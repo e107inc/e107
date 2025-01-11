@@ -30,7 +30,7 @@ if (!defined('e107_INIT'))
 	exit;
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_upload_handler.php');
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_upload_handler.php');
 
 //define("UH_DEBUG",TRUE);
 
@@ -112,7 +112,7 @@ define('e_SAVE_FILETYPES', 'filetypes_.xml');
  */
 function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 {
-	$admin_log = e107::getAdminLog();
+	$admin_log = e107::getLog();
 
 	$ul_temp_dir = '';
 	if (ini_get('open_basedir') != '') // Need to move file to intermediate directory before we can read its contents to check it.
@@ -131,10 +131,10 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 	
 	if (UH_DEBUG)
 	{
-		e107::getLog()->e_log_event(10, debug_backtrace(), "DEBUG", "Upload Handler test", "Process uploads to {$uploaddir}, fileinfo  ".$fileinfo, FALSE, LOG_TO_ROLLING);
+		e107::getLog()->addEvent(10, debug_backtrace(), "DEBUG", "Upload Handler test", "Process uploads to {$uploaddir}, fileinfo  ".$fileinfo, FALSE, LOG_TO_ROLLING);
 	}
 	
-	//	$admin_log->e_log_event(10,__FILE__."|".__FUNCTION__."@".__LINE__,"DEBUG","Upload Handler test","Intermediate directory: {$ul_temp_dir} ",FALSE,LOG_TO_ROLLING);
+	//	$admin_log->addEvent(10,__FILE__."|".__FUNCTION__."@".__LINE__,"DEBUG","Upload Handler test","Intermediate directory: {$ul_temp_dir} ",FALSE,LOG_TO_ROLLING);
 
 	$overwrite = varset($options['overwrite'], FALSE);
 
@@ -144,14 +144,14 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 	{
 		if (UH_DEBUG)
 		{
-			e107::getLog()->e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Invalid directory: ".$uploaddir, FALSE, FALSE);
+	//		e107::getLog()->addEvent(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Invalid directory: ".$uploaddir, FALSE, FALSE);
 		}
 		
 		return FALSE; // Need a valid directory
 	}
 	if (UH_DEBUG)
 	{
-		e107::getLog()->e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Destination directory: ".$uploaddir, FALSE, FALSE);
+	//	e107::getLog()->addEvent(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Destination directory: ".$uploaddir, FALSE, FALSE);
 	}
 	
 	$final_chmod = varset($options['final_chmod'], 0644);
@@ -167,11 +167,11 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 
 	$max_file_count = varset($options['max_file_count'], 0);
 
-	if (!is_array($files))
+	if (empty($files))
 	{
-		if (UH_DEBUG)
+		if (deftrue('UH_DEBUG'))
 		{
-			e107::getLog()->e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "No files uploaded", FALSE, FALSE);
+			e107::getLog()->addEvent(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "No files uploaded", FALSE, FALSE);
 		}
 		return FALSE;
 	}
@@ -184,9 +184,9 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 
 	// That's the basics set up - we can start processing files now
 
-	if (UH_DEBUG)
+	if (deftrue('UH_DEBUG'))
 	{
-		e107::getLog()->e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Start individual files: ".count($files['name'])." Max upload: ".$max_upload_size, FALSE, FALSE);
+	//	e107::getLog()->addEvent(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Start individual files: ".count($files['name'])." Max upload: ".$max_upload_size, FALSE, FALSE);
 	}
 	
 	$c = 0;
@@ -195,6 +195,8 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 	
 	foreach ($files['name'] as $key=>$name)
 	{
+		$name = $tp->filter($name, 'str');
+
 		$first_error = FALSE; // Clear error flag
 		if (($name != '') || $files['size'][$key]) // Need this check for things like file manager which allow multiple possible uploads
 		{
@@ -210,7 +212,7 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 
 			if (UH_DEBUG)
 			{
-				e107::getLog()->e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Process file {$name}, size ".$files['size'][$key], FALSE, FALSE);
+				e107::getLog()->addEvent(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Process file {$name}, size ".$files['size'][$key], FALSE, FALSE);
 			}
 			
 			if ($max_file_count && ($c >= $max_file_count))
@@ -283,7 +285,7 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 						
 						if (UH_DEBUG)
 						{
-							e107::getLog()->e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Move {$tempfilename} to {$uploadfile} ", FALSE, LOG_TO_ROLLING);
+							e107::getLog()->addEvent(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Move {$tempfilename} to {$uploadfile} ", FALSE, LOG_TO_ROLLING);
 						}
 						
 						@move_uploaded_file($tempfilename, $uploadfile); // This should work on all hosts
@@ -302,7 +304,7 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 			{
 				// File upload broken - temp file renamed.
 				// FIXME - method starting with 'get' shouldn't do system file changes.
-				$uploaded[$c] = e107::getFile()->get_file_info($uploadfile, true, false);
+				$uploaded[$c] = e107::getFile()->getFileInfo($uploadfile, true, false);
 
 				$uploaded[$c]['name'] = $name;
 				$uploaded[$c]['rawname'] = $raw_name;
@@ -320,7 +322,7 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 					
 					if (UH_DEBUG)
 					{
-						e107::getLog()->e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Final chmod() file {$destination_file} to {$final_chmod} ", FALSE, FALSE);
+						e107::getLog()->addEvent(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Final chmod() file {$destination_file} to {$final_chmod} ", FALSE, FALSE);
 					}
 									
 					$uploaded[$c]['size'] = $files['size'][$key];
@@ -328,7 +330,7 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 					
 					if (UH_DEBUG)
 					{
-						e107::getLog()->e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Saved file {$c} OK: ".$uploaded[$c]['name'], FALSE, FALSE);
+						e107::getLog()->addEvent(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Saved file {$c} OK: ".$uploaded[$c]['name'], FALSE, FALSE);
 					}
 								
 				}
@@ -401,7 +403,7 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 				
 				if (UH_DEBUG) // If we need to abort on first error, do so here - could check for specific error codes
 				{
-					e107::getLog()->e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Main routine error {$first_error} file {$c}: ".$uploaded[$c]['message'], FALSE, FALSE);
+					e107::getLog()->addEvent(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Main routine error {$first_error} file {$c}: ".$uploaded[$c]['message'], FALSE, FALSE);
 				}
 			}
 			
@@ -430,7 +432,7 @@ function handle_upload_messages(&$upload_array, $errors_only = TRUE, $use_handle
 {
 	// Display error messages, accumulate FMESSAGE
 	// Write as a separate routine - returns all messages displayed. Option to only display failures.
-	$f_message = '';
+	$f_message = [];
 	foreach ($upload_array as $k=>$r)
 	{
 		if (!$errors_only || $r['error'])
@@ -483,7 +485,7 @@ function handle_upload_messages(&$upload_array, $errors_only = TRUE, $use_handle
  */
 function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "", $overwrite = "")
 {
-	$admin_log = e107::getAdminLog();
+	$admin_log = e107::getLog();
 	$options = array(
 		'extra_file_types'=>TRUE
 	); // As default, allow any filetype enabled in filetypes.php
@@ -514,7 +516,7 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "", $overwrite = "
 
 	if (UH_DEBUG)
 		$admin_log->
-			e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Legacy call, directory ".$uploaddir, FALSE, FALSE);
+			addEvent(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Legacy call, directory ".$uploaddir, FALSE, FALSE);
 
 	$ret = process_uploaded_files(getcwd()."/".$uploaddir, $avatar, $options); // Well, that's the way it was done before
 
@@ -522,15 +524,15 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "", $overwrite = "
 	{
 		if (UH_DEBUG)
 			$admin_log->
-				e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Legacy return FALSE", FALSE, FALSE);
+				addEvent(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Legacy return FALSE", FALSE, FALSE);
 		return FALSE;
 	}
 
 	if (UH_DEBUG)
 		$admin_log->
-			e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Legacy return with ".count($ret)." files", FALSE, FALSE);
+			addEvent(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Legacy return with ".count($ret)." files", FALSE, FALSE);
 	$messages = handle_upload_messages($ret, FALSE, TRUE); // Show all the error and acknowledgment messages
-	define(F_MESSAGE, $messages);
+	define('F_MESSAGE', $messages);
 
 	if (count($ret) == 1)
 	{
@@ -548,45 +550,20 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "", $overwrite = "
 //====================================================================
 
 /**
- * Get image (string) mime type
+ * @param $filename
+ * @param bool|false $extended
+ * @return array|string
+ *@see e_file::getImageMime();
  * or when extended - array [(string) mime-type, (array) associated extensions)].
  * A much faster way to retrieve mimes than getimagesize()
  *
- * @param $filename
- * @param bool|false $extended
- * @return array|string|false
- */
+ * @deprecated Get image (string) mime type
+  */
 function get_image_mime($filename, $extended = false)
 {
-	// mime types as returned from image_type_to_mime_type()
-	// and associated file extensions
-	$imageExtensions = array(
-		'image/gif' 					=> array('gif'),
-		'image/jpeg' 					=> array('jpg'),
-		'image/png' 					=> array('png'),
-		'application/x-shockwave-flash' => array('swf', 'swc'),
-		'image/psd' 					=> array('psd'),
-		'image/bmp' 					=> array('bmp'),
-		'image/tiff' 					=> array('tiff'),
-		'application/octet-stream' 		=> array('jpc', 'jpx', 'jb2'),
-		'image/jp2' 					=> array('jp2'),
-		'image/iff' 					=> array('iff'),
-		'image/vnd.wap.wbmp' 			=> array('wbmp'),
-		'image/xbm' 					=> array('xbm'),
-		'image/vnd.microsoft.icon' 		=> array('ico')
-	);
+	trigger_error(__METHOD__.' is deprecated. Use e107::getFile()->getImageMime($filename, $extended); instead.', E_USER_DEPRECATED);
 
-	$ret = image_type_to_mime_type(exif_imagetype($filename));
-
-	if($extended)
-	{
-		return array(
-			$ret,
-			$ret && isset($imageExtensions[$ret]) ? $imageExtensions[$ret]: array()
-		);
-	}
-
-	return $ret;
+	return e107::getFile()->getImageMime($filename, $extended);
 
 }
 
@@ -613,118 +590,132 @@ function get_image_mime($filename, $extended = false)
  */
 
  //TODO - Move this function to file_class.php
-function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = FALSE)
-{
-	// 1. Start by checking against filetypes - that's the easy one!
-	$file_ext = strtolower(substr(strrchr($target_name, '.'), 1));
-	if (!isset($allowed_filetypes[$file_ext]))
+	function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = false)
 	{
-		if (is_bool($unknown))
-			return 1; // Reject out of hand if no possible alternative extensions
-		// Otherwise, it could be in the supplementary list
-		$tmp = explode(',', $unknown);
-		for ($i = 0; $i < count($tmp); $i++)
-		{
-			$tmp[$i] = strtolower(trim(str_replace('.', '', $tmp[$i])));
-		}
-		if (!in_array($file_ext, $tmp))
-			return 6;
-	}
 
-	// 2. For all files, read the first little bit to check for any flags etc
-	$res = fopen($filename, 'rb');
-	$tstr = fread($res, 100);
-	fclose($res);
-	if ($tstr === FALSE)
-	{
-		return 2; // If can't read file, not much use carrying on!
-	}
-	if (stristr($tstr, '<?php') !== FALSE)
-	{
-		return 3; // Pretty certain exploit
-	}
-	if (stristr($tstr,'<?') !== FALSE)				// Bit more tricky - can sometimes be OK
-	{
-		if (stristr($tstr, '<?xpacket') === FALSE)	// Allow the XMP header produced by CS4
-		{
-			return 7;
-		}
-	}
+		// 1. Start by checking against filetypes - that's the easy one!
+		$file_ext = strtolower(substr(strrchr($target_name, '.'), 1));
 
-	// 3. Now do what we can based on file extension
-	switch ($file_ext)
-	{
-	
-		case 'jpg':
-		case 'gif':
-		case 'png':
-		case 'jpeg':
-		case 'pjpeg':
-		case 'bmp':
-		case 'swf':
-		case 'fla':
-		case 'flv':
-		case 'swc':
-		case 'psd':
-		case 'ai':
-		case 'eps':
-		case 'svg':
-		case 'tiff':
-		case 'jpc': // http://fileinfo.com/extension/jpc
-		case 'jpx': // http://fileinfo.com/extension/jpx
-		case 'jb2': // http://fileinfo.com/extension/jb2
-		case 'jp2': // http://fileinfo.com/extension/jp2
-		case 'iff':
-		case 'wbmp':
-		case 'xbm':
-		case 'ico':
-			$ret = get_image_mime($filename);
-			if ($ret === false)
+		if(!isset($allowed_filetypes[$file_ext]))
+		{
+			if(is_bool($unknown))
 			{
-				return 4; // exif_imagetype didn't recognize the image mime
+				return 1;
+			} // Reject out of hand if no possible alternative extensions
+			// Otherwise, it could be in the supplementary list
+
+			$tmp = explode(',', $unknown);
+			for($i = 0, $iMax = count($tmp); $i < $iMax; $i++)
+			{
+				$tmp[$i] = strtolower(trim(str_replace('.', '', $tmp[$i])));
 			}
-			// getimagesize() is extremely slow + it can't handle all required media!!! Abandon this check!
-			//	return 5; // Zero size picture or bad file format
-		break;
 
-		case 'zip':
-		case 'gzip':
-		case 'gz':
-		case 'tar':
-		case 'bzip':
-		case 'pdf':
-		case 'doc':
-		case 'docx':
-		case 'xls':
-		case 'xlsx':
-		case 'rar':
-		case '7z':
-		case 'csv':
-		case 'mp3':
-		case 'wav':
-		case 'mp4':
-		case 'mpg':
-		case 'mpa':
-		case 'wma':
-		case 'wmv':
-		case 'flv': //Flash stream
-		case 'f4v': //Flash stream
-		case 'mov': //media
-		case 'avi': //media
-		break; // Just accept these
-
-		case 'php':
-		case 'htm':
-		case 'html':
-		case 'cgi':
-		case 'pl':
-			return 9; // Never accept these! Whatever the user thinks!
-
-		default:
-			if (is_bool($unknown))
-				return ($unknown ? TRUE : 8);
+			if(!in_array($file_ext, $tmp))
+			{
+				return 6;
+			}
 		}
-		return TRUE; // Accepted here
+
+		// 2. For all files, read the first little bit to check for any flags etc
+		$res = fopen($filename, 'rb');
+		$tstr = fread($res, 2048);
+		fclose($res);
+
+		if($tstr === false)
+		{
+			return 2; // If can't read file, not much use carrying on!
+		}
+
+		if(stripos($tstr, '<?php') !== false)
+		{
+			return 3; // Pretty certain exploit
+		}
+
+		if(strpos($tstr, '<?') !== false)                // Bit more tricky - can sometimes be OK
+		{
+			if(stripos($tstr, '<?xpacket') === false)    // Allow the XMP header produced by CS4
+			{
+				return 7;
+			}
+		}
+
+		// 3. Now do what we can based on file extension
+		switch($file_ext)
+		{
+
+			case 'jpg':
+			case 'gif':
+			case 'png':
+			case 'jpeg':
+			case 'pjpeg':
+			case 'bmp':
+			case 'swf':
+			case 'fla':
+			case 'flv':
+			case 'swc':
+			case 'psd':
+			case 'ai':
+			case 'eps':
+			case 'svg':
+			case 'tiff':
+			case 'jpc': // http://fileinfo.com/extension/jpc
+			case 'jpx': // http://fileinfo.com/extension/jpx
+			case 'jb2': // http://fileinfo.com/extension/jb2
+			case 'jp2': // http://fileinfo.com/extension/jp2
+			case 'iff':
+			case 'wbmp':
+			case 'xbm':
+			case 'ico':
+				$ret = get_image_mime($filename);
+				if($ret === false)
+				{
+					return 4; // exif_imagetype didn't recognize the image mime
+				}
+				// getimagesize() is extremely slow + it can't handle all required media!!! Abandon this check!
+				//	return 5; // Zero size picture or bad file format
+				break;
+
+			case 'zip':
+			case 'gzip':
+			case 'gz':
+			case 'tar':
+			case 'bzip':
+			case 'pdf':
+			case 'doc':
+			case 'docx':
+			case 'xls':
+			case 'xlsx':
+			case 'rar':
+			case '7z':
+			case 'csv':
+			case 'mp3':
+			case 'wav':
+			case 'mp4':
+			case 'mpg':
+			case 'mpa':
+			case 'wma':
+			case 'wmv':
+		//	case 'flv': //Flash stream
+			case 'f4v': //Flash stream
+			case 'mov': //media
+			case 'avi': //media
+				break; // Just accept these
+
+			case 'php':
+			case 'htm':
+			case 'html':
+			case 'cgi':
+			case 'pl':
+				return 9; // Never accept these! Whatever the user thinks!
+
+			default:
+				if(is_bool($unknown))
+				{
+					return ($unknown ? true : 8);
+				}
+		}
+
+		return true; // Accepted here
 	}
 
 
@@ -759,6 +750,7 @@ function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = F
 			$a_filetypes = trim(file_get_contents(e_ADMIN.$def_file));
 			$a_filetypes = explode(',', $a_filetypes);
 		}
+
 		foreach ($a_filetypes as $ftype)
 		{
 			$ftype = strtolower(trim(str_replace('.', '', $ftype)));
@@ -795,6 +787,7 @@ function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = F
 
 
 	/**
+	 * @deprecated @see e_file::getAllowedFileTypes();
 	 *	Get array of file types (file extensions) which are permitted - reads an XML-formatted definition file.
 	 *	(Similar to @See{get_allowed_filetypes()}, but expects an XML file)
 	 *
@@ -805,61 +798,9 @@ function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = F
 	 */
 	function get_XML_filetypes($def_file = FALSE, $file_mask = '')
 	{
-		$ret = array(
-		);
-		if ($def_file === FALSE)
-			return $ret;
+		trigger_error(__METHOD__.' is deprecated. Use e107::getFile()->getAllowedFileTypes(); instead.', E_USER_DEPRECATED);
 
-		if ($file_mask)
-		{
-			$file_array = explode(',', $file_mask);
-			foreach ($file_array as $k=>$f)
-			{
-				$file_array[$k] = trim($f);
-			}
-		}
-
-		if ($def_file && is_readable(e_SYSTEM.$def_file))
-		{
-			$xml = e107::getXml();
-			// class tag should be always array
-			$xml->setOptArrayTags('class');
-			$temp_vars = $xml->loadXMLfile(e_SYSTEM.$def_file, 'filetypes', false);
-			if ($temp_vars === FALSE)
-			{
-				echo "Error reading XML file: {$def_file}<br />";
-				return $ret;
-			}
-			foreach ($temp_vars['class'] as $v1)
-			{
-				$v = $v1['@attributes'];
-				if (check_class($v['name']))
-				{
-					$current_perms[$v['name']] = array(
-						'type'=>$v['type'], 'maxupload'=>$v['maxupload']
-					);
-					$a_filetypes = explode(',', $v['type']);
-					foreach ($a_filetypes as $ftype)
-					{
-						$ftype = strtolower(trim(str_replace('.', '', $ftype))); // File extension
-
-						if (!$file_mask || in_array($ftype, $file_array))
-						{ // We can load this extension
-							if (isset($ret[$ftype]))
-							{
-								$ret[$ftype] = file_size_decode($v['maxupload'], $ret[$ftype], 'gt'); // Use largest value
-							}
-							else
-							{
-								$ret[$ftype] = file_size_decode($v['maxupload']);
-							}
-						}
-					}
-				}
-			}
-		}
-
-		return $ret;
+		return e107::getFile()->getAllowedFileTypes();
 	}
 
 
@@ -874,12 +815,12 @@ function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = F
 	function calc_max_upload_size($max_up = -1)
 	{
 		global $pref;
-		$admin_log = e107::getAdminLog();
+		$admin_log = e107::getLog();
 		// Work out maximum allowable file size
-		if (UH_DEBUG)
+		if (deftrue('UH_DEBUG'))
 		{
 			$admin_log->
-				e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "File size limits - user set: ".$pref['upload_maxfilesize']." Post_max_size: ".ini_get('post_max_size')." upload_max_size: ".ini_get('upload_max_size'), FALSE, FALSE);
+				addEvent(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "File size limits - user set: ".$pref['upload_maxfilesize']." Post_max_size: ".ini_get('post_max_size')." upload_max_size: ".ini_get('upload_max_size'), FALSE, FALSE);
 		}
 		$max_upload_size = file_size_decode(ini_get('post_max_size'));
 		$max_upload_size = file_size_decode(ini_get('upload_max_filesize'), $max_upload_size, 'lt');
@@ -892,9 +833,9 @@ function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = F
 			if (varset($pref['upload_maxfilesize'], 0) > 0)
 				$max_upload_size = file_size_decode($pref['upload_maxfilesize'], $max_upload_size, 'lt');
 		}
-		if (UH_DEBUG)
+		if (deftrue('UH_DEBUG'))
 			$admin_log->
-				e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Final max upload size: {$max_upload_size}", FALSE, FALSE);
+				addEvent(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Final max upload size: {$max_upload_size}", FALSE, FALSE);
 		return $max_upload_size;
 	}
 
@@ -958,7 +899,7 @@ function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = F
 			{ // Unspecified max - use the global value
 				$allowed_filetypes[$t] = $max_upload_size;
 			}
-			elseif ($allowed_filetypes[$t] > $max_upload_size)
+			elseif ($s > $max_upload_size)
 				$allowed_filetypes[$t] = $max_upload_size;
 			if ($allowed_filetypes[$t] > $new_max)
 				$new_max = $allowed_filetypes[$t];
@@ -973,7 +914,10 @@ function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = F
 	 *
 	 *	@return int largest allowed file size across all file types
 	 */
-	function get_user_max_upload()
+/**
+ * @return int
+ */
+function get_user_max_upload()
 	{
 		$a_filetypes = get_filetypes();
 		if (count($a_filetypes) == 0)
@@ -983,4 +927,4 @@ function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = F
 		return $max_upload_size;
 	}
 
-?>
+

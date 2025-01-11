@@ -16,8 +16,6 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-//$comment_menu_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
-//e107::getRegistry('plugin/comment_menu/current');
 
 class comment_menu_shortcodes extends e_shortcode
 {
@@ -26,6 +24,8 @@ class comment_menu_shortcodes extends e_shortcode
 	 */
 	function sc_cm_icon()
 	{
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b>', E_USER_DEPRECATED); // NO LAN
+
 		//TODO review bullet
 		$bullet = '';
 		if(defined('BULLET'))
@@ -41,18 +41,31 @@ class comment_menu_shortcodes extends e_shortcode
 
 	function sc_cm_datestamp()
 	{
-		$gen = new convert;
-		return $gen->convert_date($this->var['comment_datestamp'], "relative");
+		return e107::getParser()->toDate($this->var['comment_datestamp'], "relative");
 	}
 		
-	function sc_cm_heading()
+	function sc_cm_heading($parm=null)
 	{
-		return $this->var['comment_title'];
+		if(!empty($parm['limit'])) // new v2.1.5
+		{
+			$text = e107::getParser()->text_truncate($this->var['comment_title'], $parm['limit']);
+		}
+		else
+		{
+			$text = $this->var['comment_title'];
+		}
+
+		return e107::getParser()->toHTML($text,false,'TITLE');
 	}
 		
 	function sc_cm_url_pre()
 	{
 		return ($this->var['comment_url'] ? "<a href='".$this->var['comment_url']."'>" : "");
+	}
+
+	function sc_cm_url() // new v2.1.5
+	{
+		return (!empty($this->var['comment_url'])) ? $this->var['comment_url'] : '#';
 	}
 		
 	function sc_cm_url_post()
@@ -69,13 +82,33 @@ class comment_menu_shortcodes extends e_shortcode
 	{
 		return $this->var['comment_author'];
 	}
+
+	function sc_cm_author_avatar($parm=null) // new v2.1.5
+	{
+		$data = array('user_id'=>$this->var['comment_author_id'], 'user_image'=>$this->var['comment_author_image']);
+
+		if(!empty($parm['size']))
+		{
+			$parm['w'] = $parm['size'];
+			$parm['h'] = $parm['size'];
+		}
+
+		return e107::getParser()->toAvatar($data, $parm);
+	}
 	
 	
-	function sc_cm_comment($parm='')
+	function sc_cm_comment($parm=null)
 	{
 		$menu_pref 	= e107::getConfig('menu')->getPref();
 		$tp 		= e107::getParser();
 		$COMMENT 	= '';
+
+
+		if(!empty($parm['limit'])) // override using shortcode parm.  // new v2.1.5
+		{
+			$menu_pref['comment_characters'] = intval($parm['limit']);
+		}
+
 		
 		if($menu_pref['comment_characters'] > 0)
 		{
@@ -161,4 +194,3 @@ return $COMMENT;
 SC_END
 
 */
-?>

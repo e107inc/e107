@@ -23,25 +23,149 @@ if(!e107::isInstalled('gsitemap'))
 
 e107::lan('gsitemap'); 
 
+
+
+class gsitemap_xml
+{
+	function __construct()
+	{
+
+		$items = [];
+
+		// Gsitemap Addon.
+		if(!empty($_GET['plug']) && !empty($_GET['func']))
+		{
+			if(!e107::isInstalled($_GET['plug']))
+			{
+				exit;
+			}
+
+			$obj = e107::getAddon($_GET['plug'], 'e_gsitemap');
+			if($items = e107::callMethod($obj, $_GET['func']))
+			{
+				$this->renderXML($items);
+			}
+
+		}
+		else // From Gsitemap Database Table.
+		{
+			$this->renderXML();
+		}
+
+
+	}
+
+	/**
+	 * @param $items
+	 * @return void
+	 */
+	function renderXML($items=array())
+	{
+		header('Content-type: application/xml', TRUE);
+		$xml = "<?xml version='1.0' encoding='UTF-8'?>
+		<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9' xmlns:image='https://www.google.com/schemas/sitemap-image/1.1'>";
+
+		if(empty($items))
+		{
+			$smArray = e107::getDb()->retrieve("gsitemap", "*", "gsitemap_active IN (".USERCLASS_LIST.") ORDER BY gsitemap_order ",true);
+			$xml .= $this->renderXMLItems($smArray,  'gsitemap_');
+		}
+		else
+		{
+			$xml .= $this->renderXMLItems($items);
+		}
+
+
+		$xml .= "
+		</urlset>";
+
+		echo $xml;
+
+
+
+	}
+
+
+
+	function renderXMLItems($data, $prefix = '')
+	{
+		$tp = e107::getParser();
+
+		$xml = '';
+
+		foreach($data as $sm)
+		{
+			$url = $sm[$prefix.'url'];
+
+			if($url[0] === '/')
+			{
+				 $url = ltrim($url, '/');
+			}
+
+			$loc = (strpos($url, 'http') === 0) ? $url : SITEURL.$tp->replaceConstants($url,true);
+			$xml .= "
+			<url>
+				<loc>".$loc."</loc>";
+
+			if(!empty($sm[$prefix.'image']))
+			{
+				$imgUrl = $sm[$prefix.'image'];
+
+				if($imgUrl[0] === '/')
+				{
+					 $imgUrl = ltrim($imgUrl, '/');
+				}
+
+				$imgUrl = (strpos($imgUrl, 'http') === 0) ? $imgUrl : SITEURL.$tp->replaceConstants($imgUrl,true);
+
+				$xml .= "
+				<image:image>
+                    <image:loc>".$imgUrl."</image:loc>
+                </image:image>";
+			}
+
+			$xml .= "	
+				<lastmod>".date('c', (int) $sm[$prefix.'lastmod'])."</lastmod>
+		      	<changefreq>".$sm[$prefix.'freq']."</changefreq>
+		      	<priority>".$sm[$prefix.'priority']."</priority>
+			</url>";
+		}
+
+		return $xml;
+
+	}
+
+}
+
+
+
+// HTML below.
+
 if(e_QUERY == "show" || !empty($_GET['show']))
 {
+	e107::canonical('gsitemap');
+	e107::route('gsitemap/index');
+
 	require_once(HEADERF);
 
-	$nfArray = $sql ->retrieve("gsitemap", "*", "gsitemap_active IN (".USERCLASS_LIST.") ORDER BY gsitemap_order ",true);
+	$nfArray = e107::getDb()->retrieve("gsitemap", "*", "gsitemap_active IN (".USERCLASS_LIST.") ORDER BY gsitemap_order ",true);
+
+	$tp = e107::getParser();
 
 	if(deftrue('BOOTSTRAP'))
 	{
 		$bread = array(
-			0 => array('text' => $tp->toHtml(GSLAN_Name), 'url'=> null ) // e107::url('gsitemap','index')
+			0 => array('text' => $tp->toHTML(GSLAN_Name), 'url'=> null ) // e107::url('gsitemap','index')
 		);
 		$text = e107::getForm()->breadcrumb($bread);
+		e107::breadcrumb($bread);
 	}
 	else
 	{
 		$text = '';
 	}
 
-	$text .= "<div style='text-align:left'><ul>";
+	$text .= "<div style='text-align:left' class='gsitemap'><ul>";
 
 	foreach($nfArray as $nfa)
 	{
@@ -50,47 +174,13 @@ if(e_QUERY == "show" || !empty($_GET['show']))
 	}
 	$text .= "</ul></div>";
 
-	$ns -> tablerender(GSLAN_Name."", $text);
+	e107::getRender() -> tablerender(GSLAN_Name, $text);
 
 	require_once(FOOTERF);
 	exit;
 }
 
-header('Content-type: application/xml', TRUE);
-$xml = "<?xml version='1.0' encoding='UTF-8'?>
-<urlset xmlns='http://www.google.com/schemas/sitemap/0.84'
-xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'	xsi:schemaLocation='http://www.google.com/schemas/sitemap/0.84
-http://www.google.com/schemas/sitemap/0.84/sitemap.xsd'>";
-
-$smArray = $sql ->retrieve("gsitemap", "*", "gsitemap_active IN (".USERCLASS_LIST.") ORDER BY gsitemap_order ",true);
-
-foreach($smArray as $sm)
-{
-	if($sm['gsitemap_url'][0] == '/') $sm['gsitemap_url'] = ltrim($sm['gsitemap_url'], '/');
-	$loc = (substr($sm['gsitemap_url'],0,4)== "http")? $sm['gsitemap_url'] : SITEURL.$tp->replaceConstants($sm['gsitemap_url'],TRUE);
-	$xml .= "
-	<url>
-		<loc>".$loc."</loc>
-		<lastmod>".get_iso_8601_date($sm['gsitemap_lastmod'])."</lastmod>
-    		<changefreq>".$sm['gsitemap_freq']."</changefreq>
-    		<priority>".$sm['gsitemap_priority']."</priority>
-	</url>";
-}
-
-$xml .= "
-</urlset>";
-
-echo $xml;
-
-/* ungu at terong dot com */
-function get_iso_8601_date($int_date)
-{
-   $date_mod = date('Y-m-d\TH:i:s', $int_date);
-   $pre_timezone = date('O', $int_date);
-   $time_zone = substr($pre_timezone, 0, 3).":".substr($pre_timezone, 3, 2);
-   $date_mod .= $time_zone;
-   return $date_mod;
-}
+new gsitemap_xml;
 
 
-?>
+

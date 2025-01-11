@@ -1,0 +1,117 @@
+body {
+  padding-top: 56px;
+}
+
+body.layout-home {
+  padding-top: 0px;
+}
+
+body.layout-singlelogin {
+  padding-top: 0px;
+}
+
+
+
+/* featurebox defaults */
+#e107bootstrapcarousel .carousel-item {
+  height: 65vh;
+  min-height: 300px;
+  background: no-repeat center center scroll;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+#e107fullpagecarousel .carousel-item {
+  height: 100vh;
+  min-height: 300px;
+  background: no-repeat center center scroll;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  background-color: #272B30;
+  color: white;
+}
+
+
+ul.social-buttons li a {
+    font-size: 20px;
+    line-height: 50px;
+    display: block;
+    width: 50px;
+    height: 50px;
+    -webkit-transition: all .3s;
+    transition: all .3s;
+    color: #fff;
+    border-radius: 100%;
+    outline: 0;
+    background-color: #212529;
+}
+
+
+/* fix for comment avatar */
+
+.rounded-circle img.rounded {
+    border-radius: 50%!important;
+}
+
+@media (min-width: 768px) {
+    .offset1 {
+        margin-left: 8.33333%;
+    }
+}
+
+/*
+
+.list-group-item.active a {
+    z-index: 2;
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+}
+*/
+
+/* fix for caret bootstrap user nav */
+.profile-photo-small {
+  display: inline;
+}
+
+/* fix for fixed-top on login page - to save custom header */
+.layout-singlelogin .fixed-top {
+  position: initial;
+}
+
+/* fix for too small core login box width */
+
+#login-template {
+    max-width: 95%;
+}
+
+@media (min-width: 768px) { 
+  #login-template {
+      max-width: 800px;
+      margin-right: auto;
+      margin-left: auto;
+  }
+}
+
+/* fix for too big margin */
+#login-template .login-page-footer {
+    margin-bottom: initial;  
+}
+
+
+
+#carousel-hero.carousel {
+  position: relative;
+  left: 0;
+  top: 70px;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  margin-bottom: 60px;
+}
+
+/* CUSTOM Responsive Styles */

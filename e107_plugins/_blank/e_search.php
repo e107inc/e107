@@ -29,8 +29,8 @@ class _blank_search extends e_search // include plugin-folder in the name.
 								'author'=> array('type'	=> 'author',	'text' => LAN_SEARCH_61)
 							),
 							
-			'return_fields'	=> array('blank_id', 'blank_nick', 'blank_message', 'blank_datestamp'),
-			'search_fields'	=> array('blank_nick' => '1', 'blank_message' => '1'), // fields and weights.
+			'return_fields'	=> array('blank_id', 'blank_name', 'blank_folder', 'blank_datestamp'),
+			'search_fields'	=> array('blank_name' => '1', 'blank_folder' => '1'), // fields and weights.
 			
 			'order'			=> array('blank_datestamp' => 'DESC'),
 			'refpage'		=> 'chat.php'
@@ -67,7 +67,7 @@ class _blank_search extends e_search // include plugin-folder in the name.
 	 * Optional - Advanced Where
 	 * @param $parm - data returned from $_GET (ie. advanced fields included. in this case 'date' and 'author' )
 	 */
-	function where($parm='')
+	function where($parm=null)
 	{
 		$tp = e107::getParser();
 

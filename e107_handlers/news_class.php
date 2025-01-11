@@ -26,6 +26,10 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+
+/**
+ *
+ */
 class news {
 
 	protected static $_rewrite_data = array();
@@ -34,11 +38,16 @@ class news {
 	//FIXME - LANs
 	//TODO - synch WIKI docs, add rewrite data to the event data
 	//@Deprecated and no longer used by newspost.php 
+	/**
+	 * @param $news
+	 * @param $smessages
+	 * @return array
+	 */
 	function submit_item($news, $smessages = false)
 	{
 		$tp = e107::getParser();
 		$sql = e107::getDb();
-		$admin_log = e107::getAdminLog();
+		$admin_log = e107::getLog();
 		$pref = e107::getPref();
 		$e_event = e107::getEvent();
 		$e107cache = e107::getCache();
@@ -49,7 +58,8 @@ class news {
 		if(empty($news['news_title']))
 		{
 			$error = true;
-			$emessage->add('Validation error: News title can\'t be empty!', E_MESSAGE_ERROR, $smessages);
+			$message = LAN_ERROR_47;
+			$emessage->add(LAN_ERROR_47, E_MESSAGE_ERROR, $smessages);
 			if(!empty($news['news_sef']))
 			{
 				$news['news_sef'] = eHelper::secureSef($news['news_sef']);
@@ -72,18 +82,21 @@ class news {
 		if(empty($news['news_sef']))
 		{
 			$error = true;
-			$emessage->add('Validation error: News SEF URL value is required field and can\'t be empty!', E_MESSAGE_ERROR, $smessages);
+			$message = LAN_ERROR_48;
+			$emessage->add(LAN_ERROR_48, E_MESSAGE_ERROR, $smessages);
 		}
-		elseif($sql->db_Count('news', '(news_id)', ($news['news_sef'] ? 'news_id<>'.intval($news['news_id']).' AND ' : '')."news_sef='".$tp->toDB($news['news_sef'])."'"))
+		elseif($sql->count('news', '(news_id)', ($news['news_sef'] ? 'news_id<>'.intval($news['news_id']).' AND ' : '')."news_sef='".$tp->toDB($news['news_sef'])."'"))
 		{
 			$error = true;
-			$emessage->add('Validation error: News SEF URL is unique field - current value already in use! Please choose another SEF URL value.', E_MESSAGE_ERROR, $smessages);
+			$message = LAN_ERROR_49;
+			$emessage->add(LAN_ERROR_49, E_MESSAGE_ERROR, $smessages);
 		}
 
 		if(empty($news['news_category']))
 		{
 			$error = true;
-			$emessage->add('Validation error: News category can\'t be empty!', E_MESSAGE_ERROR, $smessages);
+			$message = LAN_ERROR_50;
+			$emessage->add(LAN_ERROR_50, E_MESSAGE_ERROR, $smessages);
 		}
 
 
@@ -162,11 +175,11 @@ class news {
 			$data['WHERE'] = 'news_id='.intval($news['news_id']);
 
 			//$vals = "news_datestamp = '".intval($news['news_datestamp'])."', ".$author_insert." news_title='".$news['news_title']."', news_body='".$news['news_body']."', news_extended='".$news['news_extended']."', news_category='".intval($news['cat_id'])."', news_allow_comments='".intval($news['news_allow_comments'])."', news_start='".intval($news['news_start'])."', news_end='".intval($news['news_end'])."', news_class='".$tp->toDB($news['news_class'])."', news_render_type='".intval($news['news_rendertype'])."' , news_summary='".$news['news_summary']."', news_thumbnail='".$tp->toDB($news['news_thumbnail'])."', news_sticky='".intval($news['news_sticky'])."' WHERE news_id='".intval($news['news_id'])."' ";
-			if ($sql->db_Update('news', $data))
+			if ($sql->update('news', $data))
 			{
 				
 			
-				e107::getAdminLog()->logArrayAll('NEWS_09', $logData);
+				e107::getLog()->addArray($logData)->save('NEWS_09');
 
 		
 				$data['data']['news_id'] = $news['news_id'];
@@ -188,8 +201,8 @@ class news {
 				if($sql->getLastErrorNumber())
 				{
 					$error = true;
-					$emessage->add(LAN_NEWS_5, E_MESSAGE_ERROR, $smessages);
-					$message = "<strong>".LAN_NEWS_5."</strong>";
+					$emessage->add(defset('LAN_UPDATED_FAILED', "Update Failed"), E_MESSAGE_ERROR, $smessages);
+					$message = "<strong>".defset('LAN_UPDATED_FAILED', "Update Failed")."</strong>";
 				}
 				else
 				{
@@ -209,18 +222,18 @@ class news {
 		else
 		{
 			// Adding item
-			$data['data']['news_id'] = $sql->db_Insert('news', $data);
+			$data['data']['news_id'] = $sql->insert('news', $data);
 			$news['news_id'] = $data['data']['news_id'];
 			//$news['news_id'] = $sql ->db_Insert('news', "0, '".$news['news_title']."', '".$news['news_body']."', '".$news['news_extended']."', ".intval($news['news_datestamp']).", ".intval($news['news_author']).", '".intval($news['cat_id'])."', '".intval($news['news_allow_comments'])."', '".intval($news['news_start'])."', '".intval($news['news_end'])."', '".$tp->toDB($news['news_class'])."', '".intval($news['news_rendertype'])."', '0' , '".$news['news_summary']."', '".$tp->toDB($news['news_thumbnail'])."', '".intval($news['news_sticky'])."' ")
 			if ($data['data']['news_id'])
 			{
 				$data['news_id'] = $news['news_id'];
-				$message = LAN_NEWS_6;
+				$message = defset('LAN_SAVED', "Saved");
 				$emessage->add(LAN_CREATED, E_MESSAGE_SUCCESS, $smessages);
 				e107::getCache()->clear('news.php');
 
 				//moved down - prevent wrong mysql_insert_id
-				e107::getAdminLog()->logArrayAll('NEWS_08', $logData);
+				e107::getLog()->addArray($logData)->save('NEWS_08');
 				e107::getEvent()->trigger('newspost', $data['data']);
 				e107::getEvent()->trigger('admin_news_created', $data['data']);
 
@@ -231,7 +244,7 @@ class news {
 			else
 			{
 				$error = true;
-				$message = "<strong>".LAN_NEWS_7."</strong>";
+				$message = "<strong>".defset('LAN_CREATED_FAILED')."</strong>";
 				$emessage->add(LAN_UPDATED, E_MESSAGE_ERROR, $smessages);
 			}
 		}
@@ -243,7 +256,15 @@ class news {
 		$data['error'] = $error;
 		return $data;
 	}
-	
+
+	/**
+	 * @param $news
+	 * @param $mode
+	 * @param $n_restrict
+	 * @param $NEWS_TEMPLATE
+	 * @param $param
+	 * @return bool|string|null
+	 */
 	function render_newsitem($news, $mode = 'default', $n_restrict = '', $NEWS_TEMPLATE = '', $param = array())
 	{
 		global $NEWSSTYLE, $NEWSLISTSTYLE;
@@ -253,7 +274,7 @@ class news {
 			$result = call_user_func($override_newsitem, $news, $mode, $n_restrict, $NEWS_TEMPLATE, $param);
 			if ($result == 'return')
 			{
-				return;
+				return null;
 			}
 		}
 
@@ -271,12 +292,12 @@ class news {
 		}
 
 		$tmp = array();
-		$tmp['caticon'] 				= defset('ICONSTYLE');
-		$tmp['commentoffstring'] 		= defset('COMMENTOFFSTRING');
-		$tmp['commentlink'] 			= defset('COMMENTLINK');
-		$tmp['trackbackstring'] 		= defset('TRACKBACKSTRING');
+
+		$tmp['commentoffstring'] 		= defset('COMMENTOFFSTRING', '');
+		$tmp['commentlink'] 			= defset('COMMENTLINK', e107::getParser()->toGlyph('fa-comment'));
+	/*	$tmp['trackbackstring'] 		= defset('TRACKBACKSTRING');
 		$tmp['trackbackbeforestring'] 	= defset('TRACKBACKBEFORESTRING');
-		$tmp['trackbackafterstring'] 	= defset('TRACKBACKAFTERSTRING');
+		$tmp['trackbackafterstring'] 	= defset('TRACKBACKAFTERSTRING');*/
 		$tmp['itemlink'] 				= defset('NEWSLIST_ITEMLINK');
 		$tmp['thumbnail'] 				= defset('NEWSLIST_THUMB', "border:0px");
 		$tmp['catlink']  				= defset('NEWSLIST_CATLINK');
@@ -291,33 +312,35 @@ class news {
 
 		if (!isset($param['image_nonew_small']))
 		{
-		  if (!defined("IMAGE_nonew_small"))
+		/*  if (!defined("IMAGE_nonew_small"))
 		  {
 			define("IMAGE_nonew_small", (file_exists(THEME."images/nonew_comments.png") ? "<img src='".THEME_ABS."images/nonew_comments.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."generic/nonew_comments.png' alt=''  />"));
-		  }
-		  $param['image_nonew_small'] = IMAGE_nonew_small;
+		  }*/
+		  $param['image_nonew_small'] = (file_exists(THEME."images/nonew_comments.png") ? "<img src='".THEME_ABS."images/nonew_comments.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."generic/nonew_comments.png' alt=''  />");
 		}
 
 		if (!isset($param['image_new_small']))
 		{
-		  if (!defined("IMAGE_new_small"))
+		 /* if (!defined("IMAGE_new_small"))
 		  {
 			define("IMAGE_new_small", (file_exists(THEME."images/new_comments.png") ? "<img src='".THEME_ABS."images/new_comments.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."generic/new_comments.png' alt=''  /> "));
 		  }
-		  $param['image_new_small'] = IMAGE_new_small;
+		  */
+		  $param['image_new_small'] = (file_exists(THEME."images/new_comments.png") ? "<img src='".THEME_ABS."images/new_comments.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."generic/new_comments.png' alt=''  /> ");
+
 		}
 
 		if (!isset($param['image_sticky']))
 		{
-		  if (!defined("IMAGE_sticky"))
+		 /* if (!defined("IMAGE_sticky"))
 		  {
 			define("IMAGE_sticky", (file_exists(THEME."images/sticky.png") ? "<img src='".THEME_ABS."images/sticky.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."generic/sticky.png' alt='' style='width: 14px; height: 14px; vertical-align: bottom' /> "));
-		  }
-		  $param['image_sticky'] = IMAGE_sticky;
+		  }*/
+		  $param['image_sticky'] = (file_exists(THEME."images/sticky.png") ? "<img src='".THEME_ABS."images/sticky.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."generic/sticky.png' alt='' style='width: 14px; height: 14px; vertical-align: bottom' /> ");
 		}
 
-		cachevars('current_news_item', $news);
-		cachevars('current_news_param', $param);
+		e107::setRegistry('current_news_item', $news);
+		e107::setRegistry('current_news_param', $param);
 
 		if ($news['news_render_type'] == 1 && $mode != "extend") 
 		{
@@ -331,7 +354,7 @@ class news {
 			} 
 			else 
 			{
-				$NEWS_PARSE = "{NEWSICON}&nbsp;<b>{NEWSTITLELINK}</b><div class='smalltext'>{NEWSAUTHOR} ".LAN_NEWS_100." {NEWSDATE} | {NEWSCOMMENTS}</div>";
+				$NEWS_PARSE = "{NEWSICON}&nbsp;<b>{NEWSTITLELINK}</b><div class='smalltext'>{NEWSAUTHOR} ".defset('LAN_NEWS_300', 'On')." {NEWSDATE} | {NEWSCOMMENTS}</div>";
 			}
 		}
 		else 
@@ -374,7 +397,7 @@ class news {
 
 		// Retrieve batch sc object, set required vars
 
-		$wrapperKey = (!empty($param['template_key'])) ? 'news/'.$param['template_key'].'/item' : 'news/view/item';
+		$wrapperKey = (!empty($param['template_key'])) ? $param['template_key'].'/item' : 'news/view/item';
 
 		$editable = array(
 			'table' => 'news',
@@ -402,7 +425,7 @@ class news {
 
 		$text = e107::getParser()->parseTemplate($NEWS_PARSE, true, $sc);
 
-		if ($mode == 'return')
+		if ($mode == 'return' || !empty($param['return']))
 		{
 			return $text;
 		}
@@ -414,6 +437,11 @@ class news {
 	}
 
 	//@TDODO deprecated?
+
+	/**
+	 * @param $original
+	 * @return string
+	 */
 	function make_xml_compatible($original)
 	{
 		$original = e107::getParser()->toHTML($original, TRUE);
@@ -421,6 +449,143 @@ class news {
 		$original = str_replace('&copy;', '(c)', $original);
 		return htmlspecialchars($original, ENT_COMPAT, CHARSET);
 	}
+
+
+	/**
+	 * Render a news Grid. (currently used in news_grid_menu ) // new v2.1.5
+	 * @param array $parm = [
+	 *      'caption'		    => (string)     text or constant
+	 *      'titleLimit'		=> (integer)    number of chars fo news title
+	 *      'summaryLimit'		=> (integer)    number of chars for new summary
+	 *      'source'		    => (string)     latest (latest news items) | sticky (news items) | template (assigned to news-grid layout)
+	 *      'order'		        => (integer)    n.news_datestamp DESC
+	 *      'limit'		        => (integer)    10
+	 *      'template'		    => (string)     default | or any key as defined in news_grid_template.php
+	 *  ]
+	 * @return string
+	 */
+	function render_newsgrid($parm=null)
+	{
+
+		$cacheString = 'nq_news_grid_menu_'.md5(serialize($parm));
+
+		$cached = e107::getCache()->retrieve($cacheString);
+
+		if(false === $cached)
+		{
+
+			e107::plugLan('news', null);
+
+			if(is_string($parm))
+			{
+				parse_str($parm, $parms);
+			}
+			else
+			{
+				$parms = $parm;
+
+				e107::getDebug()->log($parms);
+			}
+
+			if(isset($parms['caption'][e_LANGUAGE]))
+			{
+				$parms['caption'] = $parms['caption'][e_LANGUAGE];
+			}
+
+			if(!empty($parms['caption']) && defined($parms['caption']))
+			{
+				$parms['caption'] = constant($parms['caption']);
+			}
+
+			/** @var e_news_tree $ntree */
+			$ntree = e107::getObject('e_news_tree');
+
+			if($legacyTemplate  = e107::getTemplate('news', 'news_menu', 'grid')) // BC
+			{
+				$template = $legacyTemplate;
+				$parms['tmpl']      = 'news_menu';
+				$parms['tmpl_key']  = 'grid';
+			}
+			else // New in v2.1.5
+			{
+				$tmpl = !empty($parms['layout']) ? $parms['layout'] : 'col-md-4';
+				$template = e107::getTemplate('news', 'news_grid', $tmpl);
+				$parms['tmpl']      = 'news_grid';
+				$parms['tmpl_key']  = $tmpl;
+
+			}
+
+			if(empty($parms['mode']))
+			{
+				$parms['mode'] = 'news_grid_menu';
+			}
+
+		//	$gridSize       = vartrue($parms['layout'],'col-md-4');
+
+			$parmSrch       = array(
+								'{NEWSGRID}',
+								'_titleLimit_',
+								'_summaryLimit_'
+							);
+
+			$parmReplace    = array(
+							//	$gridSize,
+							//	vartrue($parms['titleLimit'], 0),
+						//		vartrue($parms['summaryLimit'], 0)
+							);
+
+			$template = str_replace($parmSrch , '', $template); // clean up deprecated elements.
+
+			$render = (empty($parms['caption'])) ? false: true;
+
+
+
+			if(empty($parms['count']))
+			{
+				$parms['count'] = 3;
+			}
+
+			$parms['order']  = empty($parms['order']) ? 'n.news_datestamp DESC' : $parms['order'];
+
+			$treeparm = array();
+
+			if(!empty($parms['count']))
+			{
+				 $treeparm['db_limit'] = '0, '.intval($parms['count']);
+			}
+
+			if(!empty($parms['limit']))
+			{
+				$treeparm['db_limit'] = '0, '.intval($parms['limit']);
+			}
+
+			if(!empty($parms['order']))
+			{
+				$treeparm['db_order'] = e107::getParser()->toDB($parms['order']);
+			}
+
+			$parms['return'] = true;
+
+			if(varset($parms['source']) == 'template')
+			{
+				$treeparm['db_where']     = 'FIND_IN_SET(6, n.news_render_type)';
+			}
+
+			if(varset($parms['source']) == 'sticky')
+			{
+				$treeparm['db_where']     = 'n.news_sticky=1';
+			}
+
+			$cached = $ntree->loadJoinActive(vartrue($parms['category'], 0), false, $treeparm)->render($template, $parms, $render);
+
+			e107::getCache()->set($cacheString, $cached);
+		}
+
+		return $cached;
+
+	}
+
+
 }
 
 
@@ -428,22 +593,25 @@ class news {
 
 require_once(e_HANDLER.'model_class.php');
 
+
+/**
+ *
+ */
 class e_news_item extends e_front_model
 {
 	protected $_db_table = 'news';
 	protected $_field_id = 'news_id';
-	protected $_cache_string = 'news_item_';
+	protected $_cache_string = 'news_item_{ID}';
 
 	/**
 	 * Shortcodes - simple field getter (basic formatting)
 	 * THIS IS ONLY TEST, maybe useful for fields requiring simple formatting - it's a way too complicated for designers,
 	 * could be inner used inside the rest of news SCs.
 	 *
-	 * @param string $news_field name without the leading 'news_' prefix
-	 * @param mixed $default
+	 * @param null $parm
 	 * @return string field value
 	 */
-	public function sc_news_field($parm = '')
+	public function sc_news_field($parm = null)
 	{
 		$tmp = explode('|', $parm, 2);
 		$field = $tmp[0];
@@ -455,7 +623,7 @@ class e_news_item extends e_front_model
 		$val = $this->field($field, '');
 
 		//do more with $parm array, just an example here
-		if(vartrue($parm['format']))
+		if(!empty($parm['format']))
 		{
 			switch ($parm['format'])
 			{
@@ -489,7 +657,7 @@ class e_news_item extends e_front_model
 					$params = array($val); //value is always the first callback argument
 					$params = array_merge($params, explode(',', $parm['arg']));
 					//should be done with date handler (awaiting for modifications)
-					return strftime(varset($parm['arg'], e107::getPref('shortdate')), $val);
+					return eShims::strftime(varset($parm['arg'], e107::getPref('shortdate')), $val);
 				break;
 
 				default:
@@ -528,7 +696,7 @@ class e_news_item extends e_front_model
 		$id = intval($id);
 		$nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
 
-	  	$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_sef, nc.category_icon FROM #news AS n
+	  	$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 		WHERE n.news_id={$id} AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
@@ -541,6 +709,10 @@ class e_news_item extends e_front_model
 	}
 }
 
+
+/**
+ *
+ */
 class e_news_tree extends e_front_tree_model
 {
 	protected $_db_table = 'news';
@@ -565,12 +737,18 @@ class e_news_tree extends e_front_tree_model
 		$this->_current_category_id = $category_id;
 		return $this;
 	}
-	
+
+	/**
+	 * @return array|int
+	 */
 	public function getCurrentCategoryId()
 	{
 		return $this->_current_category_id;
 	}
-	
+
+	/**
+	 * @return bool
+	 */
 	public function hasCurrentCategoryId()
 	{
 		return $this->_current_category_id !== null;
@@ -579,20 +757,20 @@ class e_news_tree extends e_front_tree_model
 	/**
 	 * Load tree by category id
 	 *
-	 * @param integer $category_id
+	 * @param integer $id
 	 * @param boolean $force
 	 * @param array $params DB query parameters
 	 * @return e_news_tree
 	 */
-	public function load($category_id = 0, $force = false, $params = array())
+	public function load($id = 0, $force = false, $params = array())
 	{
-		$category_id = intval($category_id);
-		if(!$this->hasCurrentCategoryId() || $force) $this->setCurrentCategoryId($category_id);
+		$id = intval($id);
+		if(!$this->hasCurrentCategoryId() || $force) $this->setCurrentCategoryId($id);
 		
 		$this->setParam('model_class', 'e_news_item')
 			->setParam('db_order', vartrue($params['db_order'], 'news_datestamp DESC'))
 			->setParam('db_limit', vartrue($params['db_limit'], '0,10'))
-			->setParam('db_where', $category_id ? 'news_category='.$category_id : '')
+			->setParam('db_where', $id ? 'news_category='.$id : '')
 			->setParam('noCacheStringModify', false);
 			
 		return parent::load($force);
@@ -604,7 +782,7 @@ class e_news_tree extends e_front_tree_model
 	 * @param mixed $category_id
 	 * @param boolean $force
 	 * @param array $params DB query parameters
-	 * @return e_news_tree
+	 * @return e_news_tree|e_tree_model
 	 */
 	public function loadJoin($category_id = 0, $force = false, $params = array())
 	{
@@ -637,15 +815,15 @@ class e_news_tree extends e_front_tree_model
 		$db_limit = vartrue($params['db_limit'], '0,10');
 		
 		
-		$query = "SELECT  SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon FROM #news AS n
+		$query = "SELECT  SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon FROM #news AS n
 			LEFT JOIN #user AS u ON n.news_author = u.user_id
 			LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 			{$where}
 			ORDER BY ".$db_order." LIMIT ".$db_limit;
-		
+
 		$this->setParam('db_query', $query);
 		
-		return parent::load($force);
+		return parent::loadBatch($force);
 	}
 
 	/**
@@ -668,6 +846,8 @@ class e_news_tree extends e_front_tree_model
 		";
 		
 		$params['db_where'] = $where;
+
+		$this->_cache_string = null; // disable sys cache, otherwise we get a new cache file every time the time() changes.
 		
 		return $this->loadJoin($category_id, $force, $params);
 	}
@@ -687,8 +867,17 @@ class e_news_tree extends e_front_tree_model
 			return '';
 		}
 
+		if(is_string($template) || empty($template))
+		{
+			return "<div class='alert alert-danger'>Couldn't find template/layout with the following params: ".print_a($parms,true)."</div>";
+		}
+
 		$ret = array();
 		$tp = e107::getParser();
+		$start = '';
+		$end = '';
+
+		$param = $parms;
 		$param['current_action'] = 'list';
 		// TODO more default parameters
 
@@ -712,14 +901,27 @@ class e_news_tree extends e_front_tree_model
 
 		if(!empty($items))
 		{
-			$start = $parser->parseTemplate($template['start'], true, $vars); // must be here in case {SETIMAGE} is present and used for items below.
+			/** @var e_tree_model $news */
+			foreach ($items as $news)
+			{
+				$d = $news->toArray();
+				$batch->setScVar('news_item',$d); // set news category.
+				break;
+			}
+
+			$start = $parser->parseTemplate($template['start'], true,$batch,$vars); // must be here in case {SETIMAGE} is present and used for items below.
 		}
+
+
+		$featuredCount = !empty($parms['featured']) ? intval($parms['featured']) : 0;
+
 
 		foreach ($items as $news)
 		{
 			$vars->counter = $i;
 			$batch->setScVar('news_item', $news->getData());
-			$ret[] = $parser->parseTemplate($template['item'], true, $batch, $vars);
+			$tmpl = (isset($template['featured']) && $i <= $featuredCount) ? 'featured' : 'item';
+			$ret[] = $parser->parseTemplate($template[$tmpl], true, $batch, $vars);
 			$i++;
 		}
 
@@ -737,6 +939,12 @@ class e_news_tree extends e_front_tree_model
 			if($tablerender)
 			{
 				$caption = vartrue($parms['caption']) ? defset($parms['caption'], $parms['caption']) : LAN_NEWSLATEST_MENU_TITLE; // found in plugins/news/languages/English.php
+
+				if(!empty($parms['caption'][e_LANGUAGE]))
+				{
+					$caption = $parms['caption'][e_LANGUAGE];
+				}
+
 				$mod = true === $tablerender ? 'news_latest_menu' : $tablerender;
 				return e107::getRender()->tablerender($caption, $ret, varset($parms['mode'], $mod), $return);
 			}
@@ -749,6 +957,10 @@ class e_news_tree extends e_front_tree_model
 	}
 }
 
+
+/**
+ *
+ */
 class e_news_category_item extends e_front_model
 {
 	protected $_db_table = 'news_category';
@@ -766,6 +978,10 @@ class e_news_category_item extends e_front_model
 		return parent::get('category_'.$category_field, $default);
 	}
 
+	/**
+	 * @param $parm
+	 * @return array|string
+	 */
 	public function sc_news_category_title($parm = '')
 	{
 		if('attribute' == $parm)
@@ -773,13 +989,17 @@ class e_news_category_item extends e_front_model
 			 return e107::getParser()->toAttribute($this->cat('name'));
 		}
 
-		return e107::getParser()->toHtml($this->cat('name'),true,'TITLE_PLAIN');
+		return e107::getParser()->toHTML($this->cat('name'),true,'TITLE_PLAIN');
 	}
 
+	/**
+	 * @param $parm
+	 * @return string
+	 */
 	public function sc_news_category_url($parm = '')
 	{
 
-		$url = e107::getUrl()->create('news/list/category', array('id' => $this->getId(), 'name' => $this->cat('sef')));
+		$url = e107::getUrl()->create('news/list/category', array($this->getFieldIdName() => $this->getId(), 'name' => $this->cat('sef')));
 		switch($parm)
 		{
 			case 'link':
@@ -796,11 +1016,18 @@ class e_news_category_item extends e_front_model
 		}
 	}
 
+	/**
+	 * @return string
+	 */
 	public function sc_news_category_link()
 	{
 		return $this->sc_news_category_url('link');
 	}
 
+	/**
+	 * @param $parm
+	 * @return array|string
+	 */
 	public function sc_news_category_icon($parm = '')
 	{
 		if(!$this->cat('icon'))
@@ -830,17 +1057,30 @@ class e_news_category_item extends e_front_model
 		}
 	}
 
-	public function sc_news_category_news_count($parm = '')
+	/**
+	 * @param $parm
+	 * @return string
+	 */
+	public function sc_news_category_news_count($parm = null)
 	{
 		if(!$this->is('category_news_count'))
 		{
 			return '';
 		}
-		return (string) $this->cat('news_count');
+
+		if($parm === 'raw')
+		{
+			return (string) $this->cat('news_count');
+		}
+
+		return (string) e107::getParser()->toBadge( $this->cat('news_count'), $parm);
 	}
 }
 
 
+/**
+ *
+ */
 class e_news_category_tree extends e_front_tree_model
 {
 	protected $_field_id = 'category_id';
@@ -849,9 +1089,9 @@ class e_news_category_tree extends e_front_tree_model
 	 * Load category data from the DB
 	 *
 	 * @param boolean $force
-	 * @return e_news_category_tree
+	 * @return e_tree_model
 	 */
-	public function load($force = false)
+	public function loadBatch($force = false)
 	{
 		$this->setParam('model_class', 'e_news_category_item')
 			->setParam('nocount', true)
@@ -860,14 +1100,14 @@ class e_news_category_tree extends e_front_tree_model
 			->setCacheString('news_category_tree')
 			->setModelTable('news_category');
 		
-		return parent::load($force);
+		return parent::loadBatch($force);
 	}
 
 	/**
 	 * Load active categories only (containing active news items)
 	 *
 	 * @param boolean $force
-	 * @return e_news_category_tree
+	 * @return e_tree_model|e_news_category_tree
 	 */
 	public function loadActive($force = false)
 	{
@@ -894,7 +1134,7 @@ class e_news_category_tree extends e_front_tree_model
 		
 		$this->setModelTable('news_category');
 		
-		return parent::load($force);
+		return parent::loadBatch($force);
 	}
 
 	/**
@@ -912,6 +1152,8 @@ class e_news_category_tree extends e_front_tree_model
 			return '';
 		}
 
+
+
 		$ret = array();
 		$tp = e107::getParser();
 
@@ -922,20 +1164,22 @@ class e_news_category_tree extends e_front_tree_model
 		if(e_PAGE == 'news.php')
 		{
 			$tmp = explode('.', e_QUERY);
-			if(vartrue($tmp[1])) $active = $tmp[1];	
+			if(!empty($tmp[1])) $active = $tmp[1];
 		}
 		$bullet = defined('BULLET') ? THEME_ABS.'images/'.BULLET : THEME_ABS.'images/bullet2.gif';
-		$obj = new e_vars(array('bullet' => $bullet));
-		
+		$obj = new e_vars(array('BULLET' => $bullet));
+
+		/** @var e_tree_model $cat */
 		foreach ($this->getTree() as $cat)
 		{
-			$obj->active = '';
+			$obj->ACTIVE = '';
 			if($active && $active == $cat->getId())
 			{
-				$obj->active = ' active';
+				$obj->ACTIVE = ' active';
 			}
-			
+
 			$ret[] = $cat->toHTML($template['item'], $parsesc, $obj);
+
 		}
 
 		if($ret)
@@ -947,6 +1191,12 @@ class e_news_category_tree extends e_front_tree_model
 			if($tablerender)
 			{
 				$caption = vartrue($parms['caption']) ? defset($parms['caption'], $parms['caption']) : LAN_NEWSCAT_MENU_TITLE; // found in plugins/news/languages/English.php
+
+				if(!empty($parms['caption'][e_LANGUAGE]))
+				{
+					$caption = $parms['caption'][e_LANGUAGE];
+				}
+
 				$mod = true === $tablerender ? 'news_categories_menu' : $tablerender;
 				return e107::getRender()->tablerender($caption, $ret, varset($parms['mode'], $mod), $return);
 			}

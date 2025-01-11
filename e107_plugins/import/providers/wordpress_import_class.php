@@ -26,7 +26,7 @@
 //$import_class_support['wordpress_import'] 	= array('users','news','page','links');
 //$import_default_prefix['wordpress_import'] 	= 'wp_';
 
-require_once('import_classes.php');
+require_once(__DIR__.'/../import_classes.php');
 
 class wordpress_import extends base_import_class
 {
@@ -425,4 +425,3 @@ class wordpress_import extends base_import_class
 }
 
 
-?>

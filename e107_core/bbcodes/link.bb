@@ -3,7 +3,7 @@
 
 
 $class = "bbcode ".e107::getBB()->getClass('link');
-global $pref;
+global $pref, $parm;
 
 /**
  *	e107 BBCodes
@@ -28,7 +28,8 @@ global $pref;
 */
 
 	$tp = e107::getParser();
-	$parm =  $tp->dataFilter(trim($parm),'link');
+
+	$parm =  $tp->filter(trim($parm));
 
 	/* Fix for people using link=external= */
 	if(strpos($parm,"external=") !== FALSE)
@@ -37,7 +38,7 @@ global $pref;
 		$parm = $parm." ".$extras;
 	}
 
-	if(substr($parm,0,6) == "mailto")
+	if(strpos($parm, 'mailto') === 0)
 	{
 		list($pre,$email) = explode(":",$parm);
 		list($p1,$p2) = explode("@",$email);
@@ -45,22 +46,23 @@ global $pref;
 		return "<a class='bbcode' rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+\"$p1\"+\"@\"+\"$p2\";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+\"$p1\"+\"@\"+\"$p2\"; return true;' onmouseout='window.status=\"\";return true;'>".$code_text."</a>";
 	}
 
-	if (substr($code_text,0,1) == ']')
+	if (substr($code_text,0,1) === ']')
 	{	// Special fix for E107 urls including a language (not nice, really)
 		$code_text = substr($code_text,1);
 		$parm .= ']';
 	}
 
-	list($link,$extras) = explode(" ",$parm);
+	list($link,$extras) = array_pad(explode(" ",$parm), 2, null);
 
 	if(!$parm) $link = $code_text;
 
-	if($link == "external" && $extras == "")
+	if($link == "external" && empty($extras))
 	{
 		$link = $code_text;
     	$extras = "rel=external";
 	}
 
+    $extras = (string) $extras;
 	if($extras == "external" || strpos($extras,"rel=external")!==FALSE)
 	{
     	$insert = "rel='external' ";
@@ -70,5 +72,5 @@ global $pref;
     	$insert = ($pref['links_new_window'] && strpos($link,"{e_")===FALSE && substr($link,0,1) != "#" && substr($link,0,1) != "/" && strpos($extras,"rel=internal")===FALSE) ? "rel='external' " : "";
     }
 	if (strtolower(substr($link,0,11)) == 'javascript:') return '';
-	return "<a class='{$class}' href='".$tp -> toAttribute($link)."' ".$insert.">".$code_text."</a>";
+	return "<a class='{$class}' href='".e107::getParser() -> toAttribute($link)."' ".$insert.">".$code_text."</a>";
 

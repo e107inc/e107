@@ -23,7 +23,7 @@ if($pref['make_clickable'])
 }
 // Old method that attracts SPAM.
 if ($parm) {
-  	return "<a class='{$class}' href='mailto:".$tp -> toAttribute($parm)."'>".$code_text."</a>";
+  	return "<a class='{$class}' href='mailto:".e107::getParser()->toAttribute($parm)."'>".$code_text."</a>";
 } else {
-  	return "<a class='{$class}' href='mailto:".$tp -> toAttribute($code_text)."'>".$code_text."</a>";
+  	return "<a class='{$class}' href='mailto:".e107::getParser()->toAttribute($code_text)."'>".$code_text."</a>";
 }

@@ -13,13 +13,26 @@ if (!defined('e107_INIT')) { exit; }
 $pref = e107::getPref();
 
 
-if((e107::wysiwyg() === true && check_class($pref['post_html'])) || strpos(e_SELF,"tinymce4/admin_config.php") )
+if((e107::wysiwyg(null, true) === 'tinymce4' && check_class($pref['post_html'])) || strpos(e_SELF,"tinymce4/admin_config.php") )
 {
 	if(e_PAGE != 'image.php')
 	{
 	//	e107::js('footer', "https://tinymce.cachefly.net/4.3/tinymce.min.js");
 
-		e107::js('footer', '//cdn.tinymce.com/4/tinymce.min.js');
+	//	e107::js('footer', '//cdn.tinymce.com/4/tinymce.min.js');
+
+	//	e107::js('footer', 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.5.3/tinymce.min.js');
+
+	//	e107::js('footer', 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.7.11/tinymce.min.js');
+		/**
+		 * tinymce 4.7.10 and newer do not work. 
+		 * Looks like an issue introduced with 4.7.10
+		 * Reverting back to 4.7.9 makes everything work in e107
+		 * Issue #3136
+		 */
+	//	e107::js('footer', 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.7.9/tinymce.min.js');
+		e107::js('footer', 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.9.11/tinymce.min.js');
+
 
 	//	e107::js('footer', "//cdn.tinymce.com/4/tinymce.min.js");
 
@@ -48,7 +61,7 @@ if((e107::wysiwyg() === true && check_class($pref['post_html'])) || strpos(e_SEL
 		}
 		
 	}
-	else
+//	else
 	{
 	//	e107::js('tinymce4','plugins/compat3x/tiny_mce_popup.js');
 	//	e107::js('tinymce','tiny_mce_popup.js','jquery');
@@ -56,15 +69,15 @@ if((e107::wysiwyg() === true && check_class($pref['post_html'])) || strpos(e_SEL
 	
 	if(ADMIN)
 	{
-	    $insert = "$('#'+id).after('<div>";
+	    $insert = "$('#'+id).after('<div class=\"btn-group\" style=\"margin-top:5px\">";
 
 
 	     if(e_PAGE == 'mailout.php')
         {
-            $insert .= "&nbsp;&nbsp;<a href=\"#\" class=\"btn btn-mini tinyInsert\" data-value=\"|USERNAME|\" >".LAN_MAILOUT_16."<\/a>";
-            $insert .= "<a href=\"#\" class=\"btn btn-mini tinyInsert\"     data-value=\"|DISPLAYNAME|\" >".LAN_MAILOUT_14."<\/a>";
-            $insert .= "<a href=\"#\" class=\"btn btn-mini tinyInsert\"     data-value=\"|SIGNUP_LINK|\" >".LAN_MAILOUT_17."<\/a>";
-            $insert .= "<a href=\"#\" class=\"btn btn-mini tinyInsert\"     data-value=\"|USERID|\" >".LAN_MAILOUT_18."<\/a>";           
+            $insert .= "<a href=\"#\" class=\"btn btn-default btn-sm btn-mini tinyInsert\" data-value=\"|USERNAME|\" >".LAN_MAILOUT_16."<\/a>";
+            $insert .= "<a href=\"#\" class=\"btn btn-default btn-sm btn-mini tinyInsert\"     data-value=\"|DISPLAYNAME|\" >".LAN_MAILOUT_14."<\/a>";
+            $insert .= "<a href=\"#\" class=\"btn btn-default btn-sm btn-mini tinyInsert\"     data-value=\"|SIGNUP_LINK|\" >".LAN_MAILOUT_17."<\/a>";
+            $insert .= "<a href=\"#\" class=\"btn btn-default btn-sm btn-mini tinyInsert\"     data-value=\"|USERID|\" >".LAN_MAILOUT_18."<\/a>";
         }
         
 	    $insert .= "</div>');";
@@ -96,6 +109,9 @@ if((e107::wysiwyg() === true && check_class($pref['post_html'])) || strpos(e_SEL
 		     	$('#bbcode-panel-'+id+'--preview').hide();
 
 			});
+			
+			$('#media-manager-submit-buttons').show();
+
 
 			$('.tinyInsert').click(function() {
 
@@ -155,9 +171,9 @@ if((e107::wysiwyg() === true && check_class($pref['post_html'])) || strpos(e_SEL
 
 			});
 
-			$('.e-dialog-close').click(function(){
+			$('.e-dialog-cancel').click(function(){
 
-				// top.tinymce.activeEditor.windowManager.close();
+				top.tinymce.activeEditor.windowManager.close();
 
 			});
 
@@ -176,4 +192,3 @@ if((e107::wysiwyg() === true && check_class($pref['post_html'])) || strpos(e_SEL
 
 }
 
-?>

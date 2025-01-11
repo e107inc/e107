@@ -24,28 +24,35 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+
+/**
+ *
+ */
 class e_bbcode
 {
-	var $bbList;			// Caches the file contents for each bbcode processed
-	var $bbLocation;		// Location for each file - 'core' or a plugin name
-	var $preProcess = FALSE;	// Set when processing bbcodes prior to saving
-	var $core_bb = array();
-	var $class = FALSE;
+	private $bbList;			// Caches the file contents for each bbcode processed
+	private $bbLocation = array();		// Location for each file - 'core' or a plugin name
+	private $preProcess = false;	// Set when processing bbcodes prior to saving
+	private $core_bb = array();
+	private $class = false;
+	private $resizePrefs = array();
 
 	function __construct()
 	{
 		$pref = e107::getPref();
-		
+
+		$this->resizePrefs = varset($pref['resize_dimensions']);
+
 		$this->core_bb = array(
-		'alert',
-		'blockquote', 'img', 'i', 'u', 'center',
-		'_br', 'color', 'size', 'code',
-		 'flash', 'link', 'email',
-		'url', 'quote', 'left', 'right',
-		'b', 'justify', 'file', 'stream',
-		'textarea', 'list', 'time',
-		'spoiler', 'hide', 'youtube', 'sanitised', 
-		'p', 'h', 'nobr', 'block','table','th', 'tr','tbody','td','markdown','video','glyph'
+			'alert',
+			'blockquote', 'img', 'i', 'u', 'center',
+			'_br', 'color', 'size', 'code',
+			'flash', 'link', 'email',
+			'url', 'quote', 'left', 'right',
+			'b', 'justify', 'file', 'stream',
+			'textarea', 'list', 'time',
+			'spoiler', 'hide', 'youtube', 'sanitised',
+			'p', 'h', 'nobr', 'block', 'table', 'th', 'tr', 'tbody', 'td', 'video', 'glyph'
 		);
 
 		foreach($this->core_bb as $c)
@@ -136,7 +143,7 @@ class e_bbcode
 		// $matches[4] - '=' or ':' according to the separator used
 		// $matches[5] - any parameter
 
-		$content = preg_split('#(\[(?:\w|/\w).*?\])#mis', $value, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
+		$content = preg_split('#(\[(?:\w|/\w).*?\])#ms', $value, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
 
 		foreach ($content as $cont)
 		{  // Each chunk is either a bbcode or a piece of text
@@ -221,7 +228,7 @@ class e_bbcode
 							else
 							{  // Opening code to process
 								// If its a single code, we can process it now. Otherwise just stack the value
-								if (array_key_exists('_'.$bbword,$this->bbLocation))
+								if (array_key_exists('_'.$bbword, $this->bbLocation))
 								{  // Single code to process
 									if (count($code_stack) == 0)
 									{
@@ -364,8 +371,6 @@ class e_bbcode
 			
 			e107::getDebug()->logCode(1, $code, $parm, print_a($info,true));
 		}
-		
-		global $e107_debug;
 
 		if (is_object($this->bbList[$code]))
 		{
@@ -374,10 +379,10 @@ class e_bbcode
 				//echo "Preprocess: ".htmlspecialchars($code_text).", params: {$param1}<br />";
 				return $this->bbList[$code]->bbPreSave($code_text, $param1);
 			}
-			if($this->preProcess == 'toWYSIWYG')//XXX FixMe NOT working - messes with default toHTML behavior. 
-			{
+		//	if($this->preProcess == 'toWYSIWYG')//XXX FixMe NOT working - messes with default toHTML behavior.
+		//	{
 			// 	return $this->bbList[$code]->bbWYSIWYG($code_text, $param1);					
-			}
+		//	}
 			return $this->bbList[$code]->bbPreDisplay($code_text, $param1);
 		}
 		if ($this->preProcess == 'toDB') return $full_text;		// No change
@@ -386,10 +391,24 @@ class e_bbcode
 		 *	@todo - capturing output deprecated
 		 */
 		ob_start();
-		$bbcode_return = eval($bbcode); //FIXME notice removal
-		$bbcode_output = ob_get_contents();
-		ob_end_clean();
+		try
+	    {
+			$bbcode = isset($bbcode) && is_string($bbcode) ? $bbcode : '';
+			$bbcode_return = eval($bbcode); //FIXME notice removal
+	    }
+		catch (ParseError $e)
+		{
+			$error = $debugFile." -- ".$e->getMessage();
+		}
 
+		$bbcode_output = ob_get_clean();
+
+		if(!empty($error))
+		{
+			trigger_error($error, E_USER_NOTICE);
+		}
+
+		$bbcode_return = isset($bbcode_return) ? $bbcode_return : '';
 		/* added to remove possibility of nested bbcode exploits ... */
 		if(strpos($bbcode_return, "[") !== FALSE)
 		{
@@ -405,17 +424,19 @@ class e_bbcode
 	 * @var string $type  - bbcode eg. 'img' or 'youtube'
 	 * @var string $text  - text to be processed for bbcode content
 	 * @var string $path - optional path to prepend to output if http or {e_xxxx} is not found. 
-	 * @return array
+	 * @return array|null
 	 */
 	function getContent($type,$text,$path='')
 	{
+
 		if(!in_array($type,$this->core_bb))
 		{
-			return;
+			return null;
 		}
 
-		if(substr(ltrim($text),0,6) == '[html]' && $type == 'img') // support for html img tags inside [html] bbcode.
+		if(strpos(ltrim($text), '[html]') === 0 && $type == 'img') // support for html img tags inside [html] bbcode.
 		{
+
 			$tmp = e107::getParser()->getTags($text,'img');
 
 			if(!empty($tmp['img']))
@@ -435,22 +456,21 @@ class e_bbcode
 			preg_match_all("/\[".$type."(?:[^\]]*)?]([^\[]*)(?:\[\/".$type."])/im",$text,$mtch);
 		}
 
-		
 
-		
+
 		$ret = array();
 		
-		if(is_array($mtch[1]))
+		if(!empty($mtch) && is_array($mtch[1]))
 		{
 			$tp = e107::getParser();
 			foreach($mtch[1] as $i)
 			{
 
-				if(substr($i,0,4)=='http')
+				if(strpos($i,'http') === 0)
 				{
 					$ret[] = $i;
 				}
-				elseif(substr($i,0,3)=="{e_")
+				elseif(strpos($i,"{e_") === 0)
 				{
 					$ret[] = $tp->replaceConstants($i,'full');
 				}
@@ -470,39 +490,59 @@ class e_bbcode
 	}
 	
 	//Set the class type for a bbcode eg. news | page | user | {plugin-folder}
+
+	/**
+	 * @param $mode
+	 * @return void
+	 */
 	function setClass($mode=false)
 	{
 		$this->class = $mode;	
 	}
 	
 	// return the Mode used by the class.  eg. news | page | user | {plugin-folder}
+
+	/**
+	 * @return bool
+	 */
 	function getMode()
 	{
 		return $this->class; 	
 	}
-	
-	
+
+
+	/**
+	 * @return false|int
+	 */
 	function resizeWidth()
 	{
-		$pref = e107::getPref();
-		if($this->class && vartrue($pref['resize_dimensions'][$this->class.'-bbcode']['w']))
+		if($this->class && !empty($this->resizePrefs[$this->class.'-bbcode']['w']))
 		{
-			return $pref['resize_dimensions'][$this->class.'-bbcode']['w'];		
+			return (int) $this->resizePrefs[$this->class.'-bbcode']['w'];
 		}
+
 		return false;	
 	}
-	
+
+	/**
+	 * @return false|int
+	 */
 	function resizeHeight()
 	{
-		$pref = e107::getPref();
-		if($this->class && vartrue($pref['resize_dimensions'][$this->class.'-bbcode']['h']))
+		if($this->class && !empty($this->resizePrefs[$this->class.'-bbcode']['h']))
 		{
-			return $pref['resize_dimensions'][$this->class.'-bbcode']['h'];		
+			return (int) $this->resizePrefs[$this->class.'-bbcode']['h'];
 		}
+
 		return false;	
 	}	
 	
 	// return the class for a bbcode
+
+	/**
+	 * @param $type
+	 * @return string
+	 */
 	function getClass($type='')
 	{
 				
@@ -512,9 +552,12 @@ class e_bbcode
 			$ret .= " bbcode-".$type."-".$this->class;
 		}
 		return $ret; 
-	}	
-	
-	
+	}
+
+
+	/**
+	 * @return void
+	 */
 	function clearClass()
 	{
 		$this->setClass();	
@@ -523,25 +566,44 @@ class e_bbcode
 	
 	
 	
-	// NEW bbcode button rendering function. replacing displayHelp(); 
-	function renderButtons($template, $id='', $options=array())
+	//
+
+	/**
+	 * NEW bbcode button rendering function. replacing displayHelp();
+	 * @param string (optional) $template eg. news, submitnews, extended, admin, mailout, page, comment, signature
+	 * @param string $id
+	 * @param array  $options
+	 * @return string
+	 */
+	function renderButtons($template='', $id='', $options=array())
 	{
-		
+		$template = (string) $template;
 		$tp = e107::getParser();
+
+		// Notice Removal
+		$BBCODE_TEMPLATE_SUBMITNEWS = '';
+		$BBCODE_TEMPLATE_NEWSPOST = '';
+		$BBCODE_TEMPLATE_MAILOUT = '';
+		$BBCODE_TEMPLATE_CPAGE = '';
+		$BBCODE_TEMPLATE_ADMIN = '';
+		$BBCODE_TEMPLATE_COMMENT = '';
+		$BBCODE_TEMPLATE_SIGNATURE = '';
+
+
 		require(e107::coreTemplatePath('bbcode')); //correct way to load a core template.
 
-		$pref = e107::getPref('e_bb_list');
-		    
-		if (!empty($pref)) // Load the Plugin bbcode AFTER the templates, so they can modify or replace.
-		{
-			foreach($pref as $val)
-			{
-				if(is_readable(e_PLUGIN.$val."/e_bb.php"))
-				{
-					require(e_PLUGIN.$val."/e_bb.php");
-				}
-			}
-		}
+//		$pref = e107::getPref('e_bb_list');
+//
+//		if (!empty($pref)) // Load the Plugin bbcode AFTER the templates, so they can modify or replace.
+//		{
+//			foreach($pref as $val)
+//			{
+//				if(is_readable(e_PLUGIN.$val."/e_bb.php"))
+//				{
+//					require(e_PLUGIN.$val."/e_bb.php");
+//				}
+//			}
+//		}
 	
 		$temp = array();
 	    $temp['news'] 		= $BBCODE_TEMPLATE_NEWSPOST;
@@ -553,7 +615,21 @@ class e_bbcode
 		$temp['maintenance']= $BBCODE_TEMPLATE_ADMIN;
 		$temp['comment'] 	= $BBCODE_TEMPLATE_COMMENT;
 		$temp['signature'] 	= $BBCODE_TEMPLATE_SIGNATURE;
-	
+		
+		if(!isset($temp[$template]))
+		{
+			// if template not yet defined, assume that $template is the name of a plugin
+			// and load the specific bbcode template from the plugin
+			// see forum plugin "templates/bbcode_template.php" for an example of the definition
+			$tpl = e107::getTemplate($template, 'bbcode', $template);
+			if (!empty($tpl))
+			{
+				// If the plugin has a template defined for bbcode, add it to the list
+				$temp[$template] = $tpl;
+			}
+			unset($tpl);
+		}
+
 		if(isset($temp[$template]))
 		{
 	        $BBCODE_TEMPLATE = $temp[$template];
@@ -563,16 +639,29 @@ class e_bbcode
 			$BBCODE_TEMPLATE = $template;	
 			$template = 'comment';	
 		}
-		elseif(ADMIN_AREA)
+		elseif(deftrue('ADMIN_AREA'))
 		{
 			$BBCODE_TEMPLATE = $BBCODE_TEMPLATE_ADMIN;	
 		}
-		else // Front-end
+	//	else // Front-end
+	//	{
+		//	$BBCODE_TEMPLATE = $BBCODE_TEMPLATE;
+	//	}
+
+
+		$pref = e107::getPref('e_bb_list');
+
+		if (!empty($pref)) // Load the Plugin bbcode AFTER the templates, so they can modify or replace.
 		{
-			$BBCODE_TEMPLATE = $BBCODE_TEMPLATE;	
+			foreach($pref as $val)
+			{
+				if(is_readable(e_PLUGIN.$val."/e_bb.php"))
+				{
+					require(e_PLUGIN.$val."/e_bb.php");
+				}
+			}
 		}
-	
-		
+
 		$bbcode_shortcodes = e107::getScBatch('bbcode');	
 				
 		$data = array(
@@ -589,10 +678,14 @@ class e_bbcode
 		
   		return "<div id='bbcode-panel-".$id."' class='mceToolbar bbcode-panel'>".$tp->parseTemplate($BBCODE_TEMPLATE,TRUE, $bbcode_shortcodes)."</div>";		
 	}
-	
-    
 
-   function processTag($tag, $html)
+
+	/**
+	 * @param $tag
+	 * @param $html
+	 * @return array|string|string[]
+	 */
+	function processTag($tag, $html)
     {
         $html = "<html><body>".$html."</body></html>";
         $doc = new DOMDocument();     
@@ -655,23 +748,155 @@ class e_bbcode
   
         return str_replace(array("<html><body>","</body></html>"),"",$html); 
     }
-        
-    
+
+
+	/**
+	 * Replace all instances of <img> tags with [img] bbcodes - allowing image tags and their 'src' values to remain dynamic.
+	 * @param string $html
+	 * @param bool $fromDB if html source is directly from the database, set to true to handle '&quot;' etc.
+	 * @return string html with <img> tags replaced by [img] bbcodes.
+	 */
+	function imgToBBcode($html, $fromDB = false)
+    {
+
+	    $tp = e107::getParser();
+
+	    if($fromDB === true)
+	    {
+	    	$html = str_replace('&quot;','"', $html);
+	    }
+
+	//    var_dump($this->defaultImageSizes);
+	    $cl = $this->getClass();
+
+
+		$arr = $tp->getTags($html,'img');
+
+		$srch = array("?","&");
+		$repl = array("\?","&amp;");
+
+		if(defined('TINYMCE_DEBUG'))
+		{
+			print_a($arr);
+		}
+
+		$arr['img'] = isset($arr['img']) && is_array($arr['img']) ? $arr['img'] : [];
+		foreach($arr['img'] as $img)
+		{
+			if(/*substr($img['src'],0,4) == 'http' ||*/ strpos($img['src'], e_IMAGE_ABS.'emotes/')!==false) // dont resize external images or emoticons.
+			{
+				continue;
+			}
+
+			$regexp = '#(<img[^>]*src="'.str_replace($srch, $repl, $img['src']).'"[^>]*>)#';
+
+			$qr = $tp->thumbUrlDecode($img['src']); // extract width/height and src from thumb URLs.
+
+			if(strpos($qr['src'],'http')!==0 && empty($qr['w']) && empty($qr['aw']))
+			{
+				$qr['w'] = varset($img['width']);
+				$qr['h'] = varset($img['height']);
+			}
+
+			$qr['ebase'] = true;
+
+
+			if(!empty($img['class']))
+			{
+				$tmp = explode(" ",$img['class']);
+				$cls = array();
+				foreach($tmp as $v)
+				{
+					if($v === 'img-rounded' || $v === 'rounded' || (strpos($v,'bbcode') === 0 && $v !== 'bbcode-img-right' && $v !== 'bbcode-img-left' ))
+					{
+						continue;
+					}
+
+					$cls[] = $v;
+
+				}
+
+				if(empty($cls))
+				{
+					unset($img['class']);
+				}
+				else
+				{
+					$img['class'] = implode(" ",$cls);
+				}
+
+			}
+
+			if($this->resizeWidth() === (int) varset($img['width']))
+			{
+				unset($img['width']);
+			}
+
+
+			$code_text = (strpos($img['src'],'http') === 0) ? $img['src'] : str_replace($tp->getUrlConstants('raw'), $tp->getUrlConstants('sc'), $qr['src']);
+
+			unset($img['src'],$img['srcset'],$img['@value'], $img['caption'], $img['alt']);
+			$parms = !empty($img) ? ' '.str_replace('+', ' ', http_build_query($img)) : "";
+
+			$replacement = '[img'.$parms.']'.$code_text.'[/img]';
+
+			$html = preg_replace($regexp, $replacement, $html);
+
+		}
+
+	    if($fromDB === true)
+	    {
+	    	$html = str_replace('"', '&quot;', $html);
+	    }
+
+		return $html;
+
+
+    }
+
+
+
+
     
 	/**
 	 * Convert HTML to bbcode. 
 	 */
 	function htmltoBBcode($text)
 	{
-	    
-       
+		$allowedTags = array('html', 'body','div', 'a', 'img', 'table', 'thead', 'tbody', 'tr', 'td', 'th', 'b',
+			'i', 'pre', 'code', 'strong', 'u', 'em', 'ul', 'ol', 'li',  'h2', 'h3', 'h4', 'h5', 'h6', 'p',
+			'blockquote', /*'audio', 'video',*/ 'br', 'small'
+		);
+
+		$allowedAttributes = array(
+		'default'  => array(),
+		'img'      => array('src', 'alt', 'width', 'height'),
+		'a'        => array('href', 'target', 'rel'),
+		'audio'    => array('src', 'controls', 'autoplay', 'loop', 'muted', 'preload'),
+		'video'    => array('autoplay', 'controls', 'height', 'loop', 'muted', 'poster', 'preload', 'src', 'width'),
+		'td'       => array('colspan', 'rowspan'),
+		'th'       => array('colspan', 'rowspan'),
+		'x-bbcode' => array('alt'),
+		);
+
+
+	    $tp = e107::getParser();
+	    $tp->setAllowedTags($allowedTags);
+	    $tp->setAllowedAttributes($allowedAttributes);
+	    $tp->setScriptAttibutes(null);
+
+	    $text = $tp->cleanHtml($text);
+
+	    $tp->init(); // reset to default;
+
 		$text = str_replace("<!-- bbcode-html-start -->","[html]",$text);
 		$text = str_replace("<!-- bbcode-html-end -->","[/html]",$text);
+
 	//	$text = str_replace('<!-- pagebreak -->',"[newpage=]",$text);
     
         
 
-		if(substr($text,0,6)=='[html]')
+		if(strpos($text,'[html]') === 0)
 		{
 			return $text;
 		}
@@ -723,10 +948,16 @@ class e_bbcode
 		
 			
 		// Mostly closing tags. 
-		$convert = array(		
+		$convert = array(
+
 			array(	"\n",			'<br />'),
 		//	array(	"\n",			'<p>'),
 			array(	"\n",			"</p>\n"),
+			array(	"",			    "<div>\n"),
+			array(	"",			    "\t"),
+			array(	"",			    "</div>\n"),
+			array(	"\n",			"<thead>\n"),
+			array(	"\n",			"</thead>\n"),
 			array(	"\n",			"</p>"),
 			array(	"[/list]",		'</ul>\n'),
 			array(	"[/list]",		'</ul>'),
@@ -738,14 +969,22 @@ class e_bbcode
 			array(	"[h=3]",		'<h3 class="bbcode-center" style="text-align: center;">'), // e107 bbcode markup
 			array(	"[h=3]",		'<h3>'),
 			array(	"[/h]",			'</h3>'),
+			array(	"[h=4]",		'<h4>'),
+			array(	"[/h]",		    '</h4>'),
+			array(	"[h=5]",		'<h5>'),
+			array(	"[/h]",		    '</h5>'),
+			array(	"[h=6]",		'<h6>'),
+			array(	"[/h]",		    '</h6>'),
 			array(	"[/b]",			'</strong>'),
 			array(	"[/i]",			'</em>'),
 			array(	"[/block]",		'</div>'),
-			array(	"[/table]",	'</table>'),
-			array(	"[/tbody]",	'</tbody>'),
+			array(	"[/table]",	    '</table>'),
+			array(	"[/tbody]",	    '</tbody>'),
 			array(	"[/code]\n",	'</code>'),
-			array(	"[/tr]",	'</tr>'),
-			array(	"[/td]",		'</td>'),	
+			array(	"[/tr]",	    '</tr>'),
+			array(	"[/td]",		'</td>'),
+			array(	"[td]",		    '<th>'),
+			array(	"[/td]",		'</th>'),
 			array(	"[/blockquote]",'</blockquote>'),
 			array(	"]",			' style=]')
 				
@@ -858,4 +1097,3 @@ class e_bb_base
 	}
 }
 
-?>

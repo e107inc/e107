@@ -6,22 +6,23 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://gnu.org).
  * 
- * $Source: /cvs_backup/e107_0.8/e107_handlers/date_handler.php,v $
- * $Revision$
- * $Date$
- * $Author$
- * 
 */
+
 if (!defined('e107_INIT')) { exit; }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_date.php");
+//e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/lan_date.php");
+e107::coreLan('date');
 
-class convert
+
+/**
+ *
+ */
+class e_date
 {
 	
 	function __construct()
 	{
-		
+
 		
 	}
 
@@ -40,17 +41,17 @@ class convert
 
 				for ($i=1; $i < 8; $i++)
 				{
-					$day = strftime('%A', mktime(1,1,1, 1, $i, 2012));
-					$dates['days'][] = 	$day;
-					$dates['daysShort'][] = strftime('%a', mktime(1,1,1, 1, $i, 2012));
-					$dates['daysMin'][] = substr($day,0,2);
+					$day = eShims::strftime('%A', mktime(1, 1, 1, 1, $i, 2012));
+					$dates['days'][] = $day;
+					$dates['daysShort'][] = eShims::strftime('%a', mktime(1, 1, 1, 1, $i, 2012));
+					$dates['daysMin'][] = substr($day, 0, 2);
 				}
 
 
 				for ($i=1; $i < 13; $i++)
 				{
-					$dates['months'][] 		= strftime('%B', mktime(1,1,1, $i, 2, 2013));
-					$dates['monthsShort'][] = strftime('%h', mktime(1,1,1, $i, 2, 2013));
+					$dates['months'][] = eShims::strftime('%B', mktime(1, 1, 1, $i, 2, 2013));
+					$dates['monthsShort'][] = eShims::strftime('%h', mktime(1, 1, 1, $i, 2, 2013));
 				}
 
 
@@ -81,8 +82,7 @@ class convert
 	/**
 	 * Return an array of language terms representing months
 	 * @param $type string : month, month-short, day, day-short, day-shortest
-	 * @return array
-	 * TODO Cache!
+	 * @return array|bool
 	 */
 	public function terms($type='month')
 	{
@@ -90,15 +90,15 @@ class convert
 		{
 			$val = ($type == 'month-short') ? '%b' : '%B';  //eg. 'Aug' / 'August'
 			$marray = array();
-			for ($i=1; $i < 13; $i++) 
-			{ 
-				$marray[] = strftime($val,mktime(1,1,1,$i,1,2000));	
+			for ($i = 1; $i < 13; $i++)
+			{
+				$marray[$i] = eShims::strftime($val, mktime(1, 1, 1, $i, 1, 2000));
 			}
-			
+
 			return $marray;
 		}	
 		
-		if(substr($type,0,3) == 'day')
+		if(strpos($type, 'day') === 0)
 		{
 			$days = array();
 			for ($i=2; $i < 9; $i++) 
@@ -106,15 +106,15 @@ class convert
 				switch ($type) 
 				{
 					case 'day-shortest': // eg. 'Tu'
-						$days[] = substr(strftime('%a',mktime(1,1,1,6,$i,2014)),0,2);	
+						$days[] = substr(eShims::strftime('%a', mktime(1, 1, 1, 6, $i, 2014)), 0, 2);
 					break;
 					
 					case 'day-short':  // eg. 'Tue'
-						$days[] = strftime('%a',mktime(1,1,1,6,$i,2014));	
+						$days[] = eShims::strftime('%a', mktime(1, 1, 1, 6, $i, 2014));
 					break;
 					
 					default:  // eg. 'Tuesday'
-						$days[] = strftime('%A',mktime(1,1,1,6,$i,2014));	
+						$days[] = eShims::strftime('%A', mktime(1, 1, 1, 6, $i, 2014));
 					break;
 				}
 			}
@@ -144,11 +144,14 @@ class convert
 	 */
 	function convert_date($datestamp, $mask = '')
 	{
+		$datestamp = (int) $datestamp;
+		if($datestamp == 0) return "";
+
 		if(empty($mask))
 		{
 			$mask = 'long';
 		}
-		
+
 		switch($mask)
 		{
 			case 'long':
@@ -173,7 +176,7 @@ class convert
 			break;
 			
 			case 'inputtime': 
-				$mask .= e107::getPref('inputtime', '%H:%M');
+				$mask = e107::getPref('inputtime', '%H:%M');
 			break;
 
 			case 'forum': // DEPRECATED - temporary here from BC reasons only
@@ -187,7 +190,7 @@ class convert
 			break;
 			
 			case 'relative':
-				return $this->computeLapse($datestamp, time(), false, false, 'short') ;		
+				return $this->computeLapse($datestamp, time(), false, true, 'short') ;
 			break;
 			
 			default:
@@ -198,7 +201,7 @@ class convert
 			break;
 		}
 
-		$dateString = strftime($mask, $datestamp);
+		$dateString = eShims::strftime($mask, $datestamp);
 
 		if (!e107::getParser()->isUTF8($dateString))
 		{
@@ -207,8 +210,6 @@ class convert
 
 		return $dateString;
 	}
-
-
 
 
 	/**
@@ -221,21 +222,32 @@ class convert
 	 */
 	function convert($string=null, $mask = 'inputdate')
 	{
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use $tp->toDate() instead.', E_USER_DEPRECATED); // NO LAN
+
 		if($string == null) return false;
-		return is_numeric($string) ? $this->convert_date($string, $mask) : $this->toTime($string, $mask);	
+		return is_numeric($string) ? $this->convert_date($string, $mask) : $this->toTime($string, $mask);
 	}
 	
-	
+
+
+
 	
 	/** 
-	 * Converts to new date-mask format or vice-versa when $legacy is TRUE 
+	 * Converts to new date-mask format or vice-versa when $legacy is TRUE
+	 *
+	 * string       $mask
+	 * string|bool  $legacy false= strftime > datetimepicker,  true = datetimepicker > strftime, 'DateTime' = strftime > DateTime format.
+	 * @see https://secure.php.net/manual/en/function.strftime.php
+	 * @see https://github.com/AuspeXeu/bootstrap-datetimepicker
+	 * @see https://secure.php.net/manual/en/datetime.createfromformat.php
 	 */
 	function toMask($mask, $legacy = false)
 	{
+		//strftime() -> datetimepicker format.
 		$convert = array(
-			'%Y'	=> 'yyyy',	// jquery-ui docs say 'yy' but yy produces '13' instead of '2013'
-			'%d'	=> 'dd',
-			'%m'	=> 'mm',		
+			'%Y'	=> 'yyyy',	// Year 4-digits  '2013'
+			'%d'	=> 'dd',    // day of the month 2-digits
+			'%m'	=> 'mm',	// month number 2-digits
 			'%B'	=> 'MM', 	// Full month name, based on the locale
 			'%A'	=> 'DD', 	// A full textual representation of the day
 	
@@ -250,22 +262,58 @@ class convert
 			'%M'	=> 'ii',	// Two digit representation of the minute 
 			'%S'	=> 'ss',	// Two digit representation of the second 
 			'%P'	=> 'p',		// %P	lower-case 'am' or 'pm' based on the given time
-			'%p'	=> 'P',	//	%p	UPPER-CASE 'AM' or 'PM' based on the given time
+			'%p'	=> 'P',	    // %p   UPPER-CASE 'AM' or 'PM' based on the given time
 		
 			'%T' 	=> 'hh:mm:ss',
 			'%r' 	=> "hh:mmm:ss TT" // 12 hour format
 		);
-			
+
+		// strftime() > DateTime::
+		if($legacy === 'DateTime')
+		{
+			$convert = array(
+				'%Y'	=> 'Y',	    // Year 4-digits  '2013'
+				'%d'	=> 'd',     // Two-digit day of the month (with leading zeros) (01 through 31)
+				'%e'    => 'j',     // Day of the month, with a space preceding single digits. Not implemented on Windows with strftime.
+				'%m'	=> 'm',     // Two digit representation of the month (01 throught 12)
+				'%B'	=> 'F', 	// Full month name, based on the locale
+				'%A'	=> 'l', 	// A full textual representation of the day
+
+				'%y'	=> 'y',
+				'%a'	=> 'D', 	// An abbreviated textual representation of the day
+				'%b'	=> 'M', 	// Abbreviated month name, based on the locale
+				'%h'	=> 'M', 	// Abbreviated month name, based on the locale (an alias of %b)
+
+				'%k'    => 'G',    // Hour in 24-hour format, with a space preceding single digits (0 through 23)
+				'%I'	=> 'h', 	// Two digit representation of the hour in 12-hour format (	01 through 12)
+				'%l'	=> 'g',		// 12 hour format - no leading zero (1 through 12)
+				'%H'	=> 'H',	    // Two digit representation of the hour in 24-hour format (00 through 23)
+
+				'%M'	=> 'i',	    // Two digit representation of the minute (00 through 59)
+				'%S'	=> 's',	    // Two digit representation of the second (00 through 59)
+				'%P'	=> 'a',		// lower-case 'am' or 'pm' based on the given time
+				'%p'	=> 'A', 	// UPPER-CASE 'AM' or 'PM' based on the given time
+				'%Z'    => 'e',      // The time zone abbreviation. Not implemented as described on Windows with strftime.
+
+				// TODO Add anything that is missing.
+		//		'%T' 	=> 'hh:mm:ss',
+		//		'%r' 	=> "hh:mmm:ss TT" // 12 hour format
+			);
+		}
+
+
 		$s = array_keys($convert);
 		$r = array_values($convert);	
 		
-		if(strpos($mask, '%') === FALSE && $legacy == TRUE)
+		if(strpos($mask, '%') === false && $legacy === true)
 		{
-			return str_replace($r, $s,$mask);
+			$ret = str_replace($r, $s,$mask);
+			return str_replace('%%p', '%P', $ret); // quick fix.
 		}
-		elseif(strpos($mask,'%')!==FALSE)
+		elseif(strpos($mask,'%')!==false)
 		{
-			return str_replace($s,$r, $mask);	
+			return str_replace($s,$r, $mask);
+
 		}
 		
 		return $mask; 
@@ -357,8 +405,24 @@ class convert
 				$mask = e107::getPref('inputtime', '%H:%M');
 			break;
 		}
-		
-		// also in php compat handler for plugins that might use it. 
+
+		// convert to PHP 5+ @see https://secure.php.net/manual/en/datetime.createfromformat.php
+		$newMask = $this->toMask($mask, 'DateTime');
+		$tdata = date_parse_from_format($newMask, $date_string);
+
+		return mktime(
+			$tdata['hour'],
+			$tdata['minute'],
+			$tdata['second'],
+			$tdata['month'] ,
+			$tdata['day'],
+			$tdata['year']
+		);
+
+
+		// also in php compat handler for plugins that might use it.
+
+		/*
 		$tdata = $this->strptime($date_string, $mask);
 		
 		
@@ -385,14 +449,9 @@ class convert
 			$tdata['tm_mday'], 
 			($tdata['tm_year'] + 1900) 
 		); 
-		
-		
-	//	echo "<br />UNIX=".$unxTimestamp - TIMEOFFSET;
-	//	echo "<br />".date("l, d M Y g:i A",$unxTimestamp);
-	
-		// var_dump($tdata, $date_string, $this->convert_date($unxTimestamp, $mask), $unxTimestamp);
 
 		return $unxTimestamp;
+		*/
 	}
 
 // -----------------------
@@ -500,7 +559,7 @@ class convert
 			}
 			else
 			{
-				preg_match('#(\d{1,2})(?:\D(\d{1,2})){0,1}(?:\D(\d{1,2})){0,1}#', $timeString, $timeVals);
+				preg_match('#(\d{1,2})(?:\D(\d{1,2}))?(?:\D(\d{1,2}))?#', $timeString, $timeVals);
 			}
 		}
 		elseif ($endDay)
@@ -540,12 +599,16 @@ class convert
 	 * @return array|string according to $mode, array or string detailing the time difference
 	 */
 	function computeLapse($older_date, $newer_date = FALSE, $mode = FALSE, $show_secs = TRUE, $format = 'long') 
-	{	/*
-		$mode = TRUE :: return array
-		$mode = FALSE :: return string
-		*/
+	{
+		$older_date = (int) $older_date;
+		if($older_date == 0) return "";
 
-		if($format == 'short')
+		if(empty($newer_date))
+		{
+			$newer_date = time();
+		}
+
+		if($format === 'short')
 		{
 			$sec = LANDT_09;
 			$secs = LANDT_09s;
@@ -559,11 +622,76 @@ class convert
 			$min = LANDT_06;
 			$mins = LANDT_06s;
 		}
+
+		$dateString1 = date("Y-m-d H:i:s", $older_date);
+		$dateString2 = date("Y-m-d H:i:s", $newer_date);
+
+		$date1 = new DateTime($dateString1);
+		$date2 = new DateTime($dateString2);
+
+		$interval = $date1->diff($date2);
+
+		$result = array(
+			'years'     => array($interval->y, LANDT_01,LANDT_01s),
+			'months'    => array($interval->m, LANDT_02, LANDT_02s),
+			'weeks'     => array(floor($interval->d/7), LANDT_03, LANDT_03s),
+			'days'      => array($interval->d % 7,LANDT_04, LANDT_04s),
+			'hours'     => array($interval->h, LANDT_05, LANDT_05s),
+			'minutes'   => array($interval->i, $min, $mins),
+			'seconds'   => array($interval->s, $sec, $secs),
+		);
+
+
+
+		if($show_secs !== true)
+		{
+			unset($result['seconds']);
+		}
+
+		$ret = array();
+
+		foreach($result as $val)
+		{
+			if($val[0] < 1)
+			{
+				continue;
+			}
+
+			$ret[] = ($val[0] == 1) ? $val[0]." ".$val[1] : $val[0]." ".$val[2];
+
+			if($format === 'short') { break; }
+		}
+
+		if(empty($ret) || strpos($ret[0],$sec) !== false)
+		{
+			$justNow = deftrue('LANDT_10',"Just now");
+			return $mode ? array($justNow) : $justNow;
+		}
+
+        if($older_date < $newer_date) // past
+        {
+
+            $replace = implode(", ", $ret);
+            $xago = e107::getParser()->lanVars(LANDT_XAGO, $replace);
+            return ($mode ? $ret : $xago);
+        }
+        else // future
+        {
+            $replace = implode(", ", $ret);
+            $inx = e107::getParser()->lanVars(LANDT_INX, $replace);
+            return ($mode ? $ret : $inx);
+        }
+
+
+	//	print_r($ret);
+
+
 /*
   If we want an absolutely accurate result, main problems arise from the varying numbers of days in a month.
   If we go over a month boundary, then we need to add days to end of start month, plus days in 'end' month
   If start day > end day, we cross a month boundary. Calculate last day of start date. Otherwise we can just do a simple difference.
 */
+/*
 		$newer_date = ($newer_date === FALSE ? (time()) : $newer_date);
 		if($older_date>$newer_date)
 		{  // Just in case the wrong way round
@@ -638,173 +766,45 @@ class convert
 			return deftrue('LANDT_10',"Just now");
 		}
 
-		return ($mode ? $outputArray : implode(", ", $outputArray) . " " . LANDT_AGO);
+		// Check if it is 'past' or 'future'
+		if($older_date > $newer_date) // past
+		{
+			return ($mode ? $outputArray : implode(", ", $outputArray) . " " . LANDT_AGO);	
+		}	
+		else // future
+		{
+			return ($mode ? $outputArray : LANDT_IN ." ". implode(", ", $outputArray));
+		}
+		*/
 	}
 
 
-
-
 	/**
-	 *  This work of Lionel SAURON (http://sauron.lionel.free.fr:80) is licensed under the
-	 *  Creative Commons Attribution-Noncommercial-Share Alike 2.0 France License.
-	 *  To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/2.0/fr/
-	 *  or send a letter to Creative Commons, 171 Second Street, Suite 300, San Francisco, California, 94105, USA.
-	 * 
-	 * http://snipplr.com/view/4964/emulate-php-5-for-backwards-compatibility/
-	 * 
-	 * Parse a date generated with strftime().
-	 * 
-	 * @author Lionel SAURON and reworked by e107 Inc. for month names. 
-	 * @version 1.0
-	 * @public
+	 * Parse a time/date generated with strftime()
+	 * With extra output keys for localized month
 	 *
+	 * @deprecated Use eShims::strptime() instead
+	 * @see eShims::strptime()
 	 * @param string $str date string to parse (e.g. returned from strftime()).
-	 * @param string $sFormat strftime format used to create the date
-	 * @return array Returns an array with the <code>$str</code> parsed, or <code>false</code> on error.
+	 * @param        $format
+	 * @return array|bool Returns an array with the <code>$str</code> parsed, or <code>false</code> on error.
 	 */
 	public function strptime($str, $format)
 	{
-		if(STRPTIME_COMPAT !== TRUE && function_exists('strptime')) // Unix Only.  
-		{
-			$vals = strptime($str,$format); // PHP5 is more accurate than below. 
-			$vals['tm_amon'] = 	strftime('%b', mktime(0,0,0, $vals['tm_mon'] +1) );
-			$vals['tm_fmon'] = 	strftime('%B', mktime(0,0,0, $vals['tm_mon'] +1) );
-			return $vals;
-		}	
-			
-		// Below is for Windows machines. (XXX TODO - Currently not as accurate as Linux PHP5 strptime() function above. ) 
-		
-		static $expand = array('%D'=>'%m/%d/%y', '%T'=>'%H:%M:%S', );
-		
-		$ampm	= (preg_match("/%l|%I|%p|%P/",$format)) ? 'true' : 'false';
-		
-		static $map_r = array(
-			'%S'	=>'tm_sec',
-			'%M'	=>'tm_min',
-			'%H'	=>'tm_hour', 
-			'%I'	=>'tm_hour',
-			'%d'	=>'tm_mday', 
-			'%m'	=>'tm_mon', 
-			'%Y'	=>'tm_year', 
-			'%y'	=>'tm_year', 
-			'%W'	=>'tm_wday', 
-			'%D'	=>'tm_yday', 
-			'%B'	=>'tm_fmon', // full month-name
-			'%b'	=>'tm_amon', // abrev. month-name
-			'%p'	=>'tm_AMPM', // AM/PM	
-			'%P'	=>'tm_ampm', // am/pm				
-			'%u'	=>'unparsed',
-			 
-		);
-				
-		$fullmonth = array();
-		$abrevmonth = array();
-		
-		for ($i = 1; $i <= 12; $i++)
-		{
-			$k = strftime('%B',mktime(0,0,0,$i));
-    		$fullmonth[$k] = $i;
-			
-			$j = strftime('%b',mktime(0,0,0,$i));
-    		$abrevmonth[$j] = $i;
-		}
+		trigger_error('<b>' . __METHOD__ . ' is deprecated.</b>  Use eShims::strptime() instead', E_USER_DEPRECATED); // NO LAN
 
-		
-		
-		#-- transform $format into extraction regex
-		$format = str_replace(array_keys($expand), array_values($expand), $format);
-		$preg = preg_replace('/(%\w)/', '(\w+)', preg_quote($format));
-		
-		#-- record the positions of all STRFCMD-placeholders
-		preg_match_all('/(%\w)/', $format, $positions);
-		$positions = $positions[1];
-		
-		#-- get individual values
-		if (preg_match("#$preg#", $str, $extracted))
-		{
-			#-- get values
-			foreach ($positions as $pos => $strfc)
-			{
-				$v = $extracted[$pos + 1];
-				#-- add
-				if (isset($map_r[$strfc]))
-				{
-					$n = $map_r[$strfc];
-					$vals[$n] = ($v > 0) ? (int) $v : $v;
-				}
-				else
-				{
-					$vals['unparsed'] .= $v.' ';
-				}
-			}
-			
-			#-- fixup some entries
-			//$vals["tm_wday"] = $names[ substr($vals["tm_wday"], 0, 3) ];
-			if ($vals['tm_year'] >= 1900)
-			{
-				$vals['tm_year'] -= 1900;
-			}
-			elseif ($vals['tm_year'] > 0)
-			{
-				$vals['tm_year'] += 100;
-			}
-			
-			if ($vals['tm_mon'])
-			{
-				$vals['tm_mon'] -= 1;			
-			}
-			else
-			{
+		$vals = eShims::strptime($str, $format); // PHP5 is more accurate than below.
+		$vals['tm_amon'] = eShims::strftime('%b', mktime(0, 0, 0, $vals['tm_mon'] + 1));
+		$vals['tm_fmon'] = eShims::strftime('%B', mktime(0, 0, 0, $vals['tm_mon'] + 1));
 
-				if(isset($fullmonth[$vals['tm_fmon']]))
-				{
-					$vals['tm_mon'] = $fullmonth[$vals['tm_fmon']];	
-				}
-				elseif(isset($abrevmonth[$vals['tm_amon']]))
-				{
-					$vals['tm_mon'] = $abrevmonth[$vals['tm_amon']];	
-				}
-	
-			}
-			
-			if($ampm)
-			{
-				if($vals['tm_hour'] == 12 && ($vals['tm_AMPM'] == 'AM' || $vals['tm_ampm'] == 'am'))
-				{
-					$vals['tm_hour'] = 0;			
-				}
-				
-				if($vals['tm_hour'] < 12 && ($vals['tm_AMPM'] == 'PM' || $vals['tm_ampm'] == 'pm'))
-				{
-					$vals['tm_hour'] = intval($vals['tm_hour']) + 12;			
-				}
-							
-			}
-			
-			//$vals['tm_sec'] -= 1; always increasing tm_sec + 1 ??????
-			
-			#-- calculate wday/yday
-			//$vals['tm_mon'] = $vals['tm_mon'] + 1; // returns months from 0 - 11 so we need to +1 
-			
-			
-			$unxTimestamp = mktime($vals['tm_hour'], $vals['tm_min'], $vals['tm_sec'], ($vals['tm_mon'] + 1), $vals['tm_mday'], ($vals['tm_year'] + 1900));
-			
-			$vals['tm_fmon'] = strftime('%B', mktime($vals['tm_hour'], $vals['tm_min'], $vals['tm_sec'], $vals['tm_mon']));
-			$vals['tm_wday'] = (int) strftime('%w', $unxTimestamp); // Days since Sunday (0-6)
-			$vals['tm_yday'] = (strftime('%j', $unxTimestamp) - 1); // Days since January 1 (0-365)
-			
-
-			//var_dump($vals, $str, strftime($format, $unxTimestamp), $unxTimestamp);
-		}
-		
-		return isset($vals) ? $vals : false;
-		
-	} 
+		return $vals;
+	}
 
 
-
-
-
+	/**
+	 * @param $mode
+	 * @return bool
+	 */
 	function supported($mode = FALSE)
 	{
 		$strftimeFormats = array(
@@ -833,7 +833,7 @@ class convert
 		    'W' => 'A numeric representation of the week of the year, starting with the first Monday as the first week',
 		    'X' => 'Preferred time representation based on locale, without the date',
 		    'Y' => 'Four digit representation for the year',
-		    'Z' => 'The time zone offset/abbreviation option NOT given by %z (depends on operating system)',
+		    //'Z' => 'The time zone offset/abbreviation option NOT given by %z (depends on operating system)',
 		    'a' => 'An abbreviated textual representation of the day',
 		    'b' => 'Abbreviated month name, based on the locale',
 		    'c' => 'Preferred date and time stamp based on local',
@@ -859,9 +859,16 @@ class convert
 		    'w' => 'Numeric representation of the day of the week',
 		    'x' => 'Preferred date representation based on locale, without the time',
 		    'y' => 'Two digit representation of the year',
-		    'z' => 'Either the time zone offset from UTC or the abbreviation (depends on operating system)',
+		    //'z' => 'Either the time zone offset from UTC or the abbreviation (depends on operating system)',
 		    '%' => 'A literal percentage character ("%")',
 		);
+
+		if (stripos(PHP_OS, 'WIN') === false)
+		{
+			// This formats are not avaiilable on windows and will make the script fail on use.
+			$strftimeFormats['Z'] = 'The time zone offset/abbreviation option NOT given by %z (depends on operating system)';
+			$strftimeFormats['z'] = 'Either the time zone offset from UTC or the abbreviation (depends on operating system)';
+		}
 		
 		// Results.
 		$strftimeValues = array();
@@ -869,10 +876,7 @@ class convert
 		// Evaluate the formats whilst suppressing any errors.
 		foreach($strftimeFormats as $format => $description)
 		{
-		    if (False !== ($value = @strftime("%{$format}")))
-		    {
-		        $strftimeValues[$format] = $value;
-		    }
+			$strftimeValues[$format] = eShims::strftime("%{$format}");
 		}
 		
 		// Find the longest value.
@@ -913,8 +917,92 @@ class convert
 		return in_array($timezone, timezone_identifiers_list());
 	}
 
+	/**
+	 * @param $datestamp
+	 * @return array
+	 */
+	public function dateFormats($datestamp = null)
+	{
+		if(empty($datestamp))
+		{
+			$datestamp = time();
+		}
+
+		$formats = array(
+						"%A, %d %B, %Y",
+						"%A, %d %b, %Y",
+						"%a, %d %B, %Y",
+						"%a, %d %b, %Y",
+						
+						"%A, %B %d, %Y",
+						"%A, %b %d, %Y",
+						"%A, %b %d, %y",
+						
+						"%B %d, %Y",
+						"%b %d, %Y",
+						"%b %d, %y",
+						
+						"%d %B, %Y",
+						"%d %b, %Y",
+						"%d %b, %y",
+						
+						"%Y-%m-%d",
+						"%d-%m-%Y",
+						"%m/%d/%Y",
+						"%d.%m.%Y"
+					);
+
+		$ret = [];
+		foreach($formats as $f)
+		{
+			$ret[$f] = eShims::strftime($f,$datestamp);
+
+		}
+
+		return $ret;
+	}
+
+	/**
+	 * @param $datestamp
+	 * @return array
+	 */
+	function timeFormats($datestamp=null)
+	{
+		if(empty($datestamp))
+		{
+			$datestamp = time();
+		}
+
+		$inputtime = array();
+
+		$inputtime["%I:%M %p"]	= eShims::strftime("%I:%M %p",$datestamp);
+		if(e107::getDate()->supported('P'))
+		{
+			$inputtime["%I:%M %P"]	= eShims::strftime("%I:%M %P",$datestamp);
+		}
+		if(e107::getDate()->supported('l'))
+		{
+			$inputtime["%l:%M %p"]	= eShims::strftime("%l:%M %p",$datestamp);
+			$inputtime["%l:%M %P"]	= eShims::strftime("%l:%M %P",$datestamp);
+		}
+
+		$inputtime["%H:%M"]		= eShims::strftime("%H:%M",$datestamp);
+		$inputtime["%H:%M:%S"]	= eShims::strftime("%H:%M:%S",$datestamp);
+
+		return $inputtime;
+	}
+
+
+}
+
+
+/**
+ * BC Fix convert
+ */
+class convert extends e_date
+{
+
 
 
 
 }
-?>

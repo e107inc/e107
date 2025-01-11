@@ -10,7 +10,7 @@
  *
  */
 
-require_once("../../class2.php");
+require_once(__DIR__.'/../../class2.php');
 
 if (!e107::isInstalled('chatbox_menu') || !getperms("P"))
 {
@@ -97,30 +97,30 @@ $text = "
     	</colgroup>
 	<tr>
 		<td>".CHBLAN_11.":</td>
-		<td>".$frm->select('chatbox_posts', array(5, 10, 15, 20, 25), $pref['chatbox_posts'],'useValues=1')."<span class='field-help'>".CHBLAN_12."</span></td>
+		<td>".$frm->select('chatbox_posts', array(5, 10, 15, 20, 25), varset($pref['chatbox_posts']),'useValues=1')."<span class='field-help'>".CHBLAN_12."</span></td>
 	</tr>
 	<tr>
 		<td>".CHBLAN_32.": </td>
-		<td>". r_userclass("cb_mod", $pref['cb_mod'], 'off', "nobody,main,admin, classes")."</td>
+		<td>". r_userclass("cb_mod", varset($pref['cb_mod']), 'off', "nobody,main,admin, classes")."</td>
 	</tr>
 	<tr>
 		<td>".CHBLAN_36."</td>
-		<td>".$frm->radio('cb_layer', array(0 => CHBLAN_37, 1 => str_replace("[x]", $frm->number('cb_layer_height', $pref['cb_layer_height'], 3), CHBLAN_29), 2 => CHBLAN_38), $pref['cb_layer'], array('sep' => '<br />'))."</td>
+		<td>".$frm->radio('cb_layer', array(0 => CHBLAN_37, 1 => str_replace("[x]", $frm->number('cb_layer_height', varset($pref['cb_layer_height']), 3), CHBLAN_29), 2 => CHBLAN_38), varset($pref['cb_layer']), array('sep' => '<br />'))."</td>
 	</tr>
 	";
 
-if($pref['smiley_activate'])
+if(!empty($pref['smiley_activate']))
 {
 	$text .= "<tr>
 				  	<td>".CHBLAN_31."?: </td>
-					<td>".$frm->radio_switch('cb_emote', $pref['cb_emote'])."</td>
+					<td>".$frm->radio_switch('cb_emote', varset($pref['cb_emote']))."</td>
 				  </tr>";
 }
 
 $text .= "
 	<tr>
 		<td>".CHBLAN_42."</td>
-		<td>".$frm->radio_switch('cb_user_addon', $pref['cb_user_addon'])."</td>
+		<td>".$frm->radio_switch('cb_user_addon', varset($pref['cb_user_addon']))."</td>
 	</tr>
 	<tr>
 		<td>".LAN_PRUNE.":</td>
@@ -140,4 +140,19 @@ $text .= "
 $ns->tablerender(CHBLAN_20, $mes->render().$text);
 
 require_once(e_ADMIN."footer.php");
-?>
+
+function admin_chatbox_adminmenu()
+{
+	$mode = varset($_GET['mode'],'main');
+
+	$var['main']['text'] = LAN_PREFS;
+	$var['main']['link'] = e_SELF;
+
+	$caption = "<span>".LAN_PLUGIN_CHATBOX_MENU_NAME."</span>";
+
+	$var['_extras_']['icon']  = e107::getParser()->toIcon(e_PLUGIN."chatbox_menu/images/chatbox_32.png");
+
+	e107::getNav()->admin($caption, $mode, $var);
+}
+
+

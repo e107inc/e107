@@ -1,19 +1,18 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/download/languages/English/admin_download.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ */
 // define("LAN_PLUGIN_DOWNLOAD_NAME",	   "Downloads");
 define("LAN_DL_OPTIONS",               "Options"); //FIXME Use Generic
 define("LAN_DL_DOWNLOAD_OPT_GENERAL",  "General");
 define("LAN_DL_DOWNLOAD_OPT_BROKEN",   "Reporting");
 define("LAN_DL_DOWNLOAD_OPT_AGREE",    "Agreements");
+define("LAN_DL_DOWNLOAD_OPT_SECURITY", "Protection");
 define("LAN_DL_UPLOAD",                "Upload"); //FIXME Use Generic
 define("LAN_DL_USE_PHP",               "Use PHP");
 define("LAN_DL_USE_PHP_INFO",          "Checking this will send all download requests through PHP");
@@ -21,6 +20,7 @@ define("LAN_DL_SUBSUB_CAT",            "Show sub-sub-categories");
 define("LAN_DL_SUBSUB_CAT_INFO",       "Checking this will show the sub-sub-categories on the main download page");
 define("LAN_DL_SUBSUB_COUNT",          "Combine category counts");
 define("LAN_DL_SUBSUB_COUNT_INFO",     "Include sub-sub-category counts in sub-category counts");
+define("LAN_DL_BROKENDOWNLOADSREPORTS", "Broken downloads reports");
 
 define("DOWLAN_1",   "Download added to database.");
 define("DOWLAN_2",   "Download updated in database.");
@@ -49,7 +49,8 @@ define("DOWLAN_24",  "Update Download");
 define("DOWLAN_25",  "Submit Download");
 // define("DOWLAN_26",  "Uploads enabled?");
 define("DOWLAN_27",  "Download");
-define("DOWLAN_28",  "None");
+//define("DOWLAN_28",  "None");//LAN_NONE
+define("DOWLAN_29", "Requested");
 define("DOWLAN_31",  "Categories");
 define("DOWLAN_32",  "Downloads");
 define("DOWLAN_33",  "Are you sure you want to delete this download?"); //FIXME Use Generic
@@ -126,17 +127,17 @@ define("DOWLAN_112", "Limits");
 define("DOWLAN_113", "Userclass"); //FIXME Use Generic
 define("DOWLAN_114", "Add New Limit");
 define("DOWLAN_115", "Update limits");
-// define("DOWLAN_116", "Limit for that userclass already exists");
-// define("DOWLAN_117", "Limit successfully added");
-// define("DOWLAN_118", "Limit not added - unknown error");
-// define("DOWLAN_119", "Limit successfully removed");
-// define("DOWLAN_120", "Limit not removed - unknown error");
-// define("DOWLAN_121", "Limit successfully updated");
+define("DOWLAN_116", "Limit for that userclass already exists");
+define("DOWLAN_117", "Limit successfully added");
+define("DOWLAN_118", "Limit not added - unknown error");
+define("DOWLAN_119", "Limit successfully removed");
+define("DOWLAN_120", "Limit not removed - unknown error");
+define("DOWLAN_121", "Limit successfully updated");
 define("DOWLAN_122", "Inactive");
 define("DOWLAN_123", "Active - File is subject to download limits");
 define("DOWLAN_124", "Active - File is NOT subject to download limits");
 define("DOWLAN_125", "Download limits active");
-// define("DOWLAN_126", "Activation status updated");
+define("DOWLAN_126", "Activation status updated");
 // define("DOWLAN_127", "Only enter filesize if the download is an external file"); // TODO not used?
 define("DOWLAN_128", "Mirrors");
 define("DOWLAN_129", "leave blank if not using mirrors");
@@ -160,7 +161,7 @@ define("DOWLAN_146", "Custom Download-denial message or URL");
 // define("DOWLAN_147", "Icon for empty category");
 define("DOWLAN_148", "Check to update date stamp to current time");
 define("DOWLAN_149", "URL"); //FIXME Use Generic
-define("DOWLAN_150", "Email admin when broken download reported");
+//define("DOWLAN_150", "Email admin when broken download reported");
 define("DOWLAN_151", "Broken-download reporting available to");
 define("DOWLAN_152", "Couldn't move file");
 define("DOWLAN_153", "Move file into download folder");
@@ -209,7 +210,7 @@ define("DOWLAN_195", "Mirror type");
 define("DOWLAN_196", "list"); //FIXME Use Generic
 define("DOWLAN_197", "random");
 // define("DOWLAN_198", "Filter"); //FIXME Use Generic
-
+define("DOWLAN_199", "Submitted by"); 
 
 // define('DOWLAN_FP_01', 'Front page');
 // define('DOWLAN_FP_02', 'Category list');
@@ -226,7 +227,22 @@ define("DOWLAN_HELP_8", "Help for upload list");
 define("DOWLAN_HELP_9", "Help for upload types");
 define("DOWLAN_HELP_10", "Help for upload options");
 
+define("DOWLAN_HELP_11", "Click the 'delete' button to delete the report.[br][br]Click the 'view' button to manage the download.[br][br]To be notified of any new reports, please see to the [notify settings].");
+
 // define("DOWLAN_INSTALL_DONE", "Your download plugin is now installed");
 // define("DOWLAN_DESCRIPTION", "This plugin is a fully featured Download system");
 // define("DOWLAN_CAPTION", "Configure Download");
-?>
+
+define("LAN_DL_SECURITY_DESCRIPTION", "Downloads can make use of server-side URL protection features to prevent hotlinking and/or enforce link expiry. " .
+	"This section should be configured before the download server is configured to reduce the chance of disruption to downloaders.");
+define("LAN_DL_SECURITY_MODE", "URL protection mode");
+define("LAN_DL_SECURITY_MODE_NONE", "None (Default)");
+define("LAN_DL_SECURITY_MODE_NGINX_SECURELINKMD5", "NGINX secure_link_md5");
+define("LAN_DL_SECURITY_NGINX_SUPPORTED_VARIABLES_TOGGLE", "Click to toggle list of supported NGINX variables");
+define("LAN_DL_SECURITY_NGINX_SECURELINKMD5_EXPRESSION",
+	"<a target='_blank' href='https://nginx.org/en/docs/http/ngx_http_secure_link_module.html#secure_link_md5'>NGINX secure_link_md5 expression</a>");
+define("LAN_DL_SECURITY_NGINX_SECURELINKMD5_EXPRESSION_HELP", "Same expression as configured on the server");
+define("LAN_DL_SECURITY_LINK_EXPIRY", "Duration of validity in seconds");
+define("LAN_DL_SECURITY_LINK_EXPIRY_HELP", "Number of seconds the download link should last after being generated. " .
+	"Only effective if the expression supports expiry time. " .
+    "Defaults to a very long time if this field is left blank.");

@@ -52,7 +52,7 @@ define("RL_LAN_053", "User Audit Log");
 define("RL_LAN_054", "Nothing to delete, or database error");
 // define("RL_LAN_055", "Cancel");
 //define("RL_LAN_056", "Nothing deleted");
-define("RL_LAN_057", " - events older than --OLD-- (--NUM-- entries) deleted");
+define("RL_LAN_057", " - events older than [x] ([y] entries) deleted");
 define("RL_LAN_058", "Priority Filter:");
 define("RL_LAN_059", "Caller Filter:");
 define("RL_LAN_060", "IP Address Filter:");
@@ -82,8 +82,6 @@ define("RL_LAN_081", "Mail bounces");
 define("RL_LAN_082", "User bans");
 define("RL_LAN_083", "Mail bounce resets");
 define("RL_LAN_084", "Temporary accounts");
-define("RL_LAN_085", "[x] record(s) successfully deleted!");  
-define("RL_LAN_086", "[x] records not found and not deleted!");
 define("RL_LAN_087", "Details");
 
 // Intentional gap
@@ -95,7 +93,7 @@ define("RL_LAN_094", "Detailed timing analysis");
 // define("RL_LAN_095", "Logs to include");
 define("RL_LAN_096", "Diff (s)");
 // define("RL_LAN_097", "Time");
-define("RL_LAN_098", "Source");
+//define("RL_LAN_098", "Source"); // Moved to lan_admin.php
 // define("RL_LAN_099", "Comments");
 define("RL_LAN_100", "CID");			// Comment ID field
 define("RL_LAN_101", "PID");
@@ -132,4 +130,4 @@ define("RL_LAN_133", "Notice");
 define("RL_LAN_134", "Warning");
 define("RL_LAN_135", "Fatal");
 // define("RL_LAN_JS_CONFIRM", "Are you sure?");
-?>
+

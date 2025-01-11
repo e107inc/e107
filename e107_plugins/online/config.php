@@ -11,8 +11,8 @@
 */
 
 $eplug_admin = TRUE;
-require_once('../../class2.php');
-include_lan(e_PLUGIN.'online/languages/'.e_LANGUAGE.'.php');
+require_once(__DIR__.'/../../class2.php');
+e107::includeLan(e_PLUGIN.'online/languages/'.e_LANGUAGE.'.php');
 
 if (!getperms('1')) 
 {
@@ -27,14 +27,17 @@ $frm = e107::getForm();
 if (isset($_POST['update_menu']))
 {
 	$temp = array();
-	while (list($key, $value) = each($_POST))
+	foreach($_POST as $key=>$value)
 	{
 		if ($value != LAN_UPDATE)
 		{
 			$temp[$key] = $value;
 		}
 	}
-	if ($admin_log->logArrayDiffs($temp,$menu_pref,'MISC_02'))
+
+	$menu_pref = e107::getConfig('menu')->getPref();
+
+	if (e107::getLog()->logArrayDiffs($temp,$menu_pref,'MISC_02'))
 	{
 		$menuPref = e107::getConfig('menu');
 		//e107::getConfig('menu')->setPref('', $menu_pref);
@@ -47,12 +50,12 @@ if (isset($_POST['update_menu']))
 		$mes->addSuccess(LAN_SAVED);
 	}
 	//$ns->tablerender('', "<div style='text-align:center'><b>".LAN_UPDATED.'</b></div>');
-	$ns->tablerender($caption, $mes->render() . $text);
+	//e107::getRender()->tablerender(null, $mes->render() );
 
 	echo $mes->render();
 }
 
-$menu_pref = e107::getConfig('menu')->getPref('');
+$menu_pref = e107::getConfig('menu')->getPref();
 
 if (!isset($menu_pref['online_ls_caption'])) 
 {	// Assume that if one isn't set, none are set
@@ -80,7 +83,7 @@ $text = "
 	<td colspan='2'>".LAN_ONLINE_ADMIN_1."</td></tr>
 <tr>
 	<td>".LAN_ONLINE_ADMIN_2.":</td>
-	<td><input class='tbox' type='text' name='online_ls_caption' size='30' value='".$tp->toHTML($menu_pref['online_ls_caption'],"","defs")."' maxlength='200' /></td>
+	<td><input class='tbox' type='text' name='online_ls_caption' size='30' value='".e107::getParser()->toHTML($menu_pref['online_ls_caption'],"","defs")."' maxlength='200' /></td>
 </tr>
 <tr>
 	<td>".LAN_ONLINE_ADMIN_3.":</td>
@@ -102,7 +105,7 @@ $text = "
 </tr>
 <tr>
 	<td>".LAN_ONLINE_ADMIN_5.":</td>
-	<td><input class='tbox' type='text' name='online_caption' size='30' value='".$tp->toHTML($menu_pref['online_caption'],"","defs")."' maxlength='200' /></td>
+	<td><input class='tbox' type='text' name='online_caption' size='30' value='".e107::getParser()->toHTML($menu_pref['online_caption'],"","defs")."' maxlength='200' /></td>
 </tr>
 <tr>
 	<td>".LAN_ONLINE_ADMIN_10."</td>
@@ -124,6 +127,5 @@ $text = "
 </fieldset>
 </form>";
 
-$ns->tablerender(LAN_ONLINE_ADMIN_4." - ".LAN_ONLINE_ADMIN_1, $mes->render() . $text);
+e107::getRender()->tablerender(LAN_ONLINE_ADMIN_4." - ".LAN_ONLINE_ADMIN_1, $mes->render() . $text);
 require_once(e_ADMIN."footer.php");
-?>

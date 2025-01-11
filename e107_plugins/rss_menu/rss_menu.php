@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2015 e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 
@@ -54,7 +54,7 @@
 		$arr = array('rss_topicid'=> $topic, 'rss_url'=>$type);
 
 
-		if(deftrue('BOOTSTRAP') === 3) // v2.x
+		if(deftrue('BOOTSTRAP')) // v2.x
 		{
 			$text = "
 			<div>
@@ -100,4 +100,3 @@
 
 		e107::getRender()->tablerender($caption, $text, 'rss_menu');
 	}
-?>

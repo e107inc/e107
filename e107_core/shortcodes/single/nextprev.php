@@ -55,7 +55,7 @@
  * @param string $parm
  * @return string page navigation bar HTML
  */
-function nextprev_shortcode($parm = '')
+function nextprev_shortcode($parm = null)
 {
 	$e107 = e107::getInstance();
 	$pref = e107::getPref();
@@ -68,20 +68,40 @@ function nextprev_shortcode($parm = '')
 	 * New parameter requirements formatted as a GET string.
 	 * Template support.
 	 */
-	if(strpos($parm, 'total=') !== false)
+	if(is_array($parm) || strpos($parm, 'total=') !== false)
 	{
-		parse_str($parm, $parm);
+		if(is_string($parm))
+		{
+			parse_str($parm, $parm);
+		}
 
 		// Calculate
-		$total_items = intval($parm['total']);
+		$total_items = isset($parm['total']) ? (int) $parm['total'] : 0;
+
+		if(empty($total_items))
+		{
+			// e107::getDebug()->log("Next Prev has zero total items");
+			return null;
+		}
+
 		$check_render = true;
 
-		if(vartrue($parm['glyphs']) && (deftrue('BOOTSTRAP')))
+		if(!empty($parm['glyphs']) && (deftrue('BOOTSTRAP')))
 		{
-			$LAN_NP_FIRST 		= $tp->toGlyph("icon-fast-backward.glyph",false);
-			$LAN_NP_PREVIOUS 	= $tp->toGlyph("icon-backward.glyph",false);
-			$LAN_NP_NEXT 		= $tp->toGlyph("icon-forward.glyph",false);
-			$LAN_NP_LAST 		= $tp->toGlyph("icon-fast-forward",false);
+			if(deftrue('FONTAWESOME'))
+			{
+				$LAN_NP_FIRST 		= $tp->toGlyph('fa-fast-backward');
+				$LAN_NP_PREVIOUS 	= $tp->toGlyph('fa-backward');
+				$LAN_NP_NEXT 		= $tp->toGlyph('fa-forward');
+				$LAN_NP_LAST 		= $tp->toGlyph('fa-fast-forward');
+			}
+			else
+			{
+				$LAN_NP_FIRST 		= $tp->toGlyph("icon-fast-backward.glyph",false);
+				$LAN_NP_PREVIOUS 	= $tp->toGlyph("icon-backward.glyph",false);
+				$LAN_NP_NEXT 		= $tp->toGlyph("icon-forward.glyph",false);
+				$LAN_NP_LAST 		= $tp->toGlyph("icon-fast-forward",false);
+			}
 		}
 		else
 		{
@@ -240,7 +260,7 @@ function nextprev_shortcode($parm = '')
 		// caption, e.g. 'Page 1 of 20' box
 		if($e_vars->caption)
 		{
-			$ret .= $tp->simpleParse($tmpl[$tprefix.'nav_caption'], $e_vars);
+			$ret .= $tp->simpleParse(varset($tmpl[$tprefix.'nav_caption']), $e_vars);
 		}
 
 		$ret_array = array();
@@ -283,6 +303,9 @@ function nextprev_shortcode($parm = '')
 			}
 		}
 
+
+
+
 		// Add 'first', 'previous' navigation
 		if($show_prev)
 		{
@@ -302,6 +325,21 @@ function nextprev_shortcode($parm = '')
 				$ret_array[] = $tp->simpleParse($tmpl[$tprefix.'nav_prev'], $e_vars);
 			}
 		}
+
+
+		if($tprefix === 'basic_' && $show_prev === false)
+		{
+			if(!empty($tmpl[$tprefix.'nav_prev']))
+			{
+				$e_vars->url = '#';
+				$e_vars->label = $LAN_NP_PREVIOUS;
+				$e_vars->url_label = '';
+				$e_vars->disabled = "disabled";
+				$ret_array[] = $tp->simpleParse($tmpl[$tprefix.'nav_prev'], $e_vars);
+				$e_vars->disabled = '';
+			}
+		}
+
 
 		$e_vars_loop = new e_vars();
 		$e_vars_loop->bullet = stripslashes($bullet); // fix magicquotes 
@@ -350,6 +388,22 @@ function nextprev_shortcode($parm = '')
 			}
 		}
 
+		if($tprefix === 'basic_' && $show_next === false)
+		{
+			if(!empty($tmpl[$tprefix.'nav_next']))
+			{
+				$e_vars->url = '#';
+				$e_vars->label = $LAN_NP_NEXT;
+				$e_vars->url_label = '';
+				$e_vars->disabled = "disabled";
+				$ret_array[] = $tp->simpleParse($tmpl[$tprefix.'nav_next'], $e_vars);
+				$e_vars->disabled = '';
+			}
+		}
+
+
+
+
 		$ret .= implode($tmpl[$tprefix.'separator'], $ret_array);
 
 		// Nextprev navigation end
@@ -386,7 +440,8 @@ function nextprev_shortcode($parm = '')
 		else // new - page support in format 'p:1'
 		{
 			$perpage = 1;
-			$current_start = intval(array_pop(explode(':', $p[2], 2)));
+			$exp            = explode(':', $p[2], 2);
+			$current_start = intval(array_pop($exp));
 			$current_page = $current_start;
 			$total_pages = $total_items;
 			$index_add = 1;
@@ -529,7 +584,7 @@ function nextprev_shortcode($parm = '')
 
 
 
-		if($cached_parms = getcachedvars('nextprev'))
+		if($cached_parms = e107::getRegistry('nextprev'))
 		{
 			$tmp = $cached_parms;
 			foreach($tmp as $key => $val)

@@ -38,4 +38,3 @@ $advanced['date']['text'] = LAN_DATE_POSTED.':';
 $advanced['author']['type'] = 'author';
 $advanced['author']['text'] = LAN_SEARCH_61.':';
 
-?>

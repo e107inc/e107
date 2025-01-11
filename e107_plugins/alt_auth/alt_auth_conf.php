@@ -28,7 +28,7 @@
 	2. Change admin log references
  */
 $eplug_admin = true;
-require_once('../../class2.php');
+require_once(__DIR__.'/../../class2.php');
 if(!getperms('P') || !e107::isInstalled('alt_auth'))
 {
 	e107::redirect('admin');
@@ -37,7 +37,7 @@ if(!getperms('P') || !e107::isInstalled('alt_auth'))
 require_once(e_HANDLER.'form_handler.php');
 $frm = e107::getForm();
 require_once(e_ADMIN.'auth.php');
-include_lan(e_PLUGIN.'alt_auth/languages/'.e_LANGUAGE.'/admin_alt_auth.php');
+e107::includeLan(e_PLUGIN.'alt_auth/languages/'.e_LANGUAGE.'/admin_alt_auth.php');
 define('ALT_AUTH_ACTION', 'main');
 require_once(e_PLUGIN.'alt_auth/alt_auth_adminmenu.php');
 require_once(e_HANDLER.'user_extended_class.php');
@@ -72,8 +72,8 @@ if(isset($_POST['updateeufs']))
 	$au = implode(',',$authExtended);
 	if ($au != $pref['auth_extended'])
 	{
-		$pref['auth_extended'] = $au;				// @TODO:
-		save_prefs();
+
+		e107::getConfig()->set('auth_extended', $au)->save(true,true,true);
 		e107::getLog()->add('AUTH_02',$au,'');
 	}
 }
@@ -85,14 +85,23 @@ if (!isset($pref['auth_noconn'])) $pref['auth_noconn'] = 0;
 // Convert prefs
 if (isset($pref['auth_nouser']))
 {
-	$pref['auth_method2'] = 'none';		// Default to no fallback
-	if ($pref['auth_nouser'])
+	$cfg = e107::getConfig();
+	$cfg->set('auth_method2', 'none');
+
+	if($pref['auth_nouser'])
 	{
-		$pref['auth_method2'] = 'e107';
+		$cfg->set('auth_method2', 'e107');
 	}
-	unset($pref['auth_nouser']);
-	if (!isset($pref['auth_badpassword'])) $pref['auth_badpassword'] = 0;
-	save_prefs();			// @TODO
+
+	$cfg->remove('auth_nouser');
+
+	if (!isset($pref['auth_badpassword']))
+	{
+		$cfg->set('auth_badpassword', 0);
+	}
+
+	$cfg->save(false, true, true);
+
 }
 
 
@@ -107,14 +116,27 @@ else
 	$authExtended = array();
 }
 
-
-if(isset($message))
+if(e107::getDb()->getPDO() === false)
 {
-	e107::getRender()->tablerender('', "<div style='text-align:center'><b>".$message."</b></div>");
+	$mess = "PDO is required to use alt-auth. To enable add: <code>define('e_PDO', true);</code> to e107_config.php.<br />
+	<small>Warning: If PDO is not correctly configured on your server then your site may fail to connect with the database.</small>";
+	echo e107::getMessage()->addInfo($mess)->render();
+}
+
+if(!empty($message))
+{
+	echo e107::getMessage()->addSuccess($message)->render();
 }
 
 
+
+
+
 $altAuthAdmin = new alt_auth_admin();
+
+
+
+
 
 
 $text = "
@@ -160,7 +182,7 @@ $text .= "<option value='1' {$sel} >".LAN_ALT_FALLBACK."</option>
 <td>".LAN_ALT_8.":<br />
 
 </td>
-<td>".$altAuthAdmin->alt_auth_get_dropdown('auth_method2', $pref['auth_method2'], 'none')."
+<td>".$altAuthAdmin->alt_auth_get_dropdown('auth_method2', varset($pref['auth_method2']), 'none')."
 <div class='smalltext field-help'>".LAN_ALT_9."</div>
 </td>
 </tr>
@@ -178,7 +200,7 @@ $ns->tablerender(LAN_ALT_3, $text);
 
 if ($euf->userCount)
 {
-	include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user_extended.php');
+	e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user_extended.php');
 	$fl = &$euf->fieldDefinitions;
 	$text = "<div>
 		<form method='post' action='".e_SELF."'>
@@ -205,7 +227,7 @@ if ($euf->userCount)
 			<td class='center'><input type='checkbox' name='auth_euf_include[]' value='{$f['user_extended_struct_name']}'{$checked} /></td>
 			<td>{$f['user_extended_struct_name']}</td>
 			<td>".$tp->toHTML($f['user_extended_struct_text'],FALSE,'TITLE')."</td>
-			<td>{$euf->user_extended_types[$f['user_extended_struct_type']]}</td></tr>\n";
+			<td>". varset($euf->user_extended_types[$f['user_extended_struct_type']])."</td></tr>\n";
 		}
 	$text .= "</tbody>
 </table><div class='buttons-bar center'>
@@ -229,4 +251,3 @@ function alt_auth_conf_adminmenu()
 }
 
 
-?>

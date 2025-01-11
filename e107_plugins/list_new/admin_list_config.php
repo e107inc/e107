@@ -23,12 +23,14 @@
  */
 
 //include and require several classes
-require_once("../../class2.php");
+require_once(__DIR__.'/../../class2.php');
 if(!getperms("1") || !e107::isInstalled('list_new'))
 {
 	e107::redirect('admin');
 	exit ;
 }
+e107::includeLan(e_PLUGIN."list_new/languages/".e_LANGUAGE."_admin_list_new.php");
+
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
@@ -53,8 +55,8 @@ $rc->list_pref = $rc->getListPrefs();
 //render message if set
 if(isset($message))
 {
-	$MESSAGE = $message;
-	$t = preg_replace("/\{(.*?)\}/e", '$\1', $rc->template['ADMIN_MESSAGE']);
+	$scArray = array('MESSAGE' => $message);
+	$t = $tp->parseTemplate($rc->template['ADMIN_MESSAGE'], false, $scArray);
 	$mes->addInfo($message);
 	//$rc->e107->ns->tablerender('', $t);
 }
@@ -62,7 +64,7 @@ if(isset($message))
 //display admin page
 $text = $rc->admin->display();
 
-e107::getRender()->tablerender(LAN_PLUGIN_LISTNEW_NAME, $mes->render(). $text);
+e107::getRender()->tablerender(LAN_PLUGIN_LIST_NEW_NAME, $mes->render(). $text);
 
 /**
  * Display admin menu
@@ -71,35 +73,20 @@ e107::getRender()->tablerender(LAN_PLUGIN_LISTNEW_NAME, $mes->render(). $text);
  */
 function admin_list_config_adminmenu()
 {
-	$act = "";
-	unset($var);
-	$var=array();
+	$var = [];
 	//$var['general']['text'] = LIST_ADMIN_OPT_1;
 	$var['list-new-recent-page']['text'] = LIST_ADMIN_OPT_2;
 	$var['list-new-recent-menu']['text'] = LIST_ADMIN_OPT_3;
 	$var['list-new-new-page']['text'] = LIST_ADMIN_OPT_4;
 	$var['list-new-new-menu']['text'] = LIST_ADMIN_OPT_5;
+
+	$var['_extras_']['icon']  = e107::getParser()->toIcon(e_PLUGIN."list_new/icon/list_32.png");
+
 	e107::getNav()->admin(LAN_OPTIONS.'--id--list_new', 'list-new-recent-page', $var);
+
+	return null;
 }
 
 require_once(e_ADMIN."footer.php");
 
-/**
- * Handle page DOM within the page header
- *
- * @return string JS source
- */
-function headerjs()
-{
-	require_once(e_HANDLER.'js_helper.php');
-	$ret = "
-		<script type='text/javascript'>
-			//add required core lan - delete confirm message
-			(".e_jshelper::toString(LAN_JSCONFIRM).").addModLan('core', 'delete_confirm');
-		</script>
-		<script type='text/javascript' src='".e_FILE_ABS."jslib/core/admin.js'></script>
-	";
 
-	return $ret;
-}
-?>

@@ -51,7 +51,7 @@ $FORUM_POLL_TEMPLATE['results']['start'] = "
 ";
 
 $FORUM_POLL_TEMPLATE['results']['item'] = "
-			<strong>{OPTION}</strong><small class='pull-right'><a href='#' class='e-tip' title=\"{VOTES}\">{PERCENTAGE}</a></small>
+			<strong>{OPTION}</strong><small class='pull-right float-right float-end'><a href='#' class='e-tip' title=\"{VOTES}\">{PERCENTAGE}</a></small>
 			{BAR}
 ";
 
@@ -78,4 +78,3 @@ $FORUM_POLL_TEMPLATE['denied']['end'] = "<div class='alert text-warning text-cen
 
 
 
-?>

@@ -18,7 +18,7 @@
 
 		function __construct()
 		{
-			$this->gen = new convert; // TODO replace all usage with e107::getParser()->toDate();
+			$this->gen = e107::getDate(); // TODO replace all usage with e107::getParser()->toDate();
 //		$this->forum_rules = forum_rules('check');
 		}
 
@@ -57,6 +57,10 @@
 
 		function sc_threadpages()
 		{
+			if(empty($this->var['parms']))
+			{
+				return null;
+			}
 			return e107::getParser()->parseTemplate("{NEXTPREV={$this->var['parms']}}");
 		}
 
@@ -67,8 +71,9 @@
 
 		function sc_newthreadbuttonx()
 		{
+			$bootstrap = defined('BOOTSTRAP') ? BOOTSTRAP : false;
 
-			if(!BOOTSTRAP)
+			if(!$bootstrap)
 			{
 				return $this->sc_newthreadbutton();
 			}
@@ -80,25 +85,48 @@
 			global $forum;
 			$jumpList = $forum->forumGetAllowed('view');
 
-
-			$text = '<div class="btn-group">';
-
-			if(!empty($this->var['ntUrl']))
+			$text = '<div class="btn-group mb-3">';
+/*
+			$text .=
+			($this->var['ntUrl'] ? '<a href="'.$this->var['ntUrl'].'" class="btn btn-primary">'.LAN_FORUM_1018.'</a>' :'').
+		    	'<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown">
+		    	'.($this->var['ntUrl'] ? '' : LAN_FORUM_1001." ".LAN_FORUM_8013).'<span class="caret"></span>
+		    	<span class="sr-only">Toggle Dropdown</span>
+			</button>
+		    	<ul class="dropdown-menu pull-right">
+		    	';
+*/
+			$href = "#";
+			$disabled = " disabled";
+			$restricted_to_members_only = " data-toggle='tooltip' data-bs-toggle='tooltip' title='".LAN_FORUM_0006."'
+			style='cursor: not-allowed; pointer-events: all !important;'";
+			$extra_space = "<span>&nbsp;</span>";
+			if ($this->var['ntUrl'])
 			{
-				$text .= '<a href="' . $this->var['ntUrl'] . '" class="btn btn-primary">' . LAN_FORUM_1018 . '</a>';
+				$href = $this->var['ntUrl'];
+				$disabled = "";
+				$restricted_to_members_only = "";
+				$extra_space = "";
 			}
 
-			$text .= '
-		    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-		    <span class="caret"></span>
-		    </button>
-		    <ul class="dropdown-menu pull-right">
-		    ';
-
+			$text .=
+			'<a href="'.$href.'" class="btn btn-primary'.$disabled.'"'.$restricted_to_members_only.'>'.LAN_FORUM_1018.'</a>'.$extra_space.'
+			<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown">
+			';
+			if($bootstrap !== 4)
+			{
+		    	$text .= '<span class="caret"></span>';
+		    }
+		    $text .= '
+		    	<span class="sr-only">Toggle Dropdown</span>
+			</button>
+		    	<ul class="dropdown-menu pull-right float-right dropdown-menu-end">
+		    	';
+			
 			//--	foreach($jumpList as $key => $val)
 			foreach($jumpList as $val)
 			{
-				$text .= '<li><a href="' . e107::url('forum', 'forum', $val) . '">' . LAN_FORUM_1017 . ': ' . $val['forum_name'] . '</a></li>';
+				$text .= '<li><a class="dropdown-item" href="' . e107::url('forum', 'forum', $val) . '">' . LAN_FORUM_1017 . ': ' . $val['forum_name'] . '</a></li>';
 			}
 
 			$text .= '
@@ -127,14 +155,43 @@
 			return $this->var['forum_crumb'];
 		}
 
+		function sc_forumimage($parms=null)
+		{
+			if(empty($this->var['forum_image'])) return '';
+			if (!empty($parms) && !is_array($parms)) parse_str($parms, $parms);
+			if (empty($parms)) $parms = array();
+			$parms = array_merge(array('class'=>'img-fluid', 'h' => 50), $parms);
+			$text = e107::getParser()->toImage($this->var['forum_image'], $parms);
+			return $text."&nbsp;";
+		}
+
+		/**
+		* @example: {FORUMICON: size=2x} 
+		*/
+		function sc_forumicon($parms = null)
+		{
+			if(empty($this->var['forum_icon'])) return '';
+
+			return e107::getParser()->toIcon($this->var['forum_icon'], $parms);
+		}
+
 		function sc_forumtitle()
 		{
 			return $this->var['forum_name'];
 		}
 
+		function sc_forumdescription()
+		{
+			//    global $f, $restricted_string;
+		    global $restricted_string;
+			//	$tp = e107::getParser();
+			$this->var['forum_description'] = e107::getParser()->toHTML($this->var['forum_description'], true, 'no_hook');
+			return $this->var['forum_description'].($restricted_string ? "<br /><span class='smalltext'><i>$restricted_string</i></span>" : "");
+	    }
+
 		function sc_moderators()
 		{
-			return $this->var['modUser'];
+			return is_array($this->var['modUser']) ? implode(", ",$this->var['modUser']) : $this->var['modUser'];
 		}
 
 		function sc_browsers()
@@ -150,41 +207,9 @@
 
 		function sc_iconkey()
 		{
-			global $FORUM_VIEWFORUM_TEMPLATE;
+			$FORUM_VIEWFORUM_TEMPLATE = varset($GLOBALS['FORUM_VIEWFORUM_TEMPLATE']);
 
-			/*--
-			if(defset('BOOTSTRAP')==3 && !empty($FORUM_VIEWFORUM_TEMPLATE['iconkey'])) // v2.x
-			{
-				return e107::getParser()->parseTemplate($FORUM_VIEWFORUM_TEMPLATE['iconkey'],true);
-			}
-			// v1.x
-
-				return "
-				<table class='table table-bordered' style='width:100%'>
-				<tr>
-				<td style='vertical-align:middle; text-align:center; width:2%'>".IMAGE_new_small."</td>
-				<td style='width:10%' class='smallblacktext'>".LAN_FORUM_0039."</td>
-				<td style='vertical-align:middle; text-align:center; width:2%'>".IMAGE_nonew_small."</td>
-				<td style='width:10%' class='smallblacktext'>".LAN_FORUM_0040."</td>
-				<td style='vertical-align:middle; text-align:center; width:2%'>".IMAGE_sticky_small."</td>
-				<td style='width:10%' class='smallblacktext'>".LAN_FORUM_1011."</td>
-				<td style='vertical-align:middle; text-align:center; width:2%'>".IMAGE_announce_small."</td>
-				<td style='width:10%' class='smallblacktext'>".LAN_FORUM_1013."</td>
-				</tr>
-				<tr>
-				<td style='vertical-align:middle; text-align:center; width:2%'>".IMAGE_new_popular_small."</td>
-				<td style='width:2%' class='smallblacktext'>".LAN_FORUM_0039." ".LAN_FORUM_1010."</td>
-				<td style='vertical-align:middle; text-align:center; width:2%'>".IMAGE_nonew_popular_small."</td>
-				<td style='width:10%' class='smallblacktext'>".LAN_FORUM_0040." ".LAN_FORUM_1010."</td>
-				<td style='vertical-align:middle; text-align:center; width:2%'>".IMAGE_stickyclosed_small."</td>
-				<td style='width:10%' class='smallblacktext'>".LAN_FORUM_1012."</td>
-				<td style='vertical-align:middle; text-align:center; width:2%'>".IMAGE_closed_small."</td>
-				<td style='width:10%' class='smallblacktext'>".LAN_FORUM_1014."</td>
-				</tr>
-				</table>";
-			--*/
-
-			return (defset('BOOTSTRAP') == 3 && !empty($FORUM_VIEWFORUM_TEMPLATE['iconkey'])) ? e107::getParser()->parseTemplate($FORUM_VIEWFORUM_TEMPLATE['iconkey'], true) : "
+			return (defset('BOOTSTRAP') && !empty($FORUM_VIEWFORUM_TEMPLATE['iconkey'])) ? e107::getParser()->parseTemplate($FORUM_VIEWFORUM_TEMPLATE['iconkey'], true, $this) : "
 				<table class='table table-bordered' style='width:100%'>
 				<tr>
 				<td style='vertical-align:middle; text-align:center; width:2%'>" . IMAGE_new_small . "</td>
@@ -214,29 +239,26 @@
 		{
 			global $forum, $forumId;
 
-			if($users = $forum->getForumClassMembers($forumId))
+			if($usersOrUserClassId = $forum->getForumClassMembers($forumId))
 			{
 				$userList = array();
-				$viewable = e107::getUserClass()->getFixedClassDescription($users);
-				if(is_array($users))
+				if(is_array($usersOrUserClassId))
 				{
-					foreach($users as $user)
+					foreach($usersOrUserClassId as $user)
 					{
 						$userList[] = "<a href='" . e107::getUrl()->create('user/profile/view', $user) . "'>" . $user['user_name'] . "</a>";
 					}
 
 					$viewable = implode(', ', $userList);;
 				}
-				elseif($users == 0)
+				elseif($usersOrUserClassId == 0)
 				{
 					$viewable = '';
 				}
-				/*--
-					else
-					{
-						$viewable =  e107::getUserClass()->getFixedClassDescription($users);
-					}
-				--*/
+				else
+				{
+					$viewable = e107::getUserClass()->getFixedClassDescription($usersOrUserClassId);
+				}
 			}
 
 			/*--
@@ -269,19 +291,35 @@
 			return empty($viewable) ? '' : $viewable;
 		}
 
-
-		function sc_search()
+		/**
+		 * @example {SEARCH: placeholder=Search forums} - sets placeholder 'Search forums'
+		 * @example {SEARCH: buttonclass=btn btn-small} - sets button class 'btn btn-small'
+		*/
+		function sc_search($parm=null)
 		{
-			return "
-			<form method='get' class='form-inline input-append' action='" . e_BASE . "search.php'>
-			<p>
-			<input class='tbox' type='text' name='q' size='20' value='' maxlength='50' />
-			<button class='btn btn-default button' type='submit' name='s' >" . LAN_SEARCH . "</button>
-			<input type='hidden' name='r' value='0' />
-			<input type='hidden' name='ref' value='forum' />
-			</p>
-			</form>";
 
+			if(!deftrue('FONTAWESOME') || !$srchIcon = e107::getParser()->toGlyph('fa-search'))
+			{
+				$srchIcon = LAN_SEARCH;
+			}
+
+			$buttonclass 	= (!empty($parm['buttonclass'])) ? "class='".$parm['buttonclass']."'" : "class='btn btn-default btn-secondary button'";
+			$placeholder    = (!empty($parm['placeholder'])) ? $parm['placeholder'] : LAN_SEARCH;
+
+			// String candidate for USERLIST wrapper
+			return "
+			<form method='get' class='form-inline input-append' action='".e_HTTP."search.php'>
+			<div class='input-group'>
+			<input type='hidden' name='r' value='0' />
+			<input type='hidden' name='t' value='forum' />
+			<input type='hidden' name='forum' value='all' />
+			<input class='tbox form-control' type='text' name='q' size='20' value='' placeholder='".$placeholder."' maxlength='50' />
+			<span class='input-group-btn'>
+			<button ".$buttonclass." type='submit' name='s' value='search' >".$srchIcon."</button>
+			</span>
+			</div>
+
+			</form>\n";
 		}
 
 
@@ -324,7 +362,7 @@
 			{
 				$text .= "\n<option value='" . e107::url('forum', 'forum', $val, 'full') . "'>" . $val['forum_name'] . "</option>";
 			}
-			$text .= "</select> <input class='btn btn-default button' type='submit' name='fjsubmit' value='" . LAN_GO . "' /></form>";
+			$text .= "</select> <input class='btn btn-default btn-secondary button' type='submit' name='fjsubmit' value='" . LAN_GO . "' /></form>";
 			return $text;
 		}
 
@@ -337,121 +375,30 @@
 
 		function sc_subforums()
 		{
+			global $forum, $forumId;
 
-			//  echo "subforums";
+			$text = '';
 
-			// Initial ideia, to have a separate shortcode var ($subsc)....
-			//global $forum, $forumId, $threadFrom, $view;
-						global $sc, $forum, $forumId;
-			//  	var_dump ($forumId);
-			//  	var_dump (vartrue($forumId));
-			//var_dump ($forum->forumGetSubs(vartrue($forum_id)));
-
-			//  	var_dump ($FORUM_VIEW_SUB);
-			//	$tp = e107::getParser();
-
-			// Initial ideia, to have a separate shortcode var ($subsc)....
-			//  $subsc = e107::getScBatch('viewforum', 'forum', 'viewsubforum');
-			//var_dump ($subsc);
-
-			//-- $forum_id ??????
-			//--$subList = $forum->forumGetSubs(vartrue($forum_id));
-			//--$subList = $forum->forumGetSubs(vartrue($forumId));
 			$subList = $forum->forumGetSubs(false);
-
-			//  	var_dump ($forum);
 
 			if(is_array($subList) && isset($subList[$this->var['forum_parent']][$forumId]))
 			{
-			//-- $newflag_list ??????
-			//--	$newflag_list = $forum->forumGetUnreadForums();
-				$sub_info = '';
 				global $FORUM_VIEW_SUB, $FORUM_VIEW_SUB_START, $FORUM_VIEW_SUB_END;
+
+				$sub_info = '';
+
+				$tp = e107::getParser();
+
 				foreach($subList[$this->var['forum_parent']][$forumId] as $subInfo)
 				{
-
-			//----	global $FORUM_VIEW_SUB, $gen, $newflag_list;
-			//  	var_dump ($FORUM_VIEW_SUB);
-
-			//--	$tp = e107::getParser();
-			//	$tVars = new e_vars;
-
-			//----	$forumName = $tp->toHTML($subInfo['forum_name'], true);
-			//----	$tVars['SUB_FORUMTITLE'] = "<a href='".e107::getUrl()->create('forum/forum/view', $subInfo)."'>{$forumName}</a>";
-			//----	$tVars['SUB_DESCRIPTION'] = $tp->toHTML($subInfo['forum_description'], false, 'no_hook');
-			//----	$tVars['SUB_THREADS'] = $subInfo['forum_threads'];
-			//----	$tVars['SUB_REPLIES'] = $subInfo['forum_replies'];
-
-			//----	$badgeReplies = ($subInfo['forum_replies']) ? "badge-info" : "";
-			//----	$badgeThreads = ($subInfo['forum_replies']) ? "badge-info" : "";
-
-			//----	$tVars['SUB_THREADSX'] = "<span class='badge {$badgeThreads}'>".$subInfo['forum_threads']."</span>";
-			//----	$tVars['SUB_REPLIESX'] = "<span class='badge {$badgeReplies}'>".$subInfo['forum_replies']."</span>";
-
-			//	$tVars['REPLIESX'] = "<span class='badge badge-info'>".$thread_info['thread_total_replies']."</span>";
-			//	$tVars['VIEWSX'] = "<span class='badge {$badge}'>".$thread_info['thread_views']."</span>";
-
-					/*----
-						if(USER && is_array($newflag_list) && in_array($subInfo['forum_id'], $newflag_list))
-						{
-
-							$tVars['NEWFLAG'] = "<a href='".e107::getUrl()->create('forum/forum/mfar', 'id='.$subInfo['forum_id'])."'>".IMAGE_new.'</a>';
-						}
-						else
-						{
-							$tVars['NEWFLAG'] = IMAGE_nonew;
-						}
-					----*/
-					/*----
-						if($subInfo['forum_lastpost_info'])
-						{
-							$tmp = explode('.', $subInfo['forum_lastpost_info']);
-							$lp_thread = "<a href='".e107::getUrl()->create('forum/thread/last', array('id' => $tmp[1]))."'>".IMAGE_post2.'</a>';
-							$lp_date = $gen->convert_date($tmp[0], 'forum');
-
-							if($subInfo['user_name'])
-							{
-								$lp_name = "<a href='".e107::getUrl()->create('user/profile/view', array('id' => $subInfo['forum_lastpost_user'], 'name' => $subInfo['user_name']))."'>{$subInfo['user_name']}</a>";
-							}
-							else
-							{
-								$lp_name = $subInfo['forum_lastpost_user_anon'];
-							}
-							$tVars['SUB_LASTPOST'] = $lp_date.'<br />'.$lp_name.' '.$lp_thread;
-
-							$tVars['SUB_LASTPOSTDATE'] = $gen->computeLapse($tmp[0], time(), false, false, 'short');
-							$tVars['SUB_LASTPOSTUSER'] = $lp_name;
-						}
-						else
-						{
-							$tVars['SUB_LASTPOST'] = '-';
-							$tVars['SUB_LASTPOSTUSER'] = '';
-							$tVars['SUB_LASTPOSTDATE'] = '';
-						}
-					----*/
-				//----	$tVars['_WRAPPER_'] = 'forum_viewforum';
-				//var_dump ($subInfo);
-
-				// Initial ideia, to have a separate shortcode var ($subsc)....
-				//				$subsc->setVars($subInfo);
-				// Use setVars or addVars???
-					$sc->setVars($subInfo);
-			//echo "--------------------------------------";
-
-			// Initial ideia, to have a separate shortcode var ($subsc)....
-			//	$sub_info .= e107::getParser()->parseTemplate($FORUM_VIEW_SUB, false,  $subsc);
-					$sub_info .= e107::getParser()->parseTemplate($FORUM_VIEW_SUB, false, $sc);
-
-			//var_dump ($sc);
-
-
+					$this->addVars($subInfo);
+					$sub_info .= $tp->parseTemplate($FORUM_VIEW_SUB, false, $this);
 				}
-			//var_dump ("----------->".$FORUM_VIEW_SUB_START.$sub_info.$FORUM_VIEW_SUB_END."<-----------");
 
-				return $FORUM_VIEW_SUB_START . $sub_info . $FORUM_VIEW_SUB_END;
+				$text = $tp->parseTemplate($FORUM_VIEW_SUB_START) . $sub_info . $tp->parseTemplate($FORUM_VIEW_SUB_END);
 			}
 
-			return '';
+			return $text;
 
 		}
 
@@ -472,10 +419,20 @@
 		------*/
 
 
+		function sc_sub_forumimage($parms=null)
+		{
+			if(empty($this->var['forum_image'])) return '';
+			if (!empty($parms) && !is_array($parms)) parse_str($parms, $parms);
+			if (empty($parms)) $parms = array();
+			$parms = array_merge(array('class'=>'img-fluid', 'h' => 50), $parms);
+			$text = e107::getParser()->toImage($this->var['forum_image'], $parms);
+			return "<a href='".e107::url('forum', 'forum', $this->var)."'>{$text}</a>&nbsp;";
+		}
+
 		function sc_sub_forumtitle()
 		{
 			$forumName = e107::getParser()->toHTML($this->var['forum_name'], true);
-			return "<a href='" . e107::getUrl()->create('forum/forum/view', $this->var) . "'>{$forumName}</a>";
+			return "<a href='" .  e107::url('forum', 'forum', $this->var) . "'>".$forumName."</a>";
 		}
 
 
@@ -499,15 +456,17 @@
 
 		function sc_sub_threadsx()
 		{
-			$badgeThreads = ($this->var['forum_replies']) ? "badge-info" : "";
-			return "<span class='badge {$badgeThreads}'>" . $this->var['forum_threads'] . "</span>";
+			return e107::getParser()->toBadge($this->var['forum_threads']);
+		//	$badgeThreads = ($this->var['forum_replies']) ? "badge-info" : "";
+		//	return "<span class='badge {$badgeThreads}'>" . $this->var['forum_threads'] . "</span>";
 		}
 
 
 		function sc_sub_repliesx()
 		{
-			$badgeReplies = ($this->var['forum_replies']) ? "badge-info" : "";
-			return "<span class='badge {$badgeReplies}'>" . $this->var['forum_replies'] . "</span>";
+			return e107::getParser()->toBadge($this->var['forum_replies']);
+			// $badgeReplies = ($this->var['forum_replies']) ? "badge-info" : "";
+			//return "<span class='badge {$badgeReplies}'>" . $this->var['forum_replies'] . "</span>";
 		}
 
 
@@ -523,7 +482,10 @@
 				}
 					return IMAGE_nonew;
 			--*/
-			return (USER && is_array($newflag_list) && in_array($this->var['forum_id'], $newflag_list)) ? "<a href='" . e107::getUrl()->create('forum/forum/mfar', 'id=' . $this->var['forum_id']) . "'>" . IMAGE_new . '</a>' : IMAGE_nonew;
+
+		//	$url = e107::getUrl()->create('forum/forum/mfar', 'id=' . $this->var['forum_id']);
+			$url = e107::url('forum', 'markread', $this->var);
+			return (USER && is_array($newflag_list) && in_array($this->var['forum_id'], $newflag_list)) ? "<a href='" . $url . "'>" . IMAGE_new . '</a>' : IMAGE_nonew;
 
 		}
 
@@ -536,12 +498,21 @@
 
 		function subinfo()
 		{
-			$caller = debug_backtrace()[1]['function'];
+			if(empty($this->var['thread_total_replies']))
+			{   
+    			return ''; 
+			}
+			
+			$backtrace = debug_backtrace();
+			$caller = $backtrace[1]['function'];
 			if($this->var['forum_lastpost_info'])
 			{
 				//	global $gen;
 				$tmp = explode('.', $this->var['forum_lastpost_info']);
-				$lp_thread = "<a href='" . e107::getUrl()->create('forum/thread/last', array('id' => $tmp[1])) . "'>" . IMAGE_post2 . '</a>';
+			//	$lp_url = e107::getUrl()->create('forum/thread/last', array('id' => $tmp[1]));
+				$lp_url = $threadUrl = e107::url('forum','topic',$this->var, array('query'=>array('last'=>1)));
+
+				$lp_thread = "<a href='" . $lp_url . "'>" . IMAGE_post2 . '</a>';
 				$lp_date = $this->gen->convert_date($tmp[0], 'forum');
 
 				/*--
@@ -612,52 +583,54 @@
 		------*/
 
 
-		function sc_views()
+		function sc_views($parm=null)
 		{
-			return $this->var['thread_views'];
+			$val = ($this->var['thread_views']) ? $this->var['thread_views'] : '0' ;
+
+			if(!empty($parm['raw']))
+			{
+				return $val;
+			}
+
+			return e107::getParser()->toBadge($val);
 		}
 
 
-		function sc_replies()
+		function sc_replies($parm=null)
 		{
-			return ($this->var['thread_total_replies'] ?: "0");
+			$val = ($this->var['thread_total_replies']) ? $this->var['thread_total_replies'] : '0';
+
+			if(!empty($parm['raw']))
+			{
+				return $val;
+			}
+
+			return e107::getParser()->toBadge($val);
 		}
 
 
-		function sc_viewsx()
+		function sc_viewsx($parm='')
 		{
-			/*--
-				if(!deftrue('BOOTSTRAP'))
-				{
-				return $this->sc_views;
-			  }
-				$badge = ($this->var['thread_views'] > 0) ? "badge-info" : "";
-				return "<span class='badge {$badge}'>".$this->sc_views."</span>";
-			--*/
-			$badge = ($this->var['thread_views'] > 0) ? "badge-info" : "";
-			return deftrue('BOOTSTRAP') ? "<span class='badge {$badge}'>" . $this->sc_views() . "</span>" : $this->sc_views();
+			return $this->sc_views($parm);
 		}
 
 
-		function sc_repliesx()
+		function sc_repliesx($parm='')
 		{
-			/*--
-				if(!deftrue('BOOTSTRAP'))
-				{
-				return $this->sc_replies;
-			  }
-			  $badge = ($this->var['thread_total_replies'] > 0) ? "badge-info" : "";
-				return "<span class='badge {$badge}'>".$this->sc_replies."</span>";
-			--*/
-			$badge = ($this->var['thread_total_replies'] > 0) ? "badge-info" : "";
-			return deftrue('BOOTSTRAP') ? "<span class='badge {$badge}'>" . $this->sc_replies() . "</span>" : $this->sc_replies();
+			return $this->sc_replies($parm);
 		}
 
 //	function sc__wrapper_()	{	return 'forum_viewforum';}
 
 		function threadlastpostdata()
 		{
-			$caller = debug_backtrace()[1]['function'];
+			if(empty($this->var['thread_total_replies']))
+			{   
+    			return ''; 
+			}
+			
+			$backtrace = debug_backtrace();
+			$caller = $backtrace[1]['function'];
 //	if($this->var['thread_views'])
 //($this->var['thread_total_replies']?:"0")
 			if($this->var['thread_views'] || $this->var['thread_total_replies'] > 0)
@@ -712,7 +685,7 @@
 //----		$tVars['LASTPOSTDATE'] .= "<a href='".$url."'>".  $gen->computeLapse($thread_info['thread_lastpost'],time(), false, false, 'short')."</a>";
 
 
-				return ($caller == 'sc_lastpostuser' ? $LASTPOSTUSER : ($caller == 'sc_lastpostdate' ? "<a href='" . $url . "'>" . $this->gen->computeLapse($this->var['thread_lastpost'], time(), false, false, 'short') . "</a>" : ($caller == 'sc_lastpost' ? $LASTPOST : '')));
+				return ($caller == 'sc_lastpostuser' ? $LASTPOSTUSER : ($caller == 'sc_lastpostdate' ? "<a href='" . $url . "'>" . $this->gen->computeLapse($this->var['thread_lastpost'], time(), false, true, 'short') . "</a>" : ($caller == 'sc_lastpost' ? $LASTPOST : '')));
 
 			}
 
@@ -740,20 +713,39 @@
 
 		function sc_threaddate()
 		{
-//	global $gen;
+
 			return $this->gen->convert_date($this->var['thread_datestamp'], 'forum');
 		}
 
 
 		function sc_threadtimelapse()
 		{
-//	global $gen;
+
 			return $this->gen->computeLapse($this->var['thread_datestamp'], time(), false, false, 'short'); //  convert_date($thread_info['thread_datestamp'], 'forum');
 		}
 
-
-		function sc_icon()
+		private function keyIcon($parm)
 		{
+			$size = 'small';
+
+			if(!empty($parm['type']))
+			{
+				return deftrue('IMAGE_'.$parm['type'].'_'.$size);
+			}
+		}
+
+
+		function sc_icon($parm)
+		{
+
+			if(!empty($parm))
+			{
+				return $this->keyIcon($parm);
+			}
+
+
+
+
 			global $forum;
 //	global $forum, $FORUM_VIEW_FORUM, $FORUM_VIEW_FORUM_STICKY, $FORUM_VIEW_FORUM_ANNOUNCE, $gen, $menu_pref, 
 //$threadsViewed = $forum->threadGetUserViewed();
@@ -804,9 +796,15 @@
 		}
 
 
-		function sc_threadname()
+		/**
+		 *
+		 * @outdated use {TOPIC_TITLE} or {TOPIC_URL}
+		 * @param null $parm
+		 * @return string
+		 */
+		function sc_threadname($parm=null)
 		{
-			global $menu_pref, $forum;
+			global $forum;
 			$tp = e107::getParser();
 
 			$thread_name = strip_tags($tp->toHTML($this->var['thread_name'], false, 'no_hook, emotes_off'));
@@ -826,6 +824,7 @@
 				$tip_length = $forum->prefs->get('tiplength', 400);
 				if(strlen($thread_thread) > $tip_length)
 				{
+					$menu_pref = e107::getConfig('menu')->getPref();
 					//$thread_thread = substr($thread_thread, 0, $tip_length).' '.$menu_pref['newforumposts_postfix'];
 					$thread_thread = $tp->text_truncate($thread_thread, $tip_length, $menu_pref['newforumposts_postfix']);    // Doesn't split entities
 				}
@@ -847,16 +846,138 @@
 			$this->addVars($temp);
 
 			$url = e107::url('forum', 'topic', $this->var);
+
+			if($parm === 'url')
+			{
+				return $url;
+			}
+
+			if($parm === 'title')
+			{
+				return $thread_name;
+			}
+
+
 			return "<a {$title} href='" . $url . "'>{$thread_name}</a>";
 		}
+
+		//v2.1.4
+		function sc_topic_title($parm=null)
+		{
+			return $this->sc_threadname('title');
+		}
+
+		//v2.1.4
+		function sc_topic_url($parm=null)
+		{
+			return $this->sc_threadname('url');
+		}
+
+		//v2.1.4
+		function sc_topic_date($parm=null)
+		{
+			return $this->sc_threaddate();
+		}
+
+
+		//@todo more topic_xxxx shortcode aliases.
+
 
 
 		function sc_pages()
 		{
 //	$tVars['PAGES'] = fpages($thread_info, $tVars['REPLIES']);
-			return fpages($this->var, $this->sc_replies());
+			$ret = $this->fpages($this->var, $this->var['thread_total_replies']);
+
+			if(!empty($ret))
+			{
+				return LAN_GOPAGE.": ".$ret;
+			}
+
+			return null;
 		}
 
+	function fpages($thread_info, $replies)
+	{
+
+		global $forum;
+		$tp = e107::getParser();
+
+		$replies = (int) $replies;
+		$postsPerPage = (int) $forum->prefs->get('postspage');
+
+		// Add 1 for the first post in the topic (which technically is not a reply), to make it consistent with the nextprev in the forum_viewtopic page
+		$replies = $replies + 1;
+
+		$pages = ceil(($replies) / $postsPerPage);
+
+		$thread_info['thread_sef'] = eHelper::title2sef($thread_info['thread_name'], 'dashl');
+		$urlparms = $thread_info;
+		$text = '';
+
+		if($pages > 1)
+		{
+			if($pages > 6)
+			{
+				for($a = 0; $a <= 2; $a++)
+				{
+					$aa = $a + 1;
+					$text .= $text ? ' ' : '';
+					//	$urlparms['page'] = $aa;
+
+					//	$url = e107::getUrl()->create('forum/thread/view', $urlparms);
+					$title = $tp->lanVars(LAN_GOTOPAGEX, $aa);
+					$url = e107::url('forum', 'topic', $urlparms) . '&amp;p=' . $aa;
+					$opts[] = "<a class='page-link' data-toggle='tooltip' data-bs-toggle='tooltip' title=\"" . $title . "\" href='{$url}'>{$aa}</a>";
+				}
+				$text .= ' ... ';
+				for($a = $pages - 3; $a <= $pages - 1; $a++)
+				{
+					$aa = $a + 1;
+					$text .= $text ? ' ' : '';
+					//	$urlparms['page'] = $aa;
+					//	$url = e107::getUrl()->create('forum/thread/view', $urlparms);
+					$title = $tp->lanVars(LAN_GOTOPAGEX, $aa);
+					$url = e107::url('forum', 'topic', $urlparms) . '&amp;p=' . $aa;
+					$opts[] = "<a class='page-link' data-toggle='tooltip' data-bs-toggle='tooltip' title=\"" . $title . "\" href='{$url}'>{$aa}</a>";
+				}
+			}
+			else
+			{
+
+				for($a = 0; $a <= ($pages - 1); $a++)
+				{
+					$aa = $a + 1;
+					$text .= $text ? ' ' : '';
+					//	$urlparms['page'] = $aa;
+					//	$url = e107::getUrl()->create('forum/thread/view', $urlparms);
+					$title = $tp->lanVars(LAN_GOTOPAGEX, $aa);
+					$url = e107::url('forum', 'topic', $urlparms) . '&amp;p=' . $aa;
+					$opts[] = "<a class='page-link' data-toggle='tooltip' data-bs-toggle='tooltip' title=\"" . $title . "\" href='{$url}'>{$aa}</a>";
+				}
+			}
+
+			if(deftrue('BOOTSTRAP'))
+			{
+				$text = "<ul class='pagination pagination-sm forum-viewforum-pagination'>
+						<li class='page-item'>";
+
+				$text .= implode("</li><li class='page-item'>", $opts); // ."</div>";
+				$text .= "</li></ul>";
+			}
+			else
+			{
+				$text = implode(" ", $opts); // ."</div>";
+			}
+
+		}
+		else
+		{
+			$text = '';
+		}
+
+		return $text;
+	}
 
 		function sc_pagesx()
 		{
@@ -893,19 +1014,84 @@
 
 		function sc_adminoptions()
 		{
-			/*--
-				if(!deftrue('BOOTSTRAP'))
-				{
-				return $this->sc_admin_icons;
-			  }
-				if (MODERATOR)
-				{
-					return fadminoptions($this->var);
-			  }
-			  return '';
-			--*/
-			return (!deftrue('BOOTSTRAP') ? $this->sc_admin_icons() : ((MODERATOR) ? fadminoptions($this->var) : ''));
+			if(!deftrue('BOOTSTRAP'))
+			{
+				return $this->sc_admin_icons();
+			}
+			else if (MODERATOR)
+			{
+				return $this->fadminoptions($this->var);
+			}
+			else
+			{
+				return '';
+			}
 		}
+
+	function fadminoptions($thread_info)
+	{
+
+//-- $tVars here???
+//----	$tVars = new e_vars;
+		$e107 = e107::getInstance();
+		$tp = e107::getParser();
+
+//	$text = "<form method='post' action='".e_REQUEST_URI."' id='frmMod_{$forumId}_{$threadId}' style='margin:0;'>";
+		$text = '<div class="btn-group"><button class="btn btn-default btn-secondary btn-sm btn-mini dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown">
+    <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu pull-right dropdown-menu-end float-right">	
+   ';
+
+		//FIXME - not fully working.
+
+		$moveUrl = e107::url('forum', 'move', $thread_info);
+// What's the use of $splitUrl?????
+		$splitUrl = e107::url('forum', 'split', $thread_info);
+
+		$lockUnlock = ($thread_info['thread_active']) ? 'lock' : 'unlock';
+		$stickUnstick = ($thread_info['thread_sticky'] == 1) ? 'unstick' : 'stick';
+		$id = intval($thread_info['thread_id']);
+
+		$lan = array('stick' => LAN_FORUM_8007, 'unstick' => LAN_FORUM_8008, 'lock' => LAN_FORUM_8009, 'unlock' => LAN_FORUM_8010);
+		$icon = array(
+			'unstick' => $tp->toGlyph('fa-chevron-down'),
+			'stick'   => $tp->toGlyph('fa-chevron-up'),
+			'lock'    => $tp->toGlyph('fa-lock'),
+			'unlock'  => $tp->toGlyph('fa-unlock'),
+		);
+
+
+		$text .= "<li class='text-right text-end'><a class='dropdown-item' href='" . e_REQUEST_URI . "' data-forum-action='delete' data-confirm='".LAN_JSCONFIRM."' data-forum-thread='" . $id . "'>" . LAN_DELETE . " " . $tp->toGlyph('fa-trash') . "</a></li>";
+		$text .= "<li class='text-right text-end'><a class='dropdown-item' href='" . e_REQUEST_URI . "' data-forum-action='" . $stickUnstick . "' data-forum-thread='" . $id . "'>" . $lan[$stickUnstick] . " " . $icon[$stickUnstick] . "</a></li>";
+		$text .= "<li class='text-right text-end'><a class='dropdown-item' href='" . e_REQUEST_URI . "' data-forum-action='" . $lockUnlock . "' data-forum-thread='" . $id . "'>" . $lan[$lockUnlock] . " " . $icon[$lockUnlock] . "</a></li>";
+
+		$text .= "<li class='text-right text-end'><a class='dropdown-item' href='{$moveUrl}'>" . LAN_FORUM_2042 . " " . $tp->toGlyph('fa-arrows') . "</a></li>";
+
+		//if(e_DEVELOPER)
+	//	{
+//		$text .= "<li class='text-right text-end'><a href='{$splitUrl}'>Split ".$tp->toGlyph('scissors')."</i></a></li>";
+//		print_a($thread_info);
+	//	}
+
+		/*
+			$text .= "<li><input type='image' ".IMAGE_admin_delete." name='deleteThread_{$threadId}' value='thread_action' onclick=\"return confirm_({$threadId})\" /> Delete</li>";
+
+			$text .= "<li>".($thread_info['thread_sticky'] == 1 ? "<input type='image' ".IMAGE_admin_unstick." name='unstick_{$threadId}' value='thread_action' /> Unstick" : "<input type='image' ".IMAGE_admin_stick." name='stick_{$threadId}' value='thread_action' /> Stick")."
+				</li>";
+
+			$text .= "<li>".($thread_info['thread_active'] ? "<input type='image' ".IMAGE_admin_lock." name='lock_{$threadId}' value='thread_action' /> Lock" : "<input type='image' ".IMAGE_admin_unlock." name='unlock_{$threadId}' value='thread_action' /> Unlock"). "
+				</li>";
+
+			$text .= "<li><a href='".e107::getUrl()->create('forum/thread/move', "id={$thread_info['thread_id']}")."'>Move</a></li>";
+		*/
+
+		$text .= "</ul></div>";
+
+//	$text .= "</form>";
+		return $text;
+	}
+
 
 
 		function sc_poster()
@@ -980,4 +1166,4 @@
 	}
 
 
-?>
+

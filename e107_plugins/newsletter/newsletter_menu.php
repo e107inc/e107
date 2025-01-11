@@ -26,7 +26,7 @@ if(!empty($pref['signup_option_class']))
 	$text .= "<div class='input-group'>";
 	$text .= $frm->text('email','', null, array('placeholder'=> NLLAN_73));
 	$text .= "<span class='input-group-btn'>";
-	$text .= $frm->button('subscribe', 1, 'submit', NLLAN_52, array('class'=>'btn-default'));
+	$text .= $frm->button('subscribe', 1, 'submit', NLLAN_52, array('class'=>'btn-primary'));
 	$text .= "</span>";
 	$text .= "</div>";
 	$text .= $frm->close();

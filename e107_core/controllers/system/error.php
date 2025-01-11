@@ -1,102 +1,62 @@
 <?php
-/*
+
+/**
  * e107 website system
  *
- * Copyright (C) 2008-2011 e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * System error controller
- *
- * $URL$
- * $Id$
-*/
+ * @file
+ * System error controller.
+ */
+
+
+/**
+ * Class core_system_error_controller.
+ */
 class core_system_error_controller extends eController
 {
-	function preAction()
+
+	/**
+	 * Pre-action callback, fired only if dispatch status is still true
+	 * and action method is found.
+	 */
+	public function preAction()
 	{
 		e107::coreLan('error');
 	}
-	
-	/**
-	 * Alias
-	 */
-	public function action404()
-	{
-		$this->_forward('notfound');
-	}
-	
-	public function actionNotfound()
-	{
-		$this->getResponse()
-			->setRenderMod('error404')
-			->addHeader('HTTP/1.0 404 Not Found');
-		
-		$this->addTitle(LAN_ERROR_7);
-		$template = e107::getCoreTemplate('error', 404);
-		
-		$vars = new e_vars(array(
-			'SITEURL' => SITEURL,
-			'SEARCHURL' => e107::getUrl()->create('search'),
-		));
-
-
-		$body = e107::getParser()->parseTemplate(
-				$this->updateTemplate($template['start']).
-				$this->updateTemplate($template['body']).
-				$this->updateTemplate($template['end'])
-				, true, null, $vars);
-		
-		$this->addBody($body);
-	}
-
 
 	/**
-	 * Update template to v2.x spec. ALL CAPS shortcodes only.
-	 * @param $template
-	 * @return mixed
-	 */
-	private function updateTemplate($template)
-	{
-		$srch = array('{siteUrl}','{searchUrl}');
-		$repl = array('{SITEURL}','{SEARCHURL}');
-
-		return str_replace($srch,$repl,$template);
-	}
-	
-	/**
-	 * Alias
+	 * Alias for "Error 403".
 	 */
 	public function action403()
 	{
 		$this->_forward('forbidden');
 	}
 
+	/**
+	 * Alias for "Error 404".
+	 */
+	public function action404()
+	{
+		$this->_forward('notfound');
+	}
+
+	/**
+	 * Error 403.
+	 */
 	public function actionForbidden()
 	{
-		$this->getResponse()
-			->setRenderMod('error403')
-			->addHeader('HTTP/1.0 403 Forbidden');
-		
-		$this->addTitle(LAN_ERROR_7);
-		$template = e107::getCoreTemplate('error', 403);
-		
-		$vars = new e_vars(array(
-			'SITEURL' => SITEURL,
-		));
-		
-		$body = e107::getParser()->parseTemplate(
-			$this->updateTemplate($template['start']).
-			$this->updateTemplate($template['body']).
-			$this->updateTemplate($template['end'])
-			, true, null, $vars);
-		
-		$this->addBody($body);
+		e107::getError()->render(403);
 	}
-	
-	function actionHelloWorld()
+
+	/**
+	 * Error 404.
+	 */
+	public function actionNotfound()
 	{
-		//$this->addTitle('Hello!');
-		//echo 'Hello World';
+		e107::getError()->render(404);
 	}
+
 }

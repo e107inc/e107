@@ -43,9 +43,9 @@ class auth_login extends alt_auth_base
 	/**
 	 *	Read configuration, initialise connection to LDAP database
 	 *
-	 *	@return AUTH_xxxx result code
+	 *	@return integer AUTH_xxxx result code
 	 */
-	public function auth_login()
+	public function __construct()
 	{
 		$this->copyAttribs = array();
 		$this->copyMethods = array();
@@ -128,7 +128,7 @@ class auth_login extends alt_auth_base
 	 */
 	public function close()
 	{
-		if (!@ldap_close($this->connection))
+		if (!@ldap_unbind($this->connection))
 		{
 			$this->makeErrorText(); // Read the error code and explanatory string
 			return false;
@@ -274,10 +274,10 @@ class auth_login extends alt_auth_base
 					return AUTH_NOUSER; // Bit debateable what to return if this happens
 				}
 			}
-			else // Probably a bit strange if we don't get any info back - but possible
-				{
+			//else // Probably a bit strange if we don't get any info back - but possible
+			//	{
 					// echo "No results!<br />";
-				}
+			//	}
 
 				return AUTH_SUCCESS;
 		}
@@ -306,4 +306,4 @@ class auth_login extends alt_auth_base
 	}
 }
 
-?>
+

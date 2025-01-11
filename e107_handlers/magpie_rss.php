@@ -120,8 +120,7 @@ class MagpieRSS {
         # setup handlers
         #
         xml_set_object( $this->parser, $this );
-        xml_set_element_handler($this->parser, 
-                'feed_start_element', 'feed_end_element' );
+        xml_set_element_handler($this->parser, 'feed_start_element', 'feed_end_element' );
                         
         xml_set_character_data_handler( $this->parser, 'feed_cdata' ); 
     
@@ -143,8 +142,14 @@ class MagpieRSS {
 
         $this->normalize();
     }
-    
-    function feed_start_element($p, $element, &$attrs) {
+
+	/**
+	 * @param $p
+	 * @param $element
+	 * @param $attrs
+	 * @return void
+	 */
+	function feed_start_element($p, $element, $attrs) {
         $el = $element = strtolower($element);
         $attrs = array_change_key_case($attrs, CASE_LOWER);
         
@@ -224,7 +229,7 @@ class MagpieRSS {
         elseif ($this->feed_type == ATOM and $this->incontent ) 
         {
             // if tags are inlined, then flatten
-            $attrs_str = join(' ', 
+            $attrs_str = implode(' ',
                     array_map('map_attrs', 
                     array_keys($attrs), 
                     array_values($attrs) ) );
@@ -255,22 +260,31 @@ class MagpieRSS {
             array_unshift($this->stack, $el);
         }
     }
-    
 
-    
-    function feed_cdata ($p, $text) {
+
+	/**
+	 * @param $p
+	 * @param $text
+	 * @return void
+	 */
+	function feed_cdata ($p, $text) {
         
         if ($this->feed_type == ATOM and $this->incontent) 
         {
             $this->append_content( $text );
         }
         else {
-            $current_el = join('_', array_reverse($this->stack));
+            $current_el = implode('_', array_reverse($this->stack));
             $this->append($current_el, $text);
         }
     }
-    
-    function feed_end_element ($p, $el) {
+
+	/**
+	 * @param $p
+	 * @param $el
+	 * @return void
+	 */
+	function feed_end_element ($p, $el) {
         $el = strtolower($el);
         
         if ( $el == 'item' or $el == 'entry' ) 
@@ -314,17 +328,25 @@ class MagpieRSS {
         
         $this->current_namespace = false;
     }
-    
-    function concat (&$str1, $str2 = "") {
+
+	/**
+	 * @param $str1
+	 * @param $str2
+	 * @return void
+	 */
+	function concat (&$str1, $str2 = "") {
         if (!isset($str1) ) {
             $str1 = "";
         }
         $str1 .= $str2;
     }
-    
-    
-    
-    function append_content($text) {
+
+
+	/**
+	 * @param $text
+	 * @return void
+	 */
+	function append_content($text) {
         if ( $this->initem ) {
             $this->concat( $this->current_item[ $this->incontent ], $text );
         }
@@ -334,7 +356,13 @@ class MagpieRSS {
     }
     
     // smart append - field and namespace aware
-    function append($el, $text) {
+
+	/**
+	 * @param $el
+	 * @param $text
+	 * @return void
+	 */
+	function append($el, $text) {
         if (!$el) {
             return;
         }
@@ -377,12 +405,15 @@ class MagpieRSS {
             
         }
     }
-    
-    function normalize () {
+
+	/**
+	 * @return void
+	 */
+	function normalize () {
         // if atom populate rss fields
         if ( $this->is_atom() ) {
             $this->channel['description'] = $this->channel['tagline'];
-            for ( $i = 0; $i < count($this->items); $i++) {
+            for ($i = 0, $iMax = count($this->items); $i < $iMax; $i++) {
                 $item = $this->items[$i];
                 if ( isset($item['summary']) )
                     $item['description'] = $item['summary'];
@@ -402,7 +433,7 @@ class MagpieRSS {
         }
         elseif ( $this->is_rss() ) {
             $this->channel['tagline'] = $this->channel['description'];
-            for ( $i = 0; $i < count($this->items); $i++) {
+            for ($i = 0, $iMax = count($this->items); $i < $iMax; $i++) {
                 $item = $this->items[$i];
                 if ( isset($item['description']))
                     $item['summary'] = $item['description'];
@@ -426,9 +457,12 @@ class MagpieRSS {
             }
         }
     }
-    
-    
-    function is_rss () {
+
+
+	/**
+	 * @return false
+	 */
+	function is_rss () {
         if ( $this->feed_type == RSS ) {
             return $this->feed_version; 
         }
@@ -436,8 +470,11 @@ class MagpieRSS {
             return false;
         }
     }
-    
-    function is_atom() {
+
+	/**
+	 * @return false
+	 */
+	function is_atom() {
         if ( $this->feed_type == ATOM ) {
             return $this->feed_version;
         }
@@ -547,8 +584,12 @@ class MagpieRSS {
             
         return array(xml_parser_create(), $source);
     }
-    
-    function known_encoding($enc) {
+
+	/**
+	 * @param $enc
+	 * @return false|string
+	 */
+	function known_encoding($enc) {
         $enc = strtoupper($enc);
         if ( in_array($enc, $this->_KNOWN_ENCODINGS) ) {
             return $enc;
@@ -558,12 +599,17 @@ class MagpieRSS {
         }
     }
 
-    function error ($errormsg, $lvl=E_USER_WARNING) {
+	/**
+	 * @param $errormsg
+	 * @param $lvl
+	 * @return void
+	 */
+	function error ($errormsg, $lvl=E_USER_WARNING) {
         // append PHP's error message if track_errors enabled
-        if ( $php_errormsg ) { 
+     /*   if ( $php_errormsg ) {
             $errormsg .= " ({$php_errormsg})";
-        }
-        if ( MAGPIE_DEBUG ) {
+        }*/
+        if ( defined('MAGPIE_DEBUG') &&  MAGPIE_DEBUG) {
             trigger_error( $errormsg, $lvl);        
         }
         else {
@@ -581,11 +627,20 @@ class MagpieRSS {
     
 } // end class RSS
 
+/**
+ * @param $k
+ * @param $v
+ * @return string
+ */
 function map_attrs($k, $v) {
     return "$k=\"$v\"";
 }
 
-function parse_w3cdtf ( $date_str ) {
+/**
+ * @param $date_str
+ * @return false|float|int
+ */
+function parse_w3cdtf ($date_str ) {
     
     # regex to match wc3dtf
     $pat = "/(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(:(\d{2}))?(?:([-+])(\d{2}):?(\d{2})|(Z))?/";
@@ -627,4 +682,4 @@ function parse_w3cdtf ( $date_str ) {
     }
 }
 
-?>
+

@@ -1,4 +1,4 @@
 //<?
 $class = e107::getBB()->getClass('justify');
 
-return "<div class='{$justify}' style='text-align:justify'>$code_text</div>";
+return "<div class='{$class}' style='text-align:justify'>$code_text</div>";

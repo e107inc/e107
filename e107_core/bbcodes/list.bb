@@ -25,7 +25,7 @@ else
   $listitems = explode("*", $code_text);
 }
 
-if ($parm == '')
+if (empty($parm))
 {	/* unordered list */
   $listtext = "<ul class='bbcode'>";
   $trailer = "</ul>";
@@ -33,7 +33,7 @@ if ($parm == '')
 }
 else
 {
-  $type = $tp -> toAttribute($parm);
+  $type = e107::getParser()->toAttribute($parm);
   $listtext = "\n<ol class='bbcode ".$type."' style='list-style-type: $type'>";
   $trailer = "</ol>";
 }

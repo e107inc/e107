@@ -9,7 +9,13 @@
  * Application store client
  *
  */
- 
+
+e107::coreLan('theme', true);
+
+
+/**
+ *
+ */
 class e_marketplace
 {
 	/**
@@ -65,7 +71,10 @@ class e_marketplace
 		$this->adapter->setAuthKey($authkey);	
 		return $this;
 	}
-	
+
+	/**
+	 * @return bool
+	 */
 	public function hasAuthKey()
 	{
 		return $this->adapter->hasAuthKey();
@@ -96,8 +105,8 @@ class e_marketplace
 		    <div class="well">
 		    <img src="'.e_IMAGE_ABS.'admin_images/credits_logo.png" alt="" style="margin-bottom:15px" />
 		    <ul class="nav nav-tabs">
-			    <li class="active"><a href="#login" data-toggle="tab">Login</a></li>
-			    <li><a href="#create" data-toggle="tab">Create Account</a></li>
+			    <li class="active"><a href="#login" data-toggle="tab" data-bs-toggle="tab">Login</a></li>
+			    <li><a href="#create" data-toggle="tab" data-bs-toggle="tab">Create Account</a></li>
 		    </ul>
 		    <div id="myTabContent" class="tab-content">
 		    <div class="tab-pane active in" id="login">
@@ -183,16 +192,19 @@ class e_marketplace
 		}
 		return $this->adapter;
 	}
-	
+
 	/**
 	 * Retrieve currently used adapter
-	 * @param e_marketplace_adapter_abstract
+	 * @param $method
+	 * @param $data
+	 * @param bool $apply
+	 * @return mixed
 	 */
 	public function call($method, $data, $apply = true)
 	{
 		if(E107_DEBUG_LEVEL > 0)
 		{
-			e107::getMessage()->addDebug("Calling e107.org  using <b> ".$this->_adapter_name."</b> adapter");
+			e107::getDebug()->log("Calling e107.org  using <b> ".$this->_adapter_name."</b> adapter");
 		}
 		return $this->adapter()->call($method, $data, $apply);
 	}
@@ -216,8 +228,11 @@ class e_marketplace
 		}
 		throw new Exception("Error Processing Request", 10);
 	}
-	
 
+
+	/**
+	 *
+	 */
 	public function __destruct()
 	{
 		$this->adapter = null;
@@ -225,6 +240,72 @@ class e_marketplace
 	}
 
 
+	/**
+	 * @param $data - e107.org plugin/theme feed data.
+	 * @return bool|string
+	 */
+	public function getDownloadModal($type='plugin',$data=array())
+	{
+
+		$url = false;
+
+		if($type === 'plugin')
+		{
+
+			if(empty($data['plugin_id']))
+			{
+
+				$srcData = array(
+					'plugin_id'     => $data['params']['id'],
+					'plugin_folder' => $data['folder'],
+					'plugin_price'  => $data['price'],
+					'plugin_mode'   => $data['params']['mode'],
+					'plugin_url'    => $data['url'],
+				);
+			}
+			else
+			{
+				$srcData = $data;
+			}
+
+			$d = http_build_query($srcData,false,'&');
+
+		//	if(deftrue('e_DEBUG_PLUGMANAGER'))
+			{
+				$url = e_ADMIN.'plugin.php?mode=online&action=download&e-token='.e_TOKEN.'&src='.base64_encode($d);
+			}
+		//	else
+			{
+			//	$url = e_ADMIN.'plugin.php?mode=download&src='.base64_encode($d);
+			}
+
+
+		}
+
+		if($type === 'theme')
+		{
+			$srcData = array(
+				'id'    => $data['params']['id'],
+				'url'   => $data['url'],
+				'mode'  => 'addon',
+				'price' => $data['price']
+			);
+
+			$d = http_build_query($srcData,false,'&');
+			$url = e_ADMIN.'theme.php?mode=main&action=download&e-token='.e_TOKEN.'&src='.base64_encode($d);//$url.'&amp;action=download';
+
+		}
+
+
+		return $url;
+
+	}
+
+
+	/**
+	 * @param $type
+	 * @return array|string[]
+	 */
 	public function getVersionList($type='plugin')
 	{
 		$cache = e107::getCache();
@@ -259,10 +340,14 @@ class e_marketplace
 
 		}
 
-// print_a($xdata['data']);
 
-		$data = e107::serialize($arr);
-		$cache->set($tag, $data, true, null, true);
+		if(empty($arr))
+		{
+			$arr = array('-unable-to-connect'); // make sure something is cached so further lookups stop.
+		}
+
+		$data = e107::serialize($arr, 'json');
+		$cache->set($tag, $data, true, true, true);
 
 		return $arr;
 
@@ -272,13 +357,17 @@ class e_marketplace
 
 }
 
+
+/**
+ *
+ */
 abstract class e_marketplace_adapter_abstract
 {
 	/**
 	 * e107.org download URL
 	 * @var string
 	 */
-	protected $downloadUrl = 'http://e107.org/request/';	
+	protected $downloadUrl = 'https://e107.org/request/';
 	
 	/**
 	 * e107.org service URL [adapter implementation required]
@@ -304,10 +393,27 @@ abstract class e_marketplace_adapter_abstract
 	 * @var string
 	 */
 	protected $authKey = null;
-	
+
+	/**
+	 * @param $input
+	 * @return mixed
+	 */
 	abstract public function test($input);
 	//abstract public function call($method, $data, $apply);
+
+	/**
+	 * @param $method
+	 * @param $data
+	 * @param $apply
+	 * @return mixed
+	 */
 	abstract public function call($method, $data, $apply = true); // Fix issue #490
+
+	/**
+	 * @param $method
+	 * @param $result
+	 * @return mixed
+	 */
 	abstract public function fetch($method, &$result);
 	
 	/**
@@ -340,7 +446,7 @@ abstract class e_marketplace_adapter_abstract
 	 */
 	public function hasAuthKey()
 	{
-		return ($this->authKey !== null) ? true : false;	
+		return $this->authKey !== null;
 	}
 	
 	/**
@@ -350,16 +456,18 @@ abstract class e_marketplace_adapter_abstract
 	{
 		return $this->authKey;	
 	}
-	
-	
+
+
 	/**
-	 * Download a Plugin or Theme to Temp, then test and move to plugin/theme folder and backup to system backup folder. 
+	 * Download a Plugin or Theme to Temp, then test and move to plugin/theme folder and backup to system backup folder.
 	 * XXX better way to return status (e.g. getError(), getStatus() service call before download)
 	 * XXX temp is not well cleaned
 	 * XXX themes/plugins not well tested after unzip (example - Headline 1.0, non-default structure, same applies to most FS net free themes)
 	 * This method is direct outputting the status. If not needed - use buffer
-	 * @param string $remotefile URL
+	 * @param $id
+	 * @param $mode
 	 * @param string $type plugin or theme
+	 * @return bool
 	 */
 	public function download($id, $mode, $type)
 	{
@@ -372,7 +480,7 @@ abstract class e_marketplace_adapter_abstract
 		$remotefile = $this->downloadUrl."?auth=".$this->getAuthKey()."&".$qry;
 
 		$localfile = md5($remotefile.time()).".zip";
-		$mes->addSuccess("Downloading..."); 
+		$mes->addSuccess(LAN_DOWNLOADING."...");
 	
 		// FIXME call the service, check status first, then download (if status OK), else retireve the error break and show it
 		
@@ -394,7 +502,10 @@ abstract class e_marketplace_adapter_abstract
 		
 		if(!file_exists(e_TEMP.$localfile))
 		{
-			$mes->addError( "Automated download not possible. Please <a href='".$remotefile."'>Download Manually</a>"); 
+			$srch = array("[", "]");
+			$repl = array("<a href='".$remotefile."'>", "</a>");
+
+			$mes->addError( TPVLAN_83." ".str_replace($srch, $repl, TPVLAN_84));
 			
 			if(E107_DEBUG_LEVEL > 0)
 			{
@@ -405,29 +516,30 @@ abstract class e_marketplace_adapter_abstract
 		}
 		
 		
-		if($fl->unzipArchive($localfile,$type))
+		if($fl->unzipArchive($localfile,$type, true))
 		{
-			$mes->addSuccess("Download Complete!"); 
+			$lan = defset('LAN_DOWNLOAD_COMPLETE', 'Download Complete!');
+			$mes->addSuccess($lan);
 			return true; 
 		}
 		else 
 		{
-			$mes->addSuccess( "<a href='".$remotefile."'>Download Manually</a>"); // flush(); usleep(50000);
+			$mes->addSuccess( "<a href='".$remotefile."'>".TPVLAN_84."</a>");
 		}
 		
 		return false; 
 	}
-
-	
-	
-	
-	
-	
-	
 			
 		
 
 	// Grab a remote file and save it in the /temp directory. requires CURL
+
+	/**
+	 * @param $remote_url
+	 * @param $local_file
+	 * @param $type
+	 * @return bool
+	 */
 	function getRemoteFile($remote_url, $local_file, $type='temp')
 	{
 		// FIXME - different methods (see xml handler getRemoteFile()), error handling, appropriate error messages, 
@@ -470,13 +582,17 @@ abstract class e_marketplace_adapter_abstract
     }
 }
 
+
+/**
+ *
+ */
 class e_marketplace_adapter_wsdl extends e_marketplace_adapter_abstract
 {
 	/**
 	 * e107.org WSDL URL
 	 * @var string
 	 */
-	protected $serviceUrl = 'http://e107.org/service?wsdl';
+	protected $serviceUrl = 'https://e107.org/service?wsdl';
 	
 	/**
 	 * Request method POST || GET
@@ -492,26 +608,28 @@ class e_marketplace_adapter_wsdl extends e_marketplace_adapter_abstract
 	
 	public function __construct()
 	{
-		e107_ini_set('soap.wsdl_cache_enabled', 0);
-		e107_ini_set('soap.wsdl_cache_ttl', 0);
+		ini_set('soap.wsdl_cache_enabled', 0);
+		ini_set('soap.wsdl_cache_ttl', 0);
 		
 		$options = array(
 			"trace" 				=> true, 
 			'exception' 			=> true,
 		    "uri" 					=> "http://server.soap.e107.inc.com/",
 		    'cache_wsdl'			=> WSDL_CACHE_NONE,
-		    'connection_timeout' 	=> 60,
+		    'connection_timeout' 	=> 5,
 		);
 
 
 		try
 		{
+			//libxml_disable_entity_loader(false);
             $this->client = new SoapClient($this->serviceUrl, $options);
         }
         catch (Exception $e)
         {
-           e107::getMessage()->addError("Unable to connect. Please check firewall and/or internet connection.");
-           e107::getMessage()->addDebug($e->getMessage());
+	        $message = deftrue('LAN_ERROR_CONNECTION', "Unable to connect for updates. Please check firewall and/or internet connection.");
+            e107::getMessage()->addInfo($message);
+            e107::getMessage()->addDebug($e->getMessage());
         }
 
 
@@ -521,7 +639,11 @@ class e_marketplace_adapter_wsdl extends e_marketplace_adapter_abstract
 			xdebug_disable();
 		}
 	}
-	
+
+	/**
+	 * @param $input
+	 * @return string
+	 */
 	public function test($input)
 	{
 		try
@@ -550,10 +672,19 @@ class e_marketplace_adapter_wsdl extends e_marketplace_adapter_abstract
 		// authorize on every call, service class decides what to do on every method call
 		$auth = new stdClass;
 		$auth->authKey = $this->getAuthKey();
-		$header = new SoapHeader('http://e107.org/services/auth', 'checkAuthHeader', $auth);
+		$header = new SoapHeader('https://e107.org/services/auth', 'checkAuthHeader', $auth);
+
+		if(!is_object($this->client))
+		{
+			$result['exception'] = array();
+			$result['exception']['message'] = "Unable to connect at this time.";
+			return $result;
+		}
 		
 		try
 		{
+
+
 			$this->client->__setSoapHeaders(array($header));
 			if(is_array($args) && $apply)
 			{
@@ -625,6 +756,9 @@ class e_marketplace_adapter_wsdl extends e_marketplace_adapter_abstract
 		return $result;
 	}
 
+	/**
+	 *
+	 */
 	public function __destruct()
 	{
 		$this->client = null;
@@ -632,13 +766,17 @@ class e_marketplace_adapter_wsdl extends e_marketplace_adapter_abstract
 	}
 }
 
+
+/**
+ *
+ */
 class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 {
 	/**
 	 * e107.org XML-rpc service
 	 * @var xmlClass
 	 */
-	protected $serviceUrl = 'http://e107.org/xservice';
+	protected $serviceUrl = 'https://e107.org/xservice';
 	
 	/**
 	 * Request method POST || GET
@@ -652,21 +790,31 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 	public function __construct()
 	{
 	}
-	
+
+	/**
+	 * @param $input
+	 * @return void
+	 */
 	public function test($input)
 	{
 		
 	}
-	
+
+	/**
+	 * @param $method
+	 * @param $data
+	 * @param $apply
+	 * @return array|string
+	 */
 	public function call($method, $data, $apply = true)
 	{
 		$client = $this->client();
 
 		// settings based on current method
 		$this->prepareClient($method, $client);
-		
+
 		// authorization data
-		$data['auth'] = $this->getAuthKey();
+	//	$data['auth'] = $this->getAuthKey();
 		$data['action'] = $method;
 
 		foreach($data['params'] as $k=>$v)
@@ -703,12 +851,17 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 		}
 		return $result;
 	}
-	
+
+	/**
+	 * @param $method
+	 * @param $result
+	 * @return array|string
+	 */
 	public function fetch($method, &$result)
 	{
 		$ret = $this->parse($result);
 		$this->fetchParams($ret);
-		
+
 		switch ($method) 
 		{
 			// normalize
@@ -732,7 +885,7 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 		$tags = array_keys(get_object_vars($xml));
 		$count = $xml->count();
 		$tcount = count($tags);
-		
+
 		if($count === 0)
 		{
 			$attr = (array) $xml->attributes();
@@ -749,48 +902,66 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 			}
 			return $ret;
 		}
-		
+
 		/**
 		 * <key>
-		 * 	<value />
-		 * 	<value />
+		 *    <value />
+		 *    <value />
 		 * </key>
 		 */
 		if($tcount === 1 && $count > 1)
 		{
-			foreach ($xml as $name => $node) 
+			foreach($xml as $name => $node)
 			{
 				$_res = $this->parse($node, $name);
 				if(is_string($_res))
 				{
-					 $_res = trim($_res);
+					$_res = trim($_res);
 				}
-				
+
 				$ret[$name][] = $this->parse($node, $name);
 			}
 		}
 		// default
 		else
 		{
-			foreach ($xml as $name => $node) 
+			foreach($xml as $name => $node)
 			{
 				if(in_array($name, $this->_forceArray))
 				{
 					$_res = $this->parse($node, $name);
-					if(is_string($_res)) $_res = trim($_res);
-					
-					if(empty($_res)) $ret[$name] = array(); // empty
-					elseif(is_string($_res)) $ret[$name][] = $_res; // string
-					else 
+					if(is_string($_res))
 					{
-						if(in_array($name, $this->_forceNumericalArray)) $ret[$name][] = $_res; //array - controlled force numerical array
-						else $ret[$name] = $_res; //array, no force
+						$_res = trim($_res);
+					}
+
+					if(empty($_res))
+					{
+						$ret[$name] = array();
+					}
+					elseif(is_string($_res)) // empty
+					{
+						$ret[$name][] = $_res;
+					} // string
+					else
+					{
+						if(in_array($name, $this->_forceNumericalArray))
+						{
+							$ret[$name][] = $_res;
+						} //array - controlled force numerical array
+						else
+						{
+							$ret[$name] = $_res;
+						} //array, no force
 					}
 				}
-				else $ret[$name] = $this->parse($node, $name);
+				else
+				{
+					$ret[$name] = $this->parse($node, $name);
+				}
 			}
 		}
-		
+
 
 		$attr = (array) $xml->attributes();
 		if(!empty($attr))
@@ -828,7 +999,7 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 				$result['params'] = $result['@attributes'];
 				unset($result['@attributes']);
 			}
-			elseif(is_array($result[$tag]))
+			elseif(is_array($data))
 			{
 				$this->fetchParams($result[$tag]);
 			}
@@ -844,7 +1015,7 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 		switch ($method) 
 		{
 			case 'getList':
-				$this->_forceArray = array('item', 'screenshots', 'image');
+				$this->_forceArray = array('item', 'screenshots', 'image', 'data');
 				$this->_forceNumericalArray = array('item', 'image');
 				//$client->setOptArrayTags('item,screenshots,image')
 				//	->setOptStringTags('icon,folder,version,author,authorURL,date,compatibility,url,thumbnail,featured,livedemo,price,name,description,category,image');
@@ -861,6 +1032,10 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 	}
 }
 
+
+/**
+ *
+ */
 class eAuth
 {
 	
@@ -868,25 +1043,25 @@ class eAuth
 	 * e107.org manage client credentials (Consumer Key and Secret) URL 
 	 * @var string
 	 */
-	protected $eauthConsumerUrl = 'http://e107.org/eauth/client';
+	protected $eauthConsumerUrl = 'https://e107.org/eauth/client';
 	
 	/**
 	 * URL used to make temporary credential request (Request Token and Secret) to e107.org before the authorization phase
 	 * @var string
 	 */
-	protected $eauthRequestUrl = 'http://e107.org/eauth/initialize';
+	protected $eauthRequestUrl = 'https://e107.org/eauth/initialize';
 	
 	/**
 	 * URL used to redirect and authorize the resource owner (user) on e107.org using temporary (request) token
 	 * @var string
 	 */
-	protected $eauthAuthorizeUrl = 'http://e107.org/eauth/authorize';
+	protected $eauthAuthorizeUrl = 'https://e107.org/eauth/authorize';
 	
 	/**
 	 * URL used to obtain token credentials (Access Token and Secret) from e107.org using temporary (request) token
 	 * @var string
 	 */
-	protected $eauthAccessUrl = 'http://e107.org/eauth/token';
+	protected $eauthAccessUrl = 'https://e107.org/eauth/token';
 	
 	/**
 	 * Public client key (generated and obtained from e107.org)
@@ -929,25 +1104,40 @@ class eAuth
 	 * @var string
 	 */
 	public $requestMethod = null;
-	
+
+	/**
+	 * @return bool
+	 */
 	public function isClient()
 	{
 		$this->loadSysCredentials();
 		return (!empty($this->eauthConsumerKey) && !empty($this->eauthConsumerSecret));
 	}
-	
+
+	/**
+	 * @return bool
+	 */
 	public function isInitialized()
 	{
 		$this->loadSysCredentials();
 		return ($this->isClient() && !empty($this->eauthRequestKey) && !empty($this->eauthRequestSecret));
 	}
-	
+
+	/**
+	 * @return bool
+	 */
 	public function hasAccess()
 	{
 		$this->loadSysCredentials();
 		return ($this->isClient() && !empty($this->eauthAccessToken) && !empty($this->eauthAccessSecret));
 	}
 
+	/**
+	 * @param $method
+	 * @param $args
+	 * @param $toObject
+	 * @return array|stdClass
+	 */
 	public function serviceAuthData($method, $args, $toObject = true)
 	{
 		// The client has previously registered with the server and obtained the client identifier dpf43f3p2l4k3l03 and client secret kd94hf93k423kf44. 
@@ -994,6 +1184,10 @@ class eAuth
 	}
 
 
+	/**
+	 * @param $array
+	 * @return stdClass
+	 */
 	public static function toObject($array)
 	{
 		$obj = new stdClass;
@@ -1007,7 +1201,7 @@ class eAuth
 	/**
 	 * Load credentials stored in a system file
 	 * @param boolean $force
-	 * @return e_marketplace_adapter_abstract adapter instance
+	 * @return eAuth
 	 */
 	public function loadSysCredentials($force = false)
 	{
@@ -1022,7 +1216,11 @@ class eAuth
 		}
 		return $this;
 	}
-	
+
+	/**
+	 * @param $credentials
+	 * @return bool
+	 */
 	public function storeSysCredentials($credentials = null)
 	{
 		if(null === $credentials)
@@ -1074,7 +1272,12 @@ class eAuth
 		if(null !== $key) return varset($credentials[$key], null);
 		return $credentials;
 	}
-	
+
+	/**
+	 * @param $params
+	 * @return string
+	 * @throws Exception
+	 */
 	public function toAuthHeader($params)
 	{
 		$first = true;
@@ -1090,7 +1293,7 @@ class eAuth
 		$total = array();
 		foreach($params as $k => $v)
 		{
-			if(substr($k, 0, 5) != "eauth") continue;
+			if(strpos($k, "eauth") !== 0) continue;
 			if(is_array($v))
 			{
 				throw new Exception('Arrays not supported in headers', 200);
@@ -1101,14 +1304,21 @@ class eAuth
 		}
 		return $out;
 	}
-	
 
+
+	/**
+	 * @return string
+	 */
 	public function cryptMethod()
 	{
 		return function_exists('hash_hmac') ? 'HMAC-SHA1' : 'SHA1';
 	}
-	
-	function random($bits = 256) 
+
+	/**
+	 * @param $bits
+	 * @return string
+	 */
+	function random($bits = 256)
 	{
 	    $bytes = ceil($bits / 8);
 	    $ret = '';
@@ -1118,7 +1328,12 @@ class eAuth
 	    }
 	    return $ret;
 	}
-	
+
+	/**
+	 * @param $string
+	 * @param $secretKey
+	 * @return false|string
+	 */
 	public function crypt($string, $secretKey)
 	{
 		$cMethod = $this->cryptMethod();
@@ -1130,12 +1345,20 @@ class eAuth
 		// use secret key if HMAC-SHA1
 		return hash_hmac('sha1', $string, $secretKey);
 	}
-	
+
+	/**
+	 * @param $timestamp
+	 * @return false|string
+	 */
 	public function nonce($timestamp)
 	{
 		return $this->crypt($this->random().$timestamp, $this->eauthAccessSecret.$this->eauthConsumerSecret);
 	}
 
+	/**
+	 * @param $string
+	 * @return false|int
+	 */
 	public function gmtTime($string)
 	{
 		$ret = false;
@@ -1147,6 +1370,11 @@ class eAuth
 		return $ret;
 	}
 
+	/**
+	 * @param $array
+	 * @param $order
+	 * @return void
+	 */
 	public static function array_kmultisort(&$array, $order = 'asc')
 	{
 		$func = $order == 'asc' ? 'ksort' : 'krsort';

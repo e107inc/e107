@@ -6,16 +6,9 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_admin/ver.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
 if (!defined('e107_INIT')) { exit; }
 
-$e107info['e107_version'] = "2.1.3 (git)";
+$e107info['e107_version'] = "2.4.0 (git)";
 
-?>

@@ -35,6 +35,10 @@ It is the responsibility of each class to manager permission restrictions where 
 	$mailerIncludeWithDefault = TRUE;			// Mandatory - if false, show only when mailout for this specific plugin is enabled 
 	$mailerExcludeDefault = TRUE;				// Mandatory - if TRUE, when this plugin's mailout is active, the default (core) isn't loaded
 
+
+/**
+ *
+ */
 class core_mailout
 {
 	protected $mailCount = 0;
@@ -70,7 +74,7 @@ class core_mailout
 	 * The returned data is stored in the DB with a saved email. (Just return an empty string or array if this is undesirable)
 	 * The returned value is passed back to selectInit() and showSelect when needed.
 	 *
-	 * @return mixed Selection data - may be string, array or whatever suits
+	 * @return array Selection data - may be string, array or whatever suits
 	 */
 	public function returnSelectors()
 	{
@@ -227,7 +231,7 @@ class core_mailout
 	{
 		$sql = e107::getDb();
 		
-		if (!($row = $sql->db_Fetch())) return FALSE;
+		if (!($row = $sql->fetch())) return FALSE;
 		$ret = array('mail_recipient_id' => $row['user_id'],
 					 'mail_recipient_name' => $row['user_name'],		// Should this use realname?
 					 'mail_recipient_email' => $row['user_email'],
@@ -247,7 +251,7 @@ class core_mailout
 	/**
 	 *	Called once all email addresses read, to do any housekeeping needed
 	 *
-	 *	@return none
+	 *	@return void
 	 */
 	public function select_close()
 	{	
@@ -261,7 +265,7 @@ class core_mailout
 	 * @param $allow_edit is TRUE to allow user to change the selection; FALSE to just display current settings
 	 * @param $selectVals is the current selection information - in the same format as returned by returnSelectors()
 	 *
-	 * @return Returns HTML which is displayed in a table cell. Typically we return a complete table
+	 * @return array|void HTML which is displayed in a table cell. Typically we return a complete table
 	 */
 	public function showSelect($allow_edit = FALSE, $selectVals = FALSE)
 	{
@@ -303,7 +307,7 @@ class core_mailout
 		
 			if (is_numeric($selectVals['email_to']))
 			{
-				$_to = LAN_MAILOUT_23.e107::getUserClass()->uc_get_classname(intval($selectVals['email_to']));
+				$_to = LAN_MAILOUT_23.e107::getUserClass()->getName(intval($selectVals['email_to']));
 			}
 			else
 			{
@@ -350,4 +354,3 @@ class core_mailout
 
 
 
-?>

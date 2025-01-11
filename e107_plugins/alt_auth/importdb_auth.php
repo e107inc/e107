@@ -41,7 +41,7 @@ class auth_login extends alt_auth_base
 	/**
 	 *	Read configuration
 	 *
-	 *	@return AUTH_xxxx result code
+	 *	@return void result code
 	 */
 	public function __construct()
 	{
@@ -75,7 +75,7 @@ class auth_login extends alt_auth_base
 
 		// See if the user's in the E107 database - otherwise they can go away
 		global $sql, $tp;
-		if (!$sql->db_Select('user', 'user_loginname, user_password', "user_loginname = '".$tp -> toDB($uname)."'")) 
+		if (!$sql->select('user', 'user_loginname, user_password', "user_loginname = '".$tp -> toDB($uname)."'"))
 		{	// Invalid user
 			$this->makeErrorText('User not found');
 			return AUTH_NOUSER;
@@ -83,7 +83,7 @@ class auth_login extends alt_auth_base
 
 		// Now look at their password - we always need to verify it, even if its a core E107 format.
 		// Higher levels will always convert an authorised password to E107 format and save it for us.
-		if (!$row = $sql->db_Fetch())
+		if (!$row = $sql->fetch())
 		{
 			$this->makeErrorText('Error reading DB');
 			return AUTH_NOCONNECT;			// Debateable return code - really a DB error. But consistent with other handler
@@ -92,7 +92,17 @@ class auth_login extends alt_auth_base
 		require_once(e_PLUGIN.'alt_auth/extended_password_handler.php');		// This auto-loads the 'standard' password handler as well
 		$pass_check = new ExtendedPasswordHandler();
 
+		if(empty($this->conf['importdb_password_method']))
+		{
+			$this->makeErrorText('importdb_password_method not set');
+		}
+
+
+
 		$passMethod = $pass_check->passwordMapping($this->conf['importdb_password_method']);
+
+		e107::getMessage()->addInfo("Testing with Password Method: ".$this->conf['importdb_password_method']);
+
 		if ($passMethod === FALSE) 
 		{
 			$this->makeErrorText('Password error - invalid method');
@@ -100,6 +110,9 @@ class auth_login extends alt_auth_base
 		}
 
 		$pwFromDB = $row['user_password'];					// Password stored in DB
+
+		e107::getMessage()->addDebug("Stored Password: ".$pwFromDB);
+
 		if ($pass_check->checkPassword($pword, $uname, $pwFromDB, $passMethod) !== PASSWORD_VALID)
 		{
 			$this->makeErrorText('Password incorrect');
@@ -110,4 +123,3 @@ class auth_login extends alt_auth_base
 	}
 }
 
-?>

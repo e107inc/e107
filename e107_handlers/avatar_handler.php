@@ -17,37 +17,16 @@ if (!defined('e107_INIT'))
 	exit;
 }
 /**
- * @DEPRECATED 
- * Use e107::getParser()->parseTemplate("{USER_AVATAR=".$avatar."}",true); instead. 
+ * @deprecated
+ * Use e107::getParser()->toAvatar() instead.
  */
 function avatar($avatar)
 {
-	
-	return e107::getParser()->parseTemplate("{USER_AVATAR=".$avatar."}",true);
-	
-	/*
-	global $tp;
-	if (stristr($avatar, '-upload-') !== false)
-	{
-		return e_AVATAR_UPLOAD.str_replace('-upload-', '', $avatar);
-	}
-	elseif (stristr($avatar, 'Binary') !== false)
-	{
-		$sqla = new db;
-		preg_match("/Binary\s(.*?)\//", $avatar, $result);
-		$sqla->db_Select('rbinary', '*', "binary_id='".$tp->toDB($result[1])."' ");
-		$row = $sqla->db_Fetch();
-		return $row['binary_data'];
-	}
-	elseif (strpos($avatar, 'http://') === false)
-	{
-		return SITEURLBASE.e_IMAGE_ABS."avatars/".$avatar;
-	}
-	else
-	{
-		return $avatar;
-	}
- */
+	trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use e107::getParser()->toAvatar() instead.', E_USER_DEPRECATED); // no LAN
+
+	$data = array('user_image' => $avatar);
+
+	return e107::getParser()->toAvatar($data, array('type'=>'url', 'w'=>100, 'h'=>100));
+
 }
 
-?>

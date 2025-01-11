@@ -4,11 +4,14 @@
 		<core name="admin_alerts_ok">1</core>
 		<core name="admin_alerts_uniquemenu">0</core>
 		<core name="admin_separate_plugins">0</core>
+		<core name="admin_collapse_sidebar">0</core>
+		<core name="admin_navbar_labels">0</core>
+		<core name="admin_helptip">1</core>
 		<core name="admincode">0</core>		
-		<core name="admincss">admin_dark.css</core>
+		<core name="admincss">css/modern-light.css</core>
 		<core name="adminlanguage"></core>
 		<core name="adminpwordchange">0</core>
-		<core name="adminstyle">infopanel</core>
+		<core name="adminstyle">flexpanel</core>
 		<core name="admintheme">bootstrap3</core>
 		<core name="allowCommentEdit">0</core>
 		<core name="allowEmailLogin">2</core>
@@ -30,8 +33,10 @@
 		<core name="comments_moderate">247</core>
 		<core name="comments_sort">desc</core>
 		<core name="compress_output">0</core>
+		<core name="contact_info"><![CDATA[array (
+)]]></core>
 		<core name="contact_emailcopy">0</core>
-        <core name="contact_visibility">0</core>
+        <core name="contact_visibility">253</core>
         <core name="contact_filter"></core>
 		<core name="cookie_name">e107cookie</core>
 		<core name="core-infopanel-default"><![CDATA[array (
@@ -52,6 +57,8 @@
   14 => 'e-users',
   15 => 'e-wmessage',
 )]]></core>
+		<core name="db_updates"><![CDATA[array (
+)]]></core>
 		<core name="developer">0</core>
 		<core name="disable_emailcheck">0</core>
 		<core name="disallowMultiLogin">0</core>
@@ -61,7 +68,6 @@
 		<core name="displayrendertime">0</core>
 		<core name="displaysql">0</core>
 		<core name="displaythemeinfo">1</core>
-		<core name="download_email">0</core>
 		<core name="e_admin_list"><![CDATA[array (
   'social' => 'social',
 )]]></core>
@@ -82,6 +88,8 @@
   'social' => 'social',
   'tinymce4' => 'tinymce4',
 )]]></core>
+		<core name="e_jslib_cdn">1</core>
+		<core name="e_jslib_cdn_provider">jsdelivr</core>
 		<core name="e_jslib_browser_cache">0</core>
 		<core name="e_jslib_nobcache">1</core>
 		<core name="e_jslib_nocache">1</core>
@@ -89,13 +97,14 @@
 		<core name="e_jslib_nocombine">1</core>
 		<core name="e_jslib_core"><![CDATA[array (
 'prototype' => 'none',
-'jquery' => 'auto',
+'jquery' => 'all',
 )]]></core>
 		<core name="e_jslib_plugin"><![CDATA[array ()]]></core>
 		<core name="e_jslib_theme"><![CDATA[array ()]]></core>
 		<core name="e_meta_list"><![CDATA[array (
   'rss_menu' => 'rss_menu',
 )]]></core>
+	<core name="e_module_list"><![CDATA[array ()]]></core>
 		<core name="e_related_list"><![CDATA[array (
   'news' => 'news',
   'page' => 'page',
@@ -123,16 +132,20 @@
   'rss_menu' => 'rss_sql',
 )]]></core>
 		<core name="e_url_list"><![CDATA[array (
+  'news' => 'news',
   'rss_menu' => 'rss_menu',
 )]]></core>
+		<core name="e_user_list"><![CDATA[array (
+  'user' => 'user',
+)]]></core>
 		<core name="email_text"></core>
+		<core name="email_item_class">253</core>
 		<core name="emotepack">default</core>
 		<core name="enable_rdns">0</core>
 		<core name="enable_rdns_on_ban">0</core>
         <core name="failed_login_limit">10</core>
 		<core name="filter_script">0</core>
 		<core name="flood_hits">100</core>
-		<core name="flood_protect">1</core>
 		<core name="flood_time">30</core>
 		<core name="flood_timeout">5</core>
 		<core name="forumdate">%a %b %d %Y, %I:%M%p</core>
@@ -143,6 +156,8 @@
 		<core name="frontpage_force"><![CDATA[array (
   0 => '',
 )]]></core>
+		<core name="gdpr_privacypolicy"></core>
+		<core name="gdpr_termsandconditions"></core>
 		<core name="html_abuse">0</core>
 		<core name="im_height">80</core>
 		<core name="im_path">/usr/X11R6/bin/</core>
@@ -155,6 +170,14 @@
 		<core name="inputdate">%A, %d %b, %Y</core>
 		<core name="inputtime">%I:%M %p</core>
 		<core name="install_date">1251664949</core>
+		<core name="lan_global_list"><![CDATA[array (
+  'news' => 'news',
+  'page' => 'page',
+  'social' => 'social',
+  'rss_menu' => 'rss_menu',
+  'user' => 'user',
+  'gallery'=>'gallery',
+)]]></core>
 		<core name="link_replace">0</core>
 		<core name="link_text"></core>
 		<core name="linkpage_screentip">0</core>
@@ -197,10 +220,15 @@
 		<core name="multilanguage">0</core>
 		<core name="nbr_cols">1</core>
 		<core name="nested_comments">1</core>
-		<core name="news_cats"></core>
-		<core name="news_default_template">default</core>
+		<core name="news_cats">0</core>
+		<core name="news_default_template">list</core>
+		<core name="news_editauthor">254</core>
 		<core name="news_list_limit">10</core>
+		<core name="news_list_templates"><![CDATA[array (
+  0 => '0',
+)]]></core>
 		<core name="news_newdateheader">0</core>
+        <core name="news_pagination">record</core>
 		<core name="newsposts">10</core>
 		<core name="newsposts_archive">0</core>
 		<core name="newsposts_archive_title"></core>
@@ -223,7 +251,7 @@
 
 )]]></core>
 		<core name="post_html">254</core>
-		<core name="post_script">254</core>
+		<core name="post_script">255</core>
 		<core name="filter_script">1</core>
 		<core name="html_abuse">1</core>
 		<core name="pageCookieExpire">84600</core>	
@@ -243,6 +271,8 @@
 </core>
 		<core name="search_highlight">1</core>
 		<core name="search_restrict">0</core>
+		<core name="session_lifetime">86400</core>
+		<core name="session_save_method">db</core>
 		<core name="shortdate">%d %b %Y : %H:%M</core>
 		<core name="signcode">0</core>
 		<core name="signup_disallow_text"></core>
@@ -262,14 +292,10 @@
 		<core name="siteadmin">admin</core>
 		<core name="siteadminemail">user@yoursite.com</core>
 		<core name="sitebutton">{e_IMAGE}button.png</core>
-		<core name="sitecontactinfo"><![CDATA[[b]My Company[/b]
-13 My Address St.
-City, State, Country
-[b]Phone:[/b] 555-555-5555
-[b]Email:[/b] sales@mydomain.com]]></core>
-		<core name="sitecontacts">255</core>
+		<core name="sitecontacts">250</core>
+		<core name="sitecontacts">sitecontactinfo</core>
 		<core name="sitedescription"></core>
-		<core name="sitedisclaimer"><![CDATA[ Copyright Info. All Rights Reserved]]></core>
+		<core name="sitedisclaimer"></core>
 		<core name="sitelang_init">English</core>
 		<core name="sitelanguage">English</core>
 		<core name="sitelogo"></core>
@@ -310,7 +336,6 @@ City, State, Country
 		<core name="subnews_resize"></core>
 		<core name="themecss">style.css</core>
 		<core name="thumbnail_quality">75</core>
-		<core name="time_offset">0</core>
 		<core name="timezone">UTC</core>
 		<core name="track_online">1</core>
 		<core name="ue_upgrade">1</core>
@@ -326,6 +351,8 @@ City, State, Country
   'search' => 'core',
   'system' => 'core',
   'user' => 'core',
+)]]></core>
+<core name="url_profiles"><![CDATA[array (
 )]]></core>
 		<core name="url_disable_pathinfo">1</core>
 		<core name="url_error_redirect">0</core>
@@ -390,14 +417,18 @@ City, State, Country
 		<core name="user_reg">1</core>
 		<core name="user_reg_secureveri">1</core>
 		<core name="user_reg_veri">1</core>
-		<core name="user_tracking">cookie</core>
+		<core name="user_tracking">session</core>
+		<core name="version">2.2.0</core>
 		<core name="wm_enclose">1</core>
 		<core name="wmessage_sc">0</core>
 		<core name="wysiwyg">1</core>
+		<core name="wysiwyg_list"><![CDATA[array (
+  'tinymce4' => 'TinyMce4',
+)]]></core>
 		<core name="xup_enabled">1</core>
 		<core name="xurl"><![CDATA[array ()]]></core>
-		<core name="xmlfeed_languagepacks">http://www.e107.org/themeupdate.php</core>
-		<core name="xmlfeed_security">http://www.e107.org/themeupdate.php</core>
+		<core name="xmlfeed_languagepacks">https://www.e107.org/themeupdate.php</core>
+		<core name="xmlfeed_security">https://www.e107.org/themeupdate.php</core>
 		<core name="xurl"><![CDATA[array (
 		  'facebook' => '#',
 		  'twitter' => '#',
@@ -410,6 +441,14 @@ City, State, Country
 		  'pinterest' => '',
 		  'vimeo' => '',
 		)]]></core>
+		<core name="avatar_upload">0</core>
+		<core name="photo_upload">0</core>
+		<core name="profile_rate">0</core>
+		<core name="profile_comments">0</core>
+		<core name="force_userupdate">0</core>
+		<core name="del_unv">0</core>
+		<core name="del_accu">1</core>
+		<core name="signature_access">253</core>		
 		<emote name="alien!png">!alien</emote>
 		<emote name="amazed!png">!amazed</emote>
 		<emote name="angry!png">!grr !angry</emote>
@@ -444,14 +483,6 @@ City, State, Country
 		<menu name="comment_display">10</menu>
 		<menu name="comment_postfix">[more ...]</menu>
 		<menu name="comment_title">0</menu>
-		<menu name="forum_no_characters">20</menu>
-		<menu name="forum_postfix">[more ...]</menu>
-		<menu name="forum_show_topics">1</menu>
-		<menu name="newforumposts_caption">Latest Forum Posts</menu>
-		<menu name="newforumposts_characters">50</menu>
-		<menu name="newforumposts_display">10</menu>
-		<menu name="newforumposts_postfix">[more ...]</menu>
-		<menu name="newforumposts_title">0</menu>
 		<menu name="update_menu">Update menu Settings</menu>
 		<search name="comments_handlers"><![CDATA[array (
   'news' => 
@@ -650,6 +681,28 @@ City, State, Country
 			</item>
 			<item>
 				<field name="media_cat_id">3</field>
+				<field name="media_cat_owner">_common</field>
+				<field name="media_cat_category">_common_video</field>
+				<field name="media_cat_title">(Common Videos)</field>
+				<field name="media_cat_sef"></field>
+				<field name="media_cat_diz">Media in this category will be available in all areas of admin.</field>
+				<field name="media_cat_class">253</field>
+				<field name="media_cat_image"></field>
+				<field name="media_cat_order">0</field>
+			</item>
+			<item>
+				<field name="media_cat_id">4</field>
+				<field name="media_cat_owner">_common</field>
+				<field name="media_cat_category">_common_audio</field>
+				<field name="media_cat_title">(Common Audio)</field>
+				<field name="media_cat_sef"></field>
+				<field name="media_cat_diz">Media in this category will be available in all areas of admin.</field>
+				<field name="media_cat_class">253</field>
+				<field name="media_cat_image"></field>
+				<field name="media_cat_order">0</field>
+			</item>
+			<item>
+				<field name="media_cat_id">5</field>
 				<field name="media_cat_owner">news</field>
 				<field name="media_cat_category">news</field>
 				<field name="media_cat_title">News</field>
@@ -660,7 +713,7 @@ City, State, Country
 				<field name="media_cat_order">1</field>
 			</item>
 			<item>
-				<field name="media_cat_id">4</field>
+				<field name="media_cat_id">6</field>
 				<field name="media_cat_owner">page</field>
 				<field name="media_cat_category">page</field>
 				<field name="media_cat_title">Custom Pages</field>
@@ -671,7 +724,7 @@ City, State, Country
 				<field name="media_cat_order">0</field>
 			</item>
 			<item>
-				<field name="media_cat_id">5</field>
+				<field name="media_cat_id">7</field>
 				<field name="media_cat_owner">download</field>
 				<field name="media_cat_category">download_image</field>
 				<field name="media_cat_title">Download Images</field>
@@ -682,7 +735,7 @@ City, State, Country
 				<field name="media_cat_order">0</field>
 			</item>
 			<item>
-				<field name="media_cat_id">6</field>
+				<field name="media_cat_id">8</field>
 				<field name="media_cat_owner">download</field>
 				<field name="media_cat_category">download_thumb</field>
 				<field name="media_cat_title">Download Thumbnails</field>
@@ -693,7 +746,7 @@ City, State, Country
 				<field name="media_cat_order">0</field>
 			</item>
 			<item>
-				<field name="media_cat_id">7</field>
+				<field name="media_cat_id">9</field>
 				<field name="media_cat_owner">download</field>
 				<field name="media_cat_category">download_file</field>
 				<field name="media_cat_title">Download Files</field>
@@ -704,7 +757,7 @@ City, State, Country
 				<field name="media_cat_order">0</field>
 			</item>
 			<item>
-				<field name="media_cat_id">8</field>
+				<field name="media_cat_id">10</field>
 				<field name="media_cat_owner">news</field>
 				<field name="media_cat_category">news_thumb</field>
 				<field name="media_cat_title">News Thumbnails (Legacy)</field>
@@ -715,7 +768,7 @@ City, State, Country
 				<field name="media_cat_order">1</field>
 			</item>
 			<item>
-				<field name="media_cat_id">9</field>
+				<field name="media_cat_id">11</field>
 				<field name="media_cat_owner">_icon</field>
 				<field name="media_cat_category">_icon_16</field>
 				<field name="media_cat_title">Icons 16px</field>
@@ -726,7 +779,7 @@ City, State, Country
 				<field name="media_cat_order">0</field>
 			</item>
 			<item>
-				<field name="media_cat_id">10</field>
+				<field name="media_cat_id">12</field>
 				<field name="media_cat_owner">_icon</field>
 				<field name="media_cat_category">_icon_32</field>
 				<field name="media_cat_title">Icons 32px</field>
@@ -737,7 +790,7 @@ City, State, Country
 				<field name="media_cat_order">0</field>
 			</item>
 			<item>
-				<field name="media_cat_id">11</field>
+				<field name="media_cat_id">13</field>
 				<field name="media_cat_owner">_icon</field>
 				<field name="media_cat_category">_icon_48</field>
 				<field name="media_cat_title">Icons 48px</field>
@@ -748,10 +801,21 @@ City, State, Country
 				<field name="media_cat_order">0</field>
 			</item>
 			<item>
-				<field name="media_cat_id">12</field>
+				<field name="media_cat_id">14</field>
 				<field name="media_cat_owner">_icon</field>
 				<field name="media_cat_category">_icon_64</field>
 				<field name="media_cat_title">Icons 64px</field>
+				<field name="media_cat_sef"></field>
+				<field name="media_cat_diz">Available where icons are used in admin.</field>
+				<field name="media_cat_class">253</field>
+				<field name="media_cat_image"></field>
+				<field name="media_cat_order">0</field>
+			</item>
+			<item>
+				<field name="media_cat_id">15</field>
+				<field name="media_cat_owner">_icon</field>
+				<field name="media_cat_category">_icon_svg</field>
+				<field name="media_cat_title">Icons SVG</field>
 				<field name="media_cat_sef"></field>
 				<field name="media_cat_diz">Available where icons are used in admin.</field>
 				<field name="media_cat_class">253</field>
@@ -829,8 +893,8 @@ City, State, Country
 				<field name="link_open">0</field>
 				<field name="link_class">0</field>
 				<field name="link_function"></field>
-				<field name="link_sefurl"></field>
-			    <field name="link_owner"></field>
+				<field name="link_sefurl">index</field>
+			    <field name="link_owner">contact</field>
 			</item>
 			<item>
 				<field name="link_id">6</field>
@@ -844,8 +908,8 @@ City, State, Country
 				<field name="link_open">0</field>
 				<field name="link_class">0</field>
 				<field name="link_function"></field>
-				<field name="link_sefurl"></field>
-			    <field name="link_owner"></field>
+				<field name="link_sefurl">index</field>
+			    <field name="link_owner">news</field>
 			</item>
 			<item>
 				<field name="link_id">7</field>
@@ -1044,7 +1108,7 @@ City, State, Country
 			<item>
 				<field name="menu_id">14</field>
 				<field name="menu_name">news_months_menu</field>
-				<field name="menu_location">1</field>
+				<field name="menu_location">0</field>
 				<field name="menu_order">2</field>
 				<field name="menu_class">0</field>
 				<field name="menu_pages"></field>
@@ -1191,7 +1255,7 @@ City, State, Country
 			<item>
 				<field name="category_id">1</field>
 				<field name="category_name">Misc</field>
-				<field name="category_sef"></field>
+				<field name="category_sef">misc</field>
 				<field name="category_meta_description"></field>
 				<field name="category_meta_keywords"></field>
 				<field name="category_manager">254</field>

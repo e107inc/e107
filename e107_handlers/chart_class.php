@@ -182,30 +182,125 @@ class e_chart
 		
 	
 		// e107::css('inline','canvas.e-graph {  width: 100% !important;  max-width: 800px;  height: auto !important; 	}');	
-	}		
-	
+	}
+
+	/**
+	 * @param $type
+	 * @return $this
+	 */
 	public function setProvider($type = null)
 	{
 		if(!empty($type))
 		{
 			$this->provider = $type;	
-		}	
+		}
+
+		return $this;
 	}
-	
+
+	/**
+	 * @return null
+	 */
 	public function getProvider()
 	{
 		return $this->provider;	
 	}
-	
-	
+
+
+	/**
+	 * @return false|string
+	 */
 	private function getData()
 	{
 		return json_encode($this->data);
 	}
-	
+
+	/**
+	 * @return false|string
+	 */
 	private function getOptions()
 	{
 		return json_encode($this->options);	
+	}
+
+	/**
+	 * @param $flag
+	 * @return $this
+	 */
+	public function debug($flag=false)
+	{
+		if($flag === true)
+		{
+			e107::getDebug()->log($this->data);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function renderTable()
+	{
+
+		$head = array();
+		$body = array();
+
+		foreach($this->data as $k=>$v)
+		{
+			if($k == 0)
+			{
+				foreach($v as $key=> $val)
+				{
+					$head[] = $val;
+				}
+
+				continue;
+			}
+
+			foreach($v as $key=> $val)
+			{
+				$body[$k][$key] = $val;
+			}
+
+		}
+
+		$text = "<table class='table table-condensed table-striped table-bordered'>";
+		$text .= "<colgroup>";
+
+		foreach($head as $th)
+		{
+			$text .= "<col class='".eHelper::secureIdAttr($th)."' />";
+		}
+
+		$text .= "</colgroup>";
+
+
+
+		$text .= "<tr>";
+		foreach($head as $th)
+		{
+			$text .= "<th>".$th."</th>";
+		}
+
+		$text .= "</tr>";
+
+		foreach($body as $tr)
+		{
+			$text .= "<tr>";
+
+			foreach($tr as $td)
+			{
+				$text .= "<td>".$td."</td>";
+			}
+
+			$text .= "</tr>";
+		}
+
+		$text .= "</table>";
+
+		return $text;
+
 	}
 
 	/**
@@ -223,7 +318,6 @@ class e_chart
 	/**
 	 * Set the data values
 	 * @param array $data
-	 * @param string $id of canvas element
 	 * @return $this
 	 */
 	public function setData($data)
@@ -240,7 +334,10 @@ class e_chart
 		
 		return $this;		
 	}
-	
+
+	/**
+	 * @return array
+	 */
 	private function getDemoData()
 	{
 			$data = array();
@@ -288,6 +385,10 @@ class e_chart
 	}
 
 
+	/**
+	 * @param $data
+	 * @return $this
+	 */
 	public function setOptions($data)
 	{
 		
@@ -346,12 +447,16 @@ class e_chart
 				{
 		
 					case 'bar':					
-						//
+						$js .= "var chart = new google.visualization.BarChart(document.getElementById('".$id."'));	";
 					break;
 		
 					case 'column':
 						$js .= "var chart = new google.visualization.ColumnChart(document.getElementById('".$id."'));	";
 						
+					break;
+
+					case 'geo':
+						$js .= "var chart = new google.visualization.GeoChart(document.getElementById('".$id."'));	";
 					break;
 		
 					case 'polar':
@@ -374,8 +479,94 @@ class e_chart
 						
 					break;
 				}
+
+
+				// Toggle Data from clicking on Legend. //FIXME
+			/*	$js .= "
+
+				
+					// create columns array
+				    var columns".$id." = [];
+				    // display these data series by default
+				    var defaultSeries = [1, 3];
+				    var series".$id." = {};
+				    for (var i = 0; i < data.getNumberOfColumns(); i++) {
+				        if (i == 0 || defaultSeries.indexOf(i) > -1) {
+				            // if the column is the domain column or in the default list, display the series
+				            columns".$id.".push(i);
+				        }
+				        else {
+				            // otherwise, hide it
+				            columns".$id.".push({
+				                label: data.getColumnLabel(i),
+				                type: data.getColumnType(i),
+				                sourceColumn: i,
+				                calc: function () {
+				                    return null;
+				                }
+				            });
+				        }
+				        if (i > 0) {
+				            columns".$id.".push({
+				                calc: 'stringify',
+				                sourceColumn: i,
+				                type: 'string',
+				                role: 'annotation'
+				            });
+				            // set the default series option
+				            series".$id."[i - 1] = {};
+				            if (defaultSeries.indexOf(i) == -1) {
+				                // backup the default color (if set)
+				                if (typeof(series".$id."[i - 1].color) !== 'undefined') {
+				                    series".$id."[i - 1].backupColor = series".$id."[i - 1].color;
+				                }
+				                series".$id."[i - 1].color = '#CCCCCC';
+				            }
+				        }
+				    }
+				
+
+					function showHideSeries".$id." () {
+			        var sel = chart.getSelection();
+			        // if selection length is 0, we deselected an element
+			        if (sel.length > 0) {
+			            // if row is undefined, we clicked on the legend
+			            if (sel[0].row == null) {
+			                var col = sel[0].column;
+			                if (typeof(columns".$id."[col]) == 'number') {
+			                    var src = columns".$id."[col];
 			
-	
+			                    // hide the data series
+			                    columns".$id."[col] = {
+			                        label: data.getColumnLabel(src),
+			                        type: data.getColumnType(src),
+			                        sourceColumn: src,
+			                        calc: function () {
+			                            return null;
+			                        }
+			                    };
+			
+			                    // grey out the legend entry
+			                    series".$id."[src - 1].color = '#CCCCCC';
+			                }
+			                else {
+			                    var src = columns".$id."[col].sourceColumn;
+			
+			                    // show the data series
+			                    columns".$id."[col] = src;
+			                    series".$id."[src - 1].color = null;
+			                }
+			                var view = new google.visualization.DataView(data);
+			                view.setColumns(columns".$id.");
+			                chart.draw(view, options);
+			            }
+			        }
+			    }
+			
+			    google.visualization.events.addListener(chart, 'select', showHideSeries".$id.");
+				";
+*/
+
 				$js .= "
 			        chart.draw(data, options);
 			      }
@@ -385,13 +576,17 @@ class e_chart
 					
 					});
 
+				$('a[data-toggle=\"tab\"]').on('shown.bs.tab', function (e) {
+			  		 ".$fName."();
+				});
+
 		      ";
 
 			e107::js('footer','https://www.google.com/jsapi');
 			e107::js('footer-inline', $js);
 
-			return "<div class='e-graph e-chart' id='".$id."' style='width: ".$width."; height: ".$height."px;'></div>";
 
+			return "<div class='e-graph e-chart' id='".$id."' style='width: ".$width."; height: ".$height."px;'></div>";
 
 		}
 		
@@ -410,20 +605,14 @@ class e_chart
 				$js .= 'var myLine = new Chart(document.getElementById("'.$id.'").getContext("2d")).Bar(ChartData, ChartOptions);';
 			break;
 
-			case 'radar':
-				//TODO
-			break;
-
 			case 'polar':
+			case 'pie':
+			case 'radar':
 				//TODO
 			break;
 
 			case 'doughnut':
 				$js .= 'var myDoughnut = new Chart(document.getElementById("'.$id.'").getContext("2d")).Doughnut(ChartData, ChartOptions);';	
-			break;
-			
-			case 'pie':
-				//TODO
 			break;
 
 			default:
@@ -506,5 +695,5 @@ class e_chart
  
  
  
-?>
+
  

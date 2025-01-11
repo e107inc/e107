@@ -1,0 +1,40 @@
+
+<!-- Magic Shortcodes - proof of concept -->
+<!-- Enabled Debug in 'basic' mode to view all available types -->
+
+  <!-- Page Content -->
+  <div class="container">
+
+    <!-- Page Heading/Breadcrumbs -->
+    <h1 class="mt-4 mb-3">{---CAPTION---}</h1>
+
+    {---BREADCRUMB---}
+
+    <div class="row">
+
+      <!-- Blog Entries Column -->
+      <div class="col-md-8">
+			{ALERTS}
+			{SETSTYLE=main}
+			{---}
+      </div>
+
+		  <div class="col-md-4 mb-3 sidebar">
+			<!-- Standard sidebar menu -->
+			<div class="menu"> 
+				{SETSTYLE=cardmenu}
+				{MENU=1} 
+			</div>
+			<!-- Example for listgroup menu -->
+			<div class="list">
+				{SETSTYLE=listgroup}
+				{MENU=2} 
+			</div>
+		</div>
+
+    </div>
+    <!-- /.row -->
+
+  </div>
+  <!-- /.container -->
+ 

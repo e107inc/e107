@@ -10,66 +10,131 @@
  *
  *
 */
-require_once("../class2.php");
-if (!getperms("T")) {
+if(!empty($_POST) && !isset($_POST['e-token']))
+{
+	$_POST['e-token'] = '';
+}
+require_once(__DIR__ . '/../class2.php');
+
+if(!getperms("T"))
+{
 	e107::redirect('admin');
 	exit;
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+e107::coreLan('meta', true);
 
-$e_sub_cat = 'meta';
-require_once("auth.php");
 
-$mes = e107::getMessage();
-$frm = e107::getForm();
-$ns = e107::getRender();
-
-if (isset($_POST['metasubmit']))
+class meta_admin extends e_admin_dispatcher
 {
-	$tmp = $pref['meta_tag'];
-	$langs = explode(",",e_LANLIST);
-	foreach($langs as $lan)
-	{
-		$meta_tag[$lan] = $tmp[$lan];
-		$meta_diz[$lan] = $pref['meta_description'][$lan];
-		$meta_keywords[$lan] = $pref['meta_keywords'][$lan];
-		$meta_copyright[$lan] = $pref['meta_copyright'][$lan];
-		$meta_author[$lan] = $pref['meta_author'][$lan];
-	}
 
-	$meta_tag[e_LANGUAGE] = strip_if_magic(chop($_POST['meta']));
-	$meta_diz[e_LANGUAGE] = strip_if_magic(chop($_POST['meta_description']));
-	$meta_keywords[e_LANGUAGE] = strip_if_magic(chop($_POST['meta_keywords']));
-	$meta_copyright[e_LANGUAGE] = strip_if_magic(chop($_POST['meta_copyright']));
-	$meta_author[e_LANGUAGE] = strip_if_magic(chop($_POST['meta_author']));
+	protected $modes = array(
+		'main' => array(
+			'controller' => 'meta_admin_ui',
+			'path'       => null,
+			'ui'         => 'e_admin_form_ui',
+			'uipath'     => null
+		)
+	);
 
-    $pref['meta_news_summary'] = intval($_POST['meta_news_summary']);
-	$pref['meta_tag'] = $meta_tag;
-	$pref['meta_description'] = $meta_diz;
-	$pref['meta_keywords'] = $meta_keywords;
-	$pref['meta_copyright'] = $meta_copyright;
-	$pref['meta_author'] = $meta_author;
 
-   /*
-    if($pref['meta_tag'][e_LANGUAGE] == ""){
-        unset($meta_tag[e_LANGUAGE]);
-    }*/
+	protected $adminMenu = array(
+		'main/meta' => array('caption' => LAN_MANAGE, 'perm' => '0', 'icon'=>'fas-list'),
+		'main/prefs'=> array('caption' => "SEO", 'perm'=>'0', 'icon'=>'fas-cogs'),
+	);
 
-	e107::getLog()->add('META_01', 'meta_news_summary=>'.$pref['meta_news_summary'].'[!br!]'.e_LANGUAGE, E_LOG_INFORMATIVE, '');
-	save_prefs();
+	protected $adminMenuAliases = array(//	'main/edit'	=> 'main/list'
+	);
+
+	protected $menuTitle = METLAN_00;
+
+	protected $adminMenuIcon = 'e-meta-24';
+
 }
 
-$meta 			= vartrue($pref['meta_tag']);
-$meta_diz 		= vartrue($pref['meta_description']);
-$meta_keywords 	= vartrue($pref['meta_keywords']);
-$meta_copyright = vartrue($pref['meta_copyright']);
-$meta_author 	= vartrue($pref['meta_author']);
 
-$text = "
-	<form method='post' action='".e_SELF."' id='dataform'>
+class meta_admin_ui extends e_admin_ui
+{
+
+	protected $pluginTitle = METLAN_00;
+	protected $pluginName = 'core';
+
+	protected $prefs = array(
+		'seo_title_limit' => array('title'=>METLAN_8, 'type'=>'number', 'data'=>'int', 'help'=>'', 'writeParms'=>['size'=>'large']),
+		'seo_description_limit' => array('title'=>METLAN_9, 'type'=>'number', 'data'=>'int', 'help'=>'', 'writeParms'=>['size'=>'large']),
+		'meta_news_summary' => array('title'=>METLAN_3, 'type'=>'boolean', 'data'=>'int'),
+	);
+
+	function init()
+	{
+
+		if(isset($_POST['metasubmit']))
+		{
+			$this->save();
+		}
+	}
+
+
+	function save()
+	{
+
+		$fields = array(
+			'meta_description',
+			'meta_keywords',
+			'meta_copyright',
+			'meta_author',
+			'meta_tag',
+			'meta_bodystart',
+			'meta_bodyend',
+		);
+
+		$cfg = e107::getConfig();
+
+		foreach($fields as $key)
+		{
+			if(isset($_POST[$key]))
+			{
+				$cfg->setPref($key . '/' . e_LANGUAGE, trim($_POST[$key]));
+			}
+		}
+
+		$cfg->save(true, true, true);
+	}
+
+
+	public function renderHelp()
+	{
+
+		$caption = LAN_HELP;
+		$text = htmlentities(METLAN_7);
+
+		return array('caption' => $caption, 'text' => $text);
+	}
+
+
+	public function metaPage()
+	{
+
+		$mes = e107::getMessage();
+		$frm = $this->getUI();
+		$ns = e107::getRender();
+		$pref = e107::getPref();
+		$tp = e107::getParser();
+
+		$meta_diz           = vartrue($pref['meta_description'], array());
+		$meta_keywords      = vartrue($pref['meta_keywords'], array());
+		$meta_copyright     = vartrue($pref['meta_copyright'], array());
+		$meta_author        = vartrue($pref['meta_author'], array());
+
+		$customTagHead      = vartrue($pref['meta_tag'], array());
+		$customTagBodyStart = vartrue($pref['meta_bodystart'], array());
+		$customTagBodyEnd   = vartrue($pref['meta_bodyend'], array());
+
+
+		$text = "
+		<form method='post' action='" . e_SELF . "' id='dataform'>
 		<fieldset id='core-meta-settings'>
-			<legend class='e-hideme'>".METLAN_00." (".e_LANGUAGE.")"."</legend>
+			<legend class='e-hideme'>" . METLAN_00 . " (" . e_LANGUAGE . ")" . "</legend>
 			<table class='table adminform'>
 				<colgroup>
 					<col class='col-label' />
@@ -77,60 +142,94 @@ $text = "
 				</colgroup>
 				<tbody>
 					<tr>
-						<td>".LAN_DESCRIPTION."</td>
+						<td>" . LAN_DESCRIPTION . "</td>
 						<td>";
-						$text .= $frm->textarea('meta_description',$tp->toForm(varset($meta_diz[e_LANGUAGE])),3,80, array('size'=>'xxlarge'));
-					//	$text .= "<textarea class='tbox textarea e-autoheight' id='meta_description' name='meta_description' cols='70' rows='4'>".$tp->toForm(varset($meta_diz[e_LANGUAGE]))."</textarea>";
-						$text .= "</td>
+		$text .= $frm->textarea('meta_description', $tp->toForm(varset($meta_diz[e_LANGUAGE])), 3, 80, array('size' => 'xxlarge'));
+		//	$text .= "<textarea class='tbox textarea e-autoheight' id='meta_description' name='meta_description' cols='70' rows='4'>".$tp->toForm(varset($meta_diz[e_LANGUAGE]))."</textarea>";
+		$text .= "</td>
 					</tr>
 					<tr>
-						<td>".LAN_KEYWORDS."</td>
+						<td>" . LAN_KEYWORDS . "</td>
 						<td>";
-						$text .= $frm->tags('meta_keywords',$tp->toForm(varset($meta_keywords[e_LANGUAGE])));
-					//	$text .= "<textarea class='tbox textarea e-autoheight' id='meta_keywords' name='meta_keywords' cols='70' rows='4'>".$tp->toForm(varset($meta_keywords[e_LANGUAGE]))."</textarea>";
-						
-						$text .= "</td>
+		$text .= $frm->tags('meta_keywords', $tp->toForm(varset($meta_keywords[e_LANGUAGE])));
+		//	$text .= "<textarea class='tbox textarea e-autoheight' id='meta_keywords' name='meta_keywords' cols='70' rows='4'>".$tp->toForm(varset($meta_keywords[e_LANGUAGE]))."</textarea>";
+
+		$text .= "</td>
 					</tr>
 					<tr>
-						<td>".LAN_COPYRIGHT."</td>
-						<td><input class='tbox input-text' size='70' type='text' name='meta_copyright' value=\"".varset($meta_copyright[e_LANGUAGE])."\" /></td>
+						<td>" . LAN_COPYRIGHT . "</td>
+						<td><input class='tbox form-control input-xxlarge' size='70' type='text' name='meta_copyright' value=\"" . varset($meta_copyright[e_LANGUAGE]) . "\" /></td>
 					</tr>
 
 					<tr>
-						<td>".LAN_AUTHOR."</td>
-						<td><input class='tbox input-text' size='70' type='text' name='meta_author' value=\"".varset($meta_author[e_LANGUAGE])."\" /></td>
+						<td>" . LAN_AUTHOR . "</td>
+						<td><input class='tbox form-control input-xxlarge' size='70' type='text' name='meta_author' value=\"" . varset($meta_author[e_LANGUAGE]) . "\" /></td>
 					</tr>
 
 					<tr>
-						<td>".METLAN_1."</td>
+						<td>" . $this->metaLabel(METLAN_4, '<head>') . "</td>
 						<td>";
-						$text .= $frm->textarea('meta',str_replace("<","&lt;",$tp->toForm(varset($meta[e_LANGUAGE]))),5,100,'size=block-level');
-						
-						$text .= "<span class='field-help'>".METLAN_2."</span>";
-						
-				//		$text .= "<textarea class='tbox textarea e-autoheight' id='meta' name='meta' cols='70' rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".str_replace("<","&lt;",$tp->toForm(varset($meta[e_LANGUAGE])))."</textarea><span class='field-help'>".METLAN_2."</span>";
-						
-						$text .= "</td>
+		$text .= $frm->textarea('meta_tag', str_replace("<", "&lt;", $tp->toForm(varset($customTagHead[e_LANGUAGE]))), 5, 100, array('size' => 'block-level', 'placeholder' => "eg. <script>Custom code.</script>"));
+
+		$text .= "</td>
 					</tr>
 					<tr>
-						<td>".METLAN_3."</td>
-						<td>
-							<div class='auto-toggle-area autocheck'>".
-								$frm->checkbox('meta_news_summary',1, varset($pref['meta_news_summary']))."
-							</div>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-			<div class='buttons-bar center'>".
-				$frm->admin_button('metasubmit','no-value','update', LAN_UPDATE)."
-			</div>
-		</fieldset>
-	</form>
-";
+						<td>" . $this->metaLabel(METLAN_5, '<body>') . "</td>
+						<td>";
+		$text .= $frm->textarea('meta_bodystart', str_replace("<", "&lt;", $tp->toForm(varset($customTagBodyStart[e_LANGUAGE]))), 5, 100, array('size' => 'block-level', 'placeholder' => "eg. <script>Custom code.</script>"));
 
-$ns->tablerender(METLAN_00." (".e_LANGUAGE.")", $mes->render().$text);
+		$text .= "</td>
+					</tr>
+					<tr>
+						<td>" . $this->metaLabel(METLAN_6, '</body>') . "</td>
+						<td>";
+		$text .= $frm->textarea('meta_bodyend', str_replace("<", "&lt;", $tp->toForm(varset($customTagBodyEnd[e_LANGUAGE]))), 5, 100, array('size' => 'block-level', 'placeholder' => "eg. <script>Custom code.</script>"));
+
+		$text .= "</td>
+					</tr>
+				
+					</tbody>
+				</table>
+				<div class='buttons-bar center'>" .
+			$frm->admin_button('metasubmit', 'no-value', 'update', LAN_UPDATE) . "
+				</div>
+				<input type='hidden' name='e-token' value='" . defset('e_TOKEN') . "' />
+			</fieldset>
+		</form>
+		";
+
+		$caption = htmlentities(METLAN_00);
+		$installedLangs = e107::getLanguage()->installed('count');
+
+		if($installedLangs > 1)
+		{
+			$caption .= " (" . e_LANGUAGE . ")";
+		}
+
+		return $text;
+		//	$ns->tablerender($caption, $mes->render() . $text);
+	}
+
+
+	function metaLabel($text, $small)
+	{
+
+		$small = htmlentities($small);
+
+//	$text = str_replace(['(', ')'], ['<i>', '</i>'], $text);
+		return e107::getParser()->lanVars($text, $small, true);
+	}
+}
+
+
+new meta_admin();
+
+$e_sub_cat = 'meta';
+
+require_once('auth.php');
+
+e107::getAdminUI()->runPage();
+
 
 require_once("footer.php");
 
-?>

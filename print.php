@@ -1,35 +1,33 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     Copyright (C) 2008-2009 e107 Inc 
-|     http://e107.org
-|
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/print.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Printer Friendly
+ *
 */
+
 require_once("class2.php");
 //include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 e107::coreLan('print');
 
 $qs = explode(".", e_QUERY,2);
-if ($qs[0] == "") {
-	header("location:".e_BASE."index.php");
-	 exit;
+
+if ($qs[0] == "")
+{
+	e107::redirect();
+	exit;
 }
 
 $CSS = <<<CSS
 
-	body { background: #fff; color: #000 }
+	body { background: #fff !important; color: #000 !important }
+	a { color: #000 !important } 
+	.hidden-print { display: none !important } 
 
 @media print {
 
@@ -52,16 +50,21 @@ CSS;
 
 e107::css('inline',$CSS);
 
-define('e_IFRAME', true); 
+define('e_IFRAME', true);
 
-$source = $qs[0];
-$parms = varset($qs[1],'');
+$source = preg_replace('/[^\w\d_\:]/',"", $qs[0]);
+$parms = varset($qs[1]);
 unset($qs);
 
-if(strpos($source,'plugin:') !== FALSE)
+if(strpos($source,'plugin:') !== false)
 {
-	$plugin = substr($source,7);
-	if(file_exists(e_PLUGIN.$plugin."/e_emailprint.php"))
+	$plugin = substr($source, 7);
+
+	if($obj = e107::getAddon($plugin, 'e_print'))
+	{
+		$print_text = e107::callMethod($obj,'render', $parms);
+	}
+	elseif(file_exists(e_PLUGIN.$plugin."/e_emailprint.php"))
 	{
 		include_once(e_PLUGIN.$plugin."/e_emailprint.php");
 		$print_text = print_item($parms);
@@ -69,60 +72,33 @@ if(strpos($source,'plugin:') !== FALSE)
 	}
 	else
 	{
-		echo "file missing.";
-		exit;
+		echo LAN_FILE_NOT_FOUND;
+		return;
 	}
 }
-else
+else // @todo move to e107_plugins/news/e_print.php
 {
 	//$con = new convert;
+//	$id = intval($parms);
+	/** @var e_news_item $nws */
+	$nws = e107::getObject('e_news_item');
+	$row = $nws->load($parms)->toArray();
 
-	$query = "SELECT n.*,c.* FROM `#news` AS n LEFT JOIN `#news_category` AS c ON n.news_category = c.category_id WHERE n.news_id=".intval($parms);
 
-	//$sql->db_Select("news", "*", "news_id='{$parms}'");
-	$sql = e107::getDb();
-	$sql->gen($query);
-	$row = $sql->fetch();
 	$newsUrl = e107::getUrl()->create('news/view/item', $row, 'full=1');
-
-
-//	extract($row);
-//	define("e_PAGETITLE", $news_title);
-	//$news_body = $tp->toHTML($news_body, TRUE, 'BODY');
-
-	/*
-	$news_extended = $tp->toHTML($news_extended, TRUE, 'BODY');
-	if ($news_author == 0)
-	{
-		$a_name = "e107";
-		$category_name = "e107 welcome message";
-	}
-	else
-	{
-		$sql->db_Select("news_category", "category_id, category_name", "category_id='{$news_category}'");
-		list($category_id, $category_name) = $sql->db_Fetch('num');
-		$sql->db_Select("user", "user_id, user_name", "user_id='{$news_author}'");
-		list($a_id, $a_name) = $sql->db_Fetch('num');
-	}
-	$news_datestamp = $con->convert_date($news_datestamp, "long");
-	$print_text = "<span style=\"font-size: 13px; color: black; font-family: tahoma, verdana, arial, helvetica; text-decoration: none\">
-	<h2>".LAN_PRINT_135.$news_title."</h2>
-	<br />
-	(".LAN_PRINT_86." ".$tp->toHTML($category_name,FALSE,"defs").")
-	<br />
-	".LAN_PRINT_94." ".$a_name."<br />
-	".$news_datestamp."
-	<br /><br />".
-	$news_body;
-
-	if (!empty($news_extended)){ $print_text .= "<br /><br />".$news_extended; }
-
-	if (!empty($news_extended)){ $print_text .= "<br /><br />".$news_extended; }
-	if (!empty($news_source)){ $print_text .= "<br /><br />".$news_source; }
-	if (!empty($news_url)){ $print_text .= "<br />".$news_url; }
-*/
-
     $tmp = e107::getTemplate('news', 'news', 'view');
+
+    if(empty($tmp))
+    {
+        $newsViewTemplate = !empty($row['news_template']) ? $row['news_template'] : 'default';
+        $tmp = e107::getTemplate('news', 'news_view', $newsViewTemplate);
+    }
+
+    $title = e107::getParser()->toText($row['news_title']);
+  //   define('e_PAGETITLE', '[print] '. $title);
+    e107::title('[print] '. $title);
+    e107::meta('robots', 'noindex');
+
 	$template = $tmp['item'];
 	unset($tmp);
 //	ob_start();
@@ -137,35 +113,45 @@ else
 	<br />
 	".$newsUrl."
 	";
-	
-	
+
+
 
 }
 
 
-if(defined("TEXTDIRECTION") && TEXTDIRECTION == "rtl"){
+if(defined("TEXTDIRECTION") && TEXTDIRECTION === "rtl")
+{
 	$align = 'right';
-}else{
+}
+else
+{
 	$align = 'left';
 }
 
 // Header down here to give us a chance to set a page title
 require_once(HEADERF);
 
-//temporary solution - object of future cahges
-if(is_readable(THEME.'print_template.php'))
+
+if(is_readable(THEME.'print_template.php')) // legacy location.
 {
+	$PRINT_TEMPLATE = '';
 	include_once(THEME.'print_template.php');
-	echo $tp->parseTemplate($PRINT_TEMPLATE);
+	echo e107::getParser()->parseTemplate($PRINT_TEMPLATE);
 }
-else 
+else // v2.3.1+
 {
-	echo "
-		<div style='background-color:white'>
-		<div style='text-align:".$align."'>".$tp->parseTemplate("{LOGO: h=100}", TRUE)."</div><hr />
-		<div style='text-align:".$align."'>".$print_text."</div><br /><br />
-		<form action='#'><div class='hidden-print' style='text-align:center'><input class='btn btn-primary ' type='button' value='".LAN_PRINT_307."' onclick='window.print()' /></div></form></div>";
+	$PRINT_TEMPLATE = e107::getCoreTemplate('print', 'default');
+
+	$vars = array(
+		'TEXT'    => $print_text,
+		'ALIGN'   => $align,
+		'BUTTON'  => "<button class='btn btn-primary ' type='button' onclick='window.print()' />".LAN_PRINT_307."</button>"
+	);
+
+	echo e107::getParser()->parseTemplate($PRINT_TEMPLATE, true, $vars);
+
 }
+
 require_once(FOOTERF);
 
-?>
+

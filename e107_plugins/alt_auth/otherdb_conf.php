@@ -21,11 +21,11 @@
  *	@version 	$Id$;
  */
 $eplug_admin = true;
-require_once('../../class2.php');
+require_once(__DIR__.'/../../class2.php');
 require_once(e_ADMIN.'auth.php');
 require_once(e_HANDLER.'form_handler.php');
-include_lan(e_PLUGIN.'alt_auth/languages/'.e_LANGUAGE.'/admin_otherdb_conf.php');
-include_lan(e_PLUGIN.'alt_auth/languages/'.e_LANGUAGE.'/admin_alt_auth.php');
+e107::includeLan(e_PLUGIN.'alt_auth/languages/'.e_LANGUAGE.'/admin_otherdb_conf.php');
+e107::includeLan(e_PLUGIN.'alt_auth/languages/'.e_LANGUAGE.'/admin_alt_auth.php');
 define('ALT_AUTH_ACTION', 'otherdb');
 require_once(e_PLUGIN.'alt_auth/alt_auth_adminmenu.php');
 require_once(e_PLUGIN.'alt_auth/extended_password_handler.php');
@@ -51,28 +51,55 @@ class alt_auth_otherdb extends alt_auth_admin
 
 		$frm = new form;
 		$text = $frm -> form_open("post", e_SELF);
-		$text .= "<table class='table adminform'>";
 
-		$text .= "<tr><td>".LAN_ALT_26."</td><td>";
-		$text .= OTHERDB_LAN_15;
-		$text .= "</td></tr>";
 
-		$text .= $this->alt_auth_get_db_fields('otherdb', $frm, $parm, 'server|uname|pwd|db|table|ufield|pwfield|salt');
-		$text .= "<tr><td>".OTHERDB_LAN_9."</td><td>";
+		$tab1 = "<table class='table adminform'>
+		<colgroup>
+		<col class='col-label' />
+		<col class='col-control' />
+		</colgroup>
+		";
+
+		$tab1 .= "<tr><td>".LAN_ALT_26."</td><td>";
+		$tab1 .= OTHERDB_LAN_15;
+		$tab1 .= "</td></tr>";
+
+		$tab1 .= $this->alt_auth_get_db_fields('otherdb', $frm, $parm, 'server|port|uname|pwd|db|table|ufield|pwfield|salt');
+		$tab1 .= "<tr><td>".OTHERDB_LAN_9."</td><td>";
 		
-		$text .= $this->altAuthGetPasswordSelector('otherdb_password_method', $frm, $parm['otherdb_password_method'], TRUE);
+		$tab1 .= $this->altAuthGetPasswordSelector('otherdb_password_method', $frm, $parm['otherdb_password_method'], TRUE);
 
-		$text .= "</td></tr>";
+		$tab1 .= "</td></tr>
+		</table>
+		";
 
-		$text .= "<tr><td class='forumheader2' colspan='2'>".LAN_ALT_27."</td></tr>";
+		$tab2 = "
+		<table class='table adminform'>
+		<colgroup>
+		<col class='col-label' />
+		<col class='col-control' />
+		</colgroup>
+		";
 
-		$text .= $this->alt_auth_get_field_list('otherdb',$frm, $parm, FALSE);
+		$tab2 .= "<tr><td class='forumheader2' colspan='2'>".LAN_ALT_27."</td></tr>";
 
-		$text .= "<tr><td class='forumheader' colspan='2' style='text-align:center;'>";
+		$tab2 .= $this->alt_auth_get_field_list('otherdb',$frm, $parm, FALSE);
+
+
+
+		$tab2 .= '</table>';
+
+		$tabs = array(
+			'tab1'  => array('caption'=>'Database', 'text'=>$tab1),
+			'tab2'  => array('caption'=>'Data', 'text'=>$tab2),
+		);
+
+		$text .= e107::getForm()->tabs($tabs);
+
+		$text .= "<div class='buttons-bar center'>";
 		$text .= e107::getForm()->admin_button("update", LAN_UPDATE,'update');
-		$text .= '</td></tr>';
+		$text .= '</div>';
 
-		$text .= '</table>';
 		$text .= $frm -> form_close();
 
 		$ns -> tablerender(OTHERDB_LAN_10, $text);
@@ -84,15 +111,15 @@ class alt_auth_otherdb extends alt_auth_admin
 
 $otherdbAdmin = new alt_auth_otherdb();
 
-if(vartrue($_POST['update']))
+if(!empty($_POST['update']))
 {
 	$message = $otherdbAdmin->alt_auth_post_options('otherdb');
 }
 
 
-if(vartrue($message))
+if(!empty($message))
 {
-	e107::getRender()->tablerender('',"<div style='text-align:center;'>".$message.'</div>');
+	echo e107::getMessage()->addSuccess($message)->render();
 }
 
 
@@ -108,4 +135,3 @@ function otherdb_conf_adminmenu()
 	alt_auth_adminmenu();
 }
 
-?>

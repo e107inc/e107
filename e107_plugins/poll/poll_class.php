@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -10,7 +10,8 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-include_lan(e_PLUGIN.'poll/languages/'.e_LANGUAGE.'.php');
+e107::includeLan(e_PLUGIN.'poll/languages/'.e_LANGUAGE.'.php');
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
 define('POLLCLASS', TRUE);
 define('POLL_MODE_COOKIE', 0);
 define('POLL_MODE_IP', 1);
@@ -46,7 +47,7 @@ class poll
 			foreach($_COOKIE as $cookie_name => $cookie_val)
 			{	// Collect poll cookies
 
-				if(substr($cookie_name,0,5) == 'poll_')
+				if(strpos($cookie_name,'poll_') === 0)
 				{
 					// e107::getDebug()->log("Poll: ".$cookie_name);
 					list($str, $int) = explode('_', $cookie_name, 2);
@@ -61,7 +62,7 @@ class poll
 		if (count($arr_polls_cookies) > 1) 
 		{	// Remove all except first (assumption: there is always only one active poll)
 			rsort($arr_polls_cookies);
-			for($i = 1; $i < count($arr_polls_cookies); $i++)
+			for($i = 1, $iMax = count($arr_polls_cookies); $i < $iMax; $i++)
 			{
 				cookie("poll_{$arr_polls_cookies[$i]}", "", (time() - 2592000));
 			}
@@ -84,7 +85,7 @@ class poll
 			{
 				admin_purge_related("poll", $existing);
 			}
-			e107::getLog()->add('POLL_01',LAN_AL_POLL_01.': '.$existing,'');
+			e107::getLog()->add('POLL_01',POLLAN_3.': '.LAN_DELETED.': '.$existing,'');
 			//return POLL_ADLAN08;
 		}
 	}
@@ -116,11 +117,11 @@ class poll
 	*/
 	function submit_poll($mode=1)
 	{
-		global $admin_log;
-				
 		$tp = e107::getParser();
 		$sql = e107::getDb();
-		
+		$admin_log = e107::getLog();
+
+		$pollID         = (int) varset($_POST['poll_id']);
 		$poll_title		= $tp->toDB($_POST['poll_title']);
 		$poll_comment	= $tp->toDB($_POST['poll_comment']);
 		$multipleChoice	= intval($_POST['multipleChoice']);
@@ -131,15 +132,15 @@ class poll
 		$active_end		= (!$_POST['endmonth'] || !$_POST['endday'] || !$_POST['endyear'] ? 0 : mktime (0, 0, 0, $_POST['endmonth'], $_POST['endday'], $_POST['endyear']));
 		$poll_options	= '';
 
-		$_POST['poll_option'] = array_filter($_POST['poll_option'], 'poll::clean_poll_array');
- 
-		foreach ($_POST['poll_option'] as $key => $value)
-		{
+		$pollOption = $tp->filter($_POST['poll_option']);
+		$pollOption = array_filter($pollOption, 'poll::clean_poll_array');
 
+		foreach ($pollOption as $key => $value)
+		{
 			$poll_options .= $tp->toDB($value).chr(1);
 		}
 
-		if (POLLACTION == 'edit' || vartrue($_POST['poll_id']))
+		if (defset('POLLACTION') === 'edit' || !empty($pollID))
 		{
 			$sql->update("polls", "poll_title='{$poll_title}', 
 			  				   poll_options='{$poll_options}', 
@@ -149,14 +150,15 @@ class poll
 							   poll_result_type={$showResults}, 
 							   poll_vote_userclass={$pollUserclass}, 
 							   poll_storage_method={$storageMethod}
-							   WHERE poll_id=".intval(POLLID));
+							   WHERE poll_id=".$pollID);
 
 			/* update poll results - bugtracker #1124 .... */
-			$sql->select("polls", "poll_votes", "poll_id='".intval(POLLID)."' ");
+			$sql->select("polls", "poll_votes", "poll_id='".$pollID."' ");
 			$foo = $sql->fetch();
 			$voteA = explode(chr(1), $foo['poll_votes']);
 
-			$opt = count($poll_option) - count($voteA);
+		//	$poll_option = varset($poll_options, 0);
+			$opt = count($pollOption) - count($voteA);
 
 			if ($opt)
 			{
@@ -164,16 +166,16 @@ class poll
 				{
 					$foo['poll_votes'] .= '0'.chr(1);
 				}
-				$sql->update("polls", "poll_votes='".$foo['poll_votes']."' WHERE poll_id='".intval(POLLID)."' ");
+				$sql->update("polls", "poll_votes='".$foo['poll_votes']."' WHERE poll_id='".$pollID."' ");
 			}
 
-			e107::getLog()->add('POLL_02','ID: '.POLLID.' - '.$poll_title,'');
+			e107::getLog()->add('POLL_02','ID: '.$pollID.' - '.$poll_title,'');
 			//$message = POLLAN_45;
 		} 
 		else 
 		{
 			$votes = '';
-			for($a=1; $a<=count($_POST['poll_option']); $a++)
+			for($a=1, $aMax = count($_POST['poll_option']); $a<= $aMax; $a++)
 			{
 				$votes .= '0'.chr(1);
 			}
@@ -197,7 +199,7 @@ class poll
 				$sql->insert("polls", "'0', ".intval($_POST['iid']).", '0', '0', ".USERID.", '$poll_title', '$poll_options', '$votes', '', '2', '0', '".intval($multipleChoice)."', '0', '0', '".intval($storageMethod)."'");
 			}
 		}
-		return $message;
+		return varset($message);
 	}
 
 	function get_poll($query)
@@ -268,13 +270,13 @@ class poll
 		{
 			return FALSE;
 		}
-		if (isset($_POST['pollvote']) && $POLLMODE == 'notvoted' && ($POLLMODE != 'disallowed'))
+		if (isset($_POST['pollvote']) && isset($POLLMODE) && $POLLMODE == 'notvoted' && ($POLLMODE != 'disallowed'))
 		{
 			if ($_POST['votea'])
 			{
-//					$sql -> db_Select("polls", "*", "poll_vote_userclass!=255 AND poll_type=1 ORDER BY poll_datestamp DESC LIMIT 0,1");
 				$row = $pollArray;
 				extract($row);
+				$poll_votes = varset($poll_votes);
 				$votes = explode(chr(1), $poll_votes);
 				if (is_array($_POST['votea']))
 				{
@@ -300,9 +302,10 @@ class poll
 				}
 				$votep = implode(chr(1), $votes);
 				$pollArray['poll_votes'] = $votep;
-				$sql->update("polls", "poll_votes = '$votep'".($pollArray['poll_storage_method'] != POLL_MODE_COOKIE ? ", poll_ip='".$poll_ip.$userid."^'" : '')." WHERE poll_id=".$poll_id);
+				$poll_ip = varset($poll_ip) . varset($userid);
+				$sql->update("polls", "poll_votes = '$votep'".($pollArray['poll_storage_method'] != POLL_MODE_COOKIE ? ", poll_ip='".$poll_ip."^'" : '')." WHERE poll_id=".varset($poll_id));
 				/*echo "
-				<script type='text/javascript'>
+				<script>
 				<!--
 				setcook({$poll_id});
 				//-->
@@ -315,7 +318,7 @@ class poll
 			}
 		}
 		$this->pollRow = $pollArray;
-		$this->pollmode = $POLLMODE;
+		$this->pollmode = varset($POLLMODE);
 	}
 
 
@@ -330,8 +333,20 @@ class poll
 		$ns = e107::getRender();
 		$tp = e107::getParser();
 		$sql = e107::getDb();
-		
+
+		$sc = e107::getScBatch('poll');
+
 		global $POLLSTYLE;
+
+		if ($type == 'preview')
+		{
+			$POLLMODE = 'notvoted';
+			$sc->pollType = $type;
+		}
+		elseif ($type == 'forum')
+		{
+			$sc->pollPreview = true;
+		}
 		
 		switch ($POLLMODE)
 		{
@@ -355,6 +370,9 @@ class poll
 			case 'oldpolls':
 				$POLLMODE = 'results';
 			break;
+
+			case 'notvoted':
+				break;
 
 			default:
 			if(ADMIN)
@@ -396,13 +414,15 @@ class poll
 //			$voteArray = array_slice($voteArray, 0, -1);
 		}
 
-		$voteTotal = array_sum($voteArray);
+		$voteTotal = intval(array_sum($voteArray));
 		$percentage = array();
 
 		if (count($voteArray))
 		{
 			foreach ($voteArray as $votes)
 			{
+				$votes = intval($votes);
+
 				if ($voteTotal > 0)
 				{
 					$percentage[] = round(($votes/$voteTotal) * 100, 2);
@@ -447,7 +467,6 @@ class poll
 		}
 
 
-		$sc = e107::getScBatch('poll');
 		$sc->setVars($pollArray);
 
 		if ($pollArray['poll_comment']) // Only get comments if they're allowed on poll. And we only need the count ATM
@@ -461,14 +480,7 @@ class poll
 		$sc->pollRenderType = $type;
 
 
-		if ($type == 'preview')
-		{
-			$POLLMODE = 'notvoted';
-		}
-		elseif ($type == 'forum')
-		{
-			$sc->pollPreview = true;
-		}
+
 
 
 		$text = '';
@@ -504,9 +516,9 @@ class poll
 			case 'voted':
 			case 'results' :
 
-				if ($pollArray['poll_result_type'] && !strstr(e_SELF, "comment.php"))
+				if ($pollArray['poll_result_type'] && strpos(e_SELF, "comment.php") === false)
 				{
-					$text = "<div style='text-align: center;'><br /><br />".POLLAN_39."<br /><br /><a href='".e_HTTP."comment.php?comment.poll.".$pollArray['poll_id']."'>".POLLAN_40."</a></div><br /><br />";
+					$text = "<div style='text-align: center;'><br /><br />".LAN_THANK_YOU."<br /><br /><a href='".e_HTTP."comment.php?comment.poll.".$pollArray['poll_id']."'>".POLLAN_40."</a></div><br /><br />";
 				}
 				else
 				{
@@ -559,11 +571,11 @@ class poll
 
 		if (!defined("POLLRENDERED")) define("POLLRENDERED", TRUE);
 		
-		$caption = (file_exists(THEME."images/poll_menu.png") ? "<img src='".THEME_ABS."images/poll_menu.png' alt='' /> ".POLLAN_MENU_CAPTION : POLLAN_MENU_CAPTION);
+		$caption = (file_exists(THEME."images/poll_menu.png") ? "<img src='".THEME_ABS."images/poll_menu.png' alt='' /> ".LAN_PLUGIN_POLL_NAME : LAN_PLUGIN_POLL_NAME);
 		
 		if ($type == 'preview')
 		{
-			$caption = POLLAN_23.SEP.LAN_PREVIEW; // "Preview"; // TODO LAN
+			$caption = LAN_CREATE.SEP.LAN_PREVIEW; // "Preview"; // TODO not sure this is used. 
 			$text = "<div class='clearfix'>\n<div class='well span3'>".$text."</div></div>";
 		}
 		elseif ($type == 'forum')
@@ -591,7 +603,7 @@ class poll
 			 return '
 			 <div class="progress">
 			 <div class="bar progress-bar" role="progressbar" aria-valuenow="'.$val.'" aria-valuemin="0" aria-valuemax="100" style="width: '.$val.'%;">
-			   <span class="sr-only">'.$val.'%</span>
+			   <span class="sr-only visually-hidden">'.$val.'%</span>
 			 </div>
 			 </div>';	
 			
@@ -644,14 +656,14 @@ class poll
 			$text .= "
 
 				<div class='form-group'>
-					<label for='poll_title'>Poll question</label>
-					".$frm->text('poll_title', $tp->post_toForm(vartrue($_POST['poll_title'])), '200', array('placeholder' => LAN_FORUM_3030, 'id' => 'poll_title'))." 
+					<label for='poll_title'>".POLLAN_3."</label>
+					".$frm->text('poll_title', $tp->post_toForm(vartrue($_POST['poll_title'])), '200', array('placeholder' => POLLAN_3, 'id' => 'poll_title'))." 
 				</div>";
 
 			$option_count = vartrue($_POST['poll_option']) ? count($_POST['poll_option']) : 2;
 			$text .= "		
 				<div id='pollsection'>
-					<label for='pollopt'>Poll answers</label>";
+					<label for='pollopt'>".POLLAN_4."</label>";
 				
 				for($count = 1; $count <= $option_count; $count++)
 				{
@@ -660,17 +672,17 @@ class poll
 					// //	break;
 					// }
 					
-					$opt = ($count==1) ? "id='poll_answer'" : "";
+					$opt = ($count==1) ? "poll_answer" : "";
 
-					$text .= "<div class='form-group' ".$opt.">
-								".$frm->text('poll_option[]', $_POST['poll_option'][($count-1)], '200', array('placeholder' => LAN_FORUM_3031, 'id' => $opt))."
+					$text .= "<div class='form-group' id='".$opt."'>
+								".$frm->text('poll_option[]', varset($_POST['poll_option'][($count-1)]), '200', array('placeholder' => POLLAN_4, 'id' => $opt))."
 							  </div>";
 				}
 
 				$text .= "</div>"; // end pollsection div
 
 				$text .= "<div  class='form-group control-group'>
-							<input class='btn btn-default' type='button' id='addoption' name='addoption' value='".LAN_FORUM_3032."' />
+							<input class='btn btn-default' type='button' id='addoption' name='addoption' value='".LAN_ADD_MORE."' />
 						</div>
 
 				";
@@ -683,7 +695,7 @@ class poll
 
 		$text .= "<br />
 			 <div class='form-horizontal control-group'>
-				<label class='control-label'>".LAN_FORUM_3033."</label>
+				<label class='control-label'>".LAN_MULTIPLE_CHOICE."</label>
 				<div class='radio controls'>
 					". $frm->radio('multipleChoice',$opts, vartrue($_POST['multipleChoice'], 0) ).$frm->hidden('storageMethod', 1)."
 				</div>
@@ -713,7 +725,7 @@ class poll
 			".POLLAN_16."
 			
 			<input type='radio' name='storageMethod' value='0'".(!vartrue($_POST['storageMethod']) ? " checked='checked'" : "")." /> ".POLLAN_17."<br />
-			<input type='radio' name='storageMethod' value='1'".($_POST['storageMethod'] == 1 ? " checked='checked'" : "")." /> ".POLLAN_18."<br />
+			<input type='radio' name='storageMethod' value='1'".($_POST['storageMethod'] == 1 ? " checked='checked'" : "")." /> ".LAN_IP_ADDRESS."<br />
 			<input type='radio' name='storageMethod' value='2'".($_POST['storageMethod'] ==2 ? " checked='checked'" : "")." /> ".POLLAN_19."
 			</div>
 			";
@@ -731,14 +743,14 @@ class poll
 				<td class='forumheader3' colspan='2'><span class='smalltext'>".LAN_FORUM_3029."</span></td>
 			</tr>
 			<tr>
-				<td class='forumheader3' style='width:20%'><div class='normaltext'>".LAN_FORUM_3030.": </div></td>
+				<td class='forumheader3' style='width:20%'><div class='normaltext'>".POLLAN_3.": </div></td>
 				<td class='forumheader3' style='width:80%' class='forumheader3'><input class='tbox' type='text' name='poll_title' size='70' value='".$tp->post_toForm(vartrue($_POST['poll_title']))."' maxlength='200' /></td>
 			</tr>";
 
-			$option_count = (count(vartrue($_POST['poll_option'])) ? count($_POST['poll_option']) : 1);
+			$option_count = !empty($_POST['poll_option']) ? count($_POST['poll_option']) : 1;
 			$text .= "
 			<tr>
-				<td class='forumheader3' style='width:20%'>".LAN_FORUM_3031."</td>
+				<td class='forumheader3' style='width:20%'>".POLLAN_4."</td>
 				<td class='forumheader3' style='width:80%'>
 				<div id='pollsection'>";
 
@@ -756,22 +768,22 @@ class poll
 
 				$text .="
 				</div>
-				<input class='btn btn-default button' type='button' name='addoption' value='".LAN_FORUM_3032."' onclick=\"duplicateHTML('pollopt','pollsection')\" /><br />
+				<input class='btn btn-default btn-secondary button' type='button' name='addoption' value='".LAN_ADD_MORE."' onclick=\"duplicateHTML('pollopt','pollsection')\" /><br />
 				</td>
 			</tr>
 			<tr>
-				<td class='forumheader3' style='width:20%'>".LAN_FORUM_3033."</td>
+				<td class='forumheader3' style='width:20%'>".LAN_MULTIPLE_CHOICE."</td>
 				<td class='forumheader3' style='width:80%'>
 				<input type='radio' name='multipleChoice' value='1'".(vartrue($_POST['multipleChoice']) ? " checked='checked'" : "")." /> ".LAN_YES."&nbsp;&nbsp;
 				<input type='radio' name='multipleChoice' value='0'".(!$_POST['multipleChoice'] ? " checked='checked'" : "")." /> ".LAN_NO."
 			</td>
 			</tr>
 			<tr>
-				<td class='forumheader3'style='width:30%'>".LAN_FORUM_3034."</td>
+				<td class='forumheader3'style='width:30%'>".POLLAN_16."</td>
 				<td class='forumheader3'>
-					<input type='radio' name='storageMethod' value='0'".(!vartrue($_POST['storageMethod']) ? " checked='checked'" : "")." /> ".LAN_FORUM_3035."<br />
-					<input type='radio' name='storageMethod' value='1'".($_POST['storageMethod'] == 1 ? " checked='checked'" : "")." /> ".LAN_FORUM_3036."<br />
-					<input type='radio' name='storageMethod' value='2'".($_POST['storageMethod'] ==2 ? " checked='checked'" : "")." /> ".LAN_FORUM_3037."
+					<input type='radio' name='storageMethod' value='0'".(!vartrue($_POST['storageMethod']) ? " checked='checked'" : "")." /> ".POLLAN_17."<br />
+					<input type='radio' name='storageMethod' value='1'".($_POST['storageMethod'] == 1 ? " checked='checked'" : "")." /> ".LAN_IP_ADDRESS."<br />
+					<input type='radio' name='storageMethod' value='2'".($_POST['storageMethod'] ==2 ? " checked='checked'" : "")." /> ".POLLAN_19."
 				</td>
 			</tr>
 			";
@@ -792,7 +804,7 @@ class poll
 		<tr>
 		<td style='width:30%'><div class='normaltext'>".POLLAN_3.":</div></td>
 		<td style='width:70%'>
-		<input class='tbox input-xxlarge' type='text' name='poll_title' size='70' value='".$tp->post_toForm(varset($_POST['poll_title']))."' maxlength='200' />";
+		<input class='tbox input-xxlarge form-control' type='text' name='poll_title' size='70' value='".$tp->post_toForm(varset($_POST['poll_title']))."' maxlength='200' />";
 
 		$option_count = (varset($_POST['poll_option']) && count($_POST['poll_option']) ? count($_POST['poll_option']) : 2);
 
@@ -804,18 +816,18 @@ class poll
 		for($count = 1; $count <= $option_count; $count++)
 		{
 			$opt = ($count==1) ? "id='pollopt'" : "";
-			$text .="<span class='form-inline' style='display:inline-block; padding-bottom:5px' {$opt}><input  class='tbox input-large' type='text' name='poll_option[]' size='40' value=\"".$tp->post_toForm($_POST['poll_option'][($count-1)])."\" maxlength='200' />";
+			$text .="<span class='form-inline' style='display:inline-block; padding-bottom:5px' {$opt}><input  class='tbox input-large form-control' type='text' name='poll_option[]' size='40' value=\"".$tp->post_toForm($_POST['poll_option'][($count-1)])."\" maxlength='200' />";
 			$text .= "</span><br />";
 		}
 
-		$text .="</div><input class='btn btn-default' type='button' name='addoption' value='".POLLAN_8."' onclick=\"duplicateHTML('pollopt','pollsection')\" /><br />
+		$text .="</div><input class='btn btn-default' type='button' name='addoption' value='".LAN_ADD_MORE."' onclick=\"duplicateHTML('pollopt','pollsection')\" /><br />
 		</td></tr>
 
 		<tr>
-		<td style='width:30%'>".POLLAN_9."</td>
+		<td style='width:30%'>".LAN_MULTIPLE_CHOICE."</td>
 		<td style='width:70%'>
-		<input type='radio' name='multipleChoice' value='1'".(varset($_POST['multipleChoice']) ? " checked='checked'" : "")." /> ".POLLAN_10."&nbsp;&nbsp;
-		<input type='radio' name='multipleChoice' value='0'".(!varset($_POST['multipleChoice']) ? " checked='checked'" : "")." /> ".POLLAN_11."
+		<input type='radio' name='multipleChoice' value='1'".(varset($_POST['multipleChoice']) ? " checked='checked'" : "")." /> ".LAN_YES."&nbsp;&nbsp;
+		<input type='radio' name='multipleChoice' value='0'".(!varset($_POST['multipleChoice']) ? " checked='checked'" : "")." /> ".LAN_NO."
 		</td>
 		</tr>
 
@@ -841,14 +853,14 @@ class poll
 		<td style='width:30%'>".POLLAN_16."</td>
 		<td>
 		<input type='radio' name='storageMethod' value='0'".(!varset($_POST['storageMethod']) ? " checked='checked'" : "")." /> ".POLLAN_17."<br />
-		<input type='radio' name='storageMethod' value='1'".(varset($_POST['storageMethod']) ==1 ? " checked='checked'" : "")." /> ".POLLAN_18."<br />
+		<input type='radio' name='storageMethod' value='1'".(varset($_POST['storageMethod']) ==1 ? " checked='checked'" : "")." /> ".LAN_IP_ADDRESS."<br />
 		<input type='radio' name='storageMethod' value='2'".(varset($_POST['storageMethod']) ==2 ? " checked='checked'" : "")." /> ".POLLAN_19."
 		</td></tr>
 
 		<tr>
-		<td>".POLLAN_20.": </td><td>
-		<input type='radio' name='poll_comment' value='1'".(varset($_POST['poll_comment']) ? " checked='checked'" : "")." /> ".POLLAN_10."
-		<input type='radio' name='poll_comment' value='0'".(!varset($_POST['poll_comment']) ? " checked='checked'" : "")." /> ".POLLAN_11."
+		<td>".LAN_COMMENTS_ALLOWED.": </td><td>
+		<input type='radio' name='poll_comment' value='1'".(varset($_POST['poll_comment']) ? " checked='checked'" : "")." /> ".LAN_YES."
+		<input type='radio' name='poll_comment' value='0'".(!varset($_POST['poll_comment']) ? " checked='checked'" : "")." /> ".LAN_NO."
 		</td>
 		</tr>
 		</table>
@@ -856,10 +868,10 @@ class poll
 
 		if (isset($_POST['preview']) || varset($_POST['edit']))
 		{
-			// $text .= "<input  type='submit' name='preview' value='".POLLAN_24."' /> ";
-			$text .= $frm->admin_button('preview',POLLAN_24,'other');
+			// $text .= "<input  type='submit' name='preview' value='".LAN_PREVIEW."' /> ";
+			$text .= $frm->admin_button('preview',LAN_PREVIEW,'other');
 			
-			if (POLLACTION == 'edit')
+			if (defset('POLLACTION') === 'edit')
 			{
 				$text .= $frm->admin_button('submit', LAN_UPDATE, 'update')."
 				
@@ -873,14 +885,14 @@ class poll
 		} 
 		else 
 		{
-			$text .= $frm->admin_button('preview','no-value','other',POLLAN_24);
-		//	$text .= "<input  type='submit' name='preview' value='".POLLAN_24."' /> ";
+			$text .= $frm->admin_button('preview','no-value','other',LAN_PREVIEW);
+		//	$text .= "<input  type='submit' name='preview' value='".LAN_PREVIEW."' /> ";
 		}
 		
 		if (defset('POLLID')) 
 		{
-			$text .= $frm->admin_button('reset','no-value','reset',POLLAN_25);
-		//	$text .= "<input  type='submit' name='reset' value='".POLLAN_25."' /> ";
+			$text .= $frm->admin_button('reset','no-value','reset',LAN_CLEAR);
+		//	$text .= "<input  type='submit' name='reset' value='".LAN_CLEAR."' /> ";
 		}
 
 		$text .= "</div>
@@ -906,6 +918,7 @@ class poll_shortcodes extends e_shortcode
 	public $pollPercentage  = 0;
 	public $pollVotes       = 0;
 	public $pollCount       = 0; // total polls in the system
+	public $pollType;
 
 	private $barl = null;
 	private $barr = null;
@@ -941,7 +954,7 @@ class poll_shortcodes extends e_shortcode
 		$userlink = "<a href='".$link."'>".$this->var['user_name']."</a>";
 
 	//	return print_a($this->var,true);
-		return POLLAN_35." ".(($this->pollType == 'preview' || $this->pollType == 'forum') ? USERNAME : $userlink);
+		return LAN_POSTED_BY." ".(($this->pollType == 'preview' || $this->pollType == 'forum') ? USERNAME : $userlink);
 	}
 
 
@@ -994,7 +1007,7 @@ class poll_shortcodes extends e_shortcode
 			 return '
 			 <div class="progress">
 			 <div class="bar progress-bar" role="progressbar" aria-valuenow="'.$val.'" aria-valuemin="0" aria-valuemax="100" style="width: '.$val.'%;">
-			   <span class="sr-only">'.$val.'%</span>
+			   <span class="sr-only visually-hidden">'.$val.'%</span>
 			 </div>
 			 </div>';
 
@@ -1044,10 +1057,10 @@ class poll_shortcodes extends e_shortcode
 
 		if (('preview' == $this->pollType || $this->pollPreview == true) && strpos(e_REQUEST_SELF, "forum") === false)
 		{
-			return "<input class='button btn btn-default e-tip' type='button' name='null' title='Disabled' value='".POLLAN_30."' />";
+			return "<input class='button btn btn-default btn-secondary e-tip' type='button' name='null' title='".LAN_SUBMIT."' value='".LAN_SUBMIT."' />";
 		}
 
-		return "<input class='button btn btn-primary' type='submit' name='pollvote' value='".POLLAN_30."' />";
+		return "<input class='button btn btn-primary' type='submit' name='pollvote' value='".LAN_SUBMIT."' />";
 				// disable submit when previewing the poll or when NOT viewing the poll in the forum
 	}
 
@@ -1082,4 +1095,4 @@ e107::js('inline', '
 		');*/
 
 
-?>
+

@@ -14,7 +14,7 @@
  * $Author$
  */
 
-require_once('import_classes.php');
+require_once(__DIR__.'/../import_classes.php');
 
 class phpbb3_import extends base_import_class
 {
@@ -36,7 +36,8 @@ class phpbb3_import extends base_import_class
  
 	function init()
 	{
-		$this->forum_attachment_path	= vartrue(trim($_POST['forum_attachment_path'],"/" ), false);
+		$formattach = trim($_POST['forum_attachment_path'],"/" );
+		$this->forum_attachment_path	= vartrue($formattach, false);
 		
 		if($data = e107::getDb('phpbb')->retrieve('userclass_classes','userclass_id',"userclass_name='FORUM_MODERATOR' "))
 		{
@@ -80,19 +81,19 @@ class phpbb3_import extends base_import_class
 			break;
 			
 		  	case 'forum' :
-				$result = $this->ourDB->gen("SELECT * FROM `{$this->DBPrefix}forums`");
+				$result = $this->ourDB->gen("SELECT * FROM {$this->DBPrefix}forums");
 				if ($result === FALSE) return FALSE;	  
 			break;
 				
 			case 'forumthread' :
-				$result = $this->ourDB->gen("SELECT * FROM `{$this->DBPrefix}topics`");
+				$result = $this->ourDB->gen("SELECT * FROM {$this->DBPrefix}topics");
 				
 				if ($result === FALSE) return FALSE;	  
 			break;
 				
 			case 'forumpost' :
 								
-				if($this->ourDB->gen("SELECT * FROM `{$this->DBPrefix}attachments`"))
+				if($this->ourDB->gen("SELECT * FROM {$this->DBPrefix}attachments"))
 				{
 					while($row = $this->ourDB->fetch())
 					{
@@ -101,26 +102,23 @@ class phpbb3_import extends base_import_class
 						$this->forum_attachments[$id][$key] = $row['real_filename'];	
 					}
 				}
-				$result = $this->ourDB->gen("SELECT * FROM `{$this->DBPrefix}posts`");
+				$result = $this->ourDB->gen("SELECT * FROM {$this->DBPrefix}posts");
 				if ($result === FALSE) return FALSE;	  
 			break;				
 
 			case 'forumtrack' :
-				$result = $this->ourDB->gen("SELECT * FROM `{$this->DBPrefix}forums_track`");
+				$result = $this->ourDB->gen("SELECT * FROM {$this->DBPrefix}forums_track");
 				if ($result === FALSE) return FALSE;	  
 			break;
 
-				
-		  	case 'polls' :
+
+		    case 'news':
+		    case 'polls' :
 		    	return FALSE;
-			break;  
-			
-		  	case 'news' :
-				  return FALSE;	
 			break;
-		  
-			  
-		  	default :
+
+
+		    default :
 		    return FALSE;
 		}
 
@@ -188,7 +186,8 @@ class phpbb3_import extends base_import_class
 		 * 
 		 */
 	}  
-	  
+
+
 	function convertUserBan($data)
 	{
 		if($data == 3) // founder in phpbb3, but 'bounced' in e107. 
@@ -526,4 +525,3 @@ thread_options
 
 
 
-?>

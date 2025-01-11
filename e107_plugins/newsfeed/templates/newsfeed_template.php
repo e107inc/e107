@@ -59,4 +59,4 @@ $NEWSFEED_MAIN_END = "
 </table>\n";
 
 
-?>
+

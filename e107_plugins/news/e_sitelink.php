@@ -39,12 +39,15 @@ class news_sitelink // include plugin-folder in the name.
 			'name'			=> "Last 10 News Items",
 			'function'		=> "last_ten",
 			'description' 	=> ""
-		);	
+		);
+
 		
 		return $links;
 	}
 
-	
+
+
+
 	function news_category_page()
 	{
 		return $this->news_category_list('category');	
@@ -78,9 +81,11 @@ class news_sitelink // include plugin-folder in the name.
 		{		
 			while($row = $sql->fetch())
 			{
+
+				$row['id'] = $row['category_id'];
 				$sublinks[] = array(
 					'link_name'			=> $row['category_name'],
-					'link_url'			=> e107::getUrl()->create($urlPath, $row, array('allow' => 'category_sef,category_name,category_id')), // 'news.php?extend.'.$row['news_id'],
+					'link_url'			=> e107::getUrl()->create($urlPath, $row, array('allow' => 'id,category_sef,category_name,category_id')), // 'news.php?extend.'.$row['news_id'],
 					'link_description'	=> $row['category_meta_description'],
 					'link_button'		=> '',
 					'link_category'		=> '',
@@ -108,14 +113,15 @@ class news_sitelink // include plugin-folder in the name.
 	}
 
 
-	function last_ten() 
+	function last_ten()
 	{
 		$sql = e107::getDb();
 		$sublinks = array();
 		
 		$nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
 		$query = "SELECT * FROM #news WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") ORDER BY news_datestamp DESC LIMIT 10";
-		
+
+
 		if($sql->gen($query))
 		{		
 			while($row = $sql->fetch())
@@ -131,6 +137,8 @@ class news_sitelink // include plugin-folder in the name.
 					'link_open'			=> '',
 					'link_class'		=> intval($row['news_class'])
 				);
+
+
 			}
 			
 			$sublinks[] = array(
@@ -142,8 +150,11 @@ class news_sitelink // include plugin-folder in the name.
 					'link_order'		=> '',
 					'link_parent'		=> '',
 					'link_open'			=> '',
-					'link_class'		=> intval($row['news_class'])
+					'link_class'		=> 0
 				);
+
+
+
 				
 			return $sublinks;
 	    };
@@ -155,4 +166,3 @@ class news_sitelink // include plugin-folder in the name.
 
 
 
-?>

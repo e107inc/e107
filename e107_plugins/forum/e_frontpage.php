@@ -3,27 +3,35 @@
 if (!defined('e107_INIT')) { exit; }
 
 e107::lan('forum', "front", true);
-// e107::lan('forum', 'English_front');
 
-/**
- *	@todo - extend array to allow selection of any main forum, as well as the forum front page
- */
-// $front_page['forum'] = array('page' =>'{e_PLUGIN}forum/forum.php', 'title' => LAN_PLUGIN_FORUM_NAME);
-
-//v2.x spec.
 class forum_frontpage // include plugin-folder in the name.
 {
 	function config()
 	{
+		$sql 	= e107::getDb();
+		$config = array();
 
-		$frontPage = array(
-			'title'		=> LAN_PLUGIN_FORUM_NAME,
-			'page'		=> '{e_PLUGIN}forum/forum.php',
-		);
+		$config['title'] = LAN_PLUGIN_FORUM_NAME;
 
-		return $frontPage;
+		// Always show the 'forum index' option
+		$config['page'][] = array('page' => e107::url('forum', 'index'), 'title' => "Main forum index"); 
+
+		// Retrieve all forums (exclude parents)
+		if($sql->select('forum', 'forum_id, forum_name, forum_sef', "forum_parent != 0"))
+		{
+			while($row = $sql->fetch())
+			{
+				$url =  e107::url('forum', 'forum', 
+							array(
+								'forum_id' => $row['forum_id'], 
+								'forum_sef' => $row['forum_sef']
+							)
+						);
+
+				$config['page'][] = array('page' => $url, 'title' => $row['forum_sef']);
+			}
+		}
+
+		return $config;
 	}
 }
-
-
-?>

@@ -16,7 +16,7 @@
 */
 if(!defined('e107_INIT'))
 {
-    require_once('../../class2.php');
+    require_once(__DIR__.'/../../class2.php');
 }
 
 if (!e107::isInstalled('newsfeed')) 
@@ -25,7 +25,7 @@ if (!e107::isInstalled('newsfeed'))
 	exit;
 }
 
-include_lan(e_PLUGIN.'newsfeed/languages/'.e_LANGUAGE.'_newsfeed.php');
+e107::includeLan(e_PLUGIN.'newsfeed/languages/'.e_LANGUAGE.'_newsfeed.php');
 if(!class_exists('newsfeedClass'))
 {
 	require(e_PLUGIN.'newsfeed/newsfeed_functions.php');

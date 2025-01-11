@@ -31,15 +31,15 @@ class bb_h extends e_bb_base
 		$parms = $bparms[2];
 		unset($bparms);
 		
-		if(vartrue($parms['class']))
+		if(!empty($parms['class']))
 		{
 			$safe['class'] = eHelper::secureClassAttr($parms['class']);
 		}
-		if(vartrue($parms['id']))
+		if(!empty($parms['id']))
 		{
 			$safe['id'] = eHelper::secureIdAttr($parms['id']);
 		}
-		if(vartrue($parms['style']))
+		if(!empty($parms['style']))
 		{
 			$safe['style'] = eHelper::secureStyleAttr($parms['style']);
 		}

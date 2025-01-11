@@ -1,0 +1,131 @@
+<?xml version="1.0"?>
+<messaging-emoticon-map >
+
+
+<emoticon file="alien">
+	<string>!alien</string>
+</emoticon>
+<emoticon file="amazed">
+	<string>!amazed</string>
+</emoticon>
+<emoticon file="angry">
+	<string>!grr</string>
+	<string>!angry</string>
+</emoticon>
+<emoticon file="biglaugh">
+	<string>!lol</string>
+</emoticon>
+<emoticon file="cheesey">
+	<string>:D</string>
+	<string>:oD</string>
+	<string>:-D</string>
+</emoticon>
+<emoticon file="confused">
+	<string>:?</string>
+	<string>:o?</string>
+	<string>:-?</string>
+</emoticon>
+<emoticon file="cry">
+	<string>&amp;|</string>
+	<string>&amp;-|</string>
+	<string>&amp;o|</string>
+	<string>:((</string>
+	<string>!cry</string>
+</emoticon>
+<emoticon file="dead">
+	<string>x)</string>
+	<string>xo)</string>
+	<string>x-)</string>
+	<string>x(</string>
+	<string>xo(</string>
+	<string>x-(</string>
+</emoticon>
+<emoticon file="dodge">
+	<string>!dodge</string>
+</emoticon>
+<emoticon file="frown">
+	<string>:(</string>
+	<string>:o(</string>
+	<string>:-(</string>
+</emoticon>
+<emoticon file="gah">
+	<string>:@</string>
+	<string>:o@</string>
+	<string>:o@</string>
+</emoticon>
+<emoticon file="grin">
+	<string>:D</string>
+	<string>:oD</string>
+	<string>:-D</string>
+</emoticon>
+<emoticon file="heart">
+	<string>!heart</string>
+</emoticon>
+<emoticon file="idea">
+	<string>:!</string>
+	<string>:o!</string>
+	<string>:-!</string>
+</emoticon>
+<emoticon file="ill">
+	<string>!ill</string>
+</emoticon>
+<emoticon file="mad">
+	<string>~:(</string>
+	<string>~:o(</string>
+	<string>~:-(</string>
+</emoticon>
+<emoticon file="mistrust">
+	<string>!mistrust</string>
+</emoticon>
+<emoticon file="neutral">
+	<string>:|</string>
+	<string>:o|</string>
+	<string>:-|</string>
+</emoticon>
+<emoticon file="question">
+	<string>?!</string>
+</emoticon>
+<emoticon file="rolleyes">
+	<string>B)</string>
+	<string>Bo)</string>
+	<string>B-)</string>
+</emoticon>
+<emoticon file="sad">
+	<string>!sad</string>
+</emoticon>
+<emoticon file="shades">
+	<string>8)</string>
+	<string>8o)</string>
+	<string>8-)</string>
+</emoticon>
+<emoticon file="shy">
+	<string>!shy</string>
+</emoticon>
+<emoticon file="smile">
+	<string>:)</string>
+	<string>:o)</string>
+	<string>:-)</string>
+</emoticon>
+<emoticon file="special">
+	<string>%-6</string>
+</emoticon>
+<emoticon file="suprised">
+	<string>:O</string>
+	<string>:oO</string>
+	<string>:-O</string>
+</emoticon>
+<emoticon file="tongue">
+	<string>:p</string>
+	<string>:op</string>
+	<string>:-p</string>
+	<string>:P</string>
+	<string>:oP</string>
+	<string>:-P</string>
+</emoticon>
+<emoticon file="wink">
+	<string>;)</string>
+	<string>;o)</string>
+	<string>;-)</string>
+</emoticon>
+
+</messaging-emoticon-map>

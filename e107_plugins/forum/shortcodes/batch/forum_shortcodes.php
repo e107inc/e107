@@ -165,10 +165,12 @@ class forum_shortcodes extends e_shortcode
 	function sc_userlist()
 	{
 		$text = '';
+
 		if(defined('e_TRACKING_DISABLED'))
 		{
 			return;
 		}			
+
 			global $listuserson;
 			$c = 0;
 			if(is_array($listuserson))
@@ -183,6 +185,7 @@ class forum_shortcodes extends e_shortcode
 				}
 
 			}
+
 		  return $text;
 	}
 

@@ -1,0 +1,63 @@
+
+<body id="page-top" class="{LAYOUT_ID}" {BODY_ONLOAD} >
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="{SITEURL}">{BOOTSTRAP_BRANDING}</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+      {BOOTSTRAP_NAV_ALIGN}
+      {SIGNIN}
+      </div>
+    </div>
+  </nav>
+
+<!--- Optional custom header template controlled by theme_shortcodes -->
+{---HEADER---}
+
+<!-- Page Content -->
+{---LAYOUT---}
+
+<!-- Footer --> 
+{SETSTYLE=footer}
+
+
+<footer class="footer py-4 bg-dark text-white">
+	<div class="container">
+		<div class="content">
+				<div class="row">
+					<div class="col-md-3">
+						{MENUAREA=10}
+					</div>
+					<div class="col-md-3">
+						{MENUAREA=11}
+					</div>
+					<div class="col-md-3">
+						{MENUAREA=12}
+					</div>
+					<div class="col-md-3">
+						{MENUAREA=13}
+					</div>
+				</div>
+		</div>
+		<hr>
+		<div class="container">
+		<div class="row">
+		<div class="col-6 text-start">{XURL_ICONS: size=2x&template=footer}</div>
+		<div class="col-6 text-end">{NAVIGATION: type=footer&layout=footer&class=justify-content-end}</div>
+		</div>
+		</div>
+		<div class="container">
+			<p class="mt-5 mb-0 text-center text-white">{SITEDISCLAIMER}</p>
+		</div>
+	<!-- /.container -->
+	</div>
+</footer>
+
+<!--- Optional custom footer template controlled by theme_shortcodes -->
+{---FOOTER---}
+
+{---MODAL---}
+<!-- Javascripts and other information are automatically added below here -->
+</body> <!-- This tag is not necessary and is ignored and replaced. Left here only as a reference -->

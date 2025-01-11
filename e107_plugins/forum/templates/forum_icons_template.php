@@ -65,7 +65,7 @@ define('IMAGE_untrack', 	'<img src="'.img_path('untrack.png').'" alt="'.LAN_FORU
 
 // User info
 define('IMAGE_website', '<img src="'.img_path('website.png').'" alt="'.LAN_FORUM_2034.'" title="'.LAN_FORUM_2034.'" />');
-define('IMAGE_email', 	'<img src="'.img_path('email.png').'" alt="'.LAN_FORUM_2044.'" title="'.LAN_FORUM_2044.'" />');
+define('IMAGE_email', 	'<img src="'.img_path('email.png').'" alt="'.LAN_FORUM_2044.'" title="'.LAN_FORUM_2044.'" class="icon S16 action" />');
 define('IMAGE_profile', '<img src="'.img_path('profile.png').'" alt="'.LAN_FORUM_4007.'" title="'.LAN_FORUM_4007.'" />');
 
 // action
@@ -92,8 +92,18 @@ define('IMAGE_admin_unlock',	'src="'.img_path('admin_unlock.png').'" alt="'.LAN_
 // Multi Language Images
 define('IMAGE_newthread',				'<img src="'.img_path('newthread.png').'" alt="'.LAN_FORUM_2005.'" title="'.LAN_FORUM_2005.'" />');
 define('IMAGE_reply',					'<img src="'.img_path('reply.png').'" alt="'.LAN_FORUM_2006.'" title="'.LAN_FORUM_2006.'" />');
-define('IMAGE_rank_moderator_image',	'<img src="'.img_path('moderator.png', '', 'rank_moderator_image').'" alt="" />');
-define('IMAGE_rank_main_admin_image',	'<img src="'.img_path('main_admin.png', '', 'rank_main_admin_image').'" alt="" />');
-define('IMAGE_rank_admin_image', 		'<img src="'.img_path('admin.png', '', 'rank_admin_image').'" alt="" />');
 
-?>
+if(!defined('IMAGE_rank_moderator_image'))
+{
+	define('IMAGE_rank_moderator_image',	'<img src="'.img_path('moderator.png', '', 'rank_moderator_image').'" alt="" />');
+}
+if(!defined('IMAGE_rank_main_admin_image'))
+{
+	define('IMAGE_rank_main_admin_image',	'<img src="'.img_path('main_admin.png', '', 'rank_main_admin_image').'" alt="" />');
+}
+if(!defined('IMAGE_rank_admin_image'))
+{
+	define('IMAGE_rank_admin_image', 		'<img src="'.img_path('admin.png', '', 'rank_admin_image').'" alt="" />');
+}
+
+

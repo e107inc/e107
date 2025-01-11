@@ -44,25 +44,25 @@ if(!empty($parm))
 
 if(!$OTHERNEWS2_STYLE) 
 {
-	if(deftrue('BOOTSTRAP')) // v2.x
+	if(THEME_LEGACY !== true) // v2.x
 	{
 		if(!defined("OTHERNEWS_COLS"))
 		{
 			define("OTHERNEWS_COLS",false);
 		}
 
-		$template = e107::getTemplate('news', 'news_menu', 'other2');
+		$template = e107::getTemplate('news', 'news_menu', 'other2', true, true);
 		$OTHERNEWS2_STYLE = $template['item'];
 
 		if(!empty($parms['caption']))
 		{
 			if(isset($parms['caption'][e_LANGUAGE]))
 			{
-				$template['caption'] =  e107::getParser()->toHtml($parms['caption'][e_LANGUAGE], true,'TITLE');
+				$template['caption'] =  e107::getParser()->toHTML($parms['caption'][e_LANGUAGE], true,'TITLE');
 			}
 			else
 			{
-				$template['caption'] =  e107::getParser()->toHtml($parms['caption'], true,'TITLE');
+				$template['caption'] =  e107::getParser()->toHTML($parms['caption'], true,'TITLE');
 			}
 
 
@@ -76,7 +76,7 @@ if(!$OTHERNEWS2_STYLE)
 
 		if(!empty($parms['caption']))
 		{
-			$template['caption'] =  e107::getParser()->toHtml($parms['caption'],true,'TITLE');
+			$template['caption'] =  e107::getParser()->toHTML($parms['caption'],true,'TITLE');
 		}
 		else
 		{
@@ -103,6 +103,16 @@ if(!$OTHERNEWS2_STYLE)
 	}
 }
 
+
+$template['caption'] .= e107::getForm()->instantEditButton(e_ADMIN_ABS."newspost.php?searchquery=&filter_options=news_render_type__3", 'H');
+
+
+
+
+
+
+
+
 if(!defined("OTHERNEWS2_LIMIT")){
 //	define("OTHERNEWS2_LIMIT",5);
 }
@@ -121,7 +131,7 @@ if(!defined("OTHERNEWS2_THUMB")){
 }
 
 if(!defined("OTHERNEWS2_COLS")){
-	// define("OTHERNEWS2_COLS","1");
+	define("OTHERNEWS2_COLS",false);
 }
 
 if(!defined("OTHERNEWS2_CELL")){
@@ -130,6 +140,11 @@ if(!defined("OTHERNEWS2_CELL")){
 
 if(!defined("OTHERNEWS2_SPACING")){
 	// define("OTHERNEWS2_SPACING","0");
+}
+
+if(!isset($param))
+{
+	$param = array();
 }
 
 $param['itemlink'] 		= defset('OTHERNEWS2_ITEMLINK','');
@@ -203,4 +218,3 @@ if (e107::getDb()->gen($query))
 
 }
 
-?>

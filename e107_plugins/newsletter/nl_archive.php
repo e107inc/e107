@@ -10,13 +10,14 @@
  *
 */
 
-require_once('../../class2.php');
+require_once(__DIR__.'/../../class2.php');
 if (!e107::isInstalled('newsletter') || !ADMIN)
 {
 	e107::redirect();
 	exit(); 
 }
-include_lan(e_PLUGIN.'newsletter/languages/'.e_LANGUAGE.'.php');
+
+e107::plugLan('newsletter', null);
 require_once(HEADERF);
 
 $sql = e107::getDb();
@@ -27,13 +28,15 @@ if(e_QUERY)
 {
 	$tmp = explode('.', e_QUERY);
 	$action				= $tmp[0];
-	$action_parent_id	= varset(intval($tmp[1], 0));
-	$action_nl_id		= varset(intval($tmp[2], 0));
+	$parID              = intval($tmp[1], 0);
+	$nlID               = intval($tmp[2], 0);
+	$action_parent_id	= varset($parID);
+	$action_nl_id		= varset($nlID);
 	unset($tmp);
 }
 
 $page_size = 10; // Might become a preference setting later on
-$text .= "<div style='text-align: center; margin-left: auto; margin-right: auto; width: 100%;'>";
+$text = "<div style='text-align: center; margin-left: auto; margin-right: auto; width: 100%;'>";
 
 if (($action <> 'show' && $action <> 'showp') || ($action_parent_id == 0))
 { 	// Action 'show' displays initial page, 'showp' displays following pages
@@ -47,7 +50,7 @@ else
 	}
 	else
 	{
-		$limit_start = $_POST['limit_start'];
+		$limit_start = intval($_POST['limit_start']);
 	}
 	$nl_count = $sql->count('newsletter', '(*)', "WHERE newsletter_parent='".$action_parent_id."' AND newsletter_flag='1'");
 	if ($nl_count > 0)
@@ -94,7 +97,7 @@ else
 			if($limit_start + $page_size < $nl_count)
 			{
 				$text .= "<form id='nl' method='post' action='".e_PLUGIN."newsletter/nl_archive.php?showp.".$action_parent_id."'>
-				<br /><input class='btn btn-default button' name='submit' type='submit' value='View older newsletters in archive'/>
+				<br /><input class='btn btn-default btn-secondary button' name='submit' type='submit' value='View older newsletters in archive'/>
 				<input type='hidden' name='limit_start' value='".$limit_start."'/></form>";
 			}
 		}
@@ -116,7 +119,7 @@ else
 				// Display parent footer
 				$text .= "$parent_newsletter_footer<br />";
 				// Display back to newsletter overview button
-				$text .= "<br /><a href='javascript:history.go(-1);'><input class='btn btn-default button' type='submit' value='".NLLAN_71."'</a>";
+				$text .= "<br /><a href='javascript:history.go(-1);'><input class='btn btn-default btn-secondary button' type='submit' value='".defset('LAN_BACK', 'Back')."'</a>";
 			}
 			else
 			{
@@ -134,4 +137,3 @@ $text .= "</div>";
 
 $ns -> tablerender(NLLAN_67, $text);
 require_once(FOOTERF);
-?>

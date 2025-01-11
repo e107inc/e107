@@ -27,6 +27,7 @@ $ns = e107::getRender();
 
 require_once(HEADERF);
 
+
 $action = 'exit';
 if (e_QUERY)
 {
@@ -52,8 +53,7 @@ if ($action == 'exit')
 
 if ($action == "comments")
 {
-		//$sql->db_Select("user", "user_name", "user_id=".$id);
-		//$row = $sql->db_Fetch();
+
 		if($id == e107::getUser()->getId())
 		{
 			$user_name = USERNAME;
@@ -70,10 +70,8 @@ if ($action == "comments")
 	$sql2 = e107::getDb('sql2');
 	if($user_name)
 	{
-		$ccaption = UP_LAN_1.$user_name;
-		/*$sql->db_Select("user", "user_comments", "user_id=".$id);
-		$row = $sql->db_Fetch();
-		$ctotal = $row['user_comments'];*/
+		$ccaption = str_replace('[x]', $user_name, UP_LAN_1);
+
 		$ctotal = e107::getSystemUser($id, false)->getValue('comments', 0); // user_* getter shorthand
 		$data = $cobj->getCommentData(10, $from, 'comment_author_id ='.$id);
 	}
@@ -159,7 +157,8 @@ elseif ($action == 'forums')
 		exit;
 	}
 
-	$fcaption = UP_LAN_0.' '.$user_name;
+//	$fcaption = UP_LAN_0.' '.$user_name;
+	$fcaption = str_replace('[x]', $user_name, UP_LAN_0);
 /*
 	if (!$USERPOSTS_FORUM_TABLE)
 	{
@@ -225,10 +224,24 @@ elseif ($action == 'forums')
 			{
 				$vars->USERPOSTS_FORUM_TOPIC_PRE = UP_LAN_15.': ';
 			}
+
+
+			$row['forum_sef'] = $forum->getForumSef($row);
+			$row['thread_sef'] = $forum->getThreadSef($row);
+
+			$forumUrl = e107::url('forum', 'forum', $row);
+
+			$postNum = $forum->postGetPostNum($row['post_thread'], $row['post_id']);
+			$postPage = ceil($postNum / $forum->prefs->get('postspage'));
+
+			$postUrl = e107::url('forum', 'topic', $row, array('query' => array('p' => $postPage), 'fragment' => 'post-' . $row['post_id']));
+
+			if(!defined('IMODE')) define('IMODE', 'lite'); // BC
+
 			$vars->USERPOSTS_FORUM_ICON = "<img src='".e_PLUGIN."forum/images/".IMODE."/new_small.png' alt='' />";
-			$vars->USERPOSTS_FORUM_TOPIC_HREF_PRE = "<a href='".e107::getUrl()->create('forum/thread/post', array('id' =>$row['post_id']))."'>"; //$e107->url->getUrl('forum', 'thread', "func=post&id={$row['post_id']}")
+			$vars->USERPOSTS_FORUM_TOPIC_HREF_PRE = "<a href='".$postUrl."'>"; //$e107->url->getUrl('forum', 'thread', "func=post&id={$row['post_id']}")
 			$vars->USERPOSTS_FORUM_TOPIC = $tp->toHTML($row['thread_name'], true, 'USER_BODY', $id); 
-			$vars->USERPOSTS_FORUM_NAME_HREF_PRE = "<a href='".e107::getUrl()->create('forum/forum/view', array('id' => $row['forum_id']))."'>"; //$e107->url->getUrl('forum', 'forum', "func=view&id={$row['post_forum']}")
+			$vars->USERPOSTS_FORUM_NAME_HREF_PRE = "<a href='".$forumUrl."'>"; //$e107->url->getUrl('forum', 'forum', "func=view&id={$row['post_forum']}")
 			$vars->USERPOSTS_FORUM_NAME = $tp->toHTML($row['forum_name'], true, 'USER_BODY', $id);
 			$vars->USERPOSTS_FORUM_THREAD = $tp->toHTML($row['post_entry'], true, 'USER_BODY', $id);
 			$vars->USERPOSTS_FORUM_DATESTAMP = UP_LAN_11." ".$datestamp;
@@ -246,8 +259,8 @@ elseif ($action == 'forums')
 		if($vars->NEXTPREV) $vars->NEXTPREV =  str_replace('{USERPOSTS_NEXTPREV}', $vars->NEXTPREV, $USERPOSTS_TEMPLATE['np_table']);
 		$vars->USERPOSTS_FORUM_SEARCH_VALUE = htmlspecialchars($_POST['f_query'], ENT_QUOTES, CHARSET);
 		$vars->USERPOSTS_FORUM_SEARCH_FIELD = "<input class='tbox input' type='text' name='f_query' size='20' value='{$vars->USERPOSTS_FORUM_SEARCH_VALUE}' maxlength='50' />";
-		$vars->USERPOSTS_FORUM_SEARCH_BUTTON = "<input class='btn btn-default button' type='submit' name='fsearch' value='".UP_LAN_12."' />";
-		$vars->USERPOSTS_FORUM_SEARCH = "<input class='tbox' type='text' name='f_query' size='20' value='{$vars->USERPOSTS_FORUM_SEARCH_VALUE}' maxlength='50' /> <input class='btn btn-default button' type='submit' name='fsearch' value='".UP_LAN_12."' />";
+		$vars->USERPOSTS_FORUM_SEARCH_BUTTON = "<input class='btn btn-default btn-secondary button' type='submit' name='fsearch' value='".UP_LAN_12."' />";
+		$vars->USERPOSTS_FORUM_SEARCH = "<input class='tbox' type='text' name='f_query' size='20' value='{$vars->USERPOSTS_FORUM_SEARCH_VALUE}' maxlength='50' /> <input class='btn btn-default btn-secondary button' type='submit' name='fsearch' value='".UP_LAN_12."' />";
 
 		// $userposts_forum_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $USERPOSTS_FORUM_TABLE_START);
 		$userposts_forum_table_start = $tp->simpleParse($USERPOSTS_TEMPLATE['forum_table_start'], $vars);
@@ -268,6 +281,9 @@ else
 	e107::redirect();
 	exit;
 }
+
+
+
 
 require_once(FOOTERF);
 
@@ -300,4 +316,4 @@ function parse_userposts_comments_table($row, $template)
 	return e107::getParser()->simpleParse($template, $vars);
 }
 
-?>
+

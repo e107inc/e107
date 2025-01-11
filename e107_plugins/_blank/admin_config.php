@@ -8,14 +8,9 @@
  *
  * e107 blank Plugin
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/blank/admin_config.php,v $
- * $Revision$
- * $Date$
- * $Author$
- *
 */
 
-require_once("../../class2.php");
+require_once(__DIR__."/../../class2.php");
 if (!getperms("P"))
 {
 	e107::redirect('admin');
@@ -89,42 +84,28 @@ class plugin_blank_admin_ui extends e_admin_ui
 		 *
 		 * @var string
 		 */
-		protected $pluginName = 'blank';
+		protected $pluginName = '_blank';
 
 		/**
 		 * DB Table, table alias is supported
 		 * Example: 'r.blank'
 		 * @var string
 		 */
-		protected $table = "blank";
-
-		/**
-		 * If present this array will be used to build your list query
-		 * You can link fileds from $field array with 'table' parameter, which should equal to a key (table) from this array
-		 * 'leftField', 'rightField' and 'fields' attributes here are required, the rest is optional
-		 * Table alias is supported
-		 * Note:
-		 * - 'leftTable' could contain only table alias
-		 * - 'leftField' and 'rightField' shouldn't contain table aliases, they will be auto-added
-		 * - 'whereJoin' and 'where' should contain table aliases e.g. 'whereJoin' => 'AND u.user_ban=0'
-		 *
-		 * @var array [optional] table_name => array join parameters
-		 */
-		protected $tableJoin = array(
-			//'u.user' => array('leftField' => 'comment_author_id', 'rightField' => 'user_id', 'fields' => '*'/*, 'leftTable' => '', 'joinType' => 'LEFT JOIN', 'whereJoin' => '', 'where' => ''*/)
-		);
+		protected $table = "blank"; // must match _blank_sql.php
 
 		/**
 		 * This is only needed if you need to JOIN tables AND don't wanna use $tableJoin
-		 * Write your list query without any Order or Limit.
+		 * Write your list query without any Group, Order or Limit.
 		 *
 		 * @var string [optional]
 		 */
 		protected $listQry = "";
-		//
 
-		// optional - required only in case of e.g. tables JOIN. This also could be done with custom model (set it in init())
-		//protected $editQry = "SELECT * FROM #blank WHERE blank_id = {ID}";
+		protected $listOrder        = 'blank_id DESC';
+
+	//  protected $listGroup        = 'somefield';  // (optional: when needing control over JOINs)
+
+	//  protected $editQry = "SELECT * FROM #blank WHERE blank_id = {ID}";
 
 		// required - if no custom model is set in init() (primary id)
 		protected $pid = "blank_id";
@@ -132,14 +113,18 @@ class plugin_blank_admin_ui extends e_admin_ui
 		// optional
 		protected $perPage = 20;
 
-		// default - true - TODO - move to displaySettings
 		protected $batchDelete = true;
+		
 
-		// UNDER CONSTRUCTION
-		protected $displaySettings = array();
+	//	protected \$sortField		= 'somefield_order';
 
-		// UNDER CONSTRUCTION
-		protected $disallowPages = array('main/create', 'main/prefs');
+
+	//	protected \$sortParent      = 'somefield_parent';
+
+
+	//	protected \$treePrefix      = 'somefield_title';
+
+
 
 		//TODO change the blank_url type back to URL before blank.
 		// required
@@ -266,20 +251,24 @@ class plugin_blank_admin_ui extends e_admin_ui
 			'blank_id'					=> array('title'=> LAN_ID, 					'type' => 'number',		'data' => 'int',		'width'=>'5%',		'thclass' => '',  'class'=>'center',	'forced'=> TRUE, 'primary'=>TRUE/*, 'noedit'=>TRUE*/), //Primary ID is not editable
            	'blank_icon'				=> array('title'=> LAN_ICON, 			'type' => 'icon',		'data' => 'str',		'width'=>'5%',		'thclass' => '',	'forced'=> TRUE, 'primary'=>TRUE/*, 'noedit'=>TRUE*/), //Primary ID is not editable          
             'blank_type'	   			=> array('title'=> LAN_TYPE, 				'type' => 'method', 	'data' => 'str',		'width'=>'auto',	'thclass' => '', 'batch' => TRUE, 'filter'=>TRUE),
-			'blank_folder' 				=> array('title'=> 'Folder', 			'type' => 'text', 		'data' => 'str',		'width' => 'auto',	'thclass' => ''),
+			'blank_folder' 				=> array('title'=> 'Folder', 			'type' => 'dropdown', 		'data' => 'str',		'width' => 'auto',	'thclass' => '', 'writeParms'=>array('optArray'=>array('_NULL_'=>'Empty', 'opt1'=>'Option 1', 'opt2'=>'Option 2'))),
 			'blank_name' 				=> array('title'=> 'Name', 				'type' => 'text', 		'data' => 'str',		'width' => 'auto',	'thclass' => ''),
 			'blank_version' 			=> array('title'=> 'Version',			'type' => 'number', 		'data' => 'str',		'width' => 'auto',	'thclass' => ''),
-			'blank_author' 				=> array('title'=> LAN_AUTHOR,			'type' => 'text', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'),
-         	'blank_authorURL' 			=> array('title'=> "Url", 				'type' => 'url', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'),
-            'blank_date' 				=> array('title'=> LAN_DATE, 			'type' => 'datestamp', 	'data' => 'int',		'width' => 'auto',	'thclass' => '', 'readParms' => 'long', 'writeParms' => 'type=datetime'),
-			'blank_compatibility' 		=> array('title'=> 'Compatible',			'type' => 'text', 		'data' => 'str',		'width' => '10%',	'thclass' => 'center' ),
-			'blank_url' 				=> array('title'=> LAN_URL,		'type' => 'file', 		'data' => 'str',		'width' => '20%',	'thclass' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'parms' => 'truncate=30', 'validate' => false, 'help' => 'Enter blank URL here', 'error' => 'please, ener valid URL'),
-			'test_list_1'				=> array('title'=> 'test 1',			'type' => 'boolean', 		'data' => 'int',		'width' => '5%',	'thclass' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'noedit' => true),
+			'blank_author' 				=> array('title'=> LAN_AUTHOR,			'type' => 'user', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'),
+         	'blank_authorURL' 			=> array('title'=> LAN_URL, 			'type' => 'url', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'),
+            'blank_date' 				=> array('title'=> LAN_DATE, 			'type' => 'datestamp', 	'data' => 'int',		'width' => 'auto',	'thclass' => '', 'readParms' => 'long', 'writeParms' => array('type' => 'datetime')),
+			'blank_compatibility' 		=> array('title'=> 'Compatible',		'type' => 'text', 		'data' => 'str',		'width' => '10%',	'thclass' => 'center' ),
+			'blank_url' 				=> array('title'=> LAN_FILE,		        'type' => 'file', 		'data' => 'str',		'width' => '20%',	'thclass' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'readParms' => array('truncate' => 30), 'validate' => false, 'help' => 'Enter blank URL here', 'error' => 'please, enter valid URL'),
+			'blank_media' 				=> array('title'=> "Media",		        'type' => 'media', 		'data' => 'json',		'width' => '20%',	'thclass' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'readParms' => array('truncate' => 30), 'writeParms'=>array(/*'w'=>200, 'h'=>150,*/ 'image'=>1, 'video'=>1, 'youtube'=>1, 'audio'=>1, 'glyph'=>1),  'validate' => false),
+
+			'test_list_1'				=> array('title'=> 'test 1',			'type' => 'boolean', 		'data' => false,		'width' => '5%',	'thclass' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'noedit' => true),
+			'blank_class'               => array('title'=> LAN_VISIBILITY,      'type' => 'userclass',  'data'=>'int', 'inline'=>true, 'filter'=>true, 'batch'=>true, 'width'=>'auto'),
+
 			'options' 					=> array('title'=> LAN_OPTIONS, 		'type' => null, 		'data' => null,			'width' => '10%',	'thclass' => 'center last', 'class' => 'center last', 'forced'=>TRUE)
 		);
 
 		//required - default column user prefs
-		protected $fieldpref = array('checkboxes', 'blank_id', 'blank_type', 'blank_url', 'blank_compatibility', 'options');
+		protected $fieldpref = array('checkboxes', 'blank_id', 'blank_date', 'blank_type', 'blank_url', 'blank_compatibility', 'blank_class', 'options');
 
 		// FORMAT field_name=>type - optional if fields 'data' attribute is set or if custom model is set in init()
 		/*protected $dataFields = array();*/
@@ -293,12 +282,17 @@ class plugin_blank_admin_ui extends e_admin_ui
 		protected $prefs = array(
 			'pref_type'	   				=> array('title'=> 'type', 'type'=>'text', 'data' => 'string', 'validate' => true),
 			'pref_folder' 				=> array('title'=> 'folder', 'type' => 'boolean', 'data' => 'integer'),
-			'pref_name' 				=> array('title'=> 'name', 'type' => 'text', 'data' => 'string', 'validate' => 'regex', 'rule' => '#^[\w]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')
+			'pref_name' 				=> array('title'=> 'name', 'type' => 'text', 'data' => 'string', 'validate' => 'regex', 'rule' => '#^[\w]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore'),
+			'pref_classes' 				=> array('title'=> 'classes', 'type' => 'userclasses', 'inline'=>true,)
+
 		);
 
 		// optional
 		public function init()
 		{
+			$pref = e107::pref('_blank');
+			e107::getDebug()->log($pref);
+
 		}
 		
 		
@@ -308,6 +302,21 @@ class plugin_blank_admin_ui extends e_admin_ui
 			$text = "Hello World!";
 			$ns->tablerender("Hello",$text);	
 			
+		}
+	
+		// left-panel help menu area. (replaces e_help.php used in old plugins)	
+		public function renderHelp()
+		{
+			 $caption = LAN_HELP;
+			 $text = 'Some help text';
+
+			return array('caption'=> $caption,'text'=> $text);
+
+		}
+
+		public function beforePrefsSave($new_data, $old_data)
+		{
+			// return $new_data;
 		}
 }
 
@@ -381,4 +390,3 @@ function headerjs() // needed for the checkboxes - how can we remove the need to
 	return e107::getAdminUI()->getHeader();
 }
 */
-?>

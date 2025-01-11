@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -19,19 +19,30 @@ if (!defined('e107_INIT'))
 	exit;
 }
 
+
+e107::getDebug()->logTime('(Start auth.php)');
+
 define('e_CAPTCHA_FONTCOLOR','#F9A533');
 
-
 // Required for a clean v1.x -> v2 upgrade. 
-$core = e107::getConfig('core'); 		
-if($core->get('admintheme') != 'bootstrap3')
+$core = e107::getConfig();
+$adminTheme = $core->get('admintheme');
+if($adminTheme !== 'bootstrap3'/* && $adminTheme !== 'bootstrap5'*/)
 {
 	$core->update('admintheme','bootstrap3');
 	$core->update('adminstyle','infopanel');
-	$core->update('admincss','admin_dark.css');
+	$core->update('admincss','css/modern-light.css');
 	$core->set('e_jslib_core',array('prototype' => 'none', 'jquery'=> 'auto'));
 	$core->save();	
 	e107::getRedirect()->redirect(e_SELF);		
+}
+
+$admincss = trim($core->get('admincss'));
+if(empty($admincss) || $admincss === 'style.css'|| $admincss === 'admin_dark.css' || $admincss === 'admin_light.css')
+{
+	$core->update('admincss','css/modern-light.css');
+	$core->save(false,true);
+	e107::getRedirect()->redirect(e_SELF);
 }
 
 // Check Admin-Perms for current language and redirect if necessary. 
@@ -42,6 +53,11 @@ if(USER && !getperms('0') && vartrue($pref['multilanguage']) && !getperms(e_LANG
 	$tmp = explode(".",ADMINPERMS);
 	foreach($tmp as $ln)
 	{
+		if(strlen($ln) < 3) // not a language perm.
+		{
+			continue;
+		}
+
 		if($lng->isValid($ln))
 		{
 			$redirect = deftrue("MULTILANG_SUBDOMAIN") ? $lng->subdomainUrl($ln) : e_SELF."?elan=".$ln;
@@ -66,9 +82,12 @@ if (ADMIN)
 		// XXX LOGIN AS Temporary solution, we need something smarter, e.g. reserved message stack 'admin' which will be always printed
 		// inside admin area
 		if(e107::getUser()->getSessionDataAs())
-		{ // TODO - lan
+		{  
 			$asuser = e107::getSystemUser(e107::getUser()->getSessionDataAs(), false);
-			e107::getMessage()->addInfo('Successfully logged in as '.($asuser->getId()  ? $asuser->getName().' ('.$asuser->getValue('email').')' : 'unknown'). ' <a href="'.e_ADMIN_ABS.'users.php?mode=main&amp;action=logoutas">[logout]</a>');
+			
+			$lanVars = array ('x' => ($asuser->getId() ? $asuser->getName().' ('.$asuser->getValue('email').')' : 'unknown')) ;
+			e107::getMessage()->addInfo(e107::getParser()->lanVars(ADLAN_164, $lanVars).' <a href="'.e_ADMIN_ABS.'users.php?mode=main&amp;action=logoutas">['.LAN_LOGOUT.']</a>');
+			
 		}
 		// NEW, legacy 3rd party code fix, header called inside the footer o.O
 		if(deftrue('e_ADMIN_UI'))
@@ -95,82 +114,36 @@ else
 	if (e_AJAX_REQUEST)
 	{
 		require_once (e_HANDLER.'js_helper.php');
-		e_jshelper::sendAjaxError(403, ADLAN_86, ADLAN_87, true);
+		e_jshelper::sendAjaxError(403, ADLAN_86, ADLAN_87);
 	}
 	
 	require_once(e_ADMIN.'boot.php');
-	
+
 	$sec_img = e107::getSecureImg();
 
 	$use_imagecode = (vartrue($pref['admincode']) && extension_loaded("gd"));
 
-	if ($_POST['authsubmit'])
+	// login check.
+	if(!empty($_POST['authsubmit']))
 	{
-		$obj = new auth;
-
-		if ($use_imagecode)
-		{	
-			if ($sec_img->invalidCode($_POST['rand_num'], $_POST['code_verify']))
-			{
-				e107::getRedirect()->redirect('admin.php?failed');
-				exit;
-			//	echo "<script type='text/javascript'>document.location.href='../index.php'</script>\n";
-			//	header("location: ../index.php");
-			//	exit;
-			}
-		}
-
-	//	require_once (e_HANDLER.'user_handler.php');
-		$row = $authresult = $obj->authcheck($_POST['authname'], $_POST['authpass'], varset($_POST['hashchallenge'], ''));
-
-		if ($row[0] == "authfail")
+		if(e107::getUser()->login($_POST['authname'], $_POST['authpass'], false, varset($_POST['hashchallenge'])) !== false)
 		{
-			$admin_log->e_log_event(4, __FILE__."|".__FUNCTION__."@".__LINE__, "LOGIN", LAN_ROLL_LOG_11, "U: ".$tp->toDB($_POST['authname']), FALSE, LOG_TO_ROLLING);
-			echo "<script type='text/javascript'>document.location.href='../index.php'</script>\n";
-
-			e107::getRedirect()->redirect('admin.php?failed');
-			exit;
+			e107::getRedirect()->go('admin'); // successful login.
 		}
 		else
 		{
-			$cookieval = $row['user_id'].".".md5($row['user_password']);
-
-			//	  $sql->db_Select("user", "*", "user_name='".$tp -> toDB($_POST['authname'])."'");
-			//	  list($user_id, $user_name, $userpass) = $sql->db_Fetch();
-
-			// Calculate class membership - needed for a couple of things
-			// Problem is that USERCLASS_LIST just contains 'guest' and 'everyone' at this point
-			$class_list = explode(',', $row['user_class']);
-			if ($row['user_admin'] && strlen($row['user_perms']))
-			{
-				$class_list[] = e_UC_ADMIN;
-				if (strpos($row['user_perms'], '0') === 0)
-				{
-					$class_list[] = e_UC_MAINADMIN;
-				}
-			}
-			$class_list[] = e_UC_MEMBER;
-			$class_list[] = e_UC_PUBLIC;
-
-
-			if (in_array(varset($pref['user_audit_class'], ''), $class_list))
-			{
-				e107::getAdminLog()->user_audit(USER_AUDIT_LOGIN, 'Login via admin page', $row['user_id'], $row['user_name']);
-			}
-
-			$edata_li = array("user_id"=>$row['user_id'], "user_name"=>$row['user_name'], 'class_list'=>implode(',', $class_list), 'user_admin'=> $row['user_admin']);
-			
-			// Fix - set cookie before login trigger
-			session_set(e_COOKIE, $cookieval, (time() + 3600 * 24 * 30));
-			
-		
-			// ---
-			
-			e107::getEvent()->trigger("login", $edata_li);
-			e107::getRedirect()->redirect(e_ADMIN_ABS.'admin.php');
-			//echo "<script type='text/javascript'>document.location.href='admin.php'</script>\n";
+			e107::coreLan('log_messages', true);
+			e107::getLog()->addEvent(4, __FILE__."|".__FUNCTION__."@".__LINE__, "LOGIN", LAN_ROLL_LOG_11, "U: ".e107::getParser()->toDB($_POST['authname']), FALSE, LOG_TO_ROLLING);
 		}
 	}
+
+
+
+
+
+
+
+
 
 	$e_sub_cat = 'logout';
 	if (ADMIN == FALSE)
@@ -188,7 +161,7 @@ else
 		
 			body 				{ 	text-align: left; font-size:15px; line-height:1.5em; font-weight:normal; 
 									font-family:Arial, Helvetica, sans-serif; background-attachment: scroll; 
-									background-color: rgb(47, 47, 47); color: rgb(198, 198, 198);
+									/* background-color: rgb(47, 47, 47); color: rgb(198, 198, 198); */
 									
 									background-repeat: no-repeat; background-size: auto auto 
 								}
@@ -199,7 +172,8 @@ else
 			.field input		{	padding:5px; 
 								
 								}
-			
+			i.s-message-icon     { display: none }
+			.s-message-title    { display: none } 
 			.field input:focus	{
 									
 								}
@@ -251,12 +225,15 @@ else
 			
 			h2					{ text-align: center; color: #FAAD3D;  }
 			
-			#username			{background: url(".e_IMAGE."admin_images/admins_16.png) no-repeat scroll 7px 9px; padding:7px; padding-left:30px; width:80%; max-width:218px; }
+			#username           { background: url(".e_IMAGE."admin_images/admins_16.png) no-repeat scroll 7px 9px; padding:7px; padding-left:30px; width:80%; max-width:218px; }
 
-			#userpass			{background: url(".e_IMAGE."admin_images/lock_16.png) no-repeat scroll 7px 9px; padding:7px;padding-left:30px; width:80%; max-width:218px; }
+			#userpass           { background: url(".e_IMAGE."admin_images/lock_16.png) no-repeat scroll 7px 9px; padding:7px;padding-left:30px; width:80%; max-width:218px; }
 
 			#code-verify		{ width: 220px; padding: 7px; margin-left: auto; margin-right: auto; }
 
+			input, input:focus, 
+			input:hover         { color: rgb(238, 238, 238); background-color: #222222 !important }
+			
 			input[disabled] 	{ color: silver;	}
 			button[disabled] span	{	color: silver;	}
 			.title_clean		{ display:none; }
@@ -292,30 +269,20 @@ class auth
 	// Start Clean 
 	// NOTE: this should NOT be a template of the admin-template, however themes may style it using css. 
 	
-		$class = (e_QUERY == 'failed') ? "class='e-shake'" : "";
-
-
-
 		$text = "<form id='admin-login' method='post' action='".e_SELF."' {$incChap} >
-		<div id='logo' ><img src='".e_IMAGE."logo_template_large.png' alt='login' /></div>
+		<div id='logo' ><img src='".e_IMAGE."logo_template_large.png' alt='".LAN_LOGIN."' /></div>
 		<div id='login-admin' class='center'>
 		<div>";
 
-		if(e_QUERY == 'failed')
-		{
-			e107::lan('core', 'login');
-			$text .= "<div class='alert alert-danger'>".LAN_LOGIN_21."</div>";
-			$text .= "<script type='text/javascript'>
-				window.setTimeout(function() {
-			    $('.alert').fadeTo(500, 0).slideUp(500, function(){
-			        $(this).remove();
-			    });
-			}, 5000);
-			</script>";
-
-		}
-
-
+		e107::lan('core', 'login');
+		$text .= e107::getMessage()->render(); // see e107_handlers/login.php L622
+		$text .= "<script>
+			window.setTimeout(function() {
+		    $('.alert').fadeTo(500, 0).slideUp(500, function(){
+		        $(this).remove();
+		    });
+		}, 7000);
+		</script>";
 
 		$text .= "
 		<div class='panel well panel-primary'>
@@ -334,15 +301,15 @@ class auth
 		    	<div class='field-help' data-placement='right'>".LAN_PWD_REQUIRED."</div>
 		    </div>";
 		
-		if ($use_imagecode)
-		{
-			$text .= "
-			<div class='field'>
-				<label for='code-verify'>".LAN_ENTER_CODE."</label>"
-				.$sec_img->renderImage().
-				$sec_img->renderInput()."	
-			</div>";
-		}
+			if ($use_imagecode)
+			{
+				$text .= "
+				<div class='field'>
+					<label for='code-verify'>".LAN_ENTER_CODE."</label>"
+					.$sec_img->renderImage().
+					$sec_img->renderInput()."	
+				</div>";
+			}
 			    
 		    $text .= "<div class='admin-submit'>"
 		       	.$frm->admin_button('authsubmit',ADLAN_91,'login');				
@@ -360,95 +327,11 @@ class auth
 		    
 		e107::getRender()->tablerender("", $text, 'admin-login');
 		echo "<div class='row-fluid'>
-			<div class='center' style='margin-top:25%; color:silver'><span style='padding:0 40px 0 0px;'><a href='http://e107.org'>Powered by e107</a></span> <a href='".e_BASE."index.php'>Return to Website</a></div>
+						<div class='center' style='margin-top:25%; color:silver'><span style='padding:0 40px 0 0px;'><a target='_blank' href='https://e107.org'>".ADLAN_165."</a></span> <a href='".e_BASE."index.php'>".ADLAN_166."</a></div>
 			</div>";
 	}
 
 
-	/**
-	 * Admin auth check
-	 * @param string $authname, entered name
-	 * @param string $authpass, entered pass
-	 * @param object $authresponse [optional]
-	 * @return boolean if fail, else result array
-	 */
-	public function authcheck($authname, $authpass, $authresponse = '')
-	{
-		$pref 		= e107::getPref();
-		$tp 		= e107::getParser();
-		$sql_auth 	= e107::getDb('sql_auth');
-		$user_info 	= e107::getUserSession();
-		$reason 	= '';
-
-		$authname = $tp->toDB(preg_replace("/\sOR\s|\=|\#/", "", trim($authname)));
-		$authpass = trim($authpass);
-
-		if ((($authpass == '') && ($authresponse == '')) || ($authname == ''))
-			$reason = 'np';
-		if (strlen($authname) > varset($pref['loginname_maxlength'], 30))
-			$reason = 'lu';
-
-		if (!$reason)
-		{
-			if ($sql_auth->db_Select("user", "*", "user_loginname='{$authname}' AND user_admin='1' "))
-			{
-				$row = $sql_auth->db_Fetch();
-			}
-			elseif ($sql_auth->db_Select("user", "*", "user_name='{$authname}' AND user_admin='1' "))
-			{
-				$row = $sql_auth->db_Fetch();
-				$authname = $row['user_loginname'];
-			}
-			else
-			{
-				$reason = 'iu';
-			}
-		}
-
-		if (!$reason && ($row['user_id'])) // Can validate password
-		{
-			$session = e107::getSession();
-			if (($authresponse && $session->is('prevchallenge')) && ($authresponse != $session->get('prevchallenge')))
-			{ // Verify using CHAP (can't handle login by email address - only loginname - although with this code it does still work if the password is stored unsalted)
-				/*
-				$title = 'Login via admin';
-				$extra_text = 'C: '.$session->get('challenge').' PC: '.$session->get('prevchallenge').' PPC: '.$session->get('prevprevchallenge').' R:'.$authresponse.' P:'.$row['user_password'];
-				$text = 'CHAP: '.$username.' ('.$extra_text.')';
-				$title = e107::getParser()->toDB($title);
-				$text  = e107::getParser()->toDB($text);
-				e107::getAdminLog()->e_log_event(4, __FILE__."|".__FUNCTION__."@".__LINE__, "LOGIN", $title, $text, FALSE, LOG_TO_ROLLING);
-
-				$logfp = fopen(e_LOG.'authlog.txt', 'a+'); fwrite($logfp, $title.': '.$text."\n"); fclose($logfp);
-				*/
-				
-				if (($pass_result = $user_info->CheckCHAP($session->get('prevchallenge'), $authresponse, $authname, $row['user_password'])) !== PASSWORD_INVALID)
-				{
-					return $row;
-				}
-			}
-			else
-			{ // Plaintext password
-				/*
-				$title = 'Login via admin';
-				$extra_text = 'C: '.$session->get('challenge').' PC: '.$session->get('prevchallenge').' PPC: '.$session->get('prevprevchallenge').' R:'.$authresponse.' P:'.$row['user_password'];
-				$text = 'STD: '.$username.' ('.$extra_text.')';
-				$title = e107::getParser()->toDB($title);
-				$text  = e107::getParser()->toDB($text);
-				e107::getAdminLog()->e_log_event(4, __FILE__."|".__FUNCTION__."@".__LINE__, "LOGIN", $title, $text, FALSE, LOG_TO_ROLLING);
-
-//				$logfp = fopen(e_LOG.'authlog.txt', 'a+'); fwrite($logfp, $title.': '.$text."\n"); fclose($logfp);
-				*/
-
-				if (($pass_result = $user_info->CheckPassword($authpass, $authname, $row['user_password'])) !== PASSWORD_INVALID)
-				{
-					return $row;
-				}
-
-			}
-		}
-		return array("authfail", "reason"=>$reason);
-	}
 }
 
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-?>
+

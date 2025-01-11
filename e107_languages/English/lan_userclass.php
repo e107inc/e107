@@ -20,8 +20,7 @@ define("UC_LAN_7", "Forum Moderators");
 define("UC_LAN_8","Admins and Mods");
 define("UC_LAN_9","New Users");
 define("UC_LAN_10", "Search Bots");
-define("UC_LAN_INVERT", "Not --CLASS--");
+define("UC_LAN_INVERT", "Not [x]");
 define("UC_LAN_INVERTLABEL", "Everyone but..");
 
 
-?>

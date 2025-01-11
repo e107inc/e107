@@ -10,7 +10,7 @@
  *
 */
 
-require_once('../class2.php');
+require_once(__DIR__.'/../class2.php');
 if (!getperms('3'))
 {
 	e107::redirect('admin');
@@ -23,7 +23,7 @@ if(isset($_POST['go_back']))
 	exit;
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+e107::coreLan('administrator', true);
 
 $e_sub_cat = 'admin';
 require_once('auth.php');
@@ -64,8 +64,8 @@ if (isset($_POST['edit_admin']) || $action == "edit")
 {
 	$edid = array_keys($_POST['edit_admin']);
     $theid = intval(($sub_action < 0) ? $edid[0] : $sub_action);
-	if ((!$sql->db_Select("user", "*", "user_id=".$theid))
-		|| !($row = $sql->db_Fetch()))
+	if ((!$sql->select("user", "*", "user_id=".$theid))
+		|| !($row = $sql->fetch()))
 	{
 		$mes->addDebug("Couldn't find user ID: {$theid}, {$sub_action}, {$edid[0]}");	// Debug code - shouldn't be executed
 	}
@@ -76,8 +76,8 @@ if (isset($_POST['del_admin']) && count($_POST['del_admin']))
 {
 	$delid = array_keys($_POST['del_admin']);
 	$aID = intval($delid[0]);
-	$sql->db_Select("user", "*", "user_id= ".$aID);
-	$row = $sql->db_Fetch();
+	$sql->select("user", "*", "user_id= ".$aID);
+	$row = $sql->fetch();
 
 	if ($row['user_id'] == 1)
 	{	// Can't delete main admin
@@ -92,8 +92,8 @@ if (isset($_POST['del_admin']) && count($_POST['del_admin']))
 		exit;
 	}
 
-	$mes->addAuto($sql -> db_Update("user", "user_admin=0, user_perms='' WHERE user_id= ".$aID), 'update', ADMSLAN_61, LAN_DELETED_FAILED, false);
-	$logMsg = str_replace(array('--ID--', '--NAME--'),array($aID, $row['user_name']),ADMSLAN_73);
+	$mes->addAuto($sql->update("user", "user_admin=0, user_perms='' WHERE user_id= ".$aID), 'update', ADMSLAN_61, LAN_DELETED_FAILED, false);
+	$logMsg = str_replace(array('[x]', '[y]'),array($aID, $row['user_name']),ADMSLAN_73);
 	e107::getLog()->add('ADMIN_02',$logMsg,E_LOG_INFORMATIVE,'');
 }
 
@@ -119,7 +119,7 @@ function show_admins()
 
 	
 	
-	$sql->db_Select("user", "*", "user_admin='1'");
+	$sql->select("user", "*", "user_admin='1'");
 
 	$text = "
 	<form action='".e_SELF."' method='post' id='del_administrator'>
@@ -156,11 +156,11 @@ function show_admins()
 						</td>
 						<td class='center'>
 		";
-		if($row['user_id'] != "1")
+		if($row['user_id'] != "1" && intval($row['user_id']) !== USERID)
 		{
     		$text .= "
 							".$frm->submit_image("edit_admin[{$row['user_id']}]", 'edit', 'edit', LAN_EDIT)."
-							".$frm->submit_image("del_admin[{$row['user_id']}]", 'del', 'delete', $tp->toJS(ADMSLAN_59."? [".$row['user_name']."]"))."
+							".$frm->submit_image("del_admin[{$row['user_id']}]", 'del', 'delete', ADMSLAN_59."? [".$row['user_name']."]")."
 
 			";
     	}
@@ -200,11 +200,11 @@ function headerjs()
 /*
 	require_once(e_HANDLER.'js_helper.php');
 	$ret = "
-		<script type='text/javascript'>
+		<script>
 			//add required core lan - delete confirm message
 			('".LAN_JSCONFIRM."').addModLan('core', 'delete_confirm');
 		</script>
-		<script type='text/javascript' src='".e_JS."core/admin.js'></script>
+		<script src='".e_JS."core/admin.js'></script>
 	";
 
 	return $ret;*/

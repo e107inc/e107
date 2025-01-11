@@ -14,6 +14,14 @@ e107::lan('social',false, true);
 class social_shortcodes extends e_shortcode
 {
 
+	public $var;
+
+
+
+	private $xurl;
+
+
+
 
 	public function getProviders()
 	{
@@ -28,7 +36,7 @@ class social_shortcodes extends e_shortcode
 			'facebook-like'		=> array('icon' => 'e-social-thumbs-up',	'title'=> $tp->lanVars(LAN_SOCIAL_001, "Facebook"),	    'url' => "http://www.facebook.com/plugins/like.php?href=[u]"),
 			'facebook-share'	=> array('icon' => 'e-social-facebook',		'title'=> $tp->lanVars(LAN_SOCIAL_000, "Facebook"),	    'url' => "http://www.facebook.com/sharer.php?u=[u]&t=[t]"),
 			'twitter'			=> array('icon' => 'e-social-twitter',		'title'=> $tp->lanVars(LAN_SOCIAL_000, "Twitter"),	    'url' => "http://twitter.com/share?url=[u]&text=[t]"),
-			'google-plus1'		=> array('icon' => 'e-social-gplus',		'title'=> LAN_SOCIAL_003,		                        'url' => "https://apis.google.com/_/+1/fastbutton?usegapi=1&size=large&hl=en&url=[u]"),
+		//	'google-plus1'		=> array('icon' => 'e-social-gplus',		'title'=> LAN_SOCIAL_003,		                        'url' => "https://apis.google.com/_/+1/fastbutton?usegapi=1&size=large&hl=en&url=[u]"),
 
 			//	'google-plus'		=> array('icon' => 'fa-google-plus',		'title'=>"On Google Plus",		'url' => "https://plusone.google.com/_/+1/confirm?hl=en&url=[u]"),
 			'linkedin'			=> array('icon' => 'e-social-linkedin',		'title'=> $tp->lanVars(LAN_SOCIAL_000, "LinkedIn"),	    'url' => "http://www.linkedin.com/shareArticle?mini=true&url=[u]"),
@@ -52,45 +60,47 @@ class social_shortcodes extends e_shortcode
 
 
 
-
-
-
-		
-	public $var;	
 	/**
 	 * {XURL_ICONS: size=2x}
 	 * {XURL_ICONS: type=facebook,twitter,vimeo}
 	 */	
-	function sc_xurl_icons($parm='')
+	function sc_xurl_icons($parm=null)
 	{
-							
-		$social = array(
-			'rss'			=> array('href'=> (e107::isInstalled('rss_menu') ? e107::url('rss_menu', 'index', array('rss_url'=>'news')) : ''), 'title'=>'RSS/Atom Feed'),
-			'facebook'		=> array('href'=> deftrue('XURL_FACEBOOK'), 	'title'=>'Facebook'),
-			'twitter'		=> array('href'=> deftrue('XURL_TWITTER'),		'title'=>'Twitter'),
-			'google-plus'	=> array('href'=> deftrue('XURL_GOOGLE'),		'title'=>'Google Plus'),
-			'linkedin'		=> array('href'=> deftrue('XURL_LINKEDIN'),		'title'=>'LinkedIn'),
-			'github'		=> array('href'=> deftrue('XURL_GITHUB'),		'title'=>'Github'),
-			'pinterest'		=> array('href'=> deftrue('XURL_PINTEREST'),	'title'=>'Pinterest'),
-			'flickr'		=> array('href'=> deftrue('XURL_FLICKR'),		'title'=>'Flickr'),
-			'instagram'		=> array('href'=> deftrue('XURL_INSTAGRAM'),	'title'=>'Instagram'),
-			'youtube'		=> array('href'=> deftrue('XURL_YOUTUBE'),		'title'=>'YouTube'),
-			'vimeo'			=> array('href'=> deftrue('XURL_VIMEO'),		'title'=>'Vimeo')
-		);
- 			
-		
-	
-		$class      = (vartrue($parm['size'])) ?  'fa-'.$parm['size'] : '';
-		$tooltipPos = vartrue($parm['tip-pos'], 'top');
+		if(empty($this->xurl))
+		{
+			$this->xurl = e107::pref('core','xurl');
+		}
 
-		if(isset($parm['tip']))
+		$tp = e107::getParser();
+		$tmpl = !empty($parm['template']) ? $parm['template'] : 'default';
+
+		$template = e107::getTemplate('social','social_xurl', $tmpl);
+
+		if(empty($template)) // backup if the theme changes.
 		{
-			$tooltip = ($parm['tip'] == 'false' || empty($parm['tooltip'])) ? '' : 'e-tip';
+			$template = e107::getTemplate('social','social_xurl', 'default');
+		//	return (ADMIN) ? "Unable to load social template [".$tmpl."]" : ''; // NO LAN
 		}
-		else
+
+		$social = empty(e107::pref('social','xurl_rss')) ? [] : array('rss'=> array('href'=> (e107::isInstalled('rss_menu') ? e107::url('rss_menu', 'index', array('rss_url'=>'news')) : ''), 'title'=>'RSS/Atom Feed')	);
+
+		$json = file_get_contents(__DIR__."/xurls.json");
+		$xurls = e107::unserialize($json);
+		foreach($xurls as $k=>$val)
 		{
-			$tooltip = 'e-tip';
+			if(!empty($this->xurl[$k]))
+			{
+				$social[$k] = ['href'=> $this->xurl[$k],   'title'=>$val['label'] ];
+			}
 		}
+
+
+ 			
+		// print_a($social);
+
+
+		$class      = (isset($parm['class'])) ? (string) $parm['class'] : '';
+		$class      .= (!empty($parm['size'])) ?  'fa-'.$parm['size'] : '';
 
 		if(!empty($parm['type']))
 		{
@@ -98,7 +108,10 @@ class social_shortcodes extends e_shortcode
 			$tmp = explode(",",$parm['type']);
 			foreach($tmp as $v)
 			{
-				$newList[$v] = $social[$v];
+				if(isset($social[$v]))
+				{
+					$newList[$v] = $social[$v];
+				}
 
 			}
 
@@ -110,29 +123,81 @@ class social_shortcodes extends e_shortcode
 		foreach($social as $id => $data)
 		{
 
-			if($data['href'] != '')
+			if(!empty($data['href']))
 			{
+				$data['id'] = $id;
+				$data['class'] = $class;
 
-				 $text .= '<a rel="external" href="'.$data['href'].'" data-tooltip-position="'.$tooltipPos.'" class="'.$tooltip.' social-icon social-'.$id.'" title="'.$data['title'].'"><span class="fa fa-fw fa-'.$id.' '.$class.'"></span></a>';
-				 $text .= "\n";
+				$this->setVars($data);
+			//	 $text .= '<a rel="external" href="'.$data['href'].'" data-tooltip-position="'.$tooltipPos.'" class="'.$tooltip.' social-icon social-'.$id.'" title="'.$data['title'].'"><span class="fa fa-fw fa-'.$id.' '.$class.'"></span></a>';
+
+				$text .= $tp->parseTemplate($template['item'],true, $this);
+				$text .= "\n";
 			}
 		}
 
-		if($text !='')
+		if(!empty($text))
 		{
-			return 	'<p class="xurl-social-icons hidden-print">'.$text.'</p>';
+			return $tp->parseTemplate($template['start'],true). $text.$tp->parseTemplate($template['end'],true);
 		}
 
-	}	
+		return null;
 
+	}
+
+	// ----------- Internal Use only by sc_xurl_icons() ------------------
+
+	function sc_xurl_icons_href($parm=null)
+	{
+		return $this->var['href'];
+	}
+
+	function sc_xurl_icons_id($parm=null)
+	{
+		return $this->var['id'];
+	}
+
+	function sc_xurl_icons_title($parm=null)
+	{
+		return $this->var['title'];
+	}
+
+	function sc_xurl_icons_class($parm=null)
+	{
+		return $this->var['class'];
+	}
+
+	/** @experimental inline svg  - subject to removal at any time */
+	public function sc_xurl_icons_svg($parm=null)
+	{
+	//	$path = e_WEB.'lib/font-awesome/'.$this->fontawesome.'/svgs/brands/';
+
+		$path = e_PLUGIN."social/svg/".$this->var['id'].".svg";
+
+		if(!file_exists($path))
+		{
+			return null;
+		}
+
+		if($ret = file_get_contents($path))
+		{
+			$class = 'fa-'.$this->var['id'];
+			return str_replace('<svg', '<svg class="'.$class.'" role="img" aria-hidden="true" ', $ret);
+		}
+
+	}
+
+// ------------------------------------------------
 
 	function sc_social_login($parm=null)
 	{
-		$pref = e107::pref('core', 'social_login_active');
-		
+		$pref = e107::getUserProvider()->isSocialLoginEnabled();
+
+
+
 		if(empty($pref))
 		{
-			return; 
+			return null;
 		}
 		
 		$sc = e107::getScBatch('signup');
@@ -179,6 +244,55 @@ class social_shortcodes extends e_shortcode
 
 
 	/**
+	 * @param string $type provider key. eg. facebook, twitter etc.
+	 * @param string $urlScheme The URL scheme. @see getProviders 'url'
+	 * @param array  $data
+	 * @param string $data['title'] Title for the URL
+	 * @param string $data['description'] Description for the URL
+	 * @param string $data['media']
+	 * @param array $options Currently 'twitterAccount' and 'hashtags' are supported.
+	 * @return string
+	 */
+	public function getShareUrl($type, $urlScheme, $data=array(), $options=array())
+	{
+		$data = array('u'=> rawurlencode($data['url']), 't'=> rawurlencode($data['title']), 'd'	=> rawurlencode($data['description']), 'm' => rawurlencode($data['media']));
+
+		return $this->parseShareUrlScheme($type, $urlScheme, $data, $options);
+	}
+
+
+	/**
+	 * @param string $type
+	 * @param string $providerUrlScheme
+	 * @param array $data Array containing keys: 'u' (URL), 't' (Title), 'd' (Description)', 'm' (Media)
+	 * @param array $options (optional) 'hashtags' and 'twitterAccount'
+	 * @return string
+	 */
+	private function parseShareUrlScheme($type, $providerUrlScheme, $data=array(), $options=array())
+	{
+		$pUrl = str_replace("&","&amp;",$providerUrlScheme);
+
+		$shareUrl = e107::getParser()->lanVars($pUrl,$data);
+
+		if($type === 'twitter')
+		{
+			if(!empty($options['hashtags']))
+			{
+				$shareUrl .= "&amp;hashtags=".rawurlencode($options['hashtags']);
+			}
+
+			if(!empty($options['twitterAccount']))
+			{
+				$shareUrl .= "&amp;via=".$options['twitterAccount'];
+			}
+
+		}
+
+		return $shareUrl;
+
+	}
+
+	/**
 	 * {SOCIALSHARE: url=x&title=y}
 	 * @example {SOCIALSHARE: type=basic} - Show only Email, Facebook, Twitter and Google. 
 	 * @example {SOCIALSHARE: dropdown=1&type=basic} - Show only Email, Facebook, Twitter and Google in a drop-down button
@@ -187,9 +301,8 @@ class social_shortcodes extends e_shortcode
 	 * 	$socialArray = array('url'=>'your-url-here', 'title'=>'your-title-here');
 		e107::getScBatch('social')->setVars($socialArray);
 	 */
-	function sc_socialshare($parm='') // Designed so that no additional JS required. 
+	function sc_socialshare($parm=array()) // Designed so that no additional JS required.
 	{
-
 		$pref = e107::pref('social');
 
 		if(varset($pref['sharing_mode']) == 'off')
@@ -201,7 +314,8 @@ class social_shortcodes extends e_shortcode
 
 		$defaultUrl 	= vartrue($this->var['url'], e_REQUEST_URL);
 		$defaultTitle	= vartrue($this->var['title'], deftrue('e_PAGETITLE'). " | ". SITENAME);
-		$defaultDiz		= vartrue($this->var['description'], e107::getUrl()->response()->getMetaDescription());
+	//	$defaultDiz		= vartrue($this->var['description'], e107::getUrl()->response()->getMetaDescription());
+		$defaultDiz		= vartrue($this->var['description'], e107::getSingleton('eResponse')->getMetaDescription());
 		$defaultTags    = vartrue($this->var['tags'],'');
 		
 		$tp 			= e107::getParser();
@@ -210,7 +324,8 @@ class social_shortcodes extends e_shortcode
 
 		if(empty($parm['providers'])) // No parms so use prefs instead.
 		{
-			$parm['providers']  = !empty($pref['sharing_providers']) ? array_keys($pref['sharing_providers']) : array_keys($providers);
+			$defaultProviders = array('email' ,'facebook-like', 'facebook-share', 'twitter',  'pinterest' ,  'stumbleupon', 'reddit', 'digg' );
+			$parm['providers']  = !empty($pref['sharing_providers']) ? array_keys($pref['sharing_providers']) : $defaultProviders;
 		}
 		else
 		{
@@ -266,7 +381,7 @@ class social_shortcodes extends e_shortcode
 
 		$twitterAccount = basename(XURL_TWITTER);
 
-		$btnClass = varset($parm['btnClass'], 'btn btn-default social-share');
+		$btnClass = varset($parm['btnClass'], 'btn btn-default btn-secondary social-share');
 
 	//	return print_a($hashtags,true);
 		foreach($providers as $k=>$val)
@@ -277,32 +392,14 @@ class social_shortcodes extends e_shortcode
 				continue;
 			}
 
-
-
-			$pUrl = str_replace("&","&amp;",$val['url']);
-
-			$shareUrl = $tp->lanVars($pUrl,$data);
-
-			if($k == 'twitter')
-			{
-				if(!empty($hashtags))
-				{
-					$shareUrl .= "&amp;hashtags=".rawurlencode($hashtags);
-				}
-
-				if(!empty($twitterAccount))
-				{
-					$shareUrl .= "&amp;via=".$twitterAccount;
-				}
-
-			}
+			$shareUrl = $this->parseShareUrlScheme($k, $val['url'], $data, array('twitterAccount'=>$twitterAccount, 'hashtags'=>$hashtags));
 
 			if(!empty($val['mobile']))
 			{
 				$btnClass .= ' social-share-mobile';
 			}
 			
-			$opt[$k] = "<a class='".$btnClass." ".$tooltip." ".$butSize." social-share-".$k."'  target='_blank' title='".$val["title"]."' href='".$shareUrl."'>".$tp->toIcon($val["icon"], array('fw'=>1))."</a>";
+			$opt[$k] = "<a rel='noopener' class='".$btnClass." ".$tooltip." ".$butSize." social-share-".$k."'  target='_blank' title='".$val["title"]."' href='".$shareUrl."'>".$tp->toIcon($val["icon"], array('fw'=>1))."</a>";
 		}
 		
 		// Show only Email, Facebook, Twitter and Google. 
@@ -320,7 +417,10 @@ class social_shortcodes extends e_shortcode
 			$tmp = explode(",",$parm['type']);
 			foreach($tmp as $v)
 			{
-				$newlist[$v] = $opt[$v];
+				if(isset($opt[$v]))
+				{
+					$newlist[$v] = $opt[$v];
+				}
 			}
 
 			$opt = $newlist;
@@ -330,12 +430,12 @@ class social_shortcodes extends e_shortcode
 		
 		if(vartrue($parm['dropdown']))
 		{
-			$dir = ($parm['dropdown'] == 'right') ? 'pull-right' : '';
+			$dir = ($parm['dropdown'] == 'right') ? 'pull-right float-right' : '';
 			$class = varset($parm['class'],'btn-group');
 
 
 			$text = '<div class="social-share btn-group hidden-print '.$dir.'">
-				  <a class="'.$tooltip.' btn btn-dropdown btn-default btn-'.$size.' dropdown-toggle" data-toggle="dropdown" href="#" title="Share">'.$label.'</a>
+				  <a class="'.$tooltip.' btn btn-dropdown btn-default btn-secondary btn-'.$size.' dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" href="#" title="'.LAN_SOCIAL_204.'">'.$label.'</a>
 				 
 				  <ul class="dropdown-menu" role="menu" >
 				  
@@ -359,7 +459,7 @@ class social_shortcodes extends e_shortcode
 	/**
 	 * @example {TWITTER_TIMELINE: id=xxxxxxx&theme=light}
 	 */
-	function sc_twitter_timeline($parm)
+	function sc_twitter_timeline($parm=null)
 	{
 		$ns = e107::getRender();
 		
@@ -377,4 +477,3 @@ TMPL;
 
 }
 
-?>

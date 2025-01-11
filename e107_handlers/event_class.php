@@ -12,13 +12,16 @@
 if (!defined('e107_INIT')) { exit; }
 
 
-
+/**
+ *
+ */
 class e107_event
 {
 	var $functions = array();
 	var $includes = array();
 
 	protected $coreEvents;
+	private $triggered = array();
 
 	protected $oldCoreEvents = array(
 
@@ -29,7 +32,8 @@ class e107_event
 		'fileupload'	=> 'user_file_upload',
 		'newspost'		=> 'admin_news_created',
 		'newsupd'		=> 'admin_news_updated',
-		'newsdel'		=> 'admin_news_deleted'
+		'newsdel'		=> 'admin_news_deleted',
+		'userdatachanged' => 'user_profile_edit'
 	);
 
 
@@ -41,6 +45,9 @@ class e107_event
 	}
 
 
+	/**
+	 * @return void
+	 */
 	public function init()
 	{
 
@@ -67,8 +74,11 @@ class e107_event
 
 
 	}
-	
 
+
+	/**
+	 * @return array[]
+	 */
 	function coreList()
 	{
 
@@ -80,18 +90,20 @@ class e107_event
 				'user_signup_activated'		=> NU_LAN_3,
 				'login' 					=> NU_LAN_4,
 				'logout'					=> NU_LAN_5,
-				'user_xup_login'			=> 'User social login',
-				'user_xup_signup'			=> 'User social signup',
+				'user_xup_login'			=> NU_LAN_6,
+				'user_xup_signup'			=> NU_LAN_7,
 				'user_ban_flood'			=> NS_LAN_2,
-				'user_ban_failed_login'		=> 'IP banned for multiple failed login attempts',
-				'user_profile_display'      => "User views profile"
+				'user_ban_failed_login'		=> NS_LAN_3,
+				'user_profile_display'      => NU_LAN_8,
+				'user_profile_edit'         => NU_LAN_9,
+				'user_ip_changed'           => defset('NU_LAN_10', 'User IP changed')
 
 			),
 
 			'administrators'	=> array(
-				'admin_password_update'		=> "Administrator updates their password",
-				'admin_user_created'		=> 'Administrator creates a new user',
-				'admin_user_activated'		=> "Administrator activates a new user"
+				'admin_password_update'		=> NA_LAN_1,
+				'admin_user_created'		=> NA_LAN_2,
+				'admin_user_activated'		=> NA_LAN_3
 
 			),
 
@@ -100,7 +112,7 @@ class e107_event
 				'admin_news_created'	=> NN_LAN_3,
 				'admin_news_updated'	=> NN_LAN_4,
 				'admin_news_deleted'	=> NN_LAN_5,
-				'admin_news_notify'     => "News notification triggered", // TODO LAN
+				'admin_news_notify'     => NN_LAN_6,
 				'user_news_submit'		=> NN_LAN_2,
 
 			),
@@ -121,7 +133,10 @@ class e107_event
 
 		return $this->coreEvents; 	
 	}
-	
+
+	/**
+	 * @return string[]
+	 */
 	function oldCoreList()
 	{
 		return $this->oldCoreEvents; 	
@@ -138,37 +153,42 @@ class e107_event
 	 */
 	function register($eventname, $function, $include='')
 	{
-		$this->includes[$eventname] = array();
+
+
 		if(!isset($this->functions[$eventname]) || !in_array($function, $this->functions[$eventname]))
 		{
 			if (!empty($include))
 			{
 				$this->includes[$eventname][] = $include;
 			}
+
 			$this->functions[$eventname][] = $function;
 		}
 	}
 
 
-
+	/**
+	 * @return string
+	 */
 	function debug()
 	{
-		echo "<h3>Event Functions</h3>";
-		print_a($this->functions);
-		echo "<h3>Event Includes</h3>";
-		print_a($this->includes);	
-		
+		$text = "<h3>Event Functions</h3>";
+		$text .= print_a($this->functions,true);
+		$text .= "<h3>Event Includes</h3>";
+		$text .= print_a($this->includes,true);
+
+		return $text;
 	}
 
 
 	/**
-	 * Trigger event
+	 * Triggers an event
 	 *
 	 * @param string $eventname
 	 * @param mixed $data
 	 * @return mixed
 	 */
-	function trigger($eventname, $data='')
+	function trigger($eventname, $data=null)
 	{
 		/*if (isset($this->includes[$eventname]))
 		{
@@ -180,17 +200,26 @@ class e107_event
 				}
 			}
 		}*/
+
+	//	echo ($this->debug());
+		$this->triggered[$eventname] = true;
+
 		if (isset($this->functions[$eventname]))
 		{
+
+
 			foreach($this->functions[$eventname] as $i => $evt_func)
 			{
 				$location = '';
 				if(isset($this->includes[$eventname][$i])) //no checks
 				{
 					$location = $this->includes[$eventname][$i];
+
 					e107_include_once($location); 
 					unset($this->includes[$eventname][$i]);
+
 				}
+
 				if(is_array($evt_func)) //class, method
 				{
 					$class = $evt_func[0];
@@ -231,13 +260,21 @@ class e107_event
 		return (isset($ret) ? $ret : false);
 	}
 
-
+	/**
+	 * Returns true if an event has been triggered.
+	 * @param $eventname
+	 * @return bool
+	 */
+	public function triggered($eventname)
+	{
+		return !empty($this->triggered[$eventname]);
+	}
 
 
 	/**
 	 * @Deprecated
 	 */
-	function triggerAdminEvent($type, $parms=array())
+	function triggerAdminEvent($type, $parms=null)
 	{
 		global $pref;
 		if(!is_array($parms))
@@ -288,9 +325,13 @@ class e107_event
 	* @param string $function identifier for the calling function
 	* @return string $text string of rendered html, or message from db handler
 	*/
-	function triggerHook($data='')
+	/**
+	 * @param $data
+	 * @return array|string
+	 */
+	function triggerHook($data=array())
 	{
-		$text = ''; 
+		$text = null;
 		$e_event_list = e107::getPref('e_event_list');
 		
 		if(is_array($e_event_list))
@@ -346,4 +387,4 @@ class e107_event
 	}
 }
 
-?>
+

@@ -3,6 +3,11 @@
 
 function imagepreview_shortcode($parm)
 {
+	if(empty($parm))
+	{
+		return null;
+	}
+
 	list($name, $width, $height, $nothumb) = explode("|",$parm, 4);
 
 	$name = rawurldecode(varset($name));//avoid warnings

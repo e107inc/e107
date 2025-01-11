@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -15,7 +15,8 @@ if(!empty($_POST) && !isset($_POST['e-token']))
 	$_POST['e-token'] = '';
 } 
 require_once("class2.php");
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+e107::coreLan('submitnews');
+// e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 require_once(HEADERF);
 
@@ -27,7 +28,7 @@ if (!isset($pref['subnews_class']))
 
 if (!check_class($pref['subnews_class']))
 {
-	$ns->tablerender(NWSLAN_12, NWSLAN_11);
+	e107::getRender()->tablerender(NWSLAN_12, NWSLAN_11);
 	require_once(FOOTERF);
 	exit;
 }
@@ -91,8 +92,8 @@ class submitNews
 
 		$submitnews_user  = (USER ? USERNAME  : trim($tp->toDB($_POST['submitnews_name'])));
 		$submitnews_email = (USER ? USEREMAIL : trim(check_email($tp->toDB($_POST['submitnews_email']))));
-		$submitnews_title = $tp->toDB($_POST['submitnews_title']);
-		$submitnews_item  = $tp->toDB($_POST['submitnews_item']);
+		$submitnews_title = $tp->filter($_POST['submitnews_title']);
+		$submitnews_item  = $tp->filter($_POST['submitnews_item']);
 	//	$submitnews_item  = str_replace("src=&quot;e107_images", "src=&quot;".SITEURL."e107_images", $submitnews_item);
 		$submitnews_file  = "";
 		$submitnews_error = false;
@@ -105,7 +106,7 @@ class submitNews
 		}
 
 		// ==== Process File Upload ====
-		if (FILE_UPLOADS && !empty($_FILES['file_userfile']) && vartrue($pref['subnews_attach']) && vartrue($pref['upload_enabled']) && check_class($pref['upload_class']))
+		if (FILE_UPLOADS && !empty($_FILES['file_userfile']['name'][0]) && vartrue($pref['subnews_attach']) && vartrue($pref['upload_enabled']) && check_class($pref['upload_class']))
 		{
 			$uploaded = e107::getFile()->getUploaded(e_UPLOAD, 'unique', array('file_mask' => 'jpg,gif,png', 'max_file_count' => 3));
 
@@ -211,7 +212,7 @@ class submitNews
 		//	echo $mes->render();
 			unset($_POST);
 
-			// $ns->tablerender(LAN_133, "<div style='text-align:center'>".LAN_134."</div>");
+			// $ns->tablerender(LAN_THANK_YOU, "<div style='text-align:center'>".LAN_134."</div>");
 
 		}
 		else
@@ -250,13 +251,13 @@ class submitNews
 			{
 			    $text .= "
 				  <tr>
-				    <td style='width:20%' class='forumheader3'>".LAN_7."</td>
+				    <td style='width:20%' class='forumheader3'>".LAN_NAME."</td>
 				    <td style='width:80%' class='forumheader3'>
 				      <input class='tbox' type='text' name='submitnews_name' size='60' value='".$tp->toHTML($_POST['submitnew_name'],FALSE,'USER_TITLE')."' maxlength='100' required />
 				    </td>
 				  </tr>
 				  <tr>
-				    <td style='width:20%' class='forumheader3'>".LAN_112."</td>
+				    <td style='width:20%' class='forumheader3'>".LAN_EMAIL."</td>
 				    <td style='width:80%' class='forumheader3'>
 				      <input class='tbox' type='text' name='submitnews_email' size='60' value='".$tp->filter($_POST['submitnews_email'], 'email')."' maxlength='100' required />
 				    </td>
@@ -265,7 +266,7 @@ class submitNews
 
 			$text .= "
 			<tr>
-			  <td style='width:20%' class='forumheader3'>".NWSLAN_6.": </td>
+			  <td style='width:20%' class='forumheader3'>".LAN_CATEGORY."</td>
 				<td style='width:80%' class='forumheader3'>";
 
 			if (!$sql->select("news_category"))
@@ -308,8 +309,8 @@ class submitNews
 			*/
 			$fields = array();
 			$fields['submitnews_keywords']      = array('title'=>SUBNEWSLAN_9, 'type'=>'tags');
-			$fields['submitnews_summary']       = array('title'=>SUBNEWSLAN_10, 'type'=>'text', 'writeParms'=>array('maxlength'=>255, 'size'=>'xxlarge'));
-			$fields['submitnews_description']   = array('title'=>SUBNEWSLAN_11, 'type'=>'textarea','writeParms'=>array('placeholder'=>SUBNEWSLAN_12));
+			$fields['submitnews_summary']       = array('title'=>LAN_SUMMARY, 'type'=>'text', 'writeParms'=>array('maxlength'=>255, 'size'=>'xxlarge'));
+			$fields['submitnews_description']   = array('title'=>LAN_META_DESCRIPTION, 'type'=>'textarea','writeParms'=>array('placeholder'=>SUBNEWSLAN_12));
 			$fields['submitnews_media']         = array('title'=>SUBNEWSLAN_13, 'type'=>'method', 'method'=>'submitNewsForm::submitnews_media');
 
 
@@ -353,7 +354,7 @@ class submitNews
 			      <tr>
 			        <td colspan='2' style='text-align:center' class='forumheader'>
 			          <input class='btn btn-success button' type='submit' name='submitnews_submit' value='".LAN_136."' />
-			           <input type='hidden' name='e-token' value='".e_TOKEN."' />
+			           <input type='hidden' name='e-token' value='".defset('e_TOKEN')."' />
 			        </td>
 			      </tr>
 			    </table>
@@ -387,7 +388,7 @@ class submitNewsForm extends e_form
 		{
 			$help = (isset($placeholders[$i])) ? $placeholders[$i] : '';
 			$text .= "<div class='form-group'>";
-			$text .= $this->text('submitnews_media['.$i.']', $_POST['submitnews_media'][$i], 255, array('placeholder'=>$help) );
+			$text .= $this->text('submitnews_media['.$i.']', varset($_POST['submitnews_media'][$i]), 255, array('placeholder'=>$help) );
 			$text .= "</div>";
 		}
 

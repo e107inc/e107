@@ -22,18 +22,13 @@ if (!defined('e107_INIT')) { exit; }
 //register_shortcode('list_shortcodes', true);
 //initShortcodeClass('list_shortcodes');
 
-class list_shortcodes
+class list_shortcodes extends e_shortcode
 {
-	var $rc;
+	var $rc; // list class.
 	var $e107;
 	var $row;
-	var $list_pref;
-
-	function list_shortcodes()
-	{
-		$this->e107 = e107::getInstance();
-		$this->rc = '';
-	}
+	var $list_pref = array();
+	public $plugin;
 
 /*
 	function load_globals()
@@ -45,6 +40,12 @@ class list_shortcodes
 //		$tp->e_sc->scClasses['list_shortcodes']->list_pref = $rc->list_pref;
 	}
 */
+
+
+	function sc_list_css_id()
+	{
+		return eHelper::title2sef('list-new-'.$this->plugin, 'dashl');
+	}
 
 	function sc_list_date()
 	{
@@ -58,6 +59,11 @@ class list_shortcodes
 
 	function sc_list_heading()
 	{
+		if(empty($this->row['heading']))
+		{
+			return null;
+		}
+
 		return e107::getParser()->toHTML($this->row['heading'], true, "TITLE");
 	}
 
@@ -68,43 +74,73 @@ class list_shortcodes
 
 	function sc_list_category()
 	{
+		if(empty($this->row['category']))
+		{
+			return null;
+		}
+
 		return e107::getParser()->toHTML($this->row['category'], true, "");
 	}
 
 	function sc_list_info()
 	{
+		if(empty($this->row['info']))
+		{
+			return null;
+		}
+
 		return e107::getParser()->toHTML($this->row['info'], true, "");
 	}
 
 	function sc_list_caption()
 	{
+		if(empty($this->rc->data) || empty($this->rc->data['caption']))
+		{
+			return null;
+		}
+
 		return e107::getParser()->toHTML($this->rc->data['caption'], true, "");
 	}
 
 	function sc_list_displaystyle()
 	{
 		//open sections if content exists ? yes if true, else use individual setting of section
-		return (vartrue($this->list_pref[$this->rc->mode."_openifrecords"]) && is_array($this->rc->data['records']) ? "" : $this->rc->data['display']);
+		$mode = $this->rc->mode."_openifrecords";
+		return (!empty($this->list_pref[$mode]) && isset($this->rc->data['records']) &&  is_array($this->rc->data['records'])) ? "" : varset($this->rc->data['display']);
 	}
 
 	function sc_list_col_cols()
 	{
+		if(empty($this->list_pref[$this->rc->mode."_colomn"]))
+		{
+			return null;
+		}
+
 		return $this->list_pref[$this->rc->mode."_colomn"];
 	}
 
 	function sc_list_col_welcometext()
 	{
+		if(empty($this->list_pref[$this->rc->mode."_welcometext"]))
+		{
+			return null;
+		}
+
 		return e107::getParser()->toHTML($this->list_pref[$this->rc->mode."_welcometext"], true, "");
 	}
 
 	function sc_list_col_cellwidth()
 	{
+		if(empty($this->list_pref[$this->rc->mode."_colomn"]))
+		{
+			return 25;
+		}
+
 		return round((100/$this->list_pref[$this->rc->mode."_colomn"]),0);
 	}
 
 	function sc_list_timelapse()
 	{
-		return $this->row['timelapse'];
+		return varset($this->row['timelapse']);
 	}
 }
-?>

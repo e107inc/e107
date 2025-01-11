@@ -1,0 +1,463 @@
+/*   
+	Kubrick v1.2.5  for  e107
+	http://binarybonsai.com/kubrick/
+	This theme was designed and built by Michael Heilemann,
+	whose blog you will find at http://binarybonsai.com/
+	The CSS, XHTML and design is released under GPL:
+	http://www.opensource.org/licenses/gpl-license.php
+	Maintainer: William Moffett [Que~]
+*/
+
+/* BEGIN TYPOGRAPHY & COLORS */
+body {
+	margin: 0;
+	padding: 0; 
+	font-size: 62.5%; /* Resets 1em to 10px */
+	font-family: 'Lucida Grande', Verdana, Arial, Sans-Serif;
+	color: #333;
+	text-align: center;
+	background:#d5d6d7 url("images/kubrickbgcolor.jpg");
+}
+
+a {
+	color: #06c;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #147;
+	text-decoration: none;
+}
+
+h1 {
+	font-size: 4em;
+}
+
+h2 {
+	font-size: 1.6em;
+	color: #333;
+}
+
+h3 {
+	font-size: 1.3em;
+}
+
+h1, h2, h3 {
+	font-family: 'Trebuchet MS', 'Lucida Grande', Verdana, Arial, Sans-Serif;
+	font-weight: bold;
+}
+
+td {
+    background: none;
+	font-family: tahoma, verdana, arial, helvetica, sans-serif;
+	font-size: 10px;
+	font-style: normal;
+	color:#5d6e75;
+	padding: 0px;
+	text-align:left;
+}
+
+acronym, abbr, span.caps {
+	cursor: help;
+	}
+
+acronym, abbr {
+	border-bottom: 1px dashed #999;
+	}
+
+blockquote {
+	margin: 15px 30px 0 10px;
+	padding-left: 20px;
+	border-left: 5px solid #ddd;
+	}
+
+blockquote cite {
+	margin: 5px 0 0;
+	display: block;
+	}
+
+hr {
+	display: none;
+	}
+
+a img {
+	border: none;
+	}
+
+.linkspage_button{
+	border:0px;
+}
+
+.hidden{
+	display:none;
+}
+
+/* BEGIN LAYOUT */
+
+#page {
+	margin: 20px auto;
+	padding: 0;
+	width: 760px;
+	border: 1px solid #959596;
+	text-align: left;
+	background:white url("images/kubrickbg.jpg") repeat-y top; border: none;
+}
+
+#page2 {
+	margin: 20px auto;
+	padding: 0;
+	width: 760px;
+	border: 1px solid #959596;
+	text-align: left;
+	background:white url("images/kubrickbgwide.jpg") repeat-y top; border: none;
+}
+
+#header {
+	position:relative;
+	padding: 0;
+	margin: 0 auto;
+	height: 200px;
+	width: 100%;
+	background: #73a0c5 url("images/kubrickheader.jpg") no-repeat bottom center; 
+}
+
+#header h1{
+	position:absolute;
+	top:50px;
+	left:0px;
+	width: 100%;
+	padding: 0;
+	margin: 0 auto;
+	font-size: 4em;
+	text-align: center;
+}
+
+#header h1 a, #header h1 a:hover{
+	color:white;
+}
+
+#header h2 {
+	position:absolute;
+	top:100px;
+	left:0px;
+	width: 100%;
+	padding: 0;
+	margin: 0 auto;
+	font-size: 1.2em;
+	text-align: center;
+	color: #ffffff;
+}
+
+/* UL NAVIGATION ADDED BY QUE~ */
+
+#navigation{
+	font-size: 11px;
+	width: 694px;
+	height: 22px; 
+	position: absolute;
+	top: 178px;
+	left: 13px;
+	list-style: none;
+}
+
+#navigation li{
+	background: none;
+ 	display: inline;
+}
+
+/* END UL NAVIGATION */
+
+#content {
+	margin-top:22px;
+	font-size: 1.2em
+}
+
+#sidebar{
+
+}
+
+#sidebar {
+	margin:22px 0px 0px 545px;
+	padding: 20px 0 10px 0;
+	width: 190px;
+	font: 1em 'Lucida Grande', Verdana, Arial, Sans-Serif;
+}
+
+.narrowcolumn {
+	float: left;
+	padding: 0 0 20px 45px;
+	margin: 0px 0 0;
+	width: 450px;
+}
+
+.widecolumn {
+	padding: 10px 0 10px 0;
+	margin: 5px 0 0 5px;
+	width: 700px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.narrowcolumn .entry, .widecolumn .entry {
+	line-height: 1.4em;
+}
+
+.widecolumn {
+	line-height: 1.6em;
+}
+
+#footer {
+	padding: 0;
+	margin: 0 auto;
+	width: 760px;
+	clear: both;
+	background:transparent url("images/kubrickfooter.jpg") bottom left no-repeat;
+}
+
+#footer p {
+	margin: 0;
+	padding: 10px 0;
+	text-align: center;
+}
+
+/* END LAYOUT  */
+
+
+/* BEGIN E107 CORE CLASSES MAINTAINER QUE~ */
+
+.button{
+	font-family: tahoma, verdana, arial, helvetica, sans-serif;
+	font-size: 10px;
+	text-align:center;
+}
+
+.tbox.chatbox {
+	width: 80%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.spacer {
+	padding: 2px 0 2px 0;
+}
+
+
+.indent{
+	padding:4px;
+	border: 1px solid #06c;
+}
+
+.smalltext {
+	font: 1em 'Lucida Grande', Verdana, Arial, Sans-Serif;
+}
+
+.mediumtext {
+	font: 12px 'Lucida Grande', Verdana, Arial, Sans-Serif;
+}
+
+.tbox{
+	background-color: #F4F7FA;
+	border: #5e5d63 1px solid;
+	color: #000000;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.helpbox {
+	border: 0px;
+	background-color: transparent;
+	color:#000;
+	font: 9px tahoma, verdana, arial, helvetica, sans-serif;
+}
+
+.fborder {
+	border: #ededed 1px solid;
+	background-color: #fff;
+	
+}
+
+.forumheader{
+	background-color: #EBEFF2;
+	font-family: verdana, tahoma, arial, helvetica, sans-serif;
+	font-size: 11px;
+	color:#000;
+	padding: 4px;
+	border: 1px solid #ededed;
+}
+
+.forumheader2{
+	background-color: #fff;
+	font-family: verdana, tahoma, arial, helvetica, sans-serif;
+	font-size: 10px;
+	color:#000;
+	padding: 4px;
+	border: #ededed 1px solid;
+}
+
+.forumheader3{
+	background-color: #fff;
+	font: 9px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
+	padding: 4px;
+	border: #ededed 1px solid;
+
+}
+
+.forumborder{
+	border:  #000080 1px solid;
+	background-color: transparent;
+}
+
+.fcaption {
+	height:35px;
+	border: #ededed 1px solid;
+	padding: 2px 0 2px 8px;
+	background-color: #68ADE5;
+	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#fff;
+	font-weight:bold;
+	background-image: url("images/tileage.jpg");
+
+}
+.fcaption a{
+	padding-right:4px;
+	color:#fff;
+
+}
+
+/* "Daisy, Daisy, give me your answer do. I'm half crazy all for the love of you.
+	It won't be a stylish marriage, I can't afford a carriage.
+	But you'll look sweet upon the seat of a bicycle built for two." */
+
+
+/* START NAVIGATION */
+
+/* THIS PART IS FOR THE NAVIGATION LINKS */
+.nav1 a:link, .nav1 a:visited, .nav2 a:link, .nav2 a:visited, .nav3 a:link, .nav3 a:visited, .nav4 a:link, .nav4 a:visited, .nav5 a:link, .nav5 a:visited, .nav6 a:link, .nav6 a:visited, .nav7 a:link, .nav7 a:visited, .nav8 a:link, .nav8 a:visited{
+	color: #4E4E4E;
+	width: 80px;
+	height: 20px;
+	line-height: 20px;
+	background: url(images/01_linkbg2.gif) top repeat-y;
+	padding: 0;
+	text-align:center;
+}
+
+.nav1_onpage a:link, .nav1_onpage a:visited, .nav2_onpage a:link, .nav2_onpage a:visited, .nav3_onpage a:link, .nav3_onpage a:visited, .nav4_onpage a:link, .nav4_onpage a:visited, .nav5_onpage a:link, .nav5_onpage a:visited, .nav6_onpage a:link, .nav6_onpage a:visited, .nav7_onpage a:link, .nav7_onpage a:visited, .nav8_onpage a:link, .nav8_onpage a:visited{
+	color: #4E4E4E;
+	width: 80px;
+	height: 20px;
+	line-height: 20px;
+	background: url(images/01_linkbg2.gif) top repeat-y;
+	padding: 0;
+	text-align:center;
+}
+
+.nav1 a:link, .nav1 a:visited, .nav1_onpage a:link, .nav1_onpage a:visited{
+	position: absolute;
+	top: 2px;
+	left: 14px;
+}
+
+.nav2 a:link, .nav2 a:visited, .nav2_onpage a:link, .nav2_onpage a:visited{
+	position: absolute;
+	top: 2px;
+	left: 96px;
+}
+.nav3 a:link, .nav3 a:visited, .nav3_onpage a:link, .nav3_onpage a:visited{
+	position: absolute;
+	top: 2px;
+	left: 178px;
+}
+
+.nav4 a:link, .nav4 a:visited, .nav4_onpage a:link, .nav4_onpage a:visited{
+	position: absolute;
+	top: 2px;
+	left: 260px;
+}
+
+.nav5 a:link, .nav5 a:visited, .nav5_onpage a:link, .nav5_onpage a:visited{
+	position: absolute;
+	top: 2px;
+	left: 342px;
+}
+
+.nav6 a:link, .nav6 a:visited, .nav6_onpage a:link, .nav6_onpage a:visited{
+	position: absolute;
+	top: 2px;
+	left: 424px;
+}
+
+.nav7 a:link, .nav7 a:visited, .nav7_onpage a:link, .nav7_onpage a:visited{
+	position: absolute;
+	top: 2px;
+	left: 506px;
+}
+
+.nav8 a:link, .nav8 a:visited, .nav8_onpage a:link, .nav8_onpage a:visited{
+	position: absolute;
+	top: 2px;
+	left: 588px;
+}
+
+/* HOVER EFFECTS */
+
+.nav1 a:hover, .nav1 a:active,
+.nav2 a:hover, .nav2 a:active,
+.nav3 a:hover, .nav3 a:active,
+.nav4 a:hover, .nav4 a:active,
+.nav5 a:hover, .nav5 a:active,
+.nav6 a:hover, .nav6 a:active,
+.nav7 a:hover, .nav7 a:active,
+.nav8 a:hover, .nav8 a:active{
+	background: url(images/01_linkbg1.gif) top repeat-y;
+	margin: 1px 0 0 0;
+}
+
+/* USE A DIFFERENT COLOR WHEN USER IS ON THAT PAGE */
+
+.nav1_onpage a:link, .nav1_onpage a:visited,
+.nav2_onpage a:link, .nav2_onpage a:visited,
+.nav3_onpage a:link, .nav3_onpage a:visited,
+.nav4_onpage a:link, .nav4_onpage a:visited,
+.nav5_onpage a:link, .nav5_onpage a:visited,
+.nav6_onpage a:link, .nav6_onpage a:visited,
+.nav7_onpage a:link, .nav7_onpage a:visited,
+.nav8_onpage a:link, .nav8_onpage a:visited{
+	background: url(images/01_linkbg1.gif) top repeat-y;
+}
+
+/* END NAVIGATION */
+
+/* NICETITLE ADDED BY QUE~*/
+
+.nicetitle {
+	font-weight: bold;
+	color: #3C3C3C;
+	text-align: left;
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 35em;
+	z-index: 20;
+	max-width: 60%;
+}
+.nicetitle-content{
+	overflow: hidden;
+	background: white;
+	border: 1px solid #333;
+	padding: 7px;
+	opacity: 0.9;
+}
+.nicetitle p{
+	margin: 0;
+	line-height: 120%;
+}
+.nicetitle p.destination {
+	font-weight: normal;
+	font-size: 10px;
+	color: #5E7743;
+}
+div.nicetitle p span.accesskey {
+	color: #FF7200;
+}
+

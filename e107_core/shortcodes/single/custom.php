@@ -4,12 +4,19 @@ function custom_shortcode($parm)
 	$pref = e107::getPref();
 	$tp = e107::getParser();
 	$e107 = e107::getInstance();
-	$custom_query = explode('+', $parm);
+
+	$custom_query = !empty($parm) ? explode('+', $parm) : array();
+
+	if(empty($custom_query[0]))
+	{
+		return null;
+	}
+
 	switch($custom_query[0])
 	{
 		case 'login':
 		case 'login noprofile':
-			include_lan(e_PLUGIN.'login_menu/languages/'.e_LANGUAGE.'.php');
+			e107::includeLan(e_PLUGIN.'login_menu/languages/'.e_LANGUAGE.'.php');
 			$ret = '';
 			$sep = (defined('LOGINC_SEP')) ? LOGINC_SEP : "<span class='loginc sep'>.:.</span>";
 
@@ -25,9 +32,9 @@ function custom_shortcode($parm)
 			}
 			else
 			{
-				$ret .= "<form method='post' action='".e_SELF.(e_QUERY ? '?'.e_QUERY : '')."'>\n<div class='loginc_div'>\n".LAN_LOGINMENU_1."<input class='tbox loginc user' type='text' name='username' size='15' value='$username' maxlength='20' />&nbsp;&nbsp;\n".LAN_LOGINMENU_2."<input class='tbox loginc pass' type='password' name='userpass' size='15' value='' maxlength='20' />&nbsp;&nbsp;\n";
+				$ret .= "<form method='post' action='".e_SELF.(e_QUERY ? '?'.e_QUERY : '')."'>\n<div class='loginc_div'>\n".LAN_LOGINMENU_1."<input class='tbox loginc user' type='text' name='username' size='15' value=\"".USERNAME."\" maxlength='20' />&nbsp;&nbsp;\n".LAN_LOGINMENU_2."<input class='tbox loginc pass' type='password' name='userpass' size='15' value='' maxlength='20' />&nbsp;&nbsp;\n";
 				$ret .= ($pref['user_tracking'] == "cookie") ? "<input type='checkbox' name='autologin' value='1' />".LAN_LOGINMENU_6."&nbsp;&nbsp;\n" : "";
-				$ret .= "<input class='btn btn-default button loginc' type='submit' name='userlogin' value='".LAN_LOGIN."' />";
+				$ret .= "<input class='btn btn-default btn-secondary button loginc' type='submit' name='userlogin' value='".LAN_LOGIN."' />";
 				if (intval($pref['user_reg'])===1)
 				{
 					$ret .= "&nbsp;&nbsp;<a class='loginc signup' href='".e_SIGNUP."'>".LAN_LOGINMENU_3."</a>";
@@ -55,7 +62,7 @@ function custom_shortcode($parm)
 			}
 			else
 			{
-				$quotes = file($qotdf_file);
+				$quotes = file($qotd_file);
 				$quote = $tp->toHTML($quotes[rand(0, count($quotes) -1 )], true);
 			}
 			return $quote;
@@ -74,7 +81,7 @@ function custom_shortcode($parm)
 				{
 					$selected = ($languageFolder == e_LANGUAGE) ? ' selected="selected"' : '';
 					$text .= '
-							<option value="'.$languageFolder.'"'.$selected.'>'.$languageFolder.'</option>';
+							<option value="'.$languageFolder.'" '.$selected.'>'.$languageFolder.'</option>';
 				}
 
 				$text .= '
@@ -86,7 +93,10 @@ function custom_shortcode($parm)
 
 		case 'clock':
 			$clock_flat = true;
-			include_once(e_PLUGIN.'clock_menu/clock_menu.php');
+			if(is_dir(e_PLUGIN.'clock_menu'))
+			{
+				include_once(e_PLUGIN.'clock_menu/clock_menu.php');
+			}
 			return '';
 			break;
 

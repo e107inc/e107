@@ -1,9 +1,14 @@
 <?php
-
-/**
- * @file
- * Default layout for "flexpanel" admin dashboard style.
- */
+/*
++ ----------------------------------------------------------------------------+
+| 
+|     e107 website system
+|     Copyright (C) 2008-2016 e107 Inc (e107.org)
+|     Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+| 
+|     Default layout for "flexpanel" admin dashboard style.
++ ----------------------------------------------------------------------------+
+*/
 
 $FLEXPANEL_LAYOUT = '
 <div class="row">
@@ -14,7 +19,7 @@ $FLEXPANEL_LAYOUT = '
 	</div>
 	<div class="col-md-9 col-lg-10 admin-right-panel">
 		<div class="sidebar-toggle">
-			<a href="#" title="Toggle Sidebar" data-toggle-sidebar="true">&nbsp;</a>
+			<a href="#" title="'.ADLAN_185.'" data-toggle-sidebar="true">&nbsp;</a>
 		</div>
 		
 		<div>
@@ -32,7 +37,7 @@ $FLEXPANEL_LAYOUT = '
 				</div>
 			</div>
 			
-			<div class="row">
+			<div class="row row-flex">
 				<div class="col-sm-4">
 					<div class="draggable-panels" id="menu-area-03">
 						{MENU_AREA_03}
@@ -60,7 +65,7 @@ $FLEXPANEL_LAYOUT = '
 				</div>
 			</div>
 			
-			<div class="row">
+			<div class="row row-flex">
 				<div class="col-sm-6">
 					<div class="draggable-panels" id="menu-area-07">
 						{MENU_AREA_07}

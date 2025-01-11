@@ -41,7 +41,7 @@ class auth_login extends alt_auth_base
 	/**
 	 *	Read configuration, initialise connection to remote e107 database
 	 *
-	 *	@return AUTH_xxxx result code
+	 *	@return void result code
 	 */
 	public function __construct()
 	{
@@ -80,12 +80,13 @@ class auth_login extends alt_auth_base
 	public function login($uname, $pword, &$newvals, $connect_only = FALSE)
 	{
 		//Attempt to open connection to sql database
-		if(!$res = mysql_connect($this->conf['e107db_server'], $this->conf['e107db_username'], $this->conf['e107db_password']))
+
+	/*	if(!$res = mysql_connect($this->conf['e107db_server'], $this->conf['e107db_username'], $this->conf['e107db_password']))
 		{
 			$this->makeErrorText('Cannot connect to remote server');
 			return AUTH_NOCONNECT;
 		}
-	  //Select correct db
+
 
 		if(!mysql_select_db($this->conf['e107db_database'], $res))
 		{
@@ -94,7 +95,23 @@ class auth_login extends alt_auth_base
 			return AUTH_NOCONNECT;
 		}
 		if ($connect_only) return AUTH_SUCCESS;		// Test mode may just want to connect to the DB
-	  
+	  */
+
+	//	$dsn = 'mysql:dbname=' . $this->conf['e107db_database'] . ';host=' . $this->conf['e107db_server'];
+		$dsn = "mysql:host=".$this->conf['e107db_server'].";port=".varset($this->conf['e107db_port'],3306).";dbname=".$this->conf['e107db_database'].";charset=".(new db_verify())->getIntendedCharset();
+
+		try
+		{
+			$dbh = new PDO($dsn, $this->conf['e107db_username'], $this->conf['e107db_password']);
+		}
+		catch (PDOException $e)
+		{
+			$this->makeErrorText('Cannot connect to remote DB; PDOException message: ' . $e->getMessage());
+			return AUTH_NOCONNECT;
+		}
+
+
+
 		$sel_fields = array();
 		// Make an array of the fields we want from the source DB
 		foreach($this->conf as $k => $v)
@@ -118,20 +135,20 @@ class auth_login extends alt_auth_base
 		//Get record containing supplied login name
 		$qry = 'SELECT '.implode(',',$sel_fields)." FROM ".$this->conf['e107db_prefix']."user WHERE {$user_field} = '{$uname}' AND `user_ban` = 0";
 //	  echo "Query: {$qry}<br />";
-		if(!$r1 = mysql_query($qry))
+		if(!$r1 = $dbh->query($qry))
 		{
-			mysql_close($res);
 			$this->makeErrorText('Lookup query failed');
+			e107::getMessage()->addDebug($qry);
 			return AUTH_NOCONNECT;
 		}
-		if (!$row = mysql_fetch_array($r1))
+
+		if (!$row = $r1->fetch(PDO::FETCH_BOTH))
 		{
-			mysql_close($res);
 			$this->makeErrorText('User not found');
 			return AUTH_NOUSER;
 		}
 
-		mysql_close($res);				// Finished with 'foreign' DB now
+	//	mysql_close($res);				// Finished with 'foreign' DB now
 
 		// Got something from the DB - see whether password valid
 		require_once(e_PLUGIN.'alt_auth/extended_password_handler.php');		// This auto-loads the 'standard' password handler as well
@@ -178,4 +195,3 @@ class auth_login extends alt_auth_base
 	}
 }
 
-?>

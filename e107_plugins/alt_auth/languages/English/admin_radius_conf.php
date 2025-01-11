@@ -34,4 +34,4 @@ define('LAN_AUTHENTICATE_HELP','This authentication method is used with an exter
   Note that the RADIUS server may only allow access from a specific range of IP addresses');
 
 
-?>
+

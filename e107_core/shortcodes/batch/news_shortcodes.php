@@ -14,17 +14,13 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-/* DEPRECATED
-register_shortcode('news_shortcodes', TRUE);
-initShortcodeClass('news_shortcodes');
-*/
-
-// Done via e107::getScBatch('news'); call - see news_class.php
-/*e107::getScParser()->registerShortcode('news_shortcodes', true)
-	->initShortcodeClass('news_shortcodes');*/
+require_once(__DIR__.'/news_shortcodes_legacy.php');
+e107::coreLan('news');
 
 class news_shortcodes extends e_shortcode
 {
+	use news_shortcodes_legacy;
+
 	//protected $news_item; - shouldn't be set - see __set/__get methods of e_shortcode & news::render_newsitem()
 	protected $e107;
 	//protected $param;  - shouldn't be set - see __set/__get methods of e_shortcode & news::render_newsitem()
@@ -35,6 +31,9 @@ class news_shortcodes extends e_shortcode
 	
 	private $imageItem;
 
+	protected $pagination;
+
+
 	// protected $param; // do not enable - erases param. .
 	
 	
@@ -42,10 +41,12 @@ class news_shortcodes extends e_shortcode
 	{
 		parent::__construct($eVars);
 		$this->e107 = e107::getInstance();
-		
+
 		$pref = e107::getPref();
 		
 		$this->commentsDisabled = vartrue($pref['comments_disabled']);
+
+		$this->pagination = varset($pref['news_pagination'], 'record');
 
 		if(!empty($pref['comments_engine']))
 		{
@@ -53,13 +54,18 @@ class news_shortcodes extends e_shortcode
 		}
 	}
 
-	function sc_newstitle($parm)
+	function newsTitle($parm=null)
 	{
 		$text = e107::getParser()->toHTML($this->news_item['news_title'], TRUE, 'TITLE');
 
 		if(!empty($parm['attribute']))
 		{
 			$text = e107::getParser()->toAttribute($text);
+		}
+
+		if(!empty($this->param['titleLimit']))
+		{
+			$parm['limit'] = $this->param['titleLimit'];
 		}
 
 		if(!empty($parm['limit']))
@@ -71,18 +77,13 @@ class news_shortcodes extends e_shortcode
 		return $text;
 	}
 
-	function sc_newsurltitle()
-	{
-		$title = $this->sc_newstitle();
-		// FIXME generic parser toAttribute method (currently toAttribute() isn't appropriate)
-		return '<a href="'.$this->sc_newsurl().'" title="'.preg_replace('/\'|"|<|>/s', '', $this->news_item['news_title']).'">'.$title.'</a>';
-	}
-	
-	function sc_newsbody($parm=null)
+
+	function sc_news_body($parm=null)
 	{
 		$tp = e107::getParser();
 		e107::getBB()->setClass("news"); // For automatic bbcode image resizing. 
 
+		$action = isset($this->param['current_action']) ? $this->param['current_action'] : '';
 
 		$news_body = '';
 
@@ -91,7 +92,7 @@ class news_shortcodes extends e_shortcode
 			$news_body = $tp->toHTML($this->news_item['news_body'], true, 'BODY, fromadmin', $this->news_item['news_author']);
 		}
 		
-		if($this->news_item['news_extended'] && (isset($_POST['preview']) || $this->param['current_action'] == 'extend') && ($parm != 'noextend' && $parm != 'body'))
+		if($this->news_item['news_extended'] && (isset($_POST['preview']) || $action === 'extend') && ($parm !== 'noextend' && $parm !== 'body'))
 		{
 			$news_body .= $tp->toHTML($this->news_item['news_extended'], true, 'BODY, fromadmin', $this->news_item['news_author']);
 		}
@@ -101,15 +102,17 @@ class news_shortcodes extends e_shortcode
 		return $news_body;
 	}
 
-	function sc_newsicon($parm=null)
-	{
 
-		return $this->sc_newscaticon('url');
+	function sc_news_author_realname($parm=null)
+	{
+		return !empty($this->news_item['user_login']) ? $this->news_item['user_login'] : null;
 	}
 
-	function sc_newsauthor($parm)
+
+
+	function sc_news_author($parm=null)
 	{
-		if($this->news_item['user_id'])
+		if(!empty($this->news_item['user_id']))
 		{
 			if($parm == 'nolink')
 			{
@@ -117,11 +120,14 @@ class news_shortcodes extends e_shortcode
 			}
 			else
 			{
-				return "<a href='".e107::getUrl()->create('user/profile/view', $this->news_item)."'>".$this->news_item['user_name']."{$parm}</a>";
+				return "<a href='".e107::getUrl()->create('user/profile/view', $this->news_item)."'>".$this->news_item['user_name']."</a>";
 			}
 		}
-		return "<a href='http://e107.org'>e107</a>";
+		return "<a href='https://e107.org'>e107</a>";
 	}
+
+
+
 
 	function sc_newscomments($parm=null)
 	{
@@ -155,16 +161,16 @@ class news_shortcodes extends e_shortcode
 			$latest_comment = $comments['comment_datestamp'];
 			if ($latest_comment > USERLV )
 			{
-				$NEWIMAGE = $param['image_new_small'];
+				$NEWIMAGE = varset($param['image_new_small']);
 			}
 			else
 			{
-				$NEWIMAGE = $param['image_nonew_small'];
+				$NEWIMAGE = varset($param['image_nonew_small']);
 			}
 		}
 		else
 		{
-			$NEWIMAGE = $param['image_nonew_small'];
+			$NEWIMAGE = varset($param['image_nonew_small']);
 		}
 		
 		if(deftrue('BOOTSTRAP')) // Should be done with CSS, not like above.
@@ -172,17 +178,18 @@ class news_shortcodes extends e_shortcode
 			$NEWIMAGE = "";		
 		}
 		
-		return (!$news_item['news_allow_comments'] ? ''.($pref['comments_icon'] ? $NEWIMAGE.' ' : '')."<a title=\"".LAN_COMMENTS."\" href='".e107::getUrl()->create('news/view/item', $news_item)."'>".$param['commentlink'].intval($news_item['news_comment_total']).'</a>' : vartrue($param['commentoffstring'],'Disabled') );
+		return (!$news_item['news_allow_comments'] ? ''.($pref['comments_icon'] ? $NEWIMAGE.' ' : '')."<a title=\"".LAN_COMMENTS."\" href='".e107::getUrl()->create('news/view/item', $news_item)."'>".varset($param['commentlink']).intval($news_item['news_comment_total']).'</a>' : vartrue($param['commentoffstring'],'Disabled') );
 	}
 
 	function sc_trackback($parm=null)
 	{
-		global $pref;
+		return null;
+	/*	global $pref;
 		if(!vartrue($pref['trackbackEnabled'])) { return ''; }
 		$news_item = $this->news_item;
 		$news_item['#'] = 'track';
 		
-		return ($this->param['trackbackbeforestring'] ? $this->param['trackbackbeforestring'] : '')."<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$this->param['trackbackstring'].$this->news_item['tb_count'].'</a>'.($this->param['trackbackafterstring'] ? $this->param['trackbackafterstring'] : '');
+		return ($this->param['trackbackbeforestring'] ? $this->param['trackbackbeforestring'] : '')."<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$this->param['trackbackstring'].$this->news_item['tb_count'].'</a>'.($this->param['trackbackafterstring'] ? $this->param['trackbackafterstring'] : '');*/
 	}
 
 
@@ -197,52 +204,108 @@ class news_shortcodes extends e_shortcode
 	 */
 	function sc_newsnavlink($parm=null) //TODO add more options.
 	{
+		$url = $this->sc_news_nav_url($parm);
+
+		$caption = vartrue($parm['text'], LAN_BACK);
 		
-		if(varset($parm['list']) == 'all') // A list of all items - usually headings and thumbnails
-		{
-			$url = e107::getUrl()->create('news/list/all');
-		}
-		elseif(varset($parm['list']) == 'category') 
-		{
-			$url = e107::getUrl()->create('news/list/short', $this->news_item);  //default for now.
-		}
-		elseif(varset($parm['items']) == 'category') 
-		{
-			$url = e107::getUrl()->create('news/list/category', $this->news_item); 		
-		}
-		else
-		{
-			$url = e107::getUrl()->create('news/list/items'); // default for now. 	
-		}
-			
-			
-		$caption = vartrue($parm['text'],LAN_BACK);
-		
-		$text = '<ul class="pager hidden-print">
-  			<li><a href="'.$url.'">'.e107::getParser()->toHtml($caption,false,'defs').'</a></li>
+		$text = '<ul class="pagination hidden-print">
+  			<li class="page-item"><a class="page-link" href="'.$url.'">'.e107::getParser()->toHTML($caption,false,'defs').'</a></li>
 		</ul>';
+		
+		if(defined('BOOTSTRAP') && BOOTSTRAP === 4)
+		{
+			$text = '<a class="pager-button btn btn-primary hidden-print" href="'.$url.'">'.e107::getParser()->toHTML($caption,false,'defs').'</a>';
+		}
 		
 		return $text;
 	}
 
 
 
+	public function sc_news_nav_url($parm=null)
+	{
+		$url = e107::getUrl()->create('news/list/items'); // default for now.
+
+		if(varset($parm['list']) == 'all') // A list of all items - usually headings and thumbnails
+		{
+			$url = e107::getUrl()->create('news/list/all');
+		}
+		elseif(varset($parm['list']) == 'category')
+		{
+			$url = e107::getUrl()->create('news/list/short', $this->news_item);  //default for now.
+		}
+		elseif(varset($parm['items']) == 'category')
+		{
+			$url = e107::getUrl()->create('news/list/category', $this->news_item);
+		}
+
+		return $url;
+
+	}
+
 
 	function sc_newsheader($parm=null)
 	{
-		return $this->sc_newscaticon('src');
+		return $this->sc_news_category_icon('src');
+	}
+
+
+
+	function sc_news_category_id($parm=null)
+	{
+		return !empty($this->news_item['category_id']) ? (int) $this->news_item['category_id'] : 0;
 	}
 
 
 	function sc_news_category_icon($parm=null)
 	{
-		return $this->sc_newscaticon($parm);
+			if(is_string($parm))
+		{
+			$parm = array('type'=>$parm);
+		}
+		// BC
+		$category_icon = !empty($this->news_item['category_icon']) ? str_replace('../', '', trim($this->news_item['category_icon'])) : '';
+		if (!$category_icon) { return ''; }
+
+		// We store SC path in DB now + BC
+		if($category_icon[0] == '{')
+		{
+			$src =  e107::getParser()->replaceConstants($category_icon, 'abs');
+		}
+		else
+		{
+			//Backwards Compatible Link.
+			$src =  (is_readable(e_IMAGE_ABS."newspost_images/".$category_icon)) ? e_IMAGE_ABS."newspost_images/".$category_icon : e_IMAGE_ABS."icons/".$category_icon;
+		}
+
+
+	//	if($this->param['caticon'] == ''){$this->param['caticon'] = 'border:0px';}
+
+		$parm['alt']       = e107::getParser()->toHTML($this->news_item['category_name'], FALSE ,'defs');
+		$parm['legacy']    = array('{e_IMAGE}newspost_images/', '{e_IMAGE}icons/');
+		$parm['class']     = 'icon news_image news-category-icon';
+
+		$icon = e107::getParser()->toIcon($category_icon, $parm);
+
+		switch($parm['type'])
+		{
+			/* @deprecated - Will cause issues with glyphs */
+			case 'src':
+				return $src;
+
+			case 'tag':
+				return $icon;
+
+			case 'url':
+			default:
+				return "<a href='".e107::getUrl()->create('news/list/category', $this->news_item)."'>".$icon."</a>";
+		}
 	}
 
 
 	function sc_news_category_name($parm=null)
 	{
-		if(empty($parm['link']))
+		if(empty($parm['link']) && isset($this->news_item['category_name']))
 		{
 			return e107::getParser()->toHTML($this->news_item['category_name'], 'TITLE');
 		}
@@ -268,93 +331,243 @@ class news_shortcodes extends e_shortcode
 		}
 	}
 
+	function sc_news_category_url($parm=null)
+	{
+		if(empty($this->news_item['category_id']) || empty($this->news_item['category_sef']) )
+		{
+			return null;
+		}
+
+		$category = array('id' => $this->news_item['category_id'], 'name' => $this->news_item['category_sef'] );
+
+		return e107::getUrl()->create('news/list/category', $category);	
+	}
+
+
 
 	//New v2.x Aliases
 
-	public function sc_news_id($parm=null)
-	{
-		return $this->sc_newsid();
-	}
+
 
 	public function sc_news_title($parm=null)
 	{
-		return (!empty($parm['link'])) ? $this->sc_newstitlelink($parm) : $this->sc_newstitle($parm);
-	}
-
-	public function sc_news_body($parm=null)
-	{
-		return $this->sc_newsbody($parm);
-	}
-
-	public function sc_news_author($parm=null)
-	{
-		return $this->sc_newsauthor($parm);
-	}
-
-	public function sc_news_author_avatar($parm=null)
-	{
-		return $this->sc_newsavatar($parm);
+		return (!empty($parm['link'])) ? $this->newsTitleLink($parm) : $this->newsTitle($parm);
 	}
 
 	public function sc_news_author_signature($parm=null)
 	{
+		if(empty($this->news_item['user_id']))
+		{
+			return null;
+		}
 
 		$user = e107::user($this->news_item['user_id']);
 
 		if(!empty($user['user_signature']))
 		{
-			return e107::getParser()->toHtml($user['user_signature'], true, 'DESCRIPTION');
+			return e107::getParser()->toHTML($user['user_signature'], true, 'DESCRIPTION');
 		}
 	}
 
 	public function sc_news_author_items_url($parm=null)
 	{
+		if(empty($this->news_item['user_name']))
+		{
+			return null;
+		}
+
 		return e107::getUrl()->create('news/list/author',array('author'=>$this->news_item['user_name'])); // e_BASE."news.php?author=".$val
 	}
 
-	public function sc_news_summary($parm=null)
+	/**
+	 * @example {NEWS_AUTHOR_EUF: field=biography} - returns the 'value' of the User Extended Field 'biography' ('type' defaults to 'value')
+	 * @example {NEWS_AUTHOR_EUF: field=biography&type=icon} - returns the 'icon' of the User Extended Field 'biography' - [text|value|icon|text_value]
+	*/
+	public function sc_news_author_euf($parm=null)
 	{
-		return $this->sc_newssummary($parm);
+		if(empty($this->news_item['user_id']))
+		{
+			return null;
+		}
+
+		$userid = $this->news_item['user_id'];		
+		$field 	= (!empty($parm['field'])) ? $parm['field'] : '';
+		$type 	= (!empty($parm['type'])) ? $parm['type'] : 'value';
+		
+		if($field)
+		{
+			return e107::getParser()->parseTemplate("{USER_EXTENDED={$field}.{$type}.{$userid}}");
+		}
 	}
 
-	public function sc_news_description($parm=null)
-	{
-		return $this->sc_newsmetadiz($parm);
-	}
 
-	public function sc_news_tags($parm=null)
-	{
-		return $this->sc_newstags($parm);
-	}
-
-	public  function sc_news_comment_count($parm=null)
-	{
-		return $this->sc_newscommentcount($parm);
-	}
 
 	public function sc_news_comment_label($parm=null)
 	{
 		return ($this->news_item['news_comment_total'] == 1) ? COMLAN_8 : LAN_COMMENTS;
 	}
 
-	public function sc_news_date($parm=null)
-	{
-		return $this->sc_newsdate($parm);
-	}
 
-	public function sc_news_user_avatar($parm=null)
-	{
-		return $this->sc_newsavatar($parm);
-	}
 
-	public function sc_news_url($parm=null)
-	{
-		return $this->sc_newsurl($parm);
-	}
 
+	/**
+	 * Display News Images (but not video thumbnails )
+	 *
+     * @param $parm array
+	 * @example {NEWS_IMAGE: type=src&placeholder=true}
+	 * @example {NEWS_IMAGE: class=img-responsive img-fluid}
+	 */
 	public function sc_news_image($parm=null)
 	{
-		return $this->sc_newsimage($parm);
+		if(!empty($parm['carousel']))
+		{
+			return $this->news_carousel($parm);
+		}
+
+		$tp = e107::getParser();
+		$srcPath = '';
+
+		if(is_string($parm))
+		{
+			$parm = array('type'=> $parm);
+		}
+
+
+		if($tmp = $this->handleMultiple($parm))
+		{
+			$srcPath = $tmp['file'];
+		}
+
+
+
+		$class = (!empty($parm['class'])) ? $parm['class'] : "news_image news-image img-responsive img-fluid img-rounded rounded";
+		$class .= ' news-image-'.varset($tmp['count'],0);
+		$dimensions = null;
+		$srcset = null;
+		$src = '';
+
+		if ($tp->isVideo($srcPath))
+		{
+			return null;
+		}
+
+
+		if (empty($srcPath))
+		{
+			if (varset($parm['type']) == 'placeholder' || !empty($parm['placeholder']))
+			{
+				$src = $tp->thumbUrl(); // placeholder;
+				$dimensions = $tp->thumbDimensions();
+			}
+		}
+		elseif ($srcPath[0] === '{') // Always resize. Use {SETIMAGE: w=x&y=x&crop=0} PRIOR to calling shortcode to change.
+		{
+			$src = $tp->thumbUrl($srcPath);
+			$dimensions = $tp->thumbDimensions();
+			$srcset = $tp->thumbSrcSet($srcPath, array('size' => '2x'));
+		}
+		else
+		{
+			// We store SC path in DB now + BC
+
+			$src = $srcPath[0] == '{' ? $tp->replaceConstants($srcPath, 'abs') : e_IMAGE_ABS . "newspost_images/" . $srcPath;
+
+		}
+
+
+
+
+		if(!empty($parm['nolegacy'])) // Remove legacy thumbnails.
+		{
+			$legSrc = urldecode($src);
+
+		 	if(strpos($legSrc,'newspost_images/thumb_')!==false)
+			{
+				return null;
+			}
+		}
+
+		if(isset($tmp['count']) && ($tmp['count'] > 1) && empty($parm['type'])) // link first image by default, but not others.
+		{
+			$parm['type'] = 'tag';
+		}
+
+		$style = !empty($this->param['thumbnail']) ? $this->param['thumbnail'] : '';
+		$alt   = !empty($parm['alt']) ? $parm['alt'] : '';
+
+		$imgParms = array(
+			'class'         => $class,
+			'alt'           => $alt,
+			'style'         => $style,
+			'placeholder'   => varset($parm['placeholder']),
+			'legacy'        => '{e_IMAGE}newspost_images'
+		);
+
+		if(!empty($parm['loading']))
+		{
+		    $imgParms['loading'] = $parm['loading'];
+        }
+		
+
+		$imgTag = $tp->toImage($srcPath,$imgParms);
+
+		if(empty($imgTag))
+		{
+			return null;
+		}
+
+		switch(vartrue($parm['type']))
+		{
+			case 'src':
+				return empty($src) ? e_IMAGE_ABS."generic/nomedia.png" : $src;
+			break;
+
+			case 'url':
+				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$imgTag."</a>";
+			break;
+
+			case 'tag':
+			default:
+				return $imgTag; // "<img class='{$class}' src='".$src."' alt='' style='".$style."' {$dimensions} {$srcset} />";
+			break;
+
+
+		}
+	}
+
+	private function news_carousel($parm)
+	{
+		if(empty($this->news_item['news_thumbnail']))
+		{
+			return null;
+		}
+
+		$options = $parm;
+
+		if(!isset($options['interval']))
+		{
+			$options['interval'] = 'false';
+		}
+
+
+		$tp = e107::getParser();
+
+		$media = explode(",", $this->news_item['news_thumbnail']);
+		$images = array();
+
+		foreach($media as $file)
+		{
+			if($tp->isVideo($file) || empty($file))
+			{
+				continue;
+			}
+
+			$images[] = array('caption'=>'', 'text'=> $tp->toImage($file,$parm));
+		}
+
+	//	return print_a($images,true);
+
+		return e107::getForm()->carousel('news-carousel-'.$this->news_item['news_id'],$images, $options);
 	}
 
 	public function sc_news_visibility($parm=null)
@@ -364,53 +577,77 @@ class news_shortcodes extends e_shortcode
 
 	}
 
+	public function sc_news_rate($parm=array())
+	{
+		return e107::getRate()->render("news", $this->news_item['news_id'],$parm);
+	}
+
 
 // ----------------------------------- BC compatible Shortcodes ------------------------------------------- //
 
 	function sc_newscategory($parm=null)
 	{
-		$category_name = e107::getParser()->toHTML($this->news_item['category_name'], FALSE ,'defs');
-		$category = array('id' => $this->news_item['category_id'], 'name' => $this->news_item['category_sef'] );
-		$categoryClass = varset($GLOBALS['NEWS_CSSMODE'],'');
-		return "<a class='".$categoryClass."_category' style='".(isset($this->param['catlink']) ? $this->param['catlink'] : "#")."' href='".e107::getUrl()->create('news/list/category', $category)."'>".$category_name."</a>";
+		$category_name = !empty($this->news_item['category_name']) ? e107::getParser()->toHTML($this->news_item['category_name'], FALSE ,'defs') : '';
+		$category = !empty($this->news_item['category_id']) ? array('id' => $this->news_item['category_id'], 'name' => $this->news_item['category_sef'] ) : array();
+	//	$categoryClass = varset($GLOBALS['NEWS_CSSMODE'],'');
+	    $style = isset($this->param['catlink']) ? "style='".$this->param['catlink']."'" : '';
+		return "<a ".$style." href='".e107::getUrl()->create('news/list/category', $category)."'>".$category_name."</a>";
 	}
 
-	function sc_newsdate($parm)
+	private function formatDate($date, $parm)
 	{
-	   $date = ($this->news_item['news_start'] > 0) ? $this->news_item['news_start'] : $this->news_item['news_datestamp'];
+
 		$con = e107::getDate();
-		$tp = e107::getParser();
+		$tp  = e107::getParser();
 
-		if($parm == '')
+		if(empty($parm))
 		{
-			return  $tp->toDate($date, 'long');
+			$ret = $tp->toDate($date, 'long');
+		}
+		else
+		{
+			$ret = '';
+
+			switch($parm)
+			{
+				case 'long':
+					$ret = $tp->toDate($date, 'long');
+				break;
+
+				case 'short':
+					$ret = $tp->toDate($date, 'short');
+				break;
+
+				case 'forum':
+					$ret = $con->convert_date($date, 'forum');
+				break;
+
+				default :
+					$ret = $tp->toDate($date, $parm);
+				break;
+			}
 		}
 
+		return $ret;
 
-		switch($parm)
-		{
-			case 'long':
-			return  $tp->toDate($date, 'long');
-			break;
-			case 'short':
-			return  $tp->toDate($date, 'short');
-			break;
-			case 'forum':
-			return  $con->convert_date($date, 'forum');
-			break;
-			default :
-			return $tp->toDate($date,$parm);
-		//	return date($parm, $date);
-			break;
-		}
 	}
 
-
-	function sc_newsavatar($parm=null)
+	function sc_news_date($parm=null)
 	{
-		if(!empty($this->news_item['user_id']))
+		$date = ($this->news_item['news_start'] > 0) ? $this->news_item['news_start'] : $this->news_item['news_datestamp'];
+		return $this->formatDate($date, $parm);
+	}
+
+	function sc_news_modified($parm=null)
+	{
+		return $this->formatDate($this->news_item['news_modified'], $parm);
+	}
+
+	function sc_news_author_avatar($parm=null)
+	{
+		if((!empty($this->news_item['user_id']) && !empty($this->news_item['user_image'])) || !empty($parm['placeholder']))
 		{
-			return e107::getParser()->toAvatar($this->news_item['user_id'], $parm);
+			return e107::getParser()->toAvatar($this->news_item, $parm);
 		}
 	} 
 
@@ -426,22 +663,24 @@ class news_shortcodes extends e_shortcode
 			return null;
 		}
 
-		$class = varset($parm['class']) ? " ".$parm['class'] : "";
+		$class = !empty($parm['class']) ? " ".$parm['class'] : " btn btn-default btn-secondary";
 
-		if(empty($this->param['commentlink']))
+		$param = $this->getScVar('param');
+
+		if(empty($param['commentlink']))
 		{
-			$this->param['commentlink'] = e107::getParser()->toGlyph('fa-comment');
+			$param['commentlink'] = e107::getParser()->toGlyph('fa-comment','');
 		}
 
 		// When news_allow_comments = 1 then it is disabled. Backward, but that's how it is in v1.x
-		$text = ($this->news_item['news_allow_comments'] ? $this->param['commentoffstring'] : "<a title='".$this->sc_newscommentcount()." comments' class='e-tip".$class."' href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$this->param['commentlink'].'</a>');
+		$text = ($this->news_item['news_allow_comments'] ? $this->param['commentoffstring'] : "<a title='".$this->sc_newscommentcount()." ".LAN_COMMENTS."' class='e-tip".$class."' href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$param['commentlink'].'</a>');
 		return $text;
 	}
 
 	/**
 	 * {NEWSCOMMENTCOUNT: glyph=x}
 	 */
-	function sc_newscommentcount($parm=null)
+	function sc_news_comment_count($parm=null)
 	{
 		if($this->commentsDisabled || ($this->commentsEngine != 'e107'))
 		{
@@ -483,7 +722,7 @@ class news_shortcodes extends e_shortcode
 		return e107::getParser()->parseTemplate('{PDF='.LAN_NEWS_24.'^news.'.$this->news_item['news_id'].'}');
 	}
 
-	function sc_newsid()
+	function sc_news_id()
 	{
 		return $this->news_item['news_id'];
 	}
@@ -496,13 +735,14 @@ class news_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 		if (ADMIN && getperms('H'))
 		{
+
 			//TODO - discuss - a pref for 'new browser window' loading, or a parm or leave 'new browser window' as default?
-			$default = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('icon-edit',false) :  "<img src='".e_IMAGE_ABS."admin_images/edit_16.png' alt=\"".LAN_EDIT."\" class='icon' />";
+			$default = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('fa-edit',false) :  "<img src='".e_IMAGE_ABS."admin_images/edit_16.png' alt=\"".LAN_EDIT."\" class='icon' />";
 
 			
 			$adop_icon = (file_exists(THEME."images/newsedit.png") ? "<img src='".THEME_ABS."images/newsedit.png' alt=\"".LAN_EDIT."\" class='icon' />" : $default);
 			
-			$class = varset($parm['class']);
+			$class = varset($parm['class'], 'btn btn-default btn-secondary');
 			
 			return "<a class='e-tip ".$class." hidden-print' rel='external' href='".e_ADMIN_ABS."newspost.php?action=edit&amp;id=".$this->news_item['news_id']."' title=\"".LAN_EDIT."\">".$adop_icon."</a>\n";
 		}
@@ -512,12 +752,12 @@ class news_shortcodes extends e_shortcode
 		}
 	}
 
-	function sc_extended($parm='')
+	function sc_extended($parm=null)
 	{
 
-		$class = vartrue($parm['class']) ? "class='".$parm['class']."'" : '';
+		$class = !empty($parm['class']) ? "class='".$parm['class']."'" : '';
 
-		if ($this->news_item['news_extended'] && ($this->param['current_action'] != 'extend' || $parm == 'force'))
+		if (!empty($this->news_item) && $this->news_item['news_extended'] && ($this->param['current_action'] != 'extend' || $parm == 'force'))
 		{
 			$es = (defined('EXTENDEDSTRING')) ? EXTENDEDSTRING : LAN_MORE;
 			$es1 = (defined('PRE_EXTENDEDSTRING')) ? PRE_EXTENDEDSTRING : '';
@@ -547,13 +787,13 @@ class news_shortcodes extends e_shortcode
 		return "<div class='".(defined('ADMINNAME') ? ADMINNAME : "null")."'>".($this->news_item['news_render_type'] == 1 ? "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$news_title."</a>" : $news_title)."</div>";
 	}
 
-	function sc_adminbody($parm)
+	function sc_adminbody($parm=null)
 	{
-		$news_body = $this->sc_newsbody($parm);
+		$news_body = $this->sc_news_body($parm);
 		return "<div class='".(defined('ADMINNAME') ? ADMINNAME : 'null')."'>".$news_body.'</div>';
 	}
 
-	function sc_newssummary($parm=null)
+	function sc_news_summary($parm=null)
 	{
 		$text = '';
 
@@ -564,18 +804,25 @@ class news_shortcodes extends e_shortcode
 		elseif($this->news_item['news_body']) // Auto-generate from first 2 sentences of news-body. //TODO Add Pref?
 		{
 			$tp = e107::getParser();
-			$text = $tp->toHtml($this->news_item['news_body'],true);
+			$text = $tp->toHTML($this->news_item['news_body'],true);
 			$breaks = array('<br />','<br>');
 			$text = str_replace($breaks,"\n",$text);
 			$text = strip_tags($text);	
 			$tmp = preg_split('/(\.\s|!|\r|\n|\?)/i', trim($text), 2, PREG_SPLIT_DELIM_CAPTURE);
 			$tmp = array_filter($tmp);
 
-			if($tmp[0])
+			if(!empty($tmp[0]))
 			{
-				$text = trim($tmp[0]).trim($tmp[1]);
+				$text = trim($tmp[0]);
+				$text .= (!empty($tmp[1])) ? trim($tmp[1]) : '';
 			}
 		}
+
+		if(!empty($this->param['summaryLimit']))
+		{
+			$parm['limit'] = $this->param['summaryLimit'];
+		}
+
 
 		if(!empty($parm['limit']))
 		{
@@ -590,9 +837,9 @@ class news_shortcodes extends e_shortcode
 	 * Auto-thumbnailing now allowed.
 	 * New sc parameter standards
 	 * Exampes: 
-	 * - {NEWSTHUMBNAIL=link|w=200} render link with thumbnail max width 200px
-	 * - {NEWSTHUMBNAIL=|w=200} same as above
-	 * - {NEWSTHUMBNAIL=src|aw=200&ah=200} return thumb link only, size forced to 200px X 200px (smart thumbnailing close to how Facebook is doing it)
+	 * - {NEWS_THUMBNAIL=link|w=200} render link with thumbnail max width 200px
+	 * - {NEWS_THUMBNAIL=|w=200} same as above
+	 * - {NEWS_THUMBNAIL=src|aw=200&ah=200} return thumb link only, size forced to 200px X 200px (smart thumbnailing close to how Facebook is doing it)
 	 * 
 	 * First parameter values: link|src|tag
 	 * Second parameter format: aw|w=xxx&ah|ah=xxx
@@ -601,22 +848,24 @@ class news_shortcodes extends e_shortcode
 	 * @see eHelper::scParams()
 	 * XXX Also returns Video thumbnails. 
 	 */
-	function sc_newsthumbnail($parm = '') //TODO Add support {NEWSTHUMBNAIL: x=y} format 
+	function sc_news_thumbnail($parm = '') //TODO Add support {NEWSTHUMBNAIL: x=y} format
 	{
-		$tmp = $this->handleMultiple($parm,'all');
-		$newsThumb = $tmp['file'];
+		if($tmp = $this->handleMultiple($parm,'all'))
+		{
+			$newsThumb = $tmp['file'];
+		}
 		
-		$class = 'news-thumbnail-'.$tmp['count'];
+		$class = 'news-thumbnail-'.varset($tmp['count']);
 		$dimensions = null;
 		$srcset = null;
 		$tp = e107::getParser();
 		
-		if(!$newsThumb && $parm != 'placeholder')
+		if(!isset($newsThumb) && $parm != 'placeholder')
 		{
 			return '';
 		}
 		
-		if($vThumb = e107::getParser()->toVideo($newsThumb, array('thumb'=>'src')))
+		if(isset($newsThumb) && $vThumb = e107::getParser()->toVideo($newsThumb, array('thumb'=>'src')))
 		{
 			$src = $vThumb;
 			$_src = '#';
@@ -634,7 +883,7 @@ class news_shortcodes extends e_shortcode
 			
 			if(isset($parms[2]['legacy']) && $parms[2]['legacy']==true) // Legacy mode - swap out thumbnails for actual images and update paths.  
 			{
-				if($newsThumb[0] != '{') // Fix old paths. 
+				if($newsThumb[0] !== '{') // Fix old paths.
 				{
 					$newsThumb = '{e_IMAGE}newspost_images/'.$newsThumb;	
 				}
@@ -650,10 +899,16 @@ class news_shortcodes extends e_shortcode
 			}
 			
 			// We store SC path in DB now + BC
-			$_src = $src = ($newsThumb[0] == '{' || $parms[1] == 'placeholder') ? e107::getParser()->replaceConstants($newsThumb, 'abs') : e_IMAGE_ABS."newspost_images/".$newsThumb;
+			if(!empty($newsThumb))
+			{
+				$_src = $src = (($newsThumb[0] === '{')) || varset($parms[1]) === 'placeholder' ? e107::getParser()->replaceConstants($newsThumb, 'abs') : e_IMAGE_ABS."newspost_images/".$newsThumb;
+			}
+			else
+			{
+				$src = '';
+			}
 		
-		
-			if(!empty($parms[2]) || $parms[1] == 'placeholder')
+			if(!empty($parms[2]) || varset($parms[1]) === 'placeholder')
 			{
 				//  $srcset = "srcset='".$tp->thumbSrcSet($src,'all')."' size='100vw' ";
 				  $attr = !empty($parms[2]) ? $parms[2] : null;
@@ -687,7 +942,7 @@ class news_shortcodes extends e_shortcode
 			break;
 
 			default:
-				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'><img class='news_image img-responsive img-rounded ".$class."' src='".$src."' alt='' style='".$style."' {$dimensions} {$srcset} /></a>";
+				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'><img class='news_image img-responsive img-fluid img-rounded rounded ".$class."' src='".$src."' alt='' style='".$style."' {$dimensions} {$srcset} /></a>";
 			break;
 		}
 	}
@@ -696,9 +951,9 @@ class news_shortcodes extends e_shortcode
 
 	/**
 	 * XXX  Experimental Images/Video - supports multiple items
-	 * {NEWSMEDIA: item=1}
+	 * @example {NEWS_MEDIA: item=1}
 	 */
-	function sc_newsmedia($parm=array())
+	function sc_news_media($parm=array())
 	{
 		
 		$media = explode(",", $this->news_item['news_thumbnail']);
@@ -715,9 +970,9 @@ class news_shortcodes extends e_shortcode
 		$this->imageItem = varset($media[$parm['item']]); // Set the current Image for other image shortcodes. 
 
 
-		if(vartrue($parm['placeholder']))
+		if(!empty($parm['placeholder']))
 		{
-			return $this->sc_newsimage('placeholder');	
+			return $this->sc_news_image('placeholder');
 		}
 		elseif($video = e107::getParser()->toVideo($this->imageItem, array('class'=> 'news-media news-media-'.$parm['item'])))
 		{
@@ -728,21 +983,21 @@ class news_shortcodes extends e_shortcode
 			$parm['item'] = ($parm['item'] +1);
 			if(empty($parm['class']))
 			{
-				$parm['class'] = 'img-responsive news-media news-media-'.$parm['item'];
+				$parm['class'] = 'img-responsive img-fluid news-media news-media-'.$parm['item'];
 			}
-			return $this->sc_newsimage($parm);
+			return $this->sc_news_image($parm);
 		}
 			
 		
 	}
 
 
-	function sc_newsvideo($parm='')
+	function sc_news_video($parm=null)
 	{
 		$tmp = $this->handleMultiple($parm,'video');	
-		$file = $tmp['file'];	
+		$file = varset($tmp['file']);
 			
-		if($video = e107::getParser()->toVideo($file, array('class'=> 'news-video-'.$tmp['count'])))
+		if($video = e107::getParser()->toVideo($file, array('class'=> 'news-video-'.varset($tmp['count']))))
 		{
 			return $video;
 		}
@@ -801,98 +1056,6 @@ class news_shortcodes extends e_shortcode
 		
 		
 
-	/**
-	 * Display News Images (but not video thumbnails )
-	 * @param $parm array
-	 * @example {NEWSIMAGE: type=src&placeholder=true}
-	 * @example {NEWSIMAGE: class=img-responsive}
-	 */
-	function sc_newsimage($parm = null)
-	{
-		$tp = e107::getParser();
-		
-		if(is_string($parm))
-		{
-			$parm = array('type'=> $parm);
-		}
-
-
-		$tmp = $this->handleMultiple($parm);
-		$srcPath = $tmp['file'];
-		
-		$class = (!empty($parm['class'])) ? $parm['class'] : "news_image news-image img-responsive img-rounded";
-		$class .= ' news-image-'.$tmp['count'];
-		$dimensions = null;
-		$srcset = null;
-			
-		if($tp->isVideo($srcPath))
-		{
-			return; 
-		}
-		else 
-		{
-		
-			if(!$srcPath)
-			{
-				if(varset($parm['type']) == 'placeholder' || vartrue($parm['placeholder']))
-				{
-					$src = 	$tp->thumbUrl(); // placeholder;
-					$dimensions = $tp->thumbDimensions();
-				}
-				else
-				{
-					return;
-				}
-			}
-			elseif($srcPath[0] == '{' ) // Always resize. Use {SETIMAGE: w=x&y=x&crop=0} PRIOR to calling shortcode to change. 
-			{
-				$src = $tp->thumbUrl($srcPath);
-				$dimensions = $tp->thumbDimensions();
-
-			}
-			else
-			{
-				// We store SC path in DB now + BC
-				$src = $srcPath[0] == '{' ? $tp->replaceConstants($srcPath, 'abs') : e_IMAGE_ABS."newspost_images/".$srcPath;			
-			}
-		}
-		
-	
-		
-		if(vartrue($parm['nolegacy'])) // Remove legacy thumbnails. 
-		{
-			$legSrc = urldecode($src);
-
-		 	if(strpos($legSrc,'newspost_images/thumb_')!==false)
-			{
-				return;	
-			}
-		}
-		
-		if($tmp['count'] > 1 && empty($parm['type'])) // link first image by default, but not others.
-		{
-			$parm['type'] = 'tag';
-		}
-
-		$style = !empty($this->param['thumbnail']) ? $this->param['thumbnail'] : '';
-
-		switch(vartrue($parm['type']))
-		{
-			case 'src':
-				return $src;
-			break;
-
-			case 'tag':
-				return "<img class='{$class}' src='".$src."' alt='' style='".$style."' {$dimensions} {$srcset} />";
-			break;
-
-			case 'url':
-			default:
-				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'><img class='{$class}' src='".$src."' alt='' style='".$style."' {$dimensions} {$srcset} /></a>";
-			break;
-		}
-	}
-
 
 
 
@@ -904,7 +1067,7 @@ class news_shortcodes extends e_shortcode
 
 
 
-	function sc_newstitlelink($parm = '')
+	function newsTitleLink($parm = null)
 	{
 		if(is_string($parm))
 		{
@@ -916,62 +1079,28 @@ class news_shortcodes extends e_shortcode
 		}
 
 		$url = e107::getUrl()->create('news/view/item', $this->news_item);
+
 		if(isset($parms['href']))
 		{
 			return $url;
 		}
-		return "<a style='".(isset($this->param['itemlink']) ? $this->param['itemlink'] : 'null')."' href='{$url}'>".e107::getParser()->toHTML($this->news_item['news_title'], TRUE, "TITLE").'</a>';
+
+		if(isset($parm['link']))
+		{
+			unset($parm['link']);
+		}
+		
+		$title = $this->sc_news_title($parm);
+
+		return "<a style='".(isset($this->param['itemlink']) ? $this->param['itemlink'] : 'null')."' href='{$url}'>".$title.'</a>';
 	}
 
-	function sc_newsurl($parm=null)
+	function sc_news_url($parm=null)
 	{
 		return e107::getUrl()->create('news/view/item', $this->news_item);
 	}
 
-	/* @deprecated - use {NEWS_CATEGORY_ICON} instead */
-	function sc_newscaticon($parm = array())
-	{
-		// BC
-		$category_icon = str_replace('../', '', trim($this->news_item['category_icon']));
-		if (!$category_icon) { return ''; }
 
-		// We store SC path in DB now + BC
-		if($category_icon[0] == '{')
-		{
-			$src =  e107::getParser()->replaceConstants($category_icon, 'abs');	
-		}
-		else
-		{
-			//Backwards Compatible Link.
-			$src =  (is_readable(e_IMAGE_ABS."newspost_images/".$category_icon)) ? e_IMAGE_ABS."newspost_images/".$category_icon : e_IMAGE_ABS."icons/".$category_icon;
-		}
-		
-
-	//	if($this->param['caticon'] == ''){$this->param['caticon'] = 'border:0px';}
-
-		$parm['alt']       = e107::getParser()->toHTML($this->news_item['category_name'], FALSE ,'defs');
-		$parm['legacy']    = array('{e_IMAGE}newspost_images/', '{e_IMAGE}icons/');
-		$parm['class']     = 'icon news_image news-category-icon';
-
-		$icon = e107::getParser()->toIcon($category_icon, $parm);
-
-		switch($parm)
-		{
-			/* @deprecated - Will cause issues with glyphs */
-			case 'src':
-				return $src;
-			break;
-
-			case 'tag':
-				return $icon;
-			break;
-
-			case 'url':
-			default:
-				return "<a href='".e107::getUrl()->create('news/list/category', $this->news_item)."'>".$icon."</a>";
-			break;
-		}
-	}
 
 	/**
 	 * Example usage: {NEWSITEM_SCHOOK=mysc_name|my_var1=val1&myvar2=myval2}
@@ -985,19 +1114,24 @@ class news_shortcodes extends e_shortcode
 	 * @param string $parm
 	 * @return string
 	 */
-	function sc_newsitem_schook($parm='')
+	function sc_newsitem_schook($parm=null)
 	{
+		if(!is_string($parm))
+		{
+			return null;
+		}
+
 		$parm = explode('|', $parm, 2);
 		$parm[1] = 'news_id='.$this->news_item['news_id'].(varset($parm[1]) ? '&'.$parm[1] : '');
 		e107::setRegistry('core/news/schook_data', array('data' => $this->news_item, 'params' => $this->param));
 		return e107::getParser()->parseTemplate('{'.strtoupper($parm[0]).'='.$parm[1].'}');
 	}
 
-	function sc_newsinfo()
+	public function sc_news_info($parm=null)
 	{
 		$news_item = $this->news_item;
 		$param = $this->param;
-		$con = new convert;
+		$con = e107::getDate();
 		$news_item['news_start'] = (isset($news_item['news_start']) && $news_item['news_start'] ? str_replace(' - 00:00:00', '', $con->convert_date($news_item['news_start'], 'long')) : LAN_NEWS_19);
 		$news_item['news_end'] = (isset($news_item['news_end']) && $news_item['news_end'] ? ' to '.str_replace(' - 00:00:00', '', $con->convert_date($news_item['news_end'], 'long')) : '');
 		$info = $news_item['news_render_type'] == 1 ? LAN_NEWS_9 : '';
@@ -1010,7 +1144,7 @@ class news_shortcodes extends e_shortcode
 		return $info;
 	}
 
-	function sc_newstags($parm='')
+	function sc_news_tags($parm=null)
 	{
 		$tmp = explode(",",$this->news_item['news_meta_keywords']);
 		$words = array();
@@ -1034,7 +1168,9 @@ class news_shortcodes extends e_shortcode
 		{
 			if(trim($val))
 			{
-				$url = e107::getUrl()->create('news/list/tag',array('tag'=>$val)); // e_BASE."news.php?tag=".$val
+				//$url = e107::getUrl()->create('news/list/tag',array('tag'=>rawurlencode($val))); // e_BASE."news.php?tag=".$val
+				// will be encoded during create()
+				$url = e107::getUrl()->create('news/list/tag',array('tag'=> str_replace(' ','-',$val))); // e_BASE."news.php?tag=".$val
 				$words[] = "<a class='".$class."' href='".$url."'>".$start.$val.$end."</a>";
 			}
 		}
@@ -1049,10 +1185,17 @@ class news_shortcodes extends e_shortcode
 			return LAN_NONE;
 		}			
 	}
-	
-	
-	
-	function sc_newsrelated($array=array())
+
+
+	/**
+	*
+	* @param array $array
+	* @param string $array['types']
+	* @param int $array['limit']
+	* @example {NEWS_RELATED: types=news&limit-3}
+	* @return string
+	*/
+	function sc_news_related($array=array())
 	{
 		if(!varset($array['types']))
 		{
@@ -1065,10 +1208,107 @@ class news_shortcodes extends e_shortcode
 	}
 
 
-	function sc_newsmetadiz($parm=null)
+	function sc_news_description($parm=null)
 	{
-  		return e107::getParser()->toHtml($this->news_item['news_meta_description'],true);
+  		$text = e107::getParser()->toHTML($this->news_item['news_meta_description'],true);
+
+		if(!empty($parm['limit']))
+		{
+			$text = e107::getParser()->text_truncate($text, $parm['limit']);
+		}
+
+		return $text;
+
+	}
+
+	/** New in v2.3 {NEWS_PAGINATION}  */
+	function sc_news_pagination($parm=null)
+	{
+		$params = (string) e107::getRegistry('core/news/pagination');
+
+
+		return e107::getParser()->parseTemplate("{NEXTPREV=".$params."}");
+
+	}
+
+
+
+	/**
+	 * @example {NEWS_NAV_NEXT}
+	 * @return string|null
+	 */
+	function sc_news_nav_next()
+	{
+		return $this->parseNavTemplate('next');
+	}
+
+	/**
+	 * {NEWS_NAV_PREVIOUS}
+	 * @return string|null
+	 */
+	function sc_news_nav_previous()
+	{
+		return $this->parseNavTemplate('previous');
+	}
+
+	/**
+	 * {NEWS_NAV_CURRENT}
+	 * @return string|null
+	 */
+	function sc_news_nav_current()
+	{
+		$template = e107::getTemplate('news', 'news_view', 'nav');
+		return e107::getParser()->parseTemplate($template['current'], true, $this);
+	}
+
+	/**
+	 * Retrieves the data from the previous/next news record and renders the corresponding template.
+	 * @param string $type next|previous
+	 * @return string|null
+	 */
+	private function parseNavTemplate($type)
+	{
+		if(!$data = $this->getNavQuery($type))
+		{
+			return null;
+		}
+
+		$template = e107::getTemplate('news', 'news_view', 'nav');
+		$orig = $this->getScVar('news_item');
+		$this->setScVar('news_item', $data);
+		$text = e107::getParser()->parseTemplate($template[$type], true, $this);
+		$this->setScVar('news_item', $orig);
+
+		return $text;
+	}
+
+	/**
+	 * Retrieve table data from the previous or next news item.
+	 * @param string $type next/previous
+	 * @return array|string
+	 */
+	private function getNavQuery($type)
+	{
+		$nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
+
+		$var = $this->getScVar('news_item');
+
+		$dir = ($type === 'next') ? '>=' : '<=';
+		$sort = ($type === 'next') ? 'ASC' : 'DESC';
+
+		$query = "
+				SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon,
+				nc.category_meta_keywords, nc.category_meta_description, nc.category_template 
+				FROM #news AS n
+				LEFT JOIN #user AS u ON n.news_author = u.user_id
+				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
+				WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
+				AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
+				AND (FIND_IN_SET('0', n.news_render_type) OR FIND_IN_SET(1, n.news_render_type))
+				AND n.news_datestamp ".$dir . (int) $var['news_datestamp']. " AND n.news_id != ".(int) $var['news_id']." ORDER by n.news_datestamp ".$sort." LIMIT 1";
+
+		return e107::getDb()->retrieve($query);
 	}
 
 }
-?>
+

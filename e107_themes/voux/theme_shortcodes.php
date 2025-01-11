@@ -31,8 +31,10 @@ class theme_shortcodes extends e_shortcode
 
 		$frm = e107::getForm();
 		$text = $frm->open('newsletter','post', e_SIGNUP, array('class'=>'form-inline'));
+		$text .= "<div class='input-inline'>";
 		$text .= $frm->text('email','', null, array('placeholder'=>"Enter your email"));
 		$text .= $frm->button('subscribe', 1, 'primary', "Subscribe");
+		$text .= "</div>";
 		$text .= $frm->close();
 
 		return $text;
@@ -88,7 +90,7 @@ class theme_shortcodes extends e_shortcode
 
 
 
-	function sc_bootstrap_usernav($parm='')
+	function sc_bootstrap_usernav($parm=null)
 	{
 
 		$placement = e107::pref('theme', 'usernav_placement', 'bottom');
@@ -98,7 +100,7 @@ class theme_shortcodes extends e_shortcode
 			return '';
 		}
 
-		include_lan(e_PLUGIN."login_menu/languages/".e_LANGUAGE.".php");
+		e107::includeLan(e_PLUGIN."login_menu/languages/".e_LANGUAGE.".php");
 		
 		$tp = e107::getParser();		   
 		require(e_PLUGIN."login_menu/login_menu_shortcodes.php"); // don't use 'require_once'.
@@ -167,8 +169,8 @@ class theme_shortcodes extends e_shortcode
 				
 				$text .= '
 				
-				<a href="{LM_FPW_LINK=href}" class="btn btn-default btn-sm  btn-block">'.LAN_LOGINMENU_4.'</a>
-				<a href="{LM_RESEND_LINK=href}" class="btn btn-default btn-sm  btn-block">'.LAN_LOGINMENU_40.'</a>
+				<a href="{LM_FPW_LINK=href}" class="btn btn-default btn-secondary btn-sm  btn-block">'.LAN_LOGINMENU_4.'</a>
+				<a href="{LM_RESEND_LINK=href}" class="btn btn-default btn-secondary btn-sm  btn-block">'.LAN_LOGINMENU_40.'</a>
 				';
 				
 				
@@ -202,11 +204,26 @@ class theme_shortcodes extends e_shortcode
 		
 		// Logged in. 
 		//TODO Generic LANS. (not theme LANs) 	
-		
-		$text = '
-		
-		<ul class="nav navbar-nav navbar-right'.$direction.'">
-		<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">{SETIMAGE: w=20} {USER_AVATAR: shape=circle} '. USERNAME.' <b class="caret"></b></a>
+
+
+
+		if($placement == 'bottom')
+		{
+			$text = '
+			<ul class="nav navbar-nav navbar-right'.$direction.'">
+			<li class="dropdown"><a href="#" class="voux-nav-avatar dropdown-toggle" data-toggle="dropdown"> {USER_AVATAR: w=30&h=30&crop=1&shape=circle} '.USERNAME.' <b class="caret"></b></a>';
+		}
+		else
+		{
+
+			$text = '
+			<ul class="nav navbar-nav navbar-right'.$direction.'">
+			<li class="dropdown"><a href="#" class="voux-nav-avatar dropdown-toggle" data-toggle="dropdown"> {USER_AVATAR: w=20&h=20&crop=1&shape=circle} <b class="caret"></b></a>';
+
+		}
+
+
+		$text .= '
 		<ul class="dropdown-menu">
 		<li>
 			<a href="{LM_USERSETTINGS_HREF}"><span class="glyphicon glyphicon-cog"></span> '.LAN_SETTINGS.'</a>

@@ -38,6 +38,8 @@ if (!defined('e107_INIT'))
 	 */
 	function register_shortcode($classFunc, $codes, $path = '', $force = false)
 	{
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b>', E_USER_DEPRECATED); // NO LAN
+
 		return e107::getScParser()->registerShortcode($classFunc, $codes, $path, $force);
 	}
 
@@ -74,11 +76,15 @@ if (!defined('e107_INIT'))
 	 */
 	function initShortcodeClass($class, $force = false, $eVars = null)
 	{
-		return e107::getScParser()->initShortcodeClass($class, $eVars, $force);
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b>', E_USER_DEPRECATED); // NO LAN
+
+		return e107::getScParser()->initShortcodeClass($class,  $force);
 	}
 
 
-
+/**
+ *
+ */
 class e_parse_shortcode
 {
 	protected $scList               = array();  // The actual code - added by parsing files or when plugin codes encountered. Array key is the shortcode name.
@@ -93,6 +99,8 @@ class e_parse_shortcode
 	private   $legacyBatch          = array();  // List of legacy batch file codes. eg. using SC_BEGIN etc.
 	private   $legacyBatchFile       = null;
 	private   $debug_legacy         = array();
+
+	/** @var e_vars  */
 	protected $eVars                = null;
 	protected $wrappers             = array();  // Wrappers array for the current parsing cycle, see contact_template.php and $CONTACT_WRAPPER variable
 	protected $wrapper              = null;     // current wrapper being processed.
@@ -100,16 +108,25 @@ class e_parse_shortcode
 	protected $sc_style             = array();  // Former $sc_style global variable. Internally used - performance reasons
 	protected $editableCodes        = array(); // Array of editable shortcode data.
 	protected $editableActive       = false;
+	protected $nowrap               = false;
+	private   $mode                 = 'default';
 
 	function __construct()
 	{
 		// $_SESSION['editable'] = array();
 
 		$this->ignoreCodes = e107::getParser()->getUrlConstants(); // ignore all URL shortcodes. ie. {e_PLUGIN}
-		$this->loadOverrideShortcodes();
-		$this->loadThemeShortcodes();
+
+		if(e_ADMIN_AREA !== true)
+		{
+			$this->loadOverrideShortcodes();
+			$this->loadThemeShortcodes();
+		}
+
 		$this->loadPluginShortcodes();
 		$this->loadPluginSCFiles();
+
+		
 		//$this->loadCoreShortcodes(); DEPRECATED
 
 		$editableActivePref = e107::getPref('inline_editing',255);
@@ -118,6 +135,16 @@ class e_parse_shortcode
 		{
 			$this->editableActive = true;
 		}
+
+	}
+
+	/**
+	 * @return void
+	 */
+	public function clearRegistered()
+	{
+		$this->registered_codes = array();
+		$this->scClasses = array();
 
 	}
 
@@ -271,7 +298,7 @@ class e_parse_shortcode
 		{
 			$this->scClasses[$class] = new $class();
 
-			if(method_exists($this->scClasses[$class], 'init'))
+			if($class !== 'theme_shortcodes' && method_exists($this->scClasses[$class], 'init'))
 			{
 				$this->scClasses[$class]->init();
 			}
@@ -281,11 +308,9 @@ class e_parse_shortcode
 				$methods = get_class_methods($class);
 				foreach($methods as $meth)
 				{
-					if(substr($meth,0,3) == 'sc_')
+					if(strpos($meth,'sc_') === 0)
 					{
 						$this->addonOverride[$meth] = $class;
-
-
 					}
 				}
 			}
@@ -345,22 +370,22 @@ class e_parse_shortcode
 		*/
 
 		$path = null;
+		$manualCall = false;
 		
 		if(trim($className)==""){ return null; }
 
 		$_class_fname = $className;
-		if($pluginName === TRUE) //XXX When called manually by a plugin, not e_shortcode.php  eg. $sc = e107::getScBatch('faqs',TRUE); for faqs_shortcode.php with class faqs_shortcode
+		if($pluginName === true) //XXX When called manually by a plugin, not e_shortcode.php  eg. $sc = e107::getScBatch('faqs',TRUE); for faqs_shortcode.php with class faqs_shortcode
 		{
+			// @todo FAQs is incorrect and should use plugin_ as a prefix.
 			$pluginName = str_replace("_shortcodes","",$className);	
 			$manualCall = true; 	
 		}
-		elseif(is_string($pluginName))
+		elseif(is_string($pluginName)) //@fixme - stuck with it.
 		{
-			// FIXME "plugin_ " should NOT be used or be necessary. 
-			// FIXME Core classes should use special naming to avoid comflicts, not plugins.  
-			$className = 'plugin_'.$pluginName.'_'.str_replace('/', '_', $className); 
+			$className = 'plugin_'.$pluginName.'_'.str_replace('/', '_', $className);
 		}
-		
+
 		$globalOverride = $this->isBatchOverride(str_replace('plugin_', '', $className));
 		
 		// forced override
@@ -442,6 +467,8 @@ class e_parse_shortcode
 		if (is_readable($path))
 		{
 			require_once($path);
+			//e107::getDebug()->log("Loading Class '".$className."' in <b>".$path."</b>");
+
 			if (class_exists($className, false)) // don't allow __autoload()
 			{
 				// register instance directly to allow override
@@ -449,18 +476,28 @@ class e_parse_shortcode
 				// $this->registerClassMethods($className, $path);  // XXX Global registration should happen separately - here we want only the object. 
 				return $this->scClasses[$className];
 			}
+			elseif(class_exists("plugin_".$className,false)) // v2.1.7 = Fix path issues. getScObject('myplugin',true) should load: plugin_myplugin_shortcodes class.
+			{
+				$className = "plugin_".$className;
+				$this->scClasses[$className] = new $className();
+				return $this->scClasses[$className];
+			}
 			elseif(E107_DBG_BBSC || E107_DBG_SC)
 			{
 			// 	echo "<h3>Couldn't Find Class '".$className."' in <b>".$path."</b></h3>";
 				echo "<div class='alert alert-danger'>Couldn't Load: <b>".$path."</b> with class-name:<b> {$className}</b> and pluginName <b>{$pluginName}</b></div>";
 			}
+			else
+			{
+				e107::getDebug()->log("Found file: <b>".$path."</b> but couldn't Find Class <b>".$className."</b> OR <b>plugin_".$className."</b> inside.");
+			}
 		}
-		elseif(E107_DBG_INCLUDES)
+		else
 		{
-		// 	echo "<h3>Couldn't Find Class '".$className."' in <b>".$path."</b></h3>";
+			e107::getDebug()->log("File not available: <i>".$path."</i>. Couldn't Find Class '".$className."' in <b>".$path."</b>");
 		}
 
-		e107::getDebug()->log( "<div class='alert alert-danger'>Couldn't Load: <b>".$path."</b> with class-name:<b> {$className}</b> and pluginName <b>{$pluginName}</b></div>");
+	//	e107::getDebug()->log( "<div class='alert alert-danger'>Couldn't Load: <b>".$path."</b> with class-name:<b> {$className}</b> and pluginName <b>{$pluginName}</b></div>");
 
 
 		// TODO - throw exception?
@@ -505,14 +542,21 @@ class e_parse_shortcode
 	 *
 	 * @return e_parse_shortcode
 	 */
-	public function loadThemeShortcodes()
+	public function loadThemeShortcodes($theme=null)
 	{
 		global $register_sc;
-		
-		if(file_exists(THEME."theme_shortcodes.php"))
+
+		$themePath = ($theme === null) ? defset('THEME') : e_THEME.$theme.'/';
+
+		if(empty($themePath))
+		{
+			return null;
+		}
+
+		if(file_exists($themePath."theme_shortcodes.php"))
 		{
 			$classFunc = 'theme_shortcodes';
-			$path = THEME."theme_shortcodes.php";
+			$path = $themePath."theme_shortcodes.php";
 			include_once($path);
 			$this->registerClassMethods($classFunc, $path, false);
 		}
@@ -684,14 +728,21 @@ class e_parse_shortcode
 	}
 
 
-
+	/**
+	 * @param $code
+	 * @return bool
+	 */
 	function isRegistered($code)
 	{
 		return array_key_exists($code, $this->registered_codes);
 	}
 
 
-
+	/**
+	 * @param $className
+	 * @param $object
+	 * @return $this
+	 */
 	public function resetScClass($className, $object)
 	{
 		if(null === $object)
@@ -705,20 +756,51 @@ class e_parse_shortcode
 		return $this;
 	}
 
+	/**
+	 * @param $className
+	 * @return bool
+	 */
 	function isScClass($className)
 	{
 		return isset($this->scClasses[$className]);
 	}
 
+	/**
+	 * @param $code
+	 * @return bool
+	 */
 	function isOverride($code)
 	{
 		return in_array($code, $this->scOverride);
 	}
 
+	/**
+	 * @param $name
+	 * @return bool
+	 */
 	function isBatchOverride($name)
 	{
 		return in_array($name, $this->scBatchOverride);
 	}
+
+    /**
+     * Backward Compatibility for $sc_style wrapper
+     * @param mixed $extraCodes
+     */
+    private function mergeLegacyWrappers($extraCodes=null)
+    {
+        global $sc_style; //legacy, will be removed soon, use the non-global $SC_STYLE instead
+
+        if(is_array($extraCodes) && isset($extraCodes['_WRAPPER_'])) // v2.x array wrapper.
+        {
+            return null;
+        }
+
+        if(isset($sc_style) && is_array($sc_style)/* && !isset($extraCodes['_WRAPPER_'])*/)
+		{
+			$this->sc_style = array_merge($sc_style, $this->sc_style);
+		}
+    }
 
 	/**
 	 *	Parse the shortcodes in some text
@@ -728,14 +810,12 @@ class e_parse_shortcode
 	 *								- if FALSE, only those passed are used.
 	 *	@param array|object|null $extraCodes - if passed, defines additional shortcodes:
 	 *			- if an object or an array, the shortcodes defined by the class of the object are available for this parsing only.
-	 *	@param array|null $eVars - if defined, details values to be substituted for shortcodes. Array key (lower case) is shortcode name (upper case)
+	 *	@param array|object|null $eVars - if defined, details values to be substituted for shortcodes. Array key (lower case) is shortcode name (upper case)
 	 *
 	 *	@return string with shortcodes substituted
 	 */
 	function parseCodes($text, $useSCFiles = true, $extraCodes = null, $eVars = null)
 	{
-		global $sc_style; //legacy, will be removed soon, use the non-global $SC_STYLE instead
-		
 		$saveParseSCFiles = $this->parseSCFiles; // In case of nested call
 		$this->parseSCFiles = $useSCFiles;
 		$saveVars = $this->eVars; // In case of nested call
@@ -764,10 +844,7 @@ class e_parse_shortcode
 		 * 
 		 */
 
-		if(isset($sc_style) && is_array($sc_style))
-		{
-			$this->sc_style = array_merge($sc_style, $this->sc_style); // XXX Commenting this out will fix #2 above. 
-		}
+        $this->mergeLegacyWrappers($extraCodes); // XXX Commenting this out will fix #2 above.
 
 		//object support
 		
@@ -783,97 +860,118 @@ class e_parse_shortcode
 			// Do it only once per parsing cylcle and not on every doCode() loop - performance
 			if(method_exists($this->addedCodes, 'wrapper'))
 			{
-				// $cname = get_class($this->addedCodes);
-
 				$tmpWrap = e107::templateWrapper($this->addedCodes->wrapper());
+				$this->wrapper = $this->addedCodes->getWrapperID();
+
 				if(!empty($tmpWrap)) // FIX for #3 above.
 				{
 					$this->wrappers = array_merge($this->wrappers,$tmpWrap);
-					$this->wrapper = $this->addedCodes->getWrapperID();
-
 				}
-				elseif(E107_DBG_BBSC)
+				elseif(!empty($this->wrapper))  // if there's a wrapper id but no wrappers assigned to it, clear the wrappers array.
 				{
-					$this->wrapper = $this->addedCodes->getWrapperID();
-				//	e107::getMessage()->addDebug("Wrapper Empty: ".$this->addedCodes->wrapper());
+					$this->wrappers = array();
 				}
-
 			}
 
-			if(method_exists($this->addedCodes, 'editable'))
+			if($this->editableActive && method_exists($this->addedCodes, 'editable'))
 			{
 				$this->editableCodes = $this->addedCodes->editable();
 
 				if(isset($this->editableCodes['perms']) && getperms($this->editableCodes['perms']))
 				{
-					e107::js('core', 'jquery.contenteditable.js', 'jquery');
-
-					$_SESSION['editable'][e_TOKEN] = $this->editableCodes;
+					// TODO use Library Manager...
+					e107::js('footer', '{e_WEB}js/jquery.contenteditable.js', 'jquery', 2);
+					$token = defset('e_TOKEN','token-missing');
+					$_SESSION['editable'][$token] = $this->editableCodes;
 
 					e107::js('footer-inline', '$(".e-editable-front").each(function ()
 					{
 
 						var sc   = $(this).attr("data-edit-sc");
 						var id      = $(this).attr("data-edit-id");
-						var token    = "'.e_TOKEN.'";
+						var token    = "'.$token.'";
+						var box     = $(this).parent("div, span"); 
+						var container = this; 
 
 						$(this).contentEditable({
 							"placeholder" : "",
-							"onBlur" : function(element){
-								var edited_content = element.content;
+							
+							  "onFocusIn" : function(element){
+							    var $input = $("<span id=\"e-editable-front-controls\"><span class=\"e-editable-front-save\" ><i class=\"fa fa-fw fa-save\"></i></span><span class=\"e-editable-front-cancel\" ><i class=\"fa fa-fw fa-ban\"></i></span></span>"); 
+							   $input.appendTo($(box)).hide().fadeIn(300);
+								$(container).addClass("active");
+				             
+				            },
+							"onFocusOut" : function(element){
+				            //   $(".e-editable-front-save").remove();
+				            }
+				            
+				          
+						});
+						
+						
+						$(box).on("click",".e-editable-front-cancel",function () 
+						{
+					        console.log("Cancelled");
+					        $(container).removeClass("active");
+					        $("#e-editable-front-controls").fadeOut(300, function() { $("#e-editable-front-controls").remove(); });	 
+						}); 
+						
+						$(box).on("click",".e-editable-front-save",function () 
+						{
+							$("#e-editable-front-controls").html("<i class=\"fa fa-fw fa-spin fa-spinner\"></i>");
+						
+					        $(container).removeClass("active");
+					        
+					        var edited_content = $(container).html();
 
-								$.post("'.e_WEB_ABS.'js/inline.php",{ content : edited_content, sc: sc, id: id, token: token }, function (data){
-									console.log(data);
-							        try
-									{
-										var d = $.parseJSON(data);
-									} catch(e)
-									{
-										// Not JSON.
-										return;
-									}
-
-
-									 console.log(d);
-
-
-
-							// Show pop-up message.
-							if(d.msg)
+							$.post("'.e_WEB_ABS.'js/inline.php",{ content : edited_content, sc: sc, id: id, token: token }, function (data)
 							{
-								var alertType = "info";
-
-								if(d.status == "ok")
+								console.log(data);
+								try
 								{
-									alertType = "success";
+									var d = $.parseJSON(data);
+								} 
+								catch(e)
+								{
+									// Not JSON.
+								//	return;
 								}
 
-								if(d.status == "error")
+								console.log(d);
+									 
+								if(d.msg)
 								{
-									alertType = "danger";
-								}
-
-								if(jQuery().notify)
-								{
-									$("#uiAlert").notify({
-										type: alertType,
-										message: {text: d.msg},
-										fadeOut: {enabled: true, delay: 3000}
-									}).show();
-								}
+	
+									if(d.status == "ok")
+									{
+										$("#e-editable-front-controls").html("<i class=\"fa fa-fw fa-check\"></i>");	
+									}
+											
+									if(d.status == "error")
+									{
+										$("#e-editable-front-controls").html("<i class=\"fa fa-fw fa-cross\"></i>");	
+									}			
+										
+								}	
 								else
 								{
-									alert(d.msg);
-								//	location.reload();
-									return;
+									$("#e-editable-front-controls").html("<i class=\"fa fa-fw fa-cross\"></i>");	
 								}
-							}
-
-								});
-							}
-						});
+								
+								$("#e-editable-front-controls").fadeOut(2000, function() { $(this).remove(); });	 
+	
+							}) 
+					        
+						}); 
+										
+						
 
 					});
+					
+				
+
+
 
 
 					');
@@ -919,8 +1017,7 @@ class e_parse_shortcode
 		//	print_a($this);
 		}
 
-
-		$ret = preg_replace_callback('#\{([A-Z][^\x02]*?\S)\}#', array(&$this, 'doCode'), $text); // must always start with uppercase letter
+		$ret = preg_replace_callback('#\{([A-Z][^\x02]*?\S)\}#', array(&$this, 'doCode'), (string) $text); // must always start with uppercase letter
 		// $ret = preg_replace_callback('#\{(\S[^\x02]*?\S)\}#', array(&$this, 'doCode'), $text);
 		$this->parseSCFiles = $saveParseSCFiles; // Restore previous value
 		$this->addedCodes = $saveCodes;
@@ -942,6 +1039,7 @@ class e_parse_shortcode
 	 */
 	function doCode($matches)
 	{
+		// e107::getDebug()->log($matches[1]);
 		// print_a($matches);
 
 		if(in_array($matches[0],$this->ignoreCodes)) // Ignore all {e_PLUGIN}, {THEME} etc. otherwise it will just return blank for these items. 
@@ -976,6 +1074,8 @@ class e_parse_shortcode
 			$fullShortcodeKey = $newMatch[0];
 			$code = $newMatch[1];
 			$parmStr = trim($newMatch[2]);
+			// fix for #3161: htmlized shortcode parameters ...
+			$parmStr = str_ireplace('&amp;', '&', $parmStr);
 			$debugParm = $parmStr;
 			parse_str($parmStr,$parm);
 			$parmArray = true;
@@ -1006,14 +1106,19 @@ class e_parse_shortcode
 			$parm = trim($parm);
 			$parm = str_replace(array('[[', ']]'), array('{', '}'), $parm);
 		}
-		
+
+		if(empty($parm))
+		{
+			$parm = array();
+		}
+
 		
 		if (E107_DBG_BBSC || E107_DBG_SC || E107_DBG_TIMEDETAILS)
 		{
-			$sql->db_Mark_Time("SC ".$code);
+			e107::getDebug()->logTime("SC ".$code);
 		}
 
-		if (E107_DBG_SC)
+		if (E107_DBG_SC && ADMIN)
 		{
 			
 			$dbg = "<strong>";
@@ -1179,18 +1284,28 @@ class e_parse_shortcode
 				{
 					// Code is not registered, let's look for .sc or .php file
 					// .php file takes precedence over .sc file
-					if (is_readable(e_CORE.'shortcodes/single/'.strtolower($code).'.php'))
+					$codeLower = strtolower($code);
+					if (is_readable(e_CORE.'shortcodes/single/'.$codeLower.'.php'))
 					{
-						$_function = strtolower($code).'_shortcode';
-						$_class = strtolower($code);
-						$_path = e_CORE.'shortcodes/single/'.strtolower($code).'.php';
+						$_function = $codeLower.'_shortcode';
+						$_class = ($codeLower === 'sitelinks_alt') ? 'sitelinks_alt' : null; // all others are plain functions.
+						$_path = e_CORE.'shortcodes/single/'.$codeLower.'.php';
 
-						include_once(e_CORE.'shortcodes/single/'.strtolower($code).'.php');
+						include_once($_path);
 
-						if (class_exists($_class, false)) // prevent __autoload - performance
+
+						if (is_string($_class) && class_exists($_class, false)) // prevent __autoload - performance
 						{
 							// SecretR - fix array(parm, sc_mode) causing parm to become an array, see issue 424
-							$ret = call_user_func(array($_class, $_function), $parm, $sc_mode);
+							if(!method_exists($_class, $_function))
+							{
+								trigger_error("Method ".$_function." doesn't exist in class ".$_class." within file ".$_path);
+							}
+							else
+							{
+								$ret = call_user_func(array($_class, $_function), $parm, $sc_mode);
+							}
+						
 						}
 						elseif (function_exists($_function))
 						{
@@ -1199,7 +1314,7 @@ class e_parse_shortcode
 					}
 					else
 					{
-						$scFile = e_CORE.'shortcodes/single/'.strtolower($code).'.sc';
+						$scFile = e_CORE.'shortcodes/single/'.$codeLower.'.sc';
 						$_path = $scFile;
 					}
 				}
@@ -1253,7 +1368,7 @@ class e_parse_shortcode
 				$error['problem']   = $scCode;
 
                 e107::getDebug()->logCode(-2, $code, null, print_a($error,true));
-
+                trigger_error("Couldn't parse {".$code."} legacy shortcode at line ".$t->getLine().".\n". $t->getMessage(), E_USER_NOTICE);
 			}
 
 			if($ret === false && E107_DEBUG_LEVEL > 0 ) // Error in Code.
@@ -1269,7 +1384,7 @@ class e_parse_shortcode
 			}
 		}
 
-		if(E107_DBG_BBSC && $this->wrapperDebugDone[$this->wrapper]==false && !empty($this->wrapper))
+		if(E107_DBG_BBSC && !empty($this->wrapper) && $this->wrapperDebugDone[$this->wrapper]==false)
 		{
 			list($wrapTmpl, $wrapID1, $wrapID2) = explode('/',$this->wrapper,3);
 
@@ -1295,14 +1410,17 @@ class e_parse_shortcode
 		if (isset($ret) && ($ret != '' || is_numeric($ret)))
 		{
 			$ret = $this->makeEditable($ret, $code);
-			$ret = $this->makeWrapper($ret, $code, $fullShortcodeKey, $sc_mode);
+			if (!$this->nowrap == $code)
+			{
+				$ret = $this->makeWrapper($ret, $code, $fullShortcodeKey, $sc_mode);
+			}
 		}
 
 
-		if (E107_DBG_SC || E107_DBG_TIMEDETAILS)
-		{
-			$sql->db_Mark_Time("(After SC {$code})");
-		}
+		//if (E107_DBG_SC || E107_DBG_TIMEDETAILS)
+		//{
+		//	$sql->db_Mark_Time("(After SC {$code})");
+		//}
 		
 		if (($noDebugLog != true) && (E107_DBG_BBSC || E107_DBG_SC || E107_DBG_TIMEDETAILS))
 		{
@@ -1353,11 +1471,23 @@ class e_parse_shortcode
 			
 		}
 
-
-
+		if($this->mode === 'schema' && !empty($ret))
+		{
+			$ret = e107::getParser()->stripAttributes($ret, ['href']);
+			$ret = str_replace('"','',$ret);
+		}
 
 		return isset($ret) ? $ret: '';
 
+	}
+
+	/**
+	 * @param $mode
+	 * @return void
+	 */
+	public function setMode($mode)
+	{
+		$this->mode = (string) $mode;
 	}
 
 
@@ -1372,15 +1502,16 @@ class e_parse_shortcode
 	 */
 	private function makeWrapper($ret, $code, $fullShortcodeKey, $sc_mode)
 	{
-		$pre = $post = '';
+		$pre = '';
+		$post = '';
 
-		if(isset($this->wrappers[$code]) && !empty($this->wrappers[$code])) // eg: $NEWS_WRAPPER['view']['item']['NEWSIMAGE']
-		{
-			list($pre, $post) = explode("{---}", $this->wrappers[$code], 2);
-		}
-		elseif(!empty($fullShortcodeKey) && !empty($this->wrappers[$fullShortcodeKey]) ) // eg: $NEWS_WRAPPER['view']['item']['NEWSIMAGE: item=1']
+		if(!empty($fullShortcodeKey) && !empty($this->wrappers[$fullShortcodeKey]) ) // eg: $NEWS_WRAPPER['view']['item']['NEWSIMAGE: item=1']
 		{
 			list($pre, $post) = explode("{---}", $this->wrappers[$fullShortcodeKey], 2);
+		}
+		elseif(isset($this->wrappers[$code]) && !empty($this->wrappers[$code])) // eg: $NEWS_WRAPPER['view']['item']['NEWSIMAGE']
+		{
+			list($pre, $post) = explode("{---}", $this->wrappers[$code], 2);
 		}
 		else
 		{
@@ -1416,13 +1547,18 @@ class e_parse_shortcode
 
 		if(strpos($pre, '{') !== false) // shortcode found in wrapper
 		{
+			$this->nowrap = $code;
 			$pre = $this->parseCodes($pre, true, $this->addedCodes);
+			$this->nowrap = false;
 		}
 
 		if(strpos($post, '{') !== false) // shortcode found in wrapper
 		{
+			$this->nowrap = $code;
 			$post = $this->parseCodes($post, true, $this->addedCodes);
+			$this->nowrap = false;
 		}
+
 
 		return $pre.$ret.$post;
 
@@ -1476,7 +1612,15 @@ class e_parse_shortcode
 
 		$attributes = "title='".LAN_EDIT."' contenteditable='true' class='e-editable-front' data-edit-id='".$id."' data-edit-sc='".$lcode."' ";
 
-		return ($container == 'div') ? "<div ".$attributes." >".$text."</div>" : "<span  ".$attributes."  >".$text."</span>";
+		$ret = ($container == 'div') ?  "<div>" :  "<span>";
+		$ret .= ($container == 'div') ? "<div ".$attributes." >".$text."</div>" : "<span  ".$attributes."  >".$text."</span>";
+
+	//	$ret .= "<span class='input-group-btn'>";
+	//	$ret .= '<span id="'.$lcode."-".$id.'" class="e-editable-front-save" ><i class="fa fa-fw fa-save"></i></span>';
+	//	$ret .= "</span>";
+		$ret .= ($container == 'div') ?  "</div>" :  "</span>";
+
+		return $ret;
 
 	}
 
@@ -1565,6 +1709,10 @@ class e_parse_shortcode
 	}
 }
 
+
+/**
+ *
+ */
 class e_shortcode
 {
 	/**
@@ -1603,6 +1751,12 @@ class e_shortcode
 
 
 	/**
+	 * Breadcrumb calculations should occur in here.
+	 */
+	public function breadcrumb() {}
+
+
+	/**
 	 * Sets wrapper id (to be retrieved from the registry while parsing)
 	 * Example e107::getScBatch('contact')->wrapper('contact/form');
 	 * which results in using the $CONTACT_WRAPPER['form'] wrapper in the parsing phase
@@ -1622,12 +1776,19 @@ class e_shortcode
 	}
 
 
+	/**
+	 * @return null
+	 */
 	public function getWrapperID()
 	{
 		return $this->wrapper;
 	}
 
 
+	/**
+	 * @param $data
+	 * @return $this|null
+	 */
 	public function editable($data=null)
 	{
 		if(null === $data) return $this->editable;
@@ -1757,7 +1918,7 @@ class e_shortcode
 	 * Retrieve all shortcode values
 	 * <code>$some_value = e107::getScBatch('class_name')->getScVars();</code>
 	 *
-	 * @return mixed
+	 * @return array
 	 */
 	public function getScVars()
 	{

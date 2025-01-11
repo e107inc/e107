@@ -14,6 +14,10 @@
 */
 global $pref, $eplug_admin;
 
+
+/**
+ *
+ */
 class e_jslib
 {
     
@@ -32,7 +36,7 @@ class e_jslib
 		
 		/* DEPRECATED 
 		$ret .= "
-			<script type=\"text/javascript\">
+			<script>
 				var e107Path = {
 			        e_IMAGE:    '".e_IMAGE_ABS."',
 			        SITEURL:    '".SITEURL."',
@@ -63,7 +67,7 @@ class e_jslib
 			$hash = md5(serialize(varset($pref['e_jslib'])).e107::getPref('e_jslib_browser_cache', 0).THEME.e_LANGUAGE.ADMIN).'_'.$where;
 			// TODO disable cache in debug mod 
 			$hash .= (e107::getPref('e_jslib_nocache')/* || deftrue('e_NOCACHE')*/ ? '_nocache' : '').(!e107::getPref('e_jslib_nobcache') || deftrue('e_NOCACHE') ? '_nobcache' : '').(e107::getPref('e_jslib_gzip') ? '' : '_nogzip');
-			$ret .= "<script type='text/javascript' src='".e_JS."e_jslib.php?{$hash}'></script>\n";
+			$ret .= "<script src='".e_JS."e_jslib.php?{$hash}'></script>\n";
 			
 			// render CDN libraries asap 
 			$ret .= $e_jsmanager->renderJs('core', null, true, true);
@@ -172,10 +176,9 @@ class e_jslib
         $pref = e107::getPref();
         $encoding = $this->browser_enc();
         
-        $contents = ob_get_contents();
-        ob_end_clean();
-        
-        if(!deftrue('e_NOCACHE')) header('Cache-Control: must-revalidate', true);
+        $contents = ob_get_clean();
+
+	    if(!deftrue('e_NOCACHE')) header('Cache-Control: must-revalidate', true);
         
         $etag = md5($page).($encoding ? '-'.$encoding : '');
     	header('ETag: '.$etag, true);
@@ -199,7 +202,7 @@ class e_jslib
             $crc = crc32($contents);
             
             $gzdata .= gzcompress($contents, 9);
-            $gzdata = substr($gzdata, 0, strlen($gzdata) - 4);
+            $gzdata = substr($gzdata, 0, -4);
             $gzdata .= pack("V", $crc) . pack("V", $size);
             
             $gsize = strlen($gzdata);
@@ -292,4 +295,3 @@ class e_jslib
         return $cacheFile;
     }
 }
-?>

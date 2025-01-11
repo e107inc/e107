@@ -20,7 +20,7 @@ if (!defined('e107_INIT')) { exit; }
 
 class list_members
 {
-	function list_members($parent)
+	function __construct($parent)
 	{
 		$this->parent = $parent;
 	}
@@ -72,4 +72,3 @@ class list_members
 	}
 }
 
-?>

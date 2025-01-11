@@ -49,7 +49,7 @@
  *   $ajax->response($commands);
  * @endcode
  */
-class e_ajax_class
+class e_ajax
 {
 
 	/**

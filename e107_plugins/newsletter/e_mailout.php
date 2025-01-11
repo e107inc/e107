@@ -23,7 +23,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 
-include_lan(e_PLUGIN.'/newsletter/languages/English_admin_newsletter.php');
+e107::includeLan(e_PLUGIN.'/newsletter/languages/English_admin_newsletter.php');
 
 /* 
 Class for newsletter mailout function
@@ -245,18 +245,17 @@ class newsletter_mailout
 	 */
 	public function sent($data) // trigerred when email sent from queue.
 	{
-		if($data['status'] == 1) // Successfully sent
-		{
+		// if($data['status'] == 1) // Successfully sent
+		// {
 			// e107::getLog()->add('Newsletter Sent', $data, E_LOG_INFORMATIVE, 'SENT');		
-		}
-		else // Failed 
-		{
+	// 	}
+	//	else // Failed
+	//	{
 		//	 e107::getLog()->add('Newsletter Sent', $data, E_LOG_FATAL, 'SENT');		
-		}
+	//	}
 	}
 	
 }
 
 
 
-?>

@@ -1,14 +1,12 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_users_extended.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ */
 define("EXTLAN_1", "Name");
 define("EXTLAN_2", "Preview");
 define("EXTLAN_3", "Values");
@@ -70,7 +68,7 @@ define("EXTLAN_57", "Activated");
 define("EXTLAN_58", "Not Activated");
 define("EXTLAN_59", "Activate");
 define("EXTLAN_60", "Deactivate");
-define("EXTLAN_61", "None");
+//define("EXTLAN_61", "None");//LAN_NONE
 
 define("EXTLAN_62", "Table");
 define("EXTLAN_63", "Field Id");
@@ -90,11 +88,17 @@ define("EXTLAN_74", "is a reserved field name and can not be used.");
 define("EXTLAN_75", "Error adding field to database.");
 define("EXTLAN_76", "Invalid characters in field name - only A-Z, a-z, 0-9, allowed.");
 define("EXTLAN_77", "Category not deleted - must delete fields in category first: ");
-define("EXTLAN_78", "Cannot find file --FILE-- needed to create data table");
+define("EXTLAN_78", "Cannot find file [x] needed to create data table");
 
 define("EXTLAN_79", "Label");
 define("EXTLAN_80", "Validation error - aborted.");
-
+define("EXTLAN_81", "Add Custom Field");  
+define("EXTLAN_82", "Values"); 
+define("EXTLAN_83", "Placeholder"); 
+define("EXTLAN_84", "Help Tip"); 
+ 
+define("EXTLAN_86", "User Extended Column deleted from table"); 
+define("EXTLAN_87", "Sort values"); 
 
 //textbox
 define("EXTLAN_HELP_1", "<b><i>Parameters:</i></b><br />size - size of field<br />maxlength - max length of field<br /><br />class - css class of field<br />style - css style string<br /><br />regex - regex validation code<br />regexfail - validation fail text");
@@ -115,4 +119,4 @@ define("EXTLAN_HELP_8", "Allow user to select from installed languages");
 // Predefined list
 define("EXTLAN_HELP_9", "Specify a predefined list. The value field selects the type of list - at present only 'timezones' is a valid entry");
 
-?>
+

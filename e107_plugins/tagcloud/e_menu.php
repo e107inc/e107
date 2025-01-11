@@ -30,7 +30,8 @@ class tagcloud_menu
 	{
 		$fields = array();
 		$fields['tagcloud_caption']       = array('title'=> LAN_CAPTION, 'type'=>'text', 'multilan'=>true, 'writeParms'=>array('size'=>'xxlarge'));
-
+		$fields['order']       = array('title'=> LAN_ORDER, 'type'=>'dropdown', 'writeParms'=>['optArray'=>['tag,asc'=>'Tag ASC', 'tag,desc'=>'Tag DESC', 'size,asc'=>'Size ASC','size,desc'=>'Size DESC']]);
+		$fields['tagcloud_limit']       = array('title'=> LAN_LIMIT, 'type'=>'number');
         return $fields;
 
 	}
@@ -46,4 +47,3 @@ class tagcloud_menu_form extends e_form
 }
 
 
-?>

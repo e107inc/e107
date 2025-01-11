@@ -81,32 +81,45 @@ class e_online
 		//global $members_online, $total_online;						// Not needed as globals
 		global $listuserson; // FIXME - remove it, make it property, call e_online signleton - e107::getOnline()
 
-		$e107 = e107::getInstance();
+		if($online_tracking == false || $flood_control == false)
+		{
+			define('e_TRACKING_DISABLED', true);		// Used in forum, online menu
+			define('TOTAL_ONLINE', '');
+			define('MEMBERS_ONLINE', '');
+			define('GUESTS_ONLINE', '');
+			define('ON_PAGE', '');
+			define('MEMBER_LIST', '');
+
+			return null;
+		}
+
 		$sql = e107::getDb();
 		$user = e107::getUser();
+		$dbg = e107::getDebug();
 
-		if($online_tracking || $flood_control)
+		$online_timeout = 300;
+
+		list($ban_access_guest,$ban_access_member) = explode(',',e107::getPref('ban_max_online_access', '100,200'));
+		$online_bancount = max($ban_access_guest,50);					// Safety net for incorrect values
+		if ($user->isUser())
 		{
-			$online_timeout = 300;
+			$online_bancount = max($online_bancount,$ban_access_member);
+		}
 
-			list($ban_access_guest,$ban_access_member) = explode(',',e107::getPref('ban_max_online_access', '100,200'));
-			$online_bancount = max($ban_access_guest,50);					// Safety net for incorrect values
-			if ($user->isUser())
-			{
-				$online_bancount = max($online_bancount,$ban_access_member);
-			}
-
-			$online_warncount = $online_bancount * 0.9;		// Set warning threshold at 90% of ban threshold
+		$online_warncount = $online_bancount * 0.9;		// Set warning threshold at 90% of ban threshold
 			//TODO Add support for all queries.
 			// $page = (strpos(e_SELF, 'forum_') !== FALSE) ? e_SELF.'.'.e_QUERY : e_SELF;
 			// $page = (strpos(e_SELF, 'comment') !== FALSE) ? e_SELF.'.'.e_QUERY : $page;
 			// $page = (strpos(e_SELF, 'content') !== FALSE) ? e_SELF.'.'.e_QUERY : $page;
 			$page = e_REQUEST_URI; // mod rewrite & single entry support
 			// FIXME parse url, trigger registered e_online callbacks
-			$page = e107::getParser()->toDB($page, true);								/// @todo - try not to use toDB() - triggers prefilter
+		//	$page = e107::getParser()->toDB($page, true);								/// @todo - try not to use toDB() - triggers prefilter
+
+			$page = filter_var($page,FILTER_SANITIZE_URL);
 			$ip = e107::getIPHandler()->getIP(FALSE);
+
 			$udata = ($user->isUser() && USER ? $user->getId().'.'.$user->getName() : '0'); // USER check required to make sure they logged in without an error.
-			$agent = $_SERVER['HTTP_USER_AGENT'];
+			$agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
 
 			// XXX - more exceptions, e.g. hide online location for admins/users (pref), e_jlsib.php, etc
 			// XXX - more advanced flod timing when  e_AJAX_REQUEST, e.g. $ban_access_ajax = 300
@@ -129,10 +142,14 @@ class e_online
 			// don't do anything if main admin logged in as another user
 			if ($user->isUser()  && !$user->getParentId())
 			{
+				$dbg->logTime('Go online (isUser)');
 				// Find record that matches IP or visitor, or matches user info
-				if ($sql->select('online', '*', "(`online_ip` = '{$ip}' AND `online_user_id` = '0') OR `online_user_id` = '{$udata}'"))
+				$dbg->logTime('Go online (db select)');
+				if ($sql->select('online', '*', "(`online_ip` = '{$ip}' AND `online_user_id` = '0') OR `online_user_id` = '{$udata}' LIMIT 1"))
 				{
+					$dbg->logTime('Go online (db fetch)');
 					$row = $sql->fetch();
+					$dbg->logTime('Go online (db end)');
 
 					if ($row['online_user_id'] == $udata)
 					{
@@ -141,7 +158,17 @@ class e_online
 						{
 							//It has been at least 'online_timeout' seconds since this user's info last logged
 							//Update user record with timestamp, current IP, current page and set pagecount to 1
-							$query = "online_timestamp='".time()."', online_ip='{$ip}'{$update_page}, online_pagecount=1, `online_active` = 1 WHERE online_user_id='{$row['online_user_id']}'";
+						//	$query = "online_timestamp='".time()."', online_ip='{$ip}'{$update_page}, online_pagecount=1, `online_active` = 1 WHERE online_user_id='{$row['online_user_id']}'";
+
+							$query = array(
+								'online_timestamp' => time(),
+								'online_ip'         => $ip,
+								'online_pagecount'  => 1,
+								'online_active'     => 1,
+								'WHERE'             => "online_user_id=".intval($row['online_user_id'])." LIMIT 1"
+							);
+
+
 						}
 						else
 						{
@@ -150,7 +177,17 @@ class e_online
 								$row['online_pagecount'] ++;
 							}
 							// Update user record with current IP, current page and increment pagecount
-							$query = "online_ip='{$ip}'{$update_page}, `online_pagecount` = '".intval($row['online_pagecount'])."', `online_active` = 1 WHERE `online_user_id` = '{$row['online_user_id']}'";
+						//	$query = "online_ip='{$ip}'{$update_page}, `online_pagecount` = '".intval($row['online_pagecount'])."', `online_active` = 1 WHERE `online_user_id` = '{$row['online_user_id']}'";
+
+
+							$query = array(
+
+								'online_ip'         => $ip,
+								'online_pagecount'  => intval($row['online_pagecount']),
+								'online_active'     => 1,
+								'WHERE'             => "online_user_id=".intval($row['online_user_id'])." LIMIT 1"
+							);
+
 						}
 					}
 					else
@@ -160,7 +197,17 @@ class e_online
 						{
 							// It has been at least 'timeout' seconds since this user has connected
 							// Update record with timestamp, current IP, current page and set pagecount to 1
-							$query = "`online_timestamp` = '".time()."', `online_user_id` = '{$udata}'{$update_page}, `online_pagecount` = 1,  `online_active` = 1 WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0'";
+						//	$query = "`online_timestamp` = '".time()."', `online_user_id` = '{$udata}'{$update_page}, `online_pagecount` = 1,  `online_active` = 1 WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0'";
+
+							$query = array(
+								'online_timestamp' => time(),
+								'online_user_id'    => $udata,
+								'online_pagecount'  => 1,
+								'online_active'     => 1,
+								'WHERE'             => "online_ip = '".$ip."' AND online_user_id = '0' LIMIT 1"
+							);
+
+
 						}
 						else
 						{	// Another visit within the timeout period
@@ -169,15 +216,38 @@ class e_online
 								$row['online_pagecount'] ++;
 							}
 							//Update record with current IP, current page and increment pagecount
-							$query = "`online_user_id` = '{$udata}'{$update_page}, `online_pagecount` = ".intval($row['online_pagecount']).", `online_active` =1  WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0'";
+					//		$query = "`online_user_id` = '{$udata}'{$update_page}, `online_pagecount` = ".intval($row['online_pagecount']).", `online_active` =1  WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0'";
+
+							$query = array(
+							//	'online_timestamp' => time(),
+								'online_user_id'    => $udata,
+								'online_pagecount'  => intval($row['online_pagecount']),
+								'online_active'     => 1,
+								'WHERE'             => "online_ip = '".$ip."' AND online_user_id = '0' LIMIT 1"
+							);
+
 						}
 					}
+
+
+					if(!empty($update_page))
+					{
+						$query['online_location'] = $page;
+					}
+
+					$dbg->logTime('Go online (update) Line:'.__LINE__);
 					$sql->update('online', $query);
+					$dbg->logTime('Go online (after update) Line:'.__LINE__);
+
 				}
 				else
 				{
+					$dbg->logTime('Go online (insert) Line: '.__LINE__);
 					$sql->insert('online',$insert_query);
+					$dbg->logTime('Go online (after insert) Line: '.__LINE__);
 				}
+
+				$dbg->logTime('Go online (after isUser)');
 			}
 			// don't do anything if main admin logged in as another user
 			elseif(!$user->getParentId())
@@ -199,7 +269,9 @@ class e_online
 						//   echo "here {$online_pagecount}";
 						$query="`online_pagecount` = {$row['online_pagecount']}{$update_page} WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0'";
 					}
+					$dbg->logTime('Go online (update) Line:'.__LINE__);
 					$sql->update('online', $query);
+					$dbg->logTime('Go online (after update) Line:'.__LINE__);
 				}
 				else
 				{	// New visitor
@@ -213,7 +285,8 @@ class e_online
 			}
 
 			// Always allow localhost - any problems are usually semi-intentional!
-			if ((varset($row['online_ip']) != '127.0.0.1') && (varset($row['online_ip']) != e107::LOCALHOST_IP)  && (varset($row['online_ip']) != e107::LOCALHOST_IP2))
+			$onlineIP = varset($row['online_ip']);
+			if (($onlineIP !== '127.0.0.1') && ($onlineIP !== e107::LOCALHOST_IP)  && ($onlineIP != e107::LOCALHOST_IP2))
 			{
 				// Check for excessive access
 				if ($row['online_pagecount'] > $online_bancount)
@@ -221,8 +294,9 @@ class e_online
 					e107::lan('core','banlist',true);//e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_banlist.php'
 					$reason = e107::getParser()->lanVars(BANLAN_78,$row['online_pagecount']); //  str_replace('--HITS--',$row['online_pagecount'], BANLAN_78)
 
-					if (true === e107::getIPHandler()->add_ban(2, $reason, $ip,0))
+					if (true === e107::getIPHandler()->add_ban(2, $reason, $ip, 0))
 					{
+						$ip = e107::getIPHandler()->ipDecode($ip);
 						e107::getEvent()->trigger('flood', $ip); //BC
 						e107::getEvent()->trigger('user_ban_flood', $ip);
 						exit;
@@ -241,17 +315,23 @@ class e_online
 			// Speed up ajax requests
 			if(!deftrue('e_AJAX_REQUEST'))
 			{
+				$dbg->logTime('Go online (delete) Line:'.__LINE__);
 				$sql->delete('online', '`online_timestamp` < '.(time() - $online_timeout));
 
 				// FIXME - don't use constants below, save data in class vars, call e_online signleton - e107::getOnline()
 			//	$total_online = $sql->db_Count('online'); // 1 less query! :-)
-				if ($total_online = $sql->gen('SELECT o.*,u.user_image FROM #online AS o LEFT JOIN #user AS u ON o.online_user_id = u.user_id WHERE o.online_pagecount > 0 ORDER BY o.online_timestamp DESC'))
+				$dbg->logTime('Go online (total_online) Line:'.__LINE__);
+				if ($total_online = $sql->gen('SELECT o.*,u.user_image FROM `#online` AS o LEFT JOIN `#user` AS u ON o.online_user_id = u.user_id WHERE o.online_pagecount > 0 ORDER BY o.online_timestamp DESC'))
+			//	if ($total_online = $sql->gen('SELECT o  FROM `#online`  WHERE o.online_pagecount > 0 ORDER BY o.online_timestamp DESC'))
 				{
 					$member_list = '';
 					$members_online = 0;
 					$listuserson = array();
+
+					$dbg->logTime('Go online (db fetch) Line:'.__LINE__);
 					while ($row = $sql->fetch())
 					{
+
 						$row['online_bot'] = $this->isBot($row['online_agent']);
 				
 						// Sort into usable format and add bot field. 
@@ -291,15 +371,19 @@ class e_online
 						
 					}
 				}
-				define('TOTAL_ONLINE', $total_online);
-				define('MEMBERS_ONLINE', $members_online);
-				define('GUESTS_ONLINE', $total_online - $members_online);
-				define('ON_PAGE', $sql->db_Count('online', '(*)', "WHERE `online_location` = '{$page}' "));
-				define('MEMBER_LIST', $member_list);
-
+				if(!defined('TOTAL_ONLINE'))
+				{
+					define('TOTAL_ONLINE', $total_online);
+					define('MEMBERS_ONLINE', $members_online);
+					define('GUESTS_ONLINE', $total_online - $members_online);
+					$dbg->logTime('Go online (db count) Line:'.__LINE__);
+					define('ON_PAGE', $sql->count('online', '(*)', "WHERE `online_location` = '{$page}' "));
+					define('MEMBER_LIST', $member_list);
+				}
 				//update most ever online
 				$olCountPrefs = e107::getConfig('history');			// Get historic counts of members on line
 				$olCountPrefs->setParam('nologs', true);
+
 				if ($total_online > ($olCountPrefs->get('most_members_online') + $olCountPrefs->get('most_guests_online')))
 				{
 					$olCountPrefs->set('most_members_online', MEMBERS_ONLINE);
@@ -308,7 +392,7 @@ class e_online
 					$olCountPrefs->save(false, true, false);
 				}
 			}
-		}
+		/*}
 		else
 		{
 			define('e_TRACKING_DISABLED', true);		// Used in forum, online menu
@@ -317,53 +401,43 @@ class e_online
 			define('GUESTS_ONLINE', '');
 			define('ON_PAGE', '');
 			define('MEMBER_LIST', '');
-		}
+		}*/
 	}
 
 
+	/**
+	 * @param $debug
+	 * @return array|string
+	 */
 	function userList($debug=false)
 	{
 
 		if($debug === true)
 		{
 			//print_a($this->users);
-			$data = e107::getDb()->retrieve('user', 'user_id,user_name,user_image, 1 as user_active, CONCAT_WS(".",user_id,user_name) as online_user_id', "LIMIT 7", true);
-
-		//	print_a($data);
-
-			return $data;
+			return e107::getDb()->retrieve('user', 'user_id,user_name,user_image, 1 as user_active, CONCAT_WS(".",user_id,user_name) as online_user_id', "LIMIT 7", true);
 		}
 
 
 		return $this->users;
 	}
 
+	/**
+	 * @return array
+	 */
 	function guestList()
 	{
-		return $this->guests;		
-		
+		return $this->guests;
 	}
 
-	
-	
+
+	/**
+	 * @param $userAgent
+	 * @return bool
+	 */
 	function isBot($userAgent='')
 	{
-		if(!$userAgent){ return false; }
-		
-		$botlist = array("Teoma", "alexa", "froogle", "Gigabot", "inktomi",
-		"looksmart", "URL_Spider_SQL", "Firefly", "NationalDirectory",
-		"Ask Jeeves", "TECNOSEEK", "InfoSeek", "WebFindBot", "girafabot",
-		"crawler", "www.galaxy.com", "Googlebot", "Scooter", "Slurp",
-		"msnbot", "appie", "FAST", "WebBug", "Spade", "ZyBorg", "rabaz",
-		"Baiduspider", "Feedfetcher-Google", "TechnoratiSnoop", "Rankivabot",
-		"Mediapartners-Google", "Sogou web spider", "WebAlta Crawler","TweetmemeBot",
-		"Butterfly","Twitturls","Me.dium","Twiceler");
-		
-		foreach($botlist as $bot)
-		{
-			if(strpos($userAgent, $bot) !== false){ return true; }
-		}
-		return false;
+		return e107::getUser()->isBot($userAgent);
 	}
 	
 

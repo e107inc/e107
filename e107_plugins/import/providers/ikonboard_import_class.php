@@ -21,7 +21,7 @@
 // Array element key defines the function prefix and the class name; value is displayed in drop-down selection box
 // Module based on ikonboard version current about September 2007 - may well support other versions
 
-require_once('import_classes.php');
+require_once(__DIR__.'/../import_classes.php');
 
 class ikonboard_import extends base_import_class
 {
@@ -41,23 +41,20 @@ class ikonboard_import extends base_import_class
     switch ($task)
 	{
 	  case 'users' :
-	    $result = $this->ourDB->db_Select_gen("SELECT * FROM {$this->DBPrefix}member_profiles");
+	    $result = $this->ourDB->gen("SELECT * FROM {$this->DBPrefix}member_profiles");
 		if ($result === FALSE) return FALSE;
 		break;
-	  case 'forumdefs' :
-	    return FALSE;
-	  case 'forumposts' :
-	    return FALSE;
-	  case 'polls' :
-	    return FALSE;
-	  case 'news' :
-	    return FALSE;
-	  default :
-	    return FALSE;
+
+	    case 'forumdefs':
+	    case 'forumposts':
+	    case 'polls':
+	    case 'news':
+	    default :
+	    return false;
 	}
 	$this->copyUserInfo = !$blank_user;
 	$this->currentTask = $task;
-	return TRUE;
+	return true;
   }
 
 
@@ -102,4 +99,4 @@ class ikonboard_import extends base_import_class
 }
 
 
-?>
+

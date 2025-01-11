@@ -6,7 +6,12 @@ if(!defined('e107_INIT'))
 
 function menu_shortcode($parm, $mode='')
 {
-	
+
+	if(empty($parm))
+	{
+		return null;
+	}
+
 	if(is_array($parm)) //v2.x format allowing for parms. {MENU: path=y&count=x}
 	{
 		list($plugin,$menu) = explode("/",$parm['path'],2); 		
@@ -16,7 +21,7 @@ function menu_shortcode($parm, $mode='')
 		}
 		
 		unset($parm['path']);
-		return e107::getMenu()->renderMenu($plugin,$menu."_menu", http_build_query($parm, '', '&'));			
+		return e107::getMenu()->renderMenu($plugin,$menu."_menu", http_build_query($parm, '', '&'),true);
 		
 	}
 	else
@@ -37,10 +42,9 @@ function menu_shortcode($parm, $mode='')
 				$menu = $plugin;	
 			}
 			
-			return e107::getMenu()->renderMenu($plugin,$menu."_menu");		
+			return e107::getMenu()->renderMenu($plugin,$menu."_menu", null, true);
 		}
 	}
 }
 
 
-?>

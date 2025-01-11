@@ -2,26 +2,28 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2015 e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Language file - User signup
  *
 */
-define("PAGE_NAME", "Register");
-
+if(!defined('PAGE_NAME'))
+{
+	define("PAGE_NAME", "Register");
+}
 /*
-//define("LAN_103", "That username cannot be accepted as valid, please choose a different user name");
-//define("LAN_104", "That username already exists in the database, please choose a different username");
-//define("LAN_105", "The two passwords do not match");
+//define("LAN_103", "That username is invalid. Please choose a different one");
+//define("LAN_104", "That username is taken.  Please choose a different one");
+//define("LAN_105", "The two passwords don't match");
 //define("LAN_106", "That doesn"t appear to be a valid email address");
 define("LAN_108", "Registration complete");
 define("LAN_185", "You left required field(s) blank");
 // define("LAN_201", "Yes");
 // define("LAN_200", "No");
 // define("LAN_399", "Continue");
-define("LAN_407", "Please keep this email for your own information. Your password has been encrypted and cannot be retrieved if you misplace or forget it. You can however request a new password if this happens.\n\nThanks for your registration.\n\nFrom");
+define("LAN_407", "Please keep this email for your own information. Your password has been encrypted and cannot be retrieved if you misplace or forget it. You can, however, request a new password if this happens.\n\nThank you for registering.\n\nFrom");
 //define("LAN_408", "A user with that email address already exists. Please use the "forgot password" screen to retrieve your password.");
 
 //define("LAN_409", "Invalid characters in username");
@@ -30,8 +32,8 @@ define("LAN_407", "Please keep this email for your own information. Your passwor
 
 define("LAN_EMAIL_01", "Dear");
 define("LAN_EMAIL_04", "Please keep this email for your own information.");
-define("LAN_EMAIL_05", "Your password has been encrypted and cannot be retrieved if you misplace or forget it. You can however request a new password if this happens.");
-define("LAN_EMAIL_06", "Thanks for your registration.");
+define("LAN_EMAIL_05", "Your password has been encrypted and cannot be retrieved if you misplace or forget it. You can, however, request a new password if this happens.");
+define("LAN_EMAIL_06", "Thank you for registering.");
 
 
 define("LAN_SIGNUP_1", "Min.");
@@ -45,12 +47,12 @@ define("LAN_SIGNUP_8", "Thank you!");
 define("LAN_SIGNUP_9", "Unable to proceed.");
 //define("LAN_SIGNUP_10", "Yes");
 define("LAN_SIGNUP_11", ".");
-define("LAN_SIGNUP_12", "please keep your username and password written down in a safe place as if lost they cannot be retrieved.");
+define("LAN_SIGNUP_12", "please keep your username and password written down in a safe place as they cannot be retrieved if you lose them.");
 define("LAN_SIGNUP_13", "You can now log in from the Login box, or from [here].");
 define("LAN_SIGNUP_14", "here");
 define("LAN_SIGNUP_15", "Please contact the main site admin");
 define("LAN_SIGNUP_16", "if you require assistance.");
-define("LAN_SIGNUP_17", "Please certify you are 13 or over the age of 13.");
+define("LAN_SIGNUP_17", "Please confirm that you are age 13 or over.");
 define("LAN_SIGNUP_18", "Your registration has been received and created with the following login information:");
 //define("LAN_SIGNUP_19", "Username:"); // now LAN_LOGINNAME
 //define("LAN_SIGNUP_20", "Password:"); // now LAN_PASSWORD
@@ -101,8 +103,8 @@ define("LAN_SIGNUP_65", "You have been assigned the following login name");
 define("LAN_SIGNUP_66", "Please make a note of it.");
 define("LAN_SIGNUP_67", "This will be assigned by the system after signup");
 //define("LAN_SIGNUP_68","Error: Unable to open remote XUP file");
-define("LAN_SIGNUP_69","");
-define("LAN_SIGNUP_70","");
+
+
 define("LAN_SIGNUP_71", "You have reached the site limit for account registrations. Please login using one of your other accounts.");		// LAN_202
 define("LAN_SIGNUP_72", "Thanks for signing up on [sitename]! We just sent you a confirmation email to [email]. Please click on the confirmation link in the email to complete your sign up and activate your account.");  	// LAN_405
 define("LAN_SIGNUP_73", "Thank you!");											// LAN_406
@@ -140,7 +142,6 @@ define("LAN_SIGNUP_103", "Too many users already using IP address: ");
 define("LAN_SIGNUP_105", "Unable to action your request - please contact the site administrator");		// Two people with same password.
 define("LAN_SIGNUP_106", "Unable to action your request - do you already have an account here?");		// Trying to set email same as existing
 
-
 define("LAN_LOGINNAME", "Username");
 //define("LAN_PASSWORD", "Password");
 define("LAN_USERNAME", "Display Name");
@@ -153,4 +154,18 @@ define("LAN_SIGNUP_111", "Enter a URL to your image or choose an existing avatar
 define("LAN_SIGNUP_112", "You are currently logged in as Main Admin.");
 
 define("LAN_SIGNUP_113", "Subscription(s)");
+
+define("LAN_SIGNUP_114", "User registration is currently disabled.");
+define("LAN_SIGNUP_115", "Preview Activation Email");
+define("LAN_SIGNUP_116", "Preview After Form Submit");
+define("LAN_SIGNUP_117", "Send a Test Activation");
+define("LAN_SIGNUP_118", "To [x]");
+define("LAN_SIGNUP_119", "Don't send email");
+define("LAN_SIGNUP_120", "OR");
+define("LAN_SIGNUP_121", "Use a different email address");
+
+define("LAN_SIGNUP_122", "Privacy Policy");
+define("LAN_SIGNUP_123", "Terms and conditions");
+define("LAN_SIGNUP_124", "By signing up you agree to our [x] and our [y].");
+define("LAN_SIGNUP_125", "Min. [x] chars.");
 

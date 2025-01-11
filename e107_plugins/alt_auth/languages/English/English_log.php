@@ -21,4 +21,4 @@ define("LAN_AL_AUTH_02","Alt auth extended user classes changed");
 define("LAN_AL_AUTH_03","Alt auth method settings changed");
 
 
-?>
+

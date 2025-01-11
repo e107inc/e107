@@ -174,9 +174,9 @@ class bb_youtube extends e_bb_base
 
 
 		$yID = preg_replace('/[^0-9a-z]/i', '', $picRef);
-		if (($yID != $picRef) || (strlen($yID) > 20))
-		{	// Possible hack attempt
-		}
+		//if (($yID != $picRef) || (strlen($yID) > 20))
+	//	{	// Possible hack attempt
+	//	}
 	//	$params = array_merge($params, $bbpars);			// Any parameters set in bbcode override those in HTML
 		// Could check for valid array indices here
 		$paramString = implode('&', $params);
@@ -202,8 +202,11 @@ class bb_youtube extends e_bb_base
 	{
 		if(empty($code_text)) return '';
 
-		list($dimensions,$tmp) = explode('|', $parm, 2);
-		
+		$t = explode('|', $parm, 2);
+
+		$dimensions = varset($t[0]);
+		$tmp = varset($t[1]);
+
 		if($tmp)
 		{
 			parse_str(varset($tmp, ''), $bbparm);

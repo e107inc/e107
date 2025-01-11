@@ -8,7 +8,12 @@ function imageselector_shortcode($parm = '', $mod = '')
 	$sql = e107::getDb('imageselector.sc');
 	$tp = e107::getParser();
 
-	if (strstr($parm, "="))
+	if(empty($parm))
+	{
+		return null;
+	}
+
+	if (strpos($parm, "=") !== false)
 	{ // query style parms.
 		parse_str($parm, $parms);
 		extract($parms);
@@ -36,7 +41,7 @@ function imageselector_shortcode($parm = '', $mod = '')
 	if ($scaction == 'select' || $scaction == 'all')
 	{
 		// Media manager support
-		if(vartrue($parms['media']))
+		if(!empty($parms['media']))
 		{
 			$qry = "SELECT * FROM `#core_media` WHERE media_userclass IN (".USERCLASS_LIST.") ";
 			$qry .= vartrue($parms['media']) && $parms['media'] !== 'all' ? " AND media_category='".$tp->toDB($parms['media'])."' " : " AND `media_category` NOT REGEXP '_icon_16|_icon_32|_icon_48|_icon_64' ";
@@ -50,7 +55,7 @@ function imageselector_shortcode($parm = '', $mod = '')
 					$imagelist[$row['media_category']][] = array('path' => $row['media_url'], 'fname' => $row['media_name']. " (".$row['media_dimensions'].") ");
 				}
 	
-				asort($opts);
+				asort($imagelist);
 			}
 		}
 		else

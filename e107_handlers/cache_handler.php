@@ -14,7 +14,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-define('CACHE_PREFIX','<?php exit;');
+define('CACHE_PREFIX','<?php exit; ?>');
 
 /**
  * Class to cache data as files, improving site speed and throughput.
@@ -31,8 +31,10 @@ class ecache {
 	public $CachenqMD5;
 	public $UserCacheActive;			// Checkable flag - TRUE if user cache enabled
 	public $SystemCacheActive;			// Checkable flag - TRUE if system cache enabled
+	private $lastError;
+	private $lastFile;
 
-	const CACHE_PREFIX = '<?php exit;';
+	const CACHE_PREFIX = '<?php exit; ?>';
 
 	function __construct()
 	{
@@ -45,17 +47,33 @@ class ecache {
 	 */
 	public function setMD5($text, $hash=true)
 	{
+		if($text === null)
+		{
+			$this->CachePageMD5 = md5(e_BASE.e_LANGUAGE.THEME.USERCLASS_LIST.defset('e_QUERY').filemtime(THEME.'theme.php'));
+			return $this;
+		}
+
 		$this->CachePageMD5 = ($hash === true) ? md5($text) : $text;
 		return $this;
 	}
 
+
 	/**
-	* @return string
-	* @param string $query
-	* @desc Internal class function that returns the filename of a cache file based on the query.
-	* @scope private
-	* If the tag begins 'menu_', e_QUERY is not included in the hash which creates the file name
-	*/
+	 * @return mixed
+	 */
+	public function getMD5()
+	{
+		return $this->CachePageMD5;
+	}
+
+	/**
+	 * @param $CacheTag
+	 * @param bool $syscache
+	 * @return string
+	 * @desc Internal class function that returns the filename of a cache file based on the query.
+	 * @scope private
+	 * If the tag begins 'menu_', e_QUERY is not included in the hash which creates the file name
+	 */
 	function cache_fname($CacheTag, $syscache = false)
 	{
 		if(strpos($CacheTag, "nomd5_") === 0) {
@@ -103,45 +121,63 @@ class ecache {
 		{
 			$CheckTag = ''; // no MD5 on system cache. XXX To be Checked. 
 		}
-		
+
 		$fname = e_CACHE_CONTENT.$q.$CheckTag.'.cache.php';
 		//echo "cache f_name = $fname <br />";
+		$this->lastFile = $fname;
 		return $fname;
 	}
 
 	/**
-	* @return string
-	* @param string $query
-	* @param int $MaximumAge the time in minutes before the cache file 'expires'
-	* @param Forced check if cache is disabled. 
-	* @desc Returns the data from the cache file associated with $query, else it returns false if there is no cache for $query.
-	* @scope public
-	*/
+	 * Retrieve Cache data.
+	 * @param $CacheTag
+	 * @param bool|int $MaximumAge the time in minutes before the cache file 'expires'
+	 * @param bool $ForcedCheck check even if cache pref is disabled.
+	 * @param bool $syscache set to true when checking sys cache.
+	 * @return string
+	 * @desc Returns the data from the cache file associated with $query, else it returns false if there is no cache for $query.
+	 * @scope public
+	 */
 	public function retrieve($CacheTag, $MaximumAge = false, $ForcedCheck = false, $syscache = false)
 	{
 		if(($ForcedCheck != false ) || ($syscache == false && $this->UserCacheActive) || ($syscache == true && $this->SystemCacheActive) && !e107::getParser()->checkHighlighting())
 		{
 			$cache_file = (isset($this) && $this instanceof ecache ? $this->cache_fname($CacheTag, $syscache) : self::cache_fname($CacheTag, $syscache));
-			if (file_exists($cache_file))
+
+			if(file_exists($cache_file))
 			{
-				if ($MaximumAge != false && (filemtime($cache_file) + ($MaximumAge * 60)) < time()) {
+				if ($MaximumAge !== false && (filemtime($cache_file) + ($MaximumAge * 60)) < time()) {
 					unlink($cache_file);
 					return false;
 				}
 				else
 				{
 					$ret = file_get_contents($cache_file);
-					if (substr($ret,0,strlen(self::CACHE_PREFIX)) == self::CACHE_PREFIX)
+
+					if($ret === false)
+					{
+						$this->lastError = "Couldn't read ".$cache_file;
+					}
+
+					if (strpos($ret, self::CACHE_PREFIX) === 0)
 					{
 						$ret = substr($ret, strlen(self::CACHE_PREFIX));
 					}
-					else
+					elseif(strpos($ret, '<?php exit;') === 0)
+					{
+						$ret = substr($ret, 11);
+					}
+					elseif(strpos($ret,'<?php') === 0)
 					{
 						$ret = substr($ret, 5);		// Handle the history for now
 					}
+
 					return $ret;
 				}
-			} else {
+			}
+			else
+			{
+				$this->lastError = "Cache file not found: ".$cache_file;
 				return false;
 			}
 		}
@@ -149,13 +185,31 @@ class ecache {
 	}
 
 	/**
-	* @return string 
-	* @param string $CacheTag
-	* @param int $MaximumAge the time in minutes before the cache file 'expires'
-	 * @param boolean $force
-	* @desc Returns the data from the cache file associated with $query, else it returns false if there is no cache for $query.
-	* @scope public
-	*/
+	 * Return the last error encountered during cache processing.
+	 * @return mixed
+	 */
+	public function getLastError()
+	{
+		return $this->lastError;
+	}
+
+	/**
+	 * Return the last error encountered during cache processing.
+	 * @return mixed
+	 */
+	public function getLastFile()
+	{
+		return $this->lastFile;
+	}
+
+	/**
+	 * @param string $CacheTag
+	 * @param bool $MaximumAge the time in minutes before the cache file 'expires'
+	 * @param bool $ForcedCheck
+	 * @return string
+	 * @desc Returns the data from the cache file associated with $query, else it returns false if there is no cache for $query.
+	 * @scope public
+	 */
 	function retrieve_sys($CacheTag, $MaximumAge = false, $ForcedCheck = false)
 	{
 		if(isset($this) && $this instanceof ecache)
@@ -176,10 +230,15 @@ class ecache {
 	 * @param boolean $ForceCache [optional] if TRUE, writes cache even when disabled in admin prefs. 
 	 * @param boolean $bRaw [optional] if TRUE, writes data exactly as provided instead of prefacing with php leadin
 	 * @param boolean $syscache [optional]
-	 * @return none
+	 * @return void|null
 	 */
 	public function set($CacheTag, $Data, $ForceCache = false, $bRaw=0, $syscache = false)
 	{
+		if(defined('E107_INSTALL') && E107_INSTALL === true)
+		{
+			return null;
+		}
+
 		if(($ForceCache != false ) || ($syscache == false && $this->UserCacheActive) || ($syscache == true && $this->SystemCacheActive) && !e107::getParser()->checkHighlighting())
 		{
 			$cache_file = (isset($this) && $this instanceof ecache ? $this->cache_fname($CacheTag, $syscache) : self::cache_fname($CacheTag, $syscache));
@@ -202,7 +261,7 @@ class ecache {
 	{
 		if(isset($this) && $this instanceof ecache)
 		{
-			return $this->set($CacheTag, $Data, $ForceCache, $bRaw, true);
+			$this->set($CacheTag, $Data, $ForceCache, $bRaw, true);
 		}
 		else
 		{
@@ -222,8 +281,10 @@ class ecache {
 	 */
 	public function clear($CacheTag = '', $syscache = false, $related = false)
 	{
+
 		$file = ($CacheTag) ? preg_replace("#\W#", "_", $CacheTag)."*.cache.php" : "*.cache.php";
 		e107::getEvent()->triggerAdminEvent('cache_clear', "cachetag=$CacheTag&file=$file&syscache=$syscache");
+		e107::getEvent()->trigger('cache_clear', ['tag'=>$CacheTag, 'file'=>$file, 'system'=>$syscache]);
 		$ret = self::delete(e_CACHE_CONTENT, $file, $syscache);
 
 		if($CacheTag && $related) //TODO - too dirty - add it to the $file pattern above
@@ -243,6 +304,8 @@ class ecache {
 	*/
 	function clear_sys($CacheTag = '', $related = false)
 	{
+
+
 		if(isset($this) && $this instanceof ecache)
 		{
 			return $this->clear($CacheTag, true, $related);
@@ -262,7 +325,6 @@ class ecache {
 	* @scope private
 	*/
 	function delete($dir, $pattern = "*.*", $syscache = false) {
-		$deleted = false;
 		$pattern = ($syscache ? "S_" : "C_").$pattern;
 		$pattern = str_replace(array("\*", "\?"), array(".*", "."), preg_quote($pattern));
 		if (substr($dir, -1) != "/") {
@@ -273,9 +335,7 @@ class ecache {
  			$d = opendir($dir);
 			while ($file = readdir($d)) {
 				if (is_file($dir.$file) && preg_match("/^{$pattern}$/", $file)) {
-					if (unlink($dir.$file)) {
-						$deleted[] = $file;
-					}
+					unlink($dir.$file);
 				}
 			}
 			closedir($d);
@@ -288,54 +348,65 @@ class ecache {
 	
 	/**
 	 * Clear Full Cache
-	 * @param string $type: content | system| browser | db | image
+	 * @param string $type: content | system| browser | db | image | js | css | library
 	 * @example clearAll('db');
 	 */
 	 
 	function clearAll($type,$mask = null)
 	{		
 		$path = null;
-		
+
+		$event = e107::getEvent();
+
 		if($type =='content')
 		{
-			$this->clear();	
+			$this->clear();
+			$event->trigger('cache_clear_all', ['type'=>$type,'mask'=>$mask]);
 			return;
 		}
 			
-		if($type == 'system')
+		if($type === 'system')
 		{
 			$this->clear_sys();
+			$event->trigger('cache_clear_all', ['type'=>$type,'mask'=>$mask]);
 			return;	
 		}
 
-		if($type == 'browser')
+		if($type === 'browser')
 		{
 			e107::getConfig()->set('e_jslib_browser_cache', time())->save(false);
+			$event->trigger('cache_clear_all', ['type'=>$type,'mask'=>$mask]);
 			return;	
 		}
 
-		if($type == 'db')
+		if($type === 'db')
 		{
 			$path = e_CACHE_DB;
 			$mask = ($mask == null) ? '.*\.php' : $mask;
 		}
 
-		if($type == 'image')
+		if($type === 'image')
 		{
 			$path = e_CACHE_IMAGE;
-			$mask = ($mask == null) ? '.*\.cache\.bin' : $mask;		
+			$mask = ($mask == null) ? '.*(\.cache\.bin|\.jpg|\.jpeg|\.png|\.gif)' : $mask;
 		}
 
-		if($type == 'js')
+		if($type === 'js')
 		{
 			$path = e_WEB."cache/";
 			$mask = ($mask == null) ? '.*\.js' : $mask;
 		}
 
-		if($type == 'css')
+		if($type === 'css')
 		{
 			$path = e_WEB."cache/";
 			$mask = ($mask == null) ? '.*\.css' : $mask;
+		}
+
+		if($type === 'library')
+		{
+			$path = e_CACHE_CONTENT;
+			$mask = ($mask == null) ? 'S_Library_.*\.cache\.php' : $mask;
 		}
 
 		if((null == $path) || (null == $mask))
@@ -346,6 +417,7 @@ class ecache {
 		$fl = e107::getFile(false);
 		$fl->mode = 'fname';
 		$files = $fl->get_files($path, $mask);
+
 		if($files)
 		{
 			foreach ($files as $file)
@@ -353,6 +425,8 @@ class ecache {
 				unlink($path.$file);
 			}
 		}
+
+		$event->trigger('cache_clear_all', ['type'=>$type,'mask'=>$mask]);
 	}
 	
 }

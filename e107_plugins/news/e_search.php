@@ -43,7 +43,7 @@ class news_search extends e_search // include plugin-folder in the name.
 
 			
 		$search = array(
-			'name'			=> "News",
+			'name'			=> LAN_SEARCH_98,
 			'table'			=> 'news AS n LEFT JOIN #news_category AS c ON n.news_category = c.category_id',
 
 			'advanced' 		=> array(
@@ -53,9 +53,9 @@ class news_search extends e_search // include plugin-folder in the name.
 							),
 							
 			'return_fields'	=> array('n.news_id', 'n.news_title', 'n.news_sef', 'n.news_body', 'n.news_extended', 'n.news_allow_comments', 'n.news_datestamp', 'n.news_category', 'c.category_name'), 
-			'search_fields'	=> array('n.news_title' => '1.2', 'n.news_body' => '0.6', 'n.news_extended' => '0.6', 'n.news_summary' => '1.2'), // fields and their weights. 
+			'search_fields'	=> array('n.news_title' => '1.2', 'n.news_body' => '0.6', 'n.news_extended' => '0.6', 'n.news_summary' => '1.2', 'n.news_meta_keywords'=>'1.1', 'n.news_meta_description'=>'1.1'), // fields and their weights.
 	
-			'order'			=> array('news_datestamp' => DESC),
+			'order'			=> array('news_datestamp' => 'DESC'),
 			'refpage'		=> 'news.php'
 		);
 
@@ -73,7 +73,7 @@ class news_search extends e_search // include plugin-folder in the name.
 		$res = array();
 				
 		$res['link'] 		= e107::getUrl()->create('news/view/item', $row);//$row['news_allow_comments'] ? "news.php?item.".$row['news_id'] : "comment.php?comment.news.".$row['news_id'];
-		$res['pre_title'] 	= $tp->toHtml($row['category_name'],false,'TITLE')." | ";
+		$res['pre_title'] 	= $tp->toHTML($row['category_name'],false,'TITLE')." | ";
 		$res['title'] 		= $row['news_title'];
 		$res['summary'] 	= $row['news_body'].' '.$row['news_extended'];
 		$res['detail'] 		= LAN_SEARCH_3.$tp->toDate($row['news_datestamp'], "long");
@@ -89,7 +89,7 @@ class news_search extends e_search // include plugin-folder in the name.
 	 * Optional - Advanced Where
 	 * @param $parm - data returned from $parm (ie. advanced fields included. in this case 'date' and 'author' )
 	 */
-	function where($parm='')
+	function where($parm=null)
 	{
 		$tp = e107::getParser();
 	
@@ -114,4 +114,3 @@ class news_search extends e_search // include plugin-folder in the name.
 //Old v1.
 // $search_info[] = array('sfile' => e_PLUGIN.'chatbox_menu/search/search_parser.php', 'qtype' => CB_SCH_LAN_1, 'refpage' => 'chat.php', 'advanced' => e_PLUGIN.'chatbox_menu/search/search_advanced.php');
 
-?>

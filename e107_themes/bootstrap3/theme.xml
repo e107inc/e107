@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <e107Theme name="Bootstrap 3" version="1.0" date="2013-12-25" compatibility="2.0">
-	<author name ="e107 Inc" email="e107inc@something.com" url="http://e107.org" />
+	<author name ="e107 Inc" email="e107inc@something.com" url="https://e107.org" />
 	<summary>Bootstrap3 e107 theme</summary>
-	<description>a bootstrap 3 theme for the frontend</description>
+	<description>a simple bootstrap 3 template for the frontend</description>
 	<category>generic</category>
 	<plugins>
 		<plugin name='featurebox' url='core' />
 		<plugin name='gallery' url='core' />
         <plugin name='rss_menu' url='core' />
+        <plugin name='tinymce4' url='core' />
 		<plugin name='social' url='core' />
 	</plugins>
 	<keywords>
@@ -17,10 +18,22 @@
 	<screenshots>
 		<image>preview_frontend.png</image>
 	</screenshots>
+	<libraries>
+		<library name="bootstrap" version="3" scope="front,admin,wysiwyg"/>
+		<library name="fontawesome" version="6"  scope="front,admin,wysiwyg"/>
+		<library name="bootstrap.editable" scope="admin"/>
+	</libraries>
 	<stylesheets>
-		<css file="style.css" name="Default"  />
-        <css file="css/bootstrap-dark.min.css" name="Bootstrap3 Dark Admin" scope='admin' />
-        <css file="*" name="*"  />
+		<css file="style.css" name="Default" scope="front" />
+		<css file="css/modern-light.css" name="Modern Light" description="A high-contrast light skin" thumbnail='images/admin_modern-light.webp' scope='admin' exclude='bootstrap'/>
+        <css file="css/modern-dark.css" name="Modern Dark" description="A high-contrast dark skin" thumbnail='images/admin_modern-dark.webp' scope='admin' exclude='bootstrap'/>
+        <css file="css/bootstrap-dark.min.css" name="Legacy Dark Admin" description="A dark admin area skin" thumbnail='images/admin_bootstrap-dark.webp' scope='admin' exclude='bootstrap'/>
+        <css file="css/kadmin.css" name="K-Admin Inspired" scope='admin' description="A light admin area skin" thumbnail='images/admin_kadmin.webp' url='http://themifycloud.com/demos/templates/KAdmin/KAdmin-Dark/dashboard.html' />
+		<css file="css/corporate.css" name="Corporate" scope='admin' thumbnail='images/admin_corporate.webp' exclude='bootstrap' />
+		<css file="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" name="Flatly" thumbnail='images/admin_flatly.webp' scope='admin' exclude='bootstrap' />
+        <css file="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/sandstone/bootstrap.min.css" name="Sandstone" thumbnail='images/admin_sandstone.webp' scope='admin' exclude='bootstrap'/>
+        <css file="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/superhero/bootstrap.min.css" name="Superhero" thumbnail='images/admin_superhero.webp' scope='admin' exclude='bootstrap'/>
+        <css file="*" name="*"/>
 	</stylesheets>
 	<layouts>
 		<layout name='jumbotron_home' title='Jumbotron (home)' default='false'>
@@ -43,4 +56,9 @@
 			</menuPresets>	
 		</layout>
 	</layouts>
+	<themePrefs>
+		<pref name='branding'>sitename</pref>
+		<pref name='nav_alignment'>right</pref>
+		<pref name='usernav_placement'>top</pref>
+	</themePrefs>
 </e107Theme>

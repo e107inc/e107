@@ -11,10 +11,10 @@
  */
 
 $eplug_admin = TRUE;
-require_once("../../class2.php");
+require_once(__DIR__.'/../../class2.php');
 require_once(e_HANDLER."userclass_class.php");
 	
-include_lan(e_PLUGIN."comment_menu/languages/".e_LANGUAGE.".php");
+e107::includeLan(e_PLUGIN."comment_menu/languages/".e_LANGUAGE.".php");
 if (!getperms("1")) 
 {
 	e107::redirect('admin');
@@ -28,33 +28,56 @@ $menu_config = e107::getConfig('menu');
 if (isset($_POST['update_menu'])) 
 {
 	$temp = $old = $menu_config->getPref();
+
+
+	if(!is_array($temp['comment_caption']))
+	{
+		$temp['comment_caption'] = array();
+	}
+
 	
 	$tp = e107::getParser();
-	while (list($key, $value) = each($_POST)) 
+	foreach($_POST as $key=>$value)
 	{
+		//if($key == "comment_caption")
+	//	{
+		//	$temp['comment_caption'][e_LANGUAGE] = $tp->toDB($value);
+		//	continue;
+	//	}
+
+
 		if ($value != LAN_UPDATE) 
 		{
 			$temp[$tp->toDB($key)] = $tp->toDB($value);
 		}
 	}
-	if (!$_POST['comment_title']) 
+
+	if (!$_POST['comment_title'])
 	{
 		$temp['comment_title'] = 0;
 	}
 	
 	$menu_config->setPref($temp);
-	if ($admin_log->logArrayDiffs($old, $menu_config->getPref(), 'MISC_04'))
+
+	if($menu_config->save(false))
 	{
-		if($menu_config->save(false))
-		{
-			$mes->addSuccess();
-		}
+		$mes->addSuccess(LAN_SAVED);
+	}
+	/*if ($admin_log->logArrayDiffs($old, $menu_config->getPref(), 'MISC_04'))
+	{
+
 	}
 	else
 	{
 		$mes->addInfo(LAN_NO_CHANGE);
-	}
+	}*/
 }
+
+$frm = e107::getForm();
+
+$commentTmp = $menu_config->get('comment_caption');
+
+$commentCaption = (!empty($commentTmp[e_LANGUAGE])) ? $commentTmp[e_LANGUAGE] : $commentTmp;
 
 $text = "
 	<form method='post' action='".e_SELF."?".e_QUERY."' id='plugin-menu-config-form'>
@@ -65,7 +88,7 @@ $text = "
     </colgroup>
 	<tr>
 		<td>".CM_L3.":</td>
-		<td><input class='tbox' type='text' name='comment_caption' size='20' value='".$menu_config->get('comment_caption')."' maxlength='100' /></td>
+		<td>".$frm->renderElement('comment_caption',$commentCaption, array('type'=>'text','multilan'=>true))."</td>
 	</tr>
 	 
 	<tr>
@@ -94,7 +117,6 @@ $text = "
 	</div>	
 	</form>";
 	
-$ns->tablerender(CM_L8, $mes->render() . $text);
+e107::getRender()->tablerender(CM_L8, $mes->render() . $text);
 
 require_once(e_ADMIN."footer.php");
-?>

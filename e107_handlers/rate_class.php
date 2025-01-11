@@ -1,27 +1,56 @@
 <?php
 /*
- * e107 website system
- *
- * Copyright (C) e107 Inc (e107.org)
- * Released under the terms and conditions of the
- * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
- *
- * $URL$
- * $Id$
- */
++ ----------------------------------------------------------------------------+
+| 
+|     e107 website system
+|     Copyright (C) 2008-2016 e107 Inc (e107.org)
+|     Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+|
++ ----------------------------------------------------------------------------+
+*/
 
 if (!defined('e107_INIT')) { exit; }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_rate.php");
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/lan_rate.php");
 
-class rater {
-	
-	
-	function render($table,$id,$options=array())
+
+/**
+ *
+ */
+class rater
+{
+	private $ratings = array();     // loaded values.
+	private $multi = false;         // multiple lookup .
+
+	function __construct()
 	{
-			
+
+
+	}
+
+	/**
+	 * Render ratings widget
+	 *
+	 * @param string $table eg. 'news'
+	 * @param integer $id
+	 * @param array $options = [
+	 *      'multi'		=> (bool)		 set to true if used in a loop. ie. mutliple table lookups.
+	 *      'readonly'	=> (bool)
+	 *      'label'		=> (string)
+	 *      'template'	=> (string)		 default is 'STATUS |RATE|VOTES'
+	 *      'uniqueId'	=> (string)		 (optional)  = unique identifer to avoid ID conflicts;
+	 * ]
+	 * @return string
+	 */
+	function render($table, $id, $options=array())
+	{
+		if(!empty($options['multi']))
+		{
+			$this->multi = true;
+		}
+
 		list($votes,$score,$uvoted) = $this->getrating($table, $id);
-		
+
 	//	return "Table=".$table." itmeId=".$id." Votes=".$votes." score=".$score;
 		
 		if(is_string($options))
@@ -30,8 +59,15 @@ class rater {
 		}
 		
 		$label = varset($options['label'],RATELAN_5);
-			
-		$readonly = $this->checkrated($table, $id) ? '1' : '0';
+
+		if(!empty($options['readonly']))
+		{
+			$readonly = '1';
+		}
+		else
+		{
+			$readonly = $this->checkrated($table, $id) ? '1' : '0';
+		}
 		
 		$hintArray = array(RATELAN_POOR,RATELAN_FAIR,RATELAN_GOOD,RATELAN_VERYGOOD,RATELAN_EXCELLENT);
 
@@ -63,26 +99,34 @@ class rater {
 		}
 		
 		$template = vartrue($options['template'], " STATUS |RATE|VOTES");
-		
-		$TEMPLATE['STATUS'] 	= "&nbsp;<span class='e-rate-status e-rate-status-{$table}' id='e-rate-{$table}-{$id}' style='display:none'>".$label."</span>";
-		$TEMPLATE['RATE'] = "<div class='e-rate e-rate-{$table}' id='{$table}-{$id}'  data-hint=\"{$datahint}\" data-readonly='{$readonly}' data-score='{$score}' data-url='".e_HTTP."rate.php' data-path='{$path}'></div>";
-		$TEMPLATE['VOTES'] 	= "<div class='muted e-rate-votes e-rate-votes-{$table}' id='e-rate-votes-{$table}-{$id}'><small>".$this->renderVotes($votes,$score)."</small></div>";
+
+		$identifier = $table.'-'.$id.'-'.vartrue($options['uniqueId'],'rate');
+
+		$TEMPLATE['STATUS'] = "&nbsp;<span class='e-rate-status e-rate-status-{$table}' id='e-rate-{$identifier}' style='display:none'>".$label."</span>";
+		$TEMPLATE['RATE']   = "<div class='e-rate e-rate-{$table}' id='{$identifier}'  data-hint=\"{$datahint}\" data-readonly='{$readonly}' data-score='{$score}' data-url='".e_HTTP."rate.php' data-path='{$path}'>".$label."</div>";
+		$TEMPLATE['VOTES']  = "<div class='muted e-rate-votes e-rate-votes-{$table}' id='e-rate-votes-{$identifier}'><small>".$this->renderVotes($votes,$score)."</small></div>";
 
 		$tmp = explode("|",$template);
 		
 		$text = "";
 		foreach($tmp as $k)
 		{
-			$text .= $TEMPLATE[$k];	
+			if (!empty($TEMPLATE[$k]))
+			{
+				$text .= $TEMPLATE[$k];
+			}
 		}	
 		
 		return $text;
 	}
-	
-	
 
-	
-	function renderVotes($votes,$score) // TODO use template?
+
+	/**
+	 * @param $votes
+	 * @param $score
+	 * @return string
+	 */
+	function renderVotes($votes, $score) // TODO use template?
 	{	
 		if(!$votes)
 		{
@@ -99,6 +143,14 @@ class rater {
 	
 	
 	// Legacy Rate Selector. 
+
+	/**
+	 * @param $text
+	 * @param $table
+	 * @param $id
+	 * @param $mode
+	 * @return string
+	 */
 	function rateselect($text, $table, $id, $mode=FALSE)
 	{
 		//$mode	: if mode is set, no urljump will be used (used in combined comments+rating system)
@@ -139,6 +191,11 @@ class rater {
 		return $str;
 	}
 
+	/**
+	 * @param $table
+	 * @param $id
+	 * @return string
+	 */
 	function rateradio($table, $id) {
 
 		$table = preg_replace('/\W/', '', $table);
@@ -158,93 +215,176 @@ class rater {
 		return $str;
 	}
 
+	/**
+	 * @param $table
+	 * @param $id
+	 * @return bool
+	 */
 	function checkrated($table, $id) {
 		
 		$table = preg_replace('/\W/', '', $table);
 		$id = intval($id);
 
 		$sql = new db;
-		if (!$sql->db_Select("rate", "*", "rate_table = '{$table}' AND rate_itemid = '{$id}' ")) {
-			return FALSE;
-		} else {
-			$row = $sql->db_Fetch();
 
-			if (preg_match("/\.".USERID."\./", $row['rate_voters'])) {
-				return TRUE;
-			//added option to split an individual users rating
-			}else if (preg_match("/\.".USERID.chr(1)."([0-9]{1,2})\./", $row['rate_voters'])) {
-				return TRUE;
-			} else {
-				return FALSE;
+		if(!$sql->select("rate", "*", "rate_table = '{$table}' AND rate_itemid = '{$id}' "))
+		{
+			return false;
+		}
+		else
+		{
+			$row = $sql->fetch();
+
+			if(preg_match("/\." . USERID . "\./", $row['rate_voters']))
+			{
+				return true;
+				//added option to split an individual users rating
+			}
+			elseif(preg_match("/\." . USERID . chr(1) . "([0-9]{1,2})\./", $row['rate_voters']))
+			{
+				return true;
+			}
+			else
+			{
+				return false;
 			}
 		}
 	}
 
-	function getrating($table, $id, $userid=FALSE) {
+	/**
+	 * @param $table
+	 * @param $id
+	 * @param $userid
+	 * @return array|false|int[]|mixed|string
+	 */
+	function getrating($table, $id, $userid=false)
+	{
+
 		//userid	: boolean, get rating for a single user, or get general total rating of the item
+
+
+
 
 		$table = preg_replace('/\W/', '', $table);
 		$id = intval($id);
 		
 		if($id == 0)
 		{
-			return "There is no item ID in the rating";	
+			return RATELAN_10;
 		}
-		$sep = chr(1);
+
+		if($this->multi === true)
+		{
+			if(isset($this->ratings[$table]))
+			{
+				if(!empty($this->ratings[$table][$id]))
+				{
+					return $this->ratings[$table][$id];
+				}
+
+				return array(0,0,0);
+
+			}
+
+			$tmp = e107::getDb('rate')->retrieve("rate", "*", "rate_table = '{$table}' ",true);
+			$val = array();
+			foreach($tmp as $row)
+			{
+				$rid = $row['rate_itemid'];
+				$val[$rid] = $this->processRow($row,$userid);
+			}
+
+			$this->ratings[$table] = $val;
+
+			if(!empty($this->ratings[$table][$id]))
+			{
+					return $this->ratings[$table][$id];
+			}
+
+			return array(0,0,0);
+
+		}
+
+	//	$sep = chr(1);
 
 		$sql = new db;
 		if (!$sql->select("rate", "*", "rate_table = '{$table}' AND rate_itemid = '{$id}' ")) 
 		{
-			return FALSE;
+			return false;
 		}
 		 else 
 		 {
 			$rowgr = $sql->fetch();
-					
-			if($userid==TRUE)
-			{
-				$rating = "";
-				$rateusers = explode(".", $rowgr['rate_voters']);
-				for($i=0;$i<count($rateusers);$i++){
-					if(strpos($rateusers[$i], $sep)){
-						$rateuserinfo[$i] = explode($sep, $rateusers[$i]);
-						if($userid == $rateuserinfo[$i][0]){
-							$rating[0] = 0;						//number of votes, not relevant in users rating
-							$rating[1] = $rateuserinfo[$i][1];	//the rating by this user
-							$rating[2] = 0;						//no remainder is present, because we have a single users rating
-							break;
-						}
-					}else{
-						$rating[0] = 0;		//number of votes, not relevant in users rating
-						$rating[1] = 0;		//the rating by this user
-						$rating[2] = 0;		//no remainder is present, because we have a single users rating
-					}
-				}
-			}
-			else
-			{
-				$rating[0] = $rowgr['rate_votes']; // $rating[0] == number of votes
-				$tmp = $rowgr['rate_rating'] / $rowgr['rate_votes'];
-				$tmp = (strpos($tmp,",")) ? explode(",", $tmp) : explode(".", $tmp);
-				$rating[1] = $tmp[0];
-				if(isset($tmp[1]))
-				{
-					$rating[2] = substr($tmp[1], 0, 1);
-				}
-				else
-				{
-					$rating[2] = "0";
-				}
-			}
 
-			return $rating;
+			return $this->processRow($rowgr,$userid);
 		}
 	}
 
 
+	/**
+	 * @param array $rowgr
+	 * @param bool $userid
+	 * @return array
+	 */
+	private function processRow($rowgr,$userid = false)
+	{
+		$sep = chr(1);
+
+		if($userid == true)
+		{
+			$rating = array();
+
+			$rateusers = explode(".", $rowgr['rate_voters']);
+			for($i = 0, $iMax = count($rateusers); $i < $iMax; $i++)
+			{
+				if(strpos($rateusers[$i], $sep))
+				{
+					$rateuserinfo[$i] = explode($sep, $rateusers[$i]);
+
+					if($userid == $rateuserinfo[$i][0])
+					{
+						$rating[0] = 0;                        //number of votes, not relevant in users rating
+						$rating[1] = $rateuserinfo[$i][1];    //the rating by this user
+						$rating[2] = 0;                        //no remainder is present, because we have a single users rating
+						break;
+					}
+				}
+				else
+				{
+					$rating[0] = 0;        //number of votes, not relevant in users rating
+					$rating[1] = 0;        //the rating by this user
+					$rating[2] = 0;        //no remainder is present, because we have a single users rating
+				}
+			}
+		}
+		else
+		{
+			$rating[0] = $rowgr['rate_votes']; // $rating[0] == number of votes
+			$tmp = $rowgr['rate_rating'] / $rowgr['rate_votes'];
+			$tmp = (strpos($tmp, ",")) ? explode(",", $tmp) : explode(".", $tmp);
+			$rating[1] = $tmp[0];
+
+			if(isset($tmp[1]))
+			{
+				$rating[2] = substr($tmp[1], 0, 1);
+			}
+			else
+			{
+				$rating[2] = "0";
+			}
+		}
+
+		return $rating;
+	}
 
 
-	function submitVote($table,$itemid,$rate)
+	/**
+	 * @param $table
+	 * @param $itemid
+	 * @param $rate
+	 * @return string|void|null
+	 */
+	function submitVote($table, $itemid, $rate)
 	{
 		$array = $table."^".$itemid."^^".$rate;
 		return $this->enterrating($array,true);
@@ -252,10 +392,10 @@ class rater {
 	}
 	
 	/**
-	 * @param $table: table without prefix that the like is for
-	 * @param $itemid: item id within that table for the item to be liked
-	 * @param $curval: optional array of current values for 'up' and 'down'
-	 * @param $perc: optional percentage mode. Displays percentages instead of totals. 
+	 * @param string $table table without prefix that the like is for
+	 * @param int $itemid: item id within that table for the item to be liked
+	 * @param mixed $curVal: optional array of current values for 'up' and 'down'
+	 * @param bool $perc: optional percentage mode. Displays percentages instead of totals.
 	 */
 	function renderLike($table,$itemid,$curVal=false,$perc=false)
 	{
@@ -270,13 +410,13 @@ class rater {
 		
 		$p = ($perc) ? "%" : "";	
 		
-		$upImg = "<img class='e-tip' src='".e_IMAGE_ABS."rate/like_16.png' alt='' title='Like' />";
-		$upDown = "<img class='e-tip' src='".e_IMAGE_ABS."rate/dislike_16.png' alt='' title='Dislike' />";
+		$upImg = "<img class='e-tip' src='".e_IMAGE_ABS."rate/like_16.png' alt='' title='".RATELAN_7."' />";//like
+		$upDown = "<img class='e-tip' src='".e_IMAGE_ABS."rate/dislike_16.png' alt='' title='".RATELAN_8."' />";//dislike
 		
 		if(deftrue('BOOTSTRAP'))
 		{
-			$upImg = $tp->toGlyph('icon-thumbs-up',false); // "<i class='icon-thumbs-up'></i>";
-			$upDown = $tp->toGlyph('icon-thumbs-down',false); // "<i class='icon-thumbs-down'></i>";
+			$upImg = $tp->toGlyph('fa-thumbs-up',false); // "<i class='icon-thumbs-up'></i>";
+			$upDown = $tp->toGlyph('fa-thumbs-down',false); // "<i class='icon-thumbs-down'></i>";
 		}
 			
 		$text = "<span id='{$id}-up'>".intval($curVal['up'])."{$p}</span>
@@ -286,15 +426,20 @@ class rater {
 				<a  class='e-rate-thumb e-rate-down' href='".e_HTTP."rate.php?table={$table}&id={$itemid}&type=down#{$id}'>{$upDown}</a>"; 	
 		return $text;	
 	}
-	
-	
-	
-	protected function getLikes($table,$itemid,$perc=false)
+
+
+	/**
+	 * @param $table
+	 * @param $itemid
+	 * @param $perc
+	 * @return array|int[]|string[]
+	 */
+	protected function getLikes($table, $itemid, $perc=false)
 	{
 		$sql = e107::getDb();
-		if($sql->db_Select("rate","*","rate_table = '{$table}' AND rate_itemid = '{$itemid}' LIMIT 1"))
+		if($sql->select("rate","*","rate_table = '{$table}' AND rate_itemid = '{$itemid}' LIMIT 1"))
 		{
-			$row 		= $sql->db_Fetch();	
+			$row 		= $sql->fetch();
 			if($perc == true) // Percentage Mode
 			{
 				$up 	= round(($row['rate_up'] / $row['rate_votes']) * 100) . "%";
@@ -311,15 +456,22 @@ class rater {
 		
 		return ($perc == false) ? array('up'=>0,'down'=>0,'total'=>0) : array('up'=>'0%','down'=>'0%','total'=>'0%');
 	}
-	
-	
-	function submitLike($table,$itemid,$type,$perc=false)
+
+
+	/**
+	 * @param $table
+	 * @param $itemid
+	 * @param $type
+	 * @param $perc
+	 * @return false|string|null
+	 */
+	function submitLike($table, $itemid, $type, $perc=false)
 	{	
 		$sql 	= e107::getDb();
 			
-		if($sql->db_Select("rate","*","rate_table = '{$table}' AND rate_itemid = '{$itemid}' LIMIT 1"))
+		if($sql->select("rate","*","rate_table = '{$table}' AND rate_itemid = '{$itemid}' LIMIT 1"))
 		{
-			$row 		= $sql->db_Fetch();
+			$row 		= $sql->fetch();
 			
 			if(preg_match("/\.". USERID."\./",$row['rate_voters'])) // already voted. 
 			{		
@@ -335,7 +487,7 @@ class rater {
 			$qry .= ", rate_voters = '{$newvoters}', rate_votes = {$totalVotes} ";
 			$qry .= " WHERE rate_table = '{$table}' AND rate_itemid = '{$itemid}'";
 			
-			if($sql->db_Update("rate",$qry))
+			if($sql->update("rate",$qry))
 			{
 				if($perc == true) // Percentage Mode
 				{
@@ -347,6 +499,19 @@ class rater {
 					$up 	= $totalUp;
 					$down 	= $totalDown;	
 				}
+
+                $edata = array(
+                    'like_pid' => $row['rate_id'],
+                    'like_table' => $table,
+                    'like_item_id' => $itemid,
+                    'like_author_id' => USERID,
+                    'like_author_name' => USERNAME,
+                    'like_up_count' => $totalUp,
+                    'like_down_count' => $totalDown,
+                    'like_totalvotes' => $totalVotes,
+                    'like_type' => $type
+                );
+                e107::getEvent()->trigger('user_like_submitted', $edata);
 					
 				return $up."|".$down;
 			}		
@@ -364,8 +529,21 @@ class rater {
 					"rate_down"		=> ($type == 'down') ? 1 : 0
 			);
 				
-			if($sql->db_Insert("rate", $insert))
+			if($row = $sql->insert("rate", $insert))
 			{
+                    $edata = array(
+                    'like_pid' => $row,
+                    'like_table' => $table,
+                    'like_item_id' => $itemid,
+                    'like_author_id' => USERID,
+                    'like_author_name' => USERNAME,
+                    'like_up_count' => ($type == 'up') ? 1 : 0,
+                    'like_down_count' => ($type == 'down') ? 1 : 0,
+                    'like_totalvotes' => 1,
+                    'like_type' => $type
+                );
+                e107::getEvent()->trigger('user_like_submitted', $edata);
+
 				if($perc == true) // Percentage Mode
 				{
 					return ($type == 'up') ? "100%|0%" : "0%|100%";
@@ -375,11 +553,18 @@ class rater {
 					return ($type == 'up') ? "1|0" : "0|1";	
 				}
 			}		
-		}		
+		}
+
+		return null;
 	}
 
 
-	function enterrating($rateindex,$ajax = false)
+	/**
+	 * @param $rateindex
+	 * @param $ajax
+	 * @return string|void|null
+	 */
+	function enterrating($rateindex, $ajax = false)
 	{
 		
 		$sql = e107::getDb();
@@ -392,12 +577,12 @@ class rater {
 				
 			if($ajax == false)
 			{
-				header("location:".e_BASE."index.php");
+				e107::redirect();
 				exit;	
 			}
 			else
 			{
-				return "Error: ".print_a($qs,true);	
+				return LAN_ERROR.": ".print_a($qs,true);	
 			}	
 			
 		}
@@ -411,10 +596,10 @@ class rater {
 		$sep = chr(1); // problematic - invisible in phpmyadmin. 
 		$voter = USERID.$sep.intval($qs[3]);
 
-		if ($sql->db_Select("rate", "*", "rate_table='{$table}' AND rate_itemid='{$itemid}' "))
+		if ($sql->select("rate", "*", "rate_table='{$table}' AND rate_itemid='{$itemid}' "))
 		{
 		
-			$row = $sql -> db_Fetch();
+			$row = $sql -> fetch();
 			$rate_voters = $row['rate_voters'].".".$voter.".";
 			$new_votes = $row['rate_votes'] + 1;
 			$new_rating = $row['rate_rating'] + $rate;
@@ -425,17 +610,29 @@ class rater {
 			if(strpos($row['rate_voters'], ".".$voter.".") == true || strpos($row['rate_voters'], ".".USERID.".") == true)
 			{
 				
-				return "You already voted|".$this->renderVotes($new_votes,$statR); // " newvotes = ".($statR). " =".$new_votes;
+				return RATELAN_9."|".$this->renderVotes($new_votes,$statR); // " newvotes = ".($statR). " =".$new_votes;
 			}
 			
 			
-			if($sql->db_Update("rate", "rate_votes= ".$new_votes.", rate_rating='{$new_rating}', rate_voters='{$rate_voters}' WHERE rate_id='{$row['rate_id']}' "))
+			if($sql->update("rate", "rate_votes= ".$new_votes.", rate_rating='{$new_rating}', rate_voters='{$rate_voters}' WHERE rate_id='{$row['rate_id']}' "))
 			{
+                $edata = array(
+                    'rate_pid' => $row['rate_id'],
+                    'rate_table' => $table,
+                    'rate_item_id' => $itemid,
+                    'rate_author_id' => USERID,
+                    'rate_author_name' => USERNAME,
+                    'rate_old_votes' => $row['rate_votes'],
+                    'rate_new_votes' => $new_votes,
+                    'rate_old_rating' => $row['rate_rating'],
+                    'rate_new_rating' => $new_rating
+                    );
+                e107::getEvent()->trigger('user_rate_submitted', $edata);
 				return RATELAN_3."|".$this->renderVotes($new_votes,$statR);	// Thank you for your vote. 
 			}
 			else
 			{
-				return "Error";	
+				return LAN_ERROR;
 			}
 				
 		}
@@ -454,26 +651,44 @@ class rater {
 			);
 			
 			
-			if($sql->db_Insert("rate", $insert))
+			if($row = $sql->insert("rate", $insert))
 		//	if($sql->db_Insert("rate", " 0, '$table', '$itemid', '$rate', '1', '.".$voter.".' "))
 			{
+                $edata = array(
+                    'rate_pid' => $row,
+                    'rate_table' => $table,
+                    'rate_item_id' => $itemid,
+                    'rate_author_id' => USERID,
+                    'rate_author_name' => USERNAME,
+                    'rate_old_votes' => 0,
+                    'rate_new_votes' => 1,
+                    'rate_old_rating' => null,
+                    'rate_new_rating' => $rate
+                );
+                e107::getEvent()->trigger('user_rate_submitted', $edata);
+
 				$stat = ($rate /1)/2;
 				$statR = round($stat,1);
-				return RATELAN_3."|".$this->renderVotes(1,$statR);	;	// Thank you for your vote. 	
+				return RATELAN_3."|".$this->renderVotes(1,$statR);	// Thank you for your vote.
 			}
 			elseif(getperms('0'))
 			{
-				return "Rating Failed ";	
+				return RATELAN_11;
 			}
 		}
-		
+
+		return null;
 	}
 
 
-
-
-
-
+	/**
+	 * @param $table
+	 * @param $id
+	 * @param $enter
+	 * @param $userid
+	 * @param $nojump
+	 * @return string
+	 */
 	function composerating($table, $id, $enter=TRUE, $userid=FALSE, $nojump=FALSE){
 		//enter		: boolean to show (rateselect box + textual info) or not
 		//userid	: used to calculate a users given rating
@@ -491,7 +706,7 @@ class rater {
 					}
 				}
 				$rate .= "<img src='".e_IMAGE_ABS."rate/boxend.png' alt='' style='height:8px; vertical-align:middle' />";
-				if($ratearray[2] == ""){ $ratearray[2] = 0; }
+				if(empty($ratearray[2])){ $ratearray[2] = 0; }
 				$rate .= "&nbsp;".$ratearray[1].".".$ratearray[2];
 				if(!$userid){
 					$rate .= " - ".$ratearray[0]."&nbsp;";
@@ -519,11 +734,16 @@ class rater {
 
 	}
 
+	/**
+	 * @param $table
+	 * @param $id
+	 * @return int
+	 */
 	function delete_ratings($table, $id)
 	{
 		global $tp, $sql;
 		$table = $tp->toDB($table, true);
 		$id = intval($id);
-		return $sql -> db_Delete("rate", "rate_itemid='{$id}' AND rate_table='{$table}'");
+		return $sql -> delete("rate", "rate_itemid='{$id}' AND rate_table='{$table}'");
 	}
 }

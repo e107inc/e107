@@ -10,6 +10,10 @@ if (!defined('e107_INIT')) { exit; }
  *
  */
 
+
+/**
+ *
+ */
 class email_validation_class
 {
 	var $email_regular_expression="^([-!#\$%&'*+./0-9=?A-Z^_`a-z{|}~])+@([-!#\$%&'*+/0-9=?A-Z^_`a-z{|}~]+\\.)+[a-zA-Z]{2,6}\$";
@@ -26,14 +30,19 @@ class email_validation_class
 	var $preg;
 	var $last_code="";
 
-	Function Tokenize($string,$separator="")
+	/**
+	 * @param $string
+	 * @param $separator
+	 * @return mixed|string
+	 */
+	Function Tokenize($string, $separator="")
 	{
 		if(!strcmp($separator,""))
 		{
 			$separator=$string;
 			$string=$this->next_token;
 		}
-		for($character=0;$character<strlen($separator);$character++)
+		for($character=0, $characterMax = strlen($separator); $character< $characterMax; $character++)
 		{
 			if(GetType($position=strpos($string,$separator[$character]))=="integer")
 				$found=(IsSet($found) ? min($found,$position) : $position);
@@ -50,6 +59,10 @@ class email_validation_class
 		}
 	}
 
+	/**
+	 * @param $message
+	 * @return void
+	 */
 	Function OutputDebug($message)
 	{
 		$message.="\n";
@@ -59,6 +72,10 @@ class email_validation_class
 		flush();
 	}
 
+	/**
+	 * @param $connection
+	 * @return int|string
+	 */
 	Function GetLine($connection)
 	{
 		for($line="";;)
@@ -78,13 +95,22 @@ class email_validation_class
 		}
 	}
 
-	Function PutLine($connection,$line)
+	/**
+	 * @param $connection
+	 * @param $line
+	 * @return false|int
+	 */
+	Function PutLine($connection, $line)
 	{
 		if($this->debug)
 			$this->OutputDebug("C $line");
-		return(fputs($connection,"$line\r\n"));
+		return(fwrite($connection,"$line\r\n"));
 	}
 
+	/**
+	 * @param $email
+	 * @return false|int
+	 */
 	Function ValidateEmailAddress($email)
 	{
 		if(IsSet($this->preg))
@@ -100,7 +126,12 @@ class email_validation_class
 		return(preg_match("/".str_replace("/", "\\/", $this->email_regular_expression)."/i", $email)/*!=0*/);
 	}
 
-	Function ValidateEmailHost($email,&$hosts)
+	/**
+	 * @param $email
+	 * @param $hosts
+	 * @return bool|int
+	 */
+	Function ValidateEmailHost($email, &$hosts)
 	{
 		if(!$this->ValidateEmailAddress($email))
 			return(0);
@@ -112,10 +143,10 @@ class email_validation_class
 		&& $getmxrr($domain,$hosts,$weights))
 		{
 			$mxhosts=array();
-			for($host=0;$host<count($hosts);$host++)
+			for($host=0, $hostMax = count($hosts); $host< $hostMax; $host++)
 				$mxhosts[$weights[$host]]=$hosts[$host];
 			KSort($mxhosts);
-			for(Reset($mxhosts),$host=0;$host<count($mxhosts);Next($mxhosts),$host++)
+			for(Reset($mxhosts), $host=0, $hostMax = count($mxhosts); $host< $hostMax; Next($mxhosts), $host++)
 				$hosts[$host]=$mxhosts[Key($mxhosts)];
 		}
 		else
@@ -128,7 +159,12 @@ class email_validation_class
 		return(count($hosts)!=0);
 	}
 
-	Function VerifyResultLines($connection,$code)
+	/**
+	 * @param $connection
+	 * @param $code
+	 * @return int
+	 */
+	Function VerifyResultLines($connection, $code)
 	{
 		while(($line=$this->GetLine($connection)))
 		{
@@ -141,6 +177,10 @@ class email_validation_class
 		return(-1);
 	}
 
+	/**
+	 * @param $email
+	 * @return bool|int
+	 */
 	Function ValidateEmailBox($email)
 	{
 		if(!$this->ValidateEmailHost($email,$hosts))
@@ -153,7 +193,7 @@ class email_validation_class
 		&& !strcmp($localuser=getenv("USERNAME"),"")
 		&& !strcmp($localuser=getenv("USER"),""))
 		   $localuser="root";
-		for($host=0;$host<count($hosts);$host++)
+		for($host=0, $hostMax = count($hosts); $host< $hostMax; $host++)
 		{
 			$domain=$hosts[$host];
 			if(preg_match('/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/',$domain))
@@ -183,7 +223,7 @@ class email_validation_class
 				$timeout=($this->data_timeout ? $this->data_timeout : $this->timeout);
 				if($timeout
 				&& function_exists("socket_set_timeout"))
-					socket_set_timeout($connection,$timeout,0);
+					stream_set_timeout($connection,$timeout,0);
 				if($this->debug)
 					$this->OutputDebug("Connected.");
 				if($this->VerifyResultLines($connection,"220")>0
@@ -229,4 +269,3 @@ class email_validation_class
 	}
 };
 
-?>

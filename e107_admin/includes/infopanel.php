@@ -2,14 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Info panel admin view
  *
- * $URL$
- * $Id$
  */
 
 if (!defined('e107_INIT'))
@@ -18,7 +16,7 @@ if (!defined('e107_INIT'))
 }
 
 
-define('ADMINFEEDMORE', 'http://e107.org/blog');
+define('ADMINFEEDMORE', 'https://e107.org/blog');
 
 
 
@@ -31,13 +29,75 @@ class adminstyle_infopanel
 	
 	function __construct()
 	{
+
+		if(!ADMIN)
+		{
+			return null;
+		}
+
+
+		$coreUpdateCheck = '';
+		$addonUpdateCheck = '';
+
+
+		if( e107::getSession()->get('core-update-status') !== true)
+		{
+			$coreUpdateCheck = "
+				$('#e-admin-core-update').html('<i title=\"".LAN_CHECKING_FOR_UPDATES."\" class=\"fa fa-spinner fa-spin\"></i>');
+  		    	$.get('".e_ADMIN."admin.php?mode=core&type=update', function( data ) {
+ 		    	
+  		    	var res = $.parseJSON(data);
+		    
+  		    	if(res === true)
+  		    	{
+  		    	    $('#e-admin-core-update').html('<span class=\"text-info\"><i class=\"fa fa-database\"></i></span>');
+  		    	    
+  		    	     $('[data-toggle=\"popover\"]').popover('show');
+	                 $('.popover').on('click', function() 
+	                 {
+	                     $('[data-toggle=\"popover\"]').popover('hide');
+	           		});
+  		    	}
+  		    	else
+  		    	{
+  		    	    // Hide li element.
+  		    		$('#e-admin-core-update').parent().hide();
+  		    	}
+			   
+			});
+			
+			";
+
+		}
+
+		if( e107::getSession()->get('addons-update-checked') !== true)
+		{
+			$addonUpdateCheck = "
+			$('#e-admin-addons-update').load('".e_ADMIN."admin.php?mode=addons&type=update');
+			";
+
+		}
+
+
+
 		$code = "
 		jQuery(function($){
   			$('#e-adminfeed').load('".e_ADMIN."admin.php?mode=core&type=feed');
   		    $('#e-adminfeed-plugin').load('".e_ADMIN."admin.php?mode=addons&type=plugin');
   		    $('#e-adminfeed-theme').load('".e_ADMIN."admin.php?mode=addons&type=theme');
+  		    
+  		    ".$coreUpdateCheck."
+  		    ".$addonUpdateCheck."
+		
 		});
 		";
+
+
+
+
+
+
+
 		
 		e107::js('inline',$code,'jquery');
 		
@@ -160,7 +220,6 @@ class adminstyle_infopanel
 
 		';
 	*/	
-		//TODO LANs throughout.
 
 		$user_pref = $this->getUserPref();
 
@@ -170,68 +229,38 @@ class adminstyle_infopanel
 		$myE107 = varset($user_pref['core-infopanel-mye107'], array());
 		if(empty($myE107)) // Set default icons.
 		{
-			$defArray = array(
-				0  => 'e-administrator',
-				1  => 'e-cpage',
-				2  => 'e-frontpage',
-				3  => 'e-mailout',
-				4  => 'e-image',
-				5  => 'e-menus',
-				6  => 'e-meta',
-				7  => 'e-newspost',
-				8  => 'e-plugin',
-				9  => 'e-prefs',
-				10 => 'e-links',
-				11 => 'e-theme',
-				12 => 'e-userclass2',
-				13 => 'e-users',
-				14 => 'e-wmessage'
-			);
-			$user_pref['core-infopanel-mye107'] = $defArray;
+			$user_pref['core-infopanel-mye107'] = e107::getNav()->getDefaultAdminPanelArray();
 		}
 		
-       
-		
+
 	//	"<form method='post' action='".e_SELF."?".e_QUERY."'>";
 		
 		$tp->parseTemplate("{SETSTYLE=core-infopanel}");
-		
+
 		// Personalized Panel 
 		// Rendering the saved configuration.
 		
 		$mainPanel = "
 		<div id='core-infopanel_mye107' >
 		";
-		
-		/*
-		$mainPanel .= '<span class="pull-right">
-		          <span class="options">
-		            <div class="btn-group">
-		              <a class="dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i></a>
-		              <ul class="dropdown-menu black-box-dropdown dropdown-right">
-		                <li>'.$this->render_infopanel_icons().'</li>
-		              </ul>
-		            </div>
-		          </span>
-		        </span>';
-		
-		*/
-		
-	//	print_a($user_pref['core-infopanel-mye107']);
-        
-		$mainPanel .= "
-		
-		
-		
-		
-			
-				<div class='left'>";
-			
+
+		$mainPanel .= "<div class='left'>";
+			$count = 0;
 			foreach ($this->iconlist as $key=>$val)
 			{
-				if (!vartrue($user_pref['core-infopanel-mye107']) || in_array($key, $user_pref['core-infopanel-mye107']))
+				if(in_array($key, $user_pref['core-infopanel-mye107']))
 				{
-					$mainPanel .= e107::getNav()->renderAdminButton($val['link'], $val['title'], $val['caption'], $val['perms'], $val['icon_32'], "div");
+					if($tmp = e107::getNav()->renderAdminButton($val['link'], $val['title'], $val['caption'], $val['perms'], $val['icon_32'], "div"))
+					{
+						$mainPanel .= $tmp;
+						$count++;
+					}
+
+				}
+
+				if($count == 20)
+				{
+					break;
 				}
 			}
 	
@@ -240,7 +269,12 @@ class adminstyle_infopanel
 	      
 			</div>";
 
+	//	e107::getDebug()->log($this->iconlist);
+
 		$caption = $tp->lanVars(LAN_CONTROL_PANEL, ucwords(USERNAME));
+
+		$text3 = $this->renderAddonDashboards();
+
 		$text = $ns->tablerender($caption, $mainPanel, "core-infopanel_mye107",true);
 		
 	
@@ -264,7 +298,9 @@ class adminstyle_infopanel
 
 
 		
-		$text2 .= $ns->tablerender(LAN_WEBSITE_STATUS, $this->renderWebsiteStatus(),"",true);	
+	//	$text3 .= $ns->tablerender(LAN_WEBSITE_STATUS, $this->renderWebsiteStatus(),"",true);
+
+
 		
 		
 	//	$text .= $ns->tablerender(ADLAN_LAT_1,$tp->parseTemplate("{ADMIN_LATEST=norender}"),"core-infopanel_latest",true);
@@ -329,7 +365,17 @@ class adminstyle_infopanel
 			// $ns->tablerender(ADLAN_47." ".ADMINNAME, $emessage->render().$text);	
 			echo $mes->render().'
 
+
+
 			<!-- INFOPANEL -->
+
+			<div class="row">
+				 <div class="span6 col-md-12">
+				    '.$text3.'
+				 </div>
+			</div>
+
+
 			<div class="row">
 				<div class="span6 col-md-6">
 				    '.$text.'
@@ -352,7 +398,7 @@ class adminstyle_infopanel
 		}
 
 	}
-
+/*
 	private function renderChart()
 	{
 	
@@ -362,197 +408,119 @@ class adminstyle_infopanel
 		{
 			return $this->renderStats('log');
 		}
-		elseif(e107::isInstalled('awstats')) 
-		{
-			return $this->renderStats('awstats');
-		}
+
 		else
 		{
 			return $this->renderStats('demo');
 		}
 		
-	}
+	}*/
 
 
 	function renderWebsiteStatus()
 	{
-		$tp = e107::getParser();
-		/* 
-		 // Settings button if needed. 
-		<div class="tab-header">
-		          <span class="pull-right">
-		          <span class="options">
-		            <div class="btn-group">
-		              <a class="dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i></a>
-		              <ul class="dropdown-menu black-box-dropdown dropdown-left">
-		                <li><a href="#">Action</a></li>
-		                <li><a href="#">Another action</a></li>
-		                <li><a href="#">Something else here</a></li>
-		                <li class="divider"></li>
-		                <li><a href="#">Separated link</a></li>
-		              </ul>
-		            </div>
-		          </span>
-		        </span>
-		  </div>
-		 */
-		
+		return;
+	/*	$tp = e107::getParser();
+
 		$tab = array();
 		$tab['e-stats'] = array('caption'=>$tp->toGlyph('fa-signal').' '.LAN_STATS, 'text'=>$this->renderChart());
 		$tab['e-online'] = array('caption'=>$tp->toGlyph('fa-user').' '.LAN_ONLINE.' ('.$this->renderOnlineUsers('count').')', 'text'=>$this->renderOnlineUsers());
-		
 
+		return e107::getForm()->tabs($tab);*/
+
+	}
+
+
+	function getAddonDashboards()
+	{
+		$arr = array();
 
 		if($plugs = e107::getAddonConfig('e_dashboard',null, 'chart'))
 		{
 			foreach($plugs as $plug => $val)
 			{
-				foreach($val as $item)
+				$adg = e107::getAddon($plug,'e_dashboard');
+
+				if(!empty($adg->chartCaption))
 				{
+					$cap = $adg->chartCaption;
+				}
+				else
+				{
+					$cap = defset('LAN_PLUGIN_'.strtoupper($plug).'_NAME', ucfirst($plug));
+				}
+
+				foreach($val as $k=>$item)
+				{
+
+
 					if(!empty($item))
 					{
-						$tab[] = $item;	
-					}	
-				}			
+					//	$var[] = $item;
+						$renderMode = 'plug-infopanel-'.$plug."-".intval($k);
+
+
+
+						if(!isset($item['text']))
+						{
+
+							foreach ($item as $key => $v) // make sure the ids are unique.
+							{
+								$newkey = eHelper::dasherize($plug.'-'.$k.'-'.$key);
+							    $item[$newkey] = $v;
+							    unset($item[$key]);
+							}
+
+							$t = e107::getForm()->tabs($item);
+
+
+
+						//	$text .= $ns->tablerender($cap, $t, $renderMode, true);
+							$arr[] = array('caption'=>$cap, 'text'=>$t, 'mode'=>$renderMode);
+						}
+						else
+						{
+						//	$text .= $ns->tablerender($item['caption'], $item['text'], $renderMode, true);
+							$arr[] = array('caption'=>$item['caption'], 'text'=>$item['text'], 'mode'=>$renderMode);
+						}
+					}
+				}
+
 			}
 		}
 
-		return e107::getForm()->tabs($tab);
-		
 
+		return $arr;
 	}
 
 
 
-
-
-	function renderOnlineUsers($data=false)
+	function renderAddonDashboards()
 	{
-		
-		$ol = e107::getOnline();
-		$tp = e107::getParser();
-		$multilan = e107::getPref('multilanguage');
+		$ns = e107::getRender();
+		$arr = $this->getAddonDashboards();
+		$text = '';
 
-		$panelOnline = "
-				
-				<table class='table table-condensed table-striped' >
-				<colgroup>
-					<col style='width: 10%' />
-		            <col style='width: 25%' />
-					<col style='width: 10%' />
-					<col style='width: 40%' />
-					<col style='width: auto' />";
-
-
-		$panelOnline .= (!empty($multilan)) ? "<col style='width: auto' />" : "";
-
-
-		$panelOnline .= "
-
-				</colgroup>
-				<thead>
-					<tr class='first'>
-						<th>".LAN_TIMESTAMP."</th>
-						<th>".LAN_USER."</th>
-						<th>".LAN_IP."</th>
-						<th>".LAN_PAGE."</th>
-						<th class='center'>".LAN_AGENT."</th>";
-
-		$panelOnline .= (!empty($multilan)) ? "<th class='center'>".LAN_LANG."</th>" : "";
-
-		$panelOnline .= "
-					</tr>
-				</thead>
-				<tbody>";
-
-
-
-		$online = $ol->userList() + $ol->guestList();
-		
-		if($data == 'count')
+		foreach($arr as $val)
 		{
-			return count($online);	
-		}
-				
-	//		echo "Users: ".print_a($online);
+			$text .= $ns->tablerender($val['caption'], $val['text'], $val['mode'], true);
 
-		$lng = e107::getLanguage();
-
-		foreach ($online as $val)
-		{
-			$panelOnline .= "
-			<tr>
-				<td class='nowrap'>".e107::getDateConvert()->convert_date($val['user_currentvisit'],'%H:%M:%S')."</td>
-				<td>".$this->renderOnlineName($val['online_user_id'])."</td>
-				<td>".e107::getIPHandler()->ipDecode($val['user_ip'])."</td>
-				<td><a class='e-tip' href='".$val['user_location']."' title='".$val['user_location']."'>".$tp->html_truncate(basename($val['user_location']),50,"...")."</a></td>
-				<td class='center'><a class='e-tip' href='#' title='".$val['user_agent']."'>".$this->browserIcon($val)."</a></td>";
-
-			$panelOnline .= (!empty($multilan)) ? "<td class='center'><a class='e-tip' href='#' title=\"".$lng->convert($val['user_language'])."\">".$val['user_language']."</a></td>" : "";
-
-
-			$panelOnline .= "
-			</tr>
-			";
 		}
 
-	
-		$panelOnline .= "</tbody></table>";
-		
-		return $panelOnline;
-	}	
+		return $text;
 
-
-	function browserIcon($row)
-	{
-	
-		$types = array(
-			"ie" 		=> "MSIE",
-			'chrome'	=> 'Chrome',
-			'firefox'	=> 'Firefox',
-			'seamonkey'	=> 'Seamonkey',
-		//	'Chromium/xyz
-			'safari'	=> "Safari",
-			'opera'		=> "Opera"
-		);
-				
-	
-		if($row['user_bot'] === true)
-		{
-			return "<i class='browser e-bot-16'></i>";	
-		}
-		
-		foreach($types as $icon=>$b)
-		{
-			if(strpos($row['user_agent'], $b)!==false)
-			{
-				return "<i class='browsers e-".$icon."-16' ></i>";	
-			}
-		}
-
-		return "<i class='browsers e-firefox-16'></i>"; // FIXME find a default icon. 
 	}
 
-	
-	function renderOnlineName($val)
-	{
-		if($val==0)
-		{
-			return LAN_GUEST;
-		}
-		return $val;
-	}
-	
-	
+
 	function renderLatestComments()
 	{
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 
-		if(!check_class('B')) // XXX problems?
-		{
+		//if(!check_class('B')) // XXX problems?
+	//	{
 	//		return;
-		}		
+	//	}
 				
 		if(!$rows = $sql->retrieve('comments','*','comment_blocked=2 ORDER BY comment_id DESC LIMIT 25',true) )
 		{
@@ -579,8 +547,8 @@ class adminstyle_infopanel
 			<li id='comment-".$row['comment_id']."' class='media".$hide."'>
 				<span class='media-object pull-left'>{USER_AVATAR=".$row['comment_author_id']."}</span> 
 				<div class='btn-group pull-right'>
-	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='delete' class='btn btn-sm btn-mini btn-danger'><i class='icon-remove'></i> ".LAN_DELETE."</button>
-	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='approve' class='btn btn-sm btn-mini btn-success'><i class='icon-ok'></i> ".LAN_APPROVE."</button>
+	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='delete' class='btn btn-sm btn-mini btn-danger'><i class='fa fa-remove'></i> ".LAN_DELETE."</button>
+	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='approve' class='btn btn-sm btn-mini btn-success'><i class='fa fa-check'></i> ".LAN_APPROVE."</button>
 	            </div>
 				<div class='media-body'>
 					<small class='muted smalltext'>".$tp->lanVars(LAN_POSTED_BY_X, $lanVar)."</small><br />
@@ -624,7 +592,7 @@ class adminstyle_infopanel
 	
 	
 		
-	function render_infopanel_options($render = false) //TODO LAN
+	function render_infopanel_options($render = false)
 	{
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
@@ -724,7 +692,7 @@ class adminstyle_infopanel
 	
 		if (e107::getDb()->gen($menu_qry))
 		{
-			while ($row = e107::getDb()->db_Fetch())
+			while ($row = e107::getDb()->fetch())
 			{
 				// Custom menu (core).
 				if(is_numeric($row['menu_path']))
@@ -749,195 +717,11 @@ class adminstyle_infopanel
 		return $text;
 	}
 	
-	
-	private function getStats($type) 
-	{
-		
-		
-		if(file_exists(e_PLUGIN."awstats/awstats.graph.php"))  
-		{
-			require_once(e_PLUGIN."awstats/awstats.graph.php");
-			$stat = new awstats;
-			
-			if($data = $stat->getData())
-			{
-				return $data;
-			}
-			
-		//	return;	
-		}
 
-		if($type == 'demo')
-		{
-			$data = array();
-		
-			$data['labels'] 	= array("January","February","March","April","May","June","July");
-			
-			
-			$data['datasets'][]	= array(
-								'fillColor' 		=> "rgba(220,220,220,0.5)",
-								'strokeColor'  		=>  "rgba(220,220,220,1)",
-								'pointColor '  		=>  "rgba(220,220,220,1)",
-								'pointStrokeColor'  =>  "#fff",
-								'data'				=> array(65,59,90,81,56,55,40),
-								'title'				=> "Visits"
-				
-			);
-			
-			$data['datasets'][]	= array(
-								'fillColor' 		=> "rgba(151,187,205,0.5)",
-								'strokeColor'  		=>  "rgba(151,187,205,1)",
-								'pointColor '  		=>  "rgba(151,187,205,1)",
-								'pointStrokeColor'  =>  "#fff",
-								'data'				=> array(28,48,40,19,96,27,100),
-								'title'				=> "Unique Visits"		
-			);	
-			
-			return $data;
-		}
-
-	
-				
-		$sql = e107::getDB();
-
-		$td = date("Y-m-j", time());
-		$dayarray[$td] = array();
-		$pagearray = array();
-
-		$qry = "
-		SELECT * from #logstats WHERE log_id REGEXP('[[:digit:]]+\-[[:digit:]]+\-[[:digit:]]+')
-		ORDER BY CONCAT(LEFT(log_id,4), SUBSTRING(log_id, 6, 2), LPAD(SUBSTRING(log_id, 9), 2, '0'))
-		DESC LIMIT 0,9
-		";
-
-		if($amount = $sql->gen($qry)) 
-		{
-			$array = $sql->db_getList();
-
-			$ttotal = 0;
-			$utotal = 0;
-
-			foreach($array as $key => $value) 
-			{
-				extract($value);
-				$log_id = substr($log_id, 0, 4).'-'.substr($log_id, 5, 2).'-'.str_pad(substr($log_id, 8), 2, '0', STR_PAD_LEFT);
-				if(is_array($log_data)) {
-					$entries[0] = $log_data['host'];
-					$entries[1] = $log_data['date'];
-					$entries[2] = $log_data['os'];
-					$entries[3] = $log_data['browser'];
-					$entries[4] = $log_data['screen'];
-					$entries[5] = $log_data['referer'];
-				} 
-				else 
-				{
-					$entries = explode(chr(1), $log_data);
-				}
-
-				$dayarray[$log_id]['daytotal'] = $entries[0];
-				$dayarray[$log_id]['dayunique'] = $entries[1];
-
-				unset($entries[0]);
-				unset($entries[1]);
-				
-				foreach($entries as $entry) 
-				{
-					if($entry) 
-					{
-						list($url, $total, $unique) = explode("|", $entry);
-						if(strstr($url, "/")) 
-						{
-							$urlname = preg_replace("/\.php|\?.*/", "", substr($url, (strrpos($url, "/")+1)));
-						} 
-						else 
-						{
-							$urlname = preg_replace("/\.php|\?.*/", "", $url);
-						}
-						$dayarray[$log_id][$urlname] = array('url' => $url, 'total' => $total, 'unique' => $unique);
-						if (!isset($pagearray[$urlname]['total'])) $pagearray[$urlname]['total'] = 0;
-						if (!isset($pagearray[$urlname]['unique'])) $pagearray[$urlname]['unique'] = 0;
-						$pagearray[$urlname]['total'] += $total;
-						$pagearray[$urlname]['unique'] += $unique;
-						$ttotal += $total;
-						$utotal += $unique;
-					}
-				}
-			}
-		}
-
-		$logfile = e_LOG.'logp_'.date('z.Y', time()).'.php'; // was logi_ ??
-		if(is_readable($logfile)) 
-		{
-			require($logfile);
-		}
-
-
-
-		if(vartrue($pageInfo))
-		{
-			foreach($pageInfo as $fkey => $fvalue)
-			{
-				$dayarray[$td][$fkey]['total'] += $fvalue['ttl'];
-				$dayarray[$td][$fkey]['unique'] += $fvalue['unq'];
-				$dayarray[$td]['daytotal'] += $fvalue['ttl'];
-				$dayarray[$td]['dayunique'] += $fvalue['unq'];
-				$pagearray[$fkey]['total'] += $fvalue['ttl'];
-				$pagearray[$fkey]['unique'] += $fvalue['unq'];
-				$ttotal += $fvalue['ttl'];
-				$utotal += $fvalue['unq'];
-			}
-		}
-
-	
-		$visitors = array();
-		$unique = array();
-		
-	
-		ksort($dayarray);
-		foreach($dayarray as $k=>$v)
-		{
-			$unix = strtotime($k);
-			
-			$visitors[] = intval(vartrue($v['daytotal']));
-			$unique[] = intval(vartrue($v['dayunique']));
-			$label[] = "'".date("D",$unix)."'";				
-		}
-		
-		$data = array();
-		
-		$data['labels'] 	= $label; 
-		
-		//visitors
-		$data['datasets'][]	= array(
-							'fillColor' 		=> "rgba(220,220,220,0.5)",
-							'strokeColor'  		=>  "rgba(220,220,220,1)",
-							'pointColor '  		=>  "rgba(220,220,220,1)",
-							'pointStrokeColor'  =>  "#fff",
-							'data'				=> $visitors	
-			
-		);
-		
-		
-		//Unique Visitors
-		$data['datasets'][]	= array(
-							'fillColor' 		=> "rgba(151,187,205,0.5)",
-							'strokeColor'  		=>  "rgba(151,187,205,1)",
-							'pointColor '  		=>  "rgba(151,187,205,1)",
-							'pointStrokeColor'  =>  "#fff",
-							'data'				=> $unique		
-		);
-		
-		
-		
-		return $data;
-		
-	
-	}
-	
 	
 
 	
-	private function renderStats($type)
+/*	private function renderStats($type)
 	{
 
 		$data = $this->getStats($type);
@@ -955,21 +739,21 @@ class adminstyle_infopanel
 			
 		if($type == 'demo')
 		{
-			$text .= "<div class='center'><small>These stats are for demonstration purposes only. <a class='btn btn-xs btn-mini' href='".e_ADMIN."plugin.php?avail'>Install Site Stats Plugin</a></small></div>";
+			$text .= "<div class='center'><small>".ADLAN_170."<a class='btn btn-xs btn-mini' href='".e_ADMIN."plugin.php?avail'>".ADLAN_171."</a></small></div>";
 		}
 		else
 		{
 			$text .= "<div class='center'><small>
-			<span style='color:rgba(220,220,220,0.5)'>&diams;</span> Visitors  &nbsp;&nbsp;  
-			<span style='color:rgba(151,187,205,1)'>&diams;</span> Unique Visitors
+			<span style='color:rgba(220,220,220,0.5)'>&diams;</span>".ADLAN_168."&nbsp;&nbsp;
+			<span style='color:rgba(151,187,205,1)'>&diams;</span>".ADLAN_169."
 			</small></div>";
 		}
 		
 		
-		return $text;									
-
+		return $text;
 		
-	}
+	}*/
 	
 }
 ?>
+

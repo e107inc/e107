@@ -1,15 +1,50 @@
 ---
-engines:
+version: "2"
+checks:
+  argument-count:
+    config:
+      threshold: 7
+  complex-logic:
+    config:
+      threshold: 4
+  file-lines:
+    config:
+      threshold: 2000
+  method-complexity:
+    config:
+      threshold: 350
+  method-count:
+    config:
+      threshold: 250
+  method-lines:
+    config:
+      threshold: 1000
+  nested-control-flow:
+    config:
+      threshold: 4
+  return-statements:
+    config:
+      threshold: 5
+  similar-code:
+    enabled: false
+plugins:
+  phan:
+      enabled: true
+      config:
+        file_extensions: "php"
   csslint:
     enabled: false
-    duplication:
+  duplication:
     enabled: true
     checks:
       Identical code:
         enabled: false
       Design/TooManyPublicMethods:
         enabled: false
-
+      Design/TooManyMethods:
+        enabled: false
+      Design/LongMethod:
+        enabled: false
     config:
       languages:
       - javascript
@@ -19,37 +54,65 @@ engines:
   fixme:
     enabled: false
   phpmd:
-    enabled: true
+    enabled: false
     checks:
+      method-complexity:
+        enabled: false
+      method-lines:
+        enabled: false
       Identical code:
+        enabled: false
+      CyclomaticComplexity:
         enabled: false
       CleanCode/StaticAccess:
         enabled: false
-      CleanCode/BooleanArgumentFlag:
+      ExcessivePublicCount:
         enabled: false
       UnusedFormalParameter:
         enabled: false
+      Design/LongClass:
+        enabled: false
       Design/TooManyFields:
         enabled: false
+      Design/TooManyMethods:
+        enabled: false
+      Design/TooManyPublicMethods:
+        enabled: false
+      Design/WeightedMethodCount:
+        enabled: false
       CleanCode/BooleanArgumentFlag:
+        enabled: false
+      CleanCode/ElseExpression:
+        enabled: false
+      UnusedLocalVariable:
         enabled: false
     config:
       file_extensions: "php"
       rulesets: "cleancode,unusedcode,codesize"
-ratings:
-  paths:
-  - "**.css"
-  - "**.js"
-  - "**.php"
-exclude_paths:
-- e107_admin/core_image.php
-- e107_plugins/log/js/awesomechart.js
-- e107_docs/**/*
-- e107_images/**/*
-- e107_handlers/hybridauth/**/*
-- e107_handlers/jsshrink/**/*
-- e107_handlers/phpmailer/**/*
-- e107_handlers/phpthumb/**/*
-- e107_handlers/xmlrpc/**/*
-- e107_web/**/*
-
+exclude_patterns:
+- "config/"
+- "db/"
+- "dist/"
+- "features/"
+- "**/node_modules/"
+- "script/"
+- "**/spec/"
+- "**/test/"
+- "**/tests/"
+- "**/vendor/"
+- "**/*.d.ts"
+- "e107_plugins/log/js/awesomechart.js"
+- "e107_core/**/*.sc"
+- "e107_docs/**/*"
+- "e107_handlers/magpie_rss.php"
+- "e107_handlers/pclerror.lib.php"
+- "e107_handlers/pclzip.lib.php"
+- "e107_handlers/pcltar.lib.php"
+- "e107_handlers/pcltrace.lib.php"
+- "e107_images/**/*"
+- "e107_system/core_image.phar"
+- "e107_web/**/*"
+- "e107_tests/tests/**/*"
+# Ignore symlinks that are allowed to be broken due to local configurations
+- "e107_tests/lib/ci/salt/pillars/config.sls"
+- "e107_tests/lib/ci/salt/pillars/config-local.sls"

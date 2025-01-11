@@ -58,10 +58,10 @@ define("PRFLAN_55", "Cookie/Session name");
 define("PRFLAN_56", "Timezone");
 define("PRFLAN_58", "Restrict website to members only");
 define("PRFLAN_59", "ticking will restrict all areas apart from the front page and signup page to members only");
-define("PRFLAN_60", "Enable SSL");
-define("PRFLAN_61", "Only enable SSL if you are sure you know what you are doing!");
+define("PRFLAN_60", "Use SSL only");
+define("PRFLAN_61", "Redirect all traffic through SSL (https)");
 define("PRFLAN_76", "Display CAPTCHA on signup page.");
-define("PRFLAN_77", "Admin Display Options ");
+define("PRFLAN_77", "Admin Display");
 define("PRFLAN_78", "Leave blank to disable");
 // define("PRFLAN_80", "Click here to view");
 define("PRFLAN_81", "Display CAPTCHA on login page.");
@@ -99,7 +99,7 @@ define("PRFLAN_95", "Display plugins info:");
 define("PRFLAN_96", "Will display info on all admin pages for each plugin supporting this type of feature");
 define("PRFLAN_97", "Unique 'Plugins info' menu:");
 define("PRFLAN_98", "If disabled, each plugin will display its own info in an individual menu. If enabled all info will be displayed in one menu.");
-define("PRFLAN_101", "Text Rendering");
+// define("PRFLAN_101", "Text Rendering");
 define("PRFLAN_102", "Replace clickable URLs");
 define("PRFLAN_103", "If ticked, and 'Make Clickable' (above) is also ticked, posted URLs or Email addresses are displayed as a hyperlink using text from the textboxes below. This keeps very long URLs/Emails from breaking layout.");
 define("PRFLAN_104", "URL replacement text");
@@ -131,7 +131,7 @@ define("PRFLAN_130", "Activating this will prevent more than one person logging 
 // define("PRFLAN_132", "Activating this will allow authorized users to post [php] code in certain areas");
 define("PRFLAN_133", "GD extension required, not found");
 define("PRFLAN_134", "Redirect all requests to site URL");
-define("PRFLAN_135", "for example, if your site URL above is set to http://foo.com, anyone requesting http://www.foo.com will be redirected to http://foo.com"); //FIXME HTML
+define("PRFLAN_135", "for example, if your site URL above is set to https://foo.com, anyone requesting https://www.foo.com will be redirected to https://foo.com"); //FIXME HTML
 define("PRFLAN_136", "Maximum Signups permitted from the same IP address.");
 define("PRFLAN_137", "Display Memory Usage");
 define("PRFLAN_138", "Display CAPTCHA on forgotten password page.");
@@ -216,8 +216,8 @@ define("PRFLAN_208", "User class which can email links to items on site");
 define("PRFLAN_209", "Other Features");
 define("PRFLAN_210", "Comments/Posting");
 define("PRFLAN_211", "Cannot make email address optional if required for validation or login");
-define("PRFLAN_212", "Value for --FIELD-- too high - changed to --VALUE--");
-define("PRFLAN_213", "Value for --FIELD-- too low - changed to --VALUE--");
+define("PRFLAN_212", "Value for [x] too high - changed to [y]");
+define("PRFLAN_213", "Value for [x] too low - changed to [y]");
 define("PRFLAN_214", "Site Logo");
 define("PRFLAN_215", "Class which can post &lt;script&gt; and similar tags");
 define("PRFLAN_216", "(Requires HTML posting rights as well)");
@@ -234,7 +234,7 @@ define("PRFLAN_223", "Completely Automated Public Turing test to tell Computers 
 
 define("PRFLAN_224", "User registration system");
 
-define("PRFLAN_225", "Used by Facebook and others. Should be a square image of at least 144px in width and height.");
+define("PRFLAN_225", "Used by Facebook and others. Should be a square image of at least 800px in width and height.");
 define("PRFLAN_226", "Used by some themes as the header image on some pages.");
 define("PRFLAN_227", "Used by some themes. Place 'SITETAG' in your theme to use this value.");
 define("PRFLAN_228", "Used by some themes. Place 'SITEDESCRIPTION' in your theme to use this value.");
@@ -289,3 +289,22 @@ define("PRFLAN_268", "Frontend Inline-Editing");
 define("PRFLAN_269", "Admins with this userclass (and the appropriate admin permissions) will be able to edit html directly via the frontend area.");
 define("PRFLAN_270", "Contact Form Filtering");
 define("PRFLAN_271", "Ignore form submissions containing these words or phrases. One per line.");
+
+define("PRFLAN_272", "Session Lifetime");
+define("PRFLAN_273", "Lifetime in seconds. 0 = until the browser is closed. ");
+define("PRFLAN_274", "Contact form will only be visible to this userclass group.");
+define("PRFLAN_275", "View this page using https (SSL) to modify this option");
+define("PRFLAN_276", "PHP Default (Preferred)");
+
+define("PRFLAN_277", "GDPR Settings");
+define("PRFLAN_278", "URL to the Privacy Policy");
+define("PRFLAN_279", "Make sure the url exists! It's best to use an absolute url. This setting will be used on all places that require a consent from the user (e.g. signup, contact form/menu, etc.).");
+define("PRFLAN_280", "URL to the website terms and conditions");
+define("PRFLAN_281", "The 2 links above are used on various page on this site (e.g. signup and contact form/menu).\nPlease create 2 pages (if not already done) that contain your 'Privacy Policy' and the websites 'Terms and conditions'.\nThere are several websites that can generate those text for you.\nCopy the urls of this websites into the fields above (e.g. /page/privacy-policy or /page/terms-and-conditions).\nJust make sure, the pages and urls exist and are working!");
+
+define("PRFLAN_282", "Session Save Method");
+
+define("PRFLAN_283", "Display navigation-bar labels");
+define("PRFLAN_284", "Collapse navigation side-bar by default");
+define("PRFLAN_285", "Display field help tips");
+define("PRFLAN_286", "Content Filters");

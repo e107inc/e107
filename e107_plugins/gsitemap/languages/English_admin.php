@@ -44,7 +44,6 @@ define("GSLAN_33", "GSiteMap Instructions");
 define("GSLAN_34", "First, create the links you wish to have listed in your sitemap. You can import most of your links by clicking the 'Import' button on the right");
 define("GSLAN_35", "If you've chosen to import your links, click 'Import' and then check the links you wish to import");
 define("GSLAN_36", "You can also enter individual links manually by clicking 'Create New Entry'");
-define("GSLAN_37", "Once you have some entries, go to [URL] and enter the following URL -> <b>".SITEURL."gsitemap.php</b> - if this url doesn't look right to you, please make sure your site url is correct in admin -> preferences");
 define("GSLAN_38", "For more information on Google Sitemap protocol, go to [URL].");
 define("GSLAN_39", "No links in sitemap - import sitelinks?");
 // define("GSLAN_40", "Google Sitemap Entries");
@@ -62,5 +61,8 @@ define("GSLAN_39", "No links in sitemap - import sitelinks?");
 // define('GSLAN_41', "Google Sitemap. For more information on the Sitemap protocol, go to <a href='http://www.sitemaps.org/'>http://www.sitemaps.org/</a> or <a href='http://www.google.com/support/webmasters/bin/answer.py?answer=156184'>Google's page About Sitemaps</a>");
 //define('GSLAN_42', 'Installation Successful..');
 
+define("GSLAN_50", "Publicly visible");
+define("GSLAN_51", "Auto-generated from [x]");
+define("GSLAN_52", "Once you have some entries, go to [URL] and enter one of the following URLs in the Sitemaps section.[SITEMAP_URLS]  (If any of these urls look incorrect to you, please make sure your site url is correct in [preferences].)");
+define("GSLAN_53", "Instructions");
 
-?>

@@ -31,6 +31,7 @@ class language{
 	 */
 	protected $lanlist = null; // null is important!!!
 
+	// code / folder.
 	protected $list = array(
             "aa" => "Afar",
             "ab" => "Abkhazian",
@@ -48,7 +49,9 @@ class language{
             "bi" => "Bislama",
             "bo" => "Tibetan",
             "bs" => "Bosnian",
-            "br" => "Breton",
+
+			"br" => "Brazilian",
+
             "bg" => "Bulgarian",
             "my" => "Burmese",
             "ca" => "Catalan",
@@ -145,6 +148,7 @@ class language{
             "pi" => "Pali",
             "pl" => "Polish",
             "pt" => "Portuguese",
+
             "ps" => "Pushto",
             "qu" => "Quechua",
             "ro" => "Romanian",
@@ -230,6 +234,7 @@ class language{
 			"Norwegian"		=> "Norsk",
 			"Persian"	   	=> "فارسي",
 		    "Portuguese"	=> "Português",
+		    "Brazilian"     => "Português do Brasil",
 			"Polish"		=> "Polski",
 			"Romanian"		=> "Română",
 			"Russian"		=> "Pусский",
@@ -248,8 +253,8 @@ class language{
 
 	/**
 	 * Converts iso to language-name and visa-versa.
-	 * @param object $data
-	 * @return 
+	 * @param string $data
+	 * @return string
 	 */
 	function convert($data){
 
@@ -327,10 +332,11 @@ class language{
 		}
 
 	}
-	
+
 	/**
 	 * Check if the specified domain has multi-language subdomains enabled.
-	 * @return 
+	 * @param string $domain
+	 * @return bool|int|string
 	 */
 	function isLangDomain($domain='')
 	{
@@ -373,6 +379,11 @@ class language{
 	 */
 	function translate($lan, $array= array())
 	{
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use $tp->lanVars() instead.', E_USER_DEPRECATED); // NO LAN
+
+		$search = array();
+		$replace = array();
+
 		foreach($array as $k=>$v)
 		{
 			$search[] = "[".$k."]";
@@ -443,6 +454,10 @@ class language{
 				return $natList;
 				break;
 
+			case 'count':
+				return count($this->lanlist);
+			break;
+
 			case "english":
 			default:
 				return $this->lanlist;
@@ -466,15 +481,16 @@ class language{
 	 * Convert the current URL to a multi-lang for the specified language. 
 	 * eg. 'http://www.mydomain.com' becomes 'http://es.mydomain.com'
 	 * @param string $language eg. 'Spanish'
-	 * @return URL
+	 * @return string url
 	 */
 	function subdomainUrl($language, $url=e_REQUEST_URL)
 	{
-		global $pref;
+
+		$sitelanguage =  e107::getPref('sitelanguage',null);
 
 		$iso = (strlen($language) == 2) ? $language : $this->convert($language);
 
-		$codelnk = ($language == $pref['sitelanguage']) ? "www" : $iso;
+		$codelnk = ($language == $sitelanguage) ? "www" : $iso;
 		
 		if($codelnk == '')
 		{
@@ -518,13 +534,14 @@ class language{
 
 		if(defined('e_PAGE_LANGUAGE') && ($detect_language = $this->isValid(e_PAGE_LANGUAGE))) // page specific override.
 		{
+			$doNothing = '';
 			// Do nothing as $detect_language is set.
 		}
-		elseif(vartrue($pref['multilanguage_subdomain']) && $this->isLangDomain(e_DOMAIN) && (defset('MULTILANG_SUBDOMAIN') !== false))
+		elseif(!empty($pref['multilanguage_subdomain']) && $this->isLangDomain(e_DOMAIN) && (defset('MULTILANG_SUBDOMAIN') !== false))
 		{
 			$detect_language = (e_SUBDOMAIN) ? $this->isValid(e_SUBDOMAIN) : $pref['sitelanguage'];
 			// Done in session handler now, based on MULTILANG_SUBDOMAIN value
-			//e107_ini_set("session.cookie_domain", ".".e_DOMAIN); // Must be before session_start()
+			//ini_set("session.cookie_domain", ".".e_DOMAIN); // Must be before session_start()
 			$this->_cookie_domain = ".".e_DOMAIN;
 			define('MULTILANG_SUBDOMAIN',true);
 		}
@@ -540,16 +557,16 @@ class language{
 		}
 		elseif(isset($_GET['elan']) && ($detect_language = $this->isValid($_GET['elan']))) // eg: /index.php?elan=Spanish
 		{
-			// Do nothing			
+			$doNothing = '';// Do nothing
 		}
 		elseif(isset($_POST['setlanguage']) && ($detect_language = $this->isValid($_POST['sitelanguage'])))
 		{
-			// Do nothing	
+			$doNothing = '';// Do nothing
 		}
 		
 		elseif(isset($GLOBALS['elan']) && ($detect_language = $this->isValid($GLOBALS['elan'])))
 		{
-			// Do nothing		
+			$doNothing = '';// Do nothing
 		}
 		else
 		{
@@ -557,7 +574,7 @@ class language{
 		}
 		
 		// Done in session handler now
-		// e107_ini_set("session.cookie_path", e_HTTP);
+		// ini_set("session.cookie_path", e_HTTP);
 		
 		$this->detect = $detect_language;	
 		return $detect_language;
@@ -647,17 +664,21 @@ class language{
 		
 		$this->e_language = $user_language;
 		$this->setDefs();
+
+		if(e_LAN !== 'en')
+		{
+			e107::getParser()->setMultibyte(true);
+		}
+
 		return;
 	}
 
 
-	
 	/**
 	 * Set Language-specific Constants
 	 * FIXME - language detection is a mess - db handler, mysql handler, session handler and language handler + constants invlolved,
 	 * SIMPLIFY, test, get feedback
-	 * @param string $language
-	 * @return 
+	 * @return void
 	 */
 	function setDefs()
 	{
@@ -692,7 +713,11 @@ class language{
 			define("e_LANQRY", false);
 		} 	
 	}
-	
+
+	/**
+	 * @param $force
+	 * @return array
+	 */
 	public function getLanSelectArray($force = false)
 	{
 		if($force ||null === $this->_select_array)
@@ -718,7 +743,7 @@ class language{
 
 	/**
 	 * Define Legacy LAN constants based on a supplied array.
-	 * @param null $bcList
+	 * @param array $bcList legacyLAN => Replacement-LAN
 	 */
 	public function bcDefs($bcList = null)
 	{
@@ -735,6 +760,10 @@ class language{
 			if(!defined($old) && defined($new))
 			{
 				define($old, constant($new));
+			}
+			elseif(empty($new) && !defined($old))
+			{
+				define($old,'');
 			}
 
 		}

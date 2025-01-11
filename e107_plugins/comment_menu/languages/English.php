@@ -24,4 +24,4 @@ define("CM_L11", "on");
 define("CM_L12", "Re:");
 define("CM_L13", "Posted by");
 
-?>
+

@@ -10,4 +10,3 @@ $text = $tp->parseTemplate("{FAQ_SEARCH}", true, $sc);
 $ns->tablerender(LAN_PLUGIN_FAQS_SEARCH, $text, 'faqs-search-menu');
 
 
-?>

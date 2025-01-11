@@ -28,11 +28,13 @@ class listclass
 	var $defaultArray;
 	var $sections;
 	var $titles;
-	var $content_types;
+	private $content_types= array();
 	var $content_name;
 	var $list_pref;
 	var $mode;
 	var $shortcodes = FALSE;
+	private $pf; // profanity filter class.
+	public $data;
 
 	/**
 	 * constructor
@@ -41,7 +43,7 @@ class listclass
 	 * @return void
 	 *
 	 */
-	function listclass($mode='')
+	function __construct($mode='')
 	{
 		global $TEMPLATE_LIST_NEW, $list_shortcodes;
 
@@ -49,7 +51,7 @@ class listclass
 		$this->e107 = e107::getInstance();
 
 		//language
-		include_lan($this->plugin_dir."languages/".e_LANGUAGE.".php");
+		e107::includeLan($this->plugin_dir."languages/".e_LANGUAGE.".php");
 
 		//template
 		if (is_readable(THEME."list_template.php"))
@@ -67,6 +69,7 @@ class listclass
 //		$this->shortcodes = $list_shortcodes;
 		$this->shortcodes = new list_shortcodes();
 		$this->shortcodes->rc = $this;
+
 
 		if($mode=='admin')
 		{
@@ -89,7 +92,7 @@ class listclass
 	{
 		//for each call to the template, provide the correct data set through load_globals
 		//list_shortcodes::load_globals();
-		return e107::getParser()->parseTemplate($this->template[$template], true, $this->shortcodes);
+		return e107::getParser()->parseTemplate(varset($this->template[$template]), true, $this->shortcodes);
 	}
 
 	/**
@@ -100,8 +103,15 @@ class listclass
 	 */
 	function getListPrefs()
 	{
-		return e107::pref('list_new'); //TODO Convert from old format to new. 
+		$listPrefs = e107::pref('list_new'); //TODO Convert from old format to new.   
 		
+		//insert default preferences
+		if (empty(	$listPrefs))
+		{
+       		$listPrefs = $this->list_pref = $this->getDefaultPrefs();
+       		e107::getPlugConfig('list_new')->reset()->setPref($listPrefs)->save(true);
+    	}
+    	return $listPrefs;
 		/*
 		$sql = e107::getDb();
 		//check preferences from database
@@ -157,7 +167,7 @@ class listclass
 	function prepareSectionArray($mode)
 	{
 		//section reference
-		for($i=0;$i<count($this->sections);$i++)
+		for($i=0, $iMax = count($this->sections); $i< $iMax; $i++)
 		{
 			$s = $this->sections[$i];
 			if(vartrue($this->list_pref[$s."_".$mode."_display"]) == '1')
@@ -172,10 +182,16 @@ class listclass
 				$arr[$s]['amount'] 		= vartrue($this->list_pref[$s."_".$mode."_amount"]);
 				$arr[$s]['order'] 		= vartrue($this->list_pref[$s."_".$mode."_order"]);
 				$arr[$s]['section'] 	= $s;
+
+
 			}
+
 		}
 		//sort array on order values set in preferences
-		usort($arr, create_function('$e,$f','return $e["order"]==$f["order"]?0:($e["order"]>$f["order"]?1:-1);'));
+		usort($arr, function($e, $f)
+		{
+			return $e["order"]==$f["order"] ? 0 : ($e["order"] > $f["order"] ? 1 : -1);
+		});
 
 		return $arr;
 	}
@@ -189,7 +205,7 @@ class listclass
 	function getDefaultSections()
 	{
 		//default always present sections
-		for($i=0;$i<count($this->defaultArray);$i++)
+		for($i=0, $iMax = count($this->defaultArray); $i< $iMax; $i++)
 		{
 			$this->sections[] = $this->defaultArray[$i];
 			$this->titles[] = $this->defaultArray[$i];
@@ -214,6 +230,8 @@ class listclass
 		{
 			return;
 		}
+
+		$content_name = '';
 
 		$content_types = array();
 
@@ -245,15 +263,15 @@ class listclass
 	 */
 	function getSections()
 	{
-		global $pref;
 
+		$list = e107::getPref('e_list_list', array());
 		$this->getDefaultSections();
 
-		if(is_array($pref['e_list_list']))
+		if(!empty($list))
 		{
-			foreach($pref['e_list_list'] as $file)
+			foreach($list as $file)
 			{
-				if ($plugin_installed = isset($pref['plug_installed'][$file]))
+				if ($plugin_installed = e107::isInstalled($file))
 				{
 					if($file == "content")
 					{
@@ -278,11 +296,12 @@ class listclass
 	 */
 	function getDefaultPrefs()
 	{
-		global $pref;
+
+		$pref = e107::getPref();
 
 		$prf = array();
 		//section preferences
-		for($i=0;$i<count($this->sections);$i++)
+		for($i=0, $iMax = count($this->sections); $i< $iMax; $i++)
 		{
 			$s = $this->sections[$i];
 			if(!in_array($this->sections[$i], $this->defaultArray))
@@ -291,63 +310,63 @@ class listclass
 				{
 					if ($plugin_installed = isset($pref['plug_installed'][e107::getParser()->toDB($s, true)]))
 					{
-						$prf["$s_recent_menu_caption"] = $s;
-						$prf["$s_recent_page_caption"] = $s;
-						$prf["$s_new_menu_caption"] = $s;
-						$prf["$s_new_page_caption"] = $s;
+						$prf[$s."_recent_menu_caption"] = $s;
+						$prf[$s."_recent_page_caption"] = $s;
+						$prf[$s."_new_menu_caption"] = $s;
+						$prf[$s."_new_page_caption"] = $s;
 					}
 				}
 				else
 				{
-					$prf["$s_recent_menu_caption"] = $this->titles[$i];
-					$prf["$s_recent_page_caption"] = $this->titles[$i];
-					$prf["$s_new_menu_caption"] = $this->titles[$i];
-					$prf["$s_new_page_caption"] = $this->titles[$i];
+					$prf[$s."_recent_menu_caption"] = $this->titles[$i];
+					$prf[$s."_recent_page_caption"] = $this->titles[$i];
+					$prf[$s."_new_menu_caption"] = $this->titles[$i];
+					$prf[$s."_new_page_caption"] = $this->titles[$i];
 				}
 			}
 			else
 			{
-				$prf["$s_recent_menu_caption"] = $s;
-				$prf["$s_recent_page_caption"] = $s;
-				$prf["$s_new_menu_caption"] = $s;
-				$prf["$s_new_page_caption"] = $s;
+				$prf[$s."_recent_menu_caption"] = $s;
+				$prf[$s."_recent_page_caption"] = $s;
+				$prf[$s."_new_menu_caption"] = $s;
+				$prf[$s."_new_page_caption"] = $s;
 			}
 
-			$prf["$s_recent_menu_display"] = "1";
-			$prf["$s_recent_menu_open"] = "0";
-			$prf["$s_recent_menu_author"] = "0";
-			$prf["$s_recent_menu_category"] = "0";
-			$prf["$s_recent_menu_date"] = "1";
-			$prf["$s_recent_menu_amount"] = "5";
-			$prf["$s_recent_menu_order"] = ($i+1);
-			$prf["$s_recent_menu_icon"] = '';
+			$prf[$s."_recent_menu_display"] = "1";
+			$prf[$s."_recent_menu_open"] = "0";
+			$prf[$s."_recent_menu_author"] = "0";
+			$prf[$s."_recent_menu_category"] = "0";
+			$prf[$s."_recent_menu_date"] = "1";
+			$prf[$s."_recent_menu_amount"] = "5";
+			$prf[$s."_recent_menu_order"] = ($i+1);
+			$prf[$s."_recent_menu_icon"] = '';
 
-			$prf["$s_recent_page_display"] = "1";
-			$prf["$s_recent_page_open"] = "1";
-			$prf["$s_recent_page_author"] = "1";
-			$prf["$s_recent_page_category"] = "1";
-			$prf["$s_recent_page_date"] = "1";
-			$prf["$s_recent_page_amount"] = "10";
-			$prf["$s_recent_page_order"] = ($i+1);
-			$prf["$s_recent_page_icon"] = "1";
+			$prf[$s."_recent_page_display"] = "1";
+			$prf[$s."_recent_page_open"] = "1";
+			$prf[$s."_recent_page_author"] = "1";
+			$prf[$s."_recent_page_category"] = "1";
+			$prf[$s."_recent_page_date"] = "1";
+			$prf[$s."_recent_page_amount"] = "10";
+			$prf[$s."_recent_page_order"] = ($i+1);
+			$prf[$s."_recent_page_icon"] = "1";
 
-			$prf["$s_new_menu_display"] = "1";
-			$prf["$s_new_menu_open"] = "0";
-			$prf["$s_new_menu_author"] = "0";
-			$prf["$s_new_menu_category"] = "0";
-			$prf["$s_new_menu_date"] = "1";
-			$prf["$s_new_menu_amount"] = "5";
-			$prf["$s_new_menu_order"] = ($i+1);
-			$prf["$s_new_menu_icon"] = "1";
+			$prf[$s."_new_menu_display"] = "1";
+			$prf[$s."_new_menu_open"] = "0";
+			$prf[$s."_new_menu_author"] = "0";
+			$prf[$s."_new_menu_category"] = "0";
+			$prf[$s."_new_menu_date"] = "1";
+			$prf[$s."_new_menu_amount"] = "5";
+			$prf[$s."_new_menu_order"] = ($i+1);
+			$prf[$s."_new_menu_icon"] = "1";
 
-			$prf["$s_new_page_display"] = "1";
-			$prf["$s_new_page_open"] = "1";
-			$prf["$s_new_page_author"] = "1";
-			$prf["$s_new_page_category"] = "1";
-			$prf["$s_new_page_date"] = "1";
-			$prf["$s_new_page_amount"] = "10";
-			$prf["$s_new_page_order"] = ($i+1);
-			$prf["$s_new_page_icon"] = "1";
+			$prf[$s."_new_page_display"] = "1";
+			$prf[$s."_new_page_open"] = "1";
+			$prf[$s."_new_page_author"] = "1";
+			$prf[$s."_new_page_category"] = "1";
+			$prf[$s."_new_page_date"] = "1";
+			$prf[$s."_new_page_amount"] = "10";
+			$prf[$s."_new_page_order"] = ($i+1);
+			$prf[$s."_new_page_icon"] = "1";
 		}
 
 		//new menu preferences
@@ -422,6 +441,7 @@ class listclass
 		$this->data = $this->load_elist();
 		
 		//$this->shortcodes->rc->data = $this->data;
+
 
 		//set record variables
 		$this->row = array();
@@ -552,19 +572,17 @@ class listclass
 	{
 		$name = "list_".$file;
 
-		$listArray = '';
+		$listArray = array();
 
 		//instantiate the class with this as parm
-		if(!class_exists($name))
-		{
-			//echo "class $name doesn't exist<br />";
-		}
-		else
+
+		if(class_exists($name))
 		{
 			$class = new $name($this);
 			//call method
 			if(!method_exists($class, 'getListData'))
 			{
+				return $listArray;
 				//echo "method getListData doesn't exist in class $class<br />";
 			}
 			else
@@ -573,21 +591,21 @@ class listclass
 				if (e107::getPref('profanity_filter'))
 				{
 					$tp = e107::getParser();
-					if (!is_object($parser->e_pf))
+					if (!is_object($this->pf))
 					{
-					//	require_once(e_HANDLER.'profanity_filter.php');
-						$parser->e_pf = new e_profanityFilter;
+						$this->pf = new e_profanityFilter;
 					}
 					foreach ($listArray as $k => $v)
 					{
 						if (isset($v['heading']))
 						{
-							$listArray[$k]['heading'] = $tp->e_pf->filterProfanities($v['heading']);
+							$listArray[$k]['heading'] = $this->pf->filterProfanities($v['heading']);
 						}
 					}
 				}
 			}
 		}
+
 		return $listArray;
 	}
 
@@ -602,11 +620,11 @@ class listclass
 		global $qs;
 
 		$lvisit = defined('USERLV') ? USERLV : time() + 1000;			// Set default value
-		if(vartrue($qs[0]) == "new")
+		if(!empty($qs[0]) &&  $qs[0] === "new")
 		{
-			if(vartrue($this->list_pref['new_page_timelapse']))
+			if(!empty($this->list_pref['new_page_timelapse']))
 			{
-				if(vartrue($this->list_pref['new_page_timelapse_days']) && is_numeric($this->list_pref['new_page_timelapse_days']))
+				if(!empty($this->list_pref['new_page_timelapse_days']) && is_numeric($this->list_pref['new_page_timelapse_days']))
 				{
 					$days = $this->list_pref['new_page_timelapse_days'];
 				}
@@ -709,14 +727,14 @@ class listclass
 				if($thisday == $current_day)
 				{
 					$datepreftoday = $this->list_pref[$this->mode."_datestyletoday"];
-					return strftime($datepreftoday, $datestamp);
+					return eShims::strftime($datepreftoday, $datestamp);
 				}
 			}
 		}
 
 		//else use default date style
 		$datepref = $this->list_pref[$this->mode."_datestyle"];
-		return strftime($datepref, $datestamp);
+		return eShims::strftime($datepref, $datestamp);
 	}
 
 	/**
@@ -770,6 +788,8 @@ class listclass
 	{
 		global $qs;
 
+		$text = '';
+
 		//get preferences
 		if(!isset($this->list_pref))
 		{
@@ -797,8 +817,14 @@ class listclass
 
 		//display the sections
 		$k=0;
+
+	//	print_a($arr);
+
 		foreach($arr as $sect)
 		{
+
+			$this->shortcodes->plugin = $sect['section'];
+
 			if($sect['display'] == '1')
 			{
 				$sectiontext = $this->displaySection($sect);
@@ -857,4 +883,4 @@ class listclass
 	}
 }
 
-?>
+

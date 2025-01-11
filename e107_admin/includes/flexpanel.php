@@ -26,21 +26,25 @@ define('FLEXPANEL_ENABLED', $flepanelEnabled);
 // Save rearranged menus to user.
 if(e_AJAX_REQUEST)
 {
+
 	if(FLEXPANEL_ENABLED && varset($_POST['core-flexpanel-order'], false))
 	{
 		// If "Apply dashboard preferences to all administrators" is checked.
+//print_r($_POST);
 		if($adminPref == 1)
 		{
+
 			e107::getConfig()
 				->setPosted('core-flexpanel-order', $_POST['core-flexpanel-order'])
-				->save();
+				->save(true,true);
+
 		}
 		else
 		{
-			e107::getUser()
+			$result = e107::getUser()
 				->getConfig()
 				->set('core-flexpanel-order', $_POST['core-flexpanel-order'])
-				->save();
+				->save(true,true);
 		}
 		exit;
 	}
@@ -56,7 +60,7 @@ e107_require_once(e_ADMIN . 'includes/infopanel.php');
 class adminstyle_flexpanel extends adminstyle_infopanel
 {
 
-	private $iconlist = array();
+	private $iconlist;
 
 	/**
 	 * Constructor.
@@ -102,6 +106,7 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 	 */
 	public function render()
 	{
+		/** @var admin_shortcodes $admin_sc */
 		$admin_sc = e107::getScBatch('admin');
 		$tp = e107::getParser();
 		$ns = e107::getRender();
@@ -140,62 +145,76 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 
 
 		// "Help" box.
-		$tp->parseTemplate("{SETSTYLE=flexpanel}");
+		$ns->setStyle('flexpanel');
 		$ns->setUniqueId('core-infopanel_help');
 		$info = $this->getMenuPosition('core-infopanel_help');
-		$panels[$info['area']][$info['weight']] .= $tp->parseTemplate('{ADMIN_HELP}', true, $admin_sc);
+		if (!isset($panels[$info['area']][$info['weight']]))
+		{
+			$panels[$info['area']][$info['weight']] = '';
+		}
+		$panels[$info['area']][$info['weight']] .= $tp->parseTemplate('{ADMIN_HELP}', false, $admin_sc);
+
 
 		// "Latest" box.
-		$tp->parseTemplate("{SETSTYLE=flexpanel}");
+		$ns->setStyle('flexpanel');
 		$info = $this->getMenuPosition('e-latest-list');
-		$panels[$info['area']][$info['weight']] .= $tp->parseTemplate('{ADMIN_LATEST=infopanel}', true, $admin_sc);
+		if (!isset($panels[$info['area']][$info['weight']]))
+		{
+			$panels[$info['area']][$info['weight']] = '';
+		}
+		$panels[$info['area']][$info['weight']] .= $tp->parseTemplate('{ADMIN_LATEST=infopanel}', false, $admin_sc);
+
 
 		// "Status" box.
-		$tp->parseTemplate("{SETSTYLE=flexpanel}");
+		$ns->setStyle('flexpanel');
 		$info = $this->getMenuPosition('e-status-list');
-		$panels[$info['area']][$info['weight']] .= $tp->parseTemplate('{ADMIN_STATUS=infopanel}', true, $admin_sc);
+		if (!isset($panels[$info['area']][$info['weight']]))
+		{
+			$panels[$info['area']][$info['weight']] = '';
+		}
+		$panels[$info['area']][$info['weight']] .= $tp->parseTemplate('{ADMIN_STATUS=infopanel}', false, $admin_sc);
 
 
 		// --------------------- Personalized Panel -----------------------
 		$myE107 = varset($user_pref['core-infopanel-mye107'], array());
 		if(empty($myE107)) // Set default icons.
 		{
-			$defArray = array(
-				0  => 'e-administrator',
-				1  => 'e-cpage',
-				2  => 'e-frontpage',
-				3  => 'e-mailout',
-				4  => 'e-image',
-				5  => 'e-menus',
-				6  => 'e-meta',
-				7  => 'e-newspost',
-				8  => 'e-plugin',
-				9  => 'e-prefs',
-				10 => 'e-links',
-				11 => 'e-theme',
-				12 => 'e-userclass2',
-				13 => 'e-users',
-				14 => 'e-wmessage'
-			);
-			$user_pref['core-infopanel-mye107'] = $defArray;
+			$user_pref['core-infopanel-mye107'] = e107::getNav()->getDefaultAdminPanelArray();
 		}
-		$tp->parseTemplate("{SETSTYLE=flexpanel}");
+
+		$ns->setStyle('flexpanel');
 		$mainPanel = "<div id='core-infopanel_mye107'>";
 		$mainPanel .= "<div class='left'>";
+		$count = 0;
 		foreach($this->iconlist as $key => $val)
 		{
-			if(!vartrue($user_pref['core-infopanel-mye107']) || in_array($key, $user_pref['core-infopanel-mye107']))
+			if(in_array($key, $user_pref['core-infopanel-mye107']))
 			{
-				$mainPanel .= e107::getNav()->renderAdminButton($val['link'], $val['title'], $val['caption'], $val['perms'], $val['icon_32'], "div");
+				if($tmp = e107::getNav()->renderAdminButton($val['link'], $val['title'], $val['caption'], $val['perms'], $val['icon_32'], "div"))
+				{
+					$mainPanel .= $tmp;
+					$count++;
+				}
+				
+			}
+
+			if($count == 20)
+			{
+				break;
 			}
 		}
 		$mainPanel .= "</div></div>";
+
 		// Rendering the saved configuration.
-		$tp->parseTemplate("{SETSTYLE=flexpanel}");
+		$ns->setStyle('flexpanel');
 		$caption = $tp->lanVars(LAN_CONTROL_PANEL, ucwords(USERNAME));
 		$ns->setUniqueId('core-infopanel_mye107');
 		$coreInfoPanelMyE107 = $ns->tablerender($caption, $mainPanel, "core-infopanel_mye107", true);
 		$info = $this->getMenuPosition('core-infopanel_mye107');
+		if (!isset($panels[$info['area']][$info['weight']]))
+		{
+			$panels[$info['area']][$info['weight']] = '';
+		}
 		$panels[$info['area']][$info['weight']] .= $coreInfoPanelMyE107;
 
 
@@ -204,29 +223,45 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 		$newsTabs['coreFeed'] = array('caption' => LAN_GENERAL, 'text' => "<div id='e-adminfeed' style='min-height:300px'></div><div class='right'><a rel='external' href='" . ADMINFEEDMORE . "'>" . LAN_MORE . "</a></div>");
 		$newsTabs['pluginFeed'] = array('caption' => LAN_PLUGIN, 'text' => "<div id='e-adminfeed-plugin'></div>");
 		$newsTabs['themeFeed'] = array('caption' => LAN_THEMES, 'text' => "<div id='e-adminfeed-theme'></div>");
-		$tp->parseTemplate("{SETSTYLE=flexpanel}");
+		$ns->setStyle('flexpanel');
 		$ns->setUniqueId('core-infopanel_news');
 		$coreInfoPanelNews = $ns->tablerender(LAN_LATEST_e107_NEWS, e107::getForm()->tabs($newsTabs, array('active' => 'coreFeed')), "core-infopanel_news", true);
 		$info = $this->getMenuPosition('core-infopanel_news');
+		if (!isset($panels[$info['area']][$info['weight']]))
+		{
+			$panels[$info['area']][$info['weight']] = '';
+		}
 		$panels[$info['area']][$info['weight']] .= $coreInfoPanelNews;
 
 
 		// --------------------- Website Status ---------------------------
-		$tp->parseTemplate("{SETSTYLE=flexpanel}");
+	/*	$ns->setStyle('flexpanel');
 		$ns->setUniqueId('core-infopanel_website_status');
-		$coreInfoPanelWebsiteStatus = $ns->tablerender(LAN_WEBSITE_STATUS, $this->renderWebsiteStatus(), "core-infopanel_website_status", true);
+		$coreInfoPanelWebsiteStatus = '';// 'hi';/// "<div id='core-infopanel_website_status'>".$this->renderAddonDashboards()."</div>";  $ns->tablerender(LAN_WEBSITE_STATUS, $this->renderAddonDashboards(), "core-infopanel_website_status", true);
 		$info = $this->getMenuPosition('core-infopanel_website_status');
-		$panels[$info['area']][$info['weight']] .= $coreInfoPanelWebsiteStatus;
+		$panels[$info['area']][$info['weight']] .= $coreInfoPanelWebsiteStatus;*/
 
 
 		// --------------------- Latest Comments --------------------------
 		// $panels['Area01'] .= $this->renderLatestComments(); // TODO
 
 
+		// --------------------- Add-on updates ---------------------------
+		$ns->setStyle('flexpanel');
+		$ns->setUniqueId('e-addon-updates');
+		$addonUpdates = $admin_sc->sc_admin_addon_updates();
+		$info = $this->getMenuPosition('e-addon-updates');
+		if (!isset($panels[$info['area']][$info['weight']]))
+		{
+			$panels[$info['area']][$info['weight']] = '';
+		}
+		$panels[$info['area']][$info['weight']] .= $addonUpdates;
+
+
 		// --------------------- User Selected Menus ----------------------
 		if(varset($user_pref['core-infopanel-menus']))
 		{
-			$tp->parseTemplate("{SETSTYLE=flexpanel}");
+			$ns->setStyle('flexpanel');
 			foreach($user_pref['core-infopanel-menus'] as $val)
 			{
 				// Custom menu.
@@ -242,9 +277,34 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 					$inc = $tp->parseTemplate("{PLUGIN=$val|TRUE}");
 				}
 				$info = $this->getMenuPosition($id);
+				if (!isset($panels[$info['area']][$info['weight']]))
+				{
+					$panels[$info['area']][$info['weight']] = '';
+				}
 				$panels[$info['area']][$info['weight']] .= $inc;
 			}
 		}
+
+
+	// --------------------- Plugin Addon Dashboards ---------------------- eg. e107_plugin/user/e_dashboard.php
+		$dashboards = $this->getAddonDashboards();
+		if(!empty($dashboards))
+		{
+			$ns->setStyle('flexpanel');
+			foreach($dashboards as $val)
+			{
+				$id = $val['mode'];
+				$ns->setUniqueId($id);
+				$inc = $ns->tablerender($val['caption'], $val['text'], $val['mode'], true);
+				$info = $this->getMenuPosition($id);
+				if (!isset($panels[$info['area']][$info['weight']]))
+				{
+					$panels[$info['area']][$info['weight']] = '';
+				}
+				$panels[$info['area']][$info['weight']] .= $inc;
+			}
+		}
+
 
 		// Sorting panels.
 		foreach($panels as $key => $value)
@@ -282,11 +342,15 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 	 */
 	function getMenuPosition($id)
 	{
+		$id = str_replace('_', '-', $id); // fix for core news etc.
+
 		$user_pref = $this->getUserPref();
 
-		if(varset($user_pref['core-flexpanel-order'][$id]))
+		if(!empty($user_pref['core-flexpanel-order'][$id]))
 		{
-			return $user_pref['core-flexpanel-order'][$id];
+			$arr = $user_pref['core-flexpanel-order'][$id];
+
+			return ['area' => $arr['area'], 'weight' => (int) $arr['weight']];
 		}
 
 		$default = array(
@@ -294,240 +358,245 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 			'weight' => 1000,
 		);
 
-		switch(varset($user_pref['core-flexpanel-layout'], 'default'))
+		$positions = $this->getDefaultPositions();
+
+		$layout = varset($user_pref['core-flexpanel-layout'], 'default');
+
+		if(!empty($positions[$layout][$id]))
 		{
-			case 'two_col_bricks':
-				if($id == 'core-infopanel_help')
-				{
-					$default['area'] = 'menu-area-01';
-					$default['weight'] = 0;
-				}
+			return $positions[$layout][$id];
+		}
 
-				if($id == 'e-latest-list')
-				{
-					$default['area'] = 'menu-area-04';
-					$default['weight'] = 1;
-				}
-
-				if($id == 'e-status-list')
-				{
-					$default['area'] = 'menu-area-04';
-					$default['weight'] = 2;
-				}
-
-				if($id == 'core-infopanel_mye107')
-				{
-					$default['area'] = 'menu-area-02';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'core-infopanel_news')
-				{
-					$default['area'] = 'menu-area-03';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'core-infopanel_website_status')
-				{
-					$default['area'] = 'menu-area-03';
-					$default['weight'] = 1;
-				}
-				break;
-
-			case 'two_col_stacked':
-				if($id == 'core-infopanel_help')
-				{
-					$default['area'] = 'menu-area-01';
-					$default['weight'] = 1;
-				}
-
-				if($id == 'e-latest-list')
-				{
-					$default['area'] = 'menu-area-04';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'e-status-list')
-				{
-					$default['area'] = 'menu-area-05';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'core-infopanel_mye107')
-				{
-					$default['area'] = 'menu-area-02';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'core-infopanel_news')
-				{
-					$default['area'] = 'menu-area-03';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'core-infopanel_website_status')
-				{
-					$default['area'] = 'menu-area-12';
-					$default['weight'] = 1;
-				}
-				break;
-
-			case 'three_col_bricks':
-				if($id == 'core-infopanel_help')
-				{
-					$default['area'] = 'menu-area-02';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'e-latest-list')
-				{
-					$default['area'] = 'menu-area-03';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'e-status-list')
-				{
-					$default['area'] = 'menu-area-04';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'core-infopanel_mye107')
-				{
-					$default['area'] = 'menu-area-01';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'core-infopanel_news')
-				{
-					$default['area'] = 'menu-area-09';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'core-infopanel_website_status')
-				{
-					$default['area'] = 'menu-area-13';
-					$default['weight'] = 0;
-				}
-				break;
-
-			case 'three_col_stacked':
-				if($id == 'core-infopanel_help')
-				{
-					$default['area'] = 'menu-area-03';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'e-latest-list')
-				{
-					$default['area'] = 'menu-area-04';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'e-status-list')
-				{
-					$default['area'] = 'menu-area-05';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'core-infopanel_mye107')
-				{
-					$default['area'] = 'menu-area-02';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'core-infopanel_news')
-				{
-					$default['area'] = 'menu-area-12';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'core-infopanel_website_status')
-				{
-					$default['area'] = 'menu-area-13';
-					$default['weight'] = 0;
-				}
-				break;
-
-			case 'one_col':
-				if($id == 'core-infopanel_help')
-				{
-					$default['area'] = 'menu-area-01';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'e-latest-list')
-				{
-					$default['area'] = 'menu-area-02';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'e-status-list')
-				{
-					$default['area'] = 'menu-area-03';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'core-infopanel_mye107')
-				{
-					$default['area'] = 'menu-area-04';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'core-infopanel_news')
-				{
-					$default['area'] = 'menu-area-05';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'core-infopanel_website_status')
-				{
-					$default['area'] = 'menu-area-06';
-					$default['weight'] = 0;
-				}
-				break;
-
-			case 'wider_sidebar':
-			case 'default':
-			default:
-				if($id == 'core-infopanel_help')
-				{
-					$default['area'] = 'menu-area-01';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'e-latest-list')
-				{
-					$default['area'] = 'menu-area-01';
-					$default['weight'] = 1;
-				}
-
-				if($id == 'e-status-list')
-				{
-					$default['area'] = 'menu-area-01';
-					$default['weight'] = 2;
-				}
-
-				if($id == 'core-infopanel_mye107')
-				{
-					$default['area'] = 'menu-area-07';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'core-infopanel_news')
-				{
-					$default['area'] = 'menu-area-08';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'core-infopanel_website_status')
-				{
-					$default['area'] = 'menu-area-08';
-					$default['weight'] = 1;
-				}
-				break;
+		if(strpos($id,'plug-infopanel-') === 0) // addon dashboards default to area 2.
+		{
+			$default = array(
+				'area'   => 'menu-area-02',
+				'weight' => 1000,
+			);
 		}
 
 		return $default;
+	}
+
+	/**
+	 * Get default menu positions.
+	 *
+	 * @return array
+	 */
+	function getDefaultPositions()
+	{
+		return array(
+			'two_col_bricks'    => array(
+				'e-addon-updates'               => array(
+					'area'   => 'menu-area-01',
+					'weight' => -1,
+				),
+				'core-infopanel-help'           => array(
+					'area'   => 'menu-area-01',
+					'weight' => 0,
+				),
+				'e-latest-list'                 => array(
+					'area'   => 'menu-area-04',
+					'weight' => 1,
+				),
+				'e-status-list'                 => array(
+					'area'   => 'menu-area-04',
+					'weight' => 2,
+				),
+				'core-infopanel-mye107'         => array(
+					'area'   => 'menu-area-02',
+					'weight' => 0,
+				),
+				'core-infopanel-news'           => array(
+					'area'   => 'menu-area-03',
+					'weight' => 0,
+				),
+				'core-infopanel-website-status' => array(
+					'area'   => 'menu-area-03',
+					'weight' => 1,
+				),
+			),
+			'two_col_stacked'   => array(
+				'e-addon-updates'               => array(
+					'area'   => 'menu-area-01',
+					'weight' => -1,
+				),
+				'core-infopanel-help'           => array(
+					'area'   => 'menu-area-01',
+					'weight' => 0,
+				),
+				'e-latest-list'                 => array(
+					'area'   => 'menu-area-04',
+					'weight' => 0,
+				),
+				'e-status-list'                 => array(
+					'area'   => 'menu-area-05',
+					'weight' => 0,
+				),
+				'core-infopanel-mye107'         => array(
+					'area'   => 'menu-area-02',
+					'weight' => 0,
+				),
+				'core-infopanel-news'           => array(
+					'area'   => 'menu-area-03',
+					'weight' => 0,
+				),
+				'core-infopanel-website-status' => array(
+					'area'   => 'menu-area-12',
+					'weight' => 1,
+				),
+			),
+			'three_col_bricks'  => array(
+				'e-addon-updates'               => array(
+					'area'   => 'menu-area-02',
+					'weight' => -1,
+				),
+				'core-infopanel-help'           => array(
+					'area'   => 'menu-area-02',
+					'weight' => 0,
+				),
+				'e-latest-list'                 => array(
+					'area'   => 'menu-area-03',
+					'weight' => 0,
+				),
+				'e-status-list'                 => array(
+					'area'   => 'menu-area-04',
+					'weight' => 0,
+				),
+				'core-infopanel-mye107'         => array(
+					'area'   => 'menu-area-01',
+					'weight' => 0,
+				),
+				'core-infopanel-news'           => array(
+					'area'   => 'menu-area-09',
+					'weight' => 0,
+				),
+				'core-infopanel-website-status' => array(
+					'area'   => 'menu-area-13',
+					'weight' => 0,
+				),
+			),
+			'three_col_stacked' => array(
+				'e-addon-updates'               => array(
+					'area'   => 'menu-area-03',
+					'weight' => -1,
+				),
+				'core-infopanel-help'           => array(
+					'area'   => 'menu-area-03',
+					'weight' => 0,
+				),
+				'e-latest-list'                 => array(
+					'area'   => 'menu-area-04',
+					'weight' => 0,
+				),
+				'e-status-list'                 => array(
+					'area'   => 'menu-area-05',
+					'weight' => 0,
+				),
+				'core-infopanel-mye107'         => array(
+					'area'   => 'menu-area-02',
+					'weight' => 0,
+				),
+				'core-infopanel-news'           => array(
+					'area'   => 'menu-area-12',
+					'weight' => 0,
+				),
+				'core-infopanel-website-status' => array(
+					'area'   => 'menu-area-13',
+					'weight' => 0,
+				),
+			),
+			'one_col'           => array(
+				'e-addon-updates'               => array(
+					'area'   => 'menu-area-01',
+					'weight' => -1,
+				),
+				'core-infopanel-help'           => array(
+					'area'   => 'menu-area-01',
+					'weight' => 0,
+				),
+				'e-latest-list'                 => array(
+					'area'   => 'menu-area-02',
+					'weight' => 0,
+				),
+				'e-status-list'                 => array(
+					'area'   => 'menu-area-03',
+					'weight' => 0,
+				),
+				'core-infopanel-mye107'         => array(
+					'area'   => 'menu-area-04',
+					'weight' => 0,
+				),
+				'core-infopanel-news'           => array(
+					'area'   => 'menu-area-05',
+					'weight' => 0,
+				),
+				'core-infopanel-website-status' => array(
+					'area'   => 'menu-area-06',
+					'weight' => 0,
+				),
+			),
+			'wider_sidebar'     => array(
+				'e-addon-updates'               => array(
+					'area'   => 'menu-area-01',
+					'weight' => -1,
+				),
+				'core-infopanel-help'           => array(
+					'area'   => 'menu-area-01',
+					'weight' => 0,
+				),
+				'e-latest-list'                 => array(
+					'area'   => 'menu-area-01',
+					'weight' => 1,
+				),
+				'e-status-list'                 => array(
+					'area'   => 'menu-area-01',
+					'weight' => 2,
+				),
+				'core-infopanel-mye107'         => array(
+					'area'   => 'menu-area-07',
+					'weight' => 0,
+				),
+				'core-infopanel-news'           => array(
+					'area'   => 'menu-area-08',
+					'weight' => 0,
+				),
+				'core-infopanel-website-status' => array(
+					'area'   => 'menu-area-08',
+					'weight' => 1,
+				),
+			),
+			'default'           => array(
+				'e-addon-updates'               => array(
+					'area'   => 'menu-area-01',
+					'weight' => -1,
+				),
+				'core-infopanel-help'           => array(
+					'area'   => 'menu-area-01',
+					'weight' => 0,
+				),
+				'e-latest-list'                 => array(
+					'area'   => 'menu-area-01',
+					'weight' => 1,
+				),
+				'e-status-list'                 => array(
+					'area'   => 'menu-area-01',
+					'weight' => 2,
+				),
+				'core-infopanel-mye107'         => array(
+					'area'   => 'menu-area-07',
+					'weight' => 0,
+				),
+				'core-infopanel-news'           => array(
+					'area'   => 'menu-area-08',
+					'weight' => 0,
+				),
+				'core-infopanel-website-status' => array(
+					'area'   => 'menu-area-08',
+					'weight' => 1,
+				),
+			),
+		);
 	}
 
 	/**

@@ -25,7 +25,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		{
 			if(window.location.hash && e107.callbacks.isValidSelector(window.location.hash))
 			{
-				$(context).find('body').once('initialize-smooth-scrolling').each(function ()
+				$(context).find('body').one('initialize-smooth-scrolling').each(function ()
 				{
 					if($(window.location.hash).length !== 0)
 					{
@@ -40,12 +40,83 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		}
 	};
 
+	/**
+	 * Initializes click event on '.e-modal' elements.
+	 *
+	 * @type {{attach: e107.behaviors.eModalFront.attach}}
+	 */
+	e107.behaviors.eModalFront = {
+		attach: function (context, settings)
+		{
+			$(context).find('.e-modal').one('e-modal-front').each(function ()
+			{
+				var $that = $(this);
+
+				$that.on('click', function ()
+				{
+					var $this = $(this);
+
+					if($this.attr('data-cache') == 'false')
+					{
+						$('#uiModal').on('shown.bs.modal', function ()
+						{
+							$(this).removeData('bs.modal');
+						});
+					}
+
+					var url = $this.attr('href');
+					var caption = $this.attr('data-modal-caption');
+					var backdrop = $this.attr('data-modal-backdrop');
+					var keyboard = $this.attr('data-modal-keyboard');
+					var height = ($(window).height() * 0.7) - 120;
+
+					var modalOptions = {show: true};
+
+					if(backdrop !== undefined)
+					{
+						modalOptions['backdrop'] = backdrop;
+					}
+
+					if(keyboard !== undefined)
+					{
+						modalOptions['keyboard'] = keyboard;
+					}
+
+					if(caption === undefined)
+					{
+						caption = '';
+					}
+
+					if($this.attr('data-modal-height') !== undefined)
+					{
+						height = $(this).attr('data-modal-height');
+					}
+
+					$('#uiModal .modal-body').html('<div><iframe id="e-modal-iframe" width="100%" height="' + height + 'px" frameborder="0" scrolling="auto" style="display:block;" allowtransparency="true" allowfullscreen src="' + url + '"></iframe></div>');
+					$('#uiModal .modal-caption').html(caption + ' <i id="e-modal-loading" class="fa fa-spin fa-spinner"></i>');
+					$('#uiModal.modal').modal(modalOptions);
+
+					$("#e-modal-iframe").on("load", function ()
+					{
+						$('#e-modal-loading').hide();
+					});
+
+					return false;
+				});
+			});
+		}
+	};
+
 })(jQuery);
 
 
 $(document).ready(function()
 {
-		$(":input").tooltip();	
+
+	 if (typeof tooltip === "function")
+	 {
+		$(":input").tooltip();
+	 }
 	/*	
 		$(":input,label,.e-tip").each(function() {
 			
@@ -84,9 +155,13 @@ $(document).ready(function()
 			var sort	= $(this).attr("data-sort");
 			var pid 	= parseInt($(this).attr("data-pid"));
 			var formid 	= (pid != '0') ? "#e-comment-form-reply" : "#e-comment-form";
-			var data 	= $('form'+formid).serialize() ;
-			var total 	= parseInt($("#e-comment-total").text());		
-				
+			var data 	= $('form'+formid).serializeArray() ;
+			var total 	= parseInt($("#e-comment-total").text());
+			var container =  '#' + $(this).attr("data-container");
+			var input 	=  '#' + $(this).attr("data-input");
+
+			//TODO replace _POST['comment'] with $(input).val() so we can rename 'comment' in the form to something unique. 
+
 			$.ajax({
 			  type: 'POST',
 			  url: url + '?ajax_used=1&mode=submit',
@@ -96,14 +171,8 @@ $(document).ready(function()
 			//  	alert(data);
 			 // 	console.log(data);
 			  	var a = $.parseJSON(data);
-	
-				$("#comment").val('');
-				
-				if($('#comments-container').length){
-				//	alert('true');
-				}else{
-			//		$("#e-comment-form").parent().prepend("<div id='comments-container'></div>");
-				}
+
+				$(input).val('');
 				
 				if(pid != 0)
 				{
@@ -111,17 +180,18 @@ $(document).ready(function()
 				}
 				else if(sort == 'desc')
 				{
-					$('#comments-container').prepend(a.html).hide().slideDown(800);	// FIXME - works in jquery 1.7, not 1.8
+					$(container).prepend(a.html).hide().slideDown(800);	// FIXME - works in jquery 1.7, not 1.8
 				}
 				else
 				{
-					$('#comments-container').append(a.html).hide().slideDown(800); // FIXME - works in jquery 1.7, not 1.8
+					$(container).append(a.html).hide().slideDown(800); // FIXME - works in jquery 1.7, not 1.8
 					alert('Thank you for commenting'); // possibly needed as the submission may go unoticed	by the user
 				}  
 				
 				if(!a.error)
 				{
 					$("#e-comment-total").text(total + 1);
+
 					if(pid != '0')
 					{
 						$(formid).hide();		
@@ -271,6 +341,8 @@ $(document).ready(function()
     $(document).on("click", ".e-comment-delete", function(){
 			
 			var url 	= $(this).attr("data-target");
+			var table 	= $(this).attr("data-type");
+			var itemid 	= $(this).attr("data-itemid");
 			var sp 		= $(this).attr('id').split("-");	
 			var id 		= "#comment-" + sp[3];
 			var total 	= parseInt($("#e-comment-total").text());
@@ -278,7 +350,7 @@ $(document).ready(function()
 			$.ajax({
 			  type: 'POST',
 			  url: url + '?ajax_used=1&mode=delete',
-			  data: { itemid: sp[3] },
+			  data: { id: sp[3], itemid: itemid, table: table },
 			  success: function(data) {
 			var a = $.parseJSON(data);
 			  
@@ -382,8 +454,15 @@ $(document).ready(function()
 				
 			$('#'+ id).find(':invalid').each(function (index, node) {
 
-			var tab = $('#'+node.id).closest('.tab-pane').attr('id');
-			// console.log(node.id);
+			// Attempt to find a parent '.tab-pane' for the invalid input.
+			var tabPane = $(node).closest('.tab-pane');
+			var tab = null;
+
+			// Check if '.tab-pane' was found.
+			if(tabPane.length > 0) {
+				// If found, get the id of the '.tab-pane'.
+				tab = tabPane.attr('id');
+			}
 			
 			if(tab && (found === false))
 			{
@@ -395,60 +474,5 @@ $(document).ready(function()
             
             return true;
 		});
-	
 
-
-
-		/*  Bootstrap Modal window within an iFrame for frontend */
-		$('.e-modal').on('click', function(e)
-		{
-			e.preventDefault();
-
-            if($(this).attr('data-cache') == 'false')
-            {
-                $('#uiModal').on('shown.bs.modal', function () {
-                    $(this).removeData('bs.modal');
-                });
-            }
-
-			var url 		= $(this).attr('href');
-			var caption  	= $(this).attr('data-modal-caption');
-			var backdrop  	= $(this).attr('data-modal-backdrop');
-			var keyboard  	= $(this).attr('data-modal-keyboard');
-			var height 		= ($(window).height() * 0.7) - 120;
-
-			var modalOptions = {show: true};
-			
-			if(backdrop !== undefined)
-			{
-				modalOptions['backdrop'] = backdrop;
-			}
-
-			if(keyboard !== undefined)
-			{
-				modalOptions['keyboard'] = keyboard;
-			}
-
-            if(caption === undefined)
-            {
-                caption = '';
-            }
-
-            if($(this).attr('data-modal-height') !== undefined)
-            {
-            	height = $(this).attr('data-modal-height');
-			}
-
-    		$('.modal-body').html('<div><iframe id="e-modal-iframe" width="100%" height="'+height+'px" frameborder="0" scrolling="auto" style="display:block;" allowtransparency="true" allowfullscreen src="' + url + '"></iframe></div>');
-    		$('.modal-caption').html(caption + ' <i id="e-modal-loading" class="fa fa-spin fa-spinner"></i>');
-    		$('.modal').modal(modalOptions);
-
-    		$("#e-modal-iframe").on("load", function () {
-				 $('#e-modal-loading').hide();
-			});
-    	});
-
-
-
-	
 });

@@ -1,41 +1,31 @@
 <?php
-if ( ! defined('e107_INIT')) { exit(); }
 
-define("SEP"," <span class='fa fa-play e-breadcrumb'></span> ");
-define("BOOTSTRAP", 	3);
-define('FONTAWESOME',	4);
+/**
+ * e107 website system
+ *
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * @file
+ * Bootstrap 3 Theme for e107 v2.x admin area.
+ */
+
+if(!defined('e107_INIT'))
+{
+	exit();
+}
+
+//define("SEP", " <span class='fa fa-play e-breadcrumb'></span> ");
+define("SEP", " <span class='fa fa-angle-double-right e-breadcrumb'></span> ");
 
 
-
-// e107::js("url", 		"https://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js",'jquery', 2);
-// e107::css('url', 		'http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css');
-// e107::css('url', 		"https://netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css");
-
-e107::js("url", 			"https://cdn.jsdelivr.net/bootstrap/3.3.6/js/bootstrap.min.js", 'jquery', 2);
-// e107::css('url', 			'https://cdn.jsdelivr.net/bootstrap/3.3.5/css/bootstrap.min.css');
-e107::css('url',            'https://cdn.jsdelivr.net/fontawesome/4.5.0/css/font-awesome.min.css');
-
-
-// Too slow.
-// e107::css('url', "http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css");
-// e107::js('url',  "http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js");
-
-e107::css('core', 	'bootstrap3-editable/css/bootstrap-editable.css', 'jquery');
-e107::js('core', 	'bootstrap3-editable/js/bootstrap-editable.min.js', 'jquery', 4);
-
-// e107::css('url', 'http://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/slate/bootstrap.min.css');
-// e107::css('url', 'http://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/cyborg/bootstrap.min.css');
-// e107::css('url', "https://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/cosmo/bootstrap.min.css");
-// e107::css('url', "https://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/darkly/bootstrap.min.css");
-
-e107::css('theme','css/bootstrap-dark.min.css');
-e107::css('theme','admin_style.css');
-e107::css('theme','admin_dark.css');
-e107::css('theme','ie_all.css',null,'all',"<!--[if IE]>","<![endif]-->");
+$adminStyle = e107::pref('core', 'admincss', 'css/bootstrap-dark.min.css');
+e107::css('theme', $adminStyle);
+e107::css('theme', 'admin_style.css');
+e107::css('theme', 'ie_all.css', null, 'all', "<!--[if IE]>", "<![endif]-->");
 
 e107::css('inline', "
-
-
 .mce-menubar .mce-caret             { border-top-color: #C6C6C6!important  }
 .mce-menubar:hover .mce-caret       { border-top-color: #FFFFFF!important }
 .mce-menubar .mce-btn button        { color: #C6C6C6!important; }
@@ -48,16 +38,13 @@ e107::css('inline', "
 .mce-menubtn:focus                  { background-color:transparent!important; color: #FFFFFF!important; border-color:transparent!important; }
 .mce-menubar  .mce-btn.mce-active   { color:white!important; border-color:transparent!important; background-color: transparent!important; }
 
-
 body.forceColors                { margin:0; background-color: #373737; !important}
 body.forceColors a              { color: white}
 body.forceColors li a              { color: silver}
 
 div#media-manager div.mce-window-head  { background-color: #373737; !important }
 div#media-manager div.mce-title        { color:white; }
-div#media-manager, html                { color: silver; background-color: #2F2F2F; !important}
-
-
+/* div#media-manager, html                { color: silver; background-color: #2F2F2F; !important} */
 ");
 
 /*
@@ -77,7 +64,7 @@ $(function() {
 // e107::js("inline","$('.dropdown-toggle').toggle('slow');");
 
 
-
+/*
 if(defined('TEXTDIRECTION') && file_exists(THEME.'/menu/menu_'.strtolower(TEXTDIRECTION).'.css'))
 {
 	// e107::css('theme','menu/menu_'.strtolower(TEXTDIRECTION).'.css');
@@ -85,17 +72,24 @@ if(defined('TEXTDIRECTION') && file_exists(THEME.'/menu/menu_'.strtolower(TEXTDI
 else
 {
 	// e107::css('theme','menu/menu.css');
-}
+}*/
 
 
 // $register_sc[]='FS_ADMIN_ALT_NAV';
 $no_core_css = TRUE;
 
 
-class bootstrap3_admintheme
+class bootstrap3_admintheme implements e_theme_render
 {
 
-	function tablestyle($caption, $text, $mode, $data)
+	public function init()
+	{
+
+
+	}
+
+
+	public function tablestyle($caption, $text, $mode='', $data=array())
 	{
 		// global $style;
 
@@ -104,17 +98,14 @@ class bootstrap3_admintheme
 	//	echo "Style: ".$style;
 
 		echo "\n\n<!-- UniqueID: ".$data['uniqueId']." -->\n\n";
-		$class = '';
+		echo "<!-- Style: ".$style." -->\n\n";
+			echo "<!-- Mode: ".(string) $mode." -->";
+	/*	$class = '';
 
 		if(is_string($mode) && $mode == 'admin_help')
 		{
 			$class = ' ' . str_replace('_', '-', $mode);
-		}
-
-		if($mode == 'e_help')
-		{
-			$style = 'admin_menu';
-		}
+		}*/
 
 		if($mode == 'core-infopanel_latest' || $mode == 'core-infopanel_status')
 		{
@@ -160,6 +151,14 @@ class bootstrap3_admintheme
 			'site_info'      => 'panel-default',
 			'flexpanel'      => 'panel-default',
 		);
+
+		if($data['uniqueId'] === 'e-latest-list' || $data['uniqueId'] === 'e-status-list')
+		{
+			$style = 'lists';
+		}
+
+
+
 		
 		switch(varset($style, 'admin_content'))
 		{
@@ -174,16 +173,55 @@ class bootstrap3_admintheme
 					</div>';
 				break;
 
-			case 'core-infopanel':
-			case 'admin_menu':
-			case 'site_info':
-				echo '<div class="panel ' . $panelType[$style] . '">
+				case 'admin_menu':
+				echo '<div class="admin-menu admin-ui-nav-menu panel panel-default" >
+					  <div class="panel-heading">
+					    <h3 class="panel-title">' . $caption . '</h3>
+					  </div>
+
+					    ' . $text . '
+
+					</div>';
+				break;
+
+
+				case 'warning':
+				echo '<div class="panel panel-warning" id="'.$data['uniqueId'].'">
 					  <div class="panel-heading">
 					    <h3 class="panel-title">' . $caption . '</h3>
 					  </div>
 					  <div class="panel-body">
 					    ' . $text . '
 					  </div>
+					</div>';
+				break;
+
+
+			case 'core-infopanel':
+			case 'site_info':
+				echo '<div class="panel ' . $panelType[$style] . '"';
+				if(!empty($data['uniqueId']))
+				{
+					echo ' id="'.$data['uniqueId'].'" ';
+				}
+				echo ' >
+					  <div class="panel-heading">
+					    <h3 class="panel-title">' . $caption . '</h3>
+					  </div>
+					  <div class="panel-body">
+					    ' . $text . '
+					  </div>
+					</div>';
+				break;
+
+			case 'lists':
+				echo '<div class="panel panel-default" id="' . $data['uniqueId'] . '">
+					  <div class="panel-heading">
+					    <h3 class="panel-title">' . $caption . '</h3>
+					  </div>
+
+					    ' . $text . '
+
 					</div>';
 				break;
 
@@ -249,4 +287,3 @@ $NEWSSTYLE = '
 ';
 
  */
-?>

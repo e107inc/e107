@@ -16,6 +16,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+e107::coreLan('sitedown');
 
 class sitedown_shortcodes extends e_shortcode
 {
@@ -46,9 +47,26 @@ class sitedown_shortcodes extends e_shortcode
 		return THEME_ABS."style.css";
 	}
 
+	function sc_sitedown_social_css($parm=null)
+	{
+		return e_PLUGIN_ABS."social/css/fontello.css";
+	}
+
 	function sc_sitedown_e107_css($parm=null)
 	{
 		return e_WEB_ABS."css/e107.css";
+	}
+
+	function sc_sitedown_favicon($parm=null)
+	{
+		if (file_exists(THEME."favicon.ico"))
+		{
+			return THEME_ABS."favicon.ico";
+		}
+		elseif (file_exists(e_BASE."favicon.ico"))
+		{
+			return SITEURL."favicon.ico";
+		}
 	}
 
 }

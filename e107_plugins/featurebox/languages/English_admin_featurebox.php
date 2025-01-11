@@ -37,8 +37,22 @@ define("FBLAN_14", "Show this message only");
 define("FBLAN_22", "Render type");
 define("FBLAN_23", "In theme box");
 define("FBLAN_24", "Plain");
-//define("FBLAN_25", "Template"); //FIXME LAN  - use generic. 
-//define("FBLAN_26", "you can use a different template for each message, add templates to e107_plugins/featurebox/templates/ folder");
+define("FBLAN_25", "There are no featurebox items assigned to the [x] template.");
+define("FBLAN_26", "Image/Video"); 
+define("FBLAN_27", "Image Link"); 
+define("FBLAN_28", "Featurebox Menu Category"); 
+define("FBLAN_29", "Category to use for the featurebox menu"); 
+define("FBLAN_30", "Category template"); 
+define("FBLAN_31", "Random"); 
+define("FBLAN_32", "Parameters (optional)"); 
+define("FBLAN_33", "Optional Javascript Parameters (format subject to change)"); 
 
 
-?>
+// Install/uninstall messages
+
+define("FBLAN_34", "Unassigned");
+define("FBLAN_35", "Carousel");
+define("FBLAN_36", "Tabs");
+
+
+

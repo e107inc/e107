@@ -33,7 +33,7 @@ if(!is_object($cobj))
 
 class list_comment
 {
-	function list_comment($parent)
+	function __construct($parent)
 	{
 		$this->parent = $parent;
 	}
@@ -78,13 +78,13 @@ class list_comment
 				$category = '';
 				if(vartrue($this->parent->settings['category']))
 				{
-					if($row['comment_category_url'])
+					if(!empty($row['comment_category_url']))
 					{
 						$record['category'] = "<a href='".$row['comment_category_url']."'>".$row['comment_category_heading']."</a>";
 					}
 					else
 					{
-						$record['category'] = $row['comment_category_heading'];
+						$record['category'] = varset($row['comment_category_heading']);
 					}
 				}
 				$record['author'] = (vartrue($this->parent->settings['author']) ? $row['comment_author'] : '');
@@ -104,4 +104,3 @@ class list_comment
 	}
 }
 
-?>

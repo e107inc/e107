@@ -68,7 +68,9 @@ class e_session
 	 * @var integer
 	 */
 	const SECURITY_LEVEL_NONE = 0;
-	
+
+
+	const SECURITY_LEVEL_LOW = 3;
 	/**
 	 * Default system protection, balanced for best user experience, 
 	 * label 'Safe mode - Balanced'
@@ -93,7 +95,7 @@ class e_session
 	/**
 	 * Highest system protection, session id and token values are regenerated on every page request,
 	 * label 'Insane'
-	 * @var unknown_type
+	 * @var int unknown_type
 	 */
 	const SECURITY_LEVEL_INSANE = 10;
 	
@@ -107,7 +109,7 @@ class e_session
 	 * Session save method
 	 * @var string files|db
 	 */
-	protected $_sessionSaveMethod = 'files';
+	protected $_sessionSaveMethod = 'files';//'files';
 
 	/**
 	 * Session cache limiter, ignored if empty
@@ -118,7 +120,7 @@ class e_session
 	
 	protected $_namespace;
 	protected $_name;
-	protected $_sessionStarted = false; // Fixes lost $_SESSION value problem. 
+	protected static $_sessionStarted = false; // Fixes lost $_SESSION value problem.
 
 	/**
 	 * Validation options
@@ -167,7 +169,17 @@ class e_session
 		$this->setOptions(array($key => $value));
 		return $this;
 	}
-	
+
+	/**
+	 * @return array
+	 */
+	public function getOptions()
+	{
+		return $this->_options;
+	}
+
+
+
 	/**
 	 * Get session option
 	 * @param string $key
@@ -187,49 +199,80 @@ class e_session
 	 */
 	public function setDefaultSystemConfig()
 	{
-		if(!$this->getSessionId())
-		{
-			$config = array(
-				'ValidateRemoteAddr' 		=> (e_SECURITY_LEVEL >= self::SECURITY_LEVEL_BALANCED),
-				'ValidateHttpVia' 			=> (e_SECURITY_LEVEL >= self::SECURITY_LEVEL_HIGH),
-				'ValidateHttpXForwardedFor' => (e_SECURITY_LEVEL >= self::SECURITY_LEVEL_BALANCED),
-				'ValidateHttpUserAgent' 	=> (e_SECURITY_LEVEL >= self::SECURITY_LEVEL_HIGH),
-			);
-			
-			$options = array(
-		//		'httponly' => (e_SECURITY_LEVEL >= self::SECURITY_LEVEL_PARANOID),
-				'httponly' => true,
-			);
-			
-			if(!defined('E107_INSTALL'))
-			{
-				$config['SavePath'] = e107::getPref('session_save_path', false); // FIXME - new pref
-				$config['SaveMethod'] = e107::getPref('session_save_method', 'files'); // FIXME - new pref
-				$options['lifetime'] = (integer) e107::getPref('session_lifetime', 86400); // FIXME - new pref
-				$options['path'] = e107::getPref('session_cookie_path', ''); // FIXME - new pref
-				$options['secure'] = e107::getPref('ssl_enabled', false); // FIXME - new pref
-			}
+        if ($this->getSessionId()) return $this;
 
-			if(defined('SESSION_SAVE_PATH')) // safer than a pref.
-			{
-				$config['SavePath'] = e_BASE. SESSION_SAVE_PATH;
-			}
+        $config = array(
+            'ValidateRemoteAddr' => (e_SECURITY_LEVEL >= self::SECURITY_LEVEL_BALANCED),
+            'ValidateHttpVia' => (e_SECURITY_LEVEL >= self::SECURITY_LEVEL_HIGH),
+            'ValidateHttpXForwardedFor' => (e_SECURITY_LEVEL >= self::SECURITY_LEVEL_LOW),
+            'ValidateHttpUserAgent' => (e_SECURITY_LEVEL >= self::SECURITY_LEVEL_HIGH),
+        );
 
-			$hashes = hash_algos();
+        $options = array(
+            //		'httponly' => (e_SECURITY_LEVEL >= self::SECURITY_LEVEL_PARANOID),
+            'httponly' => true,
+        );
 
-			if((e_SECURITY_LEVEL >= self::SECURITY_LEVEL_BALANCED) && in_array('sha512',$hashes))
-			{
-				ini_set('session.hash_function', 'sha512');
-				ini_set('session.hash_bits_per_character', 5);
-			}
+        if (!defined('E107_INSTALL'))
+        {
+            $systemSaveMethod = ini_get('session.save_handler');
 
-			
-			$this->setConfig($config)
-				->setOptions($options);
-		}
+            $saveMethod = (!empty($systemSaveMethod)) ? $systemSaveMethod : 'files';
 
-		return $this;
+            $config['SavePath']     = e107::getPref('session_save_path', false); // FIXME - new pref
+            $config['SaveMethod']   = e107::getPref('session_save_method', $saveMethod);
+            $options['lifetime']    = (int) e107::getPref('session_lifetime', 86400);
+            $options['path']        = e107::getPref('session_cookie_path', ''); // FIXME - new pref
+            $options['secure']      = e107::getPref('ssl_enabled', false); //
+
+            e107::getDebug()->log("Session Save Method: ".$config['SaveMethod']);
+
+            if (!empty($options['secure']))
+            {
+                ini_set('session.cookie_secure', 1);
+            }
+
+            ini_set('session.gc_maxlifetime', $options['lifetime']);
+        }
+
+        if (defined('SESSION_SAVE_PATH')) // safer than a pref.
+        {
+            $config['SavePath'] = e_BASE . SESSION_SAVE_PATH;
+        }
+
+        $hashes = hash_algos();
+
+    //    if ((e_SECURITY_LEVEL >= self::SECURITY_LEVEL_BALANCED) && in_array('sha512', $hashes))
+        {
+
+          //  ini_set('session.hash_function', 'sha512'); Removed in PHP 7.1
+          //  ini_set('session.hash_bits_per_character', 5); Removed in PHP 7.1
+        }
+
+        $this->fixSessionFileGarbageCollection();
+
+        $this->setConfig($config)
+            ->setOptions($options);
+
+        return $this;
 	}
+
+    /**
+     * Modify PHP ini at runtime to enable session file garbage collection
+     *
+     * Takes no action if the garbage collector is already enabled.
+     *
+     * @see https://github.com/e107inc/e107/issues/4113
+     * @return void
+     */
+	private function fixSessionFileGarbageCollection()
+    {
+        $gc_probability = ini_get('session.gc_probability');
+        if ($gc_probability > 0) return;
+
+        ini_set('session.gc_probability', 1);
+        ini_set('session.gc_divisor', 100);
+    }
 	
 	/**
 	 * Retrieve value from current session namespace
@@ -267,13 +310,34 @@ class e_session
 	/**
 	 * Set value in current session namespace
 	 * Equals to $_SESSION[NAMESPACE][$key] = $value
-	 * @param string $key
+	 * @param string $key Also accepts multi-dimensinal format. key1/key2
 	 * @param mixed $value
 	 * @return e_session
 	 */
 	public function set($key, $value)
 	{
-		$this->_data[$key] = $value;
+		if(strpos($key,'/') !== false) // multi-dimensional
+		{
+			$keyArr = explode('/',$key);
+			$count = count($keyArr);
+
+		    if($count === 2)
+		    {
+		        list($k1, $k2) = $keyArr;
+		        $this->_data[$k1][$k2] = $value;
+		    }
+		    elseif($count === 3)
+		    {
+		        list($k1, $k2, $k3) = $keyArr;
+		        $this->_data[$k1][$k2][$k3] = $value;
+		    }
+
+		}
+		else
+		{
+			$this->_data[$key] = $value;
+		}
+
 		return $this;
 	}
 	
@@ -333,9 +397,37 @@ class e_session
 	 * @param string $key
 	 * @return e_session
 	 */
-	public function clear($key)
+	public function clear($key=null)
 	{
-		unset($this->_data[$key]);
+		if($key == null) // clear all under this namespace.
+		{
+			$this->_data = array(); // must be set to array() not unset.
+			return $this;
+		}
+
+		if(strpos($key,'/') !== false) // multi-dimensional
+		{
+			$keyArr = explode('/',$key);
+			$count = count($keyArr);
+
+		    if($count === 2)
+		    {
+		        list($k1, $k2) = $keyArr;
+		        unset($this->_data[$k1][$k2]);
+		    }
+		    elseif($count === 3)
+		    {
+		        list($k1, $k2, $k3) = $keyArr;
+		        unset($this->_data[$k1][$k2][$k3]);
+		    }
+
+		}
+		else
+		{
+			unset($this->_data[$key]);
+		}
+
+
 		return $this;
 	}
 	
@@ -400,14 +492,23 @@ class e_session
 				break;
 
 				default:
-					continue;
+					$v = null;
 				break;
 			}
-			$this->_options[$k] = $v;
+
+			if($v !== null)
+			{
+				$this->_options[$k] = $v;
+			}
 		}
 		return $this;
 	}
 
+	/**
+	 * @param $namespace
+	 * @param $sessionName
+	 * @return void
+	 */
 	public function init($namespace, $sessionName = null)
 	{
 		$this->start($sessionName);
@@ -432,7 +533,7 @@ class e_session
 	public function start($sessionName = null)
 	{
 	
-		if (isset($_SESSION) && ($this->_sessionStarted == true)) 
+		if (isset($_SESSION) && (self::$_sessionStarted === true))
 		{
 			return $this;
 		}
@@ -441,17 +542,29 @@ class e_session
 		{
 			session_save_path($this->_sessionSavePath);
 		}
-	
+
 		switch ($this->_sessionSaveMethod)
 		{
-			case 'db': // TODO session db handling, more methods (e.g. memcache)
-				ini_set('session.save_handler', 'user');
-				$session = new e_db_session;
+			case 'db':
+			//	ini_set('session.save_handler', 'user');
+
+				$session = new e_session_db;
+				session_set_save_handler(
+					[$session, 'open'],
+					[$session, 'close'],
+					[$session, 'read'],
+					[$session, 'write'],
+					[$session, 'destroy'],
+					[$session, 'gc']
+				);
 				$session->setSaveHandler();
 			break;
 
 			default:
-				session_module_name('files');
+				if(!isset($_SESSION))
+				{
+					session_module_name($this->_sessionSaveMethod);
+				}
 			break;
 		}
 
@@ -464,7 +577,14 @@ class e_session
 
 		if (empty($this->_options['path']))
 		{
-			$this->_options['path'] = defined('e_HTTP') ? e_HTTP : '/';
+			if(defined('e_MULTISITE_MATCH')) // multisite support.
+			{
+				$this->_options['path'] = '/';
+			}
+			else
+			{
+				$this->_options['path'] = defined('e_HTTP') ? e_HTTP : '/';
+			}
 		}
 
 		// session name before options - problems reported on php.net
@@ -487,7 +607,7 @@ class e_session
 		
 	
 		session_start();
-		$this->_sessionStarted = true;
+		self::$_sessionStarted = true;
 		return $this;
 	}
 
@@ -527,14 +647,14 @@ class e_session
 	/**
 	 * Set new session name
 	 * @param string $name alphanumeric characters only
-	 * @return string old session name or false on error
+	 * @return false old session name or false on error
 	 */
 	public function setSessionName($name)
 	{
 		if (!empty($name) && preg_match('#^[0-9a-z_]+$#i', $name))
 		{
 			$this->_name = $name;
-			return session_name($name);
+		//	return session_name($name);
 		}
 		return false;
 	}
@@ -624,7 +744,7 @@ class e_session
 			
 			// TODO event trigger
 			
-			// e107::getAdminLog()->log_event('Session validation failed!', $details, E_LOG_FATAL);
+			// e107::getAdminLog()->add('Session validation failed!', $details, E_LOG_FATAL);
 			// TODO session exception, handle it proper on live site
 			// throw new Exception('');
 			
@@ -674,7 +794,7 @@ class e_session
 		);
 
 		// collect ip data
-		if ($_SERVER['REMOTE_ADDR'])
+		if (isset($_SERVER['REMOTE_ADDR']))
 		{
 			$data['RemoteAddr'] = (string) $_SERVER['REMOTE_ADDR'];
 		}
@@ -703,9 +823,14 @@ class e_session
 	 */
 	public function getFormToken($in_form = true)
 	{
-		if(!$this->has('__form_token'))
+		if(!$this->has('__form_token') && !defined('e_TOKEN_DISABLE'))  // TODO FIXME: SEF URL of Error page causes e-token refresh.
 		{
 			$this->set('__form_token', uniqid(md5(rand()), true));
+			if(deftrue('e_DEBUG_SESSION')) // XXX enable to troubleshoot "Unauthorized Access!" issues.
+			{
+				$message = date('r')."\t\t".e_REQUEST_URI."\n";
+				file_put_contents(__DIR__.'/session.log', $message, FILE_APPEND);
+			}
 		}
 		return ($in_form ? md5($this->get('__form_token')) : $this->get('__form_token'));
 	}
@@ -776,13 +901,20 @@ class e_session
 		session_destroy();
 		return $this;
 	}
-	
+
+	/**
+	 * @return void
+	 */
 	public function replaceRegistry()
 	{
 		e107::setRegistry('core/e107/session/'.$this->_namespace, $this, true);
 	}
 }
 
+
+/**
+ *
+ */
 class e_core_session extends e_session
 {
 	/**
@@ -843,7 +975,65 @@ class e_core_session extends e_session
 		$this->end();
 	}
 
+	/**
+	 * @param $status
+	 * @param $type
+	 * @return void|null
+	 */
+	private function log($status, $type=E_LOG_FATAL)
+	{
 
+		if(!deftrue('e_DEBUG_SESSION'))
+		{
+			return null;
+		}
+
+
+	//	$details = "USER: ".USERNAME."\n";
+		$details = "HOST: ".$_SERVER['HTTP_HOST']."\n";
+		$details .= "REQUEST_URI: ".$_SERVER['REQUEST_URI']."\n";
+
+		$details .= ($_POST['e-token']) ? "e-token (POST): ".$_POST['e-token']."\n" : "";
+		$details .= ($_GET['e-token']) ? "e-token (GET): ".$_GET['e-token']."\n" : "";
+		$details .= ($_POST['e_token']) ? "AJAX e_token (POST): ".$_POST['e_token']."\n" : "";
+/*
+		$utoken = $this->getFormToken(false);
+		$details .= "raw token: ".$utoken."\n";
+		$details .= "checkFormToken (e-token should match this): ".md5($utoken)."\n";
+		$details .= "md5(e-token): ".md5($_POST['e-token'])."\n";*/
+/*
+		$regenerate = $this->get('__form_token_regenerate');
+		$details .= "Regenerate after: ".date('r', $regenerate)." (".$regenerate.")\n";
+*/
+
+		$details .= "has __form_token: ";
+		$hasToken = $this->has('__form_token');
+		$details .= empty($hasToken) ? 'false' : 'true';
+		$details .= "\n";
+
+		$details .= "_SESSION:\n";
+		$details .= print_r($_SESSION,true);
+
+		/*	if($pref['plug_installed'])
+			{
+				$details .= "\nPlugins:\n";
+				$details .= print_r($pref['plug_installed'],true);
+			}*/
+
+		$details .= $status."\n\n---------------------------------\n\n";
+
+		$log = e107::getLog();
+		$log->addDebug($details);
+
+		if(deftrue('e_DEBUG_SESSION'))
+		{
+			$log->toFile('Unauthorized_access','Unauthorized access Log', true);
+		}
+
+		$log->add($status, $details, $type);
+
+
+	}
 	/**
 	 * Core CSF protection, see class2.php
 	 * Could be adopted by plugins for their own (different) protection logic
@@ -856,44 +1046,16 @@ class e_core_session extends e_session
 		// TODO e-token required for all system forms?
 		
 		// only if not disabled and not in 'cli' mod
-		if(e_SECURITY_LEVEL < e_session::SECURITY_LEVEL_BALANCED || e107::getE107('cli')) return true;
+		if(e_SECURITY_LEVEL < e_session::SECURITY_LEVEL_LOW || e107::getE107('cli')) return true;
 		
 		if($this->getSessionId())
 		{
+
 			if((isset($_POST['e-token']) && !$this->checkFormToken($_POST['e-token']))
 			|| (isset($_GET['e-token']) && !$this->checkFormToken($_GET['e-token']))
 			|| (isset($_POST['e_token']) && !$this->checkFormToken($_POST['e_token']))) // '-' is not allowed in jquery. b
 			{
-			//	if(defsettrue('e_DEBUG'))
-				{
-					$details = "USER: ".USERNAME."\n";		
-					$details = "HOST: ".$_SERVER['HTTP_HOST']."\n";
-					$details .= "REQUEST_URI: ".$_SERVER['REQUEST_URI']."\n";
-					$details .= ($_POST['e-token']) ? "e-token (POST): ".$_POST['e-token']."\n" : "";
-					$details .= ($_GET['e-token']) ? "e-token (GET): ".$_GET['e-token']."\n" : "";	
-					$details .= ($_POST['e_token']) ? "AJAX e_token (POST): ".$_POST['e_token']."\n" : "";
-				
-					$details .= "_SESSION:\n";
-					$details .= print_r($_SESSION,true);
-				//	$details .= "\n_POST:\n";
-				//	$details .= print_r($_POST,true);
-				//	$details .= "\n_GET:\n";
-				//	$details .= print_r($_GET,true);
-					if($pref['plug_installed'])
-					{
-						$details .= "\nPlugins:\n";
-						$details .= print_r($pref['plug_installed'],true);
-					}
-					
-					$details .= "die = ".($die == true ? 'true' : 'false')."\n\n---------------------------------\n\n";
-				
-					$log = e107::getAdminLog();		
-					$log->addDebug($details);			
-					$log->toFile('Unauthorized_access','Unauthorized access Log', true);
-					$log->add('Unauthorized access!', $details, E_LOG_FATAL);	
-					// e107::getAdminLog()->log_event('Unauthorized access!', $details, E_LOG_FATAL);				
-				}	
-
+				$this->log('Unauthorized access!');
 				// do not redirect, prevent dead loop, save server resources
 				if($die == true)
 				{
@@ -902,6 +1064,9 @@ class e_core_session extends e_session
 				
 				return false;
 			}
+
+			$this->log('Session Token Okay!', defset('E_LOG_NOTICE', 1));
+
 		}
 		
 		if(!defined('e_TOKEN'))
@@ -966,7 +1131,8 @@ class e_core_session extends e_session
 		//$logfp = fopen(e_LOG.'authlog.txt', 'a+'); fwrite($logfp, strftime('%H:%M:%S').' CHAP start: '.$extra_text."\n"); fclose($logfp);
 
 		// could go, see _validate()
-		$ubrowser = md5('E107'.$_SERVER['HTTP_USER_AGENT']);
+		$user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+		$ubrowser = md5('E107'.$user_agent);
 		if (!$this->is('ubrowser'))
 		{
 			$this->set('ubrowser', $ubrowser);
@@ -975,21 +1141,19 @@ class e_core_session extends e_session
 	}
 }
 
-/* SQL to be added
-CREATE TABLE session (
-  `session_id` varchar(255) NOT NULL default '',
-  `session_expires` int(10) unsigned NOT NULL default 0,
-  `session_data` text NOT NULL,
-  PRIMARY KEY  (`session_id`),
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/**
+ * Database session handler
+ *
+ * @todo PHP 8.1 support with {@see SessionHandlerInterface}
  */
-class e_db_session
+class e_session_db #implements SessionHandlerInterface
 {
 	/**
-	 * @var e_db_mysql
+	 * @var e_db
 	 */
 	protected $_db = null;
-	
+
 	/**
 	 * Table name
 	 * @var string
@@ -1003,9 +1167,12 @@ class e_db_session
 	
 	public function __construct()
 	{
-		$this->_db = e107::getDb('session');		
+		$this->_db = e107::getDb('session');
 	}
-	
+
+	/**
+	 *
+	 */
 	public function __destruct()
 	{
 		session_write_close();
@@ -1021,7 +1188,7 @@ class e_db_session
 	
 	/**
 	 * @param string $table
-	 * @return e_db_session
+	 * @return e_session_db
 	 */
 	public function setTable($table)
 	{
@@ -1047,7 +1214,7 @@ class e_db_session
 	
 	/**
 	 * @param integer $seconds
-	 * @return e_db_session
+	 * @return e_session_db
 	 */
 	public function setLifetime($seconds = null)
 	{
@@ -1057,7 +1224,7 @@ class e_db_session
 	
 	/**
 	 * Set session save handler
-	 * @return e_db_session
+	 * @return e_session_db
 	 */
 	public function setSaveHandler()
 	{
@@ -1101,10 +1268,10 @@ class e_db_session
     public function read($session_id)
     {
     	$data = false;
-    	$check = $this->_db->db_Select($this->getTable(), 'session_data', "session_id='".$this->_sanitize($session_id)."' AND session_expires>".time());
+    	$check = $this->_db->select($this->getTable(), 'session_data', "session_id='".$this->_sanitize($session_id)."' AND session_expires>".time());
     	if($check)
     	{
-    		$tmp = $this->_db->db_Fetch();
+    		$tmp = $this->_db->fetch();
     		$data = base64_decode($tmp['session_data']);
     	}
     	elseif(false !== $check)
@@ -1126,10 +1293,12 @@ class e_db_session
     		'data' => array(
 	    		'session_expires' => time() + $this->getLifetime(),
 	    		'session_data' 	  => base64_encode($session_data),
+	    		'session_user'    => defset('USERID'),
     		),
     		'_FIELD_TYPES' => array(
     			'session_id'		=> 'str',
     			'session_expires'	=> 'int',
+    			'session_user'      => 'int',
     			'session_data'		=> 'str'
     		),
     		'_DEFAULT' => 'str'
@@ -1138,13 +1307,13 @@ class e_db_session
     	{
     		return false;
     	}
-    	
-    	$check = $this->_db->db_Select($this->getTable(), 'session_id', "`session_id`='{$session_id}'");
+
+    	$check = $this->_db->select($this->getTable(), 'session_id', "`session_id`='{$session_id}'");
     	
     	if($check)
     	{
     		$data['WHERE'] = "`session_id`='{$session_id}'";
-    		if(false !== $this->_db->db_Update($this->getTable(), $data))
+    		if(false !== $this->_db->update($this->getTable(), $data))
     		{
     			return true;
     		}
@@ -1152,7 +1321,7 @@ class e_db_session
     	else
     	{
     		$data['data']['session_id'] = $session_id;
-    		if($this->_db->db_Insert($this->getTable(), $data))
+    		if($this->_db->insert($this->getTable(), $data))
     		{
     			return true;
     		}	
@@ -1168,7 +1337,7 @@ class e_db_session
     public function destroy($session_id)
     {
     	$session_id = $this->_sanitize($session_id);
-    	$this->_db->db_Delete($this->getTable(), "`session_id`='{$session_id}'");
+    	$this->_db->delete($this->getTable(), "`session_id`='{$session_id}'");
     	return true;
     }
     
@@ -1179,7 +1348,7 @@ class e_db_session
      */
     public function gc($session_maxlf)
     {
-    	$this->_db->db_Delete($this->getTable(), '`session_expires`<'.time());
+    	$this->_db->delete($this->getTable(), '`session_expires`<'.time());
     	return true;
     }
     

@@ -19,4 +19,3 @@ define("BLOGCAL_CONF4", "BlogCal Menu Configuration");
 //define("BLOGCAL_CONF5", "BlogCal menu configuration saved");
 define("BLOGCAL_ARCHIV1", "Select Archive");
 	
-?>

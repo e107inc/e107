@@ -29,8 +29,14 @@ if (!e107::isInstalled('newsfeed'))
 	return;
 }
 
-define('NEWSFEED_LIST_CACHE_TAG', 'newsfeeds'.e_LAN."_");
-define('NEWSFEED_NEWS_CACHE_TAG', 'newsfeeds_news_'.e_LAN."_");
+if(!defined('NEWSFEED_LIST_CACHE_TAG'))
+{
+	define('NEWSFEED_LIST_CACHE_TAG', 'newsfeeds'.e_LAN."_");
+}
+if(!defined('NEWSFEED_NEWS_CACHE_TAG'))
+{
+	define('NEWSFEED_NEWS_CACHE_TAG', 'newsfeeds_news_'.e_LAN."_");
+}
 
 define('NEWSFEED_DEBUG', false);
 
@@ -136,7 +142,7 @@ class newsfeedClass
 
 		$cachedData  = e107::getCache()->retrieve(NEWSFEED_NEWS_CACHE_TAG.$feedID,$maxAge, true);
 
-		if(empty($this->newsList[$feedID]['newsfeed_timestamp']) || empty($cachedData) || strpos($this->newsList[$feedID]['newsfeed_data'],'MagpieRSS')) //BC Fix to update newsfeed_data from v1 to v2 spec.
+		if(empty($this->newsList[$feedID]['newsfeed_timestamp']) || empty($cachedData) || (!empty($this->newsList[$feedID]['newsfeed_data']) && strpos($this->newsList[$feedID]['newsfeed_data'],'MagpieRSS'))) //BC Fix to update newsfeed_data from v1 to v2 spec.
 		{
 			$force = true;
 			// e107::getDebug()->log("NewsFeed Force");
@@ -154,7 +160,7 @@ class newsfeedClass
 
 				if (NEWSFEED_DEBUG)
 				{
-					 e107::getLog()->e_log_event(10,debug_backtrace(),"DEBUG","Newsfeed update","Refresh item: ".$feedID,FALSE,LOG_TO_ROLLING);
+					 e107::getLog()->addEvent(10,debug_backtrace(),"DEBUG","Newsfeed update","Refresh item: ".$feedID,FALSE,LOG_TO_ROLLING);
 				}
 				
 				require_once(e_HANDLER.'xml_class.php');
@@ -216,7 +222,7 @@ class newsfeedClass
 						$temp['newsfeed_image_link'] = !empty($newsfeed_image) ? "<img src='".$newsfeed_image."' alt='' />" : '';
 					}
 					
-					$serializedArray = e107::serialize($temp, false);
+					$serializedArray = e107::serialize($temp, 'json');
 
 					$now = time();
 					$this->newsList[$feedID]['newsfeed_data'] = $serializedArray;
@@ -316,7 +322,7 @@ class newsfeedClass
 					// $url = e_PLUGIN_ABS."newsfeed/newsfeed.php?show.".$feed['newsfeed_id'];
 					$url = e107::url('newsfeed','source',$feed);
 
-					$vars['FEEDNAME'] = "<a href='".$url."'>".$tp->toHtml($feed['newsfeed_name'],false,'TITLE')."</a>";
+					$vars['FEEDNAME'] = "<a href='".$url."'>".$tp->toHTML($feed['newsfeed_name'],false,'TITLE')."</a>";
 					$vars['FEEDDESCRIPTION'] = $feed['newsfeed_description'];
 					$vars['FEEDIMAGE'] = $rss['newsfeed_image_link'];
 					$vars['FEEDLANGUAGE'] = $rss['channel']['language'];
@@ -378,7 +384,7 @@ class newsfeedClass
 								";
 
 								$vars['FEEDITEMTEXT'] = preg_replace("/&#091;.*]/", "", $tp -> toHTML($item['description'], FALSE))."
-								<br /><br /><a href='".$item['link']."' rel='external'>".NFLAN_44."</a><br /><br />
+								<br /><br /><a href='".$item['link']."' rel='external'>".LAN_CLICK_TO_VIEW."</a><br /><br />
 								</div>";
 							}
 							else
@@ -435,4 +441,4 @@ class newsfeedClass
 }
 
 
-?>
+

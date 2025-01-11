@@ -1,55 +1,60 @@
 <?php
-
-/**
- * Copyright (c) 2012 e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+/*
+ * e107 website system
  *
- * @file
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
  * Templates for "gallery" plugin.
  */
 
+$GALLERY_TEMPLATE['list']['caption'] = LAN_PLUGIN_GALLERY_TITLE;
 
-$GALLERY_TEMPLATE['list_caption'] = LAN_PLUGIN_GALLERY_TITLE;
-
-$GALLERY_TEMPLATE['list_start'] = '{GALLERY_BREADCRUMB}
-<div class="row gallery">
+$GALLERY_TEMPLATE['list']['start'] = '{GALLERY_BREADCRUMB}
+<div class="row gallery gx-3">
 ';
 
-$GALLERY_TEMPLATE['list_item'] = '
-	<div class="span2 col-xs-6 col-md-3">
-		<div class="thumbnail">
-			{GALLERY_THUMB=w=300&h=200}
+$GALLERY_TEMPLATE['list']['item'] = '
+	<div class="span2 col-xs-6 col-md-4">
+		<div class="card h-100 thumbnail">
+			{GALLERY_THUMB: w=300&h=200&class=card-img-top img-fluid img-responsive}
+			<div class="card-footer">
 			<h5>{GALLERY_CAPTION}</h5>
+			</div>
 		</div>
 	</div>
 ';
 
-$GALLERY_TEMPLATE['list_end'] = '
+$GALLERY_TEMPLATE['list']['end'] = '
 </div>
-<div class="center">
+<div class="center mt-3">
 	<div class="gallery-list-nextprev">{GALLERY_NEXTPREV}</div>
 	<div class="gallery-list-back">
-		<a class="btn btn-default" href="{GALLERY_BASEURL}">' . LAN_BACK . '</a>
+		<a class="btn btn-default btn-secondary" href="{GALLERY_BASEURL}">{LAN=BACK}</a>
 	</div>
 </div>
 ';
 
 // Bootstrap3 Compatible.
-$GALLERY_TEMPLATE['cat_caption'] = LAN_PLUGIN_GALLERY_TITLE;
+$GALLERY_TEMPLATE['cat']['caption'] = LAN_PLUGIN_GALLERY_TITLE;
 
-$GALLERY_TEMPLATE['cat_start'] = '{GALLERY_BREADCRUMB}
-<div class="row gallery-cat">
+$GALLERY_TEMPLATE['cat']['start'] = '{GALLERY_BREADCRUMB}
+<div class="row gallery-cat gx-3">
 ';
 
-$GALLERY_TEMPLATE['cat_item'] = '
-	<div class="span3 col-xs-6 col-md-3">
-		<div>
-			{GALLERY_CAT_THUMB}
-			<h3>{GALLERY_CAT_TITLE}</h3>
+$GALLERY_TEMPLATE['cat']['item'] = '
+	<div class="span3 col-xs-6 col-md-4">
+		<div class="card h-100">
+			{GALLERY_CAT_THUMB: w=300&h=200&class=card-img-top img-fluid img-responsive}
+			<div class="card-footer">
+			<h5>{GALLERY_CAT_TITLE}</h5>
+			</div>
 		</div>
 	</div>
 ';
 
-$GALLERY_TEMPLATE['cat_end'] = '
+$GALLERY_TEMPLATE['cat']['end'] = '
 </div>
 ';
 
@@ -65,10 +70,10 @@ $GALLERY_TEMPLATE['slideshow_wrapper'] = '
 </div>
 
 <div class="gallery-slideshow-controls">
-	<a href="#" class="gallery-control gal-next btn btn-xs btn-default pull-right">
+	<a href="#" class="gallery-control gal-next btn btn-sm btn-xs btn-default btn-secondary pull-right float-right">
 		' . LAN_NEXT . ' {GLYPH=fa-chevron-right}
 	</a>
-	<a href="#" class="gallery-control gal-prev btn btn-xs btn-default">
+	<a href="#" class="gallery-control gal-prev btn btn-sm btn-xs btn-default btn-secondary">
 		{GLYPH=fa-chevron-left} ' . LAN_PREVIOUS . '
 	</a>
 	<span class="gallery-slide-jumper-container">
@@ -93,7 +98,7 @@ $GALLERY_TEMPLATE['prettyphoto']['content'] = '
 				<div class="pp_content">
 					<div class="pp_loaderIcon"></div>
 					<div class="pp_fade">
-						<a href="#" class="pp_expand" title="Expand the image">' . LAN_EXPAND . '</a>
+						<a href="#" class="pp_expand" title="'.LAN_EXPAND.'">'.LAN_EXPAND.'</a>
 						<div class="pp_hoverContainer">
 							<a class="pp_next" href="#">' . LAN_NEXT . '</a>
 							<a class="pp_previous" href="#">' . LAN_PREVIOUS . '</a>
@@ -172,10 +177,23 @@ $GALLERY_TEMPLATE['prettyphoto']['social_item'] = '
 <div class="pp_social">
 	<div class="twitter">
 		<a href="http://twitter.com/share" class="twitter-share-button" data-count="none">' . LAN_SHARE . '</a>
-		<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+		<script src="http://platform.twitter.com/widgets.js"></script>
 	</div>
 	<div class="facebook">
 		<iframe src="http://www.facebook.com/plugins/like.php?locale=en_US&href=\'+location.href+\'&amp;layout=button_count&amp;show_faces=true&amp;width=500&amp;action=like&amp;font&amp;colorscheme=light&amp;height=23" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:500px; height:23px;" allowTransparency="true"></iframe>
 	</div>
 </div>
 ';
+
+
+
+
+
+
+/*
+
+$GALLERY_TEMPLATE['portfolio']['start']     = '<-- start portfolio -->';
+$GALLERY_TEMPLATE['portfolio']['item']      = '<img src="{GALLERY_THUMB: w=1080&h=720&thumbsrc}" class="img-responsive" alt="{GALLERY_CAPTION=text}">';
+$GALLERY_TEMPLATE['portfolio']['end']       = '<-- end portfolio -->';
+
+*/

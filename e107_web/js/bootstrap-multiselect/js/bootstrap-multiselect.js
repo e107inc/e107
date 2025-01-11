@@ -3,6 +3,7 @@
  * https://github.com/davidstutz/bootstrap-multiselect
  *
  * Copyright 2012 David Stutz
+ * Modified Dec 2019 by e107
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,7 +89,7 @@
                     $(element).prop('selected', 'selected');
                 }
 
-                $('ul', this.container).append('<li><a href="javascript:void(0);" style="padding:0;"><label style="margin:0;padding:3px 20px 3px 20px;width:100%;height:100%;cursor:pointer;"><input style="margin-bottom:5px;" type="checkbox" value="' + $(element).val() + '" /> ' + $(element).text() + '</label</a></li>');
+                $('ul', this.container).append('<li><a href="javascript:void(0);" style="padding:0;" ><label data-tooltip-position="right" title="' + $(element).data('title') + '" style="margin:0;padding:3px 20px 3px 20px;width:100%;height:100%;cursor:pointer;"><input style="margin-bottom:5px;" type="checkbox" value="' + $(element).val() + '" /> ' + $(element).text() + '</label</a></li>');
 
                 var selected = $(element).prop('selected') || false;
                 var checkbox = $('ul li input[value="' + $(element).val() + '"]', this.container);

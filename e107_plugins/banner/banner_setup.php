@@ -30,7 +30,7 @@ class banner_setup
 			'banner_clientlogin'    => '',
 			'banner_clientpassword' => '',
 			'banner_image'          => '{e_PLUGIN}banner/images/banner1.png',
-			'banner_clickurl'       => 'http://e107.org',
+			'banner_clickurl'       => 'https://e107.org',
 			'banner_impurchased'    => '0',
 			'banner_startdate'      => '0',
 			'banner_enddate'        => '0',
@@ -38,12 +38,12 @@ class banner_setup
 			'banner_clicks'         => '0',
 			'banner_impressions'    => '0',
 			'banner_ip'             => '',
-			'banner_description'    => 'click to visit',
+			'banner_description'    => '',
 			'banner_campaign'       => 'e107promo'
 		);
 
 		$status = ($sql->insert('banner', $insert)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-		$mes->add("Adding Default table data to table: banner", $status); //TODO Generic LAN "LAN_DEFAULT_TABLE_DATA"
+		$mes->add(LAN_DEFAULT_TABLE_DATA." banner", $status);
 
 
 	}

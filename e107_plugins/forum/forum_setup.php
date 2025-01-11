@@ -66,9 +66,15 @@ class forum_setup
 		}
 
 		$legacyMenuPref = e107::getConfig('menu')->getPref();
-		if(isset($legacyMenuPref['newforumposts_caption']))
-		{
+		//if(isset($legacyMenuPref['newforumposts_caption']))
+		//{
 
+	//	}
+
+		// Check if e_print addon is loaded
+		if(!e107::getAddon('forum','e_print'))
+		{
+			return true;
 		}
 
 		return false;
@@ -80,7 +86,7 @@ class forum_setup
 
 		$sql = e107::getDb();
 
-		if(!$sql->isTable('forum_t')) // no table, so run a default plugin install procedure.
+		if(!$sql->isTable('forum_t') || !$sql->isEmpty('forum_thread')) // no table, so run a default plugin install procedure.
 		{
 			return false;
 		//	e107::getSingleton('e107plugin')->refresh('forum');
@@ -98,10 +104,40 @@ class forum_setup
 	{
 		$sql = e107::getDb();
 
+		$config = e107::getPref('url_config');
+
+		if(!empty($config['forum']))
+		{
+			e107::getConfig()
+			->removePref('url_config/forum')
+			->removePref('url_locations/forum')
+			->save(false,true);
+
+			if(file_exists(e_PLUGIN."forum/url/url.php"))
+			{
+				@unlink(e_PLUGIN."forum/url/url.php");
+				@unlink(e_PLUGIN."forum/url/rewrite_url.php");
+			}
+
+			$bld = new eRouter;
+			$bld->buildGlobalConfig();
+
+		}
+
+
+
+
+
 		if($sql->isEmpty('forum_thread') === true && $sql->isTable('forum_t') && $sql->isEmpty('forum_t') === false)
 		{
 			$mes = e107::getMessage();
 			$mes->addSuccess("Migration is required. Please click 'Continue'.<br /><a class='btn btn-primary' href='".e_PLUGIN."forum/forum_update.php'>Continue</a>");
+		}
+
+
+		if(!e107::getAddon('forum','e_print'))
+		{
+			e107::getPlug()->clearCache()->buildAddonPrefLists();	
 		}
 
 	}

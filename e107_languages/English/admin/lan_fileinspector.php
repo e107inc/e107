@@ -72,7 +72,7 @@ releases, then you will discover files have failed integrity check because they 
 after the latest core image snapshot was created.");
 define("FR_LAN_19", "files failed");
 define("FR_LAN_20", "All files passed");
-define("FR_LAN_21", "none");
+//define("FR_LAN_21", "none");//NOT USED
 define("FR_LAN_22", "Missing core files");
 define("FR_LAN_23", "No matches found.");
 define("FR_LAN_24", "Old core files");
@@ -86,6 +86,7 @@ define("FR_LAN_28", "Known insecure files");
 //define("FR_LAN_30", "Total lines matched");//not used
 //define("FR_LAN_31", "Missing complete plugin folder");//not used
 define("FR_LAN_32", "You need to run a scan first!");
+define("FR_LAN_33", "Begin");
 
 define("FS_LAN_1", "Create Snapshot");
 define("FS_LAN_2", "Absolute path of root directory to create image from");
@@ -99,4 +100,3 @@ define("FS_LAN_9", "Snapshot");
 define("FS_LAN_10", "Snapshot Created");
 define("FS_LAN_11", "The snapshot was successfully created.");
 define("FS_LAN_12", "Return To Main Page");
-?>

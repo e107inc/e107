@@ -12,5 +12,3 @@ require_once("class2.php");
 
 require_once(e_PLUGIN."banner/banner.php");
 
-exit();
-?>

@@ -120,8 +120,8 @@ class _blank_library
 		$libraries['example'] = array(
 			// Only used in administrative UI of Libraries API.
 			'name'              => 'Example library',
-			'vendor_url'        => 'http://example.com',
-			'download_url'      => 'http://example.com/download',
+			'vendor_url'        => 'https://example.com',
+			'download_url'      => 'https://example.com/download',
 			// Override default library location ({e_WEB}/lib).
 			'library_path'      => e_PLUGIN . 'example',
 			// Optional: If, after extraction, the actual library files are contained in 'e107_web/lib/example/lib',
@@ -229,8 +229,8 @@ class _blank_library
 		// 'e107_web/lib/simple'.
 		$libraries['simple'] = array(
 			'name'              => 'Simple library',
-			'vendor_url'        => 'http://example.com/simple',
-			'download_url'      => 'http://example.com/simple',
+			'vendor_url'        => 'https://example.com/simple',
+			'download_url'      => 'https://example.com/simple',
 			'version_arguments' => array(
 				'file'    => 'readme.txt',
 				// Best practice: Document the actual version strings for later reference.
@@ -251,8 +251,8 @@ class _blank_library
 		// A library that (naturally) evolves over time with API changes.
 		$libraries['tinymce'] = array(
 			'name'              => 'TinyMCE',
-			'vendor_url'        => 'http://tinymce.moxiecode.com',
-			'download_url'      => 'http://tinymce.moxiecode.com/download.php',
+			'vendor_url'        => 'https://www.tiny.cloud/',
+			'download_url'      => 'https://www.tiny.cloud/get-tiny/downloads/',
 			'path'              => 'jscripts/tiny_mce',
 			// The regular expression catches two parts (the major and the minor version), which libraryGetVersion()
 			// doesn't allow.

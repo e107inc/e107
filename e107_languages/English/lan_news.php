@@ -9,7 +9,8 @@
 |     $Author$
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "News");
+
+
 
 
 define("LAN_NEWS_1", "News for specific members only");
@@ -44,10 +45,12 @@ define("LAN_NEWS_86", "Older News");
 define("LAN_NEWS_87", "Newer News");
 define("LAN_NEWS_462", "No news items for specified month");
 define("LAN_NEWS_463", "There are no news items for the specified category - please check back soon.");
+define("LAN_NEWS_464", "No news items for specified day");
 
 // Following used by alt_news
 // define("LAN_NEWS_99", "Comments");
-define("LAN_NEWS_100", "On");
-define("LAN_NEWS_307", "Total posts in this category: ");
 
-?>
+define("LAN_NEWS_300", "On"); // changed from LAN_NEWS_100 in v2.3.1
+define("LAN_NEWS_307", "Total posts in this category: ");
+define("LAN_NEWS_308", "Perhaps you're looking for one of the news items below?");
+define("LAN_NEWS_309", "Tag");

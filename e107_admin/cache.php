@@ -8,28 +8,21 @@
  *
  * Cache Administration Area
  *
- * $URL$
- * $Id$
- *
 */
 
-/**
- *	Admin page - cache management
- *
- *	@package	e107
- *	@subpackage	admin
- *	@version 	$Id$;
- *  @author 	e107 Inc
- */
+if(!empty($_POST) && !isset($_POST['e-token']))
+{
+	$_POST['e-token'] = '';
+}
+require_once(__DIR__."/../class2.php");
 
-require_once("../class2.php");
 if (!getperms("C"))
 {
 	e107::redirect('admin');
 	exit;
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+e107::coreLan('cache', true);
 
 $e_sub_cat = 'cache';
 
@@ -61,39 +54,41 @@ if (isset($_POST['submit_cache']))
 
 if (isset($_POST['trigger_empty_cache']))
 {
-	e107::getAdminLog()->logSuccess(CACLAN_6);
+	e107::getLog()->addSuccess(CACLAN_6);
+	$triggerName = $_POST['option_clear_cache'];
 	switch ($_POST['option_clear_cache'])
 	{
 		case 'empty_contentcache':
 			e107::getCache()->clearAll('content');
-			e107::getAdminLog()->flushMessages(CACLAN_5);
+			e107::getLog()->flushMessages(CACLAN_5);
 		break;
 
 		case 'empty_syscache':
 			e107::getCache()->clearAll('system');
-			e107::getAdminLog()->flushMessages(CACLAN_16);
+			e107::getLog()->flushMessages(CACLAN_16);
+			e107::getSession()->clear('addons-update-status');
 		break;
 
 		case 'empty_dbcache':
 			e107::getCache()->clearAll('db');
-			e107::getAdminLog()->flushMessages(CACLAN_24);
+			e107::getLog()->flushMessages(CACLAN_24);
 		break;
 
 		case 'empty_imgcache':
 			e107::getCache()->clearAll('image');
-			e107::getAdminLog()->flushMessages(CACLAN_25);
+			e107::getLog()->flushMessages(CACLAN_25);
 		break;
 		
 		// used in standard page output and internal JS includes
 		case 'empty_browsercache':
 			e107::getCache()->clearAll('browser');
-			e107::getAdminLog()->flushMessages(CACLAN_25);
+			e107::getLog()->flushMessages(CACLAN_27);
 		break;
 
 		case 'empty_jscss':
 			e107::getCache()->clearAll('js');
 			e107::getCache()->clearAll('css');
-		//	e107::getAdminLog()->flushMessages(CACLAN_5);
+			e107::getLog()->flushMessages(CACLAN_30);
 		break;
 
 		// all
@@ -105,9 +100,13 @@ if (isset($_POST['trigger_empty_cache']))
 			e107::getCache()->clearAll('browser');
 			e107::getCache()->clearAll('js');
 			e107::getCache()->clearAll('css');
-			e107::getAdminLog()->flushMessages(CACLAN_26);
+			e107::getSession()->clear('addons-update-status');
+			e107::getLog()->flushMessages(CACLAN_26);
+			$triggerName = 'default';
 		break;
 	}
+
+	e107::getEvent()->trigger('admin_after_clear_cache', $triggerName);
 }
 
 $syscache_files = glob(e_CACHE_CONTENT.'S_*.*');
@@ -149,7 +148,7 @@ $text = "
 					<tr>
 						<td>
 							<strong class='e-tip'>".CACLAN_11."</strong>
-							<div class='field-help'>".CACLAN_13."</div>
+							".$frm->help(CACLAN_13)."
 						</td>
 						<td>{$contentcache_label}</td>
 						<td class='left middle'>
@@ -159,7 +158,7 @@ $text = "
 					<tr>
 						<td>
 							<strong class='e-tip'>".CACLAN_12."</strong>
-							<div class='field-help'>".CACLAN_14."</div>
+							".$frm->help(CACLAN_14)."
 						</td>
 						<td>{$syscache_label}</td>
 						<td class='left middle'>
@@ -169,8 +168,8 @@ $text = "
 
 						<tr>
 						<td>
-							<strong class='e-tip'>".CACLAN_28."</strong>
-							<div class='field-help'>".CACLAN_29."</div>
+							<strong class='e-tip'>".CACLAN_28."</strong>".$frm->help(CACLAN_29)."
+							
 						</td>
 						<td>{$jscsscache_label}</td>
 						<td class='left middle'>
@@ -181,8 +180,7 @@ $text = "
 
 					<tr>
 						<td>
-							<strong class='e-tip'>".CACLAN_20."</strong>
-							<div class='field-help'>".CACLAN_21."</div>
+							<strong class='e-tip'>".CACLAN_20."</strong>".$frm->help(CACLAN_21)."
 						</td>
 						<td>{$dbcache_label}</td>
 						<td class='left middle'>
@@ -191,8 +189,7 @@ $text = "
 					</tr>
 					<tr>
 						<td>
-							<strong class='e-tip'>".CACLAN_22."</strong>
-							<div class='field-help'>".CACLAN_23."</div>
+							<strong class='e-tip'>".CACLAN_22."</strong>".$frm->help(CACLAN_23)."
 						</td>
 						<td>{$imgcache_label}</td>
 						<td class='left middle'>
@@ -216,6 +213,7 @@ $text = "
 					'empty_browsercache' => CACLAN_27,
 				))."
 				".$frm->admin_button('trigger_empty_cache', LAN_DELETE, 'delete')."
+				<input type='hidden' name='e-token' value='" . defset('e_TOKEN') . "' />
 			</div>
 		</fieldset>
 	</form>";

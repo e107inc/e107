@@ -1,0 +1,5 @@
+<?php exit;array (
+  'most_members_online' => 4,
+  'most_guests_online' => 4,
+  'most_online_datestamp' => 1534279911,
+)

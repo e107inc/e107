@@ -46,9 +46,13 @@ class plugin_featurebox_item extends e_model
 	 * @param string $parm
 	 * @return string
 	 */
-	public function sc_featurebox_title($parm = '')
+	public function sc_featurebox_title($parm = null)
 	{
-		parse_str($parm, $parm);
+		if(!empty($parm) && is_string($parm))
+		{
+			parse_str($parm, $parm);
+		}
+
 		$tp = e107::getParser();
 		if(isset($parm['alt']))
 		{
@@ -58,7 +62,7 @@ class plugin_featurebox_item extends e_model
 		$ret = $tp->toHTML($this->get('fb_title'), false, 'TITLE');
 		if(isset($parm['url']) && $this->get('fb_imageurl'))
 		{
-			return '<a id="featurebox-titleurl-'.$this->getId().'" href="'.$tp->replaceConstants($this->get('fb_imageurl'), 'full').'" title="'.$tp->toAttribute($this->get('fb_title')).'" rel="'.$tp->toAttribute(vartrue($parm['rel'], '')).'">'.$ret.'</a>';
+			return '<a id="featurebox-titleurl-'.$this->getId().'" href="'.$tp->replaceConstants($this->get('fb_imageurl'), 'full').'" title="'.$tp->toAttribute($this->get('fb_title')).'" rel="'.$tp->toAttribute(vartrue($parm['rel'])).'">'.$ret.'</a>';
 		}
 
 		return $ret;
@@ -73,7 +77,7 @@ class plugin_featurebox_item extends e_model
 	 * @param string $parm
 	 * @return string
 	 */
-	public function sc_featurebox_url($parm = '')
+	public function sc_featurebox_url($parm = null)
 	{
 		$tp = e107::getParser();
 		$url = $tp->replaceConstants($this->get('fb_imageurl'), 'full');
@@ -94,7 +98,7 @@ class plugin_featurebox_item extends e_model
 		
 		
 		
-		return '<a '.$buttonCls.'id="featurebox-url-'.$this->getId().'" href="'.$url.'" title="'.$alt.'" rel="'.$tp->toAttribute(vartrue($parm['rel'], '')).'">'.$title.'</a>';
+		return '<a '.$buttonCls.'id="featurebox-url-'.$this->getId().'" href="'.$url.'" title="'.$alt.'" rel="'.$tp->toAttribute(vartrue($parm['rel'])).'">'.$title.'</a>';
 	}
 	
 	
@@ -122,7 +126,7 @@ class plugin_featurebox_item extends e_model
 	 * @param string $parm
 	 * @return string
 	 */
-	public function sc_featurebox_image($parm = '')
+	public function sc_featurebox_image($parm = null)
 	{
 		if(!$this->get('fb_image') && $parm != 'placeholder')
 		{
@@ -133,13 +137,17 @@ class plugin_featurebox_item extends e_model
 		{
 			return $video;	
 		}
-		
-		parse_str($parm, $parm);
+
+		if(is_string($parm))
+		{
+			parse_str($parm, $parm);
+		}
+
 		$tp = e107::getParser();
 		
 		$imageSrc = ($parm != 'placeholder') ? $this->get('fb_image') : "";
 		
-		if($tp->thumbWidth > 100 || $tp->thumbHeight > 100) //Guessing it's a featurebox image.  Use {SETIMAGE} inside theme.php to configure. 
+		if($tp->thumbWidth() > 100 || $tp->thumbHeight() > 100) //Guessing it's a featurebox image.  Use {SETIMAGE} inside theme.php to configure.
 		{
 			$src = $tp->thumbUrl($imageSrc); //XXX TODO TBD Add a pref to use without resizing? Or, detect {SETIMAGE} in template to enable?
 		}
@@ -152,7 +160,7 @@ class plugin_featurebox_item extends e_model
 		{
 			return $src;
 		}
-		$tag = '<img id="featurebox-image-'.$this->getId().'" src="'.$src.'" alt="'.$tp->toAttribute($this->get('fb_title')).'" class="featurebox img-responsive" />';
+		$tag = '<img id="featurebox-image-'.$this->getId().'" src="'.$src.'" alt="'.$tp->toAttribute($this->get('fb_title')).'" class="featurebox img-responsive img-fluid" />';
 		if(isset($parm['nourl']) || !$this->get('fb_imageurl'))
 		{
 			return $tag;
@@ -160,7 +168,7 @@ class plugin_featurebox_item extends e_model
 		return '<a id="featurebox-imageurl-'.$this->getId().'" href="'.$tp->replaceConstants($this->get('fb_imageurl'), 'full').'" title="'.$tp->toAttribute($this->get('fb_title')).'" rel="'.$tp->toAttribute(vartrue($parm['rel'], 'external')).'">'.$tag.'</a>';
 	}
 	
-	public function sc_featurebox_thumb($parm='')
+	public function sc_featurebox_thumb($parm=null)
 	{
 		$tp = e107::getParser();
 		if(!$this->get('fb_image'))
@@ -203,7 +211,7 @@ class plugin_featurebox_item extends e_model
 	public function sc_featurebox_counter($parm=1)
 	{	
 		$count = $this->getParam('counter', 1);
-		return ($parm == 0) ? $count - 1 : $count;
+		return (empty($parm)) ? $count - 1 : $count;
 	}
 
 	/**

@@ -19,7 +19,7 @@ $text = "<div style='text-align:center'>
 	
 $admin_cat = e107::getNav()->adminCats();
 
- $newarray = e107::getNav()->adminLinks('core');
+$newarray = e107::getNav()->adminLinks('core');
 $plugin_array = e107::getNav()->adminLinks('plugin');
 
 foreach ($admin_cat['id'] as $cat_key => $cat_id)
@@ -45,7 +45,7 @@ foreach ($admin_cat['id'] as $cat_key => $cat_id)
 	}
 	else
 	{
-		$text_rend = e107::getNav()->renderAdminButton(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "Z", E_16_PLUGMANAGER, 'default');
+		$text_rend = e107::getNav()->renderAdminButton(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "Z", defset('E_16_PLUGMANAGER'), 'default');
 
 		if ($text_rend)
 		{

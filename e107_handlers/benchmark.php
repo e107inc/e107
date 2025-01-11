@@ -49,7 +49,7 @@ class e_benchmark
 
 	/**
 	 * Start timer
-	 * @return benchmark
+	 * @return e_benchmark
 	 */
 	public function start()
 	{
@@ -59,7 +59,7 @@ class e_benchmark
 
 	/**
 	 * Stop timer
-	 * @return benchmark
+	 * @return e_benchmark
 	 */
 	public function end()
 	{
@@ -81,7 +81,7 @@ class e_benchmark
 	 * @param string $id identifier of the current benchmark event e.g. 'thumbnail.create'
 	 * @param string $heading additional data to be shown in the log (header) e.g. '[Some Event]'
 	 * @param boolean $append overwrite or append to the log file
-	 * @return benchmark
+	 * @return e_benchmark
 	 */
 	public function logResult($id, $heading = '', $append = true)
 	{
@@ -93,7 +93,7 @@ class e_benchmark
 	 * Send result to the stdout
 	 *
 	 * @param string $heading
-	 * @return string
+	 * @return e_benchmark
 	 */
 	public function printResult($heading = '')
 	{
