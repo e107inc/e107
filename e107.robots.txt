@@ -10,7 +10,4 @@ Disallow: /e107_files/cache/
 Disallow: /e107_files/public/avatars/
 Disallow: /e107_handlers/
 Disallow: /e107_languages/
-Disallow: /e107_media/
 Disallow: /e107_system/
-Disallow: /e107_themes/
-Disallow: /e107_web/

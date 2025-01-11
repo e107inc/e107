@@ -24,10 +24,10 @@ class user_dashboard // plugin-folder + '_url'
 		$tp = e107::getParser();
 
 		$config[] = array(
-			0 => array(	'text'		=> $this->renderChart(), 'caption'	=> $tp->toGlyph('fa-signal').' '.LAN_STATS),
+		//	0 => array(	'text'		=> $this->renderChart(), 'caption'	=> $tp->toGlyph('fa-signal').' '.LAN_STATS),
 			1 => array('caption'    =>$tp->toGlyph('fa-user').' '.LAN_ONLINE.' ('.$this->renderOnlineUsers('count').')', 'text'=>$this->renderOnlineUsers()),
 
-			2 => array(	'text'		=> $this->registered('user_new_thismonth'), 'caption'	=> $this->title),
+			2 => array(	'text'		=> $this->registered('newUsersThisMonth'), 'caption'	=> $this->title),
 		);
 		
 		return $config;
@@ -42,7 +42,7 @@ class user_dashboard // plugin-folder + '_url'
 		}
 		else
 		{
-			return $this->renderStats('demo');
+		//	return $this->renderStats('demo');
 		}
 
 	}
@@ -57,14 +57,15 @@ class user_dashboard // plugin-folder + '_url'
 
 			$months = e107::getDate()->terms('month');
 
-			$data['labels'] = array($months[0], //"January",
- 						$months[1], //"February",
- 						$months[2], //"March",
- 						$months[3], //"April",
- 						$months[4], //"May",
- 						$months[5], //"June",
- 						$months[6]  //"July"
- 			);
+			foreach($months as $month)
+			{
+				// We need only the first 6 months for demo.
+				if (!empty($data['labels']) && count($data['labels']) >= 6)
+				{
+					continue;
+				}
+				$data['labels'][] = $month;
+			}
 
 			$data['datasets'][]	= array(
 							'fillColor'			=> "rgba(220,220,220,0.5)",
@@ -110,7 +111,11 @@ class user_dashboard // plugin-folder + '_url'
 
 			foreach($array as $key => $value)
 			{
-				extract($value);
+
+				$log_id = $value['log_id'];
+				$log_data = $value['log_data'];
+			//	extract($value);
+
 				$log_id = substr($log_id, 0, 4).'-'.substr($log_id, 5, 2).'-'.str_pad(substr($log_id, 8), 2, '0', STR_PAD_LEFT);
 				if(is_array($log_data)) {
 					$entries[0] = $log_data['host'];
@@ -136,7 +141,7 @@ class user_dashboard // plugin-folder + '_url'
 					if($entry)
 					{
 						list($url, $total, $unique) = explode("|", $entry);
-						if(strstr($url, "/"))
+						if(strpos($url, "/") !== false)
 						{
 							$urlname = preg_replace("/\.php|\?.*/", "", substr($url, (strrpos($url, "/")+1)));
 						}
@@ -244,7 +249,7 @@ class user_dashboard // plugin-folder + '_url'
 
 		if($type == 'demo')
 		{
-			$text .= "<div class='center'><small>".ADLAN_170."<a class='btn btn-xs btn-mini' href='".e_ADMIN."plugin.php?avail'>".ADLAN_171."</a></small></div>";
+			$text .= "<div class='center'><small>".ADLAN_170."<a class='btn btn-xs btn-mini' href='".e_ADMIN."plugin.php?mode=avail&action=list'>".ADLAN_171."</a></small></div>";
 		}
 		else
 		{
@@ -330,7 +335,7 @@ class user_dashboard // plugin-folder + '_url'
 		
 	//	$this->title = 'Registered '.date('M Y',$month_start).' ('.$sum.')';
 
-		$this->title = 'New Users ('.$sum.')';
+		$this->title = UC_LAN_9.' ('.$sum.')';
 	
 		$totalDays = date('t', $month_start);
 	
@@ -345,9 +350,9 @@ class user_dashboard // plugin-folder + '_url'
 	//	print_a($data);
 			
 		$options = array(
-			'chartArea'	=>array('left'=>'60', 'width'=>'90%', 'top'=>'25'),
+			'chartArea'	=>array('left'=>'60', 'width'=>'100%', 'top'=>'25'),
 			'legend'	=> array('position'=> 'none', 'alignment'=>'center', 'textStyle' => array('fontSize' => 14, 'color' => '#ccc')),
-			'vAxis'		=> array('title'=>'New Users', 'minValue'=>0, 'maxValue'=>10, 'titleFontSize'=>16, 'titleTextStyle'=>array('color' => '#ccc'), 'gridlines'=>array('color'=>'#696969', 'count'=>5), 'format'=>'', 'textStyle'=>array('color' => '#ccc') ),
+			'vAxis'		=> array('title'=> UC_LAN_9, 'minValue'=>0, 'maxValue'=>10, 'titleFontSize'=>16, 'titleTextStyle'=>array('color' => '#ccc'), 'gridlines'=>array('color'=>'#696969', 'count'=>5), 'format'=>'', 'textStyle'=>array('color' => '#ccc') ),
 			'hAxis'		=> array('title'=>date('M Y', $month_start), 'slantedText'=>true, 'slantedTextAngle'=>60, 'ticks'=>$ticks, 'titleFontSize'=>14, 'titleTextStyle'=>array('color' => '#ccc'), 'gridlines' => array('color'=>'transparent'), 'textStyle'=>array('color' => '#ccc') ),
 			'colors'	=> array('#77acd9','#EDA0B6', '#EE8D21', '#5CB85C'),
 			'animation'	=> array('duration'=>1000, 'easing' => 'out'), 
@@ -421,8 +426,9 @@ class user_dashboard // plugin-folder + '_url'
 				<tbody>";
 
 
-
-		$online = $ol->userList() + $ol->guestList();
+		// Fixes #3239: The array merge didn't work correctly by using the + operator
+		$online = $ol->userList();
+		$online = array_merge($online, $ol->guestList());
 
 		if($data == 'count')
 		{
@@ -474,7 +480,7 @@ class user_dashboard // plugin-folder + '_url'
 
 		if($row['user_bot'] === true)
 		{
-			return "<i class='browser e-bot-16'></i>";
+			return "<i class='browsers e-bot-16'></i>";
 		}
 
 		foreach($types as $icon=>$b)
@@ -497,8 +503,6 @@ class user_dashboard // plugin-folder + '_url'
 		}
 		return $val;
 	}
-
-
 
 	
 }

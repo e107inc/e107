@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<e107Plugin name="Linkwords" lan="LAN_PLUGIN_LINKWORDS_NAME" version="1.1" date="2012-08-01" compatibility="2.0" installRequired="true" >
-	<author name="e107 Inc." url="http://e107.org" />
+<e107Plugin name="Linkwords" lan="LAN_PLUGIN_LINKWORDS_NAME" version="2.0" date="2021-09-28" compatibility="2.0" installRequired="true" >
+	<author name="e107 Inc." url="https://e107.org" />
 	<description lan="LAN_PLUGIN_LINKWORDS_DESCRIPTION">This plugin will link specified words with a defined link and/or tooltip.</description>
 	<category>content</category> 
 	<adminLinks>
 		<link url='admin_config.php' description='Configure LinkWords' icon='images/linkwords_32.png' iconSmall='images/linkwords_16.png' primary='true' >Configure LinkWords</link>	
 	</adminLinks>
-	<mainPrefs>
+	<pluginPrefs>
 		<pref name="lw_page_visibility"></pref>
 		<pref name="lw_ajax_enable">0</pref>
         <pref name="lw_max_per_word">2</pref>
@@ -23,5 +23,5 @@
 				'RAWTEXT' => ''
 			)
 		</pref>
-	</mainPrefs>
+	</pluginPrefs>
 </e107Plugin>

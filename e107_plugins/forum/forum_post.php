@@ -13,17 +13,18 @@
 
 if(!defined('e107_INIT'))
 {
-	require_once('../../class2.php');
+	require_once(__DIR__.'/../../class2.php');
 }
 
-if(USER)
-{
-	define('e_TINYMCE_TEMPLATE', 'member'); // allow images / videos.
-}
-else
-{
-	define('e_TINYMCE_TEMPLATE', 'public');
-}
+// Now defined in shortcodes that handle the editors
+// if(USER)
+// {
+// 	define('e_TINYMCE_TEMPLATE', 'member'); // allow images / videos.
+// }
+// else
+// {
+// 	define('e_TINYMCE_TEMPLATE', 'public');
+// }
 
 define('NAVIGATION_ACTIVE','forum'); // ??
 
@@ -40,6 +41,7 @@ if (!e107::isInstalled('forum'))
 //e107::lan('forum','English_front');
 e107::lan('forum', "front", true);
 e107::css('forum','forum.css');
+// e107::canonical('forum', 'post');
 
 
 
@@ -66,8 +68,19 @@ class forum_post_handler
 		$this->id       = (int) $_GET['id']; // forum thread/topic id.
 		$this->post     = (int) $_GET['post']; // post ID if needed.
 
-		define('MODERATOR', USER && $this->forumObj->isModerator(USERID));
 
+		// issue #3619: In case the post id is not set
+		// use the thread id to look for the moderator ids
+		if (!empty($this->post))
+		{
+			$moderatorUserIds = $forum->getModeratorUserIdsByPostId($this->post);
+		}
+		else
+		{
+			$moderatorUserIds = $forum->getModeratorUserIdsByThreadId($this->id);
+		}
+
+		define('MODERATOR', (USER && in_array(USERID, $moderatorUserIds) || getperms('0')));
 
 
 		$this->data = $this->processGet();
@@ -115,7 +128,7 @@ class forum_post_handler
 
 		if (!e_QUERY || empty($_GET['id']))
 		{
-			$url = e107::url('forum','index',null,'full');
+			$url = e107::url('forum','index',null,['mode'=>'full']);
 			$this->redirect($url);
 		//	header('Location:'.e107::getUrl()->create('forum/forum/main', array(), 'full=1&encode=0'));
 			exit;
@@ -155,6 +168,7 @@ class forum_post_handler
 				$forumInfo              = $this->forumObj->forumGet($postInfo['post_forum']);
 				$data                   = array_merge($postInfo ,$forumInfo);
 				$data['action']         = $this->action;
+				$data['initial_post']   = $this->forumObj->threadDetermineInitialPost($this->post);
 				$this->setPageTitle($data);
 				return $data;
 				break;
@@ -169,7 +183,7 @@ class forum_post_handler
 				break;
 
 			default:
-				$url = e107::url('forum','index',null,'full');
+				$url = e107::url('forum','index',null,['mode'=>'full']);
 				$this->redirect($url);
 			//	header("Location:".e107::getUrl()->create('forum/forum/main', array(), 'full=1&encode=0'));
 				exit;
@@ -265,7 +279,7 @@ class forum_post_handler
 		$poll = new poll;
 
 		require_once(HEADERF);
-		$template = $this->getTemplate('posted');
+		$template = (array) $this->getTemplate('posted');
 		echo $template['poll'];
 		require_once(FOOTERF);
 		exit;
@@ -309,11 +323,22 @@ class forum_post_handler
 
 		$link = "{e_PLUGIN}forum/forum_admin.php?mode=post&action=list&id=".intval($result);
 
+
 		$report = LAN_FORUM_2018." ".SITENAME." : ".$link . "\n
 					".LAN_FORUM_2019.": ".USERNAME. "\n" . $report_add;
-		$subject = LAN_FORUM_2020." ". SITENAME;
-		e107::getNotify()->send('forum_post_rep', $subject, $report);
-		e107::getRender()->tablerender(LAN_FORUM_2023, $text, array('forum_viewtopic', 'report'));
+
+		$eventData = array(
+			'reporter_id' => USERID,
+			'reporter_name' => USERNAME,
+			'report_time' => $insert['gen_datestamp'],
+			'thread_id' => $insert['gen_intdata'],
+			'thread_name' => $insert['gen_ip'],
+			'report_message' => $report_add,
+			'notify_message' => $report
+		);
+
+		e107::getEvent()->trigger('user_forum_post_report', $eventData);
+		e107::getRender()->tablerender(LAN_FORUM_2023, $text, 'forum-post-report');
 	}
 
 
@@ -343,7 +368,7 @@ class forum_post_handler
 			require_once(HEADERF);
 			$mes->addError(LAN_FORUM_3001);
 			$mes->addDebug(print_a($this->data, true));
-			$ns->tablerender(LAN_FORUM_1001, $mes->render());
+			$ns->tablerender(LAN_FORUM_1001, $mes->render(), 'forum-post-unauthorized');
 			require_once(FOOTERF);
 			exit;
 		}
@@ -354,7 +379,7 @@ class forum_post_handler
 		{
 			require_once(HEADERF);
 			$mes->addError(LAN_FORUM_3002);
-			$ns->tablerender(LAN_FORUM_1001, $mes->render());
+			$ns->tablerender(LAN_FORUM_1001, $mes->render(), 'forum-post-locked');
 			require_once(FOOTERF);
 			exit;
 		}
@@ -365,7 +390,7 @@ class forum_post_handler
 
 
 	/**
-	 * @return string
+	 * @return array|string
 	 */
 	function getTemplate($type = 'post')
 	{
@@ -417,7 +442,7 @@ class forum_post_handler
 			$userbox = "<tr>
 			<td class='forumheader2' style='width:20%'>".LAN_FORUM_3010."</td>
 			<td class='forumheader2' style='width:80%'>
-			<input class='tbox form-control' type='text' name='anonname' size='71' value='".vartrue($anonname)."' maxlength='20' style='width:95%' />
+				{FORUM_POST_AUTHOR: size=block-level}
 			</td>
 			</tr>";
 		}
@@ -427,7 +452,7 @@ class forum_post_handler
 			$subjectbox = "<tr>
 			<td class='forumheader2' style='width:20%'>".LAN_FORUM_3011."</td>
 			<td class='forumheader2' style='width:80%'>
-			<input class='tbox form-control' type='text' name='subject' size='71' value='".vartrue($subject)."' maxlength='100' style='width:95%' />
+				{FORUM_POST_SUBJECT: size=block-level}
 			</td>
 			</tr>";
 		}
@@ -447,7 +472,7 @@ class forum_post_handler
 						<input class='tbox' name='file_userfile[]' type='file' size='47' />
 					</span>
 					</div>
-					<input class='btn btn-default button' type='button' name='addoption' value='".LAN_FORUM_3020."' onclick=\"duplicateHTML('fiupopt','fiupsection')\" />
+					<input class='btn btn-default btn-secondary button' type='button' name='addoption' value='".LAN_FORUM_3020."' onclick=\"duplicateHTML('fiupopt','fiupsection')\" />
 				</td>
 			</tr>
 			";
@@ -725,14 +750,14 @@ class forum_post_handler
 		</table>
 		<div class='center'>
 		<input class='btn btn-primary button' type='submit' name='split_thread' value=\"".LAN_FORUM_3052."\" />
-		<a class='btn btn-default button'  href='".$_SERVER['HTTP_REFERER']."' >".LAN_CANCEL."</a>
+		<a class='btn btn-default btn-secondary button'  href='".$_SERVER['HTTP_REFERER']."' >".LAN_CANCEL."</a>
 		</div>
 
 		</div>
 		</form>";
 
 
-		$ns->tablerender(LAN_FORUM_3052, $text);
+		$ns->tablerender(LAN_FORUM_3052, $text, 'forum-post-split');
 
 
 	}
@@ -797,8 +822,16 @@ class forum_post_handler
 	 */
 	private function renderFormMove()
 	{
+		if (isset($_POST['forum_move']))
+		{
+			// Forum just moved. No need to display the forum move form again.
+			return;
+		}
+
 		if(!deftrue('MODERATOR'))
 		{
+			$mes = e107::getMessage();
+			echo $mes->addWarning(LAN_NO_PERMISSIONS)->render();
 			return;
 		}
 
@@ -843,14 +876,14 @@ class forum_post_handler
 		</table>
 		<div class='center'>
 		<input class='btn btn-primary button' type='submit' name='move_thread' value='".LAN_FORUM_5019."' />
-		<a class='btn btn-default button'  href='".$_SERVER['HTTP_REFERER']."' >".LAN_CANCEL."</a>
+		<a class='btn btn-default btn-secondary button'  href='".$_SERVER['HTTP_REFERER']."' >".LAN_CANCEL."</a>
 		</div>
 
 		</div>
 		</form>";
 
 
-		$ns->tablerender(LAN_FORUM_5019, $text);
+		$ns->tablerender(LAN_FORUM_5019, $text, 'forum-post-move');
 
 
 
@@ -915,10 +948,10 @@ class forum_post_handler
 								<div class='alert alert-block alert-warning'>
 								<h4>".LAN_FORUM_2025.': '.$thread_name."</h4>
 									".LAN_FORUM_2027."<br />".str_replace(array('[', ']'), array('<b>', '</b>'), LAN_FORUM_2028)."
-								<a class='pull-right btn btn-xs btn-primary e-expandit' href='#post-info'>".LAN_FORUM_2026."</a>
+								<a class='pull-right float-right float-end btn btn-xs btn-primary e-expandit' href='#post-info'>".LAN_FORUM_2026."</a>
 								</div>
 								<div id='post-info' class='e-hideme alert alert-block alert-danger'>
-									".$tp->toHtml($this->data['post_entry'],true)."
+									".$tp->toHTML($this->data['post_entry'],true)."
 								</div>
 								<div class='form-group' >
 									<div class='col-md-12'>
@@ -943,7 +976,7 @@ class forum_post_handler
 							<td  style='width:50%'>
 							".LAN_FORUM_2025.': '.$thread_name." <a  class='e-expandit' href='#post-info'><span class='smalltext'>".LAN_FORUM_2026."</span></a>
 							<div id='post-info' class='e-hideme alert alert-block alert-danger'>
-									".$tp->toHtml($this->data['post_entry'],true)."
+									".$tp->toHTML($this->data['post_entry'],true)."
 							</div>
 							</td>
 							<td style='text-align:center;width:50%'></td>
@@ -955,7 +988,7 @@ class forum_post_handler
 							<td style='text-align:center;'><textarea cols='40' rows='10' class='tbox' name='report_add'></textarea></td>
 						</tr>
 						<tr>
-							<td colspan='2' style='text-align:center;'><br /><input class='btn btn-default button' type='submit' name='report_thread' value='".LAN_FORUM_2029."' /></td>
+							<td colspan='2' style='text-align:center;'><br /><input class='btn btn-default btn-secondary button' type='submit' name='report_thread' value='".LAN_FORUM_2029."' /></td>
 						</tr>
 						</table>
 						</form>";
@@ -965,7 +998,7 @@ class forum_post_handler
 		}
 
 
-		e107::getRender()->tablerender(LAN_FORUM_2023, $text, array('forum_viewtopic', 'report2'));
+		e107::getRender()->tablerender(LAN_FORUM_2023, $text, 'forum-post-report');
 
 
 
@@ -973,10 +1006,9 @@ class forum_post_handler
 	}
 
 
-
-
 	/**
-	 * @param $text
+	 * @param      $text
+	 * @param bool $caption
 	 */
 	function render($text, $caption = false)
 	{
@@ -986,7 +1018,7 @@ class forum_post_handler
 		{
 
 			$caption = (!empty($caption)) ? $caption : $this->forumObj->prefs->get('title');
-			$ns->tablerender($caption, $text);
+			$ns->tablerender($caption, $text, 'forum-post');
 		}
 		else
 		{
@@ -1022,6 +1054,11 @@ class forum_post_handler
 		$postdate = e107::getDate()->convert_date(time(), "forum");
 		$tsubject = $tp->post_toHTML($_POST['subject'], true);
 		$tpost = $tp->post_toHTML($_POST['post'], true);
+
+		if (empty($tsubject))
+		{
+			$tsubject = $this->data['thread_name'];
+		}
 
 		if ($_POST['poll_title'] != '' && check_class($this->forumObj->prefs->get('poll')))
 		{
@@ -1066,10 +1103,10 @@ class forum_post_handler
 
 		if ($poll_text)
 		{
-			$ns->tablerender($_POST['poll_title'], $poll_text);
+			$ns->tablerender($_POST['poll_title'], $poll_text, 'forum-post-preview-poll');
 		}
 
-		$ns->tablerender(LAN_FORUM_3005, $text);
+		$ns->tablerender(LAN_FORUM_3005, $text, 'forum-post-preview');
 
 /*
 		if ($this->action == 'edit')
@@ -1113,7 +1150,7 @@ class forum_post_handler
 		{
 			if ($fp->flood('forum_thread', 'thread_datestamp') == false && !ADMIN)
 			{
-				echo "<script type='text/javascript'>document.location.href='".e_BASE."index.php'</script>\n";
+				echo "<script>document.location.href='".e_BASE."index.php'</script>\n";
 				exit;
 			}
 
@@ -1183,7 +1220,7 @@ class forum_post_handler
 				case 'nt':
 
 					$threadInfo['thread_sticky']    = (MODERATOR ? (int)$_POST['threadtype'] : 0);
-					$threadInfo['thread_name']      = $_POST['subject'];
+					$threadInfo['thread_name']      = e107::getParser()->toDB($_POST['subject']);
 					$threadInfo['thread_forum_id']  = $this->id;
 					$threadInfo['thread_active']    = 1;
 					$threadInfo['thread_datestamp'] = $time;
@@ -1211,8 +1248,6 @@ class forum_post_handler
 					//	$this->data['thread_sef'] = $postResult['threadsef'];
 						$this->data['thread_sef'] = eHelper::title2sef($threadInfo['thread_name'],'dashl');
 
-
-
 						if($_POST['email_notify'])
 						{
 							$this->forumObj->track('add', USERID, $newThreadId);
@@ -1230,7 +1265,7 @@ class forum_post_handler
 				require_once(HEADERF);
 				$message = LAN_FORUM_3006."<br ><a class='btn btn-default' href='".$_SERVER['HTTP_REFERER']."'>".LAN_FORUM_8028."</a>";
 				$text = e107::getMessage()->addError($message)->render();
-				e107::getRender()->tablerender(LAN_PLUGIN_FORUM_NAME, $text); // change to forum-title pref.
+				e107::getRender()->tablerender(LAN_PLUGIN_FORUM_NAME, $text, 'forum-post-duplicate'); // change to forum-title pref.
 				require_once(FOOTERF);
 				exit;
 			}
@@ -1282,7 +1317,7 @@ class forum_post_handler
 				$txt = e107::getParser()->parseTemplate($txt,true, $SHORTCODES);
 
 
-				e107::getRender()->tablerender(e_PAGETITLE, e107::getMessage()->render().$txt);
+				e107::getRender()->tablerender(e_PAGETITLE, e107::getMessage()->render().$txt, 'forum-post');
 				require_once(FOOTERF);
 				exit;
 			}
@@ -1417,7 +1452,7 @@ class forum_post_handler
 		$text .= e107::getMessage()->render();
 
 
-		e107::getRender()->tablerender(LAN_FORUM_3052, $text);
+		e107::getRender()->tablerender(LAN_FORUM_3052, $text, 'forum-post-split');
 	}
 
 
@@ -1427,7 +1462,7 @@ class forum_post_handler
 
 		$mes = e107::getMessage();
 
-		if (empty($_POST['subject']) || empty($_POST['post']))
+		if ((isset($_POST['subject']) && empty($_POST['subject'])) || empty($_POST['post']))
 		{
 			$mes->addError(LAN_FORUM_3007);
 			return;
@@ -1471,7 +1506,11 @@ class forum_post_handler
 			$postVals['post_edit_user']         = USERID;
 			$postVals['post_entry']             = $_POST['post'];
 
-			$threadVals['thread_name'] 	 = $_POST['subject'];
+			if(!empty($_POST['subject']))
+			{
+				$threadVals['thread_name'] 	 = $_POST['subject'];
+			}
+
 			$threadVals['thread_sticky'] = (MODERATOR ? (int)$_POST['threadtype'] : 0);
 
 			$this->forumObj->threadUpdate($this->data['post_thread'], $threadVals);
@@ -1546,7 +1585,16 @@ class forum_post_handler
 
 	//	$url = e107::getUrl()->create('forum/thread/post', "id={$this->data['post_id']}", 'encode=0&full=1'); // XXX what data is available, find thread name
 
-		$url = e107::url('forum','topic',$this->data); // ."&f=post";
+		$page= (varset($_GET['p']) ? (int)$_GET['p'] : 1);
+		if($page > 1) 
+		{
+				$url = e107::url('forum','topic',$this->data)."?p=".$page; 
+		}
+		else {
+				$url = e107::url('forum','topic',$this->data);
+		}
+        
+		//$url = e107::url('forum','topic',$this->data); // ."&f=post";
 
 		$this->redirect($url);
 
@@ -1601,7 +1649,7 @@ class forum_post_handler
 						$_thumb = '';
 						$_fname = '';
 						$fpath = '';
-						if(strstr($upload['type'], 'image'))
+						if(strpos($upload['type'], 'image') !== false)
 						{
 							$_type = 'img';
 
@@ -1675,11 +1723,11 @@ class forum_post_handler
 
 				return $ret;
 			}
-			else
-			{
+			//else
+		//	{
 				// e107::getMessage()->addError('There was a problem with the attachment.');
 				// e107::getMessage()->addDebug(print_a($_FILES['file_userfile'],true));
-			}
+		//	}
 		}
 		/* no file uploaded at all, proceed with creating the topic or reply
 		// TODO don't call process_upload() when no attachments are uploaded.. (check  user input first, then call if needed)
@@ -1720,7 +1768,7 @@ class forum_post_handler
 require_once(HEADERF);
 new forum_post_handler;
 require_once(FOOTERF);
-exit;
 
 
-?>
+
+

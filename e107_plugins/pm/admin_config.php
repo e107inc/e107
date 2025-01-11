@@ -2,7 +2,7 @@
 
 // Generated e107 Plugin Admin Area 
 
-require_once('../../class2.php');
+require_once(__DIR__.'/../../class2.php');
 if (!getperms('P')) 
 {
 	e107::redirect('admin');
@@ -102,19 +102,19 @@ class private_msg_ui extends e_admin_ui
         protected $listOrder        = "p.pm_id DESC";
 			
 		protected $fields 		= array (  'checkboxes' =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
-		  'pm_id'             => array ( 'title' => LAN_ID,       'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'pm_from'           => array ( 'title' => LAN_PLUGIN_PM_FROM,       'type' => 'method', 'noedit'=>true, 'data' => 'int', 'filter'=>true, 'width' => '5%%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'pm_to'             => array ( 'title' => LAN_PLUGIN_PM_TO,         'type' => 'user', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'pm_sent'           => array ( 'title' => LAN_DATE,     'type' => 'datestamp', 'data' => 'int', 'width' => '15%', 'help' => '', 'readParms' => '', 'writeParms' => 'auto=1&readonly=1', 'class' => 'center', 'thclass' => 'center',  ),
-		  'pm_subject'        => array ( 'title' => LAN_PLUGIN_PM_SUB,    'type' => 'text', 'data' => 'str', 'width' => '15%', 'help' => '', 'readParms' => '', 'writeParms' => array('size'=>'xlarge'), 'class' => 'left', 'thclass' => 'left',  ),
+		  'pm_id'             => array ( 'title' => LAN_ID,       'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => array(), 'writeParms' => array(), 'class' => 'left', 'thclass' => 'left',  ),
+		  'pm_from'           => array ( 'title' => LAN_PLUGIN_PM_FROM,       'type' => 'method', 'noedit'=>true, 'data' => 'int', 'filter'=>true, 'width' => '5%%', 'help' => '', 'readParms' => array(), 'writeParms' => array(), 'class' => 'left', 'thclass' => 'left',  ),
+		  'pm_to'             => array ( 'title' => LAN_PLUGIN_PM_TO,         'type' => 'user', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => array(), 'writeParms' => array(), 'class' => 'left', 'thclass' => 'left',  ),
+		  'pm_sent'           => array ( 'title' => LAN_DATE,     'type' => 'datestamp', 'data' => 'int', 'width' => '15%', 'help' => '', 'readParms' => array(), 'writeParms' => 'auto=1&readonly=1', 'class' => 'center', 'thclass' => 'center',  ),
+		  'pm_subject'        => array ( 'title' => LAN_PLUGIN_PM_SUB,    'type' => 'text', 'data' => 'str', 'width' => '15%', 'help' => '', 'readParms' => array(), 'writeParms' => array('size'=>'xlarge'), 'class' => 'left', 'thclass' => 'left',  ),
 		  'pm_text'           => array ( 'title' => LAN_PLUGIN_PM_MESS,    'type' => 'bbarea', 'data' => 'str', 'width' => '40%', 'help' => '', 'readParms' => 'expand=1&truncate=50', 'writeParms' => 'rows=5&size=block&cols=80', 'class' => 'left', 'thclass' => 'left',  ),
-		  'pm_read'           => array ( 'title' => LAN_PLUGIN_PM_READ,       'type' => 'boolean', 'noedit'=>1, 'data' => 'int', 'batch'=>true, 'filter'=>true, 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'pm_read'           => array ( 'title' => LAN_PLUGIN_PM_READ,       'type' => 'boolean', 'noedit'=>1, 'data' => 'int', 'batch'=>true, 'filter'=>true, 'width' => '5%', 'help' => '', 'readParms' => array(), 'writeParms' => array(), 'class' => 'center', 'thclass' => 'center',  ),
         
-          'pm_sent_del'       => array ( 'title' => LAN_PLUGIN_PM_DEL,        'type' => 'boolean', 'noedit'=>true, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'pm_read_del'       => array ( 'title' => LAN_PLUGIN_PM_DEL,        'type' => 'boolean', 'noedit'=>true, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'pm_attachments'    => array ( 'title' => LAN_PLUGIN_PM_ATTACHMENT, 'type' => 'text', 'noedit'=>true, 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'pm_option'         => array ( 'title' => 'Option',     'type' => 'text', 'noedit'=>true, 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'pm_size'           => array ( 'title' => LAN_PLUGIN_PM_SIZE,       'type' => 'boolean', 'noedit'=>true, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+          'pm_sent_del'       => array ( 'title' => LAN_PLUGIN_PM_DEL,        'type' => 'boolean', 'noedit'=>true, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => array(), 'writeParms' => array(), 'class' => 'center', 'thclass' => 'center',  ),
+		  'pm_read_del'       => array ( 'title' => LAN_PLUGIN_PM_DEL,        'type' => 'boolean', 'noedit'=>true, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => array(), 'writeParms' => array(), 'class' => 'center', 'thclass' => 'center',  ),
+		  'pm_attachments'    => array ( 'title' => LAN_PLUGIN_PM_ATTACHMENT, 'type' => 'text', 'noedit'=>true, 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => array(), 'writeParms' => array(), 'class' => 'center', 'thclass' => 'center',  ),
+		  'pm_option'         => array ( 'title' => 'Option',     'type' => 'text', 'noedit'=>true, 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => array(), 'writeParms' => array(), 'class' => 'center', 'thclass' => 'center',  ),
+		  'pm_size'           => array ( 'title' => LAN_PLUGIN_PM_SIZE,       'type' => 'boolean', 'noedit'=>true, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => array(), 'writeParms' => array(), 'class' => 'center', 'thclass' => 'center',  ),
 		  'options'           => array ( 'title' => LAN_OPTIONS,    'type' => 'method', 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 		);		
 		
@@ -177,12 +177,12 @@ class private_msg_ui extends e_admin_ui
 
 				if($sql->insert('generic', $limArray))
 				{
-					e107::getLog()->logArrayAll('PM_ADM_05', $limArray);
+					e107::getLog()->addArray($limArray)->save('PM_ADM_05');
 					$mes->addSuccess(ADLAN_PM_6);
 				}
 				else
 				{
-					e107::getLog()->log_event('PM_ADM_08', '');
+					e107::getLog()->add('PM_ADM_08', '');
 					$mes->addError(ADLAN_PM_7);
 				}
 			}
@@ -214,12 +214,12 @@ class private_msg_ui extends e_admin_ui
 					//All entries empty - Remove record
 					if($sql->delete('generic','gen_id = '.$id))
 					{
-						e107::getLog()->log_event('PM_ADM_07', 'ID: '.$id);
+						e107::getLog()->add('PM_ADM_07', 'ID: '.$id);
 						$mes->addSuccess($id.ADLAN_PM_9);
 					}
 					else
 					{
-						e107::getLog()->log_event('PM_ADM_10', '');
+						e107::getLog()->add('PM_ADM_10', '');
 						$mes->addError($id.ADLAN_PM_10);
 					}
 				}
@@ -235,12 +235,12 @@ class private_msg_ui extends e_admin_ui
 
 					if ($sql->update('generic',array('data' => $limArray, 'WHERE' => 'gen_id = '.$id)))
 					{
-						e107::getLog()->logArrayAll('PM_ADM_06', $limArray);
+						e107::getLog()->addArray($limArray)->save('PM_ADM_06');
 						$mes->addSuccess($id.ADLAN_PM_11);
 					}
 					else
 					{
-						e107::getLog()->log_event('PM_ADM_09', '');
+						e107::getLog()->add('PM_ADM_09', '');
 						$mes->addError($id.ADLAN_PM_7);
 					}
 				}
@@ -328,7 +328,7 @@ class private_msg_ui extends e_admin_ui
 				{
 					$txt .= "
 					<tr>
-					<td>".e107::getUserClass()->uc_get_classname($row['limit_classnum'])."</td>
+					<td>".e107::getUserClass()->getName($row['limit_classnum'])."</td>
 					<td>
 						<div class='row'>
 							<div class='col-md-2'>".LAN_PLUGIN_PM_INBOX.":</div><div class='col-md-10'><input type='text' class='tbox' size='5' name='inbox_count[{$row['limit_id']}]' value='{$row['inbox_count']}' /></div>
@@ -575,7 +575,7 @@ class private_msg_ui extends e_admin_ui
 			$results = array(E_MESSAGE_INFO => array(ADLAN_PM_67));		// 'Maintenance started' - primarily for a log entry to mark start time
 			$logResults = array();
 			$e107 = e107::getInstance();
-			e107::getLog()->log_event('PM_ADM_04', implode(', ',array_keys($opts)));
+			e107::getLog()->add('PM_ADM_04', implode(', ',array_keys($opts)));
 			$pmHandler = new private_message($pmPrefs);
 			$db2 =e107::getDb('sql2');							// Will usually need a second DB object to avoid over load
 			$start = 0;						// Use to ensure we get different log times
@@ -596,7 +596,7 @@ class private_msg_ui extends e_admin_ui
 					}
 				}
 				$start = time();
-				$results[E_MESSAGE_SUCCESS][$start] = str_replace('--COUNT--', $cnt, ADLAN_PM_74);
+				$results[E_MESSAGE_SUCCESS][$start] = str_replace('[x]', $cnt, ADLAN_PM_74);
 			}
 			if (isset($opts['rec']))		// Want pm_to = deleted user and pm_sent_del = 1
 			{
@@ -613,7 +613,7 @@ class private_msg_ui extends e_admin_ui
 					}
 				}
 				$start = max($start + 1, time());
-				$results[E_MESSAGE_SUCCESS][$start] = str_replace('--COUNT--', $cnt, ADLAN_PM_75);
+				$results[E_MESSAGE_SUCCESS][$start] = str_replace('[x]', $cnt, ADLAN_PM_75);
 			}
 
 
@@ -623,23 +623,23 @@ class private_msg_ui extends e_admin_ui
 							WHERE `#user`.`user_id` IS NULL"))
 				{
 					$start = max($start + 1, time());
-					$results[E_MESSAGE_ERROR][$start] = str_replace(array('--NUM--', '--TEXT--'), array($this->sql->getLastErrorNum, $this->sql->getLastErrorText), ADLAN_PM_70);
+					$results[E_MESSAGE_ERROR][$start] = str_replace(array('[y]', '[z]'), array($this->sql->getLastErrorNum, $this->sql->getLastErrorText), ADLAN_PM_70);
 				}
 				else
 				{
 					$start = max($start + 1, time());
-					$results[E_MESSAGE_SUCCESS][$start] = str_replace('--COUNT--', $res, ADLAN_PM_69);
+					$results[E_MESSAGE_SUCCESS][$start] = str_replace('[x]', $res, ADLAN_PM_69);
 				}
 				if ($res = $db2->gen("DELETE `#private_msg_block` FROM `#private_msg_block` LEFT JOIN `#user` ON `#private_msg_block`.`pm_block_to` = `#user`.`user_id`
 							WHERE `#user`.`user_id` IS NULL"))
 				{
 					$start = max($start + 1, time());
-					$results[E_MESSAGE_ERROR][$start] = str_replace(array('--NUM--', '--TEXT--'), array($this->sql->getLastErrorNum, $this->sql->getLastErrorText), ADLAN_PM_70);
+					$results[E_MESSAGE_ERROR][$start] = str_replace(array('[y]', '[z]'), array($this->sql->getLastErrorNum, $this->sql->getLastErrorText), ADLAN_PM_70);
 				}
 				else
 				{
 					$start = max($start + 1, time());
-					$results[E_MESSAGE_SUCCESS][$start] = str_replace('--COUNT--', $res, ADLAN_PM_68);
+					$results[E_MESSAGE_SUCCESS][$start] = str_replace('[x]', $res, ADLAN_PM_68);
 				}
 			}
 
@@ -663,9 +663,9 @@ class private_msg_ui extends e_admin_ui
 				{
 					$qry = implode(' OR ', $del_qry);
 					$cnt = 0;
-					if($db2->db_Select('private_msg', 'pm_id', $qry))
+					if($db2->select('private_msg', 'pm_id', $qry))
 					{
-						while ($row = $db2->db_Fetch())
+						while ($row = $db2->fetch())
 						{
 							if ($pmHandler->del($row['pm_id']) !== FALSE)
 							{
@@ -674,7 +674,7 @@ class private_msg_ui extends e_admin_ui
 						}
 					}
 					$start = max($start + 1, time());
-					$results[E_MESSAGE_SUCCESS][$start] = str_replace('--COUNT--', $cnt, ADLAN_PM_73);
+					$results[E_MESSAGE_SUCCESS][$start] = str_replace('[x]', $cnt, ADLAN_PM_73);
 				}
 				else
 				{
@@ -724,7 +724,7 @@ class private_msg_ui extends e_admin_ui
 						$orphans[] = $fd['fname'];
 					}
 				}
-				$attachMessage = str_replace(array('--ORPHANS--', '--MISSING--'), array(count($orphans), count($missing)), ADLAN_PM_79);
+				$attachMessage = str_replace(array('[x]', '[y]'), array(count($orphans), count($missing)), ADLAN_PM_79);
 				if (TRUE)
 				{	// Mostly for testing - probably disable this
 					if (count($orphans))
@@ -741,7 +741,7 @@ class private_msg_ui extends e_admin_ui
 			}
 
 
-			e107::getLog()->logArrayAll('PM_ADM_03', $this->makeLogEntry($results));
+			e107::getLog()->addArray($this->makeLogEntry($results))->save('PM_ADM_03');
 
 			foreach ($results as $k => $r)
 			{
@@ -881,7 +881,7 @@ class private_msg_ui extends e_admin_ui
         
         }
 
-		public function beforeCreate($new_data)
+		public function beforeCreate($new_data, $old_data)
 		{
 
 			if(empty($new_data['pm_to']))
@@ -991,11 +991,11 @@ class private_msg_block_ui extends e_admin_ui
 		protected $perPage 			= 10; 
 			
 		protected $fields 		= array (  'checkboxes' =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
-		  'pm_block_id' =>   array ( 'title' => 'LAN_ID', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'pm_block_from' =>   array ( 'title' => 'From', 'type' => 'boolean', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'pm_block_to' =>   array ( 'title' => 'To', 'type' => 'boolean', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'pm_block_datestamp' =>   array ( 'title' => 'LAN_DATESTAMP', 'type' => 'datestamp', 'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'pm_block_count' =>   array ( 'title' => 'Count', 'type' => 'boolean', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'pm_block_id' =>   array ( 'title' => 'LAN_ID', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => array(), 'writeParms' => array(), 'class' => 'left', 'thclass' => 'left',  ),
+		  'pm_block_from' =>   array ( 'title' => 'From', 'type' => 'boolean', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => array(), 'writeParms' => array(), 'class' => 'center', 'thclass' => 'center',  ),
+		  'pm_block_to' =>   array ( 'title' => 'To', 'type' => 'boolean', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => array(), 'writeParms' => array(), 'class' => 'center', 'thclass' => 'center',  ),
+		  'pm_block_datestamp' =>   array ( 'title' => 'LAN_DATESTAMP', 'type' => 'datestamp', 'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => array(), 'writeParms' => array(), 'class' => 'left', 'thclass' => 'left',  ),
+		  'pm_block_count' =>   array ( 'title' => 'Count', 'type' => 'boolean', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => array(), 'writeParms' => array(), 'class' => 'center', 'thclass' => 'center',  ),
 		  'options' =>   array ( 'title' => 'Options', 'type' => null, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 		);		
 		
@@ -1044,6 +1044,6 @@ require_once(e_ADMIN."auth.php");
 e107::getAdminUI()->runPage();
 
 require_once(e_ADMIN."footer.php");
-exit;
 
-?>
+
+

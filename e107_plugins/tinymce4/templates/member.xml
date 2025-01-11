@@ -3,7 +3,7 @@
 	<plugins>advlist autosave lists link image charmap print preview hr anchor pagebreak searchreplace wordcount visualchars fullscreen
         insertdatetime media nonbreaking table contextmenu directionality emoticons template paste textcolor </plugins>
 	<menubar>edit view insert format table tools</menubar>
-	<toolbar1>undo redo | bold italic underline forecolor | alignleft aligncenter alignright alignjustify | bullist numlist | outdent indent | link image  media table   | smileys | fullscreen</toolbar1>
+	<toolbar1>undo redo | bold italic underline forecolor | alignleft aligncenter alignright alignjustify | bullist numlist | outdent indent | link image  media table  | smileys | fullscreen</toolbar1>
 	<external_plugins>e107</external_plugins>
 	<image_advtab>false</image_advtab>
 	<media_alt_source>false</media_alt_source>

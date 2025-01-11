@@ -33,7 +33,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	 *
 	 * Behaviors should use
 	 * @code
-	 *   $(selector).once('behavior-name', function () {
+	 *   $(selector).one('behavior-name', function () {
 	 *     ...
 	 *   });
 	 * @endcode
@@ -123,12 +123,12 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	e107.behaviors.eAJAX = {
 		attach: function (context, settings)
 		{
-			$(context).find('.e-ajax').once('e-ajax').each(function ()
+			$(context).find('.e-ajax').each(function ()
 			{
 				var $this = $(this);
 				var event = $this.attr('data-event') || e107.callbacks.getDefaultEventHandler($this);
 
-				$this.on(event, function ()
+				$this.one(event, function ()
 				{
 					var $element = $(this);
 
@@ -143,12 +143,20 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 						method: $element.attr('data-method'),
 						// Image to show loading.
 						loading: $element.attr('data-loading'),
+						// FontAwesome icon name.
+						loadingIcon: $element.attr('data-loading-icon'),
+						// ID or class of container to place loading-icon within. eg. #mycontainer or .mycontainer
+						loadingTarget: $element.attr('data-loading-target'),
+                        // ID or class of form element to clear upon success. eg. #my-form-element
+						clearTarget: $element.attr('data-clear-target'),
 						// If this is a navigation controller, e.g. pager.
 						nav: $element.attr('data-nav-inc'),
 						// Old way - href='myscript.php#id-to-target.
 						href: $element.attr("href"),
 						// Wait for final event. Useful for keyUp, keyDown... etc.
-						wait: $element.attr('data-event-wait')
+						wait: $element.attr('data-event-wait'),
+						// Optional confirmation message - requires user input before proceeding. 
+						confirm: $element.attr('data-confirm'),
 					};
 
 					// If this is a navigation controller, e.g. pager.
@@ -160,6 +168,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 						ajaxOptions.url = $element.attr('data-src');
 						// Set Ajax type to "GET".
 						ajaxOptions.type = 'GET';
+
 					}
 
 					if(ajaxOptions.wait != null)
@@ -189,7 +198,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		{
 			if(typeof $.fn.tooltip !== 'undefined')
 			{
-				$(context).find('[data-toggle="tooltip"]').once('bootstrap-tooltip').each(function ()
+				$(context).find('[data-toggle="tooltip"]').one('bootstrap-tooltip').each(function ()
 				{
 					$(this).tooltip();
 				});
@@ -205,11 +214,14 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	e107.behaviors.eExpandIt = {
 		attach: function (context, settings)
 		{
-			$(context).find('.e-expandit').once('e-expandit').each(function ()
+			$(context).find('.e-expandit').one('e-expandit').each(function ()
 			{
+				$(this).show();
+
 				// default 'toggle'.
-				$(this).click(function ()
+				$(this).on('click', function ()
 				{
+
 					var $this = $(this);
 					var href = ($this.is("a")) ? $this.attr("href") : '';
 					var $button = $this.find('button');
@@ -254,8 +266,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 
 					if(href === "#" || href == "")
 					{
-						var idt = $(this).nextAll("div");
-						$(idt).slideToggle("slow");
+						$(this).nextAll("div").slideToggle("slow");
 						return true;
 					}
 
@@ -263,6 +274,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					{
 						if($(this).is(':visible'))
 						{
+							$this.addClass('open');
 							if($this.hasClass('e-expandit-inline'))
 							{
 								$(this).css('display', 'initial');
@@ -271,6 +283,10 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 							{
 								$(this).css('display', 'block'); //XXX 'initial' broke the default behavior.
 							}
+						}
+						else
+						{
+							$this.removeClass('open');
 						}
 					});
 
@@ -288,9 +304,10 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	e107.behaviors.eDialogClose = {
 		attach: function (context, settings)
 		{
-			$(context).find('.e-dialog-close').once('e-dialog-close').each(function ()
-			{
-				$(this).click(function ()
+			//$(context).find('.e-dialog-close').one('e-dialog-close').each(function ()
+			//{
+			//	$(this).click(function ()
+            $(context).on('click', '.e-dialog-close', function()
 				{
 					var $modal = $('.modal');
 					var $parentModal = parent.$('.modal');
@@ -311,6 +328,72 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 						$parentDismiss.trigger({type: 'click'});
 					}
 				});
+			//});
+		}
+	};
+
+	/**
+	 * Behavior to hide elements.
+	 *
+	 * @type {{attach: e107.behaviors.eHideMe.attach}}
+	 */
+	e107.behaviors.eHideMe = {
+		attach: function (context, settings)
+		{
+			$(context).find('.e-hideme').one('e-hide-me').each(function ()
+			{
+				$(this).hide();
+			});
+		}
+	};
+
+	/**
+	 * Behavior to initialize submit buttons.
+	 *
+	 * @type {{attach: e107.behaviors.buttonSubmit.attach}}
+	 */
+	e107.behaviors.buttonSubmit = {
+		attach: function (context, settings)
+		{
+			$(context).find('button[type=submit]').one('button-submit').each(function ()
+			{
+				$(this).on('click', function ()
+					{
+						var $button = $(this);
+						var $form = $button.closest('form');
+						var form_submited = false;
+						var type = $button.data('loading-icon');
+
+						if(type === undefined || $form.length === 0)
+						{
+							return true;
+						}
+
+						$form.submit(function ()
+						{
+							if ($form.find('.has-error').length > 0) {
+								return false;
+							}
+
+							if (form_submited) {
+								return false;
+							}
+							
+							var caption = "<i class='fa fa-spin " + type + " fa-fw'></i>";
+							caption += "<span>" + $button.text() + "</span>";
+
+							$button.html(caption);
+
+							if($button.attr('data-disable') == 'true')
+							{
+								$button.addClass('disabled');
+								form_submited = true;
+							}
+						});
+
+						return true;
+					}
+				);
 			});
 		}
 	};
@@ -348,6 +431,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		var val = src.match(/from=(\d+)/);
 		var amt = parseInt(val[1]);
 
+
 		var oldVal = 'from=' + amt;
 		var newVal = null;
 
@@ -374,6 +458,11 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		else
 		{
 			newVal = 'from=' + add;
+		}
+
+		if($(e).attr("data-nav-id"))
+		{
+			navid = '.' + $(e).attr("data-nav-id");
 		}
 
 		if(newVal)
@@ -465,6 +554,22 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 			$element.after($loadingImage);
 		}
 
+		if(options.confirm != null)
+		{
+			answer = confirm(options.confirm);
+
+			if(answer === false)
+			{
+				return null;
+			}
+		}
+
+		if(options.loadingIcon != null && options.loadingTarget != null)
+		{
+			var loadHtml = '<i class="e-ajax-loading fa fa-spin '+ options.loadingIcon +'"></i>';
+			$(options.loadingTarget).html(loadHtml);
+		}
+
 		// Old way - href='myscript.php#id-to-target.
 		if(options.target == null || options.url == null)
 		{
@@ -488,11 +593,18 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		// BC.
 		if(options.target && options.target.charAt(0) != "#" && options.target.charAt(0) != ".")
 		{
+		    console.log('BC Mode: adding # to target');
 			options.target = "#" + options.target;
 		}
 
 		var form = $element.closest("form");
 		var data = form.serialize() || '';
+
+		if($element.attr('data-disable') == 'true')
+		{
+			$element.addClass('disabled');
+			$element.prop('disabled', true);
+		}
 
 		$.ajax({
 			type: options.type || 'POST',
@@ -500,15 +612,37 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 			data: data,
 			complete: function ()
 			{
+				if(loadHtml)
+				{
+					$('.e-ajax-loading').hide();
+				}
+
+
+
+
+
 				if($loadingImage)
 				{
 					$loadingImage.remove();
+				}
+
+				if($element.attr('data-disable') == 'true')
+				{
+					setTimeout( function(){
+						$element.removeClass('disabled');
+						$element.prop('disabled', false)
+					}, 4000 );
 				}
 			},
 			success: function (response)
 			{
 				var $target = $(options.target);
 				var jsonObject = response;
+
+				if(options.clearTarget !== null)
+                {
+                    $(options.clearTarget).val('');
+                }
 
 				if(typeof response == 'string')
 				{
@@ -531,7 +665,15 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					// If result is a simple text/html.
 					e107.callbacks.ajaxResponseHandler($target, options, response);
 				}
-			}
+			},
+			error: function(response)
+            {
+
+                console.log("e-ajax Error");
+                console.log("e-ajax URL: "+options.url);
+       
+
+            }
 		});
 	};
 
@@ -715,12 +857,19 @@ $.ajaxSetup({
 
 $(document).ready(function()
 {
-		$(".e-hideme").hide();
-		$(".e-expandit").show();   	
-	
-    //	 $(".e-spinner").spinner(); //FIXME breaks tooltips
 
-    	 
+		// Basic Delete Confirmation
+		$('input.delete,button.delete,a[data-confirm]').click(function(){
+  			answer = confirm($(this).attr("data-confirm"));
+  			return answer; // answer is a boolean
+		});
+
+		$(".e-confirm").click(function(){
+  			answer = confirm($(this).attr("title"));
+  			return answer; // answer is a boolean
+		});
+
+
 		 //check all
 		 $("#check-all").click(function(event){
 		 		var val = $(this).val(), selector = '.field-spacer';
@@ -841,42 +990,7 @@ $(document).ready(function()
 					
 			$(id).hide("slow");
 			return false;
-		}); 
-		
-
-
-		$('button[type=submit]').on('click', function()
-		{
-				var caption = $(this).text();
-				var type 	= $(this).attr('data-loading-icon');
-				var formid 	=  $(this).closest('form').attr('id');
-				var but		= $(this);
-
-				if(type === undefined || (formid === undefined))
-				{
-					return true;
-				}
-
-				$('#'+formid).submit(function(){ // only animate on successful submission.
-
-					caption = "<i class='fa fa-spin " + type + " fa-fw'></i><span>" + caption + "</span>";
-
-					$(but).html(caption);
-
-					if( $(but).attr('data-disable') == 'true')
-					{
-
-						$(but).addClass('disabled');
-					}
-
-				});
-
-
-				return true;
-			}
-		);
-
-
+		});
 		
 		// Dates --------------------------------------------------
 		
@@ -1028,8 +1142,10 @@ $(document).ready(function()
 			{
 				pos = 'bottom';
 			}
-
-			$(this).tooltip({opacity:1.0, fade:true, placement: pos, container: 'body'});
+            if(typeof $.fn.tooltip !== 'undefined')
+            {
+                $(this).tooltip({opacity: 1.0, fade: true, placement: pos, container: 'body'});
+            }
 			// $(this).css( 'cursor', 'pointer' )
 		});
 
@@ -1375,8 +1491,7 @@ $(document).ready(function()
 // Legacy Stuff to be converted. 
 // BC Expandit() function 
 
-	var nowLocal = new Date();		/* time at very beginning of js execution */
-	var localTime = Math.floor(nowLocal.getTime()/1000);	/* time, in ms -- recorded at top of jscript */
+
 
 	
 	function expandit(e) {
@@ -1431,26 +1546,7 @@ $(document).ready(function()
 		
 		
 		
-function SyncWithServerTime(serverTime, path, domain)
-{
-	if (serverTime) 
-	{
-	  	/* update time difference cookie */
-		var serverDelta=Math.floor(localTime-serverTime);
-		if(!path) path = '/';
-		if(!domain) domain = '';
-		else domain = '; domain=' + domain;
-	  	document.cookie = 'e107_tdOffset='+serverDelta+'; path='+path+domain;
-	  	document.cookie = 'e107_tdSetTime='+(localTime-serverDelta)+'; path='+path+domain; /* server time when set */
-	}
 
-	var tzCookie = 'e107_tzOffset=';
-//	if (document.cookie.indexOf(tzCookie) < 0) {
-		/* set if not already set */
-		var timezoneOffset = nowLocal.getTimezoneOffset(); /* client-to-GMT in minutes */
-		document.cookie = tzCookie + timezoneOffset+'; path='+path+domain;
-//	}
-}
 	
 	
 	function urljump(url){

@@ -2,6 +2,8 @@ CREATE TABLE forum (
   `forum_id` int(10) unsigned NOT NULL auto_increment,
   `forum_name` varchar(250) NOT NULL default '',
   `forum_description` text,
+  `forum_image` varchar(250) DEFAULT NULL,
+  `forum_icon` varchar(250) DEFAULT NULL,
   `forum_parent` int(10) unsigned NOT NULL default '0',
   `forum_sub` int(10) unsigned NOT NULL default '0',
   `forum_datestamp` int(10) unsigned NOT NULL default '0',
@@ -18,6 +20,7 @@ CREATE TABLE forum (
   `forum_options` text,
   `forum_sef` varchar(250) default NULL,
   PRIMARY KEY  (`forum_id`),
+  UNIQUE KEY `forum_sef` (`forum_sef`),
   KEY `forum_parent` (`forum_parent`),
   KEY `forum_sub` (`forum_sub`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1;
@@ -40,7 +43,8 @@ CREATE TABLE forum_thread (
   PRIMARY KEY  (`thread_id`),
   KEY `thread_forum_id` (`thread_forum_id`),
   KEY `thread_sticky` (`thread_sticky`),
-  KEY `thread_lastpost` (`thread_lastpost`)
+  KEY `thread_lastpost` (`thread_lastpost`),
+  FULLTEXT (`thread_name`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 ;
 
 CREATE TABLE forum_post (
@@ -62,7 +66,8 @@ CREATE TABLE forum_post (
   KEY `post_thread` (`post_thread`),
   KEY `post_forum` (`post_forum`),
   KEY `post_datestamp` (`post_datestamp`),
-  KEY `post_user` (`post_user`)
+  KEY `post_user` (`post_user`),
+  FULLTEXT (`post_entry`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 ;
 
 CREATE TABLE forum_track (

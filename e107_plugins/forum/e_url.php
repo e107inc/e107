@@ -10,7 +10,7 @@
  * 
  * 	if (!defined('e107_INIT'))
  * 	{
- * 		require_once("../../class2.php");
+ * 		require_once(__DIR__.'/../../class2.php');
  * 	}
  * 
  */
@@ -29,44 +29,55 @@ class forum_url // plugin-folder + '_url'
 			'regex'			=> '^forum/rules/?',
 			'sef'			=> 'forum/rules',
 			'redirect'		=> '{e_PLUGIN}forum/forum.php?f=rules',
+			'legacy'		=> '{e_PLUGIN}forum/forum.php?f=rules',
 		);
 
 		$config['stats'] = array(
 			'regex'			=> '^forum/stats/?',
 			'sef'			=> 'forum/stats',
 			'redirect'		=> '{e_PLUGIN}forum/forum_stats.php',
+			'legacy'		=> '{e_PLUGIN}forum/forum_stats.php',
 		);
 
 		$config['track'] = array(
 			'regex'			=> '^forum/track/?',
 			'sef'			=> 'forum/track',
 			'redirect'		=> '{e_PLUGIN}forum/forum.php?f=track',
+			'legacy'		=> '{e_PLUGIN}forum/forum.php?f=track',
 		);
 
 		$config['markread']  = array(
 			'sef'           => '^forum/markread/{forum_id}',
 			'regex'			=> 'forum/markread/([\d]*)',
-			'redirect'      => '{e_PLUGIN}forum/forum.php?f=mfar&amp;id=$1',
-			'legacy'        => '{e_PLUGIN}forum/forum.php?f=mfar&amp;id={forum_id}'
+			'redirect'      => '{e_PLUGIN}forum/forum.php?f=mfar&id=$1',
+			'legacy'        => '{e_PLUGIN}forum/forum.php?f=mfar&id={forum_id}'
+		);
+
+		$config['new']  = array(
+            'regex'			=> '^forum/new$/?',
+			'sef'           => 'forum/new',
+			'redirect'      => '{e_PLUGIN}forum/forum.php?new',
+			'legacy'        => '{e_PLUGIN}forum/forum.php?new'
 		);
 
 		$config['post'] = array(
 			'regex'			=> '^forum/post/?',
 			'sef'			=> 'forum/post/',
 			'redirect'		=> '{e_PLUGIN}forum/forum_post.php',
+			'legacy'		=> '{e_PLUGIN}forum/forum_post.php',
 		);
 
 		// only create url  - parsed above.
 		$config['move'] = array(
-			'sef'           => 'forum/post/?f=move&amp;id={thread_id}',
-			'legacy'        => '{e_PLUGIN}forum/forum_post.php?f=move&amp;id={thread_id}'
+			'sef'           => 'forum/post/?f=move&id={thread_id}',
+			'legacy'        => '{e_PLUGIN}forum/forum_post.php?f=move&id={thread_id}'
 		);
 
 
 
 		$config['split'] = array(
-			'sef'           => 'forum/post/?f=split&amp;id={thread_id}&amp;post={post_id}',
-			'legacy'        => '{e_PLUGIN}forum/forum_post.php?f=split&amp;id={thread_id}&amp;post={post_id}'
+			'sef'           => 'forum/post/?f=split&id={thread_id}&post={post_id}',
+			'legacy'        => '{e_PLUGIN}forum/forum_post.php?f=split&id={thread_id}&post={post_id}'
 		);
 
 		$config['topic'] = array(
@@ -75,6 +86,13 @@ class forum_url // plugin-folder + '_url'
 			'sef'			=> 'forum/{forum_sef}/{thread_id}/{thread_sef}/',
 			'redirect'		=> '{e_PLUGIN}forum/forum_viewtopic.php?id=$2&$4'
 		);
+        
+		$config['topic-canonical'] = array(
+			'regex'         => 'forum\/([^\/]*)\/([\d]*)(?:\/|-)([\w-]*)/?\??(.*)',
+		//	'regex'			=> '^forum/(.*)/(\d*)(?:-|/)([\w-]*)/?\??(.*)',
+			'sef'			=> 'forum/{forum_sef}/{thread_id}/?p={thread_page}',
+			'redirect'		=> '{e_PLUGIN}forum/forum_viewtopic.php?id=$2&$4'
+		);        
 /*
 		$config['subforum'] = array(
 			'regex'			=> '^forum/(.*)/(.*)$',
@@ -88,7 +106,7 @@ class forum_url // plugin-folder + '_url'
 			'regex'			=> '^forum\/?$', 						// matched against url, and if true, redirected to 'redirect' below.
 			'sef'			=> 'forum', 							// used by e107::url(); to create a url from the db table.
 			'redirect'		=> '{e_PLUGIN}forum/forum.php', 		// file-path of what to load when the regex returns true.
-
+			'legacy'		=> '{e_PLUGIN}forum/forum.php',
 		);
 
 
@@ -98,8 +116,6 @@ class forum_url // plugin-folder + '_url'
 			'redirect'		=> '{e_PLUGIN}forum/forum_viewforum.php?sef=$1&$2',
 			'legacy'        => '{e_PLUGIN}forum/forum_viewforum.php?id={forum_id}'
 		);
-
-
 
 
 		return $config;

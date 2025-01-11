@@ -7,7 +7,22 @@
  */
 function url_shortcode($parm)
 {
-	list($route, $parms) = eHelper::scDualParams($parm);
+	if(empty($parm))
+	{
+		return null;
+	}
+
+	$tmp = eHelper::scDualParams($parm);
+
+	$route = varset($tmp[1]);
+	$parms = varset($tmp[2]);
+
+	if(empty($route))
+	{
+		return null;
+	}
+
+//	list($route, $parms) = eHelper::scDualParams($parm);
 	if(empty($route)) return '';
 	
 	$options = array();
@@ -16,5 +31,6 @@ function url_shortcode($parm)
 		$options = $parms['options'];
 		unset($parms['options']);
 	}
+
 	return e107::getUrl()->create($route, $parms, $options);
 }

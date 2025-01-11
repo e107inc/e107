@@ -73,4 +73,3 @@ function forumDeletePost($postId)
 	return LAN_CANCEL.' and '.$ret.' '.FORLAN_7.'.';
 }
 
-?>

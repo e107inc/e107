@@ -16,7 +16,7 @@ if (!defined('e107_INIT'))
 }
 
 
-define('ADMINFEEDMORE', 'http://e107.org/blog');
+define('ADMINFEEDMORE', 'https://e107.org/blog');
 
 
 
@@ -29,13 +29,75 @@ class adminstyle_infopanel
 	
 	function __construct()
 	{
+
+		if(!ADMIN)
+		{
+			return null;
+		}
+
+
+		$coreUpdateCheck = '';
+		$addonUpdateCheck = '';
+
+
+		if( e107::getSession()->get('core-update-status') !== true)
+		{
+			$coreUpdateCheck = "
+				$('#e-admin-core-update').html('<i title=\"".LAN_CHECKING_FOR_UPDATES."\" class=\"fa fa-spinner fa-spin\"></i>');
+  		    	$.get('".e_ADMIN."admin.php?mode=core&type=update', function( data ) {
+ 		    	
+  		    	var res = $.parseJSON(data);
+		    
+  		    	if(res === true)
+  		    	{
+  		    	    $('#e-admin-core-update').html('<span class=\"text-info\"><i class=\"fa fa-database\"></i></span>');
+  		    	    
+  		    	     $('[data-toggle=\"popover\"]').popover('show');
+	                 $('.popover').on('click', function() 
+	                 {
+	                     $('[data-toggle=\"popover\"]').popover('hide');
+	           		});
+  		    	}
+  		    	else
+  		    	{
+  		    	    // Hide li element.
+  		    		$('#e-admin-core-update').parent().hide();
+  		    	}
+			   
+			});
+			
+			";
+
+		}
+
+		if( e107::getSession()->get('addons-update-checked') !== true)
+		{
+			$addonUpdateCheck = "
+			$('#e-admin-addons-update').load('".e_ADMIN."admin.php?mode=addons&type=update');
+			";
+
+		}
+
+
+
 		$code = "
 		jQuery(function($){
   			$('#e-adminfeed').load('".e_ADMIN."admin.php?mode=core&type=feed');
   		    $('#e-adminfeed-plugin').load('".e_ADMIN."admin.php?mode=addons&type=plugin');
   		    $('#e-adminfeed-theme').load('".e_ADMIN."admin.php?mode=addons&type=theme');
+  		    
+  		    ".$coreUpdateCheck."
+  		    ".$addonUpdateCheck."
+		
 		});
 		";
+
+
+
+
+
+
+
 		
 		e107::js('inline',$code,'jquery');
 		
@@ -167,28 +229,10 @@ class adminstyle_infopanel
 		$myE107 = varset($user_pref['core-infopanel-mye107'], array());
 		if(empty($myE107)) // Set default icons.
 		{
-			$defArray = array(
-				0  => 'e-administrator',
-				1  => 'e-cpage',
-				2  => 'e-frontpage',
-				3  => 'e-mailout',
-				4  => 'e-image',
-				5  => 'e-menus',
-				6  => 'e-meta',
-				7  => 'e-newspost',
-				8  => 'e-plugin',
-				9  => 'e-prefs',
-				10 => 'e-links',
-				11 => 'e-theme',
-				12 => 'e-userclass2',
-				13 => 'e-users',
-				14 => 'e-wmessage'
-			);
-			$user_pref['core-infopanel-mye107'] = $defArray;
+			$user_pref['core-infopanel-mye107'] = e107::getNav()->getDefaultAdminPanelArray();
 		}
 		
-       
-		
+
 	//	"<form method='post' action='".e_SELF."?".e_QUERY."'>";
 		
 		$tp->parseTemplate("{SETSTYLE=core-infopanel}");
@@ -199,36 +243,24 @@ class adminstyle_infopanel
 		$mainPanel = "
 		<div id='core-infopanel_mye107' >
 		";
-		
-		/*
-		$mainPanel .= '<span class="pull-right">
-		          <span class="options">
-		            <div class="btn-group">
-		              <a class="dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i></a>
-		              <ul class="dropdown-menu black-box-dropdown dropdown-right">
-		                <li>'.$this->render_infopanel_icons().'</li>
-		              </ul>
-		            </div>
-		          </span>
-		        </span>';
-		
-		*/
-		
-	//	print_a($user_pref['core-infopanel-mye107']);
-        
-		$mainPanel .= "
-		
-		
-		
-		
-			
-				<div class='left'>";
-			
+
+		$mainPanel .= "<div class='left'>";
+			$count = 0;
 			foreach ($this->iconlist as $key=>$val)
 			{
-				if (!vartrue($user_pref['core-infopanel-mye107']) || in_array($key, $user_pref['core-infopanel-mye107']))
+				if(in_array($key, $user_pref['core-infopanel-mye107']))
 				{
-					$mainPanel .= e107::getNav()->renderAdminButton($val['link'], $val['title'], $val['caption'], $val['perms'], $val['icon_32'], "div");
+					if($tmp = e107::getNav()->renderAdminButton($val['link'], $val['title'], $val['caption'], $val['perms'], $val['icon_32'], "div"))
+					{
+						$mainPanel .= $tmp;
+						$count++;
+					}
+
+				}
+
+				if($count == 20)
+				{
+					break;
 				}
 			}
 	
@@ -236,6 +268,8 @@ class adminstyle_infopanel
 			$mainPanel .= "</div>
 	      
 			</div>";
+
+	//	e107::getDebug()->log($this->iconlist);
 
 		$caption = $tp->lanVars(LAN_CONTROL_PANEL, ucwords(USERNAME));
 
@@ -483,10 +517,10 @@ class adminstyle_infopanel
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 
-		if(!check_class('B')) // XXX problems?
-		{
+		//if(!check_class('B')) // XXX problems?
+	//	{
 	//		return;
-		}		
+	//	}
 				
 		if(!$rows = $sql->retrieve('comments','*','comment_blocked=2 ORDER BY comment_id DESC LIMIT 25',true) )
 		{
@@ -513,8 +547,8 @@ class adminstyle_infopanel
 			<li id='comment-".$row['comment_id']."' class='media".$hide."'>
 				<span class='media-object pull-left'>{USER_AVATAR=".$row['comment_author_id']."}</span> 
 				<div class='btn-group pull-right'>
-	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='delete' class='btn btn-sm btn-mini btn-danger'><i class='icon-remove'></i> ".LAN_DELETE."</button>
-	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='approve' class='btn btn-sm btn-mini btn-success'><i class='icon-ok'></i> ".LAN_APPROVE."</button>
+	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='delete' class='btn btn-sm btn-mini btn-danger'><i class='fa fa-remove'></i> ".LAN_DELETE."</button>
+	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='approve' class='btn btn-sm btn-mini btn-success'><i class='fa fa-check'></i> ".LAN_APPROVE."</button>
 	            </div>
 				<div class='media-body'>
 					<small class='muted smalltext'>".$tp->lanVars(LAN_POSTED_BY_X, $lanVar)."</small><br />
@@ -658,7 +692,7 @@ class adminstyle_infopanel
 	
 		if (e107::getDb()->gen($menu_qry))
 		{
-			while ($row = e107::getDb()->db_Fetch())
+			while ($row = e107::getDb()->fetch())
 			{
 				// Custom menu (core).
 				if(is_numeric($row['menu_path']))

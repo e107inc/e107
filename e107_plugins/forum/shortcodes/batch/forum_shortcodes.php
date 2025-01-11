@@ -8,22 +8,27 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+e107::plugLan('forum', 'front', true);
+
 class forum_shortcodes extends e_shortcode
 {
-	private $forum_rules, $gen;
+	private $forum_rules;
+	private $gen;
+	private $prefs;
 
 	public $newFlagList;
 
 	function __construct()
 	{
-		$this->forum_rules = forum_rules('check');
-    $this->gen = new convert;
+		$this->forum_rules = function_exists('forum_rules') ? forum_rules('check') : '';
+        $this->gen = e107::getDate();
+        $this->prefs = e107::pref('forum');
 	}
 
 	// START OF $FVARS
 	function sc_forumtitle()
 	{
-		return e107::pref('forum','title', LAN_PLUGIN_FORUM_NAME);	
+		return e107::pref('forum','title', defset('LAN_PLUGIN_FORUM_NAME'));
 	}
 
 // LEGACY shortcodes, to be deprecated & directly handled in template file???
@@ -64,18 +69,28 @@ class forum_shortcodes extends e_shortcode
 
 	function sc_statlink()
 	{
-		 return "<a href='".e_PLUGIN."forum/forum_stats.php'>".LAN_FORUM_0017."</a>\n";
+		return "<a href='".e107::url('forum','stats')."'>".LAN_FORUM_0017."</a>\n";
 	}
 
 	function sc_iconkey()
 	{
+		if(!defined('IMAGE_new_small'))
+		{
+			if(ADMIN)
+			{
+				return "<div class='alert'>IMAGE_new_small has not been defined</div>";
+			}
+
+			return null;
+		}
+
 		 return "
 		<table class='table table-bordered' style='width:100%'>\n<tr>
-		<td style='width:2%'>".IMAGE_new_small."</td>
+		<td style='width:2%'>".defset('IMAGE_new_small')."</td>
 		<td style='width:10%'><span class='smallblacktext'>".LAN_FORUM_0039."</span></td>
-		<td style='width:2%'>".IMAGE_nonew_small."</td>
+		<td style='width:2%'>".defset('IMAGE_nonew_small')."</td>
 		<td style='width:10%'><span class='smallblacktext'>".LAN_FORUM_0040."</span></td>
-		<td style='width:2%'>".IMAGE_closed_small."</td>
+		<td style='width:2%'>".defset('IMAGE_closed_small')."</td>
 		<td style='width:10%'><span class='smallblacktext'>".LAN_FORUM_0041."</span></td>
 		</tr>\n</table>\n";
   }
@@ -83,25 +98,35 @@ class forum_shortcodes extends e_shortcode
 
 	function sc_logo()
 	{
+		if(!defined('IMAGE_e'))
+		{
+			return null;
+		}
+
 		return IMAGE_e;	
 	}
 
 	function sc_newimage()
 	{
+		if(!defined('IMAGE_new_small'))
+		{
+			return null;
+		}
+
 		return IMAGE_new_small;	
 	}
 
 	function sc_userinfo()
 	{
 		//---- Pass globals via $sc?????
-		  global $forum, $pref;
+		 global $forum, $pref;
 
 		$text = "<a href='".e_BASE."top.php?0.top.forum.10'>".LAN_FORUM_0010."</a> | <a href='".e_BASE."top.php?0.active'>".LAN_FORUM_0011."</a>";
 		if(USER)
 		{
-			$text .= " | <a href='".e_BASE.'userposts.php?0.forums.'.USERID."'>".LAN_FORUM_0012."</a> | <a href='".e_BASE."usersettings.php'>".LAN_FORUM_0013."</a> | <a href='".e_HTTP."user.php ?id.".USERID."'>".LAN_FORUM_0014."</a>";
+			$text .= " | <a href='".e_BASE.'userposts.php?0.forums.'.USERID."'>".LAN_FORUM_0012."</a> | <a href='".e_BASE."usersettings.php'>".LAN_FORUM_0013."</a> | <a href='".e_HTTP."user.php?id.".USERID."'>".LAN_FORUM_0014."</a>";
 		// To be reworked to get the $forum var
-			if($forum->prefs->get('attach') && (check_class($pref['upload_class']) || getperms('0')))
+			if(!empty($this->prefs['attach']) && (check_class($pref['upload_class']) || getperms('0')))
 			{
 				$text .= " | <a href='".e_PLUGIN."forum/forum_uploads.php'>".LAN_FORUM_0015."</a>";
 			}
@@ -127,9 +152,9 @@ class forum_shortcodes extends e_shortcode
 		}
 
 		// To be reworked to get the $forum var
-		$trackPref = $forum->prefs->get('track');
-//var_dump($forum->checkPerm($this->var['forum_id'], 'post'));
-		if(!empty($trackPref) && $forum->checkPerm($this->var['forum_id'], 'post'))
+		$trackPref = varset($this->prefs['track']);
+
+		if(!empty($trackPref) && is_object($forum) && $forum->checkPerm($this->var['forum_id'], 'post'))
 		{
 			$uInfo[2] = "<a href='".e107::url('forum','track')."'>".LAN_FORUM_0030."</a>";
 		}
@@ -139,6 +164,7 @@ class forum_shortcodes extends e_shortcode
 
 	function sc_userlist()
 	{
+		$text = '';
 		if(!defined('e_TRACKING_DISABLED'))
 		{
 		// String candidate for USERLIST wrapper
@@ -154,34 +180,41 @@ class forum_shortcodes extends e_shortcode
 				{
 					list($oid, $oname) = explode(".", $uinfo, 2);
 					$c ++;
-					$text .= "<a href='".e_HTTP."user.php ?id.$oid'>$oname</a>".($c == MEMBERS_ONLINE ? "." :", ");
+					$text .= "<a href='".e_HTTP."user.php?id.$oid'>$oname</a>".($c == MEMBERS_ONLINE ? "." :", ");
 				}
 
 			}
 		// String candidate for USERLIST wrapper
-			$text .= "<br /><a rel='external' href='".e_BASE."online.php'>".LAN_FORUM_0037."</a> ".LAN_FORUM_0038;
+			$text .= "<br /><a rel='external' href='".e_HTTP."online.php'>".LAN_FORUM_0037."</a> ".LAN_FORUM_0038;
 		}
 		  return $text;
 	}
 
-	function sc_search()
+	/**
+	 * @example {SEARCH: placeholder=Search forums} - sets placeholder 'Search forums'
+	 * @example {SEARCH: buttonclass=btn btn-small} - sets button class 'btn btn-small'
+	*/
+	function sc_search($parm=null)
 	{
 
-		 if(!$srchIcon = e107::getParser()->toGlyph('fa-search'))
+		if(!deftrue('FONTAWESOME') || !$srchIcon = e107::getParser()->toGlyph('fa-search'))
 		{
 			$srchIcon = LAN_SEARCH;
 		}
 
+		$buttonclass 	= (!empty($parm['buttonclass'])) ? "class='".$parm['buttonclass']."'" : "class='btn btn-default btn-secondary button'";
+		$placeholder    = (!empty($parm['placeholder'])) ? $parm['placeholder'] : LAN_SEARCH;
+
 		// String candidate for USERLIST wrapper
 		return "
-		<form method='get' class='form-inline input-append' action='".e_BASE."search.php'>
+		<form method='get' class='form-inline input-append' action='".e_HTTP."search.php'>
 		<div class='input-group'>
 		<input type='hidden' name='r' value='0' />
 		<input type='hidden' name='t' value='forum' />
 		<input type='hidden' name='forum' value='all' />
-		<input class='tbox form-control' type='text' name='q' size='20' value='' maxlength='50' />
+		<input class='tbox form-control' type='text' name='q' size='20' value='' placeholder='".$placeholder."' maxlength='50' />
 		<span class='input-group-btn'>
-		<button class='btn btn-default button' type='submit' name='s' value='search' />".$srchIcon."</button>
+		<button ".$buttonclass." type='submit' name='s' value='search' >".$srchIcon."</button>
 		</span>
 		</div>
 
@@ -195,70 +228,73 @@ class forum_shortcodes extends e_shortcode
 
 	function sc_info()
 	{
-		//$fVars->INFO = "";
-		//  global $forum;
-		//$sql = e107::getDb();
-		//$gen = new convert;
-		if (ANON == TRUE)
+	//	global $forum;
+		$allread = false;
+		$total_new_threads = 0;
+		$total_read_threads = 0;
+		$text = '';
+
+		if(ANON == true)
 		{
-			$text = LAN_FORUM_0049.'<br />'.LAN_FORUM_0050." <a href='".e_SIGNUP."'>".LAN_FORUM_0051."</a> ".LAN_FORUM_0052;
+			$text = LAN_FORUM_0049 . '<br />' . LAN_FORUM_0050 . " <a href='" . e_SIGNUP . "'>" . LAN_FORUM_0051 . "</a> " . LAN_FORUM_0052;
 		}
-		elseif(USER == FALSE)
+		elseif(USER == false)
 		{
-			$text = LAN_FORUM_0049.'<br />'.LAN_FORUM_0053." <a href='".e_SIGNUP."'>".LAN_FORUM_0054."</a> ".LAN_FORUM_0055;
+			$text = LAN_FORUM_0049 . '<br />' . LAN_FORUM_0053 . " <a href='" . e_SIGNUP . "'>" . LAN_FORUM_0054 . "</a> " . LAN_FORUM_0055;
 		}
 
-		if (USER == TRUE)
+		if(USER == true)
 		{
-			$total_new_threads = e107::getDb()->count('forum_thread', '(*)', "WHERE thread_datestamp>'".USERLV."' ");
-				$total_read_threads = 0;
-			if (USERVIEWED != "")
+			$total_new_threads = defined('USERLV') ? e107::getDb()->count('forum_thread', '(*)', "WHERE thread_datestamp>'" . USERLV . "' ") : 0;
+			$total_read_threads = 0;
+
+			if(defined('USERVIEWED') && defset('USERVIEWED') != "")
 			{
 				$tmp = explode(".", USERVIEWED); // List of numbers, separated by single period
 				$total_read_threads = count($tmp);
 			}
-		/*
-			else
-			{
-				$total_read_threads = 0;
-			}
-		*/
+			/*
+				else
+				{
+					$total_read_threads = 0;
+				}
+			*/
 
-		//		$gen = new convert;
-			$text = LAN_FORUM_0018." ".USERNAME."<br />";
-			$lastvisit_datestamp = $this->gen->convert_date(USERLV, 'long'); //FIXME Use e107::getParser()->toDate();
+			//		$gen = new convert;
+			$text = LAN_FORUM_0018 . " " . USERNAME . "<br />";
+			$lastvisit_datestamp = defined('USERLV') ? $this->gen->convert_date(USERLV, 'long') : '';
 			$datestamp = $this->gen->convert_date(time(), "long");
 
-		/*
-			if (!$total_new_threads)
-			{
-				$text .= LAN_FORUM_0019." ";
-			}
-			elseif($total_new_threads == 1)
-			{
-				$text .= LAN_FORUM_0020;
-			}
-			else
-			{
-				$text .= LAN_FORUM_0021." ".$total_new_threads." ".LAN_FORUM_0022." ";
-			}
-		*/
-				$text .= (!$total_new_threads?LAN_FORUM_0019." ":($total_new_threads == 1?LAN_FORUM_0020:LAN_FORUM_0021." ".$total_new_threads." ".LAN_FORUM_0022." ")).LAN_FORUM_0023;
-		//	$text .= LAN_FORUM_0023;
-		//	if ($total_new_threads == $total_read_threads && $total_new_threads != 0 && $total_read_threads >= $total_new_threads)
-			if ($total_new_threads != 0 && $total_read_threads >= $total_new_threads)
+			/*
+				if (!$total_new_threads)
+				{
+					$text .= LAN_FORUM_0019." ";
+				}
+				elseif($total_new_threads == 1)
+				{
+					$text .= LAN_FORUM_0020;
+				}
+				else
+				{
+					$text .= LAN_FORUM_0021." ".$total_new_threads." ".LAN_FORUM_0022." ";
+				}
+			*/
+			$text .= (!$total_new_threads ? LAN_FORUM_0019 . " " : ($total_new_threads == 1 ? LAN_FORUM_0020 : LAN_FORUM_0021 . " " . $total_new_threads . " " . LAN_FORUM_0022 . " ")) . LAN_FORUM_0023;
+			//	$text .= LAN_FORUM_0023;
+			//	if ($total_new_threads == $total_read_threads && $total_new_threads != 0 && $total_read_threads >= $total_new_threads)
+			if($total_new_threads != 0 && $total_read_threads >= $total_new_threads)
 			{
 				$text .= LAN_FORUM_0029;
-				$allread = TRUE;
+				$allread = true;
 			}
 			elseif($total_read_threads != 0)
 			{
-				$text .= " (".LAN_FORUM_0027." ".$total_read_threads." ".LAN_FORUM_0028.")";
+				$text .= " (" . LAN_FORUM_0027 . " " . $total_read_threads . " " . LAN_FORUM_0028 . ")";
 			}
 
 			$text .= "<br />
-			".LAN_FORUM_0024." ".$lastvisit_datestamp."<br />
-			".LAN_FORUM_0025." ".$datestamp;
+			" . LAN_FORUM_0024 . " " . $lastvisit_datestamp . "<br />
+			" . LAN_FORUM_0025 . " " . $datestamp;
 		}
 		/*
 		else
@@ -281,10 +317,7 @@ class forum_shortcodes extends e_shortcode
 			$text .= "<br /><a href='".e_SELF."?mark.all.as.read'>".LAN_FORUM_0057.'</a>'.(e_QUERY != 'new' ? ", <a href='".e_SELF."?new'>".LAN_FORUM_0058."</a>" : '');
 		}
 
-		$forum = new e107forum;
-		//$trackPref = $forum->prefs->get('track');
-		//if (USER && vartrue($trackPref) && e_QUERY != 'track')
-		if (USER && vartrue($forum->prefs->get('track')) && e_QUERY != 'track')
+		if (USER && !empty($this->prefs['track']) && e_QUERY != 'track')
 		{
 			$text .= "<br /><a href='".e107::url('forum','track')."'>".LAN_FORUM_0030.'</a>';
 		}
@@ -296,6 +329,10 @@ class forum_shortcodes extends e_shortcode
 	function sc_foruminfo()
 	{
 		$sql = e107::getDb();
+
+		$users = 0;
+		$member_users = 0;
+		$guest_users = 0;
 
 		$total_topics = $sql->count("forum_thread", "(*)");
 		$total_replies = $sql->count("forum_post", "(*)");
@@ -311,7 +348,7 @@ class forum_shortcodes extends e_shortcode
 		}
 
 		return str_replace("[x]", ($total_topics+$total_replies), LAN_FORUM_0031)." ($total_topics ".($total_topics == 1 ? LAN_FORUM_0032 : LAN_FORUM_0033).", $total_replies ".($total_replies == 1 ? LAN_FORUM_0034 : LAN_FORUM_0035).")
-		".(!defined("e_TRACKING_DISABLED") ? "" : "<br />".$users." ".($users == 1 ? LAN_FORUM_0059 : LAN_FORUM_0060)." (".$member_users." ".($member_users == 1 ? LAN_FORUM_0061 : LAN_FORUM_0062).", ".$guest_users." ".($guest_users == 1 ? LAN_FORUM_0063 : LAN_FORUM_0064).")<br />".LAN_FORUM_0066." ".$total_members."<br />".LAN_FORUM_0065." <a href='".e_HTTP."user.php ?id.".$nuser_id."'>".$nuser_name."</a>.\n"); // FIXME cannot find other references to e_TRACKING_DISABLED, use pref?
+		".(!defined("e_TRACKING_DISABLED") ? "" : "<br />".$users." ".($users == 1 ? LAN_FORUM_0059 : LAN_FORUM_0060)." (".$member_users." ".($member_users == 1 ? LAN_FORUM_0061 : LAN_FORUM_0062).", ".$guest_users." ".($guest_users == 1 ? LAN_FORUM_0063 : LAN_FORUM_0064).")<br />".LAN_FORUM_0066." ".$total_members."<br />".LAN_FORUM_0065." <a href='".e_HTTP."user.php?id.".$nuser_id."'>".$nuser_name."</a>.\n"); // FIXME cannot find other references to e_TRACKING_DISABLED, use pref?
 	}
 
 
@@ -327,6 +364,16 @@ class forum_shortcodes extends e_shortcode
 	    return vartrue($status);
 	}
 
+
+	function sc_parentimage($parms=null)
+	{
+		if (empty($this->var['forum_image'])) return '';
+		if (!empty($parms) && !is_array($parms)) parse_str($parms, $parms);
+		if (empty($parms)) $parms = array();
+		$parms = array_merge(array('class'=>'img-fluid', 'h' => 50), $parms);
+		$text = e107::getParser()->toImage($this->var['forum_image'], $parms);
+		return $text.'&nbsp;';
+	}
 
 	function sc_parentname()
 	{
@@ -350,30 +397,53 @@ class forum_shortcodes extends e_shortcode
 		{
 
 			$url = $this->sc_lastpost(array('type'=>'url'));
-			return "<a href='".$url."'>".IMAGE_new.'</a>';
+			return "<a href='".$url."'>".defset('IMAGE_new').'</a>';
 		}
 		elseif(empty($this->var['forum_replies']) && defined('IMAGE_noreplies'))
 		{
-			return IMAGE_noreplies;
+			return defset('IMAGE_noreplies');
 		}
 
-		return IMAGE_nonew;
+		return defset('IMAGE_nonew');
 
 	}
 
 
-	function sc_forumname()
+	function sc_forumimage($parms=null)
 	{
-		//    global $f;
-		//	$tp = e107::getParser();
+		if(empty($this->var['forum_image'])) return '';
+
+		if (!empty($parms) && !is_array($parms)) parse_str($parms, $parms);
+		if (empty($parms)) $parms = array();
+		$parms = array_merge(array('class'=>'img-fluid', 'h' => 50), $parms);
+		$text = e107::getParser()->toImage($this->var['forum_image'], $parms);
+		return "<a href='".e107::url('forum', 'forum', $this->var)."'>{$text}</a>&nbsp;";
+
+	}
+
+	/**
+	* @example: {FORUMICON: size=2x} 
+	*/
+	function sc_forumicon($parms = null)
+	{
+		if(empty($this->var['forum_icon'])) return '';
+
+		return e107::getParser()->toIcon($this->var['forum_icon'], $parms);
+	}
+
+	function sc_forumname($parm = null)
+	{
 		if(substr($this->var['forum_name'], 0, 1) == '*')
 		{
 			$this->var['forum_name'] = substr($this->var['forum_name'], 1);
 		}
+
 		$this->var['forum_name'] = e107::getParser()->toHTML($this->var['forum_name'], true, 'no_hook');
 
+		$class = !empty($parm['class']) ? "class='".$parm['class']."'" : '';
+
 		$url = e107::url('forum', 'forum', $this->var);
-		return "<a href='".$url."'>{$this->var['forum_name']}</a>";
+		return "<a href='".$url."' ".$class.">{$this->var['forum_name']}</a>";
 
 	}
 
@@ -394,21 +464,36 @@ class forum_shortcodes extends e_shortcode
 	}
 
 
-	function sc_replies()
+	function sc_replies($parm = '')
 	{
-		return $this->sc_repliesx();
+		return $this->sc_repliesx($parm);
 	}
 
 
-	function sc_threadsx() // EQUAL TO SC_THREADS.......................
+	function sc_threadsx($parm = null) // EQUAL TO SC_THREADS.......................
 	{
-		return e107::getParser()->toBadge($this->var['forum_threads']);
+		$val = ($this->var['forum_threads']) ? $this->var['forum_threads'] : '0';
+
+		if(!empty($parm['raw']))
+		{
+			return $val;
+		}
+
+		return e107::getParser()->toBadge($val);
 	}
 
 
-	function sc_repliesx() // EQUAL TO SC_REPLIES.......................
+	function sc_repliesx($parm = null) // EQUAL TO SC_REPLIES.......................
 	{
-		return e107::getParser()->toBadge($this->var['forum_replies']);
+		//print_a($parm);
+		$val = ($this->var['forum_replies']) ? $this->var['forum_replies'] : '0';
+
+		if(!empty($parm['raw']))
+		{
+			return $val;
+		}
+
+		return e107::getParser()->toBadge($val);
 	}
 
 
@@ -486,32 +571,25 @@ class forum_shortcodes extends e_shortcode
 	function sc_startertitle()
 	{
 
-		$author_name = ($this->var['user_name'] ? $this->var['user_name'] : $this->var['lastuser_anon']);
+		$author_name = (!empty($this->var['user_name']) ? $this->var['user_name'] : varset($this->var['lastuser_anon']));
 
-//--		$datestamp = $gen->convert_date($thread['thread_lastpost'], 'forum');
-		$datestamp = $this->gen->convert_date($this->var['thread_lastpost'], 'forum');
+		$datestamp = !empty($this->var['thread_lastpost']) ? $this->gen->convert_date($this->var['thread_lastpost'], 'forum') : '';
 
   
-		if(!$this->var['user_name'])
+		if(!empty($this->var['user_name']))
 		{
 			return $author_name.'<br />'.$datestamp;
 		}
 
 //			return "<a href='".$e107->url->create('user/profile/view', array('id' => $thread['thread_lastuser'], 'name' => $sc->author_name))."'>{$sc->author_name}</a><br />".$sc->datestamp;
-			return "<a href='".e107::getUrl()->create('user/profile/view', array('id' => $this->var['thread_lastuser'], 'name' => $author_name))."'>{$author_name}</a><br />".$datestamp;
+		return isset($this->var['thread_lastuser']) ? "<a href='".e107::getUrl()->create('user/profile/view', array('id' => $this->var['thread_lastuser'], 'name' => $author_name))."'>{$author_name}</a><br />".$datestamp : '';
 //----		}
 	}
 
 
 	function sc_newspostname()
 	{
-		//  global $thread;
-		//	$e107 = e107::getInstance();
-		//	$tp = e107::getParser();
-
-		//		return empty($thread)?LAN_FORUM_0029:"<a href='".$e107->url->create('forum/thread/last', $thread)."'>".$tp->toHTML($thread['thread_name'], TRUE, 'no_make_clickable, no_hook').'</a>';
-		// Only $this->var???'
-		return empty($this->var) ? LAN_FORUM_0029:"<a href='".e107::getUrl()->create('forum/thread/last', $this->var)."'>".e107::getParser()->toHTML($this->var['thread_name'], TRUE, 'no_make_clickable, no_hook').'</a>';
+		return empty($this->var) || empty($this->var['thread_name']) ? LAN_FORUM_0029 : "<a href='".e107::getUrl()->create('forum/thread/last', $this->var)."'>".e107::getParser()->toHTML($this->var['thread_name'], TRUE, 'no_make_clickable, no_hook').'</a>';
 	}
 
 
@@ -523,7 +601,7 @@ class forum_shortcodes extends e_shortcode
 		return $frm->breadcrumb($breadarray);
 	}
 
-	function sc_avatar($opts)
+	function sc_avatar($opts=null)
 	{
 		return e107::getParser()->toAvatar(e107::user($this->var['forum_lastpost_user']),$opts);
 	}

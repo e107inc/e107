@@ -385,7 +385,7 @@ function preview_image(src_val,img_path, not_found)
 
 
 //-->";
-header ('ETag: "' . md5($text).'"' );
+header ('ETag: "' . md5($js).'"' );
 echo $js;
 echo_gzipped_page(); 
 ?>

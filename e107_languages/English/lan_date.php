@@ -1,14 +1,4 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_date.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
-*/
 
 define("LANDT_01", "year");
 define("LANDT_02", "month");
@@ -30,8 +20,9 @@ define("LANDT_08s", "mins");
 define("LANDT_09", "sec");
 define("LANDT_09s", "secs");
 define("LANDT_AGO", "ago");
+define("LANDT_IN", "in");
 
 define("LANDT_10", "Just now");
 
-
-?>
+define("LANDT_XAGO", "[x] ago");
+define("LANDT_INX", "in [x]");

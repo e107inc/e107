@@ -16,7 +16,7 @@ foreach($flist as $f)
 		
 		
 		
-		if($bc[$f]['sep'])
+		if(isset($bc[$f]['sep']))
 		{
 			$ret .= $bc[$f]['sep'];
 		}
@@ -31,7 +31,7 @@ if(deftrue('BOOTSTRAP'))
 	
 	foreach($flist as $f)
 	{
-		if($bc[$f]['value'])
+		if(isset($bc[$f]['value']))
 		{
 			$opt[] = $bc[$f]['value'];
 		}	

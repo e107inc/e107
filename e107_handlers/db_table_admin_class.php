@@ -21,16 +21,23 @@
  Note: there are some uncommented 'echo' statements which are intentional to highlight that something's gone wrong! (not that it should, of course)
  */
 
- 
-// DEPRECATED - USE db_verify_class where possible. 
 
+/**
+ *
+ */
 class db_table_admin
 {
-	var $file_buffer = ''; // Contents of a file
-	var $last_file = '';
+	protected $file_buffer = ''; // Contents of a file
+	protected $last_file = '';
+	protected $errors = array();
 	
 	// Get list of fields and keys for a table - return FALSE if unsuccessful
 	// Return as for get_table_def
+	/**
+	 * @param $table_name
+	 * @param $prefix
+	 * @return false|mixed|string
+	 */
 	function get_current_table($table_name, $prefix = "")
 	{
 		$sql = e107::getDb();
@@ -50,9 +57,9 @@ class db_table_admin
 		{
 			return FALSE;
 		}
-		$row = $sql->db_Fetch('num');
+		$row = $sql->fetch('num');
 		$tmp = str_replace("`", "", stripslashes($row[1])).';'; // Add semicolon to work with our parser
-		$count = preg_match_all("#CREATE\s+?TABLE\s+?`{0,1}({$prefix}{$table_name})`{0,1}\s+?\((.*?)\)\s+?(?:TYPE|ENGINE)\s*\=\s*(.*?);#is", $tmp, $matches, PREG_SET_ORDER);
+		$count = preg_match_all("#CREATE\s+?TABLE\s+?`?({$prefix}{$table_name})`?\s+?\((.*?)\)\s+?(?:TYPE|ENGINE)\s*\=\s*(.*?);#is", $tmp, $matches, PREG_SET_ORDER);
 		if ($count === FALSE)
 		{
 			return "Error occurred";
@@ -61,6 +68,12 @@ class db_table_admin
 		{
 			return "No matches";
 		}
+
+		if(isset($matches[0][2]) && is_string($matches[0][2]))
+		{
+			$matches[0][2] = trim($matches[0][2]);
+		}
+
 		return $matches;
 	}
 	
@@ -73,6 +86,7 @@ class db_table_admin
 	 *
 	 * @param string $table_name  - If specified, returns only that table's info; otherwise returns a list of all tables
 	 * 		The table name must include a prefix where appropriate (although not required with standard E107 table definition files)
+	 * @param string $file_name
 	 * @return  string|array
 	 *			- if error, returns a brief text message
 	 *			- if successful, returns an array of table definitions, each of which is itself an array:
@@ -104,7 +118,7 @@ class db_table_admin
 			$table_name = '\w+?';
 		}
 		// Regex should be identical to that in get_current_table (apart from the source text variable name)
-		$count = preg_match_all("#CREATE\s+?TABLE\s+?`{0,1}({$table_name})`{0,1}\s+?\((.*?)\)\s+?(?:TYPE|ENGINE)\s*\=\s*(.*?);#is", $this->file_buffer, $matches, PREG_SET_ORDER);
+		$count = preg_match_all("#CREATE\s+?TABLE\s+?`?({$table_name})`?\s+?\((.*?)\)\s+?(?:TYPE|ENGINE)\s*\=\s*(.*?);#is", $this->file_buffer, $matches, PREG_SET_ORDER);
 		if ($count === false)
 		{
 			return "Error occurred";
@@ -118,12 +132,19 @@ class db_table_admin
 	
 	// Parses the block of lines which make up the field and index definitions
 	// Returns an array where each entry is the definitions of a field or index
+	/**
+	 * @param $text
+	 * @return array|false
+	 */
 	function parse_field_defs($text)
 	{
+		$text = (string) $text;
 		$ans = array(
 		);
 		$text = str_replace("\r", "\n", $text);
 		$field_lines = explode("\n", $text);
+
+		$defs = array();
 		foreach ($field_lines as $fv)
 		{
 			unset($defs);
@@ -148,7 +169,7 @@ class db_table_admin
 					case 'UNIQUE':
 						if (count($fd) < 3)
 						{
-							echo "Truncated definition after UNIQUE {$i}: ".$fd[1]."<br />";
+							$this->errors[] = "Truncated definition after UNIQUE {$fv}: ".$fd[1]."<br />";
 						}
 						elseif (strtoupper($fd[1]) == 'KEY')
 						{
@@ -159,14 +180,14 @@ class db_table_admin
 						}
 						else
 						{
-							echo "Unrecognised word after UNIQUE in definition {$i}: ".$fd[1]."<br />";
+							$this->errors[] = "Unrecognised word after UNIQUE in definition {$fv}: ".$fd[1]."<br />";
 						}
 					break;
 					
 					case 'FULLTEXT':
 						if (count($fd) < 3)
 						{
-							echo "Truncated definition after FULLTEXT {$i}: ".$fd[1]."<br />";
+							$this->errors[] = "Truncated definition after FULLTEXT {$fv}: ".$fd[1]."<br />";
 						}
 						elseif (strtoupper($fd[1]) == 'KEY')
 						{
@@ -177,7 +198,7 @@ class db_table_admin
 						}
 						else
 						{
-							echo "Unrecognised word after FULLTEXT in definition {$i}: ".$fd[1]."<br />";
+							$this->errors[] = "Unrecognised word after FULLTEXT in definition {$fv}: ".$fd[1]."<br />";
 						}
 					break;
 					
@@ -218,7 +239,7 @@ class db_table_admin
 									}
 									else
 									{ // Syntax error
-										echo "Unrecognised word in definition {$i} after 'NOT': ".$fd[$i + 1]."<br />";
+										$this->errors[] = "Unrecognised word in definition {$i} after 'NOT': ".$fd[$i + 1]."<br />";
 									}
 								break;
 								case 'DEFAULT':
@@ -250,7 +271,7 @@ class db_table_admin
 					}
 					else
 					{
-						echo "Partial definition<br />";
+						$this->errors[] = "Partial definition<br />";
 					}
 				}
 			}
@@ -262,7 +283,12 @@ class db_table_admin
 		}
 		
 		// Utility routine - given our array-based definition, create a string MySQL field definition
-		function make_def($list)
+
+	/**
+	 * @param $list
+	 * @return mixed|string
+	 */
+	function make_def($list)
 		{
 			switch ($list['type'])
 			{
@@ -306,7 +332,13 @@ class db_table_admin
 		// Return a text list of differences, plus an array of MySQL queries to fix
 		// List1 is the reference, List 2 is the actual
 		// This version looks ahead on a failed match, and moves a field up in the table if already defined - should retain as much as possible
-		function compare_field_lists($list1, $list2, $stop_on_error = FALSE)
+	/**
+	 * @param $list1
+	 * @param $list2
+	 * @param $stop_on_error
+	 * @return array[]|bool
+	 */
+	function compare_field_lists($list1, $list2, $stop_on_error = FALSE)
 		{
 			$i = 0; // Counts records in list1 (required format)
 			$j = 0; // Counts records in $created_list (our 'table so far' list)
@@ -340,7 +372,7 @@ class db_table_admin
 							return FALSE;
 						}
 						$found = FALSE;
-						for ($k = $i + 1; $k < count($list1); $k++)
+						for ($k = $i + 1, $kMax = count($list1); $k < $kMax; $k++)
 						{
 							//		    echo "Compare ".$list1[$k]['name'].' with '.$list2[0]['name'];
 							if (strcasecmp($list1[$k]['name'], $list2[0]['name']) == 0)
@@ -361,7 +393,7 @@ class db_table_admin
 						}
 						
 						$found = FALSE;
-						for ($k = 0; $k < count($list2); $k++)
+						for ($k = 0, $kMax = count($list2); $k < $kMax; $k++)
 						{
 							//		    echo "Compare ".$list1[$i]['name'].' with '.$list2[$k]['name'];
 							if (strcasecmp($list1[$i]['name'], $list2[$k]['name']) == 0)
@@ -504,15 +536,19 @@ class db_table_admin
 				$error_list, $change_list
 			);
 		}
-		
-		function make_changes_list($result)
+
+	/**
+	 * @param $result
+	 * @return string
+	 */
+	function make_changes_list($result)
 		{
 			if (!is_array($result))
 			{
 				return "Not an array<br />";
 			}
 			$text = "<table>";
-			for ($i = 0; $i < count($result[0]); $i++)
+			for ($i = 0, $iMax = count($result[0]); $i < $iMax; $i++)
 			{
 				$text .= "<tr><td>{$result[0][$i]}</td>";
 				$text .= "<td>{$result[1][$i]}</td>";
@@ -523,14 +559,19 @@ class db_table_admin
 		}
 		
 		// Return a table of info from the output of get_table_def
-		function make_table_list($result)
+
+	/**
+	 * @param $result
+	 * @return string
+	 */
+	function make_table_list($result)
 		{
 			if (!is_array($result))
 			{
 				return "Not an array<br />";
 			}
 			$text = "<table>";
-			for ($i = 0; $i < count($result); $i++)
+			for ($i = 0, $iMax = count($result); $i < $iMax; $i++)
 			{
 				$text .= "<tr><td>{$result[$i][0]}</td>";
 				$text .= "<td>{$result[$i][1]}</td>";
@@ -542,7 +583,12 @@ class db_table_admin
 		}
 		
 		// Return a table of info from the output of parse_field_defs()
-		function make_field_list($fields)
+
+	/**
+	 * @param $fields
+	 * @return string
+	 */
+	function make_field_list($fields)
 		{
 			$text = "<table>";
 			foreach ($fields as $f)
@@ -608,7 +654,14 @@ class db_table_admin
 		// Return text string if $justCheck is TRUE and changes needed
 		// Return text string on most failures
 		// Return FALSE on certain failures (generally indicative of code/system problems)
-		function update_table_structure($newStructure, $justCheck = FALSE, $makeNewifNotExist = TRUE, $mlUpdate = FALSE)
+	/**
+	 * @param $newStructure
+	 * @param $justCheck
+	 * @param $makeNewifNotExist
+	 * @param $mlUpdate
+	 * @return bool|string
+	 */
+	function update_table_structure($newStructure, $justCheck = FALSE, $makeNewifNotExist = TRUE, $mlUpdate = FALSE)
 		{
 			global $sql;
 			// Pull out table name
@@ -673,17 +726,24 @@ class db_table_admin
 					}
 					if ($ret === FALSE)
 					{
-						return $sql->dbError();
+						return $sql->dbError(__METHOD__);
 					}
 				}
 				return TRUE; // Success even if no changes required
 			}
-			return FALSE;
+
 		}
-		
-		function createTable($pathToSqlFile = '', $tableName = '', $addPrefix = true, $renameTable = '')
+
+	/**
+	 * @param $pathToSqlFile
+	 * @param $tableName
+	 * @param $addPrefix
+	 * @param $renameTable
+	 * @return bool|int
+	 */
+	function createTable($pathToSqlFile = '', $tableName = '', $addPrefix = true, $renameTable = '')
 		{
-			$e107 = e107::getInstance();
+		//	$e107 = e107::getInstance();
 			$tmp = $this->get_table_def($tableName, $pathToSqlFile);
 			$createText = $tmp[0][0];
 			$newTableName = ($renameTable ? $renameTable : $tableName);
@@ -697,9 +757,79 @@ class db_table_admin
 			}
 			return e107::getDb()->gen($createText);
 		}
-		
+
+
+		/**
+		 * Used by $sql->makeTableDef() to create an e_CACHE_DB.$tableName.'.php' file.
+		 * @param array $fieldDefs
+		 * @return array as returned by parse_field_defs()
+		 */
+		public function make_field_types($fieldDefs=array())
+		{
+			$outDefs = array();
+
+			foreach ($fieldDefs as $k => $v)
+			{
+				switch ($v['type'])
+				{
+					case 'field' :
+					//	if (!empty($v['autoinc']))
+					//	{
+							//break;		Probably include autoinc fields in array
+					//	}
+
+						$baseType = preg_replace('#\(.*?\)#', '', $v['fieldtype']);		// Should strip any length
+
+						switch ($baseType)
+						{
+							case 'int' :
+							case 'integer':
+							case 'smallint':
+							case 'shortint' :
+							case 'tinyint' :
+							case 'mediumint':
+							case 'bigint':
+								$outDefs['_FIELD_TYPES'][$v['name']] = 'int';
+								break;
+
+							case 'char' :
+							case 'text' :
+							case 'varchar' :
+							case 'tinytext' :
+							case 'mediumtext' :
+							case 'longtext' :
+							case 'enum' :
+								$outDefs['_FIELD_TYPES'][$v['name']] = 'escape'; //XXX toDB() causes serious BC issues.
+								break;
+						}
+
+					//	if($v['name'])
+
+
+						if (isset($v['nulltype']) && !isset($v['default']))
+						{
+							$outDefs['_NOTNULL'][$v['name']] = '';
+						}
+						break;
+					case 'pkey' :
+					case 'ukey' :
+					case 'key' :
+					case 'ftkey' :
+						break;			// Do nothing with keys for now
+					default :
+						$this->errors[] = "Unexpected field type: {$k} => {$v['type']}<br />";
+				}
+			}
+
+			return $outDefs;
+
+
+		}
+
+
+
 	}
 	
 
 
-?>
+

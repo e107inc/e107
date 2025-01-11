@@ -26,40 +26,37 @@ if (!defined('e107_INIT'))
  */
 
 
-
-
 if (!function_exists('strptime'))
 {
-
-	define('STRPTIME_COMPAT', true);
-	function strptime($str, $format)
+	/**
+	 * @param $date
+	 * @param $format
+	 * @return array|bool
+	 */
+	function strptime($date, $format)
 	{
-		return e107::getDate()->strptime($str,$format);	
-	} 
-	
+		return eShims::strptime($date, $format);
+	}
 }
 
-//PHP < 5.2 compatibility
-if (!function_exists('json_encode'))
+/*
+if (!function_exists('strftime'))
 {
-    require_once(e_HANDLER.'json_compat_handler.php');
-    function json_encode($array)
-    {
-        $json = new Services_JSON();
-        return $json->encode($array);
-    }
+	function strftime($format, $timestamp)
+	{
+		return eShims::strftime($format, $timestamp);
+	}
+}*/
 
-    function json_decode($json_obj)
-    {
-        $json = new Services_JSON();
-        return $json->decode($json_obj);
-    }
-}
 
 // Fix for exim missing.
 if(!function_exists('exif_imagetype'))
 {
-    function exif_imagetype($filename)
+	/**
+	 * @param $filename
+	 * @return false|mixed
+	 */
+	function exif_imagetype($filename)
     {
         if((list($width, $height, $type, $attr) = getimagesize( $filename ) ) !== false)
         {

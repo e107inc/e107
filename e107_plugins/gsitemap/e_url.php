@@ -10,7 +10,7 @@
  *
  * 	if (!defined('e107_INIT'))
  * 	{
- * 		require_once("../../class2.php");
+ * 		require_once(__DIR__.'/../../class2.php');
  * 	}
  *
  */
@@ -34,6 +34,33 @@ class gsitemap_url // plugin-folder + '_url'
 
 		);
 
+		$config['xml'] = array(
+			'alias'         => 'sitemap',
+			'regex'			=> '^{alias}\.xml$', 						// matched against url, and if true, redirected to 'redirect' below.
+			'sef'			=> '{alias}.xml', 							// used by e107::url(); to create a url from the db table.
+			'redirect'		=> '{e_BASE}gsitemap.php', 		// file-path of what to load when the regex returns true.
+
+		);
+
+		$addons = e107::getAddonConfig('e_gsitemap', 'gsitemap');
+
+		foreach($addons as $plug => $item)
+		{
+			foreach($item as $data )
+			{
+				$key = $plug.'-'.$data['sef'];  // eg. news-posts
+				$config[$key] = array(
+					'alias'         => $key.'-sitemap',
+					'regex'			=> '^{alias}\.xml$', 						// matched against url, and if true, redirected to 'redirect' below.
+					'sef'			=> '{alias}.xml', 							// used by e107::url(); to create a url from the db table.
+					'redirect'		=> '{e_BASE}gsitemap.php?plug='.$plug.'&func='.$data['function'], 		// file-path of what to load when the regex returns true.
+
+				);
+
+			//	var_dump($config);
+			}
+
+		}
 
 
 		return $config;

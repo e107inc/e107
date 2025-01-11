@@ -111,7 +111,7 @@ define ("EPL_ADLAN_92","Buy");
 define ("EPL_ADLAN_93","Free");
 define ("EPL_ADLAN_94","Connecting...");
 define ("EPL_ADLAN_95","Unable to continue");
-define ("EPL_ADLAN_96","eg. http://website.com/some-plugin.zip");
+define ("EPL_ADLAN_96","eg. https://website.com/some-plugin.zip");
 define ("EPL_ADLAN_97","There was a problem extracting the .zip file to your plugin directory.");
 define ("EPL_ADLAN_98","Unknown file:");
 define ("EPL_ADLAN_99","Error messages above this line");
@@ -271,8 +271,7 @@ define ("EPL_ADLAN_229","Refresh");
 define ("EPL_ADLAN_230", "Downloading and Installing: ");
 define ("EPL_ADLAN_231", "Remove icons from Media-Manager");
 define ("EPL_ADLAN_232", "Create Files");
-define ("TPVLAN_81", "Downloading...");
-define ("TPVLAN_82", "Download Complete!");
+
 define ("EPL_ADLAN_233", "Adding Link:"); 
 define ("EPL_ADLAN_234", "Removing Link:"); 
 define ("EPL_ADLAN_235", "Automated download not possible.");
@@ -308,5 +307,10 @@ define("LAN_INSTALL_FAIL", "Installation failed!");
 define("LAN_UNINSTALL_FAIL", "Unable to uninstall!");
 define("LAN_PLUGIN_IS_USED", "[x] plugin is used by:");
 
+define("EPL_ADLAN_254", "This will check your plugin's language files for errors and common or duplicate LAN definitions. ");
+define("EPL_ADLAN_255", "Overwrite Files");
+define("EPL_ADLAN_256", "Skipped [x] (already exists)");
 
-?>
+define ("EPL_ADLAN_257","Readonly");
+
+

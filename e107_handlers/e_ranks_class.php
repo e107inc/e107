@@ -10,12 +10,19 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+
+/**
+ *
+ */
 class e_ranks
 {
 	public $ranks;
 	private $userRanks;
 	private $imageFolder;
 
+	/**
+	 * @param $force
+	 */
 	public function __construct($force = false)
 	{
 		$this->ranks = array();
@@ -23,10 +30,10 @@ class e_ranks
 		$this->imageFolder = is_dir(THEME.'images/ranks') ? THEME_ABS.'images/ranks/' : e_IMAGE_ABS.'ranks/';
 
 
-		$e107 = e107::getInstance();
+		$ecache = e107::getCache();
 		$sql = e107::getDb();
 		//Check to see if we can get it from cache
-		if($force == false && ($ranks = $e107->ecache->retrieve_sys('nomd5_user_ranks')))
+		if($force == false && ($ranks = $ecache->retrieve_sys('nomd5_user_ranks')))
 		{
 			$this->ranks = e107::unserialize($ranks);
 		}
@@ -55,7 +62,7 @@ class e_ranks
 					}
 				}
 			}
-			$e107->ecache->set_sys('nomd5_user_ranks', $e107->arrayStorage->WriteArray($this->ranks, false));
+			$ecache->set_sys('nomd5_user_ranks', e107::serialize($this->ranks, false));
 		}
 
 		// defaults
@@ -65,6 +72,9 @@ class e_ranks
 		}
 	}
 
+	/**
+	 * @return void
+	 */
 	protected function setDefaultRankData()
 	{
 		e107::coreLan('userclass');
@@ -165,11 +175,18 @@ class e_ranks
 	}
 
 
+	/**
+	 * @return array
+	 */
 	public function getRankData()
 	{
 		return $this->ranks;
 	}
 
+	/**
+	 * @param $info
+	 * @return string
+	 */
 	private function _getImage(&$info)
 	{
 		$img = $info['image'];
@@ -182,6 +199,10 @@ class e_ranks
 	}
 
 
+	/**
+	 * @param $info
+	 * @return mixed|string
+	 */
 	private function _getName(&$info)
 	{
 		if(!isset($info['name_parsed'])) $info['name_parsed'] = e107::getParser()->toHTML($info['name'], FALSE, 'defs');
@@ -189,6 +210,12 @@ class e_ranks
 	}
 
 	// TODO - custom ranks (e.g. forum moderator)
+
+	/**
+	 * @param $userId
+	 * @param $moderator
+	 * @return array|mixed
+	 */
 	function getRanks($userId, $moderator = false)
 	{
 		$e107 = e107::getInstance();
@@ -209,7 +236,7 @@ class e_ranks
 			$userData = e107::getSystemUser($userId)->getData(); //get_usXer_data($userId);
 		}
 
-		if($userData['user_admin'])
+		if(!empty($userData['user_admin']))
 		{
 			if($userData['user_perms'] == '0')
 			{
@@ -235,7 +262,7 @@ class e_ranks
 
 		$lastRank = count($this->ranks['data']);
 		$rank = false;
-		if($level <= $this->ranks['data'][0]['thresh'])
+		if($level <= varset($this->ranks['data'][1]['thresh']))
 		{
 			$rank = 1;
 		}
@@ -245,7 +272,7 @@ class e_ranks
 		}
 		else
 		{
-			for($i=0; $i < $lastRank; $i++)
+			for($i=1; $i <= $lastRank; $i++)
 			{
 				if($level >= $this->ranks['data'][$i]['thresh'] && $level < $this->ranks['data'][($i+1)]['thresh'])
 				{
@@ -272,6 +299,11 @@ class e_ranks
 	}
 
 	// TODO - custom ranking by array key - e.g. user_comments only
+
+	/**
+	 * @param $userData
+	 * @return float
+	 */
 	private function _calcLevel(&$userData)
 	{
 		$forumCount = varset($userData['user_plugin_forum_posts'], 0) * 5;
@@ -303,4 +335,3 @@ class e_ranks
 }
 
 
-?>

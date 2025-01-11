@@ -5,12 +5,16 @@ if (!check_class(varset($pref['email_item_class'],e_UC_MEMBER)))
 	return '';
 }
 
+if(empty($parm))
+{
+    return null;
+}
 
 $parms = explode("^",$parm);
 
 if(deftrue('BOOTSTRAP'))
 {
-	$img = "<i class='icon-envelope'></i>";	
+	$img = "<span class='glyphicon glyphicon-envelope' aria-hidden='true'></span>";
 }
 elseif (defined("ICONMAIL") && file_exists(THEME."images/".ICONMAIL)) 
 {

@@ -54,7 +54,7 @@
 		$arr = array('rss_topicid'=> $topic, 'rss_url'=>$type);
 
 
-		if(deftrue('BOOTSTRAP') === 3) // v2.x
+		if(deftrue('BOOTSTRAP')) // v2.x
 		{
 			$text = "
 			<div>
@@ -100,4 +100,3 @@
 
 		e107::getRender()->tablerender($caption, $text, 'rss_menu');
 	}
-?>

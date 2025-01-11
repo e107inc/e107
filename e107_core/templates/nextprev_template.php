@@ -26,14 +26,14 @@ $NEXTPREV_TEMPLATE['default_end'] = '
 //$NEXTPREV_TEMPLATE['default_nav_caption'] = '<span class="nexprev-caption center">{caption}</span>&nbsp;'; XXX - awaiting the new front-end themes & templates
 $NEXTPREV_TEMPLATE['default_nav_caption'] = ''; // NP_3.'&nbsp;';
 
-$NEXTPREV_TEMPLATE['default_nav_first'] = '<a class="btn btn-default nextprev-item first" href="{url}" title="{url_label}">{label}</a>';
-$NEXTPREV_TEMPLATE['default_nav_prev'] = '<a class="btn btn-default nextprev-item prev" href="{url}" title="{url_label}">{label}</a>';
-$NEXTPREV_TEMPLATE['default_nav_last'] = '<a class="btn btn-default nextprev-item last" href="{url}" title="{url_label}">{label}</a>';
-$NEXTPREV_TEMPLATE['default_nav_next'] = '<a class="btn btn-default nextprev-item next" href="{url}" title="{url_label}">{label}</a>';
+$NEXTPREV_TEMPLATE['default_nav_first'] = '<a class="btn btn-default btn-secondary nextprev-item first" href="{url}" title="{url_label}">{label}</a>';
+$NEXTPREV_TEMPLATE['default_nav_prev'] = '<a class="btn btn-default btn-secondary nextprev-item prev" href="{url}" title="{url_label}">{label}</a>';
+$NEXTPREV_TEMPLATE['default_nav_last'] = '<a class="btn btn-default btn-secondary nextprev-item last" href="{url}" title="{url_label}">{label}</a>';
+$NEXTPREV_TEMPLATE['default_nav_next'] = '<a class="btn btn-default btn-secondary nextprev-item next" href="{url}" title="{url_label}">{label}</a>';
 
 $NEXTPREV_TEMPLATE['default_items_start'] = '';
-$NEXTPREV_TEMPLATE['default_item'] = '<a class="btn btn-default nextprev-item" href="{url}" title="{url_label}">{label}</a>';
-$NEXTPREV_TEMPLATE['default_item_current'] = '<a class="btn btn-default nextprev-item current active" href="#" onclick="return false;" title="{url_label}">{label}</a>';
+$NEXTPREV_TEMPLATE['default_item'] = '<a class="btn btn-default btn-secondary nextprev-item" href="{url}" title="{url_label}">{label}</a>';
+$NEXTPREV_TEMPLATE['default_item_current'] = '<a class="btn btn-default btn-secondary nextprev-item current active" href="#" onclick="return false;" title="{url_label}">{label}</a>';
 $NEXTPREV_TEMPLATE['default_items_end'] = '';
 
 //$NEXTPREV_TEMPLATE['default_separator'] = '<span class="nextprev-sep"><!-- --></span>';
@@ -46,14 +46,14 @@ $NEXTPREV_TEMPLATE['bootstrap_start']			= "<!-- Start of Next/Prev -->\n<nav>\n<
 $NEXTPREV_TEMPLATE['bootstrap_end'] 			= "</ul></nav><!-- End of Next/Prev -->";
 $NEXTPREV_TEMPLATE['bootstrap_nav_caption'] 	= '';
 
-$NEXTPREV_TEMPLATE['bootstrap_nav_first'] 		= '<li><a class="first hidden-xs" href="{url}" title="{url_label}">{label}</a></li>';
-$NEXTPREV_TEMPLATE['bootstrap_nav_prev'] 		= '<li><a class="prev" href="{url}" title="{url_label}">{label}</a></li>';
-$NEXTPREV_TEMPLATE['bootstrap_nav_last'] 		= '<li><a class="last hidden-xs" href="{url}" title="{url_label}">{label}</a></li>';
-$NEXTPREV_TEMPLATE['bootstrap_nav_next'] 		= '<li><a class="next" href="{url}" title="{url_label}">{label}</a></li>';
+$NEXTPREV_TEMPLATE['bootstrap_nav_first'] 		= '<li class="page-item"><a class="page-link first hidden-xs" href="{url}" title="{url_label}">{label}</a></li>';
+$NEXTPREV_TEMPLATE['bootstrap_nav_prev'] 		= '<li class="page-item"><a class="page-link prev" href="{url}" title="{url_label}">{label}</a></li>';
+$NEXTPREV_TEMPLATE['bootstrap_nav_last'] 		= '<li class="page-item"><a class="page-link last hidden-xs" href="{url}" title="{url_label}">{label}</a></li>';
+$NEXTPREV_TEMPLATE['bootstrap_nav_next'] 		= '<li class="page-item"><a class="page-link next" href="{url}" title="{url_label}">{label}</a></li>';
 
 $NEXTPREV_TEMPLATE['bootstrap_items_start'] 	= '';
-$NEXTPREV_TEMPLATE['bootstrap_item'] 			= '<li><a class="hidden-xs" href="{url}" title="{url_label}">{label}</a></li>';
-$NEXTPREV_TEMPLATE['bootstrap_item_current'] 	= '<li class="active disabled"><a  href="#" onclick="return false;" title="{url_label}">{label}</a></li>';
+$NEXTPREV_TEMPLATE['bootstrap_item'] 			= '<li class="page-item"><a class="page-link hidden-xs d-none d-sm-block" href="{url}" title="{url_label}">{label}</a></li>';
+$NEXTPREV_TEMPLATE['bootstrap_item_current'] 	= '<li class="page-item active disabled" aria-current="page"><a class="page-link" href="#" onclick="return false;" title="{url_label}">{label}</a></li>';
 $NEXTPREV_TEMPLATE['bootstrap_items_end'] 		= '';
 
 $NEXTPREV_TEMPLATE['bootstrap_separator'] 		= '';
@@ -95,12 +95,12 @@ $NEXTPREV_TEMPLATE['basic_start'] 				= '<!-- Start of Next/Prev --><div class="
 $NEXTPREV_TEMPLATE['basic_end'] 				= '</div><!-- End of Next/Prev -->';
 $NEXTPREV_TEMPLATE['basic_nav_caption'] 		= ''; 
 $NEXTPREV_TEMPLATE['basic_nav_first'] 			= '';
-$NEXTPREV_TEMPLATE['basic_nav_prev'] 			= '<a class="btn btn-default nextprev-item prev" href="{url}" title="{url_label}" {disabled}><i class="fa fa-backward"></i></a>';
+$NEXTPREV_TEMPLATE['basic_nav_prev'] 			= '<a class="btn btn-default btn-secondary nextprev-item prev" href="{url}" title="{url_label}" {disabled}><i class="fa fa-backward"></i></a>';
 $NEXTPREV_TEMPLATE['basic_nav_last'] 			= ''; 
-$NEXTPREV_TEMPLATE['basic_nav_next'] 			= '<a class="btn btn-default nextprev-item next " href="{url}" title="{url_label}" {disabled}><i class="fa fa-forward"></i></a>';
+$NEXTPREV_TEMPLATE['basic_nav_next'] 			= '<a class="btn btn-default btn-secondary nextprev-item next " href="{url}" title="{url_label}" {disabled}><i class="fa fa-forward"></i></a>';
 $NEXTPREV_TEMPLATE['basic_items_start'] 		= '';
 $NEXTPREV_TEMPLATE['basic_item'] 				= ''; 
-$NEXTPREV_TEMPLATE['basic_item_current'] 		= '<a class="btn btn-default">{label}</a>';
+$NEXTPREV_TEMPLATE['basic_item_current'] 		= '<a class="btn btn-default btn-secondary">{label}</a>';
 $NEXTPREV_TEMPLATE['basic_items_end'] 			= '';
 $NEXTPREV_TEMPLATE['basic_separator'] 			= '';
 
@@ -120,7 +120,7 @@ $NEXTPREV_TEMPLATE['admin_nav_caption'] = ''; // NP_3.'&nbsp;';
 $NEXTPREV_TEMPLATE['admin_nav_first'] = '<li><a class="nextprev-item first e-tip" href="{url}" title="{url_label}"><i class="fa fa-fast-backward"></i></a></li>';
 $NEXTPREV_TEMPLATE['admin_nav_prev'] = '<li><a class="nextprev-item prev e-tip" href="{url}" title="{url_label}"><i class="fa fa-backward"></i></a></li>';
 $NEXTPREV_TEMPLATE['admin_nav_last'] = '<li><a class="nextprev-item last e-tip" href="{url}" title="{url_label}"><i class="fa fa-fast-forward"></i></a></li>';
-$NEXTPREV_TEMPLATE['admin_nav_next'] = '<li><a class="nextprev-item next e-tip" href="{url}" title="{url_label}"><i class="fa fa-forward icon-forward"></i></a></li>';
+$NEXTPREV_TEMPLATE['admin_nav_next'] = '<li><a class="nextprev-item next e-tip" href="{url}" title="{url_label}"><i class="fa fa-forward"></i></a></li>';
 
 $NEXTPREV_TEMPLATE['admin_items_start'] = '';
 $NEXTPREV_TEMPLATE['admin_item'] = '<li><a class="nextprev-item e-tip" href="{url}" title="{url_label}">{label}</a></li>';
@@ -146,11 +146,9 @@ $NEXTPREV_TEMPLATE['admin_separator'] = '&nbsp;';
 
 $NEXTPREV_TEMPLATE['dropdown_start'] = '
 <!-- Start of Next/Prev -->
-<div class="nextprev form-group form-inline">
-';
+<div class="nextprev form-group form-inline input-group input-group-btn">';
 
-$NEXTPREV_TEMPLATE['dropdown_end'] = '
-</div>
+$NEXTPREV_TEMPLATE['dropdown_end'] = '</div>
 <!-- End of Next/Prev -->
 ';
 
@@ -161,12 +159,12 @@ $NEXTPREV_TEMPLATE['dropdown_nav_first'] = '';
 $NEXTPREV_TEMPLATE['dropdown_nav_last'] = '';
 
 // 'tbox npbutton' classes are deprecated!!!
-$NEXTPREV_TEMPLATE['dropdown_nav_prev'] = '<a class="btn btn-default nextprev-item prev tbox npbutton" href="{url}" title="{url_label}">{label}</a>&nbsp;';
+$NEXTPREV_TEMPLATE['dropdown_nav_prev'] = '<a class="btn btn-default btn-outline-secondary nextprev-item prev tbox npbutton" href="{url}" title="{url_label}">{label}</a>';
 // 'tbox npbutton' classes are deprecated!!!
-$NEXTPREV_TEMPLATE['dropdown_nav_next'] = '&nbsp;<a class="btn btn-default nextprev-item next tbox npbutton" href="{url}" title="{url_label}">{label}</a>';
+$NEXTPREV_TEMPLATE['dropdown_nav_next'] = '<a class="btn btn-default btn-outline-secondary nextprev-item next tbox npbutton" href="{url}" title="{url_label}">{label}</a>';
 
 // 'npdropdown' class is deprecated!!!
-$NEXTPREV_TEMPLATE['dropdown_items_start'] = '<select class="tbox npdropdown nextprev-select form-control" name="pageSelect" onchange="window.location.href=this.options[selectedIndex].value">';
+$NEXTPREV_TEMPLATE['dropdown_items_start'] = '<select class="tbox npdropdown nextprev-select form-control form-select" name="pageSelect" onchange="window.location.href=this.options[selectedIndex].value">';
 $NEXTPREV_TEMPLATE['dropdown_item'] = '<option value="{url}">{label}</option>';
 $NEXTPREV_TEMPLATE['dropdown_item_current'] = '<option value="{url}" selected="selected">{label}</option>';
 $NEXTPREV_TEMPLATE['dropdown_items_end'] = '</select>';
@@ -201,4 +199,4 @@ $NEXTPREV_TEMPLATE['page_items_end'] = '';
 
 //$NEXTPREV_TEMPLATE['default_separator'] = '<span class="nextprev-sep"><!-- --></span>';
 $NEXTPREV_TEMPLATE['page_separator'] = '<br />';
-?>
+

@@ -85,4 +85,3 @@ define("LIST_LAN_1", "no items in");
 
 define("LIST_DOWNLOAD_1", "downloads");
 define("LIST_DOWNLOAD_2", "no downloads");
-?>

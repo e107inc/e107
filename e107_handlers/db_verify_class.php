@@ -19,11 +19,17 @@ if (!defined('e107_INIT')) { exit; }
 
 e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_db_verify.php');
 
+
+/**
+ *
+ */
 class db_verify
 {
 	var $backUrl       = "";
-	var $sqlFileTables = array();
-	private $sqlDatabaseTables   = array();
+	public $sqlFileTables = array();
+	const MOST_PREFERRED_STORAGE_ENGINE = "InnoDB";
+	const MOST_PREFERRED_CHARSET = "utf8mb4";
+	public $availableStorageEngines = array(self::MOST_PREFERRED_STORAGE_ENGINE);
 
 	var $sqlLanguageTables = array();
 	var $results = array();
@@ -31,13 +37,29 @@ class db_verify
 	var $fixList = array();
 	private $currentTable = null;
 	private $internalError = false;
+
+	/**
+	 * Aliases for preferred storage engines when provided the key
+	 * @var string[][]
+	 */
+	private $storageEnginePreferenceMap = [
+		"MyISAM" => [self::MOST_PREFERRED_STORAGE_ENGINE, "Aria", "Maria", "MyISAM"],
+		"Aria"   => ["Aria", "Maria", "MyISAM"],
+		"InnoDB" => ["InnoDB", "XtraDB"],
+		"XtraDB" => ["XtraDB", "InnoDB"],
+	];
 	
 	var $fieldTypes = array('time','timestamp','datetime','year','tinyblob','blob',
-							'mediumblob','longblob','tinytext','mediumtext','longtext','text','date');
+							'mediumblob','longblob','tinytext','mediumtext','longtext','text','date', 'json');
 							
 	var $fieldTypeNum = array('bit','tinyint','smallint','mediumint','integer','int','bigint',
-		'real','double','float','decimal','numeric','varchar','char ','binary','varbinary','enum','set'); // space after 'char' required. 
-	
+		'real','double','float','decimal','numeric','varchar','char','binary','varbinary','enum','set');
+
+	const STATUS_TABLE_OK = 0x0;
+	const STATUS_TABLE_MISSING = 0x1 << 1;
+	const STATUS_TABLE_MISMATCH_STORAGE_ENGINE = 0x1 << 2;
+	const STATUS_TABLE_MISMATCH_DEFAULT_CHARSET = 0x1 << 3;
+
 	var $modes = array(
 			'missing_table'		=> 'create',
 			'mismatch' 			=> 'alter',
@@ -55,32 +77,20 @@ class db_verify
 	function __construct()
 	{
 				
-		$sql = e107::getDb();
-		$sql->gen('SET SQL_QUOTE_SHOW_CREATE = 1');
+
 
 		$this->backUrl = e_SELF;
 
-		if(!deftrue('e_DEBUG') && $tmp = e107::getCache()->retrieve(self::cachetag, 15, true, true))
-		{
-			$this->sqlFileTables = e107::unserialize($tmp);
+		$this->init();
 
-		}
-		else
-		{
-			$this->sqlFileTables = $this->load();
-			$data = e107::serialize($this->sqlFileTables,'json');
-			e107::getCache()->set(self::cachetag,$data, true, true, true);
-		}
-
-
-		$this->sqlLanguageTables = $this->getSqlLanguages();
-
-	//	$this->loadCreateTableData();
 
 		return $this;
 		
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function clearCache()
 	{
 
@@ -88,6 +98,9 @@ class db_verify
 
 	}
 
+	/**
+	 * @return array
+	 */
 	private function load()
 	{
 		$mes = e107::getMessage();
@@ -125,12 +138,53 @@ class db_verify
 	}
 
 
-
-	private function loadCreateTableData()
+	/**
+	 * Permissive field validation
+	 */
+	private function diffStructurePermissive($expected, $actual)
 	{
+		$expected['default'] = isset($expected['default']) ? $expected['default'] : '';
+		$actual['default']   = isset($actual['default'])   ? $actual['default']   : '';
 
+		if($expected['type'] === 'JSON' && $actual['type'] !== 'JSON') // Fix for JSON alias MySQL 5.7+
+		{
+			$expected['type'] = 'LONGTEXT';
+		}
 
+		// Permit actual text types that default to null even when
+		// expected does not explicitly default to null
+		if(0 === strcasecmp($expected['type'], $actual['type']) &&
+		   1 === preg_match('/[A-Z]*TEXT/i', $expected['type']) &&
+		   0 === strcasecmp($actual['default'], "DEFAULT NULL"))
+		{
+			$expected['default'] = $actual['default'];
+		}
 
+		// Loosely typed default value for numeric types
+		if(1 === preg_match('/([A-Z]*INT|NUMERIC|DEC|FIXED|FLOAT|REAL|DOUBLE)/i', $expected['type']))
+		{
+			$expected['default'] = preg_replace("/DEFAULT '(\d*\.?\d*)'/i", 'DEFAULT $1', $expected['default']);
+			$actual['default']   = preg_replace("/DEFAULT '(\d*\.?\d*)'/i", 'DEFAULT $1', $actual['default']  );
+		}
+
+		/**
+		 * Display width specification for integer data types was deprecated in MySQL 8.0.17
+		 * @see https://dev.mysql.com/doc/relnotes/mysql/8.0/en/news-8-0-19.html
+		 */
+		if(1 === preg_match('/([A-Z]*INT)/i', $expected['type']))
+		{
+			$expected['value'] = '';
+			$actual['value'] = '';
+		}
+
+		// Correct difference on CREATE TABLE statement between MariaDB and MySQL
+		if(1 === preg_match('/(DATE|DATETIME|TIMESTAMP|TIME|YEAR)/i', $expected['default']))
+		{
+			$expected['default'] = preg_replace("/CURRENT_TIMESTAMP\(\)/i", 'CURRENT_TIMESTAMP', $expected['default']);
+			$actual['default']   = preg_replace("/CURRENT_TIMESTAMP\(\)/i", 'CURRENT_TIMESTAMP', $actual['default']  );
+		}
+
+		return array_diff_assoc($expected, $actual);
 	}
 	
 	/**
@@ -138,26 +192,27 @@ class db_verify
 	 */
 	function verify()
 	{
-		
-		if(vartrue($_POST['verify_table']))
+		if(!empty($_POST['runfix']))
+		{
+			$this->runFix($_POST['fix']);
+		}
+
+		if(!empty($_POST['verify_table']))
 		{			
 			$this->runComparison($_POST['verify_table']);
-			
 		}
 		else
 		{
-			if(isset($_POST['runfix']))
-			{
-				$this->runFix($_POST['fix']);
-			
-			} 
-			
-			$this->renderTableSelect();	
+			$this->renderTableSelect();
 		}	
 
 	}
-		
-		
+
+
+	/**
+	 * @param $fileArray
+	 * @return void
+	 */
 	function runComparison($fileArray)
 	{
 		$mes = e107::getMessage();
@@ -171,11 +226,11 @@ class db_verify
 			}			
 		}
 				
-		if($cnt = count($this->errors))
+		if($cnt = $this->errors())
 		{
 			$message = str_replace("[x]",$cnt,DBVLAN_26); // Found [x] issues.
 			$mes->add($message, E_MESSAGE_WARNING); 
-			$this->renderResults();	
+			$this->renderResults($fileArray);
 		}
 		else
 		{
@@ -238,16 +293,19 @@ class db_verify
 		}
 
 	}
-	
-	
 
-	
-	
-	
-	function compare($selection,$language='')
+
+	/**
+	 * @param $selection
+	 * @param $language
+	 * @return false|void
+	 */
+	public function compare($selection, $language='')
 	{
 
 		$this->currentTable = $selection;
+
+	//	var_dump($this->sqlFileTables[$selection]);
 
 		if(!isset($this->sqlFileTables[$selection])) // doesn't have an SQL file.
 		{
@@ -265,8 +323,6 @@ class db_verify
 
 		foreach($this->sqlFileTables[$selection]['tables'] as $key=>$tbl)
 		{
-			//$this->errors[$tbl]['_status'] = 'ok'; // default table status
-					
 			$rawSqlData = $this->getSqlData($tbl,$language);
 			
 			
@@ -277,8 +333,9 @@ class db_verify
 				
 				
 				
-				$this->errors[$tbl]['_status'] = 'missing_table';
-				$this->results[$tbl]['_file'] = $selection;
+				$this->errors[$tbl]['_status'] = self::STATUS_TABLE_MISSING;
+				$this->errors[$tbl]['_file'] = $selection;
+				$this->results[$tbl] = [];
 				// echo "missing table: $tbl";
 				continue;
 			}
@@ -292,11 +349,20 @@ class db_verify
 		//	echo "<h4>PARSED</h4>";
 		//	print_a($sqlDataArr);
 
-			$fileFieldData	= $this->getFields($this->sqlFileTables[$selection]['data'][$key]);
-			$sqlFieldData	= $this->getFields($sqlDataArr['data'][0]);	
+			$fileData['field']	= $this->getFields($this->sqlFileTables[$selection]['data'][$key]);
+			$sqlData['field']	= $this->getFields($sqlDataArr['data'][0]);
 			
-			$fileIndexData	= $this->getIndex($this->sqlFileTables[$selection]['data'][$key]);
-			$sqlIndexData	= $this->getIndex($sqlDataArr['data'][0]);
+			$fileData['index']	= $this->getIndex($this->sqlFileTables[$selection]['data'][$key]);
+			$sqlData['index']	= $this->getIndex($sqlDataArr['data'][0]);
+
+			$maybeEngine = isset($sqlDataArr['engine'][0]) ? $sqlDataArr['engine'][0] : 'INTERNAL_ERROR:ENGINE';
+			$fileData['engine'] = $this->getIntendedStorageEngine($this->sqlFileTables[$selection]['engine'][$key]);
+			$sqlData['engine'] = $this->getCanonicalStorageEngine($maybeEngine);
+
+			$maybeCharset = isset($sqlDataArr['charset'][0]) ? $sqlDataArr['charset'][0] : 'INTERNAL_ERROR:CHARSET';
+			$fileData['charset'] = $this->getIntendedCharset($this->sqlFileTables[$selection]['charset'][$key]);
+			$sqlData['charset'] = $sqlDataArr['charset'][0]; // check the actual charset. $this->getCanonicalCharset($maybeCharset);
+
 		/*		
 			$debugA = print_r($fileFieldData,TRUE);	// Extracted Field Arrays	
 			$debugA .= "<h2>Index</h2>";
@@ -312,10 +378,15 @@ class db_verify
 			
 			if(isset($debugA) && (e_PAGE === 'db.php'))
 			{
-									
-				$debug = "<table class='table' border='1'>
-				<tr><td style='padding:5px;font-weight:bold'>FILE: ".$tbl." (key=".$key.")</td>
-				<td style='padding:5px;font-weight:bold'>SQL: ".$tbl."</td>
+				$engineA = !empty($this->sqlFileTables[$selection]['engine'][0]) ? $this->sqlFileTables[$selection]['engine'][0] : 'unknown';
+				$engineB = !empty($sqlDataArr['engine'][0]) ? $sqlDataArr['engine'][0] : 'unknown';
+
+				$charsetA = !empty($this->sqlFileTables[$selection]['charset'][0]) ? $this->sqlFileTables[$selection]['charset'][0] : 'not specified';
+				$charsetB = !empty($sqlDataArr['charset'][0]) ? $sqlDataArr['charset'][0] : 'unknown';
+
+				$debug = "<table class='table table-bordered table-condensed'>
+				<tr><td style='padding:5px;font-weight:bold'>FILE: $tbl (key=$key) <span class='badge'>$engineA</span> $charsetA</td>
+				<td style='padding:5px;font-weight:bold'>SQL: $tbl <span class='badge'>$engineB</span> $charsetB</td>
 				</tr>
 				<tr><td style='width:50%'><pre>".$debugA."</pre></td>
 				  <td style='width:50%'><pre>".$debugB."</pre></td></tr></table>";
@@ -329,73 +400,7 @@ class db_verify
 			 	$tbl = "lan_".$language."_".$tbl;
 			}
 			
-			
-			// Check Field Data. 
-			foreach($fileFieldData as $field => $info )
-			{
-				 
-					
-				$this->results[$tbl][$field]['_status'] = 'ok';	
-				
-				if(!is_array($sqlFieldData[$field]))
-				{
-				//	 echo "<h2>".$field."</h2><table><tr><td><pre>".print_r($info,TRUE)."</pre></td>
-				// <td style='border:1px solid silver'><pre> - ".print_r($sqlFieldData[$field],TRUE)."</pre></td></tr></table>";
-					
-					$this->errors[$tbl]['_status'] = 'error'; // table status
-					$this->results[$tbl][$field]['_status'] = 'missing_field';	 // field status					
-					$this->results[$tbl][$field]['_valid'] = $info;
-					$this->results[$tbl][$field]['_file'] = $selection;
-				}
-				elseif(count($off = array_diff_assoc($info,$sqlFieldData[$field])))
-				{
-					$this->errors[$tbl]['_status'] = 'mismatch';
-					$this->results[$tbl][$field]['_status'] = 'mismatch';
-					$this->results[$tbl][$field]['_diff'] = $off;	
-					$this->results[$tbl][$field]['_valid'] = $info;
-					$this->results[$tbl][$field]['_invalid'] = $sqlFieldData[$field];
-					$this->results[$tbl][$field]['_file'] = $selection;
-				}
-				
-				
-			}
-
-		//	 print_a($fileIndexData);
-		//	print_a($sqlIndexData);
-			// Check Index data
-			foreach($fileIndexData as $field => $info )
-			{
-				if(!is_array($sqlIndexData[$field])) // missing index. 
-				{
-					// print_a($info);
-					// print_a($sqlIndexData[$field]);
-					
-					$this->errors[$tbl]['_status'] = 'error'; // table status
-					$this->indices[$tbl][$field]['_status'] = 'missing_index';	 // index status					
-					$this->indices[$tbl][$field]['_valid'] = $info;
-					$this->indices[$tbl][$field]['_file'] = $selection;
-				}
-				elseif(count($offin = array_diff_assoc($info,$sqlIndexData[$field]))) // missmatch data
-				{
-					// print_a($info);
-					// print_a($sqlIndexData[$field]);
-					
-					$this->errors[$tbl]['_status'] = 'mismatch_index';
-					$this->indices[$tbl][$field]['_status'] = 'mismatch';
-					$this->indices[$tbl][$field]['_diff'] = $offin;	
-					$this->indices[$tbl][$field]['_valid'] = $info;
-					$this->indices[$tbl][$field]['_invalid'] = $sqlIndexData[$field];
-					$this->indices[$tbl][$field]['_file'] = $selection;
-					 
-				}
-				
-				// TODO Check for additional fields in SQL that should be removed. 
-				// TODO Add support for MYSQL 5 table layout .eg. journal_id INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-
-			}
-
-
-			
+			$this->prepareResults($tbl, $selection, $sqlData, $fileData);
 
 			unset($data);
 			
@@ -403,6 +408,94 @@ class db_verify
 		
 
 	}
+
+
+	/**
+	 * @param string $type fields|indices
+	 * @return array
+	 */
+	public function getResults($type='fields')
+	{
+		if($type === 'indices')
+		{
+			return $this->indices;
+		}
+
+		return $this->results;
+
+	}
+
+
+
+	/**
+	 * @param string $tbl table name without prefix.
+	 * @param string $selection 'core' OR plugin-folder name.
+	 * @param array $sqlData ie. array('field'=>getFields($data), 'index'=>getFields($data));
+	 * @param array $fileData ie. array('field'=>getFields($data), 'index'=>getFields($data));
+	 * @todo Check for additional fields in SQL that should be removed.
+	 * @todo Add support for MYSQL 5 table layout .eg. journal_id INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+	 */
+	public function prepareResults($tbl, $selection, $sqlData, $fileData)
+	{
+				// Check field and index data
+		foreach(['field', 'index'] as $type)
+		{
+			$results = 'results';
+
+			if ($type === 'index')
+			{
+				 $results = 'indices';
+			}
+
+			if (!isset($this->errors[$tbl])) $this->errors[$tbl] = [];
+			if (!isset($this->errors[$tbl]['_status'])) $this->errors[$tbl]['_status'] = self::STATUS_TABLE_OK;
+			$this->errors[$tbl]['_file'] = $selection;
+
+			foreach($fileData[$type] as $key => $value)
+			{
+				$this->{$results}[$tbl][$key]['_status'] = 'ok';
+
+				if(!isset($sqlData[$type][$key]) || !is_array($sqlData[$type][$key]))
+				{
+					$this->{$results}[$tbl][$key]['_status'] = "missing_$type"; // type status
+					$this->{$results}[$tbl][$key]['_valid'] = $value;
+					$this->{$results}[$tbl][$key]['_file'] = $selection;
+				}
+				elseif(count($diff = $this->diffStructurePermissive($value, $sqlData[$type][$key])))
+				{
+					$this->{$results}[$tbl][$key]['_status'] = 'mismatch';
+					$this->{$results}[$tbl][$key]['_diff'] = $diff;
+					$this->{$results}[$tbl][$key]['_valid'] = $value;
+					$this->{$results}[$tbl][$key]['_invalid'] = $sqlData[$type][$key];
+					$this->{$results}[$tbl][$key]['_file'] = $selection;
+				}
+
+
+			}
+
+			if ($fileData['engine'] !== $sqlData['engine'])
+			{
+				$this->errors[$tbl]['_status'] |= self::STATUS_TABLE_MISMATCH_STORAGE_ENGINE;
+				$this->errors[$tbl]['_valid_' . self::STATUS_TABLE_MISMATCH_STORAGE_ENGINE] = $fileData['engine'];
+				$this->errors[$tbl]['_invalid_' . self::STATUS_TABLE_MISMATCH_STORAGE_ENGINE] = $sqlData['engine'];
+			}
+			if ($fileData['charset'] !== $sqlData['charset'])
+			{
+				$this->errors[$tbl]['_status'] |= self::STATUS_TABLE_MISMATCH_DEFAULT_CHARSET;
+				$this->errors[$tbl]['_valid_' . self::STATUS_TABLE_MISMATCH_DEFAULT_CHARSET] = $fileData['charset'];
+				$this->errors[$tbl]['_invalid_' . self::STATUS_TABLE_MISMATCH_DEFAULT_CHARSET] = $sqlData['charset'];
+			}
+
+		}
+
+		return null;
+
+	}
+
+
+
+
+
 	
 	/**
 	 * Compile Results into a complete list of Fixes that could be run without the need of a form selection. 
@@ -411,18 +504,29 @@ class db_verify
 	{
 		foreach($this->results as $tabs => $field)
 		{
-			$file = varset($this->results[$tabs]['_file']);		
-			if(varset($this->errors[$tabs]['_status']) === 'missing_table') // Missing Table
+			$file = varset($this->results[$tabs]['_file'],$tabs);
+			$errorStatus = is_int($this->errors[$tabs]['_status']) ?
+				$this->errors[$tabs]['_status'] : self::STATUS_TABLE_OK;
+
+			if($errorStatus & self::STATUS_TABLE_MISSING) // Missing Table
 			{				
 				$this->fixList[$file][$tabs]['all'][] = 'create';
-			}					
-			elseif($this->errors[$tabs] != 'ok') // All Other Issues.. 
+			}
+			elseif (
+				$errorStatus & self::STATUS_TABLE_MISMATCH_STORAGE_ENGINE ||
+				$errorStatus & self::STATUS_TABLE_MISMATCH_DEFAULT_CHARSET
+			)
 			{
-				foreach($field as $k=>$f)
+				$this->fixList[$file][$tabs]['all'][] = 'convert';
+			}
+			foreach($field as $k=>$f)
+			{
+				if($f['_status']=='ok') continue;
+				$status = $f['_status'];
+				if(!empty($this->modes[$status]))
 				{
-					if($f['_status']=='ok') continue;
-					$this->fixList[$f['_file']][$tabs][$k][] = $this->modes[$f['_status']];
-				}	
+					$this->fixList[$f['_file']][$tabs][$k][] = $this->modes[$status];
+				}
 			}
 		}
 		
@@ -441,7 +545,8 @@ class db_verify
 				}				
 			}		
 		}
-	
+
+
 	}
 
 	/** 
@@ -449,12 +554,45 @@ class db_verify
 	 */
 	public function errors()
 	{
-		return count($this->errors);	
+		$badTableCount = 0;
+		foreach ($this->errors as $tableName => $tableMetadata)
+		{
+			if (!empty($tableMetadata['_status']))
+			{
+				$badTableCount++;
+				continue;
+			}
+			foreach ($this->results[$tableName] as $fieldMetadata)
+			{
+				if (isset($fieldMetadata['_status']) && $fieldMetadata['_status'] != 'ok')
+				{
+					$badTableCount++;
+					continue 2;
+				}
+			}
+			foreach ($this->indices[$tableName] as $indexMetadata)
+			{
+				if (isset($indexMetadata['_status']) && $indexMetadata['_status'] != 'ok')
+				{
+					$badTableCount++;
+					continue 2;
+				}
+			}
+		}
+
+		return $badTableCount;
 	}
 
-	
-	
-	function renderResults()
+	public function getErrors()
+	{
+		return $this->errors;
+	}
+
+	/**
+	 * @param $fileArray
+	 * @return void
+	 */
+	function renderResults($fileArray=array())
 	{
 		
 		$frm = e107::getForm();
@@ -463,8 +601,8 @@ class db_verify
 		
 		$text = "
 		<form method='post' action='".e_SELF."?".e_QUERY."'>
-			<fieldset id='core-db-verify-{$selection}'>
-				<legend id='core-db-verify-{$selection}-legend'>".DBVLAN_16."</legend>
+			<fieldset id='core-db-verify-results'>
+				<legend id='core-db-verify-results-legend'>".DBVLAN_16."</legend>
 
 				<table class='table adminlist'>
 					<colgroup>
@@ -476,7 +614,7 @@ class db_verify
 					</colgroup>
 					<thead>
 						<tr>
-							<th>".DBVLAN_4.": {$k}</th>
+							<th>".DBVLAN_4."</th>
 							<th>".DBVLAN_5."</th>
 							<th class='center'>".DBVLAN_6."</th>
 							<th>".DBVLAN_7."</th>
@@ -485,40 +623,60 @@ class db_verify
 					</thead>
 					<tbody>
 		";
-		
+
 		$info = array(
-			'missing_table'	=> DBVLAN_13,
-			'mismatch'		=> DBVLAN_8,
-			'missing_field'	=> DBVLAN_11,
-			'ok'		    => ADMIN_TRUE_ICON,
-			'missing_index'	=> DBVLAN_25,
+			self::STATUS_TABLE_MISSING                  => DBVLAN_13,
+			self::STATUS_TABLE_MISMATCH_STORAGE_ENGINE  => DBVLAN_17,
+			self::STATUS_TABLE_MISMATCH_DEFAULT_CHARSET => DBVLAN_18,
+			'mismatch'                                  => DBVLAN_8,
+			'missing_field'                             => DBVLAN_11,
+			'ok'                                        => defset('ADMIN_TRUE_ICON','true'),
+			'missing_index'                             => DBVLAN_25,
 		);
 		
 		
 		foreach($this->results as $tabs => $field)
 		{
-					
-			if($this->errors[$tabs]['_status'] === 'missing_table') // Missing Table
+			$tableStatus = $this->errors[$tabs]['_status'];
+			if($tableStatus != self::STATUS_TABLE_OK) // Missing Table
 			{
+				$errors = [];
+				$parser = e107::getParser();
+				foreach ([
+					self::STATUS_TABLE_MISSING,
+					self::STATUS_TABLE_MISMATCH_STORAGE_ENGINE,
+					self::STATUS_TABLE_MISMATCH_DEFAULT_CHARSET
+				] as $statusFlag)
+				{
+					if ($tableStatus & $statusFlag)
+						$errors[] = $parser->lanVars(
+							$info[$statusFlag],
+							[
+								'x' => $this->errors[$tabs]['_valid_' . $statusFlag],
+								'y' => $this->errors[$tabs]['_invalid_' . $statusFlag],
+							]
+						);
+				}
+
+				$fixMode = $tableStatus & self::STATUS_TABLE_MISSING ? 'create' : 'convert';
+
 				$text .= "
 					<tr>
 						<td>".$this->renderTableName($tabs)."</td>
-						<td>&nbsp;</td>
-						<td class='center middle error'>".$info[$this->errors[$tabs]['_status']]."</td>
-						<td>&nbsp;</td>
-						<td class='center middle autocheck e-pointer'>".$this->fixForm($this->results[$tabs]['_file'],$tabs, 'all', '', 'create') . "</td>
+						<td><em>".DBVLAN_28."</em></td>
+						<td class='center middle error'>".DBVLAN_27."</td>
+						<td>".implode("<br />", $errors)."</td>
+						<td class='center middle autocheck e-pointer'>".$this->fixForm($this->errors[$tabs]['_file'],$tabs, 'all', '', $fixMode) . "</td>
 					</tr>
 					";		
-			}					
-			elseif($this->errors[$tabs] != 'ok') // All Other Issues.. 
+			}
+			foreach($field as $k=>$f)
 			{
-				foreach($field as $k=>$f)
-				{
-					if($f['_status']=='ok') continue;
-					
-					$fstat = $info[$f['_status']];
-				
-					$text .= "
+				if($f['_status']=='ok') continue;
+
+				$fstat = $info[$f['_status']];
+
+				$text .= "
 					<tr>
 						<td>".$this->renderTableName($tabs)."</td>
 						<td>".$k."&nbsp;</td>
@@ -526,10 +684,8 @@ class db_verify
 						<td>".$this->renderNotes($f)."&nbsp;</td>
 						<td class='center middle autocheck e-pointer'>".$this->fixForm($f['_file'],$tabs, $k, $f['_valid'], $this->modes[$f['_status']]) . "</td>
 					</tr>
-					";	
-				}	
+					";
 			}
-			
 		}
 
 
@@ -574,7 +730,14 @@ class db_verify
 			<div class='buttons-bar right'>
 				".$frm->admin_button('runfix', DBVLAN_21, 'execute', '', array('id'=>false))."
 				".$frm->admin_button('check_all', 'jstarget:fix', 'action', LAN_CHECKALL, array('id'=>false))."
-				".$frm->admin_button('uncheck_all', 'jstarget:fix', 'action', LAN_UNCHECKALL, array('id'=>false))."
+				".$frm->admin_button('uncheck_all', 'jstarget:fix', 'action', LAN_UNCHECKALL, array('id'=>false));
+
+		foreach($fileArray as $tab)
+		{
+			$text .= $frm->hidden('verify_table[]',$tab);
+		}
+
+		$text .= "
 			</div>
 			
 			</fieldset>
@@ -582,10 +745,14 @@ class db_verify
 		";
 	
 		
-		$ns->tablerender(DBVLAN_23.' - '.DBVLAN_16, $mes->render().$text);
+		$ns->tablerender(DBVLAN_23.SEP.DBVLAN_16, $mes->render().$text);
 		
 	}
 
+	/**
+	 * @param $tabs
+	 * @return mixed|string
+	 */
 	function renderTableName($tabs)
 	{
 		
@@ -598,21 +765,35 @@ class db_verify
 	}
 
 
-	function fixForm($file,$table,$field, $newvalue,$mode,$after ='')
+	/**
+	 * @param $file
+	 * @param $table
+	 * @param $field
+	 * @param $newvalue
+	 * @param $mode
+	 * @param $after
+	 * @return string
+	 */
+	function fixForm($file, $table, $field, $newvalue, $mode, $after ='')
 	{
 		$frm = e107::getForm();
 		$text = $frm->checkbox("fix[$file][$table][$field][]", $mode, false, array('id'=>false));
 		
 		return $text;
 	}
-	
-	
-	function renderNotes($data,$mode='field')
+
+
+	/**
+	 * @param $data
+	 * @param $mode
+	 * @return string
+	 */
+	function renderNotes($data, $mode='field')
 	{
 		// return "<pre>".print_r($data,TRUE)."</pre>";
 		
 		$v = $data['_valid'];
-		$i = $data['_invalid'];
+		$i = !empty($data['_invalid']) ? $data['_invalid'] : array();
 		
 		$valid = $this->toMysql($v,$mode);
         $invalid = $this->toMysql($i,$mode);
@@ -629,10 +810,14 @@ class db_verify
 			
 		return $text;
 	}
-	
-	
-	
-	function toMysql($data,$mode = 'field')
+
+
+	/**
+	 * @param $data
+	 * @param $mode
+	 * @return string|void
+	 */
+	public function toMysql($data, $mode = 'field')
 	{
 		
 		if(!$data) return;
@@ -642,7 +827,10 @@ class db_verify
 			// print_a($data);
 			if($data['type'])
 			{
-				return $data['type']." (".$data['field'].");";	
+				//return $data['type']." (".$data['field'].");";
+				// Check if index keyname exists and add backticks
+				$keyname = (!empty($data['keyname']) ? " `".$data['keyname']."`" : "");
+				return $data['type'] . $keyname . " (" . $data['field'] . ");";
 			}
 			else
 			{
@@ -653,30 +841,33 @@ class db_verify
 		
 		if(!in_array(strtolower($data['type']), $this->fieldTypes))
 		{
-			return $data['type']."(".$data['value'].") ".$data['attributes']." ".$data['null']." ".$data['default'];	
+			$ret = $data['type']."(".$data['value'].") ".$data['attributes']." ".$data['null']." ".$data['default'];
+			return trim($ret);
 		}
 		else
 		{
-			return $data['type']." ".$data['attributes']." ".$data['null']." ".$data['default'];
+			$ret = $data['type'];
+			$ret .= !empty($data['attributes']) ? " ".$data['attributes'] : '';
+			$ret .= !empty($data['null']) ? " ".$data['null'] : '';
+			$ret .= !empty($data['default']) ? " ".$data['default'] : '';
+
+			return $ret;
 		}
            
 	}
 	
 	// returns the previous Field
-	function getPrevious($array,$cur)
+
+	/**
+	 * @param $array
+	 * @param $cur
+	 * @return int|mixed|string
+	 */
+	function getPrevious($array, $cur)
 	{
 		$fkeys = array_keys($array);
-		
-		foreach($fkeys as $fields)
-		{
-			if($fields == $cur)
-			{
-				$current = prev($fkeys); // required. 
-				$previous = prev($fkeys);
-				return $previous;
-			}
-		}
-						
+		$cur_key = array_search($cur, $fkeys);
+		return @$fkeys[$cur_key - 1];
 	}
 	
 	/**
@@ -684,9 +875,14 @@ class db_verify
 	*/ 
 	function getId($tabl,$cur)
 	{
+		if(empty($tabl))
+		{
+			return null;
+		}
+
 		$key = array_flip($tabl);
 		
-		if(substr($cur,0,4)=="lan_") // language table adjustment. 
+		if(strpos($cur,"lan_") === 0) // language table adjustment.
 		{
 			list($tmp,$lang,$cur) = explode("_",$cur,3);
 		}
@@ -697,7 +893,89 @@ class db_verify
 		} 
 
 	}
-	
+
+
+	/**
+	 * @param string $mode index|alter|insert|drop|create|indexdrop
+	 * @param string $table eg. submitnews
+	 * @param string $field eg. submitnews_id
+	 * @param string $sqlFileData (after CREATE)  eg. dblog_id int(10) unsigned NOT NULL auto_increment, ..... KEY....
+	 * @param string $engine MyISAM|InnoDB
+	 * @param string $charset MySQL/MariaDB text character set
+	 * @return string SQL query
+	 */
+	function getFixQuery(
+		$mode,
+		$table,
+		$field,
+		$sqlFileData,
+		$engine = self::MOST_PREFERRED_STORAGE_ENGINE,
+		$charset = self::MOST_PREFERRED_CHARSET
+	)
+	{
+
+		if(strpos($mode, 'index') === 0)
+		{
+			$fdata = $this->getIndex($sqlFileData);
+			$newval = $this->toMysql($fdata[$field],'index');
+		}
+		elseif($mode == 'alter' || $mode === 'insert' || $mode === 'index')
+		{
+			$fdata = $this->getFields($sqlFileData);
+			$newval = $this->toMysql($fdata[$field]);
+		}
+
+		$query = "";
+
+		switch($mode)
+		{
+			case 'alter':
+				$query = "ALTER TABLE `".MPREFIX.$table."` CHANGE `$field` `$field` $newval";
+			break;
+
+			case 'insert':
+				$after = ($aft = $this->getPrevious($fdata,$field)) ? " AFTER {$aft}" : "";
+				$query = "ALTER TABLE `".MPREFIX.$table."` ADD `$field` $newval{$after}";
+			break;
+
+			case 'drop':
+				$query = "ALTER TABLE `".MPREFIX.$table."` DROP `$field`";
+			break;
+
+			case 'index':
+				$newval = str_replace("PRIMARY", "PRIMARY KEY", $newval);
+				$query = "ALTER TABLE `".MPREFIX.$table."` ADD ".$newval;
+			break;
+
+			case 'indexdrop':
+				$query = "ALTER TABLE `".MPREFIX.$table."` DROP INDEX `$field`";
+			break;
+
+			case 'create':
+				$query = "CREATE TABLE `".MPREFIX.$table."` (".$sqlFileData.")".
+					" ENGINE=".$engine." DEFAULT CHARACTER SET=".$charset.";";
+			break;
+
+			case 'convert':
+				$showCreateTable = $this->getSqlData($table);
+				$currentSchema = $this->getSqlFileTables($showCreateTable);
+				if($engine != $currentSchema['engine'][0])
+				{
+					$query .= "ALTER TABLE `" . MPREFIX . $table . "` ENGINE=" . $engine . ";";
+				}
+				if($charset != $currentSchema['charset'][0])
+				{
+					$query .= "ALTER TABLE `" . MPREFIX . $table . "` CONVERT TO CHARACTER SET " . $charset . ";";
+				}
+				break;
+		}
+
+
+		return $query;
+	}
+
+
+
 	/**
 	 * Fix tables
 	 * FixArray eg. [core][table][field] = alter|create|index| etc. 
@@ -705,66 +983,36 @@ class db_verify
 	function runFix($fixArray='')
 	{
 		$mes  = e107::getMessage();
-		$log = e107::getAdminLog();
+		$log = e107::getLog();
 		
 		if(!is_array($fixArray))
 		{
 			$fixArray = $this->fixList;	// Fix All	
 		}
 				
-			
+
 		foreach($fixArray as $j=>$file)
 		{
-						
+
 			foreach($file as $table=>$val)
 			{
 				
 				$id = $this->getId($this->sqlFileTables[$j]['tables'],$table);
-						
+				$toFix = count($val);
+
 				foreach($val as $field=>$fixes)
 				{
 					foreach($fixes as $mode)
 					{				
-						if(substr($mode,0,5)== 'index')
-						{
-							$fdata = $this->getIndex($this->sqlFileTables[$j]['data'][$id]);
-							$newval = $this->toMysql($fdata[$field],'index');	
-						}
-						else
-						{
-							
-							$fdata = $this->getFields($this->sqlFileTables[$j]['data'][$id]);
-							$newval = $this->toMysql($fdata[$field]);	
-						}
-						
-						
-						switch($mode)
-						{
-							case 'alter':
-								$query = "ALTER TABLE `".MPREFIX.$table."` CHANGE `$field` `$field` $newval";
-							break;
-				
-							case 'insert':
-								$after = ($aft = $this->getPrevious($fdata,$field)) ? " AFTER {$aft}" : "";
-								$query = "ALTER TABLE `".MPREFIX.$table."` ADD `$field` $newval{$after}";
-							break;
-							
-							case 'drop':
-								$query = "ALTER TABLE `".MPREFIX.$table."` DROP `$field` ";
-							break;
-							
-							case 'index':
-								$query = "ALTER TABLE `".MPREFIX.$table."` ADD $newval ";
-							break;
-							
-							case 'indexdrop':
-								$query = "ALTER TABLE `".MPREFIX.$table."` DROP INDEX `$field`";
-							break;
-							
-							case 'create':
-								$query = "CREATE TABLE `".MPREFIX.$table."` (".$this->sqlFileTables[$j]['data'][$id].") ENGINE=MyISAM;";
-							break;
-						}
+
+						$query = $this->getFixQuery(
+							$mode,
+							$table,
+							$field,
+							$this->sqlFileTables[$j]['data'][$id],
+							$this->getIntendedStorageEngine($this->sqlFileTables[$j]['engine'][$id]),
+							$this->getIntendedCharset($this->sqlFileTables[$j]['charset'][$id])
+						);
 						
 				
 						// $mes->addDebug("Query: ".$query);		
@@ -773,11 +1021,12 @@ class db_verify
 						 
 						if(e107::getDb()->gen($query) !== false)
 						{
-							$log->addDebug(LAN_UPDATED.'  ['.$query.']');	
+							$log->addDebug(defset('LAN_UPDATED', 'Updated').'  ['.$query.']');
+							$toFix--;
 						} 
 						else 
 						{
-							$log->addWarning(LAN_UPDATED_FAILED.'  ['.$query.']');
+							$log->addWarning(defset('LAN_UPDATED_FAILED', 'Update Failed').'  ['.$query.']');
 							$log->addWarning(e107::getDb()->getLastErrorText()); // PDO compatible.
 							/*if(mysql_errno())
 							{
@@ -786,17 +1035,25 @@ class db_verify
 						}
 					}	
 				}
-		
-			}	// 
+
+				if(empty($toFix))
+				{
+					unset($this->errors[$table], $this->fixList[$j][$table]); // remove from error list since we are using a singleton
+				}
+			}	//
+
+
 		}
 
 		$log->flushMessages("Database Table(s) Modified");
 				
-	}	
-	
-	
-	
-	
+	}
+
+
+	/**
+	 * @param $sql_data
+	 * @return array|false
+	 */
 	function getSqlFileTables($sql_data)
 	{
 		if(!$sql_data)
@@ -808,17 +1065,13 @@ class db_verify
 		$ret = array();
 
 		$sql_data = preg_replace("#\/\*.*?\*\/#mis", '', $sql_data);	// remove comments 
-	//	echo "<h4>SqlData</h4>";
-	//	print_a($sql_data);
-	//	$regex = "/CREATE TABLE `?([\w]*)`?\s*?\(([\s\w\+\-_\(\),'\. `]*)\)\s*(ENGINE|TYPE)\s*?=\s?([\w]*)[\w =]*;/i";
 
-		$regex = "/CREATE TABLE (?:IF NOT EXISTS )?`?([\w]*)`?\s*?\(([\s\w\+\-_\(\),:'\. `]*)\)\s*(ENGINE|TYPE)\s*?=\s?([\w]*)[\w =]*;/i";
-	 			
-		$table = preg_match_all($regex,$sql_data,$match);
-		
+	 //	$regex = "/CREATE TABLE (?:IF NOT EXISTS )?`?([\w]*)`?\s*?\(([^;]*)\)\s*((?:[\w\s]+=[^\s]+)+\s*)*;/i";
+	// 	$regex = "/CREATE TABLE (?:IF NOT EXISTS )?`?(\w*)`?\s*?\(([^;]*)\)\s*((?:[\w\s]+=\S+)+\s*)*;/i";
+		$regex = "/CREATE TABLE (?:IF NOT EXISTS )?`?(\w*)`?\s*?\(([^;]*)\)\s*((?:[\w\s]+=[^;]+)+\s*)*;/i";
 
+		preg_match_all($regex,$sql_data,$match);
 
-			
 		$tables = array();
 			
 		foreach($match[1] as $c=>$k)
@@ -833,9 +1086,58 @@ class db_verify
 				
 				
 		$ret['tables'] = $tables;
-		$ret['data'] = $match[2];
-		$ret['engine'] = $match[4];
-		
+
+		$data = array();
+
+		if(!empty($match[2])) // clean/trim data.
+		{
+			foreach($match[2] as $dat)
+			{
+				$dat = str_replace("\t", '', $dat); // remove tab chars.
+				$data[] = trim($dat);
+			}
+		}
+
+		$ret['data'] = $data;
+
+		$ret['engine'] = array();
+		$ret['charset'] = array();
+
+		foreach ($match[3] as $rawTableOptions)
+		{
+			if (empty($rawTableOptions)) continue;
+
+			$engine = null;
+			$charset = null;
+
+		//	$tableOptionsRegex = "/([\w\s]+=[\w]+)+?\s*/";
+			$tableOptionsRegex = "/([\w\s]+=\s?\w+)+?\s*/";
+			preg_match_all($tableOptionsRegex, $rawTableOptions, $tableOptionsSplit);
+			$tableOptionsSplit = current($tableOptionsSplit);
+			foreach ($tableOptionsSplit as $rawTableOption)
+			{
+				list($tableOptionName, $tableOptionValue) = explode("=", $rawTableOption, 2);
+				$tableOptionName = strtoupper(trim($tableOptionName));
+				$tableOptionValue = trim($tableOptionValue);
+				switch ($tableOptionName)
+				{
+					case "ENGINE":
+					case "TYPE":
+						$engine = $tableOptionValue;
+						break;
+					case "DEFAULT CHARSET":
+					case "DEFAULT CHARACTER SET":
+					case "CHARSET":
+					case "CHARACTER SET":
+						$charset = $tableOptionValue;
+						break;
+				}
+			}
+
+			$ret['engine'][] = str_replace('MYISAM', 'MyISAM', $engine);
+			$ret['charset'][] = $charset;
+		}
+
 		if(empty($ret['tables']))
 		{
 			e107::getMessage()->addDebug("Unable to parse ".$this->currentTable."_sql.php file data. Possibly missing a ';' at the end?");
@@ -846,8 +1148,11 @@ class db_verify
 	}
 
 
-
-
+	/**
+	 * @param $data
+	 * @param $print
+	 * @return array
+	 */
 	function getFields($data, $print = false)
 	{
 		
@@ -858,41 +1163,29 @@ class db_verify
 		foreach($tmp as $line)
 		{
 			$line = trim($line);
-			$newline[] = preg_replace("/^([^`A-Z\s][a-z_]*)/","`$1`", $line);				
+
+			if(strpos($line,"PRIMARY") === 0 || strpos($line,"KEY") === 0 || strpos($line,"INDEX") === 0 || strpos($line,"FULLTEXT") === 0 || strpos($line,"FOREIGN") === 0)
+			{
+				$newline[] = '';  // Add a placeholder to preserve the structure
+				continue;
+			}
+
+			$newline[] = preg_replace('/^([^`\s][0-9a-zA-Z\$_]*)/',"`$1`", $line);
 		}
-		
+
 		$data = implode("\n",$newline);
 		// --------------------
 		
 		$mes = e107::getMessage();
 			
 	//	$regex = "/`?([\w]*)`?\s*?(".implode("|",$this->fieldTypes)."|".implode("|",$this->fieldTypeNum).")\s?(?:\([\s]?([0-9,]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(?:(NOT NULL|NULL))?[\s]*(auto_increment|default .*)?[\s]?(?:PRIMARY KEY)?[\s]*?,?\s*?\n/im";
-		$regex = "/^\s*?`?([\w]*)`?\s*?(".implode("|",$this->fieldTypes)."|".implode("|",$this->fieldTypeNum).")\s?(?:\([\s]?([0-9,]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(?:(NOT NULL|NULL))?[\s]*(auto_increment|default|AUTO_INCREMENT|DEFAULT [\w'\s.\(:\)-]*)?[\s]?(comment [\w\s'.-]*)?[\s]?(?:PRIMARY KEY)?[\s]*?,?\s*?\n/im";
+		$regex = "/^\s*?`?([\w]*)`?\s*?(".implode("|",$this->fieldTypes)."|".implode("|",$this->fieldTypeNum).")\s?(?:\([\s]?([0-9,]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(?:(NOT NULL|NULL))?[\s]*(auto_increment|default|AUTO_INCREMENT|DEFAULT [\w'\s.\(:\)-]*)?[\s]?(comment [\w\s'.-]*)?[\s]?(?:PRIMARY KEY|FULLTEXT)?[\s]*?,?\s*?\n/im";
 
-		if(e_DEBUG)
-		{
-		//	e107::getMessage()->addDebug("Regex: ".print_a($data,true));
-		//	e107::getMessage()->addDebug("Regex: ".$regex);
-
-		}
-
-	//	echo $regex."<br /><br />";
-	
-		//	$regex = "/`?([\w]*)`?\s*(int|varchar|tinyint|smallint|text|char|tinyint) ?(?:\([\s]?([0-9]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(NOT NULL|NULL)?[\s]*(auto_increment|default .*)?[\s]?,/i";		
-		
-	//	$regex = "/^\s*?`?([\w]*)`?\s*?(".implode("|",$this->fieldTypes)."|".implode("|",$this->fieldTypeNum).")\s?(?:\([\s]?([0-9,]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(?:(NOT NULL|NULL))?[\s]*?(auto_increment|default [\w'\".-]*)?[\s]?(?:PRIMARY KEY)?[\s]*?,?\n/im";
-	//$regex = "/^\s*?`?([\w]*)`?\s*?(date|time|timestamp|datetime|year|tinyblob|blob|mediumblob|longblob|tinytext|mediumtext|longtext|text|bit|tinyint|smallint|mediumint|integer|int|bigint|real|double|float|decimal|numeric|varchar|char|binary|varbinary|enum|set)\s?(?:\([\s]?([0-9,]*)[\s]?\))?[\s]?(unsigned)?[\s]*?(?:(NOT NULL|NULL))?[\s]*?(auto_increment|default [\w'\".-]*)?[\s]?(?:PRIMARY KEY)?[\s]*?,?\n/im";
-	//	$mes->addDebug($regex);
-	
-	//$regex = "/^\s*?`?([\w]*)`?\s*?(date|time|timestamp|datetime|year|text|bit|tinyint|smallint|mediumint|integer|int|bigint|real|double|float|decimal|numeric|varchar|char|binary|varbinary|enum|set)\s?(?:\([\s]?([0-9,]*)[\s]?\))?[\s]?(unsigned)?[\s]*?(?:(NOT NULL|NULL))?[\s]*?(auto_increment|default [\w'.-]*)?[\s]?(?:PRIMARY KEY)?[\s]*?,?\n/i";
-		
-	//	echo "reg=".$regex;
-		
 		preg_match_all($regex,$data,$m);	
 		
 		$ret = array();
-		
-	 if($print) var_dump($regex, $m);
+
+		 if($print) var_dump($regex, $m);
 			
 		foreach($m[1] as $k=>$val)
 		{
@@ -907,34 +1200,91 @@ class db_verify
 		
 		return $ret;
 	}
-	
-	
+
+
+	/**
+	 * @param $data
+	 * @param $print
+	 * @return array
+	 */
 	function getIndex($data, $print = false)
 	{
-		// $regex = "/(?:(PRIMARY|UNIQUE|FULLTEXT))?[\s]*?KEY (?: ?`?([\w]*)`?)[\s]* ?(?:\([\s]?`?([\w,]*[\s]?)`?\))?,?/i";
-		$regex = "/(?:(PRIMARY|UNIQUE|FULLTEXT))?[\s]*?KEY (?: ?`?([\w]*)`?)[\s]* ?(?:\([\s]?([\w\s,`]*[\s]?)`?\))?,?/i";
+	//	$regex = "/(PRIMARY|UNIQUE|FULLTEXT|FOREIGN)?[\s]*?(INDEX|KEY)[\s]*(?:`?([\w]*)`?)?[\s]*?\(`?([\w]+)`?(?:\s*\(\d+\))?(?:\s*(ASC|DESC))?\)[\s]*,?/i";
+	//	$regex = "/(?P<type>PRIMARY|PRIMARY|UNIQUE|FULLTEXT|FOREIGN|KEY)[\s]*?(?P<key_type>INDEX|KEY)?[\s]*(?:`?(?P<field>[\w]*)`?)?[\s]*?\(`?(?P<keyname>[\w]+)`?(?:\s*\(\d+\))?(?:\s*(?P<order>ASC|DESC))?\)[\s]*,?/i";
+
+		$regex = "/(?P<type>PRIMARY|UNIQUE|FULLTEXT|FOREIGN|KEY|INDEX)[\s]*?(?P<key_type>INDEX|KEY)?[\s]*(?:`?(?P<field>[\w]*)`?)?[\s]*?\(`?(?P<keyname>[\w]+)`?(?:\s*\((?P<length>\d+)\))?(?:\s*(?P<order>ASC|DESC))?\)[\s]*,?/i";
 		preg_match_all($regex,$data,$m);
-		
+
+		$ret = [];
+
+		foreach($m['type'] as $k=>$val)
+		{
+			$i          = $m['field'][$k];
+			$type       = trim(strtoupper($m['type'][$k]));
+			$keyname    = trim($m['keyname'][$k]);
+			$field      = trim($m['field'][$k]);
+
+			if(empty($field) || $field === 'KEY')
+			{
+				$field = $keyname;
+				$i = $keyname;
+			}
+
+			if($type === 'KEY' || $type === 'INDEX')
+			{
+				$type = '';
+			}
+
+			if(empty($keyname) || $keyname === 'KEY')
+			{
+				$keyname = $field;
+			}
+
+			$ret[$i] = array(
+				'type'			=> $type,
+				'keyname'		=> $keyname,
+				'field'			=> $field,
+
+			);
+		}
+
+		return $ret;
+/*
+		if (count($m) > 0)
+		{
+			unset($m[2]);
+			$m = array_combine(range(0, count($m)-1), array_values($m));
+		}
 		$ret = array();
 		
-		if($print) var_dump($regex, $m);
+		if($print)
+		{
+			e107::getDebug()->log($m);
+		}
 		
-		// Standard Detection Method. 
+		// Standard Detection Method.
+
+		$fieldReplace = array("`"," ");
+
+
 		foreach($m[3] as $k=>$val)
 		{
 			if(!$val) continue;
 			$val = str_replace("`","",$val);
-			$ret[$val] = array(
+
+			$key = !empty($m[2][$k]) ? $m[2][$k] : $val;
+
+			$ret[$key] = array(
 				'type'		=> strtoupper($m[1][$k]),
-				'keyname'	=> (vartrue($m[2][$k])) ? str_replace("`","",$m[2][$k]) : str_replace("`","",$m[3][$k]),
-				'field'		=> str_replace("`","",$m[3][$k])
+				'keyname'	=> (!empty($m[2][$k])) ? str_replace("`","",$m[2][$k]) : str_replace("`","",$m[3][$k]),
+				'field'		=> str_replace($fieldReplace,"",$m[3][$k])
 			);
 		}
 		
 		//Alternate Index detection method. 
 		// eg.  `table_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 		
-		$regex = "/`?([\w]*)`? .*((?:AUTO_INCREMENT))\s?(PRIMARY|UNIQUE|FULLTEXT)\s?KEY\s?,/i";
+		$regex = "/`?([\w]*)`? .*((?:AUTO_INCREMENT))\s?(PRIMARY|UNIQUE|FULLTEXT|FOREIGN)\s?KEY\s?,/i";
 		preg_match_all($regex,$data,$m);
 		
 		foreach($m[1] as $k=>$val)
@@ -944,17 +1294,26 @@ class db_verify
 		    $ret[$val] = array(
 				'type'		=> strtoupper($m[3][$k]),
 				'keyname'	=> $m[1][$k],
-				'field'		=> str_replace("`","",$m[1][$k])
+				'field'		=> str_replace($fieldReplace,"",$m[1][$k])
 			);	
 		}
 
-		return $ret;
+		if($print)
+		{
+			e107::getDebug()->log($ret);
+		}
 
+		return $ret;
+*/
 	}
-	
-	
-	
-	function getSqlData($tbl,$language='')
+
+
+	/**
+	 * @param $tbl
+	 * @param $language
+	 * @return false|string
+	 */
+	function getSqlData($tbl, $language='')
 	{
 		
 		$mes = e107::getMessage();
@@ -1006,11 +1365,14 @@ class db_verify
 		}
 	
 	}
-	
+
+	/**
+	 * @return array
+	 */
 	function getSqlLanguages()
 	{
 		$sql = e107::getDb();
-		$list = $sql->db_TableList('lan');
+		$list = $sql->tables('lan');
 		
 		$array = array();
 		
@@ -1023,8 +1385,11 @@ class db_verify
 		return $array;
 
 	}
-	
-	
+
+
+	/**
+	 * @return void
+	 */
 	function renderTableSelect()
 	{
 		$frm = e107::getForm();
@@ -1036,26 +1401,70 @@ class db_verify
 		<form method='post' action='".e_SELF.(e_QUERY ? '?'.e_QUERY : '')."' id='core-db-verify-sql-tables-form'>
 			<fieldset id='core-db-verify-sql-tables'>
 				<legend>".DBVLAN_14."</legend>
-				<table class='table table-striped adminlist'>
+				<table class='table table-striped' >
 					<colgroup>
-						<col style='width: 100%'></col>
+						<col style='width: 33%'></col>
+						<col style='width: 33%'></col>
+						<col style='width: 33%'></col>
 					</colgroup>
 					<thead>
 						<tr>
-							<th class='first form-inline'><label for='check-all-verify-jstarget-verify-table'>".$frm->checkbox_toggle('check-all-verify', 'verify_table', false )." ".LAN_CHECKALL.' | '.LAN_UNCHECKALL."</label></th>
+							<th class='first form-inline' colspan='3'><label for='check-all-verify-jstarget-verify-table'>".$frm->checkbox_toggle('check-all-verify', 'verify_table' )." ".LAN_CHECKALL.' | '.LAN_UNCHECKALL."</label></th>
 						</tr>
 					</thead>
 					<tbody>
 		";
-	
+
+		$c = 0;
+		$plg = e107::getPlug();
+
 		foreach(array_keys($this->sqlFileTables) as $t=>$x)
 		{
-			$text .= "
-				<tr>
-					<td>".$frm->checkbox('verify_table['.$t.']', $x, false, array('label'=>$x))."</td>
-				</tr>
-			";
+			if($x !== 'core')
+			{
+				$plg->load($x);
+				if(!$plg->getId()) // no data.
+				{
+					$plg->load($x.'_menu');// try menu folder.
+				}
+
+				$icon = $plg->getIcon();
+				$name = $plg->getName();
+
+			}
+			else
+			{
+				$icon = defset('E_16_E107');
+				$name = LAN_CORE;
+			}
+			$text .= ($c === 0) ? "<tr>\n" : '';
+			$text .= "<td title='".$x."'>".$frm->checkbox('verify_table['.$t.']', $x, false, array('label'=>$icon.' '.$name))."</td>";
+			$text .= ($c === 2) ? "</tr>\n" : '';
+
+			$c++;
+
+			if($c > 2)
+			{
+				$c = 0;
+			}
+
 		}
+
+		while (($c % 3) !== 0)
+		{
+			$text .= "<td>&nbsp;</td>\n";
+			$text .= (($c+1) % 3 == 0) ? "</tr>" : "";
+			$c++;
+		}
+
+	/*	if($c !== 2)
+		{
+			$add = (3 - $c) + 1;
+
+			$text .= "<td>".$c."</td>";
+
+			$text .= "</tr>";
+		}*/
 		
 		$text .= "
 					</tbody>
@@ -1068,10 +1477,137 @@ class db_verify
 				</form>
 		";
 	
-		$ns->tablerender(DBVLAN_23.' - '.DBVLAN_16, $mes->render().$text);
+		$ns->tablerender(DBVLAN_23.SEP.DBVLAN_16, $mes->render().$text);
 	}
-	
-	
+
+	/**
+	 * Get the available storage engines on this MySQL server
+	 *
+	 * This method is not memoized and should not be called repeatedly.
+	 *
+	 * @return string[] An unordered list of the storage engines supported by the current MySQL server
+	 */
+	private function getAvailableStorageEngines()
+	{
+		$db = e107::getDb();
+		$db->gen("SHOW ENGINES;");
+		$output = [];
+		while ($row = $db->fetch())
+		{
+			$output[] = $row['Engine'];
+		}
+		return $output;
+	}
+
+	/**
+	 * Get the most compatible MySQL storage engine on this server for the provided storage engine
+	 *
+	 * @param string|null $maybeStorageEngine The requested storage engine
+	 * @return string|false The MySQL storage engine that should actually be used. false if no match found.
+	 */
+	public function getIntendedStorageEngine($maybeStorageEngine = null)
+	{
+
+		if($maybeStorageEngine === null)
+		{
+			return $this->getIntendedStorageEngine(self::MOST_PREFERRED_STORAGE_ENGINE);
+		}
+
+		if(strtoupper($maybeStorageEngine) === 'MYISAM')
+		{
+			$maybeStorageEngine = 'MyISAM';
+		}
+		elseif(strtoupper($maybeStorageEngine) === 'INNODB')
+		{
+			$maybeStorageEngine = 'InnoDB';
+		}
+
+		if (!array_key_exists($maybeStorageEngine, $this->storageEnginePreferenceMap))
+		{
+			if (in_array($maybeStorageEngine, $this->availableStorageEngines))
+				return $maybeStorageEngine;
+			return false;
+		}
+
+		$fit = array_intersect($this->storageEnginePreferenceMap[$maybeStorageEngine], $this->availableStorageEngines);
+		return current($fit);
+	}
+
+	/**
+	 * Try to figure out what storage engine the provided one is referring to
+	 *
+	 * @param string $maybeStorageEngine The reported storage engine
+	 * @return string The probable storage engine the input is referring to
+	 * @throws UnexpectedValueException if the provided storage engine is not known as an available storage engine
+	 */
+	public function getCanonicalStorageEngine($maybeStorageEngine)
+	{
+		if (in_array($maybeStorageEngine, $this->availableStorageEngines))
+			return $maybeStorageEngine;
+
+		throw new UnexpectedValueException(
+			"Unknown storage engine: " . var_export($maybeStorageEngine, true)
+		);
+	}
+
+	/**
+	 * Get the most compatible MySQL character set based on the input
+	 *
+	 * @param string|null $maybeCharset The requested character set. null to retrieve the default
+	 * @return string The MySQL character set that should actually be used
+	 */
+	public function getIntendedCharset($maybeCharset = null)
+	{
+		if (empty($maybeCharset)) return self::MOST_PREFERRED_CHARSET;
+
+		return $this->getCanonicalCharset($maybeCharset);
+	}
+
+	/**
+	 * Try to figure out what character set the provided one is referring to
+	 *
+	 * @param string $maybeCharset The reported character set
+	 * @return string The probable character set
+	 */
+	public function getCanonicalCharset($maybeCharset)
+	{
+		if ($maybeCharset == "utf8") return "utf8mb4";
+
+		return $maybeCharset;
+	}
+
+	/**
+	 * Inititalize the class parameters.
+	 * @return void
+	 */
+	public function init($clearCache=false): void
+	{
+		$sql = e107::getDb();
+		$sql->gen('SET SQL_QUOTE_SHOW_CREATE = 1');
+
+		if(!deftrue('e_DEBUG') && ($clearCache === false) && $tmp = e107::getCache()->retrieve(self::cachetag, 15, true, true))
+		{
+			$cacheData                     = e107::unserialize($tmp);
+			$this->sqlFileTables           = isset($cacheData['sqlFileTables']) ? $cacheData['sqlFileTables'] : $this->load();
+			$this->availableStorageEngines = isset($cacheData['availableStorageEngines']) ?
+				$cacheData['availableStorageEngines'] : $this->getAvailableStorageEngines();
+		}
+		else
+		{
+			$this->sqlFileTables           = $this->load();
+			$this->availableStorageEngines = $this->getAvailableStorageEngines();
+			$cacheData                     = e107::serialize([
+				'sqlFileTables'           => $this->sqlFileTables,
+				'availableStorageEngines' => $this->availableStorageEngines,
+			], 'json');
+			e107::getCache()->set(self::cachetag, $cacheData, true, true, true);
+		}
+
+
+		$this->sqlLanguageTables = $this->getSqlLanguages();
+	}
+
+
 }
 
 
@@ -1386,7 +1922,7 @@ function check_tables($what)
 		{
 			//very tired and sick of this page, so quick and dirty
 			$text .= "
-					<script type='text/javascript'>
+					<script>
 						\$('core-db-verify-{$what}-legend').hide();
 					</script>
 			";
@@ -1642,4 +2178,4 @@ function table_list()
 */
 
 
-?>
+

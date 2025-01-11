@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e107Plugin name="Hero" lan="LAN_PLUGIN_HERO_NAME" version="1.0" date="2020-12-15" compatibility="2.0" installRequired="true" >
+	<author name="e107" url="https://e107.org" />
+	<summary lan="LAN_PLUGIN_HERO_SUMMARY">Home page 'Hero' area management</summary>
+	<description lan="LAN_PLUGIN_HERO_DESCRIPTION">Image and text slider, animated bullet points for the hero area of your home page.</description>
+	<keywords>
+		<word>generic</word>
+		<word>hero</word>
+		<word>carousel</word>
+		<word>slider</word>
+	</keywords>
+	<category>content</category>
+	<copyright></copyright>
+	<adminLinks>
+		<link url="admin_config.php" description="" icon="" iconSmall="" icon128="" primary="true" >LAN_CONFIGURE</link>
+	</adminLinks>
+	<pluginPrefs>
+		<pref name='visibility'>0</pref>
+		<pref name='icon_pack'>fontawesome</pref>
+		<pref name='slide_interval'>7000</pref>
+	</pluginPrefs>
+	<mediaCategories>
+		<category type="image">Hero Images</category>
+	</mediaCategories>
+</e107Plugin>

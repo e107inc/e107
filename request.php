@@ -53,7 +53,14 @@ if(!empty($_GET['file'])) // eg. request.php?file=1
 		$row = $sql->fetch();
 		// $file = $tp->replaceConstants($row['media_url'],'rel');
 		e107::getFile()->send($row['media_url']);
-	} 	
+	}
+	else
+	{
+		require_once(HEADERF);
+		echo e107::getMessage()->addError(LAN_DOWNLOAD_NO_PERMISSION)->render();
+		require_once(FOOTERF);
+	}
+
 }
 elseif(e107::isInstalled('download')) //BC Legacy Support. (Downloads Plugin)
 {

@@ -15,6 +15,8 @@ $pref = e107::getPref();
 $tp = e107::getParser();
 $scbatch = e107::getScBatch('news');
 
+
+
 $cString = 'nq_news_categories_sc';
 $cached = e107::getCache()->retrieve($cString);
 
@@ -126,7 +128,7 @@ $nbr_cols = (defined("NEWSCAT_COLS")) ? NEWSCAT_COLS : $nbr_cols;
         return '';
     }
 	$cats = array();
-	while ($row = $sql2->db_Fetch()) 
+	while ($row = $sql2->fetch())
 	{
 		if($row['ccount'] > 0) $cats[$row['category_id']] = $row;
 	}
@@ -165,19 +167,21 @@ $nbr_cols = (defined("NEWSCAT_COLS")) ? NEWSCAT_COLS : $nbr_cols;
             ORDER BY news_datestamp DESC LIMIT 0,".NEWSCAT_AMOUNT;
 
         $count = $sql->gen($cqry);
-		//$count = $sql->db_Select("news", "*", "news_category='".intval($category_id)."' AND news_class IN (".USERCLASS_LIST.") AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")  ORDER BY news_datestamp DESC LIMIT 0,".NEWSCAT_AMOUNT);
+		//$count = $sql->select("news", "*", "news_category='".intval($category_id)."' AND news_class IN (".USERCLASS_LIST.") AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")  ORDER BY news_datestamp DESC LIMIT 0,".NEWSCAT_AMOUNT);
 		if($count)
 		{
-            while ($row = $sql->db_Fetch()) 
+            while ($row = $sql->fetch())
             {
     			$scbatch->setScVar('news_item', $row);
     			//$row['category_name'] = $category_name;
     			//$row['category_icon'] = $category_icon;
     			$row = array_merge($row, $row3);
+
     			$textbody .= $ix -> render_newsitem($row, 'return', '', $NEWSCAT_ITEM, $param);
-    
+
     		}
 		}
+
 // ----------------------------------
 		$search[0] = "/\{NEWSCATICON\}(.*?)/si";
 		$replace[0] = $scbatch->sc_newscaticon('url');

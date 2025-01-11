@@ -33,7 +33,8 @@ define("CHATBOX_L15", "Post too long, or empty post submitted");
 // define("CHATBOX_L16", "Anonymous");
 define("CHATBOX_L17", "Duplicate post");
 define("CHATBOX_L18", "Chatbox messages moderated");
-define("CHATBOX_L19", "You may only post once every ".(FLOODPROTECT ? FLOODTIMEOUT : 'n/a')." seconds");
+//define("CHATBOX_L19", "You may only post once every ".(FLOODPROTECT ? FLOODTIMEOUT : 'n/a')." seconds");
+define("CHATBOX_L19", "You may only post once every [x] seconds");
 
 define("CHATBOX_L20", "Chatbox (all posts)");
 // define("CHATBOX_L21", "Chat Posts");
@@ -43,4 +44,3 @@ define("CHATBOX_L24", "You do not have the correct permissions to view this page
 define("CHATBOX_L25", "[ this post has been blocked by admin ]");
 
 define("LAN_CHATBOX_100", "Type your message here.");
-?>

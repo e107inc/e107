@@ -11,7 +11,7 @@
  * Render gallery pages.
  */
 
-require_once("../../class2.php");
+require_once(__DIR__.'/../../class2.php');
 
 if(!e107::isInstalled('gallery'))
 {
@@ -28,6 +28,12 @@ e107::css('gallery', 'css/gallery.css');
 
 // Load prettyPhoto settings and files.
 gallery_load_prettyphoto();
+
+// @see: Issue #2938 Missing pagetitle in case of default urls.
+if (!class_exists('plugin_gallery_index_controller') && !deftrue('e_PAGETITLE'))
+{
+	define('e_PAGETITLE', LAN_PLUGIN_GALLERY_TITLE);
+}
 
 require_once(HEADERF);
 
@@ -92,6 +98,8 @@ class gallery
 		$template = array_change_key_case($template);
 		$sc = e107::getScBatch('gallery', true);
 
+		$sc->breadcrumb();
+
 		if(defset('BOOTSTRAP') === true || defset('BOOTSTRAP') === 2) // Convert bootstrap3 to bootstrap2 compat.
 		{
 			$template['cat_start'] = str_replace('row', 'row-fluid', $template['cat_start']);
@@ -131,10 +139,12 @@ class gallery
 		$sc->amount = varset($plugPrefs['perpage'], 12);
 		$sc->curCat = $cat;
 		$sc->from = ($_GET['frm']) ? intval($_GET['frm']) : 0;
+		$sc->breadcrumb();
+
 		$orderBy = varset($plugPrefs['orderby'], 'media_id DESC');
 
 		$list = e107::getMedia()->getImages($cat, $sc->from, $sc->amount, null, $orderBy);
-		$catname = $tp->toHtml($this->catList[$cat]['media_cat_title'], false, 'defs');
+		$catname = $tp->toHTML($this->catList[$cat]['media_cat_title'], false, 'defs');
 
 		$inner = "";
 
@@ -160,4 +170,4 @@ class gallery
 new gallery;
 
 require_once(FOOTERF);
-exit;
+

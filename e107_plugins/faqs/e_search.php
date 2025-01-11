@@ -21,8 +21,8 @@ class faqs_search extends e_search // include plugin-folder in the name.
 							
 			'return_fields'	=> array('t.faq_question','t.faq_answer','t.faq_datestamp','x.faq_info_title','t.faq_id','x.faq_info_id','x.faq_info_title', 'x.faq_info_class','x.faq_info_sef'), 
 			'search_fields'	=> array('t.faq_question'=>1.0, 't.faq_answer'=>1.2, "x.faq_info_title"=>0.6, 't.faq_tags'=> 1.4), // fields and weights. 
-			'order'			=> array('t.faq_question' => DESC),
-			'refpage'		=> 'chat.php'
+			'order'			=> array('t.faq_question' => 'DESC'),
+			'refpage'		=> 'faqs.php'
 		);
 
 
@@ -52,12 +52,13 @@ class faqs_search extends e_search // include plugin-folder in the name.
 	 * Optional - Advanced Where
 	 * @param $parm - data returned from $_GET (ie. advanced fields included. in this case 'date' and 'author' )
 	 */
-	function where($parm='')
+	function where($parm=null)
 	{
 		$tp = e107::getParser();
 
 		$qry = " find_in_set(x.faq_info_class,'".USERCLASS_LIST."') AND ";
 		
+		/*
 		if (vartrue($parm['time']) && is_numeric($parm['time'])) 
 		{
 			$qry .= " cb_datestamp ".($parm['on'] == 'new' ? '>=' : '<=')." '".(time() - $parm['time'])."' AND";
@@ -66,7 +67,7 @@ class faqs_search extends e_search // include plugin-folder in the name.
 		if (vartrue($parm['author'])) 
 		{
 			$qry .= " cb_nick LIKE '%".$tp -> toDB($parm['author'])."%' AND";
-		}
+		}*/
 		
 		return $qry;
 	}
@@ -75,4 +76,3 @@ class faqs_search extends e_search // include plugin-folder in the name.
 }
 // $search_info[]=array( 'sfile' => e_PLUGIN.'faq/search.php', 'qtype' => 'FAQ', 'refpage' => 'faq.php');
 
-?>

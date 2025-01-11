@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<e107Theme name="blank" version="1.0" date="2031-05-01" compatibility="2.0" livedemo='http://e107.org'>
-	<author name ="e107 Inc" email="nospam@e107.org" url="http://e107.org" />
+<e107Theme name="blank" version="1.0" date="2031-05-01" compatibility="2.0" livedemo='https://e107.org'>
+	<author name ="e107 Inc" email="nospam@e107.org" url="https://e107.org" />
 	<summary>Blank Example theme</summary>
 	<description>Blank e107 Theme</description>
 	<category>generic</category>
 	<compliance xhtml="1.1" css="2.1" />
+	<libraries>
+		<library name="bootstrap" version="3" scope="front"/>
+		<library name="fontawesome" version="4"  scope="front"/>
+	</libraries>
     <plugins>
 		<plugin name='chatbox_menu' url='core' />
 	</plugins>

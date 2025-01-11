@@ -1,0 +1,178 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<e107Export version="2.2.0 (git)" timestamp="1541880474" >
+	<database>
+	<dbTable name="hero">
+		<item>
+			<field name="hero_id">1</field>
+			<field name="hero_title"><![CDATA[A [powerful] & [free] hero area]]></field>
+			<field name="hero_description">[Easy] to Use</field>
+			<field name="hero_bullets">[
+    {
+        "icon": "fa-sun-o.glyph",
+        "icon_style": "warning",
+        "text": "Add some bullet text",
+        "animation": "fadeInRight",
+        "animation_delay": "15"
+    },
+    {
+        "icon": "fa-font-awesome.glyph",
+        "icon_style": "success",
+        "text": "Select an Icon from FontAwesome or others",
+        "animation": "fadeInRight",
+        "animation_delay": "25"
+    },
+    {
+        "icon": "fa-adjust.glyph",
+        "icon_style": "danger",
+        "text": "Choose a Style from Bootstrap",
+        "animation": "fadeInRight",
+        "animation_delay": "35"
+    },
+    {
+        "icon": "",
+        "icon_style": "",
+        "text": "",
+        "animation": "",
+        "animation_delay": "0"
+    },
+    {
+        "icon": "",
+        "icon_style": "",
+        "text": "",
+        "animation": "",
+        "animation_delay": "0"
+    }
+]</field>
+			<field name="hero_button1">{
+    "icon": "fa-arrow-circle-o-down",
+    "label": "Button",
+    "url": "",
+    "class": "primary"
+}</field>
+			<field name="hero_button2">{
+    "icon": "fa-",
+    "label": "",
+    "url": "",
+    "class": ""
+}</field>
+			<field name="hero_order">0</field>
+			<field name="hero_media">https://via.placeholder.com/800x350.jpg?text=Image+1</field>
+			<field name="hero_bg"></field>
+		</item>
+		<item>
+			<field name="hero_id">2</field>
+			<field name="hero_title">Add [emphasized] titles</field>
+			<field name="hero_description">Add a description [here]</field>
+			<field name="hero_bullets">[
+    {
+        "icon": "fa-clock-o.glyph",
+        "icon_style": "info",
+        "text": "Time it how you wish",
+        "animation": "fadeInRight",
+        "animation_delay": "35"
+    },
+    {
+        "icon": "fa-id-badge.glyph",
+        "icon_style": "warning",
+        "text": "Add a Button",
+        "animation": "fadeInRight",
+        "animation_delay": "15"
+    },
+    {
+        "icon": "fa-globe.glyph",
+        "icon_style": "success",
+        "text": "To the URL of your choice",
+        "animation": "fadeInRight",
+        "animation_delay": "20"
+    },
+    {
+        "icon": "fa-.glyph",
+        "icon_style": "",
+        "text": "",
+        "animation": "",
+        "animation_delay": "0"
+    },
+    {
+        "icon": "fa-.glyph",
+        "icon_style": "",
+        "text": "",
+        "animation": "",
+        "animation_delay": "0"
+    }
+]</field>
+			<field name="hero_button1">{
+    "icon": "fa-link",
+    "label": "Button",
+    "url": "#",
+    "class": "success"
+}</field>
+			<field name="hero_button2">{
+    "icon": "fa-",
+    "label": "",
+    "url": "",
+    "class": ""
+}</field>
+			<field name="hero_order">1</field>
+			<field name="hero_media">https://via.placeholder.com/800x350.jpg?text=Image+2</field>
+			<field name="hero_bg"></field>
+		</item>
+		<item>
+			<field name="hero_id">3</field>
+			<field name="hero_title">Select your [Animations]</field>
+			<field name="hero_description">Use the admin area to adjust. </field>
+			<field name="hero_bullets">[
+    {
+        "icon": "fa-soccer-ball-o.glyph",
+        "icon_style": "warning",
+        "text": "Bounce In from the Left",
+        "animation": "bounceInLeft",
+        "animation_delay": "15"
+    },
+    {
+        "icon": "fa-arrow-up.glyph",
+        "icon_style": "success",
+        "text": "Zoom In Up",
+        "animation": "zoomInUp",
+        "animation_delay": "42"
+    },
+    {
+        "icon": "fa-anchor.glyph",
+        "icon_style": "danger",
+        "text": "Rotate In Down and Left",
+        "animation": "rotateInDownLeft",
+        "animation_delay": "30"
+    },
+    {
+        "icon": "",
+        "icon_style": "",
+        "text": "",
+        "animation": "",
+        "animation_delay": "0"
+    },
+    {
+        "icon": "",
+        "icon_style": "",
+        "text": "",
+        "animation": "",
+        "animation_delay": "0"
+    }
+]</field>
+			<field name="hero_button1">{
+    "icon": "fa-",
+    "label": "",
+    "url": "",
+    "class": ""
+}</field>
+			<field name="hero_button2">{
+    "icon": "fa-",
+    "label": "",
+    "url": "",
+    "class": ""
+}</field>
+			<field name="hero_order">2</field>
+			<field name="hero_media">https://via.placeholder.com/800x350.jpg?text=Image+3</field>
+			<field name="hero_bg"></field>
+		</item>
+	</dbTable>
+	</database>
+</e107Export>

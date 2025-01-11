@@ -17,6 +17,10 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+
+/**
+ *
+ */
 class notify
 {
 	public $notify_prefs;
@@ -27,7 +31,7 @@ class notify
 
 		if(empty($this->notify_prefs))
 		{
-			$this->notify_prefs = e107::getConfig('notify')->getPref();
+			$this->notify_prefs = (array) e107::getConfig('notify')->getPref();
 		}
 
 	}
@@ -42,7 +46,7 @@ class notify
 
 		if(empty($active) && defset('e_PAGE') == 'notify.php')
 		{
-			e107::getMessage()->addDebug('Notify is disabled!');
+			e107::getMessage()->addDebug('All notifications are inactive!');
 			return false;
 		}
 
@@ -54,7 +58,7 @@ class notify
 			{
 				$include = null;
 
-				if ($status['class'] != e_UC_NOBODY) // 255;
+				if (varset($status['class']) != e_UC_NOBODY) // 255;
 				{
 					if(varset($status['include'])) // Plugin
 					{
@@ -88,34 +92,42 @@ class notify
 			}
 		}
 
+		return null;
 	//	e107::getEvent()->debug();
 	}
 
 
 	/**
-	 * Generic Notification method when none defined. 
+	 * Generic Notification method when none defined.
+	 *
+	 * @param $data
+	 * @param $id
 	 */
 	function generic($data,$id)
 	{
+	    if(isset($data['user_password']))
+        {
+            unset($data['user_password']);
+        }
+
 		$message = print_a($data,true); 
 		$this->send($id, 'Event Triggered: '.$id, $message);	
 	}
-
-
 
 
 	/**
 	 * Send an email notification following an event.
 	 *
 	 * The email is sent via a common interface, which will send immediately for small numbers of recipients, and queue for larger.
-	 * 
-	 * @param string $id - identifies event actions
+	 *
+	 * @param string $id      - identifies event actions
 	 * @param string $subject - subject for email
 	 * @param string $message - email message body
+	 * @param array  $media
 	 * @return void
 	 *
-	 *	@todo handle 'everyone except' clauses (email address filter done)
-	 *	@todo set up pref to not notify originator of event which caused notify (see $blockOriginator)
+	 * @todo handle 'everyone except' clauses (email address filter done)
+	 * @todo set up pref to not notify originator of event which caused notify (see $blockOriginator)
 	 */
 	function send($id, $subject, $message, $media=array())
 	{
@@ -128,6 +140,7 @@ class notify
 	//	$message = $tp->toEmail($message);
 		$emailFilter = '';
 		$notifyTarget = $this->notify_prefs['event'][$id]['class'];
+		$qry = '';
 
 		if ($notifyTarget == '-email')
 		{
@@ -137,7 +150,25 @@ class notify
 		$blockOriginator = FALSE;		// TODO: set this using a pref
 		$recipients = array();
 
-		if ($notifyTarget == 'email') // Single email address - that can always go immediately
+		if(strpos($notifyTarget, '::') !== false) // custom router @see e107_plugins/_blank/e_notify.php
+		{
+			list($class,$method) = explode('::', $notifyTarget);
+
+			if($cls = e107::getAddon($class,'e_notify'))
+			{
+				$evData = [
+					'id'            => $id,
+					'subject'       => $subject,
+					'message'       => $message,
+					'recipient'     => varset($this->notify_prefs['event'][$id]['recipient'])
+				];
+
+				return e107::callMethod($cls, $method, $evData);
+			}
+
+			return false;
+		}
+		elseif ($notifyTarget == 'email') // Single email address - that can always go immediately
 		{
 			if (!$blockOriginator || ($this->notify_prefs['event'][$id]['email'] != USEREMAIL))
 			{
@@ -216,7 +247,9 @@ class notify
 
 		}
 
-		if(E107_DEBUG_LEVEL > 0 || deftrue('e_DEBUG_NOTIFY'))
+		$devMode =  e107::getPref('developer', false);
+
+		if((deftrue('ADMIN') || $devMode) && E107_DEBUG_LEVEL > 0 || deftrue('e_DEBUG_NOTIFY'))
 		{
 			$data = array('id'=>$id, 'subject'=>$subject, 'recipients'=> $recipients, 'prefs'=>$this->notify_prefs['event'][$id], 'message'=>$message);
 
@@ -257,14 +290,14 @@ class notify
 				}
 			}
 			
-			$result = $mailer->sendEmails('notify', $mailData, $recipients);
+			$mailer->sendEmails('notify', $mailData, $recipients);
 
-			e107::getLog()->e_log_event(10,-1,'NOTIFY',$subject,$message,FALSE,LOG_TO_ROLLING);
+			e107::getLog()->addEvent(10,-1,'NOTIFY',$subject,$message,FALSE,LOG_TO_ROLLING);
 		}
 		else
 		{
 			$data = array('qry'=>$qry, 'error'=>'No recipients');
-			e107::getLog()->add('Notify Debug', $data,  E_LOG_WARNING_, "NOTIFY_DBG");
+			e107::getLog()->add('Notify Debug', $data,  E_LOG_WARNING, "NOTIFY_DBG");
 		}
 	}
 
@@ -275,8 +308,10 @@ class notify
 	// ---------------------------------------
 
 
-
-	function notify_usersup($data)
+	/**
+	 * @param $data
+	 */
+	public function notify_usersup($data)
 	{
 		$message = "";
 		foreach ($data as $key => $value)
@@ -313,6 +348,10 @@ class notify
 	}
 
 
+	/**
+	 * @param $data
+	 * @return void
+	 */
 	function notify_login($data)
 	{
 		$message = "";
@@ -321,19 +360,32 @@ class notify
 			$message .= $key.': '.$value.'<br />';
 		}
 
-		$this->send('login', NT_LAN_LI_1, $message);
+		$user = !empty($data['user_name']) ? " (".$data['user_name'].")" : "";
+
+		$this->send('login', NT_LAN_LI_1 . $user, $message);
 	}
 
+	/**
+	 * @return void
+	 */
 	function notify_logout()
 	{
 		$this->send('logout', NT_LAN_LO_1, USERID.'. '.USERNAME.' '.NT_LAN_LO_2);
 	}
 
+	/**
+	 * @param $data
+	 * @return void
+	 */
 	function notify_flood($data)
 	{
 		$this->send('flood', NT_LAN_FL_1, NT_LAN_FL_2.': '.e107::getIPHandler()->ipDecode($data, TRUE));
 	}
 
+	/**
+	 * @param $data
+	 * @return void
+	 */
 	function notify_subnews($data)
 	{
 		$message = "";
@@ -345,6 +397,10 @@ class notify
 		$this->send('subnews', NT_LAN_SN_1, $message);
 	}
 
+	/**
+	 * @param $data
+	 * @return void
+	 */
 	function notify_newspost($data)
 	{
 		$message = '<b>'.$data['news_title'].'</b>';
@@ -354,6 +410,10 @@ class notify
 		$this->send('newspost', $data['news_title'], e107::getParser()->text_truncate(e107::getParser()->toDB($message), 400, '...'));
 	}
 
+	/**
+	 * @param $data
+	 * @return void
+	 */
 	function notify_newsupd($data)
 	{
 		$message = '<b>'.$data['news_title'].'</b>';
@@ -363,12 +423,20 @@ class notify
 		$this->send('newsupd', NT_LAN_NU_1.': '.$data['news_title'], e107::getParser()->text_truncate(e107::getParser()->toDB($message), 400, '...'));
 	}
 
+	/**
+	 * @param $data
+	 * @return void
+	 */
 	function notify_newsdel($data)
 	{
 		$this->send('newsdel', NT_LAN_ND_1, NT_LAN_ND_2.': '.$data);
 	}
 
 
+	/**
+	 * @param $data
+	 * @return void
+	 */
 	function notify_maildone($data)
 	{
 		$message = '<b>'.$data['mail_subject'].'</b><br /><br />'.$data['mail_body'];
@@ -376,6 +444,10 @@ class notify
 	}
 
 
+	/**
+	 * @param $data
+	 * @return void
+	 */
 	function notify_fileupload($data)
 	{
 		$message = '<b>'.$data['upload_name'].'</b><br /><br />'.$data['upload_description'].'<br /><br />'.$data['upload_size'].'<br /><br />'.$data['upload_user'];
@@ -383,13 +455,20 @@ class notify
 	}
 
 
-
+	/**
+	 * @param $data
+	 * @return void
+	 */
 	function notify_admin_news_created($data)
 	{
 		$this->notify_newspost($data);
 	}
 
 
+	/**
+	 * @param $data
+	 * @return void
+	 */
 	function notify_admin_news_notify($data)
 	{
 		$tp = e107::getParser();
@@ -406,9 +485,9 @@ class notify
 
 		$shortcodes = array(
 			'NEWS_URL'      => e107::getUrl()->create('news/view/item', $data,'full=1&encode=0'),
-			'NEWS_TITLE'    => $tp->toHtml($data['news_title']),
+			'NEWS_TITLE'    => $tp->toHTML($data['news_title']),
 			'NEWS_SUMMARY'  => $tp->toEmail($data['news_summary']),
-			'NEWS_AUTHOR'   => $tp->toHtml($author)
+			'NEWS_AUTHOR'   => $tp->toHTML($author)
 		);
 
 		$img = explode(",",$data['news_thumbnail']);
@@ -417,7 +496,7 @@ class notify
 
 		$this->send('admin_news_notify', $data['news_title'], $message, $img);
 
-	//	print_a($message);
+
 	}
 
 

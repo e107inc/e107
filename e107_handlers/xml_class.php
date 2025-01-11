@@ -15,41 +15,57 @@
 if (!defined('e107_INIT')) { exit; }
 
 
+/**
+ *
+ */
 class parseXml extends xmlClass // BC with v1.x
 {
 	private $xmlData = array();
 	private $counterArray = array();
+
 	
 	function __construct()
 	{
 		$data = debug_backtrace(true);
-		$log = e107::getAdminLog();
+		$log = e107::getLog();
 		$log->addDebug('Deprecated XML Parser Used');
 		
 		$log->addArray($data);
 		$log->save('DEPRECATED',E_LOG_NOTICE,'',false, LOG_TO_ROLLING);
 		
 	}
-	
+
+	/**
+	 * @param $feed
+	 * @return void
+	 */
 	function setUrl($feed)
 	{
 		$this->setFeedUrl($feed);
 	}
-	
+
+	/**
+	 * @param $address
+	 * @param $timeout
+	 * @return false|string
+	 */
 	function getRemoteXmlFile($address, $timeout = 10)
 	{	
 	//	$data = $this->getRemoteFile($address, $timeout);	
 		$fl = e107::getFile();
-		$data = $fl->getRemoteContent($address);
+		$data = $fl->getRemoteContent($address, ['timeout' => $timeout]);
 
 		$this->xmlLegacyContents = $data;
 
 		return $data;	
 	}
-	
+
+	/**
+	 * @return array|false
+	 */
 	function parseXmlContents ()
 	{
-		$log = e107::getAdminLog();
+		$log = e107::getLog();
 		
 		foreach($this -> xmlData as $key => $value)
 		{
@@ -85,7 +101,7 @@ class parseXml extends xmlClass // BC with v1.x
 		foreach($array as $data)
 		{
 
-			if(strlen($data == 4096))
+			if(strlen($data) == 4096)
 			{
 				$log->addDebug("The XML cannot be parsed as it is badly formed.")->save('XML');
 				return FALSE;
@@ -107,9 +123,14 @@ class parseXml extends xmlClass // BC with v1.x
 		xml_parser_free( $this->parser );
 		return $this -> xmlData;
 	}
-	
-	
-	
+
+
+	/**
+	 * @param $p
+	 * @param $element
+	 * @param $attrs
+	 * @return void
+	 */
 	function startElement ($p, $element, &$attrs)
 	{
 		$this -> start_tag = $element;
@@ -121,6 +142,11 @@ class parseXml extends xmlClass // BC with v1.x
 		}
 	}
 
+	/**
+	 * @param $p
+	 * @param $element
+	 * @return void
+	 */
 	function endElement ($p, $element)
 	{
 		if($this -> start_tag == $element)
@@ -129,9 +155,14 @@ class parseXml extends xmlClass // BC with v1.x
 		}
 	}
 
+	/**
+	 * @param $p
+	 * @param $data
+	 * @return void
+	 */
 	function characterData ($p, $data)
 	{
-		$data = trim ( chop ( $data ));
+		$data = trim ( rtrim ( $data ));
 		$data = preg_replace('/&(?!amp;)/', '&amp;', $data);
 		if(!array_key_exists($this -> current_tag, $this -> xmlData))
 		{
@@ -227,9 +258,9 @@ class xmlClass
 
 	public $errors;
 
-	private $arrayTags = false;
+	private $arrayTags;
 
-	private $stringTags = false;
+	private $stringTags;
 
 	private $urlPrefix = false;
 
@@ -297,8 +328,8 @@ class xmlClass
 	/**
 	 * Constructor - set defaults
 	 *
-	 */
-	function __constructor()
+	 *//*
+	function __construct()
 	{
 		$this->reset();
 
@@ -306,7 +337,7 @@ class xmlClass
 		{
 			$this->filePathConvKeys = array_keys($this->filePathConversions);
 		}
-	}
+	}*/
 
 	/**
 	 * Reset object
@@ -352,6 +383,10 @@ class xmlClass
 		return $this;
 	}
 
+	/**
+	 * @param $string
+	 * @return $this
+	 */
 	public function setOptStringTags($string)
 	{
 		$this->stringTags = (array) explode(",", $string); 
@@ -410,7 +445,7 @@ class xmlClass
 	/**
 	 * Set urlPrefix
 	 *
-	 * @param array $filter
+	 * @param string $url
 	 * @return xmlClass
 	 */
 	public function setUrlPrefix($url)
@@ -419,8 +454,11 @@ class xmlClass
 		return $this;
 	}
 
-	
-	
+
+	/**
+	 * @param $feed
+	 * @return $this
+	 */
 	public function setFeedUrl($feed)
 	{
 		if($feed)
@@ -441,7 +479,7 @@ class xmlClass
 	{		
 		$_file = e107::getFile();
 		$this->xmlFileContents = $_file->getRemoteContent($address, array('timeout' => $timeout, 'post' => $postData));
-		$this->error = $_file->getErrorMessage();
+		$this->errors = $_file->getErrorMessage();
 		
 		return $this->xmlFileContents;
 
@@ -450,9 +488,9 @@ class xmlClass
 	/**
 	 * Parse $xmlFileContents XML string to array
 	 *
-	 * @param string $xml [optional]
+	 * @param string $xmlData [optional]
 	 * @param boolean $simple [optional] false - use xml2array(), true - use xml_convert_to_array()
-	 * @return string
+	 * @return array|string
 	 */
 	function parseXml($xmlData = '', $simple = true)
 	{
@@ -478,12 +516,19 @@ class xmlClass
 		);
 
 		$xmlData = str_replace(array_keys($extendedTypes), array_values($extendedTypes), $xmlData);
-		
+
+		if(strpos($xmlData,'<html lang=')!==false)
+		{
+			$this->errors = "HTML cannot be parsed as XML";
+			return false;
+		}
+
+
 		if(!$xml = simplexml_load_string($xmlData, 'SimpleXMLElement', LIBXML_NOCDATA))
 		{
 			$this->errors = $this->getErrors($xmlData);
 			return FALSE;
-		};
+		}
 
 		$xml = $simple ? $this->xml_convert_to_array($xml, $this->filter, $this->stripComments) : $this->xml2array($xml);
 		return $xml;
@@ -497,14 +542,14 @@ class xmlClass
 	 * XXX New parser in testing phase - see e_marketplace::parse()
 	 * @param SimpleXMLElement $xml
 	 * @param string $rec_parent used for recursive calls only
-	 * @return array
+	 * @return array|string
 	 */
 	function xml2array($xml, $rec_parent = '')
 	{
 		
 		$ret = array();
 	
-		$tags = get_object_vars($xml);
+		$tags = (array) $xml;
 	
 		
 		//remove comments
@@ -527,7 +572,7 @@ class xmlClass
 			$tags = array_keys($tags);
 			foreach ($tags as $tag)
 			{
-				if($tag == '@attributes')
+				if($tag === '@attributes')
 				{
 					$tmp = (array) $xml->attributes();
 					$ret['@attributes'] = $tmp['@attributes'];
@@ -553,7 +598,7 @@ class xmlClass
 		}
 
 		//Recursive calls start here
-		if($tags)
+		if(self::is_assoc($tags))
 		{
 			$tags = array_keys($tags);
 			$count_tags = count($tags);
@@ -561,16 +606,17 @@ class xmlClass
 			//loop through tags
 			foreach ($tags as $tag)
 			{
+				if(is_int($tag)) continue;
 				switch($tag)
 				{
 					case '@attributes':
 						$tmp = (array) $xml->attributes();
 						$ret['@attributes'] = $tmp['@attributes'];
 
-						if($count_tags == 1) //only attributes & possible value
+						if($count_tags == 1 || ['@attributes', 0] === $tags) //only attributes & possible value
 						{
 							$ret[$this->_optValueKey] = trim((string) $xml);
-							return $ret;
+							//return $ret;
 						}
 					break;
 
@@ -625,6 +671,13 @@ class xmlClass
 	}
 
 	// OLD
+
+	/**
+	 * @param $xml
+	 * @param $localFilter
+	 * @param $stripComments
+	 * @return array
+	 */
 	function xml_convert_to_array($xml, $localFilter = FALSE, $stripComments = TRUE)
 	{
 		if (is_object($xml))
@@ -750,6 +803,25 @@ class xmlClass
 	}
 
 	/**
+	 * Determine if the provided variable is an associative array
+	 *
+	 * This method is necessary because since PHP 7.2, get_object_vars() on
+	 * a SimpleXMLElement object began returning sequential arrays, and
+	 * xmlClass::xml2array() interpreted the sequence as XML tags.
+	 *
+	 * See https://github.com/e107inc/e107/issues/3018 for details.
+	 *
+	 * @param array $array The variable to check
+	 * @return boolean true if the provided variable is an associative array,
+	 *                 false if it's a sequential array or anything else
+	 */
+	private static function is_assoc($array)
+	{
+		if (!is_array($array) || array() === $array) return false;
+		return array_keys($array) !== range(0, count($array) - 1);
+	}
+
+	/**
 	 * Load XML file and parse it (optional)
 	 *
 	 * @param string $fname local or remote XML source file path
@@ -758,7 +830,7 @@ class xmlClass
 	 * 								in any other case  - use xml2array()
 	 *
 	 * @param boolean $replace_constants [optional]
-	 * @return mixed
+	 * @return false|string
 	 */
 	function loadXMLfile($fname, $parse = false, $replace_constants = false)
 	{
@@ -798,7 +870,7 @@ class xmlClass
 			}
 			if ($parse)
 			{
-				return $this->parseXML('', ($parse === true));
+				return $this->parseXml('', ($parse === true));
 			}
 			else
 			{
@@ -834,7 +906,7 @@ class xmlClass
 	 * @param string $key key for the current value. Used for exception processing.
 	 * @return mixed
 	 */
-	private function e107ExportValue($val, $key = '')
+	public function e107ExportValue($val, $key = '')
 	{
 		if($key && isset($this->filePathPrepend[$key]))
 		{
@@ -843,8 +915,12 @@ class xmlClass
 
 		if(is_array($val))
 		{
-		//	$val = "<![CDATA[".e107::serialize($val,false)."]]>";
-			$val = e107::serialize($val,false);
+			$val = e107::serialize($val);
+
+			if($val === null)
+			{
+				return '<![CDATA[array ()]]>';
+			}
 		}
 
 		if($this->convertFilePaths)
@@ -853,12 +929,12 @@ class xmlClass
 			$val = preg_replace_callback("#({e_.*?\.(".$types."))#i", array($this,'replaceFilePaths'), $val);
 		}
 
-
-
 		if((strpos($val,"<")!==FALSE) || (strpos($val,">")!==FALSE) || (strpos($val,"&")!==FALSE))
 		{
 			return "<![CDATA[". $val."]]>";
 		}
+
+		$val = str_replace(chr(1),'{\u0001}',$val);
 
 		return $val;
 	}
@@ -867,12 +943,14 @@ class xmlClass
 	 * Create an e107 Export File in XML format
 	 * Note: If $this->filePathDestination has a value, then the file will be saved there.
 	 *
-	 * @param array $prefs  - see e_core_pref $aliases (eg. core, ipool etc)
+	 * @param array $xmlprefs - see e_core_pref $aliases (eg. core, ipool etc)
 	 * @param array $tables - table names without the prefix
+	 * @param array|null $plugPrefs
+	 * @param array|null $themePrefs
 	 * @param array $options [optional] debug, return, query
 	 * @return string text / file for download
 	 */
-	public function e107Export($xmlprefs, $tables, $plugPrefs, $options = array())
+	public function e107Export($xmlprefs, $tables, $plugPrefs=null, $themePrefs=null, $options = array())
 	{
 	//	error_reporting(0);
 	//	$e107info = array();
@@ -888,7 +966,7 @@ class xmlClass
 		{
 			$xmlArray = e107::getSingleton('xmlClass')->loadXMLfile(e_CORE."xml/default_install.xml",'advanced');
 			$default = e107::getSingleton('xmlClass')->e107ImportPrefs($xmlArray,'core');
-			$excludes = array('social_login','replyto_email','replyto_name','siteadminemail','lan_global_list','menuconfig_list','plug_installed','shortcode_legacy_list','siteurl','cookie_name','install_date');
+			$excludes = array('social_login','replyto_email','replyto_name','siteadminemail','lan_global_list','menuconfig_list','plug_installed','shortcode_legacy_list','siteurl','cookie_name','install_date', 'wysiwyg');
 		}
 
 		if(varset($xmlprefs)) // Export Core Preferences.
@@ -900,7 +978,7 @@ class xmlClass
 				ksort($theprefs);
 				foreach($theprefs as $key=>$val)
 				{
-					if($type == 'core' && $this->modifiedPrefsOnly == true && (($val == $default[$key]) || in_array($key,$excludes) || substr($key,0,2) == 'e_'))
+					if($type === 'core' && $this->modifiedPrefsOnly == true && (($val == $default[$key]) || in_array($key,$excludes) || strpos($key, 'e_') === 0))
 					{
 						continue;
 					}
@@ -944,6 +1022,28 @@ class xmlClass
 			$text .= "\t</pluginPrefs>\n";
 		}
 
+		if(!empty($themePrefs))
+		{
+			$text .= "\t<themePrefs>\n";
+
+			foreach($themePrefs as $plug)
+			{
+				$prefs = e107::getThemeConfig($plug)->getPref();
+
+				foreach($prefs as $key=>$val)
+				{
+					if(isset($val))
+					{
+						$text .= "\t\t<".$plug." name=\"".$key."\">".$this->e107ExportValue($val)."</".$plug.">\n";
+					}
+
+				}
+
+			}
+
+			$text .= "\t</themePrefs>\n";
+		}
+
 
 
 
@@ -952,15 +1052,29 @@ class xmlClass
 			$text .= "\t<database>\n";
 			foreach($tables as $tbl)
 			{
+				$primaryKey = '';
 				$eTable= str_replace(MPREFIX,"",$tbl);
 				$eQry = (!empty($options['query'])) ? $options['query'] : null;
-				e107::getDB()->select($eTable, "*", $eQry);
+
+				// order by the primary-key
+				if($pri = e107::getDb()->index($eTable, 'PRIMARY', null, true))
+				{
+					$primaryKey = varset($pri[0]['Column_name']);
+				}
+
+				if(empty($eQry) && !empty($primaryKey))
+				{
+					$eQry = " 1 ORDER BY ".$primaryKey." ASC";
+				}
+
+				$fields = !empty($options['fields']) ? $options['fields'] : '*';
+				e107::getDb()->select($eTable, $fields, $eQry);
 				$text .= "\t<dbTable name=\"".$eTable."\">\n";
-				$count = 1;
-				while($row = e107::getDB()->fetch())
+			//	$count = 1;
+				while($row = e107::getDb()->fetch())
 				{
 
-					if($this->convertFilePaths == true && $eTable == 'core_media' && substr($row['media_url'],0,8) != '{e_MEDIA')
+					if($this->convertFilePaths == true && $eTable === 'core_media' && strpos($row['media_url'], '{e_MEDIA') !== 0)
 					{
 						continue;
 					}
@@ -973,7 +1087,7 @@ class xmlClass
 					}
 
 					$text .= "\t\t</item>\n";
-					$count++;
+			//		$count++;
 				}
 				$text .= "\t</dbTable>\n";
 
@@ -1040,7 +1154,22 @@ class xmlClass
 	public function e107ImportPrefs($XMLData, $prefType='core', $mode='core')
 	{
 
-		$key = ($mode === 'core') ? 'prefs' : 'pluginPrefs';
+		switch($mode)
+		{
+			case "plugin":
+				$key = 'pluginPrefs';
+				break;
+
+			case "theme":
+				$key = 'themePrefs';
+				break;
+
+			case "core":
+			default:
+				$key = 'prefs';
+		}
+
+	//	$key = ($mode === 'core') ? 'prefs' : 'pluginPrefs';
 
 		if(!vartrue($XMLData[$key][$prefType]))
 		{
@@ -1084,8 +1213,9 @@ class xmlClass
 
 		if($sql == null)
 		{
-			$sql = e107::getDB();	
+			$sql = e107::getDb();
 		}
+
 
 		$xmlArray = $this->loadXMLfile($file, 'advanced');
 
@@ -1093,7 +1223,7 @@ class xmlClass
 		{
 			//$message = print_r($xmlArray);
 			echo "<pre>".var_export($xmlArray,TRUE)."</pre>";
-			return;
+			return null;
 		}
 
 		$ret = array();
@@ -1142,7 +1272,7 @@ class xmlClass
 				{
 					e107::getPlugConfig($type)->setPref($pArray);
 				}
-				else // 'add' only new prefs
+				elseif($mode === 'add') // 'add' only new prefs
 				{
 					foreach ($pArray as $pname => $pval)
 					{
@@ -1159,16 +1289,51 @@ class xmlClass
 			}
 		}
 
+		 // ---------------   Save Theme Prefs  ---------------------
 
-
-
-		if(vartrue($xmlArray['database']))
+		if(!empty($xmlArray['themePrefs']))
 		{
+			foreach($xmlArray['themePrefs'] as $type=>$array)
+			{
+
+				$pArray = $this->e107ImportPrefs($xmlArray,$type, 'theme');
+
+				if($mode == 'replace') // merge with existing, add new
+				{
+					e107::getThemeConfig($type)->setPref($pArray);
+				}
+				elseif($mode === 'add') // 'add' only new prefs
+				{
+					foreach ($pArray as $pname => $pval)
+					{
+						e107::getThemeConfig($type)->add($pname, $pval); // don't parse x/y/z
+					}
+				}
+
+				if($debug == false)
+				{
+					 e107::getThemeConfig($type)
+					 	->setParam('nologs', $noLogs)
+					 	->save(FALSE,TRUE);
+				}
+			}
+		}
+
+
+
+		if(!empty($xmlArray['database']))
+		{
+
 			foreach($xmlArray['database']['dbTable'] as $val)
 			{
 				$table = $val['@attributes']['name'];
-				
+
 				if(!isset($val['item']))
+				{
+					continue;
+				}
+
+				if($mode === 'install' && !$sql->isEmpty($table)) // install mode - ignore import when table contains data.
 				{
 					continue;
 				}
@@ -1179,16 +1344,16 @@ class xmlClass
 					foreach($item['field'] as $f)
 					{
 						$fieldkey = $f['@attributes']['name'];
-						$fieldval = (isset($f['@value'])) ? $f['@value'] : "";
+						$fieldval = (isset($f['@value'])) ? $this->e107ImportValue($f['@value']) : "";
 
 						$insert_array[$fieldkey] = $fieldval;
 
 					}
-					if(($mode == "replace") && $sql->replace($table, $insert_array)!==FALSE)
+					if(($mode === "replace") && $sql->replace($table, $insert_array)!==false)
 					{
 						$ret['success'][] = $table;
 					}
-					elseif(($mode == "add") && $sql->insert($table, $insert_array)!==FALSE)
+					elseif($sql->insert($table, $insert_array)!==false)
 					{
 						$ret['success'][] = $table;
 					}
@@ -1212,6 +1377,22 @@ class xmlClass
 	}
 
 
+	/**
+	 * @param $val
+	 * @return array|string|string[]
+	 */
+	function e107ImportValue($val)
+	{
+		$val = str_replace('{\u0001}', chr(1), $val);
+
+		return $val;
+	}
+
+
+	/**
+	 * @param $xml
+	 * @return array|false
+	 */
 	function getErrors($xml)
 	{
 		libxml_use_internal_errors(true);
@@ -1229,8 +1410,13 @@ class xmlClass
 	}
 
 
-
-	
+	/**
+	 * @return mixed
+	 */
+	public function getLastErrorMessage()
+	{
+		return $this->errors;
+	}
 
 
 
@@ -1255,14 +1441,21 @@ class XMLParse
     var $isError = false;
     var $error = '';
 
-    function __construct($xml = NULL)
+	/**
+	 * @param $xml
+	 */
+	function __construct($xml = NULL)
     {
         $this->rawXML = $xml;
 		$mes = e107::getMessage();
 		$mes->addDebug("Deprecated class XMLParse used. Please use 'xmlClass' instead");
     }
 
-    function parse($xml = NULL)
+	/**
+	 * @param $xml
+	 * @return array|false
+	 */
+	function parse($xml = NULL)
     {
         if (!is_null($xml))
         {
@@ -1283,7 +1476,10 @@ class XMLParse
         return $this->parsed;
     }
 
-    function parse_recurse()
+	/**
+	 * @return array
+	 */
+	function parse_recurse()
     {
         $found = array();
         $tagCount = array();
@@ -1364,7 +1560,10 @@ class XMLParse
         return $found;
     }
 
-    function parse_init()
+	/**
+	 * @return bool
+	 */
+	function parse_init()
     {
         $this->parser = xml_parser_create();
 

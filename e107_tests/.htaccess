@@ -1,0 +1,2 @@
+# Prevent anyone from browsing this folder on Apache HTTP Server
+Deny from all

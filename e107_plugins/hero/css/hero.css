@@ -1,0 +1,534 @@
+/* css */
+
+.hero-list-icon {
+	display: table-cell;
+	vertical-align: middle
+	}
+
+li .hero-list-icon .hero-icon {
+	margin: 0 20px 0 0;
+	margin: 0 2rem 0 0
+	}
+
+.hero-icon {
+	width: 40px;
+	height: 40px;
+	font-size: 18px;
+	color: #fff;
+	border-radius: 2px;
+	display: inline-block;
+	margin: 0 5px 5px 0;
+	text-align: center;
+	line-height: 2.2
+	}
+
+.hero-icon.hero-icon-square {
+	border-radius: 0
+	}
+
+.hero-icon.hero-icon-round {
+	border-radius: 5px
+	}
+
+.hero-icon.hero-icon-circle {
+	border-radius: 50%
+	}
+
+
+.carousel-hero-menu .hero-buttons { padding-right:30px }
+.carousel-hero-menu .hero-media-container { padding-right: 45px }
+.carousel-hero-menu h1, .carousel-hero-menu h2, .carousel-hero-menu ul.hero-list { margin-left: 30px; }
+
+.text-bold { font-weight: bold; }
+
+.hero-icon.hero-icon-xlg {
+	width: 60px;
+	height: 60px;
+	line-height: 60px;
+	font-size: 24px
+	}
+
+li .hero-list-text {
+	display: table-cell;
+	vertical-align: middle;
+	font-size: 18px;
+	font-size: 1.8rem;
+	line-height: 30px;
+	line-height: 3rem
+	}
+
+#carousel-hero.carousel {
+	position: relative;
+	left: 0;
+	top: 30px;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	margin-bottom: 30px;
+	}
+
+#carousel-hero.carousel .carousel-indicators li {
+	height: 12px;
+	width: 12px;
+	border-radius: 100%;
+	background-color: #424242
+	}
+
+#carousel-hero.carousel .carousel-indicators li.active {
+	background-color: #0288d1
+	}
+
+#carousel-hero.carousel .carousel-indicators {
+	position: static;
+	width: auto;
+	display: block;
+	margin: 15px;
+	text-align: center;
+	}
+
+#carousel-hero.carousel .carousel-indicators li {
+	vertical-align: top;
+	display: inline-block;
+	background-color: rgba(255,255,255,0.5);
+	border: none;
+	border: 0;
+	height: 3px;
+	width: 20px;
+	margin: 2px;
+	margin-top: 10px;
+	border-radius: 2px;
+	cursor: pointer;
+	text-align:center;
+	}
+
+#carousel-hero.carousel .carousel-indicators li.active {
+	top: 0;
+	background-color: #fff
+	}
+
+#carousel-hero.carousel .carousel-controls {
+	position:relative;
+	text-align: center;
+	margin-top: -80px;
+	width: 350px;
+	z-index:1000;
+	margin-left: auto;
+    margin-right: auto;
+	}
+
+#carousel-hero.carousel .carousel-controls a {
+	display: inline-block;
+	position: static;
+	height: 20px;
+	width: 20px;
+	background: none;
+	font-size: 15px;
+	background-color: #fff;
+	color: #616161;
+	text-shadow: none;
+	border-radius: 100%;
+	opacity: .7;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=70)";
+	text-align: center;
+	cursor: pointer;
+	transition: all ease .5s;
+	margin-left: 1rem;
+	margin-right: 1rem
+	}
+
+#carousel-hero.carousel .carousel-controls a:hover {
+	opacity: 1;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)"
+	}
+
+#carousel-hero.carousel .carousel-controls a i {
+	vertical-align: top;
+	line-height: 20px;
+	font-size: 12px;
+	}
+
+#carousel-hero.carousel .carousel-controls a.right {
+	margin-right: 0;
+	margin-right: 1rem
+	}
+
+#carousel-hero.carousel .carousel-inner {
+	overflow: visible;
+	height:600px;
+	}
+
+#carousel-hero.carousel .carousel-inner .item .carousel-caption {
+	position: static;
+	text-align: left;
+	}
+
+#carousel-hero.carousel .carousel-inner .item {
+	background-color: rgb(127,127,127);
+	background-size: cover;
+	height: 100%;
+	}
+
+#carousel-hero .hero-text-container .hero-title {
+	background-color: rgba(0, 0, 0, .4);
+	box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12);
+	padding: 16px;
+	padding: 1.6rem;
+	padding-left: 1.6rem;
+	margin-left: -10000px;
+	padding-left: 10000px;
+	z-index: 6;
+	margin-bottom: 40px;
+/*	margin-bottom: 4rem;*/
+	}
+
+#carousel-hero .hero-list li { padding-bottom: 15px }
+
+
+
+#carousel-hero h2 { font-size: 1.2em}
+
+/* CAROUSEL FADE */
+/*
+#carousel-hero.carousel-fade .carousel-inner .item {
+	-webkit-transition-property: opacity;
+	transition-property: opacity; }
+
+#carousel-hero.carousel-fade .carousel-inner .item,
+#carousel-hero.carousel-fade .carousel-inner .active.left,
+#carousel-hero.carousel-fade .carousel-inner .active.right {
+	opacity: 0; }
+
+#carousel-hero.carousel-fade .carousel-inner .active,
+#carousel-hero.carousel-fade .carousel-inner .next.left,
+#carousel-hero.carousel-fade .carousel-inner .prev.right {
+	opacity: 1; }
+
+#carousel-hero.carousel-fade .carousel-inner .next,
+#carousel-hero.carousel-fade .carousel-inner .prev,
+#carousel-hero.carousel-fade .carousel-inner .active.left,
+#carousel-hero.carousel-fade .carousel-inner .active.right {
+	left: 0;
+	-webkit-transform: translate3d(0, 0, 0);
+	transform: translate3d(0, 0, 0); }
+
+#carousel-hero.carousel-fade .carousel-control {
+	z-index: 2; }
+*/
+
+/* ANIMATION */
+.animation-delay-1 {
+	-webkit-animation-delay: .1s !important;
+	animation-delay: .1s !important
+	}
+
+.animation-delay-2 {
+	-webkit-animation-delay: .2s !important;
+	animation-delay: .2s !important
+	}
+
+.animation-delay-3 {
+	-webkit-animation-delay: .3s !important;
+	animation-delay: .3s !important
+	}
+
+.animation-delay-4 {
+	-webkit-animation-delay: .4s !important;
+	animation-delay: .4s !important
+	}
+
+.animation-delay-5 {
+	-webkit-animation-delay: .5s !important;
+	animation-delay: .5s !important
+	}
+
+.animation-delay-6 {
+	-webkit-animation-delay: .6s !important;
+	animation-delay: .6s !important
+	}
+
+.animation-delay-7 {
+	-webkit-animation-delay: .7s !important;
+	animation-delay: .7s !important
+	}
+
+.animation-delay-8 {
+	-webkit-animation-delay: .8s !important;
+	animation-delay: .8s !important
+	}
+
+.animation-delay-9 {
+	-webkit-animation-delay: .9s !important;
+	animation-delay: .9s !important
+	}
+
+.animation-delay-10 {
+	-webkit-animation-delay: 1s !important;
+	animation-delay: 1s !important
+	}
+
+.animation-delay-11 {
+	-webkit-animation-delay: 1.1s !important;
+	animation-delay: 1.1s !important
+	}
+
+.animation-delay-12 {
+	-webkit-animation-delay: 1.2s !important;
+	animation-delay: 1.2s !important
+	}
+
+.animation-delay-13 {
+	-webkit-animation-delay: 1.3s !important;
+	animation-delay: 1.3s !important
+	}
+
+.animation-delay-14 {
+	-webkit-animation-delay: 1.4s !important;
+	animation-delay: 1.4s !important
+	}
+
+.animation-delay-15 {
+	-webkit-animation-delay: 1.5s !important;
+	animation-delay: 1.5s !important
+	}
+
+.animation-delay-16 {
+	-webkit-animation-delay: 1.6s !important;
+	animation-delay: 1.6s !important
+	}
+
+.animation-delay-17 {
+	-webkit-animation-delay: 1.7s !important;
+	animation-delay: 1.7s !important
+	}
+
+.animation-delay-18 {
+	-webkit-animation-delay: 1.8s !important;
+	animation-delay: 1.8s !important
+	}
+
+.animation-delay-19 {
+	-webkit-animation-delay: 1.9s !important;
+	animation-delay: 1.9s !important
+	}
+
+.animation-delay-20 {
+	-webkit-animation-delay: 2s !important;
+	animation-delay: 2s !important
+	}
+
+.animation-delay-21 {
+	-webkit-animation-delay: 2.1s !important;
+	animation-delay: 2.1s !important
+	}
+
+.animation-delay-22 {
+	-webkit-animation-delay: 2.2s !important;
+	animation-delay: 2.2s !important
+	}
+
+.animation-delay-23 {
+	-webkit-animation-delay: 2.3s !important;
+	animation-delay: 2.3s !important
+	}
+
+.animation-delay-24 {
+	-webkit-animation-delay: 2.4s !important;
+	animation-delay: 2.4s !important
+	}
+
+.animation-delay-25 {
+	-webkit-animation-delay: 2.5s !important;
+	animation-delay: 2.5s !important
+	}
+
+.animation-delay-26 {
+	-webkit-animation-delay: 2.6s !important;
+	animation-delay: 2.6s !important
+	}
+
+.animation-delay-27 {
+	-webkit-animation-delay: 2.6s !important;
+	animation-delay: 2.6s !important
+	}
+
+.animation-delay-28 {
+	-webkit-animation-delay: 2.8s !important;
+	animation-delay: 2.8s !important
+	}
+
+.animation-delay-29 {
+	-webkit-animation-delay: 2.9s !important;
+	animation-delay: 2.9s !important
+	}
+
+.animation-delay-30 {
+	-webkit-animation-delay: 3s !important;
+	animation-delay: 3s !important
+	}
+
+.animation-delay-31 {
+	-webkit-animation-delay: 3.1s !important;
+	animation-delay: 3.1s !important
+	}
+
+.animation-delay-32 {
+	-webkit-animation-delay: 3.2s !important;
+	animation-delay: 3.2s !important
+	}
+
+.animation-delay-33 {
+	-webkit-animation-delay: 3.3s !important;
+	animation-delay: 3.3s !important
+	}
+
+.animation-delay-34 {
+	-webkit-animation-delay: 3.4s !important;
+	animation-delay: 3.4s !important
+	}
+
+.animation-delay-35 {
+	-webkit-animation-delay: 3.5s !important;
+	animation-delay: 3.5s !important
+	}
+
+.animation-delay-36 {
+	-webkit-animation-delay: 3.6s !important;
+	animation-delay: 3.6s !important
+	}
+
+.animation-delay-37 {
+	-webkit-animation-delay: 3.7s !important;
+	animation-delay: 3.7s !important
+	}
+
+.animation-delay-38 {
+	-webkit-animation-delay: 3.8s !important;
+	animation-delay: 3.8s !important
+	}
+
+.animation-delay-39 {
+	-webkit-animation-delay: 3.9s !important;
+	animation-delay: 3.9s !important
+	}
+
+.animation-delay-40 {
+	-webkit-animation-delay: 4s !important;
+	animation-delay: 4s !important
+	}
+
+.animation-delay-41 {
+	-webkit-animation-delay: 4.1s !important;
+	animation-delay: 4.1s !important
+	}
+
+.animation-delay-42 {
+	-webkit-animation-delay: 4.2s !important;
+	animation-delay: 4.2s !important
+	}
+
+.animation-delay-43 {
+	-webkit-animation-delay: 4.3s !important;
+	animation-delay: 4.3s !important
+	}
+
+.animation-delay-44 {
+	-webkit-animation-delay: 4.4s !important;
+	animation-delay: 4.4s !important
+	}
+
+.animation-delay-45 {
+	-webkit-animation-delay: 4.5s !important;
+	animation-delay: 4.5s !important
+	}
+
+.animation-delay-46 {
+	-webkit-animation-delay: 4.6s !important;
+	animation-delay: 4.6s !important
+	}
+
+.animation-delay-47 {
+	-webkit-animation-delay: 4.7s !important;
+	animation-delay: 4.7s !important
+	}
+
+.animation-delay-48 {
+	-webkit-animation-delay: 4.8s !important;
+	animation-delay: 4.8s !important
+	}
+
+.animation-delay-49 {
+	-webkit-animation-delay: 4.9s !important;
+	animation-delay: 4.9s !important
+	}
+
+.animation-delay-50 {
+	-webkit-animation-delay: 5s !important;
+	animation-delay: 5s !important
+	}
+
+.animation-delay-51 {
+	-webkit-animation-delay: 5.1s !important;
+	animation-delay: 5.1s !important
+	}
+
+.animation-delay-52 {
+	-webkit-animation-delay: 5.2s !important;
+	animation-delay: 5.2s !important
+	}
+
+.animation-delay-53 {
+	-webkit-animation-delay: 5.3s !important;
+	animation-delay: 5.3s !important
+	}
+
+.animation-delay-54 {
+	-webkit-animation-delay: 5.4s !important;
+	animation-delay: 5.4s !important
+	}
+
+.animation-delay-55 {
+	-webkit-animation-delay: 5.5s !important;
+	animation-delay: 5.5s !important
+	}
+
+.animation-delay-56 {
+	-webkit-animation-delay: 5.6s !important;
+	animation-delay: 5.6s !important
+	}
+
+.animation-delay-57 {
+	-webkit-animation-delay: 5.7s !important;
+	animation-delay: 5.7s !important
+	}
+
+.animation-delay-58 {
+	-webkit-animation-delay: 5.8s !important;
+	animation-delay: 5.8s !important
+	}
+
+.animation-delay-59 {
+	-webkit-animation-delay: 5.9s !important;
+	animation-delay: 5.9s !important
+	}
+
+.animation-delay-60 {
+	-webkit-animation-delay: 6s !important;
+	animation-delay: 6s !important
+	}
+
+.animated-2x {
+	-webkit-animation-duration: .5s;
+	animation-duration: .5s
+	}
+
+.animated-3x {
+	-webkit-animation-duration: .25s;
+	animation-duration: .25s
+	}
+
+.animated-slow {
+	-webkit-animation-duration: 2s;
+	animation-duration: 2s
+	}
+
+

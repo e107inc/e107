@@ -53,6 +53,9 @@ define('UC_TYPE_GROUP'		, '1');			// User class is a group or list of subsidiary
 define('UC_CACHE_TAG', 'nomd5_classtree');
 
 
+/**
+ *
+ */
 class user_class
 {
 	public $class_tree;						// Simple array, filled with current tree. Additional field class_children is an array of child user classes (by ID)
@@ -72,21 +75,22 @@ class user_class
 		$this->isAdmin = FALSE;
 
 		$this->fixed_classes = array(
-							e_UC_PUBLIC => UC_LAN_0,
-							e_UC_GUEST => UC_LAN_1,
-							e_UC_NOBODY => UC_LAN_2,
-							e_UC_MEMBER => UC_LAN_3,
-							e_UC_ADMIN => UC_LAN_5,
-							e_UC_MAINADMIN => UC_LAN_6,
-							e_UC_READONLY => UC_LAN_4,
-							e_UC_NEWUSER => UC_LAN_9,
-							e_UC_BOTS => UC_LAN_10
-							);
+				e_UC_PUBLIC    => UC_LAN_0,
+				e_UC_GUEST     => UC_LAN_1,
+				e_UC_NOBODY    => UC_LAN_2,
+				e_UC_MEMBER    => UC_LAN_3,
+				e_UC_ADMIN     => UC_LAN_5,
+				e_UC_MAINADMIN => UC_LAN_6,
+				e_UC_READONLY  => UC_LAN_4,
+				e_UC_NEWUSER   => UC_LAN_9,
+				e_UC_BOTS      => UC_LAN_10,
+		//		e_UC_MODS      => UC_LAN_7 // specific to Forum plugin
+		);
 							
 		
 
 		$this->text_class_link = array('public' => e_UC_PUBLIC, 'guest' => e_UC_GUEST, 'nobody' => e_UC_NOBODY, 'member' => e_UC_MEMBER,
-									'admin' => e_UC_ADMIN, 'main' => e_UC_MAINADMIN, 'new' => e_UC_NEWUSER, 'mods' => e_UC_MODS,
+									'admin' => e_UC_ADMIN, 'main' => e_UC_MAINADMIN, 'new' => e_UC_NEWUSER,/* 'mods' => e_UC_MODS,*/
 									'bots' => e_UC_BOTS, 'readonly' => e_UC_READONLY);
 									
 		
@@ -95,6 +99,10 @@ class user_class
 	}
 
 
+	/**
+	 * @param $id
+	 * @return false|mixed
+	 */
 	public function getFixedClassDescription($id)
 	{
 		if(isset($this->fixed_classes[$id]))
@@ -137,20 +145,20 @@ class user_class
 	 *	Data is cached if enabled
 	 *
 	 *	@param boolean $force - set to TRUE to force a re-read of the info regardless.
-	 *	@return none
-	*/
+	 *	@return void
+	 */
 	public function readTree($force = FALSE)
 	{
 		if (isset($this->class_tree) && count($this->class_tree) && !$force) return;
 
-		$e107 = e107::getInstance();
+		$ecache = e107::getCache();
 
 		$this->class_tree = array();
 		$this->class_parents = array();
 
       
         
-		if ($temp = $e107->ecache->retrieve_sys(UC_CACHE_TAG))
+		if ($temp = $ecache->retrieve_sys(UC_CACHE_TAG))
 		{
 			$this->class_tree = e107::unserialize($temp);
 			unset($temp);
@@ -194,7 +202,7 @@ class user_class
 			}
 
 			$userCache = e107::serialize($this->class_tree, FALSE);
-			$e107->ecache->set_sys(UC_CACHE_TAG,$userCache);
+			$ecache->set_sys(UC_CACHE_TAG,$userCache);
 			unset($userCache);
 		}
 
@@ -268,11 +276,13 @@ class user_class
 		$blockers = array(e_UC_PUBLIC => 1, e_UC_READONLY => 1, e_UC_MEMBER => 1, e_UC_NOBODY => 1, e_UC_GUEST => 1, e_UC_NEWUSER => 1, e_UC_BOTS => 1);
 		$possibles = array_flip(explode(',',$classList));
 		unset($possibles[e_UC_READONLY]);
+
 		foreach ($this->class_tree as $uc => $uv)
 		{
 			if (!isset($blockers[$uc]))
 			{
 				$ec = $uv['userclass_editclass'];
+			//	$ec = $uv['userclass_visibility'];
 				if (isset($possibles[$ec]))
 				{
 					$ret[] = $uc;
@@ -446,8 +456,9 @@ class user_class
 
 	 *	@param string $extra_js - can add JS handlers (e.g. 'onclick', 'onchange') if required
 	*/
-	public function uc_dropdown($fieldname, $curval = 0, $optlist = '', $extra_js = '')
+	public function uc_dropdown($fieldname, $curval = 0, $optlist = '', $extra_js = null)
 	{
+		$optlist = (string) $optlist;
 		$show_classes = self::uc_required_class_list($optlist);		// Get list of classes which meet criteria
 
 		$text = '';
@@ -467,14 +478,20 @@ class user_class
 		if(is_array($extra_js))
 		{
 			$options = $extra_js;
-			unset($extra_js);
+			$extra_js = '';
 		}
 
+		$id = $fieldname;
 		$class = "tbox form-control";
 
 		if(!empty($options['class']))
 		{
 			$class .= " ".$options['class'];
+		}
+
+		if(!empty($options['id']))
+		{
+			$id = $options['id'];
 		}
 
 
@@ -487,21 +504,24 @@ class user_class
 			}
 			else
 			{
-				$text .= "\n<optgroup label=\"".UC_LAN_INVERTLABEL."\">\n";
+				$text .= "\n";
+				$text .= '<optgroup label=\''.UC_LAN_INVERTLABEL.'\'>';
+				$text .= "\n";
 			}
 			foreach ($show_classes as $k => $v)
 			{
 				if($k != e_UC_PUBLIC && $k != e_UC_NOBODY && $k != e_UC_READONLY)  // remove everyone, nobody and readonly from list.
 				{
 					$s = ($curval == ('-'.$k) && $curval !== '') ?  "selected='selected'" : '';
-					$text .= "<option class='uc-select-inverted' value='-".$k."' ".$s.">".str_replace("--CLASS--", $v, UC_LAN_INVERT)."</option>\n";
+					$text .= "<option class='uc-select-inverted' value='-".$k."' ".$s.">".str_replace("[x]", $v, UC_LAN_INVERT)."</option>\n";
 				}
 			}
 			$text .= "</optgroup>\n";
 		}
 
 		// Only return the select box if we've ended up with some options
-		if ($text) $text = "\n<select class='".$class."' name='{$fieldname}' id='{$fieldname}' {$extra_js}>\n".$text."</select>\n";
+
+		if ($text) $text = "\n<select class='".$class."' name='$fieldname' id='$id' {$extra_js}>\n".$text."</select>\n";
 		return $text;
 	}
 
@@ -632,7 +652,7 @@ class user_class
 			{
 				// $c = (in_array($k,$curArray)) ?  " checked='checked'" : '';
 				$c = (in_array($k,$curArray)) ?  true : false;
-				if ($showdescription) $v .= ' ('.$this->uc_get_classdescription($k).')';
+				if ($showdescription) $v .= ' ('.$this->getDescription($k).')';
 				//$ret[] = "<div class='field-spacer'><input type='checkbox' class='checkbox' name='{$fieldname}[{$k}]' id='{$fieldname}-{$k}' value='{$k}'{$c} /><label for='{$fieldname}-{$k}'>".$v."</label></div>\n";
 				$name = $fieldname.'['.$k.']';
 				$ret[] = $frm->checkbox($name,$k,$c,$v);
@@ -660,7 +680,7 @@ class user_class
 		$ret = '';
 		$nest_level++;
 		$listIndex = abs($listnum);
-		$classSign = (substr($listnum, 0, 1) == '-') ? '-' : '+';
+		$classSign = (strpos($listnum, '-') === 0) ? '-' : '+';
 		//echo "Subtree: {$listnum}, {$nest_level}, {$current_value}, {$classSign}:{$listIndex}<br />";
 		if(isset($this->class_tree[$listIndex]['class_children']))
 		{
@@ -724,7 +744,9 @@ class user_class
 		{
 			if ($notCheckbox)
 			{
-				$ret .= "\n<optgroup label=\"".UC_LAN_INVERTLABEL."\">\n";
+				$ret .= "\n";
+				$ret .= '<optgroup label=\''.UC_LAN_INVERTLABEL.'\'>';
+				$ret .= "\n";
 			}
 			else
 			{
@@ -768,7 +790,7 @@ class user_class
 	public function select($treename, $classnum, $current_value, $nest_level, $opt_options = '')
 	{
 		$classIndex = abs($classnum);			// Handle negative class values
-		$classSign = (substr($classnum, 0, 1) == '-') ? '-' : '';
+		$classSign = (strpos($classnum, '-') === 0) ? '-' : '';
 		if ($classIndex == e_UC_BLANK)  return "<option value=''>&nbsp;</option>\n";
 		$tmp = explode(',',$current_value);
 		$sel = in_array($classnum, $tmp) ? " selected='selected'" : '';
@@ -790,7 +812,7 @@ class user_class
 		$ucString = $this->class_tree[$classIndex]['userclass_name'];
 		if ($classSign == '-')
 		{
-			$ucString = str_replace('--CLASS--', $ucString, UC_LAN_INVERT);
+			$ucString = str_replace('[x]', $ucString, UC_LAN_INVERT);
 		}
 		return "<option value='{$classSign}{$classIndex}'{$sel}{$style}>".$prefix.$ucString."</option>\n";
 	}
@@ -805,7 +827,7 @@ class user_class
 		$frm = e107::getForm();
 		
 		$classIndex 		= abs($classnum);			// Handle negative class values
-		$classSign 			= (substr($classnum, 0, 1) == '-') ? '-' : '';
+		$classSign 			= (strpos($classnum, '-') === 0) ? '-' : '';
 		
 		if ($classIndex == e_UC_BLANK)  return '';
 		
@@ -826,14 +848,24 @@ class user_class
 		
 		if ($classSign == '-')
 		{
-			$ucString = str_replace('--CLASS--', $ucString, UC_LAN_INVERT);
+			$ucString = str_replace('[x]', $ucString, UC_LAN_INVERT);
 		}
 		
 		$checked = in_array($classnum, $tmp) ? true : false;
-		return "<div {$style}>".$frm->checkbox($treename.'[]',$classSign.$classIndex,$checked,array('label'=> $ucString))."</div>\n";
+
+		$pre = "<div {$style}>";
+		$post = "</div>\n";
+
+		if(defset('THEME_VERSION') === 2.3)
+		{
+			$pre = '';
+			$post = '';
+		}
+
+		return $pre.$frm->checkbox($treename.'[]',$classSign.$classIndex, $checked, array('label'=> $ucString)).$post;
 		
 		
-		return "<div {$style}><input type='checkbox' class='checkbox' name='{$treename}[]' id='{$treename}_{$classSign}{$classIndex}' value='{$classSign}{$classIndex}'{$chk} />".$ucString."</div>\n";
+	//	return "<div {$style}><input type='checkbox' class='checkbox' name='{$treename}[]' id='{$treename}_{$classSign}{$classIndex}' value='{$classSign}{$classIndex}'{$chk} />".$ucString."</div>\n";
 	}
 
 
@@ -844,7 +876,7 @@ class user_class
 	public function checkbox_desc($treename, $classnum, $current_value, $nest_level, $opt_options = '')
 	{
 		$classIndex = abs($classnum);			// Handle negative class values
-		$classSign = (substr($classnum, 0, 1) == '-') ? '-' : '';
+		$classSign = (strpos($classnum, '-') === 0) ? '-' : '';
 		
 		if ($classIndex == e_UC_BLANK)  return '';
 		
@@ -866,14 +898,23 @@ class user_class
 		
 		if ($classSign == '-')
 		{
-			$ucString = str_replace('--CLASS--', $ucString, UC_LAN_INVERT);
+			$ucString = str_replace('[x]', $ucString, UC_LAN_INVERT);
 		}
 	
 		$description = $ucString.'  ('.$this->class_tree[$classIndex]['userclass_description'].")";
 
 		$id ="{$treename}_{$classSign}{$classnum}";
 
-		return "<div class='checkbox' {$style}>".e107::getForm()->checkbox($treename.'[]', $classnum , $chk, array("id"=>$id,'label'=>$description))."</div>\n";
+		$pre = "<div class='checkbox' {$style}>";
+		$post = "</div>\n";
+
+		if(defset('THEME_VERSION') === 2.3)
+		{
+			$pre = '';
+			$post = '';
+		}
+
+		return $pre.e107::getForm()->checkbox($treename.'[]', $classnum , $chk, array("id"=>$id,'label'=>$description)).$post;
 		
 	//	return "<div {$style}><input type='checkbox' class='checkbox' name='{$treename}[]' id='{$treename}_{$classSign}{$classnum}' value='{$classSign}{$classnum}'{$chk} />".$this->class_tree[$classIndex]['userclass_name'].'  ('.$this->class_tree[$classIndex]['userclass_description'].")</div>\n";
 	}
@@ -912,6 +953,7 @@ class user_class
 	 */
 	public function getName($id)
 	{
+		$id = (int) $id;
 		$cn = abs($id);
 		$ucString = 'Class:'.$id;			// Debugging aid - this should be overridden
 		
@@ -928,7 +970,7 @@ class user_class
 		{
 			//$val = abs($id);
 			//$name = isset($this->class_tree[$val]['userclass_name']) ? $this->class_tree[$val]['userclass_name'] : $this->fixed_classes[$val];
-			$ucString = str_replace('--CLASS--', $ucString, UC_LAN_INVERT);
+			$ucString = str_replace('[x]', $ucString, UC_LAN_INVERT);
 		}
 		return $ucString;
 	}
@@ -992,6 +1034,8 @@ class user_class
 	 */
 	public function uc_get_classname($id)
 	{
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use $uc->getName() instead.', E_USER_DEPRECATED); // NO LAN
+
 		return $this->getName($id);
 	}
 
@@ -1000,12 +1044,14 @@ class user_class
 
 	/**
 	 * BC Alias of getDescription
-	 * @deprecated
 	 * @param $id
-	 * @return mixed
+	 * @return string
+	 *@deprecated
 	 */
 	public function uc_get_classdescription($id)
 	{
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use $uc->getDescription($id) instead.', E_USER_DEPRECATED); // NO LAN
+
 		return $this->getDescription($id);
 	}
 
@@ -1055,11 +1101,11 @@ class user_class
 	/**
 	 * BC Alias of getID();
 	 * @param $name
-	 * @return mixed
+	 * @return bool|int
 	 */
 	public function ucGetClassIDFromName($name)
 	{
-		return $this->getId($name);
+		return $this->getID($name);
 
 	}
 
@@ -1104,7 +1150,6 @@ class user_class
 	}
 
 
-
 	/**
 	 *	See if a class can be edited (in the sense of the class ID not being fixed)
 	 *	@param integer $classID - class number. Must be >= 0
@@ -1119,40 +1164,107 @@ class user_class
 
 
 	/**
+	 * @deprecated Alias of getUsersInClass()
+	 * @param        $classes
+	 * @param string $fieldList
+	 * @param bool   $includeAncestors
+	 * @param string $orderBy
+	 * @return array
+	 */
+	public function get_users_in_class($classes, $fieldList = 'user_name, user_loginname', $includeAncestors = FALSE, $orderBy = 'user_id')
+	{
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use $uc->getUsersInClass() instead.', E_USER_DEPRECATED); // NO LAN
+
+		return $this->getUsersInClass($classes, $fieldList, $includeAncestors, $orderBy);
+	}
+
+
+	/**
 	 *	Return all users in a particular class or set of classes.
 	 *
-	 ****** Can be verrrrryyyy slow - has to scan the whole user database at present ******
-	 *
-	 ********* NOT TESTED **********
-	 *
-	 ***** NOT SURE WHETHER THIS IS REALLY A USER OR A USER CLASS FUNCTION *****
-	 *	@param string $classList - comma separated list of classes
-	 *	@param string $fieldList - comma separated list of fields to be returned. `user_id` is always returned as the key of the array entry
+	 *  Could potentially be verrrrryyyy slow - has to scan the whole user database at present.
+	 *	@param string $classes - comma separated list of classes
+	 *	@param string $fields - comma separated list of fields to be returned. `user_id` is always returned as the key of the array entry, prefix with 'ue.' to retrieve extended user fields.
 	 *	@param boolean $includeAncestors - if TRUE, also looks for classes in the hierarchy; otherwise checks exactly the classes passed
 	 *	@param string $orderBy - optional field name to define the order of entries in the results array
 	 *	@return array indexed by user_id, each element is an array (database row) containing the requested fields
 	 */
-	public function get_users_in_class($classList, $fieldList = 'user_name, user_loginname', $includeAncestors = FALSE, $orderBy = 'user_id')
+	public function getUsersInClass($classes, $fields = 'user_name, user_loginname', $includeAncestors = false, $orderBy = 'user_id')
 	{
-		$ret = array();
-		$classList = str_replace(' ','', $classList); // clean up white spaces
-		if ($includeAncestors) $classList = $this->get_all_user_classes($classList);
-		$class_regex = '(^|,)('.str_replace(',', '|', $classList).')(,|$)';
-		$qry = "SELECT user_id,{$fieldList} FROM `#user` WHERE user_class REGEXP '{$class_regex}' ORDER BY '{$orderBy}'";
-		if ($this->sql_r->db_Select_gen($qry))
+
+		$classes = str_replace(' ','', $classes); // clean up white spaces
+
+		$classList = explode(",", $classes);
+
+		if(empty($classList))
 		{
-			while ($row = $this->sql_r->db_Fetch())
+			return array();
+		}
+
+		if($includeAncestors === true)
+		{
+			$classList = $this->get_all_user_classes($classes, true);
+		}
+
+		$classList = array_flip($classList);
+
+		$qry = array();
+
+		if(isset($classList[e_UC_MEMBER]))
+		{
+			$qry[] = "user_ban = 0";
+			unset($classList[e_UC_MEMBER]);
+		}
+
+		if(isset($classList[e_UC_ADMIN]))
+		{
+			$qry[] = "user_admin = 1";
+			unset($classList[e_UC_ADMIN]);
+		}
+
+		if(isset($classList[e_UC_MAINADMIN]))
+		{
+			$qry[] = "user_perms = '0' OR user_perms = '0.'";
+			unset($classList[e_UC_MAINADMIN]);
+		}
+
+		if(!empty($classList))
+		{
+			$class_regex = implode('|', array_flip($classList));
+			$regex = "(^|,)(".e107::getParser()->toDB($class_regex).")(,|$)";
+			$qry[] = "user_class REGEXP '{$regex}' ";
+		}
+
+		if(empty($qry))
+		{
+			return array();
+		}
+
+		$sql = e107::getDb('sql_r');
+
+		$ret = array();
+
+		$lj = strpos($fields,'ue.') !== false ? "LEFT JOIN `#user_extended` AS ue ON user_id = ue.user_extended_id " : "";
+
+		$query = "SELECT user_id,{$fields} FROM `#user` ".$lj." WHERE ".implode(" OR ",$qry)." ORDER BY ".$orderBy;
+
+		if ($sql->gen($query))
+		{
+			while ($row = $sql->fetch())
 			{
+				$row['user_id'] = (int) $row['user_id'];
 				$ret[$row['user_id']] = $row;
 			}
+
 		}
+
 		return $ret;
 	}
 
 
 	/**
 	 *	Clear user class cache
-	 *	@return none
+	 *	@return void
 	 */
 	public function clearCache()
 	{
@@ -1214,6 +1326,12 @@ function r_userclass($fieldname, $curval = 0, $mode = "off", $optlist = "")
 
 // Very similar to r_userclass, but returns a list of check boxes. (currently only used in newspost.php)
 // $curval is a comma separated list of class IDs for boxes which are checked.
+/**
+ * @param $fieldname
+ * @param $curval
+ * @param $optlist
+ * @return array|string
+ */
 function r_userclass_check($fieldname, $curval = '', $optlist = "")
 {
 	//  echo "Call r_userclass_check: {$curval}<br />";
@@ -1225,7 +1343,9 @@ function r_userclass_check($fieldname, $curval = '', $optlist = "")
 }
 
 
-
+/**
+ * @return array
+ */
 function get_userclass_list()
 {
 //  echo "Call get_userclass_list<br />";
@@ -1235,13 +1355,16 @@ function get_userclass_list()
 }
 
 
-
+/**
+ * @param $id
+ * @return string
+ */
 function r_userclass_name($id)
 {
 //  echo "Call r_userclass_name<br />";
 	global $e_userclass;
 	if (!is_object($e_userclass)) $e_userclass = new user_class;
-	return $e_userclass->uc_get_classname($id);
+	return $e_userclass->getName($id);
 }
 
 
@@ -1249,6 +1372,11 @@ function r_userclass_name($id)
 
 
 // Deprecated functions to hopefully be removed
+/**
+ * @param $fieldname
+ * @param $curval
+ * @return void
+ */
 function r_userclass_radio($fieldname, $curval = '')
 {
 	echo "Deprecated function r_userclass_radio not used in core - mutter if you'd like it implemented<br />";
@@ -1258,6 +1386,10 @@ function r_userclass_radio($fieldname, $curval = '')
 //			Admin Class handler - could go into separate file later
 //========================================================================
 
+
+/**
+ *
+ */
 class user_class_admin extends user_class
 {
 	protected $field_list = array('userclass_name' => "varchar(100) NOT NULL default ''",
@@ -1316,8 +1448,8 @@ class user_class_admin extends user_class
 		
 		$pref = e107::getPref();
 	
-		$style = ($pref['admincss'] == 'admin_dark.css') ? ' icon-white' : '';
-		$this->top_icon = "<i class='icon-user{$style}'></i> ";
+	//	$style = ($pref['admincss'] == 'admin_dark.css') ? ' icon-white' : '';
+		$this->top_icon = "<i class='fa fa-user'></i> ";
 	}
 
 
@@ -1325,8 +1457,8 @@ class user_class_admin extends user_class
 	/**
 	 *	Next three routines are used to update the database after adding/deleting a class
 	 *	calc_tree is the public interface
-	 *	@return none
-	*/
+	 *	@return void
+	 */
 	public function calc_tree()
 	{
 		$this->readTree(TRUE);						// Make sure we have accurate data
@@ -1345,23 +1477,36 @@ class user_class_admin extends user_class
 	 *	@param integer $parent is the class number being processed.
 	 *	@param array $rights is the array of rights accumulated so far in the walk down the tree
 	 */
+	/**
+	 * @param $parent
+	 * @param $rights
+	 * @return void|null
+	 */
 	protected function rebuild_tree($parent, $rights)
 	{
-		if ($this->class_tree[$parent]['userclass_parent'] == e_UC_NOBODY)
+
+		if($this->class_tree[$parent]['userclass_parent'] == e_UC_NOBODY)
 		{
 			$this->topdown_tree($parent);
-			return;
+			return null;
 		}
-		if ($this->class_tree[$parent]['userclass_type'] == UC_TYPE_GROUP)
+
+		if($this->class_tree[$parent]['userclass_type'] == UC_TYPE_GROUP)
 		{
-			return;			// Probably just stop here for a group class
+			return null;            // Probably just stop here for a group class
 		}
-		$rights[]  = $parent;
-		$imp_rights = implode(',',$rights);
-		if ($this->class_tree[$parent]['userclass_accum'] != $imp_rights)
+
+		$rights[] = $parent;
+		$imp_rights = implode(',', $rights);
+
+		if($this->class_tree[$parent]['userclass_accum'] != $imp_rights)
 		{
 			$this->class_tree[$parent]['userclass_accum'] = $imp_rights;
-			if (!isset($this->class_tree[$cp]['change_flag'])) $this->class_tree[$parent]['change_flag'] = 'UPDATE';
+
+			if(!isset($this->class_tree[$parent]['change_flag']))
+			{
+				$this->class_tree[$parent]['change_flag'] = 'UPDATE';
+			}
 		}
 
 
@@ -1379,6 +1524,10 @@ class user_class_admin extends user_class
 	 * Internal function, called recursively to rebuild the permissions tree where rights increase going up the tree
 	 *	@param integer $our_class - ID of class being processed
 	 *	@return array of class permissions
+	 */
+	/**
+	 * @param $our_class
+	 * @return array|string[]
 	 */
 	protected function topdown_tree($our_class)
 	{
@@ -1404,7 +1553,7 @@ class user_class_admin extends user_class
 
 	/**
 	 *	Called after recalculating the tree to save changed records to the database
-	 *	@return none
+	 *	@return void
 	 */
 	public function save_tree()
 	{
@@ -1420,8 +1569,8 @@ class user_class_admin extends user_class
 				  case 'UPDATE' :
 					$this->save_edited_class($tree);
 					break;
-				  default :
-					continue;
+
+
 				}
 			}
 		}
@@ -1480,10 +1629,16 @@ class user_class_admin extends user_class
 	 *	@param array $indent_images - array of images with which to start each line
 	 *	@param boolean $is_last - TRUE if this is the last element on the current branch of the tree
 	 */
+	/**
+	 * @param $listnum
+	 * @param $indent_images
+	 * @param $is_last
+	 * @return string
+	 */
 	protected function show_graphical_subtree($listnum, $indent_images, $is_last = FALSE)
 	{
-			
-		$num_children = count(vartrue($this->class_tree[$listnum]['class_children']));
+		$tree = vartrue($this->class_tree[$listnum]['class_children'], array());
+		$num_children = count($tree);
 		$is_open = TRUE;
 		$tag_name = 'uclass_tree_'.$listnum;
 
@@ -1671,7 +1826,7 @@ class user_class_admin extends user_class
 				$classrec['userclass_accum'] = implode(',',$temp);
 			}
 		}
-		if ($this->sql_r->db_Insert('userclass_classes',$this->copy_rec($classrec, TRUE)) === FALSE)
+		if ($this->sql_r->insert('userclass_classes',$this->copy_rec($classrec, TRUE)) === FALSE)
 		{
 			return FALSE;
 		}
@@ -1721,7 +1876,7 @@ class user_class_admin extends user_class
 				$spacer = ", ";
 			}
 		}
-		if ($this->sql_r->db_Update('userclass_classes', $qry." WHERE `userclass_id`='{$classrec['userclass_id']}'") === FALSE)
+		if ($this->sql_r->update('userclass_classes', $qry." WHERE `userclass_id`='{$classrec['userclass_id']}'") === FALSE)
 		{
 			return FALSE;
 		}
@@ -1793,7 +1948,7 @@ class user_class_admin extends user_class
 	{
 		if (self::queryCanDeleteClass($classID) === FALSE) return FALSE;
 
-		if ($this->sql_r->db_Delete('userclass_classes', "`userclass_id`='{$classID}'") === FALSE) return FALSE;
+		if ($this->sql_r->delete('userclass_classes', "`userclass_id`='{$classID}'") === FALSE) return FALSE;
 		$this->clearCache();
 		$this->readTree(TRUE);			// Re-read the class tree
 		return TRUE;
@@ -1810,13 +1965,13 @@ class user_class_admin extends user_class
 	{
 		if (self::delete_class($classID) === TRUE)
 		{
-			if ($this->sql_r->db_Select('user', 'user_id, user_class', "user_class REGEXP '(^|,){$classID}(,|$)'"))
+			if ($this->sql_r->select('user', 'user_id, user_class', "user_class REGEXP '(^|,){$classID}(,|$)'"))
 			{
 				$sql2 = e107::getDb('sql2');
-				while ($row = $this->sql_r->db_Fetch())
+				while ($row = $this->sql_r->fetch())
 				{
 					$newClass = self::ucRemove($classID, $row['user_class']);
-					$sql2->db_Update('user', "user_class = '{$newClass}' WHERE user_id = {$row['user_id']}");
+					$sql2->update('user', "user_class = '{$newClass}' WHERE user_id = {$row['user_id']} LIMIT 1");
 				}
 			}
 			return TRUE;
@@ -1831,7 +1986,7 @@ class user_class_admin extends user_class
 	 *	(Moved in from e_userclass class)
 	 *	@param integer $cid - user class ID
 	 *	@param $uinfoArray is array(uid=>user_class) - list of affected users
-	 *	@return none
+	 *	@return void
 	 */
 	public function class_add($cid, $uinfoArray)
 	{
@@ -1848,7 +2003,7 @@ class user_class_admin extends user_class
 			{
 				$new_userclass = $cid;
 			}
-			$uc_sql->db_Update('user', "user_class='".e107::getParser()->toDB($new_userclass, true)."' WHERE user_id=".intval($uid));
+			$uc_sql->update('user', "user_class='".e107::getParser()->toDB($new_userclass, true)."' WHERE user_id=".intval($uid)." LIMIT 1");
 		}
 	}
 
@@ -1859,17 +2014,16 @@ class user_class_admin extends user_class
 	 *	(Moved in from e_userclass class)
 	 *	@param integer $cid - user class ID
 	 *	@param $uinfoArray is array(uid=>user_class) - list of affected users
-	 *	@return none
+	 *	@return void
 	 */
 	public function class_remove($cid, $uinfoArray)
 	{
-		$e107 = e107::getInstance();
-		$uc_sql = new db;
+		$uc_sql = e107::getDb();
 		foreach($uinfoArray as $uid => $curclass)
 		{
 			$newarray = array_diff(explode(',', $curclass), array('', $cid));
 			$new_userclass = implode(',', $newarray);
-			$uc_sql->update('user', "user_class='".e107::getParser()->toDB($new_userclass, true)."' WHERE user_id=".intval($uid));
+			$uc_sql->update('user', "user_class='".e107::getParser()->toDB($new_userclass, true)."' WHERE user_id=".intval($uid)." LIMIT 1");
 		}
 	}
 
@@ -1917,7 +2071,7 @@ class user_class_admin extends user_class
 
 	/**
 	 *	Set a simple default tree structure of classes
-	 *	@return none
+	 *	@return void
 	 */
 	public function set_default_structure()
 	{
@@ -1947,12 +2101,12 @@ class user_class_admin extends user_class
 							'userclass_parent' => e_UC_NOBODY,
 							'userclass_visibility' => e_UC_MEMBER
 							),
-						array('userclass_id' => e_UC_MODS, 'userclass_name' => UC_LAN_7,
+					/*	array('userclass_id' => e_UC_MODS, 'userclass_name' => UC_LAN_7,
 							'userclass_description' => UCSLAN_78,
 							'userclass_editclass' => e_UC_MAINADMIN,
 							'userclass_parent' => e_UC_ADMINMOD,
 							'userclass_visibility' => e_UC_MEMBER
-							),
+							),*/
 						array('userclass_id' => e_UC_NEWUSER, 'userclass_name' => UC_LAN_9,
 							'userclass_description' => UCSLAN_87,
 							'userclass_editclass' => e_UC_MAINADMIN,
@@ -1985,7 +2139,7 @@ class user_class_admin extends user_class
 	/**
 	 *	Write the current userclass tree to the file e_TEMP.'userclasses.xml'
 	 *
-	 *	@return TRUE on success, FALSE on fail.
+	 *	@return bool on success, FALSE on fail.
 	 */
 	public function makeXMLFile()
 	{
@@ -2001,14 +2155,14 @@ class user_class_admin extends user_class
 			$xml .= "\t</item>\n";
 		}
 		$xml .= "</dbTable>\n";
-		return (file_put_contents(e_TEMP.'userclasses.xml', $xml) === FALSE) ? FALSE : TRUE;
+		return file_put_contents(e_TEMP . 'userclasses.xml', $xml) !== false;
 	}
 
 
 
 	/**
 	 *	Clear user class cache
-	 *	@return none
+	 *	@return void
 	 */
 	public function clearCache()
 	{
@@ -2018,4 +2172,4 @@ class user_class_admin extends user_class
 
 
 
-?>
+

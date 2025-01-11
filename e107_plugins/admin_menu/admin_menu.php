@@ -29,7 +29,7 @@ if (ADMIN == TRUE)
 
 	$amtext = "<div class='text-center' style='text-align:center'>
 	<select name='activate' onchange='urljump(this.options[selectedIndex].value)' class='tbox form-control'>
-	<option>".LAN_SELECT."</option>\n";
+	<option>".LAN_SELECT."...</option>\n";
 	foreach ($array_functions as $link_value)
 	{
 		$amtext .= render_admin_links($link_value['link'], $link_value['title'], $link_value['perms']);

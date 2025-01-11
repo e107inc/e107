@@ -41,4 +41,4 @@ define('SHOW_CONVERSION_HELP', TRUE);
 define('LAN_AUTHENTICATE_HELP','This method can be used to authenticate against most LDAP servers, including Novell\'s eDirectory and Microsoft\'s Active Directory. It requires that PHP\'s LDAP extension is loaded. Refer to the wiki for further information.');
 
 
-?>
+

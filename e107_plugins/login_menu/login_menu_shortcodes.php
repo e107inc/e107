@@ -10,26 +10,14 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/login_menu_shortcodes.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
 +----------------------------------------------------------------------------+
 */
 
-/**
- *	e107 Login menu plugin
- *
- *	Shortcodes for login menu
- *
- *	@package	e107_plugins
- *	@subpackage	login
- *
- */
 
 if (!defined('e107_INIT')) { exit(); }
 global $tp;
 
+e107::plugLan('login_menu', null);
 
 // BC LAN Fix.
 
@@ -78,14 +66,45 @@ e107::getLanguage()->bcDefs($bcDefs);
 
 			}
 
-			function sc_lm_username_input($parm='')
+
+			/**
+			 *
+			 * @param array $parm
+			 * @return null|string
+			 */
+			function sc_lm_active($parm=array())
+			{
+			//	$request = e_REQUEST_URI;
+
+				$ret = null;
+
+				$mode = varset($parm['mode']);
+
+				if($mode === 'usersettings' && defset('e_PAGE') === 'usersettings.php')
+				{
+					 return 'active';
+				}
+				elseif($mode === 'profile' && defset('e_PAGE') === 'user.php')
+				{
+					return 'active';
+				}
+
+
+				return null;
+			}
+
+
+
+			function sc_lm_username_input($parm=null)
 			{
 				$pref = e107::getPref();
 
 				// If logging in with email address - ignore pref and increase to 100 chars.
 				$maxLength  = ($this->allowEmailLogin == 1 || $this->allowEmailLogin) ? 100 : varset($pref['loginname_maxlength'],30);
 
-				return "<input class='form-control tbox login user' type='text' name='username' placeholder='".$this->usernameLabel."' required='required' id='username' size='15' value='' maxlength='".$maxLength."' />\n";
+				return "
+				<label class='sr-only' for='".vartrue( $parm['idprefix'] )."username'>".$this->usernameLabel."</label>
+				<input class='form-control tbox login user' type='text' name='username' placeholder='".$this->usernameLabel."' required='required' id='".vartrue( $parm['idprefix'] )."username' size='15' value='' maxlength='".$maxLength."' />\n";
 			}
 
 
@@ -95,11 +114,16 @@ e107::getLanguage()->bcDefs($bcDefs);
 			}
 
 
-			function sc_lm_password_input($parm='')
+			function sc_lm_password_input($parm=null)
 			{
 				$pref = e107::getPref();
-				$t_password = "<input class='form-control tbox login pass' type='password' placeholder='".LAN_PASSWORD."' required='required' name='userpass' id='userpass' size='15' value='' maxlength='30' />\n";
-				if (!USER && e107::getSession()->is('challenge') && varset($pref['password_CHAP'],0)) $t_password .= "<input type='hidden' name='hashchallenge' id='hashchallenge' value='".e107::getSession()->get('challenge')."' />\n\n";
+				$t_password = "
+				<label class='sr-only' for='".vartrue( $parm['idprefix'] )."userpass'>".LAN_PASSWORD."</label>
+				<input class='form-control tbox login pass' type='password' placeholder='".LAN_PASSWORD."' required='required' name='userpass' id='".vartrue( $parm['idprefix'] )."userpass' size='15' value='' maxlength='30' />\n";
+
+				if (!USER && e107::getSession()->is('challenge') && varset($pref['password_CHAP'],0))
+					 $t_password .= "<input type='hidden' name='hashchallenge' id='hashchallenge' value='".e107::getSession()->get('challenge')."' />\n\n";
+
 				return $t_password;
 			}
 
@@ -117,6 +141,8 @@ e107::getLanguage()->bcDefs($bcDefs);
 			 */
 			function sc_lm_imagecode($parm='')
 			{
+				trigger_error('<b>{LM_IMAGECODE} is deprecated.</b> Use {LM_IMAGECODE_NUMBER}, {LM_IMAGECODE_BOX} instead.', E_USER_DEPRECATED); // NO LAN
+
 				//DEPRECATED - use LM_IMAGECODE_NUMBER, LM_IMAGECODE_BOX instead
 				if($this->use_imagecode)
 				{
@@ -156,7 +182,7 @@ e107::getLanguage()->bcDefs($bcDefs);
 
 			function sc_lm_loginbutton($parm='')
 			{
-				return "<input class='button btn btn-default login' type='submit' name='userlogin' id='userlogin' value='".LAN_LOGIN."' />";
+				return "<input class='button btn btn-default btn-secondary login' type='submit' name='userlogin' id='userlogin' value='".LAN_LOGIN."' />";
 			}
 
 			function sc_lm_rememberme($parm='')
@@ -165,7 +191,7 @@ e107::getLanguage()->bcDefs($bcDefs);
 				if($parm == "hidden"){
 					return "<input type='hidden' name='autologin' id='autologin' value='1' />";
 				}
-				if($pref['user_tracking'] != "session")
+				if(varset($pref['user_tracking']) !== "session")
 				{
 					return "<label for='autologin'><input type='checkbox' name='autologin' id='autologin' value='1' checked='checked' />".($parm ? $parm : "".LAN_LOGINMENU_6."</label>");
 				}
@@ -227,8 +253,10 @@ e107::getLanguage()->bcDefs($bcDefs);
 			{
 				if(ADMIN)
 				{
-					$data = getcachedvars('login_menu_data');
-					return $parm == 'src' ? $data['link_bullet_src'] : $data['link_bullet'];
+					if($data = e107::getRegistry('login_menu_data'))
+					{
+						return $parm == 'src' ? $data['link_bullet_src'] : $data['link_bullet'];
+					}
 				}
 				return '';
 			}
@@ -251,8 +279,12 @@ e107::getLanguage()->bcDefs($bcDefs);
 
 			function sc_lm_bullet($parm='')
 			{
-			$data = getcachedvars('login_menu_data');
-			return $parm == 'src' ? $data['link_bullet_src'] : $data['link_bullet'];
+				if(!$data = e107::getRegistry('login_menu_data'))
+				{
+					return null;
+				}
+
+				return $parm == 'src' ? $data['link_bullet_src'] : $data['link_bullet'];
 			}
 
 			function sc_lm_usersettings($parm='')
@@ -294,53 +326,85 @@ e107::getLanguage()->bcDefs($bcDefs);
 
 			function sc_lm_external_links($parm='')
 			{
-				global $menu_pref, $login_menu_shortcodes, $LOGIN_MENU_EXTERNAL_LINK;
+
+				global $LOGIN_MENU_EXTERNAL_LINK;
+				$menu_pref = e107::getConfig('menu')->getPref();
 
 				$tp = e107::getParser();
+				require_once(e_PLUGIN."login_menu/login_menu_class.php");
+				$lmc = new login_menu_class;
 
-				if(!vartrue($menu_pref['login_menu']['external_links'])) return '';
-				$lbox_infos = login_menu_class::parse_external_list(true, false);
-				$lbox_active = $menu_pref['login_menu']['external_links'] ? explode(',', $menu_pref['login_menu']['external_links']) : array();
-				if(!vartrue($lbox_infos['links'])) return '';
-				$ret = '';
-				foreach ($lbox_active as $stackid) {
-				    $lbox_items = login_menu_class::clean_links(varset($lbox_infos['links'][$stackid]));
-				    if(!$lbox_items) continue;
-				    foreach ($lbox_items as $num=>$lbox_item) {
-				        $lbox_item['link_id'] = $stackid.'_'.$num;
-				        cachevars('login_menu_linkdata', $lbox_item);
-				        $ret .= $tp -> parseTemplate($LOGIN_MENU_EXTERNAL_LINK, false, $login_menu_shortcodes);
-				    }
+				if(!vartrue($menu_pref['login_menu']['external_links']))
+				{
+					return '';
 				}
+
+				$lbox_infos = $lmc->parse_external_list(true, false);
+				$lbox_active = $menu_pref['login_menu']['external_links'] ? explode(',', $menu_pref['login_menu']['external_links']) : array();
+
+				if(!vartrue($lbox_infos['links']))
+				{
+					return '';
+				}
+
+				$ret = '';
+
+				foreach($lbox_active as $stackid)
+				{
+					$lbox_items = $lmc->clean_links(varset($lbox_infos['links'][$stackid]));
+					if(!$lbox_items)
+					{
+						continue;
+					}
+					foreach($lbox_items as $num => $lbox_item)
+					{
+						$lbox_item['link_id'] = $stackid . '_' . $num;
+						e107::setRegistry('login_menu_linkdata', $lbox_item);
+						$ret .= $tp->parseTemplate($LOGIN_MENU_EXTERNAL_LINK, false, $this);
+					}
+				}
+
 				return $ret;
 			}
 
 			function sc_lm_external_link($parm='')
 			{
-				$lbox_item = getcachedvars('login_menu_linkdata');
+				$lbox_item = e107::getRegistry('login_menu_linkdata');
+
+				if(empty($lbox_item['link_url']))
+				{
+					return null;
+				}
+
 				return $parm == 'href' ? $lbox_item['link_url'] : '<a href="'.$lbox_item['link_url'].'" class="login_menu_link external" id="login_menu_link_external_'.$lbox_item['link_id'].'">'.vartrue($lbox_item['link_label'], '['.LAN_LOGINMENU_44.']').'</a>';
 			}
 
 			function sc_lm_external_link_label($parm='')
 			{
-				$lbox_item = getcachedvars('login_menu_linkdata');
+				$lbox_item = e107::getRegistry('login_menu_linkdata');
 				return vartrue($lbox_item['link_label'], '['.LAN_LOGINMENU_44.']');
 			}
 
 			function sc_lm_stats($parm='')
 			{
+
 				$tp = e107::getParser();
 				global $LOGIN_MENU_STATS;
-				$data = getcachedvars('login_menu_data');
-				if(!$data['enable_stats']) return '';
-				return $tp -> parseTemplate($LOGIN_MENU_STATS, true, $this);
+				$data = e107::getRegistry('login_menu_data');
+
+				if(empty($data['enable_stats']) || empty($LOGIN_MENU_STATS))
+				{
+					return '';
+				}
+
+				return $tp->parseTemplate($LOGIN_MENU_STATS, true, $this);
 			}
 
 			function sc_lm_new_news($parm='')
 			{
 				$tp = e107::getParser();
 				global $LOGIN_MENU_STATITEM;
-				$data = getcachedvars('login_menu_data');
+				$data = e107::getRegistry('login_menu_data');
 				if(!isset($data['new_news'])) return '';
 				$tmp = array();
 				if($data['new_news']){
@@ -358,7 +422,7 @@ e107::getLanguage()->bcDefs($bcDefs);
 			function sc_lm_new_comments($parm='')
 			{
 				global $LOGIN_MENU_STATITEM, $tp;
-				$data = getcachedvars('login_menu_data');
+				$data = e107::getRegistry('login_menu_data');
 				if(!isset($data['new_comments'])) return '';
 				$tmp = array();
 				if($data['new_comments']){
@@ -376,7 +440,7 @@ e107::getLanguage()->bcDefs($bcDefs);
 			function sc_lm_new_users($parm='')
 			{
 				global $LOGIN_MENU_STATITEM, $tp;
-				$data = getcachedvars('login_menu_data');
+				$data = e107::getRegistry('login_menu_data');
 				if(!isset($data['new_users'])) return '';
 				$tmp = array();
 				if($data['new_users']){
@@ -396,8 +460,10 @@ e107::getLanguage()->bcDefs($bcDefs);
 				global $tp, $menu_pref, $new_total, $LOGIN_MENU_STATITEM, $LM_STATITEM_SEPARATOR;
 
 				if(!vartrue($menu_pref['login_menu']['external_stats'])) return '';
+				require_once(e_PLUGIN."login_menu/login_menu_class.php");
+				$lm = new login_menu_class;
 
-				$lbox_infos = login_menu_class::parse_external_list(true, false);
+				$lbox_infos = $lm->parse_external_list(true, false);
 
 				if(!vartrue($lbox_infos['stats'])) return '';
 
@@ -438,11 +504,20 @@ e107::getLanguage()->bcDefs($bcDefs);
 			}
 
 
-			function sc_lm_listnew_link($parm='')
+			function sc_lm_listnew_link($parm = '')
 			{
-				$data = getcachedvars('login_menu_data');
-				if($parm == 'href') return $data['listnew_link'];
-				return $data['listnew_link'] ? '<a href="'.$data['listnew_link'].'" class="login_menu_link listnew" id="login_menu_link_listnew">'.LAN_LOGINMENU_24.'</a>' : '';
+
+				if(!$data = e107::getRegistry('login_menu_data'))
+				{
+					return null;
+				}
+
+				if($parm === 'href')
+				{
+					return $data['listnew_link'];
+				}
+
+				return $data['listnew_link'] ? '<a href="' . $data['listnew_link'] . '" class="login_menu_link listnew" id="login_menu_link_listnew">' . LAN_LOGINMENU_24 . '</a>' : '';
 			}
 
 
@@ -453,8 +528,8 @@ e107::getLanguage()->bcDefs($bcDefs);
 				if($parm == "popup"){
 					$srch = array("<br />","'");
 					$rep = array("\\n","\'");
-					return "<script type='text/javascript'>
-						alert('".$tp->toJS(LOGINMESSAGE)."');
+					return "<script>
+						alert(".$tp->toJSON(LOGINMESSAGE).");
 						</script>";
 				}
 				else
@@ -470,15 +545,8 @@ e107::getLanguage()->bcDefs($bcDefs);
 			}
 
 
-
-
 		}
 	}
 
-
-
 	$login_menu_shortcodes = e107::getScBatch('login_menu',TRUE);
 
-
-
-?>

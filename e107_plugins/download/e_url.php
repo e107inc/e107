@@ -10,7 +10,7 @@
  *
  * 	if (!defined('e107_INIT'))
  * 	{
- * 		require_once("../../class2.php");
+ * 		require_once(__DIR__.'/../../class2.php');
  * 	}
  *
  */
@@ -55,6 +55,8 @@ class download_url // plugin-folder + '_url'
 
 		}
 
+
+
 		return $config;
 	}
 
@@ -65,17 +67,31 @@ class download_url // plugin-folder + '_url'
 	{
 		$config = $this->profile1();
 
+		if(!deftrue('e_DEBUG'))
+		{
+			return $config;
+		}
+
+
+		unset($config['index']);
+
 		$config['subcategory'] = array(
 			'regex'			=> '^{alias}/([^\/]*)/([^\/]*)/?$',
-			'redirect'		=> '{e_PLUGIN}vstore/vstore.php?catsef=$2',
+			'redirect'		=> '{e_PLUGIN}download/download.php?catsef=$2', // TODO catsef support in download_class.php
 			'sef'			=> '{alias}/{cat_sef}/{subcat_sef}'
 		);
 
 
 		$config['category'] = array(
-			'regex'			=> '^{alias}/([^\/]*)/(.*)$',
-			'redirect'		=> '{e_PLUGIN}download/download.php?action=list&id=$1',
+			'regex'			=> '^{alias}/([^\/]*)/?(.*)$',
+			'redirect'		=> '{e_PLUGIN}download/download.php?action=list&catsef=$1', // TODO catsef support in download_class.php
 			'sef'           => '{alias}/{download_category_sef}',
+		);
+
+		$config['index'] = array(
+			'regex'		    => '^{alias}/?$',
+			'sef'		    => '{alias}/',
+			'redirect'	    => '{e_PLUGIN}download/download.php$1',
 		);
 
 
@@ -91,7 +107,7 @@ class download_url // plugin-folder + '_url'
 
 		$config['subcategory'] = array(
 			'regex'			=> '^{alias}/([^\/]*)/([^\/]*)/?$',
-			'redirect'		=> '{e_PLUGIN}vstore/vstore.php?catsef=$2',
+			'redirect'		=> '{e_PLUGIN}download/download.php?catsef=$2',
 			'sef'			=> '{alias}/{cat_sef}/{subcat_sef}'
 		);
 */
@@ -128,7 +144,7 @@ class download_url // plugin-folder + '_url'
 		);
 
 		$config['index'] = array(
-			'regex'		    => '{alias}/?(.*)$',
+			'regex'		    => '^{alias}/?(.*)$',
 			'sef'		    => '{alias}/',
 			'redirect'	    => '{e_PLUGIN}download/download.php$1',
 		);

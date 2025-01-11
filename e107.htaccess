@@ -34,7 +34,7 @@
 	Deny from env=HTTP_SAFE_BADBOT
 
 ### Disable directory listing
-	Options -Indexes
+	Options -Indexes -MultiViews
 
 ### limit file uploads to 10mb
 ### LimitRequestBody 10240000
@@ -68,11 +68,17 @@
     RewriteRule ^media\/img\/([-A-Za-z0-9+/]*={0,3})\.(jpg|gif|png)?$ thumb.php?id=$1 [NC,L]
     ReWriteRule ^theme\/img\/(a)?([\d]*)x(a)?([\d]*)\/(.*)?$ thumb.php?src=e_THEME/$5&$1w=$2&$3h=$4 [NC,L]
 
+### Redirect all www. URLs
+###	RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+###	RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
+
+
 ### Rewrite for Static Scripts
     ReWriteRule ^static\/[0-9]*\/(.*)$ $1 [NC,L]
 
 ### send 404 on missing files in these folders 
-	RewriteCond %{REQUEST_URI} !^/(e107_images|e107_files)/ 
+	RewriteCond %{REQUEST_URI} !^/(e107_images|e107_files)/
+    RewriteCond %{REQUEST_URI} !\.(css|js|swf|mp3|mp4|eot|otf|ttc|ttf|woff|woff2)$ [NC]
 
 ### don't rewrite for existing files, directories and links
 	RewriteCond %{REQUEST_FILENAME} !-f
@@ -102,14 +108,17 @@
 
 ### Gzip Compression Module
 <ifmodule mod_deflate.c>
-    AddOutputFilterByType DEFLATE text/text text/html text/plain text/xml text/css text/javascript application/x-javascript application/javascript application/xml text/xml application/rss+xml
+    AddOutputFilterByType DEFLATE text/text text/html text/plain text/xml text/css text/javascript application/x-javascript application/javascript application/xml text/xml application/rss+xml image/svg+xml image/x-icon application/x-font application/x-font-opentype application/x-font-otf application/x-font-truetype application/x-font-ttf
 </ifmodule>
 
-<FilesMatch "\.(js|css|ico|pdf|flv|jpg|jpeg|png|gif|swf|mp3|mp4|eot|otf|ttc|ttf|woff|woff2)$">
-    Header set Cache-Control "public"
-    Header unset Cookie
-    Header unset Set-Cookie
-  # Header set Access-Control-Allow-Origin "http://mydomain.com"
+<FilesMatch "\.(js|css|ico|pdf|flv|jpg|jpeg|png|gif|swf|mp3|mp4|eot|otf|ttc|ttf|woff|woff2)">
+    <IfModule mod_headers.c>
+        Header set Cache-Control "public"
+        Header unset Cookie
+        Header unset Set-Cookie
+      # Header set Access-Control-Allow-Origin "http://mydomain.com"
+      # Header set Access-Control-Allow-Origin "*" # if you're seeing console errors.
+  </IfModule>
 </FilesMatch>
 
 

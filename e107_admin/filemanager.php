@@ -1,8 +1,7 @@
 <?php
 
-
-exit; // this script unused.
-
+// Unused - to overwrite old file.
 
 
-?>
+
+

@@ -13,8 +13,13 @@
   
 class sitelinks_alt
 {
-	function sitelinks_alt_shortcode($parm)
+	static function sitelinks_alt_shortcode($parm)
 	{
+
+		if(empty($parm))
+		{
+			return null;
+		}
 
 		$params = explode('+', $parm);
 		
@@ -31,11 +36,11 @@ class sitelinks_alt
 		
 		if (file_exists(THEME.$js_file))
 		{
-			$text = "<script type='text/javascript' src='".THEME_ABS.$js_file."'></script>";
+			$text = "<script src='".THEME_ABS.$js_file."'></script>";
 		}
 		else
 		{
-			$text = "<script type='text/javascript' src='".e_JS.$js_file."'></script>";
+			$text = "<script src='".e_JS.$js_file."'></script>";
 		}
 		$text .= "<div class='menuBar' style='width:100%; white-space: nowrap'>";
 		
@@ -68,7 +73,11 @@ class sitelinks_alt
 			}
 			else
 			{
-				$link_icon = $lk['link_button'] ? e_IMAGE_ABS.'icons/'.$lk['link_button'] : $icon;
+				$link_icon = $lk['link_button']
+					? (($lk['link_button'][0] == "{")
+						? $tp->replaceConstants($lk['link_button'],'abs')
+						: e_IMAGE_ABS.'icons/'.$lk['link_button'])
+					: $icon;
 			}
 			
 			$main_linkid = $lk['link_id'];
@@ -91,7 +100,7 @@ class sitelinks_alt
 	
 	}
 	
-	function adnav_cat($cat_title, $cat_link, $cat_img, $cat_id = FALSE, $cat_open = FALSE)
+	static function adnav_cat($cat_title, $cat_link, $cat_img, $cat_id = FALSE, $cat_open = FALSE)
 	{
 			$tp = e107::getParser();
 
@@ -124,7 +133,7 @@ class sitelinks_alt
 			return $text;
 		}
 		
-		function adnav_main($cat_title, $cat_link, $cat_img, $cat_id = FALSE, $params, $cat_open = FALSE)
+		static function adnav_main($cat_title, $cat_link, $cat_img, $cat_id = FALSE, $params=array(), $cat_open = FALSE)
 		{
 			$tp = e107::getParser();
 			
@@ -172,11 +181,18 @@ class sitelinks_alt
 			return $text;
 		}
 		
-		function render_sub($linklist, $id, $params, $icon)
+		static function render_sub($linklist, $id, $params, $icon)
 		{
 			$tp = e107::getParser();
+
+			if(!isset($linklist['sub_'.$id]) || !is_array($linklist['sub_'.$id]))
+			{
+				return null;
+			}
 			
 			$text = "<div id='l_".$id."' class='menu' onmouseover=\"menuMouseover(event)\">";
+
+
 			foreach ($linklist['sub_'.$id] as $sub)
 			{
 				// Filter title for backwards compatibility ---->

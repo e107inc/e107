@@ -14,7 +14,7 @@ define("NWSLAN_4", "News - Existing News");
 define("NWSLAN_6", "Category");
 
 // define("NWSLAN_9", "tick to confirm");
-define("NWSLAN_10", "No news categories");
+// define("NWSLAN_10", "No news categories");
 // define("NWSLAN_11", "Add/Edit Categories");
 //define("NWSLAN_12", "Title");
 define("NWSLAN_13", "Body");
@@ -146,7 +146,7 @@ define("NWSLAN_128", "Set a string to be used in news pages URL. This will only 
 // define("LAN_NEWS_21", "News updated in database.");
 
 // define("LAN_NEWS_22", "Thumbnail");
-define("LAN_NEWS_23", "Choose an image or video for this news item");
+// define("LAN_NEWS_23", "Choose an image or video for this news item");
 // define("LAN_NEWS_24", "Image + Auto-Thumbnail");
 // define("LAN_NEWS_25", "Auto-Thumbnail size");
 // define("LAN_NEWS_26", "add new upload field");
@@ -159,8 +159,8 @@ define("LAN_NEWS_30", "If selected, news item will appear above all others");
 define("LAN_NEWS_32", "Date stamp");
 define("LAN_NEWS_33", "Set the date stamp for the current news item");
 
-define("LAN_NEWS_34", "Trackback");
-define("LAN_NEWS_35", "Add trackback URLs");
+// define("LAN_NEWS_34", "Trackback");
+// define("LAN_NEWS_35", "Add trackback URLs");
 // define("LAN_NEWS_36", "<b>Pingback</b> (send a pingback to all URLs in this post)");
 define("LAN_NEWS_37", "One URL per line)");
 // define("LAN_NEWS_38", "Insert images");
@@ -182,12 +182,12 @@ define("LAN_NEWS_51", "Modification of the news-item author can be done by:");
 
 define("LAN_NEWS_52", "General Information");
 define("LAN_NEWS_53", "Advanced Options");
-define("LAN_NEWS_54", "stay in edit mode");
+// define("LAN_NEWS_54", "stay in edit mode");
 
 define("LAN_NEWS_55", "Maintenance");				// Was LAN_NEWS_50 in 0.7
-define("LAN_NEWS_56", "Recalculate comment counts");
+//define("LAN_NEWS_56", "Recalculate comment counts");
 define("LAN_NEWS_57", "Proceed");
-define("LAN_NEWS_58", "Update complete - --UPDATE-- comment counts updated, --DELETED-- disallowed comments deleted");
+//define("LAN_NEWS_58", "Update complete - [x] comment counts updated, [y] disallowed comments deleted");
 define("LAN_NEWS_59", "News Maintenance");
 
 define("LAN_NEWS_60", "Comment Total");
@@ -197,7 +197,7 @@ define("LAN_NEWS_62", "Error accessing database, or no news items found");
 define("LAN_NEWS_63", "Create Category");
 define("LAN_NEWS_64", "Old Submitted");
 define("LAN_NEWS_65", "Please choose unique SEF URL string for this category");
-define("LAN_NEWS_66", ""); // Unused
+
 define("LAN_NEWS_67", "Close");
 define("LAN_NEWS_68", "Submitted Item");
 
@@ -210,7 +210,7 @@ define("LAN_NEWS_73", "Sidebar - Othernews 2");
 define("LAN_NEWS_74", "Carousel");
 define("LAN_NEWS_75", "Featurebox");
 
-define("LAN_NEWS_87", "eg. blogsearch.google.com/ping/RPC2");
+//define("LAN_NEWS_87", "eg. blogsearch.google.com/ping/RPC2");
 define("LAN_NEWS_88", "Determines how the default news page should appear.");
 define("LAN_NEWS_89", "Notify these services when you create/update news items.");
 define("LAN_NEWS_90", "One per line.");
@@ -237,4 +237,9 @@ define("LAN_NEWS_108", "The SEF URL is unlike the title of your news item.");
 define("LAN_NEWS_109", "Trigger an email notification when you submit this form.");
 define("LAN_NEWS_110", "News Cache Timeout");
 define("LAN_NEWS_111", "Time in minutes. Applies only when system cache is enabled.");
-?>
+define("LAN_NEWS_112", "Select the URL format. Either record count (eg. page=20, page=40, page=60 etc.) or page number (eg. page=1, page=2, page=3 etc.). Warning: If modified some news URLs will need to be re-indexed by search engines.");
+
+ // v2.4
+
+define("LAN_NEWS_113", "Limit to self-authored news posts only");
+define("LAN_NEWS_114", "Enable this preference to restrict group members from viewing and editing news posts authored by other administrators.");

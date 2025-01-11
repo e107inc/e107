@@ -55,14 +55,14 @@ class list_news
 		WHERE ".$qry." AND n.news_class REGEXP '".e_CLASS_REGEXP."'
 		ORDER BY n.news_datestamp DESC LIMIT 0,".intval($this->parent->settings['amount']);
 
-		if(!$this->parent->e107->sql->db_Select_gen($qry))
+		if(!$this->parent->e107->sql->gen($qry))
 		{
 			$list_data = LIST_NEWS_2;
 		}
 		else
 		{
 			$list_data = array();
-			while($row=$this->parent->e107->sql->db_Fetch())
+			while($row=$this->parent->e107->sql->fetch())
 			{
 				$row['news_title'] = $this->parse_news_title($row['news_title']);
 				$rowheading = $this->parent->parse_heading($row['news_title']);
@@ -139,4 +139,3 @@ class list_news
 		return preg_replace($search, $replace, $title);
 	}
 }
-?>

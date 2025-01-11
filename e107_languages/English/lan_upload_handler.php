@@ -30,4 +30,3 @@ define("LANUPLOAD_18", "The uploaded file exceeds allowable limits.");
 define("LANUPLOAD_19", "Too many files uploaded - excess deleted.");
 
 
-?>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e107Theme name="Bootstrap 5" version="1.1" date="2022-04-05" compatibility="2.3.2">
+	<author name ="e107 Inc" email="e107inc@something.com" url="https://e107.org" />
+	<summary>Bootstrap 5 basic theme</summary>
+	<description>A starter template for bootstrap5 themes.</description>
+	<category>generic</category>
+	<plugins>
+        <plugin name='gallery' url='core' />
+        <plugin name='hero' url='core' />
+        <plugin name='rss_menu' url='core' />
+        <plugin name='social' url='core' />
+        <plugin name='tinymce4' url='core' />
+        <plugin name='tagcloud' url='core' />
+	</plugins>
+	<keywords>
+		<word>bootstrap</word>
+		<word>bootstrap5</word>
+		<word>clean</word>
+        <word>wireframe</word>
+        <word>bootswatch</word>
+	</keywords>
+	<libraries>
+		<library name="bootstrap" version="5" scope="front"/>
+		<library name="fontawesome" version="5" scope="front" files="js" />
+		<library name="fontawesome" version="5" scope="wysiwyg" files="css" />
+        <library name="animate.css" scope="front" />
+	</libraries>
+	<stylesheets>
+        <css file="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.3/journal/bootstrap.min.css" name="Journal" thumbnail='images/journal.png' scope='front' exclude='bootstrap' />
+        <css file="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.3/lumen/bootstrap.min.css" name="Lumen" thumbnail='images/lumen.png' scope='front' exclude='bootstrap' />
+		<css file="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.3/lux/bootstrap.min.css" name="Lux" thumbnail='images/lux.png' scope='front' exclude='bootstrap' />
+		<css file="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.3/sketchy/bootstrap.min.css" name="Sketchy" thumbnail='images/sketchy.png' scope='front' exclude='bootstrap' />
+        <css file="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.3/quartz/bootstrap.min.css" default="true" name="Quartz" thumbnail='images/quartz.png' scope='front' exclude='bootstrap' />
+		<css file="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.3/slate/bootstrap.min.css" name="Slate" thumbnail='images/slate.png' scope='front' exclude='bootstrap' />
+        <css file="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.2.3/superhero/bootstrap.min.css" name="Superhero" thumbnail='images/superhero.png' scope='front' exclude='bootstrap' />
+	    <css file="style.css" name="Legacy" thumbnail='preview_frontend.png' scope='front' />
+	</stylesheets>
+	<screenshots>
+		<image>images/quartz.png</image>
+	</screenshots>
+	<layouts>
+		<layout name='home' title='Home Page' >
+			<custompages>FRONTPAGE</custompages>
+		</layout>
+			<layout name='full' title='Full Page' >
+			<custompages>forum/ download/</custompages>
+		</layout>
+		<layout name='sidebar_left' title='Sidebar (left)' />
+		<layout name='sidebar_right' title='Sidebar (right)' default='true' />
+		<layout name='splash' title='Splash Page' >
+			<custompages>login fpw signup</custompages>
+		</layout>
+		<layout name='bare' title='Bare Page' >
+			<custompages></custompages>
+		</layout>
+	</layouts>
+	<themePrefs>
+		<pref name='cardmenu_look'>1</pref>
+		<pref name='login_iframe'></pref>
+	</themePrefs>
+</e107Theme>

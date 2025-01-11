@@ -18,7 +18,7 @@ class banner_menu
 {
 	function __construct()
 	{
-		e107::lan('banner','admin', 'true');
+		e107::lan('banner', true);
 	}
 
 
@@ -32,10 +32,10 @@ class banner_menu
 
 		$fields = array();
 		$fields['banner_caption']       = array('title'=> LAN_CAPTION, 'type'=>'text', 'multilan'=>true, 'writeParms'=>array('size'=>'xxlarge'));
-		$fields['banner_campaign']      = array('title'=> BNRLAN_39, 'type'=>'method');
+		$fields['banner_campaign']      = array('title'=> BNRLAN_39, 'type'=>'method', 'data'=>'array');
 		$fields['banner_amount']        = array('title'=> BNRLAN_41, 'type'=>'text', 'writeParms'=>array('pattern'=>'[0-9]*'));
 		$fields['banner_width']         = array('title'=> LAN_WIDTH, 'type'=>'text', 'help'=>"In pixels", 'writeParms'=>array('pattern'=>'[0-9]*'));
-		$fields['banner_rendertype']    = array('title'=> BNRLAN_43, 'type'=>'dropdown', 'writeParms'=>array('optArray'=>$renderTypes));
+		$fields['banner_rendertype']    = array('title'=> BNRLAN_43, 'type'=>'dropdown', 'writeParms'=>array('optArray'=>$renderTypes, 'size'=>'xxlarge'));
 
         return $fields;
 
@@ -56,9 +56,15 @@ class banner_menu_form extends e_form
 
 		$text = '';
 
+		if(empty($curVal))
+		{
+			$curVal = array();
+		}
+
 		while ($row = $sql -> fetch())
 		{
-			$checked = in_array($row['banner_campaign'],$curVal);
+			$checked = in_array($row['banner_campaign'], $curVal);
+		//	$text .= $this->radio_switch('banner_campaign[]',$row['banner_campaign'],$checked, array('label'=> $row['banner_campaign'],'class'=>'e-save')); // e-save class is required. TODO
 			$text .= $this->checkbox('banner_campaign[]',$row['banner_campaign'],$checked, array('label'=> $row['banner_campaign'],'class'=>'e-save')); // e-save class is required.
 		}
 
@@ -67,6 +73,3 @@ class banner_menu_form extends e_form
 	}
 
 }
-
-
-?>

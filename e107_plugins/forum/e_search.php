@@ -46,7 +46,7 @@ class forum_search extends e_search // include plugin-folder in the name.
 			'return_fields'	=> array('t.thread_id', 't.thread_name', 'p.post_id', 'p.post_entry', 't.thread_forum_id', 't.thread_datestamp', 't.thread_user', 'u.user_id', 'u.user_name', 'f.forum_class', 'f.forum_id', 'f.forum_name', 'f.forum_sef'),
 			'search_fields'	=> array('t.thread_name'=>'1.2', 'p.post_entry'=>'0.6'), // fields and weights.
 
-			'order'			=>  array('thread_datestamp' => DESC),
+			'order'			=>  array('thread_datestamp' => 'DESC'),
 			'refpage'		=> 'forum'
 		);
 
@@ -107,7 +107,7 @@ class forum_search extends e_search // include plugin-folder in the name.
 	 * Optional - Advanced Where
 	 * @param $parm - data returned from $_GET (ie. advanced fields included. in this case 'date' and 'author' )
 	 */
-	function where($parm='')
+	function where($parm=null)
 	{
 		$tp = e107::getParser();
 

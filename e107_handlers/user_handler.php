@@ -48,6 +48,10 @@ define ('PASSWORD_DEFAULT_TYPE',PASSWORD_E107_MD5);
 // Required language file - if not loaded elsewhere, uncomment next line
 e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user.php');
 
+
+/**
+ *
+ */
 class UserHandler
 {
 	var $userVettingInfo = array();
@@ -92,7 +96,8 @@ class UserHandler
 */
 	$this->userVettingInfo = array(
 		'user_name' => array('niceName'=> LAN_USER_01, 'fieldType' => 'string', 'vetMethod' => '1,2', 'vetParam' => 'signup_disallow_text', 'srcName' => 'username', 'stripTags' => TRUE, 'stripChars' => '/&nbsp;|\#|\=|\$/', 'fixedBlock' => 'anonymous', 'minLength' => 2, 'maxLength' => varset($pref['displayname_maxlength'],15)),				// Display name
-		'user_loginname' => array('niceName'=> LAN_USER_02, 'fieldType' => 'string', 'vetMethod' => '1', 'vetParam' => '', 'srcName' => 'loginname', 'stripTags' => TRUE, 'stripChars' => '#[^a-z0-9_\.]#i', 'minLength' => 2, 'maxLength' => varset($pref['loginname_maxlength'],30)),			// User name
+		//'user_loginname' => array('niceName'=> LAN_USER_02, 'fieldType' => 'string', 'vetMethod' => '1', 'vetParam' => '', 'srcName' => 'loginname', 'stripTags' => TRUE, 'stripChars' => '#[^a-z0-9_\.]#i', 'minLength' => 2, 'maxLength' => varset($pref['loginname_maxlength'],30)),			// User name
+		'user_loginname' => array('niceName'=> LAN_USER_02, 'fieldType' => 'string', 'vetMethod' => '1', 'vetParam' => '', 'srcName' => 'loginname', 'stripTags' => TRUE, 'stripChars' => '#[^\p{L}\p{M}a-z0-9_\.]#ui', 'minLength' => 2, 'maxLength' => varset($pref['loginname_maxlength'],30)),			// User name
 		'user_login' => array('niceName'=> LAN_USER_03, 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'realname', 'dbClean' => 'toDB', 'stripTags' => TRUE, 'stripChars' => '#<|>#i'),				// Real name (no real vetting)
 		'user_customtitle' => array('niceName'=> LAN_USER_04, 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'customtitle', 'dbClean' => 'toDB', 'enablePref' => 'signup_option_customtitle', 'stripTags' => TRUE, 'stripChars' => '#<|>#i'),		// No real vetting
 		'user_password' => array('niceName'=> LAN_PASSWORD, 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'password1', 'dataType' => 2, 'minLength' => varset($pref['signup_pass_len'],1)),
@@ -303,7 +308,7 @@ class UserHandler
 	 * If necessary, rehash the user password to the currently set algorythm and updated database. .
 	 * @param array $user - user fields. required: user_id, user_loginname, user_password
 	 * @param string $password - plain text password.
-	 * @return bool|str returns new password hash on success or false.
+	 * @return bool|string returns new password hash on success or false.
 	 */
 	public function rehashPassword($user, $password)
 	{
@@ -340,11 +345,14 @@ class UserHandler
 
 
 
+
+
+
 	/**
 	 * Detect Password Hash Algorythm type
 	 * @param string $hash - Password hash to analyse
 	 * @param string $mode - (optional) set to 'text' for a plain-text description.
-	 * @return bool|int
+	 * @return bool|int|array
 	 */
 	public function getHashType($hash, $mode='constant')
 	{
@@ -361,7 +369,7 @@ class UserHandler
 			$num = PASSWORD_E107_MD5;
 			$name = 'md5';
 		}
-		elseif ((strlen($hash) === 35) && (substr($hash,0,3) == PASSWORD_E107_ID))
+		elseif ((strlen($hash) === 35) && (strpos($hash, PASSWORD_E107_ID) === 0))
 		{
 			$num = PASSWORD_E107_SALT;
 			$name = 'md5-salt';
@@ -388,11 +396,11 @@ class UserHandler
 	}
 
 
-
 	/**
 	 * Reset the user's password with an auto-generated string.
 	 * @param $uid
 	 * @param string $loginName (optional)
+	 * @param array $options
 	 * @return bool|string rawPassword
 	 */
 	public function resetPassword($uid, $loginName='', $options=array())
@@ -437,7 +445,7 @@ class UserHandler
 	 *	@param string $login_name - user's login name
 	 *	@param string $stored_hash - password hash as stored in DB
 	 *
-	 *	@return PASSWORD_INVALID|PASSWORD_VALID
+	 *	@return bool|string
 	 */
 	public function CheckCHAP($challenge, $response, $login_name, $stored_hash )
 	{
@@ -490,6 +498,26 @@ class UserHandler
 		if ($this->passwordEmail) return TRUE;
 		return false;
 	}
+
+	/**
+	 * @param $userjoined
+	 * @return bool
+	 */
+	public function newUserExpired($userjoined)
+	{
+		$new_user_period = (int) e107::getPref('user_new_period', 0);
+
+		if(empty($new_user_period))
+		{
+			return true;
+		}
+
+		$userjoined = (int) $userjoined;
+
+		return (time() > ($userjoined + ( $new_user_period)*86400));
+
+	}
+
 
 
 
@@ -578,7 +606,7 @@ class UserHandler
 		$digitLength = strlen($digit) - 1;
 
 		// Create alpha numeric [A-Z][a-z]
-		$alphaNum = $alpha.$digit.chr(45).chr(95); // add support for - and _	
+		$alphaNum = $alpha.$digit.chr(45).chr(95); // add support for - and _
 		$alphaNumLength = strlen($alphaNum) - 1;
 
 		$symbols = "~!@#$%^*-+?;:"; // avoid < > and quotes.
@@ -686,8 +714,13 @@ class UserHandler
 	 */
 	public function makeUserCookie($lode,$autologin = false)
 	{
+		if(e107::isCli())
+		{
+			return true;
+		}
+
 		$cookieval = $lode['user_id'].'.'.md5($lode['user_password']);		// (Use extra md5 on cookie value to obscure hashed value for password)
-		if (e107::getPref('user_tracking') == 'session')
+		if (e107::getPref('user_tracking','session') == 'session')
 		{
 			$_SESSION[e107::getPref('cookie_name')] = $cookieval;
 		}
@@ -735,7 +768,7 @@ class UserHandler
 		}
 		foreach (array(e_UC_MEMBER, e_UC_READONLY, e_UC_PUBLIC) as $c)
 		{
-			if (!in_array($c, vartrue($classList)))
+			if (!in_array($c, vartrue($classList, array())))
 			{
 				$classList[] = $c;
 			}
@@ -844,9 +877,9 @@ Following fields auto-filled in code as required:
 			{
 				$errMsg = ERR_INVALID_EMAIL;
 			}
-			elseif ($u_sql->db_Count('user', '(*)', "WHERE `user_email`='".$v."' AND `user_ban`=1 "))
+			elseif ($u_sql->count('user', '(*)', "WHERE `user_email`='".filter_var($v,FILTER_SANITIZE_EMAIL)."' AND `user_ban`=1 "))
 			{
-				$errMsg = ERR_BANNED_USER; 
+				$errMsg = ERR_BANNED_USER;
 			}
 			else
 			{	// See if email address banned
@@ -919,7 +952,7 @@ Following fields auto-filled in code as required:
 	{
 		$pref = e107::getPref();
 		$sql = e107::getDb();
-		
+
 		$temp1 = 0;
 		if (isset($pref['del_unv']) && $pref['del_unv'] && intval($pref['user_reg_veri']) != 2)
 		{
@@ -954,6 +987,7 @@ Following fields auto-filled in code as required:
 		$pref = e107::getPref();
 		$tp = e107::getParser();
 
+		$initClassStage = isset($pref['init_class_stage']) ? intval($pref['init_class_stage']) : 0;
 		$initClasses = array();
 		$doClasses = false;
 		$doProbation = false;
@@ -966,14 +1000,14 @@ Following fields auto-filled in code as required:
 				$doProbation = true;
 				break;
 			case 'userfull':
-				if(!$pref['user_reg_veri'] || (intval($pref['init_class_stage']) == 2))
+				if(!$pref['user_reg_veri'] || ($initClassStage == 2))
 				{
 					$doClasses = true;
 				}
 				$doProbation = true;
 				break;
 			case 'userpartial' :
-				if(intval($pref['init_class_stage']) === 1)
+				if($initClassStage === 1)
 				{
 					// Set initial classes if to be done on partial signup, or if selected to add them now
 					$doClasses = true;
@@ -1014,7 +1048,7 @@ Following fields auto-filled in code as required:
 	/**
 	 * Updates user status, primarily the user_ban field, to reflect outside events
 	 *
-	 * @param string $start - 'ban', 'bounce'
+	 * @param string $action - 'ban', 'bounce'
 	 * @param integer $uid - internal user ID, zero if not known
 	 * @param string $emailAddress - email address (optional)
 	 *
@@ -1055,7 +1089,7 @@ Following fields auto-filled in code as required:
 		}
 		else
 		{
-			$row = $db->db_Fetch();
+			$row = $db->fetch();
 			if ($uid && ($uid != $row['user_id']))
 			{
 				$error = 'UID mismatch: '.$uid.'/'.$row['user_id'];
@@ -1070,7 +1104,7 @@ Following fields auto-filled in code as required:
 				{	// Only update if needed
 					$db->update('user', '`user_ban` = '.$newVal.', `user_email` = \'\' WHERE `user_id` = '.$row['user_id'].' LIMIT 1');
 					// Add to user audit log		TODO: Should we log to admin log as well?
-					$adminLog = e107::getAdminLog();
+					$adminLog = e107::getLog();
 					$adminLog->user_audit($logEvent, array('user_ban' => $newVal, 'user_email' => $row['user_email']), $row['user_id'], $row['user_loginname']);
 				}
 			}
@@ -1079,208 +1113,512 @@ Following fields auto-filled in code as required:
 	}
 }
 
+/**
+ * Social login provider
+ */
 class e_user_provider
 {
 	/**
 	 * @var string
 	 */
 	protected $_provider;
-	
+
 	/**
 	 * Hybridauth adapter
-	 * @var Hybrid_Provider_Model
+	 *
+	 * @var \Hybridauth\Adapter\AdapterInterface|null
 	 */
 	public $adapter;
-	
+
 	/**
 	 * Hybridauth object
-	 * @var Hybrid_Auth
+	 *
+	 * @var Hybridauth\Hybridauth
 	 */
-	public $hybridauth;
+	protected $hybridauth;
 	protected $_config = array();
-	
-	public function __construct($provider, $config = array())
+	/**
+	 * @var social_login_config|null
+	 */
+	protected $social_login_config_manager = null;
+
+	/**
+	 * Create a new Hybridauth-backed social login provider
+	 *
+	 * This constructor suppresses exceptions due to client usages not handling exceptions and instead sends error
+	 * messages to logged in admins. To check if a Hybridauth configuration is valid, use
+	 * {@link e107::getUserProvider()} with the provider name while logged in as an admin.
+	 *
+	 * @param string|null $provider            The name of the provider to use
+	 * @param array       $config              An override Hybridauth configuration that takes precedence over the
+	 *                                         database Hybridauth configuration for this provider. Leave blank to use
+	 *                                         the database configuration.
+	 * @param bool        $suppress_exceptions Set to false to propagate Hybridauth exceptions
+	 * @throws \Hybridauth\Exception\UnexpectedValueException if the provider is disabled
+	 * @throws \Hybridauth\Exception\InvalidArgumentException if the provider configuration validation failed
+	 */
+	public function __construct($provider = null, $config = array(), $suppress_exceptions = true)
 	{
-		if(!empty($config))
+		@include_once(e_PLUGIN . "social/includes/social_login_config.php");
+		if (!class_exists('social_login_config')) return;
+
+		$this->social_login_config_manager = new social_login_config(e107::getConfig());
+
+		if (!empty($config))
 		{
 			$this->_config = $config;
 		}
-		else 
+		else
 		{
 			$this->_config = array(
-				"base_url" 		=> e107::getUrl()->create('system/xup/endpoint', array(), array('full' => true)), 
-				"providers" 	=> e107::getPref('social_login', array()),
-				"debug_mode" 	=> 'error', 
-				"debug_file"	=> e_LOG."hybridAuth.log"	
+				"callback"   => $this->generateCallbackUrl($provider),
+				"providers"  => $this->social_login_config_manager->getSupportedConfiguredProviderConfigs(),
+				"debug_mode" => 'error',
+				"debug_file" => e_LOG . "hybridAuth.log"
 			);
-			
-		}
-		
-		$this->hybridauth = e107::getHybridAuth($this->_config);
-		$this->setProvider($provider);
-		//require_once(e_HANDLER."hybridauth/Hybrid/Auth.php");
-	}
-	
-	public function setProvider($provider)
-	{
-		$provider = strtolower($provider);
 
-		switch($provider)
-		{
-			case 'aol':
-				$provider = 'AOL';
-				break;
-
-			case 'googleopenid':
-				$provider = 'GoogleOpenID';
-				break;
-
-			case 'linkedin':
-				$provider = 'LinkedIn';
-				break;
-
-			case 'myspace':
-				$provider = 'MySpace';
-				break;
-
-			case 'openid':
-				$provider = 'OpenID';
-				break;
-
-			default:
-				$provider = ucfirst($provider);
-				break;
 		}
 
-		if(isset($this->_config['providers'][$provider]) && $this->_config['providers'][$provider]['enabled'])
+		try
 		{
-			if($this->_config['providers'][$provider]['enabled'] && vartrue($this->_config['providers'][$provider]['keys']))
+			$this->respawnHybridauth();
+			$this->setProvider($provider);
+
+			$providerId = $this->getProvider();
+			if ($providerId && $this->hybridauth->isConnectedWith($providerId))
 			{
-				$valid = true;
-				foreach ($this->_config['providers'][$provider]['keys'] as $_key => $_value) 
-				{
-					if(empty($_value)) $valid = false;
-				}
-				if($valid) $this->_provider = $provider;
+				$this->adapter = $this->hybridauth->getAdapter($providerId);
 			}
 		}
+		catch (\Hybridauth\Exception\InvalidArgumentException $e)
+		{
+			if (!$suppress_exceptions) throw $e;
+		}
+		catch (\Hybridauth\Exception\UnexpectedValueException $e)
+		{
+			if (!$suppress_exceptions) throw $e;
+		}
 	}
 
-	private function log($class,$method,$line)
+	/**
+	 * @throws \Hybridauth\Exception\InvalidArgumentException
+	 */
+	private function respawnHybridauth()
 	{
-	//	e107::getLog()->add('XUP Debug', ($class.':'.$method.'-'.$line), E_LOG_INFORMATIVE, "XUP_DEBUG");
+		$this->hybridauth = new Hybridauth\Hybridauth($this->_config);
 	}
 
+	/**
+	 * @param $provider
+	 * @return void
+	 */
+	public function setProvider($provider)
+	{
+		$this->_provider = $provider;
+	}
 
+	/**
+	 * @param $url
+	 * @return void
+	 * @throws \Hybridauth\Exception\InvalidArgumentException
+	 */
 	public function setBackUrl($url)
 	{
-		# system/xup/endpoint by default
-		$this->_config['base_url'] = $url;
+		# system/xup/login by default
+		$this->_config['callback'] = $this->generateCallbackUrl($url);
+		$this->respawnHybridauth();
 	}
-	
+
+	/**
+	 * @return string
+	 */
 	public function getProvider()
 	{
 		// $this->log(__CLASS__, __METHOD__, __LINE__);
 		return $this->_provider;
 	}
-	
+
+	/**
+	 * @return array
+	 */
 	public function getConfig()
 	{
 		return $this->_config;
 	}
-	
+
+	/**
+	 * @return \Hybridauth\User\Profile|null
+	 */
 	public function getUserProfile()
 	{
-		if($this->adapter)
+		if ($this->adapter)
 		{
-			return $this->adapter->getUserProfile();
+			try
+			{
+				return $this->adapter->getUserProfile();
+			}
+			catch (\Hybridauth\Exception\Exception $e)
+			{
+				return null;
+			}
 		}
 		return null;
 	}
-	
+
+	/**
+	 * @return string|null
+	 */
 	public function userId()
 	{
-
-		if($this->adapter && $this->adapter->getUserProfile()->identifier)
+		if ($profile = $this->getUserProfile())
 		{
-			return $this->getProvider().'_'.$this->adapter->getUserProfile()->identifier;
+			return $this->getProvider() . '_' . $profile->identifier;
 		}
 		return null;
 	}
-	
+
 	/**
-	 * XUP Signup Method (falls-back to XUP login when existing user is detected). 
-	 * May be used as a simple XUP login link for existing and non-existing users.  
+	 * Get the social login providers for which we have adapters
+	 *
+	 * Despite this being a static method, it memoizes (caches) the slow reflection code in the {@link e107} registry
+	 * after the first run, so subsequent calls to this method are fast.
+	 *
+	 * @return string[] String list of supported providers. Empty if Hybridauth is broken.
 	 */
-	public function signup($redirectUrl = true, $loginAfterSuccess = true, $emailAfterSuccess = true)
+	public static function getSupportedProviders()
 	{
-		if(!e107::getPref('social_login_active', false))
+		$regId = 'core/e107/user/provider';
+
+		if($cached = e107::getRegistry($regId))
 		{
-			throw new Exception( "Signup failed! This feature is disabled.", 100); // TODO lan
+			return $cached;
 		}
-		
-		if(!$this->getProvider()) 
+
+		$providers = [];
+
+		try
 		{
-			throw new Exception( "Signup failed! Wrong provider.", 2); // TODO lan
+			$reflector = new ReflectionClass('Hybridauth\Hybridauth');
 		}
-		
-		if($redirectUrl)
+		catch (ReflectionException $e)
 		{
-			if(true === $redirectUrl)
+			return $providers;
+		}
+		$hybridauth_path = $reflector->getFileName();
+		$hybridauth_providers_path = dirname($hybridauth_path) . "/Provider/";
+		$fs_iterator = new FilesystemIterator($hybridauth_providers_path);
+		foreach ($fs_iterator as $file)
+		{
+			if (!$file->isFile()) continue;
+
+			$provider_source_code = file_get_contents($file);
+			$provider_source_tokens = token_get_all($provider_source_code);
+			for ($token_index = 0; isset($provider_source_tokens[$token_index]); $token_index++)
+			{
+				if (!isset($provider_source_tokens[$token_index][0])) continue;
+
+				if (T_CLASS === $provider_source_tokens[$token_index][0])
+				{
+					$token_index += 2;
+					$providers[] = $provider_source_tokens[$token_index][1];
+				}
+			}
+		}
+
+		sort($providers);
+
+		e107::setRegistry($regId, $providers);
+
+		return $providers;
+	}
+
+	/**
+	 * Get the type of provider from a provider name
+	 * @param $providerName string Name of the supported social login provider
+	 * @return string|bool "OAuth1", "OAuth2", or "OpenID". If false, the provider name is invalid.
+	 *                     Other values are technically possible but not supported.
+	 */
+	public static function getTypeOf($providerName)
+	{
+		$class_name = "Hybridauth\Provider\\{$providerName}";
+		$parent_class = eShims::get_parent_class($class_name);
+		if (!$parent_class) return false;
+
+		$parent_class_split = explode("\\", eShims::get_parent_class($class_name));
+		$type = end($parent_class_split);
+		if ($type == "AbstractAdapter") return $providerName;
+		if (!in_array($type, ['OAuth1', 'OAuth2', 'OpenID'])) return self::getTypeOf($type);
+		return $type;
+	}
+
+	/**
+	 * Get standard and supplementary fields of the specified provider
+	 * @param $providerName string Name of the supported social login provider
+	 * @return array Multidimensional associative array where the keys are the known field names and the values are a
+	 *               description of what their key is for.  Keys can be nested in parent keys.  Parent keys will not
+	 *               have a description of the key.  All fields take a string value.  Return will be empty if the
+	 *               specified provider does not have any known fields.
+	 */
+	public static function getFieldsOf($providerName)
+	{
+		$standardFields = self::getStandardFieldsOf($providerName);
+		$supplementaryFields = self::getSupplementalFieldsOf($providerName);
+		return self::array_merge_recursive_distinct($standardFields, $supplementaryFields);
+	}
+
+	/**
+	 * Get the standard/common/parent fields of the specified provider
+	 * @param $providerName string Name of the supported social login provider
+	 * @return array Multidimensional associative array where the keys are the standard field names and the values are
+	 *               a description of what each key is for.  Keys can be nested in parent keys.  Parent keys will not
+	 *               have a description of the key.  All fields take a string value.  Return will be empty if the
+	 *               specified provider does not have any known standard fields.
+	 */
+	public static function getStandardFieldsOf($providerName)
+	{
+		$providerType = self::getTypeOf($providerName);
+		switch ($providerType)
+		{
+			case 'OAuth2':
+				$fieldPart = [
+					'keys' => [
+						'id' => "Client ID given to you by $providerName",
+						'secret' => "Client secret given to you by $providerName",
+					],
+					'scope' => "Permissions to request from $providerName. See the $providerName OAuth2 documentation for details.",
+				];
+				break;
+			case 'OAuth1':
+				$fieldPart = [
+					'keys' => [
+						'key' => "Consumer key given to you by $providerName",
+						'secret' => "Consumer secret given to you by $providerName",
+					]
+				];
+				break;
+			case 'OpenID':
+				$fieldPart = [
+					'openid_identifier' => "OpenID endpoint URL"
+				];
+				break;
+			default:
+				$fieldPart = [];
+		}
+
+		return $fieldPart;
+	}
+
+	/**
+	 * Get the supplemental fields specific to the specified provider
+	 * @param $providerName string Name of the supported social login provider
+	 * @return array Multidimensional associative array where the keys are the supplemental field names and the values
+	 *               are a description of what each key is for.  Keys can be nested in parent keys.  Parent keys will
+	 *               not have a description of the key.  All fields take a string value.  Return will be empty if the
+	 *               specified provider does not have any known supplemental fields.
+	 */
+	public static function getSupplementalFieldsOf($providerName)
+	{
+		$supplementalFields = [];
+		$className = "Hybridauth\Provider\\$providerName";
+		try
+		{
+			$reflector = new ReflectionClass($className);
+		}
+		catch (ReflectionException $e)
+		{
+			return $supplementalFields;
+		}
+
+		$adapterPath = $reflector->getFileName();
+		$adapterSourceCode = file_get_contents($adapterPath);
+		$adapterTokens = token_get_all($adapterSourceCode);
+		$rawDocumentation = null;
+		for ($index = 0; isset($adapterTokens[$index]); $index ++)
+		{
+			if (!isset($adapterTokens[$index][1])) continue;
+
+			if (T_DOC_COMMENT === $adapterTokens[$index][0] &&
+				FALSE !== strpos($adapterTokens[$index][1], '$config'))
+			{
+				$rawDocumentation = $adapterTokens[$index][1];
+			}
+
+			if (T_VARIABLE == $adapterTokens[$index][0])
+			{
+				$supplementalFieldPathSplit = self::adapterTokenParseConfig($adapterTokens, $index, null);
+				if (!is_null($supplementalFieldPathSplit))
+				{
+					$value = $rawDocumentation;
+					$level = [];
+					foreach (array_reverse($supplementalFieldPathSplit) as $supplementalFieldPathItem)
+					{
+						$level[$supplementalFieldPathItem] = $value;
+						$value = $level;
+						$level = [];
+					}
+					$supplementalFields = self::array_merge_recursive_distinct($supplementalFields, $value);
+				}
+			}
+		}
+
+		return $supplementalFields;
+	}
+
+	/**
+	 * @param $adapterTokens
+	 * @param $index
+	 * @param $carry
+	 * @return mixed
+	 */
+	private static function adapterTokenParseConfig($adapterTokens, &$index, $carry)
+	{
+		if (!isset($adapterTokens[$index][1]))
+		{
+			if (in_array($adapterTokens[$index], [';', '.', ',', '?'])) return $carry;
+			++$index;
+			return self::adapterTokenParseConfig($adapterTokens, $index, $carry);
+		}
+		$token = $adapterTokens[$index];
+		$tokenType = $token[0];
+		$tokenValue = $token[1];
+
+		switch ($tokenType)
+		{
+			case T_VARIABLE:
+				if ($tokenValue == '$this') break;
+				return $carry;
+			case T_OBJECT_OPERATOR:
+				break;
+			case T_STRING:
+				switch ($tokenValue)
+				{
+					case 'config':
+						$carry = [];
+						break;
+					case 'filter':
+					case 'get':
+						break;
+					default:
+						return $carry;
+				}
+				break;
+			case T_CONSTANT_ENCAPSED_STRING:
+				$carry[] = trim($tokenValue, '\'"');
+				break;
+		}
+		++$index;
+		return self::adapterTokenParseConfig($adapterTokens, $index, $carry);
+	}
+
+	/**
+	 * @param $array1
+	 * @param $array2
+	 * @return mixed
+	 */
+	private static function array_merge_recursive_distinct(&$array1, &$array2)
+	{
+		$merged = $array1;
+
+		foreach ($array2 as $key => &$value)
+		{
+			if (is_array($value) && isset($merged[$key]) && is_array($merged[$key]))
+			{
+				$merged[$key] = self::array_merge_recursive_distinct($merged[$key], $value);
+			}
+			else
+			{
+				$merged[$key] = $value;
+			}
+		}
+
+		return $merged;
+	}
+
+	/**
+	 * Check if social logins are enabled site-wide
+	 * @return bool TRUE if the site has social logins enabled; FALSE otherwise
+	 */
+	public function isSocialLoginEnabled()
+	{
+		if ($this->social_login_config_manager === null) return false;
+
+		return $this->social_login_config_manager->isFlagActive(social_login_config::ENABLE_BIT_GLOBAL);
+	}
+
+	/**
+	 * XUP Signup Method (falls-back to XUP login when existing user is detected).
+	 * May be used as a simple XUP login link for existing and non-existing users.
+	 */
+	public function login($redirectUrl = true, $loginAfterSuccess = true, $emailAfterSuccess = true)
+	{
+		if (!$this->isSocialLoginEnabled())
+		{
+			throw new Exception("Login failed! This feature is disabled.", 100); // TODO lan
+		}
+
+		if (!$this->getProvider())
+		{
+			throw new Exception("Login failed! Wrong provider.", 2); // TODO lan
+		}
+
+		if ($redirectUrl)
+		{
+			if (true === $redirectUrl)
 			{
 				$redirectUrl = SITEURL;
 			}
-			elseif(strpos($redirectUrl, 'http://') !== 0 && strpos($redirectUrl, 'https://') !== 0)
+			elseif (strpos($redirectUrl, 'http://') !== 0 && strpos($redirectUrl, 'https://') !== 0)
 			{
 				$redirectUrl = e107::getUrl()->create($redirectUrl);
 			}
 		}
 
 
-		if(e107::getUser()->isUser())
+		if (e107::getUser()->isUser())
 		{
-			if($redirectUrl)
+			if ($redirectUrl)
 			{
-				e107::getRedirect()->redirect($redirectUrl);
+				$this->redirectAndForwardMessages($redirectUrl);
 			}
 			return false;
-		//	throw new Exception( "Signup failed! User already signed in. ", 1); // TODO lan
+			//	throw new Exception( "Signup failed! User already signed in. ", 1); // TODO lan
 		}
-		
+
+		$this->setBackUrl($redirectUrl);
+
 		$this->adapter = $this->hybridauth->authenticate($this->getProvider());
 		$profile = $this->adapter->getUserProfile();
 
-		$this->log(__CLASS__, __METHOD__, __LINE__);
 		// returned back, if success...
-		if($profile->identifier)
+		if ($profile->identifier)
 		{
 
 			$sql = e107::getDb();
 			$userMethods = e107::getUserSession();
-			
+
 			$plainPwd = $userMethods->generateRandomString('************'); // auto plain passwords
 
-			
+
 			// TODO - auto login name, shouldn't be used if system set to user_email login...
-			$userdata['user_loginname']     = $this->getProvider().$userMethods->generateUserLogin(e107::getPref('predefinedLoginName', '_..#..#..#'));
-			$userdata['user_email']         = $sql->escape($profile->emailVerified ? $profile->emailVerified : $profile->email);
-			$userdata['user_name']          = $sql->escape($profile->displayName);
-			$userdata['user_login']         = $userdata['user_name'];
-			$userdata['user_customtitle']   = ''; // not used
-			$userdata['user_password']      = $userMethods->HashPassword($plainPwd, $userdata['user_loginname']); // pwd
-			$userdata['user_sess']          = ''; //
-			$userdata['user_image']         = $profile->photoURL; // avatar
-			$userdata['user_signature']     = ''; // not used
-			$userdata['user_hideemail']     = 1; // hide it by default
-			$userdata['user_xup']           = $sql->escape($this->userId());
+			$userdata['user_loginname'] = $this->getProvider() . $userMethods->generateUserLogin(e107::getPref('predefinedLoginName', '_..#..#..#'));
+			$userdata['user_email'] = $sql->escape($profile->emailVerified ? $profile->emailVerified : $profile->email) ?: '';
+			$userdata['user_name'] = $sql->escape($profile->displayName);
+			$userdata['user_login'] = $userdata['user_name'];
+			$userdata['user_customtitle'] = ''; // not used
+			$userdata['user_password'] = $userMethods->HashPassword($plainPwd, $userdata['user_loginname']); // pwd
+			$userdata['user_sess'] = ''; //
+			$userdata['user_image'] = $profile->photoURL; // avatar
+			$userdata['user_signature'] = ''; // not used
+			$userdata['user_hideemail'] = 1; // hide it by default
+			$userdata['user_xup'] = $sql->escape($this->userId());
 
 			$pref = e107::pref('core');
 
-			if(!empty($pref['initial_user_classes']))
+			if (!empty($pref['initial_user_classes']))
 			{
 				$userdata['user_class'] = $pref['initial_user_classes'];
 			}
-			elseif(!empty($pref['user_new_period']))
+			elseif (!empty($pref['user_new_period']))
 			{
 				$userdata['user_class'] = e_UC_NEWUSER;
 			}
@@ -1289,37 +1627,42 @@ class e_user_provider
 				$userdata['user_class'] = '';
 			}
 
-	//		print_a($userdata);
-		
-			
-			// user_name, user_xup, user_email and user_loginname shouldn't match
-			$insert = (!empty($userdata['user_email'])) ? "OR user_email='".$userdata['user_email']."' " : "";
+			//		print_a($userdata);
 
-			$this->log(__CLASS__, __METHOD__, __LINE__);
-			
-			if($uid = $sql->retrieve("user", "user_id", "user_xup='".$sql->escape($this->userId())."' ".$insert." OR user_loginname='{$userdata['user_loginname']}' OR user_name='{$userdata['user_name']}'"))
+
+			// user_name, user_xup, user_email and user_loginname shouldn't match
+			$insert = (!empty($userdata['user_email'])) ? "OR user_email='" . $userdata['user_email'] . "' " : "";
+
+			if ($uid = $sql->retrieve("user", "user_id", "user_xup='" . $sql->escape($this->userId()) . "' " . $insert . " OR user_loginname='{$userdata['user_loginname']}' OR user_name='{$userdata['user_name']}'"))
 			{
 				// $this->login($redirectUrl); // auto-login
-				e107::getUser()->loginProvider($this->userId());
+				$result = e107::getUser()->loginProvider($this->userId());
+                $this->updateXupProfile();
 
-				if($redirectUrl) 
+                if (!$result)
 				{
-					e107::getRedirect()->redirect($redirectUrl);
+					e107::getMessage()->addError("User already exists but is not connected through this social login provider");
 				}
-				
+
+				if ($redirectUrl)
+				{
+					$this->redirectAndForwardMessages($redirectUrl);
+				}
+
 				return false;
 				// throw new Exception( "Signup failed! User already exists. Please use 'login' instead.", 3);
 			}
-			
-			if(empty($userdata['user_email']) && e107::getPref('disable_emailcheck', 0)==0) // Allow it if set-up that way. 
+
+			if (empty($userdata['user_email']) && e107::getPref('disable_emailcheck', 0) == 0) // Allow it if set-up that way.
 			{
 				// Twitter will not provide email addresses.
-			//	throw new Exception( "Signup failed! Can't access user email - registration without an email is impossible.".print_a($userdata,true), 4); // TODO lan
+				//	throw new Exception( "Signup failed! Can't access user email - registration without an email is impossible.".print_a($userdata,true), 4); // TODO lan
 			}
-			
+
 			// other fields
-			$now = time(); 
+			$now = time();
 			$userdata['user_id'] = null;
+			$userdata['user_image'] = '';
 			$userdata['user_join'] = $now;
 			$userdata['user_lastvisit'] = 0;
 			$userdata['user_currentvisit'] = 0;
@@ -1332,18 +1675,19 @@ class e_user_provider
 			$userdata['user_perms'] = '';
 			$userdata['user_realm'] = '';
 			$userdata['user_pwchange'] = $now;
-			
+
+			/** @var e_system_user' $user */
 			$user = e107::getSystemUser(0, false);
 			$user->setData($userdata);
 			$user->getExtendedModel(); // init
 			//$user->setEditor(e107::getSystemUser(1, false));
 			$user->save(true);
-			
+
 			// user model error
-			if($user->hasError())
+			if ($user->hasError())
 			{
 				e107::getLog()->add('XUP Signup Failure', $userdata, E_LOG_WARNING, "XUP_SIGNUP");
-				throw new Exception($user->renderMessages(), 5); 
+				throw new Exception($user->renderMessages(), 5);
 			}
 
 
@@ -1351,127 +1695,203 @@ class e_user_provider
 			//$user->set('provider', $this->getProvider());
 			$userdata = $user->getData();
 			$userdata['provider'] = $this->getProvider();
-			
-		//	e107::getEvent()->trigger('userveri', $userdata);	 // Trigger New verified user.
-			
-			e107::getEvent()->trigger('user_xup_signup', $userdata); 
-			
-			$ret = e107::getEvent()->trigger('usersupprov', $userdata);	// XXX - it's time to pass objects instead of array?
 
-			if(true === $ret) return $this;
-			
+			$userdata['callback_data'] = $profile;
+
+			//	e107::getEvent()->trigger('userveri', $userdata);	 // Trigger New verified user.
+
+			e107::getEvent()->trigger('user_xup_signup', $userdata);
+
+			$ret = e107::getEvent()->trigger('usersupprov', $userdata);    // XXX - it's time to pass objects instead of array?
+
+			if (true === $ret) return $this;
+
 			// send email
-			if($emailAfterSuccess && !empty($userdata['user_email']))
+			if ($emailAfterSuccess && !empty($userdata['user_email']))
 			{
-				$user->set('user_password', $plainPwd)->email('signup'); 
+				$user->set('user_password', $plainPwd)->email('signup');
 			}
-			
+
 			e107::getUser()->setProvider($this);
-			
+
 			// auto login
-			if($loginAfterSuccess)
+			if ($loginAfterSuccess)
 			{
 				e107::getUser()->loginProvider($this->userId()); // if not proper after-login, return true so user can see login screen
 			}
-						
-			if($redirectUrl)
+
+			if ($redirectUrl)
 			{
-				e107::getRedirect()->redirect($redirectUrl);
+				$this->redirectAndForwardMessages($redirectUrl);
 			}
-			
+
 			return true;
 		}
-
-		$this->log(__CLASS__, __METHOD__, __LINE__);
 
 		return false;
 	}
 
-
-
-	public function login($redirectUrl = true)
-	{
-
-		if(!e107::getPref('social_login_active', false))
-		{
-			throw new Exception( "Signup failed! This feature is disabled.", 100); // TODO lan
-		}
-		
-		if(!$this->getProvider()) 
-		{
-			throw new Exception( "Login failed! Wrong provider.", 22); // TODO lan
-		}
-		
-		if($redirectUrl)
-		{
-			if(true === $redirectUrl)
-			{
-				$redirectUrl = SITEURL;
-			}
-			elseif(strpos($redirectUrl, 'http://') !== 0 && strpos($redirectUrl, 'https://') !== 0)
-			{
-				$redirectUrl = e107::getUrl()->create($redirectUrl);
-			}
-		}
-
-
-		if(e107::getUser()->isUser())
-		{
-			if($redirectUrl)
-			{
-				e107::getRedirect()->redirect($redirectUrl);
-			}
-			return true; 
-		}
-		
-		$this->adapter = $this->hybridauth->authenticate($this->getProvider());
-		$check = e107::getUser()->setProvider($this)->loginProvider($this->userId());
-
-
-		if($redirectUrl)
-		{
-			e107::getRedirect()->redirect($redirectUrl);
-		}
-		
-		return $check;
-	}
-
-
-
-	public function init()
-	{
-		if(!e107::getPref('social_login_active', false))
-		{
-			return;
-		}
-		$this->adapter = null;
-		$providerId = $this->_provider;
-		if($providerId && Hybrid_Auth::isConnectedWith($providerId))
-		{
-			$this->adapter = Hybrid_Auth::setup($providerId);
-		}
-	}
-	
+	/**
+	 * @return bool|string
+	 * @throws \Hybridauth\Exception\InvalidArgumentException
+	 * @throws \Hybridauth\Exception\UnexpectedValueException
+	 */
 	public function logout()
 	{
-		if(!e107::getPref('social_login_active', false) || !$this->adapter || !Hybrid_Auth::isConnectedWith($this->getProvider())) return true;
+		if (
+			!$this->adapter ||
+			!$this->hybridauth->isConnectedWith($this->getProvider())
+		) return true;
 		try
 		{
-			$this->adapter->logout();
+			$this->adapter->disconnect();
 			$this->adapter = null;
 		}
-		catch(Exception $e)
+		catch (Exception $e)
 		{
 			return $e->getMessage();
 		}
 		return true;
 	}
-	
+
+	/**
+	 * @param string $backUrl
+	 * @return string
+	 */
+	public function generateCallbackUrl($backUrl = null)
+	{
+		return e107::getUrl()->create(
+			"system/xup/login",
+			array(
+				'provider' => $this->getProvider(),
+				'back' => $backUrl,
+				),
+			array('full' => true, 'encode' => false)
+		);
+	}
+
+	/**
+	 * @param $redirectUrl
+	 */
+	private function redirectAndForwardMessages($redirectUrl)
+	{
+		$messages = e107::getMessage()->getAll('default', true, false);
+		foreach ($messages as $type => $message_stack)
+		{
+			e107::getMessage()->addSessionStack($message_stack, 'default', $type);
+		}
+		e107::getRedirect()->redirect($redirectUrl);
+	}
+
+    /**
+     * Synchronize user profile fields from social login provider
+     */
+    private function updateXupProfile()
+    {
+        try
+        {
+            // detect all currently connected providers
+            $connected = $this->hybridauth->getConnectedProviders();
+        }
+        catch (Exception $e)
+        {
+            e107::getMessage()->addError('[' . $e->getCode() . ']' . $e->getMessage(), 'default', true);
+            $session = e107::getSession();
+            $session->set('HAuthError', true);
+            $connected = false;
+        }
+        // no active session found
+        if (!$connected) return;
+
+        // query DB
+        $sql = e107::getDb();
+        $where = array();
+        $userdata = array();
+
+        foreach ($connected as $providerId)
+        {
+            try
+            {
+                $adapter = $this->hybridauth->getAdapter($providerId);
+                $profile = $adapter->getUserProfile();
+            }
+            catch (\Hybridauth\Exception\Exception $e)
+            {
+                continue;
+            }
+
+            if (!$profile->identifier) continue;
+
+            $userdata['user_name'] = $sql->escape($profile->displayName);
+            $userdata['user_image'] = $profile->photoURL; // avatar
+            $userdata['user_email'] = $profile->email;
+
+            $id = $providerId . '_' . $profile->identifier;
+            $where[] = "user_xup='" . $sql->escape($id) . "'";
+        }
+        // no active session found
+        if (empty($where)) return;
+
+        $where = implode(' OR ', $where);
+        if ($sql->select('user', 'user_id, user_name, user_email, user_image, user_password, user_xup', $where))
+        {
+
+            $user = $sql->fetch();
+            e107::getUserSession()->makeUserCookie($user);
+
+            $spref = e107::pref('social');
+
+            // Update display name or avatar image if they have changed.
+            if (
+                (empty($user['user_email']) && !empty($userdata['user_email'])) ||
+                ($userdata['user_name'] != $user['user_name']) ||
+                ($userdata['user_image'] != $user['user_image'])
+            )
+            {
+                $updateQry = array();
+
+                if (!empty($spref['xup_login_update_username']))
+                {
+                    $updateQry['user_name'] = $userdata['user_name'];
+                }
+
+                if (!empty($spref['xup_login_update_avatar']))
+                {
+                    $updateQry['user_image'] = $userdata['user_image'];
+                }
+
+                if (empty($user['user_email']))
+                {
+                    $updateQry['user_email'] = $userdata['user_email'];
+                }
+
+                $updateQry['WHERE'] = "user_id=" . $user['user_id'] . " LIMIT 1";
+
+                if ($sql->update('user', $updateQry) !== false)
+                {
+                    $updatedProfile = array_replace($user, $userdata);
+                    e107::getEvent()->trigger('user_xup_updated', $updatedProfile);
+                    e107::getLog()->add('User Profile Updated', $userdata, E_LOG_INFORMATIVE, "XUP_LOGIN", LOG_TO_ADMIN, array('user_id' => $user['user_id'], 'user_name' => $user['user_name'], 'user_email' => $userdata['user_email']));
+                }
+                else
+                {
+                    e107::getLog()->add('User Profile Update Failed', $userdata, E_LOG_WARNING, "XUP_LOGIN", LOG_TO_ADMIN, $updateQry);
+                }
+            }
+
+            unset($user['user_password']);
+            e107::getLog()->user_audit(USER_AUDIT_LOGIN, null, $user['user_id'], $user['user_name']);
+        }
+    }
 }
 
 
 e107::coreLan('administrator', true);
 
+
+/**
+ *
+ */
 class e_userperms
 {
 
@@ -1482,7 +1902,7 @@ class e_userperms
 	protected $language_perms = array();
 
 	protected $main_perms = array();
-	
+
 	protected $full_perms = array();
 
 	protected $permSectionDiz = array(
@@ -1491,8 +1911,8 @@ class e_userperms
 		'language'	=> ADLAN_132,
 		'main'		=> ADMSLAN_58
 	 );
-	 
-	
+
+
 
 
 	function __construct()
@@ -1501,33 +1921,34 @@ class e_userperms
 		$this->core_perms = array(
 
 		// In the same order as admin navigation! Plus same labels.
-		
+
 		// Settings
 		"C"	=> array(ADLAN_74,E_16_CACHE, E_32_CACHE),		    // Clear the system cache
 		"F"	=> array(ADLAN_58,E_16_EMOTE, E_32_EMOTE),	        // Emoticons
 		"G"	=> array(ADLAN_60,E_16_FRONT, E_32_FRONT),		    // Front-Page Configuration
 		"L"	=> array(ADLAN_132,E_16_LANGUAGE, E_32_LANGUAGE),	// Language Packs
 		"T"	=> array(ADLAN_66,E_16_META, E_32_META),			// Meta tags
-		
+
 		"1"	=> array(LAN_PREFS,E_16_PREFS, E_32_PREFS),			// Alter Site Preferences
 		"X"	=> array(LAN_SEARCH,E_16_SEARCH, E_32_SEARCH),		// Search
-		"I"	=> array(ADLAN_138,E_16_LINKS, E_32_LINKS),			// Post SiteLinks 
+		"I"	=> array(LAN_NAVIGATION,E_16_LINKS, E_32_LINKS),			// Post SiteLinks
 		"8"	=> array(ADMSLAN_27,E_16_LINKS, E_32_LINKS),		// Oversee SiteLink Categories
 		"K"	=> array(ADLAN_159,E_16_EURL, E_32_EURL),			// Configure URLs
-				
-		// Users 
+
+		// Users
 		"3"	=> array(ADLAN_8,E_16_ADMIN, E_32_ADMIN),			// Modify Admin perms
 		"4"	=> array(LAN_USER_MANAGEALL,E_16_USER, E_32_USER),	// Manage all user access and settings etc
 		"U0" => array(ADLAN_34,E_16_USER, E_32_USER), 		    // moderate users/bans but not userclasses or extended fields,
 		"U1" => array(LAN_USER_QUICKADD,E_16_USER, E_32_USER),	// "User: Quick Add User",
 		"U2" => array(LAN_USER_OPTIONS,E_16_USER, E_32_USER),	// Manage only user-options
 		"U3" => array(LAN_USER_RANKS,E_16_USER, E_32_USER),		// Manage only user-ranks
-		"W"	=> array(ADLAN_136,E_16_MAIL, E_32_MAIL),			// Configure mail settings and mailout		
-		
-		
-		// Content 			
-		"5"	=> array(ADLAN_42,E_16_CUST, E_32_CUST),			// create/edit custom PAGES 
+		"W"	=> array(ADLAN_136,E_16_MAIL, E_32_MAIL),			// Configure mail settings and mailout
+
+
+		// Content
+		"5"	=> array(ADLAN_42,E_16_CUST, E_32_CUST),			// create/edit custom PAGES
 		"J"	=> array(ADLAN_42,E_16_CUST, E_32_CUST),			// create/edit custom MENUS
+		"J1" => array(ADLAN_42." (".LAN_DELETE.")",E_16_CUST, E_32_CUST),	// Delete Pages/Menus.
 
 		"H"	=> array(ADLAN_0,E_16_NEWS, E_32_NEWS),								// Post News - All Areas except settings.
 		"H0" => array(ADLAN_0." (".LAN_CREATE.")",E_16_NEWS, E_32_NEWS),					// Create News Items
@@ -1540,45 +1961,63 @@ class e_userperms
 		"N"	=> array(ADLAN_0." (".LAN_SUBMITTED.")",E_16_NEWS, E_32_NEWS),			// Moderate submitted news
 		"V"	=> array(ADLAN_31,E_16_UPLOADS, E_32_UPLOADS),							// Configure public file uploads
 		"M"	=> array(ADLAN_28,E_16_WELCOME, E_32_WELCOME),							// Welcome Messages
-				
-		// Tools 
+
+		// Tools
 		"Y"	=> array(ADLAN_147,E_16_INSPECT, E_32_INSPECT),	    // File inspector
 		"9"	=> array(ADLAN_40, E_16_MAINTAIN, E_32_MAINTAIN),	// Take Down site for Maintenance
 		"O"	=> array(ADLAN_149,E_16_NOTIFY, E_32_NOTIFY),		// Notify
 		"U"	=> array(ADLAN_157,E_16_CRON, E_32_CRON),			// Schedule Tasks
 		"S"	=> array(ADLAN_155,E_16_ADMINLOG, E_32_ADMINLOG),	// System Logging
-		
+
 		// Manage
 		"B"	=> array(LAN_COMMENTMAN,E_16_COMMENT, E_32_COMMENT),	    								// Moderate Comments
-		"6"	=> array(LAN_MEDIAMANAGER,E_16_FILE, E_32_FILE),											// File-Manager  - Upload /manage files - 
-		"A"	=> array(LAN_MEDIAMANAGER." (".LAN_ALL.")",E_16_IMAGES, E_32_IMAGES),						// Media-Manager All Areas. 
+		"6"	=> array(LAN_MEDIAMANAGER,E_16_FILE, E_32_FILE),											// File-Manager  - Upload /manage files -
+		"A"	=> array(LAN_MEDIAMANAGER." (".LAN_ALL.")",E_16_IMAGES, E_32_IMAGES),						// Media-Manager All Areas.
 		"A1"=> array(LAN_MEDIAMANAGER." (".LAN_UPLOAD."/".LAN_IMPORT.")",E_16_IMAGES, E_32_IMAGES),		// Media-Manager (Media Upload/Add/Import)
 		"A2"=> array(LAN_MEDIAMANAGER." (".LAN_CATEGORIES.")",E_16_IMAGES, E_32_IMAGES),				// Media-Manager (Media-Categories)
-		
-		
+
+		"TMP"=> array(ADLAN_140." (".LAN_PREFS.")",E_16_THEMEMANAGER, E_32_THEMEMANAGER),
+
 		"2"	=> array(ADLAN_6,E_16_MENUS, E_32_MENUS),		// Alter Menus
-		
-		
+
+
 		//	"D"=> ADMSLAN_29,	// Manage Banners 				(deprecated - now a plugin)
-		//	"E"=> ADMSLAN_30,	// News feed headlines 			(deprecated - now a plugin)	
+		//	"E"=> ADMSLAN_30,	// News feed headlines 			(deprecated - now a plugin)
 		// "K"=>
-		
+
 		// "P" 				// Reserved for Plugins
-		
+
 		//	"Q"=> array(ADMSLAN_24),	// Manage download categories (deprecated - now a plugin)
-		//	"R"=> ADMSLAN_44,	// Post Downloads (deprecated)	
-		
-	
-		//	"Z"=> ADMSLAN_62, // Plugin Manager.. included under Plugins category. 
+		//	"R"=> ADMSLAN_44,	// Post Downloads (deprecated)
+
+
+		//	"Z"=> ADMSLAN_62, // Plugin Manager.. included under Plugins category.
 		);
-	
 
-		$sql = e107::getDb('sql2');
-		$tp = e107::getParser();
 
+	//	$sql = e107::getDb('sql2');
+	//	$tp = e107::getParser();
+
+		$pg = e107::getPlug();
+		$installed = $pg->getInstalled();
+		foreach($installed as $plug=>$version)
+		{
+			$pg->load($plug);
+
+			$arr = array(
+				0 => $pg->getName(),
+				1 => $pg->getIcon(16),
+				2 => $pg->getIcon(32)
+			);
+
+			$key = "P".$pg->getId();
+			$this->plugin_perms[$key] = $arr;
+		}
+
+/*
 		$plg = e107::getPlugin();
-		$allPlugins = $plg->getall(1); // Needs all for 'reading' and 'installed' for writing. 
-		
+		$allPlugins = $plg->getall(1); // Needs all for 'reading' and 'installed' for writing.
+
 		foreach($allPlugins as $k=>$row2)
 		{
 			if($plg->parse_plugin($row2['plugin_path']))
@@ -1589,15 +2028,8 @@ class e_userperms
 				$this->plugin_perms[("P".$row2['plugin_id'])][2] = $plg->getIcon($row2['plugin_path'],32);
 			}
 		}
-		
-	//	echo $plg->getIcon('forum');
-		
-	//	$sql->db_Select("plugin", "*", "plugin_installflag='1'");
-	//	while ($row2 = $sql->db_Fetch())
-	//	{
-	//		$this->plugin_perms[("P".$row2['plugin_id'])] = array($tp->toHTML($row2['plugin_name'], false, 'RAWTEXT,defs'));
-		//	$this->plugin_perms[("P".$row2['plugin_id'])][1] = $plg->getIcon('forum')
-	//	}
+*/
+
 
 		asort($this->plugin_perms);
 
@@ -1623,12 +2055,20 @@ class e_userperms
 
 	}
 
+	/**
+	 * @param $key
+	 * @return mixed
+	 */
 	function renderSectionDiz($key)
 	{
 		return $this->permSectionDiz[$key];
 	}
 
 
+	/**
+	 * @param $type
+	 * @return array|array[]
+	 */
 	function getPermList($type='all')
 	{
 		if($type == 'core')
@@ -1654,12 +2094,12 @@ class e_userperms
 			$ret['core'] 		= $this->core_perms;
 			$ret['plugin']		= $this->plugin_perms;
 
-			if(vartrue($this->language_perms))
+			if(!empty($this->language_perms))
 			{
 				$ret['language'] = $this->language_perms;
 			}
 
-			if(vartrue($this->main_perms))
+			if(!empty($this->main_perms))
 			{
 				$ret['main'] = $this->main_perms;
 			}
@@ -1671,15 +2111,21 @@ class e_userperms
 		return $this->full_perms;
 	}
 
+	/**
+	 * @param $arg
+	 * @param $perms
+	 * @param $info
+	 * @return string
+	 */
 	function checkb($arg, $perms, $info='')
 	{
 		$frm = e107::getForm();
-	
+
 		if(is_array($info))
 		{
 			$label		= $info[0];
-			$icon_16	= $info[1];
-			$icon_32	= $info[2];
+			$icon_16	= varset($info[1]);
+			$icon_32	= varset($info[2]);
 		}
 		elseif($info)
 		{
@@ -1699,15 +2145,20 @@ class e_userperms
 		return $par;
 	}
 
-	function renderPerms($perms,$uniqueID='')
+	/**
+	 * @param $perms
+	 * @param $uniqueID
+	 * @return string
+	 */
+	function renderPerms($perms, $uniqueID='')
 	{
 		$tmp = explode(".",$perms);
 		$tmp = array_filter($tmp);
-		
+
 		$permdiz = $this->getPermList();
 
 		$ptext = array();
-		
+
 		foreach($tmp as $p)
 		{
 			// if(trim($p) == ""){ continue; }
@@ -1769,22 +2220,22 @@ class e_userperms
 						<tbody>
 							<tr>
 								<td class='control'>
-								
+
 
 		";
 	*/
-	
+
 	$text = "<form method='post' action='".e_SELF."' id='myform'>
 				<fieldset id='core-administrator-edit'>
 					<legend class='e-hideme'>".ADMSLAN_52."</legend>";
 
-	//XXX Bootstrap Tabs (as used below) should eventually be the default for all of the admin area. 
+	//XXX Bootstrap Tabs (as used below) should eventually be the default for all of the admin area.
 	$text .= '
 		 <ul class="nav nav-tabs">
-		    <li class="active"><a href="#tab1" data-toggle="tab">'.$this->renderSectionDiz('core').'</a></li>
-		    <li><a href="#tab2" data-toggle="tab">'.$this->renderSectionDiz('plugin').'</a></li>
-		    <li><a href="#tab3" data-toggle="tab">'.$this->renderSectionDiz('language').'</a></li>
-		     <li><a href="#tab4" data-toggle="tab">'.$this->renderSectionDiz('main').'</a></li>
+		    <li class="active"><a href="#tab1" data-toggle="tab" data-bs-toggle="tab">'.$this->renderSectionDiz('core').'</a></li>
+		    <li><a href="#tab2" data-toggle="tab" data-bs-toggle="tab">'.$this->renderSectionDiz('plugin').'</a></li>
+		    <li><a href="#tab3" data-toggle="tab" data-bs-toggle="tab">'.$this->renderSectionDiz('language').'</a></li>
+		     <li><a href="#tab4" data-toggle="tab" data-bs-toggle="tab">'.$this->renderSectionDiz('main').'</a></li>
 		  </ul>
 		  
 		  <div class="tab-content">
@@ -1813,17 +2264,17 @@ class e_userperms
 		      </div>
 			</div>
 			
-		  </div>';	
+		  </div>';
 
 
 	//	$text .= $this->renderPermTable('grouped',$a_perms);
-		
-		
 
-		$text .= $this->renderCheckAllButtons(); 
-		
+
+
+		$text .= $this->renderCheckAllButtons();
+
 	//	$text .= "</td></tr></tbody></table>";
-					
+
 					$text .= "
 					".$this->renderSubmitButtons()."
 					<input type='hidden' name='ad_name' value='{$ad_name}' />
@@ -1837,6 +2288,9 @@ class e_userperms
 		$ns->tablerender(ADMSLAN_52.SEP.$ad_name, $text);
 	}
 
+	/**
+	 * @return string
+	 */
 	function renderCheckAllButtons()
 	{
 		$frm = e107::getForm();
@@ -1847,7 +2301,10 @@ class e_userperms
 			</div>
 		";
 	}
-	
+
+	/**
+	 * @return string
+	 */
 	function renderSubmitButtons()
 	{
 		$frm = e107::getForm();
@@ -1858,8 +2315,13 @@ class e_userperms
 			</div>
 		";
 	}
-	
-	function renderPermTable($type,$a_perms='')
+
+	/**
+	 * @param $type
+	 * @param $a_perms
+	 * @return string
+	 */
+	function renderPermTable($type, $a_perms='')
 	{
 
 
@@ -1896,7 +2358,7 @@ class e_userperms
 		}
 
 		$groupedList = $this->getPermList($type);
-			
+
 		if($type != 'grouped')
 		{
 			$text = "\t\t<table class='table adminform'>
@@ -1913,11 +2375,11 @@ class e_userperms
 				$text .= $this->checkb($key, $a_perms, $diz);
 			}
 			$text .= "</tbody>
-			</table>";	
-			
+			</table>";
+
 			return $text;
 		}
-		
+
 		$text = "";
 		foreach($groupedList as $section=>$list)
 		{
@@ -1936,10 +2398,10 @@ class e_userperms
 			$text .= "</tbody>
 			</table>";
 		}
-		
-		return $text;	
+
+		return $text;
 	}
-	
+
 	/**
 	 * Update user (admin) permissions.
 	 * NOTE: exit if $uid is not an integer or is 0.
@@ -1983,18 +2445,95 @@ class e_userperms
 				$perm .= $value.".";
 			}
 	 	}
-		
+
 		//$sql->db_Update("user", "user_perms='{$perm}' WHERE user_id='{$modID}' ") 
 		if(!$sysuser->isAdmin())
 		{
 			$sysuser->set('user_admin', 1)->save();
-			$lan = str_replace(array('--UID--', '--NAME--', '--EMAIL--'), array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email')), USRLAN_164);
+			$vars = array('x'=>$sysuser->getId(), 'y'=> $sysuser->getName(), 'z'=>$sysuser->getValue('email'));
+			$lan = e107::getParser()->lanVars( USRLAN_164, $vars);
 			e107::getLog()->add('USET_08', $lan, E_LOG_INFORMATIVE);
 		}
-		
+
 		e107::getMessage()->addAuto($sysuser->set('user_perms', $perm)->save(), 'update', sprintf(LAN_UPDATED, $tp->toDB($_POST['ad_name'])), false, false);
-		$logMsg = str_replace(array('--ID--', '--NAME--'),array($modID, $a_name),ADMSLAN_72).$perm;
+		$logMsg = str_replace(array('[x]', '[y]'),array($modID, $a_name),ADMSLAN_72).$perm;
 		e107::getLog()->add('ADMIN_01',$logMsg,E_LOG_INFORMATIVE,'');
 	}
 
+	/**
+	 * Simulate whether a user has admin permissions based on the requested access code(s) and admin's permissions.
+	 *
+	 * @param string $requestedAccess  The serialized requested access code or codes which will match if any of the
+	 *                                 codes are in the admin user's admin permissions.
+	 *                                 This is a pipe-delimited (`|`) list of access codes.
+	 *                                 Example: `C|4`
+	 * @param string $adminPermissions The serialized admin user's admin permissions.
+	 *                                 This is a dot-delimited (`.`) list of access codes.
+	 *                                 Example: `C.F.G.L.T.1.X.I.8.K.3.4.U0.U1.U2.U3.6.A.A1.A2.TMP.2.Z.P3.P4.English`
+	 * @return bool true if the user has matching permissions, false otherwise.
+	 */
+	public static function simulateHasAdminPerms($requestedAccess, $adminPermissions)
+	{
+		if(trim($adminPermissions) === '')
+		{
+			return false;
+		}
+
+		if($requestedAccess === 0)
+		{
+			$requestedAccess = '0';
+		}
+
+		if($adminPermissions === '0' || $adminPermissions === '0.')
+		{
+			return true;
+		}
+
+		$adminPermissionsArray = explode('.', $adminPermissions);
+
+		if(in_array($requestedAccess, $adminPermissionsArray, false))
+		{
+			return true;
+		}
+
+		if(strpos($requestedAccess, '|'))
+		{
+			$requestedAccessCodes = explode('|', $requestedAccess);
+			foreach($requestedAccessCodes as $requestedAccessCode)
+			{
+				if(in_array($requestedAccessCode, $adminPermissionsArray))
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Simulate whether a user has admin permissions to a plugin.
+	 *
+	 * @param e_db $db The database handle to query installed plugins.
+	 * @param string $pluginName The plugin name, not the plugin path like in {@link getperms()}.
+	 * @param string $adminPermissions The serialized admin user's admin permissions.
+	 *                                 This is a dot-delimited (`.`) list of access codes.
+	 *                                 Example: `C.F.G.L.T.1.X.I.8.K.3.4.U0.U1.U2.U3.6.A.A1.A2.TMP.2.Z.P3.P4.English`
+	 * @return bool true if the user has matching permissions, false otherwise.
+	 */
+	public static function simulateHasPluginAdminPerms($db, $pluginName, $adminPermissions)
+	{
+		$arg = "0";
+		if($db->select(
+			'plugin',
+			'plugin_id',
+			"plugin_path = :plugin_path LIMIT 1",
+			["plugin_path" => $pluginName]
+		))
+		{
+			$row = $db->fetch();
+			$arg = 'P' . $row['plugin_id'];
+		}
+		return self::simulateHasAdminPerms($arg, $adminPermissions);
+	}
 }

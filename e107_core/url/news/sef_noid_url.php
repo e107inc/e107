@@ -73,7 +73,7 @@ class core_news_sef_noid_url extends eUrlConfig
 			switch ($route[1]) 
 			{
 				case 'item':
-					$r[0] = $params['id']; // news/ID
+					$r[0] = varset($params['id']); // news/ID
 				break;
 				
 				default:
@@ -102,7 +102,7 @@ class core_news_sef_noid_url extends eUrlConfig
 				
 				case 'tag':				// news/tag/xxxx
 					$r[0] = 'tag';
-					$r[1] = $params['tag'];
+					$r[1] = eHelper::dasherize($params['tag']);
 					if($page) $parm = array('page' => $page);
 				break;
 
@@ -147,6 +147,7 @@ class core_news_sef_noid_url extends eUrlConfig
 			
 		//XXX TODO Find a better place to put this check. 	
 		$urlFormat = e107::getConfig()->get('url_sef_translate');
+
 		if($urlFormat == 'dashl' || $urlFormat == 'underscorel' || $urlFormat == 'plusl') // convert template to lowercase when using lowercase SEF URL format.  
 		{
 			$r[0] = strtolower($r[0]);	
@@ -210,7 +211,7 @@ class core_news_sef_noid_url extends eUrlConfig
 				else 
 				{
 					if(!is_numeric($parts[1])) $id = $this->categoryIdByTitle($parts[1]);
-					else $id = intval($parts[1]);
+					else $id = (int) $parts[1];
 				}
 				if(!$id)
 				{

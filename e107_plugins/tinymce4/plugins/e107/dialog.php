@@ -137,11 +137,11 @@ class e_bootstrap
 		$text .= '
 		<ul class="nav nav-tabs">';
 		
-		$text .= '<li class="active" ><a href="#mbuttons" data-toggle="tab">Buttons</a></li>';
+		$text .= '<li class="active" ><a href="#mbuttons" data-toggle="tab" data-bs-toggle="tab">Buttons</a></li>';
 		
-		$text .= '<li><a href="#badges" data-toggle="tab">Labels &amp; Badges</a></li>';
+		$text .= '<li><a href="#badges" data-toggle="tab" data-bs-toggle="tab">Labels &amp; Badges</a></li>';
 	
-		$text .= '<li><a href="#glyphs" data-toggle="tab">Glyphicons</a></li>';	
+		$text .= '<li><a href="#glyphs" data-toggle="tab" data-bs-toggle="tab">Glyphicons</a></li>';
 		
 		$text .= '</ul>';
 		 
@@ -218,7 +218,7 @@ class e_bootstrap
 		</table>
 
 		<div class='center'>". $frm->admin_button('insertButton','save','other',"Insert") ."
-		<button class='btn btn-default ' id='e-cancel'>".LAN_CANCEL."</button>
+		<button class='btn btn-default btn-secondary ' id='e-cancel'>".LAN_CANCEL."</button>
 		</div>";
 		
 		
@@ -443,11 +443,11 @@ class e_bootstrap
 					
 		$text .= "<ul class='glyphicons well clearfix'>";
 		
-		$inverse = (e107::getPref('admincss') == "admin_dark.css") ? " icon-white" : "";
+	//	$inverse = (e107::getPref('admincss') == "admin_dark.css") ? " icon-white" : "";
 		
 		foreach($icons as $ic)
 		{
-			$text .= '<li><i class="'.$ic.$inverse.'"></i> '.$ic.'</li>';
+			$text .= '<li><i class="'.$ic.'"></i> '.$ic.'</li>';
 			$text .= "\n";
 		}
 					
@@ -486,4 +486,3 @@ exit;
 //
 
 
-?>

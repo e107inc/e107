@@ -42,7 +42,7 @@ class auth_login extends alt_auth_base
 	/**
 	 *	Read configuration
 	 *
-	 *	@return AUTH_xxxx result code
+	 *	@return void result code
 	 */
 	public function __construct()
 	{
@@ -80,7 +80,9 @@ class auth_login extends alt_auth_base
 	public function login($uname, $pword, &$newvals, $connect_only = FALSE)
 	{
 		/* Begin - Deltik's PDO Workaround (part 1/2) */
-		$dsn = 'mysql:dbname=' . $this->conf['otherdb_database'] . ';host=' . $this->conf['otherdb_server'];
+	//	$dsn = 'mysql:dbname=' . $this->conf['otherdb_database'] . ';host=' . $this->conf['otherdb_server'];
+		$dsn = "mysql:host=".$this->conf['otherdb_server'].";port=".varset($this->conf['otherdb_port'],3306).";dbname=".$this->conf['otherdb_database'].";charset=".(new db_verify())->getIntendedCharset();
+
 
 		try
 		{
@@ -200,4 +202,4 @@ class auth_login extends alt_auth_base
 	}
 }
 
-?>
+

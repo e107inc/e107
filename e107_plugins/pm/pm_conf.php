@@ -33,7 +33,7 @@ TODO:
 
 $retrieve_prefs[] = 'pm_prefs';
 $eplug_admin = TRUE;
-require_once('../../class2.php');
+require_once(__DIR__.'/../../class2.php');
 
 if (!e107::isInstalled('pm') || !getperms('P'))
 {
@@ -69,7 +69,7 @@ if(!is_array($pm_prefs))
 	$pm_prefs = pm_set_default_prefs();			// Use the default settings
 	$sysprefs->setArray('pm_prefs');
 	$emessage->add(ADLAN_PM_3, E_MESSAGE_INFO);
-	$e107->admin_log->log_event('PM_ADM_01', '');
+	$e107->admin_log->add('PM_ADM_01', '');
 }
 */
 
@@ -175,7 +175,7 @@ if (isset($_POST['pm_maint_execute']))
 if(isset($_POST['addlimit']))
 {
 	$id = intval($_POST['newlimit_class']);
-	if($sql->db_Select('generic','gen_id',"gen_type = 'pm_limit' AND gen_datestamp = ".$id))
+	if($sql->select('generic','gen_id',"gen_type = 'pm_limit' AND gen_datestamp = ".$id))
 	{
 		$mes->addInfo(ADLAN_PM_5); // 'Limit for selected user class already exists'
 	}
@@ -192,12 +192,12 @@ if(isset($_POST['addlimit']))
 
 		if($sql->insert('generic', $limArray))
 		{
-			e107::getLog()->logArrayAll('PM_ADM_05', $limArray);
+			e107::getLog()->addArray($limArray)->save('PM_ADM_05');
 			$mes->addSuccess(ADLAN_PM_6);
 		}
 		else
 		{
-			e107::getLog()->log_event('PM_ADM_08', '');
+			e107::getLog()->add('PM_ADM_08', '');
 			$mes->addError(ADLAN_PM_7); 
 		}
 	}
@@ -220,12 +220,12 @@ if(isset($_POST['updatelimits']))
 			//All entries empty - Remove record
 			if($sql->delete('generic','gen_id = '.$id))
 			{
-				e107::getLog()->log_event('PM_ADM_07', 'ID: '.$id);
+				e107::getLog()->add('PM_ADM_07', 'ID: '.$id);
 				$mes->addSuccess($id.ADLAN_PM_9);
 			}
 			else
 			{
-				e107::getLog()->log_event('PM_ADM_10', '');
+				e107::getLog()->add('PM_ADM_10', '');
 				$mes->addError($id.ADLAN_PM_10);
 			}
 		}
@@ -239,12 +239,12 @@ if(isset($_POST['updatelimits']))
 				);
 			if ($sql->update('generic',array('data' => $limArray, 'WHERE' => 'gen_id = '.$id)))
 			{
-				e107::getLog()->logArrayAll('PM_ADM_06', $limArray);
+				e107::getLog()->addArray($limArray)->save('PM_ADM_06');
 				$mes->addSuccess($id.ADLAN_PM_11);
 			}
 			else
 			{
-				e107::getLog()->log_event('PM_ADM_09', '');
+				e107::getLog()->add('PM_ADM_09', '');
 				$mes->addError($id.ADLAN_PM_7);
 			}
 		}
@@ -265,7 +265,7 @@ switch ($action)
 		$ns->tablerender(ADLAN_PM_15, add_limit($pm_prefs));
 		break;
 	case 'maint' :
-		$ns->tablerender(ADLAN_PM_60, show_maint($pm_prefs));
+		$ns->tablerender(ADLAN_PM_60, renderPMMaint($pm_prefs));
 		break;
 }
 
@@ -285,15 +285,15 @@ function show_options($pm_prefs)
 	<tbody>
 	<tr>
 		<td>".ADLAN_PM_16."</td>
-		<td>".$frm->text('pm_option-title', $pm_prefs['title'], '50')."</td>
+		<td>".$frm->text('pm_option-title', varset($pm_prefs['title']), '50')."</td>
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_23."</td>
-		<td>".e107::getUserClass()->uc_dropdown('pm_option-pm_class', $pm_prefs['pm_class'], 'member,admin,classes')."</td>
+		<td>".e107::getUserClass()->uc_dropdown('pm_option-pm_class', varset($pm_prefs['pm_class']), 'member,admin,classes')."</td>
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_29."</td>
-		<td>".e107::getUserClass()->uc_dropdown('pm_option-sendall_class', $pm_prefs['sendall_class'], 'nobody,member,admin,classes')."</td>
+		<td>".e107::getUserClass()->uc_dropdown('pm_option-sendall_class', varset($pm_prefs['sendall_class']), 'nobody,member,admin,classes')."</td>
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_88."</td>
@@ -313,61 +313,61 @@ function show_options($pm_prefs)
 
 	<tr>
 		<td>".ADLAN_PM_17."</td>
-		<td>".$frm->radio_switch('pm_option-animate', $pm_prefs['animate'], LAN_YES, LAN_NO)."</td>
+		<td>".$frm->radio_switch('pm_option-animate', varset($pm_prefs['animate']), LAN_YES, LAN_NO)."</td>
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_18."</td>
-		<td>".$frm->radio_switch('pm_option-dropdown', $pm_prefs['dropdown'], LAN_YES, LAN_NO)."</td>
+		<td>".$frm->radio_switch('pm_option-dropdown', varset($pm_prefs['dropdown']), LAN_YES, LAN_NO)."</td>
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_19."</td>
-		<td>".$frm->text('pm_option-read_timeout', $pm_prefs['read_timeout'], '5', array('class' => 'tbox input-text'))."</td>
+		<td>".$frm->text('pm_option-read_timeout', varset($pm_prefs['read_timeout']), '5', array('class' => 'tbox input-text'))."</td>
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_20."</td>
-		<td>".$frm->text('pm_option-unread_timeout', $pm_prefs['unread_timeout'], '5', array('class' => 'tbox input-text'))."</td>
+		<td>".$frm->text('pm_option-unread_timeout', varset($pm_prefs['unread_timeout']), '5', array('class' => 'tbox input-text'))."</td>
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_21."</td>
-		<td>".$frm->radio_switch('pm_option-popup', $pm_prefs['popup'], LAN_YES, LAN_NO)."</td>
+		<td>".$frm->radio_switch('pm_option-popup', varset($pm_prefs['popup']), LAN_YES, LAN_NO)."</td>
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_22."</td>
-		<td class='form-inline'>".$frm->text('pm_option-popup_delay', $pm_prefs['popup_delay'], '5', array('class' => 'tbox input-text'))." ".ADLAN_PM_44."</td>
+		<td class='form-inline'>".$frm->text('pm_option-popup_delay', varset($pm_prefs['popup_delay']), '5', array('class' => 'tbox input-text'))." ".ADLAN_PM_44."</td>
 	</tr>
 
 	<tr>
 		<td>".ADLAN_PM_24."</td>
-		<td>".$frm->text('pm_option-perpage', $pm_prefs['perpage'], '5', array('class' => 'tbox input-text'))."</td>
+		<td>".$frm->text('pm_option-perpage', varset($pm_prefs['perpage']), '5', array('class' => 'tbox input-text'))."</td>
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_25."</td>
-		<td>".e107::getUserClass()->uc_dropdown('pm_option-notify_class', $pm_prefs['notify_class'], 'nobody,member,admin,classes')."</td>
+		<td>".e107::getUserClass()->uc_dropdown('pm_option-notify_class', varset($pm_prefs['notify_class']), 'nobody,member,admin,classes')."</td>
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_26."</td>
-		<td>".e107::getUserClass()->uc_dropdown('pm_option-receipt_class', $pm_prefs['receipt_class'], 'nobody,member,admin,classes')."</td>
+		<td>".e107::getUserClass()->uc_dropdown('pm_option-receipt_class', varset($pm_prefs['receipt_class']), 'nobody,member,admin,classes')."</td>
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_27."</td>
-		<td>".e107::getUserClass()->uc_dropdown('pm_option-attach_class', $pm_prefs['attach_class'], 'nobody,member,admin,classes')."</td>
+		<td>".e107::getUserClass()->uc_dropdown('pm_option-attach_class', varset($pm_prefs['attach_class']), 'nobody,member,admin,classes')."</td>
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_28."</td>
-		<td class='form-inline'>".$frm->text('pm_option-attach_size', $pm_prefs['attach_size'], '8', array('class' => 'tbox input-text'))." kB</td>
+		<td class='form-inline'>".$frm->text('pm_option-attach_size', varset($pm_prefs['attach_size']), '8', array('class' => 'tbox input-text'))." kB</td>
 	</tr>
 
 	<tr>
 		<td>".ADLAN_PM_30."</td>
-		<td>".e107::getUserClass()->uc_dropdown('pm_option-multi_class', $pm_prefs['multi_class'], 'nobody,member,admin,classes')."</td>
+		<td>".e107::getUserClass()->uc_dropdown('pm_option-multi_class', varset($pm_prefs['multi_class']), 'nobody,member,admin,classes')."</td>
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_31."</td>
-		<td>".e107::getUserClass()->uc_dropdown('pm_option-opt_userclass', $pm_prefs['opt_userclass'], 'nobody,member,admin,classes')."</td>
+		<td>".e107::getUserClass()->uc_dropdown('pm_option-opt_userclass', varset($pm_prefs['opt_userclass']), 'nobody,member,admin,classes')."</td>
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_81."</td>
-		<td class='form-inline'>".$frm->text('pm_option-v', $pm_prefs['pm_max_send'], '5', array('class' => 'tbox input-text'))."<span class='field-help'>".ADLAN_PM_82."</span></td>
+		<td class='form-inline'>".$frm->text('pm_option-v', varset($pm_prefs['pm_max_send']), '5', array('class' => 'tbox input-text'))."<span class='field-help'>".ADLAN_PM_82."</span></td>
 	</tr>
 	</tbody>
 	</table>
@@ -388,9 +388,9 @@ function show_limits($pm_prefs)
 	
 	if (!isset($pm_prefs['pm_limits'])) { $pm_prefs['pm_limits'] = 0; }
 
-	if($sql->db_Select('generic', "gen_id as limit_id, gen_datestamp as limit_classnum, gen_user_id as inbox_count, gen_ip as outbox_count, gen_intdata as inbox_size, gen_chardata as outbox_size", "gen_type = 'pm_limit'"))
+	if($sql->select('generic', "gen_id as limit_id, gen_datestamp as limit_classnum, gen_user_id as inbox_count, gen_ip as outbox_count, gen_intdata as inbox_size, gen_chardata as outbox_size", "gen_type = 'pm_limit'"))
 	{
-		while($row = $sql->db_Fetch())
+		while($row = $sql->fetch())
 		{
 			$limitList[$row['limit_classnum']] = $row;
 		}
@@ -439,7 +439,7 @@ function show_limits($pm_prefs)
 		{
 			$txt .= "
 			<tr>
-			<td>".e107::getUserClass()->uc_get_classname($row['limit_classnum'])."</td>
+			<td>".e107::getUserClass()->getName($row['limit_classnum'])."</td>
 			<td>
 			".LAN_PLUGIN_PM_INBOX.": <input type='text' class='tbox' size='5' name='inbox_count[{$row['limit_id']}]' value='{$row['inbox_count']}' /> <br />
 			".LAN_PLUGIN_PM_OUTBOX.": <input type='text' class='tbox' size='5' name='outbox_count[{$row['limit_id']}]' value='{$row['outbox_count']}' />
@@ -480,9 +480,9 @@ function add_limit($pm_prefs)
 	$sql = e107::getDb();
 	$frm = e107::getForm();
 	
-	if($sql->db_Select('generic', "gen_id as limit_id, gen_datestamp as limit_classnum, gen_user_id as inbox_count, gen_ip as outbox_count, gen_intdata as inbox_size, gen_chardata as outbox_size", "gen_type = 'pm_limit'"))
+	if($sql->select('generic', "gen_id as limit_id, gen_datestamp as limit_classnum, gen_user_id as inbox_count, gen_ip as outbox_count, gen_intdata as inbox_size, gen_chardata as outbox_size", "gen_type = 'pm_limit'"))
 	{
-		while($row = $sql->db_Fetch())
+		while($row = $sql->fetch())
 		{
 			$limitList[$row['limit_classnum']] = $row;
 		}
@@ -533,7 +533,7 @@ function add_limit($pm_prefs)
 }
 
 
-function show_maint($pmPrefs)
+function renderPMMaint($pmPrefs)
 {
 	$frm = e107::getForm();
 
@@ -631,7 +631,7 @@ function doMaint($opts, $pmPrefs)
 	$results = array(E_MESSAGE_INFO => array(ADLAN_PM_67));		// 'Maintenance started' - primarily for a log entry to mark start time
 	$logResults = array();
 	$e107 = e107::getInstance();
-	$e107->admin_log->log_event('PM_ADM_04', implode(', ',array_keys($opts)));
+	$e107->admin_log->add('PM_ADM_04', implode(', ',array_keys($opts)));
 	$pmHandler = new private_message($pmPrefs);
 	$db2 = new db();							// Will usually need a second DB object to avoid over load
 	$start = 0;						// Use to ensure we get different log times
@@ -652,7 +652,7 @@ function doMaint($opts, $pmPrefs)
 			}
 		}
 		$start = time();
-		$results[E_MESSAGE_SUCCESS][$start] = str_replace('--COUNT--', $cnt, ADLAN_PM_74);
+		$results[E_MESSAGE_SUCCESS][$start] = str_replace('[x]', $cnt, ADLAN_PM_74);
 	}
 	if (isset($opts['rec']))		// Want pm_to = deleted user and pm_sent_del = 1
 	{
@@ -669,7 +669,7 @@ function doMaint($opts, $pmPrefs)
 			}
 		}
 		$start = max($start + 1, time());
-		$results[E_MESSAGE_SUCCESS][$start] = str_replace('--COUNT--', $cnt, ADLAN_PM_75);
+		$results[E_MESSAGE_SUCCESS][$start] = str_replace('[x]', $cnt, ADLAN_PM_75);
 	}
 
 
@@ -679,23 +679,23 @@ function doMaint($opts, $pmPrefs)
 					WHERE `#user`.`user_id` IS NULL"))
 		{
 			$start = max($start + 1, time());
-			$results[E_MESSAGE_ERROR][$start] = str_replace(array('--NUM--', '--TEXT--'), array($this->sql->getLastErrorNum, $this->sql->getLastErrorText), ADLAN_PM_70);
+			$results[E_MESSAGE_ERROR][$start] = str_replace(array('[y]', '[z]'), array($db2->sql->getLastErrorNum, $db2->sql->getLastErrorText), ADLAN_PM_70);
 		}
 		else
 		{
 			$start = max($start + 1, time());
-			$results[E_MESSAGE_SUCCESS][$start] = str_replace('--COUNT--', $res, ADLAN_PM_69);
+			$results[E_MESSAGE_SUCCESS][$start] = str_replace('[x]', $res, ADLAN_PM_69);
 		}
 		if ($res = $db2->gen("DELETE `#private_msg_block` FROM `#private_msg_block` LEFT JOIN `#user` ON `#private_msg_block`.`pm_block_to` = `#user`.`user_id`
 					WHERE `#user`.`user_id` IS NULL"))
 		{
 			$start = max($start + 1, time());
-			$results[E_MESSAGE_ERROR][$start] = str_replace(array('--NUM--', '--TEXT--'), array($this->sql->getLastErrorNum, $this->sql->getLastErrorText), ADLAN_PM_70);
+			$results[E_MESSAGE_ERROR][$start] = str_replace(array('[y]', '[z]'), array($db2->sql->getLastErrorNum, $db2->sql->getLastErrorText), ADLAN_PM_70);
 		}
 		else
 		{
 			$start = max($start + 1, time());
-			$results[E_MESSAGE_SUCCESS][$start] = str_replace('--COUNT--', $res, ADLAN_PM_68);
+			$results[E_MESSAGE_SUCCESS][$start] = str_replace('[x]', $res, ADLAN_PM_68);
 		}
 	}
 
@@ -719,9 +719,9 @@ function doMaint($opts, $pmPrefs)
 		{
 			$qry = implode(' OR ', $del_qry);
 			$cnt = 0;
-			if($db2->db_Select('private_msg', 'pm_id', $qry))
+			if($db2->select('private_msg', 'pm_id', $qry))
 			{
-				while ($row = $db2->db_Fetch())
+				while ($row = $db2->fetch())
 				{
 					if ($pmHandler->del($row['pm_id']) !== FALSE)
 					{
@@ -730,7 +730,7 @@ function doMaint($opts, $pmPrefs)
 				}
 			}
 			$start = max($start + 1, time());
-			$results[E_MESSAGE_SUCCESS][$start] = str_replace('--COUNT--', $cnt, ADLAN_PM_73);
+			$results[E_MESSAGE_SUCCESS][$start] = str_replace('[x]', $cnt, ADLAN_PM_73);
 		}
 		else
 		{
@@ -780,7 +780,7 @@ function doMaint($opts, $pmPrefs)
 				$orphans[] = $fd['fname'];
 			}
 		}
-		$attachMessage = str_replace(array('--ORPHANS--', '--MISSING--'), array(count($orphans), count($missing)), ADLAN_PM_79);
+		$attachMessage = str_replace(array('[x]', '[y]'), array(count($orphans), count($missing)), ADLAN_PM_79);
 		if (TRUE)
 		{	// Mostly for testing - probably disable this
 			if (count($orphans))
@@ -796,8 +796,8 @@ function doMaint($opts, $pmPrefs)
 		$results[E_MESSAGE_SUCCESS][$start] = $attachMessage;
 	}
 
+	e107::getLog()->addArray(makeLogEntry($results))->save('PM_ADM_03');
 
-	$e107->admin_log->logArrayAll('PM_ADM_03',makeLogEntry($results));
 	foreach ($results as $k => $r)
 	{
 		foreach ($r as $sk => $s)
@@ -829,4 +829,4 @@ function pm_conf_adminmenu()
 	show_admin_menu(ADLAN_PM_12, $action, $var);
 }
 
-?>
+

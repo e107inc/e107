@@ -1,0 +1,33 @@
+name: Question
+description: Ask about behavior that you cannot find documented anywhere
+title: "[Question]: "
+labels: ["type: question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+         If you know that something isn't working the way it should, please file a bug report instead.
+         If you know that what you're trying to do is not implemented, please make a feature request instead.
+  - type: textarea
+    id: question  
+    attributes:
+      label: Question
+      description: What are you confused or uncertain about? What are you trying to accomplish?
+      placeholder: 
+    validations:
+      required: true
+  - type: textarea
+    id: expected-source
+    attributes:
+      label: Expected Source
+      description: Where did you look to try to find the answer to your question? Your answer helps us improve the documentation. 
+      placeholder: I looked ...
+    validations:
+      required: true
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any other context or screenshots about the feature request here.
+      placeholder: 
+ 

@@ -6,6 +6,9 @@
  *
 */
 
+// DEPRECATED FILE - UP FOR REMOVAL 
+
+/*
 define("MESSLAN_1", "Received messages");
 define("MESSLAN_2", "Delete Message");
 define("MESSLAN_3", "Message Deleted.");
@@ -21,4 +24,4 @@ define("MESSLAN_11", "opens in new window");
 define("MESSLAN_12", "Message");
 define("MESSLAN_13", "Link");
 
-?>
+?>*/

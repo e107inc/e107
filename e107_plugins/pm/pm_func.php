@@ -66,9 +66,9 @@ class pmbox_manager
 		{
 			$this->pmDB->gen($qry);
 			$pm_info[$which] = $this->pmDB->fetch();
-			if ($which == 'inbox' && ($this->pmPrefs['animate'] == 1 || $this->pmPrefs['popup'] == 1))
+			if ($which == 'inbox' && (!empty($this->pmPrefs['animate']) || !empty($this->pmPrefs['popup'])))
 			{
-				if($new = $this->pmDB->db_Count('private_msg', '(*)', "WHERE pm_sent > '".USERLV."' AND pm_read = 0 AND pm_to = '".USERID."' AND pm_read_del != 1"))
+				if($new = $this->pmDB->count('private_msg', '(*)', "WHERE pm_sent > '".USERLV."' AND pm_read = 0 AND pm_to = '".USERID."' AND pm_read_del != 1"))
 				{
 					$pm_info['inbox']['new'] = $new;
 				}
@@ -118,6 +118,9 @@ class pmbox_manager
 			}
 			else
 			{
+				if (!isset($pm_info['inbox']) || !is_array($pm_info['inbox'])) $pm_info['inbox'] = [];
+				if (!isset($pm_info['outbox']) || !is_array($pm_info['outbox'])) $pm_info['outbox'] = [];
+
 				$pm_info['inbox']['limit'] = '';
 				$pm_info['outbox']['limit'] = '';
 				$pm_info['inbox']['filled'] = '';
@@ -129,5 +132,11 @@ class pmbox_manager
 
 }
 
+// Backward compat. fix.
+function pm_getInfo($which = 'inbox')
+{
+	$pm = new pmbox_manager;
 
-?>
+	return $pm->pm_getInfo($which);
+
+}

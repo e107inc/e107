@@ -26,6 +26,10 @@ if (!defined('e107_INIT'))
 	exit;
 }
 
+
+/**
+ *
+ */
 class e_user_model extends e_admin_model
 {
 	/**
@@ -194,31 +198,49 @@ class e_user_model extends e_admin_model
 		return ($this->get('user_login') ? $this->get('user_login') : $this->get('user_name'));
 	}
 
+	/**
+	 * @return false|int
+	 */
 	final public function getAdminId()
 	{
 		return ($this->isAdmin() ? $this->getId() : false);
 	}
 
+	/**
+	 * @return false|mixed
+	 */
 	final public function getAdminName()
 	{
 		return ($this->isAdmin() ? $this->get('user_name') : false);
 	}
 
+	/**
+	 * @return false|mixed
+	 */
 	final public function getAdminEmail()
 	{
 		return ($this->isAdmin() ? $this->get('user_email') : false);
 	}
 
+	/**
+	 * @return false|mixed
+	 */
 	final public function getAdminPwchange()
 	{
 		return ($this->isAdmin() ? $this->get('user_pwchange') : false);
 	}
 
+	/**
+	 * @return false|mixed
+	 */
 	final public function getAdminPerms()
 	{
 		return ($this->isAdmin() ? $this->get('user_perms') : false);
 	}
 
+	/**
+	 * @return mixed|string
+	 */
 	final public function getTimezone()
 	{
 		// If timezone is not set, we return an empty string in order to use the
@@ -239,48 +261,251 @@ class e_user_model extends e_admin_model
 		}
 		return $this->get('user_token');
 	}
-	
+
+	/**
+	 * @return string
+	 */
 	public static function randomKey()
 	{
 		return md5(uniqid(rand(), 1));
 	}
 
+	/**
+	 * @return false
+	 */
 	public function isCurrent()
 	{
 		return false;
 	}
 
+	/**
+	 * @return bool
+	 */
 	final public function isAdmin()
 	{
 		return ($this->get('user_admin') ? true : false);
 	}
 
+	/**
+	 * @return bool
+	 */
 	final public function isNewUser()
 	{
 		$new_user_period = e107::getPref('user_new_period', 0);
 
 		if(empty($new_user_period))	{ return false; }
 
-		return (($this->get('user_join') > strtotime($new_user_period." days ago")) ? true : false);
+		return ($this->get('user_join') > strtotime($new_user_period . " days ago"));
 	}
 
-	final public function isBot()
+	/**
+	 * @param $userAgent
+	 * @return bool
+	 */
+	final public function isBot($userAgent = null)
 	{
-		$userAgent = $_SERVER['HTTP_USER_AGENT'];
+		if($userAgent === null  && isset($_SERVER['HTTP_USER_AGENT']))
+		{
+			$userAgent = $_SERVER['HTTP_USER_AGENT'];
+		}
 
 		if(empty($userAgent))
 		{
 			return false;
 		}
 
-		$botlist = array( "googlebot", "Bingbot", 'slurp', 'baidu', 'ichiro','nutch','yacy', "Teoma",
-		"alexa", "froogle", "Gigabot", "inktomi",
+			$botlist =  array(
+		// old list.
+		"Teoma", "alexa", "froogle", "Gigabot", "inktomi",
 		"looksmart", "URL_Spider_SQL", "Firefly", "NationalDirectory",
 		"Ask Jeeves", "TECNOSEEK", "InfoSeek", "WebFindBot", "girafabot",
-		"crawler", "www.galaxy.com", "Scooter", "msnbot", "appie", "FAST", "WebBug", "Spade", "ZyBorg", "rabaz",
+		"crawler", "www.galaxy.com", "Googlebot", "Scooter", "Slurp",
+		"msnbot", "appie", "FAST", "WebBug", "Spade", "ZyBorg", "rabaz",
 		"Baiduspider", "Feedfetcher-Google", "TechnoratiSnoop", "Rankivabot",
 		"Mediapartners-Google", "Sogou web spider", "WebAlta Crawler","TweetmemeBot",
-		"Butterfly","Twitturls","Me.dium","Twiceler");
+		"Butterfly","Twitturls","Me.dium","Twiceler",
+
+		// new list.
+				'80legs',
+				'ABACHOBot',
+				'Accoona-AI-Agent',
+				'AddSugarSpiderBot',
+				'AnyApexBot',
+				'applebot',
+				'Arachmo',
+				'B-l-i-t-z-B-O-T',
+				'Baiduspider',
+				'BecomeBot',
+				'BeslistBot',
+				'BillyBobBot',
+				'Bimbot',
+				'bingbot',
+				'BlitzBot',
+				'boitho.com-dc',
+				'boitho.com-robot',
+				'btbot',
+				'CatchBot',
+				'Cerberian Drtrs',
+				'Charlotte',
+				'ConveraCrawler',
+				'cosmos',
+				'Covario',
+				'DataparkSearch',
+				'DiamondBot',
+				'Discobot',
+				'dotnetdot', // DotBot
+				'EARTHCOM.info',
+				'EmeraldShield.com WebBot',
+				'envolk[ITS]spider',
+				'EsperanzaBot',
+				'Exabot',
+				'FAST Enterprise',
+				'fastsearch', // FAST Enterprise
+				'FAST-WebCrawler',
+				'FDSE robot',
+				'findlinks',
+				'FurlBot',
+				'FyberSpider',
+				'g2crawler',
+				'Gaisbot',
+				'GalaxyBot',
+				'genieBot',
+				'Gigabot',
+				'Girafabot',
+				'Googlebot',
+				'Googlebot-Image',
+				'GurujiBot',
+				'HappyFunBot',
+				'hl_ftien_spider',
+				'holmes',
+				'htdig',
+				'iaskspider',
+				'ia_archiver',
+				'iCCrawler',
+				'ichiro',
+				'igdeSpyder',
+				'IRLbot',
+				'IssueCrawler',
+				'Jaxified Bot',
+				'Jyxobot',
+				'KoepaBot',
+				'L.webis',
+				'LapozzBot',
+				'larbin',
+				'LDSpider',
+				'LexxeBot',
+				'Linguee Bot',
+				'LinkWalker',
+				'lmspider',
+				'lwp-trivial',
+				'mabontland',
+				'magpie-crawler',
+				'Mediapartners-Google',
+				'MJ12bot',
+				'MLBot',
+				'Mnogosearch',
+				'mogimogi',
+				'MojeekBot',
+				'Moreoverbot',
+				'Morning Paper',
+				'msnbot',
+				'msrbot',
+				'MVAClient',
+				'mxbot',
+				'NetResearchServer',
+				'NetSeer',
+				'NewsGator',
+				'NG-Search',
+				'nicebot',
+				'noxtrumbot',
+				'Nusearch Spider',
+				'NutchCVS',
+				'Nymesis',
+				'obot',
+				'oegp',
+				'omgilibot',
+				'OmniExplorer_Bot',
+				'OOZBOT',
+				'Orbiter',
+				'PageBites',
+				'Peew',
+				'petalbot',
+				'Pinterestbot',
+				'polybot',
+				'Pompos',
+				'PostPost',
+				'psbot',
+				'PycURL',
+				'Qseero',
+				'radian',
+				'RAMPyBot',
+				'RufusBot',
+				'SandCrawler',
+				'SBIder',
+				'ScoutJet',
+				'Scrubby',
+				'SearchSight',
+				'Seekbot',
+				'semanticdiscovery',
+				'SemrushBot',
+				'Sensis Web Crawler',
+				'SEOChat::Bot',
+				'SeznamBot',
+				'Shim-Crawler',
+				'ShopWiki',
+				'Shoula robot',
+				'Silk',
+				'silk',
+				'Sitebot',
+				'Snappy',
+				'sogou spider',
+				'Sosospider',
+				'Speedy Spider',
+				'Sqworm',
+				'StackRambler',
+				'suggybot',
+				'SurveyBot',
+				'SynooBot',
+				'Teoma',
+				'TerrawizBot',
+				'TheSuBot',
+				'Thumbnail.CZ robot',
+				'TinEye',
+				'truwoGPS',
+				'TurnitinBot',
+				'TweetedTimes Bot',
+				'TwengaBot',
+				'updated',
+				'Urlfilebot',
+				'Vagabondo',
+				'VoilaBot',
+				'Vortex',
+				'voyager',
+				'VYU2',
+				'webcollage',
+				'Websquash.com',
+				'wf84',
+				'WoFindeIch Robot',
+				'WomlpeFactory',
+				'Xaldon_WebSpider',
+				'yacy',
+				'Yahoo! Slurp',
+				'Yahoo! Slurp China',
+				'YahooSeeker',
+				'YahooSeeker-Testing',
+				'YandexBot',
+				'YandexImages',
+				'YandexMetrika',
+				'Yasaklibot',
+				'Yeti',
+				'YodaoBot',
+				'yoogliFetchAgent',
+				'YoudaoBot',
+				'Zao',
+				'Zealbot',
+				'zspider',
+				'ZyBorg'
+			);
 
 		foreach($botlist as $bot)
 		{
@@ -290,36 +515,57 @@ class e_user_model extends e_admin_model
 		return false;
 	}
 
+	/**
+	 * @return bool
+	 */
 	final public function isMainAdmin()
 	{
 		return $this->checkAdminPerms('0');
 	}
 
+	/**
+	 * @return bool
+	 */
 	final public function isUser()
 	{
 		return ($this->getId() ? true : false);
 	}
 
+	/**
+	 * @return bool
+	 */
 	final public function isGuest()
 	{
 		return ($this->getId() ? false : true);
 	}
 
+	/**
+	 * @return bool
+	 */
 	final public function hasBan()
 	{
-		return ((integer)$this->get('user_ban') === 1 ? true : false);
+		return ((integer) $this->get('user_ban') === 1);
 	}
 
+	/**
+	 * @return bool
+	 */
 	final public function hasRestriction()
 	{
-		return ((integer)$this->get('user_ban') === 0 ? false : true);
+		return ((integer) $this->get('user_ban') !== 0);
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function hasEditor()
 	{
 		return (null !== $this->_editor);
 	}
 
+	/**
+	 * @return $this
+	 */
 	final protected function _setClassList()
 	{
 		$this->_class_list = array();
@@ -367,6 +613,10 @@ class e_user_model extends e_admin_model
 		return $this;
 	}
 
+	/**
+	 * @param bool $toString
+	 * @return string
+	 */
 	final public function getClassList($toString = false)
 	{
 		if (null === $this->_class_list)
@@ -376,23 +626,63 @@ class e_user_model extends e_admin_model
 		return ($toString ? implode(',', $this->_class_list) : $this->_class_list);
 	}
 
+	/**
+	 * @return string
+	 */
 	final public function getClassRegex()
 	{
 		return '(^|,)('.str_replace(',', '|', $this->getClassList(true)).')(,|$)';
 	}
 
+	/**
+	 * @param $class
+	 * @param bool $allowMain
+	 * @return bool
+	 */
 	final public function checkClass($class, $allowMain = true)
 	{
 		// FIXME - replace check_class() here
 		return (($allowMain && $this->isMainAdmin()) || check_class($class, $this->getClassList(), 0));
 	}
 
+	/**
+	 * Check if this user has the provided admin permissions.
+	 *
+	 * @param string $perm_str The serialized requested access code or codes which will match if any of the codes are in
+	 *                         the admin user's admin permissions.
+	 *                         This is a pipe-delimited (`|`) list of access codes.
+	 *                         Example: `C|4`
+	 * @return bool true if the user has the matching admin permissions, false otherwise.
+	 */
 	final public function checkAdminPerms($perm_str)
 	{
-		// FIXME - method to replace getperms()
-		return ($this->isAdmin() && getperms($perm_str, $this->getAdminPerms()));
+		if(!$this->isAdmin())
+		{
+			return false;
+		}
+
+		$ap = $this->getAdminPerms();
+
+		return e_userperms::simulateHasAdminPerms($perm_str, $ap);
 	}
 
+	/**
+	 * Check if this user has permissions to administer the given plugin.
+	 *
+	 * @param string $plugin_name The name of the plugin, not the path like in {@see getperms()}.
+	 * @return bool true if the user has admin permissions for the plugin, false otherwise.
+	 */
+	final public function checkPluginAdminPerms($plugin_name)
+	{
+		$sql = e107::getDb('psql');
+		$ap = $this->getAdminPerms();
+		return e_userperms::simulateHasPluginAdminPerms($sql, $plugin_name, $ap);
+	}
+
+	/**
+	 * @param $class
+	 * @return bool
+	 */
 	final public function checkEditorPerms($class = '')
 	{
 		if (!$this->hasEditor())
@@ -807,7 +1097,8 @@ class e_user_model extends e_admin_model
 	{
 		if($this->get('user_xup'))
 		{
-			return array_shift(explode('_', $this->get('user_xup')));
+			$provider = explode('_', $this->get('user_xup'));
+			return array_shift($provider);
 		}
 		return null;
 	}
@@ -917,7 +1208,7 @@ class e_user_model extends e_admin_model
 		$editor = $this->getEditor();
 		if($this->getId() === $editor->getId() || $editor->isMainAdmin() || $editor->checkAdminPerms('4'))
 			$perm = true;
-		return ($perm || (!in_array($field, array('user_admin', 'user_perms', 'user_prefs', 'user_password') && $editor->checkClass($this->_memberlist_access))));
+		return ($perm || (!in_array($field, array('user_admin', 'user_perms', 'user_prefs', 'user_password')) && $editor->checkClass($this->_memberlist_access)));
 	}
 
 	/**
@@ -979,6 +1270,11 @@ class e_user_model extends e_admin_model
 		return $this;
     }
 
+	/**
+	 * @param $key
+	 * @param $value
+	 * @return void
+	 */
 	protected function _modifyPostedData($key, $value)
     {
     	// TODO - add more here
@@ -1019,6 +1315,12 @@ class e_user_model extends e_admin_model
 		return $ret;
 	}
 
+	/**
+	 * @param $extended
+	 * @param $return
+	 * @param $undo
+	 * @return array|void
+	 */
 	public function saveDebug($extended = true, $return = false, $undo = true)
 	{
 		$ret = array();
@@ -1029,9 +1331,12 @@ class e_user_model extends e_admin_model
 		}
 
 		if($return) return $ret;
-		print_a($ret);
+		var_dump($ret);
 	}
 
+	/**
+	 * @return void
+	 */
 	public function destroy()
 	{
 		$this->clearTarget()
@@ -1062,17 +1367,23 @@ class e_user_model extends e_admin_model
 			return false;
 		}
 
-		$curClasses = explode(",", $this->getData('user_class'));
-		$curClasses[] = $userClassId;
-		$curClasses = array_unique($curClasses);
-
-		$insert = implode(",", $curClasses);
+//		$curClasses = explode(",", $this->getData('user_class'));
+//		$curClasses[] = $userClassId;
+//		$curClasses = array_unique($curClasses);
+//
+//		$insert = implode(",", $curClasses);
 
 		//FIXME - @SecretR - I'm missing something here with setCore() etc.
 	//	$this->setCore('user_class',$insert );
 	//	$this->saveDebug(false);
 
-		$uid = $this->getData('user_id');
+		// Switched to unified remove user class method
+		$insert = e107::getUserClass()->ucAdd($userClassId, $this->getData('user_class'), false);
+
+		if(!$uid = $this->getData('user_id'))
+		{
+			return false;
+		}
 
 		return e107::getDb()->update('user',"user_class='".$insert."' WHERE user_id = ".$uid." LIMIT 1");
 
@@ -1091,19 +1402,27 @@ class e_user_model extends e_admin_model
 			return false;
 		}
 
-		$curClasses = explode(",", $this->getData('user_class'));
+//		$curClasses = explode(",", $this->getData('user_class'));
+//
+//		foreach($curClasses as $k=>$v)
+//		{
+//			if($v == $userClassId)
+//			{
+//				unset($curClasses[$k]);
+//			}
+//		}
 
-		foreach($curClasses as $k=>$v)
+//		$uid = $this->getData('user_id');
+
+//		$insert = implode(",", $curClasses);
+
+		// Switched to unified remove user class method
+		$insert = e107::getUserClass()->ucRemove($userClassId, $this->getData('user_class'), false);
+
+		if(!$uid = $this->getData('user_id'))
 		{
-			if($v == $userClassId)
-			{
-				unset($curClasses[$k]);
-			}
+			return false;
 		}
-
-		$uid = $this->getData('user_id');
-
-		$insert = implode(",", $curClasses);
 
 		return e107::getDb()->update('user',"user_class='".$insert."' WHERE user_id = ".$uid." LIMIT 1");
 
@@ -1114,6 +1433,11 @@ class e_user_model extends e_admin_model
 }
 
 // TODO - add some more useful methods, sc_* methods support
+
+
+/**
+ *
+ */
 class e_system_user extends e_user_model
 {
 	public $debug = false;
@@ -1154,7 +1478,7 @@ class e_system_user extends e_user_model
 		{
 			$userInfo = $this->getData();
 		}
-		elseif(is_object($userInfo) && get_class($userInfo) == 'e_object' || is_subclass_of($userInfo, 'e_object'))
+		elseif(is_object($userInfo) && get_class($userInfo) == 'e_object' || $userInfo instanceof \e_object)
 		{
 			$userInfo = $userInfo->getData();
 		}
@@ -1177,7 +1501,7 @@ class e_system_user extends e_user_model
 			if($this->debug)
 			{
 				echo '$eml returned nothing on Line '.__LINE__.' of user_model.php using $type = '.$type;
-				print_a($userInfo);
+				var_dump($userInfo);
 			}
 			 return false;
 		}
@@ -1186,9 +1510,9 @@ class e_system_user extends e_user_model
 			if($this->debug)
 			{
 				echo '<h3>$eml array</h3>';
-				print_a($eml);
+				var_dump($eml);
 				$temp = var_export($eml, true);
-				print_a($temp);
+				var_dump($temp);
 			}	
 		}
 		
@@ -1212,6 +1536,11 @@ class e_system_user extends e_user_model
 			return true;
 		}
 
+		if(!empty($options['debug']))
+		{
+			return $mailer->preview($eml);
+		}
+
 		
 		return $mailer->sendEmail($userInfo['user_email'], $userInfo['user_name'], $eml, false);
 	}
@@ -1232,7 +1561,8 @@ class e_system_user extends e_user_model
 	 * @return array
 	 */
 	public function renderEmail($type, $userInfo)
-	{	
+	{
+		global $SIGNUPEMAIL_USETHEME, $QUICKADDUSER_TEMPLATE, $NOTIFY_TEMPLATE;
 		$pref = e107::getPref();
 		$ret = array();
 		$tp = e107::getParser();
@@ -1277,10 +1607,10 @@ class e_system_user extends e_user_model
 			$EMAIL_TEMPLATE['signup']['bcc']			= $SIGNUPEMAIL_BCC;
 			$EMAIL_TEMPLATE['signup']['attachments']	= $SIGNUPEMAIL_ATTACHMENTS;		
 			$EMAIL_TEMPLATE['signup']['body']			= $SIGNUPEMAIL_TEMPLATE;
-			
-			$EMAIL_TEMPLATE['quickadduser']['body']		= $QUICKADDUSER_TEMPLATE['email_body'];
-			$EMAIL_TEMPLATE['notify']['body']			= $NOTIFY_TEMPLATE['email_body'];
-			
+
+			$EMAIL_TEMPLATE['quickadduser']['body']	= vartrue($QUICKADDUSER_TEMPLATE['email_body'], '');
+			$EMAIL_TEMPLATE['notify']['body']			= vartrue($NOTIFY_TEMPLATE['email_body'], '');
+
 		}
 		
 		$template = '';
@@ -1297,13 +1627,13 @@ class e_system_user extends e_user_model
 			break;
 				
 			case 'notify': 
-				if(vartrue($userInfo['mail_body'])) $template = $userInfo['mail_body']; //$NOTIFY_HEADER.$userInfo['mail_body'].$NOTIFY_FOOTER; 
+				if(!empty($userInfo['mail_body'])) $template = $userInfo['mail_body']; //$NOTIFY_HEADER.$userInfo['mail_body'].$NOTIFY_FOOTER;
 				$ret['template'] = 'notify';
 			break;
 				
 			case 'email':
 			case 'default':
-				if(vartrue($userInfo['mail_body'])) $template = $userInfo['mail_body']; //$EMAIL_HEADER.$userInfo['mail_body'].$EMAIL_FOOTER; 
+				if(!empty($userInfo['mail_body'])) $template = $userInfo['mail_body']; //$EMAIL_HEADER.$userInfo['mail_body'].$EMAIL_FOOTER;
 				$ret['template'] = 'default';
 			break;
 		}
@@ -1375,7 +1705,7 @@ class e_system_user extends e_user_model
 				}
 			
 				$HEAD .= "</head>\n";
-				if(vartrue($SIGNUPEMAIL_BACKGROUNDIMAGE)) // @deprecated. 
+				if(!empty($SIGNUPEMAIL_BACKGROUNDIMAGE)) // @deprecated.
 				{
 					$HEAD .= "<body background=\"".$SIGNUPEMAIL_BACKGROUNDIMAGE."\" >\n";
 				}
@@ -1473,12 +1803,13 @@ class e_user extends e_user_model
 	private $_parent_config = null;
 	
 	/**
-	 * @var Hybrid_Provider_Model
+	 * @var e_user_provider|null
 	 */
 	protected $_provider;
 
 	public function __construct()
 	{
+		parent::__construct();
 		$this->setSessionData() // retrieve data from current session
 			->load() // load current user from DB
 			->setEditor($this); // reference to self
@@ -1498,7 +1829,7 @@ class e_user extends e_user_model
 	 * Get parent user ID - present if main admin is browsing
 	 * front-end logged in as another user account
 	 *
-	 * @return integer or false if not present
+	 * @return bool or false if not present
 	 */
 	final public function getParentId()
 	{
@@ -1507,7 +1838,7 @@ class e_user extends e_user_model
 	
 	/**
 	 * Init external user login/signup provider
-	 * @return e_system_user
+	 * @return e_user
 	 */
 	public function initProvider()
 	{
@@ -1516,15 +1847,15 @@ class e_user extends e_user_model
 		if($this->get('user_xup'))
 		{
 			$providerId = $this->getProviderName();
-			require_once(e_HANDLER.'user_handler.php');
-			$this->_provider = new e_user_provider($providerId);
-			$this->_provider->init();
+			$this->_provider = e107::getUserProvider($providerId);
 		}
+
+		return $this;
 	}
 	
 	/**
 	 * Get external user provider
-	 * @return Hybrid_Provider_Model
+	 * @return e_user_provider|null
 	 */
 	public function getProvider()
 	{
@@ -1563,15 +1894,28 @@ class e_user extends e_user_model
 	 */
 	final public function login($uname, $upass_plain, $uauto = false, $uchallange = false, $noredirect = true)
 	{
-		if($this->isUser()) return false;
+		if($this->isUser())
+		{
+			return false;
+		}
 
 		$userlogin = new userlogin();
-		$userlogin->login($uname, $upass_plain, $uauto, $uchallange, $noredirect);
-		
+
+		if(defset('e_PAGE') === 'admin.php')
+		{
+			$userlogin->setSecureImageMode('admin'); // use the admin secure code pref.
+		}
+
+		$loginSuccess = $userlogin->login($uname, $upass_plain, $uauto, $uchallange, $noredirect);
+
 		$userdata  = $userlogin->getUserData(); 
-		
 		$this->setSessionData(true)->setData($userdata);
-		
+
+		if ($loginSuccess === false)
+		{
+			 return false;
+		}
+
 		e107::getEvent()->trigger('user_login', $userdata); 	
 
 		return $this->isUser();
@@ -1584,7 +1928,7 @@ class e_user extends e_user_model
 	 */
 	final public function loginProvider($xup)
 	{
-		if(!e107::getPref('social_login_active', false))  return false;
+		if(!e107::getUserProvider()->isSocialLoginEnabled())  return false;
 		
 		if($this->isUser()) return true;
 		
@@ -1633,7 +1977,7 @@ class e_user extends e_user_model
 		}
 
 		// TODO - lan
-		e107::getAdminLog()->log_event('Head Admin used Login As feature', 'Head Admin [#'.$this->getId().'] '.$this->getName().' logged in user account #'.$user_id);
+		e107::getLog()->add('Head Admin used Login As feature', 'Head Admin [#'.$this->getId().'] '.$this->getName().' logged in user account #'.$user_id);
 		//$this->loadAs(); - shouldn't be called here - loginAs should be called in Admin area only, loadAs - front-end
 		return true;
 	}
@@ -1695,95 +2039,6 @@ class e_user extends e_user_model
 		$this->_destroyAsSession();
 		return $this;
 	}
-	
-	public function tryProviderSession($deniedAs)
-	{
-		// don't allow if main admin browse front-end or there is already user session
-		if((!$deniedAs && $this->getSessionDataAs()) || null !== $this->_session_data || !e107::getPref('social_login_active', false)) return $this;
-		
-		try
-		{
-			// detect all currently connected providers
-			$hybrid = e107::getHybridAuth(); // init the auth class
-			$connected = Hybrid_Auth::getConnectedProviders();
-		}
-		catch(Exception $e)
-		{
-			e107::getMessage()->addError('['.$e->getCode().']'.$e->getMessage(), 'default', true);
-			$session = e107::getSession();
-			$session->set('HAuthError', true);
-			$connected = false;
-		}
-		// no active session found 
-		if(!$connected) return $this;
-		
-		// query DB
-		$sql = e107::getDb();
-		$where = array();
-		$userdata = array();
-
-		foreach ($connected as $providerId) 
-		{
-			$adapter = Hybrid_Auth::getAdapter($providerId);
-			
-			if(!$adapter->getUserProfile()->identifier) continue;
-
-			$profile = $adapter->getUserProfile();
-
-			$userdata['user_name']  = $sql->escape($profile->displayName);
-			$userdata['user_image'] = $profile->photoURL; // avatar
-
-			$id = $providerId.'_'.$profile->identifier;
-			$where[] = "user_xup='".$sql->escape($id)."'";
-		}
-
-
-		$where = implode(' OR ', $where);
-		if($sql->select('user', 'user_id, user_name, user_image, user_password, user_xup', $where))
-		{
-
-			$user = $sql->fetch();
-			e107::getUserSession()->makeUserCookie($user);
-			$this->setSessionData();
-
-			$spref = e107::pref('social');
-
-			// Update display name or avatar image if they have changed.
-			if(!empty($spref['xup_login_update_username']) || !empty($spref['xup_login_update_avatar']) || ($userdata['user_name'] != $user['user_name']) || ($userdata['user_image'] != $user['user_image']))
-			{
-				$updateQry = array();
-
-				if(!empty($spref['xup_login_update_username']))
-				{
-					$updateQry['user_name'] = $userdata['user_name'];
-				}
-
-				if(!empty($spref['xup_login_update_avatar']))
-				{
-					$updateQry['user_image'] = $userdata['user_image'];
-				}
-
-				$updateQry['WHERE'] = "user_id=".$user['user_id']." LIMIT 1";
-
-				if($sql->update('user', $updateQry) !==false)
-				{
-					$updatedProfile = array_replace($user, $userdata);
-					e107::getEvent()->trigger('user_xup_updated', $updatedProfile);
-					e107::getLog()->add('User Profile Updated', $userdata, E_LOG_INFORMATIVE, "XUP_LOGIN", LOG_TO_ADMIN, array('user_id'=>$user['user_id'],'user_name'=>$user['user_name']));
-				}
-				else
-				{
-					e107::getLog()->add('User Profile Update Failed', $userdata, E_LOG_WARNING, "XUP_LOGIN", LOG_TO_ADMIN, array('user_id'=>$user['user_id'],'user_name'=>$user['user_name']));
-				}
-			}
-
-			unset($user['user_password']);
-			e107::getLog()->user_audit(USER_AUDIT_LOGIN,'', $user['user_id'], $user['user_name']);
-			// e107::getLog()->add('XUP Login', $user, E_LOG_INFORMATIVE, "LOGIN", LOG_TO_ROLLING, array('user_id'=>$user['user_id'],'user_name'=>$user['user_name']));
-		}
-		
-		return $this;
-	}
 
 	/**
 	 * TODO load user data by cookie/session data
@@ -1803,9 +2058,6 @@ class e_user extends e_user_model
 			return $this;
 		}
 		
-		// NEW - new external user login provider feature
-		$this->tryProviderSession($denyAs);
-
 		// We have active session
 		if(null !== $this->_session_data)
 		{
@@ -1843,7 +2095,7 @@ class e_user extends e_user_model
 				$this->_initConstants();
 				
 				// init any available external user provider
-				if(e107::getPref('social_login_active', false)) $this->initProvider();
+				if(e107::getUserProvider()->isSocialLoginEnabled()) $this->initProvider();
 				
 				return $this;
 			}
@@ -1856,6 +2108,9 @@ class e_user extends e_user_model
 		return $this;
 	}
 
+	/**
+	 * @return $this
+	 */
 	final public function loadAs()
 	{
 		// FIXME - option to avoid it when browsing Admin area
@@ -1905,25 +2160,51 @@ class e_user extends e_user_model
 		// Don't update if main admin is logged in as current (non main admin) user
 		if(!$this->getParentId())
 		{
+			$iph = e107::getIPHandler();
 			$sql = e107::getDb();
 			$this->set('last_ip', $this->get('user_ip'));
-			$current_ip = e107::getIPHandler()->getIP(FALSE);
-			$update_ip = $this->get('user_ip' != $current_ip ? ", user_ip = '".$current_ip."'" : "");
+			$current_ip = $iph->getIP();
+			$update_ip = '';
+			$edata = [];
+
+			if($this->get('user_ip') != $current_ip)
+			{
+				$old_ip = (string) $this->get('user_ip');
+				$update_ip = ", user_ip = '".$current_ip."'";
+				$edata = [
+					'old_ip'    => $iph->ipDecode($old_ip),
+					'new_ip'    => $iph->ipDecode($current_ip),
+					'time'      => date('c'),
+					'user_id'   => $this->getId(),
+					'user_name' => $this->get('user_name'),
+				];
+				
+			}
+
 			$this->set('user_ip', $current_ip);
+
 			if($this->get('user_currentvisit') + 3600 < time() || !$this->get('user_lastvisit'))
 			{
 				$this->set('user_lastvisit', (integer) $this->get('user_currentvisit'));
 				$this->set('user_currentvisit', time());
-				$sql->db_Update('user', "user_visits = user_visits + 1, user_lastvisit = ".$this->get('user_lastvisit').", user_currentvisit = ".$this->get('user_currentvisit')."{$update_ip} WHERE user_id='".$this->getId()."' ");
+				$sql->update('user', "user_visits = user_visits + 1, user_lastvisit = ".$this->get('user_lastvisit').", user_currentvisit = ".$this->get('user_currentvisit').$update_ip." WHERE user_id = ".$this->getId()." LIMIT 1 ");
 			}
 			else
 			{
 				$this->set('user_currentvisit', time());
-				$sql->db_Update('user', "user_currentvisit = ".$this->get('user_currentvisit')."{$update_ip} WHERE user_id='".$this->getId()."' ");
+				$sql->update('user', "user_currentvisit = ".$this->get('user_currentvisit').$update_ip." WHERE user_id = ".$this->getId()." LIMIT 1 ");
+			}
+
+			if(!empty($edata))
+			{
+				e107::getEvent()->trigger('user_ip_changed', $edata); // new v2.3.3
 			}
 		}
 	}
 
+	/**
+	 * @return $this
+	 */
 	final protected function _destroySession()
 	{
 		cookie($this->_session_key, '', (time() - 2592000));
@@ -1932,6 +2213,9 @@ class e_user extends e_user_model
 		return $this;
 	}
 
+	/**
+	 * @return $this
+	 */
 	final protected function _destroyAsSession()
 	{
 		$key = $this->_session_key.'_as';
@@ -1942,12 +2226,18 @@ class e_user extends e_user_model
 		return $this;
 	}
 
+	/**
+	 * @return $this
+	 */
 	final protected function _destroyBadSession()
 	{
 		$this->_session_error = true;
 		return $this->_destroySession();
 	}
 
+	/**
+	 * @return false|int
+	 */
 	final public function getSessionDataAs()
 	{
 		$id = false;
@@ -1967,13 +2257,17 @@ class e_user extends e_user_model
 		return false;
 	}
 
+	/**
+	 * @param $force
+	 * @return $this
+	 */
 	final public function setSessionData($force = false)
 	{
 		if($force || null === $this->_session_data)
 		{
 			$this->_session_data = null;
 			$this->_session_key = e107::getPref('cookie_name', 'e107cookie');
-			$this->_session_type = e107::getPref('user_tracking', 'cookie');
+			$this->_session_type = e107::getPref('user_tracking', 'session');
 			
 			if('session' == $this->_session_type && isset($_SESSION[$this->_session_key]) && !empty($_SESSION[$this->_session_key]))
 			{
@@ -1988,12 +2282,19 @@ class e_user extends e_user_model
 		return $this;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function hasSessionError()
 	{
 		return $this->_session_error;
 	}
 
 
+	/**
+	 * @param $user_id
+	 * @return array|bool
+	 */
 	final protected function _load($user_id)
 	{
 		$qry = 'SELECT u.*, ue.* FROM #user AS u LEFT JOIN #user_extended as ue ON u.user_id=ue.user_extended_id WHERE u.user_id='.intval($user_id);
@@ -2024,12 +2325,19 @@ class e_user extends e_user_model
 		return $this;
 	}
 
+	/**
+	 * @return void
+	 */
 	public function destroy()
 	{
 		// not allowed - see logout()
 	}
 }
 
+
+/**
+ *
+ */
 class e_user_extended_model extends e_admin_model
 {
 	/**
@@ -2214,9 +2522,9 @@ class e_user_extended_model extends e_admin_model
 		$value = $this->get($field);
 		list($table, $field_id, $field_name, $field_order) = explode(',', $this->_struct_index[$field]['db'], 4);
 		$this->_struct_index[$field]['db_value'] = $value;
-		if($value && $table && $field_id && $field_name && e107::getDb()->db_Select($table, $field_name, "{$field_id}='{$value}'"))
+		if($value && $table && $field_id && $field_name && e107::getDb()->select($table, $field_name, "{$field_id}='{$value}'"))
 		{
-			$res = e107::getDb()->db_Fetch();
+			$res = e107::getDb()->fetch();
 			$this->_struct_index[$field]['db_value'] = $res[$field_name];
 		}
 
@@ -2254,7 +2562,7 @@ class e_user_extended_model extends e_admin_model
 	 * @param mixed $value
 	 * @param boolean $short if true, 'user_' prefix will be added to field name
 	 * @param boolean $strict if false no Applicable check will be made
-	 * @return e_user_model
+	 * @return e_user_extended_model
 	 */
 	public function setSystem($field, $value, $short = true, $strict = true)
 	{
@@ -2264,11 +2572,17 @@ class e_user_extended_model extends e_admin_model
 		return $this;
 	}
 
+	/**
+	 * @return void
+	 */
 	public function getReadData()
 	{
 		// TODO array allowed user profile page data (read mode)
 	}
 
+	/**
+	 * @return void
+	 */
 	public function getWriteData()
 	{
 		// TODO array allowed user settings page data (edit mode)
@@ -2406,7 +2720,7 @@ class e_user_extended_model extends e_admin_model
 
 	/**
 	 * Build manage rules for single field
-	 * @param $structure_model
+	 * @param e_user_extended_structure_model $structure_model
 	 * @return e_user_extended_model
 	 */
 	protected function _buildManageField(e_user_extended_structure_model $structure_model)
@@ -2428,7 +2742,6 @@ class e_user_extended_model extends e_admin_model
 
 	/**
 	 * Build manage rules for single field
-	 * @param $structure_model
 	 * @return e_user_extended_model
 	 */
 	protected function _buildManageRules()
@@ -2494,7 +2807,7 @@ class e_user_extended_model extends e_admin_model
 		}
 		$this->_buildManageRules();
 		// insert new record
-		if(!e107::getDb()->db_Count('user_extended', '(user_extended_id)', "user_extended_id=".$this->getId()))
+		if(!e107::getDb()->count('user_extended', '(user_extended_id)', "user_extended_id=".$this->getId()))
 		{
 			return $this->insert(true, $session);
 		}
@@ -2504,13 +2817,17 @@ class e_user_extended_model extends e_admin_model
 	/**
 	 * Doesn't save anything actually...
 	 */
-	public function saveDebug($retrun = false, $undo = true)
+	public function saveDebug($return = false, $undo = true)
 	{
 		$this->_buildManageRules();
 		return parent::saveDebug($return, $undo);
 	}
 }
 
+
+/**
+ *
+ */
 class e_user_extended_structure_model extends e_model
 {
 	/**
@@ -2549,7 +2866,7 @@ class e_user_extended_structure_model extends e_model
 	 *
 	 * @param string $field
 	 * @param mixed $value
-	 * @return e_user_model
+	 * @return e_user_extended_structure_model
 	 */
 	public function setValue($field, $value)
 	{
@@ -2558,16 +2875,25 @@ class e_user_extended_structure_model extends e_model
 		return $this;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function isCategory()
 	{
 		return ($this->getValue('type') ? false : true);
 	}
 
+	/**
+	 * @return mixed
+	 */
 	public function getCategoryId()
 	{
 		return $this->getValue('parent');
 	}
 
+	/**
+	 * @return false|mixed
+	 */
 	public function getLabel()
 	{
 		$label = $this->isCategory() ? $this->getValue('name') : $this->getValue('text');
@@ -2583,6 +2909,10 @@ class e_user_extended_structure_model extends e_model
 	}
 }
 
+
+/**
+ *
+ */
 class e_user_extended_structure_tree extends e_tree_model
 {
 	/**
@@ -2638,12 +2968,12 @@ class e_user_extended_structure_tree extends e_tree_model
 	 */
 	public function __construct()
 	{
-		$this->load();
+		$this->loadBatch();
 	}
 
 	/**
 	 * @param string $name name field value
-	 * @return e_user_extended_structure_model
+	 * @return e_user_extended_structure_model|e_model
 	 */
 	public function getNodeByName($name)
 	{
@@ -2708,12 +3038,12 @@ class e_user_extended_structure_tree extends e_tree_model
 	 *
 	 * @param boolean $force
 	 */
-	public function load($force = false)
+	public function loadBatch($force = false)
 	{
 		$this->setParam('nocount', true)
 			->setParam('model_class', 'e_user_extended_structure_model')
 			->setParam('db_order', 'user_extended_struct_order ASC');
-		parent::load($force);
+		parent::loadBatch($force);
 
 		return $this;
 	}
@@ -2758,6 +3088,10 @@ class e_user_extended_structure_tree extends e_tree_model
 	}
 }
 
+
+/**
+ *
+ */
 class e_user_pref extends e_front_model
 {
 	/**
@@ -2789,7 +3123,7 @@ class e_user_pref extends e_front_model
 			if(!empty($data))
 			{
 				// BC
-				$data = substr($data, 0, 5) == "array" ? e107::unserialize($data) : unserialize($data);
+				$data = strpos($data, "array") === 0 ? e107::unserialize($data) : unserialize($data);
 				if(!$data) $data = array();
 			}
 			else $data = array();
@@ -2828,7 +3162,7 @@ class e_user_pref extends e_front_model
 			{
 				$data = $this->toString(true);
 				$this->apply();
-				return (e107::getDb('user_prefs')->db_Update('user', "user_prefs='{$data}' WHERE user_id=".$this->_user->getId()) ? true : false);
+				return (e107::getDb('user_prefs')->update('user', "user_prefs='{$data}' WHERE user_id=".$this->_user->getId()) ? true : false);
 			}
 			return 0;
 		}

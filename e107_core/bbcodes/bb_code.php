@@ -43,11 +43,7 @@ class bb_code extends e_bb_base
 			
 		if($pref['smiley_activate']) 
 		{
-			if (!is_object($tp->e_emote))
-			{
-				$tp->e_emote = new e_emoteFilter;
-			}
-			$code_text = $tp->e_emote->filterEmotesRev($code_text);
+			$code_text = e107::getEmote()->filterEmotesRev($code_text);
 		}
 			
 		$search = array(E_NL,'&#092;','&#036;', '&lt;');
@@ -74,8 +70,8 @@ class bb_code extends e_bb_base
 				
 				$geshi->line_style1 = "font-family: 'Courier New', Courier, monospace; font-weight: normal; font-style: normal;";
 				$geshi->set_encoding('utf-8');
-				$geshi->enable_line_numbers(GESHI_NORMAL_LINE_NUMBERS);
-				$geshi->set_header_type(GESHI_HEADER_DIV);
+				$geshi->enable_line_numbers(defset('GESHI_NORMAL_LINE_NUMBERS'));
+				$geshi->set_header_type(defset('GESHI_HEADER_DIV'));
 				$CodeCache = $geshi->parse_code();
 				$e107cache->set('GeshiParsed_'.$code_md5, $CodeCache);
 			}
@@ -101,7 +97,7 @@ class bb_code extends e_bb_base
 			//	$highlighted_text = highlight_string($code_text, TRUE);
 			// highlighted_text = str_replace(array("<code>","</code>"),"",$highlighted_text);
 				$divClass = ($parm) ? $parm : 'code_highlight';
-				$ret = "<pre class='prettyprint linenums ".$tp -> toAttribute($divClass)." code-box {$class}' style='unicode-bidi: embed; direction: ltr'>".$code_text."</pre>";
+				$ret = "<pre class='prettyprint linenums ".e107::getParser()->toAttribute($divClass)." code-box {$class}' style='unicode-bidi: embed; direction: ltr'>".$code_text."</pre>";
 		}
 			
 	

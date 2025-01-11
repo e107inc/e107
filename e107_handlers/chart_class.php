@@ -182,32 +182,51 @@ class e_chart
 		
 	
 		// e107::css('inline','canvas.e-graph {  width: 100% !important;  max-width: 800px;  height: auto !important; 	}');	
-	}		
-	
+	}
+
+	/**
+	 * @param $type
+	 * @return $this
+	 */
 	public function setProvider($type = null)
 	{
 		if(!empty($type))
 		{
 			$this->provider = $type;	
-		}	
+		}
+
+		return $this;
 	}
-	
+
+	/**
+	 * @return null
+	 */
 	public function getProvider()
 	{
 		return $this->provider;	
 	}
-	
-	
+
+
+	/**
+	 * @return false|string
+	 */
 	private function getData()
 	{
 		return json_encode($this->data);
 	}
-	
+
+	/**
+	 * @return false|string
+	 */
 	private function getOptions()
 	{
 		return json_encode($this->options);	
 	}
 
+	/**
+	 * @param $flag
+	 * @return $this
+	 */
 	public function debug($flag=false)
 	{
 		if($flag === true)
@@ -218,6 +237,9 @@ class e_chart
 		return $this;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function renderTable()
 	{
 
@@ -296,7 +318,6 @@ class e_chart
 	/**
 	 * Set the data values
 	 * @param array $data
-	 * @param string $id of canvas element
 	 * @return $this
 	 */
 	public function setData($data)
@@ -313,7 +334,10 @@ class e_chart
 		
 		return $this;		
 	}
-	
+
+	/**
+	 * @return array
+	 */
 	private function getDemoData()
 	{
 			$data = array();
@@ -361,6 +385,10 @@ class e_chart
 	}
 
 
+	/**
+	 * @param $data
+	 * @return $this
+	 */
 	public function setOptions($data)
 	{
 		
@@ -451,8 +479,94 @@ class e_chart
 						
 					break;
 				}
+
+
+				// Toggle Data from clicking on Legend. //FIXME
+			/*	$js .= "
+
+				
+					// create columns array
+				    var columns".$id." = [];
+				    // display these data series by default
+				    var defaultSeries = [1, 3];
+				    var series".$id." = {};
+				    for (var i = 0; i < data.getNumberOfColumns(); i++) {
+				        if (i == 0 || defaultSeries.indexOf(i) > -1) {
+				            // if the column is the domain column or in the default list, display the series
+				            columns".$id.".push(i);
+				        }
+				        else {
+				            // otherwise, hide it
+				            columns".$id.".push({
+				                label: data.getColumnLabel(i),
+				                type: data.getColumnType(i),
+				                sourceColumn: i,
+				                calc: function () {
+				                    return null;
+				                }
+				            });
+				        }
+				        if (i > 0) {
+				            columns".$id.".push({
+				                calc: 'stringify',
+				                sourceColumn: i,
+				                type: 'string',
+				                role: 'annotation'
+				            });
+				            // set the default series option
+				            series".$id."[i - 1] = {};
+				            if (defaultSeries.indexOf(i) == -1) {
+				                // backup the default color (if set)
+				                if (typeof(series".$id."[i - 1].color) !== 'undefined') {
+				                    series".$id."[i - 1].backupColor = series".$id."[i - 1].color;
+				                }
+				                series".$id."[i - 1].color = '#CCCCCC';
+				            }
+				        }
+				    }
+				
+
+					function showHideSeries".$id." () {
+			        var sel = chart.getSelection();
+			        // if selection length is 0, we deselected an element
+			        if (sel.length > 0) {
+			            // if row is undefined, we clicked on the legend
+			            if (sel[0].row == null) {
+			                var col = sel[0].column;
+			                if (typeof(columns".$id."[col]) == 'number') {
+			                    var src = columns".$id."[col];
 			
-	
+			                    // hide the data series
+			                    columns".$id."[col] = {
+			                        label: data.getColumnLabel(src),
+			                        type: data.getColumnType(src),
+			                        sourceColumn: src,
+			                        calc: function () {
+			                            return null;
+			                        }
+			                    };
+			
+			                    // grey out the legend entry
+			                    series".$id."[src - 1].color = '#CCCCCC';
+			                }
+			                else {
+			                    var src = columns".$id."[col].sourceColumn;
+			
+			                    // show the data series
+			                    columns".$id."[col] = src;
+			                    series".$id."[src - 1].color = null;
+			                }
+			                var view = new google.visualization.DataView(data);
+			                view.setColumns(columns".$id.");
+			                chart.draw(view, options);
+			            }
+			        }
+			    }
+			
+			    google.visualization.events.addListener(chart, 'select', showHideSeries".$id.");
+				";
+*/
+
 				$js .= "
 			        chart.draw(data, options);
 			      }
@@ -491,20 +605,14 @@ class e_chart
 				$js .= 'var myLine = new Chart(document.getElementById("'.$id.'").getContext("2d")).Bar(ChartData, ChartOptions);';
 			break;
 
-			case 'radar':
-				//TODO
-			break;
-
 			case 'polar':
+			case 'pie':
+			case 'radar':
 				//TODO
 			break;
 
 			case 'doughnut':
 				$js .= 'var myDoughnut = new Chart(document.getElementById("'.$id.'").getContext("2d")).Doughnut(ChartData, ChartOptions);';	
-			break;
-			
-			case 'pie':
-				//TODO
 			break;
 
 			default:
@@ -587,5 +695,5 @@ class e_chart
  
  
  
-?>
+
  

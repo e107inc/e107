@@ -26,26 +26,34 @@ $insert = (vartrue($parm['book'])) ? "AND chapter_parent = ".intval($parm['book'
 
 //TODO Limits and cache etc. 
 $data = $sql->retrieve("SELECT * FROM #page_chapters WHERE chapter_visibility IN (".USERCLASS_LIST.") AND chapter_template = 'panel'  ".$insert. " LIMIT 24", true);
+$sc = null;
 
-$sc = e107::getScBatch('page', null, 'cpage');
-
-$body = $template['listChapters']['start'];
-
-foreach($data as $row)
+if(!empty($data))
 {
-	$sc->setVars($row);
+	$sc = e107::getScBatch('page', null, 'cpage');
 
-	$sc->setChapter($row['chapter_id']); 
-	$title = $tp->toHtml($row['chapter_name'],false,'TITLE'); // Used when tablerender style includes the caption. 
-	$body .= $tp->parseTemplate($template['listChapters']['item'], true, $sc);
-	
-	// check for $mode == 'page-menu' in tablestyle() if you need a simple 'echo' without rendering styles. 
+	$body = $template['listChapters']['start'];
+
+	foreach($data as $row)
+	{
+		$sc->setVars($row);
+
+		$sc->setChapter($row['chapter_id']);
+		$title = $tp->toHTML($row['chapter_name'],false,'TITLE'); // Used when tablerender style includes the caption.
+		$body .= $tp->parseTemplate($template['listChapters']['item'], true, $sc);
+
+		// check for $mode == 'page-menu' in tablestyle() if you need a simple 'echo' without rendering styles.
+	}
+
+	$body .= $template['listChapters']['end'];
+}
+elseif(ADMIN)
+{
+	$body = "<div class='alert alert-danger'>No Chapters available</div>";
 }
 
-$body .= $template['listChapters']['end'];
 
 $caption = $tp->parseTemplate($template['listChapters']['caption'], true, $sc);
 
 $ns->tablerender($caption, $body, 'chapter-menu'); 
 
-?>

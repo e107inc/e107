@@ -9,8 +9,11 @@
  * Search Administration
  *
 */
-
-require_once('../class2.php');
+if(!empty($_POST) && !isset($_POST['e-token']))
+{
+	$_POST['e-token'] = '';
+}
+require_once(__DIR__.'/../class2.php');
 if (!getperms('X'))
 {
 	e107::redirect('admin');
@@ -30,7 +33,10 @@ $e_userclass = new user_class();
 
 $query = explode('.', e_QUERY);
 
-$search_prefs = $sysprefs -> getArray('search_prefs');
+$search_prefs = e107::getConfig('search')->getPref();
+
+
+
 
 
 
@@ -136,9 +142,9 @@ if (isset($_POST['update_handler']))
 	$search_prefs[$handler_type][$query[2]]['pre_title_alt'] = $tp -> toDB($_POST['pre_title_alt']);
 
 //	$tmp = addslashes(serialize($search_prefs));
-	$tmp = e107::getArrayStorage()->writeArray($search_prefs, true);
+	$tmp = e107::serialize($search_prefs, true);
 
-	$check = $sql -> db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs'");
+	$check = $sql ->update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs'");
 	if($check)
 	{
 		$mes->addSuccess(LAN_UPDATED);
@@ -195,8 +201,10 @@ if (isset($_POST['update_prefs']))
 
 }
 
-
-
+if(empty($search_prefs['core_handlers']))
+{
+	$search_prefs['core_handlers'] = [];
+}
 
 $handlers_total = count($search_prefs['core_handlers']) + count($search_prefs['plug_handlers']);
 
@@ -258,7 +266,7 @@ if ($query[0] == 'settings')
 					<tr>
 						<td>".SEALAN_3."</td>
 						<td class='form-inline'>
-							".$frm->radio_switch('search_sort', $search_prefs['mysql_sort'], 'MySQL', SEALAN_31)."&nbsp;
+							".$frm->radio_switch('search_sort', $search_prefs['mysql_sort'], 'MySQL', 'PHP')."&nbsp;
 							".$frm->text('php_limit', $tp -> toForm($search_prefs['php_limit']), 5, 'class=tbox&size=mini')."&nbsp;".SEALAN_32."
 							<span class='field-help'>".SEALAN_49."</span>
 						</td>
@@ -274,6 +282,7 @@ if ($query[0] == 'settings')
 			</table>
 			<div class='buttons-bar center'>
 				".$frm->admin_button('update_prefs', LAN_UPDATE, 'update')."
+				<input type='hidden' name='e-token' value='" . defset('e_TOKEN') . "' />
 			</div>
 		</fieldset>
 	</form>
@@ -345,6 +354,7 @@ elseif ($query[0] == 'edit')
 			</table>
 			<div class='buttons-bar center'>
 				".$frm->admin_button('update_handler', 'no-value', 'update', LAN_UPDATE)."
+				<input type='hidden' name='e-token' value='" . defset('e_TOKEN') . "' />
 			</div>
 		</fieldset>
 	</form>
@@ -394,7 +404,7 @@ else
 								</select>
 							</td>
 							<td class='center'>
-								<a class='btn btn-default btn-large' href='".e_SELF."?edit.c.".$key."'>".ADMIN_EDIT_ICON."</a>
+								<a class='btn btn-default btn-secondary btn-large' href='".e_SELF."?edit.c.".$key."'>".ADMIN_EDIT_ICON."</a>
 							</td>
 						</tr>
 		";
@@ -448,7 +458,7 @@ else
 								</select>
 							</td>
 							<td class='center'>
-								<a class='btn btn-default btn-large' href='".e_SELF."?edit.p.".$plug_dir."'>".ADMIN_EDIT_ICON."</a>
+								<a class='btn btn-default btn-secondary btn-large' href='".e_SELF."?edit.p.".$plug_dir."'>".ADMIN_EDIT_ICON."</a>
 							</td>
 						</tr>
 		";
@@ -493,7 +503,7 @@ else
 	{
 		$path = ($value['dir'] == 'core') ? e_HANDLER.'search/comments_'.$key.'.php' : e_PLUGIN.$value['dir'].'/search/search_comments.php';
 
-		if($value['dir'] == 'download' && !e107::isInstalled($value['dir']))
+		if(($value['dir'] == 'download' || $key == 'download') && !e107::isInstalled('download'))
 		{
 			continue;
 		}
@@ -517,6 +527,7 @@ else
 			</table>
 			<div class='buttons-bar center'>
 			".$frm->admin_button('update_main','no-value','update',LAN_UPDATE)."
+			<input type='hidden' name='e-token' value='" . defset('e_TOKEN') . "' />
 			</div>
 		</fieldset>
 		</form>
@@ -541,9 +552,10 @@ function search_adminmenu()
 	$var['settings']['text'] = LAN_PREFS;
 	$var['settings']['link'] = e_SELF."?settings";
 
-		$icon  = e107::getParser()->toIcon('e-search-24');
-		$caption = $icon."<span>".SEALAN_40."</span>";
+
+	$caption ="<span>".SEALAN_40."</span>";
+
+	$var['_extras_']['icon'] = e107::getParser()->toIcon('e-search-24');
 
 	e107::getNav()->admin($caption, $action, $var);
 }
-?>

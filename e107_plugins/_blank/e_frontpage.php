@@ -45,4 +45,3 @@ class _blank_frontpage // include plugin-folder in the name.
 
 
 
-?>

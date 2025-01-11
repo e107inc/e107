@@ -21,40 +21,41 @@ $newarray = e107::getNav()->adminLinks('core');
 $buts = "";
 $text = "<div style='text-align:center'>
 	<table class='table'>";
-
-while (list($key, $funcinfo) = each($newarray)) 
+foreach($newarray as $key=>$funcinfo)
 {
 	$buts .= e107::getNav()->renderAdminButton($funcinfo[0], $funcinfo[1], $funcinfo[2], $funcinfo[3], $funcinfo[5], 'default');
 }
+
 $text .= $buts;
 
 $text_cat = '';
+$td = 0;
 while ($td <= 5) 
 {
 	$text_cat .= "<td class='td' style='width:20%;' ></td>";
 	$td++;
 }
+
 $td = 1;
 
 $text .= "</tr></table></div>";
 
-if($buts !="")
+if(!empty($buts))
 {
-	$ns->tablerender(ADLAN_47." ".ADMINNAME, $mes->render().$text);
+	e107::getRender()->tablerender(ADLAN_47." ".ADMINNAME, $mes->render().$text);
 }
 
 $text = "<div style='text-align:center'>
 	<table class='table'>";
 
 
-$text .= e107::getNav()->pluginLinks( E_16_PLUGMANAGER, 'default');
+$text .= e107::getNav()->pluginLinks( defset('E_16_PLUGMANAGER'), 'default');
 
 
 $text .= "</tr>
 	</table></div>";
 
-$ns->tablerender(ADLAN_CL_7, $text);
+e107::getRender()->tablerender(ADLAN_CL_7, $text);
 
 echo admin_info();
 
-?>

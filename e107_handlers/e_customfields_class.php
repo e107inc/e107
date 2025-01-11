@@ -14,7 +14,7 @@
 		private $_fieldTypes = array(
 			'number', 'email', 'url', 'password', 'text', 'tags', 'textarea',
 			'bbarea', 'image', 'file', 'icon', 'datestamp', 'checkboxes', 'dropdown', 'radio',
-			'userclass', 'user', 'boolean', 'checkbox', 'hidden', 'lanlist', 'language', 'country', 'video'
+			'userclass', 'user', 'boolean', 'checkbox', 'hidden', 'lanlist', 'language', 'country', 'video', 'progressbar'
 
 		);
 
@@ -22,31 +22,40 @@
 
 		private $_data = array();
 
-		private $_field_limit = 20;
+		private $_field_limit = 30;
 
 		private $_tab = array();
 
 		private $_tab_default = 'additional';
 
 
-		function __construct()
+		public function __construct()
 		{
 			asort($this->_fieldTypes);
-			$this->_tab = array($this->_tab_default => "Additional");
+			$this->_tab = array($this->_tab_default => 'Additional');
 
 		}
 
+		/**
+		 * @return string[]
+		 */
 		public function getFieldTypes()
 		{
 
 			return $this->_fieldTypes;
 		}
 
+		/**
+		 * @return string
+		 */
 		public function getTabId()
 		{
 			return $this->_tab_default;
 		}
 
+		/**
+		 * @return mixed|string
+		 */
 		public function getTabLabel()
 		{
 			return $this->_tab[$this->_tab_default];
@@ -67,7 +76,14 @@
 
 			if(is_array($data))
 			{
+				if(isset($data['__tabs__']))
+				{
+					$this->_tab = $data['__tabs__'];
+					unset($data['__tabs__']);
+				}
+
 				$this->_config = $data;
+
 				return $this;
 			}
 
@@ -108,18 +124,29 @@
 		}
 
 
+		/**
+		 * @return array
+		 */
 		public function getConfig()
 		{
 			return $this->_config;
 		}
 
 
+		/**
+		 * @return array
+		 */
 		public function getData()
 		{
 			return $this->_data;
 		}
 
 
+		/**
+		 * @param $key
+		 * @param $label
+		 * @return $this
+		 */
 		public function setTab($key, $label)
 		{
 			$this->_tab = array((string) $key => (string) $label);
@@ -128,83 +155,150 @@
 		}
 
 
+		/**
+		 * @param $key
+		 * @param $parm
+		 * @return array|bool|mixed|string|null
+		 */
 		public function getFieldValue($key, $parm=array())
 		{
 			$tp = e107::getParser();
 
 			$value = $this->_data[$key];
-			$raw = (!empty($parm['mode']) && $parm['mode'] === 'raw') ? true : false;
+			$raw = (!empty($parm['mode']) && $parm['mode'] === 'raw');
 			$type = (!empty($parm['type'])) ? $parm['type'] : null;
 
 			$fieldType = $this->_config[$key]['type'];
 
-			switch($fieldType)
+			if($value === null)
 			{
-				case "dropdown":
-				case "checkboxes":
-				case "radio":
-					return ($raw) ? $value : e107::getForm()->renderValue($key,$value,$this->_config[$key]);
-				break;
-
-				case "video":
-					return ($raw) ? 'https://www.youtube.com/watch?v='.str_replace(".youtube", '', $value) : $tp->toVideo($value);
-				break;
-
-				case "image":
-					return ($raw) ? $tp->thumbUrl($value) : $tp->toImage($value);
-					break;
-
-				case "icon":
-					return ($raw) ? str_replace(".glyph", '', $value) : $tp->toIcon($value);
-					break;
-
-				case "country":
-					return ($raw) ? $value : e107::getForm()->getCountry($value);
-					break;
-
-				case "tags":
-					return ($raw) ? $value : $tp->toLabel($value,$type);
-					break;
-
-				case "lanlist":
-				case "language":
-					return ($raw) ? $value : e107::getLanguage()->convert($value);
-					break;
-
-				case "datestamp":
-					return ($raw) ? $value : $tp->toDate($value);
-					break;
-
-				case "file":
-					return ($raw) ? $tp->toFile($value, array('raw'=>1)) : $tp->toFile($value);
-					break;
-
-				case "url":
-				case "email":
-					return ($raw) ? $value : $tp->toHtml($value);
-					break;
-
-				case "user":
-					return ($raw) ? $value : e107::getSystemUser($value,true)->getName();
-					break;
-
-				case "userclass":
-					return ($raw) ? $value : e107::getUserClass()->getName($value);
-					break;
-
-				case "textarea":
-				case "bbarea":
-					return $tp->toHtml($value, true);
-					break;
-
-
-				default:
-					return $tp->toHtml($value);
+				return null;
 			}
 
+			$ret = null;
+
+			switch($fieldType)
+			{
+				case 'dropdown':
+				case 'checkboxes':
+				case 'radio':
+					$ret = ($raw) ? $value : e107::getForm()->renderValue($key,$value,$this->_config[$key]);
+				break;
+
+				case 'video':
+
+					if(!empty($value))
+					{
+						$ret = ($raw) ? 'https://www.youtube.com/watch?v='.str_replace('.youtube', '', $value) : $tp->toVideo($value);
+					}
+				break;
+
+
+
+				case 'image':
+					if(!empty($value))
+					{
+						$ret = ($raw) ? $tp->thumbUrl($value,$parm) : $tp->toImage($value,$parm);
+					}
+					break;
+
+				case 'icon':
+					$ret = ($raw) ? str_replace('.glyph', '', $value) : $tp->toIcon($value);
+					break;
+
+				case 'country':
+					$ret = ($raw) ? $value : e107::getForm()->getCountry($value);
+					break;
+
+				case 'tags':
+					$ret = ($raw) ? $value : $tp->toLabel($value,$type);
+					break;
+
+				case 'lanlist':
+				case 'language':
+					$ret = ($raw) ? $value : e107::getLanguage()->convert($value);
+					break;
+
+				case 'datestamp':
+					$ret = ($raw) ? $value : $tp->toDate($value);
+					break;
+
+				case 'file':
+					if(!empty($value))
+					{
+						$ret = ($raw) ? $tp->toFile($value, array('raw'=>1)) : $tp->toFile($value);
+					}
+					break;
+
+				case 'url':
+				case 'email':
+					$ret = ($raw) ? $value : $tp->toHTML($value);
+					break;
+
+				case 'user':
+					$ret = ($raw) ? $value : e107::getSystemUser($value,true)->getName();
+					break;
+
+				case 'userclass':
+					$ret = ($raw) ? $value : e107::getUserClass()->getName($value);
+					break;
+
+				case 'progressbar':
+					if($raw)
+					{
+						$ret = (strpos($value, '/') === false) ? $value.'%' : $value;
+					}
+					else
+					{
+						$ret = e107::getForm()->progressBar($key,$value,$this->_config[$key]);
+					}
+
+					break;
+
+				case 'textarea':
+				case 'bbarea':
+					$ret = ($raw) ? $value : $tp->toHTML($value, true, 'BODY');
+					break;
+
+
+				case 'boolean':
+					if($raw)
+					{
+						return $value;
+					}
+					else
+					{
+						$ret = empty($value) ? $tp->toGlyph('fa-times') : $tp->toGlyph('fa-check');
+					}
+					break;
+
+				case 'checkbox':
+					if($raw)
+					{
+						$ret = $value;
+					}
+					elseif(is_numeric($value))
+					{
+						$ret = empty($value) ? $tp->toGlyph('fa-times') : $tp->toGlyph('fa-check');
+					}
+					else
+					{
+						$ret = $value;
+					}
+					break;
+
+				default:
+					$ret = ($raw) ? $value : $tp->toHTML($value);
+			}
+
+
+			return $ret;
 		}
 
 
+		/**
+		 * @return string
+		 */
 		public function renderTest()
 		{
 
@@ -214,10 +308,10 @@
 			foreach($this->_data as $ok=>$v)
 			{
 
-				$text .= "<tr><td>".$ok."</td><td>".$this->getFieldTitle($ok)."</td><td>".$this->getFieldValue($ok)."</td><td>".$this->getFieldValue($ok, array('mode'=>'raw'))."</td></tr>";
+				$text .= '<tr><td>' .$ok. '</td><td>' .$this->getFieldTitle($ok). '</td><td>' .$this->getFieldValue($ok). '</td><td>' .$this->getFieldValue($ok, array('mode' =>'raw')). '</td></tr>';
 			}
 
-			$text .= "</table>";
+			$text .= '</table>';
 
 			return $text;
 
@@ -226,7 +320,10 @@
 		}
 
 
-
+		/**
+		 * @param $key
+		 * @return mixed|null
+		 */
 		public function getFieldTitle($key)
 		{
 
@@ -239,10 +336,13 @@
 		}
 
 
-
-
+		/**
+		 * @param $name
+		 * @return string
+		 */
 		public function renderConfigForm($name)
 		{
+
 			$frm = e107::getForm();
 			$curVal = $this->_config;
 			$value = array();
@@ -258,10 +358,9 @@
 				}
 			}
 
-
 			$text = "
 			<div class='form-group'>
-				".$frm->text('__e_customfields_tabs__', $this->_tab[$this->_tab_default], 30, array('placeholder'=>"Tab label",'size'=>'medium', 'required'=>1))."
+				".$frm->text('__e_customfields_tabs__', $this->_tab[$this->_tab_default], 30, array('placeholder' => 'Tab label', 'size' =>'medium', 'required' =>1))."
 			</div>
 			<table class='table table-striped table-bordered'>
 			<colgroup>
@@ -271,35 +370,33 @@
 				<col style='width:40%' />
 			</colgroup>
 			<tbody>
-				<tr><th>".LAN_NAME."</th><th>".LAN_TITLE."</th><th>".LAN_TYPE."</th><th>Params</th><th>".LAN_TOOLTIP."</th></tr>
-				";
+				<tr><th>".LAN_NAME. '</th><th>' .LAN_TITLE. '</th><th>' .LAN_TYPE. '</th><th>Params</th><th>' .LAN_TOOLTIP. '</th></tr>
+				';
 
-			for ($i = 0; $i <= $this->_field_limit; $i++)
+			for($i = 0; $i <= $this->_field_limit; $i++)
 			{
-
 				$writeParms = array(
-				//	'class' => 'form-control',
+					//	'class' => 'form-control',
 					'useValues' => 1,
 					'default'   => 'blank',
-					'data-src' => e_REQUEST_URI,
+					'data-src'  => e_REQUEST_URI,
 
 				);
 
-				$parmsWriteParms= array(
-					'size' => 'block-level',
-					'placeholder' => $this->getCustomFieldPlaceholder($value[$i]['type'])
-
+				$parmsWriteParms = array(
+					'size'        => 'block-level',
+					'placeholder' => isset($value[$i]['type']) ? $this->getCustomFieldPlaceholder($value[$i]['type']) : '',
 				);
 
-				$fieldName = $frm->text($name.'['.$i.'][key]', $value[$i]['key'],30, array('pattern'=>'^[a-z0-9-]*'));
-				$fieldTitle = $frm->text($name.'['.$i.'][title]',$value[$i]['title'], 80);
-				$fieldType = $frm->select($name.'['.$i.'][type]',$this->getFieldTypes(),$value[$i]['type'], $writeParms);
-				$fieldParms = $frm->text($name.'['.$i.'][writeParms]',$value[$i]['writeParms'], 255, $parmsWriteParms);
-				$fieldHelp = $frm->text($name.'['.$i.'][help]',$value[$i]['help'], 255, array('size'=>'block-level'));
-			   $text .= "<tr><td>".$fieldName."</td><td>".$fieldTitle."</td><td>".$fieldType."</td><td>".$fieldParms."</td><td>".$fieldHelp."</td></tr>";
+				$fieldName = $frm->text($name . '[' . $i . '][key]', varset($value[$i]['key']), 30, array('pattern' => '^[a-z0-9-]*'));
+				$fieldTitle = $frm->text($name . '[' . $i . '][title]', varset($value[$i]['title']), 80);
+				$fieldType = $frm->select($name . '[' . $i . '][type]', $this->getFieldTypes(), varset($value[$i]['type']), $writeParms);
+				$fieldParms = $frm->text($name . '[' . $i . '][writeParms]', varset($value[$i]['writeParms']), 255, $parmsWriteParms);
+				$fieldHelp = $frm->text($name . '[' . $i . '][help]', varset($value[$i]['help']), 255, array('size' => 'block-level'));
+				$text .= '<tr><td>' . $fieldName . '</td><td>' . $fieldTitle . '</td><td>' . $fieldType . '</td><td>' . $fieldParms . '</td><td>' . $fieldHelp . '</td></tr>';
 			}
 
-			$text .= "</tbody></table>";
+			$text .= '</tbody></table>';
 
 
 			return $text;
@@ -315,13 +412,13 @@
 		{
 			switch($type)
 			{
-				case "radio":
-				case "dropdown":
-				case "checkboxes":
+				case 'radio':
+				case 'dropdown':
+				case 'checkboxes':
 					return 'eg. { "optArray": { "blue": "Blue", "green": "Green", "red": "Red" }, "default": "blank" }';
 					break;
 
-				case "datestamp":
+				case 'datestamp':
 					return 'eg. (Optional) { "format": "yyyy-mm-dd" }';
 				break;
 
@@ -358,7 +455,7 @@
 
 				if($fld['type'] === 'icon')
 				{
-					$fld['writeParms'] .= "&glyphs=1";
+					$fld['writeParms'] .= '&glyphs=1';
 				}
 
 				if($fld['type'] === 'checkboxes')
@@ -393,9 +490,11 @@
 
 			$ui->getModel()->set($fieldname, null);
 
+			$tp = e107::getParser();
+
 			foreach($this->_data as $key=>$value)
 			{
-				$ui->getModel()->set($fieldname.'__'.$key, $value);
+				$ui->getModel()->set($fieldname.'__'.$key, $tp->toDB($value));
 			//	e107::getDebug()->log($fieldname.'__'.$key.": ".$value);
 			}
 
@@ -474,9 +573,9 @@
 
 			foreach($new_data as $k=>$v)
 			{
-				if(substr($k,0,$len) === $fieldname)
+				if(strpos($k, $fieldname) === 0)
 				{
-					list($tmp,$newkey) = explode("__",$k);
+					list($tmp,$newkey) = explode('__',$k);
 					$new_data[$fieldname][$newkey] = $v;
 					unset($new_data[$k]);
 
@@ -485,10 +584,10 @@
 
 			}
 
-			if(empty($new_data[$fieldname]))
-			{
+		//	if(empty($new_data[$fieldname]))
+		//	{
 			//	$new_data[$fieldname] = array();
-			}
+		//	}
 
 			return $new_data;
 

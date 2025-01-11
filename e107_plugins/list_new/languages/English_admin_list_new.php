@@ -155,4 +155,3 @@ define("LAN_AL_LISTNEW_01", "List New preferences updated");
 // define("LAN_AL_LISTNEW_02", "");
 
 
-?>

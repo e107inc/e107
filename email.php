@@ -19,7 +19,7 @@
 require_once('class2.php');
 if (!check_class(varset($pref['email_item_class'],e_UC_MEMBER)))
 {
-	header('Location: '.e_BASE.'index.php');
+	e107::redirect('Location: '.e_BASE.'index.php');
 	exit();
 }
 
@@ -61,9 +61,25 @@ $message = '';
 $referrer = strip_tags(urldecode(html_entity_decode(varset($_SERVER['HTTP_REFERER'],''), ENT_QUOTES)));
 $emailurl = ($source == 'referer') ? $referrer : SITEURL;
 
-$comments = $tp->post_toHTML(varset($_POST['comment'],''), TRUE, 'retain_nl, emotes_off, no_make_clickable');
-$author = $tp->post_toHTML(varset($_POST['author_name'],''),FALSE,'emotes_off, no_make_clickable');
-$email_send = check_email(varset($_POST['email_send'],''));
+$comments = '';
+$author = '';
+$email_send = '';
+
+if(!empty($_POST['comment']))
+{
+	$comments = $tp->post_toHTML($_POST['comment'], true, 'retain_nl, emotes_off, no_make_clickable');
+}
+
+if(!empty($_POST['author_name']))
+{
+	$author = $tp->post_toHTML($_POST['author_name'], false,'emotes_off, no_make_clickable');
+}
+
+if(!empty($_POST['email_send']))
+{
+	$email_send = check_email($_POST['email_send']);
+}
+
 
 
 if (isset($_POST['emailsubmit']))
@@ -99,10 +115,10 @@ if (isset($_POST['emailsubmit']))
 			$message .= "\n\n".LAN_EMAIL_1." ".$author;
 		}
 	}
-	else
-	{
+	//else
+//	{
 //		$message .= $comments."\n";			// Added to message later on
-	}
+//	}
 	$ip = e107::getIPHandler()->getIP(FALSE);
 	$message .= "\n\n".LAN_EMAIL_2." ".$ip."\n\n";
 
@@ -137,9 +153,9 @@ if (isset($_POST['emailsubmit']))
 	{
 		$emailurl = strip_tags($_POST['referer']);
 		$message = '';
-		if($sql->db_Select('news', 'news_title, news_body, news_extended', 'news_id='.((int)$parms)))
+		if($sql->select('news', 'news_title, news_body, news_extended', 'news_id='.((int)$parms)))
 		{
-			$row = $sql->db_Fetch();
+			$row = $sql->fetch();
 			$message = "<h3 class='email_heading'>".$row['news_title']."</h3><br />".$row['news_body']."<br />".$row['news_extended']."<br /><br /><a href='{e_BASE}news.php?extend.".$parms."'>{e_BASE}news.php?extend.".$parms."</a><br />";
 			$message = $tp->toEmail($message);
 		}
@@ -161,11 +177,11 @@ if (isset($_POST['emailsubmit']))
 
 		if (sendemail($email_send, LAN_EMAIL_3.SITENAME,$email_body))
 		{
-			$text = "<div style='text-align:center'>".LAN_EMAIL_10." ".$email_send."</div>";
+			$text = "<div class='alert alert-success alert-block' style='text-align:center'>".LAN_EMAIL_10." ".$email_send."</div>";
 		}
 		else
 		{
-			$text = "<div style='text-align:center'>".LAN_EMAIL_9."</div>";
+			$text = "<div class='alert alert-dangere alert-block' style='text-align:center'>".LAN_EMAIL_9."</div>";
 		}
 		$ns->tablerender(LAN_EMAIL_11, $text);
 	}
@@ -229,7 +245,7 @@ $text .= "
 <tr style='vertical-align:top'>
 <td style='width:25%'></td>
 <td style='width:75%'>
-<input class='btn btn-default button' type='submit' name='emailsubmit' value='".LAN_EMAIL_4."' />
+<input class='btn btn-default btn-secondary button' type='submit' name='emailsubmit' value='".LAN_EMAIL_4."' />
 <input type='hidden' name='referer' value='".$referrer."' />
 </td>
 </tr>
@@ -239,4 +255,3 @@ $text .= "
 $ns->tablerender(LAN_EMAIL_5, $text);
 
 require_once(FOOTERF);
-?>

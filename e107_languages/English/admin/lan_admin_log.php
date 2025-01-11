@@ -52,7 +52,7 @@ define("RL_LAN_053", "User Audit Log");
 define("RL_LAN_054", "Nothing to delete, or database error");
 // define("RL_LAN_055", "Cancel");
 //define("RL_LAN_056", "Nothing deleted");
-define("RL_LAN_057", " - events older than --OLD-- (--NUM-- entries) deleted");
+define("RL_LAN_057", " - events older than [x] ([y] entries) deleted");
 define("RL_LAN_058", "Priority Filter:");
 define("RL_LAN_059", "Caller Filter:");
 define("RL_LAN_060", "IP Address Filter:");
@@ -130,4 +130,4 @@ define("RL_LAN_133", "Notice");
 define("RL_LAN_134", "Warning");
 define("RL_LAN_135", "Fatal");
 // define("RL_LAN_JS_CONFIRM", "Are you sure?");
-?>
+

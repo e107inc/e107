@@ -13,7 +13,7 @@
 require_once("class2.php");
 
 
-if ((USER || e_LOGIN != e_SELF || (empty($pref['user_reg']) && empty($pref['social_login_active']))) && e_QUERY !== 'preview' && !getperms('0') ) // Disable page if user logged in, or some custom e_LOGIN value is used.
+if ((USER || e_LOGIN != e_SELF || (empty($pref['user_reg']) && !e107::getUserProvider()->isSocialLoginEnabled())) && e_QUERY !== 'preview' && !getperms('0') ) // Disable page if user logged in, or some custom e_LOGIN value is used.
 {
 	$prev = e107::getRedirect()->getPreviousUrl();
 
@@ -110,7 +110,10 @@ if (!USER || getperms('0'))
 	$login_message = SITENAME; //	$login_message = LAN_LOGIN_3." | ".SITENAME;
 	if(strpos($LOGIN_TABLE_HEADER,'LOGIN_TABLE_LOGINMESSAGE') === false && strpos($LOGIN_TABLE,'LOGIN_TABLE_LOGINMESSAGE') === false)
 	{
-		echo LOGINMESSAGE;
+		    if(deftrue('e_IFRAME'))
+            {  
+              echo LOGINMESSAGE;
+            }              
 	}
 
 	echo $tp->parseTemplate($LOGIN_TABLE_HEADER,true, $sc);
@@ -121,6 +124,3 @@ if (!USER || getperms('0'))
 
 require_once(FOOTERF);
 
-exit;
-
-?>

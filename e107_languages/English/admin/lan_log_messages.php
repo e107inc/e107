@@ -213,7 +213,7 @@ define("LAN_AL_WELCOME_05", "");
 // Admin Password
 //---------------
 define("LAN_AL_ADMINPW_01", "Admin password changed");
-
+define("LAN_AL_ADMINPW_02", "Admin password rehashed");
 
 // Banners Admin
 //--------------
@@ -250,6 +250,7 @@ define("LAN_AL_META_01", "Meta tags updated");
 
 // Downloads
 //----------
+/*
 define("LAN_AL_DOWNL_01", "Download options changed");
 define("LAN_AL_DOWNL_02", "Download category created");
 define("LAN_AL_DOWNL_03", "Download category updated");
@@ -265,6 +266,7 @@ define("LAN_AL_DOWNL_12", "Download mirror added");
 define("LAN_AL_DOWNL_13", "Download mirror updated");
 define("LAN_AL_DOWNL_14", "Download mirror deleted");
 define("LAN_AL_DOWNL_15", "");
+*/
 
 // Custom Pages/Menus
 //-------------------
@@ -372,7 +374,7 @@ define("LAN_AL_MISC_03", "Login menu settings updated");
 define("LAN_AL_MISC_04", "Comment menu settings updated");
 define("LAN_AL_MISC_05", "Clock menu settings updated");
 define("LAN_AL_MISC_06", "Blog calendar menu settings updated");
-define("LAN_AL_MISC_07", "");
+//define("LAN_AL_MISC_07", "");
 
 
 define("LAN_AL_PING_01", "Ping to service");
@@ -384,5 +386,7 @@ define("LAN_AL_ADMINUI_04", "Admin-UI DB Error: [x]");
 
 define("LAN_AL_BACKUP", "Database backup");
 
+define("LAN_AL_MEDIA_01", "Media Upload");
 
-?>
+define("LAN_AL_USET_100", "Admin logged in as another user");
+define("LAN_AL_USET_101", "Admin logged out as another user");

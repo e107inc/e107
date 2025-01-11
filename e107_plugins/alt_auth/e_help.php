@@ -38,4 +38,3 @@ else
 	$ns -> tablerender('help',LAN_AUTHENTICATE_HELP.'<br /><br />'.(defined('SHOW_COPY_HELP') ? LAN_ALT_COPY_HELP : '').(defined('SHOW_CONVERSION_HELP') ? LAN_ALT_CONVERSION_HELP : '').LAN_ALT_VALIDATE_HELP);
 }
 
-?>

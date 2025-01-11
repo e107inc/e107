@@ -127,7 +127,7 @@ class error_page
 		$this->template = 403;
 		$this->title = LAN_ERROR_4;
 		$this->caption = LAN_ERROR_45;
-		$this->content = LAN_ERROR_5 . '<br/>' . LAN_ERROR_6 . '<br/><br/>' . LAN_ERROR_2;
+		$this->content = LAN_ERROR_5 . '<br/>' . LAN_ERROR_3 . '<br/><br/>' . LAN_ERROR_2;
 	}
 
 	/**
@@ -140,7 +140,7 @@ class error_page
 		$this->template = 404;
 		$this->title = LAN_ERROR_7;
 		$this->caption = LAN_ERROR_45;
-		$this->content = LAN_ERROR_21 . '<br/>' . LAN_ERROR_9;
+		$this->content = LAN_ERROR_21 . '<br/>' . LAN_ERROR_3;
 	}
 
 	/**
@@ -153,7 +153,7 @@ class error_page
 		$this->template = 500;
 		$this->title = LAN_ERROR_10;
 		$this->caption = LAN_ERROR_14;
-		$this->content = LAN_ERROR_11 . '<br/>' . LAN_ERROR_12;
+		$this->content = LAN_ERROR_11 . '<br/>' . LAN_ERROR_3;
 	}
 
 	/**
@@ -168,7 +168,7 @@ class error_page
 		$this->template = 'DEFAULT';
 		$this->title = LAN_ERROR_13 . ' (' . $errorQuery . ')';
 		$this->caption = LAN_ERROR_14;
-		$this->content = LAN_ERROR_15;
+		$this->content = LAN_ERROR_3;
 	}
 
 	/**
@@ -240,8 +240,19 @@ class error_page
 			'content'  => $this->content,
 		));
 
-		$body = $tp->parseTemplate($tpl, true, $sc);
-		e107::getRender()->tablerender('', $body);
+         $body = $tp->parseTemplate($tpl, true, $sc);
+
+		// set title, mode and body for when SEF (index.php) is handling it.
+		$front = eFront::instance();
+		$front->getResponse()->setTitle(LAN_ERROR);
+		$front->getResponse()->setRenderMod('error_page_'.$status_code);
+        $front->getResponse()->setBody($body);
+
+
+
+        // return $body for when error.php is handling it.
+        return $body;
+		// e107::getRender()->tablerender('', $body, 'error_page_'.$status_code); // caused double-render.test with e107v4a theme
 	}
 
 }

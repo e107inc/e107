@@ -19,25 +19,25 @@ if (!defined('e107_INIT')) { exit; }
 // include_lan(e_PLUGIN."search_menu/languages/".e_LANGUAGE.".php");
 
 
-if (strstr(e_PAGE, "news.php")) {
+if (strpos(e_PAGE, "news.php") !== false) {
 	 $page = 0;
-} elseif(strstr(e_PAGE, "comment.php")) {
+} elseif(strpos(e_PAGE, "comment.php") !== false) {
 	 $page = 1;
-} elseif(strstr(e_PAGE, "content.php") && strstr(e_QUERY, "content")) {
+} elseif(strpos(e_PAGE, "content.php") !== false && strpos(e_QUERY, "content") !== false) {
 	 $page = 2;
-} elseif(strstr(e_PAGE, "content.php") && strstr(e_QUERY, "review")) {
+} elseif(strpos(e_PAGE, "content.php") !== false && strpos(e_QUERY, "review") !== false) {
 	 $page = 3;
-} elseif(strstr(e_PAGE, "content.php") && strstr(e_QUERY, "content")) {
+} elseif(strpos(e_PAGE, "content.php") !== false && strpos(e_QUERY, "content") !== false) {
 	 $page = 4;
-} elseif(strstr(e_PAGE, "chat.php")) {
+} elseif(strpos(e_PAGE, "chat.php") !== false) {
 	 $page = 5;
-} elseif(strstr(e_PAGE, "links.php")) {
+} elseif(strpos(e_PAGE, "links.php") !== false) {
 	 $page = 6;
-} elseif(strstr(e_PAGE, "forum")) {
+} elseif(strpos(e_PAGE, "forum") !== false) {
 	 $page = 7;
-} elseif(strstr(e_PAGE, "user.php") || strstr(e_PAGE, "usersettings.php")) {
+} elseif(strpos(e_PAGE, "user.php") !== false || strpos(e_PAGE, "usersettings.php") !== false) {
 	 $page = 8;
-} elseif(strstr(e_PAGE, "download.php")) {
+} elseif(strpos(e_PAGE, "download.php") !== false) {
 	 $page = 9;
 } else {
 	 $page = 99;
@@ -52,7 +52,7 @@ if (isset($custom_query[1]) && $custom_query[1] != '')
 } 
 else 
 {
-	$search_button = "<input class='btn btn-default button search' type='submit' name='s' value='".LAN_SEARCH."' />";
+	$search_button = "<input class='btn btn-default btn-secondary button search' type='submit' name='s' value='".LAN_SEARCH."' />";
 }
 
 if (isset($custom_query[5]) && $custom_query[5]) {
@@ -78,7 +78,7 @@ if(deftrue('BOOTSTRAP'))
 		
 	$text .= '
          <span class="input-group-btn">
-         <button class="btn btn-default" type="submit" name="s">'.$tp->toGlyph('search').'</button>
+         <button class="btn btn-default btn-secondary" type="submit" name="s">'.$tp->toGlyph('fa-search').'</button>
          </span>
     </div>
     </form>';
@@ -112,7 +112,6 @@ if (isset($searchflat) && $searchflat)
 }
 else
 {
-	$ns->tablerender(LAN_SEARCH." ".SITENAME, "<div style='text-align:center'>".$text."</div>", 'search');
+	$ns->tablerender(LAN_SEARCH." ".SITENAME, "<div class='search-menu'>".$text."</div>", 'search');
 }
 
-?>

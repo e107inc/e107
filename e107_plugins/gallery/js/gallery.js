@@ -14,7 +14,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 			var pPhoto = settings.gallery.prettyphoto || {};
 			var pPhook = pPhoto.hook || 'data-gal';
 
-			$(context).find("a[" + pPhook + "^='prettyPhoto']").once('gallery-prettyPhoto').prettyPhoto(
+			$(context).find("a[" + pPhook + "^='prettyPhoto']").one('gallery-prettyPhoto').prettyPhoto(
 				{
 					hook: pPhook,
 					animation_speed: pPhoto.animation_speed, // fast/slow/normal

@@ -10,7 +10,7 @@
  *
  */
 
-require_once("../class2.php");
+require_once(__DIR__.'/../class2.php');
 
 if (!getperms("I"))
 {
@@ -46,14 +46,14 @@ class links_admin extends e_admin_dispatcher
 		'main/edit'	=> 'main/list'
 	);
 
-	protected $menuTitle = ADLAN_138;
+	protected $menuTitle = LAN_NAVIGATION;
 
 		protected $adminMenuIcon = 'e-links-24';
 }
 
 class links_admin_ui extends e_admin_ui
 {
-	protected $pluginTitle 	= ADLAN_138;
+	protected $pluginTitle 	= LAN_NAVIGATION;
 	protected $pluginName 	= 'core';
 	protected $table 		= "links";
 	protected $listQry 		= '';
@@ -61,6 +61,7 @@ class links_admin_ui extends e_admin_ui
 	protected $perPage 		= 0;
 	protected $batchDelete 	= true;
 	protected $batchCopy 	= true;
+	protected $batchExport  = true;
 	protected $listOrder = 'link_category,link_order ASC';
 	protected $sortField	= 'link_order';
     
@@ -83,8 +84,10 @@ class links_admin_ui extends e_admin_ui
 		'link_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'textarea', 'width' => 'auto'), // 'method'=>'tinymce_plugins',  ?
 		'link_order' 		=> array('title'=> LAN_ORDER, 		'type' => 'number', 'width' => 'auto', 'nolist'=>false, 'inline' => true),
 		'link_open'			=> array('title'=> LCLAN_19, 		'type' => 'dropdown', 'inline'=>true, 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first', 'writeParms'=>array('size'=>'xlarge')),
+		'link_rel'			=> array('title'=> LAN_RELATIONSHIP, 		'type' => 'tags', 'inline'=>true, 'width' => 'auto', 'batch'=>false, 'filter'=>false, 'thclass' => 'left', 'help'=>LAN_RELATIONSHIP_HELP, 'writeParms'=>array('placeholder'=>'eg.nofollow,noreferrer','size'=>'xlarge')),
+
 		'link_function'		=> array('title'=> LCLAN_105, 		'type' => 'method', 'data'=>'str', 'width' => 'auto', 'thclass' => 'left first'),
-		'link_owner'		=> array('title'=> LCLAN_106,		'type' => 'hidden', 'data'=>'str'),
+		'link_owner'		=> array('title'=> LCLAN_106,		'type' => 'hidden', 'filter'=>true, 'data'=>'str'),
 		'options' 			=> array('title'=> LAN_OPTIONS, 	'type'	=> null, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class'=>'center','readParms'=>'sort=1') // quick workaround
 	);
 
@@ -103,12 +106,12 @@ class links_admin_ui extends e_admin_ui
 	protected $_link_array	= null;
 	
 	
-	function afterCreate($newdata,$olddata, $id) //FIXME needs to work after inline editing too. 
+	function afterCreate($new_data, $old_data, $id) //FIXME needs to work after inline editing too.
 	{
 		e107::getCache()->clearAll('content');	
 	}
 	
-	function afterUpdate($newdata,$olddata, $id) //FIXME needs to work after inline editing too. 
+	function afterUpdate($new_data, $old_data, $id) //FIXME needs to work after inline editing too.
 	{
 		e107::getCache()->clearAll('content');
 	}	
@@ -118,17 +121,17 @@ class links_admin_ui extends e_admin_ui
 	function init()
 	{
 		$this->fields['link_category']['writeParms']['optArray'] = array(
-			1	=> "1 - Main",
-			2	=> "2 - Sidebar",
-			3	=> "3 - Footer",
-			4	=> "4 - Alt",
-			5	=> "5 - Alt",
-			6	=> "6 - Alt", // If more than 6 are required, then something is not right with the themeing method. 
+			1	=> LCLAN_112,
+			2	=> LCLAN_113,
+			3	=> LCLAN_114,
+			4	=> "4 -". LCLAN_115,
+			5	=> "5 -". LCLAN_115,
+			6	=> "6 -". LCLAN_115, // If more than 6 are required, then something is not right with the themeing method. 
 	//		7	=> "7 - Alt",
 	//		8	=> "8 - Alt",
 	//		9	=> "9 - Alt",
 	//		10	=> "10 - Alt"
-	       255 => "(Unassigned)",
+	       255 => LCLAN_116
 		);
 
 
@@ -181,9 +184,16 @@ class links_admin_ui extends e_admin_ui
 			$this->getTreeModel()->current_id = intval($searchFilter[1]);
 			$this->current_parent = intval($searchFilter[1]);
 		}
+
+		$this->fields['link_owner']['type'] = 'method';
+
 		parent::ListObserver();
 
 	}
+
+
+
+
 	public function ListAjaxObserver()
 	{
 		$searchFilter = $this->_parseFilterRequest($this->getRequest()->getQuery('filter_options', ''));
@@ -247,7 +257,7 @@ class links_admin_ui extends e_admin_ui
 									<option value='{$key}'{$selected}>".$type['title']."</option>
 					";*/
 		}
-		$text .= $ui->selectbox('sublink_type', $optarrayp, $this->getPosted('sublink_type'), '', true);
+		$text .= $ui->select('sublink_type', $optarrayp, $this->getPosted('sublink_type'), '', true);
 
 		$text .= "
 							</td>
@@ -342,11 +352,11 @@ class links_admin_ui extends e_admin_ui
 		$pid = intval($this->getPosted('link_parent'));
 		$sublink = $this->sublink_data($subtype);
 
-		if(!$pid)
-		{
+	//	if(!$pid)
+	//	{
 		//	$mes->addWarning(LCLAN_109);
 		//	return;
-		}
+	//	}
 		if(!$subtype)
 		{
 			$mes->addWarning(LCLAN_110);
@@ -456,15 +466,12 @@ class links_admin_ui extends e_admin_ui
 			}
 		}
 
-		if($message) // TODO admin log
-		{
-			// sitelinks_adminlog('01', $message); // 'Sublinks generated'
-		}
+
 	}
 
 	/**
 	 * Product tree model
-	 * @return links_model_admin_tree
+	 * @return links_admin_ui|links_model_admin_tree
 	 */
 	public function _setTreeModel()
 	{
@@ -482,8 +489,9 @@ class links_admin_ui extends e_admin_ui
 		{
 			if($this->getAction() != 'list')
 			{
-				$this->getTreeModel()->setParam('order', 'ORDER BY '.$this->listOrder)->load();
+				$this->getTreeModel()->setParam('order', 'ORDER BY '.$this->listOrder)->loadBatch();
 			}
+			/** @var e_tree_modell $tree */
 			$tree = $this->getTreeModel()->getTree();
 			$this->_link_array = array();
 			foreach ($tree as $id => $model)
@@ -549,7 +557,8 @@ class links_model_admin_tree extends e_admin_tree_model
 	 * @param $parent_id
 	 * @param $search
 	 * @param $src
-	 * @param $level
+	 * @param int $level
+	 * @param bool $modified
 	 * @return void
 	 */
 	function _tree_order($parent_id, $search, &$src, $level = 0, $modified = false)
@@ -597,6 +606,8 @@ class links_admin_form_ui extends e_admin_form_ui
 	
 	private $linkFunctions;
 
+	private $link_owner = array();
+
 	function init()
 	{
 		
@@ -613,7 +624,7 @@ class links_admin_form_ui extends e_admin_form_ui
 				{
 					$newkey .= "(".$val['parm'].")";	
 				}
-				$func[$newkey] = $tp->toHtml($val['name'],'','TITLE');
+				$func[$newkey] = $tp->toHTML($val['name'],'','TITLE');
 			}
 			$this->linkFunctions[$cat] = $func;
 		}
@@ -644,8 +655,21 @@ class links_admin_form_ui extends e_admin_form_ui
 			$this->linkFunctions[$cat][$newkey] = str_replace('sc_','',$func);
 		}
 
+		if($tmp = e107::getDb()->retrieve('links', 'link_owner', "GROUP BY link_owner ORDER BY link_owner", true))
+		{
+			foreach($tmp as $arr)
+			{
+				if(empty($arr['link_owner']))
+				{
+					continue;
+				}
 
-	//	var_dump($methods );
+				$plug = $arr['link_owner'];
+			//	$def = 'LAN_PLUGIN_'.strtoupper($plug).'_NAME';
+
+				$this->link_owner[$plug] = $plug;
+			}
+		}
 
 
 	}
@@ -660,9 +684,9 @@ class links_admin_form_ui extends e_admin_form_ui
 				{
 					if(null === $this->current_parent)
 					{
-						if(e107::getDb()->db_Select('links', 'link_name', 'link_id='.$current))
+						if(e107::getDb()->select('links', 'link_name', 'link_id='.$current))
 						{
-							$tmp = e107::getDb()->db_Fetch();
+							$tmp = e107::getDb()->fetch();
 							$this->current_parent = $tmp['link_name'];
 						}
 					}
@@ -679,7 +703,7 @@ class links_admin_form_ui extends e_admin_form_ui
 				$cats	= $this->getController()->getLinkArray($catid);
 				$ret	= array();
 				$this->_parent_select_array(0, $cats, $ret);
-				return $this->selectbox('link_parent', $ret, $value, array('size'=>'xlarge','default' => LAN_SELECT));
+				return $this->select('link_parent', $ret, $value, array('size'=>'xlarge','default' => LAN_SELECT."..."));
 			break;
 
 			case 'batch':
@@ -702,7 +726,7 @@ class links_admin_form_ui extends e_admin_form_ui
 
 		if($mode == 'write')
 		{			
-			return $this->selectbox('link_function',$this->linkFunctions,$curVal,array('size'=>'xlarge','default'=> "(".LAN_OPTIONAL.")"));
+			return $this->select('link_function',$this->linkFunctions,$curVal,array('size'=>'xlarge','default'=> "(".LAN_OPTIONAL.")"));
 		}
 
 		else
@@ -724,6 +748,21 @@ class links_admin_form_ui extends e_admin_form_ui
 
 
 			return "<a href='".$url."' rel='external'>".$curVal."</a>"; //  $this->linkFunctions[$curVal];
+		}
+	}
+
+
+	function link_owner($curVal,$mode)
+	{
+		if($mode == 'read')
+		{
+			return $curVal;
+		}
+
+		if($mode === 'filter')
+		{
+			return $this->link_owner;
+
 		}
 	}
 
@@ -894,7 +933,7 @@ class links_admin_form_ui extends e_admin_form_ui
 	 *
 	 * @return string
 	 */
-	public function getList($ajax = false)
+	public function getList($ajax = false, $view='default')
 	{
 		$tp = e107::getParser();
 		$controller = $this->getController();
@@ -907,6 +946,14 @@ class links_admin_form_ui extends e_admin_form_ui
 		
 		// if going through confirm screen - no JS confirm
 		$controller->setFieldAttr('options', 'noConfirm', $controller->deleteConfirmScreen);
+
+		$coreBatchOptions = array(
+			'delete'        => $controller->getBatchDelete(),
+			'copy'          => $controller->getBatchCopy(),
+			'url'           => $controller->getBatchLink(),
+			'featurebox'    => $controller->getBatchFeaturebox(),
+			'export'        => $controller->getBatchExport(),
+		);
 
 		$options[$id] = array(
 			'id' => $this->getElementId(), // unique string used for building element ids, REQUIRED
@@ -921,7 +968,7 @@ class links_admin_form_ui extends e_admin_form_ui
 			'fields' => $controller->getFields(), // see e_admin_ui::$fields
 			'fieldpref' => $controller->getFieldPref(), // see e_admin_ui::$fieldpref
 			'table_pre' => '', // markup to be added before opening table element
-			'table_post' => !$tree[$id]->isEmpty() ? $this->renderBatch(array('delete'=>$controller->getBatchDelete(),'copy'=>$controller->getBatchCopy())) : '',
+			'table_post' => !$tree[$id]->isEmpty() ? $this->renderBatch($coreBatchOptions, $controller->getBatchOptions()) : '',
 			'fieldset_pre' => '', // markup to be added before opening fieldset element
 			'fieldset_post' => '', // markup to be added after closing fieldset element
 			'perPage' => $controller->getPerPage(), // if 0 - no next/prev navigation
@@ -946,7 +993,7 @@ echo "<h2>Preview (To-Do)</h2>";
 echo $tp->parseTemplate("{SITELINKS_ALT}");
 */
 require_once(e_ADMIN."footer.php");
-exit;
+
 
 
 

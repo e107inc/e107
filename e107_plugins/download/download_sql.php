@@ -3,7 +3,7 @@
 #
 CREATE TABLE download (
   download_id int(10) unsigned NOT NULL auto_increment,
-  download_name varchar(100) NOT NULL default '',
+  download_name varchar(255) NOT NULL default '',
   download_url varchar(255) NOT NULL default '',
   download_sef varchar(255) NOT NULL default '',
   download_author varchar(100) NOT NULL default '',
@@ -25,7 +25,11 @@ CREATE TABLE download (
   download_visible varchar(255) NOT NULL default '0',
   PRIMARY KEY  (download_id),
   UNIQUE KEY download_name (download_name),
-  KEY download_category (download_category)
+  KEY download_category (download_category),
+  FULLTEXT (download_url),
+  FULLTEXT (download_description),
+  FULLTEXT (download_author),
+  FULLTEXT (download_author_website)
 ) ENGINE=MyISAM;
 # --------------------------------------------------------
 

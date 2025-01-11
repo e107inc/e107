@@ -69,6 +69,11 @@ define("LCLAN_108", "Some selections omitted - you can't set Link as a Sublink o
 define("LCLAN_109", "Please choose a parent");
 define("LCLAN_110", "Please choose a generator module");
 define("LCLAN_111", "Not valid generator module data");
+define("LCLAN_112", "1 - Main");
+define("LCLAN_113", "2 - Sidebar");
+define("LCLAN_114", "3 - Footer");
+define("LCLAN_115", "Alt");
+define("LCLAN_116", "(Unassigned)");
 
 define("LINKLAN_1", "Opens in 800x600 window");
 // define("LINKLAN_2", "Parent");
@@ -81,8 +86,7 @@ define("LINKLAN_8", "News Categories");
 define("LINKLAN_9", "Download Categories");
 
 define("LINKLAN_10", "Theme Shortcodes");
-_
+
+
 // define("LINKLAN_10", "Create Sublink");
 // define('LINKLAN_11', 'Nothing changed - not updated');
-
-?>

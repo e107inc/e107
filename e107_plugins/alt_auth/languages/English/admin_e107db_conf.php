@@ -36,4 +36,4 @@ define('LAN_AUTHENTICATE_HELP','This authentication method is to be used with a 
   original password is read from the local database, and validated against the storage format of the original system. If it verifies, its converted to the current E107-compatible format and
   stored in the database.');
 
-?>
+
