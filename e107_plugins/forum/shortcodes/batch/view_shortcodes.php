@@ -154,17 +154,25 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 	function sc_topic_views($parm = null)
 	{
-
 		$val = ($this->var['thread_views']) ? $this->var['thread_views'] : '0';
-
+		
+		if(!empty($parm['raw']))
+		{
+			return $val;
+		}
+		
 		return e107::getParser()->toBadge($val);
 	}
 
 
 	function sc_topic_replies($parm = null)
 	{
-
 		$val = ($this->var['thread_total_replies']) ? $this->var['thread_total_replies'] : '0';
+
+		if(!empty($parm['raw']))
+		{
+			return $val;
+		}
 
 		return e107::getParser()->toBadge($val);
 	}
