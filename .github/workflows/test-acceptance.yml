@@ -1,7 +1,9 @@
 name: Acceptance Tests
+
 on:
   push:
   pull_request:
+
 jobs:
   test-acceptance:
     strategy:
@@ -11,30 +13,27 @@ jobs:
           - image: docker.io/jrei/systemd-ubuntu:20.04
           - image: docker.io/jrei/systemd-ubuntu:22.04
     runs-on: ubuntu-latest
+
     steps:
-      - name: Replace Docker with Podman Rootless
-        run: |
-          sudo apt-get -o Dpkg::Options::="--force-overwrite" install -y podman
-          echo -e "export XDG_RUNTIME_DIR=/tmp/${RUNNER_TEMP}" >> $GITHUB_ENV
-          echo -e "export XDG_DATA_HOME=/tmp/${RUNNER_TEMP}" >> $GITHUB_ENV
-          echo -e "export CONTAINERS_STORAGE_CONF=/tmp/${RUNNER_TEMP}/storage.conf" >> $GITHUB_ENV
+      - name: Replace Docker with Podman
+        run: sudo apt-get -o Dpkg::Options::="--force-overwrite" install -y podman-docker
+
       - uses: actions/setup-go@v3
         with:
           go-version: "^1.19"
+
       - uses: actions/checkout@v3
+
       - name: Compile SaltStack bootstrap wrapper
         run: CGO_ENABLED=0 go build -ldflags "-s -w" -o ./salt-bootstrap salt-bootstrap.go
         working-directory: ./e107_tests/lib/ci/salt/
+
       - name: Launch test container
-        run: |
-          docker run -d --rm --name target -v .:/app/ ${{ matrix.operating_system.image }} tail -f /dev/null
-          sleep 5
-          if ! docker ps | grep -q target; then
-            docker logs target
-            exit 1
-          fi
+        run: docker run -d -it --rm --name target -v .:/app/ ${{ matrix.operating_system.image }}
+
       - name: Install SaltStack
         run: docker exec target /app/e107_tests/lib/ci/salt/salt-bootstrap onedir
+
       - name: Apply Salt state
         run: |
           ln -v -s master minion
@@ -48,14 +47,18 @@ jobs:
             salt-call -c ./ --id=e107-dev --local state.apply e107-dev
           "
         working-directory: ./e107_tests/lib/ci/salt/
+
       - name: Install test dependencies
         run: |
           docker exec -w /app/e107_tests/ -e COMPOSER_ALLOW_SUPERUSER=1 target \
           composer update --prefer-dist --no-progress
+
       - name: Download Git submodule dependencies
         run: git submodule update --init --recursive --remote
+
       - name: Install the CI test configuration file
         run: |
           ln -v -s -f ./lib/ci/config.acceptance.ci.yml ./e107_tests/config.yml
+
       - name: Run acceptance tests
         run: docker exec -w /app/e107_tests/ target php ./vendor/bin/codecept run acceptance --steps

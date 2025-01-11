@@ -103,7 +103,9 @@ CREATE TABLE comments (
   comment_share tinyint(1) unsigned NOT NULL default '0',
   PRIMARY KEY  (comment_id),
   KEY comment_blocked (comment_blocked),
-  KEY comment_author_id (comment_author_id) 
+  KEY comment_author_id (comment_author_id),
+  FULLTEXT (comment_comment),
+  FULLTEXT (comment_author_name)
 ) ENGINE=InnoDB;
 # --------------------------------------------------------
 
@@ -136,6 +138,9 @@ CREATE TABLE core_media (
   media_userclass varchar(255) NOT NULL default '',
   media_usedby text NOT NULL,
   media_tags text NOT NULL,
+  media_alt varchar(255) NOT NULL default '',
+  media_credits varchar(255) NOT NULL default '',
+  media_expires int(10) unsigned NOT NULL default '0',
   PRIMARY KEY (media_id),
   UNIQUE KEY media_url (media_url)
 ) ENGINE=InnoDB;
@@ -328,7 +333,13 @@ CREATE TABLE news (
   KEY news_datestamp (news_datestamp),
   KEY news_sticky  (news_sticky),
   KEY news_render_type  (news_render_type),
-  KEY news_class (news_class)
+  KEY news_class (news_class),
+  FULLTEXT (news_title),
+  FULLTEXT (news_body),
+  FULLTEXT (news_extended),
+  FULLTEXT (news_summary),
+  FULLTEXT (news_meta_keywords),
+  FULLTEXT (news_meta_description)
 ) ENGINE=InnoDB;
 
 
@@ -407,9 +418,12 @@ CREATE TABLE page (
   menu_template varchar(50) NOT NULL default '',
   menu_class varchar(250) NOT NULL default '0',
   menu_button_url varchar(250) NOT NULL default '', 
-  menu_button_text varchar(250) NOT NULL default '',   
-  
-  PRIMARY KEY  (page_id)
+  menu_button_text varchar(250) NOT NULL default '',
+  PRIMARY KEY  (page_id),
+  FULLTEXT (page_title),
+  FULLTEXT (page_text),
+  FULLTEXT (page_metakeys),
+  FULLTEXT (page_fields)
 ) ENGINE=InnoDB;
 # --------------------------------------------------------
 
@@ -586,7 +600,8 @@ CREATE TABLE user (
   PRIMARY KEY  (user_id),
   UNIQUE KEY user_name (user_name),
   UNIQUE KEY user_loginname (user_loginname),
-  KEY join_ban_index (user_join,user_ban)
+  KEY join_ban_index (user_join,user_ban),
+  FULLTEXT (user_signature)
 ) ENGINE=InnoDB;
 # --------------------------------------------------------
 
