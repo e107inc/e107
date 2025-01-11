@@ -60,9 +60,24 @@ class e_parseTest extends \Codeception\Test\Unit
 		);
 
 		$result = $this->tp->toRoute($posted);
-		$this->assertSame($expected, $result);
+		self::assertSame($expected, $result);
 
 	}
+
+	public function testSetGetImageAltCacheFile()
+    {
+        $path = '{e_THEME}basic/screenshot.png';
+        $value = 'Test Alt Text';
+
+        // Call setImageAltCacheFile to generate the cache file
+        $this->tp->setImageAltCacheFile($path, $value);
+
+
+        $retrievedValue = $this->tp->getImageAltCacheFile($path);
+        self::assertSame($value, $retrievedValue, "Retrieved value does not match the expected value");
+
+    }
+
 
 
 	public function testStripBlockTags()

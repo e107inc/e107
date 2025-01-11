@@ -14,8 +14,6 @@ e107::lan('forum','menu',true);  // English_menu.php or {LANGUAGE}_menu.php
 
 include_once(e_PLUGIN.'forum/forum_class.php');
 
-
-
 if(!class_exists('forum_newforumposts_menu'))
 {
 	class forum_newforumposts_menu // plugin folder + menu name (without the .php)
@@ -31,8 +29,21 @@ if(!class_exists('forum_newforumposts_menu'))
 		function __construct()
 		{
 			$this->plugPref = e107::pref('forum'); // general forum preferences.
-			$this->menuPref = e107::getMenu()->pref();// ie. popup config details from within menu-manager.
-            $this->forumObj = new e107forum;
+//			$this->menuPref = e107::getMenu()->pref();// ie. popup config details from within menu-manager.
+			$menuPrefs = e107::getMenu()->pref();// ie. popup config details from within menu-manager.
+			$this->forumObj = new e107forum;
+
+			if(is_string($menuPrefs))
+			{
+				parse_str($menuPrefs, $this->menuPref);
+			}
+			else
+			{
+				$this->menuPref = $menuPrefs;
+			}
+
+//			echo "<hr><hr><hr>";
+//			var_dump($this->menuPref);
 
 			// Set some defaults ...
 			if (!isset($this->menuPref['title'])) $this->menuPref['title'] = "";
@@ -43,8 +54,10 @@ if(!class_exists('forum_newforumposts_menu'))
 			if (!isset($this->menuPref['scroll'])) $this->menuPref['scroll'] = "";
 			if (empty($this->menuPref['layout'])) $this->menuPref['layout'] = 'default';
 
-            $this->cacheTag .= "_".$this->menuPref['layout'];
+//			echo "<hr><hr><hr>";
+//			var_dump($this->menuPref);
 
+            $this->cacheTag .= "_".$this->menuPref['layout'];
 
             if($text = e107::getCache()->retrieve($this->cacheTag, $this->cacheTime, true))
             {
@@ -54,6 +67,7 @@ if(!class_exists('forum_newforumposts_menu'))
                 return null;
             }
 
+/*
 			$sql = e107::getDb();
 
 			$this->total['topics'] = $sql->count("forum_thread");
@@ -64,13 +78,10 @@ if(!class_exists('forum_newforumposts_menu'))
 				$tmp = $sql->fetch();
 				$this->total['views'] = intval($tmp["sum"]);
 			}
-
+*/
 			$this->render();
 
 		}
-
-
-
 
 		private function getQuery()
 		{
@@ -85,7 +96,6 @@ if(!class_exists('forum_newforumposts_menu'))
 			{
 				return false;
 			}
-
 
 			$this->menuPref['layout'] = vartrue($this->menuPref['layout'], 'default');
 			switch($this->menuPref['layout'])
@@ -132,10 +142,8 @@ if(!class_exists('forum_newforumposts_menu'))
 					ORDER BY t.thread_lastpost DESC LIMIT 0, ".vartrue($this->menuPref['display'],10);
 					}
 
-
 			return $qry;
 		}
-
 
 		private function render()
 		{
@@ -164,16 +172,12 @@ if(!class_exists('forum_newforumposts_menu'))
 
 			$template = e107::getTemplate('forum','newforumposts_menu',$layout);
 
-
-
-
 			$param = array();
 
 			foreach($this->menuPref as $k=>$v)
 			{
 				$param['nfp_'.$k] = $v;
 			}
-
 
 			if($qry)
 			{
@@ -185,24 +189,36 @@ if(!class_exists('forum_newforumposts_menu'))
 					}*/
 
 					$sc = e107::getScBatch('view', 'forum')->setScVar('param',$param);
-					$sc->wrapper('newforumposts_menu/'.$layout);
-					
-					$list = $tp->parseTemplate($template['start'], true);
+          $sc->wrapper('newforumposts_menu/'.$layout);
+
+//					$list = $tp->parseTemplate($template['start'], true);
+					$text = $tp->parseTemplate($template['start'], true);
 
 					while($row = $sql->fetch())
 					{
+//						var_dump ($row);
+//						echo "<hr>";
+
 						$row['thread_sef'] = $this->forumObj->getThreadSef($row);
 
 						$sc->setScVar('postInfo', $row);
 						$sc->setVars($row);
-						$list .= $tp->parseTemplate($template['item'], true, $sc);
+//						$list .= $tp->parseTemplate($template['item'], true, $sc);
+						$text .= $tp->parseTemplate($template['item'], true, $sc);
+
+						++$total_topics;						
+						$total_views += $row['thread_views'];						
+						$total_replies += $row['thread_total_replies'];						
+
 					}
 
-					$TOTALS = array('TOTAL_TOPICS'=>$this->total['topics'], 'TOTAL_VIEWS'=>$this->total['views'], 'TOTAL_REPLIES'=>$this->total['replies']);
+//					$TOTALS = array('TOTAL_TOPICS'=>$this->total['topics'], 'TOTAL_VIEWS'=>$this->total['views'], 'TOTAL_REPLIES'=>$this->total['replies']);
+					$TOTALS = array('TOTAL_TOPICS'=>$total_topics, 'TOTAL_VIEWS'=>$total_views, 'TOTAL_REPLIES'=>$total_replies);
 
-					$list .= $tp->parseTemplate($template['end'], true, $TOTALS);
-
-					$text = $list;
+//					$list .= $tp->parseTemplate($template['end'], true, $TOTALS);
+					$text .= $tp->parseTemplate($template['end'], true, $TOTALS);
+//
+//					$text = $list;
 				}
 				else
 				{
@@ -213,7 +229,7 @@ if(!class_exists('forum_newforumposts_menu'))
 			{
 				$text = LAN_FORUM_MENU_016;
 			}
-
+//var_dump ($text);
             $caption = $this->getCaption();
 
 			if(!empty($this->menuPref['scroll']))
@@ -221,7 +237,6 @@ if(!class_exists('forum_newforumposts_menu'))
 				$text = "<div class='newforumposts-menu-scroll' style='border: 0; width: auto; height: ".intval($this->menuPref['scroll'])."px; overflow: auto; '>".$text."</div>";
 			}
 		//	e107::debug('menuPref', $this->menuPref);
-
 
 		    e107::getCache()->set($this->cacheTag, $text, true);
 
@@ -253,7 +268,6 @@ if(!class_exists('forum_newforumposts_menu'))
                 //$caption = !empty($this->menuPref['caption'][e_LANGUAGE])  ? $this->menuPref['caption'][e_LANGUAGE] : $this->menuPref['caption'];
             }
 
-
             if (empty($caption))
             {
                 $caption = LAN_PLUGIN_FORUM_LATESTPOSTS;
@@ -262,14 +276,8 @@ if(!class_exists('forum_newforumposts_menu'))
             return $caption;
         }
 
-
 	}
-
 
 }
 
-
 new forum_newforumposts_menu;
-
-
-
