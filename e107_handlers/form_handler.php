@@ -5467,7 +5467,11 @@ var_dump($select_options);*/
 
 				if($parms)
 				{
-					if(isset($parms['sep']))
+					if (!empty($parms['format']) && $parms['format'] === 'bytes')
+					{
+                        $value = eHelper::parseMemorySize($value, varset($parms['decimals'], 2)); // Use 'decimals' from parms or default to 2
+					}
+					elseif(isset($parms['sep']))
 					{
 						$value = number_format($value, varset($parms['decimals'],0), vartrue($parms['point'], '.'), vartrue($parms['sep'], ' '));
 					}
@@ -5486,7 +5490,6 @@ var_dump($select_options);*/
 					$value = $this->renderLink($value,$parms,$id);
 				}
 
-				
 				$value = vartrue($parms['pre']).$value.vartrue($parms['post']);
 				// else same
 			break;
