@@ -31,6 +31,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					var caption = $this.attr('data-modal-caption');
 					var height = ($(window).height() * 0.7) - 120;
 					var target = $this.attr('data-modal-target');
+					var customClass = $this.attr('data-modal-class');
 
 					if(caption === undefined)
 					{
@@ -46,6 +47,11 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					{
                          $(target+' .modal-footer button[data-dismiss="modal"]').hide();
                     }
+
+                    if (customClass)
+                    {
+						 $(target + ' .modal-dialog').addClass(customClass);
+					 }
 
 					$(target+' .modal-body').html('<div class="well"><iframe id="e-modal-iframe" width="100%" height="' + height + 'px" frameborder="0" scrolling="auto" style="display:block;background-color:transparent" allowtransparency="true" src="' + url + '"></iframe></div>');
 					$(target+' .modal-caption').html(caption + ' <i id="e-modal-loading" class="fa fa-spin fa-spinner"></i>');
@@ -88,7 +94,13 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 
 					});
 
-
+					$(target).on('hidden.bs.modal', function ()
+					{
+						 if (customClass)
+						 {
+							 $(target + ' .modal-dialog').removeClass(customClass);
+						 }
+					 });
 
 					return false;
 				});

@@ -51,6 +51,8 @@ class db_verifyTest extends \Codeception\Test\Unit
   table_email2 tinyint(3) unsigned NOT NULL default '0',
   table_email90 tinyint(3) unsigned NOT NULL default '0',
   e107_name varchar(100) NOT NULL default '',
+  FULLTEXT (table_title),
+  FULLTEXT (table_description),
   PRIMARY KEY  (table_id)";
 
 		$expected = array(
@@ -250,10 +252,12 @@ class db_verifyTest extends \Codeception\Test\Unit
 
 		$data = "`schedule_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 			  `schedule_cust_id` int(11) NOT NULL,
+			  `schedule_description` text NOT NULL,
 			  `schedule_complete` int(1) unsigned NOT NULL DEFAULT 0,
 			  PRIMARY KEY (`schedule_id`),
-			  UNIQUE KEY `schedule_cust_id` (`schedule_cust_id`),
-			  KEY `schedule_invoice_id` (`schedule_invoice_id`)";
+			  FULLTEXT (`schedule_description`),
+			  UNIQUE KEY `schedule_cust_id` (`schedule_cust_id_key`),
+			  KEY `schedule_invoice_id` (`schedule_invoice_id_key`)";
 
 		$expected = array(
 			'schedule_id'         =>
@@ -262,16 +266,22 @@ class db_verifyTest extends \Codeception\Test\Unit
 					'keyname' => 'schedule_id',
 					'field'   => 'schedule_id',
 				),
+				'schedule_description'    =>
+				array(
+					'type'    => 'FULLTEXT',
+					'keyname' => 'schedule_description',
+					'field'   => 'schedule_description',
+				),
 			'schedule_cust_id'    =>
 				array(
 					'type'    => 'UNIQUE',
-					'keyname' => 'schedule_cust_id',
+					'keyname' => 'schedule_cust_id_key',
 					'field'   => 'schedule_cust_id',
 				),
 			'schedule_invoice_id' =>
 				array(
 					'type'    => '',
-					'keyname' => 'schedule_invoice_id',
+					'keyname' => 'schedule_invoice_id_key',
 					'field'   => 'schedule_invoice_id',
 				),
 		);
@@ -839,6 +849,7 @@ EOF;
 			  `schedule_results` text NOT NULL,
 			  PRIMARY KEY (`schedule_id`),
 			  UNIQUE KEY `schedule_user_id` (`schedule_user_id`),
+			  FULLTEXT (`schedule_name`),
 			  KEY `schedule_invoice_id` (`schedule_invoice_id`)
             ";
 
@@ -957,6 +968,17 @@ EOF;
 									'type'    => '',
 									'keyname' => 'schedule_invoice_id',
 									'field'   => 'schedule_invoice_id',
+								),
+							'_file'   => 'myplugin',
+						),
+					'schedule_name'    =>
+						array(
+							'_status' => 'missing_index',
+							'_valid'  =>
+								array(
+									'type'    => 'FULLTEXT',
+									'keyname' => 'schedule_name',
+									'field'   => 'schedule_name',
 								),
 							'_file'   => 'myplugin',
 						),
