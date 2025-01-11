@@ -52,7 +52,7 @@ class faqs_sitelink // include plugin-folder in the name.
 		while($row = $sql->fetch())
 		{
 			$sublinks[] = array(
-				'link_name'			=> $tp->toHtml($row['faq_info_title'],'','TITLE'),
+				'link_name'			=> $tp->toHTML($row['faq_info_title'],'','TITLE'),
 				'link_url'			=> e107::url('faqs', 'category', $row),
 				'link_description'	=> $row['faq_info_about'],
 				'link_button'		=> $row['faq_info_icon'],

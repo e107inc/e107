@@ -19,7 +19,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 				{
 					var $this = $(this);
 
-					if($this.attr('data-cache') == 'false')
+					if($this.attr('data-cache') === 'false')
 					{
 						$('#uiModal').on('shown.bs.modal', function ()
 						{
@@ -30,20 +30,77 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					var url = $this.attr('href');
 					var caption = $this.attr('data-modal-caption');
 					var height = ($(window).height() * 0.7) - 120;
+					var target = $this.attr('data-modal-target');
+					var customClass = $this.attr('data-modal-class');
 
 					if(caption === undefined)
 					{
 						caption = '';
 					}
 
-					$('.modal-body').html('<div class="well"><iframe id="e-modal-iframe" width="100%" height="' + height + 'px" frameborder="0" scrolling="auto" style="display:block;background-color:transparent" allowtransparency="true" src="' + url + '"></iframe></div>');
-					$('.modal-caption').html(caption + ' <i id="e-modal-loading" class="fa fa-spin fa-spinner"></i>');
-					$('.modal').modal('show');
+					if(target === undefined)
+					{
+						target = '#uiModal';
+					}
+
+                    if($this.attr('data-modal-close') === 'false')
+					{
+                         $(target+' .modal-footer button[data-dismiss="modal"]').hide();
+                    }
+
+                    if (customClass)
+                    {
+						 $(target + ' .modal-dialog').addClass(customClass);
+					 }
+
+					$(target+' .modal-body').html('<div class="well"><iframe id="e-modal-iframe" width="100%" height="' + height + 'px" frameborder="0" scrolling="auto" style="display:block;background-color:transparent" allowtransparency="true" src="' + url + '"></iframe></div>');
+					$(target+' .modal-caption').html(caption + ' <i id="e-modal-loading" class="fa fa-spin fa-spinner"></i>');
+					$(target+'.modal').modal('show');
+
+
 
 					$("#e-modal-iframe").on("load", function ()
 					{
 						$('#e-modal-loading').hide();
+
+
+
+						if($this.attr('data-modal-submit'))
+						{
+						    var buttonObj = $('#e-modal-iframe').contents().find('#etrigger-submit');
+							var buttonCaption = buttonObj.html(); // copy submit button caption from iframe form.
+
+                            if(!buttonCaption && buttonObj.val())
+                            {
+                                buttonCaption = buttonObj.val(); // copy when it's an <input type='submit'..
+                            }
+
+
+
+							var buttonClass = $('#e-modal-iframe').contents().find('#etrigger-submit').attr('data-modal-submit-class'); // co
+							if(buttonCaption)
+							{
+								$('#e-modal-submit').html(buttonCaption).fadeIn(); // display the button in the modal footer.
+							}
+
+							if(buttonClass)
+							{
+								$('#e-modal-submit').addClass(buttonClass);
+							}
+
+
+							$('#e-modal-iframe').contents().find('.buttons-bar').hide(); // hide buttons in the iframe's form.
+						}
+
 					});
+
+					$(target).on('hidden.bs.modal', function ()
+					{
+						 if (customClass)
+						 {
+							 $(target + ' .modal-dialog').removeClass(customClass);
+						 }
+					 });
 
 					return false;
 				});
@@ -59,7 +116,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	e107.behaviors.fieldHelpTooltip = {
 		attach: function (context, settings)
 		{
-			var selector = 'div.tbox,div.checkboxes,input,textarea,select,label,.e-tip,div.form-control';
+			var selector = '.admin-ui-help-tip,div.tbox,div.checkboxes,input,textarea,select,.e-tip,div.form-control';
 
 			$(context).find(selector).once('field-help-tooltip').each(function ()
 			{
@@ -72,12 +129,20 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					placement = 'top';
 				}
 
+				// custom position defined in field-help container class
 				var custPlace = $fieldHelp.attr('data-placement'); // ie top|left|bottom|right
-
 				if(custPlace !== undefined)
 				{
 					placement = custPlace;
 				}
+
+				// custom position defined in selector tag.
+				var pos = $(this).attr('data-tooltip-position');
+				if(pos !== undefined)
+				{
+					placement = pos;
+				}
+				
 
 				$fieldHelp.hide();
 
@@ -89,10 +154,11 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					fade: true,
 					html: true,
 					opacity: 1.0,
+			//		trigger: 'hover focus',
 					placement: placement,
 					container: 'body',
 					delay: {
-						show: 300,
+						show: 0,
 						hide: 600
 					}
 				});
@@ -138,6 +204,84 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 
 $(document).ready(function()
 {
+            $('a.e-spinner').on('click', function() {
+
+			  	var orig = $(this).text();
+			  	var spin = "<i class='fa fa-spin fa-spinner fa-fw'></i>";
+
+				$(this).html(orig + spin);
+            });
+
+
+
+
+            $('.e-count').on("input focus", function(){
+
+                if($(this).attr("data-char-count") === undefined)
+                {
+                    return;
+                }
+
+                var maxlength = $(this).attr("data-char-count");
+                var currentLength = $(this).val().length;
+                var countID = $(this).attr('id') + '-char-count';
+
+               /* if( currentLength >= maxlength )
+                {
+                   $('#'+ countID + ' span').text('0');
+                }
+                else*/
+                {
+                    $('#'+ countID).show();
+                    $('#'+ countID + ' span').text(maxlength - currentLength);
+                }
+            });
+
+              $('.e-count').focusout(function() {
+
+                 var countID = $(this).attr('id') + '-char-count';
+                 $('#'+ countID).hide();
+              })
+
+
+			$('#e-modal-submit').click(function () {
+			  $('#e-modal-iframe').contents().find('#etrigger-submit').trigger('click');
+
+			  	var type = $(this).data('loading-icon');
+			  	var orig = $(this).text();
+
+				var caption = "<i class='fa fa-spin " + type + " fa-fw'></i>";
+				caption += "<span>" + orig + "</span>";
+
+				$(this).html(caption);
+
+				  $('#e-modal-iframe').on('load', function(){
+
+				  	 var buttonFound = $('#e-modal-iframe').contents().find('#etrigger-submit');
+
+				  	if(buttonFound.length === 0) // disable resubmitting if not button found after submit.
+				  	{
+				  		$('#e-modal-submit').fadeOut(1000);
+				  	}
+
+				  	$('#e-modal-submit').text(orig); // remove spinner.
+
+				  });
+
+			});
+
+			$('[data-dismiss="modal"]').click(function(){ // hide button for next modal popup usage.
+
+				$('#e-modal-submit').hide(1000);
+
+			});
+
+
+
+
+
+
+
 		$('form').h5Validate(
 			{ errorClass: 'has-error' }
 		); // allow older browsers to use html5 validation. 
@@ -177,14 +321,14 @@ $(document).ready(function()
 	
 		/* Switch to Tab containing invalid form field. */
 		$('input[type=submit],button[type=submit]').on('click', function() {
-			
+
 			var id 		= $(this).closest('form').attr('id');
 			var found 	= false;
-		       
-			 $('#'+id).find('input:invalid,select:invalid,textarea:invalid').each(function(index, node) {
+		    
+			 $('#'+id).find('input:invalid, input.has-error,select:invalid,select.has-error, textarea:invalid, textarea.has-error').each(function(index, node) {
 			
-				var tab = $('#'+node.id).closest('.tab-pane').attr('id');
-			
+				var tab = $(this).closest('.tab-pane').attr('id');;
+				
 				if(tab && (found === false))
 				{
 					$('a[href="#'+tab+'"]').tab('show');
@@ -225,8 +369,14 @@ $(document).ready(function()
 		});
 
 
+
+
 	$('div.e-container').editable({
 		selector: '.e-editable',
+		params: function(params) {
+			params.token = $(this).attr('data-token');
+           return params;
+		},
 		display: function (value, sourceData)
 		{
 			// HTML entities decoding... fix for:
@@ -317,26 +467,33 @@ $(document).ready(function()
 		);
 
 
-		$('a[data-toggle-sidebar]').on('click', function(e)
+		$('a[data-toggle-sidebar], .e-toggle-sidebar').on('click', function(e)
         {
             e.preventDefault();
 
-	        var $leftPanel = $(".admin-left-panel");
-	        var $rightPanel = $(".admin-right-panel");
-
-	        if ($rightPanel.hasClass('col-md-12'))
+	        if ($(".is-table-row").hasClass("admin-left-panel-collapsed"))
 	        {
-		        $rightPanel.toggleClass("col-md-9 col-md-12");
-		        $rightPanel.toggleClass("col-lg-10 col-lg-12");
-		        $leftPanel.toggle(1000);
+		        $(".is-table-row").toggleClass("admin-left-panel-collapsed");
 	        }
 	        else
 	        {
-		        $leftPanel.toggle(1000, function() {
-			        $rightPanel.toggleClass("col-md-9 col-md-12");
-			        $rightPanel.toggleClass("col-lg-10 col-lg-12");
-		        });
+                  $(".is-table-row").toggleClass("admin-left-panel-collapsed");
 	        }
+
+
+            var tmp =  $(".is-table-row").hasClass("admin-left-panel-collapsed");
+
+            if(tmp === true)
+            {
+               var toggleStatus = 'closed';
+            }
+            else
+            {
+               var toggleStatus = 'open';
+            }
+
+            document.cookie = 'e107_adminLeftPanel = ' + toggleStatus +'; path=/; expires = 1; samesite=strict';
+
 
         });
 
@@ -421,7 +578,7 @@ $(document).ready(function()
 					clearInterval(progresspump);
 			        $("#"+target).closest('.progress').removeClass("active");
 
-			        $("#"+target).html("Done");
+
 			        
 			        if(hide !== 'undefined')
 			        {
@@ -432,7 +589,8 @@ $(document).ready(function()
 			        {
 						$('#'+show).show('slow');	
 			        }
-			      
+
+			         $("#"+target).html("Done");
 		        
 					}
 		    
@@ -489,7 +647,8 @@ $(document).ready(function()
 		$("select.tbox").each(function() {
 			
 			var multi = $(this).attr('multiple');
-			
+			var tagName = $(this).attr('name');
+
 			if(multi === undefined)
 			{
 			//	 $(this).selectpicker();	// causes HTML5 validation alert to be hidden. 
@@ -497,8 +656,33 @@ $(document).ready(function()
 			}
 			else
 			{
-				$(this).multiselect({ buttonClass: 'btn btn-default'} );
+				$(this).multiselect({
+					buttonClass: 'btn btn-default',
+					 buttonText: function(options) {
+						if (options.length == 0) {
+
+							return '(Optional) <b class="caret"></b><input type="hidden" name="' + tagName + '" value="" />'; // send empty value to server so value is saved.
+						}
+						else if (options.length > 5) {
+							return options.length + ' selected <b class="caret"></b>';
+						}
+						else {
+							var selected = '';
+							options.each(function() {
+								selected += $(this).text() + ', ';
+							});
+							return selected.substr(0, selected.length -2) + ' <b class="caret"></b>';
+						}
+					},
+
+
+					});
 			}
+			
+
+			/*            optionLabel: function(element) {
+                return $(element).html() + '(' + $(element).val() + ')';
+            }*/
 			
 		});
 		
@@ -545,7 +729,9 @@ $(document).ready(function()
 		 $(".plugin-navigation a").click(function () {
 		 	$(".plugin-navigation a").each(function(index) {
     			var ot = $(this).attr("href");
-				$(ot).hide().removeClass('e-hideme');
+    			if (ot.split('#')[1]) {
+                    $(ot).hide().removeClass('e-hideme');
+                }
 				$(this).closest("li").removeClass("active");
 				$(this).switchClass( "link-active", "link", 0 );
 			});
@@ -553,12 +739,12 @@ $(document).ready(function()
 	   		
 			$(this).switchClass( "link", "link-active", 30 );
 			$(this).closest("li").addClass("active");
-	
-			$(id).removeClass('e-hideme').show({
-				effect: "slide"
-			});
+
 			// 'remember' the active navigation pane
 			if(hash) {
+                $(id).removeClass('e-hideme').show({
+                    effect: "slide"
+                });
 				window.location.hash = 'nav-' + hash;
 			  	if(form) {
 
@@ -667,6 +853,21 @@ $(document).ready(function()
 			//	$(selector).removeAttr("checked");
 			}
 		});
+
+
+    $("ul.col-selection input[type='checkbox']").click(function(evt){
+
+        if(this.checked)
+        {
+             $(this).closest("label").addClass( "active", 0 );
+        //    $(this).closest("tr.even").switchClass( "even", "highlight-even", 50 );
+        }
+        else
+        {
+            $(this).closest("label").removeClass( "active", 0 );
+        }
+
+    });
 		
 		// highlight checked row
 		$(".adminlist input[type='checkbox']").click(function(evt){
@@ -687,12 +888,13 @@ $(document).ready(function()
 			
 		
 	
-		// Basic Delete Confirmation	
+		// Basic Delete Confirmation
+		/*
 		$('input.delete,button.delete,a[data-confirm]').click(function(){
   			answer = confirm($(this).attr("data-confirm"));
   			return answer; // answer is a boolean
 		});
-		
+	*/
 		$(".e-confirm").click(function(){
   			answer = confirm($(this).attr("title"));
   			return answer; // answer is a boolean
@@ -706,6 +908,20 @@ $(document).ready(function()
             target      = $(this).attr("data-target");
             toconvert   = $('#'+src).val();
             script      = window.location;
+            confirmation = $(this).attr("data-sef-generate-confirm");
+            targetLength = $('#'+target).val().length ;
+
+            if(confirmation !== undefined && targetLength > 0)
+			{
+				answer = confirm(confirmation);
+
+				if(answer === false)
+				{
+					return;
+				}
+			}
+
+
 
             $.ajax({
                 type: "POST",
@@ -732,11 +948,40 @@ $(document).ready(function()
         });
 
 
+		$('body').on('slid.bs.carousel', '.carousel', function(){
 
-		$('.carousel').on('slid.bs.carousel', function () {
-		  var currentIndex = $(this).find('.active').index();
-		  var text = (currentIndex + 1);
-		  $('#admin-ui-carousel-index').text(text);
+			var label = $(this).find('.carousel-item.active').attr('data-label');
+			var id = $(this).attr('id') + '-index'; // admin-ui-carousel-index etc.
+
+			if(label !== undefined)
+			{
+				$('#'+id).text(label);
+			}
+			else
+			{
+				var currentIndex = $(this).find('.active').index();
+				var text = (currentIndex + 1);
+
+				$('#'+id).text(text);
+			}
+
+
+			// this takes commented content for each carousel slide and enables it, one slide at a time as we scroll.
+
+			$(this).find('.item').each(function(index, node)
+			{
+				var content = $(this).contents();
+
+				var item = content[0];
+
+				if(item.nodeType === 8) // commented code @see e_media::browserCarousel() using '<!--'
+				{
+					$(item).replaceWith(item.nodeValue);
+					return false;
+				}
+
+			});
+
 		});
 		
 

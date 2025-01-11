@@ -37,11 +37,11 @@ if (e_QUERY)
 }
 if ($action == 'top')
 {
-	define('e_PAGETITLE', LAN_8);
-} 
+	e107::title(LAN_8);
+}
 elseif ($action == 'active')
 {
-	define('e_PAGETITLE', LAN_7);
+	e107::title(LAN_7);
 }
 else
 {
@@ -122,7 +122,7 @@ if ($action == 'active')
 
 		$text .= "</table>\n</div>";
 
-		$ftotal = $sql->db_Count('forum_thread', '(*)', 'WHERE `thread_parent` = 0');
+		$ftotal = $sql->count('forum_thread', '(*)', 'WHERE `thread_parent` = 0');
 		$parms = "{$ftotal},{$view},{$from},".e_SELF.'?[FROM].active.forum.'.$view;
 		$text .= "<div class='nextprev'>".$tp->parseTemplate("{NEXTPREV={$parms}}").'</div>';
 		$ns->tablerender(LAN_7, $text, 'nfp');
@@ -137,10 +137,19 @@ if ($action == 'top')
 {
 	//require_once (e_HANDLER.'level_handler.php');
 	$rank = e107::getRank();
+	if(!defined('IMAGE_rank_main_admin_image'))
+	{
+		define('IMAGE_rank_main_admin_image', (!empty($pref['rank_main_admin_image']) && file_exists(THEME."forum/".$pref['rank_main_admin_image']) ? "<img src='".THEME_ABS."forum/".$pref['rank_main_admin_image']."' alt='' />" : "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/main_admin.png' alt='' />"));
+	}
 
-	define('IMAGE_rank_main_admin_image', ($pref['rank_main_admin_image'] && file_exists(THEME."forum/".$pref['rank_main_admin_image']) ? "<img src='".THEME_ABS."forum/".$pref['rank_main_admin_image']."' alt='' />" : "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/main_admin.png' alt='' />"));
-	define('IMAGE_rank_admin_image', ($pref['rank_admin_image'] && file_exists(THEME."forum/".$pref['rank_admin_image']) ? "<img src='".THEME_ABS."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/admin.png' alt='' />"));
-	define('IMAGE_rank_moderator_image', ($pref['rank_moderator_image'] && file_exists(THEME."forum/".$pref['rank_moderator_image']) ? "<img src='".THEME_ABS."forum/".$pref['rank_moderator_image']."' alt='' />" : "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/moderator.png' alt='' />"));
+	if(!defined('IMAGE_rank_main_admin_image'))
+	{
+		define('IMAGE_rank_admin_image', (!empty($pref['rank_admin_image']) && file_exists(THEME."forum/".$pref['rank_admin_image']) ? "<img src='".THEME_ABS."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/admin.png' alt='' />"));
+	}
+	if(!defined('IMAGE_rank_main_admin_image'))
+	{
+		define('IMAGE_rank_moderator_image', (!empty($pref['rank_moderator_image']) && file_exists(THEME."forum/".$pref['rank_moderator_image']) ? "<img src='".THEME_ABS."forum/".$pref['rank_moderator_image']."' alt='' />" : "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/moderator.png' alt='' />"));
+	}
 
 	if ($subaction == 'forum' || $subaction == 'all')
 	{
@@ -153,7 +162,7 @@ if ($action == 'top')
 		WHERE ue.user_plugin_forum_posts > 0
 		ORDER BY ue.user_plugin_forum_posts DESC LIMIT {$from}, {$view}
 		";
-		//		$top_forum_posters = $sql->db_Select("user", "*", "`user_forums` > 0 ORDER BY user_forums DESC LIMIT ".$from.", ".$view."");
+
 		$text = "
 			<div>
 			<table style='width:95%' class='table table-striped fborder'>
@@ -170,7 +179,7 @@ if ($action == 'top')
 			while ($row = $sql2->fetch())
 			{
 				//$ldata = get_level($row['user_id'], $row['user_plugin_forum_posts'], $row['user_comments'], $row['user_chats'], $row['user_visits'], $row['user_join'], $row['user_admin'], $row['user_perms'], $pref);
-				$ldata = $rank->getRanks($row, (USER && $forum->isModerator(USERID)));
+				$ldata = $rank->getRanks($row['user_id'], (USER && $forum->isModerator(USERID)));
 
 				if(vartrue($ldata['special']))
 				{
@@ -193,7 +202,8 @@ if ($action == 'top')
 		$text .= "</table>\n</div>";
 		if ($subaction == 'forum') 
 		{
-			$ftotal = $sql->db_Count('user', '(*)', 'WHERE `user_forums` > 0');
+			//$ftotal = $sql->db_Count('user', '(*)', 'WHERE `user_forums` > 0');
+			$ftotal = $sql->count('user_extended', '(*)', 'WHERE `user_plugin_forum_posts` > 0');
 			$parms = "{$ftotal},{$view},{$from},".e_SELF.'?[FROM].top.forum.'.$view;
 			$text .= "<div class='nextprev'>".$tp->parseTemplate("{NEXTPREV={$parms}}").'</div>';
 		}
@@ -226,7 +236,7 @@ if ($action == 'top')
 			while ($row = $sql->fetch())
 			{
 				// TODO - Custom ranking (comments), LANs
-				$ldata = $rank->getRanks($row);
+				$ldata = $rank->getRanks($row['user_id']);
 				if(vartrue($ldata['special']))
 				{
 					$r = $ldata['special'];
@@ -274,7 +284,7 @@ if ($action == 'top')
 			while ($row = $sql->fetch())
 			{
 				// TODO - Custom ranking (chat), LANs
-				$ldata = $rank->getRanks($row);
+				$ldata = $rank->getRanks($row['user_id']);
 				if(vartrue($ldata['special']))
 				{
 					$r = $ldata['special'];
@@ -306,4 +316,3 @@ if ($action == 'top')
 	}
 }
 require_once(FOOTERF);
-?>

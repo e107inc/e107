@@ -12,7 +12,7 @@
 
 if(!defined('e107_INIT'))
 {
-	require_once('../../class2.php');
+	require_once(__DIR__.'/../../class2.php');
 }
 
 e107::lan('forum', "front", true);
@@ -33,8 +33,10 @@ if(!deftrue('BOOTSTRAP'))
 	e107::getLanguage()->bcDefs($bcDefs);
 }
 
-
-define('NAVIGATION_ACTIVE','forum');
+if(!defined('NAVIGATION_ACTIVE'))
+{
+	define('NAVIGATION_ACTIVE','forum');
+}
 
 $e107 = e107::getInstance();
 $tp = e107::getParser();
@@ -52,7 +54,7 @@ $highlight_search = isset($_POST['highlight_search']);
 if (!e_QUERY)
 {
 	//No parameters given, redirect to forum home
-	$url = e107::url('forum','index','full');
+	$url = e107::url('forum','index', null, ['mode'=>'full']);
 	e107::getRedirect()->go($url);
 	exit;
 }
@@ -69,9 +71,26 @@ if(vartrue($_GET['id']) && isset($_GET['dl']))
 	exit;
 }
 
+if (isset($_GET['last']))
+{
+	$_GET['f'] = 'last';
+}
+
+if(isset($_GET['f']) && $_GET['f'] == 'post')
+{
+	$thread->processFunction();
+}
+
+$thread->init();
+
+
+/* Check if use has moderator permissions for this thread */
+$moderatorUserIds = $forum->getModeratorUserIdsByThreadId($thread->threadInfo['thread_id']);
+define('MODERATOR', (USER && in_array(USERID, $moderatorUserIds) || getperms('0') ));
+
 if(e_AJAX_REQUEST)
 {
-    if(varset($_POST['action']) == 'quickreply')
+	if(varset($_POST['action']) == 'quickreply')
 	{
 		$forum->ajaxQuickReply();
 	}
@@ -85,21 +104,11 @@ if(e_AJAX_REQUEST)
 	{
 		$forum->ajaxModerate();
 	}
-
+	else if(varset($_POST['action']) == 'deletepost')
+	{
+		$forum->usersLastPostDeletion();
+	}
 }
-
-		
-if (isset($_GET['last']))
-{
-	$_GET['f'] = 'last';
-}
-
-if(isset($_GET['f']) && $_GET['f'] == 'post')
-{
-	$thread->processFunction();
-}
-
-$thread->init();
 
 
 /*
@@ -142,8 +151,9 @@ if (USER && (USERID != $thread->threadInfo['thread_user'] || $thread->threadInfo
 }
 
 define('e_PAGETITLE', strip_tags($tp->toHTML($thread->threadInfo['thread_name'], true, 'no_hook, emotes_off')).' / '.$tp->toHTML($thread->threadInfo['forum_name'], true, 'no_hook, emotes_off').' / '.LAN_FORUM_1001);
+
 $forum->modArray = $forum->forumGetMods($thread->threadInfo['forum_moderators']);
-define('MODERATOR', (USER && $forum->isModerator(USERID)));
+
 
 e107::getScBatch('view', 'forum')->setScVar('forum', $forum);
 //var_dump(e107::getScBatch('forum', 'forum'));
@@ -164,7 +174,8 @@ if(count($postList))
 {
 	define("META_DESCRIPTION", $tp->text_truncate(
 		str_replace(
-			array('"', "'"), '', strip_tags($tp->toHTML($postList[0]['post_entry']))
+			//array('"', "'"), '', strip_tags($tp->toHTML($postList[0]['post_entry']))
+			array('"', "'"), '', $tp->toText($postList[0]['post_entry'])
 	), 250, '...'));
 }
 
@@ -244,222 +255,17 @@ else
 
 //TODO Clean up this mess!!
 
-// get info for main thread -------------------------------------------------------------------------------------------------------------------------------------------------------------------
-//---- Moved here to enclose $tVars.....
+
 $sc = e107::getScBatch('view', 'forum');
 
-//---- $tVars = new e_vars;
-//---- $forum->set_crumb(true, '', $tVars); // Set $BREADCRUMB (and BACKLINK)
+
 $forum->set_crumb(true, '', $thread->threadInfo); // Set $BREADCRUMB (and BACKLINK)
-//$tVars->BREADCRUMB = $crumbs['breadcrumb'];
-//$tVars->BACKLINK = $tVars->BREADCRUMB;
-//$tVars->FORUM_CRUMB = $crumbs['forum_crumb'];
-//---- $tVars->THREADNAME = $tp->toHTML($thread->threadInfo['thread_name'], true, 'no_hook, emotes_off');
 
 
-/*----
-	$prev = $forum->threadGetNextPrev('prev', $thread->threadId,$thread->threadInfo['forum_id'], $thread->threadInfo['thread_lastpost']);
-	$next = $forum->threadGetNextPrev('next', $thread->threadId,$thread->threadInfo['forum_id'], $thread->threadInfo['thread_lastpost']);
 
-	$options = array();
-
-	if($prev !== false)
-	{
-		$options[] = "<a class='btn btn-default btn-sm btn-small' href='" . e107::url('forum','topic', $prev) . "'>&laquo; " . LAN_FORUM_2001 . "</a>";
-	}
-	if($next !== false)
-	{
-		$options[] = "<a class='btn btn-default btn-sm btn-small' href='" .  e107::url('forum','topic', $next) . "'>" . LAN_FORUM_2002 . " &raquo;</a>";
-	}
-
-	$tVars->NEXTPREV = implode(" | ", $options);
-----*/
-
-/*
-$tVars->NEXTPREV = "<a class='btn btn-default btn-sm btn-small' href='" . $e107->url->create('forum/thread/prev', array('id' => $thread->threadId)) . "'>&laquo; " . LAN_FORUM_2001 . "</a>";
-$tVars->NEXTPREV .= ' | '; // enabled to make it look better on v1 templates
-$tVars->NEXTPREV .= "<a class='btn btn-default btn-sm btn-small' href='" . $e107->url->create('forum/thread/prev', array('id' => $thread->threadId)) . "'>" . LAN_FORUM_2002 . " &raquo;</a>";
-*/
-
-/*----
-if ($forum->prefs->get('track') && USER)
-{
-	// BC Fix for old template.
-	if(!defined('IMAGE_track'))
-	{
-		define('IMAGE_track', 		'<img src="'.img_path('track.png').'" alt="'.LAN_FORUM_4009.'" title="'.LAN_FORUM_4009.'" class="icon S16 action" />');
-	}
-
-	if(!defined('IMAGE_untrack'))
-	{
-		define('IMAGE_untrack', 	'<img src="'.img_path('untrack.png').'" alt="'.LAN_FORUM_4010.'" title="'.LAN_FORUM_4010.'" class="icon S16 action" />');
-	}
-
-
-	$img = ($thread->threadInfo['track_userid'] ? IMAGE_track : IMAGE_untrack);
-
-
-/*
-	$url = $e107->url->create('forum/thread/view', array('id' => $thread->threadId), 'encode=0'); // encoding could break AJAX call
-
-	$url = e107::url('forum','index');
-
-	$tVars->TRACK .= "
-			<span id='forum-track-trigger-container'>
-			<a class='btn btn-default btn-sm btn-small e-ajax' data-target='forum-track-trigger' href='{$url}' id='forum-track-trigger'>{$img}</a>
-			</span>
-			<script type='text/javascript'>
-			e107.runOnLoad(function(){
-				$('forum-track-trigger').observe('click', function(e) {
-					e.stop();
-					new e107Ajax.Updater('forum-track-trigger-container', '{$url}', {
-						method: 'post',
-						parameters: { //send query parameters here
-							'track_toggle': 1
-						},
-						overlayPage: $(document.body)
-					});
-				});
-			}, document, true);
-			</script>
-	";*/
-
-
-/*----
-	$trackDiz = ($forum->prefs->get('trackemail',true)) ? LAN_FORUM_3040 : LAN_FORUM_3041;
-
-	$tVars->TRACK = "<a id='forum-track-button' href='#' title=\"".$trackDiz."\" data-token='".deftrue('e_TOKEN','')."' data-forum-insert='forum-track-button'  data-forum-post='".$thread->threadInfo['thread_forum_id']."' data-forum-thread='".$thread->threadInfo['thread_id']."' data-forum-action='track' name='track' class='e-tip btn btn-default' >".$img."</a>
-";
-
-}
-----*/
-
-/*----
-$modUser = array();
-foreach ( $forum->modArray as $user)
-{
-	$modUser[] = "<a href='".e107::getUrl()->create('user/profile/view', $user)."'>".$user['user_name']."</a>";
-}
-
-$tVars->MODERATORS = LAN_FORUM_2003.": ". implode(', ', $modUser);
-unset($modUser);
-----*/
-
-//---- $tVars->THREADSTATUS = (!$thread->threadInfo['thread_active'] ? LAN_FORUM_2004 : '');
-
-/*----
-if ($thread->pages > 1)
-{
-	if(!$thread->page) $thread->page = 1;
-//	$url = rawurlencode(e107::getUrl()->create('forum/thread/view', array('name' => $thread->threadInfo['thread_name'], 'id' => $thread->threadId, 'page' => '[FROM]')));
-
-//	$url = e_REQUEST_SELF."?p=[FROM]"; // SEF URL Friendly.
-	$url = e107::url('forum','topic', $thread->threadInfo)."&amp;p=[FROM]";
-
-	$parms = "total={$thread->pages}&type=page&current={$thread->page}&url=".urlencode($url)."&caption=off&tmpl=default&navcount=4&glyphs=1";
-	
-	//XXX FIXME - pull-down template not practical here. Can we force another?
-
-	$tVars->GOTOPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");
-/*
-	$parms = ($thread->pages).",1,{$thread->page},url::forum::thread::func=view&id={$thread->threadId}&page=[FROM],off";
-	$tVars->GOTOPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");
-}
-----*/
-
-/*----
-$tVars->BUTTONS = '';
-if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'post') && $thread->threadInfo['thread_active'])
-{
-	// print_a($thread->threadInfo);
-	$url = e107::url('forum','post')."?f=rp&amp;id=".$thread->threadInfo['thread_id']."&amp;post=".$thread->threadId;
-//	$url = $e107->url->create('forum/thread/reply', array('id' => $thread->threadId));
-	$tVars->BUTTONS .= "<a href='" . $url . "'>" . IMAGE_reply . "</a>";
-}
-if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'thread'))
-{
-	$ntUrl = e107::url('forum','post')."?f=nt&amp;id=". $thread->threadInfo['thread_forum_id'];
-//	$ntUrl = $e107->url->create('forum/thread/new', array('id' => $thread->threadInfo['thread_forum_id']));
-	$tVars->BUTTONS .= "<a href='" . $ntUrl . "'>" . IMAGE_newthread . "</a>";
-}
-----*/
-/*----
-$tVars->BUTTONSX = forumbuttons($thread);
-
-function forumbuttons($thread)
-{
-	global $forum; 
-
-	
-	if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'post') && $thread->threadInfo['thread_active'])
-	{
-		$url = e107::url('forum','post')."?f=rp&amp;id=".$thread->threadInfo['thread_id']."&amp;post=".$thread->threadId;
-	//	$url = e107::getUrl()->create('forum/thread/reply', array('id' => $thread->threadId));
-		$replyUrl = "<a class='btn btn-primary' href='".$url."'>".LAN_FORUM_2006."</a>";
-	}
-	if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'thread'))
-	{
-		$ntUrl = e107::url('forum','post')."?f=nt&amp;id=". $thread->threadInfo['thread_forum_id'];
-	//	$ntUrl = e107::getUrl()->create('forum/thread/new', array('id' => $thread->threadInfo['thread_forum_id']));
-		$options[] = " <a  href='".$ntUrl."'>".LAN_FORUM_2005."</a>";
-	}	
-	
-//	$options[] = "<a href='" . e107::getUrl()->create('forum/thread/prev', array('id' => $thread->threadId)) . "'>".LAN_FORUM_1017." ".LAN_FORUM_2001."</a>";
-//	$options[] = "<a href='" . e107::getUrl()->create('forum/thread/prev', array('id' => $thread->threadId)) . "'>".LAN_FORUM_1017." ".LAN_FORUM_2002."</a>";
-
-	$prev = $forum->threadGetNextPrev('prev', $thread->threadId,$thread->threadInfo['forum_id'], $thread->threadInfo['thread_lastpost']);
-	$next = $forum->threadGetNextPrev('next', $thread->threadId,$thread->threadInfo['forum_id'], $thread->threadInfo['thread_lastpost']);
-
-	if($prev !== false)
-	{
-		$options[] = "<a href='" . e107::url('forum','topic', $prev) . "'>".LAN_FORUM_1017." ".LAN_FORUM_2001."</a>";
-	}
-	if($next !== false)
-	{
-		$options[] = "<a href='" .  e107::url('forum','topic', $next) . "'>".LAN_FORUM_1017." ".LAN_FORUM_2002."</a>";
-	}
-
-
-	$text = '<div class="btn-group">
-   '.$replyUrl.'
-    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-    <span class="caret"></span>
-    </button>
-    <ul class="dropdown-menu pull-right">
-    ';
-	
-	foreach($options as $key => $val)
-	{
-		$text .= '<li>'.$val.'</li>';
-	}
-	
-	$jumpList = $forum->forumGetAllowed();
-	
-	$text .= "<li class='divider'></li>";
-	
-	foreach($jumpList as $key=>$val)
-	{
-		$text .= '<li><a href ="'.e107::url('forum','forum',$val).'">'.LAN_FORUM_1017." ".$val['forum_name'].'</a></li>';
-	}
-	
-	$text .= '
-    </ul>
-    </div>';
-	
-	
-	return $text;
-	
-}
-----*/
-
-
-//---- $tVars->POLL = vartrue($pollstr);
-
-//---- $tVars->FORUMJUMP = forumjump();
-
-//---- $tVars->MESSAGE = $thread->message;
 
 		$sc->setVars($thread->threadInfo);
+		$sc->setScVar('threadInfo', $thread->threadInfo);
 //$forum->set_crumb(true, '', $sc); // Set $BREADCRUMB (and BACKLINK)
 
 //---- $forstr = $tp->simpleParse($FORUMSTART, $tVars);
@@ -471,22 +277,28 @@ $alt = false;
 
 $i = $thread->page;
 
-//---- Moved upwards, to enclose $tVars...
-//---- $sc = e107::getScBatch('view', 'forum');
 
 	$mes = e107::getMessage();
-//		$sc->setVars($thread->threadInfo);
-//--->$forend = $tp->simpleParse($FORUMEND, $tVars);
+
+$sc->wrapper('forum_viewtopic/end'); 
 $forend = $tp->parseTemplate($FORUMEND, true, $sc);
 
+$lastPostDetectionCounter = count($postList);
+$sc->setScVar('thisIsTheLastPost', false);
 
 foreach ($postList as $c => $postInfo)
 {
-	if($postInfo['post_options'])
+	$postInfo['thread_active'] = $thread->threadInfo['thread_active'];
+
+	if(!empty($postInfo['post_options']))
 	{
 		$postInfo['post_options'] = unserialize($postInfo['post_options']);
 	}
+
 	$loop_uid = (int)$postInfo['post_user'];
+
+	$lastPostDetectionCounter--;
+	if ($lastPostDetectionCounter == 0) $sc->setScVar('thisIsTheLastPost', true);
 
 //---- Orphan $tnum????
 	$tnum = $i;
@@ -543,73 +355,29 @@ foreach ($postList as $c => $postInfo)
 }
 unset($loop_uid);
 
-/*---->
-if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'post') && $thread->threadInfo['thread_active'])
-{
-	//XXX Show only on the last page??
-	if (!vartrue($forum_quickreply))
-	{
-		$ajaxInsert = ($thread->pages == $thread->page || $thread->pages == 0) ? 1 : 0;
-	//	$ajaxInsert = 1;
-	//	echo "AJAX-INSERT=".$ajaxInsert ."(".$thread->pages." vs ".$thread->page.")";
-		$frm = e107::getForm();
-
-		$urlParms = array('f'=>'rp','id'=>$thread->threadInfo['thread_id'], 'post'=>$thread->threadInfo['thread_id']);
-		$url = e107::url('forum','post', null, array('query'=>$urlParms));; // ."?f=rp&amp;id=".$thread->threadInfo['thread_id']."&amp;post=".$thread->threadInfo['thread_id'];
-
-		$tVars->QUICKREPLY = "
-		<form action='" . $url . "' method='post'>
-		<div class='form-group'>
-			<textarea cols='80' placeholder='".LAN_FORUM_2007."' rows='4' id='forum-quickreply-text' class='tbox input-xxlarge form-control' name='post' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
-		</div>
-		<div class='center text-center form-group'>
-			<input type='submit' data-token='".e_TOKEN."' data-forum-insert='".$ajaxInsert."' data-forum-post='".$thread->threadInfo['thread_forum_id']."' data-forum-thread='".$threadId."' data-forum-action='quickreply' name='reply' value='".LAN_FORUM_2006. "' class='btn btn-success button' />
-			<input type='hidden' name='thread_id' value='".$threadId."' />
-		</div>
-		
-		</form>";
-
-		if(E107_DEBUG_LEVEL > 0)
-		{
-		//	echo "<div class='alert alert-info'>Thread id: ".$threadId."</div>";
-		//	print_a($this);
-		}
 
 
-				
-		// Preview should be reserved for the full 'Post reply' page. <input type='submit' name='fpreview' value='" . Preview . "' /> &nbsp;
-	}
-	else
-	{
-		$tVars->QUICKREPLY = $forum_quickreply;
-	}
-}
-<----*/
 
-/*--->
-	$mes = e107::getMessage();
-		$sc->setVars($thread->threadInfo);
-//--->$forend = $tp->simpleParse($FORUMEND, $tVars);
-$forend = $tp->parseTemplate($FORUMEND, true, $sc);
-<---*/
 $forumstring = $forstr . $forthr . vartrue($forrep) . $forend;
 
 //If last post came after USERLV and not yet marked as read, mark the thread id as read
 //---- Orphan $currentUser???
 $threadsViewed = explode(',', $currentUser['user_plugin_forum_viewed']);
 
-if ($thread->threadInfo['thread_lastpost'] > USERLV && !in_array($thread->threadId, $threadsViewed))
+if ($thread->threadInfo['thread_lastpost'] > defset('USERLV') && !in_array($thread->threadId, $threadsViewed))
 {
 	$tst = $forum->threadMarkAsRead($thread->threadId);
 	$mes->addDebug("Marking Forum as read: ".$thread->threadId." result: ".$tst);
 }
 else
 {
-	$ret = array('lastpost'=>$thread->threadInfo['thread_lastpost'], 'lastvisit'=>USERLV, 'thread'=>$thread->threadId, 'viewed'=>$threadsViewed);
+	$ret = array('lastpost'=>$thread->threadInfo['thread_lastpost'], 'lastvisit'=>defset('USERLV'), 'thread'=>$thread->threadId, 'viewed'=>$threadsViewed);
 	e107::getDebug()->log($ret);
 	unset($ret);
 }
-
+ 
+$thread->threadInfo['thread_page'] = varset($thread->page,1);
+e107::canonical('forum', 'topic-canonical', $thread->threadInfo); 
 
 require_once (HEADERF);
 
@@ -617,7 +385,7 @@ require_once (HEADERF);
 if ($forum->prefs->get('enclose'))
 {
 	$forumTitle = empty($FORUMCAPTION) ? e107::pref('forum','title', LAN_PLUGIN_FORUM_NAME) : $tp->parseTemplate($FORUMCAPTION, true, $sc);
-	$ns->tablerender($forumTitle, $mes->render().$forumstring,  array('forum_viewtopic', 'main'));
+	$ns->tablerender($forumTitle, $mes->render().$forumstring,  'forum-viewtopic');
 }
 else
 {
@@ -626,12 +394,12 @@ else
 
 // end -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-echo "<script type=\"text/javascript\">
+echo "<script>
 	function confirm_(mode, forum_id, thread_id, thread) {
 	if (mode == 'Thread') {
-	return confirm(\"" . $tp->toJS(LAN_FORUM_2009) . "\");
+	return confirm(" . $tp->toJSON(LAN_FORUM_2009) . ");
 	} else {
-	return confirm(\"" . $tp->toJS(LAN_FORUM_2010) . " [ " . $tp->toJS(LAN_FORUM_0074) . " \" + thread + \" ]\");
+	return confirm(" . $tp->toJSON(LAN_FORUM_2010 . " [ " . LAN_FORUM_0074) . " + thread + \" ]\");
 	}
 	}
 	</script>";
@@ -667,7 +435,7 @@ function showmodoptions()
 	$ret .= "
 		<div>
 		<a class='e-tip' href='" . $editURL."' title=\"".LAN_EDIT."\">" . IMAGE_admin_edit . "</a>
-		<input type='image' " . IMAGE_admin_delete . " name='delete{$type}_{$delId}' value='thread_action' onclick=\"return confirm_('{$type}', {$postInfo['post_forum']}, {$postInfo['post_thread']}, '{$postInfo['user_name']}')\" />
+		<input type='image' " . IMAGE_admin_delete . " name='delete{$type}_{$delId}' value='thread_action' alt='".LAN_DELETE."' onclick=\"return confirm_('{$type}', {$postInfo['post_forum']}, {$postInfo['post_thread']}, '{$postInfo['user_name']}')\" />
 		<input type='hidden' name='mod' value='1'/>
 		";
 	if ($type == 'Thread')
@@ -1040,7 +808,7 @@ class e107ForumThread
 								<a class='pull-right btn btn-xs btn-primary e-expandit' href='#post-info'>View Post</a>
 								</div>
 								<div id='post-info' class='e-hideme alert alert-block alert-danger'>
-									".$tp->toHtml($postInfo['post_entry'],true)."
+									".$tp->toHTML($postInfo['post_entry'],true)."
 								</div>
 								<div class='form-group' >
 									<div class='col-md-12'>
@@ -1096,4 +864,4 @@ class e107ForumThread
 	}
 }
 
-?>
+

@@ -18,4 +18,3 @@ define("US_LAN_3", "All users");
 define("US_LAN_4", "Find username");
 define("US_LAN_5", "User(s) found");
 define("US_LAN_6", "Search");
-?>

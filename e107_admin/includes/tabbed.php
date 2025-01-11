@@ -47,16 +47,16 @@ class tabbed
         foreach ($admin_cat['id'] as $cat_key => $cat_id)
         {
             $cls = ($cat_key == 1) ? "class='active'" : "";
-            $text .= "<li {$cls} ><a data-toggle='tab' href='#core-main-".$cat_key."'>".$admin_cat['title'][$cat_key]."</a></li>";
+            $text .= "<li {$cls} ><a data-toggle='tab' data-bs-toggle='tab' href='#core-main-".$cat_key."'>".$admin_cat['title'][$cat_key]."</a></li>";
         }
         
         $text .= "</ul>";
     //    print_a($this->links);
-           $text .= "<div class='tab-content adminform'>";
+           $text .= "<div class='tab-content adminform clearfix'>";
          foreach ($admin_cat['id'] as $id => $cat_id)
          {
              $cls = ($id == 1) ? "active" : "";
-            $text .= "<div class='tab-pane {$cls} adminform' style='width:95%' id='core-main-{$id}'>".$this->renderCat($id)."</div>";
+            $text .= "<div class='tab-pane {$cls} adminform' style='padding-top:10px' id='core-main-{$id}'>".$this->renderCat($id)."</div>";
          }
         $text .= "</div>";
           $text .= "</div>";
@@ -109,7 +109,7 @@ class tabbed
                     foreach ($admin_cat['id'] as $cat_key => $cat_id)
         			{
         				// $text .= "<li id='tab-main_".$cat_key."' ><span style='white-space:nowrap'><img class='icon S16' src='".$admin_cat['img'][$cat_key]."' alt='' style='margin-right:3px' /><a href='#core-main_".$cat_key."'>".$admin_cat['title'][$cat_key]."</a></span></li>";
-        				$text .= "<li id='tab-main_".$cat_key."' ><a data-toggle='tab' href='#core-main_".$cat_key."'>".$admin_cat['title'][$cat_key]."</a></li>";
+        				$text .= "<li id='tab-main_".$cat_key."' ><a data-toggle='tab' data-bs-toggle='tab' href='#core-main_".$cat_key."'>".$admin_cat['title'][$cat_key]."</a></li>";
         			}
         			$text .= "</ul>";
         
@@ -141,7 +141,7 @@ class tabbed
         	}
         	else // Plugin category.
         	{
-        		$text_rend  = e107::getNav()->pluginLinks(E_32_PLUGMANAGER, "div");
+        		$text_rend  = e107::getNav()->pluginLinks(defset('E_32_PLUGMANAGER'), "div");
         
         		if ($text_rend)
         		{
@@ -171,4 +171,3 @@ class tabbed
     
     }
 }
-?>

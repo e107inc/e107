@@ -54,4 +54,3 @@ function usersearch_shortcode($parm)
 	$ret .= "</ul>";
 	return $ret;
 }
-?>

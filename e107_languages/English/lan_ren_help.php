@@ -32,9 +32,9 @@ define("LANHELP_21", "Click to open color dialog ...");
 define("LANHELP_22", "Click to open size dialog ...");
 
 define("LANHELP_23", "Insert link:\n[link]http://mysite.com[/link] or  [link=http://yoursite.com]Visit My Site[/link]");
-define("LANHELP_24", "Bold text:\n[b]This text will be bold[/b]", "font-weight:bold; width: 20px");
-define("LANHELP_25", "Italic text:\n[i]This text will be italicised[/i]", "font-style:italic; width: 20px");
-define("LANHELP_26", "Underline text:\n[u]This text will be underlined[/u]", "text-decoration: underline; width: 20px");
+define("LANHELP_24", "Bold text:\n[b]This text will be bold[/b]");
+define("LANHELP_25", "Italic text:\n[i]This text will be italicised[/i]");
+define("LANHELP_26", "Underline text:\n[u]This text will be underlined[/u]");
 define("LANHELP_27", "Insert image:\n[img]mypicture.jpg[/img]");
 define("LANHELP_28", "Center align:\n[center]This text will be centered[/center]");
 define("LANHELP_29", "Left align:\n[left]This text will be left aligned[/left]");
@@ -67,3 +67,15 @@ define("LANHELP_51", "Disable HTML new lines for enclosed text: [nobr]text[/nobr
 define("LANHELP_52", "New line (HTML): [br]");
 define("LANHELP_53", "Justify align:\n[justify]This text will be justified[/justify]");
 define("LANHELP_54", "HTML block (div tag): [block]Your content[/block]");
+define("LANHELP_55", "Format");
+define("LANHELP_56", "Insert a table");
+define("LANHELP_57", "Heading");
+define("LANHELP_58", "Block");
+define("LANHELP_59", "Quote");
+
+define("LANHELP_60", "Code Block");
+define("LANHELP_61", "Code Inline");
+define("LANHELP_62", "Paragraph");
+define("LANHELP_63", "Insert an Image from the Media Manager");
+define("LANHELP_64", "Insert a file from the Media-Manager");
+define("LANHELP_65", "Size");

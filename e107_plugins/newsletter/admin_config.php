@@ -11,12 +11,15 @@
 */
 
 
-require_once('../../class2.php');
+require_once(__DIR__.'/../../class2.php');
 if (!getperms('P')) 
 {
 	e107::redirect('admin');
 	exit;
 }
+
+e107::lan('newsletter',true);
+
 $e_sub_cat = 'newsletter';
 require_once(e_ADMIN.'auth.php');
 // Include ren_help for display_help (while showing BBcodes)
@@ -120,6 +123,8 @@ class newsletter
 		$mes = e107::getMessage();
 		$tp = e107::getParser();
 
+		$text = '';
+
 		if(!$sql->select('newsletter', '*', "newsletter_parent='0'  ORDER BY newsletter_id DESC"))
 		{
 			$mes->addInfo(NLLAN_05);
@@ -151,8 +156,8 @@ class newsletter
 					<td>".$data['newsletter_title']."</td>
 					<td>".((substr_count($data['newsletter_subscribers'], chr(1))!= 0)?"<a href='".e_SELF."?vs.".$data['newsletter_id']."'>".substr_count($data['newsletter_subscribers'], chr(1))."</a>":substr_count($data['newsletter_subscribers'], chr(1)))."</td>
 					<td>
-						<a class='btn btn-default btn-large' href='".e_SELF."?edit.".$data['newsletter_id']."'>".ADMIN_EDIT_ICON."</a>
-						<input class='btn btn-default btn-large' type='image' title='".LAN_DELETE."' name='delete[newsletter_".$data['newsletter_id']."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [ID: ".$data['newsletter_id']." ]")."') \"/>
+						<a class='btn btn-default btn-secondary btn-large' href='".e_SELF."?edit.".$data['newsletter_id']."'>".ADMIN_EDIT_ICON."</a>
+						<input class='btn btn-default btn-secondary btn-large' type='image' title='".LAN_DELETE."' name='delete[newsletter_".$data['newsletter_id']."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm(".$tp->toAttribute($tp->toJSON(LAN_CONFIRMDEL." [ID: ".$data['newsletter_id']." ]")).") \"/>
 
 					</td>
 				</tr>
@@ -165,7 +170,8 @@ class newsletter
 		}
 		$ns->tablerender(NLLAN_10, $mes->render() . $text);
 
-		unset($text);
+
+		$text = '';
 
 		if(!$sql->select('newsletter', '*', "newsletter_parent!='0' ORDER BY newsletter_id DESC"))
 		{
@@ -200,8 +206,8 @@ class newsletter
 					<td>".$data['newsletter_id']."</td>
 					<td>".$data['newsletter_issue']."</td>
 					<td>[ ".$data['newsletter_parent']." ] ".$data['newsletter_title']."</td>
-					<td>".($data['newsletter_flag'] ? LAN_YES : "<input class='btn btn-default button' type='submit' name='nlmailnow_".$data['newsletter_id']."' value='".NLLAN_17."' onclick=\"return jsconfirm('".$tp->toJS(NLLAN_18)."') \" />")."</td>
-					<td><a class='btn btn-large' href='".e_SELF."?edit.".$data['newsletter_id']."'>".ADMIN_EDIT_ICON."</a><input type='image' title='".LAN_DELETE."' name='delete[issue_".$data['newsletter_id']."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(NLLAN_19." [ID: ".$data['newsletter_id']." ]")."') \"/>
+					<td>".($data['newsletter_flag'] ? LAN_YES : "<input class='btn btn-default btn-secondary button' type='submit' name='nlmailnow_".$data['newsletter_id']."' value='".NLLAN_17."' onclick=\"return jsconfirm(".$tp->toAttribute($tp->toJSON(NLLAN_18)).") \" />")."</td>
+					<td><a class='btn btn-large' href='".e_SELF."?edit.".$data['newsletter_id']."'>".ADMIN_EDIT_ICON."</a><input type='image' title='".LAN_DELETE."' name='delete[issue_".$data['newsletter_id']."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm(".$tp->toAttribute($tp->toJSON(NLLAN_19." [ID: ".$data['newsletter_id']." ]")).") \"/>
 				
 				</td>
 				</tr>
@@ -444,7 +450,7 @@ class newsletter
 		$mailData = array(
 			'mail_content_status' => MAIL_STATUS_TEMP,
 			'mail_create_app' => 'newsletter',
-			'mail_title' => NLLAN_01.' '.$issue,
+			'mail_title' => LAN_PLUGIN_NEWSLETTER_NAME.' '.$issue,
 			'mail_subject' => $newsletterParentInfo['newsletter_title'] .': '.$newsletterInfo['newsletter_title'],
 			'mail_sender_email' => $pref['siteadminemail'],
 			'mail_sender_name'	=> $pref['siteadmin'],
@@ -464,10 +470,10 @@ class newsletter
 		{
 			$mailMainID = $mailData['mail_source_id'] = $result;
 		}
-		else
-		{
+		//else
+		//{
 				// TODO: Handle error
-		}
+		//}
   
 
 		$mailer->mailInitCounters($mailMainID);			// Initialise counters for emails added
@@ -480,7 +486,7 @@ class newsletter
 			{
 				if($sql->select('user', 'user_name,user_email,user_loginname,user_lastvisit', 'user_id='.$memberID))
 				{
-					$row = $sql->db_Fetch();
+					$row = $sql->fetch();
 					$uTarget = array('mail_recipient_id' => $memberID,
 									 'mail_recipient_name' => $row['user_name'],		// Should this use realname?
 									 'mail_recipient_email' => $row['user_email'],
@@ -507,8 +513,8 @@ class newsletter
 		else
 		{
 			$mailer->activateEmail($mailMainID, FALSE);					// Actually mark the email for sending
-			//$this->message = str_replace('--COUNT--', $counters['add'],NLLAN_40);
-			$mes->addSuccess(str_replace('--COUNT--', $counters['add'], NLLAN_40));
+			//$this->message = str_replace('[x]', $counters['add'],NLLAN_40);
+			$mes->addSuccess(str_replace('[x]', $counters['add'], NLLAN_40));
 		}
 		$sql->update('newsletter', "newsletter_flag='1' WHERE newsletter_id=".$issue);
 
@@ -545,14 +551,14 @@ class newsletter
 	/**
 	 * Delete a newsletter
 	 *
-	 * @return none
+	 * @return null
 	 */
 	function deleteNewsletter()
 	{
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
 
-		$tmp = each($_POST['delete']);
+		$tmp = key($_POST['delete']);
 		if(strpos($tmp['key'], 'newsletter') === 0)
 		{
 			$id = intval(str_replace('newsletter_', '', $tmp['key']));
@@ -578,7 +584,7 @@ class newsletter
 	 */
 	function show_options($action)
 	{
-		if ($action == "")
+		if (empty($action))
 		{
 			$action = "main";
 		}
@@ -607,11 +613,11 @@ class newsletter
 		$vs_text = '';
 
 
-		if(!$nl_sql->db_Select('newsletter', '*', 'newsletter_id='.$p_id))// Check if newsletter id is available
+		if(!$nl_sql->select('newsletter', '*', 'newsletter_id='.$p_id))// Check if newsletter id is available
 		{	
 			$mes->addError(NLLAN_56);
 			$vs_text .= "<div class='buttons-bar center'>
-							<input class='btn btn-default button' type=button value='".LAN_BACK."' onClick=\"window.location='".e_SELF."'\">
+							<input class='btn btn-default btn-secondary button' type=button value='".LAN_BACK."' onClick=\"window.location='".e_SELF."'\">
 						</div>";
 			$ns -> tablerender(NLLAN_65.' '.$p_id, $mes->render() . $vs_text);
 			return;
@@ -635,15 +641,15 @@ class newsletter
 					<td>".LAN_OPTIONS."</td>
 				</tr>";
 
-			if($nl_row = $nl_sql-> db_Fetch())
+			if($nl_row = $nl_sql->fetch())
 			{
 				$subscribers_list = explode(chr(1), trim($nl_row['newsletter_subscribers']));
-				sort($subscriber_list);
+				sort($subscribers_list);
 				$subscribers_total_count = count($subscribers_list) - 1;	// Get a null entry as well
 			}
 			if ($subscribers_total_count<1) 
 			{
-				header("location:".e_SELF);
+				e107::redirect(e_SELF);
 				exit;
 			}
 			// Loop through each user in the array subscribers_list & sanatize
@@ -726,4 +732,4 @@ function admin_config_adminmenu()
 	global $action;
 	$nl->show_options($action);
 }
-?>
+

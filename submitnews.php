@@ -15,7 +15,8 @@ if(!empty($_POST) && !isset($_POST['e-token']))
 	$_POST['e-token'] = '';
 } 
 require_once("class2.php");
-e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+e107::coreLan('submitnews');
+// e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 require_once(HEADERF);
 
@@ -105,7 +106,7 @@ class submitNews
 		}
 
 		// ==== Process File Upload ====
-		if (FILE_UPLOADS && !empty($_FILES['file_userfile']) && vartrue($pref['subnews_attach']) && vartrue($pref['upload_enabled']) && check_class($pref['upload_class']))
+		if (FILE_UPLOADS && !empty($_FILES['file_userfile']['name'][0]) && vartrue($pref['subnews_attach']) && vartrue($pref['upload_enabled']) && check_class($pref['upload_class']))
 		{
 			$uploaded = e107::getFile()->getUploaded(e_UPLOAD, 'unique', array('file_mask' => 'jpg,gif,png', 'max_file_count' => 3));
 
@@ -309,7 +310,7 @@ class submitNews
 			$fields = array();
 			$fields['submitnews_keywords']      = array('title'=>SUBNEWSLAN_9, 'type'=>'tags');
 			$fields['submitnews_summary']       = array('title'=>LAN_SUMMARY, 'type'=>'text', 'writeParms'=>array('maxlength'=>255, 'size'=>'xxlarge'));
-			$fields['submitnews_description']   = array('title'=>SUBNEWSLAN_11, 'type'=>'textarea','writeParms'=>array('placeholder'=>SUBNEWSLAN_12));
+			$fields['submitnews_description']   = array('title'=>LAN_META_DESCRIPTION, 'type'=>'textarea','writeParms'=>array('placeholder'=>SUBNEWSLAN_12));
 			$fields['submitnews_media']         = array('title'=>SUBNEWSLAN_13, 'type'=>'method', 'method'=>'submitNewsForm::submitnews_media');
 
 
@@ -353,7 +354,7 @@ class submitNews
 			      <tr>
 			        <td colspan='2' style='text-align:center' class='forumheader'>
 			          <input class='btn btn-success button' type='submit' name='submitnews_submit' value='".LAN_136."' />
-			           <input type='hidden' name='e-token' value='".e_TOKEN."' />
+			           <input type='hidden' name='e-token' value='".defset('e_TOKEN')."' />
 			        </td>
 			      </tr>
 			    </table>
@@ -387,7 +388,7 @@ class submitNewsForm extends e_form
 		{
 			$help = (isset($placeholders[$i])) ? $placeholders[$i] : '';
 			$text .= "<div class='form-group'>";
-			$text .= $this->text('submitnews_media['.$i.']', $_POST['submitnews_media'][$i], 255, array('placeholder'=>$help) );
+			$text .= $this->text('submitnews_media['.$i.']', varset($_POST['submitnews_media'][$i]), 255, array('placeholder'=>$help) );
 			$text .= "</div>";
 		}
 

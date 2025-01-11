@@ -26,9 +26,9 @@
 	<string>:-?</string>
 </emoticon>
 <emoticon file="cry">
-	<string>&|</string>
-	<string>&-|</string>
-	<string>&o|</string>
+	<string>&amp;|</string>
+	<string>&amp;-|</string>
+	<string>&amp;o|</string>
 	<string>:((</string>
 	<string>!cry</string>
 </emoticon>

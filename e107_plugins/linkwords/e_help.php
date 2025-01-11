@@ -6,25 +6,14 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/linkwords/e_help.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
-/**
- *	e107 Linkword plugin
- *
- *	@package	e107_plugins
- *	@subpackage	linkwords
- *	@version 	$Id$;
- *
- */
+// DEPRECATED FILE - moved renderHelp() in admin_config.php 
 
 if (!defined('e107_INIT')) { exit; }
+return; 
 
+/*
 
 e107::lan('linkwords',e_LANGUAGE."_admin_linkwords.php"); 
 
@@ -42,4 +31,4 @@ default :
 }
 $ns -> tablerender(LAN_LW_HELP_00, $text);
 unset($text);
-?>
+?>*/

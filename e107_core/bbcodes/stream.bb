@@ -32,17 +32,19 @@ if (isset($stream_parms['height'])) {
 }
 
 $parmStr="";
+$MozparmStr = '';
+$IEparmStr = '';
 foreach($stream_parms as $k => $v)
 {
-	$MozparmStr .= "<param name='".$tp -> toAttribute($k)."' value='".$tp -> toAttribute($v)."'>\n";
-	$IEparmStr .= $tp -> toAttribute($k)."='".$tp -> toAttribute($v)."' ";
+	$MozparmStr .= "<param name='".e107::getParser()->toAttribute($k)."' value='".e107::getParser()->toAttribute($v)."'>\n";
+	$IEparmStr .= e107::getParser()->toAttribute($k)."='".e107::getParser()->toAttribute($v)."' ";
 }
 
 $ret = "
-<object class='{$class}' id='MediaPlayer' classid='CLSID:22D6F312-B0F6-11D0-94AB-0080C74C7E95' standby='Loading Microsoft� Windows� Media Player components...' type='application/x-oleobject' codebase='http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,7,1112' width='".$tp -> toAttribute($width)."' height='".$tp -> toAttribute($height)."'>\n";
-$ret .= "<param name='filename' value='".$tp -> toAttribute($code_text)."'>\n";
+<object class='{$class}' id='MediaPlayer' classid='CLSID:22D6F312-B0F6-11D0-94AB-0080C74C7E95' standby='Loading Microsoft� Windows� Media Player components...' type='application/x-oleobject' codebase='http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,7,1112' width='".e107::getParser()->toAttribute($width)."' height='".e107::getParser()->toAttribute($height)."'>\n";
+$ret .= "<param name='filename' value='".e107::getParser()->toAttribute($code_text)."'>\n";
 $ret .= $MozparmStr;
-$ret .= "<embed src='".$tp -> toAttribute($code_text)."' width='".$tp -> toAttribute($width)."' height='".$tp -> toAttribute($height)."' id='mediaPlayer' name='mediaPlayer' {$IEparmStr}>
+$ret .= "<embed src='".e107::getParser()->toAttribute($code_text)."' width='".e107::getParser()->toAttribute($width)."' height='".e107::getParser()->toAttribute($height)."' id='mediaPlayer' name='mediaPlayer' {$IEparmStr}>
 </object>
 ";
 

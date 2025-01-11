@@ -17,18 +17,13 @@ if (!defined('e107_INIT')) { exit; }
 
 /*
  * Type defines
- * XXX - convert to eMessage class constants
- * @note 07 May 2013: These have been converted to eMessage class constants!
- *       Example: eMessage::E_MESSAGE_SUCCESS is 'success'
- *             -- Deltik
- *       P.S. Now somebody needs to get rid of these universal constants...
  */
-define('E_MESSAGE_INFO', 		'info');
-define('E_MESSAGE_SUCCESS', 	'success');
-define('E_MESSAGE_WARNING', 	'warning');
-define('E_MESSAGE_ERROR', 		'error');
-define('E_MESSAGE_DEBUG', 		'debug');
-define('E_MESSAGE_NODISPLAY',	'nodisplay'); // Appears to be needed by update_routine
+define('E_MESSAGE_INFO',      'info');
+define('E_MESSAGE_SUCCESS',   'success');
+define('E_MESSAGE_WARNING',   'warning');
+define('E_MESSAGE_ERROR',     'error');
+define('E_MESSAGE_DEBUG',     'debug');
+define('E_MESSAGE_NODISPLAY', 'nodisplay'); // Appears to be needed by update_routine
 
 //FIXME - language file! new?
 
@@ -83,6 +78,12 @@ class eMessage
 	 * @var array
 	 */
 	static $_customTitle = array();
+
+	/**
+	 * Custom font-awesome icon
+	 * @var array
+	 */
+	static $_customIcon = array();
 
 
 	static $_close = array('info'=>true,'success'=>true,'warning'=>true,'error'=>true,'debug'=>true);
@@ -155,7 +156,7 @@ class eMessage
 	
 	/**
 	 * Get session handler
-	 * @return eMessage
+	 * @return e_core_session
 	 */
 	public function getSessionHandler()
 	{
@@ -227,7 +228,7 @@ class eMessage
 	 * @param string|array $message message(s)
 	 * @param string $mstack defaults to 'default' 
 	 * @param string $type [optional]
-	 * @param boolean $sesion [optional]
+	 * @param boolean $session [optional]
 	 * @return eMessage
 	 */
 	public function addStack($message, $mstack = 'default', $type = E_MESSAGE_INFO, $session = false)
@@ -333,7 +334,7 @@ class eMessage
 		if($this->isType($type)) 
 		{
 			// unique messages only
-			if(in_array($mstack, $this->_unique) && in_array($msg, $SESSION[$type][$mstack])) return $this;
+			if(in_array($mstack, $this->_unique) && isset($SESSION[$type][$mstack]) && in_array($message, $SESSION[$type][$mstack])) return $this;
 			
 			$SESSION[$type][$mstack][] = $message;
 			$this->getSessionHandler()->set($this->_session_id, $SESSION);
@@ -349,7 +350,6 @@ class eMessage
 	 * @param string|array $message message(s)
 	 * @param string $mstack defaults to 'default' 
 	 * @param string $type [optional]
-	 * @param boolean $sesion [optional]
 	 * @return eMessage
 	 */
 	public function addSessionStack($message, $mstack = 'default', $type = E_MESSAGE_INFO)
@@ -400,6 +400,22 @@ class eMessage
 		$tp = e107::getParser();
 		self::$_customTitle[$type] = $tp->toText($title);
 		
+		return $this;
+	}
+
+	/**
+	 * Set a custom icon (useful for front-end)
+	 *
+	 * @param string $fa FontAwesome reference. eg. fa-cog
+	 * @param string $type E_MESSAGE_SUCCESS,E_MESSAGE_ERROR, E_MESSAGE_WARNING, E_MESSAGE_INFO
+	 * @return $this
+	 * @example e107::getMessage()->setIcon('fa-cog', E_MESSAGE_INFO);
+	 */
+	public function setIcon($fa, $type)
+	{
+		$tp = e107::getParser();
+		self::$_customIcon[$type] = $tp->toText($fa);
+
 		return $this;
 	}
 
@@ -519,13 +535,12 @@ class eMessage
 			$this->mergeWithSession(true, $mstack);
 		}
 		$ret = array();
-		$unique = array(); 
-		
+
 		$typesArray = (is_string($options) && in_array($options, $this->_get_types()))  ? array($options) : $this->_get_types();		
 		
 		foreach ($typesArray as $type)
 		{
-			if(E_MESSAGE_DEBUG === $type && !deftrue('E107_DEBUG_LEVEL'))
+			if(E_MESSAGE_DEBUG === $type && (!deftrue('E107_DEBUG_LEVEL') || !ADMIN))
 			{
 				continue;
 			}
@@ -572,10 +587,22 @@ class eMessage
 			//$message = array_unique($message); // quick fix for duplicates. 
 			$message = "<div class='s-message-item'>".implode("</div>\n<div class='s-message-item'>", $message)."</div>";
 		}
+
+		$icon = !empty(self::$_customIcon[$type]) ? "s-message-empty fa fa-2x ".self::$_customIcon[$type] : "s-message-".$type;
+
 		
-		$text = "<div class='s-message alert alert-block fade in {$type} {$bclass}'>";
-		$text .= (self::$_close[$type] === true) ? "<a class='close' data-dismiss='alert'>×</a>" : "";
-		$text .= "<i class='s-message-icon s-message-".$type."'></i>
+		$text = "<div class='s-message alert alert-block alert-dismissible fade in show {$type} {$bclass}' role='alert'>";
+
+		if(defset('BOOTSTRAP') === 5)
+		{
+			$text .= (self::$_close[$type] === true) ? "<button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='".LAN_CLOSE."'></button>" : "";
+		}
+		else
+		{
+			$text .= (self::$_close[$type] === true) ? "<a class='close' data-dismiss='alert' aria-label='".LAN_CLOSE."'>×</a>" : "";
+		}
+
+		$text .= "<i class='s-message-icon ".$icon."'></i>
 				<h4 class='s-message-title'>".self::getTitle($type, $mstack)."</h4>
 				<div class='s-message-body'>
 					{$message}
@@ -678,6 +705,7 @@ class eMessage
 	 * Merge _SESSION message array with the current messages
 	 * 
 	 * @param boolean $reset
+	 * @param boolean $mstack
 	 * @return eMessage
 	 */
 	public function mergeWithSession($reset = true, $mstack = false)
@@ -715,9 +743,9 @@ class eMessage
 	/**
 	 * Convert current messages to Session messages 
 	 *
-	 * @param string $mstack false - move all message stacks
-	 * @param string $message_type false - move all types
-	 * @return unknown
+	 * @param bool $mstack false - move all message stacks
+	 * @param bool $message_type false - move all types
+	 * @return eMessage
 	 */
 	public function moveToSession($mstack = false, $message_type = false)
 	{
@@ -754,8 +782,8 @@ class eMessage
 	 * 
 	 * @param string $from_stack source stack
 	 * @param string $to_stack [optional] destination stack
-	 * @param string $type [optional] merge for a given type only
-	 * @param string $session [optional] merge session as well
+	 * @param bool $type [optional] merge for a given type only
+	 * @param bool $session [optional] merge session as well
 	 * @return eMessage
 	 */
 	public function moveStack($from_stack, $to_stack = 'default', $type = false, $session = true)
@@ -798,7 +826,7 @@ class eMessage
 	 * 
 	 * @param string $from_stack source stack
 	 * @param string $to_stack [optional] destination stack
-	 * @param string $type [optional] merge for a given type only
+	 * @param string|bool $type [optional] merge for a given type only
 	 * @return eMessage
 	 */
 	public function moveSessionStack($from_stack, $to_stack = 'default', $type = false)
@@ -815,7 +843,7 @@ class eMessage
 			}
 			if(isset($stacks[$from_stack]))
 			{
-				if(!isset($SESSION[$_type][$to_stack]))
+				if(!isset($stacks[$to_stack]))
 				{
 					$SESSION[$_type][$to_stack] = array();
 				}
@@ -843,7 +871,7 @@ class eMessage
 	 * Check for messages
 	 *
 	 * @param mixed $type
-	 * @param string $mstack
+	 * @param string|bool $mstack
 	 * @param boolean $session
 	 * @return boolean
 	 */
@@ -923,8 +951,8 @@ class eMessage
 	 *
 	 * @param integer|bool $update return result of db::db_Query
 	 * @param string $type update|insert|update
-	 * @param string $success forced success message
-	 * @param string $failed forced error message
+	 * @param string|bool $success forced success message
+	 * @param string|bool $failed forced error message
 	 * @param bool $output false suppress any function output
 	 * @return integer|bool db::db_Query result
 	 */
@@ -982,6 +1010,14 @@ class eMessage
 
 }
 
+
+/**
+ * @param $mode
+ * @param $message
+ * @param $line
+ * @param $file
+ * @return void
+ */
 function show_emessage($mode, $message, $line = 0, $file = "") {
 	global $tp;
 
@@ -1062,9 +1098,9 @@ $SYSTEM_DIRECTORY    = "e107_system/";</pre>
 	}
 
 
-	if (class_exists('e107table'))
+	if (class_exists('e_render'))
 	{
-	  $ns = new e107table;
+	  $ns = new e_render;
 	}
 
 	switch($mode)
@@ -1091,6 +1127,21 @@ $SYSTEM_DIRECTORY    = "e107_system/";</pre>
 				$file = null;
 			}
 
+			if(defined('e_EMAIL_CRITICAL'))
+			{
+				$date = date('r');
+				$subject = '['. $_SERVER['HTTP_HOST'].'] Critical Error';
+				$emailLogFile = e_LOG.'criticalErrorEmail'.date('Ymd').'.log';
+				if(!file_exists($emailLogFile))
+				{
+					@mail(e_EMAIL_CRITICAL, $subject, $date."\t\t". strip_tags($message));
+					@file_put_contents(e_LOG.'criticalErrorEmail'.date('Ymd').'.log', 'Critical Error email sent to '.e_EMAIL_CRITICAL);
+				}
+				$message = LAN_ERROR_11; // "Check log for details";
+				$line = null;
+				$file = null;
+			}
+
 
 			if(!defined('HEADERF'))
 			{
@@ -1111,7 +1162,7 @@ $SYSTEM_DIRECTORY    = "e107_system/";</pre>
 			break;
 
 		case "MESSAGE":
-			if(strstr(e_SELF, "forum_post.php")) //FIXME Shouldn't be here.
+			if(strpos(e_SELF, "forum_post.php") !== false) //FIXME Shouldn't be here.
 			{
 				return;
 			}
@@ -1123,12 +1174,12 @@ $SYSTEM_DIRECTORY    = "e107_system/";</pre>
 			break;
 
 		case "ALERT":
-			$message = $emessage[$message] ? $emessage[$message] : $message;
-			echo "<noscript>$message</noscript><script type='text/javascript'>alert(\"".$tp->toJS($message)."\"); window.history.go(-1); </script>\n"; exit;
+			$message = isset($emessage[$message]) ? $emessage[$message] : $message;
+			echo "<noscript>$message</noscript><script>alert(".$tp->toJSON($message)."); window.history.go(-1); </script>\n"; exit;
 			break;
 
 		case "P_ALERT":
-			echo "<script type='text/javascript'>alert(\"".$tp->toJS($message)."\"); </script>\n";
+			echo "<script>alert(".$tp->toJSON($message)."); </script>\n";
 			break;
 
 		case 'POPUP':
@@ -1136,7 +1187,7 @@ $SYSTEM_DIRECTORY    = "e107_system/";</pre>
 			$mtext = "<html><head><title>Message</title><link rel=stylesheet href=" . THEME . "style.css></head><body style=padding-left:2px;padding-right:2px;padding:2px;padding-bottom:2px;margin:0px;align;center marginheight=0 marginleft=0 topmargin=0 leftmargin=0><table width=100% align=center style=width:100%;height:99%padding-bottom:2px class=bodytable height=99% ><tr><td width=100% style='text-align:center'><b>--- Message ---</b><br /><br />".$message."<br /><br /><form><input class=button type=submit onclick=self.close() value = ok /></form></td></tr></table></body></html> ";
 
 			echo "
-			<script type='text/javascript'>
+			<script>
 			winl=(screen.width-200)/2;
 			wint = (screen.height-100)/2;
 			winProp = 'width=200,height=100,left='+winl+',top='+wint+',scrollbars=no';
@@ -1148,4 +1199,4 @@ $SYSTEM_DIRECTORY    = "e107_system/";</pre>
 	}
 }
 
-?>
+

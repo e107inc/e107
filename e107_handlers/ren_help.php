@@ -14,7 +14,7 @@ if (!defined('e107_INIT')) { exit; }
 // IMPORTANT : Entire file is deprecated. see: bbcode_shortcodes.php and bbcode_hanlder.php 
 // Left in place only for BC. 
 /**
- *  @DEPRECATED use $frm->bbarea() instead. 
+ *  @deprecated use $frm->bbarea() instead.
  */
 function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help")
 {
@@ -128,6 +128,10 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 }
 
 
+/**
+ * @param $formid
+ * @return string
+ */
 function Size_Select($formid='size_selector') {
 	$text ="<!-- Start of Size selector -->
 	<div style='margin-left:0px;margin-right:0px; position:relative;z-index:1000;float:right;display:none' id='{$formid}'>";
@@ -148,13 +152,17 @@ function Size_Select($formid='size_selector') {
 }
 
 
+/**
+ * @param $formid
+ * @return string
+ */
 function Color_Select($formid='col_selector') {
 
 	$text = "<!-- Start of Color selector -->
 	<div style='width: 221px; position: absolute; left:340px; top:60px;  margin-right:auto; margin-left:auto; display:none; z-index: 1000; id='{$formid}' onclick=\"expandit(this)\" >
 	<div  style='border:1px solid black; position: absolute;  top:30px;  width: 221px; '>";
 
-	$text .= "<script type='text/javascript'>
+	$text .= "<script>
 	//<![CDATA[
 	var maxtd = 18;
 	var maxtddiv = -1;
@@ -217,6 +225,10 @@ function Color_Select($formid='col_selector') {
 }
 
 
+/**
+ * @param $formid
+ * @return string
+ */
 function PreImage_Select($formid='preimage_selector')
 {
 	global $bbcode_imagedir;
@@ -234,6 +246,10 @@ function PreImage_Select($formid='preimage_selector')
 
 
 // Parameter '$bbcode_filedir' removed - not used in code.
+/**
+ * @param $formid
+ * @return string
+ */
 function PreFile_Select($formid='prefile_selector')
 {
 	require_once(e_HANDLER."userclass_class.php");
@@ -245,15 +261,6 @@ function PreFile_Select($formid='prefile_selector')
 	$filelist = array();
 	$downloadList = array();
 
-	/*$sql->db_Select('download', '*', 'download_class != '.e_UC_NOBODY);
-	while ($row = $sql->db_Fetch()) {
-		extract($row);
-		if($download_url)
-		{
-			$filelist[] = array('id' => $download_id, 'name' => $download_name, 'url' => $download_url, 'class' => $download_class);
-			$downloadList[] = $download_url;
-		}
-	}*/
 
 	$tmp = $fl->get_files(e_FILE.'downloads/');
 	foreach($tmp as $value)
@@ -310,6 +317,10 @@ function PreFile_Select($formid='prefile_selector')
 	return $text;
 }
 
+/**
+ * @param $formid
+ * @return string
+ */
 function Emoticon_Select($formid='emoticon_selector') {
 	// require_once(e_HANDLER."emote.php");
 	$text ="<!-- Start of Emoticon selector -->
@@ -324,4 +335,3 @@ function Emoticon_Select($formid='emoticon_selector') {
 	return $text;
 }
 
-?>

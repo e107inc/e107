@@ -17,6 +17,10 @@
 if (!defined('e107_INIT')) { exit; }
 
 // Given an image file name, return the mime type string. Returns FALSE if invalid
+/**
+ * @param $fileName
+ * @return false|string
+ */
 function mimeFromFilename($fileName)
 {
 	$fileExt = strtolower(substr(strrchr($fileName, "."), 1));
@@ -32,7 +36,14 @@ function mimeFromFilename($fileName)
 	return "Content-type: image/".$mimeTypes[$fileExt];
 }
 
-
+/**
+ * @deprecated To be replaced with e107::getMedia()->resizeImage();
+ * @param string $source_file
+ * @param string $destination_file
+ * @param string $type
+ * @param string $model
+ * @return bool
+ */
 function resize_image($source_file, $destination_file, $type = "upload", $model = "") 
 {
 // $destination_file - 'stdout' sends direct to browser. Otherwise treated as file name	
@@ -111,7 +122,7 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 				{
 					if (($result = mimeFromFilename($source_file)) === FALSE) { return FALSE; }
 					header($result);
-					if (@readfile($source_file) === FALSE) { return FALSE; }
+					if (eShims::readfile($source_file) === FALSE) { return FALSE; }
 				}
 				else
 				{
@@ -272,4 +283,3 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 	  return TRUE;
 	} 
 }
-?>

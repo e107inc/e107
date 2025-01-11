@@ -245,18 +245,17 @@ class newsletter_mailout
 	 */
 	public function sent($data) // trigerred when email sent from queue.
 	{
-		if($data['status'] == 1) // Successfully sent
-		{
+		// if($data['status'] == 1) // Successfully sent
+		// {
 			// e107::getLog()->add('Newsletter Sent', $data, E_LOG_INFORMATIVE, 'SENT');		
-		}
-		else // Failed 
-		{
+	// 	}
+	//	else // Failed
+	//	{
 		//	 e107::getLog()->add('Newsletter Sent', $data, E_LOG_FATAL, 'SENT');		
-		}
+	//	}
 	}
 	
 }
 
 
 
-?>

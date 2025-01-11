@@ -1,4 +1,7 @@
 /* Backwards Compatibility Stylesheet for v1.x */
+/* v1.x e107.css */
+table { margin-left:auto; margin-right:auto; }
+
 
 /* Bootstrap Alerts */
 .alert          { padding: 15px; margin-bottom: 20px; border: 1px solid transparent; border-radius: 4px; }
@@ -41,6 +44,8 @@ ul.breadcrumb li span.divider { padding-left:5px; }
 .img-responsive { max-width:100%; }
 .logo.img-responsive { height: auto; }
 
+table.table { width: 100% }
+
 .media-list {
     padding-left: 0;
     list-style: none;
@@ -59,3 +64,32 @@ ul.breadcrumb li span.divider { padding-left:5px; }
 .e-debug .table-striped > tbody > tr:nth-of-type(2n+1) {
     background-color: #f9f9f9;
 }
+
+.s-message a.close { cursor: pointer }
+
+
+/* Bootstrap classes that hide content for all devices except screen readers (accessibility) */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+.sr-only-focusable:active,
+.sr-only-focusable:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+}
+
+.mt-0 { margin-top: 0 }
+.mb-0 { margin-bottom: 0 }
+.mt-3 { margin-top: 1rem !important; }
+.d-flex { display: flex !important; }

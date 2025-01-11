@@ -36,6 +36,32 @@ class gallery_shortcodes extends e_shortcode
 		$this->attFull = array('w' => $pop_w, 'h' => $pop_h, 'x' => 1, 'crop' => 0); // 'w='.$pop_w.'&h='.$pop_h.'&x=1';
 	}
 
+	function breadcrumb()
+	{
+		$breadcrumb = array();
+
+		$template = e107::getTemplate('gallery', 'gallery', 'cat');
+
+		$caption = isset($template['caption']) ? e107::getParser()->toText($template['caption']) : LAN_PLUGIN_GALLERY_TITLE;
+		if(!empty($var))
+		{
+			$breadcrumb[] = array('text' => $caption, 'url' => e107::getUrl()->create('gallery', $this->var));
+		}
+
+		if(vartrue($this->curCat))
+		{
+			$breadcrumb[] = array('text' => $this->sc_gallery_cat_title('title'), 'url' => e107::getUrl()->create('gallery/index/list', $this->var));
+		}
+
+		//var_dump($breadcrumb);
+
+		e107::breadcrumb($breadcrumb);
+	}
+
+
+
+
+
 	function sc_gallery_caption($parm = '')
 	{
 		$tp = e107::getParser();
@@ -65,16 +91,13 @@ class gallery_shortcodes extends e_shortcode
 		return $tp->toHTML($this->var['media_description'], true, 'BODY');
 	}
 
+
+
 	function sc_gallery_breadcrumb($parm = '')
 	{
-		$breadcrumb = array();
+	//	$this->breadcrumb();
 
-		$breadcrumb[] = array('text' => LAN_PLUGIN_GALLERY_TITLE, 'url' => e107::getUrl()->create('gallery', $this->var));
-
-		if(vartrue($this->curCat))
-		{
-			$breadcrumb[] = array('text' => $this->sc_gallery_cat_title('title'), 'url' => e107::getUrl()->create('gallery/index/list', $this->var));
-		}
+		$breadcrumb = e107::breadcrumb();
 
 		return e107::getForm()->breadcrumb($breadcrumb);
 	}
@@ -146,10 +169,10 @@ class gallery_shortcodes extends e_shortcode
 		$url = e107::getUrl()->create('gallery/index/list', $this->var);
 		if($parm == 'title')
 		{
-			return $tp->toHtml($this->var['media_cat_title'], false, 'TITLE');
+			return $tp->toHTML($this->var['media_cat_title'], false, 'TITLE');
 		}
 		$text = "<a href='" . $url . "'>";
-		$text .= $tp->toHtml($this->var['media_cat_title'], false, 'TITLE');
+		$text .= $tp->toHTML($this->var['media_cat_title'], false, 'TITLE');
 		$text .= "</a>";
 		return $text;
 	}
@@ -170,13 +193,13 @@ class gallery_shortcodes extends e_shortcode
 		return e107::getUrl()->create('gallery');
 	}
 
-	function sc_gallery_cat_thumb($parm = '')
+	function sc_gallery_cat_thumb($parm = null)
 	{
 		$parms = eHelper::scParams($parm);
-
-		$w = vartrue($parms['w']) ? $parms['w'] : 300; // 260;
-		$h = vartrue($parms['h']) ? $parms['h'] : 200; // 180;
+		$w = !empty($parms['w']) ? $parms['w'] : 300; // 260;
+		$h = !empty($parms['h']) ? $parms['h'] : 200; // 180;
 		$att = 'aw=' . $w . '&ah=' . $h . '&x=1'; // 'aw=190&ah=150';
+		$class = isset($parms['class']) ? $parms['class'] : 'img-responsive img-fluid';
 
 		$url = e107::getUrl()->create('gallery/index/list', $this->var);
 
@@ -186,7 +209,7 @@ class gallery_shortcodes extends e_shortcode
 		}
 
 		$text = "<a class='thumbnail' href='" . $url . "'>";
-		$text .= "<img class='img-responsive img-fluid' data-src='holder.js/" . $w . "x" . $h . "' src='" . e107::getParser()->thumbUrl($this->var['media_cat_image'], $att) . "' alt='' />";
+		$text .= "<img class='".$class."' data-src='holder.js/" . $w . "x" . $h . "' src='" . e107::getParser()->thumbUrl($this->var['media_cat_image'], $att) . "' alt='' />";
 		$text .= "</a>";
 		return $text;
 	}
@@ -195,14 +218,15 @@ class gallery_shortcodes extends e_shortcode
 	{
 		// we passs both fields, the router will convert one of them to 'cat' variable, based on the current URL config
 		$url = 'route::gallery/index/list?media_cat_category=' . $this->curCat . '--AMP--media_cat_sef=' . $this->var['media_cat_sef'] . '--AMP--frm=--FROM--::full=1';
-		$parm = 'total=' . $this->total . '&amount=' . $this->amount . '&current=' . $this->from . '&url=' . rawurlencode($url); // .'&url='.$url;
-		$text = e107::getParser()->parseTemplate("{NEXTPREV=" . $parm . "}");
+		$param = 'total=' . $this->total . '&amount=' . $this->amount . '&current=' . $this->from . '&url=' . rawurlencode($url); // .'&url='.$url;
+		$text = e107::getParser()->parseTemplate("{NEXTPREV=" . $param . "}");
 		return $text;
 	}
 
 	function sc_gallery_slideshow($parm = '')
 	{
-		$this->sliderCat = ($parm) ? $parm : vartrue(e107::getPlugPref('gallery', 'slideshow_category'), 1);
+		$slideCat = e107::getPlugPref('gallery', 'slideshow_category');
+		$this->sliderCat = ($parm) ? $parm : vartrue($slideCat, 1);
 
 		$tmpl = e107::getTemplate('gallery', 'gallery');
 		$template = array_change_key_case($tmpl);
@@ -220,7 +244,8 @@ class gallery_shortcodes extends e_shortcode
 		$ns = e107::getRender();
 		$tp = e107::getParser();
 	//	$parm = eHelper::scParams($parms);
-		$cat = (!empty($parm['category'])) ? $parm['category'] : vartrue(e107::getPlugPref('gallery', 'slideshow_category'), false); //TODO Separate pref?
+		$slideCat = e107::getPlugPref('gallery', 'slideshow_category');
+		$cat = (!empty($parm['category'])) ? $parm['category'] : vartrue($slideCat, false); //TODO Separate pref?
 
 		$tmpl = e107::getTemplate('gallery', 'gallery');
 		$limit = vartrue($parm['limit'], 6);
@@ -289,24 +314,25 @@ class gallery_shortcodes extends e_shortcode
 	 * limit - (optional) total limit of pcitures to be shown
 	 * template - (optional) template - name of template to be used for parsing the slideshow item
 	 */
-	function sc_gallery_slides($parm)
+	function sc_gallery_slides($parm=null)
 	{
 		$plugPrefs = e107::getPlugConfig('gallery')->getPref();
 		$orderBy = varset($plugPrefs['orderby'], 'media_id DESC');
 
 		$tp = e107::getParser();
 		$this->slideMode = true;
-		$parms = eHelper::scDualParams($parm);
-		$amount = $parms[1] ? intval($parms[1]) : 3; // vartrue(e107::getPlugPref('gallery','slideshow_perslide'),3);
-		$parms = $parms[2];
-		$limit = (integer) vartrue($parms['limit'], 16);
-		$list = e107::getMedia()->getImages('gallery_image|gallery_' . $this->sliderCat . '|gallery_image_' . $this->sliderCat, 0, $limit, null, $orderBy);
-		$tmpl = e107::getTemplate('gallery', 'gallery');
-		$tmpl = array_change_key_case($tmpl); // change template key to lowercase (BC fix)
-		$tmpl_key = vartrue($parms['template'], 'slideshow_slide_item');
+
+		$parms         = eHelper::scDualParams($parm);
+		$amount        = $parms[1] ? intval($parms[1]) : 3; // vartrue(e107::getPlugPref('gallery','slideshow_perslide'),3);
+		$parms         = $parms[2];
+		$limit         = (integer) vartrue($parms['limit'], 16);
+		$list          = e107::getMedia()->getImages('gallery_image|gallery_' . $this->sliderCat . '|gallery_image_' . $this->sliderCat, 0, $limit, null, $orderBy);
+		$tmpl          = e107::getTemplate('gallery', 'gallery');
+		$tmpl          = array_change_key_case($tmpl); // change template key to lowercase (BC fix)
+		$tmpl_key      = vartrue($parms['template'], 'slideshow_slide_item');
 		$item_template = $tmpl[$tmpl_key]; // e107::getTemplate('gallery','gallery', vartrue($parms['template'], 'SLIDESHOW_SLIDE_ITEM'));
-		$catList = e107::getMedia()->getCategories('gallery');
-		$cat = $catList['gallery_' . $this->sliderCat];
+		$catList       = e107::getMedia()->getCategories('gallery');
+		$cat           = varset($catList['gallery_' . $this->sliderCat]);
 
 		$count = 1;
 		$inner = '';
@@ -335,7 +361,7 @@ class gallery_shortcodes extends e_shortcode
 	}
 
 
-	function sc_gallery_jumper($parm)
+	function sc_gallery_jumper($parm=null)
 	{
 		// echo "SlideCount=".$this->slideCount; 
 		if($this->slideCount == 1 && deftrue('E107_DBG_BASIC'))

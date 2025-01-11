@@ -31,7 +31,7 @@ class redirection
 	protected $self_exceptions = array();
 	
 	/**
-	 * List of pages to not check against e_PAGE
+	 * List of pages to not check against defset('e_PAGE')
 	 *
 	 * @var array
 	 */
@@ -42,7 +42,18 @@ class redirection
 	 * @var array
 	 */
 	protected $query_exceptions = array();
-	
+
+
+	public $staticDomains;
+
+	public $domain;
+
+	public $subdomain;
+
+	public $self;
+
+	public $siteurl;
+
 	/**
 	 * Manage Member-Only Mode.
 	 *
@@ -53,12 +64,18 @@ class redirection
 		$this->self_exceptions = array(e_SIGNUP, SITEURL.'fpw.php', e_LOGIN, SITEURL.'membersonly.php');
 		$this->page_exceptions = array('e_ajax.php', 'e_js.php', 'e_jslib.php', 'sitedown.php',e_LOGIN, 'secimg.php');
 		$this->query_exceptions = array('logout');
+		$this->staticDomains    = defset('e_HTTP_STATIC');
+		$this->domain           = defset('e_DOMAIN');
+		$this->subdomain        = defset('e_SUBDOMAIN');
+		$this->self             = $this->getSelf(true);
 
 		// Remove from self_exceptions:  SITEURL, SITEURL.'index.php', // allows a custom frontpage to be viewed while logged out and membersonly active.
 	}
 
 
-
+	/**
+	 * @return array
+	 */
 	function getSelfExceptions()
 	{
 		return $this->self_exceptions;
@@ -75,7 +92,7 @@ class redirection
 	{
 		if(!$url)
 		{
-			// e_SELF, e_PAGE and e_QUERY not set early enough when in e_SINGLE_ENTRY mod
+			// e_SELF, defset('e_PAGE') and e_QUERY not set early enough when in e_SINGLE_ENTRY mod
 			if(defset('e_SELF') && in_array(e_SELF, $this->self_exceptions))
 			{
 				return;
@@ -101,7 +118,11 @@ class redirection
 		
 		return $this;
 	}
-	
+
+	/**
+	 * @param $full
+	 * @return array|mixed|string|string[]
+	 */
 	public function getSelf($full = false)
 	{
 		if($full)
@@ -215,12 +236,17 @@ class redirection
 			return;	
 		}
 		
-		if(e107::getPref('maintainance_flag') && defset('e_PAGE') != 'secure_img_render.php')
+		if(e107::getPref('maintainance_flag') && defset('e_PAGE') !== 'secure_img_render.php')
 		{
 			// if not admin
 			
-			$allowed = e107::getPref('maintainance_flag'); 
-			
+			$allowed = e107::getPref('maintainance_flag');
+
+			if(defset('e_PAGE') === 'login.php' && empty($_POST)) // allow admins/members to login.
+			{
+				return null;
+			}
+
 	//		if(!ADMIN 
 			// or if not mainadmin - ie e_UC_MAINADMIN
 	//		|| (e_UC_MAINADMIN == e107::getPref('maintainance_flag') && !getperms('0')))
@@ -231,10 +257,7 @@ class redirection
 				$this->redirect(SITEURL.'sitedown.php', TRUE, 307);
 			}
 		}
-		else
-		{
-			return;
-		}
+
 	}
 
 	
@@ -260,7 +283,7 @@ class redirection
 		{
 			return;
 		}
-		if(strpos(e_PAGE, 'admin') !== FALSE)
+		if(strpos(defset('e_PAGE'), 'admin') !== false)
 		{
 			return;
 		}
@@ -268,14 +291,14 @@ class redirection
 		{
 			return;
 		}
-		if(in_array(e_PAGE, $this->page_exceptions))
+		if(in_array(defset('e_PAGE'), $this->page_exceptions))
 		{
 			return;
 		}
 		foreach (e107::getPref('membersonly_exceptions') as $val)
 		{
 			$srch = trim($val);
-			if(strpos(e_SELF, $srch) !== FALSE)
+			if(!empty($srch) && strpos(e_SELF, $srch) !== false)
 			{
 				return;
 			}
@@ -283,7 +306,7 @@ class redirection
 		
 		/*
 		echo "e_SELF=".e_SELF;
-		echo "<br />e_PAGE=".e_PAGE;
+		echo "<br />defset('e_PAGE')=".defset('e_PAGE');
 		print_a( $this->self_exceptions);
 		print_a($this->page_exceptions);
 		*/
@@ -327,7 +350,10 @@ class redirection
 			$this->redirect($url);
 		}
 	}
-	
+
+	/**
+	 * @return void
+	 */
 	public function redirectPrevious()
 	{
 		if($this->getPreviousUrl())
@@ -337,11 +363,65 @@ class redirection
 	}
 
 
+	/**
+	 * @param $url
+	 * @param $replace
+	 * @param $http_response_code
+	 * @param $preventCache
+	 * @return void
+	 */
 	public function redirect($url, $replace = TRUE, $http_response_code = NULL, $preventCache = true)
 	{
 		$this->go($url, $replace, $http_response_code, $preventCache);
 		exit; 	
 	}
+
+	 /**
+     * Determines the correct host and generates the redirection URL if needed.
+     *
+     * @param array $server  The $_SERVER superglobal containing request data.
+     * @param string $prefUrl The preferred site URL from preferences.
+     * @return string|bool   The redirection URL if a redirection is required, or false if no redirection is needed.
+     */
+	public function host(array $server, string $prefUrl, string $adminDir='')
+	{
+
+		// Extract the current domain and port
+		list($urlbase, $urlport) = explode(':', $server['HTTP_HOST'] . ':');
+		$urlport = $urlport ?: (int) ($server['SERVER_PORT'] ?: 80);
+
+		// Parse the preferred site URL
+		$aPrefURL = parse_url($prefUrl);
+
+		if(empty($aPrefURL['host']))
+		{
+			return false; // Invalid URL structure
+		}
+
+		$PrefRoot = $aPrefURL['host'];
+		list($PrefSiteBase, $PrefSitePort) = explode(':', $PrefRoot . ':');
+		$PrefSitePort = $PrefSitePort ?: (($aPrefURL['scheme'] === 'https') ? 443 : 80);
+
+		$hostMismatch = (strcasecmp($urlbase, $PrefSiteBase) !==0); // -- base domain does not match (case-insensitive)
+		$portMismatch = ($urlport !== $PrefSitePort); 	 // -- ports do not match (http <==> https)
+
+		if(($portMismatch || $hostMismatch) && strpos($server['PHP_SELF'], $adminDir) === false)
+		{
+			// Reconstruct the redirect URL
+			$aeSELF = explode('/', $server['PHP_SELF'], 4);
+			$aeSELF[0] = $aPrefURL['scheme'] . ':'; // Correct scheme (http/https)
+			$aeSELF[1] = ''; // Defensive code: ensure http:// not http:/<garbage>/
+			$aeSELF[2] = $PrefRoot; // Correct domain and port if needed
+
+			$location = implode('/', $aeSELF) . ($server['QUERY_STRING'] ? '?' . $server['QUERY_STRING'] : '');
+
+			return filter_var($location, FILTER_SANITIZE_URL);
+		}
+
+
+		return false; // No redirection needed
+	}
+
 
 	
 	/**
@@ -355,6 +435,11 @@ class redirection
 	 */
 	public function go($url='', $replace = TRUE, $http_response_code = NULL, $preventCache = true)
 	{
+		if(e107::isCli())
+		{
+			return null;
+		}
+
 		$url = str_replace("&amp;", "&", $url); // cleanup when using e_QUERY in $url;
 
 		if(empty($url))
@@ -369,16 +454,21 @@ class redirection
 
 
 					
-		if(defset('e_DEBUG') === 'redirect')
+		if(deftrue('e_DEBUG_REDIRECT') && strpos($url, 'sitedown.php') === false)
 		{
 			$error = debug_backtrace();
 
+			$sent = headers_list();
+			$message = "Headers previously sent: ".print_r($sent,true);
+			e107::getLog()->addDebug($message);
+			print_a($message);
+
 			$message = "URL: ".$url."\nFile: ".$error[1]['file']."\nLine: ".$error[1]['line']."\nClass: ".$error[1]['class']."\nFunction: ".$error[1]['function']."\n\n";
-			e107::getLog()->addDebug($message, true);
+			e107::getLog()->addDebug($message);
 			echo "Debug active";
 			print_a($message);
 			echo "Go to : <a href='".$url."'>".$url."</a>";
-			e107::getLog()->toFile('redirect.log',true);
+			e107::getLog()->toFile('redirect.log',"Redirect Log", true);
 			return; 
 		}
 		
@@ -388,10 +478,11 @@ class redirection
 		}
 		if($preventCache)
 		{
-			header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0', true);
-			header('Expires: Sat, 26 Jul 1997 05:00:00 GMT', true); 
+			header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
+			header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');
 		}
-		if(null === $http_response_code)
+		// issue #3179 redirect with response code >= 400 doesn't work. Only response codes below 400.
+		if(null === $http_response_code || $http_response_code >= 400)
 		{
 			header('Location: '.$url, $replace);
 		}
@@ -408,4 +499,30 @@ class redirection
 		
 		exit();
 	}
+
+
+	/**
+	 * If a static subdomain is detected, returns the equivalent non-static domain.
+	 * @return string|false
+	 */
+	public function redirectStaticDomain()
+	{
+		if(empty($this->staticDomains))
+		{
+			return false;
+		}
+
+		$tmp = explode('.',$this->domain);
+
+		if(!empty($tmp[0]) && strpos($tmp[0], 'static') !== false)
+		{
+			unset($tmp[0]);
+			return str_replace($this->domain.'/', implode('.',$tmp).'/', $this->self);
+		}
+
+		return false;
+
+	}
+
+
 }

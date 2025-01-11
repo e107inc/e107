@@ -7,7 +7,7 @@ e107::lan('theme');
 e107::meta('viewport', 'width=device-width, initial-scale=1.0');
 //e107::meta('apple-mobile-web-app-capable','yes');
 
-e107::library('load', 'bootstrap');
+//e107::library('load', 'bootstrap');
 
 //e107::js('theme', 'js/theme.js');
 
@@ -30,7 +30,7 @@ function tablestyle($caption, $text, $mode='')
 	
     switch($style) 
     {
-
+/*
         case 'home': 
             echo $caption;
 			echo $text; 
@@ -44,7 +44,7 @@ function tablestyle($caption, $text, $mode='')
 		case 'full': 
             echo $caption;
 			echo $text; 
-		break;
+		break;*/
 
 		default: 
         	echo $caption;
@@ -57,6 +57,8 @@ function tablestyle($caption, $text, $mode='')
 // IMPORTANT: make sure there are no characters after <<<TMPL or TMPL;
 
 // DEFAULT
+$HEADER = array();
+$FOOTER = array();
 
 $HEADER['default'] = <<<TMPL
 
@@ -162,4 +164,3 @@ $NEWSCAT_ITEM = '
     
 ';
 
-?>

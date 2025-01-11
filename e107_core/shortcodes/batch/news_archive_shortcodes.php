@@ -66,4 +66,3 @@ class news_archive_shortcodes extends e_shortcode
 }
 		
 
-?>

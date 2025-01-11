@@ -21,6 +21,9 @@ if (!varset($pref['maintainance_flag']) && !getperms('0')) // Allow main admin t
 }
 
 header('Content-type: text/html; charset=utf-8');
+header('HTTP/1.1 503 Service Temporarily Unavailable');
+header('Status: 503 Service Temporarily Unavailable');
+header('Retry-After: 3600'); // in seconds
 
 e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
@@ -28,7 +31,7 @@ e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 $sitedown_shortcodes= e107::getScBatch('sitedown');
 
-if (!$SITEDOWN_TABLE)
+if (!isset($SITEDOWN_TABLE))
 {
 	if (file_exists(THEME.'templates/sitedown_template.php')) //v2.x location. 
 	{

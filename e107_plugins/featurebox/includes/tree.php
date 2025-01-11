@@ -21,12 +21,12 @@ class plugin_featurebox_tree extends e_tree_model
 	 * Load tree data
 	 * TODO - system cache
 	 * 
-	 * @param integer $category_id
+	 * @param integer $id
 	 * @param array $options
 	 * @param boolean $force
 	 * @return plugin_featurebox_tree
 	 */
-	public function load($category_id, $options = array(), $force = false)
+	public function load($id=null, $force = false, $options=array())
 	{
 		if(!$force && !$this->isEmpty())
 		{
@@ -36,16 +36,16 @@ class plugin_featurebox_tree extends e_tree_model
 		$this->setParam('model_class', 'plugin_featurebox_item')
 			->setParam('model_message_stack', 'featurebox');
 
-		$this->updateParams($options);
+	//	$this->updateParams($options);
 		
 		$order = $this->getParam('random') ? ' ORDER BY rand()' : ' ORDER BY fb_order ASC';
 		$limit = $this->getParam('limit') ? ' LIMIT '.intval($this->getParam('from'), 0).','.intval($this->getParam('limit')) : '';
 		$ids = $this->getParam('ids') ? preg_replace('/[^0-9,]/', '', $this->getParam('ids')) : '';
 		$where = $ids ? ' AND fb_id IN('.$ids.')' : '';
-		$qry = 'SELECT SQL_CALC_FOUND_ROWS * FROM #featurebox WHERE fb_category='.intval($category_id).' AND fb_class IN('.USERCLASS_LIST.')'.$where.$order.$limit;
+		$qry = 'SELECT SQL_CALC_FOUND_ROWS * FROM #featurebox WHERE fb_category='.intval($id).' AND fb_class IN('.USERCLASS_LIST.')'.$where.$order.$limit;
 		$this->setParam('db_query', $qry);
 		
-		parent::load($force);
+		parent::loadBatch($force);
 		
 		return $this;
 	}

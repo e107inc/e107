@@ -14,7 +14,7 @@ define("LANA_FAQ_COMMENT", "Comment Class");
 define("LANA_FAQ_ULOGINNAME", "User login"); //FIXME Use generic
 define("LANA_FAQ_TAGS", "Tags");
 define("LANA_FAQ_TAGS_HELP", "Comma separated tag list");
-define("LANA_FAQ_METAD", "Meta Description");
+// define("LANA_FAQ_METAD", "Meta Description"); LAN_META_DESCRIPTION
 define("LANA_FAQ_METAK", "Meta Keywords");
 
 define("LANA_FAQ_PREF_1", "Allow submitting of FAQs by:");
@@ -34,6 +34,13 @@ define("LANA_FAQ_PREF_14", "Display Datestamp");
 define("LANA_FAQ_PREF_15", "Display Social buttons");
 define("LANA_FAQ_PREF_16", "Specified Order");
 define("LANA_FAQ_PREF_17", "All Languages");
+define("LANA_FAQ_PREF_18", "Ascending by ID");
+define("LANA_FAQ_PREF_19", "Descending by ID");
+define("LANA_FAQ_PREF_20", "Ascending by Date");
+define("LANA_FAQ_PREF_21", "Descending by Date");
+define("LANA_FAQ_PREF_22", "Manage Questions");
+define("LANA_FAQ_PREF_23", "Manage Categories");
+define("LANA_FAQ_PREF_24", "Ask a Question: character min length");
 
 define("LANA_FAQ_PREF_HELP_1", "0 = no limit");
 define("LANA_FAQ_PREF_HELP_2", "Leave blank to use default");

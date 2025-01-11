@@ -17,7 +17,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 $caption = "System Logs Help";
-if (e_QUERY) list($action,$junk) = explode('.',e_QUERY); else $action = 'list';
+if (e_QUERY) list($action,$junk) = explode('.', e_QUERY); else $action = 'list';
 
 function common_filters()
 {
@@ -73,4 +73,3 @@ default :
   $text .= common_filters();
 }
 $ns -> tablerender($caption, $text);
-?>

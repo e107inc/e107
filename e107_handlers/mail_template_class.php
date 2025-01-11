@@ -36,7 +36,7 @@ class e107MailTemplate
 	/**
 	 *	Empty our template cache
 	 *
-	 *	@return none
+	 *	@return void
 	 */
 	public function clearTemplateCache()
 	{
@@ -80,7 +80,7 @@ class e107MailTemplate
 	 *	@param string $extraFile - optional path to additional template file (intended for plugins)
 	 *			(This is read between the theme-specific file and the defaults)
 	 *
-	 *	@return boolean TRUE - template found and loaded. FALSE if not found.
+	 *	@return boolean|array TRUE - template found and loaded. FALSE if not found.
 	 *	If successful, we store an array in $lastTemplateData, with exactly six elements:
 	 *		'template_name'
 	 *		'email_overrides' - any override information (often an empty array)
@@ -273,4 +273,4 @@ class e107MailTemplate
 	}
 }
 
-?>
+

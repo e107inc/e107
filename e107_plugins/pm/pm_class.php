@@ -111,6 +111,7 @@ class private_message
 	 */
 	function add($vars)
 	{
+
 		$tp = e107::getParser();
 		$sql = e107::getDb();
 		$pmsize = 0;
@@ -119,6 +120,7 @@ class private_message
 		$ret = '';
 		$addOutbox = TRUE;
 		$timestamp = time();
+		$a_list = array();
 
 		$maxSendNow = varset($this->pmPrefs['pm_max_send'],100);	// Maximum number of PMs to send without queueing them
 		if (isset($vars['pm_from']))
@@ -183,7 +185,7 @@ class private_message
 		{
 			if(!empty($vars['pm_userclass']))
 			{
-				$toclass = e107::getUserClass()->uc_get_classname($vars['pm_userclass']);
+				$toclass = e107::getUserClass()->getName($vars['pm_userclass']);
 				$tolist = $this->get_users_inclass($vars['pm_userclass']);
 				$ret .= LAN_PM_38.": {$toclass}<br />";
 				$class = TRUE;
@@ -200,7 +202,7 @@ class private_message
 				$totalSend = count($tolist);
 				$targets = array_chunk($tolist, $maxSendNow);		// Split into a number of lists, each with the maximum number of elements (apart from the last block, of course)
 				unset($tolist);
-				$array = new ArrayData;
+
 				$pmInfo = $info;
 				$genInfo = array(
 					'gen_type' => 'pm_bulk',
@@ -212,7 +214,7 @@ class private_message
 				{	// Save the list in the 'generic' table
 					$pmInfo['to_array'] = $targets[$i];			// Should be in exactly the right format
 					$genInfo['gen_intdata'] = count($targets[$i]);
-					$genInfo['gen_chardata'] = $array->WriteArray($pmInfo,TRUE);
+					$genInfo['gen_chardata'] = e107::serialize($pmInfo,TRUE);
 					$sql->insert('generic', array('data' => $genInfo, '_FIELD_TYPES' => array('gen_chardata' => 'string')));	// Don't want any of the clever sanitising now
 				}
 				$toclass .= ' ['.$totalSend.']';
@@ -386,15 +388,22 @@ class private_message
 
 		$template = $PM_NOTIFY;
 */
-	if(THEME_LEGACY){include_once(THEME.'pm_template.php');}
-	if (!$PM_NOTIFY){$PM_NOTIFY = e107::getTemplate('pm', 'pm', 'notify');}
+		if(THEME_LEGACY)
+		{
+			include_once(THEME.'pm_template.php');
+		}
+
+		if(empty($PM_NOTIFY))
+		{
+			$PM_NOTIFY = e107::getTemplate('pm', 'pm', 'notify');
+		}
 
 		if(empty($PM_NOTIFY)) // BC Fallback.
 		{
 
 			$PM_NOTIFY =
 			"<div>
-			<h4>".LAN_PM_101."{SITENAME}</h4>
+			<h4>".LAN_PM_101." {SITENAME}</h4>
 			<table class='table table-striped'>
 			<tr><td>".LAN_PM_102."</td><td>{USERNAME}</td></tr>
 			<tr><td>".LAN_PM_103."</td><td>{PM_SUBJECT}</td></tr>
@@ -422,7 +431,7 @@ class private_message
 		$text = e107::getParser()->simpleParse($PM_NOTIFY, $data);
 
 		$eml = array();
-		$eml['email_subject']		= LAN_PM_100.USERNAME;
+		$eml['email_subject']		= LAN_PM_100." ".USERNAME;
 		$eml['send_html']			= true;
 		$eml['email_body']			= $text;
 		$eml['template']			= 'default';
@@ -449,13 +458,13 @@ class private_message
 	function pm_send_receipt($pmInfo) //TODO Add Template and combine with method above..
 	{
 		require_once(e_HANDLER.'mail.php');
-		$subject = LAN_PM_106.$pmInfo['sent_name'];
+		$subject = LAN_PM_106." ".$pmInfo['sent_name'];
 
 		$pmlink = e107::url('pm','index', null, array('mode'=>'full')).'?show.'.$pmInfo['pm_id'];
 
-		$txt = str_replace("{UNAME}", $pmInfo['sent_name'], LAN_PM_107).date('l F dS Y h:i:s A')."\n\n";
-		$txt .= LAN_PM_108.date('l F dS Y h:i:s A', $pmInfo['pm_sent'])."\n";
-		$txt .= LAN_PM_103.$pmInfo['pm_subject']."\n";
+		$txt = str_replace("{UNAME}", $pmInfo['sent_name'], LAN_PM_107)." ".date('l F dS Y h:i:s A')."\n\n";
+		$txt .= LAN_PM_108." ".date('l F dS Y h:i:s A', $pmInfo['pm_sent'])."\n";
+		$txt .= LAN_PM_103." ".$pmInfo['pm_subject']."\n";
 		$txt .= LAN_PM_105."\n".$pmlink."\n";
 
 		if(sendemail($pmInfo['from_email'], $subject, $txt, $pmInfo['from_name']))
@@ -616,7 +625,7 @@ class private_message
 		}
 		else
 		{
-			$var = strip_if_magic($var);
+		//	$var = strip_if_magic($var);
 			$var = str_replace("'", '&#039;', trim($var));		// Display name uses entities for apostrophe
 			$where = "user_name LIKE '".$sql->escape($var, FALSE)."'";
 		}
@@ -641,7 +650,11 @@ class private_message
 	 */
 	function get_users_inclass($class)
 	{
-		$sql = e107::getDb();
+
+		return e107::getUserClass()->getUsersInClass($class, 'user_name, user_email, user_class');
+
+
+		/*$sql = e107::getDb();
 
 		if($class == e_UC_MEMBER)
 		{
@@ -663,7 +676,7 @@ class private_message
 			$ret = $sql->db_getList();
 			return $ret;
 		}
-		return FALSE;
+		return FALSE;*/
 	}
 
 
@@ -839,11 +852,15 @@ class private_message
 
 
 		@set_time_limit(10 * 60);
-		@e107_ini_set("max_execution_time", 10 * 60);
-		while (@ob_end_clean()); // kill all output buffering else it eats server resources
+		@ini_set("max_execution_time", 10 * 60);
+		while (ob_get_length() !== false)  // destroy all ouput buffering
+		{
+	        ob_end_clean();
+		}
+
 		if (connection_status() == 0)
 		{
-			if (strstr($_SERVER['HTTP_USER_AGENT'], "MSIE")) {
+			if (strpos($_SERVER['HTTP_USER_AGENT'], "MSIE") !== false) {
 				$file = preg_replace('/\./', '%2e', $file, substr_count($file, '.') - 1);
 			}
 			if (isset($_SERVER['HTTP_RANGE']))
@@ -854,7 +871,7 @@ class private_message
 			ignore_user_abort(true);
 			$data_len = filesize($filename);
 			if ($seek > ($data_len - 1)) $seek = 0;
-			$res =& fopen($filename, 'rb');
+			$res = fopen($filename, 'rb');
 			if ($seek)
 			{
 				fseek($res , $seek);

@@ -39,9 +39,9 @@ define("COMLAN_310", "Unable to accept post as that username is registered - if 
 define("COMLAN_312", "Duplicate post - unable to accept.");
 define("COMLAN_313", "Location");
 define("COMLAN_314", "moderate comments");
-define("COMLAN_315", "Trackbacks");
-define("COMLAN_316", "No trackbacks for this newspost.");
-define("COMLAN_317", "Moderate trackbacks");
+// define("COMLAN_315", "Trackbacks");
+// define("COMLAN_316", "No trackbacks for this newspost.");
+// define("COMLAN_317", "Moderate trackbacks");
 define("COMLAN_318", "Edit comment");
 define("COMLAN_319", "edited");
 define("COMLAN_320", "Update comment");
@@ -86,4 +86,3 @@ define("COMLAN_501", "If you are not yet registered, you may [click here to regi
 
 
 
-?>

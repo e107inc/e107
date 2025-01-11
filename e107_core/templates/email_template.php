@@ -38,8 +38,8 @@ See e_HANDLER.mail.php for more information
 if (!defined('e107_INIT')) { exit; }
 
 $includeSiteButton = e107::getPref('sitebutton');
-e107::lan('core','signup'); // required for when mailer runs under CLI.
-
+e107::coreLan('signup'); // required for when mailer runs under CLI.
+e107::coreLan('users', true);
 /*
 $SIGNUPEMAIL_SUBJECT = LAN_SIGNUP_96.' {SITENAME}';
 $SIGNUPEMAIL_USETHEME = 1; 			// Use CSS STYLE from THEME: 0 = Off, 1 = external, 2 = embedded
@@ -96,7 +96,7 @@ $EMAIL_OVERRIDES = array(
 
 
 // Default - test email and when no template specified. 
-
+$EMAIL_TEMPLATE = [];
 $EMAIL_TEMPLATE['default']['name']	 		= 'Default';
 $EMAIL_TEMPLATE['default']['subject']		= '{SITENAME}: {SUBJECT} ';
 $EMAIL_TEMPLATE['default']['header']		= "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
@@ -255,9 +255,9 @@ $EMAIL_TEMPLATE['quickadduser']['body']			= USRLAN_185.USRLAN_186;
 $EMAIL_TEMPLATE['quickadduser']['footer']		= $EMAIL_TEMPLATE['default']['footer']; // will use default footer above. 		
 
 
+// ------- Notify (@see admin-> notify)
+//$EMAIL_WRAPPER['notify']['SUBJECT'] = "*** {---} ***";
 
-
-// ------- Notify (@see admin-> notify) 
 $EMAIL_TEMPLATE['notify']['name']	 		    = 'Notify';
 $EMAIL_TEMPLATE['notify']['subject']			= '{SITENAME}: {SUBJECT} ';
 $EMAIL_TEMPLATE['notify']['header']		        = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
@@ -346,6 +346,12 @@ $EMAIL_TEMPLATE['whatsnew']['body']				= "Hi {USERNAME},<br />{BODY}";
 $EMAIL_TEMPLATE['whatsnew']['footer']			= $EMAIL_TEMPLATE['default']['footer'];
 
 
+$EMAIL_TEMPLATE['blank']['name']				= "Blank";
+$EMAIL_TEMPLATE['blank']['subject']			    = '{SUBJECT}';
+$EMAIL_TEMPLATE['blank']['header']			    = '';
+$EMAIL_TEMPLATE['blank']['body']				= '{BODY}';
+$EMAIL_TEMPLATE['blank']['footer']			    = '';
+
 
 // ------ A Dummy Example for theme developers. 
 
@@ -367,4 +373,3 @@ $EMAIL_TEMPLATE['example']['priority']			= 3; // (1 = High, 3 = Normal, 5 = low)
 
 
 
-?>

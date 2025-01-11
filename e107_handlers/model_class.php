@@ -64,7 +64,7 @@ class e_object
      * @see getId()
      *
      * @param   string $name
-     * @return  e_object
+     * @return object e_object
      */
     public function setFieldIdName($name)
     {
@@ -72,14 +72,13 @@ class e_object
         return $this;
     }
 
-    /**
-     * Retrieve name of object's field id
-     *
-     * @see getId()
-     *
-     * @param   string $name
-     * @return  string
-     */
+	/**
+	 * Retrieve name of object's field id
+	 *
+	 * @return  string
+	 * @see getId()
+	 *
+	 */
     public function getFieldIdName()
     {
         return $this->_field_id;
@@ -238,7 +237,7 @@ class e_object
 	/**
 	 * Update parameter array
 	 * @param array $params
-	 * @return e_object
+	 * @return object e_object
 	 */
 	public function updateParams(array $params)
 	{
@@ -291,7 +290,7 @@ class e_object
 
 	/**
 	 * Convert object data to simple shortcodes (e_vars object)
-	 * @return string
+	 * @return e_vars
 	 */
 	public function toSc()
 	{
@@ -334,7 +333,7 @@ class e_object
 	 */
 	public function toString($AddSlashes = false)
 	{
-		return (string) e107::getArrayStorage()->WriteArray($this->toArray(), $AddSlashes);
+		return (string) e107::serialize($this->toArray(), $AddSlashes);
 	}
 
 	/**
@@ -442,7 +441,7 @@ class e_vars extends e_object
 	 * Add array data to the object (merge with existing)
 	 *
 	 * @param array $array
-	 * @return e_vars
+	 * @return void
 	 */
 	public function addVars(array $array)
 	{
@@ -589,8 +588,7 @@ class e_model extends e_object
 
 	/**
 	 * Optional DB table - used for auto-load data from the DB
-	 * @param string $table
-	 * @return e_model
+	 * @return string
 	 */
 	public function getModelTable()
 	{
@@ -611,7 +609,7 @@ class e_model extends e_object
 
     /**
      * Set model Url Profile
-     * @param string $table
+     * @param string $url
      * @return e_model
      */
     public function setUrl($url)
@@ -632,7 +630,7 @@ class e_model extends e_object
 
     /**
      * Set model Featurebox  Profile
-     * @param string $table
+     * @param string $fb
      * @return e_model
      */
     public function setFeaturebox($fb)
@@ -665,10 +663,16 @@ class e_model extends e_object
 
 		$eurl = e107::getUrl();
 
-		if(empty($options)) $options = array();
-		elseif(!is_array($options)) parse_str($options, $options);
+	    if (empty($options))
+	    {
+		    $options = array();
+	    }
+	    elseif(is_string($options))
+	    {
+		    parse_str($options, $options);
+	    }
 
-		$vars = $this->toArray();
+	    $vars = $this->toArray();
 		if(!isset($options['allow']) || empty($options['allow']))
 		{
 			if(vartrue($urldata['vars']) && is_array($urldata['vars']))
@@ -701,7 +705,7 @@ class e_model extends e_object
 
      /**
      * Generic Featurebox assembling method
-     * @return mixed URL string or extended array data
+     * @return void URL string or extended array data
      */
     public function featurebox($options = array(), $extended = false)
     {
@@ -747,7 +751,7 @@ class e_model extends e_object
 
     /**
      * Set Predefined data fields in format key => type
-     * @return e_model
+     * @return object e_model
      */
     public function setDataFields($data_fields)
     {
@@ -921,29 +925,29 @@ class e_model extends e_object
     	return $this->data_has_changed;
     }
 
-    /**
-     * Retrieves data from the object
-     *
-     * If $key is empty will return all the data as an array
-     * Otherwise it will return value of the attribute specified by $key
-     * '/' inside the key will be treated as array path (x/y/z equals to [x][y][z]
-     *
-     * If $index is specified it will assume that attribute data is an array
-     * and retrieve corresponding member.
-     *
-     * NEW: '/' supported in keys now, just use double slashes '//' as key separator
-     * Examples:
-     * - 'key//some/key/with/slashes//more' -> [key][some/key/with/slashes][more]
-     * - '//some/key' -> [some/key] - starting with // means - don't parse!
-     * - '///some/key/' -> [/some/key/]
-     * - '//key//some/key/with/slashes//more' WRONG -> single key [key//some/key/with/slashes//more]
-     *
-     * @param string $key
-     * @param mixed $default
-     * @param integer $index
-     * @param boolean $posted data source
-     * @return mixed
-     */
+	/**
+	 * Retrieves data from the object
+	 *
+	 * If $key is empty will return all the data as an array
+	 * Otherwise it will return value of the attribute specified by $key
+	 * '/' inside the key will be treated as array path (x/y/z equals to [x][y][z]
+	 *
+	 * If $index is specified it will assume that attribute data is an array
+	 * and retrieve corresponding member.
+	 *
+	 * NEW: '/' supported in keys now, just use double slashes '//' as key separator
+	 * Examples:
+	 * - 'key//some/key/with/slashes//more' -> [key][some/key/with/slashes][more]
+	 * - '//some/key' -> [some/key] - starting with // means - don't parse!
+	 * - '///some/key/' -> [/some/key/]
+	 * - '//key//some/key/with/slashes//more' WRONG -> single key [key//some/key/with/slashes//more]
+	 *
+	 * @param string $key
+	 * @param mixed $default
+	 * @param null $index
+	 * @param string $data_src
+	 * @return mixed
+	 */
     protected function _getData($key = '', $default = null, $index = null, $data_src = '_data')
     {
         if ('' === $key)
@@ -1030,14 +1034,14 @@ class e_model extends e_object
         return $default;
     }
 
-    /**
-     * Get value from _data array without parsing the key
-     *
-     * @param string $key
-     * @param mixed $default
-     * @param string $posted data source
-     * @return mixed
-     */
+	/**
+	 * Get value from _data array without parsing the key
+	 *
+	 * @param string $key
+	 * @param mixed $default
+	 * @param string $data_src
+	 * @return mixed
+	 */
     protected function _getDataSimple($key, $default = null, $data_src = '_data')
     {
         return isset($this->{$data_src}[$key]) ? $this->{$data_src}[$key] : $default;
@@ -1395,12 +1399,24 @@ class e_model extends e_object
 	 *
 	 * @param string $message
 	 * @param boolean $session [optional]
+	 * @param array $logData [optional] array('TABLE'=>'', 'ERROR'=>'') etc.
 	 * @return e_model
 	 */
-	public function addMessageError($message, $session = false)
+	public function addMessageError($message, $session = false, $logData = array())
 	{
 		e107::getMessage()->addStack($message, $this->_message_stack, E_MESSAGE_ERROR, $session);
-		e107::getAdminLog()->addError($message,false)->save('ADMINUI_04');
+
+		if(!empty($logData))
+		{
+			e107::getLog()->addArray($logData);
+		}
+		else
+		{
+			e107::getLog()->addError($message,false);
+		}
+
+		e107::getLog()->save('ADMINUI_04', E_LOG_WARNING);
+
 		return $this;
 	}
 
@@ -1499,6 +1515,8 @@ class e_model extends e_object
      */
 	public function load($id = null, $force = false)
 	{
+
+
 		if(!$force && $this->getId())
 		{
 			return $this;
@@ -1554,6 +1572,7 @@ class e_model extends e_object
 		}
 		else
 		{
+
 			$this->_setCacheData();
 		}
 
@@ -1777,21 +1796,22 @@ class e_model extends e_object
 	 * @param string $value
 	 * @return integer|float
 	 */
-	public function toNumber($value)
-	{
-		$larr = localeconv();
-		$search = array(
-			$larr['decimal_point'],
-			$larr['mon_decimal_point'],
-			$larr['thousands_sep'],
-			$larr['mon_thousands_sep'],
-			$larr['currency_symbol'],
-			$larr['int_curr_symbol']
-		);
-		$replace = array('.', '.', '', '', '', '');
+	// moved to e_parse
+	// public function toNumber($value)
+	// {
+	// 	$larr = localeconv();
+	// 	$search = array(
+	// 		$larr['decimal_point'],
+	// 		$larr['mon_decimal_point'],
+	// 		$larr['thousands_sep'],
+	// 		$larr['mon_thousands_sep'],
+	// 		$larr['currency_symbol'],
+	// 		$larr['int_curr_symbol']
+	// 	);
+	// 	$replace = array('.', '.', '', '', '', '');
 
-		return str_replace($search, $replace, $value);
-	}
+	// 	return str_replace($search, $replace, $value);
+	// }
 
 	/**
 	 * Convert object data to a string
@@ -1807,13 +1827,16 @@ class e_model extends e_object
 			$value = $this->getData($key);
 			if(is_array($value))
 			{
-				return e107::getArrayStorage()->WriteArray($value, $AddSlashes);
+				return e107::serialize($value, $AddSlashes);
 			}
 			return (string) $value;
 		}
-		return (string) e107::getArrayStorage()->WriteArray($this->toArray(), $AddSlashes);
+		return (string) e107::serialize($this->toArray(), $AddSlashes);
 	}
 
+	/**
+	 * @return void
+	 */
 	public function destroy()
 	{
 		$this->_data = array();
@@ -1854,7 +1877,7 @@ class e_model extends e_object
 }
 
 /**
- * Base e107 Fron Model class interface
+ * Base e107 Front Model class interface
  *
  * Some important points:
  * - model data should be always in toDB() format:
@@ -1943,12 +1966,13 @@ class e_front_model extends e_model
     	return $this->_validation_rules;
     }
 
-    /**
-     * Set object validation rules if $_validation_rules array is empty
-     *
-     * @param array $vrules
-     * @return e_front_model
-     */
+	/**
+	 * Set object validation rules if $_validation_rules array is empty
+	 *
+	 * @param array $vrules
+	 * @param bool $force
+	 * @return e_front_model
+	 */
     public function setValidationRules(array $vrules, $force = false)
     {
     	if($force || empty($this->_validation_rules))
@@ -2086,7 +2110,7 @@ class e_front_model extends e_model
     {
     	$d = $this->getDataFields();
 		
-		if(!empty($d[$key]) && ($d[$key] == 'array'))
+		if(!empty($d[$key]) && ($d[$key] === 'array' || $d[$key] === 'json'))
 		{
 			return e107::unserialize($this->getData((string) $key, $default, $index));	
 		}   
@@ -2284,7 +2308,7 @@ class e_front_model extends e_model
 		}
 
 	//	$newData = $this->getPostedData();
-		e107::getAdminLog()->addArray($data,$oldData);
+		e107::getLog()->addArray($data,$oldData);
 	//	$this->addMessageDebug("NEWD".print_a($data,true));
 
 		$tp = e107::getParser();
@@ -2293,7 +2317,7 @@ class e_front_model extends e_model
     		// get values form validated array when possible
     		// we need it because of advanced validation methods e.g. 'compare'
     		// FIX - security issue, toDb required
-    		if(isset($valid_data[$field])) $dt = $tp->toDb($valid_data[$field]);
+    		if(isset($valid_data[$field])) $dt = $tp->toDB($valid_data[$field]);
 
     		$this->setData($field, $dt, $strict)
     			->removePostedData($field);
@@ -2305,18 +2329,19 @@ class e_front_model extends e_model
     	return $this;
     }
 
-    /**
-     * Merge passed data array with the object data
-     * Should be used on edit/update/create record (back-end)
-     *
-     * If $strict is true, only existing object data will be copied (update)
-     * If $validate is true, data will be copied only after successful validation
-     *
-     * @param array $src_data
-     * @param boolean $sanitize
-     * @param boolean $validate perform validation check
-     * @return e_front_model
-     */
+	/**
+	 * Merge passed data array with the object data
+	 * Should be used on edit/update/create record (back-end)
+	 *
+	 * If $strict is true, only existing object data will be copied (update)
+	 * If $validate is true, data will be copied only after successful validation
+	 *
+	 * @param array $src_data
+	 * @param bool $strict
+	 * @param boolean $sanitize
+	 * @param boolean $validate perform validation check
+	 * @return e_front_model
+	 */
     public function mergeData(array $src_data, $strict = true, $sanitize = true, $validate = true)
     {
     	//FIXME
@@ -2560,12 +2585,24 @@ class e_front_model extends e_model
 		$this->_db_errno = $sql->getLastErrorNumber();
 		$this->_db_errmsg = $sql->getLastErrorText();
 		$this->_db_qry = $sql->getLastQuery();
+
 		if($this->_db_errno)
 		{
-			$this->addMessageError('SQL Select Error', $session_messages); //TODO - Lan
+			$data = array(
+				'TABLE'     => $this->getModelTable(),
+				'error_no'  => $this->_db_errno,
+				'error_msg' => $this->_db_errmsg,
+				'qry'       => $this->_db_qry,
+				'url'       => e_REQUEST_URI,
+			);
+
+
+			$this->addMessageError('SQL Select Error', false, $data); //TODO - Lan
 			// already done by the parent
 			//$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$sql->getLastErrorText());
 		}
+
+
 		return $this;
 	}
 
@@ -2645,12 +2682,38 @@ class e_front_model extends e_model
 	}
 
 	/**
+	 * @param $key
+	 * @return false|mixed
+	 */
+	public function isValidFieldKey($key)
+	{
+		if(isset($this->_data_fields[$key]))
+		{
+			return $this->_data_fields[$key];
+		}
+
+		// Check key against a multi/dimensional/field name.
+		// FIXME make this more accurate - commonly used field names could conflict. @see e_front_modelTest::testSanitize()
+		foreach($this->_data_fields as $k=>$var)
+		{
+			if(strpos($k,'/') !== false && strpos($k, $key) !== false)
+			{
+				return $this->_data_fields[$k];
+			}
+		}
+
+		return false;
+	}
+
+
+
+	/**
 	 * Sanitize value based on its db field type ($_data_fields),
 	 * method will return null only if db field rule is not found.
 	 * If $value is null, it'll be retrieved from object posted data
 	 * If $key is an array, $value is omitted.
 	 *
-	 * NOTE: If $key is not found in object's _data_fields array, null is returned
+	 * NOTE: If $key is not found in object's _data_fields array, it is removed
 	 *
 	 * @param mixed $key string key name or array data to be sanitized
 	 * @param mixed $value
@@ -2658,18 +2721,10 @@ class e_front_model extends e_model
 	 */
 	public function sanitize($key, $value = null)
 	{
-		$tp = e107::getParser();
 		if(is_array($key))
 		{
-			$ret = array();
-			foreach ($key as $k=>$v)
-			{
-	            if(isset($this->_data_fields[$k]))
-	            {
-	               $ret[$k] = $this->sanitize($k, $v);
-	            }
-			}
-			return $ret;
+			$expectedFields = e107::getParser()->fromFlatArray($this->_data_fields);
+			return $this->sanitizeRecursive($key, $expectedFields);
 		}
 
 		if(!isset($this->_data_fields[$key]))
@@ -2682,58 +2737,40 @@ class e_front_model extends e_model
 			$value = $this->getPostedData($key);
 		}
 
+		return $this->sanitizeValue($type, $value, $key);
 
-		switch ($type)
-		{
-			case 'int':
-			case 'integer':
-				return intval($this->toNumber($value));
-			break;
-
-			case 'safestr':
-				return $tp->filter($value);
-			break;
-
-			case 'str':
-			case 'string':
-			case 'array':
-				$type = $this->getFieldInputType($key);
-				return $tp->toDB($value, false, false, 'model', array('type'=>$type, 'field'=>$key));
-			break;
-
-			case 'json':
-				if(empty($value))
-				{
-					return null;
-				}
-				return e107::serialize($value,'json');
-			break;
-
-			case 'code':
-				return $tp->toDB($value, false, false, 'pReFs');
-			break;
-
-			case 'float':
-				return $this->toNumber($value);
-			break;
-
-			case 'bool':
-			case 'boolean':
-				return ($value ? true : false);
-			break;
-
-			case 'model':
-				return $value->mergePostedData(false, true, true);
-			break;
-
-			case 'null':
-				return ($value ? $tp->toDB($value) : null);
-			break;
-	  	}
-
-		return null;
 	}
 
+	/**
+	 * @param array $data
+	 * @param array $fields
+	 * @return array
+	 */
+	private function sanitizeRecursive($data, $fields)
+	{
+		foreach ($data as $fieldKey => $value)
+		{
+			if (!array_key_exists($fieldKey, $fields))
+			{
+				unset($data[$fieldKey]);
+				continue;
+			}
+			$expectedType = $fields[$fieldKey];
+			if (is_array($value) && is_array($expectedType))
+			{
+				$data[$fieldKey] = $this->sanitizeRecursive($value, $fields[$fieldKey]);
+			}
+			else
+			{
+				$data[$fieldKey] = $this->sanitizeValue($expectedType, $value, $fieldKey);
+			}
+		}
+		return $data;
+	}
+
+	/**
+	 * @return void
+	 */
 	public function destroy()
 	{
 		parent::destroy();
@@ -2763,17 +2800,18 @@ class e_front_model extends e_model
 
 
 		if($this->hasError()) return false;
-		if(!$this->data_has_changed && !$force)
+
+		if(!$this->data_has_changed && $force === false)
 		{
 			$this->addMessageInfo(LAN_NO_CHANGE);
-
 			return 0;
 		}
+
 		$sql = e107::getDb();
 		$qry = $this->toSqlQuery('update');
 		$table = $this->getModelTable();
 
-		$res = $sql->db_Update($table, $qry, $this->getParam('db_debug', false));
+		$res = $sql->update($table, $qry, $this->getParam('db_debug', false));
         $this->_db_qry = $sql->getLastQuery();
 		if(!$res)
 		{
@@ -2782,19 +2820,36 @@ class e_front_model extends e_model
 
 			if($this->_db_errno)
 			{
-				$this->addMessageError('SQL Update Error', $session_messages); //TODO - Lan
+				$data = array(
+					'TABLE'     => $table,
+					'error_no' => $this->_db_errno,
+					'error_msg' => $this->_db_errmsg,
+					'qry'       => $this->_db_qry,
+					'url'       => e_REQUEST_URI,
+				);
+
+				$this->addMessageError('SQL Update Error', $session_messages, $data); //TODO - Lan
 				$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$sql->getLastErrorText());
 				return false;
 			}
 
-			$this->addMessageInfo(LAN_NO_CHANGE);
+			if($force === false)
+			{
+				$this->addMessageInfo(LAN_NO_CHANGE);
+			}
+			else
+			{
+				$this->addMessageDebug(LAN_NO_CHANGE);
+			}
+
+
 			return 0;
 		}
-		$this->clearCache()->addMessageSuccess(LAN_UPDATED);
+		$this->clearCache()->addMessageSuccess(LAN_UPDATED. " #".$this->getId());
 
-		e107::getAdminLog()->addSuccess('TABLE: '.$table, false);
-		e107::getAdminLog()->addSuccess('WHERE: '.$qry['WHERE'], false);
-		e107::getAdminLog()->save('ADMINUI_02');
+		e107::getLog()->addSuccess('TABLE: '.$table, false);
+		e107::getLog()->addSuccess('WHERE: '.$qry['WHERE'], false);
+		e107::getLog()->save('ADMINUI_02');
 
 
 		return $res;
@@ -2829,10 +2884,10 @@ class e_front_model extends e_model
 
     /**
      * Update record
-     *
+     * @see save()
      * @param boolen $from_post
      * @return boolean|integer
-     */
+     *//*
     public function update($from_post = true, $force = false, $session_messages = false)
     {
     	if(!$this->getFieldIdName())
@@ -2847,14 +2902,14 @@ class e_front_model extends e_model
 		}
 
 		return $this->dbUpdate($force, $session_messages);
-    }
+    }*/
 
-    /**
-     * Exactly what it says - your debug helper
-     * @param boolean $retrun
-     * @param boolean $undo
-     * @return void
-     */
+	/**
+	 * Exactly what it says - your debug helper
+	 * @param bool $return
+	 * @param boolean $undo
+	 * @return void
+	 */
 	public function saveDebug($return = false, $undo = true)
 	{
 		$ret = array();
@@ -2875,12 +2930,76 @@ class e_front_model extends e_model
 		if($undo)
 		{
 			$this->setData($ret['model_base_data'])
-				->isModified($ret['model_base_ismodfied'])
-				->setPostedData($ret['posted_data']);
+				->isModified($ret['model_base_ismodfied']);
+			$this->setPostedData($ret['posted_data']);
 		}
 		if($return) return $ret;
 
-		print_a($ret);
+		var_dump($ret);
+	}
+
+	/**
+	 * @param $type
+	 * @param $value
+	 * @param $key
+	 * @return array|bool|float|int|mixed|string|null
+	 */
+	private function sanitizeValue($type, $value, $key)
+	{
+
+		$ret = null; // default
+		$tp = e107::getParser();
+
+		switch($type)
+		{
+			case 'int':
+			case 'integer':
+				//return intval($this->toNumber($value));
+				$ret = (int) $tp->toNumber($value);
+				break;
+
+			case 'safestr':
+				$ret = $tp->filter($value);
+				break;
+
+			case 'str':
+			case 'string':
+			case 'array':
+				$type = $this->getFieldInputType($key);
+				$ret = $tp->toDB($value, false, false, 'model', array('type' => $type, 'field' => $key));
+				break;
+
+			case 'json':
+				if(!empty($value))
+				{
+					$ret = e107::serialize($value, 'json');
+				}
+				break;
+
+			case 'code':
+				$ret = $tp->toDB($value, false, false, 'pReFs');
+				break;
+
+			case 'float':
+				// return $this->toNumber($value);
+				$ret = $tp->toNumber($value);
+				break;
+
+			case 'bool':
+			case 'boolean':
+				$ret = ($value ? true : false);
+				break;
+
+			case 'model':
+				$ret = $value->mergePostedData(false, true, true);
+				break;
+
+			case 'null':
+				$ret = ($value ? $tp->toDB($value) : null);
+				break;
+		}
+
+		return $ret;
 	}
 }
 
@@ -2941,6 +3060,12 @@ class e_admin_model extends e_front_model
 		return $this->dbInsert($session_messages);
     }
 
+	/**
+	 * @param $ids
+	 * @param $destroy
+	 * @param $session_messages
+	 * @return false|int
+	 */
 	public function delete($ids, $destroy = true, $session_messages = false)
 	{
 		$ret = $this->dbDelete();
@@ -2979,20 +3104,25 @@ class e_admin_model extends e_front_model
 			$this->_db_errno = $sql->getLastErrorNumber();
 			$this->_db_errmsg = $sql->getLastErrorText();
 
-			$this->addMessageError('SQL Insert Error', $session_messages); //TODO - Lan
+			$logData = ($table != 'admin_log') ? array('TABLE'=>$table, 'ERROR'=>$this->_db_errmsg, 'QRY'=>print_r($sqlQry,true)) : false;
+
+			$this->addMessageError('SQL Insert Error', $session_messages, $logData); //TODO - Lan
 			$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$this->_db_errmsg);
 			$this->addMessageDebug('SQL QRY Error '.print_a($sqlQry,true));
 
 			return false;
 		}
 
-	    e107::getAdminLog()->addSuccess('TABLE: '.$table, false);
-		e107::getAdminLog()->save('ADMINUI_01');
-	//	e107::getAdminLog()->clear()->addSuccess($table,false)->addArray($sqlQry)->save('ADMINUI_01');
+
+	    e107::getLog()->addSuccess('TABLE: '.$table, false);
+	    e107::getLog()->addSuccess('ID: '.$res, false);
+		e107::getLog()->save('ADMINUI_01');
+
+	//	e107::getLog()->clear()->addSuccess($table,false)->addArray($sqlQry)->save('ADMINUI_01');
 
 		// Set the reutrned ID
 		$this->setId($res);
-		$this->clearCache()->addMessageSuccess(LAN_CREATED);
+		$this->clearCache()->addMessageSuccess(LAN_CREATED. " #".$this->getId());
 
 		return $res;
     }
@@ -3015,7 +3145,8 @@ class e_admin_model extends e_front_model
 			return 0;
 		}
 		$sql = e107::getDb();
-		$res = $sql->db_Insert($this->getModelTable(), $this->toSqlQuery('replace'));
+		$table = $this->getModelTable();
+		$res = $sql->insert($table, $this->toSqlQuery('replace'));
         $this->_db_qry = $sql->getLastQuery();
 		if(!$res)
 		{
@@ -3024,7 +3155,9 @@ class e_admin_model extends e_front_model
 
 			if($this->_db_errno)
 			{
-				$this->addMessageError('SQL Replace Error', $session_messages); //TODO - Lan
+				$logData = ($table != 'admin_log') ? array('TABLE'=>$table, 'ERROR'=>$this->_db_errmsg, 'QRY'=> print_r($this->_db_qry,true)) : false;
+
+				$this->addMessageError('SQL Replace Error', $session_messages, $logData); //TODO - Lan
 				$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$sql->getLastErrorText());
 			}
 		}
@@ -3035,12 +3168,12 @@ class e_admin_model extends e_front_model
 		return $res;
     }
 
-    /**
-     * Delete DB data
-     *
-     * @param boolean $force force query even if $data_has_changed is false
-     * @param boolean $session_messages to use or not session to store system messages
-     */
+	/**
+	 * Delete DB data
+	 *
+	 * @param boolean $session_messages to use or not session to store system messages
+	 * @return false|int
+	 */
     protected function dbDelete($session_messages = false)
     {
     	$this->_db_errno = 0;
@@ -3073,7 +3206,9 @@ class e_admin_model extends e_front_model
 
 			if($this->_db_errno)
 			{
-				$this->addMessageError('SQL Delete Error', $session_messages); //TODO - Lan
+				$logData = ($table != 'admin_log') ? array('TABLE'=>$table, 'ERROR'=>$this->_db_errmsg, 'WHERE'=>$where) : false;
+
+				$this->addMessageError('SQL Delete Error', $session_messages, $logData); //TODO - Lan
 				$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$sql->getLastErrorText());
 			}
 		}
@@ -3082,8 +3217,8 @@ class e_admin_model extends e_front_model
 			if($table != 'admin_log')
 			{
 				$logData = array('TABLE'=>$table, 'WHERE'=>$where);
-				e107::getAdminLog()->addSuccess($table,false);
-				e107::getAdminLog()->addArray($logData)->save('ADMINUI_03');
+				e107::getLog()->addSuccess($table,false);
+				e107::getLog()->addArray($logData)->save('ADMINUI_03');
 			}
 
 			$this->clearCache();
@@ -3124,11 +3259,18 @@ class e_tree_model extends e_front_model
 		}
 	}
 
+	/**
+	 * @return bool|string
+	 */
 	public function getTotal()
 	{
 		return $this->_total;
 	}
 
+	/**
+	 * @param $num
+	 * @return $this
+	 */
 	public function setTotal($num)
 	{
 		$this->_total = $num;
@@ -3137,8 +3279,8 @@ class e_tree_model extends e_front_model
 
 	/**
 	 * Set table name
-	 * @param object $table
-	 * @return e_admin_tree_model
+	 * @param string $table
+	 * @return e_tree_model
 	 */
 	public function setModelTable($table)
 	{
@@ -3188,16 +3330,54 @@ class e_tree_model extends e_front_model
 		return $this;
 	}
 
+	/**
+	 * @param $checkId
+	 * @return bool
+	 */
 	public function isCacheEnabled($checkId = true)
 	{
 		return (null !== $this->getCacheString());
 	}
 
+	/**
+	 * @param $replace
+	 * @return string|null
+	 */
 	public function getCacheString($replace = false)
 	{
 		return $this->_cache_string;
 	}
 
+	/**
+	 * @param $str
+	 * @return e_tree_model
+	 */
+	public function setCacheString($str = null)
+	{
+		if(isset($str))
+			return parent::setCacheString($str);
+
+		if($this->isCacheEnabled() && !$this->getParam('noCacheStringModify'))
+		{
+			$str = !$this->getParam('db_query')
+				?
+					$this->getModelTable()
+					.$this->getParam('nocount')
+					.$this->getParam('db_where')
+					.$this->getParam('db_order')
+					.$this->getParam('db_limit')
+				:
+					$this->getParam('db_query');
+
+			return $this->setCacheString($this->getCacheString().'_'.md5($str));
+		}
+
+		return parent::setCacheString($str);
+	}
+
+	/**
+	 * @return $this|e_tree_model
+	 */
 	protected function _setCacheData()
 	{
 		if(!$this->isCacheEnabled())
@@ -3214,6 +3394,10 @@ class e_tree_model extends e_front_model
 		return $this;
 	}
 
+	/**
+	 * @param $array
+	 * @return void
+	 */
 	protected function _loadFromArray($array)
 	{
 		if(isset($array['total']))
@@ -3248,14 +3432,8 @@ class e_tree_model extends e_front_model
 	 *
 	 * @return e_tree_model
 	 */
-	public function load($force = false)
+	public function loadBatch($force = false)
 	{
-		// XXX What would break if changed to the most proper isTree()?
-		if(!$force && $this->isTree()) //!$this->isEmpty()
-		{
-			return $this;
-		}
-
 		if ($force)
 		{
 			$this->unsetTree()
@@ -3264,21 +3442,13 @@ class e_tree_model extends e_front_model
 			$this->_total = false;
 		}
 
-		if($this->isCacheEnabled() && !$this->getParam('noCacheStringModify'))
+		// XXX What would break if changed to the most proper isTree()?
+		elseif($this->isTree()) //!$this->isEmpty()
 		{
-			$str = !$this->getParam('db_query')
-				?
-					$this->getModelTable()
-					.$this->getParam('nocount')
-					.$this->getParam('db_where')
-					.$this->getParam('db_order')
-					.$this->getParam('db_limit')
-				:
-					$this->getParam('db_query');
-
-			$this->setCacheString($this->getCacheString().'_'.md5($str));
+			return $this;
 		}
 
+		$this->setCacheString();
 		$cached = $this->_getCacheData();
 		if($cached !== false)
 		{
@@ -3286,7 +3456,6 @@ class e_tree_model extends e_front_model
 			return $this;
 		}
 
-		$class_name = $this->getParam('model_class', 'e_model');
 		// auto-load all
 		if(!$this->getParam('db_query') && $this->getModelTable())
 		{
@@ -3299,15 +3468,15 @@ class e_tree_model extends e_front_model
 			);
 		}
 
+		$class_name = $this->getParam('model_class', 'e_model');
 		if($this->getParam('db_query') && $class_name && class_exists($class_name))
 		{
 			$sql = e107::getDb($this->getParam('model_class', 'e_model'));
 			$this->_total = $sql->total_results = false;
 
-			if($sql->gen($this->getParam('db_query'), $this->getParam('db_debug') ? true : false))
+			if($rows = $this->getRows($sql))
 			{
-				$this->_total = is_integer($sql->total_results) ? $sql->total_results : false; //requires SQL_CALC_FOUND_ROWS in query - see db handler
-				while($tmp = $sql->db_Fetch())
+				foreach($rows as $tmp)
 				{
 					$tmp = new $class_name($tmp);
 					if($this->getParam('model_message_stack'))
@@ -3316,26 +3485,24 @@ class e_tree_model extends e_front_model
 					}
 					$this->_onLoad($tmp)->setNode($tmp->get($this->getFieldIdName()), $tmp);
 				}
-
-				if(false === $this->_total && $this->getModelTable() && !$this->getParam('nocount'))
-				{
-					//SQL_CALC_FOUND_ROWS not found in the query, do one more query
-				//	$this->_total = e107::getDb()->db_Count($this->getModelTable()); // fails with specific listQry
-
-					// Calculates correct total when using filters and search. //XXX Optimize.
-					$countQry = preg_replace('/(LIMIT ([\d,\s])*)$/', "", $this->getParam('db_query'));
-
-					$this->_total = e107::getDb()->gen($countQry);
-
-				}
-
 				unset($tmp);
+
+				$this->countResults($sql);
 			}
 
 			if($sql->getLastErrorNumber())
 			{
-				// TODO - admin log?
-				$this->addMessageError('Application Error - DB query failed.') // TODO LAN
+
+				$data = array(
+					'TABLE'     => $this->getModelTable(),
+					'error_no' => $sql->getLastErrorNumber(),
+					'error_msg' => $sql->getLastErrorText(),
+					'qry'       => $sql->getLastQuery(),
+					'url'       => e_REQUEST_URI,
+				);
+
+
+				$this->addMessageError('Application Error - DB query failed.', false, $data) // TODO LAN
 					->addMessageDebug('SQL Error #'.$sql->getLastErrorNumber().': '.$sql->getLastErrorText())
 					->addMessageDebug($sql->getLastQuery());
 			}
@@ -3346,6 +3513,269 @@ class e_tree_model extends e_front_model
 
 		}
 		return $this;
+	}
+
+	/**
+	 * @param $sql
+	 * @return array|false
+	 */
+	protected function getRows($sql)
+	{
+		// Tree (Parent-Child Relationship)
+		if ($this->getParam('sort_parent') && $this->getParam('sort_field'))
+		{
+			return $this->getRowsTree($sql);
+		}
+		// Flat List
+		return $this->getRowsList($sql);
+	}
+
+	/**
+	 * @param $sql
+	 * @return false
+	 */
+	protected function getRowsList($sql)
+	{
+		$success = $sql->gen($this->getParam('db_query'), $this->getParam('db_debug') ? true : false);
+		if (!$success) return false;
+
+		return $sql->rows();
+	}
+
+	/**
+	 * @param $sql
+	 * @return array|false
+	 */
+	protected function getRowsTree($sql)
+	{
+		// Workaround: Parse and modify db_query param for simulated pagination
+		$this->prepareSimulatedPagination();
+		// Workaround: Parse and modify db_query param for simulated custom ordering
+		$this->prepareSimulatedCustomOrdering();
+
+		$success = $sql->gen($this->getParam('db_query'), $this->getParam('db_debug') ? true : false);
+		if (!$success) return false;
+
+		$rows_tree = self::arrayToTree($sql->rows(),
+			$this->getParam('primary_field'),
+			$this->getParam('sort_parent'));
+		$rows = self::flattenTree($rows_tree,
+			$this->getParam('sort_field'),
+			$this->getParam('sort_order'));
+
+		// Simulated pagination
+		$rows = array_splice($rows,
+			(int) $this->getParam('db_limit_offset'),
+			($this->getParam('db_limit_count') ? $this->getParam('db_limit_count') : count($rows))
+		);
+
+		return $rows;
+	}
+
+	/**
+	 * Converts a relational array with a parent field and a sort order field to a tree
+	 * @param array $rows Relational array with a parent field and a sort order field
+	 * @param string $primary_field The field name of the primary key (matches children to parents)
+	 * @param string $sort_parent The field name whose value is the parent ID
+	 * @return array Multidimensional array with child nodes under the "_children" key
+	 */
+	protected static function arrayToTree($rows, $primary_field, $sort_parent)
+	{
+		$nodes = array();
+		$root = array($primary_field => 0);
+		$nodes[] = &$root;
+
+		while(!empty($nodes))
+		{
+			self::moveRowsToTreeNodes($nodes, $rows, $primary_field, $sort_parent);
+		}
+
+		return array(0 => $root);
+	}
+
+	/**
+	 * Put rows with parent matching the ID of the first node into the next node's children
+	 * @param array &$nodes Current queue of nodes, the first of which may have children added to it
+	 * @param array &rows The remaining rows that have yet to be converted into children of nodes
+	 * @param string $primary_field The field name of the primary key (matches children to parents)
+	 * @param string $sort_parent The field name whose value is the parent ID
+	 * @returns null
+	 */
+	protected static function moveRowsToTreeNodes(&$nodes, &$rows, $primary_field, $sort_parent)
+	{
+		$node = &$nodes[0];
+		array_shift($nodes);
+		$nodeID = (int) $node[$primary_field];
+		foreach($rows as $key => $row)
+		{
+			$rowParentID = (int) $row[$sort_parent];
+
+			// Note: This optimization only works if the SQL query executed was ordered by the sort parent.
+			if($rowParentID > $nodeID) break;
+
+			$node['_children'][] = &$row;
+			unset($rows[$key]);
+			$nodes[] = &$row;
+			unset($row);
+		}
+	}
+
+	/**
+	 * Flattens a tree into a depth-first array, sorting each node by a field's values
+	 * @param array $tree Tree with child nodes under the "_children" key
+	 * @param mixed $sort_field The field name (string) or field names (array) whose value
+	 *                          is or values are the sort order in the current tree node
+	 * @param int $sort_order Desired sorting direction: 1 if ascending, -1 if descending
+	 * @param int $depth The depth that this level of recursion is entering
+	 * @return array One-dimensional array in depth-first order with depth indicated by the "_depth" key
+	 */
+	protected static function flattenTree($tree, $sort_field = null, $sort_order = 1, $depth = 0)
+	{
+		$flat = array();
+
+		foreach($tree as $item)
+		{
+			$children = isset($item['_children']) ? $item['_children'] : null;
+			unset($item['_children']);
+			$item['_depth'] = $depth;
+			if($depth > 0)
+				$flat[] = $item;
+			if(is_array($children))
+			{
+				uasort($children, function($node1, $node2) use ($sort_field, $sort_order)
+				{
+					return self::multiFieldCmp($node1, $node2, $sort_field, $sort_order);
+				});
+				$flat = array_merge($flat, self::flattenTree($children, $sort_field, $sort_order, $depth+1));
+			}
+		}
+
+		return $flat;
+	}
+
+	/**
+	 * Naturally compares two associative arrays given multiple sort keys and a reverse order flag
+	 * @param array $row1 Associative array to compare to $row2
+	 * @param array $row2 Associative array to compare to $row1
+	 * @param mixed $sort_field Key (string) or keys (array) to compare
+	 *                          the values of in both $row1 and $row2
+	 * @param int $sort_order -1 to reverse the sorting order or 1 to keep the order as ascending
+	 * @return int -1 if $row1 is less than $row2
+	 *             0 if $row1 is equal to $row2
+	 *             1 if $row1 is greater than $row2
+	 */
+	protected static function multiFieldCmp($row1, $row2, $sort_field, $sort_order = 1)
+	{
+		if (!is_array($sort_field))
+			$sort_field = [$sort_field];
+		$field = array_shift($sort_field);
+
+		$cmp = strnatcmp((string) $row1[$field], (string) $row2[$field]);
+		if ($sort_order === -1 || $sort_order === 1) $cmp *= $sort_order;
+		if ($cmp === 0 && count($sort_field) >= 1)
+			return self::multiFieldCmp($row1, $row2, $sort_field, $sort_order);
+		return $cmp;
+	}
+
+	/**
+	 * Resiliently counts the results from the last SQL query in the given resource
+	 *
+	 * Sets the count in $this->_total
+	 *
+	 * @param e_db_pdo $sql SQL resource that executed a query
+	 * @return int Number of results from the latest query
+	 */
+	protected function countResults($sql)
+	{
+		$total = $sql->foundRows();
+		$this->_total = is_int($total) ? $total : false; //requires SQL_CALC_FOUND_ROWS in query - see db handler
+
+		if(false === $this->_total && $this->getModelTable() && !$this->getParam('nocount'))
+		{
+			//SQL_CALC_FOUND_ROWS not found in the query, do one more query
+		//	$this->_total = e107::getDb()->db_Count($this->getModelTable()); // fails with specific listQry
+
+			// Calculates correct total when using filters and search. //XXX Optimize.
+			$countQry = preg_replace('/(LIMIT ([\d,\s])*)$/', "", $this->getParam('db_query'));
+
+			$this->_total = e107::getDb()->gen($countQry);
+
+		}
+		return $this->_total;
+	}
+
+	/**
+	 * Workaround: Parse and modify query to prepare for simulation of tree pagination
+	 *
+	 * This is a hack to maintain compatibility of pagination of tree
+	 * models without SQL LIMITs
+	 *
+	 * Implemented out of necessity under
+	 * https://github.com/e107inc/e107/issues/3015
+	 *
+	 * @returns null
+	 */
+	protected function prepareSimulatedPagination()
+	{
+		$db_query = $this->getParam('db_query');
+		$db_query = preg_replace_callback("/LIMIT ([\d]+)[ ]*(?:,|OFFSET)?[ ]*([\d]*)/i", function($matches)
+		{
+			// Count only
+			if (empty($matches[2]))
+			{
+				$this->setParam('db_limit_count', $matches[1]);
+			}
+			// Offset and count
+			else
+			{
+				$this->setParam('db_limit_offset', $matches[1]);
+				$this->setParam('db_limit_count', $matches[2]);
+			}
+
+			return "";
+		}, $db_query);
+		$this->setParam('db_query', $db_query);
+	}
+
+	/**
+	 * Workaround: Parse and modify query to prepare for simulation of custom ordering
+	 *
+	 * XXX: Not compliant with all forms of ORDER BY clauses
+	 * XXX: Does not support quoted identifiers (`identifier`)
+	 * XXX: Does not support mixed sort orders (identifier1 ASC, identifier2 DESC)
+	 *
+	 * This is a hack to enable custom ordering of tree models when
+	 * flattening the tree.
+	 *
+	 * Implemented out of necessity under
+	 * https://github.com/e107inc/e107/issues/3029
+	 *
+	 * @returns null
+	 */
+	protected function prepareSimulatedCustomOrdering()
+	{
+		$db_query = $this->getParam('db_query');
+		$db_query = preg_replace_callback('/ORDER BY (?:.+\.)*[\.]*([A-Za-z0-9$_,]+)[ ]*(ASC|DESC)*/i', function($matches)
+			{
+				if (!empty($matches[1]))
+				{
+					$current_sort_field = $this->getParam('sort_field');
+					if (!empty($current_sort_field))
+					{
+						$matches[1] = $current_sort_field.",".$matches[1];
+					}
+					$this->setParam('sort_field', array_map('trim', explode(',', $matches[1])));
+				}
+				if (!empty($matches[2]))
+					$this->setParam('sort_order',
+						(0 === strcasecmp($matches[2], 'DESC') ? -1 : 1)
+					);
+
+				return "";
+			}, $db_query)
+			// Optimization goes with e_tree_model::moveRowsToTreeNodes()
+			. " ORDER BY " . $this->getParam('sort_parent') . "," . $this->getParam('primary_field');
+		$this->setParam('db_query', $db_query);
 	}
 
 	/**
@@ -3451,6 +3881,9 @@ class e_tree_model extends e_front_model
 		return $ret;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function toXML()
 	{
 		return '';
@@ -3488,18 +3921,34 @@ class e_tree_model extends e_front_model
 		{
 			return $this->getNode($node_id)->toString($AddSlashes);
 		}
-		return (string) e107::getArrayStorage()->WriteArray($this->toArray($total), $AddSlashes);
+		return (string) e107::getArrayStorage()->serialize($this->toArray($total), $AddSlashes);
 	}
 
+	/**
+	 * @param $from_post
+	 * @param $force
+	 * @param $session_messages
+	 * @return void
+	 */
 	public function update($from_post = true, $force = false, $session_messages = false)
 	{
 	}
 
+	/**
+	 * @param $ids
+	 * @param $destroy
+	 * @param $session_messages
+	 * @return void
+	 */
 	public function delete($ids, $destroy = true, $session_messages = false)
 	{
 	}
 }
 
+
+/**
+ *
+ */
 class e_front_tree_model extends e_tree_model
 {
 	/**
@@ -3567,7 +4016,7 @@ class e_front_tree_model extends e_tree_model
 	 * @param boolean $session_messages [optional] default false
 	 * @return integer updated count or false on error
 	 */
-	public function update($field, $value, $ids, $syncvalue = null, $sanitize = true, $session_messages = false)
+	public function batchUpdate($field, $value, $ids, $syncvalue = null, $sanitize = true, $session_messages = false)
 	{
 		$tp = e107::getParser();
 		$sql = e107::getDb();
@@ -3588,12 +4037,14 @@ class e_front_tree_model extends e_tree_model
 		if($sanitize)
 		{
 			$ids = array_map(array($tp, 'toDB'), $ids);
-			$field = $tp->toDb($field);
+			$field = $tp->toDB($field);
 			$value = "'".$tp->toDB($value)."'";
 		}
 		$idstr = implode(', ', $ids);
 
-		$res = $sql->db_Update($this->getModelTable(), "{$field}={$value} WHERE ".$this->getFieldIdName().' IN ('.$idstr.')', $this->getParam('db_debug', false));
+		$table = $this->getModelTable();
+
+		$res = $sql->update($table, "{$field}={$value} WHERE ".$this->getFieldIdName().' IN ('.$idstr.')', $this->getParam('db_debug', false));
 		$this->_db_errno = $sql->getLastErrorNumber();
 		$this->_db_errmsg = $sql->getLastErrorText();
 		$this->_db_qry = $sql->getLastQuery();
@@ -3602,7 +4053,16 @@ class e_front_tree_model extends e_tree_model
 		{
 			if($sql->getLastErrorNumber())
 			{
-				$this->addMessageError(LAN_UPDATED_FAILED, $session_messages);
+				$data = array(
+					'TABLE'     => $table ,
+					'error_no' => $this->_db_errno,
+					'error_msg' => $this->_db_errmsg,
+					'qry'       => $this->_db_qry,
+					'url'       => e_REQUEST_URI,
+				);
+
+
+				$this->addMessageError(LAN_UPDATED_FAILED, $session_messages, $data);
 				$this->addMessageDebug('SQL Error #'.$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
 			}
 			else
@@ -3634,6 +4094,10 @@ class e_front_tree_model extends e_tree_model
 	}
 }
 
+
+/**
+ *
+ */
 class e_admin_tree_model extends e_front_tree_model
 {
 
@@ -3674,7 +4138,16 @@ class e_admin_tree_model extends e_front_tree_model
 		{
 			if($sql->getLastErrorNumber())
 			{
-				$this->addMessageError('SQL Delete Error: ' . $sql->getLastQuery(), $session_messages); //TODO - Lan
+				$data = array(
+					'TABLE'     => $table,
+					'error_no' => $this->_db_errno,
+					'error_msg' => $this->_db_errmsg,
+					'qry'       => $this->_db_qry,
+					'url'       => e_REQUEST_URI,
+				);
+
+
+				$this->addMessageError('SQL Delete Error: ' . $sql->getLastQuery(), $session_messages, $data); //TODO - Lan
 				$this->addMessageDebug('SQL Error #'.$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
 			}
 		}
@@ -3697,7 +4170,7 @@ class e_admin_tree_model extends e_front_tree_model
 		if($table != 'admin_log')
 		{
 			$logData = array('TABLE'=>$table, 'WHERE'=>$sqlQry);
-			e107::getAdminLog()->addArray($logData)->save('ADMINUI_03');
+			e107::getLog()->addArray($logData)->save('ADMINUI_03');
 		}
 		return $res;
 	}
@@ -3707,6 +4180,14 @@ class e_admin_tree_model extends e_front_tree_model
 	 */
 	public function copy($ids, $session_messages = false)
 	{
+		if(empty($ids[0]))
+		{
+			$this->addMessageError('No IDs provided', $session_messages); //TODO - Lan
+			$this->addMessageDebug(print_a(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS),true),$session_messages); //TODO - Lan
+			return false;
+		}
+
+
 		$tp = e107::getParser();
 		$ids = array_map(array($tp, 'toDB'), $ids);
 		$idstr = implode(', ', $ids);
@@ -3723,6 +4204,7 @@ class e_admin_tree_model extends e_front_tree_model
 			{
 				$this->addMessageError('SQL Copy Error', $session_messages); //TODO - Lan
 				$this->addMessageDebug('SQL Error #'.$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
+				$this->addMessageDebug('$SQL Query'.print_a($sql->getLastQuery(),true));
 			}
 		}
 		$this->_db_errno = $sql->getLastErrorNumber();
@@ -3771,7 +4253,7 @@ class e_admin_tree_model extends e_front_tree_model
 	    $filename   = "e107Export_" .$this->getModelTable()."_". date("YmdHi").".xml";
 	    $query      = $this->getFieldIdName().' IN ('.$idstr.') '; //  ORDER BY '.$this->getParam('db_order') ;
 
-		e107::getXML()->e107Export(null,$table,null,array('file'=>$filename,'query'=>$query));
+		e107::getXml()->e107Export(null,$table,null,null, array('file'=>$filename,'query'=>$query));
 
 		return null;
 

@@ -86,6 +86,7 @@ define("FR_LAN_28", "Known insecure files");
 //define("FR_LAN_30", "Total lines matched");//not used
 //define("FR_LAN_31", "Missing complete plugin folder");//not used
 define("FR_LAN_32", "You need to run a scan first!");
+define("FR_LAN_33", "Begin");
 
 define("FS_LAN_1", "Create Snapshot");
 define("FS_LAN_2", "Absolute path of root directory to create image from");
@@ -99,4 +100,3 @@ define("FS_LAN_9", "Snapshot");
 define("FS_LAN_10", "Snapshot Created");
 define("FS_LAN_11", "The snapshot was successfully created.");
 define("FS_LAN_12", "Return To Main Page");
-?>

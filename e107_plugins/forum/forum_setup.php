@@ -66,9 +66,15 @@ class forum_setup
 		}
 
 		$legacyMenuPref = e107::getConfig('menu')->getPref();
-		if(isset($legacyMenuPref['newforumposts_caption']))
-		{
+		//if(isset($legacyMenuPref['newforumposts_caption']))
+		//{
 
+	//	}
+
+		// Check if e_print addon is loaded
+		if(!e107::getAddon('forum','e_print'))
+		{
+			return true;
 		}
 
 		return false;
@@ -126,6 +132,12 @@ class forum_setup
 		{
 			$mes = e107::getMessage();
 			$mes->addSuccess("Migration is required. Please click 'Continue'.<br /><a class='btn btn-primary' href='".e_PLUGIN."forum/forum_update.php'>Continue</a>");
+		}
+
+
+		if(!e107::getAddon('forum','e_print'))
+		{
+			e107::getPlug()->clearCache()->buildAddonPrefLists();	
 		}
 
 	}

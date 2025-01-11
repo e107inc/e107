@@ -16,8 +16,6 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-//$comment_menu_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
-//e107::getRegistry('plugin/comment_menu/current');
 
 class comment_menu_shortcodes extends e_shortcode
 {
@@ -26,6 +24,8 @@ class comment_menu_shortcodes extends e_shortcode
 	 */
 	function sc_cm_icon()
 	{
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b>', E_USER_DEPRECATED); // NO LAN
+
 		//TODO review bullet
 		$bullet = '';
 		if(defined('BULLET'))
@@ -55,7 +55,7 @@ class comment_menu_shortcodes extends e_shortcode
 			$text = $this->var['comment_title'];
 		}
 
-		return e107::getParser()->toHtml($text,false,'TITLE');
+		return e107::getParser()->toHTML($text,false,'TITLE');
 	}
 		
 	function sc_cm_url_pre()
@@ -86,6 +86,13 @@ class comment_menu_shortcodes extends e_shortcode
 	function sc_cm_author_avatar($parm=null) // new v2.1.5
 	{
 		$data = array('user_id'=>$this->var['comment_author_id'], 'user_image'=>$this->var['comment_author_image']);
+
+		if(!empty($parm['size']))
+		{
+			$parm['w'] = $parm['size'];
+			$parm['h'] = $parm['size'];
+		}
+
 		return e107::getParser()->toAvatar($data, $parm);
 	}
 	
@@ -187,4 +194,3 @@ return $COMMENT;
 SC_END
 
 */
-?>

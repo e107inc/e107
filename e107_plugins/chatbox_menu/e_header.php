@@ -8,4 +8,3 @@ if(vartrue($eMenuActive['chatbox_menu']) && ($pref['cb_layer']==2))
 }
 
 
-?>

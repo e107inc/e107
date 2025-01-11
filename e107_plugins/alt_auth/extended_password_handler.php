@@ -77,7 +77,8 @@ class ExtendedPasswordHandler extends UserHandler
 	const   PASSWORD_WORDPRESS_SALT = 8;
 	const   PASSWORD_MAGENTO_SALT   = 9;
 	const   PASSWORD_PHPFUSION_SALT = 10;
-
+    const   PASSWORD_ABANTECART_SALT = 11;
+    
 	const   PASSWORD_PHPBB_ID           = '$H$';			// PHPBB salted
 	const   PASSWORD_ORIG_ID            = '$P$';				// 'Original' code
 	const   PASSWORD_WORDPRESS_ID       = '$P$';			// WordPress 2.8
@@ -97,7 +98,7 @@ class ExtendedPasswordHandler extends UserHandler
 	 */
 	private function get_random_bytes($count)
 	{
-		$this->random_state = md5($this->random_state.microtime().mt_rand(0,10000));  // This will 'auto seed'
+		$this->random_state = md5($this->random_state.microtime().random_int(0,10000));  // This will 'auto seed'
 
 		$output = '';
 		for ($i = 0; $i < $count; $i += 16) 
@@ -210,10 +211,10 @@ class ExtendedPasswordHandler extends UserHandler
 	 */
 	public function getPasswordTypes($includeExtended = TRUE)
 	{
-		$vals = array();
-		$vals = array(
-		'md5' => IMPORTDB_LAN_7,
-		'e107_salt' => IMPORTDB_LAN_8);		// Methods supported in core
+		$vals = array( // Methods supported in core
+			'md5' => IMPORTDB_LAN_7,
+			'e107_salt' => IMPORTDB_LAN_8
+		);
 
 		if ($includeExtended)
 		{
@@ -227,6 +228,7 @@ class ExtendedPasswordHandler extends UserHandler
 				'wordpress_salt'	=> IMPORTDB_LAN_13,
 				'magento_salt'		=> IMPORTDB_LAN_14,
 				'phpfusion_salt'    => "PHPFusion",
+                'abantecart_salt'    => "AbanteCart Salt",
 				));
 		}
 		return $vals;
@@ -254,6 +256,7 @@ class ExtendedPasswordHandler extends UserHandler
 				'wordpress_salt'	=> self::PASSWORD_WORDPRESS_SALT,
 				'magento_salt'		=> self::PASSWORD_MAGENTO_SALT,
 				'phpfusion_salt'    => self::PASSWORD_PHPFUSION_SALT,
+                'abantecart_salt'   => self::PASSWORD_ABANTECART_SALT,
 				);
 		if (isset($maps[$ptype])) return $maps[$ptype];
 		return FALSE;
@@ -263,29 +266,29 @@ class ExtendedPasswordHandler extends UserHandler
 	/**
 	 *	Extension of password validation to handle more types
 	 *
-	 *	@param string $pword - plaintext password as entered by user
+	 *	@param string $password - plaintext password as entered by user
 	 *	@param string $login_name - string used to log in (could actually be email address)
 	 *	@param string $stored_hash - required value for password to match
 	 *	@param integer $password_type - constant specifying the type of password to check against
 	 *
-	 *	@return PASSWORD_INVALID|PASSWORD_VALID|string
+	 *	@return string  PASSWORD_INVALID|PASSWORD_VALID|string
 	 *		PASSWORD_INVALID if no match
 	 *		PASSWORD_VALID if valid password
 	 *		Return a new hash to store if valid password but non-preferred encoding
 	 */
-	public function CheckPassword($pword, $login_name, $stored_hash, $password_type = PASSWORD_DEFAULT_TYPE)
+	public function CheckPassword($password, $login_name, $stored_hash, $password_type = PASSWORD_DEFAULT_TYPE)
 	{
 		switch ($password_type)
 		{
 			case self::PASSWORD_GENERAL_MD5 :
 			case self::PASSWORD_E107_MD5 :
-				$pwHash = md5($pword);
+				$pwHash = md5($password);
 
 				break;
 
 			case self::PASSWORD_GENERAL_SHA1 :
 				if (strlen($stored_hash) != 40) return PASSWORD_INVALID;
-				$pwHash = sha1($pword);
+				$pwHash = sha1($password);
 				break;
 
 			case self::PASSWORD_JOOMLA_SALT :
@@ -295,8 +298,8 @@ class ExtendedPasswordHandler extends UserHandler
 					return PASSWORD_INVALID;
 				}
 				// Mambo/Joomla salted hash - should be 32-character md5 hash, ':', 16-character salt (but could be 8-char salt, maybe)
-				list($hash, $salt) = explode(':', $stored_hash); 
-				$pwHash = md5($pword.$salt);
+				list($hash, $salt) = explode(':', $stored_hash);
+				$pwHash = md5($password.$salt);
 				$stored_hash = $hash;
 				break;
 				
@@ -312,25 +315,25 @@ class ExtendedPasswordHandler extends UserHandler
 				{
 					$hash = $stored_hash;
 				} 
-				if(strlen($hash) !== 32) 
-				{
+			//	if(strlen($hash) !== 32)
+			//	{
 					//return PASSWORD_INVALID;
-				}
+			//	}
 				
-				$pwHash = $salt ? md5($salt.$pword) : md5($pword);
+				$pwHash = $salt ? md5($salt.$password) : md5($password);
 				$stored_hash = $hash;
 				break;
 
 			case self::PASSWORD_E107_SALT :
 				//return e107::getUserSession()->CheckPassword($password, $login_name, $stored_hash);
-				return parent::CheckPassword($pword, $login_name, $stored_hash);
-				break;
+				return parent::CheckPassword($password, $login_name, $stored_hash);
+			//	break;
 
 			case self::PASSWORD_PHPBB_SALT :
 			case self::PASSWORD_WORDPRESS_SALT :
 				if (strlen($stored_hash) != 34) return PASSWORD_INVALID;
-				$pwHash = $this->crypt_private($pword, $stored_hash, $password_type);
-				if ($pwHash[0] == '*')
+				$pwHash = $this->crypt_private($password, $stored_hash, $password_type);
+				if ($pwHash[0] === '*')
 				{
 					return PASSWORD_INVALID;
 				}
@@ -343,26 +346,49 @@ class ExtendedPasswordHandler extends UserHandler
 
 				if (strlen($hash) !== 32)
 				{
-					$pwHash = hash_hmac('sha256',$pword, $salt);
+					$pwHash = hash_hmac('sha256',$password, $salt);
 				}
 				else
 				{
 					e107::getMessage()->addDebug("PHPFusion Md5 Hash Detected ");
-					$pwHash = md5(md5($pword));
+					$pwHash = md5(md5($password));
 				}
 
 				$stored_hash = $hash;
 				break;
 
 			case self::PASSWORD_PLAINTEXT :
-				$pwHash = $pword;
+				$pwHash = $password;
 				break;
+                
+ 	        
+             case self::PASSWORD_ABANTECART_SALT :
+				$hash = $salt = '';
+                
+				if ((strpos($stored_hash, ':') !== false))
+				{
+					list($hash, $salt) = explode(':', $stored_hash); 
+				}
+				// Magento salted hash - should be 32-character md5 hash, ':', 2-character salt, but could be also only md5 hash
+				else 
+				{
+					$hash = $stored_hash;
+				} 
+                          
+				/*
+                password = 	SHA1(CONCAT(salt, SHA1(CONCAT(salt, SHA1('".$this->db->escape($password)."')))
+                */
+				//$pwHash = $salt ? md5($salt.$pword) : md5($pword);
+                $pwHash = sha1($salt.sha1($salt.sha1($password)));
+				$stored_hash = $hash;
+				break;               
+                
 
 			default :
 				return PASSWORD_INVALID;
 		}
-
-		if(deftrue('e_DEBUG'))
+       
+		if(deftrue('ADMIN_AREA'))
 		{
 			e107::getMessage()->addDebug("Stored Hash: ".$stored_hash);
 
@@ -382,4 +408,3 @@ class ExtendedPasswordHandler extends UserHandler
 }
 
 
-?>

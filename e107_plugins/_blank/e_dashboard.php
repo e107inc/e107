@@ -47,7 +47,7 @@ class _blank_dashboard // include plugin-folder in the name.
 
 		$label          = date('M Y', $month_start)." - ".date('M Y', $month_end);
 
-		if(!$sql->gen("SELECT id,datestamp,referred FROM `#_blank` WHERE datestamp BETWEEN ".$month_start." AND ".$month_end))
+		if(!$sql->gen("SELECT blank_id,blank_date,blank_folder FROM `#blank` WHERE blank_date BETWEEN ".$month_start." AND ".$month_end))
 		{
 			return false;
 		}
@@ -55,9 +55,9 @@ class _blank_dashboard // include plugin-folder in the name.
 		while($row = $sql->fetch())
 		{
 
-			$key = date('Y-n-j', $row['datestamp']);
+			$key = date('Y-n-j', $row['blank_date']);
 
-			switch($row['referred'])
+			switch($row['blank_folder'])
 			{
 				case "Facebook":
 					$amt[$key]['facebook'] += 1;
@@ -80,7 +80,7 @@ class _blank_dashboard // include plugin-folder in the name.
 
 			}
 
-			$dateName[$key] = date('jS', $row['datestamp']);
+			$dateName[$key] = date('jS', $row['blank_date']);
 		}
 
 		$sum = array_sum($amt);
@@ -95,7 +95,7 @@ class _blank_dashboard // include plugin-folder in the name.
 		{
 			list($yearNumber,$monthNumber,$day) = explode('-',$k);
 			$diz = date('D jS', mktime(1,1,1,$monthNumber,$day, $yearNumber));
-			$data[] = array($diz, $amt[$k]['other'], $amt[$k]['friend'], $amt[$k]['bing'], $amt[$k]['google'], $amt[$k]['facebook']); //	$dateName[$i]
+			$data[] = array($diz, $v['other'], $v['friend'], $v['bing'], $v['google'], $v['facebook']); //	$dateName[$i]
 			$ticks[] = $k;
 		//	$c++;
 		}
@@ -125,7 +125,6 @@ class _blank_dashboard // include plugin-folder in the name.
 	
 	function status() // Status Panel in the admin area
 	{
-
 		$var[0]['icon'] 	= "<img src='".e_PLUGIN."_blank/images/blank_16.png' alt='' />";
 		$var[0]['title'] 	= "My Title";
 		$var[0]['url']		= e_PLUGIN_ABS."_blank/_blank.php";
@@ -147,4 +146,3 @@ class _blank_dashboard // include plugin-folder in the name.
 	
 	
 }
-?>

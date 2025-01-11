@@ -15,10 +15,58 @@ class theme_shortcodes extends e_shortcode
 {
 	// public $override = true;
 
-	function __construct()
+
+
+	/**
+	 * Special Header Shortcode for dynamic menuarea templates.
+	 * @shortcode {---HEADER---}
+	 * @return string
+	 */
+	function sc_header()
 	{
-		
+		return "<!-- Dynamic Header template -->\n";
 	}
+
+
+	/**
+	 * Special Footer Shortcode for dynamic menuarea templates.
+	 * @shortcode {---FOOTER---}
+	 * @return string
+	 */
+	function sc_footer()
+	{
+		return "<!-- Dynamic Footer template -->\n";
+/*
+		return '
+			<footer class="footer py-4 bg-dark text-white">
+			<div class="container">       		
+				<div class="content">         			
+					<div class="row">           				
+						<div class="col-md-3">   <h4>Navigation</h4>{NAVIGATION: type=main&layout=alt} 
+							{MENUAREA=14}
+						</div>
+						<div class="col-md-3">   <h4>Follow Us</h4>{XURL_ICONS: template=footer}
+							{MENUAREA=15}
+						</div>           				
+						<div class="col-md-3">  
+							{MENUAREA=16}
+						</div>           				
+						<div class="col-md-3">  
+							{MENUAREA=17}
+						</div>                 			
+					</div>       		
+				</div>       		
+				<hr>   	 
+				<div class="container">    {NAVIGATION: type=main&layout=footer} </div>
+				<div class="container">      
+					<p class="m-0 text-center text-white">{SITEDISCLAIMER}</p>
+				</div>    
+				<!-- /.container -->
+				</div>
+		</footer>';*/
+ 
+	}
+
 
 /*
 	function sc_news_summary()
@@ -76,7 +124,7 @@ class theme_shortcodes extends e_shortcode
 
 
 
-	function sc_bootstrap_usernav($parm='')
+	function sc_bootstrap_usernav($parm=null)
 	{
 
 		$placement = e107::pref('theme', 'usernav_placement', 'top');
@@ -88,7 +136,8 @@ class theme_shortcodes extends e_shortcode
 
 		e107::includeLan(e_PLUGIN."login_menu/languages/".e_LANGUAGE.".php");
 		
-		$tp = e107::getParser();		   
+		$tp = e107::getParser();
+		$login_menu_shortcodes = null;
 		require(e_PLUGIN."login_menu/login_menu_shortcodes.php"); // don't use 'require_once'.
 
 		$direction = vartrue($parm['dir']) == 'up' ? ' dropup' : '';
@@ -137,8 +186,8 @@ class theme_shortcodes extends e_shortcode
 				$text .='	
 				
 				<form method="post" onsubmit="hashLoginPassword(this);return true" action="'.e_REQUEST_HTTP.'" accept-charset="UTF-8">
-				<p>{LM_USERNAME_INPUT}</p>
-				<p>{LM_PASSWORD_INPUT}</p>
+				<p>{LM_USERNAME_INPUT: idprefix=bs3-}</p>
+				<p>{LM_PASSWORD_INPUT: idprefix=bs3-}</p>
 
 
 				<div class="form-group"></div>
@@ -147,16 +196,16 @@ class theme_shortcodes extends e_shortcode
 				
 				<div class="checkbox">
 				
-				<label class="string optional" for="autologin"><input style="margin-right: 10px;" type="checkbox" name="autologin" id="autologin" value="1">
+				<label class="string optional" for="bs3-autologin"><input style="margin-right: 10px;" type="checkbox" name="autologin" id="bs3-autologin" value="1">
 				'.LAN_LOGINMENU_6.'</label>
 				</div>
-				<input class="btn btn-primary btn-block" type="submit" name="userlogin" id="userlogin" value="'.LAN_LOGINMENU_51.'">
+				<input class="btn btn-primary btn-block" type="submit" name="userlogin" id="bs3-userlogin" value="'.LAN_LOGINMENU_51.'">
 				';
 				
 				$text .= '
 				
-				<a href="{LM_FPW_LINK=href}" class="btn btn-default btn-sm  btn-block">'.LAN_LOGINMENU_4.'</a>
-				<a href="{LM_RESEND_LINK=href}" class="btn btn-default btn-sm  btn-block">'.LAN_LOGINMENU_40.'</a>
+				<a href="{LM_FPW_LINK=href}" class="btn btn-default btn-secondary btn-sm  btn-block">'.LAN_LOGINMENU_4.'</a>
+				<a href="{LM_RESEND_LINK=href}" class="btn btn-default btn-secondary btn-sm  btn-block">'.LAN_LOGINMENU_40.'</a>
 				';
 				
 				
@@ -184,7 +233,7 @@ class theme_shortcodes extends e_shortcode
 			
 			
 			
-			return $tp->parseTemplate($text, true, $login_menu_shortcodes);
+			return e107::getParser()->parseTemplate($text, true, $login_menu_shortcodes);
 		}  
 
 		
@@ -195,25 +244,31 @@ class theme_shortcodes extends e_shortcode
 
 		$text = '
 		
-		<ul class="nav navbar-nav navbar-right'.$direction.'">
-		<li class="dropdown">{PM_NAV}</li>
-		<li class="dropdown dropdown-avatar"><a href="#" class="dropdown-toggle" data-toggle="dropdown">{SETIMAGE: w=30} {USER_AVATAR: shape=circle} '. $userNameLabel.' <b class="caret"></b></a>
+		<ul class="nav navbar-nav navbar-right'.$direction.'">';
+		
+		if( e107::isInstalled('pm') )
+		{
+			$text .= '<li class="dropdown">{PM_NAV}</li>';
+		}
+		
+		$text .= '
+		<li class="dropdown dropdown-avatar"><a href="#" class="dropdown-toggle" data-toggle="dropdown">{USER_AVATAR: w=30&h=30&crop=1&shape=circle} '. $userNameLabel.' <b class="caret"></b></a>
 		<ul class="dropdown-menu">
 		<li>
-			<a href="{LM_USERSETTINGS_HREF}"><span class="glyphicon glyphicon-cog"></span> '.LAN_SETTINGS.'</a>
+			<a href="{LM_USERSETTINGS_HREF}">{GLYPH=fa-cog} '.LAN_SETTINGS.'</a>
 		</li>
 		<li>
-			<a class="dropdown-toggle no-block" role="button" href="{LM_PROFILE_HREF}"><span class="glyphicon glyphicon-user"></span> '.LAN_LOGINMENU_13.'</a>
+			<a class="dropdown-toggle no-block" role="button" href="{LM_PROFILE_HREF}">{GLYPH=fa-user} '.LAN_LOGINMENU_13.'</a>
 		</li>
 		<li class="divider"></li>';
 		
 		if(ADMIN) 
 		{
-			$text .= '<li><a href="'.e_ADMIN_ABS.'"><span class="fa fa-cogs"></span> '.LAN_LOGINMENU_11.'</a></li>';	
+			$text .= '<li><a href="'.e_ADMIN_ABS.'">{GLYPH=fa-cogs} '.LAN_LOGINMENU_11.'</a></li>';
 		}
 		
 		$text .= '
-		<li><a href="'.e_HTTP.'index.php?logout"><span class="glyphicon glyphicon-off"></span> '.LAN_LOGOUT.'</a></li>
+		<li><a href="'.e_HTTP.'index.php?logout">{GLYPH=fa-power-off} '.LAN_LOGOUT.'</a></li>
 		</ul>
 		</li>
 		</ul>
@@ -221,7 +276,7 @@ class theme_shortcodes extends e_shortcode
 		';
 
 
-		return $tp->parseTemplate($text,true,$login_menu_shortcodes);
+		return e107::getParser()->parseTemplate($text,true,$login_menu_shortcodes);
 	}	
 	
 
@@ -255,6 +310,7 @@ class theme_shortcodes extends e_shortcode
 			$text .= $tp->parseTemplate($TEMPLATE, true, $sc); // parse news shortcodes.
 		}
 
+        unset($parm);
 		return $text;
 
 
@@ -271,34 +327,24 @@ class theme_shortcodes extends e_shortcode
 	function sc_bootstrap_megamenu_example($data)
 	{
 		// include a plugin, custom code, whatever you wish.
-
 		// return print_a($data,true);
 
 		$parm= array();
 		$parm['caption']        = '';
-		$parm['titleLimit']     = 25; //    number of chars fo news title
-		$parm['summaryLimit']   = 50; //   number of chars for new summary
-		$parm['source']         = 'latest'; //      latest (latest news items) | sticky (news items) | template (assigned to news-grid layout)
-		$parm['order']          = 'DESC'; //       n.news_datestamp DESC
-		$parm['limit']          = '6'; //     10
+		$parm['titleLimit']     = 25;           //    number of chars fo news title
+		$parm['summaryLimit']   = 50;           //   number of chars for new summary
+		$parm['source']         = 'latest';     //      latest (latest news items) | sticky (news items) | template (assigned to news-grid layout)
+		$parm['order']          = 'n.news_datestamp DESC'; //       n.news_datestamp DESC
+		$parm['limit']          = 4;                //     number of items
 		$parm['layout']         = 'media-list'; //    default | or any key as defined in news_grid_template.php
 		$parm['featured']       = 0;
 
-
-		return "<div class='container'>". e107::getObject('news')->render_newsgrid($parm) ."</div>";
+        unset($data);
+		return '<div class="container mega-menu-example">'. e107::getObject('news')->render_newsgrid($parm) ."</div>";
 
 
 	}
-
-
-
-
-
-	
+ 
 }
+ 
 
-
-
-
-
-?>

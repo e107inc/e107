@@ -8,7 +8,7 @@
  *
  */
 
-require_once("../../class2.php");
+require_once(__DIR__.'/../../class2.php');
 $e107 = e107::getInstance();
 if (!$e107->isInstalled('forum')) 
 {
@@ -18,7 +18,7 @@ if (!$e107->isInstalled('forum'))
 
 if(!USER)
 {
-	header("location:".e_PLUGIN."forum/forum.php");
+	e107::redirect(e_PLUGIN."forum/forum.php");
 	exit;
 }
 
@@ -26,7 +26,7 @@ e107::lan('forum', "front", true);
 
 
 
-if(is_array($_POST['delete']))
+if(!empty($_POST['delete']) && is_array($_POST['delete']))
 {
 	foreach(array_keys($_POST['delete']) as $fname)
 	{
@@ -48,7 +48,7 @@ if(is_array($_POST['delete']))
 
 include_once(e_HANDLER."file_class.php");
 include_once(HEADERF);
-if($msg)
+if(!empty($msg))
 {
 	$ns->tablerender(LAN_FORUM_7004, $msg);
 }
@@ -56,7 +56,7 @@ if($msg)
 $fi = new e_file;
 $mask = ".*_".USERID."_FT.*";
 $fileList = $fi->get_files(e_UPLOAD, $mask);
-if($sql->db_Select('forum_thread','thread_id, thread_thread, thread_parent', "thread_thread REGEXP '.*_".USERID."_FT.*'")) // FIXME new forum db structure
+if($sql->select('forum_thread','thread_id, thread_thread, thread_parent', "thread_thread REGEXP '.*_".USERID."_FT.*'")) // FIXME new forum db structure
 {
 	$threadList = $sql->db_getList();
 }
@@ -68,7 +68,7 @@ if(is_array($fileList))
 	<form method='post' action='".e_SELF."'>
 	<table style='width:98%'>
 	<tr>
-		<td class='fcaption'>".FRMUP_5."</td>
+		<td class='fcaption'>".defset('LAN_FORUM_7010', "Filename")."</td>
 		<td class='fcaption'>".LAN_FORUM_7006."</td>
 	</tr>";
 	foreach($fileList as $finfo)
@@ -103,20 +103,22 @@ if(is_array($fileList))
 			}
 			else
 			{
-				$txt .= "<td class='forumheader3'>".LAN_FORUM_7008." <input class='btn btn-default button' type='submit' name='delete[{$finfo['fname']}]' value='".LAN_DELETE."' /></td>";
+				$txt .= "<td class='forumheader3'>".LAN_FORUM_7008." <input class='btn btn-default btn-secondary button' type='submit' name='delete[{$finfo['fname']}]' value='".LAN_DELETE."' /></td>";
 			}
 			$txt .= "</tr>";
 		}
 	}
 	$txt .= "</table>";
 }
-if(!$filecount) {
+if(!$filecount)
+{
 	$ns->tablerender(LAN_FORUM_7001,LAN_FORUM_7009);
-	include_once(FOOTERF);
-	exit;
+}
+else
+{
+	$ns->tablerender(LAN_FORUM_7001, $txt);
 }
 
-$ns->tablerender(LAN_FORUM_7001, $txt);
-include_once(FOOTERF);
 
-?>
+require_once(FOOTERF);
+

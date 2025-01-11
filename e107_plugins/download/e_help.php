@@ -76,4 +76,3 @@ if($text)
 	$ns -> tablerender(DOWLAN_HELP_1, $text);	
 }
 
-?>

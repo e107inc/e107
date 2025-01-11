@@ -86,7 +86,7 @@ class plugin_gallery_index_controller extends eControllerFront
 
 	private function getTemplate()
 	{
-		$template = e107::getTemplate('gallery');
+		$template = (array) e107::getTemplate('gallery');
 
 		$oldKeys = array(
 			'list_start', 'list_item', 'list_caption', 'list_end',
@@ -118,8 +118,9 @@ class plugin_gallery_index_controller extends eControllerFront
 		$template = $this->getTemplate();
 		$template = array_change_key_case($template);
 		$sc = e107::getScBatch('gallery', true);
+		$sc->breadcrumb();
 
-		$text = "";
+	//	$text = "";
 
 		if(defset('BOOTSTRAP') === true || defset('BOOTSTRAP') === 2) // Convert bootsrap3 to bootstrap2 compat.
 		{
@@ -131,12 +132,12 @@ class plugin_gallery_index_controller extends eControllerFront
 		foreach($this->catList as $val)
 		{
 			$sc->setVars($val);
-			$text .= e107::getParser()->parseTemplate($template['cat']['item'], true);
+			$text .= e107::getParser()->parseTemplate($template['cat']['item']);
 		}
 
 		$text .= e107::getParser()->parseTemplate($template['cat']['end'], true, $sc);
 
-		if(isset($template['cat_caption']))
+		if(isset($template['cat']['caption']))
 		{
 			$title = e107::getParser()->parseTemplate($template['cat']['caption'], true, $sc);
 
@@ -183,7 +184,9 @@ class plugin_gallery_index_controller extends eControllerFront
 		$tp = e107::getParser();
 		$template = $this->getTemplate();
 		$template = array_change_key_case($template);
+
 		$sc = e107::getScBatch('gallery', true);
+
 
 		if(defset('BOOTSTRAP') === true || defset('BOOTSTRAP') === 2) // Convert bootsrap3 to bootstrap2 compat.
 		{
@@ -195,13 +198,18 @@ class plugin_gallery_index_controller extends eControllerFront
 		$sc->curCat = $cid;
 		$sc->from = $request->getRequestParam('frm', 0);
 
+
+
+
 		$orderBy = varset($plugPrefs['orderby'], 'media_id DESC');
 
 		$list = e107::getMedia()->getImages($cid, $sc->from, $sc->amount, null, $orderBy);
-		$catname = $tp->toHtml($this->catList[$cid]['media_cat_title'], false, 'defs');
+		$catname = $tp->toHTML($this->catList[$cid]['media_cat_title'], false, 'defs');
 		$cat = $this->catList[$cid];
 
 		$inner = "";
+
+
 
 		foreach($list as $row)
 		{
@@ -211,11 +219,13 @@ class plugin_gallery_index_controller extends eControllerFront
 			$inner .= $tp->parseTemplate($template['list']['item'], true, $sc);
 		}
 
+		$sc->breadcrumb();
+
 		$text = $tp->parseTemplate($template['list']['start'], true, $sc);
 		$text .= $inner;
 		$text .= $tp->parseTemplate($template['list']['end'], true, $sc);
 
-		if(isset($template['list_caption']))
+		if(isset($template['list']['caption']))
 		{
 			$title = $tp->parseTemplate($template['list']['caption'], true, $sc);
 			$this->addTitle($title)->addBody($text);

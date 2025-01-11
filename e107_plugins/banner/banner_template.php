@@ -22,7 +22,7 @@ if(!isset($BANNER_LOGIN_TABLE))
 		<form method='post' action='".e_SELF."'>\n
 		<table style='width:40%'>
 		<tr>
-			<td style='width:15%' class='defaulttext'>".BANNERLAN_16." </td>
+			<td style='width:15%' class='defaulttext'>".LAN_USER." </td>
 			<td>{BANNER_LOGIN_TABLE_LOGIN}\n</td>
 		</tr>
 		<tr>
@@ -119,4 +119,3 @@ $BANNER_TEMPLATE['menu']['item'] =		"<div class='banner-menu-item'>{BANNER}</div
 $BANNER_TEMPLATE['menu']['end'] = 		"</div>"; 
 
 
-?>

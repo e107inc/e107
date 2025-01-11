@@ -41,7 +41,7 @@ class auth_login extends alt_auth_base
 	/**
 	 *	Read configuration
 	 *
-	 *	@return AUTH_xxxx result code
+	 *	@return void result code
 	 */
 	public function __construct()
 	{
@@ -75,7 +75,7 @@ class auth_login extends alt_auth_base
 
 		// See if the user's in the E107 database - otherwise they can go away
 		global $sql, $tp;
-		if (!$sql->db_Select('user', 'user_loginname, user_password', "user_loginname = '".$tp -> toDB($uname)."'")) 
+		if (!$sql->select('user', 'user_loginname, user_password', "user_loginname = '".$tp -> toDB($uname)."'"))
 		{	// Invalid user
 			$this->makeErrorText('User not found');
 			return AUTH_NOUSER;
@@ -83,7 +83,7 @@ class auth_login extends alt_auth_base
 
 		// Now look at their password - we always need to verify it, even if its a core E107 format.
 		// Higher levels will always convert an authorised password to E107 format and save it for us.
-		if (!$row = $sql->db_Fetch())
+		if (!$row = $sql->fetch())
 		{
 			$this->makeErrorText('Error reading DB');
 			return AUTH_NOCONNECT;			// Debateable return code - really a DB error. But consistent with other handler
@@ -123,4 +123,3 @@ class auth_login extends alt_auth_base
 	}
 }
 
-?>

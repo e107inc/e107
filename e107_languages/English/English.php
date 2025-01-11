@@ -96,11 +96,13 @@ define("LAN_IP","IP");
 define("LAN_IP_ADDRESS","IP Address");
 define("LAN_AUTHOR","Author");
 define("LAN_CATEGORY", "Category");
+define("LAN_CATEGORIES", "Categories");
 define("LAN_GUEST", "Guest");
 define("LAN_NEXT", "Next");
 define("LAN_PREVIOUS", "Previous");
 define("LAN_LOGIN", "Login");
 define("LAN_LOGOUT", "Logout");
+define("LAN_VERIFY", "Verify");
 define("LAN_SETTINGS", "Settings");
 define("LAN_PASSWORD", "Password");
 define("LAN_INCORRECT_PASSWORD", "Incorrect Password");
@@ -115,6 +117,7 @@ define("LAN_FILES","Files");
 define("LAN_SIZE", "Size");
 define("LAN_VERSION", "Version");
 define("LAN_DOWNLOAD", "Download");
+define("LAN_DOWNLOAD_NO_PERMISSION", "File not found or you have no permission to download this file!");
 define("LAN_WEBSITE", "Website");
 define("LAN_COMMENTS", "Comments");
 define("LAN_LOCATION", "Location");
@@ -131,6 +134,9 @@ define("LAN_RE_ORDER", "Re-order");
 define("LAN_RELATED", "Related");
 define("LAN_CLOSE", "Close");
 define("LAN_EXPAND", "Expand");
+define("LAN_LIST", "List");
+define("LAN_DATESTAMP","Date stamp");
+define("LAN_SUBJECT","Subject");
 
 define("LAN_ENTER_USRNAME_EMAIL", "Please enter your username or email"); // admin php hover field admin name
 define("LAN_PWD_REQUIRED", "Password is required"); // admin php hover field admin password
@@ -141,4 +147,6 @@ define("LAN_REQUIRED_BLANK", "Required field(s) were left blank.");
 define("LAN_PLEASEWAIT", "Please Wait");
 define("LAN_CHOOSE_FILE", "Choose a file");
 
-?>
+define("LAN_REQUIRED", "Required");
+
+define("LAN_DEVELOPERMODE_CHECK", "[b]Developer mode is currently enabled. Use this mode only when developing![/b] [br]Please disable developer mode when using your website in live production. When developer mode is enabled, sensitive information may be shown to the public!");

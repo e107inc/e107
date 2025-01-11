@@ -21,13 +21,13 @@ Admin log events:
 USET_01 - admin changed user data
 */
 
-
+if(!empty($_POST) && !isset($_POST['e-token']))
+{
+	$_POST['e-token'] = '';
+}
 require_once ('class2.php');
 
 // TODO - Remove all the adminEdit stuff. 
-
-
-e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 define("US_DEBUG",FALSE);
 //define('US_DEBUG', false);
@@ -39,7 +39,7 @@ if (!USER)
 	exit();
 }
 
-if ((!ADMIN || !getperms("4")) && e_QUERY && e_QUERY != "update" )
+if ((!ADMIN || !getperms("4")) && e_QUERY && e_QUERY != "update" && substr(e_QUERY, 0, 4) !== 'del=')
 {
 	header('location:'.e_BASE.'usersettings.php');
 	exit();
@@ -69,7 +69,7 @@ class usersettings_front // Begin Usersettings rewrite.
 	function __construct()
 	{
 
-		if(deftrue('BOOTSTRAP')===3)
+		if(deftrue('BOOTSTRAP'))
 		{
 			$template = e107::getCoreTemplate('usersettings','', true, true); // always merge
 
@@ -81,13 +81,49 @@ class usersettings_front // Begin Usersettings rewrite.
 
 			$usersettings_shortcodes->wrapper('usersettings/edit');
 
-			e107::css('inline', "
+		/*	e107::css('inline', "
 
 				.usersettings-form .col-sm-9 .checkboxes { margin-left:20px }
-			");
+			");*/
 		}
 		else
 		{
+			$bcDefs = array(
+				'LAN_418'   => 'LAN_USET_31',
+				'LAN_7'     => 'LAN_USER_01',
+				'LAN_8'     => 'LAN_USER_80',
+				'LAN_9'     => 'LAN_USER_81',
+				'LAN_10'    => 'LAN_USER_82',
+				'LAN_112'   => 'LAN_USER_60',
+				'LAN_113'   => 'LAN_USER_83',
+				'LAN_114'   => 'LAN_USER_84',
+				'LAN_120'   => 'LAN_USER_71', // Signature
+				'LAN_152'   => 'LAN_USET_24',
+				'LAN_153'   => 'LAN_USET_25',
+				'LAN_154'   => 'LAN_USET_37',
+				'LAN_308'   => 'LAN_USER_63',
+				'LAN_401'   => 'LAN_USET_23',
+				'LAN_404'   => 'LAN_USET_32',
+				'LAN_414'   => 'LAN_USET_27',
+				'LAN_415'   => 'LAN_USET_26',
+				'LAN_420'   => 'LAN_USER_07', // Avatar
+				'LAN_421'   => 'LAN_USET_33',
+				'LAN_422'   => 'LAN_USET_34',
+				'LAN_423'   => 'LAN_USET_35',
+				'LAN_424'   => 'LAN_USET_36',
+				'LAN_425'   => 'LAN_USER_06',
+				'LAN_426'   => 'LAN_USET_28',
+				'LAN_433'   => '',
+				'LAN_434'   => '',
+				'LAN_435'   => '',
+				'LAN_122'   => 'UE_LAN_TIMEZONE',
+				'LAN_CUSTOMTITLE'   => 'LAN_USER_04'
+
+			);
+
+
+			e107::getLanguage()->bcDefs($bcDefs);
+
 			global $sc_style;
 			$REQUIRED_FIELD                     = '';
 			$USER_EXTENDED_CAT                  = '';
@@ -138,6 +174,114 @@ class usersettings_front // Begin Usersettings rewrite.
 	{
 		return $this->template[$id];
 	}
+	
+	
+	
+	private function sendDeleteConfirmationEmail()
+	{
+		$tp = e107::getParser();
+
+		$message = defset('LAN_USET_52', "A confirmation email has been sent to [x]. Please click the link in the email to permanently delete your account."); // Load LAN with fall-back.
+		$subject = defset("LAN_USET_53", "Account Removal Confirmation"); // Load LAN with fall-back.
+		$caption = defset('LAN_USET_54', "Confirmation Email Sent"); // Load LAN with fall-back.
+
+		$hash = e107::getUserSession()->generateRandomString("#**************************************************************************#");
+
+		$link = SITEURL."usersettings.php?del=".$hash; // Security measure - user must be logged in to utilize the link.
+
+		$text = LAN_USET_55; // "Please click the following link to complete the deletion of your account.";
+		$text .= "<br /><br />";
+		$text .= "<a href='".$link."' target='_blank'>".$link."</a>";
+
+
+		$eml = array(
+			'subject' 		=> $subject,
+			'html'			=> true,
+			'priority'      => 1,
+			'template'		=> 'default',
+			'body'			=> $text,
+		);
+
+		if(e107::getEmail()->sendEmail(USEREMAIL,USERNAME, $eml))
+		{
+			$update = array(
+				'user_sess' => $hash,
+				'WHERE' => 'user_id = '.USERID
+			);
+
+			e107::getDb()->update('user',$update);
+
+			$alert = $tp->lanVars($message, USEREMAIL);
+			return e107::getMessage()->setTitle($caption, E_MESSAGE_INFO)->addInfo($alert)->render();
+
+		}
+
+		//todo Email Failure message.
+		return null;
+
+
+
+	}
+
+/*
+	private function processUserDeleteFields($vars)
+	{
+		$qry = array();
+
+		foreach($vars as $field => $var)
+		{
+
+
+
+		}
+
+		return $qry;
+	}*/
+
+
+	private function processUserDelete($hash)
+	{
+		if(!e107::getDb()->select('user', '*',"user_id = ".USERID." AND user_sess='".$hash."' LIMIT 1")) // user must be logged in AND have correct hash.
+		{
+			return false;
+		}
+
+		$arr = e107::getAddonConfig('e_user', '', 'delete', USERID);
+
+		$sql = e107::getDb();
+
+		foreach($arr as $plugin)
+		{
+			foreach($plugin as $table => $query)
+			{
+				$mode = $query['MODE'];
+				unset($query['MODE']);
+
+				// $query = $this->processUserDeleteFields($query); //optional pre-processing..
+
+				if($mode === 'update')
+				{
+					//echo "<h3>UPDATE ".$table."</h3>";
+				//	print_a($query);
+					$sql->update($table, $query); // todo check query ran successfully.
+				}
+				elseif($mode === 'delete')
+				{
+					//echo "<h3>DELETE ".$table."</h3>";
+					//print_a($query);
+					$sql->delete($table, $query['WHERE']); //  todo check query ran successfully.
+				}
+
+			}
+
+
+		}
+
+		$alert = defset('LAN_USET_56', "Your account has been successfully deleted.");
+
+		return e107::getMessage()->addSuccess($alert)->render();
+
+	}
 
 	/**
 	 * @return bool
@@ -171,6 +315,20 @@ class usersettings_front // Begin Usersettings rewrite.
 		$_uid               = false;			// FALSE if user modifying their own data; otherwise ID of data being modified
 		$adminEdit          = false; // @deprecated		// FALSE if editing own data. TRUE if admin edit
 
+
+		if(!empty($_POST['delete_account'])) // button clicked.
+		{
+			echo $this->sendDeleteConfirmationEmail();
+		}
+
+		if(!empty($_GET['del'])) // delete account via confirmation email link.
+		{
+
+			echo $this->processUserDelete($_GET['del']);
+			//e107::getSession()->destroy();
+			e107::getUser()->logout();
+			return null;
+		}
 
 		/* todo subject of removal */
 		if(is_numeric(e_QUERY))
@@ -226,8 +384,23 @@ class usersettings_front // Begin Usersettings rewrite.
 
 		if (!empty($_POST['updatesettings']))
 		{
-
+			// Do not filter these values (saving)
+			$ueVals   	= $_POST['ue'];
+			$passtemp1 	= $_POST['password1'];
+			$passtemp2  = $_POST['password2'];
+			
+			// Filter the others
 			$_POST = e107::getParser()->filter($_POST);
+			
+			// Pass the original values back (restoring)
+			$_POST['ue'] 		= $ueVals;
+			$_POST['password1']	= $passtemp1;
+			$_POST['password2']	= $passtemp2; 
+
+			// Unset temporary vars
+			unset($ueVals);
+			unset($passtemp1);
+			unset($passtemp2);
 
 			if (!vartrue($pref['auth_method']))
 			{
@@ -346,11 +519,17 @@ class usersettings_front // Begin Usersettings rewrite.
 
 		    // Validate Extended User Fields.
 
+
+
 			if (isset($_POST['ue']))
 			{
-				$eufVals = $ue->userExtendedValidateAll($_POST['ue'], varset($_POST['hide'],TRUE));		// Validate the extended user fields
+				$eufVals = $ue->sanitizeAll($_POST['ue']);
+				$eufVals = $ue->userExtendedValidateAll($eufVals, varset($_POST['hide'],TRUE));		// Validate the extended user fields
 				$changedEUFData['data'] = validatorClass::findChanges($eufVals['data'], $udata,FALSE);
 			}
+
+			e107::getMessage()->addDebug("<h4>Extended Data - post validation</h4>".print_a($changedEUFData['data'],true));
+
 
 
 			// Determine whether we have an error
@@ -376,7 +555,7 @@ class usersettings_front // Begin Usersettings rewrite.
 						{
 							if (US_DEBUG)
 							{
-								e107::getLog()->e_log_event(10, debug_backtrace(), "DEBUG", "Usersettings test", "Write back classes; old list: {$udata['user_class']}; new list: ".$nid, false, LOG_TO_ROLLING);
+								e107::getLog()->addEvent(10, debug_backtrace(), "DEBUG", "Usersettings test", "Write back classes; old list: {$udata['user_class']}; new list: ".$nid, false, LOG_TO_ROLLING);
 							}
 							$changedUserData['user_class'] = $nid;
 						}
@@ -521,7 +700,7 @@ class usersettings_front // Begin Usersettings rewrite.
 
 
 			// We can update the basic user record now - can just update fields from $changedUserData
-			if (US_DEBUG) { e107::getLog()->e_log_event(10, debug_backtrace(), "DEBUG", "Usersettings test", "Changed data:<br /> ".var_export($changedUserData, true), false, LOG_TO_ROLLING); }
+			if (US_DEBUG) { e107::getLog()->addEvent(10, debug_backtrace(), "DEBUG", "Usersettings test", "Changed data:<br /> ".var_export($changedUserData, true), false, LOG_TO_ROLLING); }
 			if (isset($changedUserData) && count($changedUserData))
 			{
 				$changedData['data'] = $changedUserData;
@@ -544,24 +723,21 @@ class usersettings_front // Begin Usersettings rewrite.
 				}
 			}
 
-			// Save extended field values
-			if (isset($changedEUFData['data']) && count($changedEUFData['data']))
-			{
-				$ue->addFieldTypes($changedEUFData);				// Add in the data types for storage
-				$changedEUFData['WHERE'] = '`user_extended_id` = '.$inp;
 
-				//print_a($changedEUFData);
-				if (false === $sql->retrieve('user_extended', 'user_extended_id', 'user_extended_id='.$inp))
-				{
-					// ***** Next line creates a record which presumably should be there anyway, so could generate an error if no test first
-					$sql->gen("INSERT INTO #user_extended (user_extended_id, user_hidden_fields) values ('".$inp."', '')");
-					//print_a('New extended fields added: '.$inp.'<br />');
-				}
-				if (false === $sql->update('user_extended', $changedEUFData))
+			// Save extended field values
+			if (!empty($changedEUFData['data']))
+			{
+
+				$ue->addFieldTypes($changedEUFData);				// Add in the data types for storage
+
+				$changedEUFData['_DUPLICATE_KEY_UPDATE'] = true; // update record if key found, otherwise INSERT.
+				$changedEUFData['data']['user_extended_id'] = $inp;
+
+				if (false === $sql->insert('user_extended', $changedEUFData))
 				{
 					$message .= '<br />Error updating EUF';
 				}
-
+				
 			}
 
 			// Now see if we need to log anything. First check the options and class membership
@@ -588,6 +764,10 @@ class usersettings_front // Begin Usersettings rewrite.
 				$triggerData['_CHANGED_BY_UID'] = USERID;		// May be admin changing data
 				$triggerData['_CHANGED_BY_UNAME'] = USERNAME;
 				if (!isset($triggerData['user_name'])) { $triggerData['user_name'] = $udata['user_name']; }
+			}
+
+			if(count($changedEUFData)) {
+				$triggerData['ue'] = $changedEUFData['data'];
 			}
 
 			// Now log changes if required
@@ -636,7 +816,7 @@ class usersettings_front // Begin Usersettings rewrite.
 					{
 						$log_action = USER_AUDIT_ADMIN;						// If an admin did the mod, different heading
 						// Embed a message saying who changed the data
-						$changedUserData['message'] = str_replace(array('--ID--', '--LOGNAME--'), array(USERID, USERNAME), LAN_USET_18);
+						$changedUserData['message'] = str_replace(array('[x]', '[y]'), array(USERID, USERNAME), LAN_USET_18);
 						e107::getLog()->user_audit($log_action, $do_log, $udata['user_id'], $udata['user_loginname']);
 					}
 					else
@@ -859,6 +1039,7 @@ class usersettings_front // Begin Usersettings rewrite.
 				<input type='hidden' name='updated_key' value='{$validation_key}' />
 				<input type='hidden' name='updated_extended' value='{$updated_extended}' />
 				<input type='hidden' name='extended_key' value='{$extended_key}' />
+				<input type='hidden' name='e-token' value='".defset('e_TOKEN')."' />
 				</td></tr>
 				<tr><td>&nbsp;</td></tr>
 				<tr><td style='text-align:center'>
@@ -912,15 +1093,13 @@ class usersettings_front // Begin Usersettings rewrite.
 
 		$text = '<form method="post" action="'.$target.'" id="dataform" class="usersettings-form form-horizontal"  enctype="multipart/form-data" autocomplete="off">';
 
-		//$text = (is_numeric($_uid) ? $rs->form_open("post", e_SELF."?".e_QUERY, "dataform", "", " class='form-horizontal' role='form' enctype='multipart/form-data'") : $rs->form_open("post", e_SELF, "dataform", "", " class='form-horizontal' role='form' enctype='multipart/form-data'"));
-
 		if (e_QUERY == "update")
 		{
 			$text .= "<div class='fborder' style='text-align:center'><br />".str_replace("*", "<span class='required'>*</span>", LAN_USET_9)."<br />".LAN_USET_10."<br /><br /></div>";
 		}
 
 		// e107::scStyle($sc_style);
-		e107::getScBatch('usersettings')->setVars($curVal);
+		e107::getScBatch('usersettings')->setVars($curVal)->reset();
 
 		$USERSETTINGS_EDIT = $this->getTemplate('edit');
 		$USERSETTINGS_EDIT_CAPTION = $this->getTemplate('edit_caption');
@@ -929,15 +1108,13 @@ class usersettings_front // Begin Usersettings rewrite.
 
 
 		$text .= "<div><input type='hidden' name='_uid' value='{$uuid}' /></div>
+				<input type='hidden' name='e-token' value='".defset('e_TOKEN')."' />
 		</form>
 		";
 
 		$caption = (isset($USERSETTINGS_EDIT_CAPTION)) ? $USERSETTINGS_EDIT_CAPTION : LAN_USET_39; // 'Update User Settings'
 
 		$ns->tablerender($caption, $text);
-
-
-
 
 
 	}
@@ -991,7 +1168,7 @@ function req($field)
 	$ret = "";
 	if ($field == 2)
 	{
-		$ret = "<span class='required'> *</span>";
+		$ret = "<span class='required'><!-- empty --></span>";
 	}
 	return $ret;
 }

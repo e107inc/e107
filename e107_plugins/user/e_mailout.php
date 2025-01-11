@@ -283,7 +283,7 @@ class user_mailout
 	 * @param $allow_edit is TRUE to allow user to change the selection; FALSE to just display current settings
 	 * @param $selectVals is the current selection information - in the same format as returned by returnSelectors()
 	 *
-	 * @return Returns HTML which is displayed in a table cell. Typically we return a complete table
+	 * @return array Returns HTML which is displayed in a table cell. Typically we return a complete table
 	 */
 	public function showSelect($allow_edit = FALSE, $selectVals = FALSE)
 	{
@@ -325,7 +325,7 @@ class user_mailout
 
 			if (is_numeric($selectVals['email_to']))
 			{
-				$_to = LAN_MAILOUT_23.e107::getUserClass()->uc_get_classname(intval($selectVals['email_to']));
+				$_to = LAN_MAILOUT_23.e107::getUserClass()->getName(intval($selectVals['email_to']));
 			}
 			else
 			{
@@ -369,7 +369,22 @@ class user_mailout
 		return $var;
 	}
 
-
+	/**
+	 * Manage Sent. 
+	 */
+	public function sent($data) // trigerred when email sent from queue.
+	{
+		if($data['status'] == 1) // Successfully sent
+		{
+			// e107::getLog()->add($this->mailerSource . ' email sent', $data, E_LOG_INFORMATIVE, 'SENT');		
+			return true;
+		}
+		else // Failed 
+		{
+			// e107::getLog()->add($this->mailerSource . ' email not sent', $data, E_LOG_FATAL, 'SENT');		
+			return false;
+		}
+	}
 
 
 
@@ -377,4 +392,3 @@ class user_mailout
 
 
 
-?>

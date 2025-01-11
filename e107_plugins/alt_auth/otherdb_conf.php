@@ -21,7 +21,7 @@
  *	@version 	$Id$;
  */
 $eplug_admin = true;
-require_once('../../class2.php');
+require_once(__DIR__.'/../../class2.php');
 require_once(e_ADMIN.'auth.php');
 require_once(e_HANDLER.'form_handler.php');
 e107::includeLan(e_PLUGIN.'alt_auth/languages/'.e_LANGUAGE.'/admin_otherdb_conf.php');
@@ -64,7 +64,7 @@ class alt_auth_otherdb extends alt_auth_admin
 		$tab1 .= OTHERDB_LAN_15;
 		$tab1 .= "</td></tr>";
 
-		$tab1 .= $this->alt_auth_get_db_fields('otherdb', $frm, $parm, 'server|uname|pwd|db|table|ufield|pwfield|salt');
+		$tab1 .= $this->alt_auth_get_db_fields('otherdb', $frm, $parm, 'server|port|uname|pwd|db|table|ufield|pwfield|salt');
 		$tab1 .= "<tr><td>".OTHERDB_LAN_9."</td><td>";
 		
 		$tab1 .= $this->altAuthGetPasswordSelector('otherdb_password_method', $frm, $parm['otherdb_password_method'], TRUE);
@@ -135,4 +135,3 @@ function otherdb_conf_adminmenu()
 	alt_auth_adminmenu();
 }
 
-?>

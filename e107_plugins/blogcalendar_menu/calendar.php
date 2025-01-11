@@ -105,7 +105,7 @@ function calendar($req_day, $req_month, $req_year, $links = NULL, $ws = "sunday"
 			$day_style = isset($links[$day_of_month]) ? "indent blogcalendar-day-active " : "forumheader3 blogcalendar-day";
 		}
 		
-		$label_style = isset($links[$day_of_month]) ? 'label label-info' : ''; //TODO A pref in admin to choose between info, danger, etc. 
+		$label_style = isset($links[$day_of_month]) ? 'label label-info badge bg-info' : '';
 		
 		$calendar .= "<td class='$day_style' >";
 	
@@ -141,7 +141,7 @@ function calendar($req_day, $req_month, $req_year, $links = NULL, $ws = "sunday"
 	if(deftrue('BOOTSTRAP'))
 	{
 		$active = date("n-Y") == ($req_month."-".$req_year)  ? 'active' : '';
-		$text = "<div class='item {$active}'>";
+		$text = "<div class='item carousel-item {$active}'>";
 		$text .= "<h5>".$marray[$req_month]." ".$req_year."</h5>";
 		$text .= $calendar;
 		$text .= "</div>";
@@ -153,4 +153,4 @@ function calendar($req_day, $req_month, $req_year, $links = NULL, $ws = "sunday"
 	
 	return $text;
 }
-?>
+

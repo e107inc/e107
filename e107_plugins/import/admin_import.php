@@ -33,14 +33,14 @@ Options supported:
  define('IMPORT_DEBUG',TRUE);
 // define('IMPORT_DEBUG',TRUE);
 
-require_once("../../class2.php");
+require_once(__DIR__.'/../../class2.php');
 // define("USE_PERSISTANT_DB",TRUE);
 
 
 $frm = e107::getForm();
 $mes = e107::getMessage();
 
-e107::lan('import', true, true);
+e107::lan('import', true);
 
 //XXX A Fresh Start 
 class import_admin extends e_admin_dispatcher
@@ -304,7 +304,7 @@ class import_main_ui extends e_admin_ui
 					 foreach($this->importTables as $key=>$val)
 					 {
 					 	if(vartrue($val['nolist'])){ continue; }
-		 			 	$text .= "<td class='center'>".(in_array($key,$info['supported']) ? ADMIN_TRUE_ICON : "&nbsp;")."</td>\n";
+		 			 	$text .= "<td class='center'>".(in_array($key,$info['supported']) ? defset('ADMIN_TRUE_ICON') : "&nbsp;")."</td>\n";
 					 }
 		
 		             $text .= "
@@ -501,7 +501,7 @@ class import_main_ui extends e_admin_ui
 			$text .= "
 			<tr>
 			<td >$importType ".LAN_CONVERT_22."</td>
-			<td >".$frm->select('dbParamDatabase', $databases, null, array('required'=>1), LAN_SELECT)."</td>
+			<td >".$frm->select('dbParamDatabase', $databases, null, array('required'=>1), LAN_SELECT."...")."</td>
 			</tr>
 			<tr>
 			<td >$importType ".LAN_CONVERT_23."</td>
@@ -567,9 +567,9 @@ class import_main_ui extends e_admin_ui
 	
 		$text .= "
 			<tr>
-				<td>".LAN_CONVERT_38."</td>
+				<td>".LAN_CONVERT_38."".$frm->help(LAN_CONVERT_39)."</td>
 				<td>".$frm->radio_switch('import_delete_existing_data', $_POST['import_delete_existing_data'])."
-				<div class='field-help'>".LAN_CONVERT_39."</div></td>
+				</td>
 			</tr>";
 		
 		//TODO 
@@ -607,7 +607,7 @@ class import_main_ui extends e_admin_ui
 	//  	$temp = '';
 	//  	if(varset($import_source)) { $temp .=  "disp('{$import_source}');"; }
 	//  	if (varset($current_db_type)) $temp .= " flagbits('{$current_db_type}');";
-	//  	if (varset($temp)) $text .= "<script type=\"text/javascript\"> {$temp}</script>";
+	//  	if (varset($temp)) $text .= "<script> {$temp}</script>";
 		
 		$this->addTitle($importType); 
 		echo $mes->render().$text; 
@@ -795,7 +795,7 @@ class import_main_ui extends e_admin_ui
 					$errorCounter++;
 					$line_error = $exporter->getErrorText($result);
 				//	if ($msg) $msg .= "<br />";
-					$msg = str_replace(array('--ERRNUM--','--DB--'),array($line_error,$k),LAN_CONVERT_46).$loopCounter;
+					$msg = str_replace(array('[x]','[y]'),array($line_error,$k),LAN_CONVERT_46).$loopCounter;
 					$mes->addError($msg);   // couldn't set query
 				}
 			}
@@ -805,7 +805,7 @@ class import_main_ui extends e_admin_ui
 			unset($exporter);
 					
 					
-			$msg = str_replace(array('--LINES--','--USERS--', '--ERRORS--','--BLOCK--'),
+			$msg = str_replace(array('[x]','[y]', '[z]','[w]'),
 			array($loopCounter,$loopCounter-$errorCounter,$errorCounter, $k),LAN_CONVERT_47);
 			$mes->addSuccess($msg);   // couldn't set query				
 		}
@@ -1264,272 +1264,6 @@ require_once(e_ADMIN."auth.php");
 e107::getAdminUI()->runPage();
 
 require_once(e_ADMIN."footer.php");
- exit;
-
-
-
-
-/*
- *	Currently unused function - shows available import methods and capabilities
- */
-/*
-function showStartPage()
-{
-    global $emessage, $frm, $import_class_names, $import_class_support, $db_import_blocks, $import_class_comment;
-
-	$frm = e107::getForm();
-	
-
-	$text = "
-	<form method='get' action='".e_SELF."' id='core-import-form'>
-		<fieldset id='core-import-select-type'>
-		<legend class='e-hideme'>".'DBLAN_10'."</legend>
-		".$frm->hidden('mode','main')."
-		".$frm->hidden('action','import')."
-            <table class='table adminlist'>
-			<colgroup>
-			<col />
-			<col />
-			<col />
-			<col />
-			<col />
-			</colgroup>
-			<thead>
-			<tr>
-            	<th>".LAN_CONVERT_06."</th>";
-                foreach($db_import_blocks as $name)   // 1 column for each of users, news, forum etc.
-				{
-                	$text .= "<th class='center'>".$name['message']."</th>";
- 				}
-
-				$text.="
-				<th class='center'>".LAN_OPTIONS."</th>
-
-			</tr>
-			</thead>
-			<tbody>
-
-			<tr>
-			<td><img src='".e_PLUGIN."import/images/csv.png' alt='' style='float:left;height:32px;width:32px;margin-right:4px'>CSV</td>
-			<td class='center'>".ADMIN_TRUE_ICON."</td>";
-			
-			for ($i=0; $i < count($db_import_blocks)-1; $i++) 
-			{ 
-				$text .= "<td>&nbsp;</td>";	
-			}
-
-			
-			$text .= "<td class='center middle'>".$frm->admin_button('import_type', 'csv', 'other',"Select")."</td></tr>";
-
-
-        foreach ($import_class_names as $k => $title)
-		{
-			$iconFile = e_PLUGIN."import/images/".str_replace("_import","",strtolower($k)).".png";		
-			$icon = (file_exists($iconFile)) ? "<img src='{$iconFile}' alt='' style='float:left;height:32px;width:32px;margin-right:4px'>" : "";
-			
-          	$text .= "<!-- $title -->
-			<tr><td>".$icon.$title."<div class='smalltext'>".$import_class_comment[$k]."</div></td>\n";
-
-			 foreach($db_import_blocks as $key=>$val)
-			 {
- 			 	$text .= "<td class='center'>".(in_array($key,$import_class_support[$k]) ? ADMIN_TRUE_ICON : "&nbsp;")."</td>\n";
-			 }
-
-             $text .= "
-			 	<td class='center middle'>";
-				
-				$text .= $frm->admin_button('type', $k, 'other',"Select");
-			// 	$text .= $frm->admin_button('import_type', $k, 'other',"Select");
-				
-				$text .= "
-			 	</td>
-			 </tr>";
-		}
-
-
-		$text .= "
-				</tbody>
-			</table>
-			<div class='buttons-bar center'>
-				".$frm->hidden('trigger_import',1)."
-				
-			</div>
-		</fieldset>
-	</form>";
-
-	echo $emessage->render().$text; 
-	// $ns->tablerender(LAN_PLUGIN_IMPORT_NAME, $emessage->render().$text);
-
-}
-
-
-
-
-function showImportOptions($mode='csv')
-{
-	global $text, $emessage, $csv_names, $import_class_names, $e_userclass, $db_import_blocks, $import_class_support, $import_default_prefix;
-	
-	$frm = e107::getForm();
-	$ns = e107::getRender();
-	
-	$mes = e107::getMessage();
-	
-	if (class_exists($mode))
-	{
-		$mes->addDebug("Class Available: ".$mode);   
-		$proObj = new $mode;
-		if($proObj->init()===FALSE)
-		{
-			return;
-		}
-	}
-
-	$message = "<strong>".LAN_CONVERT_05."</strong>";
-	$emessage->add($message, E_MESSAGE_WARNING);
-
-	$text = "
-	<form method='post' action='".e_SELF."?import_type=".$_GET['import_type']."'>
-    <table class='table adminform'>
-    	<colgroup>
-    		<col class='col-label' />
-    		<col class='col-control' />
-    	</colgroup>";
-
-	if($mode == "csv")
-	{
-		$text .= "
-		<tr>
-		  <td>".LAN_CONVERT_07."</td>
-		  <td><select name='csv_format' class='tbox'>\n";
-		  foreach ($csv_names as $k => $v)
-		  {
-			$s = ($current_csv == $k) ? " selected='selected'" : '';
-			$text .= "<option value='{$k}'{$s}>{$v}</option>\n";
-		  }
-	  	$text .= "</select>\n
-		  </td>
-		</tr>
-
-		<tr>
-		<td>".LAN_CONVERT_36."</td>
-		<td><input class='tbox' type='text' name='csv_data_file' size='30' value='{$csv_data_file}' maxlength='100' /></td>
-		</tr>
-
-		<tr><td>".LAN_CONVERT_17."
-		</td>
-		<td>
-
-		<input type='hidden' name='import_source' value='csv' />
-		<input type='checkbox' name='csv_pw_not_encrypted' value='1'".($csv_pw_not_encrypted ? " checked='checked'" : '')."/>
-		<span class='smallblacktext'>".LAN_CONVERT_18."</span></td>
-		</tr>
-		";
-
-	}
-	elseif(method_exists($proObj,"config"))
-	{
-		$ops  = $proObj->config();
-		foreach($ops as $key=>$val)
-		{
-			$text .= "<tr>
-				<td>".$val['caption']."</td>
-				<td>".$val['html'];
-			$text .= (vartrue($val['help'])) ? "<div class='field-help'>".$val['help']."</div>" : "";	
-			$text .= "</td>
-			</tr>\n";		
-		}
-		
-		if($proObj->sourceType)
-		{
-			$text .= "<input type='hidden' name='import_source' value='".$proObj->sourceType."' />\n";	
-		} 			
-				
-	}
-	else
-	{
-    	$importType = $import_class_names[$mode];
-
-    	$text .= "
-		<tr>
-		<td>$importType ".LAN_CONVERT_19."</td>
-		<td><input class='tbox' type='text' name='dbParamHost' size='30' value='".(varset($_POST['dbParamHost']) ? $_POST['dbParamHost'] : 'localhost')."' maxlength='100' /></td>
-		</tr>
-		<tr>
-		<td >$importType ".LAN_CONVERT_20."</td>
-		<td ><input class='tbox' type='text' name='dbParamUsername' size='30' value='".varset($_POST['dbParamUsername'])."' maxlength='100' /></td>
-		</tr>
-		<tr>
-		<td >$importType ".LAN_CONVERT_21."</td>
-		<td ><input class='tbox' type='text' name='dbParamPassword' size='30' value='".varset($_POST['dbParamPassword'])."' maxlength='100' /></td>
-		</tr>
-		<tr>
-		<td >$importType ".LAN_CONVERT_22."</td>
-		<td ><input class='tbox' type='text' name='dbParamDatabase' size='30' value='".varset($_POST['dbParamDatabase'])."' maxlength='100' /></td>
-		</tr>
-		<tr>
-		<td >$importType ".LAN_CONVERT_23."</td>
-		<td ><input class='tbox' type='text' name='dbParamPrefix' size='30' value='".(varset($_POST['dbParamPrefix']) ? $_POST['dbParamPrefix'] : $import_default_prefix[$mode])."' maxlength='100' />
-		<input type='hidden' name='import_source' value='db' />
-  		</td>
-		</tr>";
-
-	}
-
-	if($mode != 'csv')
-	{
-		$text .= "
-		<tr>
-		<td >$importType ".LAN_CONVERT_24."</td>
-		<td >";
-
-		$defCheck = (count($import_class_support[$mode])==1) ? "checked='checked'" : "";
-   	  	foreach ($db_import_blocks as $k => $v)
-	  	{
-			if(in_array($k, $import_class_support[$mode])) // display only the options supported.
-			{
-				$text .= "<input type='checkbox' name='import_block_{$k}' id='import_block_{$k}' value='1' {$defCheck} />&nbsp;".$v['message'];
-				$text .= "<br />";
-			}
-	  	}
-	  	$text .= "</td></tr>";		
-	}
-
-
-	$text .= "<tr><td>".LAN_CONVERT_38."</td>
-	<td><input type='checkbox' name='import_delete_existing_data' value='1'".(varset($_POST['import_delete_existing_data']) ? " checked='checked'" : '')."/>
-	<span class='smallblacktext'>".LAN_CONVERT_39."</span></td>
-	</tr>";
-	
-	if(varset($proObj->defaultClass) !== false)
-	{
-		$text .= "
-		<tr><td>".LAN_CONVERT_16."</td>
-		<td>";
-  		$text .= $e_userclass->vetted_tree('classes_select',array($e_userclass,'checkbox'), varset($_POST['classes_select']),'main,admin,classes,matchclass, no-excludes');
-  		$text .= "</td></tr>";
-	}
- 	
-  	$action = varset($proObj->action,'do_conversion');
-  	$text .= "</table>
-	<div class='buttons-bar center'>".$frm->admin_button($action,LAN_CONTINUE, 'execute').
-	
-	$frm->admin_button('back',LAN_CANCEL, 'cancel')."
-	<input type='hidden' name='db_import_type' value='$mode' />
-	<input type='hidden' name='import_type' value='".$mode."' />
-	</div>
-	</form>";
-
-	// Now a little bit of JS to initialise some of the display divs etc
-  	$temp = '';
-  	if(varset($import_source)) { $temp .=  "disp('{$import_source}');"; }
-  	if (varset($current_db_type)) $temp .= " flagbits('{$current_db_type}');";
-  	if (varset($temp)) $text .= "<script type=\"text/javascript\"> {$temp}</script>";
-
-  	$ns -> tablerender(LAN_PLUGIN_IMPORT_NAME.SEP.$importType, $emessage->render().$text);
-
-}
-*/
-
 
 
 
@@ -1541,7 +1275,7 @@ function csv_split(&$data,$delim=',',$enveloper='')
   $enclosed = false;
 // $fldcount=0;
 // $linecount=0;
-  for($i=0;$i<strlen($data);$i++)
+  for($i=0, $iMax = strlen($data); $i< $iMax; $i++)
   {
 	$c=$data[$i];
 	switch($c)
@@ -1584,7 +1318,7 @@ function csv_split(&$data,$delim=',',$enveloper='')
 
 
 
-
+/*
 
 function headerjs()
 {
@@ -1624,7 +1358,7 @@ function headerjs()
   }
 
   $text = "
-	<script type='text/javascript'>{$vals}{$texts}{$blocks}{$comments}
+	<script>{$vals}{$texts}{$blocks}{$comments}
 	function disp(type) 
 	{
 	  if(type == 'csv')
@@ -1683,7 +1417,7 @@ function headerjs()
 
 	return $text;
 }
+*/
 
 
 
-?>

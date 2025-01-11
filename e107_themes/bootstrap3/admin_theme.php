@@ -18,8 +18,7 @@ if(!defined('e107_INIT'))
 
 //define("SEP", " <span class='fa fa-play e-breadcrumb'></span> ");
 define("SEP", " <span class='fa fa-angle-double-right e-breadcrumb'></span> ");
-define("BOOTSTRAP", 3);
-define('FONTAWESOME', 4);
+
 
 $adminStyle = e107::pref('core', 'admincss', 'css/bootstrap-dark.min.css');
 e107::css('theme', $adminStyle);
@@ -65,7 +64,7 @@ $(function() {
 // e107::js("inline","$('.dropdown-toggle').toggle('slow');");
 
 
-
+/*
 if(defined('TEXTDIRECTION') && file_exists(THEME.'/menu/menu_'.strtolower(TEXTDIRECTION).'.css'))
 {
 	// e107::css('theme','menu/menu_'.strtolower(TEXTDIRECTION).'.css');
@@ -73,17 +72,24 @@ if(defined('TEXTDIRECTION') && file_exists(THEME.'/menu/menu_'.strtolower(TEXTDI
 else
 {
 	// e107::css('theme','menu/menu.css');
-}
+}*/
 
 
 // $register_sc[]='FS_ADMIN_ALT_NAV';
 $no_core_css = TRUE;
 
 
-class bootstrap3_admintheme
+class bootstrap3_admintheme implements e_theme_render
 {
 
-	function tablestyle($caption, $text, $mode, $data)
+	public function init()
+	{
+
+
+	}
+
+
+	public function tablestyle($caption, $text, $mode='', $data=array())
 	{
 		// global $style;
 
@@ -94,12 +100,12 @@ class bootstrap3_admintheme
 		echo "\n\n<!-- UniqueID: ".$data['uniqueId']." -->\n\n";
 		echo "<!-- Style: ".$style." -->\n\n";
 			echo "<!-- Mode: ".(string) $mode." -->";
-		$class = '';
+	/*	$class = '';
 
 		if(is_string($mode) && $mode == 'admin_help')
 		{
 			$class = ' ' . str_replace('_', '-', $mode);
-		}
+		}*/
 
 		if($mode == 'core-infopanel_latest' || $mode == 'core-infopanel_status')
 		{
@@ -168,7 +174,7 @@ class bootstrap3_admintheme
 				break;
 
 				case 'admin_menu':
-				echo '<div class="admin-menu panel panel-default" >
+				echo '<div class="admin-menu admin-ui-nav-menu panel panel-default" >
 					  <div class="panel-heading">
 					    <h3 class="panel-title">' . $caption . '</h3>
 					  </div>
@@ -281,4 +287,3 @@ $NEWSSTYLE = '
 ';
 
  */
-?>

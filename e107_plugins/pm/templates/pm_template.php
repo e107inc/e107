@@ -84,7 +84,7 @@ $PM_WRAPPER['PM_ATTACHMENTS']= "<div class='alert alert-block alert-info'>{---}<
 $PM_WRAPPER['PM_EMOTES']= "<tr><td class='forumheader3'>".LAN_PM_7.": </td><td class='forumheader3'>{---}</td></tr>";
 $PM_WRAPPER['PM_ATTACHMENT']= "<tr><td class='forumheader3'>".LAN_PM_8.": </td><td class='forumheader3'>{---}</td></tr>";
 $PM_WRAPPER['PM_RECEIPT']= "<tr><td class='forumheader3'>".LAN_PM_9.": </td><td class='forumheader3'>{---}</td></tr>";
-$PM_WRAPPER['PM_REPLY']= "<tr><td class='forumheader' style='text-align:center' colspan='2'>{---}</td></tr>";
+$PM_WRAPPER['PM_REPLY']= "<tr><td class='forumheader' style='text-align:center'>{---}</td></tr>";
 
 //$PM_SEND_PM = "<div id='pm-send-pm'>
 $PM_TEMPLATE['send'] = "{PM_BREADCRUMB}<div id='pm-send-pm'>
@@ -185,7 +185,7 @@ $PM_TEMPLATE['outbox']['start'] = "{PM_BREADCRUMB}
 
 //$PM_OUTBOX_TABLE = "
 $PM_TEMPLATE['outbox']['item'] = "
-<tr>
+<tr class='{PM_STATUS_CLASS}'>
 	<td class='forumheader3'>{PM_SELECT}</td>
 	<td class='forumheader3'>{PM_ATTACHMENT_ICON}</td>
 	<td class='forumheader3'>{PM_SUBJECT=link,outbox}</td>
@@ -222,7 +222,7 @@ $PM_TEMPLATE['outbox']['end'] = "
 	{PM_DELETE_SELECTED}
 	</td>
 	<td class='forumheader text-right' colspan='3'>
-	{PM_NEXTPREV=inbox}
+	{PM_NEXTPREV=outbox}
 	</td>
 </tr>
 </tbody>
@@ -272,10 +272,10 @@ $PM_TEMPLATE['show'] =
 "{PM_BREADCRUMB}<div class='pm-show' style='text-align: center'>
 <table class='table table-bordered table-striped fborder'>
 <tr>
-	<td class='fcaption text-left' colspan='2'>
-	<h3>{PM_SUBJECT} <small class='pull-right'>{PM_DATE}</small></h3>
+	<td class='fcaption text-left'>
+	<h3>{PM_SUBJECT} <small class='pull-right float-right'>{PM_DATE}</small></h3>
 	<small>{PM_FROM_TO}</small>
-	<small class='pull-right' >{PM_READ} {PM_DELETE}</small></td>
+	<small class='pull-right float-right'>{PM_READ} {PM_DELETE}</small></td>
 </tr>
 <tr>
 	<td class='forumheader3 text-left' style='vertical-align:top'>
@@ -293,7 +293,7 @@ $PM_TEMPLATE['show'] =
 //$PM_NOTIFY =
 $PM_TEMPLATE['notify'] =
 "<div>
-<h4>".LAN_PM_101."{SITENAME}</h4>
+<h4>".LAN_PM_101." {SITENAME}</h4>
 <table class='table table-striped'>
 <tr><td>".LAN_PM_102."</td><td>{USERNAME}</td></tr>
 <tr><td>".LAN_PM_103."</td><td>{PM_SUBJECT}</td></tr>

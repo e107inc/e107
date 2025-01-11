@@ -22,7 +22,7 @@
 	$retrieve_prefs[] = 'pm_prefs';
 	if(!defined('e107_INIT'))
 	{
-		require_once("../../class2.php");
+		require_once(__DIR__.'/../../class2.php');
 	}
 
 
@@ -95,11 +95,8 @@
 	$pm_prefs = e107::getPlugPref('pm');
 
 
-	$pm_prefs['perpage'] = intval($pm_prefs['perpage']);
-	if($pm_prefs['perpage'] == 0)
-	{
-		$pm_prefs['perpage'] = 10;
-	}
+	$pm_prefs['perpage'] = (int) varset($pm_prefs['perpage'], 10);
+
 
 	if(!isset($pm_prefs['pm_class']) || !check_class($pm_prefs['pm_class']))
 	{
@@ -142,6 +139,7 @@
 		 */
 		function show_send($to_uid)
 		{
+		//	 trigger_error('Method ' . __METHOD__ . ' is deprecated. Use e107::serialize() instead.', E_USER_DEPRECATED);
 			$pm_info = array();
 			$pm_outbox = $this->pmManager->pm_getInfo('outbox');
 
@@ -238,7 +236,9 @@
 				$PM_INBOX['end'] = $this->updateTemplate($PM_INBOX_FOOTER);
 			}
 
-			if(empty($PM_INBOX))
+
+
+			if(empty($PM_INBOX['item']))
 			{
 				$PM_INBOX = e107::getTemplate('pm', 'pm', 'inbox');
 			}
@@ -270,6 +270,7 @@
 					{
 						$rec['pm_subject'] = '[' . LAN_PM_61 . ']';
 					}
+
 					$sc->setVars($rec);
 					$txt .= $tp->parseTemplate($PM_INBOX['item'], true, $sc);
 				}
@@ -311,7 +312,7 @@
 				$PM_OUTBOX['end'] = $this->updateTemplate($PM_OUTBOX_FOOTER);
 			}
 
-			if(empty($PM_OUTBOX))
+			if(empty($PM_OUTBOX['item']))
 			{
 				$PM_OUTBOX = e107::getTemplate('pm', 'pm', 'outbox');
 			}
@@ -620,14 +621,18 @@
 
 				$maxsize = intval($this->pmPrefs['attach_size']) * 1024;
 
-				foreach(array_keys($_FILES['file_userfile']['size']) as $fid)
+				if(is_array($_FILES['file_userfile']))
 				{
-					if($maxsize > 0 && $_FILES['file_userfile']['size'][$fid] > $maxsize)
+					$file_userfile = $_FILES['file_userfile'];
+					foreach(array_keys($file_userfile['size']) as $fid)
 					{
-						$msg .= str_replace("{FILENAME}", $_FILES['file_userfile']['name'][$fid], LAN_PM_62) . "<br />";
-						$_FILES['file_userfile']['size'][$fid] = 0;
+						if($maxsize > 0 && $file_userfile['size'][$fid] > $maxsize)
+						{
+							$msg .= str_replace("{FILENAME}", $file_userfile['name'][$fid], LAN_PM_62) . "<br />";
+							$file_userfile['size'][$fid] = 0;
+						}
+						$totalsize += $file_userfile['size'][$fid];
 					}
-					$totalsize += $_FILES['file_userfile']['size'][$fid];
 				}
 
 				if(intval($this->pmPrefs['pm_limits']) > 0)
@@ -715,6 +720,8 @@
 			{
 				$array[2] = array('text' => $other, 'url' => null);
 			}
+
+			e107::breadcrumb($array);
 
 			return e107::getForm()->breadcrumb($array);
 
@@ -980,5 +987,5 @@
 
 
 	require_once(FOOTERF);
-	exit;
-?>
+
+

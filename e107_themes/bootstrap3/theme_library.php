@@ -27,9 +27,10 @@ class theme_library
 		return array();
 	}
 
-	/**
-	 * Alters library information before detection and caching takes place.
-	 */
+    /**
+     * Alters library information before detection and caching takes place.
+     * @param $libraries
+     */
 	function config_alter(&$libraries)
 	{
 		$bootswatch = e107::pref('theme', 'bootswatch', false);

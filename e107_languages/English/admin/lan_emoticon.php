@@ -52,4 +52,3 @@ define("EMOLAN_34", "Missing files for pack");
 define("EMOLAN_35", " - deleted in database");
 define("EMOLAN_37", "Emote not set");
 define("EMOLAN_38", "Empty emote value");
-?>

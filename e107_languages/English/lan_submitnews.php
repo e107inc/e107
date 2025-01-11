@@ -7,7 +7,10 @@
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  */
-define("PAGE_NAME", "Submit News");
+if(!defined('PAGE_NAME'))
+{
+	define("PAGE_NAME", "Submit News");
+}
 //define("LAN_7", "Name: ");//LAN_NAME
 //define("LAN_62", "News Title: ");//LAN_TITLE
 //define("LAN_112", "Email Address: ");//LAN_EMAIL
@@ -30,8 +33,8 @@ define("SUBNEWSLAN_7", "You must give your name and email address");
 define("SUBNEWSLAN_8", "Error uploading image");
 define("SUBNEWSLAN_9", "Keywords");
 //define("SUBNEWSLAN_10", "Summary");//LAN_SUMMARY
-define("SUBNEWSLAN_11", "Meta Description");
+// define("SUBNEWSLAN_11", "Meta Description"); LAN_META_DESCRIPTION
 define("SUBNEWSLAN_12", "Used by Facebook etc.");
 define("SUBNEWSLAN_13", "Media URLs");
 
-?>
+

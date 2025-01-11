@@ -24,9 +24,12 @@
 /**
  * @todo core request handler (non-admin), core response
  */
-if (!defined('e107_INIT')){ exit; }  
- 
- 
+if (!defined('e107_INIT')){ exit; }
+
+
+/**
+ *
+ */
 class e_admin_request
 {
 	/**
@@ -92,12 +95,13 @@ class e_admin_request
 	/**
 	 * Constructor
 	 *
-	 * @param string|array $qry [optional]
-	 * @return none
+	 * @param string|null $request_string [optional]
+	 * @param bool $parse
+	 * @return void
 	 */
 	public function __construct($request_string = null, $parse = true)
 	{
-		if(null === $request_string)
+		if($request_string === null)
 		{
 			$request_string = str_replace('&amp;', '&', e_QUERY);
 		}
@@ -123,19 +127,19 @@ class e_admin_request
 		// Set current mode
 		if(isset($this->_request_qry[$this->_mode_key]))
 		{
-			$this->_mode = preg_replace('/[^\w]/', '', $this->_request_qry[$this->_mode_key]);
+			$this->_mode = preg_replace('/[\W]/', '', $this->_request_qry[$this->_mode_key]);
 		}
 
 		// Set current action
 		if(isset($this->_request_qry[$this->_action_key]))
 		{
-			$this->_action = preg_replace('/[^\w]/', '', $this->_request_qry[$this->_action_key]);
+			$this->_action = preg_replace('/[\W]/', '', $this->_request_qry[$this->_action_key]);
 		}
 
 		// Set current id
 		if(isset($this->_request_qry[$this->_id_key]))
 		{
-			$this->_id = preg_replace('/[^\w-:.]/', '', $this->_request_qry[$this->_id_key]);
+			$this->_id = preg_replace('/[^\w\-:\.]/', '', $this->_request_qry[$this->_id_key]);
 		}
 
 		$this->_posted_qry =& $_POST; //raw?
@@ -153,7 +157,7 @@ class e_admin_request
 	 */
 	public function getQuery($key = null, $default = null)
 	{
-		if(null === $key)
+		if($key === null)
 		{
 			return $this->_request_qry;
 		}
@@ -180,10 +184,10 @@ class e_admin_request
 			return $this;
 		}
 
-		if(null === $value)
+		if($value === null)
 		{
-			unset($this->_request_qry[$key]);
-			unset($_GET[$key]);
+			unset($this->_request_qry[$key], $_GET[$key]);
+
 			return $this;
 		}
 
@@ -202,7 +206,7 @@ class e_admin_request
 	 */
 	public function getPosted($key = null, $default = null)
 	{
-		if(null === $key)
+		if($key === null)
 		{
 			return $this->_posted_qry;
 		}
@@ -214,7 +218,7 @@ class e_admin_request
 	 * If $key is array, $value is not used.
 	 * If $value is null, (string) $key is unset
 	 *
-	 * @param object $key
+	 * @param string|array $key
 	 * @param object $value [optional]
 	 * @return e_admin_request
 	 */
@@ -234,7 +238,7 @@ class e_admin_request
 			return $this;
 		}
 
-		if(null === $value)
+		if($value === null)
 		{
 			unset($this->_posted_qry[$key]);
 			return $this;
@@ -251,7 +255,10 @@ class e_admin_request
 	 */
 	public function getMode()
 	{
-		if(!$this->_mode) return $this->getDefaultMode();
+		if(!$this->_mode)
+		{
+			return $this->getDefaultMode();
+		}
 		return $this->_mode;
 	}
 
@@ -281,7 +288,7 @@ class e_admin_request
 	 */
 	public function setMode($mode)
 	{
-		$this->_mode = preg_replace('/[^\w]/', '', $mode);
+		$this->_mode = preg_replace('/[\W]/', '', $mode);
 		$this->setQuery($this->_mode_key, $this->_mode);
 		return $this;
 	}
@@ -293,7 +300,10 @@ class e_admin_request
 	 */
 	public function setDefaultMode($mode)
 	{
-		if($mode) $this->_default_mode = $mode;
+		if($mode)
+		{
+			$this->_default_mode = $mode;
+		}
 		return $this;
 	}
 
@@ -310,11 +320,14 @@ class e_admin_request
 
 	/**
 	 * Get current action
-	 * @return TBD
+	 * @return string
 	 */
 	public function getAction()
 	{
-		if(!$this->_action) return $this->getDefaultAction();
+		if(!$this->_action)
+		{
+			return $this->getDefaultAction();
+		}
 		return $this->_action;
 	}
 
@@ -344,7 +357,7 @@ class e_admin_request
 	 */
 	public function setAction($action)
 	{
-		$this->_action = preg_replace('/[^\w]/', '', $action);
+		$this->_action = preg_replace('/[\W]/', '', $action);
 		$this->setQuery($this->_action_key, $this->_action);
 		return $this;
 	}
@@ -357,7 +370,10 @@ class e_admin_request
 	 */
 	public function setDefaultAction($action)
 	{
-		if($action) $this->_default_action = $action;
+		if($action)
+		{
+			$this->_default_action = $action;
+		}
 		return $this;
 	}
 
@@ -388,7 +404,7 @@ class e_admin_request
 	 */
 	public function setId($id)
 	{
-		$id = intval($id);
+		$id = (int) $id;
 		$this->_id = $id;
 		$this->setQuery($this->_id_key, $id);
 		return $this;
@@ -420,7 +436,7 @@ class e_admin_request
 		$ret = $this->getQuery();
 
 		//special case - exclude all current
-		if(true === $exclude_from_query)
+		if($exclude_from_query === true)
 		{
 			$exclude_from_query = array_keys($ret);
 		}
@@ -433,7 +449,10 @@ class e_admin_request
 		{
 			foreach ($exclude_from_query as $var)
 			{
-				if($keepSpecial && $var != $this->_action_key && $var != $this->_mode_key) unset($ret[$var]);
+				if($keepSpecial && $var != $this->_action_key && $var != $this->_mode_key)
+				{
+					unset($ret[$var]);
+				}
 			}
 		}
 
@@ -546,7 +565,7 @@ class e_admin_response
 	 * @param string $namespace segment namesapce
 	 * @return e_admin_response
 	 */
-	function setBody($content, $namespace = 'default')
+	public function setBody($content, $namespace = 'default')
 	{
 		$this->_body[$namespace] = $content;
 		return $this;
@@ -559,7 +578,7 @@ class e_admin_response
 	 * @param string $namespace segment namesapce
 	 * @return e_admin_response
 	 */
-	function appendBody($content, $namespace = 'default')
+	public function appendBody($content, $namespace = 'default')
 	{
 		if(!isset($this->_body[$namespace]))
 		{
@@ -576,7 +595,7 @@ class e_admin_response
 	 * @param string $namespace segment namespace
 	 * @return e_admin_response
 	 */
-	function prependBody($content, $namespace = 'default')
+	public function prependBody($content, $namespace = 'default')
 	{
 		if(!isset($this->_body[$namespace]))
 		{
@@ -594,7 +613,7 @@ class e_admin_response
 	 * @param string|boolean $glue if false return array, else return string
 	 * @return string|array
 	 */
-	function getBody($namespace = 'default', $reset = false, $glue = '')
+	public function getBody($namespace = 'default', $reset = false, $glue = '')
 	{
 		$content = vartrue($this->_body[$namespace], array());
 		if($reset)
@@ -615,7 +634,7 @@ class e_admin_response
 	 * @param string $namespace
 	 * @return e_admin_response
 	 */
-	function setTitle($title, $namespace = 'default')
+	public function setTitle($title, $namespace = 'default')
 	{
 		$this->_title[$namespace] = array($title);
 		return $this;
@@ -628,7 +647,7 @@ class e_admin_response
 	 * @param string $namespace segment namesapce
 	 * @return e_admin_response
 	 */
-	function appendTitle($title, $namespace = 'default')
+	public function appendTitle($title, $namespace = 'default')
 	{
 		if(empty($title))
 		{
@@ -649,7 +668,7 @@ class e_admin_response
 	 * @param string $namespace segment namespace
 	 * @return e_admin_response
 	 */
-	function prependTitle($title, $namespace = 'default')
+	public function prependTitle($title, $namespace = 'default')
 	{
 		if(empty($title))
 		{
@@ -669,9 +688,9 @@ class e_admin_response
 	 * @param string $namespace
 	 * @param boolean $reset
 	 * @param boolean|string $glue
-	 * @return unknown
+	 * @return string|array
 	 */
-	function getTitle($namespace = 'default', $reset = false, $glue = '  ')
+	public function getTitle($namespace = 'default', $reset = false, $glue = '  ')
 	{
 		$content = array();
 				
@@ -701,7 +720,7 @@ class e_admin_response
 	 * @param string $namespace
 	 * @return e_admin_response
 	 */
-	function setRenderMod($render_mod, $namespace = 'default')
+	public function setRenderMod($render_mod, $namespace = 'default')
 	{
 		$this->_render_mod[$namespace] = $render_mod;
 		return $this;
@@ -713,7 +732,7 @@ class e_admin_response
 	 * @param string $namespace
 	 * @return string
 	 */
-	function getRenderMod($namespace = 'default')
+	public function getRenderMod($namespace = 'default')
 	{
 		return varset($this->_render_mod[$namespace], null);
 	}
@@ -725,7 +744,7 @@ class e_admin_response
 	 * @param string $content meta content
 	 * @return e_admin_response
 	 */
-	function addMetaData($meta, $content)
+	public function addMetaData($meta, $content)
 	{
 		$tp = e107::getParser();
 		$meta = '_' . $meta;
@@ -742,9 +761,22 @@ class e_admin_response
 	 * @param string $title
 	 * @return e_admin_response
 	 */
-	function addMetaTitle($title)
+	public function addMetaTitle($title)
 	{
 		$this->addMetaData('e_PAGETITLE', $title);
+		return $this;
+	}
+
+	/**
+	 * Set the Meta-title (overrides existing)
+	 * @param string $title
+	 * @return e_admin_response
+	 */
+	public function setMetaTitle($title)
+	{
+		$meta = '_e_PAGETITLE';
+		$this->{$meta} = array(strip_tags($title));
+
 		return $this;
 	}
 
@@ -754,7 +786,7 @@ class e_admin_response
 	 * @param string $description
 	 * @return e_admin_response
 	 */
-	function addMetaDescription($description)
+	public function addMetaDescription($description)
 	{
 		$this->addMetaData('META_DESCRIPTION', $description);
 		return $this;
@@ -766,7 +798,7 @@ class e_admin_response
 	 * @param string $keyword
 	 * @return e_admin_response
 	 */
-	function addMetaKeywords($keyword)
+	public function addMetaKeywords($keyword)
 	{
 		$this->addMetaData('META_KEYWORDS', $keyword);
 		return $this;
@@ -777,11 +809,13 @@ class e_admin_response
 	 *
 	 * @return e_admin_response
 	 */
-	function sendMeta()
+	public function sendMeta()
 	{
 		//HEADERF already included or meta content already sent
 		if(e_AJAX_REQUEST || defined('HEADER_INIT') || defined('e_PAGETITLE'))
+		{
 			return $this;
+		}
 
 		if(!defined('e_PAGETITLE') && !empty($this->_e_PAGETITLE))
 		{
@@ -805,7 +839,7 @@ class e_admin_response
 	 * @param string $content
 	 * @return e_admin_response
 	 */
-	function addHeaderContent($content)
+	public function addHeaderContent($content)
 	{
 		$this->appendBody($content, 'header_content');
 		return $this;
@@ -818,7 +852,7 @@ class e_admin_response
 	 * @param boolean $glue
 	 * @return string
 	 */
-	function getHeaderContent($reset = true, $glue = "\n\n")
+	public function getHeaderContent($reset = true, $glue = "\n\n")
 	{
 		return $this->getBody('header_content', $reset, $glue);
 	}
@@ -829,11 +863,13 @@ class e_admin_response
 	 *
 	 * @return e_admin_response
 	 */
-	function setIframeMod()
+	public function setIframeMod()
 	{
 		global $HEADER, $FOOTER, $CUSTOMHEADER, $CUSTOMFOOTER;
-		$HEADER = $FOOTER = '';
-		$CUSTOMHEADER = $CUSTOMFOOTER = array();
+		$FOOTER = '';
+		$HEADER = $FOOTER;
+		$CUSTOMFOOTER = array();
+		$CUSTOMHEADER = $CUSTOMFOOTER;
 		//TODO generic $_GET to activate for any page of admin. 
 		// New
 		if(!defined('e_IFRAME'))
@@ -848,9 +884,9 @@ class e_admin_response
 	 *
 	 * @param string $name segment
 	 * @param array $options valid keys are: messages|render|meta|return|raw|ajax
-	 * @return mixed
+	 * @return array|string|null
 	 */
-	function send($name = 'default', $options = array())
+	public function send($name = 'default', $options = array())
 	{
 		if(is_string($options))
 		{
@@ -933,17 +969,17 @@ class e_admin_dispatcher
 	/**
 	 * @var e_admin_request
 	 */
-	protected $_request = null;
+	protected $_request;
 
 	/**
 	 * @var e_admin_response
 	 */
-	protected $_response = null;
+	protected $_response;
 
 	/**
 	 * @var e_admin_controller
 	 */
-	protected $_current_controller = null;
+	protected $_current_controller;
 
 	/**
 	 * Required (set by child class).
@@ -1001,7 +1037,7 @@ class e_admin_dispatcher
 	protected $adminMenu = array();
 	
 
-	protected $adminMenuIcon = null;
+	protected $adminMenuIcon;
 	/**
 	 * Optional (set by child class).
 	 * Page titles for pages not in adminMenu (e.g. main/edit)
@@ -1037,19 +1073,19 @@ class e_admin_dispatcher
 			define('e_ADMIN_UI', true);
 		}
 
-		if(!empty($_GET['iframe']))
+		if(!empty($_GET['iframe']) && !defined('e_IFRAME'))
 		{
 			define('e_IFRAME', true);
 		}
 
 		require_once(e_ADMIN.'boot.php');
 		
-		if(null === $request || !is_object($request))
+		if($request === null || !is_object($request))
 		{
 			$request = new e_admin_request($request);
 		}
 
-		if(null === $response)
+		if($response === null)
 		{
 			$response = new e_admin_response();
 		}
@@ -1061,6 +1097,18 @@ class e_admin_dispatcher
 			$this->setDefaults();
 		}
 
+
+
+		// current user does not have access to default route, so find a new one.
+		if(!$hasAccess = $this->hasRouteAccess($this->defaultMode.'/'.$this->defaultAction))
+		{
+			if($newRoute = $this->getApprovedAccessRoute())
+			{
+				list($this->defaultMode,$this->defaultAction) = explode('/',$newRoute);
+			}
+		}
+
+
 		$request->setDefaultMode($this->defaultMode)->setDefaultAction($this->defaultAction);
 
 		// register itself
@@ -1071,25 +1119,28 @@ class e_admin_dispatcher
 
 		if($auto_observe)
 		{
-			$this->runObservers(true);
+			$this->runObservers();
 		}
 	}
 
 	/**
 	 * User defined constructor - called before _initController() method
-	 * @return e_admin_dispatcher
+	 * @return void
 	 */
 	public function init()
 	{
 	}
-	
+
+	/**
+	 * @return bool
+	 */
 	public function checkAccess()
 	{
 		$request = $this->getRequest();
 		$currentMode = $request->getMode();
 
 		// access based on mode setting - general controller access
-		if(!$this->checkModeAccess($currentMode))
+		if(!$this->hasModeAccess($currentMode))
 		{
 			$request->setAction('e403');
 			e107::getMessage()->addError(LAN_NO_PERMISSIONS)
@@ -1100,7 +1151,10 @@ class e_admin_dispatcher
 		// access based on $access settings - access per action
 		$currentAction = $request->getAction();
 		$route = $currentMode.'/'.$currentAction;
-		if(!$this->checkRouteAccess($route))
+
+
+
+		if(!$this->hasRouteAccess($route))
 		{
 			$request->setAction('e403');
 			e107::getMessage()->addError(LAN_NO_PERMISSIONS)
@@ -1110,8 +1164,12 @@ class e_admin_dispatcher
 		
 		return true;
 	}
-	
-	public function checkModeAccess($mode)
+
+	/**
+	 * @param $mode
+	 * @return bool
+	 */
+	public function hasModeAccess($mode)
 	{
 		// mode userclass (former check_class())
 		if(isset($this->modes[$mode]['userclass']) && !e107::getUser()->checkClass($this->modes[$mode]['userclass'], false))
@@ -1125,23 +1183,29 @@ class e_admin_dispatcher
 		}
 		
 		// generic dispatcher admin permission  (former getperms())
-		if(null !== $this->perm && is_string($this->perm) && !e107::getUser()->checkAdminPerms($this->perm))
+		if($this->perm !== null && is_string($this->perm) && !e107::getUser()->checkAdminPerms($this->perm))
 		{
 			return false;
 		}
 
 		return true;
 	}
-	
-	public function checkRouteAccess($route)
+
+	/**
+	 * @param $route
+	 * @return bool
+	 */
+	public function hasRouteAccess($route)
 	{
 		if(isset($this->access[$route]) && !e107::getUser()->checkClass($this->access[$route], false))
 		{
+			e107::getMessage()->addDebug('Userclass Permissions Failed: ' .$this->access[$route]);
 			return false;
 		}
 
 		if(is_array($this->perm) && isset($this->perm[$route]) && !e107::getUser()->checkAdminPerms($this->perm[$route]))
 		{
+			e107::getMessage()->addDebug('Admin Permissions Failed.' .$this->perm[$route]);
 			return false;
 		}
 
@@ -1168,10 +1232,43 @@ class e_admin_dispatcher
 			$action = $this->modes[$mode]['index'];
 		}
 
-		if(!$this->defaultMode) $this->defaultMode = $mode;
-		if(!$this->defaultAction) $this->defaultAction = $action;
+
+
+
+		if(!$this->defaultMode)
+		{
+			$this->defaultMode = $mode;
+		}
+		if(!$this->defaultAction)
+		{
+			$this->defaultAction = $action;
+		}
 
 		return $this;
+	}
+
+	/**
+	 * Search through access for an approved route.
+	 * Returns false if no approved route found.
+	 *
+	 * @return string|bool
+	 */
+	private function getApprovedAccessRoute()
+	{
+		if(empty($this->access))
+		{
+			return false;
+		}
+
+		foreach($this->access as $route=>$uclass)
+		{
+			if(check_class($uclass))
+			{
+				return $route;
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -1284,7 +1381,7 @@ class e_admin_dispatcher
 	 * - ajax: force ajax output (and exit)
 	 *
 	 * @param string|array $return_type expected string values: render|render_out|response|raw|ajax[_text|_json|_xml]
-	 * @return mixed
+	 * @return array|e_admin_response|string|null
 	 */
 	public function runPage($return_type = 'render')
 	{
@@ -1373,7 +1470,7 @@ class e_admin_dispatcher
 	 */
 	public function getController()
 	{
-		if(null === $this->_current_controller)
+		if($this->_current_controller === null)
 		{
 			$this->_initController();
 		}
@@ -1418,7 +1515,7 @@ class e_admin_dispatcher
 				$this->_current_controller->setRequest($request)->init();
 			}
 
-			if(vartrue($this->modes[$request->getModeName()]['ui']))
+			if(!empty($this->modes[$request->getModeName()]['ui']))
 			{
 				$class_name = $this->modes[$request->getModeName()]['ui'];
 				$class_path = vartrue($this->modes[$request->getModeName()]['uipath']);
@@ -1473,12 +1570,13 @@ class e_admin_dispatcher
 	 * Generic Admin Menu Generator
 	 * @return string
 	 */
-	function renderMenu()
+	public function renderMenu()
 	{
 		
 		$tp = e107::getParser();
 		$var = array();
 		$selected = false;
+
 		foreach($this->adminMenu as $key => $val)
 		{
 
@@ -1490,13 +1588,16 @@ class e_admin_dispatcher
 			$tmp = explode('/', trim($key, '/'), 3);
 
 			// sync with mode/route access
-			if(!$this->checkModeAccess($tmp[0]) || !$this->checkRouteAccess($tmp[0].'/'.varset($tmp[1])))
+			if(!$this->hasModeAccess($tmp[0]) || !$this->hasRouteAccess($tmp[0].'/'.varset($tmp[1])))
 			{
 				continue;
 			}
 
 			// custom 'selected' check
-			if(isset($val['selected']) && $val['selected']) $selected = $val['selected'] === true ? $key : $val['selected'];
+			if(isset($val['selected']) && $val['selected'])
+			{
+				$selected = $val['selected'] === true ? $key : $val['selected'];
+			}
 
 			foreach ($val as $k=>$v)
 			{
@@ -1505,6 +1606,7 @@ class e_admin_dispatcher
 					case 'caption':
 						$k2 = 'text';
 						$v = defset($v, $v);
+
 					break;
 
 					case 'url':
@@ -1516,6 +1618,23 @@ class e_admin_dispatcher
 					case 'uri':
 						$k2 = 'link';
 						$v = $tp->replaceConstants($v, 'abs');
+
+						if(!empty($v) && ($v === e_REQUEST_URI))
+						{
+							$selected = $key;
+						}
+
+					break;
+
+
+					case 'badge': // array('value'=> int, 'type'=>'warning');
+						$k2 = 'badge';
+						$v = (array) $v;
+					break;
+
+					case 'icon':
+						$k2 = 'image_src';
+						$v = (string) $v.'.glyph';
 					break;
 
 					default:
@@ -1524,7 +1643,6 @@ class e_admin_dispatcher
 					break;
 				}
 
-				
 
 				// Access check done above
 				// if($val['perm']!= null) // check perms
@@ -1541,7 +1659,12 @@ class e_admin_dispatcher
 				}
 
 			}
-		
+
+			// guess an icon.
+			if(!isset($var[$key]['image_src']))
+			{
+				$var[$key]['image_src'] = e_navigation::guessMenuIcon($key);
+			}
 			
 			
 			// TODO slide down menu options?
@@ -1553,7 +1676,7 @@ class e_admin_dispatcher
 				
 			if(varset($val['tab']))
 			{
-				$var[$key]['link'] .= "&amp;tab=".$val['tab'];	
+				$var[$key]['link'] .= '&amp;tab=' .$val['tab'];
 			}
 
 			/*$var[$key]['text'] = $val['caption'];
@@ -1572,10 +1695,16 @@ class e_admin_dispatcher
 		}
 
 
-		if(empty($var)) return '';
+		if(empty($var))
+		{
+			return '';
+		}
 
 		$request = $this->getRequest();
-		if(!$selected) $selected = $request->getMode().'/'.$request->getAction();
+		if(!$selected)
+		{
+			$selected = $request->getMode() . '/' . $request->getAction();
+		}
 		$selected = vartrue($this->adminMenuAliases[$selected], $selected);
 
 		$icon = '';
@@ -1586,17 +1715,23 @@ class e_admin_dispatcher
 		}
 		elseif(deftrue('e_CURRENT_PLUGIN'))
 		{
-			$icon = e107::getPlugin()->getIcon(e_CURRENT_PLUGIN, 32, '');
+			$icon = e107::getPlug()->load(e_CURRENT_PLUGIN)->getIcon(24);
 		}
 
-		return e107::getNav()->admin($icon."<span>".$this->menuTitle."</span>", $selected, $var);
+		$toggle = "<span class='e-toggle-sidebar'><!-- --></span>";
+
+		$var['_extras_'] = array('icon'=> $icon, 'return'=>true);
+
+	//	$var['_icon_'] = $icon;
+
+		return e107::getNav()->admin($this->menuTitle, $selected, $var);
 	}
 
 
 	/**
 	 * Render Help Text in <ul> format. XXX TODO
 	 */
-	function renderHelp()
+	public function renderHelp()
 	{
 
 
@@ -1608,7 +1743,7 @@ class e_admin_dispatcher
 	 * Check for table issues and warn the user. XXX TODO 
 	 * ie. user is using French interface but no french tables found for the current DB tables. 
 	 */
-	function renderWarnings()
+	public function renderWarnings()
 	{
 		
 		
@@ -1619,6 +1754,10 @@ class e_admin_dispatcher
 
 }
 
+
+/**
+ *
+ */
 class e_admin_controller
 {
 	/**
@@ -1640,6 +1779,12 @@ class e_admin_controller
 	 * @var string default action name
 	 */
 	protected $_default_action = 'index';
+
+
+	/**
+	 * @var string default trigger action.
+	 */
+	protected $_default_trigger = 'auto';
 	
 	/**
 	 * List (numerical array) of only allowed for this controller actions
@@ -1657,9 +1802,11 @@ class e_admin_controller
 	 */
 	protected $disallow = array();
 
+
+
 	/**
 	 * Constructor
-	 * @param e_admin_request $request [optional]
+	 * @param e_admin_request $request
 	 */
 	public function __construct($request, $response, $params = array())
 	{
@@ -1669,6 +1816,9 @@ class e_admin_controller
 			->setParams($params);
 			
 		$this->checkAccess();
+
+		$this->_log(); // clear the log (when debug is enabled)
+
 	}
 
 	/**
@@ -1722,7 +1872,7 @@ class e_admin_controller
 	 */
 	public function getParam($key = null, $default = null)
 	{
-		if(null === $key)
+		if($key === null)
 		{
 			return $this->_params;
 		}
@@ -1737,7 +1887,7 @@ class e_admin_controller
 	 */
 	public function setParam($key, $value)
 	{
-		if(null === $value)
+		if($value === null)
 		{
 			unset($this->_params[$key]);
 			return $this;
@@ -1853,7 +2003,7 @@ class e_admin_controller
 
 	/**
 	 * Request proxy method
-	 * @param string $key
+	 * @param string|array $key
 	 * @param mixed $value [optional]
 	 * @return e_admin_controller
 	 */
@@ -1868,32 +2018,67 @@ class e_admin_controller
 	 *
 	 * @param string $title if boolean true - current menu caption will be used
 	 * @param boolean $meta add to meta as well
-	 * @return e_admin_controller
+	 * @return object e_admin_controller
 	 */
 	public function addTitle($title = true, $meta = true)
 	{
 		
 		
-		if(true === $title)
+		if($title === true)
 		{
 			$_dispatcher = $this->getDispatcher();
 			$data = $_dispatcher->getPageTitles();
 			$search = $this->getMode().'/'.$this->getAction();
-			if(isset($data[$search])) $res['caption'] = $data[$search];
+
+
+
+			if(isset($data[$search]))
+			{
+				 $res['caption'] = $data[$search];
+			}
 			else 
 			{
+
+
 				$data = $_dispatcher->getMenuData();
-				if(isset($data[$search])) $res = $data[$search];
-				else return $this;
+
+				if(isset($data[$search]))
+				{
+					 $res = $data[$search];
+				}
+				else
+				{
+					// check for an alias match.
+					$d = $_dispatcher->getMenuAliases();
+					if(isset($d[$search]))
+					{
+						$search = $d[$search];
+						$res = $data[$search];
+
+					}
+					else
+					{
+						 return $this;
+					}
+				//	var_dump($d);
+				//	var_dump("Couldnt find: ".$search);
+
+				}
 			}
 			$title = $res['caption'];
+
+
 		}
 		
 		//	echo "<h3>".__METHOD__." - ".$title."</h3>";
 	
 	//	print_a($title);
 		$this->getResponse()->appendTitle($title);
-		if($meta) $this->addMetaTitle($title);
+		if($meta)
+		{
+			$this->addMetaTitle($title);
+		}
+
 		return $this;
 	}
 
@@ -1963,7 +2148,7 @@ class e_admin_controller
 
 	/**
 	 * Get current ID, response proxy method
-	 * @return string
+	 * @return int
 	 */
 	public function getId()
 	{
@@ -1980,24 +2165,58 @@ class e_admin_controller
 		return $this->getResponse()->getJsHelper();
 	}
 
+	/**
+	 * @param $action
+	 * @return void
+	 */
 	protected function _preDispatch($action = '')
 	{
-		if(!$action) $action = $this->getRequest()->getActionName();
-		$method = $this->toMethodName($action, 'page');
+		if(!$action)
+		{
+			$action = $this->getRequest()->getActionName();
+		}
+		$method = $this->toMethodName($action);
 		if(!method_exists($this, $method))
 		{
+			$this->_log('Skipping ' .$method. '() (not found)');
 			$this->getRequest()->setAction($this->getDefaultAction());
 		}
 
 		// switch to 404 if needed
-		$method = $this->toMethodName($this->getRequest()->getActionName(), 'page');
+		$method = $this->toMethodName($this->getRequest()->getActionName());
 		if(!method_exists($this, $method))
 		{
+			$this->_log('Skipping ' .$method. '() (not found)');
 			$this->getRequest()->setAction('e404');
 			$message = e107::getParser()->lanVars(LAN_UI_404_METHOD_ERROR, $method, true);
 			e107::getMessage()->add($message, E_MESSAGE_ERROR);
 		}
 	}
+
+	/**
+	 * Log Controller when e_DEBUG is active.
+	 * @param string|null $message
+	 * @return null
+	 */
+	protected function _log($message=null)
+	{
+		if(!deftrue('e_DEBUG'))
+		{
+			return null;
+		}
+
+		if($message === null) // clear the log.
+		{
+			file_put_contents(e_LOG. 'adminUI.log', '');
+			return null;
+		}
+
+		$date = (!empty($message)) ? date('c') : '';
+
+		file_put_contents(e_LOG. 'adminUI.log',$date."\t".$message."\n",FILE_APPEND);
+
+	}
+
 
 	/**
 	 * Dispatch observer, check for triggers
@@ -2008,14 +2227,14 @@ class e_admin_controller
 	public function dispatchObserver($action = null)
 	{
 		$request = $this->getRequest();
-		if(null === $request)
+		if($request === null)
 		{
 			$request = new e_admin_request();
 			$this->setRequest($request);
 		}
 
 		$this->_preDispatch($action);
-		if(null === $action)
+		if($action === null)
 		{
 			$action = $request->getActionName();
 		}
@@ -2024,27 +2243,34 @@ class e_admin_controller
 		$actionObserverName = $this->toMethodName($action, 'observer', e_AJAX_REQUEST);
 		if(method_exists($this, $actionObserverName))
 		{
+			$this->_log('Executing ' .$actionObserverName. '()');
 			$this->$actionObserverName();
-			
+		}
+		else
+		{
+			$this->_log('Skipping ' .$actionObserverName. '() (not found)');
 		}
 
 		// check for triggers, not available in Ajax mode
-		if(!e_AJAX_REQUEST && $this->triggersEnabled())
+		$triggerEnabled = $this->triggersEnabled();
+		if(!e_AJAX_REQUEST && $triggerEnabled)
 		{
-			$posted = $request->getPosted();
-			foreach ($posted as $key => $value)
+			if($posted = $request->getPosted())
 			{
-				if(strpos($key, 'etrigger_') === 0)
+				foreach ($posted as $key => $value)
 				{
-					$actionTriggerName = $this->toMethodName($action.$request->camelize(substr($key, 9)), 'trigger', false);
-					if(method_exists($this, $actionTriggerName))
+					if(strpos($key, 'etrigger_') === 0)
 					{
-						$this->$actionTriggerName($value);
-					}
-					//Check if triggers are still enabled
-					if(!$this->triggersEnabled())
-					{
-						break;
+						$actionTriggerName = $this->toMethodName($action.$request->camelize(substr($key, 9)), 'trigger', false);
+						if(method_exists($this, $actionTriggerName))
+						{
+							$this->$actionTriggerName($value);
+						}
+						//Check if triggers are still enabled
+						if(!$triggerEnabled)
+						{
+							break;
+						}
 					}
 				}
 			}
@@ -2067,14 +2293,14 @@ class e_admin_controller
 		}
 
 		$request = $this->getRequest();
-		if(null === $request)
+		if($request === null)
 		{
 			$request = new e_admin_request();
 			$this->setRequest($request);
 		}
 
 		$this->_preDispatch($action);
-		if(null === $action)
+		if($action === null)
 		{
 			$action = $request->getActionName();
 		}
@@ -2100,7 +2326,7 @@ class e_admin_controller
 	public function dispatchPage($action = null)
 	{
 		$request = $this->getRequest();
-		if(null === $request)
+		if($request === null)
 		{
 			$request = new e_admin_request();
 			$this->setRequest($request);
@@ -2109,32 +2335,35 @@ class e_admin_controller
 	//	print_a($response);
 		$this->_preDispatch($action);
 
-		if(null === $action)
+		if($action === null)
 		{
 			$action = $request->getActionName();
 		}
 
 		// check for observer
-		$actionName = $this->toMethodName($action, 'page');
+		$actionName = $this->toMethodName($action);
 		$ret = '';
 		if(!method_exists($this, $actionName)) // pre dispatch already switched to default action/not found page if needed
 		{
+			$this->_log('Skipping ' .$actionName. '() (not found)');
 			e107::getMessage()->add('Action '.$actionName.' no found!', E_MESSAGE_ERROR);
 			return $response;
 		}
-		
-		if($action != 'Prefs' && $action != 'Create' && $action !='Edit' && $action != 'List') // Custom Page method in use, so add the title. 
+
+		$this->_log('Executing ' .$actionName. '()');
+
+		if($action !== 'Prefs' && $action !== 'Create' && $action !== 'Edit' && $action !== 'List') // Custom Page method in use, so add the title.
 		{
-			$this->addTitle(); 	
+			$this->addTitle();
 		}
 
 
 	//	e107::getDebug()->log("Admin-ui Action: <b>".$action."</b>");
 
-		if($action === 'Edit')
-		{
-			$this->addTitle('#'.$this->getId()); // Inform user of which record is being edited. 	
-		}
+
+
+
+		
 		
 		ob_start(); //catch any output
 		$ret = $this->{$actionName}();
@@ -2169,34 +2398,52 @@ class e_admin_controller
 		return $response;
 	}
 
+	/**
+	 * @return void
+	 */
 	public function E404Observer()
 	{
 		$this->getResponse()->setTitle(LAN_UI_404_TITLE_ERROR);
 	}
 
+	/**
+	 * @return string
+	 */
 	public function E404Page()
 	{
 		return '<div class="center">'.LAN_UI_404_BODY_ERROR.'</div>';
 	}
 
 
+	/**
+	 * @return void
+	 */
 	public function E404AjaxPage()
 	{
 		exit;
 	}
-	
 
+
+	/**
+	 * @return void
+	 */
 	public function E403Observer()
 	{
 		$this->getResponse()->setTitle(LAN_UI_403_TITLE_ERROR);
 	}
 
+	/**
+	 * @return string
+	 */
 	public function E403Page()
 	{
 		return '<div class="center">'.LAN_UI_403_BODY_ERROR.'</div>';
 	}
 
 
+	/**
+	 * @return void
+	 */
 	public function E403AjaxPage()
 	{
 		exit;
@@ -2218,9 +2465,18 @@ class e_admin_controller
 	{
 		$request = $this->getRequest();
 
-		if($mode) $request->setMode($mode);
-		if($action) $request->setAction($action);
-		if(!$path) $path = e_REQUEST_SELF;
+		if($mode)
+		{
+			$request->setMode($mode);
+		}
+		if($action)
+		{
+			$request->setAction($action);
+		}
+		if(!$path)
+		{
+			$path = e_REQUEST_SELF;
+		}
 		
 		//prevent cache
 		header('Cache-Control: private, no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
@@ -2245,7 +2501,7 @@ class e_admin_controller
 	 * @param string $action [optional]
 	 * @param string|array $exclude_query [optional]
 	 * @param string|array $merge_query [optional]
-	 * @return none
+	 * @return void
 	 */
 	public function redirectAction($action = null, $exclude_query = '', $merge_query = array())
 	{
@@ -2267,7 +2523,7 @@ class e_admin_controller
 		if(!$path && $this->getParam('modes'))
 		{
 			$modes = $this->getParam('modes');
-			if(vartrue($modes[$mode]) && vartrue($modes[$mode]['url']))
+			if(!empty($modes[$mode]) && !empty($modes[$mode]['url']))
 			{
 				$path = e107::getParser()->replaceConstants($modes[$mode]['url'], 'abs');
 			}
@@ -2285,7 +2541,10 @@ class e_admin_controller
 	 */
 	public function toMethodName($action_name, $type= 'page', $ajax = null)
 	{
-		if(null === $ajax) $ajax = e_AJAX_REQUEST; //auto-resolving
+		if($ajax === null)
+		{
+			$ajax = e_AJAX_REQUEST;
+		} //auto-resolving
 		return $action_name.($ajax ? 'Ajax' : '').ucfirst(strtolower($type));
 	}
 
@@ -2316,6 +2575,16 @@ class e_admin_controller
 		return $this->_default_action;
 	}
 
+
+	/**
+	 * @return string
+	 */
+	public function getDefaultTrigger()
+	{
+		return $this->_default_trigger;
+
+	}
+
 	/**
 	 * Set default action
 	 * @param string $action_name
@@ -2324,6 +2593,21 @@ class e_admin_controller
 	public function setDefaultAction($action_name)
 	{
 		$this->_default_action = $action_name;
+		return $this;
+	}
+
+
+		/**
+	 * Set default trigger
+	 * @param string|array $triggers 'auto' or array of triggers
+	 * @example $triggers['submit'] = array(LAN_UPDATE, 'update', $model->getId());
+				$triggers['submit'] = array(LAN_CREATE, 'create', 0);
+				$triggers['cancel'] = array(LAN_CANCEL, 'cancel');
+	 * @return e_admin_controller
+	 */
+	public function setDefaultTrigger($triggers)
+	{
+		$this->_default_trigger = $triggers;
 		return $this;
 	}
 
@@ -2347,6 +2631,11 @@ class e_admin_controller
 }
 
 //FIXME - move everything from e_admin_ui except model auto-create related code
+
+
+/**
+ *
+ */
 class e_admin_controller_ui extends e_admin_controller
 {
 
@@ -2355,6 +2644,8 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @var array UI field data
 	 */
 
+	/** @var string  */
+	protected $listQry;
 
 	protected $pid;
 
@@ -2364,6 +2655,12 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @var array default fields activated on List view
 	 */
 	protected $fieldpref = array();
+
+	/**
+	 * Custom Field (User) Preferences Name. (for viewable columns)
+	 * @var string
+	 */
+	protected $fieldPrefName = '';
 
 	/**
 	 * @var array Plugin Preference description array
@@ -2407,12 +2704,12 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @var string event name
 	 * base event trigger name to be used. Leave blank for no trigger. 
 	 */
-	protected $eventName = null;
+	protected $eventName;
 
 	/**
 	 * @var string
 	 */
-	protected $defaultOrderField = null;
+	protected $defaultOrderField;
 
 	/**
 	 * @var string
@@ -2422,22 +2719,27 @@ class e_admin_controller_ui extends e_admin_controller
 	/**
 	 * @var string SQL order, false to disable order, null is default order
 	 */
-	protected $listOrder = null;
+	protected $listOrder;
+
+	/**
+	 * @var string SQL group-by field name (optional)
+	 */
+	protected $listGroup;
 	
 	/**
 	 * @var string field containing the order number
 	 */
-	protected $sortField = null;
+	protected $sortField;
 
 	/**
 	 * @var string field containing the order number
 	 */
-	protected $treePrefix = null;
+	protected $treePrefix;
 
 	/**
 	 * @var string field containing the parent field
 	 */
-	protected $sortParent = null;
+	protected $sortParent;
 	
 	/**
 	 * @var int reorder step
@@ -2482,7 +2784,20 @@ class e_admin_controller_ui extends e_admin_controller
 	/**
 	 * @var Custom Filter SQL Query override.
 	 */
-	protected $filterQry = null;
+	protected $filterQry;
+
+	/**
+	 * Custom sorting of the filter list.
+	 * @var array
+	 */
+	protected $filterSort = array();
+
+
+	/**
+	 * Custom sorting of the batch list.
+	 * @var array
+	 */
+	protected $batchSort = array();
 
 	/**
 	 * @var boolean
@@ -2542,22 +2857,22 @@ class e_admin_controller_ui extends e_admin_controller
 	/**
 	 * @var e_admin_model
 	 */
-	protected $_model = null;
+	protected $_model;
 
 	/**
 	 * @var e_admin_tree_model
 	 */
-	protected $_tree_model = null;
+	protected $_tree_model;
 
 	/**
-	 * @var e_admin_tree_model
+	 * @var e_admin_form_ui
 	 */
-	protected $_ui = null;
+	protected $_ui;
 
 	/**
 	 * @var e_plugin_pref|e_core_pref
 	 */
-	protected $_pref = null;
+	protected $_pref;
 	
 	/**
 	 * Prevent parsing table aliases more than once
@@ -2570,38 +2885,59 @@ class e_admin_controller_ui extends e_admin_controller
 	 */
 	protected $afterSubmitOptions = true;
 
+	/**
+	 * @return bool
+	 */
 	public function getAfterSubmitOptions()
 	{
 		return $this->afterSubmitOptions;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function getBatchDelete()
 	{
 		return $this->batchDelete;
 	}
-	
+
+	/**
+	 * @return bool
+	 */
 	public function getBatchCopy()
 	{
 		return $this->batchCopy;
 	}
-    
-    
-    public function getBatchLink()
+
+
+	/**
+	 * @return bool
+	 */
+	public function getBatchLink()
     {
         return $this->batchLink;
     }
 
 
-    public function getBatchFeaturebox()
+	/**
+	 * @return bool
+	 */
+	public function getBatchFeaturebox()
     {
         return $this->batchFeaturebox;
     }
 
+	/**
+	 * @return bool
+	 */
 	public function getBatchExport()
     {
         return $this->batchExport;
     }
 
+	/**
+	 * @return array
+	 */
 	public function getBatchOptions()
 	{
 		return $this->batchOptions;
@@ -2616,6 +2952,21 @@ class e_admin_controller_ui extends e_admin_controller
 		return  $this->eventName;
 	}
 
+	/**
+	 * @return array
+	 */
+	public function getFilterSort()
+	{
+		return  $this->filterSort;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getBatchSort()
+	{
+		return  $this->batchSort;
+	}
 	
 	/**
 	 * @return string
@@ -2671,7 +3022,12 @@ class e_admin_controller_ui extends e_admin_controller
 		return $this->tabs;
 	}
 
-	public function addTab($key,$val)
+	/**
+	 * @param $key
+	 * @param $val
+	 * @return void
+	 */
+	public function addTab($key, $val)
 	{
 		$this->tabs[$key] = (string) $val;
 	}
@@ -2714,6 +3070,11 @@ class e_admin_controller_ui extends e_admin_controller
 		return $this->fields;
 	}
 
+	public function setFields($fields)
+	{
+		$this->fields = $fields;
+	}
+
 	/**
 	 *
 	 * @param string $field
@@ -2725,7 +3086,7 @@ class e_admin_controller_ui extends e_admin_controller
 	{
 		if(isset($this->fields[$field]))
 		{
-			if(null !== $key)
+			if($key !== null)
 			{
 				return isset($this->fields[$field][$key]) ? $this->fields[$field][$key] : $default;
 			}
@@ -2736,7 +3097,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 	/**
 	 *
-	 * @param string $field
+	 * @param string|array $field
 	 * @param string $key attribute name
 	 * @param mixed $value default value if not set, default is null
 	 * @return e_admin_controller_ui
@@ -2753,7 +3114,7 @@ class e_admin_controller_ui extends e_admin_controller
 			return $this;
 		}
 		// remove a field
-		if(null === $key)
+		if($key === null)
 		{
 			unset($this->fields[$field]);
 			return $this;
@@ -2768,7 +3129,7 @@ class e_admin_controller_ui extends e_admin_controller
 			return $this;
 		}
 		// remove attribute from field attribute set
-		if(null === $value && $key != 'type')
+		if($value === null && $key !== 'type')
 		{
 			unset($this->fields[$field][$key]);
 			return $this;
@@ -2796,6 +3157,9 @@ class e_admin_controller_ui extends e_admin_controller
 		return $this->prefs;
 	}
 
+	/**
+	 * @return array|int|mixed
+	 */
 	public function getPerPage()
 	{
 
@@ -2813,6 +3177,10 @@ class e_admin_controller_ui extends e_admin_controller
 		return $this->perPage;
 	}
 
+	/**
+	 * @param $key
+	 * @return array|mixed
+	 */
 	public function getGrid($key=null)
 	{
 		if($key !== null)
@@ -2824,22 +3192,34 @@ class e_admin_controller_ui extends e_admin_controller
 	}
 
 
+	/**
+	 * @return bool|e_admin_model
+	 */
 	public function getFormQuery()
 	{
 		return $this->formQuery;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getPrimaryName()
 	{
 		return $this->getModel()->getFieldIdName();
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function getDefaultOrderField()
 	{
 		return ($this->defaultOrder ? $this->defaultOrderField : $this->getPrimaryName());
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getDefaultOrder()
 	{
 		return ($this->defaultOrder ? $this->defaultOrder : 'asc');
@@ -2853,23 +3233,45 @@ class e_admin_controller_ui extends e_admin_controller
 	{
 		//global $user_pref;
 		// return vartrue($user_pref['admin_cols_'.$this->getTableName()], array());
-		return e107::getUser()->getPref('admin_cols_'.$this->getTableName(), array());
+
+		$name = (!empty($this->fieldPrefName)) ? strtolower($this->pluginName. '_' .$this->fieldPrefName) : $this->getTableName();
+
+		e107::getMessage()->addDebug('Loading Field Preferences using name: ' .$name);
+		$this->_log('Loading Field Preferences using name: ' .$name);
+		return e107::getUser()->getPref('admin_cols_'.$name, array());
 	}
 
 	/**
 	 * Set column preference array
 	 * @return boolean success
 	 */
-	public function setUserPref($new)
+	public function setUserPref($new, $name='')
 	{
 		//global $user_pref;
 		//e107::getUser()->getConfig()->setData($new);
 		//$user_pref['admin_cols_'.$this->getTableName()] = $new;
 		//$this->fieldpref = $new;
 		//return save_prefs('user');
-		$this->fieldpref = $new;
+		if(!empty($new))
+        {
+		    $this->fieldpref = $new;
+        }
+
+		if(empty($name))
+		{
+			$name = $this->getTableName();
+		}
+		else
+		{
+			$name = strtolower($this->pluginName. '_' .$name);
+		}
+
+        $msg = 'Saving User Field preferences using name: ' .$name;
+		e107::getMessage()->addDebug($msg);
+		$this->_log($msg);
+
 		return e107::getUser()->getConfig()
-			->set('admin_cols_'.$this->getTableName(), $new)
+			->set('admin_cols_'.$name, $new)
 			->save();
 	}
 
@@ -2880,7 +3282,7 @@ class e_admin_controller_ui extends e_admin_controller
 	 */
 	public function getModel()
 	{
-		if(null === $this->_model)
+		if($this->_model === null)
 		{
 			$this->_setModel();
 		}
@@ -2903,9 +3305,16 @@ class e_admin_controller_ui extends e_admin_controller
 			return null;
 		}
 
-		if($this->getAction() === 'list' || $this->getAction() === 'grid')
+		$action = $this->getAction();
+		if($action === 'list' || $action === 'grid')
 		{
-			return $this->getListModel()->get($key);
+			$obj = $this->getListModel();
+			if(is_object($obj))
+			{
+				return $obj->get($key);
+			}
+
+			return null;
 		}
 
 		return $this->getModel()->get($key);
@@ -2950,10 +3359,18 @@ class e_admin_controller_ui extends e_admin_controller
 	 */
 	public function getTableName($alias = false, $prefix = false)
 	{
-		if($alias) return ($this->tableAlias ? $this->tableAlias : '');
+		if($alias)
+		{
+			return ($this->tableAlias ? $this->tableAlias : '');
+		}
 		return ($prefix ? '#' : '').$this->getModel()->getModelTable();
 	}
 
+	/**
+	 * @param $prefix
+	 * @param $quote
+	 * @return string
+	 */
 	public function getIfTableAlias($prefix = false, $quote = false) //XXX May no longer by useful. see joinAlias()
 	{
 		$alias = $this->getTableName(true);
@@ -2972,20 +3389,25 @@ class e_admin_controller_ui extends e_admin_controller
 	 */
 	public function getJoinData($table = null, $att_name = null, $default_att = null)
 	{		
-		if(null === $table)
+		if($table === null)
 		{
 			return $this->tableJoin;
 		}
-		if(null === $att_name)
+		if($att_name === null)
 		{
 			return (isset($this->tableJoin[$table]) ? $this->tableJoin[$table] : array());
 		}
 		return (isset($this->tableJoin[$table][$att_name]) ? $this->tableJoin[$table][$att_name] : $default_att);
 	}
 
+	/**
+	 * @param $table
+	 * @param $data
+	 * @return $this
+	 */
 	public function setJoinData($table, $data) //XXX - DEPRECATE?
 	{
-		if(null === $data)
+		if($data === null)
 		{
 			unset($this->tableJoin[$table]);
 			return $this;
@@ -3009,13 +3431,87 @@ class e_admin_controller_ui extends e_admin_controller
 	 */
 	public function getTreeModel()
 	{
-		if(null === $this->_tree_model)
+		if($this->_tree_model === null)
 		{
 			$this->_setTreeModel();
 		}
 
 		return $this->_tree_model;
 	}
+
+	/**
+	 * Get ordered models by their parents
+	 * add extra
+	 * @lonalore
+	 * @return e_admin_tree_model
+	 */
+	public function getTreeModelSorted()
+	{
+		$tree = $this->getTreeModel();
+
+		$parentField = $this->getSortParent();
+		$orderField = $this->getSortField();
+
+		$arr = array();
+		/**
+		 * @var  $id
+		 * @var e_tree_model $model
+		 */
+		foreach ($tree->getTree() as $id => $model)
+		{
+			$parent = $model->get($parentField);
+			$order = $model->get($orderField);
+
+			$model->set('_depth', '9999'); // include extra field in output, just as the MySQL function did.
+
+
+			$arr[$id] = $model;
+		}
+
+
+	//	usort($arr); array_multisort() ?
+
+		$tree->setTree($arr,true); // set the newly ordered tree.
+
+	//	var_dump($arr);
+
+		return $this->_tree_model;
+	}
+
+
+	/**
+	 * @lonalore - found online.
+	 * @param string $idField       The item's ID identifier (required)
+	 * @param string $parentField   The item's parent identifier (required)
+	 * @param array $els            The array (required)
+	 * @param int   $parentID       The parent ID for which to sort (internal)
+	 * @param array $result         The result set (internal)
+	 * @param int   $depth          The depth (internal)
+	 * @return array
+	 */
+	public function parentChildSort_r($idField, $parentField, $els=array(), $parentID = 0, &$result = array(), &$depth = 0)
+	{
+	    foreach ($els as $key => $value)
+	    {
+	        if ($value[$parentField] == $parentID)
+	        {
+	            $value['depth'] = $depth;
+	            array_push($result, $value);
+	            unset($els[$key]);
+	            $oldParent = $parentID;
+	            $parentID = $value[$idField];
+	            $depth++;
+	            $this->parentChildSort_r($idField,$parentField, $els, $parentID, $result, $depth);
+	            $parentID = $oldParent;
+	            $depth--;
+	        }
+	    }
+
+	    return $result;
+	}
+
+
+
 
 	/**
 	 * Set controller tree model
@@ -3040,6 +3536,10 @@ class e_admin_controller_ui extends e_admin_controller
 		return e107::getRegistry('core/adminUI/currentListModel');
 	}
 
+	/**
+	 * @param $model
+	 * @return $this
+	 */
 	public function setListModel($model)
 	{
 		e107::setRegistry('core/adminUI/currentListModel', $model);
@@ -3062,7 +3562,7 @@ class e_admin_controller_ui extends e_admin_controller
 	 */
 	public function getUI()
 	{
-		if(null === $this->_ui)
+		if($this->_ui === null)
 		{
 			$this->_setUI();
 		}
@@ -3095,7 +3595,7 @@ class e_admin_controller_ui extends e_admin_controller
 	 */
 	public function getConfig()
 	{
-		if(null === $this->_pref)
+		if($this->_pref === null)
 		{
 			$this->_setConfig();
 		}
@@ -3108,13 +3608,14 @@ class e_admin_controller_ui extends e_admin_controller
 	 */
 	public function setConfig($config)
 	{
-		$this->_prefs = $config;
+		$this->_prefs = $config; // XXX Discuss.
 		return $this;
 	}
 
 
 	/**
 	 * @param $val
+	 * @return e_admin_controller_ui
 	 */
 	public function setBatchDelete($val)
 	{
@@ -3123,9 +3624,9 @@ class e_admin_controller_ui extends e_admin_controller
 	}
 
 
-
 	/**
 	 * @param $val
+	 * @return e_admin_controller_ui
 	 */
 	public function setBatchCopy($val)
 	{
@@ -3145,8 +3646,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 	/**
 	 * Manage column visibility
-	 * @param string $batch_trigger
-	 * @return none
+	 * @return null
 	 */
 	public function manageColumns()
 	{
@@ -3154,16 +3654,18 @@ class e_admin_controller_ui extends e_admin_controller
 		$posted = $this->getPosted('e-columns', array());
 		foreach ($this->getFields() as $field => $attr)
 		{
-			if((vartrue($attr['forced']) || in_array($field, $posted)) && !vartrue($attr['nolist']))
+			if((/*vartrue($attr['forced']) || */ in_array($field, $posted)) && !vartrue($attr['nolist']))
 			{
 				$cols[] = $field;
 				continue;
 			}
 		}
 
-		if($cols)
+		// Alow for an empty array to be saved also, to reset to default.
+	    if($this->getPosted('etrigger_ecolumns', false)) // Column Save Button
 		{
-			$this->setUserPref($cols);
+			$this->setUserPref($cols, $this->fieldPrefName);
+			e107::getMessage()->addDebug('User Field Preferences Saved: ' .print_a($cols,true));
 		}
 	}
 
@@ -3182,30 +3684,23 @@ class e_admin_controller_ui extends e_admin_controller
 		$selected = array_values($this->getPosted($multi_name, array()));
 		$trigger = $tp->toDB(explode('__', $batch_trigger));
 
-		if(empty($selected) && !$this->getPosted('etrigger_delete_confirm')) // it's a delete batch, confirm screen
-		{
-			$params = $this->getFieldAttr($trigger[1], 'writeParms', array());
-			if(!is_array($params)) parse_str($params, $params);
-			if(!vartrue($params['batchNoCheck']))
-			{
-				return $this;
-			}
-		}
-		
-		if($selected)
+		if(!empty($selected))
 		{
 			foreach ($selected as $i => $_sel) 
 			{
-				$selected[$i] = preg_replace('/[^\w-:.]/', '', $_sel);
+				$selected[$i] = preg_replace('/[^\w\-:.]/', '', $_sel);
 			}
 		}
 
-		if(substr($batch_trigger, 0, 6) === 'batch_')
+		// XXX An empty selection should always be permitted for custom batch methods which may apply changes to all records, not only selected ones.
+
+
+		if(strpos($batch_trigger, 'batch_') === 0)
 		{
-			list($tmp,$plugin,$command) = explode("_",$batch_trigger,3);
+			list($tmp,$plugin,$command) = explode('_',$batch_trigger,3);
 			$this->setPosted(array());
 			$this->getRequest()->setAction('batch');
-			$cls = e107::getAddon($plugin,'e_admin',true);
+			$cls = e107::getAddon($plugin,'e_admin');
 			e107::callMethod($cls,'process',$this,array('cmd'=>$command,'ids'=>$selected));
 			return $this;
 		}
@@ -3229,7 +3724,10 @@ class e_admin_controller_ui extends e_admin_controller
 				$value = $trigger[2];
 
 				//handleListBatch(); for custom handling of all field names
-				if(empty($selected)) return $this;
+				if(empty($selected))
+				{
+					return $this;
+				}
 				$method = 'handle'.$actionName.'SefgenBatch';
 				if(method_exists($this, $method)) // callback handling
 				{
@@ -3239,7 +3737,10 @@ class e_admin_controller_ui extends e_admin_controller
 
 
 			case 'export':
-				if(empty($selected)) return $this;
+				if(empty($selected))
+				{
+					return $this;
+				}
 				$method = 'handle'.$actionName.'ExportBatch';
 				if(method_exists($this, $method)) // callback handling
 				{
@@ -3248,10 +3749,24 @@ class e_admin_controller_ui extends e_admin_controller
 
 			break;
 
-			case 'delete': //FIXME - confirmation popup
+			case 'delete':
 				//method handleListDeleteBatch(); for custom handling of 'delete' batch
 				// if(empty($selected)) return $this;
 				// don't check selected data - subclass need to check additional post variables(confirm screen)
+
+				if(empty($selected) && !$this->getPosted('etrigger_delete_confirm')) // it's a delete batch, confirm screen
+				{
+					$params = $this->getFieldAttr($trigger[1], 'writeParms', array());
+					if(!is_array($params))
+					{
+						parse_str($params, $params);
+					}
+					if(!vartrue($params['batchNoCheck']))
+					{
+						return $this;
+					}
+				}
+
 				$method = 'handle'.$actionName.'DeleteBatch';
 				if(method_exists($this, $method)) // callback handling
 				{
@@ -3260,7 +3775,10 @@ class e_admin_controller_ui extends e_admin_controller
 			break;
 
 			case 'bool':
-				if(empty($selected)) return $this;
+				if(empty($selected))
+				{
+					return $this;
+				}
 				$field = $trigger[1];
 				$value = $trigger[2] ? 1 : 0;
 				//something like handleListBoolBatch(); for custom handling of 'bool' batch
@@ -3272,7 +3790,10 @@ class e_admin_controller_ui extends e_admin_controller
 			break;
 
 			case 'boolreverse':
-				if(empty($selected)) return $this;
+				if(empty($selected))
+				{
+					return $this;
+				}
 				$field = $trigger[1];
 				//something like handleListBoolreverseBatch(); for custom handling of 'boolreverse' batch
 				$method = 'handle'.$actionName.'BoolreverseBatch';
@@ -3287,17 +3808,30 @@ class e_admin_controller_ui extends e_admin_controller
 			case 'deattach':
 			case 'addAll':
 			case 'clearAll':
+				if(empty($selected))
+				{
+					return $this;
+				}
 				$field = $trigger[1];
 				$value = $trigger[2];
 				
 				if($trigger[0] === 'addAll')
 				{
 					$parms = $this->getFieldAttr($field, 'writeParms', array());
-					if(!is_array($parms)) parse_str($parms, $parms);
+					if(!is_array($parms))
+					{
+						parse_str($parms, $parms);
+					}
 					unset($parms['__options']);
 					$value = $parms;
-					if(empty($value)) return $this;
-					if(!is_array($value)) $value = array_map('trim', explode(',', $value));
+					if(empty($value))
+					{
+						return $this;
+					}
+					if(!is_array($value))
+					{
+						$value = array_map('trim', explode(',', $value));
+					}
 				}
 				
 				if(method_exists($this, 'handleCommaBatch')) 
@@ -3309,7 +3843,10 @@ class e_admin_controller_ui extends e_admin_controller
 			// append to userclass list
 			case 'ucadd':
 			case 'ucremove':
-				//if(empty($selected)) return $this;
+				if(empty($selected))
+				{
+					return $this;
+				}
 				$field = $trigger[1];
 				$class = $trigger[2];
 				$user = e107::getUser();
@@ -3332,12 +3869,22 @@ class e_admin_controller_ui extends e_admin_controller
 			// clear userclass list
 			case 'ucaddall':
 			case 'ucdelall':
+				if(empty($selected))
+				{
+					return $this;
+				}
 				$field = $trigger[1];
 				$user = e107::getUser();
 				$e_userclass = e107::getUserClass(); 
 				$parms = $this->getFieldAttr($field, 'writeParms', array());
-				if(!is_array($parms)) parse_str($parms, $parms);
-				if(!vartrue($parms['classlist'])) return $this;
+				if(!is_array($parms))
+				{
+					parse_str($parms, $parms);
+				}
+				if(!vartrue($parms['classlist']))
+				{
+					return $this;
+				}
 				
 				$classes = $e_userclass->uc_required_class_list($parms['classlist']);
 				foreach ($classes as $id => $label) 
@@ -3350,15 +3897,22 @@ class e_admin_controller_ui extends e_admin_controller
 						unset($classes[$id],$msg);
 					}
 				}
-				$this->handleCommaBatch($selected, $field, array_keys($classes), $trigger[0] === 'ucdelall' ? 'clearAll' : 'addAll');
+				if(method_exists($this, 'handleCommaBatch'))
+				{
+					$this->handleCommaBatch($selected, $field, array_keys($classes), $trigger[0] === 'ucdelall' ? 'clearAll' : 'addAll');
+				}
 			break;
-			
+
+			// handleListCopyBatch etc.
 			default:
 				$field = $trigger[0];
 				$value = $trigger[1];
 
 				//something like handleListUrlTypeBatch(); for custom handling of 'url_type' field name
 				$method = 'handle'.$actionName.$this->getRequest()->camelize($field).'Batch';
+
+				e107::getMessage()->addDebug('Searching for custom batch method: ' .$method. '(' .$selected. ',' .$value. ')');
+
 				if(method_exists($this, $method)) // callback handling
 				{
 					$this->$method($selected, $value);
@@ -3366,8 +3920,9 @@ class e_admin_controller_ui extends e_admin_controller
 				}
 
 				//handleListBatch(); for custom handling of all field names
-				if(empty($selected)) return $this;
+				//if(empty($selected)) return $this;
 				$method = 'handle'.$actionName.'Batch';
+				e107::getDebug()->log('Checking for batch method: ' .$method);
 				if(method_exists($this, $method))
 				{
 					$this->$method($selected, $field, $value);
@@ -3382,7 +3937,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 	/**
 	 * Handle requested filter dropdown value
-	 * @param string $value
+	 * @param string $filter_value
 	 * @return array field -> value
 	 */
 	protected function _parseFilterRequest($filter_value)
@@ -3392,51 +3947,74 @@ class e_admin_controller_ui extends e_admin_controller
 		{
 			return array();
 		}
-		$filter = $tp->toDB(explode('__', $filter_value));
+		$filter = (array) $tp->toDB(explode('__', $filter_value));
 		$res = array();
 		switch($filter[0])
 		{
 			case 'bool':
 				// direct query
 				$res = array($filter[1], $filter[2]);
+				$this->_log('listQry Filtered by ' .$filter[1]. ' (' .($filter[2] ? 'true': 'false'). ')');
 			break;
 			
 			case 'datestamp':
 							
+				//XXX DO NOT TRANSLATE THESE VALUES!
 				$dateConvert = array(
-					"hour"	=> LAN_UI_FILTER_PAST_HOUR,//"1 hour ago",//etc
-					"day"	=> LAN_UI_FILTER_PAST_24_HOURS,
-					"week"	=> LAN_UI_FILTER_PAST_WEEK,
-					"month"	=> LAN_UI_FILTER_PAST_MONTH,
-					"year"	=> LAN_UI_FILTER_PAST_YEAR
+					'hour'    => '1 hour ago',
+					'day'     => '24 hours ago',
+					'week'    => '1 week ago',
+					'today'     => 'today midnight',
+					'thisweek' => 'monday this week midnight',
+					'thismonth' => 'first day of this month midnight',
+					'thisyear' => 'first day of January midnight',
+					'month'   => '1 month ago',
+					'month3'  => '3 months ago',
+					'month6'  => '6 months ago',
+					'month9'  => '9 months ago',
+					'year'    => '1 year ago',
+					'nhour'   => 'now + 1 hour',
+					'nday'    => 'now + 24 hours',
+					'nweek'   => 'now + 1 week',
+					'nmonth'  => 'now + 1 month',
+					'nmonth3' => 'now + 3 months',
+					'nmonth6' => 'now + 6 months',
+					'nmonth9' => 'now + 9 months',
+					'nyear'   => 'now + 1 year',
 				);
 				
 				$ky = $filter[2];
 				$time = vartrue($dateConvert[$ky]);
 				$timeStamp = strtotime($time);
-				
+
 				$res = array($filter[1], $timeStamp);
+			//	e107::getMessage()->addDebug('Date: '.date('c', $timeStamp));
+				$this->_log('listQry Filtered by ' .$filter[1]. ' (' .$time. ')');
 				
 			break;
 
 			default:
 				//something like handleListUrlTypeFilter(); for custom handling of 'url_type' field name filters
 				$method = 'handle'.$this->getRequest()->getActionName().$this->getRequest()->camelize($filter[0]).'Filter';
+				$args = array_slice($filter, 1);
+
+				e107::getMessage()->addDebug('Searching for custom filter method: ' .$method. '(' .implode(', ', $args). ')');
+
+
 				if(method_exists($this, $method)) // callback handling
 				{
 					//return $this->$method($filter[1], $selected); selected?
 					// better approach - pass all values as method arguments
 					// NOTE - callbacks are allowed to return QUERY as a string, it'll be added in the WHERE clause
-					$args = array_slice($filter, 1);
+
 					e107::getMessage()->addDebug('Executing filter callback <strong>'.get_class($this).'::'.$method.'('.implode(', ', $args).')</strong>');
 
 					return call_user_func_array(array($this, $method), $args);
 				}
-				else // default handling
-				{
-					$res = array($filter[0], $filter[1]);
-				}
-			break;
+
+				$res = array($filter[0], $filter[1]);
+				$this->_log('listQry Filtered by ' .$filter[0]. ' (' .$filter[1]. ')');
+				break;
 		}
 
 		//print_a($res);
@@ -3459,7 +4037,7 @@ class e_admin_controller_ui extends e_admin_controller
 		{
 			$value = vartrue($attributes['dataPath']) ? $model->getData($attributes['dataPath'])  : $model->get($key);
 
-			if(null === $value)
+			if($value === null)
 			{
 				continue;
 			}
@@ -3476,6 +4054,7 @@ class e_admin_controller_ui extends e_admin_controller
 			
 			
 				case 'datestamp':
+					$opt = array();
 					if(!is_numeric($value))
 					{
 						if(!empty($attributes['writeParms']))
@@ -3491,8 +4070,12 @@ class e_admin_controller_ui extends e_admin_controller
 						}
 
 						
-						$format = $opt['type'] ? ('input'.$opt['type']) : 'inputdate';
-						$value = trim($value) ? e107::getDate()->toTime($value, $format) : 0;
+						$format = !empty($opt['type']) ? ('input'.$opt['type']) : 'inputdate';
+
+						if($attributes['data'] !== false)
+						{
+							$value = trim($value) ? e107::getDate()->toTime($value, $format) : 0;
+						}
 					}
 				break;
 
@@ -3541,7 +4124,7 @@ class e_admin_controller_ui extends e_admin_controller
 			}
 */
 	
-			if(vartrue($attributes['dataPath']))
+			if(!empty($attributes['dataPath']))
 			{
 				$model->setData($attributes['dataPath'], $value);
 			}
@@ -3572,10 +4155,14 @@ class e_admin_controller_ui extends e_admin_controller
 	 *
 	 * @param integer $id optional, needed only if redirect action is 'edit'
 	 * @param string $noredirect_for don't redirect if action equals to its value
+	 * @return null
 	 */
 	protected function doAfterSubmit($id = 0, $noredirect_for = '')
 	{
-		if(e_AJAX_REQUEST) return;
+		if(e_AJAX_REQUEST)
+		{
+			return;
+		}
 		
 		if($noredirect_for && $noredirect_for == $this->getPosted('__after_submit_action') && $noredirect_for == $this->getAction())
 		{
@@ -3598,7 +4185,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 			default:
 				$choice = explode('|', str_replace('{ID}', $id, $choice), 3);
-				$this->redirectAction(preg_replace('/[^\w-:.]/', '', $choice[0]), vartrue($choice[1]), vartrue($choice[2]));
+				$this->redirectAction(preg_replace('/[^\w\-:.]/', '', $choice[0]), vartrue($choice[1]), vartrue($choice[2]));
 			break;
 		}
 		return;
@@ -3622,6 +4209,7 @@ class e_admin_controller_ui extends e_admin_controller
 		{
 			// Build query
 			$qry = $this->_modifyListQry(false, true, 0, 20, $listQry);
+			$this->_log('Filter ListQry: ' .$qry);
 			//file_put_contents(e_LOG.'uiAjaxResponseSQL.log', $qry."\n\n", FILE_APPEND);
 
 			// Make query
@@ -3640,7 +4228,10 @@ class e_admin_controller_ui extends e_admin_controller
 							continue;
 						}
 						preg_match('#[\S]*('.$srch.')[\S]*#i', $w, $tmp1);
-						if($tmp1[0]) $reswords[] = $tmp1[0];
+						if($tmp1[0])
+						{
+							$reswords[] = $tmp1[0];
+						}
 					}
 				}
 			}
@@ -3661,20 +4252,37 @@ class e_admin_controller_ui extends e_admin_controller
 	/**
 	 * Given an alias such as 'u' or 'n.news_datestamp' -  will return the associated table such as 'user' or 'news'
 	 */
-	function getTableFromAlias($alias)
+	public function getTableFromAlias($alias)
 	{
-		if(strpos($alias,".")!==false)
+		if(strpos($alias, '.')!==false)
 		{
-			list($alias,$tmp) = explode(".",$alias,2);	
+			list($alias,$tmp) = explode('.',$alias,2);
 		}
 				
 		$tmp = array_flip($this->joinAlias);
 		return vartrue($tmp[$alias]);			
 	}
 
-	function getJoinField($field)
+	/**
+	 * @param $field
+	 * @return array|false|mixed
+	 */
+	public function getJoinField($field=null)
 	{
+		if(empty($field))
+		{
+			return $this->joinField;
+		}
+
 		return isset($this->joinField[$field]) ? $this->joinField[$field] : false; // vartrue($this->joinField[$field],false);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getJoinAlias()
+	{
+		return $this->joinAlias;
 	}
 
 	/**
@@ -3683,9 +4291,12 @@ class e_admin_controller_ui extends e_admin_controller
 	 */
 	protected function parseAliases()
 	{
-		if($this->_alias_parsed) return $this; // already parsed!!!
+		if($this->_alias_parsed)
+		{
+			return $this;
+		} // already parsed!!!
 
-		$this->joinAlias(); // generate Table Aliases from listQry
+		$this->joinAlias($this->listQry); // generate Table Aliases from listQry
 		
 		if($this->getJoinData())
 		{
@@ -3733,7 +4344,7 @@ class e_admin_controller_ui extends e_admin_controller
 				$att['field'] = $tmp[1];
 				$att['__tableField'] = $field;
 				$att['__tablePath'] = $att['alias'].'.';
-				$att['__tableFrom'] = "`#".$table."`.".$tmp[1];//." AS ".$att['alias'];
+				$att['__tableFrom'] = '`#' .$table. '`.' .$tmp[1];//." AS ".$att['alias'];
 				$field = $att['alias'] ? $tmp[1] : $tmp[0];
 
 				$fields[$field] = $att;
@@ -3742,7 +4353,7 @@ class e_admin_controller_ui extends e_admin_controller
 			else
 			{
 
-				$att['table'] = $this->getIfTableAlias(false);
+				$att['table'] = $this->getIfTableAlias();
 				
 				if($newField = $this->getJoinField($field)) // Auto-Detect. 
 				{
@@ -3751,26 +4362,26 @@ class e_admin_controller_ui extends e_admin_controller
 					$att['alias'] = $newField;
 					$att['__tableField'] = $newField;	
 					// $att['__tablePath'] = $newField; ????!!!!!
-					$att['__tableFrom'] = "`#".$table."`.".$field;//." AS ".$newField;
+					$att['__tableFrom'] = '`#' .$table. '`.' .$field;//." AS ".$newField;
 				}			
-				elseif(isset($this->joinAlias[$this->table]) && $field !='checkboxes' && $field !='options')
+				elseif(isset($this->joinAlias[$this->table]) && $field !== 'checkboxes' && $field !== 'options')
 				{
-					$att['alias'] = $this->joinAlias[$this->table].".".$field;
+					$att['alias'] = $this->joinAlias[$this->table]. '.' .$field;
 				}
 				else
 				{
-					$att['alias'] = "";
+					$att['alias'] = '';
 				}
 				$att['field'] = $field;
 				$fields[$field] = $att;
 			}
 
-			if($fields[$field]['table'] == $this->getIfTableAlias(false))
+			if($fields[$field]['table'] == $this->getIfTableAlias())
 			{
 				$fields[$field]['__tableField'] = $att['alias'] ? $att['alias'] : $this->getIfTableAlias(true, true).'.'.$att['field'];
 				$fields[$field]['__tableFrom'] = $this->getIfTableAlias(true, true).'.'.$att['field'].($att['alias'] ? ' AS '.$att['alias'] : '');
 			}
-			else
+		//	else
 			{
 		//		$fields[$field]['__tableField'] = $this->getJoinData($fields[$field]['table'], '__tablePath').$field;
 			}
@@ -3806,31 +4417,35 @@ class e_admin_controller_ui extends e_admin_controller
 	 *  Generate array of table names and their alias - auto-detected from listQry;
 	 *  eg. $listQry = "SELECT m.*, u.user_id,u.user_name FROM #core_media AS m LEFT JOIN #user AS u ON m.media_author = u.user_id";
 	 */
-	protected function joinAlias()
+	public function joinAlias($listQry=null)
 	{
-		if($this->listQry)
+		if(!empty($listQry))
 		{
-			preg_match_all("/`?#([\w-]+)`?\s*(as|AS)\s*([\w-])/im",$this->listQry,$matches);
+			preg_match_all("/`?#([\w-]+)`?\s*(as|AS)\s*([\w-]+)/im",$listQry,$matches);
 			$keys = array();
 			foreach($matches[1] AS $k=>$v)
 			{
-				if(varset($matches[3][$k]))
+				if(!array_key_exists($v, $this->joinAlias) && !empty($matches[3][$k]))
 				{
 					$this->joinAlias[$v] = $matches[3][$k]; // array. eg $this->joinAlias['core_media'] = 'm';
 				}
 				
 				$keys[] = $matches[3][$k];
 			}
-			
+
 			foreach($keys as $alias)
 			{
-				preg_match_all("/".$alias."\.([\w]*)/i",$this->listQry,$match);
+				preg_match_all('/' .$alias."\.([\w]*)/i",$listQry,$match);
 				foreach($match[1] as $k=>$m)
 				{
+					if(empty($m))
+					{
+						continue;
+					}
 					$this->joinField[$m] = $match[0][$k];		
 				}					
 			}
-			
+
 		}
 		elseif($this->tableJoin)
 		{
@@ -3849,7 +4464,8 @@ class e_admin_controller_ui extends e_admin_controller
 				}
 			}
 		}
-		
+
+
 	}
 
 	/**
@@ -3864,7 +4480,7 @@ class e_admin_controller_ui extends e_admin_controller
 			
 		if(strpos($qry,'`')===false && strpos($qry, 'JOIN')===false) 
 		{
-			$ret = preg_replace("/FROM\s*(#[\w]*)/","FROM `$1`", $qry);  // backticks missing, so add them. 
+			$ret = preg_replace("/FROM\s*(#[\w]*)/", 'FROM `$1`', $qry);  // backticks missing, so add them.
 						
 			if($ret)
 			{
@@ -3876,443 +4492,91 @@ class e_admin_controller_ui extends e_admin_controller
 		return $qry; 
 	}
 
-
-	// TODO - abstract, array return type, move to parent?
-	protected function _modifyListQry($raw = false, $isfilter = false, $forceFrom = false, $forceTo = false, $listQry = '')
+	/**
+	 * Fix search string by replacing the commonly used '*' wildcard
+	 * with the mysql represenation of it '%' and '?' with '_' (single character)
+	 *
+	 * @param string $search
+	 * @return string
+	 */
+	protected function fixSearchWildcards($search)
 	{
-		$searchQry = array();
-		$filterFrom = array();
-		$request  = $this->getRequest();
-		$tp = e107::getParser();
-		$tablePath = $this->getIfTableAlias(true, true).'.';
-		$tableFrom = '`'.$this->getTableName(false, true).'`'.($this->getTableName(true) ? ' AS '.$this->getTableName(true) : '');
-		$tableSFieldsArr = array(); // FROM for main table
-		$tableSJoinArr = array(); // FROM for join tables
-		$filter = array();
-
-
-		$searchQuery = $tp->toDB($request->getQuery('searchquery', ''));
-		$searchFilter = $this->_parseFilterRequest($request->getQuery('filter_options', ''));
-		
-		if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
+		$search = trim($search);
+		if (empty($search))
 		{
-			e107::getMessage()->addDebug('searchQuery: <b>'.$searchQuery.'</b>'); 
+			return '';
 		}
 
-		if($searchFilter && is_array($searchFilter))
+		// strip wildcard on the beginning and the end
+		while (strpos($search, '*') === 0)
 		{
-
-			list($filterField, $filterValue) = $searchFilter;
-			
-			if($filterField && $filterValue !== '' && isset($this->fields[$filterField]))
-			{
-				$_dataType = $this->fields[$filterField]['data'];
-				$_fieldType = $this->fields[$filterField]['type'];
-
-				if($_fieldType === 'comma' || $_fieldType === 'checkboxes' || $_fieldType === 'userclasses' || ($_fieldType === 'dropdown' && !empty($this->fields[$filterField]['writeParms']['multiple'])))
-				{
-					 $_dataType = 'set';
-				}
-
-				switch ($_dataType)
-				{
-					case 'set':
-						$searchQry[] = "FIND_IN_SET('".$tp->toDB($filterValue)."', ".$this->fields[$filterField]['__tableField'].")";
-					break;
-					
-					case 'int':
-					case 'integer':
-						if($_fieldType === 'datestamp') // Past Month, Past Year etc.
-						{
-							$searchQry[] = $this->fields[$filterField]['__tableField']." > ".intval($filterValue);	
-						}
-						else 
-						{
-							$searchQry[] = $this->fields[$filterField]['__tableField']." = ".intval($filterValue);	
-						}		
-					break;
-					
-					
-					
-					default: // string usually. 
-
-						if($filterValue === '_ISEMPTY_')
-						{
-							$searchQry[] = $this->fields[$filterField]['__tableField']." = '' ";
-						}
-						else
-						{
-
-							if($_fieldType === 'method') // More flexible filtering.
-							{
-
-								$searchQry[] = $this->fields[$filterField]['__tableField']." LIKE \"%".$tp->toDB($filterValue)."%\"";		
-							}
-							else
-							{
-
-								$searchQry[] = $this->fields[$filterField]['__tableField']." = '".$tp->toDB($filterValue)."'";	
-							}
-						}
-						
-						//exit;
-					break;
-				}
-				
-			}
-				//echo 'type= '. $this->fields[$filterField]['data'];
-					//	print_a($this->fields[$filterField]);
+			$search = substr($search, 1);
 		}
-		elseif($searchFilter && is_string($searchFilter))
+		while (substr($search, -1) === '*')
 		{
-			
-			// filter callbacks could add to WHERE clause
-			$searchQry[] = $searchFilter;
+			$search = substr($search, 0, -1);
 		}
 
-	if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
+		if(strpos($search,'&quot')===0 || strpos($search,'&#039;')===0)
 		{
-			e107::getMessage()->addDebug(print_a($searchQry,true));
-		}
-
-
-		// main table should select everything
-		$tableSFieldsArr[] = $tablePath.'*';
-		foreach($this->getFields() as $key => $var)
-		{
-			// disabled or system
-			if((!empty($var['nolist']) && empty($var['filter'])) || empty($var['type']) || empty($var['data']))
-			{
-				continue;
-			}
-
-			// select FROM... for main table
-			if(!empty($var['alias']) && !empty($var['__tableField']))
-			{
-				$tableSFieldsArr[] = $var['__tableField'];
-			}
-
-			// filter for WHERE and FROM clauses
-			$searchable_types = array('text', 'textarea', 'bbarea', 'url', 'ip', 'tags', 'email', 'int', 'integer', 'str', 'string', 'number'); //method? 'user',
-			
-			if($var['type'] === 'method' && !empty($var['data']) && ($var['data'] === 'string' || $var['data'] === 'str'))
-			{
-				$searchable_types[] = 'method';
-			}
-			
-			if(trim($searchQuery) !== '' && in_array($var['type'], $searchable_types) && $var['__tableField'])
-			{
-				if($var['data'] === 'int' || $var['data'] === 'integer' ||  $var['type'] === 'int' || $var['type'] === 'integer')
-				{
-					if(is_numeric($searchQuery))
-					{
-						$filter[] = $var['__tableField']." = ".$searchQuery;
-					}
-					continue;
-				}
-
-				if($var['type'] === 'ip')
-				{
-					$ipSearch = e107::getIpHandler()->ipEncode($searchQuery);
-					if(!empty($ipSearch))
-					{
-						$filter[] = $var['__tableField']." LIKE '%".$ipSearch."%'";
-					}
-					// Continue below for BC check also.
-				}
-							
-				$filter[] = $var['__tableField']." LIKE '%".$searchQuery."%'";
-
-
-				if($isfilter)
-				{
-					$filterFrom[] = $var['__tableField'];
-
-				}
-			}
-		}
-
-		if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
-		{
-		//	e107::getDebug()->log(print_a($filter,true));
-			// e107::getMessage()->addInfo(print_a($filter,true));
-		}
-
-		if($isfilter)
-		{
-			if(!$filterFrom) return false;
-			$tableSFields = implode(', ', $filterFrom);
+			$search = str_replace(['&quot;','&#039;'],'',$search);
 		}
 		else
 		{
-			$tableSFields = $tableSFieldsArr ? implode(', ', $tableSFieldsArr) : $tablePath.'*';
+			$search = str_replace(' ','|',$search);
 		}
 
 
-		$jwhere = array();
-		$joins = array();
-		//file_put_contents(e_LOG.'uiAjaxResponseSFields.log', $tableSFields."\n\n", FILE_APPEND);
-		//file_put_contents(e_LOG.'uiAjaxResponseFields.log', print_r($this->getFields(), true)."\n\n", FILE_APPEND);
-		if($this->getJoinData())
-		{
-			$qry = "SELECT SQL_CALC_FOUND_ROWS ".$tableSFields;
-			foreach ($this->getJoinData() as $jtable => $tparams)
-			{
-				// Select fields
-				if(!$isfilter)
-				{
-					$fields = vartrue($tparams['fields']);
-					if('*' === $fields)
-					{
-						$tableSJoinArr[] = "{$tparams['__tablePath']}*";
-					}
-					elseif($fields)
-					{
-						$tableSJoinArr[] = $fields;
-						/*$fields = explode(',', $fields);
-						foreach ($fields as $field)
-						{
-							$qry .= ", {$tparams['__tablePath']}`".trim($field).'`';
-						}*/
-					}
-				}
+		// replace "*" wildcard with mysql wildcard "%"
+		return str_replace(array('*', '?'), array('%', '_'), $search);
+	}
 
-				// Prepare Joins
-				$joins[] = "
-					".vartrue($tparams['joinType'], 'LEFT JOIN')." {$tparams['__tableFrom']} ON ".(vartrue($tparams['leftTable']) ? $tparams['leftTable'].'.' : $tablePath)."`".vartrue($tparams['leftField'])."` = {$tparams['__tablePath']}`".vartrue($tparams['rightField'])."`".(vartrue($tparams['whereJoin']) ? ' '.$tparams['whereJoin'] : '');
 
-				// Prepare Where
-				if(vartrue($tparams['where']))
-				{
-					$jwhere[] = $tparams['where'];
-				}
-			}
+	// TODO - abstract, array return type, move to parent?
 
+	/**
+	 * @param $raw
+	 * @param $isfilter
+	 * @param $forceFrom
+	 * @param $forceTo
+	 * @param $listQry
+	 * @return array|Custom|false|string|string[]
+	 */
+	protected function _modifyListQry($raw = false, $isfilter = false, $forceFrom = false, $forceTo = false, $listQry = '')
+	{
+		
+		$request    = $this->getRequest();
+
+		
+		$tablePath  = $this->getIfTableAlias(true, true).'.';
+		$tableFrom  = '`'.$this->getTableName(false, true).'`'.($this->getTableName(true) ? ' AS '.$this->getTableName(true) : '');
+		$primaryName = $this->getPrimaryName();
+		$perPage    = (int) $this->getPerPage();
 				
-			//From
-			$qry .= $tableSJoinArr ? ', '.implode(', ', $tableSJoinArr)." FROM ".$tableFrom : " FROM ".$tableFrom;
+		$qryField   = $request->getQuery('field');
+		$qryAsc     = $request->getQuery('asc');
+		$qryFrom    = (int) $request->getQuery('from', 0);
+		$orderField = $request->getQuery('field', $this->getDefaultOrderField());
+		$filterOptions = $request->getQuery('filter_options', '');
+		$searchTerm     =$request->getQuery('searchquery', '');
+		$handleAction = $this->getRequest()->getActionName();
 
-			// Joins
-			if(count($joins) > 0)
-			{
-				$qry .=  "\n".implode("\n", $joins);
-			}
-		}
-		else    // default listQry
-		{
-			if(!empty($listQry))
-			{
-				$qry = $this->parseCustomListQry($listQry);
-			}
-			elseif($this->sortField && $this->sortParent) // automated 'tree' sorting.
-			{
-			//	$qry = "SELECT SQL_CALC_FOUND_ROWS a. *, CASE WHEN a.".$this->sortParent." = 0 THEN a.".$this->sortField." ELSE b.".$this->sortField." + (( a.".$this->sortField.")/1000) END AS treesort FROM `#".$this->table."` AS a LEFT JOIN `#".$this->table."` AS b ON a.".$this->sortParent." = b.".$this->pid;
-				$qry                = $this->getParentChildQry();
-				$this->listOrder	= '_treesort '; // .$this->sortField;
-			//	$this->orderStep    = ($this->orderStep === 1) ? 100 : $this->orderStep;
-			}
-			else
-			{
-				$qry = "SELECT SQL_CALC_FOUND_ROWS ".$tableSFields." FROM ".$tableFrom;
-			}
-
-		}
-
-		// group field - currently auto-added only if there are joins
-		// TODO - groupField property
-		$groupField = '';
-		if($joins && $this->getPrimaryName())
-		{
-			$groupField = $tablePath.$this->getPrimaryName();
-		}
-
-		if($raw)
-		{
-			$rawData = array(
-				'joinWhere' => $jwhere,
-				'filter' => $filter,
-				'listQrySql' => $this->listQrySql,
-				'filterFrom' => $filterFrom,
-				'search' => $searchQry,
-				'tableFromName' => $tableFrom,
-			);
-
-			$orderField = $request->getQuery('field', $this->getDefaultOrderField());
-
-			$rawData['tableFrom'] = $tableSFieldsArr;
-			$rawData['joinsFrom'] = $tableSJoinArr;
-			$rawData['joins'] = $joins;
-			$rawData['groupField'] = $groupField;
-			$rawData['orderField'] = isset($this->fields[$orderField]) ? $this->fields[$orderField]['__tableField'] : '';
-			$rawData['orderType'] = $request->getQuery('asc') === 'desc' ? 'DESC' : 'ASC';
-			$rawData['limitFrom'] = false === $forceFrom ? intval($request->getQuery('from', 0)) : intval($forceFrom);
-			$rawData['limitTo'] = false === $forceTo ? intval($this->getPerPage()) : intval($forceTo);
-			return $rawData;
-		}
-
-
-		// join where
-		if(count($jwhere) > 0)
-		{
-			$searchQry[] = " (".implode(" AND ",$jwhere)." )";
-		}
-		// filter where
-		if(count($filter) > 0)
-		{
-			$searchQry[] = " ( ".implode(" OR ",$filter)." ) ";
-		}
-
-		// more user added sql
-		if(isset($this->listQrySql['db_where']) && $this->listQrySql['db_where'])
-		{
-			if(is_array($this->listQrySql['db_where']))
-			{
-				$searchQry[] = implode(" AND ", $this->listQrySql['db_where']);
-			}
-			else
-			{
-				$searchQry[] = $this->listQrySql['db_where'];
-			}
-		}
-		
-	
-
-		// where query
-		if(count($searchQry) > 0)
-		{
-			// add more where details on the fly via $this->listQrySql['db_where'];
-			$qry .= (strripos($qry, 'where')==FALSE) ? " WHERE " : " AND "; // Allow 'where' in custom listqry
-			$qry .= implode(" AND ", $searchQry);
-		}
-
-		// GROUP BY if needed
-		if($groupField)
-		{
-			$qry .= ' GROUP BY '.$groupField;
-		}
-
-		// only when no custom order is required
-		if($this->listOrder && !$request->getQuery('field') && !$request->getQuery('asc'))
-		{
-			$qry .= ' ORDER BY '.$this->listOrder;
-		}
-		elseif(false !== $this->listOrder)
-		{
-			$orderField = $request->getQuery('field', $this->getDefaultOrderField());
-			$orderDef = (null === $request->getQuery('asc', null) ? $this->getDefaultOrder() : $request->getQuery('asc'));
-			if(isset($this->fields[$orderField]) && strpos($this->listQry,'ORDER BY')==FALSE) //override ORDER using listQry (admin->sitelinks)
-			{
-				// no need of sanitize - it's found in field array
-				$qry .= ' ORDER BY '.$this->fields[$orderField]['__tableField'].' '.(strtolower($orderDef) === 'desc' ? 'DESC' : 'ASC');
-			}
-		}
-		
-		if(isset($this->filterQry)) // custom query on filter. (see downloads plugin)
-		{
-			$qry = $this->filterQry;
-		}
-		
-		if($this->getPerPage() || false !== $forceTo)
-		{
-			$from = false === $forceFrom ? intval($request->getQuery('from', 0)) : intval($forceFrom);
-			if(false === $forceTo) $forceTo = $this->getPerPage();
-			$qry .= ' LIMIT '.$from.', '.intval($forceTo);
-		}
-
-		// Debug Filter Query.
-		if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
-		{
-			e107::getMessage()->addDebug('QRY='.str_replace('#', MPREFIX, $qry));
-		}
-	//	 echo $qry.'<br />';	
-	// print_a($this->fields);	
-	
-	
-
-		return $qry;
+		return $this->_modifyListQrySearch($listQry, $searchTerm, $filterOptions, $tablePath, $tableFrom, $primaryName, $raw, $orderField, $qryAsc, $forceFrom, $qryFrom, $forceTo, $perPage, $qryField,  $isfilter, $handleAction);
 	}
 
 
 	/**
 	 * Return a Parent/Child SQL Query based on sortParent and sortField variables
+	 *
+	 * Note: Since 2018-01-28, the queries were replaced with pure PHP sorting. See:
+	 *       https://github.com/e107inc/e107/issues/3015
+	 *
 	 * @param bool|false $orderby - include 'ORDER BY' in the qry.
 	 * @return string
 	 */
 	public function getParentChildQry($orderby=false)
 	{
-
-		$parent= $this->getSortParent();
-		$table = $this->getTableName();
-		$pid = $this->getPrimaryName();
-		$order = $this->getSortField();
-
-
-
-		$sql = "DROP FUNCTION IF EXISTS `getDepth` ;";
-
-		e107::getDb()->gen($sql);
-
-
-		$sql = "
-		CREATE FUNCTION `getDepth` (project_id INT) RETURNS int
-		BEGIN
-		    DECLARE depth INT;
-		    SET depth=1;
-
-		    WHILE project_id > 0 DO
-
-		        SELECT IFNULL(".$parent.",-1)
-		        INTO project_id
-		        FROM ( SELECT ".$parent." FROM `#".$table."` WHERE ".$pid." = project_id) AS t;
-
-		        IF project_id > 0 THEN
-		            SET depth = depth + 1;
-		        END IF;
-
-		    END WHILE;
-
-		    RETURN depth;
-
-		END
-		;
-		";
-
-
-		e107::getDb()->gen($sql);
-
-		$sql = "DROP FUNCTION IF EXISTS `getTreeSort`;";
-
-		e107::getDb()->gen($sql);
-        $sql = "
-        CREATE FUNCTION getTreeSort(incid INT)
-        RETURNS CHAR(255)
-        BEGIN
-                SET @parentstr = CONVERT(incid, CHAR);
-                SET @parent = -1;
-                label1: WHILE @parent != 0 DO
-                        SET @parent = (SELECT ".$parent." FROM `#".$table."` WHERE ".$pid." =incid);
-                        SET @order = (SELECT ".$order." FROM `#".$table."` WHERE ".$pid." =incid);
-                        SET @parentstr = CONCAT(if(@parent = 0,'',@parent), LPAD(@order,4,0), @parentstr);
-                        SET incid = @parent;
-                END WHILE label1;
-
-                RETURN @parentstr;
-        END
-   ;
-
-        ";
-
-
-        e107::getDb()->gen($sql);
-
-        $qry =  "SELECT SQL_CALC_FOUND_ROWS *, getTreeSort(".$pid.") as _treesort, getDepth(".$pid.") as _depth FROM `#".$table."` ";
-
-		if($orderby === true)
-		{
-			$qry .= " ORDER BY _treesort";
-		}
-
-		return $qry;
+		return 'SELECT SQL_CALC_FOUND_ROWS * FROM `#' .$this->getTableName(). '` ';
 	}
 
 
@@ -4329,7 +4593,7 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @param string $noredirectAction passed to doAfterSubmit()
 	 * @return boolean
 	 */
-	protected function _manageSubmit($callbackBefore = '', $callbackAfter = '', $callbackError = '', $noredirectAction = '')
+	protected function _manageSubmit($callbackBefore = '', $callbackAfter = '', $callbackError = '', $noredirectAction = '', $forceSave=false)
 	{
 
 		$model = $this->getModel();
@@ -4341,10 +4605,10 @@ class e_admin_controller_ui extends e_admin_controller
 		if($callbackBefore && method_exists($this, $callbackBefore))
 		{
 			$data = $this->$callbackBefore($_posted, $old_data, $model->getId());
-			if(false === $data)
+			if($data === false)
 			{
 				// we don't wanna loose posted data
-				$model->setPostedData($_posted, null, false);
+				$model->setPostedData($_posted);
 				return false;
 			}
 			if($data && is_array($data))
@@ -4385,7 +4649,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 
 
-		if(($this->getAction() === 'create') && !empty($this->sortField) && empty($this->sortParent) && empty($_posted[$this->sortField])  )
+		if( !empty($this->sortField) && empty($this->sortParent) && empty($_posted[$this->sortField]) && ($this->getAction() === 'create'))
 		{
 
 			$incVal = e107::getDb()->max($this->table, $this->sortField) + 1;
@@ -4393,19 +4657,12 @@ class e_admin_controller_ui extends e_admin_controller
 		//	$model->addMessageInfo(print_a($_posted,true));
 		}
 
+		$id = $model->getId();
 
-		// Trigger Admin-ui event.  'pre'
-		if($triggerName = $this->getEventTriggerName($_posted['etrigger_submit'])) // 'create' or 'update'; 
+		// Trigger Plugin Admin-ui event.  'pre'
+		if($triggerName = $this->getEventTriggerName($this->getEventName(), $_posted['etrigger_submit'])) // 'create' or 'update';
 		{
-			$id = $model->getId();
-			$eventData = array('newData'=>$_posted,'oldData'=>$old_data,'id'=> $id);
-			$model->addMessageDebug('Admin-ui Trigger fired: <b>'.$triggerName.'</b>');
-			if(E107_DBG_ALLERRORS >0 )
-			{
-				$model->addMessageDebug($triggerName.' data: '.print_a($eventData,true));
-			}
-
-			if($halt = e107::getEvent()->trigger($triggerName, $eventData))
+			if($halt = $this->triggerEvent($triggerName, $_posted,$old_data,$id))
 			{
 				$model->setMessages();
 				return false; 
@@ -4414,8 +4671,8 @@ class e_admin_controller_ui extends e_admin_controller
 
 
 		// Scenario I - use request owned POST data - toForm already executed
-		$model->setPostedData($_posted, null, false) // insert() or update() dbInsert();
-			->save(true);
+		$model->setPostedData($_posted) // insert() or update() dbInsert();
+			->save(true, $forceSave);
 
 
 
@@ -4436,22 +4693,12 @@ class e_admin_controller_ui extends e_admin_controller
 
 			e107::getAddonConfig('e_admin',null,'process', $this, $id);
 
-			// Trigger Admin-ui event. 'post' 
-			if($triggerName = $this->getEventTriggerName($_posted['etrigger_submit'],'after')) // 'created' or 'updated';
+			// Trigger Admin-ui event. 'post'
+			if($triggerName = $this->getEventTriggerName( $this->getEventName(), $_posted['etrigger_submit'],'after')) // 'created' or 'updated';
 			{
-				unset($_posted['etrigger_submit'], $_posted['__after_submit_action'], $_posted['submit_value'], $_posted['e-token']);
-
-				$pid = $this->getPrimaryName();
-				$_posted[$pid] = $id; 	// add in the primary ID field.
-				$eventData = array('newData'=>$_posted,'oldData'=>$old_data,'id'=> $id); // use $_posted as it may include unsaved data.
-				$model->addMessageDebug('Admin-ui Trigger fired: <b>'.$triggerName.'</b>');
-				if(E107_DBG_ALLERRORS >0 )
-				{
-					$model->addMessageDebug($triggerName.' data: '.print_a($eventData,true));
-				}
-				e107::getEvent()->trigger($triggerName, $eventData);	
+				$this->triggerEvent($triggerName, $_posted, $old_data, $id);
 			}
-			
+
 			if($callbackAfter && method_exists($this, $callbackAfter))
 			{
 				$this->$callbackAfter($new_data, $old_data, $id);
@@ -4463,7 +4710,7 @@ class e_admin_controller_ui extends e_admin_controller
 		elseif($callbackError && method_exists($this, $callbackError))
 		{
 			// suppress messages if callback returns TRUE
-			if(true !== $this->$callbackError($_posted, $old_data, $model->getId()))
+			if($this->$callbackError($_posted, $old_data, $model->getId()) !== true)
 			{
 				// Copy model messages to the default message stack
 				$model->setMessages();
@@ -4478,18 +4725,80 @@ class e_admin_controller_ui extends e_admin_controller
 
 
 	/**
+	 * Trigger 2 events. The $triggerName event, and a matching generic admin_ui_xxxxx event.
+	 * @param string $triggerName
+	 * @param array $_posted
+	 * @param array $old_data
+	 * @param int $id
+	 * @return false|mixed
+	 */
+	protected function triggerEvent($triggerName, $_posted, $old_data, $id)
+	{
+		unset($_posted['etrigger_submit'], $_posted['__after_submit_action'], $_posted['submit_value'], $_posted['e-token']);
+
+		$pid = $this->getPrimaryName();
+		$_posted[$pid] = $id;    // add in the primary ID field.
+
+		$table = $this->getTableName();
+		$pname = $this->getPluginName();
+
+		if($pname === 'core') // Handler 'core' plugin value.
+		{
+			$convert = array(
+				'news_category' => 'news',
+				'news'          => 'news',
+				'page'          => 'page',
+				'page_chapters' => 'page',
+				'user'          => 'user'
+			);
+
+			if(!empty($convert[$table]))
+			{
+				$pname = $convert[$table];
+			}
+		}
+
+		$eventData = array( // use $_posted as it may include unsaved data.
+			'newData'   => $_posted,
+			'oldData'   => $old_data,
+			'id'        => $id,
+			'table'     => $table,
+			'plugin'    => $pname,
+		);
+
+		$this->_log('Triggering Event: ' . $triggerName);
+
+		$tmp = explode('_', $triggerName);
+		$name = end($tmp);
+
+		$adminTriggerName = 'admin_ui_'.$name;
+
+
+		e107::getMessage()->addDebug('Event triggers fired (<b>' .$triggerName. '</b>, <b>' . $adminTriggerName."</b>) 
+		<a class='e-expandit' href='#view-event-data-".$name."'>Toggle data</a>
+		<div id='view-event-data-".$name."' class='e-hideme'>" . 	print_a($eventData, true). '</div>'
+		);
+
+		if($halt = e107::getEvent()->trigger($adminTriggerName, $eventData))
+		{
+			return $halt;
+		}
+
+		return e107::getEvent()->trigger($triggerName, $eventData);
+
+	}
+
+	/**
 	 *  Return a custom event trigger name
 	 * @param null $type  Usually 'Create' or 'Update'
 	 * @param string $when ' before or after
 	 * @return bool|string
 	 */
-	public function getEventTriggerName($type=null, $when='before')
+	public function getEventTriggerName($name, $type=null, $when='before')
 	{
-		$plug = $this->getEventName();
-		
-		if(empty($plug) || empty($type))
+		if(empty($name) || empty($type))
 		{
-			return false; 
+			return false;
 		}
 
 		if($when === 'after')
@@ -4497,11 +4806,512 @@ class e_admin_controller_ui extends e_admin_controller
 			$type .= 'd'; // ie. 'created' or 'updated'.
 		}
 		
-		return 'admin_'.strtolower($plug).'_'.strtolower($type); 
+		return 'admin_'.strtolower($name).'_'.strtolower($type);
+
+	}
+
+	/**
+	 * @param        $listQry
+	 * @param        $searchTerm
+	 * @param        $filterOptions
+	 * @param string $tablePath
+	 * @param        $isfilter
+	 * @param string $tableFrom
+	 * @param string $primaryName
+	 * @param        $raw
+	 * @param        $orderField
+	 * @param        $qryAsc
+	 * @param        $forceFrom
+	 * @param int    $qryFrom
+	 * @param        $forceTo
+	 * @param int    $perPage
+	 * @param        $qryField
+	 * @return array|Custom|false|string|string[]
+	 */
+	public function _modifyListQrySearch($listQry, $searchTerm, $filterOptions, string $tablePath,  string $tableFrom, string $primaryName, $raw, $orderField, $qryAsc, $forceFrom, int $qryFrom, $forceTo, int $perPage, $qryField,  $isfilter, $handleAction)
+	{
+		$tp       = e107::getParser();
+		$fields   = $this->getFields();
+		$joinData = $this->getJoinData();
+
+		$this->listQry = $listQry;
+
+		$tableSFieldsArr = array(); // FROM for main table
+		$tableSJoinArr   = array(); // FROM for join tables
+		$filter          = array();
+		$searchQry       = array();
+		$filterFrom      = array();
+
+		$searchTerm   = $tp->toDB($searchTerm);
+		$searchQuery  = $this->fixSearchWildcards($searchTerm);
+		$searchFilter = $this->_parseFilterRequest($filterOptions);
+
+		$listQry = $this->listQry; // check for modification during parseFilterRequest();
+
+		if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
+		{
+			e107::getMessage()->addDebug('searchQuery: <b>' . $searchQuery . '</b>');
+		}
+
+		if($searchFilter && is_array($searchFilter))
+		{
+
+			list($filterField, $filterValue) = $searchFilter;
+
+			if($filterField && $filterValue !== '' && isset($fields[$filterField]))
+			{
+				$_dataType  = $fields[$filterField]['data'];
+				$_fieldType = $fields[$filterField]['type'];
+
+				if($_fieldType === 'comma' || $_fieldType === 'checkboxes' || $_fieldType === 'userclasses' || ($_fieldType === 'dropdown' && !empty($fields[$filterField]['writeParms']['multiple'])))
+				{
+					$_dataType = 'set';
+				}
+
+				switch($_dataType)
+				{
+					case 'set':
+						$searchQry[] = "FIND_IN_SET('" . $tp->toDB($filterValue) . "', " . $fields[$filterField]['__tableField'] . ')';
+					break;
+
+					case 'int':
+					case 'integer':
+						if($_fieldType === 'datestamp') // Past Month, Past Year etc.
+						{
+							$tmp            = explode('__', $filterOptions);
+							$dateSearchType = $tmp[2];
+
+							if($filterValue > time())
+							{
+								if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
+								{
+									e107::getMessage()->addDebug("[$dateSearchType] Between now and " . date(DATE_RFC822, $filterValue));
+								}
+
+								$searchQry[] = $fields[$filterField]['__tableField'] . ' > ' . time();
+								$searchQry[] = $fields[$filterField]['__tableField'] . ' < ' . (int) $filterValue;
+							}
+							else // THIS X, FUTURE
+							{
+
+								$endOpts = [
+									'today'     => strtotime('+24 hours', $filterValue),
+									'thisweek'  => strtotime('+1 week', $filterValue),
+									'thismonth' => strtotime('+1 month', $filterValue),
+									'thisyear'  => strtotime('+1 year', $filterValue),
+								];
+
+								$end = isset($endOpts[$dateSearchType]) ? $endOpts[$dateSearchType] : time();
+
+								if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
+								{
+									e107::getMessage()->addDebug("[$dateSearchType] Between " . date(DATE_RFC822, $filterValue) . " and " . date(DATE_RFC822, $end));
+								}
+
+								$searchQry[] = $fields[$filterField]['__tableField'] . ' > ' . (int) $filterValue;
+								$searchQry[] = $fields[$filterField]['__tableField'] . ' < ' . $end;
+							}
+
+						}
+						else
+						{
+							$searchQry[] = $fields[$filterField]['__tableField'] . ' = ' . (int) $filterValue;
+						}
+					break;
+
+
+					default: // string usually.
+
+						if($filterValue === '_ISEMPTY_')
+						{
+							$searchQry[] = $fields[$filterField]['__tableField'] . " = '' ";
+						}
+
+						else
+						{
+
+							if($_fieldType === 'method') // More flexible filtering.
+							{
+
+								$searchQry[] = $fields[$filterField]['__tableField'] . ' LIKE "%' . $tp->toDB($filterValue) . '%"';
+							}
+							else
+							{
+
+								$searchQry[] = $fields[$filterField]['__tableField'] . " = '" . $tp->toDB($filterValue) . "'";
+							}
+						}
+
+						//exit;
+					break;
+				}
+
+			}
+			//echo 'type= '. $fields[$filterField]['data'];
+			//	print_a($fields[$filterField]);
+		}
+		elseif($searchFilter && is_string($searchFilter))
+		{
+
+			// filter callbacks could add to WHERE clause
+			$searchQry[] = $searchFilter;
+		}
+
+		if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
+		{
+			e107::getMessage()->addDebug(print_a($searchQry, true));
+		}
+
+		$className = get_class($this);
+
+		// main table should select everything
+		$tableSFieldsArr[] = $tablePath . '*';
+		foreach($fields as $key => $var)
+		{
+			// disabled or system
+			if((!empty($var['nolist']) && empty($var['filter'])) || empty($var['type']) || empty($var['data']))
+			{
+				continue;
+			}
+
+			// select FROM... for main table
+			if(!empty($var['alias']) && !empty($var['__tableField']))
+			{
+				$tableSFieldsArr[] = $var['__tableField'];
+			}
+
+
+			if($this->_isSearchField($var, $searchQuery))
+			{
+				// Search for customer filter handler.
+				$cutomerSearchMethod = 'handle' . $handleAction . eHelper::camelize($key) . 'Search';
+				$args                = array($searchTerm);
+
+				e107::getMessage()->addDebug('Searching for custom search method: ' . $className . '::' . $cutomerSearchMethod . '(' . implode(', ', $args) . ')');
+
+				if(method_exists($this, $cutomerSearchMethod)) // callback handling
+				{
+					e107::getMessage()->addDebug('Executing custom search callback <strong>' . $className . '::' . $cutomerSearchMethod . '(' . implode(', ', $args) . ')</strong>');
+
+					$filter[] = call_user_func_array(array($this, $cutomerSearchMethod), $args);
+					continue;
+				}
+
+
+				if($var['data'] === 'int' || $var['data'] === 'integer' || $var['type'] === 'int' || $var['type'] === 'integer')
+				{
+					if(is_numeric($searchQuery))
+					{
+						$filter[] = $var['__tableField'] . ' = ' . $searchQuery;
+					}
+					continue;
+				}
+
+				if($var['type'] === 'ip')
+				{
+					$ipSearch = e107::getIPHandler()->ipEncode($searchQuery);
+					if(!empty($ipSearch))
+					{
+						$filter[] = $var['__tableField'] . " LIKE '%" . $ipSearch . "%'";
+					}
+					// Continue below for BC check also.
+				}
+
+
+				if(strpos($searchQuery, '|') === false  ) // search multiple words across fields.
+				{
+					$filter[] = $var['__tableField'] . " LIKE '%" . $searchQuery . "%'";
+				}
+
+
+				if($isfilter)
+				{
+					$filterFrom[] = $var['__tableField'];
+
+				}
+			}
+		}
+
+		if(strpos($searchQuery, '|') !== false) // search multiple words across fields.
+		{
+			$tmp = explode('|', $searchQuery);
+
+			if(count($tmp) < 4) // avoid excessively long query.
+			{
+
+					foreach($tmp as $splitSearchQuery)
+					{
+						if(!empty($splitSearchQuery))
+						{
+							$multiWordSearch = [];
+							foreach($fields as $key => $var)
+							{
+								if(!$this->_isSearchField($var, $splitSearchQuery) || $var['data'] === 'int' || $var['data'] === 'integer' || $var['type'] === 'int' || $var['type'] === 'integer')
+								{
+									continue;
+								}
+
+								$multiWordSearch[] = $var['__tableField'] . " LIKE '%" . $splitSearchQuery . "%'";
+							}
+							$searchQry[] = '('.implode(' OR ', $multiWordSearch).')';
+						}
+					}
+
+			}
+
+		}
+
+
+
+		if(strpos($filterOptions, 'searchfield__') === 0) // search in specific field, so remove the above filters.
+		{
+			$filter = array(); // reset filter.
+		}
+
+
+		//	if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
+		{
+			//	e107::getDebug()->log(print_a($filter,true));
+			// e107::getMessage()->addInfo(print_a($filter,true));
+		}
+
+		if($isfilter)
+		{
+			if(!$filterFrom)
+			{
+				return false;
+			}
+			$tableSFields = implode(', ', $filterFrom);
+		}
+		else
+		{
+			$tableSFields = $tableSFieldsArr ? implode(', ', $tableSFieldsArr) : $tablePath . '*';
+		}
+
+
+		$jwhere = array();
+		$joins  = array();
+		//file_put_contents(e_LOG.'uiAjaxResponseSFields.log', $tableSFields."\n\n", FILE_APPEND);
+		//file_put_contents(e_LOG.'uiAjaxResponseFields.log', print_r($this->getFields(), true)."\n\n", FILE_APPEND);
+		if($joinData)
+		{
+			$qry = 'SELECT SQL_CALC_FOUND_ROWS ' . $tableSFields;
+			foreach($joinData as $jtable => $tparams)
+			{
+				// Select fields
+				if(!$isfilter)
+				{
+					$fields = vartrue($tparams['fields']);
+					if($fields === '*')
+					{
+						$tableSJoinArr[] = "{$tparams['__tablePath']}*";
+					}
+					elseif($fields)
+					{
+						$tableSJoinArr[] = $fields;
+						/*$fields = explode(',', $fields);
+						foreach ($fields as $field)
+						{
+							$qry .= ", {$tparams['__tablePath']}`".trim($field).'`';
+						}*/
+					}
+				}
+
+				// Prepare Joins
+				$joins[] = '
+					' . vartrue($tparams['joinType'], 'LEFT JOIN') . " {$tparams['__tableFrom']} ON " . (vartrue($tparams['leftTable']) ? $tparams['leftTable'] . '.' : $tablePath) . '`' . vartrue($tparams['leftField']) . "` = {$tparams['__tablePath']}`" . vartrue($tparams['rightField']) . '`' . (vartrue($tparams['whereJoin']) ? ' ' . $tparams['whereJoin'] : '');
+
+				// Prepare Where
+				if(!empty($tparams['where']))
+				{
+					$jwhere[] = $tparams['where'];
+				}
+			}
+
+
+			//From
+			$qry .= $tableSJoinArr ? ', ' . implode(', ', $tableSJoinArr) . ' FROM ' . $tableFrom : ' FROM ' . $tableFrom;
+
+			// Joins
+			if(count($joins) > 0)
+			{
+				$qry .= "\n" . implode("\n", $joins);
+			}
+		}
+		else    // default listQry
+		{
+			if(!empty($listQry))
+			{
+				$qry = $this->parseCustomListQry($listQry);
+			}
+			elseif($this->sortField && $this->sortParent && !deftrue('e_DEBUG_TREESORT')) // automated 'tree' sorting.
+			{
+				//	$qry = "SELECT SQL_CALC_FOUND_ROWS a. *, CASE WHEN a.".$this->sortParent." = 0 THEN a.".$this->sortField." ELSE b.".$this->sortField." + (( a.".$this->sortField.")/1000) END AS treesort FROM `#".$this->table."` AS a LEFT JOIN `#".$this->table."` AS b ON a.".$this->sortParent." = b.".$this->pid;
+				$qry = $this->getParentChildQry(true);
+				//$this->listOrder	= '_treesort '; // .$this->sortField;
+				//	$this->orderStep    = ($this->orderStep === 1) ? 100 : $this->orderStep;
+			}
+			else
+			{
+				$qry = 'SELECT SQL_CALC_FOUND_ROWS ' . $tableSFields . ' FROM ' . $tableFrom;
+			}
+
+		}
+
+		// group field - currently auto-added only if there are joins
+		$groupField = '';
+		if($joins && $primaryName)
+		{
+			$groupField = $tablePath . $primaryName;
+		}
+
+		// appended to GROUP BY when true.
+		if(!empty($this->listGroup))
+		{
+			$groupField = $this->listGroup;
+		}
+
+		if($raw)
+		{
+			$rawData = array(
+				'joinWhere'     => $jwhere,
+				'filter'        => $filter,
+				'listQrySql'    => $this->listQrySql,
+				'filterFrom'    => $filterFrom,
+				'search'        => $searchQry,
+				'tableFromName' => $tableFrom,
+			);
+
+
+			$rawData['tableFrom']  = $tableSFieldsArr;
+			$rawData['joinsFrom']  = $tableSJoinArr;
+			$rawData['joins']      = $joins;
+			$rawData['groupField'] = $groupField;
+			$rawData['orderField'] = isset($fields[$orderField]) ? $fields[$orderField]['__tableField'] : '';
+			$rawData['orderType']  = $qryAsc === 'desc' ? 'DESC' : 'ASC';
+			$rawData['limitFrom']  = $forceFrom === false ? $qryFrom : (int) $forceFrom;
+			$rawData['limitTo']    = $forceTo === false ? $perPage : (int) $forceTo;
+
+			return $rawData;
+		}
+
+
+		// join where
+		if(count($jwhere) > 0)
+		{
+			$searchQry[] = ' (' . implode(' AND ', $jwhere) . ' )';
+		}
+		// filter where
+		if(count($filter) > 0)
+		{
+			$searchQry[] = ' ( ' . implode(' OR ', $filter) . ' ) ';
+		}
+
+		// more user added sql
+		if(isset($this->listQrySql['db_where']) && $this->listQrySql['db_where'])
+		{
+			if(is_array($this->listQrySql['db_where']))
+			{
+				$searchQry[] = implode(' AND ', $this->listQrySql['db_where']);
+			}
+			else
+			{
+				$searchQry[] = $this->listQrySql['db_where'];
+			}
+		}
+
+
+		// where query
+		if(count($searchQry) > 0)
+		{
+			// add more where details on the fly via $this->listQrySql['db_where'];
+			$qry .= (strripos($qry, 'where') === false) ? ' WHERE ' : ' AND '; // Allow 'where' in custom listqry
+			$qry .= implode(' AND ', $searchQry);
+
+			// Disable tree (use flat list instead) when filters are applied
+			// Implemented out of necessity under https://github.com/e107inc/e107/issues/3204
+			// Horrible hack, but only needs this one line of additional code
+			if($treemodel = $this->getTreeModel())
+			{
+				$treemodel->setParam('sort_parent', null);
+			}
+
+		}
+
+		// GROUP BY if needed
+		if($groupField)
+		{
+			$qry .= ' GROUP BY ' . $groupField;
+		}
+
+		// only when no custom order is required
+		if($this->listOrder && !$qryField && !$qryAsc)
+		{
+			$qry .= ' ORDER BY ' . $this->listOrder;
+		}
+		elseif($this->listOrder !== false)
+		{
+			$orderField = !empty($qryField) ? $qryField : $this->getDefaultOrderField();
+			$orderDef   = ($qryAsc === null ? $this->getDefaultOrder() : $qryAsc);
+			if(isset($fields[$orderField]) && strpos($this->listQry, 'ORDER BY') == false) //override ORDER using listQry (admin->sitelinks)
+			{
+				// no need of sanitize - it's found in field array
+				$qry .= ' ORDER BY ' . $fields[$orderField]['__tableField'] . ' ' . (strtolower($orderDef) === 'desc' ? 'DESC' : 'ASC');
+			}
+		}
+
+		if(isset($this->filterQry)) // custom query on filter. (see downloads plugin)
+		{
+			$qry = $this->filterQry;
+		}
+
+		if($forceTo !== false || $perPage)
+		{
+			$from = $forceFrom === false ? $qryFrom : (int) $forceFrom;
+			if($forceTo === false)
+			{
+				$forceTo = $perPage;
+			}
+			$qry .= ' LIMIT ' . $from . ', ' . (int) $forceTo;
+		}
+
+		// Debug Filter Query.
+		if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
+		{
+			e107::getMessage()->addDebug('QRY=' . str_replace('#', MPREFIX, $qry));
+		}
+		//	 echo $qry.'<br />';
+		// print_a($this->fields);
+
+		$this->_log('listQry: ' . str_replace('#', MPREFIX, $qry));
+
+		return $qry;
+	}
+
+	/**
+	 * Checks whether the field array should be searched oor not.
+	 * @param array $var
+	 * @param string $searchQuery
+	 * @return bool
+	 */
+	private function _isSearchField($field, $searchQuery): bool
+	{
+		$searchable_types = array('text', 'textarea', 'bbarea', 'url', 'ip', 'tags', 'email', 'int', 'integer', 'str', 'safestr', 'string', 'number'); //method? 'user',
+
+		if($field['type'] === 'method' && !empty($field['data']) && ($field['data'] === 'string' || $field['data'] === 'str' || $field['data'] === 'safestr' || $field['data'] === 'int'))
+		{
+			$searchable_types[] = 'method';
+		}
+
+		return !empty($field['__tableField']) && trim($searchQuery) !== '' && in_array($field['type'], $searchable_types);
 
 	}
 }
 
+
+/**
+ *
+ */
 class e_admin_ui extends e_admin_controller_ui
 {
 
@@ -4524,13 +5334,13 @@ class e_admin_ui extends e_admin_controller_ui
 	 * Markup to be auto-inserted before List filter
 	 * @var string
 	 */
-	public $preFiliterMarkup = '';
+	public $preFilterMarkup = '';
 
 	/**
 	 * Markup to be auto-inserted after List filter
 	 * @var string
 	 */
-	public $postFiliterMarkup = '';
+	public $postFilterMarkup = '';
 
 	/**
 	 * Markup to be auto-inserted at the top of Create form
@@ -4566,7 +5376,9 @@ class e_admin_ui extends e_admin_controller_ui
 	 * Confirm screen custom message
 	 * @var string
 	 */
-	public $deleteConfirmMessage = null;
+	public $deleteConfirmMessage;
+
+
 
 	/**
 	 * Constructor
@@ -4586,13 +5398,13 @@ class e_admin_ui extends e_admin_controller_ui
 			$this->pluginName = 'core';
 		}
 
-		$ufieldpref = $this->getUserPref();
+	/*	$ufieldpref = $this->getUserPref();
 		if($ufieldpref)
 		{
 			$this->fieldpref = $ufieldpref;
-		}
+		}*/
 
-		$this->addTitle($this->pluginTitle, true)->parseAliases();
+		$this->addTitle($this->pluginTitle)->parseAliases();
 
 		$this->initAdminAddons();
 
@@ -4609,6 +5421,9 @@ class e_admin_ui extends e_admin_controller_ui
 	}
 
 
+	/**
+	 * @return void
+	 */
 	private function initAdminAddons()
 	{
 		$tmp = e107::getAddonConfig('e_admin', null, 'config', $this);
@@ -4618,22 +5433,31 @@ class e_admin_ui extends e_admin_controller_ui
 			return;
 		}
 
+		$opts = null;
+
 		foreach($tmp as $plug=>$config)
 		{
 
-			$form = e107::getAddon($plug, 'e_admin', $plug."_admin_form"); // class | false.
+			$form = e107::getAddon($plug, 'e_admin', $plug. '_admin_form'); // class | false.
 
 			if(!empty($config['fields']))
 			{
+				if(!empty($this->fields['options']))
+				{
+					$opts = $this->fields['options'];
+					unset($this->fields['options']);
+				}
+
 				foreach($config['fields'] as $k=>$v)
 				{
 					$v['data'] = false; // disable data-saving to db table. .
 
 					$fieldName = 'x_'.$plug.'_'.$k;
+					e107::getDebug()->log($fieldName. ' initiated by ' .$plug);
 
 					if($v['type'] === 'method' && method_exists($form,$fieldName))
 					{
-						$v['method'] = $plug."_admin_form::".$fieldName;
+						$v['method'] = $plug. '_admin_form::' .$fieldName;
 						//echo "Found method ".$fieldName." in ".$plug."_menu_form";
 						//echo $form->$fieldName();
 					}
@@ -4641,6 +5465,11 @@ class e_admin_ui extends e_admin_controller_ui
 
 					$this->fields[$fieldName] = $v; // ie. x_plugin_key
 
+				}
+
+				if(!empty($opts)) // move options field to the end.
+				{
+					$this->fields['options'] = $opts;
 				}
 			}
 
@@ -4680,7 +5509,7 @@ class e_admin_ui extends e_admin_controller_ui
 
 	/**
 	 * Catch fieldpref submit
-	 * @return none
+	 * @return void
 	 */
 	public function ListEcolumnsTrigger()
 	{
@@ -4688,14 +5517,27 @@ class e_admin_ui extends e_admin_controller_ui
 		parent::manageColumns();
 	}
 
+
+	/**
+	 * Detect if a batch function has been fired.
+	 * @param $batchKey
+	 * @return bool
+	 */
+	public function batchTriggered($batchKey)
+	{
+		return (!empty($_POST['e__execute_batch']) && (varset($_POST['etrigger_batch']) == $batchKey));
+	}
+
+
+
 	/**
 	 * Catch batch submit
 	 * @param string $batch_trigger
-	 * @return none
+	 * @return null
 	 */
 	public function ListBatchTrigger($batch_trigger)
 	{
-		$this->setPosted('etrigger_batch', null);
+		$this->setPosted('etrigger_batch');
 
 		if($this->getPosted('etrigger_cancel'))
 		{
@@ -4705,17 +5547,20 @@ class e_admin_ui extends e_admin_controller_ui
 		$this->deleteConfirmScreen = true; // Confirm screen ALWAYS enabled when multi-deleting!
 
 		// proceed ONLY if there is no other trigger, except delete confirmation
-		if($batch_trigger && !$this->hasTrigger(array('etrigger_delete_confirm'))) $this->_handleListBatch($batch_trigger);
+		if($batch_trigger && !$this->hasTrigger(array('etrigger_delete_confirm')))
+		{
+			$this->_handleListBatch($batch_trigger);
+		}
 	}
 
 		/**
 	 * Catch batch submit
 	 * @param string $batch_trigger
-	 * @return none
+	 * @return null
 	 */
 	public function GridBatchTrigger($batch_trigger)
 	{
-		$this->setPosted('etrigger_batch', null);
+		$this->setPosted('etrigger_batch');
 
 		if($this->getPosted('etrigger_cancel'))
 		{
@@ -4725,7 +5570,10 @@ class e_admin_ui extends e_admin_controller_ui
 		$this->deleteConfirmScreen = true; // Confirm screen ALWAYS enabled when multi-deleting!
 
 		// proceed ONLY if there is no other trigger, except delete confirmation
-		if($batch_trigger && !$this->hasTrigger(array('etrigger_delete_confirm'))) $this->_handleListBatch($batch_trigger);
+		if($batch_trigger && !$this->hasTrigger(array('etrigger_delete_confirm')))
+		{
+			$this->_handleListBatch($batch_trigger);
+		}
 	}
 
 	/**
@@ -4757,7 +5605,7 @@ class e_admin_ui extends e_admin_controller_ui
 				$selected = explode(',', $this->getPosted('delete_confirm_value'));
 				foreach ($selected as $i => $_sel) 
 				{
-					$selected[$i] = preg_replace('/[^\w-:.]/', '', $_sel);
+					$selected[$i] = preg_replace('/[^\w\-:.]/', '', $_sel);
 				}
 			}
 		}
@@ -4777,7 +5625,10 @@ class e_admin_ui extends e_admin_controller_ui
 				if($this->beforeDelete($data, $id))
 				{
 					$check = $this->getTreeModel()->delete($id);
-					if($check) $delcount++;
+					if($check)
+					{
+						$delcount++;
+					}
 					if(!$this->afterDelete($data, $id, $check))
 					{
 						$set_messages = false;
@@ -4796,8 +5647,14 @@ class e_admin_ui extends e_admin_controller_ui
 		{
 			$this->getTreeModel()->setMessages();
 			// FIXME lan
-			if($delcount) e107::getMessage()->addSuccess($tp->lanVars(LAN_UI_DELETED, $delcount, true));
-			if($nfcount) e107::getMessage()->addError($tp->lanVars(LAN_UI_DELETED_FAILED, $nfcount,true));
+			if($delcount)
+			{
+				e107::getMessage()->addSuccess($tp->lanVars(LAN_UI_DELETED, $delcount, true));
+			}
+			if($nfcount)
+			{
+				e107::getMessage()->addError($tp->lanVars(LAN_UI_DELETED_FAILED, $nfcount, true));
+			}
 		}
 
 		//$this->redirect();
@@ -4820,7 +5677,7 @@ class e_admin_ui extends e_admin_controller_ui
 		// send messages to session
 		e107::getMessage()->moveToSession();
 		// redirect
-	//	$this->redirect();
+		$this->redirect();
 	}
 
 
@@ -4926,12 +5783,22 @@ class e_admin_ui extends e_admin_controller_ui
 			$this->redirect();
 		}
 	}
-	
+
+	/**
+	 * @param $selected
+	 * @return false|int
+	 */
 	protected function _add2nav($selected)
 	{
-		if(empty($selected)) return false;// TODO warning message
+		if(empty($selected))
+		{
+			return false;
+		}// TODO warning message
 		
-		if(!is_array($selected)) $selected  = array($selected);
+		if(!is_array($selected))
+		{
+			$selected = array($selected);
+		}
 
         $sql        = e107::getDb();
 		$urlData	= $this->getUrl();
@@ -4947,7 +5814,7 @@ class e_admin_ui extends e_admin_controller_ui
             
             $link = $data['url'];
             
-            $link = str_replace('{e_BASE}', "", $link); // TODO temporary here, discuss
+            $link = str_replace('{e_BASE}', '', $link); // TODO temporary here, discuss
             
             // _FIELD_TYPES auto created inside mysql handler now
             $linkArray = array(
@@ -4967,19 +5834,19 @@ class e_admin_ui extends e_admin_controller_ui
             
             if($res !== FALSE)
             {
-				e107::getMessage()->addSuccess(LAN_CREATED.": ".LAN_SITELINK.": ".($name ? $name : 'n/a'));   
+				e107::getMessage()->addSuccess(LAN_CREATED. ': ' .LAN_NAVIGATION. ': ' .($name ? $name : 'n/a'));
 				$scount++; 
             }
             else 
             {
                 if($sql->getLastErrorNumber())
                 {
-					e107::getMessage()->addError(LAN_CREATED_FAILED.": ".LAN_SITELINK.": ".$name.": ".LAN_SQL_ERROR);
+					e107::getMessage()->addError(LAN_CREATED_FAILED. ': ' .LAN_NAVIGATION. ': ' .$name. ': ' .LAN_SQL_ERROR);
                     e107::getMessage()->addDebug('SQL Link Creation Error #'.$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
                 }
 				else
 				{
-					e107::getMessage()->addError(LAN_CREATED_FAILED.": ".LAN_SITELINK.": ".$name.": ".LAN_UNKNOWN_ERROR);//Unknown Error  
+					e107::getMessage()->addError(LAN_CREATED_FAILED. ': ' .LAN_NAVIGATION. ': ' .$name. ': ' .LAN_UNKNOWN_ERROR);//Unknown Error
 				}
             }
 
@@ -4987,8 +5854,8 @@ class e_admin_ui extends e_admin_controller_ui
         
 		if($scount > 0)
 		{
-			e107::getMessage()->addSuccess(LAN_CREATED." (".$scount.") ".ADLAN_138);
-			e107::getMessage()->addSuccess("<a class='btn btn-small btn-primary' href='".e_ADMIN_ABS."links.php?searchquery=&filter_options=link_category__255'>".LAN_CONFIGURE." ".ADLAN_138."</a>");
+			e107::getMessage()->addSuccess(LAN_CREATED. ' (' .$scount. ') ' .LAN_NAVIGATION_LINKS);
+			e107::getMessage()->addSuccess("<a class='btn btn-small btn-primary' href='".e_ADMIN_ABS."links.php?searchquery=&filter_options=link_category__255'>".LAN_CONFIGURE. ' ' .LAN_NAVIGATION. '</a>');
 			return $scount;        
 		}
         
@@ -4996,6 +5863,10 @@ class e_admin_ui extends e_admin_controller_ui
  
 	}
 
+	/**
+	 * @param $selected
+	 * @return false|int
+	 */
 	protected function _add2featurebox($selected)
 	{
 		// FIX - don't allow if plugin not installed
@@ -5004,16 +5875,24 @@ class e_admin_ui extends e_admin_controller_ui
 			return false;
 		}
 		
-		if(empty($selected)) return false;// TODO warning message
+		if(empty($selected))
+		{
+			return false;
+		}// TODO warning message
 		
-		if(!is_array($selected)) $selected = array($selected);
+		if(!is_array($selected))
+		{
+			$selected = array($selected);
+		}
 
         $sql        = e107::getDb();
 		$tree = $this->getTreeModel();
-		$urlData = $this->getTreeModel()->url($selected, array('sc' => true), false);
+		$urlData = $this->getTreeModel()->url($selected, array('sc' => true));
 		$data = $this->featurebox;
 		
 		$scount = 0;
+		$category = 0;
+
         foreach($selected as $id)
         {
         	if(!$tree->hasNode($id)) 
@@ -5027,7 +5906,10 @@ class e_admin_ui extends e_admin_controller_ui
 			{
 				$url = $urlData[$id];
 			}
-			else $url = $model->get($data['url']);
+			else
+			{
+				$url = $model->get($data['url']);
+			}
 			$name = $model->get($data['name']);
 			
 			$category = e107::getDb()->retrieve('featurebox_category', 'fb_category_id', "fb_category_template='unassigned'");
@@ -5047,27 +5929,27 @@ class e_admin_ui extends e_admin_controller_ui
 
             if($res !== FALSE)
             {
-				e107::getMessage()->addSuccess(LAN_CREATED.": ".LAN_PLUGIN_FEATUREBOX_NAME.": ".($name ? $name : 'n/a'));
+				e107::getMessage()->addSuccess(LAN_CREATED. ': ' .LAN_PLUGIN_FEATUREBOX_NAME. ': ' .($name ? $name : 'n/a'));
 				$scount++; 
             }
             else
             {
                 if($sql->getLastErrorNumber())
                 {
-					e107::getMessage()->addError(LAN_CREATED_FAILED.": ".LAN_PLUGIN_FEATUREBOX_NAME.": ".$name.": ".LAN_SQL_ERROR);
+					e107::getMessage()->addError(LAN_CREATED_FAILED. ': ' .LAN_PLUGIN_FEATUREBOX_NAME. ': ' .$name. ': ' .LAN_SQL_ERROR);
 					e107::getMessage()->addDebug('SQL Featurebox Creation Error #'.$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
                 }  
 				else
 				{
-					e107::getMessage()->addError(LAN_CREATED_FAILED.": ".$name.": ".LAN_UNKNOWN_ERROR);  
+					e107::getMessage()->addError(LAN_CREATED_FAILED. ': ' .$name. ': ' .LAN_UNKNOWN_ERROR);
 				}
             }
         }
         
         if($scount > 0)
         {
-			e107::getMessage()->addSuccess(LAN_CREATED." (".$scount.") ".LAN_PLUGIN_FEATUREBOX_NAME);  
-			e107::getMessage()->addSuccess("<a class='btn btn-small btn-primary' href='".e_PLUGIN_ABS."featurebox/admin_config.php?searchquery=&filter_options=fb_category__{$category}'".LAN_CONFIGURE." ".LAN_PLUGIN_FEATUREBOX_NAME."</a>");
+			e107::getMessage()->addSuccess(LAN_CREATED. ' (' .$scount. ') ' .LAN_PLUGIN_FEATUREBOX_NAME);
+			e107::getMessage()->addSuccess("<a class='btn btn-small btn-primary' href='".e_PLUGIN_ABS."featurebox/admin_config.php?searchquery=&filter_options=fb_category__{$category}' ".LAN_CONFIGURE. ' ' .LAN_PLUGIN_FEATUREBOX_NAME. '</a>');
 			return $scount;        
         }
         
@@ -5095,7 +5977,7 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	protected function handleListBoolBatch($selected, $field, $value)
 	{
-		$cnt = $this->getTreeModel()->update($field, $value, $selected, $value, false);
+		$cnt = $this->getTreeModel()->batchUpdate($field, $value, $selected, $value, false);
 		if($cnt)
 		{
 			$caption = e107::getParser()->lanVars(LAN_UI_BATCH_BOOL_SUCCESS, $cnt, true);
@@ -5109,25 +5991,33 @@ class e_admin_ui extends e_admin_controller_ui
 	 * @param array $selected
 	 * @return void
 	 */
-	protected function handleListBoolreverseBatch($selected, $field, $value)
+	protected function handleListBoolreverseBatch($selected, $field)
 	{
 		$tree = $this->getTreeModel();
-		$cnt = $tree->update($field, "1-{$field}", $selected, null, false);
+		$cnt = $tree->batchUpdate($field, "1-{$field}", $selected, null, false);
 		if($cnt)
 		{
 			$caption = e107::getParser()->lanVars(LAN_UI_BATCH_REVERSED_SUCCESS, $cnt, true);
 			$tree->addMessageSuccess($caption);
 			//sync models
-			$tree->load(true);
+			$tree->loadBatch(true);
 		}
 		$this->getTreeModel()->setMessages();
 	}
 
+	/**
+	 * @param $selected
+	 * @param $field
+	 * @param $value
+	 * @param $type
+	 * @return void
+	 */
 	public function handleCommaBatch($selected, $field, $value, $type)
 	{
 		$tree = $this->getTreeModel();
-		$cnt = $rcnt = 0;
-		$value = e107::getParser()->toDb($value);
+		$rcnt = 0;
+		$cnt = $rcnt;
+		$value = e107::getParser()->toDB($value);
 		
 		switch ($type) 
 		{
@@ -5137,37 +6027,61 @@ class e_admin_ui extends e_admin_controller_ui
 				foreach ($selected as $key => $id) 
 				{
 					$node = $tree->getNode($id);
-					if(!$node) continue;
+					if(!$node)
+					{
+						continue;
+					}
 					$val = $node->get($field);
 					
-					if(empty($val)) $val = array();
-					elseif(!is_array($val)) $val = explode(',', $val);
+					if(empty($val))
+					{
+						$val = array();
+					}
+					elseif(!is_array($val))
+					{
+						$val = explode(',', $val);
+					}
 					
 					if($type === 'deattach')
 					{
 						$search = array_search($value, $val);
-						if(false === $search) continue;
+						if($search === false)
+						{
+							continue;
+						}
 						unset($val[$search]);
 						sort($val);
 						$val = implode(',', $val);
 						$node->set($field, $val);
 						$check = $this->getModel()->setData($node->getData())->save(false, true);
 						
-						if(false === $check) $this->getModel()->setMessages();
-						else $rcnt++;
+						if($check === false)
+						{
+							$this->getModel()->setMessages();
+						}
+						else
+						{
+							$rcnt++;
+						}
 						continue;
 					}
 					
 					// attach it
-					if(false === in_array($value, $val))
+					if(in_array($value, $val) === false)
 					{
 						$val[] = $value; 
 						sort($val);
 						$val = implode(',', array_unique($val));
 						$node->set($field, $val);
 						$check = $this->getModel()->setData($node->getData())->save(false, true);
-						if(false === $check) $this->getModel()->setMessages();
-						else $cnt++;
+						if($check === false)
+						{
+							$this->getModel()->setMessages();
+						}
+						else
+						{
+							$cnt++;
+						}
 					}
 				}
 				$this->_model = null;
@@ -5182,12 +6096,12 @@ class e_admin_ui extends e_admin_controller_ui
 						$value = implode(',', array_map('trim', $value));
 					}
 					
-					$cnt = $this->getTreeModel()->update($field, $value, $selected, true, true);
+					$cnt = $this->getTreeModel()->batchUpdate($field, $value, $selected, true);
 				}
 				else
 				{
 					$this->getTreeModel()->addMessageWarning(LAN_UPDATED_FAILED)->setMessages();//"Comma list is empty, aborting."
-					$this->getTreeModel()->addDebug(LAN_UPDATED_FAILED.": Comma list is empty, aborting.")->setMessages();
+					$this->getTreeModel()->addMessageDebug(LAN_UPDATED_FAILED. ': Comma list is empty, aborting.')->setMessages();
 				}
 			break;
 				
@@ -5195,7 +6109,7 @@ class e_admin_ui extends e_admin_controller_ui
 				$allowed = !is_array($value) ? explode(',', $value) : $value;
 				if(!$allowed)
 				{
-					$rcnt = $this->getTreeModel()->update($field, '', $selected, '', true);
+					$rcnt = $this->getTreeModel()->batchUpdate($field, '', $selected, '');
 				}
 				else
 				{
@@ -5203,13 +6117,22 @@ class e_admin_ui extends e_admin_controller_ui
 					foreach ($selected as $key => $id) 
 					{
 						$node = $tree->getNode($id);
-						if(!$node) continue;
+						if(!$node)
+						{
+							continue;
+						}
 						
 						$val = $node->get($field);
 						
 						// nothing to do
-						if(empty($val)) break;
-						elseif(!is_array($val)) $val = explode(',', $val);
+						if(empty($val))
+						{
+							break;
+						}
+						elseif(!is_array($val))
+						{
+							$val = explode(',', $val);
+						}
 						
 						// remove only allowed, see userclass
 						foreach ($val as $_k => $_v) 
@@ -5225,8 +6148,14 @@ class e_admin_ui extends e_admin_controller_ui
 						$node->set($field, $val);
 						$check = $this->getModel()->setData($node->getData())->save(false, true);
 						
-						if(false === $check) $this->getModel()->setMessages();
-						else $rcnt++;
+						if($check === false)
+						{
+							$this->getModel()->setMessages();
+						}
+						else
+						{
+							$rcnt++;
+						}
 					}
 					$this->_model = null;
 				}
@@ -5251,10 +6180,40 @@ class e_admin_ui extends e_admin_controller_ui
 		$this->getTreeModel()->setMessages();
 	}
 
+	protected function handleGridSearchfieldFilter($selected)
+	{
+		return $this->handleListSearchfieldFilter($selected);
+	}
+
+	protected function handleGridDeleteBatch($selected)
+	{
+		return $this->handleListDeleteBatch($selected);
+	}
+
+
+	/**
+	 * Method to generate "Search in Field" query.
+	 * @param $selected
+	 * @return string
+	 */
+	protected function handleListSearchfieldFilter($selected)
+	{
+		$string = $this->getQuery('searchquery');
+
+
+
+		if(empty($string))
+		{
+			return null;
+		}
+
+		return $selected. " LIKE '%".e107::getParser()->toDB($string)."%' "; // array($selected, $this->getQuery('searchquery'));
+	}
+
 	/**
 	 * Batch default (field) trigger
 	 * @param array $selected
-	 * @return void
+	 * @return int|null
 	 */
 	protected function handleListBatch($selected, $field, $value)
 	{
@@ -5263,12 +6222,12 @@ class e_admin_ui extends e_admin_controller_ui
 		if($value === '#delete') // see admin->users
 		{
 			$val = "''";
-			$value = "(empty)";	
+			$value = '(empty)';
 		}	
-		elseif($value === "#null")
+		elseif($value === '#null')
 		{
 			$val = null;
-			$value = "(empty)";
+			$value = '(empty)';
 		}
 		else
 		{
@@ -5277,29 +6236,35 @@ class e_admin_ui extends e_admin_controller_ui
 		
 		if($field === 'options') // reserved field type. see: admin -> media-manager - batch rotate image.
 		{
-			return; 
+			return null;
 		}
 
 
 
 
-		$cnt = $this->getTreeModel()->update($field, $val, $selected, true, false);
+		$cnt = $this->getTreeModel()->batchUpdate($field, $val, $selected, true, false);
 		if($cnt)
 		{
 			$vttl = $this->getUI()->renderValue($field, $value, $this->getFieldAttr($field));
 			$msg = e107::getParser()->lanVars(LAN_UI_BATCH_UPDATE_SUCCESS, array('x' => $vttl, 'y' => $cnt), true);
 			$this->getTreeModel()->addMessageSuccess($msg);
 			// force reload the collection from DB, fix some issues as 'observer' is executed before the batch handler
-			$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, false, false, $this->listQry))->load(true);
+			$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, false, false, $this->listQry))->loadBatch(true);
 		}
 		$this->getTreeModel()->setMessages();
 		return $cnt;
 	}
 
+	public function GridDeleteTrigger($posted)
+	{
+		$this->ListDeleteTrigger($posted);
+	}
+
+
 	/**
 	 * Catch delete submit
-	 * @param string $batch_trigger
-	 * @return none
+	 * @param $posted
+	 * @return null
 	 */
 	public function ListDeleteTrigger($posted)
 	{
@@ -5309,7 +6274,7 @@ class e_admin_ui extends e_admin_controller_ui
 			return; // always break on cancel!
 		}
 
-		$id = intval(key($posted));
+		$id = (int) key($posted);
 		if($this->deleteConfirmScreen && !$this->getPosted('etrigger_delete_confirm'))
 		{
 			// forward data to delete confirm screen
@@ -5325,21 +6290,14 @@ class e_admin_ui extends e_admin_controller_ui
 			$data = $model->getData();
 			if($this->beforeDelete($data, $id))
 			{
-				
-				$eventData = array('oldData'=>$data,'id'=> $id);
-				
-				if($triggerName = $this->getEventTriggerName('delete')) // trigger for before. 
+
+				if($triggerName = $this->getEventTriggerName($this->getEventName(),'delete')) // trigger for before.
 				{
 
-					if(E107_DBG_ALLERRORS >0 )
-					{
-						$this->getTreeModel()->addMessageDebug('Admin-ui Trigger fired: <b>'.$triggerName.'</b> with data '.print_a($eventData,true));
-					}
-
-					if($halt = e107::getEvent()->trigger($triggerName, $eventData))
+					if($halt = $this->triggerEvent($triggerName, null, $data, $id))
 					{
 						$this->getTreeModel()->setMessages();
-						return; 
+						return null;
 					} 	
 				}
 				
@@ -5347,13 +6305,9 @@ class e_admin_ui extends e_admin_controller_ui
 				 		 
 				if($this->afterDelete($data, $id, $check))
 				{
-					if($triggerName = $this->getEventTriggerName('deleted')) // trigger for after. 
+					if($triggerName = $this->getEventTriggerName($this->getEventName(), 'deleted')) // trigger for after.
 					{
-						if(E107_DBG_ALLERRORS > 0)
-						{
-							$this->getTreeModel()->addMessageDebug('Admin-ui Trigger fired: <b>'.$triggerName.'</b>'); //FIXME - Why doesn't this display?
-						}
-						e107::getEvent()->trigger($triggerName, $eventData);
+						$this->triggerEvent($triggerName, null, $data, $id);
 					}
 					
 					$this->getTreeModel()->setMessages();
@@ -5368,7 +6322,7 @@ class e_admin_ui extends e_admin_controller_ui
 		{ 
 			//echo "Couldn't get Node for ID: ".$id;
 			// exit; 
-			e107::getMessage()->addDebug('Model Failure Fallback in use!! ID: '.$id.' file: '.__FILE__. " line: ".__LINE__ ,'default',true); 
+			e107::getMessage()->addDebug('Model Failure Fallback in use!! ID: '.$id.' file: '.__FILE__. ' line: ' .__LINE__ ,'default',true);
 			$check = $this->getTreeModel()->delete($id);
 			return;			
 		}
@@ -5406,14 +6360,27 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	public function ListObserver()
 	{
+		if($ufieldpref = $this->getUserPref())
+		{
+			$this->fieldpref = $ufieldpref;
+		}
+
 		$table = $this->getTableName();
 		if(empty($table))
 		{
 			return;
 		}
-		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, false, false, $this->listQry))->load();
+
+		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, false, false, $this->listQry))->loadBatch();
 
 		$this->addTitle();
+
+	//	if($this->getQuery('filter_options'))
+		{
+		//	var_dump($this);
+			// $this->addTitle("to-do"); // display filter option when active.
+		}
+		
 	}
 
 	/**
@@ -5427,7 +6394,7 @@ class e_admin_ui extends e_admin_controller_ui
 		{
 			return;
 		}
-		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, false, false, $this->listQry))->load();
+		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, false, false, $this->listQry))->loadBatch();
 	}
 
 	/**
@@ -5445,44 +6412,68 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	public function InlineAjaxPage()
 	{
-		$this->logajax("Inline Ajax Triggered");
+		$this->logajax('Inline Ajax Triggered');
 
 		$protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
 		if(!vartrue($_POST['name']) || !vartrue($this->fields[$_POST['name']]))
 		{
 			header($protocol.': 404 Not Found', true, 404);
-			header("Status: 404 Not Found", true, 404);
-			echo LAN_FIELD.": ".$this->fields[$_POST['name']].": ".LAN_NOT_FOUND; // Field: x: not found!
+			header('Status: 404 Not Found', true, 404);
+			echo LAN_FIELD. ': ' .$this->fields[$_POST['name']]. ': ' .LAN_NOT_FOUND; // Field: x: not found!
 			$this->logajax('Field not found');
 			return;
 		}
 		
 		$_name = $_POST['name'];
 		$_value = $_POST['value'];
+		$_token = $_POST['token'];
+
 		$parms = $this->fields[$_name]['readParms'] ? $this->fields[$_name]['readParms'] : '';
-		if(!is_array($parms)) parse_str($parms, $parms);
-		if(vartrue($parms['editable'])) $this->fields[$_name]['inline'] = true;
-		
-		if(vartrue($this->fields[$_name]['noedit']) || vartrue($this->fields[$_name]['nolist']) || !vartrue($this->fields[$_name]['inline']))
+		if(!is_array($parms))
 		{
-			header($protocol.': 403 Forbidden', true, 403);
-			header("Status: 403 Forbidden", true, 403);
-			echo ADLAN_86; //Forbidden
-			$this->logajax("Forbidden");
-			return;
+			parse_str($parms, $parms);
+		}
+		if(!empty($parms['editable']))
+		{
+			$this->fields[$_name]['inline'] = true;
 		}
 		
+		if(!empty($this->fields[$_name]['noedit']) || !empty($this->fields[$_name]['nolist']) || empty($this->fields[$_name]['inline']) || empty($_token) || !password_verify(session_id(),$_token))
+		{
+			header($protocol.': 403 Forbidden', true, 403);
+			header('Status: 403 Forbidden', true, 403);
+			echo ADLAN_86; //Forbidden
+
+			$result = var_export($this->fields[$_name], true);
+
+			$problem = array();
+			$problem['noedit'] = !empty($this->fields[$_name]['noedit']) ? 'yes' : 'no';
+			$problem['nolist'] = !empty($this->fields[$_name]['nolist']) ? 'yes' : 'no';
+			$problem['inline'] = empty($this->fields[$_name]['inline']) ? 'yes' : 'no';
+			$problem['token'] = empty($_token) ? 'yes' : 'no';
+			$problem['password'] = !password_verify(session_id(),$_token) ? 'yes' : 'no';
+
+			$result .= "\nForbidden Caused by: ".print_r($problem,true);
+			$this->logajax("Forbidden\nAction:".$this->getAction()."\nField (".$_name."):\n".$result);
+			return;
+		}
+
+
+
 
 		
 		$model = $this->getModel()->load($this->getId());
 		$_POST = array(); //reset post
 		$_POST[$_name] = $_value; // set current field only
+		$_POST['etrigger_submit'] = 'update'; // needed for event trigger
+
+	//	print_r($_POST);
 		
 		// generic handler - same as regular edit form submit
 
 		$this->convertToData($_POST);
 
-		$model->setPostedData($_POST, null, false);
+		$model->setPostedData($_POST);
 		$model->setParam('validateAvailable', true); // new param to control validate of available data only, reset on validate event
 		// Do not update here! Because $old_data and $new_data will be the same in afterUpdate() methods.
 		// Data will be saved in _manageSubmit() method.
@@ -5492,15 +6483,24 @@ class e_admin_ui extends e_admin_controller_ui
 		{
 			// using 400
 			header($protocol.': 400 Bad Request', true, 400);
-			header("Status: 400 Bad Request", true, 400);
-			$this->logajax("Bad Request");
+			header('Status: 400 Bad Request', true, 400);
+			$this->logajax('Bad Request');
 			// DEBUG e107::getMessage()->addError('Error test.', $model->getMessageStackName())->addError('Another error test.', $model->getMessageStackName());
 
 
-			if(E107_DEBUG_LEVEL) $message = e107::getMessage()->get('debug', $model->getMessageStackName(), true);
-			else $message = e107::getMessage()->get('error', $model->getMessageStackName(), true);
+			if(E107_DEBUG_LEVEL)
+			{
+				$message = e107::getMessage()->get('debug', $model->getMessageStackName(), true);
+			}
+			else
+			{
+				$message = e107::getMessage()->get('error', $model->getMessageStackName(), true);
+			}
 			
-			if(!empty($message)) echo implode(' ', $message);
+			if(!empty($message))
+			{
+				echo implode(' ', $message);
+			}
 			$this->logajax(implode(' ', $message));
 			return;
 		}
@@ -5510,6 +6510,11 @@ class e_admin_ui extends e_admin_controller_ui
 	}
 
 	// Temporary - but useful. :-)
+
+	/**
+	 * @param $message
+	 * @return void
+	 */
 	public function logajax($message)
 	{
 		if(e_DEBUG !== true)
@@ -5522,7 +6527,8 @@ class e_admin_ui extends e_admin_controller_ui
 		$message .= print_r($_POST,true);
 		$message .= "\n_GET\n";
 		$message .= print_r($_GET,true);
-		$message .= "---------------";
+
+		$message .= '---------------';
 		
 		file_put_contents(e_LOG.'uiAjaxResponseInline.log', $message."\n\n", FILE_APPEND);
 	}
@@ -5544,15 +6550,23 @@ class e_admin_ui extends e_admin_controller_ui
 			return;
 		}
 
+		$this->_log('Executing SortAjaxPage()');
+		$sql    = e107::getDb();
+
 		if(!empty($this->sortParent)) // Force 100 positions for child when sorting with parent/child.
 		{
 			$this->orderStep = 100;
 		}
+		else // Reset all the order fields first.
+		{
+			$resetQry = $this->sortField ."= 999 WHERE 1"; // .$this->sortField;
+			$sql->update($this->table, $resetQry );
+			$this->_log('Sort Qry ('.$this->table.'): '.$resetQry);
+		}
 
-		
-		$sql    = e107::getDb();
-		$step   = $this->orderStep ? intval($this->orderStep) : 1;
-		$from   = ($_GET['from']) ? intval($_GET['from']) * $step : 0;
+
+		$step   = $this->orderStep ? (int) $this->orderStep : 1;
+		$from   = !empty($_GET['from']) ? (int) $_GET['from'] * $step : $step;
 
 		$c = $from;
 		$updated = array();
@@ -5560,15 +6574,22 @@ class e_admin_ui extends e_admin_controller_ui
 		foreach($_POST['all'] as $row)
 		{
 
-			list($tmp,$id) = explode("-", $row, 2);
-			$id = preg_replace('/[^\w-:.]/', '', $id);
-			if(!is_numeric($id)) $id = "'{$id}'";
-			if($sql->update($this->table, $this->sortField." = {$c} WHERE ".$this->pid." = ".$id)!==false)
+			list($tmp,$id) = explode('-', $row, 2);
+			$id = preg_replace('/[^\w\-:.]/', '', $id);
+			if(!is_numeric($id))
 			{
-				$updated[] = "#".$id."  --  ".$this->sortField." = ".$c;
+				$id = "'{$id}'";
 			}
-			// echo($sql->getLastQuery()."\n");
-			$c++; //  += $step;
+			$updateQry = $this->sortField." = {$c} WHERE ".$this->pid. ' = ' .$id;
+
+			if($sql->update($this->table, $updateQry) !==false)
+			{
+				$updated[] = '#' .$id. '  --  ' .$this->sortField. ' = ' .$c;
+			}
+
+			$this->_log('Sort Qry ('.$this->table.'): '.$updateQry);
+
+			$c += $step;
 
 		}
 
@@ -5578,14 +6599,14 @@ class e_admin_ui extends e_admin_controller_ui
 			return null;
 		}
 
-	//file_put_contents(e_LOG."sortAjax.log", print_r($_POST['all'],true));
 
-		// Increment every other record after the current page of records.
-	//	$changed = (intval($_POST['neworder']) * $step) + $from ;
+		// Increment every record after the current page of records.
+
 		$changed = $c - $step;
-		$qry = "UPDATE `#".$this->table."` e, (SELECT @n := ".($changed).") m  SET e.".$this->sortField." = @n := @n + ".$step." WHERE ".$this->sortField." > ".($changed);
+		$qry = 'UPDATE `#' .$this->table. '` e, (SELECT @n := ' .($changed). ') m  SET e.' .$this->sortField. ' = @n := @n + ' .$step. ' WHERE ' .$this->sortField. ' > ' .($changed);
 
 		$result = $sql->gen($qry);
+		$this->_log('Sort Qry: '.$qry);
 
 
 		// ------------ Fix Child Order when parent is used. ----------------
@@ -5635,7 +6656,6 @@ class e_admin_ui extends e_admin_controller_ui
 	//	 e107::getLog()->addDebug(print_r($updated,true))->toFile('SortAjax','Admin-UI Ajax Sort Log', true);
 	//	e107::getLog()->addDebug($qry)->toFile('SortAjax','Admin-UI Ajax Sort Log', true);
 
-	// eg. 	$qry = "UPDATE e107_faqs e, (SELECT @n := 249) m  SET e.faq_order = @n := @n + 1 WHERE 1";
 
 	}
 
@@ -5674,7 +6694,12 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	public function ListAjaxObserver()
 	{
-		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, 0, false, $this->listQry))->load();
+	    if($ufieldpref = $this->getUserPref())
+		{
+			$this->fieldpref = $ufieldpref;
+		}
+
+		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, 0, false, $this->listQry))->loadBatch();
 	}
 
 
@@ -5697,6 +6722,9 @@ class e_admin_ui extends e_admin_controller_ui
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function GridAjaxPage()
 	{
 		return $this->getUI()->getList(true,'grid');
@@ -5709,6 +6737,7 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		$this->getModel()->load($this->getId());
 		$this->addTitle();
+		$this->addTitle('#'.$this->getId()); // Inform user of which record is being edited.
 	}
 
 	/**
@@ -5729,9 +6758,9 @@ class e_admin_ui extends e_admin_controller_ui
 
 	/**
 	 * Edit - send JS to page Header
-	 * @return none
+	 * @return void
 	 */
-	function EditHeader()
+	public function EditHeader()
 	{
 		// e107::getJs()->requireCoreLib('core/admin.js');
 		e107::js('core','core/admin.js','prototype');
@@ -5748,7 +6777,7 @@ class e_admin_ui extends e_admin_controller_ui
 
 	/**
 	 * Generic Create observer
-	 * @return string
+	 * @return void
 	 */
 	public function CreateObserver()
 	{
@@ -5804,25 +6833,45 @@ class e_admin_ui extends e_admin_controller_ui
 	 * User defined pre-update logic, return false to prevent DB query execution
 	 * @param $new_data
 	 * @param $old_data
+	 * @param $id
 	 */
 	public function beforeUpdate($new_data, $old_data, $id)
 	{
 	}
 
 
-
 	/**
 	 * User defined after-update logic
-	 * @param $new_data 
+	 * @param $new_data
 	 * @param $old_data
+	 * @param $id
 	 */
 	public function afterUpdate($new_data, $old_data, $id)
 	{
 	}
 
 	/**
- * User defined error handling, return true to suppress model messages
- */
+	 * User defined before pref saving logic
+	 * @param $new_data
+	 * @param $old_data
+	 * @return null
+	 */
+	public function beforePrefsSave($new_data, $old_data)
+	{
+		return null;
+	}
+
+	/**
+	 * User defined before pref saving logic
+	 */
+	public function afterPrefsSave()
+	{
+		return null;
+	}
+
+	/**
+    * User defined error handling, return true to suppress model messages
+    */
 	public function onUpdateError($new_data, $old_data, $id)
 	{
 	}
@@ -5859,9 +6908,9 @@ class e_admin_ui extends e_admin_controller_ui
 
 	/**
 	 * Create - send JS to page Header
-	 * @return none
+	 * @return void
 	 */
-	function CreateHeader()
+	public function CreateHeader()
 	{
 		// TODO - invoke it on className (not all textarea elements)
 		//e107::getJs()->requireCoreLib('core/admin.js');
@@ -5870,16 +6919,29 @@ class e_admin_ui extends e_admin_controller_ui
 
 	/**
 	 *
-	 * @return TBD
+	 * @return string
 	 */
 	public function CreatePage()
 	{
 		return $this->getUI()->getCreate();
 	}
 
+	/**
+	 * @return void
+	 */
 	public function PrefsSaveTrigger()
 	{
 		$data = $this->getPosted();
+
+		$beforePref = $data;
+		unset($beforePref['e-token'],$beforePref['etrigger_save']);
+
+		$tmp = $this->beforePrefsSave($beforePref, $this->getConfig()->getPref());
+
+		if(!empty($tmp))
+		{
+			$data = $tmp;
+		}
 
 		foreach($this->prefs as $k=>$v) // fix for empty checkboxes - need to save a value.
 		{
@@ -5897,7 +6959,7 @@ class e_admin_ui extends e_admin_controller_ui
 
 				if(is_string($this->getConfig()->get($key))) // most likely upgraded to multilan=>true, so reset to an array structure.
 				{
-					$this->getConfig()->setPostedData($key, array(e_LANGUAGE => $val), false);
+					$this->getConfig()->setPostedData($key, array(e_LANGUAGE => $val));
 				}
 				else
 				{
@@ -5909,13 +6971,14 @@ class e_admin_ui extends e_admin_controller_ui
 			}
 			else
 			{
-				$this->getConfig()->setPostedData($key, $val, false);
+				$this->getConfig()->setPostedData($key, $val);
 			}
 
 		}
 
-		$this->getConfig()->save(true);
+		$this->getConfig()->save();
 
+		$this->afterPrefsSave();
 
 /*
 		$this->getConfig()
@@ -5927,12 +6990,18 @@ class e_admin_ui extends e_admin_controller_ui
 		$this->getConfig()->setMessages();
 
 	}
-	
+
+	/**
+	 * @return void
+	 */
 	public function PrefsObserver()
 	{
 		$this->addTitle();
 	}
 
+	/**
+	 * @return string
+	 */
 	public function PrefsPage()
 	{
 		return $this->getUI()->getSettings();
@@ -5945,9 +7014,10 @@ class e_admin_ui extends e_admin_controller_ui
 	protected function parseAliases()
 	{
 		// parse table
-		if(strpos($this->table, '.') !== false)
+		$tableName = $this->getTableName();
+		if(strpos($tableName, '.') !== false)
 		{
-			$tmp = explode('.', $this->table, 2);
+			$tmp = explode('.', $tableName, 2);
 			$this->table = $tmp[1];
 			$this->tableAlias = $tmp[0];
 			unset($tmp);
@@ -5958,21 +7028,32 @@ class e_admin_ui extends e_admin_controller_ui
 		return $this;
 	}
 
+	/**
+	 * @return false
+	 */
 	public function getPrimaryName()
 	{
 		// Option for working with tables having no PID
-		if(!varset($this->pid) && vartrue($this->fields) && false !== $this->pid)
+		if($this->pid !== false && empty($this->pid) && !empty($this->fields))
 		{
-			$message = e107::getParser()->toHtml(LAN_UI_NOPID_ERROR,true);
+			$message = e107::getParser()->toHTML(LAN_UI_NOPID_ERROR,true);
 			e107::getMessage()->add($message, E_MESSAGE_WARNING);
 		}
 
 		return $this->pid;
 	}
 
+	/**
+	 * @param $alias
+	 * @param $prefix
+	 * @return string
+	 */
 	public function getTableName($alias = false, $prefix = false)
 	{
-		if($alias) return ($this->tableAlias ? $this->tableAlias : '');
+		if($alias)
+		{
+			return ($this->tableAlias ? $this->tableAlias : '');
+		}
 		return ($prefix ? '#' : '').$this->table;
 	}
 
@@ -5997,9 +7078,9 @@ class e_admin_ui extends e_admin_controller_ui
 
 	/**
 	 * Set read and write parms with drop-down-list array data (ie. type='dropdown')
-	 * @param str $field
+	 * @param string $field
 	 * @param array $array [optional]
-	 * @return none
+	 * @return null
 	 */
 	public function setDropDown($field,$array) //TODO Have Miro check this.
 	{
@@ -6016,16 +7097,24 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		$this->_pref = $this->pluginName === 'core' ? e107::getConfig() : e107::getPlugConfig($this->pluginName);
 
-		$dataFields = $validateRules = array();
+		if($this->pluginName !== 'core' && !e107::isInstalled($this->pluginName))
+		{
+			$obj = get_class($this);
+			e107::getMessage()->addWarning($obj. 'The plugin is not installed or $pluginName: is not valid. (' .$this->pluginName. ')'); // debug only.
+			return $this;
+		}
+
+		$validateRules = array();
+		$dataFields = $validateRules;
 		foreach ($this->prefs as $key => $att)
 		{
 			// create dataFields array
 			$dataFields[$key] = vartrue($att['data'], 'string');
 
 			// create validation array
-			if(vartrue($att['validate']))
+			if(!empty($att['validate']))
 			{
-				$validateRules[$key] = array((true === $att['validate'] ? 'required' : $att['validate']), varset($att['rule']), $att['title'], varset($att['error'], $att['help']));
+				$validateRules[$key] = array(($att['validate'] === true ? 'required' : $att['validate']), varset($att['rule']), $att['title'], varset($att['error'], $att['help']));
 			}
 			/* Not implemented in e_model yet
 			elseif(vartrue($att['check']))
@@ -6058,12 +7147,15 @@ class e_admin_ui extends e_admin_controller_ui
 					continue;
 				}
 
-				if(varset($att['type']) === 'comma' && (empty($att['data']) || empty($att['rule'])))
+				if((empty($att['data']) || empty($att['rule'])) && varset($att['type']) === 'comma' )
 				{
 					$att['data'] = 'set';
 					$att['validate'] = 'set';
 					$_parms = vartrue($att['writeParms'], array());
-					if(is_string($_parms)) parse_str($_parms, $_parms);
+					if(is_string($_parms))
+					{
+						parse_str($_parms, $_parms);
+					}
 					unset($_parms['__options']);
 					$att['rule'] = $_parms;
 					unset($_parms);
@@ -6074,7 +7166,7 @@ class e_admin_ui extends e_admin_controller_ui
 					$att['data'] = 'set';
 				}
 
-				if(($key !== 'options' && false !== varset($att['data']) && null !== varset($att['type'],null) && !vartrue($att['noedit'])) || vartrue($att['forceSave']))
+				if(!empty($att['forceSave']) || ($key !== 'options' && varset($att['data']) !== false && varset($att['type'],null) !== null && !vartrue($att['noedit'])))
 				{
 					$this->dataFields[$key] = vartrue($att['data'], 'str');
 					if(!empty($att['type']))
@@ -6094,13 +7186,13 @@ class e_admin_ui extends e_admin_controller_ui
 			$this->validationRules = array();
 			foreach ($this->fields as $key => $att)
 			{
-				if(null === varset($att['type'], null) || vartrue($att['noedit']))
+				if(varset($att['type'], null) === null || vartrue($att['noedit']))
 				{
 					continue;
 				}
-				if(vartrue($att['validate']))
+				if(!empty($att['validate']))
 				{
-					$this->validationRules[$key] = array((true === $att['validate'] ? 'required' : $att['validate']), varset($att['rule']), $att['title'], varset($att['error'], vartrue($att['help'])));
+					$this->validationRules[$key] = array(($att['validate'] === true ? 'required' : $att['validate']), varset($att['rule']), $att['title'], varset($att['error'], vartrue($att['help'])));
 				}
 				/*elseif(vartrue($att['check'])) could go?
 				{
@@ -6110,7 +7202,10 @@ class e_admin_ui extends e_admin_controller_ui
 		}
 
 		// don't touch it if already exists
-		if($this->_model) return $this;
+		if($this->_model)
+		{
+			return $this;
+		}
 
 		// default model
 
@@ -6118,7 +7213,7 @@ class e_admin_ui extends e_admin_controller_ui
 		$this->_model = new e_admin_model();
 		$this->_model->setModelTable($this->table)
 			->setFieldIdName($this->pid)
-            ->setUrl($this->url)
+			->setUrl($this->url)
 			->setValidationRules($this->validationRules)
 			->setDbTypes($this->fieldTypes)
 			->setFieldInputTypes($this->fieldInputTypes)
@@ -6139,9 +7234,16 @@ class e_admin_ui extends e_admin_controller_ui
 		$this->_tree_model = new e_admin_tree_model();
 		$this->_tree_model->setModelTable($this->table)
 			->setFieldIdName($this->pid)
-            ->setUrl($this->url)
+			->setUrl($this->url)
 			->setMessageStackName('admin_ui_tree_'.$this->table)
-			->setParams(array('model_class' => 'e_admin_model', 'model_message_stack' => 'admin_ui_model_'.$this->table ,'db_query' => $this->listQry));
+			->setParams(array('model_class' => 'e_admin_model',
+			                  'model_message_stack' => 'admin_ui_model_'.$this->table,
+			                  'db_query' => $this->listQry,
+			                  // Information necessary for PHP-based tree sort
+			                  'sort_parent' => $this->getSortParent(),
+			                  'sort_field' => $this->getSortField(),
+			                  'primary_field' => $this->getPrimaryName(),
+			                  ));
 
 		return $this;
 	}
@@ -6167,21 +7269,26 @@ class e_admin_ui extends e_admin_controller_ui
 
 }
 
+
+/**
+ *
+ */
 class e_admin_form_ui extends e_form
 {
 	/**
 	 * @var e_admin_ui
 	 */
-	protected $_controller = null;
+	protected $_controller;
+	protected $_list_view;
 
 
 
 	/**
 	 * Constructor
-	 * @param e_admin_ui $controller
+	 * @param e_admin_controller_ui $controller
 	 * @param boolean $tabindex [optional] enable form element auto tab-indexing
 	 */
-	function __construct($controller, $tabindex = false)
+	public function __construct($controller, $tabindex = false)
 	{
 		$this->_controller = $controller;
 		parent::__construct($tabindex);
@@ -6192,6 +7299,9 @@ class e_admin_form_ui extends e_form
 		$this->init();
 	}
 
+	/**
+	 * @return void|null
+	 */
 	protected function preventConflict()
 	{
 		$err = false;
@@ -6243,7 +7353,7 @@ class e_admin_form_ui extends e_form
 		$parentField        = $controller->getSortParent();
 		$treePrefixField    = $controller->getTreePrefix();
 		$parent 	        = $controller->getListModel()->get($parentField);
-		$level              = $controller->getListModel()->get("_depth");
+		$level              = $controller->getListModel()->get('_depth');
 
 
 		if($mode === 'read')
@@ -6256,7 +7366,7 @@ class e_admin_form_ui extends e_form
 				return $curVal;
 			}
 
-			$level_image = $parent ? str_replace('level-x','level-'.$level, ADMIN_CHILD_ICON) : '';
+			$level_image = $parent ? str_replace('level-x','level-'.$level, defset('ADMIN_CHILD_ICON')) : '';
 
 			return ($parent) ?  $level_image.$curVal : $curVal;
 
@@ -6269,7 +7379,7 @@ class e_admin_form_ui extends e_form
 
 			if(!empty($parent))
 			{
-				$ret['inlineParms'] = array('pre'=> str_replace('level-x','level-'.$level, ADMIN_CHILD_ICON));
+				$ret['inlineParms'] = array('pre'=> str_replace('level-x','level-'.$level, defset('ADMIN_CHILD_ICON')));
 			}
 
 
@@ -6303,7 +7413,7 @@ class e_admin_form_ui extends e_form
 	 * Generic DB Record Creation Form.
 	 * @return string
 	 */
-	function getCreate()
+	public function getCreate()
 	{
 		$controller = $this->getController();
 		$request = $controller->getRequest();
@@ -6326,11 +7436,11 @@ class e_admin_form_ui extends e_form
 		{
 			if(empty($tabs))
 			{
-				$head = "<div id='admin-ui-edit-db-language' class='text-right'>".$multiLangInfo."</div>";
+				$head = "<div id='admin-ui-edit-db-language' class='text-right'>".$multiLangInfo. '</div>';
 			}
 			else
 			{
-				$head = "<div id='admin-ui-edit-db-language' class='text-right'>".$multiLangInfo."</div>";
+				$head = "<div id='admin-ui-edit-db-language' class='text-right tabs'>".$multiLangInfo. '</div>';
 			}
 		}
 		else
@@ -6338,7 +7448,8 @@ class e_admin_form_ui extends e_form
 			$head = '';
 		}
 
-		$forms = $models = array();
+		$models = array();
+		$forms = array();
 		$forms[] = array(
 				'id'  => $this->getElementId(),
 				'header' => $head,
@@ -6354,10 +7465,11 @@ class e_admin_form_ui extends e_form
 						'footer' => $form_end,  //XXX Unused?
 						'after_submit_options' => $controller->getAfterSubmitOptions(), // or true for default redirect options
 						'after_submit_default' => $request->getPosted('__after_submit_action', $controller->getDefaultAction()), // or true for default redirect options
-						'triggers' => 'auto', // standard create/update-cancel triggers
+						'triggers' => $controller->getDefaultTrigger(), // standard create/update-cancel triggers
 					)
 				)
 		);
+
 		$models[] = $controller->getModel();
 
 		return $this->renderCreateForm($forms, $models, e_AJAX_REQUEST);
@@ -6367,12 +7479,13 @@ class e_admin_form_ui extends e_form
 	 * Generic Settings Form.
 	 * @return string
 	 */
-	function getSettings()
+	public function getSettings()
 	{
 		$controller = $this->getController();
 	//	$request = $controller->getRequest();
 		$legend = LAN_UI_PREF_LABEL;
-		$forms = $models = array();
+		$models = array();
+		$forms = array();
 		$forms[] = array(
 				'id'  => $this->getElementId(),
 				//'url' => e_SELF,
@@ -6397,7 +7510,73 @@ class e_admin_form_ui extends e_form
 	}
 
 
+	/**
+	 * Integrate e_addon data into the list model.
+	 * @param e_tree_model $tree
+	 * @param array $fields
+	 * @param string $pid
+	 * @return null
+	 */
+	private function setAdminAddonModel(e_tree_model $tree, $fields, $pid)
+	{
 
+		$event= $this->getController()->getEventName();
+
+		$arr = array();
+
+		/** @var e_tree_model $model */
+		foreach($tree->getTree() as $model)
+		{
+			foreach($fields as $fld)
+			{
+
+				if(strpos($fld,'x_') !== 0)
+				{
+					continue;
+				}
+
+				list($prefix,$plug,$field) = explode('_',$fld,3);
+
+				if($prefix !== 'x' || empty($field) || empty($plug))
+				{
+					continue;
+				}
+
+				$id = $model->get($pid);
+
+				if(!empty($id))
+				{
+					$arr[$plug][$field][$id] = $model;
+				}
+			}
+
+
+		}
+
+
+		foreach($arr as $plug=>$field)
+		{
+
+			if($obj = e107::getAddon($plug, 'e_admin'))
+			{
+				foreach($field as $fld=>$var)
+				{
+					$ids = implode(',', array_keys($var));
+
+					$value = (array) e107::callMethod($obj,'load', $event,$ids);
+
+				//	$value = (array) $obj->load($event, $ids);
+
+					foreach($var as $id=>$model)
+					{
+						$model->set('x_' .$plug. '_' .$fld, varset($value[$id][$fld],null));
+					}
+				}
+			}
+
+		}
+
+	}
 
 
 	/**
@@ -6410,39 +7589,49 @@ class e_admin_form_ui extends e_form
 	public function getList($ajax = false, $view='default')
 	{
 		$tp = e107::getParser();
+		$this->_list_view = $view;
 		$controller = $this->getController();
 
 		$request = $controller->getRequest();
 		$id = $this->getElementId();
-		$tree = $options = array();
+		$pid = $controller->getPrimaryName();
+		$options = array();
+		$tree = array();
 		$tree[$id] = $controller->getTreeModel();
+
+
+
+
+		if($view === 'default' && deftrue('e_DEBUG_TREESORT'))
+		{
+			$controller->getTreeModelSorted();
+		}
 
 		// if going through confirm screen - no JS confirm
 		$controller->setFieldAttr('options', 'noConfirm', $controller->deleteConfirmScreen);
 
-		$this->listTotal = $tree[$id]->getTotal();
-
-
 		$fields = $controller->getFields();
+
+		$this->setAdminAddonModel($tree[$id], array_keys($fields), $pid);
 
 		// checks dispatcher acess/perms for create/edit/delete access in list mode.
 		$mode           = $controller->getMode();
-		$deleteRoute    = $mode."/delete";
-		$editRoute      = $mode."/edit";
-		$createRoute    = $mode."/create";
+		$deleteRoute    = $mode. '/delete';
+		$editRoute      = $mode. '/edit';
+		$createRoute    = $mode. '/create';
 
-		if(!$controller->getDispatcher()->checkRouteAccess($createRoute)) // disable the batchCopy option.
+		if(!$controller->getDispatcher()->hasRouteAccess($createRoute)) // disable the batchCopy option.
 		{
 			$controller->setBatchCopy(false);
 		}
 
-		if(!$controller->getDispatcher()->checkRouteAccess($deleteRoute)) // disable the delete button and batch delete.
+		if(!$controller->getDispatcher()->hasRouteAccess($deleteRoute)) // disable the delete button and batch delete.
 		{
 			$fields['options']['readParms']['deleteClass'] = e_UC_NOBODY;
 			$controller->setBatchDelete(false);
 		}
 
-		if(!$controller->getDispatcher()->checkRouteAccess($editRoute))
+		if(!$controller->getDispatcher()->hasRouteAccess($editRoute))
 		{
 			$fields['options']['readParms']['editClass'] = e_UC_NOBODY; // display the edit button.
 			foreach($options[$id]['fields'] as $k=>$v) // disable inline editing.
@@ -6486,12 +7675,12 @@ class e_admin_form_ui extends e_form
 
 		$options[$id] = array(
 			'id'            => $this->getElementId(), // unique string used for building element ids, REQUIRED
-			'pid'           => $controller->getPrimaryName(), // primary field name, REQUIRED
+			'pid'           => $pid, // primary field name, REQUIRED
 			'query'	        => $controller->getFormQuery(), // work around - see form in newspost.php (submitted news)
 			'head_query'    => $request->buildQueryString('field=[FIELD]&asc=[ASC]&from=[FROM]', false), // without field, asc and from vars, REQUIRED
 			'np_query'      => $request->buildQueryString(array(), false, 'from'), // without from var, REQUIRED for next/prev functionality
 			'legend'        => $controller->getPluginTitle(), // hidden by default
-			'form_pre'      => !$ajax ? $this->renderFilter($tp->post_toForm(array($controller->getQuery('searchquery'), $controller->getQuery('filter_options'))), $controller->getMode().'/'.$controller->getAction()) : '', // needs to be visible when a search returns nothing
+			'form_pre'      => !$ajax ? $this->renderFilter(array($controller->getQuery('searchquery'), $controller->getQuery('filter_options')), $controller->getMode().'/'.$controller->getAction()) : '', // needs to be visible when a search returns nothing
 			'form_post'     => '', // markup to be added after closing form element
 			'fields'        => $fields, // see e_admin_ui::$fields
 			'fieldpref'     => $controller->getFieldPref(), // see e_admin_ui::$fieldpref
@@ -6519,10 +7708,11 @@ class e_admin_form_ui extends e_form
 	}
 
 
-
-
-
-
+	/**
+	 * @param $ids
+	 * @param $ajax
+	 * @return string
+	 */
 	public function getConfirmDelete($ids, $ajax = false)
 	{
 		$controller = $this->getController();
@@ -6534,11 +7724,11 @@ class e_admin_form_ui extends e_form
 		
 		if(!empty($controller->deleteConfirmMessage))
         { 
-			e107::getMessage()->addWarning(str_replace("[x]","<b>".$delcount."</b>", $controller->deleteConfirmMessage));
+			e107::getMessage()->addWarning(str_replace('[x]', '<b>' .$delcount. '</b>', $controller->deleteConfirmMessage));
         }
 		else 
         {
-			e107::getMessage()->addWarning(str_replace("[x]","<b>".$delcount."</b>",LAN_UI_DELETE_WARNING));
+			e107::getMessage()->addWarning(str_replace('[x]', '<b>' .$delcount. '</b>',LAN_UI_DELETE_WARNING));
         }
     
 		$fieldsets['confirm'] = array(
@@ -6552,13 +7742,14 @@ class e_admin_form_ui extends e_form
 			'table_rows' => '', // rows array (<td> tags)
 			'table_body' => '', // string body - used only if rows empty
 			'pre_triggers' => '',
-			'triggers' => array('hidden' => $this->hidden('etrigger_delete['.$ids.']', $ids), 'delete_confirm' => array(LAN_CONFDELETE, 'confirm', $ids), 'cancel' => array(LAN_CANCEL, 'cancel')),
+			'triggers' => array('hidden' => $this->hidden('etrigger_delete['.$ids.']', $ids) . $this->token(), 'delete_confirm' => array(LAN_CONFDELETE, 'confirm', $ids), 'cancel' => array(LAN_CANCEL, 'cancel')),
 		);
 		if($delcount > 1)
 		{
 			$fieldsets['confirm']['triggers']['hidden'] = $this->hidden('etrigger_batch', 'delete');
 		}
 
+		$id = null;
 		$forms[$id] = array(
 			'id' => $this->getElementId(), // unique string used for building element ids, REQUIRED
 			'url' => e_REQUEST_SELF, // default
@@ -6580,12 +7771,12 @@ class e_admin_form_ui extends e_form
 	 */
 	public function renderPagination()
 	{
-		if($this->getController()->getGrid('carousel') === true)
+		if($this->_list_view === 'grid' && $this->getController()->getGrid('carousel') === true)
 		{
 			return '<div class="btn-group" >
-			<a id="admin-ui-carousel-prev" class="btn btn-default" href="#admin-ui-carousel" data-slide="prev"><i class="fa fa-backward"></i></a>
-			<a id="admin-ui-carousel-index" class="btn btn-default">1</a>
-			<a id="admin-ui-carousel-next" class="btn btn-default" href="#admin-ui-carousel" data-slide="next"><i class="fa fa-forward"></i></a>
+			<a id="admin-ui-carousel-prev" class="btn btn-default btn-secondary" href="#admin-ui-carousel" data-slide="prev"><i class="fa fa-backward"></i></a>
+			<a id="admin-ui-carousel-index" class="btn btn-default btn-secondary">1</a>
+			<a id="admin-ui-carousel-next" class="btn btn-default btn-secondary" href="#admin-ui-carousel" data-slide="next"><i class="fa fa-forward"></i></a>
 			</div>';
 		}
 
@@ -6597,15 +7788,32 @@ class e_admin_form_ui extends e_form
 		$vars           = $this->getController()->getQuery();
 		$vars['from']   = '[FROM]';
 
-		$paginate       = http_build_query($vars);
+		$paginate       = http_build_query($vars, '', '&amp;');
+
+		e107::js('footer-inline', "
+				\$('#admin-ui-list-filter a.nextprev-item').on('click', function() {
+					\$('#admin-ui-list-filter .indicator').show();
+			});
+		
+		");
 
 		return $this->pagination(e_REQUEST_SELF.'?'.$paginate,$totalRecords,$fromPage,$perPage,array('template'=>'basic'));
 
 	}
 
-	function renderFilter($current_query = array(), $location = '', $input_options = array())
+	/**
+	 * @param $current_query
+	 * @param $location
+	 * @param $input_options
+	 * @return string
+	 */
+	public function renderFilter($current_query = array(), $location = '', $input_options = array())
 	{
-		if(!$input_options) $input_options = array('size' => 20);
+
+		if(!$input_options)
+		{
+			$input_options = array('size' => 20);
+		}
 		if(!$location)
 		{
 			$location = 'main/list'; //default location
@@ -6616,10 +7824,10 @@ class e_admin_form_ui extends e_form
 			parse_str($input_options, $input_options);
 		}
 		$input_options['id'] = false;
-		$input_options['class'] = 'tbox input-text filter ';
+		$input_options['class'] = 'tbox input-text filter input-xlarge ';
 		$controller = $this->getController();
-		$filter_pre = vartrue($controller->preFiliterMarkup);
-		$filter_post = vartrue($controller->postFiliterMarkup);
+		$filter_pre = vartrue($controller->preFilterMarkup);
+		$filter_post = vartrue($controller->postFilterMarkup);
 		$filter_preserve_var = array();
 		// method requires controller - stanalone advanced usage not possible 
 		if($this->getController())
@@ -6638,7 +7846,7 @@ class e_admin_form_ui extends e_form
 					continue;
 				}
 				
-				$key = preg_replace('/[^\w]/', '', $key);
+				$key = preg_replace('/[\W]/', '', $key);
 				$filter_preserve_var[] = $this->hidden($key, rawurlencode($value));
 			}
 		}
@@ -6651,46 +7859,66 @@ class e_admin_form_ui extends e_form
 
 		//	$tree = $this->getTree();
 		//	$total = $this->getTotal();
+		$grid = $this->getController()->getGrid();
 
+
+		$gridToggle = '';
+
+		if(!empty($grid) && varset($grid['toggleButton']) !==false)
+		{
+			$gridAction = $this->getController()->getAction() === 'grid' ? 'list' : 'grid';
+			$gridQuery = (array) $_GET;
+			$gridQuery['action'] = $gridAction;
+			$toggleUrl = e_REQUEST_SELF. '?' .http_build_query($gridQuery, '', '&amp;');
+			$gridIcon = ($gridAction === 'grid') ? defset('ADMIN_GRID_ICON') : defset('ADMIN_LIST_ICON');
+			$gridTitle = ($gridAction === 'grid') ? LAN_UI_VIEW_GRID_LABEL : LAN_UI_VIEW_LIST_LABEL;
+			$gridToggle = "<a class='btn btn-default' href='".$toggleUrl."' title=\"".$gridTitle. '">' .$gridIcon. '</a>';
+		}
+
+	// <!--<i class='fa fa-search searchquery form-control-feedback form-control-feedback-left'></i>-->
 
 		$text = "
 			<form method='get' action='".e_REQUEST_SELF."'>
 				<fieldset id='admin-ui-list-filter' class='e-filter'>
-					<legend class='e-hideme'>".LAN_LABEL_LABEL_SELECTED."</legend>
-					".$filter_pre."
+					<legend class='e-hideme'>".LAN_LABEL_LABEL_SELECTED. '</legend>
+					' .$filter_pre."
 					<div class='row-fluid'>
 						<div  class='left form-inline span8 col-md-8' >
-							<span class='form-group has-feedback has-feedback-left'>
-								".$this->text('searchquery', $current_query[0], 50, $input_options)."
-								<i class='fa fa-search searchquery form-control-feedback form-control-feedback-left'></i>
-							<span>
-							".$this->select_open('filter_options', array('class' => 'form-control e-tip tbox select filter', 'id' => false, 'title'=>LAN_FILTER))."
-								".$this->option(LAN_FILTER_LABEL_DISPLAYALL, '')."
-								".$this->option(LAN_FILTER_LABEL_CLEAR, '___reset___')."
-								".$this->renderBatchFilter('filter', $current_query[1])."
-							".$this->select_close()."
+							<span id='admin-ui-list-search' class='form-group has-feedback has-feedback-left'>
+								".$this->text('searchquery', $current_query[0], 50, $input_options). '					
+							</span>
+							' .$this->select_open('filter_options', array('class' => 'form-control e-tip tbox select filter', 'id' => false, 'title' =>LAN_FILTER)). '
+								' .$this->option(LAN_FILTER_LABEL_DISPLAYALL, ''). '
+								' .$this->option(LAN_FILTER_LABEL_CLEAR, '___reset___'). '
+								' .$this->renderBatchFilter('filter', $current_query[1]). '
+							' .$this->select_close()."
 							<div class='e-autocomplete'></div>
-							".implode("\n", $filter_preserve_var)."
-							".$this->admin_button('etrigger_filter', 'etrigger_filter', 'filter e-hide-if-js', ADMIN_FILTER_ICON, array('id' => false,'title'=>LAN_FILTER))."
-
-							".$this->renderPagination()."
+							".implode("\n", $filter_preserve_var). '
+							' .$this->admin_button('etrigger_filter', 'etrigger_filter', 'filter e-hide-if-js', defset('ADMIN_FILTER_ICON'), array('id' => false, 'title' =>LAN_FILTER, 'loading' => false)). '
+							
+							' .$this->renderPagination()."	
+							".$gridToggle."
 							<span class='indicator' style='display: none;'>
-								<img src='".e_IMAGE_ABS."generic/loading_16.gif' class='icon action S16' alt='".LAN_LOADING."' />
+								<i class='fa fa-spin fa-spinner fa-fw'></i>
 							</span>
 						</div>
-						<div id='admin-ui-list-db-language' class='span4 col-md-4 text-right' >";
+						<div class='span4 col-md-4 text-right' >";
 
-						
 						// Let Admin know which language table is being saved to. (avoid default table overwrites) 
-						$text .= $this->renderLanguageTableInfo();
-						
-						$text .= "
+						if($languageInfo = $this->renderLanguageTableInfo())
+						{
+							$text .= "<div id='admin-ui-list-db-language' >".$languageInfo.'</div>';
+						}
+
+						$text .= $this->renderCustomListButton(); // Optional
+
+						$text .= '
 						</div>
 					</div>
-					".$filter_post."
+					' .$filter_post. '
 				</fieldset>
 			</form>
-		";
+		';
 
 	
 		e107::js('core','scriptaculous/controls.js','prototype', 2);
@@ -6701,7 +7929,7 @@ class e_admin_form_ui extends e_form
 	             \$\$('input[name=searchquery]').each(function(el, cnt) {
 				 	if(!cnt) el.activate();
 					else return;
-					new Ajax.Autocompleter(el, el.next('div.e-autocomplete'), '".e_REQUEST_SELF."?mode=".$l[0]."&action=filter', {
+					new Ajax.Autocompleter(el, el.next('div.e-autocomplete'), '".e_REQUEST_SELF. '?mode=' .$l[0]."&action=filter', {
 					  paramName: 'searchquery',
 					  minChars: 2,
 					  frequency: 0.5,
@@ -6731,13 +7959,12 @@ class e_admin_form_ui extends e_form
 		",'prototype');
 		
 		// TODO implement ajax queue
-		// FIXME - dirty way to register events after ajax update - DO IT RIGHT - see all.jquery, create object
-		// and use handler, re-register them global after ajax update (context)
+		// FIXME
+		// dirty way to register events after ajax update - DO IT RIGHT - see all.jquery, create object and use handler,
+		// re-register them global after ajax update (context)... use behaviors and call e107.attachBehaviors();
 		e107::js('footer-inline',"
 			var filterRunning = false, request;
 			var applyAfterAjax = function(context) {
-				\$('.e-hideme', context).hide();
-				\$('.e-expandit', context).show();
 		      	\$('.e-expandit', context).click(function () {
 		       		var href = (\$(this).is('a')) ? \$(this).attr('href') : '';
 		       		if(href == '' && \$(this).attr('data-target'))
@@ -6769,13 +7996,14 @@ class e_admin_form_ui extends e_form
 				});
 			};
 			var searchQueryHandler = function (e) {
+				
 				var el = \$(this), frm = el.parents('form'), cont = frm.nextAll('.e-container');
 				if(cont.length < 1 || frm.length < 1 || (el.val().length > 0 && el.val().length < 3)) return;
 				e.preventDefault();
 				
 				if(filterRunning && request) request.abort();
 				filterRunning = true;
-				
+				\$('#admin-ui-list-filter .indicator').show();
 				cont.css({ opacity: 0.5 });
 				
 				request = \$.get(frm.attr('action'), frm.serialize(), function(data){
@@ -6786,7 +8014,11 @@ class e_admin_form_ui extends e_form
 							return;
 						}
 						cont.html(data).css({ opacity: 1 });
+						\$('#admin-ui-list-filter .indicator').hide();
+						// TODO remove applyAfterAjax() and use behaviors!
 						applyAfterAjax(cont);
+						// Attach behaviors to the newly loaded contents.
+						e107.attachBehaviors();
 					}, 700);
 				}, 'html')
 				.error(function() {
@@ -6795,53 +8027,83 @@ class e_admin_form_ui extends e_form
 				});
 			};
 			\$('#searchquery').on('keyup', searchQueryHandler);
+			
+			\$('#filter-options').on('change', function() {
+					\$('#admin-ui-list-filter .indicator').show();
+			});
+			
+			\$('#etrigger-filter').on('click', function() {
+					\$('#admin-ui-list-filter .indicator').show();
+			});
+			
+			
 		", 'jquery');
 
 		return $text;
 	}
 
+	/**
+	 * Optional
+	 * @return null|string
+	 */
+	public function renderCustomListButton()
+	{
+		return null; // "<a class='btn btn-primary' href=''>Add New</a>";
+	}
 
+
+	/**
+	 * @return string|null
+	 */
 	private function renderLanguageTableInfo()
 	{
-		$text = '';
 
-		if(e107::getConfig()->get('multilanguage'))
+		if(!e107::getConfig()->get('multilanguage'))
 		{
-			$curTable = $this->getController()->getTableName();
-			$sitelanguage = e107::getConfig()->get('sitelanguage');
-
-			if($curTable != e107::getDb()->db_IsLang($curTable))
-			{
-				$lang = e107::getDb()->mySQLlanguage;
-			}
-			else
-			{
-				$lang = $sitelanguage;
-			}
-
-			$def = deftrue('LAN_UI_USING_DATABASE_TABLE','Using [x] database table');
-			$diz  = e107::getParser()->lanVars($def, $lang); // "Using ".$lang." database table";
-			$class = ($sitelanguage == $lang) ? "default" : "";
-
-			$text = "<span class='adminui-language-table-info ".$class." e-tip' title=\"".$diz."\">";
-			$text .= e107::getParser()->toGlyph('fa-hdd-o'); // '<i class="icon-hdd"></i> ';
-			$text .= e107::getLanguage()->toNative($lang)."</span>";
-			return $text;
+			return null;
 		}
 
-		return false;
+		$curTable = $this->getController()->getTableName();
+		$sitelanguage = e107::getConfig()->get('sitelanguage');
+
+		$val = e107::getDb()->hasLanguage($curTable, true);
+
+		if($val === false)
+		{
+			return null;
+		}
+
+		if($curTable != e107::getDb()->hasLanguage($curTable))
+		{
+			$lang = e107::getDb()->mySQLlanguage;
+		}
+		else
+		{
+			$lang = $sitelanguage;
+		}
+
+		$def = deftrue('LAN_UI_USING_DATABASE_TABLE','Using [x] database table');
+		$diz  = e107::getParser()->lanVars($def, $lang); // "Using ".$lang." database table";
+		$class = ($sitelanguage == $lang) ? 'default' : '';
+
+		$text = "<span class='adminui-language-table-info ".$class." e-tip' title=\"".$diz. '">';
+		$text .= e107::getParser()->toGlyph('fa-hdd-o'); // '<i class="icon-hdd"></i> ';
+		$text .= e107::getLanguage()->toNative($lang). '</span>';
+		return $text;
+
+
 	}
 
 
 
-	// FIXME - use e_form::batchoptions(), nice way of buildig batch dropdown - news administration show_batch_options()
+	// FIXME - use e_form::batchoptions(), nice way of building batch dropdown - news administration show_batch_options()
 
 	/**
 	 * @param array $options array of flags for copy, delete, url, featurebox, batch
 	 * @param array $customBatchOptions
 	 * @return string
 	 */
-	function renderBatch($options, $customBatchOptions=array())
+	public function renderBatch($options, $customBatchOptions=array())
 	{
 
 		$fields = $this->getController()->getFields();
@@ -6866,20 +8128,35 @@ class e_admin_form_ui extends e_form
 				<div class='span6 col-md-6'>";
 
 		$selectStart = "<div class='form-inline input-inline'>
-					".ADMIN_CHILD_ICON."
+					".defset('ADMIN_CHILD_ICON')."
 	         		 		<div class='input-group input-append'>
-						".$this->select_open('etrigger_batch', array('class' => 'tbox form-control input-large select batch e-autosubmit reset', 'id' => false))."
-						".$this->option(LAN_BATCH_LABEL_SELECTED, '', false);
+						".$this->select_open('etrigger_batch', array('class' => 'tbox form-control input-large select batch e-autosubmit reset', 'id' => false)). '
+						' .$this->option(defset('LAN_BATCH_LABEL_SELECTED'), '');
 
 		$selectOpt = '';
 				
 		if(!$this->getController()->getTreeModel()->isEmpty())
 		{		
-			$selectOpt .= !empty($options['copy']) ? $this->option(LAN_COPY, 'copy', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '';
-			$selectOpt .= !empty($options['delete']) ? $this->option(LAN_DELETE, 'delete', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '';
-			$selectOpt .= !empty($options['export']) ? $this->option(LAN_UI_BATCH_EXPORT, 'export', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '';
-			$selectOpt .= !empty($options['url']) ? $this->option(LAN_UI_BATCH_CREATELINK, 'url', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '';
-			$selectOpt .= !empty($options['featurebox']) ? $this->option(LAN_PLUGIN_FEATUREBOX_BATCH, 'featurebox', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '';
+			$selectOpt .= !empty($options['copy']) ? $this->option(defset('LAN_COPY'),
+				'copy',
+				false,
+				array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '';
+			$selectOpt .= !empty($options['delete']) ? $this->option(defset('LAN_DELETE'),
+				'delete',
+				false,
+				array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '';
+			$selectOpt .= !empty($options['export']) ? $this->option(defset('LAN_UI_BATCH_EXPORT'),
+				'export',
+				false,
+				array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '';
+			$selectOpt .= !empty($options['url']) ? $this->option(defset('LAN_UI_BATCH_CREATELINK'),
+				'url',
+				false,
+				array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '';
+			$selectOpt .= !empty($options['featurebox']) ? $this->option(defset('LAN_PLUGIN_FEATUREBOX_BATCH'),
+				'featurebox',
+				false,
+				array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '';
 
 		//	if(!empty($parms['sef'])
 
@@ -6912,7 +8189,7 @@ class e_admin_form_ui extends e_form
 			}
 
 
-			$selectOpt .= $this->renderBatchFilter('batch');
+			$selectOpt .= $this->renderBatchFilter();
 
 			if(!empty($selectOpt))
 			{
@@ -6923,26 +8200,45 @@ class e_admin_form_ui extends e_form
 				$text .= $this->select_close();
 
 				$text .= "<div class='input-group-btn input-append'>
-				".$this->admin_button('e__execute_batch', 'e__execute_batch', 'batch e-hide-if-js', LAN_GO, array('id' => false))."
-				</div>";
-				$text .= "</div></div>";
+				".$this->admin_button('e__execute_batch', 'e__execute_batch', 'batch e-hide-if-js', LAN_GO, array('id' => false)). '
+				</div>';
+				$text .= '</div></div>';
 			}
 
-			$text .= "</div>";
+			$text .= '</div>';
 
 		}
 
 		
 		$text .= "
 
-				<div id='admin-ui-list-total-records' class='span6 col-md-6 right'><span>".e107::getParser()->lanVars(LAN_UI_TOTAL_RECORDS,number_format($this->listTotal))."</span></div>
+				<div id='admin-ui-list-total-records' class='span6 col-md-6 right'><span>".e107::getParser()->lanVars(LAN_UI_TOTAL_RECORDS,number_format($this->getController()->getTreeModel()->getTotal())). '</span></div>
 			</div>
-		";
+		';
 
 
 		return $text;
 	}
 
+	private function sortFieldsByPriority(array $fields, array $priorityKeys)
+	{
+	    // Separate fields into priority and non-priority arrays
+	    $priorityFields = [];
+	    $remainingFields = $fields;
+
+	    foreach ($priorityKeys as $key)
+	    {
+	        // If the key exists in the fields array, move it to the priorityFields array
+	        if (isset($fields[$key]))
+	        {
+	            $priorityFields[$key] = $fields[$key];
+	            unset($remainingFields[$key]); // Remove from remaining fields
+	        }
+	    }
+
+	    // Merge priorityFields at the top with remainingFields retaining their original order
+	    return $priorityFields + $remainingFields;
+	}
 
 	/**
 	 * Render Batch and Filter Dropdown options.
@@ -6950,24 +8246,53 @@ class e_admin_form_ui extends e_form
 	 * @param string $selected
 	 * @return string
 	 */
-	function renderBatchFilter($type='batch', $selected = '') // Common function used for both batches and filters.
+	public function renderBatchFilter($type='batch', $selected = '') // Common function used for both batches and filters.
 	{
 		$optdiz = array('batch' => LAN_BATCH_LABEL_PREFIX.'&nbsp;', 'filter'=> LAN_FILTER_LABEL_PREFIX.'&nbsp;');
-		$table = $this->getController()->getTableName();
+		$obj = $this->getController();
+		$table = $obj->getTableName();
 		$text = '';
 		$textsingle = '';
 				
 
-		foreach($this->getController()->getFields() as $key=>$val)
+		$searchFieldOpts = array();
+
+		$fieldList = $obj->getFields();
+		$fieldSort = ($type ==='batch') ? $obj->getBatchSort() : $obj->getFilterSort();
+
+		if(!empty($fieldSort))
 		{
-			if(!varset($val[$type]))
+			e107::getMessage()->addDebug("Filtering by custom sort field: ".print_r($fieldSort,true));
+			$fieldList = $this->sortFieldsByPriority($fieldList, $fieldSort);
+		}
+
+		foreach($fieldList as $key=>$val)
+		{
+			if(!empty($val['search']))
+			{
+				$searchFieldOpts['searchfield__' .$key] = $val['title'];
+			}
+
+			if(empty($val[$type])) // ie. filter = false or batch = false.
 			{
 				continue;
 			}
 
 			$option = array();
 			$parms = vartrue($val['writeParms'], array());
-			if(is_string($parms)) parse_str($parms, $parms);
+			if(is_string($parms))
+			{
+				parse_str($parms, $parms);
+			}
+
+			//Basic batch support for dropdown with multiple values. (comma separated)
+			if(!empty($val['writeParms']['multiple']) && $val['type'] === 'dropdown' && !empty($val['writeParms']['optArray']))
+			{
+				$val['type'] = 'comma';
+				$parms = $val['writeParms']['optArray'];
+			}
+
+
 
 			switch($val['type'])
 			{
@@ -6979,20 +8304,66 @@ class e_admin_form_ui extends e_form
 							$option['sefgen__'.$key.'__'.$parms['sef']] = LAN_GENERATE;
 						}
 
+						$searchFieldOpts['searchfield__' .$key] = $val['title'];
+
 					break;
 
 
+					case 'number';
+						if($type === 'filter')
+						{
+							$option[$key.'___ISEMPTY_'] = LAN_UI_FILTER_IS_EMPTY;
+						}
+
+						$searchFieldOpts['searchfield__' .$key] = $val['title'];
+
+					break;
+
+					case 'textarea':
+					case 'tags':
+						$searchFieldOpts['searchfield__' .$key] = $val['title'];
+					break;
+
 					case 'bool':
 					case 'boolean': //TODO modify description based on $val['parm]
-						if(vartrue($parms['reverse'])) // reverse true/false values; 
+
+						// defaults
+						$LAN_TRUE = LAN_ON;
+						$LAN_FALSE = LAN_OFF;
+
+						if(varset($parms['label']) === 'yesno')
 						{
-							$option['bool__'.$key.'__0'] = LAN_YES;	// see newspost.php : news_allow_comments for an example. 
-							$option['bool__'.$key.'__1'] = LAN_NO;							
+							$LAN_TRUE = LAN_YES;
+							$LAN_FALSE = LAN_NO;
+						}
+						
+						if(!empty($parms['enabled']))
+						{
+							$LAN_TRUE = $parms['enabled'];
+						}
+						elseif(!empty($parms['true']))
+						{
+							$LAN_TRUE = $parms['true'];
+						}
+
+						if(!empty($parms['disabled']))
+						{
+							$LAN_FALSE = $parms['disabled'];
+						}
+						elseif(!empty($parms['false']))
+						{
+							$LAN_FALSE = $parms['false'];
+						}
+
+						if(!empty($parms['reverse'])) // reverse true/false values;
+						{
+							$option['bool__'.$key.'__0'] = $LAN_TRUE;	// see newspost.php : news_allow_comments for an example.
+							$option['bool__'.$key.'__1'] = $LAN_FALSE;
 						}
 						else 
 						{
-							$option['bool__'.$key.'__1'] = LAN_YES;
-							$option['bool__'.$key.'__0'] = LAN_NO;	
+							$option['bool__'.$key.'__1'] = $LAN_TRUE;
+							$option['bool__'.$key.'__0'] = $LAN_FALSE;
 						}
 							
 						if($type === 'batch')
@@ -7003,14 +8374,32 @@ class e_admin_form_ui extends e_form
 					
 					case 'checkboxes':
 					case 'comma':
+
+						if (!empty($parms['optArray']))
+						{
+							$fopts = $parms;
+							$parms = $fopts['optArray'];
+							unset($fopts['optArray']);
+							$parms['__options'] = $fopts;
+						}
+				
 						// TODO lan
-						if(!isset($parms['__options'])) $parms['__options'] = array();
-						if(!is_array($parms['__options'])) parse_str($parms['__options'], $parms['__options']);
+						if(!isset($parms['__options']))
+						{
+							$parms['__options'] = array();
+						}
+						if(!is_array($parms['__options']))
+						{
+							parse_str($parms['__options'], $parms['__options']);
+						}
 						$opts = $parms['__options'];
 						unset($parms['__options']); //remove element options if any
 						
 						$options = $parms ? $parms : array();
-						if(empty($options)) continue;
+						if(empty($options))
+						{
+							continue 2;
+						}
 						
 						
 						if($type === 'batch')
@@ -7019,29 +8408,29 @@ class e_admin_form_ui extends e_form
 
 							if(isset($options['addAll']))
 							{
-								$option['attach_all__'.$key] = vartrue($options['addAll'], "(".LAN_ADD_ALL.")");
+								$option['attach_all__'.$key] = vartrue($options['addAll'], '(' .LAN_ADD_ALL. ')');
 								unset($options['addAll']);
 							}
 							if(isset($options['clearAll']))
 							{
-								$_option['deattach_all__'.$key] = vartrue($options['clearAll'], "(".LAN_CLEAR_ALL.")");
+								$_option['deattach_all__'.$key] = vartrue($options['clearAll'], '(' .LAN_CLEAR_ALL. ')');
 								unset($options['clearAll']);
 							}
 							
-							if(vartrue($opts['simple']))
+							if(!empty($opts['simple']))
 							{
 								foreach ($options as $value) 
 								{
-									$option['attach__'.$key.'__'.$value] = LAN_ADD." ".$value;
-									$_option['deattach__'.$key.'__'.$value] = LAN_REMOVE." ".$value;
+									$option['attach__'.$key.'__'.$value] = LAN_ADD. ' ' .$value;
+									$_option['deattach__'.$key.'__'.$value] = LAN_REMOVE. ' ' .$value;
 								}
 							}
 							else 
 							{
 								foreach ($options as $value => $label) 
 								{
-									$option['attach__'.$key.'__'.$value] = LAN_ADD." ".$label;	
-									$_option['deattach__'.$key.'__'.$value] = LAN_REMOVE." ".$label;	
+									$option['attach__'.$key.'__'.$value] = LAN_ADD. ' ' .$label;
+									$_option['deattach__'.$key.'__'.$value] = LAN_REMOVE. ' ' .$label;
 								}
 							}
 							$option = array_merge($option, $_option);
@@ -7050,7 +8439,7 @@ class e_admin_form_ui extends e_form
 						else
 						{
 							unset($options['addAll'], $options['clearAll']);
-							if(vartrue($opts['simple']))
+							if(!empty($opts['simple']))
 							{
 								foreach($options as $k)
 								{
@@ -7095,13 +8484,16 @@ class e_admin_form_ui extends e_form
 							$parms['__options'] = $fopts;
 						}
 
-
-						if(!is_array(varset($parms['__options']))) parse_str($parms['__options'], $parms['__options']);
+						if (!isset($parms['__options'])) $parms['__options'] = null;
+						if(!is_array($parms['__options']))
+						{
+							parse_str((string) $parms['__options'], $parms['__options']);
+						}
 						$opts = $parms['__options'];
-						if(vartrue($opts['multiple']) && $type === 'batch')
+						if(!empty($opts['multiple']) && $type === 'batch')
 						{
 							// no batch support for multiple, should have some for filters soon
-							continue;
+							continue 2;
 						}
 
 						unset($parms['__options']); //remove element options if any
@@ -7116,12 +8508,15 @@ class e_admin_form_ui extends e_form
 
 					case 'language': // full list of 
 					case 'lanlist': // use the array $parm;
-						if(!is_array(varset($parms['__options']))) parse_str($parms['__options'], $parms['__options']);
+						if(!is_array(varset($parms['__options'])))
+						{
+							parse_str($parms['__options'], $parms['__options']);
+						}
 						$opts = $parms['__options'];
-						if(vartrue($opts['multiple']))
+						if(!empty($opts['multiple']))
 						{
 							// no batch support for multiple, should have some for filters soon
-							continue;
+							continue 2;
 						}
 						$options = ($val['type'] === 'language') ? e107::getLanguage()->getList() : e107::getLanguage()->getLanSelectArray();
 						foreach($options as $code => $name)
@@ -7130,32 +8525,69 @@ class e_admin_form_ui extends e_form
 						}
 					break;
 
-					case 'datestamp': 
-						$dateFilters = array (
-							'hour'		=> LAN_UI_FILTER_PAST_HOUR,
-							"day"		=> LAN_UI_FILTER_PAST_24_HOURS,
-							"week"		=> LAN_UI_FILTER_PAST_WEEK,
-							"month"		=> LAN_UI_FILTER_PAST_MONTH,
-							"year"		=> LAN_UI_FILTER_PAST_YEAR
-						);
-					    
-						foreach($dateFilters as $k => $name)
+					case 'datestamp':
+						$tp = e107::getParser();
+						if($type !== 'batch')
 						{
-							$option['datestamp__'.$key.'__'.$k] = $name;
-						//	$option['bool__'.$key.'__0'] = LAN_NO;	
-						//	$option[$key.'__'.$k] = $name;
+							$dateFilters = array (
+								'hour'   => LAN_UI_FILTER_PAST_HOUR,
+								'day'    => LAN_UI_FILTER_PAST_24_HOURS,
+								'week'   => LAN_UI_FILTER_PAST_WEEK,
+								'month'  => LAN_UI_FILTER_PAST_MONTH,
+								'month3' => $tp->lanVars(LAN_UI_FILTER_PAST_XMONTHS,3),
+								'month6' => $tp->lanVars(LAN_UI_FILTER_PAST_XMONTHS,6),
+								'month9' => $tp->lanVars(LAN_UI_FILTER_PAST_XMONTHS,9),
+								'year'   => LAN_UI_FILTER_PAST_YEAR,
+								'today' => LAN_UI_FILTER_TODAY,
+								'thisweek' => LAN_UI_FILTER_THIS_WEEK,
+								'thismonth' => LAN_UI_FILTER_THIS_MONTH,
+								'thisyear' => LAN_UI_FILTER_THIS_YEAR,
+							);
+
+							$dateFiltersFuture = array (
+								'nhour'   => LAN_UI_FILTER_NEXT_HOUR,
+								'nday'    => LAN_UI_FILTER_NEXT_24_HOURS,
+								'nweek'   => LAN_UI_FILTER_NEXT_WEEK,
+								'nmonth'  => LAN_UI_FILTER_NEXT_MONTH,
+								'nmonth3' => $tp->lanVars(LAN_UI_FILTER_NEXT_XMONTHS,3),
+								'nmonth6' => $tp->lanVars(LAN_UI_FILTER_NEXT_XMONTHS,6),
+								'nmonth9' => $tp->lanVars(LAN_UI_FILTER_NEXT_XMONTHS,9),
+								'nyear'   => LAN_UI_FILTER_NEXT_YEAR
+							);
+
+							if($val['filter'] === 'future' )
+							{
+								$dateFilters = $dateFiltersFuture;
+							}
+
+							if($val['filter'] === 'both')
+							{
+								$dateFilters += $dateFiltersFuture;
+							}
+
+							foreach($dateFilters as $k => $name)
+							{
+								$option['datestamp__'.$key.'__'.$k] = $name;
+							}
 						}
+						else // batch
+						{
+							$time = time();
+							$option[$key.'__'.$time] = LAN_UI_BATCH_NOW;
+						}
+					    
+
 					break;
 
 					case 'userclass':
-						$classes = e107::getUserClass()->uc_required_class_list(vartrue($parms['classlist'], 'public,nobody,guest,admin,main,classes'));
+						$classes = e107::getUserClass()->uc_required_class_list(vartrue($parms['classlist'], 'public,nobody,guest,member,admin,main,classes'));
 						foreach($classes as $k => $name)
 						{
 							$option[$key.'__'.$k] = $name;
 						}
 					break;
 					case 'userclasses':
-						$classes = e107::getUserClass()->uc_required_class_list(vartrue($parms['classlist'], 'public,nobody,guest,admin,main,classes'));
+						$classes = e107::getUserClass()->uc_required_class_list(vartrue($parms['classlist'], 'public,nobody,guest,member,admin,main,classes'));
 						$_option = array();
 						
 						if($type === 'batch')
@@ -7163,10 +8595,10 @@ class e_admin_form_ui extends e_form
 							foreach ($classes as $k => $v) 
 							{
 								$option['ucadd__'.$key.'__'.$k] = LAN_ADD.' '.$v;
-								$_option['ucremove__'.$key.'__'.$k] = LAN_REMOVE." ".$v;
+								$_option['ucremove__'.$key.'__'.$k] = LAN_REMOVE. ' ' .$v;
 							}
-							$option['ucaddall__'.$key] = "(".LAN_ADD_ALL.")";
-							$_option['ucdelall__'.$key] = "(".LAN_CLEAR_ALL.")";
+							$option['ucaddall__'.$key] = '(' .LAN_ADD_ALL. ')';
+							$_option['ucdelall__'.$key] = '(' .LAN_CLEAR_ALL. ')';
 							$option = array_merge($option, $_option);
 						}
 						else
@@ -7190,7 +8622,7 @@ class e_admin_form_ui extends e_form
 							if(isset($list['singleOption']))
 							{
 								$textsingle .= $list['singleOption'];
-								continue;
+								continue 2;
 							}
 							// non rendered options array
 							foreach($list as $k => $name)
@@ -7201,7 +8633,7 @@ class e_admin_form_ui extends e_form
 						elseif(!empty($list)) //optgroup, continue
 						{
 							$text .= $list;
-							continue;
+							continue 2;
 						}
 					break;
 
@@ -7210,14 +8642,14 @@ class e_admin_form_ui extends e_form
 						$sql = e107::getDb();
 						$field = $val['field'];
 						
-						$query = "SELECT d.".$field.", u.user_name FROM #".$val['table']." AS d LEFT JOIN #user AS u ON d.".$field." = u.user_id  GROUP BY d.".$field." ORDER BY u.user_name";
+						$query = 'SELECT d.' .$field. ', u.user_name FROM #' .$val['table']. ' AS d LEFT JOIN #user AS u ON d.' .$field. ' = u.user_id  GROUP BY d.' .$field. ' ORDER BY u.user_name';
 						$row = $sql->retrieve($query,true);
 						foreach($row as $data)
 						{
 							$k = $data[$field];
 							if($k == 0)
 							{
-								$option[$key.'__'.$k] = "(".LAN_ANONYMOUS.")";	
+								$option[$key.'__'.$k] = '(' .LAN_ANONYMOUS. ')';
 							}
 							else 
 							{
@@ -7229,9 +8661,12 @@ class e_admin_form_ui extends e_form
 					break;
 			}
 
-			if(count($option) > 0)
+
+
+			if(!empty($option))
 			{
 				$text .= "\t".$this->optgroup_open($optdiz[$type].defset($val['title'], $val['title']), varset($disabled))."\n";
+
 				foreach($option as $okey=>$oval)
 				{
 					$text .= $this->option($oval, $okey, $selected == $okey)."\n";
@@ -7240,10 +8675,29 @@ class e_admin_form_ui extends e_form
 			}
 		}
 
-		return $textsingle.$text;
+		$text2 = '';
+
+		if(!empty($searchFieldOpts) && $type !== 'batch')
+		{
+			$text2 .= "\t".$this->optgroup_open(defset('LAN_UI_FILTER_SEARCH_IN_FIELD', 'Search in Field'))."\n";
+
+			foreach($searchFieldOpts as $key=>$val)
+			{
+				$text2 .= $this->option($val, $key, $selected == $key)."\n";
+			}
+
+			$text2 .= "\t".$this->optgroup_close()."\n";
+		}
+
+
+
+		return $textsingle.$text2.$text;
 
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getElementId()
 	{
 		$controller = $this->getController();
@@ -7261,8 +8715,7 @@ class e_admin_form_ui extends e_form
 	}
 }
 
-
-include_once(e107::coreTemplatePath('admin_icons'));
+e107::loadAdminIcons();
 
 /**
  * TODO:
@@ -7287,4 +8740,4 @@ include_once(e107::coreTemplatePath('admin_icons'));
  * 17. tree list view (should handle cases like Site Links admin page)
  */
  
-?>
+

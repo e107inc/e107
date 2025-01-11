@@ -2,7 +2,9 @@
 
 if(e_ADMIN_AREA !==true)
 {
-	e107::css('social', 'css/fontello.css');
+
+	e107::css('social', 'style.css');
+//	e107::link(array('rel'=>'preload', 'href'=> "{e_PLUGIN}social/font/fontello.woff2?21917124", 'as' => "font", 'type'=>"font/woff2", 'crossorigin'   => 'anonymous'));
 	e107::css('social' ,'css/social.css');
 
 	$appID = false;
@@ -18,14 +20,11 @@ if(e_ADMIN_AREA !==true)
 
 	}
 
-	$ogImage = e107::pref('social','og_image', false);
-	if(!empty($ogImage))
+	if(deftrue('XURL_TWITTER') && XURL_TWITTER !== '#')
 	{
-		e107::meta('og:image',e107::getParser()->thumbUrl($ogImage,'w=500',false,true));
-		unset($ogImage);
+		$screenName = basename(XURL_TWITTER);
+		e107::meta('twitter:site','@'.$screenName);
 	}
-
-
 
 	if(!empty($appID))
 	{
@@ -64,5 +63,3 @@ if(e_ADMIN_AREA !==true)
 
 }
 
-
-?>

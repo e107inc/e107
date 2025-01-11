@@ -6,7 +6,7 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *	RSS chatbox feed addon
+ *	RSS news feed addon
  */
  
 if (!defined('e107_INIT')) { exit; }
@@ -15,9 +15,8 @@ if (!defined('e107_INIT')) { exit; }
 class news_rss // plugin-folder + '_rss'
 {
 
-	private $showImages         =false;
+	private $showImages         = false;
 	private $summaryDescription = false;
-
 
 	/**
 	 * Admin RSS Configuration
@@ -64,9 +63,8 @@ class news_rss // plugin-folder + '_rss'
 	 * @param string $parms
 	 * @return array
 	 */
-	function data($parms='')
+	function data($parms=null)
 	{
-
 		$pref                       = e107::getConfig()->getPref();
 		$tp                         = e107::getParser();
 
@@ -78,7 +76,7 @@ class news_rss // plugin-folder + '_rss'
 		$topic          = (!empty($parms['id']) && is_numeric($parms['id'])) ?  " AND news_category = ".intval($parms['id']) : '';
 		$limit          = vartrue($parms['limit'],10);
 
-		$rssQuery = "SELECT n.*, u.user_id, u.user_name, u.user_email, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
+		$rssQuery = "SELECT n.*, u.user_id, u.user_name, u.user_email, u.user_customtitle, nc.category_name, nc.category_sef, nc.category_icon FROM #news AS n
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
 				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 				WHERE n.news_class IN (".USERCLASS_LIST.") AND NOT (n.news_class REGEXP ".$nobody_regexp.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") {$render} {$topic} ORDER BY n.news_datestamp DESC LIMIT 0,".$limit;
@@ -99,7 +97,17 @@ class news_rss // plugin-folder + '_rss'
 			$rss[$i]['author']          = $value['user_name'];
 			$rss[$i]['author_email']    = $value['user_email'];
 			$rss[$i]['category_name']   = $tp->toHTML($value['category_name'],TRUE,'defs');
-			$rss[$i]['category_link']   = SITEURL."news.php?cat.".$value['news_category']; //TODO SEFURL.
+			//category sef
+			if (empty($value['category_sef']))
+			{
+				$url = SITEURL . "news.php?cat." . $value['news_category']; 
+			}
+			else
+			{
+				$category = array('id' => $value['news_category'], 'name' => $value['category_sef']);
+				$opts = array('full' => 1);
+				$url = e107::getUrl()->create('news/list/category', $category, $opts);
+			}
 			$rss[$i]['datestamp']         = $value['news_datestamp'];
 			$rss[$i]['description']     = $this->getDescription($value);
 
@@ -117,9 +125,6 @@ class news_rss // plugin-folder + '_rss'
 	
 	}
 
-
-
-
 	function getDescription($row)
 	{
 
@@ -127,12 +132,12 @@ class news_rss // plugin-folder + '_rss'
 
 		if($row['news_summary'] && $this->summaryDescription == true)
 		{
-			$text = $tp->toHtml($row['news_summary'],true);
+			$text = $tp->toHTML($row['news_summary'],true);
 		}
 		else
 		{
 
-			$text= $tp->toHtml($row['news_body'],true). "<br />".$tp->toHtml($row['news_extended'], true);
+			$text= $tp->toHTML($row['news_body'],true). "<br />".$tp->toHTML($row['news_extended'], true);
 		}
 
 		if($this->showImages == true && !empty($row['news_thumbnail']))
@@ -152,12 +157,6 @@ class news_rss // plugin-folder + '_rss'
 
 	}
 
-
-
-
-
-
-	
 	function getMedia($row)
 	{
 		$tp = e107::getParser();
@@ -203,158 +202,5 @@ class news_rss // plugin-folder + '_rss'
 
 		return $ret;
 
-
-
-	}
-	
-
-	
-	
-	/**
-	 * Compile RSS Data
-	 * @param $parms array	url, limit, id 
-	 * @return array
-	 */
-	function dataChat($parms='')
-	{
-		$sql = e107::getDb();
-		
-		$rss = array();
-		$i=0;
-					
-		if($items = $sql->select('chatbox', "*", "cb_blocked=0 ORDER BY cb_datestamp DESC LIMIT 0,".$parms['limit']))
-		{
-
-			while($row = $sql->fetch())
-			{
-				$tmp						= explode(".", $row['cb_nick']);
-				$rss[$i]['author']			= $tmp[1];
-				$rss[$i]['author_email']	= ''; 
-				$rss[$i]['link']			= "chatbox_menu/chat.php?".$row['cb_id'];
-				$rss[$i]['linkid']			= $row['cb_id'];
-				$rss[$i]['title']			= '';
-				$rss[$i]['description']		= $row['cb_message'];
-				$rss[$i]['category_name']	= '';
-				$rss[$i]['category_link']	= '';
-				$rss[$i]['datestamp']		= $row['cb_datestamp'];
-				$rss[$i]['enc_url']			= "";
-				$rss[$i]['enc_leng']		= "";
-				$rss[$i]['enc_type']		= "";
-				$i++;
-			}
-
-		}				
-					
-		return $rss;
-	}
-			
-		
-	
+	}	
 }
-
-
-
-/*
- * 
- * if($topic_id && is_numeric($topic_id))
-				{
-					$topic = " AND news_category = ".intval($topic_id);
-				}
-				else
-				{
-					$topic = '';
-				}
-
-				$path='';
-				$render = ($pref['rss_othernews'] != 1) ? "AND (FIND_IN_SET('0', n.news_render_type) OR FIND_IN_SET(1, n.news_render_type))" : "";
-				$nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
-
-				$this -> rssQuery = "
-				SELECT n.*, u.user_id, u.user_name, u.user_email, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
-				LEFT JOIN #user AS u ON n.news_author = u.user_id
-				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-				WHERE n.news_class IN (".USERCLASS_LIST.") AND NOT (n.news_class REGEXP ".$nobody_regexp.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") {$render} {$topic} ORDER BY n.news_datestamp DESC LIMIT 0,".$this -> limit;
-				$sql->gen($this->rssQuery);
-				$tmp = $sql->db_getList();
-				$rss = array();
-				$i=0;
-				foreach($tmp as $value)
-				{
-					$rss[$i]['title'] = $value['news_title'];
-				//	$rss[$i]['link'] = "http://".$_SERVER['HTTP_HOST'].e_HTTP."news.php?item.".$value['news_id'].".".$value['news_category'];
-					
-					$rss[$i]['link'] = e107::getUrl()->create('news/view/item', $value, 'full=1'); 
-					
-					if($value['news_summary'] && $pref['rss_summarydiz'])
-					{
-						$rss[$i]['description'] = $value['news_summary'];
-					}
-					else
-					{
-						$rss[$i]['description'] = ($value['news_body']."<br />".$value['news_extended']);
-					}
-					$rss[$i]['author'] = $value['user_name'];
-					$rss[$i]['author_email'] = $value['user_email'];
-				//	$rss[$i]['category'] = "<category domain='".SITEURL."news.php?cat.".$value['news_category']."'>".$value['category_name']."</category>";
-					$rss[$i]['category_name'] = $tp->toHTML($value['category_name'],TRUE,'defs');
-                    $rss[$i]['category_link'] = SITEURL."news.php?cat.".$value['news_category']; //TODO SEFURL.
-
-					if($value['news_allow_comments'] && $pref['comments_disabled'] != 1)
-					{
-						$rss[$i]['comment'] = "http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$value['news_id'];
-					}
-					$rss[$i]['pubdate'] = $value['news_datestamp'];
-					if($pref['rss_shownewsimage'] == 1 && strlen(trim($value['news_thumbnail'])) > 0) {
-						$rss[$i]['news_thumbnail'] = $value['news_thumbnail'];
-					}
-
-					$i++;
-				}
- * 
- * 
- * 
- * 
- * XXX Left here as an example of how to convert from v1.x to v2.x
- *  
-//##### create feed for admin, return array $eplug_rss_feed --------------------------------
-
-$feed['name']		= 'Chatbox';
-$feed['url']		= 'chatbox';			//the identifier for the rss feed url
-$feed['topic_id']	= '';					//the topic_id, empty on default (to select a certain category)
-$feed['path']		= 'chatbox_menu';		//this is the plugin path location
-$feed['text']		= 'this is the rss feed for the chatbox entries';
-$feed['class']		= '0';
-$feed['limit']		= '9';
-
-// ------------------------------------------------------------------------------------
-
-
-//##### create rss data, return as array $eplug_rss_data -----------------------------------
-$rss = array();
-if($items = $sql -> db_Select('chatbox', "*", "cb_blocked=0 ORDER BY cb_datestamp DESC LIMIT 0,".$this -> limit)){
-	$i=0;
-	while($rowrss = $sql -> db_Fetch()){
-		$tmp						= explode(".", $rowrss['cb_nick']);
-		$rss[$i]['author']			= $tmp[1];
-		$rss[$i]['author_email']	= '';
-		$rss[$i]['link']			= $e107->base_path.$PLUGINS_DIRECTORY."chatbox_menu/chat.php?".$rowrss['cb_id'];
-		$rss[$i]['linkid']			= $rowrss['cb_id'];
-		$rss[$i]['title']			= '';
-		$rss[$i]['description']		= $rowrss['cb_message'];
-		$rss[$i]['category_name']	= '';
-		$rss[$i]['category_link']	= '';
-		$rss[$i]['datestamp']		= $rowrss['cb_datestamp'];
-		$rss[$i]['enc_url']			= "";
-		$rss[$i]['enc_leng']		= "";
-		$rss[$i]['enc_type']		= "";
-		$i++;
-	}
-}
-
-
-//##### ------------------------------------------------------------------------------------
-
-$eplug_rss_data[] = $rss;
-$eplug_rss_feed[] = $feed;
-*/
-

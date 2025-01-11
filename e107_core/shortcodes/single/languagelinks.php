@@ -51,10 +51,13 @@ function languagelinks_shortcode($parm = '')
 		define('LANGLINKS_SEPARATOR', '&nbsp;|&nbsp;');
 	}
 
-	$tmp = explode('|', $parm, 2);
-	$parm = $tmp[0];
-	$parms = array();
-	if(isset($tmp[1])) parse_str($tmp[1], $parms);
+	if(is_string($parm))
+	{
+		$tmp = explode('|', $parm, 2);
+		$parm = $tmp[0];
+		$parms = array();
+		if(isset($tmp[1])) parse_str($tmp[1], $parms);
+	}
 
 	// ignore Query string if required by parms or external code, false by default
 	if(!defined('LANGLINKS_NOQUERY'))
@@ -67,8 +70,6 @@ function languagelinks_shortcode($parm = '')
 		define('LANGLINKS_HOME', isset($parms['home']));
 	}
 
-	/*require_once(e_HANDLER.'language_class.php');
-	$slng = new language;*/
 	$slng = e107::getLanguage();
 
 	if(!empty($parm))

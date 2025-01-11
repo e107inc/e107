@@ -21,28 +21,7 @@
 		<read>253</read>
 		<write>253</write>
 	</item>
-	<item name="aim">
-		<type>text</type>
-		<include_text>class='form-control tbox' size='40' maxlength='254'</include_text>
-		<applicable>253</applicable>
-		<read>253</read>
-		<write>253</write>
-	</item>
 	<item name="icq">
-		<type>text</type>
-		<include_text>class='form-control tbox' size='40' maxlength='254'</include_text>
-		<applicable>253</applicable>
-		<read>253</read>
-		<write>253</write>
-	</item>
-	<item name="yahoo">
-		<type>text</type>
-		<include_text>class='form-control tbox' size='40' maxlength='254'</include_text>
-		<applicable>253</applicable>
-		<read>253</read>
-		<write>253</write>
-	</item>
-	<item name="msn">
 		<type>text</type>
 		<include_text>class='form-control tbox' size='40' maxlength='254'</include_text>
 		<applicable>253</applicable>

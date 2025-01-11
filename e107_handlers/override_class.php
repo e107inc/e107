@@ -14,6 +14,8 @@
  * $Author$
  */
 
+namespace e107;
+
 if (!defined('e107_INIT')) { exit; }
 
 /*
@@ -30,12 +32,17 @@ if (!defined('e107_INIT')) { exit; }
  *
  */
 //XXX IMPORTANT: // do not use e107 specific functions in this file - it may break secure_img_handler. 
+
+
+/**
+ *
+ */
 class override {
 	
 	protected $functions = array();
 	protected $includes = array();
 	
-	
+
 	
 	/**
 	 * Replace an existing function or class method
@@ -57,17 +64,19 @@ class override {
 		
 		$this->override_function($arr, $function, $include);
 	}
+
 	/**
 	 * check if an override exists
-	 * @param $override : function name or class object
-	 * @param $method : method name when 'class' is used for $override
-	 * @return mixed
+	 * @param object|string $override : function name or class object
+	 * @param string $method : method name when 'class' is used for $override
 	 * @example if ($user_func = e107::getOverride()->check($this,'secure_image'))
 				{
 	 				return call_user_func($user_func);
-				}  
+				}
+	 * @return mixed
+
 	 */
-	public function check($override,$method='') // alias with check for class object
+	public function check($override,$method='')
 	{
 		
 		if($method != '')
@@ -77,10 +86,15 @@ class override {
 		}
 		return $this->override_check($override);	
 	}
-	
 
-	 
-	function override_function($override, $function, $include) 
+
+	/**
+	 * @param $override
+	 * @param $function
+	 * @param $include
+	 * @return void
+	 */
+	function override_function($override, $function, $include)
 	{
 		if ($include)
 		{
@@ -93,8 +107,12 @@ class override {
 		
 		$this->functions[$override] = $function;
 	}
-	 
-	 
+
+
+	/**
+	 * @param $override
+	 * @return false|mixed|string
+	 */
 	function override_check($override)
 	{		
 		if (isset($this->includes[$override])) 
@@ -135,4 +153,3 @@ class override {
 	}
 }
 	
-?>

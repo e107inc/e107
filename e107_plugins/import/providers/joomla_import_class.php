@@ -25,7 +25,7 @@
 
 // Mambo and joomla have the same DB format apart from the default prefix - 'jos_' for Joomla
 
-require_once('import_classes.php');
+require_once(__DIR__.'/../import_classes.php');
 
 class joomla_import extends base_import_class
 {
@@ -45,7 +45,7 @@ class joomla_import extends base_import_class
 	    switch ($task)
 		{
 		  case 'users' :
-		    $result = $this->ourDB->db_Select_gen("SELECT * FROM {$this->DBPrefix}users");
+		    $result = $this->ourDB->gen("SELECT * FROM {$this->DBPrefix}users");
 			if ($result === FALSE) return FALSE;
 			break;
 		  default :
@@ -91,4 +91,3 @@ class joomla_import extends base_import_class
 }
 
 
-?>

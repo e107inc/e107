@@ -15,6 +15,10 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+
+/**
+ *
+ */
 class eUrl
 {
 	protected $_front;
@@ -40,12 +44,24 @@ class eUrl
 		}
 		$this->_front = $front;
 	}
-	
+
+	/**
+	 * @param $route
+	 * @param $params
+	 * @param $options
+	 * @return string
+	 */
 	public function create($route, $params = array(), $options = array())
 	{
 		return $this->router()->assemble($route, $params, $options);
 	}
-	
+
+	/**
+	 * @param $route
+	 * @param $params
+	 * @param $options
+	 * @return string
+	 */
 	public function sc($route, $params = array(), $options = array())
 	{
 		return $this->router()->assembleSc($route, $params, $options);

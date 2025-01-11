@@ -15,12 +15,23 @@
 		
 		init : function(ed,url) {
 
-			var t = this, dialect = ed.getParam('bbcode_dialect', 'e107').toLowerCase();
+			var t = this;
 
-	
-			ed.on('beforeSetContent', function(e) {
-				e.content = t['_' + dialect + '_bbcode2html'](e.content, url);
+            console.log('Initializing e107 TinyMce Plugin');
+
+			ed.on('beforeSetContent', function(e)
+			{
+		        e.content = t['_e107_bbcode2html'](e.content, url);
+
 			});
+
+			ed.on('change', function(e) {
+			//	  console.log('the event object ', e);
+			//	console.log(e);
+           	//	console.log('the editor object ', ed);
+           //		console.log('the content ', ed.getContent());
+			});
+
 
 		//	ed.contentCSS.push(url+'/e107.css');
 
@@ -31,39 +42,68 @@
           //      alert(e.content); // remove comment to test.
 
 				if (e.set) {
-					e.content = t['_' + dialect + '_bbcode2html'](e.content, url);
+					e.content = t['_e107_bbcode2html'](e.content, url);
 				}
 
 				if (e.get) {
-					e.content = t['_' + dialect + '_html2bbcode'](e.content, url);
+					e.content = t['_e107_html2bbcode'](e.content, url);
 				}
 
 
 			});
 			
-		/*
+
 		// Emoticons 
-			ed.addButton('e107-bbcode', {
-				text: 'bbcode',
-				icon: 'emoticons',
+		//	ed.addButton('e107-bbcode', {
+				ed.addMenuItem('e107-bbcode', {
+				text: 'e107 BBcode',
+				context: 'insert',
+				icon: 'code',
 				onclick: function() {
 					// Open window
 										
 					ed.windowManager.open({
-						title: 'Example plugin',
+						title: 'Insert e107 BBcode',
 						body: [
-							{type: 'textbox', name: 'code', label: 'BbCode'},
-                            {type: 'textbox', name: 'parm', label: 'Parameters'}
+							{type: 'textbox', name: 'code', label: 'BbCode', text: 'widget', size: 80, tooltip: 'eg. [b]bold[/b]', autofocus: true} //,
+                        //    {type: 'textbox', name: 'parm', label: 'Parameters'}
 						],
 						onsubmit: function(e) {
+
+							s = e.data.code;
+							s = s.trim(s);
+
+							var html = $.ajax({
+								type: 'POST',
+								url: url +'/parser.php',
+								data: { content: s, mode: 'tohtml' },
+								async       : false,
+
+								dataType: 'html',
+								success: function(html) {
+								  return html;
+								},
+								error: function (request, status, error) {
+                                    console.log(request.responseText);
+                                }
+							}).responseText;
+
+							html = '<x-bbcode alt=\"'+btoa(s)+'\">' + html + '</x-bbcode>   ' ;
+
+
+
+							
+
 							// Insert content when the window form is submitted
-							ed.insertContent('Title: ' + e.data.title);
+					//		console.log(url);
+					//		console.log(html);
+							ed.insertContent(html);
 						}
 					});
 				}
 			});
 			
-			*/
+
 			// Media Manager Button 
 			ed.addButton('e107-image', {
 				text: '',
@@ -118,7 +158,32 @@
 					});
 				}
 			});
-			
+
+
+		// TODO place animate.css options in here --------------
+  		ed.addButton('e107-animate', { //TODO  MUST added 'e107-animate' button to templates/mainadmin.xml
+
+            type: 'menubutton',
+
+            text: 'todo',
+
+           icon: 'charmap',
+
+            menu: [
+
+                { text: 'fadeIn', onclick: function() {tinymce.activeEditor.formatter.toggle('alignleft');}}, // TODO get this working to toggle css classes.
+
+                { text: 'fadeInDown', onclick: function() {tinymce.activeEditor.formatter.toggle('aligncenter');}},
+
+                { text: 'fadeInDownBig', onclick: function() {tinymce.activeEditor.formatter.toggle('alignright');}},
+
+                { text: 'fadeInLeft', onclick: function() {tinymce.activeEditor.formatter.toggle('alignjustify');}},
+
+            ]
+
+        });
+
+		// -------------------
 			
 		},
 
@@ -137,18 +202,25 @@
 		_e107_html2bbcode : function(s, url) {
 			s = tinymce.trim(s);
 
-		//	return s;
-		
+            if(s === '')
+            {
+                return '';
+            }
+        //    console.log('html2bbcode '+ s);
+
 			var p = $.ajax({
 					type: "POST",
 					url: url + "/parser.php",
 					data: { content: s, mode: 'tobbcode' },
-					async       : false,
+					async: false,
 
 					dataType: "html",
 					success: function(html) {
 				      return html;
-				    }
+				    },
+				     error: function (request, status, error) {
+                        console.log(request.responseText);
+                    }
 				}).responseText;
 
 			return p;
@@ -160,18 +232,27 @@
 		_e107_bbcode2html : function(s, url) {
 			s = tinymce.trim(s);
 
-		//	return s;
+			if(s === '')
+            {
+                return '';
+            }
+
+		// FIXME mod-security might block the ajax call below with Rules: 942230, 949110, 980130 - reason yet unknown.
+        //    console.log('bbcode2html '+ s);
 
 			var p = $.ajax({
 					type: "POST",
 					url: url + "/parser.php",
 					data: { content: s, mode: 'tohtml' },
-					async       : false,
+					async: false,
 
 					dataType: "html",
 					success: function(html) {
 				      return html;
-				    }
+				    },
+				    error: function (request, status, error) {
+                        console.log(request.responseText);
+                    }
 				}).responseText;
 
 				return p;

@@ -17,7 +17,11 @@
 
 e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_select.php");
 
-class user_select 
+
+/**
+ *
+ */
+class user_select
 {
 
 	/**
@@ -28,6 +32,7 @@ class user_select
 	 */
 	function user_list($class, $form_name)
 	{
+		trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use e107::getForm()->userlist() instead.', E_USER_DEPRECATED); // NO LAN
 
 	//	e107::getMessage()->addDebug("Deprecated user_list Method used ".debug_backtrace());
 
@@ -93,8 +98,8 @@ class user_select
 		}
 		if ($class == e_UC_MEMBER) 
 		{
-			$sql -> db_Select("userclass_classes", "userclass_id, userclass_name", "ORDER BY userclass_name", "nowhere");
-			while ($row = $sql -> db_Fetch()) 
+			$sql -> select("userclass_classes", "userclass_id, userclass_name", "ORDER BY userclass_name", "nowhere");
+			while ($row = $sql -> fetch())
 			{
 				if (check_class($row['userclass_id']) || ADMINPERMS == '0') 
 				{
@@ -104,8 +109,8 @@ class user_select
 		} 
 		else 
 		{
-			$sql -> db_Select("userclass_classes", "userclass_id, userclass_name", "userclass_id='".intval($class)."' ORDER BY userclass_name");
-			while ($row = $sql -> db_Fetch()) 
+			$sql -> select("userclass_classes", "userclass_id, userclass_name", "userclass_id='".intval($class)."' ORDER BY userclass_name");
+			while ($row = $sql -> fetch())
 			{
 				$text .= "<option value='".$row['userclass_id'].":".$row['userclass_name']."'>".$row['userclass_name']."</option>";
 			}
@@ -134,7 +139,7 @@ class user_select
 	{
 		global $tp;
 		if ($oldClass !== FALSE) $class = $oldClass;		// Handle legacy position of $class
-		$text = "<script type='text/javascript'>
+		$text = "<script>
 		<!--
 		function uc_switch(uctype) {
 			document.getElementById(uctype).value = '';
@@ -143,7 +148,7 @@ class user_select
 		</script>";
 
 		list($form_type, $form_id) = explode(".", $user_form);
-		if($form_id == "") { $form_id = $form_type; }
+		if(empty($form_id)) { $form_id = $form_type; }
 
 		if ($type == 'list') 
 		{
@@ -177,14 +182,17 @@ class user_select
 		
 		return $text;
 	}
-	
 
 
-	function real_name($_id) 
+	/**
+	 * @param $_id
+	 * @return mixed|void
+	 */
+	function real_name($_id)
 	{
 		global $sql;
-		$sql -> db_Select("user", "user_name", "user_id='".intval($_id)."' ");
-		if ($row = $sql -> db_Fetch()) 
+		$sql ->select("user", "user_name", "user_id='".intval($_id)."' ");
+		if ($row = $sql ->fetch())
 		{
 			return $row['user_name'];
 		}
@@ -210,7 +218,7 @@ class user_select
 		}
 		else
 		{
-			if($elementID == "")
+			if(empty($elementID))
 			{
 				$elementID = $elementType;
 			}
@@ -228,7 +236,7 @@ class user_select
 
 		echo "<link rel=stylesheet href='".e_WEB_ABS."js/bootstrap/css/bootstrap.min.css'>
 		<link rel=stylesheet href='".THEME_ABS."style.css'>
-		<script language='JavaScript' type='text/javascript'>
+		<script>
 		<!--
 		function SelectUser() {
 		var d = window.document.results.usersel.value;
@@ -250,7 +258,7 @@ class user_select
 								<input type='text' name='srch' id='srch' class='tbox form-control' value='".$tp -> post_toForm(varset($_POST['srch'],''))."' size='40'>
 							</div>
 							<div class='form-group text-center'>
-								<button class='btn btn-default button' type='submit' name='dosrch' class='tbox' value='".US_LAN_6."'>".US_LAN_6."</button>
+								<button class='btn btn-default btn-secondary button' type='submit' name='dosrch' class='tbox' value='".US_LAN_6."'>".US_LAN_6."</button>
 							</div>
 						</form>
 					</div>
@@ -283,7 +291,7 @@ class user_select
 						</select>
 					</div>
 					<div class='form-group text-center'>
-						<input type='button' class='btn btn-default button' value='".US_LAN_1."' onClick='SelectUser()' />
+						<input type='button' class='btn btn-default btn-secondary button' value='".US_LAN_1."' onClick='SelectUser()' />
 					</div>
 				</form>
 			</div>
@@ -294,12 +302,17 @@ class user_select
 		echo "\n</body>\n</html>";
 	}
 
-	function findusers($s,$banned=FALSE) {
+	/**
+	 * @param $s
+	 * @param $banned
+	 * @return false
+	 */
+	function findusers($s, $banned=FALSE) {
 		global $sql, $tp;
 		$inc = ($banned == FALSE) ? " AND user_ban != 1" : "";
-		if ($sql->db_Select("user", "*", "user_name LIKE '%".$tp -> toDB($s)."%'".$inc)) 
+		if ($sql->select("user", "*", "user_name LIKE '%".$tp -> toDB($s)."%'".$inc))
 		{
-			while ($row = $sql -> db_Fetch()) {
+			while ($row = $sql ->fetch()) {
 				$ret[strtolower($row['user_name'])] = $row['user_name'];
 			}
 			ksort($ret);

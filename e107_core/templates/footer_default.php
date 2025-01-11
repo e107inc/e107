@@ -16,11 +16,11 @@ if (!defined('e107_INIT'))
 {
 	exit;
 }
-$In_e107_Footer = TRUE; // For registered shutdown function
+$GLOBALS['E107_IN_FOOTER'] = true; // For registered shutdown function
+
+$magicSC = e107::getRender()->getMagicShortcodes(); // support for {---TITLE---} etc.
 
 global $error_handler,$db_time,$FOOTER;
-
-
 
 
 
@@ -56,6 +56,7 @@ if(!defined('e_NOCACHE'))
 $e107 = e107::getInstance();
 $sql = e107::getDb();
 $pref = e107::getPref();
+$tp = e107::getParser();
 
 if (varset($e107_popup) != 1)
 {
@@ -68,7 +69,20 @@ if (varset($e107_popup) != 1)
 	//
 	if(!deftrue('e_IFRAME'))
     {
-	   parseheader((varset($ph) ? $cust_footer : $FOOTER));
+		if(!isset($LAYOUT['_modal_']))
+		{
+			$LAYOUT['_modal_'] = '';
+		}
+
+        $psc = array(
+         '</body>'          => '',
+    //     '{THEME}'          => THEME_ABS, // moved to e107_core/shortcodes/single/
+         '{---MODAL---}'    => $LAYOUT['_modal_'],
+         '{---HEADER---}'   => $tp->parseTemplate('{HEADER}',true),
+         '{---FOOTER---}'   => $tp->parseTemplate('{FOOTER}',true)
+        );
+
+	   e107::renderLayout($FOOTER, array('magicSC'=>$psc));
     }
     
 	$eTimingStop = microtime();
@@ -88,7 +102,7 @@ if (varset($e107_popup) != 1)
 		$logLine .= "'".($now = time())."','".gmstrftime('%y-%m-%d %H:%M:%S', $now)."','".e107::getIPHandler()->getIP(FALSE)."','".e_PAGE.'?'.e_QUERY."','".$rendertime."','".$db_time."','".$queryCount."','".$memuse."','".$_SERVER['HTTP_USER_AGENT']."','{$_SERVER["REQUEST_METHOD"]}'";
 	}
 	
-	if (function_exists('getrusage'))
+	if (function_exists('getrusage') && !empty($eTimingStartCPU))
 	{
 		$ru = getrusage();
 		$cpuUTime = $ru['ru_utime.tv_sec'] + ($ru['ru_utime.tv_usec'] * 1e-6);
@@ -132,11 +146,11 @@ if (varset($e107_popup) != 1)
 	{
 		$rinfo .= CORE_LAN16.$memuse;
 	}
-	if (isset($pref['displaycacheinfo']) && $pref['displaycacheinfo'])
+/*	if (isset($pref['displaycacheinfo']) && $pref['displaycacheinfo'])
 	{
 		$rinfo .= $cachestring.".";
 	}
-	
+	*/
 	if ($pref['log_page_accesses'])
 	{
 		// Need to log the page info to a text file as CSV data
@@ -171,9 +185,15 @@ if (varset($e107_popup) != 1)
 //
 if ((ADMIN || $pref['developer']) && E107_DEBUG_LEVEL)
 {
-	global $db_debug;
+	$tmp = array();
+	foreach($magicSC as $k=>$v)
+	{
+		$k = str_replace(array('{','}'),'',$k);
+		$tmp[$k] = $v;
+	}
+	e107::getDebug()->log("<b>Magic Shortcodes</b><small> Replace [  ] with {  }</small><br />".print_a($tmp,true));
 	echo "\n<!-- DEBUG -->\n<div class='e-debug debug-info'>";
-	$db_debug->Show_All();
+	e107::getDebug()->Show_All();
 	echo "</div>\n";
 }
 
@@ -187,12 +207,15 @@ if (ADMIN && isset($queryinfo) && is_array($queryinfo))
 {
 	$c = 1;
 	$mySQLInfo = $sql->mySQLinfo;
-	echo "<div class='e-debug query-notice'><table class='fborder table table-striped table-bordered' style='width: 100%;'>
+	echo "<div class='e-debug query-notice'>
+	<h4>SQL</h4>
+	<table class='table table-striped table-bordered' style='width: 100%;'>
 		<tr>
-		<th class='fcaption' style='width: 5%;'>ID</th><th class='fcaption' style='width: 95%;'>SQL Queries</th>\n</tr>\n";
+		<th style='width: 5%;'>ID</th><th style='width: 95%;'>SQL Queries</th>\n</tr>\n";
 	foreach ($queryinfo as $infovalue)
 	{
-		echo "<tr>\n<td class='forumheader3' style='width: 5%;'>{$c}</td><td class='forumheader3' style='width: 95%;'>{$infovalue}</td>\n</tr>\n";
+		echo "<tr>\n<td style='width: 5%;'>{$c}</td>
+			<td style='width: 95%;'>{$infovalue}</td>\n</tr>\n";
 		$c++;
 	}
 	echo "</table></div>";
@@ -257,6 +280,14 @@ if ((ADMIN == true || $pref['developer']) && count($error_handler->errors) && $e
 //
 // E Last themed footer code, usually JS
 //
+
+if(deftrue('e_DEBUG_JS_FOOTER'))
+{
+	renderAllJavascript();
+}
+
+
+
 if (function_exists('theme_foot'))
 {
 	echo theme_foot();
@@ -266,13 +297,19 @@ if (function_exists('theme_foot'))
 // F any included JS footer scripts
 // DEPRECATED - use  e107::getJs()->footerFile('{e_PLUGIN}myplug/js/my.js', $zone = 2)
 //
+if(!empty($pref['jscsscachestatus']))
+{
+	e107::getJs()->renderCached('js');
+	e107::getJs()->renderJs('header_inline', 5);
+}
 global $footer_js;
 if (isset($footer_js) && is_array($footer_js))
 {
 	$footer_js = array_unique($footer_js);
+
 	foreach ($footer_js as $fname)
 	{
-		echo "<script type='text/javascript' src='{$fname}'></script>\n";
+		echo "<script src='{$fname}'></script>\n";
 		$js_included[] = $fname;
 	}
 }
@@ -288,8 +325,7 @@ if (!empty($pref['e_footer_list']) && is_array($pref['e_footer_list']))
 		
 		if(is_readable($fname))
 		{
-			
-			$ret = ($e107_debug || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
+			$ret = (deftrue('e_DEBUG') || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
 
 		}	
 	}
@@ -305,7 +341,7 @@ if(deftrue('e_DEVELOPER'))
 {
 	echo "\n\n<!-- ======= [JSManager] FOOTER: Remaining CSS ======= -->";
 }
-$CSSORDER = deftrue('CSSORDER') ? explode(",",CSSORDER) : array('other','core','plugin','theme');  // INLINE CSS in Body not supported by HTML5. .
+$CSSORDER = defined('CSSORDER') && deftrue('CSSORDER') ? explode(",",CSSORDER) : array('library','other','core','plugin','theme');  // INLINE CSS in Body not supported by HTML5. .
 
 foreach($CSSORDER as $val)
 {
@@ -340,7 +376,7 @@ e107::getJs()->renderJs('footer_inline', true);
 // see e107.js and class2.php
 // This must be done as late as possible in page processing.
 $_serverTime = time();
-$lastSet = isset($_COOKIE['e107_tdSetTime']) ? intval($_COOKIE['e107_tdSetTime']) : 0;
+$lastSet = isset($_COOKIE['e107_tdSetTime']) ? (int) $_COOKIE['e107_tdSetTime'] : 0;
 $_serverPath = e_HTTP;
 $_serverDomain = deftrue('MULTILANG_SUBDOMAIN') ? '.'.e_DOMAIN : '';
 if (abs($_serverTime - $lastSet) > 120)
@@ -349,7 +385,31 @@ if (abs($_serverTime - $lastSet) > 120)
 	 * Benefit: account for user time corrections and changes in internet delays
 	 * Drawback: each update may cause all server times to display a bit different
 	 */
-	echo "<script type='text/javascript'>\n";
+
+	echo "<script>\n";
+	echo "var nowLocal = new Date();		/* time at very beginning of js execution */
+var localTime = Math.floor(nowLocal.getTime()/1000);	/* time, in ms -- recorded at top of jscript */
+	
+function SyncWithServerTime(serverTime, path, domain)
+{
+	if (serverTime) 
+	{
+	  	/* update time difference cookie */
+		var serverDelta=Math.floor(localTime-serverTime);
+		if(!path) path = '/';
+		if(!domain) domain = '';
+		else domain = '; domain=' + domain;
+	  	document.cookie = 'e107_tdOffset='+serverDelta+'; path='+path+domain;
+	  	document.cookie = 'e107_tdSetTime='+(localTime-serverDelta)+'; path='+path+domain+'; samesite=strict'; /* server time when set */
+	}
+
+	var tzCookie = 'e107_tzOffset=';
+//	if (document.cookie.indexOf(tzCookie) < 0) {
+		/* set if not already set */
+		var timezoneOffset = nowLocal.getTimezoneOffset(); /* client-to-GMT in minutes */
+		document.cookie = tzCookie + timezoneOffset+'; path='+path+domain+'; samesite=strict';
+//	}
+}\n";
 	echo "	SyncWithServerTime('', '{$_serverPath}', '{$_serverDomain}');\n";
 	//tdOffset disabled as it can't live together with HTTP_IF_NONE_MATCH (page load speed)
 	//echo "	SyncWithServerTime('{$_serverTime}', '{$_serverPath}', '{$_serverDomain}');\n";
@@ -372,8 +432,31 @@ $show = deftrue('e_POWEREDBY_DISABLE') ? "none" : "block"; // Let search engines
 //XXX Must not contain IDs or Classes 	
 // echo "<div style='text-align:center; display:".$show."; position: absolute; width:99%; height:20px; margin-top:-30px; z-index:30000; opacity:1.0; color: silver'>Proudly powered by <a style='color:silver' href='http://e107.org/' title='e107 Content Management System'>e107</a></div>";
 unset($show);
+
+if(isset($pref['meta_bodyend'][e_LANGUAGE]))
+{
+	echo "\n<!-- Start custom body-end tag -->\n";
+	echo $pref['meta_bodyend'][e_LANGUAGE]."\n";
+	echo "<!-- End custom body-end tag -->\n\n";
+}
+
 echo "\n</body>\n</html>";
 
+//hook into the end of page (usefull for example for capturing output buffering)
+//Load e_output.php files.
+if (!empty($pref['e_output_list']) && is_array($pref['e_output_list']))
+{
+	foreach($pref['e_output_list'] as $val)
+	{
+		$fname = e_PLUGIN.$val."/e_output.php"; // Do not place inside a function - BC $pref required. . 
+		
+		if(is_readable($fname))
+		{
+			$ret = (deftrue('e_DEBUG') || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
+		}
+	}
+	unset($ret);
+}
 
 //
 // I Send the buffered page data, along with appropriate headers
@@ -382,27 +465,33 @@ echo "\n</body>\n</html>";
 //$page = ob_get_clean();
 
 
+$search = array_keys($magicSC);
+$replace = array_values($magicSC);
 
 // New - see class2.php 
 $ehd = new e_http_header;
-$ehd->setContent('buffer');
+$ehd->setContent('buffer', $search, $replace);
 $ehd->send();
 // $ehd->debug();
 
 $page = $ehd->getOutput();
-//$ehd->setContent($page);
-//$ehd->send($length);
 
 
 // real output
 echo $page;
 
-unset($In_e107_Footer);
+
+
+$GLOBALS['E107_IN_FOOTER'] = false;
 
 
 // Clean session shutdown
-e107::getSession()->shutdown(); // moved from the top of footer_default.php to fix https://github.com/e107inc/e107/issues/1446 (session closing before page was complete)
-// Shutdown
-$e107->destruct();
-$e107_Clean_Exit=true;	// For registered shutdown function -- let it know all is well!
-?>
+if(!e107::isCli())
+{
+	e107::getSession()->shutdown(); // moved from the top of footer_default.php to fix https://github.com/e107inc/e107/issues/1446 (session closing before page was complete)
+	// Shutdown
+	$e107->destruct();
+}
+
+$GLOBALS['E107_CLEAN_EXIT'] = true;  	// For registered shutdown function -- let it know all is well!
+

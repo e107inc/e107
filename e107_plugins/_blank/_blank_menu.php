@@ -32,4 +32,3 @@ e107::getRender()->tablerender("_blank", $text);
 
 
 
-?>

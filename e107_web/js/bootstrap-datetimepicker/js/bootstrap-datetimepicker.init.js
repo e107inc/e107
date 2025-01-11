@@ -17,11 +17,11 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
                 $item.on("change keyup", function () {
                     var $this = $(this);
                     var useUnix = $this.attr("data-date-unix");
+                    var newValue = $this.val();
 
-                    if (useUnix !== "true") {
+                    if (useUnix !== "true" || newValue == "") {
                         var id = $this.attr("id");
                         var newTarget = "#" + id.replace("e-datepicker-", "");
-                        var newValue = $this.val();
                         $(newTarget).val(newValue);
                     }
                 });
@@ -36,7 +36,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
                     autoclose: true,
                     format: $item.attr("data-date-format"),
                     weekStart: $item.attr("data-date-firstday"),
-                    language: $item.attr("data-date-language")
+                    language: $item.attr("data-date-language"),
                 }).on("changeDate", function (ev) {
                     var useUnix = $(this).attr("data-date-unix");
                     var newValue = "";
@@ -49,7 +49,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
                         newValue = $("#" + ev.target.id).val();
                     }
 
-                    $(newTarget).val(newValue);
+                    $(newTarget).val( newValue);
                 });
             });
 
@@ -62,6 +62,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
                     weekStart: $item.attr("data-date-firstday"),
                     showMeridian: $item.attr("data-date-ampm"),
                     language: $item.attr("data-date-language")
+
                 }).on("changeDate", function (ev) {
                     var useUnix = $(this).attr("data-date-unix");
                     var newValue = "";
@@ -74,7 +75,22 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
                         newValue = $("#" + ev.target.id).val();
                     }
 
+                     offset = parseInt($item.attr("data-date-timezone-offset"));
+
+                     if(offset) // adjust UTC value to target timezone. ie. timezone other than the one of the browser.
+                     {
+                        browserOffset = ev.date.getTimezoneOffset() * 60;
+                        relativeOffset = browserOffset + offset;
+
+                        console.log("Browser Offset: " + browserOffset);
+                        console.log('Offset: ' + offset);
+                        console.log('Relative Offset: ' + relativeOffset);
+
+                        newValue = newValue - relativeOffset;
+                     }
+
                     $(newTarget).val(newValue);
+
                 })
             });
         }

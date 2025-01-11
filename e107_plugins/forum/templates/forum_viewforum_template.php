@@ -21,10 +21,6 @@ $FORUM_VIEW_START = "
 	<div class='spacer'>
 	<table style='".USER_WIDTH."' class='fborder table' >
 	<tr>
-	<td class='fcaption'>{BREADCRUMB}</td>
-	</tr>
-	{SUBFORUMS}
-	<tr>
 	<td style='width:80%' class='forumheader'>
 	<span class='mediumtext'>{FORUMTITLE}</span></td>
 	</tr>
@@ -165,7 +161,7 @@ if (empty($FORUM_VIEW_END))
 		<div class='spacer'>
 		<table class='fborder table' style='".USER_WIDTH."'>
 		<tr>
-		<td style='vertical-align:middle; width:50%' class='forumheader3'><span class='smalltext'>{MODERATORS}</span></td>
+		<td style='vertical-align:middle; width:50%' class='forumheader3'><span class='smalltext'>{LAN=LAN_FORUM_1009}: {MODERATORS}</span></td>
 		<td style='vertical-align:middle; width:50%' class='forumheader3'><span class='smalltext'>{BROWSERS}</span></td>
 		</tr>
 		</table>
@@ -184,9 +180,9 @@ if (empty($FORUM_VIEW_END))
 		<div class='spacer'>";
 	//	hardcoded deprecated rss links
 	//	<div style='text-align:center;'>
-	//	<a href='".e_PLUGIN."rss_menu/rss.php?11.1.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss1.png' alt='".LAN_431."' style='vertical-align: middle; border: 0;' /></a>
-	//	<a href='".e_PLUGIN."rss_menu/rss.php?11.2.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss2.png' alt='".LAN_432."' style='vertical-align: middle; border: 0;' /></a>
-	//	<a href='".e_PLUGIN."rss_menu/rss.php?11.3.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss3.png' alt='".LAN_433."' style='vertical-align: middle; border: 0;' /></a>
+	//	<a href='".e_PLUGIN."rss_menu/rss.php?11.1.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss1.png' alt='{LAN=431}' style='vertical-align: middle; border: 0;' /></a>
+	//	<a href='".e_PLUGIN."rss_menu/rss.php?11.2.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss2.png' alt='{LAN=432}' style='vertical-align: middle; border: 0;' /></a>
+	//	<a href='".e_PLUGIN."rss_menu/rss.php?11.3.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss3.png' alt='{LAN=433}' style='vertical-align: middle; border: 0;' /></a>
 	//	</div>
 	//	
 		$FORUM_VIEW_END .= "
@@ -221,10 +217,10 @@ if (empty($FORUM_VIEW_SUB_START))
 		<table style='width:100%'>
 		<tr>
 			<td class='fcaption' style='width: 5%'>&nbsp;</td>
-			<td class='fcaption' style='width: 45%'>".LAN_FORUM_1002."</td>
-			<td class='fcaption' style='width: 10%'>".LAN_FORUM_0002."</td>
-			<td class='fcaption' style='width: 10%'>".LAN_FORUM_0003."</td>
-			<td class='fcaption' style='width: 30%'>".LAN_FORUM_0004."</td>
+			<td class='fcaption' style='width: 45%'>{LAN=FORUM_1002}</td>
+			<td class='fcaption' style='width: 10%'>{LAN=FORUM_0002}</td>
+			<td class='fcaption' style='width: 10%'>{LAN=FORUM_0003}</td>
+			<td class='fcaption' style='width: 30%'>{LAN=FORUM_0004}</td>
 		</tr>
 	";
 }
@@ -253,13 +249,13 @@ if (empty($FORUM_VIEW_SUB_END))
 }
 
 if (empty($FORUM_IMPORTANT_ROW)) {
-	$FORUM_IMPORTANT_ROW = "<tr><td class='forumheader'>&nbsp;</td><td colspan='5'  class='forumheader'><span class='mediumtext'><b>".LAN_FORUM_1006."</b></span></td></tr>";
+	$FORUM_IMPORTANT_ROW = "<tr><td class='forumheader'>&nbsp;</td><td colspan='5'  class='forumheader'><span class='mediumtext'><b>{LAN=FORUM_1006}</b></span></td></tr>";
 }
 
 
 if (empty($FORUM_NORMAL_ROW))
 {
-	$FORUM_NORMAL_ROW = "<tr><td class='forumheader'>&nbsp;</td><td colspan='5'  class='forumheader'><span class='mediumtext'><b>".LAN_FORUM_1007."</b></span></td></tr>";
+	$FORUM_NORMAL_ROW = "<tr><td class='forumheader'>&nbsp;</td><td colspan='5'  class='forumheader'><span class='mediumtext'><b>{LAN=FORUM_1007}</b></span></td></tr>";
 }
 
 
@@ -274,7 +270,7 @@ $FORUM_CRUMB['sitename']['sep'] = " :: ";
 $FORUM_CRUMB['forums']['value'] = "<a class='forumlink' href='{FORUMS_HREF}'>{FORUMS_TITLE}</a>";
 $FORUM_CRUMB['forums']['sep'] = " :: ";
 
-$FORUM_CRUMB['parent']['value'] = "<a class='forumlink' href='{PARENT_HREF}'>{PARENT_TITLE}</a>"; 
+$FORUM_CRUMB['parent']['value'] = "<a class='forumlink' href='{PARENT_HREF}'>{PARENT_TITLE}</a>";
 $FORUM_CRUMB['parent']['sep'] = " :: ";
 
 $FORUM_CRUMB['subparent']['value'] = "<a class='forumlink' href='{SUBPARENT_HREF}'>{SUBPARENT_TITLE}</a>";
@@ -292,8 +288,8 @@ $FORUM_VIEWFORUM_TEMPLATE['caption'] 				= "";
 $FORUM_VIEWFORUM_TEMPLATE['start'] 				= "<div id='forum-viewforum'>";
 $FORUM_VIEWFORUM_TEMPLATE['header'] 			= "<div class=' row-fluid'><div>{BREADCRUMB}</div></div>
 													<div class='row row-fluid'>
-													<div class='col-md-9 span9 pull-left'><h3>{FORUMTITLE}</h3></div>
-													<div class='col-md-3 span3 pull-right right' style='padding-top:10px'>{NEWTHREADBUTTONX}</div></div>
+													<div class='col-md-9 span9 pull-left float-left float-start'><h3>{FORUMIMAGE:h=60}{FORUMTITLE}</h3></div>
+													<div class='col-md-3 span3 pull-right float-right float-end right'>{NEWTHREADBUTTONX}</div></div>
 													<table class='table table-hover table-striped table-bordered'>
 													<colgroup>
 													<col style='width:3%' />
@@ -310,14 +306,14 @@ $FORUM_VIEWFORUM_TEMPLATE['item'] 				= "<tr>
 												    <td>{ICON}</td>
 												    <td>
 												        <div class='row'>
-												            <div class='col-xs-12 col-md-9'>
+												            <div class='col-12 col-xs-12 col-md-9'>
 												            {THREADNAME}
-												            <div><small>".LAN_FORUM_1004.": {POSTER} {THREADTIMELAPSE} &nbsp;</small></div>
-												            </div><div class='col-xs-12 col-md-3 text-right'> {PAGESX}</div>
+												            <div><small>{LAN=FORUM_1004}: {POSTER} {THREADTIMELAPSE} &nbsp;</small></div>
+												            </div><div class='col-12 col-xs-12 col-md-3 text-right'> {PAGESX}</div>
 												        </div>
 												    </td>
 												    <td class='text-center'>{REPLIESX}</td><td class='hidden-xs text-center'>{VIEWSX}</td>
-												    <td class='hidden-xs'><small>{LASTPOSTUSER} {LASTPOSTDATE} </small><div class='span2 right pull-right'>{ADMINOPTIONS}</div></td>
+												    <td class='hidden-xs'><small>{LASTPOSTUSER} {LASTPOSTDATE} </small><div class='span2 right float-right pull-right float-end'>{ADMINOPTIONS}</div></td>
 												</tr>\n";
 
 
@@ -326,14 +322,14 @@ $FORUM_VIEWFORUM_TEMPLATE['item-announce'] 		= $FORUM_VIEWFORUM_TEMPLATE['item']
 
 
 $FORUM_VIEWFORUM_TEMPLATE['sub-header']			= "<tr>
-													<th colspan='2'>".LAN_FORUM_1002."</th>
-													<th class='text-center'>".LAN_FORUM_0003."</th>
-													<th class='hidden-xs text-center'>".LAN_FORUM_0002."</th>
-													<th class='hidden-xs'>".LAN_FORUM_0004."</th>
+													<th colspan='2'>{LAN=FORUM_1002}</th>
+													<th class='text-center'>{LAN=FORUM_0003}</th>
+													<th class='hidden-xs text-center'>{LAN=FORUM_0002}</th>
+													<th class='hidden-xs'>{LAN=FORUM_0004}</th>
 												</tr>";
 
 $FORUM_VIEWFORUM_TEMPLATE['sub-item']			= "<tr><td>{NEWFLAG}</td>
-												<td><div>{SUB_FORUMTITLE}</div><small>{SUB_DESCRIPTION}</small></td>
+												<td><div>{SUB_FORUMIMAGE:h=50}{SUB_FORUMTITLE}</div><small>{SUB_DESCRIPTION}</small></td>
 												<td class='text-center'>{SUB_REPLIESX}</td>
 												<td class='hidden-xs text-center'>{SUB_THREADSX}</td>
 												<td class='hidden-xs'><small>{SUB_LASTPOSTUSER} {SUB_LASTPOSTDATE}</small></td>
@@ -343,27 +339,26 @@ $FORUM_VIEWFORUM_TEMPLATE['sub-item']			= "<tr><td>{NEWFLAG}</td>
 $FORUM_VIEWFORUM_TEMPLATE['sub-footer']			= "";		
 
 /* Examples top divider with shortcodes - working
-$FORUM_VIEWFORUM_TEMPLATE['divider-important']	= "<tr><th colspan='2'>".LAN_FORUM_1006." {FORUMTITLE}</th><th class='text-center'>".LAN_FORUM_0003."</th><th class='hidden-xs text-center'>".LAN_FORUM_1005."</th><th class='hidden-xs'>".LAN_FORUM_0004."</th></tr>";
-$FORUM_VIEWFORUM_TEMPLATE['divider-normal']		= "<tr><th colspan='2'>".LAN_FORUM_1007." {FORUMTITLE}</th><th class='text-center' >".LAN_FORUM_0003."</th><th class='hidden-xs text-center'>".LAN_FORUM_1005."</th><th class='hidden-xs'>".LAN_FORUM_0004."</th></tr>";
+$FORUM_VIEWFORUM_TEMPLATE['divider-important']	= "<tr><th colspan='2'>{LAN=FORUM_1006} {FORUMTITLE}</th><th class='text-center'>{LAN=FORUM_0003}</th><th class='hidden-xs text-center'>{LAN=FORUM_1005}</th><th class='hidden-xs'>{LAN=FORUM_0004}</th></tr>";
+$FORUM_VIEWFORUM_TEMPLATE['divider-normal']		= "<tr><th colspan='2'>{LAN=FORUM_1007} {FORUMTITLE}</th><th class='text-center' >{LAN=FORUM_0003}</th><th class='hidden-xs text-center'>{LAN=FORUM_1005}</th><th class='hidden-xs'>{LAN=FORUM_0004}</th></tr>";
 */
-$FORUM_VIEWFORUM_TEMPLATE['divider-important']	= "<tr><th colspan='2'>".LAN_FORUM_1006."</th><th class='text-center'>".LAN_FORUM_0003."</th><th class='hidden-xs text-center'>".LAN_FORUM_1005."</th><th class='hidden-xs'>".LAN_FORUM_0004."</th></tr>";
-$FORUM_VIEWFORUM_TEMPLATE['divider-normal']		= "<tr><th colspan='2'>".LAN_FORUM_1007."</th><th class='text-center' >".LAN_FORUM_0003."</th><th class='hidden-xs text-center'>".LAN_FORUM_1005."</th><th class='hidden-xs'>".LAN_FORUM_0004."</th></tr>";
+$FORUM_VIEWFORUM_TEMPLATE['divider-important']	= "<tr><th colspan='2'>{LAN=FORUM_1006}</th><th class='text-center'>{LAN=FORUM_0003}</th><th class='hidden-xs text-center'>{LAN=FORUM_1005}</th><th class='hidden-xs'>{LAN=FORUM_0004}</th></tr>";
+$FORUM_VIEWFORUM_TEMPLATE['divider-normal']		= "<tr><th colspan='2'>{LAN=FORUM_1007}</th><th class='text-center' >{LAN=FORUM_0003}</th><th class='hidden-xs text-center'>{LAN=FORUM_1005}</th><th class='hidden-xs'>{LAN=FORUM_0004}</th></tr>";
 
-$SC_WRAPPER['VIEWABLE_BY'] = "<div class='panel panel-default' style='margin-top:10px'><div class='panel-heading'>".LAN_FORUM_8012."</div><div class='panel-body'>{---}</div></div></div>";
+$SC_WRAPPER['VIEWABLE_BY'] = "<div class='panel panel-default' style='margin-top:10px'><div class='panel-heading'>{LAN=FORUM_8012}</div><div class='panel-body'>{---}</div></div>";
 
 $FORUM_VIEWFORUM_TEMPLATE['footer'] 				= "</table>
-												<div class='row row-fluid'>
+												<div class='row row-fluid d-flex justify-content-between'>
 
-												<div class='col-md-5 span5 pull-left left' style='padding-top:10px'>{THREADPAGES}</div><div class='col-md-3 span3 pull-right right' style='padding-top:10px'>{NEWTHREADBUTTONX}</div>
+												<div class='col-md-5 col-lg-2 span5 pull-left float-left float-start left'>{THREADPAGES}</div><div class='col-md-3 span3 pull-right float-right float-end right'>{NEWTHREADBUTTONX}</div>
 
 												</div>
 
-												<div>
+												<div class='mb-4'>
 													<div class='panel panel-default' style='margin-top:50px'>
-													<div class='panel-heading'>".LAN_FORUM_8011."</div>
+													<div class='panel-heading'>{LAN=FORUM_8011}</div>
 													<div class='panel-body'>
 													{ICONKEY}
-
 													</div>
 													</div>
 												</div>
@@ -377,21 +372,21 @@ $FORUM_VIEWFORUM_TEMPLATE['end'] 					= "</div>\n<!--- END --> \n";
 // define {ICONKEY}
 $FORUM_VIEWFORUM_TEMPLATE['iconkey'] 			= "
 												<div class='row' >
-													<div class='col-sm-3 col-xs-6'>".IMAGE_new_small." ".LAN_FORUM_0039."</div>
-													<div class='col-sm-3 col-xs-6'>".IMAGE_nonew_small." ".LAN_FORUM_0040."</div>
-													<div class='col-sm-3 col-xs-6'>".IMAGE_sticky_small." ".LAN_FORUM_1011."</div>
-													<div class='col-sm-3 col-xs-6'>".IMAGE_announce_small." ".LAN_FORUM_1013."</div>
+													<div class='col-sm-3 col-6 col-xs-6'>{ICON: type=new} {LAN=FORUM_0039}</div>
+													<div class='col-sm-3 col-6 col-xs-6'>{ICON: type=nonew} {LAN=FORUM_0040}</div>
+													<div class='col-sm-3 col-6 col-xs-6'>{ICON: type=sticky} {LAN=FORUM_1011}</div>
+													<div class='col-sm-3 col-6 col-xs-6'>{ICON: type=announce} {LAN=FORUM_1013}</div>
 												</div>
 
 												<div class='row' >
-													<div class='col-sm-3 col-xs-6'>".IMAGE_new_popular_small." ".LAN_FORUM_0039." ".LAN_FORUM_1010."</div>
-													<div class='col-sm-3 col-xs-6'>".IMAGE_nonew_popular_small." ".LAN_FORUM_0040." ".LAN_FORUM_1010."</div>
-													<div class='col-sm-3 col-xs-6'>".IMAGE_noreplies_small." ".LAN_FORUM_1021."</div>
-													<div class='col-sm-3 col-xs-6'>".IMAGE_closed_small." ".LAN_FORUM_1014."</div>
+													<div class='col-sm-3 col-6 col-xs-6'>{ICON: type=new_popular} {LAN=FORUM_0039} {LAN=FORUM_1010}</div>
+													<div class='col-sm-3 col-6 col-xs-6'>{ICON: type=nonew_popular} {LAN=FORUM_0040} {LAN=FORUM_1010}</div>
+													<div class='col-sm-3 col-6 col-xs-6'>{ICON: type=noreplies} {LAN=FORUM_1021}</div>
+													<div class='col-sm-3 col-6 col-xs-6'>{ICON: type=closed} {LAN=FORUM_1014}</div>
 												</div>
 												";
 
-
+$FORUM_VIEWFORUM_TEMPLATE['forum-crumb'] =  $FORUM_CRUMB;
 
 // $FORUM_VIEWFORUM_WRAPPER['THREADNAME']          = "<span class='label label-info'>{---}</span>";
 

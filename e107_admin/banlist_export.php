@@ -10,7 +10,7 @@
  *
  */
 
-require_once('../class2.php');
+require_once(__DIR__.'/../class2.php');
 if (!getperms('4')) 
 {
 	e107::redirect('admin');
@@ -18,7 +18,7 @@ if (!getperms('4'))
 }
 
 /*
-Output a selection of data from the banlist table as a CSV
+Output a selection of data from the banlist table arequire_once(__DIR__.'/../class2.php');s a CSV
 Selection data:
   $_POST['ban_types'] - array of 0..9
   $_POST['ban_separator'] - 1 or 2
@@ -42,12 +42,15 @@ $format_array = array(
   'banlist_notes' => 1
 );
 
-$use_separator = varset($separator_char[intval($_POST['ban_separator'])],$separator_char[1]);
-$use_quote = varset($quote_char[intval($_POST['ban_quote'])],$quote_char[2]);
+$banSep = (int)  varset($_POST['ban_separator']);
+$banQuote = (int) varset($_POST['ban_quote']);
+$use_separator = varset($separator_char[$banSep],$separator_char[1]);
+$use_quote = varset($quote_char[$banQuote],$quote_char[2]);
 
 
 $type_list = '';
-if (is_array($_POST['ban_types']))
+
+if (!empty($_POST['ban_types']))
 {
 	$validBanTypes = banlistManager::getValidReasonList();
 	$spacer = '';
@@ -62,7 +65,7 @@ if (is_array($_POST['ban_types']))
 	}
 }
 
-$filename = 'banlist_'.strftime("%Y%m%d_%H%M%S").'.csv';
+$filename = 'banlist_'.e107::getParser()->toDate(time(), "%Y%m%d_%H%M%S").'.csv';
 
 if ($error_string = do_export($filename, $type_list, $format_array, $use_separator, $use_quote))
 {
@@ -72,14 +75,15 @@ if ($error_string = do_export($filename, $type_list, $format_array, $use_separat
 banlist_adminlog('06','File: '.$filename.'<br />'.$error_string);
 
 
-function do_export($filename, $type_list='',$format_array, $sep = ',', $quot = '"')
+function do_export($filename, $type_list='',$format_array=array(), $sep = ',', $quot = '"')
 {
 	$sql = e107::getDb();
+	$tp = e107::getParser();
 	$export_text = '';
 	$qry = "SELECT * FROM `#banlist` ";
 	if ($type_list != '') $qry .= " WHERE`banlist_bantype` IN ({$type_list})";
 	if (!$sql->gen($qry)) return 'No data: '.$qry;
-	while ($row = $sql->db_Fetch())
+	while ($row = $sql->fetch())
 	{
 		$line = '';
 		$spacer = '';
@@ -95,7 +99,7 @@ function do_export($filename, $type_list='',$format_array, $sep = ',', $quot = '
 			  break;
 			case 'banlist_datestamp' :
 			case 'banlist_banexpires' :
-			  if ($row[$f]) $line .= $spacer.$quot.strftime($v,$row[$f]).$quot; else $line .= $spacer.$quot.'0'.$quot;
+			  if ($row[$f]) $line .= $spacer.$quot.$tp->toDate($row[$f], $v).$quot; else $line .= $spacer.$quot.'0'.$quot;
 			  break;
 		  }
 		  $spacer = $sep;
@@ -135,7 +139,7 @@ function do_export($filename, $type_list='',$format_array, $sep = ',', $quot = '
 // Log event to admin log
 function banlist_adminlog($msg_num='00', $woffle='')
 {
-	e107::getAdminLog()->log_event('BANLIST_'.$msg_num, $woffle, E_LOG_INFORMATIVE, '');
+	e107::getLog()->add('BANLIST_'.$msg_num, $woffle, E_LOG_INFORMATIVE, '');
 }
 
 

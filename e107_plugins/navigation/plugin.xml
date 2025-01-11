@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e107Plugin name="Navigation" version="1.0" date="2020-12-29" compatibility="2.0" installRequired="false" >
+	<category>menu</category>
+</e107Plugin>

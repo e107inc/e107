@@ -9,9 +9,16 @@
 
 function iconpicker_shortcode($parm)
 {
+		if(empty($parm))
+		{
+			return null;
+		}
+
 		$parms = array();
+
 		parse_str($parm, $parms);
 		$name = varset($parms['id']);
+
 	
 		$sql = e107::getDb();
 		$frm = e107::getForm();
@@ -41,7 +48,7 @@ function iconpicker_shortcode($parm)
 					$str = "";						
 				}
 				
-				$str .= "<a href='#".$row['media_url']."' title='{$filepath}' onclick=\"e107Helper.insertText('{$row['media_url']}','{$name}','{$name}-iconpicker'); return false; \"><img class='icon picker list%%size%%' src='".$tp->replaceConstants($row['media_url'],'abs')."' alt='{$row['media_name']}' /></a>";			
+				$str .= "<a href='#".$row['media_url']."'  onclick=\"e107Helper.insertText('{$row['media_url']}','{$name}','{$name}-iconpicker'); return false; \"><img class='icon picker list%%size%%' src='".$tp->replaceConstants($row['media_url'],'abs')."' alt='{$row['media_name']}' /></a>";
 								
 				$lastsize = $size;
 			
@@ -52,4 +59,3 @@ function iconpicker_shortcode($parm)
 	
 	
 }
-?>

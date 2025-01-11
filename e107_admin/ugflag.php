@@ -9,7 +9,7 @@
  * Administration - Site Maintenance
  *
  */
-require_once ('../class2.php');
+require_once (__DIR__.'/../class2.php');
 
 if(!getperms('9'))
 {
@@ -51,19 +51,16 @@ if(isset($_POST['updatesettings']))
 	{
 		e107::getLog()->add(($pref['maintainance_flag'] == 0) ? 'MAINT_02' : 'MAINT_01', $pref['maintainance_text'], E_LOG_INFORMATIVE, '');
 		save_prefs();
-		$mes->addSuccess(UGFLAN_1);
+	//	$mes->addSuccess(UGFLAN_1);
 	}
 	else
 	{
 		$mes->addInfo(LAN_NO_CHANGE);
 	}
 
+	$pref = e107::getConfig('core', true, true)->getPref();
 		
-	if(!e_AJAX_REQUEST)
-	{
-		header("location:".e_SELF);
-		exit();
-	}
+
 }
 
 require_once("auth.php");
@@ -96,7 +93,7 @@ $text .= "
 $text .= "
 					<tr>
 						<td>".UGFLAN_5."</td>
-						<td>".$frm->bbarea('maintainance_text', vartrue($pref['maintainance_text']), 'maintenance', 'small')."<div class='smalltext clear'>".UGFLAN_6."</div></td>
+						<td>".$frm->bbarea('maintainance_text', vartrue($pref['maintainance_text']), 'maintenance', '_common', 'small')."<div class='smalltext clear'>".UGFLAN_6."</div></td>
 					</tr>
 				</tbody>
 			</table>
@@ -109,16 +106,17 @@ $text .= "
 ";
 
 //Ajax Support
-if(!e_AJAX_REQUEST)
+if(e_AJAX_REQUEST)
 {
-	echo "<div id='ajax-container'>\n";
 	$ns->tablerender(UGFLAN_4, $mes->render().$text, 'core-ugflag');
-	echo "\n</div>";
-	require_once (e_ADMIN."footer.php");
-	exit();
+	exit;
 }
 
+echo "<div id='ajax-container'>\n";
 $ns->tablerender(UGFLAN_4, $mes->render().$text, 'core-ugflag');
+echo "\n</div>";
+require_once (e_ADMIN."footer.php");
+
 
 /**
  * Handle page DOM within the page header
@@ -130,7 +128,7 @@ $ns->tablerender(UGFLAN_4, $mes->render().$text, 'core-ugflag');
 function headerjs()
 {
 	$ret = "
-		<script type='text/javascript'>
+		<script>
 			//Ajax Support
 			var CoreUgflagAjaxPage = function(e_event) {
 				\$('updatesettings').observe('click', function(event) {
@@ -151,11 +149,10 @@ function headerjs()
 			}
 
 		</script>
-		<script type='text/javascript' src='".e_JS."core/admin.js'></script>
+		<script src='".e_JS."core/admin.js'></script>
 	";
 	
 	return $ret;
 }
 
  */
-?>

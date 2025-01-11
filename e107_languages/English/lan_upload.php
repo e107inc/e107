@@ -2,14 +2,13 @@
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_upload.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
+
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Upload");
+if(!defined('PAGE_NAME'))
+{
+	define("PAGE_NAME", "Upload");
+}
 
 define("LAN_UL_001","Invalid email address");
 define("LAN_UL_002", "You do not have the correct permissions to upload files to this server.");	// LAN_403
@@ -47,13 +46,13 @@ define("LAN_411", "File");
 define("LAN_413", "Description");
 define("LAN_414", "Working demo");
 define("LAN_415", "enter URL to site where demo can be viewed");
-define("LAN_416", "Submit and Upload");
-define("LAN_417", "Upload File");
+
+// define("LAN_417", "Upload File"); // LAN_UL_040
 define("LAN_418", "Absolute maximum file size: ");
-define("DOWLAN_11", "Category");
+// define("DOWLAN_11", "Category"); LAN_CATEGORY.
 define("LAN_419", "Allowed filetypes");
 define("LAN_420", "fields are required");
 
+define("LAN_UL_039", "Submit and Upload"); // LAN_416
+define("LAN_UL_040", "Upload File");
 
-
-?>

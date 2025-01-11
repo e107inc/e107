@@ -8,7 +8,7 @@
  *
  */
 
-require_once("../../class2.php");
+require_once(__DIR__.'/../../class2.php');
 if (!is_object($tp)) $tp = new e_parse;
 if (!getperms("P") || !e107::isInstalled('poll')) 
 {
@@ -23,10 +23,10 @@ require_once(e_PLUGIN."poll/poll_class.php");
 require_once(e_HANDLER."userclass_class.php");
 require_once(e_HANDLER."form_handler.php"); // FIXME using 'form' instead of 'e_form'
 
-if(isset($_POST)) 
+/*if(isset($_POST))
 {
 	$_POST = strip_if_magic($_POST);
-}
+}*/
 
 $rs = new form;
 $poll = new poll;
@@ -53,7 +53,7 @@ if (isset($_POST['submit']))
 {
 	if($_POST['poll_title'])
 	{
-		define("POLLID",$_POST['poll_id']);
+		define("POLLID", (int) $_POST['poll_id']);
 		$poll->submit_poll();
 		$mes->addSuccess(LAN_CREATED);
 		unset($_POST['poll_title'], $_POST['poll_option'], $_POST['activate'], $_POST['poll_comment']);
@@ -159,11 +159,11 @@ function poll_list()
 	$frm = e107::getForm();
 	$mes = e107::getMessage();
 	
-	global $user_pref;
+//	global $user_pref;
 	if(isset($_POST['etrigger_ecolumns'])) //TODO User 
 	{
-		$user_pref['admin_poll_columns'] = $_POST['e-columns'];
-		save_prefs('user');
+	//	$user_pref['admin_poll_columns'] = $_POST['e-columns'];
+		e107::getConfig('user')->setPref('admin_poll_columns',$_POST['e-columns'])->save(true,true,false);
 	}
 	
 	$fieldpref = (varset($user_pref['admin_poll_columns'])) ? $user_pref['admin_poll_columns'] : array("poll_id","poll_title","poll_options","poll_vote_userclass"); ;
@@ -210,8 +210,8 @@ function poll_list()
 				
 				$text .= "
 				<td class='center' style='white-space:nowrap'>
-					<button class='btn btn-default btn-large' type='submit' name='edit[{$poll_id}]' value='edit' alt='".LAN_EDIT."' title='".LAN_EDIT."' >".ADMIN_EDIT_ICON."</button>
-					<button class='btn btn-default btn-large action delete' type='submit' name='delete[$poll_id]' value='del' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [".$poll_id."]")."') \" title='".LAN_DELETE."' >".ADMIN_DELETE_ICON."</button>
+					<button class='btn btn-default btn-secondary btn-large' type='submit' name='edit[{$poll_id}]' value='edit' alt='".LAN_EDIT."' title='".LAN_EDIT."' >".ADMIN_EDIT_ICON."</button>
+					<button class='btn btn-default btn-secondary btn-large action delete' type='submit' name='delete[$poll_id]' value='del' onclick=\"return jsconfirm(".$tp->toAttribute($tp->toJSON(LAN_CONFIRMDEL." [".$poll_id."]")).") \" title='".LAN_DELETE."' >".ADMIN_DELETE_ICON."</button>
 				</td>
 			</tr>";
 		}
@@ -240,9 +240,8 @@ function admin_config_adminmenu()
 	$var['import']['link'] = e_SELF."?import";
 	$var['import']['perm'] = "0";*/
 
-	$icon  = e107::getParser()->toIcon(e_PLUGIN.'poll/images/polls_32.png');
-	$caption = $icon."<span>".LAN_PLUGIN_POLL_NAME."</span>";
+	//$icon  = e107::getParser()->toIcon(e_PLUGIN.'poll/images/polls_32.png');
+	$caption = "<span>".LAN_PLUGIN_POLL_NAME."</span>";
 
 	show_admin_menu($caption, $action, $var);
 }
-?>

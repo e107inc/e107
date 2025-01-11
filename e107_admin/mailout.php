@@ -58,8 +58,16 @@ Valid subparameters (where required):
 	$_GET['m'] - id of mail info in db
 	$_GET['t'] - id of target info in db
 */
-// header('Content-Encoding: none'); // turn off gzip. 
-require_once('../class2.php');
+// header('Content-Encoding: none'); // turn off gzip.
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\POP3;
+use PHPMailer\PHPMailer\Exception;
+
+require_once(__DIR__.'/../class2.php');
+
+
 
 if (!getperms('W'))
 {
@@ -79,8 +87,9 @@ require_once(e_HANDLER.'mail_manager_class.php');		// Mail DB API
 
 
 /**
- * Display Progress-bar of real-time mail-out. 
- * @return 
+ * Display Progress-bar of real-time mail-out.
+ * @param $id
+ * @return float
  */
 function sendProgress($id)
 {
@@ -140,13 +149,6 @@ if(e_AJAX_REQUEST)
 }
 		
 	
-
-if(vartrue($_GET['mode']) == "progress")
-{
-//	session_write_close();
-//	sendProgress();
-//	exit;
-}
 
 
 $mes = e107::getMessage();
@@ -243,6 +245,7 @@ class mailout_admin extends e_admin_dispatcher
 		'sent/list'			=> array('caption'=> LAN_MAILOUT_192, 	'perm' => 'W'),
 		'other2' 			=> array('divider'=> true),
 		'prefs/prefs' 		=> array('caption'=> LAN_PREFS, 		'perm' => '0'),
+
 		'maint/maint'		=> array('caption'=> ADLAN_40, 			'perm' => '0'),
 		'main/templates'	=> array('caption'=> LAN_MAILOUT_262, 'perm' => '0'),
 	);
@@ -256,6 +259,19 @@ class mailout_admin extends e_admin_dispatcher
 	protected $adminMenuIcon = 'e-mail-24';
 	
 	protected $menuTitle = LAN_MAILOUT_15;
+
+
+	function init()
+	{
+		$mailer = e107::getPref('bulkmailer');
+
+		if($mailer === 'smtp' )
+		{
+			$this->adminMenu['other3'] =   array('divider'=> true);
+			$this->adminMenu['prefs/test'] =array('caption'=> LAN_MAILOUT_270, 'perm' => '0'); //TODO LAN
+		}
+
+	}
 }
 
 class mailout_main_ui extends e_admin_ui
@@ -282,7 +298,7 @@ class mailout_main_ui extends e_admin_ui
 
 		protected $fields = array(
 			'checkboxes'			=> array('title'=> '',				'type' => null, 		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
-			'mail_source_id' 		=> array('title' => LAN_MAILOUT_137, 'width' =>'5%', 'thclass' => 'center', 'class'=>'center', 'forced' => TRUE),
+			'mail_source_id' 		=> array('title' => LAN_MAILOUT_137, 'type'=>'number', 'width' =>'5%', 'thclass' => 'center', 'class'=>'center', 'forced' => TRUE),
 			
 			'mail_selectors'		=> array('title' => LAN_MAILOUT_03, 'type'=>'method', 'data'=>false, 'nolist' => true, 'writeParms'=>'nolabel=0'),
 			'mail_title' 			=> array('title' => LAN_TITLE, 'type'=>'text', 'forced' => TRUE, 'data'=>'str', 'inline'=>true, 'writeParms'=>'size=xxlarge&required=1', 'help'=>''),
@@ -359,7 +375,7 @@ class mailout_main_ui extends e_admin_ui
 	);
 
 
-	function afterDelete($del_data,$id)
+	function afterDelete($deleted_data, $id, $deleted_check)
 	{
 		$result = e107::getDb()->delete('mail_recipients', 'mail_detail_id = '.intval($id));
 	//	$this->getModel()->addMessageDebug("Deleted ".$result." recipients from the deleted email #".$id);
@@ -603,14 +619,14 @@ class mailout_main_ui extends e_admin_ui
 		$options = array('mailer'=>$pref['bulkmailer']);
 
 			
-		if (!e107::getEmail($options)->sendEmail($sendto, LAN_MAILOUT_189, $eml))
+		if (e107::getEmail($options)->sendEmail($sendto, LAN_MAILOUT_189, $eml) !== true)
 		{
 			$mes->addError(($pref['bulkmailer'] == 'smtp')  ? LAN_MAILOUT_67 : LAN_MAILOUT_106);
 		}
 		else
 		{
 			$mes->addSuccess(LAN_MAILOUT_81. ' ('.$sendto.')');
-			e107::getAdminLog()->log_event('MAIL_01', $sendto, E_LOG_INFORMATIVE,'');
+			e107::getLog()->add('MAIL_01', $sendto, E_LOG_INFORMATIVE,'');
 		}
 
 		
@@ -642,17 +658,17 @@ class mailout_main_ui extends e_admin_ui
 	}
 	
 	
-	function afterCopy($firstInsert, $copied)
+	function afterCopy($result, $selected)
 	{
 		$num = array();
 		$count = 0; 
-		foreach($copied as $tmp)
+		foreach($selected as $tmp)
 		{
-			$num[] = ($firstInsert + $count);
+			$num[] = ($result + $count);
 			$count ++; 	
 		} 
 		
-		if(!empty($firstInsert))
+		if(!empty($result))
 		{
 			$update = array(
 				'mail_content_status'	=> MAIL_STATUS_TEMP,
@@ -687,7 +703,7 @@ class mailout_main_ui extends e_admin_ui
 			return;
 		}
 		
-		$id = intval($_POST['email_id']);
+		$id = (int) varset($_POST['email_id']);
 				
 		if(vartrue($_POST['email_send']))
 		{
@@ -716,7 +732,7 @@ class mailout_main_ui extends e_admin_ui
 	
 	private function emailSend($mailId)
 	{
-		$log 		= e107::getAdminLog();	
+		$log 		= e107::getLog();
 			
 		$notify 	= isset($_POST['mail_notify_complete']) ? 3 : 2;
 		$first 		= 0;
@@ -736,11 +752,11 @@ class mailout_main_ui extends e_admin_ui
 		if ($this->mailAdmin->activateEmail($mailId, FALSE, $notify, $first, $last))
 		{
 			e107::getMessage()->addSuccess(LAN_MAILOUT_185);
-			$log->log_event('MAIL_06','ID: '.$mailId,E_LOG_INFORMATIVE,'');
+			$log->add('MAIL_06','ID: '.$mailId,E_LOG_INFORMATIVE,'');
 		}
 		else
 		{
-			$errors[] = str_replace('--ID--', $mailId, LAN_MAILOUT_188);
+			$errors[] = str_replace('[x]', $mailId, LAN_MAILOUT_188);
 		}
 	}
 	
@@ -750,11 +766,11 @@ class mailout_main_ui extends e_admin_ui
 	{
 		if ($this->mailAdmin->activateEmail($mailId, TRUE))
 		{
-			e107::getMessage()->addSuccess(str_replace('--ID--', $mailId, LAN_MAILOUT_187));
+			e107::getMessage()->addSuccess(str_replace('[x]', $mailId, LAN_MAILOUT_187));
 		}
 		else
 		{
-			$errors[] = str_replace('--ID--', $mailId, LAN_MAILOUT_166);
+			$errors[] = str_replace('[x]', $mailId, LAN_MAILOUT_166);
 		}
 	}
 	
@@ -764,11 +780,11 @@ class mailout_main_ui extends e_admin_ui
 	{
 		if ($this->mailAdmin->cancelEmail($mailId))
 		{
-			e107::getMessage()->addSuccess(str_replace('--ID--', $mailId, LAN_MAILOUT_220));
+			e107::getMessage()->addSuccess(str_replace('[x]', $mailId, LAN_MAILOUT_220));
 		}
 		else
 		{
-			$errors[] = str_replace('--ID--', $mailId, LAN_MAILOUT_221);
+			$errors[] = str_replace('[x]', $mailId, LAN_MAILOUT_221);
 		}
 	}	
 	
@@ -961,8 +977,113 @@ class mailout_main_ui extends e_admin_ui
 		}
 	
 		return $text;	
-	}	
-	
+	}
+
+
+	/**
+	 * @TODO Do NOT translate, this is for debugging ONLY.
+	 *
+	*/
+	function testPage()
+	{
+
+		require_once(e_HANDLER.'vendor/autoload.php');
+	//	require_once(e_HANDLER. 'phpmailer/PHPMailerAutoload.php');
+
+		/** @var SMTP $smtp */
+		$smtp = new SMTP;
+		$smtp->do_debug = SMTP::DEBUG_CONNECTION;
+
+		$mes = e107::getMessage();
+		$pref = e107::getPref();
+
+		$username = $pref['smtp_username'];
+		$pwd     = $pref['smtp_password'];
+		$port = ($pref['smtp_port'] != 465) ? $pref['smtp_port'] : 25;
+//		$port = vartrue($pref['smtp_port'], 25);
+
+	//	var_dump($pref['smtp_port']);
+
+	//	return null;
+
+	//	var_dump($pref['smtp_password']);
+	//	print_a($pref['smtp_password']);
+
+		ob_start();
+
+		try
+		{
+			//Connect to an SMTP server
+			if(!$smtp->connect($pref['smtp_server'], $port))
+			{
+				$mes->addError('Connect failed using '.$pref['smtp_server'] .' on port '.$port);
+				$content = ob_get_contents();
+				ob_end_clean();
+				print_a($content);
+				return null;
+			}
+			//Say hello
+			if(!$smtp->hello(gethostname()))
+			{
+				$mes->addError('EHLO failed: ' . $smtp->getError()['error']);
+			}
+			//Get the list of ESMTP services the server offers
+			$e = $smtp->getServerExtList();
+			//If server can do TLS encryption, use it
+			if(is_array($e) && array_key_exists('STARTTLS', $e))
+			{
+				$mes->addSuccess("TLS is supported. ");
+				$tlsok = $smtp->startTLS();
+				if(!$tlsok)
+				{
+					$mes->addError('Failed to start encryption: ' . $smtp->getError()['error']);
+				}
+				//Repeat EHLO after STARTTLS
+				if(!$smtp->hello(gethostname()))
+				{
+					$mes->addError('EHLO (2) failed: ' . $smtp->getError()['error']);
+				}
+				//Get new capabilities list, which will usually now include AUTH if it didn't before
+				$e = $smtp->getServerExtList();
+			}
+			else
+			{
+				$mes->addWarning("TLS is not supported. ");
+
+			}
+			//If server supports authentication, do it (even if no encryption)
+			if(is_array($e) && array_key_exists('AUTH', $e))
+			{
+				if($smtp->authenticate($username, $pwd))
+				{
+					$mes->addSuccess("Connected ok!");
+				}
+				else
+				{
+					$msg = e107::getParser()->lanVars(LAN_MAILOUT_271,array('x'=>$username, 'y'=>$pwd), true);
+					$mes->addError($msg . $smtp->getError()['error']);
+				}
+			}
+		}
+		catch(Exception $e)
+		{
+			$mes->addError('SMTP error: ' . $e->getMessage());
+		}
+		//Whatever happened, close the connection.
+		$smtp->quit(true);
+
+		$content = ob_get_contents();
+
+		ob_end_clean();
+
+		print_a($content);
+
+	}
+
+
+
+
+
 		
 	function sendPage()
 	{
@@ -1241,10 +1362,7 @@ class mailout_main_ui extends e_admin_ui
 	{
 		$status = LAN_MAILOUT_162;
 	}
-	else 
-	{
-	//	$text .= " ".ADMIN_TRUE_ICON;	
-	}
+
 	
 	if(!empty($status))
 	{
@@ -1360,9 +1478,9 @@ class mailout_main_ui extends e_admin_ui
 		}
 
 		$temp['bulkmailer']     = $tp->filter($_POST['bulkmailer']);
-		$temp['smtp_server'] 	= $tp->toDB($_POST['smtp_server']);
-		$temp['smtp_username'] 	= $tp->toDB($_POST['smtp_username']);
-		$temp['smtp_password'] 	= $tp->toDB($_POST['smtp_password']);
+		$temp['smtp_server'] 	= $tp->toDB(trim($_POST['smtp_server']));
+		$temp['smtp_username'] 	= $tp->toDB(trim($_POST['smtp_username']));
+		$temp['smtp_password'] 	= $tp->toDB(trim($_POST['smtp_password']));
 		$temp['smtp_port'] 	    = intval($_POST['smtp_port']);
 	
 		$smtp_opts = array();
@@ -1408,9 +1526,17 @@ class mailout_main_ui extends e_admin_ui
 		$temp['mail_bounce_pass'] = $tp->toDB($_POST['mail_bounce_pass']);
 		$temp['mail_bounce_type'] = $tp->toDB($_POST['mail_bounce_type']);
 		$temp['mail_bounce_delete'] = intval(varset($_POST['mail_bounce_delete'], 0));
+
+		if(empty($_POST['mail_mailer_enabled']))
+		{
+			$_POST['mail_mailer_enabled'] = array('user'); // set default when empty.
+		}
 	
 		$temp['mailout_enabled'] = implode(',', varset($_POST['mail_mailer_enabled'], ''));
 		$temp['mail_log_options'] = intval($_POST['mail_log_option']).','.intval($_POST['mail_log_email']);
+
+
+
 
 		if(empty($temp['mailout_enabled']))
 		{
@@ -1423,7 +1549,7 @@ class mailout_main_ui extends e_admin_ui
 			if ($t === NULL) $t = '';
 		}
 		$pref = e107::pref('core');              		 	// Core Prefs Array.
-		if (e107::getAdminLog()->logArrayDiffs($temp, $pref, 'MAIL_03'))
+		if (e107::getLog()->logArrayDiffs($temp, $pref, 'MAIL_03'))
 		{
 			e107::getConfig()->updatePref($temp);
 			e107::getConfig()->save(false);		// Only save if changes - generates its own message
@@ -1587,8 +1713,8 @@ class mailout_admin_form_ui extends e_admin_form_ui
 			$link = e_SELF."?mode=main&action=send&id=".$id;	
 			$preview = e_SELF."?mode=main&action=preview&id=".$id;
 			$text .= "<span class='btn-group'>";
-			$text .= "<a href='".$link."' class='btn btn-default' title='".LAN_MAILOUT_08."'>".E_32_MAIL."</a>";
-			$text .= "<a rel='external' class='btn btn-default e-modal' data-modal-caption='".LAN_PREVIEW."' href='".$preview."'  title='".LAN_PREVIEW."'>".E_32_SEARCH."</a>";
+			$text .= "<a href='".$link."' class='btn btn-default' title='".LAN_MAILOUT_08."'>".defset('E_32_MAIL')."</a>";
+			$text .= "<a rel='external' class='btn btn-default btn-secondary e-modal' data-modal-caption='".LAN_PREVIEW."' href='".$preview."'  title='".LAN_PREVIEW."'>".defset('E_32_SEARCH')."</a>";
 
 			$text .= $this->renderValue('options',$value,$attributes,$id);
 
@@ -1602,8 +1728,8 @@ class mailout_admin_form_ui extends e_admin_form_ui
 			$preview = e_SELF."?mode=main&action=preview&id=".$id.'&user='.$user;
 
 			$text = "<span class='btn-group'>";
-			$text .= "<a href='".$link."' class='btn btn-default e-modal' data-modal-caption='Recipients for Mail #".$id."' title='".LAN_MAILOUT_173."'>".E_32_USER."</a>";
-			$text .= "<a rel='external' class='btn btn-default e-modal' data-modal-caption='".LAN_PREVIEW."' href='".$preview."'  title='".LAN_PREVIEW."'>".E_32_SEARCH."</a>";
+			$text .= "<a href='".$link."' class='btn btn-default btn-secondary e-modal' data-modal-caption='Recipients for Mail #".$id."' title='".LAN_MAILOUT_173."'>".defset('E_32_USER')."</a>";
+			$text .= "<a rel='external' class='btn btn-default btn-secondary e-modal' data-modal-caption='".LAN_PREVIEW."' href='".$preview."'  title='".LAN_PREVIEW."'>".defset('E_32_SEARCH')."</a>";
 
 			$attributes['readParms']['editClass'] = e_UC_NOBODY;
 			$text .= $this->renderValue('options',$value,$attributes,$id);
@@ -1695,15 +1821,15 @@ class mailout_recipients_ui extends e_admin_ui
 	/**
 	 * Fix Total counts after recipient deletion. 
 	 */
-	public function afterDelete($data, $id, $deleted_check)
+	public function afterDelete($deleted_data, $id, $deleted_check)
 	{
 		
-		if($data['mail_status'] < MAIL_STATUS_PENDING)
+		if($deleted_data['mail_status'] < MAIL_STATUS_PENDING)
 		{
 			return;	
 		}
 						
-		$query = "mail_total_count = mail_total_count - 1, mail_togo_count = mail_togo_count - 1 WHERE mail_source_id = ".intval($data['mail_detail_id'])." LIMIT 1";
+		$query = "mail_total_count = mail_total_count - 1, mail_togo_count = mail_togo_count - 1 WHERE mail_source_id = ".intval($deleted_data['mail_detail_id'])." LIMIT 1";
 
 		if(!e107::getDb()->update('mail_content',$query))
 		{
@@ -1774,7 +1900,7 @@ class mailout_recipients_form_ui extends e_admin_form_ui
 		$preview = e_SELF."?mode=main&action=preview&id=".$eid.'&user='.$user;
 
 		$text = "<span class='btn-group'>";
-		$text .= "<a rel='external' class='btn btn-default e-modal' data-modal-caption='".LAN_PREVIEW."' href='".$preview."' class='btn' title='".LAN_PREVIEW."'>".E_32_SEARCH."</a>";
+		$text .= "<a rel='external' class='btn btn-default btn-secondary e-modal' data-modal-caption='".LAN_PREVIEW."' href='".$preview."' class='btn' title='".LAN_PREVIEW."'>".defset('E_32_SEARCH')."</a>";
 		
 
 
@@ -1829,11 +1955,11 @@ $targetId = intval(varset($_GET['t'],0));
 // Create mail admin object, load all mail handlers
 $mailAdmin = new mailoutAdminClass($action);			// This decodes parts of the query using $_GET syntax
 e107::setRegistry('_mailout_admin', $mailAdmin);
-if ($mailAdmin->loadMailHandlers() == 0)
-{	// No mail handlers loaded
+//if ($mailAdmin->loadMailHandlers() == 0)
+//{	// No mail handlers loaded
 //	echo 'No mail handlers loaded!!';
 	//exit;
-}
+//}
 
 require_once(e_ADMIN.'auth.php');
 
@@ -2026,11 +2152,11 @@ switch ($action)
 		$action = 'held';
 		if ($mailAdmin->holdEmail($mailId))
 		{
-			$mes->addSuccess(str_replace('--ID--', $mailId, LAN_MAILOUT_229));
+			$mes->addSuccess(str_replace('[x]', $mailId, LAN_MAILOUT_229));
 		}
 		else
 		{
-			$errors[] = str_replace('--ID--', $mailId, LAN_MAILOUT_230);
+			$errors[] = str_replace('[x]', $mailId, LAN_MAILOUT_230);
 		}
 		break;
 
@@ -2038,11 +2164,11 @@ switch ($action)
 		$action = $pageMode;		// Want to return to some other page
 		if ($mailAdmin->cancelEmail($mailId))
 		{
-			$mes->addSuccess(str_replace('--ID--', $mailId, LAN_MAILOUT_220));
+			$mes->addSuccess(str_replace('[x]', $mailId, LAN_MAILOUT_220));
 		}
 		else
 		{
-			$errors[] = str_replace('--ID--', $mailId, LAN_MAILOUT_221);
+			$errors[] = str_replace('[x]', $mailId, LAN_MAILOUT_221);
 		}
 		break;
 
@@ -2060,11 +2186,11 @@ switch ($action)
 		{
 			if ($mailAdmin->activateEmail($mailId, TRUE))
 			{
-				$mes->addSuccess(str_replace('--ID--', $mailId, LAN_MAILOUT_187));
+				$mes->addSuccess(str_replace('[x]', $mailId, LAN_MAILOUT_187));
 			}
 			else
 			{
-				$errors[] = str_replace('--ID--', $mailId, LAN_MAILOUT_166);
+				$errors[] = str_replace('[x]', $mailId, LAN_MAILOUT_166);
 			}
 			$action = 'held';
 		}
@@ -2092,7 +2218,7 @@ switch ($action)
 		$midAction = 'midDeleteEmail';
 		if (!isset($_POST['mailIDConf']) || (intval($_POST['mailIDConf']) != $mailId))
 		{
-			$errors[] = str_replace(array('--ID--', '--CHECK--'), array($mailId, intval($_POST['mailIDConf'])), LAN_MAILOUT_174);
+			$errors[] = str_replace(array('[x]', '[z]'), array($mailId, intval($_POST['mailIDConf'])), LAN_MAILOUT_174);
 			break;
 		}
 		break;
@@ -2113,6 +2239,7 @@ switch ($action)
 	case 'mailshowtemplate' :
 		if (isset($_POST['etrigger_ecolumns']))
 		{
+			$nothing='';
 	//		$mailAdmin->mailbodySaveColumnPref($action);
 		}
 		break;
@@ -2157,7 +2284,7 @@ switch ($midAction)
 		e107::getLog()->add('MAIL_04','ID: '.$mailId,E_LOG_INFORMATIVE,'');
 		if (($result === FALSE) || !is_array($result))
 		{
-			$errors[] = str_replace('--ID--', $mailId, LAN_MAILOUT_166);
+			$errors[] = str_replace('[x]', $mailId, LAN_MAILOUT_166);
 		}
 		else
 		{
@@ -2165,22 +2292,22 @@ switch ($midAction)
 			{
 				if ($result['content'] === FALSE)
 				{
-					$errors[] = str_replace('--ID--', $mailId, LAN_MAILOUT_167);
+					$errors[] = str_replace('[x]', $mailId, LAN_MAILOUT_167);
 				}
 				else
 				{
-					$mes->addSuccess(str_replace('--ID--', $mailId, LAN_MAILOUT_167));
+					$mes->addSuccess(str_replace('[x]', $mailId, LAN_MAILOUT_167));
 				}
 			}
 			if (isset($result['recipients']))
 			{
 				if ($result['recipients'] === FALSE)
 				{
-					$errors[] = str_replace('--ID--', $mailId, LAN_MAILOUT_169);
+					$errors[] = str_replace('[x]', $mailId, LAN_MAILOUT_169);
 				}
 				else
 				{
-					$mes->addSuccess(str_replace(array('--ID--', '--NUM--'), array($mailId, $result['recipients']), LAN_MAILOUT_170));
+					$mes->addSuccess(str_replace(array('[x]', '[y]'), array($mailId, $result['recipients']), LAN_MAILOUT_170));
 				}
 			}
 		}
@@ -2205,15 +2332,12 @@ switch ($midAction)
 		}
 		else
 		{
-			$errors[] = str_replace('--ID--', $mailId, LAN_MAILOUT_188);
+			$errors[] = str_replace('[x]', $mailId, LAN_MAILOUT_188);
 		}
 		break;
 }
 
-if(isset($_POST['email_sendnow']))
-{
-//	sendImmediately($mailId);
-}
+
 
 // --------------------- Display errors and results ------------------------
 if (is_array($errors) && (count($errors) > 0))
@@ -2244,7 +2368,7 @@ switch ($action)
 			show_prefs($mailAdmin);
 		}
 		break;
-
+/*
 	case 'maint' :
 		if (getperms('0'))
 		{
@@ -2257,7 +2381,7 @@ switch ($action)
 		{
 			show_maint(TRUE);
 		}
-		break;
+		break;*/
 
 	case 'saved' :				// Show template emails
 	case 'sent' :
@@ -2312,7 +2436,7 @@ function sendImmediately($id)
 	//Initiate the Function in the Background. 
 
 	$text .= "
-	<script type='text/javascript'>
+	<script>
 	
 	//<![CDATA[
 		new Ajax.Updater('mstatus', '".e_SELF."?mode=process&id=".intval($id)."', {
@@ -2324,7 +2448,7 @@ function sendImmediately($id)
 	
 	// Update the Progress in real-time. 
 	$text .= "
-	<script type='text/javascript'>
+	<script>
 	//<![CDATA[
 
 		x = new Ajax.PeriodicalUpdater('progress', '".e_SELF."?mode=progress&id=".intval($id)."',
@@ -2530,6 +2654,7 @@ function sendImmediately($id)
 //-----------------------------------------------------------
 //			MAINTENANCE OPTIONS
 //-----------------------------------------------------------
+/*
 function show_maint($debug = FALSE)
 {
 	return;
@@ -2557,7 +2682,7 @@ function show_maint($debug = FALSE)
 
 		$ns->tablerender(ADLAN_136.SEP.ADLAN_40, $mes->render().$text);
 }
-
+*/
 
 /*
 function mailout_adminmenu() 
@@ -2604,38 +2729,40 @@ function mailout_adminmenu()
 */
 
 
-
-function headerjs()
+if(!function_exists('headerjs'))
 {
-
-	$text = "
-	<script type='text/javascript'>
-		
-
-	function bouncedisp(type)
+	function headerjs()
 	{
-		if(type == 'auto')
+
+		$text = "
+		<script>
+			
+	
+		function bouncedisp(type)
 		{
-			document.getElementById('mail_bounce_auto').style.display = '';
+			if(type == 'auto')
+			{
+				document.getElementById('mail_bounce_auto').style.display = '';
+				document.getElementById('mail_bounce_mail').style.display = 'none';
+				return;
+			}
+	
+			if(type =='mail')
+			{
+	            document.getElementById('mail_bounce_auto').style.display = 'none';
+				document.getElementById('mail_bounce_mail').style.display = '';
+				return;
+			}
+	
+			document.getElementById('mail_bounce_auto').style.display = 'none';
 			document.getElementById('mail_bounce_mail').style.display = 'none';
-			return;
 		}
+		</script>";
 
-		if(type =='mail')
-		{
-            document.getElementById('mail_bounce_auto').style.display = 'none';
-			document.getElementById('mail_bounce_mail').style.display = '';
-			return;
-		}
+		$mailAdmin = e107::getRegistry('_mailout_admin');
+	// 	$text .= $mailAdmin->_cal->load_files();
 
-		document.getElementById('mail_bounce_auto').style.display = 'none';
-		document.getElementById('mail_bounce_mail').style.display = 'none';
+		return $text;
 	}
-	</script>";
-
-	$mailAdmin = e107::getRegistry('_mailout_admin');
-// 	$text .= $mailAdmin->_cal->load_files();
-
-	return $text;
 }
-?>
+

@@ -1,0 +1,70 @@
+{
+    "facebook": {
+        "label": "Facebook",
+        "placeholder": "eg. https:\/\/www.facebook.com\/e107CMS"
+    },
+    "instagram": {
+        "label": "Instagram",
+        "placeholder": ""
+    },
+    "twitter": {
+        "label": "X",
+        "placeholder": "eg. https:\/\/x.com\/e107"
+    },
+    "youtube": {
+        "label": "Youtube",
+        "placeholder": "eg.https:\/\/youtube.com\/e107Inc"
+    },
+    "linkedin": {
+        "label": "LinkedIn",
+        "placeholder": "eg. https:\/\/www.linkedin.com\/groups?home=&gid=1782682"
+    },
+    "github": {
+        "label": "GitHub",
+        "placeholder": "eg. https:\/\/github.com\/e107inc"
+    },
+    "google": {
+        "label": "Google",
+        "placeholder": ""
+    },
+    "discord": {
+        "label": "Discord",
+        "placeholder": ""
+    },
+    "flickr": {
+        "label": "Flickr",
+        "placeholder": ""
+    },
+    "pinterest": {
+        "label": "Pinterest",
+        "placeholder": ""
+    },
+    "steam": {
+        "label": "Steam",
+        "placeholder": "eg. https:\/\/steamcommunity.com"
+    },
+    "vimeo": {
+        "label": "Vimeo",
+        "placeholder": ""
+    },
+    "tiktok": {
+        "label": "TikTok",
+        "placeholder": "eg. https:\/\/tiktok.com\/@you"
+    },
+    "twitch": {
+        "label": "Twitch",
+        "placeholder": ""
+    },
+    "vk": {
+        "label": "VK (Vkontakte)",
+        "placeholder": ""
+    },
+    "whatsapp": {
+        "label": "Whatsapp",
+        "placeholder": ""
+    },
+    "yelp": {
+        "label": "Yelp",
+        "placeholder": ""
+    }
+}

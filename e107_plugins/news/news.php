@@ -11,9 +11,11 @@
 
 
 // news rewrite for v2.x
+
+
 if (!defined('e107_INIT'))
 {
-	require_once("../../class2.php");
+	require_once(__DIR__.'/../../class2.php');
 }
 
 
@@ -31,9 +33,17 @@ class news_front
 	private $ix = null;
 	private $newsUrlparms = array();
 	private $text = null;
-	private $pref = array();
+	private $pref;
 	private $debugInfo = array();
-	private $cacheRefreshTime = false;
+	private $cacheRefreshTime;
+	private $caption = null;
+	private $templateKey = null;
+
+	private $currentRow = array();
+	private $dayMonth = null;
+	private $tagAuthor = null;
+	private $comments = array();
+	private $pagination;
 //	private $interval = 1;
 
 	function __construct()
@@ -42,10 +52,13 @@ class news_front
 
 		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_news.php');		// Temporary
+		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_comment.php');		// Temporary
 
 		$this->pref = e107::getPref();
 
 		$this->cacheRefreshTime = vartrue($this->pref['news_cache_timeout'],false);
+
+		$this->pagination = varset($this->pref['news_pagination'], 'record');
 		// $this->interval = $this->pref['newsposts']-$this>pref['newsposts_archive'];
 
 		require_once(e_HANDLER."news_class.php");
@@ -61,49 +74,190 @@ class news_front
 		$this->setConstants();
 		$this->setActions();
 		$this->setRoute();
+		$this->setPagination();
 		$this->detect();
+		$this->setBreadcrumb();
 
 		return null;
+	}
+
+
+	private function setBreadcrumb()
+	{
+		$this->addDebug('setBreadcrumb', 'complete');
+		$breadcrumb = array();
+
+		$breadcrumb[] = array('text'=> LAN_PLUGIN_NEWS_NAME, 'url'=>e107::url('news', 'index'));
+
+		if(empty($this->currentRow['category_name']))
+		{
+			$this->addDebug("Possible Issue", "missing category_name on this->currentRow");
+		}
+
+		$categoryName = e107::getParser()->toHTML($this->currentRow['category_name'],true, 'TITLE');
+
+		switch($this->route)
+		{
+			case "news/list/all":
+			case "news/list/items":
+				$breadcrumb[0]['url'] = null;
+				break;
+
+			case "news/view/item":
+
+				$itemName = e107::getParser()->toHTML($this->currentRow['news_title'],true, 'TITLE');
+
+				$breadcrumb[] = array('text'=> $categoryName, 'url'=>e107::getUrl()->create('news/list/category', $this->currentRow));
+				$breadcrumb[] = array('text'=> $itemName, 'url'=> null);
+				break;
+
+
+			case 'news/list/category':
+			case 'news/list/short':
+				$breadcrumb[] = array('text'=> $categoryName, 'url'=>null);
+				break;
+
+			case 'news/list/tag':
+				$breadcrumb[] = array('text'=> defset('LAN_NEWS_309', "Tag"), 'url'=>null);
+				$breadcrumb[] = array('text'=> $this->tagAuthor, 'url'=>null);
+				break;
+
+
+			case 'news/list/author':
+				$breadcrumb[] = array('text'=> LAN_AUTHOR, 'url'=>null);
+				$breadcrumb[] = array('text'=> $this->tagAuthor, 'url'=>null);
+				break;
+
+			case 'news/list/month':
+			case 'news/list/day':
+				$breadcrumb[] = array('text'=> LAN_DATE, 'url'=>null);
+				$breadcrumb[] = array('text' => $this->dayMonth, 'url'=>null);
+				break;
+
+			default:
+				if(ADMIN)
+				{
+					$breadcrumb[] = array('text'=> "Missing News breadcrumb for route: ".$this->route);
+				}
+			break;
+		}
+
+		e107::breadcrumb($breadcrumb);
+
 	}
 
 
 	private function detect()
 	{
 
-
 		if ($this->action === 'cat' || $this->action === 'all' || $this->action === 'tag' || $this->action === 'author')
 		{	// --> Cache
 			$this->text = $this->renderListTemplate();
 			$this->text .= $this->render_newscats();
-			return null;
+			return;
 		}
 
 		if ($this->action == 'extend')
 		{	// --> Cache
 			$this->text = $this->renderViewTemplate();
 			$this->text .= $this->render_newscats();
-			return null;
+			return;
+		}
+
+		if(!empty($this->pref['nfp_display']) && intval($this->pref['nfp_display']) === 1) // top position
+		{
+			$this->text .= $this->renderNewForumPosts();
 		}
 
 		$this->text .= $this->renderDefaultTemplate();
 
-		if(isset($this->pref['nfp_display']) && $this->pref['nfp_display'] == 2 && is_readable(e_PLUGIN."newforumposts_main/newforumposts_main.php"))
+		if(!empty($this->pref['nfp_display']) && intval($this->pref['nfp_display']) === 2) // bottom position
 		{
-			ob_start();
-			require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
-			$this->text .= ob_get_contents();
-			ob_end_clean();
+			$this->text .= $this->renderNewForumPosts();
 		}
 
 		$this->text .= $this->show_newsarchive();
 		$this->text .= $this->render_newscats();
-		return null;
+
+		return;
 
 	}
 
-	public function render()
+
+	/**
+	* BC replacement for newforumposts_main
+	 * @return string
+	 */
+	private function renderNewForumPosts()
 	{
+		if(deftrue('THEME_LEGACY') && !empty($this->pref['nfp_display']))
+		{
+			$parms = array('layout'=>'main', 'display'=>$this->pref['nfp_amount']);
+
+			if(!empty($this->pref['nfp_layer']) && !empty($this->pref['nfp_layer_height']))
+			{
+				$parms['scroll'] = $this->pref['nfp_layer_height'];
+			}
+
+			return e107::getMenu()->renderMenu('forum','newforumposts_menu', $parms, true);
+		}
+
+		return null;
+	}
+
+
+
+	private function getRenderId()
+	{
+		$tmp = explode('/',$this->route);
+
+		if(!empty($this->templateKey))
+		{
+			$tmp[] = $this->templateKey;
+		}
+
+		$unique = implode('-',$tmp);
+
+		return $unique;
+
+	}
+
+
+	/**
+	 * When the template contains a 'caption' - tablerender() is used, otherwise a simple echo is used.
+	* @return bool
+	*/
+	public function render($return = false)
+	{
+
+		$unique = $this->getRenderId();
+
+		if(defset('THEME_VERSION') === 2.3 || $this->caption !== null) // always use tablerender with 2.3 theme spec
+		{
+
+			$this->addDebug("tablerender ID", $unique);
+
+			e107::getRender()->setUniqueId($unique)->tablerender($this->caption, $this->text, 'news');
+
+			if(!empty($this->comments))
+			{
+				echo $this->renderComments($this->comments);
+			}
+
+			return true;
+		}
+
+
+		$this->addDebug("tablerender ID (not used)", $unique);
+
 		echo $this->text;
+
+		if(!empty($this->comments))
+		{
+			echo $this->renderComments($this->comments);
+		}
+
+		return null;
 	}
 
 	private function setActions()
@@ -111,21 +265,27 @@ class news_front
 
 		$this->defaultTemplate = e107::getPref('news_default_template');
 
+		$opt = array('default'=>'', 'list'=>'all');
+
 		if (e_QUERY) //TODO add support for $_GET['cat'] and $_GET['mode'] and phase-out the x.x.x format.
 		{
 
 			$tmp = explode(".",e_QUERY);
 			$action = $tmp[0];						// At least one parameter here
-			$sub_action = varset($tmp[1],'');			// Usually a numeric category, or numeric news item number, but don't presume yet
+			$sub_action = varset($tmp[1]);			// Usually a numeric category, or numeric news item number, but don't presume yet
 			//	$id = varset($tmp[2],'');					// ID of specific news item where required
 			$this->from = intval(varset($tmp[2],0));	// Item number for first item on multi-page lists
 			$this->cacheString = 'news.php_'.e_QUERY;
+
+			if($action === 'default')
+			{
+				$action = $action = varset($opt[$this->defaultTemplate]);
+			}
 		}
 		else
 		{
 
-			$opt = array('default'=>'', 'list'=>'all');
-			$action = varset($opt[$this->defaultTemplate],'');
+			$action = varset($opt[$this->defaultTemplate]);
 			$sub_action = '';
 			$tmp = array();
 
@@ -140,7 +300,7 @@ class news_front
 		if (is_numeric($action) && isset($tmp[1]) && (($tmp[1] == 'list') || ($tmp[1] == 'month') || ($tmp[1] == 'day')))
 		{
 			$action = $tmp[1];
-			$sub_action = varset($tmp[0],'');
+			$sub_action = varset($tmp[0]);
 		}
 
 
@@ -163,7 +323,12 @@ class news_front
 		}
 
 		$this->action = $action;
-		$this->subAction= $sub_action;
+		$this->subAction= e107::getParser()->filter($sub_action);
+
+		if(defined('NEWS_LAYOUT'))
+		{
+			$this->templateKey = NEWS_LAYOUT;
+		}
 
 
 	}
@@ -193,6 +358,11 @@ class news_front
 					$newsRoute = 'list/'.$this->action;
 				break;
 
+				case 'item':
+				case 'extend':
+					$newsRoute = 'view/item';
+				break;
+
 				default:
 					$newsRoute = 'list/items';
 				break;
@@ -207,7 +377,6 @@ class news_front
 		{
 			$newsRoute = 'list/items';
 		}
-
 
 
 		$this->route = 'news/'.$newsRoute;
@@ -243,7 +412,36 @@ class news_front
 			$this->newsUrlparms['author'] = $tp->filter($_GET['author']);
 			$this->from = intval(varset($_GET['page'],0));
 
+
+
 		}
+
+
+
+	}
+
+	private function setPagination()
+	{
+		// New in v2.3.1 Pagination with "Page" instead of "Record".
+		if(!empty($this->pref['news_pagination']) && $this->pref['news_pagination'] === 'page' && !empty($_GET['page']))
+		{
+			switch($this->action)
+			{
+				case 'cat':
+				case 'all':
+				case 'tag':
+				case 'author':
+					$this->from = (int) ($_GET['page'] - 1)  * NEWSLIST_LIMIT;
+					break;
+
+				default:
+					$this->from = (int) ($_GET['page'] - 1)  * ITEMVIEW;
+			}
+
+		}
+
+		$this->addDebug('FROM', $this->from);
+
 	}
 
 
@@ -269,6 +467,8 @@ class news_front
 
 	public function debug()
 	{
+		$title = e107::getSingleton('eResponse')->getMetaTitle();
+
 		echo "<div class='alert alert-info'>";
 		echo "<h4>News Debug Info</h4>";
 		echo "<table class='table table-striped table-bordered'>";
@@ -276,7 +476,7 @@ class news_front
 		echo "<tr><td><b>subaction:</b></td><td>".$this->subAction."</td></tr>";
 		echo "<tr><td><b>route:</b></td><td>".$this->route."</td></tr>";
 		echo "<tr><td><b>e_QUERY:</b></td><td>".e_QUERY."</td></tr>";
-		echo "<tr><td><b>e_PAGETITLE:</b></td><td>".defset('e_PAGETITLE','(unassigned)')."</td></tr>";
+		echo "<tr><td><b>e_PAGETITLE:</b></td><td>".vartrue($title,'(unassigned)')."</td></tr>";
 		echo "<tr><td><b>PAGE_NAME:</b></td><td>".defset('PAGE_NAME','(unassigned)')."</td></tr>";
 		echo "<tr><td><b>CacheTimeout:</b></td><td>".$this->cacheRefreshTime."</td></tr>";
 		echo "<tr><td><b>_GET:</b></td><td>".print_r($_GET,true)."</td></tr>";
@@ -339,10 +539,8 @@ class news_front
 			$newsAr = $sql -> db_getList();
 		}
 
-		$i = $this->interval;
+	//	$i = $this->interval;
 
-
-		// require_once(e_CORE.'shortcodes/batch/news_archives.php');
 		 $sc = e107::getScBatch('news_archive');
 
 		if(!$NEWSARCHIVE)
@@ -376,7 +574,10 @@ class news_front
 
 	}
 
-
+	/**
+	 * @param array $news news and category table row. ie. news_id, news_title, news_sef ... category_id etc.
+	 * @param string $type
+	 */
 	private function setNewsFrontMeta($news, $type='news')
 	{
 
@@ -388,22 +589,29 @@ class news_front
 
 		switch($type)
 		{
+
 			case "tag":
+				e107::title($this->subAction);
+				e107::meta('robots', 'noindex, follow');
+				e107::route('news/list/tag');
+				e107::canonical('news/list/tag', array('tag'=> str_replace(' ','-',$this->subAction)));
+				break;				
 			case "author":
-				if(!defined('e_PAGETITLE'))
-				{
-					define('e_PAGETITLE', $this->subAction);
-					e107::meta('og:title', $this->subAction);
-				}
+
+				e107::title($this->subAction);
+				e107::meta('robots', 'noindex, follow');
+				e107::route('news/list/author');
+				e107::canonical('news/list/author', $news);
 				break;
 
 			case "list":
-				$title = $tp->toHtml($news['category_name'],false,'TITLE_PLAIN');
-				if(!defined('e_PAGETITLE'))
-				{
-					define('e_PAGETITLE', $title );
-					e107::meta('og:title', $title);
-				}
+				$title = $tp->toHTML($news['category_name'],false,'TITLE_PLAIN');
+				e107::title($title);
+				e107::meta('robots', 'noindex, follow');
+				e107::route('news/list/category');
+			//	$category = array('id' => $this->news_item['category_id'], 'name' => $this->news_item['category_sef'] );
+
+				e107::canonical('news/list/category', $news);
 				break;
 
 			case "day":
@@ -419,54 +627,113 @@ class news_front
 
 				$title = e107::getParser()->toDate($unix, $format);
 
+
+
 				$title = strip_tags($title);
 
-				if(!defined('e_PAGETITLE'))
+				$this->dayMonth = $title;
+
+				e107::title($title);
+				e107::meta('robots', 'noindex, follow');
+				
+				if($type == 'day')
 				{
-					define('e_PAGETITLE', $title );
-					e107::meta('og:title', $title);
-				}
+                  e107::route('news/list/day');
+                  e107::canonical('news/list/day', $news);
+                }
+                else
+                {
+                 e107::route('news/list/month');
+                 e107::canonical('news/list/month', $news);
+                }
+				
 				break;
 
+			case "news":
+				e107::canonical($this->route, $news);
+				e107::route('news/view/item');      
+			break;
 
+			case "all":
 			default:
-				//
+
+				$options = array('mode'=>'full');
+
+				if(!empty($_GET['page']) && intval($_GET['page']) !== 1 )
+				{
+					$page = (int) $_GET['page'];
+					$options['query'] = ['page'=> $page];
+				}
+
+				if(!deftrue('e_FRONTPAGE') && !empty($this->caption)) // Use site title when on frontpage.
+				{
+					e107::title($this->caption);
+				}
+
+		//		e107::meta('robots', 'noindex, follow');
+				e107::route('news/list/items');
+
+				if($this->defaultTemplate == 'list')
+				{
+					e107::canonical('news', 'index', null, $options);
+				}
+				else
+				{
+					$extra = (!empty($page)) ? '?page='.$page : '';
+					e107::canonical($this->route.$extra, $news);
+				}
+
+			//	e107::canonical('news');
 		}
 
 
 		if($type == 'news')
 		{
-			if($news['news_title'] && !defined('e_PAGETITLE'))
+
+			if(!empty($news['news_meta_robots']))
 			{
-				define('e_PAGETITLE', $news['news_title']);
-				e107::meta('og:title',$news['news_title']);
+				e107::meta('robots', $news['news_meta_robots']);
+			}
+
+			if(!empty($news['news_title']))
+			{
+				e107::title($news['news_title']);
 				e107::meta('og:type','article');
+				e107::meta('twitter:card', 'summary');
+			}
+
+			if(!empty($news['news_meta_title'])) // override title with meta title.
+			{
+				e107::title($news['news_meta_title'], true);
 			}
 
 			if($news['news_meta_description'] && !defined('META_DESCRIPTION'))
 			{
 				e107::meta('description',$news['news_meta_description']);
 				e107::meta('og:description',$news['news_meta_description']);
+				e107::meta('twitter:description',$news['news_meta_description']);
 				//define('META_DESCRIPTION', $news['news_meta_description']); // deprecated
 			}
 			elseif($news['news_summary']) // BC compatibility
 			{
-				e107::meta('og:description',$news['news_summary']);
+				e107::meta('og:description', $news['news_summary']);
+				e107::meta('twitter:description', $news['news_summary']);
 			}
 
 			// include news-thumbnail/image in meta. - always put this one first.
-			if($news['news_thumbnail'])
+			if(!empty($news['news_thumbnail']))
 			{
 				$iurl = (substr($news['news_thumbnail'],0,3)=="{e_") ? $news['news_thumbnail'] : SITEURL.e_IMAGE."newspost_images/".$news['news_thumbnail'];
 				$tmp = explode(",", $iurl);
-				foreach($tmp as $mimg)
+
+				if(!empty($tmp[0]) && substr($tmp[0],-8) !== '.youtube')
 				{
-					if(substr($mimg,-8) == '.youtube')
-					{
-						continue;
-					}
-					e107::meta('og:image',$tp->thumbUrl($tmp[0],'w=500',false,true) );
-				//	e107::meta('og:image',$mimg);
+					$mimg = $tmp[0];
+					$metaImg = $tp->thumbUrl($mimg,'w=1200',false,true) ;
+					e107::meta('og:image',$metaImg);
+					e107::meta('og:image:width', 1200);
+					e107::meta('twitter:image', $metaImg);
+					e107::meta('twitter:card', 'summary_large_image');
 				}
 
 			}
@@ -488,16 +755,18 @@ class news_front
 			{
 				if($c == 3){ break; }
 				list($img,$tmp) = explode("?",$yt);
-				e107::meta('og:image',"http://img.youtube.com/vi/".$img."/0.jpg");
+				e107::meta('og:image',"https://img.youtube.com/vi/".$img."/0.jpg");
 				$c++;
 			}
 
+			$modifiedTime = !empty($news['news_modified']) ? (int) $news['news_modified'] : (int) $news['news_datestamp'];
 
+			e107::meta('og:updated_time', $modifiedTime);
 
-			$url = e107::getUrl()->create('news/view/item', $news,'full=1');
-			e107::meta('og:url',$url);
+			e107::meta('article:section', $news['category_name']);
+			e107::meta('article:published_time', date('c', $news['news_datestamp']));
+			e107::meta('article:modified_time', date('c', $modifiedTime));
 
-			e107::meta('article:section',$news['category_name']);
 
 			if($news['news_meta_keywords'] && !defined('META_KEYWORDS'))
 			{
@@ -521,9 +790,9 @@ class news_front
 
 
 
-		if($news['category_name'] && !defined('e_PAGETITLE') && $type == 'cat')
+		if($news['category_name'] && $type == 'cat')
 		{
-			define('e_PAGETITLE', $tp->toHtml($news['category_name'],false,'TITLE_PLAIN'));
+			e107::title($tp->toHTML($news['category_name'],false,'TITLE_PLAIN'));
 		}
 
 		if($news['category_meta_keywords'] && !defined('META_KEYWORDS'))
@@ -545,10 +814,13 @@ class news_front
 	private function setNewsCache($cache_tag, $cache_data, $rowData=array())
 	{
 		$e107cache = e107::getCache();
-		$e107cache->setMD5(null,true);
+		$e107cache->setMD5(null);
 
 		$e107cache->set($cache_tag, $cache_data);
-		$e107cache->set($cache_tag."_title", defined("e_PAGETITLE") ? e_PAGETITLE : '');
+		$e107cache->set($cache_tag."_caption", $this->caption);
+
+		$this->addDebug('Cache Caption', $this->caption);
+		$e107cache->set($cache_tag."_title", e107::getSingleton('eResponse')->getMetaTitle());
 		$e107cache->set($cache_tag."_diz", defined("META_DESCRIPTION") ? META_DESCRIPTION : '');
 
 		$e107cache->set($cache_tag."_rows", e107::serialize($rowData,'json'));
@@ -556,20 +828,26 @@ class news_front
 	}
 
 
-	/**
-	 * @param $cache_tag
-	 * @param string $type 'title' or 'diz' or 'rows' or empty for html.
-	 */
+		/**
+		 * @param        $cachetag
+		 * @param string $type 'title' or 'diz' or 'rows' or empty for html.
+		 * @return array|false|string
+		 */
 	private function getNewsCache($cachetag, $type=null)
 	{
 		if(!empty($type))
 		{
 			$cachetag .= "_".$type;
 		}
-		$this->addDebug('CaheString lookup', $cachetag);
+		$this->addDebug('CacheString lookup', $cachetag);
 		e107::getDebug()->log('Retrieving cache string:' . $cachetag);
 
 		$ret =  e107::getCache()->setMD5(null)->retrieve($cachetag);
+
+		if(empty($ret))
+		{
+			$this->addDebug('Possible Issue', $cachetag." is empty");
+		}
 
 		if($type == 'rows')
 		{
@@ -597,7 +875,7 @@ class news_front
 
 		if($etitle)
 		{
-			define('e_PAGETITLE', $etitle);
+			e107::title($etitle);
 		}
 
 		if($ediz)
@@ -615,20 +893,21 @@ class news_front
 		}
 	}
 
-
-	private function renderCache($cache, $nfp = FALSE)
+	/**
+	 * @param $caption
+	 * @param $text
+	 * @return null
+	 */
+	private function renderCache($caption, $text)
 	{
 		global $pref,$tp,$sql,$CUSTOMFOOTER, $FOOTER,$cust_footer,$ph;
 		global $db_debug,$ns,$eTimingStart, $error_handler, $db_time, $sql2, $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb,$e107;
 
-		return $cache;
+		$this->text = $text;
+		$this->caption = $caption;
+		$this->addDebug("Cache", 'active');
 
-		/*if (isset($nfp) && isset($this->pref['nfp_display']) && $this->pref['nfp_display'] == 2)
-		{
-			require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
-		}
-		//	render_newscats(); //fixme this shouldn't be here.
-		return $cache;*/
+		return $this->text;
 	}
 
 
@@ -657,8 +936,9 @@ class news_front
 
 		if($newsCachedPage = $this->checkCache($this->cacheString))
 		{
-			$this->addDebug("Cache", 'active');
-			return $this->renderCache($newsCachedPage, TRUE);
+
+			$caption = $this->getNewsCache($this->cacheString,'caption');
+			return $this->renderCache($caption, $newsCachedPage);
 		}
 		else
 		{
@@ -670,7 +950,7 @@ class news_front
 		{
 
 			$gen = new convert;
-			$sql->select("news_category", "*", "category_id='{$category}'");
+			$sql->select("news_category", "*", "category_id='$category'");
 			$row = $sql->fetch();
 			extract($row);  // still required for the table-render.  :(
 		}
@@ -698,8 +978,8 @@ class news_front
 
 			$query .= "
 			ORDER BY n.news_sticky DESC, n.news_datestamp DESC
-			LIMIT ".intval($this->from).",".deftrue('NEWSALL_LIMIT', NEWSLIST_LIMIT); // NEWSALL_LIMIT just for BC. NEWSLIST_LIMIT is sufficient.
-			$category_name = ($this->defaultTemplate == 'list') ? PAGE_NAME : "All";
+			LIMIT ". $this->from .",".deftrue('NEWSALL_LIMIT', NEWSLIST_LIMIT); // NEWSALL_LIMIT just for BC. NEWSLIST_LIMIT is sufficient.
+			$category_name = ($this->defaultTemplate == 'list') ? LAN_PLUGIN_NEWS_NAME : "All";
 			unset($renTypeQry);
 		}
 		elseif ($this->action == 'cat') // show archive of all news items in a particular category using list-style template.
@@ -717,11 +997,12 @@ class news_front
 			AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
 			AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$this->nobody_regexp.")
 			ORDER BY n.news_datestamp DESC
-			LIMIT ".intval($this->from).",".NEWSLIST_LIMIT;
+			LIMIT ". $this->from .",".NEWSLIST_LIMIT;
 		}
 		elseif($this->action === 'tag')
 		{
 			$tagsearch = e107::getParser()->filter($_GET['tag']);
+			$tagsearch2 = str_replace('-', ' ',$tagsearch);
 
 			$query = "
 			SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords,
@@ -729,12 +1010,16 @@ class news_front
 			FROM #news AS n
 			LEFT JOIN #user AS u ON n.news_author = u.user_id
 			LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-			WHERE n.news_meta_keywords LIKE '%".$tagsearch."%'
+			WHERE (n.news_meta_keywords LIKE '%".$tagsearch."%' OR n.news_meta_keywords LIKE '%".$tagsearch2."%')
 			AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
 			AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$this->nobody_regexp.")
 			ORDER BY n.news_datestamp DESC
-			LIMIT ".intval($this->from).",".NEWSLIST_LIMIT;
-			$category_name = 'Tag: "'.$tagsearch.'"';
+			LIMIT ". $this->from .",".NEWSLIST_LIMIT;
+			$category_name = defset('LAN_NEWS_309','Tag').': "'.$tagsearch.'"';
+
+			$tagsearch = $tagsearch2;
+			$this->tagAuthor = $tagsearch;
+
 
 		}
 		elseif($this->action === 'author')
@@ -751,10 +1036,10 @@ class news_front
 			AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
 			AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$this->nobody_regexp.")
 			ORDER BY n.news_datestamp DESC
-			LIMIT ".intval($this->from).",".NEWSLIST_LIMIT;
-			$category_name = 'Author: "'.$authorSearch.'"';
+			LIMIT ". $this->from .",".NEWSLIST_LIMIT;
+			$category_name = LAN_AUTHOR.': "'.$authorSearch.'"';
 
-
+			$this->tagAuthor = $authorSearch;
 
 		}
 
@@ -794,19 +1079,19 @@ class news_front
 		}
 
 
-		$this->setNewsFrontMeta($newsList[1], $this->action);
+
 
 
 	//	elseif($category_name)
 	//	{
 	//		define('e_PAGETITLE', $tp->toHTML($category_name,FALSE,'TITLE'));
 	//	}
-		e107::getDebug()->log("PageTitle: ".e_PAGETITLE);
+
 		$currentNewsAction = $this->action;
 
 		$action = $currentNewsAction;
 
-		if(deftrue('BOOTSTRAP'))  // v2.x
+		if(!deftrue('THEME_LEGACY'))  // v2.x
 		{
 			$template = e107::getTemplate('news', 'news', 'list');
 		}
@@ -844,9 +1129,9 @@ class news_front
 		$param['itemlink'] = (defined("NEWSLIST_ITEMLINK")) ? NEWSLIST_ITEMLINK : "";
 		$param['thumbnail'] =(defined("NEWSLIST_THUMB")) ? NEWSLIST_THUMB : "border:0px";
 		$param['catlink']  = (defined("NEWSLIST_CATLINK")) ? NEWSLIST_CATLINK : "";
-		$param['caticon'] =  (defined("NEWSLIST_CATICON")) ? NEWSLIST_CATICON : defset('ICONSTYLE','');
+		$param['caticon'] =  (defined("NEWSLIST_CATICON")) ? NEWSLIST_CATICON : defset('ICONSTYLE');
 		$param['current_action'] = $action;
-		$param['template_key'] = 'list';
+		$param['template_key'] = 'news/list';
 
 		// NEW - allow news batch shortcode override (e.g. e107::getScBatch('news', 'myplugin', true); )
 		e107::getEvent()->trigger('news_list_parse', $newsList);
@@ -855,43 +1140,52 @@ class news_front
 
 		if(!empty($template['start']))
 		{
-			$text .= $tp->parseTemplate($template['start'], true);
+			$text .= $tp->parseTemplate($template['start']);
 		}
 
 		if(!empty($newsList))
 		{
+			$c = 1;
 			foreach($newsList as $row)
 			{
-				$text .= $this->ix->render_newsitem($row, 'return', '', $template['item'], $param);
+				$tpl = ($c === 1 && !empty($template['first']) && $this->from === 0) ? $template['first'] : $template['item'];
+
+				$text .= $this->ix->render_newsitem($row, 'return', '', $tpl, $param);
+				$this->currentRow = $row;
+				$c++;
 			}
 		}
 		else // No News - empty.
 		{
-			$text .= "<div class='news-empty'><div class='alert alert-info'>".(strstr(e_QUERY, "month") ? LAN_NEWS_462 : LAN_NEWS_83)."</div></div>";
+			$text .= "<div class='news-empty'><div class='alert alert-info'>".(strpos(e_QUERY, "month") !== false ? LAN_NEWS_462 : LAN_NEWS_83)."</div></div>";
 		}
 
-		if(!empty($template['end']))
-		{
-			$text .= $tp->parseTemplate($template['end'], true);
-		}
+
 
 		$icon = ($row['category_icon']) ? "<img src='".e_IMAGE."icons/".$row['category_icon']."' alt='' />" : "";
 
-		// Deprecated.
-		// $parms = $news_total.",".$amount.",".$newsfrom.",".$e107->url->getUrl('core:news', 'main', "action=nextprev&to_action={$action}&subaction={$category}");
-		//	$parms = $news_total.",".$amount.",".$newsfrom.",".e_SELF.'?'.$action.".".$category.".[FROM]";
-		//
-		//	$text .= "<div class='nextprev'>".$tp->parseTemplate("{NEXTPREV={$parms}}")."</div>";
-
-		$amount 	= NEWSLIST_LIMIT;
-		$nitems 	= defined('NEWS_NEXTPREV_NAVCOUNT') ? '&navcount='.NEWS_NEXTPREV_NAVCOUNT : '' ;
-		$url 		= rawurlencode(e107::getUrl()->create($this->route, $this->newsUrlparms));
-		$parms  	= 'tmpl_prefix='.deftrue('NEWS_NEXTPREV_TMPL', 'default').'&total='.$news_total.'&amount='.$amount.'&current='.$this->from.$nitems.'&url='.$url;
+		$parms = $this->getPaginationParms($news_total, NEWSLIST_LIMIT);
 
 
-		$this->addDebug('newsUrlParms',$this->newsUrlparms);
 
-		$text  		.= $tp->parseTemplate("{NEXTPREV={$parms}}");
+		$paginationSC = false;
+		if(!empty($template['end']))
+		{
+			e107::setRegistry('core/news/pagination', $parms);
+			$text .= $tp->parseTemplate($template['end']);
+			if(strpos($template['end'], '{NEWS_PAGINATION') !== false)
+			{
+				$paginationSC = true;
+				$this->addDebug("Pagination Shortcode", 'true');
+			}
+		}
+
+		if($paginationSC === false) // BC Fix
+		{
+			$text .= $tp->parseTemplate("{NEXTPREV=$parms}");
+			$this->addDebug("Pagination Shortcode", 'false');
+		}
+
 
 		if(isset($template['caption'])) // v2.x
 		{
@@ -906,20 +1200,21 @@ class news_front
 			$NEWSLISTTITLE = str_replace("{NEWSCATEGORY}",$tp->toHTML($category_name,FALSE,'TITLE'),$NEWSLISTTITLE);
 		}
 
-		if($this->defaultTemplate != 'list')
+		if($this->defaultTemplate != 'list' && ($paginationSC === false))
 		{
 			$text .= "<div class='center news-list-footer'><a class='btn btn-default' href='".e107::getUrl()->create('news/list/all')."'>".LAN_NEWS_84."</a></div>";
 		}
 
+		$this->caption = $NEWSLISTTITLE;
 
-		$cache_data = e107::getRender()->tablerender($NEWSLISTTITLE, $text, 'news', true);
+		$this->templateKey = 'list';
+		$cache_data = $text; // e107::getRender()->tablerender($NEWSLISTTITLE, $text, 'news', true);
 
+		$this->setNewsFrontMeta($newsList[1], $this->action);
 		$this->setNewsCache($this->cacheString, $cache_data);
 
 
 		return $cache_data;
-
-
 
 
 	}
@@ -927,17 +1222,22 @@ class news_front
 
 	private function renderViewTemplate()
 	{
+		global $NEWSSTYLE; // v1.x backward compatibility.
+
+
 		$this->addDebug("Method",'renderViewTemplate()');
 
 		if($newsCachedPage = $this->checkCache($this->cacheString))
 		{
 			$this->addDebug("Cache",'active');
 			$rows = $this->getNewsCache($this->cacheString,'rows');
+			$this->currentRow = $rows;
+			$caption = $this->getNewsCache($this->cacheString,'caption');
 			e107::getEvent()->trigger('user_news_item_viewed', $rows);
 			$this->addDebug("Event-triggered:user_news_item_viewed", $rows);
 			$this->setNewsFrontMeta($rows);
-			$text = $this->renderCache($newsCachedPage, TRUE);		// This exits if cache used
-			$text .= $this->renderComments($rows);
+			$text = $this->renderCache($caption, $newsCachedPage);		// This exits if cache used
+			$this->comments = $rows;
 			return $text;
 		}
 		else
@@ -948,7 +1248,7 @@ class news_front
 		$sql = e107::getDb();
 		// <-- Cache
 
-		if(isset($this->pref['trackbackEnabled']) && $this->pref['trackbackEnabled'])
+	/*	if(isset($this->pref['trackbackEnabled']) && $this->pref['trackbackEnabled'])
 		{
 			$query = "
 		    SELECT COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef,
@@ -963,9 +1263,9 @@ class news_front
 			GROUP by n.news_id";
 		}
 		else
-		{
+		{*/
 			$query = "
-		    SELECT n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords,
+		    SELECT n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, u.user_login, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords,
 			nc.category_meta_description
 		    FROM #news AS n
 			LEFT JOIN #user AS u ON n.news_author = u.user_id
@@ -975,7 +1275,7 @@ class news_front
 			AND n.news_start < ".time()."
 			AND (n.news_end=0 || n.news_end>".time().")
 			AND n.news_id=".intval($this->subAction);
-		}
+	//	}
 
 
 		if ($sql->gen($query))
@@ -1001,43 +1301,6 @@ class news_front
 
 			//More SEO
 			$this->setNewsFrontMeta($news);
-			/*
-			if($news['news_title'])
-			{
-			if($this->pref['meta_news_summary'] && $news['news_title'])
-			{
-			define("META_DESCRIPTION",SITENAME.": ".$news['news_title']." - ".$news['news_summary']);
-			}
-			define("e_PAGETITLE",$news['news_title']);
-			}*/
-			/* FIXME - better implementation: cache, shortcodes, do it inside the model/shortcode class itself.
-			if (TRUE)
-			{
-			// Added by nlStart - show links to previous and next news
-			if (!isset($news['news_extended'])) $news['news_extended'] = '';
-			$news['news_extended'].="<div style='text-align:center;'><a href='".e_SELF."?cat.".$id."'>".LAN_NEWS_85."</a> &nbsp; <a href='".e_SELF."'>".LAN_NEWS_84."</a></div>";
-			$prev_query = "SELECT news_id, news_title FROM `#news`
-			WHERE `news_id` < ".intval($sub_action)." AND `news_category`=".$id." AND `news_class` REGEXP '".e_CLASS_REGEXP."'
-			AND NOT (`news_class` REGEXP ".$nobody_regexp.")
-			AND `news_start` < ".time()." AND (`news_end`=0 || `news_end` > ".time().') ORDER BY `news_id` DESC LIMIT 1';
-			$sql->db_Select_gen($prev_query);
-			$prev_news = $sql->db_Fetch();
-			if ($prev_news)
-			{
-			$news['news_extended'].="<div style='float:right;'><a href='".e_SELF."?extend.".$prev_news['news_id']."'>".LAN_NEWS_86."</a></div>";
-			}
-			$next_query = "SELECT news_id, news_title FROM `#news` AS n
-			WHERE `news_id` > ".intval($sub_action)." AND `news_category` = ".$id." AND `news_class` REGEXP '".e_CLASS_REGEXP."'
-			AND NOT (`news_class` REGEXP ".$nobody_regexp.")
-			AND `news_start` < ".time()." AND (`news_end`=0 || `news_end` > ".time().') ORDER BY `news_id` ASC LIMIT 1';
-			$sql->db_Select_gen($next_query);
-			$next_news = $sql->db_Fetch();
-			if ($next_news)
-			{
-			$news['news_extended'].="<div style='float:left;'><a href='".e_SELF."?extend.".$next_news['news_id']."'>".LAN_NEWS_87."</a></div>";
-			}
-			$news['news_extended'].="<br /><br />";
-			}*/
 
 			$currentNewsAction = $this->action;
 
@@ -1045,32 +1308,88 @@ class news_front
 
 			$param = array();
 			$param['current_action'] = $action;
-			$param['template_key'] = 'view';
+			$param['template_key'] = 'news/view';
+			$param['return'] = true;
 
-			if(vartrue($NEWSSTYLE))
+			$caption = null;
+			$render = false;
+
+			if(deftrue('THEME_LEGACY') && !empty($NEWSSTYLE))
 			{
 				$template =  $NEWSSTYLE;
 			}
-			elseif(function_exists("news_style")) // BC
+			elseif(deftrue('THEME_LEGACY') && function_exists("news_style")) // BC
 			{
 				$template = news_style($news, 'extend', $param);
 			}
 			else
 			{
 				$tmp = e107::getTemplate('news', 'news', 'view');
+
+				if(empty($tmp))
+				{
+					$this->addDebug('template', "news_view_template.php");
+					$newsViewTemplate = !empty($news['news_template']) ? $news['news_template'] : 'default';
+					$tmp = e107::getTemplate('news', 'news_view', $newsViewTemplate);
+					$param['template_key'] = 'news_view/'.$newsViewTemplate;
+				}
+				else
+				{
+					$this->addDebug('template', "news_template.php");
+				}
+
 				$template = $tmp['item'];
+
+
+
+				if(defset('THEME_VERSION') === 2.3 || (isset($tmp['caption']) && $tmp['caption'] !== null)) // to initiate tablerender() usage.
+				{
+					$this->addDebug('Internal Route', $this->route);
+
+					$this->templateKey = $newsViewTemplate; // used for tablerender id.
+
+					$nsc = e107::getScBatch('news')->setScVar('news_item', $news); // Allow any news shortcode to be used in the 'caption'.
+					$caption = e107::getParser()->parseTemplate($tmp['caption'], true, $nsc);
+
+					$render = true;
+				}
+
 				unset($tmp);
 			}
 
-			ob_start();
-				$this->ix->render_newsitem($news, 'extend', '', $template, $param);
-				$cache_data = ob_get_contents();
-			ob_end_clean();
+
+			$this->currentRow = $news;
+
+			$this->caption = $caption;
+
+
+			$cache_data =	$this->ix->render_newsitem($news, 'extend', '', $template, $param);
 
 			$this->setNewsCache($this->cacheString, $cache_data, $news);
 
-			$text = $cache_data;
-			$text .= $this->renderComments($news);
+			if($render === true)
+			{
+
+
+				$unique = $this->getRenderId();
+
+
+				$ns = e107::getRender();
+				$ns->setUniqueId($unique);
+				$ns->setContent('title', $news['news_title']);
+				$ns->setContent('text', $news['news_summary']);
+				$ns->setUniqueId(null); // prevent other tablerenders from using this content.
+
+				// TODO add 'image' and 'icon'?
+
+				$text = $cache_data;
+			}
+			else
+			{
+				$text = $cache_data;
+			}
+
+			$this->comments = $news;
 
 			return $text;
 		}
@@ -1079,10 +1398,11 @@ class news_front
 
 			header("HTTP/1.0 404 Not Found",true,404);
 			require_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_error.php");
-			$text = e107::getMessage()->setTitle(LAN_ERROR_7, E_MESSAGE_INFO)->addInfo(LAN_NEWS_308)->render(); // Perhaps you're looking for one of the news items below?
-
+			$text = "<div class='news-view-error'>".e107::getMessage()->setTitle(LAN_ERROR_7, E_MESSAGE_INFO)->addInfo(LAN_NEWS_308)->render(); // Perhaps you're looking for one of the news items below?
+			$text .= "</div>";
 			$this->action = 'all';
 			$text .= $this->renderListTemplate();
+
 
 			return $text;
 
@@ -1103,14 +1423,28 @@ class news_front
 			$comment_edit_query = 'comment.news.'.$news['news_id'];
 			$text = e107::getComment()->compose_comment('news', 'comment', $news['news_id'], null, $news['news_title'], false, 'html');
 
-
 			if(!empty($text))
 			{
-			//	$text = $comments['comment_form'] . $comments['comment'] .$comments['moderate'];
 				return $text;
-			//	return e107::getRender()->tablerender($comments['caption'], $text,'comment', true);
 			}
-
+		}
+		else
+		{	
+			// Only show message if global comments are enabled, but current news item comments are disabled
+			if(e107::getPref('comments_disabled') == 0 && $news['news_allow_comments'] == 1)
+			{
+				if(ADMIN && deftrue('e_DEBUG'))
+				{
+					if(defined('BOOTSTRAP') && BOOTSTRAP)
+					{
+						return e107::getMessage()->addDebug(LAN_NEWS_13)->render(); 
+					}
+					else
+					{
+						return "<br /><div style='text-align:center'><b>".LAN_NEWS_13."</b></div>";
+					}
+				}
+			}
 		}
 
 		$this->addDebug("Failed", "renderComments()");
@@ -1123,14 +1457,14 @@ class news_front
 	{
 		$query = "
 				SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon,
-				nc.category_meta_keywords, nc.category_meta_description
+				nc.category_meta_keywords, nc.category_meta_description, nc.category_template 
 				FROM #news AS n
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
 				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 				WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$this->nobody_regexp.")
 				AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
 				AND (FIND_IN_SET('0', n.news_render_type) OR FIND_IN_SET(1, n.news_render_type))
-				ORDER BY n.news_sticky DESC, ".$this->order." DESC LIMIT ".intval($this->from).",".ITEMVIEW;
+				ORDER BY n.news_sticky DESC, ".$this->order." DESC LIMIT ". $this->from .",".ITEMVIEW;
 
 		return $query;
 
@@ -1145,8 +1479,6 @@ class news_front
 		$tp = e107::getParser();
 		$sql = e107::getDb();
 
-
-
 		$interval = $this->pref['newsposts'];
 
 		global $NEWSSTYLE;
@@ -1158,14 +1490,14 @@ class news_front
 				//	$news_total = $sql->db_Count("news", "(*)", "WHERE news_category={$sub_action} AND news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().")");
 				$query = "
 				SELECT  SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef,
-				nc.category_icon, nc.category_meta_keywords, nc.category_meta_description
+				nc.category_icon, nc.category_meta_keywords, nc.category_meta_description, nc.category_template 
 				FROM #news AS n
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
 				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 				WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$this->nobody_regexp.")
 				AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
 				AND n.news_category={$sub_action}
-				ORDER BY n.news_sticky DESC,".$this->order." DESC LIMIT ".intval($this->from).",".ITEMVIEW;
+				ORDER BY n.news_sticky DESC,".$this->order." DESC LIMIT ". $this->from .",".ITEMVIEW;
 
 				$noNewsMessage = LAN_NEWS_463;
 				break;
@@ -1174,11 +1506,11 @@ class news_front
 			case "item" :
 				$sub_action = intval($this->subAction);
 				$news_total = 1;
-				if(isset($this->pref['trackbackEnabled']) && $this->pref['trackbackEnabled'])
+			/*	if(isset($this->pref['trackbackEnabled']) && $this->pref['trackbackEnabled'])
 				{
 					$query = "
 			    SELECT COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef,
-				nc.category_icon, nc.category_meta_keywords, nc.category_meta_description
+				nc.category_icon, nc.category_meta_keywords, nc.category_meta_description, nc.category_template 
 				FROM #news AS n
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
 				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
@@ -1188,16 +1520,16 @@ class news_front
 				GROUP by n.news_id";
 				}
 				else
-				{
+				{*/
 					$query = "
 			    SELECT n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image,  nc.category_id, nc.category_name, nc.category_sef, nc.category_icon,
-				nc.category_meta_keywords, nc.category_meta_description
+				nc.category_meta_keywords, nc.category_meta_description, nc.category_template 
 				FROM #news AS n
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
 				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 				WHERE n.news_id=".$this->subAction." AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$this->nobody_regexp.")
 				AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")";
-				}
+		//		}
 
 				$noNewsMessage = LAN_NEWS_83;
 				break;
@@ -1229,16 +1561,23 @@ class news_front
 
 				$query = "
 				SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef,
-				nc.category_icon, nc.category_meta_keywords, nc.category_meta_description
+				nc.category_icon, nc.category_meta_keywords, nc.category_meta_description, nc.category_template 
 				FROM #news AS n
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
 				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 				WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$this->nobody_regexp.")
 				AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
 				AND (FIND_IN_SET('0', n.news_render_type) OR FIND_IN_SET(1, n.news_render_type)) AND n.news_datestamp BETWEEN {$startdate} AND {$enddate}
-				ORDER BY ".$this->order." DESC LIMIT ".intval($this->from).",".ITEMVIEW;
+				ORDER BY ".$this->order." DESC LIMIT ". $this->from .",".ITEMVIEW;
 
-				$noNewsMessage = LAN_NEWS_462;
+				if($this->action == 'month')
+				{
+					$noNewsMessage = LAN_NEWS_462;
+				}
+				else
+				{
+					$noNewsMessage = LAN_NEWS_464;
+				}	
 
 				break;
 
@@ -1255,10 +1594,10 @@ class news_front
 				$interval = $this->pref['newsposts']-$this->pref['newsposts_archive'];		// Number of 'full' posts to show
 
 				// Get number of news item to show
-				if(isset($this->pref['trackbackEnabled']) && $this->pref['trackbackEnabled']) {
+			/*	if(isset($this->pref['trackbackEnabled']) && $this->pref['trackbackEnabled']) {
 					$query = "
 				SELECT SQL_CALC_FOUND_ROWS COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image,  nc.category_id,
-				nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords, nc.category_meta_description,
+				nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords, nc.category_meta_description, nc.category_template, 
 				COUNT(*) AS tbcount
 				FROM #news AS n
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
@@ -1271,11 +1610,11 @@ class news_front
 				ORDER BY news_sticky DESC, ".$this->order." DESC LIMIT ".intval($this->from).",".ITEMVIEW;
 				}
 				else
-				{
+				{*/
 					$query = $this->getQuery();
 
 
-				}
+			//	}
 
 				$noNewsMessage = LAN_NEWS_83;
 		}	// END - switch($action)
@@ -1285,8 +1624,8 @@ class news_front
 		{
 
 
-			if(!$this->action)
-			{
+			//if(!$this->action)
+		//	{
 				// Removed, themes should use {FEATUREBOX} shortcode instead
 				//		if (isset($this->pref['fb_active']))
 				//		{
@@ -1298,7 +1637,7 @@ class news_front
 					// require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
 				// }
 
-			}
+		//	}
 
 			//news archive
 			if ($this->action != "item" && $this->action != 'list' && $this->pref['newsposts_archive'])
@@ -1314,13 +1653,15 @@ class news_front
 					{
 						$newsCachedPage = $newsCachedPage.$newsarchive;
 					}
-					else
-					{
+					//else
+				//	{
 					//	$this->show_newsarchive($newsAr,$interval);
-					}
+				//	}
 				}
 			}
-			$this->renderCache($newsCachedPage, TRUE);
+
+			$this->renderCache($this->caption, $newsCachedPage);
+			return null;
 		}
 
 
@@ -1333,12 +1674,7 @@ class news_front
 
 		$newsAr = $sql -> db_getList();
 		$news_total=$sql->total_results;
-		// Get number of entries
-		//$sql -> db_Select_gen("SELECT FOUND_ROWS()");
-	//	$frows = $sql -> db_Fetch();
-		//$news_total = $frows[0];
 
-		//echo "<br />Total ".$news_total." items found, ".count($newsAr)." displayed, Interval = {$interval}<br /><br />";
 
 		$p_title = ($this->action == "item") ? $newsAr[1]['news_title'] : $tp->toHTML($newsAr[1]['category_name'],FALSE,'TITLE');
 
@@ -1355,21 +1691,13 @@ class news_front
 				break;
 		}
 
-		/*if($action != "" && !is_numeric($action))
-		{
-		if($action == "item" && $this->pref['meta_news_summary'] && $newsAr[1]['news_title'])
-		{
-		define("META_DESCRIPTION",SITENAME.": ".$newsAr[1]['news_title']." - ".$newsAr[1]['news_summary']);
-		}
-		define("e_PAGETITLE", $p_title);
-		}*/
 
 		$currentNewsAction = $this->action;
 
 		$action = $currentNewsAction;
 
-		if(!$action)
-		{
+		//if(!$action)
+	//	{
 			// Removed, themes should use {FEATUREBOX} shortcode instead
 			//	if (isset($this->pref['fb_active'])){   // --->feature box
 			//		require_once(e_PLUGIN."featurebox/featurebox.php");
@@ -1379,20 +1707,24 @@ class news_front
 			// if (isset($this->pref['nfp_display']) && $this->pref['nfp_display'] == 1){
 				// require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
 			// }
-		}
+	//	}
 
+		/**
+		 * @deprecated - for BC only. May be removed in future without further notice.
+		 */
 		if(isset($this->pref['news_unstemplate']) && $this->pref['news_unstemplate'] && file_exists(THEME."news_template.php"))
 		{
 			// theme specific template required ...
+			$this->addDebug("Template Mode",'News Preferences: Non-standard Template (Legacy)');
 
 			$ALTERNATECLASSES = null;
 			$NEWSCLAYOUT = null;
 
 			require_once(THEME."news_template.php");
 
-			if(empty($ALTERNATECLASS1))
+			if(!empty($ALTERNATECLASS1))
 			{
-				return TRUE;
+				return true;
 			}
 
 			$newscolumns = (isset($NEWSCOLUMNS) ? $NEWSCOLUMNS : 1);
@@ -1401,7 +1733,9 @@ class news_front
 			$loop = 1;
 			$param = array();
 			$param['current_action'] = $action;
-			foreach($newsAr as $news) {
+
+			foreach($newsAr as $news)
+			{
 
 				if(is_array($ALTERNATECLASSES))
 				{
@@ -1413,38 +1747,32 @@ class news_front
 					$newsdata[$loop] .= $this->ix->render_newsitem($news, 'return', '', '', $param);
 				}
 				$loop ++;
-				if($loop > $newscolumns) {
+				if($loop > $newscolumns)
+				{
 					$loop = 1;
 				}
 			}
+
 			$loop = 1;
-			foreach($newsdata as $data) {
-				$var = "ITEMS{$loop}";
-				$$var = $data;
+
+			$items = array();
+
+			foreach($newsdata as $data)
+			{
+				$var = "ITEMS".$loop;
+			//	$$var = $data;
+				$items[$var] = $data;
 				$loop ++;
 			}
-			$text = preg_replace("/\{(.*?)\}/e", '$\1', $NEWSCLAYOUT);
 
 
-			// Deprecated
-			// $parms = $news_total.",".ITEMVIEW.",".$newsfrom.",".$e107->url->getUrl('core:news', 'main', "action=nextprev&to_action=".($action ? $action : 'default' )."&subaction=".($sub_action ? $sub_action : "0"));
+			$text = $tp->parseTemplate($NEWSCLAYOUT, false, $items);
 
-		//	$sub_action = intval($sub_action);
-			//    $parms = $news_total.",".ITEMVIEW.",".$newsfrom.",".e_SELF.'?'.($action ? $action : 'default' ).($sub_action ? ".".$sub_action : ".0").".[FROM]";
-
-			$amount = ITEMVIEW;
-			$nitems = defined('NEWS_NEXTPREV_NAVCOUNT') ? '&navcount='.NEWS_NEXTPREV_NAVCOUNT : '' ;
-			$url = rawurlencode(e107::getUrl()->create($this->route, $this->newsUrlparms));
-			$parms  = 'tmpl_prefix='.deftrue('NEWS_NEXTPREV_TMPL', 'default').'&total='.$news_total.'&amount='.$amount.'&current='.$this->from.$nitems.'&url='.$url;
-
+			$parms = $this->getPaginationParms($news_total, ITEMVIEW);
 			$text  .= $tp->parseTemplate("{NEXTPREV={$parms}}");
-
-			//    $nextprev = $tp->parseTemplate("{NEXTPREV={$parms}}");
-			//    $text .= ($nextprev ? "<div class='nextprev'>".$nextprev."</div>" : "");
-			//    $text=''.$text.'<center>'.$nextprev.'</center>';
-
-			echo $text;
+			// This section is deprecated so no pagination shortcode support should be added.
 			$this->setNewsCache($this->cacheString, $text);
+			return $text;
 		}
 		else
 		{
@@ -1472,7 +1800,7 @@ class news_front
 			// #### normal newsitems, rendered via render_newsitem(), the $query is changed above (no other changes made) ---------
 			$param = array();
 			$param['current_action'] = $action;
-			$param['template_key'] = 'default';
+			$param['template_key'] = 'news/default';
 
 			// Get Correct Template
 			// XXX we use $NEWSLISTSTYLE above - correct as we are currently in list mode - XXX No this is not NEWSLISTSTYLE - which provides only summaries.
@@ -1484,30 +1812,78 @@ class news_front
 			else // v2.x
 			{
 				$layout = e107::getTemplate('news', 'news');
-				$tmpl = $layout['default']; // default - we show the full items, except for the 'extended' part..
+				$catTemplate = $newsAr[1]['category_template'];
+
+				// v2.1.7 load the category template if found.
+				if(!empty($this->templateKey)) // predefined by NEWS_LAYOUT;
+				{
+					$this->addDebug("Template Mode",'NEWS_LAYOUT constant');
+					$tmpl = $layout[$this->templateKey];
+					$param['template_key'] = 'news/'.$this->templateKey;
+				}
+				elseif(!empty($newsAr[1]['category_template']) && !empty($layout[$catTemplate])) // defined by news_category field.
+				{
+					$this->addDebug("Template Mode",'news_category database field');
+					$this->templateKey = $catTemplate;
+					$tmpl = $layout[$this->templateKey];
+					$param['template_key'] = 'news/'.$this->templateKey;
+				}
+				elseif($this->action === 'list' && isset($layout['category']) && !isset($layout['category']['body'])) // make sure it's not old news_categories.sc
+				{
+					$this->addDebug("Template Mode","'category' key defined in template file");
+					$tmpl = $layout['category'];
+					$this->templateKey = 'category';
+					$param['template_key'] = 'news/category';
+				}
+				elseif(!empty($layout[$this->defaultTemplate])) // defined by default template 'news' pref.  (newspost.php?mode=main&action=settings)
+				{
+					$this->addDebug("Template Mode",'News Preferences: Default template');
+					$tmpl = $layout[$this->defaultTemplate];
+					$this->templateKey = $this->defaultTemplate;
+				}
+				else // fallback.
+				{
+					$this->addDebug("Template Mode",'Fallback');
+					$tmpl = $layout['default'] ;
+					$this->defaultTemplate = 'default';
+					$this->templateKey = 'default';
+				}
+
+				$this->currentRow = $newsAr[1];
+
+				$this->addDebug('Template key',$this->templateKey);
+
 				$template = $tmpl['item'];
-			//	unset($tmp);
+
 			}
 
-			// load the category template if found.
-			if($this->action === 'list' && isset($layout['category']) && !isset($layout['category']['body'])) // make sure it's not old news_categories.sc
+
+			if(isset($tmpl['caption']))
 			{
-				$tmpl = $layout['category'];
-				$template = $tmpl['item'];
-				$param['template_key'] = 'category';
-			}
+				$row = $newsAr[1];
 
+				$this->currentRow = $row;
+
+				if(empty($this->action)) // default page.
+				{
+					$row['category_name'] = LAN_PLUGIN_NEWS_NAME;
+				}
+
+				$nsc = e107::getScBatch('news')->setScVar('news_item', $row)->setScVar('param', $param);
+				$this->caption = $tp->parseTemplate($tmpl['caption'], true, $nsc);
+
+			}
 
 			if(!empty($tmpl['start'])) //v2.1.5
 			{
 				$nsc = e107::getScBatch('news')->setScVar('news_item', $newsAr[1])->setScVar('param', $param);
 				echo $tp->parseTemplate($tmpl['start'],true,$nsc);
-
 			}
 			elseif($sub_action && 'list' == $action && vartrue($newsAr[1]['category_name'])) //old v1.x stuff
 			{
 				// we know category name - pass it to the nexprev url
 				$category_name = $newsAr[1]['category_name'];
+
 				if(vartrue($newsAr[1]['category_sef'])) $newsUrlparms['name'] = $newsAr[1]['category_sef'];
 				if(!isset($NEWSLISTCATTITLE))
 				{
@@ -1553,10 +1929,10 @@ class news_front
 
 
 				//        render new date header if pref selected ...
-				$thispostday = strftime("%j", $news['news_datestamp']);
+				$thispostday = eShims::strftime("%j", $news['news_datestamp']);
 				if ($newpostday != $thispostday && (isset($this->pref['news_newdateheader']) && $this->pref['news_newdateheader']))
 				{
-					echo "<div class='".DATEHEADERCLASS."'>".strftime("%A %d %B %Y", $news['news_datestamp'])."</div>";
+					echo "<div class='".DATEHEADERCLASS."'>".eShims::strftime("%A %d %B %Y", $news['news_datestamp'])."</div>";
 				}
 				$newpostday = $thispostday;
 				$news['category_id'] = $news['news_category'];
@@ -1567,34 +1943,36 @@ class news_front
 					//e107::getDebug()->log($news);
 				}
 				// $template = false;
+
+
+
 				$this->ix->render_newsitem($news, 'default', '', $template, $param);
 
 
 				$i++;
 			}
 
+
+			$parms = $this->getPaginationParms($news_total, ITEMVIEW);
+			$paginationSC = false;
+
 			if(!empty($tmpl['end']))
 			{
+				e107::setRegistry('core/news/pagination', $parms);
 				$nsc = e107::getScBatch('news')->setScVar('news_item', $newsAr[1])->setScVar('param', $param);
 				echo $tp->parseTemplate($tmpl['end'], true, $nsc);
+				if(strpos($tmpl['end'], '{NEWS_PAGINATION') !== false) // BC fix.
+				{
+					$paginationSC = true;
+					$this->addDebug("Pagination Shortcode", 'true');
+				}
 			}
 
-
-
-
-			$amount = ITEMVIEW;
-			$nitems = defined('NEWS_NEXTPREV_NAVCOUNT') ? '&navcount='.NEWS_NEXTPREV_NAVCOUNT : '' ;
-			$url = rawurlencode(e107::getUrl()->create($this->route, $this->newsUrlparms));
-			
-			// Example of passing route data instead building the URL outside the shortcode - for a reference only
-			// $url = rawurlencode('url::'.$newsRoute.'::'.http_build_query($newsUrlparms, null, '&'));
-			$parms  = 'tmpl_prefix='.deftrue('NEWS_NEXTPREV_TMPL', 'default').'&total='.$news_total.'&amount='.$amount.'&current='.$this->from.$nitems.'&url='.$url;
-
-			echo $tp->parseTemplate("{NEXTPREV={$parms}}");
-
-			//	$parms = $news_total.",".ITEMVIEW.",".$newsfrom.",".e_SELF.'?'.($action ? $action : 'default' ).($sub_action ? ".".$sub_action : ".0").".[FROM]";
-			//	$nextprev = $tp->parseTemplate("{NEXTPREV={$parms}}");
-			// 	echo ($nextprev ? "<div class='nextprev'>".$nextprev."</div>" : "");
+			if($paginationSC === false) // BC Fix.
+			{
+				echo $tp->parseTemplate("{NEXTPREV={$parms}}");
+				$this->addDebug("Pagination Shortcode", 'false');
+			}
 
 			$cache_data = ob_get_clean();
 
@@ -1604,89 +1982,53 @@ class news_front
 		}
 
 	}
+
+	/**
+	 * @param int $total
+	 * @param int $amount
+	 * @return string
+	 */
+	private function getPaginationParms($total, $amount)
+	{
+
+		$opts = [
+			'tmpl_prefix' => deftrue('NEWS_NEXTPREV_TMPL', 'default'),
+			'total'       => (int) $total,
+			'amount'      => (int) $amount,
+			'current'     => $this->from,
+			'url'         => e107::getUrl()->create($this->route, $this->newsUrlparms),
+		];
+
+		if(defined('NEWS_NEXTPREV_NAVCOUNT'))
+		{
+			$opts['navcount'] = NEWS_NEXTPREV_NAVCOUNT;
+		}
+
+		if($this->pagination === 'page')
+		{
+			$opts['type'] = 'page';
+			$opts['total'] = ceil($opts['total'] / $opts['amount']);
+			$opts['current'] = ($opts['current'] / $opts['amount']) + 1;
+		}
+
+		$this->addDebug('newsUrlParms', $this->newsUrlparms);
+		$this->addDebug('paginationParms', $opts);
+
+		//	$parms  	= 'tmpl_prefix='.deftrue('NEWS_NEXTPREV_TMPL', 'default').'&total='.$news_total.'&amount='.$amount.'&current='.$this->from.$nitems.'&url='.$url;
+
+		$parms = http_build_query($opts);
+
+		return $parms;
+	}
 }
 
 $newsObj = new news_front;
+//$content = e107::getRender()->getContent(); // get tablerender content
 require_once(HEADERF);
+//e107::getRender()->setContent($content,null); // reassign tablerender content if HEADERF uses render.
 $newsObj->render();
 if(E107_DBG_BASIC && ADMIN)
 {
 	$newsObj->debug();
 }
 require_once(FOOTERF);
-exit;
-
-
-
-
-//require_once(e_HANDLER."comment_class.php");
-//$cobj = new comment;
-
-
-
-//------------------------------------------------------
-//		DISPLAY NEWS IN 'CATEGORY' LIST FORMAT HERE
-//------------------------------------------------------
-// Just title and a few other details
-
-
-
-
-
-//------------------------------------------------------
-//		DISPLAY SINGLE ITEM IN EXTENDED FORMAT HERE
-//------------------------------------------------------
-
-
-
-//------------------------------------------------------
-//			DISPLAY NEWS IN LIST FORMAT HERE
-//------------------------------------------------------
-// Show title, author, first part of news item...
-
-
-// ##### --------------------------------------------------------------------------------------------------------------
-
-
-// #### new: news archive ---------------------------------------------------------------------------------------------
-
-// #### END -----------------------------------------------------------------------------------------------------------
-
-if ($action != "item") {
-	if (is_numeric($action)){
-		$action = "";
-	}
-	//	$parms = $news_total.",".ITEMVIEW.",".$newsfrom.",".e_SELF.'?'."[FROM].".$action.(isset($sub_action) ? ".".$sub_action : "");
-	//	$nextprev = $tp->parseTemplate("{NEXTPREV={$parms}}");
-	//	echo ($nextprev ? "<div class='nextprev'>".$nextprev."</div>" : "");
-}
-
-if(is_dir("remotefile")) {
-	require_once(e_HANDLER."file_class.php");
-	$file = new e_file;
-	//	$reject = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*', 'Readme.txt');
-	//	$crem = $file -> get_files(e_BASE."remotefile", "", $reject);
-	$crem = $file -> get_files(e_BASE."remotefile", '~Readme\.txt');
-	if(count($crem)) {
-		foreach($crem as $loadrem) {
-			if(strstr($loadrem['fname'], "load_")) {
-				require_once(e_BASE."remotefile/".$loadrem['fname']);
-			}
-		}
-	}
-}
-
-if (isset($this->pref['nfp_display']) && $this->pref['nfp_display'] == 2 && is_readable(e_PLUGIN."newforumposts_main/newforumposts_main.php"))
-{
-	require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
-}
-
-render_newscats();
-
-require_once(FOOTERF);
-
-
-// =========================================================================
-
-
-?>

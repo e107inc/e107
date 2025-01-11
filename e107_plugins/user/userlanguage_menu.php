@@ -16,8 +16,8 @@
 //TODO homogenisation with languagelinks + do not force www + unobtrusive redirect
 if ( ! defined('e107_INIT')) { exit(); }
 
-require_once(e_HANDLER.'language_class.php');
-$slng = new language;
+e107::plugLan('user', null);
+$slng = e107::getLanguage();
 
 $languageList = explode(',', e_LANLIST);
 sort($languageList);
@@ -33,7 +33,7 @@ if(varset($pref['multilanguage_subdomain']))
 		$selected = ($languageFolder == e_LANGUAGE) ? ' selected="selected"' : '';
 		$urlval   = $slng->subdomainUrl($languageFolder);
 		$text .= '
-				<option value="'.$urlval.'"'.$selected.'>'.$languageFolder.'</option>';
+				<option value="'.$urlval.'" '.$selected.'>'.$languageFolder.'</option>';
 	}
 	$text .= '
 			</select>
@@ -51,14 +51,14 @@ else
 	{
 		$selected = ($languageFolder == e_LANGUAGE) ? ' selected="selected"' : '';
 		$text .= '
-				<option value="'.$languageFolder.'"'.$selected.'>'.$languageFolder.'</option>';
+				<option value="'.$languageFolder.'" '.$selected.'>'.$languageFolder.'</option>';
 	}
 
 	$text .= '
 			</select>
 			<br />
 			<br />
-			<button class="btn btn-default button" type="submit" name="setlanguage" value="no-value"><span>'.UTHEME_MENU_L1.'</span></button>';
+			<button class="btn btn-sm btn-primary button" type="submit" name="setlanguage" value="no-value"><span>'.UTHEME_MENU_L1.'</span></button>';
 	$text .= '
 		</div>
 	</form>';

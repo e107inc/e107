@@ -11,7 +11,7 @@
  *
 */
 
-require_once('../class2.php');
+require_once(__DIR__.'/../class2.php');
 
 // include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 e107::lan('core','updateadmin',true);
@@ -53,7 +53,7 @@ if (isset($_POST['update_settings']))
 			$check = $sql->update('user',$userData);
 			if ($check) 
 			{
-				e107::getLog()->add('ADMINPW_01', '', E_LOG_INFORMATIVE, '');
+				e107::getLog()->add('ADMINPW_01', '');
 				$userMethods->makeUserCookie(array('user_id' => USERID,'user_password' => $userData['data']['user_password']), FALSE);		// Can't handle autologin ATM
 				$mes->addSuccess(UDALAN_3." ".ADMINNAME);
 				
@@ -104,13 +104,13 @@ else
 					<tr>
 						<td>".UDALAN_6.":</td>
 						<td>
-							<input class='tbox input-text' type='password' name='a_password2' size='60' value='' maxlength='20' />
+							<input class='tbox form-control input-text' type='password' name='a_password2' size='60' value='' maxlength='20' />
 						</td>
 					</tr>
 				</tbody>
 			</table>
 			<div class='buttons-bar center'>
-				<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />".
+				<input type='hidden' name='ac' value='".md5(defset('ADMINPWCHANGE'))."' />".
 				$frm->admin_button('update_settings','no-value','update',UDALAN_7)."
 				
 			</div>
@@ -124,4 +124,3 @@ else
 
 require_once(e_ADMIN.'footer.php');
 
-?>

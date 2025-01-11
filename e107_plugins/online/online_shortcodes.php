@@ -12,8 +12,10 @@
 if (!defined('e107_INIT')) { exit; }
 
 
-register_shortcode('online_shortcodes', true);
-$online_shortcodes = initShortcodeClass('online_shortcodes');
+//register_shortcode('online_shortcodes', true);
+// $online_shortcodes = initShortcodeClass('online_shortcodes');
+
+e107::plugLan('online', null);
 
 class online_shortcodes extends e_shortcode
 {
@@ -55,9 +57,9 @@ class online_shortcodes extends e_shortcode
 	// Last Seen Menu
 	function sc_lastseen_userlink()
 	{
-		$uparams = array('id' => $this->currentUser['user_id'], 'name' => $this->currentUser['user_name']);
+		$uparams = array('id' => varset($this->currentUser['user_id']), 'name' => varset($this->currentUser['user_name']));
 		$link = e107::getUrl()->create('user/profile/view', $uparams);
-		return "<a href='".$link."'>".$this->currentUser['user_name']."</a>";
+		return "<a href='".$link."'>".varset($this->currentUser['user_name'])."</a>";
 
 	// $uparams = array('id' => $this->currentUser['user_id'], 'name' => $this->currentUser['user_name']);
 	//	return "<a href='".e_BASE."user.php?id.".$this->currentUser['user_id']."'>".$this->currentUser['user_name']."</a>";
@@ -65,7 +67,13 @@ class online_shortcodes extends e_shortcode
 
 	function sc_lastseen_date()
 	{
+		if(empty($this->currentUser['user_currentvisit']))
+		{
+			return null;
+		}
+
 		$seen_ago = $this->gen->computeLapse($this->currentUser['user_currentvisit'], false, false, true, 'short');
+
 		return $seen_ago;
 		// return ($seen_ago ? $seen_ago : '1 '.LANDT_09).' '.LANDT_AGO;
 	}
@@ -73,7 +81,7 @@ class online_shortcodes extends e_shortcode
 
 	function sc_online_tracking_disabled()
 	{
-		$url = e_ADMIN."users.php?mode=main&amp;action=prefs";
+		$url = e_ADMIN_ABS."users.php?mode=main&amp;action=prefs";
 
 		$srch = array("[","]");
 		$repl = array("<a href='".$url."'>", "</a>");
@@ -186,8 +194,13 @@ class online_shortcodes extends e_shortcode
 	}
 
 
-	function sc_online_most_datestamp($parm='short')
+	function sc_online_most_datestamp($parm=null)
 	{
+		if(empty($parm))
+		{
+			$parm = 'short';
+		}
+
 		return $this->gen->convert_date($this->memberInfo->get('most_online_datestamp'), $parm);
 	}
 
@@ -231,23 +244,23 @@ class online_shortcodes extends e_shortcode
 						$pinfo = 'download.php';
 						$online_location_page = 'download';
 					}
-					elseif (strstr($online_location_page, 'forum'))
+					elseif (strpos($online_location_page, 'forum') !== false)
 					{
 						$pinfo = e_PLUGIN.'forum/forum.php';
 						$online_location_page = 'forum';
 					}
-					elseif (strstr($online_location_page, 'content'))
+					elseif (strpos($online_location_page, 'content') !== false)
 					{
 						$pinfo = 'content.php';
 						$online_location_page = 'content';
 					}
-					elseif (strstr($online_location_page, 'comment'))
+					elseif (strpos($online_location_page, 'comment') !== false)
 					{
 						$pinfo = 'comment.php';
 						$online_location_page = 'comment';
 					}
 
-					list($oid, $oname) = explode('.', $uinfo, 2);
+				//	list($oid, $oname) = explode('.', $uinfo, 2);
 
 					$data = array(
 						'oid' 	=> $row['user_id'],
@@ -284,16 +297,15 @@ class online_shortcodes extends e_shortcode
 			$parm= array('type'=> $parm);
 		}
 
-		if($parm['type'] == 'avatar')
+		if(isset($parm['type']) && ($parm['type'] === 'avatar'))
 		{
 			$userData = array(
-				'user_image' => $this->currentMember['oimage'],
-				'user_name'	=> $this->currentMember['oname']
+				'user_image' => varset($this->currentMember['oimage']),
+				'user_name'	=> varset($this->currentMember['oname'])
 			);
 
 			return e107::getParser()->toAvatar($userData, $parm);
-			
-		//	return e107::getParser()->parseTemplate("{USER_AVATAR=".$this->currentMember['oimage']."}",true);	
+
 		}
 		
 		return "<img src='".e_IMAGE_ABS."admin_images/users_16.png' alt='' style='vertical-align:middle' />";
@@ -317,13 +329,17 @@ class online_shortcodes extends e_shortcode
 
 	function sc_online_member_page()
 	{
-		if(empty($this->currentMember['page']))
+		$currentMember = $this->currentMember;
+		if(empty($currentMember['page']))
 		{
 			return null;
 		}
 
-		global $ADMIN_DIRECTORY;
-		return (!strstr($this->currentMember['pinfo'], $ADMIN_DIRECTORY) ? "<a href='".$this->currentMember['pinfo']."'>".$this->currentMember['page']."</a>" : $this->currentMember['page']);
+		$ADMIN_DIRECTORY = e107::getFolder('admin');
+		$pinfo = (isset($currentMember['pinfo'])) ? $currentMember['pinfo'] : '';
+		return strpos($pinfo, $ADMIN_DIRECTORY) === false ?
+			"<a href='".$pinfo."'>".$currentMember['page']."</a>" :
+			$currentMember['page'];
 	}
 }
 

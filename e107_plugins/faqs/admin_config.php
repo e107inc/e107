@@ -8,7 +8,7 @@
  *
  */
 
-require_once("../../class2.php");
+require_once(__DIR__.'/../../class2.php');
 
 e107::lan('faqs', 'admin',true);
 //TODO LANS
@@ -95,7 +95,7 @@ class faq_cat_ui extends e_admin_ui
          	'faq_info_about' 			=> array('title'=> LAN_DESCRIPTION,	'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
 		 	'faq_info_parent' 			=> array('title'=> LAN_CATEGORY,	'type' => 'dropdown',		'width' => '5%', 'writeParms'=>''),		
 			'faq_info_class' 			=> array('title'=> LAN_VISIBILITY,	'type' => 'userclass',		'width' => 'auto', 'data' => 'int', 'inline'=>true),
-			'faq_info_metad' 			=> array('title'=> LANA_FAQ_METAD,	'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readParms'=>'editable=1'), 
+			'faq_info_metad' 			=> array('title'=> LAN_META_DESCRIPTION,	'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readParms'=>'editable=1'),
 			'faq_info_metak' 			=> array('title'=> LANA_FAQ_METAK,	'type' => 'tags',			'width' => 'auto', 'thclass' => 'left', 'readParms'=>'editable=1'), 				
 			'faq_info_sef' 				=> array('title'=> LAN_SEFURL,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'inline'=>true, 'writeParms'=>'size=xxlarge'), 				
 	
@@ -161,6 +161,8 @@ class faq_cat_form_ui extends e_admin_form_ui
 	{
 		// TODO - catlist combo without current cat ID in write mode, parents only for batch/filter 
 		// Get UI instance
+
+		/** @var faq_cat_ui $controller */
 		$controller = $this->getController();
 		switch($mode)
 		{
@@ -169,7 +171,7 @@ class faq_cat_form_ui extends e_admin_form_ui
 			break;
 			
 			case 'write':
-				return $this->selectbox('faq_info_parent', $controller->getFaqCategoryTree(), $curVal);
+				return $this->select('faq_info_parent', $controller->getFaqCategoryTree(), $curVal);
 			break;
 			
 			case 'filter':
@@ -188,18 +190,17 @@ class faq_main_ui extends e_admin_ui
 		protected $eventName	    = 'faqs';
 		protected $table			= "faqs";
 		// without any Order or Limit. 
-		
-		//FIXME JOIN should occur automatically. We have all the data necessary to build the query. 
-		// ie. faq_author is a 'user' field. 
-		
+
 		protected $listQry		= "SELECT  f.*, u.* FROM #faqs AS f LEFT JOIN #user AS u ON f.faq_author = u.user_id "; // Should not be necessary.
 		
 		protected $editQry		= "SELECT * FROM #faqs WHERE faq_id = {ID}";
 		
 		protected $pid 			= "faq_id";
-		protected $perPage 		= 10;
+		protected $perPage 		= 15;
 		protected $batchDelete	= true;
 		protected $batchCopy	= true;
+		protected $batchExport	= true;
+
 		protected $listOrder	= 'faq_order ASC';
 		protected $sortField	= 'faq_order';
 		protected $tabs			= array(LANA_FAQ_QUESTION, LAN_DETAILS); // Simpler method than 'fieldsets'. Allows for easy moving of fields between tabs and works as required by 'news' and 'custom pages'. 
@@ -208,14 +209,14 @@ class faq_main_ui extends e_admin_ui
     	protected $fields = array(
 			'checkboxes'			=> array('title'=> '',					            'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'faq_id'				=> array('title'=> LAN_ID,				'tab' => 0, 'type' => null,				'width' =>'5%', 'forced'=> TRUE),
-			'faq_question' 			=> array('title'=> LANA_FAQ_QUESTION,	'tab' => 0, 'type' => 'text',			'width' => 'auto', 'thclass' => 'left first', 'required'=>TRUE, 'readParms'=>'editable=1', 'writeParms'=>'maxlength=1000&size=block-level'),
-			'faq_answer' 			=> array('title'=> LANA_FAQ_ANSWER,		'tab' => 0, 'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=1&truncate=50&bb=1'), 
+			'faq_question' 			=> array('title'=> LANA_FAQ_QUESTION,	'tab' => 0, 'type' => 'text',			'data' => 'str', 'width' => 'auto', 'thclass' => 'left first', 'required'=>TRUE, 'readParms'=>'editable=1', 'writeParms'=>'maxlength=1000&size=block-level'),
+			'faq_answer' 			=> array('title'=> LANA_FAQ_ANSWER,		'tab' => 0, 'type' => 'bbarea',			'data' => 'str', 'width' => '30%', 'readParms' => 'expand=1&truncate=50&bb=1'),
 		 	'faq_parent' 			=> array('title'=> LAN_CATEGORY,		'tab' => 0, 'type' => 'dropdown',		'data'=> 'int', 'inline'=>true,'width' => '10%', 'filter'=>TRUE, 'batch'=>TRUE),
 
 			'faq_tags' 				=> array('title'=> LANA_FAQ_TAGS,		'tab' => 1, 'type' => 'tags',			'data' => 'str',	'width' => 'auto', 'inline'=> true, 'help' => LANA_FAQ_TAGS_HELP),	// User id
 			'faq_comment' 			=> array('title'=> LANA_FAQ_COMMENT,	'tab' => 1, 'type' => 'userclass',		'data' => 'int',	'width' => 'auto', 'inline'=> true),	// user class who can make comments
 			
-			'faq_datestamp' 		=> array('title'=> LAN_DATE,			'tab' => 1, 'type' => 'datestamp',		'data'=> 'int','width' => 'auto', 'noedit' => false,'writeParms'=>'type=datetime&auto=1'),
+			'faq_datestamp' 		=> array('title'=> LAN_DATE,			'tab' => 1, 'type' => 'datestamp',		'data'=> 'int','width' => 'auto', 'noedit' => false,'writeParms'=>'type=datetime&auto=1', 'batch'=>true),
 			'faq_author'			=> array('title'=> LAN_AUTHOR,			'tab' => 1, 'type' => 'user',			'data'=> 'int', 'width' => 'auto', 'thclass' => 'center', 'class'=>'center', 'writeParms' => 'currentInit=1', 'filter' => true, 'batch' => true, 'nolist' => true	),	 	// Photo
 			'faq_author_ip' 		=> array('title'=> LAN_IP,				'tab' => 1, 'type' => 'ip',				'readonly'=>2, 'data'=> 'str', 'width' => 'auto', 'thclass' => 'center', 'class'=>'center', 'writeParms' => 'currentInit=1', 'filter' => true, 'batch' => true, 'nolist' => true	),
 
@@ -229,7 +230,7 @@ class faq_main_ui extends e_admin_ui
 		 
 		protected $fieldpref = array('checkboxes', 'faq_question', 'faq_answer', 'faq_parent', 'faq_datestamp', 'options');
 
-		protected $preftabs				= array(LAN_GENERAL, LAN_FAQS_ASK_A_QUESTION, LAN_MANAGE.": ".LANA_FAQ_QUESTIONS, LAN_MANAGE.": ".LAN_CATEGORIES);
+		protected $preftabs				= array(LAN_GENERAL, LAN_FAQS_ASK_A_QUESTION, LANA_FAQ_PREF_22, LANA_FAQ_PREF_23);
 		
 		// optional, if $pluginName == 'core', core prefs will be used, else e107::getPluginConfig($pluginName);
 		protected $prefs = array( 
@@ -237,6 +238,7 @@ class faq_main_ui extends e_admin_ui
 			'submit_question'	   		=> array('title'=> LANA_FAQ_PREF_2, 'tab'=>1, 'type'=>'userclass' ),
 			'submit_question_limit'		=> array('title'=> LANA_FAQ_PREF_4, 'tab'=>1, 'type'=>'number', 'data'=>'int', 'help'=>LANA_FAQ_PREF_HELP_1),
 			'submit_question_char_limit'=> array('title'=> LANA_FAQ_PREF_5, 'tab'=>1, 'type'=>'number', 'data'=>'int', 'help'=>LANA_FAQ_PREF_HELP_1, 'writeParms'=>array('max'=>255, 'default'=>255)),
+			'submit_question_char_min'=> array('title'=> LANA_FAQ_PREF_24, 'tab'=>1, 'type'=>'number', 'data'=>'int', 'help'=>LANA_FAQ_PREF_HELP_1, 'writeParms'=> array('default'=> 20)),
 			'submit_question_language'	=> array('title'=> LANA_FAQ_PREF_6, 'tab'=>1, 'type'=>'dropdown' ),
 			'submit_question_acknowledgement'=> array('title'=> LANA_FAQ_PREF_7, 'tab'=>1, 'type'=>'textarea', 'help'=>LANA_FAQ_PREF_HELP_2),
 //new display tab
@@ -247,7 +249,7 @@ class faq_main_ui extends e_admin_ui
 			'display_total'				=> array('title'=> LANA_FAQ_PREF_13, 'tab'=>0, 'type'=>'boolean', 'data'=>'int' ),
 			'display_datestamp'			=> array('title'=> LANA_FAQ_PREF_14, 'tab'=>0, 'type'=>'boolean', 'data'=>'int' ),
 			'display_social'			=> array('title'=> LANA_FAQ_PREF_15, 'tab'=>0, 'type'=>'boolean', 'data'=>'int' ),
-			'orderby'					=> array('title'=> LAN_ORDER,        'tab'=>0, 'type'=>'dropdown', 'writeParms'=>array('faq_order-ASC'=>LANA_FAQ_PREF_16, 'faq_id-ASC'=>LAN_ID." ".LAN_ASC, 'faq_id-DESC'=>LAN_ID." ".LAN_DESC, 'faq_datestamp-ASC'=>LAN_DATE." ".LAN_ASC, 'faq_datestamp-DESC'=>LAN_DATE."-".LAN_DESC)),
+			'orderby'					=> array('title'=> LAN_ORDER,        'tab'=>0, 'type'=>'dropdown', 'writeParms'=>array('faq_order-ASC'=>LANA_FAQ_PREF_16, 'faq_id-ASC'=>LANA_FAQ_PREF_18, 'faq_id-DESC'=>LANA_FAQ_PREF_19, 'faq_datestamp-ASC'=>LANA_FAQ_PREF_20, 'faq_datestamp-DESC'=>LANA_FAQ_PREF_21)),
 
 			'admin_faq_create'			=> array('title'=> LAN_CREATE_ITEM,  'tab'=>2, 'type'=>'userclass', 'writeParms'=>'default=254&classlist=main,admin,classes,no-excludes' ),
 			'admin_faq_edit'			=> array('title'=> LAN_EDIT,         'tab'=>2, 'type'=>'userclass', 'writeParms'=>'default=254&classlist=main,admin,classes,no-excludes' ),
@@ -354,22 +356,24 @@ class faq_admin_form_ui extends e_admin_form_ui
 	function faq_parent($curVal,$mode)
 	{ 
 		// Get UI instance
+
+		/** @var faq_cat_ui $controller */
 		$controller = $this->getController();
 		
 		switch($mode)
 		{
 			case 'read':
-				return e107::getParser()->toHTML($controller->getFaqCategory($curVal), false, 'TITLE');
+				return e107::getParser()->toHTML($controller->getFaqCategoryTree($curVal), false, 'TITLE');
 			break;
 			
 			case 'write':
 
-				return $this->selectbox('faq_parent', $controller->getFaqCategory(), $curVal).$this->hidden('pending', $pending);
+				return $this->select('faq_parent', $controller->getFaqCategoryTree(), $curVal).$this->hidden('pending', $pending);
 			break;
 			
 			case 'filter':
 			case 'batch':
-				return $controller->getFaqCategory();
+				return $controller->getFaqCategoryTree();
 			break;
 		}
 	}

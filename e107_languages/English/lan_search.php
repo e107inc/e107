@@ -5,8 +5,10 @@
  * Language file - Search
  *
 */
-
-define("PAGE_NAME", "Search");
+if(!defined('PAGE_NAME')) // TODO fix me
+{
+	define("PAGE_NAME", "Search");
+}
 
 define("LAN_140", "Members");
 // define("LAN_180", "Search");
@@ -21,7 +23,7 @@ define("LAN_198", "No matches found");
 define("LAN_199", "Search For:");
 
 define("LAN_416", "You must be logged in to access this page");
-define("LAN_417", "Search terms must be at least --CHARS-- characters.");
+define("LAN_417", "Search terms must be at least [x] characters.");
 
 define("LAN_418", "Other Pages");
 

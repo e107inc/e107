@@ -64,4 +64,3 @@ define("CONTENT", "Content Page");
 define("REVIEW", "Review");
 define("OTHER", "Other page: ");
 
-?>
