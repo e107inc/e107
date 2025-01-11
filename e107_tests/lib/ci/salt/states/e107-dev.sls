@@ -10,6 +10,9 @@ MySQLdb Python module for SaltStack:
     - name: mysqlclient
     - require:
       - pkg: "Install Python module build dependencies"
+    - reload_modules: True
+    - extra_args:
+      - --no-build-isolation
 
 Install LAMP stack:
   pkg.installed:

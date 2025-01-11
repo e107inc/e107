@@ -216,3 +216,7 @@ define("IMALAN_187", "Convert to webp during import");
 define("IMALAN_188", "Convert to webp during render");
 define("IMALAN_189", "JPEG, PNG and GIF files will be automatically converted to webp format. (icons excluded)");
 define("IMALAN_190", "Importing of this file-type is not allowed.");
+
+define("IMALAN_191", "Image Alt Text");
+define("IMALAN_192", "Credits");
+define("IMALAN_193", "Expiry Date");
