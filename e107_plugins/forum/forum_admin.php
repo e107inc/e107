@@ -1035,7 +1035,7 @@ e107::css('inline',"
 		public function renderHelp()
 		{
 			$help_text = str_replace("[br]", "<br />", FORLAN_189);
-			$help_text = str_replace(array("[", "]"), array("<a href='".e_ADMIN_ABS."notify.php'>"), $help_text); 
+			$help_text = str_replace(array("[", "]"), array("<a href='".e_ADMIN_ABS."notify.php'>", "</a>"), $help_text); 
 			
 			return array('caption' => LAN_HELP, 'text' => $help_text);
 		}
