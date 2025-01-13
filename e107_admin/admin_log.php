@@ -683,7 +683,7 @@ class admin_log_form_ui extends e_admin_form_ui
 				{
 					$id = $this->getController()->getListModel()->get('dblog_id');
 					$ret ="<a class='e-expandit' href='#rem-".$id."'>".RL_LAN_087."</a>";
-					$ret .= "<div style='display:none;width:33vw' id='rem-".$id."'>";
+					$ret .= "<div class='logcanvas' style='display:none;width:33vw' id='rem-".$id."'>";
 					$text = str_replace("<br />","\n",$text);
 					$text = str_replace("&#092;","/",$text);
 					
