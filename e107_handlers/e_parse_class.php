@@ -4395,10 +4395,18 @@ class e_parse
 
 		if (!empty($options['base64'])) // embed image data into URL.
 		{
-			$content = e107::getFile()->getRemoteContent($url); // returns false during unit tests, works otherwise.
+			$content = e107::getFile()->getRemoteContent($url);
 			if (!empty($content))
 			{
-				$ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+				if(!empty($file))
+				{
+					$ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+				}
+				else
+				{
+					$ext = strtolower(pathinfo($url, PATHINFO_EXTENSION));
+				}
+
 				$url = 'data:image/' . $ext . ';base64,' . base64_encode($content);
 			}
 		}

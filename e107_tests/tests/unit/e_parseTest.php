@@ -2433,16 +2433,24 @@ EXPECTED;
 					'alt="mytitle"',
 				)
 			),
-			/** @fixme - doesn't pass under CLI */
-			/*
+
 			7   => array(
 				'input'     => array('user_image'=>'avatartest.png'),
 				'parms'     => array('w'=>50, 'h'=>50, 'crop'=>true, 'base64'=>true, 'shape'=>'circle'),
 				'expected'  => array(
 								"src='data:image/png;base64,",
-								"class='img-circle user-avatar'"
+								"class='img-circle rounded-circle user-avatar'"
 							)
-			),*/
+			),
+
+			8   => array(
+				'input'     => array('user_image'=>'https://e107.org/e107_images/generic/blank_avatar.jpg'), // Test remote avatar
+				'parms'     => array('w'=>50, 'h'=>50, 'crop'=>true, 'base64'=>true, 'shape'=>'circle'),
+				'expected'  => array(
+								"src='data:image/jpg;base64,",
+								"class='img-circle rounded-circle user-avatar'"
+							)
+			),
 
 
 		);
@@ -2452,7 +2460,7 @@ EXPECTED;
 			$result = $this->tp->toAvatar($var['input'], $var['parms']);
 			foreach ($var['expected'] as $str)
 			{
-				$this->assertStringContainsString($str, $result, "Failed on index #" . $index);
+				self::assertStringContainsString($str, $result, "Failed on index #" . $index);
 			}
 		}
 
