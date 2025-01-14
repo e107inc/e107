@@ -2659,7 +2659,24 @@ Your browser does not support the audio tag.
 </audio>';
 
 		$result = $this->tp->toAudio('{e_MEDIA}myfile.mp3');
-		$this->assertEquals($expected, $result);
+		self::assertEquals($expected, $result);
+
+		$expected = '<audio controls style="max-width:100%" >
+<source src="/e107_media/000000test/myfile.wav" type="audio/wav">
+Your browser does not support the audio tag.
+</audio>';
+
+		$result = $this->tp->toAudio('{e_MEDIA}myfile.wav');
+		self::assertEquals($expected, $result);
+
+		// Override mime.
+		$expected = '<audio controls style="max-width:100%" >
+<source src="/e107_media/000000test/myfile.php" type="audio/wav">
+Your browser does not support the audio tag.
+</audio>';
+
+		$result = $this->tp->toAudio('{e_MEDIA}myfile.php', ['mime' => 'audio/wav']);
+		self::assertEquals($expected, $result);
 
 	}
 

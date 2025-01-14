@@ -4931,7 +4931,27 @@ class e_parse
 
 		$file = $this->replaceConstants($file, 'abs');
 
-		$mime = varset($parm['mime'], 'audio/mpeg');
+	    $ext = pathinfo($file, PATHINFO_EXTENSION);
+
+	    switch (strtolower($ext))
+	    {
+
+	        case 'wav':
+	            $mime = 'audio/wav';
+	            break;
+	        case 'ogg':
+	            $mime = 'audio/ogg';
+	            break;
+	        case 'mp3':
+	        default:
+	             $mime = 'audio/mpeg';
+	            break;
+	    }
+
+		if(!empty($parm['mime']))
+		{
+			$mime = $parm['mime'];
+		}
 
 		$autoplay = !empty($parm['autoplay']) ? 'autoplay ' : '';
 		$controls = !empty($parm['controls']) ? 'controls' : '';
