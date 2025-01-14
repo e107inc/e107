@@ -48,7 +48,6 @@ if (!e107::isInstalled('forum'))
 		$sc = e107::getScBatch('stats', 'forum');
 
 //		$sc['TOTAL_POSTS']= 5000000;
-//		var_dump ($sc);
 //		require_once(e_PLUGIN.'forum/forum_class.php');  // Really needed ? No call to the class is made....
 		$gen = e107::getDate();
 
@@ -71,8 +70,6 @@ if (!e107::isInstalled('forum'))
 		$sql->select('forum_post', 'post_datestamp', 'post_datestamp > 0 ORDER BY post_datestamp ASC LIMIT 0,1', 'default');
  		$fp = $sql->fetch();
 		$fp = is_array($fp) ? $fp : array();
-//		var_dump ($row);
-//		var_dump ($fp);
 
 //		$sc->setVars(array('open_ds' => ((int) varset($fp['post_datestamp']))));
 		$SCvars_0['open_ds']  = (int) varset($fp['post_datestamp']);
@@ -263,7 +260,7 @@ if (!e107::isInstalled('forum'))
 			<tr><td style='width: 50%; text-align: right;'><b>".LAN_FORUM_6007.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$avg_row_len}</td></tr>
 		</table>");
 */ // Templates are always defined in the template file, by default.... No need for this hardcode
-//var_dump ($SCvars_0);
+
 		$sc->setVars($SCvars_0);
 		$text_0 = $tp->parseTemplate($template['text_0'], true, $sc);
 
@@ -622,9 +619,6 @@ ORDER BY ft.thread_total_replies DESC LIMIT 0,10", $template['text_1'], $sc);
 		$captions = array('0'=>LAN_FORUM_6000, '1'=>LAN_FORUM_0011, '2'=>LAN_FORUM_6010, '3'=>LAN_FORUM_0010, '4'=>LAN_FORUM_6011, '5'=>LAN_FORUM_6012);
 		$orderedtabs = array_replace(array_flip($taborder), $captions);
 
-//		var_dump ($taborder);
-//		var_dump ($orderedtabs);
-
 		if(deftrue('BOOTSTRAP'))
 		{
 //			$tabs = array();
@@ -660,8 +654,6 @@ ORDER BY ft.thread_total_replies DESC LIMIT 0,10", $template['text_1'], $sc);
 			e107::breadcrumb($breadarray); // assign to {---BREADCRUMB---}
 
 //			$text = "<div id='forum-stats'>". $text . e107::getForm()->tabs($tabs)."</div>";
-//			var_dump ($template['tab_start']);
-//			var_dump (isset($template['tab_start']));
 //			$text = ($template['start']??"<div id='forum-stats'>"). $text . $frm->tabs($tabs, array("scroll" => true)).($template['end']??"</div>"); // Template is always defined, it is loaded from plugin first, so defaults are always there
 			$text .= $template['start']. $text . $frm->tabs($tabs, array("scroll" => true)).$template['end'];
 		}
@@ -697,8 +689,6 @@ ORDER BY ft.thread_total_replies DESC LIMIT 0,10", $template['text_1'], $sc);
 //		$ns -> tablerender(LAN_FORUM_6013, $text, 'forum-stats');
 
 		$sc->setVars($fstatsSCvars);
-//var_dump ($text);
-//var_dump ($sc);
 
 		echo $ns->tablerender(LAN_FORUM_6013, $tp->parseTemplate($text, true, $sc), 'forum-stats');
 //	}
