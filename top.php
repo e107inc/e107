@@ -77,7 +77,6 @@ if ($action == 'active')
 
 	if ($sql->gen($qry))
 	{
-//		var_dump($sql);
 		
 		if ($template = e107::getTemplate('forum','newforumposts_menu','main'))
 //if (1 == 2)
@@ -85,17 +84,11 @@ if ($action == 'active')
 //				$tp = e107::getParser();
 //			if($results = $sql->gen($qry))
 //			{
-//	var_dump($sql);
 //				$sql1 = $sql;
 //				$sc = e107::getScBatch('view', 'forum');
-//	var_dump($sql);
 //				$sc->wrapper('newforumposts_menu/main');
-//	var_dump($sql);
-//	var_dump($sql1);
-
 				$text = $tp->parseTemplate($template['start'], true);
 
-///				var_dump($sql);
 				while($row = $sql->fetch())
 				{
 					$row['thread_sef'] = $forum->getThreadSef($row);
@@ -103,9 +96,7 @@ if ($action == 'active')
 					$row['thread_lastuser_username'] = $row['user_last'];
 					$row['thread_user_username'] = $row['user_name'];
 					//					var_dump($row);
-//					var_dump(e107::getUrl()->create('forum/forum/view', array('id' => $row['thread_forum_id'])));
 //					$fsef = $sql->gen('forum_sef', '(*)', 'WHERE `thread_parent` = 0');
-//					var_dump($fsef);
 					$sc->setScVar('postInfo', $row);
 					$sc->setVars($row);
 					$text .= $tp->parseTemplate($template['item'], true, $sc);
@@ -123,7 +114,6 @@ if ($action == 'active')
 		}
 		else
 		{
-//			var_dump($sql);
 		$text = "<div>\n<table style='width:auto' class='table fborder'>\n";
 		$gen = e107::getDate();
 
