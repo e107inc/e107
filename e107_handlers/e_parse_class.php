@@ -4395,10 +4395,18 @@ class e_parse
 
 		if (!empty($options['base64'])) // embed image data into URL.
 		{
-			$content = e107::getFile()->getRemoteContent($url); // returns false during unit tests, works otherwise.
+			$content = e107::getFile()->getRemoteContent($url);
 			if (!empty($content))
 			{
-				$ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+				if(!empty($file))
+				{
+					$ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+				}
+				else
+				{
+					$ext = strtolower(pathinfo($url, PATHINFO_EXTENSION));
+				}
+
 				$url = 'data:image/' . $ext . ';base64,' . base64_encode($content);
 			}
 		}
@@ -4923,7 +4931,27 @@ class e_parse
 
 		$file = $this->replaceConstants($file, 'abs');
 
-		$mime = varset($parm['mime'], 'audio/mpeg');
+	    $ext = pathinfo($file, PATHINFO_EXTENSION);
+
+	    switch (strtolower($ext))
+	    {
+
+	        case 'wav':
+	            $mime = 'audio/wav';
+	            break;
+	        case 'ogg':
+	            $mime = 'audio/ogg';
+	            break;
+	        case 'mp3':
+	        default:
+	             $mime = 'audio/mpeg';
+	            break;
+	    }
+
+		if(!empty($parm['mime']))
+		{
+			$mime = $parm['mime'];
+		}
 
 		$autoplay = !empty($parm['autoplay']) ? 'autoplay ' : '';
 		$controls = !empty($parm['controls']) ? 'controls' : '';
