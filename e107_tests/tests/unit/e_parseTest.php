@@ -2680,11 +2680,43 @@ Your browser does not support the audio tag.
 
 	}
 
-	/*
-			public function testToVideo()
-			{
 
-			}*/
+	public function testToVideo()
+	{
+		$tests = [
+			0 => [
+				'file'      => '{e_MEDIA}myfile.mp4',
+				'parms'     =>[],
+				'expected'  => '<video width="320" height="240" controls>'
+				],
+
+			1 => [
+				'file'      => '{e_MEDIA}myfile.mp4',
+				'parms'     =>['w'=>500],
+				'expected'  => '<video width="500" height="240" controls>'
+				],
+
+			2 => [
+				'file'      => '{e_MEDIA}myfile.mp4',
+				'parms'     =>['w'=>300, 'h'=>0],
+				'expected'  => '<video width="300" height="auto" controls>'
+				],
+
+			3 => [
+				'file'      => '{e_MEDIA}myfile.mp4',
+				'parms'     =>['w'=>300, 'h'=>'auto'],
+				'expected'  => '<video width="300" height="auto" controls>'
+				],
+		];
+
+		foreach ($tests as $index => $var)
+		{
+			$result = $this->tp->toVideo($var['file'], $var['parms']);
+			self::assertStringContainsString($var['expected'], $result, 'Failed on index #'.$index);
+		}
+
+
+	}
 
 	public function testMakeClickable()
 	{
