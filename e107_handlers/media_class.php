@@ -1267,7 +1267,8 @@ class e_media
 		{
 
 			case "video":
-				$preview = $tp->toVideo($default, array('w'=>$width, 'h'=> ($height - 50)));
+				$h = (!is_numeric($height) || $height < 1) ? 0 : ($height - 50);
+				$preview = $tp->toVideo($default, array('w'=>$width, 'h'=>$h ));
 			break;
 
 			case "audio":
