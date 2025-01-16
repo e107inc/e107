@@ -3887,12 +3887,13 @@ var_dump($select_options);*/
 			    '.($label ?: LAN_NO_LABEL_PROVIDED).'
 			    <span class="caret"></span>
 			    </a>
-			    <ul class="dropdown-menu">
+			    <ul class="dropdown-menu '.$options['class_ul'].'">
 			    ';
-			
+// Added class_ul to add classes to the UL tag
 			foreach($value as $k=>$v)
 			{
-				$text .= '<li class="dropdown-item">'.$v.'</li>';
+// Added class_li to add classes to the LI tag			
+				$text .= '<li class="dropdown-item '.$options['class_ul'].'">'.$v.'</li>';
 			}
 			
 			$text .= '
@@ -3901,11 +3902,8 @@ var_dump($select_options);*/
 			
 			return $text;	
 		}			
-				
 
-		
 		return $this->admin_button($name, $value, $action, $label, $options);
-		
 	}
 
 	/**
