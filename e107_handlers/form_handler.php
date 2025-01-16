@@ -3892,8 +3892,8 @@ var_dump($select_options);*/
 // Added class_ul to add classes to the UL tag
 			foreach($value as $k=>$v)
 			{
-// Added class_li to add classes to the LI tag			
-				$text .= '<li class="dropdown-item '.$options['class_ul'].'">'.$v.'</li>';
+// Added class_li to add classes to the LI tag and a small enhancement ;)
+				$text .= '<li class="dropdown-item '.$options['class_ul'].($v == '--' || $v == 'divider'?'divider"><hr class="dropdown-divider">':'>'.$v).'</li>';
 			}
 			
 			$text .= '
