@@ -5112,6 +5112,11 @@ class e_parse
 			$height = varset($parm['h'], 240);
 			$mime = varset($parm['mime'], 'video/mp4');
 
+			if($height === 0)
+			{
+				$height = 'auto';
+			}
+
 			return '
 			<div class="video-responsive">
 			<video width="' . $width . '" height="' . $height . '" controls>
