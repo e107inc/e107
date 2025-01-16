@@ -4020,10 +4020,14 @@ var_dump($select_options);*/
 			$btype = 'button';
 		}
 
+		// added attributes for tooltip dispaly under BS
 		$attributes = [
 			'type'  => $btype,
 			'name'  => $name,
 			'value' => $value,
+			'data-toggle' 		=> $options['data-toggle'],
+			'data-bs-toggle' 	=> $options['data-bs-toggle'],
+			'title' 			=> $options['title'],
 		];
 
 		if (isset($options['loading']) && ($options['loading'] == false))
@@ -4057,14 +4061,12 @@ var_dump($select_options);*/
 			$class .= ' ' . $this->getDefaultButtonClassByAction($action);
 		}
 
-
 		$options['class'] = $class;
 
 		if(empty($label))
 		{
 			$label = $value;
 		}
-
 
 		switch ($action)
 		{
