@@ -3893,7 +3893,7 @@ var_dump($select_options);*/
 			foreach($value as $k=>$v)
 			{
 // Added class_li to add classes to the LI tag and a small enhancement ;)
-				$text .= '<li class="dropdown-item '.$options['class_ul'].($v == '--' || $v == 'divider'?'divider"><hr class="dropdown-divider">':'>'.$v).'</li>';
+				$text .= '<li class="dropdown-item '.$options['class_li'].($v == '--' || $v == 'divider'?'divider"><hr class="dropdown-divider">':'>'.$v).'</li>';
 			}
 			
 			$text .= '
