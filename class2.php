@@ -1118,7 +1118,7 @@ else
 	define('e_REFERER_SELF', false);
 }
 
-if(deftrue('USER'))
+if(deftrue('USER') && !e107::isCli())
 {
 	if (check_class(varset($pref['user_audit_class']))) // Need to note in user audit trail
 	{
