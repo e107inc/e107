@@ -40,7 +40,7 @@ define("LAN_AUDIT_LOG_021", "User email bounce");
 define("LAN_AUDIT_LOG_022", "User banned");
 define("LAN_AUDIT_LOG_023", "User bounce reset");
 define("LAN_AUDIT_LOG_024", "User temporary status");
-
+define("LAN_AUDIT_LOG_025", "User navigation trail");
 
 // Admin log events
 //-----------------

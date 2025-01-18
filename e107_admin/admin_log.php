@@ -486,10 +486,10 @@ class admin_log_form_ui extends e_admin_form_ui
 		//	define('USER_AUDIT_BANNED', 22); 			// User banned
 		//	define('USER_AUDIT_BOUNCE_RESET', 23); 		// User bounce reset
 		//	define('USER_AUDIT_TEMP_ACCOUNT', 24); 		// User temporary account
-		
+		$RL_LAN_136 = defset('RL_LAN_136', "User navigation trail");
 		
 		$audit_checkboxes = array(USER_AUDIT_SIGNUP => RL_LAN_071, USER_AUDIT_EMAILACK => RL_LAN_072,
-		 USER_AUDIT_LOGIN => LAN_AUDIT_LOG_013, 	USER_AUDIT_LOGOUT 	=> LAN_AUDIT_LOG_014,			// Logout is lumped in with login
+		 USER_AUDIT_LOGIN => LAN_AUDIT_LOG_013, 	USER_AUDIT_LOGOUT 	=> LAN_AUDIT_LOG_014,	USER_AUDIT_NAVIGATION => $RL_LAN_136,		// Logout is lumped in with login
 		USER_AUDIT_NEW_DN => RL_LAN_075, USER_AUDIT_NEW_PW => RL_LAN_076, USER_AUDIT_PW_RES => RL_LAN_078, USER_AUDIT_NEW_EML => RL_LAN_077, USER_AUDIT_NEW_SET => RL_LAN_079, 
 		USER_AUDIT_ADD_ADMIN => RL_LAN_080, USER_AUDIT_MAIL_BOUNCE => RL_LAN_081, USER_AUDIT_BANNED => RL_LAN_082, USER_AUDIT_BOUNCE_RESET => RL_LAN_083,
 		USER_AUDIT_TEMP_ACCOUNT => RL_LAN_084);
