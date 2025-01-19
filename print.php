@@ -109,7 +109,7 @@ else // @todo move to e107_plugins/news/e_print.php
 	//$print_text = ob_get_flush();
 
 	$print_text .= "<br /><br /><hr />".
-	LAN_PRINT_303."<b>".SITENAME."</b>
+	LAN_PRINT_303." <b>".SITENAME."</b>
 	<br />
 	".$newsUrl."
 	";
