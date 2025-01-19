@@ -112,6 +112,7 @@ class e_admin_log
 			define('USER_AUDIT_BANNED', 22); // User banned
 			define('USER_AUDIT_BOUNCE_RESET', 23); // User bounce reset
 			define('USER_AUDIT_TEMP_ACCOUNT', 24); // User temporary account
+			define('USER_AUDIT_NAVIGATION', 25); // User signed up
 
 		}
 		// Init E_MESSAGE_* constants if not already done
