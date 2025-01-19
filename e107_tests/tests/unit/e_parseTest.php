@@ -2433,16 +2433,24 @@ EXPECTED;
 					'alt="mytitle"',
 				)
 			),
-			/** @fixme - doesn't pass under CLI */
-			/*
+
 			7   => array(
 				'input'     => array('user_image'=>'avatartest.png'),
 				'parms'     => array('w'=>50, 'h'=>50, 'crop'=>true, 'base64'=>true, 'shape'=>'circle'),
 				'expected'  => array(
 								"src='data:image/png;base64,",
-								"class='img-circle user-avatar'"
+								"class='img-circle rounded-circle user-avatar'"
 							)
-			),*/
+			),
+
+			8   => array(
+				'input'     => array('user_image'=>'https://e107.org/e107_images/generic/blank_avatar.jpg'), // Test remote avatar
+				'parms'     => array('w'=>50, 'h'=>50, 'crop'=>true, 'base64'=>true, 'shape'=>'circle'),
+				'expected'  => array(
+								"src='data:image/jpg;base64,",
+								"class='img-circle rounded-circle user-avatar'"
+							)
+			),
 
 
 		);
@@ -2452,7 +2460,7 @@ EXPECTED;
 			$result = $this->tp->toAvatar($var['input'], $var['parms']);
 			foreach ($var['expected'] as $str)
 			{
-				$this->assertStringContainsString($str, $result, "Failed on index #" . $index);
+				self::assertStringContainsString($str, $result, "Failed on index #" . $index);
 			}
 		}
 
@@ -2651,15 +2659,64 @@ Your browser does not support the audio tag.
 </audio>';
 
 		$result = $this->tp->toAudio('{e_MEDIA}myfile.mp3');
-		$this->assertEquals($expected, $result);
+		self::assertEquals($expected, $result);
+
+		$expected = '<audio controls style="max-width:100%" >
+<source src="/e107_media/000000test/myfile.wav" type="audio/wav">
+Your browser does not support the audio tag.
+</audio>';
+
+		$result = $this->tp->toAudio('{e_MEDIA}myfile.wav');
+		self::assertEquals($expected, $result);
+
+		// Override mime.
+		$expected = '<audio controls style="max-width:100%" >
+<source src="/e107_media/000000test/myfile.php" type="audio/wav">
+Your browser does not support the audio tag.
+</audio>';
+
+		$result = $this->tp->toAudio('{e_MEDIA}myfile.php', ['mime' => 'audio/wav']);
+		self::assertEquals($expected, $result);
 
 	}
 
-	/*
-			public function testToVideo()
-			{
 
-			}*/
+	public function testToVideo()
+	{
+		$tests = [
+			0 => [
+				'file'      => '{e_MEDIA}myfile.mp4',
+				'parms'     =>[],
+				'expected'  => '<video width="320" height="240" controls>'
+				],
+
+			1 => [
+				'file'      => '{e_MEDIA}myfile.mp4',
+				'parms'     =>['w'=>500],
+				'expected'  => '<video width="500" height="240" controls>'
+				],
+
+			2 => [
+				'file'      => '{e_MEDIA}myfile.mp4',
+				'parms'     =>['w'=>300, 'h'=>0],
+				'expected'  => '<video width="300" height="auto" controls>'
+				],
+
+			3 => [
+				'file'      => '{e_MEDIA}myfile.mp4',
+				'parms'     =>['w'=>300, 'h'=>'auto'],
+				'expected'  => '<video width="300" height="auto" controls>'
+				],
+		];
+
+		foreach ($tests as $index => $var)
+		{
+			$result = $this->tp->toVideo($var['file'], $var['parms']);
+			self::assertStringContainsString($var['expected'], $result, 'Failed on index #'.$index);
+		}
+
+
+	}
 
 	public function testMakeClickable()
 	{

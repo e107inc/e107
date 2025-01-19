@@ -1118,6 +1118,13 @@ else
 	define('e_REFERER_SELF', false);
 }
 
+if(deftrue('USER') && !e107::isCli())
+{
+	if (check_class(varset($pref['user_audit_class']))) // Need to note in user audit trail
+	{
+		e107::getLog()->user_audit(USER_AUDIT_NAVIGATION, e_REQUEST_URI, USERID, USERNAME);
+	}
+}
 
 /**
  * @deprecated Use e107::getRedirect()->go($url) instead.
