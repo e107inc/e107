@@ -1266,7 +1266,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 			$text .= '<li>' . $val . '</li>';
 		}
 
-		$jumpList = $this->forum->forumGetAllowed('true');
+		$jumpList = $this->forum->forumGetAllowed('view', 'true');
 
 		$text .= "<li class='divider'><hr class='dropdown-divider'></li>";
 
