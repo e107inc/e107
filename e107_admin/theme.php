@@ -1054,7 +1054,7 @@ class theme_admin_online_tree_model extends e_tree_model
 class theme_admin_form_ui extends e_admin_form_ui
 {
 
-	private $approvedAdminThemes = array('bootstrap3', 'bootstrap5');
+	private $approvedAdminThemes = array('bootstrap3', 'bootstrap5', 'bs5');
 
 
 	function price($curVal)
