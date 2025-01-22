@@ -55,11 +55,26 @@ class membersonly_shortcodes extends e_shortcode
 	 */
 	function sc_membersonly_login()
 	{
-
-		$srch = array("[", "]");
-		$repl = array("<a class='alert-link' href='" . e_LOGIN . "'>", "</a>");
-
-		return str_replace($srch, $repl, LAN_MEMBERS_2);
+		$pref = e107::pref('core');
+		switch(intval($pref['user_reg'])) {
+			case 0:
+				$text = "";
+				break;
+			case 1:
+				$srch = array("[", "]");
+				$repl = array("<a class='alert-link' href='" . e_LOGIN . "'>", "</a>");
+				$text = str_replace($srch, $repl, LAN_MEMBERS_2);
+				break;
+			case 2:
+				$srch = array("[", "]");
+				$repl = array("<a class='alert-link' href='" . e_LOGIN . "'>", "</a>");
+				$text = str_replace($srch, $repl, LAN_MEMBERS_2) . ".";
+				break;
+			default:
+				$text = "";
+				break;
+		}
+		return $text; 
 	}
 
 }
