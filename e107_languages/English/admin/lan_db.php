@@ -140,4 +140,6 @@ define("DBLAN_118", "Couldn't download .zip file");
 define("DBLAN_119", "Backup");
 define("DBLAN_120", "Starting backup....");
 define("DBLAN_121", "Moving [x] to [y].");
-
+define("DBLAN_122", "Skipped");
+define("DBLAN_123", "Ignored");
+define("DBLAN_124", "Create New Site");
