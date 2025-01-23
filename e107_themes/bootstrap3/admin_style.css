@@ -88,7 +88,7 @@ a.core-mainpanel-link-icon:hover { text-decoration: none; filter: none; }
 #core-admin-log-list-form .fa-exclamation-circle { color: #FAA732 }
 #core-admin-log-list-form .fa-warning { color: #ee5f5b }
 
-.admin-ui-help-tip { padding-top: 2px; font-size: 18px; cursor: help; color: rgba(127, 127, 127, 0.7);  float: right !important; margin-left:5px; }
+.admin-ui-help-tip { padding-top: 18px; font-size: 18px; cursor: help; color: rgba(127, 127, 127, 0.7);  float: right !important; margin-left:5px; }
 .admin-ui-help-tip:hover { color: #5bc0de; }
 
 /*
@@ -1986,7 +1986,6 @@ div.admin-left-panel-collapsed .nav-pills > li > a > span > i { opacity: 1 }
 }
 .fa, .fa-brands, .fa-classic, .fa-regular, .fa-sharp, .fa-solid, .fab, .far, .fas {
   line-height: 0;
-
 }
 
 
