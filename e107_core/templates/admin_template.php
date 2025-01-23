@@ -18,7 +18,6 @@
 if (!defined('e107_INIT')) { exit(); }
 
 
-
 $ADMIN_TEMPLATE['nav']['start'] = '<ul class="nav nav-admin navbar-nav navbar-left">';
 
 $ADMIN_TEMPLATE['nav']['start_other'] = '<ul class="nav nav-admin navbar-nav navbar-right">';
@@ -27,7 +26,7 @@ $ADMIN_TEMPLATE['nav']['button'] = '
 	<li class="dropdown">
 		<a class="dropdown-toggle navbar-admin-button"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" title="{LINK_DESCRIPTION}">
 		 {LINK_IMAGE}
-		{LINK_TEXT}
+		<span class="hidenavsmall">{LINK_TEXT}</span>
 		</a> 
 		{SUB_MENU}
 	</li>
@@ -39,7 +38,7 @@ $ADMIN_TEMPLATE['nav']['button_active'] = '
 	<li class="dropdown active">
 		<a class="dropdown-toggle navbar-admin-button"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" title="{LINK_DESCRIPTION}">
 		{LINK_IMAGE}
-		{LINK_TEXT}
+		<span class="hidenavsmall">{LINK_TEXT}</span>
 		</a>
 		{SUB_MENU}
 	</li>
@@ -51,13 +50,13 @@ $ADMIN_TEMPLATE['nav']['button_active'] = '
 // Leave Admin Area. 
 $ADMIN_TEMPLATE['nav']['button_enav_home'] = '
 	<li class="dropdown admin-nav-home">
-		<a class="dropdown-toggle nav-home-main" title="'.ADLAN_53.'" href="'.e_HTTP.'" >
-		 {LINK_IMAGE} {LINK_TEXT} 
-		 </a><a class="dropdown-toggle nav-home-caret" title="'.ADLAN_53.'" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
-		 <b class="caret"></b>
-		</a>
+		<a class="dropdown-toggle" title="'.ADLAN_53.'" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >{LINK_IMAGE} {LINK_TEXT} 
+		 
+		<b class="caret"></b>
+		</a> 
 		{SUB_MENU}
 	</li>
+
 ';
 
 // Change Language
@@ -195,11 +194,7 @@ $ADMIN_TEMPLATE['header'] =  '
 			<a class="brand navbar-brand" href="'.e_ADMIN_ABS.'admin.php" title="'.LAN_RETURN_TO_FRONT_PANEL.'">
 				<img class="admin-logo" src="'.e_THEME_ABS.'bootstrap3/images/logo.webp" alt="e107"  />
 			</a>
-		</div>
-		<div class="navbar-collapse collapse">
-			{ADMIN_NAVIGATION=no-main}
-			{ADMIN_NAVIGATION=enav_popover}
-			<div>
+			<div class="hidenavbig">
 				{ADMIN_NAVIGATION=enav_logout}
 				{ADMIN_NAVIGATION=enav_language}
 				{ADMIN_NAVIGATION=enav_home}
@@ -210,6 +205,21 @@ $ADMIN_TEMPLATE['header'] =  '
 				{ADMIN_UPDATE}
 			</div>
 		</div>
+		<div class="navbar-collapse collapse">
+			{ADMIN_NAVIGATION=no-main}
+			{ADMIN_NAVIGATION=enav_popover}
+				<div class="hidenavsmall">
+				{ADMIN_NAVIGATION=enav_logout}
+				{ADMIN_NAVIGATION=enav_language}
+				{ADMIN_NAVIGATION=enav_home}
+				{ADMIN_MULTISITE}
+				{ADMIN_PM}
+				{ADMIN_DEBUG}
+				{ADMIN_NOTIFICATIONS}
+				{ADMIN_UPDATE}
+				</div>
+		</div>
+		
 	</div>
 </div>
 <div class="admin-container container-fluid">
