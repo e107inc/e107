@@ -4395,18 +4395,21 @@ class e_parse
 
 		if (!empty($options['base64'])) // embed image data into URL.
 		{
-			$content = e107::getFile()->getRemoteContent($url);
+			$content = '';
+
+			if(!empty($file))
+			{
+				$content = file_get_contents($file);
+				$ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+			}
+			else
+			{
+				$content = e107::getFile()->getRemoteContent($url);
+				$ext = strtolower(pathinfo($url, PATHINFO_EXTENSION));
+			}
+
 			if (!empty($content))
 			{
-				if(!empty($file))
-				{
-					$ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-				}
-				else
-				{
-					$ext = strtolower(pathinfo($url, PATHINFO_EXTENSION));
-				}
-
 				$url = 'data:image/' . $ext . ';base64,' . base64_encode($content);
 			}
 		}
