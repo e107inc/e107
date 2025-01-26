@@ -513,6 +513,21 @@ class forum_shortcodes extends e_shortcode
         return $this->sc_lastpost(array('type'=>'datelink'));
 	}
 
+	/**
+	 * Generate info about lastpost in forum.
+	 *
+	 * @param array       $type = [ leaving empty returns last post username as text + last post date as HTML link with date text
+	 *  'user'      => bool		true/false - returns username as text
+	 *  'username'  => bool		true/false - returns link to user area as HTML link tag
+	 *  'userurl'   => bool		true/false - returns user path link as text
+	 *  'datelink'  => bool		true/false - returns date link as HTML link tag
+	 *  'date'      => bool		true/false - returns date as text
+	 *  'url'   	=> bool		true/false - returns last post path link as text
+	 *  'name'      => bool		true/false - returns last post title name as text truncated if needed
+	 *  ]
+	 * @param array       $limit = [ value for truncating last post title name, only works when $type = 'name' ]
+	 * @return string or HTML, depending of parm
+	 */
 
 	function sc_lastpost($parm = null)
 	{
@@ -531,7 +546,9 @@ class forum_shortcodes extends e_shortcode
 		$lastpost       = $forum->threadGetLastpost($lastpost_thread); //FIXME TODO inefficient to have SQL query here.
 		$urlData        = array('forum_sef'=>$this->var['forum_sef'], 'thread_id'=>$lastpost['post_thread'],'thread_sef'=>$lastpost['thread_sef']);
 		$url            = e107::url('forum', 'topic', $urlData)."?last=1#post-".$lastpost['post_id'];
-		$lastpost_username = empty($this->var['user_name']) ? e107::getParser()->toHTML($this->var['forum_lastpost_user_anon']) : "<a href='".e107::url('user/profile/view', array('name' => $this->var['user_name'], 'id' => $this->var['forum_lastpost_user']))."'>{$this->var['user_name']}</a>";
+		$lastpost_userurl = e107::url('user/profile/view', array('name' => $this->var['user_name'], 'id' => $this->var['forum_lastpost_user']));
+//		$lastpost_username = empty($this->var['user_name']) ? e107::getParser()->toHTML($this->var['forum_lastpost_user_anon']) : "<a href='".e107::url('user/profile/view', array('name' => $this->var['user_name'], 'id' => $this->var['forum_lastpost_user']))."'>{$this->var['user_name']}</a>";
+		$lastpost_username = empty($this->var['user_name']) ? e107::getParser()->toHTML($this->var['forum_lastpost_user_anon']) : "<a href='".$lastpost_userurl."'>{$this->var['user_name']}</a>";
 
 
 		$format = !empty($parm['date-format']) ? $parm['date-format'] : 'relative';
@@ -543,9 +560,15 @@ class forum_shortcodes extends e_shortcode
 			switch($parm['type'])
 //		switch($mode)
 			{
+			    case "user":
+        			return $this->var['user_name'];
+
 				case "username":
 					return $lastpost_username;
 //				break;
+
+			    case "userurl":
+			        return $lastpost_userurl;
 
 				case "datelink":
 					return "<a href='".$url."'>". $relativeDate."</a>";
@@ -557,7 +580,8 @@ class forum_shortcodes extends e_shortcode
 					return $url;
 //					break;
 				case "name":
-					return $lastpost['thread_name'];
+//					return $lastpost['thread_name'];
+			        return empty($parm['limit']) ? $lastpost['thread_name'] : e107::getParser()->truncate($lastpost['thread_name'], $parm['limit']);
 //			default:
 
 //				return $relativeDate.'<br />'.$lastpost_name." <a href='".$url."'>".IMAGE_post2.'</a>';
