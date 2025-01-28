@@ -142,12 +142,16 @@
 
 		function sc_breadcrumb()
 		{
-			return $this->var['breadcrumb'];
+//			return $this->var['breadcrumb'];
+// Now the shortcode {---BREADCRUMB---} is always available, so this shortcode is redundant.... Left here for legacy purposes...
+	    return e107::getForm()->breadcrumb(e107::breadcrumb(), true);
 		}
 
 		function sc_backlink()
 		{
-			return $this->var['breadcrumb'];
+//			return $this->var['breadcrumb'];
+// Now the shortcode {---BREADCRUMB---} is always available, so this shortcode is redundant.... Left here for legacy purposes...
+	    return e107::getForm()->breadcrumb(e107::breadcrumb(), true);
 		}
 
 		function sc_forum_crumb()
