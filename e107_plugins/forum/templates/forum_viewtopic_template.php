@@ -481,6 +481,17 @@ $FORUM_VIEWTOPIC_TEMPLATE['deleted'] = "
 
 									";
 
+$FORUM_VIEWTOPIC_TEMPLATE['quickreply'] = "
+						<form action='{QR_URL}' method='post'>
+						<div class='form-group'>
+							<textarea cols='80' placeholder='{LAN=FORUM_2007}' rows='4' id='forum-quickreply-text' class='tbox input-xxlarge form-control' name='post' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
+						</div>
+						<div class='center text-center form-group'>
+							<input type='submit' data-token='{QR_TOKEN}' data-forum-insert='{QR_AJAX}' data-forum-post='{QR_THFORUMID}' data-forum-thread='{QR_THID}' data-forum-action='quickreply' name='reply' value='{LAN=FORUM_2007}' class='btn btn-success button' />
+							<input type='hidden' name='thread_id' value='{QR_THID}' />
+						</div>
+	
+						</form>";
 
 
 	
