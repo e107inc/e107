@@ -599,7 +599,7 @@ class forum_shortcodes extends e_shortcode
 //        global $breadarray;
 //		$frm = e107::getForm();
 //		return $frm->breadcrumb($breadarray);
-// Now the shortcode {---BREADCRUMB---} is always available, so this is shortcode is redundant.... Left here for legacy purposes...
+// Now the shortcode {---BREADCRUMB---} is always available, so this shortcode is redundant.... Left here for legacy purposes...
 	    return e107::getForm()->breadcrumb(e107::breadcrumb(), true);
 	}
 
