@@ -1319,8 +1319,8 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 	function sc_quickreply()
 	{
-
 		global $forum, $forum_quickreply, $thread;
+		global $FORUM_VIEWTOPIC_TEMPLATE;
 
 		// Define which tinymce4 template should be used, depending if the current user is registered or a guest
 		if(!deftrue('e_TINYMCE_TEMPLATE'))
@@ -1333,18 +1333,28 @@ class plugin_forum_view_shortcodes extends e_shortcode
 			//XXX Show only on the last page??
 			if(!vartrue($forum_quickreply))
 			{
-				$ajaxInsert = ($thread->pages == $thread->page || $thread->pages == 0) ? 1 : 0;
+//				$ajaxInsert = ($thread->pages == $thread->page || $thread->pages == 0) ? 1 : 0;
 				//	$ajaxInsert = 1;
 				//	echo "AJAX-INSERT=".$ajaxInsert ."(".$thread->pages." vs ".$thread->page.")";
 //Orphan $frm variable????		$frm = e107::getForm();
 
 				$urlParms = array('f' => 'rp', 'id' => $this->var['thread_id'], 'post' => $this->var['thread_id']);
-				$url = e107::url('forum', 'post', null, array('query' => $urlParms));; // ."?f=rp&amp;id=".$thread->threadInfo['thread_id']."&amp;post=".$thread->threadInfo['thread_id'];
+//				$url = e107::url('forum', 'post', null, array('query' => $urlParms)); // ."?f=rp&amp;id=".$thread->threadInfo['thread_id']."&amp;post=".$thread->threadInfo['thread_id'];
+
+				$vars = array(
+					'QR_URL' => e107::url('forum', 'post', null, array('query' => $urlParms)),
+					'QR_TOKEN' => e_TOKEN,
+					'QR_AJAX' => ($thread->pages == $thread->page || $thread->pages == 0) ? 1 : 0,
+					'QR_THID' => $this->var['thread_id'],
+					'QR_THFORUMID' => $this->var['thread_forum_id']
+				);
 
 				$qr = e107::getPlugPref('forum', 'quickreply', 'default');
+
 				if($qr == 'default')
 				{
 
+/*
 					return "
 						<form action='" . $url . "' method='post'>
 						<div class='form-group'>
@@ -1356,11 +1366,19 @@ class plugin_forum_view_shortcodes extends e_shortcode
 						</div>
 	
 						</form>";
+*/
+					$template = e107::getParser()->parseTemplate($FORUM_VIEWTOPIC_TEMPLATE['quickreply'], true, $vars);
+
 				}
 				else
 				{
 					$editor = varset($this->pref['editor'], null);
 					$editor = is_null($editor) ? 'default' : $editor;
+
+					$textarea = e107::getForm()->bbarea('post', '', 'forum', 'forum', 'medium', array('id' => 'forum-quickreply-text', 'wysiwyg' => $editor));
+					$template = preg_replace("~(?s)<textarea.*?</textarea>~", $textarea, $FORUM_VIEWTOPIC_TEMPLATE['quickreply']);
+					
+/*
 					$text = "
 						<form action='" . $url . "' method='post'>
 						<div class='form-group'>" .
@@ -1373,10 +1391,12 @@ class plugin_forum_view_shortcodes extends e_shortcode
 						</div>
 	
 						</form>";
+*/
 
-					return $text;
+//					return $text;
 				}
 
+				return e107::getParser()->parseTemplate($template, true, $vars);
 				// Preview should be reserved for the full 'Post reply' page. <input type='submit' name='fpreview' value='" . Preview . "' /> &nbsp;
 			}
 //----	else
@@ -1387,6 +1407,3 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	}
 
 }
-
-
-
