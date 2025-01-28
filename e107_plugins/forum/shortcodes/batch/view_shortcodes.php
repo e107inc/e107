@@ -1319,8 +1319,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 	function sc_quickreply()
 	{
-		global $forum, $forum_quickreply, $thread;
-		global $FORUM_VIEWTOPIC_TEMPLATE;
+		global $forum, $forum_quickreply, $thread, $FORUM_VIEWTOPIC_TEMPLATE;
 
 		// Define which tinymce4 template should be used, depending if the current user is registered or a guest
 		if(!deftrue('e_TINYMCE_TEMPLATE'))
