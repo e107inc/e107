@@ -1340,14 +1340,6 @@ class plugin_forum_view_shortcodes extends e_shortcode
 				$urlParms = array('f' => 'rp', 'id' => $this->var['thread_id'], 'post' => $this->var['thread_id']);
 //				$url = e107::url('forum', 'post', null, array('query' => $urlParms)); // ."?f=rp&amp;id=".$thread->threadInfo['thread_id']."&amp;post=".$thread->threadInfo['thread_id'];
 
-				$vars = array(
-					'QR_URL' => e107::url('forum', 'post', null, array('query' => $urlParms)),
-					'QR_TOKEN' => e_TOKEN,
-					'QR_AJAX' => ($thread->pages == $thread->page || $thread->pages == 0) ? 1 : 0,
-					'QR_THID' => $this->var['thread_id'],
-					'QR_THFORUMID' => $this->var['thread_forum_id']
-				);
-
 				$qr = e107::getPlugPref('forum', 'quickreply', 'default');
 
 				if($qr == 'default')
@@ -1366,8 +1358,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	
 						</form>";
 */
-					$template = e107::getParser()->parseTemplate($FORUM_VIEWTOPIC_TEMPLATE['quickreply'], true, $vars);
-
+					$template = $FORUM_VIEWTOPIC_TEMPLATE['quickreply'];
 				}
 				else
 				{
@@ -1395,7 +1386,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 //					return $text;
 				}
 
-				return e107::getParser()->parseTemplate($template, true, $vars);
+				return "<form action='".e107::url('forum', 'post', null, array('query' => $urlParms))."' method='post'>".e107::getParser()->parseTemplate($template, true, $this)."</form>";
 				// Preview should be reserved for the full 'Post reply' page. <input type='submit' name='fpreview' value='" . Preview . "' /> &nbsp;
 			}
 //----	else
@@ -1404,5 +1395,15 @@ class plugin_forum_view_shortcodes extends e_shortcode
 //----	}
 		}
 	}
+	function sc_qr_sbutton($parms = null)
+	{
+		global $thread;
 
+		return "<input type='submit' data-token='".e_TOKEN."' data-forum-insert='".(($thread->pages == $thread->page || $thread->pages == 0) ? 1 : 0)."' data-forum-post='".$this->var['thread_forum_id']."' data-forum-thread='".$this->var['thread_id']."' data-forum-action='quickreply' name='reply' value='".($parms['value']??LAN_FORUM_2007)."' class='btn btn-success button'>";
+	}
+
+	function sc_qr_hidden($parms = null)
+	{
+		return "<input type='hidden' name='thread_id' value='".$this->var['thread_id']."' />";
+	}
 }
