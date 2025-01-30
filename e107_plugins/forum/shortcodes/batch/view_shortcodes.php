@@ -1341,9 +1341,17 @@ class plugin_forum_view_shortcodes extends e_shortcode
 //				$url = e107::url('forum', 'post', null, array('query' => $urlParms)); // ."?f=rp&amp;id=".$thread->threadInfo['thread_id']."&amp;post=".$thread->threadInfo['thread_id'];
 
 				$qr = e107::getPlugPref('forum', 'quickreply', 'default');
-
-				if($qr == 'default')
-				{
+// DEFAULT TEMPLATE LEFT HERE FOR LEGACY PURPOSES.... 
+				$template = $FORUM_VIEWTOPIC_TEMPLATE['quickreply']??"<div class='form-group'>
+							<textarea cols='80' placeholder='{LAN=FORUM_2007}' rows='4' id='forum-quickreply-text' class='tbox input-xxlarge form-control' name='post' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
+						</div>
+						<div class='center text-center form-group'>
+							{QR_SBUTTON:value=".LAN_FORUM_2007."}
+							{QR_HIDDEN}
+	   					</div>";
+				
+				if($qr != 'default')
+//				{
 
 /*
 					return "
@@ -1358,15 +1366,16 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	
 						</form>";
 */
-					$template = $FORUM_VIEWTOPIC_TEMPLATE['quickreply'];
-				}
-				else
+//					$template = $FORUM_VIEWTOPIC_TEMPLATE['quickreply'];
+//				}
+//				else
 				{
 					$editor = varset($this->pref['editor'], null);
 					$editor = is_null($editor) ? 'default' : $editor;
 
 					$textarea = e107::getForm()->bbarea('post', '', 'forum', 'forum', 'medium', array('id' => 'forum-quickreply-text', 'wysiwyg' => $editor));
-					$template = preg_replace("~(?s)<textarea.*?</textarea>~", $textarea, $FORUM_VIEWTOPIC_TEMPLATE['quickreply']);
+//					$template = preg_replace("~(?s)<textarea.*?</textarea>~", $textarea, $FORUM_VIEWTOPIC_TEMPLATE['quickreply']);
+					$template = preg_replace("~(?s)<textarea.*?</textarea>~", $textarea, $template);
 					
 /*
 					$text = "
