@@ -1319,7 +1319,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 	function sc_quickreply()
 	{
-		global $forum, $forum_quickreply, $thread, $FORUM_VIEWTOPIC_TEMPLATE;
+		global $forum_quickreply, $FORUM_VIEWTOPIC_TEMPLATE;
 
 		// Define which tinymce4 template should be used, depending if the current user is registered or a guest
 		if(!deftrue('e_TINYMCE_TEMPLATE'))
@@ -1340,61 +1340,15 @@ class plugin_forum_view_shortcodes extends e_shortcode
 				$urlParms = array('f' => 'rp', 'id' => $this->var['thread_id'], 'post' => $this->var['thread_id']);
 //				$url = e107::url('forum', 'post', null, array('query' => $urlParms)); // ."?f=rp&amp;id=".$thread->threadInfo['thread_id']."&amp;post=".$thread->threadInfo['thread_id'];
 
-				$qr = e107::getPlugPref('forum', 'quickreply', 'default');
 // DEFAULT TEMPLATE LEFT HERE FOR LEGACY PURPOSES.... 
 				$template = $FORUM_VIEWTOPIC_TEMPLATE['quickreply']??"<div class='form-group'>
-							<textarea cols='80' placeholder='{LAN=FORUM_2007}' rows='4' id='forum-quickreply-text' class='tbox input-xxlarge form-control' name='post' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
+							{QR_TEXTAREA}
 						</div>
 						<div class='center text-center form-group'>
-							{QR_SBUTTON:value=".LAN_FORUM_2007."}
+							{QR_SBUTTON}
 							{QR_HIDDEN}
 	   					</div>";
 				
-				if($qr != 'default')
-//				{
-
-/*
-					return "
-						<form action='" . $url . "' method='post'>
-						<div class='form-group'>
-							<textarea cols='80' placeholder='" . LAN_FORUM_2007 . "' rows='4' id='forum-quickreply-text' class='tbox input-xxlarge form-control' name='post' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
-						</div>
-						<div class='center text-center form-group'>
-							<input type='submit' data-token='" . e_TOKEN . "' data-forum-insert='" . $ajaxInsert . "' data-forum-post='" . $this->var['thread_forum_id'] . "' data-forum-thread='" . $this->var['thread_id'] . "' data-forum-action='quickreply' name='reply' value='" . LAN_FORUM_2007 . "' class='btn btn-success button' />
-							<input type='hidden' name='thread_id' value='" . $this->var['thread_id'] . "' />
-						</div>
-	
-						</form>";
-*/
-//					$template = $FORUM_VIEWTOPIC_TEMPLATE['quickreply'];
-//				}
-//				else
-				{
-					$editor = varset($this->pref['editor'], null);
-					$editor = is_null($editor) ? 'default' : $editor;
-
-					$textarea = e107::getForm()->bbarea('post', '', 'forum', 'forum', 'medium', array('id' => 'forum-quickreply-text', 'wysiwyg' => $editor));
-//					$template = preg_replace("~(?s)<textarea.*?</textarea>~", $textarea, $FORUM_VIEWTOPIC_TEMPLATE['quickreply']);
-					$template = preg_replace("~(?s)<textarea.*?</textarea>~", $textarea, $template);
-					
-/*
-					$text = "
-						<form action='" . $url . "' method='post'>
-						<div class='form-group'>" .
-//						e107::getForm()->bbarea('post','','forum', '_common', 'small', array('id' => 'forum-quickreply-text', 'wysiwyg' => $editor)) .
-						e107::getForm()->bbarea('post', '', 'forum', 'forum', 'medium', array('id' => 'forum-quickreply-text', 'wysiwyg' => $editor)) .
-						"</div>
-						<div class='center text-center form-group'>
-							<input type='submit' data-token='" . e_TOKEN . "' data-forum-insert='" . $ajaxInsert . "' data-forum-post='" . $this->var['thread_forum_id'] . "' data-forum-thread='" . $this->var['thread_id'] . "' data-forum-action='quickreply' name='reply' value='" . LAN_FORUM_2006 . "' class='btn btn-success button' />
-							<input type='hidden' name='thread_id' value='" . $this->var['thread_id'] . "' />
-						</div>
-	
-						</form>";
-*/
-
-//					return $text;
-				}
-
 				return "<form action='".e107::url('forum', 'post', null, array('query' => $urlParms))."' method='post'>".e107::getParser()->parseTemplate($template, true, $this)."</form>";
 				// Preview should be reserved for the full 'Post reply' page. <input type='submit' name='fpreview' value='" . Preview . "' /> &nbsp;
 			}
@@ -1404,11 +1358,65 @@ class plugin_forum_view_shortcodes extends e_shortcode
 //----	}
 		}
 	}
+	function sc_qr_textarea($parms = null)
+	{
+		$qr = e107::getPlugPref('forum', 'quickreply', 'default');
+						
+		$textarea = "<textarea cols='80' placeholder='".($parms['placeholder']??LAN_FORUM_2007)."' rows='4' id='forum-quickreply-text' class='tbox input-xxlarge form-control' name='post' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>";
+		
+						if($qr != 'default')
+		//				{
+		
+		/*
+							return "
+								<form action='" . $url . "' method='post'>
+								<div class='form-group'>
+									<textarea cols='80' placeholder='" . LAN_FORUM_2007 . "' rows='4' id='forum-quickreply-text' class='tbox input-xxlarge form-control' name='post' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
+								</div>
+								<div class='center text-center form-group'>
+									<input type='submit' data-token='" . e_TOKEN . "' data-forum-insert='" . $ajaxInsert . "' data-forum-post='" . $this->var['thread_forum_id'] . "' data-forum-thread='" . $this->var['thread_id'] . "' data-forum-action='quickreply' name='reply' value='" . LAN_FORUM_2007 . "' class='btn btn-success button' />
+									<input type='hidden' name='thread_id' value='" . $this->var['thread_id'] . "' />
+								</div>
+			
+								</form>";
+		*/
+		//					$template = $FORUM_VIEWTOPIC_TEMPLATE['quickreply'];
+		//				}
+		//				else
+						{
+							$editor = varset($this->pref['editor'], null);
+							$editor = is_null($editor) ? 'default' : $editor;
+		
+							$textarea = e107::getForm()->bbarea('post', '', 'forum', 'forum', 'medium', array('id' => 'forum-quickreply-text', 'wysiwyg' => $editor));
+		//					$template = preg_replace("~(?s)<textarea.*?</textarea>~", $textarea, $FORUM_VIEWTOPIC_TEMPLATE['quickreply']);
+//							$template = preg_replace("~(?s)<textarea.*?</textarea>~", $textarea, $template);
+							
+		/*
+							$text = "
+								<form action='" . $url . "' method='post'>
+								<div class='form-group'>" .
+		//						e107::getForm()->bbarea('post','','forum', '_common', 'small', array('id' => 'forum-quickreply-text', 'wysiwyg' => $editor)) .
+								e107::getForm()->bbarea('post', '', 'forum', 'forum', 'medium', array('id' => 'forum-quickreply-text', 'wysiwyg' => $editor)) .
+								"</div>
+								<div class='center text-center form-group'>
+									<input type='submit' data-token='" . e_TOKEN . "' data-forum-insert='" . $ajaxInsert . "' data-forum-post='" . $this->var['thread_forum_id'] . "' data-forum-thread='" . $this->var['thread_id'] . "' data-forum-action='quickreply' name='reply' value='" . LAN_FORUM_2006 . "' class='btn btn-success button' />
+									<input type='hidden' name='thread_id' value='" . $this->var['thread_id'] . "' />
+								</div>
+			
+								</form>";
+		*/
+		
+		//					return $text;
+						}
+
+		return $textarea;
+	}
+
 	function sc_qr_sbutton($parms = null)
 	{
 		global $thread;
 
-		return "<input type='submit' data-token='".e_TOKEN."' data-forum-insert='".(($thread->pages == $thread->page || $thread->pages == 0) ? 1 : 0)."' data-forum-post='".$this->var['thread_forum_id']."' data-forum-thread='".$this->var['thread_id']."' data-forum-action='quickreply' name='reply' value='".($parms['value']??LAN_FORUM_2007)."' class='btn btn-success button'>";
+		return "<input type='submit' data-token='".defset('e_TOKEN')."' data-forum-insert='".(($thread->pages == $thread->page || $thread->pages == 0) ? 1 : 0)."' data-forum-post='".$this->var['thread_forum_id']."' data-forum-thread='".$this->var['thread_id']."' data-forum-action='quickreply' name='reply' value='".($parms['value']??LAN_FORUM_2007)."' class='btn btn-success button'>";
 	}
 
 	function sc_qr_hidden($parms = null)
