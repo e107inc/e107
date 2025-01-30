@@ -483,14 +483,13 @@ $FORUM_VIEWTOPIC_TEMPLATE['deleted'] = "
 
 $FORUM_VIEWTOPIC_TEMPLATE['quickreply'] = "
 						<div class='form-group'>
-							<textarea cols='80' placeholder='{LAN=FORUM_2007}' rows='4' id='forum-quickreply-text' class='tbox input-xxlarge form-control' name='post' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
+							{QR_TEXTAREA}
 						</div>
 						<div class='center text-center form-group'>
-							{QR_SBUTTON:value=".LAN_FORUM_2007."}
+							{QR_SBUTTON}
 							{QR_HIDDEN}
-	   					</div>";
-
-
+	   					</div>
+						";
 	
 $FORUM_VIEWTOPIC_WRAPPER['thread']['ATTACHMENTS'] = "<div class='forum-viewtopic-attachments'>{---}</div>";
 $FORUM_VIEWTOPIC_WRAPPER['thread']['CUSTOMTITLE'] = "<span class='forum-viewtopic-customtitle'><small>{---}</small></span>";
