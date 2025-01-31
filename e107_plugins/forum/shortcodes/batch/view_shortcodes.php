@@ -962,7 +962,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		}
 
 		// Delete own post, if it is the last in the thread
-		if($this->thisIsTheLastPost && USER && $this->thread->threadInfo['thread_lastuser'] == USERID && !defset('MODERATOR') && ($this->var['thread_active'] && empty($this->postInfo['thread_start'])))
+		if($this->thisIsTheLastPost && USER && $this->thread->threadInfo['thread_lastuser'] == USERID && !defset('MODERATOR') && $this->var['thread_active'] && empty($this->postInfo['thread_start']))
 		{
 			/* only show delete button when post is not the initial post of the topic
 			 * AND if this post is the last post in the thread */
