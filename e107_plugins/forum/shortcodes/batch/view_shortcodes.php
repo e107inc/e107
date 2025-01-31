@@ -1348,6 +1348,10 @@ class plugin_forum_view_shortcodes extends e_shortcode
 							{QR_SBUTTON}
 							{QR_HIDDEN}
 	   					</div>";
+
+				if (!strpos($template, "{QR_HIDDEN}")){
+					$template .= "{QR_HIDDEN}";
+				}
 				
 				return "<form action='".e107::url('forum', 'post', null, array('query' => $urlParms))."' method='post'>".e107::getParser()->parseTemplate($template, true, $this)."</form>";
 				// Preview should be reserved for the full 'Post reply' page. <input type='submit' name='fpreview' value='" . Preview . "' /> &nbsp;
