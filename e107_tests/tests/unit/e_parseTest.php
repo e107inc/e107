@@ -22,7 +22,7 @@ class e_parseTest extends \Codeception\Test\Unit
 		}
 		catch (Exception $e)
 		{
-			$this->assertTrue(false, "Couldn't load e_parser object");
+			self::assertTrue(false, "Couldn't load e_parser object");
 		}
 
 		$this->tp->__construct();
@@ -101,7 +101,7 @@ class e_parseTest extends \Codeception\Test\Unit
 				continue;
 			}
 
-			$this->assertEquals($var['expected'], $result);
+			self::assertEquals($var['expected'], $result);
 		}
 
 
@@ -135,7 +135,7 @@ TMP;
 
 		$actual = $this->tp->toHTML($src, true);
 
-		$this->assertEquals($expected, $actual, "BBcode parsing failed");
+		self::assertEquals($expected, $actual, "BBcode parsing failed");
 
 
 		$src = "[center][img]{e_IMAGE}generic/blank_avatar.jpg[/img][/center]";
@@ -144,7 +144,7 @@ TMP;
 
 		$expected = "<div class='bbcode-center' style='text-align:center'><img src='" . e_HTTP . "e107_images/generic/blank_avatar.jpg' alt='Blank Avatar' title='Blank Avatar' class='img-rounded rounded bbcode bbcode-img'  /></div>";
 
-		$this->assertEquals($expected, $actual, "BBcode parsing failed on [img]");
+		self::assertEquals($expected, $actual, "BBcode parsing failed on [img]");
 
 
 		$src = <<<SRC
@@ -176,7 +176,7 @@ src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
 EXPECTED;
 
 		$actual = $this->tp->toHTML($src, true);
-		$this->assertEquals($expected, $actual);
+		self::assertEquals($expected, $actual);
 
 		/*
 		$src = "[html]
@@ -191,7 +191,7 @@ EXPECTED;
 			$actual = $this->tp->toHTML($src,true);
 			$expected = '';
 
-				$this->assertEquals($expected, $actual, "BBcode parsing failed on <pre>");*/
+				self::assertEquals($expected, $actual, "BBcode parsing failed on <pre>");*/
 
 
 	}
@@ -243,7 +243,7 @@ EXPECTED;
 		foreach ($tests as $var)
 		{
 			$result = $this->tp->thumbUrlDecode($var['input']);
-			$this->assertSame($var['expected'], $result);
+			self::assertSame($var['expected'], $result);
 		}
 
 
@@ -439,7 +439,7 @@ EXPECTED;
 			}
 
 			$result = $this->tp->toHTML($tests[$mod]['input'], false, 'defaults_off,' . $mod);
-			$this->assertSame($tests[$mod]['expected'], $result, $mod . " didn't match the expected result.");
+			self::assertSame($tests[$mod]['expected'], $result, $mod . " didn't match the expected result.");
 			//	$ret[$mod] = $result;
 
 		}
@@ -494,7 +494,7 @@ EXPECTED;
 				continue;
 			}
 
-			$this->assertEquals($var['expected'], $result, 'Test #' . $index . ' failed.');
+			self::assertEquals($var['expected'], $result, 'Test #' . $index . ' failed.');
 		}
 
 
@@ -504,13 +504,13 @@ EXPECTED;
 	{
 		$needle = '<ul class="nav navbar-nav nav-main ml-auto">';
 		$result = $this->tp->parseTemplate('{NAVIGATION}', true);
-		$this->assertStringContainsString($needle, $result);
+		self::assertStringContainsString($needle, $result);
 	}
 
 	public function testParseTemplateWithDisabledCoreShortcodes()
 	{
 		$result = $this->tp->parseTemplate('{NAVIGATION}', false);
-		$this->assertEmpty($result);
+		self::assertEmpty($result);
 	}
 
 	public function testParseTemplateWithCoreAddonShortcodes()
@@ -519,7 +519,7 @@ EXPECTED;
 
 		$expected = "<a href=''>lost</a>";
 		$result = $this->tp->parseTemplate('{ONLINE_MEMBER_PAGE}', false, $shortcodeObject);
-		$this->assertEquals($expected, $result);
+		self::assertEquals($expected, $result);
 
 		e107::getPlugin()->uninstall('online');
 		$sc = e107::getScParser();
@@ -527,22 +527,22 @@ EXPECTED;
 		//	$sc->resetscClass('online', null);
 
 		$result = $this->tp->parseTemplate('{ONLINE_MEMBER_PAGE}', false);
-		$this->assertEmpty($result);
+		self::assertEmpty($result);
 
 		$result = $this->tp->parseTemplate('{ONLINE_MEMBER_PAGE}', true);
-		$this->assertEmpty($result, "{ONLINE_MEMBER_PAGE} wasn't empty: " . $result);
+		self::assertEmpty($result, "{ONLINE_MEMBER_PAGE} wasn't empty: " . $result);
 
 		$shortcodeObject = e107::getScBatch('online', true);
 
 		$expected = "<a href=''>lost</a>";
 		$result = $this->tp->parseTemplate('{ONLINE_MEMBER_PAGE}', false, $shortcodeObject);
-		$this->assertEquals($expected, $result);
+		self::assertEquals($expected, $result);
 
 		$result = $this->tp->parseTemplate('{ONLINE_MEMBER_PAGE}', true);
-		$this->assertEmpty($result);
+		self::assertEmpty($result);
 
 		//	$result = $this->tp->parseTemplate('{ONLINE_MEMBER_PAGE}', true);
-		//	$this->assertEquals($expected, $result);
+		//	self::assertEquals($expected, $result);
 	}
 
 	public function testParseTemplateWithNonCoreShortcodes()
@@ -551,22 +551,22 @@ EXPECTED;
 		e107::getScParser()->__construct();
 
 		$result = $this->tp->parseTemplate('{DOWNLOAD_CAT_SEARCH}', false);
-		$this->assertEmpty($result);
+		self::assertEmpty($result);
 
 		$result = $this->tp->parseTemplate('{DOWNLOAD_CAT_SEARCH}', true);
-		$this->assertEmpty($result);
+		self::assertEmpty($result);
 
 		$shortcodeObject = e107::getScBatch('download', true);
 
 		$needle = "<form class='form-search form-inline' ";
 		$result = $this->tp->parseTemplate('{DOWNLOAD_CAT_SEARCH}', false, $shortcodeObject);
-		$this->assertStringContainsString($needle, $result);
+		self::assertStringContainsString($needle, $result);
 
 		$result = $this->tp->parseTemplate('{DOWNLOAD_CAT_SEARCH}', false);
-		$this->assertEmpty($result);
+		self::assertEmpty($result);
 
 		$result = $this->tp->parseTemplate('{DOWNLOAD_CAT_SEARCH}', true);
-		$this->assertEmpty($result);
+		self::assertEmpty($result);
 	}
 
 	public function testParseTemplateWithEvars()
@@ -575,16 +575,152 @@ EXPECTED;
 		$result = $this->tp->parseTemplate('<div>something {ACTIVE}</div>', true, null, $obj);
 		$expected = '<div>something yes</div>';
 
-		$this->assertEquals($expected, $result);
+		self::assertEquals($expected, $result);
 
 	}
 
-	/*
+	public function testParseSchemaTemplate()
+	{
+		// News Example..
+		$news = [
+			'news_id'   => 123,
+			'news_title'   => 'Test',
+			'news_text'   => 'Test',
+			'news_datestamp'   => 1735732800, // January 1st, 2025, at 12:00 PM (noon)
+			'news_author'   => 21,
+			'news_meta_description' => "News item description",
+			'news_start' => 0,
+			'news_end' => 0,
+			'news_modified' => 1735722000,
+			'news_body' => 'Body of the news item',
+			'news_extended' => '',
+			'news_thumbnail'    => '{e_THEME}voux/install/gasmask.jpg,,,,',
+		];
+
+		$nsc = e107::getScBatch('news')->setScVar('news_item', $news);
+		$tpl = e107::getTemplate('news', 'news_view','default');
+
+		$result = $this->tp->parseSchemaTemplate($tpl['schema'], true, $nsc);
+		$expected = '{
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://localhost/e107/news.php?extend.123"
+    },
+    "headline": "Test",
+    "description": "News item description",
+    "image": [
+        "https://localhost/e107/thumb.php?src=e_THEME%2Fvoux%2Finstall%2Fgasmask.jpg&w=800&h=800"
+    ],
+    "author": {
+        "@type": "Person",
+        "name": "e107"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "e107",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://localhost/e107/e107_images/button.png"
+        }
+    },
+    "datePublished": "2025-01-01T12:00:00+00:00",
+    "dateModified": "2025-01-01T09:00:00+00:00",
+    "articleBody": "Body of the news item"
+}';
+
+		$expectedDecoded = json_decode($expected, true);
+		$resultDecoded = json_decode($result, true);
+
+		self::assertSame($expectedDecoded['headline'],$resultDecoded['headline']);
+		self::assertSame($expectedDecoded['description'],$resultDecoded['description']);
+		self::assertSame($expectedDecoded['datePublished'],$resultDecoded['datePublished']);
+		self::assertSame($expectedDecoded['dateModified'],$resultDecoded['dateModified']);
+		self::assertSame($expectedDecoded['articleBody'],$resultDecoded['articleBody']);
+		self::assertSame($expectedDecoded['author']['name'],$resultDecoded['author']['name']);
+		self::assertSame($expectedDecoded['publisher']['name'],$resultDecoded['publisher']['name']);
+
+		// Faqs example
+
+		$sc = e107::getScBatch('faqs', true);
+		$fullTemplate =  '
+{
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+		{
+		        "@type": "Question",
+		        "name": "{FAQ_QUESTION}",
+		        "acceptedAnswer": {
+		          "@type": "Answer",
+		          "text": "{FAQ_ANSWER}"
+		        }
+		}
+
+	]
+}
+';
+
+		$mainEntity = [
+			1 => ['faq_id' => 1, 'faq_datestamp'=>1735732800, 'faq_question' => 'Question 1 &lt; 2001', 'faq_answer' => 'Answer 1', 'faq_order' => 1],
+			2 => ['faq_id' => 2, 'faq_datestamp'=>1735732800, 'faq_question' => 'Question 2', 'faq_answer' => 'Answer 2', 'faq_order' => 2],
+
+		];
+
+		$expected = '
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+        {
+            "@type": "Question",
+            "name": "Question 1 < 2001",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Answer 1"
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Question 2",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Answer 2"
+            }
+        }
+    ]
+}';
+
+		$json = $this->tp->parseSchemaTemplate($fullTemplate, true, $sc, $mainEntity);
+		$decodedExpected = json_decode($expected, true);
+		$decodedJson = json_decode($json, true);
+
+		// Assert that the decoded objects are identical
+		self::assertSame($decodedExpected, $decodedJson);
+
+
+	}
+
+
 			public function testCreateConstants()
 			{
+				$tests = [
+					'rel'   => '/e107_themes/agency2/install/news/bike.jpg',
+					'abs'   => '{e_THEME}agency2/install/news/bike.jpg',
+					'full'  => '/e107_themes/agency2/install/news/bike.jpg',
+					'mix'   => '{e_THEME}agency2/install/news/bike.jpg',
+					'nice'  => 'e_THEME/agency2/install/news/bike.jpg'
+				];
+				foreach($tests as $mode => $expected)
+				{
+					$result = $this->tp->createConstants("/e107_themes/agency2/install/news/bike.jpg", $mode);
+					self::assertEquals($expected, $result);
+
+				}
 
 			}
-
+/*
 			public function testThumbEncode()
 			{
 
@@ -611,7 +747,7 @@ EXPECTED;
 		$tp = $this->tp;
 		$actual = $tp->toFlatArray($input, 'prepend/xyz');
 
-		$this->assertSame($expected, $actual);
+		self::assertSame($expected, $actual);
 	}
 
 	public function testFromFlatArray()
@@ -630,7 +766,7 @@ EXPECTED;
 		$tp = $this->tp;
 		$actual = $tp->fromFlatArray($input, 'prepend/xyz');
 
-		$this->assertSame($expected, $actual);
+		self::assertSame($expected, $actual);
 	}
 
 	public function testToForm()
@@ -644,16 +780,16 @@ EXPECTED;
 		e107::wysiwyg('default');
 		$actual = $this->tp->toForm($db);
 		$expected = 'lr.src = window._lr.url %2B &#039;/Scripts/api.js&#039;;';
-		$this->assertEquals($expected, $actual);
+		self::assertEquals($expected, $actual);
 
 		e107::getConfig()->updatePref('wysiwyg', false);
 		$actual = $this->tp->toForm($db);
 		$expected = 'lr.src = window._lr.url + &#039;/Scripts/api.js&#039;;';
-		$this->assertEquals($expected, $actual);
+		self::assertEquals($expected, $actual);
 
 
 		$actual = $this->tp->toForm("[html]Something &quot;hi&quot;[/html]");
-		$this->assertSame('[html]Something "hi"[/html]', $actual);
+		self::assertSame('[html]Something "hi"[/html]', $actual);
 
 	}
 
@@ -678,7 +814,7 @@ EXPECTED;
 		foreach ($array as $arr)
 		{
 			$result = $this->tp->toASCII($arr['input']);
-			$this->assertEquals($arr['expected'], $result);
+			self::assertEquals($arr['expected'], $result);
 		}
 
 
@@ -687,14 +823,14 @@ EXPECTED;
 	public function testToNumber()
 	{
 		$result = $this->tp->toNumber('v2a');
-		$this->assertSame(2, $result);
+		self::assertSame(2, $result);
 
 		$result = $this->tp->toNumber('v1.5');
-		$this->assertSame(1.5, $result);
+		self::assertSame(1.5, $result);
 
 
 		$result = $this->tp->toNumber('v3.5');
-		$this->assertSame(3.5, $result);
+		self::assertSame(3.5, $result);
 	}
 	/*
 			public function testthumbUrlSEF()
@@ -711,7 +847,7 @@ EXPECTED;
 			$string = "\n\n\nSomething\n\n\n";
 			$result = $this->tp->textclean($string);
 			var_export($result);
-			//$this->assertSame();
+			//self::assertSame();
 		}*/
 
 	public function testMultibyteOn()
@@ -724,31 +860,31 @@ EXPECTED;
 
 		// strtoupper
 		$result = $this->tp->ustrtoupper($input);
-		$this->assertEquals('РУССКИЕ', $result);
+		self::assertEquals('РУССКИЕ', $result);
 
 		// strlen
 		$result = $this->tp->ustrlen($input);
-		$this->assertEquals(7, $result);
+		self::assertEquals(7, $result);
 
 		// strtolower
 		$result = $this->tp->ustrtolower('РУССКИЕ');
-		$this->assertEquals($input, $result);
+		self::assertEquals($input, $result);
 
 		// strpos
 		$result = $this->tp->ustrpos($input, 'и');
-		$this->assertEquals(5, $result);
+		self::assertEquals(5, $result);
 
 		// substr
 		$result = $this->tp->usubstr($input, 0, 5);
-		$this->assertEquals('русск', $result);
+		self::assertEquals('русск', $result);
 
 		// stristr
 		$result = $this->tp->ustristr($input, 'ские', true);
-		$this->assertEquals('рус', $result);
+		self::assertEquals('рус', $result);
 
 		// strrpos (last occurance of a string)
 		$result = $this->tp->ustrrpos($input, 'с');
-		$this->assertEquals(3, $result);
+		self::assertEquals(3, $result);
 
 		$this->tp->setMultibyte(false); // disable after test.
 
@@ -764,31 +900,31 @@ EXPECTED;
 
 		// strtoupper
 		$result = $this->tp->ustrtoupper($input);
-		$this->assertEquals('AN EXAMPLE OF TEXT', $result);
+		self::assertEquals('AN EXAMPLE OF TEXT', $result);
 
 		// strlen
 		$result = $this->tp->ustrlen($input);
-		$this->assertEquals(18, $result);
+		self::assertEquals(18, $result);
 
 		// strtolower
 		$result = $this->tp->ustrtolower('AN EXAMPLE OF TEXT');
-		$this->assertEquals($input, $result);
+		self::assertEquals($input, $result);
 
 		// strpos
 		$result = $this->tp->ustrpos($input, 't');
-		$this->assertEquals(14, $result);
+		self::assertEquals(14, $result);
 
 		// substr
 		$result = $this->tp->usubstr($input, 0, 5);
-		$this->assertEquals('an ex', $result);
+		self::assertEquals('an ex', $result);
 
 		// stristr
 		$result = $this->tp->ustristr($input, 'of', true);
-		$this->assertEquals('an example ', $result);
+		self::assertEquals('an example ', $result);
 
 		// strrpos (last occurance of a string)
 		$result = $this->tp->ustrrpos($input, 'e');
-		$this->assertEquals(15, $result);
+		self::assertEquals(15, $result);
 
 
 	}
@@ -975,7 +1111,7 @@ EXPECTED;
 			$parm = varset($var['parm']);
 
 			$result = $this->tp->toDB($var['input'], false, false, $mode, $parm);
-			$this->assertSame($var['expected'], $result, 'Test #' . $k . " failed." . print_r($this->tp->getRemoved(), true));
+			self::assertSame($var['expected'], $result, 'Test #' . $k . " failed." . print_r($this->tp->getRemoved(), true));
 
 		}
 
@@ -999,12 +1135,12 @@ EXPECTED;
 		$text = "<div class='something'>My Test</div>";
 		$expected = '&lt;div class=&#039;something&#039;&gt;My Test&lt;/div&gt;';
 		$result = $this->tp->post_toForm($text);
-		$this->assertSame($expected, $result);
+		self::assertSame($expected, $result);
 
 		$array = array($text);
 		$arrayExp = array($expected);
 		$result = $this->tp->post_toForm($array);
-		$this->assertSame($arrayExp, $result);
+		self::assertSame($arrayExp, $result);
 
 
 	}
@@ -1063,7 +1199,7 @@ EXPECTED;
 				continue;
 			}
 
-			$this->assertSame($var['expected'], $result, "Failed on test #" . $index);
+			self::assertSame($var['expected'], $result, "Failed on test #" . $index);
 		}
 
 
@@ -1104,7 +1240,7 @@ EXPECTED;
 		foreach ($tests as $var)
 		{
 			$actual = $this->tp->replaceConstants($var['path'], $var['type']);
-			$this->assertStringContainsString($var['match'], $actual);
+			self::assertStringContainsString($var['match'], $actual);
 		}
 
 	}
@@ -1136,16 +1272,16 @@ EXPECTED;
 			$result = $this->tp->toRss($html, true);
 			$valid = $this->isValidXML($result);
 
-			$this->assertTrue($valid);
+			self::assertTrue($valid);
 		}
 
 
 		// Test with $tags = false;
 		$html = '<div class="something">One & Two < and > " or \'</div>';
 		$result = $this->tp->toRss($html);
-		$this->assertSame("One &amp; Two &lt; and &gt; \" or '", $result);
+		self::assertSame("One &amp; Two &lt; and &gt; \" or '", $result);
 		$valid = $this->isValidXML('<tag>' . $result . '</tag>');
-		$this->assertTrue($valid);
+		self::assertTrue($valid);
 
 
 	}
@@ -1220,7 +1356,7 @@ EXPECTED;
 
 			$actual = $this->tp->thumbUrl($val['path'], $val['options']);
 
-			$this->assertStringContainsString($val['expected'], $actual);
+			self::assertStringContainsString($val['expected'], $actual);
 			//echo $$actual."\n\n";
 		}
 
@@ -1262,7 +1398,7 @@ EXPECTED;
 		foreach ($urls as $val)
 		{
 			$actual = $this->tp->thumbUrlSEF($val['path'], $val['options']);
-			$this->assertStringContainsString($val['expected'], $actual);
+			self::assertStringContainsString($val['expected'], $actual);
 			//echo $$actual."\n\n";
 		}
 
@@ -1297,7 +1433,7 @@ EXPECTED;
 
 		$actual = $this->tp->toAttribute($input);
 
-		$this->assertEquals($expected, $actual);
+		self::assertEquals($expected, $actual);
 	}
 
 	public function testToAttributeDoesNotReplaceConstantsWhenStringHasSingleQuote()
@@ -1307,7 +1443,7 @@ EXPECTED;
 
 		$actual = $this->tp->toAttribute($input);
 
-		$this->assertEquals($expected, $actual);
+		self::assertEquals($expected, $actual);
 	}
 
 	public function testToAttributeDoesReplaceConstantsWhenStringHasLeftAngleBracket()
@@ -1317,7 +1453,7 @@ EXPECTED;
 
 		$actual = $this->tp->toAttribute($input);
 
-		$this->assertEquals($expected, $actual);
+		self::assertEquals($expected, $actual);
 	}
 
 	public function testToAttributeExplicitPure()
@@ -1327,7 +1463,7 @@ EXPECTED;
 
 		$actual = $this->tp->toAttribute($input, true);
 
-		$this->assertEquals($expected, $actual);
+		self::assertEquals($expected, $actual);
 	}
 
 	public function testToAttributeImplicitPure()
@@ -1337,7 +1473,7 @@ EXPECTED;
 
 		$actual = $this->tp->toAttribute($input);
 
-		$this->assertEquals($expected, $actual);
+		self::assertEquals($expected, $actual);
 	}
 
 	public function testToAttributesEmpty()
@@ -1347,7 +1483,7 @@ EXPECTED;
 
 		$actual = $this->tp->toAttributes($input);
 
-		$this->assertEquals($expected, $actual);
+		self::assertEquals($expected, $actual);
 	}
 
 	public function testToAttributesOne()
@@ -1357,7 +1493,7 @@ EXPECTED;
 
 		$actual = $this->tp->toAttributes($input);
 
-		$this->assertEquals($expected, $actual);
+		self::assertEquals($expected, $actual);
 	}
 
 	public function testToAttributesMixedPureAndReplaceConstants()
@@ -1373,7 +1509,7 @@ EXPECTED;
 
 		$actual = $this->tp->toAttributes($input);
 
-		$this->assertEquals($expected, $actual);
+		self::assertEquals($expected, $actual);
 	}
 
 	public function testThumbCacheFile()
@@ -1402,8 +1538,8 @@ EXPECTED;
 
 			$result = $this->tp->thumbCacheFile($var['file'], $var['options']);
 
-			$this->assertStringStartsWith($var['expected']['prefix'], $result);
-			$this->assertStringEndsWith($var['expected']['suffix'], $result);
+			self::assertStringStartsWith($var['expected']['prefix'], $result);
+			self::assertStringEndsWith($var['expected']['suffix'], $result);
 
 		}
 
@@ -1414,19 +1550,19 @@ EXPECTED;
 	{
 		$string = "This is a long string that will be truncated.";
 		$result = $this->tp->text_truncate($string, 20);
-		$this->assertSame('This is a long  ... ', $result);
+		self::assertSame('This is a long  ... ', $result);
 
 		$string = "This is has something &amp; something";
 		$result = $this->tp->text_truncate($string, 29);
-		$this->assertSame('This is has something &  ... ', $result);
+		self::assertSame('This is has something &  ... ', $result);
 
 		$string = "Can't fail me now [b]Bold[/b]";
 		$result = $this->tp->text_truncate($string, 25);
-		$this->assertSame("Can't fail me now Bold", $result);
+		self::assertSame("Can't fail me now Bold", $result);
 
 		$string = "Can't fail me now <strong class='bbcode bold bbcode-b'>Bold</strong>";
 		$result = $this->tp->text_truncate($string, 25);
-		$this->assertSame("Can't fail me now Bold", $result);
+		self::assertSame("Can't fail me now Bold", $result);
 
 	}
 
@@ -1435,17 +1571,17 @@ EXPECTED;
 		// html
 		$string = "Can't fail me now <strong class='bbcode bold bbcode-b'>Bold</strong>";
 		$result = $this->tp->truncate($string, 25);
-		$this->assertSame("Can't fail me now <strong class='bbcode bold bbcode-b'>Bold</strong>", $result); // html ignored in char count.
+		self::assertSame("Can't fail me now <strong class='bbcode bold bbcode-b'>Bold</strong>", $result); // html ignored in char count.
 
 		// bbcode - stripped.
 		$string = "Can't fail me now [b]Bold[/b]";
 		$result = $this->tp->truncate($string, 25);
-		$this->assertSame("Can't fail me now Bold", $result);
+		self::assertSame("Can't fail me now Bold", $result);
 
 		// text
 		$string = "This is a long string that will be truncated.";
 		$result = $this->tp->truncate($string, 20);
-		$this->assertSame('This is a long st...', $result);
+		self::assertSame('This is a long st...', $result);
 
 	}
 
@@ -1470,10 +1606,10 @@ EXPECTED;
 		$template = "{CONTACT_SUBJECT} <b>{CONTACT_PERSON}</b>{MISSING_SHORTCODE}";
 
 		$result = $this->tp->simpleParse($template, $vars);
-		$this->assertEquals("My Subject <b>My Name</b>", $result);
+		self::assertEquals("My Subject <b>My Name</b>", $result);
 
 		$result = $this->tp->simpleParse($template, null);
-		$this->assertEquals(" <b></b>", $result);
+		self::assertEquals(" <b></b>", $result);
 
 
 		$vars = array(
@@ -1482,7 +1618,7 @@ EXPECTED;
 
 		$template = "-- {aaBB_123} --";
 		$result = $this->tp->simpleParse($template, $vars);
-		$this->assertEquals('-- Simple Replacement --', $result);
+		self::assertEquals('-- Simple Replacement --', $result);
 
 	}
 
@@ -1730,7 +1866,7 @@ EXPECTED;
 		);
 
 		$list = $this->tp->getModifierList('super');
-		$this->assertSame($expected, $list);
+		self::assertSame($expected, $list);
 
 
 	}
@@ -1738,17 +1874,50 @@ EXPECTED;
 	public function testToText()
 	{
 		$arr = array(
-			0 => array('html' => "<h1><a href='#'>My Caption</a></h1>", 'expected' => 'My Caption'),
-			1 => array('html' => "<div><h1><a href='#'>My Caption</a></h1></div>", 'expected' => 'My Caption'),
-			2 => array('html' => 'Line 1<br />Line 2<br />Line 3<br />', 'expected' => "Line 1\nLine 2\nLine 3\n"),
-			3 => array('html' => "Line 1<br />\nLine 2<br />\nLine 3<br />", 'expected' => "Line 1\nLine 2\nLine 3\n"),
+			// Basic Cases
+			0  => array('html' => "<h1><a href='#'>My Caption</a></h1>", 'expected' => 'My Caption'),
+			1  => array('html' => "<div><h1><a href='#'>My Caption</a></h1></div>", 'expected' => 'My Caption'),
+			2  => array('html' => 'Line 1<br />Line 2<br />Line 3<br />', 'expected' => "Line 1\nLine 2\nLine 3\n"),
+			3  => array('html' => "Line 1<br />\nLine 2<br />\nLine 3<br />", 'expected' => "Line 1\nLine 2\nLine 3\n"),
+
+			// Special Characters
+			/*
+			4  => array('html' => 'Text &amp; More Text', 'expected' => 'Text & More Text'),
+			5  => array('html' => 'Text &lt;b&gt;Bold&lt;/b&gt;', 'expected' => 'Text <b>Bold</b>'),
+			6  => array('html' => '<b>Bold &amp; Italic</b>', 'expected' => 'Bold & Italic'),
+
+			// HTML Entities
+			7  => array('html' => '&lt;div&gt;Hello World&lt;/div&gt;', 'expected' => '<div>Hello World</div>'),
+			8  => array('html' => 'Text with &copy; and &reg;', 'expected' => 'Text with © and ®'),
+
+			// Empty and Plain Text
+			9  => array('html' => '', 'expected' => ''),
+			10 => array('html' => null, 'expected' => ''), // If null should be handled as empty string.
+			11 => array('html' => 'Plain Text', 'expected' => 'Plain Text'),
+
+			// Whitespace and Non-breaking Spaces
+			12 => array('html' => '   Text surrounded by spaces   ', 'expected' => '   Text surrounded by spaces   '),
+			13 => array('html' => 'Text&nbsp;with&nbsp;non-breaking&nbsp;spaces', 'expected' => 'Text with non-breaking spaces'),
+
+			// Nested Tags
+			14 => array('html' => '<div><span><b>Deeply Nested</b></span></div>', 'expected' => 'Deeply Nested'),
+			15 => array('html' => '<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>', 'expected' => "Item 1\nItem 2\nItem 3"),
+
+			// Void Tags
+			16 => array('html' => 'Text<img src="image.jpg" alt="My Image">More Text', 'expected' => 'TextMore Text'),
+			17 => array('html' => '<hr />Line Break<hr />', 'expected' => "Line Break"),
+
+			// Malformed/Invalid HTML
+			18 => array('html' => '<div>Unclosed tag', 'expected' => 'Unclosed tag'), // Closes should be handled.
+			19 => array('html' => 'Text<b>Bold Text<div>', 'expected' => "TextBold Text"), // Handle even broken tags.
+			*/
 		);
 
 
-		foreach ($arr as $var)
+		foreach ($arr as $k=>$var)
 		{
 			$result = $this->tp->toText($var['html']);
-			$this->assertEquals($var['expected'], $result);
+			self::assertEquals($var['expected'], $result, "Test $k failed");
 		}
 
 	}
@@ -1875,12 +2044,12 @@ EXPECTED;
 	{
 		$text = "<di style='width:100%'>Test</di>"; // invalid html.
 		$result = $this->tp->post_toHTML($text);
-		$this->assertEmpty($result);
+		self::assertEmpty($result);
 
 		$text = "<div style='width:100%'>Test</div>"; // valid html.
 		$cleaned = '<div style="width:100%">Test</div>'; // valid and cleaned html.
 		$result = $this->tp->post_toHTML($text);
-		$this->assertSame($cleaned, $result);
+		self::assertSame($cleaned, $result);
 
 	}
 
@@ -1904,7 +2073,7 @@ EXPECTED;
 	{
 		$this->tp->setScriptAccess(e_UC_PUBLIC);
 		$result = $this->tp->getScriptAccess();
-		$this->assertEquals(e_UC_PUBLIC, $result);
+		self::assertEquals(e_UC_PUBLIC, $result);
 	}
 
 	/*
@@ -1916,7 +2085,7 @@ EXPECTED;
 	public function testGetScriptAccess()
 	{
 		$result = $this->tp->getScriptAccess();
-		$this->assertFalse($result);
+		self::assertFalse($result);
 	}
 
 	public function testGetAllowedAttributes()
@@ -2138,13 +2307,13 @@ EXPECTED;
 
 
 		$result = $this->tp->getAllowedAttributes();
-		$this->assertSame($expected, $result);
+		self::assertSame($expected, $result);
 
 
 		//	var_export($result);
 		//  $true = is_array($result) && in_array('style',$result['img']);
 
-		//  $this->assertTrue($true);
+		//  self::assertTrue($true);
 	}
 
 	/*
@@ -2181,11 +2350,11 @@ EXPECTED;
 
 		if (empty($expected['img'][0]))
 		{
-			$this->assertTrue(false, "getTags() didn't return the correct value");
+			self::assertTrue(false, "getTags() didn't return the correct value");
 		}
 
-		$this->assertSame($expected['img'][0]['src'], $result['img'][0]['src']);
-		$this->assertSame($expected['img'][0]['alt'], $result['img'][0]['alt']);
+		self::assertSame($expected['img'][0]['src'], $result['img'][0]['src']);
+		self::assertSame($expected['img'][0]['alt'], $result['img'][0]['alt']);
 	}
 
 	public function testToGlyph()
@@ -2194,30 +2363,30 @@ EXPECTED;
 
 		$result = $this->tp->toGlyph('fa-envelope.glyph');
 		$expected = "<i class='fa fa-envelope' ></i> ";
-		$this->assertEquals($expected, $result);
+		self::assertEquals($expected, $result);
 
 		$this->tp->setFontAwesome(5);
 
 		$result = $this->tp->toGlyph('fa-mailchimp');
 		$expected = "<i class='fab fa-mailchimp' ></i> ";
-		$this->assertEquals($expected, $result);
+		self::assertEquals($expected, $result);
 
 		$this->tp->setFontAwesome(6);
 		$result = $this->tp->toGlyph('fa-wine-glass-empty');
 		$expected = "<i class='fas fa-wine-glass-empty' ></i> ";
-		$this->assertSame($expected, $result);
+		self::assertSame($expected, $result);
 
 		$result = $this->tp->toGlyph('fa-virus-covid');
-		$this->assertSame("<i class='fas fa-virus-covid' ></i> ", $result);
+		self::assertSame("<i class='fas fa-virus-covid' ></i> ", $result);
 
 		$this->tp->setFontAwesome(4);
 
 		$result = $this->tp->toGlyph('fab-mailchimp'); // spefific call
 		$expected = "<i class='fab fa-mailchimp' ></i> ";
-		$this->assertEquals($expected, $result);
+		self::assertEquals($expected, $result);
 
 		$result = $this->tp->toGlyph('fas-camera'); // spefific call
-		$this->assertSame("<i class='fas fa-camera' ></i> ", $result);
+		self::assertSame("<i class='fas fa-camera' ></i> ", $result);
 
 		// test core, shims and old identifiers with FontAwesome 5 installed.
 		$this->tp->setFontAwesome(5);
@@ -2243,7 +2412,7 @@ EXPECTED;
 		foreach ($tests as $icon => $expected)
 		{
 			$result = $this->tp->toGlyph($icon);
-			$this->assertSame($expected, $result);
+			self::assertSame($expected, $result);
 		}
 
 
@@ -2271,7 +2440,7 @@ EXPECTED;
 		foreach ($tests as $icon => $expected)
 		{
 			$result = $this->tp->toGlyph($icon);
-			$this->assertSame($expected, $result, 'Input was: ' . $icon);
+			self::assertSame($expected, $result, 'Input was: ' . $icon);
 		}
 
 
@@ -2289,7 +2458,7 @@ EXPECTED;
 			$expected = $parm['expected'];
 			unset($parm['expected']);
 			$result = $this->tp->toGlyph('fa-camera', $parm);
-			$this->assertSame($expected, $result);
+			self::assertSame($expected, $result);
 		}
 
 
@@ -2307,7 +2476,7 @@ EXPECTED;
 			$expected = $parm['expected'];
 			unset($parm['expected']);
 			$result = $this->tp->toGlyph('fa-camera', $parm);
-			$this->assertSame($expected, $result);
+			self::assertSame($expected, $result);
 		}
 
 
@@ -2317,17 +2486,17 @@ EXPECTED;
 	{
 		$this->tp->setFontAwesome(5);
 		$result = $this->tp->toGlyph('fa-paypal.glyph');
-		$this->assertSame("<i class='fab fa-paypal' ></i> ", $result);
+		self::assertSame("<i class='fab fa-paypal' ></i> ", $result);
 
 		$this->tp->setFontAwesome(6);
 		$result = $this->tp->toGlyph('fa-paypal.glyph');
-		$this->assertSame("<i class='fab fa-paypal' ></i> ", $result);
+		self::assertSame("<i class='fab fa-paypal' ></i> ", $result);
 
 		$result = $this->tp->toGlyph('fa-clock.glyph');
-		$this->assertSame("<i class='fas fa-clock' ></i> ", $result);
+		self::assertSame("<i class='fas fa-clock' ></i> ", $result);
 
 		$result = $this->tp->toGlyph('clock.glyph');
-		$this->assertSame("<i class='fas fa-clock' ></i> ", $result);
+		self::assertSame("<i class='fas fa-clock' ></i> ", $result);
 
 
 		$this->tp->setFontAwesome(5);
@@ -2491,7 +2660,7 @@ EXPECTED;
 		foreach ($tests as $var)
 		{
 			$result = $this->tp->toIcon($var['input'], $var['parms']);
-			$this->assertStringContainsString($var['expected'], $result);
+			self::assertStringContainsString($var['expected'], $result);
 		}
 	}
 
@@ -2502,26 +2671,28 @@ EXPECTED;
 
 		// test with defaults set above.
 		$result = $this->tp->toImage($src);
-		$this->assertStringContainsString('butterfly.jpg&amp;w=80&amp;h=80', $result); // src
-		$this->assertStringContainsString('butterfly.jpg&amp;w=320&amp;h=320', $result); // srcset 4x the size on small images.
+		self::assertStringContainsString('butterfly.jpg&amp;w=80&amp;h=80', $result); // src
+		self::assertStringContainsString('butterfly.jpg&amp;w=320&amp;h=320', $result); // srcset 4x the size on small images.
 
 		// test overriding of defaults.
 		$override = array('w' => 800, 'h' => 0);
 		$result2 = $this->tp->toImage($src, $override);
-		$this->assertStringContainsString('butterfly.jpg&amp;w=800&amp;h=0', $result2); // src
-		$this->assertStringContainsString('Fbutterfly.jpg&amp;w=1600&amp;h=0', $result2); // srcset
+		self::assertStringContainsString('butterfly.jpg&amp;w=800&amp;h=0', $result2); // src
+		self::assertStringContainsString('Fbutterfly.jpg&amp;w=1600&amp;h=0', $result2); // srcset
 
 
 		$override = array('w' => 0, 'h' => 0); // display image without resizing
 		$result3 = $this->tp->toImage($src, $override);
-		$this->assertStringContainsString('Fbutterfly.jpg&amp;w=0&amp;h=0', $result3); // src
+		self::assertStringContainsString('Fbutterfly.jpg&amp;w=0&amp;h=0', $result3); // src
 
 		$result4 = $this->tp->toImage($src, ['loading' => 'lazy']);
-		$this->assertStringContainsString('loading="lazy"', $result4); // src
+		self::assertStringContainsString('loading="lazy"', $result4); // src
 
 		$result5 = $this->tp->toImage($src, ['type' => 'webp']);
-		$this->assertStringContainsString('&amp;type=webp', $result5); // src
+		self::assertStringContainsString('&amp;type=webp', $result5); // src
 
+		$result6 = $this->tp->toImage($src, ['return' => 'url']);
+		self::assertStringContainsString('http', $result6); // src
 
 		$tests = array(
 			0 => array(
@@ -2536,7 +2707,7 @@ EXPECTED;
 		{
 			$result = $this->tp->toImage($var['src'], $var['parms']);
 			$result = preg_replace('/"([^"]*)thumb.php/', '"thumb.php', $result);
-			$this->assertSame($var['expected'], $result);
+			self::assertSame($var['expected'], $result);
 
 		}
 
@@ -2555,7 +2726,7 @@ EXPECTED;
 
 		$result = $this->tp->toImage($srcPath, $imgParms);
 		$expected = '<img class="news-image" src="/thumb.php?src=&amp;w=400&amp;h=325" alt="placeholder image" width="400" height="325" style="display:block"  />';
-		$this->assertSame($expected, $result);
+		self::assertSame($expected, $result);
 	}
 
 	public function testThumbSrcSet()
@@ -2564,18 +2735,18 @@ EXPECTED;
 		$parms = array('w' => 800, 'h' => 0, 'size' => '2x');
 
 		$result = $this->tp->thumbSrcSet($src, $parms);
-		$this->assertStringContainsString('butterfly.jpg&amp;w=1600&amp;h=0', $result);
+		self::assertStringContainsString('butterfly.jpg&amp;w=1600&amp;h=0', $result);
 
 		$this->tp->setThumbSize(80, 80); // set defaults.
 
 		$result2 = $this->tp->thumbSrcSet($src, $parms); // testing overrides
-		$this->assertStringContainsString('butterfly.jpg&amp;w=1600&amp;h=0', $result2);
+		self::assertStringContainsString('butterfly.jpg&amp;w=1600&amp;h=0', $result2);
 
 		$result3 = $this->tp->thumbSrcSet($src, array('w' => 800, 'size' => '2x')); // testing overrides without 'h' being set.
-		$this->assertStringContainsString('butterfly.jpg&amp;w=1600&amp;h=0', $result3);
+		self::assertStringContainsString('butterfly.jpg&amp;w=1600&amp;h=0', $result3);
 
 		$result4 = $this->tp->thumbSrcSet($src); // no overrides
-		$this->assertStringContainsString('butterfly.jpg&amp;w=160&amp;h=160', $result4);
+		self::assertStringContainsString('butterfly.jpg&amp;w=160&amp;h=160', $result4);
 
 	}
 
@@ -2597,7 +2768,7 @@ EXPECTED;
 			list($input, $expected) = $val;
 			$actual = $this->tp->isBBcode($input);
 
-			$this->assertEquals($expected, $actual, $input);
+			self::assertEquals($expected, $actual, $input);
 		}
 
 	}
@@ -2622,7 +2793,7 @@ EXPECTED;
 			list($input, $expected) = $val;
 			$actual = $this->tp->isHtml($input);
 
-			$this->assertEquals($expected, $actual, $input);
+			self::assertEquals($expected, $actual, $input);
 		}
 
 
@@ -2646,8 +2817,8 @@ EXPECTED;
 	*/
 	public function testIsImage()
 	{
-		$this->assertTrue($this->tp->isImage('/path-to-file/myfile.jpg'));
-		$this->assertFalse($this->tp->isImage('/path-to-file/myfile.mov'));
+		self::assertTrue($this->tp->isImage('/path-to-file/myfile.jpg'));
+		self::assertFalse($this->tp->isImage('/path-to-file/myfile.mov'));
 
 	}
 
@@ -2728,12 +2899,12 @@ Your browser does not support the audio tag.
 
 		$result = $tp->makeClickable($email, 'email', array('sub' => '[email]'));
 
-		$this->assertStringContainsString('[email]</a>', $result);
+		self::assertStringContainsString('[email]</a>', $result);
 
 		// -----
 
 		$result = $tp->makeClickable($email, 'email', array('sub' => 'fa-envelope.glyph'));
-		$this->assertStringContainsString("fa-envelope' ></i></a>", $result);
+		self::assertStringContainsString("fa-envelope' ></i></a>", $result);
 
 		// links standard.
 		$tests = array(
@@ -2748,7 +2919,7 @@ Your browser does not support the audio tag.
 		{
 			list($sample, $expected) = $row;
 			$result = $tp->makeClickable($sample, 'url');
-			$this->assertEquals($expected, $result);
+			self::assertEquals($expected, $result);
 		}
 
 		// links with substituion..
@@ -2763,7 +2934,7 @@ Your browser does not support the audio tag.
 		{
 			list($sample, $expected) = $row;
 			$result = $tp->makeClickable($sample, 'url', array('sub' => '[link]'));
-			$this->assertEquals($expected, $result);
+			self::assertEquals($expected, $result);
 		}
 
 		// links with substituion and target.
@@ -2778,7 +2949,7 @@ Your browser does not support the audio tag.
 		{
 			list($sample, $expected) = $row;
 			$result = $tp->makeClickable($sample, 'url', array('sub' => '[link]', 'ext' => true));
-			$this->assertEquals($expected, $result);
+			self::assertEquals($expected, $result);
 		}
 
 
@@ -2794,17 +2965,17 @@ Your browser does not support the audio tag.
 		$time = 1519512067; //  Saturday 24 February 2018 - 22:41:07
 
 		$long = $class->toDate($time, 'long');
-		$this->assertStringContainsString('Saturday 24 February 2018', $long);
+		self::assertStringContainsString('Saturday 24 February 2018', $long);
 
 		$short = $class->toDate($time, 'short');
-		$this->assertStringContainsString('Feb 2018', $short);
+		self::assertStringContainsString('Feb 2018', $short);
 
 		$rel = $class->toDate($time, 'relative');
-		$this->assertStringContainsString('ago', $rel);
-		$this->assertStringContainsString('data-livestamp="1519512067"', $rel);
+		self::assertStringContainsString('ago', $rel);
+		self::assertStringContainsString('data-livestamp="1519512067"', $rel);
 
 		$custom = $class->toDate($time, 'dd-M-yy');
-		$this->assertStringContainsString('<span>24-Feb-18</span>', $custom);
+		self::assertStringContainsString('<span>24-Feb-18</span>', $custom);
 
 
 	}
@@ -2836,7 +3007,7 @@ Your browser does not support the audio tag.
 		foreach ($tests as $index => $var)
 		{
 			$result = $this->tp->filter($var['input'], $var['mode']);
-			$this->assertEquals($var['expected'], $result, "Failed on index: " . $index);
+			self::assertEquals($var['expected'], $result, "Failed on index: " . $index);
 		}
 
 		// Validate.
@@ -2866,7 +3037,7 @@ Your browser does not support the audio tag.
 		{
 			$result = $this->tp->filter($var['input'], $var['mode'], true);
 			//	$ret[$index] = $result;
-			$this->assertSame($expected2[$index], $result);
+			self::assertSame($expected2[$index], $result);
 		}
 
 	}
@@ -2885,7 +3056,7 @@ Your browser does not support the audio tag.
 
 		$actual = $this->tp->filter($input, 'str');
 
-		$this->assertEquals($expected, $actual);
+		self::assertEquals($expected, $actual);
 	}
 
 	public function testCleanHtml()
@@ -2981,7 +3152,7 @@ Your browser does not support the audio tag.
 		foreach ($tests as $var)
 		{
 			$result = $this->tp->cleanHtml($var['html']);
-			$this->assertEquals($var['expected'], $result);
+			self::assertEquals($var['expected'], $result);
 		}
 
 		// ----------- Test with Script access enabled --------------
@@ -3003,7 +3174,7 @@ Your browser does not support the audio tag.
 		foreach ($scriptAccess as $var)
 		{
 			$result = $this->tp->cleanHtml($var['html']);
-			$this->assertEquals($var['expected'], $result);
+			self::assertEquals($var['expected'], $result);
 		}
 
 		$this->tp->setScriptAccess(false);

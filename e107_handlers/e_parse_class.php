@@ -854,25 +854,116 @@ class e_parse
 		return e107::getScParser()->parseCodes($text, $parseSCFiles, $extraCodes, $eVars);
 	}
 
+
 	/**
-	 * @experimental
-	 * @param string       $text
-	 * @param bool         $parseSCFiles
-	 * @param object|array $extraCodes
-	 * @param object       $eVars
-	 * @return string
+	 * Parses a JSON schema template, processes placeholders, and reconstructs the JSON with optional main entity and extra codes.
+	 *
+	 * @param string      $text         The JSON schema template to be parsed.
+	 * @param bool        $parseSCFiles Whether to enable the parsing of shortcode files. Defaults to true.
+	 * @param object|null $extraCodes   Optional extra codes object for placeholder parsing.
+	 * @param array|null  $mainEntity   Optional data array to replace the 'mainEntity' structure in the schema.
+	 * @return string|false The processed JSON schema string on success, or false if the input JSON is invalid.
 	 */
-	public function parseSchemaTemplate($text, $parseSCFiles = true, $extraCodes = null, $eVars = null)
+	public function parseSchemaTemplate($text, $parseSCFiles = true, $extraCodes = null, $mainEntity = null)
 	{
+
+		// Initialize the parser
 		$parse = e107::getScParser();
-		$parse->setMode('schema');
-		$text = e107::getScParser()->parseCodes($text, $parseSCFiles, $extraCodes, $eVars);
-		$text = str_replace('<!-- >', '', $text); // cleanup
+		$parse->setMode('schema'); // Set parsing mode for schema
+
+		// Step 1: Decode the JSON input into an array
+		$jsonArray = json_decode($text, true);
+
+		// Step 2: Validate JSON decoding
+		if(json_last_error() !== JSON_ERROR_NONE)
+		{
+			 error_log('Invalid JSON: ' . json_last_error_msg());
+			 return false;
+
+		}
+
+		// Step 3: Recursive function to process the JSON structure
+		$processItems = function (&$item) use (&$processItems, $parse, $parseSCFiles, $extraCodes, $mainEntity)
+		{
+
+			if(is_array($item))
+			{
+				// Check if the current item contains 'mainEntity', the target of our processing
+				if(isset($item['mainEntity']) && is_array($mainEntity))
+				{
+					// Get the first template item from the 'mainEntity' array to use as the structure
+					$schemaTemplate = $item['mainEntity'][0];
+					$item['mainEntity'] = []; // Reset the 'mainEntity' array to prevent duplication
+
+					foreach($mainEntity as $dataRow)
+					{
+
+						// Create a fresh copy of the schema template for this specific dataRow
+						$duplicatedItem = json_decode(json_encode($schemaTemplate), true);
+
+						// Update the extraCodes for the current data row
+						if(method_exists($extraCodes, 'setVars'))
+						{
+							$extraCodes->setVars($dataRow); // Inject new placeholders from this row
+						}
+
+						// Process placeholders in the duplicated item
+						foreach($duplicatedItem as &$value)
+						{
+							if(is_string($value) && strpos($value, '{') !== false)
+							{
+								// Parse placeholders for current dataRow
+								$value = $parse->parseCodes($value, $parseSCFiles, $extraCodes);
+								$value = html_entity_decode($value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+								$value = strip_tags($value);
+							}
+							elseif(is_array($value))
+							{
+								// Recursively process arrays (e.g., nested structures)
+								$processItems($value);
+							}
+						}
+
+						// Append the processed item to the 'mainEntity' array
+						$item['mainEntity'][] = $duplicatedItem;
+					}
+				}
+				else
+				{
+					// Recursively process other parts of the JSON structure
+					foreach($item as &$value)
+					{
+						$processItems($value);
+					}
+				}
+			}
+			elseif(is_string($item))
+			{
+				// Parse string placeholders, if any
+				if(strpos($item, '{') !== false)
+				{
+
+					$item = $parse->parseCodes($item, $parseSCFiles, $extraCodes);
+					$item = str_replace('&amp;', '&', $item);
+					$item = html_entity_decode($item, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+					 $item = strip_tags($item);
+
+
+				}
+			}
+		};
+
+		// Step 4: Initiate processing for the entire JSON structure
+		$processItems($jsonArray);
+
+		// Reset the parse mode after processing
 		$parse->setMode('default');
 
-		return $text;
-
+		// Step 5: Encode the final result back into JSON
+		return json_encode($jsonArray, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 	}
+
+
 
 
 	/**
@@ -2174,9 +2265,10 @@ class e_parse
 
 		$search = array('&amp;#039;', '&amp;#036;', '&#039;', '&#036;', '&#092;', '&amp;#092;');
 		$replace = array("'", '$', "'", '$', "\\", "\\");
-		$text = str_replace($search, $replace, $text);
 
-		return $text;
+		return str_replace($search, $replace, $text);
+
+
 	}
 
 
@@ -4727,6 +4819,12 @@ class e_parse
 		if (empty($path))
 		{
 			return null;
+		}
+
+		if(varset($parm['return']) === 'url')
+		{
+			$path = $tp->createConstants($path, 'mix');
+			return $tp->replaceConstants($path, 'full');
 		}
 
 		$html .= "<img {$id}class=\"{$class}\" src=\"" . $path . '" alt="' . $alt . '" ' . $srcset . $width . $height . $style . $loading . $title . ' />';
