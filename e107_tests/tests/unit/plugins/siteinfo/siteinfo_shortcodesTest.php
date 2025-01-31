@@ -51,16 +51,37 @@ class siteinfo_shortcodesTest extends \Codeception\Test\Unit
 	{
 
 	}
-
+*/
 	public function testSc_sitebutton()
 	{
 
+		$result = $this->sc->sc_sitebutton();
+		$expected = 'class="sitebutton"><img src="/e107_images/button.png" alt="e107" /></a>';
+		self::assertStringContainsString($expected, $result);
+
+		$result = $this->sc->sc_sitebutton(['type'=>'email']);
+		$expected = 'button.png';
+		self::assertStringContainsString($expected, $result);
+
+		$result = $this->sc->sc_sitebutton(['type'=>'url']);
+		self::assertStringContainsString('http', $result);
 	}
 
 	public function testSc_sitelogo()
 	{
+		$result = $this->sc->sc_sitelogo(['w'=>100]);
+		self::assertStringContainsString('<img class="logo img-responsive img-fluid"', $result);
+		self::assertStringContainsString('width="100"', $result);
 
-	}*/
+		$result2 = $this->sc->sc_sitelogo(['type'=>'url']);
+		self::assertStringContainsString('http', $result2);
+		self::assertStringContainsString('logoHD.png', $result2);
+
+		$result3 = $this->sc->sc_sitelogo(['type'=>'email']);
+		self::assertStringContainsString('{e_IMAGE}logoHD.png', $result3);
+
+
+	}
 
 	public function testSc_logo()
 	{
