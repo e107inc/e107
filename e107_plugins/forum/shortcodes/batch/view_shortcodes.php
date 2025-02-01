@@ -1341,13 +1341,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 //				$url = e107::url('forum', 'post', null, array('query' => $urlParms)); // ."?f=rp&amp;id=".$thread->threadInfo['thread_id']."&amp;post=".$thread->threadInfo['thread_id'];
 
 // DEFAULT TEMPLATE LEFT HERE FOR LEGACY PURPOSES.... 
-				$template = $FORUM_VIEWTOPIC_TEMPLATE['quickreply']??"<div class='form-group'>
-							{QR_TEXTAREA}
-						</div>
-						<div class='center text-center form-group'>
-							{QR_SBUTTON}
-							{QR_HIDDEN}
-	   					</div>";
+				$template = $FORUM_VIEWTOPIC_TEMPLATE['quickreply']??e107::getTemplate('forum','forum_viewtopic', 'quickreply', false);
 
 				if (!strpos($template, "{QR_HIDDEN}")){
 					$template .= "{QR_HIDDEN}";
