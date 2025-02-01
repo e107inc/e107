@@ -112,7 +112,7 @@ if(isset($_POST['updateprefs']))
 
 	if(isset($_POST['contact_info']) && is_array($_POST['contact_info']))
 	{
-		$core_pref->set('contact_info', []); // reset to type array if string had been used in the past. 
+		$core_pref->set('contact_info', []); // reset to type array if string had been used in the past.
 	}
 
 	$smtp_opts = array();
