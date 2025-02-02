@@ -16,8 +16,10 @@ $tp = e107::getParser();
 if(deftrue("FONTAWESOME", false)) {
 
 define('IMAGE_e', 					'e');
-define('IMAGE_new', 				$tp->toGlyph('fa-star', 'size=2x'));
-define('IMAGE_nonew', 				$tp->toGlyph('fa-comment', 'size=2x'));
+//define('IMAGE_new', 				$tp->toGlyph('fa-star', 'size=2x'));
+define('IMAGE_new', 				'{GLYPH:type=fa-star&size=2x}');
+//define('IMAGE_nonew', 				$tp->toGlyph('fa-comment', 'size=2x'));
+define('IMAGE_nonew', 				'{GLYPH:type=fa-comment&size=2x}');
 define('IMAGE_new_small',  			$tp->toGlyph('fa-star'));
 define('IMAGE_nonew_small',  		$tp->toGlyph('fa-comment'));
 define('IMAGE_new_popular',  		$tp->toGlyph('fa-comments', 'size=2x'));
