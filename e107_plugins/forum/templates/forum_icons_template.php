@@ -12,7 +12,7 @@
 
 if (!defined('e107_INIT')) { exit(); }
 
-$tp = e107::getParser();
+//$tp = e107::getParser();
 if(deftrue("FONTAWESOME", false)) {
 
 define('IMAGE_e', 					'e');
@@ -20,24 +20,42 @@ define('IMAGE_e', 					'e');
 define('IMAGE_new', 				'{GLYPH:type=fa-star&size=2x}');
 //define('IMAGE_nonew', 				$tp->toGlyph('fa-comment', 'size=2x'));
 define('IMAGE_nonew', 				'{GLYPH:type=fa-comment&size=2x}');
-define('IMAGE_new_small',  			$tp->toGlyph('fa-star'));
-define('IMAGE_nonew_small',  		$tp->toGlyph('fa-comment'));
-define('IMAGE_new_popular',  		$tp->toGlyph('fa-comments', 'size=2x'));
-define('IMAGE_nonew_popular', 		$tp->toGlyph('fa-comments-o', 'size=2x'));
-define('IMAGE_new_popular_small',  	$tp->toGlyph('fa-comments'));
-define('IMAGE_nonew_popular_small', $tp->toGlyph('fa-comments-o'));
-define('IMAGE_sticky',  			$tp->toGlyph('fa-thumb-tack', 'size=2x'));
-define('IMAGE_stickyclosed',  		$tp->toGlyph('fa-lock', 'size=2x'));
-define('IMAGE_sticky_small', 		$tp->toGlyph('fa-thumb-tack'));
-define('IMAGE_stickyclosed_small',  $tp->toGlyph('fa-lock'));
-define('IMAGE_announce',  			$tp->toGlyph('fa-bullhorn', 'size=2x'));
-define('IMAGE_announce_small',  	$tp->toGlyph('fa-bullhorn'));
-define('IMAGE_closed_small',  		$tp->toGlyph('fa-lock'));
-define('IMAGE_closed', 				$tp->toGlyph('fa-lock', 'size=2x'));
-define('IMAGE_noreplies', 			$tp->toGlyph('fa-comment-o', 'size=2x'));
-define('IMAGE_noreplies_small', 	$tp->toGlyph('fa-comment-o'));
-define('IMAGE_track', 		        $tp->toGlyph('fa-bell'));
-define('IMAGE_untrack', 	        $tp->toGlyph('fa-bell-o'));
+//define('IMAGE_new_small',  			$tp->toGlyph('fa-star'));
+define('IMAGE_new_small',  			'{GLYPH:type=fa-star}');
+//define('IMAGE_nonew_small',  		$tp->toGlyph('fa-comment'));
+define('IMAGE_nonew_small',  		'{GLYPH:type=fa-comment}');
+//define('IMAGE_new_popular',  		$tp->toGlyph('fa-comments', 'size=2x'));
+define('IMAGE_new_popular',  		'{GLYPH:type=fa-comments&size=2x}');
+//define('IMAGE_nonew_popular', 		$tp->toGlyph('fa-comments-o', 'size=2x'));
+define('IMAGE_nonew_popular', 		'{GLYPH:type=fa-comments-o%size=2x}');
+//define('IMAGE_new_popular_small',  	$tp->toGlyph('fa-comments'));
+define('IMAGE_new_popular_small',  	'{GLYPH:type=fa-comments}');
+//define('IMAGE_nonew_popular_small', $tp->toGlyph('fa-comments-o'));
+define('IMAGE_nonew_popular_small', '{GLYPH:type=fa-comments-o}');
+//define('IMAGE_sticky',  			$tp->toGlyph('fa-thumb-tack', 'size=2x'));
+define('IMAGE_sticky',  			'{GLYPH:type=fa-thumb-tack&size=2x}');
+//define('IMAGE_stickyclosed',  		$tp->toGlyph('fa-lock', 'size=2x'));
+define('IMAGE_stickyclosed',  		'{GLYPH:type=fa-lock&size=2x}');
+//define('IMAGE_sticky_small', 		$tp->toGlyph('fa-thumb-tack'));
+define('IMAGE_sticky_small', 		'{GLYPH:type=fa-thumb-tack}');
+//define('IMAGE_stickyclosed_small',  $tp->toGlyph('fa-lock'));
+define('IMAGE_stickyclosed_small',  '{GLYPH:type=fa-lock}');
+//define('IMAGE_announce',  			$tp->toGlyph('fa-bullhorn', 'size=2x'));
+define('IMAGE_announce',  			'{GLYPH:type=fa-bullhorn&size=2x}');
+//define('IMAGE_announce_small',  	$tp->toGlyph('fa-bullhorn'));
+define('IMAGE_announce_small',  	'{GLYPH:type=fa-bullhorn}');
+//define('IMAGE_closed_small',  		$tp->toGlyph('fa-lock'));
+define('IMAGE_closed_small',  		'{GLYPH:type=fa-lock}');
+//define('IMAGE_closed', 				$tp->toGlyph('fa-lock', 'size=2x'));
+define('IMAGE_closed', 				'{GLYPH:type=fa-lock&size=2x}');
+//define('IMAGE_noreplies', 			$tp->toGlyph('fa-comment-o', 'size=2x'));
+define('IMAGE_noreplies', 			'{GLYPH:type=fa-comment-o&size=2x}');
+//define('IMAGE_noreplies_small', 	$tp->toGlyph('fa-comment-o'));
+define('IMAGE_noreplies_small', 	'{GLYPH:type=fa-comment-o}');
+//define('IMAGE_track', 		        $tp->toGlyph('fa-bell'));
+define('IMAGE_track', 		        '{GLYPH:type=fa-bell}');
+//define('IMAGE_untrack', 	        $tp->toGlyph('fa-bell-o'));
+define('IMAGE_untrack', 	        '{GLYPH:type=fa-bell-o}');
     
 } else {
 
