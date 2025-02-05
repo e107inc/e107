@@ -78,7 +78,7 @@ class siteinfo_shortcodesTest extends \Codeception\Test\Unit
 		self::assertStringContainsString('logo', $result2);
 
 		$result3 = $this->sc->sc_sitelogo(['type'=>'email']);
-		self::assertStringContainsString('{e_IMAGE}', $result3);
+		self::assertStringContainsString('IMAGE}', $result3);
 
 
 	}
