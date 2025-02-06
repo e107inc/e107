@@ -43,6 +43,8 @@ class history_adminArea extends e_admin_dispatcher
 	);	
 	
 	protected $menuTitle = 'History';
+
+	protected $adminMenuIcon = '{e_IMAGE}admin_images/undo_32.png';
 }
 
 
