@@ -44,6 +44,8 @@ class news_front
 	private $tagAuthor = null;
 	private $comments = array();
 	private $pagination;
+
+	private $schema = '';
 //	private $interval = 1;
 
 	function __construct()
@@ -824,6 +826,7 @@ class news_front
 		$e107cache->set($cache_tag."_diz", defined("META_DESCRIPTION") ? META_DESCRIPTION : '');
 
 		$e107cache->set($cache_tag."_rows", e107::serialize($rowData,'json'));
+		$e107cache->set($cache_tag."_schema", $this->schema);
 
 	}
 
@@ -1238,6 +1241,12 @@ class news_front
 			$this->setNewsFrontMeta($rows);
 			$text = $this->renderCache($caption, $newsCachedPage);		// This exits if cache used
 			$this->comments = $rows;
+
+			if($shema = $this->getNewsCache($this->cacheString,'schema'))
+			{
+				e107::schema($shema);
+			}
+
 			return $text;
 		}
 		else
@@ -1352,6 +1361,12 @@ class news_front
 					$caption = e107::getParser()->parseTemplate($tmp['caption'], true, $nsc);
 
 					$render = true;
+				}
+
+				if(!empty($tmp['schema']))
+				{
+					$this->schema = e107::getParser()->parseSchemaTemplate($tmp['schema'], true, $nsc);
+					e107::schema($this->schema);
 				}
 
 				unset($tmp);
