@@ -24,7 +24,7 @@ $e_sub_cat = 'plug_manage';
 
 define('PLUGIN_SHOW_REFRESH', FALSE);
 define('PLUGIN_SCAN_INTERVAL', !empty($_SERVER['E_DEV']) ? 0 : 360);
-define("ADMIN_GITSYNC_ICON", e107::getParser()->toGlyph('fa-refresh', array('size'=>'2x', 'fw'=>1)));
+define("ADMIN_GITSYNC_ICON", e107::getParser()->toGlyph('fa-refresh', array('class'=>'admin-ui-option', 'size'=>'2x', 'fw'=>1)));
 
 
 global $user_pref;
