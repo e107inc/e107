@@ -4579,9 +4579,49 @@ class e_admin_controller_ui extends e_admin_controller
 		return 'SELECT SQL_CALC_FOUND_ROWS * FROM `#' .$this->getTableName(). '` ';
 	}
 
+	/**
+	 * Creates a backup record in the admin_history table for a given action on a specific record.
+	 *
+	 * @param string $table  The name of the table where the record resides.
+	 * @param int    $pid    The primary ID field of the record.
+	 * @param int    $id     The ID of the specific record being backed up.
+	 * @param string $action The action performed on the record (e.g., 'update' or 'delete').
+	 * @param array  $data   An associative array of field data to be included in the history record.
+	 * @return bool True on successful creation of the backup record, false on failure.
+	 */
+	protected function backupToHistory($table, $pid, $id, $action, $data)
+	{
+		foreach($data as $field=>$var)
+		{
+			if(empty($this->fields[$field]['data'])) // exclude data not in the table.
+			{
+				unset($data[$field]);
+			}
+		}
 
+		$historyData = [
+			'history_table'     => $table,
+			'history_pid'       => $pid,
+			'history_record_id' => $id,
+			'history_action'    => $action, // 'update' or 'delete'
+			'history_data'      => json_encode($data, JSON_PRETTY_PRINT),
+			'history_user_id'   => USERID,
+			'history_datestamp' => time(),
+		];
 
+		// Insert the record into the admin_history table
+		if (!e107::getDb()->insert('admin_history', $historyData))
+		{
+			e107::getMessage()->addError("Failed to save history for table '{$table}', record ID {$id}");
+			e107::getMessage()->addError(e107::getDb()->getLastErrorText());
+			e107::getMessage()->addError(print_a($historyData, true));
+			return false;
+		}
 
+		// Optional: Add debug logs for successful history creation
+		e107::getMessage()->addDebug("History saved for table '{$table}', record ID {$id}");
+		return true;
+	}
 
 
 	/**
@@ -4611,6 +4651,9 @@ class e_admin_controller_ui extends e_admin_controller
 				$model->setPostedData($_posted);
 				return false;
 			}
+
+
+
 			if($data && is_array($data))
 			{
 				// add to model data fields array if required
@@ -4673,6 +4716,18 @@ class e_admin_controller_ui extends e_admin_controller
 		// Scenario I - use request owned POST data - toForm already executed
 		$model->setPostedData($_posted) // insert() or update() dbInsert();
 			->save(true, $forceSave);
+
+	    if ($id)
+	    {
+	        $new_data = $model->getData();
+
+	        if($changes = array_diff_assoc($new_data, $old_data))
+	        {
+	            $old_changed_data = array_intersect_key($old_data, $changes);
+				$this->backupToHistory($this->table, $this->getPrimaryName(), $id, 'update', $old_changed_data);
+	        }
+
+	    }
 
 
 
@@ -5622,6 +5677,12 @@ class e_admin_ui extends e_admin_controller_ui
 			if($model)
 			{
 				$data = $model->getData();
+
+				if($this->table !== 'admin_history')
+				{
+					$this->backupToHistory($this->table, $this->pid, $id, 'delete', $data);
+				}
+
 				if($this->beforeDelete($data, $id))
 				{
 					$check = $this->getTreeModel()->delete($id);
@@ -6288,6 +6349,12 @@ class e_admin_ui extends e_admin_controller_ui
 		if($model)
 		{
 			$data = $model->getData();
+
+			if($this->table !== 'admin_history')
+			{
+				$this->backupToHistory($this->table, $this->pid, $id,'delete',$data);
+			}
+
 			if($this->beforeDelete($data, $id))
 			{
 
