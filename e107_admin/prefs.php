@@ -110,6 +110,10 @@ if(isset($_POST['updateprefs']))
 
 	$pref['post_html'] = intval($_POST['post_html']);			// This ensures the setting is reflected in set text
 
+	if(isset($_POST['contact_info']) && is_array($_POST['contact_info']))
+	{
+		$core_pref->set('contact_info', []); // reset to type array if string had been used in the past.
+	}
 
 	$smtp_opts = array();
 
