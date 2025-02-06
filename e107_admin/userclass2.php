@@ -131,6 +131,12 @@ e107::coreLan('userclass2', true);
 			$this->fields['userclass_visibility']['writeParms']['default']  = e_UC_ADMIN;
 			$this->fields['userclass_id']['writeParms']['default']          =$this->getUserClassAdmin()->findNewClassID();
 
+			if(getperms('0'))
+			{
+				$this->fields['userclass_editclass']['batch'] = true;
+				$this->fields['userclass_visibility']['batch'] = true;
+			}
+
 		}
 
 		/**
