@@ -75,7 +75,7 @@ class admin_history_ui extends e_admin_ui
 			'history_table'           => array ( 'title' => 'Table', 'type' => 'text', 'data' => 'safestr', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => [], 'writeParms' => [], 'class' => 'left', 'thclass' => 'left',),
 			'history_record_id'       => array ( 'title' => LAN_ID, 'type' => 'number', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => [], 'writeParms' => [], 'class' => 'left', 'thclass' => 'left',),
 			'history_action'          => array ( 'title' => 'Action', 'type' => 'dropdown', 'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => [], 'writeParms' => [], 'class' => 'left', 'thclass' => 'left', 'batch' => false,),
-			'history_data'            => array ( 'title' => 'Data', 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => [], 'writeParms' => [], 'class' => 'history-data left', 'thclass' => 'left', 'filter' => false, 'batch' => false,),
+			'history_data'            => array ( 'title' => 'Changed Data', 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => [], 'writeParms' => [], 'class' => 'history-data left', 'thclass' => 'left', 'filter' => false, 'batch' => false,),
 			'history_user_id'         => array ( 'title' => LAN_USER, 'type' => 'user', 'data' => 'int', 'width' => '5%', 'filter' => true, 'help' => '', 'readParms' => [], 'writeParms' => [], 'class' => 'left', 'thclass' => 'left',),
 			'history_restored'         => array ( 'title' => "Restored", 'type' => 'datestamp', 'data' => 'int', 'width' => '5%', 'filter' => true, 'help' => '', 'readParms' => [], 'writeParms' => [], 'class' => 'center', 'thclass' => 'center',),
 
@@ -94,7 +94,8 @@ class admin_history_ui extends e_admin_ui
 		{
 				$this->fields['history_action']['writeParms']['optArray'] = [
 					'delete'    => "<span class='label label-danger'>". LAN_DELETE."</span>",
-					'update'    =>  "<span class='label label-success'>". LAN_UPDATE."</span>"
+					'update'    =>  "<span class='label label-success'>". LAN_UPDATE."</span>",
+					'restore'    =>  "<span class='label label-warning'>Restore</span>"
 				];
 
 
@@ -134,16 +135,24 @@ class admin_history_ui extends e_admin_ui
 				$pid = $historyRow['history_pid'];
 				$recordId = $historyRow['history_record_id'];
 
+
+
 				if (!empty($originalTable) && !empty($originalData) && !empty($pid) && !empty($recordId))
 				{
-
 					if($action === 'insert')
 					{
 						$originalData[$pid] = (int) $recordId;
 						$result = $db->replace($originalTable, $originalData);
 					}
-					else
+					else // update
 					{
+						$backup = $db->retrieve($originalTable, '*', $pid. ' = '.(int) $recordId);
+						if($changes = array_diff_assoc($originalData, $backup))
+	                    {
+							$old_changed_data = array_intersect_key($backup, $changes);
+							$this->backupToHistory($originalTable, $pid, $recordId, 'restore', $old_changed_data, false);
+	                    }
+
 						$originalData['WHERE'] = $pid .' = '. (int) $recordId;
 						$result = $db->update($originalTable, $originalData);
 					}
@@ -152,6 +161,10 @@ class admin_history_ui extends e_admin_ui
 					{
 						$message->addSuccess("The record (ID: $id) has been successfully restored to the $originalTable table.", 'default', true);
 						$db->update('admin_history', "history_restored = ".time()." WHERE history_id = $id");
+					}
+					elseif($result === 0)
+					{
+						$message->addInfo("No changes made", 'default', true);
 					}
 					else
 					{
@@ -325,7 +338,7 @@ class admin_history_form_ui extends e_admin_form_ui
 			$text .= "<button class='btn btn-default' type='submit' name='$name' title='{$restoreTitle}'><i class='admin-ui-option fa fa-undo fa-2x fa-fw'></i></button>";
 		}
 
-		$att['readParms']['editClass'] = 999; // disable it. 
+		$att['readParms']['editClass'] = 999; // disable it.
 		$text .= $this->renderValue('options', $value, $att, $id);
 
 		// End options group

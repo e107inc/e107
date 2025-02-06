@@ -4587,15 +4587,19 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @param int    $id     The ID of the specific record being backed up.
 	 * @param string $action The action performed on the record (e.g., 'update' or 'delete').
 	 * @param array  $data   An associative array of field data to be included in the history record.
+	 * @param bool  $posted Whether the data has been posted and requires additional filter based on current $fields values or not.
 	 * @return bool True on successful creation of the backup record, false on failure.
 	 */
-	protected function backupToHistory($table, $pid, $id, $action, $data)
+	protected function backupToHistory($table, $pid, $id, $action, $data, $posted = true)
 	{
-		foreach($data as $field=>$var)
+		if($posted)
 		{
-			if(empty($this->fields[$field]['data'])) // exclude data not in the table.
+			foreach($data as $field=>$var)
 			{
-				unset($data[$field]);
+				if(empty($this->fields[$field]['data'])) // exclude data not in the table.
+				{
+					unset($data[$field]);
+				}
 			}
 		}
 

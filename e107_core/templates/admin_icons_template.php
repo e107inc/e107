@@ -124,6 +124,9 @@ $ADMIN_ICONS_TEMPLATE['E_16_PLUGIN']                = "<i class='S16 e-plugins-1
 $ADMIN_ICONS_TEMPLATE['E_16_PLUGMANAGER']           = "<i class='S16 e-plugmanager-16'></i>";
 $ADMIN_ICONS_TEMPLATE['E_16_THEMEMANAGER']          = "<i class='S16 e-themes-16'></i>";
 
+$ADMIN_ICONS_TEMPLATE['E_16_UNDO']                = "<img class='icon S16' src='" . e_IMAGE . "admin_images/undo_16.png' alt='' />";
+$ADMIN_ICONS_TEMPLATE['E_32_UNDO']                = "<img class='icon S32' src='" . e_IMAGE . "admin_images/undo_32.png' alt='' />";
+
 $ADMIN_ICONS_TEMPLATE['ADMIN_WARNING_ICON']         = "<i class='fa fa-warning text-warning'></i>";
 $ADMIN_ICONS_TEMPLATE['ADMIN_GRID_ICON']            = "<i class='fa fa-th'></i>";
 $ADMIN_ICONS_TEMPLATE['ADMIN_LIST_ICON']            = "<i class='fas fa-list'></i>";
