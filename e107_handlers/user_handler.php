@@ -1964,10 +1964,12 @@ class e_userperms
 
 		// Tools
 		"Y"	=> array(ADLAN_147,E_16_INSPECT, E_32_INSPECT),	    // File inspector
+		"7"	=> array(defset('LAN_HISTORY', 'History'), E_16_UNDO, E_32_UNDO),	    // History/Undo
 		"9"	=> array(ADLAN_40, E_16_MAINTAIN, E_32_MAINTAIN),	// Take Down site for Maintenance
 		"O"	=> array(ADLAN_149,E_16_NOTIFY, E_32_NOTIFY),		// Notify
 		"U"	=> array(ADLAN_157,E_16_CRON, E_32_CRON),			// Schedule Tasks
 		"S"	=> array(ADLAN_155,E_16_ADMINLOG, E_32_ADMINLOG),	// System Logging
+
 
 		// Manage
 		"B"	=> array(LAN_COMMENTMAN,E_16_COMMENT, E_32_COMMENT),	    								// Moderate Comments
