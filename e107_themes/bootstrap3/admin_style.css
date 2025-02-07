@@ -254,7 +254,7 @@ td .file.well                              { margin-bottom:0 }
 
 
 
-td.options .btn-group                   {  display: flex; }
+td.options .btn-group                   {  display: flex; justify-content: center; }
 
 
 .table .nav-tabs a,
