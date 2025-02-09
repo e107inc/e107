@@ -15,16 +15,41 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 
                 // Fix for changeDate() not being fired when value manually altered.
                 $item.on("change keyup", function () {
-                    var $this = $(this);
-                    var useUnix = $this.attr("data-date-unix");
-                    var newValue = $this.val();
+                  var $this = $(this);
+                  var useUnix = $this.attr("data-date-unix");
+                  var newValue = $this.val();
 
-                    if (useUnix !== "true" || newValue == "") {
+                  if (useUnix !== "true" || newValue == "") {
+                    var id = $this.attr("id");
+                    var newTarget = "#" + id.replace("e-datepicker-", "");
+                    $(newTarget).val(newValue);
+                  }
+
+                  // If UNIX timestamp is required, manually convert the date string (dd.mm.yyyy)
+                  if (useUnix === "true") {
+                    var parts = newValue.split(".");
+                    if (parts.length === 3) {
+                      var day = parseInt(parts[0], 10);
+                      var month = parseInt(parts[1], 10) - 1; // Month is zero-based in JS
+                      var year = parseInt(parts[2], 10);
+
+                      // Validate date parts
+                      if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+                        var date = new Date(year, month, day);
+                        var unixTimestamp = Math.floor(date.getTime() / 1000);
                         var id = $this.attr("id");
                         var newTarget = "#" + id.replace("e-datepicker-", "");
-                        $(newTarget).val(newValue);
+                        $(newTarget).val(unixTimestamp); // Update hidden UNIX field
+                      }
                     }
+                  } else {
+                    // If not using UNIX timestamp, update with raw value
+                    var id = $this.attr("id");
+                    var newTarget = "#" + id.replace("e-datepicker-", "");
+                    $(newTarget).val(newValue); // Update hidden field with text input value
+                  }
                 });
+                
             });
 
             $(context).find('input.e-date').once('datetimepicker-init').each(function () {
