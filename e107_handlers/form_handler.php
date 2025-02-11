@@ -5301,7 +5301,7 @@ var_dump($select_options);*/
 
 			$att = [
 					'href'               => e_SELF . "?$query",
-					'class'              => "btn btn-default btn-secondary$eModal",
+					'class'              => "btn btn-default btn-primary$eModal",
 					'data-modal-caption' => $eModalCap,
 					'title'              => LAN_EDIT,
 			//		'data-toggle'        => 'tooltip',
@@ -5324,7 +5324,7 @@ var_dump($select_options);*/
 
 			if(check_class($cls))
 			{
-				$parms['class'] =  'action delete btn btn-default'.$delcls;
+				$parms['class'] =  'action delete btn btn-danger'.$delcls;
 				unset($parms['deleteClass']);
 				$parms['icon'] = $deleteIconDefault;
 				$text .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', $parms);
@@ -5332,7 +5332,7 @@ var_dump($select_options);*/
 		}
 		else
 		{
-			$parms['class'] =  'action delete btn btn-default'.$delcls;
+			$parms['class'] =  'action delete btn btn-danger'.$delcls;
 			$parms['icon'] = $deleteIconDefault;
 			$text .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', $parms);
 		}

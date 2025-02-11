@@ -148,11 +148,11 @@ $ADMIN_ICONS_TEMPLATE['ADMIN_DELETE_ICON_PATH']     = e_IMAGE_ABS . "admin_image
 $ADMIN_ICONS_TEMPLATE['ADMIN_WARNING_ICON_PATH']    = e_IMAGE_ABS . "admin_images/warning_32.png";
 
 
-$ADMIN_ICONS_TEMPLATE['ADMIN_EDIT_ICON']            = "<i class='admin-ui-option fa fa-edit fa-2x fa-fw' style='font-size: 24px; line-height: 32px;'></i>"; // "<i class='S32 e-edit-32'></i>";
-$ADMIN_ICONS_TEMPLATE['ADMIN_DELETE_ICON']          = "<i class='admin-ui-option fa fa-trash fa-2x fa-fw' style='font-size: 24px; line-height: 32px;'></i>"; // "<i class='S32 e-delete-32'></i>";
-$ADMIN_ICONS_TEMPLATE['ADMIN_SORT_ICON']            = "<i class='admin-ui-option fa fa-sort fa-2x fa-fw' style='font-size: 24px; line-height: 32px;'></i>"; //
-$ADMIN_ICONS_TEMPLATE['ADMIN_EXECUTE_ICON']         = "<i class='admin-ui-option fa fa-play fa-2x fa-fw' style='font-size: 24px; line-height: 32px;'></i>"; // "<i class='S32 e-execute-32'></i>";
-$ADMIN_ICONS_TEMPLATE['ADMIN_PAGES_ICON']           = "<i class='admin-ui-option fa fa-file fa-2x fa-fw' style='font-size: 24px; line-height: 32px;'></i>"; //"<i class='S32 e-custom-32'></i>";
+$ADMIN_ICONS_TEMPLATE['ADMIN_EDIT_ICON']            = "<i class='admin-ui-option fa fa-edit fa-2x fa-fw'></i>"; // "<i class='S32 e-edit-32'></i>";
+$ADMIN_ICONS_TEMPLATE['ADMIN_DELETE_ICON']          = "<i class='admin-ui-option fa fa-trash fa-2x fa-fw'></i>"; // "<i class='S32 e-delete-32'></i>";
+$ADMIN_ICONS_TEMPLATE['ADMIN_SORT_ICON']            = "<i class='admin-ui-option fa fa-sort fa-2x fa-fw'></i>"; //
+$ADMIN_ICONS_TEMPLATE['ADMIN_EXECUTE_ICON']         = "<i class='admin-ui-option fa fa-play fa-2x fa-fw'></i>"; // "<i class='S32 e-execute-32'></i>";
+$ADMIN_ICONS_TEMPLATE['ADMIN_PAGES_ICON']           = "<i class='admin-ui-option fa fa-file fa-2x fa-fw'></i>"; //"<i class='S32 e-custom-32'></i>";
 
 $ADMIN_ICONS_TEMPLATE['E_32_TRUE']                  = "<i class='S32 e-true-32'></i>";
 

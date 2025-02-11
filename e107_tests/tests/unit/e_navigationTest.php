@@ -98,6 +98,15 @@
 			    5 => '<i class=\'S16 e-emoticons-16\'></i>',
 			    6 => '<i class=\'S32 e-emoticons-32\'></i> ',
 			  ),
+			   9 => array (
+			        0 => './e107_admin/history.php',
+			        1 => 'History',
+			        2 => 'History',
+			        3 => '7',
+			        4 => 4,
+			        5 => '<img class=\'icon S16\' src=\'./e107_images/admin_images/undo_16.png\' alt=\'\' />',
+			        6 => '<img class=\'icon S32\' src=\'./e107_images/admin_images/undo_32.png\' alt=\'\' />'
+			    ),
 			  10 =>
 			  array (
 			    0 => '/e107_admin/frontpage.php',
