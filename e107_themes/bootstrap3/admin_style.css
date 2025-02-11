@@ -254,7 +254,7 @@ td .file.well                              { margin-bottom:0 }
 
 
 
-td.options .btn-group                   {  display: flex; }
+td.options .btn-group                   {  display: flex; justify-content: center; }
 
 
 .table .nav-tabs a,
@@ -632,6 +632,7 @@ i.s-message-icon {
 	width:32px;
 	height:32px;
 	float:left;
+	line-height: 28px;
 }
 
 i.s-message-success { background-position: -592px -37px; width: 32px; height: 32px; }
