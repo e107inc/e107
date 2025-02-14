@@ -143,7 +143,7 @@ class page_admin_form_ui extends e_admin_form_ui
 			$query['id'] = $id;
 			$query = http_build_query($query, '', '&amp;');
 				
-			$text = "<a href='".e_SELF."?{$query}' class='btn btn-primary' title='".LAN_EDIT."' data-toggle='tooltip' data-bs-toggle='tooltip' data-placement='left'>
+			$text = "<a href='".e_SELF."?{$query}' class='btn btn-success' title='".LAN_EDIT."' data-toggle='tooltip' data-bs-toggle='tooltip' data-placement='left'>
 						".defset('ADMIN_EDIT_ICON')."</a>";
 
 			if($this->getController()->getMode() === 'overview' && getperms('J1')) // Page/Menu Delete Perms.

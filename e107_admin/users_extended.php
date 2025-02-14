@@ -16,6 +16,8 @@ if (!getperms('4'))
 	exit;
 }
 
+e107::css('inline', '#admin-users-extended-main-list td.options .btn-group { justify-content: left } ');
+
 e107::coreLan('users_extended', true);
 
 if(varset($_GET['mode']) == "ajax")
