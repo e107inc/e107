@@ -90,7 +90,7 @@ jobs:
       run: |
         if [ $(php -r 'printf(version_compare(PHP_VERSION, "8.2.99", ">=") ? 1 : 0);') = '1' ]
         then
-          pecl install https://xdebug.org/files/xdebug-3.3.0alpha2.tgz
+          pecl install https://xdebug.org/files/xdebug-3.4.1.tgz
         elif [ $(php -r 'printf(version_compare(PHP_VERSION, "8.0.0", ">=") ? 1 : 0);') = '1' ]
         then
           pecl install xdebug
