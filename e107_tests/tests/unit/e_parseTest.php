@@ -2027,6 +2027,7 @@ EXPECTED;
 		self::assertStringContainsString('https://static2.mydomain.com', $map['e107-themes/bootstrap3/images/myimage2.jpg'] );
 
 		$this->tp->setStaticUrl(null);
+		e107::getParser()->setStaticUrl(null);
 	}
 
 	/*
