@@ -596,9 +596,11 @@ class forum_shortcodes extends e_shortcode
 
 	function sc_forum_breadcrumb()
 	{
-        global $breadarray;
-		$frm = e107::getForm();
-		return $frm->breadcrumb($breadarray);
+//        global $breadarray;
+//		$frm = e107::getForm();
+//		return $frm->breadcrumb($breadarray);
+// Now the shortcode {---BREADCRUMB---} is always available, so this shortcode is redundant.... Left here for legacy purposes...
+	    return e107::getForm()->breadcrumb(e107::breadcrumb(), true);
 	}
 
 	function sc_avatar($opts=null)
