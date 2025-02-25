@@ -1465,8 +1465,10 @@ class mailout_main_ui extends e_admin_ui
 	
 		$bounceOpts = array('none' => LAN_MAILOUT_232, 'auto' => LAN_MAILOUT_233, 'mail' => LAN_MAILOUT_234);
 		unset($temp);
-		if (!in_array($_POST['mailer'], array('smtp', 'sendmail', 'php'))) $_POST['mailer'] = 'php';
-		$temp['mailer'] = $_POST['mailer'];
+		
+		//if (!in_array($_POST['mailer'], array('smtp', 'sendmail', 'php'))) $_POST['mailer'] = 'php';
+		//$temp['mailer'] = $_POST['mailer'];
+
 		// Allow qmail as an option as well - works much as sendmail
 		if ((strpos($_POST['sendmail'],'sendmail') !== FALSE) || (strpos($_POST['sendmail'],'qmail') !== FALSE))
 		{
