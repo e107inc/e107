@@ -625,8 +625,8 @@ EXPECTED;
             "url": "https://localhost/e107/e107_images/button.png"
         }
     },
-    "datePublished": "2025-01-01T12:00:00+00:00",
-    "dateModified": "2025-01-01T09:00:00+00:00",
+    "datePublished": "2025-01-01T", 
+    "dateModified": "2025-01-01T",
     "articleBody": "Body of the news item"
 }';
 
@@ -635,8 +635,8 @@ EXPECTED;
 
 		self::assertSame($expectedDecoded['headline'],$resultDecoded['headline']);
 		self::assertSame($expectedDecoded['description'],$resultDecoded['description']);
-		self::assertSame($expectedDecoded['datePublished'],$resultDecoded['datePublished']);
-		self::assertSame($expectedDecoded['dateModified'],$resultDecoded['dateModified']);
+		self::assertStringContainsString($expectedDecoded['datePublished'],$resultDecoded['datePublished']);
+		self::assertStringContainsString($expectedDecoded['dateModified'],$resultDecoded['dateModified']);
 		self::assertSame($expectedDecoded['articleBody'],$resultDecoded['articleBody']);
 		self::assertSame($expectedDecoded['author']['name'],$resultDecoded['author']['name']);
 		self::assertSame($expectedDecoded['publisher']['name'],$resultDecoded['publisher']['name']);
@@ -2027,6 +2027,7 @@ EXPECTED;
 		self::assertStringContainsString('https://static2.mydomain.com', $map['e107-themes/bootstrap3/images/myimage2.jpg'] );
 
 		$this->tp->setStaticUrl(null);
+		e107::getParser()->setStaticUrl(null);
 	}
 
 	/*

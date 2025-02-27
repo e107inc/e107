@@ -3817,12 +3817,12 @@ var_dump($select_options);*/
 		{
 			case 'edit':
 				$icon = deftrue('e_ADMIN_AREA') ? defset('ADMIN_EDIT_ICON') : $tp->toIcon('e-edit-32');
-				$options['class'] = $options['class'] === 'action' ? 'btn btn-default btn-secondary action edit' : $options['class'];
+				$options['class'] = $options['class'] === 'action' ? 'btn btn-success action edit' : $options['class'];
 			break;
 
 			case 'delete':
 				$icon = deftrue('e_ADMIN_AREA') ? defset('ADMIN_DELETE_ICON') : $tp->toIcon('fa-trash.glyph');
-				$options['class'] = $options['class'] === 'action' ? 'btn btn-default btn-secondary action delete' : $options['class'];
+				$options['class'] = $options['class'] === 'action' ? 'btn btn-danger action delete' : $options['class'];
 				$options['data-confirm'] = LAN_JSCONFIRM;
 			break;
 
@@ -5301,7 +5301,7 @@ var_dump($select_options);*/
 
 			$att = [
 					'href'               => e_SELF . "?$query",
-					'class'              => "btn btn-default btn-primary$eModal",
+					'class'              => "btn btn-default btn-success$eModal",
 					'data-modal-caption' => $eModalCap,
 					'title'              => LAN_EDIT,
 			//		'data-toggle'        => 'tooltip',
