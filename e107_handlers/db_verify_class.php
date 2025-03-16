@@ -425,7 +425,10 @@ class db_verify
 
 	}
 
-
+	public function hasSyntaxIssue($sqlFileData): bool
+	{
+		return false; // TODO check syntax for errrors.
+	}
 
 	/**
 	 * @param string $tbl table name without prefix.
@@ -437,6 +440,11 @@ class db_verify
 	 */
 	public function prepareResults($tbl, $selection, $sqlData, $fileData)
 	{
+		if($this->hasSyntaxIssue($fileData))
+		{
+			return false;
+		}
+
 				// Check field and index data
 		foreach(['field', 'index'] as $type)
 		{

@@ -954,8 +954,11 @@ class news_front
 
 			$gen = new convert;
 			$sql->select("news_category", "*", "category_id='$category'");
-			$row = $sql->fetch();
-			extract($row);  // still required for the table-render.  :(
+			if($row = $sql->fetch())
+			{
+				extract($row);  // still required for the table-render.  :(
+			}
+
 		}
 
 		if ($this->action == 'all') // show archive of all news items using list-style template.
