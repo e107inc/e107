@@ -823,12 +823,33 @@ EOF;
 
 	}
 
-
-	public function testPrepareResults()
+	private function prepareResults(string $file, string $sql)
 	{
 
 		$fileData = array();
 		$sqlData  = array();
+
+		$fileData['field'] = $this->dbv->getFields($file);
+		$sqlData['field']  = $this->dbv->getFields($sql);
+
+		$fileData['index'] = $this->dbv->getIndex($file);
+		$sqlData['index']  = $this->dbv->getIndex($sql);
+
+		$fileData['engine'] = $this->dbv->getIntendedStorageEngine("InnoDB");
+		$sqlData['engine']  = $this->dbv->getCanonicalStorageEngine("InnoDB");
+
+		$fileData['charset'] = $this->dbv->getIntendedCharset("utf8mb4");
+		$sqlData['charset']  = $this->dbv->getCanonicalCharset("utf8mb4");
+
+
+		return ['fileData' => $fileData, 'sqlData' => $sqlData];
+
+	}
+
+	public function testPrepareResults()
+	{
+
+
 
 		$sql = "`schedule_id` int(10) unsigned NOT NULL auto_increment,
 				`schedule_user_id`  int(11) NOT NULL,
@@ -853,20 +874,9 @@ EOF;
 			  KEY `schedule_invoice_id` (`schedule_invoice_id`)
             ";
 
+		$result = $this->prepareResults($file,$sql);
 
-		$fileData['field'] = $this->dbv->getFields($file);
-		$sqlData['field']  = $this->dbv->getFields($sql);
-
-		$fileData['index'] = $this->dbv->getIndex($file);
-		$sqlData['index']  = $this->dbv->getIndex($sql);
-
-		$fileData['engine'] = $this->dbv->getIntendedStorageEngine("InnoDB");
-		$sqlData['engine']  = $this->dbv->getCanonicalStorageEngine("InnoDB");
-
-		$fileData['charset'] = $this->dbv->getIntendedCharset("utf8mb4");
-		$sqlData['charset']  = $this->dbv->getCanonicalCharset("utf8mb4");
-
-		$this->dbv->prepareResults('schedule', 'myplugin', $sqlData, $fileData);
+		$this->dbv->prepareResults('schedule', 'myplugin', $result['sqlData'], $result['fileData']);
 
 		$resultFields = $this->dbv->getResults();
 		$expected     = array(
@@ -987,10 +997,10 @@ EOF;
 
 		self::assertEquals($expected, $resultIndices);
 
-		$fileData['charset'] = "utf8mb4";
-		$sqlData['charset']  = "utf8";
+		$result['fileData']['charset'] = "utf8mb4";
+		$result['sqlData']['charset']  = "utf8";
 
-		$result = $this->dbv->prepareResults('schedule', 'myplugin', $sqlData, $fileData);
+		$result = $this->dbv->prepareResults('schedule', 'myplugin', $result['sqlData'], $result['fileData']);
 		$resultFields = $this->dbv->getErrors();
 		$expected = array (
 		  'schedule' =>
@@ -1004,6 +1014,36 @@ EOF;
 		self::assertSame($expected, $resultFields);
 		self::assertSame(1, $this->dbv->errors());
 
+	}
+
+	public function testSyntaxCheck()
+	{
+		$file = "`affiliate_id` int(10) unsigned NOT NULL auto_increment,
+		  `affiliate_code` varchar(10) NOT NULL DEFAULT '',
+		  `affiliate_name` varchar(30) NOT NULL DEFAULT '',
+		  'affiliate_email` varchar(50) NOT NULL DEFAULT '',
+		  'affiliate_phone` varchar(16) NOT NULL DEFAULT '',
+		  `affiliate_sef` varchar(30) NOT NULL DEFAULT '',
+		  `affiliate_schema` varchar(30) NOT NULL DEFAULT '',
+		  `affiliate_cust_id` int(11) NOT NULL,
+		  `affiliate_user_id` int(11) NOT NULL,
+		  `affiliate_date` int(11) NOT NULL,
+		  `affiliate_discount` DECIMAL(6,2) NOT NULL DEFAULT '0.00',
+		  `affiliate_expires` int(11) NOT NULL,
+		  `affiliate_earned` int(6) NOT NULL,
+		  `affiliate_spent` int(6) NOT NULL,
+		  `affiliate_balance` int(6) NOT NULL,
+		  `affiliate_history` text,
+		  `affiliate_assignee` INT(3) NOT NULL DEFAULT 0,
+		  PRIMARY KEY  (`affiliate_id`),
+		  UNIQUE KEY `affiliate_code` (`affiliate_code`)";
+
+
+		$result = $this->dbv->hasSyntaxIssue($file);
+
+
+
+		var_export($result);
 
 	}
 
