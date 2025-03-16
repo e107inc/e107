@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\_blank;
+namespace E107\Plugins\_blank\Tests\Unit;
 use Codeception\Test\Unit;
 
 /* To use, run these commands from the root directory of e107 in CLI:

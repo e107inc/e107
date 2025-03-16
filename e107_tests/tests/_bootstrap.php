@@ -2,6 +2,7 @@
 use Codeception\Util\Autoload;
 use Codeception\Configuration;
 
+
 class E107TestSuiteBootstrap
 {
     const ENABLE_LOGGING = false; // Toggle logging (set to true to enable)
@@ -37,14 +38,12 @@ class E107TestSuiteBootstrap
         $this->log("Root Dir: " . codecept_root_dir());
 
         // Load core unit tests namespace (e107_tests/tests/unit/)
-        Autoload::addNamespace('Tests\Unit', codecept_root_dir() . '/tests/unit');
-        $this->log("Added core unit namespace: Tests\\Unit => " . codecept_root_dir() . '/tests/unit');
+		Autoload::addNamespace('', codecept_root_dir() . '/tests/unit');
+        $this->log("Added core unit namespace: '' => " . codecept_root_dir() . '/tests/unit');
 
-        // Load parameters
         define('PARAMS_GENERATOR', realpath(codecept_root_dir() . "/lib/config.php"));
         $params = include(PARAMS_GENERATOR);
 
-        // Define APP_PATH
         $app_path = $params['app_path'] ?: codecept_root_dir() . "/e107";
         if (substr($app_path, 0, 1) !== '/')
         {
@@ -53,10 +52,9 @@ class E107TestSuiteBootstrap
         define('APP_PATH', realpath($app_path));
         define('PARAMS_SERIALIZED', serialize($params));
 
-        // Log App Path after definition
         $this->log("App Path: " . APP_PATH);
 
-        // e_PLUGIN status
+       
         if (defined('e_PLUGIN'))
         {
             $this->log("e_PLUGIN already defined as: " . e_PLUGIN);
@@ -66,7 +64,6 @@ class E107TestSuiteBootstrap
             $this->log("e_PLUGIN not defined yet");
         }
 
-        // Set plugins directory once
         $this->pluginsDir = realpath(codecept_root_dir() . '/../e107_plugins/');
         $this->log("Plugins Dir: $this->pluginsDir");
 
@@ -74,7 +71,6 @@ class E107TestSuiteBootstrap
         $this->loadUnitTests();
         $this->loadAcceptanceTests();
 
-        // Include required e107 file
         include(codecept_root_dir() . "/lib/PriorityCallbacks.php");
 
         $this->log("e_PLUGIN after initialization: " . (defined('e_PLUGIN') ? e_PLUGIN : 'not defined'));
@@ -87,7 +83,7 @@ class E107TestSuiteBootstrap
         if ($this->pluginsDir && is_dir($this->pluginsDir))
         {
             $unitDirs = glob($this->pluginsDir . '/*/tests/unit', GLOB_ONLYDIR);
-            $separator = DIRECTORY_SEPARATOR; // \ on Windows, / on Linux
+            $separator = DIRECTORY_SEPARATOR;
             $unitGlobPattern = str_replace('/', $separator, $this->pluginsDir . '/*/tests/unit');
             $this->log("Unit Glob Pattern: $unitGlobPattern");
             $this->log("Found Unit Dirs: " . (empty($unitDirs) ? 'None' : ''));
@@ -100,11 +96,12 @@ class E107TestSuiteBootstrap
             }
             foreach ($unitDirs as $testDir)
             {
-                $pluginName = basename(dirname($testDir, 2)); // Two levels up from /unit
+                $pluginName = basename(dirname($testDir, 2));
                 $relativePath = '../e107_plugins/' . $pluginName . '/tests/unit';
                 $pluginUnitDirs[] = $relativePath;
-                Autoload::addNamespace("Tests\\Unit\\" . ucfirst($pluginName), $testDir);
-                $this->log("Added unit namespace: Tests\\Unit\\" . ucfirst($pluginName) . " => $testDir");
+                $namespace = "E107\\Plugins\\" . ucfirst($pluginName) . "\\Tests\\Unit";
+                Autoload::addNamespace($namespace, $testDir);
+                $this->log("Added unit namespace: $namespace => $testDir");
             }
         }
         else
@@ -121,7 +118,7 @@ class E107TestSuiteBootstrap
         if ($this->pluginsDir && is_dir($this->pluginsDir))
         {
             $acceptanceDirs = glob($this->pluginsDir . '/*/tests/acceptance', GLOB_ONLYDIR);
-            $separator = DIRECTORY_SEPARATOR; // \ on Windows, / on Linux
+            $separator = DIRECTORY_SEPARATOR;
             $acceptanceGlobPattern = str_replace('/', $separator, $this->pluginsDir . '/*/tests/acceptance');
             $this->log("Acceptance Glob Pattern: $acceptanceGlobPattern");
             $this->log("Found Acceptance Dirs: " . (empty($acceptanceDirs) ? 'None' : ''));
@@ -137,8 +134,9 @@ class E107TestSuiteBootstrap
                 $pluginName = basename(dirname($testDir, 2));
                 $relativePath = '../e107_plugins/' . $pluginName . '/tests/acceptance';
                 $pluginAcceptanceDirs[] = $relativePath;
-                Autoload::addNamespace("Tests\\Acceptance\\" . ucfirst($pluginName), $testDir);
-                $this->log("Added acceptance namespace: Tests\\Acceptance\\" . ucfirst($pluginName) . " => $testDir");
+                $namespace = "E107\\Plugins\\" . ucfirst($pluginName) . "\\Tests\\Acceptance";
+                Autoload::addNamespace($namespace, $testDir);
+                $this->log("Added acceptance namespace: $namespace => $testDir");
             }
         }
         else
@@ -148,6 +146,5 @@ class E107TestSuiteBootstrap
         $this->log("Included Acceptance Dirs: " . json_encode($pluginAcceptanceDirs, JSON_PRETTY_PRINT));
     }
 }
-
 
 new E107TestSuiteBootstrap;
