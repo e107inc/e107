@@ -2,11 +2,28 @@
   "name": "e107inc/e107-test",
   "description": "Test harness for e107",
   "license": "GPL-3.0-or-later",
+  "require": {
+    "php": "^8.1 || ^8.2 || ^8.3 || ^8.4"
+  },
   "require-dev": {
-    "twig/twig": ">=1.28",
-    "codeception/codeception": "^4.2",
-    "codeception/module-asserts": "^1.1",
-    "codeception/module-db": "^1.0",
-    "codeception/module-phpbrowser": "^1.0"
-        }
+    "twig/twig": "^3.12",
+    "codeception/codeception": "^5.2.1",
+    "codeception/module-asserts": "^3.0",
+    "codeception/module-db": "^3.1",
+    "codeception/module-phpbrowser": "^3.0",
+    "codeception/module-filesystem": "^3.0",
+    "codeception/module-webdriver": "^4.0"
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Helper\\": "tests/_support/Helper/",
+      "Tests\\Unit\\": "tests/unit/",
+      "Tests\\": "../e107_plugins/"
     }
+  }
+}
