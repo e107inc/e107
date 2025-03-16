@@ -113,12 +113,12 @@ jobs:
     - name: Install Composer
       run: curl -sSL https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer
 
+    - name: Opt out of CVE-2022-24765 mitigation
+      run: git config --global safe.directory '*'
+
     - name: Install test dependencies
       run: composer update --prefer-dist --no-progress
       working-directory: ./e107_tests/
-
-    - name: Opt out of CVE-2022-24765 mitigation
-      run: git config --global safe.directory '*'
 
     - name: Download Git submodule dependencies
       run: git submodule update --init --recursive --remote
