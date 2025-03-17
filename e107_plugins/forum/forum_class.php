@@ -2008,7 +2008,7 @@ class e107forum
 	}
 
 
-	function forumGetAllowed($type='view')
+	function forumGetAllowed($type='view', $mode = null)
 	{
 		if(empty($this->permList[$type]))
 		{
@@ -2017,7 +2017,12 @@ class e107forum
 
 		$sql = e107::getDb();
 		$forumList = implode(',', $this->permList[$type]);
-		$qry = "
+		$qry = $mode?"
+SELECT f.forum_id, f.forum_name, f.forum_sef, pf.forum_name AS parent_name
+FROM `#forum` AS f LEFT JOIN `#forum` AS pf
+ON f.forum_parent = pf.forum_id
+WHERE f.forum_id IN ({$forumList}) AND f.forum_parent != 0
+ORDER BY pf.forum_id, f.forum_name":"
 		SELECT forum_id, forum_name, forum_sef FROM `#forum`
 		WHERE forum_id IN ({$forumList}) AND forum_parent != 0
 		";
