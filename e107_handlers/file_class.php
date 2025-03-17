@@ -2587,7 +2587,7 @@ class e_file
 
 			if(($class === null && check_class($v['name'])) || (int) $class === (int) $v['name'])
 			{
-				$current_perms[$v['name']] = array('type' => $v['type'], 'maxupload' => $v['maxupload']);
+			//	$current_perms[$v['name']] = array('type' => $v['type'], 'maxupload' => $v['maxupload']);
 				$a_filetypes = explode(',', $v['type']);
 				foreach($a_filetypes as $ftype)
 				{
