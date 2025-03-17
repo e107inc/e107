@@ -25,7 +25,7 @@ class user_shortcodes extends e_shortcode
 		parent::__construct();
 
 		$pref = e107::getPref();
-
+		$tp = e107::getParser();
 		$this->commentsDisabled = vartrue($pref['comments_disabled']);
 
 		if(!empty($pref['comments_engine']))
@@ -462,11 +462,28 @@ class user_shortcodes extends e_shortcode
 	
 	function sc_user_sendpm($parm=null)
 	{
-		$pref = e107::getPref();
-		$tp = e107::getParser();
+//		$pref = e107::getPref();
+//		why is this orphan $pref here?
+//		$tp = e107::getParser();
 		if(e107::isInstalled("pm") && ($this->var['user_id'] > 0))
 		{
-		  return $tp->parseTemplate("{SENDPM={$this->var['user_id']}}");
+			$parms_str = 'user='.$this->var['user_id'];
+
+			if ($parm) {
+				$parms_str .='&'.implode('&', array_map(
+		            function($k, $v) { 
+                		return $k . '=' . $v;
+            		}, 
+            		array_keys($parm), 
+            		array_values($parm)
+            	)
+        		);
+			}
+
+			return $this->tp->parseTemplate("{SENDPM:".$parms_str.'}');
+//			return $tp->parseTemplate("{SENDPM:".$parms_str.'}');
+			
+//		  return $tp->parseTemplate("{SENDPM={$this->var['user_id']}}");
 		}
 	}
 
