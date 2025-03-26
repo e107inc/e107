@@ -10,8 +10,7 @@ jobs:
       fail-fast: false
       matrix:
         operating_system:
-          - image: docker.io/jrei/systemd-ubuntu:20.04
-          - image: docker.io/jrei/systemd-ubuntu:22.04
+          - image: docker.io/jrei/systemd-ubuntu:22.04  # Uses PHP 8.1 by default
     runs-on: ubuntu-latest
 
     steps:
@@ -47,6 +46,16 @@ jobs:
             salt-call -c ./ --id=e107-dev --local state.apply e107-dev
           "
         working-directory: ./e107_tests/lib/ci/salt/
+
+      - name: Install PHP extensions
+        run: |
+          docker exec target apt-get update
+          docker exec target apt-get install -y php8.1-zip php8.1-curl php8.1-mbstring php8.1-xml
+        # Install extensions for PHP 8.1 (default in Ubuntu 22.04)
+
+      - name: Verify PHP version
+        run: docker exec target php -v
+        # Confirms PHP 8.1 is in use
 
       - name: Install test dependencies
         run: |
