@@ -3997,20 +3997,34 @@ class e_admin_controller_ui extends e_admin_controller
 				//something like handleListUrlTypeFilter(); for custom handling of 'url_type' field name filters
 				$method = 'handle'.$this->getRequest()->getActionName().$this->getRequest()->camelize($filter[0]).'Filter';
 				$args = array_slice($filter, 1);
-
+			//		fwrite(STDOUT, __LINE__ . " Searching custom method: " . $method . "\n");
 				e107::getMessage()->addDebug('Searching for custom filter method: ' .$method. '(' .implode(', ', $args). ')');
 
-
-				if(method_exists($this, $method)) // callback handling
+				if (method_exists($this, $method)) // method handling
 				{
-					//return $this->$method($filter[1], $selected); selected?
-					// better approach - pass all values as method arguments
-					// NOTE - callbacks are allowed to return QUERY as a string, it'll be added in the WHERE clause
+					e107::getMessage()->addDebug('Executing filter callback <strong>' . get_class($this) . '::' . $method . '(' . implode(', ', $args) . ')</strong>');
 
-					e107::getMessage()->addDebug('Executing filter callback <strong>'.get_class($this).'::'.$method.'('.implode(', ', $args).')</strong>');
-
-					return call_user_func_array(array($this, $method), $args);
+					return call_user_func_array([$this, $method], $args);
 				}
+				elseif (property_exists($this, $method)) // dynamic property handling
+				{
+
+					// Debug information showing that the property was found
+					e107::getMessage()->addDebug('Accessing filter property <strong>' . get_class($this) . '::$' . $method . '</strong>');
+
+					if (is_callable($this->$method))
+					{
+						e107::getMessage()->addDebug('Executing callable property <strong>' . get_class($this) . '::$' . $method . '(' . implode(', ', $args) . ')</strong>');
+
+						return call_user_func_array($this->$method, $args);
+					}
+
+					// If not callable, return the property value as is (could be a query fragment or other data)
+					e107::getMessage()->addDebug('Returning property value from <strong>' . get_class($this) . '::$' . $method . '</strong>');
+
+					return $this->$method;
+				}
+
 
 				$res = array($filter[0], $filter[1]);
 				$this->_log('listQry Filtered by ' .$filter[0]. ' (' .$filter[1]. ')');
@@ -4889,6 +4903,26 @@ class e_admin_controller_ui extends e_admin_controller
 	 */
 	public function _modifyListQrySearch($listQry, $searchTerm, $filterOptions, string $tablePath,  string $tableFrom, string $primaryName, $raw, $orderField, $qryAsc, $forceFrom, int $qryFrom, $forceTo, int $perPage, $qryField,  $isfilter, $handleAction)
 	{
+
+/*
+		e107::getMessage()->addDebug('listQry: ' . $listQry);
+		e107::getMessage()->addDebug('searchTerm: ' . $searchTerm);
+		e107::getMessage()->addDebug('filterOptions: ' . $filterOptions);
+		e107::getMessage()->addDebug('tablePath: ' . $tablePath);
+		e107::getMessage()->addDebug('handleAction: ' . $handleAction);
+		e107::getMessage()->addDebug('tableFrom: ' . $tableFrom);
+		e107::getMessage()->addDebug('primaryName: ' . $primaryName);
+		e107::getMessage()->addDebug('raw: ' . $raw);
+		e107::getMessage()->addDebug('orderField: ' . $orderField);
+		e107::getMessage()->addDebug('qryAsc: ' . $qryAsc);
+		e107::getMessage()->addDebug('forceFrom: ' . $forceFrom);
+		e107::getMessage()->addDebug('qryFrom: ' . $qryFrom);
+		e107::getMessage()->addDebug('forceTo: ' . $forceTo);
+		e107::getMessage()->addDebug('perPage: ' . $perPage);
+		e107::getMessage()->addDebug('qryField: ' . $qryField);
+		e107::getMessage()->addDebug('isfilter: ' . ($isfilter ? 'true' : 'false'));*/
+
+
 		$tp       = e107::getParser();
 		$fields   = $this->getFields();
 		$joinData = $this->getJoinData();
@@ -4904,6 +4938,7 @@ class e_admin_controller_ui extends e_admin_controller
 		$searchTerm   = $tp->toDB($searchTerm);
 		$searchQuery  = $this->fixSearchWildcards($searchTerm);
 		$searchFilter = $this->_parseFilterRequest($filterOptions);
+
 
 		$listQry = $this->listQry; // check for modification during parseFilterRequest();
 
@@ -4960,7 +4995,7 @@ class e_admin_controller_ui extends e_admin_controller
 									'thisyear'  => strtotime('+1 year', $filterValue),
 								];
 
-								$end = isset($endOpts[$dateSearchType]) ? $endOpts[$dateSearchType] : time();
+								$end = $endOpts[$dateSearchType] ?? time();
 
 								if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
 								{
@@ -5043,16 +5078,26 @@ class e_admin_controller_ui extends e_admin_controller
 			if($this->_isSearchField($var, $searchQuery))
 			{
 				// Search for customer filter handler.
-				$cutomerSearchMethod = 'handle' . $handleAction . eHelper::camelize($key) . 'Search';
+				$customSearchMethod = 'handle' . $handleAction . eHelper::camelize($key) . 'Search';
+
 				$args                = array($searchTerm);
 
-				e107::getMessage()->addDebug('Searching for custom search method: ' . $className . '::' . $cutomerSearchMethod . '(' . implode(', ', $args) . ')');
+				e107::getMessage()->addDebug('Searching for custom search method: ' . $className . '::' . $customSearchMethod . '(' . implode(', ', $args) . ')');
 
-				if(method_exists($this, $cutomerSearchMethod)) // callback handling
+				if (method_exists($this, $customSearchMethod)) // callback handling
 				{
-					e107::getMessage()->addDebug('Executing custom search callback <strong>' . $className . '::' . $cutomerSearchMethod . '(' . implode(', ', $args) . ')</strong>');
+					e107::getMessage()->addDebug('Executing custom search callback <strong>' . $className . '::' . $customSearchMethod . '(' . implode(', ', $args) . ')</strong>');
 
-					$filter[] = call_user_func_array(array($this, $cutomerSearchMethod), $args);
+					$filter[] = call_user_func_array([$this, $customSearchMethod], $args);
+					continue;
+				}
+				elseif (property_exists($this, $customSearchMethod)) // check for dynamic property
+				{
+
+					e107::getMessage()->addDebug('Using custom search property <strong>' . $className . '::$' . $customSearchMethod . '</strong>');
+
+					$filter[] = call_user_func_array($this->$customSearchMethod, $args);
+
 					continue;
 				}
 
@@ -5120,6 +5165,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 		}
 
+	//	fwrite(STDOUT, __LINE__ . print_r($filter,true) . "\n");
 
 
 		if(strpos($filterOptions, 'searchfield__') === 0) // search in specific field, so remove the above filters.
