@@ -1,0 +1,277 @@
+{
+    "uri": "\/e107v2\/e107_admin\/links.php?searchquery=&filter_options=link_category__3&etrigger_filter=etrigger_filter",
+    "methodInvocation": {
+        "listQry": "",
+        "searchTerm": "",
+        "filterOptions": "link_category__3",
+        "tablePath": "`#links`.",
+        "tableFrom": "`#links`",
+        "primaryName": "link_id",
+        "raw": false,
+        "orderField": null,
+        "qryAsc": null,
+        "forceFrom": false,
+        "qryFrom": 0,
+        "forceTo": false,
+        "perPage": 0,
+        "qryField": null,
+        "isfilter": false,
+        "handleAction": "List"
+    },
+    "preProcessedData": {
+        "fields": {
+            "checkboxes": {
+                "title": "",
+                "width": "3%",
+                "forced": true,
+                "thclass": "center first",
+                "class": "center first",
+                "table": "links",
+                "alias": "",
+                "field": "checkboxes",
+                "__tableField": "`#links`.checkboxes",
+                "__tableFrom": "`#links`.checkboxes"
+            },
+            "link_button": {
+                "title": "Icon",
+                "type": "icon",
+                "width": "5%",
+                "thclass": "center",
+                "class": "center",
+                "readParms": {
+                    "legacy": "{e_IMAGE}icons\/"
+                },
+                "writeParms": "glyphs=1",
+                "table": "links",
+                "alias": "",
+                "field": "link_button",
+                "__tableField": "`#links`.link_button",
+                "__tableFrom": "`#links`.link_button"
+            },
+            "link_id": {
+                "title": "ID",
+                "type": "method",
+                "readParms": "",
+                "noedit": true,
+                "table": "links",
+                "alias": "",
+                "field": "link_id",
+                "__tableField": "`#links`.link_id",
+                "__tableFrom": "`#links`.link_id"
+            },
+            "link_name": {
+                "title": "Name",
+                "type": "text",
+                "inline": true,
+                "required": false,
+                "validate": false,
+                "width": "auto",
+                "writeParms": {
+                    "size": "xlarge"
+                },
+                "table": "links",
+                "alias": "",
+                "field": "link_name",
+                "__tableField": "`#links`.link_name",
+                "__tableFrom": "`#links`.link_name"
+            },
+            "link_category": {
+                "title": "Template",
+                "type": "dropdown",
+                "data": "str",
+                "inline": true,
+                "batch": true,
+                "filter": true,
+                "width": "auto",
+                "writeParms": {
+                    "size": "xlarge",
+                    "optArray": {
+                        "1": "1 - Main",
+                        "2": "2 - Sidebar",
+                        "3": "3 - Footer",
+                        "4": "4 -Alt",
+                        "5": "5 -Alt",
+                        "6": "6 -Alt",
+                        "255": "(Unassigned)"
+                    }
+                },
+                "table": "links",
+                "alias": "",
+                "field": "link_category",
+                "__tableField": "`#links`.link_category",
+                "__tableFrom": "`#links`.link_category"
+            },
+            "link_parent": {
+                "title": "Parent",
+                "type": "method",
+                "data": "int",
+                "width": "auto",
+                "batch": true,
+                "filter": true,
+                "thclass": "left first",
+                "writeParms": {
+                    "size": "xlarge"
+                },
+                "table": "links",
+                "alias": "",
+                "field": "link_parent",
+                "__tableField": "`#links`.link_parent",
+                "__tableFrom": "`#links`.link_parent"
+            },
+            "link_url": {
+                "title": "URL",
+                "width": "auto",
+                "type": "method",
+                "inline": true,
+                "required": true,
+                "validate": true,
+                "writeParms": "size=xxlarge",
+                "table": "links",
+                "alias": "",
+                "field": "link_url",
+                "__tableField": "`#links`.link_url",
+                "__tableFrom": "`#links`.link_url"
+            },
+            "link_sefurl": {
+                "title": "SEF URL",
+                "type": "method",
+                "inline": false,
+                "width": "auto",
+                "help": "Enable to override URL with a dynamically created Search-Engine-Friendly URL",
+                "table": "links",
+                "alias": "",
+                "field": "link_sefurl",
+                "__tableField": "`#links`.link_sefurl",
+                "__tableFrom": "`#links`.link_sefurl"
+            },
+            "link_class": {
+                "title": "Userclass",
+                "type": "userclass",
+                "inline": true,
+                "writeParms": "classlist=public,guest,nobody,member,classes,admin,main",
+                "batch": true,
+                "filter": true,
+                "width": "auto",
+                "table": "links",
+                "alias": "",
+                "field": "link_class",
+                "__tableField": "`#links`.link_class",
+                "__tableFrom": "`#links`.link_class"
+            },
+            "link_description": {
+                "title": "Description",
+                "type": "textarea",
+                "width": "auto",
+                "table": "links",
+                "alias": "",
+                "field": "link_description",
+                "__tableField": "`#links`.link_description",
+                "__tableFrom": "`#links`.link_description"
+            },
+            "link_order": {
+                "title": "Order",
+                "type": "number",
+                "width": "auto",
+                "nolist": false,
+                "inline": true,
+                "table": "links",
+                "alias": "",
+                "field": "link_order",
+                "__tableField": "`#links`.link_order",
+                "__tableFrom": "`#links`.link_order"
+            },
+            "link_open": {
+                "title": "Link Open Type",
+                "type": "dropdown",
+                "inline": true,
+                "width": "auto",
+                "batch": true,
+                "filter": true,
+                "thclass": "left first",
+                "writeParms": {
+                    "size": "xlarge",
+                    "optArray": {
+                        "0": "Opens in same window",
+                        "1": "Opens in new window",
+                        "4": "Opens in 600x400 mini-window",
+                        "5": "Opens in 800x600 window"
+                    }
+                },
+                "table": "links",
+                "alias": "",
+                "field": "link_open",
+                "__tableField": "`#links`.link_open",
+                "__tableFrom": "`#links`.link_open"
+            },
+            "link_rel": {
+                "title": "Relationship",
+                "type": "tags",
+                "inline": true,
+                "width": "auto",
+                "batch": false,
+                "filter": false,
+                "thclass": "left",
+                "help": "Optional 'rel' attribute. Comma separated.",
+                "writeParms": {
+                    "placeholder": "eg.nofollow,noreferrer",
+                    "size": "xlarge"
+                },
+                "table": "links",
+                "alias": "",
+                "field": "link_rel",
+                "__tableField": "`#links`.link_rel",
+                "__tableFrom": "`#links`.link_rel"
+            },
+            "link_function": {
+                "title": "Function",
+                "type": "method",
+                "data": "str",
+                "width": "auto",
+                "thclass": "left first",
+                "table": "links",
+                "alias": "",
+                "field": "link_function",
+                "__tableField": "`#links`.link_function",
+                "__tableFrom": "`#links`.link_function"
+            },
+            "link_owner": {
+                "title": "Owned by",
+                "type": "method",
+                "filter": true,
+                "data": "str",
+                "table": "links",
+                "alias": "",
+                "field": "link_owner",
+                "__tableField": "`#links`.link_owner",
+                "__tableFrom": "`#links`.link_owner"
+            },
+            "options": {
+                "title": "Options",
+                "type": null,
+                "forced": true,
+                "width": "10%",
+                "thclass": "center last",
+                "class": "center",
+                "readParms": "sort=1",
+                "table": "links",
+                "alias": "",
+                "field": "options",
+                "__tableField": "`#links`.options",
+                "__tableFrom": "`#links`.options"
+            }
+        },
+        "joinData": [],
+        "listOrder": "link_category,link_order ASC"
+    },
+    "intermediateStates": {
+        "searchTerm": "",
+        "searchQuery": "",
+        "searchFilter": [
+            "link_category",
+            "3"
+        ],
+        "listQry": "",
+        "listQryBeforeFinal": ""
+    },
+    "expected": "SELECT SQL_CALC_FOUND_ROWS `#links`.* FROM `#links` WHERE `#links`.link_category = '3' ORDER BY link_category,link_order ASC"
+}
