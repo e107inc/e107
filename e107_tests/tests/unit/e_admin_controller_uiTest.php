@@ -21,8 +21,9 @@
 		{
 			try
 			{
-				$this->ui = $this->make(e_admin_controller_ui::class);
+				$this->ui = $this->make(e_admin_ui::class);
 				$this->req = $this->make(e_admin_request::class);
+				$this->ui->setRequest($this->req);
 			}
 			catch (Exception $e)
 			{
@@ -155,6 +156,36 @@
 			$this::assertSame($expected, $result);
 
 
+
+
+		}
+
+		public function test_ModifyListQrySearchField()
+		{
+			$listQry = 'SELECT u.* FROM `#user`  WHERE 1 ';
+			$filterOptions = '';
+			$tablePath = '`#user`.';
+			$tableFrom = '`#user`';
+			$primaryName = 'user_id';
+			$raw = false;
+			$orderField = null;
+			$qryAsc = null;
+			$forceFrom = false;
+			$qryFrom = 0;
+			$forceTo = false;
+			$perPage = 10;
+			$qryField = null;
+			$isfilter = false;
+			$handleAction = 'List';
+
+			$this->ui->setFields([
+					'user_id'           => array('title'=>'User ID', '__tableField' => 'u.user_id', 'type'=>'int', 'data'=>'int'),
+					'user_name' 		=> array('title' => 'Name',	'__tableField' => 'u.user_name', 'type' => 'text',	 'data'=>'safestr'), // Display name
+ 		            'user_login' 		=> array('title' => 'Login','__tableField' => 'u.user_login', 'type' => 'text',	 'data'=>'safestr'), // Real name (no real vetting)
+ 		            'user_phone' 		=> array('title' => 'Phone','__tableField' => 'u.user_phone', 'search'=>true, 'type' => 'text',	 'data'=>'safestr'), // Real name (no real vetting)
+
+
+ 			]);
 			// Search Specific Field Test
 
 			$this->req->setAction('List');
@@ -176,7 +207,108 @@
 		    $expected = "SELECT u.* FROM `#user`  WHERE 1  AND u.user_phone LIKE '%custom_phone_5551234%' LIMIT 0, 10";
 		    $this::assertSame($expected, $result);
 
+
 		}
+
+		public function test_ModifyListQrySearch_FromJsonFiles()
+		{
+			// The directory where the JSON files are stored
+			$directory = e_BASE . "e107_tests/tests/_data/e_admin_ui/_modifyListQrySearch/";
+			if (!is_dir($directory))
+			{
+				$this::fail("Directory does not exist: " . $directory);
+			}
+
+			// Scan the directory for JSON files
+			$files = glob($directory . '*.json');
+
+			$this::assertNotEmpty($files, "No JSON files found in the specified directory!");
+
+			foreach ($files as $fl)
+			{
+				// Ensure the JSON file exists
+				$file = realpath(codecept_data_dir().str_replace('/', DIRECTORY_SEPARATOR, '/e_admin_ui/_modifyListQrySearch/') . basename($fl));
+				if (!file_exists($file))
+				{
+					$this::fail("File doesn't exist: " . $file);
+				}
+
+				// Load JSON content
+				$jsonContent = file_get_contents($file);
+				if (empty($jsonContent))
+				{
+					$this::fail("Failed to read JSON file: " . $file);
+				}
+
+				// Decode JSON
+				$data = json_decode($jsonContent, true);
+				if ($data === null)
+				{
+					$error = json_last_error_msg(); // Get a readable explanation of the problem
+					$this::fail("JSON decoding failed for file: $file. Error: " . $error);
+				}
+
+				// Ensure JSON data is valid
+				$this::assertNotEmpty($data, "Failed to decode JSON file: " . $file);
+
+				// Extract input parameters from JSON structure
+				$methodInvocation   = $data['methodInvocation'];
+				$preProcessedData   = $data['preProcessedData'];
+				$expected           = $data['expected'];
+
+				// Verify fields are present in the JSON
+				if (empty($preProcessedData['fields']))
+				{
+					$this::fail("Fields are not defined in the JSON file: " . $file);
+				}
+
+				if(!empty($preProcessedData['listOrder']))
+				{
+					$this->ui->setListOrder($preProcessedData['listOrder']);
+				}
+
+				$this->ui->setFields($preProcessedData['fields']);
+
+				$queryValue = $this->ui->getQuery('searchquery');
+
+				if(!empty($methodInvocation['searchTerm']))
+				{
+					$this->ui->setQuery('searchquery', $methodInvocation['searchTerm']);
+				}
+
+				if(!empty($methodInvocation['handleAction']))
+				{
+					$this->req->setAction($methodInvocation['handleAction']);
+				}
+
+				$query = $this->ui->_modifyListQrySearch(
+					$methodInvocation['listQry'],
+					$methodInvocation['searchTerm'],
+					$methodInvocation['filterOptions'],
+					$methodInvocation['tablePath'],
+					$methodInvocation['tableFrom'],
+					$methodInvocation['primaryName'],
+					$methodInvocation['raw'],
+					$methodInvocation['orderField'],
+					$methodInvocation['qryAsc'],
+					$methodInvocation['forceFrom'],
+					$methodInvocation['qryFrom'],
+					$methodInvocation['forceTo'],
+					$methodInvocation['perPage'],
+					$methodInvocation['qryField'],
+					$methodInvocation['isfilter'],
+					$methodInvocation['handleAction']
+				);
+
+				$this::assertEquals($expected, $query, "Test failed for JSON file: " . $file);
+			}
+		}
+
+
+
+
+
+
 /*
 		public function testGetSortParent()
 		{

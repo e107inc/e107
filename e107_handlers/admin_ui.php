@@ -3400,6 +3400,11 @@ class e_admin_controller_ui extends e_admin_controller
 		return (isset($this->tableJoin[$table][$att_name]) ? $this->tableJoin[$table][$att_name] : $default_att);
 	}
 
+	public function setListOrder($order)
+	{
+		$this->listOrder = $order;
+	}
+
 	/**
 	 * @param $table
 	 * @param $data
@@ -3997,19 +4002,11 @@ class e_admin_controller_ui extends e_admin_controller
 				//something like handleListUrlTypeFilter(); for custom handling of 'url_type' field name filters
 				$method = 'handle'.$this->getRequest()->getActionName().$this->getRequest()->camelize($filter[0]).'Filter';
 				$args = array_slice($filter, 1);
-			//		fwrite(STDOUT, __LINE__ . " Searching custom method: " . $method . "\n");
+
 				e107::getMessage()->addDebug('Searching for custom filter method: ' .$method. '(' .implode(', ', $args). ')');
 
-				if (method_exists($this, $method)) // method handling
+				if (property_exists($this, $method)) // dynamic property handling
 				{
-					e107::getMessage()->addDebug('Executing filter callback <strong>' . get_class($this) . '::' . $method . '(' . implode(', ', $args) . ')</strong>');
-
-					return call_user_func_array([$this, $method], $args);
-				}
-				elseif (property_exists($this, $method)) // dynamic property handling
-				{
-
-					// Debug information showing that the property was found
 					e107::getMessage()->addDebug('Accessing filter property <strong>' . get_class($this) . '::$' . $method . '</strong>');
 
 					if (is_callable($this->$method))
@@ -4024,7 +4021,12 @@ class e_admin_controller_ui extends e_admin_controller
 
 					return $this->$method;
 				}
+				elseif (method_exists($this, $method)) // method handling
+				{
+					e107::getMessage()->addDebug('Executing filter callback <strong>' . get_class($this) . '::' . $method . '(' . implode(', ', $args) . ')</strong>');
 
+					return call_user_func_array([$this, $method], $args);
+				}
 
 				$res = array($filter[0], $filter[1]);
 				$this->_log('listQry Filtered by ' .$filter[0]. ' (' .$filter[1]. ')');
@@ -4884,45 +4886,29 @@ class e_admin_controller_ui extends e_admin_controller
 	}
 
 	/**
-	 * @param        $listQry
-	 * @param        $searchTerm
-	 * @param        $filterOptions
-	 * @param string $tablePath
-	 * @param        $isfilter
-	 * @param string $tableFrom
-	 * @param string $primaryName
-	 * @param        $raw
-	 * @param        $orderField
-	 * @param        $qryAsc
-	 * @param        $forceFrom
-	 * @param int    $qryFrom
-	 * @param        $forceTo
-	 * @param int    $perPage
-	 * @param        $qryField
-	 * @return array|Custom|false|string|string[]
+	 * Modifies a list query with search parameters and filters.
+	 *
+	 * @param string $listQry       The base list query string to be modified.
+	 * @param string $searchTerm    The search term to filter records.
+	 * @param string $filterOptions The filter options for customizing the query.
+	 * @param string $tablePath     The table path for the query.
+	 * @param string $tableFrom     The primary table being queried.
+	 * @param string $primaryName   The primary key name of the table.
+	 * @param mixed  $raw           Raw data that can influence query behavior.
+	 * @param mixed  $orderField    The field by which to order results.
+	 * @param mixed  $qryAsc        Sort order for the query (ascending or descending).
+	 * @param mixed  $forceFrom     Forced starting position in the query.
+	 * @param int    $qryFrom       Starting offset for the query.
+	 * @param mixed  $forceTo       Forced ending position in the query.
+	 * @param int    $perPage       The number of results per page.
+	 * @param mixed  $qryField      Specific query field(s) to filter.
+	 * @param mixed  $isfilter      Determines if a specific filter is applied.
+	 * @param mixed  $handleAction  Custom action handler for the search process.
+	 * @return void
 	 */
-	public function _modifyListQrySearch($listQry, $searchTerm, $filterOptions, string $tablePath,  string $tableFrom, string $primaryName, $raw, $orderField, $qryAsc, $forceFrom, int $qryFrom, $forceTo, int $perPage, $qryField,  $isfilter, $handleAction)
+	public function _modifyListQrySearch(string|null $listQry, string $searchTerm, string $filterOptions, string $tablePath,  string $tableFrom, string $primaryName, $raw, $orderField, $qryAsc, $forceFrom, int $qryFrom, $forceTo, int $perPage, $qryField,  $isfilter, $handleAction)
 	{
-
-/*
-		e107::getMessage()->addDebug('listQry: ' . $listQry);
-		e107::getMessage()->addDebug('searchTerm: ' . $searchTerm);
-		e107::getMessage()->addDebug('filterOptions: ' . $filterOptions);
-		e107::getMessage()->addDebug('tablePath: ' . $tablePath);
-		e107::getMessage()->addDebug('handleAction: ' . $handleAction);
-		e107::getMessage()->addDebug('tableFrom: ' . $tableFrom);
-		e107::getMessage()->addDebug('primaryName: ' . $primaryName);
-		e107::getMessage()->addDebug('raw: ' . $raw);
-		e107::getMessage()->addDebug('orderField: ' . $orderField);
-		e107::getMessage()->addDebug('qryAsc: ' . $qryAsc);
-		e107::getMessage()->addDebug('forceFrom: ' . $forceFrom);
-		e107::getMessage()->addDebug('qryFrom: ' . $qryFrom);
-		e107::getMessage()->addDebug('forceTo: ' . $forceTo);
-		e107::getMessage()->addDebug('perPage: ' . $perPage);
-		e107::getMessage()->addDebug('qryField: ' . $qryField);
-		e107::getMessage()->addDebug('isfilter: ' . ($isfilter ? 'true' : 'false'));*/
-
-
+		$generateTest = false;
 		$tp       = e107::getParser();
 		$fields   = $this->getFields();
 		$joinData = $this->getJoinData();
@@ -4939,8 +4925,45 @@ class e_admin_controller_ui extends e_admin_controller
 		$searchQuery  = $this->fixSearchWildcards($searchTerm);
 		$searchFilter = $this->_parseFilterRequest($filterOptions);
 
-
 		$listQry = $this->listQry; // check for modification during parseFilterRequest();
+
+		$debugData = [
+			'uri'    => e_REQUEST_URI,
+		    'methodInvocation' => [
+		        'listQry'      => (string) $listQry,
+		        'searchTerm'   => $searchTerm,
+		        'filterOptions'=> $filterOptions,
+		        'tablePath'    => $tablePath,
+		        'tableFrom'    => $tableFrom,
+		        'primaryName'  => $primaryName,
+		        'raw'          => (bool) $raw,
+		        'orderField'   => $orderField,
+		        'qryAsc'       => $qryAsc,
+		        'forceFrom'    => $forceFrom,
+		        'qryFrom'      => $qryFrom,
+		        'forceTo'      => $forceTo,
+		        'perPage'      => $perPage,
+		        'qryField'     => $qryField,
+		        'isfilter'     => $isfilter,
+		        'handleAction' => $handleAction
+		    ],
+		    'preProcessedData' => [
+		        'fields'   => $fields,
+		        'joinData' => $joinData,
+		        'listOrder' => $this->listOrder,
+		    ],
+		    'intermediateStates' => [
+		        'searchTerm'  => $searchTerm,
+		        'searchQuery' => $searchQuery,
+		        'searchFilter'=> $searchFilter,
+		        'listQry'     => $this->listQry
+		    ]
+		];
+
+
+
+
+
 
 		if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
 		{
@@ -4954,7 +4977,16 @@ class e_admin_controller_ui extends e_admin_controller
 
 			if($filterField && $filterValue !== '' && isset($fields[$filterField]))
 			{
-				$_dataType  = $fields[$filterField]['data'];
+				if(!empty($fields[$filterField]['data']))
+				{
+					$_dataType  = $fields[$filterField]['data'];
+				}
+				else
+				{
+					$_dataType  = 'str';
+					e107::getMessage()->addInfo('Field <b>' . $filterField . '</b> has no data type. Using default <b>str</b>.');
+				}
+
 				$_fieldType = $fields[$filterField]['type'];
 
 				if($_fieldType === 'comma' || $_fieldType === 'checkboxes' || $_fieldType === 'userclasses' || ($_fieldType === 'dropdown' && !empty($fields[$filterField]['writeParms']['multiple'])))
@@ -5389,6 +5421,27 @@ class e_admin_controller_ui extends e_admin_controller
 		// print_a($this->fields);
 
 		$this->_log('listQry: ' . str_replace('#', MPREFIX, $qry));
+
+		// JSON encode the debug data
+		$debugData['intermediateStates']['listQryBeforeFinal'] = $listQry;
+
+		$debugData['expected'] = $qry;
+		$jsonDebugInfo = json_encode($debugData, JSON_PRETTY_PRINT);
+
+		// Optionally log the JSON data to a file for inspection
+		if($generateTest && !e107::isCli())
+		{
+			$path = e_BASE."e107_tests/tests/_data/e_admin_ui/_modifyListQrySearch/".sha1($jsonDebugInfo).".json";
+			if(file_put_contents($path, $jsonDebugInfo . PHP_EOL, FILE_APPEND))
+			{
+				e107::getMessage()->addDebug('Saved test info to ' . $path);
+			}
+		}
+
+
+		// Print to the debug interface (optional, can overload logs)
+		e107::getMessage()->addDebug('<pre>' . $jsonDebugInfo . '</pre>');
+
 
 		return $qry;
 	}
