@@ -4904,9 +4904,9 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @param mixed  $qryField      Specific query field(s) to filter.
 	 * @param mixed  $isfilter      Determines if a specific filter is applied.
 	 * @param mixed  $handleAction  Custom action handler for the search process.
-	 * @return void
+	 * @return string
 	 */
-	public function _modifyListQrySearch(string|null $listQry, string $searchTerm, string $filterOptions, string $tablePath,  string $tableFrom, string $primaryName, $raw, $orderField, $qryAsc, $forceFrom, int $qryFrom, $forceTo, int $perPage, $qryField,  $isfilter, $handleAction)
+	public function _modifyListQrySearch(string|null $listQry, string $searchTerm, string $filterOptions, string $tablePath,  string $tableFrom, string|null $primaryName, $raw, $orderField, $qryAsc, $forceFrom, int $qryFrom, $forceTo, int $perPage, $qryField,  $isfilter, $handleAction)
 	{
 		$generateTest = false;
 		$tp       = e107::getParser();
@@ -4959,9 +4959,6 @@ class e_admin_controller_ui extends e_admin_controller
 		        'listQry'     => $this->listQry
 		    ]
 		];
-
-
-
 
 
 

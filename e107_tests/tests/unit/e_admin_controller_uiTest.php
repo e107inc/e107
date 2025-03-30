@@ -13,7 +13,7 @@
 	class e_admin_controller_uiTest extends \Codeception\Test\Unit
 	{
 
-		/** @var e_admin_controller_ui */
+		/** @var e_admin_ui */
 		protected $ui;
 		protected $req;
 
@@ -30,6 +30,8 @@
 				$this::fail("Couldn't load e_admin_controller_ui object: " . $e->getMessage());
 			}
 		}
+
+
 
 		public function testJoinAlias()
 		{
@@ -155,7 +157,45 @@
 			$expected = "SELECT u.* FROM `#user`  WHERE 1  AND  ( u.user_name LIKE '%burt&#039;s%' OR u.user_login LIKE '%burt&#039;s%' OR u.user_phone LIKE '%burt&#039;s%' )  LIMIT 0, 10";
 			$this::assertSame($expected, $result);
 
+			// Raw mode.
+			$result = $this->ui->_modifyListQrySearch($listQry, "burt's", $filterOptions, $tablePath,  $tableFrom, $primaryName, true, $orderField, $qryAsc, $forceFrom, $qryFrom, $forceTo, $perPage, $qryField,  $isfilter, $handleAction);
+			$expected = array (  'joinWhere' =>
+				  array (
+				  ),
+				  'filter' =>
+				  array (
+				    0 => 'u.user_name LIKE \'%burt&#039;s%\'',
+				    1 => 'u.user_login LIKE \'%burt&#039;s%\'',
+				    2 => 'u.user_phone LIKE \'%burt&#039;s%\'',
+				  ),
+				  'listQrySql' =>
+				  array (
+				  ),
+				  'filterFrom' =>
+				  array (
+				  ),
+				  'search' =>
+				  array (
+				  ),
+				  'tableFromName' => '`#user`',
+				  'tableFrom' =>
+				  array (
+				    0 => '`#user`.*',
+				  ),
+				  'joinsFrom' =>
+				  array (
+				  ),
+				  'joins' =>
+				  array (
+				  ),
+				  'groupField' => '',
+				  'orderField' => '',
+				  'orderType' => 'ASC',
+				  'limitFrom' => 0,
+				  'limitTo' => 10,
+				);
 
+			$this::assertSame($expected, $result);
 
 
 		}
@@ -212,6 +252,26 @@
 
 		public function test_ModifyListQrySearch_FromJsonFiles()
 		{
+
+			// For Banlist test.
+
+			$this->ui->handleListBanlistIpSearch  = function($srch)
+			{
+				$ret = array(
+					"banlist_ip = '".$srch."'"
+				);
+
+				if($ip6 = e107::getIPHandler()->ipEncode($srch,true))
+				{
+					$ip = str_replace('x', '', $ip6);
+					$ret[] = "banlist_ip LIKE '%".$ip."%'";
+				}
+
+				return implode(" OR ",$ret);
+			};
+
+
+
 			// The directory where the JSON files are stored
 			$directory = e_BASE . "e107_tests/tests/_data/e_admin_ui/_modifyListQrySearch/";
 			if (!is_dir($directory))
@@ -255,6 +315,8 @@
 				$methodInvocation   = $data['methodInvocation'];
 				$preProcessedData   = $data['preProcessedData'];
 				$expected           = $data['expected'];
+
+
 
 				// Verify fields are present in the JSON
 				if (empty($preProcessedData['fields']))
