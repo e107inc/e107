@@ -5534,69 +5534,27 @@ class e107
 	 */
 	public function set_urls_deferred()
 	{
-		$fallback =  $this->HTTP_SCHEME . '://' . filter_var($_SERVER['HTTP_HOST'], FILTER_SANITIZE_URL). e_HTTP; // worst case secenario.
-		$configured_url = self::getPref('siteurl', $fallback);
+		if(self::isCli())
+		{
+			define('SITEURL', self::getPref('siteurl'));
+			define('SITEURLBASE', rtrim(SITEURL,'/'));
+		}
+		else
+		{
+			define('SITEURLBASE', $this->HTTP_SCHEME.'://'. filter_var($_SERVER['HTTP_HOST'], FILTER_SANITIZE_URL));
+			define('SITEURL', SITEURLBASE.e_HTTP);
+		}
 
-	    if (self::isCli())
-	    {
-	        define('SITEURL', $configured_url);
-	        define('SITEURLBASE', rtrim(SITEURL, '/'));
-	    }
-	    else
-	    {
 
-		    $configured_domain = parse_url($configured_url, PHP_URL_HOST);
+		// login/signup
+		define('e_SIGNUP', SITEURL.(file_exists(e_BASE.'customsignup.php') ? 'customsignup.php' : 'signup.php'));
 
-		    // Define cache file path in system folder
-		    $cache_file = e_SYSTEM . 'cache/ip_cache.json';
-		    $cache = [];
+		if(!defined('e_LOGIN'))
+		{
+			define('e_LOGIN', SITEURL.(file_exists(e_BASE.'customlogin.php') ? 'customlogin.php' : 'login.php'));
+		}
 
-		    // Load existing cache if available
-		    if (file_exists($cache_file))
-		    {
-		        $cache = json_decode(file_get_contents($cache_file), true) ?: [];
-		    }
-
-		    // Resolve configured domain IP if not cached
-		    if (!isset($cache[$configured_domain]))
-		    {
-		        $cache[$configured_domain] = gethostbyname($configured_domain);
-		        file_put_contents($cache_file, json_encode($cache, JSON_PRETTY_PRINT));
-		    }
-
-		    $configured_ip = $cache[$configured_domain];
-
-	        $requested_host = filter_var($_SERVER['HTTP_HOST'], FILTER_SANITIZE_URL);
-
-	        // Resolve requested host IP if not cached
-	        if (!isset($cache[$requested_host]))
-	        {
-	            $cache[$requested_host] = gethostbyname($requested_host);
-	            file_put_contents($cache_file, json_encode($cache, JSON_PRETTY_PRINT));
-	        }
-	        $requested_ip = $cache[$requested_host];
-
-	        $allowed_ips = [$configured_ip];
-	        if (in_array($requested_ip, $allowed_ips) && $requested_ip !== $requested_host)
-	        {
-	            define('SITEURLBASE', $this->HTTP_SCHEME . '://' . $requested_host);
-	            define('SITEURL', SITEURLBASE . e_HTTP);
-	        }
-	        else
-	        {
-	            define('SITEURL', $configured_url);
-	            define('SITEURLBASE', rtrim(SITEURL, '/'));
-	        }
-	    }
-
-	    define('e_SIGNUP', SITEURL . (file_exists(e_BASE . 'customsignup.php') ? 'customsignup.php' : 'signup.php'));
-
-	    if (!defined('e_LOGIN'))
-	    {
-	        define('e_LOGIN', SITEURL . (file_exists(e_BASE . 'customlogin.php') ? 'customlogin.php' : 'login.php'));
-	    }
-
-	    return $this;
+		return $this;
 	}
 
 	/**
