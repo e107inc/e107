@@ -5535,13 +5535,14 @@ class e107
 	public function set_urls_deferred()
 	{
 		$siteurl = self::getPref('siteurl');
+		$configured_host = parse_url($siteurl, PHP_URL_HOST);
 
 		if(self::isCli())
 		{
 			define('SITEURL', $siteurl);
 			define('SITEURLBASE', rtrim(SITEURL,'/'));
 		}
-		elseif(strpos($siteurl,'http')!== false && strpos($siteurl, $_SERVER['HTTP_HOST'])===false)
+		elseif(!empty($configured_host) && strpos($siteurl,'http')!== false && $configured_host !== $_SERVER['HTTP_HOST'] && substr($_SERVER['HTTP_HOST'], - strlen('.' . $configured_host)) !== ('.' . $configured_host))
 		{
 			die('Site Configuration Issue Detected. Please contact your webmaster.');
 			error_log('The configured siteurl in your preferences does not match the HTTP_HOST: '.$_SERVER['HTTP_HOST']);
