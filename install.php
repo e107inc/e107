@@ -11,7 +11,7 @@
 */
 
 // minimal software version
-define('MIN_PHP_VERSION',   '7.4');
+define('MIN_PHP_VERSION',   '8.0');
 define('MIN_MYSQL_VERSION', '4.1.2');
 define('MAKE_INSTALL_LOG', true);
 
@@ -1577,8 +1577,9 @@ return [
         'media'      => '{$this->e107->e107_dirs['MEDIA_DIRECTORY']}',
         'system'     => '{$this->e107->e107_dirs['SYSTEM_DIRECTORY']}',
     ],
-    'site' => [
+    'other' => [
         'site_path'  => '{$this->previous_steps['paths']['hash']}',
+    //  'site_hosts'      => ['localhost','parked-domain.com'],
     ]
 ];
 ";

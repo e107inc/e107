@@ -62,4 +62,4 @@ return [
     'other' =>  [
             'site_path' => '000000test'
     ]
-        ];
+];

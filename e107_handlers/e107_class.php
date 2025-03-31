@@ -74,6 +74,13 @@ class e107
 	protected $HTTP_SCHEME;
 
 	/**
+	 * Storage for host configuration from siteurl or e107_config $config['other']['site_hosts']
+	 *
+	 * @var array
+	 */
+	protected $hosts = [];
+
+	/**
 	 * Used for runtime caching of user extended struct
 	 *
 	 * @var array
@@ -620,6 +627,11 @@ class e107
 		if(empty($e107_config_override['site_path']))
 		{
 			$this->site_path = $this->makeSiteHash($e107_config_mysql_info['defaultdb'], $e107_config_mysql_info['prefix']);
+		}
+
+		if(!empty($e107_config_override['site_hosts']))
+		{
+			$this->hosts = (array) $e107_config_override['site_hosts'];
 		}
 
 		// Set default folder (and override paths) if missing from e107_config.php
@@ -5534,25 +5546,25 @@ class e107
 	 */
 	public function set_urls_deferred()
 	{
-		$siteurl = self::getPref('siteurl');
-		$configured_host = parse_url($siteurl, PHP_URL_HOST);
+		$siteurl        = self::getPref('siteurl');
+		$defaultHost    = (array) parse_url($siteurl, PHP_URL_HOST);
+		$hosts          = !empty($this->hosts) ? $this->hosts : $defaultHost;
 
 		if(self::isCli())
 		{
 			define('SITEURL', $siteurl);
 			define('SITEURLBASE', rtrim(SITEURL,'/'));
 		}
-		elseif(!empty($configured_host) && strpos($siteurl,'http')!== false && $configured_host !== $_SERVER['HTTP_HOST'] && substr($_SERVER['HTTP_HOST'], - strlen('.' . $configured_host)) !== ('.' . $configured_host))
+		elseif(!empty($hosts) && !$this->isAllowedHost($hosts, $_SERVER['HTTP_HOST']))
 		{
+			error_log('The configured siteurl in your preferences or e107_config "host" value does not match the HTTP_HOST: '.$_SERVER['HTTP_HOST']);
 			die('Site Configuration Issue Detected. Please contact your webmaster.');
-			error_log('The configured siteurl in your preferences does not match the HTTP_HOST: '.$_SERVER['HTTP_HOST']);
 		}
 		else
 		{
 			define('SITEURLBASE', $this->HTTP_SCHEME.'://'. filter_var($_SERVER['HTTP_HOST'], FILTER_SANITIZE_URL));
 			define('SITEURL', SITEURLBASE.e_HTTP);
 		}
-
 
 		// login/signup
 		define('e_SIGNUP', SITEURL.(file_exists(e_BASE.'customsignup.php') ? 'customsignup.php' : 'signup.php'));
@@ -5563,6 +5575,34 @@ class e107
 		}
 
 		return $this;
+	}
+
+
+	/**
+	 * Check if the current host ($_SERVER['HTTP_HOST']) matches any configured host(s).
+	 *
+	 * @param array  $allowedHosts Array of configured hostnames.
+	 * @param string $httpHost     HTTP_HOST being validated.
+	 *
+	 * @return bool True if host is allowed, false otherwise.
+	 */
+	private function isAllowedHost(array $allowedHosts, string $httpHost): bool
+	{
+		if (empty($allowedHosts))
+		{
+			error_log('The configured siteurl in your preferences does not contain a a domain name');
+			return true; // Allowed if no hosts.
+		}
+
+		foreach ($allowedHosts as $host)
+		{
+			if ($httpHost === $host || str_ends_with($httpHost, '.' . $host))
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**

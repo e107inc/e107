@@ -34,7 +34,7 @@ class e107Test extends \Codeception\Test\Unit
 
 		//	$this->e107->getInstance();
 		//$res = $this->e107::getInstance();
-		//	$this->assertTrue($res);
+		//	$this::assertTrue($res);
 	}
 
 	public function testInitCore()
@@ -47,9 +47,9 @@ class e107Test extends \Codeception\Test\Unit
 		$sql_info = @compact('mySQLserver', 'mySQLuser', 'mySQLpassword', 'mySQLdefaultdb', 'mySQLprefix', 'mySQLport');
 		$res = $this->e107->initCore($e107_paths, e_ROOT, $sql_info, varset($E107_CONFIG, array()));
 
-		$this->assertEquals('000000test', $res->site_path);
+		$this::assertEquals('000000test', $res->site_path);
 
-		$this->assertEquals('/', e_HTTP);
+		$this::assertEquals('/', e_HTTP);
 
 	}
 
@@ -166,10 +166,10 @@ class e107Test extends \Codeception\Test\Unit
 		$result = ob_get_clean();
 
 
-		$this->assertStringContainsString('<h3>MY HEADER</h3>', $result);
-		$this->assertStringContainsString('<h3>MY FOOTER</h3>', $result);
-		$this->assertStringContainsString('<script>google code</script>', $result);
-		$this->assertStringNotContainsString('{BOOTSTRAP_BRANDING}', $result);
+		$this::assertStringContainsString('<h3>MY HEADER</h3>', $result);
+		$this::assertStringContainsString('<h3>MY FOOTER</h3>', $result);
+		$this::assertStringContainsString('<script>google code</script>', $result);
+		$this::assertStringNotContainsString('{BOOTSTRAP_BRANDING}', $result);
 
 	//	var_export($result);
 
@@ -179,115 +179,115 @@ class e107Test extends \Codeception\Test\Unit
 			public function testInitInstall()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testMakeSiteHash()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testSetDirs()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testPrepareDirs()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testDefaultDirs()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testInitInstallSql()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetRegistry()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testSetRegistry()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetFolder()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetE107()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testIsCli()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetMySQLConfig()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetSitePath()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetHandlerPath()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testAddHandler()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testIsHandler()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetHandlerOverload()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testSetHandlerOverload()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testIsHandlerOverloadable()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 */
 			public function testGetSingleton()
@@ -297,16 +297,16 @@ class e107Test extends \Codeception\Test\Unit
 				// test with path.
 				$result = $e107::getSingleton('override',  e_HANDLER . 'override_class.php');
 
-				$this->assertNotEmpty($result, 'Override class not loaded');
+				$this::assertNotEmpty($result, 'Override class not loaded');
 
 				$exists = method_exists($result, 'override_check');
 
-				$this->assertTrue($exists, 'Failed to load override class singleton');
+				$this::assertTrue($exists, 'Failed to load override class singleton');
 
 				// Test without path.
 				$result2 = $e107::getOverride();
 				$exists2 = method_exists($result2, 'override_check');
-				$this->assertTrue($exists2, 'Failed to load override class singleton');
+				$this::assertTrue($exists2, 'Failed to load override class singleton');
 
 			}
 
@@ -314,115 +314,115 @@ class e107Test extends \Codeception\Test\Unit
 			public function testGetObject()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetConfig()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetPref()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testFindPref()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetPlugConfig()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetPlugLan()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetPlugPref()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testFindPlugPref()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetThemeConfig()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetThemePref()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testSetThemePref()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetThemeGlyphs()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetParser()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetScParser()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetSecureImg()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetScBatch()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetDb()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetCache()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetBB()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}*/
 
 
@@ -435,7 +435,7 @@ class e107Test extends \Codeception\Test\Unit
 
 		$res = ($className === 'UserHandler');
 
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 
 	}
 
@@ -452,16 +452,16 @@ class e107Test extends \Codeception\Test\Unit
 		$sess = $e107::getSession();
 		$input = 'test-key-result';
 		$sess->set('test-key', $input);
-		$this->assertSame($input, $sess->get('test-key'));
+		$this::assertSame($input, $sess->get('test-key'));
 
 		// Create Session 2 with namespace. Make sure Session 1 key is not present.
 		$sess2 = $e107::getSession('other');
-		$this->assertEmpty($sess2->get('test-key'));
+		$this::assertEmpty($sess2->get('test-key'));
 
 		// Make sure Session 2 key is set and not present in Session 1.
 		$sess2->set('other-key', true);
-		$this->assertEmpty($sess->get('other-key'));
-		$this->assertTrue($sess2->get('other-key'));
+		$this::assertEmpty($sess->get('other-key'));
+		$this::assertTrue($sess2->get('other-key'));
 
 	}
 
@@ -469,139 +469,139 @@ class e107Test extends \Codeception\Test\Unit
 			public function testGetRedirect()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetRate()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetSitelinks()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetRender()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetEmail()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetBulkEmail()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetEvent()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetArrayStorage()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetMenu()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetTheme()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetUrl()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetFile()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetForm()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetAdminLog()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetLog()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetDateConvert()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetDate()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetDebug()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetNotify()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetOverride()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetLanguage()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetIPHandler()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetXml()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 			*/
 
@@ -609,140 +609,140 @@ class e107Test extends \Codeception\Test\Unit
 	{
 
 		$object = e107::getHybridAuth();
-		$this->assertInstanceOf(Hybridauth\Hybridauth::class, $object);
+		$this::assertInstanceOf(Hybridauth\Hybridauth::class, $object);
 	}
 
 	/*
 	public function testGetUserClass()
 	{
 		$res = null;
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 	}
 
 	public function testGetSystemUser()
 	{
 		$res = null;
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 	}
 
 	public function testUser()
 	{
 		$res = null;
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 	}
 
 	public function testSerialize()
 	{
 		$res = null;
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 	}
 
 	public function testUnserialize()
 	{
 		$res = null;
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 	}
 
 	public function testGetUser()
 	{
 		$res = null;
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 	}
 
 	public function testGetModel()
 	{
 		$res = null;
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 	}
 
 	public function testGetUserStructure()
 	{
 		$res = null;
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 	}
 
 	public function testGetUserExt()
 	{
 		$res = null;
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 	}
 
 	public function testGetUserPerms()
 	{
 		$res = null;
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 	}
 
 	public function testGetRank()
 	{
 		$res = null;
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 	}
 
 	public function testGetPlugin()
 	{
 		$res = null;
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 	}
 
 	public function testGetPlug()
 	{
 		$res = null;
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 	}
 
 	public function testGetOnline()
 	{
 		$res = null;
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 	}
 
 	public function testGetChart()
 	{
 		$res = null;
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 	}
 
 	public function testGetComment()
 	{
 		$res = null;
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 	}
 
 	public function testGetCustomFields()
 	{
 		$res = null;
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 	}
 
 	public function testGetMedia()
 	{
 		$res = null;
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 	}
 
 	public function testGetNav()
 	{
 		$res = null;
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 	}
 
 	public function testGetMessage()
 	{
 		$res = null;
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 	}
 
 	public function testGetAjax()
 	{
 		$res = null;
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 	}
 
 	public function testGetLibrary()
 	{
 		$res = null;
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 	}
 */
 	public function testLibrary()
@@ -764,7 +764,7 @@ class e107Test extends \Codeception\Test\Unit
 		);
 
 		$result = $e107::library('files', 'fontawesome5');
-		$this->assertSame($expected, $result);
+		$this::assertSame($expected, $result);
 
 
 		// -------------------
@@ -779,7 +779,7 @@ class e107Test extends \Codeception\Test\Unit
 		);
 
 		$result = $e107::library('files', 'fontawesome5', null, ['js']);
-		$this->assertSame($expected, $result);
+		$this::assertSame($expected, $result);
 
 		// -------------------
 		$expected = array (
@@ -795,26 +795,26 @@ class e107Test extends \Codeception\Test\Unit
 		);
 
 		$result = $e107::library('files', 'bootstrap5');
-		$this->assertSame($expected, $result);
+		$this::assertSame($expected, $result);
 
 	}
 /*
 	public function testGetJs()
 	{
 		$res = null;
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 	}
 
 	public function testSet()
 	{
 		$res = null;
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 	}
 
 	public function testJs()
 	{
 		$res = null;
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 	}
 
 	public function testLink()
@@ -826,49 +826,49 @@ class e107Test extends \Codeception\Test\Unit
 	public function testCss()
 	{
 		$res = null;
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 	}
 
 	public function testDebug()
 	{
 		$res = null;
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 	}
 
 	public function testGetJshelper()
 	{
 		$res = null;
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 	}
 
 	public function testMeta()
 	{
 		$res = null;
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 	}
 
 	public function testGetAdminUI()
 	{
 		$res = null;
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 	}
 
 	public function testGetAddon()
 	{
 		$res = null;
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 	}
 
 	public function testGetAddonConfig()
 	{
 		$res = null;
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 	}
 
 	public function testCallMethod()
 	{
 		$res = null;
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 	}
 */
 	public function testGetUrlConfig()
@@ -886,8 +886,8 @@ class e107Test extends \Codeception\Test\Unit
 		  );
 
 		$result = e107::getUrlConfig();
-		$this->assertNotEmpty($result['contact']);
-		$this->assertSame($expected, $result['contact']);
+		$this::assertNotEmpty($result['contact']);
+		$this::assertSame($expected, $result['contact']);
 
 		// ----
 
@@ -899,8 +899,8 @@ class e107Test extends \Codeception\Test\Unit
 		  );
 
 		$result = e107::getUrlConfig('route');
-		$this->assertNotEmpty($result['contact/index']);
-		$this->assertSame($expected, $result['contact/index']);
+		$this::assertNotEmpty($result['contact/index']);
+		$this::assertSame($expected, $result['contact/index']);
 
 
 
@@ -909,19 +909,19 @@ class e107Test extends \Codeception\Test\Unit
 	public function testGetThemeInfo()
 	{
 		$res = null;
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 	}
 
 	public function testCoreTemplatePath()
 	{
 		$res = null;
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 	}
 
 	public function testTemplatePath()
 	{
 		$res = null;
-		$this->assertTrue($res);
+		$this::assertTrue($res);
 	}
 */
 	public function testLoadAdminIcons()
@@ -1082,7 +1082,7 @@ class e107Test extends \Codeception\Test\Unit
 				$this->fail("Remove {$key} FROM admin_icons_template");
 			}
 
-			$this->assertSame($legacyList[$key], $val, $key." should equal: ".$legacyList[$key]);
+			$this::assertSame($legacyList[$key], $val, $key." should equal: ".$legacyList[$key]);
 		}
 
 		foreach($legacyList as $key=>$val)
@@ -1096,7 +1096,7 @@ class e107Test extends \Codeception\Test\Unit
 
 		$template2 = $e107::loadAdminIcons();
 
-		$this->assertSame($new, $template2);
+		$this::assertSame($new, $template2);
 
 		$range = range(1,10);
 		foreach($range as $t)
@@ -1141,13 +1141,13 @@ class e107Test extends \Codeception\Test\Unit
 
 			$result = $e107::getCoreTemplate($path);
 
-			$this->assertIsArray($result, $path . "  template was not an array");
-			$this->assertNotEmpty($result, $path . " template was empty");
+			$this::assertIsArray($result, $path . "  template was not an array");
+			$this::assertNotEmpty($result, $path . " template was empty");
 
 		}
 
 		//$res = null;
-		//$this->assertTrue($res);
+		//$this::assertTrue($res);
 	}
 /*
 	private function clearRelatedRegistry($type)
@@ -1198,13 +1198,13 @@ class e107Test extends \Codeception\Test\Unit
 	{
 		// Loads e107_themes/bootstrap3/templates/gallery/gallery_template.php
 		$template = e107::getTemplate('gallery', null, null, true, false); // true & false default, loads theme (override true)
-		$this->assertEquals("My Gallery", $template['list']['caption']);
+		$this::assertEquals("My Gallery", $template['list']['caption']);
 
 		// Duplicate to load registry
 		$template2 = e107::getTemplate('gallery', null, null, true, false); // true & false default, loads theme (override true)
-		$this->assertEquals("My Gallery", $template2['list']['caption']);
+		$this::assertEquals("My Gallery", $template2['list']['caption']);
 
-		$this->assertSame($template, $template2);
+		$this::assertSame($template, $template2);
 
 	}
 
@@ -1213,17 +1213,17 @@ class e107Test extends \Codeception\Test\Unit
 	{
 		// Loads e107_plugins/gallery/templates/gallery_template.php then overwrites it with e107_themes/bootstrap3/templates/gallery/gallery_template.php
 		$template = e107::getTemplate('gallery', null, null, true, true); // theme override is enabled, and theme merge is enabled.
-		$this->assertArrayHasKey('merged-example', $template);
-		$this->assertEquals("My Gallery", $template['list']['caption']); // ie. from the original
-		$this->assertNotEmpty($template['merged-example']);
+		$this::assertArrayHasKey('merged-example', $template);
+		$this::assertEquals("My Gallery", $template['list']['caption']); // ie. from the original
+		$this::assertNotEmpty($template['merged-example']);
 
 		// duplicate to load registry
 		$template2 = e107::getTemplate('gallery', null, null, true, true); // theme override is enabled, and theme merge is enabled.
-		$this->assertArrayHasKey('merged-example', $template2);
-		$this->assertEquals("My Gallery", $template2['list']['caption']); // ie. from the original
-		$this->assertNotEmpty($template2['merged-example']);
+		$this::assertArrayHasKey('merged-example', $template2);
+		$this::assertEquals("My Gallery", $template2['list']['caption']); // ie. from the original
+		$this::assertNotEmpty($template2['merged-example']);
 
-		$this->assertSame($template, $template2);
+		$this::assertSame($template, $template2);
 
 	}
 
@@ -1232,15 +1232,15 @@ class e107Test extends \Codeception\Test\Unit
 
 		// // ie. should be from plugin template, not theme.
 		$template = e107::getTemplate('gallery', null, null, false, true); // theme override is disabled, theme merge is enabled.
-		$this->assertEquals("Gallery", $template['list']['caption']);
-		$this->assertArrayNotHasKey('merged-example', $template);
+		$this::assertEquals("Gallery", $template['list']['caption']);
+		$this::assertArrayNotHasKey('merged-example', $template);
 
 		// duplicate to load registry.
 		$template2 = e107::getTemplate('gallery', null, null, false, true); // theme override is disabled, theme merge is enabled.
-		$this->assertEquals("Gallery", $template2['list']['caption']);
-		$this->assertArrayNotHasKey('merged-example', $template2);
+		$this::assertEquals("Gallery", $template2['list']['caption']);
+		$this::assertArrayNotHasKey('merged-example', $template2);
 
-		$this->assertSame($template, $template2);
+		$this::assertSame($template, $template2);
 
 	}
 
@@ -1251,56 +1251,56 @@ class e107Test extends \Codeception\Test\Unit
 	{
 		// Loads e107_plugins/gallery/templates/gallery_template.php
 		$template = e107::getTemplate('gallery', null, null, false, false); // theme override is disabled.
-		$this->assertEquals("Gallery", $template['list']['caption']);
+		$this::assertEquals("Gallery", $template['list']['caption']);
 
 		// Duplicate to load registry.
 		$template2 = e107::getTemplate('gallery', null, null, false, false); // theme override is disabled.
-		$this->assertEquals("Gallery", $template2['list']['caption']);
+		$this::assertEquals("Gallery", $template2['list']['caption']);
 
-		$this->assertSame($template, $template2);
+		$this::assertSame($template, $template2);
 	}
 
 	/*
 			public function testTemplateWrapper()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testScStyle()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetTemplateInfo()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetLayouts()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function test_getTemplate()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testIncludeLan()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testCoreLan()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 */
 	public function testPlugLan()
@@ -1330,7 +1330,7 @@ class e107Test extends \Codeception\Test\Unit
 				continue;
 			}
 
-			$this->assertStringContainsString($var[3], $result);
+			$this::assertStringContainsString($var[3], $result);
 			$e107::plugLan($var[0], $var[1], $var[2]);
 		}
 /*
@@ -1381,7 +1381,7 @@ class e107Test extends \Codeception\Test\Unit
 				continue;
 			}
 
-			$this->assertSame($var['expected'], $result);
+			$this::assertSame($var['expected'], $result);
 		}
 
 
@@ -1402,13 +1402,13 @@ class e107Test extends \Codeception\Test\Unit
 				public function testLan()
 				{
 					$res = null;
-					$this->assertTrue($res);
+					$this::assertTrue($res);
 				}
 
 				public function testPref()
 				{
 					$res = null;
-					$this->assertTrue($res);
+					$this::assertTrue($res);
 				}
 		*/
 
@@ -1476,7 +1476,7 @@ class e107Test extends \Codeception\Test\Unit
 		$e107::canonical('news');
 
 		$result = $e107::canonical();
-		$this->assertSame("https://localhost/e107/news", $result);
+		$this::assertSame("https://localhost/e107/news", $result);
 
 	}
 
@@ -1563,7 +1563,7 @@ class e107Test extends \Codeception\Test\Unit
 				continue;
 			}
 			self::assertEquals($var['_expected_'], $result, 'Failed on test #'.$index);
-			//	$this->assertEquals("https://localhost/e107/news", $result);
+			//	$this::assertEquals("https://localhost/e107/news", $result);
 		}
 
 
@@ -1702,8 +1702,8 @@ class e107Test extends \Codeception\Test\Unit
 				continue;
 			}
 
-			$this->assertEquals($result, $lresult, "Legacy Test #" . $index . " -- e107::getUrl()->create('" . $var['route'] . "') didn't match e107::url('" . $var['route'] . "')");
-			$this->assertEquals($var['_expected_'], $result, 'Legacy URL index #' . $index . ' failed');
+			$this::assertEquals($result, $lresult, "Legacy Test #" . $index . " -- e107::getUrl()->create('" . $var['route'] . "') didn't match e107::url('" . $var['route'] . "')");
+			$this::assertEquals($var['_expected_'], $result, 'Legacy URL index #' . $index . ' failed');
 
 
 		}
@@ -1724,7 +1724,7 @@ class e107Test extends \Codeception\Test\Unit
 
 		if(empty($newConfig))
 		{
-			return null;
+			return;
 		}
 
 		$cfg = e107::getConfig();
@@ -1736,7 +1736,6 @@ class e107Test extends \Codeception\Test\Unit
 
 		$cfg->save(false, true);
 
-		/** @var eRouter $router */
 		$router = e107::getUrl()->router(); // e107::getSingleton('eRouter');
 		$rules = $router->getRuleSets();
 
@@ -1761,7 +1760,7 @@ class e107Test extends \Codeception\Test\Unit
 				'id' => 123
 			),
 		));
-		$this->assertEquals(
+		$this::assertEquals(
 			e_PLUGIN_ABS . 'forum/forum_viewtopic.php?f=post&amp;id=123',
 			$url, "Generated href does not match expectation"
 		);
@@ -1779,7 +1778,7 @@ class e107Test extends \Codeception\Test\Unit
 				'did'    => 'much doge',
 			),
 		));
-		$this->assertEquals(
+		$this::assertEquals(
 			e_HTTP .
 			'forum/post/?didn%27t=%3Ctag%20attr%3D%22such%20wow%22%3E%3C/tag%3E&amp;did=much%20doge',
 			$url, "Generated href query string did not have expected URL encoding"
@@ -1797,7 +1796,7 @@ class e107Test extends \Codeception\Test\Unit
 		], array(
 			'fragment' => 'Arts & Crafts <tag attr="can\'t inject here"></tag>'
 		));
-		$this->assertEquals(
+		$this::assertEquals(
 			e_HTTP .
 			'forum/&lt;&gt;/#Arts &amp; Crafts &lt;tag attr=&quot;can&#039;t inject here&quot;&gt;&lt;/tag&gt;',
 			$url, "Generated href did not prevent HTML tag injection as expected"
@@ -1809,19 +1808,19 @@ class e107Test extends \Codeception\Test\Unit
 			public function testRedirect()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetError()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testHttpBuildQuery()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 */
 	public function testMinify()
@@ -1832,7 +1831,7 @@ class e107Test extends \Codeception\Test\Unit
 
 		$result = e107::minify($text);
 
-		$this->assertEquals($expected, $result);
+		$this::assertEquals($expected, $result);
 
 	}
 
@@ -1866,7 +1865,7 @@ class e107Test extends \Codeception\Test\Unit
 		{
 			e107::wysiwyg($input);     // set the wysiwyg editor.
 			$result = e107::wysiwyg(null, true);  // get the name of the editor.
-			$this->assertSame($expected, $result, "Input: " . $input);
+			$this::assertSame($expected, $result, "Input: " . $input);
 		}
 
 
@@ -1875,7 +1874,7 @@ class e107Test extends \Codeception\Test\Unit
 		$result = e107::wysiwyg(null, true);   // get the editor value.
 		$expected = 'bbcode';
 		e107::getConfig()->setPref('wysiwyg', true)->save(); // enabled wysiwyg again.
-		$this->assertSame($expected, $result);
+		$this::assertSame($expected, $result);
 
 
 		e107::getConfig()->setPref('wysiwyg', false)->save();  // wysiwyg is disabled.
@@ -1885,13 +1884,13 @@ class e107Test extends \Codeception\Test\Unit
 				public function testLoadLanFiles()
 				{
 					$res = null;
-					$this->assertTrue($res);
+					$this::assertTrue($res);
 				}
 
 				public function testPrepare_request()
 				{
 					$res = null;
-					$this->assertTrue($res);
+					$this::assertTrue($res);
 				}
 		*/
 
@@ -1902,7 +1901,7 @@ class e107Test extends \Codeception\Test\Unit
 
 		$result = base64_decode($query, true);
 
-		$this->assertFalse($result); // correct result is 'false'.
+		$this::assertFalse($result); // correct result is 'false'.
 	}
 
 
@@ -1929,18 +1928,18 @@ class e107Test extends \Codeception\Test\Unit
 		{
 			$curPage = basename($var['path']);
 			$result = $this->e107->inAdminDir($var['path'], $curPage, $var['plugdir']);
-			$this->assertSame($var['expected'], $result, "Failed on index #" . $index);
+			$this::assertSame($var['expected'], $result, "Failed on index #" . $index);
 		}
 
 		// Test legacy override.
 		$GLOBALS['eplug_admin'] = true;
 		$result = $this->e107->inAdminDir('myplugin.php', 'myplugin.php', true);
-		$this->assertTrue($result, "Legacy Override Failed");
+		$this::assertTrue($result, "Legacy Override Failed");
 
 		// Test legacy off.
 		$GLOBALS['eplug_admin'] = false;
 		$result = $this->e107->inAdminDir('myplugin.php', 'myplugin.php', true);
-		$this->assertFalse($result);
+		$this::assertFalse($result);
 	}
 
 
@@ -1955,56 +1954,56 @@ class e107Test extends \Codeception\Test\Unit
 		//	$this->e107->prepare_request();
 
 		// 	$res = null;
-		// $this->assertTrue($res);
+		// $this::assertTrue($res);
 	}
 
 	/*
 			public function testSet_base_path()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testSet_constants()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGet_override_rel()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGet_override_http()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testSet_paths()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testFix_windows_paths()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testSet_urls()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testSet_urls_deferred()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 */
 			public function testSet_request()
@@ -2032,43 +2031,43 @@ class e107Test extends \Codeception\Test\Unit
 			public function testCanCache()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testIsSecure()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGetip()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testIpEncode()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testIpdecode()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testGet_host_name()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testParseMemorySize()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 	*/
 	public function testIsInstalled()
@@ -2078,11 +2077,11 @@ class e107Test extends \Codeception\Test\Unit
 
 		$result = $obj::isInstalled('user');
 
-		$this->assertTrue($result);
+		$this::assertTrue($result);
 
 		$result = $obj::isInstalled('news');
 
-		$this->assertTrue($result);
+		$this::assertTrue($result);
 	}
 
 
@@ -2111,7 +2110,7 @@ class e107Test extends \Codeception\Test\Unit
 		foreach($testPlugin as $input=>$expected)
 		{
 			$result = $e107::isCompatible($input, 'plugin');
-			$this->assertSame($expected, $result);
+			$this::assertSame($expected, $result);
 		}
 
 		$testTheme = array (
@@ -2134,47 +2133,93 @@ class e107Test extends \Codeception\Test\Unit
 		foreach($testTheme as $input=>$expected)
 		{
 			$result = $e107::isCompatible($input, 'theme');
-			$this->assertSame($expected, $result);
+			$this::assertSame($expected, $result);
 		//	$ret[$input] = $result;
 		}
 
 
 	}
+
+	 public function testIsAllowedHost(): void
+    {
+
+        $reflection = new ReflectionClass($this->e107);
+        $method = $reflection->getMethod('isAllowedHost');
+        $method->setAccessible(true);
+
+        $testCases = [
+            'Empty allowed hosts should return true' => [
+                'allowedHosts' => [],
+                'httpHost'     => 'anyhost.com',
+                'expected'     => true
+            ],
+            'Exact matching host should return true' => [
+                'allowedHosts' => ['example.com', 'testsite.org'],
+                'httpHost'     => 'example.com',
+                'expected'     => true
+            ],
+            'Subdomain matching allowed host should return true' => [
+                'allowedHosts' => ['example.com'],
+                'httpHost'     => 'subdomain.example.com',
+                'expected'     => true
+            ],
+            'Unrelated host should return false' => [
+                'allowedHosts' => ['example.com'],
+                'httpHost'     => 'unrelated.com',
+                'expected'     => false
+            ],
+            'Similar but incorrect subdomain pattern should return false' => [
+                'allowedHosts' => ['example.com'],
+                'httpHost'     => 'subdomain-example.com',
+                'expected'     => false
+            ],
+        ];
+
+        foreach ($testCases as $scenario => $testCase)
+        {
+            $result = $method->invoke($this->e107, $testCase['allowedHosts'], $testCase['httpHost']);
+            $this::assertSame($testCase['expected'], $result, "Failed scenario: {$scenario}");
+        }
+    }
+
+
+
+
 	/*
 			public function testIni_set()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testAutoload_register()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testAutoload()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function test__get()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testDestruct()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 			public function testCoreUpdateAvailable()
 			{
 				$res = null;
-				$this->assertTrue($res);
+				$this::assertTrue($res);
 			}
 
 
