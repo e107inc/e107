@@ -56,6 +56,14 @@ if(isset($_E107['cli'], $_SERVER["HTTP_USER_AGENT"]) && !isset($_E107['debug']))
 	exit();
 }
 
+if (PHP_MAJOR_VERSION < 8)
+{
+	echo "Configuration Error. Check error log for details.";
+    error_log('PHP 8 or higher is required. Current version: ' . PHP_VERSION);
+    exit();
+}
+
+
 if(function_exists('utf8_encode') === false)
 {
 	echo "e107 requires the PHP <a href='http://php.net/manual/en/dom.setup.php'>XML</a> package. Please install it to use e107.  ";
