@@ -9,8 +9,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        operating_system:
-          - image: docker.io/jrei/systemd-ubuntu:22.04  # Uses PHP 8.1 by default
+        php-version: ['8.1', '8.3'] # PHP versions matrix
+        include:
+          - php-version: '8.1'
+            operating_system:
+              image: docker.io/jrei/systemd-ubuntu:22.04
+          - php-version: '8.3'
+            operating_system:
+              image: docker.io/jrei/systemd-ubuntu:24.04  # Ubuntu 24.04 contains PHP 8.3 by default
+
     runs-on: ubuntu-latest
 
     steps:
@@ -50,17 +57,19 @@ jobs:
       - name: Install PHP extensions
         run: |
           docker exec target apt-get update
-          docker exec target apt-get install -y php8.1-zip php8.1-curl php8.1-mbstring php8.1-xml
-        # Install extensions for PHP 8.1 (default in Ubuntu 22.04)
+          docker exec target apt-get install -y \
+            php${{ matrix.php-version }}-zip \
+            php${{ matrix.php-version }}-curl \
+            php${{ matrix.php-version }}-mbstring \
+            php${{ matrix.php-version }}-xml
 
       - name: Verify PHP version
         run: docker exec target php -v
-        # Confirms PHP 8.1 is in use
 
       - name: Install test dependencies
         run: |
           docker exec -w /app/e107_tests/ -e COMPOSER_ALLOW_SUPERUSER=1 target \
-          composer update --prefer-dist --no-progress
+            composer update --prefer-dist --no-progress
 
       - name: Download Git submodule dependencies
         run: git submodule update --init --recursive --remote
