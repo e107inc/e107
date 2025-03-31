@@ -43,7 +43,7 @@ return [
             'server'   => '{{ mySQLserver }}',
             'user'     => '{{ mySQLuser }}',
             'password' => '{{ mySQLpassword }}',
-            'defaultdb'=> '{{ mySQLdefaultdb }}',
+            'db'       => '{{ mySQLdefaultdb }}',
             'prefix'   => '{{ mySQLprefix }}',
             'charset'  => 'utf8',
     ],

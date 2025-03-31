@@ -549,6 +549,11 @@ class e107
 			}
 		}
 
+		if(!empty($e107_config_mysql_info['db']))
+		{
+			$e107_config_mysql_info['defaultdb'] = $e107_config_mysql_info['db'];
+		}
+
 		return $this->_init($e107_paths, $e107_root_path, $e107_config_mysql_info, $e107_config_override);
 	}
 

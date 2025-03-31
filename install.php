@@ -1561,7 +1561,7 @@ return [
         'server'   => '{$this->previous_steps['mysql']['server']}',
         'user'     => '{$this->previous_steps['mysql']['user']}',
         'password' => '{$this->previous_steps['mysql']['password']}',
-        'defaultdb'=> '{$this->previous_steps['mysql']['db']}',
+        'db'       => '{$this->previous_steps['mysql']['db']}',
         'prefix'   => '{$this->previous_steps['mysql']['prefix']}',
         'charset'  => 'utf8mb4',
     ],

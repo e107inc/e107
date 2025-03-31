@@ -157,12 +157,12 @@ if(!empty($CLASS2_INCLUDE))
 
 if(empty($HANDLERS_DIRECTORY))
 {
-	$HANDLERS_DIRECTORY = 'e107_handlers/';
+	$HANDLERS_DIRECTORY = !empty($config['paths']['handlers']) ? $config['paths']['handlers'] :  'e107_handlers/';
 }
 
 if(empty($PLUGINS_DIRECTORY))
 {
-	$PLUGINS_DIRECTORY = 'e107_plugins/';
+	$PLUGINS_DIRECTORY = !empty($config['paths']['plugins']) ? $config['paths']['plugins'] : 'e107_plugins/';
 }
 
 //define("MPREFIX", $mySQLprefix); moved to $e107->set_constants()
@@ -222,6 +222,13 @@ else // New e107_config.php format. v2.4+
 	$e107_paths = $config['paths'];
 	$sql_info = $config['database'];
 	$E107_CONFIG = $config['other'] ?? [];
+
+	if(isset($sql_info['defaultdb']))
+	{
+		echo "WARNING: 'defaultdb' is deprecated. Please use 'db' instead.\n";
+		exit;
+	}
+
 	unset($config);
 }
 
@@ -291,11 +298,12 @@ e107::getSingleton('e107_traffic'); // We start traffic counting ASAP
 
 //DEPRECATED, BC, $e107->sql caught by __get()
 /** @var e_db $sql */
-$sql = e107::getDb(); //TODO - find & replace $sql, $e107->sql
+$sql = e107::getDb();
 $sql->db_SetErrorReporting(false);
 
 $dbg->logTime('SQL Connect');
-$merror=$sql->db_Connect($sql_info['server'], $sql_info['user'], $sql_info['password'], $sql_info['defaultdb']);
+
+$merror=$sql->db_Connect($sql_info['server'], $sql_info['user'], $sql_info['password'], varset($sql_info['db'], $sql_info['db']));
 unset($sql_info);
 // create after the initial connection.
 //DEPRECATED, BC, call the method only when needed

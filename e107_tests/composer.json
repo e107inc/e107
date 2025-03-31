@@ -3,7 +3,7 @@
   "description": "Test harness for e107",
   "license": "GPL-3.0-or-later",
   "require-dev": {
-    "twig/twig": "^3.0",
+    "twig/twig": ">=3.14.1",
     "codeception/codeception": ">=5.0.11",
     "codeception/module-asserts": ">=3.0.0",
     "codeception/module-db": ">=3.1.2",
@@ -15,11 +15,5 @@
     "optimize-autoloader": true,
     "preferred-install": "dist",
     "sort-packages": true
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Helper\\": "tests/_support/Helper/",
-      "Tests\\Unit\\": "tests/unit/"
-    }
   }
 }
