@@ -240,6 +240,26 @@
 
 		}
 */
+/*
+		public function testXmlAdminIcons()
+		{
+			$plugin = e107::getPlug();
+			$installed = $plugin->getInstalled();
+			fwrite(STDERR, print_r($installed, true));
+
+			if(!$data = $plugin->load('_blank')->getMeta())
+			{
+				$this::fail("Couldn't load plugin meta");
+			}
+
+			$this::assertNotEmpty($data['adminLinks']);
+
+			$status = $this->ep->XmlAdminIcons('install', '_blank', $data['adminLinks']);
+
+			fwrite(STDERR, print_r($status, true));
+		}
+*/
+
 		public function testXmlSiteLinks()
 		{
 			$plugVars = array (

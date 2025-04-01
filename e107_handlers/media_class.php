@@ -1409,7 +1409,8 @@ class e_media
 
 		$newpath = $this->checkFileExtension($newpath, $img_data['media_type']);
 
-		if(!rename($oldpath, $newpath)) // e_MEDIA.$newpath was working before. 
+
+		if(!is_file($oldpath) || !rename($oldpath, $newpath)) // e_MEDIA.$newpath was working before.
 		{
 			$this->log("Couldn't move file from ".realpath($oldpath)." to ".e_MEDIA.$newpath);
 			$mes->add("Couldn't move file from ".$oldpath." to ".$newpath, E_MESSAGE_ERROR);
@@ -1432,7 +1433,7 @@ class e_media
 		{		
 			$mes->add("Importing Media: ".$file, E_MESSAGE_SUCCESS);
 			$this->log("Importing Media: ".$file." successful");
-			return $img_data['media_url'];	
+			return $img_data['media_url'];
 		}
 		else
 		{
@@ -1458,7 +1459,7 @@ class e_media
 			return "_icon_svg";
 		}
 
-		$sizes = array(16,32,48,64);
+		$sizes = array(16,32,48,64,128);
 
 		$dimensions = $img['media_dimensions'];
 
