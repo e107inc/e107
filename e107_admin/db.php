@@ -410,13 +410,13 @@ class system_tools
 
 		if(!empty($skipped))
 		{
-			e107::getMessage()->setTitle("Skipped",E_MESSAGE_INFO)->addInfo(print_a($skipped,true));
+			e107::getMessage()->setTitle(DBLAN_122,E_MESSAGE_INFO)->addInfo(print_a($skipped,true));
 		}
 
 		if(!empty($error))
 		{
 			//e107::getMessage()->addError(print_a($error,true));
-			e107::getMessage()->setTitle("Ignored",E_MESSAGE_WARNING)->addWarning(print_a($error,true));
+			e107::getMessage()->setTitle(DBLAN_123,E_MESSAGE_WARNING)->addWarning(print_a($error,true));
 		}
 
 		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_112, e107::getMessage()->render());
@@ -717,7 +717,7 @@ class system_tools
 				</tr>
 			</table>
 			<div class='buttons-bar text-center'>
-			".$frm->admin_button('create_multisite',1,'submit','Create New Site')."
+			".$frm->admin_button('create_multisite',1,'submit',DBLAN_124)."
 			</div>
 			\n";
 		
