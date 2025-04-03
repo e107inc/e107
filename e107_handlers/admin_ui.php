@@ -8780,29 +8780,48 @@ class e_admin_form_ui extends e_form
 					break;
 
 					case 'method':
-						$method = $key;
-						$list = call_user_func_array(array($this, $method), array('', $type, $parms));
 
-						if(is_array($list))
+						$method = !empty($val['method']) ? $val['method'] : $key; // Use the method attribute if specified, otherwise fall back to the field key
+
+						if(strpos($method, '::') !== false)
 						{
-							//check for single option
-							if(isset($list['singleOption']))
+							list($className, $methodName) = explode('::', $method);
+							$cls = new $className();
+						}
+						else
+						{
+							$cls = $this;
+							$methodName = $method;
+						}
+
+						if(method_exists($cls, $methodName))
+						{
+							$list = call_user_func_array(array($cls, $methodName), array('', $type, $parms));
+							if(is_array($list))
 							{
-								$textsingle .= $list['singleOption'];
+								// Check for single option
+								if(isset($list['singleOption']))
+								{
+									$textsingle .= $list['singleOption'];
+									continue 2;
+								}
+								// options array
+								foreach($list as $k => $name)
+								{
+									$option[$key . '__' . $k] = $name;
+								}
+							}
+							elseif(!empty($list))
+							{
+								$text .= $list;
 								continue 2;
 							}
-							// non rendered options array
-							foreach($list as $k => $name)
-							{
-								$option[$key.'__'.$k] = $name;
-							}
 						}
-						elseif(!empty($list)) //optgroup, continue
+						else
 						{
-							$text .= $list;
-							continue 2;
+							e107::getDebug()->log('Missing Method: ' . get_class($cls) . '::' . $methodName);
 						}
-					break;
+						break;
 
 					case 'user': // TODO - User Filter
 					
