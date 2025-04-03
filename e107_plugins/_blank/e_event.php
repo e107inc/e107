@@ -61,12 +61,12 @@ class _blank_event // plugin-folder + '_event'
 	}
 
 
-	function myfunction($data) // the method to run.
+	function myfunction($data, $event) // the method to run.
 	{
 		// var_dump($data);
 	}
 
-	function anotherfunction($data) // the method to run.
+	function anotherfunction($data, $event) // the method to run.
 	{
 		// var_dump($data);
 	}
