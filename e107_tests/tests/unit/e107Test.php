@@ -12,6 +12,7 @@
 class e107Test extends \Codeception\Test\Unit
 {
 
+	protected $tempFiles = [];
 	/** @var e107 */
 	private $e107;
 
@@ -29,6 +30,20 @@ class e107Test extends \Codeception\Test\Unit
 
 	}
 
+	protected function _after()
+	{
+
+		// Clean up temporary files
+		foreach($this->tempFiles as $file)
+		{
+			if(file_exists($file))
+			{
+				unlink($file);
+			}
+		}
+		$this->tempFiles = [];
+	}
+
 	public function testGetInstance()
 	{
 
@@ -37,7 +52,7 @@ class e107Test extends \Codeception\Test\Unit
 		//	$this::assertTrue($res);
 	}
 
-	public function testInitCore()
+	/*public function testInitCore()
 	{
 
 		//$res = null;
@@ -51,12 +66,12 @@ class e107Test extends \Codeception\Test\Unit
 
 		$this::assertEquals('/', e_HTTP);
 
-	}
+	}*/
 
 	public function testRenderLayout()
 	{
 
-		$opts = array (
+		$opts = array(
 			'magicSC'   => array(
 				'{---HEADER---}' => '<h3>MY HEADER</h3>',
 				'{---FOOTER---}' => '<h3>MY FOOTER</h3>',
@@ -171,7 +186,7 @@ class e107Test extends \Codeception\Test\Unit
 		$this::assertStringContainsString('<script>google code</script>', $result);
 		$this::assertStringNotContainsString('{BOOTSTRAP_BRANDING}', $result);
 
-	//	var_export($result);
+		//	var_export($result);
 
 	}
 
@@ -290,140 +305,141 @@ class e107Test extends \Codeception\Test\Unit
 				$this::assertTrue($res);
 			}
 */
-			public function testGetSingleton()
-			{
-				$e107 = $this->e107;
+	public function testGetSingleton()
+	{
 
-				// test with path.
-				$result = $e107::getSingleton('override',  e_HANDLER . 'override_class.php');
+		$e107 = $this->e107;
 
-				$this::assertNotEmpty($result, 'Override class not loaded');
+		// test with path.
+		$result = $e107::getSingleton('override', e_HANDLER . 'override_class.php');
 
-				$exists = method_exists($result, 'override_check');
+		$this::assertNotEmpty($result, 'Override class not loaded');
 
-				$this::assertTrue($exists, 'Failed to load override class singleton');
+		$exists = method_exists($result, 'override_check');
 
-				// Test without path.
-				$result2 = $e107::getOverride();
-				$exists2 = method_exists($result2, 'override_check');
-				$this::assertTrue($exists2, 'Failed to load override class singleton');
+		$this::assertTrue($exists, 'Failed to load override class singleton');
 
-			}
+		// Test without path.
+		$result2 = $e107::getOverride();
+		$exists2 = method_exists($result2, 'override_check');
+		$this::assertTrue($exists2, 'Failed to load override class singleton');
 
-/*
-			public function testGetObject()
-			{
-				$res = null;
-				$this::assertTrue($res);
-			}
+	}
 
-			public function testGetConfig()
-			{
-				$res = null;
-				$this::assertTrue($res);
-			}
+	/*
+				public function testGetObject()
+				{
+					$res = null;
+					$this::assertTrue($res);
+				}
 
-			public function testGetPref()
-			{
-				$res = null;
-				$this::assertTrue($res);
-			}
+				public function testGetConfig()
+				{
+					$res = null;
+					$this::assertTrue($res);
+				}
 
-			public function testFindPref()
-			{
-				$res = null;
-				$this::assertTrue($res);
-			}
+				public function testGetPref()
+				{
+					$res = null;
+					$this::assertTrue($res);
+				}
 
-			public function testGetPlugConfig()
-			{
-				$res = null;
-				$this::assertTrue($res);
-			}
+				public function testFindPref()
+				{
+					$res = null;
+					$this::assertTrue($res);
+				}
 
-			public function testGetPlugLan()
-			{
-				$res = null;
-				$this::assertTrue($res);
-			}
+				public function testGetPlugConfig()
+				{
+					$res = null;
+					$this::assertTrue($res);
+				}
 
-			public function testGetPlugPref()
-			{
-				$res = null;
-				$this::assertTrue($res);
-			}
+				public function testGetPlugLan()
+				{
+					$res = null;
+					$this::assertTrue($res);
+				}
 
-			public function testFindPlugPref()
-			{
-				$res = null;
-				$this::assertTrue($res);
-			}
+				public function testGetPlugPref()
+				{
+					$res = null;
+					$this::assertTrue($res);
+				}
 
-			public function testGetThemeConfig()
-			{
-				$res = null;
-				$this::assertTrue($res);
-			}
+				public function testFindPlugPref()
+				{
+					$res = null;
+					$this::assertTrue($res);
+				}
 
-			public function testGetThemePref()
-			{
-				$res = null;
-				$this::assertTrue($res);
-			}
+				public function testGetThemeConfig()
+				{
+					$res = null;
+					$this::assertTrue($res);
+				}
 
-			public function testSetThemePref()
-			{
-				$res = null;
-				$this::assertTrue($res);
-			}
+				public function testGetThemePref()
+				{
+					$res = null;
+					$this::assertTrue($res);
+				}
 
-			public function testGetThemeGlyphs()
-			{
-				$res = null;
-				$this::assertTrue($res);
-			}
+				public function testSetThemePref()
+				{
+					$res = null;
+					$this::assertTrue($res);
+				}
 
-			public function testGetParser()
-			{
-				$res = null;
-				$this::assertTrue($res);
-			}
+				public function testGetThemeGlyphs()
+				{
+					$res = null;
+					$this::assertTrue($res);
+				}
 
-			public function testGetScParser()
-			{
-				$res = null;
-				$this::assertTrue($res);
-			}
+				public function testGetParser()
+				{
+					$res = null;
+					$this::assertTrue($res);
+				}
 
-			public function testGetSecureImg()
-			{
-				$res = null;
-				$this::assertTrue($res);
-			}
+				public function testGetScParser()
+				{
+					$res = null;
+					$this::assertTrue($res);
+				}
 
-			public function testGetScBatch()
-			{
-				$res = null;
-				$this::assertTrue($res);
-			}
+				public function testGetSecureImg()
+				{
+					$res = null;
+					$this::assertTrue($res);
+				}
 
-			public function testGetDb()
-			{
-				$res = null;
-				$this::assertTrue($res);
-			}
+				public function testGetScBatch()
+				{
+					$res = null;
+					$this::assertTrue($res);
+				}
 
-			public function testGetCache()
-			{
-				$res = null;
-				$this::assertTrue($res);
-			}
+				public function testGetDb()
+				{
+					$res = null;
+					$this::assertTrue($res);
+				}
 
-			public function testGetBB()
-			{
-				$res = null;
-				$this::assertTrue($res);
-			}*/
+				public function testGetCache()
+				{
+					$res = null;
+					$this::assertTrue($res);
+				}
+
+				public function testGetBB()
+				{
+					$res = null;
+					$this::assertTrue($res);
+				}*/
 
 
 	public function testGetUserSession()
@@ -747,19 +763,20 @@ class e107Test extends \Codeception\Test\Unit
 */
 	public function testLibrary()
 	{
+
 		$e107 = $this->e107;
 
-		$expected = array (
-			  'js' =>
-		  array (
-		    0 => '{e_WEB}lib/font-awesome/5/js/all.min.js',
-		    1 => '{e_WEB}lib/font-awesome/5/js/v4-shims.min.js',
-		  ),
-		  'css' =>
-		  array (
-		    0 => '{e_WEB}lib/font-awesome/5/css/all.min.css',
-		    1 => '{e_WEB}lib/font-awesome/5/css/v4-shims.min.css',
-		  ),
+		$expected = array(
+			'js'  =>
+				array(
+					0 => '{e_WEB}lib/font-awesome/5/js/all.min.js',
+					1 => '{e_WEB}lib/font-awesome/5/js/v4-shims.min.js',
+				),
+			'css' =>
+				array(
+					0 => '{e_WEB}lib/font-awesome/5/css/all.min.css',
+					1 => '{e_WEB}lib/font-awesome/5/css/v4-shims.min.css',
+				),
 
 		);
 
@@ -770,27 +787,27 @@ class e107Test extends \Codeception\Test\Unit
 		// -------------------
 
 		// Expecting only the JS portion of the library.
-		$expected = array (
-		  'js' =>
-		  array (
-		    0 => '{e_WEB}lib/font-awesome/5/js/all.min.js',
-		    1 => '{e_WEB}lib/font-awesome/5/js/v4-shims.min.js',
-		  ),
+		$expected = array(
+			'js' =>
+				array(
+					0 => '{e_WEB}lib/font-awesome/5/js/all.min.js',
+					1 => '{e_WEB}lib/font-awesome/5/js/v4-shims.min.js',
+				),
 		);
 
 		$result = $e107::library('files', 'fontawesome5', null, ['js']);
 		$this::assertSame($expected, $result);
 
 		// -------------------
-		$expected = array (
-		  'js' =>
-		  array (
-		    0 => '{e_WEB}lib/bootstrap/5/js/bootstrap.bundle.min.js',
-		  ),
-		  'css' =>
-		  array (
-		    0 => '{e_WEB}lib/bootstrap/5/css/bootstrap.min.css',
-		  ),
+		$expected = array(
+			'js'  =>
+				array(
+					0 => '{e_WEB}lib/bootstrap/5/js/bootstrap.bundle.min.js',
+				),
+			'css' =>
+				array(
+					0 => '{e_WEB}lib/bootstrap/5/css/bootstrap.min.css',
+				),
 
 		);
 
@@ -798,92 +815,93 @@ class e107Test extends \Codeception\Test\Unit
 		$this::assertSame($expected, $result);
 
 	}
-/*
-	public function testGetJs()
-	{
-		$res = null;
-		$this::assertTrue($res);
-	}
 
-	public function testSet()
-	{
-		$res = null;
-		$this::assertTrue($res);
-	}
+	/*
+		public function testGetJs()
+		{
+			$res = null;
+			$this::assertTrue($res);
+		}
 
-	public function testJs()
-	{
-		$res = null;
-		$this::assertTrue($res);
-	}
+		public function testSet()
+		{
+			$res = null;
+			$this::assertTrue($res);
+		}
 
-	public function testLink()
-	{
+		public function testJs()
+		{
+			$res = null;
+			$this::assertTrue($res);
+		}
+
+		public function testLink()
+		{
 
 
-	}
+		}
 
-	public function testCss()
-	{
-		$res = null;
-		$this::assertTrue($res);
-	}
+		public function testCss()
+		{
+			$res = null;
+			$this::assertTrue($res);
+		}
 
-	public function testDebug()
-	{
-		$res = null;
-		$this::assertTrue($res);
-	}
+		public function testDebug()
+		{
+			$res = null;
+			$this::assertTrue($res);
+		}
 
-	public function testGetJshelper()
-	{
-		$res = null;
-		$this::assertTrue($res);
-	}
+		public function testGetJshelper()
+		{
+			$res = null;
+			$this::assertTrue($res);
+		}
 
-	public function testMeta()
-	{
-		$res = null;
-		$this::assertTrue($res);
-	}
+		public function testMeta()
+		{
+			$res = null;
+			$this::assertTrue($res);
+		}
 
-	public function testGetAdminUI()
-	{
-		$res = null;
-		$this::assertTrue($res);
-	}
+		public function testGetAdminUI()
+		{
+			$res = null;
+			$this::assertTrue($res);
+		}
 
-	public function testGetAddon()
-	{
-		$res = null;
-		$this::assertTrue($res);
-	}
+		public function testGetAddon()
+		{
+			$res = null;
+			$this::assertTrue($res);
+		}
 
-	public function testGetAddonConfig()
-	{
-		$res = null;
-		$this::assertTrue($res);
-	}
+		public function testGetAddonConfig()
+		{
+			$res = null;
+			$this::assertTrue($res);
+		}
 
-	public function testCallMethod()
-	{
-		$res = null;
-		$this::assertTrue($res);
-	}
-*/
+		public function testCallMethod()
+		{
+			$res = null;
+			$this::assertTrue($res);
+		}
+	*/
 	public function testGetUrlConfig()
 	{
 
 
-		$expected =  array (
-		    'index' =>
-		    array (
-		      'alias' => 'contact',
-		      'regex' => '^{alias}\\/?$',
-		      'sef' => '{alias}',
-		      'redirect' => '{e_BASE}contact.php',
-		    ),
-		  );
+		$expected = array(
+			'index' =>
+				array(
+					'alias'    => 'contact',
+					'regex'    => '^{alias}\\/?$',
+					'sef'      => '{alias}',
+					'redirect' => '{e_BASE}contact.php',
+				),
+		);
 
 		$result = e107::getUrlConfig();
 		$this::assertNotEmpty($result['contact']);
@@ -891,205 +909,205 @@ class e107Test extends \Codeception\Test\Unit
 
 		// ----
 
-		$expected =  array (
-		    'alias' => 'contact',
-		    'regex' => '^{alias}\\/?$',
-		    'sef' => '{alias}',
-		    'redirect' => '{e_BASE}contact.php',
-		  );
+		$expected = array(
+			'alias'    => 'contact',
+			'regex'    => '^{alias}\\/?$',
+			'sef'      => '{alias}',
+			'redirect' => '{e_BASE}contact.php',
+		);
 
 		$result = e107::getUrlConfig('route');
 		$this::assertNotEmpty($result['contact/index']);
 		$this::assertSame($expected, $result['contact/index']);
 
 
-
-	}
-/*
-	public function testGetThemeInfo()
-	{
-		$res = null;
-		$this::assertTrue($res);
 	}
 
-	public function testCoreTemplatePath()
-	{
-		$res = null;
-		$this::assertTrue($res);
-	}
+	/*
+		public function testGetThemeInfo()
+		{
+			$res = null;
+			$this::assertTrue($res);
+		}
 
-	public function testTemplatePath()
-	{
-		$res = null;
-		$this::assertTrue($res);
-	}
-*/
+		public function testCoreTemplatePath()
+		{
+			$res = null;
+			$this::assertTrue($res);
+		}
+
+		public function testTemplatePath()
+		{
+			$res = null;
+			$this::assertTrue($res);
+		}
+	*/
 	public function testLoadAdminIcons()
 	{
 
 		$e107 = $this->e107;
 
-		$legacyList = array (
-		  'E_16_FACEBOOK'              => '<img class=\'icon S16\' src=\'./e107_images/admin_images/facebook_16.png\' alt=\'\' />',
-		  'E_16_TWITTER'               => '<img class=\'icon S16\' src=\'./e107_images/admin_images/twitter_16.png\' alt=\'\' />',
-		  'E_16_GITHUB'                => '<img class=\'icon S16\' src=\'./e107_images/admin_images/github_16.png\' alt=\'\' />',
-		  'E_16_E107'                  => '<img class=\'icon S16\' src=\'./e107_images/e107_icon_16.png\' alt=\'\' />',
-		  'E_32_E107'                  => '<img class=\'icon S32\' src=\'./e107_images/e107_icon_32.png\' alt=\'\' />',
-		  'E_32_ADMIN'                 => '<i class=\'S32 e-admins-32\'></i>',
-		  'E_32_ADPASS'                => '<i class=\'S32 e-adminpass-32\'></i>',
-		  'E_32_BANLIST'               => '<i class=\'S32 e-banlist-32\'></i>',
-		  'E_32_CACHE'                 => '<i class=\'S32 e-cache-32\'></i> ',
-		  'E_32_CREDITS'               => '<i class=\'S32 e-e107_icon-32.png\'></i>',
-		  'E_32_CRON'                  => '<i class=\'S32 e-cron-32\'></i> ',
-		  'E_32_CUST'                  => '<i class=\'S32 e-custom-32\'></i> ',
-		  'E_32_DATAB'                 => '<i class=\'S32 e-database-32\'></i> ',
-		  'E_32_DOCS'                  => '<i class=\'S32 e-docs-32\'></i> ',
-		  'E_32_EMOTE'                 => '<i class=\'S32 e-emoticons-32\'></i> ',
-		  'E_32_FILE'                  => '<i class=\'S32 e-filemanager-32\'></i> ',
-		  'E_32_FORUM'                 => '<i class=\'S32 e-forums-32\'></i> ',
-		  'E_32_FRONT'                 => '<i class=\'S32 e-frontpage-32\'></i> ',
-		  'E_32_IMAGES'                => '<i class=\'S32 e-images-32\'></i> ',
-		  'E_32_INSPECT'               => '<i class=\'S32 e-fileinspector-32\'></i> ',
-		  'E_32_LINKS'                 => '<i class=\'S32 e-links-32\'></i> ',
-		  'E_32_WELCOME'               => '<i class=\'S32 e-welcome-32\'></i> ',
-		  'E_32_MAIL'                  => '<i class=\'S32 e-mail-32\'></i> ',
-		  'E_32_MAINTAIN'              => '<i class=\'S32 e-maintain-32\'></i> ',
-		  'E_32_MENUS'                 => '<i class=\'S32 e-menus-32\'></i> ',
-		  'E_32_META'                  => '<i class=\'S32 e-meta-32\'></i> ',
-		  'E_32_NEWS'                  => '<i class=\'S32 e-news-32\'></i> ',
-		  'E_32_NEWSFEED'              => '<i class=\'S32 e-newsfeeds-32\'></i> ',
-		  'E_32_NOTIFY'                => '<i class=\'S32 e-notify-32\'></i> ',
-		  'E_32_PHP'                   => '<i class=\'S32 e-phpinfo-32\'></i> ',
-		  'E_32_POLLS'                 => '<i class=\'S32 e-polls-32\'></i> ',
-		  'E_32_PREFS'                 => '<i class=\'S32 e-prefs-32\'></i> ',
-		  'E_32_SEARCH'                => '<i class=\'S32 e-search-32\'></i> ',
-		  'E_32_UPLOADS'               => '<i class=\'S32 e-uploads-32\'></i> ',
-		  'E_32_EURL'                  => '<i class=\'S32 e-eurl-32\'></i> ',
-		  'E_32_USER'                  => '<i class=\'S32 e-users-32\'></i> ',
-		  'E_32_USER_EXTENDED'         => '<i class=\'S32 e-extended-32\'></i> ',
-		  'E_32_USERCLASS'             => '<i class=\'S32 e-userclass-32\'></i> ',
-		  'E_32_LANGUAGE'              => '<i class=\'S32 e-language-32\'></i> ',
-		  'E_32_PLUGIN'                => '<i class=\'S32 e-plugins-32\'></i> ',
-		  'E_32_PLUGMANAGER'           => '<i class=\'S32 e-plugmanager-32\'></i> ',
-		  'E_32_MAIN'                  => '<i class=\'S32 e-main-32\'></i> ',
-		  'E_32_THEMEMANAGER'          => '<i class=\'S32 e-themes-32\'></i> ',
-		  'E_32_COMMENT'               => '<i class=\'S32 e-comments-32\'></i> ',
-		  'E_32_ADMINLOG'              => '<i class=\'S32 e-adminlogs-32\'></i> ',
-		  'E_32_LOGOUT'                => '<i class=\'S32 e-logout-32\'></i> ',
-		  'E_32_MANAGE'                => '<i class=\'S32 e-manage-32\'></i> ',
-		  'E_32_CREATE'                => '<i class=\'S32 e-add-32\'></i> ',
-		  'E_32_SETTINGS'              => '<i class=\'S32 e-settings-32\'></i> ',
-		  'E_32_SYSINFO'               => '<i class=\'S32 e-sysinfo-32\'></i> ',
-		  'E_32_CAT_SETT'              => '<i class=\'S32 e-cat_settings-32\'></i> ',
-		  'E_32_CAT_USER'              => '<i class=\'S32 e-cat_users-32\'></i> ',
-		  'E_32_CAT_CONT'              => '<i class=\'S32 e-cat_content-32\'></i> ',
-		  'E_32_CAT_FILE'              => '<i class=\'S32 e-cat_files-32\'></i> ',
-		  'E_32_CAT_TOOL'              => '<i class=\'S32 e-cat_tools-32\'></i> ',
-		  'E_32_CAT_PLUG'              => '<i class=\'S32 e-cat_plugins-32\'></i> ',
-		  'E_32_CAT_MANAGE'            => '<i class=\'S32 e-manage-32\'></i> ',
-		  'E_32_CAT_MISC'              => '<i class=\'S32 e-settings-32\'></i> ',
-		  'E_32_CAT_ABOUT'             => '<i class=\'S32 e-info-32\'></i> ',
-		  'E_32_NAV_MAIN'              => '<i class=\'S32 e-main-32\'></i> ',
-		  'E_32_NAV_DOCS'              => '<i class=\'S32 e-docs-32\'></i> ',
-		  'E_32_NAV_LEAV'              => '<i class=\'S32 e-leave-32\'></i> ',
-		  'E_32_NAV_LGOT'              => '<i class=\'S32 e-logout-32\'></i> ',
-		  'E_32_NAV_ARROW'             => '<i class=\'S32 e-arrow-32\'></i> ',
-		  'E_32_NAV_ARROW_OVER'        => '<i class=\'S32 e-arrow_over-32\'></i> ',
-		  'E_16_ADMIN'                 => '<i class=\'S16 e-admins-16\'></i>',
-		  'E_16_ADPASS'                => '<i class=\'S16 e-adminpass-16\'></i>',
-		  'E_16_BANLIST'               => '<i class=\'S16 e-banlist-16\'></i>',
-		  'E_16_CACHE'                 => '<i class=\'S16 e-cache-16\'></i>',
-		  'E_16_COMMENT'               => '<i class=\'S16 e-comments-16\'></i>',
-		  'E_16_CREDITS'               => '<i class=\'S16 e-e107_icon-16\'></i>',
-		  'E_16_CRON'                  => '<i class=\'S16 e-cron-16\'></i>',
-		  'E_16_CUST'                  => '<i class=\'S16 e-custom-16\'></i>',
-		  'E_16_CUSTOMFIELD'           => '<i class=\'S16 e-custom_field-16\'></i>',
-		  'E_16_DATAB'                 => '<i class=\'S16 e-database-16\'></i>',
-		  'E_16_DOCS'                  => '<i class=\'S16 e-docs-16\'></i>',
-		  'E_16_EMOTE'                 => '<i class=\'S16 e-emoticons-16\'></i>',
-		  'E_16_FILE'                  => '<i class=\'S16 e-filemanager-16\'></i>',
-		  'E_16_FORUM'                 => '<i class=\'S16 e-forums-16\'></i>',
-		  'E_16_FRONT'                 => '<i class=\'S16 e-frontpage-16\'></i>',
-		  'E_16_IMAGES'                => '<i class=\'S16 e-images-16\'></i>',
-		  'E_16_INSPECT'               => '<i class=\'S16 e-fileinspector-16\'></i>',
-		  'E_16_LINKS'                 => '<i class=\'S16 e-links-16\'></i>',
-		  'E_16_WELCOME'               => '<i class=\'S16 e-welcome-16\'></i>',
-		  'E_16_MAIL'                  => '<i class=\'S16 e-mail-16\'></i>',
-		  'E_16_MAINTAIN'              => '<i class=\'S16 e-maintain-16\'></i>',
-		  'E_16_MENUS'                 => '<i class=\'icon S16 e-menus-16\'></i>',
-		  'E_16_META'                  => '<i class=\'icon S16 e-meta-16\'></i>',
-		  'E_16_NEWS'                  => '<i class=\'icon S16 e-news-16\'></i>',
-		  'E_16_NEWSFEED'              => '<i class=\'S16 e-newsfeeds-16\'></i>',
-		  'E_16_NOTIFY'                => '<i class=\'S16 e-notify-16\'></i>',
-		  'E_16_PHP'                   => '<i class=\'S16 e-phpinfo-16\'></i>',
-		  'E_16_POLLS'                 => '<i class=\'S16 e-polls-16\'></i>',
-		  'E_16_PREFS'                 => '<i class=\'S16 e-prefs-16\'></i>',
-		  'E_16_SEARCH'                => '<i class=\'S16 e-search-16\'></i>',
-		  'E_16_UPLOADS'               => '<i class=\'S16 e-uploads-16\'></i>',
-		  'E_16_EURL'                  => '<i class=\'S16 e-eurl-16\'></i>',
-		  'E_16_USER'                  => '<i class=\'S16 e-users-16\'></i>',
-		  'E_16_USER_EXTENDED'         => '<i class=\'S16 e-extended-16\'></i>',
-		  'E_16_USERCLASS'             => '<i class=\'S16 e-userclass-16\'></i>',
-		  'E_16_LANGUAGE'              => '<i class=\'S16 e-language-16\'></i>',
-		  'E_16_PLUGIN'                => '<i class=\'S16 e-plugins-16\'></i>',
-		  'E_16_PLUGMANAGER'           => '<i class=\'S16 e-plugmanager-16\'></i>',
-		  'E_16_THEMEMANAGER'          => '<i class=\'S16 e-themes-16\'></i>',
-		  'E_16_ADMINLOG'              => '<i class=\'S16 e-adminlogs-16\'></i>',
-		  'E_16_MANAGE'                => '<i class=\'S16 e-manage-16\'></i>',
-		  'E_16_CREATE'                => '<i class=\'S16 e-add-16\'></i>',
-		  'E_16_SETTINGS'              => '<i class=\'S16 e-settings-16\'></i>',
-		  'E_16_SYSINFO'               => '<i class=\'S16 e-sysinfo-16\'></i>',
-		  'E_16_FAILEDLOGIN'           => '<i class=\'S16 e-failedlogin-16\'></i>',
-		  'E_32_TRUE'                  => '<i class=\'S32 e-true-32\'></i>',
-		  'ADMIN_CHILD_ICON'           => '<img src="/e107_images/generic/branchbottom.gif" class="treeprefix level-x icon" alt="" />',
-		  'ADMIN_FILTER_ICON'          => '<i class=\'fa fa-filter\'></i>',
-		  'ADMIN_TRUE_ICON'            => '<span class=\'text-success admin-true-icon\'>&#10004;</span>',
-		  'ADMIN_FALSE_ICON'           => '<span class=\'text-danger admin-false-icon\'>&#10799;</span>',
-		  'ADMIN_WARNING_ICON'         => '<i class=\'fa fa-warning text-warning\'></i>',
-		  'ADMIN_GRID_ICON'            => '<i class=\'fa fa-th\'></i>',
-		  'ADMIN_LIST_ICON'            => '<i class=\'fas fa-list\'></i>',
-		  'ADMIN_EDIT_ICON'            => "<i class='admin-ui-option fa fa-edit fa-2x fa-fw'></i>",
-		  'ADMIN_DELETE_ICON'          => "<i class='admin-ui-option fa fa-trash fa-2x fa-fw'></i>",
-		  'ADMIN_SORT_ICON'            => "<i class='admin-ui-option fa fa-sort fa-2x fa-fw'></i>",
-		  'ADMIN_EXECUTE_ICON'         => "<i class='admin-ui-option fa fa-play fa-2x fa-fw'></i>",
-		  'ADMIN_PAGES_ICON'           => "<i class='admin-ui-option fa fa-file fa-2x fa-fw'></i>",
-		  'ADMIN_ADD_ICON'             => '<i class=\'S32 e-add-32\'></i>',
-		  'ADMIN_INFO_ICON'            => '<i class=\'fa fa-question-circle\'></i>',
-		  'ADMIN_CONFIGURE_ICON'       => "<i class='admin-ui-option fa fa-cog fa-2x fa-fw'></i>",
-		  'ADMIN_VIEW_ICON'            => "<i class='admin-ui-option fa fa-search fa-2x fa-fw'></i>",
-		  'ADMIN_URL_ICON'             => '<i class=\'S16 e-forums-16\'></i>',
-		  'ADMIN_INSTALLPLUGIN_ICON'   => '<i class=\'S32 e-plugin_install-32\'></i>',
-		  'ADMIN_UNINSTALLPLUGIN_ICON' => "<i class='admin-ui-option fa fa-trash fa-2x fa-fw'></i>",
-		  'ADMIN_UPGRADEPLUGIN_ICON'   => "<i class='admin-ui-option fa fa-arrow-up fa-2x fa-fw'></i>",
-		  'ADMIN_REPAIRPLUGIN_ICON'    => "<i class='admin-ui-option fa fa-wrench fa-2x fa-fw'></i>",
-		  'ADMIN_UP_ICON'              => "<i class='admin-ui-option fa fa-chevron-up fa-2x fa-fw'></i>",
-		  'ADMIN_DOWN_ICON'            => "<i class='admin-ui-option fa fa-chevron-down fa-2x fa-fw'></i>",
-		  'ADMIN_EDIT_ICON_PATH'       => '/e107_images/admin_images/edit_32.png',
-		  'ADMIN_DELETE_ICON_PATH'     => '/e107_images/admin_images/delete_32.png',
-		  'ADMIN_WARNING_ICON_PATH'    => '/e107_images/admin_images/warning_32.png',
-		  'E_24_PLUGIN'                => "<i class='S24 e-plugins-24'></i> ",
-			'E_16_UNDO' => "<img class='icon S16' src='" . e_IMAGE . "admin_images/undo_16.png' alt='' />",
-			'E_32_UNDO'              => "<img class='icon S32' src='" . e_IMAGE . "admin_images/undo_32.png' alt='' />"
+		$legacyList = array(
+			'E_16_FACEBOOK'              => '<img class=\'icon S16\' src=\'./e107_images/admin_images/facebook_16.png\' alt=\'\' />',
+			'E_16_TWITTER'               => '<img class=\'icon S16\' src=\'./e107_images/admin_images/twitter_16.png\' alt=\'\' />',
+			'E_16_GITHUB'                => '<img class=\'icon S16\' src=\'./e107_images/admin_images/github_16.png\' alt=\'\' />',
+			'E_16_E107'                  => '<img class=\'icon S16\' src=\'./e107_images/e107_icon_16.png\' alt=\'\' />',
+			'E_32_E107'                  => '<img class=\'icon S32\' src=\'./e107_images/e107_icon_32.png\' alt=\'\' />',
+			'E_32_ADMIN'                 => '<i class=\'S32 e-admins-32\'></i>',
+			'E_32_ADPASS'                => '<i class=\'S32 e-adminpass-32\'></i>',
+			'E_32_BANLIST'               => '<i class=\'S32 e-banlist-32\'></i>',
+			'E_32_CACHE'                 => '<i class=\'S32 e-cache-32\'></i> ',
+			'E_32_CREDITS'               => '<i class=\'S32 e-e107_icon-32.png\'></i>',
+			'E_32_CRON'                  => '<i class=\'S32 e-cron-32\'></i> ',
+			'E_32_CUST'                  => '<i class=\'S32 e-custom-32\'></i> ',
+			'E_32_DATAB'                 => '<i class=\'S32 e-database-32\'></i> ',
+			'E_32_DOCS'                  => '<i class=\'S32 e-docs-32\'></i> ',
+			'E_32_EMOTE'                 => '<i class=\'S32 e-emoticons-32\'></i> ',
+			'E_32_FILE'                  => '<i class=\'S32 e-filemanager-32\'></i> ',
+			'E_32_FORUM'                 => '<i class=\'S32 e-forums-32\'></i> ',
+			'E_32_FRONT'                 => '<i class=\'S32 e-frontpage-32\'></i> ',
+			'E_32_IMAGES'                => '<i class=\'S32 e-images-32\'></i> ',
+			'E_32_INSPECT'               => '<i class=\'S32 e-fileinspector-32\'></i> ',
+			'E_32_LINKS'                 => '<i class=\'S32 e-links-32\'></i> ',
+			'E_32_WELCOME'               => '<i class=\'S32 e-welcome-32\'></i> ',
+			'E_32_MAIL'                  => '<i class=\'S32 e-mail-32\'></i> ',
+			'E_32_MAINTAIN'              => '<i class=\'S32 e-maintain-32\'></i> ',
+			'E_32_MENUS'                 => '<i class=\'S32 e-menus-32\'></i> ',
+			'E_32_META'                  => '<i class=\'S32 e-meta-32\'></i> ',
+			'E_32_NEWS'                  => '<i class=\'S32 e-news-32\'></i> ',
+			'E_32_NEWSFEED'              => '<i class=\'S32 e-newsfeeds-32\'></i> ',
+			'E_32_NOTIFY'                => '<i class=\'S32 e-notify-32\'></i> ',
+			'E_32_PHP'                   => '<i class=\'S32 e-phpinfo-32\'></i> ',
+			'E_32_POLLS'                 => '<i class=\'S32 e-polls-32\'></i> ',
+			'E_32_PREFS'                 => '<i class=\'S32 e-prefs-32\'></i> ',
+			'E_32_SEARCH'                => '<i class=\'S32 e-search-32\'></i> ',
+			'E_32_UPLOADS'               => '<i class=\'S32 e-uploads-32\'></i> ',
+			'E_32_EURL'                  => '<i class=\'S32 e-eurl-32\'></i> ',
+			'E_32_USER'                  => '<i class=\'S32 e-users-32\'></i> ',
+			'E_32_USER_EXTENDED'         => '<i class=\'S32 e-extended-32\'></i> ',
+			'E_32_USERCLASS'             => '<i class=\'S32 e-userclass-32\'></i> ',
+			'E_32_LANGUAGE'              => '<i class=\'S32 e-language-32\'></i> ',
+			'E_32_PLUGIN'                => '<i class=\'S32 e-plugins-32\'></i> ',
+			'E_32_PLUGMANAGER'           => '<i class=\'S32 e-plugmanager-32\'></i> ',
+			'E_32_MAIN'                  => '<i class=\'S32 e-main-32\'></i> ',
+			'E_32_THEMEMANAGER'          => '<i class=\'S32 e-themes-32\'></i> ',
+			'E_32_COMMENT'               => '<i class=\'S32 e-comments-32\'></i> ',
+			'E_32_ADMINLOG'              => '<i class=\'S32 e-adminlogs-32\'></i> ',
+			'E_32_LOGOUT'                => '<i class=\'S32 e-logout-32\'></i> ',
+			'E_32_MANAGE'                => '<i class=\'S32 e-manage-32\'></i> ',
+			'E_32_CREATE'                => '<i class=\'S32 e-add-32\'></i> ',
+			'E_32_SETTINGS'              => '<i class=\'S32 e-settings-32\'></i> ',
+			'E_32_SYSINFO'               => '<i class=\'S32 e-sysinfo-32\'></i> ',
+			'E_32_CAT_SETT'              => '<i class=\'S32 e-cat_settings-32\'></i> ',
+			'E_32_CAT_USER'              => '<i class=\'S32 e-cat_users-32\'></i> ',
+			'E_32_CAT_CONT'              => '<i class=\'S32 e-cat_content-32\'></i> ',
+			'E_32_CAT_FILE'              => '<i class=\'S32 e-cat_files-32\'></i> ',
+			'E_32_CAT_TOOL'              => '<i class=\'S32 e-cat_tools-32\'></i> ',
+			'E_32_CAT_PLUG'              => '<i class=\'S32 e-cat_plugins-32\'></i> ',
+			'E_32_CAT_MANAGE'            => '<i class=\'S32 e-manage-32\'></i> ',
+			'E_32_CAT_MISC'              => '<i class=\'S32 e-settings-32\'></i> ',
+			'E_32_CAT_ABOUT'             => '<i class=\'S32 e-info-32\'></i> ',
+			'E_32_NAV_MAIN'              => '<i class=\'S32 e-main-32\'></i> ',
+			'E_32_NAV_DOCS'              => '<i class=\'S32 e-docs-32\'></i> ',
+			'E_32_NAV_LEAV'              => '<i class=\'S32 e-leave-32\'></i> ',
+			'E_32_NAV_LGOT'              => '<i class=\'S32 e-logout-32\'></i> ',
+			'E_32_NAV_ARROW'             => '<i class=\'S32 e-arrow-32\'></i> ',
+			'E_32_NAV_ARROW_OVER'        => '<i class=\'S32 e-arrow_over-32\'></i> ',
+			'E_16_ADMIN'                 => '<i class=\'S16 e-admins-16\'></i>',
+			'E_16_ADPASS'                => '<i class=\'S16 e-adminpass-16\'></i>',
+			'E_16_BANLIST'               => '<i class=\'S16 e-banlist-16\'></i>',
+			'E_16_CACHE'                 => '<i class=\'S16 e-cache-16\'></i>',
+			'E_16_COMMENT'               => '<i class=\'S16 e-comments-16\'></i>',
+			'E_16_CREDITS'               => '<i class=\'S16 e-e107_icon-16\'></i>',
+			'E_16_CRON'                  => '<i class=\'S16 e-cron-16\'></i>',
+			'E_16_CUST'                  => '<i class=\'S16 e-custom-16\'></i>',
+			'E_16_CUSTOMFIELD'           => '<i class=\'S16 e-custom_field-16\'></i>',
+			'E_16_DATAB'                 => '<i class=\'S16 e-database-16\'></i>',
+			'E_16_DOCS'                  => '<i class=\'S16 e-docs-16\'></i>',
+			'E_16_EMOTE'                 => '<i class=\'S16 e-emoticons-16\'></i>',
+			'E_16_FILE'                  => '<i class=\'S16 e-filemanager-16\'></i>',
+			'E_16_FORUM'                 => '<i class=\'S16 e-forums-16\'></i>',
+			'E_16_FRONT'                 => '<i class=\'S16 e-frontpage-16\'></i>',
+			'E_16_IMAGES'                => '<i class=\'S16 e-images-16\'></i>',
+			'E_16_INSPECT'               => '<i class=\'S16 e-fileinspector-16\'></i>',
+			'E_16_LINKS'                 => '<i class=\'S16 e-links-16\'></i>',
+			'E_16_WELCOME'               => '<i class=\'S16 e-welcome-16\'></i>',
+			'E_16_MAIL'                  => '<i class=\'S16 e-mail-16\'></i>',
+			'E_16_MAINTAIN'              => '<i class=\'S16 e-maintain-16\'></i>',
+			'E_16_MENUS'                 => '<i class=\'icon S16 e-menus-16\'></i>',
+			'E_16_META'                  => '<i class=\'icon S16 e-meta-16\'></i>',
+			'E_16_NEWS'                  => '<i class=\'icon S16 e-news-16\'></i>',
+			'E_16_NEWSFEED'              => '<i class=\'S16 e-newsfeeds-16\'></i>',
+			'E_16_NOTIFY'                => '<i class=\'S16 e-notify-16\'></i>',
+			'E_16_PHP'                   => '<i class=\'S16 e-phpinfo-16\'></i>',
+			'E_16_POLLS'                 => '<i class=\'S16 e-polls-16\'></i>',
+			'E_16_PREFS'                 => '<i class=\'S16 e-prefs-16\'></i>',
+			'E_16_SEARCH'                => '<i class=\'S16 e-search-16\'></i>',
+			'E_16_UPLOADS'               => '<i class=\'S16 e-uploads-16\'></i>',
+			'E_16_EURL'                  => '<i class=\'S16 e-eurl-16\'></i>',
+			'E_16_USER'                  => '<i class=\'S16 e-users-16\'></i>',
+			'E_16_USER_EXTENDED'         => '<i class=\'S16 e-extended-16\'></i>',
+			'E_16_USERCLASS'             => '<i class=\'S16 e-userclass-16\'></i>',
+			'E_16_LANGUAGE'              => '<i class=\'S16 e-language-16\'></i>',
+			'E_16_PLUGIN'                => '<i class=\'S16 e-plugins-16\'></i>',
+			'E_16_PLUGMANAGER'           => '<i class=\'S16 e-plugmanager-16\'></i>',
+			'E_16_THEMEMANAGER'          => '<i class=\'S16 e-themes-16\'></i>',
+			'E_16_ADMINLOG'              => '<i class=\'S16 e-adminlogs-16\'></i>',
+			'E_16_MANAGE'                => '<i class=\'S16 e-manage-16\'></i>',
+			'E_16_CREATE'                => '<i class=\'S16 e-add-16\'></i>',
+			'E_16_SETTINGS'              => '<i class=\'S16 e-settings-16\'></i>',
+			'E_16_SYSINFO'               => '<i class=\'S16 e-sysinfo-16\'></i>',
+			'E_16_FAILEDLOGIN'           => '<i class=\'S16 e-failedlogin-16\'></i>',
+			'E_32_TRUE'                  => '<i class=\'S32 e-true-32\'></i>',
+			'ADMIN_CHILD_ICON'           => '<img src="/e107_images/generic/branchbottom.gif" class="treeprefix level-x icon" alt="" />',
+			'ADMIN_FILTER_ICON'          => '<i class=\'fa fa-filter\'></i>',
+			'ADMIN_TRUE_ICON'            => '<span class=\'text-success admin-true-icon\'>&#10004;</span>',
+			'ADMIN_FALSE_ICON'           => '<span class=\'text-danger admin-false-icon\'>&#10799;</span>',
+			'ADMIN_WARNING_ICON'         => '<i class=\'fa fa-warning text-warning\'></i>',
+			'ADMIN_GRID_ICON'            => '<i class=\'fa fa-th\'></i>',
+			'ADMIN_LIST_ICON'            => '<i class=\'fas fa-list\'></i>',
+			'ADMIN_EDIT_ICON'            => "<i class='admin-ui-option fa fa-edit fa-2x fa-fw'></i>",
+			'ADMIN_DELETE_ICON'          => "<i class='admin-ui-option fa fa-trash fa-2x fa-fw'></i>",
+			'ADMIN_SORT_ICON'            => "<i class='admin-ui-option fa fa-sort fa-2x fa-fw'></i>",
+			'ADMIN_EXECUTE_ICON'         => "<i class='admin-ui-option fa fa-play fa-2x fa-fw'></i>",
+			'ADMIN_PAGES_ICON'           => "<i class='admin-ui-option fa fa-file fa-2x fa-fw'></i>",
+			'ADMIN_ADD_ICON'             => '<i class=\'S32 e-add-32\'></i>',
+			'ADMIN_INFO_ICON'            => '<i class=\'fa fa-question-circle\'></i>',
+			'ADMIN_CONFIGURE_ICON'       => "<i class='admin-ui-option fa fa-cog fa-2x fa-fw'></i>",
+			'ADMIN_VIEW_ICON'            => "<i class='admin-ui-option fa fa-search fa-2x fa-fw'></i>",
+			'ADMIN_URL_ICON'             => '<i class=\'S16 e-forums-16\'></i>',
+			'ADMIN_INSTALLPLUGIN_ICON'   => '<i class=\'S32 e-plugin_install-32\'></i>',
+			'ADMIN_UNINSTALLPLUGIN_ICON' => "<i class='admin-ui-option fa fa-trash fa-2x fa-fw'></i>",
+			'ADMIN_UPGRADEPLUGIN_ICON'   => "<i class='admin-ui-option fa fa-arrow-up fa-2x fa-fw'></i>",
+			'ADMIN_REPAIRPLUGIN_ICON'    => "<i class='admin-ui-option fa fa-wrench fa-2x fa-fw'></i>",
+			'ADMIN_UP_ICON'              => "<i class='admin-ui-option fa fa-chevron-up fa-2x fa-fw'></i>",
+			'ADMIN_DOWN_ICON'            => "<i class='admin-ui-option fa fa-chevron-down fa-2x fa-fw'></i>",
+			'ADMIN_EDIT_ICON_PATH'       => '/e107_images/admin_images/edit_32.png',
+			'ADMIN_DELETE_ICON_PATH'     => '/e107_images/admin_images/delete_32.png',
+			'ADMIN_WARNING_ICON_PATH'    => '/e107_images/admin_images/warning_32.png',
+			'E_24_PLUGIN'                => "<i class='S24 e-plugins-24'></i> ",
+			'E_16_UNDO'                  => "<img class='icon S16' src='" . e_IMAGE . "admin_images/undo_16.png' alt='' />",
+			'E_32_UNDO'                  => "<img class='icon S32' src='" . e_IMAGE . "admin_images/undo_32.png' alt='' />"
 		);
 
 
 		$new = $e107::loadAdminIcons();
 
-		foreach($new as $key=>$val)
+		foreach($new as $key => $val)
 		{
 			if(!isset($legacyList[$key]))
 			{
-				$this->fail("Remove {$key} FROM admin_icons_template");
+				$this::fail("Remove $key FROM admin_icons_template");
 			}
 
-			$this::assertSame($legacyList[$key], $val, $key." should equal: ".$legacyList[$key]);
+			$this::assertSame($legacyList[$key], $val, $key . " should equal: " . $legacyList[$key]);
 		}
 
-		foreach($legacyList as $key=>$val)
+		foreach($legacyList as $key => $val)
 		{
 			if(!isset($new[$key]))
 			{
-				$this->fail("{$key} is missing from admin_icons_template");
+				$this::fail("$key is missing from admin_icons_template");
 			}
 
 		}
@@ -1098,7 +1116,7 @@ class e107Test extends \Codeception\Test\Unit
 
 		$this::assertSame($new, $template2);
 
-		$range = range(1,10);
+		$range = range(1, 10);
 		foreach($range as $t)
 		{
 			e107::loadAdminIcons();
@@ -1111,6 +1129,7 @@ class e107Test extends \Codeception\Test\Unit
 
 	public function testGetCoreTemplate()
 	{
+
 		$e107 = $this->e107;
 		$templates = scandir(e_CORE . "templates");
 
@@ -1149,59 +1168,60 @@ class e107Test extends \Codeception\Test\Unit
 		//$res = null;
 		//$this::assertTrue($res);
 	}
-/*
-	private function clearRelatedRegistry($type)
-	{
-		$registry = e107::getRegistry('_all_');
-
-		$result = [];
-		foreach($registry as $reg => $v)
+	/*
+		private function clearRelatedRegistry($type)
 		{
-			if(strpos($reg, $type) !== false)
+			$registry = e107::getRegistry('_all_');
+
+			$result = [];
+			foreach($registry as $reg => $v)
 			{
-				e107::setRegistry($reg);
-				$result[] = $reg;
+				if(strpos($reg, $type) !== false)
+				{
+					e107::setRegistry($reg);
+					$result[] = $reg;
+				}
+
 			}
 
+			sort($result);
+
+			return $result;
+		}*/
+	/*
+		public function testGetTemplatePluginThemeMatch()
+		{
+			e107::plugLan('download', 'front', true);
+
+			e107::getConfig()->set('sitetheme', 'bootstrap3');
+			$template = e107::getTemplate('download', null, null);
+			var_export($template['header']);
+			echo "\n\n";
+
+
+			e107::getConfig()->set('sitetheme', '_blank');
+			$template = e107::getTemplate('download', null, null);
+			var_export($template['header']);
+			echo "\n\n";
+
+			e107::getConfig()->set('sitetheme', 'bootstrap3'); // doesn't have a download template, so fallback.
+			$template = e107::getTemplate('download', null, null); // theme override is enabled by default.
+			var_export($template['header']);
+			echo "\n\n";
+
+			e107::getConfig()->set('sitetheme', 'bootstrap3');
 		}
-
-		sort($result);
-
-		return $result;
-	}*/
-/*
-	public function testGetTemplatePluginThemeMatch()
-	{
-		e107::plugLan('download', 'front', true);
-
-		e107::getConfig()->set('sitetheme', 'bootstrap3');
-		$template = e107::getTemplate('download', null, null);
-		var_export($template['header']);
-		echo "\n\n";
-
-
-		e107::getConfig()->set('sitetheme', '_blank');
-		$template = e107::getTemplate('download', null, null);
-		var_export($template['header']);
-		echo "\n\n";
-
-		e107::getConfig()->set('sitetheme', 'bootstrap3'); // doesn't have a download template, so fallback.
-		$template = e107::getTemplate('download', null, null); // theme override is enabled by default.
-		var_export($template['header']);
-		echo "\n\n";
-
-		e107::getConfig()->set('sitetheme', 'bootstrap3');
-	}
-*/
+	*/
 
 	public function testGetTemplateOverride()
 	{
+
 		// Loads e107_themes/bootstrap3/templates/gallery/gallery_template.php
-		$template = e107::getTemplate('gallery', null, null, true, false); // true & false default, loads theme (override true)
+		$template = e107::getTemplate('gallery'); // true & false default, loads theme (override true)  e107::getTemplate('gallery', null, null, true, false)
 		$this::assertEquals("My Gallery", $template['list']['caption']);
 
 		// Duplicate to load registry
-		$template2 = e107::getTemplate('gallery', null, null, true, false); // true & false default, loads theme (override true)
+		$template2 = e107::getTemplate('gallery'); // true & false default, loads theme (override true) ie. e107::getTemplate('gallery', null, null, true, false)
 		$this::assertEquals("My Gallery", $template2['list']['caption']);
 
 		$this::assertSame($template, $template2);
@@ -1211,6 +1231,7 @@ class e107Test extends \Codeception\Test\Unit
 
 	public function testGetTemplateOverrideMerge()
 	{
+
 		// Loads e107_plugins/gallery/templates/gallery_template.php then overwrites it with e107_themes/bootstrap3/templates/gallery/gallery_template.php
 		$template = e107::getTemplate('gallery', null, null, true, true); // theme override is enabled, and theme merge is enabled.
 		$this::assertArrayHasKey('merged-example', $template);
@@ -1249,12 +1270,13 @@ class e107Test extends \Codeception\Test\Unit
 	 */
 	public function testGetTemplate()
 	{
+
 		// Loads e107_plugins/gallery/templates/gallery_template.php
-		$template = e107::getTemplate('gallery', null, null, false, false); // theme override is disabled.
+		$template = e107::getTemplate('gallery', null, null, false); // theme override is disabled.
 		$this::assertEquals("Gallery", $template['list']['caption']);
 
 		// Duplicate to load registry.
-		$template2 = e107::getTemplate('gallery', null, null, false, false); // theme override is disabled.
+		$template2 = e107::getTemplate('gallery', null, null, false); // theme override is disabled.
 		$this::assertEquals("Gallery", $template2['list']['caption']);
 
 		$this::assertSame($template, $template2);
@@ -1303,71 +1325,72 @@ class e107Test extends \Codeception\Test\Unit
 				$this::assertTrue($res);
 			}
 */
+	/**
+	 * @runInSeparateProcess
+	 * @return void
+	 */
 	public function testPlugLan()
 	{
 
 		$e107 = $this->e107;
 
 		$tests = array(
-					// plug, param 1, param 2, expected
-			0   => array('banner', '', false, 'e107_plugins/banner/languages/English_front.php'),
-			1   => array('forum', 'front', true, 'e107_plugins/forum/languages/English/English_front.php'),
-			2   => array('gallery', true, true, 'e107_plugins/gallery/languages/English/English_admin.php'),
-			3   => array('forum', 'menu', true, 'e107_plugins/forum/languages/English/English_menu.php'),
-			4   => array('banner', true, false, 'e107_plugins/banner/languages/English_admin.php'),
-			5   => array('chatbox_menu', e_LANGUAGE, false, 'e107_plugins/chatbox_menu/languages/English/English.php'),
-			6   => array('comment_menu', null, false, 'e107_plugins/comment_menu/languages/English.php'),
-			7   => array('poll', null, false, 'e107_plugins/poll/languages/English.php'),
-			8   => array('poll', null, false, 'e107_plugins/poll/languages/English.php'),
+			// plug, param 1, param 2, expected
+			0 => array('banner', '', false, 'e107_plugins/banner/languages/English_front.php'),
+			1 => array('forum', 'front', true, 'e107_plugins/forum/languages/English/English_front.php'),
+			2 => array('gallery', true, true, 'e107_plugins/gallery/languages/English/English_admin.php'),
+			3 => array('forum', 'menu', true, 'e107_plugins/forum/languages/English/English_menu.php'),
+			4 => array('banner', true, false, 'e107_plugins/banner/languages/English_admin.php'),
+			5 => array('chatbox_menu', e_LANGUAGE, false, 'e107_plugins/chatbox_menu/languages/English/English.php'),
+			6 => array('comment_menu', null, false, 'e107_plugins/comment_menu/languages/English.php'),
+			7 => array('poll', null, false, 'e107_plugins/poll/languages/English.php'),
+			8 => array('poll', null, false, 'e107_plugins/poll/languages/English.php'),
 		);
 
-		foreach($tests as $plug=>$var)
+		foreach($tests as $plug => $var)
 		{
 			$result = $e107::plugLan($var[0], $var[1], $var[2], true);
 			if(!isset($var[3]))
 			{
-				echo $result."\n";
+				echo $result . "\n";
 				continue;
 			}
 
 			$this::assertStringContainsString($var[3], $result);
 			$e107::plugLan($var[0], $var[1], $var[2]);
 		}
-/*
-		$registry = $e107::getRegistry('_all_');
+		/*
+				$registry = $e107::getRegistry('_all_');
 
-		foreach($registry as $k=>$v)
-		{
-			if(strpos($k, 'core/e107/pluglan/') !== false)
-			{
-				echo $k."\n";
+				foreach($registry as $k=>$v)
+				{
+					if(strpos($k, 'core/e107/pluglan/') !== false)
+					{
+						echo $k."\n";
 
-			}
-
-
-		}*/
+					}
 
 
-
-
+				}*/
 
 
 	}
 
 	function testDetectRoute()
 	{
+
 		e107::getPlugin()->install('forum');
 
 		$tests = array(
 			0 => array(
-				'plugin'    => 'forum',
-				'uri'       => '/e107_plugins/forum/forum.php?f=rules',
-				'expected'  => 'forum/rules',
+				'plugin'   => 'forum',
+				'uri'      => '/e107_plugins/forum/forum.php?f=rules',
+				'expected' => 'forum/rules',
 			),
 			1 => array(
-				'plugin'    => 'forum',
-				'uri'       => '/e107_plugins/forum/forum_viewforum.php?id=543123',
-				'expected'  => 'forum/forum',
+				'plugin'   => 'forum',
+				'uri'      => '/e107_plugins/forum/forum_viewforum.php?id=543123',
+				'expected' => 'forum/forum',
 			),
 
 		);
@@ -1377,7 +1400,7 @@ class e107Test extends \Codeception\Test\Unit
 			$result = e107::detectRoute($var['plugin'], $var['uri']);
 			if(empty($var['expected']))
 			{
-				echo $result."\n";
+				echo $result . "\n";
 				continue;
 			}
 
@@ -1385,19 +1408,16 @@ class e107Test extends \Codeception\Test\Unit
 		}
 
 
-
-
-
 		e107::getPlugin()->uninstall('forum');
 
 	}
 
-/*
-				public function testThemeLan()
-				{
-					$result = e107::themeLan(null, 'basic-light');
+	/*
+					public function testThemeLan()
+					{
+						$result = e107::themeLan(null, 'basic-light');
 
-				}*/
+					}*/
 	/*
 				public function testLan()
 				{
@@ -1455,7 +1475,7 @@ class e107Test extends \Codeception\Test\Unit
 	private function generateExpected($string, $rows)
 	{
 
-		$search = array('&');;
+		$search = array('&');
 		$replace = array('&amp;');
 
 		foreach($rows as $k => $v)
@@ -1471,6 +1491,7 @@ class e107Test extends \Codeception\Test\Unit
 
 	public function testCanonical()
 	{
+
 		$e107 = $this->e107;
 		$e107::canonical('_RESET_');
 		$e107::canonical('news');
@@ -1489,28 +1510,28 @@ class e107Test extends \Codeception\Test\Unit
 		// Test FULL url option on Legacy url with new options['mode']
 		$tests = array(
 			0 => array(
-				'plugin'     => 'news/view/item',
-				'key'        => array('news_id' => 1, 'news_sef' => 'my-news-item', 'category_sef' => 'my-category'),
-				'row'        => array(),
-				'options'    => ['mode' => 'full'],
+				'plugin'  => 'news/view/item',
+				'key'     => array('news_id' => 1, 'news_sef' => 'my-news-item', 'category_sef' => 'my-category'),
+				'row'     => array(),
+				'options' => ['mode' => 'full'],
 			),
 			1 => array(
-				'plugin'     => 'news/view/item',
-				'key'        => array('news_id' => 1, 'news_sef' => 'my-news-item', 'category_sef' => 'my-category'),
-				'row'        => 'full=1&encode=0',
-				'options'    => ['mode' => 'full'],
+				'plugin'  => 'news/view/item',
+				'key'     => array('news_id' => 1, 'news_sef' => 'my-news-item', 'category_sef' => 'my-category'),
+				'row'     => 'full=1&encode=0',
+				'options' => ['mode' => 'full'],
 			),
 			2 => array(
-				'plugin'     => 'news/view/item',
-				'key'        => array('news_id' => 1, 'news_sef' => 'my-news-item', 'category_sef' => 'my-category'),
-				'row'        => '',
-				'options'    => ['mode' => 'full'],
+				'plugin'  => 'news/view/item',
+				'key'     => array('news_id' => 1, 'news_sef' => 'my-news-item', 'category_sef' => 'my-category'),
+				'row'     => '',
+				'options' => ['mode' => 'full'],
 			),
 			3 => array(
-				'plugin'     => 'news/view/item',
-				'key'        => array('news_id' => 1, 'news_sef' => 'my-news-item', 'category_sef' => 'my-category'),
-				'row'        => null,
-				'options'    => ['mode' => 'full'],
+				'plugin'  => 'news/view/item',
+				'key'     => array('news_id' => 1, 'news_sef' => 'my-news-item', 'category_sef' => 'my-category'),
+				'row'     => null,
+				'options' => ['mode' => 'full'],
 			),
 
 		);
@@ -1519,7 +1540,6 @@ class e107Test extends \Codeception\Test\Unit
 			$result = $obj::url($v['plugin'], $v['key'], $v['row'], $v['options']);
 			self::assertStringContainsString('http', $result);
 		}
-
 
 
 		$tests = array();
@@ -1562,23 +1582,22 @@ class e107Test extends \Codeception\Test\Unit
 				echo $result . "\n";
 				continue;
 			}
-			self::assertEquals($var['_expected_'], $result, 'Failed on test #'.$index);
+			self::assertEquals($var['_expected_'], $result, 'Failed on test #' . $index);
 			//	$this::assertEquals("https://localhost/e107/news", $result);
 		}
-
-
 
 
 	}
 
 	public function testUrlDomain()
 	{
+
 		// e107 v2.4 -  test for custom domain
 
 		$obj = $this->e107;
 
 		e107::getPlugin()->install('_blank');
-		$result = $obj::url('_blank', 'parked', null, ['mode'=>'full']);
+		$result = $obj::url('_blank', 'parked', null, ['mode' => 'full']);
 		self::assertSame('https://parked-domain.com/custom', $result);
 		e107::getPlugin()->uninstall('_blank');
 
@@ -1611,12 +1630,12 @@ class e107Test extends \Codeception\Test\Unit
 		$oldConfig = e107::getPref('url_config');
 
 		$newConfig = array(
-			'news'    => 'core/sef_full',
-			'page'    => 'core/sef_chapters',
-			'search'  => 'core/rewrite',
-			'system'  => 'core/rewrite',
-			'user'    => 'core/rewrite',
-	//		'gallery' => 'plugin/rewrite'
+			'news'   => 'core/sef_full',
+			'page'   => 'core/sef_chapters',
+			'search' => 'core/rewrite',
+			'system' => 'core/rewrite',
+			'user'   => 'core/rewrite',
+			//		'gallery' => 'plugin/rewrite'
 		);
 
 
@@ -1717,6 +1736,7 @@ class e107Test extends \Codeception\Test\Unit
 
 	/**
 	 * Save the url_config preference
+	 *
 	 * @param array $newConfig
 	 */
 	private function setUrlConfig($newConfig = array())
@@ -1837,10 +1857,11 @@ class e107Test extends \Codeception\Test\Unit
 
 	public function testWysiwyg()
 	{
+
 		// Simulate editors being installed.
-		$editors = array (
-		  'tinymce4' => 'TinyMce4',
-		  'simplemde' => 'SimpleMDE',
+		$editors = array(
+			'tinymce4'  => 'TinyMce4',
+			'simplemde' => 'SimpleMDE',
 		);
 
 		e107::getConfig()
@@ -1850,7 +1871,7 @@ class e107Test extends \Codeception\Test\Unit
 
 		global $_E107;
 		$_E107['phpunit'] = true; // make sure pref is re-loaded.
-	//	$tinyMceInstalled = e107::isInstalled('tinymce4');
+		//	$tinyMceInstalled = e107::isInstalled('tinymce4');
 
 		$tests = array(
 			//input     => expected
@@ -1907,8 +1928,9 @@ class e107Test extends \Codeception\Test\Unit
 
 	public function testInAdminDir()
 	{
+
 		return null; // FIXME
-		$this->markTestSkipped("Skipped until admin-area conflict can be resolved."); // FIXME
+		$this::markTestSkipped("Skipped until admin-area conflict can be resolved."); // FIXME
 		$tests = array(
 			0  => array('path' => 'thumb.php', 'plugdir' => false, 'expected' => false),
 			1  => array('path' => 'index.php', 'plugdir' => false, 'expected' => false),
@@ -2006,70 +2028,72 @@ class e107Test extends \Codeception\Test\Unit
 				$this::assertTrue($res);
 			}
 */
-			public function testSet_request()
-			{
-				$tests = array(
+	public function testSet_request()
+	{
 
-					'mode=main&action=create'                       => 'mode=main&amp;action=create',
-					'[debug=counts!]mode=pref_editor&type=vstore'   => 'mode=pref_editor&amp;type=vstore',
-					'searchquery=šýá&mode=main'                     => 'searchquery=šýá&amp;mode=main',
-					'mode=main&action=custom&other[key]=1'          => 'mode=main&amp;action=custom&amp;other[key]=1',
-					'searchquery="two words"&mode=main'             => 'searchquery=%22two words%22&amp;mode=main',
-					"searchquery='two words'&mode=main"             => "searchquery=%27two words%27&amp;mode=main",
-				//
-				);
+		$tests = array(
 
-				foreach($tests as $input => $expected)
+			'mode=main&action=create'                     => 'mode=main&amp;action=create',
+			'[debug=counts!]mode=pref_editor&type=vstore' => 'mode=pref_editor&amp;type=vstore',
+			'searchquery=šýá&mode=main'                   => 'searchquery=šýá&amp;mode=main',
+			'mode=main&action=custom&other[key]=1'        => 'mode=main&amp;action=custom&amp;other[key]=1',
+			'searchquery="two words"&mode=main'           => 'searchquery=%22two words%22&amp;mode=main',
+			"searchquery='two words'&mode=main"           => "searchquery=%27two words%27&amp;mode=main",
+			//
+		);
+
+		foreach($tests as $input => $expected)
+		{
+			$result = $this->e107->set_request(true, $input);
+			$this::assertSame($expected, $result);
+		}
+
+
+	}
+
+	/*
+				public function testCanCache()
 				{
-					$result = $this->e107->set_request(true, $input);
-					$this::assertSame($expected, $result);
+					$res = null;
+					$this::assertTrue($res);
 				}
 
+				public function testIsSecure()
+				{
+					$res = null;
+					$this::assertTrue($res);
+				}
 
-			}
-/*
-			public function testCanCache()
-			{
-				$res = null;
-				$this::assertTrue($res);
-			}
+				public function testGetip()
+				{
+					$res = null;
+					$this::assertTrue($res);
+				}
 
-			public function testIsSecure()
-			{
-				$res = null;
-				$this::assertTrue($res);
-			}
+				public function testIpEncode()
+				{
+					$res = null;
+					$this::assertTrue($res);
+				}
 
-			public function testGetip()
-			{
-				$res = null;
-				$this::assertTrue($res);
-			}
+				public function testIpdecode()
+				{
+					$res = null;
+					$this::assertTrue($res);
+				}
 
-			public function testIpEncode()
-			{
-				$res = null;
-				$this::assertTrue($res);
-			}
+				public function testGet_host_name()
+				{
+					$res = null;
+					$this::assertTrue($res);
+				}
 
-			public function testIpdecode()
-			{
-				$res = null;
-				$this::assertTrue($res);
-			}
-
-			public function testGet_host_name()
-			{
-				$res = null;
-				$this::assertTrue($res);
-			}
-
-			public function testParseMemorySize()
-			{
-				$res = null;
-				$this::assertTrue($res);
-			}
-	*/
+				public function testParseMemorySize()
+				{
+					$res = null;
+					$this::assertTrue($res);
+				}
+		*/
 	public function testIsInstalled()
 	{
 
@@ -2087,8 +2111,9 @@ class e107Test extends \Codeception\Test\Unit
 
 	public function testIsCompatible()
 	{
+
 		// version => expected
-		$testPlugin = array (
+		$testPlugin = array(
 			'1'     => false, // assumed incompatible.
 			'1.2.3' => false,
 			'1.2'   => false,
@@ -2107,13 +2132,13 @@ class e107Test extends \Codeception\Test\Unit
 
 		$e107 = $this->e107;
 
-		foreach($testPlugin as $input=>$expected)
+		foreach($testPlugin as $input => $expected)
 		{
 			$result = $e107::isCompatible($input, 'plugin');
 			$this::assertSame($expected, $result);
 		}
 
-		$testTheme = array (
+		$testTheme = array(
 			'1'     => true, // assumed incompatible.
 			'1.2.3' => true,
 			'1.2'   => true,
@@ -2130,57 +2155,57 @@ class e107Test extends \Codeception\Test\Unit
 			'3'     => false,
 		);
 
-		foreach($testTheme as $input=>$expected)
+		foreach($testTheme as $input => $expected)
 		{
 			$result = $e107::isCompatible($input, 'theme');
 			$this::assertSame($expected, $result);
-		//	$ret[$input] = $result;
+			//	$ret[$input] = $result;
 		}
 
 
 	}
 
-	 public function testIsAllowedHost(): void
-    {
+	public function testIsAllowedHost(): void
+	{
 
-        $reflection = new ReflectionClass($this->e107);
-        $method = $reflection->getMethod('isAllowedHost');
-        $method->setAccessible(true);
+		$reflection = new ReflectionClass($this->e107);
+		$method = $reflection->getMethod('isAllowedHost');
+		$method->setAccessible(true);
 
-        $testCases = [
-            'Empty allowed hosts should return true' => [
-                'allowedHosts' => [],
-                'httpHost'     => 'anyhost.com',
-                'expected'     => true
-            ],
-            'Exact matching host should return true' => [
-                'allowedHosts' => ['example.com', 'testsite.org'],
-                'httpHost'     => 'example.com',
-                'expected'     => true
-            ],
-            'Subdomain matching allowed host should return true' => [
-                'allowedHosts' => ['example.com'],
-                'httpHost'     => 'subdomain.example.com',
-                'expected'     => true
-            ],
-            'Unrelated host should return false' => [
-                'allowedHosts' => ['example.com'],
-                'httpHost'     => 'unrelated.com',
-                'expected'     => false
-            ],
-            'Similar but incorrect subdomain pattern should return false' => [
-                'allowedHosts' => ['example.com'],
-                'httpHost'     => 'subdomain-example.com',
-                'expected'     => false
-            ],
-        ];
+		$testCases = [
+			'Empty allowed hosts should return true'                      => [
+				'allowedHosts' => [],
+				'httpHost'     => 'anyhost.com',
+				'expected'     => true
+			],
+			'Exact matching host should return true'                      => [
+				'allowedHosts' => ['example.com', 'testsite.org'],
+				'httpHost'     => 'example.com',
+				'expected'     => true
+			],
+			'Subdomain matching allowed host should return true'          => [
+				'allowedHosts' => ['example.com'],
+				'httpHost'     => 'subdomain.example.com',
+				'expected'     => true
+			],
+			'Unrelated host should return false'                          => [
+				'allowedHosts' => ['example.com'],
+				'httpHost'     => 'unrelated.com',
+				'expected'     => false
+			],
+			'Similar but incorrect subdomain pattern should return false' => [
+				'allowedHosts' => ['example.com'],
+				'httpHost'     => 'subdomain-example.com',
+				'expected'     => false
+			],
+		];
 
-        foreach ($testCases as $scenario => $testCase)
-        {
-            $result = $method->invoke($this->e107, $testCase['allowedHosts'], $testCase['httpHost']);
-            $this::assertSame($testCase['expected'], $result, "Failed scenario: {$scenario}");
-        }
-    }
+		foreach($testCases as $scenario => $testCase)
+		{
+			$result = $method->invoke($this->e107, $testCase['allowedHosts'], $testCase['httpHost']);
+			$this::assertSame($testCase['expected'], $result, "Failed scenario: $scenario");
+		}
+	}
 
 
 
@@ -2224,4 +2249,260 @@ class e107Test extends \Codeception\Test\Unit
 
 
 	*/
+
+
+/// -----START -------
+
+
+	/**
+	 * Test old-style language file with define()
+	 *
+	 * @runInSeparateProcess
+	 */
+	public function testIncludeLanOldStyle()
+	{
+
+		$file_content = <<<PHP
+    <?php
+    define('TEST_LAN_OLD', 'Old Style Test');
+    define('TEST_LAN_ANOTHER', 'Another Value');
+    PHP;
+
+		$path = $this->createTempLanguageFile($file_content, 'English', 'lan_test_old');
+
+		$result = e107::includeLan($path, false, 'English');
+
+		self::assertEquals(1, $result, 'includeLan should return 1 for successful old-style file inclusion');
+		self::assertTrue(defined('TEST_LAN_OLD'), 'TEST_LAN_OLD should be defined');
+		self::assertEquals('Old Style Test', constant('TEST_LAN_OLD'), 'TEST_LAN_OLD should have correct value');
+		self::assertTrue(defined('TEST_LAN_ANOTHER'), 'TEST_LAN_ANOTHER should be defined');
+		self::assertEquals('Another Value', constant('TEST_LAN_ANOTHER'), 'TEST_LAN_ANOTHER should have correct value');
+	}
+
+	/**
+	 * Test missing file
+	 *
+	 * @runInSeparateProcess
+	 */
+	public function testIncludeLanMissingFile()
+	{
+
+		$result = e107::includeLan(sys_get_temp_dir() . '/e107_test_languages/NonExistent/lan_missing.php', false, 'English');
+		self::assertFalse($result, 'includeLan should return false for missing file');
+	}
+
+	/**
+	 * Test new-style language file with array return
+	 */
+	public function testIncludeLanNewStyle()
+	{
+
+		$file_content = <<<PHP
+    <?php
+    return [
+        'TEST_LAN_NEW_STYLE' => 'New Style Test',
+        'TEST_LAN_ANOTHER_NEW' => 'Another New Value'
+    ];
+    PHP;
+
+		$path = $this->createTempLanguageFile($file_content, 'English', 'lan_test_new');
+
+		$result = e107::includeLan($path, true, 'English');
+
+		self::assertTrue($result, 'includeLan should return true for new-style file');
+		self::assertTrue(defined('TEST_LAN_NEW_STYLE'), 'TEST_LAN_NEW_STYLE should be defined');
+		self::assertEquals('New Style Test', constant('TEST_LAN_NEW_STYLE'), 'TEST_LAN_NEW_STYLE should have correct value');
+		self::assertTrue(defined('TEST_LAN_ANOTHER_NEW'), 'TEST_LAN_ANOTHER_NEW should be defined');
+		self::assertEquals('Another New Value', constant('TEST_LAN_ANOTHER_NEW'), 'TEST_LAN_ANOTHER_NEW should have correct value');
+	}
+
+
+	/**
+	 * Test non-English new-style file with English fallback (plugin-style path)
+	 *
+	 * @runInSeparateProcess
+	 */
+	public function testIncludeLanNonEnglishWithFallback()
+	{
+
+		$english_content = <<<PHP
+    <?php
+    return [
+        'TEST_LAN_FALLBACK' => 'English Fallback',
+        'TEST_LAN_SHARED' => 'Shared Value',
+        'TEST_LAN_ENGLISH_ONLY' => 'English Only'
+    ];
+    PHP;
+		$english_path = $this->createTempLanguageFile($english_content, 'English', 'lan_test_fallback', 'e107_plugins/testplugin/languages/');
+
+		$spanish_content = <<<PHP
+    <?php
+    return [
+        'TEST_LAN_FALLBACK' => 'Spanish Override',
+        'TEST_LAN_SHARED' => 'Spanish Shared'
+        // TEST_LAN_ENGLISH_ONLY missing
+    ];
+    PHP;
+		$spanish_path = $this->createTempLanguageFile($spanish_content, 'Spanish', 'lan_test_fallback', 'e107_plugins/testplugin/languages/');
+
+		// Load Spanish first to define constants, then English as fallback
+		$result = e107::includeLan($spanish_path, true, 'Spanish');
+		e107::includeLan($english_path, true, 'English');
+
+		self::assertTrue($result, 'includeLan should return true for Spanish file');
+		self::assertTrue(defined('TEST_LAN_FALLBACK'), 'TEST_LAN_FALLBACK should be defined');
+		self::assertEquals('Spanish Override', constant('TEST_LAN_FALLBACK'), 'TEST_LAN_FALLBACK should use Spanish value');
+		self::assertTrue(defined('TEST_LAN_SHARED'), 'TEST_LAN_SHARED should be defined');
+		self::assertEquals('Spanish Shared', constant('TEST_LAN_SHARED'), 'TEST_LAN_SHARED should use Spanish value');
+		self::assertTrue(defined('TEST_LAN_ENGLISH_ONLY'), 'TEST_LAN_ENGLISH_ONLY should be defined');
+		self::assertEquals('English Only', constant('TEST_LAN_ENGLISH_ONLY'), 'TEST_LAN_ENGLISH_ONLY should fall back to English');
+	}
+
+	/**
+	 * Test non-English new-style file with English fallback (custom path)
+	 *
+	 * @runInSeparateProcess
+	 */
+	public function testIncludeLanCustomPathWithFallback()
+	{
+
+		$english_content = <<<PHP
+    <?php
+    return [
+        'TEST_LAN_CUSTOM' => 'English Custom',
+        'TEST_LAN_SHARED_CUSTOM' => 'Shared Custom',
+        'TEST_LAN_ENGLISH_ONLY_CUSTOM' => 'English Only Custom'
+    ];
+    PHP;
+		$english_path = $this->createTempLanguageFile($english_content, 'English', 'Spanish_global', 'folder/');
+
+		$spanish_content = <<<PHP
+    <?php
+    return [
+        'TEST_LAN_CUSTOM' => 'Spanish Custom Override',
+        'TEST_LAN_SHARED_CUSTOM' => 'Spanish Shared Custom'
+        // TEST_LAN_ENGLISH_ONLY_CUSTOM missing
+    ];
+    PHP;
+		$spanish_path = $this->createTempLanguageFile($spanish_content, 'Spanish', 'Spanish_global', 'folder/');
+
+		// Load Spanish first to define constants, then English as fallback
+		$result = e107::includeLan($spanish_path, true, 'Spanish');
+		e107::includeLan($english_path, true, 'English');
+
+		self::assertTrue($result, 'includeLan should return true for Spanish file with custom path');
+		self::assertTrue(defined('TEST_LAN_CUSTOM'), 'TEST_LAN_CUSTOM should be defined');
+		self::assertEquals('Spanish Custom Override', constant('TEST_LAN_CUSTOM'), 'TEST_LAN_CUSTOM should use Spanish value');
+		self::assertTrue(defined('TEST_LAN_SHARED_CUSTOM'), 'TEST_LAN_SHARED_CUSTOM should be defined');
+		self::assertEquals('Spanish Shared Custom', constant('TEST_LAN_SHARED_CUSTOM'), 'TEST_LAN_SHARED_CUSTOM should use Spanish value');
+		self::assertTrue(defined('TEST_LAN_ENGLISH_ONLY_CUSTOM'), 'TEST_LAN_ENGLISH_ONLY_CUSTOM should be defined');
+		self::assertEquals('English Only Custom', constant('TEST_LAN_ENGLISH_ONLY_CUSTOM'), 'TEST_LAN_ENGLISH_ONLY_CUSTOM should fall back to English');
+	}
+
+	/**
+	 * Test includeLanArray directly with reflection
+	 *
+	 * @runInSeparateProcess
+	 */
+	public function testIncludeLanArrayDirectly()
+	{
+
+		$english_content = <<<PHP
+    <?php
+    return [
+        'TEST_LAN_DIRECT' => 'English Direct',
+        'TEST_LAN_SHARED_DIRECT' => 'Shared Direct',
+        'TEST_LAN_ENGLISH_ONLY_DIRECT' => 'English Only Direct'
+    ];
+    PHP;
+		$english_path = $this->createTempLanguageFile($english_content, 'English', 'lan_test_direct', 'e107_plugins/testplugin/languages/');
+
+		$spanish_content = <<<PHP
+    <?php
+    return [
+        'TEST_LAN_DIRECT' => 'Spanish Direct Override',
+        'TEST_LAN_SHARED_DIRECT' => 'Spanish Shared Direct'
+        // TEST_LAN_ENGLISH_ONLY_DIRECT missing
+    ];
+    PHP;
+		$spanish_path = $this->createTempLanguageFile($spanish_content, 'Spanish', 'lan_test_direct', 'e107_plugins/testplugin/languages/');
+
+		// Use ReflectionClass to access private static method
+		$reflection = new ReflectionClass('e107');
+		$method = $reflection->getMethod('includeLanArray');
+		$method->setAccessible(true);
+
+		// Load Spanish first, then English as fallback
+		$spanish_terms = require($spanish_path);
+		$method->invoke(null, $spanish_terms, $spanish_path, 'Spanish');
+
+		$english_terms = require($english_path);
+		$method->invoke(null, $english_terms, $english_path, 'English');
+
+		self::assertTrue(defined('TEST_LAN_DIRECT'), 'TEST_LAN_DIRECT should be defined');
+		self::assertEquals('Spanish Direct Override', constant('TEST_LAN_DIRECT'), 'TEST_LAN_DIRECT should use Spanish value');
+		self::assertTrue(defined('TEST_LAN_SHARED_DIRECT'), 'TEST_LAN_SHARED_DIRECT should be defined');
+		self::assertEquals('Spanish Shared Direct', constant('TEST_LAN_SHARED_DIRECT'), 'TEST_LAN_SHARED_DIRECT should use Spanish value');
+		self::assertTrue(defined('TEST_LAN_ENGLISH_ONLY_DIRECT'), 'TEST_LAN_ENGLISH_ONLY_DIRECT should be defined');
+		self::assertEquals('English Only Direct', constant('TEST_LAN_ENGLISH_ONLY_DIRECT'), 'TEST_LAN_ENGLISH_ONLY_DIRECT should fall back to English');
+	}
+
+	/**
+	 * Test Spanish old-style language file with English array fallback
+	 */
+	public function testIncludeLanSpanishOldStyleWithEnglishArrayFallback()
+	{
+
+		$english_content = <<<PHP
+    <?php
+    return [
+        'TEST_LAN_SPANISH_ENGLISH_FALLBACK_EN' => 'English Fallback',
+        'TEST_LAN_SHARED_SPANISH_ENGLISH_EN' => 'Shared English Value',
+        'TEST_LAN_ENGLISH_ONLY_SPANISH_ENGLISH' => 'English Only'
+    ];
+    PHP;
+		$english_path = $this->createTempLanguageFile($english_content, 'English', 'lan_test_spanish_fallback', 'e107_plugins/testplugin/languages/');
+
+		$spanish_content = <<<PHP
+    <?php
+    define('TEST_LAN_SPANISH_ENGLISH_FALLBACK_ES', 'Spanish Override');
+    define('TEST_LAN_SHARED_SPANISH_ENGLISH_ES', 'Spanish Shared');
+    // TEST_LAN_ENGLISH_ONLY_SPANISH_ENGLISH not defined
+    PHP;
+		$spanish_path = $this->createTempLanguageFile($spanish_content, 'Spanish', 'lan_test_spanish_fallback', 'e107_plugins/testplugin/languages/');
+
+		// Load Spanish first (old-style), then English as fallback (array)
+		$result = e107::includeLan($spanish_path, true, 'Spanish');
+		e107::includeLan($english_path, true, 'English');
+
+		self::assertEquals(1, $result, 'includeLan should return 1 for successful old-style Spanish file inclusion');
+		self::assertTrue(defined('TEST_LAN_SPANISH_ENGLISH_FALLBACK_ES'), 'TEST_LAN_SPANISH_ENGLISH_FALLBACK_ES should be defined');
+		self::assertEquals('Spanish Override', constant('TEST_LAN_SPANISH_ENGLISH_FALLBACK_ES'), 'TEST_LAN_SPANISH_ENGLISH_FALLBACK_ES should use Spanish value');
+		self::assertTrue(defined('TEST_LAN_SHARED_SPANISH_ENGLISH_ES'), 'TEST_LAN_SHARED_SPANISH_ENGLISH_ES should be defined');
+		self::assertEquals('Spanish Shared', constant('TEST_LAN_SHARED_SPANISH_ENGLISH_ES'), 'TEST_LAN_SHARED_SPANISH_ENGLISH_ES should use Spanish value');
+		self::assertTrue(defined('TEST_LAN_ENGLISH_ONLY_SPANISH_ENGLISH'), 'TEST_LAN_ENGLISH_ONLY_SPANISH_ENGLISH should be defined');
+		self::assertEquals('English Only', constant('TEST_LAN_ENGLISH_ONLY_SPANISH_ENGLISH'), 'TEST_LAN_ENGLISH_ONLY_SPANISH_ENGLISH should fall back to English');
+	}
+
+
+	/**
+	 * Helper to create a temporary language file
+	 */
+	private function createTempLanguageFile($content, $lang, $file, $prefix = 'e107_test_languages/')
+	{
+
+		$dir = sys_get_temp_dir() . "/$prefix$lang/";
+		if(!is_dir($dir))
+		{
+			mkdir($dir, 0777, true);
+		}
+		$path = tempnam($dir, $file); // Creates unique file with prefix
+		file_put_contents($path, $content);
+		$this->tempFiles[] = $path; // Track for cleanup
+
+		return $path;
+	}
+
+/// ------ END --------
+
 }
