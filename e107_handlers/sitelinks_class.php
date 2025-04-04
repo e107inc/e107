@@ -747,56 +747,61 @@ class e_navigation
 	 */
 	function setIconArray()
 	{
-		if(!defined('E_32_MAIN'))
+	    if (!defined('E_32_MAIN'))
+	    {
+	        // e107::getCoreTemplate('admin_icons');
+	        e107::loadAdminIcons();
+	    }
+
+
+	    $iconDefinitions = array(
+	        'main'          => 'E_32_MAIN',
+	        'admin'         => 'E_32_ADMIN',
+	        'admin_pass'    => 'E_32_ADPASS',
+	        'banlist'       => 'E_32_BANLIST',
+	        'cache'         => 'E_32_CACHE',
+	        'comment'       => 'E_32_COMMENT',
+	        'credits'       => 'E_32_CREDITS',
+	        'cron'          => 'E_32_CRON',
+	        'custom'        => 'E_32_CUST',
+	        // 'custom_field' => 'E_32_CUSTOMFIELD',
+	        'database'      => 'E_32_DATAB',
+	        'docs'          => 'E_32_DOCS',
+	        // 'download'   => 'E_32_DOWNL',
+	        'emoticon'      => 'E_32_EMOTE',
+	        'filemanage'    => 'E_32_FILE',
+	        'fileinspector' => 'E_32_INSPECT',
+	        'frontpage'     => 'E_32_FRONT',
+	        'image'         => 'E_32_IMAGES',
+	        'language'      => 'E_32_LANGUAGE',
+	        'links'         => 'E_32_LINKS',
+	        'mail'          => 'E_32_MAIL',
+	        'maintain'      => 'E_32_MAINTAIN',
+	        'menus'         => 'E_32_MENUS',
+	        'meta'          => 'E_32_META',
+	        'newsfeed'      => 'E_32_NEWSFEED',
+	        'news'          => 'E_32_NEWS',
+	        'notify'        => 'E_32_NOTIFY',
+	        'phpinfo'       => 'E_32_PHP',
+	        'plug_manage'   => 'E_32_PLUGMANAGER',
+	        'poll'          => 'E_32_POLLS',
+	        'prefs'         => 'E_32_PREFS',
+	        'search'        => 'E_32_SEARCH',
+	        'syslogs'       => 'E_32_ADMINLOG',
+	        'theme_manage'  => 'E_32_THEMEMANAGER',
+	        'upload'        => 'E_32_UPLOADS',
+	        'eurl'          => 'E_32_EURL',
+	        'userclass'     => 'E_32_USERCLASS',
+	        'user_extended' => 'E_32_USER_EXTENDED',
+	        'users'         => 'E_32_USER',
+	        'wmessage'      => 'E_32_WELCOME'
+	    );
+
+		$this->iconArray = array();
+		foreach($iconDefinitions as $key => $constant)
 		{
-		//	e107::getCoreTemplate('admin_icons');
-			e107::loadAdminIcons();
+			$this->iconArray[$key] = defset($constant, '(missing)');
 		}
-		
-		
-		$this->iconArray = array(
-				'main' 			=> E_32_MAIN,
-				'admin' 		=> E_32_ADMIN,
-				'admin_pass' 	=> E_32_ADPASS,
-				'banlist' 		=> E_32_BANLIST,
-				'cache' 		=> E_32_CACHE,
-				'comment' 		=> E_32_COMMENT,
-				'credits' 		=> E_32_CREDITS,
-				'cron'			=> E_32_CRON,
-				'custom' 		=> E_32_CUST,
-				// 'custom_field' => E_32_CUSTOMFIELD,
-				'database' 		=> E_32_DATAB,
-				'docs' 			=> E_32_DOCS,
-				//'download' => E_32_DOWNL,
-				'emoticon' 		=> E_32_EMOTE,
-				'filemanage' 	=> E_32_FILE,
-				'fileinspector' => E_32_INSPECT,
-				'frontpage' 	=> E_32_FRONT,
-				'image' 		=> E_32_IMAGES,
-				'language' 		=> E_32_LANGUAGE,
-				'links' 		=> E_32_LINKS,
-				'mail' 			=> E_32_MAIL,
-				'maintain' 		=> E_32_MAINTAIN,
-				'menus' 		=> E_32_MENUS,
-				'meta' 			=> E_32_META,
-				'newsfeed' 		=> E_32_NEWSFEED,
-				'news' 			=> E_32_NEWS,
-				'notify' 		=> E_32_NOTIFY,
-				'phpinfo' 		=> E_32_PHP,
-				'plug_manage' 	=> E_32_PLUGMANAGER,
-				'poll' 			=> E_32_POLLS,
-				'prefs' 		=> E_32_PREFS,
-				'search' 		=> E_32_SEARCH,
-				'syslogs' 		=> E_32_ADMINLOG,
-				'theme_manage' 	=> E_32_THEMEMANAGER,
-				'upload' 		=> E_32_UPLOADS,
-				'eurl' 			=> E_32_EURL,
-				'userclass' 	=> E_32_USERCLASS,
-				'user_extended' => E_32_USER_EXTENDED,
-				'users' 		=> E_32_USER,
-				'wmessage' 		=> E_32_WELCOME 
-			);		
-		
 	}
 
 	
@@ -894,6 +899,68 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		return $this->admin_cat;
 		
 	}
+
+	private function adminLinksArray() // Assuming this is inside a class; adjust the name if needed
+	{
+	    // Initial array with constant names as strings
+	    $array_definitions = array(
+	        0  => array(e_ADMIN_ABS.'administrator.php', 'ADLAN_8', 'ADLAN_9', '3', 2, 'E_16_ADMIN', 'E_32_ADMIN'),
+	        1  => array(e_ADMIN_ABS.'updateadmin.php', 'ADLAN_10', 'ADLAN_11', false, 2, 'E_16_ADPASS', 'E_32_ADPASS'),
+	        2  => array(e_ADMIN_ABS.'banlist.php', 'ADLAN_34', 'ADLAN_35', '4', 2, 'E_16_BANLIST', 'E_32_BANLIST'),
+	        4  => array(e_ADMIN_ABS.'cache.php', 'ADLAN_74', 'ADLAN_75', 'C', 1, 'E_16_CACHE', 'E_32_CACHE'),
+	        5  => array(e_ADMIN_ABS.'cpage.php', 'ADLAN_42', 'ADLAN_43', '5|J', 3, 'E_16_CUST', 'E_32_CUST'),
+	        6  => array(e_ADMIN_ABS.'db.php', 'ADLAN_44', 'ADLAN_45', '0', 4, 'E_16_DATAB', 'E_32_DATAB'),
+	        // 7 => array(e_ADMIN_ABS.'download.php', 'ADLAN_24', 'ADLAN_25', 'R', 3, 'E_16_DOWNL', 'E_32_DOWNL'),
+	        8  => array(e_ADMIN_ABS.'emoticon.php', 'ADLAN_58', 'ADLAN_59', 'F', 1, 'E_16_EMOTE', 'E_32_EMOTE'),
+	        // 9 => array(e_ADMIN_ABS.'filemanager.php', 'ADLAN_30', 'ADLAN_31', '6', 5, 'E_16_FILE', 'E_32_FILE'),
+	        9  => array(e_ADMIN_ABS.'history.php', 'LAN_HISTORY', 'LAN_HISTORY', '7', 4, 'E_16_UNDO', 'E_32_UNDO'),
+	        10 => array(e_ADMIN_ABS.'frontpage.php', 'ADLAN_60', 'ADLAN_61', 'G', 1, 'E_16_FRONT', 'E_32_FRONT'),
+	        11 => array(e_ADMIN_ABS.'image.php', 'LAN_MEDIAMANAGER', 'LAN_MEDIAMANAGER', 'A', 5, 'E_16_IMAGES', 'E_32_IMAGES'),
+	        12 => array(e_ADMIN_ABS.'links.php', 'LAN_NAVIGATION', 'ADLAN_139', 'I', 1, 'E_16_LINKS', 'E_32_LINKS'),
+	        13 => array(e_ADMIN_ABS.'wmessage.php', 'ADLAN_28', 'ADLAN_29', 'M', 3, 'E_16_WELCOME', 'E_32_WELCOME'),
+	        14 => array(e_ADMIN_ABS.'ugflag.php', 'ADLAN_40', 'ADLAN_41', '9', 4, 'E_16_MAINTAIN', 'E_32_MAINTAIN'),
+	        15 => array(e_ADMIN_ABS.'menus.php', 'ADLAN_6', 'ADLAN_7', '2', 5, 'E_16_MENUS', 'E_32_MENUS'),
+	        16 => array(e_ADMIN_ABS.'meta.php', 'ADLAN_66', 'ADLAN_67', 'T', 1, 'E_16_META', 'E_32_META'),
+	        17 => array(e_ADMIN_ABS.'newspost.php', 'ADLAN_0', 'ADLAN_1', 'H|N|7|H0|H1|H2|H3|H4|H5', 3, 'E_16_NEWS', 'E_32_NEWS'),
+	        18 => array(e_ADMIN_ABS.'phpinfo.php', 'ADLAN_68', 'ADLAN_69', '0', 20, 'E_16_PHP', 'E_32_PHP'),
+	        19 => array(e_ADMIN_ABS.'prefs.php', 'LAN_PREFS', 'ADLAN_5', '1', 1, 'E_16_PREFS', 'E_32_PREFS'),
+	        20 => array(e_ADMIN_ABS.'search.php', 'LAN_SEARCH', 'ADLAN_143', 'X', 1, 'E_16_SEARCH', 'E_32_SEARCH'),
+	        21 => array(e_ADMIN_ABS.'admin_log.php', 'ADLAN_155', 'ADLAN_156', 'S', 4, 'E_16_ADMINLOG', 'E_32_ADMINLOG'),
+	        22 => array(e_ADMIN_ABS.'theme.php', 'ADLAN_140', 'ADLAN_141', '1|TMP', 5, 'E_16_THEMEMANAGER', 'E_32_THEMEMANAGER'),
+	        23 => array(e_ADMIN_ABS.'upload.php', 'ADLAN_72', 'ADLAN_73', 'V', 3, 'E_16_UPLOADS', 'E_32_UPLOADS'),
+	        24 => array(e_ADMIN_ABS.'users.php', 'ADLAN_36', 'ADLAN_37', '4|U0|U1|U2|U3', 2, 'E_16_USER', 'E_32_USER'),
+	        25 => array(e_ADMIN_ABS.'userclass2.php', 'ADLAN_38', 'ADLAN_39', '4', 2, 'E_16_USERCLASS', 'E_32_USERCLASS'),
+	        26 => array(e_ADMIN_ABS.'language.php', 'ADLAN_132', 'ADLAN_133', 'L', 1, 'E_16_LANGUAGE', 'E_32_LANGUAGE'),
+	        27 => array(e_ADMIN_ABS.'mailout.php', 'ADLAN_136', 'ADLAN_137', 'W', 2, 'E_16_MAIL', 'E_32_MAIL'),
+	        28 => array(e_ADMIN_ABS.'users_extended.php', 'ADLAN_78', 'ADLAN_79', '4', 2, 'E_16_USER_EXTENDED', 'E_32_USER_EXTENDED'),
+	        29 => array(e_ADMIN_ABS.'fileinspector.php', 'ADLAN_147', 'ADLAN_148', 'Y', 4, 'E_16_INSPECT', 'E_32_INSPECT'),
+	        30 => array(e_ADMIN_ABS.'notify.php', 'ADLAN_149', 'ADLAN_150', 'O', 4, 'E_16_NOTIFY', 'E_32_NOTIFY'),
+	        31 => array(e_ADMIN_ABS.'cron.php', 'ADLAN_157', 'ADLAN_158', 'U', 4, 'E_16_CRON', 'E_32_CRON'),
+	        32 => array(e_ADMIN_ABS.'eurl.php', 'ADLAN_159', 'ADLAN_160', 'K', 1, 'E_16_EURL', 'E_32_EURL'),
+	        33 => array(e_ADMIN_ABS.'plugin.php', 'ADLAN_98', 'ADLAN_99', 'Z', 5, 'E_16_PLUGMANAGER', 'E_32_PLUGMANAGER'),
+	        34 => array(e_ADMIN_ABS.'docs.php', 'ADLAN_12', 'ADLAN_13', false, 20, 'E_16_DOCS', 'E_32_DOCS'),
+	        // 35 => array('#TODO', 'System Info', 'System Information', '', 20, '', ''),
+	        36 => array(e_ADMIN_ABS.'credits.php', 'LAN_CREDITS', 'LAN_CREDITS', false, 20, 'E_16_E107', 'E_32_E107'),
+	        // 37 => array(e_ADMIN_ABS.'custom_field.php', 'ADLAN_161', 'ADLAN_162', 'U', 4, 'E_16_CUSTOMFIELD', 'E_32_CUSTOMFIELD),
+	        38 => array(e_ADMIN_ABS.'comment.php', 'LAN_COMMENTMAN', 'LAN_COMMENTMAN', 'B', 5, 'E_16_COMMENT', 'E_32_COMMENT'),
+	    );
+
+	    // Process the array, applying defset() to language and icon constants
+	    $array_functions = array();
+	    foreach ($array_definitions as $key => $row) {
+	        $array_functions[$key] = array(
+	            0 => $row[0], // File path (no constant)
+	            1 => defset($row[1], 'Untitled'), // Title (e.g., ADLAN_8)
+	            2 => defset($row[2], 'No description'), // Description (e.g., ADLAN_9)
+	            3 => $row[3], // Permission/flag (no constant)
+	            4 => $row[4], // Group/order (no constant)
+	            5 => defset($row[5], 'e-' . strtolower(str_replace('E_16_', '', $row[5])) . '-16'), // Small icon (e.g., E_16_ADMIN)
+	            6 => defset($row[6], 'e-' . strtolower(str_replace('E_32_', '', $row[6])) . '-32')  // Large icon (e.g., E_32_ADMIN)
+	        );
+	    }
+
+	    return $array_functions; // Or assign to a class property like $this->array_functions if needed
+	}
 	
 	// Previously $array_functions variable. 
 
@@ -903,15 +970,16 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 	 */
 	function adminLinks($mode=false)
 	{
-	
+		$E_16_PLUGMANAGER = defset('E_16_PLUGMANAGER');
+
         if($mode === 'plugin')
         {
-             return $this->pluginLinks(E_16_PLUGMANAGER, "array") ;   
+             return $this->pluginLinks($E_16_PLUGMANAGER, "array") ;
         }
 
 		if($mode === 'plugin2')
         {
-             return $this->pluginLinks(E_16_PLUGMANAGER, "standard") ;
+             return $this->pluginLinks($E_16_PLUGMANAGER, "standard") ;
         }
 
 
@@ -937,9 +1005,9 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 				 *
 				 */
 				$array_sub_functions = array();
-				$array_sub_functions[17][] = array(e_ADMIN.'newspost.php', LAN_MANAGE, ADLAN_3, 'H', 3, E_16_MANAGE, E_32_MANAGE);
-				$array_sub_functions[17][] = array(e_ADMIN.'newspost.php?create', LAN_CREATE, ADLAN_2, 'H', 3, E_16_CREATE, E_32_CREATE);
-				$array_sub_functions[17][] = array(e_ADMIN.'newspost.php?pref', LAN_PREFS, LAN_PREFS, 'H', 3, E_16_SETTINGS, E_32_SETTINGS);	
+				$array_sub_functions[17][] = array(e_ADMIN.'newspost.php', LAN_MANAGE, ADLAN_3, 'H', 3, defset('E_16_MANAGE'), defset('E_32_MANAGE'));
+				$array_sub_functions[17][] = array(e_ADMIN.'newspost.php?create', LAN_CREATE, ADLAN_2, 'H', 3, defset('E_16_CREATE'), defset('E_32_CREATE'));
+				$array_sub_functions[17][] = array(e_ADMIN.'newspost.php?pref', LAN_PREFS, LAN_PREFS, 'H', 3, defset('E_16_SETTINGS'), defset('E_32_SETTINGS'));
 				
 				return $array_sub_functions;
 		}
@@ -950,51 +1018,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		
 			//XXX DO NOT EDIT without first checking perms in user_handler.php !!!!
 			
-			$array_functions = array(
-			0 => array(e_ADMIN_ABS.'administrator.php', ADLAN_8,	ADLAN_9,	'3', 2, E_16_ADMIN, E_32_ADMIN),
-			1 => array(e_ADMIN_ABS.'updateadmin.php', 	ADLAN_10,	ADLAN_11,	false, 2, E_16_ADPASS, E_32_ADPASS),
-			2 => array(e_ADMIN_ABS.'banlist.php', 		ADLAN_34,	ADLAN_35,	'4', 2, E_16_BANLIST, E_32_BANLIST),
-			4 => array(e_ADMIN_ABS.'cache.php', 		ADLAN_74,	ADLAN_75,	'C', 1, E_16_CACHE, E_32_CACHE),
-			5 => array(e_ADMIN_ABS.'cpage.php', 		ADLAN_42,	ADLAN_43,	'5|J', 3, E_16_CUST, E_32_CUST),
-			6 => array(e_ADMIN_ABS.'db.php', 			ADLAN_44,	ADLAN_45,	'0', 4, E_16_DATAB, E_32_DATAB),
-		//	7 => array(e_ADMIN.'download.php', ADLAN_24, ADLAN_25, 'R', 3, E_16_DOWNL, E_32_DOWNL),
-			8 => array(e_ADMIN_ABS.'emoticon.php', 		ADLAN_58,	ADLAN_59,	'F', 1, E_16_EMOTE, E_32_EMOTE),
-		//	9 => array(e_ADMIN.'filemanager.php', 	ADLAN_30,	ADLAN_31,	'6', 5, E_16_FILE, E_32_FILE), // replaced by media-manager
-			9 => array(e_ADMIN.'history.php', 	LAN_HISTORY,	LAN_HISTORY,	'7', 4, E_16_UNDO, E_32_UNDO), 
-
-			10 => array(e_ADMIN_ABS.'frontpage.php', 	ADLAN_60,	ADLAN_61,	'G', 1, E_16_FRONT, E_32_FRONT),
-			11 => array(e_ADMIN_ABS.'image.php', 		LAN_MEDIAMANAGER, LAN_MEDIAMANAGER, 'A', 5, E_16_IMAGES, E_32_IMAGES),
-			12 => array(e_ADMIN_ABS.'links.php', 		LAN_NAVIGATION,	ADLAN_139,	'I', 1, E_16_LINKS, E_32_LINKS),
-			13 => array(e_ADMIN_ABS.'wmessage.php', 	ADLAN_28,	ADLAN_29,	'M', 3, E_16_WELCOME, E_32_WELCOME),
-			14 => array(e_ADMIN_ABS.'ugflag.php', 		ADLAN_40,	ADLAN_41,	'9', 4, E_16_MAINTAIN, E_32_MAINTAIN),
-			15 => array(e_ADMIN_ABS.'menus.php', 		ADLAN_6,	ADLAN_7,	'2', 5, E_16_MENUS, E_32_MENUS),
-			16 => array(e_ADMIN_ABS.'meta.php', 		ADLAN_66,	ADLAN_67,	'T', 1, E_16_META, E_32_META),
-			17 => array(e_ADMIN_ABS.'newspost.php', 	ADLAN_0,	ADLAN_1,	'H|N|7|H0|H1|H2|H3|H4|H5', 3, E_16_NEWS, E_32_NEWS),
-			18 => array(e_ADMIN_ABS.'phpinfo.php', 		ADLAN_68, 	ADLAN_69,	'0', 20, E_16_PHP, E_32_PHP),
-			19 => array(e_ADMIN_ABS.'prefs.php', 		LAN_PREFS, 	ADLAN_5,	'1', 1, E_16_PREFS, E_32_PREFS),
-			20 => array(e_ADMIN_ABS.'search.php', 		LAN_SEARCH,	ADLAN_143,	'X', 1, E_16_SEARCH, E_32_SEARCH),
-			21 => array(e_ADMIN_ABS.'admin_log.php', 	ADLAN_155,	ADLAN_156,	'S', 4, E_16_ADMINLOG, E_32_ADMINLOG),
-			22 => array(e_ADMIN_ABS.'theme.php', 		ADLAN_140,	ADLAN_141,	'1|TMP', 5, E_16_THEMEMANAGER, E_32_THEMEMANAGER),
-			23 => array(e_ADMIN_ABS.'upload.php', 		ADLAN_72,	ADLAN_73,	'V', 3, E_16_UPLOADS, E_32_UPLOADS),
-			24 => array(e_ADMIN_ABS.'users.php', 		ADLAN_36,	ADLAN_37,	'4|U0|U1|U2|U3', 2, E_16_USER, E_32_USER),
-			25 => array(e_ADMIN_ABS.'userclass2.php', 	ADLAN_38,	ADLAN_39,	'4', 2, E_16_USERCLASS, E_32_USERCLASS),
-			26 => array(e_ADMIN_ABS.'language.php', 	ADLAN_132,	ADLAN_133,	'L', 1, E_16_LANGUAGE, E_32_LANGUAGE),
-			27 => array(e_ADMIN_ABS.'mailout.php', 		ADLAN_136,	ADLAN_137,	'W', 2, E_16_MAIL, E_32_MAIL),
-			28 => array(e_ADMIN_ABS.'users_extended.php', ADLAN_78, ADLAN_79,	'4', 2, E_16_USER_EXTENDED, E_32_USER_EXTENDED),
-			29 => array(e_ADMIN_ABS.'fileinspector.php', ADLAN_147, ADLAN_148,	'Y', 4, E_16_INSPECT, E_32_INSPECT),
-			30 => array(e_ADMIN_ABS.'notify.php', 		ADLAN_149,	ADLAN_150,	'O', 4, E_16_NOTIFY, E_32_NOTIFY),
-			31 => array(e_ADMIN_ABS.'cron.php', 		ADLAN_157,	ADLAN_158,	'U', 4, E_16_CRON, E_32_CRON),
-		
-			32 => array(e_ADMIN_ABS.'eurl.php', 		ADLAN_159,	ADLAN_160,	'K', 1, E_16_EURL, E_32_EURL),
-			33 => array(e_ADMIN_ABS.'plugin.php', 		ADLAN_98,	ADLAN_99,	'Z', 5 , E_16_PLUGMANAGER, E_32_PLUGMANAGER),
-			34 => array(e_ADMIN_ABS.'docs.php', 		ADLAN_12,	ADLAN_13,	false,	20, E_16_DOCS, E_32_DOCS),
-		// TODO System Info.
-		//	35 => array('#TODO', 'System Info', 'System Information', '', 20, '', ''),
-			36 => array(e_ADMIN_ABS.'credits.php', LAN_CREDITS, LAN_CREDITS, false, 20, E_16_E107, E_32_E107),
-		//	37 => array(e_ADMIN.'custom_field.php', ADLAN_161, ADLAN_162, 'U', 4, E_16_CUSTOMFIELD, E_32_CUSTOMFIELD),
-			38 => array(e_ADMIN_ABS.'comment.php', LAN_COMMENTMAN, LAN_COMMENTMAN, 'B', 5, E_16_COMMENT, E_32_COMMENT),
-		);
-
+		$array_functions = $this->adminLinksArray();
 
 		if($mode === 'legacy')
         {
@@ -1011,7 +1035,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
             return $array_functions_assoc;          
         }
             
-        $merged = array_merge($array_functions_assoc, $this->pluginLinks(E_16_PLUGMANAGER, "array")); 
+        $merged = array_merge($array_functions_assoc, $this->pluginLinks($E_16_PLUGMANAGER, "array"));
         $sorted = multiarray_sort($merged,'title'); // this deleted the e-xxxx and p-xxxxx keys. 
         return $this->restoreKeys($sorted); // we restore the keys with this. 
         
@@ -1140,8 +1164,13 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 	 * @param string $linkStyle standard = new in v2.1.5 | array | adminb
 	 * @return array|string
 	 */
-	function pluginLinks($iconSize = E_16_PLUGMANAGER, $linkStyle = 'adminb')
+	function pluginLinks($iconSize = '', $linkStyle = 'adminb')
 	{
+		if(empty($iconSize))
+		{
+			$iconSize = defset('E_16_PLUGMANAGER');
+		}
+
 		$plug = e107::getPlug();
 		$data = $plug->getInstalled();
 
@@ -1215,7 +1244,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 
 		foreach ($arr as $plug_key => $plug_value)
 		{
-			$the_icon =  ($iconSize == E_16_PLUGMANAGER) ?  $plug_value['icon'] : $plug_value['icon_32'];
+			$the_icon =  ($iconSize == defset('E_16_PLUGMANAGER')) ?  $plug_value['icon'] : $plug_value['icon_32'];
 			$text .= $this->renderAdminButton($plug_value['link'], $plug_value['title'], $plug_value['caption'], $plug_value['perms'], $the_icon, $linkStyle);
 		}
 
@@ -1248,7 +1277,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 	 * @param array $tmpl
 	 * @param array $sub_link
 	 * @param bool $sortlist
-	 * @return string parsed admin menu (or empty string if title is empty)
+	 * @return string|null parsed admin menu (or empty string if title is empty)
 	 */
 	function admin($title, $active_page, $e107_vars, $tmpl = array(), $sub_link = false, $sortlist = false)
 	{
