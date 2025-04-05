@@ -90,7 +90,7 @@ class e_form
 	public function __construct($enable_tabindex = false)
 	{
 		e107::loadAdminIcons(); // required below.
-		e107_include_once(e_LANGUAGEDIR.e_LANGUAGE. '/lan_form_handler.php');
+		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE. '/lan_form_handler.php');
 		$this->_tabindex_enabled = $enable_tabindex;
 		$this->_uc = e107::getUserClass();
 		$this->setRequiredString('<span class="required text-warning">&nbsp;*</span>');

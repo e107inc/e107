@@ -14,8 +14,8 @@ class e_userpermsTest extends \Codeception\Test\Unit
 		try
 		{
 			e107::loadAdminIcons();
-			require_once(e_LANGUAGEDIR . 'English/English.php');
-			require_once(e_LANGUAGEDIR . 'English/admin/lan_admin.php');
+			e107::includeLan(e_LANGUAGEDIR . 'English/English.php');
+			e107::includeLan(e_LANGUAGEDIR . 'English/admin/lan_admin.php');
 			include_once(e_HANDLER . 'user_handler.php');
 			$this->eup = $this->make('e_userperms');
 
@@ -32,8 +32,8 @@ class e_userpermsTest extends \Codeception\Test\Unit
 	{
 		$this::assertSame(LAN_EDIT,'Edit');
 		$this::assertSame(LAN_CATEGORY,'Category');
-		$this::assertSame(ADLAN_0, 'News');
-		$this::assertSame(LAN_MEDIAMANAGER, 'Media Manager');
+		$this::assertSame(constant('ADLAN_0'), 'News');
+		$this::assertSame(constant('LAN_MEDIAMANAGER'), 'Media Manager');
 
 		$this->eup->__construct();
 

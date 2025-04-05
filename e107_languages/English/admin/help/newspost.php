@@ -51,7 +51,7 @@ If you set a start and/or end date your news item will only be displayed between
 	break;
   case 'list' :
   default :
-	$text = 'List of all news items. To edit or delete, click on one of the icons in the \'options\' column. To view the item, click
+	$text = 'List of all news items. To edit or delete, click on one of the icons in the 'options' column. To view the item, click
 		on the ID.';
 }
 $ns -> tablerender($caption, $text);

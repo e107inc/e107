@@ -291,8 +291,20 @@ e107::getSession(); // starts session, creates default namespace
 
 function include_lan($path, $force = false)
 {
-	unset($force);
-	return include($path);
+	$result = include($path);
+
+	if(is_array($result))
+	{
+		foreach($result as $key => $value)
+		{
+			if(!defined($key))
+			{
+				define($key, $value);
+			}
+		}
+
+	}
+
 }
 //obsolete $e107->e107_dirs['INSTALLER'] = "{$installer_folder_name}/";
 
@@ -1064,7 +1076,7 @@ class e_install
 	/**
 	 * Install stage 5 - collect Admin Login Data.
 	 *
-	 * @return string HTML form of stage 5.
+	 * @return string|null HTML form of stage 5.
 	 */
 	private function stage_5()
 	{
@@ -1189,7 +1201,7 @@ class e_install
 	/**
 	 * Collect User's Website Preferences
 	 *
-	 * @return string HTML form of stage 6.
+	 * @return string|null HTML form of stage 6.
 	 */
 	private function stage_6()
 	{
@@ -1716,7 +1728,7 @@ return [
 	{
 		global $e_forms;
 
-		$data = array('name'=>$this->previous_steps['prefs']['sitename'], 'theme'=>$this->previous_steps['prefs']['sitetheme'], 'language'=>$this->previous_steps['language'], 'url'=>$_SERVER['SCRIPT_URI'],'version'=> defset('e_VERSION'), 'php'=>defset('PHP_VERSION'));
+		$data = array('name'=>$this->previous_steps['prefs']['sitename'], 'theme'=>$this->previous_steps['prefs']['sitetheme'], 'language'=>$this->previous_steps['language'], 'url'=>$_SERVER['SCRIPT_URL'],'version'=> defset('e_VERSION'), 'php'=>defset('PHP_VERSION'));
 		$base = base64_encode(http_build_query($data, '','&'));
 		$url = "https://e107.org/e-install/".$base;
 		$e_forms->add_plain_html("<img src='".$url."' style='width:1px; height:1px' />");
@@ -2594,8 +2606,8 @@ function die_fatal_error($error)
 	define("e_THEME", "e107_themes/");
 	define("e_LANGUAGEDIR", "e107_languages/");
 	
-	include(e_LANGUAGEDIR."English/English.php");
-	include(e_LANGUAGEDIR."English/lan_installer.php");
+	include_lan(e_LANGUAGEDIR."English/English.php");
+	include_lan(e_LANGUAGEDIR."English/lan_installer.php");
 	
 	$var = array();
 	$var["installation_heading"] 	= LANINS_001;

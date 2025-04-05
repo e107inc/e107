@@ -1127,6 +1127,9 @@ class e107Test extends \Codeception\Test\Unit
 	}
 
 
+	/**
+	 * @return void
+	 */
 	public function testGetCoreTemplate()
 	{
 
@@ -1151,11 +1154,11 @@ class e107Test extends \Codeception\Test\Unit
 
 			$path = str_replace('_template.php', '', $file);
 
-			e107::coreLan($path);
+			$e107::coreLan($path);
 
 			if($path === 'signup')
 			{
-				e107::coreLan('user');
+				$e107::coreLan('user');
 			}
 
 			$result = $e107::getCoreTemplate($path);
@@ -1318,18 +1321,223 @@ class e107Test extends \Codeception\Test\Unit
 				$res = null;
 				$this::assertTrue($res);
 			}
-
-			public function testCoreLan()
-			{
-				$res = null;
-				$this::assertTrue($res);
-			}
 */
 	/**
 	 * @runInSeparateProcess
 	 * @return void
 	 */
+	public function testCoreLan()
+	{
+
+		// Example constant known to be in core language files, adjust accordingly.
+		$constant = 'LAN_MEMBERS_0';
+		$expected = "restricted area";
+
+		// First, ensure the constant is not already defined (clean test scenario).
+		if(defined($constant))
+		{
+			$this::markTestSkipped("Constant '$constant' was already defined. Skipped for accurate isolation.");
+		}
+
+		// Call the method you need to test.
+		$this->e107::coreLan('membersonly'); // 'admin' is an example; adjust if needed based on your actual language files
+
+		// Check if the constant is correctly defined afterward.
+		$this::assertTrue(defined($constant), "coreLan() should define the constant '{$constant}'.");
+
+
+		$this::assertEquals($expected, constant($constant), "coreLan() loaded an incorrect value for '{$constant}'.");
+	}
+
+
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testCoreLanArray()
+	{
+
+		$languageDir = e_LANGUAGEDIR . 'English/';
+		$langFile = $languageDir . 'lan_test0000.php';
+
+		// Ensure the language directory exists.
+		if(!is_dir($languageDir))
+		{
+			mkdir($languageDir, 0777, true);
+		}
+
+		// Populate the file dynamically with an array of test language terms.
+		file_put_contents($langFile, "<?php\nreturn [\n" .
+			"'LAN_TEST0000_ONE' => 'Test value one',\n" .
+			"'LAN_TEST0000_TWO' => 'Test value two',\n" .
+			"'LAN_TEST0000_THREE' => 'Test value three',\n" .
+			"];");
+
+		// Store created file for later cleanup.
+		$this->tempFiles[] = $langFile;
+
+		// Define the constant and expected output.
+		$constant = 'LAN_TEST0000_ONE';
+		$expected = 'Test value one';
+
+		// Confirm the file was created.
+		$this->assertTrue(is_readable($langFile), "{$langFile} should have been created and readable.");
+
+		// Skip if already defined, ensuring proper isolation.
+		if(defined($constant))
+		{
+			$this::markTestSkipped("Constant '{$constant}' was already defined. Skipped for accurate isolation.");
+		}
+
+		// Run the method you test, passing the newly generated identifier.
+		$this->e107->coreLan('test0000');
+
+		// Verify the constant has been defined and contains the correct value.
+		$this->assertTrue(defined($constant), "coreLan() should define the constant '{$constant}'.");
+		$this->assertEquals($expected, constant($constant), "coreLan() loaded an incorrect value for '{$constant}'.");
+	}
+
+
+	/**
+	 * @runInSeparateProcess
+	 * @return void
+	 */
 	public function testPlugLan()
+	{
+
+		// Prepare the plugin directory and test files
+		$pluginName = 'testplugin';
+		$languageDir = e_PLUGIN . $pluginName . '/languages/';
+		$frontLangFile = $languageDir . 'English_front.php';
+		$adminLangFile = $languageDir . 'English_admin.php';
+		$globalLangFile = $languageDir . 'English_global.php';
+
+		// Ensure language directory exists for testing
+		if(!is_dir($languageDir))
+		{
+			mkdir($languageDir, 0777, true);
+		}
+
+		// Create mock language files with temporary constants clearly defined:
+		file_put_contents($frontLangFile, "<?php define('TESTPLUGIN_FRONT_LAN', 'Front Language Loaded');");
+		file_put_contents($adminLangFile, "<?php define('TESTPLUGIN_ADMIN_LAN', 'Admin Language Loaded');");
+		file_put_contents($globalLangFile, "<?php define('TESTPLUGIN_GLOBAL_LAN', 'Global Language Loaded');");
+
+		$this->tempFiles[] = $frontLangFile;
+		$this->tempFiles[] = $adminLangFile;
+		$this->tempFiles[] = $globalLangFile;
+
+		// 1. Test normal front-end file loading
+		$retFront = e107::plugLan($pluginName);
+		$this::assertTrue(defined('TESTPLUGIN_FRONT_LAN'), 'Front-end language file should be loaded.');
+		$this::assertEquals('Front Language Loaded', constant('TESTPLUGIN_FRONT_LAN'));
+
+		// 2. Test Admin file loading
+		$retAdmin = e107::plugLan($pluginName, true);
+		$this::assertTrue(defined('TESTPLUGIN_ADMIN_LAN'), 'Admin language file should be loaded.');
+		$this::assertEquals('Admin Language Loaded', constant('TESTPLUGIN_ADMIN_LAN'));
+
+		// 3. Test Global file loading
+		$retGlobal = e107::plugLan($pluginName, 'global');
+		$this::assertTrue(defined('TESTPLUGIN_GLOBAL_LAN'), 'Global language file should be loaded.');
+		$this::assertEquals('Global Language Loaded', constant('TESTPLUGIN_GLOBAL_LAN'));
+
+		// 4. Test 'flat=true' parameter
+		$flatLangDir = $languageDir . 'English';
+		$flatLangFile = $flatLangDir . '/English_flatfile.php';
+		if(!is_dir($flatLangDir))
+		{
+			mkdir($flatLangDir, 0777, true);
+		}
+		file_put_contents($flatLangFile, "<?php define('TESTPLUGIN_FLAT_LAN', 'Flat Language Loaded');");
+		$this->tempFiles[] = $flatLangFile;
+
+		$retFlat = e107::plugLan($pluginName, 'flatfile', true);
+		$this::assertTrue(defined('TESTPLUGIN_FLAT_LAN'), 'Flat language file should be loaded.');
+		$this::assertEquals('Flat Language Loaded', constant('TESTPLUGIN_FLAT_LAN'));
+
+		// 5. Test return path functionality
+		$returnedPath = e107::plugLan($pluginName, 'global', false, true);
+		$expectedPath = e_PLUGIN . $pluginName . '/languages/English_global.php';
+		$this::assertEquals($expectedPath, $returnedPath, 'plugLan() should correctly return the path when $returnPath=true.');
+	}
+
+
+	/**
+	 * @runInSeparateProcess
+	 * @return void
+	 */
+	/**
+	 * @runInSeparateProcess
+	 * @return void
+	 */
+	public function testPlugLanArray()
+	{
+
+		$pluginName = 'testplugin2';
+		$languageDir = e_PLUGIN . $pluginName . '/languages/';
+
+		$frontLangFile = $languageDir . 'English_front.php';
+		$adminLangFile = $languageDir . 'English_admin.php';
+		$globalLangFile = $languageDir . 'English_global.php';
+
+		if(!is_dir($languageDir))
+		{
+			mkdir($languageDir, 0777, true);
+		}
+
+		file_put_contents($frontLangFile, "<?php return ['TESTPLUGIN_FRONT_ARR_LAN' => 'Front Language Loaded'];");
+		file_put_contents($adminLangFile, "<?php return ['TESTPLUGIN_ADMIN_ARR_LAN' => 'Admin Language Loaded'];");
+		file_put_contents($globalLangFile, "<?php return ['TESTPLUGIN_GLOBAL_ARR_LAN' => 'Global Language Loaded'];");
+
+		$this->tempFiles[] = $frontLangFile;
+		$this->tempFiles[] = $adminLangFile;
+		$this->tempFiles[] = $globalLangFile;
+
+		$this->assertTrue(is_readable($frontLangFile), 'Front language file exists and is readable.');
+		$retFront = e107::plugLan($pluginName);
+		$this->assertTrue($retFront, 'plugLan() should return true after successful inclusion');
+		$this->assertTrue(defined('TESTPLUGIN_FRONT_ARR_LAN'), 'Constant TESTPLUGIN_FRONT_ARR_LAN should be defined.');
+		$this->assertEquals('Front Language Loaded', constant('TESTPLUGIN_FRONT_ARR_LAN'));
+
+		$this->assertTrue(is_readable($adminLangFile), 'Admin language file exists and is readable.');
+		$retAdmin = e107::plugLan($pluginName, true);
+		$this->assertTrue($retAdmin, 'plugLan(true) should return true after admin file inclusion');
+		$this->assertTrue(defined('TESTPLUGIN_ADMIN_ARR_LAN'), 'Constant TESTPLUGIN_ADMIN_ARR_LAN should be defined.');
+		$this->assertEquals('Admin Language Loaded', constant('TESTPLUGIN_ADMIN_ARR_LAN'));
+
+		$this->assertTrue(is_readable($globalLangFile), 'Global language file exists and is readable.');
+		$retGlobal = e107::plugLan($pluginName, 'global');
+		$this->assertTrue($retGlobal, 'plugLan(global) should return true after global file inclusion');
+		$this->assertTrue(defined('TESTPLUGIN_GLOBAL_ARR_LAN'), 'Constant TESTPLUGIN_GLOBAL_ARR_LAN should be defined.');
+		$this->assertEquals('Global Language Loaded', constant('TESTPLUGIN_GLOBAL_ARR_LAN'));
+
+		$flatLangDir = $languageDir . 'English';
+		$flatLangFile = $flatLangDir . '/English_flatfile.php';
+		if(!is_dir($flatLangDir))
+		{
+			mkdir($flatLangDir, 0777, true);
+		}
+
+		file_put_contents($flatLangFile, "<?php return ['TESTPLUGIN_FLAT_LAN' => 'Flat Language Loaded'];");
+		$this->tempFiles[] = $flatLangFile;
+
+		$this->assertTrue(is_readable($flatLangFile), 'Flat language file exists and is readable.');
+		$retFlat = e107::plugLan($pluginName, 'flatfile', true);
+		$this->assertTrue($retFlat, 'Flat file inclusion via plugLan(true, flatfile) should return true');
+		$this->assertTrue(defined('TESTPLUGIN_FLAT_LAN'), 'Constant TESTPLUGIN_FLAT_LAN should be defined.');
+		$this->assertEquals('Flat Language Loaded', constant('TESTPLUGIN_FLAT_LAN'));
+
+		$returnedPath = e107::plugLan($pluginName, 'global', false, true);
+		$expectedPath = e_PLUGIN . $pluginName . '/languages/English_global.php';
+		$this->assertEquals($expectedPath, $returnedPath, 'plugLan() should correctly return the path when $returnPath=true.');
+	}
+
+
+	/**
+	 * @runInSeparateProcess
+	 * @return void
+	 */
+	public function testPlugLanPath()
 	{
 
 		$e107 = $this->e107;
