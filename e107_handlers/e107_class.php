@@ -5647,6 +5647,8 @@ class e107
 	{
 		$siteurl        = self::getPref('siteurl');
 		$defaultHost    = (array) parse_url($siteurl, PHP_URL_HOST);
+		$defaultHost    = preg_replace('/^www\./', '', $defaultHost);
+
 		$hosts          = !empty($this->hosts) ? $this->hosts : $defaultHost;
 
 		if(self::isCli())
@@ -5693,8 +5695,16 @@ class e107
 			return true; // Allowed if no hosts.
 		}
 
+		$httpHost    = preg_replace('/^www\./', '', $httpHost);
+
 		foreach ($allowedHosts as $host)
 		{
+			if(empty($host))
+			{
+				continue;
+			}
+
+			$host = preg_replace('/^www\./', '', $host);
 			if ($httpHost === $host || str_ends_with($httpHost, '.' . $host))
 			{
 				return true;
