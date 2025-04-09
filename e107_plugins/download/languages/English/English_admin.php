@@ -233,16 +233,12 @@ define("DOWLAN_HELP_11", "Click the 'delete' button to delete the report.[br][br
 // define("DOWLAN_DESCRIPTION", "This plugin is a fully featured Download system");
 // define("DOWLAN_CAPTION", "Configure Download");
 
-define("LAN_DL_SECURITY_DESCRIPTION", "Downloads can make use of server-side URL protection features to prevent hotlinking and/or enforce link expiry. " .
-	"This section should be configured before the download server is configured to reduce the chance of disruption to downloaders.");
+define("LAN_DL_SECURITY_DESCRIPTION", "Downloads can make use of server-side URL protection features to prevent hotlinking and/or enforce link expiry. This section should be configured before the download server is configured to reduce the chance of disruption to downloaders.");
 define("LAN_DL_SECURITY_MODE", "URL protection mode");
 define("LAN_DL_SECURITY_MODE_NONE", "None (Default)");
 define("LAN_DL_SECURITY_MODE_NGINX_SECURELINKMD5", "NGINX secure_link_md5");
 define("LAN_DL_SECURITY_NGINX_SUPPORTED_VARIABLES_TOGGLE", "Click to toggle list of supported NGINX variables");
-define("LAN_DL_SECURITY_NGINX_SECURELINKMD5_EXPRESSION",
-	"<a target='_blank' href='https://nginx.org/en/docs/http/ngx_http_secure_link_module.html#secure_link_md5'>NGINX secure_link_md5 expression</a>");
+define("LAN_DL_SECURITY_NGINX_SECURELINKMD5_EXPRESSION", "[NGINX secure_link_md5 expression]");
 define("LAN_DL_SECURITY_NGINX_SECURELINKMD5_EXPRESSION_HELP", "Same expression as configured on the server");
 define("LAN_DL_SECURITY_LINK_EXPIRY", "Duration of validity in seconds");
-define("LAN_DL_SECURITY_LINK_EXPIRY_HELP", "Number of seconds the download link should last after being generated. " .
-	"Only effective if the expression supports expiry time. " .
-    "Defaults to a very long time if this field is left blank.");
+define("LAN_DL_SECURITY_LINK_EXPIRY_HELP", "Number of seconds the download link should last after being generated. Only effective if the expression supports expiry time. Defaults to a very long time if this field is left blank.");

@@ -3999,6 +3999,17 @@ class e_parse
 		return str_replace($search, $replace, $lan);
 	}
 
+
+	public function lanLink($lan, $url, $options=[])
+	{
+		$srch =["[", "]"];
+		$repl = ["<a target='_blank' href='" .$url . "'>", "</a>"];
+
+		$text = defset($lan, $lan);
+
+		return str_replace($srch, $repl, $text);
+	}
+
 	/**
 	 * Return an Array of all specific tags found in an HTML document and their attributes.
 	 *
