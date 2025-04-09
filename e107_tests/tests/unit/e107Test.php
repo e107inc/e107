@@ -2406,6 +2406,16 @@ class e107Test extends \Codeception\Test\Unit
 				'httpHost'     => 'subdomain-example.com',
 				'expected'     => false
 			],
+			'www domain' => [
+				'allowedHosts' => ['example.com'],
+				'httpHost'     => 'www.example.com',
+				'expected'     => true
+			],
+			'www2 domain' => [
+				'allowedHosts' => ['www.example.com'],
+				'httpHost'     => 'example.com',
+				'expected'     => true
+			],
 		];
 
 		foreach($testCases as $scenario => $testCase)
