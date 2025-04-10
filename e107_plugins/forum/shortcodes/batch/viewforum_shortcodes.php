@@ -323,7 +323,7 @@
 		}
 
 
-		function sc_perms()
+		function sc_perms($parm=null)
 		{
 			global $forum, $forumId;
 
@@ -347,9 +347,14 @@
 					$permDisplay['edit'] = LAN_FORUM_0048;
 				}
 			--*/
+			if(!empty($parm['type']))
+			{
+			  return 'alert alert-'.($forum->checkPerm($forumId, 'post')?'info':'danger');
+			}
 
-			return implode("<span class='forum-perms-separator'><!-- --></span>", $permDisplay);
-
+			global $FORUM_VIEWFORUM_TEMPLATE;
+//			return implode("<span class='forum-perms-separator'><!-- --></span>", $permDisplay);
+			return implode($FORUM_VIEWFORUM_TEMPLATE['perms_separator']?:"<span class='forum-perms-separator'><!-- --></span>", $permDisplay);
 		}
 
 		function sc_forumjump()
