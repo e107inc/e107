@@ -154,7 +154,7 @@ if (isset($_POST['cancel_cat']))
 
 function js()
 {
-	include_once(e_LANGUAGEDIR . e_LANGUAGE . "/lan_user_extended.php");
+	e107::includeLan(e_LANGUAGEDIR . e_LANGUAGE . "/lan_user_extended.php");
 
 	$text =  "
 

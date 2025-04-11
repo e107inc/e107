@@ -4783,8 +4783,9 @@ class e107
 		{
 			if (is_readable($s))
 			{
-				$ret = include_once($s);
-				return (isset($ret)) ? $ret : "";
+				return self::includeLan($s);
+			//	$ret = include_once($s);
+			//	return (isset($ret)) ? $ret : "";
 			}
 		}
 		if ((e_LANGUAGE === 'English') || self::getPref('noLanguageSubs'))
@@ -4797,8 +4798,9 @@ class e107
 			$s = str_replace(e_LANGUAGE, 'English', $s);
 			if (is_readable($s))
 			{
-				$ret = include_once($s);
-				return (isset($ret)) ? $ret : "";
+				return self::includeLan($s);
+			//	$ret = include_once($s);
+			//	return (isset($ret)) ? $ret : "";
 			}
 		}
 		return FALSE;		// Nothing found

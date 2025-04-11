@@ -26,7 +26,7 @@ return [
     'LAN_EURL_FORM_HELP_ALIAS_0' => "Default value is",
     'LAN_EURL_FORM_HELP_ALIAS_1' => "Alias when in",
     'LAN_EURL_FORM_HELP_EXAMPLE' => "Base URL",
-    'LAN_EURL_ERR_ALIAS_MODULE' => "Alias &quot;%1\\$s&quot; can't be saved - there is a system URL profile with the same name. Please choose another alias value for system URL profile &quot;%2\$s&quot;",
+    'LAN_EURL_ERR_ALIAS_MODULE' => "Alias &quot;%1\$s&quot; can't be saved - there is a system URL profile with the same name. Please choose another alias value for system URL profile &quot;%2\$s&quot;",
     'LAN_EURL_SURL_UPD' => "&nbsp; SEF URLs were updated.",
     'LAN_EURL_SURL_NUPD' => "&nbsp; SEF URLs were NOT updated.",
     'LAN_EURL_SETTINGS_PATHINFO' => "Remove filename from the URL",
