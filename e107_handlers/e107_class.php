@@ -3737,46 +3737,44 @@ class e107
 	public static function includeLan($path, $force = false, $lang = '')
 	{
 
-		if(!is_readable($path))
-		{
-			if((e_LANGUAGE === 'English') || self::getPref('noLanguageSubs'))
-			{
-				return false;
-			}
-
-			self::getDebug()->log("Couldn't load language file: " . $path);
-
-			$path = str_replace(e_LANGUAGE, 'English', $path);
-
-			self::getDebug()->log("Attempts to load default language file: " . $path);
-
-			if(!is_readable($path))
-			{
-				self::getDebug()->log("Couldn't load default language file: " . $path);
-
-				return false;
-			}
-		}
-
 		$adminLanguage = self::getPref('adminlanguage');
 
-		if(e_ADMIN_AREA && vartrue($adminLanguage))
+		if(deftrue('e_ADMIN_AREA') && !empty($adminLanguage))
 		{
 			$path = str_replace(e_LANGUAGE, $adminLanguage, $path);
+			$lang = $adminLanguage;
 		}
 
-		$ret = ($force) ? include($path) : include_once($path);
+		if(is_readable($path))
+		{
+			$ret = ($force) ? include($path) : include_once($path);
+		}
+		else
+		{
+			$ret = false;
+		}
 
 		// Determine the language: use $lang if provided, otherwise fall back to e_LANGUAGE or 'English'
-		$effectiveLang = $lang ?: (defined('e_LANGUAGE') ? e_LANGUAGE : 'English');
+		if ($lang)
+		{
+			$effectiveLang = $lang;
+		}
+		else
+		{
+			$effectiveLang = defined('e_LANGUAGE') ? e_LANGUAGE : 'English';
+		}
 
-		// If the included file returns an array, process it with the new system
 		if(is_array($ret))
 		{
 			self::includeLanArray($ret, $path, $effectiveLang);
 
 			return true; // New-style success indicator
 		}
+		elseif($effectiveLang !== 'English' && !self::getPref('noLanguageSubs', false)) // Fallback
+		{
+			self::includeLanArray(null, $path, $effectiveLang);
+		}
+
 
 		// Old-style behavior: return the include result or empty string if unset
 		return (isset($ret)) ? $ret : "";
@@ -3802,23 +3800,22 @@ class e107
 		static $english_terms = []; // Cache English terms by file key
 
 		// Define constants from the current language’s array first
-		foreach($terms as $const => $value)
+		if(!empty($terms) && is_array($terms))
 		{
-			if(!defined($const))
+			foreach($terms as $const => $value)
 			{
-				define($const, $value);
+				if(!defined($const))
+				{
+					define($const, $value);
+				}
 			}
 		}
-
 		// Load English fallback if not cached and not already English
 		if($lang !== 'English' && !isset($english_terms[$file_key]))
 		{
-			$english_path = preg_replace(
-				"#/{$lang}/([^/]+)$#i",
-				'/English/$1',
-				$path
-			);
-			if(file_exists($english_path))
+			$english_path = str_replace($lang, 'English', $path);
+
+			if(is_readable($english_path))
 			{
 				$english_terms[$file_key] = include($english_path);
 				if(!is_array($english_terms[$file_key]))
@@ -3828,12 +3825,13 @@ class e107
 			}
 			else
 			{
-				self::getDebug()->log("No English fallback found for: " . $english_path);
+				trigger_error("No English fallback found for: $english_path", E_USER_WARNING);
 				$english_terms[$file_key] = [];
 			}
 		}
 
 		// For non-English, define English constants only if not already defined
+
 		if($lang !== 'English' && !empty($english_terms[$file_key]))
 		{
 			foreach($english_terms[$file_key] as $const => $english_value)
@@ -3841,6 +3839,7 @@ class e107
 				if(!defined($const))
 				{
 					define($const, $english_value);
+					trigger_error("Missing $lang constant: $const in $path", E_USER_WARNING);
 				}
 			}
 		}

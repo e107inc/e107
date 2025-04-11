@@ -1999,8 +1999,8 @@ class error_handler
 
 	function __construct()
 	{
-		$this->label = array(E_NOTICE => "Notice", E_WARNING => "Warning", E_DEPRECATED => "Deprecated");
-		$this->color = array(E_NOTICE=> 'info', E_WARNING=>'warning', E_DEPRECATED => 'danger');
+		$this->label = array(E_NOTICE => "Notice", E_USER_NOTICE => "Notice", E_WARNING => "Warning",E_USER_WARNING => "Warning", E_DEPRECATED => "Deprecated");
+		$this->color = array(E_NOTICE=> 'info', E_USER_NOTICE=> 'info' , E_WARNING=>'warning',E_USER_WARNING => "warning", E_DEPRECATED => 'danger');
 
 		if (version_compare(PHP_VERSION, '8.4', '<'))
 		{
@@ -2099,6 +2099,7 @@ class error_handler
 			break;
 
 			case E_NOTICE:
+			case E_USER_NOTICE:
 		//	case E_STRICT:
 
 			if ($startup_error || $this->deftrue('E107_DBG_ALLERRORS')  || $this->deftrue('E107_DBG_ERRBACKTRACE'))
@@ -2107,6 +2108,7 @@ class error_handler
 			}
 			break;
 			case E_WARNING:
+			case E_USER_WARNING:
 			if ($startup_error || $this->deftrue('E107_DBG_BASIC') || $this->deftrue('E107_DBG_ERRBACKTRACE'))
 			{
 				$this->addError($type, $message,$line,$file);
