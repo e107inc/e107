@@ -142,6 +142,10 @@ jobs:
       working-directory: ./e107_tests/
       continue-on-error: false
 
+    - name: Debug error reporting
+      run: php -r 'echo error_reporting();'
+      working-directory: ./e107_tests/
+
     - name: Run unit tests
       run: |
         if [ $(php -r 'printf(extension_loaded("xdebug") ? 1 : 0);') = '1' ]
