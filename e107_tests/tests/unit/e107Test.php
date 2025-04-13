@@ -18,7 +18,7 @@ class e107Test extends \Codeception\Test\Unit
 
 	protected function _before()
 	{
-
+		error_reporting(E_ALL & ~E_USER_WARNING);
 		try
 		{
 			$this->e107 = e107::getInstance();
@@ -32,7 +32,7 @@ class e107Test extends \Codeception\Test\Unit
 
 	protected function _after()
 	{
-
+		error_reporting(E_ALL);
 		// Clean up temporary files
 		foreach($this->tempFiles as $file)
 		{
