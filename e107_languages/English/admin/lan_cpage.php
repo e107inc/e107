@@ -56,4 +56,5 @@ return [
     'CUSLAN_84' => "Caption displayed on the menu item.",
     'CUSLAN_85' => "Leave blank to use the default",
     'CUSLAN_86' => "Leave blank to use the corresponding page",
+    'CUSLAN_87' => "Page Count",
 ];

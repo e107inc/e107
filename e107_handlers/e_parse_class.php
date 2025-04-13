@@ -3969,7 +3969,7 @@ class e_parse
 	/**
 	 * Generic variable translator for LAN definitions.
 	 *
-	 * @param                $lan  - string LAN
+	 * @param string $lan  - string LAN or LAN constant.
 	 * @param string | array $vals - either a single value, which will replace '[x]' or an array with key=>value pairs.
 	 * @return string
 	 * @example $tp->lanVars("My name is [x] and I own a [y]", array("John","Cat"));
@@ -3977,7 +3977,7 @@ class e_parse
 	 */
 	public function lanVars($lan, $vals, $bold = false)
 	{
-
+		$lan = defset($lan, $lan);
 		$array = (!is_array($vals)) ? array('x' => $vals) : $vals;
 
 		$search = array();
