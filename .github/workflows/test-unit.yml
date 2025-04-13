@@ -142,19 +142,19 @@ jobs:
       working-directory: ./e107_tests/
       continue-on-error: false
 
-    - name: Debug error reporting
-      run: php -r 'echo error_reporting();'
-      working-directory: ./e107_tests/
-
     - name: Run unit tests
       run: |
         if [ $(php -r 'printf(extension_loaded("xdebug") ? 1 : 0);') = '1' ]
         then
-          php -d error_reporting="E_ALL & ~E_USER_WARNING" -d xdebug.mode=coverage ./vendor/bin/codecept run unit --steps --debug --coverage --coverage-xml
+          php -d error_reporting=32255 -d xdebug.mode=coverage ./vendor/bin/codecept run unit --steps --debug --coverage --coverage-xml
         else
           echo "Warning: xdebug not available; skipping coverage..."
-          php -d error_reporting="E_ALL & ~E_USER_WARNING" ./vendor/bin/codecept run unit --steps --debug
+          php -d error_reporting=32255 ./vendor/bin/codecept run unit --steps --debug
         fi
+      working-directory: ./e107_tests/
+
+    - name: Debug error reporting
+      run: php -r 'echo error_reporting();'
       working-directory: ./e107_tests/
 
     - name: Send code coverage report to Code Climate
