@@ -299,10 +299,13 @@ class download_request
 			return;
 		}
 
-		$sql->select($table, "*", "{$table}_id = '{$id}'");
-		$row = $sql->fetch();
-		extract($row);
-		$image = ($table == "upload" ? $row['upload_ss'] : $row['download_image']);
+		if(!empty($table))
+		{
+			$sql->select($table, "*", "{$table}_id = '{$id}'");
+			$row = $sql->fetch();
+			extract($row);
+			$image = ($table == "upload" ? $row['upload_ss'] : $row['download_image']);
+		}
 	//if (preg_match("/Binary\s(.*?)\/.*/", $image, $result))
 	//{
 		/*	$bid = $result[1];
