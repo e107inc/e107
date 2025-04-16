@@ -273,5 +273,5 @@
         "listQry": "",
         "listQryBeforeFinal": ""
     },
-    "expected": "SELECT SQL_CALC_FOUND_ROWS `#links`.* FROM `#links` WHERE `#links`.link_category = '3' ORDER BY link_category,link_order ASC"
+    "expected": "SELECT `#links`.* FROM `#links` WHERE `#links`.link_category = '3' ORDER BY link_category,link_order ASC"
 }

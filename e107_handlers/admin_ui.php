@@ -4592,7 +4592,7 @@ class e_admin_controller_ui extends e_admin_controller
 	 */
 	public function getParentChildQry($orderby=false)
 	{
-		return 'SELECT SQL_CALC_FOUND_ROWS * FROM `#' .$this->getTableName(). '` ';
+		return 'SELECT * FROM `#' .$this->getTableName(). '` ';
 	}
 
 	/**
@@ -5229,7 +5229,7 @@ class e_admin_controller_ui extends e_admin_controller
 		//file_put_contents(e_LOG.'uiAjaxResponseFields.log', print_r($this->getFields(), true)."\n\n", FILE_APPEND);
 		if($joinData)
 		{
-			$qry = 'SELECT SQL_CALC_FOUND_ROWS ' . $tableSFields;
+			$qry = 'SELECT ' . $tableSFields;
 			foreach($joinData as $jtable => $tparams)
 			{
 				// Select fields
@@ -5287,7 +5287,7 @@ class e_admin_controller_ui extends e_admin_controller
 			}
 			else
 			{
-				$qry = 'SELECT SQL_CALC_FOUND_ROWS ' . $tableSFields . ' FROM ' . $tableFrom;
+				$qry = 'SELECT ' . $tableSFields . ' FROM ' . $tableFrom;
 			}
 
 		}
@@ -5437,7 +5437,10 @@ class e_admin_controller_ui extends e_admin_controller
 
 
 		// Print to the debug interface (optional, can overload logs)
-		e107::getMessage()->addDebug('<pre>' . $jsonDebugInfo . '</pre>');
+			if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
+			{
+				e107::getMessage()->addDebug('<pre>' . $jsonDebugInfo . '</pre>');
+			}
 
 
 		return $qry;
@@ -6542,11 +6545,6 @@ class e_admin_ui extends e_admin_controller_ui
 
 		$this->addTitle();
 
-	//	if($this->getQuery('filter_options'))
-		{
-		//	var_dump($this);
-			// $this->addTitle("to-do"); // display filter option when active.
-		}
 		
 	}
 
