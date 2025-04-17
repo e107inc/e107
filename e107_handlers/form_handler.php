@@ -4912,7 +4912,7 @@ var_dump($select_options);*/
 	 * @param array $currentlist - eg $this->fieldpref
 	 * @param array $fieldvalues - eg. $row
 	 * @param string $pid - eg. table_id
-	 * @return string
+	 * @return string|null
 	 */
 	public function renderTableCells($fieldarray, $currentlist, $fieldvalues, $pid)
 	{
@@ -5349,7 +5349,7 @@ var_dump($select_options);*/
 	 * @param string $field field name
 	 * @param mixed $value field value
 	 * @param array $attributes field attributes including render parameters, element options - see e_admin_ui::$fields for required format
-	 * @return string
+	 * @return string|null
 	 */
 	public function renderValue($field, $value, $attributes, $id = 0)
 	{
@@ -6250,7 +6250,10 @@ var_dump($select_options);*/
 					    $styleClass = ($value === 1) ? 'admin-true-icon' : 'admin-false-icon';
                     }
 
-
+					if(!isset($attributes['title']))
+					{
+						trigger_error("$field is missing the 'title' key/attribute", E_USER_WARNING);
+					}
 					return $this->renderInline($field, $id, $attributes['title'], $value, $dispValue, 'select', $wparms, array('class'=>'e-editable-boolean '.$styleClass));
 				}
 				
