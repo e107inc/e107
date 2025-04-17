@@ -18,13 +18,13 @@ class e_url
 
 	private static $_instance;
 
-	private $_request       = null;
+	private $_request;
 
 	private $_config        = array();
 
 	private $_include       = null;
 
-	private $_rootnamespace = null;
+	private $_rootnamespace;
 
 	private $_alias         = array();
 
@@ -331,7 +331,7 @@ class eFront
 	/**
 	 * Dispatch
 	 */
-	public function dispatch(eRequest $request = null, eResponse $response = null, eDispatcher $dispatcher = null)
+	public function dispatch(eRequest|null $request = null, eResponse|null $response = null, eDispatcher|null $dispatcher = null)
 	{
 		if(null === $request)
 		{
@@ -579,7 +579,7 @@ class eDispatcher
 	 * @return void
 	 * @throws eException
 	 */
-	public function dispatch(eRequest $request = null, eResponse $response = null)
+	public function dispatch(eRequest|null $request = null, eResponse|null $response = null)
 	{
 		$controllerName = $request->getControllerName();
 		$moduleName = $request->getModuleName();
@@ -619,7 +619,7 @@ class eDispatcher
 	 * @param string $module 
 	 * @param string $location plugin|core|override
 	 * @param boolean $sc
-	 * @return string path
+	 * @return string|null path
 	 */
 	public static function getConfigPath($module, $location, $sc = false)
 	{
@@ -665,7 +665,7 @@ class eDispatcher
 	 * @param string $module 
 	 * @param string $location plugin|core|override
 	 * @param boolean $sc
-	 * @return string path
+	 * @return string|null path
 	 */
 	public static function getConfigLocationPath($module, $location, $sc = false)
 	{
@@ -694,7 +694,7 @@ class eDispatcher
 	 * @param string $location plugin|core|override
 	 * @param string $plugin required only when $location is plugin
 	 * @param boolean $sc
-	 * @return string path
+	 * @return string|null path
 	 */
 	public static function getDispatchLocationPath($location, $plugin = null, $sc = false)
 	{	
@@ -724,7 +724,7 @@ class eDispatcher
 	 * @param string $module 
 	 * @param string $location plugin|core|override
 	 * @param boolean $sc
-	 * @return string path
+	 * @return string|null path
 	 */
 	public static function getDispatchPath($module, $location, $sc = false)
 	{	
@@ -755,7 +755,7 @@ class eDispatcher
 	 * @param string $controller controller name
 	 * @param string $location core|plugin|override
 	 * @param boolean $sc return relative (false) OR shortcode (true) path
-	 * @return string controller path
+	 * @return string|null controller path
 	 */
 	public static function getControllerPath($module, $controller, $location = null, $sc = false)
 	{
@@ -770,7 +770,7 @@ class eDispatcher
 	 * @param string $module valid module name
 	 * @param string $controllerName controller name
 	 * @param string $location core|plugin|override
-	 * @return string controller path
+	 * @return string|null controller path
 	 */
 	public static function getControllerClass($module, $controllerName, $location = null)
 	{
@@ -785,7 +785,7 @@ class eDispatcher
 	 * 
 	 * @param eRequest $request
 	 * @param boolean $checkOverride whether to check the override location
-	 * @return eController null if not dispatchable
+	 * @return eController|null if not dispatchable
 	 */
 	public function getController(eRequest $request, $checkOverride = true)
 	{
@@ -801,7 +801,7 @@ class eDispatcher
 	 * @param string $controllerName controller name
 	 * @param string $location core|plugin|override
 	 * @param boolean $checkOverride whether to check the override location
-	 * @return string class name OR false if not dispatchable
+	 * @return string|false class name OR false if not dispatchable
 	 */
 	public function isDispatchableModule($module, $controllerName, $location, $checkOverride = false)
 	{
@@ -905,7 +905,7 @@ class eDispatcher
 	 * 
 	 * @param string $module valid module name
 	 * @param string $location core|plugin|override[/custom]
-	 * @return eUrlConfig
+	 * @return eUrlConfig|null
 	 */
 	public static function getConfigObject($module, $location = null)
 	{
@@ -1631,7 +1631,7 @@ class eRouter
 	 * Returns null if $alias is not an existing alias
 	 * @param string $alias
 	 * @param string $lan optional language alias check. Example $lan = 'bg' (search for Bulgarian aliases)
-	 * @return string module
+	 * @return string|null module
 	 */
 	public function getModuleFromAlias($alias, $lan = null)
 	{
@@ -1644,7 +1644,7 @@ class eRouter
 	 * Returns null if module doesn't have an alias
 	 * @param string $module
 	 * @param string $lan optional language alias check. Example $lan = 'bg' (search for Bulgarian aliases)
-	 * @return string alias 
+	 * @return string|null alias
 	 */
 	public function getAliasFromModule($module, $lan = null)
 	{
@@ -1735,7 +1735,7 @@ class eRouter
 	 * or null on failure
 	 * @param string $module
 	 * @param boolean $strict check for existence if true
-	 * @return string module
+	 * @return string|null module
 	 */
 	public function retrieveModule($module, $strict = true)
 	{
@@ -2960,9 +2960,9 @@ abstract class eUrlConfig
 	 * @param eRequest|null $request
 	 * @param eRouter|null $router
 	 * @param array $config
-	 * @return string route or false on error
+	 * @return false string route or false on error
 	 */
-	public function parse($pathInfo, $params = array(), eRequest $request = null, eRouter $router = null, $config = array())
+	public function parse($pathInfo, $params = array(), eRequest|null $request = null, eRouter|null $router = null, $config = array())
 	{
 		return false;
 	}
@@ -3038,7 +3038,7 @@ class eController
 	 * @param eRequest $request
 	 * @param eResponse|null $response
 	 */
-	public function __construct(eRequest $request, eResponse $response = null)
+	public function __construct(eRequest $request, eResponse|null $response = null)
 	{
 		$this->setRequest($request)
 			->setResponse($response)
@@ -3192,7 +3192,7 @@ class eController
 	 * @return eResponse
 	 * @throws eException
 	 */
-	public function run(eRequest $request = null, eResponse $response = null)
+	public function run(eRequest|null $request = null, eResponse|null $response = null)
 	{
 		if(null === $request) $request = $this->getRequest();
 		else $this->setRequest($request);
@@ -3360,7 +3360,7 @@ class eControllerFront extends eController
 	/**
 	 * Base constructor - set 404/403 locations
 	 */
-	public function __construct(eRequest $request, eResponse $response = null)
+	public function __construct(eRequest $request, eResponse|null $response = null)
 	{
 		parent::__construct($request, $response);
 		$this->_init();
@@ -3861,7 +3861,7 @@ class eRequest
 	 * - 'last' route record
 	 * - history record by its index number
 	 * @param mixed $source
-	 * @return string|array
+	 * @return string|array|null
 	 */
 	public function getRouteHistory($source = null)
 	{
@@ -4051,8 +4051,9 @@ class eRequest
 		{
 			$qstring = str_replace(array('{', '}', '%7B', '%7b', '%7D', '%7d'), '', rawurldecode($_SERVER['QUERY_STRING']));
 		}
-		$qstring = str_replace('&', '&amp;', e107::getParser()->post_toForm($qstring));
-		return $qstring;
+
+		return str_replace('&', '&amp;', e107::getParser()->post_toForm($qstring));
+
 	}
 	
 	/**
@@ -4075,7 +4076,7 @@ class eRequest
 	 */
 	public function setDispatched($mod)
 	{
-		$this->_dispatched = $mod ? true : false;
+		$this->_dispatched = (bool) $mod;
 		return $this;
 	}
 	
@@ -4146,13 +4147,14 @@ class eResponse
 	 */
 	public function getRobotDescriptions()
 	{
-		$_meta_robot_descriptions = array(
+		return [
 			'noindex'       => LAN_ROBOTS_NOINDEX,
 			'nofollow'      => LAN_ROBOTS_NOFOLLOW,
 			'noarchive'     => LAN_ROBOTS_NOARCHIVE,
-			'noimageindex'  => LAN_ROBOTS_NOIMAGE );
+			'noimageindex'  => LAN_ROBOTS_NOIMAGE
+		];
 
-		return $_meta_robot_descriptions;
+
 	}
 
 	/**
