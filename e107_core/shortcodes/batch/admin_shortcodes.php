@@ -96,6 +96,27 @@ class admin_shortcodes extends e_shortcode
 
 
     }
+
+    public function sc_admin_container_legacy($parm=null)
+    {
+		  $exclude = array(
+            'admin.php',
+            'menus.php',
+            'phpinfo.php',
+            'credits.php',
+            'docs.php',
+            'cache.php',
+            'emoticon.php',
+            'updateadmin.php',
+            'administrator.php',
+
+        );
+
+        if(!deftrue('e_CURRENT_PLUGIN') && in_array(e_PAGE, $exclude))
+        {
+            return 'admin-container-legacy';
+        }
+    }
    
     // {ADMIN_COREUPDATE}
     public function sc_admin_coreupdate($parm='')

@@ -816,7 +816,7 @@ tbody.collapse.in{display:table-row-group}
 .dropdown-menu .divider{height:1px;margin:9px 0;overflow:hidden;background-color:#171717}
 .dropdown-menu>li>a{display:block;clear:both;font-weight:400;color:rgba(255,255,255,0.5)}
 .dropdown-menu>li>a:focus,.dropdown-menu>li>a:hover{text-decoration:none;color:#fff;background-color:#337ab7}
-.dropdown-menu>.active>a,.dropdown-menu>.active>a:focus,.dropdown-menu>.active>a:hover{color:#5bc0de;text-decoration:none;outline:0;background-color:transparent}
+.dropdown-menu>.active>a,.dropdown-menu>.active>a:focus,.dropdown-menu>.active>a:hover{color:#fff;text-decoration:none;outline:0;background-color:transparent}
 .dropdown-menu>.disabled>a,.dropdown-menu>.disabled>a:focus,.dropdown-menu>.disabled>a:hover{color:#c6c6c6}
 .dropdown-menu>.disabled>a:focus,.dropdown-menu>.disabled>a:hover{text-decoration:none;background-color:transparent;background-image:none;filter:progid:DXImageTransform.Microsoft.gradient(enabled=false);cursor:not-allowed}
 .open>.dropdown-menu{display:block}
@@ -944,7 +944,7 @@ select[multiple].input-group-sm>.form-control,select[multiple].input-group-sm>.i
 .navbar-fixed-bottom,.navbar-fixed-top{position:fixed;right:0;left:0;z-index:1030}
 .navbar-fixed-top{top:0;border-width:0 0 1px}
 .navbar-fixed-bottom{bottom:0;margin-bottom:0;border-width:1px 0 0}
-.navbar-brand{float:left;padding:15px;font-size:18px;line-height:20px;height:50px}
+.navbar-brand{float:left;padding:15px;font-size:18px;line-height:20px;height:50px;border-right:1px solid rgba(255, 255, 255, 0.2)}
 .navbar-brand:focus,.navbar-brand:hover{text-decoration:none}
 .navbar-brand>img{display:block}
 @media (min-width:768px){.container-fluid>.navbar-collapse,.container-fluid>.navbar-header,.container>.navbar-collapse,.container>.navbar-header{margin-right:0;margin-left:0}
@@ -1003,7 +1003,7 @@ select[multiple].input-group-sm>.form-control,select[multiple].input-group-sm>.i
 .navbar-default .navbar-brand:focus,.navbar-default .navbar-brand:hover{color:#fff;background-color:none}
 .navbar-default .navbar-nav>li>a,.navbar-default .navbar-text{color:#c6c6c6}
 .navbar-default .navbar-nav>li>a:focus,.navbar-default .navbar-nav>li>a:hover{color:#fff;background-color:#0d0d0d}
-.navbar-default .navbar-nav>.active>a,.navbar-default .navbar-nav>.active>a:focus,.navbar-default .navbar-nav>.active>a:hover{color:#5bc0de;background-color:#101010}
+.navbar-default .navbar-nav>.active>a,.navbar-default .navbar-nav>.active>a:focus,.navbar-default .navbar-nav>.active>a:hover{color:#fff;background-color:transparent}
 .navbar-default .navbar-nav>.disabled>a,.navbar-default .navbar-nav>.disabled>a:focus,.navbar-default .navbar-nav>.disabled>a:hover{color:#ccc;background-color:transparent}
 .navbar-default .navbar-toggle{ margin-right:30px }
 .navbar-default .navbar-toggle:focus,.navbar-default .navbar-toggle:hover{background-color:#0d0d0d}
@@ -1455,11 +1455,7 @@ td.visible-print,th.visible-print{display:table-cell!important}
 .btn-link,.btn-link:hover{border-color:transparent}
 
 .breadcrumb,.input-group-addon,.nav-pills>li>a,.pager>li>a,.pagination>li>a,td.forumheader{text-shadow:1px 1px 1px rgba(0,0,0,.3)}
-.text-primary,.text-primary:hover{color:#337ab7}
-.text-success,.text-success:hover{color:#51a351}
-.text-danger,.text-danger:hover{color:#F86965}
-.text-warning,.text-warning:hover{color:#f89406}
-.text-info,.text-info:hover{color:#8BC0ED !important}
+
 .table a{text-decoration:underline}
 .table .danger,.table .info,.table .success,.table .warning{color:#fff}
 .table-bordered tbody tr.danger td,.table-bordered tbody tr.danger:hover td,.table-bordered tbody tr.success td,.table-bordered tbody tr.success:hover td,.table-bordered tbody tr.warning td,.table-bordered tbody tr.warning:hover td{border-color:#0a0a0a}
@@ -1517,8 +1513,11 @@ td.forumheader{background-image:linear-gradient(#303030,#212121 60%,#171717);fil
 /* Custom */
 
 html { height: auto !important; }
-body { margin-top: 51px; padding: 0 !important; background: #373737 }
-
+body { margin-top: 51px; padding: 0 !important; background: #2f2f2f }
+.navbar-brand {
+  padding:
+10px 17px !important;
+}
 
 
 div.admin-left-panel {
@@ -1553,29 +1552,36 @@ thead th, thead tr, .table > thead > tr > th { border-bottom: 0; border-left:0; 
 .admin-main-content {
     display: block;
     min-height: 1000px;
+    margin-top:60px;
 }
 
         div.admin-left-panel-collapsed .admin-left-panel {
         position: fixed;
         display: block;
-        width: 55px;
+        width: 67px;
         opacity: 1;
-        z-index: 5;
+        z-index: 1000;
         background: #373737;
         height: 100%;
         }
 
         div.admin-left-panel-collapsed .admin-right-panel {
-        padding-left: 80px;
+        padding-left: 100px;
         width:100%;
         }
 
 
-div.admin-left-panel .nav-pills > li > a > span > i { color: rgba(255,255,255,0.5); font-size:16px; opacity: 0; width:0;  }
+div.admin-left-panel .nav-pills > li > a > span > i { font-size:16px; opacity: 0; width:0;  }
+div.admin-left-panel .nav-pills > li > a:not(.text-primary):not(.text-success):not(.text-info):not(.text-warning):not(.text-danger):not(.text-muted) > span > i {
+  color: rgba(255,255,255,0.5);
+  font-size: 16px;
+  opacity: 0;
+  width: 0;
+}
 div.admin-left-panel-collapsed .nav-pills > li > a > span > i { opacity: 1; padding-left: 2px; }
 div.admin-left-panel-collapsed .nav-pills > li.active > a { background:none; }
 div.admin-left-panel-collapsed .nav-header.sidebar-toggle-panel { display: none; }
-div.admin-left-panel .nav-pills > li.active > a > span > i {  color: #5bc0de }
+div.admin-left-panel .nav-pills > li.active > a > span > i {  color: #fff }
 div.admin-left-panel .nav-pills > li > a:hover > span > i { color: white }
 ul.col-selection > li a {  border-bottom: 1px solid rgba(255,255,255,0.3); }
 .admin-true-icon { color: #65B765 !important }
@@ -1621,7 +1627,7 @@ ul.col-selection > li a {  border-bottom: 1px solid rgba(255,255,255,0.3); }
        vertical-align: top;
     }
 
-    #admin-cron  .admin-left-panel {  max-width: 300px; }
+    #admin-cron  .admin-left-panel {  max-width: 315px; }
 
 }
 
@@ -1630,3 +1636,232 @@ ul.col-selection > li a {  border-bottom: 1px solid rgba(255,255,255,0.3); }
 
 
 }
+
+
+/* Modern Dark 2 */
+
+/* Allow html and body to expand with content */
+html {
+  height: auto !important; /* Respect modern-dark.css, allow scrolling */
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+}
+
+/* Ensure the container allows scrolling */
+.admin-container {
+  position: relative;
+  min-height: 100vh; /* Ensure container is at least viewport height */
+  height: auto !important;
+}
+
+/* Ensure the row supports scrolling */
+.is-table-row {
+  min-height: 100vh; /* Ensure row is at least viewport height */
+  display: flex; /* Override table layout */
+}
+
+/* Style the left panel (sidebar) */
+.admin-left-panel {
+  position: sticky !important; /* Stick to viewport, scroll with page */
+  top: 51px; /* Match body margin-top for navbar */
+  position: absolute; /* Remove from flex flow for overlap */
+  height: 100vh; /* Full viewport height */
+  min-height: 100%; /* Allow growth with content */
+  background: #101010 !important; /* Override modern-dark.css */
+  z-index: 1000; /* Ensure overlap */
+  width: 60px; /* Collapsed width */
+  transition: width 0.5s ease; /* Smooth expand/collapse */
+  display: flex;
+  flex-direction: column;
+  padding-left: 0;
+  overflow-x: hidden;
+  border-right:1px solid rgba(255,255,255,0.3) !important;
+}
+.admin-ui-nav-menu { width:100% !important }
+#admin-ui-nav-menu a { color: rgba(255,255,255,0.5); }
+#admin-ui-nav-menu a:hover { color: rgba(255,255,255,1); }
+/* Collapsed state */
+.admin-left-panel.admin-left-panel-collapsed {
+  width: 60px;
+}
+
+/* Expanded state */
+.admin-left-panel:not(.admin-left-panel-collapsed) {
+  width: 315px;
+}
+
+
+
+/* Ensure the menu takes full width and height */
+.admin-ui-nav-menu {
+ /* flex: 1;*/
+  min-height: 0; /* Prevent flex items from overflowing */
+  width: 100%;
+ /* display: flex;
+  flex-direction: column;*/
+}
+
+/* Navigation list container */
+.admin-ui-nav-menu .nav-panel-body {
+  flex: 1;
+  height: 100%; /* Fill available space */
+  width: 100%;
+}
+
+
+
+/* Style the navigation list */
+.admin-ui-nav-menu .nav-pills {
+  width: 100%;
+}
+
+/* Menu item styling */
+.admin-left-panel .nav-pills > li > a {
+  border-radius: 0;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+
+
+.admin-left-panel .nav-pills > li > a i {
+  opacity: 1 !important;
+  margin-right: 12px;
+  min-width: 20px;
+}
+
+/* Active menu item */
+#admin-ui-nav-menu .nav-pills > li.active > a {
+  background-color: transparent !important; /* Override modern-dark.css */
+}
+
+/* Panel heading (non-scrollable) */
+.admin-ui-nav-menu .panel-heading {
+  flex-shrink: 0;
+}
+
+.admin-ui-nav-menu .panel-heading span.sidebar-toggle-panel { margin-left:10px; padding-top:1px}
+
+/* Help panel (non-scrollable, below navigation) */
+.admin-left-panel .sidebar-toggle-panel .panel {
+  flex-shrink: 0; /* Prevent shrinking */
+  width:310px;
+}
+
+/* Position the bottom nav (non-scrollable) */
+.admin-left-panel .nav-stacked[style*="position: absolute"] {
+  bottom: 100px;
+  position: relative;
+  width: 100%;
+  transition: none;
+}
+
+/* Smoothly transition labels */
+.admin-left-panel .sidebar-toggle-panel {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  display: inline-block;
+  min-width: 0;
+  overflow:hidden;
+}
+
+ .admin-left-panel:hover {
+  width: 315px !important;
+
+}
+
+.admin-left-panel:hover .sidebar-toggle-panel {
+
+  display: inline-block;
+  opacity: 1;
+  height: auto;
+  width: auto;
+  overflow-y:auto;
+}
+
+.admin-left-panel:not(.admin-left-panel-collapsed) .sidebar-toggle-panel {
+  opacity: 1;
+  visibility: visible;
+}
+
+.admin-left-panel:hover .nav-pills > li.active > a:hover {
+  background-color: #337ab7;
+}
+
+.admin-left-panel:hover .admin-ui-nav-menu { width:auto }
+
+.admin-left-panel:hover span.sidebar-toggle-panel {
+  opacity:1;
+  visibility:visible;
+  width:100% !important;
+  height: 20px !important;
+   display: inline-block;
+   overflow:hidden;
+}
+
+.admin-left-panel:hover .nav.nav-pills.nav-stacked  { }
+
+.panel-title span.close { display:none !important }
+
+.admin-left-panel .panel-title { overflow:hidden; white-space:nowrap; cursor:default}
+
+/* Style the right panel */
+.admin-right-panel {
+  width: 100% !important;
+  min-height: 100vh; /* Ensure right panel is at least viewport height */
+  overflow-y: auto;
+  margin-left: 0 !important; /* Prevent shift */
+  padding-left:90px;
+}
+
+
+/* Override max-height on panels */
+body#admin-menus .admin-left-panel .panel {
+  max-height: none !important; /* Override admin_style.css */
+}
+
+/* Override Bootstrap and external styles */
+.admin-left-panel, .admin-left-panel * {
+  box-sizing: border-box;
+}
+
+#admin-notifications.navbar-nav a { padding-left:20px;padding-right:20px }
+
+/* Override table layout for .is-table-row */
+@media only screen and (min-width: 768px) {
+  .is-table-row {
+    display: flex !important; /* Override display: table with flexbox */
+    width: 100%;
+    margin: 0;
+  }
+  .is-table-row > .admin-left-panel {
+    display: flex !important; /* Override display: table-cell */
+    height: auto !important;
+     position: absolute !important; /* Maintain absolute for overlap */
+    top: 51px;
+
+  }
+  .is-table-row > .admin-right-panel {
+    display: block !important; /* Override display: table-cell */
+    width: 100% !important;
+    margin-left: 0 !important;
+
+  }
+
+    .admin-container-legacy .admin-right-panel {
+        padding-left: 340px !important;
+    }
+
+}
+
+.text-primary,.text-primary:hover{color:#337ab7 !important}
+.text-success,.text-success:hover{color:#51a351 !important}
+.text-danger,.text-danger:hover{color:#F86965 !important}
+.text-warning,.text-warning:hover{color:#f89406 !important}
+.text-info,.text-info:hover{color:#8BC0ED !important}

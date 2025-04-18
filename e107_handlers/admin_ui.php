@@ -1687,9 +1687,15 @@ class e_admin_dispatcher
 				$var[$key]['link_class'] = ' e-modal';
 				if(!empty($val['modal-caption']))
 				{
-					$var[$key]['link_data'] = array('data-modal-caption' => $val['modal-caption']);
+					$var[$key]['link_data'] = ['data-modal-caption' => $val['modal-caption']];
 				}
 
+			}
+
+			if(!empty($val['class']))
+			{
+				$var[$key]['link_class'] ?? '';
+				$var[$key]['link_class'] .= ' '.$val['class'];
 			}
 
 		}
@@ -2065,7 +2071,7 @@ class e_admin_controller
 
 				}
 			}
-			$title = $res['caption'];
+			$title = defset($res['caption'],$res['caption']);
 
 
 		}

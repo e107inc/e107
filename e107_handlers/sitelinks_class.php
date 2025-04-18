@@ -1461,7 +1461,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			
 			if(!empty($e107_vars[$act]['image_src']) && strpos($e107_vars[$act]['image_src'], '.glyph') !== false)
 			{
-				$replace['LINK_IMAGE'] = $tp->toGlyph($e107_vars[$act]['image_src'], array('space'=>'&nbsp;'));
+				$replace['LINK_IMAGE'] = $tp->toGlyph($e107_vars[$act]['image_src'], array('fw'=>true, 'space'=>'&nbsp;'));
 			}
 			else
 			{

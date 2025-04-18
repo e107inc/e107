@@ -222,7 +222,7 @@ $ADMIN_TEMPLATE['header'] =  '
 		
 	</div>
 </div>
-<div class="admin-container container-fluid">
+<div class="admin-container container-fluid {ADMIN_CONTAINER_LEGACY}">
 	<div class="row is-table-row {ADMIN_LEFTPANEL_TOGGLE}">
 ';
 
