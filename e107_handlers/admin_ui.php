@@ -1579,6 +1579,7 @@ class e_admin_dispatcher
 		$var = array();
 		$selected = false;
 
+
 		foreach($this->adminMenu as $key => $val)
 		{
 			if(isset($val['perm']) && $val['perm'] !== '' && !getperms($val['perm']))
@@ -1632,6 +1633,12 @@ class e_admin_dispatcher
 			}
 		}
 
+		if(!$selected)
+		{
+			$request = $this->getRequest();
+			$selected = $request->getMode() . '/' . $request->getAction();
+		}
+
 		// Handle links and collapse attributes
 		foreach($var as $key => &$item)
 		{
@@ -1647,22 +1654,16 @@ class e_admin_dispatcher
 				$item['caret'] = true; // Indicate caret for sub-menu parents
 
 				// Check if any sub-item is active to expand the parent
-				$isSubItemActive = false;
 				foreach($item['sub'] as $subKey => &$subItem)
 				{
-					$fullSubPath = $key;
-					if($selected === $key)
+					if($selected === $subKey && !empty($subItem['group']))
 					{
-						$subItem['selected'] = $subKey; // Mark sub-item as active
-						$isSubItemActive = true;
+						$parent = $subItem['group'];
+						$var[$parent]['link_data']['aria-expanded'] = 'true';
 					}
+
 				}
 
-				// Expand the parent if a sub-item is active or if the parent itself is selected
-				if($selected === $key || $isSubItemActive || strpos($selected, $key . '/') === 0)
-				{
-					$item['link_data']['aria-expanded'] = 'true';
-				}
 			}
 			elseif(!isset($item['link']))
 			{
@@ -1676,11 +1677,6 @@ class e_admin_dispatcher
 			return '';
 		}
 
-		$request = $this->getRequest();
-		if(!$selected)
-		{
-			$selected = $request->getMode() . '/' . $request->getAction();
-		}
 
 		$selected = vartrue($this->adminMenuAliases[$selected], $selected);
 
@@ -1699,8 +1695,9 @@ class e_admin_dispatcher
 
 		$var['_extras_'] = array('icon' => $icon, 'return' => true);
 
-//e107::getMessage()->addInfo(print_a($var, true));
+		// e107::getMessage()->addDebug(print_a($var, true));
 		return $toggle . e107::getNav()->admin($this->menuTitle, $selected, $var);
+
 	}
 
 	/**
