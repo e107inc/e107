@@ -1582,7 +1582,7 @@ div.is-table-row .nav-pills > li > a > span > i { opacity: 1; padding-left: 2px;
 div.is-table-row .nav-pills > li.active > a { background:none; }
 div.is-table-row .nav-header.sidebar-toggle-panel { display: none; }
 div.admin-left-panel .nav-pills > li.active > a > span > i {  color: #fff }
-div.admin-left-panel .nav-pills > li > a:hover > span > i { color: white }
+div.admin-left-panel .nav-pills > li > a:hover > span > i { color: white !important }
 ul.col-selection > li a {  border-bottom: 1px solid rgba(255,255,255,0.3); }
 .admin-true-icon { color: #65B765 !important }
 .admin-false-icon { color: #F86965 !important }
@@ -1665,9 +1665,7 @@ body {
 
 /* Style the left panel (sidebar) */
 .admin-left-panel {
-  position: sticky !important; /* Stick to viewport, scroll with page */
-  top: 51px; /* Match body margin-top for navbar */
-  position: absolute; /* Remove from flex flow for overlap */
+   top: 51px; /* Match body margin-top for navbar */
   height: 100vh; /* Full viewport height */
   min-height: 100%; /* Allow growth with content */
   background: #101010 !important; /* Override modern-dark.css */
@@ -1679,6 +1677,8 @@ body {
   padding-left: 0;
   overflow-x: hidden;
   border-right:1px solid rgba(255,255,255,0.3) !important;
+  position: fixed !important; /* Maintain fixed for overlap */
+  padding-bottom: 50px;
 }
 .admin-ui-nav-menu { width:100% !important }
 #admin-ui-nav-menu a { color: rgba(255,255,255,0.5); }
@@ -1687,7 +1687,7 @@ body {
 #admin-ui-nav-menu .caret-icon { font-size:1.2em; margin-top:10px }
 #admin-ui-nav-menu a:hover .caret-icon { color: rgba(255,255,255,1); }
 #admin-ui-nav-menu a:active { background-color: #2E77B6; color:white }
-
+#admin-ui-nav-menu a div.tooltip { display:none !important }
 /* Collapsed state */
 .admin-left-panel.is-table-row {
   width: 60px;
@@ -1703,7 +1703,7 @@ body {
 /* Ensure the menu takes full width and height */
 .admin-ui-nav-menu {
  /* flex: 1;*/
-  min-height: 0; /* Prevent flex items from overflowing */
+ /* min-height: 0;*/ /* Prevent flex items from overflowing */
   width: 100%;
  /* display: flex;
   flex-direction: column;*/
@@ -1750,6 +1750,8 @@ body {
   flex-shrink: 0;
 }
 
+.admin-ui-nav-menu a[aria-expanded="true"] i { color: white !important }
+
 .admin-ui-nav-menu .panel-heading span.sidebar-toggle-panel { margin-left:10px; padding-top:1px}
 
 /* Help panel (non-scrollable, below navigation) */
@@ -1773,9 +1775,10 @@ body {
   transition: opacity 0.3s ease, visibility 0.3s ease;
   display: inline-block;
   min-width: 0;
-  overflow:hidden;
+  overflow:visible;
 }
 
+div.admin-left-panel:hover .sidebar-toggle-panel {overflow:visible !important }
  .admin-left-panel:hover {
   width: 315px !important;
 
@@ -1807,7 +1810,7 @@ body {
   width:100% !important;
   height: 20px !important;
    display: inline-block;
-   overflow:hidden;
+   overflow-x:hidden;
 }
 
 .admin-left-panel:hover .nav.nav-pills.nav-stacked  { }
@@ -1847,8 +1850,8 @@ body#admin-menus .admin-left-panel .panel {
   }
   .is-table-row > .admin-left-panel {
     display: flex !important; /* Override display: table-cell */
-    height: auto !important;
-     position: absolute !important; /* Maintain absolute for overlap */
+
+
     top: 51px;
 
   }
@@ -1865,7 +1868,9 @@ body#admin-menus .admin-left-panel .panel {
 
 }
 
+.admin-left-panel .alert { border-radius: 0 }
 
+.admin-container-legacy .admin-left-panel { width: 315px !important }
 
 .text-primary,.text-primary:hover{color:#337ab7 !important}
 .text-success,.text-success:hover{color:#51a351 !important}

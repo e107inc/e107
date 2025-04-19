@@ -1657,6 +1657,7 @@ class e_admin_dispatcher
 				// Check if any sub-item is active to expand the parent
 				foreach($item['sub'] as $subKey => &$subItem)
 				{
+
 					if($selected === $subKey && !empty($subItem['group']))
 					{
 						$parent = $subItem['group'];
@@ -1760,6 +1761,11 @@ class e_admin_dispatcher
 		if(!isset($item['image_src']))
 		{
 			$item['image_src'] = e_navigation::guessMenuIcon($key);
+		}
+
+		if(!empty($item['group'])) // empty icon for group items.
+		{
+			$item['image_src'] = '.glyph';
 		}
 
 		if(!vartrue($item['link']))
@@ -2084,7 +2090,8 @@ class e_admin_controller
 	public function addTitle($title = true, $meta = true)
 	{
 		
-		
+		$response = $this->getResponse();
+
 		if($title === true)
 		{
 			$_dispatcher = $this->getDispatcher();
@@ -2106,6 +2113,16 @@ class e_admin_controller
 				if(isset($data[$search]))
 				{
 					 $res = $data[$search];
+					 if(!empty($res['group']))
+					 {
+					    $parent = $res['group'];
+						$parentCaption = $data[$parent]['caption'] ?? '';
+						if(!empty($parentCaption))
+						{
+							$response->appendTitle($parentCaption);
+						}
+
+					 }
 				}
 				else
 				{
@@ -2134,7 +2151,8 @@ class e_admin_controller
 		//	echo "<h3>".__METHOD__." - ".$title."</h3>";
 	
 	//	print_a($title);
-		$this->getResponse()->appendTitle($title);
+		$response->appendTitle($title);
+
 		if($meta)
 		{
 			$this->addMetaTitle($title);
