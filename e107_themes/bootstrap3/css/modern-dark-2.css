@@ -1563,6 +1563,7 @@ thead th, thead tr, .table > thead > tr > th { border-bottom: 0; border-left:0; 
         z-index: 1000;
         background: #373737;
         height: 100%;
+        padding-left: 5px;
         }
 
         div.admin-left-panel-collapsed .admin-right-panel {
@@ -1683,7 +1684,7 @@ body {
 #admin-ui-nav-menu a { color: rgba(255,255,255,0.5); }
 #admin-ui-nav-menu a:hover { color: rgba(255,255,255,1); }
 #admin-ui-nav-menu span.sidebar-toggle-panel { display: flex;  justify-content: space-between;}
-#admin-ui-nav-menu .caret-icon { font-size:1.2em; margin-top:8px }
+#admin-ui-nav-menu .caret-icon { font-size:1.2em; margin-top:10px }
 #admin-ui-nav-menu a:hover .caret-icon { color: rgba(255,255,255,1); }
 #admin-ui-nav-menu a:active { background-color: #2E77B6; color:white }
 

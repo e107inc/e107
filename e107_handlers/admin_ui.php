@@ -1651,6 +1651,7 @@ class e_admin_dispatcher
 					'data-target' => '#sub-' . $item['link_id'],
 					'role'        => 'button'
 				];
+				$item['sub_class'] = 'collapse';
 				$item['caret'] = true; // Indicate caret for sub-menu parents
 
 				// Check if any sub-item is active to expand the parent
@@ -1660,14 +1661,16 @@ class e_admin_dispatcher
 					{
 						$parent = $subItem['group'];
 						$var[$parent]['link_data']['aria-expanded'] = 'true';
+						$item['sub_class'] = 'collapse in';
 					}
+
 
 				}
 
 			}
 			elseif(!isset($item['link']))
 			{
-				$tmp = explode('/', trim($key, '/'), 3);
+				$tmp = explode('/', trim($key, '/'), 2);
 				$item['link'] = e_REQUEST_SELF . '?mode=' . $tmp[0] . '&action=' . ($tmp[1] ?? 'main');
 			}
 		}

@@ -309,7 +309,7 @@ $ADMIN_TEMPLATE['menu']['button_active'] = '
 ';
 
 $ADMIN_TEMPLATE['menu']['start_sub'] = '
-	<ul class="plugin-navigation-sub nav nav-pills nav-stacked nav-second-level collapse" id="sub-{LINK_ID}">
+	<ul class="plugin-navigation-sub nav nav-pills nav-stacked nav-second-level {SUB_CLASS}" id="sub-{LINK_ID}">
 ';
 
 $ADMIN_TEMPLATE['menu']['button_sub'] = '
