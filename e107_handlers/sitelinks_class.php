@@ -1432,7 +1432,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 				$temp = varset($tmpl[$tmplateKey]);
 			}
 	
-
+			$replace['LINK_ID'] = $e107_vars[$act]['link_id'] ?? $rid;
 			$replace['LINK_TEXT'] = str_replace(" ", "&nbsp;", varset($e107_vars[$act]['text']));
 			$replace['LINK_DESCRIPTION'] = varset($e107_vars[$act]['description']);
 
@@ -1476,7 +1476,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 				$dataTmp = array();
 				foreach($e107_vars[$act]['link_data'] as $k=>$v)
 				{
-					$dataTmp[] = $k.'="'.$v.'"';
+					$dataTmp[] = $k.'="'.$v.'"';  // eg. data-toggle="modal" or data-target="#myModal"
 				}
 
 				$replace['LINK_DATA'] = implode(" ", $dataTmp); // $e107_vars[$act]['link_data']
@@ -1499,8 +1499,10 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			if(!empty($e107_vars[$act]['sub']))
 			{
 				$replace['SUB_ID'] = $id ? " id='eplug-nav-{$rid}-sub'" : '';
-				$replace['LINK_CLASS'] = ' '.varset($e107_vars[$act]['link_class'], 'e-expandit');
+				$replace['LINK_CLASS'] = ' '.varset($e107_vars[$act]['link_class'], ''); // e-expandit removed.
 				$replace['SUB_CLASS'] = ' '.varset($e107_vars[$act]['sub_class'], 'e-hideme e-expandme');
+
+
 
 				$replace['SUB_MENU']  = $tp->parseTemplate($START_SUB, false, $replace);
 				$replace['SUB_MENU'] .= $this->admin(false, $active_page, $e107_vars[$act]['sub'], $tmpl, true, (isset($e107_vars[$act]['sort']) ? $e107_vars[$act]['sort'] : $sortlist));

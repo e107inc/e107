@@ -1574,10 +1574,9 @@ thead th, thead tr, .table > thead > tr > th { border-bottom: 0; border-left:0; 
 div.admin-left-panel .nav-pills > li > a > span > i { font-size:16px; opacity: 0; width:0;  }
 div.admin-left-panel .nav-pills > li > a:not(.text-primary):not(.text-success):not(.text-info):not(.text-warning):not(.text-danger):not(.text-muted) > span > i {
   color: rgba(255,255,255,0.5);
-  font-size: 16px;
-  opacity: 0;
-  width: 0;
 }
+div.admin-left-panel .nav-pills > li.active > a > span > i { color:white !important }
+
 div.admin-left-panel-collapsed .nav-pills > li > a > span > i { opacity: 1; padding-left: 2px; }
 div.admin-left-panel-collapsed .nav-pills > li.active > a { background:none; }
 div.admin-left-panel-collapsed .nav-header.sidebar-toggle-panel { display: none; }
