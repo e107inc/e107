@@ -1566,210 +1566,229 @@ class e_admin_dispatcher
 		return 'e_admin_controller';
 	}
 
+
 	/**
 	 * Generic Admin Menu Generator
+	 *
 	 * @return string
 	 */
-public function renderMenu()
-{
-		
-    $tp = e107::getParser();
-    $var = array();
-    $selected = false;
+	public function renderMenu()
+	{
 
-    foreach ($this->adminMenu as $key => $val)
-    {
+		$tp = e107::getParser();
+		$var = array();
+		$selected = false;
 
-        if (isset($val['perm']) && $val['perm'] !== '' && !getperms($val['perm']))
-        {
-            continue;
-        }
+		foreach($this->adminMenu as $key => $val)
+		{
+			if(isset($val['perm']) && $val['perm'] !== '' && !getperms($val['perm']))
+			{
+				continue;
+			}
 
-        $tmp = explode('/', trim($key, '/'), 3);
-        $isSubItem = count($tmp) === 3;
+			$tmp = explode('/', trim($key, '/'), 2);
+			$isSubItem = !empty($val['group']);
 
-        if ($isSubItem)
-        {
-            $parentKey = $tmp[0].'/'.$tmp[1];
-            if (!$this->hasModeAccess($tmp[0]) || !$this->hasRouteAccess($parentKey))
-            {
-                continue;
-            }
-        }
-        else
-        {
-            if (!$this->hasModeAccess($tmp[0]) || !$this->hasRouteAccess($tmp[0].'/'.varset($tmp[1])))
-            {
-                continue;
-            }
-        }
+			if($isSubItem)
+			{
+				$parentKey = $val['group'];
+				if(!$this->hasModeAccess($tmp[0]) || !$this->hasRouteAccess($parentKey))
+				{
+					continue;
+				}
+			}
+			else
+			{
+				if(!$this->hasModeAccess($tmp[0]) || !$this->hasRouteAccess($key))
+				{
+					continue;
+				}
+			}
 
-        if (isset($val['selected']) && $val['selected'])
-        {
-            $selected = $val['selected'] === true ? $key : $val['selected'];
-        }
+			if(isset($val['selected']) && $val['selected'])
+			{
+				$selected = $val['selected'] === true ? $key : $val['selected'];
+			}
 
-        $processedItem = $this->processMenuItem($val, $key, $tmp);
-        $processedItem['link_id'] = str_replace('/', '-', $key);
+			$processedItem = $this->processMenuItem($val, $key, $tmp);
+			$processedItem['link_id'] = str_replace('/', '-', $key);
 
-        if ($isSubItem)
-        {
-            $parentKey = $tmp[0].'/'.$tmp[1];
-            if (!isset($var[$parentKey]))
-            {
-                $var[$parentKey] = array(
-                    'text' => 'Unknown',
-                    'image_src' => e_navigation::guessMenuIcon($parentKey),
-                    'link_id' => str_replace('/', '-', $parentKey) // Add link_id for parent
-                );
-            }
-            $var[$parentKey]['sub'][$tmp[2]] = $processedItem;
-        }
-        else
-        {
-            $var[$key] = $processedItem;
-        }
-    }
+			if($isSubItem)
+			{
+				if(!isset($var[$parentKey]))
+				{
+					$var[$parentKey] = array(
+						'text'      => 'Unknown',
+						'image_src' => e_navigation::guessMenuIcon($parentKey),
+						'link_id'   => str_replace('/', '-', $parentKey)
+					);
+				}
+				$subKey = str_replace($parentKey . '/', '', $key);
+				$var[$parentKey]['sub'][$subKey] = $processedItem;
+			}
+			else
+			{
+				$var[$key] = $processedItem;
+			}
+		}
 
-    // Handle links and collapse attributes
-    foreach ($var as $key => &$item)
-    {
-        if (!empty($item['sub']))
-        {
-            $item['link'] = '#';
-            $item['link_data'] = [
-                'data-toggle' => 'collapse',
-                'data-target' => '#sub-' . $item['link_id'],
-                'role' => 'button'
-            ];
-            if ($selected === $key || strpos($selected, $key . '/') === 0)
-            {
-                $item['link_data']['aria-expanded'] = 'true';
-            }
-        }
-        elseif (!isset($item['link']))
-        {
-            $tmp = explode('/', trim($key, '/'), 3);
-            $item['link'] = e_REQUEST_SELF.'?mode='.$tmp[0].'&action='.($tmp[1] ?? 'main');
-        }
-    }
+		// Handle links and collapse attributes
+		foreach($var as $key => &$item)
+		{
+			if(!empty($item['sub']))
+			{
+				$item['link'] = '#';
+				$item['link_caret'] = true;
+				$item['link_data'] = [
+					'data-toggle' => 'collapse',
+					'data-target' => '#sub-' . $item['link_id'],
+					'role'        => 'button'
+				];
+				$item['caret'] = true; // Indicate caret for sub-menu parents
 
-    if (empty($var))
-    {
-        return '';
-    }
+				// Check if any sub-item is active to expand the parent
+				$isSubItemActive = false;
+				foreach($item['sub'] as $subKey => &$subItem)
+				{
+					$fullSubPath = $key;
+					if($selected === $key)
+					{
+						$subItem['selected'] = $subKey; // Mark sub-item as active
+						$isSubItemActive = true;
+					}
+				}
 
-    // Debug $var
-    e107::getMessage()->addInfo(print_a($var, true));
+				// Expand the parent if a sub-item is active or if the parent itself is selected
+				if($selected === $key || $isSubItemActive || strpos($selected, $key . '/') === 0)
+				{
+					$item['link_data']['aria-expanded'] = 'true';
+				}
+			}
+			elseif(!isset($item['link']))
+			{
+				$tmp = explode('/', trim($key, '/'), 3);
+				$item['link'] = e_REQUEST_SELF . '?mode=' . $tmp[0] . '&action=' . ($tmp[1] ?? 'main');
+			}
+		}
 
-    $request = $this->getRequest();
-    if (!$selected)
-    {
-        $selected = $request->getMode() . '/' . $request->getAction();
-        if (isset($_GET['sub']) && !empty($_GET['sub']))
-        {
-            $selected .= '/' . $_GET['sub'];
-        }
-    }
-    $selected = vartrue($this->adminMenuAliases[$selected], $selected);
+		if(empty($var))
+		{
+			return '';
+		}
 
-    $icon = '';
+		$request = $this->getRequest();
+		if(!$selected)
+		{
+			$selected = $request->getMode() . '/' . $request->getAction();
+		}
 
-    if (!empty($this->adminMenuIcon))
-    {
-        $icon = e107::getParser()->toIcon($this->adminMenuIcon);
-    }
-    elseif (deftrue('e_CURRENT_PLUGIN'))
-    {
-        $icon = e107::getPlug()->load(e_CURRENT_PLUGIN)->getIcon(24);
-    }
+		$selected = vartrue($this->adminMenuAliases[$selected], $selected);
 
-    $toggle = "<span class='e-toggle-sidebar'><!-- --></span>";
+		$icon = '';
 
-    $var['_extras_'] = array('icon' => $icon, 'return' => true);
+		if(!empty($this->adminMenuIcon))
+		{
+			$icon = e107::getParser()->toIcon($this->adminMenuIcon);
+		}
+		elseif(deftrue('e_CURRENT_PLUGIN'))
+		{
+			$icon = e107::getPlug()->load(e_CURRENT_PLUGIN)->getIcon(24);
+		}
 
-    return $toggle . e107::getNav()->admin($this->menuTitle, $selected, $var);
-}
+		$toggle = "<span class='e-toggle-sidebar'><!-- --></span>";
 
-private function processMenuItem($val, $key, $tmp)
-{
-    $tp = e107::getParser();
-    $item = array();
+		$var['_extras_'] = array('icon' => $icon, 'return' => true);
 
-    foreach ($val as $k => $v)
-    {
-        switch ($k)
-        {
-            case 'caption':
-                $k2 = 'text';
-                $v = defset($v, $v);
-                break;
+//e107::getMessage()->addInfo(print_a($var, true));
+		return $toggle . e107::getNav()->admin($this->menuTitle, $selected, $var);
+	}
 
-            case 'url':
-                $k2 = 'link';
-                $qry = (isset($val['query'])) ? $val['query'] : '?mode='.$tmp[0].'&mp;action='.($tmp[1] ?? 'main').(isset($tmp[2]) ? '&sub='.$tmp[2] : '');
-                $v = $tp->replaceConstants($v, 'abs').$qry;
-                break;
+	/**
+	 * @param $val
+	 * @param $key
+	 * @param $tmp
+	 * @return array
+	 */
+	private function processMenuItem($val, $key, $tmp)
+	{
 
-            case 'uri':
-                $k2 = 'link';
-                $v = $tp->replaceConstants($v, 'abs');
-                if (!empty($v) && ($v === e_REQUEST_URI))
-                {
-                    $GLOBALS['selected'] = $key;
-                }
-                break;
+		$tp = e107::getParser();
+		$item = array();
 
-            case 'badge':
-                $k2 = 'badge';
-                $v = (array) $v;
-                break;
+		foreach($val as $k => $v)
+		{
+			switch($k)
+			{
+				case 'caption':
+					$k2 = 'text';
+					$v = defset($v, $v);
+					break;
 
-            case 'icon':
-                $k2 = 'image_src';
-                $v = (string) $v . '.glyph'; // Ensure .glyph suffix
-                break;
+				case 'url':
+					$k2 = 'link';
+					$qry = (isset($val['query'])) ? $val['query'] : '?mode=' . $tmp[0] . '&amp;action=' . ($tmp[1] ?? 'main') . (isset($tmp[2]) ? '&sub=' . $tmp[2] : '');
+					$v = $tp->replaceConstants($v, 'abs') . $qry;
+					break;
 
-            default:
-                $k2 = $k;
-                break;
-        }
+				case 'uri':
+					$k2 = 'link';
+					$v = $tp->replaceConstants($v, 'abs');
+					if(!empty($v) && ($v === e_REQUEST_URI))
+					{
+						$GLOBALS['selected'] = $key;
+					}
+					break;
 
-        $item[$k2] = $v;
-    }
+				case 'badge':
+					$k2 = 'badge';
+					$v = (array) $v;
+					break;
 
-    if (!isset($item['image_src']))
-    {
-        $item['image_src'] = e_navigation::guessMenuIcon($key); // Includes .glyph
-    }
+				case 'icon':
+					$k2 = 'image_src';
+					$v = (string) $v . '.glyph';  // required, even if empty.
+					break;
 
-    if (!vartrue($item['link']))
-    {
-        $item['link'] = e_REQUEST_SELF.'?mode='.$tmp[0].'&amp;action='.($tmp[1] ?? 'main').(isset($tmp[2]) ? '&sub='.$tmp[2] : '');
-    }
+				default:
+					$k2 = $k;
+					break;
+			}
 
-    if (varset($val['tab']))
-    {
-        $item['link'] .= '&amp;tab=' .$val['tab'];
-    }
+			$item[$k2] = $v;
+		}
 
-    if (!empty($val['modal']))
-    {
-        $item['link_class'] = ' e-modal';
-        if (!empty($val['modal-caption']))
-        {
-            $item['link_data'] = array_merge($item['link_data'] ?? [], ['data-modal-caption' => $val['modal-caption']]);
-        }
-    }
+		if(!isset($item['image_src']))
+		{
+			$item['image_src'] = e_navigation::guessMenuIcon($key);
+		}
 
-    if (!empty($val['class']))
-    {
-				$var[$key]['link_class'] ?? '';
-				$var[$key]['link_class'] .= ' '.$val['class'];
-    }
+		if(!vartrue($item['link']))
+		{
+			$item['link'] = e_REQUEST_SELF . '?mode=' . $tmp[0] . '&amp;action=' . ($tmp[1] ?? 'main') . (isset($tmp[2]) ? '&sub=' . $tmp[2] : '');
+		}
 
-    return $item;
-}
+		if(varset($val['tab']))
+		{
+			$item['link'] .= '&amp;tab=' . $val['tab'];
+		}
+
+		if(!empty($val['modal']))
+		{
+			$item['link_class'] = ' e-modal';
+			if(!empty($val['modal-caption']))
+			{
+				$item['link_data'] = array_merge($item['link_data'] ?? [], ['data-modal-caption' => $val['modal-caption']]);
+			}
+		}
+
+		if(!empty($val['class']))
+		{
+			$item['link_class'] = ($item['link_class'] ?? '') . ' ' . $val['class'];
+		}
+
+		return $item;
+	}
+
 
 	/**
 	 * Render Help Text in <ul> format. XXX TODO
@@ -1778,7 +1797,6 @@ private function processMenuItem($val, $key, $tmp)
 	{
 
 
-		
 	}
 
 	

@@ -296,14 +296,14 @@ $ADMIN_TEMPLATE['menu']['start'] = '
 
 $ADMIN_TEMPLATE['menu']['button'] = '
 	<li>
-		<a class="link{LINK_CLASS}" {LINK_DATA} href="{LINK_URL}" {ID}{ONCLICK}><span class="e-tip" data-placement="right" title="{LINK_TEXT}">{LINK_IMAGE}</span><span class="sidebar-toggle-panel"> {LINK_TEXT}{LINK_BADGE}</span></a>
+		<a class="link{LINK_CLASS}" {LINK_DATA} href="{LINK_URL}" {ID}{ONCLICK}><span class="e-tip" data-placement="right" title="{LINK_TEXT}">{LINK_IMAGE}</span><span class="sidebar-toggle-panel"> {LINK_TEXT}{LINK_BADGE}{LINK_CARET}</span></a>
 		{SUB_MENU}
 	</li>
 ';
 
 $ADMIN_TEMPLATE['menu']['button_active'] = '
 	<li class="active">
-		<a class="link-active{LINK_CLASS}" {LINK_DATA} href="{LINK_URL}" {ID}{ONCLICK}><span class="e-tip" data-placement="right" title="{LINK_TEXT}">{LINK_IMAGE}</span><span class="sidebar-toggle-panel"> {LINK_TEXT}{LINK_BADGE}</span></a>
+		<a class="link-active{LINK_CLASS}" {LINK_DATA} href="{LINK_URL}" {ID}{ONCLICK}><span class="e-tip" data-placement="right" title="{LINK_TEXT}">{LINK_IMAGE}</span><span class="sidebar-toggle-panel"> {LINK_TEXT}{LINK_BADGE}{LINK_CARET}</span></a>
 		{SUB_MENU}
 	</li>
 ';

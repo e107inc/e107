@@ -49,9 +49,8 @@ class plugin_blank_admin extends e_admin_dispatcher
 		'main/create' 		=> array('caption'=> 'LAN_CREATE', 'perm' => '0'),
 		'main/prefs' 		=> array('caption'=> 'Settings', 'perm' => '0', 'icon'=>'fa-cog'),
 		'main/custom'		=> array('caption'=> 'Custom Pages', 'perm' => '0', 'icon'=>'fa-asterisk'),
-		'main/custom/sub1' => array('caption' => 'Custom Page 1', 'perm' => '0', 'icon' => ''),
-        'main/custom/sub2' => array('caption' => 'Custom Page 2', 'perm' => '0', 'icon' => ''),
-
+		'main/custom1'        => array('group'=>'main/custom', 'caption' => 'Custom Page 1', 'perm' => '0', 'icon' => ''),
+        'main/custom2'        => array('group'=>'main/custom', 'caption' => 'Custom Page 2', 'perm' => '0', 'icon' => ''),
 	);
 
 	/**
@@ -299,12 +298,15 @@ class plugin_blank_admin_ui extends e_admin_ui
 		}
 		
 		
-		public function customPage()
+		public function custom1Page()
 		{
-			$ns = e107::getRender();
-			$text = "Hello World!";
-			$ns->tablerender("Hello",$text);	
-			
+			return "Hello World Customer Page 1!";
+
+		}
+
+		public function custom2Page()
+		{
+			return "Hello World Customer Page 2!";
 		}
 	
 		// left-panel help menu area. (replaces e_help.php used in old plugins)	

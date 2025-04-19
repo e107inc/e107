@@ -1399,19 +1399,24 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			$replace = array();
 
 			$rid = str_replace(array(' ', '_'), '-', $act).($id ? "-{$id}" : '');
-			
+
 			//XXX  && !is_numeric($act) ???
 			if (($active_page == (string) $act)
 			|| (str_replace("?", "", e_PAGE.e_QUERY) == str_replace("?", "", $act))
             || e_REQUEST_HTTP === varset($e107_vars[$act]['link'])
 			)
 			{
+
+
 				$temp = isset($tmpl['button_active' . $kpost]) ? $tmpl['button_active' . $kpost] : '';
+
 			}
 			else
 			{
 				$temp = isset($tmpl['button'.$kpost]) ? $tmpl['button'.$kpost] : '';
 			}
+
+
 
    //     e107::getDebug()->log($e107_vars[$act]['link']);
 
@@ -1431,8 +1436,9 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 				$tmplateKey = 'button_'.$e107_vars[$act]['template'].$kpost;
 				$temp = varset($tmpl[$tmplateKey]);
 			}
-	
+
 			$replace['LINK_ID'] = $e107_vars[$act]['link_id'] ?? $rid;
+			$replace['LINK_CARET'] = !empty($e107_vars[$act]['link_caret']) ? '<i class="caret-icon fa fa-chevron-down fa-2x"></i>' : '';
 			$replace['LINK_TEXT'] = str_replace(" ", "&nbsp;", varset($e107_vars[$act]['text']));
 			$replace['LINK_DESCRIPTION'] = varset($e107_vars[$act]['description']);
 
@@ -1493,7 +1499,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			}
 			else 
 			{
-				$START_SUB = isset($tmpl['start_sub']) ? $tmpl['start_sub'] : '';
+				$START_SUB = $tmpl['start_sub'] ?? '';
 			}		
 	
 			if(!empty($e107_vars[$act]['sub']))
@@ -1506,11 +1512,11 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 
 				$replace['SUB_MENU']  = $tp->parseTemplate($START_SUB, false, $replace);
 				$replace['SUB_MENU'] .= $this->admin(false, $active_page, $e107_vars[$act]['sub'], $tmpl, true, (isset($e107_vars[$act]['sort']) ? $e107_vars[$act]['sort'] : $sortlist));
-				$replace['SUB_MENU'] .= isset($tmpl['end_sub']) ? $tmpl['end_sub'] : '';
+				$replace['SUB_MENU'] .= $tmpl['end_sub'] ?? '';
 			}
 
 
-			$text .= $tp->simpleParse($temp, $replace); 
+			$text .= $tp->simpleParse($temp, $replace);
 
 		}
 	

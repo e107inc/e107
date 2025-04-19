@@ -1571,7 +1571,7 @@ thead th, thead tr, .table > thead > tr > th { border-bottom: 0; border-left:0; 
         }
 
 
-div.admin-left-panel .nav-pills > li > a > span > i { font-size:16px; opacity: 0; width:0;  }
+div.admin-left-panel .nav-pills > li > a > span > i:not(.caret-icon) { font-size:16px; opacity: 0; width:0;  }
 div.admin-left-panel .nav-pills > li > a:not(.text-primary):not(.text-success):not(.text-info):not(.text-warning):not(.text-danger):not(.text-muted) > span > i {
   color: rgba(255,255,255,0.5);
 }
@@ -1682,6 +1682,11 @@ body {
 .admin-ui-nav-menu { width:100% !important }
 #admin-ui-nav-menu a { color: rgba(255,255,255,0.5); }
 #admin-ui-nav-menu a:hover { color: rgba(255,255,255,1); }
+#admin-ui-nav-menu span.sidebar-toggle-panel { display: flex;  justify-content: space-between;}
+#admin-ui-nav-menu .caret-icon { font-size:1.2em; margin-top:8px }
+#admin-ui-nav-menu a:hover .caret-icon { color: rgba(255,255,255,1); }
+#admin-ui-nav-menu a:active { background-color: #2E77B6; color:white }
+
 /* Collapsed state */
 .admin-left-panel.admin-left-panel-collapsed {
   width: 60px;
@@ -1858,6 +1863,8 @@ body#admin-menus .admin-left-panel .panel {
     }
 
 }
+
+
 
 .text-primary,.text-primary:hover{color:#337ab7 !important}
 .text-success,.text-success:hover{color:#51a351 !important}
