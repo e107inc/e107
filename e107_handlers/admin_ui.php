@@ -1197,6 +1197,11 @@ class e_admin_dispatcher
 	 */
 	public function hasRouteAccess($route)
 	{
+		if(empty($route))
+		{
+		    return true;
+		}
+
 		if(isset($this->access[$route]) && !e107::getUser()->checkClass($this->access[$route], false))
 		{
 			e107::getMessage()->addDebug('Userclass Permissions Failed: ' .$this->access[$route]);
@@ -1208,7 +1213,6 @@ class e_admin_dispatcher
 			e107::getMessage()->addDebug('Admin Permissions Failed.' .$this->perm[$route]);
 			return false;
 		}
-
 
 		return true;
 	}
@@ -1614,44 +1618,26 @@ class e_admin_dispatcher
 	 *
 	 * @return string|array
 	 */
-	public function renderMenu($debug=false)
+	public function renderMenu($debug = false)
 	{
 
 		$tp = e107::getParser();
-		$var = array();
+		$adminMenu = $this->getMenuData();
+		$var = [];
 		$selected = false;
 
-		foreach($this->getMenuData() as $key => $val)
+		// First loop: Build $var without permissions checks
+		foreach($adminMenu as $key => $val)
 		{
-			if(isset($val['perm']) && $val['perm'] !== '' && !$this->hasPerms($val['perm']))
-			{
-				continue;
-			}
+			$parentKey = '';
 
-			$tmp = explode('/', trim($key, '/'), 2);
+			$tmp = explode('/', trim($key, '/'), 2); // mode/action
+
 			$isSubItem = !empty($val['group']);
 
 			if($isSubItem)
 			{
-				$parentKey = $val['group'];
-				if(!$this->hasModeAccess($tmp[0]) || !$this->hasRouteAccess($parentKey))
-				{
-					continue;
-				}
-
-				// Check if the parent group has valid permissions
-		        $parentData = $this->getMenuData()[$parentKey] ?? null;
-		        if ($parentData && isset($parentData['perm']) && $parentData['perm'] !== '' && !$this->hasPerms($parentData['perm']))
-		        {
-		            continue;
-		        }
-			}
-			else
-			{
-				if(!$this->hasModeAccess($tmp[0]) || !$this->hasRouteAccess($key))
-				{
-					continue;
-				}
+				$parentKey = $val['group'] ?? '';
 			}
 
 			if(isset($val['selected']) && $val['selected'])
@@ -1666,11 +1652,11 @@ class e_admin_dispatcher
 			{
 				if(!isset($var[$parentKey]))
 				{
-					$var[$parentKey] = array(
+					$var[$parentKey] = [
 						'text'      => 'Unknown',
 						'image_src' => e_navigation::guessMenuIcon($parentKey),
 						'link_id'   => str_replace('/', '-', $parentKey)
-					);
+					];
 				}
 				$subKey = str_replace($parentKey . '/', '', $key);
 				$var[$parentKey]['sub'][$subKey] = $processedItem;
@@ -1687,32 +1673,11 @@ class e_admin_dispatcher
 			$selected = $request->getMode() . '/' . $request->getAction();
 		}
 
-		// Handle links and collapse attributes
+		// Second loop: Handle links and collapse attributes without permissions checks
 		foreach($var as $key => &$item)
 		{
 			if(!empty($item['sub']))
 			{
-
-				$hasValidSubItems = false;
-				foreach($item['sub'] as $subKey => $subItem)
-				{
-					if(isset($subItem['perm']) && $this->hasPerms($subItem['perm']))
-					{
-						$hasValidSubItems = true;
-						break;
-					}
-				}
-
-				// If no valid sub-items, remove the group
-				if(!$hasValidSubItems)
-				{
-					unset($var[$key]);
-					continue;
-				}
-
-
-
-
 				$item['link'] = '#';
 				$item['link_caret'] = true;
 				$item['link_data'] = [
@@ -1721,9 +1686,8 @@ class e_admin_dispatcher
 					'role'        => 'button'
 				];
 				$item['sub_class'] = 'collapse';
-				$item['caret'] = true; // Indicate caret for sub-menu parents
+				$item['caret'] = true;
 
-				// Check if any sub-item is active to expand the parent
 				foreach($item['sub'] as $subKey => &$subItem)
 				{
 					if($selected === $subKey && !empty($subItem['group']))
@@ -1732,10 +1696,7 @@ class e_admin_dispatcher
 						$var[$parent]['link_data']['aria-expanded'] = 'true';
 						$item['sub_class'] = 'collapse in';
 					}
-
-
 				}
-
 			}
 			elseif(!isset($item['link']))
 			{
@@ -1743,6 +1704,9 @@ class e_admin_dispatcher
 				$item['link'] = e_REQUEST_SELF . '?mode=' . $tmp[0] . '&action=' . ($tmp[1] ?? 'main');
 			}
 		}
+
+		// Apply permissions restrictions
+		$var = $this->restrictMenuAccess($var, $adminMenu);
 
 		if(empty($var))
 		{
@@ -1753,7 +1717,6 @@ class e_admin_dispatcher
 		$selected = vartrue($adminMenuAliases[$selected], $selected);
 
 		$icon = '';
-
 		$adminMenuIcon = $this->getMenuIcon();
 		if(!empty($adminMenuIcon))
 		{
@@ -1766,7 +1729,7 @@ class e_admin_dispatcher
 
 		$toggle = "<span class='e-toggle-sidebar'><!-- --></span>";
 
-		$var['_extras_'] = array('icon' => $icon, 'return' => true);
+		$var['_extras_'] = ['icon' => $icon, 'return' => true];
 
 		if($debug)
 		{
@@ -1774,7 +1737,55 @@ class e_admin_dispatcher
 		}
 
 		return $toggle . e107::getNav()->admin($this->getMenuTitle(), $selected, $var);
+	}
 
+	/**
+	 * Restrict menu items based on permissions and access.
+	 *
+	 * @param array $var       The menu structure to filter.
+	 * @param array $adminMenu The original menu data for reference.
+	 * @return array The filtered menu structure.
+	 */
+	private function restrictMenuAccess($var, $adminMenu)
+	{
+
+		foreach($var as $key => &$item)
+		{
+			// Check top-level item permissions
+			$val = $adminMenu[$key] ?? [];
+			if((isset($val['perm']) && $val['perm'] !== '' && !$this->hasPerms($val['perm'])) || !$this->hasModeAccess(explode('/', trim($key, '/'), 2)[0]) || !$this->hasRouteAccess($key))
+			{
+				unset($var[$key]);
+				continue;
+			}
+
+			if(!empty($item['sub']))
+			{
+				$hasValidSubItems = false;
+				$parentKey = $key;
+				foreach($item['sub'] as $subKey => &$subItem)
+				{
+					$subVal = $adminMenu[$subKey] ?? [];
+					if(isset($subVal['perm']) && $this->hasPerms($subVal['perm']) && $this->hasRouteAccess($subKey) && $this->hasRouteAccess($parentKey))
+					{
+						$hasValidSubItems = true;
+					}
+					else
+					{
+						unset($item['sub'][$subKey]);
+					}
+				}
+
+				// Remove parent if no valid sub-items or sub-items array is empty
+				if(!$hasValidSubItems || empty($item['sub']))
+				{
+					unset($var[$key]);
+					continue;
+				}
+			}
+		}
+
+		return $var;
 	}
 
 	/**
