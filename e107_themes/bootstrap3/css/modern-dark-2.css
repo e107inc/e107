@@ -1425,7 +1425,8 @@ td.visible-print,th.visible-print{display:table-cell!important}
 }
 .popover{color:#fff}
 .popover-title{font-weight:700}
-.navbar{background-image:linear-gradient(#303030,#212121 60%,#171717);filter:none;border:2px solid #000;text-shadow:1px 1px 1px rgba(0,0,0,.3)}
+.navbar{background-image:linear-gradient(#303030,#212121 60%,#171717);filter:none;border:1px solid #000;border-top:0;text-shadow:1px 1px 1px rgba(0,0,0,.3)}
+.navbar-fixed-top { border-bottom:2px solid #000  }
 .navbar-inverse{background-image:linear-gradient(#303030,#212121 60%,#171717);filter:none}
 .navbar-inverse .badge{background-color:#080808}
 .navbar-nav>li>a{ border-right:1px solid rgba(0,0,0,.2);border-left:1px solid rgba(255,255,255,.1)}
