@@ -1299,6 +1299,26 @@ class e_admin_dispatcher
 	}
 
 	/**
+	 * Retrieves the menu icon associated with the admin panel.
+	 *
+	 * @return string The menu icon.
+	 */
+	public function getMenuIcon()
+	{
+		return $this->adminMenuIcon;
+	}
+
+	/**
+	 * Retrieves the menu title.
+	 *
+	 * @return string The title of the menu.
+	 */
+	public function getMenuTitle()
+	{
+		return $this->menuTitle;
+	}
+
+	/**
 	 * Get request object
 	 * @return e_admin_request
 	 */
@@ -1579,8 +1599,7 @@ class e_admin_dispatcher
 		$var = array();
 		$selected = false;
 
-
-		foreach($this->adminMenu as $key => $val)
+		foreach($this->getMenuData() as $key => $val)
 		{
 			if(isset($val['perm']) && $val['perm'] !== '' && !getperms($val['perm']))
 			{
@@ -1681,14 +1700,15 @@ class e_admin_dispatcher
 			return '';
 		}
 
-
-		$selected = vartrue($this->adminMenuAliases[$selected], $selected);
+		$adminMenuAliases = $this->getMenuAliases();
+		$selected = vartrue($adminMenuAliases[$selected], $selected);
 
 		$icon = '';
 
-		if(!empty($this->adminMenuIcon))
+		$adminMenuIcon = $this->getMenuIcon();
+		if(!empty($adminMenuIcon))
 		{
-			$icon = e107::getParser()->toIcon($this->adminMenuIcon);
+			$icon = e107::getParser()->toIcon($adminMenuIcon);
 		}
 		elseif(deftrue('e_CURRENT_PLUGIN'))
 		{
@@ -1700,7 +1720,8 @@ class e_admin_dispatcher
 		$var['_extras_'] = array('icon' => $icon, 'return' => true);
 
 		// e107::getMessage()->addDebug(print_a($var, true));
-		return $toggle . e107::getNav()->admin($this->menuTitle, $selected, $var);
+
+		return $toggle . e107::getNav()->admin($this->getMenuTitle(), $selected, $var);
 
 	}
 
@@ -4983,7 +5004,7 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @param mixed  $qryField      Specific query field(s) to filter.
 	 * @param mixed  $isfilter      Determines if a specific filter is applied.
 	 * @param mixed  $handleAction  Custom action handler for the search process.
-	 * @return string|false
+	 * @return string|false|array
 	 */
 	public function _modifyListQrySearch(string|null $listQry, string $searchTerm, string $filterOptions, string $tablePath,  string $tableFrom, string|null $primaryName, $raw, $orderField, $qryAsc, $forceFrom, int $qryFrom, $forceTo, int $perPage, $qryField,  $isfilter, $handleAction)
 	{
@@ -6191,7 +6212,7 @@ class e_admin_ui extends e_admin_controller_ui
         
         if($scount > 0)
         {
-			e107::getMessage()->addSuccess(LAN_CREATED. ' (' .$scount. ') ' .LAN_PLUGIN_FEATUREBOX_NAME);
+			e107::getMessage()->addSuccess(LAN_CREATED. ' (' .$scount. ') ' .defset('LAN_PLUGIN_FEATUREBOX_NAME'));
 			e107::getMessage()->addSuccess("<a class='btn btn-small btn-primary' href='".e_PLUGIN_ABS."featurebox/admin_config.php?searchquery=&filter_options=fb_category__{$category}' ".LAN_CONFIGURE. ' ' .LAN_PLUGIN_FEATUREBOX_NAME. '</a>');
 			return $scount;        
         }
@@ -6447,7 +6468,7 @@ class e_admin_ui extends e_admin_controller_ui
 
 		if(empty($string))
 		{
-			return null;
+			return '';
 		}
 
 		return $selected. " LIKE '%".e107::getParser()->toDB($string)."%' "; // array($selected, $this->getQuery('searchquery'));
@@ -6840,7 +6861,7 @@ class e_admin_ui extends e_admin_controller_ui
 
 		if(!empty($this->sortParent) && !empty($this->sortField) )
 		{
-			return null;
+			return;
 		}
 
 
