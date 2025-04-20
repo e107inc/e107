@@ -45,11 +45,11 @@ class plugin_blank_admin extends e_admin_dispatcher
 	 * @var array
 	 */
 	protected $adminMenu = array(
-		'main/list'			=> array('caption'=> 'Manage', 'perm' => '0'),
-		'main/create' 		=> array('caption'=> 'LAN_CREATE', 'perm' => '0'),
+		'main/list'			=> array('caption'=> 'Manage', 'perm' => 'P'),
+		'main/create' 		=> array('caption'=> 'LAN_CREATE', 'perm' => 'P'),
 		'main/prefs' 		=> array('caption'=> 'Settings', 'perm' => '0', 'icon'=>'fa-cog'),
-		'main/custom'		=> array('caption'=> 'Custom Pages', 'perm' => '0', 'icon'=>'fa-asterisk'),
-		'main/custom1'        => array('group'=>'main/custom', 'caption' => 'Custom Page 1', 'perm' => '0', 'icon' => ''),
+		'main/custom'		=> array('caption'=> 'Custom Pages', 'perm' => 'P', 'icon'=>'fa-asterisk'),
+		'main/custom1'        => array('group'=>'main/custom', 'caption' => 'Custom Page 1', 'perm' => 'P', 'icon' => ''),
         'main/custom2'        => array('group'=>'main/custom', 'caption' => 'Custom Page 2', 'perm' => '0', 'icon' => ''),
 	);
 

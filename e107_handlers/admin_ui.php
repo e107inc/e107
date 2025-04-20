@@ -1279,6 +1279,18 @@ class e_admin_dispatcher
 	{
 		return $this->adminMenu;
 	}
+
+	/**
+	 * Sets the administrative menu data.
+	 *
+	 * @param array $menu The menu data to set.
+	 * @return $this
+	 */
+	public function setMenuData($menu)
+	{
+		$this->adminMenu = $menu;
+		return $this;
+	}
 	
 	/**
 	 * Get admin menu array
@@ -1586,13 +1598,23 @@ class e_admin_dispatcher
 		return 'e_admin_controller';
 	}
 
+	public function hasPerms($perms)
+	{
+		return getperms($perms);
+	}
+
+	public function setAccess($access)
+	{
+		$this->access = $access;
+		return $this;
+	}
 
 	/**
 	 * Generic Admin Menu Generator
 	 *
-	 * @return string
+	 * @return string|array
 	 */
-	public function renderMenu()
+	public function renderMenu($debug=false)
 	{
 
 		$tp = e107::getParser();
@@ -1601,7 +1623,7 @@ class e_admin_dispatcher
 
 		foreach($this->getMenuData() as $key => $val)
 		{
-			if(isset($val['perm']) && $val['perm'] !== '' && !getperms($val['perm']))
+			if(isset($val['perm']) && $val['perm'] !== '' && !$this->hasPerms($val['perm']))
 			{
 				continue;
 			}
@@ -1616,6 +1638,13 @@ class e_admin_dispatcher
 				{
 					continue;
 				}
+
+				// Check if the parent group has valid permissions
+		        $parentData = $this->getMenuData()[$parentKey] ?? null;
+		        if ($parentData && isset($parentData['perm']) && $parentData['perm'] !== '' && !$this->hasPerms($parentData['perm']))
+		        {
+		            continue;
+		        }
 			}
 			else
 			{
@@ -1663,6 +1692,27 @@ class e_admin_dispatcher
 		{
 			if(!empty($item['sub']))
 			{
+
+				$hasValidSubItems = false;
+				foreach($item['sub'] as $subKey => $subItem)
+				{
+					if(isset($subItem['perm']) && $this->hasPerms($subItem['perm']))
+					{
+						$hasValidSubItems = true;
+						break;
+					}
+				}
+
+				// If no valid sub-items, remove the group
+				if(!$hasValidSubItems)
+				{
+					unset($var[$key]);
+					continue;
+				}
+
+
+
+
 				$item['link'] = '#';
 				$item['link_caret'] = true;
 				$item['link_data'] = [
@@ -1676,7 +1726,6 @@ class e_admin_dispatcher
 				// Check if any sub-item is active to expand the parent
 				foreach($item['sub'] as $subKey => &$subItem)
 				{
-
 					if($selected === $subKey && !empty($subItem['group']))
 					{
 						$parent = $subItem['group'];
@@ -1719,7 +1768,10 @@ class e_admin_dispatcher
 
 		$var['_extras_'] = array('icon' => $icon, 'return' => true);
 
-		// e107::getMessage()->addDebug(print_a($var, true));
+		if($debug)
+		{
+			return $var;
+		}
 
 		return $toggle . e107::getNav()->admin($this->getMenuTitle(), $selected, $var);
 
