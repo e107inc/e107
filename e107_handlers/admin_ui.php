@@ -1618,6 +1618,7 @@ class e_admin_dispatcher
 	 *
 	 * @return string|array
 	 */
+
 	public function renderMenu($debug = false)
 	{
 
@@ -1629,9 +1630,11 @@ class e_admin_dispatcher
 		// First loop: Build $var without permissions checks
 		foreach($adminMenu as $key => $val)
 		{
-			$parentKey = '';
+
+		//	$parentKey = '';
 
 			$tmp = explode('/', trim($key, '/'), 2); // mode/action
+
 
 			$isSubItem = !empty($val['group']);
 
@@ -1639,6 +1642,8 @@ class e_admin_dispatcher
 			{
 				$parentKey = $val['group'] ?? '';
 			}
+
+
 
 			if(isset($val['selected']) && $val['selected'])
 			{
@@ -1650,7 +1655,7 @@ class e_admin_dispatcher
 
 			if($isSubItem)
 			{
-				if(!isset($var[$parentKey]))
+				if(empty($var[$parentKey]))
 				{
 					$var[$parentKey] = [
 						'text'      => 'Unknown',
@@ -1658,20 +1663,42 @@ class e_admin_dispatcher
 						'link_id'   => str_replace('/', '-', $parentKey)
 					];
 				}
-				$subKey = str_replace($parentKey . '/', '', $key);
-				$var[$parentKey]['sub'][$subKey] = $processedItem;
+
+				// Use full key for sub-items to match $adminMenu
+				$subKey = $key;
+				if(!is_array($var[$parentKey]))
+				{
+					$var[$parentKey] = [];
+				}
+
+				if(!isset($var[$parentKey]['sub'][$subKey]))
+				{
+					$var[$parentKey]['sub'][$subKey] = $processedItem;
+				}
+
 			}
 			else
 			{
-				$var[$key] = $processedItem;
+				if(!isset($var[$key]))
+				{
+					$var[$key] = $processedItem;
+				}
+
 			}
+
+
 		}
+
 
 		if(!$selected)
 		{
 			$request = $this->getRequest();
 			$selected = $request->getMode() . '/' . $request->getAction();
 		}
+
+		// Apply permissions restrictions
+		$var = $this->restrictMenuAccess($var, $adminMenu);
+
 
 		// Second loop: Handle links and collapse attributes without permissions checks
 		foreach($var as $key => &$item)
@@ -1705,8 +1732,6 @@ class e_admin_dispatcher
 			}
 		}
 
-		// Apply permissions restrictions
-		$var = $this->restrictMenuAccess($var, $adminMenu);
 
 		if(empty($var))
 		{
@@ -1753,7 +1778,13 @@ class e_admin_dispatcher
 		{
 			// Check top-level item permissions
 			$val = $adminMenu[$key] ?? [];
-			if((isset($val['perm']) && $val['perm'] !== '' && !$this->hasPerms($val['perm'])) || !$this->hasModeAccess(explode('/', trim($key, '/'), 2)[0]) || !$this->hasRouteAccess($key))
+
+			// Handle single-segment keys (e.g., 'treatment') by using the key as the mode
+			$mode = strpos($key, '/') !== false ? explode('/', trim($key, '/'), 2)[0] : $key;
+
+			// Default to true for hasPerms if perm is unset or empty
+			$hasPerms = isset($val['perm']) && $val['perm'] !== '' ? $this->hasPerms($val['perm']) : true;
+			if(!$hasPerms || !$this->hasModeAccess($mode) || !$this->hasRouteAccess($key))
 			{
 				unset($var[$key]);
 				continue;
@@ -1766,7 +1797,17 @@ class e_admin_dispatcher
 				foreach($item['sub'] as $subKey => &$subItem)
 				{
 					$subVal = $adminMenu[$subKey] ?? [];
-					if(isset($subVal['perm']) && $this->hasPerms($subVal['perm']) && $this->hasRouteAccess($subKey) && $this->hasRouteAccess($parentKey))
+					// Log permissions check for sub-item only when removed
+					if(!isset($subVal['group']) || $subVal['group'] !== $parentKey)
+					{
+						unset($item['sub'][$subKey]);
+					//	fwrite(STDOUT, "B. restrictMenuAccess: removing subKey=$subKey, parent=$parentKey, group=" . ($subVal['group'] ?? 'none') . ", perm=" . ($subVal['perm'] ?? 'none') . ", hasPerms=" . var_export(isset($subVal['perm']) && $subVal['perm'] !== '' ? $this->hasPerms($subVal['perm']) : true, true) . ", hasModeAccess=" . var_export($this->hasModeAccess($subMode ?? $subKey), true) . ", hasRouteAccess=" . var_export($this->hasRouteAccess($subKey), true) . ", parentRouteAccess=" . var_export($this->hasRouteAccess($parentKey), true) . "\n");
+						continue;
+					}
+					$subMode = strpos($subKey, '/') !== false ? explode('/', trim($subKey, '/'), 2)[0] : $subKey;
+					// Default to true for hasPerms if perm is unset or empty
+					$hasPerms = isset($subVal['perm']) && $subVal['perm'] !== '' ? $this->hasPerms($subVal['perm']) : true;
+					if($hasPerms && $this->hasModeAccess($subMode) && $this->hasRouteAccess($subKey) && $this->hasRouteAccess($parentKey))
 					{
 						$hasValidSubItems = true;
 					}
@@ -1780,14 +1821,12 @@ class e_admin_dispatcher
 				if(!$hasValidSubItems || empty($item['sub']))
 				{
 					unset($var[$key]);
-					continue;
 				}
 			}
 		}
 
 		return $var;
 	}
-
 	/**
 	 * @param $val
 	 * @param $key
