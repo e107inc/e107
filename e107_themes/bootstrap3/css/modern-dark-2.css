@@ -1662,6 +1662,9 @@ body {
   height: auto !important;
 }
 
+
+
+
 /* Ensure the row supports scrolling */
 .is-table-row {
   min-height: 100vh; /* Ensure row is at least viewport height */
@@ -1698,13 +1701,8 @@ body {
   width: 60px;
 }
 
-div.is-table-row .sidebar-toggle-panel {
-    display:inline-block;
-    opacity: 0;
-    height: 0;
-    width: 0;
-    overflow: hidden;
-}
+
+
 
 /* Expanded state */
 .admin-left-panel:not(.is-table-row) {
@@ -1883,7 +1881,24 @@ body#admin-menus .admin-left-panel .panel {
 
 .admin-left-panel .alert { border-radius: 0 }
 
-.admin-container-legacy .admin-left-panel { width: 315px !important }
+
+
+div.is-table-row .sidebar-toggle-panel { /*display:none; */
+
+    display:inline-block;
+    opacity: 0;
+    height: 0;
+    width: 0;
+    overflow: hidden;
+
+}
+
+
+
+
+.admin-container-legacy .admin-left-panel { width: 315px !important;   }
+.admin-container-legacy div.is-table-row .sidebar-toggle-panel { opacity: 1; height: auto; overflow: visible; width: auto;  display:inline-block;}
+
 
 .text-primary,.text-primary:hover{color:#337ab7 !important}
 .text-success,.text-success:hover{color:#51a351 !important}
