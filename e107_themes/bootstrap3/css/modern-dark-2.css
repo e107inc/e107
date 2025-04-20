@@ -1698,6 +1698,14 @@ body {
   width: 60px;
 }
 
+div.is-table-row .sidebar-toggle-panel {
+    display:inline-block;
+    opacity: 0;
+    height: 0;
+    width: 0;
+    overflow: hidden;
+}
+
 /* Expanded state */
 .admin-left-panel:not(.is-table-row) {
   width: 315px;
