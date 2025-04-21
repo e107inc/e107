@@ -1643,15 +1643,18 @@ class e_admin_dispatcher
 				$parentKey = $val['group'] ?? '';
 			}
 
+			$processedItem = $this->processMenuItem($val, $key, $tmp);
+			$processedItem['link_id'] = str_replace('/', '-', $key);
 
 
-			if(isset($val['selected']) && $val['selected'])
+			if(!empty($val['selected'])) // Custom selector.
 			{
 				$selected = $val['selected'] === true ? $key : $val['selected'];
 			}
-
-			$processedItem = $this->processMenuItem($val, $key, $tmp);
-			$processedItem['link_id'] = str_replace('/', '-', $key);
+			elseif(!empty($processedItem['selected'])) // match detected in 'uri'
+			{
+				$selected = $processedItem['selected'];
+			}
 
 			if($isSubItem)
 			{
@@ -1699,6 +1702,7 @@ class e_admin_dispatcher
 		{
 			$request = $this->getRequest();
 			$selected = $request->getMode() . '/' . $request->getAction();
+			e107::getMessage()->addDebug('No selected item found, using default: ' . $selected);
 		}
 
 		// Apply permissions restrictions
@@ -1863,9 +1867,9 @@ class e_admin_dispatcher
 				case 'uri':
 					$k2 = 'link';
 					$v = $tp->replaceConstants($v, 'abs');
-					if(!empty($v) && ($v === e_REQUEST_URI))
+					if($this->compareUris($v,e_REQUEST_URL))
 					{
-						$GLOBALS['selected'] = $key;
+						$item['selected'] = $key;
 					}
 					break;
 
@@ -1922,6 +1926,55 @@ class e_admin_dispatcher
 		}
 
 		return $item;
+	}
+
+	/**
+	 * Compares two URIs after normalizing their paths and query parameters.
+	 * Specific query parameters ('asc', 'from', 'field') are excluded from comparison.
+	 *
+	 * @param string $uri1 The first URI to compare.
+	 * @param string $uri2 The second URI to compare.
+	 * @return bool Returns true if the normalized URIs are equivalent; otherwise, false.
+	 */
+	private function compareUris($uri1, $uri2)
+	{
+		if(empty($uri1) || empty($uri2))
+		{
+			return false;
+		}
+
+		$parsedUri1 = parse_url($uri1);
+		$parsedUri2 = parse_url($uri2);
+
+		$path1 = $parsedUri1['path'] ?? '';
+		$path2 = $parsedUri2['path'] ?? '';
+
+		$query1 = [];
+		$query2 = [];
+
+		if(isset($parsedUri1['query']))
+		{
+			parse_str($parsedUri1['query'], $query1);
+		}
+		if(isset($parsedUri2['query']))
+		{
+			parse_str($parsedUri2['query'], $query2);
+		}
+
+		// Remove asc, from and field from queries
+		foreach(['asc', 'from', 'field'] as $param)
+		{
+			unset($query1[$param], $query2[$param]);
+		}
+
+		$cleanQuery1 = http_build_query($query1);
+		$cleanQuery2 = http_build_query($query2);
+
+		$cleanUri1 = $path1 . ($cleanQuery1 ? '?' . $cleanQuery1 : '');
+		$cleanUri2 = $path2 . ($cleanQuery2 ? '?' . $cleanQuery2 : '');
+
+		return $cleanUri1 === $cleanUri2 ;
+
 	}
 
 
