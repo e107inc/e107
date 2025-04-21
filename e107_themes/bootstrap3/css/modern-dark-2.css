@@ -1697,6 +1697,8 @@ body {
 #admin-ui-nav-menu a:hover .caret-icon { color: rgba(255,255,255,1); }
 #admin-ui-nav-menu a:active { background-color: #2E77B6; color:white }
 #admin-ui-nav-menu a div.tooltip { display:none !important }
+#admin-ui-nav-menu .e-tip > .tooltip { opacity:0 important; display:none !important }
+
 /* Collapsed state */
 .admin-left-panel.is-table-row {
   width: 60px;
@@ -1900,6 +1902,32 @@ div.is-table-row .sidebar-toggle-panel { /*display:none; */
 .admin-container-legacy .admin-left-panel { width: 315px !important;   }
 .admin-container-legacy div.is-table-row .sidebar-toggle-panel { opacity: 1; height: auto; overflow: visible; width: auto;  display:inline-block;}
 
+/* Remove overflow clipping from admin-right-panel */
+.admin-right-panel {
+    overflow-y: visible !important; /* Prevent clipping of sticky thead */
+    padding-top: 20px;
+    border-top-left-radius: 5px;
+    background: #262626;
+    width: 100% !important;
+    min-height: 100vh;
+    margin-left: 0 !important;
+    padding-left: 90px;
+}
+
+/* Make e-container scrollable for table */
+.e-container {
+    max-height: 600px; /* Adjust based on UI needs */
+    overflow-y: auto; /* Enable scrolling for sticky thead */
+    position: relative; /* Establish stacking context */
+}
+
+
+
+/* Prevent overflow clipping in parent containers */
+.admin-main-content,
+.admin-container {
+    overflow: visible !important; /* Ensure no clipping */
+}
 
 .text-primary,.text-primary:hover{color:#337ab7 !important}
 .text-success,.text-success:hover{color:#51a351 !important}
