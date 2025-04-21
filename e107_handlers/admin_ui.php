@@ -1676,6 +1676,11 @@ class e_admin_dispatcher
 					$var[$parentKey]['sub'][$subKey] = $processedItem;
 				}
 
+				if(!empty($processedItem['badge']) && strpos($processedItem['badge']['link_class'], 'has-badge') === false)
+				{
+					$var[$parentKey]['link_class'] .= ' has-badge';
+				}
+
 			}
 			else
 			{
@@ -1827,6 +1832,7 @@ class e_admin_dispatcher
 
 		return $var;
 	}
+
 	/**
 	 * @param $val
 	 * @param $key
