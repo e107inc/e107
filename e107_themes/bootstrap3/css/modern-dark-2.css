@@ -1914,11 +1914,9 @@ div.is-table-row .sidebar-toggle-panel { /*display:none; */
     padding-left: 90px;
 }
 
-/* Make e-container scrollable for table */
+
 .e-container {
-    max-height: 600px; /* Adjust based on UI needs */
-    overflow-y: auto; /* Enable scrolling for sticky thead */
-    position: relative; /* Establish stacking context */
+      position: relative;
 }
 
 
