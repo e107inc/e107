@@ -1275,11 +1275,10 @@ class e_session_db implements SessionHandlerInterface
      * @param int $max_lifetime
      * @return bool
      */
-    public function gc(int $max_lifetime): bool
-    {
-        $this->_db->delete($this->getTable(), '`session_expires`<'.time());
-        return true;
-    }
+	public function gc(int $max_lifetime): int|false
+	{
+	    return $this->_db->delete($this->getTable(), '`session_expires`<'.time());
+	}
 
     /**
      * Allow only well formed session id string
