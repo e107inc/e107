@@ -524,6 +524,33 @@ if(!isset($_E107['no_session']) && !isset($_E107['no_lan']))
 
 	$dbg->logTime('Set User Language Session');
 	e107::getLanguage()->set();  // set e_LANGUAGE, USERLAN, Language Session / Cookies etc. requires $pref;
+
+	if($id = e107::getSession()->get('emulate'))
+	{
+		if(!empty($_POST['stopEmulation']))
+		{
+			e107::getSession()->clear('emulate');
+			e107::getMessage()->addSuccess("User access emulation mode has been stopped.");
+		}
+		else
+		{
+			$emulatedUser = e107::user($id);
+
+			$msg = "You are currently emulating the userclass and admin permissions of <b>".$emulatedUser['user_name']."</b>";
+			$msg .= "<br />This is a temporary emulation mode and will be cleared when you log out.";
+			$msg .= "<pre>userclasses: ".$emulatedUser['user_class']."\nadminperms: ".$emulatedUser['user_perms']."</pre>";
+			e107::getMessage()->setTitle('User Access Emulation Mode', E_MESSAGE_WARNING)->addWarning($msg);
+
+			$text = "<form action='".e_REQUEST_URI."' method='post'>\n";
+			$text .= "<input class='btn btn-dark' type='submit' name='stopEmulation' value='Stop Emulating' />\n";
+			$text .= "</form>\n";
+
+			e107::getMessage()->addWarning($text);
+
+			define('USERCLASS_LIST', $emulatedUser['user_class']);
+			define('ADMINPERMS', $emulatedUser['user_perms']);
+		}
+	}
 }
 else
 {
@@ -535,6 +562,8 @@ if(!empty($pref['multilanguage']) && (e_LANGUAGE !== $pref['sitelanguage']))
 	$sql->mySQLlanguage  = e_LANGUAGE;
 	$sql2->mySQLlanguage = e_LANGUAGE;
 }
+
+
 
 //do it only once and with the proper function
 // e107_include_once(e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'.php');
