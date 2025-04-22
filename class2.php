@@ -549,6 +549,8 @@ if(!isset($_E107['no_session']) && !isset($_E107['no_lan']))
 
 			define('USERCLASS_LIST', $emulatedUser['user_class']);
 			define('ADMINPERMS', $emulatedUser['user_perms']);
+			define('USERID', $emulatedUser['user_id']);
+			define('USERNAME', $emulatedUser['user_name']);
 		}
 	}
 }
@@ -1649,10 +1651,15 @@ function init_session()
 	}
 
 	e107::getDebug()->logTime('[init_session: Constants]');
+
+
 	define('ADMIN', $user->isAdmin());
 	define('ADMINID', $user->getAdminId());
 	define('ADMINNAME', $user->getAdminName());
-	define('ADMINPERMS', $user->getAdminPerms());
+	if(!defined('ADMINPERMS'))
+	{
+		define('ADMINPERMS', $user->getAdminPerms());
+	}
 	define('ADMINEMAIL', $user->getAdminEmail());
 	define('ADMINPWCHANGE', $user->getAdminPwchange());
 
@@ -1676,8 +1683,16 @@ function init_session()
 	else
 	{
 		// we shouldn't use getValue() here, it's there for e.g. shortcodes, profile page render etc.
-		define('USERID', $user->getId());
-		define('USERNAME', $user->get('user_name'));
+		if(!defined('USERID'))
+		{
+			define('USERID', $user->getId());
+		}
+
+		if(!defined('USERNAME'))
+		{
+			define('USERNAME', $user->get('user_name'));
+		}
+
 		define('USERURL', $user->get('user_homepage', false)); //required for BC
 		define('USEREMAIL', $user->get('user_email'));
 		define('USER', true);
@@ -1753,7 +1768,10 @@ function init_session()
 	}
 
 	e107::getDebug()->logTime('[init_session: getClassList]');
-	define('USERCLASS_LIST', $user->getClassList(true));
+	if(!defined('USERCLASS_LIST'))
+	{
+		define('USERCLASS_LIST', $user->getClassList(true));
+	}
 	define('e_CLASS_REGEXP', $user->getClassRegex());
 	define('e_NOBODY_REGEXP', '(^|,)'.e_UC_NOBODY.'(,|$)');
 
@@ -1813,7 +1831,7 @@ function cookie($name, $value, $expire=0, $path = e_HTTP, $domain = '', $secure 
 
 	if(!empty($_E107['cli']))
 	{
-		return null;
+		return;
 	}
 /*
 	if(!e_SUBDOMAIN || (defined('MULTILANG_SUBDOMAIN') && MULTILANG_SUBDOMAIN === true))
@@ -2112,7 +2130,7 @@ class error_handler
 	 * @param $file
 	 * @param $line
 	 * @param $context (deprecated since PHP 7.2.0)
-	 * @return bool
+	 * @return bool|void
 	 */
 	function handle_error($type, $message, $file, $line, $context = null) {
 		$startup_error = (!defined('E107_DEBUG_LEVEL')); // Error before debug system initialized
@@ -2144,7 +2162,7 @@ class error_handler
 			}
 			break;
 			case E_USER_ERROR:
-			if ($this->debug == true)
+			if ($this->debug === true)
 			{
 				$error['short'] = "&nbsp;&nbsp;&nbsp;&nbsp;Internal Error Message: {$message}, Line <mark>{$line}</mark> of {$file}<br />\n";
 				$trace = debug_backtrace();
@@ -2160,7 +2178,7 @@ class error_handler
 			break;
 		}
 
-		return null;
+		return;
 	}
 
 
