@@ -882,7 +882,6 @@ class users_admin_ui extends e_admin_ui
 
 		if(getperms('0') && !empty($_POST['userid']))
 		{
-			e107::getMessage()->addInfo("Emulating User ID".print_a($_POST,true));
 			e107::getSession()->set('emulate', (int) $_POST['userid']);
 		}
 
