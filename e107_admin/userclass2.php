@@ -126,9 +126,9 @@ e107::coreLan('userclass2', true);
 
 			// Set Defaults for when creating new records.
 			$this->fields['userclass_type']['writeParms']                   = array(UC_TYPE_STD => UCSLAN_80,	UC_TYPE_GROUP => UCSLAN_81);
-			$this->fields['userclass_editclass']['writeParms']['default']   = e_UC_ADMIN;
+			$this->fields['userclass_editclass']['writeParms']['default']   = e_UC_MAINADMIN;
 			$this->fields['userclass_parent']['writeParms']['default']      = e_UC_NOBODY;
-			$this->fields['userclass_visibility']['writeParms']['default']  = e_UC_ADMIN;
+			$this->fields['userclass_visibility']['writeParms']['default']  = e_UC_MAINADMIN;
 			$this->fields['userclass_id']['writeParms']['default']          =$this->getUserClassAdmin()->findNewClassID();
 
 			if(getperms('0'))
