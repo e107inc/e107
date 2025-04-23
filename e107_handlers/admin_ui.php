@@ -1707,7 +1707,7 @@ class e_admin_dispatcher
 		{
 			$request = $this->getRequest();
 			$selected = $request->getMode() . '/' . $request->getAction();
-			e107::getMessage()->addDebug('No selected item found, using default: ' . $selected);
+		//	e107::getMessage()->addDebug('No selected item found, using default: ' . $selected);
 		}
 
 		// Apply permissions restrictions
