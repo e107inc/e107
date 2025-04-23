@@ -36,4 +36,6 @@ modules:
             password: '%db.password%'
             populate: '%db.populate%'
             dump: '%db.dump_path%'
+settings:
+    error_level: 28671 # E_ALL & ~E_USER_DEPRECATED
 

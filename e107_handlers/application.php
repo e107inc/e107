@@ -5217,7 +5217,7 @@ class eHelper
 	 */
 	public static function dasherize($str)
 	{
-		return str_replace(array('_', ' '), '-', $str);
+		return !empty($str) ? str_replace(array('_', ' '), '-', $str) : '';
 	}
 
 	/**

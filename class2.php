@@ -549,7 +549,7 @@ if(!isset($_E107['no_session']) && !isset($_E107['no_lan']))
 
 			define('USERCLASS_LIST', $emulatedUser['user_class']);
 			define('ADMINPERMS', $emulatedUser['user_perms']);
-			define('USERID', $emulatedUser['user_id']);
+			// define('USERID', $emulatedUser['user_id']); Don't emulate user id. It will mess with logs.
 			define('USERNAME', $emulatedUser['user_name']);
 		}
 	}
