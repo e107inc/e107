@@ -41,7 +41,7 @@ e107::coreLan('userclass2', true);
 
 			'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => '4'),
 			'main/create'		=> array('caption'=> LAN_CREATE, 'perm' => '4'),
-			'main/initial' 		=> array('caption'=> UCSLAN_38, 'perm' => '4'),
+			'main/initial' 		=> array('caption'=> UCSLAN_38, 'perm' => '4', 'icon'=>'fa-asterisk'),
 			'main/options' 		=> array('caption'=> LAN_OPTIONS, 'perm' => '4'),
 
 			// 'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P')

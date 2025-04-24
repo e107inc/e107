@@ -1071,7 +1071,7 @@ class e107Test extends \Codeception\Test\Unit
 			'ADMIN_SORT_ICON'            => "<i class='admin-ui-option fa fa-sort fa-2x fa-fw'></i>",
 			'ADMIN_EXECUTE_ICON'         => "<i class='admin-ui-option fa fa-play fa-2x fa-fw'></i>",
 			'ADMIN_PAGES_ICON'           => "<i class='admin-ui-option fa fa-file fa-2x fa-fw'></i>",
-			'ADMIN_ADD_ICON'             => '<i class=\'S32 e-add-32\'></i>',
+			'ADMIN_ADD_ICON'             => "<i class='admin-ui-option fa fa-plus fa-2x fa-fw'></i>",
 			'ADMIN_INFO_ICON'            => '<i class=\'fa fa-question-circle\'></i>',
 			'ADMIN_CONFIGURE_ICON'       => "<i class='admin-ui-option fa fa-cog fa-2x fa-fw'></i>",
 			'ADMIN_VIEW_ICON'            => "<i class='admin-ui-option fa fa-search fa-2x fa-fw'></i>",

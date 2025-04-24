@@ -1331,7 +1331,7 @@ class e_admin_dispatcher
 	 */
 	public function getMenuTitle()
 	{
-		return $this->menuTitle;
+		return defset($this->menuTitle,$this->menuTitle);
 	}
 
 	/**
@@ -5828,7 +5828,8 @@ class e_admin_ui extends e_admin_controller_ui
 			$this->fieldpref = $ufieldpref;
 		}*/
 
-		$this->addTitle($this->pluginTitle)->parseAliases();
+		$pluginTitle = $this->getPluginTitle();
+		$this->addTitle($pluginTitle)->parseAliases();
 
 		$this->initAdminAddons();
 

@@ -151,11 +151,11 @@ class adminlog_admin extends e_admin_dispatcher
 	protected $adminMenu = array(
 
 		'main/list'			=> array('caption'=> RL_LAN_030, 'perm' => '5'),
-		'audit/list'		=> array('caption'=> RL_LAN_062, 'perm' => '5'),
+		'audit/list'		=> array('caption'=> RL_LAN_062, 'perm' => '5', 'icon'=>'fa-user'),
 		'rolling/list'		=> array('caption'=> RL_LAN_002, 'perm' => '5'),
 		'divider/01'        => array('divider'=>true),
 		'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => '5'),	
-		'main/maintenance'	=> array('caption'=> LAN_OPTIONS, 'perm' => '5')
+		'main/maintenance'	=> array('caption'=> LAN_OPTIONS, 'perm' => '5', 'icon'=>'fa-wrench')
 
 		// 'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P')
 	);
