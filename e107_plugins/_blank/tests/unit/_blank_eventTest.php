@@ -8,6 +8,8 @@ use Codeception\Test\Unit;
 	cd e107_tests
 	vendor/bin/codecept run unit ../e107_plugins/_blank/tests/unit
 
+	vendor/bin/codecept run unit ../e107_plugins/_blank/tests/unit/_blank_eventTest:testMyfunction
+
 OR with debug options:
 
 	vendor/bin/codecept run unit ../e107_plugins/_blank/tests/unit --steps --debug
