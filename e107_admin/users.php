@@ -882,7 +882,10 @@ class users_admin_ui extends e_admin_ui
 
 		if(getperms('0') && !empty($_POST['userid']))
 		{
-			e107::getSession()->set('emulate', (int) $_POST['userid']);
+			$uid = (int) $_POST['userid'];
+			e107::getSession()->set('emulate',$uid);
+			$user = e107::user($uid);
+			e107::getMessage()->addSuccess("Emulation of <strong>".$user['user_name']."</strong> activated.", 'default', true);;
 		}
 
 		$this->redirect('list', 'main', true);
@@ -2749,7 +2752,7 @@ class users_admin_form_ui extends e_admin_form_ui
 			// login/logout As
 			if(getperms('0') && !($row['user_admin'] && getperms('0', $row['user_perms'])))
 			{
-				$opts['emulate'] = 'Emulate Permissions';
+
 
 				if(e107::getUser()->getSessionDataAs() == $row['user_id'])
 				{
@@ -2813,6 +2816,11 @@ class users_admin_form_ui extends e_admin_form_ui
 				{
 			//		$text .= "<option value='adminperms'>".USRLAN_221."</option>\n";
 			//		$text .= "<option value='unadmin'>".USRLAN_34."</option>\n";
+
+					if(getperms('0'))
+					{
+						$opts['emulate'] = 'Emulate permissions';
+					}
 
 					$opts['adminperms'] = USRLAN_221;
 					$opts['unadmin']     = USRLAN_34;

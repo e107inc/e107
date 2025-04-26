@@ -525,33 +525,23 @@ if(!isset($_E107['no_session']) && !isset($_E107['no_lan']))
 	$dbg->logTime('Set User Language Session');
 	e107::getLanguage()->set();  // set e_LANGUAGE, USERLAN, Language Session / Cookies etc. requires $pref;
 
-	if($id = e107::getSession()->get('emulate'))
+	if(deftrue('e_ADMIN_AREA') && getperms('0') && ($id = e107::getSession()->get('emulate')))
 	{
-		if(!empty($_POST['stopEmulation']))
-		{
-			e107::getSession()->clear('emulate');
-			e107::getMessage()->addSuccess("User access emulation mode has been stopped.");
-		}
-		else
-		{
-			$emulatedUser = e107::user($id);
+	    if(!empty($_POST['stopEmulation']))
+	    {
+	        e107::getSession()->clear('emulate');
+	        e107::getMessage()->addSuccess("Admin access emulation mode has been stopped.");
+	    }
+	    else
+	    {
+	        $emulatedUser = e107::user($id);
+	        define('USERCLASS_LIST', $emulatedUser['user_class']);
+	        define('ADMINPERMS', $emulatedUser['user_perms']);
+	        // define('USERID', $emulatedUser['user_id']); // Don't emulate user id. It will mess with logs.
+	        define('USERNAME', $emulatedUser['user_name']);
+	    }
 
-			$msg = "You are currently emulating the userclass and admin permissions of <b>".$emulatedUser['user_name']."</b>";
-			$msg .= "<br />This is a temporary emulation mode and will be cleared when you log out.";
-			$msg .= "<pre>userclasses: ".$emulatedUser['user_class']."\nadminperms: ".$emulatedUser['user_perms']."</pre>";
-			e107::getMessage()->setTitle('User Access Emulation Mode', E_MESSAGE_WARNING)->addWarning($msg);
-
-			$text = "<form action='".e_REQUEST_URI."' method='post'>\n";
-			$text .= "<input class='btn btn-dark' type='submit' name='stopEmulation' value='Stop Emulating' />\n";
-			$text .= "</form>\n";
-
-			e107::getMessage()->addWarning($text);
-
-			define('USERCLASS_LIST', $emulatedUser['user_class']);
-			define('ADMINPERMS', $emulatedUser['user_perms']);
-			// define('USERID', $emulatedUser['user_id']); Don't emulate user id. It will mess with logs.
-			define('USERNAME', $emulatedUser['user_name']);
-		}
+	    unset($id);
 	}
 }
 else

@@ -198,10 +198,13 @@ $ADMIN_TEMPLATE['header'] =  '
 				{ADMIN_NAVIGATION=enav_logout}
 				{ADMIN_NAVIGATION=enav_language}
 				{ADMIN_NAVIGATION=enav_home}
+				
 				{ADMIN_MULTISITE}
 				{ADMIN_PM}
 				{ADMIN_DEBUG}
+				{ADMIN_PERM_EMULATION}
 				{ADMIN_NOTIFICATIONS}
+				
 				{ADMIN_UPDATE}
 			</div>
 		</div>
@@ -212,10 +215,12 @@ $ADMIN_TEMPLATE['header'] =  '
 				{ADMIN_NAVIGATION=enav_logout}
 				{ADMIN_NAVIGATION=enav_language}
 				{ADMIN_NAVIGATION=enav_home}
+				
 				{ADMIN_MULTISITE}
 				{ADMIN_PM}
 				{ADMIN_DEBUG}
 				{ADMIN_NOTIFICATIONS}
+				{ADMIN_PERM_EMULATION}
 				{ADMIN_UPDATE}
 				</div>
 		</div>
