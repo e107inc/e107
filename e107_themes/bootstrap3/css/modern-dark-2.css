@@ -1926,7 +1926,7 @@ div.is-table-row .sidebar-toggle-panel { /*display:none; */
 .admin-container {
     overflow: visible !important; /* Ensure no clipping */
 }
-
+#admin-ui-nav-menu li.divider { margin: 15px; border-bottom: 1px outset rgba(255,255,255,0.3) !important; }
 
 
 .text-primary,.text-primary:hover{color:#337ab7 !important}
