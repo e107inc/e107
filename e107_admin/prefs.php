@@ -759,6 +759,14 @@ $text .= "
 						</td>
 					</tr>
 					
+					<tr>
+						<td><label for='admin-collapse-sidebar'>".PRFLAN_287."</label></td>
+						<td>
+						".$e_userclass->uc_dropdown('admin_navbar_debug', $pref['admin_navbar_debug'], 'nobody,main,admin,classes,no-excludes', "tabindex='".$frm->getNext()."'")."
+			
+						</td>
+					</tr>
+					
 					
 					
 				</tbody>

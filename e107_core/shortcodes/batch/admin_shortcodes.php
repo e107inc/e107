@@ -931,14 +931,19 @@ class admin_shortcodes extends e_shortcode
 	 */
 	public function sc_admin_debug()
 	{
-		if(!deftrue('e_DEVELOPER') && !deftrue('e_DEBUG') && !deftrue('e_DEBUGGER')) // e_DEBUGGER can be defined in e107_config.php to enable
-		{
-			return null;
-		}
+		$display = (int) e107::pref('core', 'admin_navbar_debug', e_UC_NOBODY);
 
-		if(!getperms('0'))
+		if(!check_class($display))
 		{
-			return null;
+			if(!deftrue('e_DEVELOPER') && !deftrue('e_DEBUG') && !deftrue('e_DEBUGGER')) // e_DEBUGGER can be defined in e107_config.php to enable
+			{
+				return null;
+			}
+
+			if(!getperms('0'))
+			{
+				return null;
+			}
 		}
 
 		try

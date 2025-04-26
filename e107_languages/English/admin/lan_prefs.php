@@ -265,4 +265,5 @@ return [
     'PRFLAN_284' => "Collapse navigation side-bar by default",
     'PRFLAN_285' => "Display field help tips",
     'PRFLAN_286' => "Content Filters",
+    'PRFLAN_287' => "Display debug button in admin area navigation bar",
 ];

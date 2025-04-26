@@ -464,18 +464,26 @@ function update_core_prefs($type='')
 	$should = get_default_prefs();
 
 	$just_check = !($type == 'do');		// TRUE if we're just seeing if an update is needed
-   
+
+    $missing = [];
+
 	foreach ($should as $k => $v)
 	{
 		if ($k && !array_key_exists($k,$pref))
 		{
-			if ($just_check) return update_needed('Missing pref: '.$k);
+			$missing[] = $k;
 		//	$pref[$k] = $v;
 			e107::getConfig()->set($k,$v);
 			$admin_log->logMessage($k.' => '.$v, E_MESSAGE_NODISPLAY, E_MESSAGE_INFO);
 			$do_save = TRUE;
 		}
 	}
+
+	if ($just_check && !empty($missing))
+	{
+		return update_needed('<br>Missing prefs: <ul><li>'.implode('</li><li>',$missing).'</li></ul>');
+	}
+
 	if ($do_save)
 	{
 		//save_prefs();
