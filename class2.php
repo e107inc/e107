@@ -525,7 +525,7 @@ if(!isset($_E107['no_session']) && !isset($_E107['no_lan']))
 	$dbg->logTime('Set User Language Session');
 	e107::getLanguage()->set();  // set e_LANGUAGE, USERLAN, Language Session / Cookies etc. requires $pref;
 
-	if(deftrue('e_ADMIN_AREA') && getperms('0') && ($id = e107::getSession()->get('emulate')))
+	if(deftrue('e_ADMIN_AREA') && ($id = e107::getSession()->get('emulate')))
 	{
 	    if(!empty($_POST['stopEmulation']))
 	    {
