@@ -644,6 +644,15 @@ function update_core_database($type = '')
 		$just_check = !($type == 'do');
 		$pref = e107::getPref();
 
+		if(!$just_check)
+		{
+			if(e107::getConfig()->get('admincss') !== 'css/modern-dark-2.css')
+			{
+				e107::getConfig()->set('admincss','css/modern-dark-2.css')->save(false,true,false);
+				e107::getMessage()->addSuccess("Admin skin has been updated to Modern Dark 2");
+			}
+
+		}
 
 		if(!isset($pref['lan_global_list']['news']))
 		{

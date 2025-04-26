@@ -313,7 +313,7 @@ h2,h3{page-break-after:avoid}
 .glyphicon-menu-down:before{content:"\e259"}
 .glyphicon-menu-up:before{content:"\e260"}
 *,:after,:before{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}
-body{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:14px;line-height:1.42857143;color:#c6c6c6}
+body{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:14px;line-height:1.42857143;color:#c6c6c6; background-color:#262626;}
 button,input,select,textarea{font-family:inherit;font-size:inherit;line-height:inherit}
 a{color:#8BC0ED;text-decoration:none}
 a:focus,a:hover{color:#fff;text-decoration:none}
@@ -1514,7 +1514,7 @@ td.forumheader{background-image:linear-gradient(#303030,#212121 60%,#171717);fil
 /* Custom */
 
 html { height: auto !important; }
-body { margin-top: 51px; padding: 0 !important; background: #2f2f2f }
+body { margin-top: 51px; padding: 0 !important; }
 .navbar-brand {
   padding:
 10px 16px !important;
@@ -1530,7 +1530,7 @@ div.admin-left-panel {
     min-width: 50px;
 }
 
-div.admin-right-panel { padding-top: 20px; border-top-left-radius: 5px; background: #262626  }
+div.admin-right-panel { padding-top: 75px; border-top-left-radius: 5px; background: #262626  }
 
 
 
@@ -1553,7 +1553,7 @@ thead th, thead tr, .table > thead > tr > th { border-bottom: 0; border-left:0; 
 .admin-main-content {
     display: block;
     min-height: 1000px;
-    margin-top:60px;
+  /*  margin-top:60px;*/
 }
 
         div.is-table-row .admin-left-panel {
