@@ -83,6 +83,8 @@ class _system_cron
 		e107::getCache()->clearAll('js');
 		e107::getCache()->clearAll('library');
 		e107::getCache()->clearAll('browser');
+		e107::getSession()->clear('core-update-status'); // true when the update alert should be displayed.
+		e107::getSession()->clear('core-update-checked'); // true if the update check has been performed already. false if not. 
 	}
 
 
