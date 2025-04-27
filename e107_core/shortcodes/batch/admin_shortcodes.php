@@ -829,9 +829,10 @@ class admin_shortcodes extends e_shortcode
                 <li class='dropdown'>
                     <a class='dropdown-toggle' title='User Access Emulation Mode' role='button' data-toggle='dropdown' href='#'>";
 
+		$name = $emulatedUser['user_login'] ?? $emulatedUser['user_name'];
 		// Add warning glyph and emulated username (with fa-beat modification)
-		$text .= $tp->toGlyph('fa-user-secret', ['class' => 'fa-beat text-warning']) .
-			"<span class='text-warning hidden-xs hidden-sm hidden-md' style='margin-left: 5px'>" . $tp->toHTML($emulatedUser['user_name']) . "</span>" .
+		$text .= $tp->toGlyph('fa-user-secret', ['class' => 'fa-fade text-warning']) .
+			"<span class='text-warning hidden-xs hidden-sm hidden-md' style='margin-left: 5px'>" . $tp->toHTML($name) . "</span>" .
 			"<b class='caret text-warning'></b></a>";
 
 		// Start dropdown menu with padding and width
@@ -1871,7 +1872,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		$text = '<ul id="admin-notifications" class=" nav navbar-nav navbar-right">
         <li class="dropdown">
             <a class="dropdown-toggle " title="'.$lan.'" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" href="#" aria-expanded="true">
-                <i class="fas fa-beat fa-bell fa-fw text-warning"></i>';
+                <i class="fas fa-fade fa-bell fa-fw text-warning"></i>';
 
 		$text .= ($count > 1) ? '<sup class="text-warning">'.$count.'</sup>' : '';
 		$text .= '</a>
