@@ -80,7 +80,7 @@ if(e_AJAX_REQUEST && getperms('0') &&  varset($_GET['mode']) == 'addons' && ($_G
 	$tp = e107::getParser();
 	$ns->setUniqueId('e-addon-updates');
 	$ns->setStyle('warning');
-	$ret = $ns->tablerender($tp->toGlyph('fa-arrow-circle-o-down').LAN_UPDATE_AVAILABLE,$text,'default', true);
+	$ret = $ns->tablerender($tp->toGlyph('fa-arrow-circle-o-down').defset('LAN_UPDATE_AVAILABLE'),$text,'default', true);
 
 	echo $ret;
 
@@ -292,7 +292,7 @@ function admin_purge_related($table, $id)
 	$num = $_com->delete_comments($table, $id);
 	if ($num)
 	{
-		$msg .= $num." ".LAN_COMMENTS." ".LAN_DELETED."<br />";
+		$msg .= $num." ".LAN_COMMENTS." ".defset('LAN_DELETED', 'Deleted')."<br />";
 	}
 
 	// Delete any related ratings
@@ -301,7 +301,7 @@ function admin_purge_related($table, $id)
 	$num = $_rate->delete_ratings($table, $id);
 	if ($num)
 	{
-		$msg .= LAN_RATING." ".LAN_DELETED."<br />";
+		$msg .= LAN_RATING." ".defset('LAN_DELETED', 'Deleted')."<br />";
 	}
 
 	if ($msg)
