@@ -637,6 +637,11 @@ function update_core_database($type = '')
 		$pref = e107::getPref();
 
 
+		if(!isset($pref['admin_navbar_debug']))
+		{
+			return update_needed("Upgrade to 2.4 required (install skin).");
+		}
+
 		if(!isset($pref['lan_global_list']['news']))
 		{
 			if($just_check)
