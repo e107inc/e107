@@ -17,7 +17,12 @@ if (!getperms("P"))
 	exit;
 }
 
+e107::css('inline', '
 
+.admin-ui-nav-menu .has-badge span:first-child > i:after { content: "·"; font-size:30px; color:#51a351}
+
+
+');
 class plugin_blank_admin extends e_admin_dispatcher
 {
 	/**
@@ -68,6 +73,16 @@ class plugin_blank_admin extends e_admin_dispatcher
 	 * @var string
 	 */
 	protected $menuTitle = 'blank Menu';
+
+
+	function init()
+	{
+
+		$count = '&#10003;';
+		$badgStyle = 'success'; // warning | danger | info
+		$this->adminMenu['main/custom1']['badge'] = array('value' => $count, 'type'=>$badgStyle);
+
+	}
 }
 
 
