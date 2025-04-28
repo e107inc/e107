@@ -999,6 +999,10 @@ class admin_shortcodes extends e_shortcode
 
 			$active = ($var === $current) ? ' active bg-default' : '';
 
+			$srch = array('[',']','!');
+			$repl = array('&#91;','&#93;','&#33;');
+			$link = str_replace($srch,$repl,$link);
+
 			$text .= '<li role="menuitem" class="text-right'.$active.'">
 				<a href="'.$link.'">'.$label;
 
