@@ -258,87 +258,95 @@ class e_session
         ini_set('session.gc_divisor', 100);
     }
 
-    /**
-     * Retrieve value from current session namespace
-     * Equals to $_SESSION[NAMESPACE][$key] or a multi-dimensional array for keys starting with $key/
-     * @param string $key
-     * @param bool $clear unset key
-     * @return mixed
-     */
-    public function get($key, $clear = false)
-    {
-        $result = [];
+/**
+ * Retrieve value from current session namespace
+ * Equals to $_SESSION[NAMESPACE][$key] or a multi-dimensional array for keys starting with $key/
+ * @param string $key
+ * @param bool $clear unset key
+ * @return mixed
+ */
+public function get($key, $clear = false)
+{
+    $result = [];
 
-        // Check for keys starting with $key/
-        foreach ($this->_data as $dataKey => $value) {
+    // Check for keys starting with $key/
+    foreach ($this->_data as $dataKey => $value) {
+        if (strpos($dataKey, $key . '/') === 0) {
+            // Normalize multiple slashes to a single slash
+            $subKeyString = preg_replace('#/+#', '/', substr($dataKey, strlen($key . '/')));
+            $subKeys = explode('/', $subKeyString);
+            // Remove empty segments
+            $subKeys = array_filter($subKeys, function($k) { return $k !== ''; });
+            $current = &$result;
+            foreach ($subKeys as $k) {
+                if (!isset($current[$k])) {
+                    $current[$k] = [];
+                }
+                $current = &$current[$k];
+            }
+            $current = $value;
+        }
+    }
+
+    // Merge with direct key value if it exists
+    if (isset($this->_data[$key])) {
+        if (is_array($this->_data[$key]) && is_array($result)) {
+            $result = array_merge_recursive($this->_data[$key], $result);
+        } else {
+            $result = $this->_data[$key];
+        }
+    }
+
+    // Return null if no data found
+    $ret = empty($result) && !isset($this->_data[$key]) ? null : $result;
+
+    if ($clear) {
+        $this->clear($key);
+        // Clear all related keys
+        foreach (array_keys($this->_data) as $dataKey) {
             if (strpos($dataKey, $key . '/') === 0) {
-                $subKeys = explode('/', substr($dataKey, strlen($key . '/')));
-                $current = &$result;
-                foreach ($subKeys as $k) {
-                    if (!isset($current[$k])) {
-                        $current[$k] = [];
-                    }
-                    $current = &$current[$k];
+                unset($this->_data[$dataKey]);
+            }
+        }
+    }
+
+    return $ret;
+}
+
+/**
+ * Retrieve value from current session namespace
+ * If key is null, returns all current session namespace data as a multi-dimensional array
+ *
+ * @param string|null $key
+ * @param bool $clear
+ * @return mixed
+ */
+public function getData($key = null, $clear = false)
+{
+    if (null === $key) {
+        $result = [];
+        foreach ($this->_data as $dataKey => $value) {
+            // Normalize multiple slashes to a single slash
+            $dataKey = preg_replace('#/+#', '/', $dataKey);
+            $keys = explode('/', $dataKey);
+            // Remove empty segments
+            $keys = array_filter($keys, function($k) { return $k !== ''; });
+            $current = &$result;
+            foreach ($keys as $k) {
+                if (!isset($current[$k])) {
+                    $current[$k] = [];
                 }
-                $current = $value;
+                $current = &$current[$k];
             }
+            $current = $value;
         }
-
-        // Merge with direct key value if it exists
-        if (isset($this->_data[$key])) {
-            if (is_array($this->_data[$key]) && is_array($result)) {
-                $result = array_merge_recursive($this->_data[$key], $result);
-            } else {
-                $result = $this->_data[$key];
-            }
-        }
-
-        // Return null if no data found
-        $ret = empty($result) && !isset($this->_data[$key]) ? null : $result;
-
         if ($clear) {
-            $this->clear($key);
-            // Clear all related keys
-            foreach (array_keys($this->_data) as $dataKey) {
-                if (strpos($dataKey, $key . '/') === 0) {
-                    unset($this->_data[$dataKey]);
-                }
-            }
+            $this->clearData();
         }
-
-        return $ret;
+        return $result;
     }
-
-    /**
-     * Retrieve value from current session namespace
-     * If key is null, returns all current session namespace data as a multi-dimensional array
-     *
-     * @param string|null $key
-     * @param bool $clear
-     * @return mixed
-     */
-    public function getData($key = null, $clear = false)
-    {
-        if (null === $key) {
-            $result = [];
-            foreach ($this->_data as $dataKey => $value) {
-                $keys = explode('/', $dataKey);
-                $current = &$result;
-                foreach ($keys as $k) {
-                    if (!isset($current[$k])) {
-                        $current[$k] = [];
-                    }
-                    $current = &$current[$k];
-                }
-                $current = $value;
-            }
-            if ($clear) {
-                $this->clearData();
-            }
-            return $result;
-        }
-        return $this->get($key, $clear);
-    }
+    return $this->get($key, $clear);
+}
 
     /**
      * Flatten a nested array into path-based keys.
@@ -370,7 +378,9 @@ class e_session
      */
     public function set($key, $value)
     {
-        $this->_data[$key] = $value;
+        if ($key !== '') {
+            $this->_data[$key] = $value;
+        }
         return $this;
     }
 
@@ -425,7 +435,7 @@ class e_session
 
     /**
      * Unset member of current session namespace array
-     * Equals to unset($_SESSION[NAMESPACE][$key])
+     * Equals to unset($_SESSION[NAMESPACE][$key]) and all keys starting with $key/
      * @param string|null $key
      * @return e_session
      */
@@ -436,7 +446,16 @@ class e_session
             return $this;
         }
 
+        // Unset the direct key
         unset($this->_data[$key]);
+
+        // Unset all keys starting with $key/
+        foreach (array_keys($this->_data) as $dataKey) {
+            if (strpos($dataKey, $key . '/') === 0) {
+                unset($this->_data[$dataKey]);
+            }
+        }
+
         return $this;
     }
 
