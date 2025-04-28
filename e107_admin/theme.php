@@ -640,6 +640,8 @@ class theme_admin_ui extends e_admin_ui
 
 		public function InfoPage()
 		{
+
+
 			if(!empty($_GET['src'])) // online mode.
 			{
 				$string =  base64_decode($_GET['src']);
@@ -657,7 +659,7 @@ class theme_admin_ui extends e_admin_ui
 
 			$tm = (string) $this->getId();
 			$themeMeta  = e107::getTheme($tm)->get();
-			echo $this->themeObj->renderThemeInfo($themeMeta);
+			return $this->themeObj->renderThemeInfo($themeMeta);
 
 		}
 
@@ -1176,6 +1178,9 @@ class theme_admin_form_ui extends e_admin_form_ui
 
 		e107::getSession()->set('thememanager/online/'.$theme['id'], $theme);
 
+		$saved = e107::getSession()->get('thememanager/online/'.$theme['id']);
+
+
 		$d = http_build_query($srcData,false);
 		$base64 = base64_encode($d);
 
@@ -1388,7 +1393,7 @@ class theme_builder extends e_admin_ui
 			$newThemeXML = e_THEME.$this->themeName."/theme.xml";
 			if(file_exists($newThemeXML))
 			{
-				$info = e107::getTheme()->getThemeInfo($this->themeName);
+				$info = e107::getTheme()::getThemeInfo($this->themeName);
 
 				e107::getDebug()->log($info);
 

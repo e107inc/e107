@@ -260,21 +260,58 @@ class e_session
 
     /**
      * Retrieve value from current session namespace
-     * Equals to $_SESSION[NAMESPACE][$key]
+     * Equals to $_SESSION[NAMESPACE][$key] or a multi-dimensional array for keys starting with $key/
      * @param string $key
      * @param bool $clear unset key
      * @return mixed
      */
     public function get($key, $clear = false)
     {
-        $ret = $this->_data[$key] ?? null;
-        if($clear) $this->clear($key);
+        $result = [];
+
+        // Check for keys starting with $key/
+        foreach ($this->_data as $dataKey => $value) {
+            if (strpos($dataKey, $key . '/') === 0) {
+                $subKeys = explode('/', substr($dataKey, strlen($key . '/')));
+                $current = &$result;
+                foreach ($subKeys as $k) {
+                    if (!isset($current[$k])) {
+                        $current[$k] = [];
+                    }
+                    $current = &$current[$k];
+                }
+                $current = $value;
+            }
+        }
+
+        // Merge with direct key value if it exists
+        if (isset($this->_data[$key])) {
+            if (is_array($this->_data[$key]) && is_array($result)) {
+                $result = array_merge_recursive($this->_data[$key], $result);
+            } else {
+                $result = $this->_data[$key];
+            }
+        }
+
+        // Return null if no data found
+        $ret = empty($result) && !isset($this->_data[$key]) ? null : $result;
+
+        if ($clear) {
+            $this->clear($key);
+            // Clear all related keys
+            foreach (array_keys($this->_data) as $dataKey) {
+                if (strpos($dataKey, $key . '/') === 0) {
+                    unset($this->_data[$dataKey]);
+                }
+            }
+        }
+
         return $ret;
     }
 
     /**
      * Retrieve value from current session namespace
-     * If key is null, returns all current session namespace data
+     * If key is null, returns all current session namespace data as a multi-dimensional array
      *
      * @param string|null $key
      * @param bool $clear
@@ -282,51 +319,64 @@ class e_session
      */
     public function getData($key = null, $clear = false)
     {
-        if(null === $key)
-        {
-            $ret = $this->_data;
-            if($clear) $this->clearData();
-            return $ret;
+        if (null === $key) {
+            $result = [];
+            foreach ($this->_data as $dataKey => $value) {
+                $keys = explode('/', $dataKey);
+                $current = &$result;
+                foreach ($keys as $k) {
+                    if (!isset($current[$k])) {
+                        $current[$k] = [];
+                    }
+                    $current = &$current[$k];
+                }
+                $current = $value;
+            }
+            if ($clear) {
+                $this->clearData();
+            }
+            return $result;
         }
         return $this->get($key, $clear);
     }
 
     /**
+     * Flatten a nested array into path-based keys.
+     *
+     * @param array $array The nested array to flatten
+     * @param string $prefix The prefix for the current key path
+     * @return array Flat array of key-value pairs
+     */
+    private function flattenArray($array, $prefix = '')
+    {
+        $result = [];
+        foreach ($array as $key => $value) {
+            $newKey = $prefix ? $prefix . '/' . $key : $key;
+            if (is_array($value)) {
+                $result = array_merge($result, $this->flattenArray($value, $newKey));
+            } else {
+                $result[$newKey] = $value;
+            }
+        }
+        return $result;
+    }
+
+    /**
      * Set value in current session namespace
      * Equals to $_SESSION[NAMESPACE][$key] = $value
-     * @param string $key Also accepts multi-dimensional format. key1/key2
-     * @param mixed $value
+     * @param string $key Also accepts path-based format (e.g., key1/key2)
+     * @param mixed $value Any value type (string, array, integer, etc.)
      * @return e_session
      */
     public function set($key, $value)
     {
-        if(strpos($key,'/') !== false) // multi-dimensional
-        {
-            $keyArr = explode('/',$key);
-            $count = count($keyArr);
-
-            if($count === 2)
-            {
-                list($k1, $k2) = $keyArr;
-                $this->_data[$k1][$k2] = $value;
-            }
-            elseif($count === 3)
-            {
-                list($k1, $k2, $k3) = $keyArr;
-                $this->_data[$k1][$k2][$k3] = $value;
-            }
-        }
-        else
-        {
-            $this->_data[$key] = $value;
-        }
-
+        $this->_data[$key] = $value;
         return $this;
     }
 
     /**
      * Set value in current session namespace
-     * If $key is array, the whole namespace array will be replaced with it,
+     * If $key is array, the whole namespace array will be replaced with it (flattened),
      * $value will be ignored
      * @param string|array|null $key
      * @param mixed $value
@@ -334,9 +384,8 @@ class e_session
      */
     public function setData($key, $value = null)
     {
-        if(is_array($key))
-        {
-            $this->_data = $key;
+        if (is_array($key)) {
+            $this->_data = $this->flattenArray($key);
             return $this;
         }
         return $this->set($key, $value);
@@ -382,33 +431,12 @@ class e_session
      */
     public function clear($key = null)
     {
-        if($key === null) // clear all under this namespace.
-        {
-            $this->_data = array(); // must be set to array() not unset.
+        if ($key === null) {
+            $this->_data = array();
             return $this;
         }
 
-        if(strpos($key,'/') !== false) // multi-dimensional
-        {
-            $keyArr = explode('/',$key);
-            $count = count($keyArr);
-
-            if($count === 2)
-            {
-                list($k1, $k2) = $keyArr;
-                unset($this->_data[$k1][$k2]);
-            }
-            elseif($count === 3)
-            {
-                list($k1, $k2, $k3) = $keyArr;
-                unset($this->_data[$k1][$k2][$k3]);
-            }
-        }
-        else
-        {
-            unset($this->_data[$key]);
-        }
-
+        unset($this->_data[$key]);
         return $this;
     }
 
@@ -953,17 +981,17 @@ class e_core_session extends e_session
         $details = "HOST: ".$_SERVER['HTTP_HOST']."\n";
         $details .= "REQUEST_URI: ".$_SERVER['REQUEST_URI']."\n";
 
-		$details .= ($_POST['e-token']) ? "e-token (POST): ".$_POST['e-token']."\n" : "";
-		$details .= ($_GET['e-token']) ? "e-token (GET): ".$_GET['e-token']."\n" : "";
-		$details .= ($_POST['e_token']) ? "AJAX e_token (POST): ".$_POST['e_token']."\n" : "";
+        $details .= ($_POST['e-token']) ? "e-token (POST): ".$_POST['e-token']."\n" : "";
+        $details .= ($_GET['e-token']) ? "e-token (GET): ".$_GET['e-token']."\n" : "";
+        $details .= ($_POST['e_token']) ? "AJAX e_token (POST): ".$_POST['e_token']."\n" : "";
 /*
-		$utoken = $this->getFormToken(false);
-		$details .= "raw token: ".$utoken."\n";
-		$details .= "checkFormToken (e-token should match this): ".md5($utoken)."\n";
-		$details .= "md5(e-token): ".md5($_POST['e-token'])."\n";*/
+        $utoken = $this->getFormToken(false);
+        $details .= "raw token: ".$utoken."\n";
+        $details .= "checkFormToken (e-token should match this): ".md5($utoken)."\n";
+        $details .= "md5(e-token): ".md5($_POST['e-token'])."\n";*/
 /*
-		$regenerate = $this->get('__form_token_regenerate');
-		$details .= "Regenerate after: ".date('r', $regenerate)." (".$regenerate.")\n";
+        $regenerate = $this->get('__form_token_regenerate');
+        $details .= "Regenerate after: ".date('r', $regenerate)." (".$regenerate.")\n";
 */
 
         $details .= "has __form_token: ";
@@ -1275,10 +1303,10 @@ class e_session_db implements SessionHandlerInterface
      * @param int $max_lifetime
      * @return bool
      */
-	public function gc(int $max_lifetime): int|false
-	{
-	    return $this->_db->delete($this->getTable(), '`session_expires`<'.time());
-	}
+    public function gc(int $max_lifetime): int|false
+    {
+        return $this->_db->delete($this->getTable(), '`session_expires`<'.time());
+    }
 
     /**
      * Allow only well formed session id string

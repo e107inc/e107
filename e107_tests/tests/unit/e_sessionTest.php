@@ -63,7 +63,7 @@
 			);
 
 			$result = $this->sess->get('clear');
-			$this->assertSame($expected, $result);
+			$this::assertSame($expected, $result);
 
 		}
 
@@ -77,7 +77,7 @@
 
 			$result = $this->sess->get('whatever');
 
-			$this->assertEquals($expected, $result);
+			$this::assertEquals($expected, $result);
 
 
 			// Multi-dimensional array support.
@@ -92,8 +92,29 @@
 			);
 
 			$result = $newsess->get('customer');
-			$this->assertSame($expected, $result);
+			$this::assertSame($expected, $result);
 
+		}
+
+		function testSetGetArrayDepth()
+		{
+			// Flat
+			$array = ['a', 'b', 'c'];
+			e107::getSession()->set('thememanager', $array);
+			$result = e107::getSession()->get('thememanager');
+			$this::assertSame($array, $result);
+
+			// 1-level deep
+			$array2 = ['d', 'e', 'f'];
+			e107::getSession()->set('thememanager/online', $array2);
+			$result = e107::getSession()->get('thememanager/online');
+			$this::assertSame($array2, $result);
+
+			// 2-levels deep
+			$array3 = ['g', 'h', 'i'];
+			e107::getSession()->set('thememanager/online/55', $array3);
+			$result = e107::getSession()->get('thememanager/online/55');
+			$this::assertSame($array3, $result);
 		}
 /*
 		public function testGetOption()
