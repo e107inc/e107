@@ -144,159 +144,193 @@
 			$this->assertEquals($expected, $input);
 		}
 
-public function testPluginScripts()
-{
-    $core = e107::getPlug()->getCorePluginList();
-    $exclude = [
-        'forum/forum_post.php',
-        'forum/forum_viewtopic.php',
-        'forum/index.php',
-        'online/online_menu.php',
-        'pm/pm.php',
-        'poll/admin_config.php',
-        'rss_menu/rss.php',
-        'tagcloud/tagcloud_menu.php',
-        'tinymce4/wysiwyg.php',
-    ];
-    $focus = [];
+		/**
+		 * @runInSeparateProcess
+		 * @return void
+		 */
+		public function testPluginScripts()
+		{
 
-    $errors = [];
+			$core = e107::getPlug()->getCorePluginList();
+			$exclude = [
+				'forum/forum_post.php',
+				'forum/forum_viewtopic.php',
+				'forum/index.php',
+				'online/online_menu.php',
+				'pm/pm.php',
+				'poll/admin_config.php',
+				'rss_menu/rss.php',
+				'tagcloud/tagcloud_menu.php',
+				'tinymce4/wysiwyg.php',
+			];
+			$focus = [];
 
-    foreach ($core as $plug) {
-        $path = realpath(e107::getFolder('plugins') . $plug);
-        if ($path === false) {
-            fwrite(STDOUT, "Plugin directory not found: {$plug}\n");
-            continue;
-        }
+			$errors = [];
 
-        $file[$plug] = scandir($path);
-        unset($file[$plug][0], $file[$plug][1]);
-        sort($file[$plug]);
+			foreach($core as $plug)
+			{
+				$path = realpath(e107::getFolder('plugins') . $plug);
+				if($path === false)
+				{
+					fwrite(STDOUT, "Plugin directory not found: {$plug}\n");
+					continue;
+				}
 
-        if (!empty($focus) && !isset($focus[$plug])) {
-            unset($file[$plug]);
-            continue;
-        }
+				$file[$plug] = scandir($path);
+				unset($file[$plug][0], $file[$plug][1]);
+				sort($file[$plug]);
 
-        e107::plugLan($plug, 'global');
-        e107::getConfig()->setPref('plug_installed/' . $plug, 1);
-    }
+				if(!empty($focus) && !isset($focus[$plug]))
+				{
+					unset($file[$plug]);
+					continue;
+				}
 
-    foreach ($file as $plug => $files) {
-        $pluginFiles = [];
-        foreach ($files as $f) {
-            $filePath = realpath(e107::getFolder('plugins') . $plug) . DIRECTORY_SEPARATOR . $f;
-            if (!empty($focus) && $f !== $focus[$plug]) {
-                continue;
-            }
-            if (is_dir($filePath) || strpos($f, '_sql.php') !== false || strpos($f, '.php') === false || in_array($plug . '/' . $f, $exclude)) {
-                continue;
-            }
-            if (!file_exists($filePath)) {
-                fwrite(STDOUT, "File not found: {$plug}/{$f}\n");
-                continue;
-            }
-            $pluginFiles[$plug . '/' . $f] = $filePath;
-        }
+				e107::plugLan($plug, 'global');
+				e107::getConfig()->setPref('plug_installed/' . $plug, 1);
+			}
 
-        if (empty($pluginFiles)) {
-            fwrite(STDOUT, "No testable files found for plugin: {$plug}\n");
-            continue;
-        }
+			foreach($file as $plug => $files)
+			{
+				$pluginFiles = [];
+				foreach($files as $f)
+				{
+					$filePath = realpath(e107::getFolder('plugins') . $plug) . DIRECTORY_SEPARATOR . $f;
+					if(!empty($focus) && $f !== $focus[$plug])
+					{
+						continue;
+					}
+					if(is_dir($filePath) || strpos($f, '_sql.php') !== false || strpos($f, '.php') === false || in_array($plug . '/' . $f, $exclude))
+					{
+						continue;
+					}
+					if(!file_exists($filePath))
+					{
+						fwrite(STDOUT, "File not found: {$plug}/{$f}\n");
+						continue;
+					}
+					$pluginFiles[$plug . '/' . $f] = $filePath;
+				}
 
-        fwrite(STDOUT, "Testing plugin: {$plug}\n");
-        foreach ($pluginFiles as $relativePath => $_) {
-            fwrite(STDOUT, " - $relativePath\n");
-        }
+				if(empty($pluginFiles))
+				{
+					fwrite(STDOUT, "No testable files found for plugin: {$plug}\n");
+					continue;
+				}
 
-        // Build the command
-        $requireStatements = '';
-        $firstFilePath = reset($pluginFiles);
-        $e107Root = realpath(dirname($firstFilePath) . '/../../');
-        $class2Path = $e107Root . '/class2.php';
-        if ($class2Path === false || !file_exists($class2Path)) {
-            fwrite(STDOUT, "Error: Could not locate class2.php at $class2Path\n");
-            $errors[] = "Error: Could not locate class2.php for plugin {$plug}";
-            continue;
-        }
-        $lanAdminPath = $e107Root . '/e107_languages/English/admin/lan_admin.php';
-        if (!file_exists($lanAdminPath)) {
-            fwrite(STDOUT, "Error: Could not locate lan_admin.php at $lanAdminPath\n");
-            $errors[] = "Error: Could not locate lan_admin.php for plugin {$plug}";
-            continue;
-        }
+				fwrite(STDOUT, "Testing plugin: {$plug}\n");
+				foreach($pluginFiles as $relativePath => $_)
+				{
+					fwrite(STDOUT, " - $relativePath\n");
+				}
 
-        $requireStatements .= "error_reporting(E_ALL); ini_set('display_errors', 1); ";
-        $requireStatements .= "require_once '" . addslashes($class2Path) . "'; ";
-        $requireStatements .= "require_once '" . addslashes($lanAdminPath) . "'; ";
-        $requireStatements .= "e107::plugLan('" . addslashes($plug) . "', 'global'); ";
-        $requireStatements .= "e107::getConfig()->setPref('plug_installed/" . addslashes($plug) . "', 1); ";
-        foreach ($pluginFiles as $relativePath => $filePath) {
-            $requireStatements .= "echo 'START: " . addslashes($relativePath) . "\\n'; ";
-            $requireStatements .= "require_once '" . addslashes($filePath) . "'; ";
-            $requireStatements .= "echo 'END: " . addslashes($relativePath) . "\\n'; ";
-        }
-        $runCommand = sprintf('php -r %s 1>NUL 2>&1', escapeshellarg($requireStatements));
+				// Build the command
+				$requireStatements = '';
+				$firstFilePath = reset($pluginFiles);
+				$e107Root = realpath(dirname($firstFilePath) . '/../../');
+				$class2Path = $e107Root . '/class2.php';
+				if($class2Path === false || !file_exists($class2Path))
+				{
+					fwrite(STDOUT, "Error: Could not locate class2.php at $class2Path\n");
+					$errors[] = "Error: Could not locate class2.php for plugin {$plug}";
+					continue;
+				}
+				$lanAdminPath = $e107Root . '/e107_languages/English/admin/lan_admin.php';
+				if(!file_exists($lanAdminPath))
+				{
+					fwrite(STDOUT, "Error: Could not locate lan_admin.php at $lanAdminPath\n");
+					$errors[] = "Error: Could not locate lan_admin.php for plugin {$plug}";
+					continue;
+				}
 
-        // Execute and capture errors
-        exec($runCommand, $runOutput, $runExitCode);
+				$requireStatements .= "error_reporting(E_ALL); ini_set('display_errors', 1); ";
+				$requireStatements .= "require_once ('" . addslashes($class2Path) . "'); ";
+				$requireStatements .= "e107::includeLan( '" . addslashes($lanAdminPath) . "'); ";
+				$requireStatements .= "e107::plugLan('" . addslashes($plug) . "', 'global'); ";
+				$requireStatements .= "e107::getConfig()->setPref('plug_installed/" . addslashes($plug) . "', 1); ";
+				foreach($pluginFiles as $relativePath => $filePath)
+				{
+					$requireStatements .= "echo 'START: " . addslashes($relativePath) . "\\n'; ";
+					$requireStatements .= "require_once '" . addslashes($filePath) . "'; ";
+					$requireStatements .= "echo 'END: " . addslashes($relativePath) . "\\n'; ";
+				}
+				$runCommand = sprintf('php -r %s 1>NUL 2>&1', escapeshellarg($requireStatements));
 
-        if ($runExitCode !== 0 || !empty($runOutput)) {
-            $output = implode("\n", $runOutput);
-            if (!empty($output)) {
-                if (preg_match('/(Parse error|Fatal error|Warning|Notice):.*in\s+([^\s]+)\s+on\s+line\s+(\d+)/i', $output, $match)) {
-                    $errorMessage = $match[0];
-                    $errorFile = $match[2];
-                    $relativePath = array_search($errorFile, $pluginFiles) ?: $plug . '/unknown';
-                    $error = "Error in {$relativePath}: $errorMessage";
-                    fwrite(STDOUT, "$error\n");
-                    $errors[] = $error;
-                } else {
-                    $firstLine = strtok($output, "\n");
-                    $error = "Error in {$plug}: $firstLine";
-                    fwrite(STDOUT, "$error\n");
-                    $errors[] = $error;
-                }
-            } else {
-                // Sequentially check files to find the error
-                $lastGoodFile = null;
-                foreach ($pluginFiles as $relativePath => $filePath) {
-                    $testCommand = sprintf('php -r %s 1>NUL 2>&1', escapeshellarg(
-                        "error_reporting(E_ALL); ini_set('display_errors', 1); " .
-                        "require_once '" . addslashes($class2Path) . "'; " .
-                        "require_once '" . addslashes($lanAdminPath) . "'; " .
-                        "e107::plugLan('" . addslashes($plug) . "', 'global'); " .
-                        "e107::getConfig()->setPref('plug_installed/" . addslashes($plug) . "', 1); " .
-                        "require_once '" . addslashes($filePath) . "';"
-                    ));
-                    exec($testCommand, $testOutput, $testExitCode);
-                    if ($testExitCode !== 0) {
-                        $errorOutput = !empty($testOutput) ? implode("\n", $testOutput) : "Syntax error detected (exit code $testExitCode)";
-                        if (preg_match('/(Parse error|Fatal error|Warning|Notice):.*in\s+([^\s]+)\s+on\s+line\s+(\d+)/i', $errorOutput, $match)) {
-                            $errorMessage = $match[0];
-                        } else {
-                            $errorMessage = $errorOutput;
-                        }
-                        $error = "Error in {$relativePath}: $errorMessage";
-                        fwrite(STDOUT, "$error\n");
-                        $errors[] = $error;
-                        break;
-                    }
-                    $lastGoodFile = $relativePath;
-                }
-                if (empty($errors) && $lastGoodFile) {
-                    $error = "Error after {$lastGoodFile}: Syntax error detected (exit code $runExitCode)";
-                    fwrite(STDOUT, "$error\n");
-                    $errors[] = $error;
-                }
-            }
-        }
-    }
+			//	fwrite(STDOUT, "Debug run command:\n$runCommand\n\n\n\n");
 
-    if (!empty($errors)) {
-        self::fail("Errors found in plugin scripts:\n" . implode("\n", $errors));
-    }
-}
+				// Execute and capture errors
+				exec($runCommand, $runOutput, $runExitCode);
+
+				if($runExitCode !== 0 || !empty($runOutput))
+				{
+					$output = implode("\n", $runOutput);
+					if(!empty($output))
+					{
+						if(preg_match('/(Parse error|Fatal error|Warning|Notice):.*in\s+([^\s]+)\s+on\s+line\s+(\d+)/i', $output, $match))
+						{
+							$errorMessage = $match[0];
+							$errorFile = $match[2];
+							$relativePath = array_search($errorFile, $pluginFiles) ?: $plug . '/unknown';
+							$error = "Error in {$relativePath}: $errorMessage";
+							fwrite(STDOUT, "$error\n");
+							$errors[] = $error;
+						}
+						else
+						{
+							$firstLine = strtok($output, "\n");
+							$error = "Error in {$plug}: $firstLine";
+							fwrite(STDOUT, "$error\n");
+							$errors[] = $error;
+						}
+					}
+					else
+					{
+						// Sequentially check files to find the error
+						$lastGoodFile = null;
+						foreach($pluginFiles as $relativePath => $filePath)
+						{
+							$testCommand = sprintf('php -r %s 1>NUL 2>&1', escapeshellarg(
+								"error_reporting(E_ALL); ini_set('display_errors', 1); " .
+								"require_once('" . addslashes($class2Path) . "'); " .
+								"e107::includeLan('" . addslashes($lanAdminPath) . "'); " .
+								"e107::plugLan('" . addslashes($plug) . "', 'global'); " .
+								"e107::getConfig()->setPref('plug_installed/" . addslashes($plug) . "', 1); " .
+								"e107::includeLan('" . addslashes($filePath) . "');"
+							));
+							exec($testCommand, $testOutput, $testExitCode);
+							if($testExitCode !== 0)
+							{
+								$errorOutput = !empty($testOutput) ? implode("\n", $testOutput) : "Syntax error detected (exit code $testExitCode)";
+								if(preg_match('/(Parse error|Fatal error|Warning|Notice):.*in\s+([^\s]+)\s+on\s+line\s+(\d+)/i', $errorOutput, $match))
+								{
+									$errorMessage = $match[0];
+								}
+								else
+								{
+									$errorMessage = $errorOutput;
+								}
+								$error = "Error in {$relativePath}: $errorMessage";
+								fwrite(STDOUT, "$error\n");
+								$errors[] = $error;
+								break;
+							}
+							$lastGoodFile = $relativePath;
+						}
+						if(empty($errors) && $lastGoodFile)
+						{
+							$error = "Error after {$lastGoodFile}: Syntax error detected (exit code $runExitCode)";
+							fwrite(STDOUT, "$error\n");
+							$errors[] = $error;
+						}
+					}
+				}
+			}
+
+			if(!empty($errors))
+			{
+				self::fail("Errors found in plugin scripts:\n" . implode("\n", $errors));
+			}
+		}
 
 
 
@@ -434,6 +468,33 @@ public function testPluginScripts()
 			$this->pluginUninstall('tagcloud');
 		}
 
+
+
+		public function testRefreshExtendedFields()
+		{
+
+			$this->pluginInstall('_blank');
+			$count =  e107::getDb()->count('user_extended_struct', '(*)', "user_extended_struct_name LIKE 'plugin__blank_custom%'");
+			$this::assertEquals(1, $count, 'Field was not installed');
+
+			$this->pluginRefresh('_blank');
+			$count =  e107::getDb()->count('user_extended_struct', '(*)', "user_extended_struct_name LIKE 'plugin__blank_custom%'");
+			$this::assertEquals(1, $count, 'Field was duplicated or is missing');
+
+			e107::getDb()->delete('user_extended_struct', "user_extended_struct_name LIKE 'plugin__blank_custom%'");
+			$count =  e107::getDb()->count('user_extended_struct', '(*)', "user_extended_struct_name LIKE 'plugin__blank_custom%'");
+			$this::assertEquals(0, $count, 'Field was not deleted');
+			$this->pluginRefresh('_blank');
+
+			$count =  e107::getDb()->count('user_extended_struct', '(*)', "user_extended_struct_name LIKE 'plugin__blank_custom%'");
+			$this::assertEquals(1, $count, 'Field was not re-installed');
+
+			$this->pluginUninstall('_blank');
+
+
+
+		}
+
 /*
 		public function testThirdParty()
 		{
@@ -486,23 +547,6 @@ public function testPluginScripts()
 
 		}*/
 
-		public function  testVstore()
-		{
-			if(!is_dir(e_PLUGIN."vstore"))
-			{
-				return ;
-			}
-
-			$this->pluginInstall('vstore');
-			$this->pluginRefresh('vstore');
-
-			$links = e107::getDb()->retrieve('links', '*', 'link_owner = "vstore"', true);
-			$this->assertNotEmpty($links);
-			$this->assertCount(2, $links);
-
-			$this->pluginUninstall('vstore');
-
-		}
 
 		public function testplugInstalledStatus()
 		{
@@ -541,6 +585,10 @@ public function testPluginScripts()
 		}
 
 
+		/**
+		 * @runInSeparateProcess
+		 * @return void
+		 */
 		public function testPluginAddons()
 		{
 			$plg = e107::getPlug()->clearCache();

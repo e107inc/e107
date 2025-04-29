@@ -362,7 +362,7 @@ $text = "
 						<td><label for='siteurl'>".PRFLAN_3."</label>
 						".($pref['siteurl'] == SITEURL ? "" : $frm->help(PRFLAN_159.": <strong>".SITEURL."</strong>"))."</td>
 						<td>
-							".$frm->text('siteurl', $pref['siteurl'], 150, 'size=xxlarge')."
+							".$frm->text('siteurl', $pref['siteurl'], 150, ['size'=>'xxlarge', 'required'=>1, 'pattern' => '^http.*', 'placeholder'=>'eg. '.SITEURL])."
 						</td>
 					</tr>
 					<tr>
@@ -756,6 +756,14 @@ $text .= "
 						<td><label for='admin-collapse-sidebar'>".PRFLAN_285."</label></td>
 						<td>
 						".$frm->radio_switch('admin_helptip', varset($pref['admin_helptip']))."
+						</td>
+					</tr>
+					
+					<tr>
+						<td><label for='admin-collapse-sidebar'>".PRFLAN_287."</label></td>
+						<td>
+						".$e_userclass->uc_dropdown('admin_navbar_debug', $pref['admin_navbar_debug'], 'nobody,main,admin,classes,no-excludes', "tabindex='".$frm->getNext()."'")."
+			
 						</td>
 					</tr>
 					

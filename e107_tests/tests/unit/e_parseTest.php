@@ -3147,6 +3147,7 @@ Your browser does not support the audio tag.
 				'expected' => 'Τη γλώσσα μου έδωσαν ελληνική 您好，世界 こんにちは、世界',
 			),
 
+
 		);
 
 
@@ -3182,6 +3183,92 @@ Your browser does not support the audio tag.
 		unset($_E107['phpunit']);
 
 	}
+
+
+
+	public function testToUTF8()
+	{
+		$converter = $this->tp;
+
+		// Test simple string
+		$this::assertEquals('Hello World',
+			$converter->toUTF8('Hello World'),
+			'Simple ASCII string should remain unchanged'
+		);
+
+		// Test special characters
+		$this::assertEquals('café',
+			$converter->toUTF8(mb_convert_encoding('café', 'ISO-8859-1', 'UTF-8')),
+			'Latin-1 encoded string should be converted correctly'
+		);
+
+		// Test array with special characters
+		$inputArray = [
+			'name' => mb_convert_encoding('café', 'ISO-8859-1', 'UTF-8'),
+			'city' => mb_convert_encoding('München', 'ISO-8859-1', 'UTF-8')
+		];
+		$expectedArray = [
+			'name' => 'café',
+			'city' => 'München'
+		];
+		$this::assertEquals($expectedArray,
+			$converter->toUTF8($inputArray),
+			'Array with special characters should be converted correctly'
+		);
+
+		// Test nested array
+		$nestedArray = [
+			'level1' => [
+				'level2' => mb_convert_encoding('São Paulo', 'ISO-8859-1', 'UTF-8'),
+				'array' => ['deep' => mb_convert_encoding('über', 'ISO-8859-1', 'UTF-8')]
+			]
+		];
+		$expectedNested = [
+			'level1' => [
+				'level2' => 'São Paulo',
+				'array' => ['deep' => 'über']
+			]
+		];
+		$this::assertEquals($expectedNested,
+			$converter->toUTF8($nestedArray),
+			'Nested array should be converted correctly'
+		);
+
+		// Test object
+		$testObject = new stdClass();
+		$testObject->name = mb_convert_encoding('café', 'ISO-8859-1', 'UTF-8');
+		$testObject->location = mb_convert_encoding('München', 'ISO-8859-1', 'UTF-8');
+
+		$expectedObject = new stdClass();
+		$expectedObject->name = 'café';
+		$expectedObject->location = 'München';
+
+		$this::assertEquals($expectedObject,
+			$converter->toUTF8($testObject),
+			'Object properties should be converted correctly'
+		);
+
+		// Test array with various Western European characters
+		$inputArray = [
+			'french' => mb_convert_encoding('café', 'ISO-8859-1', 'UTF-8'),
+			'german' => mb_convert_encoding('Köln', 'ISO-8859-1', 'UTF-8'),
+			'spanish' => mb_convert_encoding('año', 'ISO-8859-1', 'UTF-8'),
+			'swedish' => mb_convert_encoding('björn', 'ISO-8859-1', 'UTF-8')
+		];
+
+		$expectedArray = [
+			'french' => 'café',
+			'german' => 'Köln',
+			'spanish' => 'año',
+			'swedish' => 'björn'
+		];
+
+		$this::assertEquals($expectedArray,
+			$converter->toUTF8($inputArray),
+			'Array with Western European characters should be converted correctly'
+		);
+	}
+
 
 
 	/*

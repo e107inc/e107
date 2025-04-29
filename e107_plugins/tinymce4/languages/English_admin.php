@@ -9,11 +9,14 @@
 |        $Author: Yesszus $
 +---------------------------------------------------------------+
 */
-define("TMCEALAN_1", "Paste as text by default");
-define("TMCEALAN_2", "Browser spellcheck");
-define("TMCEALAN_3", "Enable this if the browser internal spellchecker should be used.");
-define("TMCEALAN_4", "Visual Blocks");
-define("TMCEALAN_5", "Enable to make html blocks visible during editing.");
-define("TMCEALAN_6", "Code-Highlight CSS class.");
-define("TMCEALAN_7", "Use frontend style");
-define("TMCEALAN_8", "When enabled, the editor will use the style of the frontend theme. (when supported)");
+
+return [
+    'TMCEALAN_1' => "Paste as text by default",
+    'TMCEALAN_2' => "Browser spellcheck",
+    'TMCEALAN_3' => "Enable this if the browser internal spellchecker should be used.",
+    'TMCEALAN_4' => "Visual Blocks",
+    'TMCEALAN_5' => "Enable to make html blocks visible during editing.",
+    'TMCEALAN_6' => "Code-Highlight CSS class.",
+    'TMCEALAN_7' => "Use frontend style",
+    'TMCEALAN_8' => "When enabled, the editor will use the style of the frontend theme. (when supported)",
+];

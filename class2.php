@@ -56,6 +56,14 @@ if(isset($_E107['cli'], $_SERVER["HTTP_USER_AGENT"]) && !isset($_E107['debug']))
 	exit();
 }
 
+if (PHP_MAJOR_VERSION < 8)
+{
+	echo "Configuration Error. Check error log for details.";
+    error_log('PHP 8 or higher is required. Current version: ' . PHP_VERSION);
+    exit();
+}
+
+
 if(function_exists('utf8_encode') === false)
 {
 	echo "e107 requires the PHP <a href='http://php.net/manual/en/dom.setup.php'>XML</a> package. Please install it to use e107.  ";
@@ -149,12 +157,12 @@ if(!empty($CLASS2_INCLUDE))
 
 if(empty($HANDLERS_DIRECTORY))
 {
-	$HANDLERS_DIRECTORY = 'e107_handlers/';
+	$HANDLERS_DIRECTORY = !empty($config['paths']['handlers']) ? $config['paths']['handlers'] :  'e107_handlers/';
 }
 
 if(empty($PLUGINS_DIRECTORY))
 {
-	$PLUGINS_DIRECTORY = 'e107_plugins/';
+	$PLUGINS_DIRECTORY = !empty($config['paths']['plugins']) ? $config['paths']['plugins'] : 'e107_plugins/';
 }
 
 //define("MPREFIX", $mySQLprefix); moved to $e107->set_constants()
@@ -208,12 +216,21 @@ if(empty($config['paths'])) // old e107_config.php format.
 		}, array_keys($legacy_sql_info)),
         $legacy_sql_info
 	);
+
+	$sql_info['db'] = $sql_info['defaultdb'];
 }
 else // New e107_config.php format. v2.4+
 {
 	$e107_paths = $config['paths'];
 	$sql_info = $config['database'];
 	$E107_CONFIG = $config['other'] ?? [];
+
+	if(isset($sql_info['defaultdb']))
+	{
+		echo "WARNING: 'defaultdb' is deprecated. Please use 'db' instead.\n";
+		exit;
+	}
+
 	unset($config);
 }
 
@@ -283,11 +300,12 @@ e107::getSingleton('e107_traffic'); // We start traffic counting ASAP
 
 //DEPRECATED, BC, $e107->sql caught by __get()
 /** @var e_db $sql */
-$sql = e107::getDb(); //TODO - find & replace $sql, $e107->sql
+$sql = e107::getDb();
 $sql->db_SetErrorReporting(false);
 
 $dbg->logTime('SQL Connect');
-$merror=$sql->db_Connect($sql_info['server'], $sql_info['user'], $sql_info['password'], $sql_info['defaultdb']);
+
+$merror=$sql->db_Connect($sql_info['server'], $sql_info['user'], $sql_info['password'], varset($sql_info['db'], $sql_info['db']));
 unset($sql_info);
 // create after the initial connection.
 //DEPRECATED, BC, call the method only when needed
@@ -506,6 +524,25 @@ if(!isset($_E107['no_session']) && !isset($_E107['no_lan']))
 
 	$dbg->logTime('Set User Language Session');
 	e107::getLanguage()->set();  // set e_LANGUAGE, USERLAN, Language Session / Cookies etc. requires $pref;
+
+	if(deftrue('e_ADMIN_AREA') && ($id = e107::getSession()->get('emulate')))
+	{
+	    if(!empty($_POST['stopEmulation']))
+	    {
+	        e107::getSession()->clear('emulate');
+	        e107::getMessage()->addSuccess("Admin access emulation mode has been stopped.");
+	    }
+	    else
+	    {
+	        $emulatedUser = e107::user($id);
+	        define('USERCLASS_LIST', $emulatedUser['user_class']);
+	        define('ADMINPERMS', $emulatedUser['user_perms']);
+	        // define('USERID', $emulatedUser['user_id']); // Don't emulate user id. It will mess with logs.
+	        define('USERNAME', $emulatedUser['user_name']);
+	    }
+
+	    unset($id);
+	}
 }
 else
 {
@@ -518,35 +555,36 @@ if(!empty($pref['multilanguage']) && (e_LANGUAGE !== $pref['sitelanguage']))
 	$sql2->mySQLlanguage = e_LANGUAGE;
 }
 
-//do it only once and with the proper function
-// e107_include_once(e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'.php');
-// e107_include_once(e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'_custom.php');
+
+
+
 // v1 Custom language File Path.
 if(!isset($_E107['no_lan']))
 {
 	$dbg->logTime('Include Global Core Language Files');
 	if((e_ADMIN_AREA === true) && !empty($pref['adminlanguage']))
 	{
-		include(e_LANGUAGEDIR.$pref['adminlanguage'].'/'.$pref['adminlanguage'].'.php');
+		e107::includeLan(e_LANGUAGEDIR.$pref['adminlanguage'].'/'.$pref['adminlanguage'].'.php');
 	}
 	else
 	{
-		include(e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'.php'); // FASTEST - ALWAYS load
+		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'.php'); // FASTEST - ALWAYS load
 	}
 
 
 	$customLan = e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'_custom.php';
 	if(is_readable($customLan)) // FASTER - if exist, should be done 'once' by the core
 	{
-		include($customLan);
+		e107::includeLan($customLan);
 	}
 
 	// v2 Custom language File Path.
 	$customLan2 = e_SYSTEM.'/lans/'.e_LANGUAGE.'_custom.php';
 	if(is_readable($customLan2)) // FASTER - if exist, should be done 'once' by the core
 	{
-		include($customLan2);
+		e107::includeLan($customLan2);
 	}
+
 	unset($customLan, $customLan2);
 
 	$lng->bcDefs(); // defined v1.x definitions for old templates.
@@ -1602,10 +1640,15 @@ function init_session()
 	}
 
 	e107::getDebug()->logTime('[init_session: Constants]');
+
+
 	define('ADMIN', $user->isAdmin());
 	define('ADMINID', $user->getAdminId());
 	define('ADMINNAME', $user->getAdminName());
-	define('ADMINPERMS', $user->getAdminPerms());
+	if(!defined('ADMINPERMS'))
+	{
+		define('ADMINPERMS', $user->getAdminPerms());
+	}
 	define('ADMINEMAIL', $user->getAdminEmail());
 	define('ADMINPWCHANGE', $user->getAdminPwchange());
 
@@ -1629,8 +1672,16 @@ function init_session()
 	else
 	{
 		// we shouldn't use getValue() here, it's there for e.g. shortcodes, profile page render etc.
-		define('USERID', $user->getId());
-		define('USERNAME', $user->get('user_name'));
+		if(!defined('USERID'))
+		{
+			define('USERID', $user->getId());
+		}
+
+		if(!defined('USERNAME'))
+		{
+			define('USERNAME', $user->get('user_name'));
+		}
+
 		define('USERURL', $user->get('user_homepage', false)); //required for BC
 		define('USEREMAIL', $user->get('user_email'));
 		define('USER', true);
@@ -1706,7 +1757,10 @@ function init_session()
 	}
 
 	e107::getDebug()->logTime('[init_session: getClassList]');
-	define('USERCLASS_LIST', $user->getClassList(true));
+	if(!defined('USERCLASS_LIST'))
+	{
+		define('USERCLASS_LIST', $user->getClassList(true));
+	}
 	define('e_CLASS_REGEXP', $user->getClassRegex());
 	define('e_NOBODY_REGEXP', '(^|,)'.e_UC_NOBODY.'(,|$)');
 
@@ -1766,7 +1820,7 @@ function cookie($name, $value, $expire=0, $path = e_HTTP, $domain = '', $secure 
 
 	if(!empty($_E107['cli']))
 	{
-		return null;
+		return;
 	}
 /*
 	if(!e_SUBDOMAIN || (defined('MULTILANG_SUBDOMAIN') && MULTILANG_SUBDOMAIN === true))
@@ -1981,8 +2035,8 @@ class error_handler
 
 	function __construct()
 	{
-		$this->label = array(E_NOTICE => "Notice", E_WARNING => "Warning", E_DEPRECATED => "Deprecated");
-		$this->color = array(E_NOTICE=> 'info', E_WARNING=>'warning', E_DEPRECATED => 'danger');
+		$this->label = array(E_NOTICE => "Notice", E_USER_NOTICE => "Notice", E_WARNING => "Warning",E_USER_WARNING => "Warning", E_DEPRECATED => "Deprecated");
+		$this->color = array(E_NOTICE=> 'info', E_USER_NOTICE=> 'info' , E_WARNING=>'warning',E_USER_WARNING => "warning", E_DEPRECATED => 'danger');
 
 		if (version_compare(PHP_VERSION, '8.4', '<'))
 		{
@@ -2065,7 +2119,7 @@ class error_handler
 	 * @param $file
 	 * @param $line
 	 * @param $context (deprecated since PHP 7.2.0)
-	 * @return bool
+	 * @return bool|void
 	 */
 	function handle_error($type, $message, $file, $line, $context = null) {
 		$startup_error = (!defined('E107_DEBUG_LEVEL')); // Error before debug system initialized
@@ -2081,6 +2135,7 @@ class error_handler
 			break;
 
 			case E_NOTICE:
+			case E_USER_NOTICE:
 		//	case E_STRICT:
 
 			if ($startup_error || $this->deftrue('E107_DBG_ALLERRORS')  || $this->deftrue('E107_DBG_ERRBACKTRACE'))
@@ -2089,13 +2144,14 @@ class error_handler
 			}
 			break;
 			case E_WARNING:
+			case E_USER_WARNING:
 			if ($startup_error || $this->deftrue('E107_DBG_BASIC') || $this->deftrue('E107_DBG_ERRBACKTRACE'))
 			{
 				$this->addError($type, $message,$line,$file);
 			}
 			break;
 			case E_USER_ERROR:
-			if ($this->debug == true)
+			if ($this->debug === true)
 			{
 				$error['short'] = "&nbsp;&nbsp;&nbsp;&nbsp;Internal Error Message: {$message}, Line <mark>{$line}</mark> of {$file}<br />\n";
 				$trace = debug_backtrace();
@@ -2111,7 +2167,7 @@ class error_handler
 			break;
 		}
 
-		return null;
+		return;
 	}
 
 

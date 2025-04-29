@@ -17,6 +17,7 @@ class db_verifyTest extends \Codeception\Test\Unit
 
 	protected function _before()
 	{
+
 		require_once(e_HANDLER . "db_verify_class.php");
 		try
 		{
@@ -32,6 +33,7 @@ class db_verifyTest extends \Codeception\Test\Unit
 
 	public function testGetFields()
 	{
+
 		$data = "table_id int(10) unsigned NOT NULL auto_increment,
   table_name varchar(100) NOT NULL default '',
   table_email varchar(100) NOT NULL default '',
@@ -216,6 +218,7 @@ class db_verifyTest extends \Codeception\Test\Unit
 
 	}
 
+
 	/*
 			public function testClearCache()
 			{
@@ -260,25 +263,25 @@ class db_verifyTest extends \Codeception\Test\Unit
 			  KEY `schedule_invoice_id` (`schedule_invoice_id_key`)";
 
 		$expected = array(
-			'schedule_id'         =>
+			'schedule_id'          =>
 				array(
 					'type'    => 'PRIMARY',
 					'keyname' => 'schedule_id',
 					'field'   => 'schedule_id',
 				),
-				'schedule_description'    =>
+			'schedule_description' =>
 				array(
 					'type'    => 'FULLTEXT',
 					'keyname' => 'schedule_description',
 					'field'   => 'schedule_description',
 				),
-			'schedule_cust_id'    =>
+			'schedule_cust_id'     =>
 				array(
 					'type'    => 'UNIQUE',
 					'keyname' => 'schedule_cust_id_key',
 					'field'   => 'schedule_cust_id',
 				),
-			'schedule_invoice_id' =>
+			'schedule_invoice_id'  =>
 				array(
 					'type'    => '',
 					'keyname' => 'schedule_invoice_id_key',
@@ -296,6 +299,7 @@ class db_verifyTest extends \Codeception\Test\Unit
 	 */
 	public function testGetIndexOptionalLengthAndSortOrder()
 	{
+
 		$data = <<<EOF
 `field1` int(10) unsigned NOT NULL AUTO_INCREMENT,
 `field2` varchar(100) NOT NULL DEFAULT '',
@@ -336,6 +340,51 @@ EOF;
 
 		$result = $this->dbv->getIndex($data);
 		self::assertEquals($expected, $result);
+	}
+
+
+	function testGetIndexCompositeKeys()
+	{
+
+		$data = <<<DATA
+history_id int(10) unsigned NOT NULL auto_increment,
+history_table varchar(64) NOT NULL default '',
+history_pid varchar(64) NOT NULL default '',
+history_record_id int(10) unsigned NOT NULL default '0',
+history_action enum('delete','restore','update') NOT NULL,
+history_data LONGTEXT DEFAULT NULL,
+history_user_id int(10) unsigned NOT NULL default '0',
+history_datestamp int(10) unsigned NOT NULL default '0',
+history_restored int(10) unsigned NOT NULL default '0',
+PRIMARY KEY (history_id),
+KEY history_table_record (history_table, history_record_id),
+KEY history_datestamp (history_datestamp)
+DATA;
+
+		$expected = array(
+			'history_id'           =>
+				array(
+					'type'    => 'PRIMARY',
+					'keyname' => 'history_id',
+					'field'   => 'history_id',
+				),
+			'history_table_record' =>
+				array(
+					'type'    => '',
+					'keyname' => 'history_table,history_record_id',
+					'field'   => 'history_table_record',
+				),
+			'history_datestamp'    =>
+				array(
+					'type'    => '',
+					'keyname' => 'history_datestamp',
+					'field'   => 'history_datestamp',
+				),
+		);
+
+		$actual = $this->dbv->getIndex($data);
+		self::assertEquals($expected, $actual);
+
 	}
 
 	/**
@@ -389,28 +438,28 @@ EOF;
   KEY `table_user` (`table_user`)
   ";
 
-		$actual   = $this->dbv->getFixQuery('alter', 'table', 'table_ip', $sqlFileData);
+		$actual = $this->dbv->getFixQuery('alter', 'table', 'table_ip', $sqlFileData);
 		$expected = "ALTER TABLE `e107_table` CHANGE `table_ip` `table_ip` VARCHAR(45)  NOT NULL DEFAULT ''";
 		self::assertEquals($expected, $actual);
 
 
-		$actual   = $this->dbv->getFixQuery('insert', 'table', 'table_auth', $sqlFileData);
+		$actual = $this->dbv->getFixQuery('insert', 'table', 'table_auth', $sqlFileData);
 		$expected = "ALTER TABLE `e107_table` ADD `table_auth` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0' AFTER table_ip";
 		self::assertEquals($expected, $actual);
 
-		$actual   = $this->dbv->getFixQuery('insert', 'table', 'table_json', $sqlFileData);
+		$actual = $this->dbv->getFixQuery('insert', 'table', 'table_json', $sqlFileData);
 		$expected = "ALTER TABLE `e107_table` ADD `table_json` JSON NOT NULL AFTER table_category";
 		self::assertEquals($expected, $actual);
 
-		$actual   = $this->dbv->getFixQuery('index', 'table', 'table_email', $sqlFileData);
+		$actual = $this->dbv->getFixQuery('index', 'table', 'table_email', $sqlFileData);
 		$expected = 'ALTER TABLE `e107_table` ADD UNIQUE `table_email` (table_email);';
 		self::assertEquals($expected, $actual);
 
-		$actual   = $this->dbv->getFixQuery('index', 'table', 'table_user', $sqlFileData);
+		$actual = $this->dbv->getFixQuery('index', 'table', 'table_user', $sqlFileData);
 		$expected = 'ALTER TABLE `e107_table` ADD INDEX `table_user` (table_user);';
 		self::assertEquals($expected, $actual);
 
-		$actual   = $this->dbv->getFixQuery('create', 'table', 'table_user', $sqlFileData, 'InnoDB');
+		$actual = $this->dbv->getFixQuery('create', 'table', 'table_user', $sqlFileData, 'InnoDB');
 		$expected = 'CREATE TABLE `e107_table` (table_id int(10) unsigned NOT NULL auto_increment,
 				  table_name varchar(100) NOT NULL default \'\',
 				  table_email varchar(100) NOT NULL default \'\',
@@ -433,7 +482,7 @@ EOF;
 				  ) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8mb4;';
 
 		$expected = str_replace("\t", "", $expected);
-		$actual   = str_replace("\t", "", $actual);
+		$actual = str_replace("\t", "", $actual);
 
 		self::assertEquals($expected, $actual);
 
@@ -445,6 +494,7 @@ EOF;
 
 	public function testToMysql()
 	{
+
 		$tests = array(
 			0 =>
 				array(
@@ -510,6 +560,7 @@ EOF;
 	*/
 	public function testGetSqlFileTables()
 	{
+
 		$tests = array(
 
 
@@ -586,7 +637,7 @@ EOF;
 					UNIQUE KEY `eml_hash` (`eml_hash`)
 				  	) ENGINE=InnoDB DEFAULT CHARSET=utf8;",
 
-			'multiple' =>
+			'multiple'       =>
 
 				"CREATE TABLE e107_plugin (
 					  plugin_id int(10) unsigned NOT NULL auto_increment,
@@ -612,7 +663,7 @@ EOF;
 					) ENGINE=MyISAM;
 							
 				",
-				'syntax_variant' =>
+			'syntax_variant' =>
 				"CREATE TABLE e107_test (
 				 `test_id` int(10) unsigned NOT NULL,
 				 `test_name` varchar(100) not null default '',
@@ -784,7 +835,7 @@ EOF;
 						),
 				),
 
-				'syntax_variant' => array(
+			'syntax_variant' => array(
 				'tables' =>
 					array(
 						0 => 'test',
@@ -817,7 +868,7 @@ EOF;
 				self::assertEquals($data, $actual['data'][$k], "Table " . $table . "['data'][" . $k . "] did not match.");
 			}
 
-			self::assertEquals($expected[$table]['engine'], $actual['engine'],  "Test Key: '" . $table. "' failed on 'engine'");
+			self::assertEquals($expected[$table]['engine'], $actual['engine'], "Test Key: '" . $table . "' failed on 'engine'");
 
 		}
 
@@ -827,19 +878,19 @@ EOF;
 	{
 
 		$fileData = array();
-		$sqlData  = array();
+		$sqlData = array();
 
 		$fileData['field'] = $this->dbv->getFields($file);
-		$sqlData['field']  = $this->dbv->getFields($sql);
+		$sqlData['field'] = $this->dbv->getFields($sql);
 
 		$fileData['index'] = $this->dbv->getIndex($file);
-		$sqlData['index']  = $this->dbv->getIndex($sql);
+		$sqlData['index'] = $this->dbv->getIndex($sql);
 
 		$fileData['engine'] = $this->dbv->getIntendedStorageEngine("InnoDB");
-		$sqlData['engine']  = $this->dbv->getCanonicalStorageEngine("InnoDB");
+		$sqlData['engine'] = $this->dbv->getCanonicalStorageEngine("InnoDB");
 
 		$fileData['charset'] = $this->dbv->getIntendedCharset("utf8mb4");
-		$sqlData['charset']  = $this->dbv->getCanonicalCharset("utf8mb4");
+		$sqlData['charset'] = $this->dbv->getCanonicalCharset("utf8mb4");
 
 
 		return ['fileData' => $fileData, 'sqlData' => $sqlData];
@@ -848,7 +899,6 @@ EOF;
 
 	public function testPrepareResults()
 	{
-
 
 
 		$sql = "`schedule_id` int(10) unsigned NOT NULL auto_increment,
@@ -874,12 +924,12 @@ EOF;
 			  KEY `schedule_invoice_id` (`schedule_invoice_id`)
             ";
 
-		$result = $this->prepareResults($file,$sql);
+		$result = $this->prepareResults($file, $sql);
 
 		$this->dbv->prepareResults('schedule', 'myplugin', $result['sqlData'], $result['fileData']);
 
 		$resultFields = $this->dbv->getResults();
-		$expected     = array(
+		$expected = array(
 			'schedule' =>
 				array(
 					'schedule_id'         =>
@@ -952,7 +1002,7 @@ EOF;
 
 
 		$resultIndices = $this->dbv->getResults('indices');
-		$expected      = array(
+		$expected = array(
 			'schedule' =>
 				array(
 					'schedule_id'         =>
@@ -981,7 +1031,7 @@ EOF;
 								),
 							'_file'   => 'myplugin',
 						),
-					'schedule_name'    =>
+					'schedule_name'       =>
 						array(
 							'_status' => 'missing_index',
 							'_valid'  =>
@@ -998,18 +1048,18 @@ EOF;
 		self::assertEquals($expected, $resultIndices);
 
 		$result['fileData']['charset'] = "utf8mb4";
-		$result['sqlData']['charset']  = "utf8";
+		$result['sqlData']['charset'] = "utf8";
 
 		$result = $this->dbv->prepareResults('schedule', 'myplugin', $result['sqlData'], $result['fileData']);
 		$resultFields = $this->dbv->getErrors();
-		$expected = array (
-		  'schedule' =>
-		  array (
-		    '_status' => 8,
-		    '_file' => 'myplugin',
-		    '_valid_8' => 'utf8mb4',
-		    '_invalid_8' => 'utf8',
-		  ),
+		$expected = array(
+			'schedule' =>
+				array(
+					'_status'    => 8,
+					'_file'      => 'myplugin',
+					'_valid_8'   => 'utf8mb4',
+					'_invalid_8' => 'utf8',
+				),
 		);
 		self::assertSame($expected, $resultFields);
 		self::assertSame(1, $this->dbv->errors());
@@ -1018,6 +1068,7 @@ EOF;
 
 	public function testSyntaxCheck()
 	{
+
 		$file = "`affiliate_id` int(10) unsigned NOT NULL auto_increment,
 		  `affiliate_code` varchar(10) NOT NULL DEFAULT '',
 		  `affiliate_name` varchar(30) NOT NULL DEFAULT '',
@@ -1040,7 +1091,6 @@ EOF;
 
 
 		$result = $this->dbv->hasSyntaxIssue($file);
-
 
 
 		var_export($result);
@@ -1071,6 +1121,7 @@ EOF;
 
 	public function testGetCanonicalStorageEngine()
 	{
+
 		$input = "InnoDB";
 
 		$output = $this->dbv->getCanonicalStorageEngine($input);
@@ -1080,6 +1131,7 @@ EOF;
 
 	public function testGetCanonicalStorageEngineUnknownStorageEngine()
 	{
+
 		$this->expectException(UnexpectedValueException::class);
 
 		$this->dbv->getCanonicalStorageEngine("FakeEngine");
@@ -1087,7 +1139,8 @@ EOF;
 
 	public function testGetCanonicalCharsetUtf8Alias()
 	{
-		$input    = "utf8";
+
+		$input = "utf8";
 		$expected = "utf8mb4";
 
 		$output = $this->dbv->getCanonicalCharset($input);
@@ -1097,6 +1150,7 @@ EOF;
 
 	public function testGetCanonicalCharsetOther()
 	{
+
 		$inputs = ["latin1", "utf8mb3", "utf8mb4"];
 
 		foreach($inputs as $input)
@@ -1109,12 +1163,13 @@ EOF;
 
 	public function testGetIntendedStorageEngine()
 	{
+
 		$output = $this->dbv->getIntendedStorageEngine("MyISAM");
 		self::assertEquals("InnoDB", $output);
 
 		$output = $this->dbv->getIntendedStorageEngine("MYISAM");
 		self::assertEquals("InnoDB", $output);
-		
+
 		$output = $this->dbv->getIntendedStorageEngine("InnoDB");
 		self::assertEquals("InnoDB", $output);
 
@@ -1130,6 +1185,7 @@ EOF;
 
 	public function testGetIntendedCharset()
 	{
+
 		$output = $this->dbv->getIntendedCharset("");
 		self::assertEquals("utf8mb4", $output);
 
@@ -1154,6 +1210,7 @@ EOF;
 
 	public function testRunFix()
 	{
+
 		self::markTestSkipped('Inconsistent behavior');
 
 		$sql = e107::getDb();
@@ -1165,7 +1222,7 @@ EOF;
 
 		// Prepare table.
 		$sql->gen('ALTER TABLE `#rss` CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;');
-		$sql->gen('SHOW TABLE STATUS WHERE Name = "'.MPREFIX.'rss"');
+		$sql->gen('SHOW TABLE STATUS WHERE Name = "' . MPREFIX . 'rss"');
 		$row = $sql->fetch('assoc');
 
 		if(isset($row['Collation'])) // TODO Get Working on all.
@@ -1181,14 +1238,13 @@ EOF;
 
 
 		// validate table.
-		$sql->gen('SHOW TABLE STATUS WHERE Name = "'.MPREFIX.'rss"');
+		$sql->gen('SHOW TABLE STATUS WHERE Name = "' . MPREFIX . 'rss"');
 		$row = $sql->fetch('assoc');
 
 		if(isset($row['Collation'])) // TODO Get Working on all.
 		{
 			self::assertStringContainsString('utf8mb4_general_ci', $row['Collation']);
 		}
-
 
 
 	}

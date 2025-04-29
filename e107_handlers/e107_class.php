@@ -74,6 +74,13 @@ class e107
 	protected $HTTP_SCHEME;
 
 	/**
+	 * Storage for host configuration from siteurl or e107_config $config['other']['site_hosts']
+	 *
+	 * @var array
+	 */
+	protected $hosts = [];
+
+	/**
 	 * Used for runtime caching of user extended struct
 	 *
 	 * @var array
@@ -542,6 +549,11 @@ class e107
 			}
 		}
 
+		if(!empty($e107_config_mysql_info['db']))
+		{
+			$e107_config_mysql_info['defaultdb'] = $e107_config_mysql_info['db'];
+		}
+
 		return $this->_init($e107_paths, $e107_root_path, $e107_config_mysql_info, $e107_config_override);
 	}
 
@@ -620,6 +632,11 @@ class e107
 		if(empty($e107_config_override['site_path']))
 		{
 			$this->site_path = $this->makeSiteHash($e107_config_mysql_info['defaultdb'], $e107_config_mysql_info['prefix']);
+		}
+
+		if(!empty($e107_config_override['site_hosts']))
+		{
+			$this->hosts = (array) $e107_config_override['site_hosts'];
 		}
 
 		// Set default folder (and override paths) if missing from e107_config.php
@@ -2346,7 +2363,7 @@ class e107
 	 *   within a single request. The variant that has been passed first is used; different variant names in subsequent
 	 *   calls are ignored.
 	 *
-	 * @return array|boolean
+	 * @return array|boolean|null
 	 *  - In case of 'detect': An associative array containing registered information for the library specified by
 	 *    $name, or FALSE if the library $name is not registered.
 	 *  - In case of 'load': An associative array of the library information.
@@ -2907,7 +2924,7 @@ class e107
 	 * @param string $pluginName e.g. faq, page
 	 * @param string $addonName eg. e_cron, e_url, e_module
 	 * @param mixed $className [optional] true - use default name, false - no object is returned (include only), any string will be used as class name
-	 * @return object
+	 * @return object|null
 	 */
 	public static function getAddon($pluginName, $addonName, $className = true)
 	{
@@ -3636,7 +3653,7 @@ class e107
 	 * @param string $path
 	 * @param boolean $info
      * @param boolean $noWrapper
-	 * @return string|array
+	 * @return string|array|false
 	 */
 	public static function _getTemplate($id, $key, $reg_path, $path, $info = false, $noWrapper = false)
 	{
@@ -3697,45 +3714,138 @@ class e107
 		return ($ret && is_array($ret) && isset($ret[$key])) ? $ret[$key] : false;
 	}
 
+
 	/**
-	 * Load language file, replacement of include_lan()
-	 * @outdated use e107::lan() or e107::coreLan(), e107::plugLan(), e107::themeLan()
-	 * @param string $path
-	 * @param boolean $force
-	 * @return string
+	 * Load a language file, serving as a replacement for the legacy include_lan() function.
+	 *
+	 * This method includes a language file and processes it based on its return type. For old-style files using define(),
+	 * it returns the result of the include operation (typically 1 for success). For new-style files returning an array,
+	 * it defines constants from the array and applies an English fallback if the current language is not English.
+	 *
+	 * For modern language loading, consider using e107::lan(), e107::coreLan(), e107::plugLan(), or e107::themeLan()
+	 * as they provide more structured and maintainable options.
+	 *
+	 * @param string $path  The full path to the language file (e.g., 'e107_languages/English/lan_admin.php' or 'folder/Spanish/Spanish_global.php').
+	 * @param bool   $force [optional] If true, forces inclusion with include() instead of include_once(). Defaults to false.
+	 * @param string $lang  [optional] The language of the file (e.g., 'English', 'Spanish'). If empty, uses e_LANGUAGE or defaults to 'English'.
+	 * @return bool|int|string Returns:
+	 *                      - false if the file is not readable or no fallback is available,
+	 *                      - int (typically 1) for successful inclusion of old-style files,
+	 *                      - true for successful processing of new-style array-based files,
+	 *                      - string (empty '') if the include result is unset for old-style files.
 	 */
-	public static function includeLan($path, $force = false)
+	public static function includeLan($path, $force = false, $lang = '')
 	{
-		if (!is_readable($path))
-		{
-			if ((e_LANGUAGE === 'English') || self::getPref('noLanguageSubs'))
-			{
-				return false;
-			}
-
-			self::getDebug()->log("Couldn't load language file: " . $path);
-
-			$path = str_replace(e_LANGUAGE, 'English', $path);
-
-			self::getDebug()->log("Attempts to load default language file: " . $path);
-
-			if(!is_readable($path))
-			{
-				self::getDebug()->log("Couldn't load default language file: " . $path);
-				return false;
-			}
-		}
 
 		$adminLanguage = self::getPref('adminlanguage');
 
-		if(e_ADMIN_AREA && vartrue($adminLanguage))
+		if(deftrue('e_ADMIN_AREA') && !empty($adminLanguage))
 		{
 			$path = str_replace(e_LANGUAGE, $adminLanguage, $path);
+			$lang = $adminLanguage;
 		}
 
-		$ret = ($force) ? include($path) : include_once($path);
+		if(is_readable($path))
+		{
+			$ret = ($force) ? include($path) : include_once($path);
+		}
+		else
+		{
+			$ret = false;
+		}
+
+		// Determine the language: use $lang if provided, otherwise fall back to e_LANGUAGE or 'English'
+		if ($lang)
+		{
+			$effectiveLang = $lang;
+		}
+		else
+		{
+			$effectiveLang = defined('e_LANGUAGE') ? e_LANGUAGE : 'English';
+		}
+
+		if(is_array($ret))
+		{
+			self::includeLanArray($ret, $path, $effectiveLang);
+
+			return true; // New-style success indicator
+		}
+		elseif($effectiveLang !== 'English' && !self::getPref('noLanguageSubs', false)) // Fallback
+		{
+			self::includeLanArray(null, $path, $effectiveLang);
+		}
+
+
+		// Old-style behavior: return the include result or empty string if unset
 		return (isset($ret)) ? $ret : "";
 	}
+
+	/**
+	 * Helper method to process array-based language files and apply English fallback.
+	 *
+	 * Defines constants from the provided terms array and, for non-English languages, ensures all English
+	 * constants are defined as a fallback for any missing terms.
+	 *
+	 * @param array  $terms The array of language constants returned by the included file (e.g., ['LAN_FOO' => 'Bar']).
+	 * @param string $path  The path to the language file, used to determine the English fallback path.
+	 * @param string $lang  The language of the current file (e.g., 'Spanish'), used to decide if English fallback is needed.
+	 * @return void
+	 */
+	private static function includeLanArray($terms, $path, $lang)
+	{
+
+		// Use basename of the path as a cache key (e.g., "Spanish_global.php")
+		$file_key = basename($path);
+
+		static $english_terms = []; // Cache English terms by file key
+
+		// Define constants from the current language’s array first
+		if(!empty($terms) && is_array($terms))
+		{
+			foreach($terms as $const => $value)
+			{
+				if(!defined($const))
+				{
+					define($const, $value);
+				}
+			}
+		}
+		// Load English fallback if not cached and not already English
+		if($lang !== 'English' && !isset($english_terms[$file_key]))
+		{
+			$english_path = str_replace($lang, 'English', $path);
+
+			if(is_readable($english_path))
+			{
+				$english_terms[$file_key] = include($english_path);
+				if(!is_array($english_terms[$file_key]))
+				{
+					$english_terms[$file_key] = [];
+				}
+			}
+			else
+			{
+				trigger_error("No English fallback found for: $english_path", E_USER_WARNING);
+				$english_terms[$file_key] = [];
+			}
+		}
+
+		// For non-English, define English constants only if not already defined
+
+		if($lang !== 'English' && !empty($english_terms[$file_key]))
+		{
+			foreach($english_terms[$file_key] as $const => $english_value)
+			{
+				if(!defined($const))
+				{
+					define($const, $english_value);
+					trigger_error("Missing $lang constant: $const in $path", E_USER_WARNING);
+				}
+			}
+		}
+	}
+
+
 
 	/**
 	 * Simplify importing of core Language files.
@@ -3812,7 +3922,7 @@ class e107
 	 * @param string|bool|null $fname filename without the extension part (e.g. 'common')
 	 * @param boolean $flat false (default, preferred) Language folder structure; true - prepend Language to file name
 	 * @param boolean $returnPath When true, returns the path, but does not include the file or set the registry.
-	 * @return bool|null
+	 * @return bool|null|string
 	 */
 	public static function plugLan($plugin, $fname = '', $flat = false, $returnPath = false)
 	{
@@ -4219,7 +4329,7 @@ class e107
 	 * 	'fragment' => '', // A fragment identifier (named anchor) to append to the URL. Do not include the leading '#' character
 	 * 	'legacy' => false, // When true, legacy URLs will be generated regardless of mod_rewrite status
 	 * 	]
-	 * @return string   The SEF URL with HTML special characters escaped
+	 * @return string|false   The SEF URL with HTML special characters escaped
 	 *                  (equivalent to the htmlspecialchars() output)
 	 */
 	public static function url($plugin = '', $key = null, $row = array(), $options = array())
@@ -4449,7 +4559,7 @@ class e107
 	/**
 	 * Getter/Setter for schema. eg. Google structured data etc.
 	 * @param string $json
-	 * @return string|bool
+	 * @return string|bool|null
 	 */
 	public static function schema($json = null)
 	{
@@ -4672,8 +4782,9 @@ class e107
 		{
 			if (is_readable($s))
 			{
-				$ret = include_once($s);
-				return (isset($ret)) ? $ret : "";
+				return self::includeLan($s);
+			//	$ret = include_once($s);
+			//	return (isset($ret)) ? $ret : "";
 			}
 		}
 		if ((e_LANGUAGE === 'English') || self::getPref('noLanguageSubs'))
@@ -4686,8 +4797,9 @@ class e107
 			$s = str_replace(e_LANGUAGE, 'English', $s);
 			if (is_readable($s))
 			{
-				$ret = include_once($s);
-				return (isset($ret)) ? $ret : "";
+				return self::includeLan($s);
+			//	$ret = include_once($s);
+			//	return (isset($ret)) ? $ret : "";
 			}
 		}
 		return FALSE;		// Nothing found
@@ -4811,7 +4923,7 @@ class e107
 	 * @param string $key array key
 	 * @param string $type array type _SESSION, _GET etc.
 	 * @param bool $base64
-	 * @return bool|null
+	 * @return bool|null|string
 	 */
 	public static function filter_request($input,$key,$type,$base64=FALSE)
 	{
@@ -5534,69 +5646,73 @@ class e107
 	 */
 	public function set_urls_deferred()
 	{
-		$fallback =  $this->HTTP_SCHEME . '://' . filter_var($_SERVER['HTTP_HOST'], FILTER_SANITIZE_URL). e_HTTP; // worst case secenario.
-		$configured_url = self::getPref('siteurl', $fallback);
+		$siteurl        = self::getPref('siteurl');
+		$defaultHost    = (array) parse_url($siteurl, PHP_URL_HOST);
+		$defaultHost    = preg_replace('/^www\./', '', $defaultHost);
 
-	    if (self::isCli())
-	    {
-	        define('SITEURL', $configured_url);
-	        define('SITEURLBASE', rtrim(SITEURL, '/'));
-	    }
-	    else
-	    {
+		$hosts          = !empty($this->hosts) ? $this->hosts : $defaultHost;
 
-		    $configured_domain = parse_url($configured_url, PHP_URL_HOST);
+		if(self::isCli())
+		{
+			define('SITEURL', $siteurl);
+			define('SITEURLBASE', rtrim(SITEURL,'/'));
+		}
+		elseif(!empty($hosts) && !$this->isAllowedHost($hosts, $_SERVER['HTTP_HOST']))
+		{
+			error_log('The configured siteurl in your preferences or e107_config "host" value does not match the HTTP_HOST: '.$_SERVER['HTTP_HOST']);
+			die('Site Configuration Issue Detected. Please contact your webmaster.');
+		}
+		else
+		{
+			define('SITEURLBASE', $this->HTTP_SCHEME.'://'. filter_var($_SERVER['HTTP_HOST'], FILTER_SANITIZE_URL));
+			define('SITEURL', SITEURLBASE.e_HTTP);
+		}
 
-		    // Define cache file path in system folder
-		    $cache_file = e_SYSTEM . 'cache/ip_cache.json';
-		    $cache = [];
+		// login/signup
+		define('e_SIGNUP', SITEURL.(file_exists(e_BASE.'customsignup.php') ? 'customsignup.php' : 'signup.php'));
 
-		    // Load existing cache if available
-		    if (file_exists($cache_file))
-		    {
-		        $cache = json_decode(file_get_contents($cache_file), true) ?: [];
-		    }
+		if(!defined('e_LOGIN'))
+		{
+			define('e_LOGIN', SITEURL.(file_exists(e_BASE.'customlogin.php') ? 'customlogin.php' : 'login.php'));
+		}
 
-		    // Resolve configured domain IP if not cached
-		    if (!isset($cache[$configured_domain]))
-		    {
-		        $cache[$configured_domain] = gethostbyname($configured_domain);
-		        file_put_contents($cache_file, json_encode($cache, JSON_PRETTY_PRINT));
-		    }
+		return $this;
+	}
 
-		    $configured_ip = $cache[$configured_domain];
 
-	        $requested_host = filter_var($_SERVER['HTTP_HOST'], FILTER_SANITIZE_URL);
+	/**
+	 * Check if the current host ($_SERVER['HTTP_HOST']) matches any configured host(s).
+	 *
+	 * @param array  $allowedHosts Array of configured hostnames.
+	 * @param string $httpHost     HTTP_HOST being validated.
+	 *
+	 * @return bool True if host is allowed, false otherwise.
+	 */
+	private function isAllowedHost(array $allowedHosts, string $httpHost): bool
+	{
+		if (empty($allowedHosts))
+		{
+			error_log('The configured siteurl in your preferences does not contain a a domain name');
+			return true; // Allowed if no hosts.
+		}
 
-	        // Resolve requested host IP if not cached
-	        if (!isset($cache[$requested_host]))
-	        {
-	            $cache[$requested_host] = gethostbyname($requested_host);
-	            file_put_contents($cache_file, json_encode($cache, JSON_PRETTY_PRINT));
-	        }
-	        $requested_ip = $cache[$requested_host];
+		$httpHost    = preg_replace('/^www\./', '', $httpHost);
 
-	        $allowed_ips = [$configured_ip];
-	        if (in_array($requested_ip, $allowed_ips) && $requested_ip !== $requested_host)
-	        {
-	            define('SITEURLBASE', $this->HTTP_SCHEME . '://' . $requested_host);
-	            define('SITEURL', SITEURLBASE . e_HTTP);
-	        }
-	        else
-	        {
-	            define('SITEURL', $configured_url);
-	            define('SITEURLBASE', rtrim(SITEURL, '/'));
-	        }
-	    }
+		foreach ($allowedHosts as $host)
+		{
+			if(empty($host))
+			{
+				continue;
+			}
 
-	    define('e_SIGNUP', SITEURL . (file_exists(e_BASE . 'customsignup.php') ? 'customsignup.php' : 'signup.php'));
+			$host = preg_replace('/^www\./', '', $host);
+			if ($httpHost === $host || str_ends_with($httpHost, '.' . $host))
+			{
+				return true;
+			}
+		}
 
-	    if (!defined('e_LOGIN'))
-	    {
-	        define('e_LOGIN', SITEURL . (file_exists(e_BASE . 'customlogin.php') ? 'customlogin.php' : 'login.php'));
-	    }
-
-	    return $this;
+		return false;
 	}
 
 	/**
@@ -6048,67 +6164,79 @@ class e107
 	 */
 	public function __get($name)
 	{
-		switch ($name)
+
+		// Use a static cache to store instances
+		static $instances = [];
+
+		if(isset($instances[$name]))
+		{
+			return $instances[$name];
+		}
+
+		switch($name)
 		{
 			case 'tp':
 				$ret = self::getParser();
-			break;
+				break;
 
 			case 'sql':
 				$ret = self::getDb();
-			break;
+				break;
 
 			case 'ecache':
 				$ret = self::getCache();
-			break;
+				break;
 
 			case 'arrayStorage':
 				$ret = self::getArrayStorage();
-			break;
+				break;
 
 			case 'e_event':
 				$ret = self::getEvent();
-			break;
+				break;
 
 			case 'ns':
 				$ret = self::getRender();
-			break;
+				break;
 
 			case 'url':
 				$ret = self::getUrl();
-			break;
+				break;
 
 			case 'admin_log':
 				$ret = self::getLog();
-			break;
+				break;
 
 			case 'override':
-				$ret = self::getSingleton('override', e_HANDLER.'override_class.php');
-			break;
+				$ret = self::getSingleton('override', e_HANDLER . 'override_class.php');
+				break;
 
 			case 'notify':
 				$ret = self::getNotify();
-			break;
+				break;
 
 			case 'e_online':
 				$ret = self::getOnline();
-			break;
+				break;
 
 			case 'eIPHandler':
 				$ret = self::getIPHandler();
 				break;
-				
+
 			case 'user_class':
 				$ret = self::getUserClass();
-			break;
+				break;
 
 			default:
-				trigger_error('$e107->$'.$name.' not defined', E_USER_WARNING);
+				trigger_error('$e107->$' . $name . ' not defined', E_USER_WARNING);
+
 				return null;
-			break;
+				break;
 		}
 
-		$this->$name = $ret;
+		// Store the result in the static cache
+		$instances[$name] = $ret;
+
 		return $ret;
 	}
 

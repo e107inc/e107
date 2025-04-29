@@ -1197,18 +1197,22 @@ class e_admin_dispatcher
 	 */
 	public function hasRouteAccess($route)
 	{
-		if(isset($this->access[$route]) && !e107::getUser()->checkClass($this->access[$route], false))
+		if(empty($route))
+		{
+		    return true;
+		}
+
+		if(isset($this->access[$route]) && !check_class($this->access[$route]))
 		{
 			e107::getMessage()->addDebug('Userclass Permissions Failed: ' .$this->access[$route]);
 			return false;
 		}
 
-		if(is_array($this->perm) && isset($this->perm[$route]) && !e107::getUser()->checkAdminPerms($this->perm[$route]))
+		if(is_array($this->perm) && isset($this->perm[$route]) && !getperms($this->perm[$route]))
 		{
 			e107::getMessage()->addDebug('Admin Permissions Failed.' .$this->perm[$route]);
 			return false;
 		}
-
 
 		return true;
 	}
@@ -1279,6 +1283,18 @@ class e_admin_dispatcher
 	{
 		return $this->adminMenu;
 	}
+
+	/**
+	 * Sets the administrative menu data.
+	 *
+	 * @param array $menu The menu data to set.
+	 * @return $this
+	 */
+	public function setMenuData($menu)
+	{
+		$this->adminMenu = $menu;
+		return $this;
+	}
 	
 	/**
 	 * Get admin menu array
@@ -1296,6 +1312,26 @@ class e_admin_dispatcher
 	public function getMenuAliases()
 	{
 		return $this->adminMenuAliases;
+	}
+
+	/**
+	 * Retrieves the menu icon associated with the admin panel.
+	 *
+	 * @return string The menu icon.
+	 */
+	public function getMenuIcon()
+	{
+		return $this->adminMenuIcon;
+	}
+
+	/**
+	 * Retrieves the menu title.
+	 *
+	 * @return string The title of the menu.
+	 */
+	public function getMenuTitle()
+	{
+		return defset($this->menuTitle,$this->menuTitle);
 	}
 
 	/**
@@ -1566,132 +1602,148 @@ class e_admin_dispatcher
 		return 'e_admin_controller';
 	}
 
+	public function hasPerms($perms)
+	{
+		return getperms($perms);
+	}
+
+	public function setAccess($access)
+	{
+		$this->access = $access;
+		return $this;
+	}
+
 	/**
 	 * Generic Admin Menu Generator
-	 * @return string
+	 *
+	 * @return string|array
 	 */
-	public function renderMenu()
+
+	public function renderMenu($debug = false)
 	{
-		
+
 		$tp = e107::getParser();
-		$var = array();
+		$adminMenu = $this->getMenuData();
+		$var = [];
 		$selected = false;
 
-		foreach($this->adminMenu as $key => $val)
+		// First loop: Build $var without permissions checks
+		foreach($adminMenu as $key => $val)
 		{
 
-			if(isset($val['perm']) && $val['perm']!=='' && !getperms($val['perm']))
+		//	$parentKey = '';
+
+			$tmp = explode('/', trim($key, '/'), 2); // mode/action
+
+
+			$isSubItem = !empty($val['group']);
+
+			if($isSubItem)
 			{
-				continue;
+				$parentKey = $val['group'] ?? '';
 			}
 
-			$tmp = explode('/', trim($key, '/'), 3);
+			$processedItem = $this->processMenuItem($val, $key, $tmp);
+			$processedItem['link_id'] = str_replace('/', '-', $key);
 
-			// sync with mode/route access
-			if(!$this->hasModeAccess($tmp[0]) || !$this->hasRouteAccess($tmp[0].'/'.varset($tmp[1])))
-			{
-				continue;
-			}
 
-			// custom 'selected' check
-			if(isset($val['selected']) && $val['selected'])
+			if(!empty($val['selected'])) // Custom selector.
 			{
 				$selected = $val['selected'] === true ? $key : $val['selected'];
 			}
-
-			foreach ($val as $k=>$v)
+			elseif(!empty($processedItem['selected'])) // match detected in 'uri'
 			{
-				switch($k)
+				$selected = $processedItem['selected'];
+			}
+
+			if($isSubItem)
+			{
+				if(empty($var[$parentKey]))
 				{
-					case 'caption':
-						$k2 = 'text';
-						$v = defset($v, $v);
-
-					break;
-
-					case 'url':
-						$k2 = 'link';
-							$qry = (isset($val['query'])) ? $val['query'] : '?mode='.$tmp[0].'&amp;action='.$tmp[1];
-						$v = $tp->replaceConstants($v, 'abs').$qry;
-					break;
-
-					case 'uri':
-						$k2 = 'link';
-						$v = $tp->replaceConstants($v, 'abs');
-
-						if(!empty($v) && ($v === e_REQUEST_URI))
-						{
-							$selected = $key;
-						}
-
-					break;
-
-
-					case 'badge': // array('value'=> int, 'type'=>'warning');
-						$k2 = 'badge';
-						$v = (array) $v;
-					break;
-
-					case 'icon':
-						$k2 = 'image_src';
-						$v = (string) $v.'.glyph';
-					break;
-
-					default:
-						$k2 = $k;
-						
-					break;
+					$var[$parentKey] = [
+						'text'      => 'Unknown',
+						'image_src' => e_navigation::guessMenuIcon($parentKey),
+						'link_id'   => str_replace('/', '-', $parentKey)
+					];
 				}
 
-
-				// Access check done above
-				// if($val['perm']!= null) // check perms
-				// {
-					// if(getperms($val['perm']))
-					// {
-						// $var[$key][$k2] = $v;
-					// }
-				// }
-				// else
+				// Use full key for sub-items to match $adminMenu
+				$subKey = $key;
+				if(!is_array($var[$parentKey]))
 				{
-					$var[$key][$k2] = $v;
-				
+					$var[$parentKey] = [];
+				}
+
+				if(!isset($var[$parentKey]['sub'][$subKey]))
+				{
+					$var[$parentKey]['sub'][$subKey] = $processedItem;
+				}
+
+				if(!isset($var[$parentKey]['link_class']))
+				{
+					$var[$parentKey]['link_class'] = '';
+				}
+
+				if(!empty($processedItem['badge']) && strpos($var[$parentKey]['link_class'], 'has-badge') === false)
+				{
+					$var[$parentKey]['link_class'] .= ' has-badge';
+				}
+
+			}
+			else
+			{
+				if(!isset($var[$key]))
+				{
+					$var[$key] = $processedItem;
 				}
 
 			}
 
-			// guess an icon.
-			if(!isset($var[$key]['image_src']))
-			{
-				$var[$key]['image_src'] = e_navigation::guessMenuIcon($key);
-			}
-			
-			
-			// TODO slide down menu options?
-			if(!vartrue($var[$key]['link']))
-			{
-				$var[$key]['link'] = e_REQUEST_SELF.'?mode='.$tmp[0].'&amp;action='.$tmp[1]; // FIXME - URL based on $modes, remove url key
-			}
 
-				
-			if(varset($val['tab']))
-			{
-				$var[$key]['link'] .= '&amp;tab=' .$val['tab'];
-			}
+		}
 
-			/*$var[$key]['text'] = $val['caption'];
-			$var[$key]['link'] = (vartrue($val['url']) ? $tp->replaceConstants($val['url'], 'abs') : e_SELF).'?mode='.$tmp[0].'&action='.$tmp[1];
-			$var[$key]['perm'] = $val['perm'];	*/
-			if(!empty($val['modal']))
+
+		if(!$selected)
+		{
+			$request = $this->getRequest();
+			$selected = $request->getMode() . '/' . $request->getAction();
+		//	e107::getMessage()->addDebug('No selected item found, using default: ' . $selected);
+		}
+
+		// Apply permissions restrictions
+		$var = $this->restrictMenuAccess($var, $adminMenu);
+
+
+		// Second loop: Handle links and collapse attributes without permissions checks
+		foreach($var as $key => &$item)
+		{
+			if(!empty($item['sub']))
 			{
-				$var[$key]['link_class'] = ' e-modal';
-				if(!empty($val['modal-caption']))
+				$item['link'] = '#';
+				$item['link_caret'] = true;
+				$item['link_data'] = [
+					'data-toggle' => 'collapse',
+					'data-target' => '#sub-' . $item['link_id'],
+					'role'        => 'button'
+				];
+				$item['sub_class'] = 'collapse';
+				$item['caret'] = true;
+
+				foreach($item['sub'] as $subKey => &$subItem)
 				{
-					$var[$key]['link_data'] = array('data-modal-caption' => $val['modal-caption']);
+					if($selected === $subKey && !empty($subItem['group']))
+					{
+						$parent = $subItem['group'];
+						$var[$parent]['link_data']['aria-expanded'] = 'true';
+						$item['sub_class'] = 'collapse in';
+					}
 				}
-
 			}
-
+			elseif(!isset($item['link']))
+			{
+				$tmp = explode('/', trim($key, '/'), 2);
+				$item['link'] = e_REQUEST_SELF . '?mode=' . $tmp[0] . '&action=' . ($tmp[1] ?? 'main');
+			}
 		}
 
 
@@ -1700,18 +1752,14 @@ class e_admin_dispatcher
 			return '';
 		}
 
-		$request = $this->getRequest();
-		if(!$selected)
-		{
-			$selected = $request->getMode() . '/' . $request->getAction();
-		}
-		$selected = vartrue($this->adminMenuAliases[$selected], $selected);
+		$adminMenuAliases = $this->getMenuAliases();
+		$selected = vartrue($adminMenuAliases[$selected], $selected);
 
 		$icon = '';
-
-		if(!empty($this->adminMenuIcon))
+		$adminMenuIcon = $this->getMenuIcon();
+		if(!empty($adminMenuIcon))
 		{
-			$icon = e107::getParser()->toIcon($this->adminMenuIcon);
+			$icon = e107::getParser()->toIcon($adminMenuIcon);
 		}
 		elseif(deftrue('e_CURRENT_PLUGIN'))
 		{
@@ -1720,11 +1768,218 @@ class e_admin_dispatcher
 
 		$toggle = "<span class='e-toggle-sidebar'><!-- --></span>";
 
-		$var['_extras_'] = array('icon'=> $icon, 'return'=>true);
+		$var['_extras_'] = ['icon' => $icon, 'return' => true];
 
-	//	$var['_icon_'] = $icon;
+		if($debug)
+		{
+			return $var;
+		}
 
-		return e107::getNav()->admin($this->menuTitle, $selected, $var);
+		return $toggle . e107::getNav()->admin($this->getMenuTitle(), $selected, $var);
+	}
+
+	/**
+	 * Restrict menu items based on permissions and access.
+	 *
+	 * @param array $var       The menu structure to filter.
+	 * @param array $adminMenu The original menu data for reference.
+	 * @return array The filtered menu structure.
+	 */
+	private function restrictMenuAccess($var, $adminMenu)
+	{
+
+		foreach($var as $key => &$item)
+		{
+			// Check top-level item permissions
+			$val = $adminMenu[$key] ?? [];
+
+			// Handle single-segment keys (e.g., 'treatment') by using the key as the mode
+			$mode = strpos($key, '/') !== false ? explode('/', trim($key, '/'), 2)[0] : $key;
+
+			// Default to true for hasPerms if perm is unset or empty
+			$hasPerms = isset($val['perm']) && $val['perm'] !== '' ? $this->hasPerms($val['perm']) : true;
+			if(!$hasPerms || !$this->hasModeAccess($mode) || !$this->hasRouteAccess($key))
+			{
+				unset($var[$key]);
+				continue;
+			}
+
+			if(!empty($item['sub']))
+			{
+				$hasValidSubItems = false;
+				$parentKey = $key;
+				foreach($item['sub'] as $subKey => &$subItem)
+				{
+					$subVal = $adminMenu[$subKey] ?? [];
+					// Log permissions check for sub-item only when removed
+					if(!isset($subVal['group']) || $subVal['group'] !== $parentKey)
+					{
+						unset($item['sub'][$subKey]);
+					//	fwrite(STDOUT, "B. restrictMenuAccess: removing subKey=$subKey, parent=$parentKey, group=" . ($subVal['group'] ?? 'none') . ", perm=" . ($subVal['perm'] ?? 'none') . ", hasPerms=" . var_export(isset($subVal['perm']) && $subVal['perm'] !== '' ? $this->hasPerms($subVal['perm']) : true, true) . ", hasModeAccess=" . var_export($this->hasModeAccess($subMode ?? $subKey), true) . ", hasRouteAccess=" . var_export($this->hasRouteAccess($subKey), true) . ", parentRouteAccess=" . var_export($this->hasRouteAccess($parentKey), true) . "\n");
+						continue;
+					}
+					$subMode = strpos($subKey, '/') !== false ? explode('/', trim($subKey, '/'), 2)[0] : $subKey;
+					// Default to true for hasPerms if perm is unset or empty
+					$hasPerms = isset($subVal['perm']) && $subVal['perm'] !== '' ? $this->hasPerms($subVal['perm']) : true;
+					if($hasPerms && $this->hasModeAccess($subMode) && $this->hasRouteAccess($subKey) && $this->hasRouteAccess($parentKey))
+					{
+						$hasValidSubItems = true;
+					}
+					else
+					{
+						unset($item['sub'][$subKey]);
+					}
+				}
+
+				// Remove parent if no valid sub-items or sub-items array is empty
+				if(!$hasValidSubItems || empty($item['sub']))
+				{
+					unset($var[$key]);
+				}
+			}
+		}
+
+		return $var;
+	}
+
+	/**
+	 * @param $val
+	 * @param $key
+	 * @param $tmp
+	 * @return array
+	 */
+	private function processMenuItem($val, $key, $tmp)
+	{
+
+		$tp = e107::getParser();
+		$item = array();
+
+		foreach($val as $k => $v)
+		{
+			switch($k)
+			{
+				case 'caption':
+					$k2 = 'text';
+					$v = defset($v, $v);
+					break;
+
+				case 'url':
+					$k2 = 'link';
+					$qry = (isset($val['query'])) ? $val['query'] : '?mode=' . $tmp[0] . '&amp;action=' . ($tmp[1] ?? 'main') . (isset($tmp[2]) ? '&sub=' . $tmp[2] : '');
+					$v = $tp->replaceConstants($v, 'abs') . $qry;
+					break;
+
+				case 'uri':
+					$k2 = 'link';
+					$v = $tp->replaceConstants($v, 'abs');
+					if($this->compareUris($v,e_REQUEST_URL))
+					{
+						$item['selected'] = $key;
+					}
+					break;
+
+				case 'badge':
+					$k2 = 'badge';
+					$v = (array) $v;
+					break;
+
+				case 'icon':
+					$k2 = 'image_src';
+					$v = (string) $v . '.glyph';  // required, even if empty.
+					break;
+
+				default:
+					$k2 = $k;
+					break;
+			}
+
+			$item[$k2] = $v;
+		}
+
+		if(!isset($item['image_src']))
+		{
+			$item['image_src'] = e_navigation::guessMenuIcon($key);
+		}
+
+		if(!empty($item['group'])) // empty icon for group items.
+		{
+			$item['image_src'] = '.glyph';
+		}
+
+		if(!vartrue($item['link']))
+		{
+			$item['link'] = e_REQUEST_SELF . '?mode=' . $tmp[0] . '&amp;action=' . ($tmp[1] ?? 'main') . (isset($tmp[2]) ? '&sub=' . $tmp[2] : '');
+		}
+
+		if(varset($val['tab']))
+		{
+			$item['link'] .= '&amp;tab=' . $val['tab'];
+		}
+
+		if(!empty($val['modal']))
+		{
+			$item['link_class'] = ' e-modal';
+			if(!empty($val['modal-caption']))
+			{
+				$item['link_data'] = array_merge($item['link_data'] ?? [], ['data-modal-caption' => $val['modal-caption']]);
+			}
+		}
+
+		if(!empty($val['class']))
+		{
+			$item['link_class'] = ($item['link_class'] ?? '') . ' ' . $val['class'];
+		}
+
+		return $item;
+	}
+
+	/**
+	 * Compares two URIs after normalizing their paths and query parameters.
+	 * Specific query parameters ('asc', 'from', 'field') are excluded from comparison.
+	 *
+	 * @param string $uri1 The first URI to compare.
+	 * @param string $uri2 The second URI to compare.
+	 * @return bool Returns true if the normalized URIs are equivalent; otherwise, false.
+	 */
+	private function compareUris($uri1, $uri2)
+	{
+		if(empty($uri1) || empty($uri2))
+		{
+			return false;
+		}
+
+		$parsedUri1 = parse_url($uri1);
+		$parsedUri2 = parse_url($uri2);
+
+		$path1 = $parsedUri1['path'] ?? '';
+		$path2 = $parsedUri2['path'] ?? '';
+
+		$query1 = [];
+		$query2 = [];
+
+		if(isset($parsedUri1['query']))
+		{
+			parse_str($parsedUri1['query'], $query1);
+		}
+		if(isset($parsedUri2['query']))
+		{
+			parse_str($parsedUri2['query'], $query2);
+		}
+
+		// Remove asc, from and field from queries
+		foreach(['asc', 'from', 'field'] as $param)
+		{
+			unset($query1[$param], $query2[$param]);
+		}
+
+		$cleanQuery1 = http_build_query($query1);
+		$cleanQuery2 = http_build_query($query2);
+
+		$cleanUri1 = $path1 . ($cleanQuery1 ? '?' . $cleanQuery1 : '');
+		$cleanUri2 = $path2 . ($cleanQuery2 ? '?' . $cleanQuery2 : '');
+
+		return $cleanUri1 === $cleanUri2 ;
+
 	}
 
 
@@ -1735,7 +1990,6 @@ class e_admin_dispatcher
 	{
 
 
-		
 	}
 
 	
@@ -2023,7 +2277,8 @@ class e_admin_controller
 	public function addTitle($title = true, $meta = true)
 	{
 		
-		
+		$response = $this->getResponse();
+
 		if($title === true)
 		{
 			$_dispatcher = $this->getDispatcher();
@@ -2045,6 +2300,16 @@ class e_admin_controller
 				if(isset($data[$search]))
 				{
 					 $res = $data[$search];
+					 if(!empty($res['group']))
+					 {
+					    $parent = $res['group'];
+						$parentCaption = $data[$parent]['caption'] ?? '';
+						if(!empty($parentCaption))
+						{
+							$response->appendTitle($parentCaption);
+						}
+
+					 }
 				}
 				else
 				{
@@ -2065,7 +2330,7 @@ class e_admin_controller
 
 				}
 			}
-			$title = $res['caption'];
+			$title = defset($res['caption'],$res['caption']);
 
 
 		}
@@ -2073,7 +2338,8 @@ class e_admin_controller
 		//	echo "<h3>".__METHOD__." - ".$title."</h3>";
 	
 	//	print_a($title);
-		$this->getResponse()->appendTitle($title);
+		$response->appendTitle($title);
+
 		if($meta)
 		{
 			$this->addMetaTitle($title);
@@ -4592,7 +4858,7 @@ class e_admin_controller_ui extends e_admin_controller
 	 */
 	public function getParentChildQry($orderby=false)
 	{
-		return 'SELECT SQL_CALC_FOUND_ROWS * FROM `#' .$this->getTableName(). '` ';
+		return 'SELECT * FROM `#' .$this->getTableName(). '` ';
 	}
 
 	/**
@@ -4904,9 +5170,9 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @param mixed  $qryField      Specific query field(s) to filter.
 	 * @param mixed  $isfilter      Determines if a specific filter is applied.
 	 * @param mixed  $handleAction  Custom action handler for the search process.
-	 * @return void
+	 * @return string|false|array
 	 */
-	public function _modifyListQrySearch(string|null $listQry, string $searchTerm, string $filterOptions, string $tablePath,  string $tableFrom, string $primaryName, $raw, $orderField, $qryAsc, $forceFrom, int $qryFrom, $forceTo, int $perPage, $qryField,  $isfilter, $handleAction)
+	public function _modifyListQrySearch(string|null $listQry, string $searchTerm, string $filterOptions, string $tablePath,  string $tableFrom, string|null $primaryName, $raw, $orderField, $qryAsc, $forceFrom, int $qryFrom, $forceTo, int $perPage, $qryField,  $isfilter, $handleAction)
 	{
 		$generateTest = false;
 		$tp       = e107::getParser();
@@ -4959,9 +5225,6 @@ class e_admin_controller_ui extends e_admin_controller
 		        'listQry'     => $this->listQry
 		    ]
 		];
-
-
-
 
 
 
@@ -5232,7 +5495,7 @@ class e_admin_controller_ui extends e_admin_controller
 		//file_put_contents(e_LOG.'uiAjaxResponseFields.log', print_r($this->getFields(), true)."\n\n", FILE_APPEND);
 		if($joinData)
 		{
-			$qry = 'SELECT SQL_CALC_FOUND_ROWS ' . $tableSFields;
+			$qry = 'SELECT ' . $tableSFields;
 			foreach($joinData as $jtable => $tparams)
 			{
 				// Select fields
@@ -5290,7 +5553,7 @@ class e_admin_controller_ui extends e_admin_controller
 			}
 			else
 			{
-				$qry = 'SELECT SQL_CALC_FOUND_ROWS ' . $tableSFields . ' FROM ' . $tableFrom;
+				$qry = 'SELECT ' . $tableSFields . ' FROM ' . $tableFrom;
 			}
 
 		}
@@ -5440,7 +5703,10 @@ class e_admin_controller_ui extends e_admin_controller
 
 
 		// Print to the debug interface (optional, can overload logs)
-		e107::getMessage()->addDebug('<pre>' . $jsonDebugInfo . '</pre>');
+			if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
+			{
+				e107::getMessage()->addDebug('<pre>' . $jsonDebugInfo . '</pre>');
+			}
 
 
 		return $qry;
@@ -5562,7 +5828,8 @@ class e_admin_ui extends e_admin_controller_ui
 			$this->fieldpref = $ufieldpref;
 		}*/
 
-		$this->addTitle($this->pluginTitle)->parseAliases();
+		$pluginTitle = $this->getPluginTitle();
+		$this->addTitle($pluginTitle)->parseAliases();
 
 		$this->initAdminAddons();
 
@@ -6112,7 +6379,7 @@ class e_admin_ui extends e_admin_controller_ui
         
         if($scount > 0)
         {
-			e107::getMessage()->addSuccess(LAN_CREATED. ' (' .$scount. ') ' .LAN_PLUGIN_FEATUREBOX_NAME);
+			e107::getMessage()->addSuccess(LAN_CREATED. ' (' .$scount. ') ' .defset('LAN_PLUGIN_FEATUREBOX_NAME'));
 			e107::getMessage()->addSuccess("<a class='btn btn-small btn-primary' href='".e_PLUGIN_ABS."featurebox/admin_config.php?searchquery=&filter_options=fb_category__{$category}' ".LAN_CONFIGURE. ' ' .LAN_PLUGIN_FEATUREBOX_NAME. '</a>');
 			return $scount;        
         }
@@ -6368,7 +6635,7 @@ class e_admin_ui extends e_admin_controller_ui
 
 		if(empty($string))
 		{
-			return null;
+			return '';
 		}
 
 		return $selected. " LIKE '%".e107::getParser()->toDB($string)."%' "; // array($selected, $this->getQuery('searchquery'));
@@ -6545,11 +6812,6 @@ class e_admin_ui extends e_admin_controller_ui
 
 		$this->addTitle();
 
-	//	if($this->getQuery('filter_options'))
-		{
-		//	var_dump($this);
-			// $this->addTitle("to-do"); // display filter option when active.
-		}
 		
 	}
 
@@ -6766,7 +7028,7 @@ class e_admin_ui extends e_admin_controller_ui
 
 		if(!empty($this->sortParent) && !empty($this->sortField) )
 		{
-			return null;
+			return;
 		}
 
 
@@ -8783,29 +9045,48 @@ class e_admin_form_ui extends e_form
 					break;
 
 					case 'method':
-						$method = $key;
-						$list = call_user_func_array(array($this, $method), array('', $type, $parms));
 
-						if(is_array($list))
+						$method = !empty($val['method']) ? $val['method'] : $key; // Use the method attribute if specified, otherwise fall back to the field key
+
+						if(strpos($method, '::') !== false)
 						{
-							//check for single option
-							if(isset($list['singleOption']))
+							list($className, $methodName) = explode('::', $method);
+							$cls = new $className();
+						}
+						else
+						{
+							$cls = $this;
+							$methodName = $method;
+						}
+
+						if(method_exists($cls, $methodName))
+						{
+							$list = call_user_func_array(array($cls, $methodName), array('', $type, $parms));
+							if(is_array($list))
 							{
-								$textsingle .= $list['singleOption'];
+								// Check for single option
+								if(isset($list['singleOption']))
+								{
+									$textsingle .= $list['singleOption'];
+									continue 2;
+								}
+								// options array
+								foreach($list as $k => $name)
+								{
+									$option[$key . '__' . $k] = $name;
+								}
+							}
+							elseif(!empty($list))
+							{
+								$text .= $list;
 								continue 2;
 							}
-							// non rendered options array
-							foreach($list as $k => $name)
-							{
-								$option[$key.'__'.$k] = $name;
-							}
 						}
-						elseif(!empty($list)) //optgroup, continue
+						else
 						{
-							$text .= $list;
-							continue 2;
+							e107::getDebug()->log('Missing Method: ' . get_class($cls) . '::' . $methodName);
 						}
-					break;
+						break;
 
 					case 'user': // TODO - User Filter
 					

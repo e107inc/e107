@@ -99,7 +99,7 @@
 			    6 => '<i class=\'S32 e-emoticons-32\'></i> ',
 			  ),
 			   9 => array (
-			        0 => './e107_admin/history.php',
+			        0 => '/e107_admin/history.php',
 			        1 => 'History',
 			        2 => 'History',
 			        3 => '7',

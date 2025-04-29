@@ -454,6 +454,29 @@ $(document).ready(function()
 				return true;
 			}
 		);
+
+		$('#admin-ui-nav-menu a[data-toggle="collapse"]').each(function() {
+		var $link = $(this);
+		var $caret = $link.find('.caret-icon');
+		if ($caret.length) {
+			var target = $($link.attr('data-target'));
+
+			// Initial state on page load
+			if (target.hasClass('in')) {
+				$caret.removeClass('fa-chevron-down').addClass('fa-chevron-up');
+			} else {
+				$caret.removeClass('fa-chevron-up').addClass('fa-chevron-down');
+			}
+
+			// Listen for Bootstrap collapse events
+			target.on('shown.bs.collapse', function() {
+				$caret.removeClass('fa-chevron-down').addClass('fa-chevron-up');
+			}).on('hidden.bs.collapse', function() {
+				$caret.removeClass('fa-chevron-up').addClass('fa-chevron-down');
+			});
+		}
+	});
+
 		
 		$('input[data-loading-text]').on('click', function()
 			{
@@ -726,7 +749,7 @@ $(document).ready(function()
 		
 		// Admin Prefs Navigation
 		
-		 $(".plugin-navigation a").click(function () {
+		 $("#admin-prefs .plugin-navigation a").click(function () {
 		 	$(".plugin-navigation a").each(function(index) {
     			var ot = $(this).attr("href");
     			if (ot.split('#')[1]) {
@@ -735,6 +758,10 @@ $(document).ready(function()
 				$(this).closest("li").removeClass("active");
 				$(this).switchClass( "link-active", "link", 0 );
 			});
+
+
+
+
 	   		var id = $(this).attr("href"), hash = id.split('#')[1], form = $('.admin-menu')[0]; // FIXME - a better way to detect the page form
 	   		
 			$(this).switchClass( "link", "link-active", 30 );
