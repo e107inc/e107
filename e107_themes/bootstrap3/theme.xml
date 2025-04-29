@@ -27,6 +27,7 @@
 		<css file="style.css" name="Default" scope="front" />
 		<css file="css/modern-light.css" name="Modern Light" description="A high-contrast light skin" thumbnail='images/admin_modern-light.webp' scope='admin' exclude='bootstrap'/>
         <css file="css/modern-dark.css" name="Modern Dark" description="A high-contrast dark skin" thumbnail='images/admin_modern-dark.webp' scope='admin' exclude='bootstrap'/>
+        <css file="css/modern-dark-2.css" name="Modern Dark 2" description="A high-contrast dark skin with dynamic sidebar" thumbnail='images/admin_modern-dark-2.webp' scope='admin' exclude='bootstrap'/>
         <css file="css/bootstrap-dark.min.css" name="Legacy Dark Admin" description="A dark admin area skin" thumbnail='images/admin_bootstrap-dark.webp' scope='admin' exclude='bootstrap'/>
         <css file="css/kadmin.css" name="K-Admin Inspired" scope='admin' description="A light admin area skin" thumbnail='images/admin_kadmin.webp' url='http://themifycloud.com/demos/templates/KAdmin/KAdmin-Dark/dashboard.html' />
 		<css file="css/corporate.css" name="Corporate" scope='admin' thumbnail='images/admin_corporate.webp' exclude='bootstrap' />
