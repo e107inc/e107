@@ -262,7 +262,7 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 			{
 				$opts = array_merge($opts, $parm);
 			}
-			
+
 			return $tp->toIcon($this->var['link_button'], $opts);
 
 		}

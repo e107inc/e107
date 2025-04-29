@@ -1927,6 +1927,7 @@ div.is-table-row .sidebar-toggle-panel { /*display:none; */
     overflow: visible !important; /* Ensure no clipping */
 }
 #admin-ui-nav-menu li.divider { margin: 15px; border-bottom: 1px outset rgba(255,255,255,0.3) !important; }
+.admin-ui-nav-menu .panel-title .tooltip { display:none; opacity:0; }
 .adminlist table td pre { max-width: 1200px !important; }
 
 .text-primary,.text-primary:hover{color:#337ab7 !important}
@@ -1934,3 +1935,171 @@ div.is-table-row .sidebar-toggle-panel { /*display:none; */
 .text-danger,.text-danger:hover{color:#F86965 !important}
 .text-warning,.text-warning:hover{color:#f89406 !important}
 .text-info,.text-info:hover{color:#8BC0ED !important}
+
+/* Define the -xl breakpoint (≥1600px) */
+@media (min-width: 1600px) {
+  /* Container max-width for -xl */
+ /* .container {
+    max-width: 1540px;
+  }
+*/
+  /* Base column styles for -xl */
+  .col-xl-1, .col-xl-2, .col-xl-3, .col-xl-4, .col-xl-5, .col-xl-6,
+  .col-xl-7, .col-xl-8, .col-xl-9, .col-xl-10, .col-xl-11, .col-xl-12 {
+    position: relative;
+    min-height: 1px;
+    padding-left: 15px; /* Matches Bootstrap 3’s @grid-gutter-width (30px) */
+    padding-right: 15px;
+    float: left;
+  }
+
+  /* Column widths (12-column grid) */
+  .col-xl-12 { width: 100%; }
+  .col-xl-11 { width: 91.66666667%; }
+  .col-xl-10 { width: 83.33333333%; }
+  .col-xl-9 { width: 75%; }
+  .col-xl-8 { width: 66.66666667%; }
+  .col-xl-7 { width: 58.33333333%; }
+  .col-xl-6 { width: 50%; }
+  .col-xl-5 { width: 41.66666667%; }
+  .col-xl-4 { width: 33.33333333%; }
+  .col-xl-3 { width: 25%; }
+  .col-xl-2 { width: 16.66666667%; }
+  .col-xl-1 { width: 8.33333333%; }
+
+  /* Offset classes */
+  .col-xl-offset-12 { margin-left: 100%; }
+  .col-xl-offset-11 { margin-left: 91.66666667%; }
+  .col-xl-offset-10 { margin-left: 83.33333333%; }
+  .col-xl-offset-9 { margin-left: 75%; }
+  .col-xl-offset-8 { margin-left: 66.66666667%; }
+  .col-xl-offset-7 { margin-left: 58.33333333%; }
+  .col-xl-offset-6 { margin-left: 50%; }
+  .col-xl-offset-5 { margin-left: 41.66666667%; }
+  .col-xl-offset-4 { margin-left: 33.33333333%; }
+  .col-xl-offset-3 { margin-left: 25%; }
+  .col-xl-offset-2 { margin-left: 16.66666667%; }
+  .col-xl-offset-1 { margin-left: 8.33333333%; }
+  .col-xl-offset-0 { margin-left: 0; }
+
+  /* Push classes */
+  .col-xl-push-12 { left: 100%; }
+  .col-xl-push-11 { left: 91.66666667%; }
+  .col-xl-push-10 { left: 83.33333333%; }
+  .col-xl-push-9 { left: 75%; }
+  .col-xl-push-8 { left: 66.66666667%; }
+  .col-xl-push-7 { left: 58.33333333%; }
+  .col-xl-push-6 { left: 50%; }
+  .col-xl-push-5 { left: 41.66666667%; }
+  .col-xl-push-4 { left: 33.33333333%; }
+  .col-xl-push-3 { left: 25%; }
+  .col-xl-push-2 { left: 16.66666667%; }
+  .col-xl-push-1 { left: 8.33333333%; }
+  .col-xl-push-0 { left: auto; }
+
+  /* Pull classes */
+  .col-xl-pull-12 { right: 100%; }
+  .col-xl-pull-11 { right: 91.66666667%; }
+  .col-xl-pull-10 { right: 83.33333333%; }
+  .col-xl-pull-9 { right: 75%; }
+  .col-xl-pull-8 { right: 66.66666667%; }
+  .col-xl-pull-7 { right: 58.33333333%; }
+  .col-xl-pull-6 { right: 50%; }
+  .col-xl-pull-5 { right: 41.66666667%; }
+  .col-xl-pull-4 { right: 33.33333333%; }
+  .col-xl-pull-3 { right: 25%; }
+  .col-xl-pull-2 { right: 16.66666667%; }
+  .col-xl-pull-1 { right: 8.33333333%; }
+  .col-xl-pull-0 { right: auto; }
+
+  /* Responsive visibility utilities */
+  .visible-xl { display: block !important; }
+  table.visible-xl { display: table !important; }
+  tr.visible-xl { display: table-row !important; }
+  th.visible-xl, td.visible-xl { display: table-cell !important; }
+  .hidden-xl { display: none !important; }
+}
+
+/* Define the -xxl breakpoint (≥1920px) */
+@media (min-width: 1920px) {
+  /* Container max-width for -xxl */
+ /* .container {
+    max-width: 1860px;
+  }*/
+
+  /* Base column styles for -xxl */
+  .col-xxl-1, .col-xxl-2, .col-xxl-3, .col-xxl-4, .col-xxl-5, .col-xxl-6,
+  .col-xxl-7, .col-xxl-8, .col-xxl-9, .col-xxl-10, .col-xxl-11, .col-xxl-12 {
+    position: relative;
+    min-height: 1px;
+    padding-left: 15px; /* Matches Bootstrap 3’s 30px gutter */
+    padding-right: 15px;
+    float: left;
+  }
+
+  /* Column widths (12-column grid) */
+  .col-xxl-12 { width: 100%; }
+  .col-xxl-11 { width: 91.66666667%; }
+  .col-xxl-10 { width: 83.33333333%; }
+  .col-xxl-9 { width: 75%; }
+  .col-xxl-8 { width: 66.66666667%; }
+  .col-xxl-7 { width: 58.33333333%; }
+  .col-xxl-6 { width: 50%; }
+  .col-xxl-5 { width: 41.66666667%; }
+  .col-xxl-4 { width: 33.33333333%; }
+  .col-xxl-3 { width: 25%; }
+  .col-xxl-2 { width: 16.66666667%; }
+  .col-xxl-1 { width: 8.33333333%; }
+
+  /* Offset classes */
+  .col-xxl-offset-12 { margin-left: 100%; }
+  .col-xxl-offset-11 { margin-left: 91.66666667%; }
+  .col-xxl-offset-10 { margin-left: 83.33333333%; }
+  .col-xxl-offset-9 { margin-left: 75%; }
+  .col-xxl-offset-8 { margin-left: 66.66666667%; }
+  .col-xxl-offset-7 { margin-left: 58.33333333%; }
+  .col-xxl-offset-6 { margin-left: 50%; }
+  .col-xxl-offset-5 { margin-left: 41.66666667%; }
+  .col-xxl-offset-4 { margin-left: 33.33333333%; }
+  .col-xxl-offset-3 { margin-left: 25%; }
+  .col-xxl-offset-2 { margin-left: 16.66666667%; }
+  .col-xxl-offset-1 { margin-left: 8.33333333%; }
+  .col-xxl-offset-0 { margin-left: 0; }
+
+  /* Push classes */
+  .col-xxl-push-12 { left: 100%; }
+  .col-xxl-push-11 { left: 91.66666667%; }
+  .col-xxl-push-10 { left: 83.33333333%; }
+  .col-xxl-push-9 { left: 75%; }
+  .col-xxl-push-8 { left: 66.66666667%; }
+  .col-xxl-push-7 { left: 58.33333333%; }
+  .col-xxl-push-6 { left: 50%; }
+  .col-xxl-push-5 { left: 41.66666667%; }
+  .col-xxl-push-4 { left: 33.33333333%; }
+  .col-xxl-push-3 { left: 25%; }
+  .col-xxl-push-2 { left: 16.66666667%; }
+  .col-xxl-push-1 { left: 8.33333333%; }
+  .col-xxl-push-0 { left: auto; }
+
+  /* Pull classes */
+  .col-xxl-pull-12 { right: 100%; }
+  .col-xxl-pull-11 { right: 91.66666667%; }
+  .col-xxl-pull-10 { right: 83.33333333%; }
+  .col-xxl-pull-9 { right: 75%; }
+  .col-xxl-pull-8 { right: 66.66666667%; }
+  .col-xxl-pull-7 { right: 58.33333333%; }
+  .col-xxl-pull-6 { right: 50%; }
+  .col-xxl-pull-5 { right: 41.66666667%; }
+  .col-xxl-pull-4 { right: 33.33333333%; }
+  .col-xxl-pull-3 { right: 25%; }
+  .col-xxl-pull-2 { right: 16.66666667%; }
+  .col-xxl-pull-1 { right: 8.33333333%; }
+  .col-xxl-pull-0 { right: auto; }
+
+  /* Responsive visibility utilities */
+  .visible-xxl { display: block !important; }
+  table.visible-xxl { display: table !important; }
+  tr.visible-xxl { display: table-row !important; }
+  th.visible-xxl, td.visible-xxl { display: table-cell !important; }
+  .hidden-xxl { display: none !important; }
+}
