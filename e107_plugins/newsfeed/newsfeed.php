@@ -80,7 +80,7 @@ if($action == "show")
 	/* 'show' action - show feed */
 
 	$data = $newsFeed->newsfeedInfo($id == 0 ? 'all' : $id, 'main');
-	$ns->tablerender($data['title'], $data['text']);
+	e107::getRender()->tablerender($data['title'], $data['text']);
 	require_once(FOOTERF);
 	exit;
 }
@@ -104,12 +104,12 @@ if (count($newsFeed->feedList))
 			$vars['FEEDNAME'] = "<a href='".$url."'>{$feed['newsfeed_name']}</a>";
 			$vars['FEEDDESCRIPTION'] = ((!$feed['newsfeed_description'] || $feed['newsfeed_description'] == "default") ? "&nbsp;" : $feed['newsfeed_description']);
 //			$FEEDIMAGE = $feed['newsfeed_image'];	// This needs splitting up. Not used ATM anyway, so disable for now
-			$data .= $tp->simpleParse($NEWSFEED_LIST, $vars);
+			$data .= e107::getParser()->simpleParse($NEWSFEED_LIST, $vars);
 		}
 	}
 }
 
 $text = $NEWSFEED_LIST_START . vartrue($data) . $NEWSFEED_LIST_END;
-$ns->tablerender(NFLAN_29, $text);
+e107::getRender()->tablerender(NFLAN_29, $text);
 require_once(FOOTERF);
 

@@ -872,7 +872,7 @@ final class e_core_pref extends e_pref
 	 * If id not found this method returns false
 	 *
 	 * @param string $alias
-	 * @return string
+	 * @return string|false
 	 */
 	public function getConfigId($alias)
 	{
@@ -1158,7 +1158,7 @@ class prefs
 	 * Return current pref string $name from $table (only core for now)
 	 *
 	 * @param string $Name
-	 * @return  string pref value, slashes already stripped. FALSE on error
+	 * @return  string|false pref value, slashes already stripped. FALSE on error
 	 * @access  public
 	 */
 	function get($Name)

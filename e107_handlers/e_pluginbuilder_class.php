@@ -658,9 +658,6 @@ $content .= '}';
 		function pluginXml()
 		{
 
-
-			//TODO Plugin.xml Form Fields. .
-
 			$data = array(
 				'main' 			=> array('name','lang','version','date', 'compatibility'),
 				'author' 		=> array('name','url'),
@@ -888,6 +885,30 @@ $content .= '}';
 					$help 		= EPL_ADLAN_146;
 					$required 	= true;
 					$size 		= 20;
+				break;
+
+				case 'adminLinks-url':
+				//	$help 		= '';
+					$default = 'admin_config.php';
+					$size 		= 20;
+				break;
+
+				case 'adminLinks-description':
+					$default = 'LAN_CONFIGURE';
+					$type = 'text';
+				break;
+
+				case 'adminLinks-icon':
+					$default = 'images/icon_32.png';
+				break;
+
+				case 'adminLinks-iconSmall':
+					$default = 'images/icon_16.png';
+				break;
+
+
+				case 'adminLinks-icon128':
+					$default = 'images/icon_128.png';
 				break;
 
 				default:

@@ -260,7 +260,7 @@
 		 * @param bool   $debug
 		 * @param string $log_type
 		 * @param string $log_remark
-		 * @return integer Number of rows or false on error
+		 * @return integer|false Number of rows or false on error
 		 */
 		public function select($table, $fields = '*', $arg = '', $noWhere = false, $debug = false, $log_type = '', $log_remark = '');
 

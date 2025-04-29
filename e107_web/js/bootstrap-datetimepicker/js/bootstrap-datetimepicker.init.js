@@ -14,15 +14,44 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
                 var $item = $(this);
 
                 // Fix for changeDate() not being fired when value manually altered.
-                $item.on("change keyup", function () {
+                $item.on("change keyup", function() {
                     var $this = $(this);
                     var useUnix = $this.attr("data-date-unix");
                     var newValue = $this.val();
+                    var id = $this.attr("id");
+                    var newTarget = "#" + id.replace("e-datepicker-", "");
 
-                    if (useUnix !== "true" || newValue == "") {
-                        var id = $this.attr("id");
-                        var newTarget = "#" + id.replace("e-datepicker-", "");
+                    // For non-UNIX fields or empty values, just copy the value
+                    if (useUnix !== "true" || newValue === "") {
                         $(newTarget).val(newValue);
+                        return;
+                    }
+
+                    // For UNIX timestamp conversion, use the datetimepicker instance
+                    try {
+                        // Get date from the picker (handles format automatically)
+                        var pickerInstance = $this.data('datetimepicker');
+                        if (!pickerInstance) return;
+
+                        var date = pickerInstance.getDate();
+                        if (!date || isNaN(date.getTime())) return;
+
+                        // Convert to UNIX timestamp
+                        var unixTimestamp = Math.floor(date.getTime() / 1000);
+
+                        // Apply timezone offset if this is a datetime field
+                        if ($this.hasClass('e-datetime')) {
+                            var offset = parseInt($this.attr("data-date-timezone-offset"));
+                            if (!isNaN(offset)) {
+                                var browserOffset = date.getTimezoneOffset() * 60;
+                                var relativeOffset = browserOffset + offset;
+                                unixTimestamp = unixTimestamp - relativeOffset;
+                            }
+                        }
+
+                        $(newTarget).val(unixTimestamp);
+                    } catch (e) {
+                        console.error("Error processing date:", e);
                     }
                 });
             });
