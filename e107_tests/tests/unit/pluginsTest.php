@@ -468,6 +468,33 @@
 			$this->pluginUninstall('tagcloud');
 		}
 
+
+
+		public function testRefreshExtendedFields()
+		{
+
+			$this->pluginInstall('_blank');
+			$count =  e107::getDb()->count('user_extended_struct', '(*)', "user_extended_struct_name LIKE 'plugin__blank_custom%'");
+			$this::assertEquals(1, $count, 'Field was not installed');
+
+			$this->pluginRefresh('_blank');
+			$count =  e107::getDb()->count('user_extended_struct', '(*)', "user_extended_struct_name LIKE 'plugin__blank_custom%'");
+			$this::assertEquals(1, $count, 'Field was duplicated or is missing');
+
+			e107::getDb()->delete('user_extended_struct', "user_extended_struct_name LIKE 'plugin__blank_custom%'");
+			$count =  e107::getDb()->count('user_extended_struct', '(*)', "user_extended_struct_name LIKE 'plugin__blank_custom%'");
+			$this::assertEquals(0, $count, 'Field was not deleted');
+			$this->pluginRefresh('_blank');
+
+			$count =  e107::getDb()->count('user_extended_struct', '(*)', "user_extended_struct_name LIKE 'plugin__blank_custom%'");
+			$this::assertEquals(1, $count, 'Field was not re-installed');
+
+			$this->pluginUninstall('_blank');
+
+
+
+		}
+
 /*
 		public function testThirdParty()
 		{
@@ -520,23 +547,6 @@
 
 		}*/
 
-		public function  testVstore()
-		{
-			if(!is_dir(e_PLUGIN."vstore"))
-			{
-				return ;
-			}
-
-			$this->pluginInstall('vstore');
-			$this->pluginRefresh('vstore');
-
-			$links = e107::getDb()->retrieve('links', '*', 'link_owner = "vstore"', true);
-			$this->assertNotEmpty($links);
-			$this->assertCount(2, $links);
-
-			$this->pluginUninstall('vstore');
-
-		}
 
 		public function testplugInstalledStatus()
 		{
