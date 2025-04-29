@@ -140,6 +140,10 @@ class e_plugin
 	 */
 	public function getDetected()
 	{
+		if(empty($this->_data))
+		{
+
+		}
 		return array_keys($this->_data);
 	}
 
@@ -818,10 +822,18 @@ class e_plugin
 
 		$cacheTag = self::CACHETAG;
 
-		if($force === false && $tmp = e107::getCache()->retrieve($cacheTag, self::CACHETIME, true, true))
+		if(($force === false) && $tmp = e107::getCache()->retrieve($cacheTag, self::CACHETIME, true, true))
 		{
 			$this->_data = e107::unserialize($tmp);
-			return true;
+
+			if(empty($this->_data))
+			{
+				trigger_error(__FILE__.' '.__METHOD__.' plugin cache failed to load.', E_USER_WARNING);
+			}
+			else
+			{
+				return true;
+			}
 		}
 
 		$dirs = scandir(e_PLUGIN);
