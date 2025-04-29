@@ -6164,67 +6164,79 @@ class e107
 	 */
 	public function __get($name)
 	{
-		switch ($name)
+
+		// Use a static cache to store instances
+		static $instances = [];
+
+		if(isset($instances[$name]))
+		{
+			return $instances[$name];
+		}
+
+		switch($name)
 		{
 			case 'tp':
 				$ret = self::getParser();
-			break;
+				break;
 
 			case 'sql':
 				$ret = self::getDb();
-			break;
+				break;
 
 			case 'ecache':
 				$ret = self::getCache();
-			break;
+				break;
 
 			case 'arrayStorage':
 				$ret = self::getArrayStorage();
-			break;
+				break;
 
 			case 'e_event':
 				$ret = self::getEvent();
-			break;
+				break;
 
 			case 'ns':
 				$ret = self::getRender();
-			break;
+				break;
 
 			case 'url':
 				$ret = self::getUrl();
-			break;
+				break;
 
 			case 'admin_log':
 				$ret = self::getLog();
-			break;
+				break;
 
 			case 'override':
-				$ret = self::getSingleton('override', e_HANDLER.'override_class.php');
-			break;
+				$ret = self::getSingleton('override', e_HANDLER . 'override_class.php');
+				break;
 
 			case 'notify':
 				$ret = self::getNotify();
-			break;
+				break;
 
 			case 'e_online':
 				$ret = self::getOnline();
-			break;
+				break;
 
 			case 'eIPHandler':
 				$ret = self::getIPHandler();
 				break;
-				
+
 			case 'user_class':
 				$ret = self::getUserClass();
-			break;
+				break;
 
 			default:
-				trigger_error('$e107->$'.$name.' not defined', E_USER_WARNING);
+				trigger_error('$e107->$' . $name . ' not defined', E_USER_WARNING);
+
 				return null;
-			break;
+				break;
 		}
 
-		$this->$name = $ret;
+		// Store the result in the static cache
+		$instances[$name] = $ret;
+
 		return $ret;
 	}
 
