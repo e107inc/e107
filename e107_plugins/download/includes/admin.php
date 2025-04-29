@@ -1297,9 +1297,9 @@ $columnInfo = array(
 	      $text = "
 	     
 	         <ul class='nav nav-tabs'>
-	            <li class='active'><a data-toggle='tab' data-bs-toggle='tab' href='#download-create'>".DOWLAN_175."</a></li>
-	            <li><a data-toggle='tab' data-bs-toggle='tab' href='#download-edit-external'>".DOWLAN_176."</a></li>
-	            <li><a data-toggle='tab' data-bs-toggle='tab' href='#download-edit-mirror'>".DOWLAN_128."</a></li>
+	            <li class='nav-item active'><a class='nav-link active' data-toggle='tab' data-bs-toggle='tab' href='#download-create'>".DOWLAN_175."</a></li>
+	            <li class='nav-item'><a class='nav-link' data-toggle='tab' data-bs-toggle='tab' href='#download-edit-external'>".DOWLAN_176."</a></li>
+	            <li class='nav-item'><a class='nav-link' data-toggle='tab' data-bs-toggle='tab' href='#download-edit-mirror'>".DOWLAN_128."</a></li>
 	         </ul>
 	         <form method='post' action='".e_SELF."?".e_QUERY."' id='myform'>
 	          <div class='tab-content'>
@@ -2181,11 +2181,11 @@ $columnInfo = array(
 		   	$text = "
 				   
 					   <ul class='nav nav-tabs'>
-						   <li class='active'><a data-toggle='tab' data-bs-toggle='tab' href='#core-download-download1'>".LAN_DL_DOWNLOAD_OPT_GENERAL."</a></li>
-						   <li><a data-toggle='tab' data-bs-toggle='tab' href='#core-download-download2'>".LAN_DL_DOWNLOAD_OPT_BROKEN."</a></li>
-						   <li><a data-toggle='tab' data-bs-toggle='tab' href='#core-download-download3'>".LAN_DL_DOWNLOAD_OPT_AGREE."</a></li>
-						   <li><a data-toggle='tab' data-bs-toggle='tab' href='#core-download-download4'>".LAN_DL_DOWNLOAD_OPT_SECURITY."</a></li>
-						   <li><a data-toggle='tab' data-bs-toggle='tab' href='#core-download-download5'>".LAN_DL_UPLOAD."</a></li>
+						   <li class='nav-item active'><a class='nav-link active' data-toggle='tab' data-bs-toggle='tab' href='#core-download-download1'>".LAN_DL_DOWNLOAD_OPT_GENERAL."</a></li> 
+						   <li class='nav-item'><a class='nav-link' data-toggle='tab' data-bs-toggle='tab' href='#core-download-download2'>".LAN_DL_DOWNLOAD_OPT_BROKEN."</a></li>
+						   <li class='nav-item'><a class='nav-link' data-toggle='tab' data-bs-toggle='tab' href='#core-download-download3'>".LAN_DL_DOWNLOAD_OPT_AGREE."</a></li>
+						   <li class='nav-item'><a class='nav-link' data-toggle='tab' data-bs-toggle='tab' href='#core-download-download4'>".LAN_DL_DOWNLOAD_OPT_SECURITY."</a></li>
+						   <li class='nav-item'><a class='nav-link' data-toggle='tab' data-bs-toggle='tab' href='#core-download-download5'>".LAN_DL_UPLOAD."</a></li>
 					   </ul>
 						
 		        		<form method='post' action='".e_SELF."?".e_QUERY."'>\n
@@ -2305,7 +2305,7 @@ $columnInfo = array(
 		            		      </tr>
 		            		      <tbody id='nginx-secure_link_md5' ".($pref['download_security_mode'] === 'nginx-secure_link_md5' ? "" : "style='display:none'").">
 		            		      	<tr>
-		            		     	 	<td>".LAN_DL_SECURITY_NGINX_SECURELINKMD5_EXPRESSION."</td>
+		            		     	 	<td>".e107::getParser()->lanLink('LAN_DL_SECURITY_NGINX_SECURELINKMD5_EXPRESSION','https://nginx.org/en/docs/http/ngx_http_secure_link_module.html#secure_link_md5')."</td>
 		            		     	 	<td>
 		            		     	 		".$frm->text('download_security_expression', $pref['download_security_expression'], 1024)."
 		            		     	 		<div class='field-help'>".LAN_DL_SECURITY_NGINX_SECURELINKMD5_EXPRESSION_HELP."</div>
@@ -2657,7 +2657,7 @@ class download_broken_ui extends e_admin_ui
 	public function renderHelp()
 	{
 		$help_text = str_replace("[br]", "<br />", DOWLAN_HELP_11);
-		$help_text = str_replace(array("[", "]"), array("<a href='".e_ADMIN_ABS."notify.php'>"), $help_text); 
+		$help_text = str_replace(array("[", "]"), array("<a href='".e_ADMIN_ABS."notify.php'>", "</a>"), $help_text);
 		
 		return array('caption' => LAN_HELP, 'text' => $help_text);
 	}

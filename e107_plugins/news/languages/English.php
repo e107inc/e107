@@ -6,10 +6,11 @@
  * News menu language file
  */
 	
-define("TD_MENU_L1", "Other News");
-define("TD_MENU_L2", "Other News");
 
-define("LAN_NEWSCAT_MENU_TITLE", "News Categories");
-define("LAN_NEWSLATEST_MENU_TITLE", "Latest News");
-define("LAN_NEWSARCHIVE_MENU_TITLE", "News Archive");
-
+return [
+    'TD_MENU_L1' => "Other News",
+    'TD_MENU_L2' => "Other News",
+    'LAN_NEWSCAT_MENU_TITLE' => "News Categories",
+    'LAN_NEWSLATEST_MENU_TITLE' => "Latest News",
+    'LAN_NEWSARCHIVE_MENU_TITLE' => "News Archive",
+];

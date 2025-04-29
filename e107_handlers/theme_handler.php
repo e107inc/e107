@@ -2233,7 +2233,7 @@ class themeHandler
 			$text .= "<tr><td><b>".LAN_CATEGORY."</b></td><td>".$theme['category']."</td></tr>";			
 		}
 		
-		if(is_dir(e_THEME.$theme['path']."/.git"))
+		if(!empty($theme['path']) && is_dir(e_THEME.$theme['path']."/.git"))
 		{
 			$text .= "<tr><td><b>Developer</b></td>
 				<td >".$this->frm->admin_button('git_pull', $theme['path'], 'primary', e107::getParser()->toGlyph('fa-refresh'). "Git Sync")."</td></tr>";
@@ -2599,17 +2599,17 @@ class themeHandler
 		$text .= "
         
         <ul class='nav nav-tabs'>
-        <li class='active'><a data-toggle='tab' data-bs-toggle='tab' href='#core-thememanager-configure'>".LAN_CONFIGURE."</a></li>";
+        <li class='nav-item active'><a class='nav-link active' data-toggle='tab' data-bs-toggle='tab' href='#core-thememanager-configure'>".LAN_CONFIGURE."</a></li>";
 		
 
 		if($this->themeConfigObj && call_user_func(array(&$this->themeConfigObj, 'config')) && $mode == self::RENDER_SITEPREFS)
 		{
-			$text .= "<li><a data-toggle='tab' data-bs-toggle='tab' href='#core-thememanager-customconfig'>".LAN_PREFS."</a></li>\n";
+			$text .= "<li class='nav-item'><a class='nav-link' data-toggle='tab' data-bs-toggle='tab' href='#core-thememanager-customconfig'>".LAN_PREFS."</a></li>\n";
 		}
 		
 		if($this->themeConfigObj && call_user_func(array(&$this->themeConfigObj, 'help')))
 		{
-			$text .= "<li><a data-toggle='tab' data-bs-toggle='tab' href='#core-thememanager-help'>".LAN_HELP."</a></li>\n";
+			$text .= "<li class='nav-item'><a class='nav-link' data-toggle='tab' data-bs-toggle='tab' href='#core-thememanager-help'>".LAN_HELP."</a></li>\n";
 		}
 		
 		$text .= "</ul>

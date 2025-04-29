@@ -65,21 +65,21 @@ e107::css('inline',"
 		);
 
 		protected $adminMenu = array(
-			'main/list'			=> array('caption' => LAN_MANAGE, 'perm' => 'P'),
-			'main/create'		=> array('caption' => LAN_CREATE, 'perm' => 'P'),
+			'main/list'			=> array('caption' => 'LAN_MANAGE', 'perm' => 'P'),
+			'main/create'		=> array('caption' => 'LAN_CREATE', 'perm' => 'P'),
 
 			'main/opt1'         => array('divider' => true),
 
-			'main/rules'		=> array('caption' => WMGLAN_5, 'perm' => 'P'),
-			'mods/list'         => array('caption' => LAN_FORUM_2003, 'perm'=>'P', 'icon'=>'fas-user-tie'),
-			'main/prefs' 		=> array('caption' => LAN_PREFS, 'perm' => 'P'),
+			'main/rules'		=> array('caption' => 'WMGLAN_5', 'perm' => 'P', 'icon'=>'fa-book'),
+			'mods/list'         => array('caption' => 'LAN_FORUM_2003', 'perm'=>'P', 'icon'=>'fas-user-tie'),
+			'main/prefs' 		=> array('caption' => 'LAN_PREFS', 'perm' => 'P'),
 
 			'main/opt2'         => array('divider' => true),
 
-			'report/list'       => array('caption' => FORLAN_116, 'perm'=>'P', 'icon'=>'fas-flag'),
-			'post/list'         => array('caption' => LAN_PLUGIN_FORUM_LATESTPOSTS, 'perm'=>'P'),
-			'main/prune'		=> array('caption' => LAN_PRUNE, 'perm' => 'P', 'icon'=>'fas-filter'),
-			'main/tools'        => array('caption' => FORLAN_153, 'perm'=>'p')
+			'report/list'       => array('caption' => 'FORLAN_116', 'perm'=>'P', 'icon'=>'fas-flag'),
+			'post/list'         => array('caption' => 'LAN_PLUGIN_FORUM_LATESTPOSTS', 'perm'=>'P'),
+			'main/prune'		=> array('caption' => 'LAN_PRUNE', 'perm' => 'P', 'icon'=>'fas-filter'),
+			'main/tools'        => array('caption' => 'FORLAN_153', 'perm'=>'p')
 		);
 
 		protected $adminMenuAliases = array(
@@ -1035,7 +1035,7 @@ e107::css('inline',"
 		public function renderHelp()
 		{
 			$help_text = str_replace("[br]", "<br />", FORLAN_189);
-			$help_text = str_replace(array("[", "]"), array("<a href='".e_ADMIN_ABS."notify.php'>"), $help_text); 
+			$help_text = str_replace(array("[", "]"), array("<a href='".e_ADMIN_ABS."notify.php'>", "</a>"), $help_text); 
 			
 			return array('caption' => LAN_HELP, 'text' => $help_text);
 		}
