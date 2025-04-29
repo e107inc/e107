@@ -16,6 +16,8 @@ if (!getperms('4'))
 	exit;
 }
 
+e107::css('inline', '#admin-users-extended-main-list td.options .btn-group { justify-content: left } ');
+
 e107::coreLan('users_extended', true);
 
 if(varset($_GET['mode']) == "ajax")
@@ -152,7 +154,7 @@ if (isset($_POST['cancel_cat']))
 
 function js()
 {
-	include_once(e_LANGUAGEDIR . e_LANGUAGE . "/lan_user_extended.php");
+	e107::includeLan(e_LANGUAGEDIR . e_LANGUAGE . "/lan_user_extended.php");
 
 	$text =  "
 
@@ -291,7 +293,7 @@ e107::js('footer-inline', js());
 
 			'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => '0|4'),
 			'main/add'		=> array('caption'=>  EXTLAN_45, 'perm' => '0|4', 'icon'=>'fa-plus'),
-			'main/create'		=> array('caption'=> EXTLAN_81, 'perm' => '0|4', 'icon'=>'fa-user-edit'),
+			'main/create'		=> array('caption'=> EXTLAN_81, 'perm' => '0|4', 'icon'=>'fa-user-pen'),
 			'cat/list'		=> array('caption'=> LAN_CATEGORIES, 'perm' => '0|4'),
 			'cat/create'		=> array('caption'=> LAN_CREATE_CATEGORY, 'perm' => '0|4'),
 

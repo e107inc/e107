@@ -954,8 +954,11 @@ class news_front
 
 			$gen = new convert;
 			$sql->select("news_category", "*", "category_id='$category'");
-			$row = $sql->fetch();
-			extract($row);  // still required for the table-render.  :(
+			if($row = $sql->fetch())
+			{
+				extract($row);  // still required for the table-render.  :(
+			}
+
 		}
 
 		if ($this->action == 'all') // show archive of all news items using list-style template.
@@ -1412,7 +1415,7 @@ class news_front
 		{
 
 			header("HTTP/1.0 404 Not Found",true,404);
-			require_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_error.php");
+			e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/lan_error.php");
 			$text = "<div class='news-view-error'>".e107::getMessage()->setTitle(LAN_ERROR_7, E_MESSAGE_INFO)->addInfo(LAN_NEWS_308)->render(); // Perhaps you're looking for one of the news items below?
 			$text .= "</div>";
 			$this->action = 'all';

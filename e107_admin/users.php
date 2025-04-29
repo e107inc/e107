@@ -182,6 +182,13 @@ JS;
 						->setMode('main')
 						->setAction('logoutas');
 				break;
+
+				case 'emulate':
+					$this->getRequest()
+						->setQuery(array())
+						->setMode('main')
+						->setAction('emulate');
+				break;
 				
 				// redirect to AdminObserver/AdminPage()
 				case 'admin':
@@ -861,6 +868,28 @@ class users_admin_ui extends e_admin_ui
 	public function LogoutasPage()
 	{
 		// System Message only on non-successful logout as another user 
+	}
+
+
+	/**
+	 * Allows the emulation of a user ID if the current user has sufficient permissions and a user ID is provided.
+	 * If the conditions are met, a message with the emulated User ID is displayed, and the session is updated to emulate the specified user ID.
+	 *
+	 * @return void
+	 */
+	public function emulatePage()
+	{
+
+		if(getperms('0') && !empty($_POST['userid']))
+		{
+			$uid = (int) $_POST['userid'];
+			e107::getSession()->set('emulate',$uid);
+			$user = e107::user($uid);
+			e107::getMessage()->addSuccess("Emulation of <strong>".$user['user_name']."</strong> activated.", 'default', true);;
+		}
+
+		$this->redirect('list', 'main', true);
+
 	}
 	
 	/**
@@ -2723,6 +2752,8 @@ class users_admin_form_ui extends e_admin_form_ui
 			// login/logout As
 			if(getperms('0') && !($row['user_admin'] && getperms('0', $row['user_perms'])))
 			{
+
+
 				if(e107::getUser()->getSessionDataAs() == $row['user_id'])
 				{
 		//		    $text .= "<option value='logoutas'>".sprintf(USRLAN_AS_2, $row['user_name'])."</option>";
@@ -2785,6 +2816,11 @@ class users_admin_form_ui extends e_admin_form_ui
 				{
 			//		$text .= "<option value='adminperms'>".USRLAN_221."</option>\n";
 			//		$text .= "<option value='unadmin'>".USRLAN_34."</option>\n";
+
+					if(getperms('0'))
+					{
+						$opts['emulate'] = 'Emulate permissions';
+					}
 
 					$opts['adminperms'] = USRLAN_221;
 					$opts['unadmin']     = USRLAN_34;
