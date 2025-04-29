@@ -14,13 +14,16 @@
  * $Author$
  */
 
-define("LAN_AL_PM_ADM_01", "PM: Default prefs used");
-define("LAN_AL_PM_ADM_02", "PM: Prefs updated");
-define("LAN_AL_PM_ADM_03", "PM: DB Maintenance complete");
-define("LAN_AL_PM_ADM_04", "PM: DB Maintenance started");
-define("LAN_AL_PM_ADM_05", "PM: Limit added");
-define("LAN_AL_PM_ADM_06", "PM: Limit updated");
-define("LAN_AL_PM_ADM_07", "PM: Limit deleted");
-define("LAN_AL_PM_ADM_08", "PM: Error creating limit data");
-define("LAN_AL_PM_ADM_09", "PM: Error updating limit data");
-define("LAN_AL_PM_ADM_10", "PM: Error deleting limit data");
+
+return [
+    'LAN_AL_PM_ADM_01' => "PM: Default prefs used",
+    'LAN_AL_PM_ADM_02' => "PM: Prefs updated",
+    'LAN_AL_PM_ADM_03' => "PM: DB Maintenance complete",
+    'LAN_AL_PM_ADM_04' => "PM: DB Maintenance started",
+    'LAN_AL_PM_ADM_05' => "PM: Limit added",
+    'LAN_AL_PM_ADM_06' => "PM: Limit updated",
+    'LAN_AL_PM_ADM_07' => "PM: Limit deleted",
+    'LAN_AL_PM_ADM_08' => "PM: Error creating limit data",
+    'LAN_AL_PM_ADM_09' => "PM: Error updating limit data",
+    'LAN_AL_PM_ADM_10' => "PM: Error deleting limit data",
+];

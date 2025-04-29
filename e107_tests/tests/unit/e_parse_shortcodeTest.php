@@ -215,8 +215,8 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
       //  require_once(e_CORE."shortcodes/batch/admin_shortcodes.php");
         e107::getScBatch('admin');
 
-        require_once(e_LANGUAGEDIR.'English/admin/lan_header.php');
-        require_once(e_LANGUAGEDIR.'English/admin/lan_footer.php');
+        e107::includeLan(e_LANGUAGEDIR.'English/admin/lan_header.php');
+        e107::includeLan(e_LANGUAGEDIR.'English/admin/lan_footer.php');
 
 		e107::loadAdminIcons();
 

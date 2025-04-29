@@ -482,14 +482,16 @@ class e_file
 			if(class_exists('finfo')) // Best Mime detection method.
 			{
 				$fin = new finfo(FILEINFO_MIME);
-				list($mime, $other) = explode(";", $fin->file($path_to_file));
+				$result = $fin->file($path_to_file);
+                $parts = explode(";", $result);
+
+				$mime = trim($parts[0]);
 
 				if(!empty($mime))
 				{
 					$finfo['mime'] = $mime;
 				}
 
-				unset($other);
 
 			}
 
@@ -515,7 +517,7 @@ class e_file
 		}
 
 
-		if($imgcheck && ($tmp = getimagesize($path_to_file)))
+		if($imgcheck && is_file($path_to_file) && ($tmp = getimagesize($path_to_file)))
 		{
 			$finfo['img-width'] = $tmp[0];
 			$finfo['img-height'] = $tmp[1];
@@ -2587,7 +2589,7 @@ class e_file
 
 			if(($class === null && check_class($v['name'])) || (int) $class === (int) $v['name'])
 			{
-				$current_perms[$v['name']] = array('type' => $v['type'], 'maxupload' => $v['maxupload']);
+			//	$current_perms[$v['name']] = array('type' => $v['type'], 'maxupload' => $v['maxupload']);
 				$a_filetypes = explode(',', $v['type']);
 				foreach($a_filetypes as $ftype)
 				{

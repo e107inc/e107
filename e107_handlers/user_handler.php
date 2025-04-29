@@ -61,6 +61,8 @@ class UserHandler
 	private $otherFields = array();
 	private $passwordAPI = false;
 
+	private $otherFieldTypes = array();
+
 	// Constructor
 	public function __construct()
 	{
@@ -261,7 +263,7 @@ class UserHandler
 	 *	@param string $login_name - string used to log in (could actually be email address)
 	 *	@param string $stored_hash - required value for password to match
 	 *
-	 *	@return string PASSWORD_INVALID|PASSWORD_VALID|string
+	 *	@return string|bool PASSWORD_INVALID|PASSWORD_VALID|string
 	 *		PASSWORD_INVALID if no match
 	 *		PASSWORD_VALID if valid password
 	 *		Return a new hash to store if valid password but non-preferred encoding
@@ -401,7 +403,7 @@ class UserHandler
 	 * @param $uid
 	 * @param string $loginName (optional)
 	 * @param array $options
-	 * @return bool|string rawPassword
+	 * @return bool|string|array rawPassword
 	 */
 	public function resetPassword($uid, $loginName='', $options=array())
 	{
@@ -710,7 +712,7 @@ class UserHandler
 	 *	@param array $lode - user information from DB - 'user_id' and 'user_password' required
 	 *	@param bool $autologin - TRUE if the 'Remember Me' box ticked
 	 *
-	 *	@return void
+	 *	@return void|true
 	 */
 	public function makeUserCookie($lode,$autologin = false)
 	{
@@ -1918,82 +1920,7 @@ class e_userperms
 	function __construct()
 	{
 
-		$this->core_perms = array(
-
-		// In the same order as admin navigation! Plus same labels.
-
-		// Settings
-		"C"	=> array(ADLAN_74,E_16_CACHE, E_32_CACHE),		    // Clear the system cache
-		"F"	=> array(ADLAN_58,E_16_EMOTE, E_32_EMOTE),	        // Emoticons
-		"G"	=> array(ADLAN_60,E_16_FRONT, E_32_FRONT),		    // Front-Page Configuration
-		"L"	=> array(ADLAN_132,E_16_LANGUAGE, E_32_LANGUAGE),	// Language Packs
-		"T"	=> array(ADLAN_66,E_16_META, E_32_META),			// Meta tags
-
-		"1"	=> array(LAN_PREFS,E_16_PREFS, E_32_PREFS),			// Alter Site Preferences
-		"X"	=> array(LAN_SEARCH,E_16_SEARCH, E_32_SEARCH),		// Search
-		"I"	=> array(LAN_NAVIGATION,E_16_LINKS, E_32_LINKS),			// Post SiteLinks
-		"8"	=> array(ADMSLAN_27,E_16_LINKS, E_32_LINKS),		// Oversee SiteLink Categories
-		"K"	=> array(ADLAN_159,E_16_EURL, E_32_EURL),			// Configure URLs
-
-		// Users
-		"3"	=> array(ADLAN_8,E_16_ADMIN, E_32_ADMIN),			// Modify Admin perms
-		"4"	=> array(LAN_USER_MANAGEALL,E_16_USER, E_32_USER),	// Manage all user access and settings etc
-		"U0" => array(ADLAN_34,E_16_USER, E_32_USER), 		    // moderate users/bans but not userclasses or extended fields,
-		"U1" => array(LAN_USER_QUICKADD,E_16_USER, E_32_USER),	// "User: Quick Add User",
-		"U2" => array(LAN_USER_OPTIONS,E_16_USER, E_32_USER),	// Manage only user-options
-		"U3" => array(LAN_USER_RANKS,E_16_USER, E_32_USER),		// Manage only user-ranks
-		"W"	=> array(ADLAN_136,E_16_MAIL, E_32_MAIL),			// Configure mail settings and mailout
-
-
-		// Content
-		"5"	=> array(ADLAN_42,E_16_CUST, E_32_CUST),			// create/edit custom PAGES
-		"J"	=> array(ADLAN_42,E_16_CUST, E_32_CUST),			// create/edit custom MENUS
-		"J1" => array(ADLAN_42." (".LAN_DELETE.")",E_16_CUST, E_32_CUST),	// Delete Pages/Menus.
-
-		"H"	=> array(ADLAN_0,E_16_NEWS, E_32_NEWS),								// Post News - All Areas except settings.
-		"H0" => array(ADLAN_0." (".LAN_CREATE.")",E_16_NEWS, E_32_NEWS),					// Create News Items
-		"H1" => array(ADLAN_0." (".LAN_EDIT.")",E_16_NEWS, E_32_NEWS),						// Edit News Items
-		"H2" => array(ADLAN_0." (".LAN_DELETE.")",E_16_NEWS, E_32_NEWS),					// Delete News Items
-		"H3" => array(ADLAN_0." (".LAN_CATEGORY." - ".LAN_CREATE.")",E_16_NEWS, E_32_NEWS),			// Create News Category
-		"H4" => array(ADLAN_0." (".LAN_CATEGORY." - ".LAN_EDIT.")",E_16_NEWS, E_32_NEWS),			// Edit News Category
-		"H5" => array(ADLAN_0." (".LAN_CATEGORY." - ".LAN_DELETE.")",E_16_NEWS, E_32_NEWS),			// Delete News Category
-
-		"N"	=> array(ADLAN_0." (".LAN_SUBMITTED.")",E_16_NEWS, E_32_NEWS),			// Moderate submitted news
-		"V"	=> array(ADLAN_31,E_16_UPLOADS, E_32_UPLOADS),							// Configure public file uploads
-		"M"	=> array(ADLAN_28,E_16_WELCOME, E_32_WELCOME),							// Welcome Messages
-
-		// Tools
-		"Y"	=> array(ADLAN_147,E_16_INSPECT, E_32_INSPECT),	    // File inspector
-		"9"	=> array(ADLAN_40, E_16_MAINTAIN, E_32_MAINTAIN),	// Take Down site for Maintenance
-		"O"	=> array(ADLAN_149,E_16_NOTIFY, E_32_NOTIFY),		// Notify
-		"U"	=> array(ADLAN_157,E_16_CRON, E_32_CRON),			// Schedule Tasks
-		"S"	=> array(ADLAN_155,E_16_ADMINLOG, E_32_ADMINLOG),	// System Logging
-
-		// Manage
-		"B"	=> array(LAN_COMMENTMAN,E_16_COMMENT, E_32_COMMENT),	    								// Moderate Comments
-		"6"	=> array(LAN_MEDIAMANAGER,E_16_FILE, E_32_FILE),											// File-Manager  - Upload /manage files -
-		"A"	=> array(LAN_MEDIAMANAGER." (".LAN_ALL.")",E_16_IMAGES, E_32_IMAGES),						// Media-Manager All Areas.
-		"A1"=> array(LAN_MEDIAMANAGER." (".LAN_UPLOAD."/".LAN_IMPORT.")",E_16_IMAGES, E_32_IMAGES),		// Media-Manager (Media Upload/Add/Import)
-		"A2"=> array(LAN_MEDIAMANAGER." (".LAN_CATEGORIES.")",E_16_IMAGES, E_32_IMAGES),				// Media-Manager (Media-Categories)
-
-		"TMP"=> array(ADLAN_140." (".LAN_PREFS.")",E_16_THEMEMANAGER, E_32_THEMEMANAGER),
-
-		"2"	=> array(ADLAN_6,E_16_MENUS, E_32_MENUS),		// Alter Menus
-
-
-		//	"D"=> ADMSLAN_29,	// Manage Banners 				(deprecated - now a plugin)
-		//	"E"=> ADMSLAN_30,	// News feed headlines 			(deprecated - now a plugin)
-		// "K"=>
-
-		// "P" 				// Reserved for Plugins
-
-		//	"Q"=> array(ADMSLAN_24),	// Manage download categories (deprecated - now a plugin)
-		//	"R"=> ADMSLAN_44,	// Post Downloads (deprecated)
-
-
-		//	"Z"=> ADMSLAN_62, // Plugin Manager.. included under Plugins category.
-		);
-
+		$this->setCorePerms();
 
 	//	$sql = e107::getDb('sql2');
 	//	$tp = e107::getParser();
@@ -2013,22 +1940,6 @@ class e_userperms
 			$key = "P".$pg->getId();
 			$this->plugin_perms[$key] = $arr;
 		}
-
-/*
-		$plg = e107::getPlugin();
-		$allPlugins = $plg->getall(1); // Needs all for 'reading' and 'installed' for writing.
-
-		foreach($allPlugins as $k=>$row2)
-		{
-			if($plg->parse_plugin($row2['plugin_path']))
-			{
-				$plug_vars = $plg->plug_vars;
-				$this->plugin_perms[("P".$row2['plugin_id'])] = array($tp->toHTML($row2['plugin_name'], false, 'RAWTEXT,defs'));
-				$this->plugin_perms[("P".$row2['plugin_id'])][1] = $plg->getIcon($row2['plugin_path'],16);
-				$this->plugin_perms[("P".$row2['plugin_id'])][2] = $plg->getIcon($row2['plugin_path'],32);
-			}
-		}
-*/
 
 
 		asort($this->plugin_perms);
@@ -2053,6 +1964,304 @@ class e_userperms
 		// Note: Using array_merge or array_merge_recursive will corrupt the array. 
 		$this->full_perms = $this->core_perms + $this->plugin_perms + $this->language_perms + $this->main_perms;
 
+	}
+
+	function setCorePerms()
+	{
+
+		// Define permissions with associative keys and a separator
+		$perm_definitions = array(
+			// Settings
+			'C'   => [
+				'title'   => 'ADLAN_74',              // Clear the system cache
+				'icon_16' => 'E_16_CACHE',
+				'icon_32' => 'E_32_CACHE',
+			],
+			'F'   => [
+				'title'   => 'ADLAN_58',              // Emoticons
+				'icon_16' => 'E_16_EMOTE',
+				'icon_32' => 'E_32_EMOTE',
+			],
+			'G'   => [
+				'title'   => 'ADLAN_60',              // Front-Page Configuration
+				'icon_16' => 'E_16_FRONT',
+				'icon_32' => 'E_32_FRONT',
+			],
+			'L'   => [
+				'title'   => 'ADLAN_132',             // Language Packs
+				'icon_16' => 'E_16_LANGUAGE',
+				'icon_32' => 'E_32_LANGUAGE',
+			],
+			'T'   => [
+				'title'   => 'ADLAN_66',              // Meta tags
+				'icon_16' => 'E_16_META',
+				'icon_32' => 'E_32_META',
+			],
+			'1'   => [
+				'title'   => 'LAN_PREFS',             // Alter Site Preferences
+				'icon_16' => 'E_16_PREFS',
+				'icon_32' => 'E_32_PREFS',
+			],
+			'X'   => [
+				'title'   => 'LAN_SEARCH',            // Search
+				'icon_16' => 'E_16_SEARCH',
+				'icon_32' => 'E_32_SEARCH',
+			],
+			'I'   => [
+				'title'   => 'LAN_NAVIGATION',        // Post SiteLinks
+				'icon_16' => 'E_16_LINKS',
+				'icon_32' => 'E_32_LINKS',
+			],
+			'8'   => [
+				'title'   => 'ADMSLAN_27',            // Oversee SiteLink Categories
+				'icon_16' => 'E_16_LINKS',
+				'icon_32' => 'E_32_LINKS',
+			],
+			'K'   => [
+				'title'   => 'ADLAN_159',             // Configure URLs
+				'icon_16' => 'E_16_EURL',
+				'icon_32' => 'E_32_EURL',
+			],
+
+			// Users
+			'3'   => [
+				'title'   => 'ADLAN_8',               // Modify Admin perms
+				'icon_16' => 'E_16_ADMIN',
+				'icon_32' => 'E_32_ADMIN',
+			],
+			'4'   => [
+				'title'   => 'LAN_USER_MANAGEALL',    // Manage all user access and settings etc
+				'icon_16' => 'E_16_USER',
+				'icon_32' => 'E_32_USER',
+			],
+			'U0'  => [
+				'title'   => 'ADLAN_34',              // moderate users/bans but not userclasses or extended fields
+				'icon_16' => 'E_16_USER',
+				'icon_32' => 'E_32_USER',
+			],
+			'U1'  => [
+				'title'   => 'LAN_USER_QUICKADD',     // "User: Quick Add User"
+				'icon_16' => 'E_16_USER',
+				'icon_32' => 'E_32_USER',
+			],
+			'U2'  => [
+				'title'   => 'LAN_USER_OPTIONS',      // Manage only user-options
+				'icon_16' => 'E_16_USER',
+				'icon_32' => 'E_32_USER',
+			],
+			'U3'  => [
+				'title'   => 'LAN_USER_RANKS',        // Manage only user-ranks
+				'icon_16' => 'E_16_USER',
+				'icon_32' => 'E_32_USER',
+			],
+			'W'   => [
+				'title'   => 'ADLAN_136',             // Configure mail settings and mailout
+				'icon_16' => 'E_16_MAIL',
+				'icon_32' => 'E_32_MAIL',
+			],
+
+			// Content
+			'5'   => [
+				'title'   => 'ADLAN_42',              // create/edit custom PAGES
+				'icon_16' => 'E_16_CUST',
+				'icon_32' => 'E_32_CUST',
+			],
+			'J'   => [
+				'title'   => 'ADLAN_42',              // create/edit custom MENUS
+				'icon_16' => 'E_16_CUST',
+				'icon_32' => 'E_32_CUST',
+			],
+			'J1'  => [
+				'title'     => ['ADLAN_42', 'LAN_DELETE'],
+				'separator' => ' (',                // Delete Pages/Menus
+				'icon_16'   => 'E_16_CUST',
+				'icon_32'   => 'E_32_CUST',
+			],
+			'H'   => [
+				'title'   => 'ADLAN_0',               // Post News - All Areas except settings
+				'icon_16' => 'E_16_NEWS',
+				'icon_32' => 'E_32_NEWS',
+			],
+			'H0'  => [
+				'title'     => ['ADLAN_0', 'LAN_CREATE'],
+				'separator' => ' (',                // Create News Items
+				'icon_16'   => 'E_16_NEWS',
+				'icon_32'   => 'E_32_NEWS',
+			],
+			'H1'  => [
+				'title'     => ['ADLAN_0', 'LAN_EDIT'],
+				'separator' => ' (',                // Edit News Items
+				'icon_16'   => 'E_16_NEWS',
+				'icon_32'   => 'E_32_NEWS',
+			],
+			'H2'  => [
+				'title'     => ['ADLAN_0', 'LAN_DELETE'],
+				'separator' => ' (',                // Delete News Items
+				'icon_16'   => 'E_16_NEWS',
+				'icon_32'   => 'E_32_NEWS',
+			],
+			'H3'  => [
+				'title'         => ['ADLAN_0', 'LAN_CATEGORY', 'LAN_CREATE'],
+				'separator'     => ' (',                // Create News Category
+				'sub_separator' => ' - ',
+				'icon_16'       => 'E_16_NEWS',
+				'icon_32'       => 'E_32_NEWS',
+			],
+			'H4'  => [
+				'title'         => ['ADLAN_0', 'LAN_CATEGORY', 'LAN_EDIT'],
+				'separator'     => ' (',                // Edit News Category
+				'sub_separator' => ' - ',
+				'icon_16'       => 'E_16_NEWS',
+				'icon_32'       => 'E_32_NEWS',
+			],
+			'H5'  => [
+				'title'         => ['ADLAN_0', 'LAN_CATEGORY', 'LAN_DELETE'],
+				'separator'     => ' (',                // Delete News Category
+				'sub_separator' => ' - ',
+				'icon_16'       => 'E_16_NEWS',
+				'icon_32'       => 'E_32_NEWS',
+			],
+			'N'   => [
+				'title'     => ['ADLAN_0', 'LAN_SUBMITTED'],
+				'separator' => ' (',                // Moderate submitted news
+				'icon_16'   => 'E_16_NEWS',
+				'icon_32'   => 'E_32_NEWS',
+			],
+			'V'   => [
+				'title'   => 'ADLAN_31',              // Configure public file uploads
+				'icon_16' => 'E_16_UPLOADS',
+				'icon_32' => 'E_32_UPLOADS',
+			],
+			'M'   => [
+				'title'   => 'ADLAN_28',              // Welcome Messages
+				'icon_16' => 'E_16_WELCOME',
+				'icon_32' => 'E_32_WELCOME',
+			],
+
+			// Tools
+			'Y'   => [
+				'title'   => 'ADLAN_147',             // File inspector
+				'icon_16' => 'E_16_INSPECT',
+				'icon_32' => 'E_32_INSPECT',
+			],
+			'7'   => [
+				'title'   => 'LAN_HISTORY',           // History/Undo
+				'icon_16' => 'E_16_UNDO',
+				'icon_32' => 'E_32_UNDO',
+			],
+			'9'   => [
+				'title'   => 'ADLAN_40',              // Take Down site for Maintenance
+				'icon_16' => 'E_16_MAINTAIN',
+				'icon_32' => 'E_32_MAINTAIN',
+			],
+			'O'   => [
+				'title'   => 'ADLAN_149',             // Notify
+				'icon_16' => 'E_16_NOTIFY',
+				'icon_32' => 'E_32_NOTIFY',
+			],
+			'U'   => [
+				'title'   => 'ADLAN_157',             // Schedule Tasks
+				'icon_16' => 'E_16_CRON',
+				'icon_32' => 'E_32_CRON',
+			],
+			'S'   => [
+				'title'   => 'ADLAN_155',             // System Logging
+				'icon_16' => 'E_16_ADMINLOG',
+				'icon_32' => 'E_32_ADMINLOG',
+			],
+
+			// Manage
+			'B'   => [
+				'title'   => 'LAN_COMMENTMAN',        // Moderate Comments
+				'icon_16' => 'E_16_COMMENT',
+				'icon_32' => 'E_32_COMMENT',
+			],
+			'6'   => [
+				'title'   => 'LAN_MEDIAMANAGER',      // File-Manager - Upload /manage files
+				'icon_16' => 'E_16_FILE',
+				'icon_32' => 'E_32_FILE',
+			],
+			'A'   => [
+				'title'     => ['LAN_MEDIAMANAGER', 'LAN_ALL'],
+				'separator' => ' (',                // Media-Manager All Areas
+				'icon_16'   => 'E_16_IMAGES',
+				'icon_32'   => 'E_32_IMAGES',
+			],
+			'A1'  => [
+				'title'         => ['LAN_MEDIAMANAGER', 'LAN_UPLOAD', 'LAN_IMPORT'],
+				'separator'     => ' (',                // Media-Manager (Media Upload/Add/Import)
+				'sub_separator' => '/',
+				'icon_16'       => 'E_16_IMAGES',
+				'icon_32'       => 'E_32_IMAGES',
+			],
+			'A2'  => [
+				'title'     => ['LAN_MEDIAMANAGER', 'LAN_CATEGORIES'],
+				'separator' => ' (',                // Media-Manager (Media-Categories)
+				'icon_16'   => 'E_16_IMAGES',
+				'icon_32'   => 'E_32_IMAGES',
+			],
+			'TMP' => [
+				'title'     => ['ADLAN_140', 'LAN_PREFS'],
+				'separator' => ' (',                // Theme preferences
+				'icon_16'   => 'E_16_THEMEMANAGER',
+				'icon_32'   => 'E_32_THEMEMANAGER',
+			],
+			'2'   => [
+				'title'   => 'ADLAN_6',               // Alter Menus
+				'icon_16' => 'E_16_MENUS',
+				'icon_32' => 'E_32_MENUS',
+			],
+
+			// Commented-out items
+			/*'D' => [
+				'title' => 'ADMSLAN_29',            // Manage Banners (deprecated - now a plugin)
+			],
+			'E' => [
+				'title' => 'ADMSLAN_30',            // News feed headlines (deprecated - now a plugin)
+			],
+			'Q' => [
+				'title' => 'ADMSLAN_24',            // Manage download categories (deprecated - now a plugin)
+			],
+			'R' => [
+				'title' => 'ADMSLAN_44',            // Post Downloads (deprecated)
+			],
+			'Z' => [
+				'title' => 'ADMSLAN_62',            // Plugin Manager (included under Plugins category)
+			],*/
+		);
+
+		// Process the array with defset()
+		$this->core_perms = array();
+		foreach($perm_definitions as $perm => $data)
+		{
+			if(is_array($data['title']))
+			{
+				$title_parts = array_map(fn($const) => defset($const, 'Untitled'), $data['title']);
+				$separator = $data['separator'] ?? '';
+				$sub_separator = $data['sub_separator'] ?? '';
+
+				if(count($title_parts) > 2 && $sub_separator)
+				{
+					// For cases like 'News (Category - Edit)'
+					$title = $title_parts[0] . $separator . $title_parts[1] . $sub_separator . $title_parts[2] . ')';
+				}
+				else
+				{
+					// For cases like 'News (Create)' or 'Media Manager (Upload/Import)'
+					$title = implode($sub_separator ?: $separator, $title_parts) . ($separator ? ')' : '');
+				}
+			}
+			else
+			{
+				$title = defset($data['title'], 'Untitled');
+			}
+
+			$this->core_perms[$perm] = array(
+				0 => $title,
+				1 => defset($data['icon_16'], 'e-' . strtolower(str_replace('E_16_', '', $data['icon_16'])) . '-16'),
+				2 => defset($data['icon_32'], 'e-' . strtolower(str_replace('E_32_', '', $data['icon_32'])) . '-32')
+			);
+		}
 	}
 
 	/**

@@ -80,7 +80,7 @@ class faqs_shortcodes extends e_shortcode
 	}
 	
 	
-	function sc_faq_question($parm='')
+	function sc_faq_question($parm=[])
 	{
 		$tp = e107::getParser();
 		$parm = eHelper::scDualParams($parm);
@@ -93,7 +93,7 @@ class faqs_shortcodes extends e_shortcode
 
 		$faqNew = ($this->var['faq_datestamp'] > $newDate) ? " faq-new" : "";
 
-		if($param == 'expand' && !empty($this->var['faq_answer']))
+		if($param === 'expand' && !empty($this->var['faq_answer']))
 		{
 
 			$id         = "faq_".$this->var['faq_id'];
@@ -130,6 +130,11 @@ class faqs_shortcodes extends e_shortcode
 		}
 		else
 		{
+			if(isset($parm['html']) && empty($parm['html']))
+			{
+				return e107::getParser()->toText($this->var['faq_question']);
+			}
+
 			$text = $tp->toHTML($this->var['faq_question'],true, 'TITLE');
 		}
 		return $text;
@@ -154,8 +159,13 @@ class faqs_shortcodes extends e_shortcode
 		return "<a class='faq-question' href='". e107::url('faqs', 'item', $this->var)."' >".$tp -> toHTML($this->var['faq_question'],true,'TITLE')."</a>";
 	}
 	
-	function sc_faq_answer()
+	function sc_faq_answer($parm=[])
 	{
+		if(isset($parm['html']) && empty($parm['html']))
+		{
+			return e107::getParser()->toText($this->var['faq_answer']);
+		}
+
 		return e107::getParser()->toHTML($this->var['faq_answer'],true,'BODY'); 
 	}
 	

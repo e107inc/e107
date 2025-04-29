@@ -5,5 +5,8 @@
 *
 * 'Import plugin' global language defines
 */
-define("LAN_PLUGIN_IMPORT_NAME", "Import into e107");
-define("LAN_PLUGIN_IMPORT_DESCRIPTION", "Import data from Wordpress, Joomla, Drupal, Blogpost, RSS and other formats.");
+
+return [
+    'LAN_PLUGIN_IMPORT_NAME'        => "Import into e107",
+    'LAN_PLUGIN_IMPORT_DESCRIPTION' => "Import data from Wordpress, Joomla, Drupal, Blogpost, RSS and other formats.",
+];

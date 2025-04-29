@@ -27,7 +27,7 @@
 				$this->assertTrue(false, "Couldn't load eIPHandler object");
 			}
 
-			$this->__construct();
+			$this->ip->__construct();
 		}
 
 /*		public function testMakeEmailQuery()
