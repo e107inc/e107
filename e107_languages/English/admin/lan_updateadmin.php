@@ -7,12 +7,13 @@
  * 
 */
 
-define("UDALAN_1", "Error - please re-submit.");
-define("UDALAN_2", "Admin Settings updated");
-define("UDALAN_3", "Settings updated for");
-define("UDALAN_4", "Name");
-//define("UDALAN_5", "Password");//LAN_PASSWORD
-define("UDALAN_6", "Re-type password");
-define("UDALAN_7", "Change password");
-define("UDALAN_8", "Password updated for");
 
+return [
+    'UDALAN_1' => "Error - please re-submit.",
+    'UDALAN_2' => "Admin Settings updated",
+    'UDALAN_3' => "Settings updated for",
+    'UDALAN_4' => "Name",
+    'UDALAN_6' => "Re-type password",
+    'UDALAN_7' => "Change password",
+    'UDALAN_8' => "Password updated for",
+];
