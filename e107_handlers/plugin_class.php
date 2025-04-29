@@ -4220,6 +4220,7 @@ class e107plugin
 			{
 				case 'install': // Add all active extended fields
 				case 'upgrade':
+				case 'refresh':
 
 					if (!$remove)
 					{
