@@ -2537,7 +2537,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				$tmp[$c]['text']            = $sc->sc_nav_link_name();
 				$tmp[$c]['description']     = $tp->toHTML($lk['link_description'], '', 'defs');
 				$tmp[$c]['link']            = $sc->sc_nav_link_url(); // $tp->replaceConstants($link,'full');
-				$tmp[$c]['image']           = $sc->sc_nav_link_icon(); // vartrue($lk['link_button']) ? "<img class='icon S16' src='".$tp->replaceConstants($lk['link_button'])."' alt='".$tp->toAttribute($lk['link_description'],'','defs')."' />": '';
+				$tmp[$c]['image']           = $sc->sc_nav_link_icon(['class'=>'icon S16']); // vartrue($lk['link_button']) ? "<img class='icon S16' src='".$tp->replaceConstants($lk['link_button'])."' alt='".$tp->toAttribute($lk['link_description'],'','defs')."' />": '';
 				$tmp[$c]['image_large']     = '';
 				$tmp[$c]['image_src']       = vartrue($lk['link_button']);
 				$tmp[$c]['image_large_src'] = '';

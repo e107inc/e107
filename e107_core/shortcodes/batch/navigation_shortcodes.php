@@ -77,7 +77,7 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 		/**
 		 * Return the name of the current link
 		 *
-		 * @return string
+		 * @return string|null
 		 * @example {NAV_LINK_NAME}
 		 */
 		function sc_nav_link_name($parm = null)
@@ -256,16 +256,14 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 				return '';
 			}
 
-			//	if($icon = $tp->toGlyph($this->var['link_button']))
-			//	{
-			//		return $icon;	
-			//	}
-			//	else 
+			$opts = array('fw' => true, 'space' => ' ', 'legacy' => "{e_IMAGE}icons/");
+
+			if(!empty($parm) && is_array($parm))
 			{
-				//$path = e107::getParser()->replaceConstants($this->var['link_button'], 'full', TRUE);	
-				return $tp->toIcon($this->var['link_button'], array('fw' => true, 'space' => ' ', 'legacy' => "{e_IMAGE}icons/"));
-				// return "<img class='icon' src='".$path."' alt=''  />";	
+				$opts = array_merge($opts, $parm);
 			}
+			
+			return $tp->toIcon($this->var['link_button'], $opts);
 
 		}
 
@@ -273,7 +271,7 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 		/**
 		 * Return the link description of the current link
 		 * @example {NAV_LINK_DESCRIPTION}
-		 * @return string
+		 * @return string|null
 		 */
 		function sc_nav_link_description($parm = null)
 		{
@@ -293,14 +291,14 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 		/**
 		 * Return the parsed sublinks of the current link
 		 * @example {NAV_LINK_SUB}
-		 * @return string
+		 * @return string|null
 		 */
 		function sc_nav_link_sub($parm = null)
 		{
 
 			if(empty($this->var['link_sub']))
 			{
-				return false;
+				return null;
 			}
 
 			if(is_string($this->var['link_sub'])) // html override option.
