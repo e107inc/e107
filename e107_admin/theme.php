@@ -30,6 +30,10 @@ if(!empty($_GET['iframe']))
 	define('e_IFRAME', true);
 }
 
+e107::css('inline', '
+	.admin-ui-grid img { width: 100%; }
+');
+
 
 //e107::js('core','bootstrap-suggest/dist/bootstrap-suggest.min.js');
 //e107::css('core','bootstrap-suggest/dist/bootstrap-suggest.css');
@@ -131,12 +135,12 @@ class theme_admin extends e_admin_dispatcher
 
 
 	protected $adminMenu = array(
-		'main/main'			=> array('caption'=> TPVLAN_33, 'perm' => '0|1|TMP', 'icon'=>'fas-home'),
-		'main/admin' 		=> array('caption'=> TPVLAN_34, 'perm' => '0', 'icon'=>'fas-tachometer-alt'),
-		'main/choose' 		=> array('caption'=> TPVLAN_51, 'perm' => '0', 'icon'=>'fas-exchange-alt'),
-		'main/online'		=> array('caption'=> TPVLAN_62, 'perm' => '0', 'icon'=>'fas-search'),
-		'main/upload'		=> array('caption'=> TPVLAN_38, 'perm' => '0'),
-		'convert/main'		=> array('caption'=> ADLAN_CL_6, 'perm' => '0', 'icon'=>'fas-toolbox')
+		'main/main'			=> array('caption'=> 'TPVLAN_33', 'perm' => '0|1|TMP', 'icon'=>'fas-home'),
+		'main/admin' 		=> array('caption'=> 'TPVLAN_34', 'perm' => '0', 'icon'=>'fas-tachometer-alt'),
+		'main/choose' 		=> array('caption'=> 'TPVLAN_51', 'perm' => '0', 'icon'=>'fas-exchange-alt'),
+		'main/online'		=> array('caption'=> 'TPVLAN_62', 'perm' => '0', 'icon'=>'fas-search'),
+		'main/upload'		=> array('caption'=> 'TPVLAN_38', 'perm' => '0'),
+		'convert/main'		=> array('caption'=> 'ADLAN_CL_6', 'perm' => '0', 'icon'=>'fas-toolbox')
 	);
 
 
@@ -146,7 +150,7 @@ class theme_admin extends e_admin_dispatcher
 
 	protected $adminMenuIcon = 'e-themes-24';
 
-	protected $menuTitle = TPVLAN_26;
+	protected $menuTitle = 'TPVLAN_26';
 
 	function init()
 	{
@@ -320,24 +324,24 @@ class theme_admin_ui extends e_admin_ui
 	//	protected \$sortField		= 'somefield_order';
 	//	protected \$sortParent      = 'somefield_parent';
 	//	protected \$treePrefix      = 'somefield_title';
-		protected $grid             = array('price'=>'price', 'version'=>'version','title'=>'name', 'image'=>'thumbnail',  'body'=>'',  'class'=>'col-md-2 col-sm-3', 'perPage'=>12, 'carousel'=>true, 'toggleButton'=>false);
+		protected $grid             = array('price'=>'price', 'version'=>'version','title'=>'name', 'image'=>'thumbnail',  'body'=>'',  'class'=>'col-xxl-2 col-xl-3 col-lg-4 col-md-4 col-sm-6 col-xs-12', 'perPage'=>12, 'carousel'=>true, 'toggleButton'=>false);
 
 
     	protected  $fields = array(
 			'checkboxes'				=> array('title'=> '', 					'type' => null,			'data' => null,			'width'=>'5%', 		'thclass' =>'center', 'forced'=> TRUE,  'class'=>'center', 'toggle' => 'e-multiselect'),
-			'id'					    => array('title'=> LAN_ID, 				'type' => 'number',		'data' => 'int',		'width'=>'5%',		'thclass' => '',  'class'=>'center',	'forced'=> TRUE, 'primary'=>TRUE/*, 'noedit'=>TRUE*/), //Primary ID is not editable
-           	'name'				        => array('title'=> LAN_TITLE, 			'type' => 'text',		'data' => 'str',		'width'=>'5%',		'thclass' => '',	'forced'=> TRUE, 'primary'=>TRUE/*, 'noedit'=>TRUE*/), //Primary ID is not editable
-            'thumbnail'	   			    => array('title'=> LAN_IMAGE, 			'type' => 'image',      'readParms'=>array('thumb'=>1,'w'=>300,'h'=>169,'crop'=>1, 'link'=>false, 'fallback'=>'{e_IMAGE}admin_images/nopreview.png'),	'data' => 'str',		'width'=>'auto',	'thclass' => '', 'batch' => TRUE, 'filter'=>TRUE),
+			'id'					    => array('title'=> 'LAN_ID', 				'type' => 'number',		'data' => 'int',		'width'=>'5%',		'thclass' => '',  'class'=>'center',	'forced'=> TRUE, 'primary'=>TRUE/*, 'noedit'=>TRUE*/), //Primary ID is not editable
+           	'name'				        => array('title'=> 'LAN_TITLE', 			'type' => 'text',		'data' => 'str',		'width'=>'5%',		'thclass' => '',	'forced'=> TRUE, 'primary'=>TRUE/*, 'noedit'=>TRUE*/), //Primary ID is not editable
+            'thumbnail'	   			    => array('title'=> 'LAN_IMAGE', 			'type' => 'image',      'readParms'=>array('thumb'=>1,'w'=>375,'h'=>211,'crop'=>1, 'link'=>false, 'fallback'=>'{e_IMAGE}admin_images/nopreview.png'),	'data' => 'str',		'width'=>'auto',	'thclass' => '', 'batch' => TRUE, 'filter'=>TRUE),
 			'folder' 				    => array('title'=> 'Folder', 			'type' => 'text', 		'data' => 'str',		'width' => 'auto',	'thclass' => ''),
-			'category' 				    => array('title'=> LAN_CATEGORY, 		'type' => 'dropdown', 		'data' => 'str', 'filter'=>true,		'width' => 'auto',	'thclass' => '', 'writeParms'=>array()),
+			'category' 				    => array('title'=> 'LAN_CATEGORY', 		'type' => 'dropdown', 		'data' => 'str', 'filter'=>true,		'width' => 'auto',	'thclass' => '', 'writeParms'=>array()),
 			'version' 			        => array('title'=> 'Version',			'type' => 'text', 		'data' => 'str',		'width' => 'auto',	'thclass' => ''),
-			'price' 				    => array('title'=> LAN_AUTHOR,			'type' => 'method', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'),
+			'price' 				    => array('title'=> 'LAN_AUTHOR',			'type' => 'method', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'),
      //    	'blank_authorURL' 			=> array('title'=> "Url", 				'type' => 'url', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'),
      //       'blank_date' 				=> array('title'=> LAN_DATE, 			'type' => 'datestamp', 	'data' => 'int',		'width' => 'auto',	'thclass' => '', 'readParms' => 'long', 'writeParms' => 'type=datetime'),
 	//		'blank_compatibility' 		=> array('title'=> 'Compatible',			'type' => 'text', 		'data' => 'str',		'width' => '10%',	'thclass' => 'center' ),
 		//	'blank_url' 				=> array('title'=> LAN_URL,		'type' => 'file', 		'data' => 'str',		'width' => '20%',	'thclass' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'parms' => 'truncate=30', 'validate' => false, 'help' => 'Enter blank URL here', 'error' => 'please, ener valid URL'),
 	//		'test_list_1'				=> array('title'=> 'test 1',			'type' => 'boolean', 		'data' => 'int',		'width' => '5%',	'thclass' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'noedit' => true),
-			'options' 					=> array('title'=> LAN_OPTIONS, 		'type' => 'method', 		'data' => null,			'width' => '10%',	'thclass' => 'center last', 'class' => 'center last', 'forced'=>TRUE)
+			'options' 					=> array('title'=> 'LAN_OPTIONS', 		'type' => 'method', 		'data' => null,			'width' => '10%',	'thclass' => 'center last', 'class' => 'center last', 'forced'=>TRUE)
 		);
 
 		//required - default column user prefs
@@ -640,6 +644,8 @@ class theme_admin_ui extends e_admin_ui
 
 		public function InfoPage()
 		{
+
+
 			if(!empty($_GET['src'])) // online mode.
 			{
 				$string =  base64_decode($_GET['src']);
@@ -657,7 +663,7 @@ class theme_admin_ui extends e_admin_ui
 
 			$tm = (string) $this->getId();
 			$themeMeta  = e107::getTheme($tm)->get();
-			echo $this->themeObj->renderThemeInfo($themeMeta);
+			return $this->themeObj->renderThemeInfo($themeMeta);
 
 		}
 
@@ -1176,6 +1182,9 @@ class theme_admin_form_ui extends e_admin_form_ui
 
 		e107::getSession()->set('thememanager/online/'.$theme['id'], $theme);
 
+		$saved = e107::getSession()->get('thememanager/online/'.$theme['id']);
+
+
 		$d = http_build_query($srcData,false);
 		$base64 = base64_encode($d);
 
@@ -1388,7 +1397,7 @@ class theme_builder extends e_admin_ui
 			$newThemeXML = e_THEME.$this->themeName."/theme.xml";
 			if(file_exists($newThemeXML))
 			{
-				$info = e107::getTheme()->getThemeInfo($this->themeName);
+				$info = e107::getTheme()::getThemeInfo($this->themeName);
 
 				e107::getDebug()->log($info);
 

@@ -67,8 +67,8 @@ class core_news_sef_noid_url extends eUrlConfig
 		if($route[0] == 'view')
 		{
 			## news are passing array as it is retrieved from the DB, map vars to proper values
-			if(isset($params['news_id']) && !empty($params['news_id'])) $params['id'] = $params['news_id'];
-			if(isset($params['news_sef']) && !empty($params['news_sef'])) $params['id'] = $params['news_sef']; // TODO - news_sef
+			if(!empty($params['news_id'])) $params['id'] = $params['news_id'];
+			if(!empty($params['news_sef'])) $params['id'] = $params['news_sef']; // TODO - news_sef
 			
 			switch ($route[1]) 
 			{
@@ -84,8 +84,8 @@ class core_news_sef_noid_url extends eUrlConfig
 		elseif($route[0] == 'list')
 		{
 			## news are passing array as it is retrieved from the DB, map vars to proper values
-			if(isset($params['category_id']) && !empty($params['category_id'])) $params['id'] = $params['category_id'];
-			if(isset($params['category_sef']) && !empty($params['category_sef'])) $params['name'] = $params['category_sef']; // TODO - news_sef
+			if(!empty($params['category_id'])) $params['id'] = $params['category_id'];
+			if(!empty($params['category_sef'])) $params['name'] = $params['category_sef']; // TODO - news_sef
 			
 			switch ($route[1]) 
 			{
@@ -166,7 +166,7 @@ class core_news_sef_noid_url extends eUrlConfig
 	 * - news/Category/Category-Name?page=10 -> list.xxx.10
 	 * - news/Day|Month-xxx -> day|month-xxx
 	 */
-	public function parse($pathInfo, $params = array(), eRequest $request = null, eRouter $router = null, $config = array())
+	public function parse($pathInfo, $params = array(), eRequest|null $request = null, eRouter|null $router = null, $config = array())
 	{
 
 		$page = !empty($params['page']) ? intval($params['page']) : '0';
@@ -304,7 +304,7 @@ class core_news_sef_noid_url extends eUrlConfig
 		$sql = e107::getDb('url');
 		$tp = e107::getParser();
 		$id = $tp->toDB($id);
-		if($sql->select('news', 'news_id', "news_sef='{$id}'"))
+		if($sql->select('news', 'news_id', "news_sef='$id'"))
 		{
 			$id = $sql->fetch();
 			return $id['news_id'];
@@ -318,7 +318,7 @@ class core_news_sef_noid_url extends eUrlConfig
 		$sql = e107::getDb('url');
 		$tp = e107::getParser();
 		$id = $tp->toDB($id);
-		if($sql->select('news_category', 'category_id', "category_sef='{$id}'"))
+		if($sql->select('news_category', 'category_id', "category_sef='$id'"))
 		{
 			$id = $sql->fetch();
 			return $id['category_id'];

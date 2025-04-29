@@ -181,6 +181,15 @@ class e_themeTest extends \Codeception\Test\Unit
 							'description' => 'A high-contrast dark skin',
 							'thumbnail'   => 'images/admin_modern-dark.webp',
 						),
+					'css/modern-dark-2.css' => [
+				        'name' => 'css/modern-dark-2.css',
+				        'info' => 'Modern Dark 2',
+				        'nonadmin' => false,
+				        'default' => false,
+				        'exclude' => 'bootstrap',
+				        'description' => 'A high-contrast dark skin with dynamic sidebar',
+				        'thumbnail' => 'images/admin_modern-dark-2.webp',
+				        ],
 					'css/bootstrap-dark.min.css'                                                   =>
 						array(
 							'name'        => 'css/bootstrap-dark.min.css',

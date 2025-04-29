@@ -1056,7 +1056,22 @@ function show_emessage($mode, $message, $line = 0, $file = "") {
 
 		if(is_readable($path))
 		{
-			include($path);
+			$arr = include($path);
+			if(is_array($arr))
+			{
+				foreach($arr as $key => $value)
+				{
+					if(empty($key))
+					{
+						continue;
+					}
+
+					if(!defined($key))
+					{
+						define($key, $value);
+					}
+				}
+			}
 		}
 
     //	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_error.php");
