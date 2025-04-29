@@ -41,7 +41,7 @@ e107::coreLan('userclass2', true);
 
 			'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => '4'),
 			'main/create'		=> array('caption'=> LAN_CREATE, 'perm' => '4'),
-			'main/initial' 		=> array('caption'=> UCSLAN_38, 'perm' => '4'),
+			'main/initial' 		=> array('caption'=> UCSLAN_38, 'perm' => '4', 'icon'=>'fa-asterisk'),
 			'main/options' 		=> array('caption'=> LAN_OPTIONS, 'perm' => '4'),
 
 			// 'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P')
@@ -126,9 +126,9 @@ e107::coreLan('userclass2', true);
 
 			// Set Defaults for when creating new records.
 			$this->fields['userclass_type']['writeParms']                   = array(UC_TYPE_STD => UCSLAN_80,	UC_TYPE_GROUP => UCSLAN_81);
-			$this->fields['userclass_editclass']['writeParms']['default']   = e_UC_ADMIN;
+			$this->fields['userclass_editclass']['writeParms']['default']   = e_UC_MAINADMIN;
 			$this->fields['userclass_parent']['writeParms']['default']      = e_UC_NOBODY;
-			$this->fields['userclass_visibility']['writeParms']['default']  = e_UC_ADMIN;
+			$this->fields['userclass_visibility']['writeParms']['default']  = e_UC_MAINADMIN;
 			$this->fields['userclass_id']['writeParms']['default']          =$this->getUserClassAdmin()->findNewClassID();
 
 			if(getperms('0'))

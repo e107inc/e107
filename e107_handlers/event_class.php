@@ -224,12 +224,25 @@ class e107_event
 				{
 					$class = $evt_func[0];
 					$method = $evt_func[1];
-						
+
 					try
 					{
-					
-						$tmp = new $class($eventname);
-						$ret = $tmp->{$method}($data, $eventname); //let callback know what event is calling it
+
+						if (strpos($method, '::') !== false)    // If $method contains "::", call it statically
+						{
+						    [$staticClass, $staticMethod] = explode('::', $method, 2);
+						    $ret = $staticClass::$staticMethod($data, $eventname);
+						}
+						elseif(is_callable([$class, $method]))
+						{
+						    $ret = $class::$method($data, $eventname); // Call statically from within the same class.
+						}
+						else
+						{
+							$tmp = new $class($eventname);
+						    $ret = $tmp->{$method}($data, $eventname); // Let callback know what event is calling it
+						}
+
 						unset($tmp);
 						if (!empty($ret))
 						{
@@ -238,7 +251,9 @@ class e107_event
 					}
 					catch(Exception $e)
 					{
-						e107::getLog()->add('Event Trigger failed',array('name'=>$eventname,'location'=>$location,'class'=>$class,'method'=>$method,'error'=>$e),E_LOG_WARNING,'EVENT_01'); 
+						$logError = array('name'=>$eventname,'location'=>$location,'class'=>$class,'method'=>$method,'error'=>$e);
+						e107::getLog()->add('Event Trigger failed',$logError,E_LOG_WARNING,'EVENT_01');
+						trigger_error('Event Trigger failed: '.print_r($logError,true), E_USER_WARNING);
 						continue;
 					}
 				}
@@ -252,12 +267,14 @@ class e107_event
 				}
 				else
 				{
-					e107::getLog()->add('Event Trigger failed',array('name'=>$eventname,'location'=>$location,'function'=>$evt_func), E_LOG_WARNING,'EVENT_01'); 
+					$logData = array('name'=>$eventname,'location'=>$location,'function'=>$evt_func);
+					trigger_error('Event Trigger failed: function does not exist: '.print_r($logData,true), E_USER_WARNING);
+					e107::getLog()->add('Event Trigger failed',$logData, E_LOG_WARNING,'EVENT_01');
 				}
 				
 			}
 		}
-		return (isset($ret) ? $ret : false);
+		return ($ret ?? false);
 	}
 
 	/**
@@ -343,7 +360,9 @@ class e107_event
 					if(is_readable(e_PLUGIN.$hook."/e_event.php"))
 					{
 						require_once(e_PLUGIN.$hook."/e_event.php");
-						$name = "e_event_{$hook}";
+
+						$name = "e_event_$hook";
+
 						if(class_exists($name))
 						{
 							$class = new $name();

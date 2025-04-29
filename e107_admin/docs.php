@@ -11,7 +11,7 @@
  *
 */
 require_once(__DIR__ . '/../class2.php');
-if(!ADMIN)
+if(!deftrue('ADMIN'))
 {
 	e107::redirect();
 	exit;
@@ -129,7 +129,7 @@ class docs_ui extends e_admin_ui
 
 			$text .= "
 				<div class='docs-item' id='{$id}' {$display}>
-					<h4>" . LAN_DOCS . SEP . str_replace("_", " ", $helpdata['fname']) . "</h4>
+					<h4>" . LAN_DOCS . defset('SEP') . str_replace("_", " ", $helpdata['fname']) . "</h4>
 					{$tmp}
 
 				</div>";
