@@ -1,4 +1,7 @@
 <?php
 
 
-define("LAN_PLUGIN_NEWS_NAME", "News");
+
+return [
+    'LAN_PLUGIN_NEWS_NAME' => "News",
+];

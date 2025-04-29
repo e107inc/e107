@@ -25,7 +25,7 @@
 			}
 			catch(Exception $e)
 			{
-				$this->assertTrue(false, "Couldn't load e_admin_log object");
+				$this::fail("Couldn't load e_admin_log object");
 			}
 
 			$this->log->__construct();
@@ -63,9 +63,25 @@
 
 			$result = $this->log->getLastLog();
 
-			$this->assertNotEmpty($result['dblog_eventcode']);
-			$this->assertSame('ADD_ARRAY', $result['dblog_eventcode']);
-			$this->assertSame("Array[!br!]([!br!]    [one] =&gt; two[!br!]    [three] =&gt; four[!br!])[!br!]",$result['dblog_remarks']);
+			$this::assertNotEmpty($result['dblog_eventcode']);
+			$this::assertSame('ADD_ARRAY', $result['dblog_eventcode']);
+			$this::assertSame("Array[!br!]([!br!]    [one] =&gt; two[!br!]    [three] =&gt; four[!br!])[!br!]",$result['dblog_remarks']);
+
+		}
+
+		public function testSetUser()
+		{
+			$arr = array('one'=>'two', 'three'=>'four');
+
+			$this->log->addArray($arr)->setUser(5, 'testuser')->save('ADD_W_USER');
+
+			$result = $this->log->getLastLog();
+
+			$this::assertNotEmpty($result['dblog_eventcode']);
+			$this::assertSame('ADD_W_USER', $result['dblog_eventcode']);
+			$this::assertEquals(5, $result['dblog_user_id']);
+
+
 
 		}
 /*
@@ -101,10 +117,10 @@
 
 			$result = $this->log->getLastLog();
 
-			$this->assertNotEmpty($result['dblog_eventcode']);
+			$this::assertNotEmpty($result['dblog_eventcode']);
 
-			$this->assertSame('TEST', $result['dblog_eventcode']);
-			$this->assertSame("Array[!br!]([!br!]    [one] =&gt; test[!br!]    [two] =&gt; testing[!br!])[!br!]", $result['dblog_remarks']);
+			$this::assertSame('TEST', $result['dblog_eventcode']);
+			$this::assertSame("Array[!br!]([!br!]    [one] =&gt; test[!br!]    [two] =&gt; testing[!br!])[!br!]", $result['dblog_remarks']);
 
 		}
 /*
@@ -129,20 +145,20 @@
 			$this->log->add('testAdd Title', "testAdd Message", E_LOG_INFORMATIVE, 'TEST_ADD');
 			$result = $this->log->getLastLog();
 
-			$this->assertNotEmpty($result['dblog_eventcode']);
+			$this::assertNotEmpty($result['dblog_eventcode']);
 
-			$this->assertSame('TEST_ADD', $result['dblog_eventcode']);
-			$this->assertSame("testAdd Message", $result['dblog_remarks']);
-			$this->assertSame('testAdd Title', $result['dblog_title']);
+			$this::assertSame('TEST_ADD', $result['dblog_eventcode']);
+			$this::assertSame("testAdd Message", $result['dblog_remarks']);
+			$this::assertSame('testAdd Title', $result['dblog_title']);
 
 			// add to rolling log (dblog)
 			$this->log->rollingLog(true);
 			$this->log->add('Rolling Title', "Rolling Message", E_LOG_INFORMATIVE, 'TEST_ROLL',  LOG_TO_ROLLING);
 			$result = $this->log->getLastLog(LOG_TO_ROLLING);
 
-			$this->assertNotEmpty($result['dblog_eventcode']);
-			$this->assertSame('TEST_ROLL', $result['dblog_eventcode']);
-			$this->assertSame("Rolling Message", $result['dblog_remarks']);
+			$this::assertNotEmpty($result['dblog_eventcode']);
+			$this::assertSame('TEST_ROLL', $result['dblog_eventcode']);
+			$this::assertSame("Rolling Message", $result['dblog_remarks']);
 
 			$this->log->rollingLog(false);
 

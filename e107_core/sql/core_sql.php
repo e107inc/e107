@@ -211,6 +211,25 @@ CREATE TABLE generic (
 ) ENGINE=InnoDB;
 # --------------------------------------------------------
 
+CREATE TABLE admin_history (
+history_id int(10) unsigned NOT NULL auto_increment,
+history_table varchar(64) NOT NULL default '',
+history_pid varchar(64) NOT NULL default '',
+history_record_id int(10) unsigned NOT NULL default '0',
+history_action enum('delete','restore','update') NOT NULL,
+history_data LONGTEXT,
+history_user_id int(10) unsigned NOT NULL default '0',
+history_datestamp int(10) unsigned NOT NULL default '0',
+history_restored int(10) unsigned NOT NULL default '0',
+PRIMARY KEY (history_id),
+KEY history_table_record (history_table, history_record_id),
+KEY history_datestamp (history_datestamp)
+) ENGINE=InnoDB;
+
+
+
+
+
 #
 # Table structure for table `links` (navigation)
 #
