@@ -96,6 +96,27 @@ class admin_shortcodes extends e_shortcode
 
 
     }
+
+    public function sc_admin_container_legacy($parm=null)
+    {
+		  $exclude = array(
+            'admin.php',
+            'menus.php',
+            'phpinfo.php',
+            'credits.php',
+            'docs.php',
+            'cache.php',
+            'emoticon.php',
+            'updateadmin.php',
+            'administrator.php',
+
+        );
+
+        if(!deftrue('e_CURRENT_PLUGIN') && in_array(e_PAGE, $exclude))
+        {
+            return 'admin-container-legacy';
+        }
+    }
    
     // {ADMIN_COREUPDATE}
     public function sc_admin_coreupdate($parm='')
@@ -405,7 +426,7 @@ class admin_shortcodes extends e_shortcode
 		{
 			$text .= $sql->mySQLlanguage;
 			$text .= ' (' .$slng->convert($sql->mySQLlanguage).")
-			: <span class='btn btn-default btn-secondary button' style='cursor: pointer;' onclick='expandit(\"lan_tables\");'><a style='text-decoration:none' title='' href=\"javascript:void(0);\" >&nbsp;&nbsp;".count($aff). ' ' .UTHEME_MENU_L3."&nbsp;&nbsp;</a></span><br />
+			: <span class='btn btn-default btn-secondary button' style='cursor: pointer;' onclick='expandit(\"lan_tables\");'><a style='text-decoration:none' title='' href=\"javascript:void(0);\" >&nbsp;&nbsp;".count($aff). ' ' .defset('UTHEME_MENU_L3')."&nbsp;&nbsp;</a></span><br />
 			<span style='display:none' id='lan_tables'>
 			";
 			$text .= implode('<br />', $aff);
@@ -473,7 +494,7 @@ class admin_shortcodes extends e_shortcode
 				$select .= "<option value='".$lng."' {$selected}>$lng</option>\n";
 				
 			}
-			$select .= '</select> ' .(!isset($params['nobutton']) ? "<button class='update e-hide-if-js' type='submit' name='setlanguage' value='no-value'><span>".UTHEME_MENU_L1. '</span></button>' : ''). '
+			$select .= '</select> ' .(!isset($params['nobutton']) ? "<button class='update e-hide-if-js' type='submit' name='setlanguage' value='no-value'><span>".defset('UTHEME_MENU_L1'). '</span></button>' : ''). '
 			' .e107::getForm()->hidden('setlanguage', '1'). '
 			</div>
 			</form>
@@ -483,7 +504,7 @@ class admin_shortcodes extends e_shortcode
 		if(isset($params['nomenu'])) { return $select; }
 		if($select) { $text .= "<div class='center'>{$select}</div>"; }
 
-		return $ns->tablerender(UTHEME_MENU_L2, $text, 'core-menu-lang', true);
+		return $ns->tablerender(defset('UTHEME_MENU_L2'), $text, 'core-menu-lang', true);
 
 	}
 
@@ -784,20 +805,146 @@ class admin_shortcodes extends e_shortcode
 		return $ret;
 	}
 
+
+	public function sc_admin_perm_emulation()
+	{
+
+		if(!$id = e107::getSession()->get('emulate'))
+		{
+			return null; // Return nothing if not in emulation mode
+		}
+
+		$emulatedUser = e107::user($id);
+		if(empty($emulatedUser))
+		{
+			return null; // Return nothing if user data is invalid
+		}
+
+		// Initialize e107 parser and form helper
+		$tp = e107::getParser();
+		$frm = e107::getForm();
+
+		// Prepare the navbar dropdown
+		$text = "<ul class='nav nav-admin navbar-nav navbar-right admin-icon-emulation'>
+                <li class='dropdown'>
+                    <a class='dropdown-toggle' title='User Access Emulation Mode' role='button' data-toggle='dropdown' href='#'>";
+
+		$name = $emulatedUser['user_login'] ?? $emulatedUser['user_name'];
+		// Add warning glyph and emulated username (with fa-beat modification)
+		$text .= $tp->toGlyph('fa-user-secret', ['class' => 'fa-fade text-warning']) .
+			"<span class='text-warning hidden-xs hidden-sm hidden-md' style='margin-left: 5px'>" . $tp->toHTML($name) . "</span>" .
+			"<b class='caret text-warning'></b></a>";
+
+		// Start dropdown menu with padding and width
+		$text .= '<ul class="dropdown-menu" role="menu" style="padding: 10px; width: 350px">';
+
+		// Emulated user details with fixed height and scrollbar
+		$text .= '<li role="menuitem" class="text-left"><div style="padding: 10px; max-height: 300px; overflow-y: auto;">';
+		$text .= "<p><strong>Emulated Admin:</strong><br />";
+		$text .= '<ul class="list-unstyled" style="margin-left: 20px"><li>' . $tp->toHTML($emulatedUser['user_name']) . '</li></ul></p>';
+
+		// User Classes as bullets, sorted alphabetically, excluding PUBLIC (0), MAINADMIN (250), READONLY (251), GUEST (252), MEMBER (253), ADMIN (254), NOBODY (255)
+		$text .= "<p><strong>User Classes:</strong><br />";
+		$classIds = array_filter(explode(',', $emulatedUser['user_class']));
+		$excludedClasses = ['0', '250', '251', '252', '253', '254', '255']; // PUBLIC, MAINADMIN, READONLY, GUEST, MEMBER, ADMIN, NOBODY
+		$classIds = array_diff($classIds, $excludedClasses);
+		if(!empty($classIds))
+		{
+			$classNames = [];
+			foreach($classIds as $classId)
+			{
+				$className = e107::getUserClass()->getName($classId) ?: "Unknown Class ($classId)";
+				$classNames[] = $className;
+			}
+			natcasesort($classNames);
+			$text .= '<ul class="list-unstyled" style="margin-left: 20px">';
+			foreach($classNames as $className)
+			{
+				$text .= '<li>' . $tp->toHTML($className) . '</li>';
+			}
+			$text .= '</ul>';
+		}
+		else
+		{
+			$text .= 'None';
+		}
+		$text .= "</p>";
+
+		// Admin Permissions as bullets, sorted alphabetically
+		$text .= "<p><strong>Admin Permissions:</strong><br />";
+		if(!empty($emulatedUser['user_perms']) && $emulatedUser['user_perms'] !== '.')
+		{
+			$permKeys = array_filter(explode('.', $emulatedUser['user_perms']));
+			$permdiz = e107::getUserPerms()->getPermList('all');
+			$permNames = [];
+			foreach($permKeys as $p)
+			{
+				$val = isset($permdiz[$p]) ? (is_array($permdiz[$p]) ? $permdiz[$p][0] : $permdiz[$p]) : "Unknown Permission ($p)";
+				$permNames[] = $val;
+			}
+			natcasesort($permNames);
+			if(!empty($permNames))
+			{
+				$text .= '<ul class="list-unstyled" style="margin-left: 20px">';
+				foreach($permNames as $permName)
+				{
+					$text .= '<li>' . $tp->toHTML($permName) . '</li>';
+				}
+				$text .= '</ul>';
+			}
+			else
+			{
+				$text .= 'None';
+			}
+		}
+		else
+		{
+			$text .= 'None';
+		}
+		$text .= "</p>";
+
+
+		$text .= '</div></li>';
+
+		// Divider
+		$text .= '<li class="divider"></li>';
+
+		// Stop Emulation button using form helper with correct implementation
+		$text .= '<li role="menuitem" class="text-right">';
+		$text .= "<p style='padding:15px'><small class='text-muted'>This is a temporary emulation mode and will be cleared when you log out.</small></p>";
+		$text .= $frm->open('emulation-form', 'post', e_REQUEST_URI, array('class' => 'no-margin'));
+		$icon = '<i class="fa fa-right-from-bracket fa-fw"></i>';
+		$text .= $frm->button('stopEmulation', $icon . ' Stop Emulating');
+		$text .= $frm->close();
+		$text .= '</li>';
+
+
+		$text .= '</ul></li></ul>';
+
+		return $text;
+	}
+
+
+
 	/**
 	 * Admin area debug dropdown menu.
 	 * @return string|null
 	 */
 	public function sc_admin_debug()
 	{
-		if(!deftrue('e_DEVELOPER') && !deftrue('e_DEBUG') && !deftrue('e_DEBUGGER')) // e_DEBUGGER can be defined in e107_config.php to enable
-		{
-			return null;
-		}
+		$display = (int) e107::pref('core', 'admin_navbar_debug', e_UC_NOBODY);
 
-		if(!getperms('0'))
+		if(!check_class($display))
 		{
-			return null;
+			if(!deftrue('e_DEVELOPER') && !deftrue('e_DEBUG') && !deftrue('e_DEBUGGER')) // e_DEBUGGER can be defined in e107_config.php to enable
+			{
+				return null;
+			}
+
+			if(!getperms('0'))
+			{
+				return null;
+			}
 		}
 
 		try
@@ -851,6 +998,10 @@ class admin_shortcodes extends e_shortcode
 			}
 
 			$active = ($var === $current) ? ' active bg-default' : '';
+
+			$srch = array('[',']','!');
+			$repl = array('&#91;','&#93;','&#33;');
+			$link = str_replace($srch,$repl,$link);
 
 			$text .= '<li role="menuitem" class="text-right'.$active.'">
 				<a href="'.$link.'">'.$label;
@@ -1725,7 +1876,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		$text = '<ul id="admin-notifications" class=" nav navbar-nav navbar-right">
         <li class="dropdown">
             <a class="dropdown-toggle " title="'.$lan.'" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" href="#" aria-expanded="true">
-                <i class="fas fa-beat fa-bell fa-fw text-warning"></i>';
+                <i class="fas fa-fade fa-bell fa-fw text-warning"></i>';
 
 		$text .= ($count > 1) ? '<sup class="text-warning">'.$count.'</sup>' : '';
 		$text .= '</a>
@@ -2386,7 +2537,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				$tmp[$c]['text']            = $sc->sc_nav_link_name();
 				$tmp[$c]['description']     = $tp->toHTML($lk['link_description'], '', 'defs');
 				$tmp[$c]['link']            = $sc->sc_nav_link_url(); // $tp->replaceConstants($link,'full');
-				$tmp[$c]['image']           = $sc->sc_nav_link_icon(); // vartrue($lk['link_button']) ? "<img class='icon S16' src='".$tp->replaceConstants($lk['link_button'])."' alt='".$tp->toAttribute($lk['link_description'],'','defs')."' />": '';
+				$tmp[$c]['image']           = $sc->sc_nav_link_icon(['class'=>'icon S16']); // vartrue($lk['link_button']) ? "<img class='icon S16' src='".$tp->replaceConstants($lk['link_button'])."' alt='".$tp->toAttribute($lk['link_description'],'','defs')."' />": '';
 				$tmp[$c]['image_large']     = '';
 				$tmp[$c]['image_src']       = vartrue($lk['link_button']);
 				$tmp[$c]['image_large_src'] = '';
@@ -2736,7 +2887,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 	/**
 	 * @param string $text
-	 * @return string
+	 * @return string|null
 	 */
 	private function renderHelpIcon()
 	{

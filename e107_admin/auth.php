@@ -51,12 +51,14 @@ if(USER && !getperms('0') && vartrue($pref['multilanguage']) && !getperms(e_LANG
 	$lng = e107::getLanguage();
 
 	$tmp = explode(".",ADMINPERMS);
+
 	foreach($tmp as $ln)
 	{
-		if(strlen($ln) < 3) // not a language perm.
-		{
-			continue;
-		}
+
+		if(strlen($ln) < 3 || preg_match('/\d/', $ln)) // Skip if less than 2 chars or contains a number
+	    {
+	        continue;
+	    }
 
 		if($lng->isValid($ln))
 		{

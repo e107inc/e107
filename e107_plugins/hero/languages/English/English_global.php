@@ -10,6 +10,9 @@
 +----------------------------------------------------------------------+
 */
 
-define("LAN_PLUGIN_HERO_NAME", "Hero");
-define("LAN_PLUGIN_HERO_SUMMARY", "Home page 'Hero' area management");
-define("LAN_PLUGIN_HERO_DESCRIPTION", "An image and text slider with animated bullet points for the hero area of your home page.");
+
+return [
+    'LAN_PLUGIN_HERO_NAME' => "Hero",
+    'LAN_PLUGIN_HERO_SUMMARY' => "Home page 'Hero' area management",
+    'LAN_PLUGIN_HERO_DESCRIPTION' => "An image and text slider with animated bullet points for the hero area of your home page.",
+];

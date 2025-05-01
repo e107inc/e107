@@ -50,9 +50,9 @@ $action = e107::getParser()->toDB(varset($_GET['mode'],'makemail'));
 	case 'prefs' :
 	  $text = '<b>Configure mailshot options.</b><br />
 	  A test email is sent using the current method and settings. If you are having problems with emails bouncing, try sending a test email to: <i>check-auth@verifier.port25.com</i> to ensure your server MX records are correct. Of course, be sure your site email address is correct before doing so.<br /><br />';
-	  $text .= '<b>Emailing Method</b><br />
-	  Use SMTP to send mail if possible. The settings will depend on your host\'s mail server.<br /><br />';
-	  $text .= '<b>Default email format</b><br />
+	  $text .= "<b>Emailing Method</b><br />
+	  Use SMTP to send mail if possible. The settings will depend on your host's mail server.<br /><br />";
+	  $text .= "<b>Default email format</b><br />
 	  Emails may be sent either in plain text only, or in HTML format. The latter generally gives a better appearance, but is more prone to being filtered by various
 	  security measures. If you select HTML, a separate plain text part is added.<br /><br />';
 	  $text .= '<b>Bulk mail controls</b><br />
@@ -62,13 +62,13 @@ $action = e107::getParser()->toDB(varset($_GET['mode'],'makemail'));
 	  You can specify an email address to receive the return response when an email is undeliverable. If you have control over your server, you can specify the
 	  separate scheduler-driven auto-processing script; this receives bounce messages as they arrive, and updates status instantly. Otherwise you can specify a separate email account,
 	  which can be checked either periodically (using the scheduler), or manually via the user options menu. Normally this will be a standard
-	  POP3 account; use the TLS-related options only if specifically required by your host<br /><br />';
-	  $text .= '<b>Email Address Sources</b><br />
-	  If you have additional mail-related plugins, you can select which of them may contribute email addresses to the list.<br /><br />';
-	  $text .= '<b>Logging</b><br />
-	  The logging option creates a text file in the system log directory. This must be deleted periodically. The \'logging
-	  only\' options allow you to see exactly who would receive emails if actually sent. The \'with errors\' option fails every
-	  7th email, primarily for testing';
+	  POP3 account; use the TLS-related options only if specifically required by your host<br /><br />";
+	  $text .= "<b>Email Address Sources</b><br />
+	  If you have additional mail-related plugins, you can select which of them may contribute email addresses to the list.<br /><br />";
+	  $text .= "<b>Logging</b><br />
+	  The logging option creates a text file in the system log directory. This must be deleted periodically. The 'logging
+	  only' options allow you to see exactly who would receive emails if actually sent. The 'with errors' option fails every
+	  7th email, primarily for testing";
 	  break;
 	 case 'maint' :
 		$text = 'Maintenance functions for the mail database';
@@ -77,4 +77,4 @@ $action = e107::getParser()->toDB(varset($_GET['mode'],'makemail'));
 	  $text = 'Undocumented option';
   }
 
-$ns->tablerender('Mail Help', $text);
+e107::getRender()->tablerender('Mail Help', $text);
