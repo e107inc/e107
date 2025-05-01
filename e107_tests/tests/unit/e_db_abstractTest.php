@@ -1040,6 +1040,7 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$database = $config['mySQLdefaultdb'];
 		$table = 'test';
 		$MPREFIX = 'another_prefix_';
+		$xql->connect($config['mySQLserver'], $config['mySQLuser'], $config['mySQLpassword']);
 
 		// use new database
 		$use = $xql->database($database,$MPREFIX,true);

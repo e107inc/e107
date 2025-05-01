@@ -2,8 +2,9 @@
 
 // Generated e107 Plugin Admin Area 
 
-require_once('../class2.php');
-if (!getperms('0'))
+require_once(__DIR__.'/../class2.php');
+
+if (!getperms('7'))
 {
 	e107::redirect('admin');
 	exit;
@@ -43,6 +44,8 @@ class history_adminArea extends e_admin_dispatcher
 	);	
 	
 	protected $menuTitle = 'History';
+
+	protected $adminMenuIcon = '{e_IMAGE}admin_images/undo_32.png';
 }
 
 
@@ -325,7 +328,7 @@ class admin_history_form_ui extends e_admin_form_ui
 		$row = $controller->getListModel()->getData();
 
 		// Begin options group
-		$text = "<div class='btn-group pull-right'>";
+		$text = "<div class='btn-group'>";
 
 		// Check if the record can be restored
 		if (!empty($id))
@@ -335,7 +338,7 @@ class admin_history_form_ui extends e_admin_form_ui
 
 			$type = $row['history_action'];
 			$name = ($type === 'delete') ? "restore_deleted[$id]" : "restore_updated[$id]";
-			$text .= "<button class='btn btn-default' type='submit' name='$name' title='{$restoreTitle}'><i class='admin-ui-option fa fa-undo fa-2x fa-fw'></i></button>";
+			$text .= "<button class='btn btn-primary' type='submit' name='$name' title='{$restoreTitle}'><i class='admin-ui-option fa fa-undo fa-2x fa-fw'></i></button>";
 		}
 
 		$att['readParms']['editClass'] = 999; // disable it.
@@ -385,5 +388,3 @@ require_once(e_ADMIN."auth.php");
 e107::getAdminUI()->runPage();
 
 require_once(e_ADMIN."footer.php");
-exit;
-

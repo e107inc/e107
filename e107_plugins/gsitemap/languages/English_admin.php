@@ -13,56 +13,38 @@
 */
 
 
-define("GSLAN_1", "Site Link");
-define("GSLAN_2", "Import?");
 
-define("GSLAN_7", "Import Links");
-define("GSLAN_8", "Import with:");
-define("GSLAN_9", "Priority");
-define("GSLAN_10", "Frequency");
-define("GSLAN_11", "always");
-define("GSLAN_12", "hourly");
-define("GSLAN_13", "daily");
-define("GSLAN_14", "weekly");
-define("GSLAN_15", "monthly");
-define("GSLAN_16", "yearly");
-
-define("GSLAN_18", "Import ticked links");
-// define("GSLAN_19", "Google Sitemap");
-define("GSLAN_20", "Listing");
-define("GSLAN_21", "Instructions");
-define("GSLAN_22", "Create New Entry");
-define("GSLAN_23", "Import");
-define("GSLAN_24", "Google Sitemap Entries");
-
-define("GSLAN_27", "Lastmod");
-define("GSLAN_28", "Freq.");
-define("GSLAN_29", "Google Sitemap Configuration");
-
-define("GSLAN_32", "How to use Google Sitemaps");
-define("GSLAN_33", "GSiteMap Instructions");
-define("GSLAN_34", "First, create the links you wish to have listed in your sitemap. You can import most of your links by clicking the 'Import' button on the right");
-define("GSLAN_35", "If you've chosen to import your links, click 'Import' and then check the links you wish to import");
-define("GSLAN_36", "You can also enter individual links manually by clicking 'Create New Entry'");
-define("GSLAN_38", "For more information on Google Sitemap protocol, go to [URL].");
-define("GSLAN_39", "No links in sitemap - import sitelinks?");
-// define("GSLAN_40", "Google Sitemap Entries");
-
-//define("GSLAN_Name", "Sitemap");
-// define("GSLAN_17", "never");
-//define("GSLAN_25", "Name");
-//define("GSLAN_26", "URL");
-//define("GSLAN_30", "Display Order");
-//define("GSLAN_31", "Visible to");
-//define("GSLAN_3", "Type");
-//define("GSLAN_4", "Name");
-// define("GSLAN_5", "Url");
-// define("GSLAN_6", "Tick links to mark them for import ...");
-// define('GSLAN_41', "Google Sitemap. For more information on the Sitemap protocol, go to <a href='http://www.sitemaps.org/'>http://www.sitemaps.org/</a> or <a href='http://www.google.com/support/webmasters/bin/answer.py?answer=156184'>Google's page About Sitemaps</a>");
-//define('GSLAN_42', 'Installation Successful..');
-
-define("GSLAN_50", "Publicly visible");
-define("GSLAN_51", "Auto-generated from [x]");
-define("GSLAN_52", "Once you have some entries, go to [URL] and enter one of the following URLs in the Sitemaps section.[SITEMAP_URLS]  (If any of these urls look incorrect to you, please make sure your site url is correct in [preferences].)");
-define("GSLAN_53", "Instructions");
-
+return [
+    'GSLAN_1' => "Site Link",
+    'GSLAN_2' => "Import?",
+    'GSLAN_7' => "Import Links",
+    'GSLAN_8' => "Import with:",
+    'GSLAN_9' => "Priority",
+    'GSLAN_10' => "Frequency",
+    'GSLAN_11' => "always",
+    'GSLAN_12' => "hourly",
+    'GSLAN_13' => "daily",
+    'GSLAN_14' => "weekly",
+    'GSLAN_15' => "monthly",
+    'GSLAN_16' => "yearly",
+    'GSLAN_18' => "Import ticked links",
+    'GSLAN_20' => "Listing",
+    'GSLAN_21' => "Instructions",
+    'GSLAN_22' => "Create New Entry",
+    'GSLAN_23' => "Import",
+    'GSLAN_24' => "Google Sitemap Entries",
+    'GSLAN_27' => "Lastmod",
+    'GSLAN_28' => "Freq.",
+    'GSLAN_29' => "Google Sitemap Configuration",
+    'GSLAN_32' => "How to use Google Sitemaps",
+    'GSLAN_33' => "GSiteMap Instructions",
+    'GSLAN_34' => "First, create the links you wish to have listed in your sitemap. You can import most of your links by clicking the 'Import' button on the right",
+    'GSLAN_35' => "If you've chosen to import your links, click 'Import' and then check the links you wish to import",
+    'GSLAN_36' => "You can also enter individual links manually by clicking 'Create New Entry'",
+    'GSLAN_38' => "For more information on Google Sitemap protocol, go to [URL].",
+    'GSLAN_39' => "No links in sitemap - import sitelinks?",
+    'GSLAN_50' => "Publicly visible",
+    'GSLAN_51' => "Auto-generated from [x]",
+    'GSLAN_52' => "Once you have some entries, go to [URL] and enter one of the following URLs in the Sitemaps section.[SITEMAP_URLS]  (If any of these urls look incorrect to you, please make sure your site url is correct in [preferences].)",
+    'GSLAN_53' => "Instructions",
+];

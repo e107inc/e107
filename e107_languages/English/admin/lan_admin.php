@@ -9,598 +9,431 @@
  * Admin Language File
  *
 */
-define("ADLAN_0", "News");
-define("ADLAN_1", "Manage news items");
-define("ADLAN_2", "Create news item");
-define("ADLAN_3", "News items List");
-define("ADLAN_3a", "News Settings");
-// define("ADLAN_4", "Preferences");
-define("ADLAN_5", "Edit Site Preferences");
-define("ADLAN_6", "Menu Manager");
-define("ADLAN_7", "Alter the order of your menus");
-define("ADLAN_8", "Administrators");
-define("ADLAN_9", "Add/delete site administrators");
-define("ADLAN_10", "Admin password");
-define("ADLAN_11", "Change your password");
-define("ADLAN_12", "Docs");
-define("ADLAN_13", "System documentation");
-//define("ADLAN_14", "Articles");
-//define("ADLAN_15", "Add new/edit/delete articles");
-//define("ADLAN_16", "Content");
-//define("ADLAN_17", "Add new/edit/delete content pages");
-//define("ADLAN_18", "Reviews");
-//define("ADLAN_19", "Add new/edit/delete reviews");
-//define("ADLAN_22", "Link Categories");
-//define("ADLAN_23", "Add new/edit/delete link categories");
-// define("ADLAN_24", "Downloads");
-define("ADLAN_25", "Manage Downloads");
-//define("ADLAN_26", "Download Categories");
-//define("ADLAN_27", "Add new/edit/delete download categories");
-define("ADLAN_28", "Welcome Message");
-define("ADLAN_29", "Set static welcome message");
-define("ADLAN_30", "File Manager");
-define("ADLAN_31", "Manage/upload files");
-//define("ADLAN_32", "Submitted News");
-//define("ADLAN_33", "Review user submitted news items");
-define("ADLAN_34", "Banlist");
-define("ADLAN_35", "Ban visitors");
-define("ADLAN_36", "Users");
-define("ADLAN_37", "Moderate site members");
-define("ADLAN_38", "User Classes");
-define("ADLAN_39", "Create/edit user classes");
-define("ADLAN_40", "Maintenance");
-define("ADLAN_41", "Take site down for maintenance");
-define("ADLAN_42", "Pages/Menus");
-define("ADLAN_43", "Create menu items");
-define("ADLAN_44", "Database");
-define("ADLAN_45", "Database utilities");
-// define("ADLAN_46", "Logout");
-define("ADLAN_47", "Welcome");
-define("ADLAN_48", "Logged in");
-define("ADLAN_49", "main site administrator");
-//define("ADLAN_50", "permissions");
-define("ADLAN_51", "Please log in to gain access to administration area");
-define("ADLAN_52", "Admin Front Page");
-define("ADLAN_53", "Leave Admin");
-// define("ADLAN_54", "Banners");
-// define("ADLAN_55", "Configure banners");
-//define("ADLAN_56", "Chatbox");
-//define("ADLAN_57", "Configure chatbox");
-define("ADLAN_58", "Emoticons");
-define("ADLAN_59", "Configure emoticons");
-define("ADLAN_60", "Front Page");
-define("ADLAN_61", "Configure front page content");
-//define("ADLAN_62", "News Feeds");
-//define("ADLAN_63", "Configure news feeds");
-//define("ADLAN_64", "Log Stats");
-//define("ADLAN_65", "Log stats/counter etc");
-define("ADLAN_66", "Meta Tags");
-define("ADLAN_67", "Add/Edit site meta tags");
-define("ADLAN_68", "PHP Info");
-define("ADLAN_69", "PHP Info page");
-//define("ADLAN_70", "Polls");
-//define("ADLAN_71", "Add/Edit Polls");
-define("ADLAN_72", "Public Uploads");
-define("ADLAN_73", "Configure public file uploads");
-define("ADLAN_74", "Cache");
-define("ADLAN_75", "Set cache status");
-//define("ADLAN_77", "You have had a news item submitted - please click here to check.");
-define("ADLAN_78", "Extended User Fields");
-define("ADLAN_79", "Edit extended user fields");
 
-
-define("ADLAN_86", "Forbidden");
-define("ADLAN_87", "Access denied!");
-//define("ADLAN_88", "Unable to login ");
-define("ADLAN_89", "Admin Name ");
-define("ADLAN_90", "Admin Password ");
-define("ADLAN_91", "Log In");
-define("ADLAN_92", "Please log in to proceed to administration area ...");
-define("ADLAN_93", "Show Admin Functions");
-//define("ADLAN_94", "Show Installed Plugins");
-define("ADLAN_95", "Plugin Management");
-//define("ADLAN_96", "None");
-//define("ADLAN_97", "Click here for FAQ");
-define("ADLAN_98", "Plugin Manager");
-define("ADLAN_99", "Click here to install, maintain and configure plugins which provide additional features on your site.");
-// define("ADLAN_100", "Theme Layout"); // required
-//define("ADLAN_101", "Template Creator");
-define("ADLAN_102", "It has been more than 30 days since you changed the main administrator password - ");
-define("ADLAN_103", "Click here to change it now");
-define("ADLAN_104", "Security");
-
-define("ADLAN_105", "Images");
-define("ADLAN_106", "Image Settings");
-
-//define("ADLAN_107", "Unchecked submitted news items");
-//define("ADLAN_108", "Unchecked file uploads");
-//define("ADLAN_109", "Information");
-define("ADLAN_110", "Registered members");
-define("ADLAN_111", "Unverified members");
-define("ADLAN_112", "Banned users");
-// define("ADLAN_113", "Forum posts"); // should already be loaded from forum global language file. 
-// define("ADLAN_114", "Comments");
-// define("ADLAN_115", "Chatbox posts");
-define("ADLAN_116", "Admin log ...");
-define("ADLAN_117", "Show all entries");
-define("ADLAN_118", "Clear log");
-
-define("ADLAN_119", "Unchecked submitted links");
-
-define("ADLAN_120", "There is a database update available, please click button to install ...");
-define("ADLAN_121", "Install");
-define("ADLAN_122", "A new update is ready to install! Click to unzip and install v [x]");
-
-//define("ADLAN_123", "Unchecked submitted articles");
-//define("ADLAN_124", "Unchecked submitted reviews");
-
-//define("ADLAN_125", "Unchecked reported forum posts");
-
-//define("ADLAN_126", "Main Options");
-//define("ADLAN_127", "Users");
-//define("ADLAN_128", "Content");
-//define("ADLAN_129", "Communication");
-//define("ADLAN_130", "Files Management");
-//define("ADLAN_131", "Other tools");
-
-define("ADLAN_132", "Language");
-define("ADLAN_133", "default");
-
-define("ADLAN_135", "Admin Log");
-
-define("ADLAN_136", "Mail");
-define("ADLAN_137", "Email Settings And Mailout");
-
-define("ADLAN_138", "Site Links");
-define("ADLAN_139", "Add/edit/delete links");
-
-define("ADLAN_140", "Theme Manager");
-define("ADLAN_141", "Click here to install and configure themes, which control the appearance of your site.");
-
-// define("ADLAN_142", "Search");
-define("ADLAN_143", "Search Configuration");
-define("ADLAN_144", "You are in simple-view mode, to switch to advanced-view");
-define("ADLAN_145", "click here");
-
-define("ADLAN_146", "Failed logins");
-define("ADLAN_147", "File Inspector");
-define("ADLAN_148", "Scan site files");
-
-define("ADLAN_149", "Notify");
-define("ADLAN_150", "Admin Email Notifications");
-
-define("ADLAN_151", "Main");
-// define("ADLAN_152", "Enter Code");
-
-define("ADLAN_153", "Administration Area");
-define("ADLAN_154", "Error contacting Sourceforge to check for new version");
-
-define("ADLAN_155", "System Logs");
-define("ADLAN_156", "Admin log, user audit, rolling log");
-
-define("ADLAN_157", "Schedule Tasks");
-define("ADLAN_158", "Cron Jobs and Automated Maintenance");
-
-define("ADLAN_159", "URL Configuration");
-define("ADLAN_160", "Configure Site URLs");
-define("ADLAN_161", "Custom Fields?");
-define("ADLAN_162", "A newer version of your site-theme is available:");
-define("ADLAN_163", "A newer version of an installed plugin is available:");
-define("ADLAN_164", "Successfully logged in as [x].");
-define("ADLAN_165", "Powered by e107");
-define("ADLAN_166", "Return to Website");
-define("ADLAN_167", "Pending Mailshots");
-
-define("ADLAN_168", "Visitors");//infopanel
-define("ADLAN_169", "Unique Visitors");
-define("ADLAN_170", "These stats are for demonstration purposes only.");
-define("ADLAN_171", "Install Site Stats Plugin");
-
-define("ADLAN_185", "Toggle Sidebar");
-define("ADLAN_186", "The following old files can be safely deleted from your system:");
-define("ADLAN_187", "Unable to create [x]. Please check your folder permissions.");
-define("ADLAN_188", "Your timezone setting [x] is invalid. It has been reset to UTC. To Modify, please go to Admin -> Preferences -> Date Display Options.");
-define("ADLAN_189", "The following plugins are not compatible with this version of e107 and should be uninstalled: ");
-define("ADLAN_190", "Need Help?");
-define("ADLAN_191", "Connect with our community for [free support] with any upgrading issues you may encounter.");
-define("ADLAN_192", "Connect with our community for [free support] with any e107 issues you may encounter.");
-define("ADLAN_193", "The folder [x] is not writable. Please correct before proceeding.");
-define("ADLAN_194", "Legacy avatars folder detected. Please make sure [x]avatars/ is writable. Please correct before proceeding.");
-define("ADLAN_195", "Old folder moved to backup directory");
-
-// define("ADLAN_CL_1", "Settings");
-define("ADLAN_CL_2", "Users");
-define("ADLAN_CL_3", "Content");
-define("ADLAN_CL_4", "Coms");
-define("ADLAN_CL_5", "Files");
-define("ADLAN_CL_6", "Tools");
-define("ADLAN_CL_7", "Plugins");
-
-define("ADLAN_CL_8", "Misc");
-
-// define("ADLAN_CL_20", "About");
-
-define("ADLAN_LAT_1", "Latest");
-
-define("ADLAN_LAT_2", "Submitted news items");
-//define("ADLAN_LAT_3", "Submitted articles");
-//define("ADLAN_LAT_4", "Submitted reviews");
-define("ADLAN_LAT_5", "Submitted links");
-define("ADLAN_LAT_6", "Reported forum posts");
-define("ADLAN_LAT_7", "File uploads");
-define("ADLAN_LAT_8", "There are unmoderated administrator messages");
-define("ADLAN_LAT_9", "Comments pending");
-
-//LAN_WARNING define("ADLAN_ERR_1", "Warning!");
-//define("ADLAN_ERR_2", "There are files on your server that are known to be exploitable. These must be removed [b]immediately[/b]. The files are related to the older 0.6xx branch of e107. Please delete the following directories and all their contents:");
-define("ADLAN_ERR_3", "There are one or more files in your public upload directories that are not in your allowed upload filetypes list. These may have been placed here by an attacker and if so should be removed [b]immediately[/b]. You should [b]not[/b] open these files as this may execute any malicious code the file might contain; e.g. do not open them with your browser.
-
+return [
+    'ADLAN_0' => "News",
+    'ADLAN_1' => "Manage news items",
+    'ADLAN_2' => "Create news item",
+    'ADLAN_3' => "News items List",
+    'ADLAN_3a' => "News Settings",
+    'ADLAN_5' => "Edit Site Preferences",
+    'ADLAN_6' => "Menu Manager",
+    'ADLAN_7' => "Alter the order of your menus",
+    'ADLAN_8' => "Administrators",
+    'ADLAN_9' => "Add/delete site administrators",
+    'ADLAN_10' => "Admin password",
+    'ADLAN_11' => "Change your password",
+    'ADLAN_12' => "Docs",
+    'ADLAN_13' => "System documentation",
+    'ADLAN_25' => "Manage Downloads",
+    'ADLAN_28' => "Welcome Message",
+    'ADLAN_29' => "Set static welcome message",
+    'ADLAN_30' => "File Manager",
+    'ADLAN_31' => "Manage/upload files",
+    'ADLAN_34' => "Banlist",
+    'ADLAN_35' => "Ban visitors",
+    'ADLAN_36' => "Users",
+    'ADLAN_37' => "Moderate site members",
+    'ADLAN_38' => "User Classes",
+    'ADLAN_39' => "Create/edit user classes",
+    'ADLAN_40' => "Maintenance",
+    'ADLAN_41' => "Take site down for maintenance",
+    'ADLAN_42' => "Pages/Menus",
+    'ADLAN_43' => "Create menu items",
+    'ADLAN_44' => "Database",
+    'ADLAN_45' => "Database utilities",
+    'ADLAN_47' => "Welcome",
+    'ADLAN_48' => "Logged in",
+    'ADLAN_49' => "main site administrator",
+    'ADLAN_51' => "Please log in to gain access to administration area",
+    'ADLAN_52' => "Admin Front Page",
+    'ADLAN_53' => "Leave Admin",
+    'ADLAN_58' => "Emoticons",
+    'ADLAN_59' => "Configure emoticons",
+    'ADLAN_60' => "Front Page",
+    'ADLAN_61' => "Configure front page content",
+    'ADLAN_66' => "Meta Tags",
+    'ADLAN_67' => "Add/Edit site meta tags",
+    'ADLAN_68' => "PHP Info",
+    'ADLAN_69' => "PHP Info page",
+    'ADLAN_72' => "Public Uploads",
+    'ADLAN_73' => "Configure public file uploads",
+    'ADLAN_74' => "Cache",
+    'ADLAN_75' => "Set cache status",
+    'ADLAN_78' => "Extended User Fields",
+    'ADLAN_79' => "Edit extended user fields",
+    'ADLAN_86' => "Forbidden",
+    'ADLAN_87' => "Access denied!",
+    'ADLAN_89' => "Admin Name",
+    'ADLAN_90' => "Admin Password",
+    'ADLAN_91' => "Log In",
+    'ADLAN_92' => "Please log in to proceed to administration area ...",
+    'ADLAN_93' => "Show Admin Functions",
+    'ADLAN_95' => "Plugin Management",
+    'ADLAN_98' => "Plugin Manager",
+    'ADLAN_99' => "Click here to install, maintain and configure plugins which provide additional features on your site.",
+    'ADLAN_102' => "It has been more than 30 days since you changed the main administrator password -",
+    'ADLAN_103' => "Click here to change it now",
+    'ADLAN_104' => "Security",
+    'ADLAN_105' => "Images",
+    'ADLAN_106' => "Image Settings",
+    'ADLAN_110' => "Registered members",
+    'ADLAN_111' => "Unverified members",
+    'ADLAN_112' => "Banned users",
+    'ADLAN_116' => "Admin log ...",
+    'ADLAN_117' => "Show all entries",
+    'ADLAN_118' => "Clear log",
+    'ADLAN_119' => "Unchecked submitted links",
+    'ADLAN_120' => "There is a database update available, please click button to install ...",
+    'ADLAN_121' => "Install",
+    'ADLAN_122' => "A new update is ready to install! Click to unzip and install v [x]",
+    'ADLAN_132' => "Language",
+    'ADLAN_133' => "default",
+    'ADLAN_135' => "Admin Log",
+    'ADLAN_136' => "Mail",
+    'ADLAN_137' => "Email Settings And Mailout",
+    'ADLAN_138' => "Site Links",
+    'ADLAN_139' => "Add/edit/delete links",
+    'ADLAN_140' => "Theme Manager",
+    'ADLAN_141' => "Click here to install and configure themes, which control the appearance of your site.",
+    'ADLAN_143' => "Search Configuration",
+    'ADLAN_144' => "You are in simple-view mode, to switch to advanced-view",
+    'ADLAN_145' => "click here",
+    'ADLAN_146' => "Failed logins",
+    'ADLAN_147' => "File Inspector",
+    'ADLAN_148' => "Scan site files",
+    'ADLAN_149' => "Notify",
+    'ADLAN_150' => "Admin Email Notifications",
+    'ADLAN_151' => "Main",
+    'ADLAN_153' => "Administration Area",
+    'ADLAN_154' => "Error contacting Sourceforge to check for new version",
+    'ADLAN_155' => "System Logs",
+    'ADLAN_156' => "Admin log, user audit, rolling log",
+    'ADLAN_157' => "Schedule Tasks",
+    'ADLAN_158' => "Cron Jobs and Automated Maintenance",
+    'ADLAN_159' => "URL Configuration",
+    'ADLAN_160' => "Configure Site URLs",
+    'ADLAN_161' => "Custom Fields?",
+    'ADLAN_162' => "A newer version of your site-theme is available:",
+    'ADLAN_163' => "A newer version of an installed plugin is available:",
+    'ADLAN_164' => "Successfully logged in as [x].",
+    'ADLAN_165' => "Powered by e107",
+    'ADLAN_166' => "Return to Website",
+    'ADLAN_167' => "Pending Mailshots",
+    'ADLAN_168' => "Visitors",
+    'ADLAN_169' => "Unique Visitors",
+    'ADLAN_170' => "These stats are for demonstration purposes only.",
+    'ADLAN_171' => "Install Site Stats Plugin",
+    'ADLAN_185' => "Toggle Sidebar",
+    'ADLAN_186' => "The following old files can be safely deleted from your system:",
+    'ADLAN_187' => "Unable to create [x]. Please check your folder permissions.",
+    'ADLAN_188' => "Your timezone setting [x] is invalid. It has been reset to UTC. To Modify, please go to Admin -> Preferences -> Date Display Options.",
+    'ADLAN_189' => "The following plugins are not compatible with this version of e107 and should be uninstalled:",
+    'ADLAN_190' => "Need Help?",
+    'ADLAN_191' => "Connect with our community for [free support] with any upgrading issues you may encounter.",
+    'ADLAN_192' => "Connect with our community for [free support] with any e107 issues you may encounter.",
+    'ADLAN_193' => "The folder [x] is not writable. Please correct before proceeding.",
+    'ADLAN_194' => "Legacy avatars folder detected. Please make sure [x]avatars/ is writable. Please correct before proceeding.",
+    'ADLAN_195' => "Old folder moved to backup directory",
+    'ADLAN_CL_2' => "Users",
+    'ADLAN_CL_3' => "Content",
+    'ADLAN_CL_4' => "Coms",
+    'ADLAN_CL_5' => "Files",
+    'ADLAN_CL_6' => "Tools",
+    'ADLAN_CL_7' => "Plugins",
+    'ADLAN_CL_8' => "Misc",
+    'ADLAN_LAT_1' => "Latest",
+    'ADLAN_LAT_2' => "Submitted news items",
+    'ADLAN_LAT_5' => "Submitted links",
+    'ADLAN_LAT_6' => "Reported forum posts",
+    'ADLAN_LAT_7' => "File uploads",
+    'ADLAN_LAT_8' => "There are unmoderated administrator messages",
+    'ADLAN_LAT_9' => "Comments pending",
+    'ADLAN_ERR_3' => "There are one or more files in your public upload directories that are not in your allowed upload filetypes list. These may have been placed here by an attacker and if so should be removed [b]immediately[/b]. You should [b]not[/b] open these files as this may execute any malicious code the file might contain; e.g. do not open them with your browser.
 If you recognise these files as being legitimate, it is likely that the filetype is no longer in the allowed filetypes list for some reason, and you will need to re-add it (see admin => uploads). You should not allow the upload of .html, .txt, etc as an attacker may upload a file of this type which includes malicious javascript. You should also, of course, not allow the upload of .php files or any other type of executable script.
+Below is the list of files that could potentially be malicious:",
+    'LAN_CREATE' => "Create",
+    'LAN_MANAGE' => "Manage",
+    'LAN_UPDATE' => "Update",
+    'LAN_UPDATES' => "Updates",
+    'LAN_INSTALLED' => "Installed",
+    'LAN_LAST_UPDATED' => "Last Updated",
+    'LAN_UPDATE_AVAILABLE' => "Update Available",
+    'LAN_ADD' => "Add",
+    'LAN_REMOVE' => "Remove",
+    'LAN_ADD_MORE' => "Add More",
+    'LAN_MULTIPLE_CHOICE' => "Multiple Choice",
+    'LAN_SAVE' => "Save",
+    'LAN_SAVED' => "Saved",
+    'LAN_SETSAVED' => "Your settings have been saved",
+    'LAN_NOCHANGE_NOTSAVED' => "Nothing changed - not saved",
+    'LAN_CONFIRMDEL' => "Please confirm you wish to delete",
+    'LAN_ERRORS' => "Errors",
+    'LAN_MESSAGES' => "Messages",
+    'LAN_DATA' => "Data",
+    'LAN_OPTIONS' => "Options",
+    'LAN_BASIC_OPTIONS' => "Basic Options",
+    'LAN_PREFS' => "Preferences",
+    'LAN_DELETED' => "Successfully deleted",
+    'LAN_UPDATED' => "Successfully updated",
+    'LAN_CREATED' => "Successfully created",
+    'LAN_CREATED_FAILED' => "Creation Unsuccessful",
+    'LAN_DELETED_FAILED' => "Deletion Unsuccessful",
+    'LAN_UPDATED_FAILED' => "Update Unsuccessful",
+    'LAN_NO_CHANGE' => "Nothing updated as no changes were made.",
+    'LAN_TRY_AGAIN' => "Please try again.",
+    'LAN_NEVER' => "Never",
+    'LAN_PRUNE' => "Prune",
+    'LAN_RESET' => "Reset",
+    'LAN_CLEAR' => "Clear",
+    'LAN_ADD_ALL' => "Add All",
+    'LAN_CLEAR_ALL' => "Clear All",
+    'LAN_CLICK_HERE' => "CLICK HERE",
+    'LAN_UNKNOWN' => "Unknown",
+    'LAN_ALL' => "All",
+    'LAN_IMPORT' => "Import",
+    'LAN_NOTWRITABLE' => "is not writable, you need to CHMOD 777 the file or folder first.",
+    'LAN_NOTREADABLE' => "Not Readable",
+    'LAN_MISSING' => "Missing",
+    'LAN_UNUSED' => "Unused",
+    'LAN_SESSION' => "Session",
+    'LAN_TOOLTIP' => "Tooltip",
+    'LAN_TIME' => "Time",
+    'LAN_EMPTY' => "There are no entries in the database yet",
+    'LAN_EXISTING' => "Existing Entries",
+    'LAN_DEFAULT_TABLE_DATA' => "Adding default table data to table:",
+    'LAN_CONFDELETE' => "Confirm Delete",
+    'LAN_PLUGIN' => "Plugin",
+    'LAN_PLUGIN_FOLDER' => "Plugin Folder",
+    'LAN_THEMES' => "Themes",
+    'LAN_THEME' => "Theme",
+    'LAN_CORE' => "Core",
+    'LAN_LATEST_e107_NEWS' => "Latest e107 News",
+    'LAN_WEBSITE_STATUS' => "Website Status",
+    'LAN_STATS' => "Stats",
+    'LAN_ONLINE' => "Online",
+    'LAN_ORDER' => "Order",
+    'LAN_ASC' => "ASC",
+    'LAN_DESC' => "DESC",
+    'LAN_SELECT' => "Select",
+    'LAN_ADMIN' => "Admin",
+    'LAN_ROOT' => "Root",
+    'LAN_LINE' => "Line",
+    'LAN_SHORTCODES' => "Shortcodes",
+    'LAN_DISPLAYOPT' => "Edit Display Options",
+    'LAN_TIMESTAMP' => "Timestamp",
+    'LAN_PAGE' => "PAGE",
+    'LAN_AGENT' => "AGENT",
+    'LAN_LANG' => "Lang.",
+    'LAN_APPROVE' => "Approve",
+    'LAN_OPTIONAL' => "optional",
+    'LAN_INACTIVE' => "Inactive",
+    'LAN_ACTIVATE' => "Activate",
+    'LAN_ACCEPT' => "Accept",
+    'LAN_PASSWORD_WARNING' => "It is HIGHLY recommended that you [change your password encoding] to the PHP Default. (Password hashes will be automatically upgraded during user login.)",
+    'LAN_PENDING' => "Pending",
+    'LAN_SUBMITTED' => "Submitted",
+    'LAN_POSTED_BY_X' => "Posted by [x] [y]",
+    'LAN_VIEW_ALL' => "View All",
+    'LAN_BAN' => "Ban",
+    'LAN_PATH' => "Path",
+    'LAN_UPLOAD' => "Upload",
+    'LAN_UPLOADS' => "Uploads",
+    'LAN_UPLOAD_IMAGES' => "Upload Images",
+    'LAN_UPLOAD_FILES' => "Upload Files",
+    'LAN_UPLOAD_ADDFILE' => "Add Another File",
+    'LAN_UPLOAD_CONFIRM' => "Any unsaved changes to this page will be lost. Continue?",
+    'LAN_UPLOAD_777' => "Folder is missing or not writable, you need to CHMOD 777 the following folder before uploading:",
+    'LAN_UPLOAD_SERVEROFF' => "This option is disabled as file uploading is not enabled on your server",
+    'LAN_WIDTH' => "Width",
+    'LAN_HEIGHT' => "Height",
+    'LAN_ON' => "On",
+    'LAN_OFF' => "Off",
+    'LAN_DISABLE' => "Disable",
+    'LAN_DISABLED' => "Disabled",
+    'LAN_ENABLE' => "Enable",
+    'LAN_ENABLED' => "Enabled",
+    'LAN_BOOL_REVERSE' => "Invert",
+    'LAN_DETAILS' => "Details",
+    'LAN_NOT_AVAILABLE' => "Not available",
+    'LAN_AUTO_GENERATED' => "Auto-generated",
+    'LAN_AUTOMATION' => "Automation",
+    'LAN_PRESET_CONFIRMSAVE' => "Save current form values as the default for this page?",
+    'LAN_CONFIGURE' => "Configure",
+    'LAN_NOPERMISSION' => "no permissions",
+    'LAN_NO_ADMIN_PERMISSION' => "You do not have administrator permissions for [x]",
+    'LAN_CREDITS' => "Credits",
+    'LAN_NEWVERSION' => "e107 v[x] is available for download.",
+    'LAN_CHECKALL' => "Check All",
+    'LAN_UNCHECKALL' => "Uncheck All",
+    'LAN_DELCHECKED' => "Delete Checked",
+    'LAN_USERCLASS' => "Userclass",
+    'LAN_MANAGER' => "Manager",
+    'LAN_HELP' => "Help",
+    'LAN_CUSTOM' => "Custom",
+    'LAN_MENULAYOUT' => "Menu Layout",
+    'LAN_MEDIAMANAGER' => "Media Manager",
+    'LAN_MOREINFO' => "More Information...",
+    'LAN_COMMENTMAN' => "Comments Manager",
+    'LAN_FILTER' => "Filter",
+    'LAN_STATUS' => "Status",
+    'LAN_URL' => "URL",
+    'LAN_OWNER' => "Owner",
+    'LAN_PURCHASE' => "Purchase",
+    'LAN_DOWNLOADING' => "Downloading",
+    'LAN_ID' => "ID",
+    'LAN_TEST' => "Test",
+    'LAN_VISIBILITY' => "Visibility",
+    'LAN_VISIBLE_TO' => "Visible To",
+    'LAN_PARENT' => "Parent",
+    'LAN_ICON' => "Icon",
+    'LAN_LOADING' => "Loading...",
+    'LAN_RUN' => "Run",
+    'LAN_SEFURL' => "SEF URL",
+    'LAN_COPY' => "Copy",
+    'LAN_KEYWORDS' => "Keywords",
+    'LAN_TEMPLATE' => "Template",
+    'LAN_TEMPLATES' => "Templates",
+    'LAN_DEMO_FORBIDDEN' => "Changes on this page are not possible in demo mode.",
+    'LAN_COPYRIGHT' => "Copyright",
+    'LAN_MANAGEPERMS' => "Manage Permissions",
+    'LAN_PING' => "Ping",
+    'LAN_START' => "Start",
+    'LAN_END' => "End",
+    'LAN_PREVIEW' => "Preview",
+    'LAN_CREATE_CATEGORY' => "Create Category",
+    'LAN_CREATE_ITEM' => "Create Item",
+    'LAN_SECURITYL_0' => "Looking for trouble (none)",
+    'LAN_SECURITYL_5' => "Balanced",
+    'LAN_SECURITYL_7' => "High",
+    'LAN_SECURITYL_9' => "Paranoid",
+    'LAN_SECURITYL_10' => "Insane",
+    'LAN_BATCH_LABEL_SELECTED' => "With selected...",
+    'LAN_BATCH_LABEL_PREFIX' => "Modify",
+    'LAN_LABEL_LABEL_SELECTED' => "Filter",
+    'LAN_FILTER_LABEL_PREFIX' => "Filter by",
+    'LAN_FILTER_LABEL_DISPLAYALL' => "Display All",
+    'LAN_FILTER_LABEL_CLEAR' => "Clear Filter",
+    'LAN_FILTER_LABEL_TYPED' => "(typed)",
+    'LAN_UI_NOPID_ERROR' => "There is no [b]Primary ID[/b] set",
+    'LAN_UI_BATCHDEL_ERROR' => "Batch delete not allowed!",
+    'LAN_UI_404_BODY_ERROR' => "Requested page was not found!",
+    'LAN_UI_404_TITLE_ERROR' => "Page Not Found",
+    'LAN_UI_404_METHOD_ERROR' => "Action [x] not found!",
+    'LAN_UI_403_BODY_ERROR' => "Access to the requested page is denied.",
+    'LAN_UI_403_TITLE_ERROR' => "Access denied",
+    'LAN_UI_FORM_METHOD_ERROR' => "FATAL ERROR: The field name [x] is not allowed. Please rename the key [x] to something else in your fields array and database table (if required).",
+    'LAN_UNKNOWN_ERROR' => "Unknown Error",
+    'LAN_SQL_ERROR' => "SQL Error",
+    'LAN_UI_BATCH_UPDATE_SUCCESS' => "[x] set for [y] record(s).",
+    'LAN_UI_BATCH_REVERSED_SUCCESS' => "[x] records successfully reversed.",
+    'LAN_UI_BATCH_BOOL_SUCCESS' => "[x] records successfully updated.",
+    'LAN_UI_BATCH_DEATTACH_SUCCESS' => "[x] removed from [y] record(s).",
+    'LAN_UI_EDIT_LABEL' => "Update record #[x]",
+    'LAN_UI_CREATE_LABEL' => "Create new record",
+    'LAN_UI_PREF_LABEL' => "Settings",
+    'LAN_UI_DELETE_LABEL' => "Confirm Delete",
+    'LAN_UI_DELETE_WARNING' => "You are about to delete [x] records. Please confirm to continue.",
+    'LAN_UI_BATCH_CREATELINK' => "Create Navigation Link",
+    'LAN_UI_DELETED' => "[x] record(s) successfully deleted!",
+    'LAN_UI_DELETED_FAILED' => "[x] records not found and not deleted!",
+    'LAN_UI_FILE_DELETED' => "[x] file successfully deleted!",
+    'LAN_UI_FILE_DELETED_FAILED' => "Unable to delete [x]! Please remove the file manually.",
+    'LAN_UI_BATCH_EXPORT' => "Export",
+    'LAN_UI_USING_DATABASE_TABLE' => "Using [x] database table",
+    'LAN_UI_TOTAL_RECORDS' => "Total Records: [x]",
+    'LAN_UI_FILTER_PAST_HOUR' => "Past Hour",
+    'LAN_UI_FILTER_PAST_24_HOURS' => "Past 24 hours",
+    'LAN_UI_FILTER_PAST_WEEK' => "Past Week",
+    'LAN_UI_FILTER_PAST_MONTH' => "Past Month",
+    'LAN_UI_FILTER_PAST_XMONTHS' => "Past [x] Months",
+    'LAN_UI_FILTER_PAST_YEAR' => "Past Year",
+    'LAN_USER_MANAGEALL' => "Manage all User, Userclass and Extended User-Field settings",
+    'LAN_USER_LIST' => "User List",
+    'LAN_USER_QUICKADD' => "Quick Add User",
+    'LAN_USER_NOT_FOUND' => "User Not Found.",
+    'LAN_USER_PRUNE' => "Prune Users",
+    'LAN_USER_OPTIONS' => "User Options",
+    'LAN_USER_RANKS' => "User Ranks",
+    'LAN_CONTROL_PANEL' => "[x]'s Control Panel",
+    'LAN_CUSTOM_URL' => "Custom URL",
+    'LAN_CUSTOM_URL_DISABLED' => "Disabled or Enter Custom URL",
+    'LAN_GENERAL' => "General",
+    'LAN_GEN_PW' => "Generate a password",
+    'LAN_DISPL_PW' => "Display the password",
+    'LAN_WILL_OVERWRITE_SEF' => "This will overwrite your existing SEF URL.",
+    'LAN_CAPTION' => "Caption",
+    'LAN_LIMIT' => "Limit",
+    'LAN_BASIC' => "Basic",
+    'LAN_EXTENDED' => "Extended",
+    'LAN_ADVANCED' => "Advanced",
+    'LAN_DISPLAY' => "Display",
+    'LAN_FOLDER' => "Folder",
+    'LAN_PERSONALIZE_ICONS' => "Personalize Icons",
+    'LAN_PERSONALIZE_MENUS' => "Personalize Menus",
+    'LAN_LATEST_COMMENTS' => "Latest Comments",
+    'LAN_COMMENTS_ALLOWED' => "Comments Allowed",
+    'LAN_PERSONALIZE' => "Personalize",
+    'LAN_SETTINGS_NOT_SAVED_NO_CHANGES_MADE' => "Settings not saved as no changes were made.",
+    'LAN_DASHBOARD_LAYOUT' => "Dashboard Layout",
+    'LAN_UNAVAILABLE' => "Unavailable",
+    'LAN_UNINSTALL' => "Uninstall",
+    'LAN_NO_LABEL_PROVIDED' => "No Label Provided",
+    'LAN_NOT_FOUND' => "Not Found!",
+    'LAN_FIELD' => "Field",
+    'LAN_MAINTENANCE' => "Maintenance",
+    'LAN_RETURN_TO_FRONT_PANEL' => "Return to Front Panel",
+    'LAN_CHANGE_LANGUAGE' => "Change Language",
+    'LAN_NEWER_VERSION_OF_X' => "A newer version of the [x] [y] is available for download.",
+    'LAN_ITEM' => "Item",
+    'LAN_LOCK' => "Lock",
+    'LAN_SYSTEM_USER' => "System user",
+    'LAN_ENGINE' => "Engine",
+    'LAN_SOURCE' => "Source",
+    'LAN_UPGRADING' => "Upgrading?",
+    'LAN_DONT_SHOW_AGAIN' => "Don't show again",
+    'LAN_ERROR_CONNECTION' => "Unable to connect for updates. Please check firewall and/or internet connection.",
+    'LAN_UI_X_CANT_EQUAL_Y' => "[x] cannot be the same as [y]",
+    'LAN_UI_VIEW_GRID_LABEL' => "Grid view",
+    'LAN_UI_VIEW_LIST_LABEL' => "List view",
+    'LAN_CHECKING_FOR_UPDATES' => "Checking for updates",
+    'LAN_UI_FILTER_NEXT_HOUR' => "Next Hour",
+    'LAN_UI_FILTER_NEXT_24_HOURS' => "Next 24 hours",
+    'LAN_UI_FILTER_NEXT_WEEK' => "Next Week",
+    'LAN_UI_FILTER_NEXT_MONTH' => "Next Month",
+    'LAN_UI_FILTER_NEXT_XMONTHS' => "Next [x] Months",
+    'LAN_UI_FILTER_NEXT_YEAR' => "Next Year",
+    'LAN_UI_FILTER_IS_EMPTY' => "Is Empty",
+    'LAN_RECALCULATE_COMMENT_COUNT' => "Recalculate comment count",
+    'LAN_SUCC_RECALCULATE_COMMENT_COUNT' => "Comment count successfully recalculated!",
+    'LAN_NO_RESULTS_FOUND' => "No Results Found.",
+    'LAN_UI_DROPZONE_DROP_FILES' => "Drop files here to upload",
+    'LAN_DOWNLOAD_COMPLETE' => "Download Complete!",
+    'LAN_UI_FILTER_SEARCH_IN_FIELD' => "Search in Field",
+    'LAN_ROBOTS' => "Robots",
+    'LAN_ROBOTS_NOINDEX' => "Prevent search engines from indexing this item.",
+    'LAN_ROBOTS_NOFOLLOW' => "Prevent search engines from following links in this item.",
+    'LAN_ROBOTS_NOARCHIVE' => "Prevent cached copies of this item from appearing in search results.",
+    'LAN_ROBOTS_NOIMAGE' => "Prevent search engines from indexing images of this item.",
+    'LAN_NAVIGATION' => "Navigation",
+    'LAN_NAVIGATION_LINKS' => "Navigation Links",
+    'LAN_PAGINATION' => "Pagination",
+    'LAN_X_CHARS_REMAINING' => "[x] chars. remaining",
+    'LAN_UI_BATCH_NOW' => "Current Date/Time",
+    'LAN_RELATIONSHIP' => "Relationship",
+    'LAN_RELATIONSHIP_HELP' => "Optional 'rel' attribute. Comma separated.",
+    'LAN_NO_SCRIPT_ACCESS' => "You don't have permission to use [script] tags.",
+    'LAN_NO_SCRIPT_ACCESS_ASK' => "If you believe this is an error, please ask the main administrator to grant you script access via [b]Preferences > Content Filters[/b]",
+    'LAN_UI_FILTER_TODAY' => "Today",
+    'LAN_UI_FILTER_THIS_WEEK' => "This Week",
+    'LAN_UI_FILTER_THIS_MONTH' => "This Month",
+    'LAN_UI_FILTER_THIS_YEAR' => "This Year",
+    'LAN_SEARCH_ENGINES_X_LIMIT' => "Read by search engines. Maximum [x] characters.",
+    'LAN_META_TITLE' => "Meta Title",
+    'LAN_META_DESCRIPTION' => "Meta Description",
+    'LAN_SYSTEM_NOTIFICATIONS_X' => "[x] System Notification(s)",
+    'LAN_PHP_OUTDATED' => "Your website is currently running an [outdated version of PHP], which may pose a security risk. If your plugins will allow it, we recommend upgrading to [x] to ensure that your website is secure and up-to-date.",
+    'LAN_DATABASE_UPDATE' => "An update is available for your database. We recommend [running this update] as soon as possible to ensure that your database is secure and up-to-date.",
+    'LAN_HISTORY' => "History",
+];
 
-Below is the list of files that could potentially be malicious:");
-//define("ADLAN_ERR_4", "Deprecated plugin file(s) found");
-//define("ADLAN_ERR_5", "The following files need to be renamed to");
-//define("ADLAN_ERR_6", "Then, click here to re-scan your plugin folders.");
-
-
-// Common Terms
-
-define("LAN_CREATE","Create");
-define("LAN_MANAGE","Manage");
-define("LAN_UPDATE","Update");
-define("LAN_UPDATES", "Updates");
-define("LAN_INSTALLED","Installed");//TODO elsewhere
-define("LAN_LAST_UPDATED","Last Updated");
-define("LAN_UPDATE_AVAILABLE","Update Available");
-define("LAN_ADD", "Add");
-define("LAN_REMOVE", "Remove");
-define("LAN_ADD_MORE", "Add More");
-define("LAN_MULTIPLE_CHOICE", "Multiple Choice");
-
-define("LAN_SAVE","Save");
-define("LAN_SAVED","Saved");
-define("LAN_SETSAVED","Your settings have been saved");
-define("LAN_NOCHANGE_NOTSAVED", "Nothing changed - not saved");
-define("LAN_CONFIRMDEL","Please confirm you wish to delete");
-define("LAN_ERRORS", "Errors");
-define("LAN_MESSAGES", "Messages");
-define("LAN_DATA", "Data");
-
-define("LAN_OPTIONS", "Options");
-define("LAN_BASIC_OPTIONS", "Basic Options");
-define("LAN_PREFS","Preferences");
-define("LAN_DELETED","Successfully deleted");
-define("LAN_UPDATED","Successfully updated");
-define("LAN_CREATED","Successfully created");
-define("LAN_CREATED_FAILED","Creation Unsuccessful");
-define("LAN_DELETED_FAILED","Deletion Unsuccessful");
-define("LAN_UPDATED_FAILED","Update Unsuccessful");
-define("LAN_NO_CHANGE","Nothing updated as no changes were made.");
-
-define("LAN_TRY_AGAIN","Please try again.");
-define("LAN_NEVER", "Never");
-define("LAN_PRUNE", "Prune");
-define("LAN_RESET","Reset");
-define("LAN_CLEAR","Clear");
-define("LAN_ADD_ALL", "Add All");
-define("LAN_CLEAR_ALL", "Clear All");
-define("LAN_CLICK_HERE", "CLICK HERE");
-define("LAN_UNKNOWN", "Unknown");
-define("LAN_ALL","All");
-define("LAN_IMPORT","Import");
-// define("LAN_OK","OK");     // defined in e107_languages/English/English.php
-
-// define("LAN_PRESET","Preset");
-// define("LAN_PRESET_SAVED","Preset saved successfully");
-
-// define("LAN_PRESET_DELETED","Preset successfully deleted");
-// define("LAN_PRESET_CONFIRMDEL","Are you sure you want to delete this preset?");
-define("LAN_NOTWRITABLE"," is not writable, you need to CHMOD 777 the file or folder first.");
-define("LAN_NOTREADABLE", "Not Readable");
-define("LAN_MISSING", "Missing");
-define("LAN_UNUSED", "Unused");
-define("LAN_SESSION", "Session");
-define("LAN_TOOLTIP", "Tooltip");
-
-define("LAN_TIME","Time");
-// define("LAN_YES","Yes");
-// define("LAN_NO","No");   // defined in e107_languages/English/English.php
-define("LAN_EMPTY","There are no entries in the database yet");
-define("LAN_EXISTING","Existing Entries");
-define("LAN_DEFAULT_TABLE_DATA","Adding default table data to table:");
-
-define("LAN_CONFDELETE","Confirm Delete");
-define("LAN_PLUGIN","Plugin");
-define("LAN_PLUGIN_FOLDER","Plugin Folder");
-define("LAN_THEMES","Themes");
-define("LAN_THEME","Theme");
-define("LAN_CORE","Core");
-define("LAN_LATEST_e107_NEWS","Latest e107 News");
-define("LAN_WEBSITE_STATUS","Website Status");
-define("LAN_STATS","Stats");
-define("LAN_ONLINE","Online");
-define("LAN_ORDER","Order");
-define("LAN_ASC","ASC");
-define("LAN_DESC","DESC");
-
-define("LAN_SELECT","Select");
-define("LAN_ADMIN","Admin");
-define("LAN_ROOT","Root");
-define("LAN_LINE","Line");
-define("LAN_SHORTCODES","Shortcodes");
-define("LAN_DISPLAYOPT", "Edit Display Options");
-// define("LAN_GOPAGE", "Go to page:");
-// define("LAN_DATESTAMP","Date stamp"); // moved to English.php
-define("LAN_TIMESTAMP","Timestamp");
-
-define("LAN_PAGE","PAGE");
-define("LAN_AGENT","AGENT");
-define("LAN_LANG","Lang.");
-define("LAN_APPROVE","Approve");
-define("LAN_OPTIONAL", "optional");
-define("LAN_INACTIVE","Inactive");
-define("LAN_ACTIVATE","Activate");
-define("LAN_ACCEPT","Accept");
-define("LAN_PASSWORD_WARNING", "It is HIGHLY recommended that you [change your password encoding] to the PHP Default. (Password hashes will be automatically upgraded during user login.)");
-define("LAN_PENDING","Pending");
-define("LAN_SUBMITTED","Submitted");
-define("LAN_POSTED_BY_X","Posted by [x] [y]");
-define("LAN_VIEW_ALL","View All");
-
-define("LAN_BAN","Ban");
-define("LAN_PATH", "Path");
-
-define("LAN_UPLOAD", "Upload");
-define("LAN_UPLOADS","Uploads");
-define("LAN_UPLOAD_IMAGES","Upload Images");
-define("LAN_UPLOAD_FILES","Upload Files");
-define("LAN_UPLOAD_ADDFILE","Add Another File");
-define("LAN_UPLOAD_CONFIRM","Any unsaved changes to this page will be lost. Continue?");
-define("LAN_UPLOAD_777","Folder is missing or not writable, you need to CHMOD 777 the following folder before uploading:");
-define("LAN_UPLOAD_SERVEROFF", "This option is disabled as file uploading is not enabled on your server");
-define("LAN_WIDTH","Width");
-define("LAN_HEIGHT","Height");
-
-define("LAN_ON","On");
-define("LAN_OFF", "Off");
-define("LAN_DISABLE", "Disable");
-define("LAN_DISABLED","Disabled");
-define("LAN_ENABLE", "Enable");
-define("LAN_ENABLED", "Enabled");
-define("LAN_BOOL_REVERSE", "Invert");
-
-define("LAN_DETAILS", "Details");
-define("LAN_NOT_AVAILABLE","Not available");
-define("LAN_AUTO_GENERATED","Auto-generated");
-define("LAN_AUTOMATION","Automation");
-
-define("LAN_PRESET_CONFIRMSAVE","Save current form values as the default for this page?");
-define("LAN_CONFIGURE", "Configure");
-
-// define("LAN_BACK", "Back"); @see e107_languages/English.php
-
-define("LAN_NOPERMISSION", "no permissions");
-define("LAN_NO_ADMIN_PERMISSION", "You do not have administrator permissions for [x]");
-
-define("LAN_CREDITS","Credits");
-define("LAN_NEWVERSION","e107 v[x] is available for download.");
-
-define("LAN_CHECKALL", "Check All");
-define("LAN_UNCHECKALL", "Uncheck All");
-define("LAN_DELCHECKED", "Delete Checked");
-
-define("LAN_USERCLASS", "Userclass");
-define("LAN_MANAGER", "Manager");
-
-define("LAN_HELP", "Help");
-define("LAN_CUSTOM", "Custom");
-define("LAN_MENULAYOUT", "Menu Layout");
-define("LAN_MEDIAMANAGER", "Media Manager");
-
-define("LAN_MOREINFO","More Information...");
-define("LAN_COMMENTMAN", "Comments Manager");
-
-define("LAN_FILTER", "Filter");
-// define("LAN_NO_RECORDS", "No Records Found");
-define("LAN_STATUS", "Status");
-define("LAN_URL", "URL");
-
-define("LAN_OWNER", "Owner");
-define("LAN_PURCHASE", "Purchase");
-define("LAN_DOWNLOADING", "Downloading");
-
-define("LAN_ID", "ID");
-define("LAN_TEST", "Test");
-
-
-define("LAN_VISIBILITY", "Visibility");
-define("LAN_VISIBLE_TO", "Visible To");
-define("LAN_PARENT", "Parent");
-
-define("LAN_ICON", "Icon");
-define("LAN_LOADING", "Loading...");
-
-// define("LAN_GO","Go"); // Not "Execute"
-define("LAN_RUN","Run"); 
-define("LAN_SEFURL","SEF URL");
-define("LAN_COPY","Copy");
-define("LAN_KEYWORDS","Keywords");
-
-define("LAN_TEMPLATE","Template");
-define("LAN_TEMPLATES","Templates");
-
-// define("LAN_NONE", "None");
-// define("LAN_CATEGORIES", "Categories"); // moved to English.php
-define("LAN_DEMO_FORBIDDEN", "Changes on this page are not possible in demo mode.");
-define("LAN_COPYRIGHT", "Copyright");
-define("LAN_MANAGEPERMS", "Manage Permissions");
-define("LAN_PING", "Ping");
-define("LAN_START", "Start");
-define("LAN_END", "End");
-
-define("LAN_PREVIEW", "Preview");
-
-define("LAN_CREATE_CATEGORY", "Create Category");
-define("LAN_CREATE_ITEM", "Create Item");
-
-
-define("LAN_SECURITYL_0", "Looking for trouble (none)");
-define("LAN_SECURITYL_5", "Balanced");
-define("LAN_SECURITYL_7", "High");
-define("LAN_SECURITYL_9", "Paranoid");
-define("LAN_SECURITYL_10", "Insane");
-
-// XXX - move Admin UI related LANS below, add new lan_form.php file (for both front/back-end)
-define("LAN_BATCH_LABEL_SELECTED", "With selected..."); // Batch dropdown default option
-define("LAN_BATCH_LABEL_PREFIX", "Modify");
-define("LAN_LABEL_LABEL_SELECTED", "Filter"); // Filter dropdown default option
-define("LAN_FILTER_LABEL_PREFIX", "Filter by");
-define("LAN_FILTER_LABEL_DISPLAYALL", "Display All");
-define("LAN_FILTER_LABEL_CLEAR", "Clear Filter");
-define("LAN_FILTER_LABEL_TYPED", "(typed)");
-
-define("LAN_UI_NOPID_ERROR", "There is no [b]Primary ID[/b] set");
-define("LAN_UI_BATCHDEL_ERROR", "Batch delete not allowed!");
-define("LAN_UI_404_BODY_ERROR", "Requested page was not found!");
-define("LAN_UI_404_TITLE_ERROR", "Page Not Found");
-define("LAN_UI_404_METHOD_ERROR", "Action [x] not found!");
-define("LAN_UI_403_BODY_ERROR", "Access to the requested page is denied.");
-define("LAN_UI_403_TITLE_ERROR", "Access denied");
-define("LAN_UI_FORM_METHOD_ERROR", "FATAL ERROR: The field name [x] is not allowed. Please rename the key [x] to something else in your fields array and database table (if required).");
-define("LAN_UNKNOWN_ERROR", "Unknown Error");
-define("LAN_SQL_ERROR", "SQL Error");
-
-define("LAN_UI_BATCH_UPDATE_SUCCESS", "[x] set for [y] record(s).");
-define("LAN_UI_BATCH_REVERSED_SUCCESS", "[x] records successfully reversed.");
-define("LAN_UI_BATCH_BOOL_SUCCESS", "[x] records successfully updated.");
-define("LAN_UI_BATCH_DEATTACH_SUCCESS", "[x] removed from [y] record(s).");
-
-define("LAN_UI_EDIT_LABEL", "Update record #[x]");
-define("LAN_UI_CREATE_LABEL", "Create new record");
-define("LAN_UI_PREF_LABEL", "Settings");
-define("LAN_UI_DELETE_LABEL", "Confirm Delete");
-define("LAN_UI_DELETE_WARNING", "You are about to delete [x] records. Please confirm to continue.");
-define("LAN_UI_BATCH_CREATELINK", "Create Navigation Link");
-define("LAN_UI_DELETED", "[x] record(s) successfully deleted!");
-define("LAN_UI_DELETED_FAILED", "[x] records not found and not deleted!");
-define("LAN_UI_FILE_DELETED", "[x] file successfully deleted!");
-define("LAN_UI_FILE_DELETED_FAILED", "Unable to delete [x]! Please remove the file manually.");
-define("LAN_UI_BATCH_EXPORT", "Export");
-
-define("LAN_UI_USING_DATABASE_TABLE", "Using [x] database table");
-define("LAN_UI_TOTAL_RECORDS", "Total Records: [x]");
-define("LAN_UI_FILTER_PAST_HOUR", "Past Hour");
-define("LAN_UI_FILTER_PAST_24_HOURS", "Past 24 hours");
-define("LAN_UI_FILTER_PAST_WEEK", "Past Week");
-define("LAN_UI_FILTER_PAST_MONTH", "Past Month");
-define("LAN_UI_FILTER_PAST_XMONTHS", "Past [x] Months");
-define("LAN_UI_FILTER_PAST_YEAR", "Past Year");
-
-
-define("LAN_USER_MANAGEALL", "Manage all User, Userclass and Extended User-Field settings");
-define("LAN_USER_LIST", "User List");
-define("LAN_USER_QUICKADD","Quick Add User");
-define("LAN_USER_NOT_FOUND","User Not Found.");
-define("LAN_USER_PRUNE", "Prune Users");
-define("LAN_USER_OPTIONS", "User Options");
-define("LAN_USER_RANKS", "User Ranks");
-define("LAN_CONTROL_PANEL", "[x]'s Control Panel");
-define("LAN_CUSTOM_URL", "Custom URL");
-define("LAN_CUSTOM_URL_DISABLED", "Disabled or Enter Custom URL");
-
-define("LAN_GENERAL", "General");
-define("LAN_GEN_PW", "Generate a password");
-define("LAN_DISPL_PW", "Display the password");
-define("LAN_WILL_OVERWRITE_SEF", "This will overwrite your existing SEF URL.");
-
-define("LAN_CAPTION", "Caption");
-define("LAN_LIMIT", "Limit");
-define("LAN_BASIC", "Basic");
-define("LAN_EXTENDED", "Extended");
-define("LAN_ADVANCED", "Advanced");
-define("LAN_DISPLAY", "Display");
-define("LAN_FOLDER", "Folder");
-define("LAN_PERSONALIZE_ICONS", "Personalize Icons");
-define("LAN_PERSONALIZE_MENUS", "Personalize Menus");
-define("LAN_LATEST_COMMENTS", "Latest Comments");
-define("LAN_COMMENTS_ALLOWED", "Comments Allowed");
-define("LAN_PERSONALIZE", "Personalize");
-
-define("LAN_SETTINGS_NOT_SAVED_NO_CHANGES_MADE", "Settings not saved as no changes were made.");
-define("LAN_DASHBOARD_LAYOUT", "Dashboard Layout");
-define("LAN_UNAVAILABLE", "Unavailable");
-define("LAN_UNINSTALL", "Uninstall");
-define("LAN_NO_LABEL_PROVIDED", "No Label Provided");
-define("LAN_NOT_FOUND", "Not Found!");
-define("LAN_FIELD", "Field");
-
-define("LAN_MAINTENANCE", "Maintenance");
-define("LAN_RETURN_TO_FRONT_PANEL", "Return to Front Panel");
-define("LAN_CHANGE_LANGUAGE", "Change Language");
-
-define("LAN_NEWER_VERSION_OF_X", "A newer version of the [x] [y] is available for download."); // x= Name  y = Theme | Plugin
-
-// define("LAN_SUBJECT", "Subject"); // moved to English.php
-define("LAN_ITEM", "Item");
-define("LAN_LOCK", "Lock");
-define("LAN_SYSTEM_USER", "System user");
-define("LAN_ENGINE", "Engine");
-define("LAN_SOURCE", "Source");
-define("LAN_UPGRADING", "Upgrading?");
-define("LAN_DONT_SHOW_AGAIN", "Don't show again");
-
-define("LAN_ERROR_CONNECTION","Unable to connect for updates. Please check firewall and/or internet connection.");
-
-define("LAN_UI_X_CANT_EQUAL_Y", "[x] cannot be the same as [y]");
-define("LAN_UI_VIEW_GRID_LABEL", "Grid view");
-define("LAN_UI_VIEW_LIST_LABEL", "List view");
-define("LAN_CHECKING_FOR_UPDATES", "Checking for updates");
-
-define("LAN_UI_FILTER_NEXT_HOUR", "Next Hour");
-define("LAN_UI_FILTER_NEXT_24_HOURS", "Next 24 hours");
-define("LAN_UI_FILTER_NEXT_WEEK", "Next Week");
-define("LAN_UI_FILTER_NEXT_MONTH", "Next Month");
-define("LAN_UI_FILTER_NEXT_XMONTHS", "Next [x] Months");
-define("LAN_UI_FILTER_NEXT_YEAR", "Next Year");
-define("LAN_UI_FILTER_IS_EMPTY", "Is Empty");
-define("LAN_RECALCULATE_COMMENT_COUNT", "Recalculate comment count");
-define("LAN_SUCC_RECALCULATE_COMMENT_COUNT", "Comment count successfully recalculated!");
-define("LAN_NO_RESULTS_FOUND", "No Results Found.");
-
-define("LAN_UI_DROPZONE_DROP_FILES", "Drop files here to upload");
-
-define("LAN_DOWNLOAD_COMPLETE", "Download Complete!");
-
-define("LAN_UI_FILTER_SEARCH_IN_FIELD", "Search in Field");
-
-define("LAN_ROBOTS", "Robots");
-define("LAN_ROBOTS_NOINDEX", "Prevent search engines from indexing this item.");
-define("LAN_ROBOTS_NOFOLLOW", "Prevent search engines from following links in this item.");
-define("LAN_ROBOTS_NOARCHIVE", "Prevent cached copies of this item from appearing in search results.");
-define("LAN_ROBOTS_NOIMAGE", "Prevent search engines from indexing images of this item.");
-
-define("LAN_NAVIGATION", "Navigation");
-define("LAN_NAVIGATION_LINKS", "Navigation Links");
-define("LAN_PAGINATION", "Pagination");
-define("LAN_X_CHARS_REMAINING", "[x] chars. remaining");
-define("LAN_UI_BATCH_NOW", "Current Date/Time");
-define("LAN_RELATIONSHIP", "Relationship");
-define("LAN_RELATIONSHIP_HELP", "Optional 'rel' attribute. Comma separated.");
-
-define("LAN_NO_SCRIPT_ACCESS", "You don't have permission to use [script] tags.");
-define("LAN_NO_SCRIPT_ACCESS_ASK",  "If you believe this is an error, please ask the main administrator to grant you script access via [b]Preferences > Content Filters[/b]");
-
-define("LAN_UI_FILTER_TODAY", "Today");
-define("LAN_UI_FILTER_THIS_WEEK", "This Week");
-define("LAN_UI_FILTER_THIS_MONTH", "This Month");
-define("LAN_UI_FILTER_THIS_YEAR", "This Year");
-
-define("LAN_SEARCH_ENGINES_X_LIMIT", "Read by search engines. Maximum [x] characters.");
-define("LAN_META_TITLE", "Meta Title");
-define("LAN_META_DESCRIPTION", "Meta Description");
-
-define("LAN_SYSTEM_NOTIFICATIONS_X", "[x] System Notification(s)");
-define("LAN_PHP_OUTDATED", "Your website is currently running an [outdated version of PHP], which may pose a security risk. If your plugins will allow it, we recommend upgrading to [x] to ensure that your website is secure and up-to-date.");
-define("LAN_DATABASE_UPDATE", "An update is available for your database. We recommend [running this update] as soon as possible to ensure that your database is secure and up-to-date.");
-
-define("LAN_HISTORY", "History");
