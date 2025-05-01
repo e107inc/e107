@@ -143,7 +143,7 @@ class page_admin_form_ui extends e_admin_form_ui
 			$query['id'] = $id;
 			$query = http_build_query($query, '', '&amp;');
 				
-			$text = "<a href='".e_SELF."?{$query}' class='btn btn-primary' title='".LAN_EDIT."' data-toggle='tooltip' data-bs-toggle='tooltip' data-placement='left'>
+			$text = "<a href='".e_SELF."?{$query}' class='btn btn-success' title='".LAN_EDIT."' data-toggle='tooltip' data-bs-toggle='tooltip' data-placement='left'>
 						".defset('ADMIN_EDIT_ICON')."</a>";
 
 			if($this->getController()->getMode() === 'overview' && getperms('J1')) // Page/Menu Delete Perms.
@@ -170,7 +170,14 @@ class page_chapters_ui extends e_admin_ui
         protected $batchLink   	= true;
         protected $batchExport  = true;
 
-		protected $listQry          = "SELECT a. *, CASE WHEN a.chapter_parent = 0 THEN a.chapter_order ELSE b.chapter_order + (( a.chapter_order)/1000) END AS Sort FROM `#page_chapters` AS a LEFT JOIN `#page_chapters` AS b ON a.chapter_parent = b.chapter_id ";
+	//	protected $listQry          = "SELECT a. *, CASE WHEN a.chapter_parent = 0 THEN a.chapter_order ELSE b.chapter_order + (( a.chapter_order)/1000) END AS Sort FROM `#page_chapters` AS a LEFT JOIN `#page_chapters` AS b ON a.chapter_parent = b.chapter_id ";
+
+	protected $listQry = "SELECT a.*, 
+                         CASE WHEN a.chapter_parent = 0 THEN a.chapter_order ELSE b.chapter_order + ((a.chapter_order)/1000) END AS Sort,
+                         (SELECT COUNT(*) FROM `#page` p WHERE p.page_chapter = a.chapter_id) AS chapter_page_count 
+                         FROM `#page_chapters` AS a 
+                         LEFT JOIN `#page_chapters` AS b ON a.chapter_parent = b.chapter_id ";
+
 		protected $listOrder		= 'Sort,chapter_order ';
 	//	protected $listOrder 	= ' COALESCE(NULLIF(chapter_parent,0), chapter_id), chapter_parent > 0, chapter_order '; //FIXME works with parent/child but doesn't respect parent order.
 		protected $url         	= array('route'=>'page/chapter/index', 'vars' => array('id' => 'chapter_id', 'name' => 'chapter_sef'), 'name' => 'chapter_name', 'description' => ''); // 'link' only needed if profile not provided. 
@@ -181,27 +188,29 @@ class page_chapters_ui extends e_admin_ui
 		
 		protected $fields = array(
 			'checkboxes'				=> array('title'=> '',						'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
-			'chapter_id'				=> array('title'=> LAN_ID,					'type' => 'number',			'width' =>'5%', 'forced'=> TRUE, 'readonly'=>TRUE),
-         	'chapter_icon' 				=> array('title'=> LAN_ICON,				'type' => 'icon', 			'data' => 'str',		'width' => '100px',	'thclass' => 'center', 'class'=>'center', 'writeParms'=> 'glyphs=1', 'readonly'=>FALSE,	'batch' => FALSE, 'filter'=>FALSE),			       		
+			'chapter_id'				=> array('title'=> 'LAN_ID',					'type' => 'number',			'width' =>'5%', 'forced'=> TRUE, 'readonly'=>TRUE),
+         	'chapter_icon' 				=> array('title'=> 'LAN_ICON',				'type' => 'icon', 			'data' => 'str',		'width' => '100px',	'thclass' => 'center', 'class'=>'center', 'writeParms'=> 'glyphs=1', 'readonly'=>FALSE,	'batch' => FALSE, 'filter'=>FALSE),
 
-         	'chapter_parent' 			=> array('title'=> CUSLAN_52,		   		'type' => 'dropdown',		'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE, 'filter'=>true),
-         	'chapter_name' 				=> array('title'=> CUSLAN_53,	            'type' => 'method',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE, 'writeParms'=>'size=xxlarge'),
-         	'chapter_template' 			=> array('title'=> LAN_TEMPLATE, 			'type' => 'dropdown', 		'width' => 'auto','filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>''),
-        
-         	'chapter_meta_description'	=> array('title'=> LAN_DESCRIPTION,			'type' => 'textarea',		'width' => 'auto', 'thclass' => 'left','readParms' => 'expand=...&truncate=150&bb=1', 'writeParms'=>'size=xxlarge', 'readonly'=>FALSE),
-			'chapter_meta_keywords' 	=> array('title'=> LAN_KEYWORDS,			'type' => 'tags',			'inline'=>true, 'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),
-			'chapter_sef' 				=> array('title'=> LAN_SEFURL,	    	    'type' => 'text',			'width' => 'auto', 'readonly'=>FALSE, 'batch'=>true,  'inline'=>true, 'writeParms'=>'size=xxlarge&inline-empty=1&sef=chapter_name',  ), // Display name
-			'chapter_manager' 			=> array('title'=> CUSLAN_55,		        'type' => 'userclass',		'inline'=>true, 'width' => 'auto', 'data' => 'int','batch'=>TRUE, 'filter'=>TRUE),
-			'chapter_order' 			=> array('title'=> LAN_ORDER,				'type' => 'text',			'width' => 'auto', 'thclass' => 'right', 'class'=> 'right' ),										
-			'chapter_visibility' 		=> array('title'=> LAN_VISIBILITY,			'type' => 'userclass',		'inline'=>true, 'width' => 'auto', 'data' => 'int','batch'=>TRUE, 'filter'=>TRUE),
-			'chapter_fields'            => array('title', 'hidden',                 'type'=>'hidden'),
-			'chapter_image' 	        => array('title'=> LAN_IMAGE,			    'type' => 'image', 			'data' => 'str',		'width' => '100px',	'thclass' => 'center', 'class'=>'center',  'readParms'=>'thumb=140&thumb_urlraw=0&thumb_aw=140', 'writeParms'=>'', 'readonly'=>FALSE,	'batch' => FALSE, 'filter'=>FALSE),
+         	'chapter_parent' 			=> array('title'=> 'CUSLAN_52',		   		'type' => 'dropdown',		'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE, 'filter'=>true),
+         	'chapter_name' 				=> array('title'=> 'CUSLAN_53',	            'type' => 'method',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE, 'writeParms'=>'size=xxlarge'),
+         	'chapter_template' 			=> array('title'=> 'LAN_TEMPLATE', 			'type' => 'dropdown', 		'width' => 'auto','filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>''),
 
-			'options' 					=> array('title'=> LAN_OPTIONS,				'type' => 'method',			'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'left', 'readParms'=>'sort=1')
+            'chapter_page_count'        => array('title'=> 'CUSLAN_87', 'type' => 'number', 'data'=>false, 'width' => '5%', 'readonly'=>TRUE, 'thclass'=>'center', 'class'=>'page-count center'),
+
+         	'chapter_meta_description'	=> array('title'=> 'LAN_DESCRIPTION',			'type' => 'textarea',		'width' => 'auto', 'thclass' => 'left','readParms' => 'expand=...&truncate=150&bb=1', 'writeParms'=>'size=xxlarge', 'readonly'=>FALSE),
+			'chapter_meta_keywords' 	=> array('title'=> 'LAN_KEYWORDS',			'type' => 'tags',			'inline'=>true, 'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),
+			'chapter_sef' 				=> array('title'=> 'LAN_SEFURL',	    	    'type' => 'text',			'width' => 'auto', 'readonly'=>FALSE, 'batch'=>true,  'inline'=>true, 'writeParms'=>'size=xxlarge&inline-empty=1&sef=chapter_name',  ), // Display name
+			'chapter_manager' 			=> array('title'=> 'CUSLAN_55',		        'type' => 'userclass',		'inline'=>true, 'width' => 'auto', 'data' => 'int','batch'=>TRUE, 'filter'=>TRUE),
+			'chapter_order' 			=> array('title'=> 'LAN_ORDER',				'type' => 'text',			'width' => 'auto', 'thclass' => 'right', 'class'=> 'right' ),
+			'chapter_visibility' 		=> array('title'=> 'LAN_VISIBILITY',			'type' => 'userclass',		'inline'=>true, 'width' => 'auto', 'data' => 'int','batch'=>TRUE, 'filter'=>TRUE),
+			'chapter_fields'            => array('title'=> 'hidden',                 'type'=>'hidden'),
+			'chapter_image' 	        => array('title'=> 'LAN_IMAGE',			    'type' => 'image', 			'data' => 'str',		'width' => '100px',	'thclass' => 'center', 'class'=>'center',  'readParms'=>'thumb=140&thumb_urlraw=0&thumb_aw=140', 'writeParms'=>'', 'readonly'=>FALSE,	'batch' => FALSE, 'filter'=>FALSE),
+
+			'options' 					=> array('title'=> 'LAN_OPTIONS',				'type' => 'method',			'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'left', 'readParms'=>'sort=1')
 		
 		);
 
-		protected $fieldpref = array('checkboxes', 'chapter_icon', 'chapter_id', 'chapter_name', 'chapter_description','chapter_template', 'chapter_visibility', 'chapter_order', 'options');
+		protected $fieldpref = array('checkboxes', 'chapter_icon', 'chapter_id', 'chapter_page_count','chapter_name', 'chapter_description','chapter_template', 'chapter_visibility', 'chapter_order', 'options');
 
 		protected $books = array();
 	
@@ -593,46 +602,46 @@ class page_admin_ui extends e_admin_ui
             'page_title'	   	=> array('title'=> CUSLAN_2, 		'tab' => 0,	'type' => 'text', 	'data'=>'str', 'inline'=>true,		'width'=>'25%', 'writeParms'=>'size=block-level'),
 			'page_subtitle'	   	=> array('title'=> CUSLAN_80, 	'tab' => 0,	'type' => 'text', 	'data'=>'str', 'inline'=>true,		'width'=>'25%', 'writeParms'=>'size=block-level'),
 
-		    'page_chapter' 		=> array('title'=> CUSLAN_63, 	    'tab' => 0,	'type' => 'dropdown', 	'width' => '20%', 'filter' => true, 'batch'=>true, 'inline'=>true),
+		    'page_chapter' 		=> array('title'=> CUSLAN_63, 	    'tab' => 0,	'type' => 'dropdown', 'data'=>'str',	'width' => '20%', 'filter' => true, 'batch'=>true, 'inline'=>true),
        
-			'page_template' 	=> array('title'=> LAN_TEMPLATE, 		'tab' => 0,	'type' => 'dropdown', 	'width' => 'auto','filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>array()),
+			'page_template' 	=> array('title'=> LAN_TEMPLATE, 		'tab' => 0,	'type' => 'dropdown', 'data'=>'str',	'width' => 'auto','filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>array()),
 
 		 	'page_author' 		=> array('title'=> LAN_AUTHOR, 		'tab' => 0,	'type' => 'user', 'inline'=>true, 		'data'=>'int','width' => 'auto', 'thclass' => 'left'),
 			'page_text' 		=> array('title'=> CUSLAN_9,		'tab' => 0,	'type' => 'bbarea',		'data'=>'str',	'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1', 'writeParms'=>array('media'=>'page^', 'template'=>'page')),
 		
 		
 			// Options Tab. 
-			'page_datestamp' 	=> array('title'=> LAN_DATE, 		'tab' => 1,	'type' => 'datestamp', 	'data'=>'int',	'width' => 'auto','writeParms'=>'auto=1&type=datetime', 'batch'=>true),
-            'page_class' 		=> array('title'=> LAN_VISIBILITY, 	'tab' => 1,	'type' => 'userclass', 	'data'=>'str', 'inline'=>true, 'width' => 'auto',  'filter' => true, 'batch' => true),
-			'page_rating_flag' 	=> array('title'=> LAN_RATING, 		'tab' => 1,	'type' => 'boolean', 	'data'=>'int', 'width' => '5%', 'thclass' => 'center', 'class' => 'center' ),
-			'page_comment_flag' => array('title'=> LAN_COMMENTS,		'tab' => 1,	'type' => 'boolean', 	'data'=>'int', 'width' => '5%', 'thclass' => 'center', 'class' => 'center' ),
-			'page_password' 	=> array('title'=> LAN_PASSWORD, 		'tab' => 1, 'type' => 'text', 	'data'=>'str', 'width' => 'auto', 'writeParms'=>array('password'=>1, 'nomask'=>1, 'size' => 40, 'class' => 'tbox e-password', 'generate' => 1, 'strength' => 1, 'required'=>0)),								
-			'page_sef' 			=> array('title'=> LAN_SEFURL, 		'tab' => 1,	'type' => 'text', 'batch'=>true,	'data'=>'str', 'inline'=>true, 'width' => 'auto', 'writeParms'=>'size=xxlarge&sef=page_title'),
-			'page_metatitle' 	=> array('title'=> LAN_META_TITLE, 	'tab' => 1,	'type' => 'text', 	'data'=>'str', 'width' => 'auto', 'inline'=>true, 'writeParms'=>['size'=>'xxlarge']),
-			'page_metadscr' 	=> array('title'=> LAN_META_DESCRIPTION, 		'tab' => 1,	'type' => 'textarea', 	'data'=>'str', 'help'=>CUSLAN_82, 'width' => 'auto', 'writeParms'=>array('size'=>'xxlarge', 'rows'=>2, 'maxlength'=>155)),
-			'page_metakeys' 	=> array('title'=> LAN_KEYWORDS, 		'tab' => 1,	'type' => 'tags', 	'data'=>'str', 'width' => 'auto', 'inline'=>true),
+			'page_datestamp' 	=> array('title'=> 'LAN_DATE', 		'tab' => 1,	'type' => 'datestamp', 	'data'=>'int',	'width' => 'auto','writeParms'=>'auto=1&type=datetime', 'batch'=>true),
+            'page_class' 		=> array('title'=> 'LAN_VISIBILITY', 	'tab' => 1,	'type' => 'userclass', 	'data'=>'str', 'inline'=>true, 'width' => 'auto',  'filter' => true, 'batch' => true),
+			'page_rating_flag' 	=> array('title'=> 'LAN_RATING', 		'tab' => 1,	'type' => 'boolean', 	'data'=>'int', 'width' => '5%', 'thclass' => 'center', 'class' => 'center' ),
+			'page_comment_flag' => array('title'=> 'LAN_COMMENTS',		'tab' => 1,	'type' => 'boolean', 	'data'=>'int', 'width' => '5%', 'thclass' => 'center', 'class' => 'center' ),
+			'page_password' 	=> array('title'=> 'LAN_PASSWORD', 		'tab' => 1, 'type' => 'text', 	'data'=>'str', 'width' => 'auto', 'writeParms'=>array('password'=>1, 'nomask'=>1, 'size' => 40, 'class' => 'tbox e-password', 'generate' => 1, 'strength' => 1, 'required'=>0)),
+			'page_sef' 			=> array('title'=> 'LAN_SEFURL', 		'tab' => 1,	'type' => 'text', 'batch'=>true,	'data'=>'str', 'inline'=>true, 'width' => 'auto', 'writeParms'=>'size=xxlarge&sef=page_title'),
+			'page_metatitle' 	=> array('title'=> 'LAN_META_TITLE', 	'tab' => 1,	'type' => 'text', 	'data'=>'str', 'width' => 'auto', 'inline'=>true, 'writeParms'=>['size'=>'xxlarge']),
+			'page_metadscr' 	=> array('title'=> 'LAN_META_DESCRIPTION', 		'tab' => 1,	'type' => 'textarea', 	'data'=>'str', 'help'=>'CUSLAN_82', 'width' => 'auto', 'writeParms'=>array('size'=>'xxlarge', 'rows'=>2, 'maxlength'=>155)),
+			'page_metakeys' 	=> array('title'=> 'LAN_KEYWORDS', 		'tab' => 1,	'type' => 'tags', 	'data'=>'str', 'width' => 'auto', 'inline'=>true),
 
-			'page_metaimage' 	=> array('title'=> CUSLAN_81, 		 'nolist'=>false, 'tab' => 1,	'type' => 'image', 'help'=> CUSLAN_82, 		'width' => '110px',	'thclass' => 'center', 			'class' => "center", 'nosort' => false, 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','writeParms'=>'media=page^&video=1', 'readonly'=>false),
+			'page_metaimage' 	=> array('title'=> 'CUSLAN_81', 		 'nolist'=>false, 'tab' => 1,	'type' => 'image', 'help'=> 'CUSLAN_82', 		'width' => '110px',	'thclass' => 'center', 			'class' => "center", 'nosort' => false, 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','writeParms'=>'media=page^&video=1', 'readonly'=>false),
 
-			'page_metarobots'		=> array('title' => LAN_ROBOTS, 'tab'=>1,	'type' => 'dropdown',  'data'=>'safestr', 'batch'=>true,   'inline'=>true, 'readParms'=>array('type'=>'checkboxes'), 'width' => 'auto', 	'thclass' => 'left', 			'class' => 'left', 		'nosort' => false, 'filter'=>true),
+			'page_metarobots'		=> array('title' => 'LAN_ROBOTS', 'tab'=>1,	'type' => 'dropdown',  'data'=>'safestr', 'batch'=>true,   'inline'=>true, 'readParms'=>array('type'=>'checkboxes'), 'width' => 'auto', 	'thclass' => 'left', 			'class' => 'left', 		'nosort' => false, 'filter'=>true),
 
-			'page_order' 		=> array('title'=> LAN_ORDER, 		'tab' => 1,	'type' => 'number', 'width' => 'auto', 'inline'=>true),
+			'page_order' 		=> array('title'=> 'LAN_ORDER', 		'tab' => 1,	'type' => 'number', 'width' => 'auto', 'inline'=>true),
 			'page_fields'       => array('title'=>'Custom Fields',  'tab'=>4, 'type'=>'hidden', 'data'=>'json', 'width'=>'auto'),
 
 
 			// Menu Tab  XXX 'menu_name' is 'menu_name' - not caption. 
-			'menu_name' 		=> array('title'=> CUSLAN_64, 		'tab' => 2,	'type' => 'text', 'inline'=>false, 'width' => 'auto','nolist'=>false, "help"=> CUSLAN_83),
-		   	'menu_title'	   	=> array('title'=> CUSLAN_65, 	    'nolist'=>true, 'tab' => 2,	'type' => 'text', 'inline'=>true,		'width'=>'25%', "help"=>CUSLAN_84, 'writeParms'=>'size=xxlarge'),
-			'menu_text' 		=> array('title'=> CUSLAN_66,		'nolist'=>true, 'tab' => 2,	'type' => 'bbarea',		'data'=>'str',	'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1', 'writeParms'=>'media=page^' ),
-			'menu_template' 	=> array('title'=> CUSLAN_67,       'nolist'=>true, 'tab' => 2,	'type' => 'dropdown', 	'width' => 'auto','filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>''),
-            'menu_class' 		=> array('title'=> LAN_VISIBILITY, 	'tab' => 3,	'type' => 'userclass', 	'data'=>'int', 'inline'=>true, 'width' => 'auto',  'filter' => true, 'batch' => true),
-			'menu_button_text'	=> array('title'=> CUSLAN_68, 	    'nolist'=>true, 'tab' => 3,	'type' => 'text', 'inline'=>true,		'width'=>'25%', "help"=>CUSLAN_85),
+			'menu_name' 		=> array('title'=> 'CUSLAN_64', 		'tab' => 2,	'type' => 'text', 'inline'=>false, 'width' => 'auto','nolist'=>false, "help"=> 'CUSLAN_83'),
+		   	'menu_title'	   	=> array('title'=> 'CUSLAN_65', 	    'nolist'=>true, 'tab' => 2,	'type' => 'text', 'inline'=>true,		'width'=>'25%', "help"=>'CUSLAN_84', 'writeParms'=>'size=xxlarge'),
+			'menu_text' 		=> array('title'=> 'CUSLAN_66',		'nolist'=>true, 'tab' => 2,	'type' => 'bbarea',		'data'=>'str',	'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1', 'writeParms'=>'media=page^' ),
+			'menu_template' 	=> array('title'=> 'CUSLAN_67',       'nolist'=>true, 'tab' => 2,	'type' => 'dropdown', 	'width' => 'auto','filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>''),
+            'menu_class' 		=> array('title'=> 'LAN_VISIBILITY', 	'tab' => 3,	'type' => 'userclass', 	'data'=>'int', 'inline'=>true, 'width' => 'auto',  'filter' => true, 'batch' => true),
+			'menu_button_text'	=> array('title'=> 'CUSLAN_68', 	    'nolist'=>true, 'tab' => 3,	'type' => 'text', 'inline'=>true,		'width'=>'25%', "help"=>'CUSLAN_85'),
 		
-			'menu_button_url'	=> array('title'=> CUSLAN_69, 	    'nolist'=>true, 'tab' => 3,	'type' => 'text', 'inline'=>true,		'width'=>'25%', "help"=>CUSLAN_86, 'writeParms'=>'size=xxlarge'),
+			'menu_button_url'	=> array('title'=> 'CUSLAN_69', 	    'nolist'=>true, 'tab' => 3,	'type' => 'text', 'inline'=>true,		'width'=>'25%', "help"=>'CUSLAN_86', 'writeParms'=>'size=xxlarge'),
 		
-			'menu_icon'			=> array('title' =>CUSLAN_70,       'nolist'=>true, 'tab' => 2,	'type' => 'icon', 		'width' => '110px',	'thclass' => 'center', 			'class' => "center", 'nosort' => false, 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','writeParms'=>'media=page^&glyphs=1', 'readonly'=>false),
+			'menu_icon'			=> array('title' => 'CUSLAN_70',       'nolist'=>true, 'tab' => 2,	'type' => 'icon', 		'width' => '110px',	'thclass' => 'center', 			'class' => "center", 'nosort' => false, 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','writeParms'=>'media=page^&glyphs=1', 'readonly'=>false),
 		
-			'menu_image'		=> array('title' =>CUSLAN_71, 	    'nolist'=>true, 'tab' => 2,	'type' => 'image', 		'width' => '110px',	'thclass' => 'center', 			'class' => "center", 'nosort' => false, 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','writeParms'=>'media=page^&video=1', 'readonly'=>false),
+			'menu_image'		=> array('title' => 'CUSLAN_71', 	    'nolist'=>true, 'tab' => 2,	'type' => 'image', 		'width' => '110px',	'thclass' => 'center', 			'class' => "center", 'nosort' => false, 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','writeParms'=>'media=page^&video=1', 'readonly'=>false),
 			
 	
 	
@@ -967,9 +976,9 @@ class page_admin_ui extends e_admin_ui
 			$seoDescriptionLimit = (int) e107::pref('core', 'seo_description_limit', 180);
 
 			$this->fields['page_metatitle']['writeParms']['counter'] = $seoTitleLimit;
-			$this->fields['page_metatitle']['help'] = e107::getParser()->lanVars(LAN_SEARCH_ENGINES_X_LIMIT, $seoTitleLimit);
+			$this->fields['page_metatitle']['help'] = e107::getParser()->lanVars('LAN_SEARCH_ENGINES_X_LIMIT', $seoTitleLimit);
 			$this->fields['page_metadscr']['writeParms']['counter'] = $seoDescriptionLimit;
-			$this->fields['page_metadscr']['help'] = e107::getParser()->lanVars(LAN_SEARCH_ENGINES_X_LIMIT, $seoDescriptionLimit);
+			$this->fields['page_metadscr']['help'] = e107::getParser()->lanVars('LAN_SEARCH_ENGINES_X_LIMIT', $seoDescriptionLimit);
 
 		}
 
@@ -1162,7 +1171,7 @@ class page_admin_ui extends e_admin_ui
 				$mes->addDebug(CUSLAN_75." ".$id);
 				return $this->afterCreate($new_data,$old_data,$id);
 				
-			}				
+			}
 		}
 
 

@@ -15,17 +15,18 @@ class _blank_event // plugin-folder + '_event'
 {
 
 	/**
-	 * Configure functions/methods to run when specific e107 events are triggered.
-	 * 
-	 * For a list of core events, please visit: http://e107.org/developer-manual/classes-and-methods#events
-	 * 
-	 * Developers can trigger their own events using: e107::getEvent()->trigger('plugin_event', $array);
-	 * Where 'plugin' is the folder of their plugin and 'event' is a unique name of the event.
-	 * Other plugins can then 'listen' to this custom event by defining it in THEIR e_event.php addon within the config() method. 
-	 * 
-	 * $array is data which is sent to the triggered function. eg. myfunction($array) in the example below.
+	 * Configures and returns an array of events to be handled by the system.
+	 * Each event in the array includes a unique name and the corresponding function to handle it.
 	 *
-	 * @return array
+	 * The events include:
+	 * - Core events like "login".
+	 * - Core plugin events like "user_forum_post_created".
+	 * - Custom events from third-party plugins such as "customplugin_customevent".
+	 * - Plugin-specific custom events like "_blank_customevent".
+	 * - Class-based custom event handlers such as "_blankCustomEventClass::blankMethod".
+	 *
+	 * @return array Returns an array of event configurations, where each configuration includes
+	 *               the event name and the associated function or class method to handle the event.
 	 */
 	function config()
 	{
@@ -53,22 +54,50 @@ class _blank_event // plugin-folder + '_event'
 		// Example 4: custom event of the _blank plugin. 
 		// Listen to _blank's own plugin event, this usually does not occur but is here for illustration purposes. 
 		$event[] = array(
-			'name'		=> "_blank_customevent", // "plugin_event" where 'plugin' is the plugin folder name (in this case "_blank") and "event" is a unique event name (in this case "customevent")
-			'function'	=> "anotherfunction", // ..run this function (see below).
+			'name'		=> "_blank_static_event", // "plugin_event" where 'plugin' is the plugin folder name (in this case "_blank") and "event" is a unique event name (in this case "customevent")
+			'function'	=> "staticfunction", // ..run this function (see below).
+		);
+
+		// Example 5: Custom event of the _blank plugin with a separate class and static method.
+
+		$event[] = array(
+			'name'		=> "_blank_custom_class", // "plugin_event" where 'plugin' is the plugin folder name (in this case "_blank") and "event" is a unique event name (in this case "customevent")
+			'function'	=> '_blankCustomEventClass::blankMethod', // ..run this function (see below).
 		);
 	
 		return $event;
 	}
 
 
-	function myfunction($data) // the method to run.
+	public function myfunction($data, $event) // the method to run.
 	{
 		// var_dump($data);
 	}
 
-	function anotherfunction($data) // the method to run.
+	public function anotherfunction($data, $event) // the method to run.
 	{
 		// var_dump($data);
+	}
+
+	public static function staticfunction($data, $event) // the method to run.
+	{
+		return 'error in event: '.$event;
 	}
 
 } //end class
+
+
+class _blankCustomEventClass
+{
+
+	public static function blankMethod($data, $event)
+	{
+
+		return "Blocking more triggers of: ".$event. " ".json_encode($data);;
+
+	}
+
+
+
+
+}

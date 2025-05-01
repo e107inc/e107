@@ -2305,7 +2305,7 @@ $columnInfo = array(
 		            		      </tr>
 		            		      <tbody id='nginx-secure_link_md5' ".($pref['download_security_mode'] === 'nginx-secure_link_md5' ? "" : "style='display:none'").">
 		            		      	<tr>
-		            		     	 	<td>".LAN_DL_SECURITY_NGINX_SECURELINKMD5_EXPRESSION."</td>
+		            		     	 	<td>".e107::getParser()->lanLink('LAN_DL_SECURITY_NGINX_SECURELINKMD5_EXPRESSION','https://nginx.org/en/docs/http/ngx_http_secure_link_module.html#secure_link_md5')."</td>
 		            		     	 	<td>
 		            		     	 		".$frm->text('download_security_expression', $pref['download_security_expression'], 1024)."
 		            		     	 		<div class='field-help'>".LAN_DL_SECURITY_NGINX_SECURELINKMD5_EXPRESSION_HELP."</div>

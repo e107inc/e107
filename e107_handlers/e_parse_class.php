@@ -318,7 +318,7 @@ class e_parse
 	 * NOTE: can't be called until CHARSET is known
 	 * but we all know that it is UTF-8 now
 	 *
-	 * @return void
+	 * @return void|null
 	 */
 	public function setMultibyte($bool)
 	{
@@ -1895,7 +1895,7 @@ class e_parse
 		}
 		elseif (is_string($mixed))
 		{
-			return iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($mixed));
+			return iconv('UTF-8', 'UTF-8//IGNORE', mb_convert_encoding($mixed, 'UTF-8', 'ISO-8859-1'));
 		}
 
 		return $mixed;
@@ -2316,7 +2316,7 @@ class e_parse
 	/**
 	 * Retrieve img tag width and height attributes for current thumbnail.
 	 *
-	 * @return string
+	 * @return string|null
 	 */
 	public function thumbDimensions($type = 'single')
 	{
@@ -2385,7 +2385,7 @@ class e_parse
 	 *
 	 * @param string $path  The file path of the image whose alternate text is being cached.
 	 * @param string $value The alternate text value to cache.
-	 * @return string or false on failure
+	 * @return string|false String or false on failure
 	 */
 	public function setImageAltCacheFile($path, $value)
 	{
@@ -3343,7 +3343,7 @@ class e_parse
 
 			$replace = ((string) $mode === 'full' || (string) $mode === 'abs') ? $replace_absolute : $replace_relative;
 
-			return str_replace($search, $replace, $text);
+			return !empty($text) ? str_replace($search, $replace, $text) : $text;
 		}
 
 //		$pattern = ($all ? "#\{([A-Za-z_0-9]*)\}#s" : "#\{(e_[A-Z]*)\}#s");
@@ -3969,7 +3969,7 @@ class e_parse
 	/**
 	 * Generic variable translator for LAN definitions.
 	 *
-	 * @param                $lan  - string LAN
+	 * @param string $lan  - string LAN or LAN constant.
 	 * @param string | array $vals - either a single value, which will replace '[x]' or an array with key=>value pairs.
 	 * @return string
 	 * @example $tp->lanVars("My name is [x] and I own a [y]", array("John","Cat"));
@@ -3977,7 +3977,7 @@ class e_parse
 	 */
 	public function lanVars($lan, $vals, $bold = false)
 	{
-
+		$lan = defset($lan, $lan);
 		$array = (!is_array($vals)) ? array('x' => $vals) : $vals;
 
 		$search = array();
@@ -3997,6 +3997,17 @@ class e_parse
 		}
 
 		return str_replace($search, $replace, $lan);
+	}
+
+
+	public function lanLink($lan, $url, $options=[])
+	{
+		$srch =["[", "]"];
+		$repl = ["<a target='_blank' href='" .$url . "'>", "</a>"];
+
+		$text = defset($lan, $lan);
+
+		return str_replace($srch, $repl, $text);
 	}
 
 	/**
@@ -4659,8 +4670,9 @@ class e_parse
 	 *  'legacy'    => (array)		 Usually a legacy path like {e_FILE}
 	 *  'type'		=> (array)		 Force the returned image to be a jpg, webp etc.
 	 * ]
-	 * @return string
+	 *
 	 * @example $tp->toImage('welcome.png', array('legacy'=>{e_IMAGE}newspost_images/','w'=>200));
+	 * @return string|null
 	 */
 	public function toImage($file, $parm = array())
 	{
@@ -5239,7 +5251,7 @@ class e_parse
 	 *
 	 * @param integer $datestamp - unix timestamp
 	 * @param string  $format    - short | long | relative
-	 * @return string converted date (html)
+	 * @return string|null converted date (html)
 	 */
 	public function toDate($datestamp = null, $format = 'short')
 	{
@@ -5489,11 +5501,7 @@ class e_parse
 		// Set it up for processing.
 
 		libxml_use_internal_errors(true);
-		if (function_exists('mb_convert_encoding'))
-		{
-			$html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
-
-		}
+		$html = mb_encode_numericentity($html, [0x80, 0xffff, 0, 0xffff], 'UTF-8');
 
 		//	$fragment = $doc->createDocumentFragment();
 		//	$fragment->appendXML($html);
