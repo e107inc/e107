@@ -1148,7 +1148,7 @@ class download_shortcodes extends e_shortcode
 		$url = e107::url('download', 'category', $this->var);
 		// e_PLUGIN_ABS."download/download.php?action=list&id=".$this->var['download_category']
 
-		$title = "Back to [x]";
+		$title = defset('LAN_dl_80', "Back to [x]");  // less fatal errors when the LAN is missing under PHP 8.x 
 		$class = empty($parm['class']) ? 'e-tip page-link' : $parm['class'];
 
 		return "<a class='" . $class . "' title=\"" . e107::getParser()->lanVars($title, array('x' => $this->var['download_category_name'])) . "\" href='" . $url . "'>" . LAN_BACK . "</a>";
