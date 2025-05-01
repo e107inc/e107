@@ -664,7 +664,7 @@ class eIPHandler
 	 *
 	 * @param string $ip encoded IP
 	 * @param boolean $IP4Legacy
-	 * @return string decoded IP
+	 * @return string|false decoded IP
 	 */
 	public function ipDecode($ip, $IP4Legacy = TRUE)
 	{
@@ -1288,7 +1288,7 @@ class banlistManager
 
 	public function __construct()
 	{
-		e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_banlist.php");
+		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_banlist.php");
 		$this->ourConfigDir = e107::getIPHandler()->getConfigDir();
 		$this->banTypes = array( // Used in Admin-ui. 
 			'-1' 				=> BANLAN_101, // manual

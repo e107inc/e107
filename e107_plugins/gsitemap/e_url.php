@@ -42,6 +42,14 @@ class gsitemap_url // plugin-folder + '_url'
 
 		);
 
+		$config['sitemaps'] = array(
+			'alias'         => 'sitemaps',
+			'regex'			=> '^{alias}\.xml$', 						// matched against url, and if true, redirected to 'redirect' below.
+			'sef'			=> '{alias}.xml', 							// used by e107::url(); to create a url from the db table.
+			'redirect'		=> '{e_BASE}gsitemap.php?index=1', 		// file-path of what to load when the regex returns true.
+
+		);
+
 		$addons = e107::getAddonConfig('e_gsitemap', 'gsitemap');
 
 		foreach($addons as $plug => $item)

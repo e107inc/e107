@@ -245,7 +245,7 @@ class newsfeedClass
 
 
 
-						if(FALSE === $sql->update('newsfeed', $dbData))
+						if(false === $sql->update('newsfeed', $dbData))
 						{
 							// e107::getDebug()->log("NewsFeed DB Update Failed");
 							if (NEWSFEED_DEBUG) echo NFLAN_48."<br /><br />".var_dump($dbData);
@@ -432,7 +432,7 @@ class newsfeedClass
 		}
 		else
 		{
-			$ret['title'] = $feed['newsfeed_name']." ".varset($NEWSFEED_MAIN_CAPTION);
+			$ret['title'] = varset($feed['newsfeed_name'])." ".varset($NEWSFEED_MAIN_CAPTION);
 		}
 		$ret['text'] = $text;
 

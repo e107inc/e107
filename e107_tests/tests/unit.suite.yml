@@ -3,7 +3,6 @@
 # Suite for unit or integration tests.
 
 actor: UnitTester
-shuffle: true
 modules:
     enabled:
         - Asserts

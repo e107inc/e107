@@ -17,6 +17,7 @@ coverage:
         - '%app_path%/e107_plugins/**/*.php'
         - '%app_path%/e107_themes/**/*.php'
         - '%app_path%/e107_web/**/*.php'
+        - '%app_path%/e107_plugins/linkwords/tests'
     exclude:
         - './**'
         - '%app_path%/e107_handlers/vendor/**/*.php'
@@ -28,9 +29,13 @@ extensions:
         - Codeception\Extension\RunFailed
 modules:
     enabled:
+        - Asserts
         - \Helper\DelayedDb:
             dsn: 'mysql:host=%db.host%;port=%db.port%;dbname=%db.dbname%'
             user: '%db.user%'
             password: '%db.password%'
             populate: '%db.populate%'
             dump: '%db.dump_path%'
+settings:
+    error_level: 28671 # E_ALL & ~E_USER_DEPRECATED
+
