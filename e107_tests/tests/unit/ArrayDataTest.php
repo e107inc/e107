@@ -17,7 +17,7 @@
 
 			catch(Exception $e)
 			{
-				$this->assertTrue(false, $e->getMessage());
+				$this::fail($e->getMessage());
 			}
 
 		}
@@ -39,13 +39,13 @@
 			  'most_enabled' => true
 			);
 
-			$result = $this->ad->ReadArray($string);
-			$this->assertSame($expected, $result);
+			$result = e107::unserialize($string);
+			$this::assertSame($expected, $result);
 
 			// legacy Prefs test.
 			$string = 'a:4:{s:19:"most_members_online";i:10;s:18:"most_guests_online";i:20;s:21:"most_online_datestamp";i:1534279911;s:12:"most_enabled";b:1;}';
-			$actual = $this->ad->ReadArray($string);
-			$this->assertSame($expected, $actual);
+			$actual = e107::unserialize($string);
+			$this::assertSame($expected, $actual);
 
 
 		}
@@ -54,12 +54,12 @@
 		{
 			// Test with addslashes enabled.
 			$input = array('one'=>'two', 'three'=>true);
-			$result = $this->ad->WriteArray($input);
+			$result = e107::serialize($input,true);
 			$expected = 'array (
   \\\'one\\\' => \\\'two\\\',
   \\\'three\\\' => true,
 )';
-			$this->assertSame($expected, $result);
+			$this::assertSame($expected, $result);
 
 
 			// Test with addslashes disabled.

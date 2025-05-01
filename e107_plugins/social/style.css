@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'social';
-  src:  url('fonts/social.eot?jatzak');
-  src:  url('fonts/social.eot?jatzak#iefix') format('embedded-opentype'),
-    url('fonts/social.ttf?jatzak') format('truetype'),
-    url('fonts/social.woff?jatzak') format('woff'),
-    url('fonts/social.svg?jatzak#social') format('svg');
+  src:  url('fonts/social.eot?dje1ws');
+  src:  url('fonts/social.eot?dje1ws#iefix') format('embedded-opentype'),
+    url('fonts/social.ttf?dje1ws') format('truetype'),
+    url('fonts/social.woff?dje1ws') format('woff'),
+    url('fonts/social.svg?dje1ws#social') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -25,6 +25,15 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.e-social-behance:before {
+  content: "\e926";
+}
+.e-social-telegram:before {
+  content: "\e923";
+}
+.e-social-snapchat:before {
+  content: "\e911";
+}
 .e-social-map:before {
   content: "\f041";
 }
@@ -54,9 +63,6 @@
 }
 .e-social-tumblr:before {
   content: "\f173";
-}
-.e-social-reddit:before {
-  content: "\f1a1";
 }
 .e-social-twitch:before {
   content: "\f1e8";
@@ -109,9 +115,6 @@
 .e-social-flickr:before {
   content: "\e910";
 }
-.e-social-reddit-alien:before {
-  content: "\e911";
-}
 .e-social-youtube-play:before {
   content: "\e912";
 }
@@ -154,20 +157,17 @@
 .e-social-mail-alt:before {
   content: "\e91f";
 }
-.e-social-discord:before {
-  content: "\e900";
+.e-social-reddit:before {
+  content: "\e925";
 }
-.e-social-instapaper:before {
-  content: "\e903";
+.e-social-spotify:before {
+  content: "\e920";
 }
-.e-social-twitter:before {
-  content: "\e924";
+.e-social-soundcloud-alt:before {
+  content: "\e901";
 }
-.e-social-squarespace:before {
-  content: "\e921";
-}
-.e-social-tiktok:before {
-  content: "\e922";
+.e-social-soundcloud:before {
+  content: "\e904";
 }
 .e-social-pushpin:before {
   content: "\e946";
@@ -192,4 +192,19 @@
 }
 .e-social-flattr:before {
   content: "\ead5";
+}
+.e-social-discord:before {
+  content: "\e900";
+}
+.e-social-instapaper:before {
+  content: "\e903";
+}
+.e-social-twitter:before {
+  content: "\e924";
+}
+.e-social-squarespace:before {
+  content: "\e921";
+}
+.e-social-tiktok:before {
+  content: "\e922";
 }

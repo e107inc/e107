@@ -9,9 +9,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        operating_system:
-          - image: docker.io/jrei/systemd-ubuntu:20.04
-          - image: docker.io/jrei/systemd-ubuntu:22.04
+        php-version: ['8.1', '8.3'] # PHP versions matrix
+        include:
+          - php-version: '8.1'
+            operating_system:
+              image: docker.io/jrei/systemd-ubuntu:22.04
+          - php-version: '8.3'
+            operating_system:
+              image: docker.io/jrei/systemd-ubuntu:24.04  # Ubuntu 24.04 contains PHP 8.3 by default
+
     runs-on: ubuntu-latest
 
     steps:
@@ -48,10 +54,22 @@ jobs:
           "
         working-directory: ./e107_tests/lib/ci/salt/
 
+      - name: Install PHP extensions
+        run: |
+          docker exec target apt-get update
+          docker exec target apt-get install -y \
+            php${{ matrix.php-version }}-zip \
+            php${{ matrix.php-version }}-curl \
+            php${{ matrix.php-version }}-mbstring \
+            php${{ matrix.php-version }}-xml
+
+      - name: Verify PHP version
+        run: docker exec target php -v
+
       - name: Install test dependencies
         run: |
           docker exec -w /app/e107_tests/ -e COMPOSER_ALLOW_SUPERUSER=1 target \
-          composer update --prefer-dist --no-progress
+            composer update --prefer-dist --no-progress
 
       - name: Download Git submodule dependencies
         run: git submodule update --init --recursive --remote

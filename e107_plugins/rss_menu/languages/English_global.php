@@ -8,7 +8,10 @@
  * 
  *    e107 website system - Language File.
  */
-define("LAN_PLUGIN_RSS_NAME", "RSS");
-define("LAN_PLUGIN_RSS_DESCRIPTION", "RSS Feeds from your site.");
-define("LAN_PLUGIN_RSS_SUBSCRIBE", "Subscribe");
-define("LAN_PLUGIN_RSS_SUBSCRIBE_TO", "Subscribe to [x]");
+
+return [
+    'LAN_PLUGIN_RSS_NAME'           => "RSS",
+    'LAN_PLUGIN_RSS_DESCRIPTION'    => "RSS Feeds from your site.",
+    'LAN_PLUGIN_RSS_SUBSCRIBE'      => "Subscribe",
+    'LAN_PLUGIN_RSS_SUBSCRIBE_TO'   => "Subscribe to [x]",
+];

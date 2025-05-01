@@ -251,7 +251,7 @@ $EMAIL_TEMPLATE['signup']['attachments']	= "";
 */
 $EMAIL_TEMPLATE['quickadduser']['subject']		= '{SITENAME}: {SUBJECT} ';
 $EMAIL_TEMPLATE['quickadduser']['header']		= $EMAIL_TEMPLATE['default']['header']; // will use default header above. 												
-$EMAIL_TEMPLATE['quickadduser']['body']			= USRLAN_185.USRLAN_186;											
+$EMAIL_TEMPLATE['quickadduser']['body']			= USRLAN_185.USRLAN_186;
 $EMAIL_TEMPLATE['quickadduser']['footer']		= $EMAIL_TEMPLATE['default']['footer']; // will use default footer above. 		
 
 

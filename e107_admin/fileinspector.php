@@ -200,6 +200,12 @@ class fileinspector_ui extends e_admin_ui
         {
             /** @var file_inspector  */
             $fi =e107::getSingleton('file_inspector');
+            if (!$fi instanceof file_inspector)
+			{
+		        return 'Fatal error: Unable to instantiate file_inspector.';
+			}
+
+
             return $fi->scan_config();
         }
 
@@ -1332,6 +1338,11 @@ function e_help()
 
 	//	$fi = new file_inspector;
 	$fi = e107::getSingleton('file_inspector');
+	if (!$fi instanceof file_inspector)
+	{
+        return ['caption' => FC_LAN_37, 'text' => 'Fatal error: Unable to instantiate file_inspector.']; // DO NOT TRANSLATE
+	}
+
 	$list = $fi->getLegend();
 
 	$text = '';

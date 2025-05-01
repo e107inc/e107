@@ -33,8 +33,10 @@ class e_unsubscribe
 
 		parse_str($tmp,$data);
 
-		$data['plugin'] = $tp->filter($data['plugin'],'str');
-		$data['email'] = $tp->filter($data['email'],'email');
+		$data['plugin'] = (!empty($data['plugin'])) ? $tp->filter($data['plugin'],'str') : '';
+
+
+		$data['email'] = (!empty($data['email'])) ? $tp->filter($data['email'],'email') : '';
 
 
 
