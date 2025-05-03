@@ -72,6 +72,7 @@ class eIPHandlerTest extends \Codeception\Test\Unit
 
 		foreach($tests as $index => $test)
 		{
+			$this->ip->setIP(null);
 			$result = $method->invoke($this->ip, $test['server']); // IP6
 			$expected = $this->ip->ipEncode($test['expected']); // convert to IP6.
 

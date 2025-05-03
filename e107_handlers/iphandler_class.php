@@ -925,23 +925,27 @@ class eIPHandler
 		$sql = e107::getDb();
 		$pref = e107::getPref();
 		$tp = e107::getParser();
-		$admin_log = e107::getLog();
+		$log = e107::getLog();
 
-		//$admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Check for Ban",$query,FALSE,LOG_TO_ROLLING);
+		$log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Check for Ban",$query,FALSE,LOG_TO_ROLLING);
+
 		if ($sql->select('banlist', '*', $query.' ORDER BY `banlist_bantype` DESC'))
 		{
 			// Any whitelist entries will be first, because they are positive numbers - so we can answer based on the first DB record read
 			$row = $sql->fetch();
 			if($row['banlist_bantype'] >= eIPHandler::BAN_TYPE_WHITELIST)
 			{
-				//$admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Whitelist hit",$query,FALSE,LOG_TO_ROLLING);
+				$log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Whitelist hit",$query,FALSE,LOG_TO_ROLLING);
 				return true;        // Whitelisted entry
 			}
 
 			// Found banlist entry in table here
-			if(($row['banlist_banexpires'] > 0) && ($row['banlist_banexpires'] < time()))
-			{ // Ban has expired - delete from DB
+			if(($row['banlist_banexpires'] > 0) && ($row['banlist_banexpires'] < time())) // Ban has expired - delete from DB
+			{
 				$sql->delete('banlist', $query);
+
+				$log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Ban Expired",$row['banlist_ip'],FALSE,LOG_TO_ROLLING);
+
 				$this->regenerateFiles();
 
 				return true;
@@ -952,6 +956,7 @@ class eIPHandler
 			if (!empty($pref['ban_retrigger']) && !empty($pref['ban_durations'][$row['banlist_bantype']]))
 			{
 				$dur = (int) $pref['ban_durations'][$row['banlist_bantype']];
+
 				$updateQry = array(
 					'banlist_banexpires'    => (time() + ($dur * 60 * 60)),
 					'WHERE'                 => "banlist_ip ='".$row['banlist_ip']."'"
@@ -959,25 +964,30 @@ class eIPHandler
 
 				$sql->update('banlist', $updateQry);
 				$this->regenerateFiles();
-				//$admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Retrigger Ban",$row['banlist_ip'],FALSE,LOG_TO_ROLLING);
+
+				$log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Retrigger Ban",$row['banlist_ip'],FALSE,LOG_TO_ROLLING);
 			}
-			//$admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Active Ban",$query,FALSE,LOG_TO_ROLLING);
+
+			$log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Active Ban",$query,FALSE,LOG_TO_ROLLING);
+
 			if ($show_error)
 			{
 				header('HTTP/1.1 403 Forbidden', true);
 			}
+
 			// May want to display a message
 			if (!empty($pref['ban_messages']))
 			{
-				// Ban still current here
-				if($do_return)
+
+				if($do_return) // Ban still current here
 				{
 					return false;
 				}
 
 				echo $tp->toHTML(varset($pref['ban_messages'][$row['banlist_bantype']])); 	// Show message if one set
 			}
-			//$admin_log->addEvent(4, __FILE__."|".__FUNCTION__."@".__LINE__, 'BAN_03', 'LAN_AUDIT_LOG_003', $query, FALSE, LOG_TO_ROLLING);
+
+			$log->addEvent(4, __FILE__."|".__FUNCTION__."@".__LINE__, 'BAN_03', 'LAN_AUDIT_LOG_003', $query, FALSE, LOG_TO_ROLLING);
 
 			if($this->debug)
 			{
@@ -1001,7 +1011,7 @@ class eIPHandler
 		}
 
 
-		//$admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","No ban found",$query,FALSE,LOG_TO_ROLLING);
+		$log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","No ban found",$query,FALSE,LOG_TO_ROLLING);
 		return true; 		// Email address OK
 	}
 
@@ -1031,6 +1041,7 @@ class eIPHandler
 
 		$sql = e107::getDb();
 		$pref = e107::getPref();
+		$log = e107::getLog();
 
 		switch ($bantype)		// Convert from 'internal' ban types to those used in the DB
 		{
@@ -1056,9 +1067,9 @@ class eIPHandler
 		{
 			list($banType) = $sql->fetch();
 
-			if ($banType >= eIPHandler::BAN_TYPE_WHITELIST)
-			{ // Got a whitelist entry for this
-				//$admin_log->addEvent(4, __FILE__."|".__FUNCTION__."@".__LINE__, "BANLIST_11", 'LAN_AL_BANLIST_11', $ban_ip, FALSE, LOG_TO_ROLLING);
+			if ($banType >= eIPHandler::BAN_TYPE_WHITELIST) // Got a whitelist entry for this
+			{
+				$log->addEvent(4, __FILE__."|".__FUNCTION__."@".__LINE__, "BANLIST_11", 'LAN_AL_BANLIST_11', $ban_ip, FALSE, LOG_TO_ROLLING);
 				return FALSE;
 			}
 			return 1;		// Already in ban list
