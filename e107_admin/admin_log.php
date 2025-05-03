@@ -152,10 +152,10 @@ class adminlog_admin extends e_admin_dispatcher
 
 		'main/list'			=> array('caption'=> RL_LAN_030, 'perm' => '5'),
 		'audit/list'		=> array('caption'=> RL_LAN_062, 'perm' => '5', 'icon'=>'fa-user'),
-		'rolling/list'		=> array('caption'=> RL_LAN_002, 'perm' => '5'),
+		'rolling/list'		=> array('caption'=> RL_LAN_002, 'perm' => '5', 'icon'=>'fas-sync-alt'),
 		'divider/01'        => array('divider'=>true),
 		'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => '5'),	
-		'main/maintenance'	=> array('caption'=> LAN_OPTIONS, 'perm' => '5', 'icon'=>'fa-wrench')
+		'main/maintenance'	=> array('caption'=> LAN_MAINTENANCE, 'perm' => '5', 'icon'=>'fa-wrench')
 
 		// 'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P')
 	);
@@ -213,12 +213,14 @@ class admin_log_ui extends e_admin_ui
 		
 	
 		protected $prefs = array(	
-			'sys_log_perpage'			=> array('title'=> RL_LAN_044, 'type'=>'dropdown', 'data' => 'int','help'=> RL_LAN_064,'writeParms'=>''),
-			'user_audit_class'			=> array('title'=> RL_LAN_123, 'type'=>'userclass', 'data' => 'int','help'=>''),
-			'user_audit_opts'			=> array('title'=> RL_LAN_031, 'type'=>'method', 'data' => 'array','help'=>''),
-			'roll_log_active'			=> array('title'=> RL_LAN_008, 'type'=>'boolean', 'data' => 'int','help'=>''),
-			'roll_log_days'				=> array('title'=> RL_LAN_009, 'type'=>'number', 'data' => 'string','help'=>''),
-		//	'Delete admin log events older than '		=> array('title'=> RL_LAN_045, 'type'=>'method', 'data' => 'string','help'=>'Help Text goes here'),
+			'sys_log_perpage'			=> array('title'=> 'RL_LAN_044', 'type'=>'dropdown', 'data' => 'int','help'=> 'RL_LAN_064','writeParms'=>''),
+			'roll_log_active'			=> array('title'=> 'RL_LAN_008', 'type'=>'boolean', 'data' => 'int','help'=>''),
+			'roll_log_days'				=> array('title'=> 'RL_LAN_009', 'type'=>'number', 'data' => 'string','help'=>''),
+
+
+			'user_audit_class'			=> array('title'=> 'RL_LAN_123', 'type'=>'userclass', 'data' => 'int','help'=>''),
+			'user_audit_opts'			=> array('title'=> 'RL_LAN_031', 'type'=>'method', 'data' => 'array','help'=>''),
+			//	'Delete admin log events older than '		=> array('title'=> RL_LAN_045, 'type'=>'method', 'data' => 'string','help'=>'Help Text goes here'),
 		//	'Delete user audit trail log events older'		=> array('title'=> 'Delete user audit trail log events older', 'type'=>'method', 'data' => 'string','help'=>'Help Text goes here'),
 		); 
 
