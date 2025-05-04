@@ -21,12 +21,23 @@ class eIPHandlerTest extends \Codeception\Test\Unit
 		try
 		{
 			$this->ip = $this->make('eIPHandler');
+			$this->ip->regenerateFiles();
 		}
 		catch(Exception $e)
 		{
 			$this::fail("Couldn't load eIPHandler object");
 		}
 	}
+
+
+	protected function _after()
+	{
+		e107::setRegistry('core/eIPHandler/checkBan', null);
+		e107::getSession('eIPHandler')->clearData();
+		$this->ip->regenerateFiles();
+
+	}
+
 
 	/**
 	 * Test IPHandler::ipDecode()
@@ -101,7 +112,7 @@ class eIPHandlerTest extends \Codeception\Test\Unit
 			'-8' => 0 // unknown
 		);
 
-		e107::getConfig()->set('ban_durations', $banDurations)->save(false, true, false);
+	//	e107::getConfig()->set('ban_durations', $banDurations)->save(false, true, false);
 
 		$result = $this->ip->add_ban(2, "unit test generated ban", '123.123.123.123');
 		$this::assertTrue($result);
@@ -237,5 +248,194 @@ class eIPHandlerTest extends \Codeception\Test\Unit
 	}
 
 
+	public function testMakeEmailQuery()
+	{
+
+		$email = 'cameron@mydomain.co.uk';
+
+		// Test with empty $fieldname
+		$result = $this->ip->makeEmailQuery($email, '');
+		$expected = ['cameron@mydomain.co.uk', '*@mydomain.co.uk'];
+		$this::assertSame($expected, $result);
+
+
+		// Test with default $fieldname
+		$result = $this->ip->makeEmailQuery($email);
+		$expected = "`banlist_ip`='cameron@mydomain.co.uk' OR `banlist_ip`='*@mydomain.co.uk'";
+		$this::assertSame($expected, $result);
+
+
+		// Test invalid email
+		$result = $this->ip->makeEmailQuery('invalid_email', '');
+		$expected = [];
+		$this::assertSame($expected, $result);
+
+	}
+
+
+	public function testMakeDomainQuery()
+	{
+
+		// Test valid domain
+		$domain = 'mydomain.co.uk';
+		$result = $this->ip->makeDomainQuery($domain, '');
+		$expected = ['*.uk', '*.co.uk', '*.mydomain.co.uk'];
+		$this::assertSame($expected, $result);
+
+
+		// Test email address
+		$result = $this->ip->makeDomainQuery('user@mydomain.co.uk', '');
+		$expected = false;
+		$this::assertSame($expected, $result);
+
+
+		// Test invalid domain
+		$result = $this->ip->makeDomainQuery('invalid#domain', '');
+		$expected = false;
+		$this::assertSame($expected, $result);
+
+
+		// Test with fieldName
+		$result = $this->ip->makeDomainQuery('mydomain.co.uk', 'banlist_ip');
+		$expected = [
+			"(`banlist_ip`='*.uk')",
+			"(`banlist_ip`='*.co.uk')",
+			"(`banlist_ip`='*.mydomain.co.uk')"
+		];
+
+		$this::assertSame($expected, $result);
+
+	}
+
+
+	// ----
+
+
+	/**
+	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
+	 * @return void
+	 */
+	public function testCheckBanNoBan()
+	{
+
+		$query = "`banlist_ip`='cameron@mydomain.co.uk' OR `banlist_ip`='*@mydomain.co.uk'";
+
+		// Ensure no ban exists
+		e107::getDb()->delete('banlist', "`banlist_ip` IN ('cameron@mydomain.co.uk', '*@mydomain.co.uk')");
+		$this->ip->regenerateFiles();
+
+		// Clear session cache
+		e107::getSession('eIPHandler')->clearData();
+
+		// Test: no ban
+		$result = $this->ip->checkBan($query, true, true);
+		$this::assertTrue($result);
+
+		// Verify session cache is set
+		$cached = e107::getSession('eIPHandler')->get('ban_check_' . md5($query));
+		$this::assertIsArray($cached);
+		$this::assertTrue($cached['result']);
+		$this::assertArrayHasKey('timestamp', $cached);
+	}
+
+	/**
+	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
+	 * @return void
+	 */
+	public function testCheckBanActiveBan()
+	{
+
+		$this->ip->add_ban(1, '', 'cameron@mydomain.co.uk');
+
+		// Test: active ban
+		$query = "`banlist_ip`='cameron@mydomain.co.uk' OR `banlist_ip`='*@mydomain.co.uk'";
+		$result = $this->ip->checkBan($query, true, true);
+		$this::assertFalse($result); // ie. banned.
+
+		// Verify session cache is set
+		$cached = e107::getSession('eIPHandler')->get('ban_check_' . md5($query));
+		$this::assertIsArray($cached);
+		$this::assertFalse($cached['result']);
+		$this::assertArrayHasKey('timestamp', $cached);
+
+
+	}
+
+	/**
+	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
+	 * @return void
+	 */
+	public function testCheckBanThrottling()
+	{
+
+		$query = "`banlist_ip`='cameron@mydomain.co.uk' OR `banlist_ip`='*@mydomain.co.uk'";
+
+		// Ensure no ban exists
+		e107::getDb()->delete('banlist', "`banlist_ip` IN ('cameron@mydomain.co.uk', '*@mydomain.co.uk')");
+
+
+		// Test: multiple calls within 1 second
+		$startTime = microtime(true);
+		$result1 = $this->ip->checkBan($query, true, true);
+		$result2 = $this->ip->checkBan($query, true, true);
+		$endTime = microtime(true);
+
+		$this::assertTrue($result1);
+		$this::assertTrue($result2);
+		$this::assertLessThan(1, $endTime - $startTime, "Throttling test took too long, in-memory cache may not be working");
+
+		// Verify session cache is set
+		$cached = e107::getSession('eIPHandler')->get('ban_check_' . md5($query));
+		$this::assertIsArray($cached);
+		$this::assertTrue($cached['result']);
+	}
+
+	/**
+	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
+	 * @return void
+	 */
+	public function testCheckBanCacheExpiration()
+	{
+
+		$query = "`banlist_ip`='cameron@mydomain.co.uk' OR `banlist_ip`='*@mydomain.co.uk'";
+
+		// Ensure no ban exists
+		e107::getDb()->delete('banlist', "`banlist_ip` IN ('cameron@mydomain.co.uk', '*@mydomain.co.uk')");
+		$this->ip->regenerateFiles();
+
+		// Set a cached result (no ban)
+		e107::getSession('eIPHandler')->set('ban_check_' . md5($query), [
+			'result'    => true,
+			'timestamp' => time() - 5 // Within 10 seconds
+		]);
+
+		// Test: cached result within 10 seconds
+		$result = $this->ip->checkBan($query, true, true);
+		$this::assertTrue($result);
+
+		// Simulate cache expiration (11 seconds)
+		e107::getSession('eIPHandler')->set('ban_check_' . md5($query), [
+			'result'    => true,
+			'timestamp' => time() - 11
+		]);
+
+		// Insert active ban
+		e107::getDb()->insert('banlist', [
+			'banlist_ip'         => 'cameron@mydomain.co.uk',
+			'banlist_bantype'    => 1,
+			'banlist_banexpires' => 0
+		]);
+
+		// Test: new ban after expiration
+		$result = $this->ip->checkBan($query, true, true);
+		$this::assertFalse($result);
+
+		// Cleanup
+		e107::getDb()->delete('banlist', "`banlist_ip`='cameron@mydomain.co.uk'");
+	}
 }
 

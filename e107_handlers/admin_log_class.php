@@ -364,7 +364,10 @@ class e_admin_log
 		//---------------------------------------
 		if(($target_logs & LOG_TO_ROLLING) && $this->_roll_log_active)
 		{ //	Rolling log
-
+			if(getperms('0') && e_REQUEST_HTTP === '/e107_admin/admin_log.php') // Don't log while looking at the log.
+			{
+				return;
+			}
 			// 	Process source_call info
 			//---------------------------------------
 			if(is_numeric($source_call) && ($source_call >= 0))

@@ -247,7 +247,7 @@ class admin_log_ui extends e_admin_ui
 			$perPage = e107::getConfig()->get('sys_log_perpage');
 			$this->perPage = vartrue($perPage,10);
 			
-			$this->prefs['sys_log_perpage']['writeParms'] = array(10=>10, 15=>15, 20=>20, 30=>30, 40=>40, 50=>50);
+			$this->prefs['sys_log_perpage']['writeParms'] = array(10=>10, 15=>15, 20=>20, 30=>30, 40=>40, 50=>50, 75=>75, 100=>100, 250=>250 );
 
 			$this->eventTypes = loadEventTypes('admin_log');
 			
