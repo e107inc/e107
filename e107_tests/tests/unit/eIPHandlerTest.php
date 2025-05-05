@@ -360,7 +360,9 @@ class eIPHandlerTest extends \Codeception\Test\Unit
 		$this::assertFalse($cached['result']);
 		$this::assertArrayHasKey('timestamp', $cached);
 
-
+		// Cleanup
+		e107::getDb()->delete('banlist');
+		$this->ip->regenerateFiles();
 	}
 
 	/**
@@ -400,7 +402,7 @@ class eIPHandlerTest extends \Codeception\Test\Unit
 	 */
 	public function testCheckBanCacheExpiration()
 	{
-
+		e107::getSession('eIPHandler')->clearData();
 		$query = "`banlist_ip`='cameron@mydomain.co.uk' OR `banlist_ip`='*@mydomain.co.uk'";
 
 		// Ensure no ban exists
@@ -420,15 +422,10 @@ class eIPHandlerTest extends \Codeception\Test\Unit
 		// Simulate cache expiration (11 seconds)
 		e107::getSession('eIPHandler')->set('ban_check_' . md5($query), [
 			'result'    => true,
-			'timestamp' => time() - 11
+			'timestamp' => time() - 370 // must be more than 360 @see checkban() line $cached['timestamp'] <= 360
 		]);
 
-		// Insert active ban
-		e107::getDb()->insert('banlist', [
-			'banlist_ip'         => 'cameron@mydomain.co.uk',
-			'banlist_bantype'    => 1,
-			'banlist_banexpires' => 0
-		]);
+		$this->ip->add_ban(1,"nothing", 'cameron@mydomain.co.uk');
 
 		// Test: new ban after expiration
 		$result = $this->ip->checkBan($query, true, true);
