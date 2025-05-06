@@ -23,10 +23,10 @@
 			}
 			catch(Exception $e)
 			{
-				$this->assertTrue(false, "Couldn't load e107_db_debug object");
+				$this::fail("Couldn't load e107_db_debug object");
 			}
 
-            $this->dbg->active(true);
+            $this->dbg->active(false);
 		}
 /*
 		public function testShowIf()
@@ -37,13 +37,13 @@
 		public function testShow_Log()
 		{
             $result = $this->dbg->Show_Log();
-            $this->assertEmpty($result);
+            $this::assertEmpty($result);
 		}
 
 		public function testShow_Includes()
 		{
             $result = $this->dbg->Show_Includes();
-            $this->assertEmpty($result);
+            $this::assertEmpty($result);
 		}
 
 		public function testSave()
@@ -59,6 +59,7 @@
 
 		public function testLog()
 		{
+			$this->dbg->active(true);
 			$res = $this->dbg->log('hello world');
 			$this->assertTrue($res, 'db_debug->log() method returned false.');
 
@@ -71,26 +72,62 @@
 		public function testShow_Performance()
 		{
             $result = $this->dbg->Show_Performance();
-            $this->assertEmpty($result);
+            $this::assertEmpty($result);
 
 		}
 
 		public function testShow_PATH()
 		{
             $result = $this->dbg->Show_PATH();
-            $this->assertEmpty($result);
+            $this::assertEmpty($result);
 		}
 
 		public function testShow_SQL_Details()
 		{
             $result = $this->dbg->Show_SQL_Details();
-            $this->assertEmpty($result);
+            $this::assertEmpty($result);
+
+			$this->dbg->active(true);
+			$this->dbg->setSQLDetails(null);
+
 		}
+
+	/*	public function testGetSqlDetails()
+		{
+			$this->dbg->setSQLDetails(null);
+			$result = $this->dbg->getSQLDetails();
+			$this::assertEmpty($result);
+
+			$this->dbg->active(true);
+			$this->dbg->setSQLDetails(null);
+
+		    e107::getDb()->retrieve('SELECT * FROM #user');
+			e107::getDb()->retrieve("SELECT DISTINCT dblog_eventcode,dblog_title FROM #admin_log",true);
+
+			$result = $this->dbg->getSQLDetails();
+			$this::assertNotEmpty($result);
+			$result = array_values($result);
+
+			$expected = [
+				0 => 'SELECT * FROM e107_user ',
+				1 => 'SELECT DISTINCT dblog_eventcode,dblog_title FROM e107_admin_log ',
+
+			];
+
+
+
+			foreach($expected as $i => $expected_query)
+			{
+
+				$this::assertSame($expected_query, $result[$i]['query']);
+			}
+
+		}*/
 
 		public function testShow_SC_BB()
 		{
             $result = $this->dbg->Show_SC_BB();
-            $this->assertEmpty($result);
+            $this::assertEmpty($result);
 		}
 /*
 		public function testLogCode()
