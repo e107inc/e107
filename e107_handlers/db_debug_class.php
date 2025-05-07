@@ -398,8 +398,11 @@ class e107_db_debug
 
 				if($cQuery['ok'])
 				{
+					$queryTime = ($cQuery['time'] * 1000.0);
+
+					$class = ($queryTime > 100) ? 'text-danger' : '';
 					$text .= "<tr><td  style='text-align:right'>{$idx}&nbsp;</td>
-	       	        <td  style='text-align:right'>" . number_format($cQuery['time'] * 1000.0, 4) . "&nbsp;</td>
+	       	        <td class='$class' style='text-align:right'>" . number_format($queryTime, 4) . "&nbsp;</td>
 	       	        <td>" . $cQuery['query'] . '<br />[' . $cQuery['marker'] . " - " . $cQuery['caller'] . "]</td></tr>\n";
 
 					$count++;
@@ -418,18 +421,23 @@ class e107_db_debug
 			$count = 0;
 			foreach($SQLdetails as $idx => $cQuery)
 			{
+				$queryTime = ($cQuery['time'] * 1000.0);
+				$class = ($queryTime > 100) ? 'text-danger' : '';
+
 				$text .= "\n<table class='table table-striped table-bordered' style='width: 100%;'>\n";
 				$text .= "<tr><td  colspan='" . $cQuery['nFields'] . "'><b>" . $idx . ") Query:</b> [" . $cQuery['marker'] . " - " . $cQuery['caller'] . "]<br />" . $cQuery['query'] . "</td></tr>\n";
+
 				if(isset($cQuery['explain']))
 				{
 					$text .= $cQuery['explain'];
 				}
+
 				if(strlen($cQuery['error']))
 				{
 					$text .= "<tr><td  ><b>Error in query:</b></td></tr>\n<tr><td>" . $cQuery['error'] . "</td></tr>\n";
 				}
 
-				$text .= "<tr><td   colspan='" . $cQuery['nFields'] . "'><b>Query time:</b> " . number_format($cQuery['time'] * 1000.0, 4) . ' (ms)</td></tr>';
+				$text .= "<tr><td class='$class'  colspan='" . $cQuery['nFields'] . "'><b >Query time:</b> " . number_format($cQuery['time'] * 1000.0, 4) . ' (ms)</td></tr>';
 
 				$text .= '</table><br />' . "\n";
 

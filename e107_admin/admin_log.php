@@ -54,10 +54,14 @@ function loadEventTypes($table)
 {
 
 	$sql = e107::getDb();
-	$row = $sql->retrieve("SELECT dblog_eventcode,dblog_title FROM #".$table." WHERE dblog_eventcode !='' AND dblog_title !='' GROUP BY dblog_eventcode",true);
+	$row = $sql->retrieve("SELECT DISTINCT dblog_eventcode,dblog_title FROM #".$table,true);
 	$eventTypes = array();
 	foreach($row as $val)
 	{
+		if(empty($val['dblog_title']))
+		{
+			continue; 
+		}
 		$id = $val['dblog_eventcode'];
 		$def = strpos($val['dblog_title'], "LAN") !== false ? $id : $val['dblog_title'];
 		$eventTypes[$id] = str_replace(': [x]', '', deftrue($val['dblog_title'],$def));
@@ -178,14 +182,13 @@ class adminlog_admin extends e_admin_dispatcher
 class admin_log_ui extends e_admin_ui
 {
 			
-		protected $pluginTitle		= ADLAN_155;
+		protected $pluginTitle		= 'ADLAN_155';
 		protected $pluginName		= 'core';
 		protected $table			= 'admin_log';
 		protected $pid				= 'dblog_id';
 		protected $perPage 			= 10;
-	// protected $listQry			= "SELECT  f.*, u.* FROM #admin_log AS f LEFT JOIN #user AS u ON f.dblog_user_id = u.user_id "; // Should not be necessary.
 
-		protected $listQry			= "SELECT SQL_CALC_FOUND_ROWS  f.*, u.user_id, u.user_name FROM #admin_log AS f LEFT JOIN #user AS u ON f.dblog_user_id = u.user_id "; // Should not be required but be auto-calculated.
+		protected $listQry			= "SELECT f.*, u.user_id, u.user_name FROM #admin_log AS f LEFT JOIN #user AS u ON f.dblog_user_id = u.user_id "; // Should not be required but be auto-calculated.
 		protected $listOrder		= 'f.dblog_id DESC';
 		
 		protected $batchDelete		= false;
@@ -193,18 +196,18 @@ class admin_log_ui extends e_admin_ui
 			
 		protected $fields 		= array (  
 	//	'checkboxes' =>   array ( 'title' => '', 'type' => null, 'data' => null, 'nolist'=>true, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
-		  'dblog_id' 			=>   array ( 'title' => LAN_ID, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'dblog_datestamp' 	=>   array ( 'title' => LAN_DATESTAMP, 'type' => 'datestamp', 'data' => 'int', 'width' => '12%', 'filter' => true, 'help' => '', 'readParms' => array('mask'=>'dd MM yyyy hh:ii:ss'), 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'dblog_id' 			=>   array ( 'title' => 'LAN_ID', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'dblog_datestamp' 	=>   array ( 'title' => 'LAN_DATESTAMP', 'type' => 'datestamp', 'data' => 'int', 'width' => '12%', 'filter' => true, 'help' => '', 'readParms' => array('mask'=>'dd MM yyyy hh:ii:ss'), 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		//  'dblog_microtime'		=>   array ( 'title' => 'Microtime', 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'dblog_type' 			=>   array ( 'title' => RL_LAN_032, 'type' => 'method', 'data' => 'int', 'width' => '5%', 'filter' => true, 'batch'=>true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'dblog_ip' 			=>   array ( 'title' => LAN_IP, 'type' => 'ip', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'dblog_type' 			=>   array ( 'title' => 'RL_LAN_032', 'type' => 'method', 'data' => 'int', 'width' => '5%', 'filter' => true, 'batch'=>true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'dblog_ip' 			=>   array ( 'title' => 'LAN_IP', 'type' => 'ip', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		
-		  'dblog_user_id' 		=>   array ( 'title' => LAN_USER, 'type' => 'user', 'data' => 'int', 'width' => 'auto', 'filter' => true,  'help' => '', 'readParms'=>'link=1', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'dblog_eventcode' 	=>   array ( 'title' => RL_LAN_023, 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'dblog_user_id' 		=>   array ( 'title' => 'LAN_USER', 'type' => 'user', 'data' => 'int', 'width' => 'auto', 'filter' => true,  'help' => '', 'readParms'=>'link=1', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'dblog_eventcode' 	=>   array ( 'title' => 'RL_LAN_023', 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		
-		  'dblog_title' 		=>   array ( 'title' => LAN_TITLE, 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'dblog_remarks'		=>   array ( 'title' => RL_LAN_033, 'type' => 'method', 'data' => 'str', 'width' => '35%', 'filter'=>true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'options' 			=>   array ( 'title' => LAN_OPTIONS, 'type' => null, 'nolist'=>true, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
+		  'dblog_title' 		=>   array ( 'title' => 'LAN_TITLE', 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'dblog_remarks'		=>   array ( 'title' => 'RL_LAN_033', 'type' => 'method', 'data' => 'str', 'width' => '35%', 'filter'=>true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'options' 			=>   array ( 'title' => 'LAN_OPTIONS', 'type' => null, 'nolist'=>true, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 		);		
 		
 		protected $fieldpref = array( 'dblog_datestamp',  'dblog_type', 'dblog_eventcode', 'dblog_user_id', 'dblog_ip', 'dblog_title', 'dblog_remarks');
