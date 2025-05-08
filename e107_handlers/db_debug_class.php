@@ -80,6 +80,7 @@ class e107_db_debug
 		}
 
 
+
 	/**
 	 * @return void
 	 */
@@ -213,8 +214,11 @@ class e107_db_debug
 		 */
 		function Mark_Query($query, $rli, $origQryRes, $aTrace, $mytime, $curtable)
 		{
+
+
             if(!$this->active)
             {
+
                 return null;
             }
 			//  global $sql;
@@ -245,13 +249,16 @@ class e107_db_debug
 			else
 			{    // Don't run 'EXPLAIN' on other queries
 				$sQryRes = $origQryRes;            // Return from original query could be TRUE or a link resource if success
+
 			}
 
 			// Record Basic query info
 			$sCallingFile = varset($aTrace[2]['file']);
 			$sCallingLine = varset($aTrace[2]['line']);
 
-			$t = &$this->aSQLdetails[$sql->db_QueryCount()];
+			$dbQryCount = $sql->db_QueryCount();
+
+			$t = &$this->aSQLdetails[$dbQryCount];
 			$t['marker'] = $this->curTimeMark;
 			$t['caller'] = "$sCallingFile($sCallingLine)";
 			$t['query'] = $query;
@@ -259,6 +266,7 @@ class e107_db_debug
 			$t['error'] = $sQryRes ? '' : $sql->getLastErrorText(); // mysql_error();
 			$t['nFields'] = $nFields;
 			$t['time'] = $mytime;
+
 
 			if($bExplained)
 			{
@@ -286,6 +294,8 @@ class e107_db_debug
 			{
 				$this->aDBbyTable[$curtable]['DB Time'] += $mytime;
 				$this->aDBbyTable[$curtable]['DB Count']++;
+
+
 			}
 			else
 			{
@@ -294,6 +304,7 @@ class e107_db_debug
 				$this->aDBbyTable[$curtable]['%DB Count'] = 0; // placeholder
 				$this->aDBbyTable[$curtable]['DB Time'] = $mytime;
 				$this->aDBbyTable[$curtable]['DB Count'] = 1;
+
 			}
 
 			return null;
@@ -305,158 +316,180 @@ class e107_db_debug
 	 * @return false|string
 	 */
 	function Show_SQL_Details($force = false)
+	{
+
+		$sql = e107::getDb();
+		//
+		// Show stats from aSQLdetails array
+		//
+		if(!E107_DBG_SQLQUERIES && !E107_DBG_SQLDETAILS && ($force === false))
 		{
+			return false;
+		}
 
-			global $sql;
-			//
-			// Show stats from aSQLdetails array
-			//
-			if(!E107_DBG_SQLQUERIES && !E107_DBG_SQLDETAILS && ($force === false))
+
+		$text = '';
+		$nQueries = $sql->db_QueryCount();
+
+		if(!$nQueries)
+		{
+			return $text;
+		}
+
+		//
+		// ALWAYS summarize query errors
+		//
+		$badCount = 0;
+		$okCount = 0;
+		
+		$SQLdetails = $this->getSQLDetails();
+
+		foreach($SQLdetails as $cQuery)
+		{
+			if($cQuery['ok'] == 1)
 			{
-				return false;
+				$okCount++;
 			}
-
-
-			$text = '';
-			$nQueries = $sql->db_QueryCount();
-
-			if(!$nQueries)
+			else
 			{
-				return $text;
+				$badCount++;
 			}
+			
+		}
 
-			//
-			// ALWAYS summarize query errors
-			//
-			$badCount = 0;
-			$okCount = 0;
+		if($badCount)
+		{
+			$text .= "\n<table class='table table-striped table-bordered'>\n";
+			$text .= "<tr><th colspan='2'><b>$badCount Query Errors!</b></td></tr>\n";
+			$text .= "<tr><th><b>Index</b></td><th><b>Query / Error</b></td></tr>\n";
 
-			foreach($this->aSQLdetails as $cQuery)
+			foreach($SQLdetails as $idx => $cQuery)
 			{
-				if($cQuery['ok'] == 1)
+				if(!$cQuery['ok'])
 				{
-					$okCount++;
-				}
-				else
-				{
-					$badCount++;
-				}
-			}
-
-			if($badCount)
-			{
-				$text .= "\n<table class='table table-striped table-bordered'>\n";
-				$text .= "<tr><th colspan='2'><b>$badCount Query Errors!</b></td></tr>\n";
-				$text .= "<tr><th><b>Index</b></td><th><b>Query / Error</b></td></tr>\n";
-
-				foreach($this->aSQLdetails as $idx => $cQuery)
-				{
-					if(!$cQuery['ok'])
-					{
-						$text .= "<tr><td  rowspan='2' style='text-align:right'>{$idx}&nbsp;</td>
+					$text .= "<tr><td  rowspan='2' style='text-align:right'>{$idx}&nbsp;</td>
     	       	        <td>" . $cQuery['query'] . "</td></tr>\n<tr><td>" . $cQuery['error'] . "</td></tr>\n";
-					}
 				}
-				$text .= "\n</table><br />\n";
 			}
+			$text .= "\n</table><br />\n";
+		}
 
-			//
-			// Optionally list good queries
-			//
+		//
+		// Optionally list good queries
+		//
 
-			if($okCount && E107_DBG_SQLDETAILS)
-			{
-				$text .= "\n<table class='table table-striped table-bordered'>\n";
-				$text .= "<tr><th colspan='3'><b>" . $this->countLabel($okCount) . " Good Queries</b></td></tr>\n";
-				$text .= "<tr><th><b>Index</b></td><th><b>Qtime</b></td><th><b>Query</b></td></tr>\n
+		if($okCount && (E107_DBG_SQLDETAILS || $force))
+		{
+			$text .= "\n<table class='table table-striped table-bordered'>\n";
+			$text .= "<tr><th colspan='3'><b>" . $this->countLabel($okCount) . " Good Queries</b></td></tr>\n";
+			$text .= "<tr><th><b>Index</b></td><th><b>Qtime</b></td><th><b>Query</b></td></tr>\n
 				 <tr><th>&nbsp;</td><th><b>(msec)</b></td><th>&nbsp;</td></tr>\n
 				 ";
 
-				$count = 0;
-				foreach($this->aSQLdetails as $idx => $cQuery)
+			$count = 0;
+			foreach($SQLdetails as $idx => $cQuery)
+			{
+				if($count > 500)
 				{
-					if($count > 500)
-					{
-						$text .= "<tr class='danger'><td colspan='6'><b>Too many queries. Ending... </b></td></tr>"; // NO LAN - debug only.
-						break;
-					}
-
-
-					if($cQuery['ok'])
-					{
-						$text .= "<tr><td  style='text-align:right'>{$idx}&nbsp;</td>
-	       	        <td  style='text-align:right'>" . number_format($cQuery['time'] * 1000.0, 4) . "&nbsp;</td>
-	       	        <td>" . $cQuery['query'] . '<br />[' . $cQuery['marker'] . " - " . $cQuery['caller'] . "]</td></tr>\n";
-
-						$count++;
-					}
+					$text .= "<tr class='danger'><td colspan='6'><b>Too many queries. Ending... </b></td></tr>"; // NO LAN - debug only.
+					break;
 				}
 
 
-				$text .= "\n</table><br />\n";
-			}
-
-
-			//
-			// Optionally list query details
-			//
-			if(E107_DBG_SQLDETAILS)
-			{
-				$count = 0;
-				foreach($this->aSQLdetails as $idx => $cQuery)
+				if($cQuery['ok'])
 				{
-					$text .= "\n<table class='table table-striped table-bordered' style='width: 100%;'>\n";
-					$text .= "<tr><td  colspan='" . $cQuery['nFields'] . "'><b>" . $idx . ") Query:</b> [" . $cQuery['marker'] . " - " . $cQuery['caller'] . "]<br />" . $cQuery['query'] . "</td></tr>\n";
-					if(isset($cQuery['explain']))
-					{
-						$text .= $cQuery['explain'];
-					}
-					if(strlen($cQuery['error']))
-					{
-						$text .= "<tr><td  ><b>Error in query:</b></td></tr>\n<tr><td>" . $cQuery['error'] . "</td></tr>\n";
-					}
+					$queryTime = ($cQuery['time'] * 1000.0);
 
-					$text .= "<tr><td   colspan='" . $cQuery['nFields'] . "'><b>Query time:</b> " . number_format($cQuery['time'] * 1000.0, 4) . ' (ms)</td></tr>';
-
-					$text .= '</table><br />' . "\n";
-
-					if($count > 500)
-					{
-						$text .= "<div class='alert alert-danger text-center'>Too many queries. Ending...</div>"; // NO LAN - debug only.
-						break;
-					}
-
+					$class = ($queryTime > 100) ? 'text-danger' : '';
+					$text .= "<tr><td  style='text-align:right'>{$idx}&nbsp;</td>
+	       	        <td class='$class' style='text-align:right'>" . number_format($queryTime, 4) . "&nbsp;</td>
+	       	        <td>" . $cQuery['query'] . '<br />[' . $cQuery['marker'] . " - " . $cQuery['caller'] . "]</td></tr>\n";
 
 					$count++;
 				}
 			}
 
-			return $text;
+
+			$text .= "\n</table><br />\n";
 		}
+
+		//
+		// Optionally list query details
+		//
+		if(E107_DBG_SQLDETAILS || $force)
+		{
+			$count = 0;
+			foreach($SQLdetails as $idx => $cQuery)
+			{
+				$queryTime = ($cQuery['time'] * 1000.0);
+				$class = ($queryTime > 100) ? 'text-danger' : '';
+
+				$text .= "\n<table class='table table-striped table-bordered' style='width: 100%;'>\n";
+				$text .= "<tr><td  colspan='" . $cQuery['nFields'] . "'><b>" . $idx . ") Query:</b> [" . $cQuery['marker'] . " - " . $cQuery['caller'] . "]<br />" . $cQuery['query'] . "</td></tr>\n";
+
+				if(isset($cQuery['explain']))
+				{
+					$text .= $cQuery['explain'];
+				}
+
+				if(strlen($cQuery['error']))
+				{
+					$text .= "<tr><td  ><b>Error in query:</b></td></tr>\n<tr><td>" . $cQuery['error'] . "</td></tr>\n";
+				}
+
+				$text .= "<tr><td class='$class'  colspan='" . $cQuery['nFields'] . "'><b >Query time:</b> " . number_format($cQuery['time'] * 1000.0, 4) . ' (ms)</td></tr>';
+
+				$text .= '</table><br />' . "\n";
+
+				if($count > 500)
+				{
+					$text .= "<div class='alert alert-danger text-center'>Too many queries. Ending...</div>"; // NO LAN - debug only.
+					break;
+				}
+
+
+				$count++;
+			}
+		}
+
+		return $text;
+	}
+
+	public function getSQLDetails()
+	{
+		return $this->aSQLdetails;
+	}
+
+	public function setSQLDetails($aSQLdetails)
+	{
+		$this->aSQLdetails = $aSQLdetails ?? [];
+	}
+
 
 	/**
 	 * @param $amount
 	 * @return string
 	 */
 	function countLabel($amount)
+	{
+
+		$inc = '';
+
+		if($amount < 30)
 		{
-			$inc = '';
-
-			if($amount < 30)
-			{
-				$inc = 'label-success';
-			}
-			elseif($amount < 50)
-			{
-				$inc = 'label-warning';
-			}
-			elseif($amount > 49)
-			{
-				$inc = 'label-danger label-important';
-			}
-
-			return "<span class='label " . $inc . "'>" . $amount . "</span>";
+			$inc = 'label-success';
 		}
+		elseif($amount < 50)
+		{
+			$inc = 'label-warning';
+		}
+		elseif($amount > 49)
+		{
+			$inc = 'label-danger label-important';
+		}
+
+		return "<span class='label " . $inc . "'>" . $amount . "</span>";
+	}
 
 
 	/**
@@ -1111,7 +1144,7 @@ class e107_db_debug
 		 * $db_debug->log("message");
 		 * @param string|array    $message
 		 * @param int $TraceLev
-		 * @return bool  true on success , false on error
+		 * @return bool|null  true on success , false on error
 		 */
 		public function log($message, $TraceLev = 1)
 		{

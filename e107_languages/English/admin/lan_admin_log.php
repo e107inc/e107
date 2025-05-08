@@ -29,7 +29,7 @@ return [
     'RL_LAN_028' => "Update Filters",
     'RL_LAN_029' => "Event type filter",
     'RL_LAN_030' => "Admin Log",
-    'RL_LAN_031' => "Actions to log",
+    'RL_LAN_031' => "User audit actions to log",
     'RL_LAN_032' => "Pri",
     'RL_LAN_033' => "Further Information",
     'RL_LAN_044' => "Log events to display per page",

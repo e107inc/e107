@@ -35,23 +35,23 @@ class linkwords_admin_config extends e_admin_dispatcher
 
 
 	protected $adminMenu = array(
-		'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
-		'main/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
-		'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'P'),
-		'main/test'		=> array('caption'=> LAN_TEST, 'perm' => 'P')
+		'main/list'			=> array('caption'=> 'LAN_MANAGE', 'perm' => 'P'),
+		'main/create'		=> array('caption'=> 'LAN_CREATE', 'perm' => 'P'),
+		'main/test'		    => array('caption'=> 'LAN_TEST', 'perm' => 'P', 'icon'=>'fa-vial'),
+		'main/prefs' 		=> array('caption'=> 'LAN_PREFS', 'perm' => '0'),
 	);
 
 	protected $adminMenuAliases = array(
 		'main/edit'	=> 'main/list'
 	);
 
-	protected $menuTitle = LAN_PLUGIN_LINKWORDS_NAME;
+	protected $menuTitle = 'LAN_PLUGIN_LINKWORDS_NAME';
 }
 
 
 class linkwords_ui extends e_admin_ui
 {
-	protected $pluginTitle		= LAN_PLUGIN_LINKWORDS_NAME;
+	protected $pluginTitle		= 'LAN_PLUGIN_LINKWORDS_NAME';
 	protected $pluginName		= 'linkwords';
 	//	protected $eventName		= 'linkwords-linkwords'; // remove comment to enable event triggers in admin.
 	protected $table			= 'linkwords';
@@ -69,27 +69,30 @@ class linkwords_ui extends e_admin_ui
 
 	protected $fields 		= array (  
 		'checkboxes'             =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
-    	'linkword_id'           =>   array ( 'title' => LAN_ID, 'type'=>'number', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-	    'linkword_word'         =>   array ( 'title' => LWLAN_21, 'type' => 'tags', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'validate' => true, 'help' => LAN_LW_HELP_11, 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-	    'linkword_link'         =>   array ( 'title' => LWLAN_6, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'validate' => true, 'help' => LAN_LW_HELP_12, 'readParms' => '', 'writeParms' => 'size=xxlarge', 'class' => 'left', 'thclass' => 'left',  ),
-	    'linkword_active'       =>   array ( 'title' => LAN_ACTIVE, 'type' => 'dropdown', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'inline' => true, 'help' =>  LAN_LW_HELP_13, 'readParms' => '', 'writeParms' => array(), 'left' => 'center', 'thclass' => 'left',  ),
-	    'linkword_tooltip'      =>   array ( 'title' => LWLAN_50, 'type' => 'textarea', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' =>'', 'readParms' => '', 'writeParms' => array('size'=>'xxlarge'), 'class' => 'left', 'thclass' => 'left',  ),
-	    'linkword_limit'       =>   array ( 'title' => LWLAN_67, 'type' => 'number', 'data' => 'int', 'width' => '10%', 'help' => LAN_LW_HELP_15, 'readParms' => '', 'writeParms' => array('default'=>3), 'class' => 'right', 'thclass' => 'right',  ),
-	    'linkword_tip_id'       =>   array ( 'title' => LAN_ID, 'type' => 'number', 'data' => 'int', 'width' => '5%', 'help' => LAN_LW_HELP_16, 'readParms' => '', 'writeParms' => '', 'class' => 'right', 'thclass' => 'right',  ),
-	    'linkword_newwindow'    =>   array ( 'title' => LWLAN_55, 'type' => 'boolean', 'data' => 'int', 'width' => 'auto', 'inline' => true, 'help' => LAN_LW_HELP_17, 'filter'=>true, 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		'linkword_rel'    =>   array ( 'title' => LAN_RELATIONSHIP, 'type' => 'tags', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => LAN_RELATIONSHIP_HELP, 'filter'=>false, 'readParms' => '', 'writeParms'=>array('placeholder'=>'eg.nofollow,noreferrer','size'=>'xlarge'), 'class' => 'center', 'thclass' => 'center',  ),
+    	'linkword_id'           =>   array ( 'title' => 'LAN_ID', 'type'=>'number', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+	    'linkword_word'         =>   array ( 'title' => 'LWLAN_21', 'type' => 'tags', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'validate' => true, 'help' => LAN_LW_HELP_11, 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+	    'linkword_link'         =>   array ( 'title' => 'LWLAN_6', 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'validate' => true, 'help' => LAN_LW_HELP_12, 'readParms' => '', 'writeParms' => 'size=xxlarge', 'class' => 'left', 'thclass' => 'left',  ),
+	    'linkword_active'       =>   array ( 'title' => 'LAN_ACTIVE', 'type' => 'dropdown', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'inline' => true, 'help' =>  LAN_LW_HELP_13, 'readParms' => '', 'writeParms' => array(), 'left' => 'center', 'thclass' => 'left',  ),
+	    'linkword_tooltip'      =>   array ( 'title' => 'LWLAN_50', 'type' => 'textarea', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' =>'', 'readParms' => '', 'writeParms' => array('size'=>'xxlarge'), 'class' => 'left', 'thclass' => 'left',  ),
+	    'linkword_limit'       =>   array ( 'title' => 'LWLAN_67', 'type' => 'number', 'data' => 'int', 'width' => '10%', 'help' => LAN_LW_HELP_15, 'readParms' => '', 'writeParms' => array('default'=>3), 'class' => 'right', 'thclass' => 'right',  ),
+	    'linkword_tip_id'       =>   array ( 'title' => 'LAN_ID', 'type' => 'number', 'data' => 'int', 'width' => '5%', 'help' => LAN_LW_HELP_16, 'readParms' => '', 'writeParms' => '', 'class' => 'right', 'thclass' => 'right',  ),
+	    'linkword_newwindow'    =>   array ( 'title' => 'LWLAN_55', 'type' => 'boolean', 'data' => 'int', 'width' => 'auto', 'inline' => true, 'help' => LAN_LW_HELP_17, 'filter'=>true, 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		'linkword_rel'    =>   array ( 'title' => 'LAN_RELATIONSHIP', 'type' => 'tags', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => LAN_RELATIONSHIP_HELP, 'filter'=>false, 'readParms' => '', 'writeParms'=>array('placeholder'=>'eg.nofollow,noreferrer','size'=>'xlarge'), 'class' => 'center', 'thclass' => 'center',  ),
 
-		'options'               =>   array ( 'title' => LAN_OPTIONS, 'type' => null, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
+		'options'               =>   array ( 'title' => 'LAN_OPTIONS', 'type' => null, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1', 'readParms'=>[]  ),
 	);
 
 	protected $fieldpref = array();
 
+	protected $preftabs        = array('LAN_GENERAL', 'perm'=>'LAN_MANAGEPERMS' );
+
 	protected $prefs = array(
-		'lw_context_visibility'	=> array('title' => LWLAN_26, 'type' => 'checkboxes', 'help' => LAN_LW_HELP_01),
-		'lw_ajax_enable'		=> array('title' => LWLAN_59, 'type' => 'boolean', 	'data' => 'int', 'help' => LAN_LW_HELP_02),
-		'lw_notsamepage'		=> array('title' => LWLAN_64, 'type' => 'boolean', 	'data' => 'int', 'help' => LAN_LW_HELP_03),
-		'linkword_omit_pages'	=> array('title' => LWLAN_28, 'type' => 'textarea',	'data' => 'string', 'help' => LAN_LW_HELP_04),
-		'lw_custom_class'	    => array('title' => LWLAN_66, 'type' => 'text', 	'writeParms' => array('placeholder' => LAN_OPTIONAL), 'data' => 'string', 'help' => LAN_LW_HELP_05),
+		'lw_context_visibility'	=> array('title' => 'LWLAN_26', 'type' => 'checkboxes', 'help' => 'LAN_LW_HELP_01'),
+		'lw_ajax_enable'		=> array('title' => 'LWLAN_59', 'type' => 'boolean', 	'data' => 'int', 'help' => 'LAN_LW_HELP_02'),
+		'lw_notsamepage'		=> array('title' => 'LWLAN_64', 'type' => 'boolean', 	'data' => 'int', 'help' => 'LAN_LW_HELP_03'),
+		'linkword_omit_pages'	=> array('title' => 'LWLAN_28', 'type' => 'textarea',	'data' => 'string', 'help' => 'LAN_LW_HELP_04'),
+		'lw_custom_class'	    => array('title' => 'LWLAN_66', 'type' => 'text', 	'writeParms' => array('placeholder' => LAN_OPTIONAL), 'data' => 'string', 'help' => 'LAN_LW_HELP_05'),
+		'lw_admin_delete'	    => array('title' => 'LAN_DELETE', 'tab'=>'perm', 'type' => 'userclass', 	'writeParms' => ['classlist'=>'admin,main,classes,nobody,no-excludes'], 'data' => 'string', 'help' => ''),
 
 	);
 
@@ -97,6 +100,8 @@ class linkwords_ui extends e_admin_ui
 
 	public function init()
 	{
+		$this->fields['options']['readParms']['deleteClass'] = e107::pref('linkwords','lw_admin_delete',e_UC_ADMIN);
+
 		if($this->getAction() == 'list')
 		{
 			$this->fields['linkword_word']['title'] = LWLAN_5;
