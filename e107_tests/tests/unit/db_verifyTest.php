@@ -528,6 +528,27 @@ DATA;
 
 		}
 
+		$indexTests = [
+			0 => [
+				'input' => array ( 'type' => '', 'keyname' => 'dblog_eventcode', 'field' => 'dblog_eventcode', ),
+				'expected' => "INDEX `dblog_eventcode` (dblog_eventcode);"
+				],
+			1 => [
+				'input' => 	array ( 'type' => '', 'keyname' => 'dblog_eventcode,dblog_title', 'field' => 'dblog_eventcode_title', ),
+				'expected' => "INDEX `dblog_eventcode_title` (dblog_eventcode,dblog_title);"
+				],
+			2 => [
+				'input' => 	array ( 'type' => '', 'keyname' => 'dblog_user_id', 'field' => 'dblog_user_id', ),
+				'expected' => "INDEX `dblog_user_id` (dblog_user_id);"
+				]
+		];
+
+		foreach($indexTests as $k => $data)
+		{
+			$result = $this->dbv->toMysql($data['input'], 'index');
+			self::assertEquals($data['expected'], $result);
+		}
+
 	}
 
 	/*
