@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2008-2013 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ * Copyright (C) 2008-2025 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
  *
  * Admin Language File
  *
@@ -17,48 +17,31 @@
 // define("FMLAN_9", "The file did not upload. Filename");
 //define("FMLAN_10", "Error");
 // define("FMLAN_11", "Probably incorrect permissions on upload directory.");
-define("FMLAN_12", "file");
-define("FMLAN_13", "files");
-define("FMLAN_14", "directory");
-define("FMLAN_15", "directories");
-define("FMLAN_16", "Root directory");
-//define("FMLAN_17", "Name");
-define("FMLAN_18", "Size");
-define("FMLAN_19", "Last Modified");
 
-define("FMLAN_21", "Upload file to this dir");
-define("FMLAN_22", "Upload");
-
-//define("FMLAN_26", "Deleted");
-//define("FMLAN_27", "successfully");
-//define("FMLAN_28", "Unable to delete");
-define("FMLAN_29", "Path");
-define("FMLAN_30", "Up level");
-define("FMLAN_31", "folder");
-
-define("FMLAN_32", "Select Directory");
-// define("FMLAN_33", "Select");
-define("FMLAN_34", "Directory Choice");
-define("FMLAN_35", "Files Directory");
-
-// define("FMLAN_36", "Custom Menus Directory");
-// define("FMLAN_37", "Custom Pages Directory");
-
-define("FMLAN_38", "Successfully moved file to");
-define("FMLAN_39", "Unable to move file to");
-define("FMLAN_40", "Newspost-Images Directory");
-
-
-define("FMLAN_43", "Delete selected files");
-
-
-define("FMLAN_46", "Please confirm that you wish to DELETE the selected files.");
-define("FMLAN_47", "User Uploads");
-
-define("FMLAN_48", "Move selected to");
-define("FMLAN_49", "Please confirm you wish to move the selected files.");
-define("FMLAN_50", "Move");
-define("FMLAN_51", "Unidentified error");
-
-
-
+return [
+    'FMLAN_12' => "file",
+    'FMLAN_13' => "files",
+    'FMLAN_14' => "directory",
+    'FMLAN_15' => "directories",
+    'FMLAN_16' => "Root directory",
+    'FMLAN_18' => "Size",
+    'FMLAN_19' => "Last Modified",
+    'FMLAN_21' => "Upload file to this dir",
+    'FMLAN_22' => "Upload",
+    'FMLAN_29' => "Path",
+    'FMLAN_30' => "Up level",
+    'FMLAN_31' => "folder",
+    'FMLAN_32' => "Select Directory",
+    'FMLAN_34' => "Directory Choice",
+    'FMLAN_35' => "Files Directory",
+    'FMLAN_38' => "Successfully moved file to",
+    'FMLAN_39' => "Unable to move file to",
+    'FMLAN_40' => "Newspost-Images Directory",
+    'FMLAN_43' => "Delete selected files",
+    'FMLAN_46' => "Please confirm that you wish to DELETE the selected files.",
+    'FMLAN_47' => "User Uploads",
+    'FMLAN_48' => "Move selected to",
+    'FMLAN_49' => "Please confirm you wish to move the selected files.",
+    'FMLAN_50' => "Move",
+    'FMLAN_51' => "Unidentified error",
+];

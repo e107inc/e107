@@ -198,10 +198,13 @@ $ADMIN_TEMPLATE['header'] =  '
 				{ADMIN_NAVIGATION=enav_logout}
 				{ADMIN_NAVIGATION=enav_language}
 				{ADMIN_NAVIGATION=enav_home}
+				
 				{ADMIN_MULTISITE}
 				{ADMIN_PM}
 				{ADMIN_DEBUG}
+				{ADMIN_PERM_EMULATION}
 				{ADMIN_NOTIFICATIONS}
+				
 				{ADMIN_UPDATE}
 			</div>
 		</div>
@@ -212,17 +215,19 @@ $ADMIN_TEMPLATE['header'] =  '
 				{ADMIN_NAVIGATION=enav_logout}
 				{ADMIN_NAVIGATION=enav_language}
 				{ADMIN_NAVIGATION=enav_home}
+				
 				{ADMIN_MULTISITE}
 				{ADMIN_PM}
 				{ADMIN_DEBUG}
 				{ADMIN_NOTIFICATIONS}
+				{ADMIN_PERM_EMULATION}
 				{ADMIN_UPDATE}
 				</div>
 		</div>
 		
 	</div>
 </div>
-<div class="admin-container container-fluid">
+<div class="admin-container container-fluid {ADMIN_CONTAINER_LEGACY}">
 	<div class="row is-table-row {ADMIN_LEFTPANEL_TOGGLE}">
 ';
 
@@ -296,36 +301,36 @@ $ADMIN_TEMPLATE['menu']['start'] = '
 
 $ADMIN_TEMPLATE['menu']['button'] = '
 	<li>
-		<a class="link{LINK_CLASS}" {LINK_DATA} href="{LINK_URL}" {ID}{ONCLICK}><span class="e-tip" data-placement="right" title="{LINK_TEXT}">{LINK_IMAGE}</span><span class="sidebar-toggle-panel">&nbsp;{LINK_TEXT}{LINK_BADGE}</span></a>
+		<a id="plugin-navigation-{LINK_ID}" class="link{LINK_CLASS}" {LINK_DATA} href="{LINK_URL}" {ID}{ONCLICK}><span class="e-tip" data-placement="right" title="{LINK_TEXT}">{LINK_IMAGE}</span><span class="sidebar-toggle-panel"> {LINK_TEXT}{LINK_BADGE}{LINK_CARET}</span></a>
 		{SUB_MENU}
 	</li>
 ';
+
 $ADMIN_TEMPLATE['menu']['button_active'] = '
 	<li class="active">
-		<a class="link-active{LINK_CLASS}" {LINK_DATA} href="{LINK_URL}" {ID}{ONCLICK}><span class="e-tip" data-placement="right" title="{LINK_TEXT}">{LINK_IMAGE}</span><span class="sidebar-toggle-panel">&nbsp;{LINK_TEXT}{LINK_BADGE}</span></a>
+		<a id="plugin-navigation-{LINK_ID}" class="link-active{LINK_CLASS}" {LINK_DATA} href="{LINK_URL}" {ID}{ONCLICK}><span class="e-tip" data-placement="right" title="{LINK_TEXT}">{LINK_IMAGE}</span><span class="sidebar-toggle-panel"> {LINK_TEXT}{LINK_BADGE}{LINK_CARET}</span></a>
 		{SUB_MENU}
 	</li>
 ';
 
 $ADMIN_TEMPLATE['menu']['start_sub'] = '
-		<ul class="plugin-navigation-sub{SUB_CLASS}" {SUB_ID}>
+	<ul class="plugin-navigation-sub nav nav-pills nav-stacked nav-second-level {SUB_CLASS}" id="sub-{LINK_ID}">
 ';
 
 $ADMIN_TEMPLATE['menu']['button_sub'] = '
-			<li>
-				<a class="link" href="{LINK_URL}">&nbsp;{LINK_TEXT}{LINK_BADGE}</a>
-				{SUB_MENU}
-			</li>
+	<li>
+		<a class="link{LINK_CLASS}" {LINK_DATA} href="{LINK_URL}" {ID}><span class="e-tip" data-placement="right" title="{LINK_TEXT}">{LINK_IMAGE}</span><span class="sidebar-toggle-panel"> {LINK_TEXT}{LINK_BADGE}</span></a>
+	</li>
 ';
+
 $ADMIN_TEMPLATE['menu']['button_active_sub'] = '
-			<li>
-				<a class="link-active" href="{LINK_URL}">&nbsp;{LINK_TEXT}{LINK_BADGE}</a>
-				{SUB_MENU}
-			</li>
+	<li class="active">
+		<a class="link-active{LINK_CLASS}" {LINK_DATA} href="{LINK_URL}" {ID}><span class="e-tip" data-placement="right" title="{LINK_TEXT}">{LINK_IMAGE}</span><span class="sidebar-toggle-panel"> {LINK_TEXT}{LINK_BADGE}</span></a>
+	</li>
 ';
 
 $ADMIN_TEMPLATE['menu']['end_sub'] = '
-		</ul>
+	</ul>
 ';
 
 $ADMIN_TEMPLATE['menu']['end'] = '

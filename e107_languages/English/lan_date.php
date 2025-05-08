@@ -1,28 +1,28 @@
 <?php
 
-define("LANDT_01", "year");
-define("LANDT_02", "month");
-define("LANDT_03", "week");
-define("LANDT_04", "day");
-define("LANDT_05", "hour");
-define("LANDT_06", "minute");
-define("LANDT_07", "second");
-define("LANDT_01s", "years");
-define("LANDT_02s", "months");
-define("LANDT_03s", "weeks");
-define("LANDT_04s", "days");
-define("LANDT_05s", "hours");
-define("LANDT_06s", "minutes");
-define("LANDT_07s", "seconds");
 
-define("LANDT_08", "min");
-define("LANDT_08s", "mins");
-define("LANDT_09", "sec");
-define("LANDT_09s", "secs");
-define("LANDT_AGO", "ago");
-define("LANDT_IN", "in");
-
-define("LANDT_10", "Just now");
-
-define("LANDT_XAGO", "[x] ago");
-define("LANDT_INX", "in [x]");
+return [
+    'LANDT_01' => "year",
+    'LANDT_02' => "month",
+    'LANDT_03' => "week",
+    'LANDT_04' => "day",
+    'LANDT_05' => "hour",
+    'LANDT_06' => "minute",
+    'LANDT_07' => "second",
+    'LANDT_01s' => "years",
+    'LANDT_02s' => "months",
+    'LANDT_03s' => "weeks",
+    'LANDT_04s' => "days",
+    'LANDT_05s' => "hours",
+    'LANDT_06s' => "minutes",
+    'LANDT_07s' => "seconds",
+    'LANDT_08' => "min",
+    'LANDT_08s' => "mins",
+    'LANDT_09' => "sec",
+    'LANDT_09s' => "secs",
+    'LANDT_AGO' => "ago",
+    'LANDT_IN' => "in",
+    'LANDT_10' => "Just now",
+    'LANDT_XAGO' => "[x] ago",
+    'LANDT_INX' => "in [x]",
+];

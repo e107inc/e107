@@ -15,12 +15,8 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 		{
 			$path = e107::getParser()->replaceConstants($_POST['sitebutton']);
 		}
-		else 
-		{
-			$path = (strpos(SITEBUTTON, 'http:') !== false ? SITEBUTTON : e_IMAGE.SITEBUTTON);
-		}
 
-		if(varset($parm['type']) == 'email' || $parm == 'email') // (retain {}  constants )
+		if(varset($parm['type']) == 'email' || $parm == 'email' || varset($parm['type']) == 'url') // (retain {}  constants )
 		{
 			$h = !empty($parm['h']) ? $parm['h'] : 100;
 
@@ -35,8 +31,18 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 
 			if(defined('e_MEDIA') && is_writable(e_MEDIA."temp/") && ($resized = e107::getMedia()->resizeImage($path, e_MEDIA."temp/".basename($realPath),'h='.$h)))
 			{
-				$path = e107::getParser()->createConstants($resized);
+				$path = e107::getParser()->createConstants($resized,'mix');
 			}
+		}
+		else
+		{
+			$path = (strpos(SITEBUTTON, 'http:') !== false || strpos(SITEBUTTON, e_IMAGE_ABS) !== false ? SITEBUTTON : e_IMAGE.SITEBUTTON);
+		}
+
+		if(varset($parm['type']) == 'url')
+		{
+		//	return $path;
+			return e107::getParser()->replaceConstants($path,'full');
 		}
 
 		if(!empty($path))
@@ -196,8 +202,14 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 			$opts['h'] = $dimensions[1];
 		}
 
-	//	$imageStyle = (empty($dimensions)) ? '' : " style='width: ".$dimensions[0]."px; height: ".$dimensions[1]."px' ";
-	//	$image = "<img class='logo img-responsive' src='".$logo."' ".$imageStyle." alt='".SITENAME."' />\n";
+		if(varset($parm['type']) == 'url')
+		{
+			return $tp->replaceConstants($logo, 'full');
+		}
+		elseif(varset($parm['type']) == 'email')
+		{
+			return $logo;
+		}
 
 		$image = $tp->toImage($logo,$opts);
 
@@ -220,6 +232,15 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 	{
 		$pref = e107::getPref();
 		return (defined('THEME_DISCLAIMER') && $pref['displaythemeinfo'] ? THEME_DISCLAIMER : '');
+	}
+
+	function sc_organization()
+	{
+		$c = e107::getPref('contact_info');
+
+		$text = !empty($c['organization']) ? $c['organization'] : SITENAME;
+
+		return e107::getParser()->toText($text);
 	}
 
 }

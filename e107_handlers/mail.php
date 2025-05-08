@@ -761,7 +761,7 @@ class e107Email extends PHPMailer
 	/**
 	 * Preview the BODY of an email
 	 * @param $eml - array.
-	 * @return string
+	 * @return string|int
 	 */
 	public function preview($eml)
 	{
@@ -908,7 +908,7 @@ class e107Email extends PHPMailer
 
 		if(!empty($eml['template'])) // @see e107_core/templates/email_template.php
 		{
-			require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_users.php"); // do not use e107::lan etc.
+			e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_users.php"); // do not use e107::lan etc.
 
 			if(is_array($eml['template']))
 			{
@@ -1099,7 +1099,7 @@ class e107Email extends PHPMailer
 	 *      }
 	 *
 	 * @param boolean $bulkmail - set true if this email is one of a bulk send; false if an isolated email
-	 *	@return boolean|string - true if success, error message if failure
+	 *	@return boolean|string|int - true if success, error message if failure
 	 */
 	public function sendEmail($send_to, $to_name, $eml = array(), $bulkmail = false)
 	{

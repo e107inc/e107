@@ -9,15 +9,12 @@
 |     $Author$
 +----------------------------------------------------------------------------+
 */
-if(!defined('PAGE_NAME'))
-{
-	define("PAGE_NAME", "Members Only");
-}
 
-define("LAN_MEMBERS_0", "restricted area");
-define("LAN_MEMBERS_1", "This is a restricted area.");
-define("LAN_MEMBERS_2","For access please [log in]");
-define("LAN_MEMBERS_3","or [register] as a member.");
-define("LAN_MEMBERS_4","Click here to return to front page.");
-
-
+return [
+    'PAGE_NAME' => "Members Only",
+    'LAN_MEMBERS_0' => "restricted area",
+    'LAN_MEMBERS_1' => "This is a restricted area.",
+    'LAN_MEMBERS_2' => "For access please [log in]",
+    'LAN_MEMBERS_3' => "or [register] as a member.",
+    'LAN_MEMBERS_4' => "Click here to return to front page.",
+];

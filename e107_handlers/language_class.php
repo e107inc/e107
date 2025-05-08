@@ -254,7 +254,7 @@ class language{
 	/**
 	 * Converts iso to language-name and visa-versa.
 	 * @param string $data
-	 * @return string
+	 * @return string|false
 	 */
 	function convert($data){
 
@@ -404,7 +404,7 @@ class language{
 	 * @example type = english: array(0=>'English', 1=>'French' ...)
 	 * @example type = native: array('English'=>'English', 'French'=>'Francais'...)
 	 * @example type = abbr: array('en'=>'English, 'fr'=>'French' ... )
-	 * @return array
+	 * @return array|int
 	 */
 	function installed($type='english')
 	{

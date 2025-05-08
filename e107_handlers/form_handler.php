@@ -90,7 +90,7 @@ class e_form
 	public function __construct($enable_tabindex = false)
 	{
 		e107::loadAdminIcons(); // required below.
-		e107_include_once(e_LANGUAGEDIR.e_LANGUAGE. '/lan_form_handler.php');
+		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE. '/lan_form_handler.php');
 		$this->_tabindex_enabled = $enable_tabindex;
 		$this->_uc = e107::getUserClass();
 		$this->setRequiredString('<span class="required text-warning">&nbsp;*</span>');
@@ -3817,12 +3817,12 @@ var_dump($select_options);*/
 		{
 			case 'edit':
 				$icon = deftrue('e_ADMIN_AREA') ? defset('ADMIN_EDIT_ICON') : $tp->toIcon('e-edit-32');
-				$options['class'] = $options['class'] === 'action' ? 'btn btn-default btn-secondary action edit' : $options['class'];
+				$options['class'] = $options['class'] === 'action' ? 'btn btn-success action edit' : $options['class'];
 			break;
 
 			case 'delete':
 				$icon = deftrue('e_ADMIN_AREA') ? defset('ADMIN_DELETE_ICON') : $tp->toIcon('fa-trash.glyph');
-				$options['class'] = $options['class'] === 'action' ? 'btn btn-default btn-secondary action delete' : $options['class'];
+				$options['class'] = $options['class'] === 'action' ? 'btn btn-danger action delete' : $options['class'];
 				$options['data-confirm'] = LAN_JSCONFIRM;
 			break;
 
@@ -4568,7 +4568,7 @@ var_dump($select_options);*/
 	// navbar-header nav-header
 	// navbar-header nav-header
 		$text = '<div class="col-selection dropdown e-tip pull-right float-right" data-placement="left">
-    <a class="dropdown-toggle" title="'.LAN_EFORM_008.'" data-toggle="dropdown" data-bs-toggle="dropdown" href="#"><b class="caret"></b></a>
+    <a class="dropdown-toggle" title="'.LAN_EFORM_008.'" data-toggle="dropdown" data-bs-toggle="dropdown" href="#"><i class="icon fas fa-sliders"></i></a>
     <ul class="list-group dropdown-menu  col-selection e-noclick" role="menu" aria-labelledby="dLabel">
    
     <li class="list-group-item "><h5 class="list-group-item-heading">'.LAN_EFORM_009.'</h5></li>
@@ -4912,7 +4912,7 @@ var_dump($select_options);*/
 	 * @param array $currentlist - eg $this->fieldpref
 	 * @param array $fieldvalues - eg. $row
 	 * @param string $pid - eg. table_id
-	 * @return string
+	 * @return string|null
 	 */
 	public function renderTableCells($fieldarray, $currentlist, $fieldvalues, $pid)
 	{
@@ -5301,7 +5301,7 @@ var_dump($select_options);*/
 
 			$att = [
 					'href'               => e_SELF . "?$query",
-					'class'              => "btn btn-default btn-secondary$eModal",
+					'class'              => "btn btn-default btn-success$eModal",
 					'data-modal-caption' => $eModalCap,
 					'title'              => LAN_EDIT,
 			//		'data-toggle'        => 'tooltip',
@@ -5324,7 +5324,7 @@ var_dump($select_options);*/
 
 			if(check_class($cls))
 			{
-				$parms['class'] =  'action delete btn btn-default'.$delcls;
+				$parms['class'] =  'action delete btn btn-danger'.$delcls;
 				unset($parms['deleteClass']);
 				$parms['icon'] = $deleteIconDefault;
 				$text .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', $parms);
@@ -5332,7 +5332,7 @@ var_dump($select_options);*/
 		}
 		else
 		{
-			$parms['class'] =  'action delete btn btn-default'.$delcls;
+			$parms['class'] =  'action delete btn btn-danger'.$delcls;
 			$parms['icon'] = $deleteIconDefault;
 			$text .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', $parms);
 		}
@@ -5349,7 +5349,7 @@ var_dump($select_options);*/
 	 * @param string $field field name
 	 * @param mixed $value field value
 	 * @param array $attributes field attributes including render parameters, element options - see e_admin_ui::$fields for required format
-	 * @return string
+	 * @return string|null
 	 */
 	public function renderValue($field, $value, $attributes, $id = 0)
 	{
@@ -6250,7 +6250,10 @@ var_dump($select_options);*/
 					    $styleClass = ($value === 1) ? 'admin-true-icon' : 'admin-false-icon';
                     }
 
-
+					if(!isset($attributes['title']))
+					{
+						trigger_error("$field is missing the 'title' key/attribute", E_USER_WARNING);
+					}
 					return $this->renderInline($field, $id, $attributes['title'], $value, $dispValue, 'select', $wparms, array('class'=>'e-editable-boolean '.$styleClass));
 				}
 				
@@ -7813,7 +7816,7 @@ var_dump($select_options);*/
 					$tabs = [];
 					foreach($data['tabs'] as $tabId => $label)
 					{
-						$tabs[$tabId] = array('caption'=> $label, 'text'=>$this->renderCreateFieldset($elid, $data, $model, $tabId));
+						$tabs[$tabId] = array('caption'=> defset($label,$label), 'text'=>$this->renderCreateFieldset($elid, $data, $model, $tabId));
 					}
 
 
