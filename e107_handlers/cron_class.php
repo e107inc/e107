@@ -48,7 +48,7 @@ class _system_cron
 	 */
 	function gitrepo()
 	{
-		$mes = e107::getMessage();
+		$mes = e107::getLog();
 		$fl = e107::getFile();
 		
 		if(is_dir(e_BASE.".git")) // Check it's a Git Repo
@@ -83,6 +83,9 @@ class _system_cron
 		e107::getCache()->clearAll('js');
 		e107::getCache()->clearAll('library');
 		e107::getCache()->clearAll('browser');
+		e107::getSession()->clear('core-update-status'); // true when the update alert should be displayed.
+		e107::getSession()->clear('core-update-checked'); // true if the update check has been performed already. false if not. 
+		$mes->flushMessages("e107 updated via git");
 	}
 
 
