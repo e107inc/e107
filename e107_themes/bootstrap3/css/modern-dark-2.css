@@ -1259,9 +1259,9 @@ button.close{padding:0;cursor:pointer;background:0 0;border:0;-webkit-appearance
 .modal-open .modal{overflow-x:hidden;overflow-y:auto}
 .modal-dialog{position:relative;width:auto;margin:10px}
 .modal-content{position:relative;background-color:#2f2f2f;border:1px solid #999;border:1px solid rgba(0,0,0,.2);border-radius:6px;-webkit-box-shadow:0 3px 9px rgba(0,0,0,.5);box-shadow:0 3px 9px rgba(0,0,0,.5);outline:0}
-.modal-backdrop{position:fixed;top:0;z-index:1040;background-color:#000}
+.modal-backdrop{position:fixed;top:0;z-index:1040;background-color: rgba(0,0,0,0.75);}
 .modal-backdrop.fade{opacity:0;filter:alpha(opacity=0)}
-.modal-backdrop.in{opacity:.5;filter:alpha(opacity=50)}
+.modal-backdrop.in{opacity:1; backdrop-filter: blur(2px) !important;}
 .modal-header{padding:15px;border-bottom:1px solid #0a0a0a}
 .modal-header .close{margin-top:-2px}
 .modal-title{margin:0;line-height:1.42857143}
@@ -1573,7 +1573,7 @@ thead th, thead tr, .table > thead > tr > th { border-bottom: 0; border-left:0; 
              }
 
         div.is-table-row .admin-right-panel {
-        padding-left: 100px;
+        padding-left: 85px;
         width:100%;
         }
 
