@@ -88,6 +88,7 @@ $NEWS_VIEW_TEMPLATE['default']['item'] = '
 ';
 
 
+
 /*
  * 	<hr />
 	<h3>About the Author</h3>
@@ -100,6 +101,38 @@ $NEWS_VIEW_TEMPLATE['default']['item'] = '
 			</div>
 	</div>
  */
+
+$NEWS_VIEW_TEMPLATE['default']['schema'] = '
+{
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "{NEWS_URL: full=1}"
+    },
+    "headline": "{NEWS_TITLE}",
+    "description": "{NEWS_DESCRIPTION}",
+    "image": [
+        "{SETIMAGE: w=800&h=800}{NEWS_IMAGE: item=1&return=url}"
+    ],
+    "author": {
+        "@type": "Person",
+        "name": "{NEWS_AUTHOR=nolink}"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "{ORGANIZATION}",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "{SITEBUTTON: type=url}"
+        }
+    },
+    "datePublished": "{NEWS_DATE=atom}",
+    "dateModified": "{NEWS_MODIFIED=atom}",
+    "articleBody": "{NEWS_BODY=raw}"
+    
+}
+';
 
 
 // @todo add more templates. eg. 'videos' , 'slideshow images', 'full width image'  - help and ideas always appreciated.

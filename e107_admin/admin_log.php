@@ -54,10 +54,14 @@ function loadEventTypes($table)
 {
 
 	$sql = e107::getDb();
-	$row = $sql->retrieve("SELECT dblog_eventcode,dblog_title FROM #".$table." WHERE dblog_eventcode !='' AND dblog_title !='' GROUP BY dblog_eventcode",true);
+	$row = $sql->retrieve("SELECT DISTINCT dblog_eventcode,dblog_title FROM #".$table,true);
 	$eventTypes = array();
 	foreach($row as $val)
 	{
+		if(empty($val['dblog_title']))
+		{
+			continue; 
+		}
 		$id = $val['dblog_eventcode'];
 		$def = strpos($val['dblog_title'], "LAN") !== false ? $id : $val['dblog_title'];
 		$eventTypes[$id] = str_replace(': [x]', '', deftrue($val['dblog_title'],$def));
@@ -151,11 +155,11 @@ class adminlog_admin extends e_admin_dispatcher
 	protected $adminMenu = array(
 
 		'main/list'			=> array('caption'=> RL_LAN_030, 'perm' => '5'),
-		'audit/list'		=> array('caption'=> RL_LAN_062, 'perm' => '5'),
-		'rolling/list'		=> array('caption'=> RL_LAN_002, 'perm' => '5'),
+		'audit/list'		=> array('caption'=> RL_LAN_062, 'perm' => '5', 'icon'=>'fa-user'),
+		'rolling/list'		=> array('caption'=> RL_LAN_002, 'perm' => '5', 'icon'=>'fas-sync-alt'),
 		'divider/01'        => array('divider'=>true),
 		'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => '5'),	
-		'main/maintenance'	=> array('caption'=> LAN_OPTIONS, 'perm' => '5')
+		'main/maintenance'	=> array('caption'=> LAN_MAINTENANCE, 'perm' => '5', 'icon'=>'fa-wrench')
 
 		// 'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P')
 	);
@@ -178,14 +182,13 @@ class adminlog_admin extends e_admin_dispatcher
 class admin_log_ui extends e_admin_ui
 {
 			
-		protected $pluginTitle		= ADLAN_155;
+		protected $pluginTitle		= 'ADLAN_155';
 		protected $pluginName		= 'core';
 		protected $table			= 'admin_log';
 		protected $pid				= 'dblog_id';
 		protected $perPage 			= 10;
-	// protected $listQry			= "SELECT  f.*, u.* FROM #admin_log AS f LEFT JOIN #user AS u ON f.dblog_user_id = u.user_id "; // Should not be necessary.
 
-		protected $listQry			= "SELECT SQL_CALC_FOUND_ROWS  f.*, u.user_id, u.user_name FROM #admin_log AS f LEFT JOIN #user AS u ON f.dblog_user_id = u.user_id "; // Should not be required but be auto-calculated.
+		protected $listQry			= "SELECT f.*, u.user_id, u.user_name FROM #admin_log AS f LEFT JOIN #user AS u ON f.dblog_user_id = u.user_id "; // Should not be required but be auto-calculated.
 		protected $listOrder		= 'f.dblog_id DESC';
 		
 		protected $batchDelete		= false;
@@ -193,18 +196,18 @@ class admin_log_ui extends e_admin_ui
 			
 		protected $fields 		= array (  
 	//	'checkboxes' =>   array ( 'title' => '', 'type' => null, 'data' => null, 'nolist'=>true, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
-		  'dblog_id' 			=>   array ( 'title' => LAN_ID, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'dblog_datestamp' 	=>   array ( 'title' => LAN_DATESTAMP, 'type' => 'datestamp', 'data' => 'int', 'width' => '12%', 'filter' => true, 'help' => '', 'readParms' => array('mask'=>'dd MM yyyy hh:ii:ss'), 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'dblog_id' 			=>   array ( 'title' => 'LAN_ID', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'dblog_datestamp' 	=>   array ( 'title' => 'LAN_DATESTAMP', 'type' => 'datestamp', 'data' => 'int', 'width' => '12%', 'filter' => true, 'help' => '', 'readParms' => array('mask'=>'dd MM yyyy hh:ii:ss'), 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		//  'dblog_microtime'		=>   array ( 'title' => 'Microtime', 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'dblog_type' 			=>   array ( 'title' => RL_LAN_032, 'type' => 'method', 'data' => 'int', 'width' => '5%', 'filter' => true, 'batch'=>true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'dblog_ip' 			=>   array ( 'title' => LAN_IP, 'type' => 'ip', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'dblog_type' 			=>   array ( 'title' => 'RL_LAN_032', 'type' => 'method', 'data' => 'int', 'width' => '5%', 'filter' => true, 'batch'=>true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'dblog_ip' 			=>   array ( 'title' => 'LAN_IP', 'type' => 'ip', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		
-		  'dblog_user_id' 		=>   array ( 'title' => LAN_USER, 'type' => 'user', 'data' => 'int', 'width' => 'auto', 'filter' => true,  'help' => '', 'readParms'=>'link=1', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'dblog_eventcode' 	=>   array ( 'title' => RL_LAN_023, 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'dblog_user_id' 		=>   array ( 'title' => 'LAN_USER', 'type' => 'user', 'data' => 'int', 'width' => 'auto', 'filter' => true,  'help' => '', 'readParms'=>'link=1', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'dblog_eventcode' 	=>   array ( 'title' => 'RL_LAN_023', 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		
-		  'dblog_title' 		=>   array ( 'title' => LAN_TITLE, 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'dblog_remarks'		=>   array ( 'title' => RL_LAN_033, 'type' => 'method', 'data' => 'str', 'width' => '35%', 'filter'=>true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'options' 			=>   array ( 'title' => LAN_OPTIONS, 'type' => null, 'nolist'=>true, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
+		  'dblog_title' 		=>   array ( 'title' => 'LAN_TITLE', 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'dblog_remarks'		=>   array ( 'title' => 'RL_LAN_033', 'type' => 'method', 'data' => 'str', 'width' => '35%', 'filter'=>true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'options' 			=>   array ( 'title' => 'LAN_OPTIONS', 'type' => null, 'nolist'=>true, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 		);		
 		
 		protected $fieldpref = array( 'dblog_datestamp',  'dblog_type', 'dblog_eventcode', 'dblog_user_id', 'dblog_ip', 'dblog_title', 'dblog_remarks');
@@ -213,12 +216,14 @@ class admin_log_ui extends e_admin_ui
 		
 	
 		protected $prefs = array(	
-			'sys_log_perpage'			=> array('title'=> RL_LAN_044, 'type'=>'dropdown', 'data' => 'int','help'=> RL_LAN_064,'writeParms'=>''),
-			'user_audit_class'			=> array('title'=> RL_LAN_123, 'type'=>'userclass', 'data' => 'int','help'=>''),
-			'user_audit_opts'			=> array('title'=> RL_LAN_031, 'type'=>'method', 'data' => 'array','help'=>''),
-			'roll_log_active'			=> array('title'=> RL_LAN_008, 'type'=>'boolean', 'data' => 'int','help'=>''),
-			'roll_log_days'				=> array('title'=> RL_LAN_009, 'type'=>'number', 'data' => 'string','help'=>''),
-		//	'Delete admin log events older than '		=> array('title'=> RL_LAN_045, 'type'=>'method', 'data' => 'string','help'=>'Help Text goes here'),
+			'sys_log_perpage'			=> array('title'=> 'RL_LAN_044', 'type'=>'dropdown', 'data' => 'int','help'=> 'RL_LAN_064','writeParms'=>''),
+			'roll_log_active'			=> array('title'=> 'RL_LAN_008', 'type'=>'boolean', 'data' => 'int','help'=>''),
+			'roll_log_days'				=> array('title'=> 'RL_LAN_009', 'type'=>'number', 'data' => 'string','help'=>''),
+
+
+			'user_audit_class'			=> array('title'=> 'RL_LAN_123', 'type'=>'userclass', 'data' => 'int','help'=>''),
+			'user_audit_opts'			=> array('title'=> 'RL_LAN_031', 'type'=>'method', 'data' => 'array','help'=>''),
+			//	'Delete admin log events older than '		=> array('title'=> RL_LAN_045, 'type'=>'method', 'data' => 'string','help'=>'Help Text goes here'),
 		//	'Delete user audit trail log events older'		=> array('title'=> 'Delete user audit trail log events older', 'type'=>'method', 'data' => 'string','help'=>'Help Text goes here'),
 		); 
 
@@ -245,7 +250,7 @@ class admin_log_ui extends e_admin_ui
 			$perPage = e107::getConfig()->get('sys_log_perpage');
 			$this->perPage = vartrue($perPage,10);
 			
-			$this->prefs['sys_log_perpage']['writeParms'] = array(10=>10, 15=>15, 20=>20, 30=>30, 40=>40, 50=>50);
+			$this->prefs['sys_log_perpage']['writeParms'] = array(10=>10, 15=>15, 20=>20, 30=>30, 40=>40, 50=>50, 75=>75, 100=>100, 250=>250 );
 
 			$this->eventTypes = loadEventTypes('admin_log');
 			
@@ -486,10 +491,10 @@ class admin_log_form_ui extends e_admin_form_ui
 		//	define('USER_AUDIT_BANNED', 22); 			// User banned
 		//	define('USER_AUDIT_BOUNCE_RESET', 23); 		// User bounce reset
 		//	define('USER_AUDIT_TEMP_ACCOUNT', 24); 		// User temporary account
-		
+		$RL_LAN_136 = defset('RL_LAN_136', "User navigation trail");
 		
 		$audit_checkboxes = array(USER_AUDIT_SIGNUP => RL_LAN_071, USER_AUDIT_EMAILACK => RL_LAN_072,
-		 USER_AUDIT_LOGIN => LAN_AUDIT_LOG_013, 	USER_AUDIT_LOGOUT 	=> LAN_AUDIT_LOG_014,			// Logout is lumped in with login
+		 USER_AUDIT_LOGIN => LAN_AUDIT_LOG_013, 	USER_AUDIT_LOGOUT 	=> LAN_AUDIT_LOG_014,	USER_AUDIT_NAVIGATION => $RL_LAN_136,		// Logout is lumped in with login
 		USER_AUDIT_NEW_DN => RL_LAN_075, USER_AUDIT_NEW_PW => RL_LAN_076, USER_AUDIT_PW_RES => RL_LAN_078, USER_AUDIT_NEW_EML => RL_LAN_077, USER_AUDIT_NEW_SET => RL_LAN_079, 
 		USER_AUDIT_ADD_ADMIN => RL_LAN_080, USER_AUDIT_MAIL_BOUNCE => RL_LAN_081, USER_AUDIT_BANNED => RL_LAN_082, USER_AUDIT_BOUNCE_RESET => RL_LAN_083,
 		USER_AUDIT_TEMP_ACCOUNT => RL_LAN_084);
@@ -801,7 +806,7 @@ class audit_log_ui extends e_admin_ui
 class dblog_ui extends e_admin_ui
 {
 			
-		protected $pluginTitle		=  ADLAN_155;
+		protected $pluginTitle		=  'ADLAN_155';
 		protected $pluginName		= 'core';
 		protected $table			= 'dblog';
 		protected $pid				= 'dblog_id';
@@ -811,17 +816,17 @@ class dblog_ui extends e_admin_ui
 		protected $fields 		= array (  
 		  'checkboxes' 			=>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
 	//	  'dblog_id' 			=>   array ( 'title' => LAN_ID, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'dblog_datestamp' 	=>   array ( 'title' => LAN_DATESTAMP, 'type' => 'datestamp', 'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => array('mask'=>'dd MM yyyy hh:ii:ss'), 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'dblog_datestamp' 	=>   array ( 'title' => 'LAN_DATESTAMP', 'type' => 'datestamp', 'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => array('mask'=>'dd MM yyyy hh:ii:ss'), 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'dblog_microtime' 	=>   array ( 'title' => 'Microtime', 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'dblog_type' 			=>   array ( 'title' => LAN_TYPE, 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'dblog_type' 			=>   array ( 'title' => 'LAN_TYPE', 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'dblog_eventcode' 	=>   array ( 'title' => 'Eventcode', 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'dblog_user_id' 		=>   array ( 'title' => LAN_ID, 'type' => 'user', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'dblog_user_name' 	=>   array ( 'title' => LAN_USER, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'dblog_ip' 			=>   array ( 'title' => LAN_IP, 'type' => 'ip', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'dblog_user_id' 		=>   array ( 'title' => 'LAN_ID', 'type' => 'user', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+	//	  'dblog_user_name' 	=>   array ( 'title' => LAN_USER, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'dblog_ip' 			=>   array ( 'title' => 'LAN_IP', 'type' => 'ip', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'dblog_caller' 		=>   array ( 'title' => 'Caller', 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'dblog_title' 		=>   array ( 'title' => LAN_TITLE, 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'dblog_title' 		=>   array ( 'title' => 'LAN_TITLE', 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'dblog_remarks' 		=>   array ( 'title' => 'Remarks', 'type' => 'method', 'data' => 'str', 'width' => '30%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'options' 			=>   array ( 'title' => LAN_OPTIONS, 'type' => null,  'nolist'=>true,  'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
+		  'options' 			=>   array ( 'title' => 'LAN_OPTIONS', 'type' => null,  'nolist'=>true,  'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 		);
 
 		protected $fieldpref = array('dblog_id', 'dblog_datestamp', 'dblog_microtime', 'dblog_type', 'dblog_eventcode', 'dblog_user_id', 'dblog_user_name', 'dblog_ip', 'dblog_caller', 'dblog_title', 'dblog_remarks');

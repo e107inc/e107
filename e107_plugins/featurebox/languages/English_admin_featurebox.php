@@ -20,39 +20,25 @@ LAN file needs working from scratch after development is stabilized
 //define("FBLAN_05", "No feature box messages defined yet");
 //define("FBLAN_06", "Existing Feature Box Messages"); //FIXME LAN  - use generic. 
 //define("FBLAN_07", "Title / Caption"); //FIXME LAN  - use generic. 
-define("FBLAN_08", "Message text");
-//define("FBLAN_09", "Visibility of message");
-//define("FBLAN_10", "Create Feature Box Message"); //FIXME LAN  - use generic. 
-//define("FBLAN_11", "Update Feature Box Message"); //FIXME LAN  - use generic. 
-define("FBLAN_12", "Mode");
-define("FBLAN_13", "Randomly revolve messages");
-define("FBLAN_14", "Show this message only");
-//define("FBLAN_15", "Message added to database."); //FIXME LAN  - use generic. 
-//define("FBLAN_16", "Message updated in database."); //FIXME LAN  - use generic. 
-//define("FBLAN_17", "Field(s) left blank");
-//define("FBLAN_18", "Feature Box Message deleted"); //FIXME LAN  - use generic. 
-//define("FBLAN_19", "Options"); //FIXME LAN  - use generic. 
-//define("FBLAN_20", "Edit"); //FIXME LAN  - use generic. 
-//define("FBLAN_21", "Delete"); //FIXME LAN  - use generic. 
-define("FBLAN_22", "Render type");
-define("FBLAN_23", "In theme box");
-define("FBLAN_24", "Plain");
-define("FBLAN_25", "There are no featurebox items assigned to the [x] template.");
-define("FBLAN_26", "Image/Video"); 
-define("FBLAN_27", "Image Link"); 
-define("FBLAN_28", "Featurebox Menu Category"); 
-define("FBLAN_29", "Category to use for the featurebox menu"); 
-define("FBLAN_30", "Category template"); 
-define("FBLAN_31", "Random"); 
-define("FBLAN_32", "Parameters (optional)"); 
-define("FBLAN_33", "Optional Javascript Parameters (format subject to change)"); 
 
-
-// Install/uninstall messages
-
-define("FBLAN_34", "Unassigned");
-define("FBLAN_35", "Carousel");
-define("FBLAN_36", "Tabs");
-
-
-
+return [
+    'FBLAN_08' => "Message text",
+    'FBLAN_12' => "Mode",
+    'FBLAN_13' => "Randomly revolve messages",
+    'FBLAN_14' => "Show this message only",
+    'FBLAN_22' => "Render type",
+    'FBLAN_23' => "In theme box",
+    'FBLAN_24' => "Plain",
+    'FBLAN_25' => "There are no featurebox items assigned to the [x] template.",
+    'FBLAN_26' => "Image/Video",
+    'FBLAN_27' => "Image Link",
+    'FBLAN_28' => "Featurebox Menu Category",
+    'FBLAN_29' => "Category to use for the featurebox menu",
+    'FBLAN_30' => "Category template",
+    'FBLAN_31' => "Random",
+    'FBLAN_32' => "Parameters (optional)",
+    'FBLAN_33' => "Optional Javascript Parameters (format subject to change)",
+    'FBLAN_34' => "Unassigned",
+    'FBLAN_35' => "Carousel",
+    'FBLAN_36' => "Tabs",
+];

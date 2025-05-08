@@ -99,6 +99,11 @@ class news_shortcodes extends e_shortcode
 
 		e107::getBB()->clearClass();
 
+		if($parm == 'raw')
+		{
+			$news_body = strip_tags($news_body);
+		}
+
 		return $news_body;
 	}
 
@@ -507,7 +512,12 @@ class news_shortcodes extends e_shortcode
 		{
 		    $imgParms['loading'] = $parm['loading'];
         }
-		
+
+		if(!empty($parm['return']))
+		{
+		    $imgParms['return'] = $parm['return'];
+		    $parm['type'] = 'meta';
+        }
 
 		$imgTag = $tp->toImage($srcPath,$imgParms);
 
@@ -520,6 +530,10 @@ class news_shortcodes extends e_shortcode
 		{
 			case 'src':
 				return empty($src) ? e_IMAGE_ABS."generic/nomedia.png" : $src;
+			break;
+
+			case 'meta':
+				return $tp->replaceConstants($imgTag, 'full');
 			break;
 
 			case 'url':
@@ -622,6 +636,10 @@ class news_shortcodes extends e_shortcode
 					$ret = $con->convert_date($date, 'forum');
 				break;
 
+				case 'atom':
+					$ret = date(DATE_ATOM, $date);
+				break;
+
 				default :
 					$ret = $tp->toDate($date, $parm);
 				break;
@@ -640,6 +658,10 @@ class news_shortcodes extends e_shortcode
 
 	function sc_news_modified($parm=null)
 	{
+		if(empty($this->news_item['news_modified']))
+		{
+			return null;
+		}
 		return $this->formatDate($this->news_item['news_modified'], $parm);
 	}
 
@@ -1097,7 +1119,9 @@ class news_shortcodes extends e_shortcode
 
 	function sc_news_url($parm=null)
 	{
-		return e107::getUrl()->create('news/view/item', $this->news_item);
+		$options = (!empty($parm) && is_array($parm)) ? $parm : array();
+
+		return e107::getUrl()->create('news/view/item', $this->news_item, $options);
 	}
 
 

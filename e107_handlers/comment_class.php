@@ -170,7 +170,7 @@ class comment
 	 * @param bool $rating
 	 * @return string
 	 */
-	function form_comment($action, $table, $id, $subject, $content_type, $return = FALSE, $rating = FALSE, $tablerender = TRUE,$pid = false)
+	function form_comment($action, $table, $id, $subject, $content_type, $return = FALSE, $rating = FALSE, $tablerender = true,$pid = false)
 	{
 		//rating	: boolean, to show rating system in comment
 
@@ -256,7 +256,7 @@ class comment
 			//add the rating select box/result ?
 			/*
 			$rate = "";
-			if ($rating == TRUE && !(ANON == TRUE && USER == FALSE))
+			if ($rating == true && !(ANON == true && USER == FALSE))
 			{
 				global $rater;
 				require_once(e_HANDLER."rate_class.php");
@@ -264,7 +264,7 @@ class comment
 				{
 					$rater = new rater;
 				}
-				$rate = $rater->composerating($table, $itemid, $enter = TRUE, USERID, TRUE);
+				$rate = $rater->composerating($table, $itemid, $enter = true, USERID, true);
 				
 			
 			} //end rating area
@@ -318,7 +318,7 @@ class comment
 			
 			if ($tablerender)
 			{
-				$text = e107::getRender()->tablerender($caption, $text, '', TRUE);
+				$text = e107::getRender()->tablerender($caption, $text, '', true);
 			}
 		}
 		else
@@ -520,7 +520,7 @@ class comment
 		
 		if (isset($_POST['highlight_search']))
 		{
-			$highlight_search = TRUE;
+			$highlight_search = true;
 		}
 		
 		if (!defined("IMAGE_rank_main_admin_image"))
@@ -536,11 +536,11 @@ class comment
 			define("IMAGE_rank_admin_image", (isset($pref['rank_admin_image']) && $pref['rank_admin_image'] && file_exists(THEME."forum/".$pref['rank_admin_image']) ? "<img src='".THEME_ABS."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_PLUGIN_ABS."forum/images/lite/admin.png' alt='' />"));
 		}
 		
-	//	$RATING = ($addrating == TRUE && $comrow['user_id'] ? $rater->composerating($thistable, $thisid, FALSE, $comrow['user_id']) : "");
+	//	$RATING = ($addrating == true && $comrow['user_id'] ? $rater->composerating($thistable, $thisid, FALSE, $comrow['user_id']) : "");
 		
 
 		
-		$text = $tp->parseTemplate($renderstyle, TRUE, $comment_shortcodes);
+		$text = $tp->parseTemplate($renderstyle, true, $comment_shortcodes);
 
 		if ($action == "comment" && !empty($pref['nested_comments']))
 		{
@@ -632,7 +632,7 @@ class comment
 		
 		$comment = trim($comment);
 		
-		if(!e107::getDb()->update("comments","comment_comment=\"".$tp->toDB($comment)."\" WHERE comment_id = ".intval($id).""))
+		if(!e107::getDb()->update("comments","comment_comment=\"".$tp->toDB($comment)."\" WHERE comment_id = ".(int) $id.' AND comment_author_id = '.(int) USERID))
 		{
 			return "Update Failed"; // trigger ajax error message. 
 		}		
@@ -672,7 +672,7 @@ class comment
 	 */
 
 
-	function enter_comment($data, $comment='', $table='', $id='', $pid='', $subject='', $rateindex = FALSE)
+	function enter_comment($data, $comment='', $table='', $id='', $pid='', $subject='', $rateindex = false)
 	{
 		//rateindex	: the posted value from the rateselect box (without the urljump) (see function rateselect())
 		if($this->engine != 'e107')
@@ -754,7 +754,7 @@ class comment
 		{
 			if ($_POST['comment'])
 			{
-				if (USER == TRUE)
+				if (USER == true)
 				{
 					$cuser_id = USERID;
 					$cuser_name = USERNAME;
@@ -992,7 +992,7 @@ class comment
 
 	/**
 	 *	Get comment permissions; may be:
-	 *		- FALSE - no permission
+	 *		- false - no permission
 	 *		- 'ro' - read-only (Can't create)
 	 *		- 'rw' - can create and see
 	 *
@@ -1003,16 +1003,16 @@ class comment
 
 		$pref = e107::pref();
 
-		if(isset($pref['comments_disabled']) && $pref['comments_disabled'] == TRUE)
+		if(isset($pref['comments_disabled']) && $pref['comments_disabled'] == true)
 		{
 			
-        	return FALSE;
+        	return false;
 		}
 		if (isset($pref['comments_class']))
 		{
 			if (!check_class($pref['comments_class']))
 			{
-				return FALSE;
+				return false;
 			}
 			return 'rw';
 		}
@@ -1053,10 +1053,10 @@ class comment
 	 * @param boolean $tablerender
 	 * @return array|null|string|void
 	 */
-	function compose_comment($table, $action, $id, $width, $subject, $rate = FALSE, $return = FALSE, $tablerender = TRUE)
+	function compose_comment($table, $action, $id, $width, $subject, $rate = false, $return = false, $tablerender = true)
 	{
 		//compose comment	: single call function will render the existing comments and show the form_comment
-		//rate				: boolean, to show/hide rating system in comment, default FALSE
+		//rate				: boolean, to show/hide rating system in comment, default false
 		global  $totcc;
 
 		
@@ -1065,7 +1065,7 @@ class comment
 		$pref = e107::getPref();
 		$frm = e107::getForm();
 
-		if ($this->getCommentPermissions() === FALSE) return;
+		if ($this->getCommentPermissions() === false) return;
 
 		$params = array('method'=>'compose_comment', 'table'=>$table, 'action'=>$action, 'id'=>$id, 'width'=>$width, 'subject'=>$subject, 'rate'=>$rate, 'return'=>$return, 'tablerender'=>$tablerender);
 
@@ -1146,7 +1146,7 @@ class comment
 		
 		if ($lock != '1')
 		{
-			$comment = $this->form_comment($action, $table, $id, $subject, "", TRUE, $rate, false); // tablerender turned off. 
+			$comment = $this->form_comment($action, $table, $id, $subject, "", true, $rate, false); // tablerender turned off.
 		}
 		else
 		{
@@ -1184,7 +1184,7 @@ class comment
 			if ($tablerender)
 			{
 					
-					echo $ns->tablerender("<span id='e-comment-total'>".$this->totalComments."</span> ".LAN_COMMENTS, $TEMPL, 'comment', TRUE);
+					echo $ns->tablerender("<span id='e-comment-total'>".$this->totalComments."</span> ".LAN_COMMENTS, $TEMPL, 'comment', true);
 			}
 			else
 			{
@@ -1439,7 +1439,7 @@ class comment
 			}
 
 			$data = e107::getRegistry('e_comment');
-			if ($data !== FALSE)
+			if ($data !== false)
 			{
 				return $data;
 			}
@@ -1505,7 +1505,7 @@ class comment
 	 * @param $cdreta
 	 * @return array|mixed|null
 	 */
-	function getCommentData($amount = '', $from = 0, $qry = '', $cdvalid = FALSE, $cdreta = FALSE)
+	function getCommentData($amount = '', $from = 0, $qry = '', $cdvalid = false, $cdreta = false)
 		{
 
 			if($this->engine != 'e107')
@@ -1560,9 +1560,9 @@ class comment
 					$ret['comment_author'] = (USERID ? "<a href='".e107::getUrl()->create('user/profile/view', array('id' => $comment_author_id, 'name' => $comment_author_name))."'>".$comment_author_name."</a>" : $comment_author_name);
 					//comment text
 					$comment = strip_tags(preg_replace("/\[.*?\]/", "", $row['comment_comment'])); // remove bbcode - but leave text in between
-					$ret['comment_comment'] = $tp->toHTML($comment, FALSE, "", "", $pref['main_wordwrap']);
+					$ret['comment_comment'] = $tp->toHTML($comment, false, "", "", $pref['main_wordwrap']);
 					//subject
-					$ret['comment_subject'] = $tp->toHTML($row['comment_subject'], TRUE);
+					$ret['comment_subject'] = $tp->toHTML($row['comment_subject'], true);
 					switch ($row['comment_type'])
 					{
 						case '0': // news
@@ -1571,7 +1571,7 @@ class comment
 								$row2 = $sql2->fetch();
 								require_once(e_HANDLER.'news_class.php');
 								$ret['comment_type'] = COMLAN_TYPE_1;
-								$ret['comment_title'] = $tp->toHTML($row2['news_title'], TRUE, 'emotes_off, no_make_clickable');
+								$ret['comment_title'] = $tp->toHTML($row2['news_title'], true, 'emotes_off, no_make_clickable');
 								$ret['comment_url'] = e107::getUrl()->create('news/view/item', $row2);//e_HTTP."comment.php?comment.news.".$row['comment_item_id'];
 								$ret['comment_category_heading'] = COMLAN_TYPE_1;
 								$ret['comment_category_url'] = e107::getUrl()->create('news');//e_HTTP."news.php";
@@ -1585,7 +1585,7 @@ class comment
 							{
 								$row2 = $sql2->fetch();
 								$ret['comment_type'] = COMLAN_TYPE_2;
-								$ret['comment_title'] = $tp->toHTML($row2['download_name'], TRUE, 'emotes_off, no_make_clickable');
+								$ret['comment_title'] = $tp->toHTML($row2['download_name'], true, 'emotes_off, no_make_clickable');
 								$ret['comment_url'] = e_HTTP."download.php?view.".$row['comment_item_id'];
 								$ret['comment_category_heading'] = $row2['download_category_name'];
 								$ret['comment_category_url'] = e_HTTP."download.php?list.".$row2['download_category_id'];
@@ -1597,7 +1597,7 @@ class comment
 							{
 								$row2 = $sql2->fetch();
 								$ret['comment_type'] = COMLAN_TYPE_4;
-								$ret['comment_title'] = $tp->toHTML($row2['poll_title'], TRUE, 'emotes_off, no_make_clickable');
+								$ret['comment_title'] = $tp->toHTML($row2['poll_title'], true, 'emotes_off, no_make_clickable');
 								$ret['comment_url'] = e_HTTP."comment.php?comment.poll.".$row['comment_item_id'];
 								$ret['comment_category_url'] = e_PLUGIN_ABS.'poll/poll.php';
 							}
@@ -1643,7 +1643,7 @@ class comment
 										{
 											$row2 = $sql2->fetch();
 											$ret['comment_type'] = $var['plugin_name'];
-											$ret['comment_title'] = $tp->toHTML($row2[$var['db_title']], TRUE, 'emotes_off, no_make_clickable');
+											$ret['comment_title'] = $tp->toHTML($row2[$var['db_title']], true, 'emotes_off, no_make_clickable');
 											$ret['comment_url'] = str_replace("{NID}", $row['comment_item_id'], $var['reply_location']);
 											$ret['comment_category_heading'] = $var['plugin_name'];
 											$ret['comment_category_url'] = e_PLUGIN_ABS.$var['plugin_name'].'/'.$var['plugin_name'].'.php';
@@ -1657,7 +1657,7 @@ class comment
 									{
 										$row2 = $sql2->fetch();
 										$ret['comment_type'] = $var['plugin_name'];
-										$ret['comment_title'] = $tp->toHTML($row2[$var['db_title']], TRUE, 'emotes_off, no_make_clickable');
+										$ret['comment_title'] = $tp->toHTML($row2[$var['db_title']], true, 'emotes_off, no_make_clickable');
 										$ret['comment_url'] = str_replace("{NID}", $row['comment_item_id'], $var['reply_location']);
 										$ret['comment_category_heading'] = $var['plugin_name'];
 										$ret['comment_category_url'] = e_PLUGIN_ABS.$var['plugin_name'].'/'.$var['plugin_name'].'.php';

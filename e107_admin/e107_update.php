@@ -17,7 +17,11 @@
 define("e_MINIMAL",true);
 define('e_ADMIN_UPDATE', true); // used in class2.php
 require_once (__DIR__."/../class2.php");
-
+if (!getperms('0'))
+{
+	e107::redirect('admin');
+	exit;
+}
 // include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 $e_sub_cat = 'database';
@@ -32,4 +36,3 @@ e107::getSession()->set('core-update-status', false); // reset update status.
 require_once ("footer.php");
 
 
-?>

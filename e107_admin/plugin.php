@@ -24,7 +24,7 @@ $e_sub_cat = 'plug_manage';
 
 define('PLUGIN_SHOW_REFRESH', FALSE);
 define('PLUGIN_SCAN_INTERVAL', !empty($_SERVER['E_DEV']) ? 0 : 360);
-define("ADMIN_GITSYNC_ICON", e107::getParser()->toGlyph('fa-refresh', array('size'=>'2x', 'fw'=>1)));
+define("ADMIN_GITSYNC_ICON", e107::getParser()->toGlyph('fa-refresh', array('class'=>'admin-ui-option', 'size'=>'2x', 'fw'=>1)));
 
 
 global $user_pref;
@@ -94,11 +94,11 @@ class plugman_adminArea extends e_admin_dispatcher
 
 	protected $adminMenu = array(
 
-		'installed/list'		=> array('caption'=> EPL_ADLAN_22, 'perm' => 'Z'),
-		'avail/list'			=> array('caption'=> EPL_ADLAN_23, 'perm' => 'Z'),
-		'online/grid'			=> array('caption'=> EPL_ADLAN_220, 'perm' => 'Z', 'icon'=>'fas-search'),
-		'avail/upload'			=> array('caption'=>EPL_ADLAN_38, 'perm' => '0'),
-		'create/build'          =>  array('caption'=>EPL_ADLAN_114, 'perm' => '0', 'icon'=>'fas-toolbox'),
+		'installed/list'		=> array('caption'=> 'EPL_ADLAN_22', 'perm' => 'Z', 'icon'=>'fa-plug-circle-check'),
+		'avail/list'			=> array('caption'=> 'EPL_ADLAN_23', 'perm' => 'Z', 'icon'=>'fa-plug-circle-xmark'),
+		'online/grid'			=> array('caption'=> 'EPL_ADLAN_220', 'perm' => 'Z', 'icon'=>'fas-search'),
+		'avail/upload'			=> array('caption'=>'EPL_ADLAN_38', 'perm' => '0'),
+		'create/build'          =>  array('caption'=>'EPL_ADLAN_114', 'perm' => '0', 'icon'=>'fas-toolbox'),
 
 	//	'main/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
 
@@ -518,7 +518,8 @@ class plugin_ui extends e_admin_ui
 				return false;
 			}
 
-			e107::getSingleton('e107plugin')->refresh($id);
+			;
+			e107::getPlugin()->refresh($id);
 			e107::getLog()->add('PLUGMAN_04', $id);
 
 			e107::getMessage()->addSuccess("Repair Complete (".$id.")"); // Repair Complete ([x])

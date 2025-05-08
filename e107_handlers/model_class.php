@@ -3459,7 +3459,7 @@ class e_tree_model extends e_front_model
 		// auto-load all
 		if(!$this->getParam('db_query') && $this->getModelTable())
 		{
-			$this->setParam('db_query', 'SELECT'.(!$this->getParam('nocount') ? ' SQL_CALC_FOUND_ROWS' : '')
+			$this->setParam('db_query', 'SELECT'.(!$this->getParam('nocount') ? '' : '')
 				.($this->getParam('db_cols') ? ' '.$this->getParam('db_cols') : ' *').' FROM #'.$this->getModelTable()
 				.($this->getParam('db_joins') ? ' '.$this->getParam('db_joins') : '')
 				.($this->getParam('db_where') ? ' WHERE '.$this->getParam('db_where') : '')
@@ -3687,20 +3687,31 @@ class e_tree_model extends e_front_model
 	 */
 	protected function countResults($sql)
 	{
-		$total = $sql->foundRows();
-		$this->_total = is_int($total) ? $total : false; //requires SQL_CALC_FOUND_ROWS in query - see db handler
+		$qry = $this->getParam('db_query');
+
+		// @todo Move to $sql->foundRows();
+
+		$qry = str_replace('SQL_CALC_FOUND_ROWS', '', $qry); // Deprecated as of MySQL 8.0
 
 		if(false === $this->_total && $this->getModelTable() && !$this->getParam('nocount'))
 		{
-			//SQL_CALC_FOUND_ROWS not found in the query, do one more query
-		//	$this->_total = e107::getDb()->db_Count($this->getModelTable()); // fails with specific listQry
+			$countQry = preg_replace('/\s+LIMIT\s+\d+(\s*,\s*\d+)?\s*$/i', "", $qry);
 
-			// Calculates correct total when using filters and search. //XXX Optimize.
-			$countQry = preg_replace('/(LIMIT ([\d,\s])*)$/', "", $this->getParam('db_query'));
+			$QRY = "SELECT COUNT(*) AS e_tree_total FROM ($countQry) AS grouped_rows";
 
-			$this->_total = e107::getDb()->gen($countQry);
+			$result = $sql->retrieve($QRY);
+			$total = $result['e_tree_total'] ?? 0;
+
+			if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
+			{
+				e107::getMessage()->addDebug("Count Qry: ".str_replace('#',MPREFIX,$QRY));
+				e107::getMessage()->addDebug("Count Total: $total");
+			}
+
+			$this->_total = (int) $total;
 
 		}
+
 		return $this->_total;
 	}
 
