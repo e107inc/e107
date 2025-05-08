@@ -2233,7 +2233,7 @@ class themeHandler
 			$text .= "<tr><td><b>".LAN_CATEGORY."</b></td><td>".$theme['category']."</td></tr>";			
 		}
 		
-		if(is_dir(e_THEME.$theme['path']."/.git"))
+		if(!empty($theme['path']) && is_dir(e_THEME.$theme['path']."/.git"))
 		{
 			$text .= "<tr><td><b>Developer</b></td>
 				<td >".$this->frm->admin_button('git_pull', $theme['path'], 'primary', e107::getParser()->toGlyph('fa-refresh'). "Git Sync")."</td></tr>";

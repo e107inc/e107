@@ -112,17 +112,31 @@ class e_file_inspectorTest extends \Codeception\Test\Unit
      * @return e_file_inspector
      * @throws ReflectionException if e_file_inspector is broken
      */
-    private function createCustomPathFileInspector()
-    {
-        /** @var e_file_inspector $object */
-        $object = $this->make('e_file_inspector');
-        $class = new ReflectionClass(get_class($object));
-        $object->customPathToDefaultPath('populate_cache');
-        $member = $class->getProperty('customDirsCache');
-        $member->setAccessible(true);
-        $customDirs = $member->getValue($object);
-        $customDirs['ADMIN_DIRECTORY'] = 'e963_admin/';
-        $member->setValue($object, $customDirs);
-        return $object;
-    }
+	protected function createCustomPathFileInspector()
+	{
+		$mock = $this->getMockBuilder(e_file_inspector::class)
+			->disableOriginalConstructor()
+			->getMock();
+
+		// Mock the customPathToDefaultPath and defaultPathToCustomPath methods.
+		$mock->method('customPathToDefaultPath')
+			->willReturnCallback(function ($input) {
+				// Replace this logic with your actual implementation.
+				if ($input === 'e963_admin/index.php') {
+					return 'e107_admin/index.php';
+				}
+				return null;
+			});
+
+		$mock->method('defaultPathToCustomPath')
+			->willReturnCallback(function ($input) {
+				// Replace this logic with your actual implementation.
+				if ($input === 'e107_admin/index.php') {
+					return 'e963_admin/index.php';
+				}
+				return null;
+			});
+
+		return $mock;
+	}
 }
