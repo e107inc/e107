@@ -44,6 +44,8 @@ class news_front
 	private $tagAuthor = null;
 	private $comments = array();
 	private $pagination;
+
+	private $schema = '';
 //	private $interval = 1;
 
 	function __construct()
@@ -824,6 +826,7 @@ class news_front
 		$e107cache->set($cache_tag."_diz", defined("META_DESCRIPTION") ? META_DESCRIPTION : '');
 
 		$e107cache->set($cache_tag."_rows", e107::serialize($rowData,'json'));
+		$e107cache->set($cache_tag."_schema", $this->schema);
 
 	}
 
@@ -951,8 +954,11 @@ class news_front
 
 			$gen = new convert;
 			$sql->select("news_category", "*", "category_id='$category'");
-			$row = $sql->fetch();
-			extract($row);  // still required for the table-render.  :(
+			if($row = $sql->fetch())
+			{
+				extract($row);  // still required for the table-render.  :(
+			}
+
 		}
 
 		if ($this->action == 'all') // show archive of all news items using list-style template.
@@ -1238,6 +1244,12 @@ class news_front
 			$this->setNewsFrontMeta($rows);
 			$text = $this->renderCache($caption, $newsCachedPage);		// This exits if cache used
 			$this->comments = $rows;
+
+			if($shema = $this->getNewsCache($this->cacheString,'schema'))
+			{
+				e107::schema($shema);
+			}
+
 			return $text;
 		}
 		else
@@ -1354,6 +1366,12 @@ class news_front
 					$render = true;
 				}
 
+				if(!empty($tmp['schema']))
+				{
+					$this->schema = e107::getParser()->parseSchemaTemplate($tmp['schema'], true, $nsc);
+					e107::schema($this->schema);
+				}
+
 				unset($tmp);
 			}
 
@@ -1397,7 +1415,7 @@ class news_front
 		{
 
 			header("HTTP/1.0 404 Not Found",true,404);
-			require_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_error.php");
+			e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/lan_error.php");
 			$text = "<div class='news-view-error'>".e107::getMessage()->setTitle(LAN_ERROR_7, E_MESSAGE_INFO)->addInfo(LAN_NEWS_308)->render(); // Perhaps you're looking for one of the news items below?
 			$text .= "</div>";
 			$this->action = 'all';

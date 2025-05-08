@@ -49,15 +49,15 @@ class pm_admin extends e_admin_dispatcher
 	
 	protected $adminMenu = array(
 
-		'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'P'),
-		'main/limits'		=> array('caption'=> ADLAN_PM_55, 'perm' => 'P'),
-		'main/maint'		=> array('caption'=> ADLAN_PM_59, 'perm' => 'P'),
+		'main/prefs' 		=> array('caption'=> 'LAN_PREFS', 'perm' => 'P'),
+		'main/limits'		=> array('caption'=> 'ADLAN_PM_55', 'perm' => 'P', 'icon'=>'fa-lock'),
+		'main/maint'		=> array('caption'=> 'ADLAN_PM_59', 'perm' => 'P'),
 
 
 		'main/null'		    => array('divider'=> true),
-		'inbox/list'		=> array('caption'=> LAN_PLUGIN_PM_INBOX, 'perm' => 'P'),
-		'outbox/list'		=> array('caption'=> LAN_PLUGIN_PM_OUTBOX, 'perm' => 'P'),
-		'outbox/create'		=> array('caption'=> LAN_PLUGIN_PM_NEW, 'perm' => 'P'),
+		'inbox/list'		=> array('caption'=> 'LAN_PLUGIN_PM_INBOX', 'perm' => 'P', 'icon'=>'fa-inbox'),
+		'outbox/list'		=> array('caption'=> 'LAN_PLUGIN_PM_OUTBOX', 'perm' => 'P', 'icon'=>'fa-arrow-up-from-bracket'),
+		'outbox/create'		=> array('caption'=> 'LAN_PLUGIN_PM_NEW', 'perm' => 'P'),
 
 	//	'block/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
 	//	'block/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),

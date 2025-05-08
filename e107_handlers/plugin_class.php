@@ -140,6 +140,10 @@ class e_plugin
 	 */
 	public function getDetected()
 	{
+		if(empty($this->_data))
+		{
+
+		}
 		return array_keys($this->_data);
 	}
 
@@ -818,10 +822,18 @@ class e_plugin
 
 		$cacheTag = self::CACHETAG;
 
-		if($force === false && $tmp = e107::getCache()->retrieve($cacheTag, self::CACHETIME, true, true))
+		if(($force === false) && $tmp = e107::getCache()->retrieve($cacheTag, self::CACHETIME, true, true))
 		{
 			$this->_data = e107::unserialize($tmp);
-			return true;
+
+			if(empty($this->_data))
+			{
+				trigger_error(__FILE__.' '.__METHOD__.' plugin cache failed to load.', E_USER_WARNING);
+			}
+			else
+			{
+				return true;
+			}
 		}
 
 		$dirs = scandir(e_PLUGIN);
@@ -1577,7 +1589,7 @@ class e107plugin
 	 * Returns an array containing details of all plugins in the plugin table - should normally use e107plugin::update_plugins_table() first to
 	 * make sure the table is up to date. (Primarily called from plugin manager to get lists of installed and uninstalled plugins.
 	 * @param string $path
-	 * @return int
+	 * @return int|false
 	 */
 	private function getId($path)
 	{
@@ -1957,6 +1969,44 @@ class e107plugin
 	}
 
 	/**
+	 * @TODO @see https://github.com/e107inc/e107/issues/5295
+	 * @param $function
+	 * @param $folder
+	 * @param $tag
+	 * @return array
+	 */
+	public function XmlAdminIcons($function, $folder, $tag)
+	{
+		$this->log("Running ".__FUNCTION__);
+
+		$iconTypes = ['icon', 'iconSmall', 'icon128'];
+		$ret = [];
+
+		if($function === 'install' || $function === 'update')
+		{
+			foreach ($tag['link'] as $link)
+			{
+				$attrib = $link['@attributes'];
+
+				foreach($iconTypes as $key)
+				{
+					if(!empty($attrib[$key]) && str_ends_with($attrib[$key], '.png'))
+					{
+						$path = e_PLUGIN.$folder."/".$attrib[$key];
+						$file = basename($path);
+
+					}
+
+				}
+
+			}
+		}
+
+		return $ret;
+
+	}
+
+	/**
 	 * Returns details of a plugin from the plugin table from it's ID
 	 * @deprecated
 	 * @param int|string $id
@@ -2048,7 +2098,7 @@ class e107plugin
 	/**
 	 * Type number to type name
 	 * @param integer $typeId
-	 * @return string type name
+	 * @return string|int type name
 	 */
 	private function ue_field_type_name($typeId)
 	{
@@ -2903,7 +2953,7 @@ class e107plugin
 	 * 			'delete_xfields' - to delete extended fields
 	 * 			'delete_ipool' - to delete icon pool entry
 	 * 			+ any defined in <pluginname>_setup.php in the uninstall_options() method.
-	 * @return bool
+	 * @return bool|null
 	 */
 	function install_plugin_xml($id, $function = '', $options = null)
 	{	
@@ -3004,6 +3054,7 @@ class e107plugin
 		if (varset($plug_vars['adminLinks']))
 		{
 			$this->XmlAdminLinks($function, $plug_vars['adminLinks']);
+			// $this->XmlAdminIcons($function, $plug_vars['adminLinks']); // @TODO
 		}
 
 		if (!empty($plug_vars['siteLinks']))
@@ -4183,6 +4234,7 @@ class e107plugin
 			{
 				case 'install': // Add all active extended fields
 				case 'upgrade':
+				case 'refresh':
 
 					if (!$remove)
 					{
@@ -4372,7 +4424,7 @@ class e107plugin
 			if (class_exists($class_name))
 			{
 				$obj = new $class_name;
-				$obj->version_from = $this;
+			//	$obj->version_from = $this; // Not used?
 				
 				if (method_exists($obj, $method_name))
 				{
