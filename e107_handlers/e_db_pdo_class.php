@@ -70,7 +70,7 @@ class e_db_pdo implements e_db
 
 	private     $debugMode      = false;
 
-	private     $queryCount     = 0;
+	protected static $querycount = 0;
 
 
 
@@ -329,7 +329,7 @@ class e_db_pdo implements e_db
 	public function db_Query($query, $rli = NULL, $qry_from = '', $debug = false, $log_type = '', $log_remark = '')
 	{
 		global $db_time, $queryinfo;
-		$this->queryCount++;
+		self::$querycount++;
 
 		$this->_getMySQLaccess();
 		$this->mySQLlastQuery = $query;
@@ -601,6 +601,7 @@ class e_db_pdo implements e_db
 			case 'single': // single field value returned.
 				if($select && !$this->select($table, $fields, $where, $noWhere, $debug))
 				{
+					$this->mySQLcurTable = $table;
 					return null;
 				}
 				elseif(!$select && !$this->gen($table, $debug))
@@ -1840,7 +1841,7 @@ class e_db_pdo implements e_db
 	*/
 	public function queryCount()
 	{
-		return $this->queryCount;
+		return self::$querycount;
 	}
 
 

@@ -7816,7 +7816,7 @@ var_dump($select_options);*/
 					$tabs = [];
 					foreach($data['tabs'] as $tabId => $label)
 					{
-						$tabs[$tabId] = array('caption'=> $label, 'text'=>$this->renderCreateFieldset($elid, $data, $model, $tabId));
+						$tabs[$tabId] = array('caption'=> defset($label,$label), 'text'=>$this->renderCreateFieldset($elid, $data, $model, $tabId));
 					}
 
 
