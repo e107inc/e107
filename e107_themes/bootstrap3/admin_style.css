@@ -254,7 +254,7 @@ td .file.well                              { margin-bottom:0 }
 
 
 
-td.options .btn-group                   {  display: flex; }
+td.options .btn-group                   {  display: flex; justify-content: center; }
 
 
 .table .nav-tabs a,
@@ -605,6 +605,7 @@ img.S32:hover 				{}
 .adminlist th a.sorted-desc:after            { padding-left:5px; font-family:'Font Awesome 5 Free'; font-weight: 900; content: '\f0d7' }
 
 .adminlist .col-selection-cont 				{ position: relative; float:right; }
+.adminlist .col-selection .icon				{ margin-left:15px; font-size:1.5rem}
 table.adminlist								{ margin-bottom: 0 }
 table.adminlist td .video-responsive        { height: auto; padding:0 }
 
@@ -632,6 +633,7 @@ i.s-message-icon {
 	width:32px;
 	height:32px;
 	float:left;
+	line-height: 28px;
 }
 
 i.s-message-success { background-position: -592px -37px; width: 32px; height: 32px; }
@@ -1138,7 +1140,7 @@ i.e-safari-32{ background-position: -427px 0; width: 32px; height: 32px; }
 i.e-seamonkey-16{ background-position: -464px 0; width: 16px; height: 16px; } 
 i.e-seamonkey-32{ background-position: -485px 0; width: 32px; height: 32px; } 
 
-
+i.admin-ui-option { font-size:24px; line-height:32px }
 
 /* NEw */
 

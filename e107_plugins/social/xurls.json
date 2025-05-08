@@ -27,6 +27,10 @@
         "label": "Google",
         "placeholder": ""
     },
+    "behance": {
+        "label": "Behance",
+        "placeholder": ""
+    },
     "discord": {
         "label": "Discord",
         "placeholder": ""
@@ -39,12 +43,24 @@
         "label": "Pinterest",
         "placeholder": ""
     },
+    "snapchat": {
+        "label": "Snapchat",
+        "placeholder": ""
+    },
+    "soundcloud": {
+        "label": "Soundcloud",
+        "placeholder": ""
+    },
+    "spotify": {
+        "label": "Spotify",
+        "placeholder": ""
+    },
     "steam": {
         "label": "Steam",
         "placeholder": "eg. https:\/\/steamcommunity.com"
     },
-    "vimeo": {
-        "label": "Vimeo",
+     "telegram": {
+        "label": "Telegram",
         "placeholder": ""
     },
     "tiktok": {
@@ -53,6 +69,10 @@
     },
     "twitch": {
         "label": "Twitch",
+        "placeholder": ""
+    },
+     "vimeo": {
+        "label": "Vimeo",
         "placeholder": ""
     },
     "vk": {

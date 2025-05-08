@@ -47,6 +47,10 @@ class gsitemap_xml
 			}
 
 		}
+		elseif(!empty($_GET['index'])) // Sitemap index.
+		{
+			$this->renderSitemapIndex();
+		}
 		else // From Gsitemap Database Table.
 		{
 			$this->renderXML();
@@ -133,6 +137,62 @@ class gsitemap_xml
 
 		return $xml;
 
+	}
+
+
+	/**
+	 * Generates a Sitemap Index containing references to multiple sitemaps.
+	 *
+	 * @param array $sitemaps An array of sitemaps, where each item is an associative array with keys:
+	 *                        - 'loc' (string): The full URL of the sitemap.
+	 *                        - 'lastmod' (int|null): A timestamp representing the last modification date of the sitemap (optional).
+	 * @return void
+	 */
+	function renderSitemapIndex()
+	{
+		header('Content-type: application/xml', true);
+
+		// Begin the sitemap index
+		$xml = "<?xml version='1.0' encoding='UTF-8'?>\n";
+		$xml .= "<sitemapindex xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>\n";
+
+		$obj = e107::getAddon('gsitemap', 'e_url');
+
+		$sitemaps = [];
+
+		if($items = e107::callMethod($obj, 'config'))
+		{
+			foreach($items as $key => $val)
+			{
+				if($key == 'sitemaps' || $key == 'index')
+				{
+					continue;
+				}
+
+				$sitemaps[] = ['loc' => e107::url('gsitemap',$key, null, ['mode'=>'full']), 'lastmod' => (time() - 86400)];
+			}
+		}
+
+
+		foreach($sitemaps as $sitemap)
+		{
+			$xml .= "<sitemap>\n";
+			$xml .= "\t<loc>{$sitemap['loc']}</loc>\n";
+
+
+			if(!empty($sitemap['lastmod'])) // Optional: Include the last modified date, if available
+			{
+				$xml .= "\t<lastmod>" . date('c', (int) $sitemap['lastmod']) . "</lastmod>\n";
+			}
+
+			$xml .= "</sitemap>\n";
+		}
+
+
+		$xml .= "</sitemapindex>";
+
+		// Output the XML
+		echo $xml;
 	}
 
 }
