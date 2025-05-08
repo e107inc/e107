@@ -147,4 +147,45 @@ class E107TestSuiteBootstrap
     }
 }
 
+
+if(!function_exists('dbg'))
+{
+	/**
+	 * Custom Debug To Console function  - Part of _bootstrap.php
+	 *
+	 * @param mixed $data
+	 * @return void
+	 */
+	function dbg($data): void
+	{
+
+		$bt = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1);
+		$line = $bt[0]['line'] ?? '?';
+
+		if(is_array($data) || is_object($data))
+		{
+			$output = print_r($data, true) . PHP_EOL;
+		}
+		elseif(is_bool($data))
+		{
+			$output = ($data ? 'true' : 'false') . PHP_EOL;
+		}
+		elseif(is_null($data))
+		{
+			$output = 'null' . PHP_EOL;
+		}
+		elseif(is_string($data))
+		{
+			$output = "\"" . $data . "\"" . PHP_EOL; // wrap string in double quotes
+		}
+		else
+		{
+			$output = $data . PHP_EOL; // other scalars (ints, floats) as-is
+		}
+
+		fwrite(STDERR, "DEBUG (Line: $line): " . $output);
+	}
+}
+
+
 new E107TestSuiteBootstrap;
