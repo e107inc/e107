@@ -887,7 +887,7 @@ class db_verify
 			}
 			else
 			{
-				return "INDEX `" . $data['keyname'] . "` (" . $data['field'] . ");";
+				return "INDEX `" . $data['field']  . "` (" . $data['keyname'] . ");";
 			}
 
 		}
