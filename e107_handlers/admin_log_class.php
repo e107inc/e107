@@ -348,7 +348,10 @@ class e_admin_log
 				'dblog_remarks'   => $explain
 			);
 
-			$this->rldb->insert('admin_log', $adminLogInsert);
+			if(!$this->rldb->insert('admin_log', $adminLogInsert))
+			{
+				trigger_error('Error inserting admin log entry: '.print_r($adminLogInsert,true), E_USER_WARNING);
+			}
 		}
 
 		//---------------------------------------
@@ -361,7 +364,10 @@ class e_admin_log
 		//---------------------------------------
 		if(($target_logs & LOG_TO_ROLLING) && $this->_roll_log_active)
 		{ //	Rolling log
-
+			if(getperms('0') && e_REQUEST_HTTP === '/e107_admin/admin_log.php') // Don't log while looking at the log.
+			{
+				return;
+			}
 			// 	Process source_call info
 			//---------------------------------------
 			if(is_numeric($source_call) && ($source_call >= 0))
@@ -431,12 +437,18 @@ class e_admin_log
 			);
 
 
-			$this->rldb->insert('dblog', '0, ' . intval($time_sec) . ', ' . intval($time_usec) . ", '{$importance}', '{$eventcode}', {$userid}, '{$userstring}', '{$userIP}', '{$source_call}', '{$event_title}', '{$explain}' ");
+			if(!$this->rldb->insert('dblog', '0, ' . intval($time_sec) . ', ' . intval($time_usec) . ", '{$importance}', '{$eventcode}', {$userid}, '{$userstring}', '{$userIP}', '{$source_call}', '{$event_title}', '{$explain}' "))
+			{
+				trigger_error("Error inserting admin rolling log entry: $eventcode", E_USER_WARNING);
+			}
 
 			// Now delete any old stuff
 			if(!empty($this->_roll_log_days))
 			{
-				$this->rldb->delete('dblog', "dblog_datestamp < '" . intval(time() - ($this->_roll_log_days * 86400)) . "' ");
+				if(!$this->rldb->delete('dblog', "dblog_datestamp < '" . intval(time() - ($this->_roll_log_days * 86400)) . "' "))
+				{
+					// trigger_error("Error deleting old rolling log entries.", E_USER_WARNING);
+				}
 			}
 		}
 
