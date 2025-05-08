@@ -28,7 +28,7 @@
 /**
  *	Class to handle ban-related checks, and provide some utility functions related to IP addresses
  *	There are two parts to the class:
- *	
+ *
  *	Part 1
  *	------
  *	This part intentionally does NO database access, and requires an absolute minimum of file paths to be set up
@@ -153,7 +153,7 @@ class eIPHandler
 	 *
 	 *	On load it gets the user's IP address, and checks it against whitelist and blacklist files
 	 *	If the address is blacklisted, displays an appropriate message (as configured) and aborts
-	 *	Otherwise sets up 
+	 *	Otherwise sets up
 	 */
 	public function __construct($configDir = '')
 	{
@@ -168,25 +168,20 @@ class eIPHandler
 			$this->ourConfigDir = e_SYSTEM.eIPHandler::BAN_FILE_DIRECTORY;
 		}
 
-
 		$this->ourIP = $this->ipEncode($this->getCurrentIP());
 
-		$this->serverIP = $this->ipEncode(isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : 'x.x.x.x');
+		$this->serverIP = $this->ipEncode($_SERVER['SERVER_ADDR'] ?? 'x.x.x.x');
 
 		$this->makeUserToken();
+
 		$ipStatus = $this->checkIP($this->ourIP);
-		if ($ipStatus != 0)
+
+		if ($ipStatus < 0) // Blacklisted
 		{
-			if ($ipStatus < 0)
-			{	// Blacklisted
-				$this->logBanItem($ipStatus, 'result --> '.$ipStatus); // only log blacklist
-				$this->banAction($ipStatus);		// This will abort if appropriate
-			}
-			//elseif ($ipStatus > 0)
-		//	{	// Whitelisted - we may want to set a specific indicator
-		//	}
+			$this->logBanItem($ipStatus, 'result --> '.$ipStatus); // only log blacklist
+			$this->banAction($ipStatus);		// This will abort if appropriate
 		}
-		// Continue here - user not banned (so far)
+
 	}
 
 	/**
@@ -196,7 +191,6 @@ class eIPHandler
 	public function setIP($ip)
 	{
 		$this->ourIP = $this->ipEncode($ip);
-
 	}
 
 
@@ -208,8 +202,6 @@ class eIPHandler
 	{
 		$this->debug = $value === true;
 	}
-
-
 
 
 	/**
@@ -231,7 +223,6 @@ class eIPHandler
 		}
 	}
 
-	
 
 	/**
 	 *	Generate relatively unique user token from browser info
@@ -269,93 +260,75 @@ class eIPHandler
 	}
 
 
-
 	/**
-	 *	Check whether an IP address is routable
+	 * Check whether an IP address is routable
 	 *
-	 *	@param string $ip - IPV4 or IPV6 numeric address.
-	 *
-	 *	@return boolean TRUE if routable, FALSE if not
-	 
-	 @todo handle IPV6 fully
+	 * @param string $ip IPV4 or IPV6 numeric address.
+	 * @return bool TRUE if routable, FALSE if not
 	 */
 	public function isAddressRoutable($ip)
 	{
-		$ignore = array(
-						'0\..*' , '^127\..*' , 			// Local loopbacks
-						'192\.168\..*' , 					// RFC1918 - Private Network
-						'172\.(?:1[6789]|2\d|3[01])\..*' ,	// RFC1918 - Private network
-						'10\..*' , 							// RFC1918 - Private Network
-						'169\.254\..*' , 					// RFC3330 - Link-local, auto-DHCP
-						'2(?:2[456789]|[345][0-9])\..*'		// Single check for Class D and Class E
-					);
-	
-		
-		
-		$pattern = '#^('.implode('|',$ignore).')#';
-				
-		if(preg_match($pattern,$ip))
+
+		$isRoutable = filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== false;
+
+		if(!$isRoutable)
 		{
-			return false;	
+			return false;
 		}
-		
-		
-		/* XXX preg_match doesn't accept arrays. 
-		if (preg_match(array(
-						'#^0\..*#' , '#^127\..*#' , 			// Local loopbacks
-						'#^192\.168\..*#' , 					// RFC1918 - Private Network
-						'#^172\.(?:1[6789]|2\d|3[01])\..*#' ,	// RFC1918 - Private network
-						'#^10\..*#' , 							// RFC1918 - Private Network
-						'#^169\.254\..*#' , 					// RFC3330 - Link-local, auto-DHCP
-						'#^2(?:2[456789]|[345][0-9])\..*#'		// Single check for Class D and Class E
-					), $ip))
+
+		// Explicitly block IPv4 multicast: 224.0.0.0 - 239.255.255.255
+		if(filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))
 		{
-			return FALSE;
-		} 
-		*/
-		
-		if (strpos(':', $ip) === FALSE) return TRUE;
-		// Must be an IPV6 address here
-		// @todo need to handle IPV4 addresses in IPV6 format
-		$ip = strtolower($ip);
-		if ($ip == 'ff02::1') return FALSE; 			// link-local all nodes multicast group
-		if ($ip == 'ff02:0000:0000:0000:0000:0000:0000:0001') return FALSE;
-		if ($ip == '::1') return FALSE;											// localhost
-		if ($ip == '0000:0000:0000:0000:0000:0000:0000:0001') return FALSE;
-		if (strpos($ip, 'fc00:') === 0) return FALSE;							// local addresses
-		// @todo add:
-		// ::0 (all zero) - invalid
-		// ff02::1:ff00:0/104 - Solicited-Node multicast addresses - add?
-		// 2001:0000::/29 through 2001:01f8::/29 - special purpose addresses
-		// 2001:db8::/32 - used in documentation
-		return TRUE;
-	}
-
-
-
-	/**
-	 *	Get current user's IP address in 'normal' form.
-	 *	Likely to be very similar to existing e107::getIP() function
-	 *	May log X-FORWARDED-FOR cases - or could generate a special IPV6 address, maybe?
-	 */
-	private function getCurrentIP()
-	{
-		if(!$this->ourIP)
-		{
-			$ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'x.x.x.x';
-			if ($ip4 = getenv('HTTP_X_FORWARDED_FOR'))
+			$long = ip2long($ip);
+			if($long !== false && $long >= ip2long('224.0.0.0') && $long <= ip2long('239.255.255.255'))
 			{
-				if (!$this->isAddressRoutable($ip))
-				{
-					$ip3 = explode(',', $ip4);				// May only be one address; could be several, comma separated, if multiple proxies used
-					$ip = trim($ip3[count($ip3) - 1]);						// If IP address is unroutable, replace with any forwarded_for address
-					$this->logBanItem(0, 'X_Forward  '.$ip4.' --> '.$ip);		// Just log for interest ATM
-				}
+				return false;
 			}
-			$this->ourIP = $this->ipEncode($ip); 				// Normalise for storage
 		}
-		return $this->ourIP;
+
+		// Explicitly block IPv6 multicast: ff00::/8
+		if(filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))
+		{
+			if(stripos($ip, 'ff') === 0 || stripos($ip, 'ff00:') === 0)
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
+
+
+  /**
+     * Get current user's IP address in 'normal' form.
+     * Likely to be very similar to existing e107::getIP() function
+     * May log X-FORWARDED-FOR cases - or could generate a special IPV6 address, maybe?
+     *
+     * @param array|null $server Array simulating $_SERVER (e.g., ['REMOTE_ADDR' => '1.2.3.4']). Defaults to global $_SERVER.
+     * @return string Normalized IP address.
+     */
+    protected function getCurrentIP($server = null)
+    {
+        if(!$this->ourIP)
+        {
+            $server = $server ?? $_SERVER;
+            $ip = $server['REMOTE_ADDR'] ?? 'x.x.x.x';
+
+            if ($ip4 = getenv('HTTP_X_FORWARDED_FOR'))
+            {
+                if (!$this->isAddressRoutable($ip))
+                {
+                    $ip3    = explode(',', $ip4);				// May only be one address; could be several, comma separated, if multiple proxies used
+                    $ip     = trim($ip3[count($ip3) - 1]);		// If IP address is unroutable, replace with any forwarded_for address
+                    $this->logBanItem(0, 'X_Forward  '.$ip4.' --> '.$ip);		// Just log for interest ATM
+                }
+            }
+
+            $this->ourIP = $this->ipEncode($ip); 				// Normalise for storage
+        }
+
+        return $this->ourIP;
+    }
 
 
 
@@ -370,7 +343,7 @@ class eIPHandler
 	 */
 	public function getIP($forDisplay = FALSE)
 	{
-		if ($forDisplay == FALSE) return $this->ourIP;
+		if (!$forDisplay) return $this->ourIP;
 		return $this->ipDecode($this->ourIP);
 	}
 
@@ -383,7 +356,7 @@ class eIPHandler
 	 *
 	 *	@return void (may not even return)
 	 *
-	 *	Looks up the reason code, and extracts the corresponding text. 
+	 *	Looks up the reason code, and extracts the corresponding text.
 	 *	If this text begins with 'http://' or 'https://', assumed to be a link to a web page, and redirects.
 	 *	Otherwise displays an error message to the user (if configured) then aborts.
 	 */
@@ -446,6 +419,7 @@ class eIPHandler
 				die();
 			}
 		}
+
 		$this->logBanItem($code, 'Unmatched action: '.$search.' - no block implemented');
 	}
 
@@ -592,6 +566,11 @@ class eIPHandler
 	 */
 	public function ipEncode($ip, $wildCards = FALSE, $div = ':')
 	{
+		if(empty($ip))
+		{
+			return false;
+		}
+
 		$ret = '';
 		$divider = '';
 		if(strpos($ip, ':')!==FALSE)
@@ -664,7 +643,7 @@ class eIPHandler
 	 *
 	 * @param string $ip encoded IP
 	 * @param boolean $IP4Legacy
-	 * @return string decoded IP
+	 * @return string|false decoded IP
 	 */
 	public function ipDecode($ip, $IP4Legacy = TRUE)
 	{
@@ -785,7 +764,6 @@ class eIPHandler
 	/**
 	 *    Generate DB query for domain name-related checks
 	 *
-	 *    If an email address is passed, discards the individual's name
 	 *
 	 * @param string $email - an email address or domain name string
 	 * @param string $fieldName
@@ -795,31 +773,51 @@ class eIPHandler
 	 * @internal param string $fieldname - if non-empty, each array entry is a comparison with this field
 	 *
 	 */
-	function makeDomainQuery($email, $fieldName = 'banlist_ip')
+	/**
+	 * Generate DB query for network-level domain bans
+	 *
+	 * @param string $domain - a domain name string (e.g., mydomain.co.uk)
+	 * @param string $fieldName - if non-empty, each array entry is a comparison with this field
+	 * @return array|bool - array of network ban patterns, or false if invalid domain
+	 */
+	function makeDomainQuery($domain, $fieldName = 'banlist_ip'): array|bool
 	{
-		$tp = e107::getParser();
-		if (($tv = strrpos('@', $email)) !== FALSE)
+
+		$domain = trim($domain);
+
+		if(strpos($domain, '@') !== false) // this function not intended for email addresses.
 		{
-			$email = substr($email, $tv+1);
+			return false;
 		}
-		$tmp = strtolower($tp -> toDB(trim($email)));
-		if ($tmp == '') return FALSE;
-		if (strpos($tmp,'.') === FALSE) return FALSE;
-		$em = array_reverse(explode('.',$tmp));
+
+		if($domain === '' || strpos($domain, '.') === false)
+		{
+			return false;
+		}
+
+
+		$sanitized_domain = strtolower($domain);
+
+
+		$parts = array_reverse(explode('.', $sanitized_domain));
+
 		$line = '';
-		$out = array('*@'.$tmp);		// First element looks for domain as email address
-		foreach ($em as $e)
+		$out = [];
+
+		foreach($parts as $part)
 		{
-			$line = '.'.$e.$line;
-			$out[] = '*'.$line;
+			$line = '.' . $part . $line;
+			$out[] = '*' . $line;
 		}
-		if ($fieldName)
+
+		if($fieldName)
 		{
-			foreach ($out as $k => $v)
+			foreach($out as $k => $v)
 			{
-				$out[$k] = '(`'.$fieldName."`='".$v."')";
+				$out[$k] = "(`$fieldName`='$v')";
 			}
 		}
+
 		return $out;
 	}
 
@@ -830,26 +828,45 @@ class eIPHandler
 	 *	@param string $email - email address to process
 	 *	@param string $fieldname - name of field being searched in DB
 	 *
-	 *	@return bool|string false if invalid address. Otherwise returns a set of values to check
+	 *	@return bool|string|array false if invalid address. Otherwise returns a set of values to check
 	 *	(Moved in from user_handler.php)
 	 */
 	public function makeEmailQuery($email, $fieldname = 'banlist_ip')
 	{
-		$tp = e107::getParser();
-		$tmp = strtolower($tp -> toDB(trim(substr($email, strrpos($email, "@")+1))));	// Pull out the domain name
-		if ($tmp == '') return FALSE;
-		if (strpos($tmp,'.') === FALSE) return FALSE;
-		$em = array_reverse(explode('.',$tmp));
-		$line = '';
-		$out = array($fieldname."='*@{$tmp}'");		// First element looks for domain as email address
-		foreach ($em as $e)
-		{
-			$line = '.'.$e.$line;
-			$out[] = '`'.$fieldname."`='*{$line}'";
-		}
-		return implode(' OR ',$out);
-	}
 
+		$email = trim($email);
+		if(!filter_var($email, FILTER_VALIDATE_EMAIL))
+		{
+			return $fieldname ? false : [];
+		}
+
+		$sanitized_email = addslashes($email);
+
+		$domain = strtolower(substr($email, strrpos($email, '@') + 1));
+
+		if($domain === '' || strpos($domain, '.') === false)
+		{
+			return $fieldname ? false : [];
+		}
+
+		$out = [
+			"$sanitized_email", // Specific email (e.g., user@mydomain.co.uk)
+			"*@$domain"         // Domain ban (e.g., *@mydomain.co.uk)
+		];
+
+		if($fieldname)
+		{
+
+			$out = [
+				"`$fieldname`='$sanitized_email'",
+				"`$fieldname`='*@$domain'"
+			];
+
+			return implode(' OR ', $out);
+		}
+
+		return $out;
+	}
 
 
 /**
@@ -897,34 +914,26 @@ class eIPHandler
 
 			if ($ip !== e107::LOCALHOST_IP && ($ip !== e107::LOCALHOST_IP2) && ($ip !== $this->serverIP)) // Check host name, user email to see if banned
 			{
-				$vals = array();
+				$vals = [];
+
 				if (e107::getPref('enable_rdns'))
 				{
 					$vals = array_merge($vals, $this->makeDomainQuery($this->get_host_name($ip), ''));
 				}
-				if ((defined('USEREMAIL') && USEREMAIL))
+				if(deftrue('USEREMAIL'))
 				{
-						// @todo is there point to this? Usually avoid a complete query if we skip it
-					$vals = array_merge($vals, $this->makeDomainQuery(USEREMAIL, ''));
+					$vals = array_merge($vals, $this->makeEmailQuery(USEREMAIL, ''));
 				}
 				if (count($vals))
 				{
 					$vals = array_unique($vals);			// Could get identical values from domain name check and email check
 
-					if($this->debug)
-					{
-						print_a($vals);
-					}
-
-
 					$match = "`banlist_ip`='".implode("' OR `banlist_ip`='", $vals)."'";
+
 					$this->checkBan($match);
 				}
 			}
-			elseif($this->debug)
-			{
-				print_a("IP is LocalHost -  skipping ban-check");
-			}
+
 		}
 	}
 
@@ -934,7 +943,6 @@ class eIPHandler
 	 * Check the banlist table. $query is used to determine the match.
 	 * If $do_return, will always return with ban status - TRUE for OK, FALSE for banned.
 	 * If return permitted, will never display a message for a banned user; otherwise will display any message then exit
-	 * @todo consider whether can be simplified
 	 *
 	 * @param string $query - the 'WHERE' part of the DB query to be executed
 	 * @param boolean $show_error - if true, adds a '403 Forbidden' header for a banned user
@@ -943,89 +951,129 @@ class eIPHandler
 	 */
 	public function checkBan($query, $show_error = true, $do_return = false)
 	{
+		$call_id = uniqid();
+		$session_key = 'ban_check_' . md5($query);
+		$session = e107::getSession('eIPHandler');
+
+		// Long-term cache (360 seconds)
+		if($session->has($session_key))
+		{
+			$cached = $session->get($session_key);
+			if(isset($cached['timestamp']) && (time() - $cached['timestamp'] <= 360))
+			{
+				return $cached['result'];
+			}
+		}
+
+		// Short-term in-memory cache (1 second) using registry
+		$cache_key = md5($query);
+		$current_time = microtime(true);
+		$recent_checks = e107::getRegistry('core/eIPHandler/checkBan', []);
+
+		if(isset($recent_checks[$cache_key]) && ($current_time - $recent_checks[$cache_key]['time'] <= 1))
+		{
+		//	e107::getLog()->addEvent(4, __FILE__ . "|" . __FUNCTION__ . "@" . __LINE__, "DBG", "Using registry cache (Call: $call_id)", "Result: " . ($recent_checks[$cache_key]['result'] ? 'true' : 'false'), false, LOG_TO_ROLLING);
+
+			return $recent_checks[$cache_key]['result'];
+		}
+
 		$sql = e107::getDb();
 		$pref = e107::getPref();
 		$tp = e107::getParser();
-		$admin_log = e107::getLog();
+		$log = e107::getLog();
 
-		//$admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Check for Ban",$query,FALSE,LOG_TO_ROLLING);
-		if ($sql->select('banlist', '*', $query.' ORDER BY `banlist_bantype` DESC'))
+		$caller = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
+
+		$callerFunction = $caller['function']."() in ". basename($caller['file']);;
+		$log->addEvent(4, __FILE__ . "|" . __FUNCTION__ . "@" . __LINE__, "DBG", "Check for Ban ", $query."\nCall: $call_id\nCaller: $callerFunction", false, LOG_TO_ROLLING);
+
+		$full_query = "SELECT * FROM banlist WHERE $query ORDER BY `banlist_bantype` DESC";
+
+		$result = true;
+		$sqlResult = $sql->select('banlist', '*', $query . ' ORDER BY `banlist_bantype` DESC');
+	//	$log->addEvent(4, __FILE__ . "|" . __FUNCTION__ . "@" . __LINE__, "DBG", "SQL Select Result (Call: $call_id)", "Query: $query, Result: " . ($sqlResult !== false ? 'Found' : 'Not Found'), false, LOG_TO_ROLLING);
+
+		if($sqlResult)
 		{
-			// Any whitelist entries will be first, because they are positive numbers - so we can answer based on the first DB record read
 			$row = $sql->fetch();
 			if($row['banlist_bantype'] >= eIPHandler::BAN_TYPE_WHITELIST)
 			{
-				//$admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Whitelist hit",$query,FALSE,LOG_TO_ROLLING);
-				return true;        // Whitelisted entry
-			}
 
-			// Found banlist entry in table here
-			if(($row['banlist_banexpires'] > 0) && ($row['banlist_banexpires'] < time()))
-			{ // Ban has expired - delete from DB
+				$log->addEvent(4, __FILE__ . "|" . __FUNCTION__ . "@" . __LINE__, "DBG", "Whitelist hit\nCall: $call_id", $query, false, LOG_TO_ROLLING);
+
+			}
+			elseif(($row['banlist_banexpires'] > 0) && ($row['banlist_banexpires'] < time()))
+			{
 				$sql->delete('banlist', $query);
-				$this->regenerateFiles();
+				$log->addEvent(4, __FILE__ . "|" . __FUNCTION__ . "@" . __LINE__, "DBG", "Ban Expired ", $row['banlist_ip']."\nCall: $call_id", false, LOG_TO_ROLLING);
 
-				return true;
-			}
-			
-			// User is banned hereafter - just need to sort out the details.
-			// May need to retrigger ban period
-			if (!empty($pref['ban_retrigger']) && !empty($pref['ban_durations'][$row['banlist_bantype']]))
-			{
-				$dur = (int) $pref['ban_durations'][$row['banlist_bantype']];
-				$updateQry = array(
-					'banlist_banexpires'    => (time() + ($dur * 60 * 60)),
-					'WHERE'                 => "banlist_ip ='".$row['banlist_ip']."'"
-				);
-
-				$sql->update('banlist', $updateQry);
 				$this->regenerateFiles();
-				//$admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Retrigger Ban",$row['banlist_ip'],FALSE,LOG_TO_ROLLING);
 			}
-			//$admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Active Ban",$query,FALSE,LOG_TO_ROLLING);
-			if ($show_error)
+			else
 			{
-				header('HTTP/1.1 403 Forbidden', true);
-			}
-			// May want to display a message
-			if (!empty($pref['ban_messages']))
-			{
-				// Ban still current here
-				if($do_return)
+				if(!empty($pref['ban_retrigger']) && !empty($pref['ban_durations'][$row['banlist_bantype']]))
 				{
-					return false;
+					$dur = (int) $pref['ban_durations'][$row['banlist_bantype']];
+					$updateQry = array(
+						'banlist_banexpires' => (time() + ($dur * 60 * 60)),
+						'WHERE'              => "banlist_ip ='" . $row['banlist_ip'] . "'"
+					);
+					$sql->update('banlist', $updateQry);
+					$this->regenerateFiles();
+
+					$log->addEvent(4, __FILE__ . "|" . __FUNCTION__ . "@" . __LINE__, "DBG", "Retrigger Ban ", $row['banlist_ip']."\nCall: $call_id", false, LOG_TO_ROLLING);
+
 				}
 
-				echo $tp->toHTML(varset($pref['ban_messages'][$row['banlist_bantype']])); 	// Show message if one set
-			}
-			//$admin_log->addEvent(4, __FILE__."|".__FUNCTION__."@".__LINE__, 'BAN_03', 'LAN_AUDIT_LOG_003', $query, FALSE, LOG_TO_ROLLING);
+				$log->addEvent(4, __FILE__ . "|" . __FUNCTION__ . "@" . __LINE__, "DBG", "Active Ban ", $query."\nCall: $call_id", false, LOG_TO_ROLLING);
 
-			if($this->debug)
-			{
-				echo "<pre>query: ".$query;
-				echo "\nBanned</pre>";
-			}
+				if($show_error)
+				{
+					header('HTTP/1.1 403 Forbidden', true);
+				}
+				if(!empty($pref['ban_messages']))
+				{
+					if($do_return)
+					{
+						$result = false;
+					}
+					else
+					{
+						echo $tp->toHTML(varset($pref['ban_messages'][$row['banlist_bantype']]));
+					}
+				}
 
-			// added missing if clause
-			if ($do_return)
-			{
-				return false;
-			}
+				$log->addEvent(4, __FILE__ . "|" . __FUNCTION__ . "@" . __LINE__, 'BAN_03', 'LAN_AUDIT_LOG_003', $query, false, LOG_TO_ROLLING);
 
-			exit();
+				if($do_return)
+				{
+					$result = false;
+				}
+				else
+				{
+					exit();
+				}
+			}
 		}
 
-		if($this->debug)
-		{
-			echo "query: ".$query;
-			echo "<br />Not Banned ";
-		}
+		$log->addEvent(4, __FILE__ . "|" . __FUNCTION__ . "@" . __LINE__, "DBG", "No ban found ", $query."\nCall: $call_id\nCaller: $callerFunction", false, LOG_TO_ROLLING);
 
+		// Store in short-term in-memory cache (1 second) using registry
+		$recent_checks[$cache_key] = [
+			'result' => $result,
+			'time'   => $current_time
+		];
 
-		//$admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","No ban found",$query,FALSE,LOG_TO_ROLLING);
-		return true; 		// Email address OK
+		e107::setRegistry('core/eIPHandler/checkBan', $recent_checks);
+
+		// Store in long-term session cache (10 seconds)
+		$session->set($session_key, [
+			'result'    => $result,
+			'timestamp' => time()
+		]);
+
+		return $result;
 	}
-
 
 
 	/**
@@ -1052,6 +1100,7 @@ class eIPHandler
 
 		$sql = e107::getDb();
 		$pref = e107::getPref();
+		$log = e107::getLog();
 
 		switch ($bantype)		// Convert from 'internal' ban types to those used in the DB
 		{
@@ -1076,10 +1125,10 @@ class eIPHandler
 		if ($sql->select('banlist', '`banlist_bantype`', "`banlist_ip`='{$ban_ip}'"))
 		{
 			list($banType) = $sql->fetch();
-			
-			if ($banType >= eIPHandler::BAN_TYPE_WHITELIST)
-			{ // Got a whitelist entry for this
-				//$admin_log->addEvent(4, __FILE__."|".__FUNCTION__."@".__LINE__, "BANLIST_11", 'LAN_AL_BANLIST_11', $ban_ip, FALSE, LOG_TO_ROLLING);
+
+			if ($banType >= eIPHandler::BAN_TYPE_WHITELIST) // Got a whitelist entry for this
+			{
+				$log->addEvent(4, __FILE__."|".__FUNCTION__."@".__LINE__, "BANLIST_11", 'LAN_AL_BANLIST_11', $ban_ip, FALSE, LOG_TO_ROLLING);
 				return FALSE;
 			}
 			return 1;		// Already in ban list
@@ -1096,17 +1145,21 @@ class eIPHandler
 			$ban_message .= 'Host: '.$this->get_host_name($ban_ip);
 		}
 		// Add using an array - handles DB changes better
-		$sql->insert('banlist', 
+		if(!$sql->insert('banlist',
 			array(
 				'banlist_id'			=> 0,
-				'banlist_ip' 			=> $ban_ip , 
-				'banlist_bantype' 		=> $bantype , 
-				'banlist_datestamp' 	=> time() , 
+				'banlist_ip' 			=> $ban_ip ,
+				'banlist_bantype' 		=> $bantype ,
+				'banlist_datestamp' 	=> time() ,
 				'banlist_banexpires' 	=> (vartrue($pref['ban_durations'][$bantype]) ? time()+($pref['ban_durations'][$bantype]*60*60) : 0) ,
-				'banlist_admin' 		=> $ban_user , 
-				'banlist_reason' 		=> $ban_message , 
+				'banlist_admin' 		=> $ban_user ,
+				'banlist_reason' 		=> $ban_message ,
 				'banlist_notes' 		=> $ban_notes
-			));
+			)))
+		{
+			trigger_error("Error adding ban to banlist table", E_USER_WARNING);;
+			// dbg("Error adding ban to banlist table");
+		}
 
 		$this->regenerateFiles();
 		return TRUE;
@@ -1288,9 +1341,9 @@ class banlistManager
 
 	public function __construct()
 	{
-		e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_banlist.php");
+		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_banlist.php");
 		$this->ourConfigDir = e107::getIPHandler()->getConfigDir();
-		$this->banTypes = array( // Used in Admin-ui. 
+		$this->banTypes = array( // Used in Admin-ui.
 			'-1' 				=> BANLAN_101, // manual
 			'-2'				=> BANLAN_102, // Flood
 			'-3'				=> BANLAN_103, // Hits
@@ -1300,8 +1353,8 @@ class banlistManager
 			'-8'				=> BANLAN_107, // Imported
 			'100'				=> BANLAN_120 // Whitelist
 		);
-		
-		
+
+
 	}
 
 	/**
@@ -1311,7 +1364,7 @@ class banlistManager
 	{
 		return array(
 			eIPHandler::BAN_TYPE_LEGACY,
-			eIPHandler::BAN_TYPE_MANUAL, 
+			eIPHandler::BAN_TYPE_MANUAL,
 			eIPHandler::BAN_TYPE_FLOOD,
 			eIPHandler::BAN_TYPE_HITS,
 			eIPHandler::BAN_TYPE_LOGINS,
@@ -1320,7 +1373,7 @@ class banlistManager
 														// Spare value
 			eIPHandler::BAN_TYPE_UNKNOWN
 			);
-	} 
+	}
 
 
 	/**
@@ -1338,7 +1391,7 @@ class banlistManager
 	 *		BAN_FILE_CSV_NAME
 	 *		BAN_FILE_EXTENSION		File extension to append
 	 *
-	 */ 
+	 */
 	public function writeBanListFiles($options = 'ip', $typeList = '')
 	{
 		e107::getMessage()->addDebug("Writing new Banlist files.");
@@ -1406,15 +1459,15 @@ class banlistManager
 				}
 			}
 		}
-		
+
 		// Now close each file
 		foreach ($optList as $opt)
 		{
 			fclose($fileList[$opt]);
 		}
-		
+
 		// Finally, delete the working file, rename the temporary one
-		// Docs suggest that 'newname' is auto-deleted if it exists (as it usually should) 
+		// Docs suggest that 'newname' is auto-deleted if it exists (as it usually should)
 		//		- but didn't appear to work, hence copy then delete
 		foreach ($optList as $opt)
 		{
@@ -1439,12 +1492,12 @@ class banlistManager
 	{
 		$ip = trim($ip);
 		$temp = strpos($ip, 'x');
-		if ($temp !== FALSE) 
+		if ($temp !== FALSE)
 		{
 			return substr($ip, 0, $temp);
 		}
 		$temp = strpos($ip, '*');
-		if ($temp !== FALSE) 
+		if ($temp !== FALSE)
 		{
 			return substr($ip, 0, $temp);
 		}
@@ -1489,7 +1542,7 @@ class banlistManager
 
 			case eIPHandler::BAN_TYPE_WHITELIST :
 				return BANLAN_120;		// Special case - may never occur
-			case eIPHandler::BAN_TYPE_UNKNOWN :	
+			case eIPHandler::BAN_TYPE_UNKNOWN :
 			default :
 				if (($banType > 0) && ($banType < 9))
 				{
@@ -1512,7 +1565,7 @@ class banlistManager
 	public function writeBanMessageFile()
 	{
 		$pref['ban_messages'] = e107::getPref('ban_messages');
-		
+
 		$oldName = $this->ourConfigDir.eIPHandler::BAN_FILE_ACTION_NAME.'_tmp'.eIPHandler::BAN_FILE_EXTENSION;
 		if ($tmp = fopen($oldName, 'w'))
 		{
@@ -1576,8 +1629,8 @@ class banlistManager
 		$ret = array_slice($vals, -$start - $count, $count);
 		return array_reverse($ret);
 	}
-	
-	
+
+
 	/**
 	 *	Converts one of the strings returned in a getLogEntries string into an array of values
 	 *
@@ -1599,7 +1652,7 @@ class banlistManager
 		$ret['banNotes'] = str_replace("\n", '', $temp[3]);
 		return $ret;
 	}
-	
+
 
 	/**
 	 *	Delete ban Log file
@@ -1638,7 +1691,7 @@ class banlistManager
 			return 0;			// Probably no retrigger actions
 		}
 		@unlink($fileName);				// Delete the action file now we've read it in.
-		
+
 		// Scan the list completely before doing any processing - this will ensure we only process the most recent entry for each IP address
 		while (count($entries) > 0)
 		{

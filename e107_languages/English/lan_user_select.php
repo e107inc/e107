@@ -12,9 +12,12 @@
 
 // DEPRECATED - SUBJECT TO REMOVAL
 
-define("US_LAN_1", "Select user");
-define("US_LAN_2", "Select user class");
-define("US_LAN_3", "All users");
-define("US_LAN_4", "Find username");
-define("US_LAN_5", "User(s) found");
-define("US_LAN_6", "Search");
+
+return [
+    'US_LAN_1' => "Select user",
+    'US_LAN_2' => "Select user class",
+    'US_LAN_3' => "All users",
+    'US_LAN_4' => "Find username",
+    'US_LAN_5' => "User(s) found",
+    'US_LAN_6' => "Search",
+];

@@ -34,21 +34,20 @@ $FAQS_TEMPLATE['all']['end'] = "
 $FAQS_TEMPLATE['caption'] = "{FAQ_CAPTION} <small>{FAQ_COUNT}</small>";
 
 
-/** @experimental */
-$FAQS_TEMPLATE['schema']['start'] = '{
+$FAQS_TEMPLATE['schema'] = '
+{
       "@context": "https://schema.org",
       "@type": "FAQPage",
-      "mainEntity": [';
-
-$FAQS_TEMPLATE['schema']['item'] = '{
-        "@type": "Question",
-        "name": "{FAQ_QUESTION}",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "{FAQ_ANSWER}"
-        }
-}';
-
-$FAQS_TEMPLATE['schema']['end'] = ']
-    }
-   ';
+      "mainEntity": [
+        {
+	        "@type": "Question",
+	        "name": "{FAQ_QUESTION: html=0}",
+	        "acceptedAnswer": 
+	        {
+	          "@type": "Answer",
+	          "text": "{FAQ_ANSWER: html=0}"
+	        }
+		}
+	]
+}
+';
