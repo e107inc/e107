@@ -93,7 +93,7 @@ class userlogin
 		$username = trim($username);
 		$userpass = trim($userpass);
 
-		if($_E107['cli'] && ($username == ''))
+		if(!empty($_E107['cli']) && ($username == ''))
 		{
 			return FALSE;
 		}
@@ -300,7 +300,7 @@ class userlogin
 
 		$cookieval = $this->validLogin($this->userData, $autologin);
 
-		if($_E107['cli'])
+		if(!empty($_E107['cli']))
 		{
 			return $cookieval;
 		}

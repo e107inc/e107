@@ -385,11 +385,6 @@ class faq
 		$sc->tag = htmlspecialchars(varset($tag), ENT_QUOTES, 'utf-8');
 		$sc->category = varset($category);
 
-		if(!empty($schemaTemplate['start']))
-		{
-			$schema = $tp->parseSchemaTemplate($schemaTemplate['start'],false,$sc);
-		}
-
 		 if(!empty($_GET['id'])) // expand one specific FAQ.
 		{
 			$sc->item =intval($_GET['id']);
@@ -407,7 +402,7 @@ class faq
 	//	$text = $tp->parseTemplate($FAQ_START, true, $sc);
 
 	//	$text = "";
-
+		$start = false;
 
 
 		if($this->pref['list_type'] == 'ol')
@@ -419,17 +414,14 @@ class faq
 			$FAQ_LISTALL['end'] = str_replace($tsrch,$trepl, $FAQ_LISTALL['end']);
 		}
 
-		$schemaItems = [];
+
 		foreach ($data as $rw)
 		{
 			$rw['faq_sef'] = eHelper::title2sef($tp->toText($rw['faq_question']),'dashl');
 
 			$sc->setVars($rw);
 
-			if(!empty($schemaTemplate['item']))
-			{
-				$schemaItems[] = $tp->parseSchemaTemplate($schemaTemplate['item'],false,$sc);
-			}
+
 
 			if($sc->item == $rw['faq_id'])
 			{
@@ -445,7 +437,7 @@ class faq
 				}
 				$text .= "\n\n<!-- FAQ Start ".$rw['faq_info_order']."-->\n\n";
 				$text .= $tp->parseTemplate($FAQ_LISTALL['start'], true, $sc);
-				$start = TRUE;
+				$start = true;
 			}
 
 			$text .= $tp->parseTemplate($FAQ_LISTALL['item'], true, $sc);
@@ -453,24 +445,27 @@ class faq
 			$sc->counter++;
 		}
 
-		if(!empty($schemaItems))
-		{
-			$schema .= implode(",", $schemaItems);
-		}
+
 
 		$text .= ($start) ? $tp->parseTemplate($FAQ_LISTALL['end'], true, $sc) : "";
 
-		if(!empty($schemaTemplate['end']))
+		if(!empty($schemaTemplate))
 		{
-			$schema .= $tp->parseSchemaTemplate($schemaTemplate['end'],false,$sc);
-		}
+			if(isset($schemaTemplate['end']) && isset($schemaTemplate['item']) && isset($schemaTemplate['start']))
+			{
+				$schemaTpl =  $schemaTemplate['start']."\n".$schemaTemplate['item']."\n".$schemaTemplate['end'];
+				$schema = $tp->parseSchemaTemplate($schemaTpl, true, $sc, $data);
+			}
+			elseif(is_string($schemaTemplate))
+			{
+				$schema = $tp->parseSchemaTemplate($schemaTemplate, true, $sc, $data);
+			}
 
-		if(!empty($schema))
-		{
-
-			e107::schema($schema);
+			if(!empty($schema))
+			{
+				e107::schema($schema);
+			}
 		}
-//		$text .= $tp->parseTemplate($FAQ_END, true, $sc);
 
 		return $text;
 		

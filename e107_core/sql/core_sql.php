@@ -40,6 +40,9 @@ CREATE TABLE admin_log (
   dblog_remarks text NOT NULL,
   PRIMARY KEY  (dblog_id),
   KEY dblog_datestamp (dblog_datestamp)
+  KEY dblog_eventcode (dblog_eventcode),
+  KEY dblog_eventcode_title (dblog_eventcode,dblog_title),
+  KEY dblog_user_id (dblog_user_id)
 ) ENGINE=InnoDB;
 # --------------------------------------------------------
 
@@ -210,6 +213,25 @@ CREATE TABLE generic (
   KEY gen_type (gen_type)
 ) ENGINE=InnoDB;
 # --------------------------------------------------------
+
+CREATE TABLE admin_history (
+history_id int(10) unsigned NOT NULL auto_increment,
+history_table varchar(64) NOT NULL default '',
+history_pid varchar(64) NOT NULL default '',
+history_record_id int(10) unsigned NOT NULL default '0',
+history_action enum('delete','restore','update') NOT NULL,
+history_data LONGTEXT,
+history_user_id int(10) unsigned NOT NULL default '0',
+history_datestamp int(10) unsigned NOT NULL default '0',
+history_restored int(10) unsigned NOT NULL default '0',
+PRIMARY KEY (history_id),
+KEY history_table_record (history_table, history_record_id),
+KEY history_datestamp (history_datestamp)
+) ENGINE=InnoDB;
+
+
+
+
 
 #
 # Table structure for table `links` (navigation)

@@ -435,6 +435,10 @@ class forum_front
 					$data['LASTPOSTUSER'] = !empty($row['user_name']) ? "<a href='" . e107::url('user/profile/view', array('name' => $row['user_name'], 'id' => $row['thread_lastuser'])) . "'>" . $row['user_name'] . "</a>" : LAN_ANONYMOUS;
 					$data['LASTPOSTDATE'] = $tp->toDate($row['thread_lastpost'], 'relative');
 
+					$data['LASTPOSTUSERAVATAR'] =  $tp->toAvatar(e107::user($row['thread_lastuser']));
+					$data['VIEWS'] = $tp->toNumber($row['thread_views']);
+					$data['REPLIES'] = $tp->toNumber($row['thread_total_replies']);
+					
 					$buttonId = "forum-track-button-" . intval($row['thread_id']);
 
 					$forumUrl = e107::url('forum', 'forum', $row);

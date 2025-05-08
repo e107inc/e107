@@ -27,7 +27,7 @@ define('e_CAPTCHA_FONTCOLOR','#F9A533');
 // Required for a clean v1.x -> v2 upgrade. 
 $core = e107::getConfig();
 $adminTheme = $core->get('admintheme');
-if($adminTheme !== 'bootstrap3'/* && $adminTheme !== 'bootstrap5'*/)
+if($adminTheme !== 'bootstrap3' /*&& $adminTheme !== 'bootstrap5'*/)
 {
 	$core->update('admintheme','bootstrap3');
 	$core->update('adminstyle','infopanel');
@@ -51,12 +51,14 @@ if(USER && !getperms('0') && vartrue($pref['multilanguage']) && !getperms(e_LANG
 	$lng = e107::getLanguage();
 
 	$tmp = explode(".",ADMINPERMS);
+
 	foreach($tmp as $ln)
 	{
-		if(strlen($ln) < 3) // not a language perm.
-		{
-			continue;
-		}
+
+		if(strlen($ln) < 3 || preg_match('/\d/', $ln)) // Skip if less than 2 chars or contains a number
+	    {
+	        continue;
+	    }
 
 		if($lng->isValid($ln))
 		{

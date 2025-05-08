@@ -1124,7 +1124,7 @@ class download_shortcodes extends e_shortcode
 		{
 			$dlrowrow = $sql->fetch();
 			extract($dlrowrow);
-			$url = $url = e107::url('download', 'item', $dlrowrow);
+			$url = e107::url('download', 'item', $dlrowrow);
 
 
 			return "<a class='" . $class . "' href='" . $url . "' title=\"" . $dlrowrow['download_name'] . "\">" . LAN_NEXT . " " . $icon . "</a>\n";
