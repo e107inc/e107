@@ -65,7 +65,7 @@ class page_admin extends e_admin_dispatcher
 	protected $adminMenu = array(
 		'overview/list'	=> array('caption'=> CUSLAN_1, 'perm' => '5|J'), 
 		'page/list'		=> array('caption'=> CUSLAN_48, 'perm' => '5'),
-		'menu/list'		=> array('caption'=> CUSLAN_49, 'perm' => 'J', 'tab' => 2),
+		'menu/list'		=> array('caption'=> CUSLAN_49, 'perm' => 'J', 'tab' => 2, 'icon' => 'fa-bars'),
 
 		'page/create' 	=> array('caption'=> CUSLAN_12, 'perm' => '5'),
 		'other' 		=> array('divider'=> true),
