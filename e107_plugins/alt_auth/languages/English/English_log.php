@@ -16,9 +16,9 @@
  *	@subpackage	alt_auth
  */
 
-define("LAN_AL_AUTH_01","Alt auth Settings changed");
-define("LAN_AL_AUTH_02","Alt auth extended user classes changed");
-define("LAN_AL_AUTH_03","Alt auth method settings changed");
 
-
-
+return [
+    'LAN_AL_AUTH_01' => "Alt auth Settings changed",
+    'LAN_AL_AUTH_02' => "Alt auth extended user classes changed",
+    'LAN_AL_AUTH_03' => "Alt auth method settings changed",
+];

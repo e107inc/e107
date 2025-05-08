@@ -17,7 +17,12 @@ if (!getperms("P"))
 	exit;
 }
 
+e107::css('inline', '
 
+.admin-ui-nav-menu .has-badge span:first-child > i:after { content: "·"; font-size:30px; color:#51a351}
+
+
+');
 class plugin_blank_admin extends e_admin_dispatcher
 {
 	/**
@@ -45,10 +50,12 @@ class plugin_blank_admin extends e_admin_dispatcher
 	 * @var array
 	 */
 	protected $adminMenu = array(
-		'main/list'			=> array('caption'=> 'Manage', 'perm' => '0'),
-		'main/create' 		=> array('caption'=> LAN_CREATE, 'perm' => '0'),
-		'main/prefs' 		=> array('caption'=> 'Settings', 'perm' => '0'),
-		'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => '0')
+		'main/list'			=> array('caption'=> 'Manage', 'perm' => 'P'),
+		'main/create' 		=> array('caption'=> 'LAN_CREATE', 'perm' => 'P'),
+		'main/prefs' 		=> array('caption'=> 'Settings', 'perm' => '0', 'icon'=>'fa-cog'),
+		'main/custom'		=> array('caption'=> 'Custom Pages', 'perm' => 'P', 'icon'=>'fa-asterisk'),
+		'main/custom1'        => array('group'=>'main/custom', 'caption' => 'Custom Page 1', 'perm' => 'P', 'icon' => ''),
+        'main/custom2'        => array('group'=>'main/custom', 'caption' => 'Custom Page 2', 'perm' => '0', 'icon' => ''),
 	);
 
 	/**
@@ -66,6 +73,16 @@ class plugin_blank_admin extends e_admin_dispatcher
 	 * @var string
 	 */
 	protected $menuTitle = 'blank Menu';
+
+
+	function init()
+	{
+
+		$count = '&#10003;';
+		$badgStyle = 'success'; // warning | danger | info
+		$this->adminMenu['main/custom1']['badge'] = array('value' => $count, 'type'=>$badgStyle);
+
+	}
 }
 
 
@@ -296,12 +313,15 @@ class plugin_blank_admin_ui extends e_admin_ui
 		}
 		
 		
-		public function customPage()
+		public function custom1Page()
 		{
-			$ns = e107::getRender();
-			$text = "Hello World!";
-			$ns->tablerender("Hello",$text);	
-			
+			return "Hello World Customer Page 1!";
+
+		}
+
+		public function custom2Page()
+		{
+			return "Hello World Customer Page 2!";
 		}
 	
 		// left-panel help menu area. (replaces e_help.php used in old plugins)	

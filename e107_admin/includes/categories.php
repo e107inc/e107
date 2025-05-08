@@ -69,7 +69,7 @@ foreach ($admin_cat['id'] as $cat_key => $cat_id)
 
 $text .= "</table></div>";
 
-$ns->tablerender(ADLAN_47." ".ADMINNAME, $mes->render().$text);
+e107::getRender()->tablerender(ADLAN_47." ".ADMINNAME, $mes->render().$text);
 
 echo admin_info();
 

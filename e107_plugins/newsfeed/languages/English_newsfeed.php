@@ -14,14 +14,13 @@
  * $Author$
  *
 */
-define("NFLAN_29", "Available newsfeeds");
-define("NFLAN_31", "Back to newsfeed list");
-define("NFLAN_33", "Date published: ");
-define("NFLAN_34", "not known");
-define("NFLAN_38", "Headlines");
-define("NFLAN_39", "Details");
-define("NFLAN_48", "Unable to save raw data in database.");
 
-
-
-
+return [
+    'NFLAN_29' => "Available newsfeeds",
+    'NFLAN_31' => "Back to newsfeed list",
+    'NFLAN_33' => "Date published:",
+    'NFLAN_34' => "not known",
+    'NFLAN_38' => "Headlines",
+    'NFLAN_39' => "Details",
+    'NFLAN_48' => "Unable to save raw data in database.",
+];

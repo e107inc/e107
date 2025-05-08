@@ -356,13 +356,14 @@ class frontpage
 		elseif(vartrue($_GET['id']))
 		{
 			$key = intval($_GET['id']);
-			$text = $this->edit_rule($fp_settings[$key]); // Display edit form as well
+			$val = $fp_settings[$key] ?? array();
+			$text = $this->edit_rule($val); // Display edit form as well
 		//	$text .= $this->select_class($fp_settings, FALSE);
-			$ns->tablerender(FRTLAN_PAGE_TITLE.SEP.FRTLAN_46, $text);
+			$ns->tablerender(FRTLAN_PAGE_TITLE.defset('SEP').FRTLAN_46, $text);
 		}
 		else
 		{ // Just show existing rules
-			$ns->tablerender(FRTLAN_PAGE_TITLE.SEP.FRTLAN_13, $mes->render().$this->select_class($fp_settings, TRUE));
+			$ns->tablerender(FRTLAN_PAGE_TITLE.defset('SEP').FRTLAN_13, $mes->render().$this->select_class($fp_settings, TRUE));
 		}
 		
 	}
@@ -475,13 +476,13 @@ class frontpage
 
 			$text_tmp_1 .= "
 			<tr>
-				".$this->show_front_val('frontpage', $front_key, $front_value, $is_other_home, $rule_info['page'])."
+				".$this->show_front_val('frontpage', $front_key, $front_value, $is_other_home, varset($rule_info['page']))."
 			</tr>
 		  	";
 
 			$text_tmp_2 .= "
 			<tr>
-				".$this->show_front_val('fp_force_page', $front_key, $front_value, $is_other_force, $rule_info['force'])."
+				".$this->show_front_val('fp_force_page', $front_key, $front_value, $is_other_force, varset($rule_info['force']))."
 			</tr>
 		  	";
 
@@ -491,12 +492,12 @@ class frontpage
 
 		$text = "
 		<form method='post' action='".e_SELF."'>
-		<input type='hidden' name='e-token' value='".e_TOKEN."' />
+		<input type='hidden' name='e-token' value='".defset('e_TOKEN')."' />
 		";
 		
 		$text .= '<ul class="nav nav-tabs" id="myTabs">
-			<li class="active"><a data-toggle="tab" data-bs-toggle="tab" href="#home">'.FRTLAN_49.'</a></li>
-			<li><a data-toggle="tab" data-bs-toggle="tab" href="#postlogin">'.FRTLAN_35.'</a></li>
+			<li class="active"><a data-toggle="tab" data-bs-toggle="tab" href="#home">'.defset('FRTLAN_49').'</a></li>
+			<li><a data-toggle="tab" data-bs-toggle="tab" href="#postlogin">'.defset('FRTLAN_35').'</a></li>
 			</ul>
 			 ';
 			
@@ -558,11 +559,11 @@ class frontpage
 				</colgroup>
 				<tr>
 					<td>".FRTLAN_43."</td>
-					<td>".e107::getUserClass()->uc_dropdown('class', $rule_info['class'], 'public,guest,member,admin,main,classes')."</td>
+					<td>".e107::getUserClass()->uc_dropdown('class', varset($rule_info['class']), 'public,guest,member,admin,main,classes')."</td>
 				</tr>
 				<tr>
 					<td>".LAN_ORDER."</td>
-					<td>".$this->frm->number('fp_order', $rule_info['order'], 3, 'min=0')."</td>
+					<td>".$this->frm->number('fp_order', varset($rule_info['order']), 3, 'min=0')."</td>
 				</tr>
 			</table>
 			

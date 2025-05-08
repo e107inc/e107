@@ -75,7 +75,7 @@ class links_admin_ui extends e_admin_ui
 		'link_button'		=> array('title'=> LAN_ICON, 		'type'=>'icon',			'width'=>'5%',		'thclass'=>'center',		'class'=>'center',	'readParms'=>array('legacy'=>'{e_IMAGE}icons/'),	'writeParms'=>'glyphs=1'),
 		'link_id'			=> array('title'=> LAN_ID, 			'type'=>'method',		'readParms'=>'',	'noedit'=>TRUE),
 		'link_name'			=> array('title'=> LAN_NAME,		'type'=>'text',			'inline'=>true,		'required'=>false,		'validate'=>false,	'width'=>'auto', 'writeParms'=>array('size'=>'xlarge')), // not required as only an icon may be used.
-		'link_category'		=> array('title'=> LAN_TEMPLATE,	'type'=>'dropdown',		'inline'=>true,		'batch'=>true,			'filter'=>true,		'width'=>'auto', 'writeParms'=>array('size'=>'xlarge')),
+		'link_category'		=> array('title'=> LAN_TEMPLATE,	'type'=>'dropdown',	'data'=>'str',	'inline'=>true,		'batch'=>true,			'filter'=>true,		'width'=>'auto', 'writeParms'=>array('size'=>'xlarge')),
 
 		'link_parent'		=> array('title'=> LAN_PARENT,		'type' => 'method',		'data'=>'int',		'width'=>'auto',		'batch'=>true,		'filter'=>true,		'thclass'=>'left first', 'writeParms'=>array('size'=>'xlarge')),
 		'link_url'	   		=> array('title'=> LAN_URL, 		'width'=>'auto', 'type'=>'method', 'inline'=>true, 'required'=>true,'validate' => true, 'writeParms'=>'size=xxlarge'),
