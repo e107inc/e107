@@ -40,6 +40,9 @@ CREATE TABLE admin_log (
   dblog_remarks text NOT NULL,
   PRIMARY KEY  (dblog_id),
   KEY dblog_datestamp (dblog_datestamp)
+  KEY dblog_eventcode (dblog_eventcode),
+  KEY dblog_eventcode_title (dblog_eventcode,dblog_title),
+  KEY dblog_user_id (dblog_user_id)
 ) ENGINE=InnoDB;
 # --------------------------------------------------------
 
