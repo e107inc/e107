@@ -15,6 +15,8 @@
  *
 */
 
-define("NWSF_FP_1", "News Feeds");
-define("NWSF_FP_2", "main page");
 
+return [
+    'NWSF_FP_1' => "News Feeds",
+    'NWSF_FP_2' => "main page",
+];

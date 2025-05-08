@@ -318,7 +318,7 @@ class e_parse
 	 * NOTE: can't be called until CHARSET is known
 	 * but we all know that it is UTF-8 now
 	 *
-	 * @return void
+	 * @return void|null
 	 */
 	public function setMultibyte($bool)
 	{
@@ -854,25 +854,116 @@ class e_parse
 		return e107::getScParser()->parseCodes($text, $parseSCFiles, $extraCodes, $eVars);
 	}
 
+
 	/**
-	 * @experimental
-	 * @param string       $text
-	 * @param bool         $parseSCFiles
-	 * @param object|array $extraCodes
-	 * @param object       $eVars
-	 * @return string
+	 * Parses a JSON schema template, processes placeholders, and reconstructs the JSON with optional main entity and extra codes.
+	 *
+	 * @param string      $text         The JSON schema template to be parsed.
+	 * @param bool        $parseSCFiles Whether to enable the parsing of shortcode files. Defaults to true.
+	 * @param object|null $extraCodes   Optional extra codes object for placeholder parsing.
+	 * @param array|null  $mainEntity   Optional data array to replace the 'mainEntity' structure in the schema.
+	 * @return string|false The processed JSON schema string on success, or false if the input JSON is invalid.
 	 */
-	public function parseSchemaTemplate($text, $parseSCFiles = true, $extraCodes = null, $eVars = null)
+	public function parseSchemaTemplate($text, $parseSCFiles = true, $extraCodes = null, $mainEntity = null)
 	{
+
+		// Initialize the parser
 		$parse = e107::getScParser();
-		$parse->setMode('schema');
-		$text = e107::getScParser()->parseCodes($text, $parseSCFiles, $extraCodes, $eVars);
-		$text = str_replace('<!-- >', '', $text); // cleanup
+		$parse->setMode('schema'); // Set parsing mode for schema
+
+		// Step 1: Decode the JSON input into an array
+		$jsonArray = json_decode($text, true);
+
+		// Step 2: Validate JSON decoding
+		if(json_last_error() !== JSON_ERROR_NONE)
+		{
+			 error_log('Invalid JSON: ' . json_last_error_msg());
+			 return false;
+
+		}
+
+		// Step 3: Recursive function to process the JSON structure
+		$processItems = function (&$item) use (&$processItems, $parse, $parseSCFiles, $extraCodes, $mainEntity)
+		{
+
+			if(is_array($item))
+			{
+				// Check if the current item contains 'mainEntity', the target of our processing
+				if(isset($item['mainEntity']) && is_array($mainEntity))
+				{
+					// Get the first template item from the 'mainEntity' array to use as the structure
+					$schemaTemplate = $item['mainEntity'][0];
+					$item['mainEntity'] = []; // Reset the 'mainEntity' array to prevent duplication
+
+					foreach($mainEntity as $dataRow)
+					{
+
+						// Create a fresh copy of the schema template for this specific dataRow
+						$duplicatedItem = json_decode(json_encode($schemaTemplate), true);
+
+						// Update the extraCodes for the current data row
+						if(method_exists($extraCodes, 'setVars'))
+						{
+							$extraCodes->setVars($dataRow); // Inject new placeholders from this row
+						}
+
+						// Process placeholders in the duplicated item
+						foreach($duplicatedItem as &$value)
+						{
+							if(is_string($value) && strpos($value, '{') !== false)
+							{
+								// Parse placeholders for current dataRow
+								$value = $parse->parseCodes($value, $parseSCFiles, $extraCodes);
+								$value = html_entity_decode($value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+								$value = strip_tags($value);
+							}
+							elseif(is_array($value))
+							{
+								// Recursively process arrays (e.g., nested structures)
+								$processItems($value);
+							}
+						}
+
+						// Append the processed item to the 'mainEntity' array
+						$item['mainEntity'][] = $duplicatedItem;
+					}
+				}
+				else
+				{
+					// Recursively process other parts of the JSON structure
+					foreach($item as &$value)
+					{
+						$processItems($value);
+					}
+				}
+			}
+			elseif(is_string($item))
+			{
+				// Parse string placeholders, if any
+				if(strpos($item, '{') !== false)
+				{
+
+					$item = $parse->parseCodes($item, $parseSCFiles, $extraCodes);
+					$item = str_replace('&amp;', '&', $item);
+					$item = html_entity_decode($item, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+					 $item = strip_tags($item);
+
+
+				}
+			}
+		};
+
+		// Step 4: Initiate processing for the entire JSON structure
+		$processItems($jsonArray);
+
+		// Reset the parse mode after processing
 		$parse->setMode('default');
 
-		return $text;
-
+		// Step 5: Encode the final result back into JSON
+		return json_encode($jsonArray, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 	}
+
+
 
 
 	/**
@@ -1804,7 +1895,7 @@ class e_parse
 		}
 		elseif (is_string($mixed))
 		{
-			return iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($mixed));
+			return iconv('UTF-8', 'UTF-8//IGNORE', mb_convert_encoding($mixed, 'UTF-8', 'ISO-8859-1'));
 		}
 
 		return $mixed;
@@ -2174,9 +2265,10 @@ class e_parse
 
 		$search = array('&amp;#039;', '&amp;#036;', '&#039;', '&#036;', '&#092;', '&amp;#092;');
 		$replace = array("'", '$', "'", '$', "\\", "\\");
-		$text = str_replace($search, $replace, $text);
 
-		return $text;
+		return str_replace($search, $replace, $text);
+
+
 	}
 
 
@@ -2224,7 +2316,7 @@ class e_parse
 	/**
 	 * Retrieve img tag width and height attributes for current thumbnail.
 	 *
-	 * @return string
+	 * @return string|null
 	 */
 	public function thumbDimensions($type = 'single')
 	{
@@ -2293,7 +2385,7 @@ class e_parse
 	 *
 	 * @param string $path  The file path of the image whose alternate text is being cached.
 	 * @param string $value The alternate text value to cache.
-	 * @return string or false on failure
+	 * @return string|false String or false on failure
 	 */
 	public function setImageAltCacheFile($path, $value)
 	{
@@ -3251,7 +3343,7 @@ class e_parse
 
 			$replace = ((string) $mode === 'full' || (string) $mode === 'abs') ? $replace_absolute : $replace_relative;
 
-			return str_replace($search, $replace, $text);
+			return !empty($text) ? str_replace($search, $replace, $text) : $text;
 		}
 
 //		$pattern = ($all ? "#\{([A-Za-z_0-9]*)\}#s" : "#\{(e_[A-Z]*)\}#s");
@@ -3877,7 +3969,7 @@ class e_parse
 	/**
 	 * Generic variable translator for LAN definitions.
 	 *
-	 * @param                $lan  - string LAN
+	 * @param string $lan  - string LAN or LAN constant.
 	 * @param string | array $vals - either a single value, which will replace '[x]' or an array with key=>value pairs.
 	 * @return string
 	 * @example $tp->lanVars("My name is [x] and I own a [y]", array("John","Cat"));
@@ -3885,7 +3977,7 @@ class e_parse
 	 */
 	public function lanVars($lan, $vals, $bold = false)
 	{
-
+		$lan = defset($lan, $lan);
 		$array = (!is_array($vals)) ? array('x' => $vals) : $vals;
 
 		$search = array();
@@ -3905,6 +3997,17 @@ class e_parse
 		}
 
 		return str_replace($search, $replace, $lan);
+	}
+
+
+	public function lanLink($lan, $url, $options=[])
+	{
+		$srch =["[", "]"];
+		$repl = ["<a target='_blank' href='" .$url . "'>", "</a>"];
+
+		$text = defset($lan, $lan);
+
+		return str_replace($srch, $repl, $text);
 	}
 
 	/**
@@ -4395,10 +4498,21 @@ class e_parse
 
 		if (!empty($options['base64'])) // embed image data into URL.
 		{
-			$content = e107::getFile()->getRemoteContent($url); // returns false during unit tests, works otherwise.
+			$content = '';
+
+			if(!empty($file))
+			{
+				$content = file_get_contents($file);
+				$ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+			}
+			else
+			{
+				$content = e107::getFile()->getRemoteContent($url);
+				$ext = strtolower(pathinfo($url, PATHINFO_EXTENSION));
+			}
+
 			if (!empty($content))
 			{
-				$ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
 				$url = 'data:image/' . $ext . ';base64,' . base64_encode($content);
 			}
 		}
@@ -4556,8 +4670,9 @@ class e_parse
 	 *  'legacy'    => (array)		 Usually a legacy path like {e_FILE}
 	 *  'type'		=> (array)		 Force the returned image to be a jpg, webp etc.
 	 * ]
-	 * @return string
+	 *
 	 * @example $tp->toImage('welcome.png', array('legacy'=>{e_IMAGE}newspost_images/','w'=>200));
+	 * @return string|null
 	 */
 	public function toImage($file, $parm = array())
 	{
@@ -4716,6 +4831,12 @@ class e_parse
 		if (empty($path))
 		{
 			return null;
+		}
+
+		if(varset($parm['return']) === 'url')
+		{
+			$path = $tp->createConstants($path, 'mix');
+			return $tp->replaceConstants($path, 'full');
 		}
 
 		$html .= "<img {$id}class=\"{$class}\" src=\"" . $path . '" alt="' . $alt . '" ' . $srcset . $width . $height . $style . $loading . $title . ' />';
@@ -4923,7 +5044,27 @@ class e_parse
 
 		$file = $this->replaceConstants($file, 'abs');
 
-		$mime = varset($parm['mime'], 'audio/mpeg');
+	    $ext = pathinfo($file, PATHINFO_EXTENSION);
+
+	    switch (strtolower($ext))
+	    {
+
+	        case 'wav':
+	            $mime = 'audio/wav';
+	            break;
+	        case 'ogg':
+	            $mime = 'audio/ogg';
+	            break;
+	        case 'mp3':
+	        default:
+	             $mime = 'audio/mpeg';
+	            break;
+	    }
+
+		if(!empty($parm['mime']))
+		{
+			$mime = $parm['mime'];
+		}
 
 		$autoplay = !empty($parm['autoplay']) ? 'autoplay ' : '';
 		$controls = !empty($parm['controls']) ? 'controls' : '';
@@ -5084,6 +5225,11 @@ class e_parse
 			$height = varset($parm['h'], 240);
 			$mime = varset($parm['mime'], 'video/mp4');
 
+			if($height === 0)
+			{
+				$height = 'auto';
+			}
+
 			return '
 			<div class="video-responsive">
 			<video width="' . $width . '" height="' . $height . '" controls>
@@ -5105,7 +5251,7 @@ class e_parse
 	 *
 	 * @param integer $datestamp - unix timestamp
 	 * @param string  $format    - short | long | relative
-	 * @return string converted date (html)
+	 * @return string|null converted date (html)
 	 */
 	public function toDate($datestamp = null, $format = 'short')
 	{
@@ -5355,11 +5501,7 @@ class e_parse
 		// Set it up for processing.
 
 		libxml_use_internal_errors(true);
-		if (function_exists('mb_convert_encoding'))
-		{
-			$html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
-
-		}
+		$html = mb_encode_numericentity($html, [0x80, 0xffff, 0, 0xffff], 'UTF-8');
 
 		//	$fragment = $doc->createDocumentFragment();
 		//	$fragment->appendXML($html);

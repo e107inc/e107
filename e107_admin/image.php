@@ -136,16 +136,16 @@ class media_admin extends e_admin_dispatcher
 
 
 	protected $adminMenu = array(
-		'main/grid'			=> array('caption'=> LAN_IMA_M_01, 'perm' => 'A'),
+		'main/grid'			=> array('caption'=> 'LAN_IMA_M_01', 'perm' => 'A', 'icon'=>'fas-grip'),
 	//	'main/create' 		=> array('caption'=> "Add New Media", 'perm' => 'A'), // Should be handled in Media-Import.
-		'main/import' 		=> array('caption'=> LAN_IMA_M_02, 'perm' => 'A|A1'),
+		'main/import' 		=> array('caption'=> 'LAN_IMA_M_02', 'perm' => 'A|A1', 'icon'=>'fa-upload'),
 			'divider/01'        => array('divider'=>true),
-		'cat/list' 			=> array('caption'=> LAN_IMA_M_03, 'perm' => 'A|A2'),
-		'cat/create' 		=> array('caption'=> LAN_IMA_M_04, 'perm' => 'A|A2'), // is automatic.
-	//	'main/settings' 	=> array('caption'=> LAN_PREFS, 'perm' => 'A'), // legacy
+		'cat/list' 			=> array('caption'=> 'LAN_IMA_M_03', 'perm' => 'A|A2'),
+		'cat/create' 		=> array('caption'=> 'LAN_IMA_M_04', 'perm' => 'A|A2'), // is automatic.
+	//	'main/settings' 	=> array('caption'=> 'LAN_PREFS', 'perm' => 'A'), // legacy
 		'divider/02'        => array('divider'=>true),
-		'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'A'),
-		'main/avatar'		=> array('caption'=> LAN_IMA_M_05, 'perm' => 'A')
+		'main/prefs' 		=> array('caption'=> 'LAN_PREFS', 'perm' => 'A'),
+		'main/avatar'		=> array('caption'=> 'LAN_IMA_M_05', 'perm' => 'A')
 	);
 
 	protected $adminMenuIcon = 'e-images-24';
@@ -3079,7 +3079,7 @@ class media_admin_ui extends e_admin_ui
 			$text .= "</div>
 
 			<div class='col-md-12 spacer clearfix'>
-				<div class='row buttons-bar'>
+				<div class='buttons-bar'>
 					<input type='hidden' name='show_avatars' value='1' />
 					".$frm->admin_button('e_check_all', LAN_CHECKALL, 'action'). '
 					' .$frm->admin_button('e_uncheck_all', LAN_UNCHECKALL, 'action'). '

@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2025 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -25,14 +25,17 @@
  */
 
 // TODO: Some message meanings not currently known
-define("LAN_AL_DOWNL_01", "Downloads - download options changed");
-define("LAN_AL_DOWNL_02", "Downloads - upload options changed");
-define("LAN_AL_DOWNL_03", "Downloads - limit added");
-define("LAN_AL_DOWNL_04", "Downloads - log 04");
-define("LAN_AL_DOWNL_05", "Downloads - log 05");
-define("LAN_AL_DOWNL_06", "Downloads - log 06");
-define("LAN_AL_DOWNL_07", "Downloads - log 07");
-define("LAN_AL_DOWNL_08", "Downloads - log 08");
-define("LAN_AL_DOWNL_09", "Downloads - log 09");
-define("LAN_AL_DOWNL_10", "Downloads - limit updated");
-define("LAN_AL_DOWNL_11", "Downloads - limit removed");
+
+return [
+    'LAN_AL_DOWNL_01' => "Downloads - download options changed",
+    'LAN_AL_DOWNL_02' => "Downloads - upload options changed",
+    'LAN_AL_DOWNL_03' => "Downloads - limit added",
+    'LAN_AL_DOWNL_04' => "Downloads - log 04",
+    'LAN_AL_DOWNL_05' => "Downloads - log 05",
+    'LAN_AL_DOWNL_06' => "Downloads - log 06",
+    'LAN_AL_DOWNL_07' => "Downloads - log 07",
+    'LAN_AL_DOWNL_08' => "Downloads - log 08",
+    'LAN_AL_DOWNL_09' => "Downloads - log 09",
+    'LAN_AL_DOWNL_10' => "Downloads - limit updated",
+    'LAN_AL_DOWNL_11' => "Downloads - limit removed",
+];
