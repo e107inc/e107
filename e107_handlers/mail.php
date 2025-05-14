@@ -168,7 +168,7 @@ class e107Email extends PHPMailer
 
 	public	$legacyBody 		= false;	// true enables legacy conversion of plain text body to HTML in HTML emails
 	private $debug 				= false;	// echos various debug info when set to true. 
-	private $pref 				= array();	// Store code prefs. 
+
 	private $previewMode		= false;
 	private $previewAttachments = array();
 	private $overrides			 = array(
@@ -218,7 +218,6 @@ class e107Email extends PHPMailer
 			$this->Debugoutput = 'handlePHPMailerDebug';	
 		}
 		
-		$this->pref = $pref;
 
 		$this->CharSet = 'utf-8';
 		$this->setLanguage(CORE_LC);
@@ -356,7 +355,7 @@ class e107Email extends PHPMailer
 			$this->DKIM_private     = $privatekeyfile;
 			$this->DKIM_selector    = 'phpmailer';
 			$this->DKIM_passphrase  = ''; //key is not encrypted
-			$this->DKIM_identifier  = $this->From;
+			$this->DKIM_identity    = $this->From;
 		}
 
 
@@ -513,86 +512,82 @@ class e107Email extends PHPMailer
 	 * If the name field for an entry is blank, or there are not enough entries, the address is substituted
 	 * @return bool true if list accepted, false if invalid list name
 	 */
-	public function AddAddressList($list = 'to',$addresses='',$names = '')
+	public function AddAddressList($list = 'to', $addresses = '', $names = '')
 	{
-		$list = trim(strtolower($list));
-		$tmp = explode(',',$addresses);
 
-		if (strpos($names,',') === false)
+		$list = trim(strtolower($list));
+		$tmp = explode(',', $addresses);
+
+		if(strpos($names, ',') === false)
 		{
-			$names = array_fill(0,count($tmp),$names);		// Same value for all addresses
+			$names = array_fill(0, count($tmp), $names);        // Same value for all addresses
 		}
 		else
 		{
-			$names = explode(',',$names);
+			$names = explode(',', $names);
 		}
+
 		foreach($tmp as $k => $adr)
 		{
 			$to_name = ($names[$k]) ? $names[$k] : $adr;
-			switch ($list)
+
+			switch($list)
 			{
 				case 'to' :
 					try
 					{
 						$this->addAddress($adr, $to_name);
 					}
-					catch (Exception $e)
+					catch(Exception $e)
 					{
 						$this->logLine($e->getMessage());
 					}
 
 					break;
+
 				case 'replyto' :
 					try
 					{
 						$this->addReplyTo($adr, $to_name);
 					}
-					catch (Exception $e)
+					catch(Exception $e)
 					{
 						$this->logLine($e->getMessage());
 					}
 
 					break;
+
 				case 'cc' :
-					if($this->Mailer == 'mail')
-					{
-						$this->addCustomHeader('Cc: '.$adr);
-					}
-					else
-					{
-						try
-						{
-							$this->addCC($adr, $to_name);
-						}
-						catch (Exception $e)
-						{
-							$this->logLine($e->getMessage());
-						}
 
+					try
+					{
+						$this->addCC($adr, $to_name);
 					}
+					catch(Exception $e)
+					{
+						$this->logLine($e->getMessage());
+					}
+
 					break;
+
 				case 'bcc' :
-					if($this->Mailer == 'mail')
-					{
-						$this->addCustomHeader('Bcc: '.$adr);
-					}
-					else
-					{
-						try
-						{
-							$this->addBCC($adr, $to_name);
-						}
-						catch (Exception $e)
-						{
-							$this->logLine($e->getMessage());
-						}
 
+					try
+					{
+						$this->addBCC($adr, $to_name);
 					}
+					catch(Exception $e)
+					{
+						$this->logLine($e->getMessage());
+					}
+
 					break;
+
 				default :
 					return false;
 			}
 		}
+
 		return true;
 	}
 
@@ -842,9 +837,12 @@ class e107Email extends PHPMailer
 			$eml['shortcodes']['BODY'] 	= !empty($eml['body']) ? $tp->toEmail($eml['body']) : '';	
 		}
 		*/
+
+		$siteTheme = e107::getConfig()->get('site_theme');
+
 		$eml['shortcodes']['BODY'] 		= !empty($eml['body']) ? $eml['body'] : ''; // $tp->toEmail($eml['body']) : '';
 		$eml['shortcodes']['SUBJECT'] 	= !empty($eml['subject']) ? $eml['subject'] : '';
-		$eml['shortcodes']['THEME'] 	= ($this->previewMode == true) ? e_THEME_ABS.$this->pref['sitetheme'].'/' :  e_THEME.$this->pref['sitetheme'].'/'; // Always use front-end theme path. 
+		$eml['shortcodes']['THEME'] 	= ($this->previewMode) ? e_THEME_ABS.$siteTheme.'/' :  e_THEME.$siteTheme.'/'; // Always use front-end theme path.
 
 
 
