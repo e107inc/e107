@@ -7,7 +7,6 @@
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  */
-
 if(!defined('e107_INIT'))
 {
 	require_once(__DIR__.'/../../class2.php');
@@ -19,42 +18,45 @@ if (!e107::isInstalled('forum'))
 	exit;
 }
 
+//class forumStats  // Why a class? Why instatiate?
+//{
+	require_once(HEADERF);
+//	private $from = 0;
+//	private $view = 20;
 
-class forumStats
-{
+//	$from = 0;
+//	$view = 20;
 
-	private $from = 0;
-	private $view = 20;
-
-
-
-	function __construct()
-	{
+//	function __construct()
+//	{
 		//include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_stats.php');
 		//e107::lan('forum','front');
 		e107::lan('forum', "front", true);
 		e107::css('forum', 'forum.css');
-	}
+//	}
 
 
-	function init()
-	{
+//	function init()
+//	{
 
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 		$ns = e107::getRender();
 		$frm = e107::getForm();
+		$template = e107::getTemplate('forum','forum_stats');
 
+		$sc = e107::getScBatch('stats', 'forum');
 
-		require_once(e_PLUGIN.'forum/forum_class.php');
+//		$sc['TOTAL_POSTS']= 5000000;
+//		require_once(e_PLUGIN.'forum/forum_class.php');  // Really needed ? No call to the class is made....
 		$gen = e107::getDate();
 
-		$forum = new e107forum;
+//		$forum = new e107forum;
 
-		$total_posts = $sql->count('forum_post');
-		$total_topics = $sql->count('forum_thread');
-		$total_replies = $total_posts - $total_topics;
-		$total_views = 0;
+//		$total_posts = $sql->count('forum_post'); // há mais
+//		$total_topics = $sql->count('forum_thread'); // há mais
+//		$total_replies = $total_posts - $total_topics; // há mais
+/*		$total_views = 0;
 
 		$query = 'SELECT sum(thread_views) AS total FROM `#forum_thread` ';
 		if ($sql->gen($query))
@@ -62,34 +64,42 @@ class forumStats
 			$row = $sql->fetch();
 			$total_views = $row['total'];
 		}
+*/
 
-		$firstpost = $sql->select('forum_post', 'post_datestamp', 'post_datestamp > 0 ORDER BY post_datestamp ASC LIMIT 0,1', 'default');
-		$fp = $sql->fetch();
+//		$firstpost = $sql->select('forum_post', 'post_datestamp', 'post_datestamp > 0 ORDER BY post_datestamp ASC LIMIT 0,1', 'default'); // Var not used
+		$sql->select('forum_post', 'post_datestamp', 'post_datestamp > 0 ORDER BY post_datestamp ASC LIMIT 0,1', 'default');
+ 		$fp = $sql->fetch();
 		$fp = is_array($fp) ? $fp : array();
 
-		$open_ds = (int) varset($fp['post_datestamp']);
-		$open_date = $gen->convert_date($open_ds, 'long');
-		$open_since = $gen -> computeLapse($open_ds);
-		$open_days = floor((time()-$open_ds) / 86400);
-		$postsperday = ($open_days < 1 ? $total_posts : round($total_posts / $open_days));
+//		$sc->setVars(array('open_ds' => ((int) varset($fp['post_datestamp']))));
+		$SCvars_0['open_ds']  = (int) varset($fp['post_datestamp']);
+
+//		$open_ds = (int) varset($fp['post_datestamp']);
+//		$open_date = $gen->convert_date($open_ds, 'long');
+//		$open_since = $gen -> computeLapse($open_ds);
+//		$open_days = floor((time()-$open_ds) / 86400);
+//		$postsperday = ($open_days < 1 ? $total_posts : round($total_posts / $open_days));
 
 		global $mySQLdefaultdb;
 
 		$query = "SHOW TABLE STATUS FROM `{$mySQLdefaultdb}`";
 		$sql->gen($query);
 		$array = $sql -> db_getList();
-		$db_size = 0;
-		$avg_row_len = 0;
+//		$db_size = 0;
+//		$avg_row_len = 0;
 		foreach($array as $table)
 		{
 			if($table['Name'] == MPREFIX.'forum_post')
 			{
-				$db_size = eHelper::parseMemorySize($table['Data_length']);
-				$avg_row_len = eHelper::parseMemorySize($table['Avg_row_length']);
+//				$db_size = eHelper::parseMemorySize($table['Data_length']);
+//				$avg_row_len = eHelper::parseMemorySize($table['Avg_row_length']);
+
+				$SCvars_0['db_size'] = eHelper::parseMemorySize($table['Data_length'])??0;
+				$SCvars_0['avg_row_len'] = eHelper::parseMemorySize($table['Avg_row_length']??0);
 				break;
 			}
 		}
-
+/*
 		$query = "
 		SELECT ft.thread_id, ft.thread_user, ft.thread_name, ft.thread_total_replies, ft.thread_datestamp, f.forum_sef, f.forum_class, u.user_name, u.user_id FROM #forum_thread as ft
 		LEFT JOIN #user AS u ON ft.thread_user = u.user_id
@@ -100,7 +110,8 @@ class forumStats
 
 		$sql->gen($query);
 		$most_activeArray = $sql->db_getList();
-
+*/
+/*
 		$query = "
 		SELECT ft.*, f.forum_class, f.forum_sef, u.user_name, u.user_id FROM #forum_thread as ft
 		LEFT JOIN #user AS u ON ft.thread_user = u.user_id
@@ -110,7 +121,7 @@ class forumStats
 
 		$sql->gen($query);
 		$most_viewedArray = $sql->db_getList();
-
+*/
 			/*$sql->select("user", "user_id, user_name, user_forums", "ORDER BY user_forums DESC LIMIT 0, 10", "no_where");
 			$posters = $sql -> db_getList();
 			$top_posters = array();
@@ -123,7 +134,7 @@ class forumStats
 
 
 		// get all replies
-		$query = "
+/*		$query = "
 		SELECT COUNT(fp.post_id) AS post_count, u.user_name, u.user_id, fp.post_thread FROM #forum_post as fp
 		LEFT JOIN #user AS u ON fp.post_user = u.user_id
 		GROUP BY fp.post_user
@@ -142,9 +153,9 @@ class forumStats
 			$topReplier[] = intval($poster['user_id']);
 			$top_posters[] = array("user_id" => $poster['user_id'], "user_name" => vartrue($poster['user_name'],LAN_ANONYMOUS), "user_forums" => $poster['post_count'], "percentage" => $percent);
 		}
-			// end build top posters
+*/			// end build top posters
 
-		$ids = implode(',', $topReplier);
+/*		$ids = implode(',', $topReplier);
 
 		// find topics by top 10 users
 		$query = "
@@ -169,7 +180,6 @@ class forumStats
 		}
 
 		// sort
-
 		arsort($top_repliers_sort, SORT_NUMERIC);
 
 		// build top repliers
@@ -177,7 +187,8 @@ class forumStats
 		{
 			$top_repliers[] = $top_repliers_data[$uid];
 		}
-
+*/
+/*
 		// get all replies
 		$query = "
 		SELECT COUNT(ft.thread_id) AS thread_count, u.user_name, u.user_id FROM #forum_thread as ft
@@ -194,7 +205,7 @@ class forumStats
 			$percent = round(($poster['thread_count'] / $total_topics) * 100, 2);
 			$top_topic_starters[] = array("user_id" => $poster['user_id'], "user_name" => vartrue($poster['user_name'],LAN_ANONYMOUS), "user_forums" => $poster['thread_count'], "percentage" => $percent);
 		}
-
+*/
 			/*
 			$query = "
 			SELECT SUBSTRING_INDEX(thread_user,'.',1) AS t_user, COUNT(SUBSTRING_INDEX(ft.thread_user,'.',1)) AS ucount, u.user_name, u.user_id FROM #forum_t as ft
@@ -235,7 +246,8 @@ class forumStats
 
 
 
-		$text_0 = "
+/*
+		$text_0 = ($template['text_0']??"
 		<table style='width: 100%;' class='fborder table'>
 			<tr><td style='width: 50%; text-align: right;'><b>".LAN_FORUM_6001.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$open_date}</td></tr>
 			<tr><td style='width: 50%; text-align: right;'><b>".LAN_FORUM_6002.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$open_since}</td></tr>
@@ -246,11 +258,13 @@ class forumStats
 			<tr><td style='width: 50%; text-align: right;'><b>".LAN_FORUM_6014.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$postsperday}</td></tr>
 			<tr><td style='width: 50%; text-align: right;'><b>".LAN_FORUM_6006.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$db_size}</td></tr>
 			<tr><td style='width: 50%; text-align: right;'><b>".LAN_FORUM_6007.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$avg_row_len}</td></tr>
-		</table>";
+		</table>");
+*/ // Templates are always defined in the template file, by default.... No need for this hardcode
 
+		$sc->setVars($SCvars_0);
+		$text_0 = $tp->parseTemplate($template['text_0'], true, $sc);
 
-
-
+/*
 		$text_1 = "
 		<table style='width: 100%;' class='fborder table'>
 		<thead>
@@ -263,43 +277,86 @@ class forumStats
 		</tr>
 		</thead>
 		";
+*/
+//		$text_1 = $tp->parseTemplate($template['text_1']['start'], true);
+//		$count=1;
+//		$fstatsSCvars['count'] = 1;
 
-		$count=1;
-
-		foreach($most_activeArray as $ma)
-		{
-			if($ma['user_name'])
-			{
+//		foreach($most_activeArray as $ma)
+//		{
+//			if($ma['user_name'])
+//			{
 				//$uinfo = "<a href='".e_HTTP."user.php ?id.{$ma['user_id']}'>{$ma['user_name']}</a>"; //TODO SEf Url .
+/*
 				$uparams = array('id' => $ma['user_id'], 'name' => $ma['user_name']);
 				$link = e107::getUrl()->create('user/profile/view', $uparams);
 				$uinfo = "<a href='".$link."'>".$ma['user_name']."</a>";
-			}
-			else
-			{
-				$tmp = explode(chr(1), $ma['thread_anon']);
-				$uinfo = $tp->toHTML($tmp[0]);
-			}
+*/
+//				$uinfo = "<a href='".e107::getUrl()->create('user/profile/view', array('id' => $ma['user_id'], 'name' => $ma['user_name']))."'>".$ma['user_name']."</a>";
+//			}
+//			else
+//			{
+//				$tmp = explode(chr(1), $ma['thread_anon']);
+//				$uinfo = $tp->toHTML($tmp[0]);
+//			}
 
-			$ma['thread_sef'] = eHelper::title2sef($ma['thread_name'],'dashl');
-			$url = e107::url('forum','topic', $ma);
+//			$ma['thread_sef'] = eHelper::title2sef($ma['thread_name'],'dashl');
+//			$url = e107::url('forum','topic', $ma);
 
-			$text_1 .= "
-			<tr>
-			<td style='width: 10%; text-align: center;' class='forumheader3'>$count</td>
-			<td style='width: 40%;' class='forumheader3'><a href='".$url."'>{$ma['thread_name']}</a></td>
-			<td style='width: 10%; text-align: center;' class='forumheader3'>{$ma['thread_total_replies']}</td>
-			<td style='width: 20%; text-align: center;' class='forumheader3'>{$uinfo}</td>
-			<td style='width: 20%; text-align: center;' class='forumheader3'>".$gen->convert_date($ma['thread_datestamp'], "forum")."</td>
-			</tr>
-			";
+//			$text_1 .= $tp->parseTemplate($template['text_1']['item'], true, $sc);
 
-			$count++;
-		}
+//			$count++;
+//		}
+/*
+$query = "
+SELECT ft.thread_id, ft.thread_user, ft.thread_name, ft.thread_total_replies, ft.thread_datestamp, f.forum_sef, f.forum_class, u.user_name, u.user_id FROM #forum_thread as ft
+LEFT JOIN #user AS u ON ft.thread_user = u.user_id
+LEFT JOIN #forum AS f ON f.forum_id = ft.thread_forum_id
+WHERE ft.thread_active > 0
+AND f.forum_class IN (".USERCLASS_LIST.")
+ORDER BY ft.thread_total_replies DESC LIMIT 0,10";
+*/
+////$sql->gen($query);
+//$most_activeArray = 
 
-		$text_1 .= "</table>";
+////		foreach($sql->db_getList() as $SCvars_1['ma'])
+////		{
+//			if($fstatsSCvars['ma']['user_name'])
+//			{
+				//$uinfo = "<a href='".e_HTTP."user.php ?id.{$ma['user_id']}'>{$ma['user_name']}</a>"; //TODO SEf Url .
+/*
+				$uparams = array('id' => $ma['user_id'], 'name' => $ma['user_name']);
+				$link = e107::getUrl()->create('user/profile/view', $uparams);
+				$uinfo = "<a href='".$link."'>".$ma['user_name']."</a>";
+*/
+//				$uinfo = "<a href='".e107::getUrl()->create('user/profile/view', array('id' => $fstatsSCvars['ma']['user_id'], 'name' => $fstatsSCvars['ma']['user_name']))."'>".$fstatsSCvars['ma']['user_name']."</a>";
+//			}
+//			else
+//			{
+//				$tmp = explode(chr(1), $fstatsSCvars['ma']['thread_anon']);
+//				$uinfo = $tp->toHTML($tmp[0]);
+//			}
+
+//			$fstatsSCvars['ma']['thread_sef'] = eHelper::title2sef($fstatsSCvars['ma']['thread_name'],'dashl');
+//			$url = e107::url('forum','topic', $fstatsSCvars['ma']);
+
+////			$sc->setVars($SCvars_1);
+////			$text_1 .= $tp->parseTemplate($template['text_1']['item'], true, $sc);
+
+//			$fstatsSCvars['count']++;
+////		}
+////		$text_1 .= $tp->parseTemplate($template['text_1']['end'], true, $sc);
+
+		$text_1 = FS_render_table("
+SELECT ft.thread_id, ft.thread_user, ft.thread_name, ft.thread_total_replies, ft.thread_datestamp, f.forum_sef, f.forum_class, u.user_name, u.user_id FROM #forum_thread as ft
+LEFT JOIN #user AS u ON ft.thread_user = u.user_id
+LEFT JOIN #forum AS f ON f.forum_id = ft.thread_forum_id
+WHERE ft.thread_active > 0
+AND f.forum_class IN (".USERCLASS_LIST.")
+ORDER BY ft.thread_total_replies DESC LIMIT 0,10", $template['text_1'], $sc);
 
 
+/*
 		$text_2 = "
 		<table style='width: 100%;' class='fborder table'>
 		<thead>
@@ -346,10 +403,15 @@ class forumStats
 		}
 
 		$text_2 .= "</table>";
+*/
+		$text_2 = FS_render_table("
+		SELECT ft.*, f.forum_class, f.forum_sef, u.user_name, u.user_id FROM #forum_thread as ft
+		LEFT JOIN #user AS u ON ft.thread_user = u.user_id
+		LEFT JOIN #forum AS f ON f.forum_id = ft.thread_forum_id
+		WHERE f.forum_class IN (".USERCLASS_LIST.")
+		ORDER BY ft.thread_views DESC LIMIT 0,10", $template['text_2'], $sc);
 
-
-
-
+/*
 		$text_3 = "
 		<table style='width: 100%;' class='fborder table'>
 		<thead>
@@ -372,7 +434,7 @@ class forumStats
 			<td style='width: 20%;' class='forumheader3'><a href='".e107::url('user/profile/view', $ma)."'>".$ma['user_name']."</a></td>
 			<td style='width: 10%; text-align: center;' class='forumheader3'>".$ma['user_forums']."</td>
 			<td style='width: 10%; text-align: center;' class='forumheader3'>".$ma['percentage']."%</td>
-			<td style='width: 50%;' class='forumheader3'>".$this->showBar($ma['percentage'])."
+			<td style='width: 50%;' class='forumheader3'>".showBar($ma['percentage'])."
 			</td>
 			</tr>
 			";
@@ -383,8 +445,45 @@ class forumStats
 		$text_3 .= "</tbody>
 		</table>
 		";
+*/
+
+		$query = "
+		SELECT COUNT(fp.post_id) AS post_count, u.user_name, u.user_id, fp.post_thread FROM #forum_post as fp
+		LEFT JOIN #user AS u ON fp.post_user = u.user_id
+		GROUP BY fp.post_user
+		ORDER BY post_count DESC LIMIT 0,10";
+
+		$sql->gen($query);
+	 	$top_repliers_data = $sql->db_getList('ALL', false, false, 'user_id');
+//		$top_repliers_data = $sql->retrieve($query,true);
+
+		// build top posters meanwhile
+		$top_posters = array();
+		$topReplier = array();
+		$temp = call_user_func('plugin_forum_stats_shortcodes::sc_total_posts');
+//		var_dump ($temp);
+		foreach($top_repliers_data as $poster)
+		{
+//			$percent = round(($poster['post_count'] / call_user_func('plugin_forum_stats_shortcodes::sc_total_posts')) * 100, 2);
+			$percent = round(($poster['post_count'] / $sc->sc_total_posts()) * 100, 2);
+//		var_dump ($percent);
+			$topReplier[] = intval($poster['user_id']);
+			$top_posters[] = array("user_id" => $poster['user_id'], "user_name" => vartrue($poster['user_name'],LAN_ANONYMOUS), "user_forums" => $poster['post_count'], "percentage" => $percent);
+		}
+
+		$text_3 = FS_render_table($top_posters, $template['text_3'], $sc);
 
 
+
+
+
+
+
+
+
+
+
+/*
 		$text_4 = "
 		<table style='width: 100%;' class='fborder table'>
 		<thead>
@@ -406,15 +505,39 @@ class forumStats
 			<td style='width: 20%;' class='forumheader3'><a href='".e107::url('user/profile/view', $ma)."'>".$ma['user_name']."</a></td>
 			<td style='width: 10%; text-align: center;' class='forumheader3'>".$ma['user_forums']."</td>
 			<td style='width: 10%; text-align: center;' class='forumheader3'>".$ma['percentage']."%</td>
-			<td style='width: 50%; text-align: center;' class='forumheader3'>".$this->showBar($ma['percentage'])."</td>
+			<td style='width: 50%; text-align: center;' class='forumheader3'>".showBar($ma['percentage'])."</td>
 			</tr>
 			";
 			$count++;
 		}
 
 		$text_4 .= "</table>";
+*/
+		// get all replies
+		$query = "
+		SELECT COUNT(ft.thread_id) AS thread_count, u.user_name, u.user_id FROM #forum_thread as ft
+		LEFT JOIN #user AS u ON ft.thread_user = u.user_id
+		GROUP BY ft.thread_user
+		ORDER BY thread_count DESC LIMIT 0,10";
+
+		$sql->gen($query);
+		$top_topic_starters_data = $sql->db_getList();
+		$top_topic_starters = array();
+
+		foreach($top_topic_starters_data as $poster)
+		{
+//			$percent = round(($poster['thread_count'] / call_user_func('plugin_forum_stats_shortcodes::sc_total_topics')) * 100, 2);
+			$percent = round(($poster['thread_count'] / $sc->sc_total_topics()) * 100, 2);
+			$top_topic_starters[] = array("user_id" => $poster['user_id'], "user_name" => vartrue($poster['user_name'],LAN_ANONYMOUS), "user_forums" => $poster['thread_count'], "percentage" => $percent);
+		}
+
+		$text_4 = FS_render_table($top_topic_starters, $template['text_4'], $sc);
 
 
+
+
+
+/*
 		$text_5 = "
 		<table style='width: 100%;' class='fborder table'>
 		<thead>
@@ -437,7 +560,7 @@ class forumStats
 			<td style='width: 20%;' class='forumheader3'><a href='".e107::url('user/profile/view', $ma)."'>".$ma['user_name']."</a></td>
 			<td style='width: 10%; text-align: center;' class='forumheader3'>".$ma['user_forums']."</td>
 			<td style='width: 10%; text-align: center;' class='forumheader3'>".$ma['percentage']."%</td>
-			<td style='width: 50%; text-align: center;' class='forumheader3'>".$this->showBar($ma['percentage'])."</td>
+			<td style='width: 50%; text-align: center;' class='forumheader3'>".showBar($ma['percentage'])."</td>
 			</tr>
 			";
 
@@ -445,20 +568,82 @@ class forumStats
 		}
 
 		$text_5 .= '</table>';
+*/
 
+		$ids = implode(',', $topReplier);
+
+		// find topics by top 10 users
+		$query = "
+		SELECT COUNT(ft.thread_id) AS thread_count, u.user_id FROM #forum_thread as ft
+		LEFT JOIN #user AS u ON ft.thread_user = u.user_id
+		WHERE u.user_id IN ({$ids})	GROUP BY ft.thread_user";
+
+		$sql->gen($query);
+		$top_repliers_data_c = $sql->db_getList('ALL', false, false, 'user_id');
+
+		$top_repliers = array();
+		$top_repliers_sort = array();
+		foreach($top_repliers_data as $uid => $poster)
+		{
+			$poster['post_count'] = $poster['post_count'] - $top_repliers_data_c[$uid]['thread_count'];
+//			$percent = round(($poster['post_count'] / call_user_func('plugin_forum_stats_shortcodes::sc_total_replies')) * 100, 2);
+			$percent = round(($poster['post_count'] / $sc->sc_total_replies()) * 100, 2);
+			$top_repliers_sort[$uid] = $poster['post_count'];
+			//$top_repliers[$uid] = $poster;
+			$top_repliers_data[$uid]['user_forums'] = $poster['post_count'];
+			$top_repliers_data[$uid]['percentage'] = $percent;
+			//$top_repliers_data[$uid] = array("user_id" => $poster['user_id'], "user_name" => $poster['user_name'], "user_forums" => $poster['post_count'], "percentage" => $percent);
+		}
+
+				// sort
+				arsort($top_repliers_sort, SORT_NUMERIC);
+
+				// build top repliers
+				foreach ($top_repliers_sort as $uid => $c)
+				{
+					$top_repliers[] = $top_repliers_data[$uid];
+				}
+		
+				$text_5 = FS_render_table($top_repliers, $template['text_5'], $sc);
+
+
+
+
+
+
+
+		if(!defined("TAB_ORDER")){ define("TAB_ORDER","0,1,2,3,4,5"); }
+//		if(!defined("TAB_ORDER")){ define("TAB_ORDER","2,3,1,0,5,4"); }
+
+		$taborder = explode(",",TAB_ORDER);
+		$captions = array('0'=>LAN_FORUM_6000, '1'=>LAN_FORUM_0011, '2'=>LAN_FORUM_6010, '3'=>LAN_FORUM_0010, '4'=>LAN_FORUM_6011, '5'=>LAN_FORUM_6012);
+		$orderedtabs = array_replace(array_flip($taborder), $captions);
 
 		if(deftrue('BOOTSTRAP'))
 		{
-			$tabs = array();
+//			$tabs = array();
 
+/*
 			$tabs[0] = array('caption'=>LAN_FORUM_6000, 'text'=>$text_0);
 			$tabs[1] = array('caption'=>LAN_FORUM_0011, 'text'=>$text_1);
 			$tabs[2] = array('caption'=>LAN_FORUM_6010, 'text'=>$text_2);
 			$tabs[3] = array('caption'=>LAN_FORUM_0010, 'text'=>$text_3);
 			$tabs[4] = array('caption'=>LAN_FORUM_6011, 'text'=>$text_4);
 			$tabs[5] = array('caption'=>LAN_FORUM_6012, 'text'=>$text_5);
-
-			$frm = e107::getForm();
+*/
+			foreach ($orderedtabs as $tabk => $tabv) {
+				$tabs[] = array('caption'=>$tabv, 'text'=>${'text_' . $tabk});
+			}
+			
+/*
+			$tabs[] = array('caption'=>LAN_FORUM_6000, 'text'=>$text_0);
+			$tabs[] = array('caption'=>LAN_FORUM_0011, 'text'=>$text_1);
+			$tabs[] = array('caption'=>LAN_FORUM_6010, 'text'=>$text_2);
+			$tabs[] = array('caption'=>LAN_FORUM_0010, 'text'=>$text_3);
+			$tabs[] = array('caption'=>LAN_FORUM_6011, 'text'=>$text_4);
+			$tabs[] = array('caption'=>LAN_FORUM_6012, 'text'=>$text_5);
+*/
+//			$frm = e107::getForm();
 
 			$breadarray = array(
 				array('text'=> e107::pref('forum','title', defset('LAN_PLUGIN_FORUM_NAME')), 'url' => e107::url('forum','index') ),
@@ -468,11 +653,13 @@ class forumStats
 			$text = $frm->breadcrumb($breadarray);
 			e107::breadcrumb($breadarray); // assign to {---BREADCRUMB---}
 
-
-			$text = "<div id='forum-stats'>". $text . e107::getForm()->tabs($tabs)."</div>";
+//			$text = "<div id='forum-stats'>". $text . e107::getForm()->tabs($tabs)."</div>";
+//			$text = ($template['start']??"<div id='forum-stats'>"). $text . $frm->tabs($tabs, array("scroll" => true)).($template['end']??"</div>"); // Template is always defined, it is loaded from plugin first, so defaults are always there
+			$text .= $template['start']. $text . $frm->tabs($tabs, array("scroll" => true)).$template['end'];
 		}
 		else
 		{
+/*
 			$text ="
 			<h3>".LAN_FORUM_6000."</h3>". $text_0 .
 			"<h3>".LAN_FORUM_0011."</h3>". $text_1 .
@@ -480,20 +667,79 @@ class forumStats
 			"<h3>".LAN_FORUM_0010."</h3>".$text_3 .
 			"<h3>".LAN_FORUM_6011."</h3>". $text_4 .
 			"<h3>".LAN_FORUM_6012."</h3>". $text_5;
+*/
+			$text = null;
+			foreach ($orderedtabs as $tabk => $tabv) {
+				$text .= "<h3>".$tabv."</h3>".${'text_' . $tabk};
+			}
+
+/*
+			$text ="
+			<h3>".LAN_FORUM_6000."</h3>". $text_0 .
+			"<h3>".LAN_FORUM_0011."</h3>". $text_1 .
+			"<h3>".LAN_FORUM_6010."</h3>". $text_2 .
+			"<h3>".LAN_FORUM_0010."</h3>".$text_3 .
+			"<h3>".LAN_FORUM_6011."</h3>". $text_4 .
+			"<h3>".LAN_FORUM_6012."</h3>". $text_5;
+*/
 		}
 
 		$text .= "<div class='center'>".e107::getForm()->pagination(e107::url('forum','index'), LAN_BACK)."</div>";
 
-		$ns -> tablerender(LAN_FORUM_6013, $text, 'forum-stats');
+//		$ns -> tablerender(LAN_FORUM_6013, $text, 'forum-stats');
 
-	}
+		$sc->setVars($fstatsSCvars);
 
-	function showBar($perc)
+		echo $ns->tablerender(LAN_FORUM_6013, $tp->parseTemplate($text, true, $sc), 'forum-stats');
+//	}
+/*
+	function showBar($perc) /// PARA TIRAR
 	{
 		return e107::getForm()->progressBar('prog',$perc);
 	}
+*/
+	function FS_render_table($query, $template, &$sc)
+	{
+		$sc->count = 1;
+		is_array($query) ? null : $sql = e107::getDb();
+		$tp = e107::getParser();
 
+		$text = $tp->parseTemplate($template['start'], true);
 
+	is_array($query) ? null : $sql->gen($query);
+//$most_activeArray = 
+
+		foreach((is_array($query) ? $query : $sql->db_getList()) as $SCvars['ma'])
+		{
+//			if($fstatsSCvars['ma']['user_name'])
+//			{
+				//$uinfo = "<a href='".e_HTTP."user.php ?id.{$ma['user_id']}'>{$ma['user_name']}</a>"; //TODO SEf Url .
+/*
+				$uparams = array('id' => $ma['user_id'], 'name' => $ma['user_name']);
+				$link = e107::getUrl()->create('user/profile/view', $uparams);
+				$uinfo = "<a href='".$link."'>".$ma['user_name']."</a>";
+*/
+//				$uinfo = "<a href='".e107::getUrl()->create('user/profile/view', array('id' => $fstatsSCvars['ma']['user_id'], 'name' => $fstatsSCvars['ma']['user_name']))."'>".$fstatsSCvars['ma']['user_name']."</a>";
+//			}
+//			else
+//			{
+//				$tmp = explode(chr(1), $fstatsSCvars['ma']['thread_anon']);
+//				$uinfo = $tp->toHTML($tmp[0]);
+//			}
+
+//			$fstatsSCvars['ma']['thread_sef'] = eHelper::title2sef($fstatsSCvars['ma']['thread_name'],'dashl');
+//			$url = e107::url('forum','topic', $fstatsSCvars['ma']);
+
+			$sc->setVars($SCvars);
+			$text .= $tp->parseTemplate($template['item'], true, $sc);
+
+//			$fstatsSCvars['count']++;
+		}
+		$text .= $tp->parseTemplate($template['end'], true, $sc);
+
+		return $text;
+	}
+/*
 	function topPosters()               // from top.php - unused.
 	{
 		$pref = e107::pref('core');
@@ -513,7 +759,7 @@ class forumStats
 		if ($this->subaction == 'forum' || $this->subaction == 'all')
 		{
 			require_once (e_PLUGIN.'forum/forum_class.php');
-			$forum = new e107forum();
+//			$forum = new e107forum();
 
 			$qry = "
 			SELECT ue.*, u.* FROM `#user_extended` AS ue
@@ -577,10 +823,10 @@ class forumStats
 
 		}
 	}
+*/
 
 
-
-
+/*
 	function mostActiveTopics()           // from top.php - unused.
 	{
 		//require_once (e_HANDLER.'userclass_class.php');
@@ -669,12 +915,13 @@ class forumStats
 
 
 	}
+*/
 
-}
+//}
 
 
-$frmStats = new forumStats;
-require_once(HEADERF);
-$frmStats->init();
+//$frmStats = new forumStats;
+//require_once(HEADERF);
+//$frmStats->init();
 
 require_once(FOOTERF);
