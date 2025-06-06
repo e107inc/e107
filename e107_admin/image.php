@@ -1166,7 +1166,7 @@ class media_admin_ui extends e_admin_ui
 			$this->batchDelete();
 		}
 
-		if(varset($_POST['update_options']))
+		if(!empty($_POST['update_options']))
 		{
 			$this->updateSettings();
 		}

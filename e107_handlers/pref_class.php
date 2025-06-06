@@ -619,7 +619,8 @@ class e_pref extends e_front_model
 				e107::includeLan(e_LANGUAGEDIR . e_LANGUAGE . '/admin/lan_admin.php');
 
 				$log->addSuccess(LAN_SETSAVED, ($session_messages === null || $session_messages === true));
-
+			//	$debug = debug_backtrace(null,2);
+			//	e107::getMessage()->addDebug(print_a($debug,true));
 				$uid = USERID;
 
 				if(empty($uid)) // Log extra details of any pref changes made by a non-user.
