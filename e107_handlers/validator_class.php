@@ -1617,7 +1617,7 @@ class validatorClass
 			}
 			else
 			{
-				$curLine = str_replace('%t', constant($constPrefix . $n), $curLine);        // Standard messages
+				$curLine = str_replace('%t', defset($constPrefix . $n), $curLine);        // Standard messages USER_ERR_01 etc.
 			}
 			if (empty($vars['failed'][$f]))
 			{
