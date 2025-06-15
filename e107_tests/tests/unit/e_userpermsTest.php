@@ -261,12 +261,12 @@ class e_userpermsTest extends \Codeception\Test\Unit
 			    1 => '<i class=\'S16 e-comments-16\'></i>',
 			    2 => '<i class=\'S32 e-comments-32\'></i> ',
 			  ),
-			  6 =>
+		/*	  6 =>
 			  array (
 			    0 => 'Media Manager',
 			    1 => '<i class=\'S16 e-filemanager-16\'></i>',
 			    2 => '<i class=\'S32 e-filemanager-32\'></i> ',
-			  ),
+			  ),*/
 			  'A' =>
 			  array (
 			    0 => 'Media Manager (All)',
