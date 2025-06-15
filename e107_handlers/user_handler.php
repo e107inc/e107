@@ -2176,11 +2176,11 @@ class e_userperms
 				'icon_16' => 'E_16_COMMENT',
 				'icon_32' => 'E_32_COMMENT',
 			],
-			'6'   => [
+		/*	'6'   => [
 				'title'   => 'LAN_MEDIAMANAGER',      // File-Manager - Upload /manage files
 				'icon_16' => 'E_16_FILE',
 				'icon_32' => 'E_32_FILE',
-			],
+			],*/
 			'A'   => [
 				'title'     => ['LAN_MEDIAMANAGER', 'LAN_ALL'],
 				'separator' => ' (',                // Media-Manager All Areas
