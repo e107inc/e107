@@ -537,15 +537,22 @@ class admin_shortcodes extends e_shortcode
 			//		$text .= "<div style='padding-bottom: 2px;'>".E_16_UPLOADS." <a href='".e_ADMIN."upload.php'>".ADLAN_LAT_7.": $active_uploads</a></div>";
 
 					$oldconfigs = array();
-					$oldconfigs['e-news'][0] = array('icon' =>defset('E_16_NEWS'), 'title' =>defset('ADLAN_LAT_2'), 'url' => e_ADMIN. 'newspost.php?mode=sub&amp;action=list', 'total' =>$submitted_news);
 
-					if(empty($pref['comments_disabled']) && varset($pref['comments_engine'],'e107') === 'e107')
+					if(getperms('N'))
+					{
+						$oldconfigs['e-news'][0] = array('icon' =>defset('E_16_NEWS'), 'title' =>defset('ADLAN_LAT_2'), 'url' => e_ADMIN. 'newspost.php?mode=sub&amp;action=list', 'total' =>$submitted_news);
+					}
+
+					if(getperms('B') && empty($pref['comments_disabled']) && varset($pref['comments_engine'],'e107') === 'e107')
 					{
 						$oldconfigs['e-comment'][0] = array('icon' =>defset('E_16_COMMENT'), 'title' =>defset('ADLAN_LAT_9'), 'url' => e_ADMIN_ABS. 'comment.php?searchquery=&filter_options=comment_blocked__2', 'total' =>$comments_pending);
 					}
 
-					$oldconfigs['e-upload'][0] = array('icon' =>defset('E_16_UPLOADS'), 'title' =>defset('ADLAN_LAT_7'), 'url' => e_ADMIN. 'upload.php', 'total' =>$active_uploads);
-				
+					if(getperms('V'))
+					{
+						$oldconfigs['e-upload'][0] = array('icon' =>defset('E_16_UPLOADS'), 'title' =>defset('ADLAN_LAT_7'), 'url' => e_ADMIN. 'upload.php', 'total' =>$active_uploads);
+					}
+
 					$messageTypes = array(/*'Broken Download',*/ 'Dev Team Message');
 					$queryString = '';
 					foreach($messageTypes as $types)
@@ -592,23 +599,31 @@ class admin_shortcodes extends e_shortcode
 					
 					$allconfigs = multiarray_sort($allconfigs,'title'); //XXX FIXME - not sorting correctly. 
 		
-					$text = "<ul id='e-latest' class='list-group'>";
+
+
+					$items = '';
+
 					foreach($allconfigs as $k=>$v)
 					{
 						foreach($v as $val)
 						{
 							$class = admin_shortcodes::getBadge($val['total']); 
 							$link =  "<a  href='".$val['url']."'>".$val['icon']. ' ' .str_replace(':', ' ',$val['title'])." <span class='".$class."'>".$val['total']. '</span></a>';
-							$text .= "<li class='list-group-item clearfix'>".$link."</li>\n";
+							$items .= "<li class='list-group-item clearfix'>".$link."</li>\n";
 						}	
 					}
-					$text .= '</ul>';
+
+					if(empty($items))
+					{
+						return '';
+					}
+
+					$text = "<ul id='e-latest' class='list-group'>$items</ul>\n";;
 
 
-				
 				//	$text .= "</div>";
 					$ns->setUniqueId('e-latest-list');
-					return ($parm !== 'norender') ? $ns -> tablerender(ADLAN_LAT_1, $text, '', TRUE) : $text;
+					return ($parm !== 'norender') ? $ns -> tablerender(defset('ADLAN_LAT_1'), $text, '', TRUE) : $text;
 				}
 			}
 
