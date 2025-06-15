@@ -1298,7 +1298,7 @@ class plugin_online_ui extends e_admin_ui
 			$this->grid['template'] = '
 
 				 <div class="panel panel-primary" style="height:190px" >
-				 	<table class="table" style="height:180px;display:block" >
+				 	<table class="table" style="height:180px" >
 				 	<tr>
 				 	<td style="width:25%">
 					<div class="text-center" style="height:90px;">{IMAGE}
