@@ -190,7 +190,7 @@ unset($e_headers);
 /** @experimental - subject to change at any time */
 if($schema = e107::schema())
 {
-	echo '<script type="application/ld+json">'.$schema."</script>\n";
+	echo $schema;
 }
 
 unset($schema);
