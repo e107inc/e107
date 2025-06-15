@@ -24,7 +24,7 @@
 			}
 			catch(Exception $e)
 			{
-				$this->fail("Couldn't load e107Email object");
+				$this::fail("Couldn't load e107Email object");
 			}
 
 
@@ -60,12 +60,39 @@
 
 			$this->eml->arraySet($eml);
 
-			$this->assertStringContainsString("noreply@test.com", $this->eml->From);
-			$this->assertStringContainsString("Test Person", $this->eml->FromName);
-			$this->assertStringContainsString("e107: [URGENT EXAMPLE] ", $this->eml->Subject);
-			$this->assertStringContainsString("This is the body text", $this->eml->Body);
-			$this->assertStringContainsString("<h4 class='sitename'><a href='", $this->eml->Body);
-			$this->assertStringNotContainsString('{MEDIA1}', $this->eml->Body);
+			$this::assertStringContainsString("noreply@test.com", $this->eml->From);
+			$this::assertStringContainsString("Test Person", $this->eml->FromName);
+			$this::assertStringContainsString("e107: [URGENT EXAMPLE] ", $this->eml->Subject);
+			$this::assertStringContainsString("This is the body text", $this->eml->Body);
+			$this::assertStringContainsString("<h4 class='sitename'><a href='", $this->eml->Body);
+			$this::assertStringNotContainsString('{MEDIA1}', $this->eml->Body);
+		}
+
+		public function testArraySetCC()
+		{
+			$eml = array(
+					'subject' 		=> "[CC EXAMPLE]",
+					'sender_email'	=> "noreply@test.com",
+					'sender_name'	=> "Test Person",
+					'replyto'		=> "",
+					'html'			=> true,
+					'priority'      => 1,
+					'template'		=> 'default',
+					'body'			=> "This is the body text",
+					'cc'            => 'email1@example.com,email2@example.com,email3@example.com'
+				);
+
+			$this->eml->Mailer = 'mail';
+
+			$this->eml->arraySet($eml);
+			$result = $this->eml->getCcAddresses();
+
+			$this::assertIsArray($result);
+			$this::assertNotEmpty($result, 'CC Array is empty' );;
+			$this::assertEquals('email1@example.com', $result[0][0]);
+			$this::assertEquals('email2@example.com', $result[1][0]);
+			$this::assertEquals('email3@example.com', $result[2][0]);
+
 		}
 
 		/**
@@ -92,14 +119,14 @@
 
 			$this->eml->arraySet($eml);
 
-			$this->assertStringContainsString("noreply@test.com", $this->eml->From);
-			$this->assertStringContainsString("Test Person", $this->eml->FromName);
-			$this->assertStringContainsString("[CUSTOM TEMPLATE EXAMPLE]", $this->eml->Subject);
+			$this::assertStringContainsString("noreply@test.com", $this->eml->From);
+			$this::assertStringContainsString("Test Person", $this->eml->FromName);
+			$this::assertStringContainsString("[CUSTOM TEMPLATE EXAMPLE]", $this->eml->Subject);
 
-			$this->assertStringContainsString('<html lang="en"><body>', $this->eml->Body);
+			$this::assertStringContainsString('<html lang="en"><body>', $this->eml->Body);
 
-			$this->assertStringContainsString('<div><span>TestName</span> <small>Jan 1st, 2020</small></div><div>This is the body text</div>', $this->eml->Body);
-			$this->assertStringNotContainsString('{MEDIA1}', $this->eml->Body);
+			$this::assertStringContainsString('<div><span>TestName</span> <small>Jan 1st, 2020</small></div><div>This is the body text</div>', $this->eml->Body);
+			$this::assertStringNotContainsString('{MEDIA1}', $this->eml->Body);
 		}
 
 
@@ -127,14 +154,14 @@
 
 			$this->eml->arraySet($eml);
 
-			$this->assertStringContainsString("noreply@test.com", $this->eml->From);
-			$this->assertStringContainsString("Test Person", $this->eml->FromName);
-			$this->assertStringContainsString("[PLUGIN TEMPLATE EXAMPLE]", $this->eml->Subject);
+			$this::assertStringContainsString("noreply@test.com", $this->eml->From);
+			$this::assertStringContainsString("Test Person", $this->eml->FromName);
+			$this::assertStringContainsString("[PLUGIN TEMPLATE EXAMPLE]", $this->eml->Subject);
 
-			$this->assertStringContainsString('<html lang="en"><body>', $this->eml->Body);
+			$this::assertStringContainsString('<html lang="en"><body>', $this->eml->Body);
 
-			$this->assertStringContainsString('<div><span>TestName</span> <small>Jan 1st, 2020</small></div><div>This is the body text</div>', $this->eml->Body);
-			$this->assertStringNotContainsString('{MEDIA1}', $this->eml->Body);
+			$this::assertStringContainsString('<div><span>TestName</span> <small>Jan 1st, 2020</small></div><div>This is the body text</div>', $this->eml->Body);
+			$this::assertStringNotContainsString('{MEDIA1}', $this->eml->Body);
 		}
 
 
@@ -156,12 +183,12 @@
 
 			$this->eml->arraySet($eml);
 
-			$this->assertStringContainsString("noreply@test.com", $this->eml->From);
-			$this->assertStringContainsString("Test Person", $this->eml->FromName);
-			$this->assertStringContainsString("e107: [URGENT EXAMPLE] ", $this->eml->Subject);
-			$this->assertStringContainsString("This is the body text", $this->eml->Body);
-			$this->assertStringContainsString("<div class='unsubscribe'></div>", $this->eml->Body);
-			$this->assertStringNotContainsString('{MEDIA1}', $this->eml->Body);
+			$this::assertStringContainsString("noreply@test.com", $this->eml->From);
+			$this::assertStringContainsString("Test Person", $this->eml->FromName);
+			$this::assertStringContainsString("e107: [URGENT EXAMPLE] ", $this->eml->Subject);
+			$this::assertStringContainsString("This is the body text", $this->eml->Body);
+			$this::assertStringContainsString("<div class='unsubscribe'></div>", $this->eml->Body);
+			$this::assertStringNotContainsString('{MEDIA1}', $this->eml->Body);
 		}
 /*
 		public function testMakePrintableAddress()
@@ -198,7 +225,7 @@ Admin<br />
 
 			$result = json_encode($this->eml->AltBody);
 			$expected = '"Hi Joe\r\nCheck out https:\/\/e107.org\r\n\r\nThanks,\r\nAdmin\r\n\r\nWebsite:\thttps:\/\/e107.org\t\r\nGithub:\thttps:\/\/github.com\/e107inc\/"';
-			$this->assertSame($expected, $result);
+			$this::assertSame($expected, $result);
 
 		}
 /*
@@ -268,11 +295,11 @@ Admin<br />
 
 			$result = $this->eml->getSentMIMEMessage();
 
-			$this->assertStringContainsString('Content-Type: text/plain;', $result);
-			$this->assertStringContainsString('This is the body text', $result);
+			$this::assertStringContainsString('Content-Type: text/plain;', $result);
+			$this::assertStringContainsString('This is the body text', $result);
 
-			$this->assertStringContainsString('Content-Type: text/html;', $result);
-			$this->assertStringContainsString('Hi,<br />This is the <b>body</b> text', $result);
+			$this::assertStringContainsString('Content-Type: text/html;', $result);
+			$this::assertStringContainsString('Hi,<br />This is the <b>body</b> text', $result);
 
 		}
 
@@ -287,8 +314,8 @@ Admin<br />
 			$randomString1 = uniqid();
 			$randomString2 = uniqid();
 
-			$this->assertFalse($this->fileContainsString($logFilePath, $randomString1));
-			$this->assertFalse($this->fileContainsString($logFilePath, $randomString2));
+			$this::assertFalse($this->fileContainsString($logFilePath, $randomString1));
+			$this::assertFalse($this->fileContainsString($logFilePath, $randomString2));
 
 			$eml = $this->make('e107Email', ['send' => function() { return true; }]);
 			$eml->logEnable(2);
@@ -297,13 +324,13 @@ Admin<br />
 				"$randomString1 Example",
 				['body' => 'Message body'],
 			);
-			$this->assertTrue($this->fileContainsString($logFilePath, $randomString1));
+			$this::assertTrue($this->fileContainsString($logFilePath, $randomString1));
 			$eml->sendEmail(
 				'nobody2@example.com',
 				"$randomString2 Example",
 				['body' => 'Message body'],
 			);
-			$this->assertTrue($this->fileContainsString($logFilePath, $randomString2));
+			$this::assertTrue($this->fileContainsString($logFilePath, $randomString2));
 		}
 
 		/**
