@@ -139,13 +139,14 @@ class media_admin extends e_admin_dispatcher
 		'main/grid'			=> array('caption'=> 'LAN_IMA_M_01', 'perm' => 'A', 'icon'=>'fas-grip'),
 	//	'main/create' 		=> array('caption'=> "Add New Media", 'perm' => 'A'), // Should be handled in Media-Import.
 		'main/import' 		=> array('caption'=> 'LAN_IMA_M_02', 'perm' => 'A|A1', 'icon'=>'fa-upload'),
-			'divider/01'        => array('divider'=>true),
-		'cat/list' 			=> array('caption'=> 'LAN_IMA_M_03', 'perm' => 'A|A2'),
-		'cat/create' 		=> array('caption'=> 'LAN_IMA_M_04', 'perm' => 'A|A2'), // is automatic.
-	//	'main/settings' 	=> array('caption'=> 'LAN_PREFS', 'perm' => 'A'), // legacy
-		'divider/02'        => array('divider'=>true),
-		'main/prefs' 		=> array('caption'=> 'LAN_PREFS', 'perm' => 'A'),
-		'main/avatar'		=> array('caption'=> 'LAN_IMA_M_05', 'perm' => 'A')
+
+		'divider/01'        => array('divider'=>true, 'perm'=>'A2'),
+		'cat/list' 			=> array('caption'=> 'LAN_IMA_M_03', 'perm' => 'A2'),
+		'cat/create' 		=> array('caption'=> 'LAN_IMA_M_04', 'perm' => 'A2'), // is automatic.
+
+		'divider/02'        => array('divider'=>true, 'perm'=>'0'),
+		'main/prefs' 		=> array('caption'=> 'LAN_PREFS', 'perm' => '0'),
+		'main/avatar'		=> array('caption'=> 'LAN_IMA_M_05', 'perm' => '0')
 	);
 
 	protected $adminMenuIcon = 'e-images-24';
@@ -1170,7 +1171,7 @@ class media_admin_ui extends e_admin_ui
 			$this->batchDelete();
 		}
 
-		if(varset($_POST['update_options']))
+		if(!empty($_POST['update_options']))
 		{
 			$this->updateSettings();
 		}
