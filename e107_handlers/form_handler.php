@@ -5093,7 +5093,7 @@ var_dump($select_options);*/
 			$options['pk'] = $pid;
 		}
 
-		$title = varset($options['title'], (LAN_EDIT . ' ' . $fieldName));
+		$title = varset($options['title'], (LAN_EDIT . ' ' . defset($fieldName,$fieldName)));
 		$class = varset($options['class']);
 
 		unset($options['title']);

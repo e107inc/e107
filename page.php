@@ -933,10 +933,18 @@ class pageClass
 		if(null === $vars) 
 		{
 			$ret = e107::getParser()->parseTemplate($template, true, $this->batch);
+			if(!empty($this->template['schema']))
+			{
+				$schema = e107::getParser()->parseSchemaTemplate($this->template['schema'], true, $this->batch);
+			}
 		}
 		else 
 		{
 			$ret = e107::getParser()->simpleParse($template, $vars);
+			if(!empty($this->template['schema']))
+			{
+				$schema = e107::getParser()->parseSchemaTemplate($this->template['schema'], true, $vars);
+			}
 		}
 
         if($this->renderMode)
@@ -948,8 +956,11 @@ class pageClass
             $mode = vartrue($this->template['tableRender'], 'cpage-page-view');
         }
 
-	//	var_dump($this->batch->page_metadescr);
-
+		// v2.4 support for 'schema' template.
+		if(!empty($schema))
+		{
+			e107::schema($schema);
+		}
 
 		return array('caption'=>$this->page['page_title'], 'text'=>$ret, 'mode'=>$mode, 'title'=>$this->page['page_metadscr']);
 
