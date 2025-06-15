@@ -4559,20 +4559,37 @@ class e107
 	/**
 	 * Getter/Setter for schema. eg. Google structured data etc.
 	 * @param string $json
-	 * @return string|bool|null
+	 * @return string|null
 	 */
 	public static function schema($json = null)
 	{
+
+		static $currentSchema = [];
+
 		if(empty($json))
 		{
-			return self::getRegistry('core/e107/schema', false);
+			if(empty($currentSchema))
+			{
+				return '';
+			}
+
+			$output = '';
+			foreach($currentSchema as $schema)
+			{
+				if(!empty($schema))
+				{
+					$output .= '<script type="application/ld+json">' . $schema . "</script>\n";
+				}
+			}
+
+			return $output;
 		}
 
 
-		return self::setRegistry('core/e107/schema',$json);
+		$currentSchema[] = $json;
 
+		return self::setRegistry('core/e107/schema', $currentSchema);
 	}
-
 
 	/**
 	 * Retrieve error page handler.
