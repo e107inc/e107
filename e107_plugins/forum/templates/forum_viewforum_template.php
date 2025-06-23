@@ -390,7 +390,7 @@ $FORUM_VIEWFORUM_TEMPLATE['forum-crumb'] =  $FORUM_CRUMB;
 
 // $FORUM_VIEWFORUM_WRAPPER['THREADNAME']          = "<span class='label label-info'>{---}</span>";
 
-
+$FORUM_VIEWFORUM_TEMPLATE['perms_separator'] =  "<span class='forum-perms-separator'><!-- --></span>";
 
 
 
