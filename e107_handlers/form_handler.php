@@ -3887,12 +3887,13 @@ var_dump($select_options);*/
 			    '.($label ?: LAN_NO_LABEL_PROVIDED).'
 			    <span class="caret"></span>
 			    </a>
-			    <ul class="dropdown-menu">
+			    <ul class="dropdown-menu '.$options['class_ul'].'">
 			    ';
-			
+// Added class_ul to add classes to the UL tag
 			foreach($value as $k=>$v)
 			{
-				$text .= '<li class="dropdown-item">'.$v.'</li>';
+// Added class_li to add classes to the LI tag and a small enhancement ;)
+				$text .= '<li class="dropdown-item '.$options['class_li'].($v == '--' || $v == 'divider'?'divider"><hr class="dropdown-divider">':'>'.$v).'</li>';
 			}
 			
 			$text .= '
@@ -3901,11 +3902,8 @@ var_dump($select_options);*/
 			
 			return $text;	
 		}			
-				
 
-		
 		return $this->admin_button($name, $value, $action, $label, $options);
-		
 	}
 
 	/**
@@ -4022,10 +4020,14 @@ var_dump($select_options);*/
 			$btype = 'button';
 		}
 
+		// added attributes for tooltip dispaly under BS
 		$attributes = [
 			'type'  => $btype,
 			'name'  => $name,
 			'value' => $value,
+			'data-toggle' 		=> $options['data-toggle'],
+			'data-bs-toggle' 	=> $options['data-bs-toggle'],
+			'title' 			=> $options['title'],
 		];
 
 		if (isset($options['loading']) && ($options['loading'] == false))
@@ -4059,14 +4061,12 @@ var_dump($select_options);*/
 			$class .= ' ' . $this->getDefaultButtonClassByAction($action);
 		}
 
-
 		$options['class'] = $class;
 
 		if(empty($label))
 		{
 			$label = $value;
 		}
-
 
 		switch ($action)
 		{
