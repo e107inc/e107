@@ -1204,6 +1204,8 @@ class e107Email extends PHPMailer
 
 		$this->clearAddresses();			// In case we send another email
 		$this->clearCustomHeaders();
+		$this->clearAllRecipients();
+		$this->clearAttachments();
 
 		if ($result)
 		{
