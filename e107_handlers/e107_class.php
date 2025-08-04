@@ -212,6 +212,7 @@ class e107
 		'e_file_inspector_json_phar'     => '{e_HANDLER}e_file_inspector_json_phar.php',
 		'e_form'                         => '{e_HANDLER}form_handler.php',
 		'e_jshelper'                     => '{e_HANDLER}js_helper.php',
+		'e_jwt'                          => '{e_HANDLER}e_jwt_class.php',
 		'e_media'                        => '{e_HANDLER}media_class.php',
 		'e_menu'                         => '{e_HANDLER}menu_class.php',
 		'e_model'                        => '{e_HANDLER}model_class.php',
@@ -2845,13 +2846,15 @@ class e107
 
 	}
 
-
-
-
-
-
-
-
+	/**
+	 * Get the handler that can encrypt and decrypt a string secret that only the e107 server can read
+	 *
+	 * @return e_jwt JWT handler
+	 */
+	public static function getJWT()
+	{
+		return self::getSingleton('e_jwt');
+	}
 
 	/**
 	 * Retrieve JS Helper object
