@@ -778,6 +778,33 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 			return "<a class='".$class."' href='".$urlCompose."'>".$tp->toGlyph('fa-edit',' ')."".defset('LAN_PLUGIN_PM_NEW')."</a>";
 		}
 
+		public function sc_pm_breadcrumb()
+		{
+			if(!deftrue('BOOTSTRAP'))
+			{
+				return null;
+			}
+
+			$array = array();
+			$array[0] = array('text' => LAN_PM, 'url' => e107::url('pm', 'index'));
+
+			if(is_string($this->bc_type))
+			{
+				$array[1] = array('text' => $this->bc_type, 'url' => null);
+			}
+			elseif(is_array($this->bc_type))
+			{
+				$array[1] = $this->bc_type;
+			}
+
+			if(!empty($this->bc_other))
+			{
+				$array[2] = array('text' => $this->bc_other, 'url' => null);
+			}
+
+			return e107::getForm()->breadcrumb($array);
+
+		}
 
 
 		private function url($route, $params = array())
