@@ -1266,13 +1266,13 @@ class plugin_forum_view_shortcodes extends e_shortcode
 			$text .= '<li>' . $val . '</li>';
 		}
 
-		$jumpList = $this->forum->forumGetAllowed();
+		$jumpList = $this->forum->forumGetAllowed('view', 'true');
 
 		$text .= "<li class='divider'><hr class='dropdown-divider'></li>";
 
 		foreach($jumpList as $key => $val)
 		{
-			$text .= '<li><a class="dropdown-item" href ="' . e107::url('forum', 'forum', $val) . '">' . LAN_FORUM_1017 . " " . $val['forum_name'] . '</a></li>';
+			$text .= '<li><a class="dropdown-item" href ="' . e107::url('forum', 'forum', $val) . '">' . LAN_FORUM_1017 . " " .($val['parent_name']?$val['parent_name']." - ":"") . $val['forum_name'] . '</a></li>';
 		}
 
 		$text .= '
