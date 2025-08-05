@@ -1141,6 +1141,12 @@ class e_core_session extends e_session
      */
     public function challenge()
     {
+        // Only generate CHAP challenges if CHAP authentication is enabled
+        if (!e107::pref('core', 'password_CHAP', 0))
+        {
+            return $this;
+        }
+
         if (!$this->is('challenge')) // TODO: Eliminate need for this
         {
             $this->set('challenge', sha1(time().rand().$this->getSessionId())); // New challenge for next time
@@ -1156,13 +1162,6 @@ class e_core_session extends e_session
             $this->set('prevprevchallenge', ''); // Dummy value
         }
 
-        // could go, see _validate()
-        $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
-        $ubrowser = md5('E107'.$user_agent);
-        if (!$this->is('ubrowser'))
-        {
-            $this->set('ubrowser', $ubrowser);
-        }
         return $this;
     }
 }
