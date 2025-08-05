@@ -17,6 +17,9 @@ if (!defined('e107_INIT'))
     exit;
 }
 
+// Include CSRF handler classes
+require_once(e_HANDLER . 'csrf_handler.php');
+
 /**
  * @package e107
  * @subpackage e107_handlers
@@ -154,7 +157,12 @@ class e_session
      */
     protected $_data = array();
 
-    /**
+	/**
+	 * @var CSRFTokenHandler
+	 */
+	protected $csrfHandler = null;
+
+	/**
      * Set session options
      * @param string $key
      * @param mixed $value
@@ -726,6 +734,18 @@ public function getData($key = null, $clear = false)
         return $this;
     }
 
+	/**
+	 * Check if user is likely authenticated by looking for the auth session data.
+	 *
+	 * This works even before {@see USERID} is defined.
+	 *
+	 * @return bool {@see FALSE} if the session has no authentication token, {@see TRUE} otherwise
+	 */
+	protected function isGuest()
+	{
+		return empty($_SESSION[e_COOKIE]);
+	}
+
     /**
      * Validate current session
      * @return e_session
@@ -826,22 +846,43 @@ public function getData($key = null, $clear = false)
     }
 
     /**
+     * Get CSRF handler, initializing based on user status if needed
+     * @return CSRFTokenHandler
+     */
+    protected function getCSRFHandler()
+    {
+        if ($this->csrfHandler === null)
+        {
+            if ($this->isGuest() && e_SECURITY_LEVEL >= self::SECURITY_LEVEL_LOW)
+            {
+                // No auth session - this is a guest
+                $this->csrfHandler = new CSRFCookieHandler();
+            }
+            else
+            {
+                // Has auth session (likely authenticated) - use session-based handler
+                $this->csrfHandler = new CSRFSessionHandler($this);
+
+                // Clean up any guest CSRF cookie if it exists
+                if (isset($_COOKIE[CSRFCookieHandler::COOKIE_NAME]))
+                {
+                    // Use a temporary cookie handler just for cleanup
+                    $cookieHandler = new CSRFCookieHandler();
+                    $cookieHandler->cleanup();
+                }
+            }
+        }
+        return $this->csrfHandler;
+    }
+
+    /**
      * Retrieve (create if doesn't exist) CSRF protection token
      * @param bool $in_form if true (default) - value for forms, else raw session value
      * @return string
      */
     public function getFormToken($in_form = true)
     {
-        if(!$this->has('__form_token') && !defined('e_TOKEN_DISABLE'))  // TODO FIXME: SEF URL of Error page causes e-token refresh.
-        {
-            $this->set('__form_token', uniqid(md5(rand()), true));
-            if(deftrue('e_DEBUG_SESSION')) // XXX enable to troubleshoot "Unauthorized Access!" issues.
-            {
-                $message = date('r')."\t\t".e_REQUEST_URI."\n";
-                file_put_contents(__DIR__.'/session.log', $message, FILE_APPEND);
-            }
-        }
-        return ($in_form ? md5($this->get('__form_token')) : $this->get('__form_token'));
+        return $this->getCSRFHandler()->getToken($in_form);
     }
 
     /**
@@ -851,7 +892,7 @@ public function getData($key = null, $clear = false)
      */
     protected function _regenerateFormToken()
     {
-        $this->set('__form_token', uniqid(md5(rand()), true));
+        $this->getCSRFHandler()->regenerate();
         return $this;
     }
 
@@ -862,8 +903,7 @@ public function getData($key = null, $clear = false)
      */
     public function checkFormToken($token)
     {
-        $utoken = $this->getFormToken(false);
-        return ($token === md5($utoken));
+        return $this->getCSRFHandler()->validate($token);
     }
 
     /**
