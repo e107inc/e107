@@ -706,6 +706,12 @@ public function getData($key = null, $clear = false)
             return $this;
         }
 
+	    // Skip cookie validation for guests without meaningful session data
+	    if ($this->isGuest())
+	    {
+			return $this;
+	    }
+
         if (empty($_SESSION['_cookie_session_validate']))
         {
             $time = time() + round($this->_options['lifetime'] / 4);
@@ -752,6 +758,8 @@ public function getData($key = null, $clear = false)
      */
     public function validate()
     {
+		if ($this->isGuest()) return $this;
+
         if (!isset($this->_data['_session_validate_data']))
         {
             $this->_data['_session_validate_data'] = $this->getValidateData();
@@ -997,6 +1005,16 @@ class e_core_session extends e_session
         {
             $this->init($this->_namespace, $this->_name); // restart
         }
+
+		if (isset($_SESSION[$this->_namespace]) && empty($_SESSION[$this->_namespace]))
+		{
+			unset($_SESSION[$this->_namespace]);
+		}
+		if ($this->isGuest() && empty($_SESSION))
+		{
+			$this->destroy();
+			return;
+		}
 
         // give 3rd party code a way to prevent token re-generation
         if(e_SECURITY_LEVEL >= e_session::SECURITY_LEVEL_PARANOID && !deftrue('e_TOKEN_FREEZE'))
