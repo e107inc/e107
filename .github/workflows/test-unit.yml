@@ -22,7 +22,7 @@ jobs:
           - image: php:8.4
         db:
           - image: mysql:5.5
-          - image: bitnami/mysql:8.0
+          - image: mysql:8.0
           - image: mariadb:10.0
           - image: mariadb:10.6
           - image: mariadb:10.11
@@ -88,10 +88,7 @@ jobs:
 
     - name: PECL install xdebug
       run: |
-        if [ $(php -r 'printf(version_compare(PHP_VERSION, "8.2.99", ">=") ? 1 : 0);') = '1' ]
-        then
-          pecl install https://xdebug.org/files/xdebug-3.4.1.tgz
-        elif [ $(php -r 'printf(version_compare(PHP_VERSION, "8.0.0", ">=") ? 1 : 0);') = '1' ]
+        if [ $(php -r 'printf(version_compare(PHP_VERSION, "8.0.0", ">=") ? 1 : 0);') = '1' ]
         then
           pecl install xdebug
         elif [ $(php -r 'printf(version_compare(PHP_VERSION, "7.2.0", ">=") ? 1 : 0);') = '1' ]
