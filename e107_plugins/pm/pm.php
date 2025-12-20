@@ -130,6 +130,15 @@
 			parent::__construct($prefs);
 		}
 
+		function pm_caption($type = 'inbox')
+{
+	$PM_TEMPLATE = e107::getTemplate('pm', 'pm', $type);
+	$tp = e107::getParser();
+    $sc = e107::getScBatch('pm', 'epm', 'pm');
+	$sc->wrapper('pm');	
+    $caption_source = vartrue($PM_TEMPLATE['caption'], LAN_PM);
+    return $tp->parseTemplate($caption_source, true, $sc);
+}
 
 		/**
 		 *    Show the 'Send to' form
@@ -190,7 +199,7 @@
 
 			if(empty($PM_SEND_PM))
 			{
-				$PM_SEND_PM = e107::getTemplate('pm', 'pm', 'send');
+				$PM_SEND_PM = e107::getTemplate('pm', 'pm', 'send')['main'];
 			}
 
 			$enc = (check_class($this->pmPrefs['attach_class']) ? "enctype='multipart/form-data'" : '');
@@ -417,7 +426,7 @@
 				$bread = array('text' => LAN_PLUGIN_PM_INBOX, 'url' => e107::url('pm', 'index') . '?mode=inbox');
 			}
 
-			$ns->tablerender(LAN_PM, $this->breadcrumb($bread, '#' . $pmid) . $txt);
+			$ns->tablerender($this->pm_caption($comeFrom), $this->breadcrumb($bread, '#' . $pmid) . $txt);
 
 			if(!$comeFrom)
 			{
@@ -889,7 +898,7 @@
 	switch($action)
 	{
 		case 'send' :
-			$ns->tablerender(LAN_PM, $pm->breadcrumb(LAN_PLUGIN_PM_NEW) . $mes->render() . $pm->show_send($pm_proc_id));
+			$ns->tablerender($pm->pm_caption('send'), $pm->breadcrumb(LAN_PLUGIN_PM_NEW) . $mes->render() . $pm->show_send($pm_proc_id));
 			break;
 
 		case 'reply' :
@@ -913,7 +922,7 @@
 			break;
 
 		case 'inbox' :
-			$caption = LAN_PM;
+			$caption = $pm->pm_caption('inbox');;
 
 			if(THEME_LEGACY === true)
 			{
@@ -924,7 +933,7 @@
 			break;
 
 		case 'outbox' :
-			$caption = LAN_PM;
+			$caption = $pm->pm_caption('outbox');;
 
 			if(THEME_LEGACY === true)
 			{
