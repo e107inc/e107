@@ -101,7 +101,10 @@
 	if(!isset($pm_prefs['pm_class']) || !check_class($pm_prefs['pm_class']))
 	{
 		require_once(HEADERF);
-		$ns->tablerender(LAN_PM, LAN_PM_12);
+		$msg = e107::getMessage();
+		$msg->addwarning(LAN_PM_12);
+        $warning_text = $msg->render();
+		$ns->tablerender(LAN_PM, $warning_text);
 		require_once(FOOTERF);
 		exit;
 	}
