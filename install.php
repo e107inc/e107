@@ -1952,6 +1952,9 @@ return [
 		$extendedQuery = "REPLACE INTO `{$this->previous_steps['mysql']['prefix']}user_extended` (`user_extended_id` ,	`user_hidden_fields`) VALUES ('1', NULL 	);";
 		$this->dbqry($extendedQuery);
 
+		// Create FULLTEXT indexes derived from e_search configurations
+		$this->createSearchIndexes();
+
 		e107::getDb()->close();
 	//	mysql_close($this->dbLink);
 		
@@ -1959,6 +1962,54 @@ return [
 
 		unset($tp, $pref);
 		return false;
+	}
+
+	/**
+	 * Create FULLTEXT indexes derived from e_search addon configurations.
+	 *
+	 * @return void
+	 */
+	protected function createSearchIndexes()
+	{
+		installLog::add('Creating FULLTEXT indexes from e_search configurations');
+
+		// Clear config cache and reload from database to ensure e_search_list is available
+		e107::getConfig('core')->clearPrefCache()->load(null, true);
+
+		require_once(e_HANDLER . 'db_verify_class.php');
+
+		$dbv = new db_verify();
+		$dbv->compareAll();
+		$dbv->compileResults();
+
+		// Filter fixList to only include index fixes (FULLTEXT indexes)
+		$fixList = $dbv->fixList;
+		$indexFixes = array();
+		foreach($fixList as $file => $tables)
+		{
+			foreach($tables as $table => $fields)
+			{
+				foreach($fields as $field => $modes)
+				{
+					if(in_array('index', $modes))
+					{
+						$indexFixes[$file][$table][$field] = $modes;
+					}
+				}
+			}
+		}
+
+		if(!empty($indexFixes))
+		{
+			$dbv->runFix($indexFixes);
+			installLog::add('FULLTEXT indexes created successfully');
+		}
+		else
+		{
+			installLog::add('No FULLTEXT indexes needed');
+		}
+
+		e107::getMessage()->reset(false, false, true);
 	}
 
 	/**
