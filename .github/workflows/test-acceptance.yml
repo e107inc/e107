@@ -24,23 +24,59 @@ jobs:
       - name: Replace Docker with Podman
         run: sudo apt-get -o Dpkg::Options::="--force-overwrite" install -y podman-docker
 
-      - uses: actions/setup-go@v3
-        with:
-          go-version: "^1.19"
+      - uses: actions/checkout@v6
 
-      - uses: actions/checkout@v3
+      - name: Restore container image cache
+        id: cache-container
+        uses: actions/cache@v5
+        with:
+          path: /tmp/container-image.tar
+          key: container-${{ matrix.php-version }}-${{ hashFiles('.github/workflows/test-acceptance.yml', 'e107_tests/lib/ci/salt/salt-bootstrap.go', 'e107_tests/lib/ci/salt/master', 'e107_tests/lib/ci/salt/pillars/top.sls', 'e107_tests/lib/ci/salt/states/**', 'e107_tests/lib/ci/config.acceptance.ci.yml') }}
+
+      - name: Load cached container image
+        if: steps.cache-container.outputs.cache-hit == 'true'
+        run: |
+          docker load -i /tmp/container-image.tar
+          docker run -d -it --name target -v .:/app/ e107-provisioned:${{ matrix.php-version }}
+
+      - name: Wait for services to be ready
+        if: steps.cache-container.outputs.cache-hit == 'true'
+        run: |
+          docker exec target rm -fv /run/nologin
+          for i in $(seq 1 30); do
+            if docker exec target systemctl is-active --quiet mariadb apache2 ssh 2>/dev/null; then
+              echo "All services are active."
+              break
+            fi
+            if [ "$i" -eq 30 ]; then
+              echo "ERROR: Timed out waiting for services."
+              docker exec target systemctl --no-pager status mariadb apache2 ssh || true
+              exit 1
+            fi
+            echo "Attempt $i/30: waiting for services..."
+            sleep 2
+          done
+
+      - uses: actions/setup-go@v6
+        if: steps.cache-container.outputs.cache-hit != 'true'
+        with:
+          go-version: "^1.26"
 
       - name: Compile SaltStack bootstrap wrapper
+        if: steps.cache-container.outputs.cache-hit != 'true'
         run: CGO_ENABLED=0 go build -ldflags "-s -w" -o ./salt-bootstrap salt-bootstrap.go
         working-directory: ./e107_tests/lib/ci/salt/
 
       - name: Launch test container
-        run: docker run -d -it --rm --name target -v .:/app/ ${{ matrix.operating_system.image }}
+        if: steps.cache-container.outputs.cache-hit != 'true'
+        run: docker run -d -it --name target -v .:/app/ ${{ matrix.operating_system.image }}
 
       - name: Install SaltStack
+        if: steps.cache-container.outputs.cache-hit != 'true'
         run: docker exec target /app/e107_tests/lib/ci/salt/salt-bootstrap onedir
 
       - name: Apply Salt state
+        if: steps.cache-container.outputs.cache-hit != 'true'
         run: |
           ln -v -s master minion
           rm -fv pillars/config.sls
@@ -55,6 +91,7 @@ jobs:
         working-directory: ./e107_tests/lib/ci/salt/
 
       - name: Install PHP extensions
+        if: steps.cache-container.outputs.cache-hit != 'true'
         run: |
           docker exec target apt-get update
           docker exec target apt-get install -y \
@@ -62,6 +99,12 @@ jobs:
             php${{ matrix.php-version }}-curl \
             php${{ matrix.php-version }}-mbstring \
             php${{ matrix.php-version }}-xml
+
+      - name: Save provisioned container image for caching
+        if: steps.cache-container.outputs.cache-hit != 'true'
+        run: |
+          docker commit target e107-provisioned:${{ matrix.php-version }}
+          docker save e107-provisioned:${{ matrix.php-version }} -o /tmp/container-image.tar
 
       - name: Verify PHP version
         run: docker exec target php -v
