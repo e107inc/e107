@@ -1051,7 +1051,7 @@ Following fields auto-filled in code as required:
 	 * Updates user status, primarily the user_ban field, to reflect outside events
 	 *
 	 * @param string $action - 'ban', 'bounce'
-	 * @param integer $uid - internal user ID, zero if not known
+	 * @param int $uid - internal user ID, zero if not known
 	 * @param string $emailAddress - email address (optional)
 	 *
 	 * @return boolean | string - false if user found, error message if not
@@ -2615,7 +2615,7 @@ class e_userperms
 	 * Update user (admin) permissions.
 	 * NOTE: exit if $uid is not an integer or is 0.
 	 *
-	 * @param integer $uid
+	 * @param int $uid
 	 * @param array $permArray eg. array('A', 'K', '1');
 	 * @return void
 	 */

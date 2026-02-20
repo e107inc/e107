@@ -50,7 +50,7 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 		/**
 		 * Return the primary_id number for the current link
 		 *
-		 * @return integer
+		 * @return int
 		 */
 		function sc_nav_link_id($parm = null)
 		{
@@ -105,7 +105,7 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 		/**
 		 * Return the parent of the current link
 		 *
-		 * @return integer
+		 * @return int
 		 */
 		function sc_nav_link_parent($parm = null)
 		{

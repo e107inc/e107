@@ -329,7 +329,7 @@ $e_install->renderPage();
  * Set Cookie
  * @param string $name
  * @param string $value
- * @param integer $expire seconds
+ * @param int $expire seconds
  * @param string $path
  * @param string $domain
  * @param boolean $secure

@@ -413,8 +413,8 @@ class e_chart
 	/**
 	 * Render Graph
 	 * @param string $id of canvas
-	 * @param integer $width
-	 * @param integer $height
+	 * @param int $width
+	 * @param int $height
 	 * @return null
 	 */
 	public function render($id, $width='100%',$height=300)

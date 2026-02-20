@@ -137,7 +137,7 @@ class e_date
 	 * Convert datestamp to human readable date.
 	 * System time offset is considered.
 	 * 
-	 * @param integer $datestamp unix stamp
+	 * @param int $datestamp unix stamp
 	 * @param string $mask [optional] long|short|forum|relative or any strftime() valid string
 	 * 
 	 * @return string parsed date
@@ -372,12 +372,12 @@ class e_date
 
 	
 	/**
-	 * Convert date string back to integer (unix timestamp)
+	 * Convert date string back to int (unix timestamp)
 	 * NOTE: after some tests, strptime (compat mode) is adding +1 sec. after parsing to time, investigate!
 	 * 
 	 * @param string $date_string
 	 * @param string $mask [optional]
-	 * @return integer
+	 * @return int
 	 */
 	function toTime($date_string, $mask = 'input')
 	{
@@ -473,7 +473,7 @@ class e_date
 	 * @param string $format - sets field order for dates. Valid strings are dmy, mdy, ymd. Add suffix 'z' to return UTC/GMT
 	 * @param boolean $endDay - if TRUE, and no time entered, includes a time of 23:59:59 in the entered date
 	 *
-	 * @return integer time stamp.  returns zero on any error
+	 * @return int time stamp.  returns zero on any error
 	 */
 	public function decodeDateTime($input, $decode = 'date', $format = 'dmy', $endDay = FALSE)
 	{
@@ -591,8 +591,8 @@ class e_date
 	/**
 	 * Calculate difference between two dates for display in terms of years/months/weeks....
 	 * 
-	 * @param integer $older_date - time stamp
-	 * @param integer|boolean $newer_date - time stamp.  Defaults to current time if FALSE
+	 * @param int $older_date - time stamp
+	 * @param int|boolean $newer_date - time stamp.  Defaults to current time if FALSE
 	 * @param boolean $mode -if TRUE, return value is an array. Otherwise return value is a string
 	 * @param boolean $show_secs
 	 * @param string $format - controls display format. 'short' misses off year. 'long' includes everything

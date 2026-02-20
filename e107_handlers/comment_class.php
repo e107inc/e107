@@ -397,10 +397,10 @@ class comment
 	 * @param array $row
 	 * @param string $table
 	 * @param string $action
-	 * @param integer $id
-	 * @param integer $width
+	 * @param int $id
+	 * @param int $width
 	 * @param string $subject
-	 * @param integer $addrating
+	 * @param int $addrating
 	 * @return string|null html
 	 */
 	function render_comment($row, $table, $action, $id, $width=0, $subject='', $addrating = FALSE)
@@ -665,7 +665,7 @@ class comment
 	 * @param string|array $data - $author_name or array of all values.
 	 * @param unknown_type $comment
 	 * @param unknown_type $table
-	 * @param integer $id - reference of item in source table to which comment is linked
+	 * @param int          $id - reference of item in source table to which comment is linked
 	 * @param unknown_type $pid - parent comment id when it's a reply to a specific comment. t
 	 * @param unknown_type $subject
 	 * @param unknown_type $rateindex
@@ -954,7 +954,7 @@ class comment
 
 	/**
 	 * Convert type number to (core) table string
-	 * @param integer|string $type
+	 * @param int|string $type
 	 * @return string
 	 */
 	public function getTable($type)
@@ -1029,7 +1029,7 @@ class comment
 	 * Returns a rendered commenting area. (html) v2.x
 	 * This is the only method a plugin developer should require in order to include user comments.
 	 * @param string $plugin - directory of the plugin that will own these comments.
-	 * @param int $id - unique id for this page/item. Usually the primary ID of your plugin's database table.
+	 * @param int    $id - unique id for this page/item. Usually the primary ID of your plugin's database table.
 	 * @param string $subject
 	 * @param bool|false $rate true = will rendered rating buttons, false will not.
 	 * @return null|string
@@ -1045,7 +1045,7 @@ class comment
 	 *
 	 * @param string  $table - the source table for the associated item
 	 * @param string  $action - usually 'comment' or 'reply'
-	 * @param integer $id - ID of item associated with comments (e.g. news ID)
+	 * @param int     $id - ID of item associated with comments (e.g. news ID)
 	 * @param int     $width - appears to not be used
 	 * @param string  $subject
 	 * @param boolean $rate

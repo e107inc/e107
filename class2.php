@@ -1316,7 +1316,7 @@ function check_class($var, $userclass = null, $uid = 0)
  * @param string|int|null $ap   The serialized admin permissions or plugin admin permissions to check against.
  *                              Exclude or use {@link null} to use the global {@link ADMINPERMS} constant.
  *                              This is a dot-delimited (`.`) list of access codes.
- *                              Accepts an integer that will be cast to a string for backwards compatibility.
+ *                              Accepts an int that will be cast to a string for backwards compatibility.
  *                              Example: `C.F.G.1.U0.U1.U2.P3.P4.English`.
  * @param string|null     $path The path to the file requesting the permission check.
  *                              This is only used when checking plugin admin permissions.
@@ -1808,7 +1808,7 @@ if(!deftrue('e_SINGLE_ENTRY') && deftrue('e_CURRENT_PLUGIN'))
  *
  * @param string  $name
  * @param string  $value
- * @param integer $expire seconds
+ * @param int     $expire seconds
  * @param string  $path
  * @param string  $domain
  * @param int     $secure

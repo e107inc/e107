@@ -573,7 +573,7 @@ class e107MailManager
 	/**
 	 * Convert numeric representation of mail status to a text string
 	 *
-	 * @param integer $status - numeric value of status
+	 * @param int $status - numeric value of status
 	 * @return string text value
 	 */
 	public function statusToText($status)
@@ -1462,7 +1462,7 @@ class e107MailManager
 
 	/**
 	 * Put email on hold, including marking all unsent recipient entries
-	 * @param integer $handle - as returned by makeEmail()
+	 * @param int $handle - as returned by makeEmail()
 	 * @return boolean - TRUE on success, FALSE on failure
 	 */
 	public function holdEmail($handle)
@@ -1750,7 +1750,7 @@ class e107MailManager
 
 	/**
 	 * Returns the total number of records matching the search done in the most recent call to selectEmailStatus()
-	 * @return integer - number of emails matching criteria
+	 * @return int - number of emails matching criteria
 	 */
 	public function getEmailCount()
 	{
@@ -1829,7 +1829,7 @@ class e107MailManager
 
 	/**
 	 * Returns the total number of records matching the search done in the most recent call to selectTargetStatus()
-	 * @return integer - number of emails matching criteria
+	 * @return int - number of emails matching criteria
 	 */
 	public function getTargetCount()
 	{

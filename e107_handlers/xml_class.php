@@ -472,7 +472,7 @@ class xmlClass
 	 * Get Remote XML file contents
 	 * use setOptArrayTags above if you require a consistent array result by in 1 item or many. 
 	 * @param string $address
-	 * @param integer $timeout [optional] seconds
+	 * @param int $timeout [optional] seconds
 	 * @return string
 	 */
 	function getRemoteFile($address, $timeout = 10, $postData=null)

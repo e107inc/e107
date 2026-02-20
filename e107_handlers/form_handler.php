@@ -917,8 +917,8 @@ class e_form
 	 *   - pattern: default empty; allows to define an complex input pattern
 	 * 
 	 * @param string $name
-	 * @param integer $value
-	 * @param integer $maxlength
+	 * @param int $value
+	 * @param int $maxlength
 	 * @param array|string $options decimals, step, min, max, pattern
 	 * @return string
 	 */
@@ -1947,7 +1947,7 @@ class e_form
 	 * @param string $name_fld field name for user name
 	 * @param string $id_fld field name for user id
 	 * @param string $default_name default user name value
-	 * @param integer $default_id default user id
+	 * @param int $default_id default user id
 	 * @param array|string $options [optional] 'readonly' (make field read only), 'name' (db field name, default user_name)
 	 * @return string HTML text for display
 	 */

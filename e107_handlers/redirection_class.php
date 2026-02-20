@@ -159,7 +159,7 @@ class redirection
 		if($session->has($name))
 		{
 			// expired - cookie like session implementation
-			if((integer) $session->get($name.'_expire') < time())
+			if((int) $session->get($name.'_expire') < time())
 			{
 				$session->clear($name.'_expire')
 					->clear($name);
@@ -180,7 +180,7 @@ class redirection
 	 * Register url in current session
 	 * @param string $name
 	 * @param string $value
-	 * @param integer $expire expire after value in seconds, null (default) - ignore
+	 * @param int $expire expire after value in seconds, null (default) - ignore
 	 * @return redirection
 	 */
 	public function setCookie($name, $value, $expire = null, $forceCookie = false)
@@ -191,12 +191,12 @@ class redirection
 		if(!$forceCookie && e107::getPref('cookie_name') != 'cookie')
 		{
 			// expired - cookie like session implementation
-			if(null !== $expire) $session->set($name.'_expire', time() + (integer) $expire); 
+			if(null !== $expire) $session->set($name.'_expire', time() + (int) $expire);
 			$session->set($name, $value);
 		}
 		else
 		{
-			cookie($cookiename, $value, time() + (integer) $expire, e_HTTP, e107::getLanguage()->getCookieDomain());
+			cookie($cookiename, $value, time() + (int) $expire, e_HTTP, e107::getLanguage()->getCookieDomain());
 		}
 
 		return $this;
@@ -429,7 +429,7 @@ class redirection
 	 *
 	 * @param string $url or error code number. eg. 404 = Not Found. If left empty SITEURL will be used.
 	 * @param boolean $replace - default TRUE
-	 * @param integer|null $http_response_code - default NULL
+	 * @param int|null $http_response_code - default NULL
 	 * @param boolean $preventCache
 	 * @return void
 	 */

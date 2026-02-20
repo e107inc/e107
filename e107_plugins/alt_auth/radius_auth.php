@@ -144,7 +144,7 @@ class auth_login extends alt_auth_base
 	 *	@param pointer &$newvals - pointer to array to accept other data read from database
 	 *	@param boolean $connect_only - TRUE to simply connect to the server
 	 *
-	 *	@return integer result (AUTH_xxxx)
+	 *	@return int result (AUTH_xxxx)
 	 *
 	 *	On a successful login, &$newvals array is filled with the requested data from the server
 	 */
@@ -209,7 +209,7 @@ class auth_login extends alt_auth_base
 					break;
 				case 6 :		// Service type  (integer bitmap)
 				case 7 :		// Protocol (integer bitmap)
-				case 10 :		// Routing method (integer)
+				case 10 :		// Routing method (int)
 				case 12 :		// Framed MTU
 				case 13 :		// Compression method
 				case 15 :		// Login service (bitmap)

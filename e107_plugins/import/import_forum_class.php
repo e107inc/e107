@@ -74,7 +74,7 @@ class forum_import
 	/**
 	 * Insert data into e107 DB
 	 * @param row - array of table data
-	 * @return integer, boolean - error code on failure, TRUE on success
+	 * @return int, boolean - error code on failure, TRUE on success
 	 */
 	function saveData($row)
 	{	
@@ -178,7 +178,7 @@ class forumthread_import
 	/**
 	 * Insert data into e107 DB
 	 * @param row - array of table data
-	 * @return integer, boolean - error code on failure, TRUE on success
+	 * @return int, boolean - error code on failure, TRUE on success
 	 */
 	function saveData($row)
 	{	
@@ -288,7 +288,7 @@ class forumpost_import
 	/**
 	 * Insert data into e107 DB
 	 * @param row - array of table data
-	 * @return integer, boolean - error code on failure, TRUE on success
+	 * @return int, boolean - error code on failure, TRUE on success
 	 */
 	function saveData($row)
 	{	
@@ -383,7 +383,7 @@ class forumtrack_import
 	/**
 	 * Insert data into e107 DB
 	 * @param row - array of table data
-	 * @return integer, boolean - error code on failure, TRUE on success
+	 * @return int, boolean - error code on failure, TRUE on success
 	 */
 	function saveData($row)
 	{	

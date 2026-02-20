@@ -18,7 +18,7 @@
 		/**
 		 * Return the primary_id number for the current link
 		 * @deprecated
-		 * @return integer
+		 * @return int
 		 */
 		function sc_link_id($parm = null)
 		{
@@ -54,7 +54,7 @@
 		/**
 		 * Return the parent of the current link
 		 * @deprecated
-		 * @return integer
+		 * @return int
 		 */
 		function sc_link_parent($parm = null)
 		{

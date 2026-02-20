@@ -269,7 +269,7 @@ class ExtendedPasswordHandler extends UserHandler
 	 *	@param string $password - plaintext password as entered by user
 	 *	@param string $login_name - string used to log in (could actually be email address)
 	 *	@param string $stored_hash - required value for password to match
-	 *	@param integer $password_type - constant specifying the type of password to check against
+	 *	@param int $password_type - constant specifying the type of password to check against
 	 *
 	 *	@return string  PASSWORD_INVALID|PASSWORD_VALID|string
 	 *		PASSWORD_INVALID if no match

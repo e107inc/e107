@@ -150,7 +150,7 @@ if(e_QUERY)
 
 
 		// Prepare new information to display to user
-		if((integer) e107::getPref('allowEmailLogin') > 0)
+		if((int) e107::getPref('allowEmailLogin') > 0)
 		{
 			// always show email when possible
 			$sql->select('user', 'user_email', "user_id=".intval($uid));
