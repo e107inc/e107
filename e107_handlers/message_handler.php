@@ -146,7 +146,7 @@ class eMessage
 			if(session_id())
 			{
 				$session = $this->getSessionHandler();
-				$session->set($sid, $session->get($this->_session_id, true)); // move
+				$session->set($sid, $this->getSessionData()); // move
 				if(!$session->has($sid)) $session->set($sid, array()); // be sure it's array
 			}
 			$this->_session_id = $sid;
@@ -184,6 +184,80 @@ class eMessage
 		return $this;
 	}
 
+	/**
+	 * Check if all message arrays in the session data are empty
+	 * @param array $sessionData
+	 * @return bool
+	 */
+	protected function isSessionDataEmpty($sessionData)
+	{
+		if (empty($sessionData) || !is_array($sessionData))
+		{
+			return true;
+		}
+
+		foreach ($sessionData as $type => $stacks)
+		{
+			if (!is_array($stacks))
+			{
+				continue;
+			}
+			foreach ($stacks as $stack => $messages)
+			{
+				if (!empty($messages))
+				{
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Set session data only if it contains messages
+	 * This prevents unnecessary session writes
+	 * @param array $sessionData
+	 * @return void
+	 */
+	protected function setSessionData($sessionData)
+	{
+		$sessionHandler = $this->getSessionHandler();
+		if (!$this->isSessionDataEmpty($sessionData))
+		{
+			$sessionHandler->set($this->_session_id, $sessionData);
+		}
+		else
+		{
+			$sessionHandler->clear($this->_session_id);
+		}
+	}
+
+	/**
+	 * Get session data with proper structure
+	 * Ensures all message type keys exist even if session is empty
+	 * @return array
+	 */
+	protected function getSessionData()
+	{
+		$sessionData = $this->getSessionHandler()->get($this->_session_id);
+		
+		// If null or not an array, return full skeleton
+		if (!is_array($sessionData)) {
+			return $this->_type_map();
+		}
+		
+		// Start with the type map skeleton and overlay session data
+		// This ensures all keys exist in the correct order
+		$result = $this->_type_map();
+		foreach ($result as $type => &$value) {
+			if (isset($sessionData[$type])) {
+				$value = $sessionData[$type];
+			}
+		}
+		
+		return $result;
+	}
 
 	/**
 	 * Add message to a type stack and default message stack
@@ -329,7 +403,7 @@ class eMessage
 			$mstack = $message[1];
 			$message = $message[0];
 		}
-		$SESSION = $this->getSessionHandler()->get($this->_session_id);
+		$SESSION = $this->getSessionData();
 
 		if($this->isType($type)) 
 		{
@@ -337,7 +411,7 @@ class eMessage
 			if(in_array($mstack, $this->_unique) && isset($SESSION[$type][$mstack]) && in_array($message, $SESSION[$type][$mstack])) return $this;
 			
 			$SESSION[$type][$mstack][] = $message;
-			$this->getSessionHandler()->set($this->_session_id, $SESSION);
+			$this->setSessionData($SESSION);
 		}
 		return $this;
 	}
@@ -488,7 +562,7 @@ class eMessage
 	public function getSession($type, $mstack = 'default', $raw = false, $reset = true)
 	{
 		if(!session_id()) return null;
-		$SESSION = $this->getSessionHandler()->get($this->_session_id);
+		$SESSION = $this->getSessionData();
 		$message = isset($SESSION[$type][$mstack]) ? $SESSION[$type][$mstack] : '';
 		if($reset) $this->resetSession($type, $mstack);
 
@@ -668,7 +742,7 @@ class eMessage
 	public function resetSession($type = false, $mstack = false)
 	{
 		if(!session_id()) return $this;
-		$SESSION = $this->getSessionHandler()->get($this->_session_id);
+		$SESSION = $this->getSessionData();
 		if(false === $type) 
 		{
 			if(false === $mstack)
@@ -697,7 +771,7 @@ class eMessage
 				unset($SESSION[$type][$mstack]);
 			}
 		}
-		$this->getSessionHandler()->set($this->_session_id, $SESSION);
+		$this->setSessionData($SESSION);
 		return $this;
 	}
 
@@ -712,7 +786,7 @@ class eMessage
 	{
 		// do nothing if there is still no session
 		if(!session_id()) return $this;
-		$SESSION = $this->getSessionHandler()->get($this->_session_id);
+		$SESSION = $this->getSessionData();
 		
 		if(!empty($SESSION))
 		{
@@ -734,7 +808,7 @@ class eMessage
 					$this->_sysmsg[$type][$mstack] = $SESSION[$type][$mstack];
 				}
 			}
-			$this->getSessionHandler()->set($this->_session_id, $SESSION);
+			$this->setSessionData($SESSION);
 		}
 		if($reset) $this->resetSession(false, $mstack);
 		return $this;
@@ -751,7 +825,7 @@ class eMessage
 	{
 		// do nothing if there is still no session
 		if(!session_id()) return $this;
-		$SESSION = $this->getSessionHandler()->get($this->_session_id);
+		$SESSION = $this->getSessionData();
 		
 		foreach (array_keys($this->_sysmsg) as $type)
 		{
@@ -771,7 +845,7 @@ class eMessage
 				$SESSION[$type][$mstack] = $this->_sysmsg[$type][$mstack];
 			}
 		}
-		$this->getSessionHandler()->set($this->_session_id, $SESSION);
+		$this->setSessionData($SESSION);
 		$this->reset($message_type, $mstack, false);
 		return $this;
 	}
@@ -833,7 +907,7 @@ class eMessage
 	{
 		// do nothing if there is still no session
 		if(!session_id() || $from_stack == $to_stack) return $this;
-		$SESSION = $this->getSessionHandler()->get($this->_session_id);
+		$SESSION = $this->getSessionData();
 		
 		foreach ($SESSION as $_type => $stacks)
 		{
@@ -851,7 +925,7 @@ class eMessage
 				unset($SESSION[$_type][$from_stack]);
 			}
 		}
-		$this->getSessionHandler()->set($this->_session_id, $SESSION);
+		$this->setSessionData($SESSION);
 		
 		return $this;
 	}
