@@ -54,6 +54,12 @@ class db_verify
 		"XtraDB" => ["XtraDB", "InnoDB"],
 	];
 
+	/** @var e_search_fulltext_indexer|null */
+	private $fulltextIndexer = null;
+
+	/** @var array Derived index definitions keyed by table then index name */
+	private $derivedIndexDefinitions = array();
+
 	var $fieldTypes = array('time', 'timestamp', 'datetime', 'year', 'tinyblob', 'blob',
 		'mediumblob', 'longblob', 'tinytext', 'mediumtext', 'longtext', 'text', 'date', 'json');
 
@@ -101,6 +107,49 @@ class db_verify
 
 		return e107::getCache()->clear(self::cachetag, true);
 
+	}
+
+	/**
+	 * Get the FULLTEXT indexer instance
+	 * @return e_search_fulltext_indexer
+	 */
+	protected function getFulltextIndexer()
+	{
+		if($this->fulltextIndexer === null)
+		{
+			require_once(e_HANDLER . 'e_search_fulltext_indexer_class.php');
+			$this->fulltextIndexer = new e_search_fulltext_indexer();
+		}
+
+		return $this->fulltextIndexer;
+	}
+
+	/**
+	 * Get derived FULLTEXT indexes for a table from e_search configurations
+	 *
+	 * Also stores the definitions in $derivedIndexDefinitions for use by getFixQuery().
+	 *
+	 * @param string $tableName Table name without prefix
+	 * @return array Index definitions compatible with getIndex() output
+	 */
+	protected function getSearchFieldIndexes($tableName)
+	{
+		$indexes = $this->getFulltextIndexer()->getIndexesForTable($tableName);
+
+		// Store definitions for use by getFixQuery()
+		if(!empty($indexes))
+		{
+			if(!isset($this->derivedIndexDefinitions[$tableName]))
+			{
+				$this->derivedIndexDefinitions[$tableName] = array();
+			}
+			$this->derivedIndexDefinitions[$tableName] = array_merge(
+				$this->derivedIndexDefinitions[$tableName],
+				$indexes
+			);
+		}
+
+		return $indexes;
 	}
 
 	/**
@@ -368,7 +417,15 @@ class db_verify
 			$sqlData['field'] = $this->getFields($sqlDataArr['data'][0]);
 
 			$fileData['index'] = $this->getIndex($this->sqlFileTables[$selection]['data'][$key]);
-			$sqlData['index'] = $this->getIndex($sqlDataArr['data'][0]);
+
+			// Inject derived FULLTEXT indexes from e_search configurations
+			$derivedIndexes = $this->getSearchFieldIndexes($tbl);
+			if(!empty($derivedIndexes))
+			{
+				$fileData['index'] = array_merge($fileData['index'], $derivedIndexes);
+			}
+
+			$sqlData['index']  = $this->getIndex($sqlDataArr['data'][0]);
 
 			$maybeEngine = isset($sqlDataArr['engine'][0]) ? $sqlDataArr['engine'][0] : 'INTERNAL_ERROR:ENGINE';
 			$fileData['engine'] = $this->getIntendedStorageEngine($this->sqlFileTables[$selection]['engine'][$key]);
@@ -879,11 +936,11 @@ class db_verify
 			// print_a($data);
 			if($data['type'])
 			{
-				//return $data['type']." (".$data['field'].");";
-				// Check if index keyname exists and add backticks
-				$keyname = (!empty($data['keyname']) ? " `" . $data['keyname'] . "`" : "");
+				// field = index name (in backticks), keyname = column name(s) (in parentheses)
+				// This matches MySQL syntax: FULLTEXT `index_name` (column_name)
+				$field = (!empty($data['field']) ? " `" . $data['field'] . "`" : "");
 
-				return $data['type'] . $keyname . " (" . $data['field'] . ");";
+				return $data['type'] . $field . " (" . $data['keyname'] . ");";
 			}
 			else
 			{
@@ -973,7 +1030,23 @@ class db_verify
 
 		if(strpos($mode, 'index') === 0)
 		{
-			$fdata = $this->getIndex($sqlFileData);
+			$fdata  = $this->getIndex($sqlFileData);
+
+			// Check if this is a derived index (e.g., from e_search configurations)
+			if(!isset($fdata[$field]))
+			{
+				// Load derived indexes on-demand (needed when runFix() is called before compare())
+				if(!isset($this->derivedIndexDefinitions[$table]))
+				{
+					$this->getSearchFieldIndexes($table);
+				}
+
+				if(isset($this->derivedIndexDefinitions[$table][$field]))
+				{
+					$fdata[$field] = $this->derivedIndexDefinitions[$table][$field];
+				}
+			}
+
 			$newval = $this->toMysql($fdata[$field], 'index');
 		}
 		elseif($mode == 'alter' || $mode === 'insert' || $mode === 'index')
@@ -1624,12 +1697,26 @@ class db_verify
 	}
 
 	/**
-	 * Inititalize the class parameters.
+	 * Initialize db_verify with table definitions and storage engine info
 	 *
-	 * @return void
+	 * @param bool $clearCache When true, clears all caches that db_verify depends on:
+	 *                         - MySQL table list cache (for accurate isTable() checks)
+	 *                         - Core preference cache (for fresh e_sql_list and e_search_list)
+	 *                         - db_verify's own file cache
+	 *                         Use this after creating/dropping tables or changing plugin preferences.
 	 */
 	public function init($clearCache = false): void
 	{
+		if($clearCache)
+		{
+			// Clear MySQL table list cache - isTable() uses a cached list that may be stale
+			// if tables were created/dropped since the db handler was first used
+			e107::getDb()->resetTableList();
+
+			// Reload core preferences from database - load() uses e_sql_list which may have
+			// changed if plugins were installed/uninstalled
+			e107::getConfig('core')->clearPrefCache()->load(null, true);
+		}
 
 		$sql = e107::getDb();
 		$sql->gen('SET SQL_QUOTE_SHOW_CREATE = 1');

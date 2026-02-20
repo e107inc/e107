@@ -565,4 +565,81 @@
 		{
 
 		}*/
+
+		/**
+		 * Test that FULLTEXT indexes are created when installing a plugin with e_search addon
+		 *
+		 * This test installs the forum plugin (which has e_search) and verifies
+		 * that no FULLTEXT index migrations are pending after installation.
+		 */
+		public function testPluginInstallCreatesFulltextIndexes()
+		{
+			$pluginPath = 'forum';
+
+			// Skip if forum plugin doesn't exist
+			if(!is_dir(e_PLUGIN . $pluginPath))
+			{
+				$this->markTestSkipped('Forum plugin not available');
+			}
+
+			// Get plugin handlers
+			$plug = e107::getPlug();  // e_plugin - for checking installed status
+			$plugin = e107::getPlugin();  // e107plugin - for install/uninstall
+
+			// Check if forum is already installed and uninstall it first
+			$installed = $plug->load($pluginPath)->isInstalled();
+			if($installed)
+			{
+				$plugin->install_plugin_xml($pluginPath, 'uninstall', array('delete_tables' => true));
+			}
+
+			// Install the forum plugin
+			$installResult = $plugin->install_plugin_xml($pluginPath, 'install');
+			$this->assertNotFalse($installResult, 'Forum plugin installation should succeed');
+
+			// Refresh plugin cache so e_search_list is current
+			$plug->clearCache()->buildAddonPrefLists();
+
+			// Now check that no FULLTEXT indexes are pending via db_verify
+			require_once(e_HANDLER . 'db_verify_class.php');
+
+			$dbv = new db_verify();
+			// Reinitialize with fresh state - clears table list cache, reloads prefs,
+			// and refreshes db_verify's own cache to include this newly installed plugin
+			$dbv->init(true);
+			$dbv->compare($pluginPath);
+
+			// Check for missing FULLTEXT indexes
+			$missingFulltextIndexes = array();
+			if($dbv->errors())
+			{
+				$dbv->compileResults();
+				$fixList = $dbv->fixList;
+
+				foreach($fixList as $tables)
+				{
+					foreach($tables as $table => $fields)
+					{
+						foreach($fields as $field => $modes)
+						{
+							// Check if this is a FULLTEXT index fix (starts with ft_)
+							if(strpos($field, 'ft_') === 0 && in_array('index', $modes))
+							{
+								$missingFulltextIndexes[] = "{$table}.{$field}";
+							}
+						}
+					}
+				}
+			}
+
+			// Clean up: uninstall the forum plugin
+			$plugin->install_plugin_xml($pluginPath, 'uninstall', array('delete_tables' => true));
+
+			// Assert no FULLTEXT indexes are missing
+			$this->assertEmpty(
+				$missingFulltextIndexes,
+				'FULLTEXT indexes should be created during plugin installation. Missing: ' .
+				implode(', ', $missingFulltextIndexes)
+			);
+		}
 	}
