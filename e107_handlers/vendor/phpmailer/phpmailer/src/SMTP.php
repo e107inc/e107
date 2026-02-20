@@ -1045,7 +1045,7 @@ class SMTP
      *
      * @param string    $command       The command name - not sent to the server
      * @param string    $commandstring The actual command to send
-     * @param int|array $expect        One or more expected integer success codes
+     * @param int|array $expect        One or more expected int success codes
      *
      * @return bool True on success
      */

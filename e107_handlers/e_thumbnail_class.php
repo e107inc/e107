@@ -396,20 +396,20 @@ class e_thumbnail
 
 
 
-			$thumb->adaptiveResizeQuadrant((integer) vartrue($this->_request['w'], 0), (integer) vartrue($this->_request['h'], 0), $options['c']);
+			$thumb->adaptiveResizeQuadrant((int) vartrue($this->_request['w'], 0), (int) vartrue($this->_request['h'], 0), $options['c']);
 		}
 		if(isset($this->_request['w']) || isset($this->_request['h']))
 		{
-			$thumb->resize((integer) vartrue($this->_request['w'], 0), (integer) vartrue($this->_request['h'], 0));
+			$thumb->resize((int) vartrue($this->_request['w'], 0), (int) vartrue($this->_request['h'], 0));
 		}
 		elseif(!empty($this->_request['ah']))
 		{
 			//Typically gives a better result with images of people than adaptiveResize().
-			$thumb->adaptiveResizeQuadrant((integer) vartrue($this->_request['aw'], 0), (integer) vartrue($this->_request['ah'], 0), 'T');
+			$thumb->adaptiveResizeQuadrant((int) vartrue($this->_request['aw'], 0), (int) vartrue($this->_request['ah'], 0), 'T');
 		}
 		else
 		{
-			$thumb->adaptiveResize((integer) vartrue($this->_request['aw'], 0), (integer) vartrue($this->_request['ah'], 0));
+			$thumb->adaptiveResize((int) vartrue($this->_request['aw'], 0), (int) vartrue($this->_request['ah'], 0));
 		}
 
 

@@ -949,12 +949,12 @@ class eMessage
 	 * Automate DB system messages
 	 * NOTE: default value of $output parameter will be changed to false (no output by default) in the future
 	 *
-	 * @param integer|bool $update return result of db::db_Query
+	 * @param int|bool $update return result of db::db_Query
 	 * @param string $type update|insert|update
 	 * @param string|bool $success forced success message
 	 * @param string|bool $failed forced error message
 	 * @param bool $output false suppress any function output
-	 * @return integer|bool db::db_Query result
+	 * @return int|bool db::db_Query result
 	 */
 	 // TODO - This function often needs to be available BEFORE header.php is loaded. 
 	 // It has been copied from admin_update() in e107_admin/header.php

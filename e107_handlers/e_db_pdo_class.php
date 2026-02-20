@@ -657,7 +657,7 @@ class e_db_pdo implements e_db
 	* @example e107::getDb()->select("comments", "*", "comment_item_id = '$id' AND comment_type = '1' ORDER BY comment_datestamp");
 	* @example e107::getDb('sql2')->select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT $from, ".$view, true);</code>
 	* @example select('user', 'user_id, user_name', 'user_id=:id OR user_name=:name ORDER BY user_name', array('id' => 999, 'name'=>'e107')); // bind support.
-	* @return integer|false Number of rows or false on error
+	* @return int|false Number of rows or false on error
 	*/
 	public function select($table, $fields = '*', $arg = '', $noWhere = false, $debug = false, $log_type = '', $log_remark = '')
 	{
@@ -1530,7 +1530,7 @@ class e_db_pdo implements e_db
 	* @param string $query - the MySQL query string, where '#' represents the database prefix in front of table names.
 	*		Strongly recommended to enclose all table names in backticks, to minimise the possibility of erroneous substitutions - its
 	*			likely that this will become mandatory at some point
-	* @return boolean | integer
+	* @return boolean | int
 	*		Returns false if there is an error in the query
 	*		Returns TRUE if the query is successful, and it does not return a row count
 	*		Returns the number of rows added/updated/deleted for DELETE, INSERT, REPLACE, or UPDATE
@@ -1747,7 +1747,7 @@ class e_db_pdo implements e_db
 	 * @param string $where (Optional ) where condition.
 	 * @param string $order Name of the order field.
 	 * @todo Add extra params to each procedure so we only need 2 of them site-wide.
-	 * @return boolean | integer with the addition of  _treesort and _depth fields in the results.
+	 * @return boolean | int with the addition of  _treesort and _depth fields in the results.
 	 */
 	public function selectTree($table, $parent, $pid, $order, $where=null)
 	{
@@ -1835,7 +1835,7 @@ class e_db_pdo implements e_db
 
 
 	/**
-	* @return integer
+	* @return int
 	* @desc returns total number of queries made so far
 	* @access public
 	*/

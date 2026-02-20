@@ -670,8 +670,8 @@ class user_class
 	 *	Used by @see{vetted_tree()} to generate lower levels of tree
 	 *
 	 *	@param string $listnum - class number of the parent. Is negative if the class is 'Everyone except...' (Must be a string because 0 == -0)
-	 *	@param integer $nest_level - indicates our level in the tree - 0 is the top level; increases as we descend the tree. Positive value.
-	 *	@param string $current_value - comma-separated list of integers indicating classes selected. (Spaces not permitted)
+	 *	@param int $nest_level - indicates our level in the tree - 0 is the top level; increases as we descend the tree. Positive value.
+	 *	@param string $current_value - comma-separated list of ints indicating classes selected. (Spaces not permitted)
 	 *	@param array $perms - list of classes we are allowed to display
 	 *	@param string $opt_options - passed to callback function; not otherwise used
 	 */
@@ -712,7 +712,7 @@ class user_class
 	 *		checkbox - generates a set of checkboxes
 	 *		checkbox_desc - generates a set of checkboxes with the class description in brackets
 	 *		Alternative callbacks can be used to achieve different layouts/styles
-	 *	@param integer|string $current_value - single class number for single-select dropdown; comma separated array of class numbers for checkbox list or multi-select
+	 *	@param int|string $current_value - single class number for single-select dropdown; comma separated array of class numbers for checkbox list or multi-select
 	 *	@param string $optlist works the same as for @see uc_dropdown()
 	 *	@param string $opt_options - passed to callback function; not otherwise used
 	 *	@return string - formatted HTML for tree
@@ -781,8 +781,8 @@ class user_class
 	 *	@param string $treename	- name of tree elements (not used with select; used with checkboxes, for example)
 	 *	@param string $classnum - user class being displayed. This may be negative to indicate 'everyone but...'
 	 *			- special numeric part e_UC_BLANK adds a blank option in the list.
-	 *	@param integer|string $current_value - single class number for single-select dropdown; comma separated array of class numbers for checkbox list or multi-select
-	 *	@param integer $nest_level - 'depth' of this item in the tree. Zero is base level. May be used to indent or highlight dependent on level
+	 *	@param int|string $current_value - single class number for single-select dropdown; comma separated array of class numbers for checkbox list or multi-select
+	 *	@param int $nest_level - 'depth' of this item in the tree. Zero is base level. May be used to indent or highlight dependent on level
 	 *	@param string $opt_options - passed to callback function; not otherwise used
 	 *
 	 *	@return string - option list
@@ -924,7 +924,7 @@ class user_class
 
 	/**
 	 *	Return array of all classes, limited according to membership of the userclass_visibility field if $filter is set.
-	 *	@param string|integer $filter - user class or class list in format acceptable to check_class()
+	 *	@param string|int $filter - user class or class list in format acceptable to check_class()
 	 *	@return array of class elements, each itself an array:
 	 *		Index field - userclass_id
 	 *		Data fields - userclass_name, userclass_description, userclass_editclass
@@ -948,7 +948,7 @@ class user_class
 	/**
 	 *	Return class name for given class ID
 	 *	Handles 'not a member of...' construct by replacing '--CLASS--' in UC_LAN_INVERT with the class name
-	 *	@param integer $id - class number. A negative number indicates 'not a member of...'
+	 *	@param int $id - class number. A negative number indicates 'not a member of...'
 	 *	@return string class name
 	 */
 	public function getName($id)
@@ -979,7 +979,7 @@ class user_class
 
 	/**
 	 *	Return a key-name identifier for given class ID
-	 *	@param integer $id - class number. A negative number indicates 'not a member of...'
+	 *	@param int $id - class number. A negative number indicates 'not a member of...'
 	 *	@return string class name ke
 	 */
 	public function getIdentifier($id)
@@ -1006,7 +1006,7 @@ class user_class
 
 	/**
 	 *	Return class description for given class ID
-	 *	@param integer $id - class number. Must be >= 0
+	 *	@param int $id - class number. Must be >= 0
 	 *	@return string class description
 	 */
 	public function getDescription($id)
@@ -1059,7 +1059,7 @@ class user_class
 
 	/**
 	 *	Return class icon for given class ID
-	 *	@param integer $id - class number. Must be >= 0
+	 *	@param int $id - class number. Must be >= 0
 	 *	@return string class icon if defined, otherwise empty string
 	 */
 	public function uc_get_classicon($id)
@@ -1078,7 +1078,7 @@ class user_class
 	/**
 	 *	Look up class ID for a given class name
 	 *	@param string $name - class name
-	 *	@return integer|boolean FALSE if not found, else user class ID
+	 *	@return int|boolean FALSE if not found, else user class ID
 	 */
 	public function getID($name)
 	{
@@ -1112,7 +1112,7 @@ class user_class
 	/**
 	 *	Utility to remove a specified class ID from the default comma-separated list
 	 *	Optional conversion to array of classes
-	 *	@param integer $classID - class number. Must be >= 0
+	 *	@param int $classID - class number. Must be >= 0
 	 *	@param string $from - comma separated list of class numbers
 	 *	@param boolean $asArray - if TRUE, result returned as array; otherwise result returned as string
 	 *	@return string class description
@@ -1135,7 +1135,7 @@ class user_class
 	/**
 	 *	Utility to add a specified class ID to the default comma-separated list
 	 *	Optional conversion to array of classes
-	 *	@param integer $classID - class number. Must be >= 0
+	 *	@param int $classID - class number. Must be >= 0
 	 *	@param string $to - comma separated list of class numbers
 	 *	@param boolean $asArray - if TRUE, result returned as array; otherwise result returned as string
 	 *	@return string class description
@@ -1152,7 +1152,7 @@ class user_class
 
 	/**
 	 *	See if a class can be edited (in the sense of the class ID not being fixed)
-	 *	@param integer $classID - class number. Must be >= 0
+	 *	@param int $classID - class number. Must be >= 0
 	 *	@return boolean - TRUE if class can be edited
 	 */
 	public function isEditableClass($classID)
@@ -1474,7 +1474,7 @@ class user_class_admin extends user_class
 	/*
 	 *	Internal function, called recursively to rebuild the permissions tree where rights increase going down the tree
 	 *	If the permissions change, sets the 'change_flag' to force rewrite to DB (by other code)
-	 *	@param integer $parent is the class number being processed.
+	 *	@param int $parent is the class number being processed.
 	 *	@param array $rights is the array of rights accumulated so far in the walk down the tree
 	 */
 	/**
@@ -1522,7 +1522,7 @@ class user_class_admin extends user_class
 
 	/*
 	 * Internal function, called recursively to rebuild the permissions tree where rights increase going up the tree
-	 *	@param integer $our_class - ID of class being processed
+	 *	@param int $our_class - ID of class being processed
 	 *	@return array of class permissions
 	 */
 	/**
@@ -1773,7 +1773,7 @@ class user_class_admin extends user_class
 	 *	Initially tries to find an unused class ID less than e_UC_SPECIAL_BASE
 	 *	Then attempts to find a gap in the lower numbered classes
 	 *	Finally allocates a class number above e_UC_SPECIAL_END
-	 *	@return integer|boolean - class ID if available; otherwise FALSE
+	 *	@return int|boolean - class ID if available; otherwise FALSE
 	 */
 	public function findNewClassID()
 	{
@@ -1888,10 +1888,10 @@ class user_class_admin extends user_class
 
 	/**
 	 *	Check if a user may edit a user class.
-	 *	@param integer $classID > 0
+	 *	@param int $classID > 0
 	 *	@param string $classList - comma-separated list of class IDs; defaults to those of current user
 	 *
-	 *	@return integer:
+	 *	@return int:
 	 *				0 - if editing not allowed at all
 	 *				1 - if restricted editing allowed (usually because its a fixed class)
 	 *				2 - All editing rights allowed
@@ -1920,7 +1920,7 @@ class user_class_admin extends user_class
 
 	/**
 	 *	Check if a class may be deleted. (Fixed classes, classes with descendants cannot be deleted)
-	 *	@param integer $classID > 0
+	 *	@param int $classID > 0
 	 *	@return boolean TRUE if deletion permissible; false otherwise
 	 */
 	public function queryCanDeleteClass($classID)
@@ -1941,7 +1941,7 @@ class user_class_admin extends user_class
 
 	/**
 	 *	Delete a class
-	 *	@param integer $classID > 0
+	 *	@param int $classID > 0
 	 *	@return boolean TRUE on success, FALSE on error
 	 */
 	public function delete_class($classID)
@@ -1958,7 +1958,7 @@ class user_class_admin extends user_class
 
 	/**
 	 *	Delete a class, and update class membership for all users who are members of that class.
-	 *	@param integer $classID > 0
+	 *	@param int $classID > 0
 	 *	@return boolean TRUE on success, FALSE on error
 	 */
 	public function deleteClassAndUsers($classID)
@@ -1984,7 +1984,7 @@ class user_class_admin extends user_class
 	/**
 	 *	Adds all users in list to a specified user class
 	 *	(Moved in from e_userclass class)
-	 *	@param integer $cid - user class ID
+	 *	@param int $cid - user class ID
 	 *	@param $uinfoArray is array(uid=>user_class) - list of affected users
 	 *	@return void
 	 */
@@ -2012,7 +2012,7 @@ class user_class_admin extends user_class
 	/**
 	 *	Removes all users in list from a specified user class
 	 *	(Moved in from e_userclass class)
-	 *	@param integer $cid - user class ID
+	 *	@param int $cid - user class ID
 	 *	@param $uinfoArray is array(uid=>user_class) - list of affected users
 	 *	@return void
 	 */
@@ -2033,7 +2033,7 @@ class user_class_admin extends user_class
 	 *	Check class data record for a fixed class - certain fields have constraints on their values.
 	 *	updates any values which are unacceptable.
 	 *	@param array $data - user class record (passed by reference)
-	 *	@param integer $id - class id
+	 *	@param int $id - class id
 	 *	@return boolean Returns TRUE if nothing changed, FALSE if changes made
 	 */
 	public function checkAdminInfo(&$data, $id)

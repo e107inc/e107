@@ -32,7 +32,7 @@ class rater
 	 * Render ratings widget
 	 *
 	 * @param string $table eg. 'news'
-	 * @param integer $id
+	 * @param int $id
 	 * @param array $options = [
 	 *      'multi'		=> (bool)		 set to true if used in a loop. ie. mutliple table lookups.
 	 *      'readonly'	=> (bool)

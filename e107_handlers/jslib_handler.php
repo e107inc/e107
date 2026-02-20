@@ -232,7 +232,7 @@ class e_jslib
      *
      * @param string $contents
      * @param string $encoding browser accepted encoding
-     * @param integer $lmodified last modfied time
+     * @param int $lmodified last modfied time
      */
     function set_cache($contents, $encoding = '', $lmodified = 0)
     { 

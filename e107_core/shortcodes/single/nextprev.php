@@ -27,9 +27,9 @@
  * <code>$parm = 'total=10&amount=5&current=0&type=...'</code>
  *
  * Parameter list:
- * - total (integer) [required]: total records/pages
- * - amount (integer| string 'all') [required]: Records per page, always 1 when we counting pages (see 'type' parameter), ignored where tmpl_prefix is not set and 'old_np' pref is false
- * - current (integer)[required]: Current record/page
+ * - total (int) [required]: total records/pages
+ * - amount (int| string 'all') [required]: Records per page, always 1 when we counting pages (see 'type' parameter), ignored where tmpl_prefix is not set and 'old_np' pref is false
+ * - current (int)[required]: Current record/page
  * - type (string page|record) [optional]: What kind of navigation logic we need, default is 'record' (the old way)
  *
  * - url (rawurlencode'd string) [required]: URL template, will be rawurldecode'd after parameters are parsed to array, '--AMP--' strings will be replaced with '&amp;'
@@ -43,7 +43,7 @@
  * separated by '|', if present they will be used as lablels instead page numbers; language constants are supported
  * - plugin (string) [optional]: plugin name used for template loading
  * - tmpl_prefix (string) [optional]: template keys prefix; core supported are 'default' and 'dropdown', default depends on 'old_np' pref
- * - navcount (integer) [optional]: number of navigation items to be shown, minimal allowed value is 4, default is 10
+ * - navcount (int) [optional]: number of navigation items to be shown, minimal allowed value is 4, default is 10
  * - nonavcount (no value) [optional]: if is set it'll disable navigation counting (navcount will be ignored)
  * - bullet (string) [optional]: currently it should contain the markup to be prepended to the navigation item title
  *

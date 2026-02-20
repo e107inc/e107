@@ -540,7 +540,7 @@ if (!defined("PCL_TAR"))
   //   function will determine the type of the archive.
   // Parameters :
   //   $p_tarname : Name of an existing tar file
-  //   $p_index : A single index (integer) or a string of indexes of files to
+  //   $p_index : A single index (int) or a string of indexes of files to
   //              extract. The form of the string is "0,4-6,8-12" with only numbers
   //              and '-' for range or ',' to separate ranges. No spaces or ';'
   //              are allowed.
