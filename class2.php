@@ -2410,7 +2410,7 @@ class e_http_header
 				{
 				    date_default_timezone_set('UTC');
 				}
-				$time = time()+ (integer) e107::getPref('site_page_expires');
+				$time = time()+ (int) e107::getPref('site_page_expires');
 				$this->setHeader('Expires: '.gmdate("D, d M Y H:i:s", $time).' GMT', true);
 			}
 		}
