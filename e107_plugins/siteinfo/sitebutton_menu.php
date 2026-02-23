@@ -17,11 +17,11 @@
 if (!defined('e107_INIT')) { exit; }
 // echo "parm=".$parm; //FIXME - just for testing only.
 
-if(strpos(SITEBUTTON, "://") !== false) // external url.
+if(strpos((string) SITEBUTTON, "://") !== false) // external url.
 {
 	$path = SITEBUTTON;
 } 
-elseif(basename(SITEBUTTON) == SITEBUTTON) // v1.x BC Fix. - no path included. 
+elseif(basename((string) SITEBUTTON) == SITEBUTTON) // v1.x BC Fix. - no path included. 
 {
 	$path = e_IMAGE_ABS.SITEBUTTON;
 }

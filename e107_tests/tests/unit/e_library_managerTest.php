@@ -155,7 +155,7 @@
 				return false;
 			}
 
-			if(!empty($headers[0]) && strpos($headers[0], 'OK') !== false)
+			if(!empty($headers[0]) && strpos((string) $headers[0], 'OK') !== false)
 			{
 				return true;
 			}

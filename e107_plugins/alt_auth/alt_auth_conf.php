@@ -67,7 +67,7 @@ if(isset($_POST['updateeufs']))
 	$authExtended = array();
 	foreach ($_POST['auth_euf_include'] as $au)
 	{
-		$authExtended[] = trim($tp->toDB($au));
+		$authExtended[] = trim((string) $tp->toDB($au));
 	}
 	$au = implode(',',$authExtended);
 	if ($au != $pref['auth_extended'])
@@ -108,7 +108,7 @@ if (isset($pref['auth_nouser']))
 $authlist = alt_auth_admin::alt_auth_get_authlist();
 if (isset($pref['auth_extended']))
 {
-	$authExtended = explode(',',$pref['auth_extended']);
+	$authExtended = explode(',',(string) $pref['auth_extended']);
 }
 else
 {

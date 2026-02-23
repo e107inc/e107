@@ -99,7 +99,7 @@ class Steam extends OpenID
 
         $response = $this->httpClient->request($apiUrl);
 
-        $data = json_decode($response);
+        $data = json_decode((string) $response);
 
         $data = isset($data->response->players[0]) ? $data->response->players[0] : null;
 

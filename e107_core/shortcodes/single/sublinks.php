@@ -10,7 +10,7 @@ function sublinks_shortcode($parm)
 
 	if($parm)
 	{
-		list($page, $cat) = explode(":", $parm);
+		list($page, $cat) = explode(":", (string) $parm);
 	}
 
 	$page = isset($page) ? $page : defset('e_PAGE');

@@ -108,44 +108,44 @@ class e_jslib
     function getContent()
     {
         //global $pref, $eplug_admin, $THEME_JSLIB, $THEME_CORE_JSLIB;
-        
+
 		ob_start(); 
 	    ob_implicit_flush(0);
-		
+
 		$e_jsmanager = e107::getJs();
-		
+
 		$lmodified = array();
 		$e_jsmanager->renderJs('core', null, false);
 		$lmodified[] = $e_jsmanager->getLastModfied('core');
-		
+
 		$e_jsmanager->renderJs('plugin', null, false);
 		$lmodified[] = $e_jsmanager->getLastModfied('plugin');
-		
+
 		$e_jsmanager->renderJs('theme', null, false);
 		$lmodified[] = $e_jsmanager->getLastModfied('theme');
-		
+
 		$lmodified[] = $e_jsmanager->getCacheId(); //e107::getPref('e_jslib_browser_cache', 0)
-		
+
 		// last modification time for loaded files
 		$lmodified = max($lmodified);
-				
+
 		// send content type
 		header('Content-type: text/javascript', true);
 		$this->content_out($lmodified);
-		
+
 		// IT CAUSES GREAT TROUBLES ON SOME BROWSERS!
 		/*
 		if (function_exists('date_default_timezone_set')) 
 		{
 		    date_default_timezone_set('UTC');
 		}
-		
+
 
 		// send last modified date
 		if(deftrue('e_NOCACHE')) header('Cache-Control: must-revalidate', true);
 		if($lmodified) header('Last-modified: '.gmdate("D, d M Y H:i:s", $lmodified).' GMT', true);
 		//if($lmodified) header('Last-modified: '.gmdate('r', $lmodified), true);
-		
+
 		// Expire header - 1 year
 		$time = time()+ 365 * 86400;
 		header('Expires: '.gmdate("D, d M Y H:i:s", $time).' GMT', true);
@@ -200,14 +200,14 @@ class e_jslib
             $gzdata = "\x1f\x8b\x08\x00\x00\x00\x00\x00";
             $size = strlen($contents);
             $crc = crc32($contents);
-            
+
             $gzdata .= gzcompress($contents, 9);
             $gzdata = substr($gzdata, 0, -4);
             $gzdata .= pack("V", $crc) . pack("V", $size);
-            
+
             $gsize = strlen($gzdata);
             $this->set_cache($gzdata, $encoding, $lmodified);
-            
+
             header('Content-Length: '.$gsize);
             header('X-Content-size: ' . $size);
             print($gzdata);
@@ -254,7 +254,7 @@ class e_jslib
     function browser_enc()
     {
 		//NEW - option to disable completely gzip compression
-		if(strpos($_SERVER['QUERY_STRING'], '_nogzip'))
+		if(strpos((string) $_SERVER['QUERY_STRING'], '_nogzip'))
 		{
 			return '';
 		}
@@ -263,11 +263,11 @@ class e_jslib
 		{
 			$encoding = '';
 		}
-		elseif (strpos($_SERVER["HTTP_ACCEPT_ENCODING"], 'x-gzip') !== false)
+		elseif (strpos((string) $_SERVER["HTTP_ACCEPT_ENCODING"], 'x-gzip') !== false)
 		{
 			$encoding = 'x-gzip';
 		}
-		elseif (strpos($_SERVER["HTTP_ACCEPT_ENCODING"], 'gzip') !== false)
+		elseif (strpos((string) $_SERVER["HTTP_ACCEPT_ENCODING"], 'gzip') !== false)
 		{
 			$encoding = 'gzip';
 		}

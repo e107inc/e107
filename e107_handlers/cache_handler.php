@@ -76,7 +76,7 @@ class ecache {
 	 */
 	function cache_fname($CacheTag, $syscache = false)
 	{
-		if(strpos($CacheTag, "nomd5_") === 0) {
+		if(strpos((string) $CacheTag, "nomd5_") === 0) {
 			// Add 'nomd5' to indicate we are not calculating an md5
 			$CheckTag = '_nomd5';
 		}
@@ -84,7 +84,7 @@ class ecache {
 		{
 			if (defined("THEME"))
 			{
-				if (strpos($CacheTag, "nq_") === 0)
+				if (strpos((string) $CacheTag, "nq_") === 0)
 				{
 					// We do not care about e_QUERY, so don't use it in the md5 calculation
 					if (!$this->CachenqMD5)
@@ -115,7 +115,7 @@ class ecache {
 		{
 			$CheckTag = '';
 		}
-		$q = ($syscache ? "S_" : "C_").preg_replace("#\W#", "_", $CacheTag);
+		$q = ($syscache ? "S_" : "C_").preg_replace("#\W#", "_", (string) $CacheTag);
 		
 		if($syscache === true)
 		{

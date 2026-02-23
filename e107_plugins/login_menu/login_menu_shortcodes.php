@@ -340,7 +340,7 @@ e107::getLanguage()->bcDefs($bcDefs);
 				}
 
 				$lbox_infos = $lmc->parse_external_list(true, false);
-				$lbox_active = $menu_pref['login_menu']['external_links'] ? explode(',', $menu_pref['login_menu']['external_links']) : array();
+				$lbox_active = $menu_pref['login_menu']['external_links'] ? explode(',', (string) $menu_pref['login_menu']['external_links']) : array();
 
 				if(!vartrue($lbox_infos['links']))
 				{
@@ -467,7 +467,7 @@ e107::getLanguage()->bcDefs($bcDefs);
 
 				if(!vartrue($lbox_infos['stats'])) return '';
 
-				$lbox_active_sorted = $menu_pref['login_menu']['external_stats'] ? explode(',', $menu_pref['login_menu']['external_stats']) : array();
+				$lbox_active_sorted = $menu_pref['login_menu']['external_stats'] ? explode(',', (string) $menu_pref['login_menu']['external_stats']) : array();
 
 				$ret = array();
 

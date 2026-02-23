@@ -122,7 +122,7 @@ define('USE_GZIP', true);
 $compression_browser_support = false;
 $compression_server_support = false;
 
-if(strpos(varset($_SERVER['HTTP_ACCEPT_ENCODING']), 'gzip') !== false)
+if(strpos((string) varset($_SERVER['HTTP_ACCEPT_ENCODING']), 'gzip') !== false)
 {
 	$compression_browser_support = true;
 }
@@ -161,7 +161,7 @@ elseif((USE_GZIP === true) && $compression_browser_support && $compression_serve
 	header('Content-Encoding: gzip');
 
 	$minified = e107::minify($gen);
-	$gzipoutput = gzencode($minified,6);
+	$gzipoutput = gzencode((string) $minified,6);
 
 	header('Content-Length: '.strlen($gzipoutput));
 	echo $gzipoutput;

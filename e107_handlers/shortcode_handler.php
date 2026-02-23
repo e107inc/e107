@@ -192,7 +192,7 @@ class e_parse_shortcode
 		{
 			foreach ($codes as $code)
 			{
-				$code = strtoupper($code);
+				$code = strtoupper((string) $code);
 				if ((!$this->isRegistered($code) || $force == true) && !$this->isOverride($code))
 				{
 					$this->registered_codes[$code] = array('type' => 'class', 'path' => $path, 'class' => $classFunc);
@@ -207,7 +207,7 @@ class e_parse_shortcode
 		}
 		else
 		{
-			$codes = strtoupper($codes);
+			$codes = strtoupper((string) $codes);
 			if ((!$this->isRegistered($codes) || $force == true) && !$this->isOverride($codes))
 			{
 				$this->registered_codes[$codes] = array('type' => 'func', 'path' => $path, 'function' => $classFunc);
@@ -513,7 +513,7 @@ class e_parse_shortcode
 	{
 		if (e107::getPref('sc_override'))
 		{
-			$tmp = explode(',', e107::getPref('sc_override'));
+			$tmp = explode(',', (string) e107::getPref('sc_override'));
 			foreach ($tmp as $code)
 			{
 				$code = strtoupper(trim($code));
@@ -525,7 +525,7 @@ class e_parse_shortcode
 		}
 		if (e107::getPref('sc_batch_override'))
 		{
-			$tmp = explode(',', e107::getPref('sc_batch_override'));
+			$tmp = explode(',', (string) e107::getPref('sc_batch_override'));
 			foreach ($tmp as $code)
 			{
 				//$code = strtoupper(trim($code));
@@ -568,7 +568,7 @@ class e_parse_shortcode
 			{
 				if (!$this->isRegistered($code))
 				{
-					$code = strtoupper($code);
+					$code = strtoupper((string) $code);
 					$this->registered_codes[$code]['type'] = 'theme';
 				}
 			}
@@ -594,7 +594,7 @@ class e_parse_shortcode
 			{
 				foreach ($namearray as $code => $uclass)
 				{
-					$code = strtoupper($code);
+					$code = strtoupper((string) $code);
 					if (!$this->isRegistered($code))
 					{
 						if($this->isOverride($code))
@@ -628,7 +628,7 @@ class e_parse_shortcode
 					}
 					else
 					{
-						$code = strtoupper($code); 
+						$code = strtoupper((string) $code); 
 						if (!$this->isRegistered($code))
 						{
 							$this->registered_codes[$code]['type'] = 'plugin_legacy';
@@ -854,7 +854,7 @@ class e_parse_shortcode
 			$this->addedCodes = &$extraCodes;
 
 		//	e107::getDebug()->log("Codes".print_a($this->addedCodes,true));
-			
+
 			// TEMPLATEID_WRAPPER support - see contact template
 			// must be registered in e_shortcode object (batch) via () method before parsing
 			// Do it only once per parsing cylcle and not on every doCode() loop - performance
@@ -895,34 +895,34 @@ class e_parse_shortcode
 
 						$(this).contentEditable({
 							"placeholder" : "",
-							
+
 							  "onFocusIn" : function(element){
 							    var $input = $("<span id=\"e-editable-front-controls\"><span class=\"e-editable-front-save\" ><i class=\"fa fa-fw fa-save\"></i></span><span class=\"e-editable-front-cancel\" ><i class=\"fa fa-fw fa-ban\"></i></span></span>"); 
 							   $input.appendTo($(box)).hide().fadeIn(300);
 								$(container).addClass("active");
-				             
+
 				            },
 							"onFocusOut" : function(element){
 				            //   $(".e-editable-front-save").remove();
 				            }
-				            
-				          
+
+
 						});
-						
-						
+
+
 						$(box).on("click",".e-editable-front-cancel",function () 
 						{
 					        console.log("Cancelled");
 					        $(container).removeClass("active");
 					        $("#e-editable-front-controls").fadeOut(300, function() { $("#e-editable-front-controls").remove(); });	 
 						}); 
-						
+
 						$(box).on("click",".e-editable-front-save",function () 
 						{
 							$("#e-editable-front-controls").html("<i class=\"fa fa-fw fa-spin fa-spinner\"></i>");
-						
+
 					        $(container).removeClass("active");
-					        
+
 					        var edited_content = $(container).html();
 
 							$.post("'.e_WEB_ABS.'js/inline.php",{ content : edited_content, sc: sc, id: id, token: token }, function (data)
@@ -939,37 +939,37 @@ class e_parse_shortcode
 								}
 
 								console.log(d);
-									 
+
 								if(d.msg)
 								{
-	
+
 									if(d.status == "ok")
 									{
 										$("#e-editable-front-controls").html("<i class=\"fa fa-fw fa-check\"></i>");	
 									}
-											
+
 									if(d.status == "error")
 									{
 										$("#e-editable-front-controls").html("<i class=\"fa fa-fw fa-cross\"></i>");	
 									}			
-										
+
 								}	
 								else
 								{
 									$("#e-editable-front-controls").html("<i class=\"fa fa-fw fa-cross\"></i>");	
 								}
-								
+
 								$("#e-editable-front-controls").fadeOut(2000, function() { $(this).remove(); });	 
-	
+
 							}) 
-					        
+
 						}); 
-										
-						
+
+
 
 					});
-					
-				
+
+
 
 
 
@@ -1013,7 +1013,7 @@ class e_parse_shortcode
 				$this->scList[$sc] = $code;
 			}
 			*/
-			
+
 		//	print_a($this);
 		}
 
@@ -1063,13 +1063,13 @@ class e_parse_shortcode
 				return $this->eVars->$match1;
 			}
 		}
-		if (strpos($matches[1], E_NL) !== false)
+		if (strpos((string) $matches[1], E_NL) !== false)
 		{
 			return $matches[0];
 		}
 
 
-		if(preg_match('/^([A-Z_]*\d?):(.*)/', $matches[1], $newMatch))
+		if(preg_match('/^([A-Z_]*\d?):(.*)/', (string) $matches[1], $newMatch))
 		{
 			$fullShortcodeKey = $newMatch[0];
 			$code = $newMatch[1];
@@ -1080,9 +1080,9 @@ class e_parse_shortcode
 			parse_str($parmStr,$parm);
 			$parmArray = true;
 		}
-		elseif (strpos($matches[1], '='))
+		elseif (strpos((string) $matches[1], '='))
 		{
-			list($code, $parm) = explode('=', $matches[1], 2);
+			list($code, $parm) = explode('=', (string) $matches[1], 2);
 		}
 		else
 		{
@@ -1090,9 +1090,9 @@ class e_parse_shortcode
 			$parm = '';
 		}
 		//look for the $sc_mode
-		if (strpos($code, '|'))
+		if (strpos((string) $code, '|'))
 		{
-			list($code, $sc_mode) = explode("|", $code, 2);
+			list($code, $sc_mode) = explode("|", (string) $code, 2);
 			$code = trim($code);
 			$sc_mode = trim($sc_mode);
 		}
@@ -1120,7 +1120,7 @@ class e_parse_shortcode
 
 		if (E107_DBG_SC && ADMIN)
 		{
-			
+
 			$dbg = "<strong>";
 			$dbg .= '{';
 			$dbg .= $code;
@@ -1136,7 +1136,7 @@ class e_parse_shortcode
 		$scFile = '';
 		$_path = '';
 		$ret = '';
-		$_method = 'sc_'.strtolower($code);
+		$_method = 'sc_'.strtolower((string) $code);
 
 
 		// Display e_shortcode.php override info.
@@ -1186,7 +1186,7 @@ class e_parse_shortcode
 		}
 		elseif (array_key_exists($code, $this->scList)) // Check to see if we've already loaded the .sc file contents
 		{
-			
+
 			$scCode = $this->scList[$code];
 			$_path = "(loaded earlier)"; // debug. 
 		}
@@ -1195,7 +1195,7 @@ class e_parse_shortcode
 			//.sc file not yet loaded, or shortcode is new function type
 			if ($this->parseSCFiles == true)
 			{
-				
+
 				if (array_key_exists($code, $this->registered_codes))
 				{
 					//shortcode is registered, let's proceed.
@@ -1212,7 +1212,7 @@ class e_parse_shortcode
 						case 'class':
 							//It is batch shortcode.  Load the class and call the method
 							$_class 	= $this->registered_codes[$code]['class'];
-							$_method 	= 'sc_'.strtolower($code);
+							$_method 	= 'sc_'.strtolower((string) $code);
 
 							if (!$this->isScClass($_class))
 							{
@@ -1237,7 +1237,7 @@ class e_parse_shortcode
 							$wrapper = $this->callScFunc($_class, 'wrapper', null);
 
 							$ret = $this->callScFuncA($_class, $_method, array($parm, $sc_mode));
-							
+
 							/*if (method_exists($this->scClasses[$_class], $_method))
 							{
 								$ret = $this->scClasses[$_class]->$_method($parm, $sc_mode);
@@ -1248,7 +1248,7 @@ class e_parse_shortcode
 							}*/
 
 							break;
-						
+
 						case 'override':
 						case 'func':
 						case 'plugin':
@@ -1256,10 +1256,10 @@ class e_parse_shortcode
 							$_function = $this->registered_codes[$code]['function'];
 							if (!function_exists($_function) && $this->registered_codes[$code]['path'])
 							{
-								include_once($this->registered_codes[$code]['path'].strtolower($code).'.php');
+								include_once($this->registered_codes[$code]['path'].strtolower((string) $code).'.php');
 
 							}
-							
+
 							if (function_exists($_function))
 							{
 								$ret = call_user_func($_function, $parm, $sc_mode);
@@ -1267,7 +1267,7 @@ class e_parse_shortcode
 							break;
 
 						case 'plugin_legacy':
-							$scFile = e_PLUGIN.strtolower($this->registered_codes[$code]['path']).'/'.strtolower($code).'.sc';
+							$scFile = e_PLUGIN.strtolower((string) $this->registered_codes[$code]['path']).'/'.strtolower((string) $code).'.sc';
 							break;
 
 						// case 'override':
@@ -1275,7 +1275,7 @@ class e_parse_shortcode
 							// break;
 
 						case 'theme':
-							$scFile = THEME.strtolower($code).'.sc';
+							$scFile = THEME.strtolower((string) $code).'.sc';
 							break;
 
 					}
@@ -1284,7 +1284,7 @@ class e_parse_shortcode
 				{
 					// Code is not registered, let's look for .sc or .php file
 					// .php file takes precedence over .sc file
-					$codeLower = strtolower($code);
+					$codeLower = strtolower((string) $code);
 					if (is_readable(e_CORE.'shortcodes/single/'.$codeLower.'.php'))
 					{
 						$_function = $codeLower.'_shortcode';
@@ -1305,7 +1305,7 @@ class e_parse_shortcode
 							{
 								$ret = call_user_func(array($_class, $_function), $parm, $sc_mode);
 							}
-						
+
 						}
 						elseif (function_exists($_function))
 						{
@@ -1386,7 +1386,7 @@ class e_parse_shortcode
 
 		if(E107_DBG_BBSC && !empty($this->wrapper) && $this->wrapperDebugDone[$this->wrapper]==false)
 		{
-			list($wrapTmpl, $wrapID1, $wrapID2) = explode('/',$this->wrapper,3);
+			list($wrapTmpl, $wrapID1, $wrapID2) = explode('/',(string) $this->wrapper,3);
 
 			$wrapActive = strtoupper($wrapTmpl)."_WRAPPER";
 
@@ -1507,11 +1507,11 @@ class e_parse_shortcode
 
 		if(!empty($fullShortcodeKey) && !empty($this->wrappers[$fullShortcodeKey]) ) // eg: $NEWS_WRAPPER['view']['item']['NEWSIMAGE: item=1']
 		{
-			list($pre, $post) = explode("{---}", $this->wrappers[$fullShortcodeKey], 2);
+			list($pre, $post) = explode("{---}", (string) $this->wrappers[$fullShortcodeKey], 2);
 		}
 		elseif(isset($this->wrappers[$code]) && !empty($this->wrappers[$code])) // eg: $NEWS_WRAPPER['view']['item']['NEWSIMAGE']
 		{
-			list($pre, $post) = explode("{---}", $this->wrappers[$code], 2);
+			list($pre, $post) = explode("{---}", (string) $this->wrappers[$code], 2);
 		}
 		else
 		{
@@ -1538,14 +1538,14 @@ class e_parse_shortcode
 				}
 				else // new way - same format as wrapper
 				{
-					list($pre, $post) = explode("{---}", $this->sc_style[$code], 2);
+					list($pre, $post) = explode("{---}", (string) $this->sc_style[$code], 2);
 				}
 
 			}
 
 		}
 
-		if(strpos($pre, '{') !== false) // shortcode found in wrapper
+		if(strpos((string) $pre, '{') !== false) // shortcode found in wrapper
 		{
 			$this->nowrap = $code;
 			$pre = $this->parseCodes($pre, true, $this->addedCodes);
@@ -1636,7 +1636,7 @@ class e_parse_shortcode
 		$cur_shortcodes = array();
 		if ($type == 'file')
 		{
-			$batch_cachefile = 'nomd5_scbatch_'.md5($fname);
+			$batch_cachefile = 'nomd5_scbatch_'.md5((string) $fname);
 			//			$cache_filename = $e107cache->cache_fname("nomd5_{$batchfile_md5}");
 			$sc_cache = e107::getCache()->retrieve_sys($batch_cachefile);
 			if (!$sc_cache)
@@ -1661,7 +1661,7 @@ class e_parse_shortcode
 			$cur_sc = '';
 			foreach ($sc_batch as $line)
 			{
-				if (trim($line) == 'SC_END')
+				if (trim((string) $line) == 'SC_END')
 				{
 					$cur_sc = '';
 				}
@@ -1669,7 +1669,7 @@ class e_parse_shortcode
 				{
 					$cur_shortcodes[$cur_sc] .= $line;
 				}
-				if (preg_match('#^SC_BEGIN (\w*).*#', $line, $matches))
+				if (preg_match('#^SC_BEGIN (\w*).*#', (string) $line, $matches))
 				{
 					$cur_sc = $matches[1];
 					$cur_shortcodes[$cur_sc] = varset($cur_shortcodes[$cur_sc], '');
@@ -1688,11 +1688,11 @@ class e_parse_shortcode
 			{
 				if ($this->registered_codes[$cur_sc]['type'] == 'plugin')
 				{
-					$scFile = e_PLUGIN.strtolower($this->registered_codes[$cur_sc]['path']).'/'.strtolower($cur_sc).'.sc';
+					$scFile = e_PLUGIN.strtolower((string) $this->registered_codes[$cur_sc]['path']).'/'.strtolower((string) $cur_sc).'.sc';
 				}
 				else
 				{
-					$scFile = THEME.strtolower($cur_sc).'.sc';
+					$scFile = THEME.strtolower((string) $cur_sc).'.sc';
 				}
 				if (is_readable($scFile))
 				{

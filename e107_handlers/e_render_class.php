@@ -168,7 +168,7 @@
 
 			foreach($types as $var)
 			{
-				$sc = '{---' . strtoupper($var) . '---}';
+				$sc = '{---' . strtoupper((string) $var) . '---}';
 				$ret[$sc] = isset($val[$var]) ? (string) $val[$var] : null;
 			}
 

@@ -45,7 +45,7 @@ class E107TestSuiteBootstrap
         $params = include(PARAMS_GENERATOR);
 
         $app_path = $params['app_path'] ?: codecept_root_dir() . "/e107";
-        if (substr($app_path, 0, 1) !== '/')
+        if (substr((string) $app_path, 0, 1) !== '/')
         {
             $app_path = codecept_root_dir() . "/$app_path";
         }

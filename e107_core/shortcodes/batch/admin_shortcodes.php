@@ -36,7 +36,7 @@ class admin_shortcodes extends e_shortcode
             {	//TODO LANVARS
 				$text = ADLAN_122.'  v'.$cacheData.'</a>.
 					<a class="btn btn-success" href="'.$installUrl.'">'.ADLAN_121.'</a>'; //Install
-				
+
 				$mes->addInfo($text);
 				return null; //  $mes->render();
 			}
@@ -411,7 +411,7 @@ class admin_shortcodes extends e_shortcode
 		{
 			foreach($GLOBALS['mySQLtablelist'] as $tabs)
 			{
-				$clang = strtolower($sql->mySQLlanguage);
+				$clang = strtolower((string) $sql->mySQLlanguage);
 				if($clang !="" && strpos($tabs, 'lan_' .$clang))
 				{
 					$aff[] = str_replace(MPREFIX. 'lan_' .$clang. '_', '',$tabs);
@@ -775,7 +775,7 @@ class admin_shortcodes extends e_shortcode
 		$pref = e107::getPref();
 
 
-		$curScript = basename($_SERVER['SCRIPT_FILENAME']);
+		$curScript = basename((string) $_SERVER['SCRIPT_FILENAME']);
 
 		// Obsolete
 		ob_start();
@@ -860,7 +860,7 @@ class admin_shortcodes extends e_shortcode
 
 		// User Classes as bullets, sorted alphabetically, excluding PUBLIC (0), MAINADMIN (250), READONLY (251), GUEST (252), MEMBER (253), ADMIN (254), NOBODY (255)
 		$text .= "<p><strong>User Classes:</strong><br />";
-		$classIds = array_filter(explode(',', $emulatedUser['user_class']));
+		$classIds = array_filter(explode(',', (string) $emulatedUser['user_class']));
 		$excludedClasses = ['0', '250', '251', '252', '253', '254', '255']; // PUBLIC, MAINADMIN, READONLY, GUEST, MEMBER, ADMIN, NOBODY
 		$classIds = array_diff($classIds, $excludedClasses);
 		if(!empty($classIds))
@@ -889,7 +889,7 @@ class admin_shortcodes extends e_shortcode
 		$text .= "<p><strong>Admin Permissions:</strong><br />";
 		if(!empty($emulatedUser['user_perms']) && $emulatedUser['user_perms'] !== '.')
 		{
-			$permKeys = array_filter(explode('.', $emulatedUser['user_perms']));
+			$permKeys = array_filter(explode('.', (string) $emulatedUser['user_perms']));
 			$permdiz = e107::getUserPerms()->getPermList('all');
 			$permNames = [];
 			foreach($permKeys as $p)
@@ -1050,12 +1050,12 @@ class admin_shortcodes extends e_shortcode
 		{
 			return;
 		}
-        
+
         $sql = e107::getDb();
 		$tp = e107::getParser();
-		
+
         $count =  $sql->count('private_msg','(*)','WHERE pm_read = 0 AND pm_to='.USERID);
-       
+
        	if ($count >0)
        	{
             $countDisp = ' <span class="badge badge-primary">'.$count.'</span> ' ;
@@ -1064,7 +1064,7 @@ class admin_shortcodes extends e_shortcode
       	{
             $countDisp = '';    
       	}
-         
+
 		$inboxUrl 	= e_PLUGIN.'pm/admin_config.php?mode=inbox&amp;action=list&amp;iframe=1';
 		$outboxUrl 	= e_PLUGIN.'pm/admin_config.php?mode=outbox&amp;action=list&amp;iframe=1';
 		$composeUrl = e_PLUGIN.'pm/admin_config.php?mode=outbox&amp;action=create&amp;iframe=1';
@@ -1084,15 +1084,15 @@ class admin_shortcodes extends e_shortcode
         	</li>
         </ul>
         '; 
-        
+
         return $text;
-        
+
       //  e107_plugins/pm/pm.php
-        
-        
-        
+
+
+
        /*
-        
+
 		$text = '
 		<li class="dropdown">
 			<a class="dropdown-toggle" title="Messages" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" href="#" >
@@ -1461,7 +1461,7 @@ class admin_shortcodes extends e_shortcode
 			$text .= '<br />
 			<b>' .FOOTLAN_9. '</b>
 			<br />' .
-			preg_replace('/PHP.*/i', '', varset($_SERVER['SERVER_SOFTWARE'])). '<br />(' .FOOTLAN_10. ': ' .$_SERVER['SERVER_NAME']. ')
+			preg_replace('/PHP.*/i', '', (string) varset($_SERVER['SERVER_SOFTWARE'])). '<br />(' .FOOTLAN_10. ': ' .$_SERVER['SERVER_NAME']. ')
 			<br /><br />
 			<b>' .FOOTLAN_11. '</b>
 			<br />
@@ -1706,7 +1706,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 	static function legacyToConfig($text)
 	{
 		$var = array();
-		preg_match_all('/(<img[^>]*>)[\s]*<a[^>]href=(\'|")([^\'"]*)(\'|")>([^<]*)<\/a>[: ]*([\d]*)/is',$text, $match);
+		preg_match_all('/(<img[^>]*>)[\s]*<a[^>]href=(\'|")([^\'"]*)(\'|")>([^<]*)<\/a>[: ]*([\d]*)/is',(string) $text, $match);
 		foreach($match[5] as $k=>$m)
 		{
 			$var[$k]['icon'] 	= $match[1][$k];
@@ -2299,7 +2299,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$parms = $parm;
 		}
 
-		$tmpl = strtoupper(varset($parms['tmpl'], 'E_ADMIN_NAVIGATION'));
+		$tmpl = strtoupper((string) varset($parms['tmpl'], 'E_ADMIN_NAVIGATION'));
 	//	global $$tmpl;
 		$template = e107::getCoreTemplate('admin', 'nav', false);
 
@@ -2408,7 +2408,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				$tmp['sub_class'] = '';
 				$tmp['sort'] = false;
 
-				if(strpos(e_REQUEST_SELF,$tmp['link'])!==false)
+				if(strpos(e_REQUEST_SELF,(string) $tmp['link'])!==false)
 				{
 					$active = $catid;
 				}
@@ -2480,7 +2480,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			 	    $id = $convert[$pg['category']][1];
              	    $menu_vars[$id]['sub'][] = $pg;
 
-				    if(strpos(e_REQUEST_SELF,$pg['link'])!==false)
+				    if(strpos(e_REQUEST_SELF,(string) $pg['link'])!==false)
 					{
 						$active = $id;
 					}
@@ -2790,7 +2790,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		$caption .= "<span class='e-help-icon pull-right'><a data-placement=\"bottom\" class='e-tip' title=\"".e107::getParser()->toAttribute($diz). '">' .defset('ADMIN_INFO_ICON'). '</a></span>';
 
 		$var['_extras_']['icon'] = e107::getParser()->toIcon('e-menus-24');
-		
+
 	   return e107::getNav()->admin($caption,$action, $var);
 
 
@@ -2799,7 +2799,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
         $var['menumanager']['text'] = LAN_MENULAYOUT;
 		$var['menumanager']['link'] = e_ADMIN_ABS.'menus.php';
-		
+
 		$var['nothing']['divider'] = true;
 
 		if(vartrue($pref['menuconfig_list']))
@@ -2882,7 +2882,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		$text .= '<h4>Plugin Menus</h4>';
 		foreach($pluginMenu as $row)
 		{
-			$text .= "<div class='item' data-menu-id='".$row['menu_id']."'>".substr($row['menu_name'],0,-5). '</div>';
+			$text .= "<div class='item' data-menu-id='".$row['menu_id']."'>".substr((string) $row['menu_name'],0,-5). '</div>';
 		}
 
 		$text .= '</div>';

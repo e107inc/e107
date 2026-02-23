@@ -150,7 +150,7 @@ class core_news_sef_noid_url extends eUrlConfig
 
 		if($urlFormat == 'dashl' || $urlFormat == 'underscorel' || $urlFormat == 'plusl') // convert template to lowercase when using lowercase SEF URL format.  
 		{
-			$r[0] = strtolower($r[0]);	
+			$r[0] = strtolower((string) $r[0]);	
 		}	
 			
 			

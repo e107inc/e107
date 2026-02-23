@@ -228,9 +228,9 @@ class e107_event
 					try
 					{
 
-						if (strpos($method, '::') !== false)    // If $method contains "::", call it statically
+						if (strpos((string) $method, '::') !== false)    // If $method contains "::", call it statically
 						{
-						    [$staticClass, $staticMethod] = explode('::', $method, 2);
+						    [$staticClass, $staticMethod] = explode('::', (string) $method, 2);
 						    $ret = $staticClass::$staticMethod($data, $eventname);
 						}
 						elseif(is_callable([$class, $method]))
@@ -296,7 +296,7 @@ class e107_event
 		global $pref;
 		if(!is_array($parms))
 		{
-			parse_str($parms, $parms);
+			parse_str((string) $parms, $parms);
 		}
 		if(isset($pref['e_admin_events_list']) && is_array($pref['e_admin_events_list']))
 		{

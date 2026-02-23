@@ -27,7 +27,7 @@ class bb_block extends e_bb_base
 		if(!ADMIN) return $code_text; // TODO - pref
 		
 		// transform to class, equal sign at 0 position is not well formed parm string
-		if($parm && !strpos($parm, '=')) $parm = 'class='.$parm;
+		if($parm && !strpos((string) $parm, '=')) $parm = 'class='.$parm;
 		$parms = eHelper::scParams($parm);
 		$safe = array();
 		
@@ -47,7 +47,7 @@ class bb_block extends e_bb_base
 	function toHTML($code_text, $parm)
 	{
 		// transform to class, equal sign at 0 position is not well formed parm string
-		if($parm && !strpos($parm, '=')) $parm = 'class='.$parm;
+		if($parm && !strpos((string) $parm, '=')) $parm = 'class='.$parm;
 		$parms = eHelper::scParams($parm);
 		
 		// add auto-generated class name and parameter class if available

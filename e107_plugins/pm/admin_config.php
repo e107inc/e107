@@ -92,7 +92,7 @@ class pm_admin extends e_admin_dispatcher
 				
 class private_msg_ui extends e_admin_ui
 {
-			
+
 		protected $pluginTitle		= LAN_PLUGIN_PM_NAME;
 		protected $pluginName		= 'pm';
 		protected $table			= 'private_msg';
@@ -100,7 +100,7 @@ class private_msg_ui extends e_admin_ui
 		protected $perPage 			= 7;
         protected $listQry          = '';
         protected $listOrder        = "p.pm_id DESC";
-			
+
 		protected $fields 		= array (  'checkboxes' =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
 		  'pm_id'             => array ( 'title' => LAN_ID,       'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => array(), 'writeParms' => array(), 'class' => 'left', 'thclass' => 'left',  ),
 		  'pm_from'           => array ( 'title' => LAN_PLUGIN_PM_FROM,       'type' => 'method', 'noedit'=>true, 'data' => 'int', 'filter'=>true, 'width' => '5%%', 'help' => '', 'readParms' => array(), 'writeParms' => array(), 'class' => 'left', 'thclass' => 'left',  ),
@@ -109,7 +109,7 @@ class private_msg_ui extends e_admin_ui
 		  'pm_subject'        => array ( 'title' => LAN_PLUGIN_PM_SUB,    'type' => 'text', 'data' => 'str', 'width' => '15%', 'help' => '', 'readParms' => array(), 'writeParms' => array('size'=>'xlarge'), 'class' => 'left', 'thclass' => 'left',  ),
 		  'pm_text'           => array ( 'title' => LAN_PLUGIN_PM_MESS,    'type' => 'bbarea', 'data' => 'str', 'width' => '40%', 'help' => '', 'readParms' => 'expand=1&truncate=50', 'writeParms' => 'rows=5&size=block&cols=80', 'class' => 'left', 'thclass' => 'left',  ),
 		  'pm_read'           => array ( 'title' => LAN_PLUGIN_PM_READ,       'type' => 'boolean', 'noedit'=>1, 'data' => 'int', 'batch'=>true, 'filter'=>true, 'width' => '5%', 'help' => '', 'readParms' => array(), 'writeParms' => array(), 'class' => 'center', 'thclass' => 'center',  ),
-        
+
           'pm_sent_del'       => array ( 'title' => LAN_PLUGIN_PM_DEL,        'type' => 'boolean', 'noedit'=>true, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => array(), 'writeParms' => array(), 'class' => 'center', 'thclass' => 'center',  ),
 		  'pm_read_del'       => array ( 'title' => LAN_PLUGIN_PM_DEL,        'type' => 'boolean', 'noedit'=>true, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => array(), 'writeParms' => array(), 'class' => 'center', 'thclass' => 'center',  ),
 		  'pm_attachments'    => array ( 'title' => LAN_PLUGIN_PM_ATTACHMENT, 'type' => 'text', 'noedit'=>true, 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => array(), 'writeParms' => array(), 'class' => 'center', 'thclass' => 'center',  ),
@@ -117,7 +117,7 @@ class private_msg_ui extends e_admin_ui
 		  'pm_size'           => array ( 'title' => LAN_PLUGIN_PM_SIZE,       'type' => 'boolean', 'noedit'=>true, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => array(), 'writeParms' => array(), 'class' => 'center', 'thclass' => 'center',  ),
 		  'options'           => array ( 'title' => LAN_OPTIONS,    'type' => 'method', 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 		);		
-		
+
 		protected $fieldpref = array('pm_id', 'pm_from', 'pm_to', 'pm_sent', 'pm_read', 'pm_subject', 'pm_text');
 
 		protected $preftabs = array(LAN_BASIC, LAN_ADVANCED);
@@ -695,7 +695,7 @@ class private_msg_ui extends e_admin_ui
 				{
 					while ($row = $db2->fetch())
 					{
-						$attachList = explode(chr(0), $row['pm_attachments']);
+						$attachList = explode(chr(0), (string) $row['pm_attachments']);
 						foreach ($attachList as $a)
 						{
 							$found = FALSE;
@@ -870,7 +870,7 @@ class private_msg_ui extends e_admin_ui
 
 				if(!empty($_GET['subject']))
 				{
-					$this->fields['pm_subject']['writeParms']['default'] = "Re: ". base64_decode($_GET['subject']);
+					$this->fields['pm_subject']['writeParms']['default'] = "Re: ". base64_decode((string) $_GET['subject']);
 				}
 
 
@@ -878,7 +878,7 @@ class private_msg_ui extends e_admin_ui
 
 
 
-        
+
         }
 
 		public function beforeCreate($new_data, $old_data)
@@ -890,7 +890,7 @@ class private_msg_ui extends e_admin_ui
 				return false;
 			}
 
-			$new_data['pm_size'] = strlen($new_data['pm_text']);
+			$new_data['pm_size'] = strlen((string) $new_data['pm_text']);
 			$new_data['pm_from'] = USERID;
 			return $new_data;
 		}
@@ -903,16 +903,16 @@ class private_msg_ui extends e_admin_ui
 			'pref_name' 				=> array('title'=> 'name', 'type' => 'text', 'data' => 'string', 'validate' => 'regex', 'rule' => '#^[\w]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')
 		);
 
-		
 
-	
-		
+
+
+
 		public function customPage()
 		{
 			$ns = e107::getRender();
 			$text = 'Hello World!';
 			$ns->tablerender('Hello',$text);	
-			
+
 		}
 		*/
 			
@@ -953,7 +953,7 @@ class private_msg_form_ui extends e_admin_form_ui
 				$link .= (!empty($_GET['iframe'])) ? 'mode=inbox&iframe=1' : 'mode=outbox';
 
 
-				$link .= "&action=create&to=".intval($pmData['pm_from'])."&subject=".base64_encode($pmData['pm_subject']);
+				$link .= "&action=create&to=".intval($pmData['pm_from'])."&subject=".base64_encode((string) $pmData['pm_subject']);
 
 
 

@@ -8,9 +8,9 @@ function imagepreview_shortcode($parm)
 		return null;
 	}
 
-	list($name, $width, $height, $nothumb) = explode("|",$parm, 4);
+	list($name, $width, $height, $nothumb) = explode("|",(string) $parm, 4);
 
-	$name = rawurldecode(varset($name));//avoid warnings
+	$name = rawurldecode((string) varset($name));//avoid warnings
 	if(varset($width))
 	{
 		$width = intval($width);

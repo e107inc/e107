@@ -19,22 +19,22 @@ class social_event
 	*/
 	function __construct()
 	{
-		
-		
+
+
 	}
 
 
 	function config()
 	{
 		$event = array();
-		
+
 		$event[] = array(
 			'name'     => "system_meta_pre",
 			'function' => "addFallbackMeta",
 		);
 
 		return $event;
-		
+
 	}
 
 
@@ -113,13 +113,13 @@ class social_event
 		}
 		elseif(!empty($pref['sitebutton']))
 		{
-			$siteButton = (strpos($pref['sitebutton'],'{e_MEDIA') !== false) ? e107::getParser()->thumbUrl($pref['sitebutton'],'w=800',false, true) : e107::getParser()->replaceConstants($pref['sitebutton'],'full');
+			$siteButton = (strpos((string) $pref['sitebutton'],'{e_MEDIA') !== false) ? e107::getParser()->thumbUrl($pref['sitebutton'],'w=800',false, true) : e107::getParser()->replaceConstants($pref['sitebutton'],'full');
 			e107::meta('og:image',$siteButton);
 			e107::meta('twitter:image', $siteButton);
 		}
 		elseif(!empty($pref['sitelogo'])) // fallback to sitelogo
 		{
-			$siteLogo = (strpos($pref['sitelogo'],'{e_MEDIA') !== false) ? e107::getParser()->thumbUrl($pref['sitelogo'],'w=800',false, true) : e107::getParser()->replaceConstants($pref['sitelogo'],'full');
+			$siteLogo = (strpos((string) $pref['sitelogo'],'{e_MEDIA') !== false) ? e107::getParser()->thumbUrl($pref['sitelogo'],'w=800',false, true) : e107::getParser()->replaceConstants($pref['sitelogo'],'full');
 			e107::meta('og:image',$siteLogo);
 			e107::meta('twitter:image', $siteLogo);
 		}

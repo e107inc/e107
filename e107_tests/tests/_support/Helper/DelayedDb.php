@@ -21,14 +21,14 @@ class DelayedDb extends \Codeception\Module\Db
     public function _getDbHostname()
     {
         $matches = [];
-        $matched = preg_match('~host=([^;]+)~s', $this->config['dsn'], $matches);
+        $matched = preg_match('~host=([^;]+)~s', (string) $this->config['dsn'], $matches);
         return $matched ? $matches[1] : false;
     }
 
     public function _getDbName()
     {
         $matches = [];
-        $matched = preg_match('~dbname=([^;]+)~s', $this->config['dsn'], $matches);
+        $matched = preg_match('~dbname=([^;]+)~s', (string) $this->config['dsn'], $matches);
         return $matched ? $matches[1] : false;
     }
 

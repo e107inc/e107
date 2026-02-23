@@ -50,11 +50,11 @@ class ExifCommand extends BaseCommand
         $exif = [];
         $properties = $core->getImageProperties();
         foreach ($properties as $key => $value) {
-            if (substr($key, 0, 5) !== 'exif:') {
+            if (substr((string) $key, 0, 5) !== 'exif:') {
                 continue;
             }
 
-            $exif[substr($key, 5)] = $value;
+            $exif[substr((string) $key, 5)] = $value;
         }
 
         $this->setOutput($exif);

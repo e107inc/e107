@@ -43,10 +43,10 @@ class bb_youtube extends e_bb_base
 	{
 		$bbpars = array();
 		$widthString = '';
-		$parm = trim($parm);
+		$parm = trim((string) $parm);
 		
 		// Convert Simple URLs. 
-		if(strpos($code_text,"youtube.com/watch?v=")!==FALSE || strpos($code_text,"youtube.com/watch#!v=")!==FALSE )
+		if(strpos((string) $code_text,"youtube.com/watch?v=")!==FALSE || strpos((string) $code_text,"youtube.com/watch#!v=")!==FALSE )
 		{
 			$validUrls = array("http://", "https://", "www.","youtube.com/watch?v=","youtube.com/watch#!v=");
 			$tmp = str_replace($validUrls,'',$code_text);
@@ -80,14 +80,14 @@ class bb_youtube extends e_bb_base
 		
 		$params = array();										// Accumulator for parameters from youtube code
 		$ok = 0;
-		if (strpos($code_text, '<') === FALSE)
+		if (strpos((string) $code_text, '<') === FALSE)
 		{	// 'Properly defined' bbcode (we hope)
 			$picRef = $code_text;
 		}
 		else
 		{
 			//libxml_use_internal_errors(TRUE);
-			if (FALSE === ($info = simplexml_load_string($code_text)))
+			if (FALSE === ($info = simplexml_load_string((string) $code_text)))
 			{
 				//print_a($matches);
 				//$xmlErrs = libxml_get_errors();
@@ -113,13 +113,13 @@ class bb_youtube extends e_bb_base
 			if ($ok != 0)
 			{
 				print_a($info);
-				return '[sanitised]'.$ok.'B'.htmlspecialchars($matches[0]).'B[/sanitised]';
+				return '[sanitised]'.$ok.'B'.htmlspecialchars((string) $matches[0]).'B[/sanitised]';
 			}
 			$target =  (array)$info2['@attributes'];
 			unset($info);
 			$ws = varset($target['width'], 0);
 			$hs = varset($target['height'], 0);
-			if (($ws == 0) || ($hs == 0) || !isset($target['src'])) return  '[sanitised]A'.htmlspecialchars($matches[0]).'A[/sanitised]';
+			if (($ws == 0) || ($hs == 0) || !isset($target['src'])) return  '[sanitised]A'.htmlspecialchars((string) $matches[0]).'A[/sanitised]';
 			if (!$widthString)
 			{
 				$widthString = $ws.','.$hs;			// Set size of window
@@ -173,7 +173,7 @@ class bb_youtube extends e_bb_base
 		}
 
 
-		$yID = preg_replace('/[^0-9a-z]/i', '', $picRef);
+		$yID = preg_replace('/[^0-9a-z]/i', '', (string) $picRef);
 		//if (($yID != $picRef) || (strlen($yID) > 20))
 	//	{	// Possible hack attempt
 	//	}
@@ -202,29 +202,29 @@ class bb_youtube extends e_bb_base
 	{
 		if(empty($code_text)) return '';
 
-		$t = explode('|', $parm, 2);
+		$t = explode('|', (string) $parm, 2);
 
 		$dimensions = varset($t[0]);
 		$tmp = varset($t[1]);
 
 		if($tmp)
 		{
-			parse_str(varset($tmp, ''), $bbparm);
+			parse_str((string) varset($tmp, ''), $bbparm);
 		}
 		
-		if(strpos($code_text,"&")!==FALSE && strpos($code_text,"?")===FALSE) // DEPRECATED
+		if(strpos((string) $code_text,"&")!==FALSE && strpos((string) $code_text,"?")===FALSE) // DEPRECATED
 		{
-			$parms = explode('&', $code_text, 2);	
+			$parms = explode('&', (string) $code_text, 2);	
 		}
 		else
 		{
-			$parms = explode('?', $code_text, 2);	// CORRECT SEPARATOR
+			$parms = explode('?', (string) $code_text, 2);	// CORRECT SEPARATOR
 		}
 		
 
 		$code_text = $parms[0];
 			
-		parse_str(varset($parms[1], ''), $params);
+		parse_str((string) varset($parms[1], ''), $params);
 		
 	//	print_a($params);
 
@@ -317,7 +317,7 @@ class bb_youtube extends e_bb_base
 		if(isset($params['color2'])) $color[2] = $params['color2'];
 		foreach ($color as $key => $value)
 		{
-			if (ctype_xdigit($value) && strlen($value) == 6)
+			if (ctype_xdigit($value) && strlen((string) $value) == 6)
 			{
 				$url = $url.'&amp;color'.$key.'='.$value;
 			}

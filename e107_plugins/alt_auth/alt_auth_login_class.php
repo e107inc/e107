@@ -71,7 +71,7 @@ class alt_auth_base
 		$parm = array();
 		while($row = $sql->fetch())
 		{
-			$parm[$row['auth_parmname']] = base64_decode(base64_decode($row['auth_parmval']));
+			$parm[$row['auth_parmname']] = base64_decode(base64_decode((string) $row['auth_parmval']));
 		}
 		return $parm;
 	}
@@ -114,7 +114,7 @@ class alt_login
 			{
 				$username = e107::getParser()->toDB($username);
 			}
-			$username = preg_replace("/\sOR\s|\=|\#/", "", $username);
+			$username = preg_replace("/\sOR\s|\=|\#/", "", (string) $username);
 			$username = substr($username, 0, e107::getPref('loginname_maxlength'));
 
 			$aa_sql = e107::getDb('aa');
@@ -296,9 +296,9 @@ class alt_login
 			case 'lcase' :
 				return $tp->ustrtolower($word);
 			case 'ucfirst' :
-				return ucfirst($word);						// TODO: Needs changing to utf-8 function
+				return ucfirst((string) $word);						// TODO: Needs changing to utf-8 function
 			case 'ucwords' :
-				return ucwords($word);						// TODO: Needs changing to utf-8 function
+				return ucwords((string) $word);						// TODO: Needs changing to utf-8 function
 			case 'none' :
 				return $word;
 		}

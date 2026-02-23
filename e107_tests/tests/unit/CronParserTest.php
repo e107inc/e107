@@ -77,13 +77,13 @@ class CronParserTest extends \Codeception\Test\Unit
 	{
 		$lastTimeZone = date_default_timezone_get();
 		date_default_timezone_set('America/Chihuahua');
-	
+
 		$this->cp->calcLastRan('* * * * *');
-		
+
 		$due = $this->cp->getLastDue();
 		$now = $this->cp->getNow();
 
-		list($date, $time) = explode('T', $due);
+		list($date, $time) = explode('T', (string) $due);
 		list($year,$month,$day) = explode('-', $date);
 		list($hour,$minute) = explode(':', $time);
 

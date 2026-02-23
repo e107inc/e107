@@ -129,7 +129,7 @@ class bbcode_shortcodes extends e_shortcode
 		}
 		else
 		{
-			list($tag,$tmp) = explode("--",$this->var['tagid']); // works with $frm->bbarea to detect textarea from first half of tag. 
+			list($tag,$tmp) = explode("--",(string) $this->var['tagid']); // works with $frm->bbarea to detect textarea from first half of tag. 
 		}			
 
 		if (ADMIN)
@@ -178,7 +178,7 @@ class bbcode_shortcodes extends e_shortcode
 		}
 		else
 		{
-			list($tag,$tmp) = explode("--",$this->var['tagid']); // works with $frm->bbarea to detect textarea from first half of tag. 
+			list($tag,$tmp) = explode("--",(string) $this->var['tagid']); // works with $frm->bbarea to detect textarea from first half of tag. 
 		}			
 				
 			
@@ -245,7 +245,7 @@ class bbcode_shortcodes extends e_shortcode
 		}
 		else
 		{
-			list($tag,$tmp) = explode("--",$this->var['tagid']); // works with $frm->bbarea to detect textarea from first half of tag. 
+			list($tag,$tmp) = explode("--",(string) $this->var['tagid']); // works with $frm->bbarea to detect textarea from first half of tag. 
 		}
 
 	/*
@@ -275,7 +275,7 @@ class bbcode_shortcodes extends e_shortcode
 		}
 		else
 		{
-			list($tag,$tmp) = explode("--",$this->var['tagid']); // works with $frm->bbarea to detect textarea from first half of tag. 
+			list($tag,$tmp) = explode("--",(string) $this->var['tagid']); // works with $frm->bbarea to detect textarea from first half of tag. 
 		}
 		//$text = "<a class='e-modal btn btn-primary' data-modal-caption='Media Manager' data-target='#uiModal' id='{$id}' title='Insert a file from the Media-Manager' href='".e_HTTP.e_ADMIN."image.php?mode=main&amp;action=dialog&amp;for=_common_file&amp;tagid=".$tag."&amp;iframe=1&amp;bbcode=file'  >";
 		$text = "<a class='e-modal btn btn-primary' data-modal-caption='".LAN_MEDIAMANAGER."' data-target='#uiModal' id='{$id}' title='".LANHELP_64."' href='".e_ADMIN_ABS."image.php?mode=main&amp;action=dialog&amp;for=_common_file&amp;tagid=".$tag."&amp;iframe=1&amp;bbcode=file'  >";
@@ -397,7 +397,7 @@ class bbcode_shortcodes extends e_shortcode
 			$key = str_replace("!", ".", $key);					// Usually '.' was replaced by '!' when saving
 			$key = preg_replace("#_(\w{3})$#", ".\\1", $key);	// '_' followed by exactly 3 chars is file extension
 			$key = e_IMAGE_ABS."emotes/" . $pref['emotepack'] . "/" .$key;		// Add in the file path
-						$value2 = substr($value, 0, strpos($value, " "));
+						$value2 = substr((string) $value, 0, strpos((string) $value, " "));
 			$value = ($value2 ? $value2 : $value);
 			$value = ($value == '&|') ? ':((' : $value;
 			$text .= "<a style='display:inline-block; margin:2px; padding:2px' href=\"javascript:addtext('$value ',true)\"><img src='$key' alt='' /></a>";

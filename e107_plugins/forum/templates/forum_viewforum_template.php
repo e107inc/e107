@@ -298,7 +298,7 @@ $FORUM_VIEWFORUM_TEMPLATE['header'] 			= "<div class=' row-fluid'><div>{BREADCRU
 													<col class='hidden-xs' style='width:8%' />
 													<col class='hidden-xs' style='width:20%' />
 													</colgroup>
-												
+
 													{SUBFORUMS}";
 
 

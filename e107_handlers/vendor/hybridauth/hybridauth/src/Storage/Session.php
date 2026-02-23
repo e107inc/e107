@@ -119,7 +119,7 @@ class Session implements StorageInterface
             $tmp = $_SESSION[$this->storeNamespace];
 
             foreach ($tmp as $k => $v) {
-                if (strstr($k, $key)) {
+                if (strstr((string) $k, $key)) {
                     unset($tmp[$k]);
                 }
             }

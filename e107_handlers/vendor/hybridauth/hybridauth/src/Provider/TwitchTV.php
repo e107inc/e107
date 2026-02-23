@@ -74,7 +74,7 @@ class TwitchTV extends OAuth2
         $userProfile->displayName = $user->get('display_name');
         $userProfile->photoURL = $user->get('profile_image_url');
         $userProfile->email = $user->get('email');
-        $userProfile->description = strip_tags($user->get('description'));
+        $userProfile->description = strip_tags((string) $user->get('description'));
         $userProfile->profileURL = "https://www.twitch.tv/{$userProfile->displayName}";
 
         return $userProfile;

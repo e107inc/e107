@@ -161,7 +161,7 @@ class plugin_notify_admin_ui extends e_admin_ui
 									if($data = e107::callMethod($val."_notify", 'config'))
 									{
 
-										$config_category = str_replace("_menu","",ucfirst($val))." ".LAN_NOTIFY_01;
+										$config_category = str_replace("_menu","",ucfirst((string) $val))." ".LAN_NOTIFY_01;
 
 										foreach($data as $v)
 										{
@@ -271,7 +271,7 @@ class plugin_notify_admin_ui extends e_admin_ui
 			}
 			$text .= "</table>";
 
-			$caption = str_replace("_menu","",ucfirst($k))." ".LAN_NOTIFY_01;
+			$caption = str_replace("_menu","",ucfirst((string) $k))." ".LAN_NOTIFY_01;
 
 			$tab[] = array('caption'=>$caption, 'text' => $text);
 		}

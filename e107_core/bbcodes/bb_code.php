@@ -18,7 +18,7 @@ class bb_code extends e_bb_base
 		$paramet 	= ($parm == 'inline') ? 'inline' : '';
 	//	$code_text 	= htmlspecialchars($code_text, ENT_QUOTES, 'UTF-8');
 	//	$code_text = str_replace('<','&ltr;',$code_text);
-		$code_text = htmlentities($code_text, ENT_QUOTES, 'utf-8');	
+		$code_text = htmlentities((string) $code_text, ENT_QUOTES, 'utf-8');	
 
 	//	$srch = array('{','}');
 	//	$repl = array( '&lbrace;', '&rbrace;'); // avoid code getting parsed as templates or shortcodes. 

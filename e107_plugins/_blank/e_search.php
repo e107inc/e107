@@ -47,7 +47,7 @@ class _blank_search extends e_search // include plugin-folder in the name.
 	{
 		$tp = e107::getParser();
 
-		preg_match("/([0-9]+)\.(.*)/", $row['blank_nick'], $user);
+		preg_match("/([0-9]+)\.(.*)/", (string) $row['blank_nick'], $user);
 
 		$res = array();
 	

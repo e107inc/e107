@@ -34,11 +34,11 @@ class TrimCommand extends ResizeCommand
 
         // lower border names
         foreach ($away as $key => $value) {
-            $away[$key] = strtolower($value);
+            $away[$key] = strtolower((string) $value);
         }
 
         // define base color position
-        switch (strtolower($base)) {
+        switch (strtolower((string) $base)) {
             case 'transparent':
             case 'trans':
                 $checkTransparency = true;

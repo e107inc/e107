@@ -129,7 +129,7 @@ class MicrosoftGraph extends OAuth2
         $userProfile->email = $data->get('mail');
         if (empty($userProfile->email)) {
             $email = $data->get('userPrincipalName');
-            if (strpos($email, '@') !== false) {
+            if (strpos((string) $email, '@') !== false) {
                 $userProfile->email = $email;
             }
         }

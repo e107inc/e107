@@ -265,7 +265,7 @@ $override = array();
 
 if(isset($_POST['previous_steps']))
 {
-	$tmp = unserialize(base64_decode($_POST['previous_steps']));
+	$tmp = unserialize(base64_decode((string) $_POST['previous_steps']));
 	$override = (isset($tmp['paths']) && isset($tmp['paths']['hash'])) ? array('site_path'=>$tmp['paths']['hash']) : array();
 	unset($tmp);
 	unset($tmpadminpass1);
@@ -401,7 +401,7 @@ class e_install
 		$this->e107 = $e107;
 		if(isset($_POST['previous_steps']))
 		{
-			$this->previous_steps = unserialize(base64_decode($_POST['previous_steps']));
+			$this->previous_steps = unserialize(base64_decode((string) $_POST['previous_steps']));
 
 			// Save unfiltered admin password (#4004) - " are transformed into &#34;
 			$tmpadminpass2 = (isset($this->previous_steps['admin'])) ? $this->previous_steps['admin']['password'] : '';
@@ -597,7 +597,7 @@ class e_install
 		// $page_info = nl2br(LANINS_023);
 		$page_info = "<div class='alert alert-block alert-info'>".LANINS_141."</div>";
 		$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] === "debug" ? "?debug" : ""));
-		$isrequired = (($_SERVER['SERVER_ADDR'] === "127.0.0.1") || ($_SERVER['SERVER_ADDR'] === "localhost") || ($_SERVER['SERVER_ADDR'] === "::1") || preg_match('/^192\.168\.\d{1,3}\.\d{1,3}$/',$_SERVER['SERVER_ADDR'])) ? "" :  "required='required'"; // Deals with IP V6, and 192.168.x.x address ranges, could be improved to validate x.x to a valid IP but for this use, I dont think its required to be that picky.
+		$isrequired = (($_SERVER['SERVER_ADDR'] === "127.0.0.1") || ($_SERVER['SERVER_ADDR'] === "localhost") || ($_SERVER['SERVER_ADDR'] === "::1") || preg_match('/^192\.168\.\d{1,3}\.\d{1,3}$/',(string) $_SERVER['SERVER_ADDR'])) ? "" :  "required='required'"; // Deals with IP V6, and 192.168.x.x address ranges, could be improved to validate x.x to a valid IP but for this use, I dont think its required to be that picky.
 
 		$output = "
 			<div style='width: 100%; padding-left: auto; padding-right: auto;'>
@@ -927,7 +927,7 @@ class e_install
 			$perms_pass = false;
 			foreach ($not_writable as $file)
 			{
-				$perms_errors .= (substr($file, -1) === "/" ? LANINS_010a : LANINS_010)."<br /><b>{$file}</b><br />\n";
+				$perms_errors .= (substr((string) $file, -1) === "/" ? LANINS_010a : LANINS_010)."<br /><b>{$file}</b><br />\n";
 			}
 			$perms_notes = LANINS_018;
 		}
@@ -936,7 +936,7 @@ class e_install
 			$perms_pass = true;
 			foreach ($opt_writable as $file)
 			{
-				$perms_errors .= (substr($file, -1) === "/" ? LANINS_010a : LANINS_010)."<br /><b>{$file}</b><br />\n";
+				$perms_errors .= (substr((string) $file, -1) === "/" ? LANINS_010a : LANINS_010)."<br /><b>{$file}</b><br />\n";
 			}
 			$perms_notes = LANINS_106;
 		}
@@ -1901,7 +1901,7 @@ return [
 		$this->previous_steps['prefs']['replyto_email']		= $this->previous_steps['admin']['email'];
 
 		// Cookie name fix, ended up with 406 error when non-latin words used
-		$cookiename 										= preg_replace('/[^a-z0-9]/i', '', trim($this->previous_steps['prefs']['sitename']));
+		$cookiename 										= preg_replace('/[^a-z0-9]/i', '', trim((string) $this->previous_steps['prefs']['sitename']));
 		$this->previous_steps['prefs']['cookie_name']		= ($cookiename ? substr($cookiename, 0, 4).'_' : 'e_').'cookie';
 		
 		### URL related prefs
@@ -2028,7 +2028,7 @@ return [
 		{
 			$this->previous_steps['language'] = $_POST['language'];
 		}		
-		
+
 		if(!isset($this->previous_steps['language']))
 		{
 			$this->previous_steps['language'] = "English";
@@ -2242,7 +2242,7 @@ return [
 			$sql_table = preg_replace("/create table\s/si", "CREATE TABLE {$this->previous_steps['mysql']['prefix']}", $sql_table);
 
 			// Drop existing tables before creating.
-			$tmp = explode("\n",$sql_table);
+			$tmp = explode("\n",(string) $sql_table);
 			$drop_table = str_replace($srch,$repl,$tmp[0]);
 			$this->dbqry($drop_table);
 
@@ -2261,7 +2261,7 @@ return [
 	{
 		$e107_config = 'e107_config.php';
 		$fp = @fopen($e107_config, 'w');
-		if (!@fwrite($fp, $data))
+		if (!@fwrite($fp, (string) $data))
 		{
 			@fclose ($fp);
 			return nl2br(LANINS_070);

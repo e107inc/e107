@@ -53,16 +53,16 @@ class auth_login extends alt_auth_base
 
 		foreach ($ldap as $row)
 		{
-			if ((strpos($row['auth_parmname'], 'ldap_xf_') === 0) && $ldap[$row['auth_parmname']]) // Attribute to copy on successful login
+			if ((strpos((string) $row['auth_parmname'], 'ldap_xf_') === 0) && $ldap[$row['auth_parmname']]) // Attribute to copy on successful login
 			{
-				$this->copyAttribs[substr($row['auth_parmname'], strlen('ldap_xf_'))] = $ldap[$row['auth_parmname']]; // Key = LDAP attribute. Value = e107 field name
+				$this->copyAttribs[substr((string) $row['auth_parmname'], strlen('ldap_xf_'))] = $ldap[$row['auth_parmname']]; // Key = LDAP attribute. Value = e107 field name
 			}
-			elseif ((strpos($row['auth_parmname'], 'ldap_pm_') === 0) && $ldap[$row['auth_parmname']] && ($ldap[$row['auth_parmname']] != 'none')) // Method to use to copy parameter
+			elseif ((strpos((string) $row['auth_parmname'], 'ldap_pm_') === 0) && $ldap[$row['auth_parmname']] && ($ldap[$row['auth_parmname']] != 'none')) // Method to use to copy parameter
 			{	// Any fields with non-null 'copy' methods
-				$this->copyMethods[substr($row['auth_parmname'], strlen('ldap_pm_'))] = $ldap[$row['auth_parmname']]; // Key = e107 field name. Value = copy method
+				$this->copyMethods[substr((string) $row['auth_parmname'], strlen('ldap_pm_'))] = $ldap[$row['auth_parmname']]; // Key = e107 field name. Value = copy method
 			}
 		}
-		$this->server = explode(',', $ldap['ldap_server']);
+		$this->server = explode(',', (string) $ldap['ldap_server']);
 		$this->serverType = $ldap['ldap_servertype'];
 		$this->dn = $ldap['ldap_basedn'];
 		$this->ou = $ldap['ldap_ou'];
@@ -232,7 +232,7 @@ class auth_login extends alt_auth_base
 			$ldap_attributes = array_values(array_unique($this->copyAttribs));
 			if ($this->serverType == "ActiveDirectory")
 			{	// If we are using AD then build up the full string from the fqdn
-				$altauth_tmp = explode('.', $this->dn);
+				$altauth_tmp = explode('.', (string) $this->dn);
 				$checkDn='';
 				foreach($altauth_tmp as $$altauth_dc)
 				{

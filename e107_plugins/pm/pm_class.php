@@ -60,7 +60,7 @@ class private_message
 		else
 		{
 			e107::getDb()->gen("UPDATE `#private_msg` SET `pm_read` = {$now} WHERE `pm_id`=".intval($pm_id)); // TODO does this work properly?
-			if(strpos($pm_info['pm_option'], '+rr') !== FALSE)
+			if(strpos((string) $pm_info['pm_option'], '+rr') !== FALSE)
 			{
 				$this->pm_send_receipt($pm_info);
 			}
@@ -128,7 +128,7 @@ class private_message
 			$info = array();
 			foreach ($vars as $k => $v)
 			{
-				if (strpos($k, 'pm_') === 0)
+				if (strpos((string) $k, 'pm_') === 0)
 				{
 					$info[$k] = $v;
 					unset($vars[$k]);
@@ -153,16 +153,16 @@ class private_message
 				}
 				$attachlist = implode(chr(0), $a_list);
 			}
-			$pmsize += strlen($vars['pm_message']);
+			$pmsize += strlen((string) $vars['pm_message']);
 
-			$pm_subject = trim($tp->toDB($vars['pm_subject']));
-			$pm_message = trim($tp->toDB($vars['pm_message']));
-			
+			$pm_subject = trim((string) $tp->toDB($vars['pm_subject']));
+			$pm_message = trim((string) $tp->toDB($vars['pm_message']));
+
 			if (!$pm_subject && !$pm_message && !$attachlist)
 			{  // Error - no subject, no message body and no uploaded files
 				return LAN_PM_65;
 			}
-			
+
 			// Most of the pm info is fixed - just need to set the 'to' user on each send
 			$info = array(
 				'pm_from' => $vars['from_id'],
@@ -329,7 +329,7 @@ class private_message
 			if($force == TRUE)
 			{
 				// Delete any attachments and remove PM from db
-				$attachments = explode(chr(0), $row['pm_attachments']);
+				$attachments = explode(chr(0), (string) $row['pm_attachments']);
 				$aCount = array(0,0);
 				foreach($attachments as $a)
 				{
@@ -626,7 +626,7 @@ class private_message
 		else
 		{
 		//	$var = strip_if_magic($var);
-			$var = str_replace("'", '&#039;', trim($var));		// Display name uses entities for apostrophe
+			$var = str_replace("'", '&#039;', trim((string) $var));		// Display name uses entities for apostrophe
 			$where = "user_name LIKE '".$sql->escape($var, FALSE)."'";
 		}
 
@@ -703,7 +703,7 @@ class private_message
 
 		$user = e107::user($uid);
 
-		$uclass = explode(",", $user['user_class']);
+		$uclass = explode(",", (string) $user['user_class']);
 
 		if($this->pmPrefs['send_to_class'] == 'matchclass')
 		{
@@ -806,7 +806,7 @@ class private_message
 	{
 		$pm_info = $this->pm_get($pmid);
 
-		$attachments = explode(chr(0), $pm_info['pm_attachments']);
+		$attachments = explode(chr(0), (string) $pm_info['pm_attachments']);
 
 		if(!isset($attachments[$filenum]))
 		{
@@ -860,12 +860,12 @@ class private_message
 
 		if (connection_status() == 0)
 		{
-			if (strpos($_SERVER['HTTP_USER_AGENT'], "MSIE") !== false) {
+			if (strpos((string) $_SERVER['HTTP_USER_AGENT'], "MSIE") !== false) {
 				$file = preg_replace('/\./', '%2e', $file, substr_count($file, '.') - 1);
 			}
 			if (isset($_SERVER['HTTP_RANGE']))
 			{
-				$seek = intval(substr($_SERVER['HTTP_RANGE'] , strlen('bytes=')));
+				$seek = intval(substr((string) $_SERVER['HTTP_RANGE'] , strlen('bytes=')));
 			}
 			$bufsize = 2048;
 			ignore_user_abort(true);

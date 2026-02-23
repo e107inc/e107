@@ -211,7 +211,7 @@ class news_front
 
 	private function getRenderId()
 	{
-		$tmp = explode('/',$this->route);
+		$tmp = explode('/',(string) $this->route);
 
 		if(!empty($this->templateKey))
 		{
@@ -385,13 +385,13 @@ class news_front
 
 		$tp = e107::getParser();
 
-		if(vartrue($_GET['tag']) || substr($this->action,0,4) == 'tag=')
+		if(vartrue($_GET['tag']) || substr((string) $this->action,0,4) == 'tag=')
 		{
 
 			$this->route = 'news/list/tag';
 			if(!vartrue($_GET['tag']))
 			{
-				list($this->action,$word) = explode("=",$this->action,2);
+				list($this->action,$word) = explode("=",(string) $this->action,2);
 				$_GET['tag'] = $word;
 				unset($word,$tmp);
 			}
@@ -400,13 +400,13 @@ class news_front
 			$this->from = intval(varset($_GET['page'],0));
 		}
 
-		if(!empty($_GET['author']) || substr($this->action,0,4) == 'author=')
+		if(!empty($_GET['author']) || substr((string) $this->action,0,4) == 'author=')
 		{
 
 			$this->route = 'news/list/author';
 			if(!vartrue($_GET['author']))
 			{
-				list($action,$author) = explode("=",$this->action,2);
+				list($action,$author) = explode("=",(string) $this->action,2);
 				$_GET['author'] = $author;
 				unset($author,$tmp);
 			}
@@ -631,7 +631,7 @@ class news_front
 
 
 
-				$title = strip_tags($title);
+				$title = strip_tags((string) $title);
 
 				$this->dayMonth = $title;
 
@@ -725,8 +725,8 @@ class news_front
 			// include news-thumbnail/image in meta. - always put this one first.
 			if(!empty($news['news_thumbnail']))
 			{
-				$iurl = (substr($news['news_thumbnail'],0,3)=="{e_") ? $news['news_thumbnail'] : SITEURL.e_IMAGE."newspost_images/".$news['news_thumbnail'];
-				$tmp = explode(",", $iurl);
+				$iurl = (substr((string) $news['news_thumbnail'],0,3)=="{e_") ? $news['news_thumbnail'] : SITEURL.e_IMAGE."newspost_images/".$news['news_thumbnail'];
+				$tmp = explode(",", (string) $iurl);
 
 				if(!empty($tmp[0]) && substr($tmp[0],-8) !== '.youtube')
 				{
@@ -756,7 +756,7 @@ class news_front
 			foreach($youtube as $yt)
 			{
 				if($c == 3){ break; }
-				list($img,$tmp) = explode("?",$yt);
+				list($img,$tmp) = explode("?",(string) $yt);
 				e107::meta('og:image',"https://img.youtube.com/vi/".$img."/0.jpg");
 				$c++;
 			}
@@ -773,7 +773,7 @@ class news_front
 			if($news['news_meta_keywords'] && !defined('META_KEYWORDS'))
 			{
 				e107::meta('keywords',$news['news_meta_keywords']);
-				$tmp = explode(",",$news['news_meta_keywords']);
+				$tmp = explode(",",(string) $news['news_meta_keywords']);
 				foreach($tmp as $t)
 				{
 					e107::meta('article:tag', trim($t));
@@ -1060,8 +1060,8 @@ class news_front
 			{
 				if(!empty($row['news_thumbnail']))
 				{
-					$iurl = (substr($row['news_thumbnail'],0,3)=="{e_") ? $row['news_thumbnail'] : SITEURL.e_IMAGE."newspost_images/".$row['news_thumbnail'];
-					$tmp = explode(",", $iurl);
+					$iurl = (substr((string) $row['news_thumbnail'],0,3)=="{e_") ? $row['news_thumbnail'] : SITEURL.e_IMAGE."newspost_images/".$row['news_thumbnail'];
+					$tmp = explode(",", (string) $iurl);
 
 					if($tp->isImage($tmp[0]))
 					{
@@ -1179,7 +1179,7 @@ class news_front
 		{
 			e107::setRegistry('core/news/pagination', $parms);
 			$text .= $tp->parseTemplate($template['end']);
-			if(strpos($template['end'], '{NEWS_PAGINATION') !== false)
+			if(strpos((string) $template['end'], '{NEWS_PAGINATION') !== false)
 			{
 				$paginationSC = true;
 				$this->addDebug("Pagination Shortcode", 'true');
@@ -1979,7 +1979,7 @@ class news_front
 				e107::setRegistry('core/news/pagination', $parms);
 				$nsc = e107::getScBatch('news')->setScVar('news_item', $newsAr[1])->setScVar('param', $param);
 				echo $tp->parseTemplate($tmpl['end'], true, $nsc);
-				if(strpos($tmpl['end'], '{NEWS_PAGINATION') !== false) // BC fix.
+				if(strpos((string) $tmpl['end'], '{NEWS_PAGINATION') !== false) // BC fix.
 				{
 					$paginationSC = true;
 					$this->addDebug("Pagination Shortcode", 'true');

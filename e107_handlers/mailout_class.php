@@ -154,9 +154,9 @@ class core_mailout
 		{
 			foreach(array(':', '-', ',') as $sep)
 			{
-				if (strpos($selectVals['last_visit_date'], ':'))
+				if (strpos((string) $selectVals['last_visit_date'], ':'))
 				{
-					$tmp = explode($sep, $selectVals['last_visit_date']);
+					$tmp = explode($sep, (string) $selectVals['last_visit_date']);
 					break;
 				}
 			}

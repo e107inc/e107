@@ -116,7 +116,7 @@ class auth_login extends alt_auth_base
 		// Make an array of the fields we want from the source DB
 		foreach($this->conf as $k => $v)
 		{
-			if ($v && (strpos($k,'otherdb_xf_') === 0))
+			if ($v && (strpos((string) $k,'otherdb_xf_') === 0))
 			{
 				$sel_fields[] = $v;
 			}
@@ -191,9 +191,9 @@ class auth_login extends alt_auth_base
 		// Now copy across any values we have selected
 		foreach($this->conf as $k => $v)
 		{
-			if ($v && (strpos($k,'otherdb_xf_') === 0) && isset($row[$v]))
+			if ($v && (strpos((string) $k,'otherdb_xf_') === 0) && isset($row[$v]))
 			{
-				$newvals[substr($k,strlen('otherdb_xf_'))] = $row[$v];
+				$newvals[substr((string) $k,strlen('otherdb_xf_'))] = $row[$v];
 			}
 		}
 

@@ -309,7 +309,7 @@ class SMTP
             case 'html':
                 //Cleans up output a bit for a better looking, HTML-safe output
                 echo gmdate('Y-m-d H:i:s'), ' ', htmlentities(
-                    preg_replace('/[\r\n]+/', '', $str),
+                    (string) preg_replace('/[\r\n]+/', '', $str),
                     ENT_QUOTES,
                     'UTF-8'
                 ), "<br>\n";
@@ -326,7 +326,7 @@ class SMTP
                     str_replace(
                         "\n",
                         "\n                   \t                  ",
-                        trim($str)
+                        trim((string) $str)
                     )
                 ),
                 "\n";
@@ -843,7 +843,7 @@ class SMTP
         }
 
         //Some servers shut down the SMTP service here (RFC 5321)
-        if (substr($this->helo_rply, 0, 3) == '421') {
+        if (substr((string) $this->helo_rply, 0, 3) == '421') {
             return false;
         }
 
@@ -883,7 +883,7 @@ class SMTP
     protected function parseHelloFields($type)
     {
         $this->server_caps = [];
-        $lines = explode("\n", $this->helo_rply);
+        $lines = explode("\n", (string) $this->helo_rply);
 
         foreach ($lines as $n => $s) {
             //First 4 chars contain response code followed by - or space
@@ -1309,7 +1309,7 @@ class SMTP
 
                 //stream_select returns false when the `select` system call is interrupted
                 //by an incoming signal, try the select again
-                if (stripos($message, 'interrupted system call') !== false) {
+                if (stripos((string) $message, 'interrupted system call') !== false) {
                     $this->edebug(
                         'SMTP -> get_lines(): retrying stream_select',
                         self::DEBUG_LOWLEVEL

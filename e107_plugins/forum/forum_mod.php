@@ -17,7 +17,7 @@ function forum_thread_moderate($p)
 	$sql = e107::getDb();
 	foreach ($p as $key => $val)
 	{
-		if (preg_match("#(.*?)_(\d+)_x#", $key, $matches))
+		if (preg_match("#(.*?)_(\d+)_x#", (string) $key, $matches))
 		{
 			$act = $matches[1];
 			$id = (int)$matches[2];

@@ -266,7 +266,7 @@
 			{
 				foreach($pmlist['messages'] as $rec)
 				{
-					if(trim($rec['pm_subject']) == '')
+					if(trim((string) $rec['pm_subject']) == '')
 					{
 						$rec['pm_subject'] = '[' . LAN_PM_61 . ']';
 					}
@@ -338,7 +338,7 @@
 			{
 				foreach($pmlist['messages'] as $rec)
 				{
-					if(trim($rec['pm_subject']) == '')
+					if(trim((string) $rec['pm_subject']) == '')
 					{
 						$rec['pm_subject'] = '[' . LAN_PM_61 . ']';
 					}
@@ -611,7 +611,7 @@
 					}
 				}
 
-				$totalsize = strlen($_POST['pm_message']);
+				$totalsize = strlen((string) $_POST['pm_message']);
 
 				$maxsize = intval($this->pmPrefs['attach_size']) * 1024;
 
@@ -809,11 +809,11 @@
 		}
 		else
 		{
-			if(substr($_SERVER['HTTP_REFERER'], -5) == 'inbox')
+			if(substr((string) $_SERVER['HTTP_REFERER'], -5) == 'inbox')
 			{
 				$action = 'inbox';
 			}
-			elseif(substr($_SERVER['HTTP_REFERER'], -6) == 'outbox')
+			elseif(substr((string) $_SERVER['HTTP_REFERER'], -6) == 'outbox')
 			{
 				$action = 'outbox';
 			}

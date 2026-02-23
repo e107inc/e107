@@ -551,7 +551,7 @@ class download_shortcodes extends e_shortcode
 
 	function sc_download_filename($parm = null)
 	{
-		return basename($this->var['download_url']);
+		return basename((string) $this->var['download_url']);
 
 	}
 
@@ -810,7 +810,7 @@ class download_shortcodes extends e_shortcode
 			$opts = array(
 				'legacy' => "{e_FILE}downloadimages/",
 				'class'  => 'download-image dl_image download-view-image img-responsive img-fluid ' . vartrue($parm['class']),
-				'alt'    => basename($this->var['download_image'])
+				'alt'    => basename((string) $this->var['download_image'])
 			);
 
 			return e107::getParser()->toImage($this->var['download_image'], $opts);
@@ -872,7 +872,7 @@ class download_shortcodes extends e_shortcode
 		/*
       	require_once(e_HANDLER."rate_class.php");
       	$rater = new rater;
-      	
+
       	$text = "
       		<table style='width:100%'>
       		<tr>

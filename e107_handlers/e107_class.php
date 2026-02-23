@@ -385,7 +385,7 @@ class e107
 				if($bodyTag)
 				{
 					echo "\n<!-- Start custom body-start tag -->\n";
-					echo trim($opts['bodyStart'])."\n";
+					echo trim((string) $opts['bodyStart'])."\n";
 					echo "<!-- End custom body-start tag -->\n\n";
 				}
 
@@ -484,7 +484,7 @@ class e107
 			}
 		}
 
-		$location = trim($location);
+		$location = trim((string) $location);
 
 
 		// Defaults to news
@@ -543,7 +543,7 @@ class e107
 		{
 			foreach($e107_paths as $dir => $path)
 			{
-				$newKey = strtoupper($dir).'_DIRECTORY';
+				$newKey = strtoupper((string) $dir).'_DIRECTORY';
 				$e107_paths[$newKey] = $path;
 				unset($e107_paths[$dir]);
 			}
@@ -716,19 +716,19 @@ class e107
 	//	$this->e107_dirs['SYSTEM_BASE_DIRECTORY'] = $this->e107_dirs['SYSTEM_BASE_DIRECTORY'];
 
 		// $this->site_path is appended to MEDIA_DIRECTORY in defaultDirs(), which is called above.
-		if(strpos($this->e107_dirs['MEDIA_DIRECTORY'],$this->site_path) === false)
+		if(strpos((string) $this->e107_dirs['MEDIA_DIRECTORY'],(string) $this->site_path) === false)
 		{
 			$this->e107_dirs['MEDIA_DIRECTORY'] .= $this->site_path."/"; // multisite support.
 		}
 
 		// FIXME - remove this condition because:
 		// $this->site_path is appended to SYSTEM_DIRECTORY in defaultDirs(), which is called above.
-		if(strpos($this->e107_dirs['SYSTEM_DIRECTORY'],$this->site_path) === false)
+		if(strpos((string) $this->e107_dirs['SYSTEM_DIRECTORY'],(string) $this->site_path) === false)
 		{
 			$this->e107_dirs['SYSTEM_DIRECTORY'] .= $this->site_path."/"; // multisite support.
 		}
 
-		if(strpos($this->e107_dirs['CACHE_DIRECTORY'], $this->site_path) === false)
+		if(strpos((string) $this->e107_dirs['CACHE_DIRECTORY'], (string) $this->site_path) === false)
 		{
 			$this->e107_dirs['CACHE_DIRECTORY'] = $this->e107_dirs['SYSTEM_DIRECTORY']."cache/"; // multisite support.
 		}
@@ -1387,7 +1387,7 @@ class e107
 	 */
 	public static function getPlugLan($dir, $type='name')
 	{
-		$lan = "LAN_PLUGIN_".strtoupper($dir)."_".strtoupper($type);
+		$lan = "LAN_PLUGIN_".strtoupper((string) $dir)."_".strtoupper($type);
 
 		return defset($lan,false);
 	}
@@ -1530,7 +1530,7 @@ class e107
 			foreach($custom as $glyphConfig)
 			{
 
-				if(strpos($glyphConfig['path'], 'http') !== 0)
+				if(strpos((string) $glyphConfig['path'], 'http') !== 0)
 				{
 					$glyphConfig['path'] = e_THEME."$theme/".$glyphConfig['path'];
 				}
@@ -2391,7 +2391,7 @@ class e107
 				$admin = (bool) defset('e_ADMIN_AREA', false);
 
 				// Try to detect and load CDN version.
-				if(!$admin && $cdn && strpos($library, 'cdn.') !== 0)
+				if(!$admin && $cdn && strpos((string) $library, 'cdn.') !== 0)
 				{
 					$lib = $libraryHandler->detect('cdn.' . $library);
 
@@ -2801,22 +2801,22 @@ class e107
 	        {
 	            $object = json_encode($var);
 
-	           $text .= 'var object'.preg_replace('~[^A-Z|0-9]~i',"_",$name).' = \''.str_replace("'","\'",$object).'\';'.$nl;
-	           $text .= 'var val'.preg_replace('~[^A-Z|0-9]~i',"_",$name).' = eval("(" + object'.preg_replace('~[^A-Z|0-9]~i',"_",$name).' + ")" );'.$nl;
+	           $text .= 'var object'.preg_replace('~[^A-Z|0-9]~i',"_",(string) $name).' = \''.str_replace("'","\'",$object).'\';'.$nl;
+	           $text .= 'var val'.preg_replace('~[^A-Z|0-9]~i',"_",(string) $name).' = eval("(" + object'.preg_replace('~[^A-Z|0-9]~i',"_",(string) $name).' + ")" );'.$nl;
 
 	            switch($type)
 	            {
 	                case 'log':
-	                   $text .= 'console.debug(val'.preg_replace('~[^A-Z|0-9]~i',"_",$name).');'.$nl;
+	                   $text .= 'console.debug(val'.preg_replace('~[^A-Z|0-9]~i',"_",(string) $name).');'.$nl;
 	                break;
 	                case 'info':
-	                   $text .= 'console.info(val'.preg_replace('~[^A-Z|0-9]~i',"_",$name).');'.$nl;
+	                   $text .= 'console.info(val'.preg_replace('~[^A-Z|0-9]~i',"_",(string) $name).');'.$nl;
 	                break;
 	                case 'warning':
-	                   $text .= 'console.warn(val'.preg_replace('~[^A-Z|0-9]~i',"_",$name).');'.$nl;
+	                   $text .= 'console.warn(val'.preg_replace('~[^A-Z|0-9]~i',"_",(string) $name).');'.$nl;
 	                break;
 	                case 'error':
-	                   $text .= 'console.error(val'.preg_replace('~[^A-Z|0-9]~i',"_",$name).');'.$nl;
+	                   $text .= 'console.error(val'.preg_replace('~[^A-Z|0-9]~i',"_",(string) $name).');'.$nl;
 	                break;
 	            }
 	        }
@@ -3621,7 +3621,7 @@ class e107
 				$match = false;
 				foreach ($filter_mask as $mask)
 				{
-					if(preg_match($mask, $key)) //e.g. retrieve only keys starting with 'layout_'
+					if(preg_match($mask, (string) $key)) //e.g. retrieve only keys starting with 'layout_'
 					{
 						$match = true;
 						break;
@@ -3637,7 +3637,7 @@ class e107
 				$templates[$key] = defset($tmp_info[$key]['title'], $tmp_info[$key]['title']);
 				continue;
 			}
-			$templates[$key] = implode(' ', array_map('ucfirst', explode('_', $key)));
+			$templates[$key] = implode(' ', array_map('ucfirst', explode('_', (string) $key)));
 		}
 		return ($allinfo ? array($templates, $tmp_info) : $templates);
 	}
@@ -4429,7 +4429,7 @@ class e107
 		}
 
 
-		preg_match_all('#{([a-z_]*)}#', $tmp[$plugin][$key]['sef'], $matches);
+		preg_match_all('#{([a-z_]*)}#', (string) $tmp[$plugin][$key]['sef'], $matches);
 
 		$active = true;
 
@@ -4458,7 +4458,7 @@ class e107
 
 			if ($options['mode'] === 'full')
 			{
-				$siteURL = !empty($tmp[$plugin][$key]['domain']) ? 'https://'.rtrim($tmp[$plugin][$key]['domain'],'/').'/' : SITEURL;
+				$siteURL = !empty($tmp[$plugin][$key]['domain']) ? 'https://'.rtrim((string) $tmp[$plugin][$key]['domain'],'/').'/' : SITEURL;
 				$sefUrl = $siteURL . $rawUrl;
 			}
 			elseif ($options['mode'] === 'raw')
@@ -4493,7 +4493,7 @@ class e107
 
 			// Avoid duplicate query keys. eg. URL has ?id=x and $options['query']['id'] exists.
 			// @see forum/e_url.php - topic/redirect and forum/view_shortcodes.php sc_post_url()
-			list($legacyUrl, $tmp) = array_pad(explode("?", $legacyUrl), 2, null);
+			list($legacyUrl, $tmp) = array_pad(explode("?", (string) $legacyUrl), 2, null);
 
 			if (!empty($tmp))
 			{
@@ -4525,7 +4525,7 @@ class e107
 		// Append the query.
 		if (is_array($options['query']) && !empty($options['query']))
 		{
-			$sefUrl .= (strpos($sefUrl, '?') !== FALSE ? '&' : '?') . self::httpBuildQuery($options['query']);
+			$sefUrl .= (strpos((string) $sefUrl, '?') !== FALSE ? '&' : '?') . self::httpBuildQuery($options['query']);
 		}
 
 		return htmlspecialchars($sefUrl . $options['fragment'], ENT_QUOTES);
@@ -4635,7 +4635,7 @@ class e107
 
 		foreach($query as $key => $value)
 		{
-			$key = ($parent ? $parent . '[' . rawurlencode($key) . ']' : rawurlencode($key));
+			$key = ($parent ? $parent . '[' . rawurlencode((string) $key) . ']' : rawurlencode((string) $key));
 
 			// Recurse into children.
 			if(is_array($value))
@@ -4650,7 +4650,7 @@ class e107
 			else
 			{
 				// For better readability of paths in query strings, we decode slashes.
-				$params [] = $key . '=' . str_replace('%2F', '/', rawurlencode($value));
+				$params [] = $key . '=' . str_replace('%2F', '/', rawurlencode((string) $value));
 			}
 		}
 
@@ -4853,7 +4853,7 @@ class e107
 		}
 
 		// A better way to detect an AJAX request. No need for "ajax_used=1";
-		if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest')
+		if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower((string) $_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest')
 		{
   			define('e_AJAX_REQUEST', true);
 		}
@@ -4902,7 +4902,7 @@ class e107
 
 
 		// If url contains a .php in it, PHP_SELF is set wrong (imho), affecting all paths.  We need to 'fix' it if it does.
-		$_SERVER['PHP_SELF'] = (($pos = stripos($_SERVER['PHP_SELF'], '.php')) !== false ? substr($_SERVER['PHP_SELF'], 0, $pos+4) : $_SERVER['PHP_SELF']);
+		$_SERVER['PHP_SELF'] = (($pos = stripos((string) $_SERVER['PHP_SELF'], '.php')) !== false ? substr((string) $_SERVER['PHP_SELF'], 0, $pos+4) : $_SERVER['PHP_SELF']);
 		$_SERVER['SERVER_NAME'] = $_SERVER['SERVER_NAME'] ?? '';
 		$_SERVER['HTTP_HOST'] = $_SERVER['HTTP_HOST'] ?? '';
 		$_SERVER['HTTP_HOST'] = !empty($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : $_SERVER['HTTP_HOST'];
@@ -4963,32 +4963,32 @@ class e107
 			}
 
 			$regex = "/(base64_decode|chr|php_uname|fwrite|fopen|fputs|passthru|popen|proc_open|shell_exec|exec|proc_nice|proc_terminate|proc_get_status|proc_close|pfsockopen|apache_child_terminate|posix_kill|posix_mkfifo|posix_setpgid|posix_setsid|posix_setuid|phpinfo) *?\((.*) ?\;?/i";
-			if(preg_match($regex,$input))
+			if(preg_match($regex,(string) $input))
 			{
 				self::die_http_400();
 			}
 
 			// Check for XSS JS
 			$regex = "/(document\.location|document\.write|document\.cookie)/i";
-			if(preg_match($regex,$input))
+			if(preg_match($regex,(string) $input))
 			{
 				self::die_http_400();
 			}
 
 
 			// Suspicious HTML.
-			if(strpos($input, '<body/onload')!==false)
+			if(strpos((string) $input, '<body/onload')!==false)
 			{
 				self::die_http_400();
 			}
 
-			if(preg_match("/system\((.*);.*\)/i",$input))
+			if(preg_match("/system\((.*);.*\)/i",(string) $input))
 			{
 				self::die_http_400();
 			}
 
 			$regex = "/(wget |curl -o |lwp-download|onmouse)/i";
-			if(preg_match($regex,$input))
+			if(preg_match($regex,(string) $input))
 			{
 				self::die_http_400();
 			}
@@ -4997,7 +4997,7 @@ class e107
 
 		if($type === '_GET') // Basic XSS check.
 		{
-			if(stripos($input, "<script")!==false || stripos($input, "%3Cscript")!==false)
+			if(stripos((string) $input, "<script")!==false || stripos((string) $input, "%3Cscript")!==false)
 			{
 				self::die_http_400();
 			}
@@ -5006,7 +5006,7 @@ class e107
 
 		if($type === "_SERVER")
 		{
-			$input = strtolower($input);
+			$input = strtolower((string) $input);
 
 			if(($key === "QUERY_STRING") && (
 				strpos($input,"../../")!==FALSE
@@ -5033,7 +5033,7 @@ class e107
 
 		if(!$base64)
 		{
-			self::filter_request(base64_decode($input, true),$key,$type,true);
+			self::filter_request(base64_decode((string) $input, true),$key,$type,true);
 		}
 
 
@@ -5102,7 +5102,7 @@ class e107
 		{
 
 			$host = !empty($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : $_SERVER['HTTP_HOST'];
-			$domain = preg_replace('/^www\.|:\d*$/', '', $host); // remove www. and port numbers.
+			$domain = preg_replace('/^www\.|:\d*$/', '', (string) $host); // remove www. and port numbers.
 
 			$dtemp = explode(".", $domain);
 
@@ -5215,7 +5215,7 @@ class e107
 			$SCRIPT_NAME = $_SERVER['_'];
 		}
 
-		$http_path = dirname($SCRIPT_NAME);
+		$http_path = dirname((string) $SCRIPT_NAME);
 		$http_path = explode("/", $http_path);
 		for ($i = 0; $i < substr_count($path, "../"); $i ++)
 		{
@@ -5256,7 +5256,7 @@ class e107
 	  	define('e_BASE', $this->relative_base_path);
 
 		// Base dir of web stuff in server terms. e_ROOT should always end with e_HTTP, even if e_HTTP = '/'
-		define('SERVERBASE', substr(e_ROOT, 0, -strlen(e_HTTP) + 1));
+		define('SERVERBASE', substr(e_ROOT, 0, -strlen((string) e_HTTP) + 1));
 
 		if(isset($_SERVER['DOCUMENT_ROOT']))
 		{
@@ -5400,8 +5400,8 @@ class e107
 	 */
 	private static function getRelativePath($from, $to)
 	{
-		$from = is_dir($from) ? rtrim($from, '\/') . '/' : $from;
-		$to = is_dir($to) ? rtrim($to, '\/') . '/' : $to;
+		$from = is_dir($from) ? rtrim((string) $from, '\/') . '/' : $from;
+		$to = is_dir($to) ? rtrim((string) $to, '\/') . '/' : $to;
 		$from = str_replace('\\', '/', $from);
 		$to = str_replace('\\', '/', $to);
 
@@ -5471,7 +5471,7 @@ class e107
 		{
 			if(!empty($_SERVER['argv']) && isset($_SERVER['argv'][1]) && empty($_GET))
 			{
-				parse_str($_SERVER['argv'][1], $_GET); // convert argv to $_GET for script testing via CLI.
+				parse_str((string) $_SERVER['argv'][1], $_GET); // convert argv to $_GET for script testing via CLI.
 			}
 
 			if(!empty($_SERVER['_']) && empty($_SERVER['SCRIPT_FILENAME']))
@@ -5514,7 +5514,7 @@ class e107
 			}
 		}
 
-		$check = rawurldecode($requestUri); // urlencoded by default
+		$check = rawurldecode((string) $requestUri); // urlencoded by default
 
 		// a bit aggressive XSS protection... convert to e.g. htmlentities if you are not a bad guy
 		$checkregx = $no_cbrace ? '[<>\{\}]' : '[<>]';
@@ -5555,11 +5555,11 @@ class e107
 
 		if(!deftrue('e_SINGLE_ENTRY') && !deftrue('e_SELF_OVERRIDE') )
 		{
-			$page = substr(strrchr($_SERVER['PHP_SELF'], '/'), 1);
+			$page = substr(strrchr((string) $_SERVER['PHP_SELF'], '/'), 1);
 
 			if(!empty($_SERVER['_']) && self::isCli())
 			{
-				$page = basename($_SERVER['_']);
+				$page = basename((string) $_SERVER['_']);
 			}
 
 
@@ -5572,7 +5572,7 @@ class e107
 
 			if(deftrue('e_SELF_OVERRIDE')) // see multisite plugin.
 			{
-				define('e_PAGE', basename($_SERVER['SCRIPT_FILENAME']));
+				define('e_PAGE', basename((string) $_SERVER['SCRIPT_FILENAME']));
 			}
 		}
 
@@ -5580,7 +5580,7 @@ class e107
 
 		unset($requestUrl, $requestUri);
 		// END request uri/url detection, XSS protection
-		$curPage = !empty($_SERVER['SCRIPT_FILENAME']) ? basename($_SERVER['SCRIPT_FILENAME']) : '';
+		$curPage = !empty($_SERVER['SCRIPT_FILENAME']) ? basename((string) $_SERVER['SCRIPT_FILENAME']) : '';
 		$_SERVER['REQUEST_URI'] = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
 
 		$isPluginDir = strpos($_self,'/'.$PLUGINS_DIRECTORY) !== FALSE;		// True if we're in a plugin
@@ -5664,7 +5664,7 @@ class e107
 	public function set_urls_deferred()
 	{
 		$siteurl        = self::getPref('siteurl');
-		$defaultHost    = (array) parse_url($siteurl, PHP_URL_HOST);
+		$defaultHost    = (array) parse_url((string) $siteurl, PHP_URL_HOST);
 		$defaultHost    = preg_replace('/^www\./', '', $defaultHost);
 
 		$hosts          = !empty($this->hosts) ? $this->hosts : $defaultHost;
@@ -5672,7 +5672,7 @@ class e107
 		if(self::isCli())
 		{
 			define('SITEURL', $siteurl);
-			define('SITEURLBASE', rtrim(SITEURL,'/'));
+			define('SITEURLBASE', rtrim((string) SITEURL,'/'));
 		}
 		elseif(!empty($hosts) && !$this->isAllowedHost($hosts, $_SERVER['HTTP_HOST']))
 		{
@@ -5722,8 +5722,8 @@ class e107
 				continue;
 			}
 
-			$host = preg_replace('/^www\./', '', $host);
-			if ($httpHost === $host || str_ends_with($httpHost, '.' . $host))
+			$host = preg_replace('/^www\./', '', (string) $host);
+			if ($httpHost === $host || str_ends_with((string) $httpHost, '.' . $host))
 			{
 				return true;
 			}
@@ -5749,7 +5749,7 @@ class e107
 
 		foreach($inArray as $res)
 		{
-			if(stripos($queryString, $res) !== false)
+			if(stripos((string) $queryString, $res) !== false)
 			 {
 				die('Access denied.');
 			}
@@ -5777,7 +5777,7 @@ class e107
 
 		if ($no_cbrace)
 		{
-			$e_QUERY = str_replace(array('{', '}', '%7B', '%7b', '%7D', '%7d'), '', rawurldecode($e_QUERY));
+			$e_QUERY = str_replace(array('{', '}', '%7B', '%7b', '%7D', '%7d'), '', rawurldecode((string) $e_QUERY));
 		}
 
 		$replacements = array(
@@ -6153,7 +6153,7 @@ class e107
 	 */
 	private static function autoload_namespaced($className)
 	{
-		$levels = explode('\\', $className);
+		$levels = explode('\\', (string) $className);
 
 		// Guard against classes that are not ours
 		if ($levels[0] !== 'e107')

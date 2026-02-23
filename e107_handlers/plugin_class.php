@@ -491,7 +491,7 @@ class e_plugin
 	public function getAddonErrors($e_xxx)
 	{
 
-		if(substr($e_xxx, -3) === '.sc')
+		if(substr((string) $e_xxx, -3) === '.sc')
 		{
 			$filename =  $e_xxx;
 			$sc = true;
@@ -511,7 +511,7 @@ class e_plugin
 			return 2;
 		}
 
-		if(substr($e_xxx, - 4, 4) == '_sql')
+		if(substr((string) $e_xxx, - 4, 4) == '_sql')
 		{
 
 			if(strpos($content,'INSERT INTO')!==false)
@@ -559,12 +559,12 @@ class e_plugin
 	 */
 	public function isValidAddonMarkup($content='')
     {
-       if ((strpos($content, '<' . '?php') !== 0))
+       if ((strpos((string) $content, '<' . '?php') !== 0))
        {
             return false;
        }
 
-      if ((substr($content, -2, 2) != '?'.'>') && (strrpos(substr($content, -20, 20), '?'.'>') !== false))
+      if ((substr((string) $content, -2, 2) != '?'.'>') && (strrpos(substr((string) $content, -20, 20), '?'.'>') !== false))
       {
 			return false;
       }
@@ -642,7 +642,7 @@ class e_plugin
 					}
 				}
 
-				$this->_addons[$path] = !empty($row['plugin_addons']) ? explode(',',$row['plugin_addons']) : null;// $path;
+				$this->_addons[$path] = !empty($row['plugin_addons']) ? explode(',',(string) $row['plugin_addons']) : null;// $path;
 			}
 
 			if($save)
@@ -690,7 +690,7 @@ class e_plugin
 				else
 				{
 					$this->_ids[$path] = (int) $id;
-					$this->_addons[$path] = !empty($row['plugin_addons']) ? explode(',',$row['plugin_addons']) : null;
+					$this->_addons[$path] = !empty($row['plugin_addons']) ? explode(',',(string) $row['plugin_addons']) : null;
 					$runUpdate = true;
 
 					e107::getDebug()->log("Inserting plugin data into table".print_a($row,true));
@@ -773,23 +773,23 @@ class e_plugin
 		foreach($allFiles as $file)
 		{
 
-			if(substr($file, -8) === "_sql.php")
+			if(substr((string) $file, -8) === "_sql.php")
 			{
 				$addons[] = str_replace(".php", '', $file);
 			}
 
-			if(substr($file, -3) === ".bb")
+			if(substr((string) $file, -3) === ".bb")
 			{
 				$addons[] = $file;
 			}
 
 
-			if(substr($file, -3) === ".sc")
+			if(substr((string) $file, -3) === ".sc")
 			{
 				$addons[] = $file;
 			}
 
-			if(preg_match('/^bb_(.*)\.php$/',$file))
+			if(preg_match('/^bb_(.*)\.php$/',(string) $file))
 			{
 				$addons[] = $file;
 			}
@@ -1741,7 +1741,7 @@ class e107plugin
 
 		foreach ($plugList as $num => $val) // Remove Duplicates caused by having both plugin.php AND plugin.xml.
 		{
-			$key = basename($val['path']);
+			$key = basename((string) $val['path']);
 			$pluginList[$key] = $val;
 		}
 
@@ -1759,14 +1759,14 @@ class e107plugin
 				$mes->addWarning("Folder error: <i>{$p['path']}</i>.  'e107_' is not permitted within plugin folder names.");
 				continue;
 			}
-			
+
 			if(in_array($plugin_path, $this->disAllowed))
 			{
 				$mes->addWarning("Folder error: <i>{$p['path']}</i> is not permitted as an acceptable folder name.");
 				continue;	
 			}
-			
-			
+
+
 			$plug['plug_action'] = 'scan'; // Make sure plugin.php knows what we're up to
 
 			if (!$this->parse_plugin($p['path']))
@@ -1778,14 +1778,14 @@ class e107plugin
 
 			$plug_info = $this->plug_vars;
 			$eplug_addons = $this->getAddons($plugin_path);
-			
+
 			//Ensure the plugin path lives in the same folder as is configured in the plugin.php/plugin.xml - no longer relevant. 
 			if ($plugin_path == $plug_info['folder'])
 			{
 				if (array_key_exists($plugin_path, $pluginDBList))
 				{ // Update the addons needed by the plugin
 					$pluginDBList[$plugin_path]['status'] = 'exists';
-					
+
 						// Check for name (lan) changes
 					if (vartrue($plug_info['@attributes']['lan']) && $pluginDBList[$plugin_path]['plugin_name'] != $plug_info['@attributes']['lan'])
 					{
@@ -1795,7 +1795,7 @@ class e107plugin
 						$this->plugFolder = $plugin_path;
 						$this->XmlLanguageFiles('upgrade');
 					}
-					
+
 					if ($mode == 'refresh')
 					{
 						if ($this->XmlLanguageFileCheck('_log', 'lan_log_list', 'refresh', $pluginDBList[$plugin_path]['plugin_installflag'], FALSE, $plugin_path)) $sp = TRUE;
@@ -1846,10 +1846,10 @@ class e107plugin
 					if ($plug_info['@attributes']['name'])
 					{					
 						$pName = vartrue($plug_info['@attributes']['lan']) ? $plug_info['@attributes']['lan'] : $plug_info['@attributes']['name'] ;
-						
+
 						$_installed = ($plug_info['@attributes']['installRequired'] == 'true' || $plug_info['@attributes']['installRequired'] == 1 ? 0 : 1);
-						
-						
+
+
 						$pInsert = array(
 							'plugin_id' 			=> 0,
 							'plugin_name'			=> $tp->toDB($pName, true),
@@ -1859,7 +1859,7 @@ class e107plugin
 							'plugin_addons'			=> $eplug_addons,
 							'plugin_category'		=> $this->manage_category($plug_info['category'])
 						);
-						
+
 					//		if (e107::getDb()->db_Insert("plugin", "0, '".$tp->toDB($pName, true)."', '".$tp->toDB($plug_info['@attributes']['version'], true)."', '".$tp->toDB($plugin_path, true)."',{$_installed}, '{$eplug_addons}', '".$this->manage_category($plug_info['category'])."' "))
 							if (e107::getDb()->insert("plugin", $pInsert))
 							{
@@ -1869,7 +1869,7 @@ class e107plugin
 							{
 								$log->addDebug("Failed to add ".$tp->toHTML($pName,false,"defs")." to the plugin table.");
 							}
-							
+
 							$log->flushMessages("Updated Plugins table");
 						}
 					}
@@ -1990,7 +1990,7 @@ class e107plugin
 
 				foreach($iconTypes as $key)
 				{
-					if(!empty($attrib[$key]) && str_ends_with($attrib[$key], '.png'))
+					if(!empty($attrib[$key]) && str_ends_with((string) $attrib[$key], '.png'))
 					{
 						$path = e_PLUGIN.$folder."/".$attrib[$key];
 						$file = basename($path);
@@ -2285,7 +2285,7 @@ class e107plugin
 	private function manage_extended_field_sql($action, $field_name)
 	{
 		$this->log("Running ".__FUNCTION__);
-		$f = e_CORE.'sql/extended_'.preg_replace('/[^\w]/', '', $field_name).'.php'; // quick security, always good idea
+		$f = e_CORE.'sql/extended_'.preg_replace('/[^\w]/', '', (string) $field_name).'.php'; // quick security, always good idea
 		
 		if(!is_readable($f)) return false;
 		
@@ -2360,7 +2360,7 @@ class e107plugin
 			$e107->user_class = new user_class_admin; // We need the extra methods of the admin extension
 		}
 
-		$class_name = strip_tags(strtoupper($class_name));
+		$class_name = strip_tags(strtoupper((string) $class_name));
 		if ($action == 'add')
 		{
 			if ($e107->user_class->ucGetClassIDFromName($class_name) !== FALSE)
@@ -2712,7 +2712,7 @@ class e107plugin
 		$prefvals[] = $varArray;
 		//			$prefvals[] = $plugin_folder;
 		//		}
-		$curvals = explode(',', $pref[$prefname]);
+		$curvals = explode(',', (string) $pref[$prefname]);
 
 		if ($action == 'add')
 		{
@@ -2995,7 +2995,7 @@ class e107plugin
 		
 		$this->unInstallOpts = $options;
 
-		$addons = explode(',', $plug['plugin_addons']);
+		$addons = explode(',', (string) $plug['plugin_addons']);
 		$sql_list = array();
 		foreach ($addons as $addon)
 		{
@@ -3387,9 +3387,9 @@ class e107plugin
 				continue;
 			}
 
-			if(substr($file,-9) === '_menu.php')
+			if(substr((string) $file,-9) === '_menu.php')
 			{
-				$menuFiles[] = basename($file, '.php');
+				$menuFiles[] = basename((string) $file, '.php');
 			}
 
 
@@ -4044,7 +4044,7 @@ class e107plugin
 				{
 					$type = $v['@attributes']['type'];
 					
-					if(strpos($type, 'image') !== 0 && strpos($type, 'file') !== 0 && strpos($type, 'video') !== 0)
+					if(strpos((string) $type, 'image') !== 0 && strpos((string) $type, 'file') !== 0 && strpos((string) $type, 'video') !== 0)
 					{
 						continue; 	
 					}
@@ -4307,7 +4307,7 @@ class e107plugin
 
 		//	$this->log("&nbsp;   Pref:  ".$key." => ".$value);
 			
-			if(strpos($value,"e_UC_") === 0) // Convert Userclass constants.
+			if(strpos((string) $value,"e_UC_") === 0) // Convert Userclass constants.
 			{
 				$value = constant($value);	
 			}
@@ -4377,19 +4377,19 @@ class e107plugin
 	function execute_function($path = null, $what = '', $when = '', $callbackData = null)
 	{
 		$mes = e107::getMessage();
-		
+
 		if($path == null)
 		{
 			$path = $this->plugFolder;	
 		}
-		
+
 		$class_name = $path."_setup"; // was using $this->pluginFolder; 
 		$method_name = $what."_".$when;
-		
-		
+
+
 			// {PLUGIN}_setup.php should ALWAYS be the name of the file.. 
-			
-			
+
+
 	//	if (varset($this->plug_vars['@attributes']['setupFile']))
 	//	{
 	//		$setup_file = e_PLUGIN.$this->plugFolder.'/'.$this->plug_vars['@attributes']['setupFile'];
@@ -4401,7 +4401,7 @@ class e107plugin
 
 
 
-		if(!is_readable($setup_file) && substr($path,-5) == "_menu")
+		if(!is_readable($setup_file) && substr((string) $path,-5) == "_menu")
 		{
 			$setup_file = e_PLUGIN.$path.'/'.str_replace("_menu","",$path).'_setup.php';
 		}
@@ -4417,15 +4417,15 @@ class e107plugin
 			{
 				$mes->addDebug("Found setup file <b>".$path."_setup.php</b> ");
 			}
-			
+
 			include_once($setup_file);
-			
+
 
 			if (class_exists($class_name))
 			{
 				$obj = new $class_name;
 			//	$obj->version_from = $this; // Not used?
-				
+
 				if (method_exists($obj, $method_name))
 				{
 					if(e_PAGE == 'e107_update.php' && E107_DBG_INCLUDES)
@@ -4965,7 +4965,7 @@ class e107plugin
 			while ($row = $sql->fetch())
 			{
 				$is_installed = ($row['plugin_installflag'] == 1);
-				$tmp = explode(",", $row['plugin_addons']);
+				$tmp = explode(",", (string) $row['plugin_addons']);
 				$path = $row['plugin_path'];
 				
 				if ($is_installed)
@@ -5219,7 +5219,7 @@ class e107plugin
 			return 2;
 		}
 	
-		if(substr($e_xxx, - 4, 4) == '_sql')
+		if(substr((string) $e_xxx, - 4, 4) == '_sql')
 		{
 			
 			if(strpos($content,'INSERT INTO')!==false)

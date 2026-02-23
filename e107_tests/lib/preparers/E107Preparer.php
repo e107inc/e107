@@ -31,7 +31,7 @@ class E107Preparer implements Preparer
 
 	private function deleteDir($dirPath)
 	{
-		codecept_debug(__CLASS__ . ' is deleting '.escapeshellarg($dirPath).'…');
+		codecept_debug(__CLASS__ . ' is deleting '.escapeshellarg((string) $dirPath).'…');
 
 		if(!is_dir($dirPath))
 		{

@@ -43,7 +43,7 @@ if ((USER == TRUE) && check_class(varset($pref['allow_theme_select'],FALSE)))
  
 		while ($row = $sql->fetch()) 
 		{
-            $up = (substr($row['user_prefs'],0,5) == "array") ? e107::unserialize($row['user_prefs']) : unserialize($row['user_prefs']);
+            $up = (substr((string) $row['user_prefs'],0,5) == "array") ? e107::unserialize($row['user_prefs']) : unserialize($row['user_prefs']);
 
 			if (isset($themecount[$up['sitetheme']])) { $themecount[$up['sitetheme']]++; }
 		}

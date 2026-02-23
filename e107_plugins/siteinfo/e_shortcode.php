@@ -36,7 +36,7 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 		}
 		else
 		{
-			$path = (strpos(SITEBUTTON, 'http:') !== false || strpos(SITEBUTTON, e_IMAGE_ABS) !== false ? SITEBUTTON : e_IMAGE.SITEBUTTON);
+			$path = (strpos((string) SITEBUTTON, 'http:') !== false || strpos((string) SITEBUTTON, e_IMAGE_ABS) !== false ? SITEBUTTON : e_IMAGE.SITEBUTTON);
 		}
 
 		if(varset($parm['type']) == 'url')
@@ -72,7 +72,7 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 	
 	function sc_siteurl($parm='')
 	{
-		if(strlen(deftrue('SITEURL')) < 3 ) //fixes CLI/cron
+		if(strlen((string) deftrue('SITEURL')) < 3 ) //fixes CLI/cron
 		{
 			return e107::getPref('siteurl');
 		}
@@ -106,7 +106,7 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 	{
 		if(is_string($parm))
 		{
-			parse_str(vartrue($parm),$parm);		// Optional {LOGO=file=file_name} or {LOGO=link=url} or {LOGO=file=file_name&link=url}
+			parse_str((string) vartrue($parm),$parm);		// Optional {LOGO=file=file_name} or {LOGO=link=url} or {LOGO=file=file_name&link=url}
 		}
 		// Paths to image file, link are relative to site base
 		$tp = e107::getParser();

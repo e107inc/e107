@@ -146,7 +146,7 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 		{
 	//		e107::getLog()->addEvent(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Invalid directory: ".$uploaddir, FALSE, FALSE);
 		}
-		
+
 		return FALSE; // Need a valid directory
 	}
 	if (UH_DEBUG)
@@ -205,9 +205,9 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 			// FIX handle non-latin file names
 			$name = preg_replace("/[^\w\pL.-]/u", '', str_replace(' ', '_', str_replace('%20', '_', $tp->ustrtolower($name))));
 			$raw_name = $name; // Save 'proper' file name - useful for display
-			$file_ext = trim(strtolower(substr(strrchr($name, "."), 1))); 	// File extension - forced to lower case internally
+			$file_ext = trim(strtolower(substr(strrchr((string) $name, "."), 1))); 	// File extension - forced to lower case internally
 
-			if (!trim($files['type'][$key]))
+			if (!trim((string) $files['type'][$key]))
 				$files['type'][$key] = 'Unknowm mime-type';
 
 			if (UH_DEBUG)
@@ -281,13 +281,13 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 					if ($ul_temp_dir)
 					{ // Need to move file to our own temporary directory
 						$tempfilename = $uploadfile;
-						$uploadfile = $ul_temp_dir.basename($uploadfile);
-						
+						$uploadfile = $ul_temp_dir.basename((string) $uploadfile);
+
 						if (UH_DEBUG)
 						{
 							e107::getLog()->addEvent(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Move {$tempfilename} to {$uploadfile} ", FALSE, LOG_TO_ROLLING);
 						}
-						
+
 						@move_uploaded_file($tempfilename, $uploadfile); // This should work on all hosts
 					}
 					
@@ -854,7 +854,7 @@ function get_image_mime($filename, $extended = false)
 	{
 		if ($filename != '')
 		{
-			
+
 			if (strtolower(substr($filename, -4) == '.xml'))
 			{
 				return get_XML_filetypes($filename, $file_mask);

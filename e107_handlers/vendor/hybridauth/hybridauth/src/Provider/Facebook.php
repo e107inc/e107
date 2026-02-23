@@ -91,7 +91,7 @@ class Facebook extends OAuth2
         // Require proof on all Facebook api calls
         // https://developers.facebook.com/docs/graph-api/securing-requests#appsecret_proof
         if ($accessToken = $this->getStoredData('access_token')) {
-            $this->apiRequestParameters['appsecret_proof'] = hash_hmac('sha256', $accessToken, $this->clientSecret);
+            $this->apiRequestParameters['appsecret_proof'] = hash_hmac('sha256', (string) $accessToken, $this->clientSecret);
         }
     }
 
@@ -269,7 +269,7 @@ class Facebook extends OAuth2
         $jwk = array_shift($filteredKeys);
 
         $keyData = [
-            'e' => new BigInteger(base64_decode($jwk->e), 256),
+            'e' => new BigInteger(base64_decode((string) $jwk->e), 256),
             'n' => new BigInteger(base64_decode(strtr($jwk->n, '-_', '+/'), true), 256),
         ];
 
@@ -310,7 +310,7 @@ class Facebook extends OAuth2
     protected function fetchUserRegion(User\Profile $userProfile)
     {
         if (!empty($userProfile->region)) {
-            $regionArr = explode(',', $userProfile->region);
+            $regionArr = explode(',', (string) $userProfile->region);
 
             if (count($regionArr) > 1) {
                 $userProfile->city = trim($regionArr[0]);
@@ -435,7 +435,7 @@ class Facebook extends OAuth2
 
         // Refresh proof for API call.
         $parameters = $status + [
-                'appsecret_proof' => hash_hmac('sha256', $page->access_token, $this->clientSecret),
+                'appsecret_proof' => hash_hmac('sha256', (string) $page->access_token, $this->clientSecret),
             ];
 
         $response = $this->apiRequest("{$pageId}/feed", 'POST', $parameters, $headers);

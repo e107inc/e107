@@ -21,10 +21,10 @@ class bb_p extends e_bb_base
 	 */
 	function toDB($code_text, $parm)
 	{
-		$code_text = trim($code_text);
+		$code_text = trim((string) $code_text);
 		if(empty($code_text)) return '';
 		
-		if($parm && !strpos($parm, '=')) $parm = 'class='.$parm;
+		if($parm && !strpos((string) $parm, '=')) $parm = 'class='.$parm;
 		
 		$parms = eHelper::scParams($parm);
 		$safe = array();
@@ -55,8 +55,8 @@ class bb_p extends e_bb_base
 	 */
 	function toHTML($code_text, $parm)
 	{
-		if($parm && !strpos($parm, '=')) $parm = 'class='.$parm;
-		$code_text = trim($code_text);
+		if($parm && !strpos((string) $parm, '=')) $parm = 'class='.$parm;
+		$code_text = trim((string) $code_text);
 
 		$parms = eHelper::scParams($parm);
 				

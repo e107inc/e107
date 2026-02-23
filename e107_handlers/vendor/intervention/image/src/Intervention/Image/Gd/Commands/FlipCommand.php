@@ -17,7 +17,7 @@ class FlipCommand extends ResizeCommand
         $size = $image->getSize();
         $dst = clone $size;
 
-        switch (strtolower($mode)) {
+        switch (strtolower((string) $mode)) {
             case 2:
             case 'v':
             case 'vert':

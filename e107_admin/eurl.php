@@ -76,7 +76,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 			{
 				$cfg = e107::getConfig();
 
-				list($plug,$key) = explode("|", $_POST['pk']);
+				list($plug,$key) = explode("|", (string) $_POST['pk']);
 
 				if(is_string($cfg->get('e_url_alias')))
 				{
@@ -125,7 +125,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 		if(isset($_POST['rebuild']) && is_array($_POST['rebuild']))
 		{
 			$table = key($_POST['rebuild']);
-			list($primary, $input, $output) = explode("::",$_POST['rebuild'][$table]);
+			list($primary, $input, $output) = explode("::",(string) $_POST['rebuild'][$table]);
 			$this->rebuild($table, $primary, $input, $output);	
 		}
 
@@ -169,7 +169,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 		foreach($data as $row)
 		{
 			$sef = eHelper::title2sef($row[$input]);
-			
+
 			if($sql->update($table, $output ." = '".$sef."' WHERE ".$primary. " = ".intval($row[$primary]). " LIMIT 1")!==false)
 			{
 				$success++;
@@ -178,7 +178,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 			{
 				$failed++;
 			}
-			
+
 			// echo $row[$input]." => ".$output ." = '".$sef."'  WHERE ".$primary. " = ".intval($row[$primary]). " LIMIT 1 <br />";
 
 		}
@@ -314,7 +314,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 				//	$sefurl         = (!empty($alias)) ? str_replace('{alias}', $alias, $v['sef']) : $v['sef'];
 					$pid            = $plug."|".$k;
 
-					$v['regex'] =   preg_replace("/^\^/",$home,$v['regex']);
+					$v['regex'] =   preg_replace("/^\^/",$home,(string) $v['regex']);
 					$aliasForm      = $frm->renderInline('e_url_alias['.$plug.']['.$k.']', $pid, 'e_url_alias['.$plug.']['.$k.']', $alias, $alias,'text',null,array('title'=>LAN_EDIT." (Language-specific)", 'url'=>e_REQUEST_SELF));
 					$aliasRender    = str_replace('{alias}', $aliasForm, $v['regex']);
 
@@ -408,7 +408,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 				foreach ($als as $module => $alias) 
 				{
 					$alias = trim($alias);
-					$module = trim($module);
+					$module = trim((string) $module);
 					if($module !== $alias) 
 					{
 						$cindex = array_search($module, $locations);
@@ -486,7 +486,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 			$config = is_array($_POST['eurl_config']) ? e107::getParser()->post_toForm($_POST['eurl_config']) : '';
 			$modules = eRouter::adminReadModules();
 			$locations = eRouter::adminBuildLocations($modules);
-			
+
 			$aliases = eRouter::adminSyncAliases(e107::getPref('url_aliases'), $config);
 
 			if(!empty($_POST['eurl_profile']))
@@ -517,7 +517,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 
 		//	var_dump($_POST['eurl_config']);
 
-				
+
 			eRouter::clearCache();
 			e107::getCache()->clearAll('content'); // clear content - it may be using old url scheme.
 
@@ -869,7 +869,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
 				}
 				    
 
-				$label = vartrue($section['label'], $index == 0 ? LAN_EURL_DEFAULT : eHelper::labelize(ltrim(strstr($location, '/'), '/')));
+				$label = vartrue($section['label'], $index == 0 ? LAN_EURL_DEFAULT : eHelper::labelize(ltrim(strstr((string) $location, '/'), '/')));
 			//	$cssClass = $checked ? 'e-showme' : 'e-hideme';
 				$cssClass = 'e-hideme'; // always hidden for now, some interface changes could come after pre-alpha
 
@@ -1027,7 +1027,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
 		{
 			$cfg = $obj->config->config();
 			if(isset($cfg['config']['noSingleEntry']) && $cfg['config']['noSingleEntry']) continue;
-			
+
 			if($module == 'index')
 			{
 				$text .= "
@@ -1063,7 +1063,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
 			$url = e107::getUrl()->create($module, '', array('full' => 1, 'encode' => 0));
 			$defVal = isset($currentAliases[$lan]) && in_array($module, $currentAliases[$lan]) ? array_search($module, $currentAliases[$lan]) : $module; 
 			$section = vartrue($admin['labels'], array());
-			
+
 			$text .= "
 				<tr>
 					<td>
@@ -1074,9 +1074,9 @@ class eurl_admin_form_ui extends e_admin_form_ui
 					</td>
 					<td>
 			";
-			
 
-			
+
+
 			// default language
 			$text .= "<table class='table table-striped table-bordered' style='margin-bottom:0'>
 <colgroup>
@@ -1152,7 +1152,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
 				</td></tr>";
 
 
-			
+
 			/*$text .= "
 					</td>
 					<td>

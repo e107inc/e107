@@ -382,7 +382,7 @@ class lancheck
 		// Edit the Language File.
 		if($mode == 'edit' && vartrue($file) && !empty($lan) && in_array($lan, $acceptedLans))
 		{
-			
+
 			if (empty($_GET['type']))
 			{
 				$dir1 =  e_LANGUAGEDIR."English/";
@@ -394,13 +394,13 @@ class lancheck
 			{
 				$fullpath_orig = $tp->toDB($file);
 				$fullpath_trans = str_replace("English", $lan, $tp->toDB($file));
-		
-				$f1 = basename($fullpath_orig);
+
+				$f1 = basename((string) $fullpath_orig);
 				$f2 = basename($fullpath_trans);
-				$dir1 = dirname($fullpath_orig)."/";
+				$dir1 = dirname((string) $fullpath_orig)."/";
 				$dir2 = dirname($fullpath_trans)."/";
 			}
-			
+
 			return $this->edit_lanfiles($dir1,$dir2,$f1,$f2,$lan, varset($_GET['type']));
 			// return true;
 		}	
@@ -632,7 +632,7 @@ class lancheck
 
 
 		require_once(e_HANDLER.'pclzip.lib.php');
-		list($ver, $tmp) = explode(" ", e_VERSION);
+		list($ver, $tmp) = explode(" ", (string) e_VERSION);
 		if(!$locale = $this->findLocale($language))
 		{
 			$ret['error'] = TRUE;
@@ -768,7 +768,7 @@ class lancheck
 		{
 			$fullpath = $p['path'].$p['fname'];
 
-			if (strpos($fullpath, $language) !== false)
+			if (strpos($fullpath, (string) $language) !== false)
 			{
 				$pzip[] = $fullpath;
 			}
@@ -869,10 +869,10 @@ class lancheck
 
 		if(!empty($version))
 		{
-			$tmp = explode("-", $version);
+			$tmp = explode("-", (string) $version);
 			$ver = varset($tmp[0]); 
 
-			$feed .= "?ver=". preg_replace('/[^\d\.]/','', $ver);
+			$feed .= "?ver=". preg_replace('/[^\d\.]/','', (string) $ver);
 		}
 
 		e107::getDebug()->log("Language Pack Feed: ".$feed);
@@ -903,11 +903,11 @@ class lancheck
 				$id = $att['name'];
 
 				// fix github double url bug...
-				if (stripos($att['url'], 'https://github.comhttps://github.com') !== false)
+				if (stripos((string) $att['url'], 'https://github.comhttps://github.com') !== false)
 				{
 					$att['url'] = str_ireplace('https://github.comhttps://github.com', 'https://github.com', $att['url']);
 				}
-				if (stripos($att['infourl'], 'https://github.comhttps://github.com') !== false)
+				if (stripos((string) $att['infourl'], 'https://github.comhttps://github.com') !== false)
 				{
 					$att['infourl'] = str_ireplace('https://github.comhttps://github.com', 'https://github.com', $att['infourl']);
 				}
@@ -953,7 +953,7 @@ class lancheck
 			echo "debug: ".__METHOD__." missing \$lan";
 			return false;
 		}
-			
+
 	//	$lan = key($_POST['language_sel']);
 
 		$_SESSION['lancheck'][$lan] = array();
@@ -962,14 +962,14 @@ class lancheck
 		$_SESSION['lancheck'][$lan]['bom']	= 0;
 		$_SESSION['lancheck'][$lan]['utf']	= 0;
 		$_SESSION['lancheck'][$lan]['total']	= 0;
-	
-	
+
+
 		$core_text 	= $this->check_core_lanfiles($lan);
 		$core_admin = $this->check_core_lanfiles($lan,"admin/");
 		$plug_text = "";
 		$theme_text = "";
-	
-	
+
+
 		// Plugins -------------
 		$plug_header = "<table class='table table-striped'>
 		<tr>
@@ -977,7 +977,7 @@ class lancheck
 		<td class='fcaption'>".LAN_CHECK_16."</td>
 		<td class='fcaption'>".$lan."</td>
 		<td class='fcaption'>".LAN_OPTIONS."</td></tr>";
-	
+
 		foreach($this->core_plugins as $plugs)
 		{
 			if(is_readable(e_PLUGIN.$plugs))
@@ -985,9 +985,9 @@ class lancheck
 				$plug_text .= $this->check_lanfiles('P',$plugs,"English",$lan);
 			}
 		}
-		
+
 		$plug_footer = "</table>";
-	
+
 		// Themes  -------------
 		$theme_header = "<table class='table table-striped'>
 		<tr>
@@ -1003,32 +1003,32 @@ class lancheck
 			}
 		}
 		$theme_footer = "</table>";
-		
-		// -------------------------
-		
 
-		
-		
+		// -------------------------
+
+
+
+
 		if($mode != 'render')
 		{
 			 return null;
 		}
-	
+
 		$message = "
 		<form id='lancheck' method='post' action='".e_ADMIN."language.php?mode=main&action=tools'>
 		<div>\n";
-		
+
 	//	$icon = ($_SESSION['lancheck'][$lan]['total']>0) ? ADMIN_FALSE_ICON : ADMIN_TRUE_ICON;
-		
-		
+
+
 		$errors_diz = (deftrue('LAN_CHECK_23')) ? LAN_CHECK_23 : "Errors Found";
 
 		$message .= $errors_diz.": ".$_SESSION['lancheck'][$lan]['total'];
-	
+
 		$just_go_diz = (deftrue('LAN_CHECK_20')) ? LAN_CHECK_20 : "Generate Language Pack";
 		$lang_sel_diz = (deftrue('LAN_CHECK_21')) ? LAN_CHECK_21 : "Verify Again";
 		$lan_pleasewait = (deftrue('LAN_PLEASEWAIT')) ? LAN_PLEASEWAIT : "Please Wait";
-		
+
 		$message .= "
 		<br /><br />
 		<input type='hidden' name='language' value='".$lan."' />
@@ -1038,16 +1038,16 @@ class lancheck
 		</div>
 	    </form>
 		";
-		
+
 //	print_a($_SESSION['lancheck'][$lan]);
 
 		$plug_text = ($plug_text) ? $plug_header.$plug_text.$plug_footer : "<div class='alert alert-success'>".LAN_OK."</div>";
 		$theme_text = ($theme_text) ? $theme_header.$theme_text.$theme_footer : "<div class='alert alert-success'>".LAN_OK."</div>";
 
 		$mesStatus = ($_SESSION['lancheck'][$lan]['total']>0) ? E_MESSAGE_INFO : E_MESSAGE_SUCCESS;
-			
+
 		$mes->add($message, $mesStatus);	
-			
+
 	//	$ns -> tablerender(LAN_SUMMARY.": ".$lan,$message);
 
 
@@ -1151,11 +1151,11 @@ class lancheck
 		{
 			$notdef_start = "";
 			$notdef_end = "\n";
-			$deflang = (MAGIC_QUOTES_GPC === TRUE) ? stripslashes($_POST['newlang'][$i]) : $_POST['newlang'][$i];
+			$deflang = (MAGIC_QUOTES_GPC === TRUE) ? stripslashes((string) $_POST['newlang'][$i]) : $_POST['newlang'][$i];
 			$func = "define";
 			$quote = chr(34);
 	
-			if (strpos($_POST['newdef'][$i],"ndef++") !== FALSE )
+			if (strpos((string) $_POST['newdef'][$i],"ndef++") !== FALSE )
 			{
 				$defvar = str_replace("ndef++","",$_POST['newdef'][$i]);
 				$notdef_start = "if (!defined(".chr(34).$defvar.chr(34).")) {";
@@ -1173,12 +1173,12 @@ class lancheck
 	
 			if($_POST['newdef'][$i] == "LC_ALL" && vartrue($_SESSION['lancheck-edit-file']))
 			{
-				$message .= $notdef_start.'setlocale('.htmlentities($defvar).','.$deflang.');<br />'.$notdef_end;
+				$message .= $notdef_start.'setlocale('.htmlentities((string) $defvar).','.$deflang.');<br />'.$notdef_end;
 				$input .= $notdef_start."setlocale(".$defvar.",".$deflang.");".$notdef_end;
 			}
 			else
 			{
-				$message .= $notdef_start.$func.'('.$quote.htmlentities($defvar).$quote.',"'.$deflang.'");<br />'.$notdef_end;
+				$message .= $notdef_start.$func.'('.$quote.htmlentities((string) $defvar).$quote.',"'.$deflang.'");<br />'.$notdef_end;
 				$input .= $notdef_start.$func."(".$quote.$defvar.$quote.", ".chr(34).$deflang.chr(34).");".$notdef_end;
 			}
 		}
@@ -1355,7 +1355,7 @@ class lancheck
 		$error = array();
 		$warning = array();
 			
-		if((is_array($translation) && !array_key_exists($def,$translation) && $eng_line != "") || (trim($trans_line) == "" && $eng_line != ""))
+		if((is_array($translation) && !array_key_exists($def,$translation) && $eng_line != "") || (trim((string) $trans_line) == "" && $eng_line != ""))
 		{
 			$this->checkLog('def',1);
 			return $def.": ".LAN_CHECK_5."<br />";
@@ -1366,33 +1366,33 @@ class lancheck
 			$warning[] = "<span class='text-warning'>".$def. ": ".LAN_CHECK_29."</span>";
 		}
 		
-		if((strpos($eng_line,"[link=")!==FALSE && strpos($trans_line,"[link=")===FALSE) || (strpos($eng_line,"[b]")!==FALSE && strpos($trans_line,"[b]")===FALSE))
+		if((strpos((string) $eng_line,"[link=")!==FALSE && strpos((string) $trans_line,"[link=")===FALSE) || (strpos((string) $eng_line,"[b]")!==FALSE && strpos((string) $trans_line,"[b]")===FALSE))
 		{
 			$error[] = $def. ": ".LAN_CHECK_30;
 		}
-		elseif((strpos($eng_line,"[")!==FALSE && strpos($trans_line,"[")===FALSE) || (strpos($eng_line,"]")!==FALSE && strpos($trans_line, "]")===FALSE))
+		elseif((strpos((string) $eng_line,"[")!==FALSE && strpos((string) $trans_line,"[")===FALSE) || (strpos((string) $eng_line,"]")!==FALSE && strpos((string) $trans_line, "]")===FALSE))
 		{
 			$error[] = $def. ": ".LAN_CHECK_31;
 		}
 		
-		if((strpos($eng_line,"--LINK--")!==false && strpos($trans_line,"--LINK--")===false))
+		if((strpos((string) $eng_line,"--LINK--")!==false && strpos((string) $trans_line,"--LINK--")===false))
 		{
 			$error[] = $def. ": Missing --LINK--";
 		}
 		
-		if((strpos($eng_line,"e107.org")!==false && strpos($trans_line,"e107.org")===false))
+		if((strpos((string) $eng_line,"e107.org")!==false && strpos((string) $trans_line,"e107.org")===false))
 		{
 			$error[] = $def. ": Missing e107.org URL";
 		}
 		
-		if((strpos($eng_line,"e107coders.org")!==FALSE && strpos($trans_line,"e107coders.org")===false))
+		if((strpos((string) $eng_line,"e107coders.org")!==FALSE && strpos((string) $trans_line,"e107coders.org")===false))
 		{
 			$error[] = $def. ": Missing e107coders.org URL";
 		}
 		
-		if(strip_tags($eng_line) != $eng_line)
+		if(strip_tags((string) $eng_line) != $eng_line)
 		{
-			$stripped = strip_tags($trans_line);
+			$stripped = strip_tags((string) $trans_line);
 					
 			if(($stripped == $trans_line))
 			{					
@@ -1497,12 +1497,12 @@ class lancheck
 
 
 
-		if(strpos($comp_dir,e_LANGUAGEDIR) !== false)
+		if(strpos((string) $comp_dir,e_LANGUAGEDIR) !== false)
 		{
 			$regexp = "#.php#";
 			$mode = 'core';
 		}
-		elseif(strpos($comp_dir,e_THEME) !== false)
+		elseif(strpos((string) $comp_dir,e_THEME) !== false)
 		{
 			$regexp = "#".$lang."#";
 			$mode = 'themes';
@@ -1769,19 +1769,19 @@ class lancheck
 			$dir1 = e_THEME.$dir1;
 			$dir2 = e_THEME.$dir2;
 		}
-		
+
 	//	$ns = e107::getRender();
 		$sql = e107::getDb();
 
-	
+
 		/*    echo "<br />dir1 = $dir1";
 		echo "<br />file1 = $f1";
-	
+
 		echo "<br />dir2 = $dir2";
 		echo "<br />file2 = $f2";*/
-		
-	
-	
+
+
+
 		if($dir2.$f2 == e_LANGUAGEDIR.$lan."/English.php") // it's a language config file.
 		{
 			$f2 = $lan.".php";
@@ -1791,7 +1791,7 @@ class lancheck
 		{
 			$root_file = $dir2.$f2;
 		}
-	
+
 		if($dir2.$f2 == e_LANGUAGEDIR.$lan."/English_custom.php") // it's a language config file.
 		{
 			$f2 = $lan."_custom.php";
@@ -1810,7 +1810,7 @@ class lancheck
 
 		$keys = array_keys($trans);
 		sort($keys);
-	
+
 		$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."?".e_QUERY."' id='transform'>
 		<table class='table table-striped'>
@@ -1821,11 +1821,11 @@ class lancheck
 			<th>".$lan."</th>
 		</tr>
 		</thead><tbody>";
-	
+
 		$subkeys = array_keys($trans['orig']);
 		foreach($subkeys as $sk)
 		{
-			$rowamount = round(strlen($trans['orig'][$sk])/34)+1;
+			$rowamount = round(strlen((string) $trans['orig'][$sk])/34)+1;
 			$hglt1=""; $hglt2="";
 			if(empty($trans['tran'][$sk]) && !empty($trans['orig'][$sk]))
 			{
@@ -1838,14 +1838,14 @@ class lancheck
 				$hglt2="</span>";
 			}
 			$text .="<tr>
-			<td style='width:10%;vertical-align:top'>".$hglt1.htmlentities($sk).$hglt2."</td>
+			<td style='width:10%;vertical-align:top'>".$hglt1.htmlentities((string) $sk).$hglt2."</td>
 			<td style='width:40%;vertical-align:top'>".htmlentities(str_replace("ndef++","",$trans['orig'][$sk])) ."</td>";
 			$text .= "<td class='forumheader3' style='width:50%;vertical-align:top'>";
 			$text .= ($writable) ? "<textarea  class='input-xxlarge' name='newlang[]' rows='$rowamount' cols='45' style='height:100%'>" : "";
 			$text .= htmlentities(str_replace("ndef++","", varset($trans['tran'][$sk])));
 			$text .= ($writable) ? "</textarea>" : "";
 			//echo "orig --> ".$trans['orig'][$sk]."<br />";
-			if (strpos($trans['orig'][$sk],"ndef++") !== false)
+			if (strpos((string) $trans['orig'][$sk],"ndef++") !== false)
 			{
 				//echo "+orig --> ".$trans['orig'][$sk]." <> ".strpos($trans['orig'][$sk],"ndef++")."<br />";
 				$text .= "<input type='hidden' name='newdef[]' value='ndef++".$sk."' />";
@@ -1856,39 +1856,39 @@ class lancheck
 			}
 			$text .="</td></tr>";
 		}
-	
+
 		unset($_SESSION['lancheck-edit-file']);
-	
+
 		//Check if directory is writable
-		
+
 		$text .= "</tbody></table>";
-		
+
 		if($writable)
 		{
 			$text .= '<div class="buttons-bar center">
 			<input type="hidden" name="lan" value="'.$lan.'" />
 			<button id="etrigger-submit" class="btn btn-warning" type="submit" name="saveLanguageFile" value="1" >'.LAN_SAVE.' '.str_replace($dir2,'',$root_file).'</button>
 			</div>';
-	
+
 			if($root_file)
 			{			
 				$_SESSION['lancheck-edit-file'] = $root_file;
 			}
-	
-			
+
+
 		}
-	
+
 		$text .= "
-		
+
 		</form>
 		</div>";
-	
+
 		$text .= "<form method='post' action='".e_SELF."?tools' id='select_lang'>
 		<div style='text-align:center'><br />";
 		$text .= (!$writable) ? "<br />".$dir2.$f2.LAN_NOTWRITABLE : "";
 	//	$text .= "<br /><br /><input class='btn' type='submit' name='language_sel[{$lan}]' value=\"".LAN_BACK."\" />";
 		$text .= "</div></form>";
-	
+
 		$capFile = str_replace("../","",$dir2.$f2);
 		$caption = LANG_LAN_21.SEP.$lan.SEP.LAN_CHECK_2.SEP.LAN_EDIT.SEP.$capFile;
 
@@ -1904,35 +1904,35 @@ class lancheck
 	function fill_phrases_array($data,$type)
 	{	
 		$retloc = array();
-		
-		if(preg_match_all('/(\/\*[\s\S]*?\*\/)/i',$data, $multiComment))
+
+		if(preg_match_all('/(\/\*[\s\S]*?\*\/)/i',(string) $data, $multiComment))
 		{
 			$data = str_replace($multiComment[1],'',$data);	// strip multi-line comments. 	
 		}
-					
-		if(preg_match('/^\s*?setlocale\s*?\(\s*?([\w]+)\s*?,\s*?(.+)\s*?\)\s*?;/im',$data,$locale)) // check for setlocale();
+
+		if(preg_match('/^\s*?setlocale\s*?\(\s*?([\w]+)\s*?,\s*?(.+)\s*?\)\s*?;/im',(string) $data,$locale)) // check for setlocale();
 		{
 			$retloc[$type][$locale[1]]= $locale[2];	
 		}
-				
-		if(preg_match_all('/^\s*?define\s*?\(\s*?(\'|\")([\w]+)(\'|\")\s*?,\s*?(\'|\")([\s\S]*?)\s*?(\'|\")\s*?\)\s*?;/imu',$data,$matches))
+
+		if(preg_match_all('/^\s*?define\s*?\(\s*?(\'|\")([\w]+)(\'|\")\s*?,\s*?(\'|\")([\s\S]*?)\s*?(\'|\")\s*?\)\s*?;/imu',(string) $data,$matches))
 		{
 			$def = $matches[2];
 			$values = $matches[5];	
-	
+
 			foreach($def as $k=>$d)
 			{
 				$retloc[$type][$d]= $values[$k];
 			}	
 		}
-			
+
 		return $retloc;
-		
+
 		/*
 		echo "<h2>Raw Data ".$type."</h2><pre>";
 		echo htmlentities($data);
 		echo "</pre>";	
-	
+
 		*/
 			
 	}
@@ -1951,7 +1951,7 @@ class lancheck
 			return TRUE;
 		}
 	
-		return (preg_match('/^./us',$str,$ar) == 1);
+		return (preg_match('/^./us',(string) $str,$ar) == 1);
 	}
 	
 

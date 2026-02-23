@@ -139,7 +139,7 @@ class e107_import extends base_import_class
 	private function checkHtml($text)
 	{
 		$tp = e107::getParser();
-		if($tp->isHtml($text) && strpos($text,'[html]')!==0)
+		if($tp->isHtml($text) && strpos((string) $text,'[html]')!==0)
 		{
 			return "[html]".$text."[/html]";
 		}

@@ -91,7 +91,7 @@ class plugin_faqs_list_controller extends eControllerFront
 		$prevcat = "";
 		$sc = e107::getScBatch('faqs', true);
 		$sc->counter = 1;
-		$sc->tag = htmlspecialchars($tag, ENT_QUOTES, 'utf-8');
+		$sc->tag = htmlspecialchars((string) $tag, ENT_QUOTES, 'utf-8');
 		$sc->category = $category;
 
 		$text = $tp->parseTemplate($FAQ_START, true, $sc);

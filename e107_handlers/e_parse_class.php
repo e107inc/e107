@@ -458,10 +458,10 @@ class e_parse
 
 		if ($this->multibyte)
 		{
-			return mb_stristr($haystack, $needle, $before_needle);
+			return mb_stristr($haystack, (string) $needle, $before_needle);
 		}
 
-		return stristr($haystack, $needle, $before_needle);
+		return stristr($haystack, (string) $needle, $before_needle);
 
 	}
 
@@ -532,7 +532,7 @@ class e_parse
 
 		if (MAGIC_QUOTES_GPC === true && $nostrip === false)
 		{
-			$data = stripslashes($data);
+			$data = stripslashes((string) $data);
 		}
 
 		$core_pref = e107::getConfig();
@@ -1072,7 +1072,7 @@ class e_parse
 
 
 		// Start of the serious stuff - split into HTML tags and text between
-		$content = preg_split('#(<.*?' . '>)#mis', $str, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+		$content = preg_split('#(<.*?' . '>)#mis', (string) $str, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
 		foreach ($content as $value)
 		{
 			if ($value[0] === '<')
@@ -1133,7 +1133,7 @@ class e_parse
 					//			echo "Found block length ".strlen($value).': '.substr($value,20).'<br />';
 					// Split at spaces - note that this will fail if presented with invalid utf-8 when doing the regex whitespace search
 					//			$split = preg_split('#(\s)#'.$utf8, $value, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
-					$split = preg_split($whiteSpace, $value, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+					$split = preg_split($whiteSpace, (string) $value, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
 					$value = '';
 					foreach ($split as $sp)
 					{
@@ -1449,12 +1449,12 @@ class e_parse
 		{
 			$this->e_highlighting = false;
 			$shr = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '');
-			if ($pref['search_highlight'] && (strpos(e_SELF, 'search.php') === false) && ((strpos($shr, 'q=') !== false) || (strpos($shr, 'p=') !== false)))
+			if ($pref['search_highlight'] && (strpos((string) e_SELF, 'search.php') === false) && ((strpos((string) $shr, 'q=') !== false) || (strpos((string) $shr, 'p=') !== false)))
 			{
 				$this->e_highlighting = true;
 				if (!isset($this->e_query))
 				{
-					preg_match('#(q|p)=(.*?)(&|$)#', $shr, $matches);
+					preg_match('#(q|p)=(.*?)(&|$)#', (string) $shr, $matches);
 					$this->e_query = str_replace(array('+', '*', '"', ' '), array('', '.*?', '', '\b|\b'), trim(urldecode($matches[2])));
 				}
 			}
@@ -1486,7 +1486,7 @@ class e_parse
 
 		$textReplace = (!empty($opts['sub'])) ? $opts['sub'] : '';
 
-		if (substr($textReplace, -6) === '.glyph')
+		if (substr((string) $textReplace, -6) === '.glyph')
 		{
 			$textReplace = $this->toGlyph($textReplace, '');
 		}
@@ -1520,8 +1520,8 @@ class e_parse
 				$external = (!empty($opts['ext'])) ? 'target="_blank"' : '';
 
 				$text = preg_replace("/(^|[\n \(])([\w]*?)([\w]*?:\/\/[\w]+[^ \,\"\n\r\t<]*)/is", '$1$2<a class="e-url" href="$3" ' . $external . '>' . $linktext . '</a>', $text);
-				$text = preg_replace("/(^|[\n \(])([\w]*?)((www)\.[^ \,\"\t\n\r\)<]*)/is", '$1$2<a class="e-url" href="http://$3" ' . $external . '>' . $linktext . '</a>', $text);
-				$text = preg_replace("/(^|[\n ])([\w]*?)((ftp)\.[^ \,\"\t\n\r<]*)/is", '$1$2<a class="e-url" href="$4://$3" ' . $external . '>' . $linktext . '</a>', $text);
+				$text = preg_replace("/(^|[\n \(])([\w]*?)((www)\.[^ \,\"\t\n\r\)<]*)/is", '$1$2<a class="e-url" href="http://$3" ' . $external . '>' . $linktext . '</a>', (string) $text);
+				$text = preg_replace("/(^|[\n ])([\w]*?)((ftp)\.[^ \,\"\t\n\r<]*)/is", '$1$2<a class="e-url" href="$4://$3" ' . $external . '>' . $linktext . '</a>', (string) $text);
 
 				break;
 
@@ -1572,7 +1572,7 @@ class e_parse
 	public function stripAttributes($s, $allowedattr = array())
 	{
 
-		if (preg_match_all("/<[^>]*\\s([^>]*)\\/*>/msiU", $s, $res, PREG_SET_ORDER))
+		if (preg_match_all("/<[^>]*\\s([^>]*)\\/*>/msiU", (string) $s, $res, PREG_SET_ORDER))
 		{
 			foreach ($res as $r)
 			{
@@ -1670,7 +1670,7 @@ class e_parse
 
 		if ($opts['no_tags'])
 		{
-			$text = strip_tags($text);
+			$text = strip_tags((string) $text);
 		}
 		/*
 				if(MAGIC_QUOTES_GPC === true) // precaution for badly saved data.
@@ -1697,7 +1697,7 @@ class e_parse
 		{
 			// Split each text block into bits which are either within one of the 'key' bbcodes, or outside them
 			// (Because we have to match end words, the 'extra' capturing subpattern gets added to output array. We strip it later)
-			$content = preg_split('#(\[(table|html|php|code|scode|hide).*?\[\/(?:\\2)\])#mis', $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+			$content = preg_split('#(\[(table|html|php|code|scode|hide).*?\[\/(?:\\2)\])#mis', (string) $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
 		}
 
 
@@ -1723,7 +1723,7 @@ class e_parse
 
 				// Have to have a good test in case a 'non-key' bbcode starts the block
 				// - so pull out the bbcode parameters while we're there
-				if (($parseBB !== false) && preg_match('#(^\[(table|html|php|code|scode|hide)(.*?)\])(.*?)(\[/\\2\]$)#is', $full_text, $matches))
+				if (($parseBB !== false) && preg_match('#(^\[(table|html|php|code|scode|hide)(.*?)\])(.*?)(\[/\\2\]$)#is', (string) $full_text, $matches))
 				{
 
 					$proc_funcs = false;
@@ -1782,7 +1782,7 @@ class e_parse
 			if ($proc_funcs && !empty($full_text)) // some more speed
 			{
 				// Split out and ignore any scripts and style blocks. With just two choices we can match the closing tag in the regex
-				$subcon = preg_split('#((?:<s)(?:cript[^>]+>.*?</script>|tyle[^>]+>.*?</style>))#mis', $full_text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+				$subcon = preg_split('#((?:<s)(?:cript[^>]+>.*?</script>|tyle[^>]+>.*?</style>))#mis', (string) $full_text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
 				foreach ($subcon as $sub_blk)
 				{
 
@@ -1859,7 +1859,7 @@ class e_parse
 		foreach ($this->preformatted as $type)
 		{
 			$code = '[' . $type . ']';
-			if (strpos($str, $code) === 0)
+			if (strpos((string) $str, $code) === 0)
 			{
 				return true;
 			}
@@ -2024,11 +2024,11 @@ class e_parse
 
 		foreach ($attributes as $key => $value)
 		{
-			if ($value === true && (strpos($key, 'data-') !== 0))
+			if ($value === true && (strpos((string) $key, 'data-') !== 0))
 			{
 				$value = $key;
 			}
-			if (!empty($value) || is_numeric($value) || $key === "value" || strpos($key, 'data-') === 0)
+			if (!empty($value) || is_numeric($value) || $key === "value" || strpos((string) $key, 'data-') === 0)
 			{
 				$stringifiedAttributes[] = $key . "='" . $this->toAttribute($value, $pure) . "'";
 			}
@@ -2082,11 +2082,11 @@ class e_parse
 		$output = [];
 		foreach ($array as $key => $value)
 		{
-			if (!empty($unprepend) && substr($key, 0, strlen($unprepend)) == $unprepend)
+			if (!empty($unprepend) && substr((string) $key, 0, strlen($unprepend)) == $unprepend)
 			{
-				$key = substr($key, strlen($unprepend));
+				$key = substr((string) $key, strlen($unprepend));
 			}
-			$parts = explode('/', $key);
+			$parts = explode('/', (string) $key);
 			$nested = &$output;
 			while (count($parts) > 1)
 			{
@@ -2460,7 +2460,7 @@ class e_parse
 			'h'  => isset($options['h']) ? (string) intval($options['h']) : '',
 			'aw' => isset($options['aw']) ? (string) intval($options['aw']) : '',
 			'ah' => isset($options['ah']) ? (string) intval($options['ah']) : '',
-			'c'  => strtoupper(vartrue($options['c'], '0')),
+			'c'  => strtoupper((string) vartrue($options['c'], '0')),
 		);
 
 		if (!empty($options['type']))
@@ -2823,16 +2823,16 @@ class e_parse
 	public function thumbUrlDecode($src)
 	{
 
-		list($url, $qry) = array_pad(explode('?', $src), 2, null);
+		list($url, $qry) = array_pad(explode('?', (string) $src), 2, null);
 
 		$ret = array();
 
-		if (!empty($qry) && strpos($url, 'thumb.php') !== false) // Regular
+		if (!empty($qry) && strpos((string) $url, 'thumb.php') !== false) // Regular
 		{
 			parse_str($qry, $val);
 			$ret = $val;
 		}
-		elseif (preg_match('/media\/img\/(a)?([\d]*)x(a)?([\d]*)\/(.*)/', $url, $match)) // SEF
+		elseif (preg_match('/media\/img\/(a)?([\d]*)x(a)?([\d]*)\/(.*)/', (string) $url, $match)) // SEF
 		{
 			$wKey = $match[1] . 'w';
 			$hKey = $match[3] . 'h';
@@ -2843,7 +2843,7 @@ class e_parse
 				$hKey => $match[4]
 			);
 		}
-		elseif (preg_match('/theme\/img\/(a)?([\d]*)x(a)?([\d]*)\/(.*)/', $url, $match)) // Theme-image SEF Urls
+		elseif (preg_match('/theme\/img\/(a)?([\d]*)x(a)?([\d]*)\/(.*)/', (string) $url, $match)) // Theme-image SEF Urls
 		{
 			$wKey = $match[1] . 'w';
 			$hKey = $match[3] . 'h';
@@ -3008,21 +3008,21 @@ class e_parse
 
 		if (!empty($options['x']) && !empty($options['ext'])) // base64 encoded. Build URL for:  RewriteRule ^media\/img\/([-A-Za-z0-9+/]*={0,3})\.(jpg|gif|png)?$ thumb.php?id=$1
 		{
-			$ext = strtolower($options['ext']);
+			$ext = strtolower((string) $options['ext']);
 
-			return $base . 'media/img/' . base64_encode($options['thurl']) . '.' . str_replace('jpeg', 'jpg', $ext);
+			return $base . 'media/img/' . base64_encode((string) $options['thurl']) . '.' . str_replace('jpeg', 'jpg', $ext);
 		}
-		elseif (strpos($url, 'e_MEDIA_IMAGE') !== false) // media images.
+		elseif (strpos((string) $url, 'e_MEDIA_IMAGE') !== false) // media images.
 		{
 			$sefPath = 'media/img/';
 			$clean = array('{e_MEDIA_IMAGE}', 'e_MEDIA_IMAGE/');
 		}
-		elseif (strpos($url, 'e_AVATAR') !== false) // avatars
+		elseif (strpos((string) $url, 'e_AVATAR') !== false) // avatars
 		{
 			$sefPath = 'media/avatar/';
 			$clean = array('{e_AVATAR}', 'e_AVATAR/');
 		}
-		elseif (strpos($url, 'e_THEME') !== false) // theme folder images.
+		elseif (strpos((string) $url, 'e_THEME') !== false) // theme folder images.
 		{
 			$sefPath = 'theme/img/';
 			$clean = array('{e_THEME}', 'e_THEME/');
@@ -3053,7 +3053,7 @@ class e_parse
 
 			if (!is_numeric($options['crop']))
 			{
-				$sefUrl .= strtolower($options['crop']) . intval($options['w']) . 'x' . strtolower($options['crop']) . intval($options['h']);
+				$sefUrl .= strtolower((string) $options['crop']) . intval($options['w']) . 'x' . strtolower((string) $options['crop']) . intval($options['h']);
 			}
 			else
 			{
@@ -3373,7 +3373,7 @@ class e_parse
 	private function doReplace($matches)
 	{
 
-		if (defined($matches[1]) && (deftrue('ADMIN') || strpos($matches[1], 'ADMIN') === false))
+		if (defined($matches[1]) && (deftrue('ADMIN') || strpos((string) $matches[1], 'ADMIN') === false))
 		{
 			return constant($matches[1]);
 		}
@@ -3571,8 +3571,8 @@ class e_parse
 	{
 
 		$tags = array();
-		preg_match_all('#<[^>]+>#', $text, $tags);
-		$text = preg_replace('#<[^>]+>#', '<|>', $text);
+		preg_match_all('#<[^>]+>#', (string) $text, $tags);
+		$text = preg_replace('#<[^>]+>#', '<|>', (string) $text);
 		$text = preg_replace('#(\b".$match."\b)#i', '<span class="searchhighlight">\\1</span>', $text);
 		foreach ($tags[0] as $tag)
 		{
@@ -3673,7 +3673,7 @@ class e_parse
 	{
 
 		$ret = '';
-		foreach (str_split($text) as $letter)
+		foreach (str_split((string) $text) as $letter)
 		{
 			switch (mt_rand(1, 3))
 			{
@@ -4031,7 +4031,7 @@ class e_parse
 		libxml_use_internal_errors(true);
 		$doc->loadHTML($html);
 
-		$tg = explode(',', $taglist);
+		$tg = explode(',', (string) $taglist);
 		$ret = array();
 
 		foreach ($tg as $find)
@@ -4293,7 +4293,7 @@ class e_parse
 		{
 			foreach ($custom as $glyphConfig)
 			{
-				if (strpos($text, $glyphConfig['prefix']) === 0)
+				if (strpos($text, (string) $glyphConfig['prefix']) === 0)
 				{
 					$prefix = $glyphConfig['class'] . ' ';
 					$tag = $glyphConfig['tag'];
@@ -4357,7 +4357,7 @@ class e_parse
 			$type = 'default';
 		}
 
-		$tmp = explode(',', $text);
+		$tmp = explode(',', (string) $text);
 
 		$opt = array();
 		foreach ($tmp as $v)
@@ -4460,14 +4460,14 @@ class e_parse
 		if (!empty($image))
 		{
 
-			if (strpos($image, '://') !== false) // Remote Image
+			if (strpos((string) $image, '://') !== false) // Remote Image
 			{
 				$url = $image;
 			}
-			elseif (strpos($image, '-upload-') === 0)
+			elseif (strpos((string) $image, '-upload-') === 0)
 			{
 
-				$image = substr($image, 8); // strip the -upload- from the beginning.
+				$image = substr((string) $image, 8); // strip the -upload- from the beginning.
 				if (file_exists(e_AVATAR_UPLOAD . $image))
 				{
 					$file = e_AVATAR_UPLOAD . $image;
@@ -4508,7 +4508,7 @@ class e_parse
 			else
 			{
 				$content = e107::getFile()->getRemoteContent($url);
-				$ext = strtolower(pathinfo($url, PATHINFO_EXTENSION));
+				$ext = strtolower(pathinfo((string) $url, PATHINFO_EXTENSION));
 			}
 
 			if (!empty($content))
@@ -4760,7 +4760,7 @@ class e_parse
 		elseif(!empty($parm['legacy']) && !empty($file)) // Search legacy path for image in a specific folder. No path, only file name provided.
 		{
 
-			$legacyPath = rtrim($parm['legacy'], '/') . '/' . $file;
+			$legacyPath = rtrim((string) $parm['legacy'], '/') . '/' . $file;
 			$filePath = $tp->replaceConstants($legacyPath);
 
 			if (is_readable($filePath))
@@ -4984,7 +4984,7 @@ class e_parse
         |\xF0[\x90-\xBF][\x80-\xBF]{2}    # planes 1-3
         |[\xF1-\xF3][\x80-\xBF]{3}                  # planes 4-15
         |\xF4[\x80-\x8F][\x80-\xBF]{2}    # plane 16
-        )+%xs', $string);
+        )+%xs', (string) $string);
 
 	}
 
@@ -5108,9 +5108,9 @@ class e_parse
 		$ytpref = array();
 		foreach ($pref as $k => $v) // Find all Youtube Prefs.
 		{
-			if (strpos($k, 'youtube_') === 0)
+			if (strpos((string) $k, 'youtube_') === 0)
 			{
-				$key = substr($k, 8);
+				$key = substr((string) $k, 8);
 				$ytpref[$key] = $v;
 			}
 		}
@@ -5286,10 +5286,10 @@ class e_parse
 		{
 			foreach ($v as $val)
 			{
-				$tag = base64_decode($val['alt']);
+				$tag = base64_decode((string) $val['alt']);
 				$repl = ($retainTags == true) ? '$1' . $tag . '$2' : $tag;
 				//	$text = preg_replace('/(<x-bbcode[^>]*>).*(<\/x-bbcode>)/i',$repl, $text);
-				$text = preg_replace('/(<x-bbcode alt=(?:&quot;|")' . $val['alt'] . '(?:&quot;|")>).*(<\/x-bbcode>)/i', $repl, $text);
+				$text = preg_replace('/(<x-bbcode alt=(?:&quot;|")' . $val['alt'] . '(?:&quot;|")>).*(<\/x-bbcode>)/i', $repl, (string) $text);
 
 			}
 		}
@@ -5526,7 +5526,7 @@ class e_parse
 			//   $tag = strval(basename($path));
 
 
-			if (strpos($path, '/code') !== false || strpos($path, '/pre') !== false) //  treat as html.
+			if (strpos((string) $path, '/code') !== false || strpos((string) $path, '/pre') !== false) //  treat as html.
 			{
 				$this->pathList[] = $path;
 				//     $this->nodesToConvert[] =  $node->parentNode; // $node;
@@ -5535,7 +5535,7 @@ class e_parse
 			}
 
 
-			$tag = preg_replace('/([a-z0-9\[\]\/]*)?\/([\w\-]*)(\[(\d)*\])?$/i', '$2', $path);
+			$tag = preg_replace('/([a-z0-9\[\]\/]*)?\/([\w\-]*)(\[(\d)*\])?$/i', '$2', (string) $path);
 			if (!in_array($tag, $this->allowedTags))
 			{
 
@@ -5717,7 +5717,7 @@ class e_parse
 
 		foreach ($this->badAttrValues as $v) // global list because a bad value is bad regardless of the attribute it's in. ;-)
 		{
-			if (preg_match('/' . $v . '/i', $value) == true)
+			if (preg_match('/' . $v . '/i', (string) $value) == true)
 			{
 				$this->removedList['blacklist'][] = "Match found for '{$v}' in '{$value}'";
 
@@ -5920,7 +5920,7 @@ class e_parse
 				//		trigger_error('<b>tohtml_hook is deprecated.</b> Use e_parse.php instead.', E_USER_DEPRECATED); // NO LAN
 
 				//Process the older tohtml_hook pref (deprecated)
-				foreach (explode(',', $this->pref['tohtml_hook']) as $hook)
+				foreach (explode(',', (string) $this->pref['tohtml_hook']) as $hook)
 				{
 					if (!is_object($this->e_hook[$hook]) && is_readable(e_PLUGIN . $hook . '/' . $hook . '.php'))
 					{

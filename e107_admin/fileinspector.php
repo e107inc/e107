@@ -51,7 +51,7 @@ $css .= ".d { margin: 2px 0px 1px 8px; cursor: default; white-space: nowrap }
     .e { width: 9px; height: 9px }
     i.fa-folder-open-o, i.fa-times-circle-o { cursor:pointer }
     span.tree-node { cursor: pointer } 
-    
+
 ";
 
 e107::css('inline', $css);
@@ -376,9 +376,9 @@ class file_inspector {
 
 		$this->root_dir = $e107 -> file_path;
 
-		if(substr($this->root_dir, -1) == '/')
+		if(substr((string) $this->root_dir, -1) == '/')
 		{
-			$this->root_dir = substr($this->root_dir, 0, -1);
+			$this->root_dir = substr((string) $this->root_dir, 0, -1);
 		}
 
 		if(isset($_POST['core']) && $_POST['core'] == 'integrity_fail_only')
@@ -388,7 +388,7 @@ class file_inspector {
 
 		if(MAGIC_QUOTES_GPC && vartrue($_POST['regex']))
 		{
-			$_POST['regex'] = stripslashes($_POST['regex']);
+			$_POST['regex'] = stripslashes((string) $_POST['regex']);
 		}
 
 		if(!empty($_POST['regex']))
@@ -541,7 +541,7 @@ class file_inspector {
 			".FC_LAN_18.":
 			</td>
 			<td colspan='2' style='width: 65%'>
-			#<input class='tbox' type='text' name='regex' size='40' value='".htmlentities($_POST['regex'], ENT_QUOTES)."' />#<input class='tbox' type='text' name='mod' size='5' value='".$_POST['mod']."' />
+			#<input class='tbox' type='text' name='regex' size='40' value='".htmlentities((string) $_POST['regex'], ENT_QUOTES)."' />#<input class='tbox' type='text' name='mod' size='5' value='".$_POST['mod']."' />
 			</td>
 			</tr>";
 
@@ -618,7 +618,7 @@ class file_inspector {
             if ($file->isDir()) continue;
 
             $absolutePath = $file->getRealPath();
-            $relativePath = preg_replace("/^" . preg_quote($absoluteBase . "/", "/") . "/", "", $absolutePath);
+            $relativePath = preg_replace("/^" . preg_quote($absoluteBase . "/", "/") . "/", "", (string) $absolutePath);
 
             if (empty($relativePath) || $relativePath == $absolutePath) continue;
 
@@ -695,7 +695,7 @@ class file_inspector {
 
         if($fileName === 'error_log')
         {
-            $hash = md5($relativePath);
+            $hash = md5((string) $relativePath);
             e107::getSession()->set('fileinspector_error_log_'. $hash, $relativePath);
 
 
@@ -983,7 +983,7 @@ class file_inspector {
 		if($this->opt('type') == 'tree')
 		{
 			$text .= "<tr><th class='text-left f' >".FR_LAN_3."</th>
-			<th class='s text-right' style='padding-right: 4px' onclick=\"sh('f_".dechex(crc32($this->root_dir))."')\">
+			<th class='s text-right' style='padding-right: 4px' onclick=\"sh('f_".dechex(crc32((string) $this->root_dir))."')\">
 			<b class='caret'></b></th></tr>";
 		}
 		else
@@ -1080,7 +1080,7 @@ class file_inspector {
                 list($icon, $title) = $this->getGlyphForValidationCode($validation);
                 $text .= '<tr><td class="text-left f" title="'.$title.'">';
                 $text .= "$icon ";
-                $text .= htmlspecialchars($relativePath);
+                $text .= htmlspecialchars((string) $relativePath);
                 $text .= '</td><td class="s">';
                 $text .= isset($this->fileSizes[$relativePath]) ? $this->parsesize($this->fileSizes[$relativePath]) : '';
                 $oldVersion = $this->getOldVersionOfPath($relativePath, $validation);
@@ -1300,7 +1300,7 @@ i.fa-folder-open-o, i.fa-times-circle-o { cursor:pointer }
 
     private static function exitOnEvilScanId($scanId)
     {
-        if (!preg_match('/^[0-9A-F]+$/i', $scanId)) exit(1);
+        if (!preg_match('/^[0-9A-F]+$/i', (string) $scanId)) exit(1);
     }
 
     private static function pruneOldProgressFiles()

@@ -43,7 +43,7 @@ class forum_event
 		echo('hola');
 		print_a($data);*/
 		e107::getDb()->update('user_extended', "user_plugin_forum_viewed = NULL WHERE user_extended_id = ".$data['user_id']);
-		
+
 	}
 
 	function forum_eventnewpost($data) // Remove thread id from user_plugin_forum_viewed when a new reply is posted

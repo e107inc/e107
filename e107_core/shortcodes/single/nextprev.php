@@ -68,7 +68,7 @@ function nextprev_shortcode($parm = null)
 	 * New parameter requirements formatted as a GET string.
 	 * Template support.
 	 */
-	if(is_array($parm) || strpos($parm, 'total=') !== false)
+	if(is_array($parm) || strpos((string) $parm, 'total=') !== false)
 	{
 		if(is_string($parm))
 		{
@@ -186,7 +186,7 @@ function nextprev_shortcode($parm = null)
 		if($total_pages <= 1) {	return ''; }
 
 		// urldecoded once by parse_str()
-		if(substr($parm['url'], 0, 7) == 'route::')
+		if(substr((string) $parm['url'], 0, 7) == 'route::')
 		{
 			// New - use URL assembling engine
 			// Format is: route::module/controller/action::urlParams::urlOptions
@@ -195,7 +195,7 @@ function nextprev_shortcode($parm = null)
 			$urlParms = explode('::', str_replace('--AMP--', '&', $parm['url']));
 			$url = str_replace('--FROM--', '[FROM]', $e107->url->create($urlParms[1], $urlParms[2], varset($urlParms[3])));
 		}
-		elseif(substr($parm['url'], 0, 5) == 'url::')
+		elseif(substr((string) $parm['url'], 0, 5) == 'url::')
 		{
 			// New - use URL assembling engine
 			// Format is: url::module/controller/action?id=xxx--AMP--name=yyy--AMP--page=--FROM--::full=1
@@ -223,7 +223,7 @@ function nextprev_shortcode($parm = null)
 		// sprintXX(defset($e_vars->caption, $e_vars->caption), $current_page, $total_pages);
 
 		// urldecoded by parse_str()
-		$pagetitle = explode('|', vartrue($parm['pagetitle']));
+		$pagetitle = explode('|', (string) vartrue($parm['pagetitle']));
 		
 		// new - bullet support
 		$bullet = vartrue($parm['bullet'], '');
@@ -342,7 +342,7 @@ function nextprev_shortcode($parm = null)
 
 
 		$e_vars_loop = new e_vars();
-		$e_vars_loop->bullet = stripslashes($bullet); // fix magicquotes 
+		$e_vars_loop->bullet = stripslashes((string) $bullet); // fix magicquotes 
 		$ret_items = array();
 		for($c = $loop_start; $c < $loop_end; $c++)
 		{
@@ -352,7 +352,7 @@ function nextprev_shortcode($parm = null)
 				$label = defset($pagetitle[$c], $pagetitle[$c]);
 			}
 			$e_vars_loop->url = str_replace('[FROM]', ($perpage * ($c + $index_add)), $url);
-			$e_vars_loop->label = $label ? $tp->toHTML(stripslashes($label), false, 'TITLE') : $c + 1; //quick fix servers with magicquotes - stripslashes()
+			$e_vars_loop->label = $label ? $tp->toHTML(stripslashes((string) $label), false, 'TITLE') : $c + 1; //quick fix servers with magicquotes - stripslashes()
 
 			if($c + 1 == $current_page)
 			{
@@ -417,14 +417,14 @@ function nextprev_shortcode($parm = null)
 	 */
 	else
 	{
-		$parm_count = substr_count($parm, ',');
+		$parm_count = substr_count((string) $parm, ',');
 		while($parm_count < 5)
 		{
 			$parm .= ',';
 			$parm_count++;
 		}
 
-		$p = explode(',', $parm, 6);
+		$p = explode(',', (string) $parm, 6);
 
 		$total_items = intval($p[0]);
 		$perpage = intval($p[1]);

@@ -163,7 +163,7 @@ class error_page
 	{
 		header('HTTP/1.1 501 Not Implemented', true, 501);
 
-		$errorQuery = htmlentities($_SERVER['QUERY_STRING']);
+		$errorQuery = htmlentities((string) $_SERVER['QUERY_STRING']);
 
 		$this->template = 'DEFAULT';
 		$this->title = LAN_ERROR_13 . ' (' . $errorQuery . ')';

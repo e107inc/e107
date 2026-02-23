@@ -62,12 +62,12 @@
 	foreach($listuserson as $uinfo => $pinfo)
 	{
 		$class_check = true;
-		list($oid, $oname) = explode(".", $uinfo, 2);
+		list($oid, $oname) = explode(".", (string) $uinfo, 2);
 		$online_location = $pinfo;
-		$online_location_page = substr(strrchr($online_location, "/"), 1);
-		if(strpos($online_location, "forum_") === false || strpos($online_location, "content.php") === false || strpos($online_location, "comment.php") === false)
+		$online_location_page = substr(strrchr((string) $online_location, "/"), 1);
+		if(strpos((string) $online_location, "forum_") === false || strpos((string) $online_location, "content.php") === false || strpos((string) $online_location, "comment.php") === false)
 		{
-			$online_location_page = str_replace(".php", "", substr(strrchr($online_location, "/"), 1));
+			$online_location_page = str_replace(".php", "", substr(strrchr((string) $online_location, "/"), 1));
 		}
 
 		switch($online_location_page)
@@ -180,9 +180,9 @@
 		$scArray = array();
 
 
-		if(strpos($online_location, "content.php") !== false)
+		if(strpos((string) $online_location, "content.php") !== false)
 		{
-			$tmp = explode(".", substr(strrchr($online_location, "php."), 2));
+			$tmp = explode(".", substr(strrchr((string) $online_location, "php."), 2));
 			if($tmp[0] == "article")
 			{
 				$sql->select("content", "content_heading, content_class", "content_id='" . (int) $tmp[1] . "'");
@@ -221,9 +221,9 @@
 			}
 		}
 
-		if(strpos($online_location, "comment.php") !== false)
+		if(strpos((string) $online_location, "comment.php") !== false)
 		{
-			$tmp = explode(".php.", $online_location);
+			$tmp = explode(".php.", (string) $online_location);
 			$tmp = explode(".", $tmp[1]);
 			if($tmp[1] == "news")
 			{
@@ -253,10 +253,10 @@
 			}
 		}
 
-		if(strpos($online_location, "forum") !== false)
+		if(strpos((string) $online_location, "forum") !== false)
 		{
-			$tmp = explode(".", substr(strrchr($online_location, "php."), 2));
-			if(strpos($online_location, "_viewtopic") !== false)
+			$tmp = explode(".", substr(strrchr((string) $online_location, "php."), 2));
+			if(strpos((string) $online_location, "_viewtopic") !== false)
 			{
 				if($tmp[2])
 				{
@@ -281,7 +281,7 @@
 					$online_location_page = ONLINE_EL13 . ": \"" . CLASSRESTRICTED . "\"";
 				}
 			}
-			elseif(strpos($online_location, "_viewforum") !== false)
+			elseif(strpos((string) $online_location, "_viewforum") !== false)
 			{
 				$sql->select("forum", "forum_name, forum_class", "forum_id=" . intval($tmp[0]));
 				$forum = $sql->fetch();
@@ -293,7 +293,7 @@
 					$online_location_page = ONLINE_EL13 . ": \"" . CLASSRESTRICTED . "\"";
 				}
 			}
-			elseif(strpos($online_location, "_post") !== false)
+			elseif(strpos((string) $online_location, "_post") !== false)
 			{
 				$sql->select("forum_thread", "thread_name, thread_forum_id", "thread_forum_id=" . intval($tmp[0]) . " AND thread_parent=0");
 				$forum_thread = $sql->fetch();
@@ -304,7 +304,7 @@
 			}
 		}
 
-		if(strpos($online_location, "admin") !== false)
+		if(strpos((string) $online_location, "admin") !== false)
 		{
 			$class_check = false;
 			$online_location_page = ADMINAREA;

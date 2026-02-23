@@ -338,7 +338,7 @@ class news_sub_form_ui extends e_admin_form_ui
 				
 		if($submitnews_file)
 		{
-			$tmp = explode(',',$submitnews_file);
+			$tmp = explode(',',(string) $submitnews_file);
 			
 			$text .= "<br />";
 			
@@ -550,7 +550,7 @@ class news_admin_ui extends e_admin_ui
 		$this->checkSEFSimilarity($new_data);
 
 
-		$tmp = explode(chr(35), $new_data['news_author']);
+		$tmp = explode(chr(35), (string) $new_data['news_author']);
 		$new_data['news_author'] = intval($tmp[0]);
 
 		if(E107_DBG_SQLQUERIES)
@@ -613,7 +613,7 @@ class news_admin_ui extends e_admin_ui
 
 		if(!empty($new_data['news_author']))
 		{
-			$tmp = explode(chr(35), $new_data['news_author']);
+			$tmp = explode(chr(35), (string) $new_data['news_author']);
 			$new_data['news_author'] = intval($tmp[0]);
 		}
 
@@ -640,7 +640,7 @@ class news_admin_ui extends e_admin_ui
 
 
 		$expectedSEF = eHelper::title2sef($new_data['news_title']);
-		similar_text($expectedSEF,$new_data['news_sef'],$percSimilar);
+		similar_text($expectedSEF,(string) $new_data['news_sef'],$percSimilar);
 
 		if($percSimilar < 60)
 		{
@@ -718,7 +718,7 @@ class news_admin_ui extends e_admin_ui
 	// Trigger the news email notification trigger. (@see admin->notify )
 	private function triggerNotify($new_data)
 	{
-		$visibility = explode(",", $new_data['news_class']);
+		$visibility = explode(",", (string) $new_data['news_class']);
 
 		if(in_array(e_UC_PUBLIC, $visibility))
 		{
@@ -941,8 +941,8 @@ class news_admin_ui extends e_admin_ui
 	//	e107::getMessage()->addInfo($info);
 
 
-		
-		
+
+
 		$sql = e107::getDb();
 		$sql->gen("SELECT category_id,category_name FROM #news_category");
 		while($row = $sql->fetch())
@@ -1028,7 +1028,7 @@ class news_admin_ui extends e_admin_ui
 	function beforePrefsSave($new_data, $old_data)
 	{
 
-		$new_data['news_default_template']	= preg_replace('#[^\w\pL\-]#u', '', $new_data['news_default_template']);
+		$new_data['news_default_template']	= preg_replace('#[^\w\pL\-]#u', '', (string) $new_data['news_default_template']);
 
 		return $new_data;
 	}
@@ -1378,7 +1378,7 @@ class news_admin_ui extends e_admin_ui
 			return false;
 		}
 
-		$row = json_decode($data,true);
+		$row = json_decode((string) $data,true);
 		$text = '';
 		foreach($row as $k)
 		{
@@ -1643,13 +1643,13 @@ class news_form_ui extends e_admin_form_ui
 		  <div class="tab-content">';
 
 
-		$val = strpos($curVal, "[img]http") !== false ? $curVal : str_replace("[img]../", "[img]", $curVal);
+		$val = strpos((string) $curVal, "[img]http") !== false ? $curVal : str_replace("[img]../", "[img]", $curVal);
 		$text .= "<div id='news-body-container' class='tab-pane active'>";
 		$text .= $frm->bbarea('news_body', $val, 'news', 'news');
 		$text .= "</div>";
 		$text .= "<div id='news-extended-container' class='tab-pane'>";
 
-		$val = (strpos($curValExt, "[img]http") !== false ? $curValExt : str_replace("[img]../", "[img]",$curValExt));
+		$val = (strpos((string) $curValExt, "[img]http") !== false ? $curValExt : str_replace("[img]../", "[img]",$curValExt));
 		$text .= $frm->bbarea('news_extended', $val, 'extended', 'news');
 
 		$text .= "</div>
@@ -1668,9 +1668,9 @@ class news_form_ui extends e_admin_form_ui
 
 		if($mode == 'read')
 		{
-			if(strpos($curval, ",")!==false)
+			if(strpos((string) $curval, ",")!==false)
 			{
-				$tmp = explode(",",$curval);
+				$tmp = explode(",",(string) $curval);
 				$curval = $tmp[0];
 			}
 
@@ -1694,7 +1694,7 @@ class news_form_ui extends e_admin_form_ui
 			$url = e107::getParser()->thumbUrl($curval,'aw=80');
 			$link = e107::getParser()->replaceConstants($curval);
 
-			return "<a class='e-modal' href='$link'><img src='$url' alt='".basename($curval)."' /></a>";
+			return "<a class='e-modal' href='$link'><img src='$url' alt='".basename((string) $curval)."' /></a>";
 		}
 
 
@@ -1704,7 +1704,7 @@ class news_form_ui extends e_admin_form_ui
 
 			if(!empty($_GET['sub']))
 			{
-				$thumbTmp = explode(",",$curval);
+				$thumbTmp = explode(",",(string) $curval);
 				foreach($thumbTmp as $key=>$path)
 				{
 					$url = ($path[0] == '{') ? $path : e_TEMP.$path;
@@ -1718,7 +1718,7 @@ class news_form_ui extends e_admin_form_ui
 			$frm = e107::getForm();
 
 			//	$text .= $frm->imagepicker('news_thumbnail[0]', $curval ,'','media=news&video=1');
-			$thumbTmp = explode(",",$curval);
+			$thumbTmp = explode(",",(string) $curval);
 
 
 			$text = "<div class='mediaselector-multi'>";

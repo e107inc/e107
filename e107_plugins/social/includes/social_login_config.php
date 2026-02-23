@@ -151,7 +151,7 @@ class social_login_config
 	public function getProviderConfig($providerName, $path = "")
 	{
 		if (empty($path)) $path = "";
-		elseif (substr($path, 0, 1) !== "/") $path = "/$path";
+		elseif (substr((string) $path, 0, 1) !== "/") $path = "/$path";
 
 		$pref = $this->config->getPref(
 			self::SOCIAL_LOGIN_PREF . '/' . $this->normalizeProviderName($providerName) . $path
@@ -257,14 +257,14 @@ class social_login_config
 		$normalizedProviderName = $providerName;
 		foreach ($this->getSupportedProviders() as $providerProperCaps)
 		{
-			if (mb_strtolower($providerName) == mb_strtolower($providerProperCaps))
+			if (mb_strtolower((string) $providerName) == mb_strtolower($providerProperCaps))
 			{
 				$normalizedProviderName = $providerProperCaps;
 				break;
 			}
 		}
 		$providerType = $this->getTypeOfProvider($normalizedProviderName);
-		$normalizedProviderName = preg_replace('/(OpenID|OAuth1|OAuth2)$/i', '', $normalizedProviderName);
+		$normalizedProviderName = preg_replace('/(OpenID|OAuth1|OAuth2)$/i', '', (string) $normalizedProviderName);
 		if (empty($normalizedProviderName) && !empty($providerType) || $providerName == $providerType)
 			return $providerType;
 		elseif ($providerType)
@@ -279,7 +279,7 @@ class social_login_config
 	 */
 	public function denormalizeProviderName($normalizedProviderName)
 	{
-		list($provider_name, $provider_type) = array_pad(explode("-", $normalizedProviderName), 2, "");
+		list($provider_name, $provider_type) = array_pad(explode("-", (string) $normalizedProviderName), 2, "");
 		if ($provider_type != $this->getTypeOfProvider($provider_name)) $provider_name .= $provider_type;
 		return $provider_name;
 	}

@@ -1553,7 +1553,7 @@ class e_model extends e_object
 			$res = $sql->select(
 				$this->getModelTable(),
 				$this->getParam('db_fields', '*'),
-				$this->getFieldIdName().'='.$id.' '.trim($this->getParam('db_where', '')),
+				$this->getFieldIdName().'='.$id.' '.trim((string) $this->getParam('db_where', '')),
 				'default',
 				($this->getParam('db_debug') ? true : false)
 			);
@@ -2696,7 +2696,7 @@ class e_front_model extends e_model
 		// FIXME make this more accurate - commonly used field names could conflict. @see e_front_modelTest::testSanitize()
 		foreach($this->_data_fields as $k=>$var)
 		{
-			if(strpos($k,'/') !== false && strpos($k, $key) !== false)
+			if(strpos((string) $k,'/') !== false && strpos((string) $k, (string) $key) !== false)
 			{
 				return $this->_data_fields[$k];
 			}
@@ -3369,7 +3369,7 @@ class e_tree_model extends e_front_model
 				:
 					$this->getParam('db_query');
 
-			return $this->setCacheString($this->getCacheString().'_'.md5($str));
+			return $this->setCacheString($this->getCacheString().'_'.md5((string) $str));
 		}
 
 		return parent::setCacheString($str);
@@ -3744,7 +3744,7 @@ class e_tree_model extends e_front_model
 			}
 
 			return "";
-		}, $db_query);
+		}, (string) $db_query);
 		$this->setParam('db_query', $db_query);
 	}
 
@@ -3783,7 +3783,7 @@ class e_tree_model extends e_front_model
 					);
 
 				return "";
-			}, $db_query)
+			}, (string) $db_query)
 			// Optimization goes with e_tree_model::moveRowsToTreeNodes()
 			. " ORDER BY " . $this->getParam('sort_parent') . "," . $this->getParam('primary_field');
 		$this->setParam('db_query', $db_query);
@@ -4126,7 +4126,7 @@ class e_admin_tree_model extends e_front_tree_model
 
 		if(!is_array($ids))
 		{
-			$ids = explode(',', $ids);
+			$ids = explode(',', (string) $ids);
 		}
 
 		$tp = e107::getParser();
@@ -4171,7 +4171,7 @@ class e_admin_tree_model extends e_front_tree_model
 					$this->getNode($id)->clearCache()->setMessages($session_messages);
 					if($destroy)
 					{
-						call_user_func(array($this->getNode(trim($id)), 'destroy')); // first call model destroy method if any
+						call_user_func(array($this->getNode(trim((string) $id)), 'destroy')); // first call model destroy method if any
 						$this->setNode($id, null);
 					}
 				}

@@ -227,7 +227,7 @@ class alt_auth_admin extends alt_auth_base
 		if ($fieldsAdded) return;
 		$xFields = $this->euf->user_extended_get_fieldList('','user_extended_struct_name');
 	//	print_a($xFields);
-		$fields = explode(',',$pref['auth_extended']);
+		$fields = explode(',',(string) $pref['auth_extended']);
 		foreach ($fields as $f)
 		{
 			if (isset($xFields[$f]))
@@ -327,9 +327,9 @@ class alt_auth_admin extends alt_auth_base
 		// Now we can post everything
 		foreach($_POST as $k => $v)
 		{
-			if (strpos($k,$lprefix) === 0)
+			if (strpos((string) $k,$lprefix) === 0)
 			{
-				$v = base64_encode(base64_encode($v));
+				$v = base64_encode(base64_encode((string) $v));
 				if($sql -> select('alt_auth', '*', "auth_type='{$prefix}' AND auth_parmname='{$k}' "))
 				{
 					$sql -> update('alt_auth', "auth_parmval='{$v}' WHERE  auth_type='{$prefix}' AND auth_parmname='{$k}' ");
@@ -392,7 +392,7 @@ class alt_auth_admin extends alt_auth_base
 			$_login = new auth_login;
 			$log_result = defset('AUTH_UNKNOWN');
 			$pass_vars = array();
-			$val_name = trim(varset($_POST['nametovalidate']));
+			$val_name = trim((string) varset($_POST['nametovalidate']));
 
 			if(isset($_login->Available) && ($_login->Available === FALSE))
 			{	// Relevant auth method not available (e.g. PHP extension not loaded)
@@ -414,7 +414,7 @@ class alt_auth_admin extends alt_auth_base
 			if ($val_name)
 			{
 				$text .= LAN_ALT_49.": ".$val_name.'<br />'.LAN_ALT_50.": ";
-				if (varset($_POST['passtovalidate'])) $text .= str_repeat('*',strlen($_POST['passtovalidate'])); else $text .= LAN_ALT_51;
+				if (varset($_POST['passtovalidate'])) $text .= str_repeat('*',strlen((string) $_POST['passtovalidate'])); else $text .= LAN_ALT_51;
 			}
 			$text .= "</td><td>";
 

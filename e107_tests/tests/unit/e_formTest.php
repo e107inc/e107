@@ -1321,7 +1321,7 @@ class e_formTest extends \Codeception\Test\Unit
 			$result = str_replace(array("\n", "\r"), "", $result);
 
 			$expected = "<select name='dropdown_004[]' id='dropdown-004' class='tbox select form-control' multiple='multiple'><option value='noindex' data-title='Prevent search engines from indexing this item.'>NoIndex</option><option value='nofollow' data-title='Prevent search engines from following links in this item.'>NoFollow</option><option value='noarchive' data-title='Prevent cached copies of this item from appearing in search results.'>NoArchive</option><option value='noimageindex' data-title='Prevent search engines from indexing images of this item.'>NoImageIndex</option></select>";
-		
+
 			self::assertSame($expected, $result);
 	}
 

@@ -71,7 +71,7 @@ class Medium extends OAuth2
         $userProfile = new User\Profile();
         $data = $data->filter('data');
 
-        $full_name = explode(' ', $data->get('name'));
+        $full_name = explode(' ', (string) $data->get('name'));
         if (count($full_name) < 2) {
             $full_name[1] = '';
         }

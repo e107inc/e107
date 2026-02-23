@@ -404,7 +404,7 @@ class social_ui extends e_admin_ui
 			{
 				$keypref = "xurl[".$k."]";
 				$text_label = "xurl-".$k."";
-				$def = "XURL_". strtoupper($k);
+				$def = "XURL_". strtoupper((string) $k);
 				$help = LAN_SOCIAL_ADMIN_13." ".$var['label']." ".LAN_SOCIAL_ADMIN_12." (".$def.")";
 				$opts = array('size'=>'xxlarge','placeholder'=> $var['placeholder']);
 
@@ -628,7 +628,7 @@ class social_ui extends e_admin_ui
 
 		);
 
-		return varset($labels[$fieldSlash], ucfirst($fieldSlash));
+		return varset($labels[$fieldSlash], ucfirst((string) $fieldSlash));
 	}
 
 		/**
@@ -648,7 +648,7 @@ class social_ui extends e_admin_ui
 		$textKeys = '';
 		$textScope = '';
 		$label = !empty(self::getApiDocumentationUrlFor($provider_name)) ? "<a class='e-tip' rel='external' title=' " . LAN_SOCIAL_ADMIN_10 . "' href='" . self::getApiDocumentationUrlFor($provider_name) . "'>" . $pretty_provider_name . "</a>" : $pretty_provider_name;
-		$radio_label = strtolower($provider_name);
+		$radio_label = strtolower((string) $provider_name);
 
 		$text = "<table class='table adminform'>
 				<colgroup>
@@ -708,7 +708,7 @@ class social_ui extends e_admin_ui
 		$textKeys = '';
 		$textScope = '';
 		$label = !empty(self::getApiDocumentationUrlFor($provider_name)) ? "<a class='e-tip' rel='external' title=' " . LAN_SOCIAL_ADMIN_10 . "' href='" . self::getApiDocumentationUrlFor($provider_name) . "'>" . $pretty_provider_name . "</a>" : $pretty_provider_name;
-		$radio_label = strtolower($provider_name);
+		$radio_label = strtolower((string) $provider_name);
 		$text = "
 					<tr id='social-login-row-" . $radio_label."'>
 						<td><label for='social-login-" . $radio_label . "-enabled'>" . $label . "</label></td>
@@ -878,7 +878,7 @@ class social_admin_tree_model extends e_tree_model
 		foreach($themeList as $k=>$v)
 		{
 
-			if(!empty($parms['searchqry']) && stripos($v['description'],$parms['searchqry']) === false && stripos($v['folder'],$parms['searchqry']) === false && stripos($v['name'],$parms['searchqry']) === false)
+			if(!empty($parms['searchqry']) && stripos((string) $v['description'],(string) $parms['searchqry']) === false && stripos((string) $v['folder'],(string) $parms['searchqry']) === false && stripos((string) $v['name'],(string) $parms['searchqry']) === false)
 			{
 				continue;
 			}

@@ -56,9 +56,9 @@ $source = preg_replace('/[^\w\d_\:]/',"", $qs[0]);
 $parms = varset($qs[1]);
 unset($qs);
 
-if(strpos($source,'plugin:') !== false)
+if(strpos((string) $source,'plugin:') !== false)
 {
-	$plugin = substr($source, 7);
+	$plugin = substr((string) $source, 7);
 
 	if($obj = e107::getAddon($plugin, 'e_print'))
 	{

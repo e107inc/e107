@@ -585,9 +585,9 @@ class links_model_admin_tree extends e_admin_tree_model
 	
 	function bcClean($link_name)
 	{
-		if(substr($link_name, 0,8) == 'submenu.') // BC Fix. 
+		if(substr((string) $link_name, 0,8) == 'submenu.') // BC Fix. 
 		{
-			list($tmp,$tmp2,$link) = explode('.', $link_name, 3);	
+			list($tmp,$tmp2,$link) = explode('.', (string) $link_name, 3);	
 		}
 		else
 		{
@@ -789,7 +789,7 @@ class links_admin_form_ui extends e_admin_form_ui
 
 			foreach($config as $k=>$v)
 			{
-				if($k == 'index' || (strpos($v['regex'],'(') === false)) // only provide urls without dynamic elements.
+				if($k == 'index' || (strpos((string) $v['regex'],'(') === false)) // only provide urls without dynamic elements.
 				{
 					$opts[] = $k;
 				}
@@ -809,7 +809,7 @@ class links_admin_form_ui extends e_admin_form_ui
 			$owner = $this->getController()->getListModel()->get('link_owner');
 			$sef =  $this->getController()->getListModel()->get('link_sefurl');
 
-			if($curVal[0] !== '{' && substr($curVal,0,4) != 'http' && $mode == 'link_id')
+			if($curVal[0] !== '{' && substr((string) $curVal,0,4) != 'http' && $mode == 'link_id')
 			{
 				$curVal = '{e_BASE}'.$curVal;
 			}
@@ -895,7 +895,7 @@ class links_admin_form_ui extends e_admin_form_ui
 
 		foreach ($search[$parent_id] as $id => $title)
 		{
-			$src[$id] = str_repeat($strpad, $level).($level != 0 ? '-&nbsp;' : '').$title;
+			$src[$id] = str_repeat((string) $strpad, $level).($level != 0 ? '-&nbsp;' : '').$title;
 			$this->_parent_select_array($id, $search, $src, $strpad, $level + 1);
 		}
 	}

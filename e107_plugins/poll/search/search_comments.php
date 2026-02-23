@@ -17,7 +17,7 @@ $comments_table['poll'] = "LEFT JOIN #polls AS po ON c.comment_type=4 AND po.pol
 
 function com_search_4($row) {
 	global $con;
-	$nick = preg_replace("/[0-9]+\./", "", $row['comment_author']);
+	$nick = preg_replace("/[0-9]+\./", "", (string) $row['comment_author']);
 	$datestamp = $con -> convert_date($row['comment_datestamp'], "long");
 	$res['link'] = e_PLUGIN."poll/oldpolls.php?".$row['poll_id'];
 	$res['pre_title'] = 'Posted in reply to poll: ';

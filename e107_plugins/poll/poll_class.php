@@ -47,10 +47,10 @@ class poll
 			foreach($_COOKIE as $cookie_name => $cookie_val)
 			{	// Collect poll cookies
 
-				if(strpos($cookie_name,'poll_') === 0)
+				if(strpos((string) $cookie_name,'poll_') === 0)
 				{
 					// e107::getDebug()->log("Poll: ".$cookie_name);
-					list($str, $int) = explode('_', $cookie_name, 2);
+					list($str, $int) = explode('_', (string) $cookie_name, 2);
 					if (($str == 'poll') && is_numeric($int))
 					{	// Yes, its poll's cookie
 						$arr_polls_cookies[] = $int;
@@ -68,7 +68,7 @@ class poll
 			}
 		}
 	}	
-	
+
 	/*
 	function delete_poll
 	parameter in: $existing - existing poll id to be deleted
@@ -78,7 +78,7 @@ class poll
 	{
 		global $admin_log;
 		$sql = e107::getDb();
-		
+
 		if ($sql->delete("polls", " poll_id='".intval($existing)."' "))
 		{
 			if (function_exists("admin_purge_related"))
@@ -103,9 +103,9 @@ class poll
 
 	function clean_poll_array($val) 
 	{
- 		$val = trim($val); // trims the array to remove poll answers which are (seemingly) empty but which may contain spaces
+ 		$val = trim((string) $val); // trims the array to remove poll answers which are (seemingly) empty but which may contain spaces
   		$allowed_vals = array("0"); // Allows for '0' to be a poll answer option. Possible to add more allowed values. 
- 		
+
  		return in_array($val, $allowed_vals, true) ? true : ( $val ? true : false );
 	}
 
@@ -155,7 +155,7 @@ class poll
 			/* update poll results - bugtracker #1124 .... */
 			$sql->select("polls", "poll_votes", "poll_id='".$pollID."' ");
 			$foo = $sql->fetch();
-			$voteA = explode(chr(1), $foo['poll_votes']);
+			$voteA = explode(chr(1), (string) $foo['poll_votes']);
 
 		//	$poll_option = varset($poll_options, 0);
 			$opt = count($pollOption) - count($voteA);
@@ -206,7 +206,7 @@ class poll
 	{
 		global $e107;		
 		$sql = e107::getDb();
-		
+
 		if ($sql->gen($query))
 		{
 			$pollArray = $sql->fetch();
@@ -233,7 +233,7 @@ class poll
 
 					case POLL_MODE_IP:
 						$userid = e107::getIPHandler()->getIP(FALSE);
-						$voted_ids = explode('^', substr($pollArray['poll_ip'], 0, -1));
+						$voted_ids = explode('^', substr((string) $pollArray['poll_ip'], 0, -1));
 						if (in_array($userid, $voted_ids))
 						{
 							$POLLMODE = 'voted';
@@ -252,7 +252,7 @@ class poll
 						else
 						{
 							$userid = USERID;
-							$voted_ids = explode('^', substr($pollArray['poll_ip'], 0, -1));
+							$voted_ids = explode('^', substr((string) $pollArray['poll_ip'], 0, -1));
 							if (in_array($userid, $voted_ids))
 							{
 								$POLLMODE = 'voted';
@@ -291,7 +291,7 @@ class poll
 				{
 					$votes[($_POST['votea']-1)] ++;
 				}
-				$optionArray = explode(chr(1), $pollArray['poll_options']);
+				$optionArray = explode(chr(1), (string) $pollArray['poll_options']);
 				$optionArray = array_slice($optionArray, 0, -1);
 				foreach ($optionArray as $k=>$v)
 				{
@@ -347,7 +347,7 @@ class poll
 		{
 			$sc->pollPreview = true;
 		}
-		
+
 		switch ($POLLMODE)
 		{
 			case 'query' :	// Show poll, register any vote
@@ -382,7 +382,7 @@ class poll
 
 		}
 
-		
+
 
 		if ($type == 'preview')
 		{
@@ -400,17 +400,17 @@ class poll
 			}
 			else
 			{
-				$optionArray = explode(chr(1), $pollArray['poll_options']);
+				$optionArray = explode(chr(1), (string) $pollArray['poll_options']);
 				$optionArray = array_slice($optionArray, 0, -1);
 			}
-			$voteArray = explode(chr(1), $pollArray['poll_votes']);
+			$voteArray = explode(chr(1), (string) $pollArray['poll_votes']);
 //			$voteArray = array_slice($voteArray, 0, -1);
 		}
 		else
 		{  // Get existing results
-			$optionArray = explode(chr(1), $pollArray['poll_options']);
+			$optionArray = explode(chr(1), (string) $pollArray['poll_options']);
 			$optionArray = array_slice($optionArray, 0, -1);
-			$voteArray = explode(chr(1), $pollArray['poll_votes']);
+			$voteArray = explode(chr(1), (string) $pollArray['poll_votes']);
 //			$voteArray = array_slice($voteArray, 0, -1);
 		}
 
@@ -499,11 +499,11 @@ class poll
 				{
 					$sc->answerOption = $option; 
 					$text .= $tp->parseTemplate($template['form']['item'], true, $sc);
-						
+
 					$count ++;
 					$sc->answerCount++;
 				}
-				
+
 				$text .= $tp->parseTemplate($template['form']['end'], true, $sc);
 
 				$text .= "</form>";
@@ -538,10 +538,10 @@ class poll
 						$count ++;
 						$sc->answerCount++;
 					}
-						
+
 					$text .= $tp->parseTemplate($template['results']['end'], true, $sc);
 				}
-			
+
 				break;
 
 
@@ -570,9 +570,9 @@ class poll
 
 
 		if (!defined("POLLRENDERED")) define("POLLRENDERED", TRUE);
-		
+
 		$caption = (file_exists(THEME."images/poll_menu.png") ? "<img src='".THEME_ABS."images/poll_menu.png' alt='' /> ".LAN_PLUGIN_POLL_NAME : LAN_PLUGIN_POLL_NAME);
-		
+
 		if ($type == 'preview')
 		{
 			$caption = LAN_CREATE.SEP.LAN_PREVIEW; // "Preview"; // TODO not sure this is used. 
@@ -594,7 +594,7 @@ class poll
 	}
 
 
-	
+
 	function generateBar($perc)
 	{
 		if(deftrue('BOOTSTRAP',false))
@@ -606,7 +606,7 @@ class poll
 			   <span class="sr-only visually-hidden">'.$val.'%</span>
 			 </div>
 			 </div>';	
-			
+
 		}
 		else
 		{
@@ -635,16 +635,16 @@ class poll
 		$tp = e107::getParser();
 		$frm = e107::getForm();
 	//	echo "MODE=".$mode;
-		
+
 		//XXX New v2.x default for front-end. Currently used by forum-post in bootstrap mode. 
 		// TODO LAN - Needs a more generic LAN rewrite when used on another area than forum
 
 
 		if ($mode == 'front')
 		{				
-			
+
 			$text = "
-			
+
 			<div class='alert alert-info'>
 				<small >".LAN_FORUM_3029."</small>
 			</div>";
@@ -664,14 +664,14 @@ class poll
 			$text .= "		
 				<div id='pollsection'>
 					<label for='pollopt'>".POLLAN_4."</label>";
-				
+
 				for($count = 1; $count <= $option_count; $count++)
 				{
 					// if ($count != 1 && $_POST['poll_option'][($count-1)] =="")
 					// {
 					// //	break;
 					// }
-					
+
 					$opt = ($count==1) ? "poll_answer" : "";
 
 					$text .= "<div class='form-group' id='".$opt."'>
@@ -686,11 +686,11 @@ class poll
 						</div>
 
 				";
-			
+
 			//FIXME - get this looking good with Bootstrap CSS only. 
-			
+
 			$opts = array(1 => LAN_YES, 0=> LAN_NO);
-				
+
 			// Set to IP address.. Can add a pref to Poll admin for 'default front-end storage method' if demand is there for it. 
 
 		$text .= "<br />
@@ -703,38 +703,38 @@ class poll
 		";
 
 	//	$text .= "</form>";
-		
+
 		return $text;
-		
-			
+
+
 	/*
 			$text .= "
 				<div class='controls controls-row'>".POLL_506."
-				
+
 				<input type='radio' name='multi/pleChoice' value='1'".(vartrue($_POST['multipleChoice']) ? " checked='checked'" : "")." /> ".POLL_507."&nbsp;&nbsp;
 				<input type='radio' name='multi/pleChoice' value='0'".(!$_POST['multipleChoice'] ? " checked='checked'" : "")." /> ".POLL_508."
-				
+
 				</div>";
 			*/
-		
+
 			//XXX Should NOT be decided by USER 
 			/*
 			$text .= "
 
 			<div>
 			".POLLAN_16."
-			
+
 			<input type='radio' name='storageMethod' value='0'".(!vartrue($_POST['storageMethod']) ? " checked='checked'" : "")." /> ".POLLAN_17."<br />
 			<input type='radio' name='storageMethod' value='1'".($_POST['storageMethod'] == 1 ? " checked='checked'" : "")." /> ".LAN_IP_ADDRESS."<br />
 			<input type='radio' name='storageMethod' value='2'".($_POST['storageMethod'] ==2 ? " checked='checked'" : "")." /> ".POLLAN_19."
 			</div>
 			";
 			*/
-		
-			
+
+
 		}
-		
-		
+
+
 		//TODO Hardcoded FORUM code needs to be moved somewhere. 
 		if ($mode == 'forum') // legacy code.
 		{
@@ -841,10 +841,10 @@ class poll
 
 		<tr>
 		<td style='width:30%'>".POLLAN_15."</td>";
-		
+
 		$uclass = (ADMIN) ? "" : "public,member,admin,classes,matchclass";
-		
-		
+
+
 		$text .= "
 		<td>".r_userclass("pollUserclass", vartrue($_POST['pollUserclass']), 'off', $uclass)."</td>
 		</tr>
@@ -870,11 +870,11 @@ class poll
 		{
 			// $text .= "<input  type='submit' name='preview' value='".LAN_PREVIEW."' /> ";
 			$text .= $frm->admin_button('preview',LAN_PREVIEW,'other');
-			
+
 			if (defset('POLLACTION') === 'edit')
 			{
 				$text .= $frm->admin_button('submit', LAN_UPDATE, 'update')."
-				
+
 				<input type='hidden' name='poll_id' value='".intval($_POST['poll_id'])."' /> ";
 			}
 			else
@@ -888,7 +888,7 @@ class poll
 			$text .= $frm->admin_button('preview','no-value','other',LAN_PREVIEW);
 		//	$text .= "<input  type='submit' name='preview' value='".LAN_PREVIEW."' /> ";
 		}
-		
+
 		if (defset('POLLID')) 
 		{
 			$text .= $frm->admin_button('reset','no-value','reset',LAN_CLEAR);

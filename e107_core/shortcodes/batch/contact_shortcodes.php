@@ -219,7 +219,7 @@ class contact_shortcodes extends e_shortcode
 		$class = (!empty($parm['class'])) ? $parm['class'] : 'tbox '.$size.' form-control';
 
 
-		$value = !empty($_POST['body']) ? stripslashes($_POST['body']) : '';
+		$value = !empty($_POST['body']) ? stripslashes((string) $_POST['body']) : '';
 		
 		return "<textarea cols='{$cols}'  id='contactBody' rows='{$rows}' title='".LAN_CONTACT_20."' aria-label='".LAN_CONTACT_20."' aria-labelledby='contactBody' name='body' ".$placeholder." required='required' class='".$class."'>".$value."</textarea>";
 	}

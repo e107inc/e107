@@ -691,7 +691,7 @@ class Mysqldump
             if ('/' != $pattern[0]) {
                 continue;
             }
-            if (1 == preg_match($pattern, $table)) {
+            if (1 == preg_match($pattern, (string) $table)) {
                 $match = true;
             }
         }
@@ -1458,7 +1458,7 @@ class CompressGzip extends CompressManagerFactory
 
     public function write($str)
     {
-        $bytesWritten = gzwrite($this->fileHandler, $str);
+        $bytesWritten = gzwrite($this->fileHandler, (string) $str);
         if (false === $bytesWritten) {
             throw new Exception("Writting to file failed! Probably, there is no more free space left?");
         }
@@ -1490,7 +1490,7 @@ class CompressNone extends CompressManagerFactory
 
     public function write($str)
     {
-        $bytesWritten = fwrite($this->fileHandler, $str);
+        $bytesWritten = fwrite($this->fileHandler, (string) $str);
         if (false === $bytesWritten) {
             throw new Exception("Writting to file failed! Probably, there is no more free space left?");
         }
@@ -1526,7 +1526,7 @@ class CompressGzipstream extends CompressManagerFactory
     public function write($str)
     {
 
-    $bytesWritten = fwrite($this->fileHandler, deflate_add($this->compressContext, $str, ZLIB_NO_FLUSH));
+    $bytesWritten = fwrite($this->fileHandler, deflate_add($this->compressContext, (string) $str, ZLIB_NO_FLUSH));
     if (false === $bytesWritten) {
         throw new Exception("Writting to file failed! Probably, there is no more free space left?");
     }
@@ -1929,7 +1929,7 @@ class TypeAdapterMysql extends TypeAdapterFactory
         }
 
 		if ($this->dumpSettings['if-not-exists'] ) {
-			$createTable = preg_replace('/^CREATE TABLE/', 'CREATE TABLE IF NOT EXISTS', $createTable);
+			$createTable = preg_replace('/^CREATE TABLE/', 'CREATE TABLE IF NOT EXISTS', (string) $createTable);
         }
 
         $ret = "/*!40101 SET @saved_cs_client     = @@character_set_client */;".PHP_EOL.
@@ -2298,7 +2298,7 @@ class TypeAdapterMysql extends TypeAdapterFactory
     public function parseColumnType($colType)
     {
         $colInfo = array();
-        $colParts = explode(" ", $colType['Type']);
+        $colParts = explode(" ", (string) $colType['Type']);
 
         if ($fparen = strpos($colParts[0], "(")) {
             $colInfo['type'] = substr($colParts[0], 0, $fparen);
@@ -2312,7 +2312,7 @@ class TypeAdapterMysql extends TypeAdapterFactory
         // for virtual columns that are of type 'Extra', column type
         // could by "STORED GENERATED" or "VIRTUAL GENERATED"
         // MySQL reference: https://dev.mysql.com/doc/refman/5.7/en/create-table-generated-columns.html
-        $colInfo['is_virtual'] = strpos($colType['Extra'], "VIRTUAL GENERATED") !== false || strpos($colType['Extra'], "STORED GENERATED") !== false;
+        $colInfo['is_virtual'] = strpos((string) $colType['Extra'], "VIRTUAL GENERATED") !== false || strpos((string) $colType['Extra'], "STORED GENERATED") !== false;
 
         return $colInfo;
     }
