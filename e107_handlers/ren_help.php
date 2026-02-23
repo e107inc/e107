@@ -31,15 +31,15 @@ function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help")
  */
 function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $helpfunc = "help", $helpsize = '')
 {
-	
+
 	$options = array('trigger' => $addtextfunc );
-	
+
 	return e107::getBB()->renderButtons($mode,'data',$options); // guessing the name of the textarea as 'data' no indicator unfortunately. 
 	// may cause pre-image and pre-file selector issues. 
-	
-		
+
+
   //  if(defsettrue('e_WYSIWYG')) { return; }
-	
+
 	/*
 	global $tp, $pref, $eplug_bb, $bbcode_func, $register_bb, $bbcode_help, $bbcode_helpactive, $bbcode_helptag, $bbcode_helpsize;
 	$bbcode_helpsize = $helpsize;
@@ -47,7 +47,7 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 	$bbcode_func = $addtextfunc;
  	$bbcode_help = $helpfunc;
     $bbcode_helptag = $tagid;
-	
+
 	// $arr = get_defined_vars();
 	// print_a($arr);
 
@@ -98,14 +98,14 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 
     if(is_readable(e_CORE."shortcodes/batch/bbcode_shortcodes.php"))
 	{
-		
+
 		$sc = e107::getScBatch('bbcode');
-		
+
 		if($tagid == 'data') // BC fix. 
 		{
 			$tagid = 'data_';	
 		}
-		
+
 		$data = array(
 			'tagid'			=> $tagid,
 			'template'		=> $mode,
@@ -114,9 +114,9 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 			'hint_active'	=> $bbcode_helpactive,
 			'size'			=> $helpsize
 		);
-				
+
 		$sc->setVars($data);	
-		
+
   		return "<div id='bbcode-panel-".$tagid."' class='mceToolbar bbcode-panel' {$visible}>".$tp->parseTemplate($BBCODE_TEMPLATE)."</div>";
 	}
 	else
@@ -305,7 +305,7 @@ function PreFile_Select($formid='prefile_selector')
 			}
 			else
 			{
-				$text .= "<option value=\"[file={e_BASE}request.php?".htmlspecialchars($file['url'])."{$ucinfo}]".htmlspecialchars($file['name'])."[/file]\">".htmlspecialchars($file['name'])." - {$ucname}</option>\n";
+				$text .= "<option value=\"[file={e_BASE}request.php?".htmlspecialchars((string) $file['url'])."{$ucinfo}]".htmlspecialchars((string) $file['name'])."[/file]\">".htmlspecialchars((string) $file['name'])." - {$ucname}</option>\n";
 			}
 
 		}

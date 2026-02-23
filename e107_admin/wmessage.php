@@ -58,7 +58,7 @@ class wmessage_admin extends e_admin_dispatcher
 				
 class generic_ui extends e_admin_ui
 {
-			
+
 		protected $pluginTitle		= WMLAN_00;
 		protected $pluginName		= 'core';
 		protected $eventName		= 'wmessage';
@@ -71,11 +71,11 @@ class generic_ui extends e_admin_ui
 	//	protected $sortField		= 'somefield_order';
 	//	protected $orderStep		= 10;
 	//	protected $tabs			= array('Tabl 1','Tab 2'); // Use 'tab'=>0  OR 'tab'=>1 in the $fields below to enable. 
-		
+
 		protected $listQry      	= "SELECT * FROM `#generic` WHERE gen_type='wmessage'  "; // Example Custom Query. LEFT JOINS allowed. Should be without any Order or Limit.
-	
+
 		protected $listOrder		= 'gen_id DESC';
-	
+
 		protected $fields		= array (  
 		  'checkboxes'		=>   array ( 'title' => '', 			'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
 		  'gen_id'			=>   array ( 'title' => LAN_ID, 		'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
@@ -87,26 +87,26 @@ class generic_ui extends e_admin_ui
 		  'gen_chardata'	=>   array ( 'title' => LAN_MESSAGE, 	'type' => 'bbarea', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 		  'options' 		=>   array ( 'title' => LAN_OPTIONS, 	'type' => null, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 		);		
-		
+
 		protected $fieldpref = array('gen_ip', 'gen_intdata');
-		
-		
+
+
 		protected $prefs = array(
 			'wm_enclose'		=> array('title'=> WMLAN_05, 'type'=>'radio', 'data' => 'int','help'=> WMLAN_06, 'writeParms'=>array('optArray'=>array(0=> LAN_DISABLED, 1=> LAN_ENABLED, 2=> WMLAN_11))),
 		);
 
-	
+
 		public function init()
 		{
 
-	
+
 		}
-	
+
 		public function beforeCreate($new_data, $old_data)
 		{
 			return $new_data;
 		}
-	
+
 		public function afterCreate($new_data, $old_data, $id)
 		{
 			// do something
@@ -121,7 +121,7 @@ class generic_ui extends e_admin_ui
 		{
 			e107::getCache()->clear("wmessage");
 		}
-		
+
 		public function onCreateError($new_data, $old_data)
 		{
 			// do something		
@@ -131,8 +131,8 @@ class generic_ui extends e_admin_ui
 		{
 			// do something		
 		}
-		
-		
+
+
 	/*	
 		// optional - override edit page. 
 		public function customPage()
@@ -140,7 +140,7 @@ class generic_ui extends e_admin_ui
 			$ns = e107::getRender();
 			$text = 'Hello World!';
 			$ns->tablerender('Hello',$text);	
-			
+
 		}
 	*/
 			

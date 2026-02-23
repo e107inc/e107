@@ -64,7 +64,7 @@ class forum_post_handler
 		$forum = new e107forum();
 		$this->forumObj = $forum;
 
-		$this->action   = trim($_GET['f']); // action: rp|quote|nt|edit etc.
+		$this->action   = trim((string) $_GET['f']); // action: rp|quote|nt|edit etc.
 		$this->id       = (int) $_GET['id']; // forum thread/topic id.
 		$this->post     = (int) $_GET['post']; // post ID if needed.
 
@@ -687,7 +687,7 @@ class forum_post_handler
 			//$template = str_replace("{".$old."}", "{".$new."}", $template);
 			$reg = '/\{'.$old.'((?:=|:)?[^\}]*)\}/';  // handle variations.
 			$repl = '{'.$new.'$1}';
-			$template = preg_replace($reg,$repl, $template);
+			$template = preg_replace($reg,$repl, (string) $template);
 
 		}
 
@@ -793,9 +793,9 @@ class forum_post_handler
 
 		foreach($fList as $f)
 		{
-			if(substr($f['forum_name'], 0, 1) != '*')
+			if(substr((string) $f['forum_name'], 0, 1) != '*')
 			{
-				$f['sub_parent'] = ltrim($f['sub_parent'], '*');
+				$f['sub_parent'] = ltrim((string) $f['sub_parent'], '*');
 				$for_name = $f['forum_parent'].' &gg; ';
 				$for_name .= ($f['sub_parent'] ? $f['sub_parent'].' &gg; ' : '');
 				$for_name .= $f['forum_name'];
@@ -1142,7 +1142,7 @@ class forum_post_handler
 
 		$fp = new floodprotect;
 
-		if ((isset($_POST['newthread']) && trim($_POST['subject']) == '') || trim($_POST['post']) == '')
+		if ((isset($_POST['newthread']) && trim((string) $_POST['subject']) == '') || trim((string) $_POST['post']) == '')
 		{
 			message_handler('ALERT', 5);
 		}
@@ -1347,7 +1347,7 @@ class forum_post_handler
 		{
 			$newThreadTitle = '['.LAN_FORUM_5021.']';
 		}
-		elseif($posted['rename_thread'] == 'rename' && trim($posted['newtitle']) != '')
+		elseif($posted['rename_thread'] == 'rename' && trim((string) $posted['newtitle']) != '')
 		{
 			$newThreadTitle = $tp->toDB($posted['newtitle']);
 			$newThreadTitleType = 1;
@@ -1495,13 +1495,13 @@ class forum_post_handler
 				$postVals['post_attachments'] = e107::serialize($newValues);
 				// $postVals['post_attachments'] = implode(',', $attachments);
 			}
-			
+
 			//Allows directly overriding the method of adding files (or other data) as attachments
 			if($attachmentsPosted = $this->processAttachmentsPosted($this->data['post_attachments']))
 			{
 				$postVals['post_attachments'] = $attachmentsPosted;
 			}	
-      
+
 			$postVals['post_edit_datestamp']    = time();
 			$postVals['post_edit_user']         = USERID;
 			$postVals['post_entry']             = $_POST['post'];
@@ -1649,7 +1649,7 @@ class forum_post_handler
 						$_thumb = '';
 						$_fname = '';
 						$fpath = '';
-						if(strpos($upload['type'], 'image') !== false)
+						if(strpos((string) $upload['type'], 'image') !== false)
 						{
 							$_type = 'img';
 
@@ -1742,9 +1742,9 @@ class forum_post_handler
 	//Allows directly overriding the method of adding files (or other data) as attachments
 	function processAttachmentsPosted($existingValues = '')
 	{		
-		if(isset($_POST['post_attachments_json']) && trim($_POST['post_attachments_json']))
+		if(isset($_POST['post_attachments_json']) && trim((string) $_POST['post_attachments_json']))
 		{
-			$postedAttachments = json_decode($_POST['post_attachments_json'], true);
+			$postedAttachments = json_decode((string) $_POST['post_attachments_json'], true);
 			$attachmentsJsonErrors = json_last_error();
 			if($attachmentsJsonErrors === JSON_ERROR_NONE)
 			{

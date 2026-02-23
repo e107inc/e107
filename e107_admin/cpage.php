@@ -181,11 +181,11 @@ class page_chapters_ui extends e_admin_ui
 		protected $listOrder		= 'Sort,chapter_order ';
 	//	protected $listOrder 	= ' COALESCE(NULLIF(chapter_parent,0), chapter_id), chapter_parent > 0, chapter_order '; //FIXME works with parent/child but doesn't respect parent order.
 		protected $url         	= array('route'=>'page/chapter/index', 'vars' => array('id' => 'chapter_id', 'name' => 'chapter_sef'), 'name' => 'chapter_name', 'description' => ''); // 'link' only needed if profile not provided. 
-	
+
 		protected $sortField	= 'chapter_order';
 		protected $sortParent   = 'chapter_parent';
 	//	protected $orderStep 	= 10;
-		
+
 		protected $fields = array(
 			'checkboxes'				=> array('title'=> '',						'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'chapter_id'				=> array('title'=> 'LAN_ID',					'type' => 'number',			'width' =>'5%', 'forced'=> TRUE, 'readonly'=>TRUE),
@@ -207,13 +207,13 @@ class page_chapters_ui extends e_admin_ui
 			'chapter_image' 	        => array('title'=> 'LAN_IMAGE',			    'type' => 'image', 			'data' => 'str',		'width' => '100px',	'thclass' => 'center', 'class'=>'center',  'readParms'=>'thumb=140&thumb_urlraw=0&thumb_aw=140', 'writeParms'=>'', 'readonly'=>FALSE,	'batch' => FALSE, 'filter'=>FALSE),
 
 			'options' 					=> array('title'=> 'LAN_OPTIONS',				'type' => 'method',			'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'left', 'readParms'=>'sort=1')
-		
+
 		);
 
 		protected $fieldpref = array('checkboxes', 'chapter_icon', 'chapter_id', 'chapter_page_count','chapter_name', 'chapter_description','chapter_template', 'chapter_visibility', 'chapter_order', 'options');
 
 		protected $books = array();
-	
+
 		function init()
 		{
 			$this->addTitle(CUSLAN_63);
@@ -234,33 +234,33 @@ class page_chapters_ui extends e_admin_ui
 			$sql = e107::getDb();
 			$sql->gen("SELECT chapter_id,chapter_name FROM #page_chapters WHERE chapter_parent =0");
 			$this->books[0] = CUSLAN_5;
-			
+
 			while($row = $sql->fetch())
 			{
 				$bk = $row['chapter_id'];
 				$this->books[$bk] = $row['chapter_name'];
 			}
-			
+
 			asort($this->books);
-			
+
 			$this->fields['chapter_parent']['writeParms'] = $this->books;	
-			
-			
+
+
 			$tmp = e107::getLayouts('', 'chapter', 'front', '', true, false);
 			$tmpl = array();
 			foreach($tmp as $key=>$val)
 			{
-				if(substr($key,0,3) != 'nav')
+				if(substr((string) $key,0,3) != 'nav')
 				{
 					$tmpl[$key] = $val;	
 				}	
 			}
-			
+
 			$this->fields['chapter_template']['writeParms'] = $tmpl; // e107::getLayouts('', 'chapter', 'front', '', true, false); // e107::getLayouts('', 'page', 'books', 'front', true, false); 
-			
+
 		}
-		
-		
+
+
 		public function beforeCreate($new_data, $old_data)
 		{
 			if(empty($new_data['chapter_sef']))
@@ -271,9 +271,9 @@ class page_chapters_ui extends e_admin_ui
 			{
 				$new_data['chapter_sef'] = eHelper::secureSef($new_data['chapter_sef']);
 			}
-			
+
 			$sef = e107::getParser()->toDB($new_data['chapter_sef']);
-			
+
 			if(e107::getDb()->count('page_chapters', '(*)', "chapter_sef='{$sef}'"))
 			{
 				e107::getMessage()->addError(CUSLAN_57);
@@ -281,11 +281,11 @@ class page_chapters_ui extends e_admin_ui
 			}
 
 			$new_data = e107::getCustomFields()->processConfigPost('chapter_fields', $new_data);
-			
+
 			return $new_data;	
 		}
-		
-		
+
+
 		public function beforeUpdate($new_data, $old_data, $id)
 		{	
 			// return $this->beforeCreate($new_data);
@@ -815,7 +815,7 @@ class page_admin_ui extends e_admin_ui
 			$tmpl = array();
 			foreach($tmp as $key=>$val)
 			{
-				if(substr($key,0,3) != 'nav')
+				if(substr((string) $key,0,3) != 'nav')
 				{
 					$tmpl[$key] = $val;	
 				}	
@@ -1084,7 +1084,7 @@ class page_admin_ui extends e_admin_ui
 
 			$new_data = e107::getCustomFields()->processDataPost('page_fields',$new_data);
 
-			$new_data['menu_name'] = preg_replace('/[^\w\-*]/','-',$new_data['menu_name']);
+			$new_data['menu_name'] = preg_replace('/[^\w\-*]/','-',(string) $new_data['menu_name']);
 
 			if(empty($new_data['page_sef']))
 			{

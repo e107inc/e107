@@ -74,7 +74,7 @@
 
 			$result = $this->bb->htmltoBbcode($text);
 
-			$expected = strip_tags($result);
+			$expected = strip_tags((string) $result);
 
 			$this->assertSame($expected, $result);
 

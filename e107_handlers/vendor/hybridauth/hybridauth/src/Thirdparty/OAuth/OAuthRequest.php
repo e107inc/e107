@@ -32,7 +32,7 @@ class OAuthRequest
     public function __construct($http_method, $http_url, $parameters = null)
     {
         $parameters = ($parameters) ? $parameters : array();
-        $parameters = array_merge(OAuthUtil::parse_parameters(parse_url($http_url, PHP_URL_QUERY)), $parameters);
+        $parameters = array_merge(OAuthUtil::parse_parameters(parse_url((string) $http_url, PHP_URL_QUERY)), $parameters);
         $this->parameters  = $parameters;
         $this->http_method = $http_method;
         $this->http_url    = $http_url;
@@ -209,7 +209,7 @@ class OAuthRequest
      */
     public function get_normalized_http_method()
     {
-        return strtoupper($this->http_method);
+        return strtoupper((string) $this->http_method);
     }
     
     /**
@@ -218,7 +218,7 @@ class OAuthRequest
      */
     public function get_normalized_http_url()
     {
-        $parts = parse_url($this->http_url);
+        $parts = parse_url((string) $this->http_url);
         
         $scheme = (isset($parts['scheme'])) ? $parts['scheme'] : 'http';
         $port   = (isset($parts['port'])) ? $parts['port'] : (($scheme == 'https') ? '443' : '80');
@@ -266,9 +266,9 @@ class OAuthRequest
         } else {
             $out = 'OAuth';
         }
-        
+
         foreach ($this->parameters as $k => $v) {
-            if (substr($k, 0, 5) != "oauth") {
+            if (substr((string) $k, 0, 5) != "oauth") {
                 continue;
             }
             if (is_array($v)) {
@@ -332,7 +332,7 @@ class OAuthRequest
     {
         $mt   = microtime();
         $rand = mt_rand();
-        
+
         return md5($mt . $rand); // md5s look nicer than numbers
     }
 }

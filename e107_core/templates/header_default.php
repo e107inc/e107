@@ -236,11 +236,11 @@ if (is_array($pref['e_meta_list']))
 {	
 	// $pref = e107::getPref();
 	ob_start();
-	
+
 	foreach($pref['e_meta_list'] as $val)
 	{		
 		$fname = e_PLUGIN.$val."/e_meta.php"; // Do not place inside a function - BC $pref required. . 
-		
+
 		if(is_readable($fname))
 		{
 			$ret = (deftrue('e_DEBUG') || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
@@ -298,7 +298,7 @@ else
 	else 
 	{
 		// Theme default
-		
+
 		$e_js->themeCSS(THEME_STYLE, $css_default);
 
 		// Support for style.css - override theme default CSS
@@ -318,11 +318,11 @@ else
 			$e_js->themeCSS('style_print.css', 'print');
 		}
 	}
-	
+
 	// possibility to overwrite some CSS definition according to TEXTDIRECTION
 	// especially usefull for rtl.css
 	// see _blank theme for examples
-	if(defined('TEXTDIRECTION') && file_exists(THEME.'/'.strtolower(TEXTDIRECTION).'.css'))
+	if(defined('TEXTDIRECTION') && file_exists(THEME.'/'.strtolower((string) TEXTDIRECTION).'.css'))
 	{
 		//echo '
 		//<link rel="stylesheet" href="'.THEME_ABS.strtolower(TEXTDIRECTION).'.css" type="text/css" media="all" />';
@@ -617,10 +617,10 @@ echo "</head>\n";
 			{
 				continue;	
 			}
-			
-			if(strpos($template,'{---}') !==false)
+
+			if(strpos((string) $template,'{---}') !==false)
 			{
-				list($hd,$ft) = explode("{---}",$template);
+				list($hd,$ft) = explode("{---}",(string) $template);
 				$HEADER[$key] = isset($LAYOUT['_header_']) ? $LAYOUT['_header_'] . $hd : $hd;
 				$FOOTER[$key] = isset($LAYOUT['_footer_']) ? $ft . $LAYOUT['_footer_'] : $ft ;	
 			}
@@ -664,7 +664,7 @@ echo "</head>\n";
 	        echo e107::getMessage()->addError("There is no layout in theme.php with the key: <b>".$def."</b> or your layout is missing {---}. ")->render();
 	    }
     }
-    
+
     if(deftrue('e_IFRAME'))
     {
         $HEADER = deftrue('e_IFRAME_HEADER');
@@ -728,7 +728,7 @@ if(deftrue('BOOTSTRAP'))
 				            <div class="modal-header">
 				            	<h4 class="modal-caption modal-title col-sm-11">&nbsp;</h4>
 				                <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
-				                
+
 				             </div>
 				             <div class="modal-body">
 				             <p>Loading…</p>
@@ -790,7 +790,7 @@ e107::getDebug()->logTime('Render Layout');
 		if(deftrue('DEMO_CONTENT')) // embedded content relative to THEME directory - update paths. 
 		{
 			$HEADER = preg_replace('#(src|href)=("|\')([^:\'"]*)("|\')#','$1=$2'.THEME.'$3$4', $HEADER);	
-			$FOOTER = preg_replace('#(src|href)=("|\')([^:\'"]*)("|\')#','$1=$2'.THEME.'$3$4', $FOOTER);	
+			$FOOTER = preg_replace('#(src|href)=("|\')([^:\'"]*)("|\')#','$1=$2'.THEME.'$3$4', (string) $FOOTER);	
 		}
 
 
@@ -833,7 +833,7 @@ e107::getDebug()->logTime('Render Other');
 		// echo "<div class='installer alert alert-danger alert-block alert-dismissible text-center'>".e107::getParser()->toHTML(LAN_DEVELOPERMODE_CHECK, true)."<button type='button' class='close btn-close' data-bs-dismiss='alert' data-dismiss='alert' aria-label='".LAN_CLOSE."'></button></div>";
 	}
 
-	
+
 	//XXX TODO LAN in English.php 
 	echo "<noscript><div class='alert alert-block alert-error alert-danger'><strong>This web site requires that javascript be enabled. <a rel='external' href='https://enablejavascript.io'>Click here for instructions.</a>.</strong></div></noscript>";
 
@@ -847,12 +847,12 @@ e107::getDebug()->logTime('Render Other');
      * fix - only when e_FRONTPAGE set to true
      * @see core_index_index_controller/actionIndex
      */
-    if(deftrue('e_FRONTPAGE') && ($noBody !== true) && strpos($HEADER, "{WMESSAGE") === false && strpos($FOOTER, "{WMESSAGE") === false) // Auto-detection to override old pref.
+    if(deftrue('e_FRONTPAGE') && ($noBody !== true) && strpos($HEADER, "{WMESSAGE") === false && strpos((string) $FOOTER, "{WMESSAGE") === false) // Auto-detection to override old pref.
 	{
 		echo e107::getParser()->parseTemplate("{WMESSAGE}");
 	}
 
-	if(!deftrue('e_IFRAME') && (strpos($HEADER, "{ALERTS}") === false && strpos($FOOTER, "{ALERTS}") === false)) // Old theme, missing {ALERTS}
+	if(!deftrue('e_IFRAME') && (strpos($HEADER, "{ALERTS}") === false && strpos((string) $FOOTER, "{ALERTS}") === false)) // Old theme, missing {ALERTS}
 	{
 		if(deftrue('e_DEBUG'))
 		{

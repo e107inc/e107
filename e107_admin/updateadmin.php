@@ -110,7 +110,7 @@ else
 				</tbody>
 			</table>
 			<div class='buttons-bar center'>
-				<input type='hidden' name='ac' value='".md5(defset('ADMINPWCHANGE'))."' />".
+				<input type='hidden' name='ac' value='".md5((string) defset('ADMINPWCHANGE'))."' />".
 				$frm->admin_button('update_settings','no-value','update',UDALAN_7)."
 				
 			</div>

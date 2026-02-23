@@ -58,36 +58,36 @@ define('PRE_EXTENDEDSTRING', '<br />');
 function tablestyle($caption, $text, $id='', $info=array()) 
 {
 //	global $style; // no longer needed. 
-	
+
 	$style = $info['setStyle'];
-	
+
 	echo "<!-- tablestyle: style=".$style." id=".$id." -->\n\n";
-	
+
 	$type = $style;
 	if(empty($caption))
 	{
 		$type = 'box';
 	}
-	
+
 	if($style == 'navdoc' || $style == 'none')
 	{
 		echo $text;
 		return;
 	}
-	
+
 	/*
 	if($id == 'wm') // Example - If rendered from 'welcome message' 
 	{
-		
+
 	}
-	
+
 	if($id == 'featurebox') // Example - If rendered from 'featurebox' 
 	{
-		
+
 	}	
 	*/
-	
-	
+
+
 	if($style == 'jumbotron')
 	{
 		echo '<div class="jumbotron">
@@ -102,11 +102,11 @@ function tablestyle($caption, $text, $id='', $info=array())
     	</div>';	
 		return;
 	}
-	
+
 	if($style == 'col-md-3' || $style == 'col-md-4' || $style == 'col-md-6' || $style == 'col-md-8' || $style == 'col-md-9')
 	{
 		echo ' <div class="col-xs-12 '.$style.'">';
-		
+
 		if(!empty($caption))
 		{
             echo '<h2>'.$caption.'</h2>';
@@ -116,9 +116,9 @@ function tablestyle($caption, $text, $id='', $info=array())
           '.$text.'
         </div>';
 		return;	
-		
+
 	}
-		
+
 	if($style == 'menu')
 	{
 		echo '<div class="menu">
@@ -128,7 +128,7 @@ function tablestyle($caption, $text, $id='', $info=array())
 	  </div>
 	</div>';
 		return;
-		
+
 	}	
 
 	if($style == 'portfolio')
@@ -152,11 +152,11 @@ function tablestyle($caption, $text, $id='', $info=array())
 	echo $text;
 
 
-					
+
 	return;
-	
-	
-	
+
+
+
 }
 
 // applied before every layout.
@@ -190,8 +190,8 @@ $LAYOUT['_header_'] = '
 </h1>
 </div>
 </div>
-  
-	
+
+
 ';
 
 // applied after every layout. 
@@ -331,9 +331,9 @@ $LAYOUT['jumbotron_home'] =  <<<TMPL
 	<div class="container">	
 
 	{MENU=1}
-	
+
 	{---}
-	
+
 	</div>
     <div class="container">
       <!-- Example row of columns -->
@@ -397,14 +397,14 @@ $LAYOUT['modern_business_home'] =  <<<TMPL
     {SETSTYLE=none}
 
 	{FEATUREBOX}   
-	
+
 	<div class="container">	
 	{ALERTS}
 <!-- Start Menu 1 --> 
 	{MENU=1}
 <!-- End Menu 1 --> 
 	</div>
-	
+
 	<div class="section">
 	    <div class="container">
 	      <!-- Example row of columns -->
@@ -416,7 +416,7 @@ $LAYOUT['modern_business_home'] =  <<<TMPL
 	      </div>
 		</div>
 	</div>
-		
+
 {SETSTYLE=default}
 
 	<div class="section-colored text-center">
@@ -431,8 +431,8 @@ $LAYOUT['modern_business_home'] =  <<<TMPL
 
   	</div><!-- /.section-colored -->
 
-	
-	
+
+
 	<div class="section">
 
       <div class="container">
@@ -442,11 +442,11 @@ $LAYOUT['modern_business_home'] =  <<<TMPL
             <h2>Display Some Work on the Home Page Portfolio</h2>
             <hr>
           </div>
-          
+
 		  {SETSTYLE=portfolio}
 		  {SETIMAGE: w=700&h=500&crop=1}
 		  {GALLERY_PORTFOLIO: placeholder=1&limit=6}   
-		  
+
         </div><!-- /.row -->
 
       </div><!-- /.container -->
@@ -462,29 +462,29 @@ $LAYOUT['modern_business_home'] =  <<<TMPL
 		<div class="container">
 
 			<div class="row">
-			
+
         		{CMENU=feature-menu-1}
-				
+
 			</div>
-			
+
 		</div><!-- /.container -->
 
 	</div><!-- /.section-colored -->
 
 
-	
+
 	 <div class="section">
-	
+
 		<div class="container">
-		
+
 			<div class="row">
-			
+
 				{CMENU=feature-menu-2}
-				
+
 			</div>
-			
+
 		</div><!-- /.container -->
-	
+
 	</div><!-- /.section -->
 
 
@@ -492,9 +492,9 @@ $LAYOUT['modern_business_home'] =  <<<TMPL
 	<div class="container">
 
 		<div class="row well">
-      
+
         	{CMENU=feature-menu-3}
-		
+
 		</div><!-- /.row -->
 
 	</div><!-- /.container -->
@@ -517,32 +517,32 @@ TMPL;
 
 
 $LAYOUT['jumbotron_full'] = '
-   
+
 	{SETSTYLE=default}
 	<div class="container">	
 	{ALERTS}
    	 {MENU=1}
 	{---}
-	
+
 	</div>
     <div class="container">
-   
-     
+
+
 
 	';
 
 
 
 $LAYOUT['jumbotron_sidebar_right'] =  '
-   
+
 	{SETSTYLE=default}
 	<div class="container">	
 	{ALERTS}
 		<div class="row">
    			<div class="col-xs-12 col-md-8">
-   		
+
 				{---}
-	
+
  			</div>
         	<div id="sidebar" class="col-xs-12 col-md-4">
         	{SETSTYLE=menu}
@@ -550,7 +550,7 @@ $LAYOUT['jumbotron_sidebar_right'] =  '
         		{MENU=1}
         	</div>
       </div>
-	
+
 	</div>
     <div class="container">
            {SETSTYLE=default}
@@ -597,9 +597,9 @@ $LAYOUT['jumbotron_sidebar_right'] =  '
 
 
 /*
- 
- 
- 
+
+
+
 $NEWSCAT = "\n\n\n\n<!-- News Category -->\n\n\n\n
 	<div style='padding:2px;padding-bottom:12px'>
 	<div class='newscat_caption'>

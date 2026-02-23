@@ -1149,7 +1149,7 @@ $SYSTEM_DIRECTORY    = "e107_system/";</pre>
 				$emailLogFile = e_LOG.'criticalErrorEmail'.date('Ymd').'.log';
 				if(!file_exists($emailLogFile))
 				{
-					@mail(e_EMAIL_CRITICAL, $subject, $date."\t\t". strip_tags($message));
+					@mail((string) e_EMAIL_CRITICAL, $subject, $date."\t\t". strip_tags($message));
 					@file_put_contents(e_LOG.'criticalErrorEmail'.date('Ymd').'.log', 'Critical Error email sent to '.e_EMAIL_CRITICAL);
 				}
 				$message = LAN_ERROR_11; // "Check log for details";

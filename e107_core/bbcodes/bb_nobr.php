@@ -30,6 +30,6 @@ class bb_nobr extends e_bb_base
 	 */
 	function toHTML($code_text, $parm)
 	{
-		return str_replace(E_NL, "\n", trim($code_text));
+		return str_replace(E_NL, "\n", trim((string) $code_text));
 	}
 }

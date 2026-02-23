@@ -38,12 +38,12 @@ function user_avatar_shortcode($parm=null)
 	$tp 		= e107::getParser();
 	$width 		= $tp->thumbWidth;
 	$height 	= ($tp->thumbHeight !== 0) ? $tp->thumbHeight : "";
-	
+
 	if(intval($loop_uid) > 0 && trim($parm) == "")
 	{
 		$parm = $loop_uid;
 	}
-	
+
 	if(is_numeric($parm))
 	{
 		if($parm == USERID)
@@ -68,24 +68,24 @@ function user_avatar_shortcode($parm=null)
 	{
 		$image = "";	
 	}
-	
+
 
 	$genericImg = $tp->thumbUrl(e_IMAGE."generic/blank_avatar.jpg","w=".$width."&h=".$height,true);	
-	
+
 	if (vartrue($image)) 
 	{
-		
+
 		if(strpos($image,"://")!==false) // Remove Image
 		{
 			$img = $image;	
 
-			
+
 			//$height 	= e107::getPref("im_height",100); // these prefs are too limiting for local images.  
 			//$width 		= e107::getPref("im_width",100);
 		}
 		elseif(substr($image,0,8) == "-upload-")
 		{
-			
+
 			$image = substr($image,8); // strip the -upload- from the beginning. 
 			if(file_exists(e_AVATAR_UPLOAD.$image)) // Local Default Image
 			{
@@ -93,7 +93,7 @@ function user_avatar_shortcode($parm=null)
 			}	
 			else 
 			{
-				
+
 				$img = $genericImg;
 			}	
 		}
@@ -103,7 +103,7 @@ function user_avatar_shortcode($parm=null)
 		}
 		else // Image Missing. 
 		{
-			
+
 			$img = $genericImg;
 		}
 	}
@@ -111,9 +111,9 @@ function user_avatar_shortcode($parm=null)
 	{
 		$img = $genericImg;
 	}
-	
+
 	$title = (ADMIN) ? $image : "";
-	
+
 	$text = "<img class='img-rounded user-avatar e-tip' title='".$title."' src='".$img."' alt='' style='width:".$width."px; height:".$height."px' />";
 //	return $img;
 	return $text;

@@ -594,7 +594,7 @@ class banlist_ui extends e_admin_ui
 				$mes->addSuccess(str_replace('[y]', $result, BANLAN_48));
 			}
 
-			list($ban_access_guest, $ban_access_member) = explode(',', varset($pref['ban_max_online_access'], '100,200'));
+			list($ban_access_guest, $ban_access_member) = explode(',', (string) varset($pref['ban_max_online_access'], '100,200'));
 			$ban_access_member = max($ban_access_guest, $ban_access_member);
 
 
@@ -720,7 +720,7 @@ class banlist_form_ui extends e_admin_form_ui
 
 		if(!empty($curVal))
 		{
-			$tmp = explode(":",$curVal);
+			$tmp = explode(":",(string) $curVal);
 
 			if(count($tmp) === 8)
 			{

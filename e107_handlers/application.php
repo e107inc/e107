@@ -170,7 +170,7 @@ class e_url
 				}
 
 
-				$newLocation = preg_replace($regex, $v['redirect'], $this->_request);
+				$newLocation = preg_replace($regex, (string) $v['redirect'], $this->_request);
 
 				if($newLocation != $this->_request)
 				{
@@ -957,9 +957,9 @@ class eDispatcher
 		$location = self::getModuleConfigLocation($module);
 		if(!$location) return null;
 		
-		if(($pos = strpos($location, '/'))) //can't be 0
+		if(($pos = strpos((string) $location, '/'))) //can't be 0
 		{
-			return substr($location, 0, $pos);
+			return substr((string) $location, 0, $pos);
 		}
 		return $location;
 	}
@@ -1408,7 +1408,7 @@ class eRouter
 					$ret[$module] = $current[$module];
 					continue;
 				}
-				
+
 				// in all other cases additional re-check will be made - see below
 			}
 			
@@ -1882,7 +1882,7 @@ class eRouter
 		}
 
 		// max number of parts is actually 4 - module/controller/action/[additional/pathinfo/vars], here for reference only
-		$parts = $rawPathInfo ? explode('/', $rawPathInfo, 4) : array();
+		$parts = $rawPathInfo ? explode('/', (string) $rawPathInfo, 4) : array();
 
 		$this->_debug('parts',$parts,  __LINE__);
 
@@ -2000,7 +2000,7 @@ class eRouter
 									if(isset($_GET[$key]) && !$request->isRequestParam($key))
 									{
 										// sanitize
-										$vars->$key = preg_replace('/[^\w\-]/', '', $_GET[$key]);
+										$vars->$key = preg_replace('/[^\w\-]/', '', (string) $_GET[$key]);
 									}
 								}
 							}
@@ -2234,7 +2234,7 @@ class eRouter
 
 		$alias = $this->hasAlias($module, vartrue($options['lan'], null)) ? $this->getAliasFromModule($module, vartrue($options['lan'], null)) : $module;
 		$route[0] = $alias;
-		if($options['encode']) $alias = rawurlencode($alias);
+		if($options['encode']) $alias = rawurlencode((string) $alias);
 		
 		$format = isset($config['format']) && $config['format'] ? $config['format'] : self::FORMAT_GET;
 		
@@ -2411,7 +2411,7 @@ class eRouter
 		$ampersand = !$encode && $options['amp'] == '&amp;' ? '&' : $options['amp'];
 		foreach ($params as $k => $v)
 		{
-			if (null !== $key) $k = $key.'['.rawurlencode($k).']';
+			if (null !== $key) $k = $key.'['.rawurlencode((string) $k).']';
 
 			if (is_array($v)) $pairs[] = $this->createPathInfo($v, $options, $k);
 			else 
@@ -2420,15 +2420,15 @@ class eRouter
 				{
 					if($encode)
 					{
-						$k = null !== $key ? $k : rawurlencode($k);
+						$k = null !== $key ? $k : rawurlencode((string) $k);
 					}
 					$pairs[] = $k;
 					continue;
 				}
 				if($encode)
 				{
-					$k =  null !== $key ? $k : rawurlencode($k);
-					$v = rawurlencode($v);
+					$k =  null !== $key ? $k : rawurlencode((string) $k);
+					$v = rawurlencode((string) $v);
 				}
 				$pairs[] = $k.$equal.$v;
 			}
@@ -2805,7 +2805,7 @@ class eUrlRule
 			{
 				foreach($this->params as $key=>$value)
 				{
-					if(!preg_match('/'.$value.'/'.$case,$params[$key]))
+					if(!preg_match('/'.$value.'/'.$case,(string) $params[$key]))
 						return false;
 				}
 			}
@@ -2825,7 +2825,7 @@ class eUrlRule
 		foreach ($this->params as $key => $value)
 		{
 			// FIX - non-latin URLs proper encoded
-			$tr["<$key>"] = rawurlencode($params[$key]); //todo transliterate non-latin
+			$tr["<$key>"] = rawurlencode((string) $params[$key]); //todo transliterate non-latin
 		//	$tr["<$key>"] = eHelper::title2sef($tp->toASCII($params[$key]), $urlFormat); // enabled to test.
 			unset($params[$key]);
 		}
@@ -3179,7 +3179,7 @@ class eController
 			else 
 			{
 				//TODO not found method by controller or default one
-				$action = substr($actionMethodName, 6);
+				$action = substr((string) $actionMethodName, 6);
 				throw new eException('Action "'.$action.'" does not exist');
 			}
 		}
@@ -3221,7 +3221,7 @@ class eController
 		{
 			$url = eFront::instance()->getRouter()->assemble($url, '', 'encode=0');
 		}
-		if(strpos($url, 'http://') !== 0 && strpos($url, 'https://') !== 0)
+		if(strpos((string) $url, 'http://') !== 0 && strpos((string) $url, 'https://') !== 0)
 		{
 			$url = $url[0] == '/' ? SITEURLBASE.$url : SITEURL.$url;
 		}
@@ -3910,7 +3910,7 @@ class eRequest
 		$this->setModule($parts[0])
 			->setController(vartrue($parts[1], 'index'))
 			->setAction(vartrue($parts[2], 'index'));
-			
+
 		return $this;//->getRoute(true);
 	}
 
@@ -4049,7 +4049,7 @@ class eRequest
 		$qstring = '';
 		if($_SERVER['QUERY_STRING'])
 		{
-			$qstring = str_replace(array('{', '}', '%7B', '%7b', '%7D', '%7d'), '', rawurldecode($_SERVER['QUERY_STRING']));
+			$qstring = str_replace(array('{', '}', '%7B', '%7b', '%7D', '%7d'), '', rawurldecode((string) $_SERVER['QUERY_STRING']));
 		}
 
 		return str_replace('&', '&amp;', e107::getParser()->post_toForm($qstring));
@@ -4568,7 +4568,7 @@ class eResponse
 		if(!empty($pref['meta_keywords'][e_LANGUAGE])) // Always append (global) meta keywords to the end.
 		{
 			$tmp1 = (array) explode(",", $this->getMetaKeywords());
-			$tmp2 = (array) explode(",", $pref['meta_keywords'][e_LANGUAGE]);
+			$tmp2 = (array) explode(",", (string) $pref['meta_keywords'][e_LANGUAGE]);
 
 			$tmp3 = array_unique(array_merge($tmp1,$tmp2));
 
@@ -4585,7 +4585,7 @@ class eResponse
 			$attrData .= '<meta';
 			foreach ($attr as $p => $v) 
 			{
-				$attrData .= ' '.preg_replace('/[^\w\-]/', '', $p).'="'.str_replace(array('"', '<'), '', $v).'"';
+				$attrData .= ' '.preg_replace('/[^\w\-]/', '', (string) $p).'="'.str_replace(array('"', '<'), '', $v).'"';
 			}
 			$attrData .= ' />'."\n";
 		}
@@ -4878,7 +4878,7 @@ class eHelper
 	 */
 	public static function secureClassAttr($string)
 	{
-		return preg_replace(self::$_classRegEx, '', $string);
+		return preg_replace(self::$_classRegEx, '', (string) $string);
 	}
 
 
@@ -4930,7 +4930,7 @@ class eHelper
 	 */
 	public static function secureStyleAttr($string)
 	{
-		return preg_replace(self::$_styleRegEx, '', $string);
+		return preg_replace(self::$_styleRegEx, '', (string) $string);
 	}
 
 	/**
@@ -4949,7 +4949,7 @@ class eHelper
 	public static function formatMetaTitle($title)
 	{
 		$title = trim(str_replace(array('"', "'"), '', strip_tags(e107::getParser()->toHTML($title, TRUE))));
-		return trim(preg_replace('/[\s,]+/', ' ', str_replace('_', ' ', $title)));
+		return trim((string) preg_replace('/[\s,]+/', ' ', str_replace('_', ' ', $title)));
 	}
 
 	/**
@@ -4958,7 +4958,7 @@ class eHelper
 	 */
 	public static function secureSef($sef)
 	{
-		return trim(preg_replace('/[^\w\pL\s\-+.,]+/u', '', strip_tags(e107::getParser()->toHTML($sef, TRUE))));
+		return trim((string) preg_replace('/[^\w\pL\s\-+.,]+/u', '', strip_tags(e107::getParser()->toHTML($sef, TRUE))));
 	}
 
 	/**
@@ -4968,7 +4968,7 @@ class eHelper
 	public static function formatMetaKeys($keywordString)
 	{
 		$keywordString = preg_replace('/[^\w\pL\s\-.,+]/u', '', strip_tags(e107::getParser()->toHTML($keywordString, TRUE)));
-		return trim(preg_replace('/[\s]?,[\s]?/', ',', str_replace('_', ' ', $keywordString)));
+		return trim((string) preg_replace('/[\s]?,[\s]?/', ',', str_replace('_', ' ', $keywordString)));
 	}
 
 	/**
@@ -4978,7 +4978,7 @@ class eHelper
 	public static function formatMetaDescription($descrString)
 	{
 		$descrString = preg_replace('/[\r]*\n[\r]*/', ' ', trim(str_replace(array('"', "'"), '', strip_tags(e107::getParser()->toHTML($descrString, TRUE)))));
-		return trim(preg_replace('/[\s]+/', ' ', str_replace('_', ' ', $descrString)));
+		return trim((string) preg_replace('/[\s]+/', ' ', str_replace('_', ' ', $descrString)));
 	}
 
 	/**
@@ -5059,7 +5059,7 @@ class eHelper
 		$title = str_replace(array('/',' ',","),' ',$title);
 		$title = str_replace(array("&","(",")"),'',$title);
 		$title = preg_replace('/[^\w\pL\s.-]/u', '', strip_tags(e107::getParser()->toHTML($title, TRUE)));
-		$title = trim(preg_replace('/[\s]+/', ' ', str_replace('_', ' ', $title)));
+		$title = trim((string) preg_replace('/[\s]+/', ' ', str_replace('_', ' ', $title)));
 		$title = str_replace(array(' - ',' -','- ','--'),'-',$title); // cleanup to avoid ---
 
 		$words = str_word_count($title,1, '1234567890');

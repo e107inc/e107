@@ -108,9 +108,9 @@ class faq_cat_ui extends e_admin_ui
 	public function init()
 	{
 		$sql = e107::getDb();
-		
+
 		$this->categories[0] = "(".LAN_ROOT.")";
-		
+
 		if($sql->select('faqs_info','*', 'faq_info_parent = 0 ORDER BY faq_info_title ASC'))
 		{
 			while ($row = $sql->fetch())
@@ -118,9 +118,9 @@ class faq_cat_ui extends e_admin_ui
 				$this->categories[$row['faq_info_id']] = $row['faq_info_title'];
 			}
 		}
-		
+
 		$this->fields['faq_info_parent']['writeParms'] = $this->categories;
-		
+
 		/*
 		if(e_AJAX_REQUEST) // ajax link sorting. 
 		{
@@ -134,8 +134,8 @@ class faq_cat_ui extends e_admin_ui
 					$c++;		
 				}	
 			}
-			
-		
+
+
 			exit;
 		}		
 		*/
@@ -281,7 +281,7 @@ class faq_main_ui extends e_admin_ui
 
 		if(!empty($faqOrder))
 		{
-			list($sortField,$sortASC) = explode("-",$faqOrder);
+			list($sortField,$sortASC) = explode("-",(string) $faqOrder);
 			$this->listOrder = $sortField." ".$sortASC;
 
 			if($sortField != 'faq_order')
@@ -316,7 +316,7 @@ class faq_main_ui extends e_admin_ui
 		// trim spaces
 		if(!empty($new_data['faq_tags']))
 		{
-			$new_data['faq_tags'] = implode(',', array_map('trim', explode(',', $new_data['faq_tags'])));
+			$new_data['faq_tags'] = implode(',', array_map('trim', explode(',', (string) $new_data['faq_tags'])));
 		}
 
 		$new_data['faq_order'] = 0;
@@ -330,7 +330,7 @@ class faq_main_ui extends e_admin_ui
 		// trim spaces
 		if(!empty($new_data['faq_tags']))
 		{
-			$new_data['faq_tags'] = implode(',', array_map('trim', explode(',', $new_data['faq_tags'])));
+			$new_data['faq_tags'] = implode(',', array_map('trim', explode(',', (string) $new_data['faq_tags'])));
 		}
 
 	//	e107::getMessage()->addInfo(print_a($new_data, true));

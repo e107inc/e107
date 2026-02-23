@@ -232,7 +232,7 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 			if(vartrue($this->var['pm_subject']))
 			{
 				$value = $this->var['pm_subject'];
-				if(substr($value, 0, strlen(LAN_PM_58)) != LAN_PM_58)
+				if(substr((string) $value, 0, strlen(LAN_PM_58)) != LAN_PM_58)
 				{
 					$value = LAN_PM_58.$value;
 				}
@@ -255,7 +255,7 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 				if(isset($_POST['quote']))
 				{
 					$t = time();
-					$value = "\n\n\n\n\n\n\n[quote{$t}={$this->var['from_name']}]\n".trim($this->var['pm_text'])."[/quote{$t}]";
+					$value = "\n\n\n\n\n\n\n[quote{$t}={$this->var['from_name']}]\n".trim((string) $this->var['pm_text'])."[/quote{$t}]";
 				}
 			}
 
@@ -335,7 +335,7 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 
 			if(!empty($this->var['pm_attachments']))
 			{
-				$attachments = explode(chr(0), $this->var['pm_attachments']);
+				$attachments = explode(chr(0), (string) $this->var['pm_attachments']);
 				$i = 0;
 				$ret = '';
 				foreach($attachments as $a)

@@ -23,7 +23,7 @@ if (!defined('e107_INIT')) { exit; }
  */
 function mimeFromFilename($fileName)
 {
-	$fileExt = strtolower(substr(strrchr($fileName, "."), 1));
+	$fileExt = strtolower(substr(strrchr((string) $fileName, "."), 1));
 	$mimeTypes = array(
 		'jpg' 	=> 'jpeg',
 		'gif' 	=> 'gif',

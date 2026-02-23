@@ -340,7 +340,7 @@ abstract class e_file_inspector implements e_file_inspector_interface
             $defaultDir = $this->defaultDirsCache[$dirType];
             if ($customDir === $defaultDir) continue;
 
-            if (substr($path, 0, strlen($customDir)) === $customDir)
+            if (substr($path, 0, strlen((string) $customDir)) === $customDir)
                 $path = $defaultDir . substr($path, strlen($customDir));
         }
         return $path;
@@ -360,8 +360,8 @@ abstract class e_file_inspector implements e_file_inspector_interface
             $defaultDir = $this->defaultDirsCache[$dirType];
             if ($customDir === $defaultDir) continue;
 
-            if (substr($path, 0, strlen($defaultDir)) === $defaultDir)
-                $path = $customDir . substr($path, strlen($defaultDir));
+            if (substr((string) $path, 0, strlen($defaultDir)) === $defaultDir)
+                $path = $customDir . substr((string) $path, strlen($defaultDir));
         }
         return $path;
     }

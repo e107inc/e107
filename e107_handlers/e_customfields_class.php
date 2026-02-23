@@ -569,13 +569,13 @@
 
 			unset($new_data[$fieldname]); // Reset.
 
-			$len = strlen($fieldname);
+			$len = strlen((string) $fieldname);
 
 			foreach($new_data as $k=>$v)
 			{
-				if(strpos($k, $fieldname) === 0)
+				if(strpos((string) $k, (string) $fieldname) === 0)
 				{
-					list($tmp,$newkey) = explode('__',$k);
+					list($tmp,$newkey) = explode('__',(string) $k);
 					$new_data[$fieldname][$newkey] = $v;
 					unset($new_data[$k]);
 

@@ -613,12 +613,12 @@ class e_news_item extends e_front_model
 	 */
 	public function sc_news_field($parm = null)
 	{
-		$tmp = explode('|', $parm, 2);
+		$tmp = explode('|', (string) $parm, 2);
 		$field = $tmp[0];
 
 		if(!is_array($parm))
 		{
-			parse_str(varset($tmp[1]), $parm);
+			parse_str((string) varset($tmp[1]), $parm);
 		}
 		$val = $this->field($field, '');
 
@@ -631,7 +631,7 @@ class e_news_item extends e_front_model
 				case 'html':
 					$method = 'toHTML';
 					$callback = e107::getParser();
-					$parm['arg'] = explode(',', varset($parm['arg']));
+					$parm['arg'] = explode(',', (string) varset($parm['arg']));
 					$parm['arg'][0] = vartrue($parm['arg'][0]) ? true : false; //to boolean
 					$params = array($val); //value is always the first callback argument
 					$params += $parm['arg'];
@@ -1034,7 +1034,7 @@ class e_news_category_item extends e_front_model
 		{
 			return '';
 		}
-		if(strpos($this->cat('icon'), '{') === 0)
+		if(strpos((string) $this->cat('icon'), '{') === 0)
 		{
 			$src = e107::getParser()->replaceConstants($this->cat('icon'));
 		}

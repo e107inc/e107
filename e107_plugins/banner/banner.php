@@ -35,7 +35,7 @@ if(e_QUERY)
 	$query_string = intval(e_QUERY);
 	$row = $sql->retrieve("banner", "*", "banner_id = '{$query_string}'"); // select the banner
 	$ip = e107::getIPHandler()->getIP();
-	$newip = (strpos($row['banner_ip'], "{$ip}^") !== FALSE) ? $row['banner_ip'] : "{$row['banner_ip']}{$ip}^"; // what does this do?
+	$newip = (strpos((string) $row['banner_ip'], "{$ip}^") !== FALSE) ? $row['banner_ip'] : "{$row['banner_ip']}{$ip}^"; // what does this do?
 	$sql->update("banner", "banner_clicks = banner_clicks + 1, `banner_ip` = '{$newip}' WHERE `banner_id` = '{$query_string}'");
 //	header("Location: {$row['banner_clickurl']}");
 	e107::redirect($row['banner_clickurl']);
@@ -113,7 +113,7 @@ if (isset($_POST['clientsubmit']))
 			
 			if ($row['banner_ip']) 
 			{
-				$tmp = explode("^", $row['banner_ip']);
+				$tmp = explode("^", (string) $row['banner_ip']);
 				$scArray['BANNER_TABLE_IP_LAN'] = (count($tmp)-1);
 				
 				for($a = 0; $a <= (count($tmp)-2); $a++) {

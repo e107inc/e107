@@ -178,7 +178,7 @@ class forum_shortcodes extends e_shortcode
 			    foreach(array_keys($listuserson) as $uinfo)
 			//	foreach($listuserson as $uinfo => &$pinfo)
 				{
-					list($oid, $oname) = explode(".", $uinfo, 2);
+					list($oid, $oname) = explode(".", (string) $uinfo, 2);
 					$c ++;
 					$text .= "<a href='".e_HTTP."user.php?id.$oid'>$oname</a>".($c == MEMBERS_ONLINE ? "." :", ");
 				}
@@ -250,7 +250,7 @@ class forum_shortcodes extends e_shortcode
 
 			if(defined('USERVIEWED') && defset('USERVIEWED') != "")
 			{
-				$tmp = explode(".", USERVIEWED); // List of numbers, separated by single period
+				$tmp = explode(".", (string) USERVIEWED); // List of numbers, separated by single period
 				$total_read_threads = count($tmp);
 			}
 			/*
@@ -433,9 +433,9 @@ class forum_shortcodes extends e_shortcode
 
 	function sc_forumname($parm = null)
 	{
-		if(substr($this->var['forum_name'], 0, 1) == '*')
+		if(substr((string) $this->var['forum_name'], 0, 1) == '*')
 		{
-			$this->var['forum_name'] = substr($this->var['forum_name'], 1);
+			$this->var['forum_name'] = substr((string) $this->var['forum_name'], 1);
 		}
 
 		$this->var['forum_name'] = e107::getParser()->toHTML($this->var['forum_name'], true, 'no_hook');
@@ -523,7 +523,7 @@ class forum_shortcodes extends e_shortcode
 
 		global $forum;
 
-		list($lastpost_datestamp, $lastpost_thread) = explode('.', $this->var['forum_lastpost_info']);
+		list($lastpost_datestamp, $lastpost_thread) = explode('.', (string) $this->var['forum_lastpost_info']);
 
 		// e107::getDebug()->log($this->var);
 
@@ -575,7 +575,7 @@ class forum_shortcodes extends e_shortcode
 
 		$datestamp = !empty($this->var['thread_lastpost']) ? $this->gen->convert_date($this->var['thread_lastpost'], 'forum') : '';
 
-  
+
 		if(!empty($this->var['user_name']))
 		{
 			return $author_name.'<br />'.$datestamp;

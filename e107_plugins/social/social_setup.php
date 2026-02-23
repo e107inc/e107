@@ -138,7 +138,7 @@ class social_setup
 				$new_user_xup = preg_replace(
 					'/^' . preg_quote($oldProviderName) . '_/',
 					$newProviderName . '_',
-					$old_user_xup
+					(string) $old_user_xup
 				);
 				$this->fixUserXup($db, $row['user_id'], $old_user_xup, $new_user_xup);
 			}

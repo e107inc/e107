@@ -115,7 +115,7 @@ class e_pluginbuilder
 					<td><div class='input-append form-inline'>".$frm->open('createPlugin','get',e_SELF."?mode=create").$frm->select("newplugin",$newDir, false, 'size=xlarge').$frm->admin_button('step', 2,'other',LAN_GO)."</div> ".$frm->checkbox('createFiles',1,1,EPL_ADLAN_255).$frm->close()."</td>
 					<td><div class='alert alert-info'>".$info."</div></td>
 				</tr>
-				
+
 				<tr>
 					<td>".EPL_ADLAN_108."</td>
 					<td><div class='input-append form-inline'>".$frm->open('checkPluginLangs','get',e_SELF."?mode=lans").$frm->select("newplugin",$lanDir, false, 'size=xlarge').$frm->admin_button('step', 2,'other',LAN_GO)."</div> ".$frm->close()."</td>
@@ -138,7 +138,7 @@ class e_pluginbuilder
 			$text .= "				
 				</table>
 				<div class='buttons-bar center'>
-				
+
 				</div>";
 
 			$text .= $frm->close();
@@ -409,7 +409,7 @@ $content = <<<TMPL
 // Template File
 TMPL;
 
-$upperName = strtoupper($this->pluginName);
+$upperName = strtoupper((string) $this->pluginName);
 
 $content .=  "
 // ".$this->pluginName." Template file
@@ -469,7 +469,7 @@ class plugin_".$this->pluginName."_".$this->pluginName."_shortcodes extends e_sh
 
 $content .= "
 	/**
-	* {".strtoupper($key)."}
+	* {".strtoupper((string) $key)."}
 	*/
 	public function sc_".$key."(\$parm=null)
 	{
@@ -780,7 +780,7 @@ $content .= '}';
 		function xmlInput($name, $info, $default='')
 		{
 			$frm = e107::getForm();
-			list($cat,$type) = explode("-",$info);
+			list($cat,$type) = explode("-",(string) $info);
 
 			$size 		= 30; // Textbox size.
 			$help		= '';
@@ -1239,10 +1239,10 @@ TEMPLATE;
 		 */
 		function fieldType($name, $val)
 		{
-			$type = strtolower($val['type']);
+			$type = strtolower((string) $val['type']);
 			$frm = e107::getForm();
 
-			if(strtolower($val['default']) == "auto_increment")
+			if(strtolower((string) $val['default']) == "auto_increment")
 			{
 				$key = $this->table."[pid]";
 				return "Primary Id".
@@ -1357,7 +1357,7 @@ TEMPLATE;
 		// Guess Default Field Type based on name of field.
 		function guess($data, $val=null,$mode = 'type')
 		{
-			$tmp = explode("_",$data);
+			$tmp = explode("_",(string) $data);
 			$name = '';
 
 			if(count($tmp) == 3) // eg Link_page_title
@@ -1373,7 +1373,7 @@ TEMPLATE;
 				$name = $data;
 			}
 
-			$ret['title'] = ucfirst($name);
+			$ret['title'] = ucfirst((string) $name);
 			$ret['width'] = 'auto';
 			$ret['class'] = 'left';
 			$ret['thclass'] = 'left';
@@ -1408,7 +1408,7 @@ TEMPLATE;
 				case 'lastname':
 				case 'company':
 				case 'city':
-					$ret['title'] = ucfirst($name);
+					$ret['title'] = ucfirst((string) $name);
 					$ret['type'] = 'text';
 					$ret['batch'] = false;
 					$ret['filter'] = false;
@@ -1481,7 +1481,7 @@ TEMPLATE;
 
 				case 'code':
 				case 'zip':
-					$ret['title'] = ucfirst($name);
+					$ret['title'] = ucfirst((string) $name);
 					$ret['type'] = 'number';
 					$ret['batch'] = false;
 					$ret['filter'] = false;
@@ -1491,7 +1491,7 @@ TEMPLATE;
 				case 'state':
 				case 'country':
 				case 'category':
-					$ret['title'] = ($name == 'category') ? 'LAN_CATEGORY' : ucfirst($name);
+					$ret['title'] = ($name == 'category') ? 'LAN_CATEGORY' : ucfirst((string) $name);
 					$ret['type'] = 'dropdown';
 					$ret['batch'] = true;
 					$ret['filter'] = true;
@@ -1542,7 +1542,7 @@ TEMPLATE;
 				case 'comments':
 				case 'address':
 				case 'description':
-					$ret['title'] = ($name == 'description') ? 'LAN_DESCRIPTION' : ucfirst($name);
+					$ret['title'] = ($name == 'description') ? 'LAN_DESCRIPTION' : ucfirst((string) $name);
 					 $ret['type'] = ($val['type'] == 'TEXT') ? 'textarea' : 'text';
 					 $ret['width'] = '40%';
 					$ret['inline'] = false;
@@ -1575,7 +1575,7 @@ TEMPLATE;
 							'mediumblob','longblob','tinytext','mediumtext','longtext','text','date');
 
 
-			$type = strtolower($type);
+			$type = strtolower((string) $type);
 
 			if(in_array($type,$strings))
 			{
@@ -1705,7 +1705,7 @@ TEMPLATE;
 	{
 		$text = '';
 
-		$typeUpper = ucfirst($type);
+		$typeUpper = ucfirst((string) $type);
 
 		$params = ($type === 'batch') ? "\$selected, \$type" : "\$type";
 

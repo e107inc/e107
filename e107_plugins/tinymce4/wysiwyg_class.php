@@ -156,7 +156,7 @@ class wysiwyg
 			return null;
 		}
 
-		$tmp = explode(" ",$data);
+		$tmp = explode(" ",(string) $data);
 
 		if(e107::pref('core','smiley_activate',false))
 		{
@@ -181,7 +181,7 @@ class wysiwyg
 	function convertBoolean($string)
 	{
 
-		if(substr($string,0,1) == '{' || substr($string,0,1) == '[' || substr($string,0,9) == 'function(')
+		if(substr((string) $string,0,1) == '{' || substr((string) $string,0,1) == '[' || substr((string) $string,0,9) == 'function(')
 		{
 			return $string;
 		}
@@ -377,7 +377,7 @@ class wysiwyg
                     {title: 'Image Right', selector: 'img', classes: 'bbcode-img-right', icon: 'alignright'}
 
                 ]},
-                
+
                 {title: 'Glyphs', items: [
                     {title: 'Size 2x', selector: 'i', classes: 'fa-2x'},
                     {title: 'Size 3x', selector: 'i', classes: 'fa-3x'},
@@ -427,9 +427,9 @@ class wysiwyg
 				 {title: 'Hover', selector: 'table', classes: 'table-hover'},
                  {title: 'Striped', selector: 'table', classes: 'table-striped'},
                 ]},
-                
 
-                
+
+
                 {title: 'Animate.css Style', items: [
 					{title: 'bounce',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated bounce'},
 					{title: 'flash',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated flash'},
@@ -508,7 +508,7 @@ class wysiwyg
 					{title: 'slideOutLeft',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated slideOutLeft'},
 					{title: 'slideOutRight',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated slideOutRight'},
 					{title: 'slideOutUp',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated slideOutUp'}, */
-		
+
                 ]},
 
 
@@ -633,9 +633,9 @@ class wysiwyg
 			$c = 0;
 			foreach($emo as $path=>$co)
 			{
-				$codes = explode(" ",$co);
+				$codes = explode(" ",(string) $co);
 				$url = e_IMAGE_ABS."emotes/" . $pack . "/" . str_replace("!",".",$path);
-				$emotes[$i][] = array('shortcut'=>$codes, 'url'=>$url, 'title'=>ucfirst($path));
+				$emotes[$i][] = array('shortcut'=>$codes, 'url'=>$url, 'title'=>ucfirst((string) $path));
 
 				if($c == 6)
 				{
@@ -714,7 +714,7 @@ class wysiwyg
 
 		$this->config = implode(",\n",$text);
 
-		
+
 
 		// -------------------------------------------------------------------------------------
 

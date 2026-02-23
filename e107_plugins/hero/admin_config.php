@@ -57,7 +57,7 @@ class hero_adminArea extends e_admin_dispatcher
 				
 class hero_ui extends e_admin_ui
 {
-			
+
 		protected $pluginTitle		= 'Hero';
 		protected $pluginName		= 'hero';
 
@@ -73,11 +73,11 @@ class hero_ui extends e_admin_ui
 	//	protected $treePrefix      = 'somefield_title';
 
 		protected $tabs				= array(LAN_GENERAL, LAN_ADVANCED); // Use 'tab'=>0  OR 'tab'=>1 in the $fields below to enable.
-		
+
 	//	protected $listQry      	= "SELECT * FROM `#tableName` WHERE field != '' "; // Example Custom Query. LEFT JOINS allowed. Should be without any Order or Limit.
-	
+
 		protected $listOrder		= 'hero_order';
-	
+
 		protected $fields 		= array (
 		   'checkboxes'         =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
 		  'hero_id'           =>   array ( 'title' => LAN_ID, 'type' => null, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
@@ -95,9 +95,9 @@ class hero_ui extends e_admin_ui
 
 	        'options'             =>   array ( 'title' => LAN_OPTIONS, 'type' => null, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 		);		
-		
+
 		protected $fieldpref = array('hero_media', 'hero_bg', 'hero_title', 'hero_description', 'hero_bullets', 'hero_button1');
-		
+
 
 	//	protected $preftabs        = array('General', 'Other' );
 		protected $prefs = array(
@@ -106,7 +106,7 @@ class hero_ui extends e_admin_ui
 			'slide_interval'    => array('title'=>LAN_HERO_ADMIN_011, 'type'=>'dropdown', 'data'=>'int', 'writeParms'=>array('optArray'=>array())),
 		);
 
-	
+
 		public function init()
 		{
 			// Set drop-down values (if any).
@@ -147,14 +147,14 @@ class hero_ui extends e_admin_ui
 		}
 		*/
 		// ------- Customize Create --------
-		
+
 		public function beforeCreate($new_data,$old_data)
 		{
 			$new_data = $this->processGlyph($new_data);
 
 			return $new_data;
 		}
-	
+
 		public function afterCreate($new_data, $old_data, $id)
 		{
 			// do something
@@ -164,10 +164,10 @@ class hero_ui extends e_admin_ui
 		{
 			// do something		
 		}		
-		
-		
+
+
 		// ------- Customize Update --------
-		
+
 		public function beforeUpdate($new_data, $old_data, $id)
 		{
 			$new_data = $this->processGlyph($new_data);
@@ -179,7 +179,7 @@ class hero_ui extends e_admin_ui
 		{
 			foreach($new_data['hero_bullets'] as $key=>$row)
 			{
-				if(!empty($row['icon']) && strpos($row['icon'],".glyph")===false)
+				if(!empty($row['icon']) && strpos((string) $row['icon'],".glyph")===false)
 				{
 					$new_data['hero_bullets'][$key]['icon'] = $row['icon'].".glyph";
 				}
@@ -194,12 +194,12 @@ class hero_ui extends e_admin_ui
 		{
 			// do something	
 		}
-		
+
 		public function onUpdateError($new_data, $old_data, $id)
 		{
 			// do something		
 		}		
-		
+
 		// left-panel help menu area. 
 		public function renderHelp()
 		{
@@ -209,7 +209,7 @@ class hero_ui extends e_admin_ui
 			return array('caption'=>$caption,'text'=> $text);
 
 		}
-			
+
 	/*	
 		// optional - a custom page.  
 		public function customPage()
@@ -217,12 +217,12 @@ class hero_ui extends e_admin_ui
 			$text = 'Hello World!';
 			$otherField  = $this->getController()->getFieldVar('other_field_name');
 			return $text;
-			
+
 		}
-		
-	
-		
-		
+
+
+
+
 	*/
 			
 }

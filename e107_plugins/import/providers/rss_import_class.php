@@ -140,7 +140,7 @@ class rss_import extends base_import_class
 	function copyNewsData(&$target, &$source)
 	{
 		$this->foundImages = array();
-		
+
 		if(!$content = $this->process('content_encoded',$source))
 		{
 			$body = $this->process('description',$source);	
@@ -149,14 +149,14 @@ class rss_import extends base_import_class
 		{
 			$body = $content;
 		}
-				
+
 		$body 			= $this->saveImages($body,'news');
 		$keywords 		= $this->process('category',$source);
 		$sef            = $this->process('sef',$source);
-							
+
 		if(!vartrue($source['title'][0]))
 		{
-			list($title,$newbody) = explode("<br />",$body,2);
+			list($title,$newbody) = explode("<br />",(string) $body,2);
 			$title = strip_tags($title);
 			if(trim($newbody)!='')
 			{
@@ -167,14 +167,14 @@ class rss_import extends base_import_class
 		{
 			$title = $source['title'][0];
 		}
-		
+
 		$target['news_title']					= $title;
 		$target['news_sef']					    = $sef;
 		$target['news_body']					= "[html]".$body."[/html]";
 		//	$target['news_extended']			= '';
 		$target['news_meta_keywords']			= implode(",",$keywords);
 		//	$target['news_meta_description']	= '';
-			$target['news_datestamp']			= strtotime($source['pubDate'][0]);
+			$target['news_datestamp']			= strtotime((string) $source['pubDate'][0]);
 		//	$target['news_author']				= $source['post_author'];
 		//	$target['news_category']			= '';
 		//	$target['news_allow_comments']		= ($source['comment_status']=='open') ? 1 : 0;
@@ -187,12 +187,12 @@ class rss_import extends base_import_class
 			$target['news_thumbnail']			= !empty($this->foundImages[0]) ? $this->foundImages[0] : '';
 		//	$target['news_sticky']				= '';
 
-		
-		
+
+
 		return $target;  // comment out to debug 
-		
+
 	//	$this->renderDebug($source,$target);
-		
+
 		// DEBUG INFO BELOW. 		
 		
 	}
@@ -252,7 +252,7 @@ class rss_import extends base_import_class
 		$target['page_text']			= "[html]".$body."[/html]";
 	//	$target['page_metakeys']		= '';
 	//	$target['page_metadscr']		= '';
-		$target['page_datestamp']		= strtotime($source['pubDate'][0]);
+		$target['page_datestamp']		= strtotime((string) $source['pubDate'][0]);
 	//	$target['page_author']			= $source['post_author'];
 	//	$target['page_category']		= '',
 	//	$target['page_comment_flag']	= ($source['comment_status']=='open') ? 1 : 0;
@@ -310,25 +310,25 @@ class rss_import extends base_import_class
 
 
 		$result = $tp->getTags($body, 'img');
-			
+
 		if($result)
 		{
-			$relPath = 'images/'. substr(md5($this->feedUrl),0,10);
-		
+			$relPath = 'images/'. substr(md5((string) $this->feedUrl),0,10);
+
 			if(!is_dir(e_MEDIA.$relPath))
 			{
 				mkdir(e_MEDIA.$relPath,'0755');	
 			}
-		
+
 			foreach($result['img'] as $att)
 			{
-				$filename = basename($att['src']);
+				$filename = basename((string) $att['src']);
 
 				if(file_exists(e_MEDIA.$relPath."/".$filename))
 				{
 					continue;
 				}
-					
+
 				$fl->getRemoteFile($att['src'], $relPath."/".$filename, 'media');
 
 				if(filesize(e_MEDIA.$relPath."/".$filename) > 0)
@@ -339,59 +339,59 @@ class rss_import extends base_import_class
 					$replace[] = $src;
 				}
 			}	
-		
+
 		}
 		else
 		{
 			$mes->addDebug("No Images Found: ".print_a($result,true));
 		}
-		
+
 		if(count($search))
 		{
 			$mes->addDebug("Found: ".print_a($search,true));
 			$mes->addDebug("Replaced: ".print_a($replace,true));
 			$med->import($cat,e_MEDIA.$relPath);	
 		}
-		
+
 		return str_replace($search,$replace,$body);
-		
-		
+
+
 		/*
-		
+
 	//	echo htmlentities($body);
 		preg_match_all("/(((http:\/\/www)|(http:\/\/)|(www))[-a-zA-Z0-9@:%_\+.~#?&\/\/=]+)\.(jpg|jpeg|gif|png|svg)/im",$body,$matches);
 		$fl = e107::getFile();
-			
+
 		if(is_array($matches[0]))
 		{
 			$relPath = 'images/'. substr(md5($this->feedUrl),0,10);
-			
+
 			if(!is_dir(e_MEDIA.$relPath))
 			{
 				mkdir(e_MEDIA.$relPath,'0755');	
 			}
-			
+
 			foreach($matches[0] as $link)
 			{
 				$filename = basename($link);
-				
+
 				if(file_exists($relPath."/".$filename))
 				{
 					continue;
 				}
-				
+
 				$fl->getRemoteFile($link,$relPath."/".$filename, 'media');
-				
+
 				$search[] = $link;
 				$replace[] = $tp->createConstants(e_MEDIA.$relPath."/".$filename,1);
 			}	
 		}
-		
+
 		if(count($search))
 		{
 			$med->import($cat,e_MEDIA.$relPath);	
 		}
-		
+
 		return str_replace($search,$replace,$body);*/
 		
 	}

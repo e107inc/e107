@@ -94,7 +94,7 @@ class meta_admin_ui extends e_admin_ui
 		{
 			if(isset($_POST[$key]))
 			{
-				$cfg->setPref($key . '/' . e_LANGUAGE, trim($_POST[$key]));
+				$cfg->setPref($key . '/' . e_LANGUAGE, trim((string) $_POST[$key]));
 			}
 		}
 
@@ -187,7 +187,7 @@ class meta_admin_ui extends e_admin_ui
 
 		$text .= "</td>
 					</tr>
-				
+
 					</tbody>
 				</table>
 				<div class='buttons-bar center'>" .
@@ -214,7 +214,7 @@ class meta_admin_ui extends e_admin_ui
 	function metaLabel($text, $small)
 	{
 
-		$small = htmlentities($small);
+		$small = htmlentities((string) $small);
 
 //	$text = str_replace(['(', ')'], ['<i>', '</i>'], $text);
 		return e107::getParser()->lanVars($text, $small, true);

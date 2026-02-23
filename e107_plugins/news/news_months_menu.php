@@ -31,9 +31,9 @@ if(false === $cached)
 	{
 		function newsFormatDate($year, $month, $day = "") {
 			$date = $year;
-			$date .= (strlen($month) < 2)?"0".$month:
+			$date .= (strlen((string) $month) < 2)?"0".$month:
 			$month;
-			$date .= (strlen($day) < 2 && $day != "")?"0".$day:
+			$date .= (strlen((string) $day) < 2 && $day != "")?"0".$day:
 			$day;
 			return $date;
 		}

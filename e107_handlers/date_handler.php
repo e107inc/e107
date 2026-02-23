@@ -98,7 +98,7 @@ class e_date
 			return $marray;
 		}	
 		
-		if(strpos($type, 'day') === 0)
+		if(strpos((string) $type, 'day') === 0)
 		{
 			$days = array();
 			for ($i=2; $i < 9; $i++) 
@@ -250,20 +250,20 @@ class e_date
 			'%m'	=> 'mm',	// month number 2-digits
 			'%B'	=> 'MM', 	// Full month name, based on the locale
 			'%A'	=> 'DD', 	// A full textual representation of the day
-	
+
 			'%y'	=> 'yy',
 			'%a'	=> 'D', 	// An abbreviated textual representation of the day
 			'%b'	=> 'M', 	// Abbreviated month name, based on the locale
 			'%h'	=> 'M', 	// Abbreviated month name, based on the locale (an alias of %b)
 			'%I'	=> 'HH',	// Two digit representation of the hour in 12-hour format 
 			'%l'	=> 'H',		// 12 hour format - no leading zero
-			
+
 			'%H'	=> 'hh',	// 24 hour format - leading zero
 			'%M'	=> 'ii',	// Two digit representation of the minute 
 			'%S'	=> 'ss',	// Two digit representation of the second 
 			'%P'	=> 'p',		// %P	lower-case 'am' or 'pm' based on the given time
 			'%p'	=> 'P',	    // %p   UPPER-CASE 'AM' or 'PM' based on the given time
-		
+
 			'%T' 	=> 'hh:mm:ss',
 			'%r' 	=> "hh:mmm:ss TT" // 12 hour format
 		);
@@ -304,24 +304,24 @@ class e_date
 
 		$s = array_keys($convert);
 		$r = array_values($convert);	
-		
-		if(strpos($mask, '%') === false && $legacy === true)
+
+		if(strpos((string) $mask, '%') === false && $legacy === true)
 		{
 			$ret = str_replace($r, $s,$mask);
 			return str_replace('%%p', '%P', $ret); // quick fix.
 		}
-		elseif(strpos($mask,'%')!==false)
+		elseif(strpos((string) $mask,'%')!==false)
 		{
 			return str_replace($s,$r, $mask);
 
 		}
-		
+
 		return $mask; 
-		
+
 		// Keep this info here: 
 		/*
 				 * $options allowed keys:
-	
+
 		 * 
 		 *   d - day of month (no leading zero)
 		    dd - day of month (two digit)
@@ -340,7 +340,7 @@ class e_date
 		    '...' - literal text
 		    '' - single quote
 		    anything else - literal text 
-		
+
 		    ATOM - 'yy-mm-dd' (Same as RFC 3339/ISO 8601)
 		    COOKIE - 'D, dd M yy'
 		    ISO_8601 - 'yy-mm-dd'
@@ -365,7 +365,7 @@ class e_date
 		 * T    A or P for AM/PM
 		 * tt    am or pm for AM/PM
 		 * TT    AM or PM for AM/PM 
-			
+
 			*/
 	}
 
@@ -386,7 +386,7 @@ class e_date
 			case 'long':
 				$mask = e107::getPref('longdate');
 			break;
-			
+
 			case 'short':
 				$mask = e107::getPref('shortdate');
 			break;
@@ -395,12 +395,12 @@ class e_date
 			case 'inputdate': 
 				$mask = e107::getPref('inputdate', '%Y/%m/%d');
 			break;
-			
+
 			case 'inputdatetime': 
 				$mask = e107::getPref('inputdate', '%Y/%m/%d');
 				$mask .= " ".e107::getPref('inputtime', '%H:%M');
 			break;
-			
+
 			case 'inputtime': 
 				$mask = e107::getPref('inputtime', '%H:%M');
 			break;
@@ -424,8 +424,8 @@ class e_date
 
 		/*
 		$tdata = $this->strptime($date_string, $mask);
-		
-		
+
+
 		if(empty($tdata))
 		{
 			if(!empty($date_string) && ADMIN)
@@ -434,13 +434,13 @@ class e_date
 			}
 			return null;
 		}
-		
+
 		if(STRPTIME_COMPAT !== TRUE) // returns months from 0 - 11 on Unix so we need to +1 
 		{
 			$tdata['tm_mon'] = $tdata['tm_mon'] +1;	 
 		}
-				
-		
+
+
 		$unxTimestamp = mktime( 
 			$tdata['tm_hour'], 
 			$tdata['tm_min'], 
@@ -755,8 +755,8 @@ class e_date
 		  if (($i > 4) || ($result[$i] != 0))
 		  {  // Only show non-zero values, except always show minutes/seconds
 		    $outputArray[] = $result[$i]." ".($result[$i] == 1 ? $params[$i][2] : $params[$i][3]) ;
-			
-			
+
+
 		  }
 		  if($format == 'short' && count($outputArray) == 1) { break; }
 		}

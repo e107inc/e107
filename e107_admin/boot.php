@@ -213,7 +213,7 @@ e107::coreLan('footer', true);
 	if(strpos(e_REQUEST_URI,$plugDir) !== false && !deftrue('e_ADMIN_UI') && !empty($_plugins) && !empty($_globalLans) && is_array($_plugins) && (count($_plugins) > 0))
 	{
 		$_plugins = array_keys($_plugins);
-		
+
 		foreach ($_plugins as $_p) 
 		{
 			if(defset('e_CURRENT_PLUGIN') != $_p)
@@ -225,7 +225,7 @@ e107::coreLan('footer', true);
 			{
 				continue;
 			}
-			
+
 			e107::getDebug()->logTime('[boot.php: Loading LANS for '.$_p.']');
 			e107::loadLanFiles($_p, 'admin');
 		}

@@ -170,7 +170,7 @@ $EMAIL_TEMPLATE['default']['header']		= "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHT
 													.btn-sm 		{ padding: 5px 10px; font-size: 12px; line-height: 1.5; border-radius: 3px; }
 												</style>
 												</head>
-												
+
 												<body>
 												<div id='body'>
 												";
@@ -221,14 +221,14 @@ $EMAIL_TEMPLATE['signup']['body'] 			= "
 												".LAN_EMAIL_06."<br />
 												<br />
 
-											
+
 												<br /><table cellspacing='4'>
 												<tr><td>{SITEBUTTON: type=email&h=60}</td>
 												<td><h4 class='sitename'>{SITENAME=link}</h4>
 												{SITEURL}</td></tr>
 												</table>
 												</div>
-												
+
 												";
 $EMAIL_TEMPLATE['signup']['footer']			= "</div>
 												</body>
@@ -241,7 +241,7 @@ $EMAIL_TEMPLATE['signup']['attachments']	= "";
 
 // -----------------------------
 
-												
+
 /*
  * QUICK ADD USER EMAIL TEMPLATE - BODY. 	
  * This is the email that is sent when an admin creates a user account in admin. "Quick Add User"
@@ -359,7 +359,7 @@ $EMAIL_TEMPLATE['example']['subject']			= '{SITENAME}: {SUBJECT} ';
 $EMAIL_TEMPLATE['example']['header']			= $EMAIL_TEMPLATE['default']['header']; // will use default header above. 	
 $EMAIL_TEMPLATE['example']['body']				= $EMAIL_TEMPLATE['default']['body']; // will use default header above. 	
 $EMAIL_TEMPLATE['example']['footer']			= "<br /><br />
-												
+
 												<a href='{SITEURL}'><img src='{THEME}images/my-signature.png' alt='{SITENAME}' /></a>
 												</div>
 												</body>

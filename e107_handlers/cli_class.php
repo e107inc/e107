@@ -53,7 +53,7 @@ class eCLI
 		$_ARG = array();
 		foreach ($argv as $arg)
 		{
-			if (preg_match('#^-{1,2}([a-zA-Z0-9]*)=?(.*)$#', $arg, $matches))
+			if (preg_match('#^-{1,2}([a-zA-Z0-9]*)=?(.*)$#', (string) $arg, $matches))
 			{
 				$key = $matches[1];
 				switch ($matches[2])

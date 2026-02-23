@@ -271,10 +271,10 @@ public function get($key, $clear = false)
 
     // Check for keys starting with $key/
     foreach ($this->_data as $dataKey => $value) {
-        if (strpos($dataKey, $key . '/') === 0) {
+        if (strpos((string) $dataKey, $key . '/') === 0) {
             // Normalize multiple slashes to a single slash
-            $subKeyString = preg_replace('#/+#', '/', substr($dataKey, strlen($key . '/')));
-            $subKeys = explode('/', $subKeyString);
+            $subKeyString = preg_replace('#/+#', '/', substr((string) $dataKey, strlen($key . '/')));
+            $subKeys = explode('/', (string) $subKeyString);
             // Remove empty segments
             $subKeys = array_filter($subKeys, function($k) { return $k !== ''; });
             $current = &$result;
@@ -304,7 +304,7 @@ public function get($key, $clear = false)
         $this->clear($key);
         // Clear all related keys
         foreach (array_keys($this->_data) as $dataKey) {
-            if (strpos($dataKey, $key . '/') === 0) {
+            if (strpos((string) $dataKey, $key . '/') === 0) {
                 unset($this->_data[$dataKey]);
             }
         }
@@ -327,8 +327,8 @@ public function getData($key = null, $clear = false)
         $result = [];
         foreach ($this->_data as $dataKey => $value) {
             // Normalize multiple slashes to a single slash
-            $dataKey = preg_replace('#/+#', '/', $dataKey);
-            $keys = explode('/', $dataKey);
+            $dataKey = preg_replace('#/+#', '/', (string) $dataKey);
+            $keys = explode('/', (string) $dataKey);
             // Remove empty segments
             $keys = array_filter($keys, function($k) { return $k !== ''; });
             $current = &$result;
@@ -451,7 +451,7 @@ public function getData($key = null, $clear = false)
 
         // Unset all keys starting with $key/
         foreach (array_keys($this->_data) as $dataKey) {
-            if (strpos($dataKey, $key . '/') === 0) {
+            if (strpos((string) $dataKey, $key . '/') === 0) {
                 unset($this->_data[$dataKey]);
             }
         }
@@ -759,7 +759,7 @@ public function getData($key = null, $clear = false)
             $this->cookieDelete()->destroy();
 
             // TODO event trigger
-            $msg = 'Session validation failed! <a href="'.strip_tags($_SERVER['REQUEST_URI']).'">Go Back</a>';
+            $msg = 'Session validation failed! <a href="'.strip_tags((string) $_SERVER['REQUEST_URI']).'">Go Back</a>';
         }
 
         return $this;
@@ -841,7 +841,7 @@ public function getData($key = null, $clear = false)
                 file_put_contents(__DIR__.'/session.log', $message, FILE_APPEND);
             }
         }
-        return ($in_form ? md5($this->get('__form_token')) : $this->get('__form_token'));
+        return ($in_form ? md5((string) $this->get('__form_token')) : $this->get('__form_token'));
     }
 
     /**
@@ -1248,7 +1248,7 @@ class e_session_db implements SessionHandlerInterface
         if($check)
         {
             $tmp = $this->_db->fetch();
-            $data = base64_decode($tmp['session_data']);
+            $data = base64_decode((string) $tmp['session_data']);
         }
         elseif(false !== $check)
         {

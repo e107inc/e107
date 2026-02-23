@@ -43,7 +43,7 @@ class OAuthUtil
      */
     public static function urldecode_rfc3986($string)
     {
-        return urldecode($string);
+        return urldecode((string) $string);
     }
     
     // Utility function for turning the Authorization: header into
@@ -60,7 +60,7 @@ class OAuthUtil
     public static function split_header($header, $only_allow_oauth_parameters = true)
     {
         $params = array();
-        if (preg_match_all('/(' . ($only_allow_oauth_parameters ? 'oauth_' : '') . '[a-z_-]*)=(:?"([^"]*)"|([^,]*))/', $header, $matches)) {
+        if (preg_match_all('/(' . ($only_allow_oauth_parameters ? 'oauth_' : '') . '[a-z_-]*)=(:?"([^"]*)"|([^,]*))/', (string) $header, $matches)) {
             foreach ($matches[1] as $i => $h) {
                 $params[$h] = OAuthUtil::urldecode_rfc3986(empty($matches[3][$i]) ? $matches[4][$i] : $matches[3][$i]);
             }
@@ -104,11 +104,11 @@ class OAuthUtil
             }
             
             foreach ($_SERVER as $key => $value) {
-                if (substr($key, 0, 5) == "HTTP_") {
+                if (substr((string) $key, 0, 5) == "HTTP_") {
                     // this is chaos, basically it is just there to capitalize the first
                     // letter of every word that is not an initial HTTP and strip HTTP
                     // code from przemek
-                    $key       = str_replace(" ", "-", ucwords(strtolower(str_replace("_", " ", substr($key, 5)))));
+                    $key       = str_replace(" ", "-", ucwords(strtolower(str_replace("_", " ", substr((string) $key, 5)))));
                     $out[$key] = $value;
                 }
             }
@@ -130,7 +130,7 @@ class OAuthUtil
             return array();
         }
         
-        $pairs = explode('&', $input);
+        $pairs = explode('&', (string) $input);
         
         $parsed_parameters = array();
         foreach ($pairs as $pair) {

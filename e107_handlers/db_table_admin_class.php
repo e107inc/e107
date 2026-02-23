@@ -58,7 +58,7 @@ class db_table_admin
 			return FALSE;
 		}
 		$row = $sql->fetch('num');
-		$tmp = str_replace("`", "", stripslashes($row[1])).';'; // Add semicolon to work with our parser
+		$tmp = str_replace("`", "", stripslashes((string) $row[1])).';'; // Add semicolon to work with our parser
 		$count = preg_match_all("#CREATE\s+?TABLE\s+?`?({$prefix}{$table_name})`?\s+?\((.*?)\)\s+?(?:TYPE|ENGINE)\s*\=\s*(.*?);#is", $tmp, $matches, PREG_SET_ORDER);
 		if ($count === FALSE)
 		{
@@ -109,7 +109,7 @@ class db_table_admin
 				// Strip any php header
 				$temp = preg_replace("#\<\?php.*?\?\>#mis", '', $temp);
 				// Strip any comments  (only /*...*/ supported
-				$this->file_buffer = preg_replace("#\/\*.*?\*\/#mis", '', $temp);
+				$this->file_buffer = preg_replace("#\/\*.*?\*\/#mis", '', (string) $temp);
 				$this->last_file = $file_name;
 			}
 		}
@@ -118,7 +118,7 @@ class db_table_admin
 			$table_name = '\w+?';
 		}
 		// Regex should be identical to that in get_current_table (apart from the source text variable name)
-		$count = preg_match_all("#CREATE\s+?TABLE\s+?`?({$table_name})`?\s+?\((.*?)\)\s+?(?:TYPE|ENGINE)\s*\=\s*(.*?);#is", $this->file_buffer, $matches, PREG_SET_ORDER);
+		$count = preg_match_all("#CREATE\s+?TABLE\s+?`?({$table_name})`?\s+?\((.*?)\)\s+?(?:TYPE|ENGINE)\s*\=\s*(.*?);#is", (string) $this->file_buffer, $matches, PREG_SET_ORDER);
 		if ($count === false)
 		{
 			return "Error occurred";
@@ -364,7 +364,7 @@ class db_table_admin
 				elseif ($list1[$i]['type'] == $list2[0]['type'])
 				{ // Worth doing a compare - fields are same type
 					//		echo $i.': compare - '.$list1[$i]['name'].', '.$list2[0]['name'].'<br />';
-					if (strcasecmp($list1[$i]['name'], $list2[0]['name']) != 0)
+					if (strcasecmp((string) $list1[$i]['name'], (string) $list2[0]['name']) != 0)
 					{ // Names differ, so need to add or subtract a field.
 						//		  echo $i.': names differ - '.$list1[$i]['name'].', '.$list2[0]['name'].'<br />';
 						if ($stop_on_error)
@@ -375,7 +375,7 @@ class db_table_admin
 						for ($k = $i + 1, $kMax = count($list1); $k < $kMax; $k++)
 						{
 							//		    echo "Compare ".$list1[$k]['name'].' with '.$list2[0]['name'];
-							if (strcasecmp($list1[$k]['name'], $list2[0]['name']) == 0)
+							if (strcasecmp((string) $list1[$k]['name'], (string) $list2[0]['name']) == 0)
 							{ // Field in list2 found later in list1; do nothing
 								//			  echo " - match<br />";
 								$found = TRUE;
@@ -383,7 +383,7 @@ class db_table_admin
 							}
 							//			echo " - no match<br />";
 						}
-						
+
 						if (!$found)
 						{ // Field in existing DB no longer required
 							$error_list[] = 'Obsolete field: '.$list2[0]['name'];
@@ -391,12 +391,12 @@ class db_table_admin
 							array_shift($list2);
 							continue;
 						}
-						
+
 						$found = FALSE;
 						for ($k = 0, $kMax = count($list2); $k < $kMax; $k++)
 						{
 							//		    echo "Compare ".$list1[$i]['name'].' with '.$list2[$k]['name'];
-							if (strcasecmp($list1[$i]['name'], $list2[$k]['name']) == 0)
+							if (strcasecmp((string) $list1[$i]['name'], (string) $list2[$k]['name']) == 0)
 							{ // Field found; we need to move it up
 								//			  echo " - match<br />";
 								$found = TRUE;
@@ -427,7 +427,7 @@ class db_table_admin
 									$created_list[$j] = $list1[$i]['name'];
 									$j++;
 								break;
-								
+
 								case 'field':
 									$change_list[] = 'ADD '.$this->make_def($list1[$i]).(count($created_list) ? ' AFTER '.$created_list[count($created_list) - 1] : ' FIRST');
 									$error_list[] = 'Missing field: '.$list1[$i]['name'].' (found: '.$list2[0]['type'].' '.$list2[0]['name'].')';
@@ -444,15 +444,15 @@ class db_table_admin
 						foreach ($list1[$i] as $fi=>$v)
 						{
 							$t = $list2[0][$fi];
-							if (stripos($v, 'varchar') !== FALSE)
+							if (stripos((string) $v, 'varchar') !== FALSE)
 							{
-								$v = substr($v, 3);
+								$v = substr((string) $v, 3);
 							} // Treat char, varchar the same
-							if (stripos($t, 'varchar') !== FALSE)
+							if (stripos((string) $t, 'varchar') !== FALSE)
 							{
-								$t = substr($t, 3);
+								$t = substr((string) $t, 3);
 							} // Treat char, varchar the same
-							if (strcasecmp($t, $v) !== 0)
+							if (strcasecmp((string) $t, (string) $v) !== 0)
 							{
 								if ($stop_on_error)
 								{
@@ -495,18 +495,18 @@ class db_table_admin
 								$j++;
 							}
 						break;
-						
+
 						case 'field': // Require a field - got a key. so add a field at the end
 							$error_list[] = 'Missing field: '.$list1[$i]['name'].' (found: '.$list2[0]['type'].' '.$list2[0]['name'].')';
 							$change_list[] = 'ADD '.$this->make_def($list1[$i]);
 						break;
-						
+
 						default:
 							$error_list[] = 'Unknown field type: '.$list1[$i]['type'];
 							$change_list[] = ''; // Null entry to keep them in step
 					}
 				} // End - missing or extra field
-				
+
 				$i++; // On to next field
 			}
 			if (count($list2))
@@ -698,7 +698,7 @@ class db_table_admin
 				{
 					echo 'Actual table structure: <br />'.$this->make_field_list($actualFields);
 				}
-				
+
 				$diffs = $this->compare_field_lists($reqFields, $actualFields); // Work out any differences
 				if (count($diffs[0]))
 				{ // Changes needed
@@ -753,7 +753,7 @@ class db_table_admin
 			}
 			if ($newTableName != $tableName)
 			{
-				$createText = preg_replace('#create +table +(\w*?) +#i', 'CREATE TABLE '.$newTableName.' ', $createText);
+				$createText = preg_replace('#create +table +(\w*?) +#i', 'CREATE TABLE '.$newTableName.' ', (string) $createText);
 			}
 			return e107::getDb()->gen($createText);
 		}
@@ -778,7 +778,7 @@ class db_table_admin
 							//break;		Probably include autoinc fields in array
 					//	}
 
-						$baseType = preg_replace('#\(.*?\)#', '', $v['fieldtype']);		// Should strip any length
+						$baseType = preg_replace('#\(.*?\)#', '', (string) $v['fieldtype']);		// Should strip any length
 
 						switch ($baseType)
 						{

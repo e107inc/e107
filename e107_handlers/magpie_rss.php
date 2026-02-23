@@ -124,7 +124,7 @@ class MagpieRSS {
                         
         xml_set_character_data_handler( $this->parser, 'feed_cdata' ); 
     
-        $status = xml_parse( $this->parser, $source );
+        $status = xml_parse( $this->parser, (string) $source );
         
         if (! $status ) {
             $errorcode = xml_get_error_code( $this->parser );
@@ -150,7 +150,7 @@ class MagpieRSS {
 	 * @return void
 	 */
 	function feed_start_element($p, $element, $attrs) {
-        $el = $element = strtolower($element);
+        $el = $element = strtolower((string) $element);
         $attrs = array_change_key_case($attrs, CASE_LOWER);
         
         // check for a namespace, and split if found
@@ -285,7 +285,7 @@ class MagpieRSS {
 	 * @return void
 	 */
 	function feed_end_element ($p, $el) {
-        $el = strtolower($el);
+        $el = strtolower((string) $el);
         
         if ( $el == 'item' or $el == 'entry' ) 
         {
@@ -542,7 +542,7 @@ class MagpieRSS {
         }
         
         if (!$in_enc) {
-            if (preg_match('/<?xml.*encoding=[\'"](.*?)[\'"].*?>/m', $source, $m)) {
+            if (preg_match('/<?xml.*encoding=[\'"](.*?)[\'"].*?>/m', (string) $source, $m)) {
                 $in_enc = strtoupper($m[1]);
                 $this->source_encoding = $in_enc;
             }
@@ -562,7 +562,7 @@ class MagpieRSS {
         // @see http://php.net/iconv
        
         if (function_exists('iconv'))  {
-            $encoded_source = iconv($in_enc,'UTF-8', $source);
+            $encoded_source = iconv((string) $in_enc,'UTF-8', (string) $source);
             if ($encoded_source) {
                 return array(xml_parser_create('UTF-8'), $encoded_source);
             }
@@ -590,7 +590,7 @@ class MagpieRSS {
 	 * @return false|string
 	 */
 	function known_encoding($enc) {
-        $enc = strtoupper($enc);
+        $enc = strtoupper((string) $enc);
         if ( in_array($enc, $this->_KNOWN_ENCODINGS) ) {
             return $enc;
         }
@@ -645,7 +645,7 @@ function parse_w3cdtf ($date_str ) {
     # regex to match wc3dtf
     $pat = "/(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(:(\d{2}))?(?:([-+])(\d{2}):?(\d{2})|(Z))?/";
     
-    if ( preg_match( $pat, $date_str, $match ) ) {
+    if ( preg_match( $pat, (string) $date_str, $match ) ) {
         list( $year, $month, $day, $hours, $minutes, $seconds) = 
             array( $match[1], $match[2], $match[3], $match[4], $match[5], $match[6]);
         

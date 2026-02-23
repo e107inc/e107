@@ -63,7 +63,7 @@ if (varset($e107_popup) != 1)
 	//
 	// B.1 Clear cache (admin-only)
 	//
-	
+
 	//
 	// B.2 Send footer template, stop timing, send simple page stats
 	//
@@ -84,7 +84,7 @@ if (varset($e107_popup) != 1)
 
 	   e107::renderLayout($FOOTER, array('magicSC'=>$psc));
     }
-    
+
 	$eTimingStop = microtime();
 	global $eTimingStart;
 	$clockTime = e107::getSingleton('e107_traffic')->TimeDelta($eTimingStart, $eTimingStop);
@@ -101,7 +101,7 @@ if (varset($e107_popup) != 1)
 	{ // Collect the first batch of data to log
 		$logLine .= "'".($now = time())."','".gmstrftime('%y-%m-%d %H:%M:%S', $now)."','".e107::getIPHandler()->getIP(FALSE)."','".e_PAGE.'?'.e_QUERY."','".$rendertime."','".$db_time."','".$queryCount."','".$memuse."','".$_SERVER['HTTP_USER_AGENT']."','{$_SERVER["REQUEST_METHOD"]}'";
 	}
-	
+
 	if (function_exists('getrusage') && !empty($eTimingStartCPU))
 	{
 		$ru = getrusage();
@@ -127,7 +127,7 @@ if (varset($e107_popup) != 1)
 	//
 	//	$logname = "/home/mysite/public_html/queryspeed.log";
 	//	$logfp = fopen($logname, 'a+'); fwrite($logfp, "$cpuTot,$cpuPct,$cpuStart,$rendertime,$db_time\n"); fclose($logfp);
-	
+
 	if ($pref['displayrendertime'])
 	{
 		$rinfo .= CORE_LAN11;
@@ -157,18 +157,18 @@ if (varset($e107_popup) != 1)
 
 		$logname = e_LOG."logd_".date("Y-m-d", time()).".csv";
 		$logHeader = "Unix time,Date/Time,IP,URL,RenderTime,DbTime,Qrys,Memory-Usage,User-Agent,Request-Method";
-			
+
 		$logfp = fopen($logname, 'a+');
-		
+
 		if(filesize($logname) == 0 || !is_file($logname))
 		{
 			fwrite($logfp, $logHeader."\n");	
 		}	
-		
+
 		fwrite($logfp, $logLine."\n");
 		fclose($logfp);
 	}
-	
+
 	if (function_exists('theme_renderinfo')) 
 	{
 		theme_renderinfo($rinfo);
@@ -177,7 +177,7 @@ if (varset($e107_popup) != 1)
 	{
 		echo($rinfo ? "\n<div class='e-footer-info muted smalltext hidden-print'><small>{$rinfo}</small></div>\n" : "");
 	}
-	
+
 } // End of regular-page footer (the above NOT done for popups)
 
 //
@@ -322,7 +322,7 @@ if (!empty($pref['e_footer_list']) && is_array($pref['e_footer_list']))
 	foreach($pref['e_footer_list'] as $val)
 	{		
 		$fname = e_PLUGIN.$val."/e_footer.php"; // Do not place inside a function - BC $pref required. . 
-		
+
 		if(is_readable($fname))
 		{
 			$ret = (deftrue('e_DEBUG') || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
@@ -341,7 +341,7 @@ if(deftrue('e_DEVELOPER'))
 {
 	echo "\n\n<!-- ======= [JSManager] FOOTER: Remaining CSS ======= -->";
 }
-$CSSORDER = defined('CSSORDER') && deftrue('CSSORDER') ? explode(",",CSSORDER) : array('library','other','core','plugin','theme');  // INLINE CSS in Body not supported by HTML5. .
+$CSSORDER = defined('CSSORDER') && deftrue('CSSORDER') ? explode(",",(string) CSSORDER) : array('library','other','core','plugin','theme');  // INLINE CSS in Body not supported by HTML5. .
 
 foreach($CSSORDER as $val)
 {
@@ -389,7 +389,7 @@ if (abs($_serverTime - $lastSet) > 120)
 	echo "<script>\n";
 	echo "var nowLocal = new Date();		/* time at very beginning of js execution */
 var localTime = Math.floor(nowLocal.getTime()/1000);	/* time, in ms -- recorded at top of jscript */
-	
+
 function SyncWithServerTime(serverTime, path, domain)
 {
 	if (serverTime) 
@@ -449,7 +449,7 @@ if (!empty($pref['e_output_list']) && is_array($pref['e_output_list']))
 	foreach($pref['e_output_list'] as $val)
 	{
 		$fname = e_PLUGIN.$val."/e_output.php"; // Do not place inside a function - BC $pref required. . 
-		
+
 		if(is_readable($fname))
 		{
 			$ret = (deftrue('e_DEBUG') || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);

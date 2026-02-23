@@ -16,7 +16,7 @@ function iconpicker_shortcode($parm)
 
 		$parms = array();
 
-		parse_str($parm, $parms);
+		parse_str((string) $parm, $parms);
 		$name = varset($parms['id']);
 
 	
@@ -39,7 +39,7 @@ function iconpicker_shortcode($parm)
 		{
 			while($row = $sql->fetch())
 			{
-				list($tmp,$tmp2,$size) = explode("_",$row['media_category']);
+				list($tmp,$tmp2,$size) = explode("_",(string) $row['media_category']);
 				
 								
 				if($str !='' && ($size != $lastsize))

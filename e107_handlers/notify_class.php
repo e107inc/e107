@@ -150,9 +150,9 @@ class notify
 		$blockOriginator = FALSE;		// TODO: set this using a pref
 		$recipients = array();
 
-		if(strpos($notifyTarget, '::') !== false) // custom router @see e107_plugins/_blank/e_notify.php
+		if(strpos((string) $notifyTarget, '::') !== false) // custom router @see e107_plugins/_blank/e_notify.php
 		{
-			list($class,$method) = explode('::', $notifyTarget);
+			list($class,$method) = explode('::', (string) $notifyTarget);
 
 			if($cls = e107::getAddon($class,'e_notify'))
 			{
@@ -289,7 +289,7 @@ class notify
 					$mailData['mail_media'][$k] = array('path'=>$v);
 				}
 			}
-			
+
 			$mailer->sendEmails('notify', $mailData, $recipients);
 
 			e107::getLog()->addEvent(10,-1,'NOTIFY',$subject,$message,FALSE,LOG_TO_ROLLING);
@@ -495,7 +495,7 @@ class notify
 			'NEWS_AUTHOR'   => $tp->toHTML($author)
 		);
 
-		$img = explode(",",$data['news_thumbnail']);
+		$img = explode(",",(string) $data['news_thumbnail']);
 
 		$message = $tp->simpleParse($template, $shortcodes);
 

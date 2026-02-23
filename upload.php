@@ -28,16 +28,16 @@ class userUpload
 {
 	function __construct()
 	{
-		
+
 
 		/*
 		e107::css('inline', "
 			input[type=file] {
-			
-			
+
+
 			}
 		"); 
-		
+
 		e107::js('inline', "
 
 			function frmVerify()
@@ -63,7 +63,7 @@ class userUpload
 					return false;
 				}
 			}
-			
+
 		");
 		*/
    		
@@ -161,7 +161,7 @@ class userUpload
 
 	    	if(!empty($_POST['category']))
 		    {
-		        list($catOwner, $catID) = explode("__",$_POST['category'],2);
+		        list($catOwner, $catID) = explode("__",(string) $_POST['category'],2);
 		    }
 		    else
 		    {

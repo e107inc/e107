@@ -451,7 +451,7 @@ class xoops_import extends base_import_class
 		//$text = e107::getParser()->toDb($text);
 		return $text;
 					
-		$text 		= html_entity_decode($text,ENT_QUOTES,'UTF-8');
+		$text 		= html_entity_decode((string) $text,ENT_QUOTES,'UTF-8');
 
 		$detected 	= mb_detect_encoding($text); // 'ISO-8859-1'
 		$text 		= iconv($detected,'UTF-8',$text);

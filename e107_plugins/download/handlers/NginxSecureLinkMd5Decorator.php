@@ -32,7 +32,7 @@ class NginxSecureLinkMd5Decorator implements SecureLinkDecorator
 			$expiry = PHP_INT_MAX;
 		else
 			$expiry = time() + $expiry;
-		$url_parts = parse_url($url);
+		$url_parts = parse_url((string) $url);
 		$evaluation = str_replace(
 			self::supported_variables(),
 			array(
@@ -46,7 +46,7 @@ class NginxSecureLinkMd5Decorator implements SecureLinkDecorator
 		$query_string = $url_parts['query'];
 		parse_str($query_string, $query_args);
 		$query_args['md5'] = str_replace(array('+', '/', '='), array('-', '_', ''), base64_encode(md5($evaluation, true)));
-		if (strpos($prefs['download_security_expression'], '$secure_link_expires') !== false)
+		if (strpos((string) $prefs['download_security_expression'], '$secure_link_expires') !== false)
 			$query_args['expires'] = $expiry;
 		require_once(__DIR__ . '/../vendor/shim_http_build_url.php');
 		return http_build_url($url_parts, array('query' => http_build_query($query_args)));

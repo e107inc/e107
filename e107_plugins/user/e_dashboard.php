@@ -116,7 +116,7 @@ class user_dashboard // plugin-folder + '_url'
 				$log_data = $value['log_data'];
 			//	extract($value);
 
-				$log_id = substr($log_id, 0, 4).'-'.substr($log_id, 5, 2).'-'.str_pad(substr($log_id, 8), 2, '0', STR_PAD_LEFT);
+				$log_id = substr((string) $log_id, 0, 4).'-'.substr((string) $log_id, 5, 2).'-'.str_pad(substr((string) $log_id, 8), 2, '0', STR_PAD_LEFT);
 				if(is_array($log_data)) {
 					$entries[0] = $log_data['host'];
 					$entries[1] = $log_data['date'];
@@ -127,7 +127,7 @@ class user_dashboard // plugin-folder + '_url'
 				}
 				else
 				{
-					$entries = explode(chr(1), $log_data);
+					$entries = explode(chr(1), (string) $log_data);
 				}
 
 				$dayarray[$log_id]['daytotal'] = $entries[0];
@@ -140,7 +140,7 @@ class user_dashboard // plugin-folder + '_url'
 				{
 					if($entry)
 					{
-						list($url, $total, $unique) = explode("|", $entry);
+						list($url, $total, $unique) = explode("|", (string) $entry);
 						if(strpos($url, "/") !== false)
 						{
 							$urlname = preg_replace("/\.php|\?.*/", "", substr($url, (strrpos($url, "/")+1)));
@@ -289,25 +289,25 @@ class user_dashboard // plugin-folder + '_url'
 
 
 		$cht->setProvider('google');
-		
+
 		$width='100%'; $height = 380; 
-	
+
 		$data[] = array('Day', "Registered" );
-		
+
 		$amt = array();
-		
+
 	//	if($when == 'this')
 		{
 			$month_start = strtotime('first day of this month', mktime(0,0,0));		
 			$month_end = strtotime('last day of this month', mktime(23,59,59));
 		}
-		
+
 	/*	if($when == 'last')
 		{
 			$month_start = strtotime('first day of last month', mktime(0,0,0));		
 			$month_end = strtotime('last day of last month', mktime(23,59,59));	
 		}*/
-		
+
 		if(!$sql->gen("SELECT user_id,user_ban,user_join FROM `#user` WHERE user_join BETWEEN ".$month_start." AND ".$month_end." AND user_ban = 0"))
 		{
 			return false;
@@ -332,13 +332,13 @@ class user_dashboard // plugin-folder + '_url'
 	//	print_a($monthNumber);
 
 		$sum = array_sum($amt);
-		
+
 	//	$this->title = 'Registered '.date('M Y',$month_start).' ('.$sum.')';
 
 		$this->title = UC_LAN_9.' ('.$sum.')';
-	
+
 		$totalDays = date('t', $month_start);
-	
+
 		for ($i=1; $i < ($totalDays +1); $i++) 
 		{
 			$diz = date('D jS', mktime(1,1,1,$monthNumber,$i, $yearNumber));
@@ -346,9 +346,9 @@ class user_dashboard // plugin-folder + '_url'
 			$data[] = array($diz, $val); //	$dateName[$i]
 			$ticks[] = $i;
 		}
-		
+
 	//	print_a($data);
-			
+
 		$options = array(
 			'chartArea'	=>array('left'=>'60', 'width'=>'100%', 'top'=>'25'),
 			'legend'	=> array('position'=> 'none', 'alignment'=>'center', 'textStyle' => array('fontSize' => 14, 'color' => '#ccc')),
@@ -357,29 +357,29 @@ class user_dashboard // plugin-folder + '_url'
 			'colors'	=> array('#77acd9','#EDA0B6', '#EE8D21', '#5CB85C'),
 			'animation'	=> array('duration'=>1000, 'easing' => 'out'), 
 			'areaOpacity'	=> 0.8,
-	
+
 			'backgroundColor' => array('fill' => 'transparent' )
 		);
 		//
 		$cht->setType('column');
 		$cht->setOptions($options);
 		$cht->setData($data);
-		
+
 		// redraw to fix sizing issue.
 	/*	e107::js('footer-inline', "
-		
-			
+
+
 			$('a[data-toggle=\"tab\"]').on('shown.bs.tab', function (e) {
 			  	//	drawLast();
 			  		drawThismonth();
 			})
-						
-			
+
+
 		");*/
-		
-		
+
+
 		return "<div class='height:50%'>".$cht->render($id, $width, $height)."</div>";
-		
+
 		// return "<div class='height:50%'>".$cht->render('projection', 320, 380)."</div>";
 		
 	}
@@ -446,7 +446,7 @@ class user_dashboard // plugin-folder + '_url'
 				<td class='nowrap'>".e107::getDateConvert()->convert_date($val['user_currentvisit'],'%H:%M:%S')."</td>
 				<td>".$this->renderOnlineName($val['online_user_id'])."</td>
 				<td>".e107::getIPHandler()->ipDecode($val['user_ip'])."</td>
-				<td><a class='e-tip' href='".$val['user_location']."' title='".$val['user_location']."'>".$tp->html_truncate(basename($val['user_location']),50,"...")."</a></td>
+				<td><a class='e-tip' href='".$val['user_location']."' title='".$val['user_location']."'>".$tp->html_truncate(basename((string) $val['user_location']),50,"...")."</a></td>
 				<td class='center'><a class='e-tip' href='#' title='".$val['user_agent']."'>".$this->browserIcon($val)."</a></td>";
 
 			$panelOnline .= (!empty($multilan)) ? "<td class='center'><a class='e-tip' href='#' title=\"".$lng->convert($val['user_language'])."\">".$val['user_language']."</a></td>" : "";
@@ -485,7 +485,7 @@ class user_dashboard // plugin-folder + '_url'
 
 		foreach($types as $icon=>$b)
 		{
-			if(strpos($row['user_agent'], $b)!==false)
+			if(strpos((string) $row['user_agent'], $b)!==false)
 			{
 				return "<i class='browsers e-".$icon."-16' ></i>";
 			}

@@ -509,7 +509,7 @@ class e_user_model extends e_admin_model
 
 		foreach($botlist as $bot)
 		{
-			if(stripos($userAgent, $bot) !== false){ return true; }
+			if(stripos((string) $userAgent, $bot) !== false){ return true; }
 		}
 
 		return false;
@@ -1097,7 +1097,7 @@ class e_user_model extends e_admin_model
 	{
 		if($this->get('user_xup'))
 		{
-			$provider = explode('_', $this->get('user_xup'));
+			$provider = explode('_', (string) $this->get('user_xup'));
 			return array_shift($provider);
 		}
 		return null;
@@ -1676,7 +1676,7 @@ class e_system_user extends e_user_model
 			
 			$sc['LOGINNAME'] 		= intval($pref['allowEmailLogin']) === 0 ? $userInfo['user_loginname'] : $userInfo['user_email'];
 			$sc['PASSWORD']			= ($pass_show && !empty($userInfo['user_password'])) ?  '*************' : $userInfo['user_password'];
-			$sc['ACTIVATION_LINK']	= strpos($userInfo['activation_url'], 'http') === 0 ? '<a href="'.$userInfo['activation_url'].'">'.$userInfo['activation_url'].'</a>' : $userInfo['activation_url'];
+			$sc['ACTIVATION_LINK']	= strpos((string) $userInfo['activation_url'], 'http') === 0 ? '<a href="'.$userInfo['activation_url'].'">'.$userInfo['activation_url'].'</a>' : $userInfo['activation_url'];
 		//	$sc['SITENAME']			= SITENAME;
 			$sc['SITEURL']			= "<a href='".SITEURL."' {$style}>".SITEURL."</a>";
 			$sc['USERNAME']			= $userInfo['user_name'];
@@ -2080,7 +2080,7 @@ class e_user extends e_user_model
 			}
 
 			// we have a match
-			if(md5($udata['user_password']) == $upw)
+			if(md5((string) $udata['user_password']) == $upw)
 			{
 				// set current user data
 				$this->setData($udata);
@@ -2520,7 +2520,7 @@ class e_user_extended_model extends e_admin_model
 
 		// retrieve db data
 		$value = $this->get($field);
-		list($table, $field_id, $field_name, $field_order) = explode(',', $this->_struct_index[$field]['db'], 4);
+		list($table, $field_id, $field_name, $field_order) = explode(',', (string) $this->_struct_index[$field]['db'], 4);
 		$this->_struct_index[$field]['db_value'] = $value;
 		if($value && $table && $field_id && $field_name && e107::getDb()->select($table, $field_name, "{$field_id}='{$value}'"))
 		{
@@ -2609,7 +2609,7 @@ class e_user_extended_model extends e_admin_model
 		$hidden = $this->get('user_hidden_fields');
 		$editor = $this->getEditor();
 
-		if(!empty($hidden) && $this->getId() !== $editor->getId() && strpos($hidden, '^'.$field.'^') !== false) return false;
+		if(!empty($hidden) && $this->getId() !== $editor->getId() && strpos((string) $hidden, '^'.$field.'^') !== false) return false;
 
 		return ($this->checkApplicable($field) && $editor->checkClass($this->_memberlist_access) && $editor->checkClass(varset($this->_struct_index[$field]['read'])));
 	}
@@ -2728,7 +2728,7 @@ class e_user_extended_model extends e_admin_model
 		$ftype = $structure_model->getValue('type') == 6 ? 'integer' : 'string';
 
 		// 0- field control (html) attributes;1 - regex; 2 - validation error msg;
-		$parms = explode('^,^', $structure_model->getValue('parms'));
+		$parms = explode('^,^', (string) $structure_model->getValue('parms'));
 
 		// validaton rules
 		$vtype = $parms[1] ? 'regex' : $ftype;
@@ -3123,7 +3123,7 @@ class e_user_pref extends e_front_model
 			if(!empty($data))
 			{
 				// BC
-				$data = strpos($data, "array") === 0 ? e107::unserialize($data) : unserialize($data);
+				$data = strpos((string) $data, "array") === 0 ? e107::unserialize($data) : unserialize($data);
 				if(!$data) $data = array();
 			}
 			else $data = array();

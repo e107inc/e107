@@ -293,7 +293,7 @@ class base_import_class
 		{
 				$text .= "<tr>
 					<td style='width:50%;'>".$k."</td>
-					<td>".htmlentities($v)."</td>
+					<td>".htmlentities((string) $v)."</td>
 				</tr>";
 
 
@@ -327,8 +327,8 @@ class base_import_class
 	  $bbphpbb = (strpos($options,'phpbb') !== FALSE) ? TRUE : FALSE;		// Strip values as phpbb
 	  $nextchar = 0;
 	  $loopcount = 0;
-	 
-	  while ($nextchar < strlen($value))
+
+	  while ($nextchar < strlen((string) $value))
 	  {
 	    $firstbit = '';
 	    $middlebit = '';
@@ -336,11 +336,11 @@ class base_import_class
 	    $loopcount++;
 		if ($loopcount > 10) return 'Max depth exceeded';
 	    unset($bbword);
-	    $firstcode = strpos($value,'[',$nextchar);
+	    $firstcode = strpos((string) $value,'[',$nextchar);
 	    if ($firstcode === FALSE) return $value;   	// Done if no square brackets
-	    $firstend = strpos($value,']',$firstcode);
+	    $firstend = strpos((string) $value,']',$firstcode);
 	    if ($firstend === FALSE) return $value;		// Done if no closing bracket
-	    $bbword = substr($value,$firstcode+1,$firstend - $firstcode - 1);	// May need to process this more if parameter follows
+	    $bbword = substr((string) $value,$firstcode+1,$firstend - $firstcode - 1);	// May need to process this more if parameter follows
 		$bbparam = '';
 		$temp = strpos($bbword,'=');
 		if ($temp !== FALSE)
@@ -350,8 +350,8 @@ class base_import_class
 		}
 	    if (($bbword) && ($bbword == trim($bbword)))
 	    {
-	      $laststart = strpos($value,'[/'.$bbword,$firstend);    // Find matching end
-		  $lastend   = strpos($value,']',$laststart);
+	      $laststart = strpos((string) $value,'[/'.$bbword,$firstend);    // Find matching end
+		  $lastend   = strpos((string) $value,']',$laststart);
 		  if (($laststart === FALSE) || ($lastend === FALSE))
 		  {   //  No matching end character
 		    $nextchar = $firstend;	// Just move scan pointer along 
@@ -359,9 +359,9 @@ class base_import_class
 		  else
 		  {  // Got a valid bbcode pair here
 		    $firstbit = '';
-		    if ($firstcode > 0) $firstbit = substr($value,0,$firstcode);
-		    $middlebit = substr($value,$firstend+1,$laststart - $firstend-1);
-		    $lastbit = substr($value,$lastend+1,strlen($value) - $lastend);
+		    if ($firstcode > 0) $firstbit = substr((string) $value,0,$firstcode);
+		    $middlebit = substr((string) $value,$firstend+1,$laststart - $firstend-1);
+		    $lastbit = substr((string) $value,$lastend+1,strlen((string) $value) - $lastend);
 		    // Process bbcodes here
 			if ($bblower) $bbword = strtolower($bbword);
 			if ($bbphpbb && (strpos($bbword,':') !== FALSE)) $bbword = substr($bbword,0,strpos($bbword,':'));

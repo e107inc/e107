@@ -119,7 +119,7 @@ class news_gsitemap
 				'lastmod'   => !empty($row['news_modified']) ? $row['news_modified'] : (int) $row['news_datestamp'],
 				'freq'      => 'hourly',
 				'priority'  => 0.5,
-				'image'     => (strpos($imgUrl, 'http') === 0) ? $imgUrl : SITEURLBASE.$sc->sc_news_image(['item'=>1, 'type'=>'src']),
+				'image'     => (strpos((string) $imgUrl, 'http') === 0) ? $imgUrl : SITEURLBASE.$sc->sc_news_image(['item'=>1, 'type'=>'src']),
 			];
 		}
 

@@ -76,14 +76,14 @@ class cpage_shortcodes extends e_shortcode
 			$pid = $this->var['page_chapter'];
 			$cid = isset($this->chapterData[$pid]['chapter_parent']) ?  $this->chapterData[$pid]['chapter_parent'] : 0;
 		}
-		
+
 		$row = isset($this->chapterData[$cid]) ? $this->chapterData[$cid] : array();
-		
+
 		if(!empty($row['chapter_id']) && $row['chapter_parent'] < 1)
 		{
 			return $row;	
 		}
-		
+
 		return false; // not a book.
 		
 	}
@@ -150,7 +150,7 @@ class cpage_shortcodes extends e_shortcode
 			}
 			elseif(!empty($this->var['user_name']))
 			{
-				$author = preg_replace('/[^\w\pL\s]+/u', ' ', $this->var['user_name']);
+				$author = preg_replace('/[^\w\pL\s]+/u', ' ', (string) $this->var['user_name']);
 			}
 		}
 		
@@ -205,13 +205,13 @@ class cpage_shortcodes extends e_shortcode
 				}
 			}
 		}
-		
+
 		//if($parm && isset($com[$parm])) return $com[$parm];
 		if($comflag)
 		{
 			return e107::getComment()->parseLayout($com['comment'],$com['comment_form'],$com['moderate']);	
 		}
-		
+
 	//	return $com['comment'].$com['moderate'].$com['comment_form'];
 	}
 
@@ -274,7 +274,7 @@ class cpage_shortcodes extends e_shortcode
 		if(empty($parms[1])) return '';
 		
 		$tp = e107::getParser();
-		$path = rawurldecode($parms[1]);
+		$path = rawurldecode((string) $parms[1]);
 		
 		if(substr($path, 0, 2) === 'e_') $path = str_replace($tp->getUrlConstants('raw'), $tp->getUrlConstants('sc'), $path);
 		elseif($path[0] !== '{') $path = '{e_MEDIA}'.$path;
@@ -347,7 +347,7 @@ class cpage_shortcodes extends e_shortcode
 			return $url;
 		}
 		
-		if(trim($this->var['page_text']) == '' && empty($this->var['menu_button_url'])) // Hide the button when there is no page content. (avoids templates with and without buttons)
+		if(trim((string) $this->var['page_text']) == '' && empty($this->var['menu_button_url'])) // Hide the button when there is no page content. (avoids templates with and without buttons)
 		{
 			return "<!-- Button Removed: No page text exists! -->";	
 		}

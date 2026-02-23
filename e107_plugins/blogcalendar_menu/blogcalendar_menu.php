@@ -130,7 +130,7 @@ if(false === $cached)
 			if (!isset($links[$xyear][$xmonth][$xday]))
 			{
 				$links[$xyear][$xmonth][$xday] = e107::getUrl()->create('news/list/day', 'id='.formatDate($xyear, $xmonth, $xday));//e_BASE."news.php?day.".formatDate($req_year, $req_month, $xday);
-	
+
 				$day_links[$xday] = e107::getUrl()->create('news/list/day', 'id='.formatDate($xyear, $xmonth, $xday));//e_BASE."news.php?day.".formatDate($req_year, $req_month, $xday);
 			}
 		}

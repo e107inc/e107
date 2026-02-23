@@ -26,18 +26,18 @@ class gsitemap_adminArea extends e_admin_dispatcher
 {
 
 	protected $modes = array(	
-	
+
 		'main'	=> array(
 			'controller' 	=> 'gsitemap_ui',
 			'path' 			=> null,
 			'ui' 			=> 'gsitemap_form_ui',
 			'uipath' 		=> null
 		),
-		
+
 
 	);	
-	
-	
+
+
 	protected $adminMenu = array(
 
 		'main/list'			=> array('caption'=> 'LAN_MANAGE', 'perm' => 'P'),
@@ -46,23 +46,23 @@ class gsitemap_adminArea extends e_admin_dispatcher
 		// 'main/div0'        => array('divider'=> true),
 		 'main/import'		=> array('caption'=> 'LAN_IMPORT', 'perm' => 'P'),
 		 'main/instructions' => array('caption'=> 'GSLAN_53', 'perm' => 'P', 'icon'=>'fa-info-circle'),
-		
+
 	);
 
 	protected $adminMenuAliases = array(
 		'main/edit'	=> 'main/list'				
 	);	
-	
+
 	protected $menuTitle = 'LAN_PLUGIN_GSITEMAP_NAME';
 }
 
 
 
 
-				
+
 class gsitemap_ui extends e_admin_ui
 {
-			
+
 		protected $pluginTitle		= 'LAN_PLUGIN_GSITEMAP_NAME';
 		protected $pluginName		= 'gsitemap';
 	//	protected $eventName		= 'gsitemap-gsitemap'; // remove comment to enable event triggers in admin. 		
@@ -78,11 +78,11 @@ class gsitemap_ui extends e_admin_ui
 	//	protected $treePrefix      = 'somefield_title';
 
 		protected $tabs				= array(LAN_GENERAL,LAN_ADVANCED); // Use 'tab'=>0  OR 'tab'=>1 in the $fields below to enable.
-		
+
 	//	protected $listQry      	= "SELECT * FROM `#tableName` WHERE field != '' "; // Example Custom Query. LEFT JOINS allowed. Should be without any Order or Limit.
-	
+
 		protected $listOrder		= 'gsitemap_id DESC';
-	
+
 		protected $fields 		= array (
 			'checkboxes'              => array (  'title' => '',  'type' => null,  'data' => null,  'width' => '5%',  'thclass' => 'center',  'forced' => true,  'class' => 'center',  'toggle' => 'e-multiselect',  'readParms' =>  array (),  'writeParms' =>  array (),),
 			'gsitemap_id'             => array (  'title' => 'LAN_ID',  'type'=>'number', 'data' => 'int',  'width' => '5%',  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',),
@@ -99,9 +99,9 @@ class gsitemap_ui extends e_admin_ui
 			'gsitemap_active'         => array (  'title' => LAN_VISIBILITY,  'type' => 'userclass',  'data' => 'int',  'width' => 'auto',  'filter' => true,  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',),
 			'options'                 => array (  'title' => LAN_OPTIONS,  'type' => null,  'data' => null,  'width' => '10%',  'thclass' => 'center last',  'class' => 'center last',  'forced' => true,  'readParms' =>  array (),  'writeParms' =>  array (),),
 		);		
-		
+
 		protected $fieldpref = array('gsitemap_name','gsitemap_url','gsitemap_lastmod','gsitemap_freq','gsitemap_priority');
-		
+
 
 	//	protected $preftabs        = array('General', 'Other' );
 		protected $prefs = array(
@@ -118,7 +118,7 @@ class gsitemap_ui extends e_admin_ui
 												"never"		=>	LAN_NEVER
 											);
 
-	
+
 		public function init()
 		{
 			// This code may be removed once plugin development is complete. 
@@ -126,7 +126,7 @@ class gsitemap_ui extends e_admin_ui
 			{
 				e107::getMessage()->addWarning("This plugin is not yet installed. Saving and loading of preference or table data will fail.");
 			}
-			
+
 			// Set drop-down values (if any). 
 			$this->fields['gsitemap_table']['writeParms']['optArray'] = array('gsitemap_table_0','gsitemap_table_1', 'gsitemap_table_2'); // Example Drop-down array. 
 			$this->fields['gsitemap_cat']['writeParms']['optArray'] = array('gsitemap_cat_0','gsitemap_cat_1', 'gsitemap_cat_2'); // Example Drop-down array. 
@@ -145,12 +145,12 @@ class gsitemap_ui extends e_admin_ui
 	 */
 
 		// ------- Customize Create --------
-		
+
 		public function beforeCreate($new_data,$old_data)
 		{
 			return $new_data;
 		}
-	
+
 		public function afterCreate($new_data, $old_data, $id)
 		{
 			// do something
@@ -160,10 +160,10 @@ class gsitemap_ui extends e_admin_ui
 		{
 			// do something		
 		}		
-		
-		
+
+
 		// ------- Customize Update --------
-		
+
 		public function beforeUpdate($new_data, $old_data, $id)
 		{
 			return $new_data;
@@ -173,12 +173,12 @@ class gsitemap_ui extends e_admin_ui
 		{
 			// do something	
 		}
-		
+
 		public function onUpdateError($new_data, $old_data, $id)
 		{
 			// do something		
 		}		
-		
+
 		// left-panel help menu area. (replaces e_help.php used in old plugins)
 		public function renderHelp()
 		{
@@ -334,9 +334,9 @@ class gsitemap_ui extends e_admin_ui
 			}
 
 			$text.="</select>&nbsp;&nbsp;&nbsp;".GSLAN_10."
-	
-		
-			
+
+
+
 			<select class='tbox' name='import_freq' >\n";
 			foreach($this->freqList as $k=>$fq)
 			{
@@ -345,9 +345,9 @@ class gsitemap_ui extends e_admin_ui
 			}
 
 			$text .= "</select> <br /><br />
-	
+
 			</div>
-			
+
 			</td>
 			</tr>
 			</tbody>
@@ -422,7 +422,7 @@ $text = "
 			return $text;
 
 		}
-			
+
 	/*	
 		// optional - a custom page.  
 		public function customPage()
@@ -430,11 +430,11 @@ $text = "
 			$text = 'Hello World!';
 			$otherField  = $this->getController()->getFieldVar('other_field_name');
 			return $text;
-			
-		}
-		
 
-	
+		}
+
+
+
 	 // Handle batch options as defined in gsitemap_form_ui::gsitemap_lastmod;  'handle' + action + field + 'Batch'
 	 // @important $fields['gsitemap_lastmod']['batch'] must be true for this method to be detected. 
 	 // @param $selected
@@ -461,7 +461,7 @@ $text = "
 
 	}
 
-	
+
 	 // Handle batch options as defined in gsitemap_form_ui::gsitemap_freq;  'handle' + action + field + 'Batch'
 	 // @important $fields['gsitemap_freq']['batch'] must be true for this method to be detected. 
 	 // @param $selected
@@ -488,7 +488,7 @@ $text = "
 
 	}
 
-	
+
 	 // Handle filter options as defined in gsitemap_form_ui::gsitemap_lastmod;  'handle' + action + field + 'Filter'
 	 // @important $fields['gsitemap_lastmod']['filter'] must be true for this method to be detected. 
 	 // @param $selected
@@ -497,7 +497,7 @@ $text = "
 	{
 
 		$this->listOrder = 'gsitemap_lastmod ASC';
-	
+
 		switch($type)
 		{
 			case 'customfilter_1':
@@ -515,7 +515,7 @@ $text = "
 
 	}
 
-	
+
 	 // Handle filter options as defined in gsitemap_form_ui::gsitemap_freq;  'handle' + action + field + 'Filter'
 	 // @important $fields['gsitemap_freq']['filter'] must be true for this method to be detected. 
 	 // @param $selected
@@ -524,7 +524,7 @@ $text = "
 	{
 
 		$this->listOrder = 'gsitemap_freq ASC';
-	
+
 		switch($type)
 		{
 			case 'customfilter_1':
@@ -541,9 +541,9 @@ $text = "
 
 
 	}
-	
-		
-		
+
+
+
 	*/
 	function importLink()
 	{
@@ -555,7 +555,7 @@ $text = "
 
 		foreach ($_POST['importid'] as $import)
 		{
-			list($name, $url, $type, $plugin, $table, $id) = explode("^", $import);
+			list($name, $url, $type, $plugin, $table, $id) = explode("^", (string) $import);
 
 			$insert = array(
 				'gsitemap_id'       => 0,
@@ -591,24 +591,24 @@ $text = "
 	}
 
 }
-				
+
 
 
 class gsitemap_form_ui extends e_admin_form_ui
 {
 
-	
+
 	// Custom Method/Function 
 	function gsitemap_priority($curVal,$mode)
 	{
 
-		 		
+
 		switch($mode)
 		{
 			case 'read': // List Page
 				return $curVal;
 			break;
-			
+
 			case 'write': // Edit Page
 			case 'batch':
 			case 'filter':
@@ -627,44 +627,44 @@ class gsitemap_form_ui extends e_admin_form_ui
 
 				return ($mode === 'write') ? $text : $array;
 			break;
-			
+
 
 		}
-		
+
 		return null;
 	}
 
-	
+
 	// Custom Method/Function 
 	function gsitemap_freq($curVal,$mode)
 	{
 
-		 		
+
 		switch($mode)
 		{
 			case 'read': // List Page
 				return $curVal;
 			break;
-			
+
 			case 'write': // Edit Page
 				return $this->text('gsitemap_freq',$curVal, 255, 'size=large');
 			break;
-			
+
 			case 'filter':
 				return array('customfilter_1' => 'Custom Filter 1', 'customfilter_2' => 'Custom Filter 2');
 			break;
-			
+
 			case 'batch':
 				return array('custombatch_1' => 'Custom Batch 1', 'custombatch_2' => 'Custom Batch 2');
 			break;
 		}
-		
+
 		return null;
 	}
 
 }		
-		
-		
+
+
 new gsitemap_adminArea();
 
 require_once(e_ADMIN."auth.php");
@@ -694,7 +694,7 @@ class gsitemap
 	{
 		$mes = e107::getMessage();
 
-		
+
 
 		$this->freq_list = array
 		(
@@ -756,15 +756,15 @@ class gsitemap
 
 	function showList()
 	{
-		
+
 		$mes 	= e107::getMessage();
 		$sql 	= e107::getDb();
 		$ns 	= e107::getRender();
 		$tp 	= e107::getParser();
 		$frm 	= e107::getForm();
-		
+
 		$gen = new convert;
-		
+
 		$count = $sql->select("gsitemap", "*", "gsitemap_id !=0 ORDER BY gsitemap_order ASC");
 
 		if (!$count)
@@ -774,9 +774,9 @@ class gsitemap
 			".GSLAN_39."<br /><br />"
 			.$frm->admin_button('import',LAN_YES)."
 			</form>";
-			
+
 			$mes->addInfo($text);
-			
+
 			$ns->tablerender(GSLAN_24, $mes->render());
 			return;
 		}
@@ -834,7 +834,7 @@ class gsitemap
 		}
 
 		$text .= "</tbody></table>\n</form>";
-		
+
 		$ns->tablerender(GSLAN_24, $mes->render(). $text);
 	}
 
@@ -843,7 +843,7 @@ class gsitemap
 	{
 		$sql = e107::getDb();
 		$tp = e107::getParser();
-		
+
 		$e_idt = array_keys($_POST['edit']);
 
 		if($sql->select("gsitemap", "*", "gsitemap_id='".$e_idt[0]."' "))
@@ -864,10 +864,10 @@ class gsitemap
 		$sql 	= e107::getDb();
 		$ns 	= e107::getRender();
 		$mes 	= e107::getMessage();
-		
-		
+
+
 		$count = $sql->select("gsitemap", "*", "gsitemap_id !=0 ORDER BY gsitemap_id ASC");
-		
+
 		$text = "
 		<form action='".e_SELF."' id='form' method='post'>
 		<table class='table adminform'>
@@ -951,7 +951,7 @@ class gsitemap
 		$log = e107::getLog();
 		$sql = e107::getDb();
 		$tp  = e107::getParser();
-		
+
 		$gmap = array(
 			'gsitemap_name' 	=> $tp->toDB($_POST['gsitemap_name']),
 			'gsitemap_url' 		=> $tp->toDB($_POST['gsitemap_url']), 
@@ -967,11 +967,11 @@ class gsitemap
 		{
 			// Add where statement to update query 
 			$gmap['WHERE'] = "gsitemap_id= ".intval($_POST['gsitemap_id']); 
-			
+
 			if($sql->update("gsitemap", $gmap))
 			{
 				$this->message = LAN_UPDATED; 	
-				
+
 				// Log update
 				$log->addArray($gmap)->save('GSMAP_04');
 			}
@@ -986,7 +986,7 @@ class gsitemap
 		{
 			$gmap['gsitemap_img'] = vartrue($_POST['gsitemap_img']);
 			$gmap['gsitemap_cat'] = vartrue($_POST['gsitemap_cat']);
-			
+
 			if($sql->insert('gsitemap', $gmap))
 			{
 				$this->message = LAN_CREATED;
@@ -1006,7 +1006,7 @@ class gsitemap
 	{
 		$log = e107::getLog();
 		$sql = e107::getDb();
-		
+
 		$d_idt = array_keys($_POST['delete']);
 
 		if($sql->delete("gsitemap", "gsitemap_id='".$d_idt[0]."'"))
@@ -1045,7 +1045,7 @@ function admin_config_adminmenu()
 	$var['import']['text'] = GSLAN_23;
 	$var['import']['link'] = e_SELF."?import";
 	$var['import']['perm'] = "0";
-	
+
 	show_admin_menu(LAN_PLUGIN_GSITEMAP_NAME, $action, $var);
 }*/
 

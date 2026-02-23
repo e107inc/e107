@@ -185,7 +185,7 @@ class e_file
 	{
 
 		$fullpath = $f['path'] . $f['fname'];
-		$newfile = preg_replace("/[^a-z0-9-\._]/", "-", strtolower($f['fname']));
+		$newfile = preg_replace("/[^a-z0-9-\._]/", "-", strtolower((string) $f['fname']));
 		$newpath = $f['path'] . $newfile;
 
 		if($rename == true)
@@ -1179,13 +1179,13 @@ class e_file
 			if(is_file($filename) && is_readable($filename) && connection_status() == 0)
 			{
 				$seek = 0;
-				if(strpos($_SERVER['HTTP_USER_AGENT'], "MSIE") !== false)
+				if(strpos((string) $_SERVER['HTTP_USER_AGENT'], "MSIE") !== false)
 				{
 					$file = preg_replace('/\./', '%2e', $file, substr_count($file, '.') - 1);
 				}
 				if(isset($_SERVER['HTTP_RANGE']))
 				{
-					$seek = intval(substr($_SERVER['HTTP_RANGE'], strlen('bytes=')));
+					$seek = intval(substr((string) $_SERVER['HTTP_RANGE'], strlen('bytes=')));
 				}
 				$bufsize = 2048;
 				ignore_user_abort(true);
@@ -1300,7 +1300,7 @@ class e_file
 
 		foreach($unarc as $d)
 		{
-			$target = trim($d['stored_filename'], '/');
+			$target = trim((string) $d['stored_filename'], '/');
 
 			$test = basename(str_replace(e_TEMP, "", $d['stored_filename']), '/');
 
@@ -1661,7 +1661,7 @@ class e_file
 
 		//   print_a($headers);
 
-		return (stripos($headers[0], "200 OK") || strpos($headers[0], "302"));
+		return (stripos((string) $headers[0], "200 OK") || strpos((string) $headers[0], "302"));
 	}
 
 
@@ -1966,7 +1966,7 @@ class e_file
 
 		foreach($array as $term)
 		{
-			if(strpos($file, $term) !== false)
+			if(strpos((string) $file, (string) $term) !== false)
 			{
 				return true;
 			}
@@ -2278,9 +2278,9 @@ class e_file
 
 		$remote = false;
 
-		if(strpos($targetFile, 'http') === 0) // remote file.
+		if(strpos((string) $targetFile, 'http') === 0) // remote file.
 		{
-			$tmp = parse_url($targetFile);
+			$tmp = parse_url((string) $targetFile);
 			$targetFile = $tmp['path'];
 			$remote = true;
 			if(!empty($tmp['host']) && ($tmp['host'] === 'localhost' || $tmp['host'] === '127.0.0.1'))
@@ -2289,7 +2289,7 @@ class e_file
 			}
 		}
 
-		$ext = pathinfo($targetFile, PATHINFO_EXTENSION);
+		$ext = pathinfo((string) $targetFile, PATHINFO_EXTENSION);
 
 		$types = $this->getAllowedFileTypes();
 
@@ -2590,7 +2590,7 @@ class e_file
 			if(($class === null && check_class($v['name'])) || (int) $class === (int) $v['name'])
 			{
 			//	$current_perms[$v['name']] = array('type' => $v['type'], 'maxupload' => $v['maxupload']);
-				$a_filetypes = explode(',', $v['type']);
+				$a_filetypes = explode(',', (string) $v['type']);
 				foreach($a_filetypes as $ftype)
 				{
 					$ftype = strtolower(trim(str_replace('.', '', $ftype))); // File extension

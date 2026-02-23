@@ -117,7 +117,7 @@ class e107Bounce
 				//	$message .= "<h4>Emails Found</h4><pre>".print_r($multiArray,TRUE). "</pre>";
 
 				$message .= "<pre>" . $strEmail . "</pre>";
-				
+
 			}
 
 
@@ -211,7 +211,7 @@ class e107Bounce
 		function getHeader($message, $id = 'X-e107-id')
 		{
 
-			$tmp = explode("\n", $message);
+			$tmp = explode("\n", (string) $message);
 			foreach($tmp as $val)
 			{
 				if(strpos($val, $id . ":") !== false)
@@ -380,7 +380,7 @@ class BounceHandler
 			$arrBody = explode("\r\n", $body);
 
 			// now we try all our weird text parsing methods
-			if(preg_match("/auto.{0,20}reply|vacation|(out|away|on holiday).*office/i", $head_hash['Subject']))
+			if(preg_match("/auto.{0,20}reply|vacation|(out|away|on holiday).*office/i", (string) $head_hash['Subject']))
 			{
 				// looks like a vacation autoreply, ignoring
 
@@ -415,7 +415,7 @@ class BounceHandler
 				$arrFailed = self::find_email_addresses($mime_sections['first_body_part']);
 				for($j = 0, $jMax = count($arrFailed); $j < $jMax; $j++)
 				{
-					$output[$j]['recipient'] = trim($arrFailed[$j]);
+					$output[$j]['recipient'] = trim((string) $arrFailed[$j]);
 					$output[$j]['status'] = self::get_status_code_from_text($output[$j]['recipient'], $arrBody, 0);
 					$output[$j]['action'] = self::get_action_from_status_code($output[$j]['status']);
 				}
@@ -430,7 +430,7 @@ class BounceHandler
 				$arrFailed = self::find_email_addresses($body);
 				for($j = 0, $jMax = count($arrFailed); $j < $jMax; $j++)
 				{
-					$output[$j]['recipient'] = trim($arrFailed[$j]);
+					$output[$j]['recipient'] = trim((string) $arrFailed[$j]);
 					$output[$j]['status'] = self::get_status_code_from_text($output[$j]['recipient'], $arrBody, 0);
 					$output[$j]['action'] = self::get_action_from_status_code($output[$j]['status']);
 				}
@@ -453,10 +453,10 @@ class BounceHandler
 
 			for($i = $index, $iMax = count($arrBody); $i < $iMax; $i++)
 			{
-				$line = trim($arrBody[$i]);
+				$line = trim((string) $arrBody[$i]);
 
 				/******** recurse into the email if you find the recipient ********/
-				if(stripos($line, $recipient) !== false)
+				if(stripos($line, (string) $recipient) !== false)
 				{
 					// the status code MIGHT be in the next few lines after the recipient line,
 					// depending on the message from the foreign host... What a laugh riot!
@@ -476,7 +476,7 @@ class BounceHandler
 				}
 				//if we see an email address other than our current recipient's,
 				if(count(self::find_email_addresses($line)) >= 1
-					&& stripos($line, $recipient) === false
+					&& stripos($line, (string) $recipient) === false
 					&& strpos($line, 'FROM:<') === false)
 				{ // Kanon added this line because Hotmail puts the e-mail address too soon and there actually is error message stuff after it.
 					return '';
@@ -609,7 +609,7 @@ class BounceHandler
 				//$out = "";
 				for($i = 0; $i < $blob; $i++)
 				{
-					$out = preg_replace("/<HEADER>/i", "", $blob[$i]);
+					$out = preg_replace("/<HEADER>/i", "", (string) $blob[$i]);
 					$out = preg_replace("/</HEADER>/i", "", $out);
 					$out = preg_replace("/<MESSAGE>/i", "", $out);
 					$out = preg_replace("/</MESSAGE>/i", "", $out);
@@ -627,7 +627,7 @@ class BounceHandler
 				$strEmail = "";
 				for($i = 0; $i < $blob; $i++)
 				{
-					$strEmail .= rtrim($blob[$i]) . "\r\n";
+					$strEmail .= rtrim((string) $blob[$i]) . "\r\n";
 				}
 			}
 
@@ -655,15 +655,15 @@ class BounceHandler
 
 			if(!is_array($headers))
 			{
-				$headers = explode("\r\n", $headers);
+				$headers = explode("\r\n", (string) $headers);
 			}
 			$hash = self::standard_parser($headers);
 			// get a little more complex
-			$arrRec = explode('|', $hash['Received']);
+			$arrRec = explode('|', (string) $hash['Received']);
 			$hash['Received'] = $arrRec;
 			if($hash['Content-type'])
 			{//preg_match('/Multipart\/Report/i', $hash['Content-type'])){
-				$multipart_report = explode(';', $hash['Content-type']);
+				$multipart_report = explode(';', (string) $hash['Content-type']);
 				$hash['Content-type'] = array();
 				$hash['Content-type']['type'] = strtolower($multipart_report[0]);
 				foreach($multipart_report as $mr)
@@ -697,7 +697,7 @@ class BounceHandler
 			{
 				$body = implode("\r\n", $body);
 			}
-			$body = explode($boundary, $body);
+			$body = explode($boundary, (string) $body);
 			$mime_sections['first_body_part'] = $body[1];
 			$mime_sections['machine_parsable_body_part'] = $body[2];
 			$mime_sections['returned_message_body_part'] = $body[3];
@@ -720,11 +720,11 @@ class BounceHandler
 
 			if(!is_array($content))
 			{
-				$content = explode("\r\n", $content);
+				$content = explode("\r\n", (string) $content);
 			}
 			foreach($content as $line)
 			{
-				if(preg_match('/([^\s.]*):\s(.*)/', $line, $array))
+				if(preg_match('/([^\s.]*):\s(.*)/', (string) $line, $array))
 				{
 					$entity = ucfirst(strtolower($array[1]));
 					if(empty($hash[$entity]))
@@ -767,14 +767,14 @@ class BounceHandler
 			$hash['per_message'] = self::standard_parser($hash['per_message']);
 			if(isset($hash['per_message']['X-postfix-sender']) && $hash['per_message']['X-postfix-sender'])
 			{
-				$arr = explode(';', $hash['per_message']['X-postfix-sender']);
+				$arr = explode(';', (string) $hash['per_message']['X-postfix-sender']);
 				$hash['per_message']['X-postfix-sender'] = '';
 				$hash['per_message']['X-postfix-sender']['type'] = trim($arr[0]);
 				$hash['per_message']['X-postfix-sender']['addr'] = trim($arr[1]);
 			}
 			if($hash['per_message']['Reporting-mta'])
 			{
-				$arr = explode(';', $hash['per_message']['Reporting-mta']);
+				$arr = explode(';', (string) $hash['per_message']['Reporting-mta']);
 				$hash['per_message']['Reporting-mta'] = '';
 				$hash['per_message']['Reporting-mta']['type'] = trim($arr[0]);
 				$hash['per_message']['Reporting-mta']['addr'] = trim($arr[1]);
@@ -782,16 +782,16 @@ class BounceHandler
 			//Per-Recipient DSN fields
 			for($i = 0, $iMax = count($hash['per_recipient']); $i < $iMax; $i++)
 			{
-				$temp = self::standard_parser(explode("\r\n", $hash['per_recipient'][$i]));
-				$arr = explode(';', $temp['Final-recipient']);
+				$temp = self::standard_parser(explode("\r\n", (string) $hash['per_recipient'][$i]));
+				$arr = explode(';', (string) $temp['Final-recipient']);
 				$temp['Final-recipient'] = array();
 				$temp['Final-recipient']['type'] = trim($arr[0]);
 				$temp['Final-recipient']['addr'] = trim($arr[1]);
-				$arr = explode(';', $temp['Original-recipient']);
+				$arr = explode(';', (string) $temp['Original-recipient']);
 				$temp['Original-recipient'] = array();
 				$temp['Original-recipient']['type'] = trim($arr[0]);
 				$temp['Original-recipient']['addr'] = trim($arr[1]);
-				$arr = explode(';', $temp['Diagnostic-code']);
+				$arr = explode(';', (string) $temp['Diagnostic-code']);
 				$temp['Diagnostic-code'] = array();
 				$temp['Diagnostic-code']['type'] = trim($arr[0]);
 				$temp['Diagnostic-code']['text'] = trim($arr[1]);
@@ -805,7 +805,7 @@ class BounceHandler
 
 				if($judgement == 'transient')
 				{
-					if(stripos($temp['Action'], 'failed') !== false)
+					if(stripos((string) $temp['Action'], 'failed') !== false)
 					{
 						$temp['Action'] = 'transient';
 						$temp['Status'] = '4.3.0';
@@ -825,7 +825,7 @@ class BounceHandler
 		static function get_head_from_returned_message_body_part($mime_sections)
 		{
 
-			$temp = explode("\r\n\r\n", $mime_sections['returned_message_body_part']);
+			$temp = explode("\r\n\r\n", (string) $mime_sections['returned_message_body_part']);
 			$head = self::standard_parser($temp[1]);
 			$head['From'] = self::extract_address($head['From']);
 			$head['To'] = self::extract_address($head['To']);
@@ -842,7 +842,7 @@ class BounceHandler
 
 			$from = '';
 
-			$from_stuff = preg_split('/[ \"\'\<\>:\(\)\[\]]/', $str);
+			$from_stuff = preg_split('/[ \"\'\<\>:\(\)\[\]]/', (string) $str);
 			foreach($from_stuff as $things)
 			{
 				if(strpos($things, '@') !== false)
@@ -886,7 +886,7 @@ class BounceHandler
 
 			if(!is_array($dsn_fields))
 			{
-				$dsn_fields = explode("\r\n\r\n", $dsn_fields);
+				$dsn_fields = explode("\r\n\r\n", (string) $dsn_fields);
 			}
 			$j = 0;
 			reset($dsn_fields);
@@ -899,7 +899,7 @@ class BounceHandler
 				{
 					$hash['mime_header'] = $dsn_fields[0];
 				}
-				elseif($i == 1 && !preg_match('/(Final|Original)-Recipient/', $dsn_fields[1]))
+				elseif($i == 1 && !preg_match('/(Final|Original)-Recipient/', (string) $dsn_fields[1]))
 				{
 					// some mta's don't output the per_message part, which means
 					// the second element in the array should really be
@@ -930,12 +930,12 @@ class BounceHandler
 
 			$ret = array();
 
-			if(preg_match('/([245]\.[01234567]\.[012345678])(.*)/', $code, $matches))
+			if(preg_match('/([245]\.[01234567]\.[012345678])(.*)/', (string) $code, $matches))
 			{
 				$ret['code'] = $matches[1];
 				$ret['text'] = $matches[2];
 			}
-			elseif(preg_match('/([245][01234567][012345678])(.*)/', $code, $matches))
+			elseif(preg_match('/([245][01234567][012345678])(.*)/', (string) $code, $matches))
 			{
 				preg_match_all("/./", $matches[1], $out);
 				$ret['code'] = $out[0];
@@ -1114,7 +1114,7 @@ class BounceHandler
 
 
 			$ret = self::format_status_code($code);
-			$arr = explode('.', $ret['code']);
+			$arr = explode('.', (string) $ret['code']);
 			$str = "<p><b>" . $status_code_classes[$arr[0]]['title'] . "</b> - " . $status_code_classes[$arr[0]]['descr'] . "  <B>" . $status_code_subclasses[$arr[1] . "." . $arr[2]]['title'] . "</B> - " . $status_code_subclasses[$arr[1] . "." . $arr[2]]['descr'] . "</p>";
 
 			return $str;
@@ -1157,11 +1157,11 @@ class BounceHandler
 		static function decode_diagnostic_code($dcode)
 		{
 
-			if(preg_match("/(\d\.\d\.\d)\s/", $dcode, $array))
+			if(preg_match("/(\d\.\d\.\d)\s/", (string) $dcode, $array))
 			{
 				return $array[1];
 			}
-			elseif(preg_match("/(\d\d\d)\s/", $dcode, $array))
+			elseif(preg_match("/(\d\d\d)\s/", (string) $dcode, $array))
 			{
 				return $array[1];
 			}
@@ -1176,17 +1176,17 @@ class BounceHandler
 		static function is_a_bounce($head_hash)
 		{
 
-			if(preg_match("/(mail delivery failed|failure notice|warning: message|delivery status notif|delivery failure|delivery problem|spam eater|returned mail|undeliverable|returned mail|delivery errors|mail status report|mail system error|failure delivery|delivery notification|delivery has failed|undelivered mail|returned email|returning message to sender|returned to sender|message delayed|mdaemon notification|mailserver notification|mail delivery system|nondeliverable mail|mail transaction failed)|auto.{0,20}reply|vacation|(out|away|on holiday).*office/i", $head_hash['Subject']))
+			if(preg_match("/(mail delivery failed|failure notice|warning: message|delivery status notif|delivery failure|delivery problem|spam eater|returned mail|undeliverable|returned mail|delivery errors|mail status report|mail system error|failure delivery|delivery notification|delivery has failed|undelivered mail|returned email|returning message to sender|returned to sender|message delayed|mdaemon notification|mailserver notification|mail delivery system|nondeliverable mail|mail transaction failed)|auto.{0,20}reply|vacation|(out|away|on holiday).*office/i", (string) $head_hash['Subject']))
 			{
 				return true;
 			}
 
-			if(preg_match('/auto_reply/', $head_hash['Precedence']))
+			if(preg_match('/auto_reply/', (string) $head_hash['Precedence']))
 			{
 				return true;
 			}
 
-			if(preg_match("/^(postmaster|mailer-daemon)\@?/i", $head_hash['From']))
+			if(preg_match("/^(postmaster|mailer-daemon)\@?/i", (string) $head_hash['From']))
 			{
 				return true;
 			}
@@ -1202,7 +1202,7 @@ class BounceHandler
 		{
 
 			// not finished yet.  This finds only one address.
-			if(preg_match("/\b([A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4})\b/i", $first_body_part, $matches))
+			if(preg_match("/\b([A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4})\b/i", (string) $first_body_part, $matches))
 			{
 				return array($matches[1]);
 			}

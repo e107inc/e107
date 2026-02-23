@@ -74,17 +74,17 @@ class receiveMail
 		$mail_header=imap_header($this->marubox,$mid);
 		$sender=$mail_header->from[0];
 		$sender_replyto=$mail_header->reply_to[0];
-		$stat = !(strtolower($sender->mailbox) != 'mailer-daemon' && strtolower($sender->mailbox) != 'postmaster');
-        if(strpos($mail_header->subject,"delayed")){
+		$stat = !(strtolower((string) $sender->mailbox) != 'mailer-daemon' && strtolower((string) $sender->mailbox) != 'postmaster');
+        if(strpos((string) $mail_header->subject,"delayed")){
            $stat = FALSE;
 		}
 			$mail_details=array(
-					'from'=>strtolower($sender->mailbox).'@'.$sender->host,
+					'from'=>strtolower((string) $sender->mailbox).'@'.$sender->host,
 					'fromName'=>$sender->personal,
-					'toOth'=>strtolower($sender_replyto->mailbox).'@'.$sender_replyto->host,
+					'toOth'=>strtolower((string) $sender_replyto->mailbox).'@'.$sender_replyto->host,
 					'toNameOth'=>$sender_replyto->personal,
 					'subject'=>$mail_header->subject,
-					'to'=>strtolower($mail_header->toaddress),
+					'to'=>strtolower((string) $mail_header->toaddress),
 					'bounce'=>$stat,
 					'date'=>$mail_header->date
 				);

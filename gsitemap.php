@@ -103,10 +103,10 @@ class gsitemap_xml
 
 			if($url[0] === '/')
 			{
-				 $url = ltrim($url, '/');
+				 $url = ltrim((string) $url, '/');
 			}
 
-			$loc = (strpos($url, 'http') === 0) ? $url : SITEURL.$tp->replaceConstants($url,true);
+			$loc = (strpos((string) $url, 'http') === 0) ? $url : SITEURL.$tp->replaceConstants($url,true);
 			$xml .= "
 			<url>
 				<loc>".$loc."</loc>";
@@ -117,10 +117,10 @@ class gsitemap_xml
 
 				if($imgUrl[0] === '/')
 				{
-					 $imgUrl = ltrim($imgUrl, '/');
+					 $imgUrl = ltrim((string) $imgUrl, '/');
 				}
 
-				$imgUrl = (strpos($imgUrl, 'http') === 0) ? $imgUrl : SITEURL.$tp->replaceConstants($imgUrl,true);
+				$imgUrl = (strpos((string) $imgUrl, 'http') === 0) ? $imgUrl : SITEURL.$tp->replaceConstants($imgUrl,true);
 
 				$xml .= "
 				<image:image>
@@ -229,7 +229,7 @@ if(e_QUERY == "show" || !empty($_GET['show']))
 
 	foreach($nfArray as $nfa)
 	{
-		$url = (substr($nfa['gsitemap_url'],0,4)== "http")? $nfa['gsitemap_url'] : SITEURL.$tp->replaceConstants($nfa['gsitemap_url'],TRUE);
+		$url = (substr((string) $nfa['gsitemap_url'],0,4)== "http")? $nfa['gsitemap_url'] : SITEURL.$tp->replaceConstants($nfa['gsitemap_url'],TRUE);
 		$text .= "<li>".$tp->toHTML($nfa['gsitemap_cat'],"","defs").": <a href='".$url."'>".$tp->toHTML($nfa['gsitemap_name'],"","defs")."</a></li>\n";
 	}
 	$text .= "</ul></div>";

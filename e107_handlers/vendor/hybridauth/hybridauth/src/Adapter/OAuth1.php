@@ -285,13 +285,13 @@ abstract class OAuth1 extends AbstractAdapter implements AdapterInterface
 
         if ($denied) {
             throw new AuthorizationDeniedException(
-                'User denied access request. Provider returned a denied token: ' . htmlentities($denied)
+                'User denied access request. Provider returned a denied token: ' . htmlentities((string) $denied)
             );
         }
 
         if ($oauth_problem) {
             throw new InvalidOauthTokenException(
-                'Provider returned an error. oauth_problem: ' . htmlentities($oauth_problem)
+                'Provider returned an error. oauth_problem: ' . htmlentities((string) $oauth_problem)
             );
         }
 

@@ -345,7 +345,7 @@ abstract class AbstractDecoder
 
             // isBase64 has to be after isFilePath to prevent false positives
             case $this->isBase64():
-                return $this->initFromBinary(base64_decode($this->data));
+                return $this->initFromBinary(base64_decode((string) $this->data));
 
             default:
                 throw new NotReadableException("Image source not readable");

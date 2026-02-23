@@ -476,7 +476,7 @@ class e_fileTest extends \Codeception\Test\Unit
 				foreach($test as $mime=>$ext)
 				{
 					$actual = $this->fl->getFileExtension($mime);
-		
+
 					self::assertSame($ext, $actual);
 				}	
 			}
@@ -630,7 +630,7 @@ class e_fileTest extends \Codeception\Test\Unit
 		{
 			foreach ($src_dest_map as $src => $dest)
 			{
-				$desired_filename = preg_replace("/^".preg_quote($src, '/')."/", $dest, $desired_filename);
+				$desired_filename = preg_replace("/^".preg_quote($src, '/')."/", $dest, (string) $desired_filename);
 			}
 			self::assertContains(realpath($destination.$desired_filename), $results['success'],
 				"Desired file $desired_filename did not appear in file system");

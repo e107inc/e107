@@ -161,8 +161,8 @@ class db_verify
 		// Permit actual text types that default to null even when
 		// expected does not explicitly default to null
 		if(
-			0 === strcasecmp($expected['type'], $actual['type']) &&
-			1 === preg_match('/[A-Z]*TEXT/i', $expected['type']) &&
+			0 === strcasecmp((string) $expected['type'], (string) $actual['type']) &&
+			1 === preg_match('/[A-Z]*TEXT/i', (string) $expected['type']) &&
 			0 === strcasecmp($actual['default'], "DEFAULT NULL")
 		)
 		{
@@ -170,9 +170,9 @@ class db_verify
 		}
 
 		// Loosely typed default value for numeric types
-		if(1 === preg_match('/([A-Z]*INT|NUMERIC|DEC|FIXED|FLOAT|REAL|DOUBLE)/i', $expected['type']))
+		if(1 === preg_match('/([A-Z]*INT|NUMERIC|DEC|FIXED|FLOAT|REAL|DOUBLE)/i', (string) $expected['type']))
 		{
-			$expected['default'] = preg_replace("/DEFAULT '(\d*\.?\d*)'/i", 'DEFAULT $1', $expected['default']);
+			$expected['default'] = preg_replace("/DEFAULT '(\d*\.?\d*)'/i", 'DEFAULT $1', (string) $expected['default']);
 			$actual['default'] = preg_replace("/DEFAULT '(\d*\.?\d*)'/i", 'DEFAULT $1', $actual['default']);
 		}
 
@@ -181,17 +181,17 @@ class db_verify
 		 *
 		 * @see https://dev.mysql.com/doc/relnotes/mysql/8.0/en/news-8-0-19.html
 		 */
-		if(1 === preg_match('/([A-Z]*INT)/i', $expected['type']))
+		if(1 === preg_match('/([A-Z]*INT)/i', (string) $expected['type']))
 		{
 			$expected['value'] = '';
 			$actual['value'] = '';
 		}
 
 		// Correct difference on CREATE TABLE statement between MariaDB and MySQL
-		if(1 === preg_match('/(DATE|DATETIME|TIMESTAMP|TIME|YEAR)/i', $expected['default']))
+		if(1 === preg_match('/(DATE|DATETIME|TIMESTAMP|TIME|YEAR)/i', (string) $expected['default']))
 		{
-			$expected['default'] = preg_replace("/CURRENT_TIMESTAMP\(\)/i", 'CURRENT_TIMESTAMP', $expected['default']);
-			$actual['default'] = preg_replace("/CURRENT_TIMESTAMP\(\)/i", 'CURRENT_TIMESTAMP', $actual['default']);
+			$expected['default'] = preg_replace("/CURRENT_TIMESTAMP\(\)/i", 'CURRENT_TIMESTAMP', (string) $expected['default']);
+			$actual['default'] = preg_replace("/CURRENT_TIMESTAMP\(\)/i", 'CURRENT_TIMESTAMP', (string) $actual['default']);
 		}
 
 		return array_diff_assoc($expected, $actual);
@@ -784,7 +784,7 @@ class db_verify
 
 		$text .= "
 			</div>
-			
+
 			</fieldset>
 			</form>
 		";
@@ -892,7 +892,7 @@ class db_verify
 
 		}
 
-		if(!in_array(strtolower($data['type']), $this->fieldTypes))
+		if(!in_array(strtolower((string) $data['type']), $this->fieldTypes))
 		{
 			$ret = $data['type'] . "(" . $data['value'] . ") " . $data['attributes'] . " " . $data['null'] . " " . $data['default'];
 
@@ -939,9 +939,9 @@ class db_verify
 
 		$key = array_flip($tabl);
 
-		if(strpos($cur, "lan_") === 0) // language table adjustment.
+		if(strpos((string) $cur, "lan_") === 0) // language table adjustment.
 		{
-			list($tmp, $lang, $cur) = explode("_", $cur, 3);
+			list($tmp, $lang, $cur) = explode("_", (string) $cur, 3);
 		}
 
 		if(isset($key[$cur]))
@@ -1123,7 +1123,7 @@ class db_verify
 
 		$ret = array();
 
-		$sql_data = preg_replace("#\/\*.*?\*\/#mis", '', $sql_data);    // remove comments
+		$sql_data = preg_replace("#\/\*.*?\*\/#mis", '', (string) $sql_data);    // remove comments
 
 		//	$regex = "/CREATE TABLE (?:IF NOT EXISTS )?`?([\w]*)`?\s*?\(([^;]*)\)\s*((?:[\w\s]+=[^\s]+)+\s*)*;/i";
 		// 	$regex = "/CREATE TABLE (?:IF NOT EXISTS )?`?(\w*)`?\s*?\(([^;]*)\)\s*((?:[\w\s]+=\S+)+\s*)*;/i";
@@ -1219,7 +1219,7 @@ class db_verify
 	{
 
 		// Clean $data and add ` ` arond field-names - prevents issues when field == field-type. 
-		$tmp = explode("\n", $data);
+		$tmp = explode("\n", (string) $data);
 		$newline = array();
 
 		foreach($tmp as $line)
@@ -1381,7 +1381,7 @@ class db_verify
 
 			//return $row[1];
 
-			return stripslashes($row[1]) . ';'; // backticks needed.
+			return stripslashes((string) $row[1]) . ';'; // backticks needed.
 			// return str_replace("`", "", stripslashes($row[1])).';';
 		}
 		else
@@ -1407,7 +1407,7 @@ class db_verify
 
 		foreach($list as $tb)
 		{
-			list($tmp, $lang, $table) = explode("_", $tb, 3);
+			list($tmp, $lang, $table) = explode("_", (string) $tb, 3);
 			$array[$lang][] = $table;
 		}
 
@@ -1777,7 +1777,7 @@ function check_tables($what)
 					$xl = preg_replace('/\r?\n$|\r[^\n]$/', '', $xl);
 					$xl = str_replace('  ',' ',$xl);				// Remove double spaces
 					list($xfname, $xfparams) = explode(" ", $xl, 2);	// Field name and the rest
-					
+
 					if ($xfname == 'UNIQUE' || $xfname == 'FULLTEXT')
 					{
 						list($key, $key1, $keyname, $keyparms) = explode(" ", $xl, 4);
@@ -1790,7 +1790,7 @@ function check_tables($what)
 						$xfname = $key." ".$keyname;
 						$xfparams = $keyparms;
 					}
-					
+
 					if ($xfname != "CREATE" && $xfname != ")")
 					{
 						$xfields[$xfname] = 1;
@@ -1862,8 +1862,8 @@ function check_tables($what)
 
 							";
 						}
-						
-						
+
+
 						// DISABLED for now (show only errors), could be page setting
 						// else
 						// {
@@ -1919,8 +1919,8 @@ function check_tables($what)
 					";
 				}
 			}
-			
-			
+
+
 		}
 		else
 		{	// Table Missing.
@@ -1937,7 +1937,7 @@ function check_tables($what)
 			$fix_active = TRUE;
 			$xfield_errors++;
 		}
-		
+
 		if(!$xfield_errors)
 		{
 			//no errors, so no table rows yet
@@ -1947,13 +1947,13 @@ function check_tables($what)
 					</tr>
 			";
 		}
-	
+
 		$ttext .= "
 					</tbody>
 				</table>
 				<br/>
 		";
-		
+
 		//FIXME - add 'show_if_ok' switch
 		if($xfield_errors || (!$xfield_errors && varsettrue($_GET['show_if_ok'])))
 		{
@@ -1961,12 +1961,12 @@ function check_tables($what)
 			$ttcount++;
 		}
 	}
-	
+
 	if(!$fix_active)
 	{
 		//Everything should be OK
 		$emessage->add('DB successfully verified - no problems were found.', E_MESSAGE_SUCCESS);
-		
+
 		if(!$ttcount)
 		{
 			//very tired and sick of this page, so quick and dirty
@@ -1977,7 +1977,7 @@ function check_tables($what)
 			";
 		}
 	}
-	
+
 	if($fix_active)
 	{
 		$text .= "
@@ -1988,7 +1988,7 @@ function check_tables($what)
 			</div>
 		";
 	}
-	
+
 	foreach(array_keys($_POST) as $j) 
 	{
 		$match = array();
@@ -2038,7 +2038,7 @@ if(isset($_POST['do_fix']))
 
 
 		$field= $key;
-		
+
 		switch($mode)
 		{
 			case 'alter':
@@ -2049,23 +2049,23 @@ if(isset($_POST['do_fix']))
 				if($after) $after = " AFTER {$after}";
 				$query = "ALTER TABLE `".MPREFIX.$table."` ADD `$field` $newval{$after}";
 			break;
-			
+
 			case 'drop':
 				$query = "ALTER TABLE `".MPREFIX.$table."` DROP `$field` ";
 			break;
-			
+
 			case 'index':
 				$query = "ALTER TABLE `".MPREFIX.$table."` ADD INDEX `$field` ($newval)";
 			break;
-			
+
 			case 'indexalt':
 				$query = "ALTER TABLE `".MPREFIX.$table."` ADD $field ($newval)";
 			break;
-			
+
 			case 'indexdrop':
 				$query = "ALTER TABLE `".MPREFIX.$table."` DROP INDEX `$field`";
 			break;
-			
+
 			case 'create':
 			$query = "CREATE TABLE `".MPREFIX.$table."` ({$newval}";
 			if (!preg_match('#.*?\s+?(?:TYPE|ENGINE)\s*\=\s*(.*?);#is', $newval))
@@ -2137,7 +2137,7 @@ exit;
 function fix_form($table,$field, $newvalue,$mode,$after ='')
 {
 	global $frm;
-	
+
 	if($mode == 'create')
 	{
 		$newvalue = implode("\n",$newvalue);
@@ -2153,7 +2153,7 @@ function fix_form($table,$field, $newvalue,$mode,$after ='')
 			$newvalue = str_replace($search,'',$newvalue);
 			$after = '';
 		}
-		
+
 		if($mode == 'index' && (stristr($field, 'FULLTEXT ') !== FALSE || stristr($field, 'UNIQUE ') !== FALSE))
 		{
 			$mode = 'indexalt';
@@ -2194,9 +2194,9 @@ function table_list()
 	$exclude[] = "user_extended_struct";
 	$exclude[] = "pm_messages";
 	$exclude[] = "pm_blocks";
-	
+
 	$replace = array();
-	
+
 	$lanlist = explode(",",e_LANLIST);
 	foreach($lanlist as $lang)
 	{

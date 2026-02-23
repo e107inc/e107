@@ -99,7 +99,7 @@ class LightOpenID
         $this->set_realm($host);
         $this->set_proxy($proxy);
 
-        $uri = rtrim(preg_replace('#((?<=\?)|&)openid\.[^&]+#', '', $_SERVER['REQUEST_URI']), '?');
+        $uri = rtrim((string) preg_replace('#((?<=\?)|&)openid\.[^&]+#', '', (string) $_SERVER['REQUEST_URI']), '?');
         $this->returnUrl = $this->trustRoot . $uri;
 
         $this->data = ($_SERVER['REQUEST_METHOD'] === 'POST') ? $_POST : $_GET;
@@ -141,7 +141,7 @@ class LightOpenID
             break;
         case 'trustRoot':
         case 'realm':
-            $this->trustRoot = trim($value);
+            $this->trustRoot = trim((string) $value);
             break;
         case 'xrdsOverride':
             if (is_array($value)) {
@@ -186,7 +186,7 @@ class LightOpenID
         if (!empty($proxy)) {
             // When the proxy is a string - try to parse it.
             if (!is_array($proxy)) {
-                $proxy = parse_url($proxy);
+                $proxy = parse_url((string) $proxy);
             }
 
             // Check if $proxy is valid after the parsing.
@@ -215,10 +215,10 @@ class LightOpenID
      */
     public function hostExists($url)
     {
-        if (strpos($url, '/') === false) {
+        if (strpos((string) $url, '/') === false) {
             $server = $url;
         } else {
-            $server = @parse_url($url, PHP_URL_HOST);
+            $server = @parse_url((string) $url, PHP_URL_HOST);
         }
 
         if (!$server) {
@@ -236,13 +236,13 @@ class LightOpenID
         $realm = '';
 
         # Set a protocol, if not specified.
-        $realm .= (($offset = strpos($uri, '://')) === false) ? $this->get_realm_protocol() : '';
+        $realm .= (($offset = strpos((string) $uri, '://')) === false) ? $this->get_realm_protocol() : '';
 
         # Set the offset properly.
         $offset = (($offset !== false) ? $offset + 3 : 0);
 
         # Get only the root, without the path.
-        $realm .= (($end = strpos($uri, '/', $offset)) === false) ? $uri : substr($uri, 0, $end);
+        $realm .= (($end = strpos((string) $uri, '/', $offset)) === false) ? $uri : substr((string) $uri, 0, $end);
 
         $this->trustRoot = $realm;
     }
@@ -384,10 +384,10 @@ class LightOpenID
     {
         $headers = array();
         foreach ($array as $header) {
-            $pos = strpos($header, ':');
+            $pos = strpos((string) $header, ':');
             if ($pos !== false) {
-                $name = strtolower(trim(substr($header, 0, $pos)));
-                $headers[$name] = trim(substr($header, $pos+1));
+                $name = strtolower(trim(substr((string) $header, 0, $pos)));
+                $headers[$name] = trim(substr((string) $header, $pos+1));
 
                 # Following possible redirections. The point is just to have
                 # claimed_id change with them, because the redirections
@@ -398,7 +398,7 @@ class LightOpenID
                     if (strpos($headers[$name], 'http') === 0) {
                         $this->identity = $this->claimed_id = $headers[$name];
                     } elseif ($headers[$name][0] == '/') {
-                        $parsed_url = parse_url($this->claimed_id);
+                        $parsed_url = parse_url((string) $this->claimed_id);
                         $this->identity =
                         $this->claimed_id = $parsed_url['scheme'] . '://'
                                           . $parsed_url['host']
@@ -426,7 +426,7 @@ class LightOpenID
         }
 
         if (empty($this->cnmatch)) {
-            $this->cnmatch = parse_url($url, PHP_URL_HOST);
+            $this->cnmatch = parse_url((string) $url, PHP_URL_HOST);
         }
 
         $params = http_build_query($params, '', '&');
@@ -521,7 +521,7 @@ class LightOpenID
             stream_context_get_default($default);
 
             if (!empty($headers)) {
-                if (intval(substr($headers[0], strlen('HTTP/1.1 '))) == 405) {
+                if (intval(substr((string) $headers[0], strlen('HTTP/1.1 '))) == 405) {
                     // The server doesn't support HEAD - emulate it with a GET.
                     $args = func_get_args();
                     $args[1] = 'GET';
@@ -655,8 +655,8 @@ class LightOpenID
      */
     protected function htmlTag($content, $tag, $attrName, $attrValue, $valueName)
     {
-        preg_match_all("#<{$tag}[^>]*$attrName=['\"].*?$attrValue.*?['\"][^>]*$valueName=['\"](.+?)['\"][^>]*/?>#i", $content, $matches1);
-        preg_match_all("#<{$tag}[^>]*$valueName=['\"](.+?)['\"][^>]*$attrName=['\"].*?$attrValue.*?['\"][^>]*/?>#i", $content, $matches2);
+        preg_match_all("#<{$tag}[^>]*$attrName=['\"].*?$attrValue.*?['\"][^>]*$valueName=['\"](.+?)['\"][^>]*/?>#i", (string) $content, $matches1);
+        preg_match_all("#<{$tag}[^>]*$valueName=['\"](.+?)['\"][^>]*$attrName=['\"].*?$attrValue.*?['\"][^>]*/?>#i", (string) $content, $matches2);
 
         $result = array_merge($matches1[1], $matches2[1]);
         return empty($result)?false:$result[0];
@@ -674,7 +674,7 @@ class LightOpenID
             throw new ErrorException('No identity supplied.');
         }
         # Use xri.net proxy to resolve i-name identities
-        if (!preg_match('#^https?:#', $url)) {
+        if (!preg_match('#^https?:#', (string) $url)) {
             $url = "https://xri.net/$url";
         }
 
@@ -689,7 +689,7 @@ class LightOpenID
         # Allows optional regex replacement of the URL, e.g. to use Google Apps
         # as an OpenID provider without setting up XRDS on the domain hosting.
         if (!is_null($this->xrds_override_pattern) && !is_null($this->xrds_override_replacement)) {
-            $url = preg_replace($this->xrds_override_pattern, $this->xrds_override_replacement, $url);
+            $url = preg_replace($this->xrds_override_pattern, $this->xrds_override_replacement, (string) $url);
         }
 
         # We'll jump a maximum of 5 times, to avoid endless redirections.
@@ -699,7 +699,7 @@ class LightOpenID
 
                 $next = false;
                 if (isset($headers['x-xrds-location'])) {
-                    $url = $this->build_url(parse_url($url), parse_url(trim($headers['x-xrds-location'])));
+                    $url = $this->build_url(parse_url((string) $url), parse_url(trim($headers['x-xrds-location'])));
                     $next = true;
                 }
 
@@ -775,13 +775,13 @@ class LightOpenID
                 $content = $this->request($url, 'GET', array(), true);
 
                 if (isset($this->headers['x-xrds-location'])) {
-                    $url = $this->build_url(parse_url($url), parse_url(trim($this->headers['x-xrds-location'])));
+                    $url = $this->build_url(parse_url((string) $url), parse_url(trim($this->headers['x-xrds-location'])));
                     continue;
                 }
 
                 $location = $this->htmlTag($content, 'meta', 'http-equiv', 'X-XRDS-Location', 'content');
                 if ($location) {
-                    $url = $this->build_url(parse_url($url), parse_url($location));
+                    $url = $this->build_url(parse_url((string) $url), parse_url($location));
                     continue;
                 }
             }
@@ -837,7 +837,7 @@ class LightOpenID
         }
 
         foreach ($allowed_types as $type) {
-            if (strpos($content_type, $type) !== false) {
+            if (strpos((string) $content_type, $type) !== false) {
                 return true;
             }
         }
@@ -856,7 +856,7 @@ class LightOpenID
 
         if (!empty($provider_url)) {
             $tokens = array_reverse(
-                explode('.', parse_url($provider_url, PHP_URL_HOST))
+                explode('.', parse_url((string) $provider_url, PHP_URL_HOST))
             );
             $result = strtolower(
                 (count($tokens) > 1 && strlen($tokens[1]) > 3)
@@ -962,7 +962,7 @@ class LightOpenID
         # we need to somehow preserve the claimed id between requests.
         # The simplest way is to just send it along with the return_to url.
         if ($this->identity != $this->claimed_id) {
-            $returnUrl .= (strpos($returnUrl, '?') ? '&' : '?') . 'openid.claimed_id=' . $this->claimed_id;
+            $returnUrl .= (strpos((string) $returnUrl, '?') ? '&' : '?') . 'openid.claimed_id=' . $this->claimed_id;
         }
 
         $params = array(
@@ -972,7 +972,7 @@ class LightOpenID
             'openid.trust_root' => $this->trustRoot,
             ) + $this->sregParams();
 
-        return $this->build_url(parse_url($this->server), array('query' => http_build_query($params, '', '&')));
+        return $this->build_url(parse_url((string) $this->server), array('query' => http_build_query($params, '', '&')));
     }
 
     /**
@@ -1017,7 +1017,7 @@ class LightOpenID
             $params['openid.claimed_id'] = $this->claimed_id;
         }
 
-        return $this->build_url(parse_url($this->server), array('query' => http_build_query($params, '', '&')));
+        return $this->build_url(parse_url((string) $this->server), array('query' => http_build_query($params, '', '&')));
     }
 
     /**
@@ -1077,7 +1077,7 @@ class LightOpenID
         ) {
             # If it's an OpenID 1 provider, and we've got claimed_id,
             # we have to append it to the returnUrl, like authUrl_v1 does.
-            $this->returnUrl .= (strpos($this->returnUrl, '?') ? '&' : '?')
+            $this->returnUrl .= (strpos((string) $this->returnUrl, '?') ? '&' : '?')
                              .  'openid.claimed_id=' . $this->claimed_id;
         }
 
@@ -1089,7 +1089,7 @@ class LightOpenID
 
         $server = $this->discover($this->claimed_id);
 
-        foreach (explode(',', $this->data['openid_signed']) as $item) {
+        foreach (explode(',', (string) $this->data['openid_signed']) as $item) {
             $value = $this->data['openid_' . str_replace('.', '_', $item)];
             $params['openid.' . $item] = $value;
         }
@@ -1112,7 +1112,7 @@ class LightOpenID
             $prefix = 'openid_' . $alias;
             $length = strlen('http://axschema.org/');
 
-            foreach (explode(',', $this->data['openid_signed']) as $key) {
+            foreach (explode(',', (string) $this->data['openid_signed']) as $key) {
                 $keyMatch = $alias . '.type.';
 
                 if (strncmp($key, $keyMatch, strlen($keyMatch)) !== 0) {
@@ -1122,7 +1122,7 @@ class LightOpenID
                 $key = substr($key, strlen($keyMatch));
                 $idv = $prefix . '_value_' . $key;
                 $idc = $prefix . '_count_' . $key;
-                $key = substr($this->getItem($prefix . '_type_' . $key), $length);
+                $key = substr((string) $this->getItem($prefix . '_type_' . $key), $length);
 
                 if (!empty($key)) {
                     if (($count = intval($this->getItem($idc))) > 0) {
@@ -1158,7 +1158,7 @@ class LightOpenID
         $attributes = array();
         $sreg_to_ax = array_flip(self::$ax_to_sreg);
         if ($alias = $this->getNamespaceAlias('http://openid.net/extensions/sreg/1.1', 'sreg')) {
-            foreach (explode(',', $this->data['openid_signed']) as $key) {
+            foreach (explode(',', (string) $this->data['openid_signed']) as $key) {
                 $keyMatch = $alias . '.';
                 if (strncmp($key, $keyMatch, strlen($keyMatch)) !== 0) {
                     continue;
@@ -1231,8 +1231,8 @@ class LightOpenID
             $length = strlen($prefix);
 
             foreach ($this->data as $key => $val) {
-                if (strncmp($key, $prefix, $length) === 0 && $val === $namespace) {
-                    $result = trim(substr($key, $length));
+                if (strncmp((string) $key, $prefix, $length) === 0 && $val === $namespace) {
+                    $result = trim(substr((string) $key, $length));
                     break;
                 }
             }

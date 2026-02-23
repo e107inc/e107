@@ -125,7 +125,7 @@ class list_forum
 					{
 						if($row['thread_lastuser'][0] == "0")
 						{
-							$LASTPOST = substr($row['thread_lastuser'], 2);
+							$LASTPOST = substr((string) $row['thread_lastuser'], 2);
 						}
 						//else
 						//	{

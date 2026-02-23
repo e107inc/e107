@@ -118,7 +118,7 @@ class ExtendedPasswordHandler extends UserHandler
 	 */
 	private function encode64($input, $count)
 	{
-		return base64_encode(substr($input, 0, $count));	// @todo - check this works OK
+		return base64_encode(substr((string) $input, 0, $count));	// @todo - check this works OK
 		/*
 		$output = '';
 		$i = 0;
@@ -149,7 +149,7 @@ class ExtendedPasswordHandler extends UserHandler
 	private function crypt_private($password, $stored_password, $password_type = self::PASSWORD_PHPBB_SALT)
 	{
 		$output = '*0';
-		if (substr($stored_password, 0, 2) == $output)
+		if (substr((string) $stored_password, 0, 2) == $output)
 		{
 			$output = '*1';
 		}
@@ -167,12 +167,12 @@ class ExtendedPasswordHandler extends UserHandler
 				$prefix = '';
 		}
 
-		if ($prefix != substr($stored_password, 0, 3))
+		if ($prefix != substr((string) $stored_password, 0, 3))
 		{
 			return $output;
 		}
 
-		$count_log2 = strpos($this->itoa64, $stored_password[3]);			// 4th character indicates hash depth count
+		$count_log2 = strpos((string) $this->itoa64, (string) $stored_password[3]);			// 4th character indicates hash depth count
 		if ($count_log2 < 7 || $count_log2 > 30)
 		{
 			return $output;
@@ -180,7 +180,7 @@ class ExtendedPasswordHandler extends UserHandler
 
 		$count = 1 << $count_log2;
 
-		$salt = substr($stored_password, 4, 8);						// Salt is characters 5..12
+		$salt = substr((string) $stored_password, 4, 8);						// Salt is characters 5..12
 		if (strlen($salt) != 8)
 		{
 			return $output;

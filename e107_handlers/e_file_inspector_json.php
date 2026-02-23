@@ -32,7 +32,7 @@ class e_file_inspector_json extends e_file_inspector
     {
         global $core_image;
         @include($this->database);
-        $this->coreImage = json_decode($core_image, true);
+        $this->coreImage = json_decode((string) $core_image, true);
         if (!is_array($this->coreImage)) $this->coreImage = [];
         $this->coreImage = self::array_slash($this->coreImage);
         if (!$this->coreImage) $this->coreImage = [];
@@ -91,7 +91,7 @@ class e_file_inspector_json extends e_file_inspector
             {
                 foreach ($value as $versionWithV => $checksum)
                 {
-                    $value[ltrim($versionWithV, 'v')] = $checksum;
+                    $value[ltrim((string) $versionWithV, 'v')] = $checksum;
                     unset($value[$versionWithV]);
                 }
                 $results[$prepend . $key] = $value;

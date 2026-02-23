@@ -86,7 +86,7 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 		
 		if(vartrue($tmpl['js']))
 		{		
-			$tmp = explode(',', $tmpl['js']);
+			$tmp = explode(',', (string) $tmpl['js']);
 			
 			foreach($tmp as $file)
 			{

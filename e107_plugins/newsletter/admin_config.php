@@ -86,7 +86,7 @@ class newsletter
 		foreach($_POST as $key => $value)
 		{
 			$key = $tp->toDB($key);
-			if(strpos($key, 'nlmailnow') === 0)
+			if(strpos((string) $key, 'nlmailnow') === 0)
 			{
 				$this->releaseIssue($key);
 				break;
@@ -154,7 +154,7 @@ class newsletter
 				<tr>
 					<td>".$data['newsletter_id']."</td>
 					<td>".$data['newsletter_title']."</td>
-					<td>".((substr_count($data['newsletter_subscribers'], chr(1))!= 0)?"<a href='".e_SELF."?vs.".$data['newsletter_id']."'>".substr_count($data['newsletter_subscribers'], chr(1))."</a>":substr_count($data['newsletter_subscribers'], chr(1)))."</td>
+					<td>".((substr_count((string) $data['newsletter_subscribers'], chr(1))!= 0)?"<a href='".e_SELF."?vs.".$data['newsletter_id']."'>".substr_count((string) $data['newsletter_subscribers'], chr(1))."</a>":substr_count((string) $data['newsletter_subscribers'], chr(1)))."</td>
 					<td>
 						<a class='btn btn-default btn-secondary btn-large' href='".e_SELF."?edit.".$data['newsletter_id']."'>".ADMIN_EDIT_ICON."</a>
 						<input class='btn btn-default btn-secondary btn-large' type='image' title='".LAN_DELETE."' name='delete[newsletter_".$data['newsletter_id']."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm(".$tp->toAttribute($tp->toJSON(LAN_CONFIRMDEL." [ID: ".$data['newsletter_id']." ]")).") \"/>
@@ -440,7 +440,7 @@ class newsletter
 			return FALSE;
 		}
 		$newsletterParentInfo = $sql->fetch();
-		$memberArray = explode(chr(1), $newsletterParentInfo['newsletter_subscribers']);
+		$memberArray = explode(chr(1), (string) $newsletterParentInfo['newsletter_subscribers']);
 
 		require(e_HANDLER.'mail_manager_class.php');
 		$mailer = new e107MailManager;
@@ -559,7 +559,7 @@ class newsletter
 		$mes = e107::getMessage();
 
 		$tmp = key($_POST['delete']);
-		if(strpos($tmp['key'], 'newsletter') === 0)
+		if(strpos((string) $tmp['key'], 'newsletter') === 0)
 		{
 			$id = intval(str_replace('newsletter_', '', $tmp['key']));
 			$sql->delete('newsletter', "newsletter_id='{$id}'");
@@ -643,7 +643,7 @@ class newsletter
 
 			if($nl_row = $nl_sql->fetch())
 			{
-				$subscribers_list = explode(chr(1), trim($nl_row['newsletter_subscribers']));
+				$subscribers_list = explode(chr(1), trim((string) $nl_row['newsletter_subscribers']));
 				sort($subscribers_list);
 				$subscribers_total_count = count($subscribers_list) - 1;	// Get a null entry as well
 			}
@@ -716,7 +716,7 @@ class newsletter
 		$sql ->select('newsletter', '*', 'newsletter_id='.intval($p_id));
 		if($nl_row = $sql->fetch())
 		{
-			$subscribers_list = array_flip(explode(chr(1), $nl_row['newsletter_subscribers']));
+			$subscribers_list = array_flip(explode(chr(1), (string) $nl_row['newsletter_subscribers']));
 			unset($subscribers_list[$p_key]);
 			$new_subscriber_list = implode(chr(1), array_keys($subscribers_list));
 			$sql->update('newsletter', "newsletter_subscribers='{$new_subscriber_list}' WHERE newsletter_id='".$p_id."'");

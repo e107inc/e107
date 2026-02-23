@@ -108,7 +108,7 @@ if (!USER || getperms('0'))
 
 
 	$login_message = SITENAME; //	$login_message = LAN_LOGIN_3." | ".SITENAME;
-	if(strpos($LOGIN_TABLE_HEADER,'LOGIN_TABLE_LOGINMESSAGE') === false && strpos($LOGIN_TABLE,'LOGIN_TABLE_LOGINMESSAGE') === false)
+	if(strpos((string) $LOGIN_TABLE_HEADER,'LOGIN_TABLE_LOGINMESSAGE') === false && strpos((string) $LOGIN_TABLE,'LOGIN_TABLE_LOGINMESSAGE') === false)
 	{
 		    if(deftrue('e_IFRAME'))
             {  

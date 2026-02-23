@@ -13,14 +13,14 @@ function imageselector_shortcode($parm = '', $mod = '')
 		return null;
 	}
 
-	if (strpos($parm, "=") !== false)
+	if (strpos((string) $parm, "=") !== false)
 	{ // query style parms.
-		parse_str($parm, $parms);
+		parse_str((string) $parm, $parms);
 		extract($parms);
 	}
 	else
 	{ // comma separated parms.
-		list($name, $path, $default, $width, $height, $multiple, $label, $subdirs, $filter, $fullpath, $click_target, $click_prefix, $click_postfix, $tabindex, $class) = explode(",", $parm);
+		list($name, $path, $default, $width, $height, $multiple, $label, $subdirs, $filter, $fullpath, $click_target, $click_prefix, $click_postfix, $tabindex, $class) = explode(",", (string) $parm);
 	}
 
 	
@@ -136,7 +136,7 @@ function imageselector_shortcode($parm = '', $mod = '')
 			$text .= "</optgroup>\n";
 		}
 		$text .= "</select>";
-		$text .= "<a href='#'  onclick=\"replaceSC('imageselector=".rawurlencode($parm)."&amp;saction=select',\$('{$name_id}').up('form'),'{$name_id}_cont'); return false;\">refresh</a>";
+		$text .= "<a href='#'  onclick=\"replaceSC('imageselector=".rawurlencode((string) $parm)."&amp;saction=select',\$('{$name_id}').up('form'),'{$name_id}_cont'); return false;\">refresh</a>";
 		if(!e_AJAX_REQUEST) $text .= '</div>';
 
 		if ($scaction == 'select') return $text;

@@ -118,7 +118,7 @@ class e107_debug {
 
 		$keys = array_flip($a);
 
-		list($tmp,$level) = explode('=',$_COOKIE['e107_debug_level']);
+		list($tmp,$level) = explode('=',(string) $_COOKIE['e107_debug_level']);
 
 		$level = (int) $level;
 
@@ -156,7 +156,7 @@ class e107_debug {
             if (!isset($debug_param[1]) || ($debug_param[1] == '')) $debug_param[1] = '=';
             if (isset($_COOKIE['e107_debug_level']))
             {
-                $dVals = substr($_COOKIE['e107_debug_level'], 6);
+                $dVals = substr((string) $_COOKIE['e107_debug_level'], 6);
             }
 
             if (preg_match('/debug(=?)(.*?),?(!|\+|stick|-|unstick|$)/', e_MENU))

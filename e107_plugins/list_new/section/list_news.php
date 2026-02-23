@@ -136,6 +136,6 @@ class list_news
 		$replace[4] = '\\2';
 		$search[5] = "/\<a href=&#039;(.*?)&#039;>(.*?)<\/a>/si";
 		$replace[5] = '\\2';
-		return preg_replace($search, $replace, $title);
+		return preg_replace($search, $replace, (string) $title);
 	}
 }

@@ -42,7 +42,7 @@ if (!function_exists('http_build_url'))
 		}
 
 		// Parse the original URL
-		$parse_url = !is_array($url) ? parse_url($url) : $url;
+		$parse_url = !is_array($url) ? parse_url((string) $url) : $url;
 
 		// Scheme and Host are always replaced
 		if (isset($parts['scheme']))

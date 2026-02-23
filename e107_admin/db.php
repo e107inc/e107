@@ -35,12 +35,12 @@ $mes = e107::getMessage();
 
 if(isset($_GET['mode']))
 {
-    $_GET['mode'] = preg_replace('/[^\w\-]/', '', $_GET['mode']);
+    $_GET['mode'] = preg_replace('/[^\w\-]/', '', (string) $_GET['mode']);
 }
 
 if(isset($_GET['type']))
 {
-    $_GET['type'] = preg_replace('/[^\w\-]/', '', $_GET['type']);
+    $_GET['type'] = preg_replace('/[^\w\-]/', '', (string) $_GET['type']);
 }
 
 /*
@@ -479,24 +479,24 @@ class system_tools
 	{	
 		$sql 		= e107::getDb('new');
 		$mes 		= e107::getMessage();
-		
+
 		$user 		= $_POST['name'];
 		$pass 		= $_POST['password'];
 		$server 	= e107::getMySQLConfig('server'); // $_POST['server'];
 		$database 	= $_POST['db'];
 		$prefix		= $_POST['prefix'];
-			
+
 		if($connect = $sql->connect($server,$user, $pass, true))
 		{
 			$mes->addSuccess(DBLAN_74);
-			
+
 			if(vartrue($_POST['createdb']))
 			{
-			
+
 				if($sql->gen("CREATE DATABASE ".$database." CHARACTER SET `utf8mb4`"))
 				{
 					$mes->addSuccess(DBLAN_75);
-					
+
 				//	$sql->gen("CREATE USER ".$user."@'".$server."' IDENTIFIED BY '".$pass."';");
 					$sql->gen("GRANT ALL ON `".$database."`.* TO ".$user."@'".$server."';");
 					$sql->gen("FLUSH PRIVILEGES;");		
@@ -507,32 +507,32 @@ class system_tools
 					return;
 				}
 			}
-			
+
 			if(!$sql->database($database))
 			{
 				$mes->addError(DBLAN_76);
 			}
-					
+
 			$mes->addSuccess(DBLAN_76);
-					
+
 			if($this->multiSiteCreateTables($sql, $prefix))
 			{
 				$coreConfig = e_CORE. "xml/default_install.xml";		
 				$ret = e107::getXml()->e107Import($coreConfig, 'add', true, false, $sql); // Add core pref values
 				$mes->addInfo(print_a($ret,true));
 			}	
-				
+
 		}
 		else
 		{
 			$mes->addSuccess(DBLAN_74);
 		}
-		
+
 		if($error = $sql->getLastErrorText())
 		{
 			$mes->addError($error);
 		}
-			
+
 		//	print_a($_POST);
 
 		
@@ -555,7 +555,7 @@ class system_tools
 			$mes->addError(DBLAN_77);
 		}
 
-		preg_match_all("/create(.*?)(?:myisam|innodb);/si", $sql_data, $result );
+		preg_match_all("/create(.*?)(?:myisam|innodb);/si", (string) $sql_data, $result );
 
 
 		$sql->gen('SET NAMES `utf8mb4`');
@@ -954,12 +954,12 @@ class system_tools
 
 	function getQueries($query)
 	{
-		
+
 		$mes = e107::getMessage();
 		$sql = e107::getDb('utf8-convert');
 
 		$qry = [];
-		
+
 		if($sql->gen($query))
 		{
 			while ($row = $sql->fetch('num'))
@@ -973,8 +973,8 @@ class system_tools
 		}
 
 		return $qry;
-		
-		
+
+
 		/*
 		if(!$result = mysql_query($query))
 		{
@@ -1415,13 +1415,13 @@ class system_tools
 
 	private function getPrefConfig($type)
 	{
-		if(strpos($type,'plugin_') === 0)
+		if(strpos((string) $type,'plugin_') === 0)
 		{
-			$config = e107::getPlugConfig(substr($type,7));
+			$config = e107::getPlugConfig(substr((string) $type,7));
 		}
-		elseif(strpos($type,'theme_') === 0)
+		elseif(strpos((string) $type,'theme_') === 0)
 		{
-			$config = e107::getThemeConfig(substr($type,6));
+			$config = e107::getThemeConfig(substr((string) $type,6));
 		}
 		else
 		{
@@ -1514,7 +1514,7 @@ class system_tools
 			}
 			else
 			{
-				$ptext = htmlspecialchars($val, ENT_QUOTES, 'utf-8');
+				$ptext = htmlspecialchars((string) $val, ENT_QUOTES, 'utf-8');
 			}
 
 			$ptext = $tp->textclean($ptext, 80);
@@ -1577,7 +1577,7 @@ class system_tools
 		{
 			foreach($fList as $file)
 			{
-				$scList[] = strtoupper(substr($file['fname'], 0, -4));
+				$scList[] = strtoupper(substr((string) $file['fname'], 0, -4));
 			}
 			$scList = implode(',', $scList);
 		}
@@ -1590,7 +1590,7 @@ class system_tools
 		{
 			foreach($fList as $file)
 			{
-				$scList[] = substr($file['fname'], 0, -4);
+				$scList[] = substr((string) $file['fname'], 0, -4);
 			}
 			$scList = implode(',', $scList);
 		}
@@ -1815,7 +1815,7 @@ function exportXmlFile($prefs,$tables=array(),$plugPrefs=array(), $themePrefs=ar
 		{
 			foreach($xml->fileConvertLog as $oldfile)
 			{
-				$file = basename($oldfile);
+				$file = basename((string) $oldfile);
 				$newfile = $desinationFolder.$file;
 				if($oldfile == $newfile || (copy($oldfile,$newfile)))
 				{

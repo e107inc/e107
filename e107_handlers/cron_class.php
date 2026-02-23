@@ -167,7 +167,7 @@ class _system_cron
 			error_log('e107: Cron running _system_cron::sendEmail(); ', E_USER_NOTICE);
 		}
 
-		
+
 	  //  require_once(e_HANDLER.'mail.php');
 		$message = "Your Cron test worked correctly. Sent on ".date("r").".";
 
@@ -337,7 +337,7 @@ class _system_cron
 		}
 		elseif(file_exists($file))
 		{
-			e107::getLog()->addSuccess(LAN_CRON_56." ".basename($file))->save('BACKUP');
+			e107::getLog()->addSuccess(LAN_CRON_56." ".basename((string) $file))->save('BACKUP');
 		}
 
 		return null;
@@ -484,9 +484,9 @@ class CronParser
 	{
 		$ret = [];
 
-		if (strpos($str, ",") !== false)
+		if (strpos((string) $str, ",") !== false)
 		{
-			$arParts = explode(',', $str);
+			$arParts = explode(',', (string) $str);
 			foreach ($arParts AS $part)
 			{
 				if (strpos($part, '-') !== false)
@@ -503,9 +503,9 @@ class CronParser
 				}
 			}
 		}
-		elseif (strpos($str, '-') !== false)
+		elseif (strpos((string) $str, '-') !== false)
 		{
-			$arRange = explode('-', $str);
+			$arRange = explode('-', (string) $str);
 			for ($i = $arRange[0]; $i <= $arRange[1]; $i++)
 			{
 				$ret[] = $i;
@@ -549,7 +549,7 @@ class CronParser
 		$this->minutes_arr = array();
 		$this->months_arr = array();
 
-		$string = preg_replace('/\s{2,}/', ' ', $string);
+		$string = preg_replace('/\s{2,}/', ' ', (string) $string);
 
 		if (preg_match('/[^-,* \\d]/', $string) !== 0)
 		{
@@ -679,7 +679,7 @@ class CronParser
 		}
 		else
 		{
-			$lastDue = $this->year.'-'.(strlen($this->month) === 1 ? '0'.$this->month : $this->month).'-'.(strlen($this->day) === 1 ? '0'.$this->day : $this->day).'T'.(strlen($this->hour) === 1 ? '0'.$this->hour : $this->hour) . ":" . (strlen($this->minute) === 1 ? '0'.$this->minute : $this->minute);
+			$lastDue = $this->year.'-'.(strlen((string) $this->month) === 1 ? '0'.$this->month : $this->month).'-'.(strlen((string) $this->day) === 1 ? '0'.$this->day : $this->day).'T'.(strlen((string) $this->hour) === 1 ? '0'.$this->hour : $this->hour) . ":" . (strlen($this->minute) === 1 ? '0'.$this->minute : $this->minute);
 			$this->debug(__METHOD__.' ('.__LINE__.'): '.date_default_timezone_get());
 			$this->debug(__METHOD__.' ('.__LINE__.'): Setting lastDue to ' . $lastDue);
 			$this->lastDue = $lastDue;
@@ -1306,7 +1306,7 @@ class cronScheduler
 		}
 		elseif(!empty($_SERVER['argv'][1]))
 		{
-			$pwd = trim($_SERVER['argv'][1]);
+			$pwd = trim((string) $_SERVER['argv'][1]);
 		}
 
 		if(!empty($_GET['token']))
@@ -1387,7 +1387,7 @@ class cronScheduler
 		{
 			while($row = $sql->fetch())
 			{
-				list($class, $function) = explode("::", $row['cron_function'], 2);
+				list($class, $function) = explode("::", (string) $row['cron_function'], 2);
 				$key = $class . "__" . $function;
 
 				$list[$key] = array(

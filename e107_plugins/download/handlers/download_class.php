@@ -127,16 +127,16 @@ class download
 		{
 			if (is_numeric($tmp[0]))	//legacy		// $tmp[0] at least must be valid
 			{
-				$parsed                 = preg_replace("#\W#", "", $tp->toDB($tmp[1]));
+				$parsed                 = preg_replace("#\W#", "", (string) $tp->toDB($tmp[1]));
 			   $this->qry['action'] 	= varset($parsed,'list');
 			   $this->qry['id'] 		= intval($tmp[2]);
 			   $this->qry['view'] 		= intval($tmp[3]);
-			   $this->qry['order'] 		= preg_replace("#\W#", "", $tp->toDB($tmp[4]));
-			   $this->qry['sort'] 		= preg_replace("#\W#", "", $tp->toDB($tmp[5]));
+			   $this->qry['order'] 		= preg_replace("#\W#", "", (string) $tp->toDB($tmp[4]));
+			   $this->qry['sort'] 		= preg_replace("#\W#", "", (string) $tp->toDB($tmp[5]));
 		   	}
 			elseif(!empty($tmp[1]))
 		   	{
-			   $this->qry['action'] 	= preg_replace("#\W#", "", $tp->toDB($tmp[0]));
+			   $this->qry['action'] 	= preg_replace("#\W#", "", (string) $tp->toDB($tmp[0]));
 			   $this->qry['id'] 		= intval($tmp[1]);
 			   $this->qry['error']		= intval(varset($tmp[2],0));
 			}	
@@ -148,7 +148,7 @@ class download
 		{
 			$this->qry['view'] 		= varset($_POST['view']) ? intval($_POST['view']) : 10;
 			$this->qry['order'] 	= varset($_POST['order']) && in_array("download_".$_POST['order'],$this->orderOptions) ? $_POST['order'] : 'datestamp';
-			$this->qry['sort'] 		= (strtolower($_POST['sort']) == 'asc') ? "asc" : 'desc';	
+			$this->qry['sort'] 		= (strtolower((string) $_POST['sort']) == 'asc') ? "asc" : 'desc';	
 		}	
 		
 
@@ -255,7 +255,7 @@ class download
 		$tp = e107::getParser();
 		$ns = e107::getRender();
 		$pref = e107::getPref();
-		
+
 
 	//	if ($cacheData = $e107cache->retrieve("download_cat".$maincatval,720)) // expires every 12 hours. //TODO make this an option
 		{
@@ -264,18 +264,18 @@ class download
 		}
 
 
-		
+
 		if(deftrue('BOOTSTRAP')) // v2.x 
 		{
 			$template = e107::getTemplate('download','download','categories');
-			
+
 			$DOWNLOAD_CAT_CAPTION		= $template['caption'];
 			$DOWNLOAD_CAT_TABLE_START 	= varset($template['start']);
 			$DOWNLOAD_CAT_PARENT_TABLE	= $template['parent'];
 			$DOWNLOAD_CAT_CHILD_TABLE	= $template['child'];
 			$DOWNLOAD_CAT_SUBSUB_TABLE	= $template['subchild'];
 			$DOWNLOAD_CAT_TABLE_END		= varset($template['end']);
-			
+
 //			$DL_VIEW_NEXTPREV			= varset($template['nextprev']);
 //			$DL_VIEW_PAGETITLE			= varset($template['pagetitle']);
 //			$DL_VIEW_CAPTION			= varset($template['caption'],"{DOWNLOAD_VIEW_CAPTION}");
@@ -291,7 +291,7 @@ class download
 
 
 			$template_name = 'download_template.php';
-			
+
 			if (is_readable(THEME."templates/".$template_name))
 			{
 				require_once(THEME."templates/".$template_name);
@@ -311,9 +311,9 @@ class download
 		$sc->wrapper('download/categories');
 		$sc->breadcrumb();
 		$sc->qry 	= $this->qry;	
-		
-	
-		
+
+
+
 		if(!defined("DL_IMAGESTYLE")){ define("DL_IMAGESTYLE","border:1px solid blue");}
 
 	   // Read in tree of categories which this user is allowed to see
@@ -324,20 +324,20 @@ class download
 
 			return $ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, "<div class='alert alert-warning' style='text-align:center'>".LAN_NO_RECORDS_FOUND."</div>",'download-categories',true);
 		}
-				
+
 		$download_cat_table_string = "";
 		foreach($dlcat->cat_tree as $dlrow)  // Display main category headings, then sub-categories, optionally with sub-sub categories expanded
 		{
 			$sc->setVars($dlrow); 
 			$download_cat_table_string .= $tp->parseTemplate($DOWNLOAD_CAT_PARENT_TABLE, TRUE, vartrue($sc));
-			
+
 			foreach($dlrow['subcats'] as $dlsubrow)
 			{
 				$sc->dlsubrow = $dlsubrow;
-				
-				
+
+
 				$download_cat_table_string .= $tp->parseTemplate($DOWNLOAD_CAT_CHILD_TABLE, TRUE, $sc);
-				
+
 				foreach($dlsubrow['subsubcats'] as $dlsubsubrow)
 				{
 					$sc->dlsubsubrow = $dlsubsubrow;
@@ -348,20 +348,20 @@ class download
 
 	//    e107::getDebug()->log($dlcat->cat_tree);
 
-	  
+
 		$dl_text = $tp->parseTemplate($this->templateHeader, TRUE, $sc);
 		$dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_START, TRUE, $sc);
 		$dl_text .= $download_cat_table_string;
 		$dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_END, TRUE, $sc);
-	   
+
 		$caption = varset($DOWNLOAD_CAT_CAPTION) ? $tp->parseTemplate($DOWNLOAD_CAT_CAPTION, TRUE, $sc) : LAN_PLUGIN_DOWNLOAD_NAME;
-		
+
 		//ob_start();
-		
+
 		$dl_text .= $tp->parseTemplate($this->templateFooter, TRUE, $sc);
 
 
-	   
+
 		return $ns->tablerender($caption, $dl_text, 'download-categories',true);
 
 	  // $cache_data = ob_get_flush();
@@ -724,7 +724,7 @@ class download
 
 
 		   $this->qry['name'] = $dlrow['download_category_sef'];
-		   
+
 	   //	   define("e_PAGETITLE", LAN_PLUGIN_DOWNLOAD_NAME." / ".$dlrow['download_category_name']);
 		}
 		else
@@ -1072,7 +1072,7 @@ class download
 			$sc->setVars($dlrow);
 
 			
-			$array = explode(chr(1), $dlrow['download_mirror']);
+			$array = explode(chr(1), (string) $dlrow['download_mirror']);
 			
 			if (2 == varset($pref['mirror_order']))
 			{
@@ -1147,7 +1147,7 @@ class download
 		switch ($this->qry['error'])
 		{
 			case 1 :	// No permissions
-	            if (strlen($pref['download_denied']) > 0) 
+	            if (strlen((string) $pref['download_denied']) > 0) 
 	            {
 					$errmsg = $tp->toHTML($pref['download_denied'],true, 'DESCRIPTION');
 	   	      	} 
@@ -1224,7 +1224,7 @@ class download
          {
             if ($groupOnMain)
             {
-            	$boxinfo .= "<optgroup label='".htmlspecialchars($thiscat['download_category_name'])."'>";
+            	$boxinfo .= "<optgroup label='".htmlspecialchars((string) $thiscat['download_category_name'])."'>";
              	$scprefix = '';
             }
             else
@@ -1233,7 +1233,7 @@ class download
             	if ($currentID == $thiscat['download_category_id']) {
             	   $boxinfo .= " selected='selected'";
             	}
-               $boxinfo .= ">".htmlspecialchars($thiscat['download_category_name'])."</option>\n";
+               $boxinfo .= ">".htmlspecialchars((string) $thiscat['download_category_name'])."</option>\n";
              	$scprefix = '&nbsp;&nbsp;&nbsp;';
             }
             foreach ($thiscat['subcats'] as $sc)
@@ -1243,7 +1243,7 @@ class download
             	if ($currentID == $sc['download_category_id']) {
             	   $boxinfo .= " selected='selected'";
             	}
-               $boxinfo .= ">".$scprefix.htmlspecialchars($sc['download_category_name'])."</option>\n";
+               $boxinfo .= ">".$scprefix.htmlspecialchars((string) $sc['download_category_name'])."</option>\n";
                if ($incSubSub)
                {  // Sub-sub categories
                	foreach ($sc['subsubcats'] as $ssc)
@@ -1262,7 +1262,7 @@ class download
          else
          {
          	$sel = ($currentID == $thiscat['download_category_id']) ? " selected='selected'" : "";
-           	$boxinfo .= "<option value='".$thiscat['download_category_id']."' {$sel}>".htmlspecialchars($thiscat['download_category_name'])."</option>\n";
+           	$boxinfo .= "<option value='".$thiscat['download_category_id']."' {$sel}>".htmlspecialchars((string) $thiscat['download_category_name'])."</option>\n";
          }
       }
       $boxinfo .= "</select>\n";
@@ -1272,8 +1272,8 @@ class download
 
 function sort_download_mirror_order($a, $b)
 {
-   $a = explode(",", $a);
-   $b = explode(",", $b);
+   $a = explode(",", (string) $a);
+   $b = explode(",", (string) $b);
    if ($a[1] == $b[1]) {
       return 0;
    }

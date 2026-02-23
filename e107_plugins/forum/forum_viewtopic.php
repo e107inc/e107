@@ -362,7 +362,7 @@ $forumstring = $forstr . $forthr . vartrue($forrep) . $forend;
 
 //If last post came after USERLV and not yet marked as read, mark the thread id as read
 //---- Orphan $currentUser???
-$threadsViewed = explode(',', $currentUser['user_plugin_forum_viewed']);
+$threadsViewed = explode(',', (string) $currentUser['user_plugin_forum_viewed']);
 
 if ($thread->threadInfo['thread_lastpost'] > defset('USERLV') && !in_array($thread->threadId, $threadsViewed))
 {
@@ -473,7 +473,7 @@ function forumjump()
 function rpg($user_join, $user_forums)
 {
 	global $FORUMTHREADSTYLE;
-	if (strpos($FORUMTHREADSTYLE, '{RPG}') === false)
+	if (strpos((string) $FORUMTHREADSTYLE, '{RPG}') === false)
 	{
 		return '';
 	}
@@ -688,7 +688,7 @@ class e107ForumThread
 			return;
 		}
 
-		$function = trim($_GET['f']);
+		$function = trim((string) $_GET['f']);
 		switch ($function)
 		{
 			case 'post':

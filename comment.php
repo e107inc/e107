@@ -43,7 +43,7 @@ if(e_AJAX_REQUEST) // TODO improve security
 	// Comment Pagination 
 	if(varset($_GET['mode']) == 'list' && vartrue($_GET['id']) && vartrue($_GET['type']))
 	{
-		$clean_type = preg_replace("/[^\w\d]/","",$_GET['type']);
+		$clean_type = preg_replace("/[^\w\d]/","",(string) $_GET['type']);
 		
 		$tmp = e107::getComment()->getComments($clean_type,intval($_GET['id']),intval($_GET['from']));
 		echo $tmp['comments'];
@@ -303,13 +303,13 @@ if ($redirectFlag)
 		$plugin_redir = TRUE;
 		$reply_location = str_replace('{NID}', $redirectFlag, $e_comment[$table]['reply_location']);
 	}
-	
+
 	if ($plugin_redir)
 	{
 		echo "<script>document.location.href='{$reply_location}'</script>\n";
 		exit;
 	}
-	
+
 	// No redirect found if we get here.
 }
 

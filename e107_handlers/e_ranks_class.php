@@ -190,9 +190,9 @@ class e_ranks
 	private function _getImage(&$info)
 	{
 		$img = $info['image'];
-		if($info['lan_pfx'] && strpos('_', $info['image']))
+		if($info['lan_pfx'] && strpos('_', (string) $info['image']))
 		{
-			$_tmp = explode('_', $info['image'], 2);
+			$_tmp = explode('_', (string) $info['image'], 2);
 			$img = e_LANGUAGE.'_'.$_tmp[1];
 		}
 		return $this->imageFolder.$img;

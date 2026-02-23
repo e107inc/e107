@@ -105,7 +105,7 @@ class cPanelDeployer extends Deployer
 		if (!is_null($acceptance_tests_apiresponse->{'data'}))
 		{
 			$acceptance_tests_raw = $acceptance_tests_apiresponse->{'data'}->{'content'};
-			$acceptance_tests = (array) json_decode($acceptance_tests_raw, true);
+			$acceptance_tests = (array) json_decode((string) $acceptance_tests_raw, true);
 			self::prune_acceptance_tests($acceptance_tests);
 		}
 		return $acceptance_tests;
@@ -157,7 +157,7 @@ class cPanelDeployer extends Deployer
 		foreach ($target_files as $target_file)
 		{
 			$questionable_filename = $target_file->{'file'};
-			if (substr($questionable_filename, 0, strlen(self::TEST_PREFIX)) === self::TEST_PREFIX &&
+			if (substr((string) $questionable_filename, 0, strlen(self::TEST_PREFIX)) === self::TEST_PREFIX &&
 				!in_array($questionable_filename, $valid_acceptance_test_ids))
 			{
 				self::println("Deleting expired test folder \"".self::TARGET_RELPATH.$questionable_filename."\"…");
@@ -172,9 +172,9 @@ class cPanelDeployer extends Deployer
 		foreach ($dbs as $db)
 		{
 			$db = (array) $db;
-			if (substr($db['db'], 0, strlen($prefix)) !== $prefix)
+			if (substr((string) $db['db'], 0, strlen($prefix)) !== $prefix)
 				continue;
-			$questionable_db = substr($db['db'], strlen($prefix));
+			$questionable_db = substr((string) $db['db'], strlen($prefix));
 			if (!in_array($questionable_db, $ids))
 			{
 				self::println("Deleting expired MySQL database \"".$db['db']."\"…");
@@ -189,9 +189,9 @@ class cPanelDeployer extends Deployer
 		foreach ($users as $user)
 		{
 			$user = (array) $user;
-			if (substr($user['user'], 0, strlen($prefix)) !== $prefix)
+			if (substr((string) $user['user'], 0, strlen($prefix)) !== $prefix)
 				continue;
-			$questionable_user = substr($user['user'], strlen($prefix));
+			$questionable_user = substr((string) $user['user'], strlen($prefix));
 			if (!in_array($questionable_user, $ids))
 			{
 				self::println("Deleting expired MySQL user \"".$user['user']."\"…");
@@ -356,8 +356,8 @@ class cPanelDeployer extends Deployer
 		foreach ($i as $file_info)
 		{
 			$realpath = $file_info->getRealPath();
-			if (substr($realpath, 0, strlen($path)) === $path)
-				$relpath = substr($realpath, strlen($path));
+			if (substr((string) $realpath, 0, strlen($path)) === $path)
+				$relpath = substr((string) $realpath, strlen($path));
 			if (substr($relpath, -3) === "/.." ||
 				substr($relpath, -2) === "/." ||
 				!file_exists($realpath) ||

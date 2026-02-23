@@ -626,7 +626,7 @@ class e_validator
 
 			case 'set':
 			case 'enum':
-				$tmp = array_map('trim', explode(',', $cond));
+				$tmp = array_map('trim', explode(',', (string) $cond));
 				if (!$value || !in_array($value, $tmp))
 				{
 					$this->addValidateResult($name, self::ERR_FIELDS_MATCH);
@@ -692,7 +692,7 @@ class e_validator
 				break;
 
 			case 'file': // TODO - type image - validate dimensions?
-				parse_str($cond, $params);
+				parse_str((string) $cond, $params);
 				$path = e107::getParser()->replaceConstants(varset($params['base']) . $value);
 				if (!$value || !is_file($path))
 				{
@@ -841,7 +841,7 @@ class e_validator
 	protected function parseMinMax($string)
 	{
 
-		return explode(':', $this->_convertConditionBC($string), 2);
+		return explode(':', (string) $this->_convertConditionBC($string), 2);
 	}
 
 	/**
@@ -852,9 +852,9 @@ class e_validator
 	{
 
 		// BC! Will be removed after we replace '-' with ':' separator!
-		if (strpos($condition, ':') === false)
+		if (strpos((string) $condition, ':') === false)
 		{
-			return preg_replace('/^([0-9]+)-([0-9]+)$/', '$1:$2', $condition);
+			return preg_replace('/^([0-9]+)-([0-9]+)$/', '$1:$2', (string) $condition);
 		}
 
 		return $condition;
@@ -1236,7 +1236,7 @@ class validatorClass
 								$temp = array();
 								foreach ($value as $v)
 								{
-									$v = trim($v);
+									$v = trim((string) $v);
 									if (is_numeric($v))
 									{
 										$temp[] = (int) $v;
@@ -1250,7 +1250,7 @@ class validatorClass
 							}
 							break;
 						case 2 :        // Assumes we're processing a dual password field - array name for second value is one more than for first
-							$src2 = substr($src, 0, -1) . (substr($src, -1, 1) + 1);
+							$src2 = substr((string) $src, 0, -1) . (substr((string) $src, -1, 1) + 1);
 							if (!isset($sourceFields[$src2]) || ($sourceFields[$src2] != $value))
 							{
 								$errNum = ERR_PASSWORDS_DIFFERENT;
@@ -1326,7 +1326,7 @@ class validatorClass
 				$ret['errors'][$dest] = $errNum;
 				if ($defs['dataType'] == 2)
 				{
-					$ret['failed'][$dest] = str_repeat('*', strlen($sourceFields[$src]));        // Save value with error - obfuscated
+					$ret['failed'][$dest] = str_repeat('*', strlen((string) $sourceFields[$src]));        // Save value with error - obfuscated
 				}
 				else
 				{
@@ -1391,7 +1391,7 @@ class validatorClass
 				$options = $definitions[$f];            // Validation options to use
 				if (!vartrue($options['fieldOptional']) || ($v != ''))
 				{
-					$toDo = explode(',', $options['vetMethod']);
+					$toDo = explode(',', (string) $options['vetMethod']);
 
 					foreach ($toDo as $vm)
 					{
@@ -1435,7 +1435,7 @@ class validatorClass
 							case 2 :        // Check against $pref
 								if (isset($options['vetParam']) && !empty($pref[$options['vetParam']]))
 								{
-									$tmp = explode(",", $pref[$options['vetParam']]);
+									$tmp = explode(",", (string) $pref[$options['vetParam']]);
 
 									foreach ($tmp as $disallow)
 									{
@@ -1445,7 +1445,7 @@ class validatorClass
 										{    // Exact match search (noticed with exclamation mark in the end of the word)
 											$errMsg = ERR_DISALLOWED_TEXT_EXACT_MATCH;
 										}
-										elseif (stripos($v, $disTrim) !== false)
+										elseif (stripos((string) $v, $disTrim) !== false)
 										{    // Wild card search
 											$errMsg = ERR_DISALLOWED_TEXT;
 										}
@@ -1506,7 +1506,7 @@ class validatorClass
 	public static function checkMandatory($fieldList, &$target)
 	{
 
-		$fields = explode(',', $fieldList);
+		$fields = explode(',', (string) $fieldList);
 		$allOK = true;
 		foreach ($fields as $f)
 		{

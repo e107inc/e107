@@ -136,7 +136,7 @@ class user_import
 	// On error, if $just_strip true, returns 'processed' name; otherwise returns FALSE
 	function vetUserName($name, $just_strip = FALSE)
 	{
-		$temp_name = trim(preg_replace('/&nbsp;|\#|\=|\$/', "", strip_tags($name)));
+		$temp_name = trim((string) preg_replace('/&nbsp;|\#|\=|\$/', "", strip_tags((string) $name)));
 		if (($temp_name == $name) || $just_strip) return $temp_name;
 		return FALSE;
 	}
@@ -168,7 +168,7 @@ class user_import
 				{
 					e107::getMessage()->addDebug("Removing user-field due to missing user-extended field {$k} ");	
 				}			
-				
+
 				unset($userRecord[$k]);			// And always delete from the original data record
 			}
 		}
@@ -191,8 +191,8 @@ class user_import
 			return 5;
 		}
 		
-		if (trim($userRecord['user_name']) == '') $userRecord['user_name'] = trim($userRecord['user_loginname']);
-		if (trim($userRecord['user_loginname']) == '') $userRecord['user_loginname'] = trim($userRecord['user_name']);
+		if (trim((string) $userRecord['user_name']) == '') $userRecord['user_name'] = trim((string) $userRecord['user_loginname']);
+		if (trim((string) $userRecord['user_loginname']) == '') $userRecord['user_loginname'] = trim((string) $userRecord['user_name']);
 		
 		foreach ($this->userMandatory as $k)
 		{
@@ -201,7 +201,7 @@ class user_import
 				e107::getMessage()->addDebug("Failed userMandatory on {$k}");
 				return 3;
 			}
-			
+
 			//if (strlen($userRecord[$k]) < 3)
 		//	{
 			//	e107::getMessage()->addDebug("Failed userMandatory length on {$k}");

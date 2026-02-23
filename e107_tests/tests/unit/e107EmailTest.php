@@ -343,7 +343,7 @@ Admin<br />
 			if (!file_exists($filePath)) return false;
 			$handle = fopen($filePath, 'r');
 			while (($buffer = fgets($handle)) !== false) {
-				if (strpos($buffer, $string) !== false) {
+				if (strpos($buffer, (string) $string) !== false) {
 					return true;
 				}
 			}

@@ -94,7 +94,7 @@ function uploadfile_shortcode($parm)
 	}
 
 	$parms = array();
-	parse_str(varset($parm[1], ''), $parms);
+	parse_str((string) varset($parm[1], ''), $parms);
 
 	$parms = array_merge(array(
 		'trigger'		=> 'uploadfiles',

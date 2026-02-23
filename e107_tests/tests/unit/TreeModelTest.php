@@ -94,7 +94,7 @@ class TreeModelTest extends \Codeception\Test\Unit
         $method->setAccessible(true);
         $method->invoke($tree_model);
 
-        $this->assertEquals('ORDER BY n.news_sticky DESC, n.news_datestamp DESC', trim($tree_model->getParam('db_query')));
+        $this->assertEquals('ORDER BY n.news_sticky DESC, n.news_datestamp DESC', trim((string) $tree_model->getParam('db_query')));
         $this->assertEquals('4', $tree_model->getParam('db_limit_count'));
         $this->assertEmpty($tree_model->getParam('db_limit_offset'));
     }
@@ -109,7 +109,7 @@ class TreeModelTest extends \Codeception\Test\Unit
         $method->setAccessible(true);
         $method->invoke($tree_model);
 
-        $this->assertEquals('ORDER BY n.news_sticky DESC, n.news_datestamp DESC', trim($tree_model->getParam('db_query')));
+        $this->assertEquals('ORDER BY n.news_sticky DESC, n.news_datestamp DESC', trim((string) $tree_model->getParam('db_query')));
         $this->assertEquals('163', $tree_model->getParam('db_limit_count'));
         $this->assertEquals('79', $tree_model->getParam('db_limit_offset'));
     }

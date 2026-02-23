@@ -63,7 +63,7 @@ class banner_shortcodes extends e_shortcode
 			return "<a href='" . e_HTTP . 'banner.php?' . $row['banner_id'] . "' rel='external'>" . BANNERLAN_39 . "</a>";
 		}
 
-		$fileext1 = substr(strrchr($row['banner_image'], '.'), 1);
+		$fileext1 = substr(strrchr((string) $row['banner_image'], '.'), 1);
 
 		$sql->update('banner', 'banner_impressions=banner_impressions+1 WHERE banner_id=' . (int) $row['banner_id']);
 
@@ -91,7 +91,7 @@ class banner_shortcodes extends e_shortcode
 			default:
 
 				$class = empty($parm['class']) ? "e-banner img-responsive img-fluid" : $parm['class'];
-				$ban_ret = $tp->toImage($row['banner_image'], array('class' => $class, 'alt' => basename($row['banner_image']), 'legacy' => '{e_IMAGE}banners'));
+				$ban_ret = $tp->toImage($row['banner_image'], array('class' => $class, 'alt' => basename((string) $row['banner_image']), 'legacy' => '{e_IMAGE}banners'));
 
 				break;
 		}

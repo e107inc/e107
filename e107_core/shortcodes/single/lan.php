@@ -8,7 +8,7 @@ function lan_shortcode($parm = '')
 		return null;
 	}
 
-	$lan = trim($parm);
+	$lan = trim((string) $parm);
 
 	if(defined('LAN_'.$lan))
 	{

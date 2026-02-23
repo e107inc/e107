@@ -496,11 +496,11 @@ class CSS extends Minify
         $content = preg_replace('/(?<=[: ])#([0-9a-f])\\1([0-9a-f])\\2([0-9a-f])\\3(?:([0-9a-f])\\4)?(?=[; }])/i', '#$1$2$3$4', $content);
 
         // remove alpha channel if it's pointless ..
-        $content = preg_replace('/(?<=[: ])#([0-9a-f]{6})ff(?=[; }])/i', '#$1', $content);
-        $content = preg_replace('/(?<=[: ])#([0-9a-f]{3})f(?=[; }])/i', '#$1', $content);
+        $content = preg_replace('/(?<=[: ])#([0-9a-f]{6})ff(?=[; }])/i', '#$1', (string) $content);
+        $content = preg_replace('/(?<=[: ])#([0-9a-f]{3})f(?=[; }])/i', '#$1', (string) $content);
 
         // replace `transparent` with shortcut ..
-        $content = preg_replace('/(?<=[: ])#[0-9a-f]{6}00(?=[; }])/i', '#fff0', $content);
+        $content = preg_replace('/(?<=[: ])#[0-9a-f]{6}00(?=[; }])/i', '#fff0', (string) $content);
 
         $colors = array(
             // make these more readable
@@ -561,7 +561,7 @@ class CSS extends Minify
             function ($match) use ($colors) {
                 return $colors[strtolower($match[0])];
             },
-            $content
+            (string) $content
         );
     }
 
@@ -584,9 +584,9 @@ class CSS extends Minify
 
         // convert legacy color syntax
         $content = preg_replace('/(rgb)a?\(\s*([0-9]{1,3}%?)\s*,\s*([0-9]{1,3}%?)\s*,\s*([0-9]{1,3}%?)\s*,\s*([0,1]?(?:\.[0-9]*)?)\s*\)/i', '$1($2 $3 $4 / $5)', $content);
-        $content = preg_replace('/(rgb)a?\(\s*([0-9]{1,3}%?)\s*,\s*([0-9]{1,3}%?)\s*,\s*([0-9]{1,3}%?)\s*\)/i', '$1($2 $3 $4)', $content);
-        $content = preg_replace('/(hsl)a?\(\s*([0-9]+(?:deg|grad|rad|turn)?)\s*,\s*([0-9]{1,3}%)\s*,\s*([0-9]{1,3}%)\s*,\s*([0,1]?(?:\.[0-9]*)?)\s*\)/i', '$1($2 $3 $4 / $5)', $content);
-        $content = preg_replace('/(hsl)a?\(\s*([0-9]+(?:deg|grad|rad|turn)?)\s*,\s*([0-9]{1,3}%)\s*,\s*([0-9]{1,3}%)\s*\)/i', '$1($2 $3 $4)', $content);
+        $content = preg_replace('/(rgb)a?\(\s*([0-9]{1,3}%?)\s*,\s*([0-9]{1,3}%?)\s*,\s*([0-9]{1,3}%?)\s*\)/i', '$1($2 $3 $4)', (string) $content);
+        $content = preg_replace('/(hsl)a?\(\s*([0-9]+(?:deg|grad|rad|turn)?)\s*,\s*([0-9]{1,3}%)\s*,\s*([0-9]{1,3}%)\s*,\s*([0,1]?(?:\.[0-9]*)?)\s*\)/i', '$1($2 $3 $4 / $5)', (string) $content);
+        $content = preg_replace('/(hsl)a?\(\s*([0-9]+(?:deg|grad|rad|turn)?)\s*,\s*([0-9]{1,3}%)\s*,\s*([0-9]{1,3}%)\s*\)/i', '$1($2 $3 $4)', (string) $content);
 
         // convert `rgb` to `hex`
         $dec = '([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])';
@@ -595,7 +595,7 @@ class CSS extends Minify
             function ($match) {
                 return sprintf('#%02x%02x%02x', $match[1], $match[2], $match[3]);
             },
-            $content
+            (string) $content
         );
     }
 
@@ -624,7 +624,7 @@ class CSS extends Minify
         $content = preg_replace('/' . $tag . '\(\s*([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+\/\s+1(?:(?:\.\d?)*|00%)?\s*\)/i', '$1($2 $3 $4)', $content);
 
         // replace `transparent` with shortcut ..
-        $content = preg_replace('/' . $tag . '\(\s*[^\s]+\s+[^\s]+\s+[^\s]+\s+\/\s+0(?:[\.0%]*)?\s*\)/i', '#fff0', $content);
+        $content = preg_replace('/' . $tag . '\(\s*[^\s]+\s+[^\s]+\s+[^\s]+\s+\/\s+0(?:[\.0%]*)?\s*\)/i', '#fff0', (string) $content);
 
         return $content;
     }
@@ -682,23 +682,23 @@ class CSS extends Minify
         $content = preg_replace('/' . $before . '(-?0*(\.0+)?)(?<=0)px' . $after . '/', '\\1', $content);
 
         // strip 0-digits (.0 -> 0)
-        $content = preg_replace('/' . $before . '\.0+' . $units . '?' . $after . '/', '0\\1', $content);
+        $content = preg_replace('/' . $before . '\.0+' . $units . '?' . $after . '/', '0\\1', (string) $content);
         // strip trailing 0: 50.10 -> 50.1, 50.10px -> 50.1px
-        $content = preg_replace('/' . $before . '(-?[0-9]+\.[0-9]+)0+' . $units . '?' . $after . '/', '\\1\\2', $content);
+        $content = preg_replace('/' . $before . '(-?[0-9]+\.[0-9]+)0+' . $units . '?' . $after . '/', '\\1\\2', (string) $content);
         // strip trailing 0: 50.00 -> 50, 50.00px -> 50px
-        $content = preg_replace('/' . $before . '(-?[0-9]+)\.0+' . $units . '?' . $after . '/', '\\1\\2', $content);
+        $content = preg_replace('/' . $before . '(-?[0-9]+)\.0+' . $units . '?' . $after . '/', '\\1\\2', (string) $content);
         // strip leading 0: 0.1 -> .1, 01.1 -> 1.1
-        $content = preg_replace('/' . $before . '(-?)0+([0-9]*\.[0-9]+)' . $units . '?' . $after . '/', '\\1\\2\\3', $content);
+        $content = preg_replace('/' . $before . '(-?)0+([0-9]*\.[0-9]+)' . $units . '?' . $after . '/', '\\1\\2\\3', (string) $content);
 
         // strip negative zeroes (-0 -> 0) & truncate zeroes (00 -> 0)
-        $content = preg_replace('/' . $before . '-?0+' . $units . '?' . $after . '/', '0\\1', $content);
+        $content = preg_replace('/' . $before . '-?0+' . $units . '?' . $after . '/', '0\\1', (string) $content);
 
         // IE doesn't seem to understand a unitless flex-basis value (correct -
         // it goes against the spec), so let's add it in again (make it `%`,
         // which is only 1 char: 0%, 0px, 0 anything, it's all just the same)
         // @see https://developer.mozilla.org/nl/docs/Web/CSS/flex
-        $content = preg_replace('/flex:([0-9]+\s[0-9]+\s)0([;\}])/', 'flex:${1}0%${2}', $content);
-        $content = preg_replace('/flex-basis:0([;\}])/', 'flex-basis:0%${1}', $content);
+        $content = preg_replace('/flex:([0-9]+\s[0-9]+\s)0([;\}])/', 'flex:${1}0%${2}', (string) $content);
+        $content = preg_replace('/flex-basis:0([;\}])/', 'flex-basis:0%${1}', (string) $content);
 
         return $content;
     }
@@ -713,7 +713,7 @@ class CSS extends Minify
     protected function stripEmptyTags($content)
     {
         $content = preg_replace('/(?<=^)[^\{\};]+\{\s*\}/', '', $content);
-        $content = preg_replace('/(?<=(\}|;))[^\{\};]+\{\s*\}/', '', $content);
+        $content = preg_replace('/(?<=(\}|;))[^\{\};]+\{\s*\}/', '', (string) $content);
 
         return $content;
     }
@@ -737,24 +737,24 @@ class CSS extends Minify
     {
         // remove leading & trailing whitespace
         $content = preg_replace('/^\s*/m', '', $content);
-        $content = preg_replace('/\s*$/m', '', $content);
+        $content = preg_replace('/\s*$/m', '', (string) $content);
 
         // replace newlines with a single space
-        $content = preg_replace('/\s+/', ' ', $content);
+        $content = preg_replace('/\s+/', ' ', (string) $content);
 
         // remove whitespace around meta characters
         // inspired by stackoverflow.com/questions/15195750/minify-compress-css-with-regex
-        $content = preg_replace('/\s*([\*$~^|]?+=|[{};,>~]|!important\b)\s*/', '$1', $content);
-        $content = preg_replace('/([\[(:>\+])\s+/', '$1', $content);
-        $content = preg_replace('/\s+([\]\)>\+])/', '$1', $content);
-        $content = preg_replace('/\s+(:)(?![^\}]*\{)/', '$1', $content);
+        $content = preg_replace('/\s*([\*$~^|]?+=|[{};,>~]|!important\b)\s*/', '$1', (string) $content);
+        $content = preg_replace('/([\[(:>\+])\s+/', '$1', (string) $content);
+        $content = preg_replace('/\s+([\]\)>\+])/', '$1', (string) $content);
+        $content = preg_replace('/\s+(:)(?![^\}]*\{)/', '$1', (string) $content);
 
         // whitespace around + and - can only be stripped inside some pseudo-
         // classes, like `:nth-child(3+2n)`
         // not in things like `calc(3px + 2px)`, shorthands like `3px -2px`, or
         // selectors like `div.weird- p`
         $pseudos = array('nth-child', 'nth-last-child', 'nth-last-of-type', 'nth-of-type');
-        $content = preg_replace('/:(' . implode('|', $pseudos) . ')\(\s*([+-]?)\s*(.+?)\s*([+-]?)\s*(.*?)\s*\)/', ':$1($2$3$4$5)', $content);
+        $content = preg_replace('/:(' . implode('|', $pseudos) . ')\(\s*([+-]?)\s*(.+?)\s*([+-]?)\s*(.*?)\s*\)/', ':$1($2$3$4$5)', (string) $content);
 
         // remove semicolon/whitespace followed by closing bracket
         $content = str_replace(';}', '}', $content);
@@ -775,7 +775,7 @@ class CSS extends Minify
         $minifier = $this;
         $callback = function ($match) use ($minifier, $pattern, &$callback) {
             $function = $match[1];
-            $length = strlen($match[2]);
+            $length = strlen((string) $match[2]);
             $expr = '';
             $opened = 0;
 
@@ -823,7 +823,7 @@ class CSS extends Minify
             '/(?<=^|[;}{])\s*(--[^:;{}"\'\s]+)\s*:([^;{}]+)/m',
             function ($match) use ($minifier) {
                 $placeholder = '--custom-' . count($minifier->extracted) . ':0';
-                $minifier->extracted[$placeholder] = $match[1] . ':' . trim($match[2]);
+                $minifier->extracted[$placeholder] = $match[1] . ':' . trim((string) $match[2]);
 
                 return $placeholder;
             }
