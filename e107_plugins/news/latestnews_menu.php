@@ -32,14 +32,32 @@ if(false === $cached)
 		$parms = $parm;
 	}
 
-	if(isset($parms['caption'][e_LANGUAGE]))
+	if(empty($parms['tmpl']))
 	{
-		$parms['caption'] = $parms['caption'][e_LANGUAGE];
+		$parms['tmpl'] = 'news_menu';
+	}
+
+	if(empty($parms['tmpl_key']))
+	{
+		$parms['tmpl_key'] = 'latest';
+	}
+	$template = e107::getTemplate('news', $parms['tmpl'], $parms['tmpl_key'], true, true);
+
+	if(THEME_LEGACY !== true) // v2.x
+	{
+		$parms['caption'] = e107::getParser()->parseTemplate("<div class='inline-text'>".$template['caption']."</div>", true);
+	}
+	else //v1.x
+	{
+		if(isset($parms['caption'][e_LANGUAGE]))
+		{
+			$parms['caption'] = $parms['caption'][e_LANGUAGE];
+		}
 	}
 
 	/** @var e_news_tree $ntree */
 	$ntree = e107::getObject('e_news_tree', null, e_HANDLER.'news_class.php');
-
+/*
 	if(empty($parms['tmpl']))
 	{
 		$parms['tmpl'] = 'news_menu';
@@ -51,7 +69,7 @@ if(false === $cached)
 	}
 
 	$template = e107::getTemplate('news', $parms['tmpl'], $parms['tmpl_key'], true, true);
-
+*/
 	$treeparm = array();
 	if(vartrue($parms['count'])) $treeparm['db_limit'] = '0, '.intval($parms['count']);
 	if(vartrue($parms['order'])) $treeparm['db_order'] = e107::getParser()->toDb($parms['order']);
