@@ -520,7 +520,7 @@ class e_theme
 
 	/**
 	 * Returns the fontawesome version of the currently loaded theme.
-	 * @return integer|false
+	 * @return int|false
 	 */
 	public function getFontAwesome()
 	{

@@ -148,7 +148,7 @@ class e_jsmanager
 	/**
 	 * Browser cache id
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $_browser_cache_id = 0;
 
@@ -481,7 +481,7 @@ class e_jsmanager
 	 * Extremely useful for shortcodes and menus.
 	 *
 	 * @param string $file_path relative to e107_files/jslib/ folder
-	 * @param integer $zone 1-5 (see header.php)
+	 * @param int $zone 1-5 (see header.php)
 	 * @return e_jsmanager
 	 */
 	public function requireCoreLib($file_path, $zone = 2, $opts=[])
@@ -504,7 +504,7 @@ class e_jsmanager
 	 *
 	 * @param string $plugname
 	 * @param string $file_path relative to e107_plugins/myplug/ folder
-	 * @param integer $zone 1-5 (see header.php)
+	 * @param int $zone 1-5 (see header.php)
 	 * @return e_jsmanager
 	 */
 	public function requirePluginLib($plugname, $file_path, $zone = 5, $opts=[])
@@ -525,7 +525,7 @@ class e_jsmanager
 	 * Add JS file(s) for inclusion in site header
 	 *
 	 * @param string|array $file_path path shortcodes usage is prefered
-	 * @param integer $zone 1-5 (see header.php)
+	 * @param int $zone 1-5 (see header.php)
 	 * @return e_jsmanager
 	 */
 	public function headerFile($file_path, $zone = 5, $pre = '', $post = '', $opts = array())
@@ -548,7 +548,7 @@ class e_jsmanager
 	 * Add Core JS file for inclusion in site header, shorthand of headerFile() method
 	 *
 	 * @param string $file_path relative to {e_JS} folder
-	 * @param integer $zone 1-5 (see header.php)
+	 * @param int $zone 1-5 (see header.php)
 	 * @return e_jsmanager
 	 */
 	public function headerCore($file_path, $zone = 2, $pre = '', $post = '', $opts=[])
@@ -561,7 +561,7 @@ class e_jsmanager
 	 * Add Theme JS file for inclusion in site header, shorthand of headerFile() method
 	 *
 	 * @param string $file_path relative to theme root folder
-	 * @param integer $zone 1-5 (see header.php)
+	 * @param int $zone 1-5 (see header.php)
 	 * @return e_jsmanager
 	 */
 	public function headerTheme($file_path, $zone = 5, $pre = '', $post = '', $opts=[])
@@ -575,7 +575,7 @@ class e_jsmanager
 	 * Add Theme JS file for inclusion in site footer (preferred), shorthand of footerFile() method
 	 *
 	 * @param string $file_path relative to theme root folder
-	 * @param integer $zone 1-5 (see header.php)
+	 * @param int $zone 1-5 (see header.php)
 	 * @return e_jsmanager
 	 */
 	public function footerTheme($file_path, $zone = 5, $pre = '', $post = '')
@@ -604,7 +604,7 @@ class e_jsmanager
 	 * use {@link footerFile()}
 	 *
 	 * @param string|array $file_path path shortcodes usage is prefered
-	 * @param integer $zone 1-5 (see header.php and footer.php)
+	 * @param int $zone 1-5 (see header.php and footer.php)
 	 * @return e_jsmanager
 	 */
 	public function tryHeaderFile($file_path, $zone = 5, $opts=[])
@@ -623,7 +623,7 @@ class e_jsmanager
 	 * Add JS file(s) for inclusion in site footer
 	 *
 	 * @param string|array $file_path path shortcodes usage is prefered
-	 * @param integer $priority 1-5 (see footer.php)
+	 * @param int $priority 1-5 (see footer.php)
 	 * @return e_jsmanager
 	 */
 	public function footerFile($file_path, $priority = 5, $pre = '', $post = '', $opts=array())
@@ -646,7 +646,7 @@ class e_jsmanager
 	 * Add JS code to site header
 	 *
 	 * @param string|array $js_content
-	 * @param integer $zone 1-5 (see header.php)
+	 * @param int $zone 1-5 (see header.php)
 	 * @return e_jsmanager
 	 */
 	public function headerInline($js_content, $zone = 5)
@@ -660,7 +660,7 @@ class e_jsmanager
 	 * use {@link footerInline()}
 	 *
 	 * @param string $js_content
-	 * @param integer $zone 1-5 (see header.php and footer.php)
+	 * @param int $zone 1-5 (see header.php and footer.php)
 	 * @return e_jsmanager
 	 */
 	public function tryHeaderInline($js_content, $zone = 5)
@@ -679,7 +679,7 @@ class e_jsmanager
 	 * Add JS file(s) for inclusion in site footer
 	 *
 	 * @param string|array $js_content path shortcodes usage is prefered
-	 * @param integer $priority 1-5 (see footer.php)
+	 * @param int $priority 1-5 (see footer.php)
 	 * @return e_jsmanager
 	 */
 	public function footerInline($js_content, $priority = 5)
@@ -951,7 +951,7 @@ class e_jsmanager
 	 * @see footerInline()
 	 * @param string $type core|plugin - jslib.php, header|footer|header_inline|footer_inline|core_css|plugin_css|theme_css|other_css|inline_css - runtime
 	 * @param string|array $file_path
-	 * @param string|integer $runtime_location admin|front|all|none (jslib), 0-5 (runtime inclusion), 'media' attribute (CSS)
+	 * @param string|int $runtime_location admin|front|all|none (jslib), 0-5 (runtime inclusion), 'media' attribute (CSS)
 	 * @param array $opts  - ['pre'] and ['post']
 	 * @return object $this
 	 */
@@ -1227,7 +1227,7 @@ class e_jsmanager
 	 * Render registered JS
 	 *
 	 * @param string $mod core|plugin|theme|header|footer|header_inline|footer_inline|core_css|plugin_css|theme_css|other_css|inline_css
-	 * @param integer $zone 1-5 - only used when in 'header','footer','header_inline' and 'footer_inline' render mod
+	 * @param int $zone 1-5 - only used when in 'header','footer','header_inline' and 'footer_inline' render mod
 	 * @param boolean $external external file calls, only used when NOT in 'header_inline' and 'footer_inline' render mod
 	 * @param boolean $return
 	 * @return string JS content - only if $return is true
@@ -2087,7 +2087,7 @@ class e_jsmanager
 	/**
 	 * Get browser cache id
 	 *
-	 * @return integer
+	 * @return int
 	 */
 	public function getCacheId()
 	{
@@ -2109,7 +2109,7 @@ class e_jsmanager
 	 * Set last modification timestamp for given namespace
 	 *
 	 * @param string $what
-	 * @param integer $when [optional]
+	 * @param int $when [optional]
 	 * @return e_jsmanager
 	 */
 	public function setLastModfied($what, $when = 0)
@@ -2122,7 +2122,7 @@ class e_jsmanager
 	 * Get last modification timestamp for given namespace
 	 *
 	 * @param string $what
-	 * @return integer
+	 * @return int
 	 */
 	public function getLastModfied($what)
 	{
