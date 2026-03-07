@@ -174,7 +174,7 @@
 		 * @param bool   $debug
 		 * @param string $log_type
 		 * @param string $log_remark
-		 * @return boolean | integer
+		 * @return boolean | int
 		 *        Returns FALSE if there is an error in the query
 		 *        Returns TRUE if the query is successful, and it does not return a row count
 		 *        Returns the number of rows added/updated/deleted for DELETE, INSERT, REPLACE, or UPDATE
@@ -260,7 +260,7 @@
 		 * @param bool   $debug
 		 * @param string $log_type
 		 * @param string $log_remark
-		 * @return integer|false Number of rows or false on error
+		 * @return int|false Number of rows or false on error
 		 */
 		public function select($table, $fields = '*', $arg = '', $noWhere = false, $debug = false, $log_type = '', $log_remark = '');
 

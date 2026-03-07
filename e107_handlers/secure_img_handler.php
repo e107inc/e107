@@ -112,7 +112,7 @@ class secure_image
 	/**
 	 * @deprecated Use invalidCode() instead. Returns true when the code doesn't match.
 	 * Return true if code is valid, otherwise return FALSE
-	 * @param integer $recnum The public code - returned by create_code()
+	 * @param int $recnum The public code - returned by create_code()
 	 * @param string $checkstr - code entered by the user.
 	 * @return bool|mixed
 	 */

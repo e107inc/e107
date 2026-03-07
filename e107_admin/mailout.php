@@ -2424,7 +2424,7 @@ require_once(e_ADMIN.'footer.php');
 
 /**
  * Real-time Immediate Mail-out. Browser may be closed and will continue. 
- * @param integer $id (mailing id)
+ * @param int $id (mailing id)
  * @return 
  */
  /*
