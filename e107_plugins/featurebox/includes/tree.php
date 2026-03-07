@@ -21,7 +21,7 @@ class plugin_featurebox_tree extends e_tree_model
 	 * Load tree data
 	 * TODO - system cache
 	 * 
-	 * @param integer $id
+	 * @param int $id
 	 * @param array $options
 	 * @param boolean $force
 	 * @return plugin_featurebox_tree
