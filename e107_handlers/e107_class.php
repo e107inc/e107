@@ -2090,7 +2090,7 @@ class e107
 	/**
 	 * Retrieve user model 'e_user' object.
 	 *
-	 * @param integer $user_id target user
+	 * @param int $user_id target user
 	 * @param boolean $checkIfCurrent if tru user_id will be compared to current user, if there is a match
 	 * 	current user object will be returned
 	 * @return e_system_user|e_user
@@ -2118,7 +2118,7 @@ class e107
 
 	/**
 	 * Simple replacement for deprecated get_user_data(). e107::user();
-	 * @param $uid integer user_id. Use e107::user(USERID) for currently logged in user. 
+	 * @param $uid int user_id. Use e107::user(USERID) for currently logged in user.
 	 * @return array|false of user data
 	 */
 	public static function user($uid=null)
@@ -2537,7 +2537,7 @@ class e107
 	 * @param string $type core|theme|footer|inline|footer-inline|url or any existing plugin_name
 	 * @param string|array $data depends on the type - path/url or inline js source
 	 * @param string|array $parm parameters. BC string dependence :  null | prototype | jquery OR array of parameters. tbd
-	 * @param integer $zone [optional] leave it null for default zone
+	 * @param int $zone [optional] leave it null for default zone
 	 */
 	public static function js($type, $data, $parm = null, $zone = null, $pre = '', $post = '')
 	{
@@ -5921,8 +5921,8 @@ class e107
 
 	/**
 	 * @deprecated Use eHelper::parseMemorySize() instead.
-	 * @param integer $size
-	 * @param integer $dp
+	 * @param int $size
+	 * @param int $dp
 	 * @return string formatted size
 	 */
 	public function parseMemorySize($size, $dp = 2)
