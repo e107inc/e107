@@ -124,7 +124,7 @@ class notify
 	 * @param string $subject - subject for email
 	 * @param string $message - email message body
 	 * @param array  $media
-	 * @return void
+	 * @return array|bool
 	 *
 	 * @todo handle 'everyone except' clauses (email address filter done)
 	 * @todo set up pref to not notify originator of event which caused notify (see $blockOriginator)
@@ -332,7 +332,7 @@ class notify
 			}
 		}
 
-		$this->send('usersup', NT_LAN_US_1, $message);
+		$this->send('usersup', defset('NT_LAN_US_1'), $message);
 	}
 
 	/**
@@ -362,7 +362,12 @@ class notify
 
 		$user = !empty($data['user_name']) ? " (".$data['user_name'].")" : "";
 
-		$this->send('login', NT_LAN_LI_1 . $user, $message);
+		if($ip = e107::getIPHandler()->getIP(true))
+		{
+			$message .= 'user_ip: '.$ip.'<br />';
+		}
+
+		$this->send('login', defset('NT_LAN_LI_1') . $user, $message);
 	}
 
 	/**
