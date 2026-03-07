@@ -345,7 +345,7 @@ class e_jshelper
     /**
      * Send error to the JS Ajax.response object
      *
-     * @param integer $errcode
+     * @param int    $errcode
      * @param string $errmessage
      * @param string $errextended
      * @access public 
