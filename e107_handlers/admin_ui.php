@@ -82,7 +82,7 @@ class e_admin_request
 
 	/**
 	 * Current ID
-	 * @var integer
+	 * @var int
 	 */
 	protected $_id = 0;
 
@@ -390,7 +390,7 @@ class e_admin_request
 
 	/**
 	 * Get current ID
-	 * @return integer
+	 * @return int
 	 */
 	public function getId()
 	{
@@ -3104,7 +3104,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 	/**
 	 * Default (db) limit value
-	 * @var integer
+	 * @var int
 	 */
 	protected $perPage = 20;
 
@@ -4435,7 +4435,7 @@ class e_admin_controller_ui extends e_admin_controller
 	/**
 	 * Take approproate action after successfull submit
 	 *
-	 * @param integer $id optional, needed only if redirect action is 'edit'
+	 * @param int $id optional, needed only if redirect action is 'edit'
 	 * @param string $noredirect_for don't redirect if action equals to its value
 	 * @return null
 	 */

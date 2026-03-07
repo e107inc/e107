@@ -325,7 +325,7 @@ class gallery_shortcodes extends e_shortcode
 		$parms         = eHelper::scDualParams($parm);
 		$amount        = $parms[1] ? intval($parms[1]) : 3; // vartrue(e107::getPlugPref('gallery','slideshow_perslide'),3);
 		$parms         = $parms[2];
-		$limit         = (integer) vartrue($parms['limit'], 16);
+		$limit         = (int) vartrue($parms['limit'], 16);
 		$list          = e107::getMedia()->getImages('gallery_image|gallery_' . $this->sliderCat . '|gallery_image_' . $this->sliderCat, 0, $limit, null, $orderBy);
 		$tmpl          = e107::getTemplate('gallery', 'gallery');
 		$tmpl          = array_change_key_case($tmpl); // change template key to lowercase (BC fix)

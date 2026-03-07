@@ -487,7 +487,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 		}
 
 		$adviseLoginName = '';
-		if (vartrue($pref['predefinedLoginName']) && (integer) $pref['allowEmailLogin'] === 0)
+		if (vartrue($pref['predefinedLoginName']) && (int) $pref['allowEmailLogin'] === 0)
 		{
 			$adviseLoginName = LAN_SIGNUP_65.': '.$allData['data']['user_loginname'].'<br />'.LAN_SIGNUP_66.'<br />';
 		}
