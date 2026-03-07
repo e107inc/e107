@@ -66,7 +66,7 @@ function drawMath(ctx,config,data,msr,vars) {
 
 	/**
 	 * Draw a deviation vertical line (if needed with top and bottom horizontal lines)
-	 * @param i {integer} dataset number
+	 * @param i {int} dataset number
 	 * @param deviationFct {string} math function name
 	 */
 	function drawMathDeviation(i,deviationFct) {
@@ -103,7 +103,7 @@ function drawMath(ctx,config,data,msr,vars) {
 
 	/**
 	 * Draw a horizontal line
-	 * @param i {integer} numer of dataset
+	 * @param i {int} numer of dataset
 	 * @param lineFct {string} name of the mathfunctions => compute height
 	 */
 	function drawMathLine(i,lineFct) {
@@ -126,8 +126,8 @@ function drawMath(ctx,config,data,msr,vars) {
 
 	/**
 	 * Get a y position depending on the current values
-	 * @param dataset {integer} number of dataset
-	 * @param iteration {integer} number of value inside dataset.data
+	 * @param dataset {int} number of dataset
+	 * @param iteration {int} number of value inside dataset.data
 	 * @param add {float} add a value to the current value if value is true
 	 * @param value {bool} true => value+add, false=>add
 	 * @returns {float} position (px)
