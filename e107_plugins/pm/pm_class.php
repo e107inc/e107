@@ -295,7 +295,7 @@ class private_message
 	 *	PM is only actually deleted from DB once both sender and recipient have marked it as deleted
 	 *	When physically deleted, any attachments are deleted as well
 	 *
-	 *	@param integer $pmid - ID of the PM
+	 *	@param int $pmid - ID of the PM
 	 *	@param boolean $force - set to TRUE to force deletion of unread PMs
 	 *	@return boolean|string - FALSE if PM not found, or other DB error. String if successful
 	 */
@@ -501,7 +501,7 @@ class private_message
 	/**
 	 *	Get list of users blocked from sending to a specific user ID.
 	 *
-	 *	@param integer $to - user ID
+	 *	@param int $to - user ID
 	 *
 	 *	@return array of blocked users, including specific user info
 	 */
