@@ -16,7 +16,7 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 	
 	/**
 	 * Available parameters (GET string format)
-	 * - cols (integer): number of items per column, default 1
+	 * - cols (int): number of items per column, default 1
 	 * - no_fill_empty (boolean): don't fill last column with empty items (if required), default 0
 	 * - tablestyle (string): mode to be used with <code>tablerender()</code>, default 'featurebox'
 	 * - notablestyle (null): if isset - disable <code>tablerender()</code>
@@ -280,10 +280,10 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 	/**
 	 * Get & Render featurebox items (custom)
 	 * Available parameters (GET string format)
-	 * - cols (integer): number of items per column, default 1
+	 * - cols (int): number of items per column, default 1
 	 * - no_fill_empty (boolean): don't fill last column with empty items (if required), default 0
-	 * - from (integer): start load at
-	 * - limit (integer): load to
+	 * - from (int): start load at
+	 * - limit (int): load to
 	 * 
 	 * @param string $parm parameters
 	 * @param string $mod category template
