@@ -40,7 +40,7 @@ class plugin_gallery_index_controller extends eControllerFront
 
 	/**
 	 * Default controller access
-	 * @var integer
+	 * @var int
 	 */
 	protected $userclass = e_UC_PUBLIC;
 
