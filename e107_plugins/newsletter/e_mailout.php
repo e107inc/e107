@@ -84,7 +84,7 @@ class newsletter_mailout
 	 *
 	 * @param string $selectVals - array of selection criteria as returned by returnSelectors()
 	 *
-	 * @return integer Return number of records available (or 1 if unknown) on success, FALSE on failure
+	 * @return int Return number of records available (or 1 if unknown) on success, FALSE on failure
 	 */
 	public function selectInit($selectVals = FALSE)
 	{

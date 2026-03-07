@@ -1641,7 +1641,7 @@ class e107_user_extended
 	 * Proxy method for setting the value of an extended field
 	 * (inserts or updates)
 	 *
-	 * @param integer $uid
+	 * @param int $uid
 	 * @param string $field_name eg. location
 	 * @param string $newvalue eg. USA
 	 * @param string $fieldType [optional] default 'todb' |
