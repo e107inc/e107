@@ -481,8 +481,15 @@ $FORUM_VIEWTOPIC_TEMPLATE['deleted'] = "
 
 									";
 
-
-
+$FORUM_VIEWTOPIC_TEMPLATE['quickreply'] = "
+						<div class='form-group'>
+							{QR_TEXTAREA}
+						</div>
+						<div class='center text-center form-group'>
+							{QR_SBUTTON}
+							{QR_HIDDEN}
+	   					</div>
+						";
 	
 $FORUM_VIEWTOPIC_WRAPPER['thread']['ATTACHMENTS'] = "<div class='forum-viewtopic-attachments'>{---}</div>";
 $FORUM_VIEWTOPIC_WRAPPER['thread']['CUSTOMTITLE'] = "<span class='forum-viewtopic-customtitle'><small>{---}</small></span>";
