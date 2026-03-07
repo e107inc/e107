@@ -61,107 +61,107 @@ class e_validator
 {
 
 	/**
-	 * @var integer Unknown error code
+	 * @var int Unknown error code
 	 */
 	const ERR_UNKNOWN = 0;
 
 	/**
-	 * @var integer Value not found error code
+	 * @var int Value not found error code
 	 */
 	const ERR_MISSING_VALUE = 101;
 
 	/**
-	 * @var integer Unexpected value type error code (bad rule)
+	 * @var int Unexpected value type error code (bad rule)
 	 */
 	const ERR_UNEXPECTED_VALUE = 102;
 
 	/**
-	 * @var integer Invalid characters error code
+	 * @var int Invalid characters error code
 	 */
 	const ERR_INVALID_CHARS = 103;
 
 	/**
-	 * @var integer Invalid email error code
+	 * @var int Invalid email error code
 	 */
 	const ERR_INVALID_EMAIL = 104;
 
 	/**
-	 * @var integer Field doesn't match error code
+	 * @var int Field doesn't match error code
 	 */
 	const ERR_FIELDS_MATCH = 105;
 
 	/**
-	 * @var integer String too short error code
+	 * @var int String too short error code
 	 */
 	const ERR_TOO_SHORT = 131;
 
 	/**
-	 * @var integer String too long error code
+	 * @var int String too long error code
 	 */
 	const ERR_TOO_LONG = 132;
 
 	/**
-	 * @var integer Number too low error code
+	 * @var int Number too low error code
 	 */
 	const ERR_TOO_LOW = 133;
 
 	/**
-	 * @var integer Number too high error code
+	 * @var int Number too high error code
 	 */
 	const ERR_TOO_HIGH = 134;
 
 	/**
-	 * @var integer Array count too low error code
+	 * @var int Array count too low error code
 	 */
 	const ERR_ARRCOUNT_LOW = 135;
 
 	/**
-	 * @var integer Array count high error code
+	 * @var int Array count high error code
 	 */
 	const ERR_ARRCOUNT_HIGH = 136;
 
 	/**
-	 * @var integer Type of integer expected error code
+	 * @var int Type of int expected error code
 	 */
 	const ERR_INT_EXPECTED = 151;
 
 	/**
-	 * @var integer Type of float expected error code
+	 * @var int Type of float expected error code
 	 */
 	const ERR_FLOAT_EXPECTED = 152;
 
 	/**
-	 * @var integer Instance type expected error code
+	 * @var int Instance type expected error code
 	 */
 	const ERR_INSTANCEOF_EXPECTED = 153;
 
 	/**
-	 * @var integer Array type expected error code
+	 * @var int Array type expected error code
 	 */
 	const ERR_ARRAY_EXPECTED = 154;
 
 	/**
-	 * @var integer Generic (empty value) error code
+	 * @var int Generic (empty value) error code
 	 */
 	const ERR_GENERIC = 191;
 
 	/**
-	 * @var integer File not exists or not a file error code
+	 * @var int File not exists or not a file error code
 	 */
 	const ERR_NOT_FILE = 201;
 
 	/**
-	 * @var integer File not writable error code
+	 * @var int File not writable error code
 	 */
 	const ERR_WRITABLE_FILE = 202;
 
 	/**
-	 * @var integer File exceeds allowed file size error code
+	 * @var int File exceeds allowed file size error code
 	 */
 	const ERR_SIZEMIN_FILE = 203;
 
 	/**
-	 * @var integer File lower than minimal file size error code
+	 * @var int File lower than minimal file size error code
 	 */
 	const ERR_SIZEMAX_FILE = 204;
 
@@ -576,13 +576,13 @@ class e_validator
 				}
 				// BC! Will be removed after we replace '-' with ':' separator!
 				$tmp = $this->parseMinMax($cond);
-				if (is_numeric($tmp[0]) && (integer) $tmp[0] > (integer) $value)
+				if (is_numeric($tmp[0]) && (int) $tmp[0] > (int) $value)
 				{
 					$this->addValidateResult($name, self::ERR_TOO_LOW);
 
 					return false;
 				}
-				if (is_numeric(varset($tmp[1])) && (integer) $tmp[1] < (integer) $value)
+				if (is_numeric(varset($tmp[1])) && (int) $tmp[1] < (int) $value)
 				{
 					$this->addValidateResult($name, self::ERR_TOO_HIGH);
 
@@ -600,7 +600,7 @@ class e_validator
 				$tmp = $this->parseMinMax($cond);
 
 				$length = e107::getParser()->ustrlen($value);
-				if (is_numeric($tmp[0]) && (integer) $tmp[0] > $length)
+				if (is_numeric($tmp[0]) && (int) $tmp[0] > $length)
 				{
 					$this->addValidateResult($name, self::ERR_TOO_SHORT);
 
@@ -612,7 +612,7 @@ class e_validator
 					$tmp[1] = 255;
 				}
 
-				if (is_numeric(varset($tmp[1])) && (integer) $tmp[1] < $length)
+				if (is_numeric(varset($tmp[1])) && (int) $tmp[1] < $length)
 				{
 					$this->addValidateResult($name, self::ERR_TOO_LONG);
 
@@ -674,7 +674,7 @@ class e_validator
 				}
 				$length = count($value);
 				$tmp = $this->parseMinMax($cond);
-				if (is_numeric($tmp[0]) && (integer) $tmp[0] > $length)
+				if (is_numeric($tmp[0]) && (int) $tmp[0] > $length)
 				{
 					$this->addValidateResult($name, self::ERR_ARRCOUNT_LOW);
 
@@ -710,20 +710,20 @@ class e_validator
 				{
 					$tmp = $this->parseMinMax($cond);
 					$fs = filesize($path);
-					if (!$fs || (integer) $tmp[0] > $fs)
+					if (!$fs || (int) $tmp[0] > $fs)
 					{
 						$this->addValidateResult($name, self::ERR_SIZEMIN_FILE);
 
 						return false;
 					}
-					elseif (is_numeric(varset($tmp[1])) && (integer) $tmp[1] < $fs)
+					elseif (is_numeric(varset($tmp[1])) && (int) $tmp[1] < $fs)
 					{
 						$this->addValidateResult($name, self::ERR_SIZEMAX_FILE);
 
 						return false;
 					}
 				}
-				if (is_numeric(varset($params['maxlen'])) && (integer) $params['maxlen'] < e107::getParser()->ustrlen($value))
+				if (is_numeric(varset($params['maxlen'])) && (int) $params['maxlen'] < e107::getParser()->ustrlen($value))
 				{
 					$this->addValidateResult($name, self::ERR_TOO_LONG);
 
@@ -754,13 +754,13 @@ class e_validator
 				{
 					$tmp = $this->parseMinMax($cond);
 					$length = e107::getParser()->ustrlen($value[0]);
-					if (is_numeric($tmp[0]) && (integer) $tmp[0] > $length)
+					if (is_numeric($tmp[0]) && (int) $tmp[0] > $length)
 					{
 						$this->addValidateResult($name, self::ERR_TOO_SHORT);
 
 						return false;
 					}
-					if (is_numeric(varset($tmp[1])) && (integer) $tmp[1] < $length)
+					if (is_numeric(varset($tmp[1])) && (int) $tmp[1] < $length)
 					{
 						$this->addValidateResult($name, self::ERR_TOO_LONG);
 
@@ -791,13 +791,13 @@ class e_validator
 				{
 					$tmp = $this->parseMinMax($cond);
 					$length = e107::getParser()->ustrlen($value[0]);
-					if (is_numeric($tmp[0]) && (integer) $tmp[0] > $length)
+					if (is_numeric($tmp[0]) && (int) $tmp[0] > $length)
 					{
 						$this->addValidateResult($name, self::ERR_TOO_SHORT);
 
 						return false;
 					}
-					if (is_numeric(varset($tmp[1])) && (integer) $tmp[1] < $length)
+					if (is_numeric(varset($tmp[1])) && (int) $tmp[1] < $length)
 					{
 						$this->addValidateResult($name, self::ERR_TOO_LONG);
 
@@ -969,7 +969,7 @@ class e_validator
 	 * Add validate error code for a field
 	 *
 	 * @param string $name
-	 * @param integer $code
+	 * @param int $code
 	 * @return e_validator
 	 */
 	function addValidateResult($name, $code)
@@ -997,7 +997,7 @@ class e_validator
 	 *
 	 * @param string $field
 	 * @param mixed $default
-	 * @return integer error code
+	 * @return int error code
 	 */
 	function getErrorCode($field, $default = 0)
 	{
@@ -1009,7 +1009,7 @@ class e_validator
 	 * Get error string by given error code
 	 *
 	 * @param string $error_code
-	 * @return integer error code
+	 * @return int error code
 	 */
 	function getErrorByCode($error_code)
 	{

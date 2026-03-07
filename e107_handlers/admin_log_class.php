@@ -184,9 +184,9 @@ class e_admin_log
 	 *
 	 * @param string       $event_title
 	 * @param string|array $event_detail
-	 * @param integer      $event_type [optional] Log level eg. E_LOG_INFORMATIVE, E_LOG_NOTICE, E_LOG_WARNING, E_LOG_FATAL
+	 * @param int          $event_type [optional] Log level eg. E_LOG_INFORMATIVE, E_LOG_NOTICE, E_LOG_WARNING, E_LOG_FATAL
 	 * @param string       $event_code [optional] - eg. 'BOUNCE'
-	 * @param integer      $target     [optional]  LOG_TO_ADMIN, LOG_TO_AUDIT, LOG_TO_ROLLING
+	 * @param int          $target     [optional]  LOG_TO_ADMIN, LOG_TO_AUDIT, LOG_TO_ROLLING
 	 * @param null         $userData
 	 * @return e_admin_log
 	 *
@@ -595,7 +595,7 @@ class e_admin_log
 	/**
 	 * Removes all events older than $days, or truncates the table if $days == false
 	 *
-	 * @param integer|false $days
+	 * @param int|false $days
 	 * @return void
 	 */
 	public function purge_log_events($days)
