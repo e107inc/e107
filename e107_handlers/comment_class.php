@@ -1172,9 +1172,14 @@ class comment
 			$text = "<ul class='comments-container media-list' id='".$containerTarget."'><li><!-- --></li></ul>";
 		}
 
-
 		$TEMPL = $this->parseLayout($text,$comment,$modcomment);
 
+		if ($this->template['start']) {
+			$data['TOTAL_COMMENTS']= $this->totalComments;
+			$COMM_HEAD_TEMPL = ($tp->parseTemplate($this->template['start'], true, $data));
+		} else {
+			$COMM_HEAD_TEMPL = "<span id='e-comment-total'>".$this->totalComments."</span> ".LAN_COMMENTS;
+		}
 
 	//	$return = null;
 	//	$tablerender = true;
@@ -1183,8 +1188,7 @@ class comment
 		{		
 			if ($tablerender)
 			{
-					
-					echo $ns->tablerender("<span id='e-comment-total'>".$this->totalComments."</span> ".LAN_COMMENTS, $TEMPL, 'comment', true);
+				echo $ns->tablerender($COMM_HEAD_TEMPL, $TEMPL, 'comment', TRUE);
 			}
 			else
 			{
@@ -1193,7 +1197,7 @@ class comment
 		}
 		elseif($return === 'html')
 		{
-			return $ns->tablerender("<span id='e-comment-total'>".$this->totalComments."</span> ".LAN_COMMENTS, $TEMPL, 'comment', true);
+			return $ns->tablerender($COMM_HEAD_TEMPL, $TEMPL, 'comment', true);
 		}
 			//echo $modcomment.$comment;
 			//echo $text;
@@ -1203,13 +1207,11 @@ class comment
 			$comment = $ns->tablerender(COMLAN_9, $comment, 'comment', true );
 		}
 
-		
-
 		$ret = array();
 		$ret['comment'] = $text;
 		$ret['moderate'] = $modcomment;
 		$ret['comment_form'] = $comment;
-		$ret['caption'] = "<span id='e-comment-total'>".$this->totalComments."</span> ".LAN_COMMENTS;
+		$ret['caption'] = $COMM_HEAD_TEMPL;
 
 		return (!$return) ? "" : $ret;
 	}
