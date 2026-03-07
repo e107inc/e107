@@ -150,7 +150,7 @@ class gallery_cat_admin_ui extends e_admin_ui
 	/**
 	 * Default (db) limit value.
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $perPage = 10;
 
