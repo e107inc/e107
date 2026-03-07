@@ -3309,7 +3309,7 @@ class eControllerFront extends eController
 	
 	/**
 	 * Default controller access
-	 * @var integer
+	 * @var int
 	 */
 	protected $userclass = e_UC_PUBLIC;
 	
@@ -3887,7 +3887,7 @@ class eRequest
 	 * Search route history for the given $route
 	 * 
 	 * @param string $route
-	 * @return integer route index or false if not found
+	 * @return int route index or false if not found
 	 */
 	public function findRouteHistory($route)
 	{
@@ -5123,14 +5123,14 @@ class eHelper
 	 * $dp overrides the number of decimal places displayed - realistically, only 0..3 are sensible
 	 * FIXME e107->parseMemorySize() START
 	 * - move here all e107 class ban/ip related methods
-	 * - out of (integer) range case?
+	 * - out of (int) range case?
 	 * 32 bit systems range: -2147483648 to 2147483647
 	 * 64 bit systems range: -9223372036854775808 9223372036854775807
 	 * {@link http://www.php.net/intval}
 	 * FIXME e107->parseMemorySize() END
 	 *
-	 * @param integer $size
-	 * @param integer $dp
+	 * @param int $size
+	 * @param int $dp
 	 * @return string formatted size
 	 */
 	public static function parseMemorySize($size, $dp = 2)

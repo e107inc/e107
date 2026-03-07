@@ -106,7 +106,7 @@ class e_user_model extends e_admin_model
 	/**
 	 * User class as set in user Adminsitration
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $_memberlist_access = null;
 
@@ -150,13 +150,13 @@ class e_user_model extends e_admin_model
 	}
 
 	/**
-	 * Always return integer
+	 * Always return int
 	 *
 	 * @see e107_handlers/e_model#getId()
 	 */
 	public function getId()
 	{
-		return (integer) parent::getId();
+		return (int) parent::getId();
 	}
 
 	/**
@@ -544,7 +544,7 @@ class e_user_model extends e_admin_model
 	 */
 	final public function hasBan()
 	{
-		return ((integer) $this->get('user_ban') === 1);
+		return ((int) $this->get('user_ban') === 1);
 	}
 
 	/**
@@ -552,7 +552,7 @@ class e_user_model extends e_admin_model
 	 */
 	final public function hasRestriction()
 	{
-		return ((integer) $this->get('user_ban') !== 0);
+		return ((int) $this->get('user_ban') !== 0);
 	}
 
 	/**
@@ -1069,7 +1069,7 @@ class e_user_model extends e_admin_model
 	 * Get user preference (advanced - slower)
 	 * @param string $pref_path
 	 * @param mixed $default
-	 * @param integer $index if number, value will be exploded by "\n" and corresponding index will be returned
+	 * @param int $index if number, value will be exploded by "\n" and corresponding index will be returned
 	 * @return mixed
 	 */
 	public function findPref($pref_path = null, $default = null, $index = null)
@@ -1951,7 +1951,7 @@ class e_user extends e_user_model
 
 	/**
 	 * Login as another user account
-	 * @param integer $user_id
+	 * @param int $user_id
 	 * @return boolean success
 	 */
 	final public function loginAs($user_id)
@@ -2185,7 +2185,7 @@ class e_user extends e_user_model
 
 			if($this->get('user_currentvisit') + 3600 < time() || !$this->get('user_lastvisit'))
 			{
-				$this->set('user_lastvisit', (integer) $this->get('user_currentvisit'));
+				$this->set('user_lastvisit', (int) $this->get('user_currentvisit'));
 				$this->set('user_currentvisit', time());
 				$sql->update('user', "user_visits = user_visits + 1, user_lastvisit = ".$this->get('user_lastvisit').", user_currentvisit = ".$this->get('user_currentvisit').$update_ip." WHERE user_id = ".$this->getId()." LIMIT 1 ");
 			}
@@ -2370,7 +2370,7 @@ class e_user_extended_model extends e_admin_model
 	/**
 	 * User class as set in user Adminsitration
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	protected $_memberlist_access = null;
 
@@ -2404,11 +2404,11 @@ class e_user_extended_model extends e_admin_model
 	}
 
 	/**
-	 * Always return integer
+	 * Always return int
 	 */
 	public function getId()
 	{
-		return (integer) parent::getId();
+		return (int) parent::getId();
 	}
 
 	/**
@@ -2997,7 +2997,7 @@ class e_user_extended_structure_tree extends e_tree_model
 	/**
 	 * Get node ID by node name field
 	 * @param string $name
-	 * @return integer
+	 * @return int
 	 */
 	public function getNodeId($name)
 	{
@@ -3024,7 +3024,7 @@ class e_user_extended_structure_tree extends e_tree_model
 
 	/**
 	 * Get collection of nodes assigned to a specific category
-	 * @param integer $category_id
+	 * @param int $category_id
 	 * @return array
 	 */
 	public function getTreeByCategory($category_id)
