@@ -96,7 +96,7 @@ class e_pref extends e_front_model
 	 *
 	 * @param string $pref_name
 	 * @param mixed $default
-	 * @param integer $index
+	 * @param int $index
 	 * @return mixed
 	 */
 	public function getPref($pref_name = '', $default = null, $index = null)
@@ -507,7 +507,7 @@ class e_pref extends e_front_model
 	 * @param boolean $from_post merge post data
 	 * @param boolean $force
 	 * @param mixed $session_messages      null: normal messages displayed, true: session messages used, false: no messages displayed. 
-	 * @return boolean|integer 0 - no change, true - saved, false - error
+	 * @return boolean|int 0 - no change, true - saved, false - error
 	 */
 	public function save($from_post = true, $force = false, $session_messages = null)
 	{
