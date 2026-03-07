@@ -865,7 +865,7 @@ class links_admin_form_ui extends e_admin_form_ui
 
 	/**
 	 *
-	 * @param integer $category_id
+	 * @param int $category_id
 	 * @param array $search
 	 * @param array $src
 	 * @param boolean $titles
