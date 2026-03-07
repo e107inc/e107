@@ -69,7 +69,7 @@ class e_benchmark
 
 	/**
 	 * Calculate result
-	 * @return integer
+	 * @return int
 	 */
 	public function result()
 	{

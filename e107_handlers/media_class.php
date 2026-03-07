@@ -294,7 +294,7 @@ class e_media
 	 * 'class' data is optional, 'id' key is ignored
 	 * 
 	 * @param array $datas associative array, db keys should be passed without the leading 'media_cat_' e.g. 'class', 'type', etc.
-	 * @return integer last inserted ID or false on error
+	 * @return int last inserted ID or false on error
 	 */
 	public function createCategory($datas)
 	{
@@ -356,7 +356,7 @@ class e_media
 	/**
 	 * Create multiple media categories in once
 	 * @param array $multi_data
-	 * @return integer number of successfully inserted records
+	 * @return int number of successfully inserted records
 	 */
 	public function createCategories($multi_data)
 	{
@@ -598,8 +598,8 @@ class e_media
 	/**
 	 * Return an array of Images in a particular category
 	 * @param string $type : 16 | 32 | 48 | 64
-	 * @param integer $from
-	 * @param integer $amount
+	 * @param int $from
+	 * @param int $amount
 	 * @return array
 	 */
 	public function getIcons($type='', $from=0, $amount=null)
