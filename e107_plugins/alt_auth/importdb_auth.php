@@ -65,7 +65,7 @@ class auth_login extends alt_auth_base
 	 *	@param pointer &$newvals - pointer to array to accept other data read from database
 	 *	@param boolean $connect_only - TRUE to simply connect to the database
 	 *
-	 *	@return integer result (AUTH_xxxx)
+	 *	@return int result (AUTH_xxxx)
 	 *
 	 *	On a successful login, &$newvals array is filled with the requested data from the server
 	 */

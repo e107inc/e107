@@ -1260,7 +1260,7 @@ class Mysqldump
      * Table rows extractor, close locks and commits after dump
      *
      * @param string $tableName Name of table to export.
-     * @param integer    $count     Number of rows inserted.
+     * @param int    $count     Number of rows inserted.
      *
      * @return void
      */
@@ -2368,8 +2368,8 @@ class TypeAdapterMysql extends TypeAdapterFactory
      * Check number of parameters passed to function, useful when inheriting.
      * Raise exception if unexpected.
      *
-     * @param integer $num_args
-     * @param integer $expected_num_args
+     * @param int $num_args
+     * @param int $expected_num_args
      * @param string $method_name
      */
     private function check_parameters($num_args, $expected_num_args, $method_name)
