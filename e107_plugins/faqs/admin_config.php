@@ -144,7 +144,7 @@ class faq_cat_ui extends e_admin_ui
 	/**
 	 * Get FAQ Category data
 	 *
-	 * @param integer $id [optional] get category title, false - return whole array
+	 * @param int $id [optional] get category title, false - return whole array
 	 * @param mixed $default [optional] default value if not found (default 'n/a')
 	 * @return 
 	 */
@@ -349,7 +349,7 @@ class faq_admin_form_ui extends e_admin_form_ui
 	/**
 	 * faq_parent field method
 	 * 
-	 * @param integer $curVal
+	 * @param int $curVal
 	 * @param string $mode
 	 * @return mixed
 	 */

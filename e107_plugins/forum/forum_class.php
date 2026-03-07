@@ -216,7 +216,7 @@ class e107forum
 
 
 	/**
-	 * @param $user integer userid (if empty "anon" will be used)
+	 * @param $user int userid (if empty "anon" will be used)
 	 * @param $create boolean creates the attachment folder if set to true
 	 * @return string forum attachment path for specific user
 	 */
@@ -2503,7 +2503,7 @@ class e107forum
 
 	/**
 	 * Delete a Thread
-	 * @param $threadId integer
+	 * @param $threadId int
 	 * @param $updateForumLastPost boolean
 	 * @return true on success or false on error. 
 	 */
@@ -2572,7 +2572,7 @@ class e107forum
 
 	/**
 	 * Delete a Post
-	 * @param $postId integer
+	 * @param $postId int
 	 * @param $updateCounts boolean
 	 * @return "null" if this post does not exist, "true" if post could deleted, otherwise "false"
 	 */
