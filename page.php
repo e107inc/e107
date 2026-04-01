@@ -533,11 +533,11 @@ class pageClass
 			}
 			else
 			{
-				
+
 				$pageArray = $sql->db_getList();
 
 				$text = $tp->parseTemplate($template['start'], true, $var); // for parsing {SETIMAGE} etc.
-				
+
 				foreach($pageArray as $page)
 				{
 					/*$data = array(
@@ -552,23 +552,23 @@ class pageClass
 					$page['book_id']    = $page['chapter_parent'];
 					$page['book_name']  =  $this->getName($page['chapter_parent']);
 					$page['book_sef'] = $bookSef;
-					
+
 				//	$this->page = $page;
 					$this->batch->setVars($page);
 					$this->batch->breadcrumb();
 				//	$this->batch->setVars(new e_vars($data))->setScVar('page', $this->page);
 
 
-					
+
 
 				//	$url = e107::getUrl()->create('page/view', $page, 'allow=page_id,page_sef,chapter_sef,book_sef');
 					// $text .= "<li><a href='".$url."'>".$tp->toHTML($page['page_title'])."</a></li>";
 					$text .= e107::getParser()->parseTemplate($template['item'], true, $this->batch);
 				}
-				
+
 				$text .= $tp->parseTemplate($template['end'], true, $var);
-				
-		
+
+
 			//	$caption = ($title !='')? $title: LAN_PAGE_11;
 			//	e107::getRender()->tablerender($caption, $text,"cpage_list");
 			}
@@ -584,27 +584,27 @@ class pageClass
 	
 	function processViewPage()
 	{
-		
+
 		if($this->checkCache())
 		{
 			return;
 		}
-		
+
 		$sql = e107::getDb();
-		
+
 		$query = "SELECT p.*, u.user_id, u.user_name, user_login FROM #page AS p
 		LEFT JOIN #user AS u ON p.page_author = u.user_id
 		WHERE p.page_id=".intval($this->pageID); // REMOVED AND p.page_class IN (".USERCLASS_LIST.") - permission check is done later 
 
 
-		
-		
+
+
 		if(!$sql->gen($query))
 		{
 		 	header("HTTP/1.0 404 Not Found");
 		 //	exit; 
 			/*
-			
+
 			$ret['title'] = LAN_PAGE_12;			// ***** CHANGED
 			$ret['sub_title'] = '';
 			$ret['text'] = LAN_PAGE_3;
@@ -614,9 +614,9 @@ class pageClass
 			$ret['err'] = TRUE;
 			$ret['cachecontrol'] = false;
 			*/
-			
+
 			// ---------- New (to replace values above) ----
-			
+
 			$this->page['page_title'] = LAN_PAGE_12;			// ***** CHANGED
 			$this->page['sub_title'] = '';
 			$this->page['page_text'] = LAN_PAGE_3;
@@ -626,9 +626,9 @@ class pageClass
 			$this->page['err'] = TRUE;
 			$this->page['cachecontrol'] = false;
 
-			
+
 			// -------------------------------------
-			
+
 			$this->authorized = 'nf';
 			$this->template = e107::getCoreTemplate('page', 'default');
 		//	$this->batch = e107::getScBatch('page',null,'cpage')->setVars(new e_vars($ret))->setScVar('page', array()); ///Upgraded to setVars() array. (not using '$this->page')
@@ -639,10 +639,10 @@ class pageClass
 
 			$this->batch = e107::getScBatch('page',null,'cpage')->setVars($this->page)->wrapper('page/'.$this->templateID);
 			$this->batch->breadcrumb();
-			
+
 
 			e107::title($this->page['page_title']);
-			
+
 			return;
 		}
 
@@ -655,7 +655,7 @@ class pageClass
 		$this->templateID = vartrue($this->page['page_template'], 'default');
 
 		$this->template = e107::getCoreTemplate('page', $this->templateID, true, true);
-		
+
 		if(!$this->template)
 		{
 			// switch to default
@@ -713,9 +713,9 @@ class pageClass
 		$ret['err'] = FALSE;
 		$ret['cachecontrol'] = (isset($this->page['page_password']) && !$this->page['page_password'] && $this->authorized === true);		// Don't cache password protected pages
 		*/
-		
+
 	//	$this->batch->setVars(new e_vars($ret))->setScVar('page', $this->page); // Removed in favour of $this->var (cross-compatible with menus and other parts of e107 that use the same shortcodes) 
-	
+
 		// ---- New --- -
 		$this->page['page_text'] 	    = $this->pageToRender;
 	//	$this->page['np'] 			    = $pagenav;
@@ -977,20 +977,20 @@ class pageClass
 		
 		$this->pageTitles = array();		// Notice removal
 
-		if(preg_match_all('/\[newpage.*?\]/si', $this->pageText, $pt))
+		if(preg_match_all('/\[newpage.*?\]/si', (string) $this->pageText, $pt))
 		{
-			if (substr($this->pageText, 0, 6) == '[html]')
+			if (substr((string) $this->pageText, 0, 6) == '[html]')
 			{	// Need to strip html bbcode from wysiwyg on multi-page docs (handled automatically on single pages)
-				if (substr($this->pageText, -7, 7) == '[/html]')
+				if (substr((string) $this->pageText, -7, 7) == '[/html]')
 				{
-					$this->pageText = substr($this->pageText, 6, -7);
+					$this->pageText = substr((string) $this->pageText, 6, -7);
 				}
 				else
 				{
-					$this->pageText = substr($this->pageText, 6);
+					$this->pageText = substr((string) $this->pageText, 6);
 				}
 			}
-			$pages = preg_split("/\[newpage.*?\]/si", $this->pageText, -1, PREG_SPLIT_NO_EMPTY);
+			$pages = preg_split("/\[newpage.*?\]/si", (string) $this->pageText, -1, PREG_SPLIT_NO_EMPTY);
 			$this->multipageFlag = TRUE;
 		}
 		else
@@ -1076,14 +1076,14 @@ class pageClass
 	// FIXME most probably will fail when cache enabled
 	function pageRating($page_rating_flag)
 	{
-		
+
 		if($page_rating_flag)
 		{
 			return "<br /><div style='text-align:right'>".e107::getRate()->render("page", $this->pageID,array('label'=>LAN_PAGE_4))."</div>";
-			
+
 		}
-		
-		
+
+
 		// return $rate_text;
 	}
 
@@ -1175,10 +1175,10 @@ class pageClass
 	{
 		if(!$this->pageID || !vartrue($_POST['page_pw'])) return;
 		$pref = e107::getPref();
-		
+
 		$pref['pageCookieExpire'] = max($pref['pageCookieExpire'], 120);
 		$hash = md5($_POST['page_pw'].USERID);
-		
+
 		cookie($this->getCookieName(), $hash, (time() + $pref['pageCookieExpire']));
 		//header("location:".e_SELF."?".e_QUERY);
 		//exit;

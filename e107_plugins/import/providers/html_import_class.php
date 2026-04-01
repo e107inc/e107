@@ -37,7 +37,7 @@ class html_import extends base_import_class
 	function init()
 	{
 		$this->feedUrl	= vartrue($_POST['siteUrl'],false);
-		$this->feedUrl 	= rtrim($this->feedUrl,"/");
+		$this->feedUrl 	= rtrim((string) $this->feedUrl,"/");
 
 		if(!extension_loaded("tidy")) 
 		{
@@ -250,7 +250,7 @@ class html_import extends base_import_class
 		
 		if($file == '')	{ $file = "index.html";	} // just for local file, not url. 
 			
-		$path		= md5($this->feedUrl);
+		$path		= md5((string) $this->feedUrl);
 		$local_file = $path."/".$file; 
 		$this->localPath = e_TEMP.$path."/"; 
 		
@@ -327,7 +327,7 @@ class html_import extends base_import_class
 	 */
 	function copyNewsData(&$target, &$source)
 	{
-		
+
 		if(!$content = $this->process('content_encoded',$source))
 		{
 			$body = $this->process('description',$source);	
@@ -336,14 +336,14 @@ class html_import extends base_import_class
 		{
 			$body = $content;
 		}
-				
+
 		$body 								= $this->saveImages($body,'news');
 		$keywords 							= $this->process('category',$source);
-			
-				
+
+
 		if(!vartrue($source['title'][0]))
 		{
-			list($title,$newbody) = explode("<br />",$body,2);
+			list($title,$newbody) = explode("<br />",(string) $body,2);
 			$title = strip_tags($title);
 			if(trim($newbody)!='')
 			{
@@ -354,14 +354,14 @@ class html_import extends base_import_class
 		{
 			$title = $source['title'][0];
 		}
-		
+
 		$target['news_title']					= $title;
 		//	$target['news_sef']					= $source['post_name'];
 		$target['news_body']					= "[html]".$body."[/html]";
 		//	$target['news_extended']			= '';
 		$target['news_meta_keywords']			= implode(",",$keywords);
 		//	$target['news_meta_description']	= '';
-		$target['news_datestamp']				= strtotime($source['pubDate'][0]);
+		$target['news_datestamp']				= strtotime((string) $source['pubDate'][0]);
 		//	$target['news_author']				= $source['post_author'];
 		//	$target['news_category']			= '';
 		//	$target['news_allow_comments']		= ($source['comment_status']=='open') ? 1 : 0;
@@ -374,11 +374,11 @@ class html_import extends base_import_class
 		//	$target['news_thumbnail']			= '';
 		//	$target['news_sticky']				= '';
 
-		
+
 		return $target;  // comment out to debug 
-		
+
 		$this->renderDebug($source,$target);
-		
+
 		// DEBUG INFO BELOW. 		
 		
 	}
@@ -439,7 +439,7 @@ class html_import extends base_import_class
 		$target['page_text']			= "[html]".$body."[/html]";
 	//	$target['page_metakeys']		= '';
 	//	$target['page_metadscr']		= '';
-		$target['page_datestamp']		= strtotime($source['pubDate'][0]);
+		$target['page_datestamp']		= strtotime((string) $source['pubDate'][0]);
 	//	$target['page_author']			= $source['post_author'];
 	//	$target['page_category']		= '',
 	//	$target['page_comment_flag']	= ($source['comment_status']=='open') ? 1 : 0;
@@ -495,12 +495,12 @@ class html_import extends base_import_class
 		
 		
 	//	echo htmlentities($body);
-		preg_match_all("/(((http:\/\/www)|(http:\/\/)|(www))[-a-zA-Z0-9@:%_\+.~#?&\/\/=]+)\.(jpg|jpeg|gif|png|svg)/im",$body,$matches);
+		preg_match_all("/(((http:\/\/www)|(http:\/\/)|(www))[-a-zA-Z0-9@:%_\+.~#?&\/\/=]+)\.(jpg|jpeg|gif|png|svg)/im",(string) $body,$matches);
 		$fl = e107::getFile();
 			
 		if(is_array($matches[0]))
 		{
-			$relPath = 'images/'.md5($this->feedUrl);
+			$relPath = 'images/'.md5((string) $this->feedUrl);
 			
 			if(!is_dir(e_MEDIA.$relPath))
 			{

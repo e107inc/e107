@@ -193,7 +193,7 @@ class news_shortcodes extends e_shortcode
 		if(!vartrue($pref['trackbackEnabled'])) { return ''; }
 		$news_item = $this->news_item;
 		$news_item['#'] = 'track';
-		
+
 		return ($this->param['trackbackbeforestring'] ? $this->param['trackbackbeforestring'] : '')."<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$this->param['trackbackstring'].$this->news_item['tb_count'].'</a>'.($this->param['trackbackafterstring'] ? $this->param['trackbackafterstring'] : '');*/
 	}
 
@@ -269,7 +269,7 @@ class news_shortcodes extends e_shortcode
 			$parm = array('type'=>$parm);
 		}
 		// BC
-		$category_icon = !empty($this->news_item['category_icon']) ? str_replace('../', '', trim($this->news_item['category_icon'])) : '';
+		$category_icon = !empty($this->news_item['category_icon']) ? str_replace('../', '', trim((string) $this->news_item['category_icon'])) : '';
 		if (!$category_icon) { return ''; }
 
 		// We store SC path in DB now + BC
@@ -566,7 +566,7 @@ class news_shortcodes extends e_shortcode
 
 		$tp = e107::getParser();
 
-		$media = explode(",", $this->news_item['news_thumbnail']);
+		$media = explode(",", (string) $this->news_item['news_thumbnail']);
 		$images = array();
 
 		foreach($media as $file)
@@ -978,7 +978,7 @@ class news_shortcodes extends e_shortcode
 	function sc_news_media($parm=array())
 	{
 		
-		$media = explode(",", $this->news_item['news_thumbnail']);
+		$media = explode(",", (string) $this->news_item['news_thumbnail']);
 
 		if(empty($parm['item']))
 		{
@@ -1036,7 +1036,7 @@ class news_shortcodes extends e_shortcode
 		
 		$tp = e107::getParser();
 	
-		$media = explode(",", $this->news_item['news_thumbnail']);
+		$media = explode(",", (string) $this->news_item['news_thumbnail']);
 		$list = array();
 		
 		foreach($media as $file)
@@ -1148,7 +1148,7 @@ class news_shortcodes extends e_shortcode
 		$parm = explode('|', $parm, 2);
 		$parm[1] = 'news_id='.$this->news_item['news_id'].(varset($parm[1]) ? '&'.$parm[1] : '');
 		e107::setRegistry('core/news/schook_data', array('data' => $this->news_item, 'params' => $this->param));
-		return e107::getParser()->parseTemplate('{'.strtoupper($parm[0]).'='.$parm[1].'}');
+		return e107::getParser()->parseTemplate('{'.strtoupper((string) $parm[0]).'='.$parm[1].'}');
 	}
 
 	public function sc_news_info($parm=null)
@@ -1163,14 +1163,14 @@ class news_shortcodes extends e_shortcode
 		$info .= $news_item['news_sticky'] ? '<br />'.LAN_NEWS_31 : '';
 		$info .= '<br />'.($news_item['news_allow_comments'] ? LAN_NEWS_13 : LAN_NEWS_12);
 		$info .= LAN_NEWS_14.$news_item['news_start'].$news_item['news_end'].'<br />';
-		$info .= LAN_NEWS_15.strlen($news_item['news_body']).LAN_NEWS_16.strlen($news_item['news_extended']).LAN_NEWS_17."<br /><br />";
+		$info .= LAN_NEWS_15.strlen((string) $news_item['news_body']).LAN_NEWS_16.strlen((string) $news_item['news_extended']).LAN_NEWS_17."<br /><br />";
 		//return $ns->tablerender(LAN_NEWS_18, $info);
 		return $info;
 	}
 
 	function sc_news_tags($parm=null)
 	{
-		$tmp = explode(",",$this->news_item['news_meta_keywords']);
+		$tmp = explode(",",(string) $this->news_item['news_meta_keywords']);
 		$words = array();
 		$class = (!empty($parm['class'])) ? $parm['class'] : 'news-tag';
 		$separator = (isset($parm['separator'])) ? $parm['separator'] : ', ';

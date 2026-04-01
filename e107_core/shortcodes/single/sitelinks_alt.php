@@ -21,7 +21,7 @@ class sitelinks_alt
 			return null;
 		}
 
-		$params = explode('+', $parm);
+		$params = explode('+', (string) $parm);
 		
 		if (vartrue($params[0]) && ($params[0] != 'no_icons') && ($params[0] != 'default'))
 		{
@@ -60,7 +60,7 @@ class sitelinks_alt
 		foreach ($linklist['head_menu'] as $lk)
 		{
 
-			if(substr($lk['link_url'],0,3) != '{e_' && strpos($lk['link_url'], '://') === false)
+			if(substr((string) $lk['link_url'],0,3) != '{e_' && strpos((string) $lk['link_url'], '://') === false)
 			{
 				$lk['link_url'] = '{e_BASE}'.$lk['link_url'];
 			}
@@ -197,9 +197,9 @@ class sitelinks_alt
 			{
 				// Filter title for backwards compatibility ---->
 				
-				if (substr($sub['link_name'], 0, 8) == "submenu.")
+				if (substr((string) $sub['link_name'], 0, 8) == "submenu.")
 				{
-					$tmp = explode(".", $sub['link_name']);
+					$tmp = explode(".", (string) $sub['link_name']);
 					$subname = $tmp[2];
 				}
 				else

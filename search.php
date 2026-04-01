@@ -227,9 +227,9 @@ class search_front extends e_shortcode
 	function sc_search_type_sel($parm='')
 	{
 		return e107::getForm()->radio_switch('adv', vartrue($_GET['adv']), LAN_SEARCH_30, LAN_SEARCH_29, array('class'=>'e-expandit','reverse'=>1, 'data-target'=>'search-advanced'));
-		
-		
-		
+
+
+
 	//	return "<input type='radio' name='adv' value='0' ".(vartrue($_GET['adv']) ? "" : "checked='checked'")." /> ".LAN_SEARCH_29."&nbsp;
 	//	<input type='radio' name='adv' value='1' ".(vartrue($_GET['adv']) ? "checked='checked'" : "" )." /> ".LAN_SEARCH_30;
 	}
@@ -719,7 +719,7 @@ class search_front extends e_shortcode
 				{
 					if (isset($_SERVER['HTTP_REFERER'])) 
 					{
-						if (!$refpage = substr($_SERVER['HTTP_REFERER'], (strrpos($_SERVER['HTTP_REFERER'], "/")+1))) 
+						if (!$refpage = substr((string) $_SERVER['HTTP_REFERER'], (strrpos((string) $_SERVER['HTTP_REFERER'], "/")+1))) 
 						{
 							$refpage = "index.php";
 						}
@@ -733,7 +733,7 @@ class search_front extends e_shortcode
 					{
 						if ($value['refpage']) 
 						{
-							if (strpos($refpage, $value['refpage']) !== FALSE) 
+							if (strpos($refpage, (string) $value['refpage']) !== FALSE) 
 							{
 								$searchtype[$key] = true;
 								$_GET['t'] = $key;
@@ -795,8 +795,8 @@ class search_front extends e_shortcode
 		$query = $this->query;
 
 		
-		$_GET['q'] = rawurlencode(varset($_GET['q']));
-		$_GET['t'] = preg_replace('/[^\w\-]/i', '', varset($_GET['t']));
+		$_GET['q'] = rawurlencode((string) varset($_GET['q']));
+		$_GET['t'] = preg_replace('/[^\w\-]/i', '', (string) varset($_GET['t']));
 		
 		$search_prefs	= $this->search_prefs;
 		$result_flag	= $this->result_flag;
@@ -876,8 +876,8 @@ class search_front extends e_shortcode
 					$core_parms = array('r' => '', 'q' => '', 't' => '', 's' => '');
 					foreach ($_GET as $pparm_key => $pparm_value) 
 					{
-						$temp = preg_replace('/[^\w_]/i','',$pparm_key);
-						$temp1 = preg_replace('/[^\w_ +]/i','',$pparm_value);		// Filter 'non-word' charcters in search term
+						$temp = preg_replace('/[^\w_]/i','',(string) $pparm_key);
+						$temp1 = preg_replace('/[^\w_ +]/i','',(string) $pparm_value);		// Filter 'non-word' charcters in search term
 						//if (($temp == $pparm_key) && !isset($core_parms[$pparm_key]))
 					//	{
 						//	$parms .= "&".$pparm_key."=".$temp1; //FIXME Unused
@@ -916,7 +916,7 @@ class search_front extends e_shortcode
 			if (is_array($value)) {
 				$data[$key] = $this->magic_search($value);
 			} else {
-				$data[$key] = stripslashes($value);
+				$data[$key] = stripslashes((string) $value);
 			}
 		}
 		return $data;
@@ -941,7 +941,7 @@ class search_front extends e_shortcode
 			
 			if ($_GET['in']) 
 			{
-				$en_in = explode(' ', $_GET['in']);
+				$en_in = explode(' ', (string) $_GET['in']);
 				foreach ($en_in as $en_in_key) 
 				{
 					$full_query .= " +".$tp->filter($en_in_key);
@@ -950,7 +950,7 @@ class search_front extends e_shortcode
 			}
 			if ($_GET['ex']) 
 			{
-				$en_ex = explode(' ', $_GET['ex']);
+				$en_ex = explode(' ', (string) $_GET['ex']);
 				foreach ($en_ex as $en_ex_key) 
 				{
 					$full_query .= " -".$tp->filter($en_ex_key);
@@ -964,7 +964,7 @@ class search_front extends e_shortcode
 			}
 			if ($_GET['be']) 
 			{
-				$en_be = explode(' ', $_GET['be']);
+				$en_be = explode(' ', (string) $_GET['be']);
 				foreach ($en_be as $en_be_key) 
 				{
 					$full_query .= " ".$tp->filter($en_be_key)."*";
@@ -978,12 +978,12 @@ class search_front extends e_shortcode
 				$this->message = LAN_SEARCH_201;
 				$this->result_flag = false;
 			} 
-			else if (strlen($full_query) == 0) 
+			else if (strlen((string) $full_query) == 0) 
 			{
 				$perform_search = false;
 				$this->message = LAN_SEARCH_201;
 			} 
-			elseif (strlen($full_query) < ($char_count = ($this->search_prefs['mysql_sort'] ? 4 : 3))) 
+			elseif (strlen((string) $full_query) < ($char_count = ($this->search_prefs['mysql_sort'] ? 4 : 3))) 
 			{
 				$perform_search = false;
 				$this->message = str_replace('[x]', $char_count, LAN_417);
@@ -1015,7 +1015,7 @@ class search_front extends e_shortcode
 			
 
 			
-			$this->query = trim($full_query);
+			$this->query = trim((string) $full_query);
 
 			if ($this->query)
 			{
@@ -1208,7 +1208,7 @@ if ($perform_search)
 function parsesearch($text, $match) 
 {
 	$tp = e107::getParser();
-	$text = strip_tags($text);
+	$text = strip_tags((string) $text);
 	$temp = $tp->ustristr($text, $match);
 	$pos = $tp->ustrlen($text) - $tp->ustrlen($temp);
 	$matchedText = $tp->usubstr($text,$pos,$tp->ustrlen($match));

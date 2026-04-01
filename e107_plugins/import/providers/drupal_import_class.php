@@ -428,7 +428,7 @@ class drupal_import extends base_import_class
 		// Strip a slash from the end of URL.
 		$base_url = rtrim($base_url, '/');
 		// Strip slashes from the beginning and end of path.
-		$base_path = trim($this->basePath, '/');
+		$base_path = trim((string) $this->basePath, '/');
 		// Append slashes to the beginning and end of path if it's not empty.
 		$base_path = !empty($base_path) ? '/' . $base_path . '/' : '/';
 		// Replace file schema with the real path.

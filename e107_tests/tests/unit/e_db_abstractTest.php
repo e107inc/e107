@@ -609,7 +609,7 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$row = $this->db->db_Fetch('num');
 		$this->assertEquals('e107_user', $row[0]);
 
-		$check = (strpos($row[1], "CREATE TABLE `e107_user`") !== false);
+		$check = (strpos((string) $row[1], "CREATE TABLE `e107_user`") !== false);
 		$this->assertTrue($check);
 
 		$this->db->select('user', '*', 'user_id = 1');
@@ -971,7 +971,7 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$this->db->select('doesnt_exists');
 		$result = $this->db->getLastErrorText();
 
-		$actual = (strpos($result,"doesn't exist")!== false );
+		$actual = (strpos((string) $result,"doesn't exist")!== false );
 
 		$this->assertTrue($actual);
 	}

@@ -87,7 +87,7 @@ class Font extends \Intervention\Image\AbstractFont
             // represented as is.
             // eg: &amp;#160; will render &#160; rather than its character.
             $this->text = preg_replace('/&(#(?:x[a-fA-F0-9]+|[0-9]+);)/', '&#38;\1', $this->text);
-            $this->text = mb_encode_numericentity($this->text, array(0x0080, 0xffff, 0, 0xffff), 'UTF-8');
+            $this->text = mb_encode_numericentity((string) $this->text, array(0x0080, 0xffff, 0, 0xffff), 'UTF-8');
 
             // get bounding box with angle 0
             $box = imagettfbbox($this->getPointSize(), 0, $this->file, $this->text);

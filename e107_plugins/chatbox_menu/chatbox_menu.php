@@ -44,10 +44,10 @@ if((isset($_POST['chat_submit']) || e_AJAX_REQUEST) && $_POST['cmessage'] !== ''
 	}
 	else
 	{
-		$nick = trim(preg_replace("#\[.*\]#s", '', $tp->toDB($_POST['nick'])));
+		$nick = trim((string) preg_replace("#\[.*\]#s", '', (string) $tp->toDB($_POST['nick'])));
 
 		$cmessage = $_POST['cmessage'];
-		$cmessage = preg_replace("#\[.*?\](.*?)\[/.*?\]#s", "\\1", $cmessage);
+		$cmessage = preg_replace("#\[.*?\](.*?)\[/.*?\]#s", "\\1", (string) $cmessage);
 
 
 		$fp = new floodprotect;

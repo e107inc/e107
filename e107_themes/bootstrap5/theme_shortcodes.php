@@ -140,7 +140,7 @@ class theme_shortcodes extends e_shortcode
 			default:
 			if(!empty($news['news_thumbnail']))
 			{
-				$tmp = explode(',', $news['news_thumbnail']);
+				$tmp = explode(',', (string) $news['news_thumbnail']);
 
 				$opts = array(
 					'w' => 1800,

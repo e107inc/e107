@@ -84,7 +84,7 @@ class plugin_featurebox_item extends e_model
 		
 		if(empty($url)) return '';
 
-		parse_str($parm, $parm);
+		parse_str((string) $parm, $parm);
 				
 		if(vartrue($parm['href']))
 		{
@@ -175,7 +175,7 @@ class plugin_featurebox_item extends e_model
 		{
 			return '';
 		}
-		parse_str($parm, $parm);
+		parse_str((string) $parm, $parm);
 		$att = ($parm['aw']) ? "aw=".$parm['aw'] : 'aw=100&ah=60';
 		$src = e107::getParser()->thumbUrl($this->get('fb_image'),$att);
 			

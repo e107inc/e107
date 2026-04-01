@@ -37,10 +37,10 @@ class wordpress_import extends base_import_class
 	
 	function init()
 	{
-		
-		
+
+
 		$this->newsAuthor	= intval($_POST['news_author']);
-		
+
 	//	if($data = e107::getDb('phpbb')->retrieve('userclass_classes','userclass_id',"userclass_name='FORUM_MODERATOR' "))
 	//	{
 	//		$this->forum_moderator_class = $data;
@@ -169,13 +169,13 @@ class wordpress_import extends base_import_class
 		{
 			 $target['user_id'] = $source['ID'];
 		}
-		
+
 		$target['user_name'] 		= $source['user_nicename'];
 		$target['user_loginname'] 	= $source['user_login'];
 		$target['user_password'] 	= $source['user_pass'];   // needs to be salted!!!!
 		$target['user_email'] 		= $source['user_email'];
 		$target['user_hideemail'] 	= $source['user_hideemail'];
-		$target['user_join'] 		= strtotime($source['user_registered']);
+		$target['user_join'] 		= strtotime((string) $source['user_registered']);
 		$target['user_admin'] 		= ($user_meta['administrator'] == 1) ? 1 : 0;
 		$target['user_lastvisit'] 	= $source['user_lastvisit'];
 		$target['user_login'] 		= $source['firstname']." ".$source['lastname'];
@@ -188,7 +188,7 @@ class wordpress_import extends base_import_class
 		$target['user_lastpost'] 	= $source['user_lastpost'];
 		$target['user_chats'] 		= $source['user_chats'];
 		$target['user_comments'] 	= $source['user_comments'];
-	
+
 		$target['user_ip'] 			= $source['user_ip'];
 		$target['user_prefs'] 		= $source['user_prefs'];
 		$target['user_visits'] 		= $source['user_visits'];
@@ -207,7 +207,7 @@ class wordpress_import extends base_import_class
 		$target['user_timezone'] 	= $source['user_timezone'];
 
 		$this->renderDebug($source,$target);
-		
+
 	//return $target;
 	}
 
@@ -251,7 +251,7 @@ class wordpress_import extends base_import_class
 		//	$target['news_extended']			= '';
 		//	$target['news_meta_keywords']		= '';
 		//	$target['news_meta_description']	= '';
-			$target['news_datestamp']			= strtotime($source['post_date']);
+			$target['news_datestamp']			= strtotime((string) $source['post_date']);
 			$target['news_author']				= ($this->newsAuthor !=0) ? $this->newsAuthor : $source['post_author'];
 		//	$target['news_category']			= '';
 			$target['news_allow_comments']		= ($source['comment_status']=='open') ? 1 : 0;
@@ -310,7 +310,7 @@ class wordpress_import extends base_import_class
 		$target['page_text']			= (vartrue($source['post_content'])) ? "[html]".$this->convertText($source['post_content'])."[/html]" : ""; 
 		$target['page_metakeys']		= '';
 		$target['page_metadscr']		= '';
-		$target['page_datestamp']		= strtotime($source['post_date']);
+		$target['page_datestamp']		= strtotime((string) $source['post_date']);
 		$target['page_author']			= $source['post_author'];
 	//	$target['page_category']		= '',
 		$target['page_comment_flag']	= ($source['comment_status']=='open') ? 1 : 0;
@@ -394,7 +394,7 @@ class wordpress_import extends base_import_class
 		//$text = e107::getParser()->toDb($text);
 		return $text;
 					
-		$text 		= html_entity_decode($text,ENT_QUOTES,'UTF-8');
+		$text 		= html_entity_decode((string) $text,ENT_QUOTES,'UTF-8');
 
 		$detected 	= mb_detect_encoding($text); // 'ISO-8859-1'
 		$text 		= iconv($detected,'UTF-8',$text);

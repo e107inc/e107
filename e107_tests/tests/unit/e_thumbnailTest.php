@@ -378,10 +378,10 @@ class compareImages
     public function compareHash($imageHash)
     {
         $sString = $this->getHasString();
-        if (strlen($imageHash) == 64 && strlen($sString) == 64) {
+        if (strlen((string) $imageHash) == 64 && strlen((string) $sString) == 64) {
             $diff = 0;
-            $sString = str_split($sString);
-            $imageHash = str_split($imageHash);
+            $sString = str_split((string) $sString);
+            $imageHash = str_split((string) $imageHash);
             for($a = 0; $a < 64; $a++) {
                 if ($imageHash[$a] != $sString[$a]) {
                     $diff++;

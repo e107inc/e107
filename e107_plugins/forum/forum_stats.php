@@ -277,7 +277,7 @@ class forumStats
 			}
 			else
 			{
-				$tmp = explode(chr(1), $ma['thread_anon']);
+				$tmp = explode(chr(1), (string) $ma['thread_anon']);
 				$uinfo = $tp->toHTML($tmp[0]);
 			}
 
@@ -326,7 +326,7 @@ class forumStats
 			}
 			else
 			{
-				$tmp = explode(chr(1), $ma['thread_anon']);
+				$tmp = explode(chr(1), (string) $ma['thread_anon']);
 				$uinfo = $tp->toHTML($tmp[0]);
 			}
 

@@ -192,7 +192,7 @@ class cron_admin_ui extends e_admin_ui
 	
 			if(!vartrue($_GET['action']) || $_GET['action'] == 'refresh')
 			{
-				
+
 				$this->cronImport($cronDefaults);	// import Core Crons (if missing)
 				$this->cronImport(e107::getAddonConfig('e_cron'));	// Import plugin Crons
 				$this->cronImportLegacy(); // Import Legacy Cron Tab Settings	
@@ -438,7 +438,7 @@ class cron_admin_ui extends e_admin_ui
 			}
 
 			
-			list($class_name, $method_name) = explode("::", $class_func);
+			list($class_name, $method_name) = explode("::", (string) $class_func);
 			$mes = e107::getMessage();
 			$taskName = $class_name;
 			
@@ -535,7 +535,7 @@ class cron_admin_form_ui extends e_admin_form_ui
 		if($mode == 'read')
 		{
 			$sep = array();
-			list($min, $hour, $day, $month, $weekday) = explode(" ", $curVal);
+			list($min, $hour, $day, $month, $weekday) = explode(" ", (string) $curVal);
 			$text = (isset($this->min_options[$min])) ? $this->min_options[$min] : LAN_CRON_50 ." ". $min;	// Minute(s)
 			$text .= "<br />";
 			$text .= (isset($this->hour_options[$hour])) ? $this->hour_options[$hour] : LAN_CRON_51 ." ". $hour;	// Hour(s)		
@@ -599,7 +599,7 @@ class cron_admin_form_ui extends e_admin_form_ui
 		{
 			$func = $this->getController()->getFieldVar('cron_function');
 		//
-			if(substr($func,0,7) === '_system')
+			if(substr((string) $func,0,7) === '_system')
 			{
 				$att['readParms'] = array('disabled'=>'disabled');
 			}
@@ -618,7 +618,7 @@ class cron_admin_form_ui extends e_admin_form_ui
 	function editTab($curVal)
 	{
 		$sep = array();
-		list($sep['minute'], $sep['hour'], $sep['day'], $sep['month'], $sep['weekday']) = explode(" ", $curVal);
+		list($sep['minute'], $sep['hour'], $sep['day'], $sep['month'], $sep['weekday']) = explode(" ", (string) $curVal);
 
 		foreach ($sep as $key => $value)
 		{

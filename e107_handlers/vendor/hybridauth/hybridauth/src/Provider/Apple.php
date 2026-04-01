@@ -185,7 +185,7 @@ class Apple extends OAuth2
             // payload extraction by https://github.com/omidborjian
             // https://github.com/hybridauth/hybridauth/issues/1095#issuecomment-626479263
             // JWT splits the string to 3 components 1) first is header 2) is payload 3) is signature
-            $payload = explode('.', $id_token)[1];
+            $payload = explode('.', (string) $id_token)[1];
             $payload = json_decode(base64_decode($payload));
         } else {
             // validate the token signature and get the payload
@@ -202,7 +202,7 @@ class Apple extends OAuth2
 
                     $key = PublicKeyLoader::load(
                         [
-                            'e' => new BigInteger(base64_decode($jwk['e']), 256),
+                            'e' => new BigInteger(base64_decode((string) $jwk['e']), 256),
                             'n' => new BigInteger(base64_decode(strtr($jwk['n'], '-_', '+/'), true), 256)
                         ]
                     )
@@ -240,7 +240,7 @@ class Apple extends OAuth2
         $this->storeData('expires_at', $data->get('exp'));
 
         if (!empty($_REQUEST['user'])) {
-            $objUser = json_decode($_REQUEST['user']);
+            $objUser = json_decode((string) $_REQUEST['user']);
             $user = new Data\Collection($objUser);
             if (!$user->isEmpty()) {
                 $name = $user->get('name');

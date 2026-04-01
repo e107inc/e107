@@ -90,7 +90,7 @@ class userlogin
 		$e_event = e107::getEvent();
 		$_E107 = e107::getE107();
 		
-		$username = trim($username);
+		$username = trim((string) $username);
 		$userpass = trim($userpass);
 
 		if(!empty($_E107['cli']) && ($username == ''))
@@ -177,7 +177,7 @@ class userlogin
 			}
 		}
 
-		$username = preg_replace("/\sOR\s|\=|\#/", "", $username);
+		$username = preg_replace("/\sOR\s|\=|\#/", "", (string) $username);
 
 		// Check secure image
 		if (!$forceLogin && !empty($pref[$this->secImageType]) && extension_loaded('gd'))
@@ -324,9 +324,9 @@ class userlogin
 			{
 				if (in_array($fk,$class_list))
 				{  // We've found the entry of interest
-					if (strlen($fp))
+					if (strlen((string) $fp))
 					{
-						if (strpos($fp, 'http') === FALSE)
+						if (strpos((string) $fp, 'http') === FALSE)
 						{
 							$fp = str_replace(e_HTTP, '', $fp);		// This handles sites in a subdirectory properly (normally, will replace nothing)
 							$fp = SITEURL.$fp;
@@ -405,7 +405,7 @@ class userlogin
 
 		// User is in DB here
 		$this->userData = e107::getDb()->fetch();		// Get user info
-		$this->userData['user_perms'] = trim($this->userData['user_perms']);
+		$this->userData['user_perms'] = trim((string) $this->userData['user_perms']);
 		$this->lookEmail = ($username == $this->userData['user_email']) ? 1 : 0;		// Know whether login name or email address used now
 		
 		return TRUE;
@@ -421,7 +421,7 @@ class userlogin
 		$pref = e107::getPref();
 		$tp = e107::getParser();
 
-		$username = preg_replace("/\sOR\s|\=|\#/", "", $username);
+		$username = preg_replace("/\sOR\s|\=|\#/", "", (string) $username);
 		
 		if($forceLogin === 'provider')
 		{

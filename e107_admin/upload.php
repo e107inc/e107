@@ -208,7 +208,7 @@ class upload_ui extends e_admin_ui
 
 		// Make sure the upload_category contains only integers
 		// Make sure the owner correspondents to the category id
-		list($catOwner, $catID) = explode("__", $new_data['upload_category'], 2);
+		list($catOwner, $catID) = explode("__", (string) $new_data['upload_category'], 2);
 		$new_data['upload_category'] = intval($catID);
 		$new_data['upload_owner'] = $catOwner;
 

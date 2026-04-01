@@ -94,7 +94,7 @@ TEMPL;
 		if($this->gzipCompression == true)
 		{
 			header('Content-Encoding: gzip');
-			$gzipoutput = gzencode($html,6);
+			$gzipoutput = gzencode((string) $html,6);
 			header('Content-Length: '.strlen($gzipoutput));
 			echo $gzipoutput;
 		}
@@ -122,7 +122,7 @@ TEMPL;
 			define('BOOTSTRAP', (int) $bs);
 		}
 
-		$content = stripslashes($content);
+		$content = stripslashes((string) $content);
 
 		//	$content = e107::getBB()->htmltoBBcode($content);	//XXX This breaks inserted images from media-manager. :/
 		e107::getBB()->setClass($this->getMediaCategory());
@@ -176,7 +176,7 @@ TEMPL;
 	{
 		e107::getBB()->setClass($this->getMediaCategory());
 
-		$content = stripslashes($content);
+		$content = stripslashes((string) $content);
 
 		if(check_class($this->postHtmlClass)) // Plain HTML mode.
 		{

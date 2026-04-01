@@ -225,7 +225,7 @@ class newsfeed_form_ui extends e_admin_form_ui
 
 			case 'write': // Edit Page
 
-				$tmp = explode('::',$curVal);
+				$tmp = explode('::',(string) $curVal);
 
 				return $frm->text('newsfeed_image',$tmp[0], 255, 'size=large');
 			break;
@@ -275,7 +275,7 @@ class newsfeed_form_ui extends e_admin_form_ui
 		{
 			case 'read': // List Page
 				$data = $this->getController()->getListModel()->get('newsfeed_image');
-				list($image,$menu,$main) = explode('::',$data);
+				list($image,$menu,$main) = explode('::',(string) $data);
 
 				return intval($main);
 			break;
@@ -283,7 +283,7 @@ class newsfeed_form_ui extends e_admin_form_ui
 			case 'write': // Edit Page
 
 				$data = $this->getController()->getModel()->get('newsfeed_image');
-				list($image,$menu,$main) = explode('::',$data);
+				list($image,$menu,$main) = explode('::',(string) $data);
 
 				if(empty($main))
 				{
@@ -310,14 +310,14 @@ class newsfeed_form_ui extends e_admin_form_ui
 		{
 			case 'read': // List Page
 				$data = $this->getController()->getListModel()->get('newsfeed_image');
-				list($image,$menu,$main) = explode('::',$data);
+				list($image,$menu,$main) = explode('::',(string) $data);
 
 				return intval($menu);
 			break;
 
 			case 'write': // Edit Page
 				$data = $this->getController()->getModel()->get('newsfeed_image');
-				list($image,$menu,$main) = explode('::',$data);
+				list($image,$menu,$main) = explode('::',(string) $data);
 
 				if(empty($menu))
 				{

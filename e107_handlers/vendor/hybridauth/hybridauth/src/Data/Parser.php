@@ -49,7 +49,7 @@ final class Parser
      */
     public function parseJson($result)
     {
-        return json_decode($result);
+        return json_decode((string) $result);
     }
 
     /**
@@ -63,7 +63,7 @@ final class Parser
     {
         libxml_use_internal_errors(true);
 
-        $result = preg_replace('/([<\/])([a-z0-9-]+):/i', '$1', $result);
+        $result = preg_replace('/([<\/])([a-z0-9-]+):/i', '$1', (string) $result);
         $xml = simplexml_load_string($result);
 
         libxml_use_internal_errors(false);
@@ -87,7 +87,7 @@ final class Parser
      */
     public function parseQueryString($result)
     {
-        parse_str($result, $output);
+        parse_str((string) $result, $output);
 
         if (!is_array($output)) {
             return $result;

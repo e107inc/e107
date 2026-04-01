@@ -39,14 +39,14 @@ if(isset($_POST['updatesettings']))
 		$pref['maintainance_text'] = $temp;
 		$changed = TRUE;
 	}
-	
+
 	$temp = intval($_POST['main_admin_only']);
 	if(getperms('0') && $pref['main_admin_only'] != $temp)
 	{
 		$pref['main_admin_only'] = $temp;
 		$changed = TRUE;
 	}
-	
+
 	if($changed)
 	{
 		e107::getLog()->add(($pref['maintainance_flag'] == 0) ? 'MAINT_02' : 'MAINT_01', $pref['maintainance_text'], E_LOG_INFORMATIVE, '');
@@ -59,7 +59,7 @@ if(isset($_POST['updatesettings']))
 	}
 
 	$pref = e107::getConfig('core', true, true)->getPref();
-		
+
 
 }
 
@@ -75,14 +75,14 @@ $text = "
 					<col class='col-control' />
 				</colgroup>
 				<tbody>";
-				
+
 $elements = array(
 	e_UC_PUBLIC		=> LAN_DISABLED,
 	e_UC_MEMBER		=> ADLAN_110,
 	e_UC_ADMIN		=> UGFLAN_8,
 	e_UC_MAINADMIN	=> UGFLAN_9
 );
-	 
+
 $text .= "
 					<tr>
 						<td>".UGFLAN_2.": </td>
@@ -151,7 +151,7 @@ function headerjs()
 		</script>
 		<script src='".e_JS."core/admin.js'></script>
 	";
-	
+
 	return $ret;
 }
 

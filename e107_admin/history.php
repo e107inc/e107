@@ -54,7 +54,7 @@ class history_adminArea extends e_admin_dispatcher
 				
 class admin_history_ui extends e_admin_ui
 {
-			
+
 		protected $pluginTitle		= 'History';
 		protected $pluginName		= 'myplugin';
 	//	protected $eventName		= 'myplugin-admin_history'; // remove comment to enable event triggers in admin. 		
@@ -66,11 +66,11 @@ class admin_history_ui extends e_admin_ui
 		protected $batchCopy		= false;
 
 	//	protected $tabs				= array('tab1'=>'Tab 1', 'tab2'=>'Tab 2'); // Use 'tab'=>'tab1'  OR 'tab'=>'tab2' in the $fields below to enable. 
-		
+
 	//	protected $listQry      	= "SELECT * FROM `#tableName` WHERE field != '' "; // Example Custom Query. LEFT JOINS allowed. Should be without any Order or Limit.
-	
+
 		protected $listOrder		= 'history_id DESC';
-	
+
 		protected $fields 		= array (
 			'checkboxes'              => array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => 'value', 'class' => 'center', 'toggle' => 'e-multiselect', 'readParms' => [], 'writeParms' => [],),
 		//	'history_id'              => array ( 'title' => LAN_ID, 'type' => 'number', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => [], 'writeParms' => [], 'class' => 'left', 'thclass' => 'left',),
@@ -84,15 +84,15 @@ class admin_history_ui extends e_admin_ui
 
 			'options'                 => array ( 'title' => LAN_OPTIONS, 'type' => 'method', 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => 'value', 'readParms' => [], 'writeParms' => [],),
 		);		
-		
+
 		protected $fieldpref = array( 'history_datestamp', 'history_table', 'history_record_id','history_action', 'history_data', 'history_user_id', 'history_restored');
-	
+
 
 	//	protected $preftabs        = array('General', 'Other' );
 		protected $prefs = array(
 		); 
 
-	
+
 		public function init()
 		{
 				$this->fields['history_action']['writeParms']['optArray'] = [
@@ -134,7 +134,7 @@ class admin_history_ui extends e_admin_ui
 			if ($historyRow)
 			{
 				$originalTable = $historyRow['history_table'];                  // The table where this record belongs
-				$originalData = json_decode($historyRow['history_data'], true);
+				$originalData = json_decode((string) $historyRow['history_data'], true);
 				$pid = $historyRow['history_pid'];
 				$recordId = $historyRow['history_record_id'];
 
@@ -190,34 +190,34 @@ class admin_history_ui extends e_admin_ui
 
 
 		// ------- Customize Create --------
-		
+
 		public function beforeCreate($new_data,$old_data)
 		{
 			return $new_data;
 		}
-	
 
-		
+
+
 		// left-panel help menu area. (replaces e_help.php used in old plugins)
 	public function renderHelp()
 	{
 		$caption = LAN_HELP;
 		$text = "
         <p>This page allows you to view the <strong>history of changes</strong> made to records in the system and restore records to a previous state when needed.</p>
-        
+
         <h4>Features of this page:</h4>
         <ul>
             <li><strong>View Changes:</strong> See details of updates and deletions, including who made the changes and when.</li>
             <li><strong>Revert Changes:</strong> Restore a record to its earlier version, undoing accidental or undesired modifications.</li>
             <li><strong>Audit Trail:</strong> Track all actions performed on records for accountability and transparency.</li>
         </ul>
-        
+
         <p>Use the filters to narrow down the history logs or locate specific changes. If a record can be restored, an option will be available in the Options menu.</p>
     ";
 
 		return ['caption' => $caption, 'text' => $text];
 	}
-			
+
 	/*	
 		// optional - a custom page.  
 		public function customPage()
@@ -253,10 +253,10 @@ class admin_history_ui extends e_admin_ui
 			$text .= $frm->close();
 
 			return $text;
-			
+
 		}
-		
-	
+
+
 	 // Handle batch options as defined in admin_history_form_ui::history_data;  'handle' + action + field + 'Batch'
 	 // @important $fields['history_data']['batch'] must be true for this method to be detected. 
 	 // @param $selected
@@ -283,7 +283,7 @@ class admin_history_ui extends e_admin_ui
 
 	}
 
-	
+
 	 // Handle filter options as defined in admin_history_form_ui::history_data;  'handle' + action + field + 'Filter'
 	 // @important $fields['history_data']['filter'] must be true for this method to be detected. 
 	 // @param $selected
@@ -292,7 +292,7 @@ class admin_history_ui extends e_admin_ui
 	{
 
 		$this->listOrder = 'history_data ASC';
-	
+
 		switch($type)
 		{
 			case 'customfilter_1':
@@ -309,9 +309,9 @@ class admin_history_ui extends e_admin_ui
 
 
 	}
-	
-		
-		
+
+
+
 	*/
 			
 }

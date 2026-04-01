@@ -151,7 +151,7 @@ if (!empty($_POST))
 {
 
 	// avoid endless loop.
-	if(varset($_POST['frontpage']) == 'other' && (trim($_POST['frontpage_other']) == 'index.php' || trim($_POST['frontpage_other']) == '{e_BASE}index.php'))
+	if(varset($_POST['frontpage']) == 'other' && (trim((string) $_POST['frontpage_other']) == 'index.php' || trim((string) $_POST['frontpage_other']) == '{e_BASE}index.php'))
 	{
 		$_POST['frontpage'] = 'wmessage';
 		$_POST['frontpage_other'] = '';
@@ -160,8 +160,8 @@ if (!empty($_POST))
 
 	foreach ($_POST as $k => $v)
 	{
-		$incDec = substr($k, 0, 6);
-		$idNum = substr($k, 6);
+		$incDec = substr((string) $k, 0, 6);
+		$idNum = substr((string) $k, 6);
 		if ($incDec == 'fp_inc')
 		{
 			$mv = intval($idNum);
@@ -217,7 +217,7 @@ if(isset($_POST['fp_save_new']))
 
 	if($_POST['frontpage'] == 'other')
 	{
-		$_POST['frontpage_other'] = trim($tp->toForm($_POST['frontpage_other']));
+		$_POST['frontpage_other'] = trim((string) $tp->toForm($_POST['frontpage_other']));
 		$frontpage_value = $_POST['frontpage_other'] ? $_POST['frontpage_other'] : 'news.php';
 	}
 	else
@@ -234,7 +234,7 @@ if(isset($_POST['fp_save_new']))
 
 	if($_POST['fp_force_page'] == 'other')
 	{
-		$_POST['fp_force_page_other'] = trim($tp->toForm($_POST['fp_force_page_other']));
+		$_POST['fp_force_page_other'] = trim((string) $tp->toForm($_POST['fp_force_page_other']));
 		$forcepage_value = $_POST['fp_force_page_other']; // A null value is allowable here
 	}
 	else
@@ -249,7 +249,7 @@ if(isset($_POST['fp_save_new']))
 		}
 	}
 
-	$temp = array('order' => intval($_POST['fp_order']), 'class' => $_POST['class'], 'page' => $frontpage_value, 'force' => trim($forcepage_value));
+	$temp = array('order' => intval($_POST['fp_order']), 'class' => $_POST['class'], 'page' => $frontpage_value, 'force' => trim((string) $forcepage_value));
 
 	if($temp['order'] == 0) // New index to add
 	{

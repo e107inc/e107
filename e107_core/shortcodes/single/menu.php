@@ -14,7 +14,7 @@ function menu_shortcode($parm, $mode='')
 
 	if(is_array($parm)) //v2.x format allowing for parms. {MENU: path=y&count=x}
 	{
-		list($plugin,$menu) = explode("/",$parm['path'],2); 		
+		list($plugin,$menu) = explode("/",(string) $parm['path'],2); 		
 		if($menu == '')
 		{
 			$menu = $plugin;	
@@ -35,7 +35,7 @@ function menu_shortcode($parm, $mode='')
 		}
 		else // eg. {MENU=contact} for e107_plugins/contact/contact_menu.php OR {MENU=contact/other} for e107_plugins/contact/other_menu.php 
 		{
-			list($plugin,$menu) = explode("/",$path,2); 
+			list($plugin,$menu) = explode("/",(string) $path,2); 
 			
 			if($menu == '')
 			{

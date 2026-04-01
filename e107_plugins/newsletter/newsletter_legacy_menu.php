@@ -28,14 +28,14 @@ $requery = false;
 
 foreach($_POST as $key => $value)
 {
-	if(strpos($key, 'nlUnsubscribe_') === 0)
+	if(strpos((string) $key, 'nlUnsubscribe_') === 0)
 	{
 		$subid = str_replace('nlUnsubscribe_', '', $key);
 		$newsletterArray[$subid]['newsletter_subscribers'] = str_replace(chr(1).USERID, "", $newsletterArray[$subid]['newsletter_subscribers']);
 		$sql->update('newsletter', "newsletter_subscribers='".$newsletterArray[$subid]['newsletter_subscribers']."' WHERE newsletter_id='".intval($subid)."' ");
 		$requery = true;
 	}
-	elseif(strpos($key, 'nlSubscribe_') === 0)
+	elseif(strpos((string) $key, 'nlSubscribe_') === 0)
 	{
 		$subid = str_replace("nlSubscribe_", "", $key);
 		$nl_subscriber_array = $newsletterArray[$subid]['newsletter_subscribers'];
@@ -81,7 +81,7 @@ foreach($newsletterArray as $nl)
 	$tp->toHTML($nl['newsletter_text'], TRUE)."</span><br /><br />
 	";
 
-	if(preg_match("#".chr(1).USERID."(".chr(1)."|$)#si", $nl['newsletter_subscribers']))
+	if(preg_match("#".chr(1).USERID."(".chr(1)."|$)#si", (string) $nl['newsletter_subscribers']))
 	{
 		$text .= NLLAN_48."<br /><br />
 		<input class='btn btn-sm btn-primary button' type='submit' name='nlUnsubscribe_".$nl['newsletter_id']."' value='".NLLAN_51."' onclick=\"return jsconfirm(".$tp->toAttribute($tp->toJSON(NLLAN_49)).") \" />

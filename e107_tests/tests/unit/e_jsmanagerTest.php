@@ -377,7 +377,7 @@ class e_jsmanagerTest extends \Codeception\Test\Unit
 
 		foreach($tests as $var)
 		{
-			$result = (strpos($actual, $var['expected']) !== false);
+			$result = (strpos((string) $actual, $var['expected']) !== false);
 			$this->assertTrue($result, $var['expected'] . " was not found in the rendered links. Render links result:" . $actual . "\n\n");
 		}
 
@@ -431,7 +431,7 @@ class e_jsmanagerTest extends \Codeception\Test\Unit
 
 		foreach($staticTests as $var)
 		{
-			$result = (strpos($actual, $var['expected']) !== false);
+			$result = (strpos((string) $actual, $var['expected']) !== false);
 			self::assertTrue($result, $var['expected'] . " was not found in the rendered links. Render links result:" . $actual . "\n\n");
 		}
 

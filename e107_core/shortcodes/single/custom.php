@@ -5,7 +5,7 @@ function custom_shortcode($parm)
 	$tp = e107::getParser();
 	$e107 = e107::getInstance();
 
-	$custom_query = !empty($parm) ? explode('+', $parm) : array();
+	$custom_query = !empty($parm) ? explode('+', (string) $parm) : array();
 
 	if(empty($custom_query[0]))
 	{

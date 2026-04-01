@@ -95,7 +95,7 @@ if(e_QUERY)
 	define('FPW_ACTIVE','TRUE');
 
 	// Verify the password reset code syntax
-	$tmpinfo = preg_replace("#[\W_]#", "", e107::getParser()->toDB(e_QUERY, true));			// query part is a 'random' number
+	$tmpinfo = preg_replace("#[\W_]#", "", (string) e107::getParser()->toDB(e_QUERY, true));			// query part is a 'random' number
 	if ($tmpinfo != e_QUERY)
 	{
 		// Shouldn't be any characters that toDB() changes
@@ -118,7 +118,7 @@ if(e_QUERY)
 
 		$sql->delete('tmp', "tmp_time < ".time()); // cleanup table.
 
-		list($uid, $loginName, $md5) = explode(FPW_SEPARATOR, $row['tmp_info']);
+		list($uid, $loginName, $md5) = explode(FPW_SEPARATOR, (string) $row['tmp_info']);
 		$loginName = $tp->toDB($loginName, true);
 
 		// This should never happen! 

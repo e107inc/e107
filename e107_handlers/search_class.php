@@ -234,7 +234,7 @@ class e_search
 
 			$keycount = !empty($this->keywords['split']) ? count($this->keywords['split']) : 0;
 
-			if(!empty($keycount) && (strpos($query, '"') === false) && (!isset($no_exact)))
+			if(!empty($keycount) && (strpos((string) $query, '"') === false) && (!isset($no_exact)))
 			{
 				$exact_query[] = $query;
 				$this->keywords['split'] = array_merge($exact_query, $this->keywords['split']);
@@ -288,7 +288,7 @@ class e_search
 				$x = 0;
 				foreach ($search_fields as $field_key => $field)
 				{
-					$crop_fields[] = preg_replace('/(.*?)\./', '', $field);
+					$crop_fields[] = preg_replace('/(.*?)\./', '', (string) $field);
 				}
 
 				while ($row = $sql->fetch())
@@ -299,7 +299,7 @@ class e_search
 						$this -> text = $row[$field];
 						foreach ($this -> keywords['match'] as $k_key => $this -> query) 
 						{
-							if (stripos($this->text, $this->query) !== false)
+							if (stripos((string) $this->text, (string) $this->query) !== false)
 							{
 								if ($this -> keywords['exact'][$k_key] || $this -> keywords['boolean'][$k_key]) 
 								{
@@ -354,23 +354,23 @@ class e_search
 					$endcrop = FALSE;
 					$output = ''; // <!-- Start Search Block -->';
 					$title = TRUE;
-					
+
 					if(!empty($matches))
 					{
 
 						foreach ($matches as $this -> text) 
 						{
-							$this -> text = nl2br($this -> text);
+							$this -> text = nl2br((string) $this -> text);
 							$t_search = $tp->search;
 							$t_replace = $tp->replace;
 							$s_search = array('<br />', '[', ']');
 							$s_replace = array(' ', '<', '>');
 							$search = array_merge($t_search, $s_search);
 							$replace = array_merge($t_replace, $s_replace);
-							
+
 							$this -> text = strip_tags(str_replace($search, $replace, $this -> text));
-							
-							
+
+
 							if(!empty($this->keywords['match']))
 							{
 
@@ -391,12 +391,12 @@ class e_search
 											$endcrop = TRUE;
 										}
 										$key = $tp->usubstr($this -> text, $this->pos, $tp->ustrlen($this -> query));
-										$this -> text = preg_replace("#(".$boundary.$this -> query.$regex_append."#i", "<mark>\\1</mark>", $this -> text);
+										$this -> text = preg_replace("#(".$boundary.$this -> query.$regex_append."#i", "<mark>\\1</mark>", (string) $this -> text);
 									}
 								}
 							}
-							
-							
+
+
 							if($title) 
 							{
 								if ($pre_title == 0) 
@@ -411,14 +411,14 @@ class e_search
 								{
 									$pre_title_output = $pre_title;
 								}
-								
+
 								$this -> text = $this -> bullet."<h4><a class='title visit' href='".$res['link']."'>".$pre_title_output.$this -> text."</a></h4>{DETAILS}<div>".$res['pre_summary'];
 							} 
 							elseif (!$endcrop) 
 							{
 								$this -> parsesearch_crop();
 							}
-							
+
 							$output .= $this -> text;
 							$title = FALSE;
 						}
@@ -461,7 +461,7 @@ class e_search
 	{
 		global $search_chars;
 		$tp = e107::getParser();
-		if (strlen($this -> text) > $search_chars) {
+		if (strlen((string) $this -> text) > $search_chars) {
 			if ($this -> pos < ($search_chars - $tp->ustrlen($this -> query))) {
 				$this -> text = $tp->usubstr($this -> text, 0, $search_chars)."...";
 			} else if ($this -> pos > ($tp->ustrlen($this -> text) - ($search_chars - $tp->ustrlen($this -> query)))) {

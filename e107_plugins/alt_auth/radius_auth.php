@@ -51,11 +51,11 @@ class auth_login extends alt_auth_base
 		$this->copyAttribs = array();
 		$radius = $this->altAuthGetParams('radius');
 
-		$this->server = explode(',',$radius['radius_server']);
+		$this->server = explode(',',(string) $radius['radius_server']);
 		$this->port = 1812;								// Assume fixed port number for now - 1812 (UDP) is listed for servers, 1645 for authentification. (1646, 1813 for accounting)
 														// (A Microsoft app note says 1812 is the RFC2026-compliant port number. (http://support.microsoft.com/kb/230786)
 //		$this->port = 1645;
-		$this->secret = explode(',',$radius['radius_secret']);
+		$this->secret = explode(',',(string) $radius['radius_secret']);
 		if ((count($this->server) > 1)  && (count($this->secret) == 1))
 		{
 			$this->secret = array();
@@ -241,7 +241,7 @@ class auth_login extends alt_auth_base
 				default :
 					$attribs[$resa['attr']] = radius_cvt_string($resa['data']);		// Default to string type
 			}
-			printf("Got Attr: %d => %d Bytes %s\n", $resa['attr'], strlen($attribs[$resa['attr']]), $attribs[$resa['attr']]);
+			printf("Got Attr: %d => %d Bytes %s\n", $resa['attr'], strlen((string) $attribs[$resa['attr']]), $attribs[$resa['attr']]);
 		}
 
 		return AUTH_SUCCESS;

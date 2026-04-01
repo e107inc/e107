@@ -92,7 +92,7 @@ class e107MailTemplate
 	public function loadTemplateInfo($templateName, $extraFile = FALSE)
 	{
 		static $requiredFields = array ('email_overrides', 'email_header', 'email_body', 'email_footer', 'email_plainText');
-		
+
 		if (is_array($this->lastTemplateData))
 		{
 			if ($this->lastTemplateData['template_name'] == $templateName)
@@ -106,7 +106,7 @@ class e107MailTemplate
 		if (!in_array($templateName, array('textonly', 'texthtml', 'texttheme')))
 		{
 			$found = 0;		// Count number of field definitions we've found
-			
+
 			$fileList = array(THEME.'templates/email_template.php');
 			if ($extraFile)
 			{
@@ -151,7 +151,7 @@ class e107MailTemplate
 			{
 				foreach ($requiredFields as $k)
 				{
-					$override = strtoupper($k);
+					$override = strtoupper((string) $k);
 					if (!$ret[$k] && isset($$override))
 					{
 						$ret[$k] = $$override;

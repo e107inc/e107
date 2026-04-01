@@ -625,13 +625,13 @@ class usersettings_shortcodes extends e_shortcode
 			$fname = str_replace("{FIELDNAME}", $fname, $REQUIRED_FIELD);
 		}
 
-		$parms = explode("^,^", $fInfo['user_extended_struct_parms']);
+		$parms = explode("^,^", (string) $fInfo['user_extended_struct_parms']);
 
 		$fhide = "";
 
 		if(varset($parms[3]))
 		{
-			$chk = (strpos($this->var['user_hidden_fields'], "^user_" . $parm . "^") === false) ? false : true;
+			$chk = (strpos((string) $this->var['user_hidden_fields'], "^user_" . $parm . "^") === false) ? false : true;
 
 			if(isset($_POST['updatesettings']))
 			{

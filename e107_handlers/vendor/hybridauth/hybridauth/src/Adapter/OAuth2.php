@@ -429,7 +429,7 @@ abstract class OAuth2 extends AbstractAdapter implements AdapterInterface
         ) {
             $this->deleteStoredData('authorization_state');
             throw new InvalidAuthorizationStateException(
-                'The authorization state [state=' . substr(htmlentities($state), 0, 100) . '] '
+                'The authorization state [state=' . substr(htmlentities((string) $state), 0, 100) . '] '
                 . 'of this page is either invalid or has already been consumed.'
             );
         }

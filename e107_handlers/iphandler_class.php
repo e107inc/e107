@@ -497,7 +497,7 @@ class eIPHandler
 
 		foreach ($checkLists as $val)
 		{
-			if (strpos($addr, $val['ip']) === 0)	// See if our address begins with an entry - handles wildcards
+			if (strpos($addr, (string) $val['ip']) === 0)	// See if our address begins with an entry - handles wildcards
 			{	// Match found
 
 				if($this->debug)
@@ -532,7 +532,7 @@ class eIPHandler
 	 */
 	private function ip4Encode($ip, $wildCards = FALSE, $div = ':')
 	{
-		$ipa = explode('.', $ip);
+		$ipa = explode('.', (string) $ip);
 		$temp = '';
 		for ($s = 0; $s < 4; $s++)
 		{

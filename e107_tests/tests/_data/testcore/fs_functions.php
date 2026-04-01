@@ -6,7 +6,7 @@ function hilite($link,$enabled=''){
     if(!$enabled){ return FALSE; }
 
     $link = $tp->replaceConstants($link,TRUE);
-  	$tmp = explode("?",$link);
+  	$tmp = explode("?",(string) $link);
     $link_qry = (isset($tmp[1])) ? $tmp[1] : "";
     $link_slf = (isset($tmp[0])) ? $tmp[0] : "";
 	$link_pge = basename($link_slf);
@@ -22,7 +22,7 @@ function hilite($link,$enabled=''){
 // ----------- highlight overriding - set the link matching in the page itself.
 
 	if(defined("HILITE")) {
-		if(strpos($link,HILITE)) {
+		if(strpos((string) $link,(string) HILITE)) {
         	return TRUE;
 		}
 	}
@@ -37,11 +37,11 @@ function hilite($link,$enabled=''){
 	}
 
 // --------------- highlighting for plugins. ----------------
-		if(stristr($link, $PLUGINS_DIRECTORY) !== FALSE && stristr($link, "custompages") === FALSE){
+		if(stristr((string) $link, (string) $PLUGINS_DIRECTORY) !== FALSE && stristr((string) $link, "custompages") === FALSE){
 
 			if($link_qry)
 			{  // plugin links with queries
-                $subq = explode("?",$link);
+                $subq = explode("?",(string) $link);
 				if(strpos(e_SELF,$subq[0]) && e_QUERY == $subq[1]){
 			   		return TRUE;
 				}else{
@@ -60,10 +60,10 @@ function hilite($link,$enabled=''){
 
 // --------------- highlight for news items.----------------
 // eg. news.php, news.php?list.1 or news.php?cat.2 etc
-	if(substr(basename($link),0,8) == "news.php")
+	if(substr(basename((string) $link),0,8) == "news.php")
 	{
 
-		if (strpos($link, "news.php?") !== FALSE && strpos(e_SELF,"/news.php")!==FALSE) {
+		if (strpos((string) $link, "news.php?") !== FALSE && strpos(e_SELF,"/news.php")!==FALSE) {
 
 			$lnk = explode(".",$link_qry); // link queries.
 			$qry = explode(".",e_QUERY); // current page queries.
@@ -100,7 +100,7 @@ function hilite($link,$enabled=''){
 // --------------- highlight for Custom Pages.----------------
 // eg. page.php?1
 
-		if (strpos($link, "page.php?") !== FALSE && strpos(e_SELF,"/page.php")) {
+		if (strpos((string) $link, "page.php?") !== FALSE && strpos(e_SELF,"/page.php")) {
             list($custom,$page) = explode(".",$link_qry);
 			list($q_custom,$q_page) = explode(".",e_QUERY);
 			if($custom == $q_custom){
@@ -111,7 +111,7 @@ function hilite($link,$enabled=''){
 		}
 
 // --------------- highlight default ----------------
-		if(strpos($link, "?") !== FALSE){
+		if(strpos((string) $link, "?") !== FALSE){
 
 			$thelink = str_replace("../", "", $link);
 			if((strpos(e_SELF,$thelink) !== false) && (strpos(e_QUERY,$link_qry) !== false)){
@@ -122,11 +122,11 @@ function hilite($link,$enabled=''){
 		  	return true;
 		}
 
-   		if((!$link_qry && !e_QUERY) && (strpos(e_SELF,$link) !== FALSE)){
+   		if((!$link_qry && !e_QUERY) && (strpos(e_SELF,(string) $link) !== FALSE)){
 			return TRUE;
 		}
 
-		if(($link_slf == e_SELF && !link_qry) || (e_QUERY && strpos(e_SELF."?".e_QUERY,$link)!== FALSE) ){
+		if(($link_slf == e_SELF && !link_qry) || (e_QUERY && strpos(e_SELF."?".e_QUERY,(string) $link)!== FALSE) ){
           	return TRUE;
 		}
 
@@ -137,7 +137,7 @@ function hilite($link,$enabled=''){
 function adnav_cat($cat_title, $cat_link, $cat_id=FALSE, $cat_open=FALSE) {
 	global $tp;
 
-	$cat_link = (strpos($cat_link, '://') === FALSE && strpos($cat_link, 'mailto:') !== 0 ? e_HTTP.$cat_link : $cat_link);
+	$cat_link = (strpos((string) $cat_link, '://') === FALSE && strpos((string) $cat_link, 'mailto:') !== 0 ? e_HTTP.$cat_link : $cat_link);
 	
 	if ($cat_open == 4 || $cat_open == 5){
 		$dimen = ($cat_open == 4) ? "600,400" : "800,600";
@@ -166,8 +166,8 @@ function render_sub($linklist, $id) {
 	foreach ($linklist['sub_'.$id] as $sub) {
 	
 		// Filter title for backwards compatibility ---->
-		if(substr($sub['link_name'],0,8) == "submenu.") {
-			$tmp = explode(".",$sub['link_name']);
+		if(substr((string) $sub['link_name'],0,8) == "submenu.") {
+			$tmp = explode(".",(string) $sub['link_name']);
 			$subname = $tmp[2];
 		} else {
 			$subname = $sub['link_name'];
@@ -214,7 +214,7 @@ function render_sub($linklist, $id) {
 function adnav_main($cat_title, $cat_link, $cat_id=FALSE, $cat_open=FALSE) {
 	global $tp;
 	
-	$cat_link = (strpos($cat_link, '://') === FALSE) ? e_HTTP.$cat_link : $cat_link;
+	$cat_link = (strpos((string) $cat_link, '://') === FALSE) ? e_HTTP.$cat_link : $cat_link;
 	$cat_link = $tp->replaceConstants($cat_link,TRUE);
 
 	if ($cat_open == 4 || $cat_open == 5){

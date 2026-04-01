@@ -225,7 +225,7 @@ class e107_db_debug
 			$sql = e107::getDb($rli);
 
 			// Explain the query, if possible...
-			list($qtype, $args) = explode(" ", ltrim($query), 2);
+			list($qtype, $args) = explode(" ", ltrim((string) $query), 2);
 
 			unset($args);
 			$nFields = 0;
@@ -432,7 +432,7 @@ class e107_db_debug
 					$text .= $cQuery['explain'];
 				}
 
-				if(strlen($cQuery['error']))
+				if(strlen((string) $cQuery['error']))
 				{
 					$text .= "<tr><td  ><b>Error in query:</b></td></tr>\n<tr><td>" . $cQuery['error'] . "</td></tr>\n";
 				}
@@ -507,7 +507,7 @@ class e107_db_debug
 
 			foreach($this->aTimeMarks as $item)
 			{
-				$item['What'] = str_pad($item['What'], 50, " ", STR_PAD_RIGHT);
+				$item['What'] = str_pad((string) $item['What'], 50, " ", STR_PAD_RIGHT);
 				$text .= implode("\t\t\t", $item) . "\n";
 			}
 
@@ -913,7 +913,7 @@ class e107_db_debug
 
 			foreach($prefix as $c)
 			{
-				if(strpos($value, $c) === 0)
+				if(strpos((string) $value, $c) === 0)
 				{
 					return true;
 				}

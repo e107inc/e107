@@ -236,9 +236,9 @@ class e107Email extends PHPMailer
 			}
 		}
 
-		if(strpos($overrides['smtp_server'],':')!== false)
+		if(strpos((string) $overrides['smtp_server'],':')!== false)
 		{
-			list($smtpServer,$smtpPort) = explode(":", $overrides['smtp_server']);
+			list($smtpServer,$smtpPort) = explode(":", (string) $overrides['smtp_server']);
 			$overrides['smtp_server'] = $smtpServer;
 		}
 		else
@@ -251,7 +251,7 @@ class e107Email extends PHPMailer
 		$this->pause_time =  varset($pref['mail_pausetime'], 1);
 		$this->allow_html = varset($pref['mail_sendstyle'],'textonly') == 'texthtml' ? true : 1;
 
-		if (vartrue($pref['mail_options'])) $this->general_opts = explode(',',$pref['mail_options'],'');
+		if (vartrue($pref['mail_options'])) $this->general_opts = explode(',',(string) $pref['mail_options'],'');
 		
 		if ($this->debug)
 		{
@@ -260,7 +260,7 @@ class e107Email extends PHPMailer
 		
 		foreach ($this->general_opts as $k => $v) 
 		{
-			$v = trim($v);
+			$v = trim((string) $v);
 			$this->general_opts[$k] = $v;
 			if (strpos($v,'hostname') === 0)
 			{
@@ -270,13 +270,13 @@ class e107Email extends PHPMailer
 			}
 		}
 
-		list($this->logEnable,$this->add_email) = explode(',',varset($pref['mail_log_options'],'0,0'));
+		list($this->logEnable,$this->add_email) = explode(',',(string) varset($pref['mail_log_options'],'0,0'));
 
 		switch ($overrides['mailer'])
 		{
 			case 'smtp' :
 				$smtp_options = array();
-				$temp_opts = explode(',',varset($pref['smtp_options'],''));
+				$temp_opts = explode(',',(string) varset($pref['smtp_options'],''));
 				if (vartrue($overrides ['smtp_pop3auth'])) $temp_opts[] = 'pop3auth';		// Legacy option - remove later
 				if (vartrue($pref['smtp_keepalive'])) $temp_opts[] = 'keepalive';	// Legacy option - remove later
 				foreach ($temp_opts as $k=>$v) 
@@ -630,22 +630,22 @@ class e107Email extends PHPMailer
 			//  !preg_match('/<(table|div|font|br|a|img|b)/i', $message)
 			if ($this->legacyBody && e107::getParser()->isHtml($message) != true) // Assume html if it includes one of these tags
 			{	// Otherwise assume its a plain text message which needs some conversion to render in HTML
-			
+
 				if($this->debug == true)
 				{
 					echo 'Running legacyBody mode<br />';	
 				}
-			
+
 				$message = htmlspecialchars($message,ENT_QUOTES,$this->CharSet);
 				$message = preg_replace('%(http|ftp|https)(://\S+)%', '<a href="\1\2">\1\2</a>', $message);
-				$message = preg_replace('/([[:space:]()[{}])(www.[-a-zA-Z0-9@:%_\+.~#?&\/=]+)/i', '\\1<a href="http://\\2">\\2</a>', $message);
-				$message = preg_replace('/([_\.0-9a-z-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,3})/i', '<a href="mailto:\\1">\\1</a>', $message);
+				$message = preg_replace('/([[:space:]()[{}])(www.[-a-zA-Z0-9@:%_\+.~#?&\/=]+)/i', '\\1<a href="http://\\2">\\2</a>', (string) $message);
+				$message = preg_replace('/([_\.0-9a-z-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,3})/i', '<a href="mailto:\\1">\\1</a>', (string) $message);
 				$message = str_replace("\r\n","\n",$message);		// Handle alternative newline characters
 				$message = str_replace("\n\r","\n",$message);		// Handle alternative newline characters
 				$message = str_replace("\r","\n",$message);			// Handle alternative newline characters
 				$message = str_replace("\n", "<br />\n", $message);
 			}
-			
+
 
 			$this->MsgHTML($message);		// Theoretically this should do everything, including handling of inline images.
 
@@ -664,7 +664,7 @@ class e107Email extends PHPMailer
 
 			$text = str_replace('<br />', "\n", $text);
 			$text = strip_tags(str_replace('<br>', "\n", $text));
-			
+
 			// TODO: strip bbcodes here
 
 			$this->Body = $text;
@@ -691,7 +691,7 @@ class e107Email extends PHPMailer
 
 		foreach($attachments as $attach)
 		{
-			$tempName = basename($attach);
+			$tempName = basename((string) $attach);
 			if(is_readable($attach) && $tempName) // First parameter is complete path + filename; second parameter is 'name' of file to send
 			{	
 				if($this->previewMode === true)
@@ -812,11 +812,11 @@ class e107Email extends PHPMailer
 
 		$mediaParms = array();
 
-		if(strpos($eml['templateHTML']['body'], '{MEDIA') !==false )
+		if(strpos((string) $eml['templateHTML']['body'], '{MEDIA') !==false )
 		{
 			// check for media sizing.
 
-			if(preg_match_all('/\{MEDIA([\d]): w=([\d]*)\}/', $eml['templateHTML']['body'], $match))
+			if(preg_match_all('/\{MEDIA([\d]): w=([\d]*)\}/', (string) $eml['templateHTML']['body'], $match))
 			{
 
 				foreach($match[1] as $k=>$num)
@@ -890,18 +890,18 @@ class e107Email extends PHPMailer
 	{
 		$tp = e107::getParser();
 		$tmpl = null;
-		
+
 		// Cleanup legacy key names. ie. remove 'email_' prefix. 		
 		foreach($eml as $k=>$v)
 		{
-			if(substr($k,0,6) == 'email_')
+			if(substr((string) $k,0,6) == 'email_')
 			{
-				$nkey = substr($k,6);
+				$nkey = substr((string) $k,6);
 				$eml[$nkey] = $v;	
 				unset($eml[$k]);
 			}		
 		}
-		
+
 
 
 		if(!empty($eml['template'])) // @see e107_core/templates/email_template.php
@@ -933,11 +933,11 @@ class e107Email extends PHPMailer
 					$eml['shortcodes']['_WRAPPER_'] = 'email/'.$eml['template'];
 				}
 				$emailBody = varset($tmpl['header']). str_replace('{BODY}', $eml['body'], $tmpl['body']) . varset($tmpl['footer']);
-				
+
 				$eml['body'] = $tp->parseTemplate($emailBody, true, $eml['shortcodes']);
-				
+
 			//	$eml['body'] = ($tp->toEmail($tmpl['header']). str_replace('{BODY}', $eml['body'], $tmpl['body']). $tp->toEmail($tmpl['footer']));
-				
+
 				if($this->debug)
 				{
 				//	echo "<h4>e107Email::arraySet() - line ".__LINE__."</h4>";
@@ -946,9 +946,9 @@ class e107Email extends PHPMailer
 					var_dump($this->Subject);
 				//	print_a($tmpl);
 				}
-				
+
 				unset($eml['add_html_header']); // disable other headers when template is used. 
-				
+
 				$this->Subject = $tp->parseTemplate(varset($tmpl['subject'],'{SUBJECT}'), true, varset($eml['shortcodes'],null));
 
 				if($this->debug)
@@ -963,11 +963,11 @@ class e107Email extends PHPMailer
 					echo "<h4>Couldn't find email template: ".print_r($eml['template'],true)."</h4>";
 				}
 			//	$emailBody = $eml['body'];
-				
+
 				if (vartrue($eml['subject'])) $this->Subject = $tp->parseTemplate($eml['subject'], true, varset($eml['shortcodes'],null)); 	
 				e107::getMessage()->addDebug("Couldn't find email template: ".$eml['template']);	
 			}
-			
+
 		}
 		else
 		{
@@ -1022,7 +1022,7 @@ class e107Email extends PHPMailer
 			$this->Sender = $eml['bouncepath'];				// Bounce path
 			$this->save_bouncepath = $eml['bouncepath'];		// Bounce path
 		}
-			
+
 		if (!empty($eml['extra_header'])) 
 		{
 			if (is_array($eml['extra_header']))
@@ -1110,10 +1110,10 @@ class e107Email extends PHPMailer
 
 		}
 
-		if (($bulkmail == true) && $this->localUseVerp && $this->save_bouncepath && (strpos($this->save_bouncepath,'@') !== false))
+		if (($bulkmail == true) && $this->localUseVerp && $this->save_bouncepath && (strpos((string) $this->save_bouncepath,'@') !== false))
 		{
 			// Format where sender is owner@origin, target is user@domain is: owner+user=domain@origin
-			list($our_sender,$our_domain) = explode('@', $this->save_bouncepath,2);
+			list($our_sender,$our_domain) = explode('@', (string) $this->save_bouncepath,2);
 			if ($our_sender && $our_domain)
 			{
 				$this->Sender = $our_sender.'+'.str_replace($send_to,'@','=').'@'.$our_domain; 
@@ -1268,7 +1268,7 @@ class e107Email extends PHPMailer
 
 		$message = $tp->toEmail($message, false, 'rawtext');
 
-		preg_match_all("/(src|background)=([\"\'])(.*)\\2/Ui", $message, $images);			// Modified to accept single quotes as well
+		preg_match_all("/(src|background)=([\"\'])(.*)\\2/Ui", (string) $message, $images);			// Modified to accept single quotes as well
 		if(isset($images[3]) && ($this->previewMode === false)) 
 		{
 			
@@ -1342,7 +1342,7 @@ class e107Email extends PHPMailer
 					try
 					{
 						$this->addEmbeddedImage($basedir.$directory.$filename, md5($filename), $filename, 'base64',$mimeType);
-						$message = preg_replace("/".$images[1][$i]."=".$delim.preg_quote($images[3][$i], '/').$delim."/Ui", $images[1][$i]."=".$delim.$cid.$delim, $message);
+						$message = preg_replace("/".$images[1][$i]."=".$delim.preg_quote($images[3][$i], '/').$delim."/Ui", $images[1][$i]."=".$delim.$cid.$delim, (string) $message);
 					}
 					catch (Exception $e)
 					{

@@ -203,7 +203,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		}
 		elseif($this->var['action'] == 'quote')
 		{
-			$post = preg_replace('#\[hide].*?\[/hide]#s', '', trim($this->var['post_entry']));
+			$post = preg_replace('#\[hide].*?\[/hide]#s', '', trim((string) $this->var['post_entry']));
 			$quoteName = ($this->var['user_name'] ? $this->var['user_name'] : $this->var['post_user_anon']);
 			$text = $tp->toText("[quote={$quoteName}]\n".$post."\n[/quote]\n",true);
 			$text .= "\n\n";
@@ -374,10 +374,10 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		$text = "
 		<ul class='nav nav-tabs'>
 		<li class='active'><a href='#type' data-toggle='tab' data-bs-toggle='tab'>".LAN_FORUM_3025."</a></li>";
-		
+
 		$text .= ($poll) ? "<li><a href='#poll' data-toggle='tab' data-bs-toggle='tab'>".LAN_FORUM_1016."</a></li>\n" : "";
 		$text .= ($attach) ? "<li><a href='#attach' data-toggle='tab' data-bs-toggle='tab'>".LAN_FORUM_3012."</a></li>\n" : "";
-		
+
 		$text .= "
 		</ul>
 				<div class='tab-content text-left'>
@@ -390,15 +390,15 @@ class plugin_forum_post_shortcodes extends e_shortcode
 						</div>
 					</div>
 				";
-				
+
 		if($poll)
 		{
 			$text .= "<div class='tab-pane' id='poll'>
 						".$poll."
 					</div>";	
-			
+
 		}
-					
+
 		if($attach)
 		{
 			$text .= "
@@ -406,11 +406,11 @@ class plugin_forum_post_shortcodes extends e_shortcode
 						".$attach."
 					</div>";	
 		}			
-										
+
 		$text .= "			
 		</div>";
-		
-			
+
+
 		return $text;*/
 		
 		

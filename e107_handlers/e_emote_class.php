@@ -37,13 +37,13 @@ class e_emote
 		foreach($this->emotes as $key => $value)
 		{
 
-			$value = trim($value);
+			$value = trim((string) $value);
 
 			if($value)
 			{    // Only 'activate' emote if there's a substitution string set
 
 
-				$key = preg_replace("#!(\w{3,}?)$#si", ".\\1", $key);
+				$key = preg_replace("#!(\w{3,}?)$#si", ".\\1", (string) $key);
 				// Next two probably to sort out legacy issues - may not be required any more
 				//	$key = preg_replace("#_(\w{3})$#", ".\\1", $key);
 
@@ -113,7 +113,7 @@ class e_emote
 			return '';
 		}
 
-		if(!empty($this->singleSearch) && (strlen($text) < 12) && in_array($text, $this->singleSearch)) // just one emoticon with no space, line-break or html tags around it.
+		if(!empty($this->singleSearch) && (strlen((string) $text) < 12) && in_array($text, $this->singleSearch)) // just one emoticon with no space, line-break or html tags around it.
 		{
 			return str_replace($this->singleSearch, $this->singleReplace, $text);
 		}

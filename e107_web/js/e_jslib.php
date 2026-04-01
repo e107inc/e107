@@ -17,7 +17,7 @@
 error_reporting(0);
 
 //admin or front-end call
-if (strpos($_SERVER['QUERY_STRING'], '_admin') !== FALSE)
+if (strpos((string) $_SERVER['QUERY_STRING'], '_admin') !== FALSE)
 {
 	define('ADMIN_AREA', true); //force admin area
 }
@@ -26,7 +26,7 @@ else
 	define('USER_AREA', true); //force user area
 }
 // no-browser-cache check
-if (strpos($_SERVER['QUERY_STRING'], '_nobcache') !== FALSE)
+if (strpos((string) $_SERVER['QUERY_STRING'], '_nobcache') !== FALSE)
 {
 	define('e_NOCACHE', true); //force no browser cache
 }
@@ -36,7 +36,7 @@ else
 }
 
 // no-server-cache check
-if (strpos($_SERVER['QUERY_STRING'], '_nocache') !== FALSE)
+if (strpos((string) $_SERVER['QUERY_STRING'], '_nocache') !== FALSE)
 {
 	define('e_NOSCACHE', true); //force no system cache
 }
@@ -176,7 +176,7 @@ function e_jslib_is_cache($encoding)
 function e_jslib_browser_enc()
 {
 	//NEW - option to disable completely gzip compression
-	if(strpos($_SERVER['QUERY_STRING'], '_nogzip') !== false)
+	if(strpos((string) $_SERVER['QUERY_STRING'], '_nogzip') !== false)
 	{
 		return '';
 	}
@@ -185,11 +185,11 @@ function e_jslib_browser_enc()
 	{
 		$encoding = '';
 	}
-	elseif (strpos($_SERVER["HTTP_ACCEPT_ENCODING"], 'x-gzip') !== false)
+	elseif (strpos((string) $_SERVER["HTTP_ACCEPT_ENCODING"], 'x-gzip') !== false)
 	{
 		$encoding = 'x-gzip';
 	}
-	elseif (strpos($_SERVER["HTTP_ACCEPT_ENCODING"], 'gzip') !== false)
+	elseif (strpos((string) $_SERVER["HTTP_ACCEPT_ENCODING"], 'gzip') !== false)
 	{
 		$encoding = 'gzip';
 	}

@@ -271,7 +271,7 @@ function array_diff_recursive($array1, $array2)
  */
 function array_stripslashes($data)
 {
-	return is_array($data) ? array_map('array_stripslashes', $data) : stripslashes($data);
+	return is_array($data) ? array_map('array_stripslashes', $data) : stripslashes((string) $data);
 }
 
 /**
@@ -284,11 +284,11 @@ function echo_gzipped_page()
 	{
         $encoding = false;
     }
-	elseif( strpos($_SERVER["HTTP_ACCEPT_ENCODING"], 'x-gzip') !== false )
+	elseif( strpos((string) $_SERVER["HTTP_ACCEPT_ENCODING"], 'x-gzip') !== false )
 	{
         $encoding = 'x-gzip';
     }
-	elseif( strpos($_SERVER["HTTP_ACCEPT_ENCODING"],'gzip') !== false )
+	elseif( strpos((string) $_SERVER["HTTP_ACCEPT_ENCODING"],'gzip') !== false )
 	{
         $encoding = 'gzip';
     }
@@ -464,7 +464,7 @@ if (!function_exists('r_emote'))
 			$key = preg_replace("#_(\w{3})$#", ".\\1", $key);	// '_' followed by exactly 3 chars is file extension
 			$key = e_IMAGE_ABS."emotes/" . $pack . "/" .$key;		// Add in the file path
 	
-			$value2 = substr($value, 0, strpos($value, " "));
+			$value2 = substr((string) $value, 0, strpos((string) $value, " "));
 			$value = ($value2 ? $value2 : $value);
 			$value = ($value === '&|') ? ':((' : $value;
 			$value = " ".$value." ";
@@ -510,7 +510,7 @@ if (!function_exists('multiarray_sort'))
     {
         if(!is_array($array)) return $array;
 
-        $order = strtolower($order);
+        $order = strtolower((string) $order);
         foreach ($array as $i => $arr)
         {
            $sort_values[$i] = varset($arr[$key]);
@@ -615,7 +615,7 @@ class e_array {
 
 		// below is var_export() format using eval();
 
-        $ArrayData = trim($ArrayData);
+        $ArrayData = trim((string) $ArrayData);
 
         if(strpos($ArrayData, "\$data = ") === 0) // Fix for buggy old value.
 		{

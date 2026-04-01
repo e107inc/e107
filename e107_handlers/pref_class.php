@@ -1234,7 +1234,7 @@ class prefs
 				break;
 			}
 		}
-		$val = addslashes($val);
+		$val = addslashes((string) $val);
 
 		switch ($table )
 		{
@@ -1273,7 +1273,7 @@ class prefs
 	{
 		$tp = e107::getParser();
 
-		if (!strlen($name))
+		if (!strlen((string) $name))
 		{
 			switch ($table)
 			{

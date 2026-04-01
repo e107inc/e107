@@ -194,16 +194,16 @@ class TagCloud
     if ($this->options['transformation']) {
       switch ($this->options['transformation']) {
         case 'upper':
-          $string = $this->options['transliterate'] ? strtoupper($string) : mb_convert_case($string, MB_CASE_UPPER, "UTF-8");
+          $string = $this->options['transliterate'] ? strtoupper((string) $string) : mb_convert_case((string) $string, MB_CASE_UPPER, "UTF-8");
           break;
         default:
-          $string = $this->options['transliterate'] ? strtolower($string) : mb_convert_case($string, MB_CASE_LOWER, "UTF-8");
+          $string = $this->options['transliterate'] ? strtolower((string) $string) : mb_convert_case((string) $string, MB_CASE_LOWER, "UTF-8");
       }
     }
     if ($this->options['trim']) {
-      $string = trim($string);
+      $string = trim((string) $string);
     }
-    return preg_replace('/[^\w ]/u', '', strip_tags($string));
+    return preg_replace('/[^\w ]/u', '', strip_tags((string) $string));
   }
 
   /**
@@ -416,7 +416,7 @@ class TagCloud
     if (empty($this->orderBy)) {
       $this->shuffle();
     } else {
-      $orderDirection = strtolower($this->orderBy['direction']) == 'desc' ? 'SORT_DESC' : 'SORT_ASC';
+      $orderDirection = strtolower((string) $this->orderBy['direction']) == 'desc' ? 'SORT_DESC' : 'SORT_ASC';
       $this->tagsArray = $this->order(
         $this->tagsArray,
         $this->orderBy['field'],
@@ -552,7 +552,7 @@ class TagCloud
       $i = 0;
       $_tagsArray = array();
       foreach ($this->tagsArray as $key => $value) {
-        if (strlen($value['tag']) >= $limit) {
+        if (strlen((string) $value['tag']) >= $limit) {
           $_tagsArray[$value['tag']] = $value;
         }
         $i++;

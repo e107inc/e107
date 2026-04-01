@@ -8,7 +8,7 @@
  * 
  * Chatbox e_search addon 
  */
- 
+
 
 if (!defined('e107_INIT')) { exit; }
 
@@ -17,7 +17,7 @@ if (!defined('e107_INIT')) { exit; }
 
 class chatbox_menu_search extends e_search // include plugin-folder in the name.
 {
-		
+
 	function config()
 	{	
 		$search = array(
@@ -28,10 +28,10 @@ class chatbox_menu_search extends e_search // include plugin-folder in the name.
 								'date'	=> array('type'	=> 'date', 		'text' => LAN_DATE_POSTED),
 								'author'=> array('type'	=> 'author',	'text' => LAN_SEARCH_61)
 							),
-							
+
 			'return_fields'	=> array('cb_id', 'cb_nick', 'cb_message', 'cb_datestamp'), 
 			'search_fields'	=> array('cb_nick' => '1', 'cb_message' => '1'), // fields and weights. 
-			
+
 			'order'			=> array('cb_datestamp' => 'DESC'),
 			'refpage'		=> 'chat.php'
 		);
@@ -47,10 +47,10 @@ class chatbox_menu_search extends e_search // include plugin-folder in the name.
 	{
 		$tp = e107::getParser();
 
-		preg_match("/([0-9]+)\.(.*)/", $row['cb_nick'], $user);
+		preg_match("/([0-9]+)\.(.*)/", (string) $row['cb_nick'], $user);
 
 		$res = array();
-	
+
 		$res['link'] 		= e_PLUGIN."chatbox_menu/chat.php?".$row['cb_id'].".fs";
 		$res['pre_title'] 	= LAN_SEARCH_7;
 		$res['title'] 		= $user[2];
@@ -58,7 +58,7 @@ class chatbox_menu_search extends e_search // include plugin-folder in the name.
 		$res['detail'] 		= $tp->toDate($row['cb_datestamp'], "long");
 
 		return $res;
-		
+
 	}
 
 
@@ -72,7 +72,7 @@ class chatbox_menu_search extends e_search // include plugin-folder in the name.
 		$tp = e107::getParser();
 
 		$qry = "";
-		
+
 		if (vartrue($parm['time']) && is_numeric($parm['time'])) 
 		{
 			$qry .= " cb_datestamp ".($parm['on'] == 'new' ? '>=' : '<=')." '".(time() - $parm['time'])."' AND";
@@ -82,10 +82,10 @@ class chatbox_menu_search extends e_search // include plugin-folder in the name.
 		{
 			$qry .= " cb_nick LIKE '%".$tp -> toDB($parm['author'])."%' AND";
 		}
-		
+
 		return $qry;
 	}
-	
+
 
 }
 

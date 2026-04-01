@@ -56,7 +56,7 @@ if (!empty($_POST['ban_types']))
 	$spacer = '';
 	foreach($_POST['ban_types'] as $b)
 	{
-		$b = trim($b);
+		$b = trim((string) $b);
 		if (is_numeric($b) && in_array($b, $validBanTypes))
 		{
 			$type_list .= $spacer.($b);
@@ -124,7 +124,7 @@ function do_export($filename, $type_list='',$format_array=array(), $sep = ',', $
 
 		//Secure https check
 		if (isset($_SERVER['HTTP_USER_AGENT']) && $_SERVER['HTTP_USER_AGENT']=='contype') header('Pragma: public');
-		if (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'],'MSIE'))
+		if (isset($_SERVER['HTTP_USER_AGENT']) && strpos((string) $_SERVER['HTTP_USER_AGENT'],'MSIE'))
 			header('Content-Type: application/force-download');
 		else
 			header('Content-Type: application/octet-stream');

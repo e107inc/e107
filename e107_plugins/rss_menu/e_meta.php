@@ -23,7 +23,7 @@ if(USER_AREA && e107::getDb()->select("rss", "*", "rss_class='0' AND rss_limit>0
 
 	while($row = $sql->fetch())
 	{
-		if(strpos($row['rss_url'], "*") === false) // Wildcard topic_id's should not be listed
+		if(strpos((string) $row['rss_url'], "*") === false) // Wildcard topic_id's should not be listed
 		{
 			$name = $tp->toHTML($row['rss_name'], TRUE, 'no_hook, emotes_off');
 			$title = htmlspecialchars(SITENAME, ENT_QUOTES, 'utf-8')." ".htmlspecialchars($name, ENT_QUOTES, 'utf-8');

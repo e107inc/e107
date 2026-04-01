@@ -233,7 +233,7 @@ class online_shortcodes extends e_shortcode
 
 					$pinfo = $row['user_location'];
 
-					$online_location_page = str_replace('.php', '', substr(strrchr($pinfo, '/'), 1));
+					$online_location_page = str_replace('.php', '', substr(strrchr((string) $pinfo, '/'), 1));
 					if ($pinfo == 'log.php' || $pinfo == 'error.php')
 					{
 						$pinfo = 'news.php';

@@ -32,7 +32,7 @@ function com_search_2($row)
 	$res['pre_title'] = !empty($row['download_name']) ? defset('LAN_SEARCH_70') . ": " : "";
 	$res['title'] = !empty($row['download_name']) ? $row['download_name'] : defset('LAN_SEARCH_9');
 	$res['summary'] = $row['comment_comment'];
-	preg_match("/([0-9]+)\.(.*)/", $row['comment_author'], $user);
+	preg_match("/([0-9]+)\.(.*)/", (string) $row['comment_author'], $user);
 	$res['detail'] = defset('LAN_SEARCH_7') . "<a href='user.php?id." . $user[1] . "'>" . $user[2] . "</a>" . defset('LAN_SEARCH_8') . $datestamp;
 
 	return $res;

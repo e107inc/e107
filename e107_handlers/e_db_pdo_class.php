@@ -338,7 +338,7 @@ class e_db_pdo implements e_db
 		{
 			$this->dbg->log($query);
 		}
-		if ($debug !== false || strpos($_SERVER['QUERY_STRING'], 'showsql') !== false)
+		if ($debug !== false || strpos((string) $_SERVER['QUERY_STRING'], 'showsql') !== false)
 		{
 			$debugQry = is_array($query) ? print_a($query,true) : $query;
 			$queryinfo[] = "<b>{$qry_from}</b>: ".$debugQry;
@@ -1561,7 +1561,7 @@ class e_db_pdo implements e_db
 		}
 		elseif ($this->mySQLresult === TRUE)
 		{	// Successful query which may return a row count (because it operated on a number of rows without returning a result set)
-			if(preg_match('#^(DELETE|INSERT|REPLACE|UPDATE)#',$query, $matches))
+			if(preg_match('#^(DELETE|INSERT|REPLACE|UPDATE)#',(string) $query, $matches))
 			{
 				/** @var PDOStatement $resource */
 				$resource = $this->mySQLresult;
@@ -1593,7 +1593,7 @@ class e_db_pdo implements e_db
 			$this->tabset = true;
 		}
 
-		return " ".$this->mySQLPrefix.$table.substr($matches[0],-1);
+		return " ".$this->mySQLPrefix.$table.substr((string) $matches[0],-1);
 	}
 
 
@@ -1643,9 +1643,9 @@ class e_db_pdo implements e_db
 			foreach($this->mySQLtableList as $tab)
 			{
 
- 				if(strpos($tab,"lan_") === 0)
+ 				if(strpos((string) $tab,"lan_") === 0)
 				{
-					list($tmp,$lng,$tableName) = explode("_",$tab,3);
+					list($tmp,$lng,$tableName) = explode("_",(string) $tab,3);
 
                     foreach($table as $t)
 					{
@@ -1869,7 +1869,7 @@ class e_db_pdo implements e_db
 
       	foreach($tmp as $val)
 		{
-   			if(strpos($val,$this->mySQLPrefix) !== false) // search for table names references using the mprefix
+   			if(strpos($val,(string) $this->mySQLPrefix) !== false) // search for table names references using the mprefix
 			{
     			$table[] = str_replace(array($this->mySQLPrefix,"`"),"", $val);
 				$search[] = str_replace("`","",$val);
@@ -2206,9 +2206,9 @@ class e_db_pdo implements e_db
 		$database = !empty($this->mySQLdefaultdb) ? "FROM  `".$this->mySQLdefaultdb."`" : "";
 		$prefix = $this->mySQLPrefix;
 
-		if(strpos($prefix, ".") !== false) // eg. `my_database`.$prefix
+		if(strpos((string) $prefix, ".") !== false) // eg. `my_database`.$prefix
 		{
-			$tmp = explode(".",$prefix);
+			$tmp = explode(".",(string) $prefix);
 			$prefix = $tmp[1];
 		}
 
@@ -2217,7 +2217,7 @@ class e_db_pdo implements e_db
 			if(!isset($this->mySQLtableListLanguage[$language]))
 			{
 				$table = array();
-				if($res = $this->db_Query("SHOW TABLES ".$database." LIKE '".$prefix."lan_".strtolower($language)."%' "))
+				if($res = $this->db_Query("SHOW TABLES ".$database." LIKE '".$prefix."lan_".strtolower((string) $language)."%' "))
 				{
 					while($rows = $this->fetch('num'))
 					{
@@ -2239,10 +2239,10 @@ class e_db_pdo implements e_db
 
 			if($res = $this->db_Query("SHOW TABLES ".$database." LIKE '".$prefix."%' "))
 			{
-				$length = strlen($prefix);
+				$length = strlen((string) $prefix);
 				while($rows = $this->fetch('num'))
 				{
-					$table[] = substr($rows[0],$length);
+					$table[] = substr((string) $rows[0],$length);
 				}
 			}
 			return $table;
@@ -2284,7 +2284,7 @@ class e_db_pdo implements e_db
 			$ret = array();
 			foreach($this->mySQLtableList as $table)
 			{
-				if(substr($table,-4) != '_log' && $table != 'download_requests')
+				if(substr((string) $table,-4) != '_log' && $table != 'download_requests')
 				{
 					$ret[] = $table;
 				}
@@ -2307,7 +2307,7 @@ class e_db_pdo implements e_db
 
 			foreach($this->mySQLtableList as $tab)
 			{
-				if(strpos($tab,'lan_') === 0)
+				if(strpos((string) $tab,'lan_') === 0)
 				{
 					$lan[] = $tab;
 				}
@@ -2413,7 +2413,7 @@ class e_db_pdo implements e_db
 			$row = $this->fetch('num');
 			$qry = $row[1];
 			//        $qry = str_replace($old, $new, $qry);
-			$qry = preg_replace("#CREATE\sTABLE\s`?".$old."`?\s#", "CREATE TABLE {$new} ", $qry, 1); // More selective search
+			$qry = preg_replace("#CREATE\sTABLE\s`?".$old."`?\s#", "CREATE TABLE {$new} ", (string) $qry, 1); // More selective search
 		}
 		else
 		{
@@ -2463,7 +2463,7 @@ class e_db_pdo implements e_db
 
 	//	$dbtable 		= $this->mySQLdefaultdb;
 		$fileName		= ($table =='*') ? str_replace(" ","_",SITENAME) : $table;
-		$fileName	 	= preg_replace('/[\W]/',"",$fileName);
+		$fileName	 	= preg_replace('/[\W]/',"",(string) $fileName);
 
 		$backupFile 	= ($file) ? e_BACKUP.$file  :  e_BACKUP.strtolower($fileName)."_".$this->mySQLPrefix.date("Y-m-d-H-i-s").".sql";
 
@@ -2474,7 +2474,7 @@ class e_db_pdo implements e_db
 		}
 		else
 		{
-			$tableList 	= explode(",",$table);
+			$tableList 	= explode(",",(string) $table);
 		}
 
 		if(!empty($options['gzip']))
@@ -2505,7 +2505,7 @@ class e_db_pdo implements e_db
 
         foreach($tableList as $tab)
         {
-            $dumpSettings['include-tables'][] = $this->mySQLPrefix.trim($tab);
+            $dumpSettings['include-tables'][] = $this->mySQLPrefix.trim((string) $tab);
         }
 
 

@@ -62,28 +62,28 @@ $filtered = e107::getParser()->filter($_POST);
 // Check for pack-related buttons pressed
 foreach ($filtered as $key => $value)
 {
-	if (strpos($key, "subPack_") !== false)
+	if (strpos((string) $key, "subPack_") !== false)
 	{
 		$subpack = str_replace("subPack_", "", $key);
 		$emote->emoteConf($subpack);
 		break;
 	}
 
-	if (strpos($key, "XMLPack_") !== false)
+	if (strpos((string) $key, "XMLPack_") !== false)
 	{
 		$subpack = str_replace("XMLPack_", "", $key);
 		$emote->emoteXML($subpack);
 		break;
 	}
 
-	if (strpos($key, "defPack_") !== false)
+	if (strpos((string) $key, "defPack_") !== false)
 	{
 		e107::getConfig()->set('emotepack', str_replace("defPack_", "", $key))->save(true, true, true);
 		e107::getLog()->add('EMOTE_01', $pref['emotepack'], E_LOG_INFORMATIVE, '');
 		break;
 	}
 
-	if (strpos($key, "scanPack_") !== false)
+	if (strpos((string) $key, "scanPack_") !== false)
 	{
 		$one_pack = str_replace("scanPack_", "", $key);
 		break;
@@ -204,9 +204,9 @@ class emotec
 
 			foreach ($emoteArray as $emote)
 			{
-				if (strpos($emote['fname'], ".pak") !== false
-					|| strpos($emote['fname'], ".xml") !== false
-					|| strpos($emote['fname'], "phpBB") !== false)
+				if (strpos((string) $emote['fname'], ".pak") !== false
+					|| strpos((string) $emote['fname'], ".xml") !== false
+					|| strpos((string) $emote['fname'], "phpBB") !== false)
 				{
 					$can_scan = true;        // Allow re-scan of config files
 				}
@@ -377,7 +377,7 @@ class emotec
 			$evalue = str_replace(".", "!", $emote);
 			if ($strip_xtn)
 			{
-				$ename = substr($emote, 0, strrpos($emote, '.'));
+				$ename = substr((string) $emote, 0, strrpos((string) $emote, '.'));
 			}
 			$f_string .= "<emoticon file=\"{$ename}\">\n";
 			foreach (explode(' ', $tp->toForm($emotecode[$evalue])) as $v)
@@ -455,13 +455,13 @@ class emotec
 		{
 			while ($row = $sql->fetch())
 			{
-				$pack_local[substr($row['e107_name'], 6)] = true;
+				$pack_local[substr((string) $row['e107_name'], 6)] = true;
 			}
 		}
 
 		foreach ($this->packArray as $value)
 		{
-			if (strpos($value, ' ') !== false)
+			if (strpos((string) $value, ' ') !== false)
 			{    // Highlight any directory names containing spaces - not allowed
 				$msg = "
 					<strong>" . EMOLAN_17 . "</strong> " . EMOLAN_18 . ":
@@ -488,15 +488,15 @@ class emotec
 				$confFile = '';
 				foreach ($fileArray as $k => $file)
 				{
-					if (strpos($file['fname'], ".xml") !== false)
+					if (strpos((string) $file['fname'], ".xml") !== false)
 					{
 						$confFile = array('file' => $file['fname'], 'type' => "xml");
 					}
-					elseif (strpos($file['fname'], ".pak") !== false)
+					elseif (strpos((string) $file['fname'], ".pak") !== false)
 					{
 						$confFile = array('file' => $file['fname'], 'type' => "pak");
 					}
-					elseif (strpos($file['fname'], ".php") !== false)
+					elseif (strpos((string) $file['fname'], ".php") !== false)
 					{
 						$confFile = array('file' => $file['fname'], 'type' => "php");
 					}
@@ -606,7 +606,7 @@ class emotec
 							{ // Check that the file exists
 								if (strpos($e_file, ".") === false)
 								{  // File extension not specified - accept any file extension for match
-									if (strpos($emote['fname'], $e_file . ".") === 0)
+									if (strpos((string) $emote['fname'], $e_file . ".") === 0)
 									{
 										$file = str_replace(".", "!", $emote['fname']);
 										break;

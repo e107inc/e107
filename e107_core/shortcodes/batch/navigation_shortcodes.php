@@ -88,9 +88,9 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 				return null;
 			}
 
-			if(strpos($this->var['link_name'], 'submenu.') === 0) // BC Fix.
+			if(strpos((string) $this->var['link_name'], 'submenu.') === 0) // BC Fix.
 			{
-				list($tmp, $tmp2, $link) = explode('.', $this->var['link_name'], 3);
+				list($tmp, $tmp2, $link) = explode('.', (string) $this->var['link_name'], 3);
 				unset($tmp, $tmp2);
 			}
 			else
@@ -134,11 +134,11 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 				return e107::url($this->var['link_owner'], $this->var['link_sefurl']);
 			}
 
-			if(strpos($this->var['link_url'], e_HTTP) === 0)
+			if(strpos((string) $this->var['link_url'], e_HTTP) === 0)
 			{
-				$url = "{e_BASE}" . substr($this->var['link_url'], strlen(e_HTTP));
+				$url = "{e_BASE}" . substr((string) $this->var['link_url'], strlen(e_HTTP));
 			}
-			elseif($this->var['link_url'][0] !== "{" && strpos($this->var['link_url'], "://") === false)
+			elseif($this->var['link_url'][0] !== "{" && strpos((string) $this->var['link_url'], "://") === false)
 			{
 				$url = "{e_BASE}" . $this->var['link_url']; // Add e_BASE to links like: 'news.php' or 'contact.php' 	
 			}
@@ -181,9 +181,9 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 		function sc_nav_link_target($parm = null)
 		{
 
-			if(strpos($this->var['link_url'], '#') !== false)
+			if(strpos((string) $this->var['link_url'], '#') !== false)
 			{
-				list($tmp, $segment) = explode('#', $this->var['link_url'], 2);
+				list($tmp, $segment) = explode('#', (string) $this->var['link_url'], 2);
 
 				return '#' . $segment;
 
@@ -213,7 +213,7 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 			{
 				case 1:
 					$text = ' target="_blank"';
-					$rel = (strpos($this->var['link_url'], 'http') !== false) ? 'noopener noreferrer'  : '';
+					$rel = (strpos((string) $this->var['link_url'], 'http') !== false) ? 'noopener noreferrer'  : '';
 					break;
 
 				case 4:

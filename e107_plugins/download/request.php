@@ -56,7 +56,7 @@ class download_request
 					{
 						self::check_download_limits();
 					}
-					$mirrorList = explode(chr(1), $row['download_mirror']);
+					$mirrorList = explode(chr(1), (string) $row['download_mirror']);
 					$mstr = "";
 					foreach($mirrorList as $mirror)
 					{
@@ -99,7 +99,7 @@ class download_request
 		}
 		else
 		{
-			$table = preg_replace("#\W#", "", $tp->toDB($tmp[0], true));
+			$table = preg_replace("#\W#", "", (string) $tp->toDB($tmp[0], true));
 			$id = intval($tmp[1]);
 			$type = "image";
 		}
@@ -165,7 +165,7 @@ class download_request
 					extract($row);
 					if($row['download_mirror'])
 					{
-						$array = explode(chr(1), $row['download_mirror']);
+						$array = explode(chr(1), (string) $row['download_mirror']);
 						$c = (count($array) - 1);
 						for($i = 1; $i < $c; $i++)
 						{
@@ -253,11 +253,11 @@ class download_request
 				}
 				else
 				{    // Download Access Denied.
-					if((!strpos($pref['download_denied'], ".php") &&
-						!strpos($pref['download_denied'], ".htm") &&
-						!strpos($pref['download_denied'], ".html") &&
-						!strpos($pref['download_denied'], ".shtml") ||
-						(strpos($pref['download_denied'], "signup.php") && USER == true)
+					if((!strpos((string) $pref['download_denied'], ".php") &&
+						!strpos((string) $pref['download_denied'], ".htm") &&
+						!strpos((string) $pref['download_denied'], ".html") &&
+						!strpos((string) $pref['download_denied'], ".shtml") ||
+						(strpos((string) $pref['download_denied'], "signup.php") && USER == true)
 					))
 					{
 						//	$goUrl = e107::getUrl()->create('download/index')."?action=error&id=1";
@@ -267,7 +267,7 @@ class download_request
 					}
 					else
 					{
-						e107::redirect(trim($pref['download_denied']));
+						e107::redirect(trim((string) $pref['download_denied']));
 						return;
 					}
 				}
@@ -325,7 +325,7 @@ class download_request
 
 	// $image = ($table == "upload" ? $upload_ss : $download_image);
 
-		if(strpos($image, "http") !== false)
+		if(strpos((string) $image, "http") !== false)
 		{
 			e107::redirect($image);
 			exit();

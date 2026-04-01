@@ -116,9 +116,9 @@ class auth_login extends alt_auth_base
 		// Make an array of the fields we want from the source DB
 		foreach($this->conf as $k => $v)
 		{
-			if ($v && (strpos($k,'e107db_xf_') === 0))
+			if ($v && (strpos((string) $k,'e107db_xf_') === 0))
 			{
-				$sel_fields[] = substr($k,strlen('e107db_xf_'));
+				$sel_fields[] = substr((string) $k,strlen('e107db_xf_'));
 			}
 		}
 
@@ -172,7 +172,7 @@ class auth_login extends alt_auth_base
 		// Valid user - check he's in an appropriate class
 		if ($filterClass != e_UC_PUBLIC)
 		{
-			$tmp = explode(',', $row['user_class']);
+			$tmp = explode(',', (string) $row['user_class']);
 			if (!in_array($filterClass, $tmp))
 			{
 				$this->makeErrorText('Userc not found');
@@ -184,9 +184,9 @@ class auth_login extends alt_auth_base
 		// Now copy across any values we have selected
 		foreach($this->conf as $k => $v)
 		{
-			if ($v && (strpos($k,'e107db_xf_') === 0))
+			if ($v && (strpos((string) $k,'e107db_xf_') === 0))
 			{
-				$f = substr($k,strlen('e107db_xf_'));
+				$f = substr((string) $k,strlen('e107db_xf_'));
 				if (isset($row[$f])) $newvals[$f] = $row[$f];
 			}
 		}

@@ -154,11 +154,11 @@ if(!$sql->select('rss', '*', "rss_class != 2 AND rss_url='".$content_type."' ".$
 	if(!$sql->select('rss', '*', "rss_class != 2 AND rss_url='".$content_type."' ".$check_topic." AND rss_limit > 0 "))
 	{
 		require_once(HEADERF);
-		
+
 		$repl  		= array("<br /><br /><a href='".e_REQUEST_SELF."'>", "</a>");
 		$message 	= str_replace(array("[","]"), $repl, RSS_LAN_ERROR_1);
 		e107::getRender()->tablerender('', $message);
-		
+
 		require_once(FOOTERF);
 		exit;
 	}
@@ -177,7 +177,7 @@ else
 
 if($rss = new rssCreate($content_type, $rss_type, $topic_id, $row))
 {
-	$rss_title = ($rss->contentType ? $rss->contentType : ucfirst($content_type));
+	$rss_title = ($rss->contentType ? $rss->contentType : ucfirst((string) $content_type));
 
 	if(defset('E107_DEBUG_LEVEL') > 0)
 	{
@@ -236,9 +236,9 @@ class rssCreate
 		{
 			$path = e_PLUGIN.$row['rss_path'].'/e_rss.php';
 		}
-		if(strpos($row['rss_path'],'|')!==FALSE) //FIXME remove this check completely. 
+		if(strpos((string) $row['rss_path'],'|')!==FALSE) //FIXME remove this check completely. 
 		{
-			$tmp = explode("|", $row['rss_path']);
+			$tmp = explode("|", (string) $row['rss_path']);
 			$path = e_PLUGIN.$tmp[0]."/e_rss.php";
 			$this->parm = $tmp[1];	// FIXME @Deprecated - use $parm['url'] instead in data() method within e_rss.php.  Parm is used in e_rss.php to define which feed you need to prepare
 		}
@@ -295,7 +295,7 @@ class rssCreate
 					}
 
 					$this -> rssItems[$loop]['description'] = $value['comment_comment'];
-					$this -> rssItems[$loop]['author'] = substr($value['comment_author'], (strpos($value['comment_author'], ".")+1));
+					$this -> rssItems[$loop]['author'] = substr((string) $value['comment_author'], (strpos((string) $value['comment_author'], ".")+1));
 					$loop++;
 				}
 				break;
@@ -328,16 +328,16 @@ class rssCreate
 			if (is_readable($path))
 			{
 				require_once($path);
-				
+
 				$className = basename(dirname($path)).'_rss';
-				
+
 				// v2.x standard 
 				if($data = e107::callMethod($className,'data', array('url' => $content_type, 'id' => $this->topicid, 'limit' => $this->limit)))
 				{			
 					$eplug_rss_data = array(0 => $data);
 					unset($data);			
 				}
-								
+
 				foreach($eplug_rss_data as $key=>$rs)
 				{
 					foreach($rs as $k=>$row)
@@ -348,7 +348,7 @@ class rssCreate
 
 						if($row['link'])
 						{
-							if(stripos($row['link'], 'http') !== FALSE)
+							if(stripos((string) $row['link'], 'http') !== FALSE)
 							{
 								$this -> rssItems[$k]['link'] = $row['link'];
 							}
@@ -359,12 +359,12 @@ class rssCreate
 						}
 
 						$this -> rssItems[$k]['description'] = $row['description'];
-						
+
 						if($row['enc_url'])
 						{
 							$this -> rssItems[$k]['enc_url'] = SITEURLBASE.e_PLUGIN_ABS.$row['enc_url'].$row['item_id'];
 						}
-						
+
 						if($row['enc_leng'])
 						{
 							$this -> rssItems[$k]['enc_leng'] = $row['enc_leng'];
@@ -380,10 +380,10 @@ class rssCreate
 						}
 
 						$this -> rssItems[$k]['category_name'] = $row['category_name'];
-						
+
 						if($row['category_link'])
 						{
-							if(stripos($row['category_link'], 'http') !== FALSE)
+							if(stripos((string) $row['category_link'], 'http') !== FALSE)
 							{
 								$this -> rssItems[$k]['category_link'] = $row['category_link'];
 							}
@@ -392,7 +392,7 @@ class rssCreate
 								$this -> rssItems[$k]['category_link'] = SITEURLBASE.e_PLUGIN_ABS.$row['category_link'];
 							}
 						}
-						
+
 						if(!empty($row['datestamp']))
 						{
 							$this -> rssItems[$k]['pubdate'] = $row['datestamp'];
@@ -458,7 +458,7 @@ class rssCreate
 							<item>
 							<title>".$tp->toRss($value['title'])."</title>
 							<description>".substr($tp->toRss($value['description']),0,150);
-						if($pref['rss_shownewsimage'] == 1 && strlen(trim($value['news_thumbnail'])) > 0)
+						if($pref['rss_shownewsimage'] == 1 && strlen(trim((string) $value['news_thumbnail'])) > 0)
 						{
 							$news_thumbnail = SITEURLBASE.e_IMAGE_ABS."newspost_images/".$tp->toRss($value['news_thumbnail']);
 							echo "&lt;a href=&quot;".$link."&quot;&gt;&lt;img src=&quot;".$news_thumbnail."&quot; height=&quot;50&quot; border=&quot;0&quot; hspace=&quot;10&quot; vspace=&quot;10&quot; align=&quot;right&quot;&gt;&lt;/a&gt;";
@@ -475,7 +475,7 @@ class rssCreate
 			break;
 
 			case 2:	// RSS 2.0
-				$sitebutton = (strpos(SITEBUTTON, "http:") !== false ? SITEBUTTON : SITEURL.str_replace("../", "", SITEBUTTON));
+				$sitebutton = (strpos((string) SITEBUTTON, "http:") !== false ? SITEBUTTON : SITEURL.str_replace("../", "", SITEBUTTON));
 				echo "<?xml version=\"1.0\" encoding=\"utf-8\"?".">
 				<!-- generator=\"e107\" -->
 				<!-- content type=\"".$this->contentType."\" -->
@@ -509,7 +509,7 @@ class rssCreate
 				echo "
 				<atom:link href=\"".$tp->toRss(e107::url('rss_menu','atom', array('rss_url'=>$this->contentType, 'rss_topicid'=>$this->topicid),'full'))."\" rel=\"self\" type=\"application/rss+xml\" />\n";
 
-				if (trim(SITEBUTTON))
+				if (trim((string) SITEBUTTON))
 				{
 					$path = e107::getConfig()->get('sitebutton');
 					$imgPath = e107::getParser()->thumbUrl($path, array(), false, true);					
@@ -702,7 +702,7 @@ class rssCreate
 					<generator uri='https://e107.org/' version='".defset('e_VERSION')."'>e107</generator>\n";
 					//<icon>/icon.jpg</icon>\n
 					echo "
-					<logo>".(strpos(SITEBUTTON, "http:") !== false ? SITEBUTTON : SITEURL.str_replace("../", "", SITEBUTTON))."</logo>\n
+					<logo>".(strpos((string) SITEBUTTON, "http:") !== false ? SITEBUTTON : SITEURL.str_replace("../", "", SITEBUTTON))."</logo>\n
 					<rights type='html'>".$pref['siteadmin']." - ".$this->nospam($pref['siteadminemail'])."</rights>\n";
 					if($pref['sitedescription']){
 					echo "
@@ -817,7 +817,7 @@ class rssCreate
 
 	function getmime($file)
 	{
-		$ext = strtolower(str_replace(".","",strrchr(basename($file), ".")));
+		$ext = strtolower(str_replace(".","",strrchr(basename((string) $file), ".")));
 		$mime["mp3"] = "audio/mpeg";
 		return $mime[$ext];
 	}
@@ -833,7 +833,7 @@ class rssCreate
 
 	function nospam($text)
 	{
-		$tmp = explode("@",$text);
+		$tmp = explode("@",(string) $text);
 		return ($tmp[0] != "") ? $tmp[0].RSS_LAN_2 : RSS_LAN_3;
 	}
 } // End class rssCreate

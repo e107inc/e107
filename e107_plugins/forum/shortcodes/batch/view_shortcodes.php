@@ -277,9 +277,9 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	function sc_forum_name($parm = null)
 	{
 
-		if(substr($this->var['forum_name'], 0, 1) === '*')
+		if(substr((string) $this->var['forum_name'], 0, 1) === '*')
 		{
-			$this->var['forum_name'] = substr($this->var['forum_name'], 1);
+			$this->var['forum_name'] = substr((string) $this->var['forum_name'], 1);
 		}
 
 		$this->var['forum_name'] = e107::getParser()->toHTML($this->var['forum_name'], true, 'no_hook');
@@ -442,7 +442,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 					}
 					else
 					{
-						list($date, $user, $name) = explode("_", $file, 3);
+						list($date, $user, $name) = explode("_", (string) $file, 3);
 					}
 
 					switch($type)
@@ -1354,7 +1354,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 							<input type='submit' data-token='" . e_TOKEN . "' data-forum-insert='" . $ajaxInsert . "' data-forum-post='" . $this->var['thread_forum_id'] . "' data-forum-thread='" . $this->var['thread_id'] . "' data-forum-action='quickreply' name='reply' value='" . LAN_FORUM_2007 . "' class='btn btn-success button' />
 							<input type='hidden' name='thread_id' value='" . $this->var['thread_id'] . "' />
 						</div>
-	
+
 						</form>";
 				}
 				else
@@ -1371,7 +1371,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 							<input type='submit' data-token='" . e_TOKEN . "' data-forum-insert='" . $ajaxInsert . "' data-forum-post='" . $this->var['thread_forum_id'] . "' data-forum-thread='" . $this->var['thread_id'] . "' data-forum-action='quickreply' name='reply' value='" . LAN_FORUM_2006 . "' class='btn btn-success button' />
 							<input type='hidden' name='thread_id' value='" . $this->var['thread_id'] . "' />
 						</div>
-	
+
 						</form>";
 
 					return $text;

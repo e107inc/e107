@@ -54,7 +54,7 @@ class chatbox_menu_shortcodes extends e_shortcode
 	protected function getUserIdFromNick()
 	{
 
-		$temp = explode('.', $this->var['cb_nick']);
+		$temp = explode('.', (string) $this->var['cb_nick']);
 
 		return $temp[0];
 	}
@@ -68,7 +68,7 @@ class chatbox_menu_shortcodes extends e_shortcode
 	protected function getUserNameFromNick()
 	{
 
-		$temp = explode('.', $this->var['cb_nick'], 2);
+		$temp = explode('.', (string) $this->var['cb_nick'], 2);
 
 		return $temp[1];
 	}

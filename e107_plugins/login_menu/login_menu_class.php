@@ -86,7 +86,7 @@ class login_menu_class
 		{
             foreach ($list_arr as $item) 
 			{
-				$path = explode('/', trim($item['path'], '/.'));
+				$path = explode('/', trim((string) $item['path'], '/.'));
                 $tmp = end($path);
                 
                 if(e107::isInstalled($tmp)) 
@@ -98,7 +98,7 @@ class login_menu_class
 
         if($sort && $this->loginPrefs['external_links']) 
 		{
-            $tmp = array_flip(explode(',', $this->loginPrefs['external_links']));
+            $tmp = array_flip(explode(',', (string) $this->loginPrefs['external_links']));
             
             $cnt = count($tmp);
             foreach ($list as $value) {
@@ -123,8 +123,8 @@ class login_menu_class
         //$lbox_admin = varsettrue($eplug_admin, false);
         $coreplugs = $this->get_coreplugs(); 
         
-        $lprefs = vartrue($this->loginPrefs['external_links']) ? explode(',', $this->loginPrefs['external_links']) : array();
-        $sprefs = vartrue($this->loginPrefs['external_stats']) ? explode(',', $this->loginPrefs['external_stats']) : array();
+        $lprefs = vartrue($this->loginPrefs['external_links']) ? explode(',', (string) $this->loginPrefs['external_links']) : array();
+        $sprefs = vartrue($this->loginPrefs['external_stats']) ? explode(',', (string) $this->loginPrefs['external_stats']) : array();
         
         if($active) 
 		{
@@ -232,7 +232,7 @@ class login_menu_class
         $lbox_infos = $this->parse_external_list(false);
         if(!vartrue($lbox_infos['links'])) return '';
         
-        $enabled = vartrue($this->loginPrefs['external_links']) ? explode(',', $this->loginPrefs['external_links']) : array();
+        $enabled = vartrue($this->loginPrefs['external_links']) ? explode(',', (string) $this->loginPrefs['external_links']) : array();
         
         $num = 1;
         foreach ($lbox_infos['links'] as $id => $stack) {
@@ -284,7 +284,7 @@ class login_menu_class
 
         if(!$lbox_infos) return '';
 
-        $enabled = vartrue($this->loginPrefs['external_stats']) ? explode(',', $this->loginPrefs['external_stats']) : array();
+        $enabled = vartrue($this->loginPrefs['external_stats']) ? explode(',', (string) $this->loginPrefs['external_stats']) : array();
         
         $num = 1;
         foreach ($lbox_infos as $id => $stack) 
@@ -324,7 +324,7 @@ class login_menu_class
 		}
             
         $ret = 0;
-        $lbox_active_sorted = $this->loginPrefs['external_stats'] ? explode(',', $this->loginPrefs['external_stats']) : array();
+        $lbox_active_sorted = $this->loginPrefs['external_stats'] ? explode(',', (string) $this->loginPrefs['external_stats']) : array();
         
         foreach ($lbox_active_sorted as $stackid) 
 		{ 

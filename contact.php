@@ -40,7 +40,7 @@ class contact_front
 		$pref = e107::pref();
 
 		$active = varset($pref['contact_visibility'], e_UC_PUBLIC);
-		$contactInfo = trim(SITECONTACTINFO);
+		$contactInfo = trim((string) SITECONTACTINFO);
 		$pref = e107::getPref();
 
 		if(!check_class($active) && empty($contactInfo) && empty($pref['contact_info']))
@@ -106,13 +106,13 @@ class contact_front
 
 		if(!empty($contact_filter))
 		{
-			$tmp = explode("\n", $contact_filter);
+			$tmp = explode("\n", (string) $contact_filter);
 
 			if(!empty($tmp))
 			{
 				foreach($tmp as $filterItem)
 				{
-					if(strpos($_POST['body'], $filterItem) !== false)
+					if(strpos((string) $_POST['body'], $filterItem) !== false)
 					{
 						$ignore = true;
 						break;
@@ -127,7 +127,7 @@ class contact_front
 		$sender_name = $tp->toEmail($_POST['author_name'], true, 'RAWTEXT');
 		$sender = check_email($_POST['email_send']);
 		$subject = $tp->toEmail($_POST['subject'], true, 'RAWTEXT');
-		$body = nl2br($tp->toEmail(strip_tags($_POST['body']), true, 'RAWTEXT'));
+		$body = nl2br((string) $tp->toEmail(strip_tags((string) $_POST['body']), true, 'RAWTEXT'));
 
 		$email_copy = !empty($_POST['email_copy']) ? 1 : 0;
 
@@ -144,12 +144,12 @@ class contact_front
 		}
 
 		// Check subject line.
-		if(isset($_POST['subject']) && strlen(trim($subject)) < 2)
+		if(isset($_POST['subject']) && strlen(trim((string) $subject)) < 2)
 		{
 			$error .= LAN_CONTACT_13 . "\n";
 		}
 
-		if(!strpos(trim($sender), "@"))
+		if(!strpos(trim((string) $sender), "@"))
 		{
 			$error .= LAN_CONTACT_11 . "\n";
 		}
@@ -231,7 +231,7 @@ class contact_front
 				{
 					foreach($_POST as $k => $v)
 					{
-						$scKey = strtoupper($k);
+						$scKey = strtoupper((string) $k);
 						$vars[$scKey] = $tp->toEmail($v, true, 'RAWTEXT');
 					}
 				}

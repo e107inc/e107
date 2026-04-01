@@ -8,7 +8,7 @@
  *
  *	RSS chatbox feed addon
  */
- 
+
 if (!defined('e107_INIT')) { exit; }
 
 // v2.x Standard 
@@ -20,7 +20,7 @@ class chatbox_menu_rss // plugin-folder + '_rss'
 	function config() 
 	{
 		$config = array();
-	
+
 		$config[] = array(
 			'name'			=> 'Chatbox Posts',
 			'url'			=> 'chatbox',
@@ -29,10 +29,10 @@ class chatbox_menu_rss // plugin-folder + '_rss'
 			'class'			=> '0',
 			'limit'			=> '9'
 		);
-		
+
 		return $config;
 	}
-	
+
 	/**
 	 * Compile RSS Data
 	 * @param $parms array	url, limit, id 
@@ -41,16 +41,16 @@ class chatbox_menu_rss // plugin-folder + '_rss'
 	function data($parms='')
 	{
 		$sql = e107::getDb();
-		
+
 		$rss = array();
 		$i=0;
-					
+
 		if($items = $sql->select('chatbox', "*", "cb_blocked=0 ORDER BY cb_datestamp DESC LIMIT 0,".$parms['limit']))
 		{
 
 			while($row = $sql->fetch())
 			{
-				$tmp						= explode(".", $row['cb_nick']);
+				$tmp						= explode(".", (string) $row['cb_nick']);
 				$rss[$i]['author']			= $tmp[1];
 				$rss[$i]['author_email']	= ''; 
 				$rss[$i]['link']			= "chatbox_menu/chat.php?".$row['cb_id'];
@@ -67,12 +67,12 @@ class chatbox_menu_rss // plugin-folder + '_rss'
 			}
 
 		}				
-					
+
 		return $rss;
 	}
-			
-		
-	
+
+
+
 }
 
 

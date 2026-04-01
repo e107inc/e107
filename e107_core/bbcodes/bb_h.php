@@ -22,7 +22,7 @@ class bb_h extends e_bb_base
 	 */
 	function toDB($code_text, $parm)
 	{
-		$code_text = trim($code_text);
+		$code_text = trim((string) $code_text);
 		if(empty($code_text)) return '';
 
 		$bparms = eHelper::scDualParams($parm);
@@ -57,7 +57,7 @@ class bb_h extends e_bb_base
 	 */
 	function toHTML($code_text, $parm)
 	{
-		$code_text = trim($code_text);
+		$code_text = trim((string) $code_text);
 		if(empty($code_text)) return '';
 		$bparms = eHelper::scDualParams($parm);
 		

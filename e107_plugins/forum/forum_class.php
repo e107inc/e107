@@ -101,17 +101,17 @@ class e107forum
 		$tp = e107::getParser();
 		$this->userViewed = array();
 		$this->modArray = array();
-		
+
 		if($update === false)
 		{
 			$this->loadPermList();
 		}
-		
+
 		$this->prefs = e107::getPlugConfig('forum');
 		if(!$this->prefs->get('postspage')) {
 			$this->setDefaults();
 		}
-		
+
 		$this->getForumData();
 //		var_dump($this->prefs);
 
@@ -1189,7 +1189,7 @@ class e107forum
 			$tmp = $sql->fetch();
 			if($tmp)
 			{
-				if(trim($tmp['thread_options']) != '')
+				if(trim((string) $tmp['thread_options']) != '')
 				{
 					$tmp['thread_options'] = unserialize($tmp['thread_options']);
 				}
@@ -1346,7 +1346,7 @@ class e107forum
 			$viewed = $tmp['user_plugin_forum_viewed'];
 			unset($tmp);
 		}
-		return explode(',', $viewed);
+		return explode(',', (string) $viewed);
 	}
 
 
@@ -1598,7 +1598,7 @@ class e107forum
 	{
 		global $currentUser;
 
-		$_tmp = preg_split('#\,+#', $currentUser['user_plugin_forum_viewed']);
+		$_tmp = preg_split('#\,+#', (string) $currentUser['user_plugin_forum_viewed']);
 		if(!is_array($threadId)) { $threadId = array($threadId); }
 		foreach($threadId as $tid)
 		{
@@ -1827,7 +1827,7 @@ class e107forum
 		}
 		else
 		{
-			$tmp = explode(".", $post_info['thread_user'], 2);
+			$tmp = explode(".", (string) $post_info['thread_user'], 2);
 			return $tmp[1];
 		}
 	}
@@ -2382,7 +2382,7 @@ class e107forum
 			if($forumInfo['forum_sub'])
 			{
 				$search 	= array('{SUBPARENT_TITLE}', '{SUBPARENT_HREF}');
-				$replace 	= array(ltrim($forumInfo['sub_parent'], '*'), e107::url('forum', 'forum', array('forum_id'=>$forumInfo['forum_sub'],'forum_sef'=>$forumInfo['parent_sef'])));
+				$replace 	= array(ltrim((string) $forumInfo['sub_parent'], '*'), e107::url('forum', 'forum', array('forum_id'=>$forumInfo['forum_sub'],'forum_sef'=>$forumInfo['parent_sef'])));
 				$FORUM_CRUMB['subparent']['value'] = str_replace($search, $replace, $FORUM_CRUMB['subparent']['value']);
 			}
 			else
@@ -2391,7 +2391,7 @@ class e107forum
 			}
 
 			$search 	= array('{FORUM_TITLE}', '{FORUM_HREF}');
-			$replace 	= array(ltrim($forumInfo['forum_name'], '*'), e107::url('forum', 'forum', $forumInfo));
+			$replace 	= array(ltrim((string) $forumInfo['forum_name'], '*'), e107::url('forum', 'forum', $forumInfo));
 			$FORUM_CRUMB['forum']['value'] = str_replace($search, $replace, $FORUM_CRUMB['forum']['value']);
 
 			if(isset($threadInfo['thread_id']))
@@ -2420,12 +2420,12 @@ class e107forum
 
 			if($forumInfo['sub_parent'])
 			{
-				$forum_sub_parent = (substr($forumInfo['sub_parent'], 0, 1) == '*' ? substr($forumInfo['sub_parent'], 1) : $forumInfo['sub_parent']);
+				$forum_sub_parent = (substr((string) $forumInfo['sub_parent'], 0, 1) == '*' ? substr((string) $forumInfo['sub_parent'], 1) : $forumInfo['sub_parent']);
 				$BREADCRUMB .= "<a class='forumlink' href='".e_PLUGIN_ABS."forum/forum_viewforum.php?{$forumInfo['forum_sub']}'>{$forum_sub_parent}</a>".$dfltsep;
 			}
 
 			$tmpFname = $forumInfo['forum_name'];
-			if(substr($tmpFname, 0, 1) == "*") { $tmpFname = substr($tmpFname, 1); }
+			if(substr((string) $tmpFname, 0, 1) == "*") { $tmpFname = substr((string) $tmpFname, 1); }
 
 			if ($forum_href)
 			{
@@ -2435,7 +2435,7 @@ class e107forum
 				$BREADCRUMB .= $tmpFname;
 			}
 
-			if(strlen($thread_title))
+			if(strlen((string) $thread_title))
 			{
 				$BREADCRUMB .= $dfltsep.$thread_title;
 			}
@@ -2454,20 +2454,20 @@ class e107forum
 		
 		if($forumInfo['sub_parent'])
 		{
-				$forum_sub_parent = (substr($forumInfo['sub_parent'], 0, 1) == '*' ? substr($forumInfo['sub_parent'], 1) : $forumInfo['sub_parent']);
+				$forum_sub_parent = (substr((string) $forumInfo['sub_parent'], 0, 1) == '*' ? substr((string) $forumInfo['sub_parent'], 1) : $forumInfo['sub_parent']);
 		}
 		
 		$breadcrumb[]	= array('text'=>$tp->toHTML($forumInfo['parent_name'])		, 'url'=> e107::url('forum', 'index')."#".$frm->name2id($forumInfo['parent_name']));
 	
 		if($forumInfo['forum_sub'])
 		{
-			$breadcrumb[]	= array('text'=> ltrim($forumInfo['sub_parent'], '*')		, 'url'=> e107::url('forum','forum', array('forum_sef'=> $forumInfo['sub_parent_sef'])));
-			$breadcrumb[]	= array('text'=>ltrim($forumInfo['forum_name'], '*')		, 'url'=> (defset('e_PAGE') !='forum_viewforum.php') ? e107::url('forum', 'forum', $forumInfo) : null);
+			$breadcrumb[]	= array('text'=> ltrim((string) $forumInfo['sub_parent'], '*')		, 'url'=> e107::url('forum','forum', array('forum_sef'=> $forumInfo['sub_parent_sef'])));
+			$breadcrumb[]	= array('text'=>ltrim((string) $forumInfo['forum_name'], '*')		, 'url'=> (defset('e_PAGE') !='forum_viewforum.php') ? e107::url('forum', 'forum', $forumInfo) : null);
 
 		}
 		else
 		{
-			$breadcrumb[]	= array('text'=>ltrim($forumInfo['forum_name'], '*')		, 'url'=> (defset('e_PAGE') !='forum_viewforum.php') ? e107::url('forum', 'forum', $forumInfo) : null);
+			$breadcrumb[]	= array('text'=>ltrim((string) $forumInfo['forum_name'], '*')		, 'url'=> (defset('e_PAGE') !='forum_viewforum.php') ? e107::url('forum', 'forum', $forumInfo) : null);
 		}
 
 		if(vartrue($forumInfo['thread_name']))
@@ -2520,7 +2520,7 @@ class e107forum
 			{
 				$sql->delete('polls', 'poll_datestamp='.$threadId);
 			} 
-	
+
 			// decrement user post counts
 			if ($postCount = $this->threadGetUserPostcount($threadId))
 			{
@@ -2557,7 +2557,7 @@ class e107forum
 			{	
 				$sql->delete('forum_track', 'track_thread='.$threadId);
 			}
-			
+
 			// update forum with correct thread/reply counts
 			$sql->update('forum', "forum_threads=GREATEST(forum_threads-1,0), forum_replies=GREATEST(forum_replies-{$threadInfo['thread_total_replies']},0) WHERE forum_id=".$threadInfo['thread_forum_id']);
 

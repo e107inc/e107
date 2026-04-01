@@ -29,7 +29,7 @@ class e_unsubscribe
 			return;	
 		}
 		
-		$tmp = base64_decode($_GET['id']);
+		$tmp = base64_decode((string) $_GET['id']);
 
 		parse_str($tmp,$data);
 

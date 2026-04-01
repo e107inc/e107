@@ -39,7 +39,7 @@ ob_implicit_flush(0);
 			 // parse errror fix from the previous commit
 			 e107::getScParser()->loadThemeShortcodes();
 		}
-		list($fld,$parm) = explode("=", $_POST['ajax_sc'], 2);
+		list($fld,$parm) = explode("=", (string) $_POST['ajax_sc'], 2);
 		$prm = ($parm) ? "=".rawurldecode($parm) : ""; //var_dump($_GET);
 		echo e107::getParser()->parseTemplate("{".strtoupper($fld).$prm."}", true, $shortcodes);
 		exit;

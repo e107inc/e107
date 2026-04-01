@@ -175,7 +175,7 @@ elseif ($action == 'forums')
 	$USERPOSTS_TEMPLATE = e107::getCoreTemplate('userposts');
 
 	$s_info = '';
-	$_POST['f_query'] = trim(varset($_POST['f_query']));
+	$_POST['f_query'] = trim((string) varset($_POST['f_query']));
 	if ($_POST['f_query'] !== '')
 	{
 		$f_query = $tp->toDB($_POST['f_query']);

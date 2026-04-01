@@ -450,11 +450,11 @@ class secure_image
 
 		if(!empty($fontFile))
 		{
-			imagettftext($image, $secureimg['size'],$secureimg['angle'], $secureimg['x'], $secureimg['y'], $text_color, $fontFile, $code);
+			imagettftext($image, $secureimg['size'],$secureimg['angle'], $secureimg['x'], $secureimg['y'], $text_color, $fontFile, (string) $code);
 		}
 		else
 		{
-			imagestring ($image, 5, 12, 2, $code, $text_color);
+			imagestring ($image, 5, 12, 2, (string) $code, $text_color);
 		}
 
 		imagesavealpha($image, true);

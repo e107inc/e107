@@ -120,7 +120,7 @@ class docs_ui extends e_admin_ui
 			}
 
 			$tmp = preg_replace('/Q\>(.*?)A>/si', "###QSTART###<div class='qitem'>" . $iconQ . "\\1</div>###QEND###", $tmp);
-			$tmp = preg_replace('/###QEND###(.*?)###QSTART###/si', "<div class='aitem'>" . $iconA . "\\1</div>", $tmp);
+			$tmp = preg_replace('/###QEND###(.*?)###QSTART###/si', "<div class='aitem'>" . $iconA . "\\1</div>", (string) $tmp);
 			$tmp = str_replace(array('###QSTART###', '###QEND###'), array('', "<div class='aitem'>" . $iconA), $tmp) . "</div>";
 
 			$id = 'doc-' . $key;

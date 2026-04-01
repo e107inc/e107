@@ -392,7 +392,7 @@ class e_db_mysql implements e_db
 		{
 			$this->dbg->log($query);
 		}
-		if ($debug !== FALSE || strpos($_SERVER['QUERY_STRING'], 'showsql') !== false)
+		if ($debug !== FALSE || strpos((string) $_SERVER['QUERY_STRING'], 'showsql') !== false)
 		{
 			$debugQry = is_array($query) ? print_a($query,true) : $query;
 			$queryinfo[] = "<b>{$qry_from}</b>: ".$debugQry;
@@ -1464,7 +1464,7 @@ class e_db_mysql implements e_db
 		}
 		elseif ($this->mySQLresult === TRUE)
 		{	// Successful query which may return a row count (because it operated on a number of rows without returning a result set)
-			if(preg_match('#^(DELETE|INSERT|REPLACE|UPDATE)#',$query, $matches))
+			if(preg_match('#^(DELETE|INSERT|REPLACE|UPDATE)#',(string) $query, $matches))
 			{	// Need to check mysqli_affected_rows() - to return number of rows actually updated
 				$tmp = mysqli_affected_rows($this->mySQLaccess);
 				$this->dbError('db_Select_gen');
@@ -1502,7 +1502,7 @@ class e_db_mysql implements e_db
 			$this->tabset = true;
 		}
 
-		return " ".$this->mySQLPrefix.$table.substr($matches[0],-1);
+		return " ".$this->mySQLPrefix.$table.substr((string) $matches[0],-1);
 	}
 
 	/**
@@ -1547,9 +1547,9 @@ class e_db_mysql implements e_db
 			foreach($this->mySQLtableList as $tab)
 			{
 
- 				if(strpos($tab, "lan_") === 0)
+ 				if(strpos((string) $tab, "lan_") === 0)
 				{
-					list($tmp,$lng,$tableName) = explode("_",$tab,3);
+					list($tmp,$lng,$tableName) = explode("_",(string) $tab,3);
 
                     foreach($table as $t)
 					{
@@ -1804,7 +1804,7 @@ class e_db_mysql implements e_db
 
       	foreach($tmp as $val)
 		{
-   			if(strpos($val,$this->mySQLPrefix) !== false) // search for table names references using the mprefix
+   			if(strpos($val,(string) $this->mySQLPrefix) !== false) // search for table names references using the mprefix
 			{
     			$table[] = str_replace(array($this->mySQLPrefix,"`"),"", $val);
 				$search[] = str_replace("`","",$val);
@@ -2142,9 +2142,9 @@ class e_db_mysql implements e_db
 		$database = !empty($this->mySQLdefaultdb) ? "FROM  `".$this->mySQLdefaultdb."`" : "";
 		$prefix = $this->mySQLPrefix;
 
-		if(strpos($prefix, ".") !== false) // eg. `my_database`.$prefix
+		if(strpos((string) $prefix, ".") !== false) // eg. `my_database`.$prefix
 		{
-			$tmp = explode(".",$prefix);
+			$tmp = explode(".",(string) $prefix);
 			$prefix = $tmp[1];
 		}
 
@@ -2153,7 +2153,7 @@ class e_db_mysql implements e_db
 			if(!isset($this->mySQLtableListLanguage[$language]))
 			{
 				$table = array();
-				if($res = $this->db_Query("SHOW TABLES ".$database." LIKE '".$prefix."lan_".strtolower($language)."%' "))
+				if($res = $this->db_Query("SHOW TABLES ".$database." LIKE '".$prefix."lan_".strtolower((string) $language)."%' "))
 				{
 					while($rows = $this->fetch('num'))
 					{
@@ -2175,10 +2175,10 @@ class e_db_mysql implements e_db
 
 			if($res = $this->db_Query("SHOW TABLES ".$database." LIKE '".$prefix."%' "))
 			{
-				$length = strlen($prefix);
+				$length = strlen((string) $prefix);
 				while($rows = $this->fetch('num'))
 				{
-					$table[] = substr($rows[0],$length);
+					$table[] = substr((string) $rows[0],$length);
 				}
 			}
 			return $table;
@@ -2235,7 +2235,7 @@ class e_db_mysql implements e_db
 			$ret = array();
 			foreach($this->mySQLtableList as $table)
 			{
-				if(substr($table,-4) != '_log' && $table != 'download_requests')
+				if(substr((string) $table,-4) != '_log' && $table != 'download_requests')
 				{
 					$ret[] = $table;
 				}
@@ -2258,7 +2258,7 @@ class e_db_mysql implements e_db
 
 			foreach($this->mySQLtableList as $tab)
 			{
-				if(strpos($tab,'lan_') === 0)
+				if(strpos((string) $tab,'lan_') === 0)
 				{
 					$lan[] = $tab;
 				}
@@ -2317,8 +2317,8 @@ class e_db_mysql implements e_db
 	 */
 	function db_CopyTable($oldtable, $newtable, $drop = FALSE, $data = FALSE)
 	{
-		$old = $this->mySQLPrefix.strtolower($oldtable);
-		$new = $this->mySQLPrefix.strtolower($newtable);
+		$old = $this->mySQLPrefix.strtolower((string) $oldtable);
+		$new = $this->mySQLPrefix.strtolower((string) $newtable);
 
 		if ($drop)
 		{
@@ -2334,7 +2334,7 @@ class e_db_mysql implements e_db
 			$row = $this->fetch('num');
 			$qry = $row[1];
 			//        $qry = str_replace($old, $new, $qry);
-			$qry = preg_replace("#CREATE\sTABLE\s`?".$old."`?\s#", "CREATE TABLE {$new} ", $qry, 1); // More selective search
+			$qry = preg_replace("#CREATE\sTABLE\s`?".$old."`?\s#", "CREATE TABLE {$new} ", (string) $qry, 1); // More selective search
 		}
 		else
 		{
@@ -2480,7 +2480,7 @@ class e_db_mysql implements e_db
 			else
 			{
 				// Check if MySQL version is utf8 compatible
-				preg_match('/^(.*?)($|-)/', $this->mySqlServerInfo, $mysql_version);
+				preg_match('/^(.*?)($|-)/', (string) $this->mySqlServerInfo, $mysql_version);
 				if (version_compare($mysql_version[1], '4.1.2', '<'))
 				{
 					// reset utf8

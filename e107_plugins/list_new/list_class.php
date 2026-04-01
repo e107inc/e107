@@ -104,7 +104,7 @@ class listclass
 	function getListPrefs()
 	{
 		$listPrefs = e107::pref('list_new'); //TODO Convert from old format to new.   
-		
+
 		//insert default preferences
 		if (empty(	$listPrefs))
 		{
@@ -149,9 +149,9 @@ class listclass
 		//get all sections to use
 		foreach($this->list_pref as $key=>$value)
 		{
-			if(substr($key,-$len) == "_{$mode}_display" && $value == "1")
+			if(substr((string) $key,-$len) == "_{$mode}_display" && $value == "1")
 			{
-				$sections[] = substr($key,0,-$len);
+				$sections[] = substr((string) $key,0,-$len);
 			}
 		}
 		return $sections;

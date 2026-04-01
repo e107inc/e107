@@ -562,7 +562,7 @@ class gallery_cat_admin_ui extends e_admin_ui
 		$cats = array();
 		foreach($categories as $k => $var)
 		{
-			$id = preg_replace("/[^0-9]/", '', $k);
+			$id = preg_replace("/[^0-9]/", '', (string) $k);
 			$cats[$id] = $var['media_cat_title'];
 		}
 

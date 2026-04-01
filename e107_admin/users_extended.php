@@ -57,7 +57,7 @@ if(varset($_GET['mode']) == "ajax")
 				}
 
 				$currVal = $current['user_extended_struct_values'];
-				$curVals = explode(",", varset($currVal));
+				$curVals = explode(",", (string) varset($currVal));
 
 				// Ajax URL for "Table" dropdown.
 				$ajaxGetTableSrc = e_SELF . '?mode=ajax&action=changeTable';
@@ -788,7 +788,7 @@ e107::js('footer-inline', js());
 			$txt .= "
 			<tr>
 			<td>{$var['user_extended_struct_name']}</td>
-			<td>".constant(strtoupper($var['user_extended_struct_text'])."_DESC")."</td>
+			<td>".constant(strtoupper((string) $var['user_extended_struct_text'])."_DESC")."</td>
 			<td>".$ue->user_extended_edit($var,'')."</td>
 	        <td>".$tp->toHTML($var['type'], false, 'defs')."</td>
 			<td class='center'>".($active ? ADMIN_TRUE_ICON : "&nbsp;")."</td>
@@ -842,7 +842,7 @@ e107::js('footer-inline', js());
 
 				$name = $this->getController()->getListModel()->get('user_extended_struct_name');
 
-				if(strpos($name, 'plugin_') === 0)
+				if(strpos((string) $name, 'plugin_') === 0)
 				{
 					$attributes['readParms']['deleteClass'] = e_UC_NOBODY;
 				}
@@ -990,7 +990,7 @@ e107::js('footer-inline', js());
 
 			$text = "<div id='values' style='display:$val_hide'>\n";
 			$text .= "<div id='value_container' >\n";
-			$curVals = explode(",",varset($current['user_extended_struct_values']));
+			$curVals = explode(",",(string) varset($current['user_extended_struct_values']));
 			if(count($curVals) == 0)
 			{
 				$curVals[]='';

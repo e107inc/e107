@@ -115,7 +115,7 @@ if (isset($_POST['update_prefs']))
 	$temp = array();
 	foreach($_POST as $k => $v)
 	{
-		if (strpos($k, 'pm_option-') === 0)
+		if (strpos((string) $k, 'pm_option-') === 0)
 		{
 			$k = str_replace('pm_option-','',$k);
 			$temp[$k] = $v;
@@ -751,7 +751,7 @@ function doMaint($opts, $pmPrefs)
 		{
 			while ($row = $db2->fetch())
 			{
-				$attachList = explode(chr(0), $row['pm_attachments']);
+				$attachList = explode(chr(0), (string) $row['pm_attachments']);
 				foreach ($attachList as $a)
 				{
 					$found = FALSE;

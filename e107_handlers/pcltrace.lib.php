@@ -241,14 +241,14 @@ if (!defined("PCLTRACE_LIB"))
 
     // ----- Extract the function name in the list
     // ----- Remove the function name in the list
-    if (!($v_name = strrchr($g_pcl_trace_name, ",")))
+    if (!($v_name = strrchr((string) $g_pcl_trace_name, ",")))
     {
       $v_name = $g_pcl_trace_name;
       $g_pcl_trace_name = "";
     }
     else
     {
-      $g_pcl_trace_name = substr($g_pcl_trace_name, 0, strlen($g_pcl_trace_name)-strlen($v_name));
+      $g_pcl_trace_name = substr((string) $g_pcl_trace_name, 0, strlen((string) $g_pcl_trace_name)-strlen($v_name));
       $v_name = substr($v_name, -strlen($v_name)+1);
     }
 
@@ -444,7 +444,7 @@ if (!defined("PCLTRACE_LIB"))
       }
       echo "</tr></table></td>";
       echo "<td width=5></td>";
-      echo "<td><font size=1 face=$v_font>".basename($g_pcl_trace_entries[$i][file])."</font></td>";
+      echo "<td><font size=1 face=$v_font>".basename((string) $g_pcl_trace_entries[$i][file])."</font></td>";
       echo "<td width=5></td>";
       echo "<td><font size=1 face=$v_font>".$g_pcl_trace_entries[$i][line]."</font></td>";
       echo "</tr>";

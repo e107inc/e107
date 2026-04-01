@@ -97,7 +97,7 @@ class linkwords_parse
 
 	private function loadRow($lw, $row)
 	{
-		$lw = trim($lw);
+		$lw = trim((string) $lw);
 
 		if(empty($lw))
 		{
@@ -143,7 +143,7 @@ class linkwords_parse
 		$cflag = false; // commented code prsent.
 
 		// Shouldn't need utf-8 on next line - just looking for HTML tags
-		$content = preg_split('#(<.*?>)#mis', $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
+		$content = preg_split('#(<.*?>)#mis', (string) $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
 
 		$range = range(1,5);
 
@@ -289,12 +289,12 @@ class linkwords_parse
 		}
 
 		// This splits the text into blocks, some of which will precisely contain a linkword
-		$split_line = preg_split('#\b('.$lw.')(\s|\b)#i'.$this->utfMode, $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );		// *utf (selected)
+		$split_line = preg_split('#\b('.$lw.')(\s|\b)#i'.$this->utfMode, (string) $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );		// *utf (selected)
 		//	$class = "".implode(' ',$lwClass)."' ";
 
 		$class = implode(' ',$lwClass);
 
-		$hash = md5($lw);
+		$hash = md5((string) $lw);
 		$this->hash = $hash;
 
 		if(!isset($this->wordCount[$hash]))
@@ -373,7 +373,7 @@ class linkwords_parse
 
 		// Now see if disabled on specific pages
 		$check_url = e_SELF . (defined('e_QUERY') ? "?" . e_QUERY : '');
-		$this->block_list = explode("|", substr(varset($pref['lw_page_visibility']), 2));    // Knock off the 'show/hide' flag
+		$this->block_list = explode("|", substr((string) varset($pref['lw_page_visibility']), 2));    // Knock off the 'show/hide' flag
 
 		foreach($this->block_list as $p)
 		{

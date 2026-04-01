@@ -45,7 +45,7 @@ class e_signup
 	{
 		$ns = e107::getRender();
 
-		if(strpos($query,'activate.') === 0)
+		if(strpos((string) $query,'activate.') === 0)
 		{
 			$result = $this->processActivationLink($query);
 
@@ -165,7 +165,7 @@ class e_signup
 		$row = $sql -> fetch();
 		// We should have a user record here
 
-		if(trim($_POST['resend_password']) !="" && $new_email) // Need to change the email address - check password to make sure
+		if(trim((string) $_POST['resend_password']) !="" && $new_email) // Need to change the email address - check password to make sure
 		{
 			if ($userMethods->CheckPassword($_POST['resend_password'], $row['user_loginname'], $row['user_password']) === TRUE)
 			{
@@ -356,7 +356,7 @@ class e_signup
 		$log        = e107::getLog();
 
 
-		$qs = explode('.', $queryString); // ie.  activate.".$row['user_id'].".".$row['user_sess']
+		$qs = explode('.', (string) $queryString); // ie.  activate.".$row['user_id'].".".$row['user_sess']
 
 		if ($qs[0] == 'activate' && (count($qs) == 3 || count($qs) == 4) && $qs[2])
 		{

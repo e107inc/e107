@@ -722,7 +722,7 @@ class Uri implements UriInterface, \JsonSerializable
 
     private function rawurlencodeMatchZero(array $match): string
     {
-        return rawurlencode($match[0]);
+        return rawurlencode((string) $match[0]);
     }
 
     private function validateState(): void

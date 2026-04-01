@@ -1288,7 +1288,7 @@ EXPECTED;
 
 	private function isValidXML($xmlContent)
 	{
-		if (trim($xmlContent) == '')
+		if (trim((string) $xmlContent) == '')
 		{
 			return false;
 		}
@@ -2707,7 +2707,7 @@ EXPECTED;
 		foreach ($tests as $index => $var)
 		{
 			$result = $this->tp->toImage($var['src'], $var['parms']);
-			$result = preg_replace('/"([^"]*)thumb.php/', '"thumb.php', $result);
+			$result = preg_replace('/"([^"]*)thumb.php/', '"thumb.php', (string) $result);
 			self::assertSame($var['expected'], $result);
 
 		}

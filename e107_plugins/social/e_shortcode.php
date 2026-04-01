@@ -105,7 +105,7 @@ class social_shortcodes extends e_shortcode
 		if(!empty($parm['type']))
 		{
 			$newList = array();
-			$tmp = explode(",",$parm['type']);
+			$tmp = explode(",",(string) $parm['type']);
 			foreach($tmp as $v)
 			{
 				if(isset($social[$v]))
@@ -255,7 +255,7 @@ class social_shortcodes extends e_shortcode
 	 */
 	public function getShareUrl($type, $urlScheme, $data=array(), $options=array())
 	{
-		$data = array('u'=> rawurlencode($data['url']), 't'=> rawurlencode($data['title']), 'd'	=> rawurlencode($data['description']), 'm' => rawurlencode($data['media']));
+		$data = array('u'=> rawurlencode((string) $data['url']), 't'=> rawurlencode((string) $data['title']), 'd'	=> rawurlencode((string) $data['description']), 'm' => rawurlencode((string) $data['media']));
 
 		return $this->parseShareUrlScheme($type, $urlScheme, $data, $options);
 	}
@@ -278,7 +278,7 @@ class social_shortcodes extends e_shortcode
 		{
 			if(!empty($options['hashtags']))
 			{
-				$shareUrl .= "&amp;hashtags=".rawurlencode($options['hashtags']);
+				$shareUrl .= "&amp;hashtags=".rawurlencode((string) $options['hashtags']);
 			}
 
 			if(!empty($options['twitterAccount']))
@@ -329,7 +329,7 @@ class social_shortcodes extends e_shortcode
 		}
 		else
 		{
-			$parm['providers']  = explode(",",$parm['providers']);
+			$parm['providers']  = explode(",",(string) $parm['providers']);
 		}
 
 		if(empty($parm['dropdown']))
@@ -348,7 +348,7 @@ class social_shortcodes extends e_shortcode
 		$size			= varset($parm['size'],		'md');
 
 
-		$data = array('u'=> rawurlencode($url), 't'=> rawurlencode($title), 'd'	=> rawurlencode($description), 'm' => rawurlencode($media));
+		$data = array('u'=> rawurlencode((string) $url), 't'=> rawurlencode((string) $title), 'd'	=> rawurlencode((string) $description), 'm' => rawurlencode($media));
 		
 		if(!vartrue($parm['dropdown']))
 		{
@@ -414,7 +414,7 @@ class social_shortcodes extends e_shortcode
 		elseif(!empty($parm['type']))
 		{
 			$newlist = array();
-			$tmp = explode(",",$parm['type']);
+			$tmp = explode(",",(string) $parm['type']);
 			foreach($tmp as $v)
 			{
 				if(isset($opt[$v]))

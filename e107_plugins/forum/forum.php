@@ -507,7 +507,7 @@ class forum_front
 
 		if(!empty($forumList['subs']) && is_array($forumList['subs'][$f['forum_id']]))
 		{
-			$lastPost = explode('.', $f['forum_lastpost_info']);
+			$lastPost = explode('.', (string) $f['forum_lastpost_info']);
 			$lastpost_datestamp = reset($lastPost);
 			$ret = $this->parse_subs($forumList, $f['forum_id'], $lastpost_datestamp);
 
@@ -557,7 +557,7 @@ class forum_front
 			$ret['text'] .= "<a href='{$suburl}'>" . $tp->toHTML($sub['forum_name']) . '</a>';
 			$ret['threads'] += $sub['forum_threads'];
 			$ret['replies'] += $sub['forum_replies'];
-			$tmp = explode('.', $sub['forum_lastpost_info']);
+			$tmp = explode('.', (string) $sub['forum_lastpost_info']);
 
 			if($tmp[0] > $lastpost_datestamp)
 			{

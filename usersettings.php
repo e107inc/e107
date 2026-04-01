@@ -597,7 +597,7 @@ class usersettings_front // Begin Usersettings rewrite.
 		{
 /*			if(!empty($_POST['updated_data']) && !empty($_POST['currentpassword']) && !empty($_POST['updated_key']))
 			{	// Got some data confirmed with password entry*/
-				$new_data = base64_decode($_POST['updated_data']);
+				$new_data = base64_decode((string) $_POST['updated_data']);
 
 				 // Should only happen if someone's fooling around
 				if ($this->getValidationKey($new_data) !== $_POST['updated_key'] || ($userMethods->hasReadonlyField($new_data) !==false))
@@ -990,7 +990,7 @@ class usersettings_front // Begin Usersettings rewrite.
 	 */
 	private function getValidationKey($string)
 	{
-		return crypt($string, e_TOKEN);
+		return crypt((string) $string, e_TOKEN);
 	}
 
 

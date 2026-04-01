@@ -37,20 +37,20 @@ class email_validation_class
 	 */
 	Function Tokenize($string, $separator="")
 	{
-		if(!strcmp($separator,""))
+		if(!strcmp((string) $separator,""))
 		{
 			$separator=$string;
 			$string=$this->next_token;
 		}
-		for($character=0, $characterMax = strlen($separator); $character< $characterMax; $character++)
+		for($character=0, $characterMax = strlen((string) $separator); $character< $characterMax; $character++)
 		{
-			if(GetType($position=strpos($string,$separator[$character]))=="integer")
+			if(GetType($position=strpos((string) $string,(string) $separator[$character]))=="integer")
 				$found=(IsSet($found) ? min($found,$position) : $position);
 		}
 		if(IsSet($found))
 		{
-			$this->next_token=substr($string,$found+1);
-			return(substr($string,0,$found));
+			$this->next_token=substr((string) $string,$found+1);
+			return(substr((string) $string,0,$found));
 		}
 		else
 		{
@@ -116,14 +116,14 @@ class email_validation_class
 		if(IsSet($this->preg))
 		{
 			if(strlen($this->preg))
-				return(preg_match($this->preg,$email));
+				return(preg_match($this->preg,(string) $email));
 		}
 		else
 		{
 			$this->preg=(function_exists("preg_match") ? "/".str_replace("/", "\\/", $this->email_regular_expression)."/" : "");
 			return($this->ValidateEmailAddress($email));
 		}
-		return(preg_match("/".str_replace("/", "\\/", $this->email_regular_expression)."/i", $email)/*!=0*/);
+		return(preg_match("/".str_replace("/", "\\/", $this->email_regular_expression)."/i", (string) $email)/*!=0*/);
 	}
 
 	/**
@@ -151,8 +151,8 @@ class email_validation_class
 		}
 		else
 		{
-			if(strcmp($ip=@gethostbyname($domain),$domain)
-			&& (strlen($this->exclude_address)==0
+			if(strcmp($ip=@gethostbyname($domain),(string) $domain)
+			&& (strlen((string) $this->exclude_address)==0
 			|| strcmp(@gethostbyname($this->exclude_address),$ip)))
 				$hosts[]=$domain;
 		}
@@ -169,9 +169,9 @@ class email_validation_class
 		while(($line=$this->GetLine($connection)))
 		{
 			$this->last_code=$this->Tokenize($line," -");
-			if(strcmp($this->last_code,$code))
+			if(strcmp((string) $this->last_code,(string) $code))
 				return(0);
-			if(!strcmp(substr($line, strlen($this->last_code), 1)," "))
+			if(!strcmp(substr((string) $line, strlen((string) $this->last_code), 1)," "))
 				return(1);
 		}
 		return(-1);
@@ -185,32 +185,32 @@ class email_validation_class
 	{
 		if(!$this->ValidateEmailHost($email,$hosts))
 			return(0);
-		if(!strcmp($localhost=$this->localhost,"")
+		if(!strcmp((string) $localhost=$this->localhost,"")
 		&& !strcmp($localhost=getenv("SERVER_NAME"),"")
 		&& !strcmp($localhost=getenv("HOST"),""))
 		   $localhost="localhost";
-		if(!strcmp($localuser=$this->localuser,"")
+		if(!strcmp((string) $localuser=$this->localuser,"")
 		&& !strcmp($localuser=getenv("USERNAME"),"")
 		&& !strcmp($localuser=getenv("USER"),""))
 		   $localuser="root";
 		for($host=0, $hostMax = count($hosts); $host< $hostMax; $host++)
 		{
 			$domain=$hosts[$host];
-			if(preg_match('/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/',$domain))
+			if(preg_match('/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/',(string) $domain))
 				$ip=$domain;
 			else
 			{
 				if($this->debug)
 					$this->OutputDebug("Resolving host name \"".$hosts[$host]."\"...");
-				if(!strcmp($ip=@gethostbyname($domain),$domain))
+				if(!strcmp($ip=@gethostbyname($domain),(string) $domain))
 				{
 					if($this->debug)
 						$this->OutputDebug("Could not resolve host name \"".$hosts[$host]."\".");
 					continue;
 				}
 			}
-			if(strlen($this->exclude_address)
-			&& !strcmp(@gethostbyname($this->exclude_address),$ip))
+			if(strlen((string) $this->exclude_address)
+			&& !strcmp(@gethostbyname($this->exclude_address),(string) $ip))
 			{
 				if($this->debug)
 					$this->OutputDebug("Host address of \"".$hosts[$host]."\" is the exclude address");
@@ -241,8 +241,8 @@ class email_validation_class
 					}
 					else
 					{
-						if(strlen($this->last_code)
-						&& !strcmp($this->last_code[0],"4"))
+						if(strlen((string) $this->last_code)
+						&& !strcmp((string) $this->last_code[0],"4"))
 							$result=-1;
 					}
 					if($this->debug)

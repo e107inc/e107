@@ -11,7 +11,7 @@
 if(isset($_GET['configure']))
 {
 	//Switch to Front-end
-	$_GET['configure'] = preg_replace('[^a-z0-9_-]','',$_GET['configure']);
+	$_GET['configure'] = preg_replace('[^a-z0-9_-]','',(string) $_GET['configure']);
 	
 	define("USER_AREA", true);
 	define('ADMIN_AREA', false);
@@ -692,7 +692,7 @@ if(e_AJAX_REQUEST)
 	
 	if(!empty($_GET['enc']))
 	{
-		$string = base64_decode($_GET['enc']);
+		$string = base64_decode((string) $_GET['enc']);
 		parse_str($string,$_GET);
 
 	}

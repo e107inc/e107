@@ -336,7 +336,7 @@ class JS extends Minify
                 '/\s+(' . implode('|', $operatorsAfter) . ')/',
             ),
             '\\1',
-            $content
+            (string) $content
         );
 
         // make sure + and - can't be mistaken for, or joined into ++ and --
@@ -346,12 +346,12 @@ class JS extends Minify
                 '/(?<![\+\-])([\+\-])\s*(?![\+\-])/',
             ),
             '\\1',
-            $content
+            (string) $content
         );
 
         // collapse whitespace around reserved words into single space
-        $content = preg_replace('/(^|[;\}\s])\K(' . implode('|', $keywordsBefore) . ')\s+/', '\\2 ', $content);
-        $content = preg_replace('/\s+(' . implode('|', $keywordsAfter) . ')(?=([;\{\s]|$))/', ' \\1', $content);
+        $content = preg_replace('/(^|[;\}\s])\K(' . implode('|', $keywordsBefore) . ')\s+/', '\\2 ', (string) $content);
+        $content = preg_replace('/\s+(' . implode('|', $keywordsAfter) . ')(?=([;\{\s]|$))/', ' \\1', (string) $content);
 
         /*
          * We didn't strip whitespace after a couple of operators because they
@@ -361,8 +361,8 @@ class JS extends Minify
          */
         $operatorsDiffBefore = array_diff($operators, $operatorsBefore);
         $operatorsDiffAfter = array_diff($operators, $operatorsAfter);
-        $content = preg_replace('/(' . implode('|', $operatorsDiffBefore) . ')[^\S\n]+/', '\\1', $content);
-        $content = preg_replace('/[^\S\n]+(' . implode('|', $operatorsDiffAfter) . ')/', '\\1', $content);
+        $content = preg_replace('/(' . implode('|', $operatorsDiffBefore) . ')[^\S\n]+/', '\\1', (string) $content);
+        $content = preg_replace('/[^\S\n]+(' . implode('|', $operatorsDiffAfter) . ')/', '\\1', (string) $content);
 
         /*
          * Whitespace after `return` can be omitted in a few occasions
@@ -370,9 +370,9 @@ class JS extends Minify
          * Same for whitespace in between `)` and `{`, or between `{` and some
          * keywords.
          */
-        $content = preg_replace('/\breturn\s+(["\'\/\+\-])/', 'return$1', $content);
-        $content = preg_replace('/\)\s+\{/', '){', $content);
-        $content = preg_replace('/}\n(else|catch|finally)\b/', '}$1', $content);
+        $content = preg_replace('/\breturn\s+(["\'\/\+\-])/', 'return$1', (string) $content);
+        $content = preg_replace('/\)\s+\{/', '){', (string) $content);
+        $content = preg_replace('/}\n(else|catch|finally)\b/', '}$1', (string) $content);
 
         /*
          * Get rid of double semicolons, except where they can be used like:
@@ -381,9 +381,9 @@ class JS extends Minify
          * temporarily replacing them with an invalid condition: they won't have
          * a double semicolon and will be easy to spot to restore afterwards.
          */
-        $content = preg_replace('/\bfor\(([^;]*);;([^;]*)\)/', 'for(\\1;-;\\2)', $content);
-        $content = preg_replace('/;+/', ';', $content);
-        $content = preg_replace('/\bfor\(([^;]*);-;([^;]*)\)/', 'for(\\1;;\\2)', $content);
+        $content = preg_replace('/\bfor\(([^;]*);;([^;]*)\)/', 'for(\\1;-;\\2)', (string) $content);
+        $content = preg_replace('/;+/', ';', (string) $content);
+        $content = preg_replace('/\bfor\(([^;]*);-;([^;]*)\)/', 'for(\\1;;\\2)', (string) $content);
 
         /*
          * Next, we'll be removing all semicolons where ASI kicks in.
@@ -403,16 +403,16 @@ class JS extends Minify
          * of the three parts for a specific for() case.
          * REGEX throwing catastrophic backtracking: $content = preg_replace('/(for\([^;\{]*(\{([^\{\}]*(?-2))*[^\{\}]*\})?[^;\{]*;[^;\{]*(\{([^\{\}]*(?-2))*[^\{\}]*\})?[^;\{]*;[^;\{]*(\{([^\{\}]*(?-2))*[^\{\}]*\})?[^;\{]*\));(\}|$)/s', '\\1;;\\8', $content);
          */
-        $content = preg_replace('/(for\((?:[^;\{]*|[^;\{]*function[^;\{]*(\{([^\{\}]*(?-2))*[^\{\}]*\})?[^;\{]*);[^;\{]*;[^;\{]*\));(\}|$)/s', '\\1;;\\4', $content);
-        $content = preg_replace('/(for\([^;\{]*;(?:[^;\{]*|[^;\{]*function[^;\{]*(\{([^\{\}]*(?-2))*[^\{\}]*\})?[^;\{]*);[^;\{]*\));(\}|$)/s', '\\1;;\\4', $content);
-        $content = preg_replace('/(for\([^;\{]*;[^;\{]*;(?:[^;\{]*|[^;\{]*function[^;\{]*(\{([^\{\}]*(?-2))*[^\{\}]*\})?[^;\{]*)\));(\}|$)/s', '\\1;;\\4', $content);
+        $content = preg_replace('/(for\((?:[^;\{]*|[^;\{]*function[^;\{]*(\{([^\{\}]*(?-2))*[^\{\}]*\})?[^;\{]*);[^;\{]*;[^;\{]*\));(\}|$)/s', '\\1;;\\4', (string) $content);
+        $content = preg_replace('/(for\([^;\{]*;(?:[^;\{]*|[^;\{]*function[^;\{]*(\{([^\{\}]*(?-2))*[^\{\}]*\})?[^;\{]*);[^;\{]*\));(\}|$)/s', '\\1;;\\4', (string) $content);
+        $content = preg_replace('/(for\([^;\{]*;[^;\{]*;(?:[^;\{]*|[^;\{]*function[^;\{]*(\{([^\{\}]*(?-2))*[^\{\}]*\})?[^;\{]*)\));(\}|$)/s', '\\1;;\\4', (string) $content);
 
-        $content = preg_replace('/(for\([^;\{]+\s+in\s+[^;\{]+\));(\}|$)/s', '\\1;;\\2', $content);
+        $content = preg_replace('/(for\([^;\{]+\s+in\s+[^;\{]+\));(\}|$)/s', '\\1;;\\2', (string) $content);
 
         /*
          * Do the same for the if's that don't have a body but are followed by ;}
          */
-        $content = preg_replace('/(\bif\s*\([^{;]*\));\}/s', '\\1;;}', $content);
+        $content = preg_replace('/(\bif\s*\([^{;]*\));\}/s', '\\1;;}', (string) $content);
 
         /*
          * Below will also keep `;` after a `do{}while();` along with `while();`
@@ -420,7 +420,7 @@ class JS extends Minify
          * distinction is cumbersome, so I'll play it safe and make sure `;`
          * after any kind of `while` is kept.
          */
-        $content = preg_replace('/(while\([^;\{]+\));(\}|$)/s', '\\1;;\\2', $content);
+        $content = preg_replace('/(while\([^;\{]+\));(\}|$)/s', '\\1;;\\2', (string) $content);
 
         /*
          * We also can't strip empty else-statements. Even though they're
@@ -430,7 +430,7 @@ class JS extends Minify
          *
          * @see https://github.com/matthiasmullie/minify/issues/91
          */
-        $content = preg_replace('/else;/s', '', $content);
+        $content = preg_replace('/else;/s', '', (string) $content);
 
         /*
          * We also don't really want to terminate statements followed by closing
@@ -438,8 +438,8 @@ class JS extends Minify
          * script: ASI will kick in here & we're all about minifying.
          * Semicolons at beginning of the file don't make any sense either.
          */
-        $content = preg_replace('/;(\}|$)/s', '\\1', $content);
-        $content = ltrim($content, ';');
+        $content = preg_replace('/;(\}|$)/s', '\\1', (string) $content);
+        $content = ltrim((string) $content, ';');
 
         // get rid of remaining whitespace af beginning/end
         return trim($content);
@@ -577,7 +577,7 @@ class JS extends Minify
          * character and check if it's a `.`
          */
         $callback = function ($match) {
-            if (trim($match[1]) === '.') {
+            if (trim((string) $match[1]) === '.') {
                 return $match[0];
             }
 
@@ -586,10 +586,10 @@ class JS extends Minify
         $content = preg_replace_callback('/(^|.\s*)\b(true|false)\b(?!:)/', $callback, $content);
 
         // for(;;) is exactly the same as while(true), but shorter :)
-        $content = preg_replace('/\bwhile\(!0\){/', 'for(;;){', $content);
+        $content = preg_replace('/\bwhile\(!0\){/', 'for(;;){', (string) $content);
 
         // now make sure we didn't turn any do ... while(true) into do ... for(;;)
-        preg_match_all('/\bdo\b/', $content, $dos, PREG_OFFSET_CAPTURE | PREG_SET_ORDER);
+        preg_match_all('/\bdo\b/', (string) $content, $dos, PREG_OFFSET_CAPTURE | PREG_SET_ORDER);
 
         // go backward to make sure positional offsets aren't altered when $content changes
         $dos = array_reverse($dos);
@@ -598,12 +598,12 @@ class JS extends Minify
 
             // find all `while` (now `for`) following `do`: one of those must be
             // associated with the `do` and be turned back into `while`
-            preg_match_all('/\bfor\(;;\)/', $content, $whiles, PREG_OFFSET_CAPTURE | PREG_SET_ORDER, $offsetDo);
+            preg_match_all('/\bfor\(;;\)/', (string) $content, $whiles, PREG_OFFSET_CAPTURE | PREG_SET_ORDER, $offsetDo);
             foreach ($whiles as $while) {
                 $offsetWhile = $while[0][1];
 
-                $open = substr_count($content, '{', $offsetDo, $offsetWhile - $offsetDo);
-                $close = substr_count($content, '}', $offsetDo, $offsetWhile - $offsetDo);
+                $open = substr_count((string) $content, '{', $offsetDo, $offsetWhile - $offsetDo);
+                $close = substr_count((string) $content, '}', $offsetDo, $offsetWhile - $offsetDo);
                 if ($open === $close) {
                     // only restore `while` if amount of `{` and `}` are the same;
                     // otherwise, that `for` isn't associated with this `do`

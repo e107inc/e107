@@ -90,7 +90,7 @@ class Argument
             return $this;
         }
 
-        switch (strtolower($type)) {
+        switch (strtolower((string) $type)) {
             case 'bool':
             case 'boolean':
                 $valid = \is_bool($value);

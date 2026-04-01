@@ -1178,7 +1178,7 @@ class plugin_online_ui extends e_admin_ui
 			$tp = e107::getParser();
 
 
-			$string =  base64_decode($_GET['src']);
+			$string =  base64_decode((string) $_GET['src']);
 			parse_str($string, $data);
 
 			if(deftrue('e_DEBUG_MARKETPLACE'))
@@ -1309,7 +1309,7 @@ class plugin_online_ui extends e_admin_ui
 					<div><small class="text-muted"><i class="fa fa-user"></i> {AUTHOR} <i>{DATE}</i></small> <span class="pull-right">&nbsp; {OPTIONS}</span></div>
 					</td></tr>
 					</table>
-					
+
 				</div>';
 
 			$this->perPage = 180;
@@ -1403,13 +1403,13 @@ class plugin_online_ui extends e_admin_ui
 
 	private function truncateSentence($string, 	$limit = 120 )
 	{
-		if(strlen($string) <= $limit)
+		if(strlen((string) $string) <= $limit)
 		{
-			$text = nl2br($string);
+			$text = nl2br((string) $string);
 			return $string;
 		}
 
-		$tmp = explode(".", $string);
+		$tmp = explode(".", (string) $string);
 
 		$chars = 0;
 
@@ -1451,7 +1451,7 @@ class plugin_online_ui extends e_admin_ui
 
 		if($filter = $this->getQuery('filter_options'))
 		{
-			list($bla, $cat) = explode("__",$filter);
+			list($bla, $cat) = explode("__",(string) $filter);
 		}
 
 
@@ -1486,13 +1486,13 @@ class plugin_online_ui extends e_admin_ui
 				'plugin_id'          => $row['params']['id'],
 				'plugin_mode'        => $row['params']['mode'],
 				'plugin_icon'        => vartrue($row['icon'], e_IMAGE."logo_template.png"),
-				'plugin_name'        => stripslashes($row['name']),
+				'plugin_name'        => stripslashes((string) $row['name']),
 				'plugin_description' => $this->truncateSentence(vartrue($row['description'])),
 				'plugin_featured'    => $featured,
 				'plugin_sef'         => '',
 				'plugin_folder'      => $row['folder'],
 				'plugin_path'        => $row['folder'],
-				'plugin_date'        => $tp->toDate(strtotime($row['date']), 'relative'),
+				'plugin_date'        => $tp->toDate(strtotime((string) $row['date']), 'relative'),
 				'plugin_category'    => vartrue($row['category'], 'n/a'),
 				'plugin_author'      => vartrue($row['author']),
 				'plugin_version'     => $row['version'],
@@ -1539,7 +1539,7 @@ class plugin_online_ui extends e_admin_ui
 
 		//TODO use admin_ui including filter capabilities by sending search queries back to the xml script.
 		$from = isset($_GET['frm']) ? intval($_GET['frm']) : 0;
-		$srch = preg_replace('/[^\w]/', '', vartrue($_GET['srch']));
+		$srch = preg_replace('/[^\w]/', '', (string) vartrue($_GET['srch']));
 
 
 		$mp = $this->getMarketplace();
@@ -1589,7 +1589,7 @@ class plugin_online_ui extends e_admin_ui
 				'plugin_id'          => $row['params']['id'],
 				'plugin_mode'        => $row['params']['mode'],
 				'plugin_icon'        => vartrue($row['icon'], 'e-plugins-32'),
-				'plugin_name'        => stripslashes($row['name']),
+				'plugin_name'        => stripslashes((string) $row['name']),
 				'plugin_featured'    => $featured,
 				'plugin_sef'         => '',
 				'plugin_folder'      => $row['folder'],
@@ -1598,7 +1598,7 @@ class plugin_online_ui extends e_admin_ui
 				'plugin_category'    => vartrue($row['category'], 'n/a'),
 				'plugin_author'      => vartrue($row['author']),
 				'plugin_version'     => $row['version'],
-				'plugin_description' => nl2br(vartrue($row['description'])),
+				'plugin_description' => nl2br((string) vartrue($row['description'])),
 				'plugin_compatible'  => $badge,
 
 				'plugin_website'     => vartrue($row['authorUrl']),
@@ -1946,7 +1946,7 @@ class pluginLanguage extends e_admin_ui
 
 			foreach($files as $v)
 			{
-				if(strpos($v['path'],'English')!==false OR strpos($v['fname'],'English')!==false)
+				if(strpos((string) $v['path'],'English')!==false OR strpos((string) $v['fname'],'English')!==false)
 				{
 					$path = $v['path'].$v['fname'];
 					$this->lanFiles[] = $path;
@@ -1981,7 +1981,7 @@ class pluginLanguage extends e_admin_ui
 
 				if($this->useSimilar == true)
 				{
-					similar_text($v['value'], $data['value'], $percentSimilar);
+					similar_text((string) $v['value'], (string) $data['value'], $percentSimilar);
 				}
 				else
 				{
@@ -1990,7 +1990,7 @@ class pluginLanguage extends e_admin_ui
 
 				if((($v['value'] == $data['value'] || $percentSimilar > 89) && $data['file'] != $v['file']))
 				{
-					if(strpos($v['lan'],'LAN')===false) // Defined constants that don't contain 'LAN'.
+					if(strpos((string) $v['lan'],'LAN')===false) // Defined constants that don't contain 'LAN'.
 					{
 						$v['status'] = 2;
 					}
@@ -2101,7 +2101,7 @@ class pluginLanguage extends e_admin_ui
 
 				$text = str_replace(e_PLUGIN.$this->plugin.'/languages/','',$path);
 
-				if(strpos($path,'_front.php')===false && strpos($path,'_admin.php')===false && strpos($path,'_global.php')===false && strpos($path,'_menu.php')===false && strpos($path,'_notify.php')===false && strpos($path,'_search.php')===false)
+				if(strpos((string) $path,'_front.php')===false && strpos((string) $path,'_admin.php')===false && strpos((string) $path,'_global.php')===false && strpos((string) $path,'_menu.php')===false && strpos((string) $path,'_notify.php')===false && strpos((string) $path,'_search.php')===false)
 				{
 					return "<span class='text-error e-tip' title='File name should be either English_front.php, English_admin.php or English_global.php'>".$text."</span>";
 				}
@@ -2209,13 +2209,13 @@ class pluginLanguage extends e_admin_ui
 
 			foreach($this->unused as $k=>$v)
 			{
-				if(strpos($v,'LAN')===false)
+				if(strpos((string) $v,'LAN')===false)
 				{
 					unset($this->unused[$k]);
 					$this->unsure[$k] = $v;
 				}
 
-				if(strpos($this->lanDefsData[$k]['file'],$this->plugin) === false || in_array($v,$this->excludeLans))
+				if(strpos((string) $this->lanDefsData[$k]['file'],$this->plugin) === false || in_array($v,$this->excludeLans))
 				{
 					unset($this->unused[$k]);
 					unset($this->unsure[$k]);
@@ -2311,7 +2311,7 @@ class pluginLanguage extends e_admin_ui
 			}
 
 
-			$type = basename($path);
+			$type = basename((string) $path);
 
 			if(preg_match_all('/^\s*?define\s*?\(\s*?(\'|\")([\w]+)(\'|\")\s*?,\s*?(\'|\")([\s\S]*?)\s*?(\'|\")\s*?\)\s*?;/im',$data,$matches))
 			{

@@ -90,8 +90,8 @@ class submitNews
 			exit;
 		}
 
-		$submitnews_user  = (USER ? USERNAME  : trim($tp->toDB($_POST['submitnews_name'])));
-		$submitnews_email = (USER ? USEREMAIL : trim(check_email($tp->toDB($_POST['submitnews_email']))));
+		$submitnews_user  = (USER ? USERNAME  : trim((string) $tp->toDB($_POST['submitnews_name'])));
+		$submitnews_email = (USER ? USEREMAIL : trim((string) check_email($tp->toDB($_POST['submitnews_email']))));
 		$submitnews_title = $tp->filter($_POST['submitnews_title']);
 		$submitnews_item  = $tp->filter($_POST['submitnews_item']);
 	//	$submitnews_item  = str_replace("src=&quot;e107_images", "src=&quot;".SITEURL."e107_images", $submitnews_item);

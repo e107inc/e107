@@ -54,7 +54,7 @@ class e_marketplace
 	 */
 	public function generateAuthKey($username, $password)
 	{
-		if(trim($username) == '' || trim($password) == '')
+		if(trim((string) $username) == '' || trim((string) $password) == '')
 		{
 			return false;	
 		}
@@ -87,7 +87,7 @@ class e_marketplace
 	public function makeAuthKey($username, $password = '', $plain = false)
 	{
 		$now 	= gmdate('y-m-d H');
-		if($plain && !empty($password)) $password = md5($password);
+		if($plain && !empty($password)) $password = md5((string) $password);
 		return sha1($username.$password.$now);
 	}
 
@@ -222,7 +222,7 @@ class e_marketplace
 	 */
 	public function __call($method, $arguments)
 	{
-		if(strpos($method, 'get') === 0 || strpos($method, 'do') === 0)
+		if(strpos((string) $method, 'get') === 0 || strpos((string) $method, 'do') === 0)
 		{
 			return $this->adapter()->call($method, $arguments);
 		}
@@ -1284,7 +1284,7 @@ class eAuth
 		$realm = isset($params['realm']) ? $params['realm'] : null;
 		if($realm)
 		{
-			$out = 'Authorization: eAuth realm="'.rawurlencode($realm).'"';
+			$out = 'Authorization: eAuth realm="'.rawurlencode((string) $realm).'"';
 			$first = false;
 		}
 		else
@@ -1293,13 +1293,13 @@ class eAuth
 		$total = array();
 		foreach($params as $k => $v)
 		{
-			if(strpos($k, "eauth") !== 0) continue;
+			if(strpos((string) $k, "eauth") !== 0) continue;
 			if(is_array($v))
 			{
 				throw new Exception('Arrays not supported in headers', 200);
 			}
 			$out .= ($first) ? ' ' : ',';
-			$out .= rawurlencode($k).'="'.rawurlencode($v).'"';
+			$out .= rawurlencode((string) $k).'="'.rawurlencode((string) $v).'"';
 			$first = false;
 		}
 		return $out;
@@ -1343,7 +1343,7 @@ class eAuth
 			return sha1($string.$secretKey);
 		}
 		// use secret key if HMAC-SHA1
-		return hash_hmac('sha1', $string, $secretKey);
+		return hash_hmac('sha1', (string) $string, (string) $secretKey);
 	}
 
 	/**
@@ -1363,7 +1363,7 @@ class eAuth
 	{
 		$ret = false;
 		// mask - Y-m-d H:i:s
-		if(preg_match('#(.*?)-(.*?)-(.*?) (.*?):(.*?):(.*?)$#', $string, $matches))
+		if(preg_match('#(.*?)-(.*?)-(.*?) (.*?):(.*?):(.*?)$#', (string) $string, $matches))
 		{
 			$ret = gmmktime($matches[4], $matches[5], $matches[6], $matches[2], $matches[3], $matches[1]);
 		}

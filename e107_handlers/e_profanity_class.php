@@ -20,7 +20,7 @@ class e_profanity
 			return null;
 		}
 
-		$words = explode(',', $this->pref['profanity_words']);
+		$words = explode(',', (string) $this->pref['profanity_words']);
 		$word_array = array();
 		foreach($words as $word)
 		{
@@ -57,10 +57,10 @@ class e_profanity
 
 		if(!empty($this->pref['profanity_replace']))
 		{
-			return preg_replace("#\b" . $this->profanityList . "\b#is", $this->pref['profanity_replace'], $text);
+			return preg_replace("#\b" . $this->profanityList . "\b#is", (string) $this->pref['profanity_replace'], (string) $text);
 		}
 
-		return preg_replace_callback("#\b" . $this->profanityList . "\b#is", array($this, 'replaceProfanities'), $text);
+		return preg_replace_callback("#\b" . $this->profanityList . "\b#is", array($this, 'replaceProfanities'), (string) $text);
 	}
 
 	/**
@@ -78,6 +78,6 @@ class e_profanity
 		@result filtered text
 		*/
 
-		return preg_replace('#a|e|i|o|u#i', '*', $matches[0]);
+		return preg_replace('#a|e|i|o|u#i', '*', (string) $matches[0]);
 	}
 }

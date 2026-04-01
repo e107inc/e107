@@ -122,7 +122,7 @@
 			</button>
 		    	<ul class="dropdown-menu pull-right float-right dropdown-menu-end">
 		    	';
-			
+
 			//--	foreach($jumpList as $key => $val)
 			foreach($jumpList as $val)
 			{
@@ -508,7 +508,7 @@
 			if($this->var['forum_lastpost_info'])
 			{
 				//	global $gen;
-				$tmp = explode('.', $this->var['forum_lastpost_info']);
+				$tmp = explode('.', (string) $this->var['forum_lastpost_info']);
 			//	$lp_url = e107::getUrl()->create('forum/thread/last', array('id' => $tmp[1]));
 				$lp_url = $threadUrl = e107::url('forum','topic',$this->var, array('query'=>array('last'=>1)));
 

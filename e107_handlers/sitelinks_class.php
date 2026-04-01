@@ -59,7 +59,7 @@ class sitelinks
 					if(!empty($row['link_function']))
 					{
 						$parm = false;
-						list($path,$method) = explode("::",$row['link_function']);
+						list($path,$method) = explode("::",(string) $row['link_function']);
 						
 						if(strpos($method,"("))
 						{
@@ -105,7 +105,7 @@ class sitelinks
 		$pref = e107::getPref();
 		$e107cache = e107::getCache();
 
-		$usecache = (!(trim(defset('LINKSTART_HILITE')) != "" || trim(defset('LINKCLASS_HILITE')) != ""));
+		$usecache = (!(trim((string) defset('LINKSTART_HILITE')) != "" || trim((string) defset('LINKCLASS_HILITE')) != ""));
 
 		if($usecache && !strpos(e_SELF, e_ADMIN) && ($data = $e107cache->retrieve('sitelinks_' . $cat . md5($linkstyle . e_PAGE . e_QUERY))))
 		{
@@ -320,12 +320,12 @@ class sitelinks
 		// Start with an empty link
 		$linkstart = $indent = $linkadd = $screentip = $href = $link_append = '';
 		$highlighted = FALSE;
-		
+
 		if(!isset($style['linkstart_hilite'])) // Notice removal
 		{
 			$style['linkstart_hilite'] = "";	
 		}
-		
+
 		if(!isset($style['linkclass_hilite']))
 		{
 			$style['linkclass_hilite'] = "";	
@@ -341,9 +341,9 @@ class sitelinks
 		// If submenu: Fix Name, Add Indentation.
 		if ($submenu == true)
 		{
-			if(strpos($linkInfo['link_name'], 'submenu.') === 0)
+			if(strpos((string) $linkInfo['link_name'], 'submenu.') === 0)
 			{
-				$tmp = explode('.', $linkInfo['link_name'], 3);
+				$tmp = explode('.', (string) $linkInfo['link_name'], 3);
 				$linkInfo['link_name'] = $tmp[2];
 			}
 			$indent = ($style['linkdisplay'] != self::LINK_DISPLAY_OTHER && !empty($style['subindent'])) ? ($style['subindent']) : "";
@@ -352,23 +352,23 @@ class sitelinks
 		// Convert any {e_XXX} to absolute URLs (relative ones sometimes get broken by adding e_HTTP at the front)
 		$linkInfo['link_url'] = $tp -> replaceConstants($linkInfo['link_url'], TRUE, TRUE); // replace {e_xxxx}
 
-		if(strpos($linkInfo['link_url'],"{") !== false)
+		if(strpos((string) $linkInfo['link_url'],"{") !== false)
 		{
 			$linkInfo['link_url'] = $tp->parseTemplate($linkInfo['link_url'], TRUE); // shortcode in URL support - dynamic urls for multilanguage.
 		}
-		elseif($linkInfo['link_url'][0] !== '/' && strpos($linkInfo['link_url'],'http') !== 0)
+		elseif($linkInfo['link_url'][0] !== '/' && strpos((string) $linkInfo['link_url'],'http') !== 0)
 		{
-			$linkInfo['link_url'] = e_HTTP.ltrim($linkInfo['link_url'],'/');
+			$linkInfo['link_url'] = e_HTTP.ltrim((string) $linkInfo['link_url'],'/');
 		}
 		// By default links are not highlighted.
-		
+
 		if (isset($linkInfo['link_expand']) && $linkInfo['link_expand'])
 		{
 			// $href = " href=\"javascript:expandit('sub_".$linkInfo['link_id']."')\"";
 			$css_class .= " e-expandit";
 		}
-		
-		
+
+
 		$linkstart = $style['linkstart'];
 		$linkadd = ($style['linkclass']) ? " class='".$style['linkclass']."'" : "";
 		$linkadd = ($css_class) ? " class='".$style['linkclass'].$css_class."'" : $linkadd;
@@ -421,9 +421,9 @@ class sitelinks
 		// Remove default images if its a button and add new image at the start.
 		if ($linkInfo['link_button'])
 		{
-			$linkstart = preg_replace('/\<img.*\>/si', '', $linkstart);
+			$linkstart = preg_replace('/\<img.*\>/si', '', (string) $linkstart);
 			$linkstart .= $tp->toIcon($linkInfo['link_button'],array('legacy'=> "{e_IMAGE}icons/"));
-			
+
 		/*	if($linkInfo['link_button'][0]=='{')
 			{
 				$linkstart .= "<img src='".$tp->replaceConstants($linkInfo['link_button'],'abs')."' alt='' style='vertical-align:middle' />";	
@@ -505,7 +505,7 @@ class sitelinks
 		// ----------- highlight overriding - set the link matching in the page itself.
 		if(defined('HILITE'))
 		{
-			if(strpos($link,HILITE))
+			if(strpos($link,(string) HILITE))
 			{
 				return TRUE;
 			}
@@ -526,7 +526,7 @@ class sitelinks
 			{
 				if (in_array($fk,$uc_array))
 				{
-					$full_url = ((strpos($fp, 'http') === FALSE) ? SITEURL : '').$fp;
+					$full_url = ((strpos((string) $fp, 'http') === FALSE) ? SITEURL : '').$fp;
 					break;
 				}
 			}
@@ -544,7 +544,7 @@ class sitelinks
 		}
 
 		// --------------- highlighting for plugins. ----------------
-		if(stripos($link, $PLUGINS_DIRECTORY) !== false && stripos($link, "custompages") === false)
+		if(stripos($link, (string) $PLUGINS_DIRECTORY) !== false && stripos($link, "custompages") === false)
 		{
 			if($link_qry)
 			{	// plugin links with queries
@@ -639,7 +639,7 @@ class sitelinks
           	return TRUE;
 		}
 		
-		if($link_pge == basename($_SERVER['REQUEST_URI'])) // mod_rewrite support
+		if($link_pge == basename((string) $_SERVER['REQUEST_URI'])) // mod_rewrite support
 		{
 			return TRUE;
 		}
@@ -689,7 +689,7 @@ class e_navigation
 	 */
 	public static function guessMenuIcon($key)
 	{
-		$tmp = explode('/', $key);
+		$tmp = explode('/', (string) $key);
 		$mode = varset($tmp[0]);
 		$action = varset($tmp[1]);
 
@@ -983,13 +983,13 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
         }
 
 
-		
+
 		$this->setIconArray();	
-		
-			
+
+
 		if($mode === 'sub')
 		{
-				
+
 				//FIXME  array structure suitable for e_admin_menu - see shortcodes/admin_navigation.php
 				/*
 				 * Info about sublinks array structure
@@ -1008,16 +1008,16 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 				$array_sub_functions[17][] = array(e_ADMIN.'newspost.php', LAN_MANAGE, ADLAN_3, 'H', 3, defset('E_16_MANAGE'), defset('E_32_MANAGE'));
 				$array_sub_functions[17][] = array(e_ADMIN.'newspost.php?create', LAN_CREATE, ADLAN_2, 'H', 3, defset('E_16_CREATE'), defset('E_32_CREATE'));
 				$array_sub_functions[17][] = array(e_ADMIN.'newspost.php?pref', LAN_PREFS, LAN_PREFS, 'H', 3, defset('E_16_SETTINGS'), defset('E_32_SETTINGS'));
-				
+
 				return $array_sub_functions;
 		}
-		
-		
+
+
 			//FIXME array structure suitable for e_admin_menu (NOW admin() below) - see shortcodes/admin_navigation.php
 			//TODO find out where is used $array_functions elsewhere, refactor it
-		
+
 			//XXX DO NOT EDIT without first checking perms in user_handler.php !!!!
-			
+
 		$array_functions = $this->adminLinksArray();
 
 		if($mode === 'legacy')
@@ -1029,12 +1029,12 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
     	$array_functions_assoc = $this->convert_core_icons($newarray);
 
 
-        
+
        if($mode === 'core') // Core links only.
         {          
             return $array_functions_assoc;          
         }
-            
+
         $merged = array_merge($array_functions_assoc, $this->pluginLinks($E_16_PLUGMANAGER, "array"));
         $sorted = multiarray_sort($merged,'title'); // this deleted the e-xxxx and p-xxxxx keys. 
         return $this->restoreKeys($sorted); // we restore the keys with this. 
@@ -1122,7 +1122,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		{
 			if(varset($val[0]))
 			{
-				$key = "e-".basename($val[0],".php");
+				$key = "e-".basename((string) $val[0],".php");
                 $val['key'] = $key;
 				$val['icon'] = $val[5];
 				$val['icon_32'] = $val[6];
@@ -1465,7 +1465,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 				$e107_vars[$act]['image_src'] = self::guessMenuIcon($act.'/'.$act);
 			}
 			
-			if(!empty($e107_vars[$act]['image_src']) && strpos($e107_vars[$act]['image_src'], '.glyph') !== false)
+			if(!empty($e107_vars[$act]['image_src']) && strpos((string) $e107_vars[$act]['image_src'], '.glyph') !== false)
 			{
 				$replace['LINK_IMAGE'] = $tp->toGlyph($e107_vars[$act]['image_src'], array('fw'=>true, 'space'=>'&nbsp;'));
 			}
@@ -1571,7 +1571,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		$text = '';
 		if (getperms($perms))
 		{
-			$description = strip_tags($description);
+			$description = strip_tags((string) $description);
 			if ($mode === 'adminb')
 			{
 				$text = "<tr><td class='forumheader3'>
@@ -1841,7 +1841,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		{	
 			$parm = false;	
 			
-			list($path,$method) = explode("::",$row['link_function']);
+			list($path,$method) = explode("::",(string) $row['link_function']);
 
 			if($path === 'theme')
 			{
@@ -1897,16 +1897,16 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		### Example of main link: {e_BASE}some/url/#?match/string1^match/string2
 		### It would match http://your.domain/match/string/ or http://your.domain/match/string2?some=vars
 		### '#?' is the alternate active check trigger
-		if(strpos($data['link_url'], '#?') !== false)
+		if(strpos((string) $data['link_url'], '#?') !== false)
 		{
 			if($removeOnly)
 			{
-			    $arr = explode('#?', $data['link_url'], 2);
+			    $arr = explode('#?', (string) $data['link_url'], 2);
 				$data['link_url'] = array_shift($arr);
 				return null;
 			}
 			
-			$_temp = explode('#?', $data['link_url'], 2);
+			$_temp = explode('#?', (string) $data['link_url'], 2);
 			$data['link_url'] = $_temp[0] ? $_temp[0] : '#';
 			$matches = explode('^', $_temp[1]);
 			foreach ($matches as $match) 
@@ -1971,7 +1971,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		$manualOverride = e107::getRegistry('core/e107/navigation/active');
 		if(!empty($manualOverride) && empty($data['link_sub']))
 		{
-			if(strpos($dbLink, $manualOverride) !==false)
+			if(strpos($dbLink, (string) $manualOverride) !==false)
 			{
 				return true;
 			}
@@ -1982,7 +1982,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		// Set the URL matching in the page itself. see: forum_viewforum.php and forum_viewtopic.php 
 		if(defined("NAVIGATION_ACTIVE") && empty($data['link_sub']))
 		{
-			if(strpos($data['link_url'], NAVIGATION_ACTIVE)!==false)
+			if(strpos((string) $data['link_url'], NAVIGATION_ACTIVE)!==false)
 			{
 				return true;
 			}

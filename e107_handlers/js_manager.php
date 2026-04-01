@@ -796,9 +796,9 @@ class e_jsmanager
 
 			foreach($this->_libraries[$this->_dependence] as $inc)
 			{
-				if(strpos($inc,".css")!==false)
+				if(strpos((string) $inc,".css")!==false)
 				{
-					if(strpos($inc,"://")!==false) // cdn 
+					if(strpos((string) $inc,"://")!==false) // cdn 
 					{
 
 						$this->addJs('other_css', $inc, 'all', $opts);
@@ -825,9 +825,9 @@ class e_jsmanager
 				{
 					continue;
 				}
-				if(strpos($inc,".css")!==false)
+				if(strpos((string) $inc,".css")!==false)
 				{
-					if(strpos($inc,"://")!==false) // cdn 
+					if(strpos((string) $inc,"://")!==false) // cdn 
 					{
 						$this->addJs('other_css', $inc, 'all', $opts);
 					}
@@ -1020,7 +1020,7 @@ class e_jsmanager
 					$loc = $runtime_location;
 				}
 				
-				$type = (strpos($fp,".css")!==false && $type == 'core') ? "core_css" : $type;
+				$type = (strpos((string) $fp,".css")!==false && $type == 'core') ? "core_css" : $type;
 				
 							
 				 $this->addJs($type, $fp, $loc);
@@ -1266,7 +1266,7 @@ class e_jsmanager
 					foreach ($lib as $path) 
 					{
 						$erase = array_search($path, $this->_e_jslib_core);
-						if($erase !== false && strpos($path, 'http') === 0)
+						if($erase !== false && strpos((string) $path, 'http') === 0)
 						{
 							unset($this->_e_jslib_core[$erase]);
 							$fw[] = $path;
@@ -1459,17 +1459,17 @@ class e_jsmanager
 		$lmodified = 0;
 		foreach ($file_path_array as $path)
 		{
-            if (substr($path, - 4) == '.php')
+            if (substr((string) $path, - 4) == '.php')
             {
             	if('css' === $external)
 				{
-					$path = explode($this->_sep, $path, 4);
+					$path = explode($this->_sep, (string) $path, 4);
 					$media = $path[0] ? $path[0] : 'all';
 					// support of IE checks
 					$pre = varset($path[2]) ? $path[2]."\n" : '';
 					$post = varset($path[3]) ? "\n".$path[3] : '';
 					$path = $path[1];
-					if(strpos($path, 'http') !== 0)
+					if(strpos((string) $path, 'http') !== 0)
 					{
 						$path = $tp->replaceConstants($path, 'abs').'?external=1'; // &amp;'.$this->getCacheId();
 						$path = $this->url($path);
@@ -1482,9 +1482,9 @@ class e_jsmanager
 				}
 				elseif($external) //true or 'js'
 				{
-					if(strpos($path, 'http') === 0 || strpos($path, '//') === 0) continue; // not allowed
+					if(strpos((string) $path, 'http') === 0 || strpos((string) $path, '//') === 0) continue; // not allowed
 					
-					$path = explode($this->_sep, $path, 3);
+					$path = explode($this->_sep, (string) $path, 3);
 					$pre = varset($path[1]);
 					if($pre) $pre .= "\n";
 					$post = varset($path[2]);
@@ -1508,7 +1508,7 @@ class e_jsmanager
             {
             	// CDN fix, ignore URLs inside consolidation script, render as external scripts
             	$isExternal = false;
-				if(strpos($path, 'http') === 0 || strpos($path, '//') === 0)
+				if(strpos((string) $path, 'http') === 0 || strpos((string) $path, '//') === 0)
 				{
 					if($external !== 'css') $isExternal = true;
 				}
@@ -1520,7 +1520,7 @@ class e_jsmanager
 				            	
 				if('css' === $external)
 				{
-					$path = explode($this->_sep, $path, 4);
+					$path = explode($this->_sep, (string) $path, 4);
 
 
 
@@ -1533,7 +1533,7 @@ class e_jsmanager
 					$insertID ='';
 
 					// issue #3390 Fix for protocol-less path
-					if(strpos($path, 'http') !== 0 && strpos($path, '//') !== 0) // local file.
+					if(strpos((string) $path, 'http') !== 0 && strpos((string) $path, '//') !== 0) // local file.
 					{
 
 						if($label === 'Theme CSS') // add an id for local theme stylesheets. 
@@ -1559,7 +1559,7 @@ class e_jsmanager
 					continue;
 				}
 
-				$path = explode($this->_sep, $path, 4);
+				$path = explode($this->_sep, (string) $path, 4);
 				$pre = varset($path[1], '');
 				if($pre) $pre .= "\n";
 				$post = varset($path[2], '');
@@ -1661,7 +1661,7 @@ class e_jsmanager
 
 		if(!defined('e_HTTP_STATIC'))
 		{
-			if(strpos($path,'?')!==false)
+			if(strpos((string) $path,'?')!==false)
 			{
 				$path .= "&amp;".$this->getCacheId();
 			}
@@ -1709,7 +1709,7 @@ class e_jsmanager
 	 */
 	private function addCache($type,$path)
 	{
-		if($this->_cache_enabled != true  || $this->isInAdmin() || strpos($path, '//') === 0 || strpos($path, 'wysiwyg.php')!==false )
+		if($this->_cache_enabled != true  || $this->isInAdmin() || strpos((string) $path, '//') === 0 || strpos((string) $path, 'wysiwyg.php')!==false )
 		{
 			return false;
 		}
@@ -1765,7 +1765,7 @@ class e_jsmanager
 
 			}
 
-			echo "\n\n<!-- [JSManager] Cached ".strtoupper($type)." -->\n";
+			echo "\n\n<!-- [JSManager] Cached ".strtoupper((string) $type)." -->\n";
 
 			if($type == 'js')
 			{
@@ -1859,7 +1859,7 @@ class e_jsmanager
 	 */
 	private function normalizePath($path)
 	{
-	    $parts = preg_split(":[\\\/]:", $path); // split on known directory separators
+	    $parts = preg_split(":[\\\/]:", (string) $path); // split on known directory separators
 
 	    // resolve relative paths
 	    for ($i = 0, $iMax = count($parts); $i < $iMax; $i +=1)
@@ -1966,7 +1966,7 @@ class e_jsmanager
 			$script = array();
 			foreach($content_array as $code)
 			{
-				$start = substr($code,0,7);
+				$start = substr((string) $code,0,7);
 				if($start == '<script' || $start == '<iframe')
 				{
 					$raw[] = $code;	
@@ -2143,7 +2143,7 @@ class e_jsmanager
 		}
 		$core = e107::getConfig();
 		$plugname = '';
-		if(strpos($mod, 'plugin:') === 0)
+		if(strpos((string) $mod, 'plugin:') === 0)
 		{
 			$plugname = str_replace('plugin:', '', $mod);
 			$mod = 'plugin';
@@ -2170,7 +2170,7 @@ class e_jsmanager
 		if(!$libs) $libs = array();
 		foreach ($array_newlib as $path => $location)
 		{
-			$path = trim($path, '/');
+			$path = trim((string) $path, '/');
 
 			if(!$path) continue;
 
@@ -2196,7 +2196,7 @@ class e_jsmanager
 		}
 		$core = e107::getConfig();
 		$plugname = '';
-		if(strpos($mod, 'plugin:') === 0)
+		if(strpos((string) $mod, 'plugin:') === 0)
 		{
 			$plugname = str_replace('plugin:', '', $mod);
 			$mod = 'plugin';
@@ -2223,7 +2223,7 @@ class e_jsmanager
 		if(!$libs) $libs = array();
 		foreach ($array_removelib as $path => $location)
 		{
-			$path = trim($path, '/');
+			$path = trim((string) $path, '/');
 			if(!$path) continue;
 
 			unset($libs[$path]);

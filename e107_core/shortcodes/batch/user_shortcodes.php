@@ -298,17 +298,17 @@ class user_shortcodes extends e_shortcode
 	{
 		$boot = deftrue('BOOTSTRAP');
 		$tp = e107::getParser();
-		
+
 		switch ($parm) 
 		{
 			case 'email':
 				return ($boot) ? $tp->toGlyph('fa-envelope') : $this->sc_user_email_icon();
 			break;
-			
+
 			case 'lastvisit':
 				return ($boot) ? $tp->toGlyph('fa fa-clock-o') : '';
 			break;
-			
+
 			case 'birthday':
 				return ($boot) ? $tp->toGlyph('fa-calendar') : $this->sc_user_birthday_icon();
 			break;
@@ -316,11 +316,11 @@ class user_shortcodes extends e_shortcode
 			case 'level':
 				return ($boot) ? $tp->toGlyph('fa-signal') : '';
 			break;
-			
+
 			case 'website':
 				return ($boot) ? $tp->toGlyph('fa-home') : '';
 			break;
-			
+
 			case 'location':
 				return ($boot) ? $tp->toGlyph('fa-map-marker') : '';
 			break;
@@ -337,7 +337,7 @@ class user_shortcodes extends e_shortcode
 			break;
 		}
 
-	
+
 		/*
 		if(defined("USER_ICON"))
 		{
@@ -347,7 +347,7 @@ class user_shortcodes extends e_shortcode
 		{
 			return "<img src='".THEME_ABS."images/user.png' alt='' style='vertical-align:middle;' /> ";
 		}
-		
+
 		return "<img src='".e_IMAGE_ABS."user_icons/user.png' alt='' style='vertical-align:middle;' /> ";
 		*/
 	}
@@ -426,7 +426,7 @@ class user_shortcodes extends e_shortcode
 
 	function sc_user_birthday($parm='')
 	{
-		if(!empty($this->var['user_birthday']) && $this->var['user_birthday'] != "0000-00-00" && preg_match("/([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})/", $this->var['user_birthday'], $regs))
+		if(!empty($this->var['user_birthday']) && $this->var['user_birthday'] != "0000-00-00" && preg_match("/([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})/", (string) $this->var['user_birthday'], $regs))
 		{
 			return "$regs[3].$regs[2].$regs[1]";
 		}
@@ -588,10 +588,10 @@ class user_shortcodes extends e_shortcode
 	
 		if($parms[1] == 'prev')
 		{
-		
+
 			$icon = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('fa-chevron-left') : '&lt;&lt;';
 	    	return isset($userjump['prev']['id']) ? "<a class='".$class."' href='".$url->create('user/profile/view', $userjump['prev']) ."' title=\"".$userjump['prev']['name']."\">".$icon." ".LAN_USER_40."</a>\n" : "&nbsp;";
-		
+
 			// return isset($userjump['prev']['id']) ? "&lt;&lt; ".LAN_USER_40." [ <a href='".$url->create('user/profile/view', $userjump['prev'])."'>".$userjump['prev']['name']."</a> ]" : "&nbsp;";
 		
 		}
@@ -619,7 +619,7 @@ class user_shortcodes extends e_shortcode
 		/*
 
 		return $tp->parseTemplate("{USER_AVATAR=".$this->var['user_sess']."}",true);
-		
+
 		if ($this->var['user_sess'] && file_exists(e_MEDIA."avatars/".$this->var['user_sess']))
 		{
 			//return $tp->parseTemplate("{USER_AVATAR=".$this->var['user_image']."}", true); // this one will resize. 
@@ -675,7 +675,7 @@ class user_shortcodes extends e_shortcode
 		}
 
 		// Get all userclasses that the user belongs to (comma separated)
-		$userclasses = explode(',', $this->var['user_class']);
+		$userclasses = explode(',', (string) $this->var['user_class']);
 		//print_a($userclasses);
  		
  		// Loop through userclasses
@@ -959,8 +959,8 @@ class user_shortcodes extends e_shortcode
 		if($parm){
 			
 			//if the first char of parm is an ! mark, it means it should not render the following parms
-			if(strpos($parm,'!')===0){
-				$tmp = explode(",", substr($parm,1) );
+			if(strpos((string) $parm,'!')===0){
+				$tmp = explode(",", substr((string) $parm,1) );
 				foreach($tmp as $not){
 					$not=trim($not);
 					if(isset($key[$not])){
@@ -968,10 +968,10 @@ class user_shortcodes extends e_shortcode
 						unset($key[$not]);
 					}
 				}
-			
+
 			//else it means we render only the following parms
 			}else{
-				$tmp = explode(",", $parm );
+				$tmp = explode(",", (string) $parm );
 				foreach($tmp as $yes){
 					$yes=trim($yes);
 					if(isset($key[$yes])){

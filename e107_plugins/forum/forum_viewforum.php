@@ -218,7 +218,7 @@ function init()
 	$forumInfo['forum_name'] = $tp->toHTML($forumInfo['forum_name'], true, 'no_hook, emotes_off');
 	$forumInfo['forum_description'] = $tp->toHTML($forumInfo['forum_description'], true, 'no_hook');
 
-	$_forum_name = (substr($forumInfo['forum_name'], 0, 1) == '*' ? substr($forumInfo['forum_name'], 1) : $forumInfo['forum_name']);
+	$_forum_name = (substr((string) $forumInfo['forum_name'], 0, 1) == '*' ? substr((string) $forumInfo['forum_name'], 1) : $forumInfo['forum_name']);
 
 	e107::title($_forum_name . ' / ' . LAN_FORUM_1001);
 	// define('e_PAGETITLE', $_forum_name . ' / ' . LAN_FORUM_1001);
@@ -294,7 +294,7 @@ function init()
 
 	if($pages)
 	{
-		if(strpos($FORUM_VIEW_START, 'THREADPAGES') !== false || strpos($FORUM_VIEW_END, 'THREADPAGES') !== false)
+		if(strpos((string) $FORUM_VIEW_START, 'THREADPAGES') !== false || strpos((string) $FORUM_VIEW_END, 'THREADPAGES') !== false)
 		{
 			// issue #3087 url need to be decoded first (because the [FROM] get's encoded in url())
 			// and to encode the full url to not loose the id param when being used in the $forumSCvars['parms']
@@ -311,9 +311,9 @@ function init()
 	}
 
 //XXX  What is this?
-	if(!empty($forumInfo['forum_name']) && (substr($forumInfo['forum_name'], 0, 1) == '*'))
+	if(!empty($forumInfo['forum_name']) && (substr((string) $forumInfo['forum_name'], 0, 1) == '*'))
 	{
-		$forum_info['forum_name'] = substr($forum_info['forum_name'], 1);
+		$forum_info['forum_name'] = substr((string) $forum_info['forum_name'], 1);
 		$container_only = true;
 	}
 	else
@@ -321,9 +321,9 @@ function init()
 		$container_only = false;
 	}
 
-	if(!empty($forum_info['sub_parent']) && (substr($forum_info['sub_parent'], 0, 1) == '*'))
+	if(!empty($forum_info['sub_parent']) && (substr((string) $forum_info['sub_parent'], 0, 1) == '*'))
 	{
-		$forum_info['sub_parent'] = substr($forum_info['sub_parent'], 1);
+		$forum_info['sub_parent'] = substr((string) $forum_info['sub_parent'], 1);
 	}
 
 //----$forum->set_crumb(true, '', $fVars); // set $BREADCRUMB (and $BACKLINK)
@@ -494,12 +494,12 @@ function init()
 		}
 
 
-		if(substr($_TEMPLATE, 0, 4) == '<tr>') // Inject id into table row. //XXX Find a better way to do this without placing in template. .
+		if(substr((string) $_TEMPLATE, 0, 4) == '<tr>') // Inject id into table row. //XXX Find a better way to do this without placing in template. .
 		{
 
 			$threadId = $thread_info['thread_id'];
 
-			$_TEMPLATE = "<tr id='thread-{$threadId}'>" . substr($_TEMPLATE, 4);
+			$_TEMPLATE = "<tr id='thread-{$threadId}'>" . substr((string) $_TEMPLATE, 4);
 		}
 
 		return $tp->parseTemplate($_TEMPLATE, true, $sc);

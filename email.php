@@ -58,7 +58,7 @@ unset($qs);
 $error = '';
 $message = '';
 
-$referrer = strip_tags(urldecode(html_entity_decode(varset($_SERVER['HTTP_REFERER'],''), ENT_QUOTES)));
+$referrer = strip_tags(urldecode(html_entity_decode((string) varset($_SERVER['HTTP_REFERER'],''), ENT_QUOTES)));
 $emailurl = ($source == 'referer') ? $referrer : SITEURL;
 
 $comments = '';
@@ -122,9 +122,9 @@ if (isset($_POST['emailsubmit']))
 	$ip = e107::getIPHandler()->getIP(FALSE);
 	$message .= "\n\n".LAN_EMAIL_2." ".$ip."\n\n";
 
-	if (substr($source,0,7) == 'plugin:')
+	if (substr((string) $source,0,7) == 'plugin:')
 	{
-		$plugin = substr($source,7);
+		$plugin = substr((string) $source,7);
 		$text = '';
 		if(file_exists(e_PLUGIN.$plugin.'/e_emailprint.php'))
 		{
@@ -146,12 +146,12 @@ if (isset($_POST['emailsubmit']))
 			e107::redirect();
 			exit;
 		}
-		$message .= strip_tags($_POST['referer']);
-		$emailurl = strip_tags($_POST['referer']);
+		$message .= strip_tags((string) $_POST['referer']);
+		$emailurl = strip_tags((string) $_POST['referer']);
 	}
 	else
 	{
-		$emailurl = strip_tags($_POST['referer']);
+		$emailurl = strip_tags((string) $_POST['referer']);
 		$message = '';
 		if($sql->select('news', 'news_title, news_body, news_extended', 'news_id='.((int)$parms)))
 		{

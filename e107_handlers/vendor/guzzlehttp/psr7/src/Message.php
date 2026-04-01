@@ -142,12 +142,12 @@ final class Message
         }
 
         /** @var array[] $headerLines */
-        $count = preg_match_all(Rfc7230::HEADER_REGEX, $rawHeaders, $headerLines, PREG_SET_ORDER);
+        $count = preg_match_all(Rfc7230::HEADER_REGEX, (string) $rawHeaders, $headerLines, PREG_SET_ORDER);
 
         // If these aren't the same, then one line didn't match and there's an invalid header.
-        if ($count !== substr_count($rawHeaders, "\n")) {
+        if ($count !== substr_count((string) $rawHeaders, "\n")) {
             // Folding is deprecated, see https://datatracker.ietf.org/doc/html/rfc7230#section-3.2.4
-            if (preg_match(Rfc7230::HEADER_FOLD_REGEX, $rawHeaders)) {
+            if (preg_match(Rfc7230::HEADER_FOLD_REGEX, (string) $rawHeaders)) {
                 throw new \InvalidArgumentException('Invalid header syntax: Obsolete line folding');
             }
 
@@ -188,7 +188,7 @@ final class Message
         }
 
         $host = $headers[reset($hostKey)][0];
-        $scheme = substr($host, -4) === ':443' ? 'https' : 'http';
+        $scheme = substr((string) $host, -4) === ':443' ? 'https' : 'http';
 
         return $scheme.'://'.$host.'/'.ltrim($path, '/');
     }
@@ -202,10 +202,10 @@ final class Message
     {
         $data = self::parseMessage($message);
         $matches = [];
-        if (!preg_match('/^[\S]+\s+([a-zA-Z]+:\/\/|\/).*/', $data['start-line'], $matches)) {
+        if (!preg_match('/^[\S]+\s+([a-zA-Z]+:\/\/|\/).*/', (string) $data['start-line'], $matches)) {
             throw new \InvalidArgumentException('Invalid request string');
         }
-        $parts = explode(' ', $data['start-line'], 3);
+        $parts = explode(' ', (string) $data['start-line'], 3);
         $version = isset($parts[2]) ? explode('/', $parts[2])[1] : '1.1';
 
         $request = new Request(
@@ -230,10 +230,10 @@ final class Message
         // According to https://datatracker.ietf.org/doc/html/rfc7230#section-3.1.2
         // the space between status-code and reason-phrase is required. But
         // browsers accept responses without space and reason as well.
-        if (!preg_match('/^HTTP\/.* [0-9]{3}( .*|$)/', $data['start-line'])) {
+        if (!preg_match('/^HTTP\/.* [0-9]{3}( .*|$)/', (string) $data['start-line'])) {
             throw new \InvalidArgumentException('Invalid response string: '.$data['start-line']);
         }
-        $parts = explode(' ', $data['start-line'], 3);
+        $parts = explode(' ', (string) $data['start-line'], 3);
 
         return new Response(
             (int) $parts[1],

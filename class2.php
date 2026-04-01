@@ -135,7 +135,7 @@ if(isset($retrieve_prefs) && is_array($retrieve_prefs))
 {
 	foreach ($retrieve_prefs as $key => $pref_name)
 	{
-		 $retrieve_prefs[$key] = preg_replace("/\W/", '', $pref_name);
+		 $retrieve_prefs[$key] = preg_replace("/\W/", '', (string) $pref_name);
 	}
 }
 else
@@ -647,7 +647,7 @@ if(!isset($_E107['no_event']))
 
 if(!defined('SITENAME')) // Allow override by English_custom.php or English_global.php plugin files.
 {
-	define('SITENAME', trim($tp->toHTML($pref['sitename'], '', 'USER_TITLE,er_on,defs')));
+	define('SITENAME', trim((string) $tp->toHTML($pref['sitename'], '', 'USER_TITLE,er_on,defs')));
 }
 
 //
@@ -1195,7 +1195,7 @@ function check_email($email)
 		return false;
 	}
 
-	if(is_numeric(substr($email,-1))) // fix for eCaptcha accidently typed on wrong line.
+	if(is_numeric(substr((string) $email,-1))) // fix for eCaptcha accidently typed on wrong line.
 	{
 		return false;
 	}
@@ -1204,9 +1204,9 @@ function check_email($email)
 	{
 		return $email;	
 	}
-	
+
 	return false; 
-	
+
 	// return preg_match("/^([_a-zA-Z0-9-+]+)(\.[_a-zA-Z0-9-]+)*@([a-zA-Z0-9-]+)(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,6})$/" , $email) ? $email : false;
 }
 
@@ -1250,14 +1250,14 @@ function check_class($var, $userclass = null, $uid = 0)
 		return false;
 	}
 
-	$class_array = !is_array($userclass) ? explode(',', $userclass) : $userclass;
+	$class_array = !is_array($userclass) ? explode(',', (string) $userclass) : $userclass;
 
 	$varList = !is_array($var) ? explode(',', (string) $var) : $var;
 	$latchedAccess = false;
 
 	foreach ($varList as $v)
 	{
-		$v = trim($v);
+		$v = trim((string) $v);
 		$invert = false;
 		//value to test is a userclass name (or garbage, of course), go get the id
 		if (!is_numeric($v))
@@ -1358,7 +1358,7 @@ function getperms($arg, $ap = null, $path = null)
 		return true;
 	}
 
-	if ($arg === 'P' && preg_match('#(.*?)/' .e107::getFolder('plugins'). '(.*?)/(.*?)#', $path, $matches))
+	if ($arg === 'P' && preg_match('#(.*?)/' .e107::getFolder('plugins'). '(.*?)/(.*?)#', (string) $path, $matches))
 	{
 		$sql = e107::getDb('psql');
 
@@ -1876,7 +1876,7 @@ function session_set($name, $value, $expire='', $path = e_HTTP, $domain = '', $s
 			$path = '/';
 		}
 		
-		setcookie($name, $value, $expire, $path, $domain, $secure, true);
+		setcookie($name, (string) $value, $expire, $path, $domain, $secure, true);
 		$_COOKIE[$name] = $value;
 	}
 }
@@ -1994,7 +1994,7 @@ function force_userupdate($currentUser)
 		}
     }
 
-	if (!e107::getPref('disable_emailcheck',true) && !trim($currentUser['user_email'])) return true;
+	if (!e107::getPref('disable_emailcheck',true) && !trim((string) $currentUser['user_email'])) return true;
 
 	if(e107::getDb()->select('user_extended_struct', 'user_extended_struct_applicable, user_extended_struct_write, user_extended_struct_name, user_extended_struct_type', 'user_extended_struct_required = 1 AND user_extended_struct_applicable != '.e_UC_NOBODY))
 	{
@@ -2068,7 +2068,7 @@ class error_handler
 			return;
 		}
 
-		if ((isset($_SERVER['QUERY_STRING']) && (strpos($_SERVER['QUERY_STRING'], 'debug=') !== false)) || isset($_COOKIE['e107_debug_level']) && ((strpos($_SERVER['QUERY_STRING'], 'debug=-')) === false) )
+		if ((isset($_SERVER['QUERY_STRING']) && (strpos((string) $_SERVER['QUERY_STRING'], 'debug=') !== false)) || isset($_COOKIE['e107_debug_level']) && ((strpos((string) $_SERVER['QUERY_STRING'], 'debug=-')) === false) )
 		{
 		   	$this->debug = true;
 		  	error_reporting(E_ALL);
@@ -2192,7 +2192,7 @@ class error_handler
 				<td>";
 			$text .= !empty($val['class']) ? $val['class']."->" : '';
 			$text .= !empty($val['include_filename']) ? "include: ". str_replace($this->docroot,'', $val['include_filename']) : '';
-			$text .= !empty($val['function']) ? htmlentities($val['function'])."(" : "";
+			$text .= !empty($val['function']) ? htmlentities((string) $val['function'])."(" : "";
 			$text .= !empty($val['params']) ? print_r($val['params'],true) : '';
 			$text .= !empty($val['function']) ? ")" : "";
 			$text .="</td>
@@ -2276,7 +2276,7 @@ class e_http_header
 	
 	function __construct()
 	{
-		if (strpos(varset($_SERVER['HTTP_ACCEPT_ENCODING']), 'gzip') !== false)
+		if (strpos((string) varset($_SERVER['HTTP_ACCEPT_ENCODING']), 'gzip') !== false)
 		{
 			$this->compression_browser_support = true;
 		}
@@ -2313,10 +2313,10 @@ class e_http_header
 		else
 		{
 			$this->content = $content;
-			$this->length = strlen($content);
+			$this->length = strlen((string) $content);
 		}
 
-		$this->etag = md5($this->content);
+		$this->etag = md5((string) $this->content);
 
 	//print_a($this->length);
 
@@ -2341,7 +2341,7 @@ class e_http_header
 			return null;
 		}
 
-		list($key,$val) = explode(':',$header,2);
+		list($key,$val) = explode(':',(string) $header,2);
 		$this->headers[$key] = $val;
 		header($header, $force, $response_code);
 	}
@@ -2367,7 +2367,7 @@ class e_http_header
 		$server = array();
 		foreach($_SERVER as $k=>$v)
 		{
-			if(strncmp($k, 'HTTP', 4) === 0)
+			if(strncmp((string) $k, 'HTTP', 4) === 0)
 			{
 				$server[$k] = $v;	
 			}	
@@ -2423,7 +2423,7 @@ class e_http_header
 		if($this->compress_output !== false)
 		{
 			$this->setHeader('ETag: "'.$this->etag.'-gzip"', true);
-			$this->content = gzencode($this->content, $this->compression_level);
+			$this->content = gzencode((string) $this->content, $this->compression_level);
 			$this->length = strlen($this->content);
 			$this->setHeader('Content-Encoding: gzip', true);
 			$this->setHeader("Content-Length: ".$this->length, true);

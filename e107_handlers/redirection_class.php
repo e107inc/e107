@@ -226,7 +226,7 @@ class redirection
 	public function checkMaintenance()
 	{
 		// prevent looping.
-		if(strpos(defset('e_SELF'), 'admin.php') !== FALSE || strpos(defset('e_SELF'), 'sitedown.php') !== FALSE)
+		if(strpos((string) defset('e_SELF'), 'admin.php') !== FALSE || strpos((string) defset('e_SELF'), 'sitedown.php') !== FALSE)
 		{
 			return;
 		}
@@ -283,7 +283,7 @@ class redirection
 		{
 			return;
 		}
-		if(strpos(defset('e_PAGE'), 'admin') !== false)
+		if(strpos((string) defset('e_PAGE'), 'admin') !== false)
 		{
 			return;
 		}
@@ -297,7 +297,7 @@ class redirection
 		}
 		foreach (e107::getPref('membersonly_exceptions') as $val)
 		{
-			$srch = trim($val);
+			$srch = trim((string) $val);
 			if(!empty($srch) && strpos(e_SELF, $srch) !== false)
 			{
 				return;
@@ -405,10 +405,10 @@ class redirection
 		$hostMismatch = (strcasecmp($urlbase, $PrefSiteBase) !==0); // -- base domain does not match (case-insensitive)
 		$portMismatch = ($urlport !== $PrefSitePort); 	 // -- ports do not match (http <==> https)
 
-		if(($portMismatch || $hostMismatch) && strpos($server['PHP_SELF'], $adminDir) === false)
+		if(($portMismatch || $hostMismatch) && strpos((string) $server['PHP_SELF'], $adminDir) === false)
 		{
 			// Reconstruct the redirect URL
-			$aeSELF = explode('/', $server['PHP_SELF'], 4);
+			$aeSELF = explode('/', (string) $server['PHP_SELF'], 4);
 			$aeSELF[0] = $aPrefURL['scheme'] . ':'; // Correct scheme (http/https)
 			$aeSELF[1] = ''; // Defensive code: ensure http:// not http:/<garbage>/
 			$aeSELF[2] = $PrefRoot; // Correct domain and port if needed
@@ -512,7 +512,7 @@ class redirection
 			return false;
 		}
 
-		$tmp = explode('.',$this->domain);
+		$tmp = explode('.',(string) $this->domain);
 
 		if(!empty($tmp[0]) && strpos($tmp[0], 'static') !== false)
 		{

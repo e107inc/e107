@@ -80,7 +80,7 @@ class e_upgrade
 		$xml = e107::getXml();
         $feed = $this->getOption('releaseUrl');
 
-	 	if(substr($feed,-4) == ".php")
+	 	if(substr((string) $feed,-4) == ".php")
 		{
         	 $feed .= "?folder=".$this->getOption('curFolder')."&version=".$this->getOption('curVersion');
 		}

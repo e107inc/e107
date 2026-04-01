@@ -1726,7 +1726,7 @@ class e107MailManager
 		}
 		if ($sortOrder)
 		{
-			$sortOrder = strtoupper($sortOrder);
+			$sortOrder = strtoupper((string) $sortOrder);
 			$query .= ($sortOrder == 'DESC') ? ' DESC' : ' ASC';
 		}
 		if ($count)
@@ -1804,7 +1804,7 @@ class e107MailManager
 		}
 		if ($sortOrder)
 		{
-			$sortOrder = strtoupper($sortOrder);
+			$sortOrder = strtoupper((string) $sortOrder);
 			$query .= ($sortOrder == 'DESC') ? ' DESC' : ' ASC';
 		}
 		if ($count)
@@ -1932,14 +1932,14 @@ class e107MailManager
 			$templateName = varset($emailData['mail_send_style'], 'textonly');        // Safest default if nothing specified
 		}
 
-		$templateName = trim($templateName);
+		$templateName = trim((string) $templateName);
 		if ($templateName == '')
 		{
 			return false;
 		}
 
 		$this->currentMailBody = $emailData['mail_body'];            // In case we send immediately
-		$this->currentTextBody = strip_tags($emailData['mail_body']);
+		$this->currentTextBody = strip_tags((string) $emailData['mail_body']);
 
 		//		$emailData['mail_body_templated'] 	= $ourTemplate->mainBodyText;
 		//		$emailData['mail_body_alt'] 		= $ourTemplate->altBodyText;

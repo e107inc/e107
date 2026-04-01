@@ -30,7 +30,7 @@ if(!empty($_POST['delete']) && is_array($_POST['delete']))
 {
 	foreach(array_keys($_POST['delete']) as $fname)
 	{
-		$f = explode("_", $fname);
+		$f = explode("_", (string) $fname);
 		if($f[1] == USERID)
 		{
 			$path = e_UPLOAD.e107::getParser()->filter($fname,'w');
@@ -82,7 +82,7 @@ if(is_array($fileList))
 			{
 				foreach($threadList as $tinfo)
 				{
-					if(strpos($tinfo['thread_thread'], $finfo['fname']) != FALSE)
+					if(strpos((string) $tinfo['thread_thread'], (string) $finfo['fname']) != FALSE)
 					{
 						$found = $tinfo;
 						break;

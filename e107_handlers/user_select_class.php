@@ -313,7 +313,7 @@ class user_select
 		if ($sql->select("user", "*", "user_name LIKE '%".$tp -> toDB($s)."%'".$inc))
 		{
 			while ($row = $sql ->fetch()) {
-				$ret[strtolower($row['user_name'])] = $row['user_name'];
+				$ret[strtolower((string) $row['user_name'])] = $row['user_name'];
 			}
 			ksort($ret);
 		} else {

@@ -340,9 +340,9 @@ function step4()
 	$old_prefs = array();
 	foreach($pref as $k => $v)
 	{
-		if(substr($k, 0, 6) == 'forum_')
+		if(substr((string) $k, 0, 6) == 'forum_')
 		{
-			$nk = substr($k, 6);
+			$nk = substr((string) $k, 6);
 			$mes->addDebug("Converting $k to $nk");
 			$old_prefs[$nk] = $v;
 			$coreConfig->remove($k);
@@ -391,7 +391,7 @@ function step4()
 			$userId = (int) $row['user_id'];
 
 			$viewed = $row['user_viewed'];
-			$viewed = trim($viewed, '.');
+			$viewed = trim((string) $viewed, '.');
 			$tmp = preg_split('#\.+#', $viewed);
 			$viewed = implode(',', $tmp);
 
@@ -933,7 +933,7 @@ function step10_ajax()//TODO
 
 			//	if (preg_match_all('#\[link=(.*?)\]\[img.*?\]({e_FILE}.*?)\[/img\]\[/link\]#ms', $post['post_entry'], $matches, PREG_SET_ORDER))
 
-			if(preg_match_all('#\[link=([^\]]*?)\]\s*?\[img.*?\](({e_FILE}|e107_files|\.\./\.\./e107_files)[^\]]*)\[/img\]\s*?\[/link\]#ms', $post['post_entry'], $matches, PREG_SET_ORDER))
+			if(preg_match_all('#\[link=([^\]]*?)\]\s*?\[img.*?\](({e_FILE}|e107_files|\.\./\.\./e107_files)[^\]]*)\[/img\]\s*?\[/link\]#ms', (string) $post['post_entry'], $matches, PREG_SET_ORDER))
 			{
 				foreach($matches as $match)
 				{
@@ -950,7 +950,7 @@ function step10_ajax()//TODO
 				}
 			}
 
-			if(preg_match_all('#\[lightbox=([^\]]*?)\]\s*?\[img.*?\](({e_FILE}|e107_files|\.\./\.\./e107_files)[^\]]*)\[/img\]\s*?\[/lightbox\]#ms', $post['post_entry'], $matches, PREG_SET_ORDER))
+			if(preg_match_all('#\[lightbox=([^\]]*?)\]\s*?\[img.*?\](({e_FILE}|e107_files|\.\./\.\./e107_files)[^\]]*)\[/img\]\s*?\[/lightbox\]#ms', (string) $post['post_entry'], $matches, PREG_SET_ORDER))
 			{
 				foreach($matches as $match)
 				{
@@ -993,7 +993,7 @@ function step10_ajax()//TODO
 			;
 
 			//	if (preg_match_all('#\[img.*?\]({e_FILE}.*?_FT\d+_.*?)\[/img\]#ms', $post['post_entry'], $matches, PREG_SET_ORDER))
-			if(preg_match_all('#\[img[^\]]*?\]\s*?(({e_FILE}|e107_files|\.\./\.\./e107_files)[^\[]*)\s*?\[/img\]#ms', $post['post_entry'], $matches, PREG_SET_ORDER))
+			if(preg_match_all('#\[img[^\]]*?\]\s*?(({e_FILE}|e107_files|\.\./\.\./e107_files)[^\[]*)\s*?\[/img\]#ms', (string) $post['post_entry'], $matches, PREG_SET_ORDER))
 			{
 				foreach($matches as $match)
 				{
@@ -1038,7 +1038,7 @@ function step10_ajax()//TODO
 
 
 			//	if (preg_match_all('#\[file=({e_FILE}.*?)\](.*?)\[/file\]#ms', $post['post_entry'], $matches, PREG_SET_ORDER))
-			if(preg_match_all('#\[file=(({e_FILE}|e107_files|\.\./\.\./e107_files)[^\]]*)#ms', $post['post_entry'], $matches, PREG_SET_ORDER))
+			if(preg_match_all('#\[file=(({e_FILE}|e107_files|\.\./\.\./e107_files)[^\]]*)#ms', (string) $post['post_entry'], $matches, PREG_SET_ORDER))
 			{
 				foreach($matches as $match)
 				{
@@ -1523,8 +1523,8 @@ class forumUpgrade
 		 * thread_sef
 		 */
 
-		$detected = mb_detect_encoding($post['thread_name']); // 'ISO-8859-1'
-		$threadName = iconv($detected, 'UTF-8', $post['thread_name']);
+		$detected = mb_detect_encoding((string) $post['thread_name']); // 'ISO-8859-1'
+		$threadName = iconv($detected, 'UTF-8', (string) $post['thread_name']);
 
 		$thread = array();
 		$thread['thread_id'] = $post['thread_id'];
@@ -1579,7 +1579,7 @@ class forumUpgrade
 			return 0;
 		}
 
-		list($num, $name) = explode(".", $string, 2);
+		list($num, $name) = explode(".", (string) $string, 2);
 
 		return intval($num);
 
@@ -1591,8 +1591,8 @@ class forumUpgrade
 
 		global $forum;
 
-		$detected = mb_detect_encoding($post['thread_thread']); // 'ISO-8859-1'
-		$postEntry = iconv($detected, 'UTF-8', $post['thread_thread']);
+		$detected = mb_detect_encoding((string) $post['thread_thread']); // 'ISO-8859-1'
+		$postEntry = iconv($detected, 'UTF-8', (string) $post['thread_thread']);
 
 		$newPost = array();
 		$newPost['post_id'] = $post['thread_id'];
@@ -1630,7 +1630,7 @@ class forumUpgrade
 	function getUserInfo($info)
 	{
 
-		$tmp = explode('.', $info);
+		$tmp = explode('.', (string) $info);
 		$id = (int) $tmp[0];
 
 		// Set default values
@@ -1641,9 +1641,9 @@ class forumUpgrade
 		);
 
 		// Check if post is done anonymously (ID = 0, and there should be a chr(1) value between the username and IP address)
-		if(strpos($info, chr(1)) !== false && $id == 0)
+		if(strpos((string) $info, chr(1)) !== false && $id == 0)
 		{
-			$anon = explode(chr(1), $info);
+			$anon = explode(chr(1), (string) $info);
 			$anon_name = explode('.', $anon[0]);
 
 			$ret['anon_name'] = $anon_name[1];
@@ -1729,8 +1729,8 @@ class forumUpgrade
 		$oldThumb = '';
 		if($attachment['thumb'])
 		{
-			$tmp = explode('/', $attachment['thumb']);
-			$fileInfo = pathinfo($attachment['thumb']);
+			$tmp = explode('/', (string) $attachment['thumb']);
+			$fileInfo = pathinfo((string) $attachment['thumb']);
 
 			$oldThumb = str_replace('{e_FILE}', e_FILE, $attachment['thumb']);
 			//			$newThumb 	= e_PLUGIN.'forum/attachments/thumb/'.$tmp[1];

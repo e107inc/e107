@@ -44,7 +44,7 @@ e107::library('load', 'bootstrap-suggest');
 e107::js('footer-inline', "
 $('textarea').suggest(':', {
   data: function(q, lookup) {
- 
+
       $.getJSON('theme.php', {q : q }, function(data) {
 			console.log(data);
 			console.log(lookup);
@@ -54,7 +54,7 @@ $('textarea').suggest(':', {
       // we aren't returning any
 
   }
-  
+
 });
 
 
@@ -64,9 +64,9 @@ $('textarea').suggest(':', {
 e107::js('footer-inline', "
 
 $('textarea.input-custompages').suggest(':', {
-	
+
   data: function() {
-  
+
   var i = $.ajax({
 		type: 'GET',
 		url: 'theme.php',
@@ -78,7 +78,7 @@ $('textarea.input-custompages').suggest(':', {
 		//	console.log(data);
 			return data; 
 		}).responseText;		
-    	
+
 	try
 	{
 		var d = $.parseJSON(i);
@@ -88,7 +88,7 @@ $('textarea.input-custompages').suggest(':', {
 		// Not JSON.
 		return;
 	}
-	
+
 	return d;   
   },
   filter: {
@@ -203,7 +203,7 @@ class theme_admin extends e_admin_dispatcher
 				case 'info':
 					if(!empty($_GET['src']))
 					{
-						$string =  base64_decode($_GET['src']);
+						$string =  base64_decode((string) $_GET['src']);
 						parse_str($string,$p);
 						$themeInfo = e107::getSession()->get('thememanager/online/'.intval($p['id']));
 						echo $themec->renderThemeInfo($themeInfo);
@@ -488,7 +488,7 @@ class theme_admin_ui extends e_admin_ui
 			$this->perPage = 500;
 
 		}
-		
+
 		public function ChooseAjaxObserver()
 		{
 			$this->ChooseObserver();
@@ -648,7 +648,7 @@ class theme_admin_ui extends e_admin_ui
 
 			if(!empty($_GET['src'])) // online mode.
 			{
-				$string =  base64_decode($_GET['src']);
+				$string =  base64_decode((string) $_GET['src']);
 				parse_str($string,$p);
 				$themeInfo = e107::getSession()->get('thememanager/online/'.intval($p['id']));
 				return $this->themeObj->renderThemeInfo($themeInfo);
@@ -677,7 +677,7 @@ class theme_admin_ui extends e_admin_ui
 
 			$frm = e107::getForm();
 			$mes = e107::getMessage();
-			$string =  base64_decode($_GET['src']);
+			$string =  base64_decode((string) $_GET['src']);
 			parse_str($string, $data);
 
 			if(!empty($data['price']))
@@ -786,7 +786,7 @@ class theme_admin_ui extends e_admin_ui
 
 			foreach($dep as $test)
 			{
-				if(strpos($code, $test) !== false)
+				if(strpos((string) $code, $test) !== false)
 				{
 					e107::getMessage()->addDebug("Incompatible function <b>".rtrim($test,"(")."</b> found in theme.php");
 					return true;
@@ -879,7 +879,7 @@ class theme_admin_ui extends e_admin_ui
 
 		if($filter = $this->getQuery('filter_options'))
 		{
-			list($bla, $cat) = explode("__",$filter);
+			list($bla, $cat) = explode("__",(string) $filter);
 		}
 
 		$limit 	= 96;
@@ -909,7 +909,7 @@ class theme_admin_ui extends e_admin_ui
 						'id'			=> $r['params']['id'],
 						'type'			=> 'theme',
 						'mode'			=> $r['params']['mode'],
-						'name'			=> stripslashes($r['name']),
+						'name'			=> stripslashes((string) $r['name']),
 						'category'		=> $r['category'],
 						'preview' 		=> varset($r['screenshots']['image']),
 						'date'			=> $r['date'],
@@ -1004,7 +1004,7 @@ class theme_admin_tree_model extends e_tree_model
 		foreach($themeList as $k=>$v)
 		{
 
-			if(!empty($parms['searchqry']) && stripos($v['info'],$parms['searchqry']) === false && stripos($v['folder'],$parms['searchqry']) === false && stripos($v['name'],$parms['searchqry']) === false)
+			if(!empty($parms['searchqry']) && stripos((string) $v['info'],(string) $parms['searchqry']) === false && stripos((string) $v['folder'],(string) $parms['searchqry']) === false && stripos((string) $v['name'],(string) $parms['searchqry']) === false)
 			{
 				continue;
 			}
@@ -1228,7 +1228,7 @@ class theme_admin_form_ui extends e_admin_form_ui
 		return $main_icon.$info_icon.$preview_icon;
 
 	}
-	
+
 }
 
 
@@ -1404,7 +1404,7 @@ class theme_builder extends e_admin_ui
 				if($this->themeSrc) // New theme copied from another
 				{
 					$defaults = array(
-						"main-name"				=> ucfirst($this->themeName),
+						"main-name"				=> ucfirst((string) $this->themeName),
 						'category-category'     => vartrue($info['category']),
 					);
 				}
@@ -1489,7 +1489,7 @@ class theme_builder extends e_admin_ui
 			$text .= "
 			<div class='buttons-bar center'>"
 			.$frm->hidden('newtheme', $this->themeName);
-			$text .= $frm->hidden('xml[custompages]', trim(vartrue($leg['CUSTOMPAGES'])))
+			$text .= $frm->hidden('xml[custompages]', trim((string) vartrue($leg['CUSTOMPAGES'])))
 			.$frm->admin_button('step', 3,'other',LAN_GENERATE)."
 			</div>";
 
@@ -1601,7 +1601,7 @@ class theme_builder extends e_admin_ui
 
 			if(!empty($newArray['CUSTOMPAGES']))
 			{
-				$newArray['CUSTOMPAGES'] = trim($newArray['CUSTOMPAGES']);
+				$newArray['CUSTOMPAGES'] = trim((string) $newArray['CUSTOMPAGES']);
 				$LAYOUTS = "\n<layout name='custom' title='Custom'>\n";
 				$LAYOUTS .= "			<custompages>{CUSTOMPAGES}</custompages>\n";
 				$LAYOUTS .= "		</layout>";
@@ -1685,7 +1685,7 @@ TEMPLATE;
 		function xmlInput($name, $info, $default='')
 		{
 			$frm = e107::getForm();
-			list($cat,$type) = explode("-",$info);
+			list($cat,$type) = explode("-",(string) $info);
 
 			$size 		= 30;
 			$help		= '';
@@ -1710,7 +1710,7 @@ TEMPLATE;
 				case 'main-date':
 					$help 		= TPVLAN_CONV_6;
 					$required 	= true;
-					$default = (empty($default)) ? time() : strtotime($default);
+					$default = (empty($default)) ? time() : strtotime((string) $default);
 				break;
 
 				case 'main-version':

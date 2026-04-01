@@ -99,7 +99,7 @@ class e_online
 
 		$online_timeout = 300;
 
-		list($ban_access_guest,$ban_access_member) = explode(',',e107::getPref('ban_max_online_access', '100,200'));
+		list($ban_access_guest,$ban_access_member) = explode(',',(string) e107::getPref('ban_max_online_access', '100,200'));
 		$online_bancount = max($ban_access_guest,50);					// Safety net for incorrect values
 		if ($user->isUser())
 		{
@@ -333,7 +333,7 @@ class e_online
 					{
 
 						$row['online_bot'] = $this->isBot($row['online_agent']);
-				
+
 						// Sort into usable format and add bot field. 
 						$user = array(
 							'user_location'		=> $row['online_location'],
@@ -348,10 +348,10 @@ class e_online
 							'online_user_id'	=> $row['online_user_id'],
 							'user_language'     => $row['online_language']
 						);	
-		
+
 						if($row['online_user_id'] != 0 )
 						{
-							$vals = explode('.', $row['online_user_id'], 2);
+							$vals = explode('.', (string) $row['online_user_id'], 2);
 							$user['user_id'] = $vals[0];
 							$user['user_name'] = $vals[1];
 							$member_list .= "<a href='".SITEURL."user.php?id.{$vals[0]}'>{$vals[1]}</a> ";
@@ -367,8 +367,8 @@ class e_online
 							$user['user_name'] = 'guest';		// Maybe should just be an empty string?
 							$this->guests[] = $user;	
 						}
-						
-						
+
+
 					}
 				}
 				if(!defined('TOTAL_ONLINE'))

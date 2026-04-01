@@ -2334,7 +2334,7 @@ class e_library_manager
 		$p_major = '(?P<major>\d+)';
 		// By setting the minor version to x, branches can be matched.
 		$p_minor = '(?P<minor>(?:\d+|x)(?:-[A-Za-z]+\d+)?)';
-		$parts = explode('(', $dependency, 2);
+		$parts = explode('(', (string) $dependency, 2);
 		$value['name'] = trim($parts[0]);
 
 		if(isset($parts[1]))
@@ -2481,7 +2481,7 @@ class e_library_manager
 			if($exclude)
 			{
 				// Split string into array and remove whitespaces.
-				$excludedLibraries = array_map('trim', explode(',', $exclude));
+				$excludedLibraries = array_map('trim', explode(',', (string) $exclude));
 			}
 		}
 

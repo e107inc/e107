@@ -131,7 +131,7 @@ class signup_shortcodes extends e_shortcode
 		{
 			if ($v['enabled'] == 1)
 			{
-				$ic = strtolower($p);
+				$ic = strtolower((string) $p);
 
 				switch ($ic)
 				{

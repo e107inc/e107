@@ -91,7 +91,7 @@ class e_thumbnail
 
 		$this->_upsize = ((isset($this->_request['w']) && $this->_request['w'] > 110) || (isset($this->_request['aw']) && ($this->_request['aw'] > 110))); // don't resizeUp the icon images.
 
-		$this->_forceWebP = empty($this->_request['type']) && !empty($pref['thumb_to_webp']) && (strpos( $_SERVER['HTTP_ACCEPT'], 'image/webp' ) !== false) ? true : false;
+		$this->_forceWebP = empty($this->_request['type']) && !empty($pref['thumb_to_webp']) && (strpos( (string) $_SERVER['HTTP_ACCEPT'], 'image/webp' ) !== false) ? true : false;
 	//	var_dump($this);
 	//	exit;
 		return null;
@@ -135,7 +135,7 @@ class e_thumbnail
 
 		if(isset($_GET['id'])) // very-basic url-tampering prevention and path cloaking
 		{
-			$e_QUERY = base64_decode($_GET['id']);
+			$e_QUERY = base64_decode((string) $_GET['id']);
 		}
 
 		$e_QUERY= str_replace('e_AVATAR', 'e_AVATAR/', $e_QUERY); // FIXME  Quick and dirty fix.
@@ -479,7 +479,7 @@ class e_thumbnail
 		}
 
 		// check browser cache
-		if (@$_SERVER['HTTP_IF_MODIFIED_SINCE'] && ($thumbnfo['lmodified'] <= strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE'])) && (isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) == $thumbnfo['md5s']))
+		if (@$_SERVER['HTTP_IF_MODIFIED_SINCE'] && ($thumbnfo['lmodified'] <= strtotime((string) $_SERVER['HTTP_IF_MODIFIED_SINCE'])) && (isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) == $thumbnfo['md5s']))
 		{
 			header('HTTP/1.1 304 Not Modified');
 			//$bench->end()->logResult('thumb.php', $_GET['src'].' - 304 not modified');
@@ -587,7 +587,7 @@ class e_thumbnail
 			//'bmp'  => 'image/bmp',
 		);
 
-		$ftype = strtolower($ftype);
+		$ftype = strtolower((string) $ftype);
 		if(isset($known_types[$ftype]))
 		{
 			return $known_types[$ftype];

@@ -84,7 +84,7 @@ class download_rss // plugin-folder + '_rss'
 		{
 			if($value['download_author'])
 			{
-				$nick = preg_replace("/[0-9]+\./", "", $value['download_author']);
+				$nick = preg_replace("/[0-9]+\./", "", (string) $value['download_author']);
 				$rss[$i]['author'] = $nick;
 			}
 

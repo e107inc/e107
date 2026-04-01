@@ -135,12 +135,12 @@ class newsletter_mailout
 					$this->selectorActive = FALSE;
 					return FALSE;		// Run out of DB records
 				}
-				$this->targets = explode(chr(1), $row['newsletter_subscribers']);
+				$this->targets = explode(chr(1), (string) $row['newsletter_subscribers']);
 				unset($row);
 			}
 			foreach ($this->targets as $k => $v)
 			{
-				if ($uid = intval(trim($v)))
+				if ($uid = intval(trim((string) $v)))
 				{	// Got a user ID here - look them up and add their data
 					if ($this->ourDB->select('user', 'user_name,user_email,user_lastvisit', '`user_id`='.$uid))
 					{

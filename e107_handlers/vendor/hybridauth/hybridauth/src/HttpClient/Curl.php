@@ -308,7 +308,7 @@ class Curl implements HttpClientInterface
         $headers = [];
 
         foreach ($this->requestHeader as $header => $value) {
-            $headers[] = trim($header) . ': ' . trim($value);
+            $headers[] = trim((string) $header) . ': ' . trim((string) $value);
         }
 
         return $headers;

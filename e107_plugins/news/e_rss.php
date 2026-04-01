@@ -142,7 +142,7 @@ class news_rss // plugin-folder + '_rss'
 
 		if($this->showImages == true && !empty($row['news_thumbnail']))
 		{
-			$tmp = explode(",", $row['news_thumbnail']);
+			$tmp = explode(",", (string) $row['news_thumbnail']);
 
 			foreach($tmp as $img)
 			{
@@ -166,7 +166,7 @@ class news_rss // plugin-folder + '_rss'
 			return '';
 		}
 
-		$tmp = explode(",", $row['news_thumbnail']);
+		$tmp = explode(",", (string) $row['news_thumbnail']);
 
 		$ret = array();
 

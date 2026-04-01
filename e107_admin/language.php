@@ -271,7 +271,7 @@ if(!empty($_GET['iframe']))
 		//	if(is_readable(e_ADMIN."ver.php"))
 			{
 			//	include(e_ADMIN."ver.php");
-				list($ver, $tmp) = explode(" ", e_VERSION);
+				list($ver, $tmp) = explode(" ", (string) e_VERSION);
 			}
 
 			$lck = e107::getSingleton('lancheck', e_ADMIN."lancheck.php");
@@ -438,7 +438,7 @@ if(!empty($_GET['iframe']))
 					<td class='text-left'>".$value['date']."</td>
 					<td class='text-left'>".$value['version'];
 
-					if(strpos($value['tag'],'-') !==false)
+					if(strpos((string) $value['tag'],'-') !==false)
 					{
 						$text .= " <span class='label label-warning'>".LANG_LAN_153."</span>";
 					}
@@ -505,7 +505,7 @@ if(!empty($_GET['iframe']))
 			// ----------------- delete tables ---------------------------------------------
 			if (isset($_POST['del_existing']) && $_POST['lang_choices'] && getperms('0'))
 			{
-				$lang = strtolower($_POST['lang_choices']);
+				$lang = strtolower((string) $_POST['lang_choices']);
 
 				$_POST['lang_choices'] = e107::getParser()->filter($_POST['lang_choices'],'w');
 
@@ -543,7 +543,7 @@ if(!empty($_GET['iframe']))
 
 				foreach ($tabs as $value)
 				{
-					$lang = strtolower($_POST['language']);
+					$lang = strtolower((string) $_POST['language']);
 					if (isset($_POST[$value]))
 					{
 						$copdata = ($_POST['copydata_'.$value]) ? 1 : 0;
@@ -916,7 +916,7 @@ class lanDeveloper
 				$mes->addError(LANG_LAN_136.$disUnusedLanFile);//Couldn't overwrite
 			}
 
-			$ns->tablerender(LANG_LAN_137.SEP.$disUnusedLanFile,$mes->render()."<pre>".htmlentities($new)."</pre>");//Processed
+			$ns->tablerender(LANG_LAN_137.SEP.$disUnusedLanFile,$mes->render()."<pre>".htmlentities((string) $new)."</pre>");//Processed
 		}
 
 
@@ -940,17 +940,17 @@ class lanDeveloper
 
 			foreach($script as $k=>$scr)
 			{
-				if(strpos($scr,e_ADMIN)!==false) // CORE
+				if(strpos((string) $scr,e_ADMIN)!==false) // CORE
 				{
 					$mes->addDebug("Mode: Core Admin Calculated");
 					//$scriptname = str_replace("lan_","",basename($lanfile));
-					$lanfile[$k] = e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_".basename($scr);
+					$lanfile[$k] = e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_".basename((string) $scr);
 					$this->adminFile = true;
 				}
 				else  // Root
 				{
 					$mes->addDebug("Mode: Search Core Root lan calculated");
-					$lanfile[$k] = e_LANGUAGEDIR.e_LANGUAGE."/lan_".basename($scr);
+					$lanfile[$k] = e_LANGUAGEDIR.e_LANGUAGE."/lan_".basename((string) $scr);
 					$lanfile[$k] = str_replace("lan_install", "lan_installer", $lanfile[$k]); //quick fix.,
 
 					//$lanfile = $this->findIncludedFiles($script,vartrue($_POST['deprecatedLansReverse']));
@@ -1034,12 +1034,12 @@ class lanDeveloper
 			return array('define'=>$line,'value'=>'-');
 		}
 
-		if(preg_match("#\"(.*?)\".*?\"(.*)\"#",$line,$match) ||
-			preg_match("#\'(.*?)\'.*?\"(.*)\"#",$line,$match) ||
-			preg_match("#\"(.*?)\".*?\'(.*)\'#",$line,$match) ||
-			preg_match("#\'(.*?)\'.*?\'(.*)\'#",$line,$match) ||
-			preg_match("#\((.*?)\,.*?\"(.*)\"#",$line,$match) ||
-			preg_match("#\((.*?)\,.*?\'(.*)\'#",$line,$match))
+		if(preg_match("#\"(.*?)\".*?\"(.*)\"#",(string) $line,$match) ||
+			preg_match("#\'(.*?)\'.*?\"(.*)\"#",(string) $line,$match) ||
+			preg_match("#\"(.*?)\".*?\'(.*)\'#",(string) $line,$match) ||
+			preg_match("#\'(.*?)\'.*?\'(.*)\'#",(string) $line,$match) ||
+			preg_match("#\((.*?)\,.*?\"(.*)\"#",(string) $line,$match) ||
+			preg_match("#\((.*?)\,.*?\'(.*)\'#",(string) $line,$match))
 		{
 
 			return array('define'=>$match[1],'value'=>$match[2]);
@@ -1106,7 +1106,7 @@ class lanDeveloper
 
 		foreach($lans as $script => $lan)
 		{
-			if(in_array(basename($lan), $exclude))
+			if(in_array(basename((string) $lan), $exclude))
 			{
 				continue;
 			}
@@ -1121,7 +1121,7 @@ class lanDeveloper
 
 		foreach($root as $script => $lan)
 		{
-			if(in_array(basename($lan), $exclude))
+			if(in_array(basename((string) $lan), $exclude))
 			{
 				continue;
 			}
@@ -1135,7 +1135,7 @@ class lanDeveloper
 		$text .= "<optgroup label='" . LAN_TEMPLATES . "'>";
 		foreach($templates as $script => $lan)
 		{
-			if(in_array(basename($lan), $exclude))
+			if(in_array(basename((string) $lan), $exclude))
 			{
 				continue;
 			}
@@ -1148,7 +1148,7 @@ class lanDeveloper
 		$text .= "<optgroup label='" . LAN_SHORTCODES . "'>";
 		foreach($shortcodes as $script => $lan)
 		{
-			if(in_array(basename($lan), $exclude))
+			if(in_array(basename((string) $lan), $exclude))
 			{
 				continue;
 			}
@@ -1182,7 +1182,7 @@ class lanDeveloper
 		asort($_SESSION['languageTools_lanFileList']);
 		foreach($_SESSION['languageTools_lanFileList'] as $val)
 		{
-			if(strpos($val, e_SYSTEM) !== false)
+			if(strpos((string) $val, e_SYSTEM) !== false)
 			{
 				continue;
 			}
@@ -1250,7 +1250,7 @@ class lanDeveloper
 		foreach($haystack as $file => $content)
 		{
 			$count = 1;
-			$lines = explode("\n",$content);
+			$lines = explode("\n",(string) $content);
 			foreach($lines as $ln)
 			{
 				if(preg_match("/\b".$needle."\b/i",$ln, $mtch))
@@ -1290,9 +1290,9 @@ class lanDeveloper
 		// Check if a common phrases was used.
 		foreach($ar as $def=>$common)
 		{
-			similar_text($value, $common, $p);
+			similar_text((string) $value, (string) $common, $p);
 
-			if(strtoupper(trim($value)) == strtoupper($common))
+			if(strtoupper(trim((string) $value)) == strtoupper((string) $common))
 			{
 				//$text .= "<div style='color:yellow'><b>$common</b></div>";
 
@@ -1404,7 +1404,7 @@ class lanDeveloper
 			// return "<tr><td style='width:25%;'>".$needle .$disabled. "</td><td></td></tr>";
 		}
 
-		elseif($foundSimilar && $found && substr($def,0,4) == "LAN_")
+		elseif($foundSimilar && $found && substr((string) $def,0,4) == "LAN_")
 		{
 			// $color = "background-color:#E9EAF2";
 			$label .= "  <span class='label label-warning' style='cursor:help' title=\"".$common."\">".round($p)."% like ".$def."</span> ";
@@ -1644,12 +1644,12 @@ class lanDeveloper
 			$reverse = false;
 		}
 
-		$dir = dirname($script);
+		$dir = dirname((string) $script);
 
 		$dir = str_replace("/includes","",$dir);
 		$plugin = basename($dir);
 
-		if(strpos($script,'admin')!==false || strpos($script,'includes')!==false) // Admin Language files.
+		if(strpos((string) $script,'admin')!==false || strpos((string) $script,'includes')!==false) // Admin Language files.
 		{
 
 			$newLangs = array(

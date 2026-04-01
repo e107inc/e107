@@ -721,7 +721,7 @@ class UserHandler
 			return true;
 		}
 
-		$cookieval = $lode['user_id'].'.'.md5($lode['user_password']);		// (Use extra md5 on cookie value to obscure hashed value for password)
+		$cookieval = $lode['user_id'].'.'.md5((string) $lode['user_password']);		// (Use extra md5 on cookie value to obscure hashed value for password)
 		if (e107::getPref('user_tracking','session') == 'session')
 		{
 			$_SESSION[e107::getPref('cookie_name')] = $cookieval;
@@ -766,7 +766,7 @@ class UserHandler
 		}
 		else
 		{
-			if (!empty($userData['user_class'])) $classList = explode(',',$userData['user_class']);
+			if (!empty($userData['user_class'])) $classList = explode(',',(string) $userData['user_class']);
 		}
 		foreach (array(e_UC_MEMBER, e_UC_READONLY, e_UC_PUBLIC) as $c)
 		{
@@ -775,10 +775,10 @@ class UserHandler
 				$classList[] = $c;
 			}
 		}
-		if (((varset($userData['user_admin'],0) == 1) && strlen($userData['user_perms'])) || ($fromAdmin && ADMIN))
+		if (((varset($userData['user_admin'],0) == 1) && strlen((string) $userData['user_perms'])) || ($fromAdmin && ADMIN))
 		{
 			$classList[] = e_UC_ADMIN;
-			if ((strpos($userData['user_perms'],'0') === 0) || getperms('0'))
+			if ((strpos((string) $userData['user_perms'],'0') === 0) || getperms('0'))
 			{
 				$classList[] = e_UC_MAINADMIN;
 			}
@@ -1022,7 +1022,7 @@ Following fields auto-filled in code as required:
 		{
 			if(isset($pref['initial_user_classes']))   // Any initial user classes to be set at some stage
 			{
-				$initClasses = explode(',', $pref['initial_user_classes']);
+				$initClasses = explode(',', (string) $pref['initial_user_classes']);
 			}
 
 			if($doProbation && (varset($pref['user_new_period'], 0) > 0))
@@ -1034,7 +1034,7 @@ Following fields auto-filled in code as required:
 			{    // Update the user classes
 				if($user['user_class'])
 				{
-					$initClasses = array_unique(array_merge($initClasses, explode(',', $user['user_class'])));
+					$initClasses = array_unique(array_merge($initClasses, explode(',', (string) $user['user_class'])));
 				}
 				$user['user_class'] = $tp->toDB(implode(',', $initClasses));
 				//$ret = TRUE;
@@ -1505,7 +1505,7 @@ class e_user_provider
 				}
 				break;
 			case T_CONSTANT_ENCAPSED_STRING:
-				$carry[] = trim($tokenValue, '\'"');
+				$carry[] = trim((string) $tokenValue, '\'"');
 				break;
 		}
 		++$index;
@@ -1569,7 +1569,7 @@ class e_user_provider
 			{
 				$redirectUrl = SITEURL;
 			}
-			elseif (strpos($redirectUrl, 'http://') !== 0 && strpos($redirectUrl, 'https://') !== 0)
+			elseif (strpos((string) $redirectUrl, 'http://') !== 0 && strpos((string) $redirectUrl, 'https://') !== 0)
 			{
 				$redirectUrl = e107::getUrl()->create($redirectUrl);
 			}

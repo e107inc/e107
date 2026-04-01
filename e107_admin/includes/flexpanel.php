@@ -629,7 +629,7 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 		$files = $fl->get_files(e_ADMIN . 'includes/layouts/', "flexpanel_(.*).php", "standard", 1);
 		foreach($files as $num => $val)
 		{
-			$filename = basename($val['fname']);
+			$filename = basename((string) $val['fname']);
 			$layout = str_replace('flexpanel_', '', $filename);
 			$layout = str_replace('.php', '', $layout);
 

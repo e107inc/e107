@@ -304,7 +304,7 @@ class language{
 			$lang = $pref['adminlanguage'];
 		}
 
-		if(strlen($lang)== 2)
+		if(strlen((string) $lang)== 2)
 		{
 			$iso = $lang;
 			$lang = $this->convert($lang);	
@@ -346,7 +346,7 @@ class language{
 		}
 		
 		global $pref;
-		$mtmp = explode("\n", $pref['multilanguage_subdomain']);
+		$mtmp = explode("\n", (string) $pref['multilanguage_subdomain']);
         foreach($mtmp as $val)
 		{
         	if($domain == trim($val))
@@ -359,7 +359,7 @@ class language{
 		{
 			foreach($pref['multilanguage_domain'] as $lng=>$val)
 			{
-				if($domain == trim($val))
+				if($domain == trim((string) $val))
 				{
 					return $lng;
 				}
@@ -616,7 +616,7 @@ class language{
 			
 			if(varset($_COOKIE['e107_language'])!=$this->detect && (defset('MULTILANG_SUBDOMAIN') != TRUE))
 			{
-				setcookie('e107_language', $this->detect, time() + 86400, e_HTTP);
+				setcookie('e107_language', (string) $this->detect, time() + 86400, e_HTTP);
 				$_COOKIE['e107_language'] = $this->detect; // Used only when a user returns to the site. Not used during this session. 
 			}
 			else // Multi-lang SubDomains should ignore cookies and remove old ones if they exist. 

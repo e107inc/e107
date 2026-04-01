@@ -987,7 +987,7 @@ class e_admin_log
 
 		foreach($this->_allMessages as $m)
 		{
-			$text .= date('Y-m-d H:i:s', $m['time']) . "  \t" . str_pad($m['loglevel'], 10, ' ', STR_PAD_RIGHT) . "\t" . strip_tags($m['message']) . "\n";
+			$text .= date('Y-m-d H:i:s', $m['time']) . "  \t" . str_pad((string) $m['loglevel'], 10, ' ', STR_PAD_RIGHT) . "\t" . strip_tags((string) $m['message']) . "\n";
 		}
 
 		$date = ($append == true) ? date('Y-m-d') : date('Y-m-d_H-i-s') . '_' . crc32($text);
@@ -1017,7 +1017,7 @@ class e_admin_log
 
 		if(!empty($opts['filename']))
 		{
-			$fileName = $dir . basename($opts['filename']);
+			$fileName = $dir . basename((string) $opts['filename']);
 		}
 
 		if($append == true)

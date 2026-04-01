@@ -39,6 +39,6 @@ class OAuthSignatureMethodHMACSHA1 extends OAuthSignatureMethod
         $key_parts = OAuthUtil::urlencode_rfc3986($key_parts);
         $key = implode('&', $key_parts);
         
-        return base64_encode(hash_hmac('sha1', $base_string, $key, true));
+        return base64_encode(hash_hmac('sha1', (string) $base_string, $key, true));
     }
 }

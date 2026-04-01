@@ -22,7 +22,7 @@ class SFTPDeployer extends Deployer
 		if (empty($this->getFsParam('privkey_path')) &&
 			!empty($this->getFsParam('password')))
 		{
-			return 'sshpass -p '.escapeshellarg($this->getFsParam('password')).' ';
+			return 'sshpass -p '.escapeshellarg((string) $this->getFsParam('password')).' ';
 		}
 		return '';
 	}
@@ -35,9 +35,9 @@ class SFTPDeployer extends Deployer
 	private function generateRsyncRemoteShell()
 	{
 		$prefix = 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p '.
-			escapeshellarg($this->getFsParam('port'));
+			escapeshellarg((string) $this->getFsParam('port'));
 		if (!empty($this->getFsParam('privkey_path')))
-			return $prefix.' -i ' . escapeshellarg($this->getFsParam('privkey_path'));
+			return $prefix.' -i ' . escapeshellarg((string) $this->getFsParam('privkey_path'));
 		else
 			return $prefix;
 	}
@@ -78,7 +78,7 @@ class SFTPDeployer extends Deployer
 		$command = $this->generateSshpassPrefix().
 			$this->generateRsyncRemoteShell().
 			" ".escapeshellarg("{$fs_params['user']}@{$fs_params['host']}").
-			" ".escapeshellarg("rm -v " . escapeshellarg(rtrim($fs_params['path'], '/')."/$relative_path"));
+			" ".escapeshellarg("rm -v " . escapeshellarg(rtrim((string) $fs_params['path'], '/')."/$relative_path"));
 		$retcode = self::runCommand($command);
 		if ($retcode === 0)
 		{
@@ -93,10 +93,10 @@ class SFTPDeployer extends Deployer
 	private function start_fs()
 	{
 		$fs_params = $this->getFsParams();
-		$fs_params['path'] = rtrim($fs_params['path'], '/') . '/';
+		$fs_params['path'] = rtrim((string) $fs_params['path'], '/') . '/';
 		$command = $this->generateSshpassPrefix() .
 			'rsync -e ' .
-			escapeshellarg($this->generateRsyncRemoteShell()) .
+			escapeshellarg((string) $this->generateRsyncRemoteShell()) .
 			' --delete -avzHXShs ' .
 			escapeshellarg(rtrim(APP_PATH, '/') . '/') . ' ' .
 			escapeshellarg("{$fs_params['user']}@{$fs_params['host']}:{$fs_params['path']}");

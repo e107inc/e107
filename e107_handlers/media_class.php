@@ -832,7 +832,7 @@ class e_media
 
 		foreach($images as $im)
 		{
-			list($dbWidth,$dbHeight) = explode(" x ",$im['media_dimensions']);
+			list($dbWidth,$dbHeight) = explode(" x ",(string) $im['media_dimensions']);
 			unset($dbHeight);
 				
 			$w = ($dbWidth > $defaultResizeWidth) ? $defaultResizeWidth : intval($dbWidth);
@@ -1127,7 +1127,7 @@ class e_media
 		elseif(!empty($pattern) && !empty($path))
 		{
 			$pattern = '/'.$pattern.'/';
-			if(strpos($path, 'http') === 0)
+			if(strpos((string) $path, 'http') === 0)
 			{
 				$subject = e107::getFile()->getRemoteContent($path);
 			}
@@ -1142,7 +1142,7 @@ class e_media
 		}
 
 
-		$prefixLength = !empty($prefix) ? strlen($prefix) : 3;
+		$prefixLength = !empty($prefix) ? strlen((string) $prefix) : 3;
 
 		if(!empty($pattern) && !empty($subject))
 		{
@@ -1498,7 +1498,7 @@ class e_media
 
 		$len = strlen($ext);
 
-		if($ext && (substr($path,- $len) != $ext))
+		if($ext && (substr((string) $path,- $len) != $ext))
 		{
 			return $path.$ext;
 		}
@@ -1535,7 +1535,7 @@ class e_media
 
 		$style  = varset($data['style']);
 		$class  = varset($data['class']);
-		$dataPreview = !empty($data['previewHtml']) ? base64_encode($data['previewHtml']) : '';
+		$dataPreview = !empty($data['previewHtml']) ? base64_encode((string) $data['previewHtml']) : '';
 
 		return "<a data-toggle='context' data-bs-toggle='context' class='e-media-select ".$select." ".$class."' ".$close." data-id='".$data['id']."' data-width='".$data['width']."' data-height='".$data['height']."' data-src='".$data['previewUrl']."' data-type='".$data['type']."' data-bbcode='".$data['bbcode']."' data-target='".$data['tagid']."' data-path='".$data['saveValue']."' data-preview='".$data['previewUrl']."'  data-preview-html='".$dataPreview."' title=\"".$data['title']."\" style='".$style."' href='#' >";
 
@@ -1725,7 +1725,7 @@ class e_media
 	 */
 	function getThumb($id)
 	{
-		$id = trim($id);
+		$id = trim((string) $id);
 		$filename = 'temp/thumb-'.md5($id).".jpg";
 		$filepath = e_MEDIA.$filename;
 
@@ -2137,7 +2137,7 @@ class e_media
 
 
 		// Clean the fileName for security reasons
-		$fileName = preg_replace('/[^\w\._]+/', '_', $fileName);
+		$fileName = preg_replace('/[^\w\._]+/', '_', (string) $fileName);
 
 		//	$array = array("jsonrpc" => "2.0", "error" => array('code'=>$_FILES['file']['error'], 'message'=>'Failed to move file'), "id" => "id",  'data'=>$_FILES );
 
@@ -2204,7 +2204,7 @@ class e_media
 		}
 
 		// Handle non multipart uploads older WebKit versions didn't support multipart in HTML5
-		if(strpos($contentType, "multipart") !== false)
+		if(strpos((string) $contentType, "multipart") !== false)
 		{
 			if(isset($_FILES['file']['tmp_name']) && is_uploaded_file($_FILES['file']['tmp_name']))
 			{
@@ -2377,7 +2377,7 @@ class e_media
 
 		if(!empty($request['rename']))
 		{
-			$newPath = $targetDir.basename($request['rename']);
+			$newPath = $targetDir.basename((string) $request['rename']);
 			if(!rename($filePath, $newPath))
 			{
 				return '{"jsonrpc" : "2.0", "error" : {"code": 105, "message": "Unable to rename '.$filePath.' to '.$newPath.'"}, "id" : "id"}';

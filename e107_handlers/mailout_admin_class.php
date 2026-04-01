@@ -338,7 +338,7 @@ class mailoutAdminClass extends e107MailManager
 		}
 		if (isset($_GET['asc']))
 		{
-			$temp = strtolower(e107::getParser()->toDB($_GET['asc']));
+			$temp = strtolower((string) e107::getParser()->toDB($_GET['asc']));
 			if (($temp == 'asc') || ($temp == 'desc'))
 			{
 				$this->sortOrder = $temp;
@@ -571,7 +571,7 @@ class mailoutAdminClass extends e107MailManager
 		$ret = 0;
 		$toLoad = explode(',', $options);
 
-		$active_mailers = explode(',', varset($pref['mailout_enabled'], 'user'));
+		$active_mailers = explode(',', (string) varset($pref['mailout_enabled'], 'user'));
 
 		//if((in_array('core', $toLoad) || ($options == 'all')) && in_array('core', $active_mailers))
 		//	{
@@ -799,7 +799,7 @@ class mailoutAdminClass extends e107MailManager
 			{
 				$value = 'ue.user_' . $fd['user_extended_struct_name'];
 				$selected = ($value == $curval) ? " selected='selected'" : '';
-				$ret .= "<option value='" . $value . "' {$selected}>" . ucfirst($fd['user_extended_struct_name']) . "</option>\n";
+				$ret .= "<option value='" . $value . "' {$selected}>" . ucfirst((string) $fd['user_extended_struct_name']) . "</option>\n";
 			}
 		}
 		$ret .= "</select>\n";
@@ -826,7 +826,7 @@ class mailoutAdminClass extends e107MailManager
 			'mail_sender_name'    => $_POST['email_from_name'],
 			'mail_copy_to'        => $_POST['email_cc'],
 			'mail_bcopy_to'       => $_POST['email_bcc'],
-			'mail_attach'         => trim($_POST['email_attachment']),
+			'mail_attach'         => trim((string) $_POST['email_attachment']),
 			'mail_send_style'     => varset($_POST['email_send_style'], 'textonly'),
 			'mail_include_images' => (isset($_POST['email_include_images']) ? 1 : 0)
 		);
@@ -865,23 +865,23 @@ class mailoutAdminClass extends e107MailManager
 
 			return $errList;
 		}
-		if (!trim($email['mail_subject']))
+		if (!trim((string) $email['mail_subject']))
 		{
 			$errList[] = LAN_MAILOUT_200;
 		}
-		if (!trim($email['mail_body']))
+		if (!trim((string) $email['mail_body']))
 		{
 			$errList[] = LAN_MAILOUT_202;
 		}
-		if (!trim($email['mail_sender_name']))
+		if (!trim((string) $email['mail_sender_name']))
 		{
 			$errList[] = LAN_MAILOUT_203;
 		}
-		if (!trim($email['mail_sender_email']))
+		if (!trim((string) $email['mail_sender_email']))
 		{
 			$errList[] = LAN_MAILOUT_204;
 		}
-		if (strlen($email['mail_send_style']) == 0)
+		if (strlen((string) $email['mail_send_style']) == 0)
 		{
 			// Can be a template name now
 			$errList[] = LAN_MAILOUT_205;
@@ -976,7 +976,7 @@ class mailoutAdminClass extends e107MailManager
 						break;
 					case 'chars':
 						// Show generated html as is
-						$text .= htmlspecialchars($val, ENT_COMPAT, 'UTF-8');
+						$text .= htmlspecialchars((string) $val, ENT_COMPAT, 'UTF-8');
 						break;
 					case 'contentstatus':
 						$text .= $this->statusToText($val);
@@ -2200,7 +2200,7 @@ class mailoutAdminClass extends e107MailManager
 
 		$mailers = array('php' => 'php', 'smtp' => 'smtp', 'sendmail' => 'sendmail');
 
-		$smtp_opts = explode(',', varset($pref['smtp_options'], ''));
+		$smtp_opts = explode(',', (string) varset($pref['smtp_options'], ''));
 		$smtpdisp = ($pref[$id] != 'smtp') ? "style='display:none;'" : '';
 
 		$text = $frm->select($id, $mailers, $pref[$id]) . "

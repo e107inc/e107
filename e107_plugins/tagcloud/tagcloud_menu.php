@@ -73,7 +73,7 @@ if(!class_exists('tagcloud_menu'))
 				foreach ($result as $row)
 				{
 
-					$tmp = explode(",", $row['news_meta_keywords']);
+					$tmp = explode(",", (string) $row['news_meta_keywords']);
 
 					$c = 0;
 					foreach ($tmp as $word)
@@ -126,7 +126,7 @@ if(!class_exists('tagcloud_menu'))
 
 			if(!empty($parm['order']))
 			{
-				list($o1,$o2) = explode(',', $parm['order']);
+				list($o1,$o2) = explode(',', (string) $parm['order']);
 				$cloud->setOrder($o1, strtoupper($o2));
 			}
 			else

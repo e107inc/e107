@@ -66,9 +66,9 @@ class Tumblr extends OAuth1
                 $userProfile->identifier = $blog->get('url');
                 $userProfile->profileURL = $blog->get('url');
                 $userProfile->webSiteURL = $blog->get('url');
-                $userProfile->description = strip_tags($blog->get('description'));
+                $userProfile->description = strip_tags((string) $blog->get('description'));
 
-                $bloghostname = explode('://', $blog->get('url'));
+                $bloghostname = explode('://', (string) $blog->get('url'));
                 $bloghostname = substr($bloghostname[1], 0, -1);
 
                 // store user's primary blog which will be used as target by setUserStatus

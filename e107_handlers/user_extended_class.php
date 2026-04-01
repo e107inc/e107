@@ -289,7 +289,7 @@ class e107_user_extended
 	 */
 	public function getDBFieldType($fieldname)
 	{
-		if(strpos($fieldname, 'user_') !== 0)
+		if(strpos((string) $fieldname, 'user_') !== 0)
 		{
 		//	$fieldname = 'user_'. $fieldname;
 			var_dump($fieldname);
@@ -412,7 +412,7 @@ class e107_user_extended
 	{
 		$tp = e107::getParser();
 
-		$parms = explode('^,^', $params['user_extended_struct_parms']);
+		$parms = explode('^,^', (string) $params['user_extended_struct_parms']);
 		$requiredField = $params['user_extended_struct_required'] == 1;
 		$regex = $tp->toText($parms[1]);
 		$regexfail = $tp->toText($parms[2]);
@@ -438,7 +438,7 @@ class e107_user_extended
 		}
 		if($regex != "" && $val != "")
 		{
-			if(!preg_match($regex, $val))
+			if(!preg_match($regex, (string) $val))
 			{
 				return $regexfail ? $regexfail : true;
 			}
@@ -731,10 +731,10 @@ class e107_user_extended
 		$sql = e107::getDb('ue');
 
 		$ret = array();
-		
+
 		$more = ($cat != '') ? " AND user_extended_struct_parent = ".intval($cat)." " : "";
 		$sys = ($system == false) ? " AND user_extended_struct_text != '_system_' " : "";
-		
+
 		if($sql->select("user_extended_struct", "*", "user_extended_struct_type > 0 {$sys} {$more} ORDER BY user_extended_struct_order ASC"))
 		{
 			while($row = $sql->fetch())
@@ -822,7 +822,7 @@ class e107_user_extended
 	{
 		if(!empty($this->fieldAttributes[$field]['values']))
 		{
-			return html_entity_decode($this->fieldAttributes[$field]['values']);
+			return html_entity_decode((string) $this->fieldAttributes[$field]['values']);
 		}
 
 		return false;
@@ -1184,21 +1184,21 @@ class e107_user_extended
 	{
 		$tp = e107::getParser();
 		$frm = e107::getForm();
-		$curval = trim($curval);
+		$curval = trim((string) $curval);
 
 		if(empty($curval) && !empty($struct['user_extended_struct_default']))
 		{
 			$curval = $struct['user_extended_struct_default'];
 		}
 		
-		$choices = explode(",",$struct['user_extended_struct_values']);
+		$choices = explode(",",(string) $struct['user_extended_struct_values']);
 		
 		foreach($choices as $k => $v)
 		{
 			$choices[$k] = str_replace("[E_COMMA]", ",", $v);
 		}
 		
-		$parms 		= explode("^,^",$struct['user_extended_struct_parms']);
+		$parms 		= explode("^,^",(string) $struct['user_extended_struct_parms']);
 		$include 	= preg_replace("/\n/", " ", $tp->toHTML($parms[0]));
 		// $regex 		= $tp->toText(varset($parms[1]));
 		// $regexfail 	= $tp->toText(varset($parms[2]));
@@ -1220,7 +1220,7 @@ class e107_user_extended
 			$title = '';
 		}
 
-		if(strpos($include, 'class') === FALSE)
+		if(strpos((string) $include, 'class') === FALSE)
 		{
 			$include .= " class='".$class."' ";
 		}
@@ -1332,7 +1332,7 @@ class e107_user_extended
 			  break;
 
 			case EUF_PREDEFINED : // predefined list, shown in dropdown
-				$listRoot = trim($struct['user_extended_struct_values']);			// Base list name
+				$listRoot = trim((string) $struct['user_extended_struct_values']);			// Base list name
 
 				if(!$temp = $this->getFieldTypeClass($listRoot))
 				{
@@ -1395,8 +1395,8 @@ class e107_user_extended
 
 					foreach($choiceList as $cArray)
 					{
-						$cID = trim($cArray[$choices[1]]);
-						$cText = trim($cArray[$choices[2]]);
+						$cID = trim((string) $cArray[$choices[1]]);
+						$cText = trim((string) $cArray[$choices[2]]);
 						$sel = ($curval == $cID) ? " selected='selected' " : "";
 						$ret .= "<option value='{$cID}' {$sel}>{$cText}</option>\n";
 					}
@@ -1455,7 +1455,7 @@ class e107_user_extended
 					$ret .= "<option value=''>&nbsp;</option>\n";  // ensures that the user chose it.
 					foreach($lanlist as $choice)
 					{
-						$choice = trim($choice);
+						$choice = trim((string) $choice);
 						$sel = ($curval == $choice || (!USER && $choice == e_LANGUAGE))? " selected='selected' " : "";
 						$ret .= "<option value='{$choice}' {$sel}>{$choice}</option>\n";
 					}
@@ -1544,7 +1544,7 @@ class e107_user_extended
 
 			$info = array(
 						"name" 			=> $item['@attributes']['name'],
-						"text" 			=> "UE_LAN_".strtoupper($item['@attributes']['name']),
+						"text" 			=> "UE_LAN_".strtoupper((string) $item['@attributes']['name']),
 						"type" 			=> varset($item['type']),
 						"values" 		=> varset($item['values']),
 						"default" 		=> varset($item['default']),
@@ -1562,7 +1562,7 @@ class e107_user_extended
 			}
 			if($item['regex'])
 			{
-				$info['parms'] .= $item['include_text']."^,^".$item['regex']."^,^LAN_UE_FAIL_".strtoupper($item['@attributes']['name']);
+				$info['parms'] .= $item['include_text']."^,^".$item['regex']."^,^LAN_UE_FAIL_".strtoupper((string) $item['@attributes']['name']);
 			}
 			$ret[$item['@attributes']['name']] = $info;
 		}

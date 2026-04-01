@@ -208,9 +208,9 @@ else
 // possibility to overwrite some CSS definition according to TEXTDIRECTION
 // especially usefull for rtl.css
 // see _blank theme for examples
-if(defined('TEXTDIRECTION') && file_exists(THEME . '/' . strtolower(TEXTDIRECTION) . '.css'))
+if(defined('TEXTDIRECTION') && file_exists(THEME . '/' . strtolower((string) TEXTDIRECTION) . '.css'))
 {
-	$e_js->themeCSS(strtolower(TEXTDIRECTION) . '.css');
+	$e_js->themeCSS(strtolower((string) TEXTDIRECTION) . '.css');
 }
 
 

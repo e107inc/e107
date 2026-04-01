@@ -104,7 +104,7 @@ class e_bbcode
 		$postID = $p_ID;
 
 
-		if (strlen($value) <= 6) return $value;     		// Don't waste time on trivia!
+		if (strlen((string) $value) <= 6) return $value;     		// Don't waste time on trivia!
 		if ($force_lower == 'default') $force_lower = TRUE;	// Set the default behaviour if not overridden
 		$code_stack = array();								// Stack for unprocessed bbcodes and text
 		$unmatch_stack = array();							// Stack for unmatched bbcodes
@@ -116,7 +116,7 @@ class e_bbcode
 		$strip_array = array();
 		if (!is_bool($bbStrip))
 		{
-			$strip_array = explode(',',$bbStrip);
+			$strip_array = explode(',',(string) $bbStrip);
 			if ($strip_array[0] == 'PRE')
 			{
 				$this->preProcess = "toDB";
@@ -143,7 +143,7 @@ class e_bbcode
 		// $matches[4] - '=' or ':' according to the separator used
 		// $matches[5] - any parameter
 
-		$content = preg_split('#(\[(?:\w|/\w).*?\])#ms', $value, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
+		$content = preg_split('#(\[(?:\w|/\w).*?\])#ms', (string) $value, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
 
 		foreach ($content as $cont)
 		{  // Each chunk is either a bbcode or a piece of text
@@ -336,7 +336,7 @@ class e_bbcode
 			else
 			{	// Add code to check for plugin bbcode addition
 				$bbPath = e_PLUGIN.$this->bbLocation[$code].'/';
-				$bbFile = strtolower($code);
+				$bbFile = strtolower((string) $code);
 				$debugFile = $bbFile;
 			}
 			if (file_exists($bbPath.'bb_'.$bbFile.'.php'))
@@ -434,7 +434,7 @@ class e_bbcode
 			return null;
 		}
 
-		if(strpos(ltrim($text), '[html]') === 0 && $type == 'img') // support for html img tags inside [html] bbcode.
+		if(strpos(ltrim((string) $text), '[html]') === 0 && $type == 'img') // support for html img tags inside [html] bbcode.
 		{
 
 			$tmp = e107::getParser()->getTags($text,'img');
@@ -444,7 +444,7 @@ class e_bbcode
 				$mtch = array();
 				foreach($tmp['img'] as $k)
 				{
-					$mtch[1][] = str_replace('"','',trim($k['src']));
+					$mtch[1][] = str_replace('"','',trim((string) $k['src']));
 					// echo $k['src']."<br />";
 				}
 
@@ -453,7 +453,7 @@ class e_bbcode
 		}
 		else // regular bbcode;
 		{
-			preg_match_all("/\[".$type."(?:[^\]]*)?]([^\[]*)(?:\[\/".$type."])/im",$text,$mtch);
+			preg_match_all("/\[".$type."(?:[^\]]*)?]([^\[]*)(?:\[\/".$type."])/im",(string) $text,$mtch);
 		}
 
 
@@ -743,7 +743,7 @@ class e_bbcode
                 break;
             }
            
-           $html = preg_replace($search,$replace,$html);  
+           $html = preg_replace($search,$replace,(string) $html);  
         }
   
         return str_replace(array("<html><body>","</body></html>"),"",$html); 
@@ -783,7 +783,7 @@ class e_bbcode
 		$arr['img'] = isset($arr['img']) && is_array($arr['img']) ? $arr['img'] : [];
 		foreach($arr['img'] as $img)
 		{
-			if(/*substr($img['src'],0,4) == 'http' ||*/ strpos($img['src'], e_IMAGE_ABS.'emotes/')!==false) // dont resize external images or emoticons.
+			if(/*substr($img['src'],0,4) == 'http' ||*/ strpos((string) $img['src'], e_IMAGE_ABS.'emotes/')!==false) // dont resize external images or emoticons.
 			{
 				continue;
 			}
@@ -792,7 +792,7 @@ class e_bbcode
 
 			$qr = $tp->thumbUrlDecode($img['src']); // extract width/height and src from thumb URLs.
 
-			if(strpos($qr['src'],'http')!==0 && empty($qr['w']) && empty($qr['aw']))
+			if(strpos((string) $qr['src'],'http')!==0 && empty($qr['w']) && empty($qr['aw']))
 			{
 				$qr['w'] = varset($img['width']);
 				$qr['h'] = varset($img['height']);
@@ -803,7 +803,7 @@ class e_bbcode
 
 			if(!empty($img['class']))
 			{
-				$tmp = explode(" ",$img['class']);
+				$tmp = explode(" ",(string) $img['class']);
 				$cls = array();
 				foreach($tmp as $v)
 				{
@@ -833,14 +833,14 @@ class e_bbcode
 			}
 
 
-			$code_text = (strpos($img['src'],'http') === 0) ? $img['src'] : str_replace($tp->getUrlConstants('raw'), $tp->getUrlConstants('sc'), $qr['src']);
+			$code_text = (strpos((string) $img['src'],'http') === 0) ? $img['src'] : str_replace($tp->getUrlConstants('raw'), $tp->getUrlConstants('sc'), $qr['src']);
 
 			unset($img['src'],$img['srcset'],$img['@value'], $img['caption'], $img['alt']);
 			$parms = !empty($img) ? ' '.str_replace('+', ' ', http_build_query($img)) : "";
 
 			$replacement = '[img'.$parms.']'.$code_text.'[/img]';
 
-			$html = preg_replace($regexp, $replacement, $html);
+			$html = preg_replace($regexp, $replacement, (string) $html);
 
 		}
 

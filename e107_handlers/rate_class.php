@@ -106,7 +106,7 @@ class rater
 		$TEMPLATE['RATE']   = "<div class='e-rate e-rate-{$table}' id='{$identifier}'  data-hint=\"{$datahint}\" data-readonly='{$readonly}' data-score='{$score}' data-url='".e_HTTP."rate.php' data-path='{$path}'>".$label."</div>";
 		$TEMPLATE['VOTES']  = "<div class='muted e-rate-votes e-rate-votes-{$table}' id='e-rate-votes-{$identifier}'><small>".$this->renderVotes($votes,$score)."</small></div>";
 
-		$tmp = explode("|",$template);
+		$tmp = explode("|",(string) $template);
 		
 		$text = "";
 		foreach($tmp as $k)
@@ -155,7 +155,7 @@ class rater
 	{
 		//$mode	: if mode is set, no urljump will be used (used in combined comments+rating system)
 
-		$table = preg_replace('/\W/', '', $table);
+		$table = preg_replace('/\W/', '', (string) $table);
 		$id = intval($id);
 		
 	//	return $this->render($text,$table,$id,$mode);
@@ -198,7 +198,7 @@ class rater
 	 */
 	function rateradio($table, $id) {
 
-		$table = preg_replace('/\W/', '', $table);
+		$table = preg_replace('/\W/', '', (string) $table);
 		$id = intval($id);
 
 		$str = "
@@ -222,7 +222,7 @@ class rater
 	 */
 	function checkrated($table, $id) {
 		
-		$table = preg_replace('/\W/', '', $table);
+		$table = preg_replace('/\W/', '', (string) $table);
 		$id = intval($id);
 
 		$sql = new db;
@@ -235,12 +235,12 @@ class rater
 		{
 			$row = $sql->fetch();
 
-			if(preg_match("/\." . USERID . "\./", $row['rate_voters']))
+			if(preg_match("/\." . USERID . "\./", (string) $row['rate_voters']))
 			{
 				return true;
 				//added option to split an individual users rating
 			}
-			elseif(preg_match("/\." . USERID . chr(1) . "([0-9]{1,2})\./", $row['rate_voters']))
+			elseif(preg_match("/\." . USERID . chr(1) . "([0-9]{1,2})\./", (string) $row['rate_voters']))
 			{
 				return true;
 			}
@@ -265,7 +265,7 @@ class rater
 
 
 
-		$table = preg_replace('/\W/', '', $table);
+		$table = preg_replace('/\W/', '', (string) $table);
 		$id = intval($id);
 		
 		if($id == 0)
@@ -334,7 +334,7 @@ class rater
 		{
 			$rating = array();
 
-			$rateusers = explode(".", $rowgr['rate_voters']);
+			$rateusers = explode(".", (string) $rowgr['rate_voters']);
 			for($i = 0, $iMax = count($rateusers); $i < $iMax; $i++)
 			{
 				if(strpos($rateusers[$i], $sep))
@@ -473,7 +473,7 @@ class rater
 		{
 			$row 		= $sql->fetch();
 			
-			if(preg_match("/\.". USERID."\./",$row['rate_voters'])) // already voted. 
+			if(preg_match("/\.". USERID."\./",(string) $row['rate_voters'])) // already voted. 
 			{		
 				return false;
 			}
@@ -570,7 +570,7 @@ class rater
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 
-		$qs = explode("^", $rateindex);
+		$qs = explode("^", (string) $rateindex);
 
 		if (!$qs[0] || USER == FALSE || $qs[3] > 10 || $qs[3] < 1)
 		{
@@ -607,9 +607,9 @@ class rater
 			$stat = ($new_rating /$new_votes)/2;
 			$statR = round($stat,1);
 			
-			if(strpos($row['rate_voters'], ".".$voter.".") == true || strpos($row['rate_voters'], ".".USERID.".") == true)
+			if(strpos((string) $row['rate_voters'], ".".$voter.".") == true || strpos((string) $row['rate_voters'], ".".USERID.".") == true)
 			{
-				
+
 				return RATELAN_9."|".$this->renderVotes($new_votes,$statR); // " newvotes = ".($statR). " =".$new_votes;
 			}
 			

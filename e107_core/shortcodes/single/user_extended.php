@@ -26,7 +26,7 @@
 			return null;
 		}
 
-		$tmp = explode('.', $parm);
+		$tmp = explode('.', (string) $parm);
 
 		$fieldname = trim($tmp[0]);
 		$type = trim($tmp[1]);
@@ -98,7 +98,7 @@
 				$ret_cause = 3;
 			}
 
-			if((!ADMIN && substr($fkeyStruct, -1) == 1	&& strpos($udata['user_hidden_fields'], '^user_' . $fieldname . '^') !== false && $uid != USERID))
+			if((!ADMIN && substr($fkeyStruct, -1) == 1	&& strpos((string) $udata['user_hidden_fields'], '^user_' . $fieldname . '^') !== false && $uid != USERID))
 			{
 				$ret_cause = 4;
 			}

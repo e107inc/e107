@@ -134,7 +134,7 @@ class parseXml extends xmlClass // BC with v1.x
 	function startElement ($p, $element, &$attrs)
 	{
 		$this -> start_tag = $element;
-		$this -> current_tag = strtolower($element);
+		$this -> current_tag = strtolower((string) $element);
 		if(!array_key_exists($this -> current_tag, $this -> counterArray))
 		{
 			$this -> counterArray[$this -> current_tag] = 0;
@@ -162,7 +162,7 @@ class parseXml extends xmlClass // BC with v1.x
 	 */
 	function characterData ($p, $data)
 	{
-		$data = trim ( rtrim ( $data ));
+		$data = trim ( rtrim ( (string) $data ));
 		$data = preg_replace('/&(?!amp;)/', '&amp;', $data);
 		if(!array_key_exists($this -> current_tag, $this -> xmlData))
 		{
@@ -389,7 +389,7 @@ class xmlClass
 	 */
 	public function setOptStringTags($string)
 	{
-		$this->stringTags = (array) explode(",", $string); 
+		$this->stringTags = (array) explode(",", (string) $string); 
 		return $this;
 	}
 
@@ -772,9 +772,9 @@ class xmlClass
 			
 		foreach($this->arrayTags as $p)
 		{
-			if(strpos($p,"/")!==false)
+			if(strpos((string) $p,"/")!==false)
 			{
-				list($vl,$sub) = explode("/",$p);	
+				list($vl,$sub) = explode("/",(string) $p);	
 			}
 			else
 			{
@@ -848,7 +848,7 @@ class xmlClass
 		
 		$xml = false;
 		
-		if (strpos($fname, '://') !== false)
+		if (strpos((string) $fname, '://') !== false)
 		{
 			$this->getRemoteFile($fname);
 			$this->_feedUrl = false; // clear it to avoid conflicts. 
@@ -926,10 +926,10 @@ class xmlClass
 		if($this->convertFilePaths)
 		{
 			$types = implode("|",$this->convertFileTypes);
-			$val = preg_replace_callback("#({e_.*?\.(".$types."))#i", array($this,'replaceFilePaths'), $val);
+			$val = preg_replace_callback("#({e_.*?\.(".$types."))#i", array($this,'replaceFilePaths'), (string) $val);
 		}
 
-		if((strpos($val,"<")!==FALSE) || (strpos($val,">")!==FALSE) || (strpos($val,"&")!==FALSE))
+		if((strpos((string) $val,"<")!==FALSE) || (strpos((string) $val,">")!==FALSE) || (strpos((string) $val,"&")!==FALSE))
 		{
 			return "<![CDATA[". $val."]]>";
 		}
@@ -978,7 +978,7 @@ class xmlClass
 				ksort($theprefs);
 				foreach($theprefs as $key=>$val)
 				{
-					if($type === 'core' && $this->modifiedPrefsOnly == true && (($val == $default[$key]) || in_array($key,$excludes) || strpos($key, 'e_') === 0))
+					if($type === 'core' && $this->modifiedPrefsOnly == true && (($val == $default[$key]) || in_array($key,$excludes) || strpos((string) $key, 'e_') === 0))
 					{
 						continue;
 					}
@@ -1074,7 +1074,7 @@ class xmlClass
 				while($row = e107::getDb()->fetch())
 				{
 
-					if($this->convertFilePaths == true && $eTable === 'core_media' && strpos($row['media_url'], '{e_MEDIA') !== 0)
+					if($this->convertFilePaths == true && $eTable === 'core_media' && strpos((string) $row['media_url'], '{e_MEDIA') !== 0)
 					{
 						continue;
 					}
@@ -1189,7 +1189,7 @@ class xmlClass
 				// var_dump(e107::getArrayStorage()->ReadArray($val['@value']));
 				// echo $val['@value'].'</pre>';
 			// }
-			$value = strpos($val['@value'], 'array (') === 0 ? e107::unserialize($val['@value']) : $val['@value'];
+			$value = strpos((string) $val['@value'], 'array (') === 0 ? e107::unserialize($val['@value']) : $val['@value'];
 			$pref[$name] = $value;
 
 			// $mes->add("Setting up ".$prefType." Pref [".$name."] => ".$value, E_MESSAGE_DEBUG);
@@ -1396,7 +1396,7 @@ class xmlClass
 	function getErrors($xml)
 	{
 		libxml_use_internal_errors(true);
-		$sxe = simplexml_load_string($xml);
+		$sxe = simplexml_load_string((string) $xml);
 		$errors = array();
 		if (!$sxe)
 		{
@@ -1570,7 +1570,7 @@ class XMLParse
         $parser = $this->parser;
         xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
         xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);
-        if (!$res = (bool)xml_parse_into_struct($parser, $this->rawXML, $this->valueArray, $this->keyArray))
+        if (!$res = (bool)xml_parse_into_struct($parser, (string) $this->rawXML, $this->valueArray, $this->keyArray))
         {
             $this->isError = true;
             $this->error = 'error: '.xml_error_string(xml_get_error_code($parser)).' at line '.xml_get_current_line_number($parser);

@@ -88,7 +88,7 @@ class e_menu
 				$converted = $this->convertMenuTable();
 				e107::getConfig()->set('menu_layouts', $converted)->save();
 			}
-			
+
 			$eMenuArea = $this->getData(THEME_LAYOUT);
 			//print_a($eMenuArea);
 		}
@@ -279,10 +279,10 @@ class e_menu
 		$model->load($id, true);
 
 		$menu_path = $model->get('menu_path');
-		$menu_path = rtrim($menu_path, '/');
+		$menu_path = rtrim((string) $menu_path, '/');
 
 		$menu_name = $model->get('menu_name');
-		$menu_name = substr($menu_name,0,-5);
+		$menu_name = substr((string) $menu_name,0,-5);
 
 		if(!$obj = e107::getAddon($menu_path,'e_menu'))
 		{
@@ -504,7 +504,7 @@ class e_menu
 		$tp = e107::getParser();
 		if($row['menu_pages'])
 		{
-			list ($listtype, $listpages) = explode("-", $row['menu_pages'], 2);
+			list ($listtype, $listpages) = explode("-", (string) $row['menu_pages'], 2);
 			$pagelist = explode("|", $listpages);
 			// TODO - check against REQUEST_URI, see what would get broken
 			$check_url = $url ? $url : ($_SERVER['REQUEST_URI'] ? SITEURLBASE.$_SERVER['REQUEST_URI'] : e_SELF.(e_QUERY ? "?".e_QUERY : ''));
@@ -526,13 +526,13 @@ class e_menu
 						if(substr($p, -1)==='!')
 						{
 							$p = substr($p, 0, -1);
-							if(substr($check_url, strlen($p)*-1) == $p)
+							if(substr((string) $check_url, strlen($p)*-1) == $p)
 							{
 								$show_menu = true;
 								break 2;
 							}
 						}
-						elseif(strpos($check_url, $p) !== false)
+						elseif(strpos((string) $check_url, $p) !== false)
 						{
 							$show_menu = true;
 							break 2;
@@ -554,13 +554,13 @@ class e_menu
 						if(substr($p, -1) === '!')
 						{
 							$p = substr($p, 0, -1);
-							if(substr($check_url, strlen($p)*-1) == $p)
+							if(substr((string) $check_url, strlen($p)*-1) == $p)
 							{
 								$show_menu = false;
 								break 2;
 							}
 						}
-						elseif(strpos($check_url, $p) !== false)
+						elseif(strpos((string) $check_url, $p) !== false)
 						{
 							$show_menu = false;
 							break 2;
