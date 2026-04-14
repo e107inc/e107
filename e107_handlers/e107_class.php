@@ -1877,7 +1877,7 @@ class e107
         {
             $fileInspector->loadDatabase();
         }
-        catch (Exception $e)
+        catch (Throwable $e)
         {
             // TODO: LAN
             self::getMessage()->addWarning(
