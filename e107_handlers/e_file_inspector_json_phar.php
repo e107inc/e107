@@ -35,29 +35,9 @@ class e_file_inspector_json_phar extends e_file_inspector_json
         }
 
         Phar::loadPhar($this->database, "core_image.phar");
-        $tmpFile = tmpfile();
-        $tmpFilePath = stream_get_meta_data($tmpFile)['uri'];
-        $this->copyUrlToResource("phar://core_image.phar/core_image.json", $tmpFile);
-        $this->coreImage = json_decode(file_get_contents($tmpFilePath), true);
+        $this->coreImage = json_decode(file_get_contents("phar://core_image.phar/core_image.json"), true);
         if (!is_array($this->coreImage)) $this->coreImage = [];
         $this->coreImage = self::array_slash($this->coreImage);
         if (!$this->coreImage) $this->coreImage = [];
-    }
-
-    /**
-     * Copy file to destination with low memory footprint
-     * @param $source string URL of the source
-     * @param $destination resource File pointer of the destination
-     */
-    private function copyUrlToResource($source, $destination)
-    {
-        $dbFile = fopen($source, "r");
-        while (!feof($dbFile))
-        {
-            $buffer = fread($dbFile, 4096);
-            fwrite($destination, $buffer);
-        }
-        unset($buffer);
-        fclose($dbFile);
     }
 }
