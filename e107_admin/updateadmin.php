@@ -133,10 +133,10 @@ require_once(e_ADMIN.'footer.php');
 function updateadmin_adminmenu()
 {
 	$var = array();
-	$var['main']['text'] = UDALAN_8;
+	$var['main']['text'] = UDALAN_7;
 	$var['main']['link'] = e_SELF;
 
-	$caption = "<span>".UDALAN_8."</span>";
+	$caption = "<span>".UDALAN_7."</span>";
 	$var['_extras_']['icon'] = e107::getParser()->toIcon('e-adminpass-24');
 
 	return e107::getNav()->admin($caption, 'main', $var);
