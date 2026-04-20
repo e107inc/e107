@@ -23,40 +23,61 @@ require_once("auth.php");
 
 ob_start();
 phpinfo();
-$phpinfo = ob_get_contents();
+$phpinfo = ob_get_clean();
 
-$phpinfo = preg_replace("#^.*<body>#is", "", $phpinfo);
-// Strip any leftover <style> block emitted by phpinfo() so it cannot bleed into the admin layout.
-$phpinfo = preg_replace('#<style[^>]*>.*?</style>#is', '', $phpinfo);
-$phpinfo = str_replace("font","span",$phpinfo);
-$phpinfo = str_replace("</body></html>","",$phpinfo);
-$phpinfo = str_replace('border="0"','',$phpinfo);
-// Remove hard-coded width/cellpadding/cellspacing attributes that cause horizontal overflow.
-$phpinfo = preg_replace('/\s(width|cellpadding|cellspacing|align)="[^"]*"/i', '', $phpinfo);
-//$phpinfo = str_replace('<table ','<table class="table table-striped adminlist" ',$phpinfo);
-$phpinfo = str_replace('name=','id=',$phpinfo);
-$phpinfo = str_replace('class="e"','class="forumheader2 text-left"',$phpinfo);
-$phpinfo = str_replace('class="v"','class="forumheader3 text-left"',$phpinfo);
-$phpinfo = str_replace('class="v"','class="forumheader3 text-left"',$phpinfo);
-$phpinfo = str_replace('class="h"','class="fcaption"',$phpinfo);
-$phpinfo = preg_replace('/<table[^>]*>/i', '<table class="table table-striped table-bordered adminlist phpinfo-table"><colgroup><col style="width:30%" /><col style="width:auto" /></colgroup>', $phpinfo);
+// Keep only the <body>…</body> payload so the admin <head>/<html> shell isn't duplicated.
+if(preg_match('#<body\b[^>]*>(.*?)</body>#is', $phpinfo, $m))
+{
+	$phpinfo = $m[1];
+}
 
-// Wrap each rendered table in a Bootstrap responsive container so wide rows scroll instead of overflowing.
-$phpinfo = preg_replace('#(<table class="table table-striped table-bordered adminlist phpinfo-table">)#', '<div class="table-responsive">$1', $phpinfo);
-$phpinfo = str_replace('</table>', '</table></div>', $phpinfo);
+// Drop phpinfo()'s own <style> block so its low-contrast palette can't bleed into the admin layout.
+// The hardcoded HTML presentational attributes phpinfo() emits (width, cellpadding, cellspacing,
+// align, bgcolor, valign…) map to the lowest-specificity CSS, so any author rule scoped under
+// .phpinfo-wrapper overrides them — no attribute-stripping or class-renaming pass needed.
+$phpinfo = preg_replace('#<style\b[^>]*>.*?</style>#is', '', $phpinfo);
 
-// Local CSS to keep long values from breaking the layout.
+// Wrap once. .phpinfo-wrapper scopes all CSS to this page and provides a safety overflow-x.
+// The CSS below styles phpinfo's native td.e / td.v / tr.h classes (width:100% + word-break
+// on cells, so wide values wrap instead of forcing the admin column wider).
+$phpinfo = '<div class="phpinfo-wrapper">'.$phpinfo.'</div>';
+
+// Inject the phpinfo CSS inline so it works under any admin theme variant (modern-light,
+// modern-dark, corporate, kadmin…) without coupling phpinfo.php to a specific stylesheet.
+// Styles target phpinfo()'s native td.e / td.v / tr.h classes scoped under .phpinfo-wrapper.
 e107::css('inline', '
-.phpinfo-wrapper { max-width: 100%; overflow-x: hidden; }
-.phpinfo-wrapper .table-responsive { margin-bottom: 1.25rem; }
-.phpinfo-wrapper table.phpinfo-table { width: 100%; table-layout: fixed; word-wrap: break-word; }
-.phpinfo-wrapper table.phpinfo-table td,
-.phpinfo-wrapper table.phpinfo-table th { word-break: break-word; overflow-wrap: anywhere; vertical-align: top; }
-.phpinfo-wrapper h1, .phpinfo-wrapper h2 { font-size: 1.25rem; margin-top: 1rem; }
+.phpinfo-wrapper { max-width: 100%; overflow-x: auto; box-sizing: border-box; color: rgba(0,0,0,0.85); }
+.phpinfo-wrapper * { box-sizing: border-box; }
+.phpinfo-wrapper h1,
+.phpinfo-wrapper h2,
+.phpinfo-wrapper h3,
+.phpinfo-wrapper h4 { color: rgba(0,0,0,0.85); margin-top: 1rem; }
+.phpinfo-wrapper a { color: #337ab7; }
+.phpinfo-wrapper a:hover { color: #23527c; }
 .phpinfo-wrapper img { max-width: 100%; height: auto; }
+.phpinfo-wrapper hr { border-top: 1px solid #ddd; }
+.phpinfo-wrapper table {
+    width: 100%; max-width: 100%;
+    border-collapse: collapse; margin-bottom: 1rem;
+    background-color: #ffffff;
+}
+.phpinfo-wrapper td,
+.phpinfo-wrapper th {
+    padding: 6px 10px; border: 1px solid #ddd;
+    text-align: left; vertical-align: top;
+    word-break: break-word; overflow-wrap: anywhere;
+    background-color: #fff; color: rgba(0,0,0,0.85);
+}
+.phpinfo-wrapper tr.h th { background-color: #eee; text-align: center; font-weight: bold; }
+.phpinfo-wrapper td.e   { background-color: #f5f5f5; font-weight: bold; }
+.phpinfo-wrapper td.v   { background-color: #fff; font-family: Menlo, Consolas, "Liberation Mono", monospace; }
+/* In multi-column rows (label + value), keep the label cell on a single line so a long value
+   in td.v cannot squeeze the label into a 1-char-wide column. Single-cell rows (1-column
+   sub-tables like PHP QA Team / License / Documentation) keep wrapping so they stay inside
+   the admin column width. */
+.phpinfo-wrapper tr > td.e:not(:only-child) { white-space: nowrap; }
+.phpinfo-wrapper td.alert-danger { background-color: #f2dede; color: #a94442; }
 ');
-
-$phpinfo = '<div class="phpinfo-wrapper">' . $phpinfo . '</div>';
 
 
 $mes = e107::getMessage();
@@ -112,8 +133,8 @@ $security_risks = array(
     {
         if(ini_get($risk))
         {
-            $srch = '<tr><td class="forumheader2 text-left">'.$risk.'</td><td class="forumheader3">';
-            $repl = '<tr><td class="forumheader2 text-left">'.$risk.'</td><td  title="'.e107::getParser()->toAttribute($diz).'" class="forumheader3 alert alert-danger">';
+            $srch = '<tr><td class="e">'.$risk.'</td><td class="v">';
+            $repl = '<tr><td class="e">'.$risk.'</td><td title="'.e107::getParser()->toAttribute($diz).'" class="v alert alert-danger">';
             $phpinfo = str_replace($srch,$repl,$phpinfo);   
             $mes->addWarning("<b>".$risk."</b>: ".$diz);
         }   
@@ -128,11 +149,6 @@ $security_risks = array(
 			$mes->addError(e107::getParser()->toHTML(PHP_LAN_6, true));	
 		}
 	}
-
-
-// $phpinfo = preg_replace("#^.*<body>#is", "", $phpinfo);
-ob_end_clean();
-
 
 
 if(deftrue('e_DEBUG'))
