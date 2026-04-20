@@ -26,16 +26,37 @@ phpinfo();
 $phpinfo = ob_get_contents();
 
 $phpinfo = preg_replace("#^.*<body>#is", "", $phpinfo);
+// Strip any leftover <style> block emitted by phpinfo() so it cannot bleed into the admin layout.
+$phpinfo = preg_replace('#<style[^>]*>.*?</style>#is', '', $phpinfo);
 $phpinfo = str_replace("font","span",$phpinfo);
 $phpinfo = str_replace("</body></html>","",$phpinfo);
 $phpinfo = str_replace('border="0"','',$phpinfo);
+// Remove hard-coded width/cellpadding/cellspacing attributes that cause horizontal overflow.
+$phpinfo = preg_replace('/\s(width|cellpadding|cellspacing|align)="[^"]*"/i', '', $phpinfo);
 //$phpinfo = str_replace('<table ','<table class="table table-striped adminlist" ',$phpinfo);
 $phpinfo = str_replace('name=','id=',$phpinfo);
 $phpinfo = str_replace('class="e"','class="forumheader2 text-left"',$phpinfo);
 $phpinfo = str_replace('class="v"','class="forumheader3 text-left"',$phpinfo);
 $phpinfo = str_replace('class="v"','class="forumheader3 text-left"',$phpinfo);
 $phpinfo = str_replace('class="h"','class="fcaption"',$phpinfo);
-$phpinfo = preg_replace('/<table[^>]*>/i', '<table class="table table-striped adminlist"><colgroup><col style="width:30%" /><col style="width:auto" /></colgroup>', $phpinfo);
+$phpinfo = preg_replace('/<table[^>]*>/i', '<table class="table table-striped table-bordered adminlist phpinfo-table"><colgroup><col style="width:30%" /><col style="width:auto" /></colgroup>', $phpinfo);
+
+// Wrap each rendered table in a Bootstrap responsive container so wide rows scroll instead of overflowing.
+$phpinfo = preg_replace('#(<table class="table table-striped table-bordered adminlist phpinfo-table">)#', '<div class="table-responsive">$1', $phpinfo);
+$phpinfo = str_replace('</table>', '</table></div>', $phpinfo);
+
+// Local CSS to keep long values from breaking the layout.
+e107::css('inline', '
+.phpinfo-wrapper { max-width: 100%; overflow-x: hidden; }
+.phpinfo-wrapper .table-responsive { margin-bottom: 1.25rem; }
+.phpinfo-wrapper table.phpinfo-table { width: 100%; table-layout: fixed; word-wrap: break-word; }
+.phpinfo-wrapper table.phpinfo-table td,
+.phpinfo-wrapper table.phpinfo-table th { word-break: break-word; overflow-wrap: anywhere; vertical-align: top; }
+.phpinfo-wrapper h1, .phpinfo-wrapper h2 { font-size: 1.25rem; margin-top: 1rem; }
+.phpinfo-wrapper img { max-width: 100%; height: auto; }
+');
+
+$phpinfo = '<div class="phpinfo-wrapper">' . $phpinfo . '</div>';
 
 
 $mes = e107::getMessage();
