@@ -1671,3 +1671,61 @@ h4.caption { margin-bottom: 15px !important; }
 
             #admin-cron  .admin-left-panel {  max-width: 300px; }
         }
+
+
+/* ------------------------------------------------------------------ */
+/* PHP Info page (e107_admin/phpinfo.php) – override the dark table   */
+/* backgrounds inherited from the admin theme so text stays readable. */
+/* ------------------------------------------------------------------ */
+.phpinfo-wrapper { color: rgba(0,0,0,0.85); }
+.phpinfo-wrapper h1,
+.phpinfo-wrapper h2,
+.phpinfo-wrapper h3,
+.phpinfo-wrapper h4 { color: rgba(0,0,0,0.85); }
+.phpinfo-wrapper a { color: #337ab7; }
+.phpinfo-wrapper a:hover { color: #23527c; }
+
+.phpinfo-wrapper .table-responsive,
+.phpinfo-wrapper .table-responsive > .table,
+.phpinfo-wrapper table.phpinfo-table {
+    background-color: #ffffff !important;
+    color: rgba(0,0,0,0.85);
+    border-color: #dddddd;
+}
+
+.phpinfo-wrapper table.phpinfo-table > thead > tr > th,
+.phpinfo-wrapper table.phpinfo-table > tbody > tr > th,
+.phpinfo-wrapper table.phpinfo-table > tbody > tr > td {
+    background-color: #ffffff !important;
+    color: rgba(0,0,0,0.85) !important;
+    border-color: #dddddd !important;
+}
+
+/* Striped rows on a light background */
+.phpinfo-wrapper table.table-striped > tbody > tr:nth-of-type(odd) > td,
+.phpinfo-wrapper table.table-striped > tbody > tr:nth-of-type(odd) > th {
+    background-color: #f9f9f9 !important;
+}
+
+/* Header / label / value cells produced by phpinfo() after the e107 rewrite */
+.phpinfo-wrapper td.fcaption,
+.phpinfo-wrapper th.fcaption {
+    background-color: #f5f5f5 !important;
+    color: rgba(0,0,0,0.85) !important;
+    font-weight: bold;
+}
+.phpinfo-wrapper td.forumheader2 {
+    background-color: #f5f5f5 !important;
+    color: rgba(0,0,0,0.85) !important;
+    font-weight: bold;
+}
+.phpinfo-wrapper td.forumheader3 {
+    background-color: #ffffff !important;
+    color: rgba(0,0,0,0.85) !important;
+}
+
+/* Security-warning rows keep their alert colouring */
+.phpinfo-wrapper td.alert-danger {
+    background-color: #f2dede !important;
+    color: #a94442 !important;
+}
