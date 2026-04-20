@@ -222,4 +222,22 @@ e107::getRender()->tablerender(CACLAN_3, $mes->render().$text);
 
 require_once("footer.php");
 
+
+/**
+ * Build the admin sidebar menu (auto-invoked by the {ADMIN_MENU} shortcode).
+ * Provides the icon + caption shown in the left admin panel, consistent with
+ * frontpage.php / docs.php and visible also when the sidebar is collapsed.
+ */
+function cache_adminmenu()
+{
+	$var = array();
+	$var['main']['text'] = CACLAN_3;
+	$var['main']['link'] = e_SELF;
+
+	$caption = "<span>".CACLAN_3."</span>";
+	$var['_extras_']['icon'] = e107::getParser()->toIcon('e-cache-24');
+
+	return e107::getNav()->admin($caption, 'main', $var);
+}
+
 ?>

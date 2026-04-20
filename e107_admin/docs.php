@@ -27,6 +27,39 @@ e107::css('inline', 'div.qitem { margin-top:20px }
 
 ');
 
+// Sidebar (admin nativo) -> show/hide de los .docs-item con animación, sin tocar el JS global.
+// Los items se generan en init() con uri="#doc-N"; aquí enganchamos los clicks de esos enlaces
+// dentro del sidebar admin (#admin-ui-nav-menu) y replicamos el efecto que en otras páginas
+// hace el handler "#admin-prefs .plugin-navigation a" de admin.jquery.js.
+e107::js('footer-inline', "
+$(function() {
+	var \$items = $('.docs-item');
+	var \$navLinks = $('#admin-ui-nav-menu a[href^=\"#doc-\"]');
+
+	function showDoc(id) {
+		var \$target = $(id);
+		if (!\$target.length) { return; }
+		\$items.stop(true, true).hide();
+		\$target.show({ effect: 'slide', duration: 250 });
+		\$navLinks.closest('li').removeClass('active');
+		\$navLinks.filter('[href=\"' + id + '\"]').closest('li').addClass('active');
+	}
+
+	\$navLinks.on('click', function(e) {
+		var href = $(this).attr('href') || '';
+		if (href.indexOf('#doc-') === 0) {
+			e.preventDefault();
+			showDoc(href);
+		}
+	});
+
+	// Activar el doc desde el hash de la URL si existe.
+	if (window.location.hash && window.location.hash.indexOf('#doc-') === 0) {
+		showDoc(window.location.hash);
+	}
+});
+");
+
 
 class docs_admin extends e_admin_dispatcher
 {
@@ -48,6 +81,11 @@ class docs_admin extends e_admin_dispatcher
 	protected $adminMenuAliases = array();
 
 	protected $menuTitle = LAN_DOCS;
+
+	// Icono del título del menú lateral (panel-heading). Visible también cuando
+	// el sidebar está colapsado, sirviendo de "ancla" para volver a expandirlo.
+	// Usa el sprite nativo e-docs-24 (mismo patrón que admin_log.php, users.php, etc.)
+	protected $adminMenuIcon = 'e-docs-24';
 
 	protected static $helpList = array();
 
@@ -83,7 +121,12 @@ class docs_admin extends e_admin_dispatcher
 			$id = 'doc-' . $key;
 			$k = 'main/' . $id;
 
-			$this->adminMenu[$k] = array('caption' => str_replace("_", " ", $helpdata['fname']), 'perm' => false, 'uri' => "#" . $id);
+			$this->adminMenu[$k] = array(
+				'caption' => str_replace("_", " ", $helpdata['fname']),
+				'perm'    => false,
+				'uri'     => "#" . $id,
+				'icon'    => 'fa-question-circle',
+			);
 		}
 
 
@@ -136,7 +179,6 @@ class docs_ui extends e_admin_ui
 
 			// <div class='gotop'><a href='#docs-list' class='scroll-to'>".LAN_DOCS_GOTOP."</a></div>
 		}
-
 
 		return $text;
 
