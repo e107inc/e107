@@ -83,6 +83,13 @@ function fpw_error($txt)
 	exit;
 }
 
+$fpw_siteurl = e107::getPref('siteurl');
+if (empty($fpw_siteurl))
+{
+	error_log('fpw.php: Password reset blocked because the "siteurl" preference is not set. Configure it in Admin → Preferences.');
+	fpw_error(LAN_FPW_MISCONFIGURED);
+}
+
 //the separator character used
 define('FPW_SEPARATOR', '#');
 //$fpw_sep = '#';
@@ -256,7 +263,7 @@ if (!empty($_POST['pwsubmit']))
 	//	$rcode 		= crypt(($_SERVER['HTTP_USER_AGENT'] . serialize($pref). $clean_email . $datekey), e_TOKEN);
 
 		// Prepare email
-		$link 		= SITEURL.'fpw.php?'.$rcode;
+		$link 		= rtrim($fpw_siteurl, '/').'/fpw.php?'.$rcode;
 		$message 	= LAN_FPW5.' '.SITENAME.' '.LAN_FPW14.': '.e107::getIPHandler()->getIP(TRUE).".\n\n".LAN_FPW15."\n\n".LAN_FPW16."\n\n".LAN_FPW17."\n\n{$link}";
 
 		// Set timestamp two days ahead so it doesn't get auto-deleted

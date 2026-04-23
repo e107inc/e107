@@ -52,5 +52,4 @@ define("LAN_FPW22", "Email address registered on this site");
 define("LAN_FPW_100", "Forgot your password?");
 define("LAN_FPW_101", "Not to worry. Just enter your email address below and we'll send you an email with instructions to get it back.");
 define("LAN_FPW_102", "Reset Password");
-
-
+define("LAN_FPW_MISCONFIGURED", "Password reset is currently unavailable due to a site configuration issue. Please contact the site administrator.");
