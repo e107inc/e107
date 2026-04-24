@@ -269,11 +269,11 @@ class download
 		{
 			$template = e107::getTemplate('download','download','categories');
 			
-			$DOWNLOAD_CAT_CAPTION		= $template['caption'];
+			$DOWNLOAD_CAT_CAPTION		= varset($template['caption']);
 			$DOWNLOAD_CAT_TABLE_START 	= varset($template['start']);
-			$DOWNLOAD_CAT_PARENT_TABLE	= $template['parent'];
-			$DOWNLOAD_CAT_CHILD_TABLE	= $template['child'];
-			$DOWNLOAD_CAT_SUBSUB_TABLE	= $template['subchild'];
+			$DOWNLOAD_CAT_PARENT_TABLE	= varset($template['parent']);
+			$DOWNLOAD_CAT_CHILD_TABLE	= varset($template['child']);
+			$DOWNLOAD_CAT_SUBSUB_TABLE	= varset($template['subchild']);
 			$DOWNLOAD_CAT_TABLE_END		= varset($template['end']);
 			
 //			$DL_VIEW_NEXTPREV			= varset($template['nextprev']);
