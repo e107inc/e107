@@ -94,7 +94,6 @@
 				// Each of these loads, and reports a defect of its own that
 				// belongs to its plugin rather than to the sweep. See #6424.
 				'blogcalendar_menu/config.php',
-				'download/download.php',
 				'faqs/admin_config.php',
 				// Still red after #6376, which #6424 has yet to catch up with:
 				// faqs_shortcodes.php line 354 reads submit_question raw.
