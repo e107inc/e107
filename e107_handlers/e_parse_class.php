@@ -5475,6 +5475,13 @@ class e_parse
 		}
 
 
+		// Normalize HTML5 void elements so serialization is identical
+		// across libxml versions. libxml < 2.13 treated elements like
+		// <source> as non-void and swallowed following text as their
+		// content; the HTML5-spec-compliant output keeps such text as
+		// a sibling and omits any closing tag.
+		$this->normalizeVoidElements($doc);
+
 		// Convert <code> and <pre> Tags to Htmlentities.
 		/* TODO XXX Still necessary? Perhaps using bbcodes only?
 		foreach($this->nodesToConvert as $node)
@@ -5513,6 +5520,58 @@ class e_parse
 		); // filter out tags.
 
 		return trim($cleaned);
+	}
+
+	/**
+	 * Move children out of HTML5 void elements and into sibling positions.
+	 *
+	 * Older libxml2 (< 2.13) parses elements like <source> as non-void and
+	 * sucks up following content as the element's child nodes. Newer libxml2
+	 * correctly treats them as void. Running this pass before serialization
+	 * normalizes the DOM so saveHTML() output is spec-compliant on every
+	 * libxml version.
+	 *
+	 * @param DOMDocument $doc
+	 * @return void
+	 */
+	private function normalizeVoidElements($doc)
+	{
+		$voidTags = array(
+			'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
+			'link', 'meta', 'source', 'track', 'wbr',
+		);
+
+		foreach ($voidTags as $tagName)
+		{
+			$nodes = $doc->getElementsByTagName($tagName);
+			$toFix = array();
+			foreach ($nodes as $node)
+			{
+				if ($node->hasChildNodes())
+				{
+					$toFix[] = $node;
+				}
+			}
+
+			foreach ($toFix as $node)
+			{
+				$parent = $node->parentNode;
+				$after = $node->nextSibling;
+				while ($node->hasChildNodes())
+				{
+					$child = $node->firstChild;
+					$node->removeChild($child);
+					if ($after === null)
+					{
+						$parent->appendChild($child);
+					}
+					else
+					{
+						$parent->insertBefore($child, $after);
+					}
+				}
+			}
+		}
 	}
 
 	/**
