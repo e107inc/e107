@@ -4285,22 +4285,14 @@ class e_parse
 		$image = (!empty($userData['user_image'])) ? varset($userData['user_image']) : null;
 
 		$genericFile = e_IMAGE . 'generic/blank_avatar.jpg';
-		$genericImg = $tp->thumbUrl($genericFile, 'w=' . $width . '&h=' . $height, false, $full);
+		$genericImg = $tp->thumbUrl($genericFile, 'w=' . $width . '&h=' . $height, true, $full);
 
 		if (!empty($image))
 		{
 
 			if (strpos($image, '://') !== false) // Remote Image
 			{
-			    if (@fopen($image, 'r'))
-				{
-                    $url = $image;
-                }
-                else
-                {
-					$file = $genericFile;
-					$url = $genericImg;
-                }
+				$url = $image;
 			}
 			elseif (strpos($image, '-upload-') === 0)
 			{
