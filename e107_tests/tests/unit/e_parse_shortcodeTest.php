@@ -1210,6 +1210,12 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
         $this->processShortcodeMethods($sc);
 
+        // Regression: sc_foruminfo() used to have its SELECT commented out so
+        // $sql->fetch('num') returned false and list() destructured bool.
+        // The rendered output must include the newest non-banned user's name.
+        $info = $sc->sc_foruminfo();
+        $this->assertStringContainsString('e107', $info, 'sc_foruminfo() must render the newest member link');
+
     }
 
       public function testForumPostShortcodes()
