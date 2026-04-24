@@ -45,12 +45,12 @@ class gallery_shortcodes extends e_shortcode
 		$caption = isset($template['caption']) ? e107::getParser()->toText($template['caption']) : LAN_PLUGIN_GALLERY_TITLE;
 		if(!empty($this->var))
 		{
-			$breadcrumb[] = array('text' => $caption, 'url' => e107::getUrl()->create('gallery', $this->var));
+			$breadcrumb[] = array('text' => $caption, 'url' => e107::getUrl()->create('gallery'));
 		}
 
 		if(vartrue($this->curCat))
 		{
-			$breadcrumb[] = array('text' => $this->sc_gallery_cat_title('title'), 'url' => e107::getUrl()->create('gallery/index/list', $this->var));
+			$breadcrumb[] = array('text' => $this->sc_gallery_cat_title('title'), 'url' => e107::getUrl()->create('gallery/index/list', array('media_cat_sef' => $this->curCat, 'from' => $this->from)));
 		}
 
 		//var_dump($breadcrumb);
