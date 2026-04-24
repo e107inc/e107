@@ -337,8 +337,17 @@ class forum_shortcodes extends e_shortcode
 		$total_topics = $sql->count("forum_thread", "(*)");
 		$total_replies = $sql->count("forum_post", "(*)");
 		$total_members = $sql->count("user");
-		//----$newest_member = $sql->select("user", "*", "user_ban='0' ORDER BY user_join DESC LIMIT 0,1");
-		list($nuser_id, $nuser_name) = $sql->fetch('num'); // FIXME $nuser_id & $user_name return empty even though print_a($newest_member); returns proper result.
+
+		$nuser_id = 0;
+		$nuser_name = '';
+		if ($sql->select("user", "user_id, user_name", "user_ban='0' ORDER BY user_join DESC LIMIT 0,1"))
+		{
+			$row = $sql->fetch('num');
+			if (is_array($row))
+			{
+				list($nuser_id, $nuser_name) = $row;
+			}
+		}
 
 		if(!defined('e_TRACKING_DISABLED'))
 		{
@@ -348,7 +357,7 @@ class forum_shortcodes extends e_shortcode
 		}
 
 		return str_replace("[x]", ($total_topics+$total_replies), LAN_FORUM_0031)." ($total_topics ".($total_topics == 1 ? LAN_FORUM_0032 : LAN_FORUM_0033).", $total_replies ".($total_replies == 1 ? LAN_FORUM_0034 : LAN_FORUM_0035).")
-		".(!defined("e_TRACKING_DISABLED") ? "" : "<br />".$users." ".($users == 1 ? LAN_FORUM_0059 : LAN_FORUM_0060)." (".$member_users." ".($member_users == 1 ? LAN_FORUM_0061 : LAN_FORUM_0062).", ".$guest_users." ".($guest_users == 1 ? LAN_FORUM_0063 : LAN_FORUM_0064).")<br />".LAN_FORUM_0066." ".$total_members."<br />".LAN_FORUM_0065." <a href='".e_HTTP."user.php?id.".$nuser_id."'>".$nuser_name."</a>.\n"); // FIXME cannot find other references to e_TRACKING_DISABLED, use pref?
+		".(defined("e_TRACKING_DISABLED") ? "" : "<br />".$users." ".($users == 1 ? LAN_FORUM_0059 : LAN_FORUM_0060)." (".$member_users." ".($member_users == 1 ? LAN_FORUM_0061 : LAN_FORUM_0062).", ".$guest_users." ".($guest_users == 1 ? LAN_FORUM_0063 : LAN_FORUM_0064).")<br />".LAN_FORUM_0066." ".$total_members."<br />".LAN_FORUM_0065." <a href='".e_HTTP."user.php?id.".$nuser_id."'>".$nuser_name."</a>.\n");
 	}
 
 
