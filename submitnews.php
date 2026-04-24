@@ -276,8 +276,9 @@ class submitNews
 			else
 			{
 				$text .= "<select name='cat_id' class='tbox form-control'>";
-				while (list($cat_id, $cat_name, $cat_icon) = $sql->fetch('num'))
+				while ($row = $sql->fetch('num'))
 				{
+					list($cat_id, $cat_name, $cat_icon) = $row;
 					$sel = (varset($_POST['cat_id'],'') == $cat_id) ? "selected='selected'" : "";
 					$text .= "<option value='{$cat_id}' {$sel}>".$tp->toHTML($cat_name, FALSE, "defs")."</option>";
 				}

@@ -613,8 +613,9 @@ class e_menuManager
 			$location_count--;
 		}
 		$sql->select("menus", "*", "menu_path NOT REGEXP('[0-9]+') ");
-		while(list($menu_id, $menu_name, $menu_location, $menu_order) = $sql->fetch('num'))
+		while($row = $sql->fetch('num'))
 		{
+			list($menu_id, $menu_name, $menu_location, $menu_order) = $row;
 			if(stripos($menustr, $menu_name) === false)
 			{
 				$sql2->delete("menus", "menu_name='$menu_name'");
