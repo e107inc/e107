@@ -1212,9 +1212,11 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
         // Regression: sc_foruminfo() used to have its SELECT commented out so
         // $sql->fetch('num') returned false and list() destructured bool.
-        // The rendered output must include the newest non-banned user's name.
+        // The rendered output must include a newest-member link with a
+        // non-zero user id (the suite has at least one user from the sample
+        // data fixture; other tests may add more, so don't lock the id).
         $info = $sc->sc_foruminfo();
-        $this->assertStringContainsString('e107', $info, 'sc_foruminfo() must render the newest member link');
+        $this->assertMatchesRegularExpression('#user\.php\?id\.[1-9][0-9]*#', $info, 'sc_foruminfo() must render the newest member link');
 
     }
 
