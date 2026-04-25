@@ -5505,6 +5505,8 @@ class e_parse
 
 		$cleaned = $doc->saveHTML($doc->documentElement); // $doc->documentElement fixes utf-8/entities issue. @see http://stackoverflow.com/questions/8218230/php-domdocument-loadhtml-not-encoding-utf-8-correctly
 
+		$cleaned = $this->stripVoidClosingTags($cleaned);
+
 		$cleaned = str_replace(
 			array("\n", '__E_PARSER_CLEAN_HTML_LINE_BREAK__', '__E_PARSER_CLEAN_HTML_NON_BREAKING_SPACE__', '{{{', '}}}', '__E_PARSER_CLEAN_HTML_CURLY_OPEN__', '__E_PARSER_CLEAN_HTML_CURLY_CLOSED__', '<body>', '</body>', '<html>', '</html>'),
 			array('', "\n", '&nbsp;', '&#123;', '&#125;', '{', '}', '', '', '', ''),
@@ -5513,6 +5515,16 @@ class e_parse
 
 		return trim($cleaned);
 	}
+
+	/**
+	 * HTML5 void elements that may not have a closing tag.
+	 *
+	 * @var string[]
+	 */
+	private static $voidTags = array(
+		'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
+		'link', 'meta', 'source', 'track', 'wbr',
+	);
 
 	/**
 	 * Move children out of HTML5 void elements and into sibling positions.
@@ -5528,10 +5540,7 @@ class e_parse
 	 */
 	private function normalizeVoidElements($doc)
 	{
-		$voidTags = array(
-			'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
-			'link', 'meta', 'source', 'track', 'wbr',
-		);
+		$voidTags = self::$voidTags;
 
 		foreach ($voidTags as $tagName)
 		{
@@ -5564,6 +5573,22 @@ class e_parse
 				}
 			}
 		}
+	}
+
+	/**
+	 * Strip empty closing tags for HTML5 void elements from a serialized
+	 * HTML string. libxml2 < 2.13 emits a closing `</source>` etc. for any
+	 * element it does not recognize as void; once `normalizeVoidElements()`
+	 * has moved their children out, the closing tag is always empty and
+	 * safe to remove.
+	 *
+	 * @param string $html
+	 * @return string
+	 */
+	private function stripVoidClosingTags($html)
+	{
+		$pattern = '#</(?:' . implode('|', self::$voidTags) . ')>#i';
+		return preg_replace($pattern, '', $html);
 	}
 
 	/**

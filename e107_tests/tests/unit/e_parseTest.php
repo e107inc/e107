@@ -2962,8 +2962,10 @@ Your browser does not support the audio tag.
 	 */
 	public function testCleanHtmlNormalizesVoidElementsOnOldLibxml()
 	{
-		$reflection = new ReflectionMethod('e_parse', 'normalizeVoidElements');
-		$reflection->setAccessible(true);
+		$normalize = new ReflectionMethod('e_parse', 'normalizeVoidElements');
+		$normalize->setAccessible(true);
+		$strip = new ReflectionMethod('e_parse', 'stripVoidClosingTags');
+		$strip->setAccessible(true);
 
 		$doc = new DOMDocument();
 		$doc->loadHTML('<body><video><source src="x.mp4" type="video/mp4"></source></video></body>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
@@ -2972,7 +2974,7 @@ Your browser does not support the audio tag.
 		$source->appendChild($doc->createTextNode('Your browser does not support the video tag.'));
 		self::assertTrue($source->hasChildNodes(), 'precondition: simulated old-libxml placed content inside <source>');
 
-		$reflection->invoke($this->tp, $doc);
+		$normalize->invoke($this->tp, $doc);
 
 		$source = $doc->getElementsByTagName('source')->item(0);
 		self::assertFalse($source->hasChildNodes(), '<source> must be childless after normalization');
@@ -2980,8 +2982,9 @@ Your browser does not support the audio tag.
 		$video = $doc->getElementsByTagName('video')->item(0);
 		self::assertStringContainsString('Your browser does not support the video tag.', $video->textContent, 'promoted text must remain inside <video>');
 
-		$serialized = $doc->saveHTML($doc->documentElement);
+		$serialized = $strip->invoke($this->tp, $doc->saveHTML($doc->documentElement));
 		self::assertStringNotContainsString('</source>', $serialized, 'serialized output must not include a </source> closing tag');
+		self::assertStringContainsString('Your browser does not support the video tag.', $serialized, 'promoted text must survive serialization');
 	}
 
 
