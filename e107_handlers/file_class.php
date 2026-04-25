@@ -540,6 +540,74 @@ class e_file
 
 
 		/**
+		 * Reject URLs that point at private/reserved IP ranges or non-HTTP(S) protocols.
+		 * Define `e_REMOTE_FILE_ALLOW_PRIVATE` to bypass for legitimate intranet use.
+		 *
+		 * @param string $url
+		 * @return bool
+		 */
+		public function isUrlSafe($url)
+		{
+			if(defined('e_REMOTE_FILE_ALLOW_PRIVATE') && e_REMOTE_FILE_ALLOW_PRIVATE === true)
+			{
+				return true;
+			}
+
+			$parts = parse_url($url);
+			if(empty($parts['host']))
+			{
+				return false;
+			}
+
+			$scheme = isset($parts['scheme']) ? strtolower($parts['scheme']) : '';
+			if($scheme !== 'http' && $scheme !== 'https')
+			{
+				return false;
+			}
+
+			$host = $parts['host'];
+			if($host[0] === '[' && substr($host, -1) === ']')
+			{
+				$host = substr($host, 1, -1);
+			}
+
+			$ips = array();
+			if(filter_var($host, FILTER_VALIDATE_IP))
+			{
+				$ips[] = $host;
+			}
+			else
+			{
+				$records = @dns_get_record($host, DNS_A | DNS_AAAA);
+				if(!is_array($records))
+				{
+					return false;
+				}
+				foreach($records as $r)
+				{
+					if(!empty($r['ip']))    { $ips[] = $r['ip']; }
+					if(!empty($r['ipv6']))  { $ips[] = $r['ipv6']; }
+				}
+			}
+
+			if(empty($ips))
+			{
+				return false;
+			}
+
+			foreach($ips as $ip)
+			{
+				if(!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE))
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+
+		/**
 		 *     Grab a remote file and save it in the /temp directory. requires CURL
 		 *
 		 * @param string $remote_url
@@ -561,6 +629,13 @@ class e_file
 
 				error_log($msg);
 				return false;            // May not be installed
+			}
+
+			if(!$this->isUrlSafe($remote_url))
+			{
+				$this->error = 'Refused to fetch URL with non-HTTP(S) scheme or private/reserved IP: ' . $remote_url;
+				error_log($this->error);
+				return false;
 			}
 
 			$path = ($type === 'media') ? e_MEDIA : e_TEMP;
@@ -620,6 +695,11 @@ class e_file
 			curl_setopt($cu, CURLOPT_REFERER, $referer);
 			curl_setopt($cu, CURLOPT_SSL_VERIFYPEER, false);
 			curl_setopt($cu, CURLOPT_FOLLOWLOCATION, true);
+			if(defined('CURLOPT_PROTOCOLS') && defined('CURLPROTO_HTTP') && defined('CURLPROTO_HTTPS'))
+			{
+				curl_setopt($cu, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
+				curl_setopt($cu, CURLOPT_REDIR_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
+			}
 			curl_setopt($cu, CURLOPT_USERAGENT, "Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0");
 			curl_setopt($cu, CURLOPT_COOKIEFILE, e_SYSTEM . 'cookies.txt');
 			curl_setopt($cu, CURLOPT_COOKIEJAR, e_SYSTEM . 'cookies.txt');
@@ -697,6 +777,12 @@ class e_file
 			// May be paranoia, but streaky thought it might be a good idea
 
 			$address = str_replace(array("\r", "\n", "\t", '&amp;'), array('', '', '', '&'), $address);
+
+			if(!$this->isUrlSafe($address))
+			{
+				$this->error = 'Refused to fetch URL with non-HTTP(S) scheme or private/reserved IP: ' . $address;
+				return false;
+			}
 
 			// ... and there shouldn't be unprintable characters in the URL anyway
 			$requireCurl = false;
