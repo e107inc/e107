@@ -170,7 +170,11 @@ jobs:
         ARTIFACT_NAME="tests_output_${{ github.run_id }}_${INTERPRETER_IMAGE}_${DB_IMAGE}_${TIMESTAMP}"
         echo "ARTIFACT_NAME=${ARTIFACT_NAME}" >> $GITHUB_ENV
 
+    # actions/upload-artifact@v4 runs Node 20, which requires glibc 2.27+.
+    # The php:5.6 and php:7.0 images are based on Debian 9 (glibc 2.24), so the
+    # upload step is skipped there. Test results are still visible in the run log.
     - name: Upload test output
+      if: matrix.interpreter.image != 'php:5.6' && matrix.interpreter.image != 'php:7.0'
       uses: actions/upload-artifact@v4
       with:
         name: ${{ env.ARTIFACT_NAME }}
