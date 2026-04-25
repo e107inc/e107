@@ -586,6 +586,136 @@ class e_fileTest extends \Codeception\Test\Unit
 		}
 	}
 
+	/**
+	 * Public addresses (real-world resolvable IPs and unbracketed/bracketed
+	 * IPv6) should be allowed through `e_file::isUrlSafe()`.
+	 *
+	 * Ref: GHSA-92fr-7h4f-22pp.
+	 */
+	public function testIsUrlSafeAcceptsPublicAddresses()
+	{
+		$this->assertTrue($this->fl->isUrlSafe('http://1.1.1.1/'));
+		$this->assertTrue($this->fl->isUrlSafe('https://8.8.8.8/'));
+		$this->assertTrue($this->fl->isUrlSafe('http://93.184.216.34/'));
+		$this->assertTrue($this->fl->isUrlSafe('http://[2606:4700:4700::1111]/'));
+	}
+
+	/**
+	 * RFC 1918 ranges (10/8, 172.16/12, 192.168/16) are the canonical
+	 * SSRF-pivot targets and must be rejected.
+	 *
+	 * Ref: GHSA-92fr-7h4f-22pp.
+	 */
+	public function testIsUrlSafeRejectsPrivateIPv4()
+	{
+		$this->assertFalse($this->fl->isUrlSafe('http://10.0.0.1/'));
+		$this->assertFalse($this->fl->isUrlSafe('http://10.255.255.255/'));
+		$this->assertFalse($this->fl->isUrlSafe('http://172.16.0.1/'));
+		$this->assertFalse($this->fl->isUrlSafe('http://172.31.255.255/'));
+		$this->assertFalse($this->fl->isUrlSafe('http://192.168.0.1/'));
+		$this->assertFalse($this->fl->isUrlSafe('http://192.168.255.255/'));
+	}
+
+	/**
+	 * Reserved/loopback/link-local/broadcast IPv4 ranges, including the
+	 * AWS-style metadata endpoint at 169.254.169.254.
+	 *
+	 * Ref: GHSA-92fr-7h4f-22pp.
+	 */
+	public function testIsUrlSafeRejectsReservedIPv4()
+	{
+		$this->assertFalse($this->fl->isUrlSafe('http://0.0.0.0/'));
+		$this->assertFalse($this->fl->isUrlSafe('http://127.0.0.1/'));
+		$this->assertFalse($this->fl->isUrlSafe('http://169.254.169.254/'));
+		$this->assertFalse($this->fl->isUrlSafe('http://255.255.255.255/'));
+	}
+
+	/**
+	 * IPv6 loopback, ULA, link-local, and IPv4-mapped IPv6 forms must be
+	 * rejected. The IPv4-mapped case (`::ffff:127.0.0.1`) is a common
+	 * filter-evasion vector that PHP's FILTER_FLAG_NO_RES_RANGE catches.
+	 *
+	 * Ref: GHSA-92fr-7h4f-22pp.
+	 */
+	public function testIsUrlSafeRejectsReservedIPv6()
+	{
+		$this->assertFalse($this->fl->isUrlSafe('http://[::1]/'));
+		$this->assertFalse($this->fl->isUrlSafe('http://[fc00::1]/'));
+		$this->assertFalse($this->fl->isUrlSafe('http://[fd00::dead:beef]/'));
+		$this->assertFalse($this->fl->isUrlSafe('http://[fe80::1]/'));
+		$this->assertFalse($this->fl->isUrlSafe('http://[::ffff:127.0.0.1]/'));
+	}
+
+	/**
+	 * Anything other than http(s) must be refused, even if the host would
+	 * otherwise pass the IP check. This stops file://, gopher://, dict://,
+	 * etc. before they ever reach cURL.
+	 *
+	 * Ref: GHSA-92fr-7h4f-22pp.
+	 */
+	public function testIsUrlSafeRejectsNonHttpSchemes()
+	{
+		$this->assertFalse($this->fl->isUrlSafe('file:///etc/passwd'));
+		$this->assertFalse($this->fl->isUrlSafe('gopher://1.1.1.1/'));
+		$this->assertFalse($this->fl->isUrlSafe('ftp://1.1.1.1/'));
+		$this->assertFalse($this->fl->isUrlSafe('dict://1.1.1.1/'));
+		$this->assertFalse($this->fl->isUrlSafe('javascript:alert(1)'));
+	}
+
+	/**
+	 * Empty, schemeless, hostless, or otherwise unparseable URLs should be
+	 * rejected without making any network call.
+	 *
+	 * Ref: GHSA-92fr-7h4f-22pp.
+	 */
+	public function testIsUrlSafeRejectsMalformedUrls()
+	{
+		$this->assertFalse($this->fl->isUrlSafe(''));
+		$this->assertFalse($this->fl->isUrlSafe('not-a-url'));
+		$this->assertFalse($this->fl->isUrlSafe('http:///path-only'));
+		$this->assertFalse($this->fl->isUrlSafe('//1.1.1.1/'));
+	}
+
+	/**
+	 * Decimal/hex/octal-encoded IPv4 forms (e.g. `2130706433` for
+	 * 127.0.0.1) bypass FILTER_VALIDATE_IP because they aren't dotted
+	 * quads. They then fail dns_get_record (no valid A/AAAA record),
+	 * so the no-IPs-found branch rejects them.
+	 *
+	 * Ref: GHSA-92fr-7h4f-22pp.
+	 */
+	public function testIsUrlSafeRejectsObfuscatedAddresses()
+	{
+		$this->assertFalse($this->fl->isUrlSafe('http://2130706433/'));
+		$this->assertFalse($this->fl->isUrlSafe('http://0x7f000001/'));
+	}
+
+	/**
+	 * `getRemoteFile()` should refuse SSRF candidates without making any
+	 * cURL call and surface a meaningful error message.
+	 *
+	 * Ref: GHSA-92fr-7h4f-22pp.
+	 */
+	public function testGetRemoteFileRejectsUnsafeUrl()
+	{
+		$result = $this->fl->getRemoteFile('http://127.0.0.1/foo.jpg', 'foo.jpg');
+		$this->assertFalse($result);
+		$this->assertStringContainsString('private/reserved IP', $this->fl->getErrorMessage());
+	}
+
+	/**
+	 * `getRemoteContent()` should refuse SSRF candidates without making
+	 * any cURL call and surface a meaningful error message.
+	 *
+	 * Ref: GHSA-92fr-7h4f-22pp.
+	 */
+	public function testGetRemoteContentRejectsUnsafeUrl()
+	{
+		$result = $this->fl->getRemoteContent('http://10.0.0.1/');
+		$this->assertFalse($result);
+		$this->assertStringContainsString('private/reserved IP', $this->fl->getErrorMessage());
+	}
+
 	/*
 	public function testGetRootFolder()
 	{
