@@ -18,11 +18,11 @@ jobs:
       - name: Replace Docker with Podman
         run: sudo apt-get -o Dpkg::Options::="--force-overwrite" install -y podman-docker
 
-      - uses: actions/setup-go@v3
+      - uses: actions/setup-go@v6
         with:
           go-version: "^1.19"
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
 
       - name: Compile SaltStack bootstrap wrapper
         run: CGO_ENABLED=0 go build -ldflags "-s -w" -o ./salt-bootstrap salt-bootstrap.go
