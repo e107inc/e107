@@ -48,17 +48,40 @@ jobs:
     - name: Enable Debian backports
       run: |
         if ! apt-get update; then
-          sed -i 's#/\(deb\|security\)\.debian\.org/#/archive.debian.org/#g' /etc/apt/sources.list
-          sed -r -i '/^[^\s#]*[^\s]+\s+[^\s]+\s+[^#]*-updates/d' /etc/apt/sources.list
+          for FILE in /etc/apt/sources.list /etc/apt/sources.list.d/debian.sources; do
+            [ -f "$FILE" ] || continue
+            sed -i 's#/\(deb\|security\)\.debian\.org/#/archive.debian.org/#g' "$FILE"
+          done
+          if [ -f /etc/apt/sources.list ]; then
+            sed -r -i '/^[^\s#]*[^\s]+\s+[^\s]+\s+[^#]*-updates/d' /etc/apt/sources.list
+          fi
+          if [ -f /etc/apt/sources.list.d/debian.sources ]; then
+            sed -i -E '/^Suites:/ s/[[:space:]]+[^[:space:]]*-updates//g' /etc/apt/sources.list.d/debian.sources
+          fi
           echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99ignore-obsolete
           echo 'Acquire::AllowInsecureRepositories "true";' >> /etc/apt/apt.conf.d/99ignore-obsolete
           echo 'APT::Get::AllowUnauthenticated "true";' >> /etc/apt/apt.conf.d/99ignore-obsolete
           apt-get update
           DEBIAN_FRONTEND=noninteractive apt-get -y full-upgrade
         fi
-        apt-get install -y debian-archive-keyring
-        grep -m1 -P '^deb http://(deb|archive).debian.org/debian [a-z]+ main' /etc/apt/sources.list |
-        awk '$3 = $3"-backports"' >> /etc/apt/sources.list
+        apt-get install -y debian-archive-keyring curl
+        . /etc/os-release
+        DEBIAN_RELEASE="$(echo "$VERSION" | grep -oP '^[^(]+\(\K[^)]+')"
+        BACKPORTS_URI=""
+        for HOST in deb.debian.org archive.debian.org; do
+          if curl -sfLI "http://${HOST}/debian/dists/${DEBIAN_RELEASE}-backports/Release" >/dev/null; then
+            BACKPORTS_URI="http://${HOST}/debian"
+            break
+          fi
+        done
+        if [ -n "$BACKPORTS_URI" ]; then
+          if [ -f /etc/apt/sources.list.d/debian.sources ]; then
+            printf '\nTypes: deb\nURIs: %s\nSuites: %s-backports\nComponents: main\nSigned-By: /usr/share/keyrings/debian-archive-keyring.gpg\n' \
+              "$BACKPORTS_URI" "$DEBIAN_RELEASE" >> /etc/apt/sources.list.d/debian.sources
+          else
+            echo "deb $BACKPORTS_URI ${DEBIAN_RELEASE}-backports main" >> /etc/apt/sources.list
+          fi
+        fi
 
     - name: Update operating system software repository
       run: apt-get update
