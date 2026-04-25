@@ -597,13 +597,45 @@ class e_file
 
 			foreach($ips as $ip)
 			{
-				if(!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE))
+				$canonical = $this->canonicalizeIp($ip);
+				if($canonical === false)
+				{
+					return false;
+				}
+				if(!filter_var($canonical, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE))
 				{
 					return false;
 				}
 			}
 
 			return true;
+		}
+
+
+		/**
+		 * Canonicalize an IP for range validation. IPv4-mapped IPv6 addresses
+		 * (`::ffff:X.X.X.X`) are returned as their embedded IPv4 form so
+		 * `FILTER_FLAG_NO_RES_RANGE` evaluates the IPv4 ranges; PHP's filter
+		 * does not normalize the mapped form on its own, leaving
+		 * `::ffff:127.0.0.1` reachable as a loopback evasion.
+		 *
+		 * @param string $ip
+		 * @return string|false canonical IP, or false if the input is not an IP
+		 */
+		private function canonicalizeIp($ip)
+		{
+			$packed = @inet_pton($ip);
+			if($packed === false)
+			{
+				return false;
+			}
+
+			if(strlen($packed) === 16 && substr($packed, 0, 10) === str_repeat("\x00", 10) && substr($packed, 10, 2) === "\xff\xff")
+			{
+				return inet_ntop(substr($packed, 12, 4));
+			}
+
+			return $ip;
 		}
 
 
