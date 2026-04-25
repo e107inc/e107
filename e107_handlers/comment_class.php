@@ -632,7 +632,7 @@ class comment
 		
 		$comment = trim($comment);
 		
-		if(!e107::getDb()->update("comments","comment_comment=\"".$tp->toDB($comment)."\" WHERE comment_id = ".intval($id).""))
+		if(!e107::getDb()->update("comments","comment_comment=\"".$tp->toDB($comment)."\" WHERE comment_id = ".(int) $id.' AND comment_author_id = '.(int) USERID))
 		{
 			return "Update Failed"; // trigger ajax error message. 
 		}		
