@@ -1216,7 +1216,7 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
         // non-zero user id (the suite has at least one user from the sample
         // data fixture; other tests may add more, so don't lock the id).
         $info = $sc->sc_foruminfo();
-        $this->assertMatchesRegularExpression('#user\.php\?id\.[1-9][0-9]*#', $info, 'sc_foruminfo() must render the newest member link');
+        $this->assertRegExp('#user\.php\?id\.[1-9][0-9]*#', $info, 'sc_foruminfo() must render the newest member link');
 
     }
 
