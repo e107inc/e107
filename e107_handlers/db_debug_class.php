@@ -462,7 +462,7 @@ class e107_db_debug
 
 	public function setSQLDetails($aSQLdetails)
 	{
-		$this->aSQLdetails = $aSQLdetails ?? [];
+		$this->aSQLdetails = isset($aSQLdetails) ? $aSQLdetails : [];
 	}
 
 
