@@ -14,6 +14,7 @@ require_once("class2.php");
 //include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 e107::coreLan('print');
+e107::title(LAN_PRINT_PAGE_NAME);
 
 $qs = explode(".", e_QUERY,2);
 
