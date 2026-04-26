@@ -28,11 +28,19 @@ jobs:
           set -eu
           for DB in $DB_IMAGES; do
             DB_TAG=$(echo "$DB" | tr ':.' '--')
-            # mysql:8.x defaults to caching_sha2_password, which the legacy PHP
-            # PDO drivers (5.6/7.0) can't speak. Force mysql_native_password.
-            EXTRA_ARGS=""
+            # Per-image overrides:
+            #   * mysql:8.x defaults to caching_sha2_password (PHP 5.6/7.0 PDO
+            #     can't speak it) and to utf8mb4 (PHP 5.6 PDO rejects with
+            #     "Server sent charset unknown to the client") — pin both back.
+            #   * Every server gets a generous max_connections so concurrent
+            #     cells against the same DB don't trip the default limit (~150).
+            EXTRA_ARGS="--max-connections=500"
             case "$DB" in
-              mysql:8.*) EXTRA_ARGS="--default-authentication-plugin=mysql_native_password" ;;
+              mysql:8.*)
+                EXTRA_ARGS="$EXTRA_ARGS --default-authentication-plugin=mysql_native_password"
+                EXTRA_ARGS="$EXTRA_ARGS --character-set-server=utf8mb3"
+                EXTRA_ARGS="$EXTRA_ARGS --collation-server=utf8mb3_general_ci"
+                ;;
             esac
             docker run -d --name "db-${DB_TAG}" --network e107-test \
               -e MYSQL_ROOT_PASSWORD="$MYSQL_ROOT_PASSWORD" \
@@ -230,14 +238,20 @@ jobs:
                   "db-${DB_TAG}" "${CELL}" \
                   > "/tmp/ws/php-${PHP_TAG}/e107_tests/config.local.yml"
 
+                # `-d output_buffering=4096` keeps PHP from flagging headers as
+                # already sent when class2.php's bootstrap calls
+                # `ini_set('session.*', ...)` after Codeception's `--debug`
+                # output. PHPUnit promotes that warning to a test failure under
+                # `convertWarningsToExceptions=true`, which sinks every PHP 8.1+
+                # cell otherwise.
                 docker exec "php-${PHP_TAG}" sh -c "
                   cd /app/e107_tests
                   if php -r 'exit(extension_loaded(\"xdebug\") ? 0 : 1);'; then
-                    php -d xdebug.mode=coverage ./vendor/bin/codecept run unit \
+                    php -d output_buffering=4096 -d xdebug.mode=coverage ./vendor/bin/codecept run unit \
                       -o 'paths: output: tests/_output/${CELL}' \
                       --steps --debug --coverage --coverage-xml
                   else
-                    php ./vendor/bin/codecept run unit \
+                    php -d output_buffering=4096 ./vendor/bin/codecept run unit \
                       -o 'paths: output: tests/_output/${CELL}' \
                       --steps --debug
                   fi
