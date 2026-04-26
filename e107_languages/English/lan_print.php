@@ -11,7 +11,7 @@
 */
 
 return [
-    'PAGE_NAME' => "Printer Friendly",
+    'LAN_PRINT_PAGE_NAME' => "Printer Friendly",
     'LAN_PRINT_303' => "This news item is from",
     'LAN_PRINT_307' => "Print this page",
     'LAN_PRINT_1' => "printer friendly",
