@@ -6,6 +6,7 @@
 		<core name="admin_separate_plugins">0</core>
 		<core name="admin_collapse_sidebar">0</core>
 		<core name="admin_navbar_labels">0</core>
+		<core name="admin_navbar_debug">255</core>
 		<core name="admin_helptip">1</core>
 		<core name="admincode">0</core>		
 		<core name="admincss">css/modern-light.css</core>
