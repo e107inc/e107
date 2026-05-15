@@ -37,69 +37,81 @@ if(e_AJAX_REQUEST) // TODO improve security
 	{
 		exit;
 	}
-	
+
 	$ret = array();
-	
-	// Comment Pagination 
+
+	$requireToken = function()
+	{
+		if (!isset($_POST['e-token']) || !e107::getSession()->checkFormToken($_POST['e-token']))
+		{
+			echo json_encode(array('msg' => 'Unauthorized access!', 'error' => true));
+			exit;
+		}
+	};
+
+	// Comment Pagination
 	if(varset($_GET['mode']) == 'list' && vartrue($_GET['id']) && vartrue($_GET['type']))
 	{
 		$clean_type = preg_replace("/[^\w\d]/","",$_GET['type']);
-		
+
 		$tmp = e107::getComment()->getComments($clean_type,intval($_GET['id']),intval($_GET['from']));
 		echo $tmp['comments'];
 		exit;
 	}
-	
+
 
 	if(varset($_GET['mode']) == 'reply' && vartrue($_POST['itemid']))
-	{	
-		$status 		= e107::getComment()->replyComment($_POST['itemid']);	
-		$ret['msg'] 	= COMLAN_332; 
+	{
+		$status 		= e107::getComment()->replyComment($_POST['itemid']);
+		$ret['msg'] 	= COMLAN_332;
 		$ret['error'] 	= ($status) ? false : true;
 		$ret['html']	= $status;
 		echo json_encode($ret);
-		exit; 	
+		exit;
 	}
-	
-	
+
+
 	if(varset($_GET['mode']) == 'delete' && !empty($_POST['id']) && ADMIN)
 	{
+		$requireToken();
 		$status 		= e107::getComment()->deleteComment($_POST['id'],$_POST['table'],$_POST['itemid']);
-		$ret['msg'] 	= ($status) ? 'Ok' : COMLAN_332; 
+		$ret['msg'] 	= ($status) ? 'Ok' : COMLAN_332;
 		$ret['error'] 	= ($status) ? false : true;
 		echo json_encode($ret);
-		exit; 	
+		exit;
 	}
-	
+
 	if(varset($_GET['mode']) == 'approve' && vartrue($_POST['itemid']) && ADMIN)
 	{
-		$status 		= e107::getComment()->approveComment($_POST['itemid']);		
-		$ret['msg'] 	= ($status) ? COMLAN_333 : COMLAN_334; 
+		$requireToken();
+		$status 		= e107::getComment()->approveComment($_POST['itemid']);
+		$ret['msg'] 	= ($status) ? COMLAN_333 : COMLAN_334;
 		$ret['error'] 	= ($status) ? false : true;
 		$ret['html']	= COMLAN_335;
 		echo json_encode($ret);
-		exit; 	
+		exit;
 	}
-	
-		
+
+
 	if(!vartrue($_POST['comment']) && varset($_GET['mode']) == 'submit')
 	{
 		$ret['error'] 	= true;
 		$ret['msg'] 	= COMLAN_336." - ".implode(" ",$_GET);
 		echo json_encode($ret);
-		exit; 	
+		exit;
 	}
 
-	// Update Comment 
+	// Update Comment
 	if(e107::getPref('allowCommentEdit') && varset($_GET['mode']) == 'edit' && vartrue($_POST['comment']) && vartrue($_POST['itemid']))
-	{			
+	{
+		$requireToken();
 		$error = e107::getComment()->updateComment($_POST['itemid'],$_POST['comment']);
-		
+
 		$ret['error'] 	= ($error) ? true : false;
 		$ret['msg'] 	= ($error) ? $error : COMLAN_337;
-		
+
 		echo json_encode($ret);
-		exit;	
+		exit;
 	}
 	
 	// Insert Comment and return rendered html. 

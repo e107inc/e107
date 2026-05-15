@@ -261,8 +261,9 @@ $(document).ready(function()
 
 
     $(document).on("click", ".e-comment-edit", function(){
-			
+
         var url = $(this).attr("data-target");
+        var token = $(this).attr("data-token");
         var sp = $(this).attr('id').split("-");
         var id = "#comment-" + sp[3] + "-edit";
 
@@ -272,7 +273,7 @@ $(document).ready(function()
         }
 
         $(id).attr('contentEditable',true);
-        $(id).after("<div class='e-comment-edit-save'><input data-target='"+url+"' id='e-comment-edit-save-"+sp[3]+"' class='button btn btn-success e-comment-edit-save' type='button' value='Save' /></div>");
+        $(id).after("<div class='e-comment-edit-save'><input data-target='"+url+"' data-token='"+token+"' id='e-comment-edit-save-"+sp[3]+"' class='button btn btn-success e-comment-edit-save' type='button' value='Save' /></div>");
         $('div.e-comment-edit-save').hide().fadeIn(800);
         $(id).addClass("e-comment-edit-active");
         $(id).focus();
@@ -281,21 +282,23 @@ $(document).ready(function()
 
 
     $(document).on("click", "input.e-comment-edit-save", function(){
-			
+
 			var url 	= $(this).attr("data-target");
-			var sp 		= $(this).attr('id').split("-");	
+			var token 	= $(this).attr("data-token");
+			var sp 		= $(this).attr('id').split("-");
 			var id 		= "#comment-" + sp[4] + "-edit";
 			var comment = $(id).text();
 
 
 			$(id).attr('contentEditable',false);
-			
+
 		        $.ajax({
 		            url: url + '?ajax_used=1&mode=edit',
 		            type: 'POST',
 		            data: {
 		            	comment: comment,
-		            	itemid: sp[4]
+		            	itemid: sp[4],
+		            	'e-token': token
 		            },
 		            success:function (data) {
 		            
@@ -339,18 +342,19 @@ $(document).ready(function()
 
 
     $(document).on("click", ".e-comment-delete", function(){
-			
+
 			var url 	= $(this).attr("data-target");
 			var table 	= $(this).attr("data-type");
 			var itemid 	= $(this).attr("data-itemid");
-			var sp 		= $(this).attr('id').split("-");	
+			var token 	= $(this).attr("data-token");
+			var sp 		= $(this).attr('id').split("-");
 			var id 		= "#comment-" + sp[3];
 			var total 	= parseInt($("#e-comment-total").text());
-	
+
 			$.ajax({
 			  type: 'POST',
 			  url: url + '?ajax_used=1&mode=delete',
-			  data: { id: sp[3], itemid: itemid, table: table },
+			  data: { id: sp[3], itemid: itemid, table: table, 'e-token': token },
 			  success: function(data) {
 			var a = $.parseJSON(data);
 			  
@@ -368,15 +372,16 @@ $(document).ready(function()
 		});
 
     $(document).on("click", ".e-comment-approve", function() {
-			
+
 			var url = $(this).attr("data-target");
-			var sp = $(this).attr('id').split("-");	
+			var token = $(this).attr("data-token");
+			var sp = $(this).attr('id').split("-");
 			var id = "#comment-status-" + sp[3];
-	
+
 			$.ajax({
 			  type: 'POST',
 			  url: url + '?ajax_used=1&mode=approve',
-			  data: { itemid: sp[3] },
+			  data: { itemid: sp[3], 'e-token': token },
 			  success: function(data) {
 	
 			  
