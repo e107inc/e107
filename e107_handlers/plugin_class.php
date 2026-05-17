@@ -5152,6 +5152,7 @@ class e107plugin
 				'e_library'    => EPL_ADLAN_286, // Include a third-party library.
 				'e_parse'      => EPL_ADLAN_287, // Hook into e107's text/html parser.
 				'e_output'     => EPL_ADLAN_288, // Hook into all pages at the end (after closing </html>).
+				'e_print'      => EPL_ADLAN_289, // Customize the [Print] function for your plugin's content.
 			);
 		}
 

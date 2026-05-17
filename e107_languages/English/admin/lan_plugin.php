@@ -297,4 +297,5 @@ return [
     'EPL_ADLAN_286' => "Include a third-party library",
     'EPL_ADLAN_287' => "Hook into e107's text/html parser",
     'EPL_ADLAN_288' => "Hook into all pages at the end (after closing </html>)",
+    'EPL_ADLAN_289' => "Customize the [Print] function for your plugin's content.",
 ];
