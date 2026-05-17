@@ -196,14 +196,14 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	 * @return string
 	 * @example {TOPIC_LASTPOST_DATE: format=relative}
 	 */
-	function sc_topic_lastpost_date($parm = null)
+		function sc_topic_lastpost_date($parm = null)
 	{
-
+/*
 		if(empty($this->var['thread_total_replies']))
 		{
 			return '';
 		}
-
+*/
 
 		$mode = empty($parm['format']) ? 'forum' : $parm['format'];
 
@@ -214,8 +214,8 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	function sc_topic_lastpost_author($parm = null)
 	{
 
-		if($this->var['thread_views'] && !empty($this->var['thread_total_replies']))
-		{
+//		if($this->var['thread_views'] && !empty($this->var['thread_total_replies']))
+//		{
 
 			if(!empty($this->var['thread_lastuser_username']))
 			{
@@ -232,9 +232,9 @@ class plugin_forum_view_shortcodes extends e_shortcode
 				return LAN_FORUM_1015;
 
 			}
-		}
+//		}
 
-		return ' - ';
+//		return ' - ';
 
 	}
 
@@ -1067,7 +1067,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	function sc_track()
 	{
 
-		global $forum;
+		//global $forum; //$forum is not used inside function, so why global here?
 		if(!empty($this->pref['track']) && USER)
 		{
 			// BC Fix for old template.
