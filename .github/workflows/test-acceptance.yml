@@ -32,7 +32,7 @@ jobs:
         run: docker run -d -it --rm --name target -v .:/app/ ${{ matrix.operating_system.image }}
 
       - name: Install SaltStack
-        run: docker exec target /app/e107_tests/lib/ci/salt/salt-bootstrap onedir 3007
+        run: docker exec target /app/e107_tests/lib/ci/salt/salt-bootstrap onedir
 
       - name: Apply Salt state
         run: |
