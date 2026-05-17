@@ -5,9 +5,13 @@ Install Python module build dependencies:
       - libmariadb-dev
       - pkg-config
 
-MySQLdb Python module for SaltStack:
+Python modules for SaltStack:
   pip.installed:
-    - name: mysqlclient
+    - pkgs:
+      - mysqlclient
+      - passlib
+      - saltext.mysql
+    - bin_env: /usr/bin/salt-pip
     - require:
       - pkg: "Install Python module build dependencies"
 
