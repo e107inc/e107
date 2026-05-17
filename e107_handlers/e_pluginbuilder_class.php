@@ -319,11 +319,13 @@ class e_pluginbuilder
 
 			$text = $frm->open('buildTab', 'get', e_REQUEST_SELF);
 
+			$lanSelectTable = e107::getParser()->lanVars(EPL_ADLAN_258, "<em>".$this->pluginName."_sql.php</em>");
+
 			$text .= "<table class='table adminform'>
 				<tr><td colspan='2'><h4>".ucfirst(LAN_OPTIONAL)."</h4></td></tr>
 
 				<tr>
-				<td class='col-label'>To generate your <em>".$this->pluginName."_sql.php</em> table creation file, please select your sql table then click 'Refresh'</td>
+				<td class='col-label'>".$lanSelectTable."</td>
 				<td class='form-inline'>";
 
 			$text .= $frm->select('build', $tables, null, array('useValues'=>1), "(".LAN_OPTIONAL.")");
@@ -568,11 +570,11 @@ $content .= '}';
 
 		//Todo LANS
 			$dizOther = array(
-				'_blank' => "Simple frontend script",
-				'_blank_setup' => "Create default table data during install, upgrade, uninstall etc",
-				'_blank_menu' => "Menu item for use in the menu manager.",
-				'_blank_template' => "Template to allow layout customization by themes.",
-				'_blank_shortcodes' => "Shortcodes for the template."
+				'_blank'            => EPL_ADLAN_259, // Simple frontend script
+				'_blank_setup'      => EPL_ADLAN_260, // Create default table data during install, upgrade, uninstall etc
+				'_blank_menu'       => EPL_ADLAN_261, // Menu item for use in the menu manager.
+				'_blank_template'   => EPL_ADLAN_262, // Template to allow layout customization by themes.
+				'_blank_shortcodes' => EPL_ADLAN_263, // Shortcodes for the template.
 			);
 
 			array_unshift($list,'_blank', '_blank_setup', '_blank_menu', '_blank_template', '_blank_shortcodes');
