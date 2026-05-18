@@ -308,3 +308,5 @@ define("PRFLAN_283", "Display navigation-bar labels");
 define("PRFLAN_284", "Collapse navigation side-bar by default");
 define("PRFLAN_285", "Display field help tips");
 define("PRFLAN_286", "Content Filters");
+define("PRFLAN_288", "Trusted Hosts");
+define("PRFLAN_289", "Additional hostnames the site will accept in the Host header, one per line. The host parsed from Site URL is always trusted; entries here are added to that list. Paste a full URL and the saved value is normalised to the host only.");
