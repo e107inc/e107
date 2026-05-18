@@ -30,19 +30,53 @@ if(defined('MYSQL_LIGHT'))
 	define('E107_DEBUG_LEVEL', 0);
 	define('e_QUERY', '');
 	$path = (MYSQL_LIGHT !== true ? MYSQL_LIGHT : '');
-	require_once($path.'e107_config.php');
-	define('MPREFIX', $mySQLprefix);
-	$sql = new db;
-	$sql->db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
+	$config = require_once($path.'e107_config.php');
+
+	if(is_array($config) && !empty($config['database'])) // New e107_config.php format. v2.4+
+	{
+		$dbInfo = $config['database'];
+		define('MPREFIX', $dbInfo['prefix'] ?? '');
+		$sql = new db;
+		$sql->db_Connect(
+			$dbInfo['server']   ?? '',
+			$dbInfo['user']     ?? '',
+			$dbInfo['password'] ?? '',
+			$dbInfo['db']       ?? ''
+		);
+	}
+	else // old e107_config.php format with legacy globals.
+	{
+		define('MPREFIX', $mySQLprefix ?? '');
+		$sql = new db;
+		$sql->db_Connect(
+			$mySQLserver   ?? '',
+			$mySQLuser     ?? '',
+			$mySQLpassword ?? '',
+			$mySQLdefaultdb ?? ''
+		);
+	}
 }
 elseif(defined('E107_INSTALL'))
 {
 	define('E107_DEBUG_LEVEL', 0);
-	require('e107_config.php');
-	$sql_info = compact('mySQLserver', 'mySQLuser', 'mySQLpassword', 'mySQLdefaultdb', 'mySQLprefix');
+	$config = require('e107_config.php');
+
+	if(is_array($config) && !empty($config['database'])) // New e107_config.php format. v2.4+
+	{
+		$sql_info = $config['database']; // server / user / password / db / prefix
+	}
+	else // old e107_config.php format with legacy globals.
+	{
+		$sql_info = compact('mySQLserver', 'mySQLuser', 'mySQLpassword', 'mySQLdefaultdb', 'mySQLprefix');
+	}
 	e107::getInstance()->initInstallSql($sql_info);
 	$sql = new db;
-	$sql->db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
+	$sql->db_Connect(
+		$sql_info['server']   ?? ($sql_info['mySQLserver']   ?? ''),
+		$sql_info['user']     ?? ($sql_info['mySQLuser']     ?? ''),
+		$sql_info['password'] ?? ($sql_info['mySQLpassword'] ?? ''),
+		$sql_info['db']       ?? ($sql_info['mySQLdefaultdb'] ?? '')
+	);
 }
 else
 {
