@@ -5651,14 +5651,25 @@ class e107
 		$configured_host = parse_url($siteurl, PHP_URL_HOST);
 		$http_host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
 
+		$allowed_hosts = array();
+		if(!empty($configured_host))
+		{
+			$allowed_hosts[] = $configured_host;
+		}
+		$trusted_hosts_pref = self::getPref('trusted_hosts');
+		if(!empty($trusted_hosts_pref))
+		{
+			$allowed_hosts = array_merge($allowed_hosts, (array) $trusted_hosts_pref);
+		}
+
 		if(self::isCli())
 		{
 			define('SITEURL', $siteurl);
 			define('SITEURLBASE', rtrim(SITEURL,'/'));
 		}
-		elseif(!empty($configured_host) && strpos($siteurl,'http')!== false && !$this->isAllowedHost($configured_host, $http_host))
+		elseif(!empty($configured_host) && strpos($siteurl,'http')!== false && !$this->isAllowedHost($allowed_hosts, $http_host))
 		{
-			error_log('e107 host check: HTTP_HOST '.var_export($http_host, true).' is not allowed by the configured siteurl preference '.var_export($siteurl, true));
+			error_log('e107 host check: HTTP_HOST '.var_export($http_host, true).' is not allowed by the configured siteurl preference '.var_export($siteurl, true).' or any of the configured `trusted_hosts` pref entries');
 			$this->renderHostMismatchKillswitch();
 		}
 		else
@@ -5694,7 +5705,7 @@ class e107
 	 */
 	private function isAllowedHost($allowedHosts, $httpHost)
 	{
-		$httpHost = $this->normaliseHost($httpHost);
+		$httpHost = self::normaliseHost($httpHost);
 		if($httpHost === '')
 		{
 			return false;
@@ -5702,7 +5713,7 @@ class e107
 
 		foreach((array) $allowedHosts as $allowedHost)
 		{
-			$allowedHost = $this->normaliseHost($allowedHost);
+			$allowedHost = self::normaliseHost($allowedHost);
 			if($allowedHost === '')
 			{
 				continue;
@@ -5733,12 +5744,60 @@ class e107
 	 *
 	 * @return string
 	 */
-	private function normaliseHost($host)
+	private static function normaliseHost($host)
 	{
 		$host = strtolower((string) $host);
 		$host = preg_replace('/:\d+$/', '', $host);
 		$host = preg_replace('/^www\./', '', $host);
 		return $host;
+	}
+
+	/**
+	 * Normalise the `trusted_hosts` admin-form input into a list of bare
+	 * hostnames suitable for the `trusted_hosts` SitePref.
+	 *
+	 * Accepts a newline-separated string (the textarea body) or an array
+	 * (legacy callers). For each entry it strips a surrounding scheme/path,
+	 * lowercases the host, strips a trailing `:port` and a leading `www.`,
+	 * drops blanks, and de-duplicates case-insensitively. So an admin can
+	 * paste `https://Staging.Example.com/foo` and the saved value is
+	 * `staging.example.com`.
+	 *
+	 * @param string|array $input
+	 *
+	 * @return string[]
+	 */
+	public static function normaliseTrustedHostList($input)
+	{
+		$lines = is_array($input) ? $input : preg_split('/\r\n|\r|\n/', (string) $input);
+		$hosts = array();
+		foreach($lines as $line)
+		{
+			$line = trim((string) $line);
+			if($line === '')
+			{
+				continue;
+			}
+			if(strpos($line, '://') === false)
+			{
+				$line = 'http://' . $line;
+			}
+			$host = parse_url($line, PHP_URL_HOST);
+			if(!is_string($host) || $host === '')
+			{
+				continue;
+			}
+			$host = self::normaliseHost($host);
+			if($host === '')
+			{
+				continue;
+			}
+			if(!in_array($host, $hosts, true))
+			{
+				$hosts[] = $host;
+			}
+		}
+		return $hosts;
 	}
 
 	/**
