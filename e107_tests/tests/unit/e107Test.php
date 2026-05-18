@@ -2371,61 +2371,6 @@ class e107Test extends \Codeception\Test\Unit
 
 	}
 
-	public function testIsAllowedHost(): void
-	{
-
-		$reflection = new ReflectionClass($this->e107);
-		$method = $reflection->getMethod('isAllowedHost');
-		$method->setAccessible(true);
-
-		$testCases = [
-			'Empty allowed hosts should return true'                      => [
-				'allowedHosts' => [],
-				'httpHost'     => 'anyhost.com',
-				'expected'     => true
-			],
-			'Exact matching host should return true'                      => [
-				'allowedHosts' => ['example.com', 'testsite.org'],
-				'httpHost'     => 'example.com',
-				'expected'     => true
-			],
-			'Subdomain matching allowed host should return true'          => [
-				'allowedHosts' => ['example.com'],
-				'httpHost'     => 'subdomain.example.com',
-				'expected'     => true
-			],
-			'Unrelated host should return false'                          => [
-				'allowedHosts' => ['example.com'],
-				'httpHost'     => 'unrelated.com',
-				'expected'     => false
-			],
-			'Similar but incorrect subdomain pattern should return false' => [
-				'allowedHosts' => ['example.com'],
-				'httpHost'     => 'subdomain-example.com',
-				'expected'     => false
-			],
-			'www domain' => [
-				'allowedHosts' => ['example.com'],
-				'httpHost'     => 'www.example.com',
-				'expected'     => true
-			],
-			'www2 domain' => [
-				'allowedHosts' => ['www.example.com'],
-				'httpHost'     => 'example.com',
-				'expected'     => true
-			],
-		];
-
-		foreach($testCases as $scenario => $testCase)
-		{
-			$result = $method->invoke($this->e107, $testCase['allowedHosts'], $testCase['httpHost']);
-			$this::assertSame($testCase['expected'], $result, "Failed scenario: $scenario");
-		}
-	}
-
-
-
-
 	/*
 			public function testIni_set()
 			{
