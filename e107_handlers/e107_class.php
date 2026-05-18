@@ -5526,20 +5526,21 @@ class e107
 	{
 		$siteurl = self::getPref('siteurl');
 		$configured_host = parse_url($siteurl, PHP_URL_HOST);
+		$http_host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
 
 		if(self::isCli())
 		{
 			define('SITEURL', $siteurl);
 			define('SITEURLBASE', rtrim(SITEURL,'/'));
 		}
-		elseif(!empty($configured_host) && strpos($siteurl,'http')!== false && $configured_host !== $_SERVER['HTTP_HOST'] && substr($_SERVER['HTTP_HOST'], - strlen('.' . $configured_host)) !== ('.' . $configured_host))
+		elseif(!empty($configured_host) && strpos($siteurl,'http')!== false && !$this->isAllowedHost($configured_host, $http_host))
 		{
-			die('Site Configuration Issue Detected. Please contact your webmaster.');
-			error_log('The configured siteurl in your preferences does not match the HTTP_HOST: '.$_SERVER['HTTP_HOST']);
+			error_log('e107 host check: HTTP_HOST '.var_export($http_host, true).' is not allowed by the configured siteurl preference '.var_export($siteurl, true));
+			$this->renderHostMismatchKillswitch();
 		}
 		else
 		{
-			define('SITEURLBASE', $this->HTTP_SCHEME.'://'. filter_var($_SERVER['HTTP_HOST'], FILTER_SANITIZE_URL));
+			define('SITEURLBASE', $this->HTTP_SCHEME.'://'. filter_var($http_host, FILTER_SANITIZE_URL));
 			define('SITEURL', SITEURLBASE.e_HTTP);
 		}
 
@@ -5553,6 +5554,103 @@ class e107
 		}
 
 		return $this;
+	}
+
+	/**
+	 * Test whether $httpHost is accepted by one or more configured hosts.
+	 *
+	 * Both sides are passed through `normaliseHost()` first, so a leading
+	 * `www.`, a trailing `:port`, and case differences don't matter for the
+	 * comparison. After normalisation, a host is accepted when it equals an
+	 * allowed host or is a subdomain of one.
+	 *
+	 * @param string|array $allowedHosts one host or a list of hosts.
+	 * @param string       $httpHost     the incoming `HTTP_HOST`.
+	 *
+	 * @return bool
+	 */
+	private function isAllowedHost($allowedHosts, $httpHost)
+	{
+		$httpHost = $this->normaliseHost($httpHost);
+		if($httpHost === '')
+		{
+			return false;
+		}
+
+		foreach((array) $allowedHosts as $allowedHost)
+		{
+			$allowedHost = $this->normaliseHost($allowedHost);
+			if($allowedHost === '')
+			{
+				continue;
+			}
+
+			if($httpHost === $allowedHost
+				|| substr($httpHost, -strlen('.' . $allowedHost)) === '.' . $allowedHost)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Normalise a hostname for comparison: lowercase, strip a trailing
+	 * `:port`, strip a leading `www.`.
+	 *
+	 * Both sides of the host check run through this so the configured
+	 * `Example.com` matches a visited `WWW.example.com:8080` and vice versa.
+	 * The port strip targets the `HTTP_HOST` value (which retains the visited
+	 * port) since `parse_url(PHP_URL_HOST)` already drops the port from
+	 * `siteurl`; applying it symmetrically keeps any manually-entered
+	 * `trusted_hosts` entries that include a port from silently never matching.
+	 *
+	 * @param string $host
+	 *
+	 * @return string
+	 */
+	private function normaliseHost($host)
+	{
+		$host = strtolower((string) $host);
+		$host = preg_replace('/:\d+$/', '', $host);
+		$host = preg_replace('/^www\./', '', $host);
+		return $host;
+	}
+
+	/**
+	 * Emit a 503 Service Unavailable response and terminate the request.
+	 *
+	 * Fires when `set_urls_deferred()` rejects the incoming `Host` header. The
+	 * response is rendered inline because none of the theme, plugin, or session
+	 * bootstrap has run yet at this point.
+	 *
+	 * The body intentionally carries no diagnostic detail (no echo of the
+	 * incoming `Host`, no configured hostname, no admin URL). The diagnostic
+	 * detail is sent to `error_log()` by the caller, which is the channel that
+	 * already requires server access.
+	 *
+	 * @return void
+	 */
+	private function renderHostMismatchKillswitch()
+	{
+		if(!headers_sent())
+		{
+			header('HTTP/1.1 503 Service Unavailable');
+			header('Content-Type: text/html; charset=utf-8');
+			header('Cache-Control: no-store');
+		}
+
+		echo "<!DOCTYPE html>\n";
+		echo "<html lang=\"en\"><head>";
+		echo "<meta charset=\"utf-8\">";
+		echo "<title>Site Configuration Issue</title>";
+		echo "</head><body>";
+		echo "<h1>Site Configuration Issue Detected</h1>";
+		echo "<p>The site administrator should check the server error log for details.</p>";
+		echo "</body></html>\n";
+
+		exit;
 	}
 
 	/**
