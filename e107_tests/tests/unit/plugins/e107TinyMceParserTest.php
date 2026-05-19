@@ -34,6 +34,11 @@
 
 		public function testToHtmlOnPlain()
 		{
+			// parser's check_class is strict; set the post-HTML class to a
+			// value that the test's default USERCLASS_LIST (public) satisfies,
+			// so toHTML takes the raw-HTML branch and applies nl2br().
+			$this->tm->setHtmlClass(e_UC_PUBLIC);
+
 			$test = 'Plain text paragraph 1
 
 Plain text &quot;paragraph&quot; 2
@@ -55,6 +60,8 @@ Plain text paragraph 3<br />';
 
 		public function testToHtmlOnBbcode()
 		{
+			$this->tm->setHtmlClass(e_UC_PUBLIC);
+
 			$test = '[b]Bold text[/b]
 			
 			paragraph 2
@@ -160,13 +167,8 @@ Plain text paragraph 3<br />';
 	</table>
 	<hr />";
 
-		global $_E107;
-		$_E107['phpunit']  = true;  // enable the user of check_class();
-
 		$this->tm->setHtmlClass(e_UC_NOBODY);
 		$result = $this->tm->toDB($text);
-
-		$_E107['phpunit']  = false;
 
 		}
 
