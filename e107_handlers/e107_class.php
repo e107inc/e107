@@ -74,13 +74,6 @@ class e107
 	protected $HTTP_SCHEME;
 
 	/**
-	 * Storage for host configuration from siteurl or e107_config $config['other']['site_hosts']
-	 *
-	 * @var array
-	 */
-	protected $hosts = [];
-
-	/**
 	 * Used for runtime caching of user extended struct
 	 *
 	 * @var array
@@ -212,6 +205,7 @@ class e107
 		'e_file_inspector_json_phar'     => '{e_HANDLER}e_file_inspector_json_phar.php',
 		'e_form'                         => '{e_HANDLER}form_handler.php',
 		'e_jshelper'                     => '{e_HANDLER}js_helper.php',
+		'e_jwt'                          => '{e_HANDLER}e_jwt_class.php',
 		'e_media'                        => '{e_HANDLER}media_class.php',
 		'e_menu'                         => '{e_HANDLER}menu_class.php',
 		'e_model'                        => '{e_HANDLER}model_class.php',
@@ -632,11 +626,6 @@ class e107
 		if(empty($e107_config_override['site_path']))
 		{
 			$this->site_path = $this->makeSiteHash($e107_config_mysql_info['defaultdb'], $e107_config_mysql_info['prefix']);
-		}
-
-		if(!empty($e107_config_override['site_hosts']))
-		{
-			$this->hosts = (array) $e107_config_override['site_hosts'];
 		}
 
 		// Set default folder (and override paths) if missing from e107_config.php
@@ -1610,7 +1599,7 @@ class e107
 	 * // object of plugin_myplugin_my_shortcodes class -> myplugin/shortcodes/batch/my_shortcodes.php
 	 * e107::getScObject('my', 'myplugin');
 	 *
-	 * // news override - plugin_myplugin_news_shortcodes extends news_shortcodes -> myplugin/shortcodes/batch/news_shortcodes.php
+	 * // news forced override - plugin_myplugin_plugin_myplugin_news_shortcodes extends news_shortcodes -> myplugin/shortcodes/batch/plugin_myplugin_news_shortcodes.php
 	 * e107::getScObject('news', 'myplugin', true);
 	 *
 	 * // news override - plugin_myplugin_mynews_shortcodes extends news_shortcodes -> myplugin/shortcodes/batch/mynews_shortcodes.php
@@ -1903,7 +1892,7 @@ class e107
         {
             $fileInspector->loadDatabase();
         }
-        catch (Exception $e)
+        catch (Throwable $e)
         {
             // TODO: LAN
             self::getMessage()->addWarning(
@@ -2845,13 +2834,15 @@ class e107
 
 	}
 
-
-
-
-
-
-
-
+	/**
+	 * Get the handler that can encrypt and decrypt a string secret that only the e107 server can read
+	 *
+	 * @return e_jwt JWT handler
+	 */
+	public static function getJWT()
+	{
+		return self::getSingleton('e_jwt');
+	}
 
 	/**
 	 * Retrieve JS Helper object
@@ -4695,10 +4686,7 @@ class e107
 	public static function wysiwyg($val=null, $returnEditor=false)
 	{
 		static $editor = 'bbcode';
-		static $availEditors;
 		$fallbackEditor = 'bbcode';
-
-		global $_E107;
 
 		if (self::getPref('wysiwyg',false) != true)
 		{
@@ -4707,13 +4695,9 @@ class e107
 		}
 		else
 		{
-			if(!isset($availEditors) || !empty($_E107['phpunit']))
-			{
-				// init list of installed wysiwyg editors
-				$default = self::isInstalled('tinymce4') ? array('tinymce4'=>'TinyMce4') : array();  // if missing pref fallback.
-				$availEditors = self::getPref('wysiwyg_list', $default);
-			//	$availEditors = array_keys(e107::getPlug()->getInstalledWysiwygEditors()); // very slow.
-			}
+			// init list of installed wysiwyg editors
+			$default = self::isInstalled('tinymce4') ? array('tinymce4'=>'TinyMce4') : array();  // if missing pref fallback.
+			$availEditors = self::getPref('wysiwyg_list', $default);
 
 			if($val !== null)
 			{
@@ -5663,27 +5647,37 @@ class e107
 	 */
 	public function set_urls_deferred()
 	{
-		$siteurl        = self::getPref('siteurl');
-		$defaultHost    = (array) parse_url($siteurl, PHP_URL_HOST);
-		$defaultHost    = preg_replace('/^www\./', '', $defaultHost);
+		$siteurl = self::getPref('siteurl');
+		$configured_host = parse_url($siteurl, PHP_URL_HOST);
+		$http_host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
 
-		$hosts          = !empty($this->hosts) ? $this->hosts : $defaultHost;
+		$allowed_hosts = array();
+		if(!empty($configured_host))
+		{
+			$allowed_hosts[] = $configured_host;
+		}
+		$trusted_hosts_pref = self::getPref('trusted_hosts');
+		if(!empty($trusted_hosts_pref))
+		{
+			$allowed_hosts = array_merge($allowed_hosts, (array) $trusted_hosts_pref);
+		}
 
 		if(self::isCli())
 		{
 			define('SITEURL', $siteurl);
 			define('SITEURLBASE', rtrim(SITEURL,'/'));
 		}
-		elseif(!empty($hosts) && !$this->isAllowedHost($hosts, $_SERVER['HTTP_HOST']))
+		elseif(!empty($configured_host) && strpos($siteurl,'http')!== false && !$this->isAllowedHost($allowed_hosts, $http_host))
 		{
-			error_log('The configured siteurl in your preferences or e107_config "host" value does not match the HTTP_HOST: '.$_SERVER['HTTP_HOST']);
-			die('Site Configuration Issue Detected. Please contact your webmaster.');
+			error_log('e107 host check: HTTP_HOST '.var_export($http_host, true).' is not allowed by the configured siteurl preference '.var_export($siteurl, true).' or any of the configured `trusted_hosts` pref entries');
+			$this->renderHostMismatchKillswitch();
 		}
 		else
 		{
-			define('SITEURLBASE', $this->HTTP_SCHEME.'://'. filter_var($_SERVER['HTTP_HOST'], FILTER_SANITIZE_URL));
+			define('SITEURLBASE', $this->HTTP_SCHEME.'://'. filter_var($http_host, FILTER_SANITIZE_URL));
 			define('SITEURL', SITEURLBASE.e_HTTP);
 		}
+
 
 		// login/signup
 		define('e_SIGNUP', SITEURL.(file_exists(e_BASE.'customsignup.php') ? 'customsignup.php' : 'signup.php'));
@@ -5696,40 +5690,149 @@ class e107
 		return $this;
 	}
 
-
 	/**
-	 * Check if the current host ($_SERVER['HTTP_HOST']) matches any configured host(s).
+	 * Test whether $httpHost is accepted by one or more configured hosts.
 	 *
-	 * @param array  $allowedHosts Array of configured hostnames.
-	 * @param string $httpHost     HTTP_HOST being validated.
+	 * Both sides are passed through `normaliseHost()` first, so a leading
+	 * `www.`, a trailing `:port`, and case differences don't matter for the
+	 * comparison. After normalisation, a host is accepted when it equals an
+	 * allowed host or is a subdomain of one.
 	 *
-	 * @return bool True if host is allowed, false otherwise.
+	 * @param string|array $allowedHosts one host or a list of hosts.
+	 * @param string       $httpHost     the incoming `HTTP_HOST`.
+	 *
+	 * @return bool
 	 */
-	private function isAllowedHost(array $allowedHosts, string $httpHost): bool
+	private function isAllowedHost($allowedHosts, $httpHost)
 	{
-		if (empty($allowedHosts))
+		$httpHost = self::normaliseHost($httpHost);
+		if($httpHost === '')
 		{
-			error_log('The configured siteurl in your preferences does not contain a a domain name');
-			return true; // Allowed if no hosts.
+			return false;
 		}
 
-		$httpHost    = preg_replace('/^www\./', '', $httpHost);
-
-		foreach ($allowedHosts as $host)
+		foreach((array) $allowedHosts as $allowedHost)
 		{
-			if(empty($host))
+			$allowedHost = self::normaliseHost($allowedHost);
+			if($allowedHost === '')
 			{
 				continue;
 			}
 
-			$host = preg_replace('/^www\./', '', $host);
-			if ($httpHost === $host || str_ends_with($httpHost, '.' . $host))
+			if($httpHost === $allowedHost
+				|| substr($httpHost, -strlen('.' . $allowedHost)) === '.' . $allowedHost)
 			{
 				return true;
 			}
 		}
 
 		return false;
+	}
+
+	/**
+	 * Normalise a hostname for comparison: lowercase, strip a trailing
+	 * `:port`, strip a leading `www.`.
+	 *
+	 * Both sides of the host check run through this so the configured
+	 * `Example.com` matches a visited `WWW.example.com:8080` and vice versa.
+	 * The port strip targets the `HTTP_HOST` value (which retains the visited
+	 * port) since `parse_url(PHP_URL_HOST)` already drops the port from
+	 * `siteurl`; applying it symmetrically keeps any manually-entered
+	 * `trusted_hosts` entries that include a port from silently never matching.
+	 *
+	 * @param string $host
+	 *
+	 * @return string
+	 */
+	private static function normaliseHost($host)
+	{
+		$host = strtolower((string) $host);
+		$host = preg_replace('/:\d+$/', '', $host);
+		$host = preg_replace('/^www\./', '', $host);
+		return $host;
+	}
+
+	/**
+	 * Normalise the `trusted_hosts` admin-form input into a list of bare
+	 * hostnames suitable for the `trusted_hosts` SitePref.
+	 *
+	 * Accepts a newline-separated string (the textarea body) or an array
+	 * (legacy callers). For each entry it strips a surrounding scheme/path,
+	 * lowercases the host, strips a trailing `:port` and a leading `www.`,
+	 * drops blanks, and de-duplicates case-insensitively. So an admin can
+	 * paste `https://Staging.Example.com/foo` and the saved value is
+	 * `staging.example.com`.
+	 *
+	 * @param string|array $input
+	 *
+	 * @return string[]
+	 */
+	public static function normaliseTrustedHostList($input)
+	{
+		$lines = is_array($input) ? $input : preg_split('/\r\n|\r|\n/', (string) $input);
+		$hosts = array();
+		foreach($lines as $line)
+		{
+			$line = trim((string) $line);
+			if($line === '')
+			{
+				continue;
+			}
+			if(strpos($line, '://') === false)
+			{
+				$line = 'http://' . $line;
+			}
+			$host = parse_url($line, PHP_URL_HOST);
+			if(!is_string($host) || $host === '')
+			{
+				continue;
+			}
+			$host = self::normaliseHost($host);
+			if($host === '')
+			{
+				continue;
+			}
+			if(!in_array($host, $hosts, true))
+			{
+				$hosts[] = $host;
+			}
+		}
+		return $hosts;
+	}
+
+	/**
+	 * Emit a 503 Service Unavailable response and terminate the request.
+	 *
+	 * Fires when `set_urls_deferred()` rejects the incoming `Host` header. The
+	 * response is rendered inline because none of the theme, plugin, or session
+	 * bootstrap has run yet at this point.
+	 *
+	 * The body intentionally carries no diagnostic detail (no echo of the
+	 * incoming `Host`, no configured hostname, no admin URL). The diagnostic
+	 * detail is sent to `error_log()` by the caller, which is the channel that
+	 * already requires server access.
+	 *
+	 * @return void
+	 */
+	private function renderHostMismatchKillswitch()
+	{
+		if(!headers_sent())
+		{
+			header('HTTP/1.1 503 Service Unavailable');
+			header('Content-Type: text/html; charset=utf-8');
+			header('Cache-Control: no-store');
+		}
+
+		echo "<!DOCTYPE html>\n";
+		echo "<html lang=\"en\"><head>";
+		echo "<meta charset=\"utf-8\">";
+		echo "<title>Site Configuration Issue</title>";
+		echo "</head><body>";
+		echo "<h1>Site Configuration Issue Detected</h1>";
+		echo "<p>The site administrator should check the server error log for details.</p>";
+		echo "</body></html>\n";
+
+		exit;
 	}
 
 	/**
