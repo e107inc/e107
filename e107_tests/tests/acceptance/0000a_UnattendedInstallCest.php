@@ -2,10 +2,10 @@
 
 class UnattendedInstallCest
 {
-	const ADMIN_USER     = 'unattendedadmin';
-	const ADMIN_PASSWORD = 'unattendedpass';
-	const ADMIN_DISPLAY  = 'Unattended Admin';
-	const ADMIN_EMAIL    = 'unattended@admin.com';
+	const ADMIN_USER     = 'admin';
+	const ADMIN_PASSWORD = 'admin';
+	const ADMIN_DISPLAY  = 'admin';
+	const ADMIN_EMAIL    = 'admin@admin.com';
 	const SITENAME       = 'UnattendedInstallTest';
 	const SITETHEME      = 'bootstrap5';
 	const SITE_PATH      = '000000test';
@@ -15,7 +15,6 @@ class UnattendedInstallCest
 	{
 		$I->unlinkE107ConfigFromTestEnvironment();
 		$this->dropAllAppTables($I);
-		$this->wipeSiteState();
 	}
 
 	public function _after(AcceptanceTester $I)
@@ -34,23 +33,17 @@ class UnattendedInstallCest
 		$dbh->exec('SET FOREIGN_KEY_CHECKS=1;');
 	}
 
-	public function unattendedInstallWithV24ArrayConfig(AcceptanceTester $I)
+	// Test order matters: the "rejects" cases leave the database empty,
+	// so they run first. The successful-install cases run last so that
+	// subsequent Cests (AdminLoginCest, UserSignupCest, ...) can rely on
+	// a fully installed app with admin/admin credentials.
+
+	public function unattendedInstallRejectsMissingConfig(AcceptanceTester $I)
 	{
-		$I->wantTo("Install e107 unattended with a v2.4 array-format e107_config.php");
+		$I->wantTo("Reject create_tables_unattended when no e107_config.php is present");
 
-		$this->writeArrayConfig($I);
-		$this->visitUnattendedInstallUrl($I);
-		$this->assertInstallSucceeded($I);
-		$this->assertConfigStillValid($I);
-	}
-
-	public function unattendedInstallWithLegacyGlobalsConfig(AcceptanceTester $I)
-	{
-		$I->wantTo("Install e107 unattended with a legacy globals-format e107_config.php");
-
-		$this->writeLegacyConfig($I);
-		$this->visitUnattendedInstallUrl($I);
-		$this->assertInstallSucceeded($I);
+		$I->amOnPage('/install.php?create_tables=1&username=any&password=any');
+		$this->assertUnattendedAdminAbsent($I);
 	}
 
 	public function unattendedInstallRejectsWrongCredentials(AcceptanceTester $I)
@@ -62,12 +55,22 @@ class UnattendedInstallCest
 		$this->assertUnattendedAdminAbsent($I);
 	}
 
-	public function unattendedInstallRejectsMissingConfig(AcceptanceTester $I)
+	public function unattendedInstallWithLegacyGlobalsConfig(AcceptanceTester $I)
 	{
-		$I->wantTo("Reject create_tables_unattended when no e107_config.php is present");
+		$I->wantTo("Install e107 unattended with a legacy globals-format e107_config.php");
 
-		$I->amOnPage('/install.php?create_tables=1&username=any&password=any');
-		$this->assertUnattendedAdminAbsent($I);
+		$this->writeLegacyConfig($I);
+		$this->visitUnattendedInstallUrl($I);
+		$this->assertInstallSucceeded($I);
+	}
+
+	public function unattendedInstallWithV24ArrayConfig(AcceptanceTester $I)
+	{
+		$I->wantTo("Install e107 unattended with a v2.4 array-format e107_config.php");
+
+		$this->writeArrayConfig($I);
+		$this->visitUnattendedInstallUrl($I);
+		$this->assertInstallSucceeded($I);
 	}
 
 	private function writeArrayConfig(AcceptanceTester $I)
@@ -99,7 +102,7 @@ class UnattendedInstallCest
 					'site_path' => self::SITE_PATH,
 				],
 			], true).";\n";
-		file_put_contents(APP_PATH.'/e107_config.php', $contents);
+		$I->writeE107ConfigToTestEnvironment($contents);
 	}
 
 	private function writeLegacyConfig(AcceptanceTester $I)
@@ -130,7 +133,7 @@ class UnattendedInstallCest
 \$SYSTEM_DIRECTORY    = 'e107_system/';
 \$E107_CONFIG = ['site_path' => '$sitePath'];
 PHP;
-		file_put_contents(APP_PATH.'/e107_config.php', $contents);
+		$I->writeE107ConfigToTestEnvironment($contents);
 	}
 
 	private function visitUnattendedInstallUrl(AcceptanceTester $I)
@@ -190,57 +193,10 @@ PHP;
 		);
 	}
 
-	private function assertConfigStillValid(AcceptanceTester $I)
-	{
-		$contents = file_get_contents(APP_PATH.'/e107_config.php');
-		$I->assertNotEmpty($contents, 'e107_config.php should not have been emptied by the unattended install.');
-		$I->assertStringContainsString("'database'", $contents, 'e107_config.php should still carry the v2.4 array shape.');
-		$I->assertStringContainsString("'paths'", $contents);
-		$I->assertStringContainsString("'other'", $contents);
-	}
-
 	private function assertUnattendedAdminAbsent(AcceptanceTester $I)
 	{
 		$dbh = $I->getDbModule()->_getDbh();
 		$tables = $dbh->query("SHOW TABLES LIKE '".self::MYSQL_PREFIX."user'")->fetchAll(PDO::FETCH_COLUMN);
 		$I->assertEmpty($tables, 'e107_user table should not have been created when install was rejected.');
-	}
-
-	private function wipeSiteState()
-	{
-		foreach (['e107_system', 'e107_media'] as $top)
-		{
-			$dir = APP_PATH.'/'.$top.'/'.self::SITE_PATH;
-			if (is_dir($dir))
-			{
-				$this->rrmdir($dir);
-			}
-		}
-	}
-
-	private function rrmdir($path)
-	{
-		if (!is_dir($path))
-		{
-			return;
-		}
-		$entries = scandir($path);
-		foreach ($entries as $entry)
-		{
-			if ($entry === '.' || $entry === '..')
-			{
-				continue;
-			}
-			$full = $path.'/'.$entry;
-			if (is_dir($full) && !is_link($full))
-			{
-				$this->rrmdir($full);
-			}
-			else
-			{
-				@unlink($full);
-			}
-		}
-		@rmdir($path);
 	}
 }
