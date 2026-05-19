@@ -1793,6 +1793,52 @@ return [
 	}
 					
 	/**
+	 * Run the full install pipeline non-interactively for create_tables_unattended().
+	 *
+	 * Mirrors the install-time side effects of stage_8() (constants, htaccess
+	 * rename, filetypes.xml write, table creation, configuration import) but
+	 * without the form-rendering plumbing.
+	 *
+	 * @return array{errors: ?string, htaccess: string}
+	 */
+	public function runUnattendedInstall()
+	{
+		if(!defined('USERNAME'))
+		{
+			define('USERNAME', $this->previous_steps['admin']['user']);
+			define('USEREMAIL', $this->previous_steps['admin']['email']);
+		}
+
+		$this->setDb();
+
+		if(!defined('THEME'))
+		{
+			define('THEME', e_THEME.$this->previous_steps['prefs']['sitetheme'].'/');
+			define('THEME_ABS', e_THEME_ABS.$this->previous_steps['prefs']['sitetheme'].'/');
+		}
+		if(!defined('USERCLASS_LIST'))
+		{
+			define('USERCLASS_LIST', '253,247,254,250,251,0');
+		}
+
+		$htaccessError = $this->htaccess();
+		$this->saveFileTypes();
+
+		installLog::add('Unattended install started');
+		$errors = $this->create_tables();
+		if(!empty($errors))
+		{
+			return array('errors' => $errors, 'htaccess' => $htaccessError);
+		}
+
+		installLog::add('Tables created successfully');
+		$this->import_configuration();
+		installLog::add('Unattended install completed');
+
+		return array('errors' => null, 'htaccess' => $htaccessError);
+	}
+
+	/**
 	 * Import and generate preferences and default content.
 	 *
 	 * @return boolean
@@ -2445,14 +2491,24 @@ function create_tables_unattended()
 	$mySQLpassword = null;
 	$mySQLdefaultdb = null;
 	$mySQLprefix = null;
-	
+
 	if(file_exists('e107_config.php'))
 	{
-		@include('e107_config.php');
+		$config = @include('e107_config.php');
 	} else {
 		return false;
-	}	
-	
+	}
+
+	if(is_array($config) && !empty($config['database'])) // New e107_config.php format. v2.4+
+	{
+		$dbInfo = $config['database'];
+		$mySQLserver    = $dbInfo['server']   ?? null;
+		$mySQLuser      = $dbInfo['user']     ?? null;
+		$mySQLpassword  = $dbInfo['password'] ?? null;
+		$mySQLdefaultdb = $dbInfo['db']       ?? null;
+		$mySQLprefix    = $dbInfo['prefix']   ?? null;
+	}
+
 	//If mysql info not set, config file is not created properly
 	if(!isset($mySQLuser) || !isset($mySQLpassword) || !isset($mySQLdefaultdb) || !isset($mySQLprefix))
 	{
@@ -2460,7 +2516,8 @@ function create_tables_unattended()
 	}
 
 	// If specified username and password does not match the ones in config, exit
-	if($_GET['username'] !== $mySQLuser || $_GET['password'] !== $mySQLpassword)
+	if(!hash_equals((string) $mySQLuser, (string) $_GET['username'])
+		|| !hash_equals((string) $mySQLpassword, (string) $_GET['password']))
 	{
 		return false;
 	}
@@ -2482,19 +2539,15 @@ function create_tables_unattended()
 	$einstall->previous_steps['generate_content'] 	= isset($_GET['gen']) ? (int) $_GET['gen'] : 1;
 	$einstall->previous_steps['install_plugins'] 	= isset($_GET['plugins']) ? (int) $_GET['plugins'] : 1;
 	$einstall->previous_steps['prefs']['sitename'] 	= isset($_GET['sitename']) ? urldecode($_GET['sitename']) : LANINS_113;
-	$einstall->previous_steps['prefs']['sitetheme'] = isset($_GET['theme']) ? urldecode($_GET['theme']) : 'bootstrap3';
+	$einstall->previous_steps['prefs']['sitetheme'] = isset($_GET['theme']) ? urldecode($_GET['theme']) : DEFAULT_INSTALL_THEME;
 
-	//@include_once("./{$HANDLERS_DIRECTORY}e107_class.php");
-	//$e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'CACHE_DIRECTORY', 'DOWNLOADS_DIRECTORY', 'UPLOADS_DIRECTORY');
-	//$e107 = e107::getInstance();
-	//$e107->init($e107_paths, realpath(dirname(__FILE__)));
+	$result = $einstall->runUnattendedInstall();
+	if(!empty($result['errors']))
+	{
+		installLog::add('Unattended install failed: '.$result['errors'], 'error');
+		return false;
+	}
 
-	//$einstall->e107 = &$e107;
-
-	//FIXME - does not appear to work for import_configuration. ie. tables are blank except for user table.
-
-	$einstall->create_tables();
-	$einstall->import_configuration();
 	return true;
 }
 
