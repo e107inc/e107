@@ -124,3 +124,21 @@ else
 
 require_once(e_ADMIN.'footer.php');
 
+
+/**
+ * Build the admin sidebar menu (auto-invoked by the {ADMIN_MENU} shortcode).
+ * Provides the icon + caption shown in the left admin panel, consistent with
+ * frontpage.php / docs.php and visible also when the sidebar is collapsed.
+ */
+function updateadmin_adminmenu()
+{
+	$var = array();
+	$var['main']['text'] = UDALAN_7;
+	$var['main']['link'] = e_SELF;
+
+	$caption = "<span>".UDALAN_7."</span>";
+	$var['_extras_']['icon'] = e107::getParser()->toIcon('e-adminpass-24');
+
+	return e107::getNav()->admin($caption, 'main', $var);
+}
+

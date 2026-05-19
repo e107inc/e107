@@ -88,6 +88,18 @@ if(isset($_POST['updateprefs']))
 	$_POST['siteurl'] = trim($_POST['siteurl']) ? trim($_POST['siteurl']) : SITEURL;
 	$_POST['siteurl'] = substr($_POST['siteurl'], - 1) == "/" ? $_POST['siteurl'] : $_POST['siteurl']."/";
 
+	// trusted_hosts: textarea with one host per line. Server-side normalisation
+	// strips schemes and paths so admins can paste e.g. `https://staging.example.com/`
+	// and the pref stores `staging.example.com`. We seed the pref via set()
+	// rather than letting the generic $core_pref->update() loop below pick it
+	// up because update() silently no-ops for keys that aren't already in the
+	// prefs array — that would drop the very first save of trusted_hosts.
+	if(isset($_POST['trusted_hosts']))
+	{
+		$core_pref->set('trusted_hosts', e107::normaliseTrustedHostList($_POST['trusted_hosts']));
+		unset($_POST['trusted_hosts']);
+	}
+
 	// If email verification or Email/Password Login Method - email address is required!
 	if (($_POST['user_reg_veri'] == 1 || $_POST['allowEmailLogin'] == 1) && $_POST['disable_emailcheck'])
 	{
@@ -363,6 +375,12 @@ $text = "
 						".($pref['siteurl'] == SITEURL ? "" : $frm->help(PRFLAN_159.": <strong>".SITEURL."</strong>"))."</td>
 						<td>
 							".$frm->text('siteurl', $pref['siteurl'], 150, ['size'=>'xxlarge', 'required'=>1, 'pattern' => '^http.*', 'placeholder'=>'eg. '.SITEURL])."
+						</td>
+					</tr>
+					<tr>
+						<td><label for='trusted_hosts'>".PRFLAN_288."</label>".$frm->help(PRFLAN_289)."</td>
+						<td>
+							".$frm->textarea('trusted_hosts', is_array(varset($pref['trusted_hosts'])) ? implode("\n", $pref['trusted_hosts']) : '', 4, 80, ['size'=>'xxlarge', 'placeholder'=>"staging.example.com\nparked-domain.com"])."
 						</td>
 					</tr>
 					<tr>

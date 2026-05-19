@@ -48,7 +48,13 @@ class fpw_shortcodes extends e_shortcode
 		// return "<input class='button btn btn-primary btn-block' type='submit' name='pwsubmit' value='".$label."' />";
 		$label = deftrue('LAN_FPW_102', LAN_SUBMIT);
 
-		return e107::getForm()->button('pwsubmit', $label);
+		$options = array();
+		if(!empty($parm['class']))
+		{
+			$options['class'] = $parm['class'];
+		}
+
+		return e107::getForm()->button('pwsubmit', $label, 'submit', '', $options);
 	}
 
 	function sc_fpw_captcha_lan($parm = null)

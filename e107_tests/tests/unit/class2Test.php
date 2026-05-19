@@ -81,10 +81,9 @@
 
 		function testCheckClass()
 		{
-			// XXX: Should not use some flag just to make tests pass!
-			global $_E107;
-			$_E107['phpunit'] = true;
-
+			// All calls below pass an explicit $userclass list, which
+			// disables the CLI "grant-all" short-circuit so the real
+			// class-matching logic is exercised.
 			$result = check_class(0, "253,254,250,251,0");
 			self::assertTrue($result);
 
@@ -126,8 +125,6 @@
 
 			$result = check_class(e_UC_NEWUSER, "253,254,250,251,0");
 			self::assertFalse($result);
-
-			unset($_E107['phpunit']);
 		}
 
 
