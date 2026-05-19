@@ -685,17 +685,7 @@ class language{
 		global $pref;
 		
 		$language = $this->e_language;
-		//$session = e107::getSession();
 
-		// SecretR - don't register lanlist in session, confusions, save it as class property (lan class is singleton) 
-		e107::getSession()->set('language-list', null); // cleanup test installs, will be removed soon
-		
-		/*if(!$session->is('language-list'))
-		{
-			$session->set('language-list', implode(',',$this->installed()));
-		}*/
-		
-		//define('e_LANLIST', $session->get('language-list'));
 		define('e_LANLIST',  implode(',', $this->installed()));
 		define('e_LANGUAGE', $language);
 		define('USERLAN', $language); // Keep USERLAN for backward compatibility

@@ -42,15 +42,15 @@ jobs:
       - name: Wait for services to be ready
         if: steps.cache-container.outputs.cache-hit == 'true'
         run: |
-          docker exec target rm -fv /run/nologin
           for i in $(seq 1 30); do
-            if docker exec target systemctl is-active --quiet mariadb apache2 ssh 2>/dev/null; then
-              echo "All services are active."
+            if docker exec target sh -c '! test -e /run/nologin && systemctl is-active --quiet mariadb && systemctl is-active --quiet apache2 && systemctl is-active --quiet ssh' 2>/dev/null; then
+              echo "All services are active and user logins are permitted."
               break
             fi
             if [ "$i" -eq 30 ]; then
               echo "ERROR: Timed out waiting for services."
-              docker exec target systemctl --no-pager status mariadb apache2 ssh || true
+              docker exec target systemctl --no-pager status mariadb apache2 ssh systemd-user-sessions || true
+              docker exec target ls -la /run/nologin || true
               exit 1
             fi
             echo "Attempt $i/30: waiting for services..."

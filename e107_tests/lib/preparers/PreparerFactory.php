@@ -18,7 +18,7 @@ class PreparerFactory
 		{
 			return self::createFromName('E107Preparer');
 		}
-		elseif (self::systemHasGit() && self::appPathIsGitRepo())
+		elseif (self::systemHasGit() && self::appPathIsUsableGitRepo())
 		{
 			return self::createFromName('GitPreparer');
 		}
@@ -53,5 +53,26 @@ class PreparerFactory
 	private static function appPathIsGitRepo()
 	{
 		return file_exists(APP_PATH."/.git");
+	}
+
+	/**
+	 * Returns true only if git can actually operate on APP_PATH. This catches
+	 * cases where a `.git` entry exists but the underlying gitdir is unreachable
+	 * — most commonly a worktree (`.git` is a file pointing outside APP_PATH) that
+	 * the parent repo isn't mounted into.
+	 *
+	 * @return bool
+	 */
+	private static function appPathIsUsableGitRepo()
+	{
+		if (!self::appPathIsGitRepo())
+		{
+			return false;
+		}
+		$cmd = 'git -C ' . escapeshellarg(APP_PATH) . ' rev-parse --git-dir 2>/dev/null';
+		$rc = 0;
+		$out = [];
+		@exec($cmd, $out, $rc);
+		return $rc === 0;
 	}
 }
