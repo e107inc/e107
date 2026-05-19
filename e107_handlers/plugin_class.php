@@ -3163,15 +3163,11 @@ class e107plugin
 	//	$this->save_addon_prefs('update'); // to be replaced with buildAddonPrefLists(); once working correctly.
 		e107::getPlug()->clearCache()->buildAddonPrefLists();
 
-
-		/*	if($function == 'install')
-		 {
-		 if(isset($plug_vars['management']['installDone'][0]))
-		 {
-		 $mes->add($plug_vars['management']['installDone'][0], E_MESSAGE_SUCCESS);
-		 }
-		 }*/
-
+		// Create FULLTEXT indexes derived from e_search configurations for newly installed plugins
+		if($function == 'install')
+		{
+			$this->createSearchIndexes($plug['plugin_path']);
+		}
 
 		 $xmlInstallStatus = $this->XmlInstallXml($function, $plug_vars['folder']);
 
@@ -3435,6 +3431,68 @@ class e107plugin
 		}
 
 		return null;
+	}
+
+	/**
+	 * Create FULLTEXT indexes derived from e_search configurations for a plugin.
+	 *
+	 * This should be called after plugin installation when:
+	 * 1. Plugin tables have been created
+	 * 2. buildAddonPrefLists() has been called (so e_search_list is updated)
+	 *
+	 * @param string $pluginPath The plugin folder name
+	 */
+	protected function createSearchIndexes($pluginPath)
+	{
+		$this->log("Running " . __METHOD__ . " for plugin: " . $pluginPath);
+
+		// Check if this plugin has an e_search addon
+		$searchFile = e_PLUGIN . $pluginPath . '/e_search.php';
+		if(!is_readable($searchFile))
+		{
+			return;
+		}
+
+		// Use db_verify to detect and create missing FULLTEXT indexes
+		// The e_search_fulltext_indexer (used by db_verify) will derive
+		// the required indexes from the plugin's e_search configuration
+		require_once(e_HANDLER . 'db_verify_class.php');
+
+		$dbv = new db_verify();
+		// Reinitialize with fresh state - clears table list cache, reloads prefs,
+		// and refreshes db_verify's own cache to include this newly installed plugin
+		$dbv->init(true);
+		$dbv->compare($pluginPath);
+
+		if($dbv->errors())
+		{
+			$dbv->compileResults();
+
+			// Filter to only index fixes
+			$fixList = $dbv->fixList;
+			$indexFixes = array();
+			foreach($fixList as $file => $tables)
+			{
+				foreach($tables as $table => $fields)
+				{
+					foreach($fields as $field => $modes)
+					{
+						if(in_array('index', $modes))
+						{
+							$indexFixes[$file][$table][$field] = $modes;
+						}
+					}
+				}
+			}
+
+			if(!empty($indexFixes))
+			{
+				$dbv->runFix($indexFixes);
+				$this->log("Created FULLTEXT indexes for plugin: " . $pluginPath);
+			}
+		}
+
+		e107::getMessage()->reset(false, false, true);
 	}
 
 	/**

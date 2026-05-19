@@ -21,7 +21,9 @@
 		@require_once($class2);
 	}
 
-	if(empty($_E107['phpunit']))
+	// Define E107_BOUNCE_NO_AUTORUN before require to load the class without
+	// processing (e.g. from tests).
+	if (!defined('E107_BOUNCE_NO_AUTORUN'))
 	{
 		$bnc = new e107Bounce;
 		$bnc->process();

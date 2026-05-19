@@ -55,7 +55,7 @@ if(!isset($_GET['id']))
 	exit;	
 }
 
-$code = (int) $_GET['id'];
+$code = (string) $_GET['id'];
 
 if(!empty($_GET['clr']) && preg_match('/^[a-f0-9]{6}$/i', $_GET['clr'])) //hex color is valid
 {

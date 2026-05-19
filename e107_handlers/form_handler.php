@@ -1921,6 +1921,7 @@ class e_form
 			foreach($users as $u)
 			{
 				$id = $u['user_id'];
+				if(!empty($options['excludeSelf']) && ($id == USERID)){continue;}
 				$opt[$id] = $u['user_name'];
 			}
 
