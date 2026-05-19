@@ -1435,15 +1435,41 @@ class e_install
 
 	}
 
+	/**
+	 * Resolve any remaining "[hash]" placeholders in $this->e107->e107_dirs
+	 * and strip the duplicated site_path segment from the multisite
+	 * SYSTEM_DIRECTORY and MEDIA_DIRECTORY entries.
+	 *
+	 * Normally updatePaths() (called from stage_5) has already cleared every
+	 * "[hash]" before stage_7 runs, but if stage_7() or import_configuration()
+	 * is invoked without updatePaths() running first (e.g. a custom migration
+	 * script reusing install internals), the previous implementation left a
+	 * literal "[hash]" substring in every derived directory key. See #5631.
+	 *
+	 * @return null
+	 */
+	private function resolveSitePathPlaceholders()
+	{
+		foreach($this->e107->e107_dirs as $key => $path)
+		{
+			if(is_string($path) && strpos($path, '[hash]') !== false)
+			{
+				$this->e107->e107_dirs[$key] = str_replace('[hash]', $this->e107->site_path, $path);
+			}
+		}
+
+		$this->e107->e107_dirs['SYSTEM_DIRECTORY'] = str_replace("/".$this->e107->site_path,"",$this->e107->e107_dirs['SYSTEM_DIRECTORY']);
+		$this->e107->e107_dirs['MEDIA_DIRECTORY']  = str_replace("/".$this->e107->site_path,"",$this->e107->e107_dirs['MEDIA_DIRECTORY']);
+
+		return null;
+	}
+
 	private function stage_7()
 	{
 		global $e_forms;
 		$tp = e107::getParser();
 
-		$this->e107->e107_dirs['SYSTEM_DIRECTORY'] = str_replace("[hash]",$this->e107->site_path,$this->e107->e107_dirs['SYSTEM_DIRECTORY']);	
-		$this->e107->e107_dirs['CACHE_DIRECTORY']  = str_replace("[hash]",$this->e107->site_path,$this->e107->e107_dirs['CACHE_DIRECTORY']);
-		$this->e107->e107_dirs['SYSTEM_DIRECTORY'] = str_replace("/".$this->e107->site_path,"",$this->e107->e107_dirs['SYSTEM_DIRECTORY']);
-		$this->e107->e107_dirs['MEDIA_DIRECTORY']  = str_replace("/".$this->e107->site_path,"",$this->e107->e107_dirs['MEDIA_DIRECTORY']);
+		$this->resolveSitePathPlaceholders();
 
 		$this->stage = 7;
 		installLog::add('Stage 7 started');
@@ -1591,7 +1617,6 @@ return [
     ],
     'other' => [
         'site_path'  => '{$this->previous_steps['paths']['hash']}',
-    //  'site_hosts'      => ['localhost','parked-domain.com'],
     ]
 ];
 ";
@@ -1767,6 +1792,52 @@ return [
 		return $error;	
 	}
 					
+	/**
+	 * Run the full install pipeline non-interactively for create_tables_unattended().
+	 *
+	 * Mirrors the install-time side effects of stage_8() (constants, htaccess
+	 * rename, filetypes.xml write, table creation, configuration import) but
+	 * without the form-rendering plumbing.
+	 *
+	 * @return array{errors: ?string, htaccess: string}
+	 */
+	public function runUnattendedInstall()
+	{
+		if(!defined('USERNAME'))
+		{
+			define('USERNAME', $this->previous_steps['admin']['user']);
+			define('USEREMAIL', $this->previous_steps['admin']['email']);
+		}
+
+		$this->setDb();
+
+		if(!defined('THEME'))
+		{
+			define('THEME', e_THEME.$this->previous_steps['prefs']['sitetheme'].'/');
+			define('THEME_ABS', e_THEME_ABS.$this->previous_steps['prefs']['sitetheme'].'/');
+		}
+		if(!defined('USERCLASS_LIST'))
+		{
+			define('USERCLASS_LIST', '253,247,254,250,251,0');
+		}
+
+		$htaccessError = $this->htaccess();
+		$this->saveFileTypes();
+
+		installLog::add('Unattended install started');
+		$errors = $this->create_tables();
+		if(!empty($errors))
+		{
+			return array('errors' => $errors, 'htaccess' => $htaccessError);
+		}
+
+		installLog::add('Tables created successfully');
+		$this->import_configuration();
+		installLog::add('Unattended install completed');
+
+		return array('errors' => null, 'htaccess' => $htaccessError);
+	}
+
 	/**
 	 * Import and generate preferences and default content.
 	 *
@@ -1952,6 +2023,9 @@ return [
 		$extendedQuery = "REPLACE INTO `{$this->previous_steps['mysql']['prefix']}user_extended` (`user_extended_id` ,	`user_hidden_fields`) VALUES ('1', NULL 	);";
 		$this->dbqry($extendedQuery);
 
+		// Create FULLTEXT indexes derived from e_search configurations
+		$this->createSearchIndexes();
+
 		e107::getDb()->close();
 	//	mysql_close($this->dbLink);
 		
@@ -1959,6 +2033,54 @@ return [
 
 		unset($tp, $pref);
 		return false;
+	}
+
+	/**
+	 * Create FULLTEXT indexes derived from e_search addon configurations.
+	 *
+	 * @return void
+	 */
+	protected function createSearchIndexes()
+	{
+		installLog::add('Creating FULLTEXT indexes from e_search configurations');
+
+		// Clear config cache and reload from database to ensure e_search_list is available
+		e107::getConfig('core')->clearPrefCache()->load(null, true);
+
+		require_once(e_HANDLER . 'db_verify_class.php');
+
+		$dbv = new db_verify();
+		$dbv->compareAll();
+		$dbv->compileResults();
+
+		// Filter fixList to only include index fixes (FULLTEXT indexes)
+		$fixList = $dbv->fixList;
+		$indexFixes = array();
+		foreach($fixList as $file => $tables)
+		{
+			foreach($tables as $table => $fields)
+			{
+				foreach($fields as $field => $modes)
+				{
+					if(in_array('index', $modes))
+					{
+						$indexFixes[$file][$table][$field] = $modes;
+					}
+				}
+			}
+		}
+
+		if(!empty($indexFixes))
+		{
+			$dbv->runFix($indexFixes);
+			installLog::add('FULLTEXT indexes created successfully');
+		}
+		else
+		{
+			installLog::add('No FULLTEXT indexes needed');
+		}
+
+		e107::getMessage()->reset(false, false, true);
 	}
 
 	/**
@@ -2369,14 +2491,24 @@ function create_tables_unattended()
 	$mySQLpassword = null;
 	$mySQLdefaultdb = null;
 	$mySQLprefix = null;
-	
+
 	if(file_exists('e107_config.php'))
 	{
-		@include('e107_config.php');
+		$config = @include('e107_config.php');
 	} else {
 		return false;
-	}	
-	
+	}
+
+	if(is_array($config) && !empty($config['database'])) // New e107_config.php format. v2.4+
+	{
+		$dbInfo = $config['database'];
+		$mySQLserver    = $dbInfo['server']   ?? null;
+		$mySQLuser      = $dbInfo['user']     ?? null;
+		$mySQLpassword  = $dbInfo['password'] ?? null;
+		$mySQLdefaultdb = $dbInfo['db']       ?? null;
+		$mySQLprefix    = $dbInfo['prefix']   ?? null;
+	}
+
 	//If mysql info not set, config file is not created properly
 	if(!isset($mySQLuser) || !isset($mySQLpassword) || !isset($mySQLdefaultdb) || !isset($mySQLprefix))
 	{
@@ -2384,7 +2516,8 @@ function create_tables_unattended()
 	}
 
 	// If specified username and password does not match the ones in config, exit
-	if($_GET['username'] !== $mySQLuser || $_GET['password'] !== $mySQLpassword)
+	if(!hash_equals((string) $mySQLuser, (string) $_GET['username'])
+		|| !hash_equals((string) $mySQLpassword, (string) $_GET['password']))
 	{
 		return false;
 	}
@@ -2406,19 +2539,15 @@ function create_tables_unattended()
 	$einstall->previous_steps['generate_content'] 	= isset($_GET['gen']) ? (int) $_GET['gen'] : 1;
 	$einstall->previous_steps['install_plugins'] 	= isset($_GET['plugins']) ? (int) $_GET['plugins'] : 1;
 	$einstall->previous_steps['prefs']['sitename'] 	= isset($_GET['sitename']) ? urldecode($_GET['sitename']) : LANINS_113;
-	$einstall->previous_steps['prefs']['sitetheme'] = isset($_GET['theme']) ? urldecode($_GET['theme']) : 'bootstrap3';
+	$einstall->previous_steps['prefs']['sitetheme'] = isset($_GET['theme']) ? urldecode($_GET['theme']) : DEFAULT_INSTALL_THEME;
 
-	//@include_once("./{$HANDLERS_DIRECTORY}e107_class.php");
-	//$e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'CACHE_DIRECTORY', 'DOWNLOADS_DIRECTORY', 'UPLOADS_DIRECTORY');
-	//$e107 = e107::getInstance();
-	//$e107->init($e107_paths, realpath(dirname(__FILE__)));
+	$result = $einstall->runUnattendedInstall();
+	if(!empty($result['errors']))
+	{
+		installLog::add('Unattended install failed: '.$result['errors'], 'error');
+		return false;
+	}
 
-	//$einstall->e107 = &$e107;
-
-	//FIXME - does not appear to work for import_configuration. ie. tables are blank except for user table.
-
-	$einstall->create_tables();
-	$einstall->import_configuration();
 	return true;
 }
 

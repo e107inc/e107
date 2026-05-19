@@ -224,20 +224,57 @@ function e_jslib_cache_filename($encoding = '')
 function e_jslib_cache_path()
 {
 	global $eJslibCacheDir;
-	
+
 	if(null === $eJslibCacheDir)
 	{
-		include('../../e107_config.php');
-	
-		if($CACHE_DIRECTORY)
+		$config = include('../../e107_config.php');
+		$cacheDir = null;
+
+		if(is_array($config) && !empty($config['paths'])) // v2.4+ array format
 		{
-			$eJslibCacheDir = '../'.$CACHE_DIRECTORY.'content/';
+			$paths = $config['paths'];
+
+			// Honor an explicit cache key if present (uppercase or lowercase form).
+			$cacheDir = $paths['CACHE_DIRECTORY'] ?? ($paths['cache'] ?? null);
+
+			// Otherwise derive from SYSTEM_DIRECTORY + site_path, matching what
+			// e107::defaultDirs() does at runtime. install.php currently writes
+			// the lowercase 'system' key and no explicit cache entry.
+			if(empty($cacheDir))
+			{
+				$system = $paths['SYSTEM_DIRECTORY'] ?? ($paths['system'] ?? null);
+				$sitePath = $config['other']['site_path'] ?? '';
+				if(!empty($system))
+				{
+					$cacheDir = rtrim($system, '/').'/';
+					if($sitePath !== '' && strpos($cacheDir, '/'.$sitePath.'/') === false)
+					{
+						$cacheDir .= $sitePath.'/';
+					}
+					$cacheDir .= 'cache/';
+				}
+			}
 		}
-		elseif (isset($E107_CONFIG) && isset($E107_CONFIG['CACHE_DIRECTORY'])) 
+		elseif(isset($CACHE_DIRECTORY) && $CACHE_DIRECTORY) // legacy globals
 		{
-			$eJslibCacheDir = '../'.$E107_CONFIG['CACHE_DIRECTORY'].'content/';
+			$cacheDir = $CACHE_DIRECTORY;
 		}
-		else $eJslibCacheDir = '';
+		elseif(isset($SYSTEM_DIRECTORY) && $SYSTEM_DIRECTORY) // derive from legacy SYSTEM_DIRECTORY
+		{
+			$sitePath = isset($E107_CONFIG['site_path']) ? $E107_CONFIG['site_path'] : '';
+			$cacheDir = rtrim($SYSTEM_DIRECTORY, '/').'/';
+			if($sitePath !== '' && strpos($cacheDir, '/'.$sitePath.'/') === false)
+			{
+				$cacheDir .= $sitePath.'/';
+			}
+			$cacheDir .= 'cache/';
+		}
+		elseif(isset($E107_CONFIG['CACHE_DIRECTORY']))
+		{
+			$cacheDir = $E107_CONFIG['CACHE_DIRECTORY'];
+		}
+
+		$eJslibCacheDir = !empty($cacheDir) ? '../'.$cacheDir.'content/' : '';
 	}
 	return $eJslibCacheDir;
 }
