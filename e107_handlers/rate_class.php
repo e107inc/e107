@@ -49,7 +49,12 @@ class rater
 			$this->multi = true;
 		}
 
-		list($votes,$score,$uvoted) = $this->getrating($table, $id);
+		$rating = $this->getrating($table, $id);
+		if (!is_array($rating))
+		{
+			$rating = array(0, 0, 0);
+		}
+		list($votes, $score, $uvoted) = $rating;
 
 	//	return "Table=".$table." itmeId=".$id." Votes=".$votes." score=".$score;
 		

@@ -424,7 +424,6 @@
 			 */
 
 			$sc = e107::getScBatch('usersettings');
-			$GLOBALS['_E107']['phpunit'] = true; // disable universal CLI access in check_class()
 
 			$perms = array(e_UC_PUBLIC, e_UC_MEMBER, e_UC_ADMIN,  e_UC_MAINADMIN);
 			$sc->setVars(array('userclass_list' => implode(',',$perms)));
@@ -450,8 +449,6 @@
 			$sc->setVars(array('userclass_list' => implode(',',$perms)));
 			$data = $sc->loadUEFieldData('write', 16);
 			$this->assertCount(0, $data);  // should be empty
-
-			$GLOBALS['_E107']['phpunit'] = false; // fix check_class()
 
 		}
 
@@ -646,8 +643,6 @@
 				'applicable'   => e_UC_MAINADMIN,
 			 */
 
-			$GLOBALS['_E107']['phpunit'] = true; // fix check_class()
-		//	$_E107['phpunit'] = true;
 			$ret = [];
 			foreach($this->structTypes as $field => $name)
 			{
@@ -670,8 +665,6 @@
 				$this->assertTrue($result);
 
 			}
-
-			$GLOBALS['_E107']['phpunit'] = false;
 
 
 		}
