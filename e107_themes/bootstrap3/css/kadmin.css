@@ -14530,3 +14530,19 @@ margin-bottom: 15px;
 	.col-lg-2 { width: 12% }
 	.col-lg-10 { width: 88% }
 }
+/* phpinfo() output palette - keep in sync with .phpinfo-wrapper structural styles in e107_admin/phpinfo.php */
+.phpinfo-wrapper                 { color: rgba(0,0,0,0.85); }
+.phpinfo-wrapper h1,
+.phpinfo-wrapper h2,
+.phpinfo-wrapper h3,
+.phpinfo-wrapper h4              { color: rgba(0,0,0,0.85); }
+.phpinfo-wrapper a               { color: #337ab7; }
+.phpinfo-wrapper a:hover         { color: #23527c; }
+.phpinfo-wrapper hr              { border-top: 1px solid #ddd; }
+.phpinfo-wrapper table           { background-color: #ffffff; }
+.phpinfo-wrapper td,
+.phpinfo-wrapper th              { background-color: #fff; color: rgba(0,0,0,0.85); border-color: #ddd; }
+.phpinfo-wrapper tr.h th         { background-color: #eee; }
+.phpinfo-wrapper td.e            { background-color: #f5f5f5; }
+.phpinfo-wrapper td.v            { background-color: #fff; }
+.phpinfo-wrapper td.alert-danger { background-color: #f2dede; color: #a94442; }
