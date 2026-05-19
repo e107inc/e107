@@ -1617,7 +1617,6 @@ return [
     ],
     'other' => [
         'site_path'  => '{$this->previous_steps['paths']['hash']}',
-    //  'site_hosts'      => ['localhost','parked-domain.com'],
     ]
 ];
 ";
