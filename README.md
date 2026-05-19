@@ -1,6 +1,5 @@
 [![e107 Content Management System](https://e107.org/e107_images/logoHD.png)](https://e107.org)
 =================
-[![Supported PHP Versions](https://img.shields.io/badge/PHP-8.0,%208.1,%208.2,%208.3,,%208.4-blue)](https://github.com/e107inc/e107/)
 [![GitHub release](https://img.shields.io/github/v/release/e107inc/e107?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAALiMAAC4jAXilP3YAAAAHdElNRQfjDBwRCAhY3Q3XAAAAGXRFWHRDb21tZW50AENyZWF0ZWQgd2l0aCBHSU1QV4EOFwAAA8hJREFUWMOtlltMVFcUhhcDGC+YalXSpI1Kqtg0jMVLTS9p0tcahkTb+GRi65MvfRWN+tL60kuqsU+mxtLYpIQOIBYhNJZYQY2RFrVoNWICioYWOpFhBqQw8/kwnH32Ppe5Mftp5uy1/3+t/19n7SOS5eIFDtNHhAh3OUaFFHaxkX709Q/bCwlfxRDONcXOwmXvhgeYZEch4IM+8ADP5l0FVTwyIPvoIVmwKlziHKJEhI+IG17sKJQ4dWqn1kGxM7/sH3rDi4gQYnJeQhFk0B9+ropY3lVQlS57H6Gyr8JlbZ1vZCgPu/2tzaKKzEIRdIhzIGNCtTnY7cp+f1aShhLxrN7u7Kz1rmI4s92ZreV9vqaDVo6w0V3F9Xgsnd2ugewQh5do0XanOU6JGTESOh8b87M7k7WUc801Sc9QbEb11jZORbyEcmXvEIe1XPcc1s2UmZGXa8PxUd3u7SJCGX+mhV/HPbV3m085wBP1v91N0RT/V79YVwufZIC/q/Z6KBcRoVq7IzpYYp64GDIovhQaNfjPHfCvavDdrPTsuPMsNU9d2hWeVh11Q7isQqO8nCb7FcZepfaV0e6s4vf+H629/4QuzZQtBvzfXtmr/QqDQvPi5tKuR03WzrBwQpPoakplR/Ye8CIi3Wu4rQk1R0HgwpkGG/FX4W3D5KuUu+BfVFm/wYfs4k2KUv9b12pVdLBEJFn6W/1POt5uEeG4QXGRzdxxZ882OpkGIMEl3k09barQqmhjVeP37TpWE6UiQjGn1KNZOrnvtpYaJow0YtR4VNGZaBu2Y1pYbJUe4DuAqUTvOS28W4Of9Piu86LoSDYr+IV6TxRxkjB1mjg9Spwadb2P8RVfMKKq2K0o7HOdyYP0adkbjXnTM3tr1j9OtTEbVAPP8rGi+EudbWU5pd4XzojL2pAGX6294RZFUqPo9xsfzrH9iwZviTPMZscQsShmLIoLq+kBznqIox3cwj7127b2CZtckTZFwqIYWMRe52RKc5Wr7B8S9Iyw3+QEe3L9dNym+n6IrSzwiapUbTHNe7kRtCn4Kk7Sa80oLaLk5waaWc+NuchjuRFsZRAYIhj/FoArJgWB0R/CAA1UcgtoYVmuIlXTxWvs08agfeGUUG91NEd5hW/Sdk4akhVE3cOcAPXa01nWSL6LMk4b8+cPPuAdwsazc/Y4z4eiSJu0XsscaXlRzE1aH/jFMv/lS3F23tnbQj07NU6UKBEiTDDOU6ZaWCSFWwT+PzoQf8Ad7jHA4Ez0dEHhU2vm9dhBGmgc+4y3sj/1HPOcQpNXqqPqAAAAAElFTkSuQmCC)](https://github.com/e107inc/e107/releases)
 [![GitHub Workflow "Unit Tests" Status](https://img.shields.io/github/actions/workflow/status/e107inc/e107/test-unit.yml?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAAOCAQAAABnEe8CAAAAAnNCSVQICFXsRgQAAAAJcEhZcwAAA3cAAAN3Aa+SYCgAAAAZdEVYdFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAABG0lEQVQoFW3By0pUARgA4H8O05AQZWjkImjprr0LL7guJ3VcidAmkFZBi0AHDyNCtu4FeoF6hbQLw5CiKIX2BLWa0+jshj6P13Tq++KUfjWbDrTtWnUvrnAzjpmU2Vc14aGXdhwaizP6VNyKCFM6qirWNR2qe2ROT+Qk5qWKEeGO36peaxiWKBnx3u3IGVL3NE5Ztqei4breuOCut34ajnO2LfpoJMIDqWKEoucy2+7HX1rKMknkvPHZjF28cyMu01KWSSKn1y/8UVOIq2ypWjcaJzzRNhP/UrNn2lc9kVMwqKQU3fTLLHnlu3GJgiGfPFOIbh7rSE1b09T0xawXPrgW3ZQ1/ZAqm7Dgm5bZ+B99UhtaDmxZMRBdjgBnPOGTaoNcdgAAAABJRU5ErkJggg==)](https://github.com/e107inc/e107/actions)
 [![Code coverage](https://img.shields.io/codeclimate/coverage/e107inc/e107?logo=code-climate)](https://codeclimate.com/github/e107inc/e107/test_coverage)
@@ -16,7 +15,8 @@
       * [Requirements](#requirements)
          * [Minimum](#minimum)
          * [Recommended](#recommended)
-         * [Version Guidance](#version-guidance)
+         * [Release Cycle Lifecycle](#release-cycle-lifecycle)
+         * [PHP Compatibility](#php-compatibility)
       * [Installation](#installation)
          * [Standard Installation](#standard-installation)
          * [Git Installation (developer version)](#git-installation-developer-version)
@@ -44,19 +44,38 @@
    * Access to a server control panel (such as cPanel)
 
 
-### Version Guidance
+### Release Lifecycle
 
+| Versions   | Maintainer                                                                        | Release    | End of New Features | End of Maintenance | End of Revival |
+|------------|-----------------------------------------------------------------------------------|------------|---------------------|--------------------|----------------|
+| `~> 0.5.4` | [@e107steved](https://github.com/e107steved)                                      | 2002-10-02 | 2003-06-13          | 2003-06-13         | 2003-08-04     |
+| `~> 0.6.0` | [@e107steved](https://github.com/e107steved)                                      | 2003-08-04 | 2004-09-17          | 2004-09-17         | 2006-01-24     |
+| `~> 0.7.0` | Contributors to the e107 project                                                  | 2006-01-24 | 2011-09-14          | 2011-09-14         | 2011-12-28     |
+| `~> 1.0`   | Contributors to the e107 project                                                  | 2011-12-28 | 2013-05-21          | 2013-05-21         | _(unset)_      |
+| `~> 2.0.0` | [@CaMer0n](https://github.com/CaMer0n)                                            | 2015-09-02 | 2015-09-02          | 2015-09-02         | 2016-03-18     |
+| `~> 2.1.0` | [@CaMer0n](https://github.com/CaMer0n)                                            | 2016-03-18 | 2018-08-22          | 2018-08-22         | 2019-05-18     |
+| `~> 2.2.0` | [@CaMer0n](https://github.com/CaMer0n)                                            | 2019-05-18 | 2019-05-29          | 2019-05-29         | 2020-11-30     |
+| `~> 2.3.0` | [@CaMer0n](https://github.com/CaMer0n) &amp; [@Deltik](https://github.com/Deltik) | 2020-11-30 | _(unset)_           | _(unset)_          | _(unset)_      |
+| `~> 2.4.0` | [@Deltik](https://github.com/Deltik)                                              | _(unset)_  | _(unset)_           | _(unset)_          | _(unset)_      |
 
-|  Version  | Status |                               Last Release                                |  PHP Version  |
-|:---------:|:------:|:-------------------------------------------------------------------------:|:-------------:|
-|   1.0.x   |  EOL   | [v1.0.4](https://sourceforge.net/projects/e107/files/e107/e107%20v1.0.4/) |    >= 5.6     |
-|   1.0.4   |  EOL   | [v1.0.4](https://sourceforge.net/projects/e107/files/e107/e107%20v1.0.4/) |    >= 5.6     |
-|   2.0.x   |  EOL   |          [v2.3.3](https://github.com/e107inc/e107/releases)           |    >= 7.4     |
-|   2.1.x   |  EOL   |          [v2.3.3](https://github.com/e107inc/e107/releases)           |    >= 7.4     |
-|   2.2.x   |  EOL   |          [v2.3.3](https://github.com/e107inc/e107/releases)           |   5.6 - 7.4   |
-|   2.3.2   |   OK   |          [v2.3.3](https://github.com/e107inc/e107/releases)           |  5.6 - 8.1.*  |
-| 2.3.3 | Latest |          [v2.3.3](https://github.com/e107inc/e107/releases)           | 7.4 - ^8.2.12 |
+**Versions** uses [the Ruby pessimistic operator](https://guides.rubygems.org/patterns/#pessimistic-version-constraint): `~> 2.3.0` matches `>= 2.3.0, < 2.4.0`.
+- **Release** is the date on which the first release of the cycle was published.
+- **End of New Features** is the date past which no new features will be added in this cycle.
+- **End of Maintenance** is the date past which no further bug or security fixes will be made in this cycle.
+- **End of Revival** is the date past which the cycle is fully abandoned with no consideration of reviving it.
 
+### PHP Compatibility
+
+| Software Version    | Minimum PHP Version | Maximum PHP Version        | Cause of Compatibility Change                                                                                                                                                                                 |
+|---------------------|---------------------|----------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `~> 0.7`            | 4.3                 | _Unknown_                  | First explicit floor in `install.php` (`$required_php = '4.3'`).                                                                                                                                              |
+| `~> 1.0.0`          | 4.3                 | _Unknown_                  | Same install-time floor; no documented PHP version work between 0.7 and 1.0.                                                                                                                                  |
+| `>= 2.0.0, < 2.3.0` | 5.3                 | _Unknown_                  | `install.php` switched to a `MIN_PHP_VERSION` constant set to `5.3`.                                                                                                                                          |
+| `>= 2.3.0, < 2.3.4` | 5.6                 | 8.1.*                      | `MIN_PHP_VERSION` raised to `5.6`; `composer.json` introduced with platform `5.6` and `require.php` `>= 5.6`. PHP 8.2+ surfaces deprecations.                                                                 |
+| `~> 2.3.4`          | 5.6                 | _No known incompatibility_ | Bundled fixes for the PHP 8.5-promoted "`Cannot use bool as array`" warning and a libxml ≥ 2.13 normalization pass in `cleanHtml`. PHP 8.5 still surfaces remaining `setAccessible()` and other deprecations. |
+| `~> 2.4.0`          | _To be determined_  | _No known incompatibility_ |                                                                                                                                                                                                               |         
+
+**Software Version** uses Ruby-style version constraints. The constraint describes an inclusive range of e107 versions for which the next two columns hold. The maximum may be _No known incompatibility_ when no upper bound was hit at the time of release; subsequent PHP releases may surface deprecations not captured here.
 
 ## Installation
 

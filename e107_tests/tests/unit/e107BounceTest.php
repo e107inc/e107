@@ -19,9 +19,14 @@
 		{
 		//	define('e107_INIT', true);
 			parent::_before();
-			global $_E107;
 
-			$_E107['phpunit'] = true;
+			// Load the handler for its class definition only. The auto-run
+			// at the top of bounce_handler.php processes a live mailbox,
+			// which must not happen in tests.
+			if (!defined('E107_BOUNCE_NO_AUTORUN'))
+			{
+				define('E107_BOUNCE_NO_AUTORUN', true);
+			}
 
 			require_once(e_HANDLER."bounce_handler.php");
 			try

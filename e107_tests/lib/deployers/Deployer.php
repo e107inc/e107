@@ -38,6 +38,12 @@ abstract class Deployer
 		"but the configured deployer ".get_class($this)." is not capable of doing that.");
 	}
 
+	public function writeAppFile($relative_path, $contents)
+	{
+		throw new \PHPUnit\Framework\SkippedTestError("Test wants to write \"$relative_path\" into the app, ".
+		"but the configured deployer ".get_class($this)." is not capable of doing that.");
+	}
+
 	/**
 	 * Methods not implemented
 	 *
