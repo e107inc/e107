@@ -27,6 +27,34 @@ e107::css('inline', 'div.qitem { margin-top:20px }
 
 ');
 
+e107::js('footer-inline', "
+$(function() {
+	var \$items = $('.docs-item');
+	var \$navLinks = $('#admin-ui-nav-menu a[href^=\"#doc-\"]');
+
+	function showDoc(id) {
+		var \$target = $(id);
+		if (!\$target.length) { return; }
+		\$items.stop(true, true).hide();
+		\$target.show({ effect: 'slide', duration: 250 });
+		\$navLinks.closest('li').removeClass('active');
+		\$navLinks.filter('[href=\"' + id + '\"]').closest('li').addClass('active');
+	}
+
+	\$navLinks.on('click', function(e) {
+		var href = $(this).attr('href') || '';
+		if (href.indexOf('#doc-') === 0) {
+			e.preventDefault();
+			showDoc(href);
+		}
+	});
+
+	if (window.location.hash && window.location.hash.indexOf('#doc-') === 0) {
+		showDoc(window.location.hash);
+	}
+});
+");
+
 
 class docs_admin extends e_admin_dispatcher
 {
@@ -48,6 +76,8 @@ class docs_admin extends e_admin_dispatcher
 	protected $adminMenuAliases = array();
 
 	protected $menuTitle = LAN_DOCS;
+
+	protected $adminMenuIcon = 'e-docs-24';
 
 	protected static $helpList = array();
 
@@ -83,7 +113,12 @@ class docs_admin extends e_admin_dispatcher
 			$id = 'doc-' . $key;
 			$k = 'main/' . $id;
 
-			$this->adminMenu[$k] = array('caption' => str_replace("_", " ", $helpdata['fname']), 'perm' => false, 'uri' => "#" . $id);
+			$this->adminMenu[$k] = array(
+				'caption' => str_replace("_", " ", $helpdata['fname']),
+				'perm'    => false,
+				'uri'     => "#" . $id,
+				'icon'    => 'fa-question-circle',
+			);
 		}
 
 
@@ -129,14 +164,13 @@ class docs_ui extends e_admin_ui
 
 			$text .= "
 				<div class='docs-item' id='{$id}' {$display}>
-					<h4>" . LAN_DOCS . defset('SEP') . str_replace("_", " ", $helpdata['fname']) . "</h4>
+					<h4>" . LAN_DOCS . SEP . str_replace("_", " ", $helpdata['fname']) . "</h4>
 					{$tmp}
 
 				</div>";
 
 			// <div class='gotop'><a href='#docs-list' class='scroll-to'>".LAN_DOCS_GOTOP."</a></div>
 		}
-
 
 		return $text;
 
