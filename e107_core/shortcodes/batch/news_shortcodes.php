@@ -123,6 +123,10 @@ class news_shortcodes extends e_shortcode
 			{
 				return $this->news_item['user_name'];
 			}
+			elseif($parm == 'profilelink')
+			{
+				return e107::getUrl()->create('user/profile/view', $this->news_item);
+			}
 			else
 			{
 				return "<a href='".e107::getUrl()->create('user/profile/view', $this->news_item)."'>".$this->news_item['user_name']."</a>";

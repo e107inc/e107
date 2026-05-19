@@ -1,7 +1,25 @@
 e107 Test Suites
 ===
 
-## Quickstart
+## Quickstart (Docker — recommended)
+
+The fastest path is the Docker harness in [`docker/`](docker/). It builds a per-worktree PHP + Apache + MariaDB stack so several developers (or AI agents) can run tests in parallel without sharing a dev VM.
+
+```sh
+git clone https://github.com/e107inc/e107.git
+cd e107
+e107_tests/bin/e107-tests up                # PHP 8.3 + MariaDB 10.11 by default
+e107_tests/bin/e107-tests run unit          # run the unit suite
+e107_tests/bin/e107-tests run acceptance    # run the acceptance suite
+e107_tests/bin/e107-tests urls              # see where the app is reachable
+e107_tests/bin/e107-tests down              # tear it all down
+```
+
+Pick a different matrix combo with `--php` and `--db`, e.g. `e107-tests up --php 8.4 --db mysql:8.0`. See [`docker/README.md`](docker/README.md) for the full command reference.
+
+## Quickstart (Manual / legacy deployers)
+
+If you prefer to wire tests into your own LAMP stack — local, SFTP, cPanel, or anything else — keep reading. This is the original flow described below.
 
 1. Check out this repository:
    ```sh

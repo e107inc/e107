@@ -30,8 +30,18 @@ class e_file_inspector_sqlphar extends e_file_inspector
      */
     public function loadDatabase()
     {
+        if(!file_exists($this->database))
+        {
+            $this->coreImage = null;
+            return;
+        }
+
         Phar::loadPhar($this->database, "core_image.phar");
         $tmpFile = tmpfile();
+        if($tmpFile === false)
+        {
+            throw new RuntimeException("Failed to create a temporary file. Check that PHP can write to the temporary directory.");
+        }
         $tmpFilePath = stream_get_meta_data($tmpFile)['uri'];
         $this->copyUrlToResource("phar://core_image.phar/core_image.sqlite", $tmpFile);
         $this->coreImage = new PDO("sqlite:{$tmpFilePath}");
