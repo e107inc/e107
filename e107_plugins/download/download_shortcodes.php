@@ -516,7 +516,7 @@ class download_shortcodes extends e_shortcode
 		return e107::getForm()->rate("download", $this->var['download_id']);
 	}
 
-	function sc_download_list_link($parm = '')
+	function sc_download_list_link($parms = null)
 	{
 		$tp = e107::getParser();
 		$img = '';
@@ -533,13 +533,13 @@ class download_shortcodes extends e_shortcode
 		}
 
 		return "<a" . $tp->toAttributes([
-				"class"   => "e-tip",
+				"class"   => empty($parms['class']) ? 'e-tip' : $parms['class'],
 				"title"   => defined("LAN_DOWNLOAD") ? LAN_DOWNLOAD : null,
 				"href"    => $this->var['download_mirror_type'] ?
 					e_PLUGIN_ABS . "download/download.php?mirror." . $this->var['download_id'] :
 					$tp->parseTemplate("{DOWNLOAD_REQUEST_URL}", true, $this),
 				"onclick" => $this->getAgreeTextAsHtmlEventAttribute(),
-			]) . ">$img</a>";
+			]) . ">{$img}".(empty($parms['lan']) ? null:LAN_DOWNLOAD)."</a>";
 	}
 
 
@@ -1148,7 +1148,7 @@ class download_shortcodes extends e_shortcode
 		$url = e107::url('download', 'category', $this->var);
 		// e_PLUGIN_ABS."download/download.php?action=list&id=".$this->var['download_category']
 
-		$title = "Back to [x]";
+		$title = defset('LAN_dl_80', "Back to [x]");  // less fatal errors when the LAN is missing under PHP 8.x 
 		$class = empty($parm['class']) ? 'e-tip page-link' : $parm['class'];
 
 		return "<a class='" . $class . "' title=\"" . e107::getParser()->lanVars($title, array('x' => $this->var['download_category_name'])) . "\" href='" . $url . "'>" . LAN_BACK . "</a>";

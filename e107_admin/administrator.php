@@ -186,7 +186,22 @@ function show_admins()
 require_once("footer.php");
 
 
+/**
+ * Build the admin sidebar menu (auto-invoked by the {ADMIN_MENU} shortcode).
+ * Provides the icon + caption shown in the left admin panel, consistent with
+ * frontpage.php / docs.php and visible also when the sidebar is collapsed.
+ */
+function administrator_adminmenu()
+{
+	$var = array();
+	$var['main']['text'] = ADMSLAN_13;
+	$var['main']['link'] = e_SELF;
 
+	$caption = "<span>".ADMSLAN_13."</span>";
+	$var['_extras_']['icon'] = e107::getParser()->toIcon('e-admins-24');
+
+	return e107::getNav()->admin($caption, 'main', $var);
+}
 
 
 /**

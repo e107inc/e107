@@ -848,9 +848,8 @@ if (isset($_POST['userlogin']) || isset($_POST['userlogin_x']))
 
 
 
-// $_SESSION['ubrowser'] check not needed anymore - see session handler
 // e_QUERY not defined in single entry mod
-if (($_SERVER['QUERY_STRING'] === 'logout')/* || (($pref['user_tracking'] == 'session') && isset($_SESSION['ubrowser']) && ($_SESSION['ubrowser'] != $ubrowser))*/)
+if (($_SERVER['QUERY_STRING'] === 'logout'))
 {
 	if (USER)
 	{
@@ -1229,15 +1228,6 @@ function check_class($var, $userclass = null, $uid = 0)
 	if ($var === defset('e_LANGUAGE'))
 	{
 		return true;
-	}
-
-	if (e107::isCli())
-	{
-		global $_E107;
-		if (empty($_E107['phpunit']))
-		{
-			return true;
-		}
 	}
 
 	if (is_numeric($uid) && $uid > 0)
