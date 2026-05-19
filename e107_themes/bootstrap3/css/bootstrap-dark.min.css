@@ -1528,3 +1528,19 @@ ul.col-selection > li a:hover 				{ color: #FFF; background-image: linear-gradie
 ul.col-selection 							{ background-color: rgb(39, 39, 39);}
 ul.col-selection > li a 					{ color: rgb(153, 153, 153); }
 ul.col-selection > li a 					{ border-top: 1px solid rgb(51, 51, 51);  border-bottom: 1px solid rgb(32, 32, 32); }
+/* phpinfo() output palette - keep in sync with .phpinfo-wrapper structural styles in e107_admin/phpinfo.php */
+.phpinfo-wrapper                 { color: #c6c6c6; }
+.phpinfo-wrapper h1,
+.phpinfo-wrapper h2,
+.phpinfo-wrapper h3,
+.phpinfo-wrapper h4              { color: #e6e6e6; }
+.phpinfo-wrapper a               { color: #5bc0de; }
+.phpinfo-wrapper a:hover         { color: #8ad4ea; }
+.phpinfo-wrapper hr              { border-top: 1px solid #444; }
+.phpinfo-wrapper table           { background-color: #2f2f2f; }
+.phpinfo-wrapper td,
+.phpinfo-wrapper th              { background-color: #373737; color: #c6c6c6; border-color: #444; }
+.phpinfo-wrapper tr.h th         { background-color: #1f1f1f; color: #e6e6e6; }
+.phpinfo-wrapper td.e            { background-color: #2a2a2a; }
+.phpinfo-wrapper td.v            { background-color: #373737; }
+.phpinfo-wrapper td.alert-danger { background-color: #5a1a1a; color: #f2b5b5; }
