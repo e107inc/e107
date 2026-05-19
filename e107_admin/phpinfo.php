@@ -23,19 +23,55 @@ require_once("auth.php");
 
 ob_start();
 phpinfo();
-$phpinfo = ob_get_contents();
+$phpinfo = ob_get_clean();
 
-$phpinfo = preg_replace("#^.*<body>#is", "", $phpinfo);
-$phpinfo = str_replace("font","span",$phpinfo);
-$phpinfo = str_replace("</body></html>","",$phpinfo);
-$phpinfo = str_replace('border="0"','',$phpinfo);
-//$phpinfo = str_replace('<table ','<table class="table table-striped adminlist" ',$phpinfo);
-$phpinfo = str_replace('name=','id=',$phpinfo);
-$phpinfo = str_replace('class="e"','class="forumheader2 text-left"',$phpinfo);
-$phpinfo = str_replace('class="v"','class="forumheader3 text-left"',$phpinfo);
-$phpinfo = str_replace('class="v"','class="forumheader3 text-left"',$phpinfo);
-$phpinfo = str_replace('class="h"','class="fcaption"',$phpinfo);
-$phpinfo = preg_replace('/<table[^>]*>/i', '<table class="table table-striped adminlist"><colgroup><col style="width:30%" /><col style="width:auto" /></colgroup>', $phpinfo);
+// Keep only the <body>…</body> payload so the admin <head>/<html> shell isn't duplicated.
+if(preg_match('#<body\b[^>]*>(.*?)</body>#is', $phpinfo, $m))
+{
+	$phpinfo = $m[1];
+}
+
+// Drop phpinfo()'s own <style> block so its low-contrast palette can't bleed into the admin layout.
+// The hardcoded HTML presentational attributes phpinfo() emits (width, cellpadding, cellspacing,
+// align, bgcolor, valign…) map to the lowest-specificity CSS, so any author rule scoped under
+// .phpinfo-wrapper overrides them — no attribute-stripping or class-renaming pass needed.
+$phpinfo = preg_replace('#<style\b[^>]*>.*?</style>#is', '', $phpinfo);
+
+// Wrap once. .phpinfo-wrapper scopes all CSS to this page and provides a safety overflow-x.
+// The inline CSS below is purely STRUCTURAL (layout, spacing, wrapping). The COLOR PALETTE
+// for .phpinfo-wrapper lives in each admin theme stylesheet (e.g. modern-light.css,
+// modern-dark.css), so phpinfo respects the theme the admin is using.
+$phpinfo = '<div class="phpinfo-wrapper">'.$phpinfo.'</div>';
+
+// Structural-only inline CSS: no background-color, no color, no border-color. These are
+// theme palette decisions and belong in the admin theme stylesheets.
+e107::css('inline', '
+.phpinfo-wrapper { max-width: 100%; overflow-x: auto; box-sizing: border-box; }
+.phpinfo-wrapper * { box-sizing: border-box; }
+.phpinfo-wrapper h1,
+.phpinfo-wrapper h2,
+.phpinfo-wrapper h3,
+.phpinfo-wrapper h4 { margin-top: 1rem; }
+.phpinfo-wrapper img { max-width: 100%; height: auto; }
+.phpinfo-wrapper table {
+    width: 100%; max-width: 100%;
+    border-collapse: collapse; margin-bottom: 1rem;
+}
+.phpinfo-wrapper td,
+.phpinfo-wrapper th {
+    padding: 6px 10px; border-width: 1px; border-style: solid;
+    text-align: left; vertical-align: top;
+    word-break: break-word; overflow-wrap: anywhere;
+}
+.phpinfo-wrapper tr.h th { text-align: center; font-weight: bold; }
+.phpinfo-wrapper td.e   { font-weight: bold; }
+.phpinfo-wrapper td.v   { font-family: Menlo, Consolas, "Liberation Mono", monospace; }
+/* In multi-column rows (label + value), keep the label cell on a single line so a long value
+   in td.v cannot squeeze the label into a 1-char-wide column. Single-cell rows (1-column
+   sub-tables like PHP QA Team / License / Documentation) keep wrapping so they stay inside
+   the admin column width. */
+.phpinfo-wrapper tr > td.e:not(:only-child) { white-space: nowrap; }
+');
 
 
 $mes = e107::getMessage();
@@ -91,8 +127,8 @@ $security_risks = array(
     {
         if(ini_get($risk))
         {
-            $srch = '<tr><td class="forumheader2 text-left">'.$risk.'</td><td class="forumheader3">';
-            $repl = '<tr><td class="forumheader2 text-left">'.$risk.'</td><td  title="'.e107::getParser()->toAttribute($diz).'" class="forumheader3 alert alert-danger">';
+            $srch = '<tr><td class="e">'.$risk.'</td><td class="v">';
+            $repl = '<tr><td class="e">'.$risk.'</td><td title="'.e107::getParser()->toAttribute($diz).'" class="v alert alert-danger">';
             $phpinfo = str_replace($srch,$repl,$phpinfo);   
             $mes->addWarning("<b>".$risk."</b>: ".$diz);
         }   
@@ -107,11 +143,6 @@ $security_risks = array(
 			$mes->addError(e107::getParser()->toHTML(PHP_LAN_6, true));	
 		}
 	}
-
-
-// $phpinfo = preg_replace("#^.*<body>#is", "", $phpinfo);
-ob_end_clean();
-
 
 
 if(deftrue('e_DEBUG'))

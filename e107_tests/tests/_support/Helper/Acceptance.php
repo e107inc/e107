@@ -18,4 +18,9 @@ class Acceptance extends E107Base
 	{
 		$this->deployer->unlinkAppFile("e107_config.php");
 	}
+
+	public function writeE107ConfigToTestEnvironment($contents)
+	{
+		$this->deployer->writeAppFile("e107_config.php", $contents);
+	}
 }
