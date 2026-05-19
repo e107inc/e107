@@ -11,6 +11,7 @@
 */
 
 return [
+    'PAGE_NAME' => "Email",
     'LAN_EMAIL_1' => "From:",
     'LAN_EMAIL_2' => "IP address of sender:",
     'LAN_EMAIL_3' => "Emailed item from",

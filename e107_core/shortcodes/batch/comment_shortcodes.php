@@ -227,11 +227,29 @@ class comment_shortcodes extends e_shortcode
 
 	//	e107::getDebug()->log($this->var);
 
-		$text = "<a href='#' data-target='".e_HTTP."comment.php' id='e-comment-delete-".$this->var['comment_id']."'  data-type='".$this->var['comment_type']."' data-itemid='".$this->var['comment_item_id']."' class='e-comment-delete btn btn-default btn-secondary btn-sm btn-mini btn-xs'>".LAN_DELETE."</a> ";
+		$tp = e107::getParser();
 
-		if($this->var['comment_blocked'] == 2) // pending approval. 
+		$deleteAttrs = array(
+			'href'        => '#',
+			'data-target' => e_HTTP . 'comment.php',
+			'id'          => 'e-comment-delete-' . $this->var['comment_id'],
+			'data-type'   => $this->var['comment_type'],
+			'data-itemid' => $this->var['comment_item_id'],
+			'data-token'  => defset('e_TOKEN'),
+			'class'       => 'e-comment-delete btn btn-default btn-secondary btn-sm btn-mini btn-xs',
+		);
+		$text = "<a" . $tp->toAttributes($deleteAttrs, true) . ">" . LAN_DELETE . "</a> ";
+
+		if($this->var['comment_blocked'] == 2) // pending approval.
 		{
-			$text .= "<a href='#' data-target='" . e_HTTP . "comment.php' id='e-comment-approve-" . $this->var['comment_id'] . "' class='e-comment-approve btn btn-default btn-secondary btn-sm btn-mini btn-xs'>" . COMLAN_404 . "</a> ";
+			$approveAttrs = array(
+				'href'        => '#',
+				'data-target' => e_HTTP . 'comment.php',
+				'id'          => 'e-comment-approve-' . $this->var['comment_id'],
+				'data-token'  => defset('e_TOKEN'),
+				'class'       => 'e-comment-approve btn btn-default btn-secondary btn-sm btn-mini btn-xs',
+			);
+			$text .= "<a" . $tp->toAttributes($approveAttrs, true) . ">" . COMLAN_404 . "</a> ";
 		}
 		return $text;
 		/*
@@ -406,17 +424,27 @@ class comment_shortcodes extends e_shortcode
 
 		if ($pref['allowCommentEdit'] && USER && $this->var['user_id'] == USERID && ($this->var['comment_lock'] < 1))
 		{
+			$tp = e107::getParser();
 			$adop_icon = (file_exists(THEME."images/commentedit.png") ? "<img src='".THEME_ABS."images/commentedit.png' alt='".COMLAN_318."' title='".COMLAN_318."' class='icon' />" : LAN_EDIT);
+
 			//Searching for '.' is BAD!!! It breaks mod rewritten requests. Why is this needed at all?
 			if (strpos(e_QUERY, "&") !== false)
 			{
-				return "<a data-target='".e_HTTP."comment.php' id='e-comment-edit-".$this->var['comment_id']."' class='btn btn-default btn-secondary btn-sm btn-mini btn-xs e-comment-edit' href='".e_SELF."?".e_QUERY."&amp;comment=edit&amp;comment_id=".$this->var['comment_id']."'>{$adop_icon}</a>";
+				$href = e_SELF . '?' . e_QUERY . '&comment=edit&comment_id=' . $this->var['comment_id'];
 			}
 			else
 			{
-				//		return "<a href='".e_SELF."?".$comment_edit_query.".edit.".$this->var['comment_id']."'><img src='".e_IMAGE."generic/newsedit.png' alt='".COMLAN_318."' title='".COMLAN_318."' style='border: 0;' /></a>";
-				return "<a data-target='".e_HTTP."comment.php' id='e-comment-edit-".$this->var['comment_id']."' class='btn btn-default btn-secondary btn-sm btn-mini btn-xs e-comment-edit' href='".SITEURL."comment.php?".$comment_edit_query.".edit.".$this->var['comment_id']."#e-comment-form'>".$adop_icon."</a>";
+				$href = SITEURL . 'comment.php?' . $comment_edit_query . '.edit.' . $this->var['comment_id'] . '#e-comment-form';
 			}
+
+			$editAttrs = array(
+				'data-target' => e_HTTP . 'comment.php',
+				'id'          => 'e-comment-edit-' . $this->var['comment_id'],
+				'data-token'  => defset('e_TOKEN'),
+				'class'       => 'btn btn-default btn-secondary btn-sm btn-mini btn-xs e-comment-edit',
+				'href'        => $href,
+			);
+			return "<a" . $tp->toAttributes($editAttrs, true) . ">" . $adop_icon . "</a>";
 		}
 		else
 		{
