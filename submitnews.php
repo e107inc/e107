@@ -144,7 +144,8 @@ class submitNews
 
 							$today = getdate();
 
-							$submitnews_file = USERID."_".$today[0]."_".$c."_".str_replace(" ", "_", substr($submitnews_title, 0, 6)).".".$fileext;
+							$titleSlug = preg_replace('/[^\w\pL]/u', '_', $tp->usubstr($submitnews_title, 0, 6));
+							$submitnews_file = USERID."_".$today[0]."_".$c."_".$titleSlug.".".$fileext;
 
 							if (is_numeric($pref['subnews_resize']) && ($pref['subnews_resize'] > 30)  && ($pref['subnews_resize'] < 5000))
 							{

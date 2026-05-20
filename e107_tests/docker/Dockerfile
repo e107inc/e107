@@ -32,6 +32,7 @@ RUN set -eux; \
         ca-certificates \
         curl \
         git \
+        imagemagick \
         less \
         libbz2-dev \
         libcurl4-openssl-dev \
