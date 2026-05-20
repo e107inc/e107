@@ -154,17 +154,15 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 	switch ($mode)
 	{
 	  case "ImageMagick" :
-	    if ($destination_file == "stdout") 
-		{		// if destination is stdout, output directly to the browser 
+	    if ($destination_file == "stdout")
+		{		// if destination is stdout, output directly to the browser
 //		  $destination_file = "jpg:-";
 		  header("Content-type: image/jpeg");
-		  // Use double quotes instead of single to keep Bill happy
-		  passthru ($pref['im_path']."convert -quality ".$im_quality." -antialias -geometry ".$new_size."x".$new_imageheight." ".escapeshellarg($source_file)." \"jpg:-\"", $returnError);
-		} 
-		else 
-		{		// otherwise output to file 
-		  // Use double quotes instead of single to keep Bill happy
-		  exec ($pref['im_path']."convert -quality ".$im_quality." -antialias -geometry ".$new_size."x".$new_imageheight." ".escapeshellarg($source_file)." \"".$destination_file."\"", $dummy, $returnError);
+		  passthru ($pref['im_path']."convert -quality ".intval($im_quality)." -antialias -geometry ".intval($new_size)."x".intval($new_imageheight)." ".escapeshellarg($source_file)." jpg:-", $returnError);
+		}
+		else
+		{		// otherwise output to file
+		  exec ($pref['im_path']."convert -quality ".intval($im_quality)." -antialias -geometry ".intval($new_size)."x".intval($new_imageheight)." ".escapeshellarg($source_file)." ".escapeshellarg($destination_file), $dummy, $returnError);
 		}
 		if ($returnError) echo "ImageMagick resize/output error: {$returnError}<br />";
 		break;
