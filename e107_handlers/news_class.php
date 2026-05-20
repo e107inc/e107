@@ -492,7 +492,7 @@ class news {
 				$parms['caption'] = $parms['caption'][e_LANGUAGE];
 			}
 
-			if(!empty($parms['caption']) && defined($parms['caption']))
+			if(!empty($parms['caption']) && is_string($parms['caption']) && defined($parms['caption']))
 			{
 				$parms['caption'] = constant($parms['caption']);
 			}
