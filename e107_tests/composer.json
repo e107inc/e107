@@ -9,5 +9,10 @@
     "codeception/module-db": "^1.0",
     "codeception/module-phpbrowser": "^1.0",
     "behat/gherkin": "<4.13"
+  },
+  "config": {
+    "audit": {
+      "block-insecure": false
+    }
   }
 }
