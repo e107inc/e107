@@ -29,6 +29,15 @@ class resize_handlerTest extends \Codeception\Test\Unit
 	/** @var string */
 	private $source;
 
+	/**
+	 * Marker that _before() actually ran past markTestSkipped(); guards the
+	 * teardown so a skipped run doesn't clobber globals it never touched
+	 * (and that downstream tests in the same shuffled run rely on).
+	 *
+	 * @var bool
+	 */
+	private $prefMutated = false;
+
 	/** @var array|null Saved $pref snapshot. */
 	private $savedPref;
 
@@ -62,10 +71,20 @@ class resize_handlerTest extends \Codeception\Test\Unit
 		$GLOBALS['pref']['im_quality']    = 99;
 		$GLOBALS['pref']['image_owner']   = '';
 		unset($GLOBALS['pref']['im_width'], $GLOBALS['pref']['im_height']);
+		$this->prefMutated = true;
 	}
 
 	protected function _after()
 	{
+		// PHPUnit/Codeception runs tearDown even when setUp short-circuited
+		// via markTestSkipped(), so we'd otherwise unset $GLOBALS['pref']
+		// (savedPref still at its default null) and break every later test
+		// in the same shuffled suite run that does `global $pref; $pref[...]`.
+		if (!$this->prefMutated)
+		{
+			return;
+		}
+
 		if ($this->savedPref === null)
 		{
 			unset($GLOBALS['pref']);
