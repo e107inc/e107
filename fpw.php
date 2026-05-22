@@ -14,7 +14,8 @@
 $_E107['allow_guest'] = true;
 require_once('class2.php');
 
-e107::coreLan('fpw'); 
+e107::coreLan('fpw');
+e107::getLanguage()->bcDefs(array('LAN_112' => 'LAN_FPW22')); // BC for legacy/fpw_template.php (issue #5653)
 
 $tp = e107::getParser();
 
@@ -49,8 +50,6 @@ if ($pref['membersonly_enabled'])
 	}
 	else
 	{
-		$oldDefs = array('LAN_112' => 'LAN_FPW22');
-		e107::getLanguage()->bcDefs($oldDefs);
 		require_once (e107::coreTemplatePath('fpw')); //correct way to load a core template.
 	}
 
