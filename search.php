@@ -94,9 +94,11 @@ class search_front extends e_shortcode
 			{
 				require(THEME."search_template.php");
 			} 
-			else 
+			else
 			{
-				require(e_CORE."templates/legacy/search_template.php");
+				$_legacy_search_tmpl = e_CORE."templates/legacy/search_template.php";
+				e107::predefineLegacyLans($_legacy_search_tmpl); // #5653
+				require($_legacy_search_tmpl);
 			}
 
 			if(!isset($SEARCH_TOP_TABLE))
