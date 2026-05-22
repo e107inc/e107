@@ -50,7 +50,9 @@ if ($pref['membersonly_enabled'])
 	}
 	else
 	{
-		require_once (e107::coreTemplatePath('fpw')); //correct way to load a core template.
+		$fpwTmpl = e107::coreTemplatePath('fpw');
+		e107::predefineLegacyLans($fpwTmpl); // #5653: define any still-missing LAN_* before the require — prevents PHP 8 fatals.
+		require_once ($fpwTmpl); //correct way to load a core template.
 	}
 
 	define('e_IFRAME', true);
@@ -345,7 +347,9 @@ if(deftrue('BOOTSTRAP'))
 }	
 elseif(!$FPW_TABLE)
 {
-	require_once (e107::coreTemplatePath('fpw')); //correct way to load a core template.
+	$fpwTmpl = e107::coreTemplatePath('fpw');
+	e107::predefineLegacyLans($fpwTmpl); // #5653
+	require_once ($fpwTmpl); //correct way to load a core template.
 	$caption = LAN_03;
 }
 
