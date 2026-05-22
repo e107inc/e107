@@ -743,6 +743,20 @@ class language{
 
 	/**
 	 * Define Legacy LAN constants based on a supplied array.
+	 *
+	 * Called once at boot from class2.php with no arguments to apply a
+	 * default "graveyard" of legacy v1.x → v2.x constant aliases. Called
+	 * again from per-entrypoint sites (e.g. fpw.php, signup.php,
+	 * usersettings.php) with a scoped array for context-specific mappings.
+	 *
+	 * The default below is bounded by class2.php's boot order: only the
+	 * Replacement-LAN constants already loaded from English/English.php
+	 * at bcDefs() call time can resolve via defined()/constant(). Mappings
+	 * whose replacement comes from a lazily-loaded LAN file (e.g.
+	 * LAN_FPW22 from lan_fpw.php) silently no-op here and must be handled
+	 * by per-entrypoint bcDefs($localList) calls that run after the
+	 * relevant coreLan().
+	 *
 	 * @param array $bcList legacyLAN => Replacement-LAN
 	 */
 	public function bcDefs($bcList = null)
@@ -751,7 +765,36 @@ class language{
 		if(empty($bcList))
 		{
 			$bcList = array(
-				'LAN_180'   => 'LAN_SEARCH'
+				// Search legacy
+				'LAN_180'   => 'LAN_SEARCH',
+				'LAN_199'   => 'LAN_SEARCH',
+				// Generic forms / actions present in English/English.php
+				'LAN_406'   => 'LAN_EDIT',
+				'LAN_419'   => 'LAN_SHOW',
+				'LAN_435'   => 'LAN_DELETE',
+				// Download plugin v1 prefix — all targets in English/English.php
+				'LAN_dl_7'  => 'LAN_DESCRIPTION',
+				'LAN_dl_10' => 'LAN_SIZE',
+				'LAN_dl_11' => 'LAN_IMAGE',
+				'LAN_dl_17' => 'LAN_FILES',
+				'LAN_dl_19' => 'LAN_CATEGORY',
+				'LAN_dl_20' => 'LAN_FILES',
+				'LAN_dl_21' => 'LAN_SIZE',
+				'LAN_dl_22' => 'LAN_DATE',
+				'LAN_dl_23' => 'LAN_FILE',
+				'LAN_dl_24' => 'LAN_AUTHOR',
+				'LAN_dl_25' => 'LAN_ASCENDING',
+				'LAN_dl_26' => 'LAN_DESCENDING',
+				'LAN_dl_27' => 'LAN_GO',
+				'LAN_dl_28' => 'LAN_NAME',
+				'LAN_dl_32' => 'LAN_DOWNLOAD',
+				'LAN_dl_35' => 'LAN_BACK',
+				// Defined-as-empty: dropped with no replacement, kept defined
+				// so legacy templates that reference them render nothing
+				// instead of fatal.
+				'LAN_433'   => '',
+				'LAN_434'   => '',
+				'FORLAN_15' => '',
 			);
 		}
 
