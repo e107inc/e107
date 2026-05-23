@@ -765,14 +765,16 @@ class language{
 		if(empty($bcList))
 		{
 			$bcList = array(
-				// Search legacy
+				// Search legacy. LAN_180 only: lan_search.php still defines
+				// LAN_199 via define() on this branch, so priming it here
+				// would collide ("Constant LAN_199 already defined") when
+				// coreLan('search') loads the lazy file.
 				'LAN_180'   => 'LAN_SEARCH',
-				'LAN_199'   => 'LAN_SEARCH',
-				// Generic forms / actions present in English/English.php
-				'LAN_406'   => 'LAN_EDIT',
-				'LAN_419'   => 'LAN_SHOW',
+				// Generic action LAN_* present in English/English.php.
+				// LAN_406/LAN_419 omitted: lan_upload.php still uses define()
+				// on this branch and would collide on coreLan('upload').
 				'LAN_435'   => 'LAN_DELETE',
-				// Download plugin v1 prefix — all targets in English/English.php
+				// Download plugin v1 prefix. All targets in English/English.php.
 				'LAN_dl_7'  => 'LAN_DESCRIPTION',
 				'LAN_dl_10' => 'LAN_SIZE',
 				'LAN_dl_11' => 'LAN_IMAGE',
