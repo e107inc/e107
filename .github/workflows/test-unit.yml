@@ -129,7 +129,22 @@ jobs:
         fi
         docker-php-ext-enable xdebug
 
+    # actions/checkout@v3 runs Node 20, which requires glibc 2.27+. The
+    # php:5.6 and php:7.0 images are based on Debian 9 (glibc 2.24), so the
+    # action's own bootstrap can't start. Inline a plain git clone instead;
+    # git itself was installed in the OS-deps step above.
+    - name: Check out repository (legacy PHP)
+      if: matrix.interpreter.image == 'php:5.6' || matrix.interpreter.image == 'php:7.0'
+      run: |
+        git config --global --add safe.directory '*'
+        cd "$GITHUB_WORKSPACE"
+        git init
+        git remote add origin "https://github.com/${{ github.repository }}.git"
+        git fetch --no-tags --prune --depth=1 origin "+${{ github.sha }}:refs/remotes/origin/run-head"
+        git checkout --force refs/remotes/origin/run-head
+
     - uses: actions/checkout@v3
+      if: matrix.interpreter.image != 'php:5.6' && matrix.interpreter.image != 'php:7.0'
 
     - name: Install Composer
       run: curl -sSL https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer
