@@ -194,10 +194,8 @@ unset($tmp);
 
 if(empty($config['paths'])) // old e107_config.php format.
 {
-	$dirNames = ['ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY','UPLOADS_DIRECTORY','SYSTEM_DIRECTORY', 'MEDIA_DIRECTORY','CACHE_DIRECTORY','LOGS_DIRECTORY', 'CORE_DIRECTORY', 'WEB_DIRECTORY'];
-
 	$e107_paths = [];
-	foreach ($dirNames as $name)
+	foreach (array_keys(e107::getInstance()->overridableDirs()) as $name)
 	{
 	    if (isset($$name))
 	    {
