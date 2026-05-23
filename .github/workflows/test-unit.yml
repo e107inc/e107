@@ -27,6 +27,19 @@ jobs:
           - image: mariadb:10.0
           - image: mariadb:10.6
           - image: mariadb:10.11
+        # mysql:8.0 starts with utf8mb4 by default, which PHP 5.6 / 7.0
+        # PDO drivers do not recognise ("Server sent charset unknown to
+        # the client"). GitHub Actions service containers do not accept
+        # CMD args to override the charset, so exclude the pair.
+        exclude:
+          - interpreter:
+              image: php:5.6
+            db:
+              image: mysql:8.0
+          - interpreter:
+              image: php:7.0
+            db:
+              image: mysql:8.0
     runs-on: ubuntu-latest
     container:
       image: ${{ matrix.interpreter.image }}
