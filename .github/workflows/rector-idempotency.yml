@@ -1,0 +1,74 @@
+name: Rector Idempotency
+
+# Gates merges on the PHP 5.6 downgrade being idempotent: running Rector
+# against the already-downgraded shipping source must produce no changes.
+# Any diff means a contributor committed source that Rector still wants to
+# rewrite, which would cause the next release build to drift.
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  rector-idempotency:
+    runs-on: ubuntu-latest
+    container:
+      # Matches the platform pin in e107_tests/tools/rector/composer.json.
+      image: php:8.2
+
+    steps:
+      - name: Enable Debian backports
+        run: |
+          if ! apt-get update; then
+            for FILE in /etc/apt/sources.list /etc/apt/sources.list.d/debian.sources; do
+              [ -f "$FILE" ] || continue
+              sed -i 's#/\(deb\|security\)\.debian\.org/#/archive.debian.org/#g' "$FILE"
+            done
+            if [ -f /etc/apt/sources.list ]; then
+              sed -r -i '/^[^\s#]*[^\s]+\s+[^\s]+\s+[^#]*-updates/d' /etc/apt/sources.list
+            fi
+            if [ -f /etc/apt/sources.list.d/debian.sources ]; then
+              sed -i -E '/^Suites:/ s/[[:space:]]+[^[:space:]]*-updates//g' /etc/apt/sources.list.d/debian.sources
+            fi
+            echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99ignore-obsolete
+            echo 'Acquire::AllowInsecureRepositories "true";' >> /etc/apt/apt.conf.d/99ignore-obsolete
+            echo 'APT::Get::AllowUnauthenticated "true";' >> /etc/apt/apt.conf.d/99ignore-obsolete
+            apt-get update
+            DEBIAN_FRONTEND=noninteractive apt-get -y full-upgrade
+          fi
+
+      - name: Update operating system software repository
+        run: apt-get update
+
+      - name: Install operating system dependencies
+        run: apt-get install -y git unzip
+
+      - uses: actions/checkout@v4
+
+      - name: Install Composer
+        run: curl -sSL https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer
+
+      - name: Opt out of CVE-2022-24765 mitigation
+        run: git config --global safe.directory '*'
+
+      - name: Install Rector tooling dependencies
+        run: composer install --no-progress
+        working-directory: ./e107_tests/tools/rector/
+
+      - name: Run Rector against the shipping source
+        run: |
+          php -d error_reporting='E_ALL&~E_DEPRECATED' -d memory_limit=2G \
+            ./vendor/bin/rector process --no-progress-bar
+        working-directory: ./e107_tests/tools/rector/
+
+      - name: Verify Rector made no changes
+        run: |
+          if ! git diff --exit-code; then
+            echo ""
+            echo "ERROR: Rector changed files. Run"
+            echo "  e107_tests/tools/rector/vendor/bin/rector process"
+            echo "locally and commit the result."
+            exit 1
+          fi

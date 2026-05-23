@@ -1,4 +1,16 @@
 {
+  "_comment": [
+    "TODO: PHP 5.6 unit-test CI matrix row.",
+    "Composer 2.2 can resolve a parallel dependency set (codeception/codeception ^4.2,",
+    "module-asserts ^1.3, module-db ^1.0, module-phpbrowser ^1.0, module-filesystem ^1.0,",
+    "module-webdriver ^1.0) against a php 5.6 platform pin, so a downgrade pipeline for",
+    "the test harness is feasible. Blocker is the test code itself: the Cest classes,",
+    "config, and bootstrap target Codeception 5.x APIs. Running the unit suite on PHP 5.6",
+    "needs either (a) a separate composer.json + parallel test sources downgraded by Rector",
+    "or (b) backporting the Cest classes to the Codeception 4.x surface. Skipped from CI",
+    "until someone scopes that work. See .github/workflows/ (rector-idempotency.yml,",
+    "php56-lint.yml) for the gates that DO run today."
+  ],
   "name": "e107inc/e107-test",
   "description": "Test harness for e107",
   "license": "GPL-3.0-or-later",
