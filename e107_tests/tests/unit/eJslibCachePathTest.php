@@ -231,7 +231,11 @@ PROBE;
 			$probePath,
 		];
 
-		$process = proc_open($cmd, $descriptors, $pipes, $this->scratchRoot);
+		// proc_open() takes an array as the first arg since PHP 7.4. The 5.6
+		// downgrade pipeline can't reliably rewrite that pattern, so the call
+		// site does the implode itself.
+		$cmdStr = implode(' ', array_map('escapeshellarg', $cmd));
+		$process = proc_open($cmdStr, $descriptors, $pipes, $this->scratchRoot);
 		$this->assertIsResource($process, 'proc_open() must return a resource');
 
 		fclose($pipes[0]);
