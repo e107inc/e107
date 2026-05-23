@@ -34,7 +34,10 @@ class installStage7HashTest extends \Codeception\Test\Unit
 	/** @var string */
 	private static $renamedClass = 'e_install_for_5631_test';
 
-	public static function setUpBeforeClass(): void
+	/**
+     * @return void
+     */
+    public static function setUpBeforeClass()
 	{
 		if (class_exists(self::$renamedClass, false))
 		{

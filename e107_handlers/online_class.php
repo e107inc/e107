@@ -333,7 +333,7 @@ class e_online
 					{
 
 						$row['online_bot'] = $this->isBot($row['online_agent']);
-				
+
 						// Sort into usable format and add bot field. 
 						$user = array(
 							'user_location'		=> $row['online_location'],
@@ -348,7 +348,7 @@ class e_online
 							'online_user_id'	=> $row['online_user_id'],
 							'user_language'     => $row['online_language']
 						);	
-		
+
 						if($row['online_user_id'] != 0 )
 						{
 							$vals = explode('.', $row['online_user_id'], 2);
@@ -367,8 +367,8 @@ class e_online
 							$user['user_name'] = 'guest';		// Maybe should just be an empty string?
 							$this->guests[] = $user;	
 						}
-						
-						
+
+
 					}
 				}
 				if(!defined('TOTAL_ONLINE'))

@@ -867,7 +867,7 @@ class e_user_model extends e_admin_model
 		}
 		else
 		{
-			$mfield = substr($field, 5);
+			$mfield = (string) substr($field, 5);
 		}
 
 		// check for BC/override method first e.g. getSingatureValue($default, $system = false, $rawExtended);
@@ -904,7 +904,7 @@ class e_user_model extends e_admin_model
 		}
 		else
 		{
-			$mfield = substr($field, 5);
+			$mfield = (string) substr($field, 5);
 		}
 
 		// check for BC/override method first e.g. setSingatureValue($value, $system = false);
@@ -948,7 +948,7 @@ class e_user_model extends e_admin_model
 		}
 		else
 		{
-			$mfield = substr($field, 5);
+			$mfield = (string) substr($field, 5);
 		}
 
 		// check for BC/override method first e.g. getSingatureValue($default, $system = true, $rawExtended);
@@ -984,7 +984,7 @@ class e_user_model extends e_admin_model
 		}
 		else
 		{
-			$mfield = substr($field, 5);
+			$mfield = (string) substr($field, 5);
 		}
 
 		// check for BC/override method first e.g. setSingatureValue($value, $system = true);
@@ -1158,7 +1158,7 @@ class e_user_model extends e_admin_model
 	 * @param e_user_pref $user_config
 	 * @return e_user_model
 	 */
-	public function setConfig(e_user_pref $user_config)
+	public function setConfig($user_config)
 	{
 		$this->_user_config = $user_config;
 		return $this;
@@ -1174,10 +1174,11 @@ class e_user_model extends e_admin_model
 	}
 
 	/**
-	 * Set current user editor model
-	 * @return e_user_model
-	 */
-	public function setEditor(e_user_model $user_model)
+     * Set current user editor model
+     * @return e_user_model
+     * @param \e_user_model $user_model
+     */
+    public function setEditor($user_model)
 	{
 		$this->_editor = $user_model;
 		return $this;
@@ -2723,7 +2724,7 @@ class e_user_extended_model extends e_admin_model
 	 * @param e_user_extended_structure_model $structure_model
 	 * @return e_user_extended_model
 	 */
-	protected function _buildManageField(e_user_extended_structure_model $structure_model)
+	protected function _buildManageField($structure_model)
 	{
 		$ftype = $structure_model->getValue('type') == 6 ? 'integer' : 'string';
 

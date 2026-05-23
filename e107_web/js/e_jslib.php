@@ -235,15 +235,15 @@ function e_jslib_cache_path()
 			$paths = $config['paths'];
 
 			// Honor an explicit cache key if present (uppercase or lowercase form).
-			$cacheDir = $paths['CACHE_DIRECTORY'] ?? ($paths['cache'] ?? null);
+			$cacheDir = isset($paths['CACHE_DIRECTORY']) ? $paths['CACHE_DIRECTORY'] : (isset($paths['cache']) ? $paths['cache'] : null);
 
 			// Otherwise derive from SYSTEM_DIRECTORY + site_path, matching what
 			// e107::defaultDirs() does at runtime. install.php currently writes
 			// the lowercase 'system' key and no explicit cache entry.
 			if(empty($cacheDir))
 			{
-				$system = $paths['SYSTEM_DIRECTORY'] ?? ($paths['system'] ?? null);
-				$sitePath = $config['other']['site_path'] ?? '';
+				$system = isset($paths['SYSTEM_DIRECTORY']) ? $paths['SYSTEM_DIRECTORY'] : (isset($paths['system']) ? $paths['system'] : null);
+				$sitePath = isset($config['other']['site_path']) ? $config['other']['site_path'] : '';
 				if(!empty($system))
 				{
 					$cacheDir = rtrim($system, '/').'/';

@@ -78,7 +78,7 @@ class core_user_rewrite_url extends eUrlConfig
 	 * profile/edit & profile/view callback
 	 * @param eRequest $request
 	 */
-	public function idByName(eRequest $request)
+	public function idByName($request)
 	{
 		$name = $request->getRequestParam('name');
 		if(!$name) return;

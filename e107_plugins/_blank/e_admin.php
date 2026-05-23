@@ -42,11 +42,12 @@ class _blank_admin implements e_admin_addon_interface
 
 
 	/**
-	 * Extend Admin-ui Configuration Parameters eg. Fields etc.
-	 * @param $ui admin-ui object
-	 * @return array
-	 */
-	public function config(e_admin_ui $ui)
+     * Extend Admin-ui Configuration Parameters eg. Fields etc.
+     * @param $ui admin-ui object
+     * @return array
+     * @param \e_admin_ui $ui
+     */
+    public function config($ui)
 	{
 		$action     = $ui->getAction(); // current mode: create, edit, list
 		$type       = $ui->getEventName(); // 'wmessage', 'news' etc. (core or plugin)
@@ -77,11 +78,11 @@ class _blank_admin implements e_admin_addon_interface
 
 
 	/**
-	 * Process Posted Data.
-	 * @param object $ui admin-ui
-	 * @param int|array $id - Primary ID of the record being created/edited/deleted or array data of a batch process.
-	 */
-	public function process(e_admin_ui $ui, $id=null)
+     * Process Posted Data.
+     * @param \e_admin_ui $ui admin-ui
+     * @param int|array $id - Primary ID of the record being created/edited/deleted or array data of a batch process.
+     */
+    public function process($ui, $id=null)
 	{
 
 		$data       = $ui->getPosted(); // ie $_POST field-data

@@ -320,12 +320,12 @@ class sitelinks
 		// Start with an empty link
 		$linkstart = $indent = $linkadd = $screentip = $href = $link_append = '';
 		$highlighted = FALSE;
-		
+
 		if(!isset($style['linkstart_hilite'])) // Notice removal
 		{
 			$style['linkstart_hilite'] = "";	
 		}
-		
+
 		if(!isset($style['linkclass_hilite']))
 		{
 			$style['linkclass_hilite'] = "";	
@@ -361,14 +361,14 @@ class sitelinks
 			$linkInfo['link_url'] = e_HTTP.ltrim($linkInfo['link_url'],'/');
 		}
 		// By default links are not highlighted.
-		
+
 		if (isset($linkInfo['link_expand']) && $linkInfo['link_expand'])
 		{
 			// $href = " href=\"javascript:expandit('sub_".$linkInfo['link_id']."')\"";
 			$css_class .= " e-expandit";
 		}
-		
-		
+
+
 		$linkstart = $style['linkstart'];
 		$linkadd = ($style['linkclass']) ? " class='".$style['linkclass']."'" : "";
 		$linkadd = ($css_class) ? " class='".$style['linkclass'].$css_class."'" : $linkadd;
@@ -423,7 +423,7 @@ class sitelinks
 		{
 			$linkstart = preg_replace('/\<img.*\>/si', '', $linkstart);
 			$linkstart .= $tp->toIcon($linkInfo['link_button'],array('legacy'=> "{e_IMAGE}icons/"));
-			
+
 		/*	if($linkInfo['link_button'][0]=='{')
 			{
 				$linkstart .= "<img src='".$tp->replaceConstants($linkInfo['link_button'],'abs')."' alt='' style='vertical-align:middle' />";	
@@ -983,13 +983,13 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
         }
 
 
-		
+
 		$this->setIconArray();	
-		
-			
+
+
 		if($mode === 'sub')
 		{
-				
+
 				//FIXME  array structure suitable for e_admin_menu - see shortcodes/admin_navigation.php
 				/*
 				 * Info about sublinks array structure
@@ -1008,16 +1008,16 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 				$array_sub_functions[17][] = array(e_ADMIN.'newspost.php', LAN_MANAGE, ADLAN_3, 'H', 3, defset('E_16_MANAGE'), defset('E_32_MANAGE'));
 				$array_sub_functions[17][] = array(e_ADMIN.'newspost.php?create', LAN_CREATE, ADLAN_2, 'H', 3, defset('E_16_CREATE'), defset('E_32_CREATE'));
 				$array_sub_functions[17][] = array(e_ADMIN.'newspost.php?pref', LAN_PREFS, LAN_PREFS, 'H', 3, defset('E_16_SETTINGS'), defset('E_32_SETTINGS'));
-				
+
 				return $array_sub_functions;
 		}
-		
-		
+
+
 			//FIXME array structure suitable for e_admin_menu (NOW admin() below) - see shortcodes/admin_navigation.php
 			//TODO find out where is used $array_functions elsewhere, refactor it
-		
+
 			//XXX DO NOT EDIT without first checking perms in user_handler.php !!!!
-			
+
 		$array_functions = $this->adminLinksArray();
 
 		if($mode === 'legacy')
@@ -1029,12 +1029,12 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
     	$array_functions_assoc = $this->convert_core_icons($newarray);
 
 
-        
+
        if($mode === 'core') // Core links only.
         {          
             return $array_functions_assoc;          
         }
-            
+
         $merged = array_merge($array_functions_assoc, $this->pluginLinks($E_16_PLUGMANAGER, "array"));
         $sorted = multiarray_sort($merged,'title'); // this deleted the e-xxxx and p-xxxxx keys. 
         return $this->restoreKeys($sorted); // we restore the keys with this. 
@@ -1437,7 +1437,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 				$temp = varset($tmpl[$tmplateKey]);
 			}
 
-			$replace['LINK_ID'] = $e107_vars[$act]['link_id'] ?? $rid;
+			$replace['LINK_ID'] = isset($e107_vars[$act]['link_id']) ? $e107_vars[$act]['link_id'] : $rid;
 			$replace['LINK_CARET'] = !empty($e107_vars[$act]['link_caret']) ? '<i class="caret-icon fa fa-chevron-down fa-2x"></i>' : '';
 			$replace['LINK_TEXT'] = str_replace(" ", "&nbsp;", varset($e107_vars[$act]['text']));
 			$replace['LINK_DESCRIPTION'] = varset($e107_vars[$act]['description']);
@@ -1499,7 +1499,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			}
 			else 
 			{
-				$START_SUB = $tmpl['start_sub'] ?? '';
+				$START_SUB = isset($tmpl['start_sub']) ? $tmpl['start_sub'] : '';
 			}		
 	
 			if(!empty($e107_vars[$act]['sub']))
@@ -1511,7 +1511,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 
 				$replace['SUB_MENU']  = $tp->parseTemplate($START_SUB, false, $replace);
 				$replace['SUB_MENU'] .= $this->admin(false, $active_page, $e107_vars[$act]['sub'], $tmpl, true, (isset($e107_vars[$act]['sort']) ? $e107_vars[$act]['sort'] : $sortlist));
-				$replace['SUB_MENU'] .= $tmpl['end_sub'] ?? '';
+				$replace['SUB_MENU'] .= isset($tmpl['end_sub']) ? $tmpl['end_sub'] : '';
 			}
 
 

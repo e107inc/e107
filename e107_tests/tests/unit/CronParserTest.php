@@ -77,9 +77,9 @@ class CronParserTest extends \Codeception\Test\Unit
 	{
 		$lastTimeZone = date_default_timezone_get();
 		date_default_timezone_set('America/Chihuahua');
-	
+
 		$this->cp->calcLastRan('* * * * *');
-		
+
 		$due = $this->cp->getLastDue();
 		$now = $this->cp->getNow();
 

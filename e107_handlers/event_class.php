@@ -274,7 +274,7 @@ class e107_event
 				
 			}
 		}
-		return ($ret ?? false);
+		return (isset($ret) ? $ret : false);
 	}
 
 	/**

@@ -345,7 +345,7 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 					$ret .= $tp->toGlyph('fa-paperclip')."<a href='".$url."'>{$filename}</a><br />";
 					$i++;
 				}
-				$ret = substr($ret, 0, -3);
+				$ret = (string) substr($ret, 0, -3);
 				return $ret;
 			}
 		}

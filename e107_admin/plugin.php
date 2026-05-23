@@ -1309,7 +1309,7 @@ class plugin_online_ui extends e_admin_ui
 					<div><small class="text-muted"><i class="fa fa-user"></i> {AUTHOR} <i>{DATE}</i></small> <span class="pull-right">&nbsp; {OPTIONS}</span></div>
 					</td></tr>
 					</table>
-					
+
 				</div>';
 
 			$this->perPage = 180;

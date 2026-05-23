@@ -382,8 +382,9 @@ class redirection
      * @param array $server  The $_SERVER superglobal containing request data.
      * @param string $prefUrl The preferred site URL from preferences.
      * @return string|bool   The redirection URL if a redirection is required, or false if no redirection is needed.
+     * @param string $adminDir
      */
-	public function host(array $server, string $prefUrl, string $adminDir='')
+    public function host($server, $prefUrl, $adminDir='')
 	{
 
 		// Extract the current domain and port

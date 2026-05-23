@@ -476,7 +476,7 @@ class e_fileTest extends \Codeception\Test\Unit
 				foreach($test as $mime=>$ext)
 				{
 					$actual = $this->fl->getFileExtension($mime);
-		
+
 					self::assertSame($ext, $actual);
 				}	
 			}

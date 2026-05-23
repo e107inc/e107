@@ -23,11 +23,12 @@ class social_admin
 
 
 	/**
-	 * Extend Admin-ui Parameters
-	 * @param $ui admin-ui object
-	 * @return array
-	 */
-	public function config(e_admin_ui $ui)
+     * Extend Admin-ui Parameters
+     * @param $ui admin-ui object
+     * @return array
+     * @param \e_admin_ui $ui
+     */
+    public function config($ui)
 	{
 		$action     = $ui->getAction(); // current mode: create, edit, list
 		$type       = $ui->getEventName(); // 'wmessage', 'news' etc.
@@ -56,10 +57,11 @@ class social_admin
 
 
 	/**
-	 * Process Posted Data.
-	 * @param $ui admin-ui object
-	 */
-	public function process(e_admin_ui $ui, $id=0)
+     * Process Posted Data.
+     * @param $ui admin-ui object
+     * @param \e_admin_ui $ui
+     */
+    public function process($ui, $id=0)
 	{
 		$data       = $ui->getPosted();
 		$action     = $ui->getAction(); // current mode: create, edit, list

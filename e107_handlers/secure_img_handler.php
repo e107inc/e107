@@ -240,7 +240,7 @@ class secure_image
 		}
 
 		// Compare solution (case-sensitive)
-		$solution = $data['solution'] ?? '';
+		$solution = isset($data['solution']) ? $data['solution'] : '';
 
 		return ($solution === $userInput);
 	}
@@ -330,8 +330,8 @@ class secure_image
 		else
 		{
 			$r = hexdec(substr($hex, 0, 2));
-			$g = hexdec(substr($hex, 2, 2));
-			$b = hexdec(substr($hex, 4, 2));
+			$g = hexdec((string) substr($hex, 2, 2));
+			$b = hexdec((string) substr($hex, 4, 2));
 		}
 
 		$rgb = array($r, $g, $b);

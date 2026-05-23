@@ -36,7 +36,7 @@ if(ADMIN && empty($template))
 {
 	$text = "Missing Template. Check that your theme's news_menu_template.php file contains an 'archive' template. ";
 }
-  
+
 foreach($arr as $year=>$val)
 {
 	if($year == date('Y'))
@@ -51,17 +51,17 @@ foreach($arr as $year=>$val)
 	}
 
 	$id = "news-archive-".$year;
- 
+
 
   $var = array('EXPANDOPEN' => $expandOpen,
                'YEAR_ID' => $id,
                'YEAR_NAME' => $year,
                'YEAR_DISPLAY' => $displayYear
- 
+
    );
- 
+
   $text .=  $tp->simpleParse($template['year_start'], $var);
- 
+
 		foreach($val as $month=>$items)
 		{
 			//$displayMonth = ($mCount === 1) ? 'display:block': 'display:none';
@@ -72,16 +72,16 @@ foreach($arr as $year=>$val)
                    'MONTH_NAME' => $monthLabels[$month],
                    'MONTH_COUNT'=> count($items),
       );
-         
+
 			$text .=  $tp->simpleParse($template['month_start'], $var);
- 
+
       /*
 			if(!empty($parm['badges'])) // param only (no menu-manager config. To be replaced by template.
 			{
 				$num = count($items);
 				$text .= "<span class='badge'>".$num."</span>";
 			} */
- 
+
 
 			foreach($items as $row)
 			{
@@ -93,7 +93,7 @@ foreach($arr as $year=>$val)
 			}
 			$text .= $template['month_end'];
 		}
- 
+
 	$text .= $template['year_end'];
 
 }

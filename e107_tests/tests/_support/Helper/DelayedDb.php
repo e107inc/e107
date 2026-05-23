@@ -3,9 +3,14 @@ namespace Helper;
 
 class DelayedDb extends \Codeception\Module\Db
 {
-    protected array $requiredFields = ['dsn', 'user', 'password']; // Enforce required config
-
-    public function _initialize(): void
+    /**
+     * @var mixed[]
+     */
+    protected $requiredFields = ['dsn', 'user', 'password']; // Enforce required config
+    /**
+     * @return void
+     */
+    public function _initialize()
     {
         // Call parent directly instead of deferring
         parent::_initialize();

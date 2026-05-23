@@ -130,24 +130,24 @@ class page_search extends e_search // include plugin-folder in the name.
 	function where($parm=array())
 	{
 		$tp = e107::getParser();
-	
+
 		$time = time();
 
 		$qry = " (c.chapter_visibility IN (".USERCLASS_LIST.") OR p.page_chapter = 0) AND p.page_class IN (".USERCLASS_LIST.") AND p.page_text != '' AND ";
-		
+
 		if(!empty($parm['cat']) && $parm['cat'] != 'all')
 		{
 			$qry .= " p.page_chapter='".intval($parm['cat'])."' AND";	
 		}
-		
+
 		return $qry;
-		
+
 		/*
-		
+
 		if (isset($parm['time']) && is_numeric($parm['time'])) {
 			$qry .= " n.news_datestamp ".($parm['on'] == 'new' ? '>=' : '<=')." '".(time() - $parm['time'])."' AND";
 		}
-				
+
 		return $qry;
 		*/
 	

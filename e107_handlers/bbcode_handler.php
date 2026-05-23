@@ -257,8 +257,8 @@ class e_bbcode
 					// Next lines could be deleted - but gives better rejection of 'stray' opening brackets
 					if ((!$is_proc) && (($temp = strrpos($cont,"[")) !== 0))
 					{
-						$oddtext = substr($cont,0,$temp);
-						$cont = substr($cont,$temp);
+						$oddtext = (string) substr($cont,0,$temp);
+						$cont = (string) substr($cont,$temp);
 					}
 				}
 

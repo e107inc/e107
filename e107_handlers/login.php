@@ -161,7 +161,9 @@ class userlogin
 									$authorized = true;
 								break;
 								case LOGIN_TRY_OTHER:
-									if ($key === array_key_last($authMethod)) { 
+									end($authMethod);
+                                    if ($key === key($authMethod)) { 
+                                        reset($authMethod);
                                         return $this->invalidLogin($username,LOGIN_ABORT);
                                     }
 									continue 2;

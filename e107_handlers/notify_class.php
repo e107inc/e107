@@ -289,7 +289,7 @@ class notify
 					$mailData['mail_media'][$k] = array('path'=>$v);
 				}
 			}
-			
+
 			$mailer->sendEmails('notify', $mailData, $recipients);
 
 			e107::getLog()->addEvent(10,-1,'NOTIFY',$subject,$message,FALSE,LOG_TO_ROLLING);

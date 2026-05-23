@@ -89,10 +89,10 @@ class e_db_pdo implements e_db
 		$config =  e107::getMySQLConfig();
 
 
-		$this->mySQLserver      = $config['mySQLserver'] ?? '';
-		$this->mySQLuser        = $config['mySQLuser'] ?? '';
-		$this->mySQLpassword    = $config['mySQLpassword'] ?? '';
-		$this->mySQLdefaultdb   = $config['mySQLdefaultdb'] ?? '';
+		$this->mySQLserver      = isset($config['mySQLserver']) ? $config['mySQLserver'] : '';
+		$this->mySQLuser        = isset($config['mySQLuser']) ? $config['mySQLuser'] : '';
+		$this->mySQLpassword    = isset($config['mySQLpassword']) ? $config['mySQLpassword'] : '';
+		$this->mySQLdefaultdb   = isset($config['mySQLdefaultdb']) ? $config['mySQLdefaultdb'] : '';
 		$this->mySQLport        = varset($config['port'], 3306);
 		$this->mySQLPrefix      = varset($config['mySQLprefix'], 'e107_');
 
@@ -2242,7 +2242,7 @@ class e_db_pdo implements e_db
 				$length = strlen($prefix);
 				while($rows = $this->fetch('num'))
 				{
-					$table[] = substr($rows[0],$length);
+					$table[] = (string) substr($rows[0],$length);
 				}
 			}
 			return $table;

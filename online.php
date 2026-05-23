@@ -64,10 +64,10 @@
 		$class_check = true;
 		list($oid, $oname) = explode(".", $uinfo, 2);
 		$online_location = $pinfo;
-		$online_location_page = substr(strrchr($online_location, "/"), 1);
+		$online_location_page = (string) substr(strrchr($online_location, "/"), 1);
 		if(strpos($online_location, "forum_") === false || strpos($online_location, "content.php") === false || strpos($online_location, "comment.php") === false)
 		{
-			$online_location_page = str_replace(".php", "", substr(strrchr($online_location, "/"), 1));
+			$online_location_page = str_replace(".php", "", (string) substr(strrchr($online_location, "/"), 1));
 		}
 
 		switch($online_location_page)
@@ -182,7 +182,7 @@
 
 		if(strpos($online_location, "content.php") !== false)
 		{
-			$tmp = explode(".", substr(strrchr($online_location, "php."), 2));
+			$tmp = explode(".", (string) substr(strrchr($online_location, "php."), 2));
 			if($tmp[0] == "article")
 			{
 				$sql->select("content", "content_heading, content_class", "content_id='" . (int) $tmp[1] . "'");
@@ -255,7 +255,7 @@
 
 		if(strpos($online_location, "forum") !== false)
 		{
-			$tmp = explode(".", substr(strrchr($online_location, "php."), 2));
+			$tmp = explode(".", (string) substr(strrchr($online_location, "php."), 2));
 			if(strpos($online_location, "_viewtopic") !== false)
 			{
 				if($tmp[2])

@@ -117,7 +117,7 @@ class resize_handlerTest extends \Codeception\Test\Unit
 	 *
 	 * @return string[][]
 	 */
-	public function destinationPayloads(): array
+	public function destinationPayloads()
 	{
 		return [
 			'dollar parens' => ['out_$(touch %s).jpg'],
@@ -127,9 +127,10 @@ class resize_handlerTest extends \Codeception\Test\Unit
 	}
 
 	/**
-	 * @dataProvider destinationPayloads
-	 */
-	public function testResizeImageMustNotExecuteShellMetacharactersInDestination(string $payloadTemplate)
+     * @dataProvider destinationPayloads
+     * @param string $payloadTemplate
+     */
+    public function testResizeImageMustNotExecuteShellMetacharactersInDestination($payloadTemplate)
 	{
 		// Marker file lives next to the source so cleanup is automatic in _after().
 		// Name uses only hex so it can't itself influence shell parsing.
@@ -213,7 +214,12 @@ class resize_handlerTest extends \Codeception\Test\Unit
 		}
 	}
 
-	private function createSourceImage(string $path, int $width, int $height)
+	/**
+     * @param string $path
+     * @param int $width
+     * @param int $height
+     */
+    private function createSourceImage($path, $width, $height)
 	{
 		$img = imagecreatetruecolor($width, $height);
 		imagefill($img, 0, 0, imagecolorallocate($img, 135, 206, 235));
@@ -222,12 +228,13 @@ class resize_handlerTest extends \Codeception\Test\Unit
 	}
 
 	/**
-	 * Filenames in $dir that contain output from the `id` command,
-	 * which only appears if command substitution actually fired.
-	 *
-	 * @return string[]
-	 */
-	private function findInjectedFiles(string $dir): array
+     * Filenames in $dir that contain output from the `id` command,
+     * which only appears if command substitution actually fired.
+     *
+     * @return string[]
+     * @param string $dir
+     */
+    private function findInjectedFiles($dir)
 	{
 		$leaked = [];
 		foreach (scandir($dir) as $entry)
@@ -246,7 +253,10 @@ class resize_handlerTest extends \Codeception\Test\Unit
 		return $leaked;
 	}
 
-	private function rmrf(string $dir)
+	/**
+     * @param string $dir
+     */
+    private function rmrf($dir)
 	{
 		foreach (scandir($dir) as $entry)
 		{
@@ -260,7 +270,10 @@ class resize_handlerTest extends \Codeception\Test\Unit
 		@rmdir($dir);
 	}
 
-	private static function imageMagickAvailable(): bool
+	/**
+     * @return bool
+     */
+    private static function imageMagickAvailable()
 	{
 		$which = trim((string) shell_exec('command -v convert 2>/dev/null'));
 		return $which !== '';

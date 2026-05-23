@@ -11,13 +11,19 @@ class UnattendedInstallCest
 	const SITE_PATH      = '000000test';
 	const MYSQL_PREFIX   = 'e107_';
 
-	public function _before(AcceptanceTester $I)
+	/**
+     * @param \AcceptanceTester $I
+     */
+    public function _before($I)
 	{
 		$I->unlinkE107ConfigFromTestEnvironment();
 		$this->dropAllAppTables($I);
 	}
 
-	public function _after(AcceptanceTester $I)
+	/**
+     * @param \AcceptanceTester $I
+     */
+    public function _after($I)
 	{
 	}
 
@@ -34,11 +40,13 @@ class UnattendedInstallCest
 	}
 
 	// Test order matters: the "rejects" cases leave the database empty,
-	// so they run first. The successful-install cases run last so that
-	// subsequent Cests (AdminLoginCest, UserSignupCest, ...) can rely on
-	// a fully installed app with admin/admin credentials.
-
-	public function unattendedInstallRejectsMissingConfig(AcceptanceTester $I)
+    // so they run first. The successful-install cases run last so that
+    // subsequent Cests (AdminLoginCest, UserSignupCest, ...) can rely on
+    // a fully installed app with admin/admin credentials.
+    /**
+     * @param \AcceptanceTester $I
+     */
+    public function unattendedInstallRejectsMissingConfig($I)
 	{
 		$I->wantTo("Reject create_tables_unattended when no e107_config.php is present");
 
@@ -46,7 +54,10 @@ class UnattendedInstallCest
 		$this->assertUnattendedAdminAbsent($I);
 	}
 
-	public function unattendedInstallRejectsWrongCredentials(AcceptanceTester $I)
+	/**
+     * @param \AcceptanceTester $I
+     */
+    public function unattendedInstallRejectsWrongCredentials($I)
 	{
 		$I->wantTo("Reject create_tables_unattended when the URL credentials don't match the config");
 
@@ -55,7 +66,10 @@ class UnattendedInstallCest
 		$this->assertUnattendedAdminAbsent($I);
 	}
 
-	public function unattendedInstallWithLegacyGlobalsConfig(AcceptanceTester $I)
+	/**
+     * @param \AcceptanceTester $I
+     */
+    public function unattendedInstallWithLegacyGlobalsConfig($I)
 	{
 		$I->wantTo("Install e107 unattended with a legacy globals-format e107_config.php");
 
@@ -64,7 +78,10 @@ class UnattendedInstallCest
 		$this->assertInstallSucceeded($I);
 	}
 
-	public function unattendedInstallWithV24ArrayConfig(AcceptanceTester $I)
+	/**
+     * @param \AcceptanceTester $I
+     */
+    public function unattendedInstallWithV24ArrayConfig($I)
 	{
 		$I->wantTo("Install e107 unattended with a v2.4 array-format e107_config.php");
 
