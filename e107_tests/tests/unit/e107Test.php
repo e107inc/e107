@@ -1373,7 +1373,7 @@ class e107Test extends \Codeception\Test\Unit
 		}
 
 		// Call the method you need to test.
-		$this->e107::coreLan('membersonly'); // 'admin' is an example; adjust if needed based on your actual language files
+		e107::coreLan('membersonly'); // 'admin' is an example; adjust if needed based on your actual language files
 
 		// Check if the constant is correctly defined afterward.
 		$this::assertTrue(defined($constant), "coreLan() should define the constant '{$constant}'.");

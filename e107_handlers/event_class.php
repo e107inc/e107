@@ -230,7 +230,7 @@ class e107_event
 
 						if (strpos($method, '::') !== false)    // If $method contains "::", call it statically
 						{
-						    [$staticClass, $staticMethod] = explode('::', $method, 2);
+						    list($staticClass, $staticMethod) = explode('::', $method, 2);
 						    $ret = $staticClass::$staticMethod($data, $eventname);
 						}
 						elseif(is_callable([$class, $method]))
