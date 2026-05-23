@@ -2202,7 +2202,7 @@ class themeHandler
 		$website 		= !empty($theme['website']) ? "<a href='".$theme['website']."' rel='external'>".$theme['website']."</a>" : "";
 //		$preview 		= "<a href='".SITEURL."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >".($theme['preview'] ? "<img src='".$theme['preview']."' style='border: 1px solid #000;width:200px' alt='' />" : "<img src='".e_IMAGE_ABS."admin_images/nopreview.png' title='".TPVLAN_12."' alt='' />")."</a>";
 		$description 	= vartrue($theme['description']);
-		$compat			= (version_compare(1.9,$theme['compatibility'],'<')) ? "<span class='label label-".$compatLabelType."'>".$theme['compatibility']."</span><span class='text-".$compatLabelType."'> ".$compatLabel."</span>": vartrue($theme['compatibility'],'1.0');
+		$compat			= (version_compare('1.9',$theme['compatibility'],'<')) ? "<span class='label label-".$compatLabelType."'>".$theme['compatibility']."</span><span class='text-".$compatLabelType."'> ".$compatLabel."</span>": vartrue($theme['compatibility'],'1.0');
 		$price 			= (!empty($theme['price'])) ? "<span class='label label-primary'><i class='fa fa-shopping-cart icon-white'></i> ".$theme['price']."</span>" : "<span class='label label-success'>".TPVLAN_76."</span>";
 
 		$text = e107::getForm()->open('theme-info','post');
