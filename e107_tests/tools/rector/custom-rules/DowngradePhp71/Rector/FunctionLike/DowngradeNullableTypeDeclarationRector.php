@@ -110,6 +110,13 @@ CODE_SAMPLE
         }
 
         $type = $this->staticTypeMapper->mapPhpParserNodePHPStanType($param->type);
+        // Rector 2.x's StaticTypeMapper occasionally returns null for nullable
+        // parameter types that resolve to MixedType-with-explicit-null. We can
+        // still strip the native type (refactorParamType does that next) but
+        // there's nothing meaningful to annotate, so skip the docblock.
+        if ($type === null) {
+            return;
+        }
 
         $paramName = $this->getName($param->var);
         if ($paramName === null) {
