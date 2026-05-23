@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+#
+# php56-shell — drop into an interactive PHP 5.6 shell on the worktree
+#
+# Companion to bin/php56-lint. The lint script does a fast pass/fail check
+# per file; this one is for poking around — running `php -a`, executing a
+# downgraded entry point, or experimenting with Composer 2.2 (the last LTS
+# line that still supports PHP 5.6). The repo is bind-mounted read-write at
+# /repo so you can iterate without leaving the shell.
+#
+# Usage:
+#   bin/php56-shell                 # interactive bash inside php:5.6-cli
+#   bin/php56-shell -- <cmd> ...    # run one command non-interactively
+#
+# Composer:
+#   Not preinstalled. Run `install-composer` (a helper baked in by this
+#   script) to fetch the Composer 2.2 LTS phar — it's the final release
+#   line supporting PHP 5.6.
+#
+# Requires: bash 4+, docker (or a `docker` shim such as podman).
+#
+set -euo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd -- "${SCRIPT_DIR}/../../../.." && pwd)"
+IMAGE="${PHP56_SHELL_IMAGE:-docker.io/library/php:5.6-cli}"
+
+if ! command -v docker >/dev/null 2>&1; then
+    echo "php56-shell: error: docker is not on PATH" >&2
+    exit 127
+fi
+
+# install-composer is a tiny inline shim materialised at /usr/local/bin
+# inside the container so users can pull Composer 2.2 LTS on demand.
+INSTALL_COMPOSER='#!/bin/sh
+set -eu
+echo "Fetching Composer 2.2 LTS (the last line supporting PHP 5.6)..."
+curl -sSLf https://getcomposer.org/installer \
+    | php -- --install-dir=/usr/local/bin --filename=composer --2.2
+composer --version
+'
+
+# Use a writable tmpfs for /home so user-id mapping never trips up programs
+# that want $HOME. Repo is rw here (unlike php56-lint) — that is the point.
+DOCKER_ARGS=(
+    --rm
+    --user "$(id -u):$(id -g)"
+    -v "${REPO_ROOT}:/repo"
+    -w /repo
+    -e HOME=/tmp
+    --tmpfs /tmp:exec
+)
+
+# Allocate a TTY only when the host actually has one.
+if [ -t 0 ] && [ -t 1 ]; then
+    DOCKER_ARGS+=(-it)
+fi
+
+# Inject install-composer via an entrypoint shim. We write it to /tmp and
+# symlink into PATH so we don't need to bake a custom image.
+ENTRY='set -eu
+printf %s "$INSTALL_COMPOSER_BODY" > /tmp/install-composer
+chmod +x /tmp/install-composer
+ln -sf /tmp/install-composer /usr/local/bin/install-composer 2>/dev/null || true
+export PATH="/tmp:$PATH"
+exec "$@"
+'
+
+if [ "$#" -eq 0 ]; then
+    set -- bash
+elif [ "$1" = "--" ]; then
+    shift
+fi
+
+exec docker run "${DOCKER_ARGS[@]}" \
+    -e "INSTALL_COMPOSER_BODY=${INSTALL_COMPOSER}" \
+    --entrypoint /bin/bash \
+    "${IMAGE}" \
+    -c "${ENTRY}" -- "$@"

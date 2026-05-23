@@ -1,0 +1,102 @@
+#!/usr/bin/env bash
+#
+# php56-lint — verify that PHP source parses under PHP 5.6
+#
+# Part of the e107 downgrade pipeline (see e107_tests/tools/rector/). Modern
+# e107 source is transformed by Rector into PHP 5.6-compatible code; this
+# script confirms the output is at least syntactically valid for the lowest
+# supported runtime. It runs `php -l` against each given file inside an
+# upstream `php:5.6-cli` Docker image because no live host PHP supports 5.6.
+#
+# Usage:
+#   bin/php56-lint <file> [file ...]   # lint specific files
+#   bin/php56-lint --all               # lint every *.php in the worktree
+#                                        (skips vendor/, node_modules/, .git/,
+#                                        and the Rector cache)
+#
+# Files may be absolute or repo-relative. Exit status is 0 iff every file
+# parses cleanly; the final summary line reports pass/fail counts.
+#
+# Requires: bash 4+, docker (or a `docker` shim such as podman).
+#
+set -euo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+# bin -> rector -> tools -> e107_tests -> repo root
+REPO_ROOT="$(cd -- "${SCRIPT_DIR}/../../../.." && pwd)"
+IMAGE="${PHP56_LINT_IMAGE:-docker.io/library/php:5.6-cli}"
+
+if ! command -v docker >/dev/null 2>&1; then
+    echo "php56-lint: error: docker is not on PATH" >&2
+    exit 127
+fi
+
+if [ "$#" -eq 0 ]; then
+    echo "Usage: $(basename "$0") <file> [file ...] | --all" >&2
+    exit 2
+fi
+
+declare -a TARGETS=()
+if [ "$1" = "--all" ]; then
+    while IFS= read -r -d '' f; do
+        TARGETS+=("${f#./}")
+    done < <(cd "${REPO_ROOT}" && find . -type f -name '*.php' \
+        -not -path './.git/*' \
+        -not -path './*/vendor/*' -not -path './vendor/*' \
+        -not -path './*/node_modules/*' -not -path './node_modules/*' \
+        -not -path './e107_tests/tools/rector/.rector-cache/*' \
+        -print0 | sort -z)
+else
+    for arg in "$@"; do
+        # Normalise absolute -> repo-relative; reject anything outside the repo.
+        case "$arg" in
+            /*) rel="${arg#"${REPO_ROOT}/"}" ;;
+            *)  rel="$arg" ;;
+        esac
+        if [ "$rel" = "$arg" ] && [ "${arg#/}" != "$arg" ]; then
+            echo "php56-lint: skipping (outside repo): $arg" >&2
+            continue
+        fi
+        if [ ! -f "${REPO_ROOT}/${rel}" ]; then
+            echo "php56-lint: skipping (not a file): $arg" >&2
+            continue
+        fi
+        TARGETS+=("$rel")
+    done
+fi
+
+TOTAL="${#TARGETS[@]}"
+if [ "$TOTAL" -eq 0 ]; then
+    echo "php56-lint: no files to lint" >&2
+    exit 2
+fi
+
+# Drive the loop inside a single container to avoid N startup costs. The
+# subshell prints `OK <rel>` / `FAIL <rel>` lines plus the inner php output.
+# We tally on the host side so the exit code reflects all failures.
+PASS=0; FAIL=0
+while IFS= read -r line; do
+    printf '%s\n' "$line"
+    case "$line" in
+        "OK "*)   PASS=$((PASS + 1)) ;;
+        "FAIL "*) FAIL=$((FAIL + 1)) ;;
+    esac
+done < <(printf '%s\0' "${TARGETS[@]}" | docker run --rm -i \
+        --user "$(id -u):$(id -g)" \
+        -v "${REPO_ROOT}:/repo:ro" \
+        -w /repo \
+        "${IMAGE}" \
+        bash -c '
+            set -u
+            while IFS= read -r -d "" rel; do
+                if out="$(php -l -d display_errors=1 "$rel" 2>&1)"; then
+                    printf "OK %s\n" "$rel"
+                else
+                    printf "FAIL %s\n%s\n" "$rel" "$out"
+                fi
+            done
+        ')
+
+printf -- '----\n'
+printf 'php56-lint: %d passed, %d failed (of %d)\n' "$PASS" "$FAIL" "$TOTAL"
+[ "$FAIL" -eq 0 ]
