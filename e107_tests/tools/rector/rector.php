@@ -43,14 +43,14 @@ return static function (RectorConfig $rectorConfig): void {
     $root = __DIR__ . '/../../..';
     $rectorConfig->paths([
         // Top-level entry-point scripts (class2.php, index.php, install.php, ...)
-        // are globbed by the listed subdirs through their includes — but Rector
+        // are globbed by the listed subdirs through their includes, but Rector
         // only processes files passed explicitly, so name the directory plus the
         // bare PHPs at repo root.
         $root,
     ]);
 
     // 8.x → 7.2 from upstream rector/rector-downgrade-php 0.15.1.
-    // We deliberately omit PHP_71 here — our vendored Php71 rules handle that step.
+    // We deliberately omit PHP_71 here; our vendored Php71 rules handle that step.
     $rectorConfig->sets([
         DowngradeSetList::PHP_82,
         DowngradeSetList::PHP_81,
@@ -80,7 +80,7 @@ return static function (RectorConfig $rectorConfig): void {
         DowngradeIsIterableRector::class,
         // DowngradePhp71JsonConstRector excluded: references
         // Rector\Enum\JsonConstant::UNESCAPED_LINE_TERMINATORS which doesn't
-        // exist in 2.x's JsonConstant enum — needs porting to current API.
+        // exist in 2.x's JsonConstant enum. Needs porting to current API.
 
         DowngradeScalarTypeDeclarationRector::class,
         DowngradeNullCoalesceRector::class,
@@ -110,6 +110,13 @@ return static function (RectorConfig $rectorConfig): void {
         \Rector\DowngradePhp81\Rector\FuncCall\DowngradeHashAlgorithmXxHashRector::class,
         // DowngradeStreamIsattyRector needs StmtsAwareInterface (missing in 2.x core).
         \Rector\DowngradePhp72\Rector\FuncCall\DowngradeStreamIsattyRector::class,
+        // DowngradeProcOpenArrayCommandArgRector is non-idempotent: it wraps
+        // proc_open's first arg in is_array() each pass, never recognising its
+        // own output as already-handled, so successive runs balloon the
+        // expression exponentially. We source-fix the one array-form call
+        // (eJslibCachePathTest::runProbe) to pre-implode at the call site;
+        // any future array-form proc_open() call must do the same.
+        \Rector\DowngradePhp74\Rector\FuncCall\DowngradeProcOpenArrayCommandArgRector::class,
 
         // Third-party vendored dependencies handled in their own pipeline
         // (see firebase/php-jwt audit task). Process upstream code at upgrade
@@ -117,7 +124,7 @@ return static function (RectorConfig $rectorConfig): void {
         $root . '/e107_handlers/vendor',
         $root . '/e107_tests/vendor',
 
-        // The Rector tooling itself is intentionally modern PHP — never
+        // The Rector tooling itself is intentionally modern PHP. Never
         // downgrade it, and never let it try to downgrade its own caches.
         $root . '/e107_tests/tools',
 
@@ -125,14 +132,14 @@ return static function (RectorConfig $rectorConfig): void {
         $root . '/e107_tests/tests/_output',
         $root . '/e107_tests/tests/_support/_generated',
 
-        // Static assets and docs — no PHP, but a few asset bundles
-        // include .php tooling we don't want to touch.
+        // Docs and media directories have no PHP, so skip them; Rector
+        // shouldn't waste cycles enumerating asset trees. (e107_web and
+        // e107_images DO contain shipping PHP scripts and stay in scope.)
         $root . '/e107_docs',
-        $root . '/e107_images',
         $root . '/e107_media',
-        $root . '/e107_web',
 
-        // Git/Claude workspace metadata.
+        // CI release-build helpers and workspace metadata. Never shipped.
+        $root . '/.github',
         $root . '/.git',
         $root . '/.claude',
     ]);
