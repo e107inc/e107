@@ -217,7 +217,9 @@ class e107RequireLegacyTemplateTest extends \Codeception\Test\Unit
 	{
 		// Indirect check: second call with same path should still work (and
 		// for templates with no LAN_*, must not emit warnings).
-		$body = "<?php\n\$GLOBALS['__test_cached'] = (\$GLOBALS['__test_cached'] ?? 0) + 1;\n";
+		// Template body uses isset()/ternary instead of ?? because v2.3.x
+		// CI still runs PHP 5.6 cells, which predate null-coalesce.
+		$body = "<?php\n\$GLOBALS['__test_cached'] = (isset(\$GLOBALS['__test_cached']) ? \$GLOBALS['__test_cached'] : 0) + 1;\n";
 		$path = $this->writeTempTemplate('cached.php', $body);
 
 		e107::requireLegacyTemplate($path);
