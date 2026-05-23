@@ -40,9 +40,13 @@ use E107\Rector\DowngradePhp71\Rector\String_\DowngradeNegativeStringOffsetToStr
 use E107\Rector\DowngradePhp71\Rector\TryCatch\DowngradePipeToMultiCatchExceptionRector;
 
 return static function (RectorConfig $rectorConfig): void {
-    // Prototype scope — start narrow, broaden once we trust the output.
+    $root = __DIR__ . '/../../..';
     $rectorConfig->paths([
-        __DIR__ . '/../../../e107_handlers/session_handler.php',
+        // Top-level entry-point scripts (class2.php, index.php, install.php, ...)
+        // are globbed by the listed subdirs through their includes — but Rector
+        // only processes files passed explicitly, so name the directory plus the
+        // bare PHPs at repo root.
+        $root,
     ]);
 
     // 8.x → 7.2 from upstream rector/rector-downgrade-php 0.15.1.
@@ -106,6 +110,31 @@ return static function (RectorConfig $rectorConfig): void {
         \Rector\DowngradePhp81\Rector\FuncCall\DowngradeHashAlgorithmXxHashRector::class,
         // DowngradeStreamIsattyRector needs StmtsAwareInterface (missing in 2.x core).
         \Rector\DowngradePhp72\Rector\FuncCall\DowngradeStreamIsattyRector::class,
+
+        // Third-party vendored dependencies handled in their own pipeline
+        // (see firebase/php-jwt audit task). Process upstream code at upgrade
+        // time, not as part of e107 source downgrade.
+        $root . '/e107_handlers/vendor',
+        $root . '/e107_tests/vendor',
+
+        // The Rector tooling itself is intentionally modern PHP — never
+        // downgrade it, and never let it try to downgrade its own caches.
+        $root . '/e107_tests/tools',
+
+        // Generated artefacts and per-environment scratch.
+        $root . '/e107_tests/tests/_output',
+        $root . '/e107_tests/tests/_support/_generated',
+
+        // Static assets and docs — no PHP, but a few asset bundles
+        // include .php tooling we don't want to touch.
+        $root . '/e107_docs',
+        $root . '/e107_images',
+        $root . '/e107_media',
+        $root . '/e107_web',
+
+        // Git/Claude workspace metadata.
+        $root . '/.git',
+        $root . '/.claude',
     ]);
 
     $rectorConfig->cacheDirectory(__DIR__ . '/.rector-cache');
