@@ -132,20 +132,15 @@ class e_thumbpage
 			'CORE_DIRECTORY'
 		);
 
-		$e107 = e107::getInstance();
+		$sql_info = compact('mySQLserver', 'mySQLuser', 'mySQLpassword', 'mySQLdefaultdb', 'mySQLprefix');
+		if(isset($mySQLport))
+		{
+			$sql_info['mySQLport'] = $mySQLport;
+		}
 
-		$e107->site_path = substr(md5($mySQLdefaultdb.".".$mySQLprefix),0,10);
-
-		$e107->prepare_request();
-		$e107->setDirs($e107_paths, varset($E107_CONFIG, array()));
-		$e107->set_constants();
-		$e107->set_paths();
-		$e107->file_path = $e107->fix_windows_paths($self)."/";
-		$e107->set_base_path();
-		$e107->set_request(false);
+		$e107 = e107::getInstance()->initCore($e107_paths, e_ROOT, $sql_info, varset($E107_CONFIG, array()));
 
 		unset($tmp, $self);
-		$e107->set_urls(false);
 		// basic Admin area detection - required for proper path parsing
 		define('ADMIN', strpos(e_SELF, (e107::getFolder('admin')) != false || strpos(e_PAGE, 'admin') !== false));
 
@@ -153,7 +148,7 @@ class e_thumbpage
 		//  See https://github.com/e107inc/e107/issues/3033
 		$e107->set_urls_deferred();
 
-		$pref = $e107->getPref();
+		$pref = e107::getPref();
 
 
 		require_once(e_HANDLER."e_thumbnail_class.php");
