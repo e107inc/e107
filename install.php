@@ -1519,15 +1519,23 @@ class e_install
 		// Adding a name to e107::overridableDirs() makes it appear in both
 		// templates below and in the legacy reader in class2.php automatically.
 		//
-		// DOWNLOADS, UPLOADS, and LOGS are derived from MEDIA/SYSTEM in
-		// e107::defaultDirs() but setDirs() does not re-apply site_path to
-		// them if they are explicitly set in e107_config.php. Emitting bare
-		// defaults uncommented would break multisite installs, so these three
-		// stay commented while their 13 siblings get written with their
-		// resolved values. defaultDirs() supplies the runtime values for
-		// commented entries.
+		// Some names are derived from other overridable names in
+		// e107::defaultDirs() but are not re-derived by setDirs() when they
+		// are explicitly set in e107_config.php. Emitting bare defaults
+		// uncommented for these would freeze them to the default upstream
+		// value, breaking any admin who customises the source (e.g. an admin
+		// who renames DOCS_DIRECTORY would still get HELP under the original
+		// DOCS path). They stay commented so defaultDirs() can re-derive at
+		// every bootstrap. The other entries get written with their bare
+		// defaults so the v2.4 'paths' array is never empty (otherwise
+		// class2.php and thumb.php would route into the legacy branch).
 		$overridable = $this->e107->overridableDirs();
-		$mustComment = array('DOWNLOADS_DIRECTORY', 'UPLOADS_DIRECTORY', 'LOGS_DIRECTORY');
+		$mustComment = array(
+			'HELP_DIRECTORY',      // derived from DOCS_DIRECTORY
+			'DOWNLOADS_DIRECTORY', // derived from MEDIA_DIRECTORY + site_path
+			'UPLOADS_DIRECTORY',   // derived from SYSTEM_DIRECTORY + site_path
+			'LOGS_DIRECTORY',      // derived from SYSTEM_DIRECTORY + site_path
+		);
 		$legacyPathLines = '';
 		$v24PathLines = '';
 		foreach($overridable as $name => $default)
@@ -1535,8 +1543,8 @@ class e_install
 			$prefix = in_array($name, $mustComment, true) ? '// ' : '';
 			$short = strtolower(str_replace('_DIRECTORY', '', $name));
 
-			// Emit bare defaults so MEDIA/SYSTEM/CACHE keep their multisite
-			// site_path re-derivation through setDirs() at every bootstrap,
+			// Emit bare defaults (no site_path appended) so MEDIA/SYSTEM/CACHE
+			// get re-derived multisite-aware by setDirs() at every bootstrap,
 			// rather than baking in the install-time hash.
 			$legacyPathLines .= $prefix . str_pad('$' . $name, 20) . " = '" . $default . "';\n";
 			$v24PathLines    .= '        ' . $prefix . str_pad("'" . $short . "'", 11) . " => '" . $default . "',\n";

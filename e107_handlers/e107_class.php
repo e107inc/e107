@@ -787,6 +787,7 @@ class e107
 			'PLUGINS_DIRECTORY'   => 'e107_plugins/',
 			'HANDLERS_DIRECTORY'  => 'e107_handlers/',
 			'LANGUAGES_DIRECTORY' => 'e107_languages/',
+			'DOCS_DIRECTORY'      => 'e107_docs/',
 			'HELP_DIRECTORY'      => 'e107_docs/help/',
 			'DOWNLOADS_DIRECTORY' => 'e107_media/files/',
 			'UPLOADS_DIRECTORY'   => 'e107_system/temp/',
