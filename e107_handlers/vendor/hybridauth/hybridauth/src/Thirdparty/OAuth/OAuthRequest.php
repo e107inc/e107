@@ -266,7 +266,7 @@ class OAuthRequest
         } else {
             $out = 'OAuth';
         }
-        
+
         foreach ($this->parameters as $k => $v) {
             if (substr($k, 0, 5) != "oauth") {
                 continue;
@@ -332,7 +332,7 @@ class OAuthRequest
     {
         $mt   = microtime();
         $rand = mt_rand();
-        
+
         return md5($mt . $rand); // md5s look nicer than numbers
     }
 }

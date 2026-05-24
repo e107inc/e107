@@ -129,7 +129,7 @@ class LightOpenID
         case 'identity':
             if (strlen($value = trim((String) $value))) {
                 if (preg_match('#^xri:/*#i', $value, $m)) {
-                    $value = substr($value, strlen($m[0]));
+                    $value = (string) substr($value, strlen($m[0]));
                 } elseif (!preg_match('/^(?:[=@+\$!\(]|https?:)/i', $value)) {
                     $value = "http://$value";
                 }
@@ -242,7 +242,7 @@ class LightOpenID
         $offset = (($offset !== false) ? $offset + 3 : 0);
 
         # Get only the root, without the path.
-        $realm .= (($end = strpos($uri, '/', $offset)) === false) ? $uri : substr($uri, 0, $end);
+        $realm .= (($end = strpos($uri, '/', $offset)) === false) ? $uri : (string) substr($uri, 0, $end);
 
         $this->trustRoot = $realm;
     }
@@ -331,7 +331,7 @@ class LightOpenID
         if ($method == 'HEAD' && curl_getinfo($curl, CURLINFO_HTTP_CODE) == 405) {
             curl_setopt($curl, CURLOPT_HTTPGET, true);
             $response = curl_exec($curl);
-            $response = substr($response, 0, strpos($response, "\r\n\r\n"));
+            $response = (string) substr($response, 0, strpos($response, "\r\n\r\n"));
         }
 
         if ($method == 'HEAD' || $method == 'GET') {
@@ -339,15 +339,15 @@ class LightOpenID
 
             # If it's a GET request, we want to only parse the header part.
             if ($method == 'GET') {
-                $header_response = substr($response, 0, strpos($response, "\r\n\r\n"));
+                $header_response = (string) substr($response, 0, strpos($response, "\r\n\r\n"));
             }
 
             $headers = array();
             foreach (explode("\n", $header_response) as $header) {
                 $pos = strpos($header, ':');
                 if ($pos !== false) {
-                    $name = strtolower(trim(substr($header, 0, $pos)));
-                    $headers[$name] = trim(substr($header, $pos+1));
+                    $name = strtolower(trim((string) substr($header, 0, $pos)));
+                    $headers[$name] = trim((string) substr($header, $pos+1));
                 }
             }
 
@@ -386,8 +386,8 @@ class LightOpenID
         foreach ($array as $header) {
             $pos = strpos($header, ':');
             if ($pos !== false) {
-                $name = strtolower(trim(substr($header, 0, $pos)));
-                $headers[$name] = trim(substr($header, $pos+1));
+                $name = strtolower(trim((string) substr($header, 0, $pos)));
+                $headers[$name] = trim((string) substr($header, $pos+1));
 
                 # Following possible redirections. The point is just to have
                 # claimed_id change with them, because the redirections
@@ -1119,10 +1119,10 @@ class LightOpenID
                     continue;
                 }
 
-                $key = substr($key, strlen($keyMatch));
+                $key = (string) substr($key, strlen($keyMatch));
                 $idv = $prefix . '_value_' . $key;
                 $idc = $prefix . '_count_' . $key;
-                $key = substr($this->getItem($prefix . '_type_' . $key), $length);
+                $key = (string) substr($this->getItem($prefix . '_type_' . $key), $length);
 
                 if (!empty($key)) {
                     if (($count = intval($this->getItem($idc))) > 0) {
@@ -1163,7 +1163,7 @@ class LightOpenID
                 if (strncmp($key, $keyMatch, strlen($keyMatch)) !== 0) {
                     continue;
                 }
-                $key = substr($key, strlen($keyMatch));
+                $key = (string) substr($key, strlen($keyMatch));
                 if (!isset($sreg_to_ax[$key])) {
                     # The field name isn't part of the SREG spec, so we ignore it.
                     continue;
@@ -1232,7 +1232,7 @@ class LightOpenID
 
             foreach ($this->data as $key => $val) {
                 if (strncmp($key, $prefix, $length) === 0 && $val === $namespace) {
-                    $result = trim(substr($key, $length));
+                    $result = trim((string) substr($key, $length));
                     break;
                 }
             }

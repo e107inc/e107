@@ -117,7 +117,7 @@ class X extends OAuth2
             $this->accessTokenUrl,
             $this->tokenExchangeMethod,
             $parameters,
-            $this->tokenExchangeHeaders,
+            $this->tokenExchangeHeaders
         );
 
         $this->validateApiResponse('Unable to exchange code for API access token');
