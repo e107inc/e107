@@ -11,6 +11,7 @@
 
 class e_parseTest extends \Codeception\Test\Unit
 {
+	use \Helper\PhpUnitCompat;
 	/** @var e_parse */
 	private $tp;
 

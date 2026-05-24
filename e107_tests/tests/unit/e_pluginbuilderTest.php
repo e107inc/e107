@@ -3,6 +3,7 @@
 
 class e_pluginbuilderTest extends \Codeception\Test\Unit
 {
+	use \Helper\PhpUnitCompat;
 
 	/** @var e_pluginbuilder */
 	protected $pb;

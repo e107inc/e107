@@ -11,6 +11,7 @@
 
 class e107Test extends \Codeception\Test\Unit
 {
+	use \Helper\PhpUnitCompat;
 
 	protected $tempFiles = [];
 	/** @var e107 */

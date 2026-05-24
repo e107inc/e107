@@ -31,6 +31,7 @@
 
 class installStage7HashTest extends \Codeception\Test\Unit
 {
+	use \Helper\PhpUnitCompat;
 	/** @var string */
 	private static $renamedClass = 'e_install_for_5631_test';
 

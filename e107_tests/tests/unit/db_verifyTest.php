@@ -11,6 +11,7 @@
 
 class db_verifyTest extends \Codeception\Test\Unit
 {
+	use \Helper\PhpUnitCompat;
 
 	/** @var db_verify */
 	private $dbv;

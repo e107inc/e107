@@ -11,6 +11,7 @@
 
 	class e_customfieldsTest extends \Codeception\Test\Unit
 	{
+		use \Helper\PhpUnitCompat;
 
 		/** @var e_customfields  */
 		protected $cf;
