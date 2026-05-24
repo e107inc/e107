@@ -15,6 +15,7 @@ use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeAnalyzer\ParamAnalyzer;
 use Rector\Rector\AbstractRector;
 use Rector\PhpDocDecorator\PhpDocFromTypeDeclarationDecorator;
+use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -26,7 +27,13 @@ final class DowngradeNullableTypeDeclarationRector extends AbstractRector
     public function __construct(
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly PhpDocFromTypeDeclarationDecorator $phpDocFromTypeDeclarationDecorator,
-        private readonly ParamAnalyzer $paramAnalyzer
+        private readonly ParamAnalyzer $paramAnalyzer,
+        // AbstractRector in Rector 2.x no longer autowires staticTypeMapper as
+        // an inherited service. Inject it explicitly so decorateWithDocBlock()
+        // can still resolve param types into PHPStan Type instances; without
+        // this, calling $this->staticTypeMapper->mapPhpParserNodePHPStanType()
+        // dereferences null and the rule fatals on every nullable param.
+        private readonly StaticTypeMapper $staticTypeMapper
     ) {
     }
 

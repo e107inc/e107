@@ -119,8 +119,12 @@ return static function (RectorConfig $rectorConfig): void {
         \Rector\DowngradePhp74\Rector\FuncCall\DowngradeProcOpenArrayCommandArgRector::class,
 
         // Third-party vendored dependencies handled in their own pipeline
-        // (see firebase/php-jwt audit task). Process upstream code at upgrade
-        // time, not as part of e107 source downgrade.
+        // (see firebase/php-jwt audit task #19). Process upstream code at
+        // upgrade time, not as part of e107 source downgrade. The bundled
+        // firebase/php-jwt is PHP 8.x-only today and is the blocker for the
+        // PHP 5.6 / 7.0 unit-test cells; pulling it into scope here needs
+        // several more vendored-rule DI fixes plus a new rule for the
+        // `isset(self::CONST[expr])` pattern in JWK.php.
         $root . '/e107_handlers/vendor',
         $root . '/e107_tests/vendor',
 
