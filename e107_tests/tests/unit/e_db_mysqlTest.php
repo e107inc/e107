@@ -77,7 +77,11 @@ class e_db_mysqlTest extends e_db_abstractTest
 	    if (!empty($db_impl->server_info))
 	    {
 	        $this->db->db_Close();
-	        self::assertTrue(empty($db_impl->server_info));
+	        // Reading a property off a closed mysqli triggers a PHP 5.6
+	        // warning ("Couldn't fetch mysqli") that Codeception 4.x
+	        // promotes to a test error. Suppress with @ so the property
+	        // access still returns the empty value we are asserting on.
+	        self::assertTrue(@empty($db_impl->server_info));
 	    }
 	    else
 	    {
