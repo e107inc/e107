@@ -12,6 +12,19 @@ if (!ini_get('date.timezone')) {
     date_default_timezone_set('UTC');
 }
 
+// Several PHP versions in the matrix emit warnings or deprecation notices
+// the moment Codeception's autoloader pulls in classes that predate their
+// stricter contract checks: PHP 7.0 flags the LSP gap between Helper\Base
+// and Codeception 4.x's \Codeception\Module, and PHP 8.4 warns whenever a
+// typed parameter defaults to null without an explicit "?" prefix (which
+// the downgrade pipeline strips for the legacy cells, leaving the modern
+// cells running the implicit form). Both messages land on stdout via the
+// CI image's display_errors=1, and stdout-before-session_start triggers
+// "headers already sent" inside e107's bootstrap. Silence display here;
+// Codeception's ErrorHandler subscriber still routes real failures through
+// its own reporting channel.
+ini_set('display_errors', '0');
+
 
 class E107TestSuiteBootstrap
 {
