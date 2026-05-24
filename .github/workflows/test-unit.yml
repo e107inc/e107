@@ -166,6 +166,15 @@ jobs:
     - name: Opt out of CVE-2022-24765 mitigation
       run: git config --global safe.directory '*'
 
+    # Codeception 5.x requires PHP 8.1+. For the php:5.6 and php:7.0
+    # cells, swap in a parallel composer.json pinned to Codeception 4.x
+    # (which supports the full PHP 5.6 to 8.x range). The modern cells
+    # keep the default composer.json pointing at Codeception 5.x so they
+    # still exercise the up-to-date test harness.
+    - name: Use legacy Codeception dependency set
+      if: matrix.interpreter.image == 'php:5.6' || matrix.interpreter.image == 'php:7.0'
+      run: cp ./e107_tests/composer-legacy.json ./e107_tests/composer.json
+
     - name: Install test dependencies
       run: composer update --prefer-dist --no-progress
       working-directory: ./e107_tests/
