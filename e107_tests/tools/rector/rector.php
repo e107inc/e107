@@ -20,6 +20,7 @@ use E107\Rector\DowngradePhp70\Rector\FunctionLike\DowngradeScalarTypeDeclaratio
 use E107\Rector\DowngradePhp70\Rector\FunctionLike\DowngradeThrowableTypeDeclarationRector;
 use E107\Rector\DowngradePhp70\Rector\GroupUse\SplitGroupedUseImportsRector;
 use E107\Rector\DowngradePhp70\Rector\Instanceof_\DowngradeInstanceofThrowableRector;
+use E107\Rector\DowngradePhp70\Rector\Isset_\DowngradeIssetOnClassConstFetchRector;
 use E107\Rector\DowngradePhp70\Rector\MethodCall\DowngradeClosureCallRector;
 use E107\Rector\DowngradePhp70\Rector\MethodCall\DowngradeMethodCallOnCloneRector;
 use E107\Rector\DowngradePhp70\Rector\New_\DowngradeAnonymousClassRector;
@@ -99,6 +100,10 @@ return static function (RectorConfig $rectorConfig): void {
         DowngradeDirnameLevelsRector::class,
         DowngradeUncallableValueCallToCallUserFuncRector::class,
         DowngradeMethodCallOnCloneRector::class,
+        // Upstream rector-downgrade-php doesn't ship an isset-on-class-const
+        // rule. PHP 5.6 fatals on isset(self::CONST[$x]); our rule emits
+        // array_key_exists($x, self::CONST). Needed for firebase/php-jwt JWK.
+        DowngradeIssetOnClassConstFetchRector::class,
     ]);
 
     $rectorConfig->phpVersion(PhpVersion::PHP_56);
@@ -118,14 +123,27 @@ return static function (RectorConfig $rectorConfig): void {
         // any future array-form proc_open() call must do the same.
         \Rector\DowngradePhp74\Rector\FuncCall\DowngradeProcOpenArrayCommandArgRector::class,
 
-        // Third-party vendored dependencies handled in their own pipeline
-        // (see firebase/php-jwt audit task #19). Process upstream code at
-        // upgrade time, not as part of e107 source downgrade. The bundled
-        // firebase/php-jwt is PHP 8.x-only today and is the blocker for the
-        // PHP 5.6 / 7.0 unit-test cells; pulling it into scope here needs
-        // several more vendored-rule DI fixes plus a new rule for the
-        // `isset(self::CONST[expr])` pattern in JWK.php.
-        $root . '/e107_handlers/vendor',
+        // Third-party vendored dependencies are usually handled in their
+        // own pipeline (process upstream code at upgrade time, not as part
+        // of e107 source downgrade). The exception is firebase/php-jwt:
+        // its upstream is PHP 7.4+ today, but e107 ships it in a runtime
+        // that still has to start on PHP 5.6, so we route it through the
+        // downgrade. Every other package under e107_handlers/vendor stays
+        // out: it either already supports 5.6 or is loaded conditionally
+        // behind a version check.
+        $root . '/e107_handlers/vendor/bin',
+        $root . '/e107_handlers/vendor/composer',
+        $root . '/e107_handlers/vendor/guzzlehttp',
+        $root . '/e107_handlers/vendor/hybridauth',
+        $root . '/e107_handlers/vendor/ifsnop',
+        $root . '/e107_handlers/vendor/intervention',
+        $root . '/e107_handlers/vendor/matthiasmullie',
+        $root . '/e107_handlers/vendor/phpmailer',
+        $root . '/e107_handlers/vendor/psr',
+        $root . '/e107_handlers/vendor/ralouphie',
+        $root . '/e107_handlers/vendor/autoload.php',
+        // e107_tests/vendor is exclusively dev-time tooling (Codeception,
+        // PHPUnit). Never shipped to runtime, so no downgrade needed.
         $root . '/e107_tests/vendor',
 
         // The Rector tooling itself is intentionally modern PHP. Never

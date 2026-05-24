@@ -20,11 +20,11 @@ use UnexpectedValueException;
  */
 class JWK
 {
-    private const OID = '1.2.840.10045.2.1';
-    private const ASN1_OBJECT_IDENTIFIER = 0x06;
-    private const ASN1_SEQUENCE = 0x10; // also defined in JWT
-    private const ASN1_BIT_STRING = 0x03;
-    private const EC_CURVES = [
+    const OID = '1.2.840.10045.2.1';
+    const ASN1_OBJECT_IDENTIFIER = 0x06;
+    const ASN1_SEQUENCE = 0x10; // also defined in JWT
+    const ASN1_BIT_STRING = 0x03;
+    const EC_CURVES = [
         'P-256' => '1.2.840.10045.3.1.7', // Len: 64
         'secp256k1' => '1.3.132.0.10', // Len: 64
         'P-384' => '1.3.132.0.34', // Len: 96
@@ -33,7 +33,7 @@ class JWK
 
     // For keys with "kty" equal to "OKP" (Octet Key Pair), the "crv" parameter must contain the key subtype.
     // This library supports the following subtypes:
-    private const OKP_SUBTYPES = [
+    const OKP_SUBTYPES = [
         'Ed25519' => true, // RFC 8037
     ];
 
@@ -52,7 +52,7 @@ class JWK
      *
      * @uses parseKey
      */
-    public static function parseKeySet(array $jwks, ?string $defaultAlg = null): array
+    public static function parseKeySet($jwks, $defaultAlg = null)
     {
         $keys = [];
 
@@ -93,7 +93,7 @@ class JWK
      *
      * @uses createPemFromModulusAndExponent
      */
-    public static function parseKey(array $jwk, ?string $defaultAlg = null): ?Key
+    public static function parseKey($jwk, $defaultAlg = null)
     {
         if (empty($jwk)) {
             throw new InvalidArgumentException('JWK must not be empty');
@@ -141,7 +141,7 @@ class JWK
                     throw new UnexpectedValueException('crv not set');
                 }
 
-                if (!isset(self::EC_CURVES[$jwk['crv']])) {
+                if (!array_key_exists($jwk['crv'], self::EC_CURVES)) {
                     throw new DomainException('Unrecognised or unsupported EC curve');
                 }
 
@@ -194,7 +194,7 @@ class JWK
      *
      * @return  string
      */
-    private static function createPemFromCrvAndXYCoordinates(string $crv, string $x, string $y): string
+    private static function createPemFromCrvAndXYCoordinates($crv, $x, $y)
     {
         $pem =
             self::encodeDER(
@@ -235,9 +235,9 @@ class JWK
      * @uses encodeLength
      */
     private static function createPemFromModulusAndExponent(
-        string $n,
-        string $e
-    ): string {
+        $n,
+        $e
+    ) {
         $mod = JWT::urlsafeB64Decode($n);
         $exp = JWT::urlsafeB64Decode($e);
 
@@ -278,7 +278,7 @@ class JWK
      * @param int $length
      * @return string
      */
-    private static function encodeLength(int $length): string
+    private static function encodeLength($length)
     {
         if ($length <= 0x7F) {
             return \chr($length);
@@ -297,7 +297,7 @@ class JWK
      * @param   string  $value the value to encode
      * @return  string  the encoded object
      */
-    private static function encodeDER(int $type, string $value): string
+    private static function encodeDER($type, $value)
     {
         $tag_header = 0;
         if ($type === self::ASN1_SEQUENCE) {
@@ -319,7 +319,7 @@ class JWK
      * @param   string $oid the OID string
      * @return  string the binary DER-encoded OID
      */
-    private static function encodeOID(string $oid): string
+    private static function encodeOID($oid)
     {
         $octets = explode('.', $oid);
 
