@@ -1,23 +1,20 @@
 <?php
 namespace Helper;
 
+// `Codeception\Module\Db` gained typed properties / return types in Codeception 5.x
+// (e.g. `protected array $requiredFields` and `public function _initialize(): void`).
+// On PHP 5.6 / 7.0 cells we run Codeception 4.x where those declarations are absent.
+// Overriding either of them in a single source file is therefore unsolvable: the
+// typed form fails to parse on 5.6, and the untyped form violates the LSP contract
+// against the 5.x parent. We sidestep both by NOT overriding those members. Required
+// field enforcement is redundant anyway because codeception.yml always supplies the
+// dsn/user/password keys; the previous debug log line on initialise is cosmetic.
 class DelayedDb extends \Codeception\Module\Db
 {
-    /**
-     * @var mixed[]
-     */
-    protected $requiredFields = ['dsn', 'user', 'password']; // Enforce required config
-    /**
-     * @return void
-     */
-    public function _initialize()
-    {
-        // Call parent directly instead of deferring
-        parent::_initialize();
-        codecept_debug("DelayedDb initialized with DSN: " . $this->config['dsn']);
-    }
-
-    // Keep this for manual triggering if needed
+    // Codeception still has the deferred-init plumbing we used historically.
+    // Kept as a no-arg wrapper so callers can opt back in if they need to
+    // postpone connection bring-up; new code should just rely on Codeception's
+    // own _initialize() lifecycle.
     public function _delayedInitialize()
     {
         return parent::_initialize();
