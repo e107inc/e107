@@ -133,6 +133,7 @@ class usersettings_front // Begin Usersettings rewrite.
 			$USERSETTINGS_EDIT_CAPTION 			= '';
 			$USERSETTINGS_EDIT					= '';
 			$coreTemplatePath                   = e107::coreTemplatePath('usersettings');
+			e107::predefineLegacyLans($coreTemplatePath); // #5653: pre-define any missing legacy LAN_* before include.
 			include_once($coreTemplatePath); //correct way to load a core template.
 			e107::scStyle($sc_style);
 			$usersettings_shortcodes = e107::getScBatch('usersettings');

@@ -14,7 +14,8 @@
 $_E107['allow_guest'] = true;
 require_once('class2.php');
 
-e107::coreLan('fpw'); 
+e107::coreLan('fpw');
+e107::getLanguage()->bcDefs(array('LAN_112' => 'LAN_FPW22')); // BC for legacy/fpw_template.php (issue #5653)
 
 $tp = e107::getParser();
 
@@ -49,9 +50,9 @@ if ($pref['membersonly_enabled'])
 	}
 	else
 	{
-		$oldDefs = array('LAN_112' => 'LAN_FPW22');
-		e107::getLanguage()->bcDefs($oldDefs);
-		require_once (e107::coreTemplatePath('fpw')); //correct way to load a core template.
+		$fpwTmpl = e107::coreTemplatePath('fpw');
+		e107::predefineLegacyLans($fpwTmpl); // #5653: define any still-missing LAN_* before the require — prevents PHP 8 fatals.
+		require_once ($fpwTmpl); //correct way to load a core template.
 	}
 
 	define('e_IFRAME', true);
@@ -346,7 +347,9 @@ if(deftrue('BOOTSTRAP'))
 }	
 elseif(!$FPW_TABLE)
 {
-	require_once (e107::coreTemplatePath('fpw')); //correct way to load a core template.
+	$fpwTmpl = e107::coreTemplatePath('fpw');
+	e107::predefineLegacyLans($fpwTmpl); // #5653
+	require_once ($fpwTmpl); //correct way to load a core template.
 	$caption = LAN_03;
 }
 
