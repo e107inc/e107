@@ -24,10 +24,19 @@ class e_admin_dispatcherTest extends \Codeception\Test\Unit
 		try
 		{
 			$this->controller = $this->make(e_admin_controller_ui::class);
-			$this->dp = $this->getMockBuilder('e_admin_dispatcher')
-				->onlyMethods(['hasPerms', 'hasRouteAccess', 'getMenuData', 'getMenuAliases', 'getMenuIcon', 'getMenuTitle', 'hasModeAccess'])
-				->disableOriginalConstructor()
-				->getMock();
+			// PHPUnit renamed setMethods() to onlyMethods() in 8.x and
+			// dropped the old form in 10.x. The legacy PHP cells run
+			// Codeception 4.x with a PHPUnit that only has setMethods();
+			// the modern cells run Codeception 5.x with a PHPUnit that
+			// only has onlyMethods(). Pick whichever the active mock
+			// builder exposes so the same test source runs on both ends
+			// of the matrix.
+			$mockedMethods = ['hasPerms', 'hasRouteAccess', 'getMenuData', 'getMenuAliases', 'getMenuIcon', 'getMenuTitle', 'hasModeAccess'];
+			$mockBuilder = $this->getMockBuilder('e_admin_dispatcher')->disableOriginalConstructor();
+			$mockBuilder = method_exists($mockBuilder, 'onlyMethods')
+				? $mockBuilder->onlyMethods($mockedMethods)
+				: $mockBuilder->setMethods($mockedMethods);
+			$this->dp = $mockBuilder->getMock();
 
 			$this->req = $this->make(e_admin_request::class);
 			$this->dp->setRequest($this->req);
