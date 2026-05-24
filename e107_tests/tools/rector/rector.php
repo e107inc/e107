@@ -134,7 +134,10 @@ return static function (RectorConfig $rectorConfig): void {
         $root . '/e107_handlers/vendor/bin',
         $root . '/e107_handlers/vendor/composer',
         $root . '/e107_handlers/vendor/guzzlehttp',
-        $root . '/e107_handlers/vendor/hybridauth',
+        // hybridauth/hybridauth v3.13.0 claims "^5.4 || ^7.0 || ^8.0" in its
+        // composer manifest but actually uses PHP 7.1 nullable parameter
+        // types in Hybridauth.php and other constructors. Route it through
+        // the downgrade pipeline so PHP 5.6 / 7.0 cells can load it.
         $root . '/e107_handlers/vendor/ifsnop',
         $root . '/e107_handlers/vendor/intervention',
         $root . '/e107_handlers/vendor/matthiasmullie',

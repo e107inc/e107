@@ -40,17 +40,25 @@ declare -a TARGETS=()
 if [ "$1" = "--all" ]; then
     # Excluded paths mirror the skip list in e107_tests/tools/rector/rector.php
     # so the lint target matches the downgrade target: production PHP that ships
-    # in the v2 release artifact, nothing else.
+    # in the v2 release artifact, nothing else. Vendor packages stay excluded
+    # by default; any package routed through the downgrade pipeline (currently
+    # firebase/php-jwt and hybridauth/hybridauth) must be added back explicitly
+    # so its parse-validity is gated on the same lint cycle as e107's source.
     while IFS= read -r -d '' f; do
         TARGETS+=("${f#./}")
     done < <(cd "${REPO_ROOT}" && find . -type f -name '*.php' \
-        -not -path './.git/*' \
-        -not -path './.github/*' \
-        -not -path './.claude/*' \
-        -not -path './*/vendor/*' -not -path './vendor/*' \
-        -not -path './*/node_modules/*' -not -path './node_modules/*' \
-        -not -path './e107_tests/tools/*' \
-        -print0 | sort -z)
+        \( \
+            \( \
+                -not -path './.git/*' \
+                -a -not -path './.github/*' \
+                -a -not -path './.claude/*' \
+                -a -not -path './*/vendor/*' -a -not -path './vendor/*' \
+                -a -not -path './*/node_modules/*' -a -not -path './node_modules/*' \
+                -a -not -path './e107_tests/tools/*' \
+            \) \
+            -o -path './e107_handlers/vendor/firebase/php-jwt/src/*' \
+            -o -path './e107_handlers/vendor/hybridauth/hybridauth/src/*' \
+        \) -print0 | sort -z)
 else
     for arg in "$@"; do
         # Normalise absolute -> repo-relative; reject anything outside the repo.
