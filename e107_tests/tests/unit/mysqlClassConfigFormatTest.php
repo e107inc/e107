@@ -27,6 +27,7 @@
  */
 class mysqlClassConfigFormatTest extends \Codeception\Test\Unit
 {
+	use \Helper\PhpUnitCompat;
 	/** @var string */
 	private $tmpDir;
 

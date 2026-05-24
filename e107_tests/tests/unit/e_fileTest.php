@@ -11,6 +11,7 @@
 
 class e_fileTest extends \Codeception\Test\Unit
 {
+	use \Helper\PhpUnitCompat;
 
 	/** @var e_file  */
 	protected $fl;

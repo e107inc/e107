@@ -11,6 +11,7 @@
 
 	class pluginsTest extends \Codeception\Test\Unit
 	{
+		use \Helper\PhpUnitCompat;
 
 		protected $_debugPlugin = ''; // 'linkwords'; // add plugin-dir for full report.
 

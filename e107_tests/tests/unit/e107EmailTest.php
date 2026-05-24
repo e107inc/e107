@@ -11,6 +11,7 @@
 
 	class e107EmailTest extends \Codeception\Test\Unit
 	{
+		use \Helper\PhpUnitCompat;
 
 		/** @var e107Email */
 		protected $eml;

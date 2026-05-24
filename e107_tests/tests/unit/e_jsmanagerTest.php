@@ -11,6 +11,7 @@
 
 class e_jsmanagerTest extends \Codeception\Test\Unit
 {
+	use \Helper\PhpUnitCompat;
 
 	/** @var e_jsmanager */
 	protected $js;

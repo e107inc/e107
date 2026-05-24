@@ -11,6 +11,7 @@
 
 	class e_dateTest extends \Codeception\Test\Unit
 	{
+		use \Helper\PhpUnitCompat;
 		/** @var e_date  */
 		protected $dateObj;
 

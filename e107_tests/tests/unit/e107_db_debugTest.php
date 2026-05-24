@@ -9,6 +9,7 @@
 
 	class e107_db_debugTest extends \Codeception\Test\Unit
 	{
+		use \Helper\PhpUnitCompat;
 
 		/** @var e107_db_debug */
 		protected $dbg;

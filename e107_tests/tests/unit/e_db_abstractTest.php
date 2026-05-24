@@ -10,6 +10,7 @@
 
 abstract class e_db_abstractTest extends \Codeception\Test\Unit
 {
+	use \Helper\PhpUnitCompat;
 	/** @var e_db */
 	protected $db;
 	protected $dbConfig = array();

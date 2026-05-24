@@ -11,6 +11,7 @@
 
 	class e107_user_extendedTest extends \Codeception\Test\Unit
 	{
+		use \Helper\PhpUnitCompat;
 
 		private $structTypes;
 		private $structLabels;

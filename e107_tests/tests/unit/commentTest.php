@@ -3,6 +3,7 @@
 
 	class commentTest extends \Codeception\Test\Unit
 	{
+		use \Helper\PhpUnitCompat;
 
 		/** @var comment */
 		protected $cm;

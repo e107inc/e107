@@ -11,6 +11,7 @@
 
 	class e_mediaTest extends \Codeception\Test\Unit
 	{
+		use \Helper\PhpUnitCompat;
 
 		/** @var e_media  */
 		protected $md;

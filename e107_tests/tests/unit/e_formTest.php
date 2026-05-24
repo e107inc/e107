@@ -11,6 +11,7 @@
 
 class e_formTest extends \Codeception\Test\Unit
 {
+	use \Helper\PhpUnitCompat;
 	/** @var e_form */
 	protected $_frm;
 
