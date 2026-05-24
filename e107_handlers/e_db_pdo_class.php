@@ -109,7 +109,7 @@ class e_db_pdo implements e_db
 			 $this->mySQLlanguage = e107::getLanguage()->e_language;
 		}
 
-		if (E107_DEBUG_LEVEL > 0)
+		if (defset('E107_DEBUG_LEVEL') > 0)
 		{
 			$this->debugMode = true;
 		}
