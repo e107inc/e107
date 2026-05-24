@@ -1357,6 +1357,7 @@ class e107Test extends \Codeception\Test\Unit
 			}
 */
 	/**
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 * @return void
 	 */
@@ -1385,6 +1386,7 @@ class e107Test extends \Codeception\Test\Unit
 
 
 	/**
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 */
 	public function testCoreLanArray()
@@ -1432,6 +1434,7 @@ class e107Test extends \Codeception\Test\Unit
 
 
 	/**
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 * @return void
 	 */
@@ -1497,10 +1500,12 @@ class e107Test extends \Codeception\Test\Unit
 
 
 	/**
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 * @return void
 	 */
 	/**
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 * @return void
 	 */
@@ -1568,6 +1573,7 @@ class e107Test extends \Codeception\Test\Unit
 
 
 	/**
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 * @return void
 	 */
@@ -2452,6 +2458,7 @@ class e107Test extends \Codeception\Test\Unit
 	/**
 	 * Test old-style language file with define()
 	 *
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 */
 	public function testIncludeLanOldStyle()
@@ -2478,6 +2485,7 @@ PHP
 	/**
 	 * Test missing file
 	 *
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 */
 	public function testIncludeLanMissingFile()
@@ -2517,6 +2525,7 @@ PHP
 	/**
 	 * Test non-English new-style file with English fallback (plugin-style path)
 	 *
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 */
 	public function testIncludeLanNonEnglishWithFallback()
@@ -2560,6 +2569,7 @@ PHP
 	/**
 	 * Test non-English new-style file with English fallback (custom path)
 	 *
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 */
 	public function testIncludeLanCustomPathWithFallback()
@@ -2603,6 +2613,7 @@ PHP
 	/**
 	 * Test includeLanArray directly with reflection
 	 *
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 */
 	public function testIncludeLanArrayDirectly()
