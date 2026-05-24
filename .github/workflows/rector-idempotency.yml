@@ -7,8 +7,6 @@ name: Rector Idempotency
 
 on:
   push:
-    branches:
-      - master
   pull_request:
 
 jobs:
