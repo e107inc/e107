@@ -5,356 +5,228 @@ on:
   pull_request:
 
 env:
+  MYSQL_DATABASE: app
   MYSQL_ROOT_PASSWORD: 'Database Password for Continuous Integration'
+  #CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
   CC_TEST_REPORTER_ID: 8948074581c1ffe7f4e47995c65d7d303882310256edd73536723d7c92adb1e3
-  PHP_VERSIONS: '5.6 7.0 7.4 8.1 8.2'
-  DB_IMAGES: 'mysql:5.5 mysql:8.0 mariadb:10.0 mariadb:10.6 mariadb:10.11'
 
 jobs:
   test-unit:
+    strategy:
+      fail-fast: false
+      matrix:
+        interpreter:
+          - image: php:5.6
+          - image: php:7.0
+          - image: php:7.4
+          - image: php:8.1
+          - image: php:8.2
+        db:
+          - image: mysql:5.5
+          - image: mysql:8.0
+          - image: mariadb:10.0
+          - image: mariadb:10.6
+          - image: mariadb:10.11
+        # mysql:8.0 starts with utf8mb4 by default, which PHP 5.6 / 7.0
+        # PDO drivers do not recognise ("Server sent charset unknown to
+        # the client"). GitHub Actions service containers do not accept
+        # CMD args to override the charset, so exclude the pair.
+        exclude:
+          - interpreter:
+              image: php:5.6
+            db:
+              image: mysql:8.0
+          - interpreter:
+              image: php:7.0
+            db:
+              image: mysql:8.0
     runs-on: ubuntu-latest
+    container:
+      image: ${{ matrix.interpreter.image }}
+    services:
+      db:
+        image: ${{ matrix.db.image }}
+        env:
+          MYSQL_ROOT_PASSWORD: 'Database Password for Continuous Integration'
+          MYSQL_DATABASE: 'app'
+          MYSQL_AUTHENTICATION_PLUGIN: 'mysql_native_password'
+          MYSQL_CHARACTER_SET: 'utf8mb3'
+        options: >-
+          --health-cmd "mysqladmin ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
-      - uses: actions/checkout@v6
-
-      - name: Download Git submodule dependencies
-        run: git submodule update --init --recursive --remote
-
-      - name: Create test network
-        run: docker network create e107-test
-
-      - name: Launch DB containers
-        run: |
-          set -eu
-          for DB in $DB_IMAGES; do
-            DB_TAG=$(echo "$DB" | tr ':.' '--')
-            # Per-image overrides:
-            #   * mysql:8.x defaults to caching_sha2_password (PHP 5.6/7.0 PDO
-            #     can't speak it) and to utf8mb4 (PHP 5.6 PDO rejects with
-            #     "Server sent charset unknown to the client") — pin both back.
-            #   * Every server gets a generous max_connections so concurrent
-            #     cells against the same DB don't trip the default limit (~150).
-            EXTRA_ARGS="--max-connections=500"
-            case "$DB" in
-              mysql:8.*)
-                EXTRA_ARGS="$EXTRA_ARGS --default-authentication-plugin=mysql_native_password"
-                EXTRA_ARGS="$EXTRA_ARGS --character-set-server=utf8mb3"
-                EXTRA_ARGS="$EXTRA_ARGS --collation-server=utf8mb3_general_ci"
-                ;;
-            esac
-            docker run -d --name "db-${DB_TAG}" --network e107-test \
-              -e MYSQL_ROOT_PASSWORD="$MYSQL_ROOT_PASSWORD" \
-              -e MYSQL_CHARACTER_SET=utf8mb3 \
-              "$DB" $EXTRA_ARGS
+    - name: Enable Debian backports
+      run: |
+        if ! apt-get update; then
+          for FILE in /etc/apt/sources.list /etc/apt/sources.list.d/debian.sources; do
+            [ -f "$FILE" ] || continue
+            sed -i 's#/\(deb\|security\)\.debian\.org/#/archive.debian.org/#g' "$FILE"
           done
-
-      - name: Wait for DB containers
-        run: |
-          set -eu
-          for DB in $DB_IMAGES; do
-            DB_TAG=$(echo "$DB" | tr ':.' '--')
-            for i in $(seq 1 60); do
-              if docker exec "db-${DB_TAG}" sh -c "mysqladmin ping -uroot -p\"$MYSQL_ROOT_PASSWORD\" --silent" 2>/dev/null; then
-                echo "db-${DB_TAG} is ready."
-                break
-              fi
-              if [ "$i" = "60" ]; then
-                echo "Timeout waiting for db-${DB_TAG}"
-                docker logs "db-${DB_TAG}" | tail -50
-                exit 1
-              fi
-              sleep 2
-            done
-          done
-
-      - name: Pre-create per-cell databases
-        run: |
-          set -eu
-          for DB in $DB_IMAGES; do
-            DB_TAG=$(echo "$DB" | tr ':.' '--')
-            for PHP in $PHP_VERSIONS; do
-              PHP_TAG=$(echo "$PHP" | tr '.' '-')
-              docker exec "db-${DB_TAG}" sh -c "mysql -uroot -p\"$MYSQL_ROOT_PASSWORD\" -e 'CREATE DATABASE IF NOT EXISTS \`e107_${PHP_TAG}_${DB_TAG}\`;'"
-            done
-          done
-
-      - name: Prepare per-PHP workspaces
-        run: |
-          set -eu
-          mkdir -p /tmp/ws
-          for PHP in $PHP_VERSIONS; do
-            PHP_TAG=$(echo "$PHP" | tr '.' '-')
-            WS="/tmp/ws/php-${PHP_TAG}"
-            cp -a "$GITHUB_WORKSPACE" "$WS"
-            cp "$WS/e107_tests/lib/ci/config.unit.ci.yml" "$WS/e107_tests/config.yml"
-          done
-
-      - name: Launch PHP containers
-        run: |
-          set -eu
-          for PHP in $PHP_VERSIONS; do
-            PHP_TAG=$(echo "$PHP" | tr '.' '-')
-            docker run -d --name "php-${PHP_TAG}" --network e107-test \
-              -v "/tmp/ws/php-${PHP_TAG}:/app" \
-              -w /app \
-              "php:${PHP}" \
-              tail -f /dev/null
-          done
-
-      - name: Provision PHP containers (parallel)
-        run: |
-          set -eu
-          PIDS=""
-          mkdir -p /tmp/provision-logs
-          for PHP in $PHP_VERSIONS; do
-            PHP_TAG=$(echo "$PHP" | tr '.' '-')
-            (
-              docker exec "php-${PHP_TAG}" sh -c '
-                set -eu
-
-                # Refresh apt sources to point at archive.debian.org for archived
-                # Debian releases (Stretch/Buster). On modern containers the first
-                # apt-get update succeeds and we leave sources alone.
-                if ! apt-get update >/dev/null 2>&1; then
-                  for FILE in /etc/apt/sources.list /etc/apt/sources.list.d/debian.sources; do
-                    [ -f "$FILE" ] || continue
-                    sed -i "s#/\(deb\|security\)\.debian\.org/#/archive.debian.org/#g" "$FILE"
-                  done
-                  if [ -f /etc/apt/sources.list ]; then
-                    sed -r -i "/^[^[:space:]#]*[^[:space:]]+[[:space:]]+[^[:space:]]+[[:space:]]+[^#]*-updates/d" /etc/apt/sources.list
-                  fi
-                  if [ -f /etc/apt/sources.list.d/debian.sources ]; then
-                    sed -i -E "/^Suites:/ s/[[:space:]]+[^[:space:]]*-updates//g" /etc/apt/sources.list.d/debian.sources
-                  fi
-                  echo "Acquire::Check-Valid-Until \"false\";" > /etc/apt/apt.conf.d/99ignore-obsolete
-                  echo "Acquire::AllowInsecureRepositories \"true\";" >> /etc/apt/apt.conf.d/99ignore-obsolete
-                  echo "APT::Get::AllowUnauthenticated \"true\";" >> /etc/apt/apt.conf.d/99ignore-obsolete
-                  apt-get update
-                fi
-
-                apt-get install -y --no-install-recommends \
-                  curl ca-certificates \
-                  libzip-dev libbz2-dev libpng-dev libjpeg-dev libwebp-dev libvpx-dev libicu-dev \
-                  zip default-mysql-client
-
-                if php -r "exit(version_compare(PHP_VERSION, \"7.4.0\", \">=\") ? 0 : 1);"; then
-                  docker-php-ext-configure gd --with-jpeg --with-webp
-                elif php -r "exit(version_compare(PHP_VERSION, \"7.0.0\", \">=\") ? 0 : 1);"; then
-                  docker-php-ext-configure gd --with-jpeg-dir=/usr --with-webp-dir=/usr
-                else
-                  docker-php-ext-configure gd --with-jpeg-dir=/usr --with-vpx-dir=/usr
-                fi
-                docker-php-ext-install -j "$(nproc)" zip bz2 gd pdo_mysql mysqli intl
-
-                if php -r "exit(version_compare(PHP_VERSION, \"8.0.0\", \">=\") ? 0 : 1);"; then
-                  pecl install xdebug
-                elif php -r "exit(version_compare(PHP_VERSION, \"7.2.0\", \">=\") ? 0 : 1);"; then
-                  pecl install xdebug-3.1.6
-                elif php -r "exit(version_compare(PHP_VERSION, \"7.1.0\", \">=\") ? 0 : 1);"; then
-                  pecl install xdebug-2.9.8
-                elif php -r "exit(version_compare(PHP_VERSION, \"7.0.0\", \">=\") ? 0 : 1);"; then
-                  pecl install xdebug-2.7.2
-                else
-                  pecl install xdebug-2.5.5
-                fi
-                docker-php-ext-enable xdebug
-
-                curl -sSL https://getcomposer.org/installer \
-                  | php -- --install-dir=/usr/local/bin/ --filename=composer
-              ' >"/tmp/provision-logs/php-${PHP_TAG}.log" 2>&1
-            ) &
-            PIDS="$PIDS $!"
-          done
-          STATUS=0
-          for PID in $PIDS; do
-            if ! wait "$PID"; then
-              STATUS=1
-            fi
-          done
-          if [ "$STATUS" != "0" ]; then
-            echo "::error::One or more PHP containers failed to provision"
-            for LOG in /tmp/provision-logs/*.log; do
-              echo "::group::$(basename "$LOG")"
-              cat "$LOG"
-              echo "::endgroup::"
-            done
-            exit 1
+          if [ -f /etc/apt/sources.list ]; then
+            sed -r -i '/^[^\s#]*[^\s]+\s+[^\s]+\s+[^#]*-updates/d' /etc/apt/sources.list
           fi
-
-      - name: Install test dependencies
-        run: |
-          set -eu
-          PIDS=""
-          mkdir -p /tmp/composer-logs
-          for PHP in $PHP_VERSIONS; do
-            PHP_TAG=$(echo "$PHP" | tr '.' '-')
-            (
-              docker exec "php-${PHP_TAG}" sh -c '
-                set -eu
-                cd /app/e107_tests
-                composer update --prefer-dist --no-progress
-                php ./vendor/bin/codecept build
-              ' >"/tmp/composer-logs/php-${PHP_TAG}.log" 2>&1
-            ) &
-            PIDS="$PIDS $!"
-          done
-          STATUS=0
-          for PID in $PIDS; do
-            if ! wait "$PID"; then
-              STATUS=1
-            fi
-          done
-          if [ "$STATUS" != "0" ]; then
-            echo "::error::Composer install or codecept build failed"
-            for LOG in /tmp/composer-logs/*.log; do
-              echo "::group::$(basename "$LOG")"
-              cat "$LOG"
-              echo "::endgroup::"
-            done
-            exit 1
+          if [ -f /etc/apt/sources.list.d/debian.sources ]; then
+            sed -i -E '/^Suites:/ s/[[:space:]]+[^[:space:]]*-updates//g' /etc/apt/sources.list.d/debian.sources
           fi
-
-      - name: Run unit tests across all cells
-        id: run-tests
-        run: |
-          set +e
-          set -u
-          mkdir -p /tmp/cell-outputs /tmp/cell-status
-          PIDS=""
-          for PHP in $PHP_VERSIONS; do
-            PHP_TAG=$(echo "$PHP" | tr '.' '-')
-            (
-              CELL_PHP_STATUS=0
-              for DB in $DB_IMAGES; do
-                DB_TAG=$(echo "$DB" | tr ':.' '--')
-                CELL="${PHP_TAG}_${DB_TAG}"
-                CELL_OUT="/tmp/cell-outputs/${CELL}"
-                mkdir -p "$CELL_OUT"
-
-                # Per-cell config.local.yml inside the PHP version's workspace.
-                # Cells within the same PHP container run sequentially, so the
-                # file is written, consumed, and overwritten in order.
-                printf 'db:\n  host: %s\n  dbname: e107_%s\n' \
-                  "db-${DB_TAG}" "${CELL}" \
-                  > "/tmp/ws/php-${PHP_TAG}/e107_tests/config.local.yml"
-
-                # `-d output_buffering=4096` keeps PHP from flagging headers as
-                # already sent when class2.php's bootstrap calls
-                # `ini_set('session.*', ...)` after Codeception's `--debug`
-                # output. PHPUnit promotes that warning to a test failure under
-                # `convertWarningsToExceptions=true`, which sinks every PHP 8.1+
-                # cell otherwise.
-                docker exec "php-${PHP_TAG}" sh -c "
-                  cd /app/e107_tests
-                  if php -r 'exit(extension_loaded(\"xdebug\") ? 0 : 1);'; then
-                    php -d output_buffering=4096 -d xdebug.mode=coverage ./vendor/bin/codecept run unit \
-                      -o 'paths: output: tests/_output/${CELL}' \
-                      --steps --debug --coverage --coverage-xml
-                  else
-                    php -d output_buffering=4096 ./vendor/bin/codecept run unit \
-                      -o 'paths: output: tests/_output/${CELL}' \
-                      --steps --debug
-                  fi
-                " >"${CELL_OUT}/codecept.log" 2>&1
-                CELL_RC=$?
-                echo "$CELL_RC" > "/tmp/cell-status/${CELL}.rc"
-                if [ -d "/tmp/ws/php-${PHP_TAG}/e107_tests/tests/_output/${CELL}" ]; then
-                  cp -a "/tmp/ws/php-${PHP_TAG}/e107_tests/tests/_output/${CELL}/." "${CELL_OUT}/"
-                fi
-                if [ "$CELL_RC" != "0" ]; then
-                  CELL_PHP_STATUS=1
-                fi
-              done
-              exit "$CELL_PHP_STATUS"
-            ) &
-            PIDS="$PIDS $!"
-          done
-          OVERALL=0
-          for PID in $PIDS; do
-            wait "$PID" || OVERALL=1
-          done
-          echo "overall=$OVERALL" >> "$GITHUB_OUTPUT"
-
-      - name: Build summary table
-        if: always()
-        run: |
-          set -u
-          {
-            echo "## Unit test matrix"
-            echo ""
-            HEADER='| PHP \\ DB'
-            SEP='|---'
-            for DB in $DB_IMAGES; do
-              HEADER="$HEADER | $DB"
-              SEP="$SEP|---"
-            done
-            echo "$HEADER |"
-            echo "$SEP|"
-            for PHP in $PHP_VERSIONS; do
-              PHP_TAG=$(echo "$PHP" | tr '.' '-')
-              ROW="| php:${PHP}"
-              for DB in $DB_IMAGES; do
-                DB_TAG=$(echo "$DB" | tr ':.' '--')
-                CELL="${PHP_TAG}_${DB_TAG}"
-                if [ -f "/tmp/cell-status/${CELL}.rc" ]; then
-                  RC=$(cat "/tmp/cell-status/${CELL}.rc")
-                  if [ "$RC" = "0" ]; then
-                    ROW="$ROW | :white_check_mark:"
-                  else
-                    ROW="$ROW | :x: ($RC)"
-                  fi
-                else
-                  ROW="$ROW | :grey_question:"
-                fi
-              done
-              echo "$ROW |"
-            done
-          } >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Upload test outputs
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: tests_output_${{ github.run_id }}
-          path: /tmp/cell-outputs/
-
-      - name: Send code coverage report to Code Climate
-        if: always()
-        continue-on-error: true
-        run: |
-          set -eu
-          PHP_VERSIONS_DESC=$(printf '%s\n' $PHP_VERSIONS | sort -rV | tr '\n' ' ')
-          DB_IMAGES_DESC=$(printf '%s\n' $DB_IMAGES | sort -rV | tr '\n' ' ')
-          COV_DIR=""
-          for PHP in $PHP_VERSIONS_DESC; do
-            PHP_TAG=$(echo "$PHP" | tr '.' '-')
-            for DB in $DB_IMAGES_DESC; do
-              DB_TAG=$(echo "$DB" | tr ':.' '--')
-              CELL="${PHP_TAG}_${DB_TAG}"
-              if [ -f "/tmp/cell-outputs/${CELL}/coverage.xml" ]; then
-                COV_DIR="/tmp/cell-outputs/${CELL}"
-                echo "Using coverage from ${CELL}"
-                break 2
-              fi
-            done
-          done
-          if [ -z "$COV_DIR" ]; then
-            echo "No cell produced coverage.xml; skipping upload."
-            exit 0
+          echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99ignore-obsolete
+          echo 'Acquire::AllowInsecureRepositories "true";' >> /etc/apt/apt.conf.d/99ignore-obsolete
+          echo 'APT::Get::AllowUnauthenticated "true";' >> /etc/apt/apt.conf.d/99ignore-obsolete
+          apt-get update
+          DEBIAN_FRONTEND=noninteractive apt-get -y full-upgrade
+        fi
+        apt-get install -y debian-archive-keyring curl
+        . /etc/os-release
+        DEBIAN_RELEASE="$(echo "$VERSION" | grep -oP '^[^(]+\(\K[^)]+')"
+        BACKPORTS_URI=""
+        for HOST in deb.debian.org archive.debian.org; do
+          if curl -sfLI "http://${HOST}/debian/dists/${DEBIAN_RELEASE}-backports/Release" >/dev/null; then
+            BACKPORTS_URI="http://${HOST}/debian"
+            break
           fi
-          curl -sSL -o /tmp/cc-test-reporter \
-            https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
-          chmod +x /tmp/cc-test-reporter
-          /tmp/cc-test-reporter before-build || true
-          /tmp/cc-test-reporter format-coverage \
-            --input-type clover \
-            --output "${COV_DIR}/codeclimate.json" \
-            "${COV_DIR}/coverage.xml"
-          /tmp/cc-test-reporter upload-coverage \
-            --input "${COV_DIR}/codeclimate.json"
+        done
+        if [ -n "$BACKPORTS_URI" ]; then
+          if [ -f /etc/apt/sources.list.d/debian.sources ]; then
+            printf '\nTypes: deb\nURIs: %s\nSuites: %s-backports\nComponents: main\nSigned-By: /usr/share/keyrings/debian-archive-keyring.gpg\n' \
+              "$BACKPORTS_URI" "$DEBIAN_RELEASE" >> /etc/apt/sources.list.d/debian.sources
+          else
+            echo "deb $BACKPORTS_URI ${DEBIAN_RELEASE}-backports main" >> /etc/apt/sources.list
+          fi
+        fi
 
-      - name: Fail if any cell failed
-        if: steps.run-tests.outputs.overall != '0'
-        run: |
-          echo "::error::At least one PHP×DB cell failed; see the summary table above."
-          exit 1
+    - name: Update operating system software repository
+      run: apt-get update
+
+    - name: Install operating system dependencies
+      run: |
+        . /etc/os-release
+        DEBIAN_RELEASE="$(echo "$VERSION" | grep -oP '^[^(]+\(\K[^)]+')"
+        USE_GIT_BPO="$(test $VERSION_ID -lt 10 && echo "-t ${DEBIAN_RELEASE}-backports" || echo)"
+        apt-get $USE_GIT_BPO install -y git zip libzip-dev libbz2-dev libpng-dev libjpeg-dev libwebp-dev libvpx-dev libicu-dev
+
+    - name: Configure PHP gd extension with default bundle
+      run: |
+        if [ $(php -r 'printf(version_compare(PHP_VERSION, "7.4.0", ">=") ? 1 : 0);') = '1' ]
+        then
+          docker-php-ext-configure gd --with-jpeg --with-webp
+        elif [ $(php -r 'printf(version_compare(PHP_VERSION, "7.0.0", ">=") ? 1 : 0);') = '1' ]
+        then
+          docker-php-ext-configure gd --with-jpeg-dir=/usr --with-webp-dir=/usr
+        else
+          docker-php-ext-configure gd --with-jpeg-dir=/usr --with-vpx-dir=/usr
+        fi
+
+    - name: Install necessary PHP extensions
+      run: |
+        docker-php-ext-install -j "$(nproc)" \
+        zip bz2 gd pdo_mysql mysqli intl
+
+    - name: PECL install xdebug
+      run: |
+        if [ $(php -r 'printf(version_compare(PHP_VERSION, "8.0.0", ">=") ? 1 : 0);') = '1' ]
+        then
+          pecl install xdebug
+        elif [ $(php -r 'printf(version_compare(PHP_VERSION, "7.2.0", ">=") ? 1 : 0);') = '1' ]
+        then
+          pecl install xdebug-3.1.6
+        elif [ $(php -r 'printf(version_compare(PHP_VERSION, "7.1.0", ">=") ? 1 : 0);') = '1' ]
+        then
+          pecl install xdebug-2.9.8
+        elif [ $(php -r 'printf(version_compare(PHP_VERSION, "7.0.0", ">=") ? 1 : 0);') = '1' ]
+        then
+          pecl install xdebug-2.7.2
+        else
+          pecl install xdebug-2.5.5
+        fi
+        docker-php-ext-enable xdebug
+
+    # actions/checkout@v3 runs Node 20, which requires glibc 2.27+. The
+    # php:5.6 and php:7.0 images are based on Debian 9 (glibc 2.24), so the
+    # action's own bootstrap can't start. Inline a plain git clone instead;
+    # git itself was installed in the OS-deps step above.
+    - name: Check out repository (legacy PHP)
+      if: matrix.interpreter.image == 'php:5.6' || matrix.interpreter.image == 'php:7.0'
+      run: |
+        git config --global --add safe.directory '*'
+        cd "$GITHUB_WORKSPACE"
+        git init
+        git remote add origin "https://github.com/${{ github.repository }}.git"
+        git fetch --no-tags --prune --depth=1 origin "+${{ github.sha }}:refs/remotes/origin/run-head"
+        git checkout --force refs/remotes/origin/run-head
+
+    - uses: actions/checkout@v3
+      if: matrix.interpreter.image != 'php:5.6' && matrix.interpreter.image != 'php:7.0'
+
+    - name: Install Composer
+      run: curl -sSL https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer
+
+    - name: Install test dependencies
+      run: composer update --prefer-dist --no-progress
+      working-directory: ./e107_tests/
+
+    - name: Opt out of CVE-2022-24765 mitigation
+      run: git config --global safe.directory '*'
+
+    - name: Download Git submodule dependencies
+      run: git submodule update --init --recursive --remote
+
+    - name: Install the CI test configuration file
+      run: cp ./e107_tests/lib/ci/config.unit.ci.yml ./e107_tests/config.yml
+
+    - name: Download Code Climate test reporter
+      run: |
+        curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+        chmod +x ./cc-test-reporter
+      working-directory: ./e107_tests/vendor/bin/
+      continue-on-error: true
+
+    - name: Code Climate report before build
+      run: ./e107_tests/vendor/bin/cc-test-reporter before-build
+      continue-on-error: true
+
+    - name: Build Codeception
+      run: php ./vendor/bin/codecept build
+      working-directory: ./e107_tests/
+      continue-on-error: false
+
+    - name: Run unit tests
+      run: |
+        if [ $(php -r 'printf(extension_loaded("xdebug") ? 1 : 0);') = '1' ]
+        then
+          php -d xdebug.mode=coverage ./vendor/bin/codecept run unit --steps --debug --coverage --coverage-xml #--coverage-html
+        else
+          echo "Warning: xdebug not available; skipping coverage..."
+          php ./vendor/bin/codecept run unit --steps --debug
+        fi
+      working-directory: ./e107_tests/
+
+    - name: Send code coverage report to Code Climate
+      run: |
+        ./e107_tests/vendor/bin/cc-test-reporter format-coverage \
+          --input-type clover \
+          --output ./e107_tests/tests/_output/coverage/codeclimate.json \
+          ./e107_tests/tests/_output/coverage.xml
+        ./e107_tests/vendor/bin/cc-test-reporter upload-coverage \
+          --input ./e107_tests/tests/_output/coverage/codeclimate.json
+      continue-on-error: true
+
+    - name: Set artifact name
+      id: set_artifact_name
+      run: |
+        TIMESTAMP=$(date +%Y%m%d%H%M%S)
+        INTERPRETER_IMAGE=$(echo "${{ matrix.interpreter.image }}" | sed 's/[:/]/_/g')
+        DB_IMAGE=$(echo "${{ matrix.db.image }}" | sed 's/[:/]/_/g')
+        ARTIFACT_NAME="tests_output_${{ github.run_id }}_${INTERPRETER_IMAGE}_${DB_IMAGE}_${TIMESTAMP}"
+        echo "ARTIFACT_NAME=${ARTIFACT_NAME}" >> $GITHUB_ENV
+
+    # actions/upload-artifact@v4 runs Node 20, which requires glibc 2.27+.
+    # The php:5.6 and php:7.0 images are based on Debian 9 (glibc 2.24), so the
+    # upload step is skipped there. Test results are still visible in the run log.
+    - name: Upload test output
+      if: matrix.interpreter.image != 'php:5.6' && matrix.interpreter.image != 'php:7.0'
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ env.ARTIFACT_NAME }}
+        path: ./e107_tests/tests/_output/
