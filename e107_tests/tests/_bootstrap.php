@@ -2,6 +2,16 @@
 use Codeception\Util\Autoload;
 use Codeception\Configuration;
 
+// PHP 5.6 warns on every date() call when no default timezone is configured,
+// and the runner's display_errors=1 means that warning lands on stdout. Once
+// stdout has content, e107's session_start() can no longer send the session
+// cookie and the suite fails before reaching any test. Set a deterministic
+// timezone up front so the date() calls below stay silent. PHP 7+ defaults
+// to UTC and was unaffected.
+if (!ini_get('date.timezone')) {
+    date_default_timezone_set('UTC');
+}
+
 
 class E107TestSuiteBootstrap
 {
