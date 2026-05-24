@@ -271,7 +271,6 @@ if(isset($_POST['previous_steps']))
 	unset($tmpadminpass1);
 }
 
-//$e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'CACHE_DIRECTORY', 'DOWNLOADS_DIRECTORY', 'UPLOADS_DIRECTORY', 'MEDIA_DIRECTORY', 'LOGS_DIRECTORY', 'SYSTEM_DIRECTORY', 'CORE_DIRECTORY');
 $e107_paths = array();
 $e107 = e107::getInstance();
 $ebase = realpath(__DIR__);
@@ -1516,6 +1515,33 @@ class e_install
 			return $this->stage_6();
 		}
 
+		// Render the directory-override section from the canonical list on e107.
+		// Adding a name to e107::overridableDirs() makes it appear in both
+		// templates below and in the legacy reader in class2.php automatically.
+		//
+		// DOWNLOADS, UPLOADS, and LOGS are derived from MEDIA/SYSTEM in
+		// e107::defaultDirs() but setDirs() does not re-apply site_path to
+		// them if they are explicitly set in e107_config.php. Emitting bare
+		// defaults uncommented would break multisite installs, so these three
+		// stay commented while their 13 siblings get written with their
+		// resolved values. defaultDirs() supplies the runtime values for
+		// commented entries.
+		$overridable = $this->e107->overridableDirs();
+		$mustComment = array('DOWNLOADS_DIRECTORY', 'UPLOADS_DIRECTORY', 'LOGS_DIRECTORY');
+		$legacyPathLines = '';
+		$v24PathLines = '';
+		foreach($overridable as $name => $default)
+		{
+			$prefix = in_array($name, $mustComment, true) ? '// ' : '';
+			$short = strtolower(str_replace('_DIRECTORY', '', $name));
+
+			// Emit bare defaults so MEDIA/SYSTEM/CACHE keep their multisite
+			// site_path re-derivation through setDirs() at every bootstrap,
+			// rather than baking in the install-time hash.
+			$legacyPathLines .= $prefix . str_pad('$' . $name, 20) . " = '" . $default . "';\n";
+			$v24PathLines    .= '        ' . $prefix . str_pad("'" . $short . "'", 11) . " => '" . $default . "',\n";
+		}
+
 		$config_file = "<?php
 /*
  * e107 website system
@@ -1536,17 +1562,9 @@ class e_install
 \$mySQLprefix    = '{$this->previous_steps['mysql']['prefix']}';
 \$mySQLcharset   = 'utf8mb4';
 
-\$ADMIN_DIRECTORY     = '{$this->e107->e107_dirs['ADMIN_DIRECTORY']}';
-\$FILES_DIRECTORY     = '{$this->e107->e107_dirs['FILES_DIRECTORY']}';
-\$IMAGES_DIRECTORY    = '{$this->e107->e107_dirs['IMAGES_DIRECTORY']}';
-\$THEMES_DIRECTORY    = '{$this->e107->e107_dirs['THEMES_DIRECTORY']}';
-\$PLUGINS_DIRECTORY   = '{$this->e107->e107_dirs['PLUGINS_DIRECTORY']}';
-\$HANDLERS_DIRECTORY  = '{$this->e107->e107_dirs['HANDLERS_DIRECTORY']}';
-\$LANGUAGES_DIRECTORY = '{$this->e107->e107_dirs['LANGUAGES_DIRECTORY']}';
-\$HELP_DIRECTORY      = '{$this->e107->e107_dirs['HELP_DIRECTORY']}';
-\$MEDIA_DIRECTORY	  = '{$this->e107->e107_dirs['MEDIA_DIRECTORY']}';
-\$SYSTEM_DIRECTORY    = '{$this->e107->e107_dirs['SYSTEM_DIRECTORY']}';
-
+// -- Optional directory overrides --
+// Uncomment and edit any line below to point e107 at a different directory layout.
+{$legacyPathLines}
 \$E107_CONFIG = ['site_path' => '{$this->previous_steps['paths']['hash']}'];
 
 
@@ -1603,18 +1621,9 @@ return [
         'prefix'   => '{$this->previous_steps['mysql']['prefix']}',
         'charset'  => 'utf8mb4',
     ],
+    // Uncomment any line below to override the default directory layout.
     'paths' => [
-        'admin'      => '{$this->e107->e107_dirs['ADMIN_DIRECTORY']}',
-        'files'      => '{$this->e107->e107_dirs['FILES_DIRECTORY']}',
-        'images'     => '{$this->e107->e107_dirs['IMAGES_DIRECTORY']}',
-        'themes'     => '{$this->e107->e107_dirs['THEMES_DIRECTORY']}',
-        'plugins'    => '{$this->e107->e107_dirs['PLUGINS_DIRECTORY']}',
-        'handlers'   => '{$this->e107->e107_dirs['HANDLERS_DIRECTORY']}',
-        'languages'  => '{$this->e107->e107_dirs['LANGUAGES_DIRECTORY']}',
-        'help'       => '{$this->e107->e107_dirs['HELP_DIRECTORY']}',
-        'media'      => '{$this->e107->e107_dirs['MEDIA_DIRECTORY']}',
-        'system'     => '{$this->e107->e107_dirs['SYSTEM_DIRECTORY']}',
-    ],
+{$v24PathLines}    ],
     'other' => [
         'site_path'  => '{$this->previous_steps['paths']['hash']}',
     ]

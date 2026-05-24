@@ -762,6 +762,44 @@ class e107
 	}
 
 	/**
+	 * Canonical list of directory names a site admin may override in e107_config.php,
+	 * paired with their config-layer default values (no site_path appended).
+	 *
+	 * Single source of truth used by:
+	 *  - class2.php (reading legacy $*_DIRECTORY variables from e107_config.php)
+	 *  - install.php stage_7 (emitting both the legacy and v2.4 array templates)
+	 *
+	 * The v2.4 short-key transform is mechanical and handled by initCore():
+	 *   short = strtolower(str_replace('_DIRECTORY','',$name))
+	 *
+	 * Adding a new overridable name? Add it here and the reader and both templates
+	 * pick it up automatically.
+	 *
+	 * @return array map of *_DIRECTORY name => default path string (with trailing slash)
+	 */
+	public function overridableDirs()
+	{
+		return array(
+			'ADMIN_DIRECTORY'     => 'e107_admin/',
+			'FILES_DIRECTORY'     => 'e107_files/',
+			'IMAGES_DIRECTORY'    => 'e107_images/',
+			'THEMES_DIRECTORY'    => 'e107_themes/',
+			'PLUGINS_DIRECTORY'   => 'e107_plugins/',
+			'HANDLERS_DIRECTORY'  => 'e107_handlers/',
+			'LANGUAGES_DIRECTORY' => 'e107_languages/',
+			'HELP_DIRECTORY'      => 'e107_docs/help/',
+			'DOWNLOADS_DIRECTORY' => 'e107_media/files/',
+			'UPLOADS_DIRECTORY'   => 'e107_system/temp/',
+			'SYSTEM_DIRECTORY'    => 'e107_system/',
+			'MEDIA_DIRECTORY'     => 'e107_media/',
+			'CACHE_DIRECTORY'     => 'e107_system/cache/',
+			'LOGS_DIRECTORY'      => 'e107_system/logs/',
+			'CORE_DIRECTORY'      => 'e107_core/',
+			'WEB_DIRECTORY'       => 'e107_web/',
+		);
+	}
+
+	/**
 	 * Get default e107 folders, root folders can be overridden by passed override array
 	 *
 	 * @param array $override_root

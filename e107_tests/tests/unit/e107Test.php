@@ -52,6 +52,39 @@ class e107Test extends \Codeception\Test\Unit
 		//	$this::assertTrue($res);
 	}
 
+	/**
+	 * Locks the contract between overridableDirs() and initCore()'s v2.4
+	 * short-key transform. The transform is mechanical:
+	 *
+	 *   short = strtolower(str_replace('_DIRECTORY','',$name))
+	 *   name  = strtoupper($short).'_DIRECTORY'
+	 *
+	 * Anyone adding a name to overridableDirs() that doesn't round-trip
+	 * cleanly (e.g. one with mixed case or no _DIRECTORY suffix) would
+	 * silently break the v2.4 array-format reader. Catch it here.
+	 */
+	public function testOverridableDirsRoundTripsThroughV24Transform()
+	{
+		$overridable = $this->e107->overridableDirs();
+		self::assertNotEmpty($overridable, 'overridableDirs() must not be empty');
+
+		foreach($overridable as $name => $default)
+		{
+			self::assertStringEndsWith('_DIRECTORY', $name,
+				"overridableDirs() name '$name' must end in _DIRECTORY");
+
+			$short = strtolower(str_replace('_DIRECTORY', '', $name));
+			$roundTripped = strtoupper($short) . '_DIRECTORY';
+			self::assertSame($name, $roundTripped,
+				"overridableDirs() name '$name' doesn't survive the v2.4 short-key transform");
+
+			self::assertNotEmpty($default,
+				"overridableDirs()['$name'] default must not be empty");
+			self::assertStringEndsWith('/', $default,
+				"overridableDirs()['$name'] default '$default' must end with a slash");
+		}
+	}
+
 	/*public function testInitCore()
 	{
 
