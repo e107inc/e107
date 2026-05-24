@@ -16,6 +16,8 @@ jobs:
       fail-fast: false
       matrix:
         interpreter:
+          - image: php:5.6
+          - image: php:7.0
           - image: php:8.1
           - image: php:8.2
           - image: php:8.3
@@ -26,6 +28,19 @@ jobs:
           - image: mariadb:10.0
           - image: mariadb:10.6
           - image: mariadb:10.11
+        # mysql:8.0 starts with utf8mb4 by default, which PHP 5.6 / 7.0
+        # PDO drivers do not recognise ("Server sent charset unknown to
+        # the client"). GitHub Actions service containers do not accept
+        # CMD args to override the charset, so exclude the pair.
+        exclude:
+          - interpreter:
+              image: php:5.6
+            db:
+              image: mysql:8.0
+          - interpreter:
+              image: php:7.0
+            db:
+              image: mysql:8.0
     runs-on: ubuntu-latest
     container:
       image: ${{ matrix.interpreter.image }}
@@ -128,7 +143,22 @@ jobs:
         fi
         docker-php-ext-enable xdebug
 
+    # actions/checkout@v3 runs Node 20, which requires glibc 2.27+. The
+    # php:5.6 and php:7.0 images are based on Debian 9 (glibc 2.24), so the
+    # action's own bootstrap can't start. Inline a plain git clone instead;
+    # git itself was installed in the OS-deps step above.
+    - name: Check out repository (legacy PHP)
+      if: matrix.interpreter.image == 'php:5.6' || matrix.interpreter.image == 'php:7.0'
+      run: |
+        git config --global --add safe.directory '*'
+        cd "$GITHUB_WORKSPACE"
+        git init
+        git remote add origin "https://github.com/${{ github.repository }}.git"
+        git fetch --no-tags --prune --depth=1 origin "+${{ github.sha }}:refs/remotes/origin/run-head"
+        git checkout --force refs/remotes/origin/run-head
+
     - uses: actions/checkout@v3
+      if: matrix.interpreter.image != 'php:5.6' && matrix.interpreter.image != 'php:7.0'
 
     - name: Install Composer
       run: curl -sSL https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer
@@ -192,7 +222,11 @@ jobs:
         ARTIFACT_NAME="tests_output_${{ github.run_id }}_${INTERPRETER_IMAGE}_${DB_IMAGE}_${TIMESTAMP}"
         echo "ARTIFACT_NAME=${ARTIFACT_NAME}" >> $GITHUB_ENV
 
+    # actions/upload-artifact@v4 runs Node 20, which requires glibc 2.27+.
+    # The php:5.6 and php:7.0 images are based on Debian 9 (glibc 2.24), so the
+    # upload step is skipped there. Test results are still visible in the run log.
     - name: Upload test output
+      if: matrix.interpreter.image != 'php:5.6' && matrix.interpreter.image != 'php:7.0'
       uses: actions/upload-artifact@v4
       with:
         name: ${{ env.ARTIFACT_NAME }}
