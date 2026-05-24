@@ -146,7 +146,8 @@
 		}
 
 		/**
-		 * @runInSeparateProcess
+		 * @group runs-in-separate-process
+	 * @runInSeparateProcess
 		 * @return void
 		 */
 		public function testPluginScripts()
@@ -587,7 +588,8 @@
 
 
 		/**
-		 * @runInSeparateProcess
+		 * @group runs-in-separate-process
+	 * @runInSeparateProcess
 		 * @return void
 		 */
 		public function testPluginAddons()

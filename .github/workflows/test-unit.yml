@@ -194,12 +194,21 @@ jobs:
 
     - name: Run unit tests
       run: |
+        # Codeception 4.x on the legacy PHP cells ignores PHPUnit's
+        # @requires PHP and @runInSeparateProcess gating, so it spawns
+        # subprocesses that can't load Codeception\Test\Unit because
+        # the bootstrap doesn't carry across. Skip the dedicated group
+        # on those cells; modern cells run the full suite.
+        SKIP_GROUP_ARGS=""
+        if [ "${{ matrix.interpreter.image }}" = "php:5.6" ] || [ "${{ matrix.interpreter.image }}" = "php:7.0" ]; then
+          SKIP_GROUP_ARGS="--skip-group runs-in-separate-process"
+        fi
         if [ $(php -r 'printf(extension_loaded("xdebug") ? 1 : 0);') = '1' ]
         then
-          php -d xdebug.mode=coverage ./vendor/bin/codecept run unit --steps --debug --coverage --coverage-xml #--coverage-html
+          php -d xdebug.mode=coverage ./vendor/bin/codecept run unit --steps --debug --coverage --coverage-xml $SKIP_GROUP_ARGS #--coverage-html
         else
           echo "Warning: xdebug not available; skipping coverage..."
-          php ./vendor/bin/codecept run unit --steps --debug
+          php ./vendor/bin/codecept run unit --steps --debug $SKIP_GROUP_ARGS
         fi
       working-directory: ./e107_tests/
 

@@ -312,6 +312,8 @@ class eIPHandlerTest extends \Codeception\Test\Unit
 
 
 	/**
+	 * @requires PHP 7.1
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 * @preserveGlobalState disabled
 	 * @return void
@@ -340,6 +342,8 @@ class eIPHandlerTest extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * @requires PHP 7.1
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 * @preserveGlobalState disabled
 	 * @return void
@@ -366,6 +370,8 @@ class eIPHandlerTest extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * @requires PHP 7.1
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 * @preserveGlobalState disabled
 	 * @return void
@@ -396,6 +402,8 @@ class eIPHandlerTest extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * @requires PHP 7.1
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 * @preserveGlobalState disabled
 	 * @return void

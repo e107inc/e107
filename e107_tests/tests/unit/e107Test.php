@@ -1357,6 +1357,7 @@ class e107Test extends \Codeception\Test\Unit
 			}
 */
 	/**
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 * @return void
 	 */
@@ -1385,6 +1386,7 @@ class e107Test extends \Codeception\Test\Unit
 
 
 	/**
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 */
 	public function testCoreLanArray()
@@ -1432,6 +1434,7 @@ class e107Test extends \Codeception\Test\Unit
 
 
 	/**
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 * @return void
 	 */
@@ -1497,10 +1500,12 @@ class e107Test extends \Codeception\Test\Unit
 
 
 	/**
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 * @return void
 	 */
 	/**
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 * @return void
 	 */
@@ -1568,6 +1573,7 @@ class e107Test extends \Codeception\Test\Unit
 
 
 	/**
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 * @return void
 	 */
@@ -2452,6 +2458,7 @@ class e107Test extends \Codeception\Test\Unit
 	/**
 	 * Test old-style language file with define()
 	 *
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 */
 	public function testIncludeLanOldStyle()
@@ -2477,6 +2484,7 @@ class e107Test extends \Codeception\Test\Unit
 	/**
 	 * Test missing file
 	 *
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 */
 	public function testIncludeLanMissingFile()
@@ -2515,6 +2523,7 @@ class e107Test extends \Codeception\Test\Unit
 	/**
 	 * Test non-English new-style file with English fallback (plugin-style path)
 	 *
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 */
 	public function testIncludeLanNonEnglishWithFallback()
@@ -2556,6 +2565,7 @@ class e107Test extends \Codeception\Test\Unit
 	/**
 	 * Test non-English new-style file with English fallback (custom path)
 	 *
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 */
 	public function testIncludeLanCustomPathWithFallback()
@@ -2597,6 +2607,7 @@ class e107Test extends \Codeception\Test\Unit
 	/**
 	 * Test includeLanArray directly with reflection
 	 *
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 */
 	public function testIncludeLanArrayDirectly()
