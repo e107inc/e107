@@ -35,9 +35,16 @@ class installStage7HashTest extends \Codeception\Test\Unit
 	private static $renamedClass = 'e_install_for_5631_test';
 
 	/**
-     * @return void
-     */
-    public static function setUpBeforeClass()
+	 * Use Codeception's @beforeClass annotation rather than overriding
+	 * PHPUnit's setUpBeforeClass(): the latter requires a `: void` return
+	 * type on PHPUnit 8+, which the downgrade pipeline strips for PHP 5.6
+	 * targets. Annotation-driven lifecycle methods have no signature
+	 * contract, so they survive the strip and still execute on every
+	 * PHP version in the matrix.
+	 *
+	 * @beforeClass
+	 */
+	public static function loadRenamedInstallClass()
 	{
 		if (class_exists(self::$renamedClass, false))
 		{
