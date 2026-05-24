@@ -235,13 +235,18 @@ class installStage7HashTest extends \Codeception\Test\Unit
 		$fakeE107->site_path = $sitePath;
 
 		// Private members are reachable by ReflectionProperty/Method
-		// directly since PHP 8.1; setAccessible() is a no-op and emits
-		// a deprecation notice on 8.5+. Codeception (5.x) already
-		// requires PHP 8.2+, so it is safe to elide the calls here.
+		// directly since PHP 8.1; setAccessible() is a no-op there and
+		// emits a deprecation notice on 8.5+. The legacy 5.6 / 7.0
+		// cells still enforce the visibility check, so call it
+		// conditionally to satisfy both ends of the matrix.
 		$e107Property = $reflectionClass->getProperty('e107');
-		$e107Property->setValue($instance, $fakeE107);
-
 		$method = $reflectionClass->getMethod('resolveSitePathPlaceholders');
+		if (PHP_VERSION_ID < 80100)
+		{
+			$e107Property->setAccessible(true);
+			$method->setAccessible(true);
+		}
+		$e107Property->setValue($instance, $fakeE107);
 		$method->invoke($instance);
 
 		return $fakeE107->e107_dirs;
