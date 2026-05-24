@@ -10,6 +10,7 @@ use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeAnalyzer\ParamAnalyzer;
@@ -28,12 +29,14 @@ final class DowngradeNullableTypeDeclarationRector extends AbstractRector
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly PhpDocFromTypeDeclarationDecorator $phpDocFromTypeDeclarationDecorator,
         private readonly ParamAnalyzer $paramAnalyzer,
-        // AbstractRector in Rector 2.x no longer autowires staticTypeMapper as
-        // an inherited service. Inject it explicitly so decorateWithDocBlock()
-        // can still resolve param types into PHPStan Type instances; without
-        // this, calling $this->staticTypeMapper->mapPhpParserNodePHPStanType()
-        // dereferences null and the rule fatals on every nullable param.
-        private readonly StaticTypeMapper $staticTypeMapper
+        // Rector 2.x's AbstractRector no longer autowires staticTypeMapper or
+        // phpDocInfoFactory as inherited services. Inject them explicitly so
+        // decorateWithDocBlock() can resolve param types and attach @param
+        // annotations; without these, the rule fatals on every nullable param
+        // with either "mapPhpParserNodePHPStanType() on null" or
+        // "createFromNodeOrEmpty() on null".
+        private readonly StaticTypeMapper $staticTypeMapper,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory
     ) {
     }
 
