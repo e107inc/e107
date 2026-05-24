@@ -22,10 +22,10 @@
 			$siteadminemail  = e107::pref('core','siteadminemail'); 
 			
 			$cron[] = array(
-				'name'			=> LANA_FAQ_CRON_1,
+				'name'			=> defset('LANA_FAQ_CRON_1'),
 				'function'		=> "unanswered",
 				'category'		=> "notify",
-				'description' 	=> $tp->lanVars(LANA_FAQ_CRON_2, $siteadminemail)
+				'description' 	=> $tp->lanVars(defset('LANA_FAQ_CRON_2'), $siteadminemail)
 			);
 
 			return $cron;
@@ -60,7 +60,7 @@
 		//	$questions = array( "<i>Test Question</i><br /><small>".$tp->toDate(time(),'short')."</small>");
 
 
-			$name = SITENAME." ".LAN_AUTOMATION;
+			$name = SITENAME." ".defset('LAN_AUTOMATION');
 
 			$email = e107::pref('core','siteadminemail');
 			$name = e107::pref('core','siteadmin');
