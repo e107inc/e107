@@ -754,49 +754,54 @@ class e_navigation
 		}
 		
 		
-		$this->iconArray = array(
-				'main' 			=> E_32_MAIN,
-				'admin' 		=> E_32_ADMIN,
-				'admin_pass' 	=> E_32_ADPASS,
-				'banlist' 		=> E_32_BANLIST,
-				'cache' 		=> E_32_CACHE,
-				'comment' 		=> E_32_COMMENT,
-				'credits' 		=> E_32_CREDITS,
-				'cron'			=> E_32_CRON,
-				'custom' 		=> E_32_CUST,
-				// 'custom_field' => E_32_CUSTOMFIELD,
-				'database' 		=> E_32_DATAB,
-				'docs' 			=> E_32_DOCS,
-				//'download' => E_32_DOWNL,
-				'emoticon' 		=> E_32_EMOTE,
-				'filemanage' 	=> E_32_FILE,
-				'fileinspector' => E_32_INSPECT,
-				'frontpage' 	=> E_32_FRONT,
-				'image' 		=> E_32_IMAGES,
-				'language' 		=> E_32_LANGUAGE,
-				'links' 		=> E_32_LINKS,
-				'mail' 			=> E_32_MAIL,
-				'maintain' 		=> E_32_MAINTAIN,
-				'menus' 		=> E_32_MENUS,
-				'meta' 			=> E_32_META,
-				'newsfeed' 		=> E_32_NEWSFEED,
-				'news' 			=> E_32_NEWS,
-				'notify' 		=> E_32_NOTIFY,
-				'phpinfo' 		=> E_32_PHP,
-				'plug_manage' 	=> E_32_PLUGMANAGER,
-				'poll' 			=> E_32_POLLS,
-				'prefs' 		=> E_32_PREFS,
-				'search' 		=> E_32_SEARCH,
-				'syslogs' 		=> E_32_ADMINLOG,
-				'theme_manage' 	=> E_32_THEMEMANAGER,
-				'upload' 		=> E_32_UPLOADS,
-				'eurl' 			=> E_32_EURL,
-				'userclass' 	=> E_32_USERCLASS,
-				'user_extended' => E_32_USER_EXTENDED,
-				'users' 		=> E_32_USER,
-				'wmessage' 		=> E_32_WELCOME 
-			);		
-		
+		$iconDefinitions = array(
+				'main' 			=> 'E_32_MAIN',
+				'admin' 		=> 'E_32_ADMIN',
+				'admin_pass' 	=> 'E_32_ADPASS',
+				'banlist' 		=> 'E_32_BANLIST',
+				'cache' 		=> 'E_32_CACHE',
+				'comment' 		=> 'E_32_COMMENT',
+				'credits' 		=> 'E_32_CREDITS',
+				'cron'			=> 'E_32_CRON',
+				'custom' 		=> 'E_32_CUST',
+				// 'custom_field' => 'E_32_CUSTOMFIELD',
+				'database' 		=> 'E_32_DATAB',
+				'docs' 			=> 'E_32_DOCS',
+				//'download' => 'E_32_DOWNL',
+				'emoticon' 		=> 'E_32_EMOTE',
+				'filemanage' 	=> 'E_32_FILE',
+				'fileinspector' => 'E_32_INSPECT',
+				'frontpage' 	=> 'E_32_FRONT',
+				'image' 		=> 'E_32_IMAGES',
+				'language' 		=> 'E_32_LANGUAGE',
+				'links' 		=> 'E_32_LINKS',
+				'mail' 			=> 'E_32_MAIL',
+				'maintain' 		=> 'E_32_MAINTAIN',
+				'menus' 		=> 'E_32_MENUS',
+				'meta' 			=> 'E_32_META',
+				'newsfeed' 		=> 'E_32_NEWSFEED',
+				'news' 			=> 'E_32_NEWS',
+				'notify' 		=> 'E_32_NOTIFY',
+				'phpinfo' 		=> 'E_32_PHP',
+				'plug_manage' 	=> 'E_32_PLUGMANAGER',
+				'poll' 			=> 'E_32_POLLS',
+				'prefs' 		=> 'E_32_PREFS',
+				'search' 		=> 'E_32_SEARCH',
+				'syslogs' 		=> 'E_32_ADMINLOG',
+				'theme_manage' 	=> 'E_32_THEMEMANAGER',
+				'upload' 		=> 'E_32_UPLOADS',
+				'eurl' 			=> 'E_32_EURL',
+				'userclass' 	=> 'E_32_USERCLASS',
+				'user_extended' => 'E_32_USER_EXTENDED',
+				'users' 		=> 'E_32_USER',
+				'wmessage' 		=> 'E_32_WELCOME'
+			);
+
+		$this->iconArray = array();
+		foreach($iconDefinitions as $key => $constant)
+		{
+			$this->iconArray[$key] = defset($constant, '(missing)');
+		}
 	}
 
 	
@@ -937,9 +942,9 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 				 *
 				 */
 				$array_sub_functions = array();
-				$array_sub_functions[17][] = array(e_ADMIN.'newspost.php', LAN_MANAGE, ADLAN_3, 'H', 3, E_16_MANAGE, E_32_MANAGE);
-				$array_sub_functions[17][] = array(e_ADMIN.'newspost.php?create', LAN_CREATE, ADLAN_2, 'H', 3, E_16_CREATE, E_32_CREATE);
-				$array_sub_functions[17][] = array(e_ADMIN.'newspost.php?pref', LAN_PREFS, LAN_PREFS, 'H', 3, E_16_SETTINGS, E_32_SETTINGS);	
+				$array_sub_functions[17][] = array(e_ADMIN.'newspost.php', LAN_MANAGE, ADLAN_3, 'H', 3, defset('E_16_MANAGE'), defset('E_32_MANAGE'));
+				$array_sub_functions[17][] = array(e_ADMIN.'newspost.php?create', LAN_CREATE, ADLAN_2, 'H', 3, defset('E_16_CREATE'), defset('E_32_CREATE'));
+				$array_sub_functions[17][] = array(e_ADMIN.'newspost.php?pref', LAN_PREFS, LAN_PREFS, 'H', 3, defset('E_16_SETTINGS'), defset('E_32_SETTINGS'));
 				
 				return $array_sub_functions;
 		}
