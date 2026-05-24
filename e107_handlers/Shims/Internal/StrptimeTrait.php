@@ -13,7 +13,7 @@
 namespace e107\Shims\Internal;
 
 use DateTimeZone;
-use e_date;
+use eShims;
 
 /**
  *
@@ -83,10 +83,10 @@ trait StrptimeTrait
 
 		for ($i = 1; $i <= 12; $i++)
 		{
-			$k = @strftime('%B', mktime(0, 0, 0, $i));
+			$k = eShims::strftime('%B', mktime(0, 0, 0, $i));
 			$fullmonth[$k] = $i;
 
-			$j = @strftime('%b', mktime(0, 0, 0, $i));
+			$j = eShims::strftime('%b', mktime(0, 0, 0, $i));
 			$abrevmonth[$j] = $i;
 		}
 
