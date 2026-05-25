@@ -16,6 +16,9 @@ abstract class E107Base extends Base
 	const E107_MYSQL_PREFIX = 'e107_';
 	protected $preparer = null;
 
+	/** @var resource|null Open file handle for the deployment target lock */
+	private $deploymentLockHandle;
+
 	public function __construct(ModuleContainer $moduleContainer, $config = null)
 	{
 		parent::__construct($moduleContainer, $config);
@@ -24,6 +27,7 @@ abstract class E107Base extends Base
 
 	public function _beforeSuite($settings = array())
 	{
+		$this->acquireDeploymentLock();
 		$this->backupLocalE107Config();
 		$this->preparer->snapshot();
 		parent::_beforeSuite($settings);
@@ -64,6 +68,7 @@ abstract class E107Base extends Base
 		$this->revokeLocalE107Config();
 		$this->preparer->rollback();
 		$this->restoreLocalE107Config();
+		$this->releaseDeploymentLock();
 		$this->workaroundOldPhpUnitPhpCodeCoverage();
 	}
 /*
@@ -90,6 +95,73 @@ abstract class E107Base extends Base
 		{
 			rename(APP_PATH.'/e107_config.php.bak', self::APP_PATH_E107_CONFIG);
 		}
+	}
+
+	/**
+	 * Acquire a blocking exclusive lock on the deployment target so that
+	 * parallel acceptance/webdriver runs against the same URL are serialized.
+	 * No-op for unit/functional suites (no deployment target).
+	 */
+	private function acquireDeploymentLock()
+	{
+		$url = $this->getDeploymentTargetUrl();
+		if ($url === null)
+		{
+			return;
+		}
+
+		$lockPath = sys_get_temp_dir() . '/e107-acceptance-' . md5($url) . '.lock';
+		$this->deploymentLockHandle = fopen($lockPath, 'w');
+		if ($this->deploymentLockHandle === false)
+		{
+			return;
+		}
+
+		codecept_debug('E107Base: Acquiring deployment lock for ' . $url);
+		flock($this->deploymentLockHandle, LOCK_EX);
+		fwrite($this->deploymentLockHandle, json_encode(array(
+			'pid' => getmypid(),
+			'url' => $url,
+			'acquired' => time(),
+		)));
+		fflush($this->deploymentLockHandle);
+		codecept_debug('E107Base: Deployment lock acquired');
+	}
+
+	private function releaseDeploymentLock()
+	{
+		if ($this->deploymentLockHandle !== null)
+		{
+			flock($this->deploymentLockHandle, LOCK_UN);
+			fclose($this->deploymentLockHandle);
+			$this->deploymentLockHandle = null;
+			codecept_debug('E107Base: Deployment lock released');
+		}
+	}
+
+	/**
+	 * @return string|null The acceptance/webdriver target URL, or null for
+	 *                     suites that don't use a browser module.
+	 */
+	private function getDeploymentTargetUrl()
+	{
+		foreach (array('PhpBrowser', 'WebDriver') as $moduleName)
+		{
+			try
+			{
+				$module = $this->getModule($moduleName);
+				$url = $module->_getConfig('url');
+				if ($url !== null && $url !== '')
+				{
+					return $url;
+				}
+			}
+			catch (\Exception $e)
+			{
+				// Module not enabled for this suite
+			}
+		}
+		return null;
 	}
 
 	/**
