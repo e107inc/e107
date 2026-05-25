@@ -49,7 +49,27 @@ class E107TestSuiteBootstrap
         {
             $app_path = codecept_root_dir() . "/$app_path";
         }
-        define('APP_PATH', realpath($app_path));
+        $original_app_path = realpath($app_path);
+
+        // Load PriorityCallbacks early so GitPreparer can register
+        // its shutdown function during snapshot().
+        include(codecept_root_dir() . "/lib/PriorityCallbacks.php");
+
+        // Phase 1: create a disposable worktree if git is available.
+        // The worktree captures the current dirty state so tests run in
+        // an isolated copy, leaving the main tree untouched.
+        require_once(codecept_root_dir() . "/lib/preparers/PreparerFactory.php");
+        $preparer = PreparerFactory::createForPath($original_app_path);
+        $effective_app_path = $original_app_path;
+        if ($preparer instanceof GitPreparer)
+        {
+            $preparer->snapshot();
+            $effective_app_path = $preparer->getWorktreePath();
+        }
+
+        // Phase 2: APP_PATH points to the worktree (or original if no
+        // worktree was created). All subsequent code uses this path.
+        define('APP_PATH', $effective_app_path);
         define('PARAMS_SERIALIZED', serialize($params));
 
         $this->log("App Path: " . APP_PATH);
@@ -70,8 +90,6 @@ class E107TestSuiteBootstrap
         // Load test types
         $this->loadUnitTests();
         $this->loadAcceptanceTests();
-
-        include(codecept_root_dir() . "/lib/PriorityCallbacks.php");
 
         $this->log("e_PLUGIN after initialization: " . (defined('e_PLUGIN') ? e_PLUGIN : 'not defined'));
     }

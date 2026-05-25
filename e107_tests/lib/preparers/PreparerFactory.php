@@ -9,29 +9,58 @@ spl_autoload_register(function($class_name) {
 
 class PreparerFactory
 {
+	/** @var Preparer|null */
+	private static $instance;
+
+	/**
+	 * Create a Preparer for the given app path. Called during bootstrap,
+	 * before APP_PATH is defined.
+	 *
+	 * @param string $appPath
+	 * @return Preparer
+	 */
+	public static function createForPath($appPath)
+	{
+		if (self::$instance !== null)
+		{
+			return self::$instance;
+		}
+
+		if (self::systemIsSlow())
+		{
+			self::$instance = self::createFromName('E107Preparer');
+		}
+		elseif (self::pathHasUsableGit($appPath))
+		{
+			self::$instance = new GitPreparer($appPath);
+		}
+		else
+		{
+			self::$instance = self::createFromName('E107Preparer');
+		}
+
+		codecept_debug('Instantiating Preparer: ' . get_class(self::$instance));
+		return self::$instance;
+	}
+
 	/**
 	 * @return Preparer
 	 */
 	public static function create()
 	{
-		if (self::systemIsSlow())
+		if (self::$instance !== null)
 		{
-			return self::createFromName('E107Preparer');
+			return self::$instance;
 		}
-		elseif (self::systemHasGit() && self::appPathIsUsableGitRepo())
-		{
-			return self::createFromName('GitPreparer');
-		}
-		return self::createFromName('E107Preparer');
+		return self::createForPath(APP_PATH);
 	}
 
 	/**
-	 * @param $class_name
+	 * @param string $class_name
 	 * @return Preparer
 	 */
 	public static function createFromName($class_name)
 	{
-		codecept_debug('Instantiating Preparer: ' . $class_name);
 		return new $class_name();
 	}
 
@@ -50,26 +79,26 @@ class PreparerFactory
 		return stripos(shell_exec('git --version'), 'git version') !== false;
 	}
 
-	private static function appPathIsGitRepo()
-	{
-		return file_exists(APP_PATH."/.git");
-	}
-
 	/**
-	 * Returns true only if git can actually operate on APP_PATH. This catches
-	 * cases where a `.git` entry exists but the underlying gitdir is unreachable
-	 * — most commonly a worktree (`.git` is a file pointing outside APP_PATH) that
-	 * the parent repo isn't mounted into.
+	 * Returns true only if git can actually operate on the given path.
+	 * Catches worktrees whose .git file points outside the current
+	 * filesystem view (e.g. a Docker container with a host-worktree
+	 * bind-mount).
 	 *
+	 * @param string $path
 	 * @return bool
 	 */
-	private static function appPathIsUsableGitRepo()
+	private static function pathHasUsableGit($path)
 	{
-		if (!self::appPathIsGitRepo())
+		if (!file_exists($path . '/.git'))
 		{
 			return false;
 		}
-		$cmd = 'git -C ' . escapeshellarg(APP_PATH) . ' rev-parse --git-dir 2>/dev/null';
+		if (!self::systemHasGit())
+		{
+			return false;
+		}
+		$cmd = 'git -C ' . escapeshellarg($path) . ' rev-parse --git-dir 2>/dev/null';
 		$rc = 0;
 		$out = [];
 		@exec($cmd, $out, $rc);
