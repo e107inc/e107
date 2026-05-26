@@ -2,6 +2,29 @@
 use Codeception\Util\Autoload;
 use Codeception\Configuration;
 
+// PHP 5.6 warns on every date() call when no default timezone is configured,
+// and the runner's display_errors=1 means that warning lands on stdout. Once
+// stdout has content, e107's session_start() can no longer send the session
+// cookie and the suite fails before reaching any test. Set a deterministic
+// timezone up front so the date() calls below stay silent. PHP 7+ defaults
+// to UTC and was unaffected.
+if (!ini_get('date.timezone')) {
+    date_default_timezone_set('UTC');
+}
+
+// Several PHP versions in the matrix emit warnings or deprecation notices
+// the moment Codeception's autoloader pulls in classes that predate their
+// stricter contract checks: PHP 7.0 flags the LSP gap between Helper\Base
+// and Codeception 4.x's \Codeception\Module, and PHP 8.4 warns whenever a
+// typed parameter defaults to null without an explicit "?" prefix (which
+// the downgrade pipeline strips for the legacy cells, leaving the modern
+// cells running the implicit form). Both messages land on stdout via the
+// CI image's display_errors=1, and stdout-before-session_start triggers
+// "headers already sent" inside e107's bootstrap. Silence display here;
+// Codeception's ErrorHandler subscriber still routes real failures through
+// its own reporting channel.
+ini_set('display_errors', '0');
+
 
 class E107TestSuiteBootstrap
 {
@@ -114,7 +137,7 @@ class E107TestSuiteBootstrap
             }
             foreach ($unitDirs as $testDir)
             {
-                $pluginName = basename(dirname($testDir, 2));
+                $pluginName = basename(dirname(dirname($testDir)));
                 $relativePath = '../e107_plugins/' . $pluginName . '/tests/unit';
                 $pluginUnitDirs[] = $relativePath;
                 $namespace = "E107\\Plugins\\" . ucfirst($pluginName) . "\\Tests\\Unit";
@@ -149,7 +172,7 @@ class E107TestSuiteBootstrap
             }
             foreach ($acceptanceDirs as $testDir)
             {
-                $pluginName = basename(dirname($testDir, 2));
+                $pluginName = basename(dirname(dirname($testDir)));
                 $relativePath = '../e107_plugins/' . $pluginName . '/tests/acceptance';
                 $pluginAcceptanceDirs[] = $relativePath;
                 $namespace = "E107\\Plugins\\" . ucfirst($pluginName) . "\\Tests\\Acceptance";
@@ -174,11 +197,11 @@ if(!function_exists('dbg'))
 	 * @param mixed $data
 	 * @return void
 	 */
-	function dbg($data): void
+	function dbg($data)
 	{
 
 		$bt = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1);
-		$line = $bt[0]['line'] ?? '?';
+		$line = isset($bt[0]['line']) ? $bt[0]['line'] : '?';
 
 		if(is_array($data) || is_object($data))
 		{

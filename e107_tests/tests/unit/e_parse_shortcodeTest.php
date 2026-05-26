@@ -10,6 +10,7 @@
 
 class e_parse_shortcodeTest extends \Codeception\Test\Unit
 {
+	use \Helper\PhpUnitCompat;
 	/** @var e_parse_shortcode */
 	private $scParser;
 	/**

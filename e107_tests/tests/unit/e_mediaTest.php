@@ -11,6 +11,7 @@
 
 	class e_mediaTest extends \Codeception\Test\Unit
 	{
+		use \Helper\PhpUnitCompat;
 
 		/** @var e_media  */
 		protected $md;
@@ -88,7 +89,7 @@
 
 				$json = $this->md->processAjaxImport($file,$var['param']);
 
-				$result = json_decode($json, JSON_PRETTY_PRINT);
+				$result = json_decode($json, JSON_PRETTY_PRINT === null ?: JSON_PRETTY_PRINT);
 
 				$this->assertNotFalse($result);
 				$this->assertStringEndsWith('/'.basename($var['file']), $result['result']);
@@ -115,7 +116,7 @@
 
 				$json = $this->md->processAjaxImport($file,$var['param']);
 
-				$result = json_decode($json, JSON_PRETTY_PRINT);
+				$result = json_decode($json, JSON_PRETTY_PRINT === null ?: JSON_PRETTY_PRINT);
 
 				$this->assertNotFalse($result);
 				$this->assertNotEmpty($result['error']);

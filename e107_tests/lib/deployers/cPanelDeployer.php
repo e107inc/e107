@@ -174,7 +174,7 @@ class cPanelDeployer extends Deployer
 			$db = (array) $db;
 			if (substr($db['db'], 0, strlen($prefix)) !== $prefix)
 				continue;
-			$questionable_db = substr($db['db'], strlen($prefix));
+			$questionable_db = (string) substr($db['db'], strlen($prefix));
 			if (!in_array($questionable_db, $ids))
 			{
 				self::println("Deleting expired MySQL database \"".$db['db']."\"…");
@@ -191,7 +191,7 @@ class cPanelDeployer extends Deployer
 			$user = (array) $user;
 			if (substr($user['user'], 0, strlen($prefix)) !== $prefix)
 				continue;
-			$questionable_user = substr($user['user'], strlen($prefix));
+			$questionable_user = (string) substr($user['user'], strlen($prefix));
 			if (!in_array($questionable_user, $ids))
 			{
 				self::println("Deleting expired MySQL user \"".$user['user']."\"…");
@@ -356,8 +356,8 @@ class cPanelDeployer extends Deployer
 		foreach ($i as $file_info)
 		{
 			$realpath = $file_info->getRealPath();
-			if (substr($realpath, 0, strlen($path)) === $path)
-				$relpath = substr($realpath, strlen($path));
+			if ((string) substr($realpath, 0, strlen($path)) === $path)
+				$relpath = (string) substr($realpath, strlen($path));
 			if (substr($relpath, -3) === "/.." ||
 				substr($relpath, -2) === "/." ||
 				!file_exists($realpath) ||

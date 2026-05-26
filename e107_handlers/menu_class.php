@@ -88,7 +88,7 @@ class e_menu
 				$converted = $this->convertMenuTable();
 				e107::getConfig()->set('menu_layouts', $converted)->save();
 			}
-			
+
 			$eMenuArea = $this->getData(THEME_LAYOUT);
 			//print_a($eMenuArea);
 		}
@@ -282,7 +282,7 @@ class e_menu
 		$menu_path = rtrim($menu_path, '/');
 
 		$menu_name = $model->get('menu_name');
-		$menu_name = substr($menu_name,0,-5);
+		$menu_name = (string) substr($menu_name,0,-5);
 
 		if(!$obj = e107::getAddon($menu_path,'e_menu'))
 		{
@@ -525,7 +525,7 @@ class e_menu
 						$p = $tp->replaceConstants($p, 'full');
 						if(substr($p, -1)==='!')
 						{
-							$p = substr($p, 0, -1);
+							$p = (string) substr($p, 0, -1);
 							if(substr($check_url, strlen($p)*-1) == $p)
 							{
 								$show_menu = true;
@@ -553,7 +553,7 @@ class e_menu
 						$p = $tp->replaceConstants($p, 'full');
 						if(substr($p, -1) === '!')
 						{
-							$p = substr($p, 0, -1);
+							$p = (string) substr($p, 0, -1);
 							if(substr($check_url, strlen($p)*-1) == $p)
 							{
 								$show_menu = false;

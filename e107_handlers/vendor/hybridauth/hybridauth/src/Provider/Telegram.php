@@ -508,7 +508,7 @@ class Telegram extends AbstractAdapter
      *
      * @throws UnexpectedApiResponseException
      */
-    protected function verifyJwtSignature($headerB64, $payloadB64, $signature, array $header)
+    protected function verifyJwtSignature($headerB64, $payloadB64, $signature, $header)
     {
         $alg = strtoupper(isset($header['alg']) ? $header['alg'] : '');
         $kid = isset($header['kid']) ? $header['kid'] : null;
@@ -586,7 +586,7 @@ class Telegram extends AbstractAdapter
      *
      * @throws UnexpectedApiResponseException
      */
-    protected function jwkToRsaPublicKey(array $jwk)
+    protected function jwkToRsaPublicKey($jwk)
     {
         if ((isset($jwk['kty']) ? $jwk['kty'] : '') !== 'RSA') {
             throw new UnexpectedApiResponseException(

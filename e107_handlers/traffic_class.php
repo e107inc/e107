@@ -185,7 +185,7 @@ class e107_traffic
 	 * @param $count
 	 * @return void
 	 */
-	function Calibrate(e107_traffic $tObject, $count = 10)
+	function Calibrate($tObject, $count = 10)
 	{
 		if (!defined("E107_DBG_TRAFFIC") || !E107_DBG_TRAFFIC)
 		{

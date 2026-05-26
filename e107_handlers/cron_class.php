@@ -167,7 +167,7 @@ class _system_cron
 			error_log('e107: Cron running _system_cron::sendEmail(); ', E_USER_NOTICE);
 		}
 
-		
+
 	  //  require_once(e_HANDLER.'mail.php');
 		$message = "Your Cron test worked correctly. Sent on ".date("r").".";
 

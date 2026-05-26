@@ -9,6 +9,7 @@
 
 	class xmlClassTest extends \Codeception\Test\Unit
 	{
+		use \Helper\PhpUnitCompat;
 		const RAW_XML = '<?xml version="1.0" encoding="UTF-8"?>
 				<feed xmlns:yt="http://www.youtube.com/xml/schemas/2015" xmlns:media="http://search.yahoo.com/mrss/" xmlns="http://www.w3.org/2005/Atom">
 				 <link rel="self" href="http://www.youtube.com/feeds/videos.xml?channel_id=UC7vv3cBq14FRXajteZt6FEg"/>

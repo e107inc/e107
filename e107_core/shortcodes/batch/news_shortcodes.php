@@ -197,7 +197,7 @@ class news_shortcodes extends e_shortcode
 		if(!vartrue($pref['trackbackEnabled'])) { return ''; }
 		$news_item = $this->news_item;
 		$news_item['#'] = 'track';
-		
+
 		return ($this->param['trackbackbeforestring'] ? $this->param['trackbackbeforestring'] : '')."<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$this->param['trackbackstring'].$this->news_item['tb_count'].'</a>'.($this->param['trackbackafterstring'] ? $this->param['trackbackafterstring'] : '');*/
 	}
 

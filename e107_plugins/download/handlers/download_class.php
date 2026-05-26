@@ -255,7 +255,7 @@ class download
 		$tp = e107::getParser();
 		$ns = e107::getRender();
 		$pref = e107::getPref();
-		
+
 
 	//	if ($cacheData = $e107cache->retrieve("download_cat".$maincatval,720)) // expires every 12 hours. //TODO make this an option
 		{
@@ -264,18 +264,18 @@ class download
 		}
 
 
-		
+
 		if(deftrue('BOOTSTRAP')) // v2.x 
 		{
 			$template = e107::getTemplate('download','download','categories');
-			
+
 			$DOWNLOAD_CAT_CAPTION		= $template['caption'];
 			$DOWNLOAD_CAT_TABLE_START 	= varset($template['start']);
 			$DOWNLOAD_CAT_PARENT_TABLE	= $template['parent'];
 			$DOWNLOAD_CAT_CHILD_TABLE	= $template['child'];
 			$DOWNLOAD_CAT_SUBSUB_TABLE	= $template['subchild'];
 			$DOWNLOAD_CAT_TABLE_END		= varset($template['end']);
-			
+
 //			$DL_VIEW_NEXTPREV			= varset($template['nextprev']);
 //			$DL_VIEW_PAGETITLE			= varset($template['pagetitle']);
 //			$DL_VIEW_CAPTION			= varset($template['caption'],"{DOWNLOAD_VIEW_CAPTION}");
@@ -291,7 +291,7 @@ class download
 
 
 			$template_name = 'download_template.php';
-			
+
 			if (is_readable(THEME."templates/".$template_name))
 			{
 				require_once(THEME."templates/".$template_name);
@@ -311,9 +311,9 @@ class download
 		$sc->wrapper('download/categories');
 		$sc->breadcrumb();
 		$sc->qry 	= $this->qry;	
-		
-	
-		
+
+
+
 		if(!defined("DL_IMAGESTYLE")){ define("DL_IMAGESTYLE","border:1px solid blue");}
 
 	   // Read in tree of categories which this user is allowed to see
@@ -324,20 +324,20 @@ class download
 
 			return $ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, "<div class='alert alert-warning' style='text-align:center'>".LAN_NO_RECORDS_FOUND."</div>",'download-categories',true);
 		}
-				
+
 		$download_cat_table_string = "";
 		foreach($dlcat->cat_tree as $dlrow)  // Display main category headings, then sub-categories, optionally with sub-sub categories expanded
 		{
 			$sc->setVars($dlrow); 
 			$download_cat_table_string .= $tp->parseTemplate($DOWNLOAD_CAT_PARENT_TABLE, TRUE, vartrue($sc));
-			
+
 			foreach($dlrow['subcats'] as $dlsubrow)
 			{
 				$sc->dlsubrow = $dlsubrow;
-				
-				
+
+
 				$download_cat_table_string .= $tp->parseTemplate($DOWNLOAD_CAT_CHILD_TABLE, TRUE, $sc);
-				
+
 				foreach($dlsubrow['subsubcats'] as $dlsubsubrow)
 				{
 					$sc->dlsubsubrow = $dlsubsubrow;
@@ -348,20 +348,20 @@ class download
 
 	//    e107::getDebug()->log($dlcat->cat_tree);
 
-	  
+
 		$dl_text = $tp->parseTemplate($this->templateHeader, TRUE, $sc);
 		$dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_START, TRUE, $sc);
 		$dl_text .= $download_cat_table_string;
 		$dl_text .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_END, TRUE, $sc);
-	   
+
 		$caption = varset($DOWNLOAD_CAT_CAPTION) ? $tp->parseTemplate($DOWNLOAD_CAT_CAPTION, TRUE, $sc) : LAN_PLUGIN_DOWNLOAD_NAME;
-		
+
 		//ob_start();
-		
+
 		$dl_text .= $tp->parseTemplate($this->templateFooter, TRUE, $sc);
 
 
-	   
+
 		return $ns->tablerender($caption, $dl_text, 'download-categories',true);
 
 	  // $cache_data = ob_get_flush();
@@ -724,7 +724,7 @@ class download
 
 
 		   $this->qry['name'] = $dlrow['download_category_sef'];
-		   
+
 	   //	   define("e_PAGETITLE", LAN_PLUGIN_DOWNLOAD_NAME." / ".$dlrow['download_category_name']);
 		}
 		else

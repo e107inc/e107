@@ -1495,13 +1495,13 @@ class forum_post_handler
 				$postVals['post_attachments'] = e107::serialize($newValues);
 				// $postVals['post_attachments'] = implode(',', $attachments);
 			}
-			
+
 			//Allows directly overriding the method of adding files (or other data) as attachments
 			if($attachmentsPosted = $this->processAttachmentsPosted($this->data['post_attachments']))
 			{
 				$postVals['post_attachments'] = $attachmentsPosted;
 			}	
-      
+
 			$postVals['post_edit_datestamp']    = time();
 			$postVals['post_edit_user']         = USERID;
 			$postVals['post_entry']             = $_POST['post'];

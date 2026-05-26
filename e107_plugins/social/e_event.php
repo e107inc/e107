@@ -19,22 +19,22 @@ class social_event
 	*/
 	function __construct()
 	{
-		
-		
+
+
 	}
 
 
 	function config()
 	{
 		$event = array();
-		
+
 		$event[] = array(
 			'name'     => "system_meta_pre",
 			'function' => "addFallbackMeta",
 		);
 
 		return $event;
-		
+
 	}
 
 

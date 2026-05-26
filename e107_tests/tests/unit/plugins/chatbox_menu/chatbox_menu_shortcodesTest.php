@@ -18,6 +18,7 @@
  */
 class chatbox_menu_shortcodesTest extends \Codeception\Test\Unit
 {
+	use \Helper\PhpUnitCompat;
 	/** @var chatbox_menu_shortcodes */
 	protected $sc;
 

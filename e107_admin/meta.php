@@ -187,7 +187,7 @@ class meta_admin_ui extends e_admin_ui
 
 		$text .= "</td>
 					</tr>
-				
+
 					</tbody>
 				</table>
 				<div class='buttons-bar center'>" .

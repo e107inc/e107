@@ -24,7 +24,10 @@
 const e107_INIT = true;
 
 
-function thumbExceptionHandler(Throwable $e)
+/**
+ * @param \Throwable $e
+ */
+function thumbExceptionHandler($e)
 {
 	http_response_code(500);
 	echo "Fatal Thumbnail Error\n";
@@ -143,7 +146,7 @@ class e_thumbpage
 		{
 			$e107_paths = $config['paths'];
 			$sql_info = $config['database'];
-			$E107_CONFIG = $config['other'] ?? [];
+			$E107_CONFIG = isset($config['other']) ? $config['other'] : [];
 		}
 
 		$e107 = e107::getInstance()->initCore($e107_paths, e_ROOT, $sql_info, varset($E107_CONFIG, array()));

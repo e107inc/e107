@@ -85,7 +85,7 @@ class ORCID extends OAuth2
      *
      * @return User\Profile
      */
-    protected function getDetails(User\Profile $profile, Data\Collection $data)
+    protected function getDetails($profile, $data)
     {
         $data = new Data\Collection($data->get('orcid-identifier'));
 
@@ -103,7 +103,7 @@ class ORCID extends OAuth2
      *
      * @return User\Profile
      */
-    protected function getBiography(User\Profile $profile, Data\Collection $data)
+    protected function getBiography($profile, $data)
     {
         $data = new Data\Collection($data->get('person'));
         $data = new Data\Collection($data->get('biography'));
@@ -121,7 +121,7 @@ class ORCID extends OAuth2
      *
      * @return User\Profile
      */
-    protected function getWebsite(User\Profile $profile, Data\Collection $data)
+    protected function getWebsite($profile, $data)
     {
         $data = new Data\Collection($data->get('person'));
         $data = new Data\Collection($data->get('researcher-urls'));
@@ -144,7 +144,7 @@ class ORCID extends OAuth2
      *
      * @return User\Profile
      */
-    protected function getName(User\Profile $profile, Data\Collection $data)
+    protected function getName($profile, $data)
     {
         $data = new Data\Collection($data->get('person'));
         $data = new Data\Collection($data->get('name'));
@@ -169,7 +169,7 @@ class ORCID extends OAuth2
      *
      * @return User\Profile
      */
-    protected function getEmail(User\Profile $profile, Data\Collection $data)
+    protected function getEmail($profile, $data)
     {
         $data = new Data\Collection($data->get('person'));
         $data = new Data\Collection($data->get('emails'));
@@ -208,7 +208,7 @@ class ORCID extends OAuth2
      *
      * @return User\Profile
      */
-    protected function getLanguage(User\Profile $profile, Data\Collection $data)
+    protected function getLanguage($profile, $data)
     {
         $data = new Data\Collection($data->get('preferences'));
 
@@ -225,7 +225,7 @@ class ORCID extends OAuth2
      *
      * @return User\Profile
      */
-    protected function getAddress(User\Profile $profile, Data\Collection $data)
+    protected function getAddress($profile, $data)
     {
         $data = new Data\Collection($data->get('person'));
         $data = new Data\Collection($data->get('addresses'));

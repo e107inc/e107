@@ -11,6 +11,7 @@
 
 	class e107EmailTest extends \Codeception\Test\Unit
 	{
+		use \Helper\PhpUnitCompat;
 
 		/** @var e107Email */
 		protected $eml;
@@ -322,13 +323,13 @@ Admin<br />
 			$eml->sendEmail(
 				'nobody@example.com',
 				"$randomString1 Example",
-				['body' => 'Message body'],
+				['body' => 'Message body']
 			);
 			$this::assertTrue($this->fileContainsString($logFilePath, $randomString1));
 			$eml->sendEmail(
 				'nobody2@example.com',
 				"$randomString2 Example",
-				['body' => 'Message body'],
+				['body' => 'Message body']
 			);
 			$this::assertTrue($this->fileContainsString($logFilePath, $randomString2));
 		}

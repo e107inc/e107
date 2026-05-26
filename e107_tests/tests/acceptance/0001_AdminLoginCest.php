@@ -3,18 +3,25 @@
 
 class AdminLoginCest
 {
-	public function _before(AcceptanceTester $I)
-	{
-	}
-
-	public function _after(AcceptanceTester $I)
+	/**
+     * @param \AcceptanceTester $I
+     */
+    public function _before($I)
 	{
 	}
 
 	/**
-	 * @see https://github.com/e107inc/e107/issues/4779
-	 */
-	public function testAdminFailedLogin(AcceptanceTester $I)
+     * @param \AcceptanceTester $I
+     */
+    public function _after($I)
+	{
+	}
+
+	/**
+     * @see https://github.com/e107inc/e107/issues/4779
+     * @param \AcceptanceTester $I
+     */
+    public function testAdminFailedLogin($I)
 	{
 		$I->wantTo("See a login failure message in the admin area if I put in the wrong credentials");
 		$I->amOnPage("/e107_admin/admin.php");
@@ -24,7 +31,10 @@ class AdminLoginCest
 		$I->see("Your login details don't match any registered user");
 	}
 
-	public function testAdminLogin(AcceptanceTester $I)
+	/**
+     * @param \AcceptanceTester $I
+     */
+    public function testAdminLogin($I)
 	{
 
 		$I->wantTo("Test the admin area login process");
@@ -58,7 +68,10 @@ class AdminLoginCest
 	}
 
 
-	public function testForMissingLans(AcceptanceTester $I)
+	/**
+     * @param \AcceptanceTester $I
+     */
+    public function testForMissingLans($I)
 	{
 		$this->e107Login($I);
 
@@ -71,7 +84,10 @@ class AdminLoginCest
 	}
 
 
-	public function testAdminURLS(AcceptanceTester $I)
+	/**
+     * @param \AcceptanceTester $I
+     */
+    public function testAdminURLS($I)
 	{
 
 		$this->e107Login($I);

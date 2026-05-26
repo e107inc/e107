@@ -3,16 +3,25 @@
 
 class ThumbCest
 {
-	public function _before(AcceptanceTester $I)
+	/**
+     * @param \AcceptanceTester $I
+     */
+    public function _before($I)
 	{
 	}
 
-	public function _after(AcceptanceTester $I)
+	/**
+     * @param \AcceptanceTester $I
+     */
+    public function _after($I)
 	{
 	}
 
 	// tests
-	public function testThumbOutput(AcceptanceTester $I)
+    /**
+     * @param \AcceptanceTester $I
+     */
+    public function testThumbOutput($I)
 	{
 
 		$I->amOnPage('/thumb.php?src=e_PLUGIN%2Fgallery%2Fimages%2Fbutterfly.jpg&w=220&h=190');

@@ -18,32 +18,36 @@ class Psr3LoggerWrapper implements LoggerInterface
 
     /**
      * @inheritdoc
+     * @param mixed[] $context
      */
-    public function info($message, array $context = [])
+    public function info($message, $context = [])
     {
         $this->logger->info($message, $context);
     }
 
     /**
      * @inheritdoc
+     * @param mixed[] $context
      */
-    public function debug($message, array $context = [])
+    public function debug($message, $context = [])
     {
         $this->logger->debug($message, $context);
     }
 
     /**
      * @inheritdoc
+     * @param mixed[] $context
      */
-    public function error($message, array $context = [])
+    public function error($message, $context = [])
     {
         $this->logger->error($message, $context);
     }
 
     /**
      * @inheritdoc
+     * @param mixed[] $context
      */
-    public function log($level, $message, array $context = [])
+    public function log($level, $message, $context = [])
     {
         $this->logger->log($level, $message, $context);
     }

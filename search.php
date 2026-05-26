@@ -229,9 +229,9 @@ class search_front extends e_shortcode
 	function sc_search_type_sel($parm='')
 	{
 		return e107::getForm()->radio_switch('adv', vartrue($_GET['adv']), LAN_SEARCH_30, LAN_SEARCH_29, array('class'=>'e-expandit','reverse'=>1, 'data-target'=>'search-advanced'));
-		
-		
-		
+
+
+
 	//	return "<input type='radio' name='adv' value='0' ".(vartrue($_GET['adv']) ? "" : "checked='checked'")." /> ".LAN_SEARCH_29."&nbsp;
 	//	<input type='radio' name='adv' value='1' ".(vartrue($_GET['adv']) ? "checked='checked'" : "" )." /> ".LAN_SEARCH_30;
 	}
@@ -721,7 +721,7 @@ class search_front extends e_shortcode
 				{
 					if (isset($_SERVER['HTTP_REFERER'])) 
 					{
-						if (!$refpage = substr($_SERVER['HTTP_REFERER'], (strrpos($_SERVER['HTTP_REFERER'], "/")+1))) 
+						if (!$refpage = (string) substr($_SERVER['HTTP_REFERER'], (strrpos($_SERVER['HTTP_REFERER'], "/")+1))) 
 						{
 							$refpage = "index.php";
 						}

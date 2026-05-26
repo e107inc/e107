@@ -64,7 +64,7 @@ class core_page_sef_noid_url extends eUrlConfig
 	 * view/item by name callback
 	 * @param eRequest $request
 	 */
-	public function itemIdByTitle(eRequest $request)
+	public function itemIdByTitle($request)
 	{
 		$name = $request->getRequestParam('name');
 
@@ -110,7 +110,7 @@ class core_page_sef_noid_url extends eUrlConfig
 	 * chapter/index and book/index by name callback
 	 * @param eRequest $request
 	 */
-	public function chapterIdByTitle(eRequest $request)
+	public function chapterIdByTitle($request)
 	{	
 		$name = $request->getRequestParam('name');
 		

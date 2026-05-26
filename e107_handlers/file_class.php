@@ -250,7 +250,7 @@ class e_file
 		if(!empty($fmask) && strpos($fmask, '~') === 0)
 		{
 			$invert = true;                        // Invert selection - exclude files which match selection
-			$fmask = substr($fmask, 1);
+			$fmask = (string) substr($fmask, 1);
 		}
 
 		if($recurse_level < 0)
@@ -261,7 +261,7 @@ class e_file
 
 		if(substr($path, -1) == '/')
 		{
-			$path = substr($path, 0, -1);
+			$path = (string) substr($path, 0, -1);
 		}
 
 
@@ -573,7 +573,7 @@ class e_file
 		$host = $parts['host'];
 		if($host[0] === '[' && substr($host, -1) === ']')
 		{
-			$host = substr($host, 1, -1);
+			$host = (string) substr($host, 1, -1);
 		}
 
 		$ips = array();
@@ -635,9 +635,9 @@ class e_file
 			return false;
 		}
 
-		if(strlen($packed) === 16 && substr($packed, 0, 10) === str_repeat("\x00", 10) && substr($packed, 10, 2) === "\xff\xff")
+		if(strlen($packed) === 16 && substr($packed, 0, 10) === str_repeat("\x00", 10) && (string) substr($packed, 10, 2) === "\xff\xff")
 		{
-			return inet_ntop(substr($packed, 12, 4));
+			return inet_ntop((string) substr($packed, 12, 4));
 		}
 
 		return $ip;
@@ -948,7 +948,7 @@ class e_file
 		if($path[strlen($path) - 1] === '/')
 			//	if(substr($path, -1) == '/')
 		{
-			$path = substr($path, 0, -1);
+			$path = (string) substr($path, 0, -1);
 		}
 
 		if(!$handle = opendir($path))

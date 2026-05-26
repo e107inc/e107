@@ -1,0 +1,23 @@
+{
+  "name": "e107inc/e107-test",
+  "description": "Test harness for e107 (PHP 5.6 / 7.0 cells)",
+  "license": "GPL-3.0-or-later",
+  "require-dev": {
+    "twig/twig": ">=1.28",
+    "codeception/codeception": "^4.2",
+    "codeception/module-asserts": "^1.1",
+    "codeception/module-db": "^1.0",
+    "codeception/module-phpbrowser": "^1.0",
+    "codeception/module-filesystem": "^1.0",
+    "codeception/module-webdriver": ">=1.0",
+    "behat/gherkin": "<4.13"
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true,
+    "audit": {
+      "block-insecure": false
+    }
+  }
+}

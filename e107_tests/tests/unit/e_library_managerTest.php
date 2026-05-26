@@ -3,6 +3,7 @@
 
 	class e_library_managerTest extends \Codeception\Test\Unit
 	{
+		use \Helper\PhpUnitCompat;
 
 		/** @var e_library_manager */
 		protected $lib;
