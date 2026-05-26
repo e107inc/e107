@@ -1504,5 +1504,20 @@ class e_formTest extends \Codeception\Test\Unit
 
 	}*/
 
+	/**
+	 * @see https://github.com/e107inc/e107/issues/5674
+	 */
+	public function testColumnSelectorIconUsesToGlyph()
+	{
+		$columns = [
+			'col_a' => ['title' => 'Column A', 'type' => 'text'],
+		];
+
+		$result = $this->_frm->columnSelector($columns, ['col_a']);
+		$expected = e107::getParser()->toGlyph('fa-sliders.glyph');
+
+		self::assertStringContainsString($expected, $result,
+			'Column selector icon should be rendered through toGlyph(), not hardcoded');
+	}
 
 }
