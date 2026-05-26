@@ -1,33 +1,26 @@
-<!--- Please fill out the following template, which will help other contributors review your GitHub pull request. -->
+### Why
 
-<!--- Provide a general summary of your changes in the title section above. -->
+<!-- What problem does this solve? Link the issue: Fixes #N or Closes #N -->
 
-### Motivation and Context
-<!--- Why is this change required? What problem does it solve? -->
-<!--- If it fixes an open issue, please link to the issue here. -->
+### What Changed
 
-### Description
-<!--- Describe your changes in detail. -->
+<!-- Describe the change. If the diff is self-explanatory, a one-liner is fine. -->
 
-### How Has This Been Tested?
-<!--- Please describe in detail how you tested your changes. -->
-<!--- Include details of your testing environment, and the tests you ran to -->
-<!--- see how your change affects other areas of the code, etc. -->
-<!--- If your change is a performance enhancement, please provide benchmarks here. -->
+### How It Was Tested
 
-### Types of Changes
-<!--- What types of changes does your code introduce? Put an `x` in all the boxes that apply: -->
-- [ ] Bug fix (non-breaking change which fixes an issue)
-- [ ] New feature (non-breaking change which adds functionality)
-- [ ] Performance enhancement (non-breaking change which improves efficiency)
-- [ ] Code cleanup (non-breaking change which makes code smaller or more readable)
-- [ ] Breaking change (fix or feature that would cause existing functionality to change)
-- [ ] Documentation (a change to man pages or other documentation)
+<!-- How did you verify this works? Ran the test suite, loaded a page, traced the code? Be honest; "traced only, not reproduced" is fine. -->
+
+### Backwards Compatibility
+
+<!-- Does this change any rendered HTML, public API, or default behavior? If yes, describe the impact and the migration path. If no, just write "No BC impact." -->
+
+### AI Model (Optional)
+
+<!-- If this PR was written with or by an AI assistant, name the model (e.g., Claude 3 Opus, GPT-4o, Gemini 1.0 Pro). This helps reviewers anticipate model-specific bias patterns. Omit if not applicable. -->
 
 ### Checklist
-<!--- Go over all the following points, and put an `x` in all the boxes that apply. -->
-<!--- If you're unsure about any of these, don't hesitate to ask. We're here to help! -->
-- [ ] My code adheres to the e107 [code style standard](https://github.com/e107inc/e107/wiki/e107-Coding-Standard).
-- [ ] I have read the [**contributing** document](https://github.com/e107inc/e107/blob/master/.github/CONTRIBUTING.md).
-- [ ] I have added [tests](https://github.com/e107inc/e107/tree/master/e107_tests) to cover my changes.
-- [ ] All new and existing tests pass.
+
+- [ ] One issue per PR: the diff is scoped to this change only
+- [ ] Commit messages explain *why*, not just *what*
+- [ ] New or changed behavior has test coverage (or explain why not)
+- [ ] No unrelated reformatting, renames, or import reordering
