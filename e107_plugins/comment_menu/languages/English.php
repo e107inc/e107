@@ -9,17 +9,16 @@
  * $URL$
  * $Id$
 */
-return[
-
-'CM_L1'=> "No comments yet.",
-'CM_L2'=> "",
-'CM_L3'=> "Caption",
-'CM_L4'=> "Number of comments to display?",
-'CM_L5'=> "Number of characters to display?",
-'CM_L6'=> "Postfix for too long comments?",
-'CM_L7'=> "Show original news title in menu?",
-'CM_L8'=> "New Comments Menu Configuration",
-'CM_L11'=> "on",
-'CM_L12'=> "Re:",
-'CM_L13'=> "Posted by",
+return [
+    'CM_L1' => "No comments yet.",
+    'CM_L2' => "",
+    'CM_L3' => "Caption",
+    'CM_L4' => "Number of comments to display?",
+    'CM_L5' => "Number of characters to display?",
+    'CM_L6' => "Postfix for too long comments?",
+    'CM_L7' => "Show original news title in menu?",
+    'CM_L8' => "New Comments Menu Configuration",
+    'CM_L11' => "on",
+    'CM_L12' => "Re:",
+    'CM_L13' => "Posted by",
 ];
