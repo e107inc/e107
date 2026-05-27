@@ -1,7 +1,6 @@
 <?php
 
-return[
-
-'LAN_PLUGIN_NAVIGATION_NAME' => "Navigation",
+return [
+    'LAN_PLUGIN_NAVIGATION_NAME' => "Navigation",
 
 ];
