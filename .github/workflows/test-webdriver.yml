@@ -1,0 +1,168 @@
+name: WebDriver Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test-webdriver:
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ['8.3'] # one version for now; can expand later
+        include:
+          - php-version: '8.3'
+            operating_system:
+              image: docker.io/jrei/systemd-ubuntu:24.04  # Ubuntu 24.04 contains PHP 8.3 by default
+
+    runs-on: ubuntu-latest
+
+    env:
+      # Network shared by the `target` and `selenium` containers so codecept
+      # inside `target` can reach `selenium:4444`, and Selenium's browser can
+      # reach `http://target/e107/`.
+      WEBDRIVER_NETWORK: e107-webdriver
+      # Pin to a known-good Selenium Standalone Chrome release. Bump periodically.
+      # See https://github.com/SeleniumHQ/docker-selenium/releases for current tags.
+      SELENIUM_IMAGE: docker.io/selenium/standalone-chrome:4.21.0-20240517
+
+    steps:
+      - name: Replace Docker with Podman
+        # aardvark-dns answers DNS on podman's DNS-enabled custom networks; without
+        # it `target` resolves neither github.com (provisioning) nor `selenium` (tests).
+        run: sudo apt-get -o Dpkg::Options::="--force-overwrite" install -y podman-docker aardvark-dns
+
+      - uses: actions/checkout@v6
+
+      - name: Create shared container network
+        run: docker network create "$WEBDRIVER_NETWORK"
+
+      - name: Restore container image cache
+        id: cache-container
+        uses: actions/cache@v5
+        with:
+          path: /tmp/container-image.tar
+          # Distinct cache key namespace ('webdriver-…') so it does not collide
+          # with the acceptance workflow's 'container-…' cache key, even though
+          # the underlying Salt provisioning is identical.
+          key: webdriver-${{ matrix.php-version }}-${{ hashFiles('.github/workflows/test-webdriver.yml', 'e107_tests/lib/ci/salt/salt-bootstrap.go', 'e107_tests/lib/ci/salt/master', 'e107_tests/lib/ci/salt/pillars/top.sls', 'e107_tests/lib/ci/salt/states/**', 'e107_tests/lib/ci/config.webdriver.ci.yml') }}
+
+      - name: Load cached container image
+        if: steps.cache-container.outputs.cache-hit == 'true'
+        run: |
+          docker load -i /tmp/container-image.tar
+          docker run -d -it --name target --network "$WEBDRIVER_NETWORK" --network-alias target -v .:/app/ e107-provisioned:${{ matrix.php-version }}
+
+      - name: Wait for services to be ready
+        if: steps.cache-container.outputs.cache-hit == 'true'
+        run: |
+          for i in $(seq 1 30); do
+            if docker exec target sh -c '! test -e /run/nologin && systemctl is-active --quiet mariadb && systemctl is-active --quiet apache2 && systemctl is-active --quiet ssh' 2>/dev/null; then
+              echo "All services are active and user logins are permitted."
+              break
+            fi
+            if [ "$i" -eq 30 ]; then
+              echo "ERROR: Timed out waiting for services."
+              docker exec target systemctl --no-pager status mariadb apache2 ssh systemd-user-sessions || true
+              docker exec target ls -la /run/nologin || true
+              exit 1
+            fi
+            echo "Attempt $i/30: waiting for services..."
+            sleep 2
+          done
+
+      - uses: actions/setup-go@v6
+        if: steps.cache-container.outputs.cache-hit != 'true'
+        with:
+          go-version: "^1.26"
+
+      - name: Compile SaltStack bootstrap wrapper
+        if: steps.cache-container.outputs.cache-hit != 'true'
+        run: CGO_ENABLED=0 go build -ldflags "-s -w" -o ./salt-bootstrap salt-bootstrap.go
+        working-directory: ./e107_tests/lib/ci/salt/
+
+      - name: Launch test container
+        if: steps.cache-container.outputs.cache-hit != 'true'
+        run: docker run -d -it --name target --network "$WEBDRIVER_NETWORK" --network-alias target -v .:/app/ ${{ matrix.operating_system.image }}
+
+      - name: Install SaltStack
+        if: steps.cache-container.outputs.cache-hit != 'true'
+        run: docker exec target /app/e107_tests/lib/ci/salt/salt-bootstrap onedir
+
+      - name: Apply Salt state
+        if: steps.cache-container.outputs.cache-hit != 'true'
+        run: |
+          ln -v -s master minion
+          rm -fv pillars/config.sls
+          touch pillars/config.sls
+          rm -fv pillars/config-sample.sls
+          touch pillars/config-sample.sls
+          ln -v -s -f ../../config.webdriver.ci.yml pillars/config-local.sls
+          docker exec -w /app/e107_tests/lib/ci/salt/ target /bin/sh -c "
+            salt-call -c ./ --id=e107-dev --local state.apply e107-dev ||
+            salt-call -c ./ --id=e107-dev --local state.apply e107-dev
+          "
+        working-directory: ./e107_tests/lib/ci/salt/
+
+      - name: Install PHP extensions
+        if: steps.cache-container.outputs.cache-hit != 'true'
+        run: |
+          docker exec target apt-get update
+          docker exec target apt-get install -y \
+            php${{ matrix.php-version }}-zip \
+            php${{ matrix.php-version }}-curl \
+            php${{ matrix.php-version }}-mbstring \
+            php${{ matrix.php-version }}-xml
+
+      - name: Save provisioned container image for caching
+        if: steps.cache-container.outputs.cache-hit != 'true'
+        run: |
+          docker commit target e107-provisioned:${{ matrix.php-version }}
+          docker save e107-provisioned:${{ matrix.php-version }} -o /tmp/container-image.tar
+
+      - name: Verify PHP version
+        run: docker exec target php -v
+
+      - name: Start Selenium Standalone Chrome
+        run: |
+          docker run -d \
+            --name selenium \
+            --network "$WEBDRIVER_NETWORK" \
+            --network-alias selenium \
+            --shm-size=2g \
+            "$SELENIUM_IMAGE"
+
+      - name: Wait for Selenium to be ready
+        run: |
+          for i in $(seq 1 30); do
+            if docker exec target sh -c 'curl -sf http://selenium:4444/wd/hub/status >/dev/null 2>&1 || curl -sf http://selenium:4444/status >/dev/null 2>&1'; then
+              echo "Selenium is reachable from target."
+              break
+            fi
+            if [ "$i" -eq 30 ]; then
+              echo "ERROR: Timed out waiting for Selenium."
+              docker logs selenium || true
+              exit 1
+            fi
+            echo "Attempt $i/30: waiting for Selenium..."
+            sleep 2
+          done
+
+      - name: Install test dependencies
+        run: |
+          docker exec -w /app/e107_tests/ -e COMPOSER_ALLOW_SUPERUSER=1 target \
+            composer update --prefer-dist --no-progress
+
+      - name: Download Git submodule dependencies
+        run: git submodule update --init --recursive --remote
+
+      - name: Install the CI test configuration file
+        run: |
+          ln -v -s -f ./lib/ci/config.webdriver.ci.yml ./e107_tests/config.yml
+
+      - name: Run WebDriver tests
+        run: docker exec -w /app/e107_tests/ target php ./vendor/bin/codecept run webdriver --steps
+
+      - name: Collect Selenium logs on failure
+        if: failure()
+        run: docker logs selenium || true
