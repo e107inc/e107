@@ -170,15 +170,14 @@ write_managed_config() {
 ---
 app_path: '../'
 deployer: 'local'
-# Acceptance/functional run PhpBrowser *inside* the web container, so the app is
-# reachable at localhost there. (Humans browse via the host-published port from
-# 'e107-tests urls'.)
-url: 'http://localhost/'
-# The WebDriver browser runs in the separate 'selenium' container, where
-# localhost is the browser itself, not the web server. It reaches the app by the
-# compose service alias instead. The fixture trusts host 'web' (trusted_hosts in
-# the sample dump) so e107's host-header check accepts it.
-webdriver_url: 'http://web/'
+# One app URL for every suite, so acceptance (PhpBrowser inside the web
+# container) and webdriver (a browser in the separate 'selenium' container) hit
+# the same HTTP interface. It must be reachable from the selenium container too,
+# so it's the 'web' compose alias, not 'localhost' (which there is the browser
+# itself). The web container reaches itself by that alias, and e107 trusts host
+# 'web' via the sample dump's trusted_hosts pref, so its host-header check
+# accepts it. (Humans browse via the host-published port from 'e107-tests urls'.)
+url: 'http://web/'
 db:
   host: 'db'
   port: '3306'
@@ -188,11 +187,11 @@ db:
   populate: true
   dump_path: 'tests/_data/e107_v2.3.0.sample.sql'
 # WebDriver suite drives the dedicated 'selenium' service over the compose
-# network. '/wd/hub' is the legacy route standalone-chrome serves.
+# network. The grid serves the W3C protocol at the root '/'.
 selenium:
   host: 'selenium'
   port: '4444'
-  path: '/wd/hub'
+  path: '/'
 EOF
 }
 

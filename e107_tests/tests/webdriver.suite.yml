@@ -8,9 +8,11 @@ coverage:
 modules:
     enabled:
         - WebDriver:
-            # Browser-reachable app URL (e.g. http://web/), not localhost: the
-            # browser runs in the selenium container, where localhost is itself.
-            url: '%webdriver_url%'
+            # The shared app URL, so this suite hits the same HTTP interface as
+            # acceptance. It must be browser-reachable (e.g. http://web/), never
+            # localhost: the browser runs in the selenium container, where
+            # localhost is the browser itself.
+            url: '%url%'
             browser: chrome
             host: '%selenium.host%'
             port: '%selenium.port%'

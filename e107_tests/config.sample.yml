@@ -31,16 +31,14 @@ hosting:
   # Control panel account password
   password: ''
 
-# URL (with trailing slash) at which the app can be reached for acceptance tests
-url: 'http://set-this-to-your-acceptance-test-url.local/'
-
-# URL (with trailing slash) the WebDriver suite's browser uses to reach the app.
-# The browser runs in a separate container/host from codecept, so this must be
-# reachable *from the browser* (e.g. a Docker/compose service alias), which is
-# usually NOT the same as `url` above. The e107-tests docker harness sets this
-# to 'http://web/' and CI to the app container's alias; e107's host-header check
-# must trust that hostname (see the `trusted_hosts` pref in the test dump).
-webdriver_url: 'http://set-this-to-your-webdriver-app-url.local/'
+# URL (with trailing slash) at which the app can be reached. Every suite uses
+# it, so the PhpBrowser acceptance suite and the WebDriver suite exercise the
+# same HTTP interface. The WebDriver browser runs in a separate container/host
+# from codecept, so this must be reachable *from that browser* (e.g. a
+# Docker/compose service alias or a routable host), never 'localhost'. e107's
+# host-header check must trust that hostname (see the `trusted_hosts` pref in the
+# test dump). The e107-tests docker harness sets this to 'http://web/'.
+url: 'http://set-this-to-your-app-url.local/'
 
 # Only MySQL/MariaDB is supported
 db:
@@ -84,10 +82,10 @@ selenium:
   # Port number of the Selenium server
   port: '4444'
 
-  # WebDriver endpoint base path. '/wd/hub' is the legacy route a Selenium
-  # grid (selenium/standalone-chrome) serves and is the right value for both
-  # the docker harness and CI.
-  path: '/wd/hub'
+  # WebDriver endpoint base path. The Selenium 4 grid serves the W3C protocol at
+  # the root '/', so that's the value for both the docker harness and CI. (The
+  # '/wd/hub' path is still served for backward compatibility with old clients.)
+  path: '/'
 
 # Configure this section for deployers that need file upload configuration
 fs:

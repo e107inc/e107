@@ -17,11 +17,6 @@
 #     it on '127.0.0.1'.
 deployer: 'sftp'
 url: 'http://target/e107/'
-# The Selenium browser drives the app from inside the 'selenium' container, so
-# it reaches the app at the 'target' network alias (same host as `url` here,
-# since codecept also runs on 'target'). e107's host-header check trusts host
-# 'target' via the `trusted_hosts` pref baked into the test dump.
-webdriver_url: 'http://target/e107/'
 db:
   host: '127.0.0.1'
   dbname: 'app'
