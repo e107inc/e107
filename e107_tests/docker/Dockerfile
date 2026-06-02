@@ -60,10 +60,16 @@ RUN set -eux; \
         intl \
         mbstring \
         mysqli \
-        opcache \
         pdo_mysql \
         xml \
-        zip
+        zip; \
+    # OPcache is a separately-built shared extension up to PHP 8.4 but is
+    # compiled into the core as of PHP 8.5, where `docker-php-ext-install
+    # opcache` fails outright (there is no shared module to build). Install it
+    # only when the runtime doesn't already provide it.
+    if ! php -m | grep -qi opcache; then \
+        docker-php-ext-install -j"$(nproc)" opcache; \
+    fi
 
 RUN set -eux; \
     if [ "$WITH_XDEBUG" = "yes" ]; then \
