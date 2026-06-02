@@ -94,11 +94,11 @@ class GitPreparer implements Preparer
 		$this->worktreePath = null;
 	}
 
-	/**
-	 * @return string|null The worktree path, or null if not yet created
-	 */
-	public function getWorktreePath()
+	public function getAppPath()
 	{
+		// Isolated copy: ensure the worktree exists (snapshot is idempotent),
+		// then run from it so the source tree stays pristine.
+		$this->snapshot();
 		return $this->worktreePath;
 	}
 

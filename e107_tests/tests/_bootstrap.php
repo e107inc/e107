@@ -51,24 +51,18 @@ class E107TestSuiteBootstrap
         }
         $original_app_path = realpath($app_path);
 
-        // Load PriorityCallbacks early so GitPreparer can register
-        // its shutdown function during snapshot().
+        // Load PriorityCallbacks early so a GitPreparer worktree can register
+        // its deferred cleanup during snapshot().
         include(codecept_root_dir() . "/lib/PriorityCallbacks.php");
 
-        // Phase 1: create a disposable worktree if git is available.
-        // The worktree captures the current dirty state so tests run in
-        // an isolated copy, leaving the main tree untouched.
+        // Ask the preparer where the app runs: in place, or in an isolated
+        // git worktree for deploy-based suites. The factory decides which.
         require_once(codecept_root_dir() . "/lib/preparers/PreparerFactory.php");
-        $preparer = PreparerFactory::createForPath($original_app_path);
-        $effective_app_path = $original_app_path;
-        if ($preparer instanceof GitPreparer)
-        {
-            $preparer->snapshot();
-            $effective_app_path = $preparer->getWorktreePath();
-        }
+        $deployer = $params['deployer'] ?? 'local';
+        $preparer = PreparerFactory::createForPath($original_app_path, $deployer);
+        $effective_app_path = $preparer->getAppPath();
 
-        // Phase 2: APP_PATH points to the worktree (or original if no
-        // worktree was created). All subsequent code uses this path.
+        // APP_PATH points to the prepared tree; all later code uses it.
         define('APP_PATH', $effective_app_path);
         define('PARAMS_SERIALIZED', serialize($params));
 

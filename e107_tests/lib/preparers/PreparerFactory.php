@@ -13,30 +13,31 @@ class PreparerFactory
 	private static $instance;
 
 	/**
-	 * Create a Preparer for the given app path. Called during bootstrap,
-	 * before APP_PATH is defined.
+	 * Create the Preparer for a deployer + app path. Called during bootstrap,
+	 * before APP_PATH is defined; the isolation strategy is decided here, not
+	 * in the bootstrap or the deployers.
 	 *
 	 * @param string $appPath
+	 * @param string $deployer
 	 * @return Preparer
 	 */
-	public static function createForPath($appPath)
+	public static function createForPath($appPath, $deployer = 'local')
 	{
 		if (self::$instance !== null)
 		{
 			return self::$instance;
 		}
 
-		if (self::systemIsSlow())
-		{
-			self::$instance = self::createFromName('E107Preparer');
-		}
-		elseif (self::pathHasUsableGit($appPath))
+		// 'local' serves the app from $appPath itself, so it must run in place.
+		// Deploy-based suites (sftp/cpanel) copy elsewhere, so they can isolate
+		// the source in a disposable git worktree where git is usable.
+		if ($deployer !== 'local' && !self::systemIsSlow() && self::pathHasUsableGit($appPath))
 		{
 			self::$instance = new GitPreparer($appPath);
 		}
 		else
 		{
-			self::$instance = self::createFromName('E107Preparer');
+			self::$instance = new E107Preparer($appPath);
 		}
 
 		codecept_debug('Instantiating Preparer: ' . get_class(self::$instance));
@@ -53,15 +54,6 @@ class PreparerFactory
 			return self::$instance;
 		}
 		return self::createForPath(APP_PATH);
-	}
-
-	/**
-	 * @param string $class_name
-	 * @return Preparer
-	 */
-	public static function createFromName($class_name)
-	{
-		return new $class_name();
 	}
 
 	private static function systemIsSlow()
