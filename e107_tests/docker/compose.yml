@@ -89,10 +89,12 @@ services:
       - "127.0.0.1:${E107_WEB_PORT:-0}:80"
 
   # Dedicated browser for the WebDriver suite: codecept (in `web`) drives it at
-  # `selenium:4444/wd/hub`, and it navigates back to the app at `http://web/`.
-  # Pinned to the image CI uses (.github/workflows/test-webdriver.yml).
+  # `selenium:4444` (the Selenium 4 grid serves the W3C protocol at the root),
+  # and it navigates back to the app at `http://web/`. The image floats on
+  # `latest` so an upstream Chromium change surfaces here rather than in the
+  # wild; set E107_SELENIUM_IMAGE to pin or to matrix a specific build.
   selenium:
-    image: docker.io/selenium/standalone-chrome:4.21.0-20240517
+    image: ${E107_SELENIUM_IMAGE:-docker.io/selenium/standalone-chrome:latest}
     restart: unless-stopped
     # supervisord can't write its /var/run control socket as the image's default
     # `seluser` once a rootless-Podman userns remaps ownership (errno.EPERM,

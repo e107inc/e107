@@ -221,7 +221,9 @@ cmd_up() {
     write_managed_config
 
     note ">> Bringing up env: $PROJECT (PHP $PHP / $DB)"
-    compose up -d --build --wait
+    # `compose up` builds the web image only when it's missing, so a cached
+    # image (CI) or an earlier build is reused automatically.
+    compose up -d --wait
     cmd_install
     cmd_urls
 }
@@ -453,7 +455,8 @@ USAGE:
   e107-tests --env <project> <command> [args...]   # operate on a specific env
 
 LIFECYCLE:
-  up [--php X] [--db Y] [--xdebug]   Build, start, install deps, mark active.
+  up [--php X] [--db Y] [--xdebug]   Start, install deps, mark active. Builds the
+                                     web image if missing, else reuses it.
                                      Default: PHP 8.3 + MariaDB 10.11.
   down [--volumes]                   Stop and remove this env.
   reset                              Drop+recreate DB, clear written app state.
