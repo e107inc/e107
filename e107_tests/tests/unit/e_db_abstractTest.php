@@ -219,7 +219,7 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 	public function testRetrieve()
 	{
 		// 'single' field value mode.
-		$expected = 'e107';
+		$expected = \Helper\AdminLogin::ADMIN_USER;
 		$result = $this->db->retrieve('user', 'user_name', 'user_id = 1');
 		$this->assertEquals($expected,$result);
 
@@ -227,7 +227,7 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$this->assertEquals($expected,$result);
 
 		// 'one' row mode.
-		$expected = array ('user_id' => '1', 'user_name' => 'e107',	);
+		$expected = array ('user_id' => '1', 'user_name' => \Helper\AdminLogin::ADMIN_USER,	);
 		$result = $this->db->retrieve('user', 'user_id, user_name', 'user_id = 1');
 		$this->assertEquals($expected,$result);
 
@@ -250,7 +250,7 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$this->assertEquals($expected,$result);
 
 		// 'multi' row mode.
-		$expected = array ( 0 =>  array (   'user_id' => '1', 'user_name' => 'e107', ),);
+		$expected = array ( 0 =>  array (   'user_id' => '1', 'user_name' => \Helper\AdminLogin::ADMIN_USER, ),);
 		$result = $this->db->retrieve('user', 'user_id, user_name', 'user_id = 1', true);
 		$this->assertEquals($expected,$result);
 
@@ -614,7 +614,7 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 
 		$this->db->select('user', '*', 'user_id = 1');
 		$row = $this->db->db_Fetch();
-		$this->assertEquals("e107", $row['user_name']);
+		$this->assertEquals(\Helper\AdminLogin::ADMIN_USER, $row['user_name']);
 		$this->assertFalse(isset($row[0]), "MYSQL_NUM keys not expected");
 		$this->assertFalse(isset($row[1]), "MYSQL_NUM keys not expected");
 
@@ -631,8 +631,8 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 
 		$this->db->select('user', '*', 'user_id = 1');
 		$row = $this->db->db_Fetch(MYSQL_BOTH);
-		$this->assertEquals("e107", $row['user_name']);
-		$this->assertEquals("e107", $row[1]);
+		$this->assertEquals(\Helper\AdminLogin::ADMIN_USER, $row['user_name']);
+		$this->assertEquals(\Helper\AdminLogin::ADMIN_USER, $row[1]);
 
 	}
 

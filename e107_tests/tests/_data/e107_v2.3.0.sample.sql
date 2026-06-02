@@ -998,7 +998,7 @@ CREATE TABLE `e107_user` (
 
 LOCK TABLES `e107_user` WRITE;
 /*!40000 ALTER TABLE `e107_user` DISABLE KEYS */;
-INSERT INTO `e107_user` VALUES (1,'e107','e107','','$2y$10$2iSbCDECDbzpiR7tj2BmJuCbu8e6XjUoxx9Fyeftyu5IzRlqN.xi.','','e107inc@gmail.com','','',0,1590351985,0,0,0,0,0,'10.64.229.1',0,'',0,1,'','','0','',1590351985,'');
+INSERT INTO `e107_user` VALUES (1,'admin','admin','','$2y$10$tjwQ7AG6Uw7ysnt76kmpVegTRVWUaqdy3bmhRiDiuTbkYLDu5xHvy','','e107inc@gmail.com','','',0,1590351985,0,0,0,0,0,'10.64.229.1',0,'',0,1,'','','0','',1590351985,'');
 /*!40000 ALTER TABLE `e107_user` ENABLE KEYS */;
 UNLOCK TABLES;
 

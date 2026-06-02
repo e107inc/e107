@@ -446,7 +446,7 @@ class e_formTest extends \Codeception\Test\Unit
 			public function testUserlist()
 			{
 				$list = $this->_frm->userlist('name');
-				self::assertStringContainsString("<option value='1'>e107</option>",$list);
+				self::assertStringContainsString("<option value='1'>" . \Helper\AdminLogin::ADMIN_USER . "</option>", $list);
 
 			}
 /*
@@ -1148,7 +1148,7 @@ class e_formTest extends \Codeception\Test\Unit
 			'date_001'          => '2018-08-23',
 			'userclass_001'     => 'Everyone (public)',
 			'userclasses_001'   => 'Everyone (public)<br />PRIVATEMENU',
-			'user_001'          => 'e107',
+			'user_001'          => \Helper\AdminLogin::ADMIN_USER,
 			'url_001'           => "<a href='https://e107.org' title='https://e107.org'>https://e107.org</a>",
 			'email_001'         => "<a href='mailto:me@email.com' title='me@email.com'>me@email.com</a>",
 			'hidden_001'        => '',

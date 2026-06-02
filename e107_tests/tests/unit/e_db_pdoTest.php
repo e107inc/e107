@@ -85,7 +85,7 @@ class e_db_pdoTest extends e_db_abstractTest
 	 */
 	public function testSelectBind()
 	{
-		$result = $this->db->select('user', 'user_id, user_name', 'user_id=:id OR user_name=:name ORDER BY user_name', array('id' => 999, 'name' => 'e107')); // bind support.
+		$result = $this->db->select('user', 'user_id, user_name', 'user_id=:id OR user_name=:name ORDER BY user_name', array('id' => 999, 'name' => \Helper\AdminLogin::ADMIN_USER)); // bind support.
 		$this->assertEquals(1, $result);
 	}
 
@@ -126,7 +126,7 @@ class e_db_pdoTest extends e_db_abstractTest
 			'PREPARE' => 'SELECT * FROM ' . MPREFIX . 'user WHERE user_id=:user_id AND user_name=:user_name',
 			'EXECUTE' => array(
 				'user_id' => 1,
-				'user_name' => 'e107'
+				'user_name' => \Helper\AdminLogin::ADMIN_USER
 			)
 		);
 
