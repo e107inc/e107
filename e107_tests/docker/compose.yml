@@ -86,9 +86,33 @@ services:
       # cycles only re-extract instead of re-downloading.
       - composer-cache:/root/.composer/cache
     ports:
-      # Empty host port = let Docker pick a free one. The wrapper resolves
-      # the actual port with `docker compose port web 80`.
-      - "127.0.0.1::80"
+      - "127.0.0.1:${E107_WEB_PORT:-0}:80"
+
+  # Dedicated browser for the WebDriver suite: codecept (in `web`) drives it at
+  # `selenium:4444/wd/hub`, and it navigates back to the app at `http://web/`.
+  # Pinned to the image CI uses (.github/workflows/test-webdriver.yml).
+  selenium:
+    image: docker.io/selenium/standalone-chrome:4.21.0-20240517
+    restart: unless-stopped
+    # supervisord can't write its /var/run control socket as the image's default
+    # `seluser` once a rootless-Podman userns remaps ownership (errno.EPERM,
+    # crash-loop). Root sidesteps it; under rootless Podman that is just the
+    # unprivileged host user.
+    user: root
+    depends_on:
+      - web
+    shm_size: 2gb
+    healthcheck:
+      # check-grid.sh ships in the image and returns 0 only once the node has
+      # registered and the grid reports ready, so `up --wait` blocks until the
+      # browser can actually accept sessions (no first-run race).
+      test:
+        - CMD-SHELL
+        - /opt/bin/check-grid.sh --host 0.0.0.0 --port 4444 || exit 1
+      interval: 5s
+      timeout: 10s
+      retries: 30
+      start_period: 10s
 
 volumes:
   composer-cache:

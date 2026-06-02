@@ -170,7 +170,15 @@ write_managed_config() {
 ---
 app_path: '../'
 deployer: 'local'
+# Acceptance/functional run PhpBrowser *inside* the web container, so the app is
+# reachable at localhost there. (Humans browse via the host-published port from
+# 'e107-tests urls'.)
 url: 'http://localhost/'
+# The WebDriver browser runs in the separate 'selenium' container, where
+# localhost is the browser itself, not the web server. It reaches the app by the
+# compose service alias instead. The fixture trusts host 'web' (trusted_hosts in
+# the sample dump) so e107's host-header check accepts it.
+webdriver_url: 'http://web/'
 db:
   host: 'db'
   port: '3306'
@@ -179,6 +187,12 @@ db:
   password: '$DEFAULT_DB_ROOT_PASSWORD'
   populate: true
   dump_path: 'tests/_data/e107_v2.3.0.sample.sql'
+# WebDriver suite drives the dedicated 'selenium' service over the compose
+# network. '/wd/hub' is the legacy route standalone-chrome serves.
+selenium:
+  host: 'selenium'
+  port: '4444'
+  path: '/wd/hub'
 EOF
 }
 
