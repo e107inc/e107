@@ -249,7 +249,7 @@
 		  'tags'        => "<span class='label label-default'",
 		  'textarea'    => 'Plain text',
 		  'url'         => 'http://something.com',
-		  'user'        => 'e107',
+		  'user'        => \Helper\AdminLogin::ADMIN_USER,
 		  'userclass'   => 'Everyone (public)',
 		  'progressbar' => "<div  class='progress",
 

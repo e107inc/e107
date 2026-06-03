@@ -27,6 +27,7 @@ Install LAMP stack:
       - php-curl
       - php-gd
       - php-mbstring
+      - curl
 
 Install SSH:
   pkg.installed:
@@ -53,7 +54,7 @@ Allow user logins on every boot:
 
 Install Composer:
   cmd.run:
-    - name: 'wget https://getcomposer.org/installer -O - | php -- --install-dir="/usr/local/bin" --filename="composer"'
+    - name: 'curl -fsSL https://getcomposer.org/installer | php -- --install-dir="/usr/local/bin" --filename="composer"'
     - unless: test -f /usr/local/bin/composer
 
 MariaDB server configuration file:

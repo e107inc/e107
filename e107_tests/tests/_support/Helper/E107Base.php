@@ -40,24 +40,26 @@ abstract class E107Base extends Base
         }
     }
 
-    protected function writeLocalE107Config()
+    protected function renderLocalE107Config()
     {
-        $twig_loader = new ArrayLoader([
+        $twig = new Environment(new ArrayLoader([
             'e107_config.php' => file_get_contents(codecept_data_dir() . "/e107_config.php.sample")
-        ]);
-        $twig = new Environment($twig_loader);
+        ]));
 
         $db = $this->getModule('\Helper\DelayedDb');
 
-        $e107_config = [];
-        $e107_config['mySQLserver'] = $db->_getDbHostname();
-        $e107_config['mySQLuser'] = $db->_getDbUsername();
-        $e107_config['mySQLpassword'] = $db->_getDbPassword();
-        $e107_config['mySQLdefaultdb'] = $db->_getDbName();
-        $e107_config['mySQLprefix'] = self::E107_MYSQL_PREFIX;
+        return $twig->render('e107_config.php', [
+            'mySQLserver'    => $db->_getDbHostname(),
+            'mySQLuser'      => $db->_getDbUsername(),
+            'mySQLpassword'  => $db->_getDbPassword(),
+            'mySQLdefaultdb' => $db->_getDbName(),
+            'mySQLprefix'    => self::E107_MYSQL_PREFIX,
+        ]);
+    }
 
-        $e107_config_contents = $twig->render('e107_config.php', $e107_config);
-        file_put_contents(self::APP_PATH_E107_CONFIG, $e107_config_contents);
+    protected function writeLocalE107Config()
+    {
+        file_put_contents(self::APP_PATH_E107_CONFIG, $this->renderLocalE107Config());
     }
 
     public function _afterSuite()
