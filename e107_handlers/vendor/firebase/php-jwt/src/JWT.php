@@ -27,9 +27,9 @@ use UnexpectedValueException;
  */
 class JWT
 {
-    private const ASN1_INTEGER = 0x02;
-    private const ASN1_SEQUENCE = 0x10;
-    private const ASN1_BIT_STRING = 0x03;
+    const ASN1_INTEGER = 0x02;
+    const ASN1_SEQUENCE = 0x10;
+    const ASN1_BIT_STRING = 0x03;
 
     /**
      * When checking nbf, iat or expiration times,
@@ -94,10 +94,10 @@ class JWT
      * @uses urlsafeB64Decode
      */
     public static function decode(
-        string $jwt,
+        $jwt,
         $keyOrKeyArray,
-        ?stdClass &$headers = null
-    ): stdClass {
+        &$headers = null
+    ) {
         // Validate JWT
         $timestamp = \is_null(static::$timestamp) ? \time() : static::$timestamp;
 
@@ -197,12 +197,12 @@ class JWT
      * @uses urlsafeB64Encode
      */
     public static function encode(
-        array $payload,
+        $payload,
         $key,
-        string $alg,
-        ?string $keyId = null,
-        ?array $head = null
-    ): string {
+        $alg,
+        $keyId = null,
+        $head = null
+    ) {
         $header = ['typ' => 'JWT'];
         if (isset($head)) {
             $header = \array_merge($header, $head);
@@ -235,10 +235,10 @@ class JWT
      * @throws DomainException Unsupported algorithm or bad key was specified
      */
     public static function sign(
-        string $msg,
+        $msg,
         $key,
-        string $alg
-    ): string {
+        $alg
+    ) {
         if (empty(static::$supported_algs[$alg])) {
             throw new DomainException('Algorithm not supported');
         }
@@ -301,11 +301,11 @@ class JWT
      * @throws DomainException Invalid Algorithm, bad key, or OpenSSL failure
      */
     private static function verify(
-        string $msg,
-        string $signature,
+        $msg,
+        $signature,
         $keyMaterial,
-        string $alg
-    ): bool {
+        $alg
+    ) {
         if (empty(static::$supported_algs[$alg])) {
             throw new DomainException('Algorithm not supported');
         }
@@ -364,7 +364,7 @@ class JWT
      *
      * @throws DomainException Provided string was invalid JSON
      */
-    public static function jsonDecode(string $input)
+    public static function jsonDecode($input)
     {
         $obj = \json_decode($input, false, 512, JSON_BIGINT_AS_STRING);
 
@@ -385,7 +385,7 @@ class JWT
      *
      * @throws DomainException Provided object could not be encoded to valid JSON
      */
-    public static function jsonEncode(array $input): string
+    public static function jsonEncode($input)
     {
         $json = \json_encode($input, \JSON_UNESCAPED_SLASHES);
         if ($errno = \json_last_error()) {
@@ -408,7 +408,7 @@ class JWT
      *
      * @throws InvalidArgumentException invalid base64 characters
      */
-    public static function urlsafeB64Decode(string $input): string
+    public static function urlsafeB64Decode($input)
     {
         return \base64_decode(self::convertBase64UrlToBase64($input));
     }
@@ -423,7 +423,7 @@ class JWT
      *
      * @see https://www.rfc-editor.org/rfc/rfc4648
      */
-    public static function convertBase64UrlToBase64(string $input): string
+    public static function convertBase64UrlToBase64($input)
     {
         $remainder = \strlen($input) % 4;
         if ($remainder) {
@@ -440,7 +440,7 @@ class JWT
      *
      * @return string The base64 encode of what you passed in
      */
-    public static function urlsafeB64Encode(string $input): string
+    public static function urlsafeB64Encode($input)
     {
         return \str_replace('=', '', \strtr(\base64_encode($input), '+/', '-_'));
     }
@@ -458,8 +458,8 @@ class JWT
      */
     private static function getKey(
         $keyOrKeyArray,
-        ?string $kid
-    ): Key {
+        $kid
+    ) {
         if ($keyOrKeyArray instanceof Key) {
             return $keyOrKeyArray;
         }
@@ -485,7 +485,7 @@ class JWT
      * @param string $right The user-supplied string
      * @return bool
      */
-    public static function constantTimeEquals(string $left, string $right): bool
+    public static function constantTimeEquals($left, $right)
     {
         if (\function_exists('hash_equals')) {
             return \hash_equals($left, $right);
@@ -510,7 +510,7 @@ class JWT
      *
      * @return void
      */
-    private static function handleJsonError(int $errno): void
+    private static function handleJsonError($errno)
     {
         $messages = [
             JSON_ERROR_DEPTH => 'Maximum stack depth exceeded',
@@ -533,7 +533,7 @@ class JWT
      *
      * @return int
      */
-    private static function safeStrlen(string $str): int
+    private static function safeStrlen($str)
     {
         if (\function_exists('mb_strlen')) {
             return \mb_strlen($str, '8bit');
@@ -547,7 +547,7 @@ class JWT
      * @param   string $sig The ECDSA signature to convert
      * @return  string The encoded DER object
      */
-    private static function signatureToDER(string $sig): string
+    private static function signatureToDER($sig)
     {
         // Separate the signature into r-value and s-value
         $length = max(1, (int) (\strlen($sig) / 2));
@@ -581,7 +581,7 @@ class JWT
      *
      * @return  string  the encoded object
      */
-    private static function encodeDER(int $type, string $value): string
+    private static function encodeDER($type, $value)
     {
         $tag_header = 0;
         if ($type === self::ASN1_SEQUENCE) {
@@ -605,7 +605,7 @@ class JWT
      *
      * @return  string  the signature
      */
-    private static function signatureFromDER(string $der, int $keySize): string
+    private static function signatureFromDER($der, $keySize)
     {
         // OpenSSL returns the ECDSA signatures as a binary ASN.1 DER SEQUENCE
         list($offset, $_) = self::readDER($der);
@@ -633,7 +633,7 @@ class JWT
      *
      * @return array{int, string|null} the new offset and the decoded object
      */
-    private static function readDER(string $der, int $offset = 0): array
+    private static function readDER($der, $offset = 0)
     {
         $pos = $offset;
         $size = \strlen($der);
@@ -653,10 +653,10 @@ class JWT
         // Value
         if ($type === self::ASN1_BIT_STRING) {
             $pos++; // Skip the first contents octet (padding indicator)
-            $data = \substr($der, $pos, $len - 1);
+            $data = (string) \substr($der, $pos, $len - 1);
             $pos += $len - 1;
         } elseif (!$constructed) {
-            $data = \substr($der, $pos, $len);
+            $data = (string) \substr($der, $pos, $len);
             $pos += $len;
         } else {
             $data = null;

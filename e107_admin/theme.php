@@ -44,7 +44,7 @@ e107::library('load', 'bootstrap-suggest');
 e107::js('footer-inline', "
 $('textarea').suggest(':', {
   data: function(q, lookup) {
- 
+
       $.getJSON('theme.php', {q : q }, function(data) {
 			console.log(data);
 			console.log(lookup);
@@ -54,7 +54,7 @@ $('textarea').suggest(':', {
       // we aren't returning any
 
   }
-  
+
 });
 
 
@@ -64,9 +64,9 @@ $('textarea').suggest(':', {
 e107::js('footer-inline', "
 
 $('textarea.input-custompages').suggest(':', {
-	
+
   data: function() {
-  
+
   var i = $.ajax({
 		type: 'GET',
 		url: 'theme.php',
@@ -78,7 +78,7 @@ $('textarea.input-custompages').suggest(':', {
 		//	console.log(data);
 			return data; 
 		}).responseText;		
-    	
+
 	try
 	{
 		var d = $.parseJSON(i);
@@ -88,7 +88,7 @@ $('textarea.input-custompages').suggest(':', {
 		// Not JSON.
 		return;
 	}
-	
+
 	return d;   
   },
   filter: {
@@ -488,7 +488,7 @@ class theme_admin_ui extends e_admin_ui
 			$this->perPage = 500;
 
 		}
-		
+
 		public function ChooseAjaxObserver()
 		{
 			$this->ChooseObserver();
@@ -1228,7 +1228,7 @@ class theme_admin_form_ui extends e_admin_form_ui
 		return $main_icon.$info_icon.$preview_icon;
 
 	}
-	
+
 }
 
 
@@ -1397,7 +1397,8 @@ class theme_builder extends e_admin_ui
 			$newThemeXML = e_THEME.$this->themeName."/theme.xml";
 			if(file_exists($newThemeXML))
 			{
-				$info = e107::getTheme()::getThemeInfo($this->themeName);
+				$theme = e107::getTheme();
+				$info = $theme::getThemeInfo($this->themeName);
 
 				e107::getDebug()->log($info);
 

@@ -11,6 +11,7 @@
 
 class e_fileTest extends \Codeception\Test\Unit
 {
+	use \Helper\PhpUnitCompat;
 
 	/** @var e_file  */
 	protected $fl;
@@ -476,7 +477,7 @@ class e_fileTest extends \Codeception\Test\Unit
 				foreach($test as $mime=>$ext)
 				{
 					$actual = $this->fl->getFileExtension($mime);
-		
+
 					self::assertSame($ext, $actual);
 				}	
 			}

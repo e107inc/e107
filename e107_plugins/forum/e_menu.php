@@ -12,7 +12,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 //v2.x Standard for extending menu configuration within Menu Manager. (replacement for v1.x config.php)
-	
+
 class forum_menu
 {
 	function __construct()
@@ -37,7 +37,7 @@ class forum_menu
 		$fields['postfix']      = array('title'=> LAN_FORUM_MENU_007, 'type'=>'text', 'writeParms'=>array('size'=>'mini','default' => '...'));
 		$fields['scroll']        = array('title'=> LAN_FORUM_MENU_014, 'type'=>'text', 'writeParms'=>array('size'=>'mini','pattern'=>'[0-9]*'), 'help'=>LAN_FORUM_MENU_015);
 		$fields['layout']       = array('title'=> LAN_TEMPLATE, 'type'=>'dropdown', 'writeParms'=>array('optArray'=>$layouts[0]));
-		
+
         return $fields;
 
 	}

@@ -25,7 +25,7 @@ if (!getperms("2")) 		// Same permissions as menu configuration
 require_once(e_ADMIN."auth.php");
 
 $frm = e107::getForm();
-	
+
 // Get the list of available themes
 $handle = opendir(e_THEME);
 while ($file = readdir($handle)) 
@@ -117,9 +117,9 @@ $text = "
 	</form>
 	";
 	$mes = e107::getMessage();
-	
+
 $ns->tablerender(defset('LAN_UMENU_THEME_6'),$mes->render().$text);
-	
+
 require_once(e_ADMIN."footer.php");
 
 /*

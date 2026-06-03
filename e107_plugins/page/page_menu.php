@@ -24,8 +24,8 @@ foreach($data as $row)
 {
 	$title = $tp->toHTML($row['page_title'],false,'TITLE');
 	$body = $tp->toHTML($row['page_text'],true,'BODY');
-	
-	
+
+
 	$ns->tablerender($title, $body,'page-menu'); // check for $mode == 'page-menu' in tablestyle() if you need a simple 'echo' without rendering styles. 
 }
 

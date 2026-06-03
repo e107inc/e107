@@ -171,7 +171,7 @@ class e_parse_shortcode
 			{
 				if (strpos($c, 'sc_') === 0)
 				{
-					$codes[] = substr($c, 3);
+					$codes[] = (string) substr($c, 3);
 				}
 			}
 			unset($tmp);
@@ -708,7 +708,7 @@ class e_parse_shortcode
 		{
 			if (strpos($c, 'sc_') === 0)
 			{
-				$sc_func = substr($c, 3);
+				$sc_func = (string) substr($c, 3);
 				$code = strtoupper($sc_func);
 				if ($force || !$this->isRegistered($code))
 				{
@@ -854,7 +854,7 @@ class e_parse_shortcode
 			$this->addedCodes = &$extraCodes;
 
 		//	e107::getDebug()->log("Codes".print_a($this->addedCodes,true));
-			
+
 			// TEMPLATEID_WRAPPER support - see contact template
 			// must be registered in e_shortcode object (batch) via () method before parsing
 			// Do it only once per parsing cylcle and not on every doCode() loop - performance
@@ -895,34 +895,34 @@ class e_parse_shortcode
 
 						$(this).contentEditable({
 							"placeholder" : "",
-							
+
 							  "onFocusIn" : function(element){
 							    var $input = $("<span id=\"e-editable-front-controls\"><span class=\"e-editable-front-save\" ><i class=\"fa fa-fw fa-save\"></i></span><span class=\"e-editable-front-cancel\" ><i class=\"fa fa-fw fa-ban\"></i></span></span>"); 
 							   $input.appendTo($(box)).hide().fadeIn(300);
 								$(container).addClass("active");
-				             
+
 				            },
 							"onFocusOut" : function(element){
 				            //   $(".e-editable-front-save").remove();
 				            }
-				            
-				          
+
+
 						});
-						
-						
+
+
 						$(box).on("click",".e-editable-front-cancel",function () 
 						{
 					        console.log("Cancelled");
 					        $(container).removeClass("active");
 					        $("#e-editable-front-controls").fadeOut(300, function() { $("#e-editable-front-controls").remove(); });	 
 						}); 
-						
+
 						$(box).on("click",".e-editable-front-save",function () 
 						{
 							$("#e-editable-front-controls").html("<i class=\"fa fa-fw fa-spin fa-spinner\"></i>");
-						
+
 					        $(container).removeClass("active");
-					        
+
 					        var edited_content = $(container).html();
 
 							$.post("'.e_WEB_ABS.'js/inline.php",{ content : edited_content, sc: sc, id: id, token: token }, function (data)
@@ -939,37 +939,37 @@ class e_parse_shortcode
 								}
 
 								console.log(d);
-									 
+
 								if(d.msg)
 								{
-	
+
 									if(d.status == "ok")
 									{
 										$("#e-editable-front-controls").html("<i class=\"fa fa-fw fa-check\"></i>");	
 									}
-											
+
 									if(d.status == "error")
 									{
 										$("#e-editable-front-controls").html("<i class=\"fa fa-fw fa-cross\"></i>");	
 									}			
-										
+
 								}	
 								else
 								{
 									$("#e-editable-front-controls").html("<i class=\"fa fa-fw fa-cross\"></i>");	
 								}
-								
+
 								$("#e-editable-front-controls").fadeOut(2000, function() { $(this).remove(); });	 
-	
+
 							}) 
-					        
+
 						}); 
-										
-						
+
+
 
 					});
-					
-				
+
+
 
 
 
@@ -1013,7 +1013,7 @@ class e_parse_shortcode
 				$this->scList[$sc] = $code;
 			}
 			*/
-			
+
 		//	print_a($this);
 		}
 
@@ -1120,7 +1120,7 @@ class e_parse_shortcode
 
 		if (E107_DBG_SC && ADMIN)
 		{
-			
+
 			$dbg = "<strong>";
 			$dbg .= '{';
 			$dbg .= $code;
@@ -1186,7 +1186,7 @@ class e_parse_shortcode
 		}
 		elseif (array_key_exists($code, $this->scList)) // Check to see if we've already loaded the .sc file contents
 		{
-			
+
 			$scCode = $this->scList[$code];
 			$_path = "(loaded earlier)"; // debug. 
 		}
@@ -1195,7 +1195,7 @@ class e_parse_shortcode
 			//.sc file not yet loaded, or shortcode is new function type
 			if ($this->parseSCFiles == true)
 			{
-				
+
 				if (array_key_exists($code, $this->registered_codes))
 				{
 					//shortcode is registered, let's proceed.
@@ -1237,7 +1237,7 @@ class e_parse_shortcode
 							$wrapper = $this->callScFunc($_class, 'wrapper', null);
 
 							$ret = $this->callScFuncA($_class, $_method, array($parm, $sc_mode));
-							
+
 							/*if (method_exists($this->scClasses[$_class], $_method))
 							{
 								$ret = $this->scClasses[$_class]->$_method($parm, $sc_mode);
@@ -1248,7 +1248,7 @@ class e_parse_shortcode
 							}*/
 
 							break;
-						
+
 						case 'override':
 						case 'func':
 						case 'plugin':
@@ -1259,7 +1259,7 @@ class e_parse_shortcode
 								include_once($this->registered_codes[$code]['path'].strtolower($code).'.php');
 
 							}
-							
+
 							if (function_exists($_function))
 							{
 								$ret = call_user_func($_function, $parm, $sc_mode);
@@ -1305,7 +1305,7 @@ class e_parse_shortcode
 							{
 								$ret = call_user_func(array($_class, $_function), $parm, $sc_mode);
 							}
-						
+
 						}
 						elseif (function_exists($_function))
 						{
@@ -1369,7 +1369,14 @@ class e_parse_shortcode
 
                 e107::getDebug()->logCode(-2, $code, null, print_a($error,true));
                 trigger_error("Couldn't parse {".$code."} legacy shortcode at line ".$t->getLine().".\n". $t->getMessage(), E_USER_NOTICE);
-			}
+			} catch (\Exception $t) {
+                // Executed only in PHP 7, will not match in PHP 5.x
+                $error              = $this->debug_legacy;
+                $error['code']      = $code;
+                $error['problem']   = $scCode;
+                e107::getDebug()->logCode(-2, $code, null, print_a($error,true));
+                trigger_error("Couldn't parse {".$code."} legacy shortcode at line ".$t->getLine().".\n". $t->getMessage(), E_USER_NOTICE);
+            }
 
 			if($ret === false && E107_DEBUG_LEVEL > 0 ) // Error in Code.
 			{

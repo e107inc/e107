@@ -630,12 +630,12 @@ class e107Email extends PHPMailer
 			//  !preg_match('/<(table|div|font|br|a|img|b)/i', $message)
 			if ($this->legacyBody && e107::getParser()->isHtml($message) != true) // Assume html if it includes one of these tags
 			{	// Otherwise assume its a plain text message which needs some conversion to render in HTML
-			
+
 				if($this->debug == true)
 				{
 					echo 'Running legacyBody mode<br />';	
 				}
-			
+
 				$message = htmlspecialchars($message,ENT_QUOTES,$this->CharSet);
 				$message = preg_replace('%(http|ftp|https)(://\S+)%', '<a href="\1\2">\1\2</a>', $message);
 				$message = preg_replace('/([[:space:]()[{}])(www.[-a-zA-Z0-9@:%_\+.~#?&\/=]+)/i', '\\1<a href="http://\\2">\\2</a>', $message);
@@ -645,7 +645,7 @@ class e107Email extends PHPMailer
 				$message = str_replace("\r","\n",$message);			// Handle alternative newline characters
 				$message = str_replace("\n", "<br />\n", $message);
 			}
-			
+
 
 			$this->MsgHTML($message);		// Theoretically this should do everything, including handling of inline images.
 
@@ -664,7 +664,7 @@ class e107Email extends PHPMailer
 
 			$text = str_replace('<br />', "\n", $text);
 			$text = strip_tags(str_replace('<br>', "\n", $text));
-			
+
 			// TODO: strip bbcodes here
 
 			$this->Body = $text;
@@ -890,18 +890,18 @@ class e107Email extends PHPMailer
 	{
 		$tp = e107::getParser();
 		$tmpl = null;
-		
+
 		// Cleanup legacy key names. ie. remove 'email_' prefix. 		
 		foreach($eml as $k=>$v)
 		{
 			if(substr($k,0,6) == 'email_')
 			{
-				$nkey = substr($k,6);
+				$nkey = (string) substr($k,6);
 				$eml[$nkey] = $v;	
 				unset($eml[$k]);
 			}		
 		}
-		
+
 
 
 		if(!empty($eml['template'])) // @see e107_core/templates/email_template.php
@@ -933,11 +933,11 @@ class e107Email extends PHPMailer
 					$eml['shortcodes']['_WRAPPER_'] = 'email/'.$eml['template'];
 				}
 				$emailBody = varset($tmpl['header']). str_replace('{BODY}', $eml['body'], $tmpl['body']) . varset($tmpl['footer']);
-				
+
 				$eml['body'] = $tp->parseTemplate($emailBody, true, $eml['shortcodes']);
-				
+
 			//	$eml['body'] = ($tp->toEmail($tmpl['header']). str_replace('{BODY}', $eml['body'], $tmpl['body']). $tp->toEmail($tmpl['footer']));
-				
+
 				if($this->debug)
 				{
 				//	echo "<h4>e107Email::arraySet() - line ".__LINE__."</h4>";
@@ -946,9 +946,9 @@ class e107Email extends PHPMailer
 					var_dump($this->Subject);
 				//	print_a($tmpl);
 				}
-				
+
 				unset($eml['add_html_header']); // disable other headers when template is used. 
-				
+
 				$this->Subject = $tp->parseTemplate(varset($tmpl['subject'],'{SUBJECT}'), true, varset($eml['shortcodes'],null));
 
 				if($this->debug)
@@ -963,11 +963,11 @@ class e107Email extends PHPMailer
 					echo "<h4>Couldn't find email template: ".print_r($eml['template'],true)."</h4>";
 				}
 			//	$emailBody = $eml['body'];
-				
+
 				if (vartrue($eml['subject'])) $this->Subject = $tp->parseTemplate($eml['subject'], true, varset($eml['shortcodes'],null)); 	
 				e107::getMessage()->addDebug("Couldn't find email template: ".$eml['template']);	
 			}
-			
+
 		}
 		else
 		{
@@ -1022,7 +1022,7 @@ class e107Email extends PHPMailer
 			$this->Sender = $eml['bouncepath'];				// Bounce path
 			$this->save_bouncepath = $eml['bouncepath'];		// Bounce path
 		}
-			
+
 		if (!empty($eml['extra_header'])) 
 		{
 			if (is_array($eml['extra_header']))

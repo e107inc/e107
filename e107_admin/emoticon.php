@@ -377,7 +377,7 @@ class emotec
 			$evalue = str_replace(".", "!", $emote);
 			if ($strip_xtn)
 			{
-				$ename = substr($emote, 0, strrpos($emote, '.'));
+				$ename = (string) substr($emote, 0, strrpos($emote, '.'));
 			}
 			$f_string .= "<emoticon file=\"{$ename}\">\n";
 			foreach (explode(' ', $tp->toForm($emotecode[$evalue])) as $v)

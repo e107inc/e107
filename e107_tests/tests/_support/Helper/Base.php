@@ -57,8 +57,23 @@ abstract class Base extends \Codeception\Module
 		}
 	}
 
-	public function _before(?\Codeception\TestInterface $test = null)
+	/**
+	 * Signature note: the source-of-truth form used to carry a
+	 * \Codeception\TestInterface hint on $test, but Rector's
+	 * DowngradeParameterTypeWideningRector treats any typed parameter
+	 * defaulting to null as nullable and strips the hint at commit
+	 * time, leaving the untyped form below to ship to every cell.
+	 * Codeception 4.x's parent class declares the hint and emits an
+	 * LSP warning at autoload on PHP 7.0; PHP 8.4 separately emits an
+	 * implicit-nullable deprecation for the typed-with-null form.
+	 * Both messages are silenced by the display_errors=0 sink in
+	 * tests/_bootstrap.php so the warnings never reach stdout and so
+	 * never trip e107's session_start() with "headers already sent".
+	 *
+	 * @param \Codeception\TestInterface $test
+	 */
+	public function _before($test = null)
 	{
-	    $this->_callbackDeployerStarted();
+		$this->_callbackDeployerStarted();
 	}
 }

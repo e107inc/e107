@@ -397,7 +397,7 @@ class bbcode_shortcodes extends e_shortcode
 			$key = str_replace("!", ".", $key);					// Usually '.' was replaced by '!' when saving
 			$key = preg_replace("#_(\w{3})$#", ".\\1", $key);	// '_' followed by exactly 3 chars is file extension
 			$key = e_IMAGE_ABS."emotes/" . $pref['emotepack'] . "/" .$key;		// Add in the file path
-						$value2 = substr($value, 0, strpos($value, " "));
+						$value2 = (string) substr($value, 0, strpos($value, " "));
 			$value = ($value2 ? $value2 : $value);
 			$value = ($value == '&|') ? ':((' : $value;
 			$text .= "<a style='display:inline-block; margin:2px; padding:2px' href=\"javascript:addtext('$value ',true)\"><img src='$key' alt='' /></a>";

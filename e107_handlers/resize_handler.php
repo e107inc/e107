@@ -23,7 +23,7 @@ if (!defined('e107_INIT')) { exit; }
  */
 function mimeFromFilename($fileName)
 {
-	$fileExt = strtolower(substr(strrchr($fileName, "."), 1));
+	$fileExt = strtolower((string) substr(strrchr($fileName, "."), 1));
 	$mimeTypes = array(
 		'jpg' 	=> 'jpeg',
 		'gif' 	=> 'gif',
@@ -224,7 +224,7 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 		} 
 		else
 		{
-			$fileExt = strtolower(substr(strrchr($destination_file, "."), 1));
+			$fileExt = strtolower((string) substr(strrchr($destination_file, "."), 1));
 		}
 
 		if ($returnError == 0)

@@ -11,6 +11,7 @@
 
 class e_db_pdoTest extends e_db_abstractTest
 {
+	use \Helper\PhpUnitCompat;
 	protected function makeDb()
 	{
 		return $this->make('e_db_pdo');

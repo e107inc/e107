@@ -2146,8 +2146,8 @@ class e_media
 		if($chunks < 2 && file_exists($targetDir . $fileName))
 		{
 			$ext = strrpos($fileName, '.');
-			$fileName_a = substr($fileName, 0, $ext);
-			$fileName_b = substr($fileName, $ext);
+			$fileName_a = (string) substr($fileName, 0, $ext);
+			$fileName_b = (string) substr($fileName, $ext);
 
 			$count = 1;
 			while(file_exists($targetDir .  $fileName_a . '_' . $count . $fileName_b))

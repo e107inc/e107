@@ -27,6 +27,7 @@
  */
 class mysqlClassConfigFormatTest extends \Codeception\Test\Unit
 {
+	use \Helper\PhpUnitCompat;
 	/** @var string */
 	private $tmpDir;
 
@@ -263,7 +264,11 @@ PHP;
 		$this->assertSame('legacydb',    $args['d']);
 	}
 
-	private function writeArrayConfig(string $dir): void
+	/**
+     * @return void
+     * @param string $dir
+     */
+    private function writeArrayConfig($dir)
 	{
 		$contents = <<<'PHP'
 <?php
@@ -283,7 +288,11 @@ PHP;
 		file_put_contents($dir . '/e107_config.php', $contents);
 	}
 
-	private function writeLegacyConfig(string $dir): void
+	/**
+     * @return void
+     * @param string $dir
+     */
+    private function writeLegacyConfig($dir)
 	{
 		$contents = <<<'PHP'
 <?php
@@ -297,9 +306,11 @@ PHP;
 	}
 
 	/**
-	 * @return array{stdout: string, stderr: string, exit: int}
-	 */
-	private function runPhp(string $cwd, string $script): array
+     * @return array{stdout: string, stderr: string, exit: int}
+     * @param string $cwd
+     * @param string $script
+     */
+    private function runPhp($cwd, $script)
 	{
 		$descriptors = [
 			0 => ['pipe', 'r'],
@@ -326,7 +337,11 @@ PHP;
 		];
 	}
 
-	private function rrmdir(string $dir): void
+	/**
+     * @return void
+     * @param string $dir
+     */
+    private function rrmdir($dir)
 	{
 		if (!is_dir($dir)) return;
 		$items = scandir($dir);

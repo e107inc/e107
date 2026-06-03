@@ -156,7 +156,7 @@ class e107_debug {
             if (!isset($debug_param[1]) || ($debug_param[1] == '')) $debug_param[1] = '=';
             if (isset($_COOKIE['e107_debug_level']))
             {
-                $dVals = substr($_COOKIE['e107_debug_level'], 6);
+                $dVals = (string) substr($_COOKIE['e107_debug_level'], 6);
             }
 
             if (preg_match('/debug(=?)(.*?),?(!|\+|stick|-|unstick|$)/', e_MENU))

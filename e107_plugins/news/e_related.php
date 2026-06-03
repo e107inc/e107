@@ -23,9 +23,9 @@ class news_related // include plugin-folder in the name.
 	{
 		$sql = e107::getDb();
 		$items = array();
-			
+
 		$tag_regexp = "'(^|,)(".str_replace(",", "|", $tags).")(,|$)'";
-		
+
 	//	$query = "SELECT * FROM #news WHERE news_id != ".$parm['current']." AND news_class REGEXP '".e_CLASS_REGEXP."'  AND news_meta_keywords REGEXP ".$tag_regexp."  ORDER BY news_datestamp DESC LIMIT ".$parm['limit'];
 
 		$query = "SELECT n.*, nc.category_id, nc.category_name, nc.category_sef 
@@ -48,7 +48,7 @@ class news_related // include plugin-folder in the name.
 					'date'			=> e107::getParser()->toDate(varset($row['news_datestamp']), 'short'),
 				);
 			}
-			
+
 			return $items;
 	    }
 		//elseif(ADMIN)

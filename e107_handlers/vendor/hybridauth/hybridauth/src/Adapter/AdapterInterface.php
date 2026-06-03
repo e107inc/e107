@@ -120,9 +120,9 @@ interface AdapterInterface
     /**
      * Set http client instance.
      *
-     * @param HttpClientInterface $httpClient
+     * @param \Hybridauth\HttpClient\HttpClientInterface|null $httpClient
      */
-    public function setHttpClient(?HttpClientInterface $httpClient = null);
+    public function setHttpClient($httpClient = null);
 
     /**
      * Return http client instance.
@@ -132,9 +132,9 @@ interface AdapterInterface
     /**
      * Set storage instance.
      *
-     * @param StorageInterface $storage
+     * @param \Hybridauth\Storage\StorageInterface|null $storage
      */
-    public function setStorage(?StorageInterface $storage = null);
+    public function setStorage($storage = null);
 
     /**
      * Return storage instance.
@@ -144,9 +144,9 @@ interface AdapterInterface
     /**
      * Set Logger instance.
      *
-     * @param LoggerInterface $logger
+     * @param \Hybridauth\Logger\LoggerInterface|null $logger
      */
-    public function setLogger(?LoggerInterface $logger = null);
+    public function setLogger($logger = null);
 
     /**
      * Return logger instance.

@@ -694,7 +694,7 @@ class e_jsmanager
 	 * @param array $js_settings
 	 * @return e_jsmanager
 	 */
-	public function jsSettings(array $js_settings)
+	public function jsSettings($js_settings)
 	{
 		$this->addJs('settings', $js_settings);
 		return $this;

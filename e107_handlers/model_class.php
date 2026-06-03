@@ -228,7 +228,7 @@ class e_object
 	 * @param array $params
 	 * @return e_object
 	 */
-	public function setParams(array $params)
+	public function setParams($params)
 	{
 		$this->_params = $params;
 		return $this;
@@ -239,7 +239,7 @@ class e_object
 	 * @param array $params
 	 * @return object e_object
 	 */
-	public function updateParams(array $params)
+	public function updateParams($params)
 	{
 		foreach ($params as $k => $v)
 		{
@@ -431,7 +431,7 @@ class e_vars extends e_object
 	 * @param array $array
 	 * @return e_vars
 	 */
-	public function setVars(array $array)
+	public function setVars($array)
 	{
 		$this->setData($array);
 		return $this;
@@ -443,7 +443,7 @@ class e_vars extends e_object
 	 * @param array $array
 	 * @return void
 	 */
-	public function addVars(array $array)
+	public function addVars($array)
 	{
 		$this->addData($array);
 	}
@@ -958,7 +958,7 @@ class e_model extends e_object
         $simple = false;
         if(strpos($key, '//') === 0)
         {
-        	$key = substr($key, 2);
+        	$key = (string) substr($key, 2);
         	$simple = true;
         }
         /*elseif($key[0] == '/')
@@ -1108,7 +1108,7 @@ class e_model extends e_object
         	// Example: '//some/key'; NOTE: '//some/key//more/depth' is NOT parsed
         	// if you wish to have array('some/key' => array('more/depth' => value))
         	// right syntax is 'some/key//more/depth'
-        	$key = substr($key, 2);
+        	$key = (string) substr($key, 2);
         	$simple = true;
         }
         /*elseif($key[0] == '/')
@@ -1744,7 +1744,7 @@ class e_model extends e_object
 	 * @param array $params
 	 * @return e_model
 	 */
-	public function setParams(array $params)
+	public function setParams($params)
 	{
 		parent::setParams($params);
 		return $this;
@@ -1973,7 +1973,7 @@ class e_front_model extends e_model
 	 * @param bool $force
 	 * @return e_front_model
 	 */
-    public function setValidationRules(array $vrules, $force = false)
+    public function setValidationRules($vrules, $force = false)
     {
     	if($force || empty($this->_validation_rules))
     	{
@@ -1994,7 +1994,7 @@ class e_front_model extends e_model
      * @param array $rules
      * @return e_front_model
      */
-    public function setOptionalRules(array $rules)
+    public function setOptionalRules($rules)
     {
     	$this->_optional_rules = $rules;
     	return $this;
@@ -2342,7 +2342,7 @@ class e_front_model extends e_model
 	 * @param boolean $validate perform validation check
 	 * @return e_front_model
 	 */
-    public function mergeData(array $src_data, $strict = true, $sanitize = true, $validate = true)
+    public function mergeData($src_data, $strict = true, $sanitize = true, $validate = true)
     {
     	//FIXME
     	if(!$src_data || ($validate && !$this->validate($src_data)))
@@ -3700,7 +3700,7 @@ class e_tree_model extends e_front_model
 			$QRY = "SELECT COUNT(*) AS e_tree_total FROM ($countQry) AS grouped_rows";
 
 			$result = $sql->retrieve($QRY);
-			$total = $result['e_tree_total'] ?? 0;
+			$total = isset($result['e_tree_total']) ? $result['e_tree_total'] : 0;
 
 			if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
 			{

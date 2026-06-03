@@ -941,8 +941,8 @@ class news_admin_ui extends e_admin_ui
 	//	e107::getMessage()->addInfo($info);
 
 
-		
-		
+
+
 		$sql = e107::getDb();
 		$sql->gen("SELECT category_id,category_name FROM #news_category");
 		while($row = $sql->fetch())

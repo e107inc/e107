@@ -1198,7 +1198,7 @@ class validatorClass
 				{
 					if (vartrue($defs['longtrim']))
 					{
-						$value = substr($value, 0, $defs['maxLength']);
+						$value = (string) substr($value, 0, $defs['maxLength']);
 					}
 					else
 					{

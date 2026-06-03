@@ -336,7 +336,7 @@ class admin_log_ui extends e_admin_ui
 			$action = '';
 
 		//	print_a($_POST);
-			
+
 			if(!empty($_POST['deleteoldadmin']) && isset($_POST['rolllog_clearadmin']))
 			{
 				$back_count = intval($_POST['rolllog_clearadmin']);
@@ -371,8 +371,8 @@ class admin_log_ui extends e_admin_ui
 			*/
 
 			$old_date = strtotime($back_count.' days ago');
-			
-			
+
+
 			// Actually delete back events - admin or user audit log
 			if(($action == "backdel") && isset($_POST['backdeltype']))
 			{
@@ -418,7 +418,7 @@ class admin_log_ui extends e_admin_ui
 				}
 
 			}
-			
+
 			// Prompt to delete back events
 			/*
 			if(($action == "confdel") || ($action == "auditdel"))
@@ -442,12 +442,12 @@ class admin_log_ui extends e_admin_ui
 							</div>
 						</fieldset>
 					</form>
-			
+
 				";
-			
+
 				$ns->tablerender(LAN_CONFDELETE, $text);
 			}	
-			
+
 			*/
 			
 		}
@@ -694,12 +694,12 @@ class admin_log_form_ui extends e_admin_form_ui
 					
 					if(strpos($text,'\n') === 0) // cleanup (not sure of the cause)
 					{
-						$text = substr($text,2);	
+						$text = (string) substr($text,2);	
 					}
 					
 					if(substr($text,-2) == '\n') // cleanup (not sure of the cause)
 					{
-						$text = substr($text,0,-2);	
+						$text = (string) substr($text,0,-2);	
 					}
 					
 					$text = print_a($text,true);	
@@ -750,7 +750,7 @@ class admin_log_form_ui extends e_admin_form_ui
 				
 class audit_log_ui extends e_admin_ui
 {
-			
+
 		protected $pluginTitle		=  ADLAN_155;
 		protected $pluginName		= 'core';
 		protected $table			= 'audit_log';
@@ -758,7 +758,7 @@ class audit_log_ui extends e_admin_ui
 		protected $perPage 			= 10;
 		protected $listOrder        = 'dblog_id DESC';
 		protected $batchDelete		= true;
-			
+
 		protected $fields 		= array (  
 		'checkboxes' =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
 		  'dblog_id' 			=>   array ( 'title' => LAN_ID, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
@@ -772,9 +772,9 @@ class audit_log_ui extends e_admin_ui
 		  'dblog_remarks' 		=>   array ( 'title' => 'Remarks', 'type' => 'method', 'data' => 'str', 'width' => '30%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'options' 			=>   array ( 'title' => LAN_OPTIONS, 'type' => null,  'nolist'=>true, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 		);		
-		
+
 		protected $fieldpref = array('dblog_id', 'dblog_datestamp', 'dblog_microtime', 'dblog_eventcode', 'dblog_user_id', 'dblog_user_name', 'dblog_ip', 'dblog_title','dblog_remarks');
-		
+
 		public $eventTypes = array();
 
 		// optional
@@ -791,7 +791,7 @@ class audit_log_ui extends e_admin_ui
 			$ns = e107::getRender();
 			$text = 'Hello World!';
 			$ns->tablerender('Hello',$text);	
-			
+
 		}
 	*/
 			
@@ -855,7 +855,7 @@ class dblog_ui extends e_admin_ui
 				case 'br':
 					return '<br />';
 				case 'link':
-					$temp = substr($matches[2], 1);
+					$temp = (string) substr($matches[2], 1);
 					return "<a href='{$temp}'>{$temp}</a>";
 				case 'test':
 					return '----TEST----';

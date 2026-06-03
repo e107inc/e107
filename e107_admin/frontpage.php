@@ -161,7 +161,7 @@ if (!empty($_POST))
 	foreach ($_POST as $k => $v)
 	{
 		$incDec = substr($k, 0, 6);
-		$idNum = substr($k, 6);
+		$idNum = (string) substr($k, 6);
 		if ($incDec == 'fp_inc')
 		{
 			$mv = intval($idNum);
@@ -356,7 +356,7 @@ class frontpage
 		elseif(vartrue($_GET['id']))
 		{
 			$key = intval($_GET['id']);
-			$val = $fp_settings[$key] ?? array();
+			$val = isset($fp_settings[$key]) ? $fp_settings[$key] : array();
 			$text = $this->edit_rule($val); // Display edit form as well
 		//	$text .= $this->select_class($fp_settings, FALSE);
 			$ns->tablerender(FRTLAN_PAGE_TITLE.defset('SEP').FRTLAN_46, $text);

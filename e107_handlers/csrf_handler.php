@@ -306,16 +306,23 @@ class CSRFCookieHandler extends CSRFTokenHandler
 		$session = e107::getSession();
 		$options = $session->getOptions();
 
-		$params = [
-			'expires' => 0,
-			'path' => $options['path'] ?: '/',
-			'domain' => $options['domain'] ?: '',
-			'secure' => $options['secure'] ?: false,
-			'httponly' => true,
-			'samesite' => 'Lax'
-		];
-
-		setcookie(self::COOKIE_NAME, $token, $params);
+		// SameSite=Lax has no portable setcookie() expression. PHP 7.3's
+		// options-array form supports it but fatals on PHP 5.6; the pre-7.3
+		// "fold into path" trick is rejected by PHP 8.x's stricter setcookie
+		// path-character validation. Emit the Set-Cookie header directly so
+		// the attribute lands the same way on every interpreter.
+		$header = 'Set-Cookie: ' . self::COOKIE_NAME . '=' . rawurlencode($token)
+			. '; Path=' . ($options['path'] ?: '/');
+		if ($options['domain'])
+		{
+			$header .= '; Domain=' . $options['domain'];
+		}
+		if ($options['secure'])
+		{
+			$header .= '; Secure';
+		}
+		$header .= '; HttpOnly; SameSite=Lax';
+		header($header, false);
 
 		// Also set in $_COOKIE for immediate availability
 		$_COOKIE[self::COOKIE_NAME] = $token;
