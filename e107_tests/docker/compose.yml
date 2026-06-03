@@ -1,19 +1,7 @@
-# e107 test harness — docker compose stack
-#
-# Don't invoke `docker compose` against this file directly — use the
-# `e107_tests/bin/e107-tests` wrapper, which sets the per-worktree project
-# name, exports the matrix env vars, and points the bind mount at the
-# worktree's app root.
-#
-# Required env vars (the wrapper sets all of these):
-#   E107_PHP_VERSION   e.g. 8.1 / 8.2 / 8.3 / 8.4
-#   E107_DB_IMAGE      e.g. mariadb:10.11 / mysql:8.0
-#   E107_APP_PATH      absolute path to the repo root on the host
-#   E107_DB_NAME       database name to create
-#   E107_DB_USER       app db username
-#   E107_DB_PASSWORD   app db password
-#   E107_DB_ROOT_PASSWORD  root password for the db service
-#   E107_WITH_XDEBUG   "yes" to build/enable Xdebug
+# e107 test harness compose stack: db + web + selenium. Driven by the
+# e107_tests/bin/e107-tests wrapper, which sets the project name, the matrix
+# env vars, and the bind mount; see e107_tests/docker/README.md. Don't run
+# `docker compose` against this file directly.
 
 name: ${COMPOSE_PROJECT_NAME:?set via e107-tests wrapper}
 
@@ -46,8 +34,7 @@ services:
       timeout: 5s
       retries: 30
     tmpfs:
-      # Tests don't need persistent data; tmpfs is faster and means
-      # `down` truly resets to a clean slate without `--volumes` gymnastics.
+      # Ephemeral DB: faster, and `down` is a clean reset.
       - /var/lib/mysql
     ports:
       # Expose so agents/humans can connect a MySQL client from the host.
@@ -71,43 +58,30 @@ services:
       E107_DB_USER: ${E107_DB_USER}
       E107_DB_PASSWORD: ${E107_DB_PASSWORD}
       E107_DB_NAME: ${E107_DB_NAME}
-      # Surface the URL Apache is reachable at, so codecept inside the
-      # container can self-test by hitting it via the bridge network.
+      # The URL Apache is reachable at, for in-container self-tests.
       E107_INTERNAL_URL: http://web/
     volumes:
-      # Bind-mount the worktree. Acceptance tests do real e107 installs
-      # against this mount, so the worktree will accumulate test artifacts
-      # (e107_config.php, e107Install.log, hash dirs under e107_system/
-      # and e107_media/, theme copies). Run `e107-tests clean` to wipe
-      # them between runs. (Podman :O overlay would isolate these, but
-      # docker compose silently strips the flag, so we don't bother.)
+      # Bind-mount the app root so host edits are live. Acceptance installs
+      # write artifacts here; `e107-tests clean` removes them.
       - ${E107_APP_PATH}:/var/www/html
-      # Persist composer's download cache so reinstalls between `down`/`up`
-      # cycles only re-extract instead of re-downloading.
+      # Persist composer's download cache across `down`/`up` cycles.
       - composer-cache:/root/.composer/cache
     ports:
       - "127.0.0.1:${E107_WEB_PORT:-0}:80"
 
-  # Dedicated browser for the WebDriver suite: codecept (in `web`) drives it at
-  # `selenium:4444` (the Selenium 4 grid serves the W3C protocol at the root),
-  # and it navigates back to the app at `http://web/`. The image floats on
-  # `latest` so an upstream Chromium change surfaces here rather than in the
-  # wild; set E107_SELENIUM_IMAGE to pin or to matrix a specific build.
+  # Dedicated browser for the WebDriver suite. The image floats on `latest` so an
+  # upstream Chromium change surfaces here; set E107_SELENIUM_IMAGE to pin it.
   selenium:
     image: ${E107_SELENIUM_IMAGE:-docker.io/selenium/standalone-chrome:latest}
     restart: unless-stopped
-    # supervisord can't write its /var/run control socket as the image's default
-    # `seluser` once a rootless-Podman userns remaps ownership (errno.EPERM,
-    # crash-loop). Root sidesteps it; under rootless Podman that is just the
-    # unprivileged host user.
+    # Run as root to dodge a rootless-Podman supervisord EPERM crash-loop.
     user: root
     depends_on:
       - web
     shm_size: 2gb
     healthcheck:
-      # check-grid.sh ships in the image and returns 0 only once the node has
-      # registered and the grid reports ready, so `up --wait` blocks until the
-      # browser can actually accept sessions (no first-run race).
+      # check-grid.sh (ships in the image) passes only once the grid accepts
+      # sessions, so `up --wait` blocks until the browser is usable.
       test:
         - CMD-SHELL
         - /opt/bin/check-grid.sh --host 0.0.0.0 --port 4444 || exit 1

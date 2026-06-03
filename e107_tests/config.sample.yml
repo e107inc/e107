@@ -31,13 +31,10 @@ hosting:
   # Control panel account password
   password: ''
 
-# URL (with trailing slash) at which the app can be reached. Every suite uses
-# it, so the PhpBrowser acceptance suite and the WebDriver suite exercise the
-# same HTTP interface. The WebDriver browser runs in a separate container/host
-# from codecept, so this must be reachable *from that browser* (e.g. a
-# Docker/compose service alias or a routable host), never 'localhost'. e107's
-# host-header check must trust that hostname (see the `trusted_hosts` pref in the
-# test dump). The e107-tests docker harness sets this to 'http://web/'.
+# URL (with trailing slash) where the app under test is reachable. The
+# acceptance and WebDriver suites share it, so they exercise the same HTTP
+# interface; the WebDriver browser runs elsewhere, so use a host reachable from
+# there, not 'localhost'. See e107_tests/docker/README.md for the harness setup.
 url: 'http://set-this-to-your-app-url.local/'
 
 # Only MySQL/MariaDB is supported
@@ -67,24 +64,17 @@ db:
   # Absolute path begins with "/"; relative path does not begin with "/"
   dump_path: 'tests/_data/e107_v2.3.0.sample.sql'
 
-# Selenium endpoint used by the WebDriver suite (e107_tests/tests/webdriver/).
-# The browser runs in a dedicated container (a `selenium/standalone-chrome`
-# grid) and drives the app over HTTP, so the `url` above must be reachable
-# *from that browser container* (a service alias or routable host), never
-# 'localhost'. The `e107-tests` docker harness wires this up automatically
-# (host: 'selenium'); set it explicitly here only for a hand-rolled setup.
+# Selenium endpoint for the WebDriver suite. The e107-tests docker harness wires
+# this up automatically; set it by hand only for a custom Selenium server.
 selenium:
 
-  # Hostname or IP address of the Selenium server (without the http:// prefix),
-  # reachable from wherever codecept runs. 'selenium' in the docker harness.
+  # Hostname of the Selenium server (no http:// prefix), reachable from codecept
   host: 'localhost'
 
   # Port number of the Selenium server
   port: '4444'
 
-  # WebDriver endpoint base path. The Selenium 4 grid serves the W3C protocol at
-  # the root '/', so that's the value for both the docker harness and CI. (The
-  # '/wd/hub' path is still served for backward compatibility with old clients.)
+  # Base path. A Selenium 4 grid serves the W3C protocol at the root '/'.
   path: '/'
 
 # Configure this section for deployers that need file upload configuration

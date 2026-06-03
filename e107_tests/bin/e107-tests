@@ -1,19 +1,6 @@
 #!/usr/bin/env bash
-# e107 test harness CLI
-#
-# Spins up isolated Docker test environments per worktree+matrix combo,
-# bind-mounts the worktree into a PHP+Apache container, and drives
-# Codeception against it.
-#
-# Quickstart:
-#   e107_tests/bin/e107-tests up                # PHP 8.3 + MariaDB 10.11
-#   e107_tests/bin/e107-tests urls              # show URL + DB conn info
-#   e107_tests/bin/e107-tests run unit          # run unit suite
-#   e107_tests/bin/e107-tests run acceptance    # run acceptance suite
-#   e107_tests/bin/e107-tests shell             # interactive bash in web
-#   e107_tests/bin/e107-tests down              # tear down this env
-#
-# See `e107-tests help` for the full command list.
+# e107 test harness CLI: per-matrix docker stacks for running Codeception.
+# Run `e107-tests help` for the command list; see e107_tests/docker/README.md.
 
 set -euo pipefail
 
@@ -52,13 +39,6 @@ require_docker() {
     docker compose version >/dev/null 2>&1 \
         || err "the 'docker compose' plugin is required (got: $(docker compose version 2>&1 || true))"
 }
-
-# Returns ":O" when the engine is Podman (supports ephemeral overlay
-# mounts that keep the host worktree pristine across acceptance tests),
-# empty string otherwise. With overlay the container can install vendor/,
-# write e107_config.php, and create hash dirs without leaking back to the
-# host. With plain bind, those writes will dirty the worktree — agents on
-# Docker should be prepared to clean up after acceptance runs.
 
 # Slug an arbitrary string into something safe for compose project names.
 slug() {
@@ -170,13 +150,9 @@ write_managed_config() {
 ---
 app_path: '../'
 deployer: 'local'
-# One app URL for every suite, so acceptance (PhpBrowser inside the web
-# container) and webdriver (a browser in the separate 'selenium' container) hit
-# the same HTTP interface. It must be reachable from the selenium container too,
-# so it's the 'web' compose alias, not 'localhost' (which there is the browser
-# itself). The web container reaches itself by that alias, and e107 trusts host
-# 'web' via the sample dump's trusted_hosts pref, so its host-header check
-# accepts it. (Humans browse via the host-published port from 'e107-tests urls'.)
+# Shared by the acceptance and WebDriver suites. It's the 'web' alias (not
+# 'localhost') so the separate selenium browser can reach it; the test dump's
+# trusted_hosts pref lets e107 accept that host. See docker/README.md.
 url: 'http://web/'
 db:
   host: 'db'
