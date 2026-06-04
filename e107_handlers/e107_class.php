@@ -5964,16 +5964,7 @@ class e107
 		$configured_host = parse_url($siteurl, PHP_URL_HOST);
 		$http_host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
 
-		$allowed_hosts = array();
-		if(!empty($configured_host))
-		{
-			$allowed_hosts[] = $configured_host;
-		}
-		$trusted_hosts_pref = self::getPref('trusted_hosts');
-		if(!empty($trusted_hosts_pref))
-		{
-			$allowed_hosts = array_merge($allowed_hosts, (array) $trusted_hosts_pref);
-		}
+		$allowed_hosts = $this->getAllowedHosts();
 
 		if(self::isCli())
 		{
@@ -6001,6 +5992,53 @@ class e107
 		}
 
 		return $this;
+	}
+
+	/**
+	 * The list of hostnames this installation answers to: the host from the
+	 * `siteurl` pref plus any `trusted_hosts` pref entries.
+	 *
+	 * Shared by the boot-time host check in `set_urls_deferred()` and by the
+	 * public `isTrustedHost()` so both reason about the same allow-list.
+	 *
+	 * @return string[]
+	 */
+	private function getAllowedHosts()
+	{
+		$allowed_hosts = array();
+
+		$configured_host = parse_url(self::getPref('siteurl'), PHP_URL_HOST);
+		if(!empty($configured_host))
+		{
+			$allowed_hosts[] = $configured_host;
+		}
+
+		$trusted_hosts_pref = self::getPref('trusted_hosts');
+		if(!empty($trusted_hosts_pref))
+		{
+			$allowed_hosts = array_merge($allowed_hosts, (array) $trusted_hosts_pref);
+		}
+
+		return $allowed_hosts;
+	}
+
+	/**
+	 * Whether $httpHost is a hostname this installation answers to: the host
+	 * from the `siteurl` pref or one of the `trusted_hosts` entries added in
+	 * e107inc/e107#5639.
+	 *
+	 * This is the public wrapper around the same allow-list the boot-time host
+	 * check uses (see `set_urls_deferred()` and `isAllowedHost()`), so callers
+	 * such as the post-login destination check can ask "may I redirect to this
+	 * host?" without duplicating the matching rules.
+	 *
+	 * @param string $httpHost a bare hostname (scheme and port are ignored)
+	 *
+	 * @return bool
+	 */
+	public function isTrustedHost($httpHost)
+	{
+		return $this->isAllowedHost($this->getAllowedHosts(), $httpHost);
 	}
 
 	/**
