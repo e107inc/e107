@@ -413,6 +413,22 @@ class redirection
 			return false;
 		}
 
+		// Only ever remember a top-level document navigation. Browsers tag every
+		// request with its destination via the Fetch Metadata header
+		// Sec-Fetch-Dest: a top-level navigation is 'document', whereas an <iframe>
+		// sub-request is 'iframe', a fetch()/XHR is 'empty', an image is 'image',
+		// and so on. Anything that is not a top-level document - most importantly
+		// the menu manager's iframe body, whose src is an admin-perms-gated URL -
+		// must never become the post-login return destination, or the user is
+		// dumped into the bare embedded view with no way to navigate. The header is
+		// set by the browser and cannot be spoofed by page script; clients that
+		// omit it (older browsers) fall through to the marker check below.
+		if(isset($_SERVER['HTTP_SEC_FETCH_DEST'])
+			&& strtolower($_SERVER['HTTP_SEC_FETCH_DEST']) !== 'document')
+		{
+			return false;
+		}
+
 		if(null === $url)
 		{
 			// e_REQUEST_URI is reliable even in e_SINGLE_ENTRY mode, where e_SELF /
@@ -449,6 +465,28 @@ class redirection
 		{
 			$ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
 			if($ext !== '' && in_array($ext, $this->asset_extensions))
+			{
+				return false;
+			}
+		}
+
+		// Embedded / dialog views are not navigable landing pages. e107 switches a
+		// page into iframe or modal rendering via these request markers (the menu
+		// manager's ?configure=, the shared ?iframe=1, and cpage / image dialogs'
+		// ?mode=dialog / ?action=dialog - see e107_admin/boot.php, menus.php,
+		// cpage.php), but each page only recognises the marker AFTER its getperms()
+		// gate has already funnelled the unauthenticated sub-request through
+		// redirection::go('admin'). Recognise the markers here - off the URL itself,
+		// so it also covers clients that send no Fetch Metadata - so an iframe or
+		// modal sub-request can never overwrite the real page the user was viewing.
+		$query = parse_url($url, PHP_URL_QUERY);
+		if(is_string($query) && $query !== '')
+		{
+			parse_str($query, $params);
+			if(!empty($params['iframe'])
+				|| isset($params['configure'])
+				|| (isset($params['mode']) && $params['mode'] === 'dialog')
+				|| (isset($params['action']) && $params['action'] === 'dialog'))
 			{
 				return false;
 			}

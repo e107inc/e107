@@ -234,6 +234,51 @@ class redirectionTest extends \Codeception\Test\Unit
 		}
 	}
 
+	public function testIsCapturableRejectsEmbeddedRequests()
+	{
+		// A page rendered inside an <iframe> or modal (e.g. the menu manager's
+		// ?configure= layout view) must never be remembered as a post-login
+		// destination, or the user is returned to the bare embedded view with no
+		// way to navigate. Two independent guards cover this: the browser's
+		// Sec-Fetch-Dest Fetch Metadata header, and e107's own iframe/dialog
+		// request markers (for clients that send no Fetch Metadata).
+		$page = '/e107_admin/menus.php';
+		$serverBackup = $_SERVER;
+
+		try
+		{
+			// Baseline: a plain top-level GET of an admin page is capturable.
+			unset($_SERVER['HTTP_SEC_FETCH_DEST']);
+			self::assertTrue($this->rd->isCapturable($page), 'a plain admin page view should be capturable');
+
+			// A top-level document navigation stays capturable...
+			$_SERVER['HTTP_SEC_FETCH_DEST'] = 'document';
+			self::assertTrue($this->rd->isCapturable($page), 'Sec-Fetch-Dest: document is a top-level navigation');
+
+			// ...but an iframe / frame / fetch / asset sub-request never is.
+			foreach(array('iframe', 'frame', 'empty', 'image', 'script', 'object', 'embed') as $dest)
+			{
+				$_SERVER['HTTP_SEC_FETCH_DEST'] = $dest;
+				self::assertFalse($this->rd->isCapturable($page), "Sec-Fetch-Dest: $dest must not be capturable");
+			}
+			unset($_SERVER['HTTP_SEC_FETCH_DEST']);
+
+			// Belt for clients that send no Fetch Metadata: the request markers
+			// e107 uses to enter iframe / dialog rendering are refused by URL alone.
+			self::assertFalse($this->rd->isCapturable('/e107_admin/menus.php?configure=3_column'), 'the menu-manager iframe view (?configure=) must not be capturable');
+			self::assertFalse($this->rd->isCapturable('/e107_admin/theme.php?mode=main&iframe=1&action=info'), 'an ?iframe=1 admin view must not be capturable');
+			self::assertFalse($this->rd->isCapturable('/e107_admin/cpage.php?mode=dialog&action=preview&id=3'), 'an ?mode=dialog dialog view must not be capturable');
+			self::assertFalse($this->rd->isCapturable('/e107_admin/image.php?action=dialog&iframe=1'), 'an ?action=dialog dialog view must not be capturable');
+
+			// A normal admin page with an unrelated query is still capturable.
+			self::assertTrue($this->rd->isCapturable('/e107_admin/users.php?mode=main&action=list'), 'a normal admin query must remain capturable');
+		}
+		finally
+		{
+			$_SERVER = $serverBackup;
+		}
+	}
+
 	public function testLoginDestinationTokenSkipsAssets()
 	{
 		// Regression for issue #5218: a missing asset must never be remembered as a destination.
