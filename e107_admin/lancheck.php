@@ -643,9 +643,22 @@ class lancheck
 		}
 
 
-		global $THEMES_DIRECTORY, $PLUGINS_DIRECTORY, $LANGUAGES_DIRECTORY, $HANDLERS_DIRECTORY, $HELP_DIRECTORY;
+		global $THEMES_DIRECTORY, $PLUGINS_DIRECTORY, $LANGUAGES_DIRECTORY, $HANDLERS_DIRECTORY, $HELP_DIRECTORY, $e107_paths;
 
-		if(($HANDLERS_DIRECTORY != "e107_handlers/") || ( $LANGUAGES_DIRECTORY != "e107_languages/") || ($THEMES_DIRECTORY != "e107_themes/") || ($HELP_DIRECTORY != "e107_docs/help/") || ($PLUGINS_DIRECTORY != "e107_plugins/"))
+		// Patch (lancheck-config-paths): With the new $config = [...] format introduced in
+		// v2.4+, only $HANDLERS_DIRECTORY and $PLUGINS_DIRECTORY are exposed as globals
+		// by class2.php. The remaining *_DIRECTORY globals are empty in that case, which
+		// made the strict comparison below ALWAYS fail and produced a misleading message
+		// (the LANG_LAN_26 preference label) instead of generating the pack.
+		// Fall back to $e107_paths (or the canonical defaults) for each path.
+		$paths = is_array($e107_paths) ? $e107_paths : array();
+		$handlersDir  = $HANDLERS_DIRECTORY  ?: ($paths['handlers']  ?? ($paths['HANDLERS_DIRECTORY']  ?? 'e107_handlers/'));
+		$languagesDir = $LANGUAGES_DIRECTORY ?: ($paths['languages'] ?? ($paths['LANGUAGES_DIRECTORY'] ?? 'e107_languages/'));
+		$themesDir    = $THEMES_DIRECTORY    ?: ($paths['themes']    ?? ($paths['THEMES_DIRECTORY']    ?? 'e107_themes/'));
+		$helpDir      = $HELP_DIRECTORY      ?: ($paths['help']      ?? ($paths['HELP_DIRECTORY']      ?? 'e107_docs/help/'));
+		$pluginsDir   = $PLUGINS_DIRECTORY   ?: ($paths['plugins']   ?? ($paths['PLUGINS_DIRECTORY']   ?? 'e107_plugins/'));
+
+		if(($handlersDir != "e107_handlers/") || ($languagesDir != "e107_languages/") || ($themesDir != "e107_themes/") || ($helpDir != "e107_docs/help/") || ($pluginsDir != "e107_plugins/"))
 		{
 			$ret['error'] = TRUE;
 			$ret['message'] = (defined('LANG_LAN_26')) ? LANG_LAN_26 : LANG_LAN_120;
@@ -658,6 +671,15 @@ class lancheck
 
 		$file = $this->getFileList($language);
 
+		// Patch (lancheck-xml-dedup): exclude e107_languages/<lang>/<lang>.xml from the
+		// initial file list, because right after archive creation we (re)write a fresh
+		// XML manifest into the archive with current author/version/date. Without this
+		// filter the ZIP ends up containing two copies of e107_languages/<lang>/<lang>.xml.
+		$metaXmlPath = e_LANGUAGEDIR.$language."/".$language.".xml";
+		$file = array_values(array_filter($file, function($p) use ($metaXmlPath) {
+			return realpath($p) !== realpath($metaXmlPath);
+		}));
+
 		$data = implode(",", $file);
 
 		if ($archive->create($data,PCLZIP_OPT_REMOVE_PATH,e_BASE) == 0)
@@ -669,20 +691,29 @@ class lancheck
 		else
 		{
 
-			$fileName = e_FILE."public/".$language.".xml";
+			// Patch (lancheck-xml-path): e_FILE points to ./e107_files/ which does NOT
+			// exist in v2.3.5+. The structure was reorganised under e_MEDIA. Build the
+			// path under e_SYSTEM (a guaranteed-writable directory) and create the
+			// intermediate folder so file_put_contents never fails silently.
+			$xmlTmpDir = e_SYSTEM."temp/lancheck/";
+			if(!is_dir($xmlTmpDir))
+			{
+				@mkdir($xmlTmpDir, 0755, true);
+			}
+			$fileName = $xmlTmpDir.$language.".xml";
 			if(is_readable($fileName))
 			{
 				@unlink($fileName);
 			}
 
 			$fileData = '<?xml version="1.0" encoding="utf-8"?>
-<e107Language name="'.$language.'" compatibility="'.$ver.'" date="'.date("Y-m-d").'" >
-<author name ="'.USERNAME.'" email="'.USEREMAIL.'" url="'.SITEURL.'" />
+<e107Language name="'.htmlspecialchars($language, ENT_QUOTES | ENT_XML1, 'UTF-8').'" compatibility="'.htmlspecialchars($ver, ENT_QUOTES | ENT_XML1, 'UTF-8').'" date="'.date("Y-m-d").'" >
+<author name="'.htmlspecialchars(USERNAME, ENT_QUOTES | ENT_XML1, 'UTF-8').'" email="'.htmlspecialchars(USEREMAIL, ENT_QUOTES | ENT_XML1, 'UTF-8').'" url="'.htmlspecialchars(SITEURL, ENT_QUOTES | ENT_XML1, 'UTF-8').'" />
 </e107Language>';
 
 			if(file_put_contents($fileName,$fileData))
 			{
-				$addTag = $archive->add($fileName, PCLZIP_OPT_ADD_PATH, 'e107_languages/'.$language, PCLZIP_OPT_REMOVE_PATH, e_FILE.'public/');
+				$addTag = $archive->add($fileName, PCLZIP_OPT_ADD_PATH, 'e107_languages/'.$language, PCLZIP_OPT_REMOVE_PATH, $xmlTmpDir);
 				$_SESSION['lancheck'][$language]['xml'] = "Yes";
 			}
 			else
@@ -1904,7 +1935,12 @@ class lancheck
 	function fill_phrases_array($data,$type)
 	{	
 		$retloc = array();
-		
+
+		// Patch (lancheck-modern-syntax): always register the file entry so that
+		// modern language files (return [...] / const) that have no define()
+		// statements are NOT misreported as "File missing!".
+		$retloc[$type] = array();
+
 		if(preg_match_all('/(\/\*[\s\S]*?\*\/)/i',$data, $multiComment))
 		{
 			$data = str_replace($multiComment[1],'',$data);	// strip multi-line comments. 	
@@ -1915,6 +1951,7 @@ class lancheck
 			$retloc[$type][$locale[1]]= $locale[2];	
 		}
 				
+		// 1) Legacy: define('KEY','value');
 		if(preg_match_all('/^\s*?define\s*?\(\s*?(\'|\")([\w]+)(\'|\")\s*?,\s*?(\'|\")([\s\S]*?)\s*?(\'|\")\s*?\)\s*?;/imu',$data,$matches))
 		{
 			$def = $matches[2];
@@ -1924,6 +1961,24 @@ class lancheck
 			{
 				$retloc[$type][$d]= $values[$k];
 			}	
+		}
+
+		// 2) Modern: const KEY = 'value';
+		if(preg_match_all('/^\s*?const\s+([A-Z_][A-Z0-9_]*)\s*=\s*([\'"])([\s\S]*?)\2\s*;/imu',$data,$matches))
+		{
+			foreach($matches[1] as $k=>$d)
+			{
+				$retloc[$type][$d] = $matches[3][$k];
+			}
+		}
+
+		// 3) Modern: return [ 'KEY' => 'value', ... ];  (regex tolerant, no eval)
+		if(preg_match_all('/[\'"]([A-Z][A-Z0-9_]*)[\'"]\s*=>\s*([\'"])([\s\S]*?)\2\s*[,\]]/u',$data,$matches))
+		{
+			foreach($matches[1] as $k=>$d)
+			{
+				$retloc[$type][$d] = $matches[3][$k];
+			}
 		}
 			
 		return $retloc;
