@@ -2680,6 +2680,68 @@ class e107Test extends \Codeception\Test\Unit
 
 
 	/**
+	 * Regression test for issue #5682.
+	 *
+	 * includeLanArray() cached the loaded English fallback terms keyed on
+	 * basename($path). Two language files that share a basename but live in
+	 * different directories (core ships both lan_search.php and
+	 * admin/lan_search.php, likewise lan_notify.php and lan_upload.php) then
+	 * collided in the cache: the first file loaded primed the slot, and the
+	 * second file's English fallback was skipped entirely, leaving its
+	 * English-only constants undefined and emitting as their literal token
+	 * names. Keying the cache on the resolved English path fixes it.
+	 *
+	 * @runInSeparateProcess
+	 */
+	public function testIncludeLanFallbackBasenameCollision()
+	{
+		$base = sys_get_temp_dir() . '/e107_5682_collision';
+
+		// admin/ pair, same basename "lan_coll.php"; the Spanish file is
+		// missing the admin-only English constant so the fallback must fill it.
+		$adminSpanish = $base . '/Spanish/admin/lan_coll.php';
+		$this->writeLanFixture($base . '/English/admin/lan_coll.php',
+			"<?php\nreturn ['LAN_5682_ADMIN' => 'Admin ES', 'LAN_5682_ADMIN_EN_ONLY' => 'Admin English Only'];\n");
+		$this->writeLanFixture($adminSpanish,
+			"<?php\nreturn ['LAN_5682_ADMIN' => 'Admin ES'];\n");
+
+		// frontend pair, identical basename in a different directory.
+		$frontSpanish = $base . '/Spanish/lan_coll.php';
+		$this->writeLanFixture($base . '/English/lan_coll.php',
+			"<?php\nreturn ['LAN_5682_FRONT' => 'Front ES', 'LAN_5682_FRONT_EN_ONLY' => 'Front English Only'];\n");
+		$this->writeLanFixture($frontSpanish,
+			"<?php\nreturn ['LAN_5682_FRONT' => 'Front ES'];\n");
+
+		// Load the admin file first; this primes the fallback cache.
+		e107::includeLan($adminSpanish, true, 'Spanish');
+		self::assertTrue(defined('LAN_5682_ADMIN_EN_ONLY'),
+			'admin English-only constant should fall back');
+
+		// Load the frontend file with the same basename from a different
+		// directory. Its own English fallback must still be applied.
+		e107::includeLan($frontSpanish, true, 'Spanish');
+		self::assertTrue(defined('LAN_5682_FRONT_EN_ONLY'),
+			'frontend English-only constant must fall back even though an admin file with the same basename was loaded first (issue #5682)');
+		self::assertEquals('Front English Only', constant('LAN_5682_FRONT_EN_ONLY'));
+	}
+
+	/**
+	 * Write a language fixture at an exact path and track it for cleanup.
+	 * Unlike createTempLanguageFile(), the basename is deterministic (no
+	 * tempnam suffix), which is required to reproduce same-basename collisions.
+	 */
+	private function writeLanFixture($path, $content)
+	{
+		$dir = dirname($path);
+		if(!is_dir($dir))
+		{
+			mkdir($dir, 0777, true);
+		}
+		file_put_contents($path, $content);
+		$this->tempFiles[] = $path;
+	}
+
+	/**
 	 * Helper to create a temporary language file
 	 */
 	private function createTempLanguageFile($content, $lang, $file, $prefix = 'e107_test_languages/')
