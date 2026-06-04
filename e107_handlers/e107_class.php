@@ -4098,10 +4098,7 @@ class e107
 	private static function includeLanArray($terms, $path, $lang)
 	{
 
-		// Use basename of the path as a cache key (e.g., "Spanish_global.php")
-		$file_key = basename($path);
-
-		static $english_terms = []; // Cache English terms by file key
+		static $english_terms = []; // Cache English fallback terms, keyed by resolved English path
 
 		// Define constants from the current language’s array first
 		if(!empty($terms) && is_array($terms))
@@ -4114,31 +4111,55 @@ class e107
 				}
 			}
 		}
-		// Load English fallback if not cached and not already English
-		if($lang !== 'English' && !isset($english_terms[$file_key]))
-		{
-			$english_path = str_replace($lang, 'English', $path);
 
+		if($lang === 'English')
+		{
+			return;
+		}
+
+		// Resolve the English fallback path. The language name appears only as
+		// the language directory ("languages/<lang>/") and/or the leading token
+		// of the language file ("<lang>.php" or "<lang>_*.php"), never elsewhere
+		// in a real e107 path. Rewriting just those positions (rather than every
+		// occurrence, as a blunt str_replace would) leaves a language name that
+		// also occurs in the docroot untouched. See issue #5682.
+		$quotedLang = preg_quote($lang, '#');
+		$english_path = preg_replace(
+			[
+				'#(languages/)' . $quotedLang . '/#',    // language directory segment
+				'#/' . $quotedLang . '(?=[._][^/]*$)#',  // language file token (last path segment only)
+			],
+			['${1}English/', '/English'],
+			$path
+		);
+
+		// The cache is keyed on this resolved English path, NOT basename($path):
+		// two files that share a basename but live in different directories
+		// (core ships lan_search.php and admin/lan_search.php, etc.) resolve to
+		// different English files and must not share a cache slot.
+
+		// Load English fallback if not already cached for this English path
+		if(!isset($english_terms[$english_path]))
+		{
 			if(is_readable($english_path))
 			{
-				$english_terms[$file_key] = include($english_path);
-				if(!is_array($english_terms[$file_key]))
+				$english_terms[$english_path] = include($english_path);
+				if(!is_array($english_terms[$english_path]))
 				{
-					$english_terms[$file_key] = [];
+					$english_terms[$english_path] = [];
 				}
 			}
 			else
 			{
 				trigger_error("No English fallback found for: $english_path", E_USER_WARNING);
-				$english_terms[$file_key] = [];
+				$english_terms[$english_path] = [];
 			}
 		}
 
-		// For non-English, define English constants only if not already defined
-
-		if($lang !== 'English' && !empty($english_terms[$file_key]))
+		// Define English constants only for terms still missing
+		if(!empty($english_terms[$english_path]))
 		{
-			foreach($english_terms[$file_key] as $const => $english_value)
+			foreach($english_terms[$english_path] as $const => $english_value)
 			{
 				if(!defined($const))
 				{
