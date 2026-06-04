@@ -2695,19 +2695,19 @@ class e107Test extends \Codeception\Test\Unit
 	 */
 	public function testIncludeLanFallbackBasenameCollision()
 	{
-		$base = sys_get_temp_dir() . '/e107_5682_collision';
+		$root = sys_get_temp_dir() . '/e107_5682_collision/e107_languages';
 
 		// admin/ pair, same basename "lan_coll.php"; the Spanish file is
 		// missing the admin-only English constant so the fallback must fill it.
-		$adminSpanish = $base . '/Spanish/admin/lan_coll.php';
-		$this->writeLanFixture($base . '/English/admin/lan_coll.php',
+		$adminSpanish = $root . '/Spanish/admin/lan_coll.php';
+		$this->writeLanFixture($root . '/English/admin/lan_coll.php',
 			"<?php\nreturn ['LAN_5682_ADMIN' => 'Admin ES', 'LAN_5682_ADMIN_EN_ONLY' => 'Admin English Only'];\n");
 		$this->writeLanFixture($adminSpanish,
 			"<?php\nreturn ['LAN_5682_ADMIN' => 'Admin ES'];\n");
 
 		// frontend pair, identical basename in a different directory.
-		$frontSpanish = $base . '/Spanish/lan_coll.php';
-		$this->writeLanFixture($base . '/English/lan_coll.php',
+		$frontSpanish = $root . '/Spanish/lan_coll.php';
+		$this->writeLanFixture($root . '/English/lan_coll.php',
 			"<?php\nreturn ['LAN_5682_FRONT' => 'Front ES', 'LAN_5682_FRONT_EN_ONLY' => 'Front English Only'];\n");
 		$this->writeLanFixture($frontSpanish,
 			"<?php\nreturn ['LAN_5682_FRONT' => 'Front ES'];\n");
@@ -2723,6 +2723,36 @@ class e107Test extends \Codeception\Test\Unit
 		self::assertTrue(defined('LAN_5682_FRONT_EN_ONLY'),
 			'frontend English-only constant must fall back even though an admin file with the same basename was loaded first (issue #5682)');
 		self::assertEquals('Front English Only', constant('LAN_5682_FRONT_EN_ONLY'));
+	}
+
+	/**
+	 * Regression test for issue #5682 (English path derivation).
+	 *
+	 * The English fallback path was derived with str_replace($lang, 'English',
+	 * $path), which rewrites every occurrence of the language name in the path.
+	 * On an install whose docroot contains the language name, that corrupted
+	 * the directory above the language folder and the fallback silently failed.
+	 * The derivation must only rewrite the language directory and the language
+	 * file token, leaving the rest of the path untouched.
+	 *
+	 * @runInSeparateProcess
+	 */
+	public function testIncludeLanFallbackDocrootContainsLanguageName()
+	{
+		// Base directory deliberately embeds the language name as a substring.
+		$root = sys_get_temp_dir() . '/Spanish_site_5682/e107_languages';
+
+		$this->writeLanFixture($root . '/English/lan_doc.php',
+			"<?php\nreturn ['LAN_5682_DOC' => 'Doc ES', 'LAN_5682_DOC_EN_ONLY' => 'Doc English Only'];\n");
+		$spanish = $root . '/Spanish/lan_doc.php';
+		$this->writeLanFixture($spanish,
+			"<?php\nreturn ['LAN_5682_DOC' => 'Doc ES'];\n");
+
+		e107::includeLan($spanish, true, 'Spanish');
+
+		self::assertTrue(defined('LAN_5682_DOC_EN_ONLY'),
+			'English fallback must resolve even when the docroot contains the language name (issue #5682)');
+		self::assertEquals('Doc English Only', constant('LAN_5682_DOC_EN_ONLY'));
 	}
 
 	/**

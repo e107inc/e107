@@ -4117,11 +4117,26 @@ class e107
 			return;
 		}
 
-		// Cache key is the resolved English fallback path, NOT basename($path).
-		// Two files that share a basename but live in different directories
+		// Resolve the English fallback path. The language name appears only as
+		// the language directory ("languages/<lang>/") and/or the leading token
+		// of the language file ("<lang>.php" or "<lang>_*.php"), never elsewhere
+		// in a real e107 path. Rewriting just those positions (rather than every
+		// occurrence, as a blunt str_replace would) leaves a language name that
+		// also occurs in the docroot untouched. See issue #5682.
+		$quotedLang = preg_quote($lang, '#');
+		$english_path = preg_replace(
+			[
+				'#(languages/)' . $quotedLang . '/#',    // language directory segment
+				'#/' . $quotedLang . '(?=[._][^/]*$)#',  // language file token (last path segment only)
+			],
+			['${1}English/', '/English'],
+			$path
+		);
+
+		// The cache is keyed on this resolved English path, NOT basename($path):
+		// two files that share a basename but live in different directories
 		// (core ships lan_search.php and admin/lan_search.php, etc.) resolve to
-		// different English files and must not share a cache slot. See issue #5682.
-		$english_path = str_replace($lang, 'English', $path);
+		// different English files and must not share a cache slot.
 
 		// Load English fallback if not already cached for this English path
 		if(!isset($english_terms[$english_path]))
