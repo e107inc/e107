@@ -660,20 +660,17 @@ class lancheck
 		}
 
 
-		global $THEMES_DIRECTORY, $PLUGINS_DIRECTORY, $LANGUAGES_DIRECTORY, $HANDLERS_DIRECTORY, $HELP_DIRECTORY, $e107_paths;
-
-		// Patch (lancheck-config-paths): With the new $config = [...] format introduced in
-		// v2.4+, only $HANDLERS_DIRECTORY and $PLUGINS_DIRECTORY are exposed as globals
-		// by class2.php. The remaining *_DIRECTORY globals are empty in that case, which
-		// made the strict comparison below ALWAYS fail and produced a misleading message
-		// (the LANG_LAN_26 preference label) instead of generating the pack.
-		// Fall back to $e107_paths (or the canonical defaults) for each path.
-		$paths = is_array($e107_paths) ? $e107_paths : array();
-		$handlersDir  = $HANDLERS_DIRECTORY  ?: ($paths['handlers']  ?? ($paths['HANDLERS_DIRECTORY']  ?? 'e107_handlers/'));
-		$languagesDir = $LANGUAGES_DIRECTORY ?: ($paths['languages'] ?? ($paths['LANGUAGES_DIRECTORY'] ?? 'e107_languages/'));
-		$themesDir    = $THEMES_DIRECTORY    ?: ($paths['themes']    ?? ($paths['THEMES_DIRECTORY']    ?? 'e107_themes/'));
-		$helpDir      = $HELP_DIRECTORY      ?: ($paths['help']      ?? ($paths['HELP_DIRECTORY']      ?? 'e107_docs/help/'));
-		$pluginsDir   = $PLUGINS_DIRECTORY   ?: ($paths['plugins']   ?? ($paths['PLUGINS_DIRECTORY']   ?? 'e107_plugins/'));
+		// Patch (lancheck-config-paths): resolve directory names via e107::getFolder(),
+		// which reads e107_dirs and is populated on BOTH the legacy flat config and the
+		// new $config = [...] format. The previous $e107_paths fallback was dead code:
+		// class2.php unset()s $e107_paths right after initCore(), so on every admin page
+		// the *_DIRECTORY globals collapsed to the hardcoded defaults and the
+		// non-standard-layout guard below could never fire under the new config format.
+		$handlersDir  = e107::getFolder('handlers');
+		$languagesDir = e107::getFolder('languages');
+		$themesDir    = e107::getFolder('themes');
+		$helpDir      = e107::getFolder('help');
+		$pluginsDir   = e107::getFolder('plugins');
 
 		if(($handlersDir != "e107_handlers/") || ($languagesDir != "e107_languages/") || ($themesDir != "e107_themes/") || ($helpDir != "e107_docs/help/") || ($pluginsDir != "e107_plugins/"))
 		{
@@ -723,9 +720,26 @@ class lancheck
 				@unlink($fileName);
 			}
 
+			// Patch (lancheck-xml-attrs): build the manifest attributes with
+			// e_parse::toAttributes(), which performs the correct HTML/XML escaping
+			// internally. This removes the manual htmlspecialchars(..., ENT_XML1)
+			// concatenation and keeps the quoting of name/email/url consistent with
+			// the rest of the codebase.
+			$tp = e107::getParser();
+			$langAttributes = $tp->toAttributes(array(
+				'name'          => $language,
+				'compatibility' => $ver,
+				'date'          => date("Y-m-d"),
+			));
+			$authorAttributes = $tp->toAttributes(array(
+				'name'  => USERNAME,
+				'email' => USEREMAIL,
+				'url'   => SITEURL,
+			));
+
 			$fileData = '<?xml version="1.0" encoding="utf-8"?>
-<e107Language name="'.htmlspecialchars($language, ENT_QUOTES | ENT_XML1, 'UTF-8').'" compatibility="'.htmlspecialchars($ver, ENT_QUOTES | ENT_XML1, 'UTF-8').'" date="'.date("Y-m-d").'" >
-<author name="'.htmlspecialchars(USERNAME, ENT_QUOTES | ENT_XML1, 'UTF-8').'" email="'.htmlspecialchars(USEREMAIL, ENT_QUOTES | ENT_XML1, 'UTF-8').'" url="'.htmlspecialchars(SITEURL, ENT_QUOTES | ENT_XML1, 'UTF-8').'" />
+<e107Language'.$langAttributes.' >
+<author'.$authorAttributes.' />
 </e107Language>';
 
 			if(file_put_contents($fileName,$fileData))
@@ -1950,7 +1964,7 @@ class lancheck
 	
 	
 	function fill_phrases_array($data,$type)
-	{	
+	{
 		$retloc = array();
 
 		// Patch (lancheck-modern-syntax): always register the file entry so that
@@ -1958,57 +1972,160 @@ class lancheck
 		// statements are NOT misreported as "File missing!".
 		$retloc[$type] = array();
 
-		if(preg_match_all('/(\/\*[\s\S]*?\*\/)/i',$data, $multiComment))
+		if(!is_string($data) || $data === '')
 		{
-			$data = str_replace($multiComment[1],'',$data);	// strip multi-line comments. 	
-		}
-					
-		if(preg_match('/^\s*?setlocale\s*?\(\s*?([\w]+)\s*?,\s*?(.+)\s*?\)\s*?;/im',$data,$locale)) // check for setlocale();
-		{
-			$retloc[$type][$locale[1]]= $locale[2];	
-		}
-				
-		// 1) Legacy: define('KEY','value');
-		if(preg_match_all('/^\s*?define\s*?\(\s*?(\'|\")([\w]+)(\'|\")\s*?,\s*?(\'|\")([\s\S]*?)\s*?(\'|\")\s*?\)\s*?;/imu',$data,$matches))
-		{
-			$def = $matches[2];
-			$values = $matches[5];	
-	
-			foreach($def as $k=>$d)
-			{
-				$retloc[$type][$d]= $values[$k];
-			}	
+			return $retloc;
 		}
 
-		// 2) Modern: const KEY = 'value';
-		if(preg_match_all('/^\s*?const\s+([A-Z_][A-Z0-9_]*)\s*=\s*([\'"])([\s\S]*?)\2\s*;/imu',$data,$matches))
+		// Patch (lancheck-tokenizer): parse the source with the PHP tokenizer instead
+		// of regular expressions. The tokenizer ignores commented-out define()/const
+		// statements automatically and is immune to the quoting/escaping edge cases
+		// that the previous preg_match_all() approach could mis-handle. It recognises
+		// three localisation forms plus setlocale():
+		//   1) define('KEY', 'value');
+		//   2) const KEY = 'value';
+		//   3) return array('KEY' => 'value', ...);  (and the short [] syntax)
+		$code = (strpos($data, '<?php') === false) ? "<?php\n".$data : $data;
+
+		try
 		{
-			foreach($matches[1] as $k=>$d)
+			$tokens = token_get_all($code);
+		}
+		catch (\Throwable $e)
+		{
+			return $retloc;
+		}
+
+		// Drop whitespace and comments so the matcher can look at adjacent tokens.
+		$sig = array();
+		foreach($tokens as $tk)
+		{
+			if(is_array($tk))
 			{
-				$retloc[$type][$d] = $matches[3][$k];
+				if($tk[0] === T_WHITESPACE || $tk[0] === T_COMMENT || $tk[0] === T_DOC_COMMENT)
+				{
+					continue;
+				}
+				$sig[] = array($tk[0], $tk[1]);
+			}
+			else
+			{
+				$sig[] = array(null, $tk);
 			}
 		}
 
-		// 3) Modern: return [ 'KEY' => 'value', ... ];  (regex tolerant, no eval)
-		if(preg_match_all('/[\'"]([A-Z][A-Z0-9_]*)[\'"]\s*=>\s*([\'"])([\s\S]*?)\2\s*[,\]]/u',$data,$matches))
+		$count = count($sig);
+		for($i = 0; $i < $count; $i++)
 		{
-			foreach($matches[1] as $k=>$d)
+			$id   = $sig[$i][0];
+			$text = $sig[$i][1];
+
+			// setlocale(LC_*, 'value', ...);
+			if($id === T_STRING && strcasecmp($text, 'setlocale') === 0
+				&& isset($sig[$i + 1]) && $sig[$i + 1][1] === '('
+				&& isset($sig[$i + 2]) && $sig[$i + 2][0] === T_STRING)
 			{
-				$retloc[$type][$d] = $matches[3][$k];
+				$lcKey = $sig[$i + 2][1];
+				$lcVal = '';
+				for($j = $i + 3; $j < $count; $j++)
+				{
+					if($sig[$j][1] === ')')
+					{
+						break;
+					}
+					if($sig[$j][0] === T_CONSTANT_ENCAPSED_STRING)
+					{
+						$lcVal = $this->decodeStringToken($sig[$j][1]);
+						break;
+					}
+				}
+				$retloc[$type][$lcKey] = $lcVal;
+				continue;
+			}
+
+			// 1) Legacy: define('KEY', 'value');
+			if($id === T_STRING && strcasecmp($text, 'define') === 0
+				&& isset($sig[$i + 1]) && $sig[$i + 1][1] === '('
+				&& isset($sig[$i + 2]) && $sig[$i + 2][0] === T_CONSTANT_ENCAPSED_STRING
+				&& isset($sig[$i + 3]) && $sig[$i + 3][1] === ','
+				&& isset($sig[$i + 4]) && $sig[$i + 4][0] === T_CONSTANT_ENCAPSED_STRING)
+			{
+				$key = $this->decodeStringToken($sig[$i + 2][1]);
+				if(preg_match('/^\w+$/', $key))
+				{
+					$retloc[$type][$key] = $this->decodeStringToken($sig[$i + 4][1]);
+				}
+				continue;
+			}
+
+			// 2) Modern: const KEY = 'value';
+			if($id === T_CONST
+				&& isset($sig[$i + 1]) && $sig[$i + 1][0] === T_STRING
+				&& isset($sig[$i + 2]) && $sig[$i + 2][1] === '='
+				&& isset($sig[$i + 3]) && $sig[$i + 3][0] === T_CONSTANT_ENCAPSED_STRING)
+			{
+				$key = $sig[$i + 1][1];
+				if(preg_match('/^[A-Z_][A-Z0-9_]*$/', $key))
+				{
+					$retloc[$type][$key] = $this->decodeStringToken($sig[$i + 3][1]);
+				}
+				continue;
+			}
+
+			// 3) Modern: 'KEY' => 'value' inside a returned array.
+			if($id === T_CONSTANT_ENCAPSED_STRING
+				&& isset($sig[$i + 1]) && $sig[$i + 1][0] === T_DOUBLE_ARROW
+				&& isset($sig[$i + 2]) && $sig[$i + 2][0] === T_CONSTANT_ENCAPSED_STRING)
+			{
+				$key = $this->decodeStringToken($text);
+				if(preg_match('/^[A-Z][A-Z0-9_]*$/', $key))
+				{
+					$retloc[$type][$key] = $this->decodeStringToken($sig[$i + 2][1]);
+				}
+				continue;
 			}
 		}
-			
+
 		return $retloc;
-		
-		/*
-		echo "<h2>Raw Data ".$type."</h2><pre>";
-		echo htmlentities($data);
-		echo "</pre>";	
-	
-		*/
-			
 	}
-	
+
+	/**
+	 * Decode a single PHP string-literal token (T_CONSTANT_ENCAPSED_STRING) into its
+	 * runtime value, handling the common single- and double-quote escape sequences.
+	 *
+	 * @param string $raw The raw token text, including its surrounding quotes.
+	 * @return string
+	 */
+	private function decodeStringToken($raw)
+	{
+		if(!is_string($raw) || strlen($raw) < 2)
+		{
+			return $raw;
+		}
+
+		$quote = $raw[0];
+		$inner = substr($raw, 1, -1);
+
+		if($quote === "'")
+		{
+			return strtr($inner, array("\\'" => "'", "\\\\" => "\\"));
+		}
+
+		if($quote === '"')
+		{
+			return strtr($inner, array(
+				'\\"'  => '"',
+				'\\\\' => '\\',
+				'\\n'  => "\n",
+				'\\t'  => "\t",
+				'\\r'  => "\r",
+				'\\$'  => '$',
+			));
+		}
+
+		return $inner;
+	}
+
 	
 	
 	//--------------------------------------------------------------------
