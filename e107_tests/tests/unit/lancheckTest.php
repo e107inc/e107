@@ -65,6 +65,96 @@
 
 		}
 
+		public function testFill_phrases_array_const()
+		{
+			$strings =
+				'const LAN1 = "Főadminisztrátor";'."\n".
+				'const CORE_LC = "es";'."\n".
+				"const LAN2 = 'Hői';";
+
+			$expected = array(
+				'orig' => array(
+					'LAN1'    => 'Főadminisztrátor',
+					'CORE_LC' => 'es',
+					'LAN2'    => 'Hői',
+				),
+			);
+
+			$actual = $this->lan->fill_phrases_array($strings, 'orig');
+			$this->assertEquals($expected, $actual, 'fill_phrases_array() failed on const syntax.');
+		}
+
+		public function testFill_phrases_array_returnArray()
+		{
+			$strings =
+				'return array('."\n".
+				"\t'LAN1' => 'Főadminisztrátor',"."\n".
+				"\t'LAN2' => 'Hői',"."\n".
+				'];';
+
+			$expected = array(
+				'orig' => array(
+					'LAN1' => 'Főadminisztrátor',
+					'LAN2' => 'Hői',
+				),
+			);
+
+			$actual = $this->lan->fill_phrases_array($strings, 'orig');
+			$this->assertEquals($expected, $actual, 'fill_phrases_array() failed on return-array syntax.');
+		}
+
+		public function testFill_phrases_array_shortArray()
+		{
+			$strings =
+				'return ['."\n".
+				"\t'LAN1' => \"It's escaped\","."\n".
+				"\t'LAN2' => 'A \\'quoted\\' value',"."\n".
+				'];';
+
+			$expected = array(
+				'orig' => array(
+					'LAN1' => "It's escaped",
+					'LAN2' => "A 'quoted' value",
+				),
+			);
+
+			$actual = $this->lan->fill_phrases_array($strings, 'orig');
+			$this->assertEquals($expected, $actual, 'fill_phrases_array() failed on short-array syntax with escapes.');
+		}
+
+		public function testFill_phrases_array_ignoresComments()
+		{
+			// define()s inside comments must NOT be picked up (the old regex needed a
+			// pre-pass to strip /* */ blocks; the tokenizer ignores them natively).
+			$strings =
+				'/* define("LAN_COMMENTED", "ignore me"); */'."\n".
+				'// define("LAN_LINE", "ignore me too");'."\n".
+				'define("LAN1", "kept");';
+
+			$expected = array(
+				'orig' => array(
+					'LAN1' => 'kept',
+				),
+			);
+
+			$actual = $this->lan->fill_phrases_array($strings, 'orig');
+			$this->assertEquals($expected, $actual, 'fill_phrases_array() must ignore commented-out statements.');
+		}
+
+		public function testFill_phrases_array_registersEmptyType()
+		{
+			// A modern file with no recognised phrases must still register the type
+			// key (as an empty array) so it is not misreported as "File missing!".
+			$strings = '$foo = 1; // nothing to harvest here';
+
+			$expected = array(
+				'orig' => array(),
+			);
+
+			$actual = $this->lan->fill_phrases_array($strings, 'orig');
+			$this->assertEquals($expected, $actual, 'fill_phrases_array() must register the type for phrase-less files.');
+		}
+
 /*
 		public function testThirdPartyPlugins()
 		{
