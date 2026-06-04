@@ -135,7 +135,7 @@ if(isset($_POST['submit']))
 		$caption = LAN_CHECK_PAGE_TITLE.' - '.LAN_SUMMARY;
 		$mes->addSuccess(sprintXXX(str_replace("[x]", "%s", LAN_CHECK_23), basename($writeit)));
 	}
-	fclose($writeit);
+	fclose($fp);
 
 	$message .= "
 	<form method='post' action='".e_SELF."' id='core-lancheck-save-file-form'>
@@ -472,7 +472,9 @@ class lancheck
 		}
 		else
 		{
-			$mes->addError($status['error']);
+			// Patch (lancheck-modern-syntax): show the actual message, not the boolean error flag.
+			$msg = !empty($status['message']) ? $status['message'] : $status['error'];
+			$mes->addError($msg);
 		}
 
 		return array('text'=> $mes->render(), 'caption'=>'');
@@ -564,7 +566,9 @@ class lancheck
 		$code = file_get_contents(e_LANGUAGEDIR.$language."/".$language.".php");
 		$tmp = explode("\n",$code);
 
-		$srch = array("define","'",'"',"(",")",";","CORE_LC2","CORE_LC",",");
+		// Patch (lancheck-modern-syntax): include `const` and `=` so that
+		// modern `const CORE_LC = "es";` declarations parse correctly.
+		$srch = array("define","const","'",'"',"(",")",";","CORE_LC2","CORE_LC",",","=");
 
 		foreach($tmp as $line)
 		{
