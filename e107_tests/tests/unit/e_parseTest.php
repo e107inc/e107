@@ -2625,13 +2625,33 @@ EXPECTED;
 
 		);
 
-		foreach ($tests as $index => $var)
+		// Stub the remote GET so the remote-avatar + base64 case (index #8) is
+		// deterministic and offline. toAvatar() fetches remote images through
+		// the e_file singleton; inject a double that returns fixed bytes.
+		$registryId = 'core/e107/singleton/e_file';
+		$originalFile = e107::getRegistry($registryId);
+		$remoteBytes = file_get_contents($icon);
+		$stubFile = $this->make('e_file', array(
+			'getRemoteContent' => function () use ($remoteBytes) { return $remoteBytes; },
+		));
+		e107::setRegistry($registryId, $stubFile);
+
+		try
 		{
-			$result = $this->tp->toAvatar($var['input'], $var['parms']);
-			foreach ($var['expected'] as $str)
+			foreach ($tests as $index => $var)
 			{
-				self::assertStringContainsString($str, $result, "Failed on index #" . $index);
+				$result = $this->tp->toAvatar($var['input'], $var['parms']);
+				foreach ($var['expected'] as $str)
+				{
+					self::assertStringContainsString($str, $result, "Failed on index #" . $index);
+				}
 			}
+		}
+		finally
+		{
+			// Restore the registry (null => removes our stub) so the shuffled
+			// suite isn't polluted for later tests.
+			e107::setRegistry($registryId, $originalFile);
 		}
 
 
