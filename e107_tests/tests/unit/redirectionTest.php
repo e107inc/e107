@@ -204,4 +204,133 @@ class redirectionTest extends \Codeception\Test\Unit
 	}
 
 
+	public function testIsCapturable()
+	{
+		$capturable = array(
+			'/news.php?extend.1',
+			'/index.php',
+			'/',
+			'/blog/my-post-title/', // SEF, no extension
+			'/page/system/2',
+		);
+
+		foreach($capturable as $url)
+		{
+			self::assertTrue($this->rd->isCapturable($url), "Expected capturable: $url");
+		}
+
+		$notCapturable = array(
+			'/e107_media/x/thumb.jpg',
+			'/theme/style.css',
+			'/js/bootstrap.bundle.min.js',
+			'/css/bootstrap.css.map', // the #5218 source-map case
+			'/fonts/icon.woff2',
+			'/files/manual.pdf',
+		);
+
+		foreach($notCapturable as $url)
+		{
+			self::assertFalse($this->rd->isCapturable($url), "Expected NOT capturable: $url");
+		}
+	}
+
+	public function testLoginDestinationTokenSkipsAssets()
+	{
+		// Regression for issue #5218: a missing asset must never be remembered as a destination.
+		self::assertSame('', $this->rd->getLoginDestinationToken('/e107_plugins/estate/media/prop/thm/14-1-0-349.jpeg'));
+		self::assertSame('', $this->rd->getLoginDestinationToken('/themes/bootstrap.bundle.min.js.map'));
+
+		// A real page is remembered.
+		self::assertNotSame('', $this->rd->getLoginDestinationToken('/news.php?extend.1'));
+	}
+
+	public function testLoginDestinationRoundTrip()
+	{
+		$token = $this->rd->getLoginDestinationToken('/news.php?extend.1');
+		self::assertNotSame('', $token);
+		self::assertSame('/news.php?extend.1', $this->rd->verifyDestination($token));
+	}
+
+	public function testVerifyDestinationRejectsTamperAndGarbage()
+	{
+		$token = $this->rd->getLoginDestinationToken('/news.php?extend.1');
+		self::assertNotSame('', $token);
+
+		$tampered = substr($token, 0, -4) . 'AAAA';
+		self::assertFalse($this->rd->verifyDestination($tampered));
+		self::assertFalse($this->rd->verifyDestination('not-a-token'));
+		self::assertFalse($this->rd->verifyDestination(''));
+	}
+
+	public function testVerifyDestinationRejectsExpired()
+	{
+		// Sign directly with a negative TTL to force an already-expired token.
+		$expired = e107::getJWT()->encode(array('dest' => '/news.php'), -100);
+		self::assertFalse($this->rd->verifyDestination($expired));
+	}
+
+	public function testVerifyDestinationEnforcesSameOrigin()
+	{
+		$offsite = array(
+			'https://evil.example/phish',
+			'//evil.example/phish',
+			'/\\evil.example/phish',
+			'\\\\evil.example/phish',
+			'javascript:alert(1)',
+			'not/rooted/relative',
+		);
+
+		foreach($offsite as $dest)
+		{
+			$token = e107::getJWT()->encode(array('dest' => $dest), 600);
+			self::assertFalse($this->rd->verifyDestination($token), "Should reject off-site: $dest");
+		}
+
+		// Same-origin relative and absolute are accepted.
+		$relToken = e107::getJWT()->encode(array('dest' => '/profile.php'), 600);
+		self::assertSame('/profile.php', $this->rd->verifyDestination($relToken));
+
+		$abs = SITEURL . 'news.php';
+		$absToken = e107::getJWT()->encode(array('dest' => $abs), 600);
+		self::assertSame($abs, $this->rd->verifyDestination($absToken));
+	}
+
+	public function testVerifyDestinationAllowsTrustedHost()
+	{
+		// A destination on a host configured in the `trusted_hosts` pref (e107inc/e107#5639)
+		// is accepted, while an unrelated third-party host is still rejected.
+		$cfg = e107::getConfig();
+		$originalTrusted = $cfg->get('trusted_hosts');
+
+		$cfg->set('trusted_hosts', array('staging.example.test'));
+
+		try
+		{
+			$good = 'https://staging.example.test/members/area?x=1';
+			$goodToken = e107::getJWT()->encode(array('dest' => $good), 600);
+			self::assertSame($good, $this->rd->verifyDestination($goodToken), 'a configured trusted host should be accepted');
+
+			$badToken = e107::getJWT()->encode(array('dest' => 'https://not-trusted.example.test/x'), 600);
+			self::assertFalse($this->rd->verifyDestination($badToken), 'an untrusted third-party host must be rejected');
+		}
+		finally
+		{
+			$cfg->set('trusted_hosts', $originalTrusted);
+		}
+	}
+
+	public function testGetLoginDestinationFromPostField()
+	{
+		$token = $this->rd->getLoginDestinationToken('/restricted-page');
+		self::assertNotSame('', $token);
+
+		$_POST[redirection::LOGIN_DEST_FIELD] = $token;
+		self::assertSame('/restricted-page', $this->rd->getLoginDestination());
+
+		// With no token present, there is no destination.
+		unset($_POST[redirection::LOGIN_DEST_FIELD], $_COOKIE[redirection::LOGIN_DEST_COOKIE]);
+		self::assertFalse($this->rd->getLoginDestination());
+	}
+
+
 }

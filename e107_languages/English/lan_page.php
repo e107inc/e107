@@ -24,4 +24,5 @@ return [
     'LAN_PAGE_15' => "Articles",
     'LAN_PAGE_16' => "There are no chapters in this book",
     'LAN_PAGE_17' => "Comments on this page are locked.",
+    'LAN_PAGE_18' => "Log in to view this page",
 ];

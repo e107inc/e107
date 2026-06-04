@@ -1826,7 +1826,7 @@ function cookie($name, $value, $expire=0, $path = e_HTTP, $domain = '', $secure 
 		$path = '/';
 	}
 	
-	setcookie($name, $value, $expire, $path, $domain, $secure, true);
+	eShims::setcookie($name, $value, $expire, $path, $domain, $secure, true);
 }
 
 //
@@ -1864,7 +1864,7 @@ function session_set($name, $value, $expire='', $path = e_HTTP, $domain = '', $s
 			$path = '/';
 		}
 		
-		setcookie($name, $value, $expire, $path, $domain, $secure, true);
+		eShims::setcookie($name, $value, $expire, $path, $domain, $secure, true);
 		$_COOKIE[$name] = $value;
 	}
 }
