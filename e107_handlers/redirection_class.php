@@ -344,14 +344,43 @@ class redirection
 		// site returns the visitor via the same mechanism as every other login seam.
 		$this->setLoginDestination();
 
-		$redirectType = e107::getPref('membersonly_redirect');
-
-		$redirectURL = ($redirectType == 'splash') ? e_HTTP.'membersonly.php' : e_LOGIN;
-
-		$this->redirect($redirectURL);
+		$this->redirect($this->getMembersOnlyRedirectUrl());
 	}
 
-	
+
+	/**
+	 * Resolve the URL a non-member is redirected to on a members-only site.
+	 *
+	 * Split out of checkMembersOnly() so the destination decision can be unit
+	 * tested without performing the actual header redirect.
+	 *
+	 * Loop guard (issue #5698): when registration is Disabled (user_reg=0) and
+	 * no social login provider is active, the core login.php turns guests away
+	 * (see its top guard), so redirecting a guest there just bounces them back
+	 * to the members-only site and loops until the browser aborts. If the login
+	 * page in use is the stock login.php (i.e. e_LOGIN has not been overridden
+	 * by a customlogin.php or a plugin), send the guest to the members-only
+	 * splash instead, which is a dead end and breaks the loop. A custom login
+	 * page is assumed to handle its own guest access, so it is left untouched.
+	 *
+	 * @return string absolute URL to redirect a non-member to
+	 */
+	public function getMembersOnlyRedirectUrl()
+	{
+		$redirectType = e107::getPref('membersonly_redirect');
+
+		if($redirectType != 'splash'
+			&& e_LOGIN === SITEURL.'login.php'
+			&& !e107::getPref('user_reg')
+			&& !e107::getUserProvider()->isSocialLoginEnabled())
+		{
+			$redirectType = 'splash';
+		}
+
+		return ($redirectType == 'splash') ? e_HTTP.'membersonly.php' : e_LOGIN;
+	}
+
+
 	/**
 	 * Store the current URL so that it can retrieved after login.
 	 *
