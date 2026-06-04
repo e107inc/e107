@@ -346,9 +346,9 @@ class redirection
 
 		$redirectType = e107::getPref('membersonly_redirect');
 
-		$redirectURL = ($redirectType == 'splash') ? 'membersonly.php' : 'login.php';
+		$redirectURL = ($redirectType == 'splash') ? e_HTTP.'membersonly.php' : e_LOGIN;
 
-		$this->redirect(e_HTTP.$redirectURL);
+		$this->redirect($redirectURL);
 	}
 
 	
