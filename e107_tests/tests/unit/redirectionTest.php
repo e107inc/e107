@@ -377,5 +377,52 @@ class redirectionTest extends \Codeception\Test\Unit
 		self::assertFalse($this->rd->getLoginDestination());
 	}
 
+	/**
+	 * issue #5698: on a members-only site, registration set to "Disabled"
+	 * (user_reg=0) with no social login provider sends a guest to a login.php
+	 * that turns them straight back, looping until the browser aborts. The
+	 * redirect must fall back to the members-only splash (a dead end) in that
+	 * case only; "Login Only" (user_reg=2) and a custom login page are untouched.
+	 *
+	 * @throws Exception
+	 */
+	public function testMembersOnlyRedirectUrlBreaksLoopWhenLoginUnreachable()
+	{
+		// The loop guard only applies to the stock login page with social login off.
+		self::assertSame(SITEURL.'login.php', e_LOGIN, 'test env must use the stock login page');
+		self::assertFalse(e107::getUserProvider()->isSocialLoginEnabled(), 'test env must have social login off');
+
+		$cfg = e107::getConfig();
+		$beforeReg = $cfg->getPref('user_reg');
+		$beforeRedir = $cfg->getPref('membersonly_redirect');
+
+		try
+		{
+			// Disabled + default (non-splash) redirect: break the loop -> splash.
+			$cfg->setPref('user_reg', 0)->setPref('membersonly_redirect', '');
+			self::assertSame(e_HTTP.'membersonly.php', $this->rd->getMembersOnlyRedirectUrl(),
+				'user_reg=0 (Disabled) must fall back to the members-only splash');
+
+			// Login Only: members can still log in, so the login page is used.
+			$cfg->setPref('user_reg', 2);
+			self::assertSame(e_LOGIN, $this->rd->getMembersOnlyRedirectUrl(),
+				'user_reg=2 (Login Only) must still go to the login page');
+
+			// Register & Login: login page as well.
+			$cfg->setPref('user_reg', 1);
+			self::assertSame(e_LOGIN, $this->rd->getMembersOnlyRedirectUrl(),
+				'user_reg=1 (Register & Login) must go to the login page');
+
+			// An explicit splash redirect is honoured regardless of user_reg.
+			$cfg->setPref('user_reg', 1)->setPref('membersonly_redirect', 'splash');
+			self::assertSame(e_HTTP.'membersonly.php', $this->rd->getMembersOnlyRedirectUrl(),
+				'an explicit splash redirect must always use the splash');
+		}
+		finally
+		{
+			$cfg->setPref('user_reg', $beforeReg)->setPref('membersonly_redirect', $beforeRedir);
+		}
+	}
+
 
 }
