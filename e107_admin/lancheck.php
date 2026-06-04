@@ -612,8 +612,21 @@ class lancheck
 		{
 			$ret = array();
 			$ret['error'] = TRUE;
+
+			// Patch (lancheck-modern-syntax): explicit breakdown so the translator
+			// knows WHAT to fix instead of just seeing "[x] missing".
+			$s = $_SESSION['lancheck'][$language];
+			$parts = array();
+			if(!empty($s['file'])) { $parts[] = $s['file'].' missing file(s)'; }
+			if(!empty($s['def']))  { $parts[] = $s['def'].' missing/invalid phrase(s)'; }
+			if(!empty($s['bom']))  { $parts[] = $s['bom'].' file(s) with BOM/illegal characters'; }
+			if(!empty($s['utf']))  { $parts[] = $s['utf'].' non-UTF8 phrase(s)'; }
+			$detail = $parts ? ' ('.implode(', ', $parts).')' : '';
+
 			$message = LANG_LAN_115;
-			$ret['message'] = str_replace("[x]",$_SESSION['lancheck'][$language]['total'],$message);
+			$ret['message']  = str_replace("[x]", $s['total'], $message).$detail;
+			$ret['message'] .= "<br /><small>Tip: open the <em>Verify</em> tab to see the affected files/keys. ".
+			                   "Enable <code>E107_DEBUG_LEVEL</code> in <code>e107_config.php</code> to bypass this check and generate the pack anyway.</small>";
 			return $ret;
 		}
 
