@@ -642,4 +642,84 @@
 				implode(', ', $missingFulltextIndexes)
 			);
 		}
+
+		/**
+		 * Regression for https://github.com/e107inc/e107/issues/5709
+		 *
+		 * A plugin folder scan runs update_plugins_table() in 'update' mode. A stale
+		 * lan_global_list entry for an uninstalled plugin (here _blank, which ships
+		 * languages/English/English_global.php and is installRequired, so it is never
+		 * auto-installed) must be reconciled away by that scan, not survive it.
+		 */
+		public function testFolderScanUpdateModeRemovesStaleGlobalLanForUninstalledPlugin()
+		{
+			$folder = '_blank';
+			$plugin = e107::getPlugin();
+
+			// Make sure _blank is registered in the plugin table (uninstalled).
+			$plugin->update_plugins_table('update');
+
+			$plg = e107::getPlug()->clearCache();
+			$plg->load($folder);
+			$this->assertFalse($plg->isInstalled(), 'precondition: _blank must not be installed');
+
+			// Baseline (after registration) to restore, so shuffled sibling tests stay clean.
+			$globalBefore = e107::getConfig('core')->get('lan_global_list', array());
+			$logBefore    = e107::getConfig('core')->get('lan_log_list', array());
+
+			try
+			{
+				// Seed a stale entry, as if left over from a previous install or folder swap.
+				e107::getConfig('core')->setPref('lan_global_list/' . $folder, $folder)->save(false, true, false);
+
+				// The folder scan (mode 'update') must drop it.
+				$plugin->update_plugins_table('update');
+
+				$after = e107::getConfig('core', true, true)->get('lan_global_list', array());
+				$this->assertArrayNotHasKey($folder, $after,
+					'A folder scan (mode update) must drop the stale lan_global_list entry for uninstalled _blank');
+			}
+			finally
+			{
+				// Restore the lists we touched.
+				e107::getConfig('core')->set('lan_global_list', $globalBefore)->set('lan_log_list', $logBefore)->save(false, true, false);
+			}
+		}
+
+		/**
+		 * Regression for https://github.com/e107inc/e107/issues/5709
+		 *
+		 * XmlLanguageFiles('uninstall') must persist its removePref. For a plugin that
+		 * ships only English_global.php (no English_log.php) the removal was lost before
+		 * the fix, because the global branch set $update instead of $updated and the
+		 * trailing save() was therefore skipped.
+		 */
+		public function testXmlLanguageFilesUninstallPersistsGlobalOnlyRemoval()
+		{
+			$folder = 'temptest5709';
+			$base   = e_PLUGIN . $folder;
+			mkdir($base . '/languages/English', 0755, true);
+			file_put_contents($base . '/languages/English/English_global.php', "<?php\nreturn array();\n");
+
+			try
+			{
+				e107::getConfig('core')->setPref('lan_global_list/' . $folder, $folder)->save(false, true, false);
+
+				$plugin = e107::getPlugin();
+				$plugin->plugFolder = $folder;
+				$plugin->XmlLanguageFiles('uninstall');
+
+				$persisted = e107::getConfig('core', true, true)->get('lan_global_list', array());
+				$this->assertArrayNotHasKey($folder, $persisted,
+					'XmlLanguageFiles(uninstall) must save the removal of a global-only plugin from lan_global_list');
+			}
+			finally
+			{
+				e107::getConfig('core')->removePref('lan_global_list/' . $folder)->save(false, true, false);
+				@unlink($base . '/languages/English/English_global.php');
+				@rmdir($base . '/languages/English');
+				@rmdir($base . '/languages');
+				@rmdir($base);
+			}
+		}
 	}
