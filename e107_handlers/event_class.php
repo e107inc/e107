@@ -228,6 +228,14 @@ class e107_event
 					try
 					{
 
+						if (!class_exists($class)) // Stale notify_prefs entry: plugin class no longer exists (folder removed/renamed). Skip and continue.
+						{
+							$logError = array('name'=>$eventname,'location'=>$location,'class'=>$class,'method'=>$method,'error'=>'class does not exist');
+							e107::getLog()->add('Event Trigger failed',$logError,E_LOG_WARNING,'EVENT_01');
+							trigger_error('Event Trigger failed: class does not exist: '.print_r($logError,true), E_USER_WARNING);
+							continue;
+						}
+
 						if (strpos($method, '::') !== false)    // If $method contains "::", call it statically
 						{
 						    [$staticClass, $staticMethod] = explode('::', $method, 2);
@@ -249,7 +257,7 @@ class e107_event
 							break;
 						}
 					}
-					catch(Exception $e)
+					catch(\Throwable $e) // \Throwable also catches \Error (e.g. renamed/missing class) on PHP7+; \Exception alone left those fatal.
 					{
 						$logError = array('name'=>$eventname,'location'=>$location,'class'=>$class,'method'=>$method,'error'=>$e);
 						e107::getLog()->add('Event Trigger failed',$logError,E_LOG_WARNING,'EVENT_01');
