@@ -553,9 +553,14 @@ class e_media
 		
 		$fields = ($amount == 'all') ? "media_id" : "*";
 		
-		$query = "SELECT ".$fields." FROM #core_media WHERE `media_category` REGEXP '(^|,)".implode("|",$catArray)."(,|$)' 
-		AND `media_userclass` IN (".USERCLASS_LIST.") 
-		AND `media_type` LIKE '".$type."/%' " ;
+		$catAnchored = array_map(function($c) {
+			return '(^|,)' . preg_quote($c, '/') . '(,|$)';
+		}, $catArray);
+
+		$query = "SELECT ".$fields." FROM #core_media WHERE `media_category` REGEXP '" . implode("|", $catAnchored) . "'
+		AND `media_userclass` IN (".USERCLASS_LIST.")
+		AND `media_type` LIKE '".$type."/%' ";
+
 
 		if($search)
 		{
