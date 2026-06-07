@@ -66,9 +66,11 @@ class plugin_gallery_index_controller extends eControllerFront
 
 	public function init()
 	{
+		$plugPrefs = e107::getPlugConfig('gallery')->getPref();
+		$orderBy = varset($plugPrefs['cat_orderby'], 'media_cat_id DESC');
 		e107::plugLan('gallery', 'front');
 		e107::css('gallery', 'css/gallery.css');
-		$this->catList = e107::getMedia()->getCategories('gallery');
+		$this->catList = e107::getMedia()->getCategories('gallery', $orderBy);
 	}
 
 	public function actionIndex()

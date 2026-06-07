@@ -408,7 +408,7 @@ class e_media
 	 * @param string $owner
 	 * @return array
 	 */
-	public function getCategories($owner='')
+	public function getCategories($owner='', $orderby='media_cat_order')
 	{
 		$ret = array();
 		
@@ -416,7 +416,7 @@ class e_media
 		$qry = "SELECT * FROM #core_media_cat ";
 		$qry .= ($owner) ? " WHERE media_cat_owner = '".$owner."' " : " (1) ";
 		$qry .= "AND media_cat_class IN (".USERCLASS_LIST.") ";
-		$qry .= "ORDER BY media_cat_order";
+		$qry .= "ORDER BY ".$orderby;
 		
 		e107::getDb()->gen($qry);
 		while($row = e107::getDb()->fetch())
