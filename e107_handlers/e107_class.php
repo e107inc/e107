@@ -5223,7 +5223,10 @@ class e107
 		$_SERVER['PHP_SELF'] = (($pos = stripos($_SERVER['PHP_SELF'], '.php')) !== false ? substr($_SERVER['PHP_SELF'], 0, $pos+4) : $_SERVER['PHP_SELF']);
 		$_SERVER['SERVER_NAME'] = $_SERVER['SERVER_NAME'] ?? '';
 		$_SERVER['HTTP_HOST'] = $_SERVER['HTTP_HOST'] ?? '';
-		$_SERVER['HTTP_HOST'] = !empty($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : $_SERVER['HTTP_HOST'];
+		// Prefer the client `Host` header so a non-standard port survives into
+		// every URL built from HTTP_HOST (form actions, SITEURL, redirects); a
+		// malformed/crafted Host falls back to SERVER_NAME. See resolveHttpHost().
+		$_SERVER['HTTP_HOST'] = self::resolveHttpHost($_SERVER);
 
 		if(empty($_SERVER['HTTP_HOST']) && !self::isCli())
 		{
@@ -6122,6 +6125,43 @@ class e107
 		$host = preg_replace('/:\d+$/', '', $host);
 		$host = preg_replace('/^www\./', '', $host);
 		return $host;
+	}
+
+	/**
+	 * Resolve the request's HTTP host (`host` or `host:port`) from a `$_SERVER`
+	 * array, preferring the client-supplied `Host` header so the visited port
+	 * survives into every URL built from it (form actions, SITEURL, redirects).
+	 *
+	 * The `Host` header is client-controlled, so it is trusted only when it is
+	 * shaped like a bare hostname / IPv4 or a bracketed IPv6 literal with an
+	 * optional numeric port. Anything else (a crafted Host carrying quotes,
+	 * markup or a path) falls back to the server-configured `SERVER_NAME`, which
+	 * a client cannot influence, keeping a malformed Host out of generated URLs.
+	 *
+	 * Spoofing with a *valid-looking* host is a separate concern, contained by
+	 * the siteurl / `trusted_hosts` allow-list in {@see e107::set_urls_deferred()}
+	 * via {@see e107::isAllowedHost()}.
+	 *
+	 * @param array $server typically `$_SERVER`
+	 *
+	 * @return string the resolved `host` or `host:port`, or '' when neither
+	 *                source is usable
+	 */
+	private static function resolveHttpHost($server)
+	{
+		$httpHost   = isset($server['HTTP_HOST'])   ? (string) $server['HTTP_HOST']   : '';
+		$serverName = isset($server['SERVER_NAME']) ? (string) $server['SERVER_NAME'] : '';
+
+		// A bare hostname / IPv4, or a bracketed IPv6 literal, with an optional
+		// numeric port: what a browser puts in the `Host` header.
+		$shaped = '/^(?:[A-Za-z0-9._-]+|\[[0-9A-Fa-f:]+\])(?::\d{1,5})?$/';
+
+		if($httpHost !== '' && preg_match($shaped, $httpHost))
+		{
+			return $httpHost;
+		}
+
+		return $serverName;
 	}
 
 	/**
