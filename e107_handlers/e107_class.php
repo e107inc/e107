@@ -5047,6 +5047,14 @@ class e107
 		// If url contains a .php in it, PHP_SELF is set wrong (imho), affecting all paths.  We need to 'fix' it if it does.
 		$_SERVER['PHP_SELF'] = (($pos = stripos($_SERVER['PHP_SELF'], '.php')) !== false ? substr($_SERVER['PHP_SELF'], 0, $pos+4) : $_SERVER['PHP_SELF']);
 
+		// Resolve the request host up front: prefer the client `Host` header so
+		// a non-standard port survives into every URL built from HTTP_HOST
+		// (form actions, SITEURL, redirects), but reject a malformed/crafted
+		// Host in favour of SERVER_NAME. See resolveHttpHost().
+		$_SERVER['SERVER_NAME'] = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '';
+		$_SERVER['HTTP_HOST']   = isset($_SERVER['HTTP_HOST'])   ? $_SERVER['HTTP_HOST']   : '';
+		$_SERVER['HTTP_HOST']   = self::resolveHttpHost($_SERVER);
+
 		// setup some php options
 		self::ini_set('magic_quotes_runtime',     0);
 		self::ini_set('magic_quotes_sybase',      0);
@@ -5372,7 +5380,10 @@ class e107
 		//	define("e_ROOT", realpath(dirname(__FILE__)."/../")."/");
 
 		$this->relative_base_path = $path;
-		$_SERVER['HTTP_HOST'] = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost';
+		// resolveHttpHost() (in prepare_request) yields '' only when neither the
+		// Host header nor SERVER_NAME is usable; keep the historical localhost
+		// backstop for that degenerate case.
+		$_SERVER['HTTP_HOST'] = !empty($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost';
 		$this->http_path =  filter_var("http://{$_SERVER['HTTP_HOST']}{$this->server_path}", FILTER_SANITIZE_URL);
 		$this->https_path = filter_var("https://{$_SERVER['HTTP_HOST']}{$this->server_path}", FILTER_SANITIZE_URL);
 
@@ -5901,6 +5912,43 @@ class e107
 		$host = preg_replace('/:\d+$/', '', $host);
 		$host = preg_replace('/^www\./', '', $host);
 		return $host;
+	}
+
+	/**
+	 * Resolve the request's HTTP host (`host` or `host:port`) from a `$_SERVER`
+	 * array, preferring the client-supplied `Host` header so the visited port
+	 * survives into every URL built from it (form actions, SITEURL, redirects).
+	 *
+	 * The `Host` header is client-controlled, so it is trusted only when it is
+	 * shaped like a bare hostname / IPv4 or a bracketed IPv6 literal with an
+	 * optional numeric port. Anything else (a crafted Host carrying quotes,
+	 * markup or a path) falls back to the server-configured `SERVER_NAME`, which
+	 * a client cannot influence, keeping a malformed Host out of generated URLs.
+	 *
+	 * Spoofing with a *valid-looking* host is a separate concern, contained by
+	 * the siteurl / `trusted_hosts` allow-list in {@see e107::set_urls_deferred()}
+	 * via {@see e107::isAllowedHost()}.
+	 *
+	 * @param array $server typically `$_SERVER`
+	 *
+	 * @return string the resolved `host` or `host:port`, or '' when neither
+	 *                source is usable
+	 */
+	private static function resolveHttpHost($server)
+	{
+		$httpHost   = isset($server['HTTP_HOST'])   ? (string) $server['HTTP_HOST']   : '';
+		$serverName = isset($server['SERVER_NAME']) ? (string) $server['SERVER_NAME'] : '';
+
+		// A bare hostname / IPv4, or a bracketed IPv6 literal, with an optional
+		// numeric port: what a browser puts in the `Host` header.
+		$shaped = '/^(?:[A-Za-z0-9._-]+|\[[0-9A-Fa-f:]+\])(?::\d{1,5})?$/';
+
+		if($httpHost !== '' && preg_match($shaped, $httpHost))
+		{
+			return $httpHost;
+		}
+
+		return $serverName;
 	}
 
 	/**
