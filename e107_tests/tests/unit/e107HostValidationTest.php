@@ -24,6 +24,9 @@ class e107HostValidationTest extends \Codeception\Test\Unit
 	/** @var ReflectionMethod */
 	private $isAllowedHost;
 
+	/** @var ReflectionMethod */
+	private $resolveHttpHost;
+
 	protected function _before()
 	{
 		try
@@ -38,6 +41,8 @@ class e107HostValidationTest extends \Codeception\Test\Unit
 		$reflection = new ReflectionClass($this->e107);
 		$this->isAllowedHost = $reflection->getMethod('isAllowedHost');
 		$this->isAllowedHost->setAccessible(true);
+		$this->resolveHttpHost = $reflection->getMethod('resolveHttpHost');
+		$this->resolveHttpHost->setAccessible(true);
 	}
 
 	/**
@@ -56,6 +61,75 @@ class e107HostValidationTest extends \Codeception\Test\Unit
 	{
 		$result = e107::normaliseTrustedHostList($input);
 		$this->assertSame($expected, $result, "Failed scenario: $scenario");
+	}
+
+	/**
+	 * Resolve the request host from a $_SERVER array. The visited port must
+	 * survive (regression for the master-only port-strip that broke admin
+	 * login and absolute URLs on non-standard ports, e.g. XAMPP/Docker on
+	 * :8080), while a crafted Host falls back to the server-configured
+	 * SERVER_NAME so it can never reach a generated URL.
+	 *
+	 * @dataProvider resolveHttpHostProvider
+	 */
+	public function testResolveHttpHost($server, $expected, $scenario)
+	{
+		$result = $this->resolveHttpHost->invoke(null, $server);
+		$this->assertSame($expected, $result, "Failed scenario: $scenario");
+	}
+
+	public function resolveHttpHostProvider()
+	{
+		return array(
+			'plain host kept' => array(
+				array('HTTP_HOST' => 'example.com', 'SERVER_NAME' => 'example.com'),
+				'example.com', 'plain host kept'),
+			'non-standard port preserved (the regression)' => array(
+				array('HTTP_HOST' => 'localhost:8080', 'SERVER_NAME' => 'localhost'),
+				'localhost:8080', 'non-standard port preserved (the regression)'),
+			'docker random port preserved' => array(
+				array('HTTP_HOST' => 'localhost:34487', 'SERVER_NAME' => 'localhost', 'SERVER_PORT' => '34487'),
+				'localhost:34487', 'docker random port preserved'),
+			'explicit :80 preserved verbatim' => array(
+				array('HTTP_HOST' => 'example.com:80', 'SERVER_NAME' => 'example.com'),
+				'example.com:80', 'explicit :80 preserved verbatim'),
+			'IPv4 host with port' => array(
+				array('HTTP_HOST' => '127.0.0.1:8443', 'SERVER_NAME' => '127.0.0.1'),
+				'127.0.0.1:8443', 'IPv4 host with port'),
+			'bracketed IPv6 with port' => array(
+				array('HTTP_HOST' => '[::1]:8443', 'SERVER_NAME' => 'localhost'),
+				'[::1]:8443', 'bracketed IPv6 with port'),
+			'subdomain with port' => array(
+				array('HTTP_HOST' => 'sub.example.com:8080', 'SERVER_NAME' => 'example.com'),
+				'sub.example.com:8080', 'subdomain with port'),
+			'empty Host falls back to SERVER_NAME' => array(
+				array('HTTP_HOST' => '', 'SERVER_NAME' => 'fallback.example.com'),
+				'fallback.example.com', 'empty Host falls back to SERVER_NAME'),
+			'missing Host key falls back to SERVER_NAME' => array(
+				array('SERVER_NAME' => 'fallback.example.com'),
+				'fallback.example.com', 'missing Host key falls back to SERVER_NAME'),
+			'single-quote injection rejected, uses SERVER_NAME' => array(
+				array('HTTP_HOST' => "localhost'onerror=alert(1)", 'SERVER_NAME' => 'safe.example.com'),
+				'safe.example.com', 'single-quote injection rejected, uses SERVER_NAME'),
+			'double-quote injection rejected, uses SERVER_NAME' => array(
+				array('HTTP_HOST' => 'localhost" onx=1', 'SERVER_NAME' => 'safe.example.com'),
+				'safe.example.com', 'double-quote injection rejected, uses SERVER_NAME'),
+			'path in Host rejected, uses SERVER_NAME' => array(
+				array('HTTP_HOST' => 'evil.com/path', 'SERVER_NAME' => 'safe.example.com'),
+				'safe.example.com', 'path in Host rejected, uses SERVER_NAME'),
+			'whitespace in Host rejected, uses SERVER_NAME' => array(
+				array('HTTP_HOST' => 'evil .com', 'SERVER_NAME' => 'safe.example.com'),
+				'safe.example.com', 'whitespace in Host rejected, uses SERVER_NAME'),
+			'non-numeric port rejected, uses SERVER_NAME' => array(
+				array('HTTP_HOST' => 'localhost:zz', 'SERVER_NAME' => 'safe.example.com'),
+				'safe.example.com', 'non-numeric port rejected, uses SERVER_NAME'),
+			'both sources unusable, empty string' => array(
+				array('HTTP_HOST' => 'bad/host', 'SERVER_NAME' => ''),
+				'', 'both sources unusable, empty string'),
+			'empty server array, empty string' => array(
+				array(),
+				'', 'empty server array, empty string'),
+		);
 	}
 
 	public function trustedHostListProvider()
