@@ -269,7 +269,7 @@ class media_cat_ui extends e_admin_ui
 
 	public function createPage()
 	{
-		if(!count($this->fields['media_cat_owner']['writeParms'])) 
+		if(empty($this->fields['media_cat_owner']['writeParms']))
 		{
 			e107::getMessage()->addInfo('Category creation not available.');
 			return null;
