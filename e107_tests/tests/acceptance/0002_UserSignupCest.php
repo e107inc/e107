@@ -16,8 +16,8 @@ class UserSignupCest
 	{
 		// first login as admin ( to simulate without emails going out).
 		$I->amOnPage('/login.php');
-		$I->fillField('username', 'admin');
-		$I->fillField('userpass', 'admin');
+		$I->fillField('username', \Helper\AdminLogin::ADMIN_USER);
+		$I->fillField('userpass', \Helper\AdminLogin::ADMIN_PASS);
 
 		$I->click('userlogin');
 

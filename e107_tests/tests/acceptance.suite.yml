@@ -13,3 +13,4 @@ modules:
         - PhpBrowser:
             url: '%url%'
         - \Helper\Acceptance:
+        - \Helper\AdminLogin:

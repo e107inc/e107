@@ -110,7 +110,9 @@ if(THEME_LEGACY === true) // v1.x BC Fix for loading old templates.
 {
     $sc_style = array();
 	e107::getMessage()->addDebug( "Loading v1.x user template");
-	include(e107::coreTemplatePath('user')); //correct way to load a core template. (don't use 'include_once' in case it has already been loaded).
+	$_userTmpl = e107::coreTemplatePath('user');
+	e107::predefineLegacyLans($_userTmpl); // #5653: pre-define any missing legacy LAN_* before include.
+	include($_userTmpl); //correct way to load a core template. (don't use 'include_once' in case it has already been loaded).
     e107::scStyle($sc_style);
 }
 else // v2.x

@@ -49,7 +49,21 @@ class E107TestSuiteBootstrap
         {
             $app_path = codecept_root_dir() . "/$app_path";
         }
-        define('APP_PATH', realpath($app_path));
+        $original_app_path = realpath($app_path);
+
+        // Load PriorityCallbacks early so a GitPreparer worktree can register
+        // its deferred cleanup during snapshot().
+        include(codecept_root_dir() . "/lib/PriorityCallbacks.php");
+
+        // Ask the preparer where the app runs: in place, or in an isolated
+        // git worktree for deploy-based suites. The factory decides which.
+        require_once(codecept_root_dir() . "/lib/preparers/PreparerFactory.php");
+        $deployer = $params['deployer'] ?? 'local';
+        $preparer = PreparerFactory::createForPath($original_app_path, $deployer);
+        $effective_app_path = $preparer->getAppPath();
+
+        // APP_PATH points to the prepared tree; all later code uses it.
+        define('APP_PATH', $effective_app_path);
         define('PARAMS_SERIALIZED', serialize($params));
 
         $this->log("App Path: " . APP_PATH);
@@ -70,8 +84,6 @@ class E107TestSuiteBootstrap
         // Load test types
         $this->loadUnitTests();
         $this->loadAcceptanceTests();
-
-        include(codecept_root_dir() . "/lib/PriorityCallbacks.php");
 
         $this->log("e_PLUGIN after initialization: " . (defined('e_PLUGIN') ? e_PLUGIN : 'not defined'));
     }

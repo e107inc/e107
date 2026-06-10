@@ -187,17 +187,17 @@
         },
         {
             "name": "hybridauth/hybridauth",
-            "version": "v3.12.1",
-            "version_normalized": "3.12.1.0",
+            "version": "v3.13.0",
+            "version_normalized": "3.13.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/hybridauth/hybridauth.git",
-                "reference": "9449686baf2593739129a24e515a60908738ea8d"
+                "reference": "5f799ed5fd35e21f06cf42310f9f6ed3f7bbe7df"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hybridauth/hybridauth/zipball/9449686baf2593739129a24e515a60908738ea8d",
-                "reference": "9449686baf2593739129a24e515a60908738ea8d",
+                "url": "https://api.github.com/repos/hybridauth/hybridauth/zipball/5f799ed5fd35e21f06cf42310f9f6ed3f7bbe7df",
+                "reference": "5f799ed5fd35e21f06cf42310f9f6ed3f7bbe7df",
                 "shasum": ""
             },
             "require": {
@@ -211,7 +211,7 @@
                 "firebase/php-jwt": "Needed to support Apple provider",
                 "phpseclib/phpseclib": "Needed to support Apple provider"
             },
-            "time": "2025-04-22T05:22:57+00:00",
+            "time": "2026-04-02T19:11:26+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -246,7 +246,7 @@
             "support": {
                 "gitter": "https://gitter.im/hybridauth/hybridauth",
                 "issues": "https://github.com/hybridauth/hybridauth/issues",
-                "source": "https://github.com/hybridauth/hybridauth/tree/v3.12.1"
+                "source": "https://github.com/hybridauth/hybridauth/tree/v3.13.0"
             },
             "install-path": "../hybridauth/hybridauth"
         },
