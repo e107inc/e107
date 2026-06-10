@@ -745,7 +745,8 @@
 
 			if(!empty($parm))
 			{
-				return $this->keyIcon($parm);
+//				return $this->keyIcon($parm);
+				return e107::getParser()->parseTemplate($this->keyIcon($parm));
 			}
 
 

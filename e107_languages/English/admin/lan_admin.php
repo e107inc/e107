@@ -151,7 +151,6 @@ return [
     'ADLAN_LAT_9' => "Comments pending",
     'ADLAN_ERR_3' => "There are one or more files in your public upload directories that are not in your allowed upload filetypes list. These may have been placed here by an attacker and if so should be removed [b]immediately[/b]. You should [b]not[/b] open these files as this may execute any malicious code the file might contain; e.g. do not open them with your browser.
 If you recognise these files as being legitimate, it is likely that the filetype is no longer in the allowed filetypes list for some reason, and you will need to re-add it (see admin => uploads). You should not allow the upload of .html, .txt, etc as an attacker may upload a file of this type which includes malicious javascript. You should also, of course, not allow the upload of .php files or any other type of executable script.
-
 Below is the list of files that could potentially be malicious:",
     'LAN_CREATE' => "Create",
     'LAN_MANAGE' => "Manage",
@@ -437,3 +436,4 @@ Below is the list of files that could potentially be malicious:",
     'LAN_DATABASE_UPDATE' => "An update is available for your database. We recommend [running this update] as soon as possible to ensure that your database is secure and up-to-date.",
     'LAN_HISTORY' => "History",
 ];
+
