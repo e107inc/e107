@@ -1964,7 +1964,8 @@ class news_front
 
 
 
-				$this->ix->render_newsitem($news, 'default', '', $template, $param);
+				$tpl = ($i === 1 && !empty($tmpl['first']) && $this->from === 0) ? $tmpl['first'] : $template;
+				$this->ix->render_newsitem($news, 'default', '', $tpl, $param);
 
 
 				$i++;

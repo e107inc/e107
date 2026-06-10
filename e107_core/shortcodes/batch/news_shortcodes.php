@@ -890,6 +890,8 @@ class news_shortcodes extends e_shortcode
 		{
 			return '';
 		}
+
+		$parms = eHelper::scDualParams($parm);
 		
 		if(isset($newsThumb) && $vThumb = e107::getParser()->toVideo($newsThumb, array('thumb'=>'src')))
 		{
@@ -899,8 +901,7 @@ class news_shortcodes extends e_shortcode
 		}
 		else
 		{
-			$parms = eHelper::scDualParams($parm);
-			
+						
 			if(empty($parms[2])) // get {SETIMAGE} values when no parm provided. 
 			{
 				$parms[2] = array('aw' => $tp->thumbWidth(), 'ah'=> $tp->thumbHeight());

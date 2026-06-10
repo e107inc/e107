@@ -1,1 +1,8 @@
 blank_issues_enabled: false
+contact_links:
+  - name: Security Vulnerability
+    url: https://github.com/e107inc/e107/security/advisories/new
+    about: Report security vulnerabilities privately through GitHub Security Advisories.
+  - name: Question or Discussion
+    url: https://github.com/e107inc/e107/discussions
+    about: Ask questions, share ideas, or start a conversation in GitHub Discussions.
