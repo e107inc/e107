@@ -215,11 +215,175 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$this->assertFalse($result, $err);
 	}
 
+	public function testSelectBind()
+	{
+		$result = $this->db->select('user', 'user_id, user_name', 'user_id=:id OR user_name=:name ORDER BY user_name', array('id' => 999, 'name' => \Helper\AdminLogin::ADMIN_USER)); // bind support.
+		$this->assertEquals(1, $result);
+	}
+
+	public function testDb_QueryBind()
+	{
+		$query = array(
+			'PREPARE' => 'INSERT INTO ' . MPREFIX . 'tmp (`tmp_ip`,`tmp_time`,`tmp_info`) VALUES (:tmp_ip, :tmp_time, :tmp_info)',
+			'BIND' =>
+				array(
+					'tmp_ip' =>
+						array(
+							'value' => '127.0.0.1',
+							'type' => e_db::PARAM_STR,
+						),
+					'tmp_time' =>
+						array(
+							'value' => 12345435,
+							'type' => e_db::PARAM_INT,
+						),
+					'tmp_info' =>
+						array(
+							'value' => 'Insert test',
+							'type' => e_db::PARAM_STR,
+						),
+				),
+		);
+
+		$result = $this->db->db_Query($query, null, 'db_Insert');
+		$this->assertGreaterThan(0, $result);
+
+		$query = array(
+			'PREPARE' => 'SELECT * FROM ' . MPREFIX . 'user WHERE user_id=:user_id AND user_name=:user_name',
+			'EXECUTE' => array(
+				'user_id' => 1,
+				'user_name' => \Helper\AdminLogin::ADMIN_USER
+			)
+		);
+
+		$res = $this->db->db_Query($query, null, 'db_Select');
+		$this->assertNotFalse($res);
+		$result = $this->db->fetch();
+		$this->assertArrayHasKey('user_password', $result);
+	}
+
+	public function testDb_QueryBindLiteralColon()
+	{
+		// a colon inside a string literal must not be treated as a placeholder
+		$query = array(
+			'PREPARE' => "SELECT user_name FROM " . MPREFIX . "user WHERE user_name != 'not:a:param' AND user_id=:id",
+			'EXECUTE' => array('id' => 1),
+		);
+
+		$res = $this->db->db_Query($query, null, 'db_Select');
+		$this->assertNotFalse($res);
+		$row = $this->db->fetch();
+		$this->assertEquals(\Helper\AdminLogin::ADMIN_USER, $row['user_name']);
+	}
+
+	public function testDb_QueryBindRepeatedPlaceholder()
+	{
+		$query = array(
+			'PREPARE' => 'SELECT user_id FROM ' . MPREFIX . 'user WHERE user_id=:id OR user_id=:id',
+			'EXECUTE' => array('id' => 1),
+		);
+
+		$res = $this->db->db_Query($query, null, 'db_Select');
+		$this->assertNotFalse($res);
+		$row = $this->db->fetch();
+		$this->assertSame('1', $row['user_id']); // result values are stringified on both backends
+	}
+
+	public function testDb_QueryBindTypedNull()
+	{
+		$query = array(
+			'PREPARE' => 'SELECT :v IS NULL AS n',
+			'BIND' => array(
+				'v' => array('value' => 'ignored', 'type' => e_db::PARAM_NULL),
+			),
+		);
+
+		$res = $this->db->db_Query($query, null, 'db_Select');
+		$this->assertNotFalse($res);
+		$row = $this->db->fetch();
+		$this->assertSame('1', $row['n']);
+	}
+
+	public function testExecute()
+	{
+		// no params; `#table` marker resolved; '#' inside a string literal untouched
+		$count = $this->db->execute("SELECT user_name FROM `#user` WHERE user_name != 'no#user' AND user_id = 1");
+		$this->assertEquals(1, $count);
+		$row = $this->db->fetch();
+		$this->assertEquals(\Helper\AdminLogin::ADMIN_USER, $row['user_name']);
+
+		// bound params
+		$count = $this->db->execute('SELECT user_name FROM `#user` WHERE user_id = :id', array('id' => 1));
+		$this->assertEquals(1, $count);
+		$row = $this->db->fetch();
+		$this->assertEquals(\Helper\AdminLogin::ADMIN_USER, $row['user_name']);
+
+		// bare #table marker
+		$count = $this->db->execute('SELECT user_name FROM #user WHERE user_id = :id', array('id' => 1));
+		$this->assertEquals(1, $count);
+
+		// write path returns affected rows
+		$affected = $this->db->execute('INSERT INTO `#tmp` (tmp_ip, tmp_time, tmp_info) VALUES (:ip, :time, :info)',
+			array('ip' => '127.0.0.1', 'time' => 12345, 'info' => 'execute() test'));
+		$this->assertEquals(1, $affected);
+
+		// explicitly typed parameter
+		$affected = $this->db->execute('DELETE FROM `#tmp` WHERE tmp_info = :info',
+			array('info' => array('value' => 'execute() test', 'type' => e_db::PARAM_STR)));
+		$this->assertGreaterThan(0, $affected);
+
+		// an UPDATE matching no rows returns 0, not false
+		$result = $this->db->execute('UPDATE `#tmp` SET tmp_info = :v WHERE tmp_ip = :ip',
+			array('v' => 'x', 'ip' => 'no.such.ip'));
+		$this->assertSame(0, $result);
+
+		// errors return false
+		$result = $this->db->execute('SELECT * FROM `#doesnt_exist_table`');
+		$this->assertFalse($result);
+	}
+
+	public function testResolveTableName()
+	{
+		$this->assertEquals(MPREFIX.'user', $this->db->resolveTableName('user'));
+		$this->assertEquals(MPREFIX.'user', $this->db->resolveTableName('#user'));
+		$this->assertFalse($this->db->resolveTableName('bad-name'));
+		$this->assertFalse($this->db->resolveTableName('user; DROP TABLE x'));
+	}
+
+	public function testQuoteIdentifier()
+	{
+		$this->assertEquals('`user_name`', $this->db->quoteIdentifier('user_name'));
+		$this->assertEquals('`u`.`user_name`', $this->db->quoteIdentifier('u.user_name'));
+		$this->assertFalse($this->db->quoteIdentifier('user_name; --'));
+		$this->assertFalse($this->db->quoteIdentifier('a`b'));
+	}
+
+	public function testEscapeDeprecationNoticeOncePerCallSite()
+	{
+		$caught = array();
+		set_error_handler(function ($errno, $errstr) use (&$caught)
+		{
+			$caught[] = $errstr;
+			return true;
+		}, E_USER_DEPRECATED);
+
+		for($i = 0; $i < 2; $i++)
+		{
+			$this->db->escape("x"); // one call site, called twice: one notice
+		}
+		$this->db->escape("y"); // a second call site: one more notice
+
+		restore_error_handler();
+
+		$this->assertCount(2, $caught);
+		$this->assertStringContainsString('escape() is deprecated', $caught[0]);
+	}
+
 
 	public function testRetrieve()
 	{
 		// 'single' field value mode.
-		$expected = 'e107';
+		$expected = \Helper\AdminLogin::ADMIN_USER;
 		$result = $this->db->retrieve('user', 'user_name', 'user_id = 1');
 		$this->assertEquals($expected,$result);
 
@@ -227,7 +391,7 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$this->assertEquals($expected,$result);
 
 		// 'one' row mode.
-		$expected = array ('user_id' => '1', 'user_name' => 'e107',	);
+		$expected = array ('user_id' => '1', 'user_name' => \Helper\AdminLogin::ADMIN_USER,	);
 		$result = $this->db->retrieve('user', 'user_id, user_name', 'user_id = 1');
 		$this->assertEquals($expected,$result);
 
@@ -250,7 +414,7 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$this->assertEquals($expected,$result);
 
 		// 'multi' row mode.
-		$expected = array ( 0 =>  array (   'user_id' => '1', 'user_name' => 'e107', ),);
+		$expected = array ( 0 =>  array (   'user_id' => '1', 'user_name' => \Helper\AdminLogin::ADMIN_USER, ),);
 		$result = $this->db->retrieve('user', 'user_id, user_name', 'user_id = 1', true);
 		$this->assertEquals($expected,$result);
 
@@ -614,7 +778,7 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 
 		$this->db->select('user', '*', 'user_id = 1');
 		$row = $this->db->db_Fetch();
-		$this->assertEquals("e107", $row['user_name']);
+		$this->assertEquals(\Helper\AdminLogin::ADMIN_USER, $row['user_name']);
 		$this->assertFalse(isset($row[0]), "MYSQL_NUM keys not expected");
 		$this->assertFalse(isset($row[1]), "MYSQL_NUM keys not expected");
 
@@ -631,8 +795,8 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 
 		$this->db->select('user', '*', 'user_id = 1');
 		$row = $this->db->db_Fetch(MYSQL_BOTH);
-		$this->assertEquals("e107", $row['user_name']);
-		$this->assertEquals("e107", $row[1]);
+		$this->assertEquals(\Helper\AdminLogin::ADMIN_USER, $row['user_name']);
+		$this->assertEquals(\Helper\AdminLogin::ADMIN_USER, $row[1]);
 
 	}
 
@@ -834,7 +998,7 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$this->assertEquals(123,$result);
 
 		$result = $this->db->escape("Can't", true);
-		$this->assertEquals("Can't", $result);
+		$this->assertEquals("Can\'t", $result);
 	}
 
 	public function testDb_Table_exists()
