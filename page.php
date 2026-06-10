@@ -896,6 +896,13 @@ class pageClass
 		{
 			case 'class':
 				$extend->text = LAN_PAGE_6;
+				if(!e107::getUser()->isUser())
+				{
+					// Remember this page so the visitor returns here after logging in, and offer a way in.
+					e107::getRedirect()->setLoginDestination();
+					$loginLink = $tp->toAttributes(array('class' => 'e-login-here', 'href' => e_LOGIN), true);
+					$extend->text .= " <a".$loginLink.">".LAN_PAGE_18."</a>";
+				}
 				$template = $tp->parseTemplate($this->template['start'], true).$this->template['restricted'].$tp->parseTemplate($this->template['end'] ,true);
                 $this->renderMode = 'cpage-restricted';
 			break;
