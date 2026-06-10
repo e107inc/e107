@@ -176,7 +176,7 @@ class social_setup
 		$logger = e107::getMessage();
 		$status = $db->update(
 			'user',
-			"user_xup = '" . $db->escape($new_user_xup) . "' WHERE user_id = " . $db->escape($user_id)
+			"user_xup = '" . $db->escape($new_user_xup) . "' WHERE user_id = " . (int) $user_id
 		);
 		if ($status !== 1)
 		{

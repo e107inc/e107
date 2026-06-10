@@ -36,7 +36,7 @@ if(!function_exists('pm_show_popup'))
     function pm_show_popup($pm_inbox, $alertdelay = 0)
     {
         if($alertdelay == 0) { $alertdelay = 60; }
-        setcookie('pm-alert', 'ON', time()+$alertdelay);
+        eShims::setcookie('pm-alert', 'ON', time()+$alertdelay);
         $popuptext = "
 	<html>
 		<head>

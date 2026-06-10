@@ -1,0 +1,63 @@
+name: WebDriver Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test-webdriver:
+    strategy:
+      fail-fast: false
+      matrix:
+        # One job for now. Add entries to fan out: each dimension is just a tag
+        # the compose stack already parameterises (E107_PHP_VERSION /
+        # E107_DB_IMAGE / E107_SELENIUM_IMAGE), so a matrix of PHP, database,
+        # and Chromium versions is a matter of listing them here.
+        include:
+          - php-version: '8.5'
+            db-image: 'mariadb:10.11'
+            selenium-image: 'docker.io/selenium/standalone-chrome:latest'
+
+    runs-on: ubuntu-latest
+
+    env:
+      E107_SELENIUM_IMAGE: ${{ matrix.selenium-image }}
+
+    steps:
+      - uses: actions/checkout@v6
+
+      # The web image (PHP + Apache + e107's extensions) is the only slow thing
+      # to build, so cache it keyed on the files that define it. On a hit the tar
+      # is loaded and `up` reuses it; only a Dockerfile/PHP change rebuilds.
+      - name: Restore web image cache
+        id: cache-web
+        uses: actions/cache@v5
+        with:
+          path: /tmp/e107-web-image.tar
+          key: webdriver-web-${{ matrix.php-version }}-${{ hashFiles('e107_tests/docker/Dockerfile', 'e107_tests/docker/apache-vhost.conf', 'e107_tests/docker/php-overrides.ini', 'e107_tests/docker/entrypoint.sh') }}
+
+      - name: Load cached web image
+        if: steps.cache-web.outputs.cache-hit == 'true'
+        run: docker load -i /tmp/e107-web-image.tar
+
+      - name: Bring up the stack
+        run: e107_tests/bin/e107-tests up --php '${{ matrix.php-version }}' --db '${{ matrix.db-image }}'
+
+      - name: Save web image for caching
+        if: steps.cache-web.outputs.cache-hit != 'true'
+        run: docker save "e107-web:${{ matrix.php-version }}" -o /tmp/e107-web-image.tar
+
+      - name: Run WebDriver tests
+        run: e107_tests/bin/e107-tests run webdriver
+
+      - name: Upload Codeception output on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: webdriver-output-${{ matrix.php-version }}
+          path: e107_tests/tests/_output/
+          if-no-files-found: ignore
+
+      - name: Container logs on failure
+        if: failure()
+        run: timeout 20 e107_tests/bin/e107-tests logs || true
