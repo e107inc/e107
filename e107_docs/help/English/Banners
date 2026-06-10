@@ -1,18 +1,34 @@
+H1> Working with banners
 
-Q>	I defined a new banner from the admin area but it's not showing up - why?
-A>	The theme you're using needs to know to display a banner. Open the theme.php of the theme and make sure you have {BANNER} or {BANNER=yourcampaignname} in the $HEADER section.
+P> The Banners admin lets you run multiple advertising or promotional [b]campaigns[/b] in parallel and place them anywhere in your theme.
 
-Q>	I want to one set of banners in one area and a different set in another area - how?
-A>	You can group your banners under 'campaigns', and then set up your theme to show banners from certain campaigns. For example, if you had two campaigns, called cam_1 and cam_2, putting {BANNER=cam1} in one area of your $HEADER section in the theme.php will show only cam_1 banners, and putting {BANNER=cam_2} in another area will only show cam_2 banners. Putting {BANNER} (no campaign name) in your theme.php will show random banners from all campaigns.
+SHOT> banners/banner-admin.png | Banner manager listing active campaigns
 
-Q>	What's the client login and client password for?
-A>	You can define a login and password for your banner clients, they can then use these to access information about how their banners are performing by going to http://yoursite.com/banner.php and entering the name and pass.
+H1> Common questions
 
-Q>	How can I have a 'tower' type banner in a menu item?
-A>	First you need to define the campaign for the tower type banners (this will keep them separate from bar type banners) ...
-	1. Go to your admin area and click on banners.
-	2. Enter your tower-type banner(s), make sure you use a new campaign name, for example 'towers'.
-	3. Now go to your Menus area, and activate the Banner_menu into one of your menu areas.
-	4. Click on the 'Configure' link in the menu item.
-	5. Enter the caption title (by default it's 'Advertisement'), and enter the campaign name you defined before.
-	6. Leave your admin area and you'll see your tower-type banner(s) in the area you assigned them to.
+Q> I defined a new banner from the admin area but it's not showing up – why?
+A> Your theme has to be told to display a banner. Open the theme's `theme.php` and make sure you have `{BANNER}` or `{BANNER=yourcampaignname}` in the `$HEADER` section.
+
+Q> I want one set of banners in one area and a different set in another area – how?
+A> Group your banners under [b]campaigns[/b] and reference each campaign from the theme:
+
+STEP> Create campaign `cam_1` and add its banners.
+STEP> Create campaign `cam_2` and add its banners.
+STEP> In `theme.php`, place `{BANNER=cam_1}` where you want the first set.
+STEP> Place `{BANNER=cam_2}` where you want the second set.
+STEP> Use a bare `{BANNER}` to mix banners from every campaign at random.
+
+Q> What's the client login and client password for?
+A> You can define a login and password for each banner client. They use them to access reports about how their banners are performing by visiting `http://yoursite.com/banner.php` and entering their credentials.
+
+H1> Tower banners inside a menu item
+
+P> Tower (vertical) banners look out of place in a header bar. The cleanest way to display them is through the dedicated Banner menu.
+
+STEP> Open [b]Admin → Banners[/b] and add your tower banners to a new campaign, e.g. `towers`.
+STEP> Open [b]Admin → Menus[/b] and activate [b]Banner_menu[/b] in the column where you want the towers.
+STEP> Click [b]Configure[/b] on the menu item.
+STEP> Set the caption (default is "Advertisement") and enter the campaign name `towers`.
+STEP> Save and visit the front page – the tower banners are now in the chosen column.
+
+SHOT> banners/banner-manager-listing.png | Banner_menu configuration panel
