@@ -1670,7 +1670,10 @@ class system_tools
 		{
 			$plg->load($folder);
 			$plgClass->plugFolder = $folder;
-			$plgClass->XmlLanguageFiles('refresh');
+			// buildAddonPrefLists() above already rebuilt lan_global_list from installed plugins only.
+			// Refresh would re-add an uninstalled plugin (file-existence only, no install check), undoing
+			// that cleanup; uninstall removes its stale entry instead. https://github.com/e107inc/e107/issues/5709
+			$plgClass->XmlLanguageFiles($plg->isInstalled() ? 'refresh' : 'uninstall');
 
 			$name   = $plg->getName();
 			$addons = $plg->getAddons();

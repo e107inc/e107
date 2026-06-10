@@ -15,6 +15,15 @@ require_once("class2.php");
 
 if ((USER || e_LOGIN != e_SELF || (empty($pref['user_reg']) && !e107::getUserProvider()->isSocialLoginEnabled())) && e_QUERY !== 'preview' && !getperms('0') ) // Disable page if user logged in, or some custom e_LOGIN value is used.
 {
+	$dest = e107::getRedirect()->getLoginDestination();
+
+	if(!empty($dest))
+	{
+		e107::getRedirect()->clearLoginDestination();
+		e107::redirect($dest);
+		exit();
+	}
+
 	$prev = e107::getRedirect()->getPreviousUrl();
 
 	if(!empty($prev))
@@ -29,7 +38,8 @@ if ((USER || e_LOGIN != e_SELF || (empty($pref['user_reg']) && !e107::getUserPro
 
 e107::coreLan('login');
 
-if(!defined('e_IFRAME')) define('e_IFRAME',true);
+$loginTpl = e107::getCoreTemplate('login'); // fetched here (and re-fetched/cached at L64) so a theme can opt out of bare/iframe render
+if(!defined('e_IFRAME')) define('e_IFRAME', empty($loginTpl['page']['noiframe'])); // default true (bare) unchanged; set $LOGIN_TEMPLATE['page']['noiframe']=true in a theme override to render with full theme
 require_once(HEADERF);
 $use_imagecode = ($pref['logcode'] && extension_loaded("gd"));
 

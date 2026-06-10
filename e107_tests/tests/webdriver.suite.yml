@@ -1,0 +1,40 @@
+# WebDriver suite: drives a real browser against the running e107 admin UI, for
+# the JavaScript flows the PhpBrowser acceptance suite cannot exercise.
+# Parameters resolve through e107_tests/lib/config.php (see codeception.yml).
+actor: WebDriverTester
+shuffle: false
+coverage:
+    enabled: false
+modules:
+    enabled:
+        - WebDriver:
+            # The shared app URL, so this suite hits the same HTTP interface as
+            # acceptance. It must be browser-reachable (e.g. http://web/), never
+            # localhost: the browser runs in the selenium container, where
+            # localhost is the browser itself.
+            url: '%url%'
+            browser: chrome
+            host: '%selenium.host%'
+            port: '%selenium.port%'
+            path: '%selenium.path%'
+            window_size: 1366x900
+            capabilities:
+                goog:chromeOptions:
+                    args:
+                        - '--no-sandbox'
+                        - '--disable-dev-shm-usage'
+        - \Helper\DelayedDb:
+            dsn: 'mysql:host=%db.host%;port=%db.port%;dbname=%db.dbname%'
+            user: '%db.user%'
+            password: '%db.password%'
+            populate: '%db.populate%'
+            dump: '%db.dump_path%'
+        - \Helper\AdminLogin
+        # Writes e107_config.php from the dump's DB params so the served app is
+        # installed (Acceptance's variant no-ops the write and installs instead).
+        - \Helper\Webdriver
+        # After DelayedDb: the dump load leaves e107's pref cache stale.
+        - \Helper\PrefCacheReset
+        # After PrefCacheReset: starts each test logged out.
+        - \Helper\WebDriverSession
+step_decorators: ~
