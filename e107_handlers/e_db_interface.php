@@ -245,6 +245,35 @@
 
 
 		/**
+		 * Create a fluent query builder bound to this connection. The builder
+		 * compiles to SQL with bound :named placeholders and runs through
+		 * {@see e_db::execute()}; table names are logical (no '#' marker, no
+		 * database prefix) and resolve through {@see e_db::resolveTableName()}.
+		 *
+		 * <code>
+		 * $rows = e107::getDb()->createQueryBuilder()
+		 *     ->select('user_id', 'user_name')
+		 *     ->from('user')
+		 *     ->whereIn('user_class', array(1, 2))
+		 *     ->orderBy('user_name', 'ASC')
+		 *     ->fetchAll();
+		 * </code>
+		 *
+		 * @return e_db_query
+		 */
+		public function createQueryBuilder();
+
+
+		/**
+		 * SQL dialect of this connection, consulted by the query builder for
+		 * dialect-specific SQL such as LIMIT clauses.
+		 *
+		 * @return e_db_platform
+		 */
+		public function getPlatform();
+
+
+		/**
 		 * Return a list of the field names in a table.
 		 *
 		 * @param string $table - table name (no prefix)

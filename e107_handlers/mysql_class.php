@@ -129,6 +129,9 @@ class e_db_mysql implements e_db
 
 	protected	$dbFieldDefs = array();		// Local cache - Field type definitions for _FIELD_DEFS and _NOTNULL arrays
 	public      $mySQLcharset;
+
+	/** @var e_db_platform|null lazily created SQL dialect object */
+	private     $platform = null;
 	public	    $mySqlServerInfo = '?';			// Server info - needed for various things
 
 	public      $total_results = false;			// Total number of results
@@ -1643,6 +1646,42 @@ class e_db_mysql implements e_db
 		}
 
 		return e_db_filter::identifier($identifier);
+	}
+
+	/**
+	 * Create a fluent query builder bound to this connection; the full
+	 * contract is documented at {@see e_db::createQueryBuilder()}.
+	 *
+	 * @return e_db_query
+	 */
+	public function createQueryBuilder()
+	{
+		if(!class_exists('e_db_query'))
+		{
+			require_once(__DIR__.'/e_db_query_class.php');
+		}
+
+		return new e_db_query($this);
+	}
+
+	/**
+	 * SQL dialect of this connection, consulted by the query builder.
+	 *
+	 * @return e_db_platform
+	 */
+	public function getPlatform()
+	{
+		if($this->platform === null)
+		{
+			if(!class_exists('e_db_platform_mysql'))
+			{
+				require_once(__DIR__.'/e_db_platform_class.php');
+			}
+
+			$this->platform = new e_db_platform_mysql();
+		}
+
+		return $this->platform;
 	}
 
 	/**

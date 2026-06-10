@@ -358,6 +358,168 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$this->assertFalse($this->db->quoteIdentifier('a`b'));
 	}
 
+	public function testCreateQueryBuilder()
+	{
+		$qb = $this->db->createQueryBuilder();
+
+		$this->assertInstanceOf('e_db_query', $qb);
+		$this->assertInstanceOf('e_db_expr', $qb->expr());
+		$this->assertInstanceOf('e_db_platform_mysql', $this->db->getPlatform());
+		$this->assertSame($this->db->getPlatform(), $qb->getPlatform());
+	}
+
+	public function testQueryBuilderRoundTrip()
+	{
+		$db = $this->db;
+
+		// INSERT through the builder; every value is bound
+		$rows = array(
+			array('tmp_ip' => 'qb.test.1', 'tmp_time' => 1001, 'tmp_info' => 'alpha 50% off'),
+			array('tmp_ip' => 'qb.test.2', 'tmp_time' => 1002, 'tmp_info' => 'beta'),
+			array('tmp_ip' => 'qb.test.3', 'tmp_time' => 1003, 'tmp_info' => 'gamma'),
+		);
+
+		foreach($rows as $row)
+		{
+			$affected = $db->createQueryBuilder()->insert('tmp')->values($row)->execute();
+			$this->assertSame(1, $affected);
+		}
+
+		// fetchAll() with expression, ORDER BY and LIMIT
+		$qb = $db->createQueryBuilder();
+		$found = $qb->select('tmp_ip', 'tmp_time')
+			->from('tmp')
+			->where($qb->expr()->startsWith('tmp_ip', 'qb.test.'))
+			->orderBy('tmp_time', 'DESC')
+			->setMaxResults(2)
+			->fetchAll();
+
+		$this->assertCount(2, $found);
+		$this->assertSame('qb.test.3', $found[0]['tmp_ip']);
+		$this->assertSame('qb.test.2', $found[1]['tmp_ip']);
+
+		// fetchAll($indexBy)
+		$qb = $db->createQueryBuilder();
+		$indexed = $qb->select()
+			->from('tmp')
+			->where($qb->expr()->startsWith('tmp_ip', 'qb.test.'))
+			->fetchAll('tmp_ip');
+
+		$this->assertArrayHasKey('qb.test.2', $indexed);
+		$this->assertSame('beta', $indexed['qb.test.2']['tmp_info']);
+
+		// whereIn() + fetchColumn()
+		$qb = $db->createQueryBuilder();
+		$ips = $qb->select('tmp_ip')
+			->from('tmp')
+			->whereIn('tmp_time', array(1001, 1003))
+			->orderBy('tmp_time', 'ASC')
+			->fetchColumn();
+
+		$this->assertSame(array('qb.test.1', 'qb.test.3'), $ips);
+
+		// fetchPairs(); both backends stringify row values identically
+		$qb = $db->createQueryBuilder();
+		$pairs = $qb->select('tmp_ip', 'tmp_time')
+			->from('tmp')
+			->where($qb->expr()->startsWith('tmp_ip', 'qb.test.'))
+			->orderBy('tmp_time', 'ASC')
+			->fetchPairs();
+
+		$this->assertSame(array('qb.test.1' => '1001', 'qb.test.2' => '1002', 'qb.test.3' => '1003'), $pairs);
+
+		// contains() escapes LIKE wildcards: a literal '%' in the needle
+		$qb = $db->createQueryBuilder();
+		$found = $qb->select('tmp_ip')
+			->from('tmp')
+			->where($qb->expr()->contains('tmp_info', '50%'))
+			->fetchAll();
+
+		$this->assertCount(1, $found);
+		$this->assertSame('qb.test.1', $found[0]['tmp_ip']);
+
+		// ... and '_' matches only a literal underscore, not "any character"
+		$qb = $db->createQueryBuilder();
+		$found = $qb->select('tmp_ip')
+			->from('tmp')
+			->where($qb->expr()->contains('tmp_info', '5_'))
+			->fetchAll();
+
+		$this->assertCount(0, $found);
+
+		// fetchOne() / fetchRow()
+		$qb = $db->createQueryBuilder();
+		$value = $qb->select('tmp_info')
+			->from('tmp')
+			->where($qb->expr()->eq('tmp_ip', 'qb.test.2'))
+			->fetchOne();
+
+		$this->assertSame('beta', $value);
+
+		$qb = $db->createQueryBuilder();
+		$row = $qb->select()
+			->from('tmp')
+			->where($qb->expr()->eq('tmp_ip', 'qb.no.such.row'))
+			->fetchRow();
+
+		$this->assertSame(array(), $row);
+
+		$qb = $db->createQueryBuilder();
+		$none = $qb->select('tmp_info')
+			->from('tmp')
+			->where($qb->expr()->eq('tmp_ip', 'qb.no.such.row'))
+			->fetchOne();
+
+		$this->assertNull($none);
+
+		// UPDATE through the builder
+		$qb = $db->createQueryBuilder();
+		$affected = $qb->update('tmp')
+			->set('tmp_info', 'updated')
+			->where($qb->expr()->eq('tmp_ip', 'qb.test.2'))
+			->execute();
+
+		$this->assertSame(1, $affected);
+
+		$qb = $db->createQueryBuilder();
+		$this->assertSame('updated', $qb->select('tmp_info')
+			->from('tmp')
+			->where($qb->expr()->eq('tmp_ip', 'qb.test.2'))
+			->fetchOne());
+
+		// DELETE through the builder cleans up
+		$qb = $db->createQueryBuilder();
+		$affected = $qb->delete('tmp')
+			->where($qb->expr()->startsWith('tmp_ip', 'qb.test.'))
+			->execute();
+
+		$this->assertSame(3, $affected);
+	}
+
+	public function testQueryBuilderRejectsHostileInput()
+	{
+		try
+		{
+			$this->db->createQueryBuilder()->select()->from('tmp')
+				->orderBy('tmp_time; DROP TABLE `'.MPREFIX.'tmp`');
+			$this->fail('Expected InvalidArgumentException was not thrown');
+		}
+		catch(InvalidArgumentException $e)
+		{
+			$this->assertStringContainsString('ORDER BY', $e->getMessage());
+		}
+
+		try
+		{
+			$this->db->createQueryBuilder()->select()->from('tmp; DROP TABLE x')->getSQL();
+			$this->fail('Expected InvalidArgumentException was not thrown');
+		}
+		catch(InvalidArgumentException $e)
+		{
+			$this->assertStringContainsString('table name', $e->getMessage());
+		}
+	}
+
 	public function testEscapeDeprecationNoticeOncePerCallSite()
 	{
 		$caught = array();
