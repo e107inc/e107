@@ -47,8 +47,8 @@
 					'_expected_'    => false
 				),
 				1 => array(
-					'username'      => 'e107',
-					'userpass'      => 'e107',
+					'username'      => \Helper\AdminLogin::ADMIN_USER,
+					'userpass'      => \Helper\AdminLogin::ADMIN_PASS,
 					'autologin'     => 0,
 					'noredirect'    => true,
 					'response'      => '',

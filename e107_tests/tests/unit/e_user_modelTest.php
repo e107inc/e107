@@ -158,7 +158,7 @@
 		public function testGetName()
 		{
 			$result = $this->usr->getName();
-			$this->assertEquals('e107', $result);
+			$this->assertEquals(\Helper\AdminLogin::ADMIN_USER, $result);
 		}
 /*
 		public function testGetAdminPerms()
@@ -383,7 +383,7 @@
 		public function testUserLoginWrongCredentialsNotUser()
 		{
 			$user = e107::getUser();
-			$user->login("e107", "DefinitelyTheWrongPassword");
+			$user->login(\Helper\AdminLogin::ADMIN_USER, "DefinitelyTheWrongPassword");
 
 			$this->assertFalse($user->isUser());
 			$this->assertEmpty($user->getData());
@@ -399,7 +399,7 @@
 			try
 			{
 				$user = e107::getUser();
-				$user->login("e107", "DefinitelyTheWrongPassword");
+				$user->login(\Helper\AdminLogin::ADMIN_USER, "DefinitelyTheWrongPassword");
 
 				e107::getEvent();
 			}
