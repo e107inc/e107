@@ -522,25 +522,6 @@ if(!isset($_E107['no_session']) && !isset($_E107['no_lan']))
 
 	$dbg->logTime('Set User Language Session');
 	e107::getLanguage()->set();  // set e_LANGUAGE, USERLAN, Language Session / Cookies etc. requires $pref;
-
-	if(deftrue('e_ADMIN_AREA') && ($id = e107::getSession()->get('emulate')))
-	{
-	    if(!empty($_POST['stopEmulation']))
-	    {
-	        e107::getSession()->clear('emulate');
-	        e107::getMessage()->addSuccess("Admin access emulation mode has been stopped.");
-	    }
-	    else
-	    {
-	        $emulatedUser = e107::user($id);
-	        define('USERCLASS_LIST', $emulatedUser['user_class']);
-	        define('ADMINPERMS', $emulatedUser['user_perms']);
-	        // define('USERID', $emulatedUser['user_id']); // Don't emulate user id. It will mess with logs.
-	        define('USERNAME', $emulatedUser['user_name']);
-	    }
-
-	    unset($id);
-	}
 }
 else
 {
@@ -1633,10 +1614,7 @@ function init_session()
 	define('ADMIN', $user->isAdmin());
 	define('ADMINID', $user->getAdminId());
 	define('ADMINNAME', $user->getAdminName());
-	if(!defined('ADMINPERMS'))
-	{
-		define('ADMINPERMS', $user->getAdminPerms());
-	}
+	define('ADMINPERMS', $user->getAdminPerms());
 	define('ADMINEMAIL', $user->getAdminEmail());
 	define('ADMINPWCHANGE', $user->getAdminPwchange());
 
@@ -1660,16 +1638,8 @@ function init_session()
 	else
 	{
 		// we shouldn't use getValue() here, it's there for e.g. shortcodes, profile page render etc.
-		if(!defined('USERID'))
-		{
-			define('USERID', $user->getId());
-		}
-
-		if(!defined('USERNAME'))
-		{
-			define('USERNAME', $user->get('user_name'));
-		}
-
+		define('USERID', $user->getId());
+		define('USERNAME', $user->get('user_name'));
 		define('USERURL', $user->get('user_homepage', false)); //required for BC
 		define('USEREMAIL', $user->get('user_email'));
 		define('USER', true);
@@ -1745,10 +1715,7 @@ function init_session()
 	}
 
 	e107::getDebug()->logTime('[init_session: getClassList]');
-	if(!defined('USERCLASS_LIST'))
-	{
-		define('USERCLASS_LIST', $user->getClassList(true));
-	}
+	define('USERCLASS_LIST', $user->getClassList(true));
 	define('e_CLASS_REGEXP', $user->getClassRegex());
 	define('e_NOBODY_REGEXP', '(^|,)'.e_UC_NOBODY.'(,|$)');
 

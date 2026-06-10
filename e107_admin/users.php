@@ -22,8 +22,16 @@ if (!defined('e107_INIT'))
 
 if (!getperms('4|U0|U1|U2|U3'))
 {
-	e107::redirect('admin');
-	exit;
+	// Permission-emulation escape hatch (#5745): the real main admin must
+	// always be able to reach the emulation-stop route, even when the
+	// emulated permissions deny access to this page. getEmulatedUser() is
+	// non-null only if this request's re-verification confirmed the real
+	// user is a main admin.
+	if(varset($_GET['action']) !== 'emulatestop' || null === e107::getUser()->getEmulatedUser())
+	{
+		e107::redirect('admin');
+		exit;
+	}
 }
 
 e107::coreLan('user');
@@ -886,24 +894,86 @@ class users_admin_ui extends e_admin_ui
 
 
 	/**
-	 * Allows the emulation of a user ID if the current user has sufficient permissions and a user ID is provided.
-	 * If the conditions are met, a message with the emulated User ID is displayed, and the session is updated to emulate the specified user ID.
+	 * Start admin permission emulation of the posted user id (#5745).
+	 * POST + e-token are enforced (see the top of this file and the session
+	 * check in class2.php). The user model applies all rules: the real user
+	 * must be a main admin and the target must exist, must not be the
+	 * current user and must not be a main admin.
 	 *
 	 * @return void
 	 */
 	public function emulatePage()
 	{
+		$user = e107::getUser();
+		$mes = e107::getMessage();
+		$uid = !empty($_POST['userid']) ? (int) $_POST['userid'] : 0;
 
-		if(getperms('0') && !empty($_POST['userid']))
+		if($uid && $user->emulateAs($uid))
 		{
-			$uid = (int) $_POST['userid'];
-			e107::getSession()->set('emulate',$uid);
-			$user = e107::user($uid);
-			e107::getMessage()->addSuccess("Emulation of <strong>".$user['user_name']."</strong> activated.", 'default', true);;
+			$target = $user->getEmulatedUser();
+
+			// TODO - lan
+			$mes->addSuccess('Now emulating the permissions of <strong>'.$target->getName().'</strong>. Your identity is unchanged.', 'default', true);
+
+			$search = array('--UID--', '--NAME--', '--EMAIL--', '--ADMIN_UID--', '--ADMIN_NAME--', '--ADMIN_EMAIL--');
+			$replace = array($target->getId(), $target->getName(), $target->get('user_email'), $user->getId(), $user->getName(), $user->get('user_email'));
+
+			// TODO - lan
+			$lan = 'Administrator --ADMIN_EMAIL-- (#--ADMIN_UID--, --ADMIN_NAME--) started emulating the permissions of user --EMAIL-- (#--UID--, --NAME--)';
+
+			e107::getLog()->add('USET_102', str_replace($search, $replace, $lan), E_LOG_INFORMATIVE);
+
+			$eventData = array('user_id' => $target->getId(), 'admin_id' => $user->getId());
+			e107::getEvent()->trigger('admin_user_emulate', $eventData);
+		}
+		elseif($uid)
+		{
+			$mes->addError(LAN_NO_PERMISSIONS, 'default', true);
 		}
 
 		$this->redirect('list', 'main', true);
+	}
 
+	/**
+	 * Stop admin permission emulation (#5745). POST only; e-token is
+	 * enforced like every other admin POST. getEmulatedUser() is non-null
+	 * only if this request's loadEmulation() re-verification confirmed the
+	 * real user is a main admin.
+	 */
+	public function EmulatestopObserver()
+	{
+		$user = e107::getUser();
+		$target = $user->getEmulatedUser();
+
+		if($_SERVER['REQUEST_METHOD'] !== 'POST' || null === $target)
+		{
+			$this->redirect('list', 'main', true);
+			return;
+		}
+
+		if($user->stopEmulation())
+		{
+			// TODO - lan
+			e107::getMessage()->addSuccess('Stopped emulating the permissions of <strong>'.$target->getName().'</strong>.', 'default', true);
+
+			$search = array('--UID--', '--NAME--', '--EMAIL--', '--ADMIN_UID--', '--ADMIN_NAME--', '--ADMIN_EMAIL--');
+			$replace = array($target->getId(), $target->getName(), $target->get('user_email'), $user->getId(), $user->getName(), $user->get('user_email'));
+
+			// TODO - lan
+			$lan = 'Administrator --ADMIN_EMAIL-- (#--ADMIN_UID--, --ADMIN_NAME--) stopped emulating the permissions of user --EMAIL-- (#--UID--, --NAME--)';
+
+			e107::getLog()->add('USET_103', str_replace($search, $replace, $lan), E_LOG_INFORMATIVE);
+
+			$eventData = array('user_id' => $target->getId(), 'admin_id' => $user->getId());
+			e107::getEvent()->trigger('admin_user_emulate_stop', $eventData);
+		}
+
+		$this->redirect('list', 'main', true);
+	}
+
+	public function EmulatestopPage()
+	{
+		// Work done in EmulatestopObserver(); required so _preDispatch() keeps the action.
 	}
 
 	public function copypermsPage()
@@ -2877,7 +2947,10 @@ class users_admin_form_ui extends e_admin_form_ui
 
 					if(getperms('0'))
 					{
-						$opts['emulate'] = 'Emulate permissions';
+						// To offer emulation of non-admin users too, also add
+						// $opts['emulate'] in the !$user_admin branch above and
+						// remove the isAdmin() check in e_user::_getEmulationTarget().
+						$opts['emulate'] = e107::getParser()->lanVars(USRLAN_EMU_1, $row['user_name']);
 
 						if(e107::getSession()->get('copyperms'))
 						{
