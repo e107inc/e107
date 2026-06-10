@@ -1177,13 +1177,13 @@ class e_admin_dispatcher
 			return false;
 		}
 		// mode admin permission (former getperms())
-		if(isset($this->modes[$mode]['perm']) && !e107::getUser()->checkAdminPerms($this->modes[$mode]['perm']))
+		if(isset($this->modes[$mode]['perm']) && !$this->checkAdminPermCode($this->modes[$mode]['perm']))
 		{
 			return false;
 		}
-		
+
 		// generic dispatcher admin permission  (former getperms())
-		if($this->perm !== null && is_string($this->perm) && !e107::getUser()->checkAdminPerms($this->perm))
+		if($this->perm !== null && is_string($this->perm) && !$this->checkAdminPermCode($this->perm))
 		{
 			return false;
 		}
@@ -1202,19 +1202,39 @@ class e_admin_dispatcher
 		    return true;
 		}
 
-		if(isset($this->access[$route]) && !check_class($this->access[$route]))
+		if(isset($this->access[$route]) && !e107::getUser()->checkClass($this->access[$route], false))
 		{
 			e107::getMessage()->addDebug('Userclass Permissions Failed: ' .$this->access[$route]);
 			return false;
 		}
 
-		if(is_array($this->perm) && isset($this->perm[$route]) && !getperms($this->perm[$route]))
+		if(is_array($this->perm) && isset($this->perm[$route]) && !$this->checkAdminPermCode($this->perm[$route]))
 		{
 			e107::getMessage()->addDebug('Admin Permissions Failed.' .$this->perm[$route]);
 			return false;
 		}
 
 		return true;
+	}
+
+	/**
+	 * Check a dispatcher perm code against the current user model, resolving
+	 * the special 'P' code (admin permission for the plugin being dispatched)
+	 * the same way getperms() does from the request path. The model carries
+	 * the permission-emulation overlay (#5745), so these checks stay faithful
+	 * during emulation.
+	 *
+	 * @param string $perm
+	 * @return bool
+	 */
+	protected function checkAdminPermCode($perm)
+	{
+		if($perm === 'P' && deftrue('e_CURRENT_PLUGIN'))
+		{
+			return e107::getUser()->checkPluginAdminPerms(e_CURRENT_PLUGIN);
+		}
+
+		return e107::getUser()->checkAdminPerms($perm);
 	}
 
 	/**
