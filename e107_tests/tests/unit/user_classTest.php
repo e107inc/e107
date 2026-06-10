@@ -89,8 +89,8 @@
 			$result = $this->uc->getUsersInClass(e_UC_MEMBER);
 			$expected = [
 				'user_id' => 1,
-				'user_name' => 'e107',
-				'user_loginname' => 'e107',
+				'user_name' => \Helper\AdminLogin::ADMIN_USER,
+				'user_loginname' => \Helper\AdminLogin::ADMIN_USER,
 
 			];
 
@@ -117,8 +117,8 @@
 			$result = $this->uc->getUsersInClass(e_UC_MAINADMIN);
 			$expected = [
 				'user_id' => 1,
-				'user_name' => 'e107',
-				'user_loginname' => 'e107',
+				'user_name' => \Helper\AdminLogin::ADMIN_USER,
+				'user_loginname' => \Helper\AdminLogin::ADMIN_USER,
 			];
 
 			$passed = false;

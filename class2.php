@@ -194,10 +194,8 @@ unset($tmp);
 
 if(empty($config['paths'])) // old e107_config.php format.
 {
-	$dirNames = ['ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY','UPLOADS_DIRECTORY','SYSTEM_DIRECTORY', 'MEDIA_DIRECTORY','CACHE_DIRECTORY','LOGS_DIRECTORY', 'CORE_DIRECTORY', 'WEB_DIRECTORY'];
-
 	$e107_paths = [];
-	foreach ($dirNames as $name)
+	foreach (array_keys(e107::getInstance()->overridableDirs()) as $name)
 	{
 	    if (isset($$name))
 	    {
@@ -685,7 +683,7 @@ define('SITETAG', $tp->toHTML($pref['sitetag'], false, 'emotes_off,defs'));
 
 define('SITEADMIN', $pref['siteadmin']);
 define('SITEADMINEMAIL', $pref['siteadminemail']);
-define('SITEDISCLAIMER', $tp->toHTML($pref['sitedisclaimer'], '', 'emotes_off,defs'));
+define('SITEDISCLAIMER', str_replace('YYYY', date('Y'), $tp->toHTML($pref['sitedisclaimer'], '', 'emotes_off,defs')));
 define('SITECONTACTINFO', (!empty($pref['sitecontactinfo']) ? $tp->toHTML($pref['sitecontactinfo'], true, 'emotes_off,defs') : ''));
 define('SITEEMAIL', vartrue($pref['replyto_email'],$pref['siteadminemail']));
 define('USER_REGISTRATION', vartrue($pref['user_reg'],false)); // User Registration System Active or Not.
@@ -1828,7 +1826,7 @@ function cookie($name, $value, $expire=0, $path = e_HTTP, $domain = '', $secure 
 		$path = '/';
 	}
 	
-	setcookie($name, $value, $expire, $path, $domain, $secure, true);
+	eShims::setcookie($name, $value, $expire, $path, $domain, $secure, true);
 }
 
 //
@@ -1866,7 +1864,7 @@ function session_set($name, $value, $expire='', $path = e_HTTP, $domain = '', $s
 			$path = '/';
 		}
 		
-		setcookie($name, $value, $expire, $path, $domain, $secure, true);
+		eShims::setcookie($name, $value, $expire, $path, $domain, $secure, true);
 		$_COOKIE[$name] = $value;
 	}
 }
