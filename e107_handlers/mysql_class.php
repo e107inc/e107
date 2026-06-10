@@ -25,6 +25,9 @@
  * Always use $this->getConfig() method to avoid issues pointed above
  */
 
+require_once(__DIR__.'/e_db_interface.php');
+require_once(__DIR__.'/e_db_legacy_trait.php');
+
 if(defined('MYSQL_LIGHT'))
 {
 	define('E107_DEBUG_LEVEL', 0);
@@ -94,6 +97,9 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
  */
 class e_db_mysql implements e_db
 {
+
+	use e_db_legacy;
+
 	// TODO switch to protected vars where needed
 	public      $mySQLserver;
 	public      $mySQLuser;
@@ -140,12 +146,14 @@ class e_db_mysql implements e_db
 	{
 		e107::getSingleton('e107_traffic')->BumpWho('Create db object', 1);
 
-		$this->mySQLPrefix = MPREFIX;				// Set the default prefix - may be overridden
+		$config = e107::getMySQLConfig();
 
-		if($port = e107::getMySQLConfig('port'))
-		{
-			$this->mySQLport = intval($port);
-		}
+		$this->mySQLserver      = isset($config['mySQLserver']) ? $config['mySQLserver'] : '';
+		$this->mySQLuser        = isset($config['mySQLuser']) ? $config['mySQLuser'] : '';
+		$this->mySQLpassword    = isset($config['mySQLpassword']) ? $config['mySQLpassword'] : '';
+		$this->mySQLdefaultdb   = isset($config['mySQLdefaultdb']) ? $config['mySQLdefaultdb'] : '';
+		$this->mySQLport        = varset($config['port'], 3306);
+		$this->mySQLPrefix      = varset($config['mySQLprefix'], MPREFIX);
 
 		/*$langid = (isset($pref['cookie_name'])) ? 'e107language_'.$pref['cookie_name'] : 'e107language_temp';
 		if (isset($pref['user_tracking']) && ($pref['user_tracking'] == 'session'))
@@ -203,67 +211,6 @@ class e_db_mysql implements e_db
 	}
 
 	/**
-	 * Connects to mySQL server and selects database - generally not required if your table is in the main DB.<br />
-	 * <br />
-	 * Example using e107 database with variables defined in e107_config.php:<br />
-	 * <code>$sql = new db;
-	 * $sql->db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);</code>
-	 * <br />
-	 * OR to connect an other database:<br />
-	 * <code>$sql = new db;
-	 * $sql->db_Connect('url_server_database', 'user_database', 'password_database', 'name_of_database');</code>
-	 *
-	 * @param string $mySQLserver IP Or hostname of the MySQL server
-	 * @param string $mySQLuser MySQL username
-	 * @param string $mySQLpassword MySQL Password
-	 * @param string $mySQLdefaultdb The database schema to connect to
-	 * @param string $newLink force a new link connection if TRUE. Default FALSE
-	 * @param string $mySQLPrefix Tables prefix. Default to $mySQLPrefix from e107_config.php
-	 * @return null|string error code
-	 */
-	public function db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $newLink = FALSE, $mySQLPrefix = MPREFIX)
-	{
-		global $db_ConnectionID, $db_defaultPrefix;
-		e107::getSingleton('e107_traffic')->BumpWho('db Connect', 1);
-
-		$this->mySQLserver      = $mySQLserver;
-		$this->mySQLuser        = $mySQLuser;
-		$this->mySQLpassword    = $mySQLpassword;
-		$this->mySQLdefaultdb   = $mySQLdefaultdb;
-		$this->mySQLPrefix      = $mySQLPrefix;
-		$this->mySQLerror       = false;
-
-		if (!$this->mySQLaccess = @mysqli_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword, $newLink))
-		{
-			$this->mySQLlastErrText = mysqli_connect_error();
-			return 'e1';
-		}
-
-		$this->mySqlServerInfo = mysqli_get_server_info($this->mySQLaccess); // We always need this for db_Set_Charset() - so make generally available
-
-		// Set utf8 connection?
-		//@TODO: simplify when yet undiscovered side-effects will be fixed
-		$this->db_Set_Charset();
-		$this->setSQLMode();
-
-		if (!$this->database($this->mySQLdefaultdb))
-		{
-			return 'e2';
-		}
-
-		$this->dbError('dbConnect/SelectDB');
-
-		// Save the connection resource
-		if ($db_ConnectionID == null)
-		{
-			$db_ConnectionID = $this->mySQLaccess;
-		}
-
-		return true;
-	}
-
-
-	/**
 	 * Connect ONLY  - used in v2.x
 	 * @param string $mySQLserver IP Or hostname of the MySQL server
 	 * @param string $mySQLuser MySQL username
@@ -298,7 +245,11 @@ class e_db_mysql implements e_db
 		$this->db_Set_Charset();
 		$this->setSQLMode();
 
-		$db_ConnectionID = $this->mySQLaccess;
+		// Save the connection resource
+		if ($db_ConnectionID == null)
+		{
+			$db_ConnectionID = $this->mySQLaccess;
+		}
 
 		return true;
 	}
@@ -353,16 +304,13 @@ class e_db_mysql implements e_db
 	}
 
 	/**
-	* @return void
+	*
 	* @param string $sMarker
-    * @deprecated Use e107::getDebug()->logTime();
 	* @desc Enter description here...
-	* @access private
+	 * @return null|true
 	*/
-	function db_Mark_Time($sMarker)
+	public function markTime($sMarker)
 	{
-		trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use e107::getDebug()->logTime() instead.', E_USER_DEPRECATED); // NO LAN
-
 		if($this->debugMode !== true)
 		{
 			return null;
@@ -370,6 +318,7 @@ class e_db_mysql implements e_db
 
 		$this->dbg->Mark_Time($sMarker);
 
+		return true;
 	}
 
 
@@ -391,16 +340,30 @@ class e_db_mysql implements e_db
 	* @desc add query to dblog table
 	* @access private
 	*/
-	function db_Write_log($log_type = '', $log_remark = '', $log_query = '')
+	function log($log_type = '', $log_remark = '', $log_query = '')
 	{
-
 		$tp = e107::getParser();
 		list($time_usec, $time_sec) = explode(" ", microtime());
 		$uid = (USER) ? USERID : '0';
 		$userstring = ( USER === true ? USERNAME : "LAN_ANONYMOUS");
-		$ip = e107::getIPHandler()->getIP(FALSE);
+		$ip = e107::getIPHandler()->getIP(false);
 		$qry = $tp->toDB($log_query);
-		$this->insert('dblog', "0, {$time_sec}, {$time_usec}, '{$log_type}', 'DBDEBUG', {$uid}, '{$userstring}', '{$ip}', '', '{$log_remark}', '{$qry}'");
+
+		$insert = array(
+			'dblog_datestamp'   => $time_sec,
+			'dblog_microtime'   => $time_usec,
+			'dblog_type'        => $log_type,
+			'dblog_eventcode'   => 'DBDEBUG',
+			'dblog_user_id'     => $uid,
+			'dblog_user_name'   => $userstring,
+			'dblog_ip'          => $ip,
+			'dblog_caller'      => '',
+			'dblog_title'       => $log_remark,
+			'dblog_remarks'     => is_array($qry) ? e107::serialize($qry) : $qry
+
+		);
+
+		$this->insert('dblog', $insert);
 	}
 
 
@@ -534,7 +497,7 @@ class e_db_mysql implements e_db
 	 * @param boolean $debug
 	 * @return string|array
 	 */
-	public function retrieve($table, $fields = null, $where=null, $multi = false, $indexField = null, $debug = false)
+	public function retrieve($table=null, $fields = null, $where=null, $multi = false, $indexField = null, $debug = false)
 	{
 		// fetch mode
 		if(empty($table))
@@ -697,18 +660,6 @@ class e_db_mysql implements e_db
 				return FALSE;
 			}
 		}
-	}
-
-	/**
-	 * select() alias
-	 *
-	 * @deprecated
-	 */
-	public function db_Select($table, $fields = '*', $arg = '', $mode = 'default', $debug = FALSE, $log_type = '', $log_remark = '')
-	{
-		trigger_error('<b>'.__METHOD__.' is deprecated.</b> Use e107::getDb()->select() instead.', E_USER_DEPRECATED); // NO LAN
-
-		return $this->select($table, $fields, $arg, $mode !== 'default', $debug, $log_type, $log_remark);
 	}
 
 	/**
@@ -886,11 +837,11 @@ class e_db_mysql implements e_db
 
 
 	/**
-	 * @return bool|int|string
+	 * @return bool|int
 	 */
 	public function lastInsertId()
 	{
-		$tmp = mysqli_insert_id($this->mySQLaccess);
+		$tmp = (int) mysqli_insert_id($this->mySQLaccess);
 		return ($tmp) ? $tmp : true; // return true even if table doesn't have auto-increment.
 	}
 
@@ -906,7 +857,7 @@ class e_db_mysql implements e_db
 
 	/**
 	 * @param mysqli_result $result
-	 * @return int|string
+	 * @return int
 	 */
 	public function rowCount($result=null)
 	{
@@ -914,31 +865,20 @@ class e_db_mysql implements e_db
 		{
 			$result = $this->mySQLresult;
 		}
+		if (!$result)
+		{
+			return -1;
+		}
 		if ($result instanceof mysqli_result)
 		{
 			$this->mySQLrows = mysqli_num_rows($result);
 		}
+		elseif ($result === true) // no result set; report affected rows like PDOStatement::rowCount()
+		{
+			$this->mySQLrows = mysqli_affected_rows($this->mySQLaccess);
+		}
 		$this->dbError('db_Rows');
 		return $this->mySQLrows;
-	}
-
-	/**
-	 * hasLanguage() alias
-	 * @deprecated Use hasLanguage($table,$multiple)
-	 */
-	function db_IsLang($table, $multiple=false)
-	{
-		return $this->hasLanguage($table, $multiple);
-	}
-
-
-	/**
-	 * insert() alias
-	 * @deprecated
-	 */
-	function db_Insert($tableName, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
-	{
-		return $this->insert($tableName, $arg, $debug, $log_type, $log_remark);
 	}
 
 	/**
@@ -960,16 +900,6 @@ class e_db_mysql implements e_db
 		$arg['_REPLACE'] = TRUE;
 		return $this->insert($table, $arg, $debug, $log_type, $log_remark);
 	}
-
-	/**
-	 * replace() alias
-	 * @deprecated
-	 */
-	function db_Replace($table, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
-	{
-		return $this->replace($table, $arg, $debug, $log_type, $log_remark);
-	}
-
 
 	/**
 	 * @param $tableName
@@ -1070,15 +1000,6 @@ class e_db_mysql implements e_db
 	}
 
 	/**
-	 * update() alias
-	 * @deprecated
-	 */
-	function db_Update($tableName, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
-	{
-		return $this->update($tableName, $arg, $debug, $log_type, $log_remark);
-	}
-
-	/**
 	 * @param $arg
 	 * @return array|mixed
 	 */
@@ -1168,47 +1089,6 @@ class e_db_mysql implements e_db
 				return "'".$this->escape($fieldValue, false)."'";
 			break;
 	  	}
-	}
-
-	/**
-	 *  @DEPRECATED
-	 	Similar to db_Update(), but splits the variables and the 'WHERE' clause.
-		$vars may be an array (fieldname=>newvalue) of fields to be updated, or a simple list.
-		$arg is usually a 'WHERE' clause
-		The way the code is written at the moment, a call to db_Update() with just the first two parameters specified can be
-			converted simply by changing the function name - it will still work.
-		Deprecated routine - use db_Update() with array parameters
-	*/
-	function db_UpdateArray($table, $vars, $arg='', $debug = FALSE, $log_type = '', $log_remark = '')
-	{
-	  $table = $this->hasLanguage($table);
-	  $this->mySQLcurTable = $table;
-
-		$this->provide_mySQLaccess();
-
-	  $new_data = '';
-	  if (is_array($vars))
-	  {
-		$spacer = '';
-		foreach ($vars as $fn => $fv)
-		{
-		  $new_data .= $spacer."`{$fn}`='{$fv}'";
-		  $spacer = ', ';
-		}
-		$vars = '';
-	  }
-	  if ($result = $this->mySQLresult = $this->db_Query('UPDATE '.$this->mySQLPrefix.$table.' SET '.$new_data.$vars.' '.$arg, NULL, 'db_UpdateArray', $debug, $log_type, $log_remark))
-	  {
-		$result = mysqli_affected_rows($this->mySQLaccess);
-		if ($result == -1) return FALSE;	// Error return from mysqli_affected_rows
-		return $result;
-	  }
-	  else
-	  {
-	    $query = 'UPDATE '.$this->mySQLPrefix.$table.' SET '.$new_data.$vars.' '.$arg;
-		$this->dbError("Error in deprecated db_UpdateArray method query:($query)");
-		return FALSE;
-	  }
 	}
 
 	/**
@@ -1339,15 +1219,6 @@ class e_db_mysql implements e_db
 	}
 
 	/**
-	 * @deprecated use count()
-	 */
-	function db_Count($table, $fields = '(*)', $arg = '', $debug = FALSE, $log_type = '', $log_remark = '')
-	{
-		return $this->count($table, $fields, $arg, $debug, $log_type, $log_remark);
-	}
-
-
-	/**
 
 	 * @desc Closes the mySQL server connection.<br />
 	 * <br />
@@ -1365,15 +1236,6 @@ class e_db_mysql implements e_db
 		$this->provide_mySQLaccess();
 		e107::getSingleton('e107_traffic')->BumpWho('db Close', 1);
 		@mysqli_close($this->mySQLaccess);
-	}
-
-
-	/**
-	 * BC Alias of close()
-	 */
-	function db_Close()
-	{
-		$this->close();
 	}
 
 
@@ -1428,33 +1290,12 @@ class e_db_mysql implements e_db
 	}
 
 	/**
-	 * @deprecated use $sql->delete();
-	 */
-	function db_Delete($table, $arg = '', $debug = FALSE, $log_type = '', $log_remark = '')
-	{
-		return $this->delete($table, $arg, $debug, $log_type, $log_remark);
-	}
-
-
-	/**
-	* @deprecated
-	* @desc Enter description here...
-	* @access private
-	*/
-	function db_Rows()
-	{
-		return $this->rowCount();
-
-	}
-
-
-	/**
 	* @return void
 	* @param bool $mode
 	* @desc Enter description here...
 	* @access private
 	*/
-	public function db_SetErrorReporting($mode)
+	function setErrorReporting($mode)
 	{
 		$this->mySQLerror = $mode;
 	}
@@ -1512,15 +1353,6 @@ class e_db_mysql implements e_db
 			$this->dbError('db_Select_gen');
 			return $this->rowCount();
 		}
-	}
-
-	/**
-	 * gen() alias
-	 * @deprecated
-	 */
-	public function db_Select_gen($query, $debug = FALSE, $log_type = '', $log_remark = '')
-	{
-		return $this->gen($query, $debug, $log_type, $log_remark);
 	}
 
 	/**
@@ -1611,16 +1443,6 @@ class e_db_mysql implements e_db
 
 
 	}
-
-
-	/**
-	 * Deprecated alias of the rows() function below.
-	 */
-	function db_getList($fields = 'ALL', $amount = FALSE, $maximum = FALSE, $ordermode=FALSE)
-	{
-		return $this->rows($fields, $amount, $maximum, $ordermode);
-	}
-
 
 
 	/**
@@ -1807,7 +1629,7 @@ class e_db_mysql implements e_db
 	* @desc returns total number of queries made so far
 	* @access public
 	*/
-	function db_QueryCount()
+	public function queryCount()
 	{
 		global $db_mySQLQueryCount;
 		return $db_mySQLQueryCount;
@@ -1887,23 +1709,19 @@ class e_db_mysql implements e_db
 	 *	@param boolean $retinfo = FALSE - just returns array of field names. TRUE - returns all field info
 	 *	@return array|boolean - FALSE on error, field list array on success
 	 */
-	function db_FieldList($table, $prefix = '', $retinfo = FALSE)
+	public function fields($table, $prefix = '', $retinfo = false)
 	{
-		if(!$this->mySQLdefaultdb)
-		{
-			global $mySQLdefaultdb;
-			$this->mySQLdefaultdb = $mySQLdefaultdb;
-		}
-
 		$this->provide_mySQLaccess();
 
-		if ($prefix == '') $prefix = $this->mySQLPrefix;
+		if ($prefix == '')
+		{
+			 $prefix = $this->mySQLPrefix;
+		}
 
-		if (false ===  $this->gen('SHOW COLUMNS FROM '.$prefix.$table))
+		if (false === ($result = $this->gen('SHOW COLUMNS FROM '.$prefix.$table)))
 		{
 			return false;		// Error return
 		}
-
 		$ret = array();
 
         if ($this->rowCount() > 0)
@@ -1920,21 +1738,7 @@ class e_db_mysql implements e_db
 				}
 			}
 		}
-
 		return $ret;
-	}
-
-
-	/**
-	 * @param $table
-	 * @param $fieldid
-	 * @param $key
-	 * @param $retinfo
-	 * @return array|bool
-	 */
-	function db_Field($table, $fieldid="", $key="", $retinfo = FALSE)
-	{
-		return $this->field($table,$fieldid,$key, $retinfo);
 	}
 
 	/**
@@ -2082,20 +1886,6 @@ class e_db_mysql implements e_db
 
 
 	/**
-	 * Legacy Alias of isTable();
-	 * @deprecated
-	 * @param $table
-	 * @param string $language
-	 * @return bool
-	 */
-	public function db_Table_exists($table,$language='')
-	{
-		return $this->isTable($table, $language);
-	}
-
-
-
-	/**
 	 * Verify whether a table exists, without causing an error
 	 *
 	 * @param string $table Table name without the prefix
@@ -2224,30 +2014,12 @@ class e_db_mysql implements e_db
 	}
 
 	/**
-	 * @return void
-	 */
-	public function db_ResetTableList()
-	{
-		$this->mySQLtableList = array();
-		$this->mySQLtableListLanguage = array();
-	}
-	/**
 	 * @inheritDoc
 	 */
 	public function resetTableList()
 	{
-		$this->db_ResetTableList();
-	}
-
-	/**
-	 * Legacy Alias of tables
-	 * @deprecated Use $sql->tables($mode) instead.
-	 * @param string $mode
-	 * @return array
-	 */
-	public function db_TableList($mode='all')
-	{
-		return $this->tables($mode);
+		$this->mySQLtableList = array();
+		$this->mySQLtableListLanguage = array();
 	}
 
 
@@ -2311,45 +2083,98 @@ class e_db_mysql implements e_db
 	/**
 	 * Duplicate a Table Row in a table.
 	 */
-	function db_CopyRow($table,$fields = '*', $args='')
+	function copyRow($table, $fields = '*', $args='')
 	{
 		if(!$table || !$args )
 		{
 			return false;
 		}
 
-		if($fields === '*')
-		{
-			$fields = $this->db_FieldList($table);
-			unset($fields[0]); // Remove primary_id. 
-			$fieldList = implode(",",$fields);
-		}
-		else
-		{
-			$fieldList = $fields;
+		for ($retries = 0; $retries < 3; $retries ++) {
+			list($fieldList, $fieldList2) = $this->generateCopyRowFieldLists($table, $fields);
+
+			if (empty($fieldList)) {
+				$this->mySQLlastErrText = "copyRow \$fields list was empty";
+				return false;
+			}
+
+			$beforeLastInsertId = $this->lastInsertId();
+			$query = "INSERT INTO " . $this->mySQLPrefix . $table .
+				"(" . $fieldList . ") SELECT " .
+				$fieldList2 .
+				" FROM " . $this->mySQLPrefix . $table .
+				" WHERE " . $args;
+			$id = $this->gen($query);
+			$lastInsertId = $this->lastInsertId();
+			if ($beforeLastInsertId !== $lastInsertId) break;
 		}
 
-		if(empty($fields))
-		{
-			$this->mysqlLastErrText = "copyRow \$fields list was empty";
-			return false;
-		}
-
-		$id = $this->gen("INSERT INTO ".$this->mySQLPrefix.$table."(".$fieldList.") SELECT ".$fieldList." FROM ".$this->mySQLPrefix.$table." WHERE ".$args);
-		$lastInsertId = $this->lastInsertId();
 		return ($id && $lastInsertId) ? $lastInsertId : false;
-
 	}
 
+	/**
+	 * Determine before and after fields for a table
+	 * @param $table string Table name, without the prefix
+	 * @param $fields string Field list in query format (i.e. separated by commas) or all of them ("*")
+	 * @return array Index 0 is before and index 1 is after
+	 */
+	private function generateCopyRowFieldLists($table, $fields)
+	{
+		if ($fields !== '*') return array($fields, $fields);
+
+		$fieldList = $this->db_FieldList($table);
+		$unique = $this->_getUnique($table);
+
+		$flds = array();
+		// randomize fields that must be unique.
+		foreach ($fieldList as $fld) {
+			if (isset($unique[$fld])) {
+				$flds[] = $unique[$fld] === 'PRIMARY' ? 0 :
+					"'rand-" . e107::getUserSession()->generateRandomString('***********') . "'";
+				continue;
+			}
+
+			$flds[] = $fld;
+		}
+
+		$fieldList = implode(",", $fieldList);
+		$fieldList2 = implode(",", $flds);
+		return array($fieldList, $fieldList2);
+	}
 
 	/**
-	 * @param $oldtable
-	 * @param $newtable
-	 * @param $drop
-	 * @param $data
-	 * @return bool|int|mysqli_result
+	 * @param $table
+	 * @return array  field name => key name
 	 */
-	function db_CopyTable($oldtable, $newtable, $drop = FALSE, $data = FALSE)
+	private function _getUnique($table)
+	{
+
+		$unique = array();
+
+		$result = $this->retrieve("SHOW INDEXES FROM #".$table, true);
+		foreach($result as $row)
+		{
+			$notUnique = (int) $row['Non_unique'];
+
+			if(!$notUnique)
+			{
+				$field = $row['Column_name'];
+				$unique[$field] = $row['Key_name'];
+			}
+
+		}
+
+		return $unique;
+	}
+
+	/**
+	 * @param string $oldtable
+	 * @param string $newtable
+	 * @param bool $drop
+	 * @param bool $data
+	 * @return bool|int
+	 */
+	public function copyTable($oldtable, $newtable, $drop = false, $data = false)
 	{
 		$old = $this->mySQLPrefix.strtolower($oldtable);
 		$new = $this->mySQLPrefix.strtolower($newtable);
@@ -2372,7 +2197,7 @@ class e_db_mysql implements e_db
 		}
 		else
 		{
-			return FALSE;
+			return false;
 		}
 
 		if(!$this->isTable($newtable))
@@ -2388,13 +2213,6 @@ class e_db_mysql implements e_db
 		return $result;
 	}
 
-	/**
-	 * @inheritDoc
-	 */
-	public function copyTable($oldtable, $newtable, $drop = false, $data = false) {
-		return $this->db_CopyTable($oldtable, $newtable, $drop, $data);
-	}
-
 
 
 
@@ -2407,7 +2225,7 @@ class e_db_mysql implements e_db
 	 */
 	function backup($table='*', $file='', $options=null)
 	{
-		$this->mysqlLastErrText = "PDO is required to use the mysql backup() method";
+		$this->mySQLlastErrText = "PDO is required to use the mysql backup() method";
 		return false;
 	}
 
@@ -2533,6 +2351,30 @@ class e_db_mysql implements e_db
 		// Save mySQLcharset for further uses within this connection
 		$this->mySQLcharset = $charset;
 		return $message;
+	}
+
+
+	/**
+	 * Set Database charset to utf8mb4
+	 *
+	 * @access private
+	 */
+	public function setCharset($charset = 'utf8mb4')
+	{
+		$this->provide_mySQLaccess();
+		$this->mySQLaccess->set_charset($charset);
+
+		$this->mySQLcharset = $charset;
+	}
+
+
+	/**
+	 * @return mixed
+	 */
+	public function getCharset()
+	{
+		require_once(e_HANDLER."db_verify_class.php");
+		return (new db_verify())->getIntendedCharset($this->mySQLcharset);
 	}
 
 
@@ -2694,18 +2536,15 @@ class e_db_mysql implements e_db
 			global $db_ConnectionID;
 			$this->mySQLaccess = $db_ConnectionID;
 		}
-		if (!$this->mySQLaccess) {
-			$this->mySQLaccess = e107::getDb()->get_mySQLaccess();
+		if (!$this->mySQLaccess && ($db = e107::getDb()) !== $this) {
+			$this->mySQLaccess = $db->get_mySQLaccess();
 		}
-	}
-
-	/**
-	 * @deprecated 2.1.9 Used only to provide $mySQLaccess to other instances of e_db_mysql scattered around
-	 * @return mysqli
-	 */
-	public function get_mySQLaccess()
-	{
-		return $this->mySQLaccess;
+		if (!$this->mySQLaccess) {
+			// lazy self-connect from the config loaded in the constructor, like e_db_pdo::_getMySQLaccess()
+			$success = $this->connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword);
+			if ($success) $success = $this->database($this->mySQLdefaultdb, $this->mySQLPrefix);
+			if (!$success) throw new RuntimeException($this->mySQLlastErrText);
+		}
 	}
 
 	/**
