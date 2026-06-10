@@ -8,6 +8,17 @@
 
 	interface e_db
 	{
+		/**
+		 * Bind-parameter types for the db_Query() ['PREPARE' => ..., 'BIND' => ...]
+		 * contract. Values match the PDO::PARAM_* constants, so existing call sites
+		 * passing PDO::PARAM_* keep working while backend-neutral code can use
+		 * e_db::PARAM_* without depending on the pdo extension.
+		 */
+		const PARAM_NULL = 0;
+		const PARAM_INT  = 1;
+		const PARAM_STR  = 2;
+		const PARAM_LOB  = 3;
+		const PARAM_BOOL = 5;
 
 		/**
 		 * Connect ONLY  - used in v2.x

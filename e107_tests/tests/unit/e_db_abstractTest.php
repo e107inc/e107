@@ -215,6 +215,95 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$this->assertFalse($result, $err);
 	}
 
+	public function testSelectBind()
+	{
+		$result = $this->db->select('user', 'user_id, user_name', 'user_id=:id OR user_name=:name ORDER BY user_name', array('id' => 999, 'name' => \Helper\AdminLogin::ADMIN_USER)); // bind support.
+		$this->assertEquals(1, $result);
+	}
+
+	public function testDb_QueryBind()
+	{
+		$query = array(
+			'PREPARE' => 'INSERT INTO ' . MPREFIX . 'tmp (`tmp_ip`,`tmp_time`,`tmp_info`) VALUES (:tmp_ip, :tmp_time, :tmp_info)',
+			'BIND' =>
+				array(
+					'tmp_ip' =>
+						array(
+							'value' => '127.0.0.1',
+							'type' => e_db::PARAM_STR,
+						),
+					'tmp_time' =>
+						array(
+							'value' => 12345435,
+							'type' => e_db::PARAM_INT,
+						),
+					'tmp_info' =>
+						array(
+							'value' => 'Insert test',
+							'type' => e_db::PARAM_STR,
+						),
+				),
+		);
+
+		$result = $this->db->db_Query($query, null, 'db_Insert');
+		$this->assertGreaterThan(0, $result);
+
+		$query = array(
+			'PREPARE' => 'SELECT * FROM ' . MPREFIX . 'user WHERE user_id=:user_id AND user_name=:user_name',
+			'EXECUTE' => array(
+				'user_id' => 1,
+				'user_name' => \Helper\AdminLogin::ADMIN_USER
+			)
+		);
+
+		$res = $this->db->db_Query($query, null, 'db_Select');
+		$this->assertNotFalse($res);
+		$result = $this->db->fetch();
+		$this->assertArrayHasKey('user_password', $result);
+	}
+
+	public function testDb_QueryBindLiteralColon()
+	{
+		// a colon inside a string literal must not be treated as a placeholder
+		$query = array(
+			'PREPARE' => "SELECT user_name FROM " . MPREFIX . "user WHERE user_name != 'not:a:param' AND user_id=:id",
+			'EXECUTE' => array('id' => 1),
+		);
+
+		$res = $this->db->db_Query($query, null, 'db_Select');
+		$this->assertNotFalse($res);
+		$row = $this->db->fetch();
+		$this->assertEquals(\Helper\AdminLogin::ADMIN_USER, $row['user_name']);
+	}
+
+	public function testDb_QueryBindRepeatedPlaceholder()
+	{
+		$query = array(
+			'PREPARE' => 'SELECT user_id FROM ' . MPREFIX . 'user WHERE user_id=:id OR user_id=:id',
+			'EXECUTE' => array('id' => 1),
+		);
+
+		$res = $this->db->db_Query($query, null, 'db_Select');
+		$this->assertNotFalse($res);
+		$row = $this->db->fetch();
+		$this->assertSame('1', $row['user_id']); // result values are stringified on both backends
+	}
+
+	public function testDb_QueryBindTypedNull()
+	{
+		$query = array(
+			'PREPARE' => 'SELECT :v IS NULL AS n',
+			'BIND' => array(
+				'v' => array('value' => 'ignored', 'type' => e_db::PARAM_NULL),
+			),
+		);
+
+		$res = $this->db->db_Query($query, null, 'db_Select');
+		$this->assertNotFalse($res);
+		$row = $this->db->fetch();
+		$this->assertSame('1', $row['n']);
+	}
+
 
 	public function testRetrieve()
 	{

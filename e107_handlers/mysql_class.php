@@ -138,6 +138,8 @@ class e_db_mysql implements e_db
 
 	private     $debugMode      = false;
 
+	private     $stringifyFetch = false;	// Prepared-statement results carry native types; stringify on fetch for PDO parity.
+
 	/**
 	* Constructor - gets language options from the cookie or session
 	* @access public
@@ -396,16 +398,25 @@ class e_db_mysql implements e_db
 		}
 		if ($log_type != '')
 		{
-			$this->db_Write_log($log_type, $log_remark, $query);
+			$this->log($log_type, $log_remark, $query);
 		}
 
 		$this->provide_mySQLaccess();
 
+		$this->stringifyFetch = false;
+
 		$b = microtime();
 
-		$sQryRes = is_null($rli) ? @mysqli_query($this->mySQLaccess, $query) : @mysqli_query($rli, $query);
-		$this->mySQLlastErrNum = mysqli_errno($this->mySQLaccess);
-		$this->mySQLlastErrText = mysqli_error($this->mySQLaccess);
+		if(is_array($query) && !empty($query['PREPARE']))
+		{
+			$sQryRes = $this->_executePrepared($query, $qry_from);
+		}
+		else
+		{
+			$sQryRes = is_null($rli) ? @mysqli_query($this->mySQLaccess, $query) : @mysqli_query($rli, $query);
+			$this->mySQLlastErrNum = mysqli_errno($this->mySQLaccess);
+			$this->mySQLlastErrText = mysqli_error($this->mySQLaccess);
+		}
 
 		$e = microtime();
 
@@ -446,11 +457,209 @@ class e_db_mysql implements e_db
 			if(is_object($db_debug))
 			{
 				$buglink = is_null($rli) ? $this->mySQLaccess : $rli;
+
+				if(is_array($query))
+				{
+					$query['BIND'] = isset($query['BIND']) ? $query['BIND'] : null;
+					$query = "PREPARE: " . $query['PREPARE'] . "<br />BIND:" . print_a($query['BIND'], true);
+				}
+
 				$db_debug->Mark_Query($query, $buglink, $sQryRes, $aTrace, $mytime, $pTable);
 			}
 		}
 
 		return $sQryRes;
+	}
+
+	/**
+	 * Execute the array-form prepared-statement contract on mysqli:
+	 * ['PREPARE' => SQL with :named placeholders,
+	 *  'BIND'    => [name => ['value' => mixed, 'type' => e_db::PARAM_*]],
+	 *  'EXECUTE' => [name => value]]
+	 *
+	 * Mirrors the e_db_pdo behavior: when 'EXECUTE' is non-empty it takes
+	 * precedence over 'BIND' and every value binds as a string, exactly like
+	 * PDOStatement::execute($input_parameters). Returns the result set for
+	 * 'db_Select' calls, a row/affected count otherwise, false on error.
+	 *
+	 * @param array $query
+	 * @param string $qry_from
+	 * @return mysqli_result|int|false
+	 */
+	private function _executePrepared($query, $qry_from)
+	{
+		if(!function_exists('mysqli_stmt_get_result'))
+		{
+			$this->mySQLlastErrNum = -1;
+			$this->mySQLlastErrText = 'Prepared statements on the mysqli backend require the mysqlnd driver (mysqli_stmt_get_result() is missing)';
+			return false;
+		}
+
+		list($sql, $order) = $this->_compileNamedQuery($query['PREPARE']);
+
+		$bind = !empty($query['BIND']) ? $query['BIND'] : array();
+		$execute = !empty($query['EXECUTE']) ? $query['EXECUTE'] : array();
+		$useExecute = !empty($execute);
+
+		$stmt = mysqli_prepare($this->mySQLaccess, $sql);
+
+		if($stmt === false)
+		{
+			$this->mySQLlastErrNum = mysqli_errno($this->mySQLaccess);
+			$this->mySQLlastErrText = mysqli_error($this->mySQLaccess);
+			return false;
+		}
+
+		$types = '';
+		$values = array();
+
+		foreach($order as $i => $name)
+		{
+			if($useExecute)
+			{
+				if(!array_key_exists($name, $execute))
+				{
+					$this->mySQLlastErrNum = 2031; // CR_NO_DATA
+					$this->mySQLlastErrText = 'No value supplied for placeholder :'.$name;
+					mysqli_stmt_close($stmt);
+					return false;
+				}
+				$types .= 's'; // PDOStatement::execute() binds every input parameter as PARAM_STR
+				$values[$i] = $execute[$name];
+				continue;
+			}
+
+			if(!array_key_exists($name, $bind))
+			{
+				$this->mySQLlastErrNum = 2031; // CR_NO_DATA
+				$this->mySQLlastErrText = 'No value supplied for placeholder :'.$name;
+				mysqli_stmt_close($stmt);
+				return false;
+			}
+
+			$type = isset($bind[$name]['type']) ? (int) $bind[$name]['type'] : e_db::PARAM_STR;
+			$value = isset($bind[$name]['value']) ? $bind[$name]['value'] : null;
+
+			switch($type)
+			{
+				case e_db::PARAM_INT:
+					$types .= 'i';
+					$values[$i] = $value;
+					break;
+
+				case e_db::PARAM_BOOL:
+					$types .= 'i';
+					$values[$i] = (int) $value;
+					break;
+
+				case e_db::PARAM_NULL:
+					$types .= 's';
+					$values[$i] = null;
+					break;
+
+				case e_db::PARAM_LOB: // 's' is binary-safe; 'b' would require mysqli_stmt_send_long_data()
+				case e_db::PARAM_STR:
+				default:
+					$types .= 's';
+					$values[$i] = $value;
+					break;
+			}
+		}
+
+		if($types !== '')
+		{
+			$params = array($types);
+			foreach(array_keys($values) as $i)
+			{
+				$params[] = &$values[$i];
+			}
+
+			if(!call_user_func_array(array($stmt, 'bind_param'), $params))
+			{
+				$this->mySQLlastErrNum = mysqli_stmt_errno($stmt);
+				$this->mySQLlastErrText = mysqli_stmt_error($stmt);
+				mysqli_stmt_close($stmt);
+				return false;
+			}
+		}
+
+		if(!mysqli_stmt_execute($stmt))
+		{
+			$this->mySQLlastErrNum = mysqli_stmt_errno($stmt);
+			$this->mySQLlastErrText = mysqli_stmt_error($stmt);
+			mysqli_stmt_close($stmt);
+			return false;
+		}
+
+		$this->mySQLlastErrNum = 0;
+		$this->mySQLlastErrText = '';
+
+		$result = mysqli_stmt_get_result($stmt); // buffered; survives closing the statement
+		$affected = mysqli_stmt_affected_rows($stmt);
+		mysqli_stmt_close($stmt);
+
+		if($result instanceof mysqli_result)
+		{
+			$this->stringifyFetch = true;
+
+			// Match e_db_pdo: 'db_Select' callers receive the result set itself,
+			// others receive a count like PDOStatement::rowCount().
+			return ($qry_from === 'db_Select') ? $result : mysqli_num_rows($result);
+		}
+
+		return ($qry_from === 'db_Select') ? false : (int) $affected;
+	}
+
+	/**
+	 * Compile a query with :named placeholders into positional ? placeholders.
+	 *
+	 * Quote-aware: single-quoted strings, double-quoted strings, backticked
+	 * identifiers, comments and :: are consumed first, so tokens that merely
+	 * look like placeholders inside them are never rewritten.
+	 *
+	 * @param string $sql
+	 * @return array [compiled SQL, placeholder names in positional order]
+	 */
+	private function _compileNamedQuery($sql)
+	{
+		$order = array();
+
+		$compiled = preg_replace_callback(
+			'/\'(?:[^\'\\\\]|\\\\.)*\'|"(?:[^"\\\\]|\\\\.)*"|`[^`]*`|\/\*[\s\S]*?\*\/|--[^\r\n]*|::|:([A-Za-z0-9_]+)/',
+			function ($matches) use (&$order)
+			{
+				if(!isset($matches[1]) || $matches[1] === '')
+				{
+					return $matches[0];
+				}
+				$order[] = $matches[1];
+				return '?';
+			},
+			$sql
+		);
+
+		return array($compiled, $order);
+	}
+
+	/**
+	 * Cast native int/float values to strings, so prepared-statement results
+	 * (mysqlnd returns native types) match plain mysqli_query() results and
+	 * the PDO::ATTR_STRINGIFY_FETCHES behavior of e_db_pdo.
+	 *
+	 * @param array $row
+	 * @return array
+	 */
+	private function _stringifyRow($row)
+	{
+		foreach($row as $key => $value)
+		{
+			if(is_int($value) || is_float($value))
+			{
+				$row[$key] = (string) $value;
+			}
+		}
+
+		return $row;
 	}
 
 	/**
@@ -621,7 +830,30 @@ class e_db_mysql implements e_db
 
 		$this->mySQLcurTable = $table;
 
-		if ($arg != '' && ($noWhere === false || $noWhere === 'default'))  // 'default' for BC. 
+		// e107 v2.2 PDO bind params.
+		if(!empty($arg) && is_array($noWhere))
+		{
+
+			$query = array(
+				'PREPARE'   => 'SELECT '.$fields.' FROM '.$this->mySQLPrefix.$table.' WHERE '.$arg,
+				'EXECUTE'   => $noWhere
+			);
+
+			if ($this->mySQLresult = $this->db_Query($query, null, 'db_Select', $debug, $log_type, $log_remark))
+			{
+				$this->dbError('dbQuery');
+				return $this->rowCount();
+			}
+			else
+			{
+				$this->dbError('select() with prepare/execute');
+				return false;
+			}
+
+		}
+
+
+		if ($arg != '' && ($noWhere === false || $noWhere === 'default'))  // 'default' for BC.
 		{
 			if ($this->mySQLresult = $this->db_Query('SELECT '.$fields.' FROM '.$this->mySQLPrefix.$table.' WHERE '.$arg, NULL, 'db_Select', $debug, $log_type, $log_remark))
 			{
@@ -1146,6 +1378,10 @@ class e_db_mysql implements e_db
 			e107::getSingleton('e107_traffic')->Bump('db_Fetch', $b);
 			if ($row)
 			{
+				if($this->stringifyFetch)
+				{
+					$row = $this->_stringifyRow($row);
+				}
 				$this->dbError('db_Fetch');
 				return $row;		// Success - return data
 			}
