@@ -39,9 +39,9 @@ return [
     'LAN_413' => "Description",
     'LAN_414' => "Working demo",
     'LAN_415' => "enter URL to site where demo can be viewed",
-    'LAN_418' => "Absolute maximum file size:",
     'LAN_419' => "Allowed filetypes",
     'LAN_420' => "fields are required",
     'LAN_UL_039' => "Submit and Upload",
     'LAN_UL_040' => "Upload File",
+    'LAN_UL_041' => "Absolute maximum file size:", // LAN_418
 ];

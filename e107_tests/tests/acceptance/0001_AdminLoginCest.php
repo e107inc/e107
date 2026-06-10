@@ -18,7 +18,7 @@ class AdminLoginCest
 	{
 		$I->wantTo("See a login failure message in the admin area if I put in the wrong credentials");
 		$I->amOnPage("/e107_admin/admin.php");
-		$I->fillField('authname', 'e107');
+		$I->fillField('authname', \Helper\AdminLogin::ADMIN_USER);
 		$I->fillField('authpass', 'wrong password');
 		$I->click('authsubmit');
 		$I->see("Your login details don't match any registered user");
@@ -45,8 +45,8 @@ class AdminLoginCest
 		$I->see("Admin Area");
 		$I->see("login");
 
-		$I->fillField('authname', 'admin');
-		$I->fillField('authpass', 'admin');
+		$I->fillField('authname', \Helper\AdminLogin::ADMIN_USER);
+		$I->fillField('authpass', \Helper\AdminLogin::ADMIN_PASS);
 
 		$I->click('authsubmit');
 

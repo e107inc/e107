@@ -14,7 +14,6 @@ return [
     'PAGE_NAME' => "Register",
     'LAN_108' => "Registration complete",
     'LAN_185' => "You left required field(s) blank",
-    'LAN_407' => "Please keep this email for your own information. Your password has been encrypted and cannot be retrieved if you misplace or forget it. You can, however, request a new password if this happens.\\n\\nThank you for registering.\\n\\nFrom",
     'LAN_EMAIL_01' => "Dear",
     'LAN_EMAIL_04' => "Please keep this email for your own information.",
     'LAN_EMAIL_05' => "Your password has been encrypted and cannot be retrieved if you misplace or forget it. You can, however, request a new password if this happens.",

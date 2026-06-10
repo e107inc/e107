@@ -187,16 +187,16 @@
         },
         {
             "name": "hybridauth/hybridauth",
-            "version": "v3.12.1",
+            "version": "v3.13.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/hybridauth/hybridauth.git",
-                "reference": "9449686baf2593739129a24e515a60908738ea8d"
+                "reference": "5f799ed5fd35e21f06cf42310f9f6ed3f7bbe7df"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hybridauth/hybridauth/zipball/9449686baf2593739129a24e515a60908738ea8d",
-                "reference": "9449686baf2593739129a24e515a60908738ea8d",
+                "url": "https://api.github.com/repos/hybridauth/hybridauth/zipball/5f799ed5fd35e21f06cf42310f9f6ed3f7bbe7df",
+                "reference": "5f799ed5fd35e21f06cf42310f9f6ed3f7bbe7df",
                 "shasum": ""
             },
             "require": {
@@ -243,9 +243,9 @@
             "support": {
                 "gitter": "https://gitter.im/hybridauth/hybridauth",
                 "issues": "https://github.com/hybridauth/hybridauth/issues",
-                "source": "https://github.com/hybridauth/hybridauth/tree/v3.12.1"
+                "source": "https://github.com/hybridauth/hybridauth/tree/v3.13.0"
             },
-            "time": "2025-04-22T05:22:57+00:00"
+            "time": "2026-04-02T19:11:26+00:00"
         },
         {
             "name": "ifsnop/mysqldump-php",
@@ -751,7 +751,7 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
@@ -759,9 +759,9 @@
         "ext-json": "*",
         "ext-pdo": "*"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "platform-overrides": {
         "php": "8.0"
     },
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }

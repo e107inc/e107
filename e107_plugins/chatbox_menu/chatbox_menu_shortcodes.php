@@ -84,18 +84,20 @@ class chatbox_menu_shortcodes extends e_shortcode
 	public function sc_cb_avatar($parm = null)
 	{
 
-		$tp = e107::getParser();
-		$size = !empty($parm['size']) ? $parm['size'] : 40;
-		$options = array('h' => $size, 'w' => $size, 'crop' => 'C', 'shape' => varset($parm['shape']), 'class'=> varset($parm['class']));
-
 		if(!isset($this->var['user_image']))
 		{
 			$this->init();
-
-			return $tp->toAvatar($this->var, $options);
 		}
 
-		return $tp->toAvatar($this->var, $options);
+		$defaults = array('w' => 40, 'h' => 40, 'crop' => 'C');
+		if(!empty($parm['size']))
+		{
+			$defaults['w'] = $defaults['h'] = $parm['size'];
+		}
+		$options = array_merge($defaults, (array) $parm);
+		unset($options['size']);
+
+		return e107::getParser()->toAvatar($this->var, $options);
 	}
 
 
