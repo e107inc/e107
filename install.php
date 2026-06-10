@@ -271,7 +271,6 @@ if(isset($_POST['previous_steps']))
 	unset($tmpadminpass1);
 }
 
-//$e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'CACHE_DIRECTORY', 'DOWNLOADS_DIRECTORY', 'UPLOADS_DIRECTORY', 'MEDIA_DIRECTORY', 'LOGS_DIRECTORY', 'SYSTEM_DIRECTORY', 'CORE_DIRECTORY');
 $e107_paths = array();
 $e107 = e107::getInstance();
 $ebase = realpath(__DIR__);
@@ -1516,6 +1515,41 @@ class e_install
 			return $this->stage_6();
 		}
 
+		// Render the directory-override section from the canonical list on e107.
+		// Adding a name to e107::overridableDirs() makes it appear in both
+		// templates below and in the legacy reader in class2.php automatically.
+		//
+		// Some names are derived from other overridable names in
+		// e107::defaultDirs() but are not re-derived by setDirs() when they
+		// are explicitly set in e107_config.php. Emitting bare defaults
+		// uncommented for these would freeze them to the default upstream
+		// value, breaking any admin who customises the source (e.g. an admin
+		// who renames DOCS_DIRECTORY would still get HELP under the original
+		// DOCS path). They stay commented so defaultDirs() can re-derive at
+		// every bootstrap. The other entries get written with their bare
+		// defaults so the v2.4 'paths' array is never empty (otherwise
+		// class2.php and thumb.php would route into the legacy branch).
+		$overridable = $this->e107->overridableDirs();
+		$mustComment = array(
+			'HELP_DIRECTORY',      // derived from DOCS_DIRECTORY
+			'DOWNLOADS_DIRECTORY', // derived from MEDIA_DIRECTORY + site_path
+			'UPLOADS_DIRECTORY',   // derived from SYSTEM_DIRECTORY + site_path
+			'LOGS_DIRECTORY',      // derived from SYSTEM_DIRECTORY + site_path
+		);
+		$legacyPathLines = '';
+		$v24PathLines = '';
+		foreach($overridable as $name => $default)
+		{
+			$prefix = in_array($name, $mustComment, true) ? '// ' : '';
+			$short = strtolower(str_replace('_DIRECTORY', '', $name));
+
+			// Emit bare defaults (no site_path appended) so MEDIA/SYSTEM/CACHE
+			// get re-derived multisite-aware by setDirs() at every bootstrap,
+			// rather than baking in the install-time hash.
+			$legacyPathLines .= $prefix . str_pad('$' . $name, 20) . " = '" . $default . "';\n";
+			$v24PathLines    .= '        ' . $prefix . str_pad("'" . $short . "'", 11) . " => '" . $default . "',\n";
+		}
+
 		$config_file = "<?php
 /*
  * e107 website system
@@ -1536,17 +1570,9 @@ class e_install
 \$mySQLprefix    = '{$this->previous_steps['mysql']['prefix']}';
 \$mySQLcharset   = 'utf8mb4';
 
-\$ADMIN_DIRECTORY     = '{$this->e107->e107_dirs['ADMIN_DIRECTORY']}';
-\$FILES_DIRECTORY     = '{$this->e107->e107_dirs['FILES_DIRECTORY']}';
-\$IMAGES_DIRECTORY    = '{$this->e107->e107_dirs['IMAGES_DIRECTORY']}';
-\$THEMES_DIRECTORY    = '{$this->e107->e107_dirs['THEMES_DIRECTORY']}';
-\$PLUGINS_DIRECTORY   = '{$this->e107->e107_dirs['PLUGINS_DIRECTORY']}';
-\$HANDLERS_DIRECTORY  = '{$this->e107->e107_dirs['HANDLERS_DIRECTORY']}';
-\$LANGUAGES_DIRECTORY = '{$this->e107->e107_dirs['LANGUAGES_DIRECTORY']}';
-\$HELP_DIRECTORY      = '{$this->e107->e107_dirs['HELP_DIRECTORY']}';
-\$MEDIA_DIRECTORY	  = '{$this->e107->e107_dirs['MEDIA_DIRECTORY']}';
-\$SYSTEM_DIRECTORY    = '{$this->e107->e107_dirs['SYSTEM_DIRECTORY']}';
-
+// -- Optional directory overrides --
+// Uncomment and edit any line below to point e107 at a different directory layout.
+{$legacyPathLines}
 \$E107_CONFIG = ['site_path' => '{$this->previous_steps['paths']['hash']}'];
 
 
@@ -1603,18 +1629,9 @@ return [
         'prefix'   => '{$this->previous_steps['mysql']['prefix']}',
         'charset'  => 'utf8mb4',
     ],
+    // Uncomment any line below to override the default directory layout.
     'paths' => [
-        'admin'      => '{$this->e107->e107_dirs['ADMIN_DIRECTORY']}',
-        'files'      => '{$this->e107->e107_dirs['FILES_DIRECTORY']}',
-        'images'     => '{$this->e107->e107_dirs['IMAGES_DIRECTORY']}',
-        'themes'     => '{$this->e107->e107_dirs['THEMES_DIRECTORY']}',
-        'plugins'    => '{$this->e107->e107_dirs['PLUGINS_DIRECTORY']}',
-        'handlers'   => '{$this->e107->e107_dirs['HANDLERS_DIRECTORY']}',
-        'languages'  => '{$this->e107->e107_dirs['LANGUAGES_DIRECTORY']}',
-        'help'       => '{$this->e107->e107_dirs['HELP_DIRECTORY']}',
-        'media'      => '{$this->e107->e107_dirs['MEDIA_DIRECTORY']}',
-        'system'     => '{$this->e107->e107_dirs['SYSTEM_DIRECTORY']}',
-    ],
+{$v24PathLines}    ],
     'other' => [
         'site_path'  => '{$this->previous_steps['paths']['hash']}',
     ]
