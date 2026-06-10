@@ -2,100 +2,236 @@
 
 class GitPreparer implements Preparer
 {
-	const TEST_IN_PROGRESS = 'TEST-IN-PROGRESS';
-	const TEST_IN_PROGRESS_FILE = APP_PATH."/".self::TEST_IN_PROGRESS;
+	const WORKTREE_PREFIX = 'e107-TEST-IN-PROGRESS-';
+
+	/** @var string The original (non-worktree) app path */
+	private $appPath;
+
+	/** @var string|null Path to the created worktree */
+	private $worktreePath;
+
+	/** @var resource|null Open file handle holding the flock */
+	private $lockHandle;
+
+	/**
+	 * @param string $appPath The original app path (source tree)
+	 */
+	public function __construct($appPath)
+	{
+		$this->appPath = $appPath;
+	}
 
 	public function snapshot()
 	{
-		$this->debug('Snapshot requested');
-		return $this->setVcsInProgress();
+		if ($this->worktreePath !== null)
+		{
+			return; // idempotent: worktree already created
+		}
+
+		$this->pruneOrphans();
+
+		$pid = getmypid();
+		$hash = substr(md5($this->appPath), 0, 8);
+		$this->worktreePath = sys_get_temp_dir() . '/' . self::WORKTREE_PREFIX . $pid . '-' . $hash;
+
+		$this->debug('Creating worktree at ' . $this->worktreePath);
+
+		$stdout = '';
+		$stderr = '';
+		$rc = $this->runCommand(
+			'git worktree add --detach ' . escapeshellarg($this->worktreePath) . ' HEAD',
+			$stdout, $stderr
+		);
+		if ($rc !== 0)
+		{
+			$this->worktreePath = null;
+			$this->debug('Failed to create worktree: ' . trim($stderr));
+			throw new Exception('GitPreparer: failed to create worktree: ' . trim($stderr));
+		}
+
+		$this->overlayDirtyFiles();
+		$this->acquireLock();
+
+		// Defer cleanup to AFTER all other shutdown handlers.
+		// PriorityCallbacks fires early (registered during bootstrap).
+		// From within it, register_shutdown_function() appends to the
+		// end of the queue, so the actual removal runs after e107's
+		// e107_debug_shutdown and any other application handlers.
+		PriorityCallbacks::instance()->register_shutdown_function(function()
+		{
+			register_shutdown_function(function()
+			{
+				$this->cleanup();
+			});
+		});
+
+		$this->debug('Worktree ready');
 	}
 
 	public function rollback()
 	{
-		$this->debug('Rollback requested');
-		return $this->unsetVcsInProgress();
+		// No-op when called from _afterSuite(). The worktree must
+		// persist through all shutdown handlers; actual removal is
+		// deferred via the late shutdown function registered above.
 	}
 
-	protected function setVcsInProgress()
+	private function cleanup()
 	{
-		// Cleanup in case of a fatal error
-		PriorityCallbacks::instance()->register_shutdown_function([$this, 'rollback']);
-
-		if ($this->isVcsInProgress())
+		if ($this->worktreePath === null)
 		{
-			$this->debug('Git repo shows test in progress. Probably crashed test.');
-			$this->unsetVcsInProgress();
+			return;
+		}
+		$this->debug('Removing worktree at ' . $this->worktreePath);
+
+		if ($this->lockHandle !== null)
+		{
+			flock($this->lockHandle, LOCK_UN);
+			fclose($this->lockHandle);
+			$this->lockHandle = null;
 		}
 
-		$this->debug('Setting test locks in Git…');
+		$this->removeWorktree($this->worktreePath);
+		$this->worktreePath = null;
+	}
 
-		touch(self::TEST_IN_PROGRESS_FILE);
-		$this->runCommand('git add -f '.escapeshellarg(self::TEST_IN_PROGRESS_FILE));
-		$this->runCommand('git add -A -f');
+	public function getAppPath()
+	{
+		// Isolated copy: ensure the worktree exists (snapshot is idempotent),
+		// then run from it so the source tree stays pristine.
+		$this->snapshot();
+		return $this->worktreePath;
+	}
 
-		$commit_command = 'git -c user.name="Test Run" -c user.email="testrun@example.com" commit -a --no-gpg-sign ' .
-			"-m '".self::TEST_IN_PROGRESS."! If test crashed, run `git log -1` for instructions' " .
-			"-m 'Running the test again after fixing the crash will clear this commit\nand any related stashes.' " .
-			"-m 'Alternatively, run these commands to restore the repository to its\npre-test state:' ";
-		$unsetVcsInProgress_commands = [
-			'git reset --hard HEAD',
-			'git clean -fdx',
-			'git reset --mixed HEAD^',
-			'rm -fv '.escapeshellarg(self::TEST_IN_PROGRESS)
-		];
-		foreach($unsetVcsInProgress_commands as $command)
+	private function acquireLock()
+	{
+		$lockFile = $this->worktreePath . '/.lock';
+		$this->lockHandle = fopen($lockFile, 'w');
+		if ($this->lockHandle === false)
 		{
-			$commit_command .= "-m ".escapeshellarg($command)." ";
+			throw new Exception('GitPreparer: failed to create lock file');
+		}
+		flock($this->lockHandle, LOCK_EX);
+		fwrite($this->lockHandle, json_encode(array(
+			'pid' => getmypid(),
+			'appPath' => $this->appPath,
+			'created' => time(),
+		)));
+		fflush($this->lockHandle);
+	}
+
+	private function pruneOrphans()
+	{
+		$pattern = sys_get_temp_dir() . '/' . self::WORKTREE_PREFIX . '*';
+		$candidates = glob($pattern);
+		if (!is_array($candidates))
+		{
+			return;
 		}
 
+		foreach ($candidates as $dir)
+		{
+			if (!is_dir($dir))
+			{
+				continue;
+			}
+
+			$lockFile = $dir . '/.lock';
+			if (!file_exists($lockFile))
+			{
+				$this->debug('Pruning orphan (no lock): ' . $dir);
+				$this->removeWorktree($dir);
+				continue;
+			}
+
+			$handle = @fopen($lockFile, 'r');
+			if ($handle === false)
+			{
+				continue;
+			}
+
+			if (flock($handle, LOCK_EX | LOCK_NB))
+			{
+				flock($handle, LOCK_UN);
+				fclose($handle);
+				$this->debug('Pruning orphan (lock released): ' . $dir);
+				$this->removeWorktree($dir);
+			}
+			else
+			{
+				fclose($handle);
+			}
+		}
+
+		$this->runCommand('git worktree prune');
+	}
+
+	private function overlayDirtyFiles()
+	{
 		$stdout = '';
 		$stderr = '';
-		$rc = $this->runCommand($commit_command, $stdout, $stderr);
+		$rc = $this->runCommand(
+			'rsync -a --exclude=.git '
+			. escapeshellarg($this->appPath . '/') . ' '
+			. escapeshellarg($this->worktreePath . '/'),
+			$stdout, $stderr
+		);
 		if ($rc !== 0)
 		{
-			@unlink(self::TEST_IN_PROGRESS_FILE);
-			$this->debug('Error taking snapshot with Git!');
-			$this->debug('========== STDOUT ==========');
-			$this->debug($stdout);
-			$this->debug('========== STDERR ==========');
-			$this->debug($stderr);
-			throw new Exception("Error taking snapshot with Git!");
+			$this->debug('rsync overlay warning: ' . trim($stderr));
 		}
 	}
 
-	protected function isVcsInProgress($case = '')
+	private function removeWorktree($path)
 	{
-		$in_progress = [];
+		$this->runCommand('git worktree remove --force ' . escapeshellarg($path));
 
-		$in_progress['file'] = file_exists(self::TEST_IN_PROGRESS_FILE);
+		if (is_dir($path))
+		{
+			$this->deleteDir($path);
+			$this->runCommand('git worktree prune');
+		}
+	}
 
-		$stdout = '';
-		$this->runCommand('git log -1 --pretty=%B', $stdout);
-		$in_progress['commit'] = strpos($stdout, self::TEST_IN_PROGRESS) !== false;
-
-		$stdout = '';
-		$this->runCommand('git stash list', $stdout);
-		$in_progress['stash'] = strpos($stdout, self::TEST_IN_PROGRESS) !== false;
-
-		if(!empty($case)) return $in_progress[$case];
-		return in_array(true, $in_progress);
+	private function deleteDir($dirPath)
+	{
+		if (!is_dir($dirPath))
+		{
+			return;
+		}
+		$entries = scandir($dirPath);
+		foreach ($entries as $entry)
+		{
+			if ($entry === '.' || $entry === '..')
+			{
+				continue;
+			}
+			$full = $dirPath . '/' . $entry;
+			if (is_dir($full))
+			{
+				$this->deleteDir($full);
+			}
+			else
+			{
+				unlink($full);
+			}
+		}
+		rmdir($dirPath);
 	}
 
 	/**
-	 * @param string $command The command to run
-	 * @param string $stdout Reference to the STDOUT output as a string
-	 * @param string $stderr Reference to the STDERR output as a string
-	 * @return int Return code of the command that was run
+	 * @param string $command
+	 * @param string $stdout
+	 * @param string $stderr
+	 * @return int Exit code
 	 */
-	protected function runCommand($command, &$stdout = "", &$stderr = "")
+	private function runCommand($command, &$stdout = '', &$stderr = '')
 	{
-		$descriptorspec = [
-			1 => ['pipe', 'w'],
-			2 => ['pipe', 'w'],
-		];
-		$pipes = [];
-		$resource = proc_open($command, $descriptorspec, $pipes, APP_PATH);
+		$descriptorspec = array(
+			1 => array('pipe', 'w'),
+			2 => array('pipe', 'w'),
+		);
+		$pipes = array();
+		$resource = proc_open($command, $descriptorspec, $pipes, $this->appPath);
 		$stdout .= stream_get_contents($pipes[1]);
 		$stderr .= stream_get_contents($pipes[2]);
 		foreach ($pipes as $pipe)
@@ -105,34 +241,7 @@ class GitPreparer implements Preparer
 		return proc_close($resource);
 	}
 
-	protected function unsetVcsInProgress()
-	{
-		if (!$this->isVcsInProgress())
-		{
-			$this->debug('No test locks found');
-			return;
-		}
-
-		$this->debug('Rolling back Git repo to pre-test state…');
-		$this->runCommand('git reset --hard HEAD');
-		$this->runCommand('git clean -fdx');
-
-		while ($this->isVcsInProgress('commit'))
-		{
-			$this->debug('Going back one commit…');
-			$this->runCommand('git reset --mixed HEAD^');
-		}
-
-		while ($this->isVcsInProgress('stash'))
-		{
-			$this->debug('Popping top of stash…');
-			$this->runCommand('git stash pop');
-		}
-
-		@unlink(self::TEST_IN_PROGRESS_FILE);
-	}
-
-	protected function debug($message)
+	private function debug($message)
 	{
 		codecept_debug(__CLASS__ . ': ' . $message);
 	}

@@ -225,7 +225,35 @@ class login_shortcodes extends e_shortcode
         $class = (!empty($parm['class'])) ? "class='".$parm['class']."'" : "";
 		return "<a href='".e_HTTP."fpw.php' ".$class.">".LAN_LOGIN_12."</a>";
 	}
-	
+
+	/* {LOGIN_TABLE_DEST} - carries the signed post-login destination through the login POST */
+	function sc_login_table_dest($parm=null)
+	{
+		$rd = e107::getRedirect();
+
+		// Re-emit an already-captured destination (e.g. set when the visitor was bounced
+		// here) so it survives the POST even if the cookie expires; otherwise capture the
+		// page the form is being shown on (e.g. the login menu on a content page).
+		$token = $rd->getStoredDestinationToken();
+		if($token === '')
+		{
+			$token = $rd->getLoginDestinationToken();
+		}
+
+		if($token === '')
+		{
+			return '';
+		}
+
+		$attributes = e107::getParser()->toAttributes(array(
+			'type'  => 'hidden',
+			'name'  => redirection::LOGIN_DEST_FIELD,
+			'value' => $token,
+		), true);
+
+		return "<input".$attributes." />";
+	}
+
 
 }
 

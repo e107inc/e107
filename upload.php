@@ -342,7 +342,7 @@ class userUpload
 		
 		$text .= " ".$allowed_filetypes;
 		
-		$text .= "<div class='alert alert-block alert-danger'>".LAN_407."<br />".LAN_418.eHelper::parseMemorySize($max_upload_size,0)." (".LAN_UL_022.")<br />";
+		$text .= "<div class='alert alert-block alert-danger'>".LAN_407."<br />".LAN_UL_041.eHelper::parseMemorySize($max_upload_size,0)." (".LAN_UL_022.")<br />";
 		
 		$text .= "<span style='text-decoration:underline'>".LAN_408."</span> ".LAN_420;
 		
