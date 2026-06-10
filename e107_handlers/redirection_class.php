@@ -43,6 +43,45 @@ class redirection
 	 */
 	protected $query_exceptions = array();
 
+	/**
+	 * Default lifetime (in seconds) for a captured post-login destination.
+	 */
+	const LOGIN_DEST_TTL = 1800;
+
+	/**
+	 * Name of the cookie carrying the signed post-login destination token.
+	 */
+	const LOGIN_DEST_COOKIE = 'e107_logindest';
+
+	/**
+	 * Name of the form field carrying the signed post-login destination token.
+	 */
+	const LOGIN_DEST_FIELD = '__logindest';
+
+	/**
+	 * Static-asset extensions that must never be captured as a return destination.
+	 * A missing thumbnail or source-map routes through index.php, but bouncing a
+	 * user to one of those after login/logout is the bug behind issue #5218.
+	 *
+	 * @var array
+	 */
+	protected $asset_extensions = array(
+		'jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'svgz', 'ico', 'bmp', 'avif',
+		'css', 'js', 'mjs', 'map',
+		'woff', 'woff2', 'ttf', 'eot', 'otf',
+		'mp4', 'webm', 'ogg', 'ogv', 'mp3', 'wav', 'm4a',
+		'pdf', 'zip', 'gz', 'tar',
+	);
+
+	/**
+	 * Per-request cache of signed destination tokens, so repeated renders (e.g. two
+	 * login forms on one page) emit the same value instead of minting a fresh JWT
+	 * on every call.
+	 *
+	 * @var array
+	 */
+	protected $destination_token_cache = array();
+
 
 	public $staticDomains;
 
@@ -92,23 +131,12 @@ class redirection
 	{
 		if(!$url)
 		{
-			// e_SELF, defset('e_PAGE') and e_QUERY not set early enough when in e_SINGLE_ENTRY mod
-			if(defset('e_SELF') && in_array(e_SELF, $this->self_exceptions))
+			// Only remember a real page navigation, never an asset / AJAX / login-family
+			// request. This is also the issue #5218 guard for the auto-capture path:
+			// a missing asset routing through index.php must not become the return URL.
+			if(!$this->isCapturable())
 			{
-				return;
-			}
-			elseif(in_array(e_REQUEST_URI, $this->self_exceptions))
-			{
-				return;
-			}
-			
-			if(defset('e_PAGE') && in_array(e_PAGE, $this->page_exceptions))
-			{
-				return;
-			}
-			if(in_array($_SERVER['QUERY_STRING'], $this->query_exceptions))
-			{
-				return;
+				return $this;
 			}
 			$url = $this->getSelf($forceNoSef);
 		}
@@ -312,15 +340,47 @@ class redirection
 		*/
 		
 		$this->saveMembersOnlyUrl();
+		// Also capture through the unified signed-destination path, so a members-only
+		// site returns the visitor via the same mechanism as every other login seam.
+		$this->setLoginDestination();
 
-		$redirectType = e107::getPref('membersonly_redirect');
-
-		$redirectURL = ($redirectType == 'splash') ? 'membersonly.php' : 'login.php';
-
-		$this->redirect(e_HTTP.$redirectURL);
+		$this->redirect($this->getMembersOnlyRedirectUrl());
 	}
 
-	
+
+	/**
+	 * Resolve the URL a non-member is redirected to on a members-only site.
+	 *
+	 * Split out of checkMembersOnly() so the destination decision can be unit
+	 * tested without performing the actual header redirect.
+	 *
+	 * Loop guard (issue #5698): when registration is Disabled (user_reg=0) and
+	 * no social login provider is active, the core login.php turns guests away
+	 * (see its top guard), so redirecting a guest there just bounces them back
+	 * to the members-only site and loops until the browser aborts. If the login
+	 * page in use is the stock login.php (i.e. e_LOGIN has not been overridden
+	 * by a customlogin.php or a plugin), send the guest to the members-only
+	 * splash instead, which is a dead end and breaks the loop. A custom login
+	 * page is assumed to handle its own guest access, so it is left untouched.
+	 *
+	 * @return string absolute URL to redirect a non-member to
+	 */
+	public function getMembersOnlyRedirectUrl()
+	{
+		$redirectType = e107::getPref('membersonly_redirect');
+
+		if($redirectType != 'splash'
+			&& e_LOGIN === SITEURL.'login.php'
+			&& !e107::getPref('user_reg')
+			&& !e107::getUserProvider()->isSocialLoginEnabled())
+		{
+			$redirectType = 'splash';
+		}
+
+		return ($redirectType == 'splash') ? e_HTTP.'membersonly.php' : e_LOGIN;
+	}
+
+
 	/**
 	 * Store the current URL so that it can retrieved after login.
 	 *
@@ -328,10 +388,14 @@ class redirection
 	 */
 	private function saveMembersOnlyUrl($forceNoSef = false)
 	{
+		// Never remember an asset / AJAX request as the after-login target (issue #5218).
+		if(!$this->isCapturable())
+		{
+			return;
+		}
+
 		// remember the url for after-login.
-		//$afterlogin = e_COOKIE.'_afterlogin';
 		$this->setCookie('_afterlogin', $this->getSelf($forceNoSef), 300);
-		//session_set($afterlogin, $url, time() + 300);
 	}
 
 	
@@ -349,6 +413,323 @@ class redirection
 			$this->clearCookie('_afterlogin');
 			$this->redirect($url);
 		}
+	}
+
+	/**
+	 * Decide whether the current (or a given) request is a sensible page to send a
+	 * user back to after they log in.
+	 *
+	 * Only a normal GET page view qualifies: not a POST/HEAD target, not an AJAX
+	 * call, not a static asset (by extension), and not one of the login / signup /
+	 * fpw / membersonly / logout URLs. The asset check is what stops a missing
+	 * thumbnail or source-map (which still routes through index.php) from being
+	 * remembered as a destination - the root cause of issue #5218.
+	 *
+	 * @param string|null $url defaults to the current request URI
+	 * @return bool
+	 */
+	public function isCapturable($url = null)
+	{
+		// Only ever remember a normal GET page view.
+		if(isset($_SERVER['REQUEST_METHOD']) && strtoupper($_SERVER['REQUEST_METHOD']) !== 'GET')
+		{
+			return false;
+		}
+
+		// Never remember a background / AJAX request.
+		if(deftrue('e_AJAX_REQUEST'))
+		{
+			return false;
+		}
+
+		// Only ever remember a top-level document navigation. Browsers tag every
+		// request with its destination via the Fetch Metadata header
+		// Sec-Fetch-Dest: a top-level navigation is 'document', whereas an <iframe>
+		// sub-request is 'iframe', a fetch()/XHR is 'empty', an image is 'image',
+		// and so on. Anything that is not a top-level document - most importantly
+		// the menu manager's iframe body, whose src is an admin-perms-gated URL -
+		// must never become the post-login return destination, or the user is
+		// dumped into the bare embedded view with no way to navigate. The header is
+		// set by the browser and cannot be spoofed by page script; clients that
+		// omit it (older browsers) fall through to the marker check below.
+		if(isset($_SERVER['HTTP_SEC_FETCH_DEST'])
+			&& strtolower($_SERVER['HTTP_SEC_FETCH_DEST']) !== 'document')
+		{
+			return false;
+		}
+
+		if(null === $url)
+		{
+			// e_REQUEST_URI is reliable even in e_SINGLE_ENTRY mode, where e_SELF /
+			// e_PAGE / e_QUERY are not set early enough (see setPreviousUrl() note).
+			$url = $this->getSelf(false);
+		}
+
+		if(!is_string($url) || $url === '')
+		{
+			return false;
+		}
+
+		// Login / signup / fpw / membersonly / logout are not landing pages.
+		if(in_array($url, $this->self_exceptions))
+		{
+			return false;
+		}
+		if(defset('e_SELF') && in_array(e_SELF, $this->self_exceptions))
+		{
+			return false;
+		}
+		if(defset('e_PAGE') && in_array(e_PAGE, $this->page_exceptions))
+		{
+			return false;
+		}
+		if(isset($_SERVER['QUERY_STRING']) && in_array($_SERVER['QUERY_STRING'], $this->query_exceptions))
+		{
+			return false;
+		}
+
+		// Reject static assets by extension (issue #5218).
+		$path = parse_url($url, PHP_URL_PATH);
+		if(is_string($path) && $path !== '')
+		{
+			$ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+			if($ext !== '' && in_array($ext, $this->asset_extensions))
+			{
+				return false;
+			}
+		}
+
+		// Embedded / dialog views are not navigable landing pages. e107 switches a
+		// page into iframe or modal rendering via these request markers (the menu
+		// manager's ?configure=, the shared ?iframe=1, and cpage / image dialogs'
+		// ?mode=dialog / ?action=dialog - see e107_admin/boot.php, menus.php,
+		// cpage.php), but each page only recognises the marker AFTER its getperms()
+		// gate has already funnelled the unauthenticated sub-request through
+		// redirection::go('admin'). Recognise the markers here - off the URL itself,
+		// so it also covers clients that send no Fetch Metadata - so an iframe or
+		// modal sub-request can never overwrite the real page the user was viewing.
+		$query = parse_url($url, PHP_URL_QUERY);
+		if(is_string($query) && $query !== '')
+		{
+			parse_str($query, $params);
+			if(!empty($params['iframe'])
+				|| isset($params['configure'])
+				|| (isset($params['mode']) && $params['mode'] === 'dialog')
+				|| (isset($params['action']) && $params['action'] === 'dialog'))
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Sign the current (or a given) destination URL into a stateless token.
+	 *
+	 * The token is a JWT signed with the site secret (see {@see e_jwt}), so the
+	 * destination is server-certified: a visitor cannot forge or alter it. That is
+	 * what makes it safe to carry in a hidden form field or a cookie without
+	 * opening a redirect-injection hole. Returns '' when the request is not a
+	 * capturable target (see self::isCapturable()).
+	 *
+	 * @param string|null $url defaults to the current request URI (relative, query preserved)
+	 * @param int $ttl token lifetime in seconds
+	 * @return string signed token, or '' when nothing should be captured
+	 */
+	public function getLoginDestinationToken($url = null, $ttl = self::LOGIN_DEST_TTL)
+	{
+		if(null === $url)
+		{
+			$url = $this->getSelf(false); // e_REQUEST_URI - relative, SEF / single-entry safe
+		}
+
+		$cacheKey = $url . '|' . (int) $ttl;
+		if(isset($this->destination_token_cache[$cacheKey]))
+		{
+			return $this->destination_token_cache[$cacheKey];
+		}
+
+		if(!$this->isCapturable($url))
+		{
+			$this->destination_token_cache[$cacheKey] = '';
+			return '';
+		}
+
+		$token = e107::getJWT()->encode(array('dest' => $url), (int) $ttl);
+		$this->destination_token_cache[$cacheKey] = $token;
+
+		return $token;
+	}
+
+	/**
+	 * Decode a destination token and confirm it points somewhere on this site.
+	 *
+	 * Signature, issuer and expiry are verified by {@see e_jwt}. On top of that we
+	 * enforce a same-origin / site-rooted target as defence-in-depth, so the
+	 * redirect can never be turned into an off-site (open-redirect) jump even if a
+	 * signed token somehow carried one.
+	 *
+	 * @param string $token
+	 * @return string|false the verified destination URL, or false
+	 */
+	public function verifyDestination($token)
+	{
+		if(!is_string($token) || $token === '')
+		{
+			return false;
+		}
+
+		$payload = e107::getJWT()->decode($token);
+
+		if(empty($payload['dest']) || !is_string($payload['dest']))
+		{
+			return false;
+		}
+
+		$dest = $payload['dest'];
+
+		// Collapse backslashes so "/\evil" or "\\evil" cannot smuggle an off-site host.
+		$probe = str_replace('\\', '/', $dest);
+
+		// Reject protocol-relative ("//host") targets.
+		if(strpos($probe, '//') === 0)
+		{
+			return false;
+		}
+
+		if(preg_match('#^https?://#i', $probe))
+		{
+			// An absolute URL must point at this site or one of its trusted hosts.
+			// The literal SITEURL match covers the common case; the host check
+			// additionally honours the `trusted_hosts` pref (e107inc/e107#5639),
+			// so a multi-hostname install can return a visitor to whichever of
+			// its own hosts they came in on, but never to a third-party host.
+			$host = parse_url($probe, PHP_URL_HOST);
+			$onSite = (strpos($probe, SITEURLBASE) === 0 || strpos($probe, SITEURL) === 0);
+			if(!$onSite && (!is_string($host) || $host === '' || !e107::getInstance()->isTrustedHost($host)))
+			{
+				return false;
+			}
+		}
+		elseif(strpos($probe, '/') !== 0)
+		{
+			// Otherwise it must be a site-rooted relative path.
+			return false;
+		}
+
+		return $dest;
+	}
+
+	/**
+	 * Capture the current (or a given) URL as the page to return the user to after
+	 * they log in. Stateless: stored as a signed token in a cookie, so guests never
+	 * create a server-side session row. No-op when the request is not capturable.
+	 *
+	 * @param string|null $url defaults to the current request URI
+	 * @param int $ttl cookie / token lifetime in seconds
+	 * @return redirection
+	 */
+	public function setLoginDestination($url = null, $ttl = self::LOGIN_DEST_TTL)
+	{
+		$token = $this->getLoginDestinationToken($url, $ttl);
+
+		if($token !== '')
+		{
+			$this->writeDestinationCookie($token, time() + (int) $ttl);
+			$_COOKIE[self::LOGIN_DEST_COOKIE] = $token;
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Return the verified post-login destination, or false.
+	 *
+	 * Reads the signed token from the submitted form first (so it still works with
+	 * cookies disabled), then the cookie. The result is always same-origin (see
+	 * self::verifyDestination()).
+	 *
+	 * @return string|false
+	 */
+	public function getLoginDestination()
+	{
+		$token = '';
+
+		if(isset($_POST[self::LOGIN_DEST_FIELD]) && is_string($_POST[self::LOGIN_DEST_FIELD]))
+		{
+			$token = $_POST[self::LOGIN_DEST_FIELD];
+		}
+		elseif(isset($_COOKIE[self::LOGIN_DEST_COOKIE]) && is_string($_COOKIE[self::LOGIN_DEST_COOKIE]))
+		{
+			$token = $_COOKIE[self::LOGIN_DEST_COOKIE];
+		}
+
+		if($token === '')
+		{
+			return false;
+		}
+
+		return $this->verifyDestination($token);
+	}
+
+	/**
+	 * Raw signed destination token currently stored in the cookie, or '' if there
+	 * is none or it no longer verifies. Used to re-emit the destination as a hidden
+	 * form field so it survives the login POST even if the cookie later expires.
+	 *
+	 * @return string
+	 */
+	public function getStoredDestinationToken()
+	{
+		if(isset($_COOKIE[self::LOGIN_DEST_COOKIE])
+			&& is_string($_COOKIE[self::LOGIN_DEST_COOKIE])
+			&& $this->verifyDestination($_COOKIE[self::LOGIN_DEST_COOKIE]) !== false)
+		{
+			return $_COOKIE[self::LOGIN_DEST_COOKIE];
+		}
+
+		return '';
+	}
+
+	/**
+	 * Forget any stored post-login destination (called once it has been consumed).
+	 *
+	 * @return redirection
+	 */
+	public function clearLoginDestination()
+	{
+		$this->writeDestinationCookie('', time() - 3600);
+		unset($_COOKIE[self::LOGIN_DEST_COOKIE]);
+
+		return $this;
+	}
+
+	/**
+	 * Write the destination cookie, aligned with the session cookie (path / domain /
+	 * secure) and hardened with HttpOnly + SameSite=Lax, mirroring
+	 * {@see CSRFCookieHandler::setCookieToken()}. The PHP-version handling for the
+	 * SameSite attribute lives in {@see eShims::setcookie()}.
+	 *
+	 * @param string $value token value ('' to delete)
+	 * @param int $expires absolute expiry timestamp
+	 * @return void
+	 */
+	private function writeDestinationCookie($value, $expires)
+	{
+		$opt = e107::getSession()->getOptions();
+		$path = !empty($opt['path']) ? $opt['path'] : '/';
+		$domain = !empty($opt['domain']) ? $opt['domain'] : '';
+		$secure = !empty($opt['secure']);
+
+		eShims::setcookie(self::LOGIN_DEST_COOKIE, $value, array(
+			'expires'  => $expires,
+			'path'     => $path,
+			'domain'   => $domain,
+			'secure'   => $secure,
+			'httponly' => true,
+			'samesite' => 'Lax',
+		));
 	}
 
 	/**
@@ -449,6 +830,17 @@ class redirection
 
 		if($url == 'admin')
 		{
+			// Every admin page bounces an unauthorised visitor to the admin login
+			// through this branch (e107::redirect('admin') in the page's getperms()
+			// gate). Capture the page they were on first, so a successful admin login
+			// can return them to it instead of always landing on the dashboard
+			// (consumed in e107_admin/auth.php). setLoginDestination() self-guards via
+			// isCapturable(); skip it for users who are already admins, e.g. the
+			// post-login go('admin') to the dashboard.
+			if(!e107::getUser()->isAdmin())
+			{
+				$this->setLoginDestination();
+			}
 			$url = SITEURLBASE. e_ADMIN_ABS;
 		}
 
