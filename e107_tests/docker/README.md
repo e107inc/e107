@@ -64,19 +64,25 @@ or `mariadb`/`mysql` Docker Hub images should work.
   - `config.docker.yml` (managed by this tool) overrides while a stack is up.
   - `config.local.yml` always wins for personal tweaks.
 - The worktree's app root is bind-mounted at `/var/www/html`, so file edits
-  on the host show up in Apache immediately — no rebuild required for
-  application changes.
+  on the host show up in Apache immediately; no rebuild for application changes.
 - The web container also has PHP CLI, Composer, and git, so `e107-tests run`
   invokes Codeception inside the container against the same filesystem
   Apache is serving.
+- The WebDriver suite drives a dedicated `selenium/standalone-chrome` browser
+  container. Both the acceptance and WebDriver suites use one app URL (the
+  `web` service alias), so they exercise the same HTTP interface; e107 trusts
+  the `web` host via the test dump's `trusted_hosts` pref.
+- `up` builds the web image only if it is missing and reuses it otherwise, so a
+  previously built or CI-cached image is picked up without a rebuild.
 - Database state lives on tmpfs. `down` is a true reset; no leftover state.
 
 ## Working in a worktree
 
-`PreparerFactory` now verifies that git actually works in the app path before
-selecting `GitPreparer`. Worktrees whose `.git` file points outside the
-container's view fall back to `E107Preparer` automatically, which is
-sufficient because each Docker stack is already isolated.
+The local deployer (this harness) serves e107 from the app path itself, so it
+runs the tests in place via `E107Preparer`. Only deploy-based suites
+(sftp/cpanel) isolate the source in a disposable `git worktree`, and only when
+git actually works in the app path. Each Docker stack is already isolated, so
+running in place is safe here.
 
 ## Common operations
 
@@ -127,10 +133,9 @@ during validation, so we don't rely on it. Treat `clean` as the canonical
 
 ## Files
 
-- `Dockerfile` — PHP + Apache + extensions, built once per `(PHP, xdebug)`
-  combo.
-- `compose.yml` — single service definition, parameterized by env.
-- `entrypoint.sh` — waits for DB, fixes ownership on the bind mount.
-- `apache-vhost.conf` / `php-overrides.ini` — sensible test defaults.
-- `.envs/<project>/stack.env` — per-stack state. Hand-edit at your peril;
+- `Dockerfile`: PHP + Apache + extensions, built once per `(PHP, xdebug)` combo.
+- `compose.yml`: the db + web + selenium services, parameterized by env.
+- `entrypoint.sh`: waits for DB, fixes ownership on the bind mount.
+- `apache-vhost.conf` / `php-overrides.ini`: sensible test defaults.
+- `.envs/<project>/stack.env`: per-stack state. Hand-edit at your peril;
   re-run `e107-tests up` instead.

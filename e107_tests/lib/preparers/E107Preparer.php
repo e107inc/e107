@@ -4,6 +4,20 @@ class E107Preparer implements Preparer
 {
 	const TEST_HASH = '000000test'; // see e107_config.php
 
+	/** @var string */
+	private $appPath;
+
+	public function __construct($appPath)
+	{
+		$this->appPath = $appPath;
+	}
+
+	public function getAppPath()
+	{
+		// In-place: the app runs straight from the served tree.
+		return $this->appPath;
+	}
+
 	public function snapshot()
 	{
 		return $this->deleteHashDirs();
