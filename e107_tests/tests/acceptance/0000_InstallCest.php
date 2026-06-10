@@ -117,10 +117,10 @@ class InstallCest
 
 		$I->see("Administration", 'h3');
 
-		$I->fillField('u_name',     'admin');
-		$I->fillField('d_name',     'admin');
-		$I->fillField('pass1',      'admin');
-		$I->fillField('pass2',      'admin');
+		$I->fillField('u_name',     \Helper\AdminLogin::ADMIN_USER);
+		$I->fillField('d_name',     \Helper\AdminLogin::ADMIN_USER);
+		$I->fillField('pass1',      \Helper\AdminLogin::ADMIN_PASS);
+		$I->fillField('pass2',      \Helper\AdminLogin::ADMIN_PASS);
 		$I->fillField('email',      'admin@admin.com');
 
 		$I->click('submit');
@@ -160,8 +160,8 @@ class InstallCest
 	private function loginToAdmin(AcceptanceTester $I)
 	{
 		$I->amOnPage('/e107_admin/admin.php');
-		$I->fillField('authname', 'admin');
-		$I->fillField('authpass', 'admin');
+		$I->fillField('authname', \Helper\AdminLogin::ADMIN_USER);
+		$I->fillField('authpass', \Helper\AdminLogin::ADMIN_PASS);
 		$I->click('authsubmit');
 		$I->dontSeeInSource('Unauthorized access!');
 	}
