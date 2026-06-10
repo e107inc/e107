@@ -315,7 +315,7 @@ class CSRFCookieHandler extends CSRFTokenHandler
 			'samesite' => 'Lax'
 		];
 
-		setcookie(self::COOKIE_NAME, $token, $params);
+		eShims::setcookie(self::COOKIE_NAME, $token, $params);
 
 		// Also set in $_COOKIE for immediate availability
 		$_COOKIE[self::COOKIE_NAME] = $token;
@@ -332,7 +332,7 @@ class CSRFCookieHandler extends CSRFTokenHandler
 		$options = $session->getOptions();
 
 		// Delete cookie
-		setcookie(self::COOKIE_NAME, '', time() - 3600,
+		eShims::setcookie(self::COOKIE_NAME, '', time() - 3600,
 				  $options['path'] ?: '/',
 				  $options['domain'] ?: '',
 				  $options['secure'] ?: false,

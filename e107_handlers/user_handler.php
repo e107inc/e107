@@ -1161,6 +1161,12 @@ class e_user_provider
 	 */
 	public function __construct($provider = null, $config = array(), $suppress_exceptions = true)
 	{
+		// social is a non-core plugin and may not be installed. Bail out cleanly
+		// before the include so it doesn't attempt (and log, despite the leading @)
+		// a failed-to-open-stream warning on every instantiation. See e107inc/e107#5683.
+		if (!e107::isInstalled('social')) return;
+		if (!is_readable(e_PLUGIN . "social/includes/social_login_config.php")) return;
+
 		@include_once(e_PLUGIN . "social/includes/social_login_config.php");
 		if (!class_exists('social_login_config')) return;
 
@@ -1448,7 +1454,7 @@ class e_user_provider
 			if (T_VARIABLE == $adapterTokens[$index][0])
 			{
 				$supplementalFieldPathSplit = self::adapterTokenParseConfig($adapterTokens, $index, null);
-				if (!is_null($supplementalFieldPathSplit))
+				if (!empty($supplementalFieldPathSplit))
 				{
 					$value = $rawDocumentation;
 					$level = [];
@@ -1499,6 +1505,7 @@ class e_user_provider
 						break;
 					case 'filter':
 					case 'get':
+					case 'exists':
 						break;
 					default:
 						return $carry;
