@@ -834,7 +834,7 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$this->assertEquals(123,$result);
 
 		$result = $this->db->escape("Can't", true);
-		$this->assertEquals("Can't", $result);
+		$this->assertEquals("Can\'t", $result);
 	}
 
 	public function testDb_Table_exists()
