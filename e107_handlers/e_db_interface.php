@@ -56,6 +56,7 @@
 		 * <code>$sql->delete("tmp", "tmp_ip='$ip'");</code><br />
 		 * <br />
 		 * @access public
+		 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters instead.
 		 */
 		function delete($table, $arg = '', $debug = false, $log_type = '', $log_remark = '');
 
@@ -108,6 +109,7 @@
 		 * <code>e107::getDb()->replace("links", $array);</code>
 		 *
 		 * @access public
+		 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters instead.
 		 */
 		function replace($table, $arg, $debug = false, $log_type = '', $log_remark = '');
 
@@ -160,6 +162,7 @@
 		 * @param string $indexField field name to be used for indexing when in multi mode
 		 * @param boolean $debug
 		 * @return string|array
+		 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters, then {@see e_db::fetch()} or {@see e_db::rows()} to read the results.
 		 */
 		public function retrieve($table, $fields = null, $where=null, $multi = false, $indexField = null, $debug = false);
 
@@ -189,8 +192,83 @@
 		 *        Returns FALSE if there is an error in the query
 		 *        Returns TRUE if the query is successful, and it does not return a row count
 		 *        Returns the number of rows added/updated/deleted for DELETE, INSERT, REPLACE, or UPDATE
+		 * @deprecated v2.4.0 Use {@see e_db::execute()} instead; it accepts the same SQL (including '#table' markers) with values moved to bound :named parameters.
 		 */
 		public function gen($query, $debug = false, $log_type = '', $log_remark = '');
+
+
+		/**
+		 * Execute an SQL statement with bound parameters. The canonical way to
+		 * run SQL against an e107 database.
+		 *
+		 * Table names may be written as `#table` (backticks optional): the e107
+		 * database prefix is attached and multi-language routing is applied,
+		 * while a '#' inside string literals or comments is left untouched.
+		 * Values belong in $params as :named placeholders, never concatenated
+		 * into the SQL string.
+		 *
+		 * <code>
+		 * $sql->execute('SELECT user_name FROM `#user` WHERE user_id = :id', array('id' => 5));
+		 * while($row = $sql->fetch()) { ... }
+		 * </code>
+		 *
+		 * @param string $sql SQL with optional `#table` markers and :named placeholders
+		 * @param array $params name => value, or name => array('value' => mixed, 'type' => e_db::PARAM_*)
+		 * @return int|bool row count for result sets (read rows with {@see e_db::fetch()});
+		 *                  affected rows for DELETE/INSERT/REPLACE/UPDATE;
+		 *                  true for other successful statements; false on error
+		 */
+		public function execute($sql, $params = array());
+
+
+		/**
+		 * Resolve a logical e107 table name to its physical name: the database
+		 * prefix is attached and, on multi-language sites, the table is routed
+		 * to the current language's lan_* table when one exists.
+		 *
+		 * @param string $table table name with or without a leading '#'
+		 * @return string|false physical table name (unquoted), or false when
+		 *                      the name is not a valid identifier
+		 */
+		public function resolveTableName($table);
+
+
+		/**
+		 * Validate and backtick-quote an SQL identifier (`column` or `table.column`).
+		 * Fails closed: anything outside the [A-Za-z0-9_] grammar (with one
+		 * optional dot) returns false.
+		 *
+		 * @param string $identifier
+		 * @return string|false
+		 */
+		public function quoteIdentifier($identifier);
+
+
+		/**
+		 * Return a list of the field names in a table.
+		 *
+		 * @param string $table - table name (no prefix)
+		 * @param string $prefix - table prefix to apply. If empty, MPREFIX is used.
+		 * @param boolean $retinfo = false - just returns array of field names. TRUE - returns all field info
+		 * @return array|boolean - false on error, field list array on success
+		 */
+		public function fields($table, $prefix = '', $retinfo = false);
+
+
+		/**
+		 * Escape special characters in a string for use inside a quoted SQL
+		 * literal, with mysqli_real_escape_string() semantics.
+		 *
+		 * @deprecated v2.4.0 Bind values with {@see e_db::execute()} instead.
+		 *             Escaping is only safe when the result is placed inside
+		 *             quotes in the SQL string, which parameter binding makes
+		 *             unnecessary. Calls emit one E_USER_DEPRECATED notice per
+		 *             call site per request.
+		 * @param string $data
+		 * @param bool $strip Unused; retained for backwards compatibility
+		 * @return string
+		 */
+		public function escape($data, $strip = true);
 
 
 		/**
@@ -212,6 +290,7 @@
 		 * e107::getDb('sql2')->update("user", "user_viewed = '$u_new' WHERE user_id = '".USERID."' ");</code><br />
 		 *
 		 * @access public
+		 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters instead.
 		 */
 		function update($tableName, $arg, $debug = false, $log_type = '', $log_remark = '');
 
@@ -272,6 +351,7 @@
 		 * @param string $log_type
 		 * @param string $log_remark
 		 * @return int|false Number of rows or false on error
+		 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters instead.
 		 */
 		public function select($table, $fields = '*', $arg = '', $noWhere = false, $debug = false, $log_type = '', $log_remark = '');
 
@@ -303,6 +383,7 @@
 		 * <code>e107::getDb()->insert("links", "0, 'News', 'news.php', '', '', 1, 0, 0, 0");</code>
 		 *
 		 * @access public
+		 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters instead.
 		 */
 		function insert($tableName, $arg, $debug = false, $log_type = '', $log_remark = '');
 
@@ -340,6 +421,7 @@
 		 * <code>$topics = e107::getDb()->count("forum_thread", "(*)", "thread_forum_id='".$forum_id."' AND thread_parent='0'");</code>
 		 *
 		 * @access public
+		 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters and {@see e_db::fetch()} instead, e.g. execute("SELECT COUNT(*) FROM `#table` WHERE field = :v", $params).
 		 */
 		function count($table, $fields = '(*)', $arg = '', $debug = FALSE, $log_type = '', $log_remark = '');
 
@@ -351,6 +433,7 @@
 		 * @param $field
 		 * @param string $where (optional)
 		 * @return bool|resource
+		 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters and {@see e_db::fetch()} instead, e.g. execute("SELECT MAX(field) FROM `#table`").
 		 */
 		public function max($table, $field, $where='');
 
