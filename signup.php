@@ -101,6 +101,7 @@ else
 	$SIGNUP_EXTENDED_CAT = '';
 
 	$tmplPath = e107::coreTemplatePath('signup');
+	e107::predefineLegacyLans($tmplPath); // #5653: pre-define any missing legacy LAN_* before require.
 	require_once($tmplPath); //correct way to load a core template.
 	if(empty($SIGNUP_BODY) && empty($SIGNUP_BEGIN)) // fall-back in case the template has been loaded before.
 	{

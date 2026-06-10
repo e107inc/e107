@@ -1,19 +1,6 @@
 #!/usr/bin/env bash
-# e107 test harness CLI
-#
-# Spins up isolated Docker test environments per worktree+matrix combo,
-# bind-mounts the worktree into a PHP+Apache container, and drives
-# Codeception against it.
-#
-# Quickstart:
-#   e107_tests/bin/e107-tests up                # PHP 8.3 + MariaDB 10.11
-#   e107_tests/bin/e107-tests urls              # show URL + DB conn info
-#   e107_tests/bin/e107-tests run unit          # run unit suite
-#   e107_tests/bin/e107-tests run acceptance    # run acceptance suite
-#   e107_tests/bin/e107-tests shell             # interactive bash in web
-#   e107_tests/bin/e107-tests down              # tear down this env
-#
-# See `e107-tests help` for the full command list.
+# e107 test harness CLI: per-matrix docker stacks for running Codeception.
+# Run `e107-tests help` for the command list; see e107_tests/docker/README.md.
 
 set -euo pipefail
 
@@ -52,13 +39,6 @@ require_docker() {
     docker compose version >/dev/null 2>&1 \
         || err "the 'docker compose' plugin is required (got: $(docker compose version 2>&1 || true))"
 }
-
-# Returns ":O" when the engine is Podman (supports ephemeral overlay
-# mounts that keep the host worktree pristine across acceptance tests),
-# empty string otherwise. With overlay the container can install vendor/,
-# write e107_config.php, and create hash dirs without leaking back to the
-# host. With plain bind, those writes will dirty the worktree — agents on
-# Docker should be prepared to clean up after acceptance runs.
 
 # Slug an arbitrary string into something safe for compose project names.
 slug() {
@@ -170,7 +150,10 @@ write_managed_config() {
 ---
 app_path: '../'
 deployer: 'local'
-url: 'http://localhost/'
+# Shared by the acceptance and WebDriver suites. It's the 'web' alias (not
+# 'localhost') so the separate selenium browser can reach it; the test dump's
+# trusted_hosts pref lets e107 accept that host. See docker/README.md.
+url: 'http://web/'
 db:
   host: 'db'
   port: '3306'
@@ -179,6 +162,12 @@ db:
   password: '$DEFAULT_DB_ROOT_PASSWORD'
   populate: true
   dump_path: 'tests/_data/e107_v2.3.0.sample.sql'
+# WebDriver suite drives the dedicated 'selenium' service over the compose
+# network. The grid serves the W3C protocol at the root '/'.
+selenium:
+  host: 'selenium'
+  port: '4444'
+  path: '/'
 EOF
 }
 
@@ -208,7 +197,9 @@ cmd_up() {
     write_managed_config
 
     note ">> Bringing up env: $PROJECT (PHP $PHP / $DB)"
-    compose up -d --build --wait
+    # `compose up` builds the web image only when it's missing, so a cached
+    # image (CI) or an earlier build is reused automatically.
+    compose up -d --wait
     cmd_install
     cmd_urls
 }
@@ -440,7 +431,8 @@ USAGE:
   e107-tests --env <project> <command> [args...]   # operate on a specific env
 
 LIFECYCLE:
-  up [--php X] [--db Y] [--xdebug]   Build, start, install deps, mark active.
+  up [--php X] [--db Y] [--xdebug]   Start, install deps, mark active. Builds the
+                                     web image if missing, else reuses it.
                                      Default: PHP 8.3 + MariaDB 10.11.
   down [--volumes]                   Stop and remove this env.
   reset                              Drop+recreate DB, clear written app state.

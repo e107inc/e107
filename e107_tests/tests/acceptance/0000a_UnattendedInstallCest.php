@@ -2,8 +2,8 @@
 
 class UnattendedInstallCest
 {
-	const ADMIN_USER     = 'admin';
-	const ADMIN_PASSWORD = 'admin';
+	const ADMIN_USER     = \Helper\AdminLogin::ADMIN_USER;
+	const ADMIN_PASSWORD = \Helper\AdminLogin::ADMIN_PASS;
 	const ADMIN_DISPLAY  = 'admin';
 	const ADMIN_EMAIL    = 'admin@admin.com';
 	const SITENAME       = 'UnattendedInstallTest';
