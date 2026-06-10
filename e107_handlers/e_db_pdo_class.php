@@ -2103,23 +2103,27 @@ class e_db_pdo implements e_db
 
 
 	/**
-	 * A pointer to mysql_real_escape_string() - see http://www.php.net/mysql_real_escape_string
+	 * Escape special characters in a string for use in an SQL statement,
+	 * with the same semantics as mysqli_real_escape_string().
+	 * The result is only safe when enclosed in quotes in the SQL statement.
 	 *
 	 * @param string $data
+	 * @param bool $strip Unused; retained for backwards compatibility
 	 * @return string
+	 * @throws PDOException if the PDO driver does not support quoting
 	 */
 	function escape($data, $strip = true)
 	{
-/*
-		if ($strip)
-		{
-			$data = strip_if_magic($data);
-		}*/
-
 		$this->_getMySQLaccess();
 
-		return $data;
+		$quoted = $this->mySQLaccess->quote((string) $data);
 
+		if($quoted === false) // pdo_mysql always supports quoting
+		{
+			throw new PDOException('escape() requires a PDO driver that supports quoting');
+		}
+
+		return substr($quoted, 1, -1);
 	}
 
 

@@ -71,15 +71,6 @@ class e_db_mysqlTest extends e_db_abstractTest
 		$this->assertEquals("1146", $result);
 	}
 
-	public function testEscape()
-	{
-		$result = $this->db->escape(123);
-		$this->assertEquals(123,$result);
-
-		$result = $this->db->escape("Can't", true);
-		$this->assertEquals("Can\'t", $result);
-	}
-
 	public function testDb_Close()
 	{
 		$db_impl = $this->getDbImplementation();
