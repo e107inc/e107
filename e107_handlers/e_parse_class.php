@@ -4507,7 +4507,10 @@ class e_parse
 			}
 			else
 			{
-				$content = e107::getFile()->getRemoteContent($url);
+				// Use the shared (singleton) file handler so the remote fetch
+				// can be stubbed in tests via the registry, and so repeated
+				// avatar rendering reuses one e_file instance.
+				$content = e107::getFile(true)->getRemoteContent($url);
 				$ext = strtolower(pathinfo($url, PATHINFO_EXTENSION));
 			}
 
