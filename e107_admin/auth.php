@@ -130,6 +130,13 @@ else
 	{
 		if(e107::getUser()->login($_POST['authname'], $_POST['authpass'], false, varset($_POST['hashchallenge'])) !== false)
 		{
+			// Return the admin to the page they were trying to reach before logging in.
+			$adminDest = e107::getRedirect()->getLoginDestination();
+			if($adminDest)
+			{
+				e107::getRedirect()->clearLoginDestination();
+				e107::getRedirect()->redirect($adminDest);
+			}
 			e107::getRedirect()->go('admin'); // successful login.
 		}
 		else
@@ -314,11 +321,28 @@ class auth
 			}
 			    
 		    $text .= "<div class='admin-submit'>"
-		       	.$frm->admin_button('authsubmit',ADLAN_91,'login');				
-				
+		       	.$frm->admin_button('authsubmit',ADLAN_91,'login');
+
+			// Carry the page the admin was trying to reach through the login POST,
+			// so they are returned to it afterwards (see auth.php login check).
+			$rd = e107::getRedirect();
+			$destToken = $rd->getStoredDestinationToken();
+			if($destToken === '')
+			{
+				$destToken = $rd->getLoginDestinationToken();
+			}
+			if($destToken !== '')
+			{
+				$text .= "<input".e107::getParser()->toAttributes(array(
+					'type'  => 'hidden',
+					'name'  => redirection::LOGIN_DEST_FIELD,
+					'value' => $destToken,
+				), true)." />";
+			}
+
 			if (e107::getSession()->is('challenge') && varset($pref['password_CHAP'], 0))
 			{
-				$text .= "<input type='hidden' name='hashchallenge' id='hashchallenge' value='".e107::getSession()->get('challenge')."' />\n\n";		
+				$text .= "<input type='hidden' name='hashchallenge' id='hashchallenge' value='".e107::getSession()->get('challenge')."' />\n\n";
 			}
 								
 		$text .= "</div></div>

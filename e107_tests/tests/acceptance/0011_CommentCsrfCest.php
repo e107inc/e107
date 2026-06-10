@@ -78,8 +78,8 @@ class CommentCsrfCest
 	private function loginAsAdmin(AcceptanceTester $I)
 	{
 		$I->amOnPage('/e107_admin/admin.php');
-		$I->fillField('authname', 'admin');
-		$I->fillField('authpass', 'admin');
+		$I->fillField('authname', \Helper\AdminLogin::ADMIN_USER);
+		$I->fillField('authpass', \Helper\AdminLogin::ADMIN_PASS);
 		$I->click('authsubmit');
 	}
 

@@ -1796,7 +1796,11 @@ class e107plugin
 						$this->XmlLanguageFiles('upgrade');
 					}
 					
-					if ($mode == 'refresh')
+					// Reconcile the global/log language-file lists on a folder scan too, not just 'refresh'.
+					// XmlLanguageFileCheck() forces an 'uninstall' (removePref) when the plugin is not
+					// installed, so a stale lan_global_list/lan_log_list entry for an uninstalled plugin
+					// is cleared instead of surviving every scan. See https://github.com/e107inc/e107/issues/5709
+					if ($mode == 'refresh' || $mode == 'update')
 					{
 						if ($this->XmlLanguageFileCheck('_log', 'lan_log_list', 'refresh', $pluginDBList[$plugin_path]['plugin_installflag'], FALSE, $plugin_path)) $sp = TRUE;
 						if ($this->XmlLanguageFileCheck('_global', 'lan_global_list', 'refresh', $pluginDBList[$plugin_path]['plugin_installflag'], TRUE, $plugin_path)) $sp = TRUE;
@@ -3889,7 +3893,7 @@ class e107plugin
 					break;
 				case 'uninstall':
 					$core->removePref('lan_global_list/'.$this->plugFolder);
-					$update = true;
+					$updated = true;
 				break;
 			}	
 		}

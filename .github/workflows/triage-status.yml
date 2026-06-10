@@ -1,0 +1,78 @@
+# Triage status automation for the org issue-fields taxonomy.
+#
+#   - Issue CLOSED  -> clear its triage status (a lingering "In review" on a
+#                      closed issue is misleading; cleared == untriaged).
+#   - PR OPENED that declares it closes an issue (closing keyword, surfaced as
+#     closingIssuesReferences) -> set those issues' "Triage Status" = In review.
+#   - Issue REOPENED is intentionally NOT handled; a reopened issue is untriaged.
+name: Triage status automation
+
+on:
+  issues:
+    types: [closed]
+  pull_request_target:
+    types: [opened]
+
+env:
+  TRIAGE_FIELD_ID: IFSS_kgDOAoyy4Q
+  IN_REVIEW_OPTION_ID: IFSSO_kgDOBHY0zg
+
+jobs:
+  clear-on-close:
+    if: github.event_name == 'issues'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Clear triage status if currently set
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_ID: ${{ github.event.issue.node_id }}
+        run: |
+          set -euo pipefail
+          have=$(gh api graphql -f query='
+            query($id:ID!){ node(id:$id){ ... on Issue {
+              issueFieldValues(first:20){ nodes {
+                ... on IssueFieldSingleSelectValue {
+                  field { ... on IssueFieldSingleSelect { id } } } } } } } }' \
+            -F id="$ISSUE_ID" \
+            --jq "[.data.node.issueFieldValues.nodes[]? | select(.field.id==\"$TRIAGE_FIELD_ID\")] | length")
+          if [ "$have" = "0" ]; then
+            echo "No triage status set on this issue; nothing to clear."
+            exit 0
+          fi
+          gh api graphql -f query='
+            mutation($id:ID!,$field:ID!){
+              deleteIssueFieldValue(input:{issueId:$id, fieldId:$field}){ clientMutationId } }' \
+            -F id="$ISSUE_ID" -F field="$TRIAGE_FIELD_ID"
+          echo "Cleared triage status on closed issue."
+
+  set-in-review-on-pr:
+    if: github.event_name == 'pull_request_target'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: read
+    steps:
+      - name: Set "In review" on issues this PR will close
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_ID: ${{ github.event.pull_request.node_id }}
+        run: |
+          set -euo pipefail
+          issues=$(gh api graphql -f query='
+            query($id:ID!){ node(id:$id){ ... on PullRequest {
+              closingIssuesReferences(first:20){ nodes { id } } } } }' \
+            -F id="$PR_ID" --jq '.data.node.closingIssuesReferences.nodes[]?.id')
+          if [ -z "$issues" ]; then
+            echo "PR closes no issues; nothing to do."
+            exit 0
+          fi
+          for iid in $issues; do
+            gh api graphql -f query='
+              mutation($id:ID!,$field:ID!,$opt:ID!){
+                updateIssueFieldValue(input:{issueId:$id,
+                  issueField:{fieldId:$field, singleSelectOptionId:$opt}}){ clientMutationId } }' \
+              -F id="$iid" -F field="$TRIAGE_FIELD_ID" -F opt="$IN_REVIEW_OPTION_ID"
+            echo "Set triage status to in review on $iid"
+          done
