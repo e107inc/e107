@@ -200,6 +200,7 @@ class e107
 		'e_bbcode'                       => '{e_HANDLER}bbcode_handler.php',
 		'e_bb_base'                      => '{e_HANDLER}bbcode_handler.php',
 		'e_customfields'                 => '{e_HANDLER}e_customfields_class.php',
+		'e_db_filter'                    => '{e_HANDLER}e_db_filter_class.php',
 		'e_emote'                        => '{e_HANDLER}e_emote_class.php',
 		'e_file'                         => '{e_HANDLER}file_class.php',
 		'e_file_inspector_json_phar'     => '{e_HANDLER}e_file_inspector_json_phar.php',
