@@ -373,6 +373,10 @@ class e_db_mysql implements e_db
 	* This is the 'core' routine which handles much of the interface between other functions and the DB
 	*
 	* If a SELECT query includes SQL_CALC_FOUND_ROWS, the value of FOUND_ROWS() is retrieved and stored in $this->total_results
+	*
+	* The array ['PREPARE' => ..., 'BIND' => ..., 'EXECUTE' => ...] contract is
+	* internal plumbing; new code should call {@see e_db::execute()} instead.
+	*
 	* @param string|array $query
 	* @param mysqli $rli Your own mysqli connection instead of the one in this object
 	* @return boolean|mysqli_result - as mysqli_query() function.
@@ -607,7 +611,7 @@ class e_db_mysql implements e_db
 			return ($qry_from === 'db_Select') ? $result : mysqli_num_rows($result);
 		}
 
-		return ($qry_from === 'db_Select') ? false : (int) $affected;
+		return (int) $affected; // no result set: affected rows, like PDOStatement::rowCount()
 	}
 
 	/**
@@ -705,6 +709,7 @@ class e_db_mysql implements e_db
 	 * @param string $indexField field name to be used for indexing when in multi mode
 	 * @param boolean $debug
 	 * @return string|array
+	 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters, then {@see e_db::fetch()} or {@see e_db::rows()} to read the results.
 	 */
 	public function retrieve($table=null, $fields = null, $where=null, $multi = false, $indexField = null, $debug = false)
 	{
@@ -821,6 +826,7 @@ class e_db_mysql implements e_db
 	* e107::getDb('sql2')->select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT $from, ".$view, true);</code>
 	*
 	* @return int Number of rows or false on error
+	 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters instead.
 	*/
 	public function select($table, $fields = '*', $arg = '', $noWhere = false, $debug = FALSE, $log_type = '', $log_remark = '')
 	{
@@ -907,6 +913,7 @@ class e_db_mysql implements e_db
 	 * <code>e107::getDb()->insert("links", "0, 'News', 'news.php', '', '', 1, 0, 0, 0");</code>
 	 *
 	 * @access public
+	 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters instead.
 	 */
 	function insert($tableName, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
 	{
@@ -1126,6 +1133,7 @@ class e_db_mysql implements e_db
 	 * <code>e107::getDb()->replace("links", $array);</code>
 	 *
 	 * @access public
+	 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters instead.
 	 */
 	function replace($table, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
 	{
@@ -1202,6 +1210,7 @@ class e_db_mysql implements e_db
 	* e107::getDb('sql2')->update("user", "user_viewed = '$u_new' WHERE user_id = '".USERID."' ");</code><br />
 	*
 	* @access public
+	 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters instead.
 	*/
 	function update($tableName, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
 	{
@@ -1284,7 +1293,7 @@ class e_db_mysql implements e_db
 			case 'str':
 			case 'string':
 				//return "'{$fieldValue}'";
-				return "'".$this->escape($fieldValue, false)."'";
+				return "'".$this->_escape($fieldValue)."'";
 			break;
 
 			case 'float':
@@ -1300,7 +1309,7 @@ class e_db_mysql implements e_db
 
 			case 'null':
 				//return ($fieldValue && $fieldValue !== 'NULL' ? "'{$fieldValue}'" : 'NULL');
-				return ($fieldValue && $fieldValue !== 'NULL' ? "'".$this->escape($fieldValue, false)."'" : 'NULL');
+				return ($fieldValue && $fieldValue !== 'NULL' ? "'".$this->_escape($fieldValue)."'" : 'NULL');
 				break;
 
 			case 'array':
@@ -1318,7 +1327,7 @@ class e_db_mysql implements e_db
 
 			case 'escape':
 			default:
-				return "'".$this->escape($fieldValue, false)."'";
+				return "'".$this->_escape($fieldValue)."'";
 			break;
 	  	}
 	}
@@ -1413,6 +1422,7 @@ class e_db_mysql implements e_db
 	 * <code>$topics = e107::getDb()->count("forum_thread", "(*)", "thread_forum_id='".$forum_id."' AND thread_parent='0'");</code>
 	 *
 	 * @access public
+	 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters and {@see e_db::fetch()} instead, e.g. execute("SELECT COUNT(*) FROM `#table` WHERE field = :v", $params).
 	 */
 	function count($table, $fields = '(*)', $arg = '', $debug = FALSE, $log_type = '', $log_remark = '')
 	{
@@ -1485,6 +1495,7 @@ class e_db_mysql implements e_db
 	* <code>$sql->delete("tmp", "tmp_ip='$ip'");</code><br />
 	* <br />
 	* @access public
+	 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters instead.
 	*/
 	function delete($table, $arg = '', $debug = FALSE, $log_type = '', $log_remark = '')
 	{
@@ -1538,6 +1549,159 @@ class e_db_mysql implements e_db
 
 
 	/**
+	 * Execute an SQL statement with bound parameters. The canonical way to run
+	 * SQL against an e107 database; the full contract is documented at {@see e_db::execute()}.
+	 *
+	 * @param string $sql SQL with optional `#table` markers and :named placeholders
+	 * @param array $params name => value, or name => array('value' => mixed, 'type' => e_db::PARAM_*)
+	 * @return int|bool row count for result sets (read rows with {@see e_db::fetch()});
+	 *                  affected rows for DELETE/INSERT/REPLACE/UPDATE;
+	 *                  true for other successful statements; false on error
+	 */
+	public function execute($sql, $params = array())
+	{
+		$sql = $this->_substituteTableNames($sql);
+
+		if(!empty($params))
+		{
+			$bind = array();
+
+			foreach($params as $name => $value)
+			{
+				$bind[$name] = is_array($value) ? $value : array('value' => $value, 'type' => $this->_detectParamType($value));
+			}
+
+			$query = array('PREPARE' => $sql, 'BIND' => $bind);
+		}
+		else
+		{
+			$query = $sql;
+		}
+
+		$result = $this->mySQLresult = $this->db_Query($query, null, 'db_Select');
+
+		if($result === false)
+		{
+			$this->dbError('execute('.$sql.')');
+			return false;
+		}
+
+		$this->dbError('execute');
+
+		if($result instanceof mysqli_result) // result set; rows readable via fetch()
+		{
+			return $this->rowCount();
+		}
+
+		if(is_int($result)) // prepared statement without a result set: affected rows
+		{
+			return preg_match('#^\s*(DELETE|INSERT|REPLACE|UPDATE)#i', $sql) ? $result : true;
+		}
+
+		// plain query success without a result set
+		if(preg_match('#^\s*(DELETE|INSERT|REPLACE|UPDATE)#i', $sql))
+		{
+			return mysqli_affected_rows($this->mySQLaccess);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Resolve a logical e107 table name to its physical name: the database
+	 * prefix is attached and, on multi-language sites, the table is routed to
+	 * the current language's lan_* table when one exists.
+	 *
+	 * @param string $table table name with or without a leading '#'
+	 * @return string|false physical table name (unquoted), or false when the
+	 *                      name is not a valid identifier
+	 */
+	public function resolveTableName($table)
+	{
+		$table = ltrim((string) $table, '#');
+
+		if(!preg_match('/^[A-Za-z0-9_]+$/D', $table))
+		{
+			return false;
+		}
+
+		return $this->mySQLPrefix.$this->hasLanguage($table);
+	}
+
+	/**
+	 * Validate and backtick-quote an SQL identifier (`column` or `table.column`).
+	 * Fails closed: anything outside the {@see e_db_filter::identifier()} grammar returns false.
+	 *
+	 * @param string $identifier
+	 * @return string|false
+	 */
+	public function quoteIdentifier($identifier)
+	{
+		if(!class_exists('e_db_filter'))
+		{
+			require_once(__DIR__.'/e_db_filter_class.php');
+		}
+
+		return e_db_filter::identifier($identifier);
+	}
+
+	/**
+	 * Replace `#table` (and bare #table) markers with physical table names via
+	 * a quote-aware scan: string literals, backticked identifiers and comments
+	 * are consumed first, so a '#' inside them is never rewritten.
+	 *
+	 * @param string $sql
+	 * @return string
+	 */
+	private function _substituteTableNames($sql)
+	{
+		return preg_replace_callback(
+			'/\'(?:[^\'\\\\]|\\\\.)*\'|"(?:[^"\\\\]|\\\\.)*"|`#([A-Za-z0-9_]+)`|`[^`]*`|\/\*[\s\S]*?\*\/|--[^\r\n]*|#([A-Za-z0-9_]+)/',
+			function ($matches)
+			{
+				if(!empty($matches[1])) // `#table`
+				{
+					return '`'.$this->resolveTableName($matches[1]).'`';
+				}
+
+				if(isset($matches[2]) && $matches[2] !== '') // bare #table
+				{
+					return $this->resolveTableName($matches[2]);
+				}
+
+				return $matches[0];
+			},
+			$sql
+		);
+	}
+
+	/**
+	 * Pick the bind type for an execute() parameter given as a plain value.
+	 *
+	 * @param mixed $value
+	 * @return int e_db::PARAM_*
+	 */
+	private function _detectParamType($value)
+	{
+		if($value === null)
+		{
+			return e_db::PARAM_NULL;
+		}
+
+		if(is_int($value))
+		{
+			return e_db::PARAM_INT;
+		}
+
+		if(is_bool($value))
+		{
+			return e_db::PARAM_BOOL;
+		}
+
+		return e_db::PARAM_STR;
+	}
+
+	/**
 	* Function to handle any MySQL query
 	* @param string $query - the MySQL query string, where '#' represents the database prefix in front of table names.
 	*		Strongly recommended to enclose all table names in backticks, to minimise the possibility of erroneous substitutions - its
@@ -1546,6 +1710,7 @@ class e_db_mysql implements e_db
 	*		Returns FALSE if there is an error in the query
 	*		Returns TRUE if the query is successful, and it does not return a row count
 	*		Returns the number of rows added/updated/deleted for DELETE, INSERT, REPLACE, or UPDATE
+	 * @deprecated v2.4.0 Use {@see e_db::execute()} instead; it accepts the same SQL (including '#table' markers) with values moved to bound :named parameters.
 	*/
 	public function gen($query, $debug = FALSE, $log_type = '', $log_remark = '')
 	{
@@ -1729,6 +1894,7 @@ class e_db_mysql implements e_db
 	 * @param $field
 	 * @param string $where (optional)
 	 * @return array|bool|null|string
+	 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters and {@see e_db::fetch()} instead, e.g. execute("SELECT MAX(field) FROM `#table`").
 	 */
 	public function max($table, $field, $where='')
 	{
@@ -2104,20 +2270,54 @@ class e_db_mysql implements e_db
 
 	/**
 	 * A pointer to mysqli_real_escape_string() - see https://www.php.net/manual/en/mysqli.real-escape-string.php
+	 * The result is only safe when enclosed in quotes in the SQL statement.
 	 *
+	 * @deprecated v2.4.0 Bind values with {@see e_db::execute()} instead.
 	 * @param string $data
+	 * @param bool $strip Unused; retained for backwards compatibility
 	 * @return string
 	 */
 	function escape($data, $strip = true)
 	{
-	/*	if ($strip)
-		{
-			$data = strip_if_magic($data);
-		}*/
+		$this->_notifyEscapeDeprecated();
 
+		return $this->_escape($data);
+	}
+
+	/**
+	 * escape() without the deprecation notice, for internal legacy paths.
+	 *
+	 * @param string $data
+	 * @return string
+	 */
+	private function _escape($data)
+	{
 		$this->provide_mySQLaccess();
 
-		return mysqli_real_escape_string($this->mySQLaccess, $data);
+		return mysqli_real_escape_string($this->mySQLaccess, (string) $data);
+	}
+
+	/**
+	 * Emit one E_USER_DEPRECATED notice per escape() call site per request.
+	 * The class2.php error handler feeds these into the E107_DBG_DEPRECATED
+	 * debug panel via {@see e107_db_debug::logDeprecated()}.
+	 *
+	 * @return void
+	 */
+	private function _notifyEscapeDeprecated()
+	{
+		static $notified = array();
+
+		$trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);
+		$site = (isset($trace[1]['file']) ? $trace[1]['file'] : '?').':'.(isset($trace[1]['line']) ? $trace[1]['line'] : '?');
+
+		if(isset($notified[$site]))
+		{
+			return;
+		}
+
+		$notified[$site] = true;
+		trigger_error('<b>$sql->escape() is deprecated.</b> Bind values with $sql->execute($sql, $params) instead. Called from '.$site, E_USER_DEPRECATED); // NO LAN
 	}
 
 
