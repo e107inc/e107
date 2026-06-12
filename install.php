@@ -556,21 +556,22 @@ class e_install
 
 
 
-	function add_button($id, $title='', $align = "right", $type = "submit")
+	function add_button($id, $title='', $type = "submit")
 	{
 
 		global $e_forms;
 
-		$e_forms->form .= "<div class='buttons-bar inline' style='text-align: {$align}; z-index: 10;'>";
+		// Forward control first so an implicit submit (Enter) advances, not Backs.
+		$e_forms->form .= "<div class='buttons-bar inline' style='display: flex; flex-direction: row-reverse; justify-content: flex-start; gap: 5px; z-index: 10;'>";
+		if($id !== 'back')
+		{
+			$e_forms->form .= "<input type='{$type}' id='{$id}' name='{$id}' value='{$title} &raquo;' class='btn btn-large btn-primary' />";
+		}
 		if($id !== 'start')
 		{
 			//		$this->form .= "<a class='btn btn-large ' href='javascript:history.go(-1)'>&laquo; ".LAN_BACK."</a>&nbsp;";
 			$prevStage = ($this->stage - 1);
-			$e_forms->form .= "<button class='btn btn-default btn-secondary btn-large no-validate ' name='back' value='".$prevStage."' type='submit'>&laquo; ".LAN_BACK."</button>&nbsp;";
-		}
-		if($id !== 'back')
-		{
-			$e_forms->form .= "<input type='{$type}' id='{$id}' name='{$id}' value='{$title} &raquo;' class='btn btn-large btn-primary' />";
+			$e_forms->form .= "<button class='btn btn-default btn-secondary btn-large no-validate ' name='back' value='".$prevStage."' type='submit'>&laquo; ".LAN_BACK."</button>";
 		}
 		$e_forms->form .= "</div>\n";
 	}
