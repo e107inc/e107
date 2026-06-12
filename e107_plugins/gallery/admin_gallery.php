@@ -159,7 +159,7 @@ class gallery_cat_admin_ui extends e_admin_ui
 	 *
 	 * @var string
 	 */
-	protected $listOrder = 'media_cat_order';
+	protected $listOrder = 'media_cat_id DESC';
 
 	/**
 	 * SQL query for listing. Without any Order or Limit.
@@ -346,6 +346,22 @@ class gallery_cat_admin_ui extends e_admin_ui
 			'type'  => 'number',
 			'data'  => 'int',
 			'help'  => LAN_GALLERY_ADMIN_21,
+		),
+		'cat_orderby'                    => array(
+			'title'      => LAN_GALLERY_ADMIN_72,
+			'tab'        => 0,
+			'type'       => 'dropdown',
+			'data'       => 'str',
+			'writeParms' => array(
+				'optArray' => array(
+					'media_cat_id ASC'      => LAN_GALLERY_ADMIN_73,
+					'media_cat_id DESC'       => LAN_GALLERY_ADMIN_74,
+					'media_cat_order ASC'  => LAN_GALLERY_ADMIN_77,
+					'media_cat_order DESC' => LAN_GALLERY_ADMIN_78,
+					'media_cat_title ASC'     => LAN_GALLERY_ADMIN_75,
+					'media_cat_title DESC'    => LAN_GALLERY_ADMIN_76,
+				),
+			),
 		),
 		'orderby'                    => array(
 			'title'      => LAN_GALLERY_ADMIN_22,

@@ -48,7 +48,9 @@ class gallery
 
 	function __construct()
 	{
-		$this->catList = e107::getMedia()->getCategories('gallery');
+		$plugPrefs = e107::getPlugConfig('gallery')->getPref();
+		$orderBy = varset($plugPrefs['cat_orderby'], 'media_cat_id DESC');
+		$this->catList = e107::getMedia()->getCategories('gallery', $orderBy);
 
 		if((vartrue($_GET['cat'])) && isset($this->catList[$_GET['cat']]))
 		{
