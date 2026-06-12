@@ -183,9 +183,15 @@ if(empty($PLUGINS_DIRECTORY))
 
 //define("MPREFIX", $mySQLprefix); moved to $e107->set_constants()
 
-if(empty($mySQLdefaultdb))
+// Positively detect a completed installation: real database credentials must be
+// present (the legacy $mySQLdefaultdb). Anything else - a missing/empty/0-byte
+// file, or an install-pending lock holding only a provisioning token - is not
+// installed, so redirect to the installer.
+$e107_install_pending = !empty($E107_CONFIG['install_pending']);
+
+if($e107_install_pending || empty($mySQLdefaultdb))
 {
-  // e107_config.php is either empty, not valid or doesn't exist so redirect to installer..
+  // e107_config.php is empty/invalid, or holds a not-yet-finished install lock.
   header('Location: install.php');
   exit();
 }
