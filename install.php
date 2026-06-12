@@ -248,6 +248,7 @@ if($functions_ok == false)
 //obsolete $installer_folder_name = 'e107_install';
 include_once("./{$HANDLERS_DIRECTORY}core_functions.php");
 include_once("./{$HANDLERS_DIRECTORY}e107_class.php");
+require_once("./{$HANDLERS_DIRECTORY}install_state.php");
 
 function check_class($whatever='')
 {
@@ -265,8 +266,8 @@ $override = array();
 
 if(isset($_POST['previous_steps']))
 {
-	$tmp = unserialize(base64_decode($_POST['previous_steps']));
-	$override = (isset($tmp['paths']) && isset($tmp['paths']['hash'])) ? array('site_path'=>$tmp['paths']['hash']) : array();
+	$tmp = install_state_decode($_POST['previous_steps']);
+	$override = (isset($tmp['paths']['hash']) && is_string($tmp['paths']['hash'])) ? array('site_path'=>$tmp['paths']['hash']) : array();
 	unset($tmp);
 	unset($tmpadminpass1);
 }
@@ -389,7 +390,7 @@ class e_install
 		$this->e107 = $e107;
 		if(isset($_POST['previous_steps']))
 		{
-			$this->previous_steps = unserialize(base64_decode($_POST['previous_steps']));
+			$this->previous_steps = install_state_decode($_POST['previous_steps']);
 
 			// Save unfiltered admin password (#4004) - " are transformed into &#34;
 			$tmpadminpass2 = (isset($this->previous_steps['admin'])) ? $this->previous_steps['admin']['password'] : '';
@@ -2068,7 +2069,7 @@ if($this->pdo == true)
 		global $e_forms;
 		if($this->previous_steps)
 		{
-			$e_forms->add_hidden_data("previous_steps", base64_encode(serialize($this->previous_steps)));
+			$e_forms->add_hidden_data("previous_steps", install_state_encode($this->previous_steps));
 		}
 		$e_forms->add_hidden_data("stage", ($force_stage ? $force_stage : ($this->stage + 1)));
 
