@@ -139,6 +139,17 @@ class e_user_model extends e_admin_model
 	protected $_class_list;
 
 	/**
+	 * Effective-permissions overlay (admin permission emulation, issue #5745).
+	 * When non-null, authorization getters (getAdminPerms(), getClassList() and
+	 * everything built on them) resolve against this model instead of the real
+	 * user data. Identity getters (getId(), getName(), getAdminName(), ...) are
+	 * deliberately not affected.
+	 *
+	 * @var e_user_model|null
+	 */
+	protected $_effective_model = null;
+
+	/**
 	 * Constructor
 	 * @param array $data
 	 * @return void
@@ -235,6 +246,11 @@ class e_user_model extends e_admin_model
 	 */
 	final public function getAdminPerms()
 	{
+		if(null !== $this->_effective_model)
+		{
+			return $this->_effective_model->getAdminPerms();
+		}
+
 		return ($this->isAdmin() ? $this->get('user_perms') : false);
 	}
 
@@ -589,7 +605,9 @@ class e_user_model extends e_admin_model
 				$this->_class_list[] = e_UC_ADMIN;
 			}
 
-			if ($this->isMainAdmin())
+			// _class_list is always the real (identity) user's list; an active
+			// permission-emulation overlay must not bleed into it (#5745).
+			if ($this->isRealMainAdmin())
 			{
 				$this->_class_list[] = e_UC_MAINADMIN;
 			}
@@ -615,9 +633,26 @@ class e_user_model extends e_admin_model
 
 	/**
 	 * @param bool $toString
-	 * @return string
+	 * @return string|array
 	 */
 	final public function getClassList($toString = false)
+	{
+		if(null !== $this->_effective_model)
+		{
+			return $this->_effective_model->getClassList($toString);
+		}
+
+		return $this->getRealClassList($toString);
+	}
+
+	/**
+	 * Class list of the real (identity) user, ignoring any active
+	 * permission emulation.
+	 *
+	 * @param bool $toString
+	 * @return string|array
+	 */
+	final public function getRealClassList($toString = false)
 	{
 		if (null === $this->_class_list)
 		{
@@ -632,6 +667,43 @@ class e_user_model extends e_admin_model
 	final public function getClassRegex()
 	{
 		return '(^|,)('.str_replace(',', '|', $this->getClassList(true)).')(,|$)';
+	}
+
+	/**
+	 * Get the user model whose permissions are currently being emulated
+	 * by the admin permission-emulation feature (issue #5745).
+	 *
+	 * @return e_user_model|null null when emulation is not active
+	 */
+	public function getEmulatedUser()
+	{
+		return $this->_effective_model;
+	}
+
+	/**
+	 * Set or clear the effective-permissions overlay model.
+	 * Invalidates the lazily-cached class list so dependent values are rebuilt.
+	 *
+	 * @param e_user_model|null $model
+	 * @return e_user_model $this
+	 */
+	protected function _setEffectiveModel($model)
+	{
+		$this->_effective_model = ($model instanceof e_user_model) ? $model : null;
+		$this->_class_list = null;
+
+		return $this;
+	}
+
+	/**
+	 * Main-admin check against the real (identity) user data, ignoring any
+	 * active permission emulation. Treats legacy '0.' as main admin.
+	 *
+	 * @return bool
+	 */
+	public function isRealMainAdmin()
+	{
+		return ($this->isAdmin() && e_userperms::simulateHasAdminPerms('0', (string) $this->get('user_perms')));
 	}
 
 	/**
@@ -722,7 +794,7 @@ class e_user_model extends e_admin_model
 		// $ret = array_merge($this->getExtendedModel()->getExtendedData(), $this->getData());
 		if ($ret['user_perms'] == '0.') $ret['user_perms'] = '0';
 		$ret['user_baseclasslist'] = $ret['user_class'];
-		$ret['user_class'] = $this->getClassList(true);
+		$ret['user_class'] = $this->getRealClassList(true); // identity data; never the emulation overlay (#5745)
 		return $ret;
 	}
 
@@ -1791,6 +1863,13 @@ class e_system_user extends e_user_model
  */
 class e_user extends e_user_model
 {
+	/**
+	 * Core-session key holding the user id whose permissions are being
+	 * emulated in the admin area (issue #5745). Stored server-side via
+	 * e107::getSession() regardless of the 'user_tracking' pref.
+	 */
+	const EMULATE_SESSION_KEY = 'emulate';
+
 	private $_session_data = null;
 	private $_session_key = null;
 	private $_session_type = null;
@@ -1983,6 +2062,136 @@ class e_user extends e_user_model
 	}
 
 	/**
+	 * Start admin permission emulation of another user account (admin area
+	 * only, issue #5745). Unlike loginAs(), this never changes identity
+	 * (USERID, USERNAME, session, audit trail) - only effective authorization
+	 * (admin perms + class list).
+	 *
+	 * @param int $user_id target user id
+	 * @return boolean success
+	 */
+	final public function emulateAs($user_id)
+	{
+		if($this->getParentId() || null !== $this->getEmulatedUser())
+		{
+			return false;
+		}
+
+		$target = $this->_getEmulationTarget($user_id);
+		if(null === $target)
+		{
+			return false;
+		}
+
+		e107::getSession()->set(self::EMULATE_SESSION_KEY, (int) $user_id);
+		$this->_setEffectiveModel($target);
+
+		return true;
+	}
+
+	/**
+	 * Stop admin permission emulation.
+	 *
+	 * @return boolean true if an emulation session was actually cleared
+	 */
+	final public function stopEmulation()
+	{
+		$wasActive = (null !== $this->getEmulatedUser()) || (bool) e107::getSession()->get(self::EMULATE_SESSION_KEY);
+
+		e107::getSession()->clear(self::EMULATE_SESSION_KEY);
+		$this->_setEffectiveModel(null);
+
+		return $wasActive;
+	}
+
+	/**
+	 * Apply (or clear) the admin permission-emulation overlay from session
+	 * state. Re-verifies on every call: the real user must be a main admin,
+	 * the target must exist, must not be the current user and must not be a
+	 * main admin. On any violation the session key is cleared silently and
+	 * the user continues with their real permissions.
+	 *
+	 * Called from load() on admin-area requests only; front-end and CLI never
+	 * reach it. Carries no e_ADMIN_AREA/isCli() checks of its own (the caller
+	 * gates) so it stays directly unit-testable.
+	 *
+	 * @return e_user $this
+	 */
+	final public function loadEmulation()
+	{
+		$session = e107::getSession();
+		$user_id = (int) $session->get(self::EMULATE_SESSION_KEY);
+
+		if(empty($user_id))
+		{
+			$this->_setEffectiveModel(null);
+			return $this;
+		}
+
+		$target = $this->_getEmulationTarget($user_id);
+		if(null === $target)
+		{
+			// Verification failed (admin demoted, target deleted/promoted to
+			// main admin, stale id, ...) - drop emulation, keep real perms.
+			$session->clear(self::EMULATE_SESSION_KEY);
+			$this->_setEffectiveModel(null);
+			return $this;
+		}
+
+		$this->_setEffectiveModel($target);
+		return $this;
+	}
+
+	/**
+	 * Validate an emulation target id and build its model.
+	 * Shared by emulateAs() (start) and loadEmulation() (per-request
+	 * re-verification).
+	 *
+	 * Builds the model with `new e_user_model()` directly:
+	 * e107::getSystemUser()/e_system_user constructors call e107::getUser(),
+	 * which recurses while this runs inside the e_user constructor (the
+	 * registry is not populated yet).
+	 *
+	 * @param int $user_id
+	 * @return e_user_model|null target model, or null on any rule violation
+	 */
+	final protected function _getEmulationTarget($user_id)
+	{
+		$user_id = (int) $user_id;
+
+		if(empty($user_id)
+			|| $user_id === $this->getId()    // never emulate self
+			|| !$this->isRealMainAdmin())     // the real identity must be a main admin ('0' or legacy '0.')
+		{
+			return null;
+		}
+
+		$data = $this->_load($user_id);
+		if(empty($data))
+		{
+			return null;
+		}
+
+		$target = new e_user_model($data);
+		$target->setEditor($this); // a bare e_user_model has no editor; getValue() etc. fatal without one
+
+		if($target->isMainAdmin())            // never emulate a main admin
+		{
+			return null;
+		}
+
+		// Only administrator accounts may be emulated for now. To allow any
+		// non-main-admin user instead, remove this check and offer the
+		// 'emulate' option for non-admin rows in e107_admin/users.php.
+		if(!$target->isAdmin())
+		{
+			return null;
+		}
+
+		return $target;
+	}
+
+	/**
 	 *
 	 * @return e_user
 	 */
@@ -2087,6 +2296,9 @@ class e_user extends e_user_model
 
 				// NEW - try 'logged in as' feature
 				if(!$denyAs) $this->loadAs();
+
+				// Admin permission emulation overlay - admin area only (#5745)
+				if(deftrue('e_ADMIN_AREA')) $this->loadEmulation();
 
 				// update lastvisit field
 				$this->updateVisit();

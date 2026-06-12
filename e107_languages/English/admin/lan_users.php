@@ -225,4 +225,5 @@ return [
     'USRLAN_AS_1' => "Login as [x]",
     'USRLAN_AS_2' => "Logout from [x] account",
     'USRLAN_AS_3' => "You are already logged in as another user account. Please logout first.",
+    'USRLAN_EMU_1' => "Emulate permissions of [x] (admin area)",
 ];

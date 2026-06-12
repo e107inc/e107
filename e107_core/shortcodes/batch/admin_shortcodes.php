@@ -823,16 +823,12 @@ class admin_shortcodes extends e_shortcode
 
 	public function sc_admin_perm_emulation()
 	{
-
-		if(!$id = e107::getSession()->get('emulate'))
+		// Re-verified on every request by e_user::loadEmulation() (#5745);
+		// null whenever emulation is not active or no longer allowed.
+		$emulated = e107::getUser()->getEmulatedUser();
+		if(null === $emulated)
 		{
-			return null; // Return nothing if not in emulation mode
-		}
-
-		$emulatedUser = e107::user($id);
-		if(empty($emulatedUser))
-		{
-			return null; // Return nothing if user data is invalid
+			return null;
 		}
 
 		// Initialize e107 parser and form helper
@@ -842,9 +838,9 @@ class admin_shortcodes extends e_shortcode
 		// Prepare the navbar dropdown
 		$text = "<ul class='nav nav-admin navbar-nav navbar-right admin-icon-emulation'>
                 <li class='dropdown'>
-                    <a class='dropdown-toggle' title='User Access Emulation Mode' role='button' data-toggle='dropdown' href='#'>";
+                    <a class='dropdown-toggle' title='" . LAN_EMULATION_MODE . "' role='button' data-toggle='dropdown' href='#'>";
 
-		$name = $emulatedUser['user_login'] ?? $emulatedUser['user_name'];
+		$name = $emulated->getRealName();
 		// Add warning glyph and emulated username (with fa-beat modification)
 		$text .= $tp->toGlyph('fa-user-secret', ['class' => 'fa-fade text-warning']) .
 			"<span class='text-warning hidden-xs hidden-sm hidden-md' style='margin-left: 5px'>" . $tp->toHTML($name) . "</span>" .
@@ -855,14 +851,14 @@ class admin_shortcodes extends e_shortcode
 
 		// Emulated user details with fixed height and scrollbar
 		$text .= '<li role="menuitem" class="text-left"><div style="padding: 10px; max-height: 300px; overflow-y: auto;">';
-		$text .= "<p><strong>Emulated Admin:</strong><br />";
-		$text .= '<ul class="list-unstyled" style="margin-left: 20px"><li>' . $tp->toHTML($emulatedUser['user_name']) . '</li></ul></p>';
+		$text .= "<p><strong>" . LAN_EMULATION_EMULATING . "</strong><br />";
+		$text .= '<ul class="list-unstyled" style="margin-left: 20px"><li>' . $tp->toHTML($emulated->getName()) . '</li></ul></p>';
 
-		// User Classes as bullets, sorted alphabetically, excluding PUBLIC (0), MAINADMIN (250), READONLY (251), GUEST (252), MEMBER (253), ADMIN (254), NOBODY (255)
-		$text .= "<p><strong>User Classes:</strong><br />";
-		$classIds = array_filter(explode(',', $emulatedUser['user_class']));
-		$excludedClasses = ['0', '250', '251', '252', '253', '254', '255']; // PUBLIC, MAINADMIN, READONLY, GUEST, MEMBER, ADMIN, NOBODY
-		$classIds = array_diff($classIds, $excludedClasses);
+		// Effective user classes (including inherited and implicit ones) as
+		// bullets, sorted alphabetically, minus the fixed system classes.
+		$text .= "<p><strong>" . LAN_EMULATION_USERCLASSES . "</strong><br />";
+		$excludedClasses = [e_UC_PUBLIC, e_UC_MAINADMIN, e_UC_READONLY, e_UC_GUEST, e_UC_MEMBER, e_UC_ADMIN, e_UC_NOBODY, e_UC_ADMINMOD, e_UC_MODS, e_UC_NEWUSER, e_UC_BOTS];
+		$classIds = array_diff($emulated->getClassList(), $excludedClasses);
 		if(!empty($classIds))
 		{
 			$classNames = [];
@@ -881,15 +877,16 @@ class admin_shortcodes extends e_shortcode
 		}
 		else
 		{
-			$text .= 'None';
+			$text .= LAN_NONE;
 		}
 		$text .= "</p>";
 
 		// Admin Permissions as bullets, sorted alphabetically
-		$text .= "<p><strong>Admin Permissions:</strong><br />";
-		if(!empty($emulatedUser['user_perms']) && $emulatedUser['user_perms'] !== '.')
+		$text .= "<p><strong>" . LAN_EMULATION_ADMINPERMS . "</strong><br />";
+		$perms = $emulated->getAdminPerms();
+		if(!empty($perms) && $perms !== '.')
 		{
-			$permKeys = array_filter(explode('.', $emulatedUser['user_perms']));
+			$permKeys = array_filter(explode('.', $perms));
 			$permdiz = e107::getUserPerms()->getPermList('all');
 			$permNames = [];
 			foreach($permKeys as $p)
@@ -909,12 +906,12 @@ class admin_shortcodes extends e_shortcode
 			}
 			else
 			{
-				$text .= 'None';
+				$text .= LAN_NONE;
 			}
 		}
 		else
 		{
-			$text .= 'None';
+			$text .= LAN_NONE;
 		}
 		$text .= "</p>";
 
@@ -924,12 +921,13 @@ class admin_shortcodes extends e_shortcode
 		// Divider
 		$text .= '<li class="divider"></li>';
 
-		// Stop Emulation button using form helper with correct implementation
+		// Stop Emulation button posting to the dedicated admin route (with CSRF token)
 		$text .= '<li role="menuitem" class="text-right">';
-		$text .= "<p style='padding:15px'><small class='text-muted'>This is a temporary emulation mode and will be cleared when you log out.</small></p>";
-		$text .= $frm->open('emulation-form', 'post', e_REQUEST_URI, array('class' => 'no-margin'));
+		$text .= "<p style='padding:15px'><small class='text-muted'>" . LAN_EMULATION_TEMPORARY . "</small></p>";
+		$text .= $frm->open('emulation-stop-form', 'post', e_ADMIN_ABS . 'users.php?mode=main&action=emulatestop', array('class' => 'no-margin'));
+		$text .= $frm->token();
 		$icon = '<i class="fa fa-right-from-bracket fa-fw"></i>';
-		$text .= $frm->button('stopEmulation', $icon . ' Stop Emulating');
+		$text .= $frm->button('stopEmulation', $icon . ' ' . LAN_EMULATION_STOP);
 		$text .= $frm->close();
 		$text .= '</li>';
 
