@@ -406,25 +406,40 @@ class e_media
 	 * Return an Array of Media Categories
 	 *
 	 * @param string $owner
+	 * @param string $orderby column with optional ASC/DESC direction; anything
+	 *                        outside that grammar falls back to media_cat_order
 	 * @return array
 	 */
 	public function getCategories($owner='', $orderby='media_cat_order')
 	{
 		$ret = array();
-		
-		
-		$qry = "SELECT * FROM #core_media_cat ";
-		$qry .= ($owner) ? " WHERE media_cat_owner = '".$owner."' " : " (1) ";
-		$qry .= "AND media_cat_class IN (".USERCLASS_LIST.") ";
-		$qry .= "ORDER BY ".$orderby;
-		
-		e107::getDb()->gen($qry);
+
+		$safeOrderBy = e_db_filter::orderBy($orderby);
+
+		if($safeOrderBy === false) // fail closed
+		{
+			$safeOrderBy = '`media_cat_order` ASC';
+		}
+
+		$params = array();
+		$qry = "SELECT * FROM `#core_media_cat` WHERE ";
+
+		if($owner)
+		{
+			$qry .= "media_cat_owner = :owner AND ";
+			$params['owner'] = $owner;
+		}
+
+		$qry .= "media_cat_class IN (".USERCLASS_LIST.") ORDER BY ".$safeOrderBy;
+
+		e107::getDb()->execute($qry, $params);
+
 		while($row = e107::getDb()->fetch())
 		{
 			$id = $row['media_cat_category'];
 			$ret[$id] = $row;
 		}
-		return $ret;	
+		return $ret;
 	}
 
 	/**
