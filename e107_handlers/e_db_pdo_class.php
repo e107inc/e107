@@ -872,7 +872,7 @@ class e_db_pdo implements e_db
 		if ($result !==false)
 		{
 
-			if(is_object($result))
+			if(is_object($result) || $result === true)
 			{
 					// make sure to return the number of records affected, instead of an object
 				$result = $this->rowCount();
@@ -1056,10 +1056,10 @@ class e_db_pdo implements e_db
 
 
 	/**
-	 * Convert FIELD_TYPE to PDO compatible Field-Type
+	 * Convert FIELD_TYPE to a bind type for the prepared-statement contract.
 	 * @param $type
 	 * @param null $value
-	 * @return int
+	 * @return int e_db::PARAM_* constant (value-identical to PDO::PARAM_*)
 	 */
 	private function _getPDOType($type, $value = null)
 	{
@@ -1067,11 +1067,11 @@ class e_db_pdo implements e_db
 		{
 			case "int":
 			case "integer":
-				return PDO::PARAM_INT;
+				return e_db::PARAM_INT;
 				break;
 
 			case 'null':
-				return ($value === null) ? PDO::PARAM_NULL : PDO::PARAM_STR;
+				return ($value === null) ? e_db::PARAM_NULL : e_db::PARAM_STR;
 				break;
 
 			case 'cmd':
@@ -1082,13 +1082,13 @@ class e_db_pdo implements e_db
 			case 'array':
 			case 'todb':
 			case 'float':
-				return PDO::PARAM_STR;
+				return e_db::PARAM_STR;
 				break;
 
 		}
 
 		// e107::getMessage()->addDebug("MySQL Missing Field-Type: ".$type);
-		return PDO::PARAM_STR;
+		return e_db::PARAM_STR;
 	}
 
 	/**
