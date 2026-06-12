@@ -95,7 +95,7 @@ class InstallCest
 
 		// Lose the session: drop the convenience cookie so the next request has no
 		// valid state and is gated behind the paste prompt.
-		$I->resetCookie('e107install_state');
+		$I->resetInstallStateCookie();
 		$I->amOnPage('/install.php');
 		$I->see('already in progress');
 
@@ -125,7 +125,7 @@ class InstallCest
 		$I->dontSee('already in progress');
 
 		// Cookie gone: the same bare GET falls back to the paste gate.
-		$I->resetCookie('e107install_state');
+		$I->resetInstallStateCookie();
 		$I->amOnPage('/install.php');
 		$I->see('already in progress');
 	}
