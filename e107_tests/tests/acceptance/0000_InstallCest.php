@@ -3,6 +3,8 @@
 
 class InstallCest
 {
+	const MYSQL_PREFIX = 'e107_';
+
 	public function _before(AcceptanceTester $I)
 	{
 		$I->unlinkE107ConfigFromTestEnvironment();
@@ -19,6 +21,125 @@ class InstallCest
 		$I->amOnPage('/install.php');
 		$I->see("e107 Installation :: Step 1");
 		$I->see("Language Selection");
+	}
+
+	// Phase 2 regression coverage (GHSA-c8h6-wpj3-4cr8 follow-up): the signed
+	// wizard state, resume gate, and the schema-gated unattended entry. These
+	// run before installDefault/installVoux so a clean successful install is
+	// still the last thing InstallCest leaves behind for the downstream Cests.
+
+	public function installedSiteBlocksTheInstaller(AcceptanceTester $I)
+	{
+		$I->wantTo("Block the interactive installer once the site is installed (fail closed on e107_config.php)");
+
+		$this->installe107($I);
+
+		// A completed install must refuse to run the wizard again; reinstalling
+		// requires removing e107_config.php from the filesystem.
+		$I->amOnPage('/install.php');
+		$I->see('already installed');
+		$I->dontSee('Language Selection');
+
+		// The unattended entry must also be refused (the existing install blocks it).
+		$db = $I->getDbModule();
+		$I->amOnPage('/install.php?create_tables=1&username='.urlencode($db->_getDbUsername()).'&password='.urlencode($db->_getDbPassword()));
+		$I->dontSee('Language Selection');
+	}
+
+	public function installResumesFromPastedState(AcceptanceTester $I)
+	{
+		$I->wantTo("Resume a locked install by pasting the saved state after the session is lost");
+
+		// Stage 1 -> 2 mints the provisioning lock and signs the wizard state.
+		$I->amOnPage('/install.php');
+		$I->selectOption('language', 'English');
+		$I->click('start');
+		$I->see('MySQL Server Details', 'h3');
+
+		$savedState = $I->grabValueFrom('input[name=previous_steps]');
+
+		// Lose the session: drop the convenience cookie so the next request has no
+		// valid state and is gated behind the paste prompt.
+		$I->resetInstallStateCookie();
+		$I->amOnPage('/install.php');
+		$I->see('already in progress');
+
+		// A tampered blob must not unlock the gate.
+		$tampered = substr($savedState, 0, -1).($savedState[strlen($savedState) - 1] === 'a' ? 'b' : 'a');
+		$I->fillField(['name' => 'previous_steps'], $tampered);
+		$I->click('start');
+		$I->see('already in progress');
+
+		// The genuine saved state resumes the wizard at the database step.
+		$I->fillField(['name' => 'previous_steps'], $savedState);
+		$I->click('start');
+		$I->see('MySQL Server Details', 'h3');
+	}
+
+	public function installCookieAutoResumeAvoidsGate(AcceptanceTester $I)
+	{
+		$I->wantTo("Auto-resume from the cookie instead of gating when a lock already exists");
+
+		$I->amOnPage('/install.php');
+		$I->selectOption('language', 'English');
+		$I->click('start');
+		$I->see('MySQL Server Details', 'h3');
+
+		// Cookie present: a bare GET must not gate.
+		$I->amOnPage('/install.php');
+		$I->dontSee('already in progress');
+
+		// Cookie gone: the same bare GET falls back to the paste gate.
+		$I->resetInstallStateCookie();
+		$I->amOnPage('/install.php');
+		$I->see('already in progress');
+	}
+
+	public function installErrorPageDoesNotLeakProvisioningToken(AcceptanceTester $I)
+	{
+		$I->wantTo("Keep the provisioning token and credentials out of the installer error/debug output");
+
+		$I->amOnPage('/install.php');
+		$I->selectOption('language', 'English');
+		$I->click('start');
+		$I->see('MySQL Server Details', 'h3');
+
+		// Force an out-of-range stage so the server reaches the error/debug render
+		// path while a token is loaded. The stage-2 form already carries the valid
+		// signed state in its hidden previous_steps field.
+		$I->submitForm('#versions', ['stage' => 999], 'submit');
+
+		// The error path must render only the structured error, never the e_install
+		// object: it holds the private $token (the HMAC signing key) and the
+		// submitted credentials, none of which may leak into the response.
+		$I->see('makes no sense');                  // confirms the error path was hit
+		$I->dontSeeInSource('e_install Object');    // print_r() dump of $this
+		$I->dontSeeInSource(':e_install:private');  // print_r() private-property marker
+	}
+
+	public function unattendedInstallRefusedOnceLocked(AcceptanceTester $I)
+	{
+		$I->wantTo("Refuse a repeat ?create_tables once the database already holds an e107 install");
+
+		// A finished interactive install populates the database.
+		$this->installe107($I);
+
+		$db = $I->getDbModule();
+		$dbh = $db->_getDbh();
+
+		// Drop the admin user table, then replay the unattended URL with the real
+		// database credentials.
+		$dbh->exec('SET FOREIGN_KEY_CHECKS=0;');
+		$dbh->exec('DROP TABLE IF EXISTS `'.self::MYSQL_PREFIX.'user`');
+		$dbh->exec('SET FOREIGN_KEY_CHECKS=1;');
+
+		$I->amOnPage('/install.php?create_tables=1&username='.urlencode($db->_getDbUsername()).'&password='.urlencode($db->_getDbPassword()));
+
+		// The remaining schema must make the replay a no-op: the credential check
+		// is never reached, so the user table is not recreated and the site cannot
+		// be silently re-provisioned/taken over.
+		$tables = $dbh->query("SHOW TABLES LIKE '".self::MYSQL_PREFIX."user'")->fetchAll(\PDO::FETCH_COLUMN);
+		\PHPUnit\Framework\Assert::assertEmpty($tables, 'An installed site must refuse unattended re-provisioning, so the user table is not recreated.');
 	}
 
 	public function installDefault(AcceptanceTester $I)
