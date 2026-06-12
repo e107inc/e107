@@ -216,6 +216,34 @@ trait e_db_common
 	}
 
 	/**
+	 * Validate a caller-supplied identifier before it is placed in SQL, using
+	 * the same grammar as {@see e_db_filter::identifier()}. The name is
+	 * returned unquoted and unchanged, so the emitted SQL stays byte-identical
+	 * for valid input; anything outside the grammar fails closed.
+	 *
+	 * The grammar is inlined rather than delegated to e_db_filter because this
+	 * trait must stay loadable in MYSQL_LIGHT standalone mode, where
+	 * e_db_filter_class.php is unavailable.
+	 *
+	 * @param string $name
+	 * @param bool $allowDot true to also accept the `table.column` form
+	 * @return string|false the trimmed name, or false on violation
+	 */
+	private function _safeIdentifier($name, $allowDot = false)
+	{
+		if(!is_string($name) && !is_numeric($name))
+		{
+			return false;
+		}
+
+		$name = trim((string) $name);
+
+		$pattern = $allowDot ? '/^[A-Za-z0-9_]+(\.[A-Za-z0-9_]+)?$/D' : '/^[A-Za-z0-9_]+$/D';
+
+		return preg_match($pattern, $name) ? $name : false;
+	}
+
+	/**
 	 * Escape special characters in a string for use in an SQL statement,
 	 * with the same semantics as mysqli_real_escape_string().
 	 * The result is only safe when enclosed in quotes in the SQL statement.
@@ -300,22 +328,30 @@ trait e_db_common
 
 	/**
 	 * Truncate a table
-	 * @param string $table - table name without e107 prefix
+	 * @param string $table - table name without e107 prefix; fails closed on
+	 *                        anything outside the [A-Za-z0-9_] identifier grammar
 	 */
 	function truncate($table=null)
 	{
 		if($table == null){ return null; }
+
+		if(($table = $this->_safeIdentifier($table)) === false)
+		{
+			return false;
+		}
+
 		return $this->gen("TRUNCATE TABLE ".$this->mySQLPrefix.$table);
 	}
 
 	/**
 	 * Check if a database table is empty or not.
-	 * @param $table
+	 * @param $table table name without the prefix; fails closed on anything
+	 *               outside the [A-Za-z0-9_] identifier grammar
 	 * @return bool
 	 */
 	function isEmpty($table=null)
 	{
-		if(empty($table))
+		if(empty($table) || ($table = $this->_safeIdentifier($table)) === false)
 		{
 			return false;
 		}
@@ -335,7 +371,8 @@ trait e_db_common
 	 * @param string $table Name of table (without the prefix)
 	 * @param string $parent Name of the parent field
 	 * @param string $pid  Name of the primary id
-	 * @param string $where (Optional ) where condition.
+	 * @param string $where (Optional ) where condition. Caller-supplied SQL:
+	 *               never place user input here; bind it with {@see e_db::execute()} instead.
 	 * @param string $order Name of the order field.
 	 * @todo Add extra params to each procedure so we only need 2 of them site-wide.
 	 * @return boolean | int with the addition of  _treesort and _depth fields in the results.
@@ -346,6 +383,16 @@ trait e_db_common
 		if(empty($table) || empty($parent) || empty($pid))
 		{
 			$this->mySQLlastErrText = "missing variables in sql->categories()";
+			return false;
+		}
+
+		// table and column names fail closed outside the identifier grammar
+		if(($table = $this->_safeIdentifier($table)) === false
+			|| ($parent = $this->_safeIdentifier($parent, true)) === false
+			|| ($pid = $this->_safeIdentifier($pid, true)) === false
+			|| ($order = $this->_safeIdentifier($order, true)) === false)
+		{
+			$this->mySQLlastErrText = "invalid identifier in sql->selectTree()";
 			return false;
 		}
 
@@ -431,6 +478,11 @@ trait e_db_common
 
 		$unique = array();
 
+		if(($table = $this->_safeIdentifier($table)) === false)
+		{
+			return $unique;
+		}
+
 		$result = $this->retrieve("SHOW INDEXES FROM #".$table, true);
 		foreach($result as $row)
 		{
@@ -458,12 +510,38 @@ trait e_db_common
 
 	/**
 	 * Duplicate a Table Row in a table.
+	 *
+	 * @param string $table table name without the prefix; fails closed
+	 *               outside the [A-Za-z0-9_] identifier grammar
+	 * @param string $fields '*' or a comma-separated list of column names;
+	 *               every name fails closed outside the identifier grammar
+	 * @param string $args WHERE clause. Caller-supplied SQL: never place user
+	 *               input here; bind it with {@see e_db::execute()} instead.
+	 * @return int|false the copied row's id, or false on failure
 	 */
 	function copyRow($table, $fields = '*', $args='')
 	{
 		if(!$table || !$args )
 		{
 			return false;
+		}
+
+		if(($table = $this->_safeIdentifier($table)) === false)
+		{
+			$this->mySQLlastErrText = "copyRow \$table failed identifier validation";
+			return false;
+		}
+
+		if($fields !== '*')
+		{
+			foreach(explode(',', $fields) as $fieldName)
+			{
+				if($this->_safeIdentifier($fieldName, true) === false)
+				{
+					$this->mySQLlastErrText = "copyRow \$fields failed identifier validation";
+					return false;
+				}
+			}
 		}
 
 		for ($retries = 0; $retries < 3; $retries ++) {
@@ -527,6 +605,11 @@ trait e_db_common
 	 */
 	public function copyTable($oldtable, $newtable, $drop = false, $data = false)
 	{
+		if(($oldtable = $this->_safeIdentifier($oldtable)) === false || ($newtable = $this->_safeIdentifier($newtable)) === false)
+		{
+			return false;
+		}
+
 		$old = $this->mySQLPrefix.strtolower($oldtable);
 		$new = $this->mySQLPrefix.strtolower($newtable);
 
@@ -566,11 +649,17 @@ trait e_db_common
 
 	/**
 	 * Drop/delete table and all it's data
-	 * @param string $table name without the prefix
+	 * @param string $table name without the prefix; fails closed on anything
+	 *               outside the [A-Za-z0-9_] identifier grammar
 	 * @return bool|int
 	 */
 	public function dropTable($table)
 	{
+		if(($table = $this->_safeIdentifier($table)) === false)
+		{
+			return false;
+		}
+
 		$name = $this->mySQLPrefix.strtolower($table);
 		return $this->gen("DROP TABLE IF EXISTS ".$name);
 	}
@@ -820,14 +909,22 @@ trait e_db_common
 
 	/**
 	 * Return the maximum value for a given table/field
-	 * @param $table (without the prefix)
-	 * @param $field
-	 * @param string $where (optional)
+	 * @param $table (without the prefix); fails closed outside the
+	 *               [A-Za-z0-9_] identifier grammar
+	 * @param $field column name (optionally table.column); fails closed
+	 *               outside the identifier grammar
+	 * @param string $where (optional) Caller-supplied SQL: never place user
+	 *               input here; bind it with {@see e_db::execute()} instead.
 	 * @return mixed
 	 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters and {@see e_db::fetch()} instead, e.g. execute("SELECT MAX(field) FROM `#table`").
 	 */
 	public function max($table, $field, $where='')
 	{
+		if(($table = $this->_safeIdentifier($table)) === false || ($field = $this->_safeIdentifier($field, true)) === false)
+		{
+			return null;
+		}
+
 		$qry = "SELECT MAX(".$field.") FROM ".$this->mySQLPrefix.$table;
 
 		if(!empty($where))
@@ -850,6 +947,11 @@ trait e_db_common
 	 */
 	function field($table,$fieldid="",$key="", $retinfo = false)
 	{
+
+		if(($table = $this->_safeIdentifier($table)) === false)
+		{
+			return false;
+		}
 
 		$convert = array("PRIMARY"=>"PRI","INDEX"=>"MUL","UNIQUE"=>"UNI");
 		$key = (isset($convert[$key])) ? $convert[$key] : "OFF";
@@ -896,6 +998,10 @@ trait e_db_common
 	function index($table, $keyname, $fields=null, $retinfo = false)
 	{
 
+		if(($table = $this->_safeIdentifier($table)) === false)
+		{
+			return false;
+		}
 
 		$this->_getMySQLaccess();
 

@@ -520,6 +520,33 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		}
 	}
 
+	public function testCommonTraitRejectsHostileIdentifiers()
+	{
+		$db = $this->db;
+		$hostile = 'tmp; DROP TABLE `'.MPREFIX.'tmp`';
+
+		// identifier positions fail closed, before any SQL is executed
+		$this->assertFalse($db->truncate($hostile));
+		$this->assertFalse($db->isEmpty($hostile));
+		$this->assertFalse($db->dropTable($hostile));
+		$this->assertFalse($db->copyTable($hostile, 'tmp2'));
+		$this->assertFalse($db->copyTable('tmp', $hostile));
+		$this->assertFalse($db->copyRow($hostile, '*', "tmp_ip='x'"));
+		$this->assertFalse($db->copyRow('tmp', 'tmp_ip) SELECT tmp_ip FROM x; -- ', "tmp_ip='x'"));
+		$this->assertFalse($db->field($hostile));
+		$this->assertFalse($db->index($hostile, 'PRIMARY'));
+		$this->assertNull($db->max($hostile, 'tmp_time'));
+		$this->assertNull($db->max('tmp', 'tmp_time) FROM dual; -- '));
+		$this->assertFalse($db->selectTree($hostile, 'p', 'i', 'o'));
+		$this->assertFalse($db->selectTree('tmp', 'p)`; DROP FUNCTION x', 'i', 'o'));
+
+		// valid identifiers behave exactly as before
+		$this->assertFalse($db->isEmpty('user'));
+		$this->assertTrue($db->field('user', 'user_name'));
+		$this->assertTrue($db->index('user', 'PRIMARY'));
+		$this->assertGreaterThanOrEqual(1, (int) $db->max('user', 'user_id'));
+	}
+
 	public function testEscapeDeprecationNoticeOncePerCallSite()
 	{
 		$caught = array();
