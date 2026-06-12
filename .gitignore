@@ -15,7 +15,7 @@ e107_config.php
 e107_config_*.php
 e107_media/*
 e107_system/*
-e107InstallLog.log
+e107Install.log
 /.settings
 e107_core/override
 test/*
