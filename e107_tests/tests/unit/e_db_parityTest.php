@@ -30,8 +30,6 @@ class e_db_parityTest extends \Codeception\Test\Unit
 	 * @var string[]
 	 */
 	private static $allowedOnlyInMysql = array(
-		'_getFieldValue',      // legacy escape-based write path; e_db_pdo uses private _getPDOValue()/_getPDOType()
-		'_getTypes',           // same role as above; public only by historical accident
 		'db_Set_Charset',      // legacy charset setter with config guard; the modern API is setCharset()
 		'db_Show_Performance', // dead legacy stub
 	);
