@@ -135,7 +135,7 @@ if(isset($_POST['submit']))
 		$caption = LAN_CHECK_PAGE_TITLE.' - '.LAN_SUMMARY;
 		$mes->addSuccess(sprintXXX(str_replace("[x]", "%s", LAN_CHECK_23), basename($writeit)));
 	}
-	fclose($writeit);
+	fclose($fp);
 
 	$message .= "
 	<form method='post' action='".e_SELF."' id='core-lancheck-save-file-form'>
@@ -472,7 +472,9 @@ class lancheck
 		}
 		else
 		{
-			$mes->addError($status['error']);
+			// Patch (lancheck-modern-syntax): show the actual message, not the boolean error flag.
+			$msg = !empty($status['message']) ? $status['message'] : $status['error'];
+			$mes->addError($msg);
 		}
 
 		return array('text'=> $mes->render(), 'caption'=>'');
@@ -564,7 +566,9 @@ class lancheck
 		$code = file_get_contents(e_LANGUAGEDIR.$language."/".$language.".php");
 		$tmp = explode("\n",$code);
 
-		$srch = array("define","'",'"',"(",")",";","CORE_LC2","CORE_LC",",");
+		// Patch (lancheck-modern-syntax): include `const` and `=` so that
+		// modern `const CORE_LC = "es";` declarations parse correctly.
+		$srch = array("define","const","'",'"',"(",")",";","CORE_LC2","CORE_LC",",","=");
 
 		foreach($tmp as $line)
 		{
@@ -608,8 +612,21 @@ class lancheck
 		{
 			$ret = array();
 			$ret['error'] = TRUE;
+
+			// Patch (lancheck-modern-syntax): explicit breakdown so the translator
+			// knows WHAT to fix instead of just seeing "[x] missing".
+			$s = $_SESSION['lancheck'][$language];
+			$parts = array();
+			if(!empty($s['file'])) { $parts[] = $s['file'].' missing file(s)'; }
+			if(!empty($s['def']))  { $parts[] = $s['def'].' missing/invalid phrase(s)'; }
+			if(!empty($s['bom']))  { $parts[] = $s['bom'].' file(s) with BOM/illegal characters'; }
+			if(!empty($s['utf']))  { $parts[] = $s['utf'].' non-UTF8 phrase(s)'; }
+			$detail = $parts ? ' ('.implode(', ', $parts).')' : '';
+
 			$message = LANG_LAN_115;
-			$ret['message'] = str_replace("[x]",$_SESSION['lancheck'][$language]['total'],$message);
+			$ret['message']  = str_replace("[x]", $s['total'], $message).$detail;
+			$ret['message'] .= "<br /><small>Tip: open the <em>Verify</em> tab to see the affected files/keys. ".
+			                   "Enable <code>E107_DEBUG_LEVEL</code> in <code>e107_config.php</code> to bypass this check and generate the pack anyway.</small>";
 			return $ret;
 		}
 
@@ -643,9 +660,19 @@ class lancheck
 		}
 
 
-		global $THEMES_DIRECTORY, $PLUGINS_DIRECTORY, $LANGUAGES_DIRECTORY, $HANDLERS_DIRECTORY, $HELP_DIRECTORY;
+		// Patch (lancheck-config-paths): resolve directory names via e107::getFolder(),
+		// which reads e107_dirs and is populated on BOTH the legacy flat config and the
+		// new $config = [...] format. The previous $e107_paths fallback was dead code:
+		// class2.php unset()s $e107_paths right after initCore(), so on every admin page
+		// the *_DIRECTORY globals collapsed to the hardcoded defaults and the
+		// non-standard-layout guard below could never fire under the new config format.
+		$handlersDir  = e107::getFolder('handlers');
+		$languagesDir = e107::getFolder('languages');
+		$themesDir    = e107::getFolder('themes');
+		$helpDir      = e107::getFolder('help');
+		$pluginsDir   = e107::getFolder('plugins');
 
-		if(($HANDLERS_DIRECTORY != "e107_handlers/") || ( $LANGUAGES_DIRECTORY != "e107_languages/") || ($THEMES_DIRECTORY != "e107_themes/") || ($HELP_DIRECTORY != "e107_docs/help/") || ($PLUGINS_DIRECTORY != "e107_plugins/"))
+		if(($handlersDir != "e107_handlers/") || ($languagesDir != "e107_languages/") || ($themesDir != "e107_themes/") || ($helpDir != "e107_docs/help/") || ($pluginsDir != "e107_plugins/"))
 		{
 			$ret['error'] = TRUE;
 			$ret['message'] = (defined('LANG_LAN_26')) ? LANG_LAN_26 : LANG_LAN_120;
@@ -658,6 +685,15 @@ class lancheck
 
 		$file = $this->getFileList($language);
 
+		// Patch (lancheck-xml-dedup): exclude e107_languages/<lang>/<lang>.xml from the
+		// initial file list, because right after archive creation we (re)write a fresh
+		// XML manifest into the archive with current author/version/date. Without this
+		// filter the ZIP ends up containing two copies of e107_languages/<lang>/<lang>.xml.
+		$metaXmlPath = e_LANGUAGEDIR.$language."/".$language.".xml";
+		$file = array_values(array_filter($file, function($p) use ($metaXmlPath) {
+			return realpath($p) !== realpath($metaXmlPath);
+		}));
+
 		$data = implode(",", $file);
 
 		if ($archive->create($data,PCLZIP_OPT_REMOVE_PATH,e_BASE) == 0)
@@ -669,20 +705,46 @@ class lancheck
 		else
 		{
 
-			$fileName = e_FILE."public/".$language.".xml";
+			// Patch (lancheck-xml-path): e_FILE points to ./e107_files/ which does NOT
+			// exist in v2.3.5+. The structure was reorganised under e_MEDIA. Build the
+			// path under e_SYSTEM (a guaranteed-writable directory) and create the
+			// intermediate folder so file_put_contents never fails silently.
+			$xmlTmpDir = e_SYSTEM."temp/lancheck/";
+			if(!is_dir($xmlTmpDir))
+			{
+				@mkdir($xmlTmpDir, 0755, true);
+			}
+			$fileName = $xmlTmpDir.$language.".xml";
 			if(is_readable($fileName))
 			{
 				@unlink($fileName);
 			}
 
+			// Patch (lancheck-xml-attrs): build the manifest attributes with
+			// e_parse::toAttributes(), which performs the correct HTML/XML escaping
+			// internally. This removes the manual htmlspecialchars(..., ENT_XML1)
+			// concatenation and keeps the quoting of name/email/url consistent with
+			// the rest of the codebase.
+			$tp = e107::getParser();
+			$langAttributes = $tp->toAttributes(array(
+				'name'          => $language,
+				'compatibility' => $ver,
+				'date'          => date("Y-m-d"),
+			));
+			$authorAttributes = $tp->toAttributes(array(
+				'name'  => USERNAME,
+				'email' => USEREMAIL,
+				'url'   => SITEURL,
+			));
+
 			$fileData = '<?xml version="1.0" encoding="utf-8"?>
-<e107Language name="'.$language.'" compatibility="'.$ver.'" date="'.date("Y-m-d").'" >
-<author name ="'.USERNAME.'" email="'.USEREMAIL.'" url="'.SITEURL.'" />
+<e107Language'.$langAttributes.' >
+<author'.$authorAttributes.' />
 </e107Language>';
 
 			if(file_put_contents($fileName,$fileData))
 			{
-				$addTag = $archive->add($fileName, PCLZIP_OPT_ADD_PATH, 'e107_languages/'.$language, PCLZIP_OPT_REMOVE_PATH, e_FILE.'public/');
+				$addTag = $archive->add($fileName, PCLZIP_OPT_ADD_PATH, 'e107_languages/'.$language, PCLZIP_OPT_REMOVE_PATH, $xmlTmpDir);
 				$_SESSION['lancheck'][$language]['xml'] = "Yes";
 			}
 			else
@@ -1902,41 +1964,168 @@ class lancheck
 	
 	
 	function fill_phrases_array($data,$type)
-	{	
+	{
 		$retloc = array();
-		
-		if(preg_match_all('/(\/\*[\s\S]*?\*\/)/i',$data, $multiComment))
+
+		// Patch (lancheck-modern-syntax): always register the file entry so that
+		// modern language files (return [...] / const) that have no define()
+		// statements are NOT misreported as "File missing!".
+		$retloc[$type] = array();
+
+		if(!is_string($data) || $data === '')
 		{
-			$data = str_replace($multiComment[1],'',$data);	// strip multi-line comments. 	
+			return $retloc;
 		}
-					
-		if(preg_match('/^\s*?setlocale\s*?\(\s*?([\w]+)\s*?,\s*?(.+)\s*?\)\s*?;/im',$data,$locale)) // check for setlocale();
+
+		// Patch (lancheck-tokenizer): parse the source with the PHP tokenizer instead
+		// of regular expressions. The tokenizer ignores commented-out define()/const
+		// statements automatically and is immune to the quoting/escaping edge cases
+		// that the previous preg_match_all() approach could mis-handle. It recognises
+		// three localisation forms plus setlocale():
+		//   1) define('KEY', 'value');
+		//   2) const KEY = 'value';
+		//   3) return array('KEY' => 'value', ...);  (and the short [] syntax)
+		$code = (strpos($data, '<?php') === false) ? "<?php\n".$data : $data;
+
+		try
 		{
-			$retloc[$type][$locale[1]]= $locale[2];	
+			$tokens = token_get_all($code);
 		}
-				
-		if(preg_match_all('/^\s*?define\s*?\(\s*?(\'|\")([\w]+)(\'|\")\s*?,\s*?(\'|\")([\s\S]*?)\s*?(\'|\")\s*?\)\s*?;/imu',$data,$matches))
+		catch (\Throwable $e)
 		{
-			$def = $matches[2];
-			$values = $matches[5];	
-	
-			foreach($def as $k=>$d)
+			return $retloc;
+		}
+
+		// Drop whitespace and comments so the matcher can look at adjacent tokens.
+		$sig = array();
+		foreach($tokens as $tk)
+		{
+			if(is_array($tk))
 			{
-				$retloc[$type][$d]= $values[$k];
-			}	
+				if($tk[0] === T_WHITESPACE || $tk[0] === T_COMMENT || $tk[0] === T_DOC_COMMENT)
+				{
+					continue;
+				}
+				$sig[] = array($tk[0], $tk[1]);
+			}
+			else
+			{
+				$sig[] = array(null, $tk);
+			}
 		}
-			
+
+		$count = count($sig);
+		for($i = 0; $i < $count; $i++)
+		{
+			$id   = $sig[$i][0];
+			$text = $sig[$i][1];
+
+			// setlocale(LC_*, 'value', ...);
+			if($id === T_STRING && strcasecmp($text, 'setlocale') === 0
+				&& isset($sig[$i + 1]) && $sig[$i + 1][1] === '('
+				&& isset($sig[$i + 2]) && $sig[$i + 2][0] === T_STRING)
+			{
+				$lcKey = $sig[$i + 2][1];
+				$lcVal = '';
+				for($j = $i + 3; $j < $count; $j++)
+				{
+					if($sig[$j][1] === ')')
+					{
+						break;
+					}
+					if($sig[$j][0] === T_CONSTANT_ENCAPSED_STRING)
+					{
+						$lcVal = $this->decodeStringToken($sig[$j][1]);
+						break;
+					}
+				}
+				$retloc[$type][$lcKey] = $lcVal;
+				continue;
+			}
+
+			// 1) Legacy: define('KEY', 'value');
+			if($id === T_STRING && strcasecmp($text, 'define') === 0
+				&& isset($sig[$i + 1]) && $sig[$i + 1][1] === '('
+				&& isset($sig[$i + 2]) && $sig[$i + 2][0] === T_CONSTANT_ENCAPSED_STRING
+				&& isset($sig[$i + 3]) && $sig[$i + 3][1] === ','
+				&& isset($sig[$i + 4]) && $sig[$i + 4][0] === T_CONSTANT_ENCAPSED_STRING)
+			{
+				$key = $this->decodeStringToken($sig[$i + 2][1]);
+				if(preg_match('/^\w+$/', $key))
+				{
+					$retloc[$type][$key] = $this->decodeStringToken($sig[$i + 4][1]);
+				}
+				continue;
+			}
+
+			// 2) Modern: const KEY = 'value';
+			if($id === T_CONST
+				&& isset($sig[$i + 1]) && $sig[$i + 1][0] === T_STRING
+				&& isset($sig[$i + 2]) && $sig[$i + 2][1] === '='
+				&& isset($sig[$i + 3]) && $sig[$i + 3][0] === T_CONSTANT_ENCAPSED_STRING)
+			{
+				$key = $sig[$i + 1][1];
+				if(preg_match('/^[A-Z_][A-Z0-9_]*$/', $key))
+				{
+					$retloc[$type][$key] = $this->decodeStringToken($sig[$i + 3][1]);
+				}
+				continue;
+			}
+
+			// 3) Modern: 'KEY' => 'value' inside a returned array.
+			if($id === T_CONSTANT_ENCAPSED_STRING
+				&& isset($sig[$i + 1]) && $sig[$i + 1][0] === T_DOUBLE_ARROW
+				&& isset($sig[$i + 2]) && $sig[$i + 2][0] === T_CONSTANT_ENCAPSED_STRING)
+			{
+				$key = $this->decodeStringToken($text);
+				if(preg_match('/^[A-Z][A-Z0-9_]*$/', $key))
+				{
+					$retloc[$type][$key] = $this->decodeStringToken($sig[$i + 2][1]);
+				}
+				continue;
+			}
+		}
+
 		return $retloc;
-		
-		/*
-		echo "<h2>Raw Data ".$type."</h2><pre>";
-		echo htmlentities($data);
-		echo "</pre>";	
-	
-		*/
-			
 	}
-	
+
+	/**
+	 * Decode a single PHP string-literal token (T_CONSTANT_ENCAPSED_STRING) into its
+	 * runtime value, handling the common single- and double-quote escape sequences.
+	 *
+	 * @param string $raw The raw token text, including its surrounding quotes.
+	 * @return string
+	 */
+	private function decodeStringToken($raw)
+	{
+		if(!is_string($raw) || strlen($raw) < 2)
+		{
+			return $raw;
+		}
+
+		$quote = $raw[0];
+		$inner = substr($raw, 1, -1);
+
+		if($quote === "'")
+		{
+			return strtr($inner, array("\\'" => "'", "\\\\" => "\\"));
+		}
+
+		if($quote === '"')
+		{
+			return strtr($inner, array(
+				'\\"'  => '"',
+				'\\\\' => '\\',
+				'\\n'  => "\n",
+				'\\t'  => "\t",
+				'\\r'  => "\r",
+				'\\$'  => '$',
+			));
+		}
+
+		return $inner;
+	}
+
 	
 	
 	//--------------------------------------------------------------------
