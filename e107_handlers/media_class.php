@@ -502,7 +502,8 @@ class e_media
 	 * @param int    $from
 	 * @param int|string     $amount
 	 * @param string  $search
-	 * @param string   $orderby
+	 * @param string   $orderby columns with optional ASC/DESC direction; anything
+	 *                          outside that grammar falls back to the default order
 	 * @return array|bool
 	 */
 	private function getMedia($type, $cat='', $from=0, $amount=null, $search=null, $orderby=null)
@@ -537,59 +538,65 @@ class e_media
 		}
 
 
-		// TODO check the category is valid. 
-		
+		// TODO check the category is valid.
+
+		$params = array();
+
 		if($search)
 		{
-			$searchinc[] = "media_name LIKE '%".$search."%' ";
-			$searchinc[] = "media_description LIKE '%".$search."%' "; 
-			$searchinc[] = "media_caption LIKE '%".$search."%' ";
-			$searchinc[] = "media_tags LIKE '%".$search."%' ";  
+			$params['search'] = '%'.addcslashes($search, '%_\\').'%'; // LIKE wildcards in the search term match literally
+			$searchinc[] = "media_name LIKE :search ";
+			$searchinc[] = "media_description LIKE :search ";
+			$searchinc[] = "media_caption LIKE :search ";
+			$searchinc[] = "media_tags LIKE :search ";
 		}
 
-		
+
 		$ret = array();
-		
-		
+
+
 		$fields = ($amount == 'all') ? "media_id" : "*";
-		
+
 		$catAnchored = array_map(function($c) {
 			return '(^|,)' . preg_quote($c, '/') . '(,|$)';
 		}, $catArray);
 
-		$query = "SELECT ".$fields." FROM #core_media WHERE `media_category` REGEXP '" . implode("|", $catAnchored) . "'
+		$params['catpattern'] = implode("|", $catAnchored);
+		$params['typepattern'] = $type."/%";
+
+		$query = "SELECT ".$fields." FROM `#core_media` WHERE `media_category` REGEXP :catpattern
 		AND `media_userclass` IN (".USERCLASS_LIST.")
-		AND `media_type` LIKE '".$type."/%' ";
+		AND `media_type` LIKE :typepattern ";
 
 
 		if($search)
 		{
-			$query .= " AND ( ".implode(" OR ",$searchinc)." ) " ;	
+			$query .= " AND ( ".implode(" OR ",$searchinc)." ) " ;
 		}
 
-		if($orderby)
+		$safeOrderBy = ($orderby) ? e_db_filter::orderBy($orderby) : false;
+
+		if($safeOrderBy === false) // fail closed; the default places the specified category before the _common categories.
 		{
-			$query .= " ORDER BY " . $orderby;
+			$safeOrderBy = '`media_category` ASC, `media_id` DESC';
 		}
-		else
-		{
-			$query .= " ORDER BY media_category ASC, media_id DESC"; // places the specified category before the _common categories.
-		}
+
+		$query .= " ORDER BY ".$safeOrderBy;
 
 		if($amount == 'all')
 		{
-			return e107::getDb()->gen($query);		
+			return e107::getDb()->execute($query, $params);
 		}
 
-		
+
 		if($amount)
 		{
-			$query .= " LIMIT ".$from." ,".$amount;	
+			$query .= " LIMIT ".(int) $from." ,".(int) $amount;
 		}
 
 		e107::getDebug()->log($query);
 
-		e107::getDb()->gen($query);
+		e107::getDb()->execute($query, $params);
 		while($row = e107::getDb()->fetch())
 		{
 			$id = $row['media_id'];
