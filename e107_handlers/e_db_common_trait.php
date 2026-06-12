@@ -28,6 +28,8 @@ trait e_db_common
 	/** @var e_db_platform|null lazily created SQL dialect object */
 	private     $platform = null;
 
+	private     $pdoBind        = false;
+
 	/**
 	 * Get system config
 	 * @return e_core_pref
@@ -1123,5 +1125,535 @@ trait e_db_common
 	// -------------------------
 
 
+	}
+
+	/**
+	 * @param string $tableName - Name of table to access, without any language or general DB prefix
+	 * @param        $arg
+	 * @param bool   $debug
+	 * @param string $log_type
+	 * @param string $log_remark
+	 * @return int|bool Last insert ID or false on error. When using '_DUPLICATE_KEY_UPDATE' return ID, true on update, 0 on no change and false on error.
+	 * @desc Insert a row into the table<br />
+	 * <br />
+	 * Example:<br />
+	 * <code>e107::getDb()->insert("links", "0, 'News', 'news.php', '', '', 1, 0, 0, 0");</code>
+	 *
+	 * @access public
+	 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters instead.
+	 */
+	function insert($tableName, $arg, $debug = false, $log_type = '', $log_remark = '')
+	{
+		$table = $this->hasLanguage($tableName);
+		$this->mySQLcurTable = $table;
+		$REPLACE = false; // kill any PHP notices
+		$DUPEKEY_UPDATE = false;
+		$IGNORE = '';
+
+		if(is_array($arg))
+		{
+			if(isset($arg['WHERE'])) // use same array for update and insert.
+			{
+				unset($arg['WHERE']);
+			}
+
+			if(isset($arg['_REPLACE']))
+			{
+				$REPLACE = TRUE;
+				unset($arg['_REPLACE']);
+			}
+
+			if(isset($arg['_DUPLICATE_KEY_UPDATE']))
+			{
+				$DUPEKEY_UPDATE = true;
+				unset($arg['_DUPLICATE_KEY_UPDATE']);
+			}
+
+			if(isset($arg['_IGNORE']))
+			{
+				$IGNORE = ' IGNORE';
+				unset($arg['_IGNORE']);
+			}
+
+			if(!isset($arg['_FIELD_TYPES']) && !isset($arg['data']))
+			{
+		   	//Convert data if not using 'new' format
+				$_tmp = array();
+				$_tmp['data'] = $arg;
+				$arg = $_tmp;
+				unset($_tmp);
+			}
+
+			if(!isset($arg['data'])) { return false; }
+
+
+			// See if we need to auto-add field types array
+			if(!isset($arg['_FIELD_TYPES']))
+			{
+				$fieldDefs = $this->getFieldDefs($tableName);
+				if (is_array($fieldDefs)) $arg = array_merge($arg, $fieldDefs);
+			}
+
+			$argUpdate = $arg;  // used when DUPLICATE_KEY_UPDATE is active;
+
+
+			// Handle 'NOT NULL' fields without a default value
+			if (isset($arg['_NOTNULL']))
+			{
+				foreach ($arg['_NOTNULL'] as $f => $v)
+				{
+					if (!isset($arg['data'][$f]))
+					{
+						$arg['data'][$f] = $v;
+					}
+				}
+			}
+
+
+			$fieldTypes = $this->_getTypes($arg);
+			$keyList= '`'.implode('`,`', array_keys($arg['data'])).'`';
+			$tmp = array();
+			$bind = array();
+
+			foreach($arg['data'] as $fk => $fv)
+			{
+				$tmp[] = ':'.$fk;
+				$fieldType = isset($fieldTypes[$fk]) ? $fieldTypes[$fk] : null;
+				$bind[$fk] = array('value'=>$this->_getPDOValue($fieldType,$fv), 'type'=> $this->_getPDOType($fieldType,$this->_getPDOValue($fieldType,$fv)));
+			}
+
+			$valList= implode(', ', $tmp);
+
+
+			unset($tmp);
+
+
+
+			if($REPLACE === false)
+			{
+				$query = "INSERT".$IGNORE." INTO ".$this->mySQLPrefix."{$table} ({$keyList}) VALUES ({$valList})";
+
+				if($DUPEKEY_UPDATE === true)
+				{
+					$query .= " ON DUPLICATE KEY UPDATE ";
+					$query .= $this->_prepareUpdateArg($tableName, $argUpdate);
+				}
+
+			}
+			else
+			{
+				$query = "REPLACE INTO ".$this->mySQLPrefix."{$table} ({$keyList}) VALUES ({$valList})";
+			}
+
+
+			$query = array(
+				'PREPARE' => $query,
+				'BIND'  => $bind,
+			);
+
+
+
+		}
+		else
+		{
+			$query = 'INSERT INTO '.$this->mySQLPrefix."{$table} VALUES ({$arg})";
+		}
+
+		$this->_getMySQLaccess();
+
+		$this->mySQLresult = $this->db_Query($query, NULL, 'db_Insert', $debug, $log_type, $log_remark);
+
+		if($DUPEKEY_UPDATE === true)
+		{
+			$result = false; // ie. there was an error.
+
+			if($this->mySQLresult === 1 ) // insert.
+			{
+				$result = $this->lastInsertId();
+			}
+			elseif($this->mySQLresult === 2 || $this->mySQLresult === true) // updated
+			{
+				$result = true;
+				// reset auto-increment to prevent gaps.
+				$this->db_Query("ALTER TABLE ".$this->mySQLPrefix.$table."  AUTO_INCREMENT=1", NULL, 'db_Insert', $debug, $log_type, $log_remark);
+			}
+			elseif($this->mySQLresult === 0) // updated (no change)
+			{
+				$result = 0;
+			}
+
+			$this->dbError('db_Insert');
+			return $result;
+		}
+
+
+		if ($this->mySQLresult)
+		{
+			if(true === $REPLACE)
+			{
+				$tmp = $this->mySQLresult ;
+				$this->dbError('db_Replace');
+				// $tmp == -1 (error), $tmp == 0 (not modified), $tmp == 1 (added), greater (replaced)
+				if ($tmp == -1) { return false; } // mysql_affected_rows error
+				return $tmp;
+			}
+
+		//	$tmp = ($this->pdo) ? $this->mySQLaccess->lastInsertId() : mysql_insert_id($this->mySQLaccess);
+
+			$tmp = $this->lastInsertId();
+
+			$this->dbError('db_Insert');
+			return ($tmp) ? $tmp : TRUE; // return true even if table doesn't have auto-increment.
+		}
+		else
+		{
+		//	$this->dbError("db_Insert ({$query})");
+			return false;
+		}
+	}
+
+	/**
+	 * @param string $table
+	 * @param array  $arg
+	 * @param bool   $debug
+	 * @param string $log_type
+	 * @param string $log_remark
+	 * @return int Last insert ID or false on error
+	 * @desc Insert/REplace a row into the table<br />
+	 * <br />
+	 * Example:<br />
+	 * <code>e107::getDb()->replace("links", $array);</code>
+	 *
+	 * @access public
+	 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters instead.
+	 */
+	function replace($table, $arg, $debug = false, $log_type = '', $log_remark = '')
+	{
+		$arg['_REPLACE'] = TRUE;
+		return $this->insert($table, $arg, $debug, $log_type, $log_remark);
+	}
+
+	/**
+	 * @param $tableName
+	 * @param $arg
+	 * @return false|mixed|string
+	 */
+	private function _prepareUpdateArg($tableName, $arg)
+	{
+		$this->pdoBind = array();
+		if (is_array($arg))  // Remove the need for a separate db_UpdateArray() function.
+	  	{
+
+			if(!isset($arg['_FIELD_TYPES']) && !isset($arg['data']))
+		   	{
+			   	//Convert data if not using 'new' format
+		   		$_tmp = array();
+		   		if(isset($arg['WHERE']))
+		   		{
+		   			$_tmp['WHERE'] = $arg['WHERE'];
+		   			unset($arg['WHERE']);
+		   		}
+		   		$_tmp['data'] = $arg;
+		   		$arg = $_tmp;
+		   		unset($_tmp);
+		   	}
+
+	   		if(!isset($arg['data'])) { return false; }
+
+			// See if we need to auto-add field types array
+			if(!isset($arg['_FIELD_TYPES']))
+			{
+				$fieldDefs = $this->getFieldDefs($tableName);
+				if (is_array($fieldDefs)) $arg = array_merge($arg, $fieldDefs);
+			}
+
+			$fieldTypes = $this->_getTypes($arg);
+
+
+			$new_data = '';
+			//$this->pdoBind = array(); // moved up to the beginning of the method to make sure it is initialized properly
+			foreach ($arg['data'] as $fn => $fv)
+			{
+				$new_data .= ($new_data ? ', ' : '');
+				$ftype =  isset($fieldTypes[$fn]) ? $fieldTypes[$fn] : 'str';
+
+				$new_data .= ($ftype !='cmd') ? "`{$fn}`= :". $fn : "`{$fn}`=".$this->_getFieldValue($fn, $fv, $fieldTypes);
+
+				if($fv === '_NULL_')
+				{
+					$ftype = 'null';
+				}
+
+				if($ftype != 'cmd')
+				{
+					$this->pdoBind[$fn] = array('value'=>$this->_getPDOValue($ftype,$fv), 'type'=> $this->_getPDOType($ftype,$this->_getPDOValue($ftype,$fv)));
+				}
+			}
+
+			$arg = $new_data .(isset($arg['WHERE']) ? ' WHERE '. $arg['WHERE'] : '');
+
+		}
+
+		return $arg;
+
+	}
+
+	/**
+	* @return int|false number of affected rows, or false on error
+	* @param string $tableName - Name of table to access, without any language or general DB prefix
+	* @param array|string|false $arg  (array preferred)
+	* @param bool $debug
+	* @desc Update fields in ONE table of the database corresponding to your $arg variable<br />
+	* <br />
+	* Think to call it if you need to do an update while retrieving data.<br />
+	* <br />
+	* Example using a unique connection to database:<br />
+	* <code>e107::getDb()->update("user", "user_viewed='$u_new' WHERE user_id='".USERID."' ");</code>
+	* <br />
+	* OR as second connection<br />
+	* <code>
+	* e107::getDb('sql2')->update("user", "user_viewed = '$u_new' WHERE user_id = '".USERID."' ");</code><br />
+	*
+	* @access public
+	 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters instead.
+	*/
+	function update($tableName, $arg, $debug = false, $log_type = '', $log_remark = '')
+	{
+		$table = $this->hasLanguage($tableName);
+		$this->mySQLcurTable = $table;
+
+		$this->_getMySQLaccess();
+
+		$arg = $this->_prepareUpdateArg($tableName, $arg);
+
+		$query = 'UPDATE '.$this->mySQLPrefix.$table.' SET '.$arg;
+
+		if(!empty($this->pdoBind))
+		{
+			$query = array(
+					'PREPARE' => $query,
+					'BIND'  => $this->pdoBind,
+			);
+		}
+
+		$result = $this->mySQLresult = $this->db_Query($query, NULL, 'db_Update', $debug, $log_type, $log_remark);
+
+		if ($result !==false)
+		{
+
+			if(is_object($result) || $result === true)
+			{
+					// make sure to return the number of records affected, instead of an object
+				$result = $this->rowCount();
+			}
+
+
+			$this->dbError('db_Update');
+			if ($result === -1) { return false; }	// Error return from mysql_affected_rows
+			return $result;
+		}
+		else
+		{
+			$this->dbError('db_Update ('.print_r($query, true).')');
+			return false;
+		}
+	}
+
+	/**
+	 * @param $arg
+	 * @return array|mixed
+	 */
+	private function _getTypes(&$arg)
+	{
+		if(isset($arg['_FIELD_TYPES']))
+		{
+			if(!isset($arg['_FIELD_TYPES']['_DEFAULT']))
+			{
+				$arg['_FIELD_TYPES']['_DEFAULT'] = 'string';
+			}
+			$fieldTypes = $arg['_FIELD_TYPES'];
+			unset($arg['_FIELD_TYPES']);
+		}
+		else
+		{
+			$fieldTypes = array();
+			$fieldTypes['_DEFAULT'] = 'string';
+		}
+		return $fieldTypes;
+	}
+
+	/**
+	* @param string|array $fieldValue
+	 * @desc Return new field value in proper format<br />
+	*
+	* @access private
+	*@return array|float|int|string
+	*/
+	private function _getFieldValue($fieldKey, $fieldValue, &$fieldTypes)
+	{
+		if($fieldValue === '_NULL_') { return 'NULL';}
+		$type = (isset($fieldTypes[$fieldKey]) ? $fieldTypes[$fieldKey] : $fieldTypes['_DEFAULT']);
+
+		switch ($type)
+		{
+			case 'int':
+			case 'integer':
+				return (int) $fieldValue;
+			break;
+
+			case 'cmd':
+				return $fieldValue;
+			break;
+
+			case 'safestr':
+				return "'{$fieldValue}'";
+			break;
+
+			case 'str':
+			case 'string':
+				//return "'{$fieldValue}'";
+				return "'".$this->_escape($fieldValue)."'";
+			break;
+
+			case 'float':
+				// fix - convert localized float numbers
+				// $larr = localeconv();
+				// $search = array($larr['decimal_point'], $larr['mon_decimal_point'], $larr['thousands_sep'], $larr['mon_thousands_sep'], $larr['currency_symbol'], $larr['int_curr_symbol']);
+				// $replace = array('.', '.', '', '', '', '');
+
+				// return str_replace($search, $replace, floatval($fieldValue));
+
+				return e107::getParser()->toNumber($fieldValue);
+			break;
+
+			case 'null':
+				//return ($fieldValue && $fieldValue !== 'NULL' ? "'{$fieldValue}'" : 'NULL');
+				return ($fieldValue && $fieldValue !== 'NULL' ? "'".$this->_escape($fieldValue)."'" : 'NULL');
+				break;
+
+			case 'array':
+				if(is_array($fieldValue))
+				{
+					return "'".e107::serialize($fieldValue, true)."'";
+				}
+				return "'". (string) $fieldValue."'";
+			break;
+
+			case 'todb': // using as default causes serious BC issues.
+				if($fieldValue == '') { return "''"; }
+				return "'".e107::getParser()->toDB($fieldValue)."'";
+			break;
+
+			case 'escape':
+			default:
+				return "'".$this->_escape($fieldValue)."'";
+			break;
+	  	}
+	}
+
+	/**
+	 * Return a value for use in PDO bindValue() - based on field-type.
+	 * @param $type
+	 * @param $fieldValue
+	 * @return int|string|null
+	 */
+	private function _getPDOValue($type, $fieldValue)
+	{
+
+
+		if(is_string($fieldValue) && ($fieldValue === '_NULL_'))
+		{
+			$type = 'null';
+		}
+
+		switch($type)
+		{
+			case "int":
+			case "integer":
+				return (int) $fieldValue;
+				break;
+
+
+
+			case 'float':
+				// fix - convert localized float numbers
+				// $larr = localeconv();
+				// $search = array($larr['decimal_point'], $larr['mon_decimal_point'], $larr['thousands_sep'], $larr['mon_thousands_sep'], $larr['currency_symbol'], $larr['int_curr_symbol']);
+				// $replace = array('.', '.', '', '', '', '');
+
+				// return str_replace($search, $replace, floatval($fieldValue));
+				return e107::getParser()->toNumber($fieldValue);
+			break;
+
+			case 'null':
+			    return (
+                    is_string($fieldValue) && (
+                        ($fieldValue !== '_NULL_') && ($fieldValue !== '')
+                    )
+                ) ? $fieldValue : null;
+				break;
+
+			case 'array':
+				if(is_array($fieldValue))
+				{
+					return e107::serialize($fieldValue);
+				}
+				return $fieldValue;
+			break;
+
+			case 'todb': // using as default causes serious BC issues.
+				if($fieldValue == '') { return ''; }
+				return e107::getParser()->toDB($fieldValue);
+			break;
+
+				case 'cmd':
+			case 'safestr':
+			case 'str':
+			case 'string':
+			case 'escape':
+			default:
+
+				return $fieldValue;
+				break;
+
+		}
+
+
+	}
+
+	/**
+	 * Convert FIELD_TYPE to a bind type for the prepared-statement contract.
+	 * @param $type
+	 * @param null $value
+	 * @return int e_db::PARAM_* constant (value-identical to PDO::PARAM_*)
+	 */
+	private function _getPDOType($type, $value = null)
+	{
+		switch($type)
+		{
+			case "int":
+			case "integer":
+				return e_db::PARAM_INT;
+				break;
+
+			case 'null':
+				return ($value === null) ? e_db::PARAM_NULL : e_db::PARAM_STR;
+				break;
+
+			case 'cmd':
+			case 'safestr':
+			case 'str':
+			case 'string':
+			case 'escape':
+			case 'array':
+			case 'todb':
+			case 'float':
+				return e_db::PARAM_STR;
+				break;
+
+		}
+
+		// e107::getMessage()->addDebug("MySQL Missing Field-Type: ".$type);
+		return e_db::PARAM_STR;
 	}
 }

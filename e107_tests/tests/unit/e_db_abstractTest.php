@@ -877,17 +877,138 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$actual = $this->db->db_Update('tmp', 'tmp_ip = "127.0.0.1", tmp_time = tmp_time + 1, tmp_info = "test 3" WHERE tmp_ip="127.0.0.1"');
 		$this->assertEquals(1,$actual);
 	}
-	/*
-			public function test_getTypes()
-			{
 
-			}
+	public function testWritePathUsesBinds()
+	{
+		$this->db->delete('tmp');
 
-			public function test_getFieldValue()
-			{
+		$result = $this->db->insert('tmp', array('tmp_ip' => '127.0.0.9', 'tmp_time' => 4, 'tmp_info' => 'bind check'));
+		$this->assertNotEmpty($result, 'insert() failed');
 
-			}
-	*/
+		$last = $this->db->getLastQuery();
+		$this->assertTrue(is_array($last), 'Array-form insert() should run through the prepared-statement contract');
+		$this->assertArrayHasKey('PREPARE', $last);
+		$this->assertSame('bind check', $last['BIND']['tmp_info']['value']);
+
+		$result = $this->db->update('tmp', array('tmp_info' => 'bind check 2', 'WHERE' => 'tmp_ip = "127.0.0.9"'));
+		$this->assertEquals(1, $result);
+
+		$last = $this->db->getLastQuery();
+		$this->assertTrue(is_array($last), 'Array-form update() should run through the prepared-statement contract');
+		$this->assertArrayHasKey('PREPARE', $last);
+		$this->assertSame('bind check 2', $last['BIND']['tmp_info']['value']);
+
+		$result = $this->db->update('tmp', 'tmp_time = tmp_time + 1 WHERE tmp_ip = "127.0.0.9"');
+		$this->assertEquals(1, $result);
+		$this->assertTrue(is_string($this->db->getLastQuery()), 'Raw-string update() should remain a plain query');
+	}
+
+	public function testWritePathBindsHostileValues()
+	{
+		$hostile = "Rob'); DROP TABLE `".MPREFIX."tmp`; -- \\ \"%_";
+
+		$this->db->delete('tmp');
+
+		$result = $this->db->insert('tmp', array('tmp_ip' => '127.0.0.8', 'tmp_time' => 1, 'tmp_info' => $hostile));
+		$this->assertNotEmpty($result, 'insert() failed on special characters');
+
+		$actual = $this->db->retrieve('tmp', 'tmp_info', 'tmp_ip = "127.0.0.8"');
+		$this->assertSame($hostile, $actual, 'insert() altered the stored value');
+
+		$hostile = "O'Connor \\' OR '1'='1";
+		$result = $this->db->update('tmp', array('tmp_info' => $hostile, 'WHERE' => 'tmp_ip = "127.0.0.8"'));
+		$this->assertEquals(1, $result, 'update() failed on special characters');
+
+		$actual = $this->db->retrieve('tmp', 'tmp_info', 'tmp_ip = "127.0.0.8"');
+		$this->assertSame($hostile, $actual, 'update() altered the stored value');
+
+		$this->assertEquals(1, $this->db->count('tmp'));
+	}
+
+	public function testWritePathFieldTypes()
+	{
+		$chardata = array('k' => "v'1", 'n' => 2);
+
+		$data = array(
+			'data'          => array(
+				'gen_id'        => 0,
+				'gen_type'      => 'write-path-types',
+				'gen_datestamp' => '12abc',
+				'gen_user_id'   => 1,
+				'gen_ip'        => '127.0.0.1',
+				'gen_intdata'   => 0,
+				'gen_chardata'  => $chardata,
+			),
+			'_FIELD_TYPES'  => array(
+				'gen_id'        => 'int',
+				'gen_type'      => 'str',
+				'gen_datestamp' => 'int',
+				'gen_user_id'   => 'int',
+				'gen_ip'        => 'str',
+				'gen_intdata'   => 'int',
+				'gen_chardata'  => 'array',
+			),
+		);
+
+		$id = $this->db->insert('generic', $data);
+		$this->assertGreaterThan(0, $id);
+
+		$row = $this->db->retrieve('generic', 'gen_datestamp, gen_chardata', 'gen_id = '.(int) $id);
+		$this->assertSame('12', $row['gen_datestamp'], "'int' field type should cast the value");
+		$this->assertSame($chardata, e107::unserialize($row['gen_chardata']), "'array' field type should serialize round-trip");
+
+		$result = $this->db->update('generic', array(
+			'data'          => array('gen_datestamp' => 'gen_datestamp+5'),
+			'_FIELD_TYPES'  => array('gen_datestamp' => 'cmd'),
+			'WHERE'         => 'gen_id = '.(int) $id,
+		));
+		$this->assertEquals(1, $result, "'cmd' field type update failed");
+
+		$actual = $this->db->retrieve('generic', 'gen_datestamp', 'gen_id = '.(int) $id);
+		$this->assertSame('17', $actual, "'cmd' field type should evaluate as SQL");
+	}
+
+	public function testWritePathReturnContracts()
+	{
+		$this->db->delete('generic', 'gen_type = "write-path-contract"');
+
+		$base = array(
+			'gen_type'      => 'write-path-contract',
+			'gen_datestamp' => 100,
+			'gen_user_id'   => 1,
+			'gen_ip'        => '127.0.0.1',
+			'gen_intdata'   => 1,
+			'gen_chardata'  => 'a',
+		);
+
+		// REPLACE: 1 = added, 2 = replaced (delete + insert)
+		$first = $this->db->replace('generic', $base);
+		$this->assertEquals(1, $first, 'REPLACE of a new row should report 1');
+		$id = $this->db->lastInsertId();
+		$this->assertGreaterThan(0, $id);
+
+		$row = $base;
+		$row['gen_id'] = $id;
+		$row['gen_intdata'] = 2;
+		$second = $this->db->replace('generic', $row);
+		$this->assertEquals(2, $second, 'REPLACE of an existing row should report 2');
+
+		// _DUPLICATE_KEY_UPDATE: new ID on insert, true on update, 0 on no change
+		$update = $row;
+		$update['gen_intdata'] = 3;
+		$update['_DUPLICATE_KEY_UPDATE'] = true;
+		$result = $this->db->insert('generic', $update);
+		$this->assertTrue($result, 'Duplicate-key update with changed data should return true');
+
+		$result = $this->db->insert('generic', $update);
+		$this->assertSame(0, $result, 'Duplicate-key update with no change should return 0');
+
+		$fresh = $base;
+		$fresh['gen_intdata'] = 4;
+		$fresh['_DUPLICATE_KEY_UPDATE'] = true;
+		$result = $this->db->insert('generic', $fresh);
+		$this->assertGreaterThan(0, $result, 'Fresh duplicate-key insert should return the new ID');
+	}
 	public function testDb_QueryCount()
 	{
 		$this->db->select('user', '*');
