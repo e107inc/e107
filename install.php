@@ -290,6 +290,16 @@ function install_config_state()
 		return array('mode' => 'fresh', 'token' => null);
 	}
 
+	// The installer rewrites this file (install-pending state, then the finished
+	// config) and reads it back on the very next request. opcache caches the
+	// compiled bytecode by path and, at one-second mtime granularity, can return
+	// the previous compile for a same-second rewrite, hiding the freshly written
+	// state. Drop the cached compile so the include reflects what is on disk.
+	if(function_exists('opcache_invalidate'))
+	{
+		@opcache_invalidate($file, true);
+	}
+
 	$mySQLdefaultdb = null;
 	$E107_CONFIG = array();
 	$config = @include($file);
@@ -2547,7 +2557,13 @@ class e_install
 			return nl2br(LANINS_070);
 		}
 		@fclose ($fp);
-		@chmod($e107_config,0644); // correct permissions. 
+		@chmod($e107_config,0644); // correct permissions.
+		// Evict the just-overwritten file from opcache so the next read (this or
+		// a following request) compiles the new contents, not the prior compile.
+		if(function_exists('opcache_invalidate'))
+		{
+			@opcache_invalidate($e107_config, true);
+		}
 		return false;
 	}
 
@@ -2652,6 +2668,12 @@ function create_tables_unattended()
 
 	if(file_exists('e107_config.php'))
 	{
+		// Bypass any stale opcache compile so the credentials below are read as
+		// written, not from a same-second-older compile of this file.
+		if(function_exists('opcache_invalidate'))
+		{
+			@opcache_invalidate('e107_config.php', true);
+		}
 		@include('e107_config.php');
 	} else {
 		return false;
