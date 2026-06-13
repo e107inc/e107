@@ -18,6 +18,7 @@ trait InternalShimsTrait
 {
 	use Internal\GetParentClassTrait;
 	use Internal\ReadfileTrait;
+	use Internal\SetcookieTrait;
 	use Internal\StrftimeTrait;
 	use Internal\StrptimeTrait;
 }
