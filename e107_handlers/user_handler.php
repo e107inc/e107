@@ -879,7 +879,7 @@ Following fields auto-filled in code as required:
 			{
 				$errMsg = ERR_INVALID_EMAIL;
 			}
-			elseif ($u_sql->count('user', '(*)', "WHERE `user_email`='".filter_var($v,FILTER_SANITIZE_EMAIL)."' AND `user_ban`=1 "))
+			elseif ($u_sql->createQueryBuilder()->from('user')->where('user_email', filter_var($v, FILTER_SANITIZE_EMAIL))->where('user_ban', 1)->count() > 0)
 			{
 				$errMsg = ERR_BANNED_USER;
 			}
@@ -1059,7 +1059,6 @@ Following fields auto-filled in code as required:
 	public function userStatusUpdate($action, $uid, $emailAddress = '')
 	{
 		$db = e107::getDb('user');
-		$qry = '';
 		$error = false;				// Assume no error to start with
 		$uid = intval($uid);		// Precautionary - should have already been done
 		switch ($action)
@@ -1083,9 +1082,10 @@ Following fields auto-filled in code as required:
 			default :
 				return 'Invalid action: '.$action;
 		}
-		if ($uid) { $qry = '`user_id`='.$uid; }
-		if ($emailAddress) { if ($qry) $qry .= ' OR '; $qry .= "`user_email` = '{$emailAddress}'"; }
-		if (false === $db->select('user', 'user_id, user_email, user_ban, user_loginname', $qry.' LIMIT 1'))
+		$qb = $db->createQueryBuilder()->select('user_id', 'user_email', 'user_ban', 'user_loginname')->from('user');
+		if ($uid) { $qb->where('user_id', (int) $uid); }
+		if ($emailAddress) { $qb->orWhere('user_email', $emailAddress); }
+		if (false === $qb->limit(1)->execute())
 		{
 			$error = 'User not found: '.$uid.'/'.$emailAddress;
 		}

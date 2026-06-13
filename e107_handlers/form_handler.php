@@ -1866,7 +1866,7 @@ class e_form
 			break;
 
 			default:
-				$where = "user_class REGEXP '(^|,)(".str_replace(',', '|', $class).")(,|$)'";
+				$where = "user_class REGEXP '(^|,)(".e107::getDb()->escape(str_replace(',', '|', $class)).")(,|$)'";
 				$classList = $class;
 				break;
 		}

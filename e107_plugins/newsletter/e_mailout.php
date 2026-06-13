@@ -96,9 +96,15 @@ class newsletter_mailout
 			return 0;				// No valid selector - so no valid records
 		}
 
-		$qry = "SELECT newsletter_id,newsletter_subscribers FROM `#newsletter` WHERE (`newsletter_parent`=0) AND (`newsletter_id` IN ({$selectVals}))";
-//		echo "Selector {$selectVals} query: ".$qry.'<br />';
-		if (!($sql->gen($qry))) return FALSE;
+		// $selectVals is a caller-supplied comma list used in an IN() clause; cast each
+		// element to an integer so no SQL can be injected, then bind it via whereIn().
+		$ids = array_map('intval', explode(',', (string) $selectVals));
+		if (empty($ids))
+		{
+			return 0;
+		}
+
+		if (!$sql->createQueryBuilder()->select('newsletter_id', 'newsletter_subscribers')->from('newsletter')->where('newsletter_parent', 0)->whereIn('newsletter_id', $ids)->execute()) return FALSE;
 		$this->selectorActive = TRUE;
 		$this->mail_count = 1;			// We have no idea of how many subscribers without reading all relevant DB records
 		$this->mail_read = 0;

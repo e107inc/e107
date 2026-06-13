@@ -1128,10 +1128,24 @@ class db_verify
 			{
 
 				$id = $this->getId($this->sqlFileTables[$j]['tables'], $table);
+
+				// $table is an attacker-controllable POST array key: reject anything that
+				// is not a known table identifier before it reaches the SQL string.
+				if($id === null || !preg_match('/^[A-Za-z0-9_]+$/D', (string) $table))
+				{
+					continue;
+				}
+
 				$toFix = count($val);
 
 				foreach($val as $field => $fixes)
 				{
+					// $field is likewise a POST array key; only allow plain identifiers.
+					if(!preg_match('/^[A-Za-z0-9_]+$/D', (string) $field))
+					{
+						continue;
+					}
+
 					foreach($fixes as $mode)
 					{
 

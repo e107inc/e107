@@ -75,7 +75,7 @@ if (isset($_POST['recalculate']))
 
 	foreach($list as $uid => $cnt)
 	{
-		$sql->update("user", "user_chats = '{$cnt}' WHERE user_id = '{$uid}'");
+		$sql->createQueryBuilder()->update('user')->set('user_chats', (int) $cnt)->where('user_id', (int) $uid)->execute();
 	}
 
 	e107::getLog()->add('CHBLAN_03','', E_LOG_INFORMATIVE, '');

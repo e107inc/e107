@@ -661,7 +661,7 @@ class newsletter
 				{
 					if ($val != $_last_subscriber)
 					{
-						$nl_sql -> select("user", "*", "user_id=".$val);
+						$nl_sql->createQueryBuilder()->select('*')->from('user')->where('user_id', (int) $val)->execute();
 						if($nl_row = $nl_sql-> fetch())
 						{
 							//<a href='".e_BASE."user.php?id.{$val}'>".$nl_row['user_name']."</a>
@@ -682,7 +682,7 @@ class newsletter
 					{	// Duplicate user id found in the subscribers_list array!
 						newsletter::remove_subscribers($p_id, $val);	// removes all entries for this user id
 						$newsletterArray[$p_id]['newsletter_subscribers'] = chr(1).$val;	// keep this single value in the list
-						$nl_sql -> update("newsletter", "newsletter_subscribers='".$newsletterArray[$p_id]['newsletter_subscribers']."' WHERE newsletter_id='".intval($p_id)."'");
+						$nl_sql->createQueryBuilder()->update('newsletter')->set('newsletter_subscribers', $newsletterArray[$p_id]['newsletter_subscribers'])->where('newsletter_id', (int) $p_id)->execute();
 						$subscribers_total_count --;
 						$_nl_sanatized = 1;
 					}

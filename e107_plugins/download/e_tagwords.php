@@ -32,10 +32,10 @@ class e_tagwords_download
 		$this->row = '';
 
 		$qry = "SELECT d.*
-		FROM #download as d
-		WHERE d.download_id='{$id}' AND d.download_class REGEXP '".e_CLASS_REGEXP."' ";
+		FROM `#download` as d
+		WHERE d.download_id= :id AND d.download_class REGEXP '".e_CLASS_REGEXP."' ";
 
-		if($sql->gen($qry))
+		if($sql->execute($qry, array('id' => (int) $id)))
 		{
 			$this->row=$sql->fetch();
 		}

@@ -2734,9 +2734,16 @@ class e_user_extended_model extends e_admin_model
 		$value = $this->get($field);
 		list($table, $field_id, $field_name, $field_order) = explode(',', $this->_struct_index[$field]['db'], 4);
 		$this->_struct_index[$field]['db_value'] = $value;
-		if($value && $table && $field_id && $field_name && e107::getDb()->select($table, $field_name, "{$field_id}='{$value}'"))
+		$db = e107::getDb();
+		// $table/$field_id/$field_name are SQL identifiers from the field's 'db' config
+		// (cannot be bound); validate/resolve them and bind $value (the stored field data).
+		$safeTable     = $db->resolveTableName($table);
+		$safeFieldId   = $db->quoteIdentifier($field_id);
+		$safeFieldName = $db->quoteIdentifier($field_name);
+		if($value && $safeTable !== false && $safeFieldId !== false && $safeFieldName !== false
+			&& $db->execute("SELECT ".$safeFieldName." FROM `".$safeTable."` WHERE ".$safeFieldId." = :v", array('v' => $value)))
 		{
-			$res = e107::getDb()->fetch();
+			$res = $db->fetch();
 			$this->_struct_index[$field]['db_value'] = $res[$field_name];
 		}
 

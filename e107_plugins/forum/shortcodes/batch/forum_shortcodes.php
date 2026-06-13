@@ -247,7 +247,11 @@ class forum_shortcodes extends e_shortcode
 
 		if(USER == true)
 		{
-			$total_new_threads = defined('USERLV') ? e107::getDb()->count('forum_thread', '(*)', "WHERE thread_datestamp>'" . USERLV . "' ") : 0;
+			$total_new_threads = 0;
+			if(defined('USERLV'))
+			{
+				$total_new_threads = e107::getDb()->createQueryBuilder()->from('forum_thread')->where('thread_datestamp', '>', (int) USERLV)->count();
+			}
 			$total_read_threads = 0;
 
 			if(defined('USERVIEWED') && defset('USERVIEWED') != "")

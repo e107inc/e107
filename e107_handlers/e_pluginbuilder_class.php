@@ -172,7 +172,9 @@ class e_pluginbuilder
 		private function buildSQLFile($table, $file)
 		{
 
-			$table = e107::getParser()->filter($table);
+			// $table is embedded inside a backtick-quoted identifier; filter() does not
+			// strip backticks, so restrict it to identifier-safe characters instead.
+			$table = preg_replace('/[^A-Za-z0-9_]/', '', e107::getParser()->filter($table));
 
 			e107::getDb()->gen("SHOW CREATE TABLE `#".$table."`");
 			$data = e107::getDb()->fetch('num');

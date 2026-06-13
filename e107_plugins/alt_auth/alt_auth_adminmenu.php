@@ -330,13 +330,13 @@ class alt_auth_admin extends alt_auth_base
 			if (strpos($k,$lprefix) === 0)
 			{
 				$v = base64_encode(base64_encode($v));
-				if($sql -> select('alt_auth', '*', "auth_type='{$prefix}' AND auth_parmname='{$k}' "))
+				if($sql->createQueryBuilder()->select('*')->from('alt_auth')->where('auth_type', $prefix)->where('auth_parmname', $k)->execute())
 				{
-					$sql -> update('alt_auth', "auth_parmval='{$v}' WHERE  auth_type='{$prefix}' AND auth_parmname='{$k}' ");
+					$sql->createQueryBuilder()->update('alt_auth')->set('auth_parmval', $v)->where('auth_type', $prefix)->where('auth_parmname', $k)->execute();
 				}
 				else
 				{
-					$sql -> insert('alt_auth', "'{$prefix}','{$k}','{$v}' ");
+					$sql->createQueryBuilder()->insert('alt_auth')->values(array('auth_type' => $prefix, 'auth_parmname' => $k, 'auth_parmval' => $v))->execute();
 				}
 			}
 		}

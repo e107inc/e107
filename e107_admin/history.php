@@ -138,7 +138,18 @@ class admin_history_ui extends e_admin_ui
 				$pid = $historyRow['history_pid'];
 				$recordId = $historyRow['history_record_id'];
 
+				// $originalTable and $pid are SQL identifiers sourced from a DB row and
+				// cannot be bound as values; validate them before use to prevent
+				// second-order identifier injection if admin_history were ever poisoned.
+				$tableValid = in_array($originalTable, $db->tables(), true);
+				$pidValid   = ($db->quoteIdentifier($pid) !== false);
 
+				if (!$tableValid || !$pidValid)
+				{
+					$message->addError("Restoration aborted: invalid table or key identifier for Record ID: $id.", 'default', true);
+					e107::getRedirect()->go(e_SELF);
+					return;
+				}
 
 				if (!empty($originalTable) && !empty($originalData) && !empty($pid) && !empty($recordId))
 				{

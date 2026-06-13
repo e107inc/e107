@@ -441,8 +441,11 @@ class rater
 	 */
 	protected function getLikes($table, $itemid, $perc=false)
 	{
+		// Match the defensive sanitisation used by the other methods in this class.
+		$table = preg_replace('/\W/', '', $table);
+		$itemid = intval($itemid);
 		$sql = e107::getDb();
-		if($sql->select("rate","*","rate_table = '{$table}' AND rate_itemid = '{$itemid}' LIMIT 1"))
+		if($sql->createQueryBuilder()->select('*')->from('rate')->where('rate_table', $table)->where('rate_itemid', $itemid)->limit(1)->execute())
 		{
 			$row 		= $sql->fetch();
 			if($perc == true) // Percentage Mode
@@ -471,10 +474,13 @@ class rater
 	 * @return false|string|null
 	 */
 	function submitLike($table, $itemid, $type, $perc=false)
-	{	
+	{
+		// Match the defensive sanitisation used by the other methods in this class.
+		$table = preg_replace('/\W/', '', $table);
+		$itemid = intval($itemid);
 		$sql 	= e107::getDb();
-			
-		if($sql->select("rate","*","rate_table = '{$table}' AND rate_itemid = '{$itemid}' LIMIT 1"))
+
+		if($sql->createQueryBuilder()->select('*')->from('rate')->where('rate_table', $table)->where('rate_itemid', $itemid)->limit(1)->execute())
 		{
 			$row 		= $sql->fetch();
 			

@@ -160,7 +160,7 @@ class e_media
 				'media_type'		=> $f['mime']
 			);
 
-			if(!$sql->select('core_media','media_url',"media_url = '".$fullpath."' LIMIT 1"))
+			if(!$sql->createQueryBuilder()->select('media_url')->from('core_media')->where('media_url', $fullpath)->limit(1)->execute())
 			{
 			
 				if($sql->insert("core_media",$insert))
@@ -229,7 +229,7 @@ class e_media
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
 
-		$status = ($sql->delete('core_media',"media_cat = '".$cat."'")) ? true : false;
+		$status = ($sql->createQueryBuilder()->delete('core_media')->where('media_cat', $cat)->execute()) ? true : false;
 		$mes->add("Removing Media in Category: ".$cat, E_MESSAGE_DEBUG);
 		return $status;
 	}
@@ -256,7 +256,7 @@ class e_media
 		}
 
 		$path = $tp->createConstants($epath, 'rel');
-		$status = ($sql->delete('core_media',"media_url LIKE '".$path."%'".$qry)) ? TRUE : FALSE;
+		$status = ($sql->execute("DELETE FROM `#core_media` WHERE media_url LIKE :pat".$qry, array('pat' => $path."%"))) ? TRUE : FALSE;
 		$message = ($type == 'image') ?  "Removing Media with path: ".$path : "Removing Icons with path: ".$path;
 		$mes->add($message, E_MESSAGE_DEBUG);
 		return $status;
@@ -280,7 +280,7 @@ class e_media
 		
 		$path = $tp->createConstants($epath, 'rel');
 	
-		$sql->gen("SELECT * FROM `#core_media` WHERE `media_url` LIKE '".$path."%' AND media_category REGEXP '_icon_16|_icon_32|_icon_48|_icon_64|_icon_svg' ");
+		$sql->execute("SELECT * FROM `#core_media` WHERE `media_url` LIKE :pat AND media_category REGEXP '_icon_16|_icon_32|_icon_48|_icon_64|_icon_svg' ", array('pat' => $path."%"));
 		while ($row = $sql->fetch())
 		{
 			$ret[] = $row['media_url'];
@@ -386,13 +386,13 @@ class e_media
 		
 		$sql = e107::getDb();
 		
-		$sql->select('core_media_cat',"media_cat_category", "media_cat_owner = '".$owner."' ");
+		$sql->createQueryBuilder()->select('media_cat_category')->from('core_media_cat')->where('media_cat_owner', $owner)->execute();
 		while($row = $sql->fetch())
 		{
-			$categories[] = "'".$row['media_cat_category']."'";	
+			$categories[] = "'".$row['media_cat_category']."'";
 		}
-		
-		if($sql->delete('core_media_cat', "media_cat_owner = '".$owner."' "))
+
+		if($sql->createQueryBuilder()->delete('core_media_cat')->where('media_cat_owner', $owner)->execute())
 		{
 			//TODO retrieve all category names for owner, and reset all media categories to _common. 
 			return TRUE;
@@ -413,12 +413,27 @@ class e_media
 		$ret = array();
 		
 		
-		$qry = "SELECT * FROM #core_media_cat ";
-		$qry .= ($owner) ? " WHERE media_cat_owner = '".$owner."' " : " (1) ";
+		// Only allow plain identifier (optionally "col DESC/ASC") in ORDER BY to block injection.
+		if(!preg_match('/^[A-Za-z0-9_]+( +(ASC|DESC))?$/iD', (string) $orderby))
+		{
+			$orderby = 'media_cat_order';
+		}
+
+		$params = array();
+		$qry = "SELECT * FROM `#core_media_cat` ";
+		if($owner)
+		{
+			$qry .= " WHERE media_cat_owner = :owner ";
+			$params['owner'] = $owner;
+		}
+		else
+		{
+			$qry .= " (1) ";
+		}
 		$qry .= "AND media_cat_class IN (".USERCLASS_LIST.") ";
 		$qry .= "ORDER BY ".$orderby;
-		
-		e107::getDb()->gen($qry);
+
+		e107::getDb()->execute($qry, $params);
 		while($row = e107::getDb()->fetch())
 		{
 			$id = $row['media_cat_category'];
@@ -539,12 +554,17 @@ class e_media
 
 		// TODO check the category is valid. 
 		
+		$params = array();
+
 		if($search)
 		{
-			$searchinc[] = "media_name LIKE '%".$search."%' ";
-			$searchinc[] = "media_description LIKE '%".$search."%' "; 
-			$searchinc[] = "media_caption LIKE '%".$search."%' ";
-			$searchinc[] = "media_tags LIKE '%".$search."%' ";  
+			// Bind the search term and escape LIKE wildcards so it cannot inject SQL
+			// or expand into a match-all pattern.
+			$params['search'] = '%'.addcslashes($search, '%_\\').'%';
+			$searchinc[] = "media_name LIKE :search ";
+			$searchinc[] = "media_description LIKE :search ";
+			$searchinc[] = "media_caption LIKE :search ";
+			$searchinc[] = "media_tags LIKE :search ";
 		}
 
 		
@@ -578,7 +598,7 @@ class e_media
 
 		if($amount == 'all')
 		{
-			return e107::getDb()->gen($query);		
+			return e107::getDb()->execute($query, $params);
 		}
 
 		
@@ -589,7 +609,7 @@ class e_media
 
 		e107::getDebug()->log($query);
 
-		e107::getDb()->gen($query);
+		e107::getDb()->execute($query, $params);
 		while($row = e107::getDb()->fetch())
 		{
 			$id = $row['media_id'];
@@ -946,7 +966,7 @@ class e_media
 			$newpath = $this->getPath($f['mime']).'/'.$file;						
 		}
 		
-		if($sql->select("core_media","media_url","media_url LIKE '%".$tp->createConstants($newpath,'rel')."' LIMIT 1"))
+		if($sql->createQueryBuilder()->select('media_url')->from('core_media')->whereLike('media_url', '%'.$tp->createConstants($newpath,'rel'))->limit(1)->execute())
 		{
 			// $mes->addWarning($newpath." detected in media-manager.");
 			$this->log("Import not performed. ".$newpath." detected in media table already.");

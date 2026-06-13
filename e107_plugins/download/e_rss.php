@@ -75,7 +75,7 @@ class download_rss // plugin-folder + '_rss'
 			$topic = "";
 		}
 		
-	    $query = "SELECT d.*, dc.* FROM #download AS d LEFT JOIN #download_category AS dc ON d.download_category = dc.download_category_id WHERE {$topic} d.download_active > 0 AND d.download_class IN (".USERCLASS_LIST.") ORDER BY d.download_datestamp DESC LIMIT 0,".$limit;
+	    $query = "SELECT d.*, dc.* FROM #download AS d LEFT JOIN #download_category AS dc ON d.download_category = dc.download_category_id WHERE {$topic} d.download_active > 0 AND d.download_class IN (".USERCLASS_LIST.") ORDER BY d.download_datestamp DESC LIMIT 0,".(int)$limit;
 
 	    $sql->gen($query);
 	 	$tmp = $sql->db_getList();

@@ -1257,7 +1257,7 @@ class e107MailManager
 		}
 
 
-		$result = $this->db->select('mail_recipients', 'mail_target_id', "`mail_detail_id`={$handle} AND `mail_recipient_email`='{$mailRecip['mail_recipient_email']}'");
+		$result = $this->db->createQueryBuilder()->select('mail_target_id')->from('mail_recipients')->where('mail_detail_id', (int) $handle)->where('mail_recipient_email', $mailRecip['mail_recipient_email'])->execute();
 
 
 		if ($result === false)
@@ -1722,7 +1722,13 @@ class e107MailManager
 		}
 		if ($orderField)
 		{
-			$query .= " ORDER BY `{$orderField}`";
+			// $orderField is a column identifier (cannot be bound); validate it.
+			$safeOrderField = $this->db->quoteIdentifier($orderField);
+			if ($safeOrderField === false)
+			{
+				$safeOrderField = '`mail_source_id`';
+			}
+			$query .= " ORDER BY " . $safeOrderField;
 		}
 		if ($sortOrder)
 		{
@@ -1800,7 +1806,13 @@ class e107MailManager
 		$query = "SELECT SQL_CALC_FOUND_ROWS {$fields} FROM `#mail_recipients` WHERE `mail_detail_id`={$handle}";
 		if ($orderField)
 		{
-			$query .= " ORDER BY `{$orderField}`";
+			// $orderField is a column identifier (cannot be bound); validate it.
+			$safeOrderField = $this->db->quoteIdentifier($orderField);
+			if ($safeOrderField === false)
+			{
+				$safeOrderField = '`mail_source_id`';
+			}
+			$query .= " ORDER BY " . $safeOrderField;
 		}
 		if ($sortOrder)
 		{

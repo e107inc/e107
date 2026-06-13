@@ -97,16 +97,14 @@ class auth_login extends alt_auth_base
 		if ($connect_only) return AUTH_SUCCESS;		// Test mode may just want to connect to the DB
 	  */
 
-	//	$dsn = 'mysql:dbname=' . $this->conf['e107db_database'] . ';host=' . $this->conf['e107db_server'];
-		$dsn = "mysql:host=".$this->conf['e107db_server'].";port=".varset($this->conf['e107db_port'],3306).";dbname=".$this->conf['e107db_database'].";charset=".(new db_verify())->getIntendedCharset();
+		$server = $this->conf['e107db_server'].':'.varset($this->conf['e107db_port'], 3306);
 
-		try
+		$db = e107::getDb('alt_auth_e107db');
+
+		if(!$db->connect($server, $this->conf['e107db_username'], $this->conf['e107db_password'], true)
+			|| !$db->database($this->conf['e107db_database'], '', false))
 		{
-			$dbh = new PDO($dsn, $this->conf['e107db_username'], $this->conf['e107db_password']);
-		}
-		catch (PDOException $e)
-		{
-			$this->makeErrorText('Cannot connect to remote DB; PDOException message: ' . $e->getMessage());
+			$this->makeErrorText('Cannot connect to remote DB; '.$db->getLastErrorText());
 			return AUTH_NOCONNECT;
 		}
 
@@ -132,17 +130,37 @@ class auth_login extends alt_auth_base
 		$user_field = 'user_loginname';
 
 
-		//Get record containing supplied login name
-		$qry = 'SELECT '.implode(',',$sel_fields)." FROM ".$this->conf['e107db_prefix']."user WHERE {$user_field} = '{$uname}' AND `user_ban` = 0";
-//	  echo "Query: {$qry}<br />";
-		if(!$r1 = $dbh->query($qry))
+		$columns = array();
+		foreach($sel_fields as $field)
 		{
-			$this->makeErrorText('Lookup query failed');
-			e107::getMessage()->addDebug($qry);
+			$column = $db->quoteIdentifier($field);
+			if($column === false)
+			{
+				$this->makeErrorText('Invalid field name in alt_auth e107db configuration');
+				return AUTH_NOCONNECT;
+			}
+			$columns[] = $column;
+		}
+
+		$table = $db->quoteIdentifier($this->conf['e107db_prefix']."user");
+		$userColumn = $db->quoteIdentifier($user_field);
+
+		if($table === false || $userColumn === false)
+		{
+			$this->makeErrorText('Invalid table prefix in alt_auth e107db configuration');
 			return AUTH_NOCONNECT;
 		}
 
-		if (!$row = $r1->fetch(PDO::FETCH_BOTH))
+		//Get record containing supplied login name
+		$qry = "SELECT ".implode(',', $columns)." FROM ".$table." WHERE ".$userColumn." = :uname AND `user_ban` = 0";
+
+		if($db->execute($qry, array('uname' => $uname)) === false)
+		{
+			$this->makeErrorText('Lookup query failed');
+			return AUTH_NOCONNECT;
+		}
+
+		if (!$row = $db->fetch('both'))
 		{
 			$this->makeErrorText('User not found');
 			return AUTH_NOUSER;

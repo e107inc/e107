@@ -718,7 +718,7 @@ class plugin_ui extends e_admin_ui
 
 				e107::getLog()->add('PLUGMAN_02', $name);
 				$text .= (isset($eplug_upgrade_done)) ? '<br />'.$eplug_upgrade_done : "<br />".LAN_UPGRADE_SUCCESSFUL;
-				$sql->update('plugin', "plugin_version ='{$eplug_version}', plugin_addons='{$eplug_addons}' WHERE plugin_id='$this->id' ");
+				$sql->createQueryBuilder()->update('plugin')->set('plugin_version', $eplug_version)->set('plugin_addons', $eplug_addons)->where('plugin_id', (int) $this->id)->execute();
 				$pref['plug_installed'][$plug['plugin_path']] = $eplug_version; 			// Update the version
 
 				e107::getConfig()->setPref($pref);

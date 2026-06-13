@@ -82,7 +82,7 @@ if(varset($_GET['mode']) == "ajax")
 					$text .= "<select style='width:99%' class='tbox e-select' name='field_id'>";
 					$text .= "<option value='' class='caption'>" . LAN_NONE . "</option>";
 					$table_list = !empty($_POST['table_db']) ? $_POST['table_db'] : $curVals[0];
-					if($sql->gen("DESCRIBE " . MPREFIX . $table_list))
+					if(preg_match('/^[A-Za-z0-9_]+$/D', (string) $table_list) && $sql->execute("DESCRIBE " . MPREFIX . $table_list))
 					{
 						while($row3 = $sql->fetch())
 						{
@@ -98,7 +98,7 @@ if(varset($_GET['mode']) == "ajax")
 					$text .= "<select style='width:99%' class='tbox e-select' name='field_value'>";
 					$text .= "<option value='' class='caption'>" . LAN_NONE . "</option>";
 					$table_list = !empty($_POST['table_db']) ? $_POST['table_db'] : $curVals[0];
-					if($sql->gen("DESCRIBE " . MPREFIX . "{$table_list}"))
+					if(preg_match('/^[A-Za-z0-9_]+$/D', (string) $table_list) && $sql->execute("DESCRIBE " . MPREFIX . $table_list))
 					{
 						while($row3 = $sql->fetch())
 						{
@@ -114,7 +114,7 @@ if(varset($_GET['mode']) == "ajax")
 					$text .= "<select style='width:99%' class='tbox e-select' name='field_order'>";
 					$text .= "<option value='' class='caption'>" . LAN_NONE . "</option>";
 					$table_list = !empty($_POST['table_db']) ? $_POST['table_db'] : $curVals[0];
-					if($sql->gen("DESCRIBE " . MPREFIX . "{$table_list}"))
+					if(preg_match('/^[A-Za-z0-9_]+$/D', (string) $table_list) && $sql->execute("DESCRIBE " . MPREFIX . $table_list))
 					{
 						while($row3 = $sql->fetch())
 						{
@@ -679,9 +679,11 @@ e107::js('footer-inline', js());
 			$ret = "";
 			foreach(array_keys($_POST['deactivate']) as $f)
 			{
-				$f = $tp->filter($f);
+				// $f becomes part of a SQL table identifier (DROP TABLE ...user_extended_$f)
+				// which cannot be bound; restrict it to identifier-safe characters.
+				$f = preg_replace('/[^a-z0-9_]/i', '', $tp->filter($f));
 
-				if($ue->user_extended_remove($f, $f))
+				if($f !== '' && $ue->user_extended_remove($f, $f))
 				{
 					$ret .= EXTLAN_68." $f ".EXTLAN_72."<br />";
 					if(is_readable(e_CORE."sql/extended_".$f.".php"))
@@ -1054,7 +1056,7 @@ e107::js('footer-inline', js());
 			<option value='' class='caption'>".LAN_NONE."</option>\n";
 				$table_list = !empty($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
 
-				if($sql->gen("DESCRIBE ".MPREFIX."{$table_list}"))
+				if(preg_match('/^[A-Za-z0-9_]+$/D', (string) $table_list) && $sql->execute("DESCRIBE ".MPREFIX.$table_list))
 				{
 					while($row3 = $sql->fetch())
 					{
@@ -1069,7 +1071,7 @@ e107::js('footer-inline', js());
 			<option value='' class='caption'>".LAN_NONE."</option>\n";
 				$table_list = !empty($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
 
-				if($sql->gen("DESCRIBE ".MPREFIX."{$table_list}"))
+				if(preg_match('/^[A-Za-z0-9_]+$/D', (string) $table_list) && $sql->execute("DESCRIBE ".MPREFIX.$table_list))
 				{
 					while($row3 = $sql->fetch())
 					{
@@ -1084,7 +1086,7 @@ e107::js('footer-inline', js());
 			<option value='' class='caption'>".LAN_NONE."</option>\n";
 				$table_list = !empty($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
 
-				if($sql ->gen("DESCRIBE ".MPREFIX."{$table_list}"))
+				if(preg_match('/^[A-Za-z0-9_]+$/D', (string) $table_list) && $sql->execute("DESCRIBE ".MPREFIX.$table_list))
 				{
 					while($row3 = $sql->fetch())
 					{

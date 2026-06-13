@@ -94,7 +94,8 @@ if(!empty($menu_pref['banner_campaign']) /*&& !empty($menu_pref['banner_amount']
 		$tmp = explode("|", $menu_pref['banner_campaign']); 
 		foreach($tmp as $v)
 		{
-			$filter[] = "banner_campaign=\"".$v."\""; 		
+			// $v is an admin-set campaign value concatenated into the WHERE clause; escape it.
+			$filter[] = 'banner_campaign="'.e107::getParser()->toDB($v).'"';
 		}
 	
 		$query = " (banner_startdate=0 OR banner_startdate <= {$time}) AND (banner_enddate=0 OR banner_enddate > {$time}) AND (banner_impurchased=0 OR banner_impressions<=banner_impurchased)";

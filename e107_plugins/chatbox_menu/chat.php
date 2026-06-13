@@ -74,7 +74,11 @@ if ( ! empty($_POST['moderate']) && CB_MOD) {
 
 	if (isset($_POST['delete'])) {
 
-		$deletelist = implode(",", array_keys($_POST['delete']));
+		$kk = array();
+		foreach (array_keys($_POST['delete']) as $k) {
+			$kk[] = intval($k);
+		}
+		$deletelist = implode(",", $kk);
 
 		$query = "SELECT c.cb_id, u.user_id FROM #chatbox AS c
 		LEFT JOIN #user AS u ON SUBSTRING_INDEX(c.cb_nick,'.',1) = u.user_id

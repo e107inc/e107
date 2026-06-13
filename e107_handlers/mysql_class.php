@@ -630,6 +630,14 @@ class e_db_mysql implements e_db
 	{
 		global $db_mySQLQueryCount;
 
+		// Fail closed if the table name is not a plain identifier - it is always
+		// interpolated unquoted into the FROM clause below.
+		if($this->_safeIdentifier($table) === false)
+		{
+			$this->dbError('select() invalid table identifier');
+			return false;
+		}
+
 		$table = $this->hasLanguage($table);
 
 		$this->mySQLcurTable = $table;
@@ -806,6 +814,15 @@ class e_db_mysql implements e_db
 	 */
 	function count($table, $fields = '(*)', $arg = '', $debug = FALSE, $log_type = '', $log_remark = '')
 	{
+		// $fields === 'generic' is the documented raw-SQL escape hatch ($table holds
+		// the full query); every other path interpolates $table unquoted into FROM,
+		// so validate it as a plain identifier and fail closed otherwise.
+		if ($fields != 'generic' && $this->_safeIdentifier($table) === false)
+		{
+			$this->dbError('count() invalid table identifier');
+			return false;
+		}
+
 		$table = $this->hasLanguage($table);
 
 		if ($fields == 'generic')
@@ -873,6 +890,14 @@ class e_db_mysql implements e_db
 	 */
 	function delete($table, $arg = '', $debug = FALSE, $log_type = '', $log_remark = '')
 	{
+		// Fail closed if the table name is not a plain identifier - it is always
+		// interpolated unquoted into the DELETE statement below.
+		if($this->_safeIdentifier($table) === false)
+		{
+			$this->dbError('delete() invalid table identifier');
+			return false;
+		}
+
 		$table = $this->hasLanguage($table);
 		$this->mySQLcurTable = $table;
 
@@ -1106,6 +1131,12 @@ class e_db_mysql implements e_db
 	 */
 	public function fields($table, $prefix = '', $retinfo = false)
 	{
+		// $table becomes a SQL identifier (cannot be bound); validate it like field().
+		if(($table = $this->_safeIdentifier($table)) === false)
+		{
+			return false;
+		}
+
 		$this->_getMySQLaccess();
 
 		if ($prefix == '')
@@ -1218,12 +1249,24 @@ class e_db_mysql implements e_db
 			$prefix = $tmp[1];
 		}
 
+		// $prefix is interpolated into SHOW TABLES ... LIKE patterns below; escape LIKE
+		// wildcards/metacharacters so a config prefix cannot match unintended tables
+		// or break out of the string literal.
+		$prefixLike = str_replace(array('\\', '%', '_'), array('\\\\', '\\%', '\\_'), $prefix);
+
 		if($language)
 		{
+			// $language is interpolated into the LIKE pattern below; only accept a
+			// plain identifier so it cannot break out of the string literal.
+			if(!preg_match('/^[A-Za-z0-9_]+$/D', (string) $language))
+			{
+				return array();
+			}
+
 			if(!isset($this->mySQLtableListLanguage[$language]))
 			{
 				$table = array();
-				if($res = $this->db_Query("SHOW TABLES ".$database." LIKE '".$prefix."lan_".strtolower($language)."%' "))
+				if($res = $this->db_Query("SHOW TABLES ".$database." LIKE '".$prefixLike."lan_".strtolower($language)."%' "))
 				{
 					while($rows = $this->fetch('num'))
 					{
@@ -1243,7 +1286,7 @@ class e_db_mysql implements e_db
 		{
 			$table = array();
 
-			if($res = $this->db_Query("SHOW TABLES ".$database." LIKE '".$prefix."%' "))
+			if($res = $this->db_Query("SHOW TABLES ".$database." LIKE '".$prefixLike."%' "))
 			{
 				$length = strlen($prefix);
 				while($rows = $this->fetch('num'))
@@ -1395,6 +1438,13 @@ class e_db_mysql implements e_db
 			$mySQLcharset = '';
 		}
 		$charset = ($charset ? $charset : $mySQLcharset);
+		// $charset is interpolated into "SET NAMES `$charset`" below (both the
+		// mysqli_query and db_Query paths); a backtick would break out of the
+		// identifier context, so reject anything that is not a plain charset token.
+		if($charset && !preg_match('/^[A-Za-z0-9_]+$/D', $charset))
+		{
+			return 'Invalid charset';
+		}
 		$message = (( ! $charset && $debug) ? 'Empty charset!' : '');
 		if($charset)
 		{

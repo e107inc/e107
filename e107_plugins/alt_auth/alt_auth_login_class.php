@@ -67,7 +67,7 @@ class alt_auth_base
 	{
 		$sql = e107::getDb();
 
-		$sql->select('alt_auth', '*', "auth_type = '".$prefix."' ");
+		$sql->createQueryBuilder()->select('*')->from('alt_auth')->where('auth_type', $prefix)->execute();
 		$parm = array();
 		while($row = $sql->fetch())
 		{

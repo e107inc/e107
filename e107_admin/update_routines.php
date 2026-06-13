@@ -2059,7 +2059,7 @@ function copy_user_timezone()
 	{
 		while ($row = $sql->fetch())
 		{
-			$sql2->update('user_extended',"`user_timezone`='{$row['user_timezone']}' WHERE `user_extended_id`={$row['user_id']}");
+			$sql2->createQueryBuilder()->update('user_extended')->set('user_timezone', $row['user_timezone'])->where('user_extended_id', (int) $row['user_id'])->execute();
 		}
 	}
 	return true;		// All done!

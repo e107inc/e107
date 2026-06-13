@@ -211,7 +211,7 @@ e107::css('inline',"
 						$c = $c+1;
 					}
 
-					$sql2->update('forum', 'forum_order = '.$c.' WHERE forum_id = '.$row['forum_id'].' LIMIT 1');
+					$sql2->createQueryBuilder()->update('forum')->set('forum_order', (int) $c)->where('forum_id', (int) $row['forum_id'])->limit(1)->execute();
 				}
 			}
 		}
@@ -344,7 +344,7 @@ e107::css('inline',"
 		public function beforeCreate($new_data, $old_data)
 		{
 			$sql = e107::getDb();
-			$parentOrder = $sql->retrieve('forum','forum_order','forum_id='.$new_data['forum_parent']." LIMIT 1");
+			$parentOrder = (int) $sql->createQueryBuilder()->select('forum_order')->from('forum')->where('forum_id', (int) $new_data['forum_parent'])->limit(1)->fetchOne();
 
 			$new_data['forum_order'] = $parentOrder + 50;
 
@@ -496,17 +496,17 @@ e107::css('inline',"
 			$memberrules 	= $tp->toDB($_POST['memberrules']);
 			$adminrules 	= $tp->toDB($_POST['adminrules']);
 
-			if(!$sql->update("generic", "gen_chardata ='$guestrules', gen_intdata='".$_POST['guest_active']."' WHERE gen_type='forum_rules_guest' "))
+			if(!$sql->createQueryBuilder()->update('generic')->set('gen_chardata', $guestrules)->set('gen_intdata', (int) $_POST['guest_active'])->where('gen_type', 'forum_rules_guest')->execute())
 			{
-				$sql->insert("generic", "0, 'forum_rules_guest', '".time()."', 0, '', '".$_POST['guest_active']."', '$guestrules' ");
+				$sql->createQueryBuilder()->insert('generic')->values(array('gen_type' => 'forum_rules_guest', 'gen_datestamp' => time(), 'gen_user_id' => 0, 'gen_ip' => '', 'gen_intdata' => (int) $_POST['guest_active'], 'gen_chardata' => $guestrules))->execute();
 			}
-			if(!$sql->update("generic", "gen_chardata ='$memberrules', gen_intdata='".$_POST['member_active']."' WHERE gen_type='forum_rules_member' "))
+			if(!$sql->createQueryBuilder()->update('generic')->set('gen_chardata', $memberrules)->set('gen_intdata', (int) $_POST['member_active'])->where('gen_type', 'forum_rules_member')->execute())
 			{
-				$sql->insert("generic", "0, 'forum_rules_member', '".time()."', 0, '', '".$_POST['member_active']."', '$memberrules' ");
+				$sql->createQueryBuilder()->insert('generic')->values(array('gen_type' => 'forum_rules_member', 'gen_datestamp' => time(), 'gen_user_id' => 0, 'gen_ip' => '', 'gen_intdata' => (int) $_POST['member_active'], 'gen_chardata' => $memberrules))->execute();
 			}
-			if(!$sql->update("generic", "gen_chardata ='$adminrules', gen_intdata='".$_POST['admin_active']."' WHERE gen_type='forum_rules_admin' "))
+			if(!$sql->createQueryBuilder()->update('generic')->set('gen_chardata', $adminrules)->set('gen_intdata', (int) $_POST['admin_active'])->where('gen_type', 'forum_rules_admin')->execute())
 			{
-				$sql->insert("generic", "0, 'forum_rules_admin', '".time()."', 0, '', '".$_POST['admin_active']."', '$adminrules' ");
+				$sql->createQueryBuilder()->insert('generic')->values(array('gen_type' => 'forum_rules_admin', 'gen_datestamp' => time(), 'gen_user_id' => 0, 'gen_ip' => '', 'gen_intdata' => (int) $_POST['admin_active'], 'gen_chardata' => $adminrules))->execute();
 			}
 
 			e107::getMessage()->addSuccess(LAN_SAVED);

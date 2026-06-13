@@ -268,10 +268,11 @@ class userlogin
 				$mLog = 'Dropped existing user session: #' . $user_id. " ".$username;
 			}
 
-			if($onlineIP = $sql->retrieve("online", "online_ip", "online_user_id='".$user_id.".".$user_name."'"))
+			$onlineUserId = $user_id.".".$user_name;
+			if(($onlineIP = $sql->createQueryBuilder()->select('online_ip')->from('online')->where('online_user_id', $onlineUserId)->fetchOne()))
 			{
 				$mLog .= ' ('. e107::getIpHandler()->ipDecode($onlineIP).')';
-				$sql->delete('online', "online_user_id='".$user_id.".".$user_name."'");
+				$sql->createQueryBuilder()->delete('online')->where('online_user_id', $onlineUserId)->execute();
 			}
 
 			if(!empty($mLog))
@@ -282,7 +283,7 @@ class userlogin
 		}
 		elseif(!empty($pref['track_online']) && !empty($pref['disallowMultiLogin']) && !empty($user_id))
 		{
-			if($sql->select("online", "online_ip", "online_user_id='".$user_id.".".$user_name."'"))
+			if($sql->createQueryBuilder()->select('online_ip')->from('online')->where('online_user_id', $user_id.".".$user_name)->execute())
 			{
 				return $this->invalidLogin($username, LOGIN_MULTIPLE, $user_id);
 			}
@@ -762,7 +763,7 @@ class userlogin
 		{
 			$userData['user_class'] = e107::getUserClass()->ucRemove(e_UC_NEWUSER, $userData['user_class']);
 //			$this->e107->admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Login new user complete",$userData['user_class'],FALSE,FALSE);
-			e107::getDb()->update('user', "`user_class` = '" . $userData['user_class'] . "' WHERE `user_id`=" . $userData['user_id'] . " LIMIT 1");
+			e107::getDb()->createQueryBuilder()->update('user')->set('user_class', $userData['user_class'])->where('user_id', (int) $userData['user_id'])->limit(1)->execute();
 			$edata_li = array('user_id' => $userData['user_id'], 'user_name' => $userData['user_name'], 'class_list' => $userData['user_class'], 'user_email' => $userData['user_email']);
 			e107::getEvent()->trigger('userNotNew', $edata_li);
 		}

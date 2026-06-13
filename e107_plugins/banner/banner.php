@@ -36,7 +36,7 @@ if(e_QUERY)
 	$row = $sql->retrieve("banner", "*", "banner_id = '{$query_string}'"); // select the banner
 	$ip = e107::getIPHandler()->getIP();
 	$newip = (strpos($row['banner_ip'], "{$ip}^") !== FALSE) ? $row['banner_ip'] : "{$row['banner_ip']}{$ip}^"; // what does this do?
-	$sql->update("banner", "banner_clicks = banner_clicks + 1, `banner_ip` = '{$newip}' WHERE `banner_id` = '{$query_string}'");
+	$sql->createQueryBuilder()->update('banner')->setExpression('banner_clicks', 'banner_clicks + 1')->set('banner_ip', $newip)->where('banner_id', (int) $query_string)->execute();
 //	header("Location: {$row['banner_clickurl']}");
 	e107::redirect($row['banner_clickurl']);
 	exit;
@@ -82,7 +82,7 @@ if (isset($_POST['clientsubmit']))
 	}
 	 
 	$row = $sql->fetch();
-	$banner_total = $sql->select("banner", "*", "`banner_clientname` = '{$row['banner_clientname']}'");
+	$banner_total = $sql->createQueryBuilder()->select('*')->from('banner')->where('banner_clientname', $row['banner_clientname'])->execute();
 	
 	// check 
 	if(!$banner_total) 

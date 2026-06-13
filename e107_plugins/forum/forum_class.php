@@ -1072,12 +1072,17 @@ class e107forum
 	function threadMove($threadId, $newForumId, $threadTitle= '', $titleType=0)
 	{
 		$sql = e107::getDb();
+		// IDs are SQL-injection-sensitive integer columns; enforce int regardless of caller.
+		$threadId   = (int) $threadId;
+		$newForumId = (int) $newForumId;
 		$threadInfo = $this->threadGet($threadId);
-		$oldForumId = $threadInfo['thread_forum_id'];
+		$oldForumId = (int) $threadInfo['thread_forum_id'];
 
 		//Move thread to new forum, changing thread title if needed
 		if(!empty($threadTitle))
 		{
+			// Escape the title value before it is interpolated into the SET clause.
+			$threadTitle = e107::getParser()->toDB($threadTitle);
 
 			if($titleType == 0)
 			{
@@ -1533,7 +1538,7 @@ class e107forum
 				}
 				if($row['thread_lastuser_anon'])
 				{
-					$sql->update('forum', "forum_lastpost_user = 0, forum_lastpost_user_anon = '{$row['thread_lastuser_anon']}', forum_lastpost_info = '{$lp_info}' WHERE forum_id=".$id);
+					$sql->createQueryBuilder()->update('forum')->set('forum_lastpost_user', 0)->set('forum_lastpost_user_anon', $row['thread_lastuser_anon'])->set('forum_lastpost_info', $lp_info)->where('forum_id', (int) $id)->execute();
 				}
 				else
 				{

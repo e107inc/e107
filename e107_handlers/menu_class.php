@@ -256,10 +256,10 @@ class e_menu
 	 */
 	public function setParms($plugin, $menu, $parms=array(), $location = 'all')
 	{
-		$qry = 'menu_parms="'.e107::serialize($parms).'" WHERE menu_parms="" AND menu_path="'.$plugin.'/" AND menu_name="'.$menu.'" ';
+		$qry = 'UPDATE `#menus` SET menu_parms = :parms WHERE menu_parms = "" AND menu_path = :path AND menu_name = :name ';
 		$qry .= ($location !== 'all') ? 'menu_location='. (int)$location : '';
 
-		return  e107::getDb()->update('menus', $qry);
+		return  e107::getDb()->execute($qry, array('parms' => e107::serialize($parms), 'path' => $plugin.'/', 'name' => $menu));
 	}
 
 
@@ -352,7 +352,7 @@ class e_menu
 			return false;
 		}
 
-		if($sql->select('menus', 'menu_id' , 'menu_path="'.$plugin.'/" AND menu_name="'.$menufile.'" LIMIT 1'))
+		if($sql->createQueryBuilder()->select('menu_id')->from('menus')->where('menu_path', $plugin.'/')->where('menu_name', $menufile)->limit(1)->execute())
 		{
 			return false;
 		}
@@ -383,14 +383,14 @@ class e_menu
 	 */
 	public function remove($plugin, $menufile=null)
 	{
-		$qry = 'menu_path="'.$plugin.'/" ';
+		$qb = e107::getDb()->createQueryBuilder()->delete('menus')->where('menu_path', $plugin.'/');
 
 		if(!empty($menufile))
 		{
-			$qry .= ' AND menu_name="'.$menufile.'" ';
+			$qb->where('menu_name', $menufile);
 		}
 
-		return e107::getDb()->delete('menus', $qry);
+		return $qb->execute();
 	}
 
 
@@ -662,11 +662,17 @@ class e_menu
 		}
 		e107::getDebug()->logTime($mname);
 		
-		if(is_numeric($mpath) || ($mname === false)) // Custom Page/Menu 
+		if(is_numeric($mpath) || ($mname === false)) // Custom Page/Menu
 		{
-			$query = ($mname === false) ? "menu_name = '".$mpath."' " :  "page_id=". (int)$mpath ." "; // load by ID or load by menu-name (menu_name)
-			
-			$sql->select("page", "*", $query);
+			// load by ID or load by menu-name (menu_name)
+			if($mname === false)
+			{
+				$sql->createQueryBuilder()->select('*')->from('page')->where('menu_name', $mpath)->execute();
+			}
+			else
+			{
+				$sql->createQueryBuilder()->select('*')->from('page')->where('page_id', (int)$mpath)->execute();
+			}
 			$page = $sql->fetch();
 			
 			if(!empty($page['menu_class']) && !check_class($page['menu_class']))

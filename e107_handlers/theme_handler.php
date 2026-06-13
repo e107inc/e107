@@ -3050,7 +3050,7 @@ class themeHandler
 			else
 			{
 				//	echo $plug;
-				if($sql->select("plugin", "plugin_id", " plugin_path = '".$plug."' LIMIT 1 "))
+				if($sql->createQueryBuilder()->select('plugin_id')->from('plugin')->where('plugin_path', $plug)->limit(1)->execute())
 				{
 					$row = $sql->fetch();
 					$name = "installplugin[".$row['plugin_id']."]";

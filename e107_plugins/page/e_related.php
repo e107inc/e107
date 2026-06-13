@@ -23,9 +23,12 @@ class page_related // replace 'e_' with 'plugin-folder_'
 		$sql = e107::getDb();
 		$items = array();
 
+		// $tags is admin-set DB content interpolated into a REGEXP string literal; escape
+		// it so a single quote cannot break out of the literal.
+		$tags = e107::getParser()->toDB($tags);
 		$tag_regexp = "'(^|,)(".str_replace(",", "|", $tags).")(,|$)'";
-		
-		$query = "SELECT * FROM #page WHERE page_id != ".$parm['current']." AND page_class REGEXP '".e_CLASS_REGEXP."'  AND page_metakeys REGEXP ".$tag_regexp."  ORDER BY page_datestamp DESC LIMIT ".$parm['limit'];
+
+		$query = "SELECT * FROM #page WHERE page_id != ".(int)$parm['current']." AND page_class REGEXP '".e_CLASS_REGEXP."'  AND page_metakeys REGEXP ".$tag_regexp."  ORDER BY page_datestamp DESC LIMIT ".(int)$parm['limit'];
 				
 		if($sql->gen($query))
 		{		

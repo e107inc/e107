@@ -116,7 +116,7 @@ if(!class_exists('forum_newforumposts_menu'))
 					LEFT JOIN `#user` AS u ON u.user_id = p.post_user
 					LEFT JOIN `#user` AS lu ON t.thread_lastuser = lu.user_id
 					WHERE {$max_age} p.post_forum IN ({$forumList})
-					ORDER BY p.post_datestamp DESC LIMIT 0, ".vartrue($this->menuPref['display'],10);
+					ORDER BY p.post_datestamp DESC LIMIT 0, ".(int)vartrue($this->menuPref['display'],10);
 					break;
 
 				 // standardized field names.  thread_user_[user table fields without the '_')
@@ -139,7 +139,7 @@ if(!class_exists('forum_newforumposts_menu'))
 					WHERE f.forum_id = t.thread_forum_id AND f.forum_class IN (".USERCLASS_LIST.")
 					AND fp.forum_class IN (".USERCLASS_LIST.") 
 					GROUP BY t.thread_id  
-					ORDER BY t.thread_lastpost DESC LIMIT 0, ".vartrue($this->menuPref['display'],10);
+					ORDER BY t.thread_lastpost DESC LIMIT 0, ".(int)vartrue($this->menuPref['display'],10);
 					}
 
 			return $qry;

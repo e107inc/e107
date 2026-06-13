@@ -852,7 +852,7 @@ if (($_SERVER['QUERY_STRING'] === 'logout'))
 	// TODO - should be done inside online handler, more core areas need it (session handler for example)
 	if (isset($pref['track_online']) && $pref['track_online'])
 	{
-		$sql->update('online', "online_user_id = 0, online_pagecount=online_pagecount+1 WHERE online_user_id = '{$udata}'");
+		$sql->createQueryBuilder()->update('online')->set('online_user_id', 0)->setExpression('online_pagecount', 'online_pagecount + 1')->where('online_user_id', $udata)->execute();
 	}
 	
 	// earlier event trigger with user data still available 

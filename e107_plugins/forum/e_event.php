@@ -42,14 +42,15 @@ class forum_event
 		fclose($myfile);
 		echo('hola');
 		print_a($data);*/
-		e107::getDb()->update('user_extended', "user_plugin_forum_viewed = NULL WHERE user_extended_id = ".$data['user_id']);
+		e107::getDb()->createQueryBuilder()->update('user_extended')->setExpression('user_plugin_forum_viewed', 'NULL')->where('user_extended_id', (int) $data['user_id'])->execute();
 		
 	}
 
 	function forum_eventnewpost($data) // Remove thread id from user_plugin_forum_viewed when a new reply is posted
 	{
 		//e107::getDb()->update('user_extended', "user_plugin_forum_viewed = REPLACE(user_plugin_forum_viewed, '{$data[post_thread]}', '0') WHERE user_extended_id != ".$data[post_user]); 
-		e107::getDb()->update('user_extended', "user_plugin_forum_viewed = TRIM(BOTH ',' FROM REPLACE(CONCAT(',', user_plugin_forum_viewed, ','), ',".$data['post_thread'].",', ',')) WHERE FIND_IN_SET('".$data['post_thread']."', user_plugin_forum_viewed) AND user_extended_id != ".$data['post_user']);
+		$postThread = (int) $data['post_thread'];
+		e107::getDb()->execute("UPDATE `#user_extended` SET user_plugin_forum_viewed = TRIM(BOTH ',' FROM REPLACE(CONCAT(',', user_plugin_forum_viewed, ','), CONCAT(',', :thread1, ','), ',')) WHERE FIND_IN_SET(:thread2, user_plugin_forum_viewed) AND user_extended_id != :postuser", array('thread1' => $postThread, 'thread2' => $postThread, 'postuser' => (int) $data['post_user']));
 
 	}
 

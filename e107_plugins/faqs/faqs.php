@@ -79,9 +79,17 @@ if (isset($_POST['faq_submit']))
 	{
 		$faq_question 	= $tp->toDB($_POST['faq_question']);
 		$data 			= $tp->toDB($_POST['data']);
-		$count 			= ($sql->count("faqs", "(*)", "WHERE faq_parent='".intval($_POST['faq_parent'])."' ") + 1);
-		
-		$sql->insert("faqs", " 0, '".$_POST['faq_parent']."', '$faq_question', '$data', '".e107::getParser()->filter($_POST['faq_comment'], 'str')."', '".time()."', '".USERID."', '".$count."' ");
+		$count = $sql->createQueryBuilder()->from('faqs')->where('faq_parent', intval($_POST['faq_parent']))->count() + 1;
+
+		$sql->createQueryBuilder()->insert('faqs')->values(array(
+			'faq_parent'	=> intval($_POST['faq_parent']),
+			'faq_question'	=> $faq_question,
+			'faq_answer'	=> $data,
+			'faq_comment'	=> e107::getParser()->filter($_POST['faq_comment'], 'str'),
+			'faq_datestamp'	=> time(),
+			'faq_author'	=> USERID,
+			'faq_order'		=> $count,
+		))->execute();
 		
 		$message = LAN_FAQS_004; // FAQ_ADLAN_32;
 		
@@ -101,7 +109,7 @@ if (isset($_POST['faq_edit_submit']))
 		$faq_question 	= $tp->toDB($_POST['faq_question']);
 		$data 			= $tp->toDB($_POST['data']);
 
-		$sql->update("faqs", "faq_parent='".intval($_POST['faq_parent'])."', faq_question ='$faq_question', faq_answer='$data', faq_comment='".$_POST['faq_comment']."'  WHERE faq_id='".$idx."' ");
+		$sql->createQueryBuilder()->update('faqs')->set('faq_parent', intval($_POST['faq_parent']))->set('faq_question', $faq_question)->set('faq_answer', $data)->set('faq_comment', intval($_POST['faq_comment']))->where('faq_id', (int) $idx)->execute();
 		
 		$message = LAN_UPDATED;
 		
@@ -485,8 +493,7 @@ class faq
 		$sql 	= e107::getDb();
 		$sc 	= e107::getScBatch('faqs',TRUE);
 
-		$query = "SELECT f.*,cat.* FROM #faqs AS f LEFT JOIN #faqs_info AS cat ON f.faq_parent = cat.faq_info_id WHERE f.faq_parent = '$id' ";
-		$sql->gen($query);
+		$sql->createQueryBuilder()->select('f.*', 'cat.*')->from('faqs', 'f')->leftJoin('faqs_info', 'cat', 'f.faq_parent = cat.faq_info_id')->where('f.faq_parent', (int) $id)->execute();
 		$sc->setVars($row);
 
 		$text = $tp->parseTemplate($FAQ_LIST_START, true);
@@ -579,7 +586,7 @@ class faq
 		
 		$sc = e107::getScBatch('faqs',TRUE);
 
-		$sql->select("faqs", "*", "faq_id='$idx' LIMIT 1");
+		$sql->createQueryBuilder()->select('*')->from('faqs')->where('faq_id', (int) $idx)->limit(1)->execute();
 		$row = $sql->fetch();
 
 		$sc->setVars($row);
@@ -676,7 +683,7 @@ class faq
 		$text .= "<table class='fborder' style=\"".USER_WIDTH."\" >
         <tr>
         <td colspan='2' class='forumheader3' style=\"width:80%; padding:0px\">";
-		$sql->select("faqs", "*", "faq_parent='$id' AND faq_author = '$userid' ORDER BY faq_id ASC");
+		$sql->createQueryBuilder()->select('*')->from('faqs')->where('faq_parent', (int) $id)->where('faq_author', (int) $userid)->orderBy('faq_id', 'ASC')->execute();
 		$text .= "<div style='width : auto; height : 110px; overflow : auto; '>
         <table class='fborder' style=\"width:100%\">
         <tr>
@@ -703,7 +710,7 @@ class faq
 		// TODO - optimize
 		if ($action == "edit")
 		{
-			$sql->select("faqs", "*", " faq_id = '$idx' ");
+			$sql->createQueryBuilder()->select('*')->from('faqs')->where('faq_id', (int) $idx)->execute();
 			$row = $sql->fetch();
 			extract($row); // get rid of this
 			$data = $faq_answer;

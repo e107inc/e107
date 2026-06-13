@@ -145,7 +145,7 @@ class e_online
 				$dbg->logTime('Go online (isUser)');
 				// Find record that matches IP or visitor, or matches user info
 				$dbg->logTime('Go online (db select)');
-				if ($sql->select('online', '*', "(`online_ip` = '{$ip}' AND `online_user_id` = '0') OR `online_user_id` = '{$udata}' LIMIT 1"))
+				if ($sql->createQueryBuilder()->select('*')->from('online')->where(function($q) use ($ip) { $q->where('online_ip', $ip)->where('online_user_id', '0'); })->orWhere('online_user_id', $udata)->limit(1)->execute())
 				{
 					$dbg->logTime('Go online (db fetch)');
 					$row = $sql->fetch();
@@ -260,14 +260,25 @@ class e_online
 					if ($row['online_timestamp'] < (time() - $online_timeout)) //It has been at least 'timeout' seconds since this ip has connected
 					{
 						//Update record with timestamp, current page, and set pagecount to 1
-						$query = "`online_timestamp` = '".time()."'{$update_page}, `online_pagecount` = 1 WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0'";
+						$query = array(
+							'online_timestamp'	=> time(),
+							'online_pagecount'	=> 1,
+							'WHERE'				=> "online_ip = '".$ip."' AND online_user_id = '0'"
+						);
 					}
 					else
 					{
 						//Update record with current page and increment pagecount
 						$row['online_pagecount'] ++;
 						//   echo "here {$online_pagecount}";
-						$query="`online_pagecount` = {$row['online_pagecount']}{$update_page} WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0'";
+						$query = array(
+							'online_pagecount'	=> intval($row['online_pagecount']),
+							'WHERE'				=> "online_ip = '".$ip."' AND online_user_id = '0'"
+						);
+					}
+					if(!empty($update_page))
+					{
+						$query['online_location'] = $page;
 					}
 					$dbg->logTime('Go online (update) Line:'.__LINE__);
 					$sql->update('online', $query);
@@ -377,7 +388,7 @@ class e_online
 					define('MEMBERS_ONLINE', $members_online);
 					define('GUESTS_ONLINE', $total_online - $members_online);
 					$dbg->logTime('Go online (db count) Line:'.__LINE__);
-					define('ON_PAGE', $sql->count('online', '(*)', "WHERE `online_location` = '{$page}' "));
+					define('ON_PAGE', $sql->createQueryBuilder()->from('online')->where('online_location', $page)->count());
 					define('MEMBER_LIST', $member_list);
 				}
 				//update most ever online

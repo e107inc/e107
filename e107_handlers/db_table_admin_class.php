@@ -52,7 +52,11 @@ class db_table_admin
 		}
 		//	echo "Get table structure for: {$table_name}, prefix: {$prefix}<br />";
 		$sql->gen('SET SQL_QUOTE_SHOW_CREATE = 1');
-		$qry = 'SHOW CREATE TABLE `'.$prefix.$table_name."`";
+		// $prefix.$table_name form a SQL identifier (inside backticks) that cannot be
+		// bound; strip to identifier-safe characters so a backtick cannot break out.
+		$safePrefix = preg_replace('/[^A-Za-z0-9_]/', '', $prefix);
+		$safeTable  = preg_replace('/[^A-Za-z0-9_]/', '', $table_name);
+		$qry = 'SHOW CREATE TABLE `'.$safePrefix.$safeTable."`";
 		if (!($z = $sql->gen($qry)))
 		{
 			return FALSE;
@@ -711,7 +715,9 @@ class db_table_admin
 					{
 						echo "List of changes found:<br />".$this->make_changes_list($diffs);
 					}
-					$qry = 'ALTER TABLE '.MPREFIX.$tableName.' '.implode(', ', $diffs[1]);
+					// $tableName is a SQL identifier (cannot be bound); sanitise and backtick-quote it.
+					$safeTableName = preg_replace('/[^A-Za-z0-9_]/', '', $tableName);
+					$qry = 'ALTER TABLE `'.MPREFIX.$safeTableName.'` '.implode(', ', $diffs[1]);
 					if ($debugLevel)
 					{
 						echo 'Update Query used: '.$qry.'<br />';
@@ -751,9 +757,11 @@ class db_table_admin
 			{
 				$newTableName = MPREFIX.$newTableName;
 			}
+			// $newTableName is a SQL identifier (cannot be bound); sanitise and backtick-quote it.
+			$newTableName = preg_replace('/[^A-Za-z0-9_]/', '', $newTableName);
 			if ($newTableName != $tableName)
 			{
-				$createText = preg_replace('#create +table +(\w*?) +#i', 'CREATE TABLE '.$newTableName.' ', $createText);
+				$createText = preg_replace('#create +table +(\w*?) +#i', 'CREATE TABLE `'.$newTableName.'` ', $createText);
 			}
 			return e107::getDb()->gen($createText);
 		}

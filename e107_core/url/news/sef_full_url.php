@@ -122,8 +122,7 @@ class core_news_sef_full_url extends eUrlConfig
 		}
 		
 		$sql = e107::getDb('url');
-		$id = e107::getParser()->toDB($name);
-		if($sql->select('news_category', 'category_id', "category_sef='{$name}'")) // TODO - it'll be category_sef (new) field
+		if($sql->createQueryBuilder()->select('category_id')->from('news_category')->where('category_sef', $name)->execute()) // TODO - it'll be category_sef (new) field
 		{
 			$name = $sql->fetch();
 			$request->setRequestParam('name', $name['category_id']);

@@ -1708,6 +1708,13 @@ class e107_user_extended
 			$field_name = 'user_'.$field_name;
 		}
 
+		// $field_name is used unquoted as a column identifier; reject anything that
+		// is not a plain identifier to prevent SQL injection via the column name.
+		if(!preg_match('/^[A-Za-z0-9_]+$/D', (string) $field_name))
+		{
+			return false;
+		}
+
 
 		$qry = "
 		INSERT INTO `#user_extended` (user_extended_id, {$field_name})
@@ -1887,7 +1894,13 @@ class e107_user_extended
 				}
 
 				$sql_ue = e107::getDb('euf_db');            // Use our own DB object to avoid conflicts
-				if($sql_ue->select($tmp[0], "{$tmp[1]}, {$tmp[2]}", "{$tmp[1]} = '{$value}'"))
+
+				// $tmp[0..2] are table/column identifiers from the field config; validate
+				// them and bind $value so it cannot break out of the WHERE clause.
+				if(preg_match('/^[A-Za-z0-9_]+$/D', (string) $tmp[0])
+					&& preg_match('/^[A-Za-z0-9_]+$/D', (string) $tmp[1])
+					&& preg_match('/^[A-Za-z0-9_]+$/D', (string) $tmp[2])
+					&& $sql_ue->execute("SELECT `{$tmp[1]}`, `{$tmp[2]}` FROM `#{$tmp[0]}` WHERE `{$tmp[1]}` = :value", array('value' => $value)))
 				{
 
 					$row = $sql_ue->fetch();

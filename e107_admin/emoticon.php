@@ -427,13 +427,14 @@ class emotec
 		//	$tmp = addslashes(serialize($encoded_emotes));
 		$tmp = e107::serialize($encoded_emotes, true);
 
-		if ($sql->select("core", "*", "e107_name='emote_" . $packID . "'"))
+		$emoteName = 'emote_' . $packID;
+		if ($sql->createQueryBuilder()->select('*')->from('core')->where('e107_name', $emoteName)->execute())
 		{
-			e107::getMessage()->addAuto($sql->update("core", "`e107_value`='{$tmp}' WHERE `e107_name`='emote_" . $packID . "' "), 'update', LAN_SETSAVED, false, false);
+			e107::getMessage()->addAuto($sql->createQueryBuilder()->update('core')->set('e107_value', $tmp)->where('e107_name', $emoteName)->execute(), 'update', LAN_SETSAVED, false, false);
 		}
 		else
 		{
-			e107::getMessage()->addAuto($sql->insert("core", "'emote_" . $packID . "', '$tmp' "), 'insert', LAN_SETSAVED, false, false);
+			e107::getMessage()->addAuto($sql->createQueryBuilder()->insert('core')->values(array('e107_name' => $emoteName, 'e107_value' => $tmp))->execute(), 'insert', LAN_SETSAVED, false, false);
 		}
 	}
 

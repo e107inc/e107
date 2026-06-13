@@ -1250,7 +1250,9 @@ class comment
 		$rate		= varset($att['rate']);
 			
 		$type = $this->getCommentType($table);
+		// $sort is appended raw to ORDER BY; restrict to a known-safe direction.
 		$sort = vartrue($pref['comments_sort'],'desc');
+		$sort = in_array(strtoupper($sort), array('ASC','DESC'), true) ? strtoupper($sort) : 'DESC';
 		
 		if(!empty($pref['nested_comments']))
 		{
@@ -1356,16 +1358,9 @@ class comment
 				}
 				return;
 			}
-			$qry = "
-		SELECT COUNT(*) AS count
-		FROM #comments
-		WHERE comment_author_id = '{$id}'
-		";
-			if ($sql->gen($qry))
-			{
-				$row = $sql->fetch();
-				$sql->update("user", "user_comments = '{$row['count']}' WHERE user_id = '{$id}'");
-			}
+			$id = (int) $id;
+			$commentCount = $sql->createQueryBuilder()->from('comments')->where('comment_author_id', $id)->count();
+			$sql->createQueryBuilder()->update('user')->set('user_comments', $commentCount)->where('user_id', $id)->execute();
 		}
 
 
@@ -1711,15 +1706,22 @@ class comment
 		$tp = e107::getParser();
 		$this->nestedComments = array();
 
-		$query = "SELECT c.*, u.*, ue.*, r.* FROM #comments AS c
-					LEFT JOIN #user AS u ON c.comment_author_id = u.user_id
-					LEFT JOIN #user_extended AS ue ON c.comment_author_id = ue.user_extended_id 
-					LEFT JOIN #rate AS r ON c.comment_id = r.rate_itemid AND r.rate_table = 'comments' 
-					
-					WHERE c.comment_item_id='" . intval($id) . "' AND c.comment_type='" . $tp->toDB($type, true) . "' AND c.comment_pid > 0 
-					ORDER BY c.comment_datestamp " . $sort;
+		// $sort is appended raw to ORDER BY; restrict to a known-safe direction.
+		$sort = in_array(strtoupper($sort), array('ASC','DESC'), true) ? strtoupper($sort) : 'DESC';
 
-		if($nested = e107::getDb()->retrieve($query, true))
+		$nested = e107::getDb()->createQueryBuilder()
+			->select('c.*', 'u.*', 'ue.*', 'r.*')
+			->from('comments', 'c')
+			->leftJoin('user', 'u', 'c.comment_author_id = u.user_id')
+			->leftJoin('user_extended', 'ue', 'c.comment_author_id = ue.user_extended_id')
+			->leftJoin('rate', 'r', "c.comment_id = r.rate_itemid AND r.rate_table = 'comments'")
+			->where('c.comment_item_id', (int) $id)
+			->where('c.comment_type', $type)
+			->where('c.comment_pid', '>', 0)
+			->orderBy('c.comment_datestamp', $sort)
+			->fetchAll();
+
+		if($nested)
 		{
 			foreach($nested as $row)
 			{

@@ -35,7 +35,11 @@ class base_import_class
 		{
 	  		$this->ourDB = e107::getDb('ourDB');
 	  		$result = $this->ourDB->database($database,$prefix,true);
-	  		$this->DBPrefix = "`".$database."`.".$prefix;
+	  		// SQL identifiers cannot be bound; sanitise both components before they
+	  		// are spliced into table references (e.g. `db`.prefixtable) by callers.
+	  		$safeDatabase = "`".str_replace("`", "``", $database)."`";
+	  		$safePrefix   = preg_replace('/[^A-Za-z0-9_]/', '', $prefix);
+	  		$this->DBPrefix = $safeDatabase.".".$safePrefix;
 	  		if ($result)
 	  		{
 	  	 		return $result;

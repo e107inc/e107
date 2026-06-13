@@ -834,7 +834,7 @@ $columnInfo = array(
 		            $files = $efile->get_files(e_DOWNLOAD);
 		            $foundSome = false;
 		            foreach($files as $file) {
-		               if (0 == $sql->count('download', '(*)', " WHERE download_url='".$file['fname']."'")) {
+		               if (0 == $sql->createQueryBuilder()->from('download')->where('download_url', $file['fname'])->count()) {
 		                  if (!$foundSome) {
 		   		           // $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
 		                     $text .= '<form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">
@@ -1927,7 +1927,7 @@ $columnInfo = array(
 		
 		            if ($_POST['remove_upload'])
 		            {
-		               $sql->update("upload", "upload_active='1' WHERE upload_id='".$_POST['remove_id']."'");
+		               $sql->createQueryBuilder()->update('upload')->set('upload_active', '1')->where('upload_id', (int) $_POST['remove_id'])->execute();
 		               $mess = "<br/>".$_POST['download_name']." ".DOWLAN_104;
 		               $mess .= "<br/><br/><a href='".e_ADMIN."upload.php'>".DOWLAN_105."</a>";
 		               $this->show_message($mess);
@@ -2130,7 +2130,7 @@ $columnInfo = array(
 		         }
 		         else
 		         {
-		            $mes->addAuto($sql ->insert("download_mirror", "0, '{$name}', '{$url}', '".$tp->toDB($_POST['mirror_image'])."', '{$location}', '{$description}', 0"), 'insert', DOWLAN_134);
+		            $mes->addAuto($sql->createQueryBuilder()->insert("download_mirror")->values(array('mirror_name'=>$name, 'mirror_url'=>$url, 'mirror_image'=>$tp->toDB($_POST['mirror_image']), 'mirror_location'=>$location, 'mirror_description'=>$description, 'mirror_count'=>0))->execute(), 'insert', DOWLAN_134);
 		            e107::getLog()->add('DOWNL_12',$logString,E_LOG_INFORMATIVE,'');
 		         }
 		      }

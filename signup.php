@@ -387,7 +387,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 			exit;
 		}
 
-		if ($_POST['email'] && $sql->select("user", "*", "user_email='".$_POST['email']."' AND user_ban='".USER_BANNED."'"))
+		if ($_POST['email'] && $sql->createQueryBuilder()->select('*')->from('user')->where('user_email', $_POST['email'])->where('user_ban', USER_BANNED)->execute())
 		{
 			exit;
 		}
@@ -580,7 +580,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 			if ($init_class = $userMethods->userClassUpdate($row, 'userpartial'))
 			{
 				$allData['data']['user_class'] = $init_class;
-				$user_class_update = $sql->update("user", "user_class = '{$allData['data']['user_class']}' WHERE user_name='{$allData['data']['user_name']}' LIMIT 1");
+				$user_class_update = $sql->createQueryBuilder()->update('user')->set('user_class', $allData['data']['user_class'])->where('user_name', $allData['data']['user_name'])->limit(1)->execute();
 				
 				if($user_class_update === FALSE)
 				{

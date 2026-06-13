@@ -505,9 +505,11 @@ if(!empty($_GET['iframe']))
 			// ----------------- delete tables ---------------------------------------------
 			if (isset($_POST['del_existing']) && $_POST['lang_choices'] && getperms('0'))
 			{
-				$lang = strtolower($_POST['lang_choices']);
-
+				// Filter BEFORE deriving $lang so the value concatenated into the
+				// DROP TABLE identifier below is restricted to [A-Za-z0-9_].
 				$_POST['lang_choices'] = e107::getParser()->filter($_POST['lang_choices'],'w');
+
+				$lang = strtolower($_POST['lang_choices']);
 
 				foreach ($tabs as $del_table)
 				{

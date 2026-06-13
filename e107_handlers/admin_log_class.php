@@ -305,6 +305,10 @@ class e_admin_log
 			$userIP = $userData['user_ip'];
 		}
 
+		// $userstring (USERNAME / user_name) is interpolated raw into the rolling-log
+		// INSERT below; escape it to prevent second-order SQLi from quotes in user names.
+		$userstring = $tp->toDB($userstring, true, false, 'no_html');
+
 		$importance = $tp->toDB($importance, true, false, 'no_html');
 		$eventcode = $tp->toDB($eventcode, true, false, 'no_html');
 

@@ -79,39 +79,19 @@ class auth_login extends alt_auth_base
 	 */
 	public function login($uname, $pword, &$newvals, $connect_only = FALSE)
 	{
-		/* Begin - Deltik's PDO Workaround (part 1/2) */
-	//	$dsn = 'mysql:dbname=' . $this->conf['otherdb_database'] . ';host=' . $this->conf['otherdb_server'];
-		$dsn = "mysql:host=".$this->conf['otherdb_server'].";port=".varset($this->conf['otherdb_port'],3306).";dbname=".$this->conf['otherdb_database'].";charset=".(new db_verify())->getIntendedCharset();
+		$db = e107::getDb('alt_auth_otherdb');
 
+		$server = $this->conf['otherdb_server'].':'.varset($this->conf['otherdb_port'], 3306);
 
-		try
+		if(!$db->connect($server, $this->conf['otherdb_username'], $this->conf['otherdb_password'], true)
+			|| !$db->database($this->conf['otherdb_database'], '', false))
 		{
-			$dbh = new PDO($dsn, $this->conf['otherdb_username'], $this->conf['otherdb_password']);
-		}
-		catch (PDOException $e)
-		{
-			$this->makeErrorText('Cannot connect to remote DB; PDOException message: ' . $e->getMessage());
+			$this->makeErrorText('Cannot connect to remote DB; '.$db->getLastErrorText());
 			return AUTH_NOCONNECT;
 		}
-		/* End - Deltik's PDO Workaround (part 1/2) */
-		
-		/** Ancient code that breaks e107's ability to use the original MySQL resource
-		//Attempt to open connection to sql database
-		if(!$res = mysql_connect($this->conf['otherdb_server'], $this->conf['otherdb_username'], $this->conf['otherdb_password']))
-		{
-			$this->makeErrorText('Cannot connect to remote server');
-			return AUTH_NOCONNECT;
-		}
-		//Select correct db
-		if(!mysql_select_db($this->conf['otherdb_database'], $res))
-		{
-			mysql_close($res);
-			$this->makeErrorText('Cannot connect to remote DB');
-			return AUTH_NOCONNECT;
-		}
-		*/
-		
+
 		if ($connect_only) return AUTH_SUCCESS;		// Test mode may just want to connect to the DB
+
 		$sel_fields = array();
 		// Make an array of the fields we want from the source DB
 		foreach($this->conf as $k => $v)
@@ -130,23 +110,41 @@ class auth_login extends alt_auth_base
 			$sel_fields[] = $this->conf['otherdb_password_salt'];
 		}
 
-		//Get record containing supplied login name
-		$qry = "SELECT ".implode(',',$sel_fields)." FROM {$this->conf['otherdb_table']} WHERE {$user_field} = '{$uname}'";
-//	  echo "Query: {$qry}<br />";
-		
-		/* Begin - Deltik's PDO Workaround (part 2/2) */
-		if (!$r1 = $dbh->query($qry))
+		$columns = array();
+		foreach($sel_fields as $field)
 		{
-			$this->makeErrorText('Lookup query failed');
-			e107::getMessage()->addDebug($qry);
+			$column = $db->quoteIdentifier($field);
+			if($column === false)
+			{
+				$this->makeErrorText('Invalid field name in alt_auth otherdb configuration');
+				return AUTH_NOCONNECT;
+			}
+			$columns[] = $column;
+		}
+
+		$table = $db->quoteIdentifier($this->conf['otherdb_table']);
+		$userColumn = $db->quoteIdentifier($user_field);
+
+		if($table === false || $userColumn === false)
+		{
+			$this->makeErrorText('Invalid table or user field in alt_auth otherdb configuration');
 			return AUTH_NOCONNECT;
 		}
-		if (!$row = $r1->fetch(PDO::FETCH_BOTH))
+
+		//Get record containing supplied login name
+		$qry = "SELECT ".implode(',', $columns)." FROM ".$table." WHERE ".$userColumn." = :uname";
+
+		if($db->execute($qry, array('uname' => $uname)) === false)
+		{
+			$this->makeErrorText('Lookup query failed');
+			return AUTH_NOCONNECT;
+		}
+
+		if (!$row = $db->fetch('both'))
 		{
 			$this->makeErrorText('User not found');
 			return AUTH_NOUSER;
 		}
-		/* End - Deltik's PDO Workaround (part 2/2) */
 		
 		/** Ancient code that breaks e107's ability to use the original MySQL resource
 		if(!$r1 = mysql_query($qry))
