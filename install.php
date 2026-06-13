@@ -2214,7 +2214,12 @@ class e_install
 		$hash = $us->HashPassword($this->previous_steps['admin']['password'],$this->previous_steps['admin']['user'], $pwdEncoding);
 
 		$ip = $_SERVER['REMOTE_ADDR'];
-		$userp = "1, '{$this->previous_steps['admin']['display']}', '{$this->previous_steps['admin']['user']}', '', '".$hash."', '', '{$this->previous_steps['admin']['email']}', '', '', 0, ".time().", 0, 0, 0, 0, 0, '{$ip}', 0, '', 0, 1, '', '', '0', '', ".time().", ''";
+		$db = e107::getDb();
+		$adminDisplay = $db->escape($this->previous_steps['admin']['display']);
+		$adminUser    = $db->escape($this->previous_steps['admin']['user']);
+		$adminEmail   = $db->escape($this->previous_steps['admin']['email']);
+		$ipEsc        = $db->escape($ip);
+		$userp = "1, '{$adminDisplay}', '{$adminUser}', '', '".$hash."', '', '{$adminEmail}', '', '', 0, ".time().", 0, 0, 0, 0, 0, '{$ipEsc}', 0, '', 0, 1, '', '', '0', '', ".time().", ''";
 	//	$qry = "REPLACE INTO {$this->previous_steps['mysql']['prefix']}user VALUES ({$userp})";
 		$this->dbqry("REPLACE INTO {$this->previous_steps['mysql']['prefix']}user VALUES ({$userp})" );
 		installLog::add('Admin user created');

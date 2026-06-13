@@ -1072,12 +1072,15 @@ class e107forum
 	function threadMove($threadId, $newForumId, $threadTitle= '', $titleType=0)
 	{
 		$sql = e107::getDb();
+		$threadId   = (int) $threadId;
+		$newForumId = (int) $newForumId;
 		$threadInfo = $this->threadGet($threadId);
-		$oldForumId = $threadInfo['thread_forum_id'];
+		$oldForumId = (int) $threadInfo['thread_forum_id'];
 
 		//Move thread to new forum, changing thread title if needed
 		if(!empty($threadTitle))
 		{
+			$threadTitle = $sql->escape($threadTitle);
 
 			if($titleType == 0)
 			{
@@ -1533,7 +1536,7 @@ class e107forum
 				}
 				if($row['thread_lastuser_anon'])
 				{
-					$sql->update('forum', "forum_lastpost_user = 0, forum_lastpost_user_anon = '{$row['thread_lastuser_anon']}', forum_lastpost_info = '{$lp_info}' WHERE forum_id=".$id);
+					$sql->update('forum', "forum_lastpost_user = 0, forum_lastpost_user_anon = '".$sql->escape($row['thread_lastuser_anon'])."', forum_lastpost_info = '{$lp_info}' WHERE forum_id=".$id);
 				}
 				else
 				{

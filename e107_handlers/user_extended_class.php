@@ -1708,6 +1708,12 @@ class e107_user_extended
 			$field_name = 'user_'.$field_name;
 		}
 
+		// $field_name is an SQL identifier (column); reject anything outside a strict identifier allowlist.
+		if(!preg_match('/^[A-Za-z0-9_]+$/', (string) $field_name))
+		{
+			return false;
+		}
+
 
 		$qry = "
 		INSERT INTO `#user_extended` (user_extended_id, {$field_name})
@@ -1886,8 +1892,16 @@ class e107_user_extended
 					return null;
 				}
 
+				// $tmp[0..2] are table/column identifiers from the field's db_lookup config; validate them.
+				if(!preg_match('/^[A-Za-z0-9_]+$/', (string) $tmp[0])
+					|| !preg_match('/^[A-Za-z0-9_]+$/', (string) $tmp[1])
+					|| !preg_match('/^[A-Za-z0-9_]+$/', (string) $tmp[2]))
+				{
+					return null;
+				}
+
 				$sql_ue = e107::getDb('euf_db');            // Use our own DB object to avoid conflicts
-				if($sql_ue->select($tmp[0], "{$tmp[1]}, {$tmp[2]}", "{$tmp[1]} = '{$value}'"))
+				if($sql_ue->select($tmp[0], "{$tmp[1]}, {$tmp[2]}", "{$tmp[1]} = '".$sql_ue->escape($value)."'"))
 				{
 
 					$row = $sql_ue->fetch();

@@ -1009,7 +1009,7 @@ class e_plugin_pref extends e_pref
 		$ret = false;
 		if($this->plugin_id)
 		{
-			$ret = e107::getDb($this->plugin_id)->delete('core', "e107_name='{$this->plugin_id}'");
+			$ret = e107::getDb($this->plugin_id)->delete('core', "e107_name='".e107::getDb($this->plugin_id)->escape($this->plugin_id)."'");
 			$this->destroy();
 		}
 		return $ret;
@@ -1078,7 +1078,7 @@ class e_theme_pref extends e_pref
 		$ret = false;
 		if($this->theme_id)
 		{
-			$ret = e107::getDb($this->theme_id)->delete('core', "e107_name='{$this->theme_id}'");
+			$ret = e107::getDb($this->theme_id)->delete('core', "e107_name='".e107::getDb($this->theme_id)->escape($this->theme_id)."'");
 			$this->destroy();
 		}
 		return $ret;

@@ -297,7 +297,7 @@
 			{
 				$sql->select("forum_thread", "thread_name, thread_forum_id", "thread_forum_id=" . intval($tmp[0]) . " AND thread_parent=0");
 				$forum_thread = $sql->fetch();
-				$sql->select("forum", "forum_name", "forum_id=" . $forum_thread['thread_forum_id']);
+				$sql->select("forum", "forum_name", "forum_id=" . (int) $forum_thread['thread_forum_id']);
 				$forum = $sql->fetch();
 				$online_location_page = ONLINE_EL12 . ": " . ONLINE_EL13 . " .:. " . $forum['forum_name'] . "->" . ONLINE_EL14 . " .:. " . $forum_thread['thread_name'];
 				$online_location = e_PLUGIN . "forum/forum_viewtopic.php?$tmp[0].$tmp[1]";

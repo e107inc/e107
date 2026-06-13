@@ -33,7 +33,7 @@ class e_tagwords_download
 
 		$qry = "SELECT d.*
 		FROM #download as d
-		WHERE d.download_id='{$id}' AND d.download_class REGEXP '".e_CLASS_REGEXP."' ";
+		WHERE d.download_id='".(int) $id."' AND d.download_class REGEXP '".e_CLASS_REGEXP."' ";
 
 		if($sql->gen($qry))
 		{

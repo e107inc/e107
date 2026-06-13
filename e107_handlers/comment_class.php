@@ -1250,7 +1250,7 @@ class comment
 		$rate		= varset($att['rate']);
 			
 		$type = $this->getCommentType($table);
-		$sort = vartrue($pref['comments_sort'],'desc');
+		$sort = (strtolower(vartrue($pref['comments_sort'],'desc')) === 'asc') ? 'asc' : 'desc'; // ORDER BY direction only
 		
 		if(!empty($pref['nested_comments']))
 		{
@@ -1356,6 +1356,7 @@ class comment
 				}
 				return;
 			}
+			$id = (int) $id; // comment_author_id / user_id is numeric
 			$qry = "
 		SELECT COUNT(*) AS count
 		FROM #comments
@@ -1364,7 +1365,7 @@ class comment
 			if ($sql->gen($qry))
 			{
 				$row = $sql->fetch();
-				$sql->update("user", "user_comments = '{$row['count']}' WHERE user_id = '{$id}'");
+				$sql->update("user", "user_comments = '".(int) $row['count']."' WHERE user_id = '{$id}'");
 			}
 		}
 

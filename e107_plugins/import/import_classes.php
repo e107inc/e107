@@ -30,7 +30,14 @@ class base_import_class
 	 * Connect to the external DB if not already connected
 	 */
 	function database($database, $prefix)
-	{		
+	{
+		// $database and $prefix become SQL identifiers in DBPrefix (used unescaped by every provider);
+		// escape() cannot protect identifier positions, so enforce a strict identifier allowlist here.
+		if (!preg_match('/^[A-Za-z0-9_]+$/', (string) $database) || !preg_match('/^[A-Za-z0-9_]*$/', (string) $prefix))
+		{
+			return FALSE;
+		}
+
 		if ($this->ourDB == NULL)
 		{
 	  		$this->ourDB = e107::getDb('ourDB');

@@ -211,7 +211,7 @@ e107::css('inline',"
 						$c = $c+1;
 					}
 
-					$sql2->update('forum', 'forum_order = '.$c.' WHERE forum_id = '.$row['forum_id'].' LIMIT 1');
+					$sql2->update('forum', 'forum_order = '.(int) $c.' WHERE forum_id = '.(int) $row['forum_id'].' LIMIT 1');
 				}
 			}
 		}
@@ -344,7 +344,7 @@ e107::css('inline',"
 		public function beforeCreate($new_data, $old_data)
 		{
 			$sql = e107::getDb();
-			$parentOrder = $sql->retrieve('forum','forum_order','forum_id='.$new_data['forum_parent']." LIMIT 1");
+			$parentOrder = $sql->retrieve('forum','forum_order','forum_id='.intval($new_data['forum_parent'])." LIMIT 1");
 
 			$new_data['forum_order'] = $parentOrder + 50;
 
@@ -496,17 +496,21 @@ e107::css('inline',"
 			$memberrules 	= $tp->toDB($_POST['memberrules']);
 			$adminrules 	= $tp->toDB($_POST['adminrules']);
 
-			if(!$sql->update("generic", "gen_chardata ='$guestrules', gen_intdata='".$_POST['guest_active']."' WHERE gen_type='forum_rules_guest' "))
+			$guestActive  = (int) varset($_POST['guest_active']);
+			$memberActive = (int) varset($_POST['member_active']);
+			$adminActive  = (int) varset($_POST['admin_active']);
+
+			if(!$sql->update("generic", "gen_chardata ='$guestrules', gen_intdata='".$guestActive."' WHERE gen_type='forum_rules_guest' "))
 			{
-				$sql->insert("generic", "0, 'forum_rules_guest', '".time()."', 0, '', '".$_POST['guest_active']."', '$guestrules' ");
+				$sql->insert("generic", "0, 'forum_rules_guest', '".time()."', 0, '', '".$guestActive."', '$guestrules' ");
 			}
-			if(!$sql->update("generic", "gen_chardata ='$memberrules', gen_intdata='".$_POST['member_active']."' WHERE gen_type='forum_rules_member' "))
+			if(!$sql->update("generic", "gen_chardata ='$memberrules', gen_intdata='".$memberActive."' WHERE gen_type='forum_rules_member' "))
 			{
-				$sql->insert("generic", "0, 'forum_rules_member', '".time()."', 0, '', '".$_POST['member_active']."', '$memberrules' ");
+				$sql->insert("generic", "0, 'forum_rules_member', '".time()."', 0, '', '".$memberActive."', '$memberrules' ");
 			}
-			if(!$sql->update("generic", "gen_chardata ='$adminrules', gen_intdata='".$_POST['admin_active']."' WHERE gen_type='forum_rules_admin' "))
+			if(!$sql->update("generic", "gen_chardata ='$adminrules', gen_intdata='".$adminActive."' WHERE gen_type='forum_rules_admin' "))
 			{
-				$sql->insert("generic", "0, 'forum_rules_admin', '".time()."', 0, '', '".$_POST['admin_active']."', '$adminrules' ");
+				$sql->insert("generic", "0, 'forum_rules_admin', '".time()."', 0, '', '".$adminActive."', '$adminrules' ");
 			}
 
 			e107::getMessage()->addSuccess(LAN_SAVED);

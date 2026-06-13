@@ -877,14 +877,14 @@ Following fields auto-filled in code as required:
 			{
 				$errMsg = ERR_INVALID_EMAIL;
 			}
-			elseif ($u_sql->count('user', '(*)', "WHERE `user_email`='".filter_var($v,FILTER_SANITIZE_EMAIL)."' AND `user_ban`=1 "))
+			elseif ($u_sql->count('user', '(*)', "WHERE `user_email`='".$u_sql->escape(filter_var($v,FILTER_SANITIZE_EMAIL))."' AND `user_ban`=1 "))
 			{
 				$errMsg = ERR_BANNED_USER;
 			}
 			else
 			{	// See if email address banned
 				$wc = e107::getIPHandler()->makeEmailQuery($v);		// Generate the query for the ban list
-				if ($wc) { $wc = "`banlist_ip`='{$v}' OR ".$wc;  }
+				if ($wc) { $wc = "`banlist_ip`='".$u_sql->escape($v)."' OR ".$wc;  }
 				if (($wc === false) || !e107::getIPHandler()->checkBan($wc, false, TRUE))
 				{
 //					echo "Email banned<br />";
@@ -1082,7 +1082,7 @@ Following fields auto-filled in code as required:
 				return 'Invalid action: '.$action;
 		}
 		if ($uid) { $qry = '`user_id`='.$uid; }
-		if ($emailAddress) { if ($qry) $qry .= ' OR '; $qry .= "`user_email` = '{$emailAddress}'"; }
+		if ($emailAddress) { if ($qry) $qry .= ' OR '; $qry .= "`user_email` = '".$db->escape($emailAddress)."'"; }
 		if (false === $db->select('user', 'user_id, user_email, user_ban, user_loginname', $qry.' LIMIT 1'))
 		{
 			$error = 'User not found: '.$uid.'/'.$emailAddress;

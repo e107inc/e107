@@ -115,8 +115,8 @@ class download
 			$this->qry['view'] 		= varset($_GET['view']) ? intval($_GET['view']) : $this->qry['view'];
 			$this->qry['id']		= intval($_GET['id']);
 			$this->qry['order'] 	= vartrue($_GET['order']) && in_array("download_".$_GET['order'],$this->orderOptions) ? $_GET['order'] : $this->qry['order'];
-			$this->qry['sort'] 		= (varset($_GET['sort']) == 'asc') ? "asc" : 'desc';	
-			$this->qry['from']		= varset($_GET['from'],0);
+			$this->qry['sort'] 		= (varset($_GET['sort']) == 'asc') ? "asc" : 'desc';
+			$this->qry['from']		= intval(varset($_GET['from'],0));
 
 			if($this->qry['action'] == 'error')
 			{

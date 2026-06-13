@@ -1246,6 +1246,16 @@ class user_class
 
 		$lj = strpos($fields,'ue.') !== false ? "LEFT JOIN `#user_extended` AS ue ON user_id = ue.user_extended_id " : "";
 
+		// $fields (column list) and $orderBy (order column) are SQL identifiers; reject unsafe values.
+		if(!preg_match('/^[A-Za-z0-9_,\.\s]+$/', (string) $fields))
+		{
+			$fields = 'user_name, user_loginname';
+		}
+		if(!preg_match('/^[A-Za-z0-9_,\.\s]+$/', (string) $orderBy))
+		{
+			$orderBy = 'user_id';
+		}
+
 		$query = "SELECT user_id,{$fields} FROM `#user` ".$lj." WHERE ".implode(" OR ",$qry)." ORDER BY ".$orderBy;
 
 		if ($sql->gen($query))
@@ -1872,11 +1882,11 @@ class user_class_admin extends user_class
 		{
 			if (isset($classrec[$fl]))
 			{
-				$qry .= $spacer."`".$fl."` = '".$classrec[$fl]."'";
+				$qry .= $spacer."`".$fl."` = '".$this->sql_r->escape($classrec[$fl])."'";
 				$spacer = ", ";
 			}
 		}
-		if ($this->sql_r->update('userclass_classes', $qry." WHERE `userclass_id`='{$classrec['userclass_id']}'") === FALSE)
+		if ($this->sql_r->update('userclass_classes', $qry." WHERE `userclass_id`='".intval($classrec['userclass_id'])."'") === FALSE)
 		{
 			return FALSE;
 		}

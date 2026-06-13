@@ -562,7 +562,7 @@ $columnInfo = array(
             $foundSome = false;
             foreach($files as $file)
 			{
-               if (0 == $sql->count('download', '(*)', " WHERE download_url='".$file['fname']."'")) {
+               if (0 == $sql->count('download', '(*)', " WHERE download_url='".$sql->escape($file['fname'])."'")) {
                   if (!$foundSome) {
    		           // $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
                      $text .= '<form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">
@@ -834,7 +834,7 @@ $columnInfo = array(
 		            $files = $efile->get_files(e_DOWNLOAD);
 		            $foundSome = false;
 		            foreach($files as $file) {
-		               if (0 == $sql->count('download', '(*)', " WHERE download_url='".$file['fname']."'")) {
+		               if (0 == $sql->count('download', '(*)', " WHERE download_url='".$sql->escape($file['fname'])."'")) {
 		                  if (!$foundSome) {
 		   		           // $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
 		                     $text .= '<form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">
@@ -1927,7 +1927,7 @@ $columnInfo = array(
 		
 		            if ($_POST['remove_upload'])
 		            {
-		               $sql->update("upload", "upload_active='1' WHERE upload_id='".$_POST['remove_id']."'");
+		               $sql->update("upload", "upload_active='1' WHERE upload_id='".intval($_POST['remove_id'])."'");
 		               $mess = "<br/>".$_POST['download_name']." ".DOWLAN_104;
 		               $mess .= "<br/><br/><a href='".e_ADMIN."upload.php'>".DOWLAN_105."</a>";
 		               $this->show_message($mess);

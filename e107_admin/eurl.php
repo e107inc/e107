@@ -155,22 +155,33 @@ class eurl_admin_ui extends e_admin_controller_ui
 	{
 		if(empty($table) || empty($input) || empty($output) || empty($primary))
 		{
-			e107::getMessage()->addError("Missing Generator data");	
+			e107::getMessage()->addError("Missing Generator data");
 			return;
 		}
-		
+
+		// $table, $primary, $input and $output are SQL identifiers taken from request input.
+		// escape() does not protect identifier positions, so validate against a strict allowlist.
+		if(!preg_match('/^[A-Za-z0-9_]+$/', (string) $table)
+			|| !preg_match('/^[A-Za-z0-9_]+$/', (string) $primary)
+			|| !preg_match('/^[A-Za-z0-9_]+$/', (string) $input)
+			|| !preg_match('/^[A-Za-z0-9_]+$/', (string) $output))
+		{
+			e107::getMessage()->addError("Invalid Generator data");
+			return;
+		}
+
 		$sql = e107::getDb();
-		
+
 		$data = $sql->retrieve($table, $primary.",".$input, $input ." != '' ", true);
-		
+
 		$success = 0;
 		$failed = 0;
-		
+
 		foreach($data as $row)
 		{
 			$sef = eHelper::title2sef($row[$input]);
-			
-			if($sql->update($table, $output ." = '".$sef."' WHERE ".$primary. " = ".intval($row[$primary]). " LIMIT 1")!==false)
+
+			if($sql->update($table, $output ." = '".$sql->escape($sef)."' WHERE ".$primary. " = ".intval($row[$primary]). " LIMIT 1")!==false)
 			{
 				$success++;
 			}

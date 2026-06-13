@@ -96,6 +96,9 @@ class newsletter_mailout
 			return 0;				// No valid selector - so no valid records
 		}
 
+		// $selectVals is a comma-separated list of numeric newsletter IDs; rebuild it from ints only.
+		$selectVals = implode(',', array_map('intval', explode(',', (string) $selectVals)));
+
 		$qry = "SELECT newsletter_id,newsletter_subscribers FROM `#newsletter` WHERE (`newsletter_parent`=0) AND (`newsletter_id` IN ({$selectVals}))";
 //		echo "Selector {$selectVals} query: ".$qry.'<br />';
 		if (!($sql->gen($qry))) return FALSE;

@@ -1257,7 +1257,7 @@ class e107MailManager
 		}
 
 
-		$result = $this->db->select('mail_recipients', 'mail_target_id', "`mail_detail_id`={$handle} AND `mail_recipient_email`='{$mailRecip['mail_recipient_email']}'");
+		$result = $this->db->select('mail_recipients', 'mail_target_id', "`mail_detail_id`=".(int) $handle." AND `mail_recipient_email`='".$this->db->escape($mailRecip['mail_recipient_email'])."'");
 
 
 		if ($result === false)
@@ -1720,7 +1720,7 @@ class e107MailManager
 		{
 			$query .= ' WHERE ' . implode(' AND ', $filters);
 		}
-		if ($orderField)
+		if ($orderField && preg_match('/^[A-Za-z0-9_]+$/', (string) $orderField))
 		{
 			$query .= " ORDER BY `{$orderField}`";
 		}
@@ -1798,7 +1798,7 @@ class e107MailManager
 
 		// TODO: Implement filters if needed
 		$query = "SELECT SQL_CALC_FOUND_ROWS {$fields} FROM `#mail_recipients` WHERE `mail_detail_id`={$handle}";
-		if ($orderField)
+		if ($orderField && preg_match('/^[A-Za-z0-9_]+$/', (string) $orderField))
 		{
 			$query .= " ORDER BY `{$orderField}`";
 		}

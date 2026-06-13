@@ -90,7 +90,7 @@ if((isset($_POST['chat_submit']) || e_AJAX_REQUEST) && $_POST['cmessage'] !== ''
 					else
 					{
 
-						if($sql->select('user', '*', "user_name='$nick' "))
+						if($sql->select('user', '*', "user_name='".$sql->escape($nick)."' "))
 						{
 
 							$emessage = CHATBOX_L1;

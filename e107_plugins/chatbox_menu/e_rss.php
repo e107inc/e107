@@ -45,7 +45,7 @@ class chatbox_menu_rss // plugin-folder + '_rss'
 		$rss = array();
 		$i=0;
 					
-		if($items = $sql->select('chatbox', "*", "cb_blocked=0 ORDER BY cb_datestamp DESC LIMIT 0,".$parms['limit']))
+		if($items = $sql->select('chatbox', "*", "cb_blocked=0 ORDER BY cb_datestamp DESC LIMIT 0,".(int) $parms['limit']))
 		{
 
 			while($row = $sql->fetch())

@@ -91,10 +91,10 @@ if(!empty($menu_pref['banner_campaign']) /*&& !empty($menu_pref['banner_amount']
 		$seed = mt_rand(1,2000000000);
 		$time = time();
 	
-		$tmp = explode("|", $menu_pref['banner_campaign']); 
+		$tmp = explode("|", $menu_pref['banner_campaign']);
 		foreach($tmp as $v)
 		{
-			$filter[] = "banner_campaign=\"".$v."\""; 		
+			$filter[] = "banner_campaign=\"".e107::getDb()->escape($v)."\"";
 		}
 	
 		$query = " (banner_startdate=0 OR banner_startdate <= {$time}) AND (banner_enddate=0 OR banner_enddate > {$time}) AND (banner_impurchased=0 OR banner_impressions<=banner_impurchased)";

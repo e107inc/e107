@@ -59,7 +59,7 @@ class download_rss // plugin-folder + '_rss'
 	function data($parms='')
 	{
 		$sql 		= e107::getDb();
-		$limit 		= $parms['limit'];
+		$limit 		= (int) $parms['limit'];
 		$topic_id 	= $parms['id'];
 		
 		$rss 		= array();

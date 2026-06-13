@@ -67,7 +67,7 @@ class alt_auth_base
 	{
 		$sql = e107::getDb();
 
-		$sql->select('alt_auth', '*', "auth_type = '".$prefix."' ");
+		$sql->select('alt_auth', '*', "auth_type = '".$sql->escape($prefix)."' ");
 		$parm = array();
 		while($row = $sql->fetch())
 		{

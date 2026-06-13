@@ -174,6 +174,12 @@ class e_pluginbuilder
 
 			$table = e107::getParser()->filter($table);
 
+			// $table is a backtick-quoted identifier; reject anything outside a strict identifier allowlist.
+			if(!preg_match('/^[A-Za-z0-9_]+$/', (string) $table))
+			{
+				return;
+			}
+
 			e107::getDb()->gen("SHOW CREATE TABLE `#".$table."`");
 			$data = e107::getDb()->fetch('num');
 

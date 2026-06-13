@@ -30,7 +30,7 @@ function sublinks_shortcode($parm)
 
 	$text = "\n\n<!-- Sublinks Start -->\n\n";
 	$text .= varset($style['prelink']);
-	if($sql->select("links", "link_id", "link_url= '{$page}' AND link_category = {$cat} LIMIT 1"))
+	if($sql->select("links", "link_id", "link_url= '".$sql->escape($page)."' AND link_category = ".(int) $cat." LIMIT 1"))
 	{
 		$row = $sql->fetch();
 		$parent = (int) $row['link_id'];
