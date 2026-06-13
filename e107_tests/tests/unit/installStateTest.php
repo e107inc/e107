@@ -87,6 +87,124 @@ class installStateTest extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * Sanity bounds for the provisioning token: 256 bits of hex, all distinct.
+	 */
+	public function testGenerateTokenFormatAndUniqueness()
+	{
+		$seen = array();
+		for($i = 0; $i < 100; $i++)
+		{
+			$token = install_state_generate_token();
+			$this->assertTrue((bool) preg_match('/^[0-9a-f]{64}$/', $token),
+				'token must be 64 lowercase hex characters');
+			$this->assertArrayNotHasKey($token, $seen, 'tokens must not repeat');
+			$seen[$token] = true;
+		}
+	}
+
+	/**
+	 * Validly signed state round-trips back to the exact same array.
+	 */
+	public function testSignedStateRoundTrips()
+	{
+		$token = install_state_generate_token();
+		$state = array(
+			'mysql'    => array('server' => 'localhost', 'user' => 'u', 'password' => 'p"x\\y/z', 'db' => 'd', 'prefix' => 'e107_'),
+			'language' => 'English',
+			'paths'    => array('hash' => '0123456789'),
+		);
+
+		$this->assertSame($state, install_state_verify(install_state_sign($state, $token), $token));
+	}
+
+	/**
+	 * A tampered payload or MAC must not verify.
+	 */
+	public function testVerifyRejectsTampering()
+	{
+		$token = install_state_generate_token();
+		$blob = install_state_sign(array('paths' => array('hash' => 'abcdef0123')), $token);
+		$dot = strrpos($blob, '.');
+
+		$payloadTampered = $this->flipChar($blob, 0);
+		$macTampered = $this->flipChar($blob, strlen($blob) - 1);
+
+		$this->assertNull(install_state_verify($payloadTampered, $token), 'tampered payload must fail');
+		$this->assertNull(install_state_verify($macTampered, $token), 'tampered MAC must fail');
+		// A blob whose MAC is stripped entirely is also rejected.
+		$this->assertNull(install_state_verify(substr($blob, 0, $dot), $token));
+	}
+
+	/**
+	 * State signed under one token must not verify under another.
+	 */
+	public function testVerifyRejectsWrongToken()
+	{
+		$blob = install_state_sign(array('language' => 'English'), install_state_generate_token());
+
+		$this->assertNull(install_state_verify($blob, install_state_generate_token()));
+	}
+
+	/**
+	 * A missing or too-short token must reject everything, so an empty signing key
+	 * can never be used to forge state. A full-length token still verifies.
+	 */
+	public function testVerifyRejectsShortToken()
+	{
+		$state = array('language' => 'English');
+		$thirtyTwo = str_repeat('a', 32);
+
+		$blob = install_state_sign($state, $thirtyTwo);
+		$this->assertSame($state, install_state_verify($blob, $thirtyTwo), '32-char token is accepted');
+
+		$this->assertNull(install_state_verify($blob, ''));
+		$this->assertNull(install_state_verify($blob, str_repeat('a', 31)));
+	}
+
+	/**
+	 * Malformed blobs and non-string input are rejected without error.
+	 */
+	public function testVerifyRejectsMalformedBlob()
+	{
+		$token = install_state_generate_token();
+
+		$this->assertNull(install_state_verify('', $token));
+		$this->assertNull(install_state_verify('no-dot-present', $token));
+		$this->assertNull(install_state_verify('.', $token));
+		$this->assertNull(install_state_verify('.onlymac', $token));
+		$this->assertNull(install_state_verify('onlypayload.', $token));
+		$this->assertNull(install_state_verify(null, $token));
+		$this->assertNull(install_state_verify(123, $token));
+	}
+
+	/**
+	 * Even after a successful signature check the decode path yields only
+	 * arrays/scalars, never objects (the Phase 1 invariant survives signing).
+	 */
+	public function testVerifyNeverReturnsObjects()
+	{
+		$token = install_state_generate_token();
+		$blob = install_state_sign(array('a' => array('b' => 'c'), 'd' => 1), $token);
+
+		$state = install_state_verify($blob, $token);
+
+		$this->assertTrue(is_array($state));
+		array_walk_recursive($state, function ($value) {
+			$this->assertFalse(is_object($value), 'verified state must not contain objects');
+		});
+	}
+
+	/**
+	 * Replace one character with a guaranteed-different one, to forge tampering.
+	 */
+	private function flipChar($string, $index)
+	{
+		$replacement = $string[$index] === 'A' ? 'B' : 'A';
+
+		return substr($string, 0, $index) . $replacement . substr($string, $index + 1);
+	}
+
+	/**
 	 * Build the GHSA-c8h6-wpj3-4cr8 POP chain against the bundled psr7 classes.
 	 *
 	 * @param string $sink callable the PumpStream would invoke

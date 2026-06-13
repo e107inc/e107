@@ -62,6 +62,97 @@ class InstallCest
 		$this->checkTinyMceIsInstalled($I);
 	}
 
+	public function installedSiteBlocksTheInstaller(AcceptanceTester $I)
+	{
+		$I->wantTo("Block the interactive installer once the site is installed (fail closed on e107_config.php)");
+
+		$this->installe107($I);
+
+		// A completed install must refuse to run the wizard again; reinstalling
+		// requires removing e107_config.php from the filesystem.
+		$I->amOnPage('/install.php');
+		$I->see('already installed');
+		$I->dontSee('Language Selection');
+
+		// The unattended entry must also be refused (the existing install blocks it).
+		$db = $I->getDbModule();
+		$I->amOnPage('/install.php?create_tables=1&username='.urlencode($db->_getDbUsername()).'&password='.urlencode($db->_getDbPassword()));
+		$I->dontSee('Language Selection');
+	}
+
+	public function installResumesFromPastedState(AcceptanceTester $I)
+	{
+		$I->wantTo("Resume a locked install by pasting the saved state after the session is lost");
+
+		// Stage 1 -> 2 mints the provisioning lock and signs the wizard state.
+		$I->amOnPage('/install.php');
+		$I->selectOption('language', 'English');
+		$I->click('start');
+		$I->see('MySQL Server Details', 'h3');
+
+		$savedState = $I->grabValueFrom('input[name=previous_steps]');
+		$I->assertNotEmpty($savedState, 'Stage 2 must hand back signed wizard state.');
+
+		// Lose the session: drop the convenience cookie so the next request has no
+		// valid state and is gated behind the paste prompt.
+		$I->resetInstallStateCookie();
+		$I->amOnPage('/install.php');
+		$I->see('already in progress');
+
+		// A tampered blob must not unlock the gate.
+		$tampered = substr($savedState, 0, -1).($savedState[strlen($savedState) - 1] === 'a' ? 'b' : 'a');
+		$I->fillField(['name' => 'previous_steps'], $tampered);
+		$I->click('start');
+		$I->see('already in progress');
+
+		// The genuine saved state resumes the wizard at the database step.
+		$I->fillField(['name' => 'previous_steps'], $savedState);
+		$I->click('start');
+		$I->see('MySQL Server Details', 'h3');
+	}
+
+	public function installCookieAutoResumeAvoidsGate(AcceptanceTester $I)
+	{
+		$I->wantTo("Auto-resume from the cookie instead of gating when a lock already exists");
+
+		$I->amOnPage('/install.php');
+		$I->selectOption('language', 'English');
+		$I->click('start');
+		$I->see('MySQL Server Details', 'h3');
+
+		// Cookie present: a bare GET must not gate.
+		$I->amOnPage('/install.php');
+		$I->dontSee('already in progress');
+
+		// Cookie gone: the same bare GET falls back to the paste gate.
+		$I->resetInstallStateCookie();
+		$I->amOnPage('/install.php');
+		$I->see('already in progress');
+	}
+
+	public function installErrorPageDoesNotLeakProvisioningToken(AcceptanceTester $I)
+	{
+		$I->wantTo("Keep the provisioning token and credentials out of the installer error/debug output");
+
+		// Stage 1 -> 2 mints the provisioning token and loads it for the next request.
+		$I->amOnPage('/install.php');
+		$I->selectOption('language', 'English');
+		$I->click('start');
+		$I->see('MySQL Server Details', 'h3');
+
+		// Force an out-of-range stage so the server reaches the error/debug render
+		// path while a token is loaded. The stage-2 form already carries the valid
+		// signed state in its hidden previous_steps field.
+		$I->submitForm('#versions', ['stage' => 999], 'submit');
+
+		// The error path must render only the structured error, never the e_install
+		// object: it holds the private $token (the HMAC signing key) and the
+		// submitted credentials, none of which may leak into the response.
+		$I->see('makes no sense');                  // confirms the error path was hit
+		$I->dontSeeInSource('e_install Object');    // print_r() dump of $this
+		$I->dontSeeInSource(':e_install:private');  // print_r() private-property marker
+	}
+
 	private function installe107(AcceptanceTester $I, $params = array())
 	{
 		// Step 1

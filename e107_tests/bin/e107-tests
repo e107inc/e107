@@ -337,7 +337,7 @@ cmd_reset() {
 cmd_clean() {
     note ">> Cleaning acceptance-test artifacts from $APP_PATH"
 
-    local docroot_files='e107_config.php e107_config.php.bak e107Install.log NUL'
+    local docroot_files='e107_config.php e107_config.php.bak e107Install.log e107_system/e107Install.log NUL'
     local hash_dirs='e107_system/000000test e107_media/000000test
                      e107_system/416f4602e3 e107_media/416f4602e3'
     local theme_copies='e107_themes/basic-light e107_themes/testcore
