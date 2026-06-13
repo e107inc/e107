@@ -724,6 +724,22 @@ class lancheck
 
 		$file = array_merge($core,$core_admin, $plugs, $theme, $docs, $handlers);
 
+		// Patch (lancheck-plupload-i18n): include the Plupload i18n translation
+		// (e107_web/js/plupload/i18n/<iso>.js) in the generated pack so the file
+		// uploader is localised too. Core only bundles en.js, but a translator can
+		// drop their locale file in; without this it was silently left out of every
+		// pack, leaving Plupload in English regardless of the selected language.
+		$locale = $this->findLocale($language);
+		if($locale)
+		{
+			$iso = strtolower(substr($locale, 0, 2));
+			$pluploadJs = e_WEB.'js/plupload/i18n/'.$iso.'.js';
+			if(is_readable($pluploadJs))
+			{
+				$file[] = $pluploadJs;
+			}
+		}
+
 		$file = array_unique($file);
 
 		return $file;
