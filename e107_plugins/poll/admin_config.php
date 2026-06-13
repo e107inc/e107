@@ -107,9 +107,9 @@ function edit_poll()
 {
 	
 	$sql = e107::getDb();
-	$id = key($_POST['edit']);
-	
-	if ($sql->select("polls", "*", "poll_id=".$id)) 
+	$id = (int) key($_POST['edit']); // raw POST array key; poll_id is numeric
+
+	if ($sql->select("polls", "*", "poll_id=".$id))
 	{
 		$_GET['mode'] = 'create';
 		$row = $sql->fetch();

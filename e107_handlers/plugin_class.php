@@ -1895,9 +1895,9 @@ class e107plugin
 				$temp = array();
 				foreach ($this->all_editable_db_fields as $p_f)
 				{
-					$temp[] = "`{$p_f}` = '{$plug_info[$p_f]}'";
+					$temp[] = "`{$p_f}` = '".$sql->escape($plug_info[$p_f])."'";
 				}
-				$sql->update('plugin', implode(", ", $temp)."  WHERE `plugin_id`={$plug_info['plugin_id']}");
+				$sql->update('plugin', implode(", ", $temp)."  WHERE `plugin_id`=".intval($plug_info['plugin_id']));
 				//			echo "Updated: ".$plug_path."<br />";
 				}
 		}
@@ -3120,7 +3120,7 @@ class e107plugin
 
 		if ($function == 'install' || $function == 'upgrade' || $function == 'refresh')
 		{
-			$sql->update('plugin', "plugin_installflag = 1, plugin_addons = '{$eplug_addons}', plugin_version = '{$plug_vars['@attributes']['version']}', plugin_category ='".$this->manage_category($plug_vars['category'])."' WHERE plugin_id = ".$id);
+			$sql->update('plugin', "plugin_installflag = 1, plugin_addons = '".$sql->escape($eplug_addons)."', plugin_version = '".$sql->escape($plug_vars['@attributes']['version'])."', plugin_category ='".$sql->escape($this->manage_category($plug_vars['category']))."' WHERE plugin_id = ".intval($id));
 			$p_installed[$plug['plugin_path']] = $plug_vars['@attributes']['version'];
 
 			e107::getConfig('core')->setPref('plug_installed', $p_installed);
@@ -3129,7 +3129,7 @@ class e107plugin
 
 		if ($function == 'uninstall')
 		{
-			$sql->update('plugin', "plugin_installflag = 0, plugin_addons = '{$eplug_addons}', plugin_version = '{$plug_vars['@attributes']['version']}', plugin_category ='".$this->manage_category($plug_vars['category'])."' WHERE plugin_id = ".$id);
+			$sql->update('plugin', "plugin_installflag = 0, plugin_addons = '".$sql->escape($eplug_addons)."', plugin_version = '".$sql->escape($plug_vars['@attributes']['version'])."', plugin_category ='".$sql->escape($this->manage_category($plug_vars['category']))."' WHERE plugin_id = ".intval($id));
 			unset($p_installed[$plug['plugin_path']]);
 			
 			e107::getConfig('core')->setPref('plug_installed', $p_installed);
@@ -4875,7 +4875,7 @@ class e107plugin
 					$this->manage_userclass('remove', $eplug_userclass);
 				}
 
-				$sql->update('plugin', "plugin_installflag=0, plugin_version='{$eplug_version}' WHERE plugin_path='{$eplug_folder}' ");
+				$sql->update('plugin', "plugin_installflag=0, plugin_version='".$sql->escape($eplug_version)."' WHERE plugin_path='".$sql->escape($eplug_folder)."' ");
 				$this->manage_search('remove', $eplug_folder);
 
 				$this->manage_notify('remove', $eplug_folder);

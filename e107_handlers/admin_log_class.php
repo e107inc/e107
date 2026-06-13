@@ -403,7 +403,9 @@ class e_admin_log
 
 
 
-			$this->rldb->insert('dblog', '0, ' .intval($time_sec).', '.intval($time_usec).", '{$importance}', '{$eventcode}', {$userid}, '{$userstring}', '{$userIP}', '{$source_call}', '{$event_title}', '{$explain}' ");
+			$userstringEsc = $this->rldb->escape($userstring);
+			$userIPEsc = $this->rldb->escape($userIP);
+			$this->rldb->insert('dblog', '0, ' .intval($time_sec).', '.intval($time_usec).", '{$importance}', '{$eventcode}', ".intval($userid).", '{$userstringEsc}', '{$userIPEsc}', '{$source_call}', '{$event_title}', '{$explain}' ");
 
 			// Now delete any old stuff
 			if(!empty($this->_roll_log_days))

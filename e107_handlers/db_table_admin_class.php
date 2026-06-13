@@ -51,6 +51,11 @@ class db_table_admin
 			$prefix = MPREFIX;
 		}
 		//	echo "Get table structure for: {$table_name}, prefix: {$prefix}<br />";
+		// $prefix.$table_name is a backtick-quoted identifier; reject anything outside a strict allowlist.
+		if (!preg_match('/^[A-Za-z0-9_]+$/', (string) ($prefix.$table_name)))
+		{
+			return FALSE;
+		}
 		$sql->gen('SET SQL_QUOTE_SHOW_CREATE = 1');
 		$qry = 'SHOW CREATE TABLE `'.$prefix.$table_name."`";
 		if (!($z = $sql->gen($qry)))
@@ -711,6 +716,10 @@ class db_table_admin
 					{
 						echo "List of changes found:<br />".$this->make_changes_list($diffs);
 					}
+					if (!preg_match('/^[A-Za-z0-9_]+$/', (string) $tableName)) // $tableName is an SQL identifier
+					{
+						return FALSE;
+					}
 					$qry = 'ALTER TABLE '.MPREFIX.$tableName.' '.implode(', ', $diffs[1]);
 					if ($debugLevel)
 					{
@@ -750,6 +759,11 @@ class db_table_admin
 			if ($addPrefix)
 			{
 				$newTableName = MPREFIX.$newTableName;
+			}
+			// $newTableName is injected as a replacement into a CREATE TABLE identifier; reject non-identifiers.
+			if (!preg_match('/^[A-Za-z0-9_]+$/', (string) $newTableName))
+			{
+				return FALSE;
 			}
 			if ($newTableName != $tableName)
 			{

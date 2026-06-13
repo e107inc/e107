@@ -186,7 +186,7 @@ class contact_front
 				}
 				else
 				{
-					$query = "FIND_IN_SET(" . $pref['sitecontacts'] . ",user_class) ";
+					$query = "FIND_IN_SET(" . intval($pref['sitecontacts']) . ",user_class) ";
 				}
 			}
 			else

@@ -132,13 +132,19 @@ class auth_login extends alt_auth_base
 		$user_field = 'user_loginname';
 
 
+		$quotedUname = $dbh->quote($uname);
+		if ($quotedUname === false)
+		{
+			$this->makeErrorText('Lookup query failed');
+			return AUTH_NOCONNECT;
+		}
+
 		//Get record containing supplied login name
-		$qry = 'SELECT '.implode(',',$sel_fields)." FROM ".$this->conf['e107db_prefix']."user WHERE {$user_field} = '{$uname}' AND `user_ban` = 0";
+		$qry = 'SELECT '.implode(',',$sel_fields)." FROM ".$this->conf['e107db_prefix']."user WHERE {$user_field} = ".$quotedUname." AND `user_ban` = 0";
 //	  echo "Query: {$qry}<br />";
 		if(!$r1 = $dbh->query($qry))
 		{
 			$this->makeErrorText('Lookup query failed');
-			e107::getMessage()->addDebug($qry);
 			return AUTH_NOCONNECT;
 		}
 

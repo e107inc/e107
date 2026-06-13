@@ -441,6 +441,8 @@ class rater
 	 */
 	protected function getLikes($table, $itemid, $perc=false)
 	{
+		$table = preg_replace('/\W/', '', $table);
+		$itemid = intval($itemid);
 		$sql = e107::getDb();
 		if($sql->select("rate","*","rate_table = '{$table}' AND rate_itemid = '{$itemid}' LIMIT 1"))
 		{
@@ -471,9 +473,11 @@ class rater
 	 * @return false|string|null
 	 */
 	function submitLike($table, $itemid, $type, $perc=false)
-	{	
+	{
+		$table = preg_replace('/\W/', '', $table);
+		$itemid = intval($itemid);
 		$sql 	= e107::getDb();
-			
+
 		if($sql->select("rate","*","rate_table = '{$table}' AND rate_itemid = '{$itemid}' LIMIT 1"))
 		{
 			$row 		= $sql->fetch();

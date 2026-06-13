@@ -505,9 +505,11 @@ if(!empty($_GET['iframe']))
 			// ----------------- delete tables ---------------------------------------------
 			if (isset($_POST['del_existing']) && $_POST['lang_choices'] && getperms('0'))
 			{
-				$lang = strtolower($_POST['lang_choices']);
-
+				// Filter to word characters BEFORE deriving $lang, which is concatenated
+				// into a DROP TABLE identifier below (escape() cannot protect identifiers).
 				$_POST['lang_choices'] = e107::getParser()->filter($_POST['lang_choices'],'w');
+
+				$lang = strtolower($_POST['lang_choices']);
 
 				foreach ($tabs as $del_table)
 				{
@@ -540,6 +542,9 @@ if(!empty($_GET['iframe']))
 			{
 				$table_to_copy = array();
 				$lang_to_create = array();
+
+				// $lang is concatenated into DROP TABLE identifiers below; restrict to word chars.
+				$_POST['language'] = e107::getParser()->filter($_POST['language'],'w');
 
 				foreach ($tabs as $value)
 				{

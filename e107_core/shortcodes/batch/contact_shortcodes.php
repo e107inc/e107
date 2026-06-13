@@ -49,7 +49,7 @@ class contact_shortcodes extends e_shortcode
 		}
 		else
 		{
-			$query = "FIND_IN_SET(".$pref['sitecontacts'].",user_class) AND user_ban = 0 ";
+			$query = "FIND_IN_SET(".intval($pref['sitecontacts']).",user_class) AND user_ban = 0 ";
 		}
 		
 		$text = "<select name='contact_person' class='tbox contact_person form-control'>\n";

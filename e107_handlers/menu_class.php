@@ -256,10 +256,11 @@ class e_menu
 	 */
 	public function setParms($plugin, $menu, $parms=array(), $location = 'all')
 	{
-		$qry = 'menu_parms="'.e107::serialize($parms).'" WHERE menu_parms="" AND menu_path="'.$plugin.'/" AND menu_name="'.$menu.'" ';
+		$sql = e107::getDb();
+		$qry = 'menu_parms="'.$sql->escape(e107::serialize($parms)).'" WHERE menu_parms="" AND menu_path="'.$sql->escape($plugin).'/" AND menu_name="'.$sql->escape($menu).'" ';
 		$qry .= ($location !== 'all') ? 'menu_location='. (int)$location : '';
 
-		return  e107::getDb()->update('menus', $qry);
+		return  $sql->update('menus', $qry);
 	}
 
 
@@ -352,7 +353,7 @@ class e_menu
 			return false;
 		}
 
-		if($sql->select('menus', 'menu_id' , 'menu_path="'.$plugin.'/" AND menu_name="'.$menufile.'" LIMIT 1'))
+		if($sql->select('menus', 'menu_id' , 'menu_path="'.$sql->escape($plugin).'/" AND menu_name="'.$sql->escape($menufile).'" LIMIT 1'))
 		{
 			return false;
 		}
@@ -383,14 +384,15 @@ class e_menu
 	 */
 	public function remove($plugin, $menufile=null)
 	{
-		$qry = 'menu_path="'.$plugin.'/" ';
+		$sql = e107::getDb();
+		$qry = 'menu_path="'.$sql->escape($plugin).'/" ';
 
 		if(!empty($menufile))
 		{
-			$qry .= ' AND menu_name="'.$menufile.'" ';
+			$qry .= ' AND menu_name="'.$sql->escape($menufile).'" ';
 		}
 
-		return e107::getDb()->delete('menus', $qry);
+		return $sql->delete('menus', $qry);
 	}
 
 
@@ -664,7 +666,7 @@ class e_menu
 		
 		if(is_numeric($mpath) || ($mname === false)) // Custom Page/Menu 
 		{
-			$query = ($mname === false) ? "menu_name = '".$mpath."' " :  "page_id=". (int)$mpath ." "; // load by ID or load by menu-name (menu_name)
+			$query = ($mname === false) ? "menu_name = '".$sql->escape($mpath)."' " :  "page_id=". (int)$mpath ." "; // load by ID or load by menu-name (menu_name)
 			
 			$sql->select("page", "*", $query);
 			$page = $sql->fetch();

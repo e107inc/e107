@@ -2522,7 +2522,11 @@ class e_user_extended_model extends e_admin_model
 		$value = $this->get($field);
 		list($table, $field_id, $field_name, $field_order) = explode(',', $this->_struct_index[$field]['db'], 4);
 		$this->_struct_index[$field]['db_value'] = $value;
-		if($value && $table && $field_id && $field_name && e107::getDb()->select($table, $field_name, "{$field_id}='{$value}'"))
+		// $table, $field_id, $field_name are identifiers from the field's db config; validate before use.
+		$validIdentifiers = preg_match('/^[A-Za-z0-9_]+$/', (string) $table)
+			&& preg_match('/^[A-Za-z0-9_]+$/', (string) $field_id)
+			&& preg_match('/^[A-Za-z0-9_]+$/', (string) $field_name);
+		if($value && $table && $field_id && $field_name && $validIdentifiers && e107::getDb()->select($table, $field_name, "{$field_id}='".e107::getDb()->escape($value)."'"))
 		{
 			$res = e107::getDb()->fetch();
 			$this->_struct_index[$field]['db_value'] = $res[$field_name];

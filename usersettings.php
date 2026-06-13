@@ -242,7 +242,7 @@ class usersettings_front // Begin Usersettings rewrite.
 
 	private function processUserDelete($hash)
 	{
-		if(!e107::getDb()->select('user', '*',"user_id = ".USERID." AND user_sess='".$hash."' LIMIT 1")) // user must be logged in AND have correct hash.
+		if(!e107::getDb()->select('user', '*',"user_id = ".USERID." AND user_sess='".e107::getDb()->escape($hash)."' LIMIT 1")) // user must be logged in AND have correct hash.
 		{
 			return false;
 		}

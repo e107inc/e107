@@ -1407,7 +1407,7 @@ class forum_post_handler
 			$update = array(
 				'post_thread' => $ret['threadid'],
 				'post_forum'  => $threadInfo['thread_forum_id'],
-				 'WHERE'   => "post_thread = ".$this->data['post_thread']." AND post_id >= ".$this->data['post_id']
+				 'WHERE'   => "post_thread = ".(int) $this->data['post_thread']." AND post_id >= ".(int) $this->data['post_id']
 
 			);
 

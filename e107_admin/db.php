@@ -485,7 +485,24 @@ class system_tools
 		$server 	= e107::getMySQLConfig('server'); // $_POST['server'];
 		$database 	= $_POST['db'];
 		$prefix		= $_POST['prefix'];
-			
+
+		// Validate identifiers/credentials used in DDL - escape() does not protect identifier positions.
+		if(!preg_match('/^[A-Za-z0-9_]+$/', (string) $database))
+		{
+			$mes->addError(DBLAN_76);
+			return;
+		}
+		if(!preg_match('/^[A-Za-z0-9_]+$/', (string) $user))
+		{
+			$mes->addError(DBLAN_74);
+			return;
+		}
+		if(!preg_match('/^[a-z0-9]+_$/', (string) $prefix))
+		{
+			$mes->addError(DBLAN_77);
+			return;
+		}
+
 		if($connect = $sql->connect($server,$user, $pass, true))
 		{
 			$mes->addSuccess(DBLAN_74);

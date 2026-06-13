@@ -253,7 +253,7 @@ class rss_ui extends e_admin_ui
 			$feed['url'] = $tp->toDB($feed['url']);
 
 			// Check if feed is not yet present
-			if(!$sql->select("rss", "*", "rss_path='" . $feed['path'] . "' AND rss_url='" . $feed['url'] . "' AND rss_topicid='" . $feed['topic_id'] . "' "))
+			if(!$sql->select("rss", "*", "rss_path='" . $sql->escape($feed['path']) . "' AND rss_url='" . $feed['url'] . "' AND rss_topicid='" . $feed['topic_id'] . "' "))
 			{
 				$render = true;
 				$rss_shortcodes->setVars($feed);

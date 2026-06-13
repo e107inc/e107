@@ -729,7 +729,7 @@ function step8_ajax()
 
 	$sql = e107::getDb();
 
-	$lastThread = vartrue($_SESSION['forumupdate']['lastpost_last'], 0);
+	$lastThread = (int) vartrue($_SESSION['forumupdate']['lastpost_last'], 0);
 
 	global $forum;
 
@@ -886,7 +886,7 @@ function step10_ajax()//TODO
 	$sql = e107::getDb();
 	global $f;
 
-	$lastPost = vartrue($_SESSION['forumupdate']['attachment_last'], 0);
+	$lastPost = (int) vartrue($_SESSION['forumupdate']['attachment_last'], 0);
 	$errorText = '';
 	/*
 		$qry = "
@@ -1103,7 +1103,7 @@ function step10_ajax()//TODO
 					$info['post_attachments'] = e107::serialize($newValues);
 					//	$sql->update('forum_post', $info); // XXX FIXME TODO screwed up due to _FIELD_DEFS
 
-					$sql->update('forum_post', "post_entry = \"" . $info['post_entry'] . "\", post_attachments=\"" . $info['post_attachments'] . "\" WHERE post_id = " . $post['post_id'] . "");
+					$sql->update('forum_post', "post_entry = \"" . $sql->escape($info['post_entry']) . "\", post_attachments=\"" . $sql->escape($info['post_attachments']) . "\" WHERE post_id = " . (int) $post['post_id'] . "");
 				}
 
 			}

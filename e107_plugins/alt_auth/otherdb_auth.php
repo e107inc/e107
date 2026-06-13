@@ -130,15 +130,21 @@ class auth_login extends alt_auth_base
 			$sel_fields[] = $this->conf['otherdb_password_salt'];
 		}
 
+		$quotedUname = $dbh->quote($uname);
+		if ($quotedUname === false)
+		{
+			$this->makeErrorText('Lookup query failed');
+			return AUTH_NOCONNECT;
+		}
+
 		//Get record containing supplied login name
-		$qry = "SELECT ".implode(',',$sel_fields)." FROM {$this->conf['otherdb_table']} WHERE {$user_field} = '{$uname}'";
+		$qry = "SELECT ".implode(',',$sel_fields)." FROM {$this->conf['otherdb_table']} WHERE {$user_field} = ".$quotedUname;
 //	  echo "Query: {$qry}<br />";
-		
+
 		/* Begin - Deltik's PDO Workaround (part 2/2) */
 		if (!$r1 = $dbh->query($qry))
 		{
 			$this->makeErrorText('Lookup query failed');
-			e107::getMessage()->addDebug($qry);
 			return AUTH_NOCONNECT;
 		}
 		if (!$row = $r1->fetch(PDO::FETCH_BOTH))

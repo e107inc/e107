@@ -80,6 +80,7 @@ if(varset($_GET['mode']) == "ajax")
 					$text .= "<select style='width:99%' class='tbox e-select' name='field_id'>";
 					$text .= "<option value='' class='caption'>" . LAN_NONE . "</option>";
 					$table_list = !empty($_POST['table_db']) ? $_POST['table_db'] : $curVals[0];
+					$table_list = preg_match('/^[A-Za-z0-9_]+$/', (string) $table_list) ? $table_list : ''; // identifier used in DESCRIBE - escape() cannot protect it
 					if($sql->gen("DESCRIBE " . MPREFIX . $table_list))
 					{
 						while($row3 = $sql->fetch())
@@ -96,6 +97,7 @@ if(varset($_GET['mode']) == "ajax")
 					$text .= "<select style='width:99%' class='tbox e-select' name='field_value'>";
 					$text .= "<option value='' class='caption'>" . LAN_NONE . "</option>";
 					$table_list = !empty($_POST['table_db']) ? $_POST['table_db'] : $curVals[0];
+					$table_list = preg_match('/^[A-Za-z0-9_]+$/', (string) $table_list) ? $table_list : ''; // identifier used in DESCRIBE - escape() cannot protect it
 					if($sql->gen("DESCRIBE " . MPREFIX . "{$table_list}"))
 					{
 						while($row3 = $sql->fetch())
@@ -112,6 +114,7 @@ if(varset($_GET['mode']) == "ajax")
 					$text .= "<select style='width:99%' class='tbox e-select' name='field_order'>";
 					$text .= "<option value='' class='caption'>" . LAN_NONE . "</option>";
 					$table_list = !empty($_POST['table_db']) ? $_POST['table_db'] : $curVals[0];
+					$table_list = preg_match('/^[A-Za-z0-9_]+$/', (string) $table_list) ? $table_list : ''; // identifier used in DESCRIBE - escape() cannot protect it
 					if($sql->gen("DESCRIBE " . MPREFIX . "{$table_list}"))
 					{
 						while($row3 = $sql->fetch())
@@ -679,6 +682,12 @@ e107::js('footer-inline', js());
 			{
 				$f = $tp->filter($f);
 
+				// $f is concatenated into a DROP TABLE identifier below; restrict to a strict identifier.
+				if(!preg_match('/^[A-Za-z0-9_]+$/', (string) $f))
+				{
+					continue;
+				}
+
 				if($ue->user_extended_remove($f, $f))
 				{
 					$ret .= EXTLAN_68." $f ".EXTLAN_72."<br />";
@@ -1051,6 +1060,7 @@ e107::js('footer-inline', js());
 				$text .= "<tr><td>".EXTLAN_63."</td><td><select style='width:99%' class='tbox e-select' name='field_id' >\n
 			<option value='' class='caption'>".LAN_NONE."</option>\n";
 				$table_list = !empty($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
+				$table_list = preg_match('/^[A-Za-z0-9_]+$/', (string) $table_list) ? $table_list : ''; // identifier used in DESCRIBE - escape() cannot protect it
 
 				if($sql->gen("DESCRIBE ".MPREFIX."{$table_list}"))
 				{
@@ -1066,6 +1076,7 @@ e107::js('footer-inline', js());
 				$text .= EXTLAN_64."</td><td><select style='width:99%' class='tbox e-select' name='field_value' >
 			<option value='' class='caption'>".LAN_NONE."</option>\n";
 				$table_list = !empty($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
+				$table_list = preg_match('/^[A-Za-z0-9_]+$/', (string) $table_list) ? $table_list : ''; // identifier used in DESCRIBE - escape() cannot protect it
 
 				if($sql->gen("DESCRIBE ".MPREFIX."{$table_list}"))
 				{
@@ -1081,6 +1092,7 @@ e107::js('footer-inline', js());
 				$text .= LAN_ORDER."</td><td><select style='width:99%' class='tbox e-select' name='field_order' >
 			<option value='' class='caption'>".LAN_NONE."</option>\n";
 				$table_list = !empty($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
+				$table_list = preg_match('/^[A-Za-z0-9_]+$/', (string) $table_list) ? $table_list : ''; // identifier used in DESCRIBE - escape() cannot protect it
 
 				if($sql ->gen("DESCRIBE ".MPREFIX."{$table_list}"))
 				{

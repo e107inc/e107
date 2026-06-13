@@ -62,8 +62,9 @@ if (!vartrue($_GET['elan']) && empty($_GET))
 {
 	$qs 	= explode(".", e_QUERY);
 	$action = $qs[0];
-	$id 	= $qs[1];
-	$idx 	= $qs[2];
+	// $id (faq_parent/category) and $idx (faq_id) are numeric IDs used in SQL below; cast to int.
+	$id 	= isset($qs[1]) ? (int) $qs[1] : '';
+	$idx 	= isset($qs[2]) ? (int) $qs[2] : '';
 }
 
 
@@ -81,7 +82,7 @@ if (isset($_POST['faq_submit']))
 		$data 			= $tp->toDB($_POST['data']);
 		$count 			= ($sql->count("faqs", "(*)", "WHERE faq_parent='".intval($_POST['faq_parent'])."' ") + 1);
 		
-		$sql->insert("faqs", " 0, '".$_POST['faq_parent']."', '$faq_question', '$data', '".e107::getParser()->filter($_POST['faq_comment'], 'str')."', '".time()."', '".USERID."', '".$count."' ");
+		$sql->insert("faqs", " 0, '".intval($_POST['faq_parent'])."', '$faq_question', '$data', '".e107::getParser()->filter($_POST['faq_comment'], 'str')."', '".time()."', '".USERID."', '".$count."' ");
 		
 		$message = LAN_FAQS_004; // FAQ_ADLAN_32;
 		
@@ -91,7 +92,7 @@ if (isset($_POST['faq_submit']))
 	{
 		$message = LAN_REQUIRED_BLANK;
 	}
-	$id = $_POST['faq_parent'];
+	$id = (int) $_POST['faq_parent'];
 }
 
 if (isset($_POST['faq_edit_submit']))
@@ -101,7 +102,7 @@ if (isset($_POST['faq_edit_submit']))
 		$faq_question 	= $tp->toDB($_POST['faq_question']);
 		$data 			= $tp->toDB($_POST['data']);
 
-		$sql->update("faqs", "faq_parent='".intval($_POST['faq_parent'])."', faq_question ='$faq_question', faq_answer='$data', faq_comment='".$_POST['faq_comment']."'  WHERE faq_id='".$idx."' ");
+		$sql->update("faqs", "faq_parent='".intval($_POST['faq_parent'])."', faq_question ='$faq_question', faq_answer='$data', faq_comment='".e107::getParser()->filter($_POST['faq_comment'], 'str')."'  WHERE faq_id='".intval($idx)."' ");
 		
 		$message = LAN_UPDATED;
 		
@@ -490,6 +491,7 @@ class faq
 		$sql 	= e107::getDb();
 		$sc 	= e107::getScBatch('faqs',TRUE);
 
+		$id = (int) $id; // faq_parent is a numeric category id
 		$query = "SELECT f.*,cat.* FROM #faqs AS f LEFT JOIN #faqs_info AS cat ON f.faq_parent = cat.faq_info_id WHERE f.faq_parent = '$id' ";
 		$sql->gen($query);
 		$sc->setVars($row);
@@ -584,6 +586,7 @@ class faq
 		
 		$sc = e107::getScBatch('faqs',TRUE);
 
+		$idx = (int) $idx; // faq_id is a numeric primary key
 		$sql->select("faqs", "*", "faq_id='$idx' LIMIT 1");
 		$row = $sql->fetch();
 
@@ -675,6 +678,9 @@ class faq
 		$tp 	= e107::getParser();
 		$sql 	= e107::getDb();
 		$ns 	= e107::getRender();
+
+		$id  = (int) $id;  // faq_parent (numeric category id)
+		$idx = (int) $idx; // faq_id (numeric primary key)
 
 		$userid = USERID;
 

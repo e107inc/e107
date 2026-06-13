@@ -1865,6 +1865,14 @@ class e_db_mysql implements e_db
 
 		if ($prefix == '') $prefix = $this->mySQLPrefix;
 
+		// $prefix.$table is an identifier; reject anything outside a strict identifier allowlist.
+		// A secondary-database prefix may carry a backtick-quoted database qualifier (`db`.prefix),
+		// so allow an optional leading `db`. (or db.) before the identifier characters.
+		if (!preg_match('/^(`?[A-Za-z0-9_]+`?\.)?[A-Za-z0-9_]+$/', (string) ($prefix.$table)))
+		{
+			return false;		// Error return
+		}
+
 		if (false ===  $this->gen('SHOW COLUMNS FROM '.$prefix.$table))
 		{
 			return false;		// Error return
@@ -2153,7 +2161,7 @@ class e_db_mysql implements e_db
 			if(!isset($this->mySQLtableListLanguage[$language]))
 			{
 				$table = array();
-				if($res = $this->db_Query("SHOW TABLES ".$database." LIKE '".$prefix."lan_".strtolower($language)."%' "))
+				if($res = $this->db_Query("SHOW TABLES ".$database." LIKE '".$prefix."lan_".$this->escape(strtolower($language))."%' "))
 				{
 					while($rows = $this->fetch('num'))
 					{
@@ -2469,6 +2477,11 @@ class e_db_mysql implements e_db
 			$mySQLcharset = '';
 		}
 		$charset = ($charset ? $charset : $mySQLcharset);
+		// $charset is used as a backtick-quoted identifier in SET NAMES; restrict to a strict charset-name allowlist.
+		if($charset && !preg_match('/^[A-Za-z0-9_]+$/', (string) $charset))
+		{
+			$charset = '';
+		}
 		$message = (( ! $charset && $debug) ? 'Empty charset!' : '');
 		if($charset)
 		{

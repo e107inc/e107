@@ -661,7 +661,7 @@ class newsletter
 				{
 					if ($val != $_last_subscriber)
 					{
-						$nl_sql -> select("user", "*", "user_id=".$val);
+						$nl_sql -> select("user", "*", "user_id=".intval($val));
 						if($nl_row = $nl_sql-> fetch())
 						{
 							//<a href='".e_BASE."user.php?id.{$val}'>".$nl_row['user_name']."</a>
@@ -682,7 +682,7 @@ class newsletter
 					{	// Duplicate user id found in the subscribers_list array!
 						newsletter::remove_subscribers($p_id, $val);	// removes all entries for this user id
 						$newsletterArray[$p_id]['newsletter_subscribers'] = chr(1).$val;	// keep this single value in the list
-						$nl_sql -> update("newsletter", "newsletter_subscribers='".$newsletterArray[$p_id]['newsletter_subscribers']."' WHERE newsletter_id='".intval($p_id)."'");
+						$nl_sql -> update("newsletter", "newsletter_subscribers='".$nl_sql->escape($newsletterArray[$p_id]['newsletter_subscribers'])."' WHERE newsletter_id='".intval($p_id)."'");
 						$subscribers_total_count --;
 						$_nl_sanatized = 1;
 					}
@@ -719,7 +719,7 @@ class newsletter
 			$subscribers_list = array_flip(explode(chr(1), $nl_row['newsletter_subscribers']));
 			unset($subscribers_list[$p_key]);
 			$new_subscriber_list = implode(chr(1), array_keys($subscribers_list));
-			$sql->update('newsletter', "newsletter_subscribers='{$new_subscriber_list}' WHERE newsletter_id='".$p_id."'");
+			$sql->update('newsletter', "newsletter_subscribers='".$sql->escape($new_subscriber_list)."' WHERE newsletter_id='".intval($p_id)."'");
 		}
 	}
 }

@@ -1821,6 +1821,10 @@ class e_form
 	{
 
 		$fields = (!empty($options['fields']))  ? $options['fields'] : 'user_id,user_name,user_class';
+		if(!preg_match('/^[A-Za-z0-9_,\.\s]+$/', (string) $fields)) // $fields is a column list (identifiers)
+		{
+			$fields = 'user_id,user_name,user_class';
+		}
 		$class =  (!empty($options['classes']))   ? $options['classes'] : e_UC_MEMBER ; // all users sharing the same class as the logged-in user.
 
 		$class = str_replace(' ', '',$class);
@@ -1852,7 +1856,7 @@ class e_form
 			break;
 
 			default:
-				$where = "user_class REGEXP '(^|,)(".str_replace(',', '|', $class).")(,|$)'";
+				$where = "user_class REGEXP '(^|,)(".e107::getDb()->escape(str_replace(',', '|', $class)).")(,|$)'";
 				$classList = $class;
 				break;
 		}

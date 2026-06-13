@@ -421,7 +421,7 @@ class emotec
 		$tp = e107::getParser();
 
 
-		$packID = $_POST['packID'];
+		$packID = $tp->filter($_POST['packID']);
 		unset($_POST['sub_conf'], $_POST['packID']);
 		$encoded_emotes = $tp->toDB($_POST);
 		//	$tmp = addslashes(serialize($encoded_emotes));
