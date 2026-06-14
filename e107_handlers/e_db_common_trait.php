@@ -246,13 +246,9 @@ trait e_db_common
 	}
 
 	/**
-	 * Escape special characters in a string for use in an SQL statement,
-	 * with the same semantics as mysqli_real_escape_string().
-	 * The result is only safe when enclosed in quotes in the SQL statement.
+	 * Documented at {@see e_db::escape()}.
 	 *
-	 * @deprecated v2.4.0 Bind values with {@see e_db::execute()} instead.
-	 * @param string $data
-	 * @param bool $strip Unused; retained for backwards compatibility
+	 * @deprecated v2.4.0 Bind values instead; see {@see e_db::escape()}.
 	 * @return string
 	 */
 	function escape($data, $strip = true)
@@ -701,49 +697,10 @@ trait e_db_common
 	}
 
 	/**
-	 * Query and fetch at once
+	 * Documented at {@see e_db::retrieve()}.
 	 *
-	 * Examples:
-	 * <code>
-	 * <?php
-	 *
-	 * // Get single value, $multi and indexField are ignored
-	 * $string = e107::getDb()->retrieve('user', 'user_email', 'user_id=1');
-	 *
-	 * // Get single row set, $multi and indexField are ignored
-	 * $array = e107::getDb()->retrieve('user', 'user_email, user_name', 'user_id=1');
-	 *
-	 * // Fetch all, don't append WHERE to the query, index by user_id, noWhere auto detected (string starts with upper case ORDER)
-	 * $array = e107::getDb()->retrieve('user', 'user_id, user_email, user_name', 'ORDER BY user_email LIMIT 0,20', true, 'user_id');
-	 *
-	 * // Same as above but retrieve() is only used to fetch, not useable for single return value
-	 * if(e107::getDb()->select('user', 'user_id, user_email, user_name', 'ORDER BY user_email LIMIT 0,20', true))
-	 * {
-	 *        $array = e107::getDb()->retrieve(null, null, null,  true, 'user_id');
-	 * }
-	 *
-	 * // Using whole query example, in this case default mode is 'one'
-	 * $array = e107::getDb()->retrieve('SELECT
-	 *    p.*, u.user_email, u.user_name FROM `#user` AS u
-	 *    LEFT JOIN `#myplug_table` AS p ON p.myplug_table=u.user_id
-	 *    ORDER BY u.user_email LIMIT 0,20'
-	 * );
-	 *
-	 * // Using whole query example, multi mode - $fields argument mapped to $multi
-	 * $array = e107::getDb()->retrieve('SELECT u.user_email, u.user_name FROM `#user` AS U ORDER BY user_email LIMIT 0,20', true);
-	 *
-	 * // Using whole query example, multi mode with index field
-	 * $array = e107::getDb()->retrieve('SELECT u.user_email, u.user_name FROM `#user` AS U ORDER BY user_email LIMIT 0,20', null, null, true, 'user_id');
-	 * </code>
-	 *
-	 * @param string $table if empty, enter fetch only mode
-	 * @param string $fields comma separated list of fields or * or single field name (get one); if $fields is of type boolean and $where is not found, $fields overrides $multi
-	 * @param string $where WHERE/ORDER/LIMIT etc clause, empty to disable
-	 * @param boolean $multi if true, fetch all (multi mode)
-	 * @param string $indexField field name to be used for indexing when in multi mode
-	 * @param boolean $debug
+	 * @deprecated v2.4.0 Prefer the query builder; see {@see e_db::retrieve()}.
 	 * @return mixed
-	 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters, then {@see e_db::fetch()} or {@see e_db::rows()} to read the results.
 	 */
 	public function retrieve($table=null, $fields = null, $where=null, $multi = false, $indexField = null, $debug = false)
 	{
@@ -910,15 +867,10 @@ trait e_db_common
 	}
 
 	/**
-	 * Return the maximum value for a given table/field
-	 * @param $table (without the prefix); fails closed outside the
-	 *               [A-Za-z0-9_] identifier grammar
-	 * @param $field column name (optionally table.column); fails closed
-	 *               outside the identifier grammar
-	 * @param string $where (optional) Caller-supplied SQL: never place user
-	 *               input here; bind it with {@see e_db::execute()} instead.
+	 * Documented at {@see e_db::max()}.
+	 *
+	 * @deprecated v2.4.0 Prefer the query builder; see {@see e_db::max()}.
 	 * @return mixed
-	 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters and {@see e_db::fetch()} instead, e.g. execute("SELECT MAX(field) FROM `#table`").
 	 */
 	public function max($table, $field, $where='')
 	{
@@ -1128,19 +1080,10 @@ trait e_db_common
 	}
 
 	/**
-	 * @param string $tableName - Name of table to access, without any language or general DB prefix
-	 * @param        $arg
-	 * @param bool   $debug
-	 * @param string $log_type
-	 * @param string $log_remark
-	 * @return int|bool Last insert ID or false on error. When using '_DUPLICATE_KEY_UPDATE' return ID, true on update, 0 on no change and false on error.
-	 * @desc Insert a row into the table<br />
-	 * <br />
-	 * Example:<br />
-	 * <code>e107::getDb()->insert("links", "0, 'News', 'news.php', '', '', 1, 0, 0, 0");</code>
+	 * Documented at {@see e_db::insert()}.
 	 *
-	 * @access public
-	 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters instead.
+	 * @return int|bool Last insert ID or false on error. When using '_DUPLICATE_KEY_UPDATE' return ID, true on update, 0 on no change and false on error.
+	 * @deprecated v2.4.0 Prefer the query builder; see {@see e_db::insert()}.
 	 */
 	function insert($tableName, $arg, $debug = false, $log_type = '', $log_remark = '')
 	{
@@ -1313,19 +1256,10 @@ trait e_db_common
 	}
 
 	/**
-	 * @param string $table
-	 * @param array  $arg
-	 * @param bool   $debug
-	 * @param string $log_type
-	 * @param string $log_remark
-	 * @return int Last insert ID or false on error
-	 * @desc Insert/REplace a row into the table<br />
-	 * <br />
-	 * Example:<br />
-	 * <code>e107::getDb()->replace("links", $array);</code>
+	 * Documented at {@see e_db::replace()}.
 	 *
-	 * @access public
-	 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters instead.
+	 * @return int Last insert ID or false on error
+	 * @deprecated v2.4.0 Prefer the query builder; see {@see e_db::replace()}.
 	 */
 	function replace($table, $arg, $debug = false, $log_type = '', $log_remark = '')
 	{
@@ -1399,24 +1333,11 @@ trait e_db_common
 	}
 
 	/**
-	* @return int|false number of affected rows, or false on error
-	* @param string $tableName - Name of table to access, without any language or general DB prefix
-	* @param array|string|false $arg  (array preferred)
-	* @param bool $debug
-	* @desc Update fields in ONE table of the database corresponding to your $arg variable<br />
-	* <br />
-	* Think to call it if you need to do an update while retrieving data.<br />
-	* <br />
-	* Example using a unique connection to database:<br />
-	* <code>e107::getDb()->update("user", "user_viewed='$u_new' WHERE user_id='".USERID."' ");</code>
-	* <br />
-	* OR as second connection<br />
-	* <code>
-	* e107::getDb('sql2')->update("user", "user_viewed = '$u_new' WHERE user_id = '".USERID."' ");</code><br />
-	*
-	* @access public
-	 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters instead.
-	*/
+	 * Documented at {@see e_db::update()}.
+	 *
+	 * @return int|false number of affected rows, or false on error
+	 * @deprecated v2.4.0 Prefer the query builder; see {@see e_db::update()}.
+	 */
 	function update($tableName, $arg, $debug = false, $log_type = '', $log_remark = '')
 	{
 		$table = $this->hasLanguage($tableName);

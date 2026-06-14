@@ -1,8 +1,40 @@
 <?php
 	/**
-	 * Created by PhpStorm.
-	 * Date: 2/3/2019
-	 * Time: 6:22 PM
+	 * e107 database abstraction layer.
+	 *
+	 * Obtain the active instance with {@see e107::getDb()}. There are three ways
+	 * to reach the database, listed here in order of preference.
+	 *
+	 * 1. The fluent query builder (preferred). Call
+	 *    {@see e_db::createQueryBuilder()} to get an {@see e_db_query}. It binds
+	 *    every value (no escaping, no injection surface) and compiles through the
+	 *    {@see e_db_platform} dialect layer, so the same code stays portable
+	 *    toward other SQL backends. Use it for ordinary
+	 *    SELECT/INSERT/UPDATE/DELETE work.
+	 *    <code>
+	 *    $rows = e107::getDb()->createQueryBuilder()
+	 *        ->select('user_id', 'user_name')
+	 *        ->from('user')
+	 *        ->whereIn('user_class', array(1, 2))
+	 *        ->orderBy('user_name', 'ASC')
+	 *        ->fetchAll();
+	 *    </code>
+	 *
+	 * 2. {@see e_db::execute()} with bound :named parameters (fallback). Reach
+	 *    for it only when the builder cannot express the query, such as
+	 *    INSERT...SELECT, window functions, or other constructs the fluent
+	 *    methods do not model. The SQL you pass is run verbatim in the
+	 *    connection's own dialect, so unlike builder output it does not
+	 *    automatically carry across backends.
+	 *
+	 * 3. The legacy CRUD methods (select, insert, update, delete, replace, gen,
+	 *    retrieve, count, max, escape) are deprecated; do not use them in new
+	 *    code. Each carries an @deprecated note mapping it to its replacement.
+	 *
+	 * Schema and DDL work (CREATE/ALTER/DROP/TRUNCATE) has its own dedicated
+	 * methods: {@see e_db::dropTable()}, {@see e_db::truncate()},
+	 * {@see e_db::copyTable()}, {@see e_db::field()}, {@see e_db::fields()} and
+	 * {@see e_db::index()}.
 	 */
 
 
@@ -44,19 +76,23 @@
 
 
 		/**
+		 * Delete rows from a table.
+		 *
 		 * @param string $table
-		 * @param string $arg
+		 * @param string $arg WHERE clause, without the WHERE keyword
 		 * @param bool   $debug
 		 * @param string $log_type
 		 * @param string $log_remark
 		 * @return int number of affected rows, or false on error
-		 * @desc Delete rows from a table<br />
-		 * <br />
-		 * Example:
-		 * <code>$sql->delete("tmp", "tmp_ip='$ip'");</code><br />
-		 * <br />
-		 * @access public
-		 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters instead.
+		 * @deprecated v2.4.0 Prefer the query builder, which binds every value:
+		 *             <code>
+		 *             $qb = e107::getDb()->createQueryBuilder();
+		 *             $qb->delete('tmp')
+		 *                 ->where($qb->expr()->eq('tmp_ip', $ip))
+		 *                 ->execute();
+		 *             </code>
+		 *             See {@see e_db_query::delete()}, and {@see e_db} for the
+		 *             full guide.
 		 */
 		function delete($table, $arg = '', $debug = false, $log_type = '', $log_remark = '');
 
@@ -97,19 +133,24 @@
 
 
 		/**
+		 * Insert a row, replacing any existing row with the same primary or
+		 * unique key.
+		 *
 		 * @param string $table
-		 * @param array  $arg
+		 * @param array  $arg column => value map
 		 * @param bool   $debug
 		 * @param string $log_type
 		 * @param string $log_remark
 		 * @return int Last insert ID or false on error
-		 * @desc Insert/REplace a row into the table<br />
-		 * <br />
-		 * Example:<br />
-		 * <code>e107::getDb()->replace("links", $array);</code>
-		 *
-		 * @access public
-		 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters instead.
+		 * @deprecated v2.4.0 Prefer the query builder, which binds every value:
+		 *             <code>
+		 *             $qb = e107::getDb()->createQueryBuilder();
+		 *             $qb->replace('links')
+		 *                 ->values(array('link_id' => 1, 'link_name' => 'News'))
+		 *                 ->execute();
+		 *             </code>
+		 *             See {@see e_db_query::replace()}, and {@see e_db} for the
+		 *             full guide.
 		 */
 		function replace($table, $arg, $debug = false, $log_type = '', $log_remark = '');
 
@@ -120,40 +161,7 @@
 
 
 		/**
-		 * Query and fetch at once
-		 *
-		 * Examples:
-		 * <code>
-		 * <?php
-		 *
-		 * // Get single value, $multi and indexField are ignored
-		 * $string = e107::getDb()->retrieve('user', 'user_email', 'user_id=1');
-		 *
-		 * // Get single row set, $multi and indexField are ignored
-		 * $array = e107::getDb()->retrieve('user', 'user_email, user_name', 'user_id=1');
-		 *
-		 * // Fetch all, don't append WHERE to the query, index by user_id, noWhere auto detected (string starts with upper case ORDER)
-		 * $array = e107::getDb()->retrieve('user', 'user_id, user_email, user_name', 'ORDER BY user_email LIMIT 0,20', true, 'user_id');
-		 *
-		 * // Same as above but retrieve() is only used to fetch, not useable for single return value
-		 * if(e107::getDb()->select('user', 'user_id, user_email, user_name', 'ORDER BY user_email LIMIT 0,20', true))
-		 * {
-		 *        $array = e107::getDb()->retrieve(null, null, null,  true, 'user_id');
-		 * }
-		 *
-		 * // Using whole query example, in this case default mode is 'single'
-		 * $array = e107::getDb()->retrieve('SELECT
-		 *    p.*, u.user_email, u.user_name FROM `#user` AS u
-		 *    LEFT JOIN `#myplug_table` AS p ON p.myplug_table=u.user_id
-		 *    ORDER BY u.user_email LIMIT 0,20'
-		 * );
-		 *
-		 * // Using whole query example, multi mode - $fields argument mapped to $multi
-		 * $array = e107::getDb()->retrieve('SELECT u.user_email, u.user_name FROM `#user` AS U ORDER BY user_email LIMIT 0,20', true);
-		 *
-		 * // Using whole query example, multi mode with index field
-		 * $array = e107::getDb()->retrieve('SELECT u.user_email, u.user_name FROM `#user` AS U ORDER BY user_email LIMIT 0,20', null, null, true, 'user_id');
-		 * </code>
+		 * Run a SELECT and fetch the result in one call.
 		 *
 		 * @param string $table if empty, enter fetch only mode
 		 * @param string $fields comma separated list of fields or * or single field name (get one); if $fields is of type boolean and $where is not found, $fields overrides $multi
@@ -162,7 +170,19 @@
 		 * @param string $indexField field name to be used for indexing when in multi mode
 		 * @param boolean $debug
 		 * @return string|array
-		 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters, then {@see e_db::fetch()} or {@see e_db::rows()} to read the results.
+		 * @deprecated v2.4.0 Prefer the query builder, which binds every value and
+		 *             fetches in one call:
+		 *             <code>
+		 *             $qb = e107::getDb()->createQueryBuilder();
+		 *             $email = $qb->select('user_email')
+		 *                 ->from('user')
+		 *                 ->where($qb->expr()->eq('user_id', 1))
+		 *                 ->fetchOne();
+		 *             </code>
+		 *             See {@see e_db_query::fetchOne()},
+		 *             {@see e_db_query::fetchRow()} and
+		 *             {@see e_db_query::fetchAll()}, and {@see e_db} for the full
+		 *             guide.
 		 */
 		public function retrieve($table, $fields = null, $where=null, $multi = false, $indexField = null, $debug = false);
 
@@ -180,10 +200,10 @@
 
 
 		/**
-		 * Function to handle any MySQL query
+		 * Run a hand-written SQL query.
 		 *
-		 * @param string $query - the MySQL query string, where '#' represents the database prefix in front of table names.
-		 *        Strongly recommended to enclose all table names in backticks, to minimise the possibility of erroneous substitutions - its
+		 * @param string $query the SQL query string, where '#' represents the database prefix in front of table names.
+		 *        Strongly recommended to enclose all table names in backticks, to minimise the possibility of erroneous substitutions; it is
 		 *            likely that this will become mandatory at some point
 		 * @param bool   $debug
 		 * @param string $log_type
@@ -192,14 +212,27 @@
 		 *        Returns FALSE if there is an error in the query
 		 *        Returns TRUE if the query is successful, and it does not return a row count
 		 *        Returns the number of rows added/updated/deleted for DELETE, INSERT, REPLACE, or UPDATE
-		 * @deprecated v2.4.0 Use {@see e_db::execute()} instead; it accepts the same SQL (including '#table' markers) with values moved to bound :named parameters.
+		 * @deprecated v2.4.0 Use {@see e_db::execute()} instead; it accepts the
+		 *             same SQL (including '#table' markers) with values moved to
+		 *             bound :named parameters. For ordinary CRUD prefer the query
+		 *             builder ({@see e_db::createQueryBuilder()}); see {@see e_db}
+		 *             for the full guide.
 		 */
 		public function gen($query, $debug = false, $log_type = '', $log_remark = '');
 
 
 		/**
 		 * Execute an SQL statement with bound parameters. The canonical way to
-		 * run SQL against an e107 database.
+		 * run raw SQL against an e107 database.
+		 *
+		 * For ordinary SELECT/INSERT/UPDATE/DELETE work, prefer the query builder
+		 * ({@see e_db::createQueryBuilder()}): it binds values for you and emits
+		 * SQL through the {@see e_db_platform} dialect layer, so builder-based code
+		 * stays portable across backends. Reach for execute() when the builder
+		 * cannot express the query, for example INSERT...SELECT, window functions,
+		 * or other constructs the fluent methods do not model. SQL you pass here is
+		 * run verbatim in the connection's own dialect; the full decision guide
+		 * lives at {@see e_db}.
 		 *
 		 * Table names may be written as `#table` (backticks optional): the e107
 		 * database prefix is attached and multi-language routing is applied,
@@ -245,10 +278,11 @@
 
 
 		/**
-		 * Create a fluent query builder bound to this connection. The builder
-		 * compiles to SQL with bound :named placeholders and runs through
-		 * {@see e_db::execute()}; table names are logical (no '#' marker, no
-		 * database prefix) and resolve through {@see e_db::resolveTableName()}.
+		 * Preferred entry point for database access. Create a fluent query builder
+		 * bound to this connection. It compiles to SQL with bound :named
+		 * placeholders and runs through {@see e_db::execute()}; table names are
+		 * logical (no '#' marker, no database prefix) and resolve through
+		 * {@see e_db::resolveTableName()}.
 		 *
 		 * <code>
 		 * $rows = e107::getDb()->createQueryBuilder()
@@ -258,6 +292,9 @@
 		 *     ->orderBy('user_name', 'ASC')
 		 *     ->fetchAll();
 		 * </code>
+		 *
+		 * For the cases the builder cannot express, drop down to
+		 * {@see e_db::execute()}; see {@see e_db} for the decision guide.
 		 *
 		 * @return e_db_query
 		 */
@@ -295,13 +332,16 @@
 
 		/**
 		 * Escape special characters in a string for use inside a quoted SQL
-		 * literal, with mysqli_real_escape_string() semantics.
+		 * literal.
 		 *
-		 * @deprecated v2.4.0 Bind values with {@see e_db::execute()} instead.
-		 *             Escaping is only safe when the result is placed inside
-		 *             quotes in the SQL string, which parameter binding makes
-		 *             unnecessary. Calls emit one E_USER_DEPRECATED notice per
-		 *             call site per request.
+		 * @deprecated v2.4.0 Bind values instead of escaping them: the query
+		 *             builder ({@see e_db::createQueryBuilder()}) binds every
+		 *             value for you, and {@see e_db::execute()} binds :named
+		 *             parameters. Escaping is only safe when the result is placed
+		 *             inside quotes in the SQL string, which parameter binding
+		 *             makes unnecessary. Calls emit one E_USER_DEPRECATED notice
+		 *             per call site per request. See {@see e_db} for the full
+		 *             guide.
 		 * @param string $data
 		 * @param bool $strip Unused; retained for backwards compatibility
 		 * @return string
@@ -310,25 +350,26 @@
 
 
 		/**
-		 * @param string       $tableName - Name of table to access, without any language or general DB prefix
+		 * Update fields in one table.
+		 *
+		 * @param string       $tableName Name of table to access, without any language or general DB prefix
 		 * @param array|string $arg (array preferred)
 		 * @param bool         $debug
 		 * @param string       $log_type
 		 * @param string       $log_remark
 		 * @return int|false number of affected rows, or false on error
-		 * @desc Update fields in ONE table of the database corresponding to your $arg variable<br />
-		 * <br />
-		 * Think to call it if you need to do an update while retrieving data.<br />
-		 * <br />
-		 * Example using a unique connection to database:<br />
-		 * <code>e107::getDb()->update("user", "user_viewed='$u_new' WHERE user_id='".USERID."' ");</code>
-		 * <br />
-		 * OR as second connection<br />
-		 * <code>
-		 * e107::getDb('sql2')->update("user", "user_viewed = '$u_new' WHERE user_id = '".USERID."' ");</code><br />
-		 *
-		 * @access public
-		 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters instead.
+		 * @deprecated v2.4.0 Prefer the query builder, which binds every value:
+		 *             <code>
+		 *             $qb = e107::getDb()->createQueryBuilder();
+		 *             $qb->update('user')
+		 *                 ->set('user_viewed', $u_new)
+		 *                 ->where($qb->expr()->eq('user_id', USERID))
+		 *                 ->execute();
+		 *             </code>
+		 *             See {@see e_db_query::update()} and {@see e_db_query::set()};
+		 *             for SQL expressions such as user_viewed = user_viewed + 1
+		 *             use {@see e_db_query::setExpression()}. See {@see e_db} for
+		 *             the full guide.
 		 */
 		function update($tableName, $arg, $debug = false, $log_type = '', $log_remark = '');
 
@@ -370,16 +411,7 @@
 
 
 		/**
-		 * @desc Perform a select query()
-		 * <br />
-		 * If you need more requests think to call the class.<br />
-		 * <br />
-		 * Example using a unique connection to database:<br />
-		 * <code>e107::getDb()->select("comments", "*", "comment_item_id = '$id' AND comment_type = '1' ORDER BY comment_datestamp");</code><br />
-		 * <br />
-		 * OR as second connection:<br />
-		 * <code>
-		 * e107::getDb('sql2')->select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT $from, ".$view, true);</code>
+		 * Perform a SELECT query.
 		 *
 		 * @param        $table
 		 * @param string $fields
@@ -389,7 +421,18 @@
 		 * @param string $log_type
 		 * @param string $log_remark
 		 * @return int|false Number of rows or false on error
-		 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters instead.
+		 * @deprecated v2.4.0 Prefer the query builder, which binds every value:
+		 *             <code>
+		 *             $qb = e107::getDb()->createQueryBuilder();
+		 *             $rows = $qb->select('*')
+		 *                 ->from('comments')
+		 *                 ->where($qb->expr()->eq('comment_item_id', $id))
+		 *                 ->orderBy('comment_datestamp', 'ASC')
+		 *                 ->fetchAll();
+		 *             </code>
+		 *             See {@see e_db_query::select()} and
+		 *             {@see e_db_query::fetchAll()}, and {@see e_db} for the full
+		 *             guide.
 		 */
 		public function select($table, $fields = '*', $arg = '', $noWhere = false, $debug = false, $log_type = '', $log_remark = '');
 
@@ -409,19 +452,27 @@
 
 
 		/**
-		 * @param string $tableName - Name of table to access, without any language or general DB prefix
+		 * Insert one row into a table.
+		 *
+		 * @param string $tableName Name of table to access, without any language or general DB prefix
 		 * @param        $arg
 		 * @param bool   $debug
 		 * @param string $log_type
 		 * @param string $log_remark
 		 * @return int|bool Last insert ID or false on error. When using '_DUPLICATE_KEY_UPDATE' return ID, true on update, 0 on no change and false on error.
-		 * @desc Insert a row into the table<br />
-		 * <br />
-		 * Example:<br />
-		 * <code>e107::getDb()->insert("links", "0, 'News', 'news.php', '', '', 1, 0, 0, 0");</code>
-		 *
-		 * @access public
-		 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters instead.
+		 * @deprecated v2.4.0 Prefer the query builder, which binds every value:
+		 *             <code>
+		 *             $qb = e107::getDb()->createQueryBuilder();
+		 *             $qb->insert('links')
+		 *                 ->values(array('link_name' => 'News', 'link_url' => 'news.php'))
+		 *                 ->execute();
+		 *             </code>
+		 *             See {@see e_db_query::insert()} and {@see e_db_query::values()};
+		 *             pass a list of rows to {@see e_db_query::values()} for a
+		 *             multi-row insert, and use {@see e_db_query::upsert()} for the
+		 *             legacy '_DUPLICATE_KEY_UPDATE' option. For inserts the builder
+		 *             still cannot express (INSERT...SELECT), fall back to
+		 *             {@see e_db::execute()}. See {@see e_db} for the full guide.
 		 */
 		function insert($tableName, $arg, $debug = false, $log_type = '', $log_remark = '');
 
@@ -438,7 +489,8 @@
 
 
 		/**
-		 * Truncate a table
+		 * Truncate a table, removing all of its rows.
+		 *
 		 * @param string $table - table name without e107 prefix
 		 */
 		function truncate($table=null);
@@ -446,6 +498,8 @@
 
 
 		/**
+		 * Count the number of rows matching a query.
+		 *
 		 * @param string $table
 		 * @param string $fields
 		 * @param string $arg
@@ -453,25 +507,36 @@
 		 * @param string $log_type
 		 * @param string $log_remark
 		 * @return int number of affected rows or false on error
-		 * @desc Count the number of rows in a select<br />
-		 * <br />
-		 * Example:<br />
-		 * <code>$topics = e107::getDb()->count("forum_thread", "(*)", "thread_forum_id='".$forum_id."' AND thread_parent='0'");</code>
-		 *
-		 * @access public
-		 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters and {@see e_db::fetch()} instead, e.g. execute("SELECT COUNT(*) FROM `#table` WHERE field = :v", $params).
+		 * @deprecated v2.4.0 Prefer the query builder, which binds every value:
+		 *             <code>
+		 *             $qb = e107::getDb()->createQueryBuilder();
+		 *             $topics = $qb->select('COUNT(*)')
+		 *                 ->from('forum_thread')
+		 *                 ->where($qb->expr()->eq('thread_forum_id', $forum_id))
+		 *                 ->andWhere($qb->expr()->eq('thread_parent', 0))
+		 *                 ->fetchOne();
+		 *             </code>
+		 *             See {@see e_db_query::fetchOne()}, and {@see e_db} for the
+		 *             full guide.
 		 */
 		function count($table, $fields = '(*)', $arg = '', $debug = FALSE, $log_type = '', $log_remark = '');
 
 
 
 		/**
-		 * Return the maximum value for a given table/field
+		 * Return the maximum value of a field.
+		 *
 		 * @param $table (without the prefix)
 		 * @param $field
 		 * @param string $where (optional)
 		 * @return bool|resource
-		 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters and {@see e_db::fetch()} instead, e.g. execute("SELECT MAX(field) FROM `#table`").
+		 * @deprecated v2.4.0 Prefer the query builder, which binds every value:
+		 *             <code>
+		 *             $qb = e107::getDb()->createQueryBuilder();
+		 *             $max = $qb->select('MAX(user_id)')->from('user')->fetchOne();
+		 *             </code>
+		 *             See {@see e_db_query::fetchOne()}, and {@see e_db} for the
+		 *             full guide.
 		 */
 		public function max($table, $field, $where='');
 
@@ -489,7 +554,8 @@
 
 
 		/**
-		 * TODO: Document this method
+		 * Discard the cached list of database tables, so the next lookup
+		 * (e.g. {@see e_db::tables()}) reads the current schema again.
 		 */
 		public function resetTableList();
 
@@ -528,7 +594,8 @@
 
 
 		/**
-		 * XXX: e_db_pdo and e_db_mysql have differing implementations of this method.
+		 * Copy a table, optionally including its data.
+		 *
 		 * @param string $oldtable
 		 * @param string $newtable
 		 * @param bool $drop
@@ -540,7 +607,8 @@
 
 
 		/**
-		 * Drop/delete table and all it's data
+		 * Drop a table and all its data.
+		 *
 		 * @param string $table name without the prefix
 		 * @return bool|int
 		 */
