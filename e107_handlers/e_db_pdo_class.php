@@ -433,18 +433,11 @@ class e_db_pdo implements e_db
 	}
 
 	/**
-	* Perform a SELECT  using the arguments suplpied by calling db::db_Query()
-	*
-	* @param string $table
-	* @param string $fields
-	* @param string|array|false $arg;
-	*
-	* @example e107::getDb()->select("comments", "*", "comment_item_id = '$id' AND comment_type = '1' ORDER BY comment_datestamp");
-	* @example e107::getDb('sql2')->select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT $from, ".$view, true);</code>
-	* @example select('user', 'user_id, user_name', 'user_id=:id OR user_name=:name ORDER BY user_name', array('id' => 999, 'name'=>'e107')); // bind support.
-	* @return int|false Number of rows or false on error
-	 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters instead.
-	*/
+	 * Documented at {@see e_db::select()}.
+	 *
+	 * @return int|false Number of rows or false on error
+	 * @deprecated v2.4.0 Prefer the query builder; see {@see e_db::select()}.
+	 */
 	public function select($table, $fields = '*', $arg = '', $noWhere = false, $debug = false, $log_type = '', $log_remark = '')
 	{
 
@@ -602,20 +595,10 @@ class e_db_pdo implements e_db
 
 
 	/**
-	 * @param string $table
-	 * @param string $fields
-	 * @param string $arg
-	 * @param bool   $debug
-	 * @param string $log_type
-	 * @param string $log_remark
-	 * @return int|false number of affected rows or false on error
-	 * @desc Count the number of rows in a select<br />
-	 * <br />
-	 * Example:<br />
-	 * <code>$topics = e107::getDb()->count("forum_thread", "(*)", "thread_forum_id='".$forum_id."' AND thread_parent='0'");</code>
+	 * Documented at {@see e_db::count()}.
 	 *
-	 * @access public
-	 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters and {@see e_db::fetch()} instead, e.g. execute("SELECT COUNT(*) FROM `#table` WHERE field = :v", $params).
+	 * @return int|false number of affected rows or false on error
+	 * @deprecated v2.4.0 Prefer the query builder; see {@see e_db::count()}.
 	 */
 	function count($table, $fields = '(*)', $arg = '', $debug = false, $log_type = '', $log_remark = '')
 	{
@@ -684,17 +667,11 @@ class e_db_pdo implements e_db
 
 
 	/**
-	* @return int|false number of affected rows, or false on error
-	* @param string $table
-	* @param string $arg
-	* @desc Delete rows from a table<br />
-	* <br />
-	* Example:
-	* <code>$sql->delete("tmp", "tmp_ip='$ip'");</code><br />
-	* <br />
-	* @access public
-	 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters instead.
-	*/
+	 * Documented at {@see e_db::delete()}.
+	 *
+	 * @return int|false number of affected rows, or false on error
+	 * @deprecated v2.4.0 Prefer the query builder; see {@see e_db::delete()}.
+	 */
 	function delete($table, $arg = '', $debug = false, $log_type = '', $log_remark = '')
 	{
 		$table = $this->hasLanguage($table);
@@ -789,16 +766,11 @@ class e_db_pdo implements e_db
 	}
 
 	/**
-	* Function to handle any MySQL query
-	* @param string $query - the MySQL query string, where '#' represents the database prefix in front of table names.
-	*		Strongly recommended to enclose all table names in backticks, to minimise the possibility of erroneous substitutions - its
-	*			likely that this will become mandatory at some point
-	* @return boolean | int
-	*		Returns false if there is an error in the query
-	*		Returns TRUE if the query is successful, and it does not return a row count
-	*		Returns the number of rows added/updated/deleted for DELETE, INSERT, REPLACE, or UPDATE
-	 * @deprecated v2.4.0 Use {@see e_db::execute()} instead; it accepts the same SQL (including '#table' markers) with values moved to bound :named parameters.
-	*/
+	 * Documented at {@see e_db::gen()}.
+	 *
+	 * @return boolean | int
+	 * @deprecated v2.4.0 Use {@see e_db::execute()} instead; see {@see e_db::gen()}.
+	 */
 	public function gen($query, $debug = false, $log_type = '', $log_remark = '')
 	{
 		$this->tabset = false;
