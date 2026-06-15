@@ -15,7 +15,7 @@
  */
 
 if (!defined('e107_INIT')) { exit; }
-if (e_QUERY) list($action,$junk) = explode('.',e_QUERY); else $action = 'list';
+if (e_QUERY) list($action) = explode('.',e_QUERY); else $action = 'list';
 
 switch ($action)
 {
