@@ -58,6 +58,46 @@
 
 		}
 
+		public function testGetCategories()
+		{
+			$sql = e107::getDb();
+			$sql->delete('core_media_cat', "media_cat_category LIKE 'mediatest_%'");
+
+			$cats = array(
+				array('media_cat_owner' => 'mediatestowner', 'media_cat_category' => 'mediatest_a', 'media_cat_title' => 'A', 'media_cat_class' => 0, 'media_cat_order' => 2),
+				array('media_cat_owner' => 'mediatestowner', 'media_cat_category' => 'mediatest_b', 'media_cat_title' => 'B', 'media_cat_class' => 0, 'media_cat_order' => 1),
+				array('media_cat_owner' => "media'test", 'media_cat_category' => 'mediatest_q', 'media_cat_title' => 'Q', 'media_cat_class' => 0, 'media_cat_order' => 3),
+			);
+
+			foreach($cats as $cat)
+			{
+				$this->assertNotFalse($sql->insert('core_media_cat', $cat));
+			}
+
+			// default order: media_cat_order ASC
+			$result = $this->md->getCategories('mediatestowner');
+			$this->assertSame(array('mediatest_b', 'mediatest_a'), array_keys($result));
+
+			// a valid column + direction passes the grammar and is honoured
+			$result = $this->md->getCategories('mediatestowner', 'media_cat_order DESC');
+			$this->assertSame(array('mediatest_a', 'mediatest_b'), array_keys($result));
+
+			// anything outside the grammar fails closed to the default order
+			$result = $this->md->getCategories('mediatestowner', 'media_cat_order; DROP TABLE `'.MPREFIX."core_media_cat`; --");
+			$this->assertSame(array('mediatest_b', 'mediatest_a'), array_keys($result));
+
+			// the owner is bound, so a quote in the owner round-trips
+			$result = $this->md->getCategories("media'test");
+			$this->assertSame(array('mediatest_q'), array_keys($result));
+
+			// no owner returns all visible categories
+			$result = $this->md->getCategories();
+			$this->assertArrayHasKey('mediatest_a', $result);
+			$this->assertArrayHasKey('mediatest_q', $result);
+
+			$sql->delete('core_media_cat', "media_cat_category LIKE 'mediatest_%'");
+		}
+
 		public function testProcessAjaxImport()
 		{
 			$tests = array(
