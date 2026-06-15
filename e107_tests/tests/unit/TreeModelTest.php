@@ -183,6 +183,142 @@ class TreeModelTest extends \Codeception\Test\Unit
 	$this->assertEquals(1, $result);
     }
 
+	protected function invokeBuildCountQuery($qry)
+	{
+		$class = new \ReflectionClass('e_tree_model');
+		$method = $class->getMethod('buildCountQuery');
+		$method->setAccessible(true);
+		return $method->invoke(null, $qry);
+	}
+
+	public function testBuildCountQueryReducesMultiWildcardProjection()
+	{
+		// Reproduces the projection that triggers issue #5761: u.* and ue.*
+		// both expose user_timezone, which MySQL rejects inside a derived table.
+		$qry = "SELECT  u.*,ue.* from #user AS u LEFT JOIN #user_extended AS ue ON u.user_id = ue.user_extended_id ORDER BY u.user_id ASC";
+		$count = $this->invokeBuildCountQuery($qry);
+
+		$this->assertStringContainsString('SELECT COUNT(*) AS e_tree_total FROM (', $count);
+		$this->assertStringContainsString('AS grouped_rows', $count);
+		$this->assertStringNotContainsString('u.*', $count);
+		$this->assertStringNotContainsString('ue.*', $count);
+		$this->assertStringContainsString('SELECT  1 from #user AS u LEFT JOIN #user_extended AS ue', $count);
+		// ORDER BY references a real column, so it is left in place.
+		$this->assertStringContainsString('ORDER BY u.user_id ASC', $count);
+	}
+
+	public function testBuildCountQueryWrapsScalarSubqueryProjectionVerbatim()
+	{
+		// Regression guard: the Book/Chapter list has a single wildcard beside a
+		// correlated subquery whose own FROM must not be mistaken for the real
+		// one. This query has no duplicate column, so it is wrapped untouched.
+		$qry = "SELECT a.*, CASE WHEN a.chapter_parent = 0 THEN a.chapter_order ELSE b.chapter_order + ((a.chapter_order)/1000) END AS Sort, (SELECT COUNT(*) FROM `#page` p WHERE p.page_chapter = a.chapter_id) AS chapter_page_count FROM `#page_chapters` AS a LEFT JOIN `#page_chapters` AS b ON a.chapter_parent = b.chapter_id ORDER BY Sort, chapter_order";
+		$count = $this->invokeBuildCountQuery($qry);
+
+		$this->assertEquals("SELECT COUNT(*) AS e_tree_total FROM ($qry) AS grouped_rows", $count);
+		// The inner subquery FROM was not split out into a broken projection.
+		$this->assertStringNotContainsString('SELECT 1 FROM `#page`', $count);
+		$this->assertStringContainsString('chapter_page_count', $count);
+	}
+
+	public function testBuildCountQueryWrapsSingleWildcardVerbatim()
+	{
+		// A single wildcard cannot collide, so the projection is left intact.
+		$qry = "SELECT n.*, u.user_name FROM #news AS n LEFT JOIN #user AS u ON n.news_author = u.user_id ORDER BY n.news_datestamp DESC";
+		$count = $this->invokeBuildCountQuery($qry);
+
+		$this->assertEquals("SELECT COUNT(*) AS e_tree_total FROM ($qry) AS grouped_rows", $count);
+	}
+
+	public function testBuildCountQueryFindsTopLevelFromPastSubquery()
+	{
+		// Two wildcards plus a correlated subquery: the projection must be
+		// reduced at the real top-level FROM, never the subquery's FROM.
+		$qry = "SELECT u.*, ue.*, (SELECT COUNT(*) FROM #user_extended x WHERE x.user_extended_id = u.user_id) AS c FROM #user AS u LEFT JOIN #user_extended AS ue ON u.user_id = ue.user_extended_id";
+		$count = $this->invokeBuildCountQuery($qry);
+
+		// The whole projection collapses to the constant; the real FROM and its
+		// joins survive, while the subquery's own FROM clause does not leak out.
+		$this->assertStringContainsString('SELECT 1 FROM #user AS u LEFT JOIN #user_extended AS ue ON u.user_id = ue.user_extended_id', $count);
+		$this->assertStringNotContainsString('ue.*', $count);
+		$this->assertStringNotContainsString('WHERE x.user_extended_id', $count);
+	}
+
+	public function testBuildCountQueryPreservesDistinctProjection()
+	{
+		// DISTINCT makes the projection significant to the row count, so even a
+		// multi-wildcard projection must be left untouched.
+		$qry = "SELECT DISTINCT u.*, ue.* FROM #user AS u LEFT JOIN #user_extended AS ue ON u.user_id = ue.user_extended_id";
+		$count = $this->invokeBuildCountQuery($qry);
+
+		$this->assertEquals("SELECT COUNT(*) AS e_tree_total FROM ($qry) AS grouped_rows", $count);
+	}
+
+	/**
+	 * End-to-end guard for issue #5761: counting a list query that joins two
+	 * tables sharing a column name must not raise "1060 Duplicate column name".
+	 */
+	public function testCountResultsToleratesDuplicateColumnNames()
+	{
+		$sql = e107::getDb();
+
+		$sql->gen("DROP TEMPORARY TABLE IF EXISTS tmp_5761_a");
+		$sql->gen("DROP TEMPORARY TABLE IF EXISTS tmp_5761_b");
+		$sql->gen("CREATE TEMPORARY TABLE tmp_5761_a (id INT PRIMARY KEY, user_timezone VARCHAR(10) NOT NULL DEFAULT '')");
+		$sql->gen("CREATE TEMPORARY TABLE tmp_5761_b (ext_id INT PRIMARY KEY, user_timezone VARCHAR(10) NOT NULL DEFAULT '')");
+		$sql->gen("INSERT INTO tmp_5761_a (id, user_timezone) VALUES (1,'UTC'),(2,'CET'),(3,'PST')");
+		$sql->gen("INSERT INTO tmp_5761_b (ext_id, user_timezone) VALUES (1,'UTC'),(2,'CET')");
+
+		$tree = $this->make('e_tree_model');
+		$tree->setModelTable('tmp_5761_a');
+		$tree->setParam('db_query', "SELECT a.*, b.* FROM tmp_5761_a AS a LEFT JOIN tmp_5761_b AS b ON a.id = b.ext_id ORDER BY a.id ASC");
+
+		$class = new \ReflectionClass('e_tree_model');
+		$method = $class->getMethod('countResults');
+		$method->setAccessible(true);
+		$total = $method->invoke($tree, $sql);
+
+		$this->assertEquals(0, $sql->getLastErrorNumber(), $sql->getLastErrorText());
+		$this->assertEquals(3, $total);
+
+		$sql->gen("DROP TEMPORARY TABLE IF EXISTS tmp_5761_a");
+		$sql->gen("DROP TEMPORARY TABLE IF EXISTS tmp_5761_b");
+	}
+
+	/**
+	 * Regression guard for the Book/Chapter list (PR #5771 review): a list
+	 * query with a correlated subquery in its projection must count without a
+	 * SQL syntax error. The subquery's own FROM is the part that broke an
+	 * earlier fix; the Book/Chapter list's self-join is left out here because
+	 * older engines cannot reference a TEMPORARY table twice (error 1137).
+	 */
+	public function testCountResultsCountsScalarSubqueryListVerbatim()
+	{
+		$sql = e107::getDb();
+
+		$sql->gen("DROP TEMPORARY TABLE IF EXISTS tmp_5761_chapters");
+		$sql->gen("DROP TEMPORARY TABLE IF EXISTS tmp_5761_pages");
+		$sql->gen("CREATE TEMPORARY TABLE tmp_5761_chapters (chapter_id INT PRIMARY KEY, chapter_parent INT NOT NULL DEFAULT 0, chapter_order INT NOT NULL DEFAULT 0)");
+		$sql->gen("CREATE TEMPORARY TABLE tmp_5761_pages (page_id INT PRIMARY KEY, page_chapter INT NOT NULL DEFAULT 0)");
+		$sql->gen("INSERT INTO tmp_5761_chapters (chapter_id, chapter_parent, chapter_order) VALUES (1,0,1),(2,1,1),(3,1,2),(4,0,2)");
+		$sql->gen("INSERT INTO tmp_5761_pages (page_id, page_chapter) VALUES (1,2),(2,2),(3,3)");
+
+		$tree = $this->make('e_tree_model');
+		$tree->setModelTable('tmp_5761_chapters');
+		$tree->setParam('db_query', "SELECT a.*, CASE WHEN a.chapter_parent = 0 THEN 0 ELSE 1 END AS is_child, (SELECT COUNT(*) FROM tmp_5761_pages p WHERE p.page_chapter = a.chapter_id) AS chapter_page_count FROM tmp_5761_chapters AS a ORDER BY a.chapter_order");
+
+		$class = new \ReflectionClass('e_tree_model');
+		$method = $class->getMethod('countResults');
+		$method->setAccessible(true);
+		$total = $method->invoke($tree, $sql);
+
+		$this->assertEquals(0, $sql->getLastErrorNumber(), $sql->getLastErrorText());
+		$this->assertEquals(4, $total);
+
+		$sql->gen("DROP TEMPORARY TABLE IF EXISTS tmp_5761_chapters");
+		$sql->gen("DROP TEMPORARY TABLE IF EXISTS tmp_5761_pages");
+	}
+
 	protected $sample_rows =
 		array(
 			0 =>
