@@ -507,4 +507,56 @@
 			$result = $this->md->getPath('image/jpeg');
 			$this->assertStringContainsString(e_MEDIA.'images/', $result);
 		}
+
+		public function testGetImages()
+		{
+			$sql = e107::getDb();
+			$sql->delete('core_media', "media_category LIKE 'mediatestcat%'");
+
+			$rows = array(
+				'percent' => array('media_name' => 'mediatest 100% pure.jpg', 'media_category' => 'mediatestcat', 'media_url' => '{e_MEDIA_IMAGE}mediatest1.jpg'),
+				'plain'   => array('media_name' => 'mediatest 100 plain.jpg', 'media_category' => 'mediatestcat', 'media_url' => '{e_MEDIA_IMAGE}mediatest2.jpg'),
+				'quoted'  => array('media_name' => "mediatest don't panic.jpg", 'media_category' => 'mediatestcat', 'media_url' => '{e_MEDIA_IMAGE}mediatest3.jpg'),
+				'meta'    => array('media_name' => 'mediatest brackets.jpg', 'media_category' => 'mediatestcat(x)', 'media_url' => '{e_MEDIA_IMAGE}mediatest4.jpg'),
+			);
+
+			$ids = array();
+
+			foreach($rows as $key => $row)
+			{
+				$row['media_type'] = 'image/jpeg';
+				$row['media_userclass'] = 0;
+				$id = $sql->insert('core_media', $row);
+				$this->assertNotFalse($id);
+				$ids[$key] = (int) $id;
+			}
+
+			// the category pattern is bound and anchored: no bleed into 'mediatestcat(x)'
+			$list = $this->md->getImages('mediatestcat');
+			$this->assertCount(3, $list);
+
+			// regex metacharacters in a category name match literally
+			$list = $this->md->getImages('mediatestcat(x)');
+			$this->assertSame(array($ids['meta']), array_keys($list));
+
+			// LIKE wildcards in the search term match literally...
+			$this->assertSame(1, $this->md->countImages('mediatestcat', '100%'));
+
+			// ...and a quote in the search term is data, not SQL
+			$this->assertSame(1, $this->md->countImages('mediatestcat', "don't"));
+
+			// a valid ORDER BY override is honoured
+			$list = $this->md->getImages('mediatestcat', 0, 10, null, 'media_id DESC');
+			$this->assertSame(array($ids['quoted'], $ids['plain'], $ids['percent']), array_keys($list));
+
+			// anything outside the column/direction grammar fails closed to the default order
+			$list = $this->md->getImages('mediatestcat', 0, 10, null, 'media_id; DROP TABLE `'.MPREFIX.'core_media`; --');
+			$this->assertCount(3, $list);
+
+			// LIMIT arguments are cast to integers
+			$list = $this->md->getImages('mediatestcat', 0, 2, null, 'media_id ASC');
+			$this->assertSame(array($ids['percent'], $ids['plain']), array_keys($list));
+
+			$sql->delete('core_media', "media_category LIKE 'mediatestcat%'");
+		}
 	}
