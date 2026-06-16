@@ -896,7 +896,11 @@ DATA;
 
 	}
 
-	private function prepareResults(string $file, string $sql)
+	/**
+     * @param string $file
+     * @param string $sql
+     */
+    private function prepareResults($file, $sql)
 	{
 
 		$fileData = array();

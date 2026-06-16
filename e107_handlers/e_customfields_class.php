@@ -440,7 +440,7 @@
 		 * @param e_admin_ui $ui
 		 * @return $this
 		 */
-		public function setAdminUIConfig($fieldName, e_admin_ui &$ui)
+		public function setAdminUIConfig($fieldName, &$ui)
 		{
 			$fields = array();
 
@@ -485,7 +485,7 @@
 		 * @param e_admin_ui $ui
 		 * @return $this
 		 */
-		public function setAdminUIData($fieldname, e_admin_ui &$ui)
+		public function setAdminUIData($fieldname, &$ui)
 		{
 
 			$ui->getModel()->set($fieldname, null);

@@ -9,15 +9,24 @@
  */
 class AdminLoginDestinationCest
 {
-	public function _before(AcceptanceTester $I)
+	/**
+     * @param \AcceptanceTester $I
+     */
+    public function _before($I)
 	{
 	}
 
-	public function _after(AcceptanceTester $I)
+	/**
+     * @param \AcceptanceTester $I
+     */
+    public function _after($I)
 	{
 	}
 
-	public function returnsToRequestedAdminPageAfterLogin(AcceptanceTester $I)
+	/**
+     * @param \AcceptanceTester $I
+     */
+    public function returnsToRequestedAdminPageAfterLogin($I)
 	{
 		$I->wantTo('Return to the requested admin page after admin login (PR #5695 review)');
 
@@ -40,13 +49,14 @@ class AdminLoginDestinationCest
 	}
 
 	/**
-	 * Regression: an <iframe> sub-request must never be remembered as the post-login
-	 * destination. The menu manager renders its body in an iframe whose src is an
-	 * admin-perms-gated URL; if that sub-request is captured, the user is returned to
-	 * the bare iframe view with no way to navigate. Browsers tag the sub-request with
-	 * the Fetch Metadata header Sec-Fetch-Dest: iframe, which the capture guard honours.
-	 */
-	public function doesNotReturnToIframeSubRequestAfterLogin(AcceptanceTester $I)
+     * Regression: an <iframe> sub-request must never be remembered as the post-login
+     * destination. The menu manager renders its body in an iframe whose src is an
+     * admin-perms-gated URL; if that sub-request is captured, the user is returned to
+     * the bare iframe view with no way to navigate. Browsers tag the sub-request with
+     * the Fetch Metadata header Sec-Fetch-Dest: iframe, which the capture guard honours.
+     * @param \AcceptanceTester $I
+     */
+    public function doesNotReturnToIframeSubRequestAfterLogin($I)
 	{
 		$I->wantTo('Not capture an iframe sub-request as the post-login destination');
 
@@ -69,13 +79,14 @@ class AdminLoginDestinationCest
 	}
 
 	/**
-	 * Belt for clients that send no Fetch Metadata: e107's own iframe/dialog request
-	 * markers (here the menu manager's ?configure=) are refused by URL alone, so the
-	 * iframe layout view never becomes the return destination. The destination cookie
-	 * is never written for that sub-request (the bare login page that the bounce lands
-	 * on may still carry its own self-referential field, which is harmless).
-	 */
-	public function doesNotCaptureIframeMarkerUrl(AcceptanceTester $I)
+     * Belt for clients that send no Fetch Metadata: e107's own iframe/dialog request
+     * markers (here the menu manager's ?configure=) are refused by URL alone, so the
+     * iframe layout view never becomes the return destination. The destination cookie
+     * is never written for that sub-request (the bare login page that the bounce lands
+     * on may still carry its own self-referential field, which is harmless).
+     * @param \AcceptanceTester $I
+     */
+    public function doesNotCaptureIframeMarkerUrl($I)
 	{
 		$I->wantTo('Not capture an ?configure= iframe-marker URL as the destination');
 

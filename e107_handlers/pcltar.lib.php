@@ -60,7 +60,7 @@ if (!defined("PCL_TAR"))
   $g_pcltar_version = "1.3";
 
   // ----- Extract extension type (.php3/.php/...)
-  $g_pcltar_extension = substr(strrchr(basename($PATH_TRANSLATED), '.'), 1);
+  $g_pcltar_extension = (string) substr(strrchr(basename($PATH_TRANSLATED), '.'), 1);
 
   // ----- Include other libraries
   // This library should be called by each script before the include of PhpZip
@@ -1608,12 +1608,12 @@ if (!defined("PCL_TAR"))
         if ((substr($p_filename, 0, 2) == "./") && (substr($p_remove_dir, 0, 2) != "./"))
           $p_remove_dir = "./".$p_remove_dir;
         if ((substr($p_filename, 0, 2) != "./") && (substr($p_remove_dir, 0, 2) == "./"))
-          $p_remove_dir = substr($p_remove_dir, 2);
+          $p_remove_dir = (string) substr($p_remove_dir, 2);
       }
 
       if (substr($p_filename, 0, strlen($p_remove_dir)) == $p_remove_dir)
       {
-        $v_stored_filename = substr($p_filename, strlen($p_remove_dir));
+        $v_stored_filename = (string) substr($p_filename, strlen($p_remove_dir));
         TrFctMessage(__FILE__, __LINE__, 3, "Remove path '$p_remove_dir' in file '$p_filename' = '$v_stored_filename'");
       }
     }
@@ -1817,7 +1817,7 @@ if (!defined("PCL_TAR"))
     // ..... First part of the header
     for ($i=0; $i<148; $i++)
     {
-      $v_checksum += ord(substr($v_binary_data_first,$i,1));
+      $v_checksum += ord((string) substr($v_binary_data_first,$i,1));
     }
     // ..... Ignore the checksum value and replace it by ' ' (space)
     for ($i=148; $i<156; $i++)
@@ -1827,7 +1827,7 @@ if (!defined("PCL_TAR"))
     // ..... Last part of the header
     for ($i=156, $j=0; $i<512; $i++, $j++)
     {
-      $v_checksum += ord(substr($v_binary_data_last,$j,1));
+      $v_checksum += ord((string) substr($v_binary_data_last,$j,1));
     }
     TrFctMessage(__FILE__, __LINE__, 3, "Calculated checksum : $v_checksum");
 
@@ -2098,7 +2098,7 @@ if (!defined("PCL_TAR"))
         {
           TrFctMessage(__FILE__, __LINE__, 3, "Found path '$p_remove_path' to remove in file '$v_header[filename]'");
           // ----- Remove the path
-          $v_header[filename] = substr($v_header[filename], $p_remove_path_size);
+          $v_header[filename] = (string) substr($v_header[filename], $p_remove_path_size);
           TrFctMessage(__FILE__, __LINE__, 3, "Reslting file is '$v_header[filename]'");
         }
 
@@ -2109,7 +2109,7 @@ if (!defined("PCL_TAR"))
           while (substr($p_path, -1) == "/")
           {
             TrFctMessage(__FILE__, __LINE__, 3, "Destination path [$p_path] ends by '/'");
-            $p_path = substr($p_path, 0, -1);
+            $p_path = (string) substr($p_path, 0, -1);
             TrFctMessage(__FILE__, __LINE__, 3, "Modified to [$p_path]");
           }
 
@@ -2606,7 +2606,7 @@ if (!defined("PCL_TAR"))
         {
           TrFctMessage(__FILE__, __LINE__, 3, "Found path '$p_remove_path' to remove in file '$v_header[filename]'");
           // ----- Remove the path
-          $v_header[filename] = substr($v_header[filename], $p_remove_path_size);
+          $v_header[filename] = (string) substr($v_header[filename], $p_remove_path_size);
           TrFctMessage(__FILE__, __LINE__, 3, "Resulting file is '$v_header[filename]'");
         }
 
@@ -2617,7 +2617,7 @@ if (!defined("PCL_TAR"))
           while (substr($p_path, -1) == "/")
           {
             TrFctMessage(__FILE__, __LINE__, 3, "Destination path [$p_path] ends by '/'");
-            $p_path = substr($p_path, 0, -1);
+            $p_path = (string) substr($p_path, 0, -1);
             TrFctMessage(__FILE__, __LINE__, 3, "Modified to [$p_path]");
           }
 
@@ -3142,7 +3142,7 @@ if (!defined("PCL_TAR"))
 
       if (substr($p_file_list[$i], 0, strlen($p_remove_dir)) == $p_remove_dir)
       {
-        $v_stored_list[$i] = substr($p_file_list[$i], strlen($p_remove_dir));
+        $v_stored_list[$i] = (string) substr($p_file_list[$i], strlen($p_remove_dir));
         TrFctMessage(__FILE__, __LINE__, 3, "Remove path '$p_remove_dir' in file '$p_file_list[$i]' = '$v_stored_list[$i]'");
       }
     }
@@ -3483,7 +3483,7 @@ if (!defined("PCL_TAR"))
     // ..... First part of the header
     for ($i=0; $i<148; $i++)
     {
-      $v_checksum+=ord(substr($v_binary_data,$i,1));
+      $v_checksum+=ord((string) substr($v_binary_data,$i,1));
     }
     // ..... Ignore the checksum value and replace it by ' ' (space)
     for ($i=148; $i<156; $i++)
@@ -3493,7 +3493,7 @@ if (!defined("PCL_TAR"))
     // ..... Last part of the header
     for ($i=156; $i<512; $i++)
     {
-      $v_checksum+=ord(substr($v_binary_data,$i,1));
+      $v_checksum+=ord((string) substr($v_binary_data,$i,1));
     }
     TrFctMessage(__FILE__, __LINE__, 3, "Calculated checksum : $v_checksum");
 

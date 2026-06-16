@@ -157,12 +157,12 @@ class private_message
 
 			$pm_subject = trim($tp->toDB($vars['pm_subject']));
 			$pm_message = trim($tp->toDB($vars['pm_message']));
-			
+
 			if (!$pm_subject && !$pm_message && !$attachlist)
 			{  // Error - no subject, no message body and no uploaded files
 				return LAN_PM_65;
 			}
-			
+
 			// Most of the pm info is fixed - just need to set the 'to' user on each send
 			$info = array(
 				'pm_from' => $vars['from_id'],

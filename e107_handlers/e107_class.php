@@ -1948,6 +1948,17 @@ class e107
                 "Error message: " .
                 $e->getMessage()
             );
+        } catch (\Exception $e) {
+            // TODO: LAN
+            self::getMessage()->addWarning(
+                "The core integrity image is corrupt. " .
+                "File Inspector will be inoperative. " .
+                "Resolve this issue by uploading a good copy of the core image to " .
+                escapeshellarg($fileInspectorPath) . ". " .
+                "If uploading with FTP, use binary transfer mode. " .
+                "Error message: " .
+                $e->getMessage()
+            );
         }
 
         return $fileInspector;
@@ -3020,7 +3031,7 @@ class e107
 		$filename = $addonName; // e.g. 'e_cron';
 		if(!$className)
 		{
-			$className = substr($filename, 2); // remove 'e_'
+			$className = (string) substr($filename, 2); // remove 'e_'
 		}
 
 		$elist = self::getPref($filename.'_list');
@@ -4959,7 +4970,7 @@ class e107
 	 * @param string $parent Internal use only. Used to build the $query array key for nested items.
 	 * @return string A rawurlencoded string which can be used as or appended to the URL query string.
 	 */
-	public static function httpBuildQuery(array $query, $parent = '')
+	public static function httpBuildQuery($query, $parent = '')
 	{
 		$params = array();
 
@@ -5220,14 +5231,14 @@ class e107
 			str_replace(
 				array('ajax_used=1', '&&'),
 				array('', '&'),
-				($_SERVER['QUERY_STRING'] ?? '')
+				(isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '')
 			), '&');
 
 
 		// If url contains a .php in it, PHP_SELF is set wrong (imho), affecting all paths.  We need to 'fix' it if it does.
-		$_SERVER['PHP_SELF'] = (($pos = stripos($_SERVER['PHP_SELF'], '.php')) !== false ? substr($_SERVER['PHP_SELF'], 0, $pos+4) : $_SERVER['PHP_SELF']);
-		$_SERVER['SERVER_NAME'] = $_SERVER['SERVER_NAME'] ?? '';
-		$_SERVER['HTTP_HOST'] = $_SERVER['HTTP_HOST'] ?? '';
+		$_SERVER['PHP_SELF'] = (($pos = stripos($_SERVER['PHP_SELF'], '.php')) !== false ? (string) substr($_SERVER['PHP_SELF'], 0, $pos+4) : $_SERVER['PHP_SELF']);
+		$_SERVER['SERVER_NAME'] = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '';
+		$_SERVER['HTTP_HOST'] = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
 		// Prefer the client `Host` header so a non-standard port survives into
 		// every URL built from HTTP_HOST (form actions, SITEURL, redirects); a
 		// malformed/crafted Host falls back to SERVER_NAME. See resolveHttpHost().
@@ -5712,7 +5723,7 @@ class e107
 	function fix_windows_paths($path)
 	{
 		$fixed_path = str_replace(array('\\\\', '\\'), array('/', '/'), $path);
-		$fixed_path = (substr($fixed_path, 1, 2) === ":/" ? substr($fixed_path, 2) : $fixed_path);
+		$fixed_path = ((string) substr($fixed_path, 1, 2) === ":/" ? (string) substr($fixed_path, 2) : $fixed_path);
 		return $fixed_path;
 	}
 
@@ -5881,7 +5892,7 @@ class e107
 
 		if(!deftrue('e_SINGLE_ENTRY') && !deftrue('e_SELF_OVERRIDE') )
 		{
-			$page = substr(strrchr($_SERVER['PHP_SELF'], '/'), 1);
+			$page = (string) substr(strrchr($_SERVER['PHP_SELF'], '/'), 1);
 
 			if(!empty($_SERVER['_']) && self::isCli())
 			{
@@ -5917,8 +5928,8 @@ class e107
 
 		if ($isPluginDir)
 		{
-			$temp = substr($e107Path, strpos($e107Path, '/') +1);
-			$plugDir = substr($temp, 0, strpos($temp, '/'));
+			$temp = (string) substr($e107Path, strpos($e107Path, '/') +1);
+			$plugDir = (string) substr($temp, 0, strpos($temp, '/'));
 			define('e_CURRENT_PLUGIN', rtrim($plugDir,'/'));
 			define('e_PLUGIN_DIR', e_PLUGIN.e_CURRENT_PLUGIN.'/');
 			define('e_PLUGIN_DIR_ABS', e_PLUGIN_ABS.e_CURRENT_PLUGIN.'/');
@@ -6100,7 +6111,7 @@ class e107
 			}
 
 			if($httpHost === $allowedHost
-				|| substr($httpHost, -strlen('.' . $allowedHost)) === '.' . $allowedHost)
+				|| (string) substr($httpHost, -strlen('.' . $allowedHost)) === '.' . $allowedHost)
 			{
 				return true;
 			}
@@ -6898,7 +6909,7 @@ class e107
 	 * @param array $sqlinfo
 	 * @return void
 	 */
-	private function setMySQLConfig($sqlinfo): void
+	private function setMySQLConfig($sqlinfo)
 	{
 		if(!empty($sqlinfo['server']))
 		{
@@ -6950,7 +6961,7 @@ interface e_admin_addon_interface
 	 * @param e_admin_ui $ui admin-ui object
 	 * @return array
 	 */
-	public function config(e_admin_ui $ui);
+	public function config($ui);
 
 
 	/**
@@ -6958,7 +6969,7 @@ interface e_admin_addon_interface
 	 * @param e_admin_ui $ui admin-ui object
 	 * @param int $id
 	 */
-	public function process(e_admin_ui $ui, $id=0);
+	public function process($ui, $id=0);
 
 
 

@@ -72,7 +72,7 @@ abstract class Base extends \Codeception\Module
 	 *
 	 * @param \Codeception\TestInterface $test
 	 */
-	public function _before(?\Codeception\TestInterface $test = null)
+	public function _before($test = null)
 	{
 		$this->_callbackDeployerStarted();
 	}

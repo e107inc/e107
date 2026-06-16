@@ -86,14 +86,14 @@ class user_class
 				e_UC_BOTS      => UC_LAN_10,
 		//		e_UC_MODS      => UC_LAN_7 // specific to Forum plugin
 		);
-							
-		
+
+
 
 		$this->text_class_link = array('public' => e_UC_PUBLIC, 'guest' => e_UC_GUEST, 'nobody' => e_UC_NOBODY, 'member' => e_UC_MEMBER,
 									'admin' => e_UC_ADMIN, 'main' => e_UC_MAINADMIN, 'new' => e_UC_NEWUSER,/* 'mods' => e_UC_MODS,*/
 									'bots' => e_UC_BOTS, 'readonly' => e_UC_READONLY);
-									
-		
+
+
 
 		$this->readTree(TRUE);			// Initialise the classes on entry
 	}
@@ -825,16 +825,16 @@ class user_class
 	public function checkbox($treename, $classnum, $current_value, $nest_level, $opt_options = '')
 	{
 		$frm = e107::getForm();
-		
+
 		$classIndex 		= abs($classnum);			// Handle negative class values
 		$classSign 			= (strpos($classnum, '-') === 0) ? '-' : '';
-		
+
 		if ($classIndex == e_UC_BLANK)  return '';
-		
+
 		$tmp 				= explode(',',$current_value);
 		$chk 				= in_array($classnum, $tmp) ? " checked='checked'" : '';
 		$style				= "";
-		
+
 		if ($nest_level == 0)
 		{
 			$style = " style='font-weight:bold'";
@@ -843,14 +843,14 @@ class user_class
 		{
 			$style = " style='text-indent:".(1.2 * $nest_level)."em'";
 		}
-		
+
 		$ucString = $this->class_tree[$classIndex]['userclass_name'];
-		
+
 		if ($classSign == '-')
 		{
 			$ucString = str_replace('[x]', $ucString, UC_LAN_INVERT);
 		}
-		
+
 		$checked = in_array($classnum, $tmp) ? true : false;
 
 		$pre = "<div {$style}>";
@@ -863,8 +863,8 @@ class user_class
 		}
 
 		return $pre.$frm->checkbox($treename.'[]',$classSign.$classIndex, $checked, array('label'=> $ucString)).$post;
-		
-		
+
+
 	//	return "<div {$style}><input type='checkbox' class='checkbox' name='{$treename}[]' id='{$treename}_{$classSign}{$classIndex}' value='{$classSign}{$classIndex}'{$chk} />".$ucString."</div>\n";
 	}
 
@@ -877,12 +877,12 @@ class user_class
 	{
 		$classIndex = abs($classnum);			// Handle negative class values
 		$classSign = (strpos($classnum, '-') === 0) ? '-' : '';
-		
+
 		if ($classIndex == e_UC_BLANK)  return '';
-		
+
 		$tmp = explode(',',$current_value);
 		$chk = in_array($classnum, $tmp) ? " checked='checked'" : '';
-		
+
 		if ($nest_level == 0)
 		{
 			$style = " style='font-weight:bold'";
@@ -891,16 +891,16 @@ class user_class
 		{
 			$style = " style='text-indent:".(0.3 * $nest_level)."em'";
 		}
-		
+
 		$id = "{$treename}_{$classnum}";
-		
+
 		$ucString = $this->class_tree[$classIndex]['userclass_name'];
-		
+
 		if ($classSign == '-')
 		{
 			$ucString = str_replace('[x]', $ucString, UC_LAN_INVERT);
 		}
-	
+
 		$description = $ucString.'  ('.$this->class_tree[$classIndex]['userclass_description'].")";
 
 		$id ="{$treename}_{$classSign}{$classnum}";
@@ -915,7 +915,7 @@ class user_class
 		}
 
 		return $pre.e107::getForm()->checkbox($treename.'[]', $classnum , $chk, array("id"=>$id,'label'=>$description)).$post;
-		
+
 	//	return "<div {$style}><input type='checkbox' class='checkbox' name='{$treename}[]' id='{$treename}_{$classSign}{$classnum}' value='{$classSign}{$classnum}'{$chk} />".$this->class_tree[$classIndex]['userclass_name'].'  ('.$this->class_tree[$classIndex]['userclass_description'].")</div>\n";
 	}
 
@@ -1921,14 +1921,14 @@ class user_class_admin extends user_class
 	public function queryCanEditClass($classID, $classList = USERCLASS_LIST)
 	{
 		if (!isset($this->class_tree[$classID])) return 0;			// Class doesn't exist - no hope of editing!
-		
+
 		$blockers = array(e_UC_PUBLIC => 1, e_UC_READONLY => 1, e_UC_NOBODY => 1, e_UC_GUEST => 1);
 		if (isset($blockers[$classID])) return 0;					// Don't allow edit of some fixed classes
 
 		$canEdit = $this->isAdmin;
 		$possibles = array_flip(explode(',',$classList));
 		if (isset($possibles[$this->class_tree[$classID]['userclass_editclass']])) $canEdit = TRUE;
-		
+
 		if (!$canEdit) return 0;
 
 		if (($classID >= e_UC_SPECIAL_BASE) && ($classID <= e_UC_SPECIAL_END)) return  1;	// Restricted edit of fixed classes

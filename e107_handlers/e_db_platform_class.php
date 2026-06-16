@@ -63,7 +63,7 @@ interface e_db_platform
 	 * @param string[] $placeholders Bound-parameter placeholders, one per column.
 	 * @return string SQL statement.
 	 */
-	public function compileReplace($quotedTable, array $columns, array $placeholders);
+	public function compileReplace($quotedTable, $columns, $placeholders);
 
 	/**
 	 * Build an INSERT statement for one or more pre-built VALUES tuples,
@@ -76,7 +76,7 @@ interface e_db_platform
 	 * @param string $modifier '' or 'IGNORE'.
 	 * @return string SQL statement.
 	 */
-	public function compileInsert($quotedTable, array $columns, array $tuples, $modifier = '');
+	public function compileInsert($quotedTable, $columns, $tuples, $modifier = '');
 
 	/**
 	 * Build an "insert, or update the given columns on a key collision"
@@ -89,7 +89,7 @@ interface e_db_platform
 	 *                 (see {@see e_db_platform::getUpsertValueReference()}).
 	 * @return string SQL statement.
 	 */
-	public function compileUpsert($quotedTable, array $columns, array $tuples, array $updateAssignments);
+	public function compileUpsert($quotedTable, $columns, $tuples, $updateAssignments);
 
 	/**
 	 * How this dialect refers, in the upsert UPDATE list, to the value that was
@@ -126,7 +126,7 @@ interface e_db_platform
 	 * @param string $modifier '' or 'IGNORE'.
 	 * @return string SQL statement.
 	 */
-	public function compileInsertSelect($quotedTable, array $columns, $selectSql, $modifier = '');
+	public function compileInsertSelect($quotedTable, $columns, $selectSql, $modifier = '');
 
 	/**
 	 * Expression that selects rows at random for ORDER BY (e.g. MySQL's RAND()).
@@ -181,7 +181,7 @@ interface e_db_platform
 	 * @param string $placeholder Bound parameter holding the search terms.
 	 * @return string
 	 */
-	public function compileFullText(array $quotedColumns, $placeholder);
+	public function compileFullText($quotedColumns, $placeholder);
 }
 
 
@@ -245,9 +245,11 @@ class e_db_platform_mysql implements e_db_platform
 	}
 
 	/**
-	 * @return string
-	 */
-	public function compileReplace($quotedTable, array $columns, array $placeholders)
+     * @return string
+     * @param mixed[] $columns
+     * @param mixed[] $placeholders
+     */
+    public function compileReplace($quotedTable, $columns, $placeholders)
 	{
 		return 'REPLACE INTO '.$quotedTable
 			.' ('.implode(', ', $columns).')'
@@ -255,9 +257,11 @@ class e_db_platform_mysql implements e_db_platform
 	}
 
 	/**
-	 * @return string
-	 */
-	public function compileInsert($quotedTable, array $columns, array $tuples, $modifier = '')
+     * @return string
+     * @param mixed[] $columns
+     * @param mixed[] $tuples
+     */
+    public function compileInsert($quotedTable, $columns, $tuples, $modifier = '')
 	{
 		$verb = ($modifier === 'IGNORE') ? 'INSERT IGNORE INTO' : 'INSERT INTO';
 
@@ -267,9 +271,12 @@ class e_db_platform_mysql implements e_db_platform
 	}
 
 	/**
-	 * @return string
-	 */
-	public function compileUpsert($quotedTable, array $columns, array $tuples, array $updateAssignments)
+     * @return string
+     * @param mixed[] $columns
+     * @param mixed[] $tuples
+     * @param mixed[] $updateAssignments
+     */
+    public function compileUpsert($quotedTable, $columns, $tuples, $updateAssignments)
 	{
 		return 'INSERT INTO '.$quotedTable
 			.' ('.implode(', ', $columns).')'
@@ -302,9 +309,10 @@ class e_db_platform_mysql implements e_db_platform
 	}
 
 	/**
-	 * @return string
-	 */
-	public function compileInsertSelect($quotedTable, array $columns, $selectSql, $modifier = '')
+     * @return string
+     * @param mixed[] $columns
+     */
+    public function compileInsertSelect($quotedTable, $columns, $selectSql, $modifier = '')
 	{
 		$verb = ($modifier === 'IGNORE') ? 'INSERT IGNORE INTO' : 'INSERT INTO';
 		$cols = (count($columns) > 0) ? ' ('.implode(', ', $columns).')' : '';
@@ -366,9 +374,10 @@ class e_db_platform_mysql implements e_db_platform
 	}
 
 	/**
-	 * @return string
-	 */
-	public function compileFullText(array $quotedColumns, $placeholder)
+     * @return string
+     * @param mixed[] $quotedColumns
+     */
+    public function compileFullText($quotedColumns, $placeholder)
 	{
 		return 'MATCH ('.implode(', ', $quotedColumns).') AGAINST ('.$placeholder.')';
 	}

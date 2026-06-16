@@ -796,7 +796,7 @@ class e_db_query
 	 * @param Closure $callback Receives a fresh builder.
 	 * @return e_db_query $this
 	 */
-	public function whereNot(Closure $callback)
+	public function whereNot($callback)
 	{
 		return $this->_appendWhere('AND', 'NOT ('.$this->_buildGroup($callback).')');
 	}
@@ -807,7 +807,7 @@ class e_db_query
 	 * @param Closure $callback
 	 * @return e_db_query $this
 	 */
-	public function orWhereNot(Closure $callback)
+	public function orWhereNot($callback)
 	{
 		return $this->_appendWhere('OR', 'NOT ('.$this->_buildGroup($callback).')');
 	}
@@ -1452,7 +1452,7 @@ class e_db_query
 	 * @return e_db_query $this
 	 * @throws InvalidArgumentException when a column name fails validation.
 	 */
-	public function values(array $values)
+	public function values($values)
 	{
 		if($this->_isListOfRows($values))
 		{
@@ -1514,7 +1514,7 @@ class e_db_query
 	 * @return int|string|bool the last insert id, or false on error.
 	 * @throws InvalidArgumentException when a column name fails validation.
 	 */
-	public function insertGetId(array $values)
+	public function insertGetId($values)
 	{
 		$this->values($values);
 
@@ -1640,7 +1640,7 @@ class e_db_query
 	 * @return e_db_query $this
 	 * @throws InvalidArgumentException when no table is set or an identifier fails validation.
 	 */
-	public function upsert(array $values, $uniqueBy, $update = null)
+	public function upsert($values, $uniqueBy, $update = null)
 	{
 		if($this->table === null)
 		{
@@ -1695,7 +1695,7 @@ class e_db_query
 	 * @return int|bool affected rows, or 0 when an existing row needs no change.
 	 * @throws InvalidArgumentException when no table is set.
 	 */
-	public function updateOrInsert(array $attributes, array $values = array())
+	public function updateOrInsert($attributes, $values = array())
 	{
 		if($this->table === null)
 		{
@@ -1748,7 +1748,7 @@ class e_db_query
 	 * @return e_db_query $this
 	 * @throws InvalidArgumentException when an identifier fails validation.
 	 */
-	public function increment($column, $amount = 1, array $extra = array())
+	public function increment($column, $amount = 1, $extra = array())
 	{
 		return $this->_incDec($column, '+', $amount, $extra);
 	}
@@ -1763,7 +1763,7 @@ class e_db_query
 	 * @return e_db_query $this
 	 * @throws InvalidArgumentException when an identifier fails validation.
 	 */
-	public function decrement($column, $amount = 1, array $extra = array())
+	public function decrement($column, $amount = 1, $extra = array())
 	{
 		return $this->_incDec($column, '-', $amount, $extra);
 	}
@@ -2108,7 +2108,7 @@ class e_db_query
 
 		if(substr($expression, -2) === '.*')
 		{
-			$quoted = $this->db->quoteIdentifier(substr($expression, 0, -2));
+			$quoted = $this->db->quoteIdentifier((string) substr($expression, 0, -2));
 
 			if($quoted !== false)
 			{
@@ -3018,7 +3018,7 @@ class e_db_expr
 	 * @param array $values
 	 * @return string SQL fragment
 	 */
-	public function in($column, array $values)
+	public function in($column, $values)
 	{
 		return $this->_inList($column, $values, 'IN', '1=0');
 	}
@@ -3031,7 +3031,7 @@ class e_db_expr
 	 * @param array $values
 	 * @return string SQL fragment
 	 */
-	public function notIn($column, array $values)
+	public function notIn($column, $values)
 	{
 		return $this->_inList($column, $values, 'NOT IN', '1=1');
 	}

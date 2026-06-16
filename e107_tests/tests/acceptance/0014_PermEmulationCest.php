@@ -12,12 +12,18 @@ class PermEmulationCest
 	const STOP_ROUTE = '/e107_admin/users.php?mode=main&action=emulatestop';
 	const BANNER_MARKER = 'admin-icon-emulation';
 
-	public function _before(AcceptanceTester $I)
+	/**
+     * @param \AcceptanceTester $I
+     */
+    public function _before($I)
 	{
 		$I->loginAsAdmin();
 	}
 
-	public function emulationAppliesAndStopRouteEscapesLowPerms(AcceptanceTester $I)
+	/**
+     * @param \AcceptanceTester $I
+     */
+    public function emulationAppliesAndStopRouteEscapesLowPerms($I)
 	{
 		$I->wantTo('Emulate a low-perm admin, see the banner, get denied on prefs.php, then stop from the banner route');
 
@@ -67,7 +73,10 @@ class PermEmulationCest
 		$I->seeInCurrentUrl('prefs.php');
 	}
 
-	public function startRejectsForgedRequestWithoutToken(AcceptanceTester $I)
+	/**
+     * @param \AcceptanceTester $I
+     */
+    public function startRejectsForgedRequestWithoutToken($I)
 	{
 		$I->wantTo('Reject an emulation-start POST that omits the e-token');
 
@@ -83,7 +92,10 @@ class PermEmulationCest
 		$I->dontSeeInSource(self::BANNER_MARKER);
 	}
 
-	public function startRefusesMainAdminTarget(AcceptanceTester $I)
+	/**
+     * @param \AcceptanceTester $I
+     */
+    public function startRefusesMainAdminTarget($I)
 	{
 		$I->wantTo('Refuse to emulate a main administrator');
 

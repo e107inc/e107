@@ -133,20 +133,20 @@ class e107Test extends \Codeception\Test\Unit
 			        </div><!--/.navbar-collapse -->
 			      </div>
 			    </div>
-			
+
 			<!--- Optional custom header template controlled by theme_shortcodes -->
 			{---HEADER---}
-			
+
 			<!-- Page Content -->
 			{---LAYOUT---}
-			
+
 			<!-- Footer --> 
-			
+
 			{SETSTYLE=default}
 			<footer>
 				<div class="container">
 					<div class="row">
-			
+
 						<div>
 							<div class="col-lg-6">
 								{MENU=100}
@@ -155,23 +155,23 @@ class e107Test extends \Codeception\Test\Unit
 								{MENU=101}
 							</div>
 						</div>
-			
+
 						<div>
 							<div class="col-sm-12 col-lg-4">
 								{MENU=102}
 							</div>
-			
+
 							<div class="col-sm-12 col-lg-8">
 								{MENU=103}
 							</div>
 						</div>
-			
+
 						<div >
 							<div class="col-lg-12">
 								{MENU=104}
 							</div>
 						</div>
-			
+
 						<div>
 							<div class="col-lg-6">
 								{MENU=105}
@@ -182,28 +182,28 @@ class e107Test extends \Codeception\Test\Unit
 								{BOOTSTRAP_USERNAV: placement=bottom&dir=up}
 							</div>
 						</div>
-			
+
 						<div>
 							<div class="col-lg-12">
-					
+
 							</div>
 						</div>
-			
+
 						<div>
 							<div id="sitedisclaimer" class="col-lg-12 text-center">
 								<small >{SITEDISCLAIMER}</small>
 							</div>
 						</div>
-			
+
 					</div>	 <!-- /row -->
 				</div> <!-- /container -->
 			</footer>
-			
+
 			{---MODAL---}
 			<!--- Optional custom footer template controlled by theme_shortcodes -->
 			{---FOOTER---}
-			
-			
+
+
 			<!-- Javascripts and other information are automatically added below here -->
 			</body> <!-- This tag is not necessary and is ignored and replaced. Left here only as a reference -->';
 
@@ -2465,10 +2465,11 @@ class e107Test extends \Codeception\Test\Unit
 	{
 
 		$file_content = <<<PHP
-    <?php
-    define('TEST_LAN_OLD', 'Old Style Test');
-    define('TEST_LAN_ANOTHER', 'Another Value');
-    PHP;
+<?php
+define('TEST_LAN_OLD', 'Old Style Test');
+define('TEST_LAN_ANOTHER', 'Another Value');
+PHP
+;
 
 		$path = $this->createTempLanguageFile($file_content, 'English', 'lan_test_old');
 
@@ -2501,12 +2502,13 @@ class e107Test extends \Codeception\Test\Unit
 	{
 
 		$file_content = <<<PHP
-    <?php
-    return [
-        'TEST_LAN_NEW_STYLE' => 'New Style Test',
-        'TEST_LAN_ANOTHER_NEW' => 'Another New Value'
-    ];
-    PHP;
+<?php
+return [
+'TEST_LAN_NEW_STYLE' => 'New Style Test',
+'TEST_LAN_ANOTHER_NEW' => 'Another New Value'
+];
+PHP
+;
 
 		$path = $this->createTempLanguageFile($file_content, 'English', 'lan_test_new');
 
@@ -2530,23 +2532,25 @@ class e107Test extends \Codeception\Test\Unit
 	{
 
 		$english_content = <<<PHP
-    <?php
-    return [
-        'TEST_LAN_FALLBACK' => 'English Fallback',
-        'TEST_LAN_SHARED' => 'Shared Value',
-        'TEST_LAN_ENGLISH_ONLY' => 'English Only'
-    ];
-    PHP;
+<?php
+return [
+'TEST_LAN_FALLBACK' => 'English Fallback',
+'TEST_LAN_SHARED' => 'Shared Value',
+'TEST_LAN_ENGLISH_ONLY' => 'English Only'
+];
+PHP
+;
 		$english_path = $this->createTempLanguageFile($english_content, 'English', 'lan_test_fallback', 'e107_plugins/testplugin/languages/');
 
 		$spanish_content = <<<PHP
-    <?php
-    return [
-        'TEST_LAN_FALLBACK' => 'Spanish Override',
-        'TEST_LAN_SHARED' => 'Spanish Shared'
-        // TEST_LAN_ENGLISH_ONLY missing
-    ];
-    PHP;
+<?php
+return [
+'TEST_LAN_FALLBACK' => 'Spanish Override',
+'TEST_LAN_SHARED' => 'Spanish Shared'
+// TEST_LAN_ENGLISH_ONLY missing
+];
+PHP
+;
 		$spanish_path = $this->createTempLanguageFile($spanish_content, 'Spanish', 'lan_test_fallback', 'e107_plugins/testplugin/languages/');
 
 		// Load Spanish first to define constants, then English as fallback
@@ -2572,23 +2576,25 @@ class e107Test extends \Codeception\Test\Unit
 	{
 
 		$english_content = <<<PHP
-    <?php
-    return [
-        'TEST_LAN_CUSTOM' => 'English Custom',
-        'TEST_LAN_SHARED_CUSTOM' => 'Shared Custom',
-        'TEST_LAN_ENGLISH_ONLY_CUSTOM' => 'English Only Custom'
-    ];
-    PHP;
+<?php
+return [
+'TEST_LAN_CUSTOM' => 'English Custom',
+'TEST_LAN_SHARED_CUSTOM' => 'Shared Custom',
+'TEST_LAN_ENGLISH_ONLY_CUSTOM' => 'English Only Custom'
+];
+PHP
+;
 		$english_path = $this->createTempLanguageFile($english_content, 'English', 'Spanish_global', 'folder/');
 
 		$spanish_content = <<<PHP
-    <?php
-    return [
-        'TEST_LAN_CUSTOM' => 'Spanish Custom Override',
-        'TEST_LAN_SHARED_CUSTOM' => 'Spanish Shared Custom'
-        // TEST_LAN_ENGLISH_ONLY_CUSTOM missing
-    ];
-    PHP;
+<?php
+return [
+'TEST_LAN_CUSTOM' => 'Spanish Custom Override',
+'TEST_LAN_SHARED_CUSTOM' => 'Spanish Shared Custom'
+// TEST_LAN_ENGLISH_ONLY_CUSTOM missing
+];
+PHP
+;
 		$spanish_path = $this->createTempLanguageFile($spanish_content, 'Spanish', 'Spanish_global', 'folder/');
 
 		// Load Spanish first to define constants, then English as fallback
@@ -2614,23 +2620,25 @@ class e107Test extends \Codeception\Test\Unit
 	{
 
 		$english_content = <<<PHP
-    <?php
-    return [
-        'TEST_LAN_DIRECT' => 'English Direct',
-        'TEST_LAN_SHARED_DIRECT' => 'Shared Direct',
-        'TEST_LAN_ENGLISH_ONLY_DIRECT' => 'English Only Direct'
-    ];
-    PHP;
+<?php
+return [
+'TEST_LAN_DIRECT' => 'English Direct',
+'TEST_LAN_SHARED_DIRECT' => 'Shared Direct',
+'TEST_LAN_ENGLISH_ONLY_DIRECT' => 'English Only Direct'
+];
+PHP
+;
 		$english_path = $this->createTempLanguageFile($english_content, 'English', 'lan_test_direct', 'e107_plugins/testplugin/languages/');
 
 		$spanish_content = <<<PHP
-    <?php
-    return [
-        'TEST_LAN_DIRECT' => 'Spanish Direct Override',
-        'TEST_LAN_SHARED_DIRECT' => 'Spanish Shared Direct'
-        // TEST_LAN_ENGLISH_ONLY_DIRECT missing
-    ];
-    PHP;
+<?php
+return [
+'TEST_LAN_DIRECT' => 'Spanish Direct Override',
+'TEST_LAN_SHARED_DIRECT' => 'Spanish Shared Direct'
+// TEST_LAN_ENGLISH_ONLY_DIRECT missing
+];
+PHP
+;
 		$spanish_path = $this->createTempLanguageFile($spanish_content, 'Spanish', 'lan_test_direct', 'e107_plugins/testplugin/languages/');
 
 		// Use ReflectionClass to access private static method
@@ -2660,21 +2668,23 @@ class e107Test extends \Codeception\Test\Unit
 	{
 
 		$english_content = <<<PHP
-    <?php
-    return [
-        'TEST_LAN_SPANISH_ENGLISH_FALLBACK_EN' => 'English Fallback',
-        'TEST_LAN_SHARED_SPANISH_ENGLISH_EN' => 'Shared English Value',
-        'TEST_LAN_ENGLISH_ONLY_SPANISH_ENGLISH' => 'English Only'
-    ];
-    PHP;
+<?php
+return [
+'TEST_LAN_SPANISH_ENGLISH_FALLBACK_EN' => 'English Fallback',
+'TEST_LAN_SHARED_SPANISH_ENGLISH_EN' => 'Shared English Value',
+'TEST_LAN_ENGLISH_ONLY_SPANISH_ENGLISH' => 'English Only'
+];
+PHP
+;
 		$english_path = $this->createTempLanguageFile($english_content, 'English', 'lan_test_spanish_fallback', 'e107_plugins/testplugin/languages/');
 
 		$spanish_content = <<<PHP
-    <?php
-    define('TEST_LAN_SPANISH_ENGLISH_FALLBACK_ES', 'Spanish Override');
-    define('TEST_LAN_SHARED_SPANISH_ENGLISH_ES', 'Spanish Shared');
-    // TEST_LAN_ENGLISH_ONLY_SPANISH_ENGLISH not defined
-    PHP;
+<?php
+define('TEST_LAN_SPANISH_ENGLISH_FALLBACK_ES', 'Spanish Override');
+define('TEST_LAN_SHARED_SPANISH_ENGLISH_ES', 'Spanish Shared');
+// TEST_LAN_ENGLISH_ONLY_SPANISH_ENGLISH not defined
+PHP
+;
 		$spanish_path = $this->createTempLanguageFile($spanish_content, 'Spanish', 'lan_test_spanish_fallback', 'e107_plugins/testplugin/languages/');
 
 		// Load Spanish first (old-style), then English as fallback (array)

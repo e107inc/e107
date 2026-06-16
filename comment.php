@@ -315,13 +315,13 @@ if ($redirectFlag)
 		$plugin_redir = TRUE;
 		$reply_location = str_replace('{NID}', $redirectFlag, $e_comment[$table]['reply_location']);
 	}
-	
+
 	if ($plugin_redir)
 	{
 		echo "<script>document.location.href='{$reply_location}'</script>\n";
 		exit;
 	}
-	
+
 	// No redirect found if we get here.
 }
 

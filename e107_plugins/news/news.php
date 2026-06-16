@@ -620,8 +620,8 @@ class news_front
 			case "month":
 				$item = intval($this->subAction).'20000101';
 				$year = substr($item, 0, 4);
-				$month = substr($item, 4,2);
-				$day = substr($item, 6, 2);
+				$month = (string) substr($item, 4,2);
+				$day = (string) substr($item, 6, 2);
 
 				$unix = strtotime($year.'-'.$month.'-'.$day);
 
@@ -1557,13 +1557,13 @@ class news_front
 			case "day" :
 				$item = $tp -> toDB($this->subAction).'20000101';
 				$year = substr($item, 0, 4);
-				$month = substr($item, 4,2);
+				$month = (string) substr($item, 4,2);
 
 
 
 				if ($this->action == 'day')
 				{
-					$day = substr($item, 6, 2);
+					$day = (string) substr($item, 6, 2);
 					$lastday = $day;
 					$startdate = mktime(0, 0, 0, $month, $day, $year);
 				}

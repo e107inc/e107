@@ -96,17 +96,17 @@ class newsfeedClass
 			while ($row = $sql->fetch())
 			{
 				$nfID = $row['newsfeed_id'];
-				
+
 				if (!empty($row['newsfeed_data']))
 				{
 					$this->newsList[$nfID]['newsfeed_data'] = $row['newsfeed_data'];		// Pull out the actual news - might as well since we're here
 
-					
+
 					unset($row['newsfeed_data']);			// Don't keep this in memory twice!
 				}
 
 				$this->newsList[$nfID]['newsfeed_timestamp'] = $row['newsfeed_timestamp'];
-				
+
 				$this->feedList[$nfID] = $row;						// Put the rest into the feed data
 			}
 			$this->validFeedList = TRUE;
@@ -315,7 +315,7 @@ class newsfeedClass
 				if (($rss = $this->getFeed($nfID)))	// Call ensures that feed is updated if necessary
 				{
 					list($newsfeed_image, $newsfeed_showmenu, $newsfeed_showmain) = explode("::", $feed['newsfeed_image']);
-					
+
 					$numtoshow = intval($where == 'main' ? $newsfeed_showmain : $newsfeed_showmenu);
 					$numtoshow = ($numtoshow > 0 ? $numtoshow : 999);
 
@@ -326,7 +326,7 @@ class newsfeedClass
 					$vars['FEEDDESCRIPTION'] = $feed['newsfeed_description'];
 					$vars['FEEDIMAGE'] = $rss['newsfeed_image_link'];
 					$vars['FEEDLANGUAGE'] = $rss['channel']['language'];
-					
+
 					if($rss['channel']['lastbuilddate'])
 					{
 						$pubbed = $rss['channel']['lastbuilddate'];
@@ -359,9 +359,9 @@ class newsfeedClass
 					{
 						$vars['LINKTOMAIN'] = "";
 					}
-	
+
 					$data = "";
-	
+
 					$numtoshow = min($numtoshow, count($rss['items']));
 					$i = 0;
 					while($i < $numtoshow)
@@ -369,12 +369,12 @@ class newsfeedClass
 						$item = $rss['items'][$i];
 
 
-						
+
 						$vars['FEEDITEMLINK']       = "<a href='".$item['link']."' rel='external'>".$tp -> toHTML($item['title'], FALSE)."</a>\n";
 						$vars['FEEDITEMLINK']       = str_replace('&', '&amp;', $vars['FEEDITEMLINK']);
 						$feeditemtext               = preg_replace("#\[[a-z0-9=]+\]|\[\/[a-z]+\]|\{[A-Z_]+\}#si", "", strip_tags($item['description']));
 						$vars['FEEDITEMCREATOR']    = $tp -> toHTML(vartrue($item['author']), FALSE);
-						
+
 						if ($where == 'main')
 						{
 							if(!empty($NEWSFEED_COLLAPSE))

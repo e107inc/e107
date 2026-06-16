@@ -3,16 +3,25 @@
 
 class UserSignupCest
 {
-	public function _before(AcceptanceTester $I)
+	/**
+     * @param \AcceptanceTester $I
+     */
+    public function _before($I)
 	{
 	}
 
-	public function _after(AcceptanceTester $I)
+	/**
+     * @param \AcceptanceTester $I
+     */
+    public function _after($I)
 	{
 	}
 
 	// tests
-	public function testUserSignupSimulation(AcceptanceTester $I)
+    /**
+     * @param \AcceptanceTester $I
+     */
+    public function testUserSignupSimulation($I)
 	{
 		// first login as admin ( to simulate without emails going out).
 		$I->amOnPage('/login.php');

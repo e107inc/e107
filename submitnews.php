@@ -140,7 +140,7 @@ class submitNews
 							$filename = $uploaded[$c]['name'];
 							$filetype = $uploaded[$c]['type'];
 							$filesize = $uploaded[$c]['size'];
-							$fileext  = substr(strrchr($filename, "."), 1);
+							$fileext  = (string) substr(strrchr($filename, "."), 1);
 
 							$today = getdate();
 

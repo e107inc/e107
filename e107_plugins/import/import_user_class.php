@@ -168,7 +168,7 @@ class user_import
 				{
 					e107::getMessage()->addDebug("Removing user-field due to missing user-extended field {$k} ");	
 				}			
-				
+
 				unset($userRecord[$k]);			// And always delete from the original data record
 			}
 		}
@@ -201,7 +201,7 @@ class user_import
 				e107::getMessage()->addDebug("Failed userMandatory on {$k}");
 				return 3;
 			}
-			
+
 			//if (strlen($userRecord[$k]) < 3)
 		//	{
 			//	e107::getMessage()->addDebug("Failed userMandatory length on {$k}");

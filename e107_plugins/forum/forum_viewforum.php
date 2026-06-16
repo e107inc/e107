@@ -218,7 +218,7 @@ function init()
 	$forumInfo['forum_name'] = $tp->toHTML($forumInfo['forum_name'], true, 'no_hook, emotes_off');
 	$forumInfo['forum_description'] = $tp->toHTML($forumInfo['forum_description'], true, 'no_hook');
 
-	$_forum_name = (substr($forumInfo['forum_name'], 0, 1) == '*' ? substr($forumInfo['forum_name'], 1) : $forumInfo['forum_name']);
+	$_forum_name = (substr($forumInfo['forum_name'], 0, 1) == '*' ? (string) substr($forumInfo['forum_name'], 1) : $forumInfo['forum_name']);
 
 	e107::title($_forum_name . ' / ' . LAN_FORUM_1001);
 	// define('e_PAGETITLE', $_forum_name . ' / ' . LAN_FORUM_1001);
@@ -313,7 +313,7 @@ function init()
 //XXX  What is this?
 	if(!empty($forumInfo['forum_name']) && (substr($forumInfo['forum_name'], 0, 1) == '*'))
 	{
-		$forum_info['forum_name'] = substr($forum_info['forum_name'], 1);
+		$forum_info['forum_name'] = (string) substr($forum_info['forum_name'], 1);
 		$container_only = true;
 	}
 	else
@@ -323,7 +323,7 @@ function init()
 
 	if(!empty($forum_info['sub_parent']) && (substr($forum_info['sub_parent'], 0, 1) == '*'))
 	{
-		$forum_info['sub_parent'] = substr($forum_info['sub_parent'], 1);
+		$forum_info['sub_parent'] = (string) substr($forum_info['sub_parent'], 1);
 	}
 
 //----$forum->set_crumb(true, '', $fVars); // set $BREADCRUMB (and $BACKLINK)

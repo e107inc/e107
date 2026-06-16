@@ -56,18 +56,18 @@
 		public function testMagicGetterLazyGeneration()
 		{
 			$si = new secure_image();
-			
+
 			// Access $random_number - should trigger lazy generation
 			$token = $si->random_number;
-			
+
 			// Verify it's a JWT token (non-empty string)
 			$this->assertNotEmpty($token);
 			$this->assertIsString($token);
-			
+
 			// Verify we can extract the secret from it
 			$secret = $si->getSecret();
 			$this->assertNotEmpty($secret);
-			
+
 			// Verify the token validates with the secret
 			$result = $si->invalidCode($token, $secret);
 			$this->assertFalse($result);
@@ -79,14 +79,14 @@
 		public function testMagicSetterOverride()
 		{
 			$si = new secure_image();
-			
+
 			// Manually set a custom value
 			$customToken = 'custom_test_token_123';
 			$si->random_number = $customToken;
-			
+
 			// Verify getter returns our custom value
 			$this->assertEquals($customToken, $si->random_number);
-			
+
 			// getSecret() should return null since it's not a valid JWT
 			$secret = $si->getSecret();
 			$this->assertNull($secret);
@@ -98,14 +98,14 @@
 		public function testMagicIsset()
 		{
 			$si = new secure_image();
-			
+
 			// Before generation, isset should return false (doesn't trigger generation)
 			$this->assertFalse(isset($si->random_number));
-			
+
 			// Access the property to trigger generation
 			$token = $si->random_number;
 			$this->assertNotEmpty($token);
-			
+
 			// Now isset should return true
 			$this->assertTrue(isset($si->random_number));
 		}
@@ -116,13 +116,13 @@
 		public function testConsistentTokenReturn()
 		{
 			$si = new secure_image();
-			
+
 			// First access
 			$token1 = $si->random_number;
-			
+
 			// Second access
 			$token2 = $si->random_number;
-			
+
 			// Should be the same token
 			$this->assertEquals($token1, $token2);
 		}
@@ -133,11 +133,11 @@
 		public function testGetTokenMethod()
 		{
 			$si = new secure_image();
-			
+
 			// getToken() should trigger generation
 			$token = $si->getToken();
 			$this->assertNotEmpty($token);
-			
+
 			// Should be same as accessing via property
 			$this->assertEquals($token, $si->random_number);
 		}
@@ -148,16 +148,16 @@
 		public function testExplicitCreateCode()
 		{
 			$si = new secure_image();
-			
+
 			// First generation via property access
 			$token1 = $si->random_number;
-			
+
 			// Explicit call to createCode()
 			$token2 = $si->createCode();
-			
+
 			// Should generate a new token
 			$this->assertNotEquals($token1, $token2);
-			
+
 			// Property should now return the new token
 			$this->assertEquals($token2, $si->random_number);
 		}
@@ -168,15 +168,15 @@
 		public function testLegacyUsagePattern()
 		{
 			$si = new secure_image();
-			
+
 			// Legacy pattern: access property then verify
 			$code = $si->random_number;
 			$secret = $si->getSecret();
-			
+
 			// Should work as before
 			$result = $si->verify_code($code, $secret);
 			$this->assertTrue($result);
-			
+
 			// Test with wrong code
 			$result = $si->verify_code($code, 'wrong_secret');
 			$this->assertFalse($result);

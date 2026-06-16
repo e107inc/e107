@@ -342,7 +342,7 @@ function step4()
 	{
 		if(substr($k, 0, 6) == 'forum_')
 		{
-			$nk = substr($k, 6);
+			$nk = (string) substr($k, 6);
 			$mes->addDebug("Converting $k to $nk");
 			$old_prefs[$nk] = $v;
 			$coreConfig->remove($k);

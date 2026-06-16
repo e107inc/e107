@@ -101,17 +101,17 @@ class e107forum
 		$tp = e107::getParser();
 		$this->userViewed = array();
 		$this->modArray = array();
-		
+
 		if($update === false)
 		{
 			$this->loadPermList();
 		}
-		
+
 		$this->prefs = e107::getPlugConfig('forum');
 		if(!$this->prefs->get('postspage')) {
 			$this->setDefaults();
 		}
-		
+
 		$this->getForumData();
 //		var_dump($this->prefs);
 
@@ -2425,12 +2425,12 @@ class e107forum
 
 			if($forumInfo['sub_parent'])
 			{
-				$forum_sub_parent = (substr($forumInfo['sub_parent'], 0, 1) == '*' ? substr($forumInfo['sub_parent'], 1) : $forumInfo['sub_parent']);
+				$forum_sub_parent = (substr($forumInfo['sub_parent'], 0, 1) == '*' ? (string) substr($forumInfo['sub_parent'], 1) : $forumInfo['sub_parent']);
 				$BREADCRUMB .= "<a class='forumlink' href='".e_PLUGIN_ABS."forum/forum_viewforum.php?{$forumInfo['forum_sub']}'>{$forum_sub_parent}</a>".$dfltsep;
 			}
 
 			$tmpFname = $forumInfo['forum_name'];
-			if(substr($tmpFname, 0, 1) == "*") { $tmpFname = substr($tmpFname, 1); }
+			if(substr($tmpFname, 0, 1) == "*") { $tmpFname = (string) substr($tmpFname, 1); }
 
 			if ($forum_href)
 			{
@@ -2459,7 +2459,7 @@ class e107forum
 		
 		if($forumInfo['sub_parent'])
 		{
-				$forum_sub_parent = (substr($forumInfo['sub_parent'], 0, 1) == '*' ? substr($forumInfo['sub_parent'], 1) : $forumInfo['sub_parent']);
+				$forum_sub_parent = (substr($forumInfo['sub_parent'], 0, 1) == '*' ? (string) substr($forumInfo['sub_parent'], 1) : $forumInfo['sub_parent']);
 		}
 		
 		$breadcrumb[]	= array('text'=>$tp->toHTML($forumInfo['parent_name'])		, 'url'=> e107::url('forum', 'index')."#".$frm->name2id($forumInfo['parent_name']));
@@ -2525,7 +2525,7 @@ class e107forum
 			{
 				$sql->delete('polls', 'poll_datestamp='.$threadId);
 			} 
-	
+
 			// decrement user post counts
 			if ($postCount = $this->threadGetUserPostcount($threadId))
 			{
@@ -2562,7 +2562,7 @@ class e107forum
 			{	
 				$sql->delete('forum_track', 'track_thread='.$threadId);
 			}
-			
+
 			// update forum with correct thread/reply counts
 			$sql->update('forum', "forum_threads=GREATEST(forum_threads-1,0), forum_replies=GREATEST(forum_replies-{$threadInfo['thread_total_replies']},0) WHERE forum_id=".$threadInfo['thread_forum_id']);
 

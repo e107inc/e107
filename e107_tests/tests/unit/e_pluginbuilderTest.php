@@ -7,7 +7,7 @@ class e_pluginbuilderTest extends \Codeception\Test\Unit
 
 	/** @var e_pluginbuilder */
 	protected $pb;
-	
+
 	protected $posted;
 
 	protected function _before()
@@ -22,7 +22,7 @@ class e_pluginbuilderTest extends \Codeception\Test\Unit
 		{
 			$this->fail($e->getMessage());
 		}
-		
+
 		$this->posted = array (
 		  'xml' => 
 		  array (

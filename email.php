@@ -124,7 +124,7 @@ if (isset($_POST['emailsubmit']))
 
 	if (substr($source,0,7) == 'plugin:')
 	{
-		$plugin = substr($source,7);
+		$plugin = (string) substr($source,7);
 		$text = '';
 		if(file_exists(e_PLUGIN.$plugin.'/e_emailprint.php'))
 		{

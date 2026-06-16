@@ -10,7 +10,10 @@ class LoginDestinationCest
 	/** @var int */
 	private $pageId;
 
-	public function _before(AcceptanceTester $I)
+	/**
+     * @param \AcceptanceTester $I
+     */
+    public function _before($I)
 	{
 		// A custom page only logged-in members (e_UC_MEMBER = 253) may view.
 		$this->pageId = $I->haveInDatabase('e107_page', array(
@@ -22,11 +25,17 @@ class LoginDestinationCest
 		));
 	}
 
-	public function _after(AcceptanceTester $I)
+	/**
+     * @param \AcceptanceTester $I
+     */
+    public function _after($I)
 	{
 	}
 
-	public function returnsToRequestedPageAfterLogin(AcceptanceTester $I)
+	/**
+     * @param \AcceptanceTester $I
+     */
+    public function returnsToRequestedPageAfterLogin($I)
 	{
 		$I->wantTo('Return to a class-restricted page after logging in (issue #5694)');
 

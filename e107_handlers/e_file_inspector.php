@@ -320,7 +320,7 @@ abstract class e_file_inspector implements e_file_inspector_interface
         foreach ($this->existingInsecureDirectories as $existingInsecureDirectory)
         {
             $existingInsecureDirectory .= '/';
-            if (substr($absolutePath, 0, strlen($existingInsecureDirectory)) === $existingInsecureDirectory) return true;
+            if ((string) substr($absolutePath, 0, strlen($existingInsecureDirectory)) === $existingInsecureDirectory) return true;
         }
         return false;
     }
@@ -340,7 +340,7 @@ abstract class e_file_inspector implements e_file_inspector_interface
             $defaultDir = $this->defaultDirsCache[$dirType];
             if ($customDir === $defaultDir) continue;
 
-            if (substr($path, 0, strlen($customDir)) === $customDir)
+            if ((string) substr($path, 0, strlen($customDir)) === $customDir)
                 $path = $defaultDir . substr($path, strlen($customDir));
         }
         return $path;
@@ -360,7 +360,7 @@ abstract class e_file_inspector implements e_file_inspector_interface
             $defaultDir = $this->defaultDirsCache[$dirType];
             if ($customDir === $defaultDir) continue;
 
-            if (substr($path, 0, strlen($defaultDir)) === $defaultDir)
+            if ((string) substr($path, 0, strlen($defaultDir)) === $defaultDir)
                 $path = $customDir . substr($path, strlen($defaultDir));
         }
         return $path;
