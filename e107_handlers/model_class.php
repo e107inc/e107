@@ -3697,7 +3697,7 @@ class e_tree_model extends e_front_model
 		{
 			$countQry = preg_replace('/\s+LIMIT\s+\d+(\s*,\s*\d+)?\s*$/i', "", $qry);
 
-			$QRY = "SELECT COUNT(*) AS e_tree_total FROM ($countQry) AS grouped_rows";
+			$QRY = self::buildCountQuery($countQry);
 
 			$result = $sql->retrieve($QRY);
 			$total = $result['e_tree_total'] ?? 0;
@@ -3713,6 +3713,120 @@ class e_tree_model extends e_front_model
 		}
 
 		return $this->_total;
+	}
+
+	/**
+	 * Wraps a list query in a duplicate-column-safe COUNT(*) derived table
+	 *
+	 * MySQL and MariaDB permit a top-level "SELECT t1.*, t2.*" to repeat a
+	 * column name, but reject duplicate names inside a derived table. Counting
+	 * the raw list query therefore fails with "1060 Duplicate column name"
+	 * whenever two joined tables share a column (e.g. user.user_timezone and
+	 * user_extended.user_timezone on an upgraded site).
+	 *
+	 * @param string $qry List query, already stripped of any trailing LIMIT
+	 * @return string COUNT(*) query exposing the total as e_tree_total
+	 */
+	protected static function buildCountQuery($qry)
+	{
+		return "SELECT COUNT(*) AS e_tree_total FROM (".self::reduceWildcardProjection($qry).") AS grouped_rows";
+	}
+
+	/**
+	 * Replaces a multi-wildcard "SELECT t1.*, t2.*" projection with a constant
+	 *
+	 * Only the projection between the leading SELECT and the first top-level
+	 * FROM is rewritten, and only when it expands two or more "alias.*"
+	 * wildcards, the one shape that can collide inside a derived table. The
+	 * constant is irrelevant to COUNT(*), so the row total is unchanged while
+	 * the duplicate name disappears. Every other query is returned untouched,
+	 * including a single wildcard sat beside computed columns such as the
+	 * Book/Chapter list's correlated subquery, and DISTINCT projections, whose
+	 * selected columns determine the row count.
+	 *
+	 * @param string $qry List query, already stripped of any trailing LIMIT
+	 * @return string
+	 */
+	protected static function reduceWildcardProjection($qry)
+	{
+		if(preg_match('/^\s*SELECT\s+DISTINCT\b/i', $qry))
+		{
+			return $qry;
+		}
+
+		$from = self::findTopLevelFrom($qry);
+		if($from < 0 || !preg_match('/^\s*SELECT\s+/i', $qry, $lead))
+		{
+			return $qry;
+		}
+
+		$projection = substr($qry, strlen($lead[0]), $from - strlen($lead[0]));
+		if(preg_match_all('/[\w`]\s*\.\s*\*/', $projection, $m) < 2)
+		{
+			return $qry;
+		}
+
+		return $lead[0]."1 ".substr($qry, $from);
+	}
+
+	/**
+	 * Returns the offset of the first FROM keyword at parenthesis depth zero
+	 *
+	 * Quoted identifiers and string literals are skipped, so a FROM inside a
+	 * correlated subquery or a literal is never matched. Returns -1 when no
+	 * top-level FROM keyword is present.
+	 *
+	 * @param string $qry
+	 * @return int
+	 */
+	protected static function findTopLevelFrom($qry)
+	{
+		$len = strlen($qry);
+		$depth = 0;
+		$quote = '';
+
+		for($i = 0; $i < $len; $i++)
+		{
+			$ch = $qry[$i];
+
+			if($quote !== '')
+			{
+				if($ch === '\\' && $quote !== '`')
+				{
+					$i++;
+				}
+				elseif($ch === $quote)
+				{
+					if($i + 1 < $len && $qry[$i + 1] === $quote) $i++;
+					else $quote = '';
+				}
+				continue;
+			}
+
+			if($ch === "'" || $ch === '"' || $ch === '`')
+			{
+				$quote = $ch;
+			}
+			elseif($ch === '(')
+			{
+				$depth++;
+			}
+			elseif($ch === ')')
+			{
+				if($depth > 0) $depth--;
+			}
+			elseif($depth === 0 && ($ch === 'f' || $ch === 'F') && strcasecmp(substr($qry, $i, 4), 'FROM') === 0)
+			{
+				$before = $i === 0 ? ' ' : $qry[$i - 1];
+				$after = $i + 4 >= $len ? ' ' : $qry[$i + 4];
+				if(!ctype_alnum($before) && $before !== '_' && !ctype_alnum($after) && $after !== '_')
+				{
+					return $i;
+				}
+			}
+		}
+
+		return -1;
 	}
 
 	/**
