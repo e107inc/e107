@@ -126,7 +126,7 @@ if (!defined("PCLERROR_LIB"))
   {
     global $g_pcl_error_string;
     global $g_pcl_error_code;
-    
+
     return($g_pcl_error_code);
   }
   // --------------------------------------------------------------------------------

@@ -7,16 +7,25 @@
  */
 class CommentCsrfCest
 {
-	public function _before(AcceptanceTester $I)
+	/**
+     * @param \AcceptanceTester $I
+     */
+    public function _before($I)
 	{
 		$this->loginAsAdmin($I);
 	}
 
-	public function _after(AcceptanceTester $I)
+	/**
+     * @param \AcceptanceTester $I
+     */
+    public function _after($I)
 	{
 	}
 
-	public function deleteRejectsForgedRequestWithoutToken(AcceptanceTester $I)
+	/**
+     * @param \AcceptanceTester $I
+     */
+    public function deleteRejectsForgedRequestWithoutToken($I)
 	{
 		$I->wantTo("Reject comment.php?mode=delete POSTs that omit e-token");
 
@@ -36,7 +45,10 @@ class CommentCsrfCest
 		));
 	}
 
-	public function approveRejectsForgedRequestWithoutToken(AcceptanceTester $I)
+	/**
+     * @param \AcceptanceTester $I
+     */
+    public function approveRejectsForgedRequestWithoutToken($I)
 	{
 		$I->wantTo("Reject comment.php?mode=approve POSTs that omit e-token");
 
@@ -54,7 +66,10 @@ class CommentCsrfCest
 		));
 	}
 
-	public function deleteAcceptsRequestWithValidToken(AcceptanceTester $I)
+	/**
+     * @param \AcceptanceTester $I
+     */
+    public function deleteAcceptsRequestWithValidToken($I)
 	{
 		$I->wantTo("Accept comment.php?mode=delete POSTs that carry a valid e-token");
 

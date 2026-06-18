@@ -79,7 +79,7 @@ class core_news_sef_full_url extends eUrlConfig
 	 * view/item by name callback
 	 * @param eRequest $request
 	 */
-	public function itemIdByTitle(eRequest $request)
+	public function itemIdByTitle($request)
 	{
 		$name = $request->getRequestParam('name');
 		if(($id = $request->getRequestParam('id'))) 
@@ -107,7 +107,7 @@ class core_news_sef_full_url extends eUrlConfig
 	 * list/items by name callback
 	 * @param eRequest $request
 	 */
-	public function categoryIdByTitle(eRequest $request)
+	public function categoryIdByTitle($request)
 	{
 		$name = $request->getRequestParam('name');
 		if(($id = $request->getRequestParam('id'))) 

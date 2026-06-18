@@ -498,7 +498,10 @@ class db_verify
 
 	}
 
-	public function hasSyntaxIssue($sqlFileData): bool
+	/**
+     * @return bool
+     */
+    public function hasSyntaxIssue($sqlFileData)
 	{
 
 		return false; // TODO check syntax for errrors.
@@ -841,7 +844,7 @@ class db_verify
 
 		$text .= "
 			</div>
-			
+
 			</fieldset>
 			</form>
 		";
@@ -1224,7 +1227,7 @@ class db_verify
 		{
 			if(strpos($k, 'e107_') === 0) // remove prefix if found in sql dump.
 			{
-				$k = substr($k, 5);
+				$k = (string) substr($k, 5);
 			}
 
 			$tables[$c] = $k;
@@ -1711,15 +1714,16 @@ class db_verify
 	}
 
 	/**
-	 * Initialize db_verify with table definitions and storage engine info
-	 *
-	 * @param bool $clearCache When true, clears all caches that db_verify depends on:
-	 *                         - MySQL table list cache (for accurate isTable() checks)
-	 *                         - Core preference cache (for fresh e_sql_list and e_search_list)
-	 *                         - db_verify's own file cache
-	 *                         Use this after creating/dropping tables or changing plugin preferences.
-	 */
-	public function init($clearCache = false): void
+     * Initialize db_verify with table definitions and storage engine info
+     *
+     * @param bool $clearCache When true, clears all caches that db_verify depends on:
+     *                         - MySQL table list cache (for accurate isTable() checks)
+     *                         - Core preference cache (for fresh e_sql_list and e_search_list)
+     *                         - db_verify's own file cache
+     *                         Use this after creating/dropping tables or changing plugin preferences.
+     * @return void
+     */
+    public function init($clearCache = false)
 	{
 		if($clearCache)
 		{
@@ -1878,7 +1882,7 @@ function check_tables($what)
 					$xl = preg_replace('/\r?\n$|\r[^\n]$/', '', $xl);
 					$xl = str_replace('  ',' ',$xl);				// Remove double spaces
 					list($xfname, $xfparams) = explode(" ", $xl, 2);	// Field name and the rest
-					
+
 					if ($xfname == 'UNIQUE' || $xfname == 'FULLTEXT')
 					{
 						list($key, $key1, $keyname, $keyparms) = explode(" ", $xl, 4);
@@ -1891,7 +1895,7 @@ function check_tables($what)
 						$xfname = $key." ".$keyname;
 						$xfparams = $keyparms;
 					}
-					
+
 					if ($xfname != "CREATE" && $xfname != ")")
 					{
 						$xfields[$xfname] = 1;
@@ -1963,8 +1967,8 @@ function check_tables($what)
 
 							";
 						}
-						
-						
+
+
 						// DISABLED for now (show only errors), could be page setting
 						// else
 						// {
@@ -2020,8 +2024,8 @@ function check_tables($what)
 					";
 				}
 			}
-			
-			
+
+
 		}
 		else
 		{	// Table Missing.
@@ -2038,7 +2042,7 @@ function check_tables($what)
 			$fix_active = TRUE;
 			$xfield_errors++;
 		}
-		
+
 		if(!$xfield_errors)
 		{
 			//no errors, so no table rows yet
@@ -2048,13 +2052,13 @@ function check_tables($what)
 					</tr>
 			";
 		}
-	
+
 		$ttext .= "
 					</tbody>
 				</table>
 				<br/>
 		";
-		
+
 		//FIXME - add 'show_if_ok' switch
 		if($xfield_errors || (!$xfield_errors && varsettrue($_GET['show_if_ok'])))
 		{
@@ -2062,12 +2066,12 @@ function check_tables($what)
 			$ttcount++;
 		}
 	}
-	
+
 	if(!$fix_active)
 	{
 		//Everything should be OK
 		$emessage->add('DB successfully verified - no problems were found.', E_MESSAGE_SUCCESS);
-		
+
 		if(!$ttcount)
 		{
 			//very tired and sick of this page, so quick and dirty
@@ -2078,7 +2082,7 @@ function check_tables($what)
 			";
 		}
 	}
-	
+
 	if($fix_active)
 	{
 		$text .= "
@@ -2089,7 +2093,7 @@ function check_tables($what)
 			</div>
 		";
 	}
-	
+
 	foreach(array_keys($_POST) as $j) 
 	{
 		$match = array();
@@ -2139,7 +2143,7 @@ if(isset($_POST['do_fix']))
 
 
 		$field= $key;
-		
+
 		switch($mode)
 		{
 			case 'alter':
@@ -2150,23 +2154,23 @@ if(isset($_POST['do_fix']))
 				if($after) $after = " AFTER {$after}";
 				$query = "ALTER TABLE `".MPREFIX.$table."` ADD `$field` $newval{$after}";
 			break;
-			
+
 			case 'drop':
 				$query = "ALTER TABLE `".MPREFIX.$table."` DROP `$field` ";
 			break;
-			
+
 			case 'index':
 				$query = "ALTER TABLE `".MPREFIX.$table."` ADD INDEX `$field` ($newval)";
 			break;
-			
+
 			case 'indexalt':
 				$query = "ALTER TABLE `".MPREFIX.$table."` ADD $field ($newval)";
 			break;
-			
+
 			case 'indexdrop':
 				$query = "ALTER TABLE `".MPREFIX.$table."` DROP INDEX `$field`";
 			break;
-			
+
 			case 'create':
 			$query = "CREATE TABLE `".MPREFIX.$table."` ({$newval}";
 			if (!preg_match('#.*?\s+?(?:TYPE|ENGINE)\s*\=\s*(.*?);#is', $newval))
@@ -2238,7 +2242,7 @@ exit;
 function fix_form($table,$field, $newvalue,$mode,$after ='')
 {
 	global $frm;
-	
+
 	if($mode == 'create')
 	{
 		$newvalue = implode("\n",$newvalue);
@@ -2254,7 +2258,7 @@ function fix_form($table,$field, $newvalue,$mode,$after ='')
 			$newvalue = str_replace($search,'',$newvalue);
 			$after = '';
 		}
-		
+
 		if($mode == 'index' && (stristr($field, 'FULLTEXT ') !== FALSE || stristr($field, 'UNIQUE ') !== FALSE))
 		{
 			$mode = 'indexalt';
@@ -2295,9 +2299,9 @@ function table_list()
 	$exclude[] = "user_extended_struct";
 	$exclude[] = "pm_messages";
 	$exclude[] = "pm_blocks";
-	
+
 	$replace = array();
-	
+
 	$lanlist = explode(",",e_LANLIST);
 	foreach($lanlist as $lang)
 	{

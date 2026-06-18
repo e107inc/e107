@@ -160,7 +160,7 @@ class e_db_filter
 	 * @param mixed $default Returned when $input is not in $allowed.
 	 * @return mixed $input or $default.
 	 */
-	public static function filterOrderBy($input, array $allowed, $default)
+	public static function filterOrderBy($input, $allowed, $default)
 	{
 		return in_array($input, $allowed, true) ? $input : $default;
 	}

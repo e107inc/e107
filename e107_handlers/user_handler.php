@@ -2243,9 +2243,11 @@ class e_userperms
 		{
 			if(is_array($data['title']))
 			{
-				$title_parts = array_map(fn($const) => defset($const, 'Untitled'), $data['title']);
-				$separator = $data['separator'] ?? '';
-				$sub_separator = $data['sub_separator'] ?? '';
+				$title_parts = array_map(function ($const) {
+                    return defset($const, 'Untitled');
+                }, $data['title']);
+				$separator = isset($data['separator']) ? $data['separator'] : '';
+				$sub_separator = isset($data['sub_separator']) ? $data['sub_separator'] : '';
 
 				if(count($title_parts) > 2 && $sub_separator)
 				{

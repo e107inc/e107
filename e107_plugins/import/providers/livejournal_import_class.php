@@ -23,7 +23,7 @@ require_once('rss_import_class.php');
 class livejournal_import extends rss_import
 {
 
-	
+
 	public $title		= 'LiveJournal';
 	public $description	= 'Import up to 500 items from yourblog.livejournal.com';
 	public $supported	= array('news');
@@ -38,40 +38,40 @@ class livejournal_import extends rss_import
 	function init()
 	{
 		$mes = e107::getMessage();
-	
+
 		if(vartrue($_POST['siteUrl']))
 		{
 			$domain = preg_replace("/https?:\/\//i",'',$_POST['siteUrl']);
 			list($site,$dom,$tld) = explode(".",$domain);
-									
+
 			$this->feedUrl = "http://".$site.".livejournal.com/data/rss";	
 		}
-		
+
 		if(vartrue($_POST['siteCleanup']))
 		{
 			$this->cleanupHtml = true;
 		}	
-		
+
 		$mes->addDebug("LiveJournal Feed:".$this->feedUrl);
 	}
-		
-	
+
+
 	function config()
 	{
 		$var[0]['caption']	= "Your LiveJournal URL";
 		$var[0]['html'] 	= "<input class='tbox' type='text' name='siteUrl' size='80' value='{$_POST['bloggerUrl']}' maxlength='250' />";
 		$var[0]['help']		= "eg. http://blogname.livejournal.com";
-		
+
 		$var[1]['caption']	= "Cleanup HTML in content";
 		$var[1]['html'] 	= "<input class='tbox' type='checkbox' name='siteCleanup' size='80' value='1' />";
 		$var[1]['help']		= "Tick to enable";
-		
+
 		return $var;
 	}
 
 	function process($type,$source)
 	{
-				
+
 		switch ($type) 
 		{
 			case 'description':
@@ -88,13 +88,13 @@ class livejournal_import extends rss_import
 					return $body;
 				}		
 			break;
-			
+
 			default:
 				return $source[$type][0];
 			break;
 		}		
-		
-		
+
+
 	}
 
 	//TODO Comment Import: 	

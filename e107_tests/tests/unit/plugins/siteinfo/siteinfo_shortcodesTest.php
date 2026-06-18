@@ -6,6 +6,7 @@
  */
 class siteinfo_shortcodesTest extends \Codeception\Test\Unit
 {
+	use \Helper\PhpUnitCompat;
 
 	/** @var siteinfo_shortcodes */
 	protected $sc;

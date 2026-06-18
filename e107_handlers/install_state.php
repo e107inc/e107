@@ -139,8 +139,8 @@ function install_state_verify($blob, $token)
 		return null;
 	}
 
-	$payload = substr($blob, 0, $dot);
-	$provided = substr($blob, $dot + 1);
+	$payload = (string) substr($blob, 0, $dot);
+	$provided = (string) substr($blob, $dot + 1);
 	$expected = hash_hmac('sha256', $payload, $token);
 
 	if(!hash_equals($expected, $provided))

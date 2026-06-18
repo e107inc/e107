@@ -227,7 +227,7 @@ abstract class OpenID extends AbstractAdapter implements AdapterInterface
      *
      * @return User\Profile
      */
-    protected function fetchUserDisplayName(User\Profile $userProfile, Data\Collection $data)
+    protected function fetchUserDisplayName($userProfile, $data)
     {
         $userProfile->displayName = $data->get('namePerson');
 
@@ -250,7 +250,7 @@ abstract class OpenID extends AbstractAdapter implements AdapterInterface
      *
      * @return User\Profile
      */
-    protected function fetchUserGender(User\Profile $userProfile, $gender)
+    protected function fetchUserGender($userProfile, $gender)
     {
         $gender = strtolower((string)$gender);
 

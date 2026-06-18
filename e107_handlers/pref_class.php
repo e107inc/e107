@@ -414,7 +414,7 @@ class e_pref extends e_front_model
 	 * @param boolean $sanitize
 	 * @return e_pref
 	 */
-	public function loadData(array $data, $sanitize = true)
+	public function loadData($data, $sanitize = true)
 	{
 		global $pref;
 		if(!empty($data))

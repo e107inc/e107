@@ -3,6 +3,7 @@
 
 class page_sitelinkTest extends \Codeception\Test\Unit
 {
+	use \Helper\PhpUnitCompat;
 
 	/** @var page_sitelink */
 	protected $nav;

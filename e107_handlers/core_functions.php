@@ -304,7 +304,7 @@ function echo_gzipped_page()
         print("\x1f\x8b\x08\x00\x00\x00\x00\x00");
         $size = strlen($contents);
         $contents = gzcompress($contents, 9);
-        $contents = substr($contents, 0, $size);
+        $contents = (string) substr($contents, 0, $size);
         print($contents);
         exit();
     }
@@ -464,7 +464,7 @@ if (!function_exists('r_emote'))
 			$key = preg_replace("#_(\w{3})$#", ".\\1", $key);	// '_' followed by exactly 3 chars is file extension
 			$key = e_IMAGE_ABS."emotes/" . $pack . "/" .$key;		// Add in the file path
 	
-			$value2 = substr($value, 0, strpos($value, " "));
+			$value2 = (string) substr($value, 0, strpos($value, " "));
 			$value = ($value2 ? $value2 : $value);
 			$value = ($value === '&|') ? ':((' : $value;
 			$value = " ".$value." ";

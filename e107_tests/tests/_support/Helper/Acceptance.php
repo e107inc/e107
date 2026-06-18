@@ -20,7 +20,7 @@ class Acceptance extends E107Base
 	 * @param array $params
 	 * @return void
 	 */
-	public function sendPostRequest($uri, array $params = [])
+	public function sendPostRequest($uri, $params = [])
 	{
 		$this->getModule('PhpBrowser')->_request('POST', $uri, $params);
 	}

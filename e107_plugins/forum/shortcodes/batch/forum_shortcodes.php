@@ -450,7 +450,7 @@ class forum_shortcodes extends e_shortcode
 	{
 		if(substr($this->var['forum_name'], 0, 1) == '*')
 		{
-			$this->var['forum_name'] = substr($this->var['forum_name'], 1);
+			$this->var['forum_name'] = (string) substr($this->var['forum_name'], 1);
 		}
 
 		$this->var['forum_name'] = e107::getParser()->toHTML($this->var['forum_name'], true, 'no_hook');
@@ -614,7 +614,7 @@ class forum_shortcodes extends e_shortcode
 
 		$datestamp = !empty($this->var['thread_lastpost']) ? $this->gen->convert_date($this->var['thread_lastpost'], 'forum') : '';
 
-  
+
 		if(!empty($this->var['user_name']))
 		{
 			return $author_name.'<br />'.$datestamp;

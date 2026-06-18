@@ -1,0 +1,20 @@
+name: PHP 5.6 Lint
+
+# Gates merges on PHP 5.6 compatibility of the shipping source. Runs `php -l`
+# against every shipped *.php file inside an upstream php:5.6-cli image, since
+# no live host PHP supports 5.6 any more. The helper script handles the
+# enumeration and tally; we just shell out to it.
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  php56-lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Lint every shipping PHP file under PHP 5.6
+        run: bash e107_tests/tools/rector/bin/php56-lint --all

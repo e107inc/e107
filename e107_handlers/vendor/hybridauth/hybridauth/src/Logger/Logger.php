@@ -78,8 +78,9 @@ class Logger implements LoggerInterface
 
     /**
      * @inheritdoc
+     * @param mixed[] $context
      */
-    public function info($message, array $context = [])
+    public function info($message, $context = [])
     {
         if (!in_array($this->level, [self::DEBUG, self::INFO])) {
             return;
@@ -90,8 +91,9 @@ class Logger implements LoggerInterface
 
     /**
      * @inheritdoc
+     * @param mixed[] $context
      */
-    public function debug($message, array $context = [])
+    public function debug($message, $context = [])
     {
         if (!in_array($this->level, [self::DEBUG])) {
             return;
@@ -102,8 +104,9 @@ class Logger implements LoggerInterface
 
     /**
      * @inheritdoc
+     * @param mixed[] $context
      */
-    public function error($message, array $context = [])
+    public function error($message, $context = [])
     {
         if (!in_array($this->level, [self::DEBUG, self::INFO, self::ERROR])) {
             return;
@@ -114,8 +117,9 @@ class Logger implements LoggerInterface
 
     /**
      * @inheritdoc
+     * @param mixed[] $context
      */
-    public function log($level, $message, array $context = [])
+    public function log($level, $message, $context = [])
     {
         $datetime = new \DateTime();
         $datetime = $datetime->format(DATE_ATOM);

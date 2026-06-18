@@ -36,7 +36,7 @@ class admin_shortcodes extends e_shortcode
             {	//TODO LANVARS
 				$text = ADLAN_122.'  v'.$cacheData.'</a>.
 					<a class="btn btn-success" href="'.$installUrl.'">'.ADLAN_121.'</a>'; //Install
-				
+
 				$mes->addInfo($text);
 				return null; //  $mes->render();
 			}
@@ -1048,12 +1048,12 @@ class admin_shortcodes extends e_shortcode
 		{
 			return;
 		}
-        
+
         $sql = e107::getDb();
 		$tp = e107::getParser();
-		
+
         $count =  $sql->count('private_msg','(*)','WHERE pm_read = 0 AND pm_to='.USERID);
-       
+
        	if ($count >0)
        	{
             $countDisp = ' <span class="badge badge-primary">'.$count.'</span> ' ;
@@ -1062,7 +1062,7 @@ class admin_shortcodes extends e_shortcode
       	{
             $countDisp = '';    
       	}
-         
+
 		$inboxUrl 	= e_PLUGIN.'pm/admin_config.php?mode=inbox&amp;action=list&amp;iframe=1';
 		$outboxUrl 	= e_PLUGIN.'pm/admin_config.php?mode=outbox&amp;action=list&amp;iframe=1';
 		$composeUrl = e_PLUGIN.'pm/admin_config.php?mode=outbox&amp;action=create&amp;iframe=1';
@@ -1082,15 +1082,15 @@ class admin_shortcodes extends e_shortcode
         	</li>
         </ul>
         '; 
-        
+
         return $text;
-        
+
       //  e107_plugins/pm/pm.php
-        
-        
-        
+
+
+
        /*
-        
+
 		$text = '
 		<li class="dropdown">
 			<a class="dropdown-toggle" title="Messages" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" href="#" >
@@ -2788,7 +2788,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		$caption .= "<span class='e-help-icon pull-right'><a data-placement=\"bottom\" class='e-tip' title=\"".e107::getParser()->toAttribute($diz). '">' .defset('ADMIN_INFO_ICON'). '</a></span>';
 
 		$var['_extras_']['icon'] = e107::getParser()->toIcon('e-menus-24');
-		
+
 	   return e107::getNav()->admin($caption,$action, $var);
 
 
@@ -2797,7 +2797,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
         $var['menumanager']['text'] = LAN_MENULAYOUT;
 		$var['menumanager']['link'] = e_ADMIN_ABS.'menus.php';
-		
+
 		$var['nothing']['divider'] = true;
 
 		if(vartrue($pref['menuconfig_list']))

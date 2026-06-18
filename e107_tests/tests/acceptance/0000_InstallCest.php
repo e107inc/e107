@@ -3,13 +3,19 @@
 
 class InstallCest
 {
-	public function _before(AcceptanceTester $I)
+	/**
+     * @param \AcceptanceTester $I
+     */
+    public function _before($I)
 	{
 		$I->unlinkE107ConfigFromTestEnvironment();
 		$this->dropAllDbTables($I);
 	}
 
-	public function _after(AcceptanceTester $I)
+	/**
+     * @param \AcceptanceTester $I
+     */
+    public function _after($I)
 	{
 	}
 
@@ -26,7 +32,7 @@ class InstallCest
 		$I->see("Language Selection");
 	}*/
 
-	public function installDefault(AcceptanceTester $I)
+	public function installDefault($I)
 	{
 		$I->wantTo("Install e107 with default settings"); // bootstrap5.
 		$this->installe107($I);
@@ -37,23 +43,25 @@ class InstallCest
 
 	}
 /*
-	public function installBootstrap3(AcceptanceTester $I)
-	{
-		$I->wantTo("Install e107 with bootstrap3");
-		$this->installe107($I, array('sitetheme'=>'bootstrap3'));
-		$this->checkAdminButtonWelcomeMessage($I);
-		$this->testNoUpdatesRequired($I);
-		$this->checkTinyMceIsInstalled($I);
-
-		// Check install.xml Custom Fields in Page table.
-		$I->amOnPage('/page.php?id=4');
-		$I->see("22 Aug 2018");
-		$I->see("United States");
-		$I->see("Blue");
-
-	}*/
-
-	public function installVoux(AcceptanceTester $I)
+    	public function installBootstrap3(AcceptanceTester $I)
+    	{
+    		$I->wantTo("Install e107 with bootstrap3");
+    		$this->installe107($I, array('sitetheme'=>'bootstrap3'));
+    		$this->checkAdminButtonWelcomeMessage($I);
+    		$this->testNoUpdatesRequired($I);
+    		$this->checkTinyMceIsInstalled($I);
+    
+    		// Check install.xml Custom Fields in Page table.
+    		$I->amOnPage('/page.php?id=4');
+    		$I->see("22 Aug 2018");
+    		$I->see("United States");
+    		$I->see("Blue");
+    
+    	}*/
+    /**
+     * @param \AcceptanceTester $I
+     */
+    public function installVoux($I)
 	{
 		$I->wantTo("Install e107 with Voux theme");
 		$this->installe107($I, array('sitetheme'=>'voux'));
@@ -62,7 +70,10 @@ class InstallCest
 		$this->checkTinyMceIsInstalled($I);
 	}
 
-	public function installedSiteBlocksTheInstaller(AcceptanceTester $I)
+	/**
+     * @param \AcceptanceTester $I
+     */
+    public function installedSiteBlocksTheInstaller($I)
 	{
 		$I->wantTo("Block the interactive installer once the site is installed (fail closed on e107_config.php)");
 
@@ -80,7 +91,10 @@ class InstallCest
 		$I->dontSee('Language Selection');
 	}
 
-	public function installResumesFromPastedState(AcceptanceTester $I)
+	/**
+     * @param \AcceptanceTester $I
+     */
+    public function installResumesFromPastedState($I)
 	{
 		$I->wantTo("Resume a locked install by pasting the saved state after the session is lost");
 
@@ -111,7 +125,10 @@ class InstallCest
 		$I->see('MySQL Server Details', 'h3');
 	}
 
-	public function installCookieAutoResumeAvoidsGate(AcceptanceTester $I)
+	/**
+     * @param \AcceptanceTester $I
+     */
+    public function installCookieAutoResumeAvoidsGate($I)
 	{
 		$I->wantTo("Auto-resume from the cookie instead of gating when a lock already exists");
 
@@ -130,7 +147,10 @@ class InstallCest
 		$I->see('already in progress');
 	}
 
-	public function installErrorPageDoesNotLeakProvisioningToken(AcceptanceTester $I)
+	/**
+     * @param \AcceptanceTester $I
+     */
+    public function installErrorPageDoesNotLeakProvisioningToken($I)
 	{
 		$I->wantTo("Keep the provisioning token and credentials out of the installer error/debug output");
 

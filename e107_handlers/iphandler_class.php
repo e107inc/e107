@@ -170,7 +170,7 @@ class eIPHandler
 
 		$this->ourIP = $this->ipEncode($this->getCurrentIP());
 
-		$this->serverIP = $this->ipEncode($_SERVER['SERVER_ADDR'] ?? 'x.x.x.x');
+		$this->serverIP = $this->ipEncode(isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : 'x.x.x.x');
 
 		$this->makeUserToken();
 
@@ -311,8 +311,8 @@ class eIPHandler
     {
         if(!$this->ourIP)
         {
-            $server = $server ?? $_SERVER;
-            $ip = $server['REMOTE_ADDR'] ?? 'x.x.x.x';
+            $server = isset($server) ? $server : $_SERVER;
+            $ip = isset($server['REMOTE_ADDR']) ? $server['REMOTE_ADDR'] : 'x.x.x.x';
 
             if ($ip4 = getenv('HTTP_X_FORWARDED_FOR'))
             {
@@ -398,7 +398,7 @@ class eIPHandler
 						fclose($tmp);
 					}
 				}
-				$line = trim(substr($line, strlen($search)));
+				$line = trim((string) substr($line, strlen($search)));
 				if ((strpos($line, 'http://') === 0) || (strpos($line, 'https://') === 0))
 				{	// Display a specific web page
 					if (strpos($line, '?') === FALSE)
@@ -780,7 +780,7 @@ class eIPHandler
 	 * @param string $fieldName - if non-empty, each array entry is a comparison with this field
 	 * @return array|bool - array of network ban patterns, or false if invalid domain
 	 */
-	function makeDomainQuery($domain, $fieldName = 'banlist_ip'): array|bool
+	function makeDomainQuery($domain, $fieldName = 'banlist_ip')
 	{
 
 		$domain = trim($domain);
@@ -849,7 +849,7 @@ class eIPHandler
 
 		$sanitized_email = addslashes($email);
 
-		$domain = strtolower(substr($email, strrpos($email, '@') + 1));
+		$domain = strtolower((string) substr($email, strrpos($email, '@') + 1));
 
 		if($domain === '' || strpos($domain, '.') === false)
 		{
@@ -1501,12 +1501,12 @@ class banlistManager
 		$temp = strpos($ip, 'x');
 		if ($temp !== FALSE)
 		{
-			return substr($ip, 0, $temp);
+			return (string) substr($ip, 0, $temp);
 		}
 		$temp = strpos($ip, '*');
 		if ($temp !== FALSE)
 		{
-			return substr($ip, 0, $temp);
+			return (string) substr($ip, 0, $temp);
 		}
 		return $ip;
 	}

@@ -290,9 +290,9 @@ class Curl implements HttpClientInterface
         $pos = strpos($header, ':');
 
         if (!empty($pos)) {
-            $key = str_replace('-', '_', strtolower(substr($header, 0, $pos)));
+            $key = str_replace('-', '_', strtolower((string) substr($header, 0, $pos)));
 
-            $value = trim(substr($header, $pos + 2));
+            $value = trim((string) substr($header, $pos + 2));
 
             $this->responseHeader[$key] = $value;
         }

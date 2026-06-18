@@ -3,6 +3,7 @@
 
 class e_renderTest extends \Codeception\Test\Unit
 {
+	use \Helper\PhpUnitCompat;
 
 	/** @var e_render */
 	protected $ns;

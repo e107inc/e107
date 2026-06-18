@@ -248,8 +248,8 @@ if (!defined("PCLTRACE_LIB"))
     }
     else
     {
-      $g_pcl_trace_name = substr($g_pcl_trace_name, 0, strlen($g_pcl_trace_name)-strlen($v_name));
-      $v_name = substr($v_name, -strlen($v_name)+1);
+      $g_pcl_trace_name = (string) substr($g_pcl_trace_name, 0, strlen($g_pcl_trace_name)-strlen($v_name));
+      $v_name = (string) substr($v_name, -strlen($v_name)+1);
     }
 
     // ----- Decrement the index

@@ -87,7 +87,7 @@ if (!$dont_check_update)
 				$fname = e_PLUGIN.$path.'/'.$path.'_update_check.php';  // DEPRECATED - left for BC only. 
 				if (is_readable($fname)) include_once($fname);
 			}
-			
+
 			$fname = e_PLUGIN.$path.'/'.$path.'_setup.php';
 			if (is_readable($fname))
 			{
@@ -103,7 +103,7 @@ if (!$dont_check_update)
 	{
 		$dbupdate['test_code'] = 'Test update routine';
 	}
-	
+
 	// set 'master' to true to prevent other upgrades from running before it is complete.
 
 	$LAN_UPDATE_4 = deftrue('LAN_UPDATE_4',"Update from [x] to [y]"); // in case language-pack hasn't been upgraded.
@@ -115,7 +115,7 @@ if (!$dont_check_update)
 	$dbupdate['706_to_800'] = array('master'=>true, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('1.x','2.0')), 'message'=> LAN_UPDATE_29, 'hide_when_complete'=>true);
 
 	$dbupdate['20x_to_latest'] = array('master'=>true, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('2.x', $e107info['e107_version'])), 'message'=> null, 'hide_when_complete'=>false);
-	
+
 
 
 	// always run these last.
@@ -429,7 +429,7 @@ function update_check()
 		{
 			 $update_needed = TRUE;
 		}
-	
+
 
 	//	$e107cache->set_sys('nq_admin_updatecheck', time().','.($update_needed ? '2,' : '1,').$e107info['e107_version'], TRUE);
 	}
@@ -1596,7 +1596,7 @@ function update_706_to_800($type='')
 			{
 				$log->addDebug("core-media-cat `media_cat_nick` field removed.");	
 			}
-			
+
 	//		$query = "INSERT INTO `".MPREFIX."core_media_cat` (`media_cat_id`, `media_cat_owner`, `media_cat_category`, `media_cat_title`, `media_cat_diz`, `media_cat_class`, `media_cat_image`, `media_cat_order`) VALUES
 	//		(0, 'gallery', 'gallery_1', 'Gallery 1', 'Visible to the public at /gallery.php', 0, '', 0);
 	///		";
@@ -1832,7 +1832,7 @@ function update_706_to_800($type='')
 	
 	if (!$just_check)  // Running the Upgrade Process. 
 	{
-			
+
 		if(!is_array($pref['sitetheme_layouts']) || !vartrue($pref['sitetheme_deflayout']))
 		{
 			$th = e107::getSingleton('themeHandler');
@@ -1846,10 +1846,10 @@ function update_706_to_800($type='')
 				$log->addDebug("Couldn't update SiteTheme prefs");	
 			}
 		}
-		
+
 		$log->toFile('upgrade_v1_to_v2'); 
-		
-		
+
+
 		if ($do_save)
 		{
 		//	save_prefs();

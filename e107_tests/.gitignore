@@ -4,6 +4,7 @@
 /tests/_output/*
 /tests/_support/_generated/*
 composer.phar
+/composer.lock
 /vendor/**/*
 
 error_log

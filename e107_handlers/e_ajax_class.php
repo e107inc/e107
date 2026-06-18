@@ -256,24 +256,25 @@ class e_ajax
 	}
 
 	/**
-	 * Creates an Ajax 'invoke' command.
-	 *
-	 * The 'invoke' command will instruct the client to invoke the given jQuery
-	 * method with the supplied arguments on the elements matched by the given
-	 * target. Intended for simple jQuery commands, such as attr(), addClass(),
-	 * removeClass(), toggleClass(), etc.
-	 *
-	 * @param $target
-	 *   A jQuery selector string.
-	 * @param $method
-	 *   The jQuery method to invoke.
-	 * @param $arguments
-	 *   (optional) A list of arguments to the jQuery $method, if any.
-	 *
-	 * @return array
-	 *   An array suitable for use with the e107::ajax()->render() function.
-	 */
-	public function commandInvoke($target, $method, array $arguments = array())
+     * Creates an Ajax 'invoke' command.
+     *
+     * The 'invoke' command will instruct the client to invoke the given jQuery
+     * method with the supplied arguments on the elements matched by the given
+     * target. Intended for simple jQuery commands, such as attr(), addClass(),
+     * removeClass(), toggleClass(), etc.
+     *
+     * @param $target
+     *   A jQuery selector string.
+     * @param $method
+     *   The jQuery method to invoke.
+     * @param $arguments
+     *   (optional) A list of arguments to the jQuery $method, if any.
+     *
+     * @return array
+     *   An array suitable for use with the e107::ajax()->render() function.
+     * @param mixed[] $arguments
+     */
+    public function commandInvoke($target, $method, $arguments = array())
 	{
 		return array(
 			'command'   => 'invoke',

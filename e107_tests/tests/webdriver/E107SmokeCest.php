@@ -26,7 +26,7 @@ class E107SmokeCest
      * @param \WebDriverTester $I
      * @return void
      */
-    public function frontPageRenders(\WebDriverTester $I)
+    public function frontPageRenders($I)
     {
         $I->wantTo('load the e107 front page through a real browser');
 
@@ -48,7 +48,7 @@ class E107SmokeCest
      * @param \WebDriverTester $I
      * @return void
      */
-    public function adminLoginWorks(\WebDriverTester $I)
+    public function adminLoginWorks($I)
     {
         $I->wantTo('log into the e107 admin area through a real browser');
 

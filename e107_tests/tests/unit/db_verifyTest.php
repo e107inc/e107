@@ -11,6 +11,7 @@
 
 class db_verifyTest extends \Codeception\Test\Unit
 {
+	use \Helper\PhpUnitCompat;
 
 	/** @var db_verify */
 	private $dbv;
@@ -895,7 +896,11 @@ DATA;
 
 	}
 
-	private function prepareResults(string $file, string $sql)
+	/**
+     * @param string $file
+     * @param string $sql
+     */
+    private function prepareResults($file, $sql)
 	{
 
 		$fileData = array();

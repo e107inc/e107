@@ -13,7 +13,10 @@ use Codeception\TestInterface;
  */
 class WebDriverSession extends Module
 {
-	public function _before(TestInterface $test)
+	/**
+     * @param \Codeception\TestInterface $test
+     */
+    public function _before($test)
 	{
 		if (!$this->hasModule('WebDriver'))
 		{

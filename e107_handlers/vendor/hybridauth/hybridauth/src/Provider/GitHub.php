@@ -104,7 +104,7 @@ class GitHub extends OAuth2
      *
      * @throws \Exception
      */
-    protected function requestUserEmail(User\Profile $userProfile)
+    protected function requestUserEmail($userProfile)
     {
         $response = $this->apiRequest('user/emails');
 

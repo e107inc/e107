@@ -620,7 +620,7 @@ class rater
 			
 			if(strpos($row['rate_voters'], ".".$voter.".") == true || strpos($row['rate_voters'], ".".USERID.".") == true)
 			{
-				
+
 				return RATELAN_9."|".$this->renderVotes($new_votes,$statR); // " newvotes = ".($statR). " =".$new_votes;
 			}
 			

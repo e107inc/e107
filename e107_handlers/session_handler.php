@@ -190,7 +190,7 @@ class e_session
      */
     public function getOption($key, $default = null)
     {
-        return ($this->_options[$key] ?? $default);
+        return (isset($this->_options[$key]) ? $this->_options[$key] : $default);
     }
 
     /**
@@ -281,7 +281,7 @@ public function get($key, $clear = false)
     foreach ($this->_data as $dataKey => $value) {
         if (strpos($dataKey, $key . '/') === 0) {
             // Normalize multiple slashes to a single slash
-            $subKeyString = preg_replace('#/+#', '/', substr($dataKey, strlen($key . '/')));
+            $subKeyString = preg_replace('#/+#', '/', (string) substr($dataKey, strlen($key . '/')));
             $subKeys = explode('/', $subKeyString);
             // Remove empty segments
             $subKeys = array_filter($subKeys, function($k) { return $k !== ''; });
@@ -769,7 +769,7 @@ public function getData($key = null, $clear = false)
             $sessionData = $this->_data['_session_validate_data'];
             $validateData = $this->getValidateData();
 
-            $details = 'USER INFORMATION: '.($_COOKIE[e_COOKIE] ?? ($_SESSION[e_COOKIE] ?? 'n/a'))."\n";
+            $details = 'USER INFORMATION: '.(isset($_COOKIE[e_COOKIE]) ? $_COOKIE[e_COOKIE] : (isset($_SESSION[e_COOKIE]) ? $_SESSION[e_COOKIE] : 'n/a'))."\n";
             $details .= "HOST: ".$_SERVER['HTTP_HOST']."\n";
             $details .= "REQUEST_URI: ".$_SERVER['REQUEST_URI']."\n";
             $details .= "SESSION OPTIONS: ".print_r($this->_options, true)."\n";
@@ -1278,7 +1278,7 @@ class e_session_db implements SessionHandlerInterface
      * @param string $name
      * @return bool
      */
-    public function open(string $path, string $name): bool
+    public function open($path, $name)
     {
         return true;
     }
@@ -1287,7 +1287,7 @@ class e_session_db implements SessionHandlerInterface
      * Close session
      * @return bool
      */
-    public function close(): bool
+    public function close()
     {
         $this->gc($this->getLifetime());
         return true;
@@ -1298,7 +1298,7 @@ class e_session_db implements SessionHandlerInterface
      * @param string $id
      * @return string|false
      */
-    public function read(string $id): string|false
+    public function read($id)
     {
         $data = false;
         $check = $this->_db->select($this->getTable(), 'session_data', "session_id='".$this->_sanitize($id)."' AND session_expires>".time());
@@ -1320,7 +1320,7 @@ class e_session_db implements SessionHandlerInterface
      * @param string $data
      * @return bool
      */
-    public function write(string $id, string $data): bool
+    public function write($id, $data)
     {
         $session_data = array(
             'data' => array(
@@ -1367,7 +1367,7 @@ class e_session_db implements SessionHandlerInterface
      * @param string $id
      * @return bool
      */
-    public function destroy(string $id): bool
+    public function destroy($id)
     {
         $id = $this->_sanitize($id);
         $this->_db->delete($this->getTable(), "`session_id`='$id'");
@@ -1377,9 +1377,9 @@ class e_session_db implements SessionHandlerInterface
     /**
      * Garbage collection
      * @param int $max_lifetime
-     * @return bool
+     * @return int|false
      */
-    public function gc(int $max_lifetime): int|false
+    public function gc($max_lifetime)
     {
         return $this->_db->delete($this->getTable(), '`session_expires`<'.time());
     }
@@ -1389,7 +1389,7 @@ class e_session_db implements SessionHandlerInterface
      * @param string $id
      * @return string
      */
-    protected function _sanitize(string $id): string
+    protected function _sanitize($id)
     {
         return preg_replace('#[^0-9a-zA-Z,-]#', '', $id);
     }

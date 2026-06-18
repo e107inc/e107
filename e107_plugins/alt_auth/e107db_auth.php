@@ -116,7 +116,7 @@ class auth_login extends alt_auth_base
 		{
 			if ($v && (strpos($k,'e107db_xf_') === 0))
 			{
-				$sel_fields[] = substr($k,strlen('e107db_xf_'));
+				$sel_fields[] = (string) substr($k,strlen('e107db_xf_'));
 			}
 		}
 
@@ -204,7 +204,7 @@ class auth_login extends alt_auth_base
 		{
 			if ($v && (strpos($k,'e107db_xf_') === 0))
 			{
-				$f = substr($k,strlen('e107db_xf_'));
+				$f = (string) substr($k,strlen('e107db_xf_'));
 				if (isset($row[$f])) $newvals[$f] = $row[$f];
 			}
 		}
