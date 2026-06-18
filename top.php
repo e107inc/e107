@@ -59,9 +59,12 @@ if ($action == 'active')
 
 	$forumList = implode(',', $forum->getForumPermList('view'));
 
+	$sc = e107::getScBatch('view', 'forum');
+	$sc->wrapper('newforumposts_menu/main');
+	
 	$qry = "
 	SELECT
-		t.*, u.user_name, ul.user_name AS user_last, f.forum_name
+		t.*, u.user_name, ul.user_name AS user_last, f.forum_name, f.forum_sef
 	FROM `#forum_thread` as t
 	LEFT JOIN `#forum` AS f ON f.forum_id = t.thread_forum_id
 	LEFT JOIN `#user` AS u ON u.user_id = t.thread_user
@@ -74,6 +77,43 @@ if ($action == 'active')
 
 	if ($sql->gen($qry))
 	{
+		
+		if ($template = e107::getTemplate('forum','newforumposts_menu','main'))
+//if (1 == 2)
+		{
+//				$tp = e107::getParser();
+//			if($results = $sql->gen($qry))
+//			{
+//				$sql1 = $sql;
+//				$sc = e107::getScBatch('view', 'forum');
+//				$sc->wrapper('newforumposts_menu/main');
+				$text = $tp->parseTemplate($template['start'], true);
+
+				while($row = $sql->fetch())
+				{
+					$row['thread_sef'] = $forum->getThreadSef($row);
+					$row['post_id'] = $row['thread_id'];
+					$row['thread_lastuser_username'] = $row['user_last'];
+					$row['thread_user_username'] = $row['user_name'];
+					//					var_dump($row);
+//					$fsef = $sql->gen('forum_sef', '(*)', 'WHERE `thread_parent` = 0');
+					$sc->setScVar('postInfo', $row);
+					$sc->setVars($row);
+					$text .= $tp->parseTemplate($template['item'], true, $sc);
+
+					++$total_topics;						
+					$total_views += $row['thread_views'];						
+					$total_replies += $row['thread_total_replies'];						
+				}
+
+				$TOTALS = array('TOTAL_TOPICS'=>$total_topics, 'TOTAL_VIEWS'=>$total_views, 'TOTAL_REPLIES'=>$total_replies);
+
+				$text .= $tp->parseTemplate($template['end'], true, $TOTALS);
+//			}
+			$ns->tablerender(LAN_7, $text, 'nfp');
+		}
+		else
+		{
 		$text = "<div>\n<table style='width:auto' class='table fborder'>\n";
 		$gen = e107::getDate();
 
@@ -126,6 +166,7 @@ if ($action == 'active')
 		$parms = "{$ftotal},{$view},{$from},".e_SELF.'?[FROM].active.forum.'.$view;
 		$text .= "<div class='nextprev'>".$tp->parseTemplate("{NEXTPREV={$parms}}").'</div>';
 		$ns->tablerender(LAN_7, $text, 'nfp');
+		}
 		/*
 		require_once (e_HANDLER.'np_class.php');
 		$ftotal = $sql->db_Count('forum_thread', '(*)', 'WHERE 1');
