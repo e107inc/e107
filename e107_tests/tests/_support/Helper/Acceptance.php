@@ -26,6 +26,26 @@ class Acceptance extends E107Base
 	}
 
 	/**
+	 * Assert the last response did not issue a Location redirect to a URL
+	 * containing $needle.
+	 *
+	 * Codeception 5's PhpBrowser exposes no seeHttpHeader, so read the Location
+	 * header straight off the BrowserKit client. Pair with
+	 * $I->stopFollowingRedirects() so the redirect response is captured here
+	 * rather than chased to the (possibly off-site) target.
+	 *
+	 * @param string $needle
+	 * @return void
+	 */
+	public function seeNoRedirectTo($needle)
+	{
+		$response = $this->getModule('PhpBrowser')->client->getInternalResponse();
+		$location = (string) $response->getHeader('Location');
+		\PHPUnit\Framework\Assert::assertStringNotContainsString(
+			$needle, $location, "Response must not redirect to: $needle");
+	}
+
+	/**
 	 * Clear the installer's resume cookie at the path it was actually set on.
 	 *
 	 * The installer scopes e107install_state to e_HTTP (the app's base path,
