@@ -163,25 +163,9 @@ class eurl_admin_ui extends e_admin_controller_ui
 
 		// $table/$primary/$input/$output are SQL identifiers and cannot be bound.
 		// They can arrive raw from $_POST (init() path), so validate each against
-		// the set of identifiers registered in the URL 'generate' config, and
-		// reject anything that is not a syntactically valid identifier.
-		$allowed = array();
-		$gen = e107::getUrlConfig('generate');
-		if(is_array($gen))
-		{
-			foreach($gen as $confSet)
-			{
-				if(!is_array($confSet)) continue;
-				foreach($confSet as $conf)
-				{
-					if(!is_array($conf)) continue;
-					foreach(array('table', 'primary', 'input', 'output') as $key)
-					{
-						if(!empty($conf[$key])) $allowed[$conf[$key]] = true;
-					}
-				}
-			}
-		}
+		// the identifiers registered by the URL generator configs, and reject
+		// anything that is not a syntactically valid identifier.
+		$allowed = $this->generatorIdentifiers();
 
 		foreach(array($table, $primary, $input, $output) as $ident)
 		{
@@ -223,13 +207,75 @@ class eurl_admin_ui extends e_admin_controller_ui
 		{
 			e107::getMessage()->addError(LAN_EURL_TABLE.": <b>".$table."</b><br />".$failed. LAN_EURL_SURL_NUPD);
 		}
-		
-		
+
+
 	}
-	
-	
-	
-	
+
+	/**
+	 * Collect every table/column identifier registered by a URL generator, so a
+	 * rebuild request carrying raw identifiers from $_POST can be allowlisted.
+	 *
+	 * Generator configs live in two places that both feed the rebuild UI: plugin
+	 * e_url.php $generate properties (via {@see e107::getUrlConfig()}) and the
+	 * admin()['generate'] entry of each core or plugin url config. Both must feed
+	 * the allowlist, or a legitimate rebuild is rejected as an invalid identifier.
+	 *
+	 * @return array identifier => true
+	 */
+	private function generatorIdentifiers()
+	{
+		$allowed = array();
+
+		$this->collectGeneratorIdentifiers(e107::getUrlConfig('generate'), $allowed);
+
+		$modules = eRouter::adminReadModules();
+		foreach(eRouter::adminBuildLocations($modules) as $module => $locations)
+		{
+			foreach($locations as $location)
+			{
+				$obj = eDispatcher::getConfigObject($module, $location);
+				if(!is_object($obj) || !method_exists($obj, 'admin')) continue;
+
+				$admin = $obj->admin();
+				if(!empty($admin['generate'])) $this->collectGeneratorIdentifiers($admin['generate'], $allowed);
+			}
+		}
+
+		return $allowed;
+	}
+
+	/**
+	 * Register the identifiers named by a generator config node, which is either
+	 * a single {table, primary, input, output} config or a list of them.
+	 *
+	 * @param mixed $node    generator config array, or a list of configs
+	 * @param array $allowed identifier => true, populated by reference
+	 * @return void
+	 */
+	private function collectGeneratorIdentifiers($node, &$allowed)
+	{
+		if(!is_array($node)) return;
+
+		$keys = array('table', 'primary', 'input', 'output');
+
+		foreach($keys as $key)
+		{
+			if(isset($node[$key]))
+			{
+				foreach($keys as $k)
+				{
+					if(!empty($node[$k])) $allowed[$node[$k]] = true;
+				}
+				return;
+			}
+		}
+
+		foreach($node as $child) $this->collectGeneratorIdentifiers($child, $allowed);
+	}
+
+
+
+
 	public function HelpObserver()
 	{
 		
@@ -876,11 +922,12 @@ class eurl_admin_form_ui extends e_admin_form_ui
 			foreach ($obj->locations as $index => $location) 
 			{
 				$objSub = $obj->defaultLocation != $location ? eDispatcher::getConfigObject($obj->module, $location) : false; 
-				if($objSub) 
+				if($objSub)
 				{
 					$admin = $objSub->admin();
 					$section = vartrue($admin['labels'], array());
-				} 
+					if(!empty($admin['generate'])) $generate = $admin['generate'];
+				}
 				elseif($obj->defaultLocation != $location) $section = array();
 				
 				$id = 'eurl-'.str_replace('_', '-', $obj->module).'-'.$index;
@@ -947,13 +994,18 @@ class eurl_admin_form_ui extends e_admin_form_ui
                     <td><select name='eurl_config[$module]' class='form-control input-block-level'>".$opt."</select></td>
                     <td>";
 		
-			$bTable = varset($admin['generate']['table']);
-			$bInput = varset($admin['generate']['input']);
-			$bOutput = varset($admin['generate']['output']);
-			$bPrimary = varset($admin['generate']['primary']);
-			
-		
-			$text .= (is_array($admin['generate'])) ? $frm->admin_button('rebuild['.$bTable.']', $bPrimary."::".$bInput."::".$bOutput,'delete', LAN_EURL_REBUILD) : "";	  
+			// The module's generator config (from admin()['generate']) supplies the
+			// SEF field names. Only offer Rebuild when all four are present, so a
+			// module with no generator config never renders a button that would
+			// post empty data and fail with "Missing Generator data".
+			$bTable = varset($generate['table']);
+			$bInput = varset($generate['input']);
+			$bOutput = varset($generate['output']);
+			$bPrimary = varset($generate['primary']);
+
+			$text .= (!empty($bTable) && !empty($bPrimary) && !empty($bInput) && !empty($bOutput))
+				? $frm->admin_button('rebuild['.$bTable.']', $bPrimary."::".$bInput."::".$bOutput, 'delete', LAN_EURL_REBUILD)
+				: "";
 				  
 
 			$text .= "</td>
