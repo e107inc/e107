@@ -2460,12 +2460,17 @@ class e107plugin
 		{
 			$link_t = $sql->createQueryBuilder()->from('links')->count();
 
-			$countQry = !empty($options['link_owner']) ? "link_owner = '".$options['link_owner']."' AND link_url = '".$path."'" : "link_url = '{$path}' OR link_name = '".$link_name."'";
-
 			$countQb = $sql->createQueryBuilder()->from('links');
 			if (!empty($options['link_owner']))
 			{
 				$countQb->where('link_owner', $options['link_owner'])->where('link_url', $path);
+
+				// Sitelinks are dispatched by link_function, so links sharing a url
+				// under one owner are still distinct when their functions differ. #5788
+				if (!empty($options['link_function']))
+				{
+					$countQb->where('link_function', $options['link_function']);
+				}
 			}
 			else
 			{
@@ -2492,7 +2497,7 @@ class e107plugin
 			}
 			else
 			{
-				e107::getMessage()->addDebug("Skipped inserting of sitelink. Count Qry: ".$countQry);
+				e107::getMessage()->addDebug("Skipped inserting of sitelink. Count Qry: ".$countQb->getSQL()." Params: ".json_encode($countQb->getParameters()));
 				return null;
 			}
 		}
