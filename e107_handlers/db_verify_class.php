@@ -984,6 +984,32 @@ class db_verify
 	}
 
 	/**
+	 * Resolve the base table name for a language table.
+	 *
+	 * Language tables are stored as lan_<language>_<base> (e.g. lan_dutch_news).
+	 * SQL-file definitions and derived indexes are registered under the base
+	 * name, so both getId() and getFixQuery() must normalise to it before a
+	 * lookup.
+	 *
+	 * @param string $table table name, possibly lan_<language>_ prefixed
+	 * @return string base table name
+	 */
+	private function getBaseTableName($table)
+	{
+
+		if(strpos($table, "lan_") === 0) // language table adjustment.
+		{
+			$parts = explode("_", $table, 3);
+			if(count($parts) === 3)
+			{
+				return $parts[2];
+			}
+		}
+
+		return $table;
+	}
+
+	/**
 	 * get the key ID for the current table which is being Fixed.
 	 */
 	function getId($tabl, $cur)
@@ -996,10 +1022,7 @@ class db_verify
 
 		$key = array_flip($tabl);
 
-		if(strpos($cur, "lan_") === 0) // language table adjustment.
-		{
-			list($tmp, $lang, $cur) = explode("_", $cur, 3);
-		}
+		$cur = $this->getBaseTableName($cur); // language table adjustment.
 
 		if(isset($key[$cur]))
 		{
@@ -1035,15 +1058,19 @@ class db_verify
 			// Check if this is a derived index (e.g., from e_search configurations)
 			if(!isset($fdata[$field]))
 			{
+				// Derived indexes are registered under the base table name, so a
+				// language table (lan_<language>_*) must resolve to it first.
+				$baseTable = $this->getBaseTableName($table);
+
 				// Load derived indexes on-demand (needed when runFix() is called before compare())
-				if(!isset($this->derivedIndexDefinitions[$table]))
+				if(!isset($this->derivedIndexDefinitions[$baseTable]))
 				{
-					$this->getSearchFieldIndexes($table);
+					$this->getSearchFieldIndexes($baseTable);
 				}
 
-				if(isset($this->derivedIndexDefinitions[$table][$field]))
+				if(isset($this->derivedIndexDefinitions[$baseTable][$field]))
 				{
-					$fdata[$field] = $this->derivedIndexDefinitions[$table][$field];
+					$fdata[$field] = $this->derivedIndexDefinitions[$baseTable][$field];
 				}
 			}
 
