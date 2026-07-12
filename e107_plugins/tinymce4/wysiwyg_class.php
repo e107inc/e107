@@ -679,6 +679,7 @@ class wysiwyg
 		$ret['document_base_url']		= SITEURL;
 		$ret['schema']                  = "html5";
 		$ret['element_format']          = "html";
+		$ret['pagebreak_separator']     = "[newpage]"; // emit e107's own pagination marker instead of the default <!-- pagebreak --> comment.
 
 	//	$ret['table_default_attributes'] = json_encode(array('class'=>'table table-striped' ));
 
@@ -707,6 +708,13 @@ class wysiwyg
 				$text[] = 'external_plugins: '. $this->getExternalPlugins($v);
 				continue;
 			}
+
+			if($k == 'pagebreak_separator')
+			{
+				$text[] = $k.': '.json_encode($v); // quoted JS string; convertBoolean() would treat a [...] value as a JS array literal.
+				continue;
+			}
+
 			$text[] = $k.': '.$this->convertBoolean($v);
 		}
 
