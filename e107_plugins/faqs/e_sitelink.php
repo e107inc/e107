@@ -16,6 +16,9 @@
 */
 
 if (!defined('e107_INIT')) { exit; }
+
+e107::plugLan('faqs', 'global', true); // #5738 - global LAN not autoloaded in admin (config() below uses LAN_PLUGIN_FAQS_FUNCTIONNAME).
+
 /*if(!e107::isInstalled('gsitemap'))
 { 
 	return;

@@ -11,6 +11,7 @@
 require_once(__DIR__.'/../../class2.php');
 
 e107::lan('faqs', 'admin',true);
+e107::plugLan('faqs', 'global', true); // #5738 - admin does not autoload plugin globals; LAN_PLUGIN_FAQS_* used in property defaults below.
 //TODO LANS
 class faq_admin extends e_admin_dispatcher
 {
