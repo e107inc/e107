@@ -492,6 +492,65 @@ DATA;
 
 	}
 
+	/**
+	 * A derived FULLTEXT index (from an e_search config) is registered under the
+	 * base table name, but the repair path receives the language-prefixed table
+	 * name (lan_<language>_<base>). getFixQuery() must normalise to the base name
+	 * so the derived definition is found and the full FULLTEXT clause is emitted,
+	 * not a truncated "ALTER TABLE ... ADD " that MySQL rejects with error 1064.
+	 *
+	 * @see https://github.com/e107inc/e107/issues/5797
+	 */
+	public function testGetFixQueryDerivedFulltextIndexOnLanguageTable()
+	{
+
+		// Base "news" table as declared in the SQL file: the FULLTEXT index is
+		// NOT declared inline here; it is derived from an e_search config.
+		$sqlFileData = "news_id int(10) unsigned NOT NULL auto_increment,
+  news_title varchar(200) NOT NULL default '',
+  news_body text NOT NULL,
+  PRIMARY KEY (news_id)";
+
+		// Stand in for the e_search-derived FULLTEXT indexer so the test does not
+		// depend on which plugins ship a search config. It only knows the base
+		// table "news"; the language-prefixed name resolves to nothing, mirroring
+		// production where no e_search config exists under lan_dutch_news.
+		$fakeIndexer = new class {
+			public function getIndexesForTable($tableName)
+			{
+
+				if($tableName === 'news')
+				{
+					return array(
+						'ft_news_news_title' => array(
+							'type'    => 'FULLTEXT',
+							'keyname' => 'news_title',
+							'field'   => 'ft_news_news_title',
+						),
+					);
+				}
+
+				return array();
+			}
+		};
+
+		// $this->dbv is a Codeception mock subclass, so reflect the declaring
+		// class to reach the private property rather than the mock instance.
+		$reflection = new ReflectionClass('db_verify');
+		$prop = $reflection->getProperty('fulltextIndexer');
+		$prop->setAccessible(true);
+		$prop->setValue($this->dbv, $fakeIndexer);
+
+		$actual = $this->dbv->getFixQuery('index', 'lan_dutch_news', 'ft_news_news_title', $sqlFileData);
+
+		$expected = 'ALTER TABLE `e107_lan_dutch_news` ADD FULLTEXT `ft_news_news_title` (news_title);';
+		self::assertEquals($expected, $actual);
+
+		// Guard against a regression to the empty-ADD form (issue #5797).
+		self::assertStringContainsString('FULLTEXT `ft_news_news_title` (news_title)', $actual);
+		self::assertStringEndsNotWith('ADD ', $actual);
+	}
+
 	public function testToMysql()
 	{
 
