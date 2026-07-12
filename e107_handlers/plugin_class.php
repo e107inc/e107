@@ -89,11 +89,11 @@ class e_plugin
 	protected $_core_plugins = array(
 		"_blank","admin_menu","banner","blogcalendar_menu",
 		"chatbox_menu", "comment_menu",
-		"contact", "download", "featurebox", "forum","gallery",
+		"contact", "download", "faqs", "featurebox", "forum","gallery",
 		"gsitemap", "hero", "import", "linkwords", "list_new",  "login_menu",
-		 "newforumposts_main", "news", "newsfeed",
+		"navigation", "newforumposts_main", "news", "newsfeed",
 		"newsletter","online", "page", "pm","poll",
-		"rss_menu","search_menu","siteinfo", "social", "tagcloud", "tinymce4",
+		"rss_menu","search_menu","signin","siteinfo", "social", "tagcloud", "tinymce4",
 		"user"
 	);
 
@@ -1490,11 +1490,11 @@ class e107plugin
 	protected $core_plugins = array(
 		"_blank","admin_menu","banner","blogcalendar_menu",
 		"chatbox_menu",	"comment_menu",
-		"contact", "download", "featurebox", "forum","gallery",
+		"contact", "download", "faqs", "featurebox", "forum","gallery",
 		"gsitemap","hero", "import", "linkwords", "list_new", "log", "login_menu",
-		"metaweblog", "newforumposts_main", "news", "newsfeed",
+		"metaweblog", "navigation", "newforumposts_main", "news", "newsfeed",
 		"newsletter","online", "page", "pm","poll",
-		"rss_menu","search_menu","siteinfo", "social", "tagcloud", "tinymce4",
+		"rss_menu","search_menu","signin","siteinfo", "social", "tagcloud", "tinymce4",
 		"user"
 	);
 
