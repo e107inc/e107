@@ -2125,10 +2125,19 @@ class eRouter
 	 * $router->assemble('* /* /newaction'); // (NO EMPTY SPACES) change only current action - /module/controller/newaction
 	 * $newsItem = array('news_id' => 1, 'news_sef' => 'My Title', ...); // as retrieved from DB
 	 * $router->assemble('news/view/item', $newsItem); // All unused key=>values will be removed and NOT appended as GET vars
-	 * 
+	 *
+	 * With the default options the returned URL is ready to embed directly in an
+	 * HTML/XHTML attribute: every dynamic segment is rawurlencoded (SEF path parts
+	 * here, GET values in {@see eRouter::createPathInfo()}) and the parameter
+	 * separator defaults to the already-escaped `&amp;`. Do NOT wrap the result in
+	 * {@see e_parse::toAttribute()} or htmlspecialchars(); that double-encodes the
+	 * separator to `&amp;amp;` and breaks multi-parameter URLs. For a non-HTML
+	 * context pass `array('amp' => '&')` in $options.
+	 *
 	 * @param string $route
 	 * @param array $params
 	 * @param array $options {@see eRouter::$_defaultAssembleOptions}
+	 * @return string attribute-ready URL
 	 */
 	public function assemble($route, $params = array(), $options = array())
 	{

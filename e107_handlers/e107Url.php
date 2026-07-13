@@ -46,10 +46,22 @@ class eUrl
 	}
 
 	/**
-	 * @param $route
-	 * @param $params
-	 * @param $options
-	 * @return string
+	 * Assemble a system URL, ready to embed directly in an HTML/XHTML attribute.
+	 *
+	 * With the default options the result is attribute-safe by construction:
+	 * every dynamic segment (SEF path parts and GET values) is rawurlencoded, and
+	 * the default parameter separator ({@see eRouter::$_defaultAssembleOptions}
+	 * `amp` => `&amp;`) is already HTML-escaped. Do NOT pass the result through
+	 * {@see e_parse::toAttribute()} or htmlspecialchars() - that double-encodes the
+	 * separator to `&amp;amp;` and corrupts any multi-parameter URL.
+	 *
+	 * For a non-HTML context (Location header, JSON, plain-text email) pass
+	 * `array('amp' => '&')` in $options to get a raw `&` separator instead.
+	 *
+	 * @param string       $route   e.g. `news/view/item`; {@see eRouter::assemble()} for the route syntax
+	 * @param array|string $params  route/GET parameters, or a full DB row (unused keys are dropped)
+	 * @param array|string $options {@see eRouter::$_defaultAssembleOptions}
+	 * @return string attribute-ready URL
 	 */
 	public function create($route, $params = array(), $options = array())
 	{
