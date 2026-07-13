@@ -67,11 +67,4 @@ return [
     'RSS_LAN_0' => "RSS",
     'RSS_LAN_2' => "@nospam.com",
     'RSS_LAN_3' => "noauthor@nospam.com",
-    'LAN_AL_RSS_01' => "RSS feed deleted",
-    'LAN_AL_RSS_02' => "RSS feed created",
-    'LAN_AL_RSS_03' => "RSS feed updated",
-    'LAN_AL_RSS_04' => "RSS feed imported",
-    'LAN_AL_RSS_05' => "RSS limits updated",
-    'LAN_AL_RSS_06' => "RSS settings updated",
-    'LAN_AL_RSS_07' => "",
 ];
