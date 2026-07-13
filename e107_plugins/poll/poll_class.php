@@ -580,7 +580,7 @@ class poll
 		}
 		elseif ($type == 'forum')
 		{
-			$caption = 'Post Poll'; //LAN_4 former forum
+			$caption = defset('POLLAN_POST_POLL', 'Post Poll');
 		}
 
 		if ($returnMethod)
