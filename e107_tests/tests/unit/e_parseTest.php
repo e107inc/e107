@@ -196,6 +196,80 @@ EXPECTED;
 
 	}
 
+	/**
+	 * Behaviour that must hold before and after the script/style split rewrite:
+	 * well-formed <script>/<style> blocks are handled exactly as they always were.
+	 */
+	public function testToHTMLPreservesScriptStyleHandling()
+	{
+		$tests = array(
+			// A <script> with attributes is stripped when scripts are disabled.
+			'attr script, scripts disabled'      => array(
+				'input'     => 'before<script src="x.js">bad()</script>after',
+				'modifiers' => 'scripts_off',
+				'expected'  => 'beforeafter',
+			),
+			// ...and passed through when scripts are allowed.
+			'attr script, scripts allowed'       => array(
+				'input'     => 'before<script src="x.js">bad()</script>after',
+				'modifiers' => '',
+				'expected'  => 'before<script src="x.js">bad()</script>after',
+			),
+			// Entities inside an allowed script are decoded, as before.
+			'entity script, scripts allowed'     => array(
+				'input'     => 'before<script src=&quot;x.js&quot;>bad()</script>after',
+				'modifiers' => '',
+				'expected'  => 'before<script src="x.js">bad()</script>after',
+			),
+			// A bare <script> is left untouched when scripts are allowed: the fix
+			// only changes the scripts-disabled path.
+			'bare script, scripts allowed'       => array(
+				'input'     => 'before<script>bad()</script>after',
+				'modifiers' => '',
+				'expected'  => 'before<script>bad()</script>after',
+			),
+			// Style blocks pass through unaltered.
+			'style block'                        => array(
+				'input'     => 'before<style type="text/css">.x{color:red}</style>after',
+				'modifiers' => 'scripts_off',
+				'expected'  => 'before<style type="text/css">.x{color:red}</style>after',
+			),
+			// Ordinary HTML is not disturbed.
+			'plain html'                         => array(
+				'input'     => 'before<div class="z">hi</div>after',
+				'modifiers' => 'scripts_off',
+				'expected'  => 'before<div class="z">hi</div>after',
+			),
+		);
+
+		foreach ($tests as $name => $var)
+		{
+			$result = $this->tp->toHTML($var['input'], false, $var['modifiers']);
+			self::assertSame($var['expected'], $result, "toHTML script/style: $name");
+		}
+	}
+
+	/**
+	 * Attribute-less and uppercase <script> tags must also be stripped when
+	 * scripts are disabled (e.g. USER_TITLE/USER_BODY). The previous regex split
+	 * (`<script[^>]+>`, with a case-sensitive downstream check) let a bare
+	 * `<script>` or any `<SCRIPT>` leak through the normal-text path.
+	 */
+	public function testToHTMLStripsAttributelessAndUppercaseScriptsWhenDisabled()
+	{
+		$tests = array(
+			'bare script'          => 'before<script>bad()</script>after',
+			'uppercase bare script'=> 'before<SCRIPT>bad()</SCRIPT>after',
+			'uppercase attr script'=> 'before<SCRIPT SRC="x.js">bad()</SCRIPT>after',
+		);
+
+		foreach ($tests as $name => $input)
+		{
+			$result = $this->tp->toHTML($input, false, 'scripts_off');
+			self::assertSame('beforeafter', $result, "toHTML must strip $name when scripts are disabled");
+		}
+	}
+
 	/*
 			public function testUstrpos()
 			{

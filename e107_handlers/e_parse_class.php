@@ -1781,19 +1781,20 @@ class e_parse
 			// Do the 'normal' processing - in principle, as previously - but think about the order.
 			if ($proc_funcs && !empty($full_text)) // some more speed
 			{
-				// Split out and ignore any scripts and style blocks. With just two choices we can match the closing tag in the regex
-				$subcon = preg_split('#((?:<s)(?:cript[^>]+>.*?</script>|tyle[^>]+>.*?</style>))#mis', $full_text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
-				foreach ($subcon as $sub_blk)
+				// Split out <script>/<style> blocks so they are stripped or passed
+				// through verbatim, never run through the normal text processing.
+				foreach ($this->splitScriptStyle($full_text) as $block)
 				{
+					list($type, $sub_blk) = $block;
 
-					if (strpos($sub_blk, '<script') === 0) // Strip scripts unless permitted
+					if ($type === 'script') // Strip scripts unless permitted
 					{
 						if ($opts['scripts'])
 						{
 							$ret_parser .= html_entity_decode($sub_blk, ENT_QUOTES);
 						}
 					}
-					elseif (strpos($sub_blk, '<style') === 0)
+					elseif ($type === 'style')
 					{
 						// Its a style block - just pass it through unaltered - except, do we need the line break stuff? - QUERY XXX-01
 						$ret_parser .= $sub_blk;
@@ -1801,18 +1802,6 @@ class e_parse
 					else
 					{
 						// Do 'normal' processing on a chunk
-
-
-						// Could put tag stripping in here
-
-						/*
-												//	Line break compression - filter white space after HTML tags - among other things, ensures HTML tables display properly
-												// Hopefully now achieved by other means
-												if ($convertNL && !$opts['nobreak'])
-												{
-													$sub_blk = preg_replace("#>\s*[\r]*\n[\r]*#", ">", $sub_blk);
-												}
-						*/
 
 						//	Link substitution
 						// Convert URL's to clickable links, unless modifiers or prefs override
@@ -1844,6 +1833,95 @@ class e_parse
 		$ret_parser = str_replace($srch, $repl, $ret_parser);
 
 		return trim($ret_parser);
+	}
+
+
+	/**
+	 * Separate top-level <script> and <style> blocks from the surrounding markup.
+	 *
+	 * {@see e_parse::toHTML()} must strip or pass these blocks through verbatim
+	 * instead of running the normal text processing over their contents. This
+	 * replaces a single fragile regex (`<script[^>]+>`) that silently missed
+	 * attribute-less tags such as a bare `<script>` (and, because the downstream
+	 * check was case-sensitive, any `<SCRIPT>`), letting them leak through the
+	 * normal-text path even when scripts were disabled.
+	 *
+	 * @param string $html
+	 * @return array[] ordered [type, chunk] pairs where type is 'script', 'style' or 'text'
+	 */
+	private function splitScriptStyle($html)
+	{
+		$blocks = array();
+		$length = strlen($html);
+		$pos = 0;        // scan cursor
+		$textStart = 0;  // start of the pending run of normal text
+
+		while (($lt = strpos($html, '<', $pos)) !== false)
+		{
+			$tag = $this->scriptStyleStartTag($html, $lt);
+			if ($tag === false)
+			{
+				$pos = $lt + 1;
+				continue;
+			}
+
+			// Find the matching close tag. Browsers treat an unclosed
+			// <script>/<style> as running to the end of input, so do the same.
+			$close = stripos($html, '</' . $tag, $lt + 1);
+			if ($close === false)
+			{
+				$end = $length;
+			}
+			else
+			{
+				$gt = strpos($html, '>', $close);
+				$end = ($gt === false) ? $length : $gt + 1;
+			}
+
+			if ($lt > $textStart)
+			{
+				$blocks[] = array('text', substr($html, $textStart, $lt - $textStart));
+			}
+			$blocks[] = array($tag, substr($html, $lt, $end - $lt));
+
+			$pos = $end;
+			$textStart = $end;
+		}
+
+		if ($textStart < $length)
+		{
+			$blocks[] = array('text', substr($html, $textStart));
+		}
+
+		return $blocks;
+	}
+
+
+	/**
+	 * Test whether the `<` at $offset opens a <script> or <style> start tag.
+	 *
+	 * The tag name must be followed by a delimiter (`>`, `/` or whitespace) so a
+	 * name such as `<scripting>` is not mistaken for a script tag.
+	 *
+	 * @param string $html
+	 * @param int    $offset position of a `<` within $html
+	 * @return string|false 'script', 'style', or false
+	 */
+	private function scriptStyleStartTag($html, $offset)
+	{
+		foreach (array('script', 'style') as $tag)
+		{
+			if (strcasecmp(substr($html, $offset + 1, strlen($tag)), $tag) !== 0)
+			{
+				continue;
+			}
+			$next = (string) substr($html, $offset + 1 + strlen($tag), 1);
+			if ($next === '>' || $next === '/' || ($next !== '' && ctype_space($next)))
+			{
+				return $tag;
+			}
+		}
+		return false;
 	}
 
 
