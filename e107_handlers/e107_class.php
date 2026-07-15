@@ -3973,6 +3973,7 @@ class e107
 
 		$wrapper = strtoupper($id).'_WRAPPER'; // see contact_template.php
 		$wrapperRegPath = 'templates/wrapper/'.$id;
+		$sourceRegPath = 'templates/source/'.$path;
 
 		// Use: list($pre,$post) = explode("{---}",$text,2);
 
@@ -3980,37 +3981,55 @@ class e107
 
 		if(self::getRegistry($regPath) === null)
 		{
-			(deftrue('E107_DEBUG_LEVEL') ? include_once($path) : @include_once($path));
-			self::setRegistry($regPath, (isset($$var) ? $$var : array()));
+			// One physical file can back several registry paths, e.g. the override ('/ext')
+			// and non-override flavours when the theme provides no override, but include_once()
+			// populates $$var only on the first inclusion. What the file defines is therefore
+			// captured once per $path and re-read for every later registry path it backs.
+			$source = self::getRegistry($sourceRegPath);
+
+			if($source === null)
+			{
+				(deftrue('E107_DEBUG_LEVEL') ? include_once($path) : @include_once($path));
+				$source = array(
+					'template' => (isset($$var) ? $$var : array()),
+					'info'     => (isset($$var_info) && is_array($$var_info) ? $$var_info : array()),
+					'sc_style' => (isset($SC_WRAPPER) ? $SC_WRAPPER : null),
+					'wrapper'  => (isset($$wrapper) && !empty($$wrapper) && is_array($$wrapper) ? $$wrapper : null),
+				);
+				self::setRegistry($sourceRegPath, $source);
+			}
+
+			self::setRegistry($regPath, $source['template']);
 
 			// sc_style not a global anymore and uppercase
 
             // Fix template merge issue - no-wrapper sent to avoid sc wrappers confusions
             if(!$noWrapper)
             {
-                if(isset($SC_WRAPPER))
+                if($source['sc_style'] !== null)
                 {
                     if(E107_DBG_BBSC)
                     {
-                        self::getMessage()->addDebug("Found deprecated \$SC_WRAPPER: ".print_a($SC_WRAPPER, true));
+                        self::getMessage()->addDebug("Found deprecated \$SC_WRAPPER: ".print_a($source['sc_style'], true));
                     }
-                    self::scStyle($SC_WRAPPER);
+                    self::scStyle($source['sc_style']);
                 }
 
                 // ID_WRAPPER support
-                if(isset($$wrapper) && !empty($$wrapper) && is_array($$wrapper))
+                if($source['wrapper'] !== null)
                 {
                     if(E107_DBG_BBSC)
                     {
                         self::getMessage()->addDebug("Found ID wrapper: ".$wrapper);
                     }
-                    self::setRegistry($wrapperRegPath, $$wrapper);
+                    self::setRegistry($wrapperRegPath, $source['wrapper']);
                 }
             }
 		}
 		if(self::getRegistry($regPathInfo) === null)
 		{
-			self::setRegistry($regPathInfo, (isset($$var_info) && is_array($$var_info) ? $$var_info : array()));
+			$source = self::getRegistry($sourceRegPath);
+			self::setRegistry($regPathInfo, (is_array($source) && isset($source['info']) ? $source['info'] : array()));
 		}
 
 		$ret = (!$info ? self::getRegistry($regPath) : self::getRegistry($regPathInfo));
