@@ -1310,27 +1310,11 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		 */
 		if ($sortlist == TRUE)
 		{
-			$temp = $e107_vars;
-			unset($e107_vars);
-			$func_list = array();
-			foreach (array_keys($temp) as $key)
+			$e107_vars = array_values($e107_vars);
+			eShims::usort($e107_vars, function ($a, $b)
 			{
-				$func_list[] = $temp[$key]['text'];
-			}
-	
-			usort($func_list, 'strcoll');
-	
-			foreach ($func_list as $func_text)
-			{
-				foreach (array_keys($temp) as $key)
-				{
-					if ($temp[$key]['text'] == $func_text)
-					{
-						$e107_vars[] = $temp[$key];
-					}
-				}
-			}
-			unset($temp);
+				return strcoll((string) varset($a['text']), (string) varset($b['text']));
+			});
 		}
 	
 		if(empty($e107_vars))
