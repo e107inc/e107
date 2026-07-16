@@ -8,6 +8,8 @@
  *
  */
 
+use e107\Database\QueryBuilder;
+
 if (!defined('e107_INIT')) { exit; }
 e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_sitelinks.php');
 
@@ -29,6 +31,53 @@ class sitelinks
 
 
 	/**
+	 * Build the shared sitelink query: all links visible to the current user's
+	 * classes, optionally restricted to a category. Caller appends ORDER BY and
+	 * the fetch terminal.
+	 *
+	 * @param int $cat category id; 0/negative means "all categories"
+	 * @return QueryBuilder a SELECT builder against the links table
+	 */
+	private function buildLinksQuery($cat = 1)
+	{
+		$classList = explode(',', USERCLASS_LIST);
+
+		$qb = e107::getDb('sqlSiteLinks')->createQueryBuilder();
+		$qb->select('*')->from('links');
+
+		if((int) $cat > 0)
+		{
+			$qb->where('link_category', (int) $cat);
+		}
+
+		$expr = $qb->expr();
+
+		// ABS(link_class) NOT IN (...): ABS() is not a plain identifier, so build
+		// the fragment with each class value bound. Empty list => always-true (1=1),
+		// matching the legacy SQL where USERCLASS_LIST is never empty in practice.
+		if($classList)
+		{
+			$placeholders = array();
+			foreach($classList as $class)
+			{
+				$placeholders[] = $qb->createNamedParameter($class);
+			}
+			$absNotIn = 'ABS('.$qb->quoteColumn('link_class').') NOT IN ('.implode(', ', $placeholders).')';
+		}
+		else
+		{
+			$absNotIn = '1=1';
+		}
+
+		$qb->where($expr->anyOf(
+			$expr->allOf($expr->gte('link_class', 0), $expr->in('link_class', $classList)),
+			$expr->allOf($expr->lt('link_class', 0), $absNotIn)
+		));
+
+		return $qb;
+	}
+
+	/**
 	 * @param $cat
 	 * @return void
 	 */
@@ -36,12 +85,12 @@ class sitelinks
 	{
 
 		$this->eLinkList = array(); // clear the array in case getlinks is called 2x on the same page.
-		$sql = e107::getDb('sqlSiteLinks');
-		$ins = ($cat > 0) ? "link_category = ". (int) $cat ." AND " : "";
-		$query = "SELECT * FROM #links WHERE ".$ins."  ((link_class >= 0 AND link_class IN (".USERCLASS_LIST.")) OR (link_class < 0 AND ABS(link_class) NOT IN (".USERCLASS_LIST.")) ) ORDER BY link_order ASC";
-		if($sql->gen($query))
+		$qb = $this->buildLinksQuery($cat);
+		$qb->orderBy('link_order', 'ASC');
+		$rows = $qb->fetchAll();
+		if($rows)
 		{
-			while ($row = $sql->fetch())
+			foreach ($rows as $row)
 			{
 
 				
@@ -1710,16 +1759,58 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 	 * --------------- CODE-EFFICIENT APPROACH -------------------------
 	 * FIXME syscache
 	 */
+	/**
+	 * Build the base "links" query (visibility-filtered) shared by this class's
+	 * data methods. Mirrors sitelinks::buildLinksQuery(); every value is bound.
+	 *
+	 * @param int $cat link_category, or 0 for all
+	 * @return QueryBuilder
+	 */
+	private function buildLinksQuery($cat = 1)
+	{
+		$classList = explode(',', USERCLASS_LIST);
+
+		$qb = e107::getDb('sqlSiteLinks')->createQueryBuilder();
+		$qb->select('*')->from('links');
+
+		if((int) $cat > 0)
+		{
+			$qb->where('link_category', (int) $cat);
+		}
+
+		$expr = $qb->expr();
+
+		// ABS(link_class) NOT IN (...): ABS() is not a plain identifier, so build
+		// the fragment with each class value bound. Empty list => always-true (1=1).
+		if($classList)
+		{
+			$placeholders = array();
+			foreach($classList as $class)
+			{
+				$placeholders[] = $qb->createNamedParameter($class);
+			}
+			$absNotIn = 'ABS('.$qb->quoteColumn('link_class').') NOT IN ('.implode(', ', $placeholders).')';
+		}
+		else
+		{
+			$absNotIn = '1=1';
+		}
+
+		$qb->where($expr->anyOf(
+			$expr->allOf($expr->gte('link_class', 0), $expr->in('link_class', $classList)),
+			$expr->allOf($expr->lt('link_class', 0), $absNotIn)
+		));
+
+		return $qb;
+	}
+
 	public function initData($cat=1, $opt=array())
-	{	
-		$sql 		= e107::getDb('sqlSiteLinks');
-
-		$ins = ($cat > 0) ? " link_category = ". (int) $cat ." AND " : "";
-
-		$query 		= "SELECT * FROM #links WHERE ".$ins." ((link_class >= 0 AND link_class IN (".USERCLASS_LIST.")) OR (link_class < 0 AND ABS(link_class) NOT IN (".USERCLASS_LIST.")) ) ORDER BY link_order,link_parent ASC";
+	{
+		$qb = $this->buildLinksQuery($cat);
+		$qb->orderBy('link_order', 'ASC')->addOrderBy('link_parent', 'ASC');
 
 		$outArray 	= array();
-		$data 		= $sql->retrieve($query,true);
+		$data 		= $qb->fetchAll();
 
 
 		$ret = $this->compile($data, $outArray);

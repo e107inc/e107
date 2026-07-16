@@ -50,18 +50,18 @@ class wordpress_import extends base_import_class
 	
 	function config()
 	{
-		$sql = e107::getDb();
-		
-		$sql->select('user','user_id, user_name','user_admin = 1');
-		
 		$adminList = array();
-		
+
 		$adminList[0] = "Default";
-		
-		while($row = $sql->fetch())
+
+		$rows = e107::getDb()->createQueryBuilder()
+			->select('user_id', 'user_name')->from('user')
+			->where('user_admin', 1)
+			->fetchAll();
+		foreach($rows as $row)
 		{
 			$id = $row['user_id'];
-			$adminList[$id] = $row['user_name'];	
+			$adminList[$id] = $row['user_name'];
 		}
 		$frm = e107::getForm();
 		

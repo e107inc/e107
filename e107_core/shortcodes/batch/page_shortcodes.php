@@ -31,7 +31,8 @@ class cpage_shortcodes extends e_shortcode
 	{
 		parent::__construct();
 		
-		$books = e107::getDb()->retrieve("SELECT * FROM #page_chapters ORDER BY chapter_id ASC" , true);
+		$books = e107::getDb()->createQueryBuilder()->select('*')->from('page_chapters')
+			->orderBy('chapter_id', 'ASC')->fetchAll();
 				
 		foreach($books as $row)
 		{

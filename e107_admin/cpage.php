@@ -231,11 +231,13 @@ class page_chapters_ui extends e_admin_ui
 				$this->fields['chapter_sef']['help'] = 'May also be used in shortcode {CHAPTER_MENUS: name=x}';
 			}
 
-			$sql = e107::getDb();
-			$sql->gen("SELECT chapter_id,chapter_name FROM #page_chapters WHERE chapter_parent =0");
+			$rows = e107::getDb()->createQueryBuilder()
+				->select('chapter_id', 'chapter_name')->from('page_chapters')
+				->where('chapter_parent', 0)
+				->fetchAll();
 			$this->books[0] = CUSLAN_5;
-			
-			while($row = $sql->fetch())
+
+			foreach($rows as $row)
 			{
 				$bk = $row['chapter_id'];
 				$this->books[$bk] = $row['chapter_name'];
@@ -274,7 +276,8 @@ class page_chapters_ui extends e_admin_ui
 			
 			$sef = e107::getParser()->toDB($new_data['chapter_sef']);
 			
-			if(e107::getDb()->count('page_chapters', '(*)', "chapter_sef='{$sef}'"))
+			if(e107::getDb()->createQueryBuilder()->from('page_chapters')
+				->where('chapter_sef', $sef)->count())
 			{
 				e107::getMessage()->addError(CUSLAN_57);
 				return false;
@@ -730,7 +733,8 @@ class page_admin_ui extends e_admin_ui
 				if($key)
 				{
 					//e107::getDb()->update('page',"menu_name = '' WHERE page_id=".intval($key)." LIMIT 1");
-					e107::getDb()->delete('page',"page_id=".intval($key));
+					e107::getDb()->createQueryBuilder()->delete('page')
+						->where('page_id', (int) $key)->execute();
 				}
 			}
 
@@ -824,10 +828,12 @@ class page_admin_ui extends e_admin_ui
 			
 			$this->prefs['listBooksTemplate']['writeParms'] = $tmpl; 
 			
-			$sql = e107::getDb();
-
-			$sql->gen("SELECT chapter_id,chapter_name,chapter_parent, chapter_sef, chapter_fields FROM #page_chapters ORDER BY chapter_parent asc, chapter_order");
-			while($row = $sql->fetch())
+			$rows = e107::getDb()->createQueryBuilder()
+				->select('chapter_id', 'chapter_name', 'chapter_parent', 'chapter_sef', 'chapter_fields')
+				->from('page_chapters')
+				->orderBy('chapter_parent', 'asc')->addOrderBy('chapter_order')
+				->fetchAll();
+			foreach($rows as $row)
 			{
 				$cat = $row['chapter_id'];
 
@@ -930,9 +936,22 @@ class page_admin_ui extends e_admin_ui
 			e107::getCustomFields()->setAdminUIConfig('page_fields',$this);
 		}
 
+		/**
+		 * Fetch the page_chapter and page_fields columns for the current page id.
+		 *
+		 * @return array associative row, or empty array when no row.
+		 */
+		private function getPageChapterFields()
+		{
+			return e107::getDb()->createQueryBuilder()
+				->select('page_chapter', 'page_fields')->from('page')
+				->where('page_id', (int) $this->getId())
+				->fetchRow();
+		}
+
 		private function loadCustomFieldsData()
 		{
-			$row = e107::getDb()->retrieve('page', 'page_chapter, page_fields', 'page_id='.$this->getId());
+			$row = $this->getPageChapterFields();
 
 			$cf = e107::getCustomFields();
 
@@ -959,7 +978,7 @@ class page_admin_ui extends e_admin_ui
 
 			parent::EditObserver();
 
-			$row = e107::getDb()->retrieve('page', 'page_chapter, page_fields', 'page_id='.$this->getId());
+			$row = $this->getPageChapterFields();
 			$chap = intval($row['page_chapter']);
 
 			$this->initCustomFields($chap);
@@ -1058,23 +1077,23 @@ class page_admin_ui extends e_admin_ui
 		function afterCreate($new_data, $old_data, $id)
 		{
 			$tp = e107::getParser();
-			$sql = e107::getDb();
 			$mes = e107::getMessage();
-			
+
 			$menu_name = $tp->toDB($new_data['menu_name']); // not to be confused with menu-caption.
 			$menu_path = intval($id);
-				
-			if (!$sql->select('menus', 'menu_name', "`menu_path` = ".$menu_path." LIMIT 1")) 	
-			{		
+
+			if (!e107::getDb()->createQueryBuilder()->from('menus')
+				->where('menu_path', $menu_path)->count())
+			{
 				$insert = array('menu_name' => $menu_name, 'menu_path' => $menu_path);
-			
-				if($sql->insert('menus', $insert) !== false)
+
+				if(e107::getDb()->createQueryBuilder()->insert('menus')->valuesTyped($insert, e107::getDb()->getFieldDefs('menus')['_FIELD_TYPES'])->execute() !== false)
 				{
 					$mes->addDebug(CUSLAN_73);
 					return true;
 				}
-			}	
-			
+			}
+
 			return $new_data;
 			
 		}
@@ -1115,16 +1134,17 @@ class page_admin_ui extends e_admin_ui
 				return false;
 			}
 
-			if(e107::getDb()->count('page', '(*)', "page_sef='{$sef}'"))
+			if(e107::getDb()->createQueryBuilder()->from('page')
+				->where('page_sef', $sef)->count())
 			{
 				e107::getMessage()->addError(CUSLAN_57);
 				return false;
 			}
 
 
-			return $new_data;	
+			return $new_data;
 		}
-		
+
 		function beforeUpdate($new_data,$old_data, $id)
 		{
 
@@ -1148,29 +1168,30 @@ class page_admin_ui extends e_admin_ui
 		function afterUpdate($new_data, $old_data, $id)
 		{
 			$tp = e107::getParser();
-			$sql = e107::getDb();
 			$mes = e107::getMessage();
 
 			if(!isset($new_data['menu_name']))
 			{
 				return true;
 			}
-					
+
 			$menu_name = $tp->toDB($new_data['menu_name']); // not to be confused with menu-caption.
-				
-			if ($sql->select('menus', 'menu_name', "`menu_path` = ".$id." LIMIT 1")) 	
-			{		
-				if($sql->update('menus', "menu_name='{$menu_name}' WHERE menu_path=".$id." ") !== false)
+
+			if (e107::getDb()->createQueryBuilder()->from('menus')
+				->where('menu_path', $id)->count())
+			{
+				if(e107::getDb()->createQueryBuilder()->update('menus')
+					->set('menu_name', $menu_name)->where('menu_path', $id)->execute() !== false)
 				{
 					$mes->addDebug(CUSLAN_74);
 					return true;
 				}
 			}
-			else // missing menu record so create it.  
+			else // missing menu record so create it.
 			{
 				$mes->addDebug(CUSLAN_75." ".$id);
 				return $this->afterCreate($new_data,$old_data,$id);
-				
+
 			}
 		}
 
@@ -1179,11 +1200,11 @@ class page_admin_ui extends e_admin_ui
 
 		public function afterDelete($deleted_data, $id, $deleted_check)
 		{
-			$sql = e107::getDb();
-
-			if ($sql->select('menus', 'menu_name', "`menu_path` = ".$id." LIMIT 1"))
+			if (e107::getDb()->createQueryBuilder()->from('menus')
+				->where('menu_path', $id)->count())
 			{
-				if($sql->delete('menus', " menu_path=".intval($id)." ") !== false)
+				if(e107::getDb()->createQueryBuilder()->delete('menus')
+					->where('menu_path', (int) $id)->execute() !== false)
 				{
 					e107::getMessage()->addDebug(CUSLAN_76."".$id." ".CUSLAN_77);
 					return true;

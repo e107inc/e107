@@ -98,13 +98,15 @@ class cron_admin_ui extends e_admin_ui
 				$this->setCronPwd();
 			}
 			
-			$sql->gen("SELECT cron_function,cron_active FROM #cron ");
-			while($row = $sql->fetch())
+			$rows = $sql->createQueryBuilder()
+				->select('cron_function', 'cron_active')->from('cron')
+				->fetchAll();
+			foreach($rows as $row)
 			{
 				$this->curCrons[] = $row['cron_function'];
 				if($row['cron_active']==1)
 				{
-					$this->activeCrons++;	
+					$this->activeCrons++;
 				}
 			}
 			
@@ -280,17 +282,35 @@ class cron_admin_ui extends e_admin_ui
 			
 			if(in_array($insert['cron_function'],$this->curCrons))
 			{
-				return;			
+				return;
 			}
-			
-			if(!$sql->insert('cron',$insert))
+
+			$defs = $sql->getFieldDefs('cron');
+			$fieldTypes = isset($defs['_FIELD_TYPES']) ? $defs['_FIELD_TYPES'] : array();
+
+			// Honour NOT NULL columns the legacy array insert auto-filled (e.g. cron_lastrun).
+			if(isset($defs['_NOTNULL']) && is_array($defs['_NOTNULL']))
+			{
+				foreach($defs['_NOTNULL'] as $field => $default)
+				{
+					if(!isset($insert[$field]))
+					{
+						$insert[$field] = $default;
+					}
+				}
+			}
+
+			$result = $sql->createQueryBuilder()->insert('cron')
+				->valuesTyped($insert, $fieldTypes)->execute();
+
+			if($result === false)
 			{
 				e107::getMessage()->addDebug(LAN_CRON_6);
 			}
 			else
 			{
-				e107::getMessage()->add(LAN_CRON_8.": ".$insert['cron_function'], E_MESSAGE_INFO); 
-			}	
+				e107::getMessage()->add(LAN_CRON_8.": ".$insert['cron_function'], E_MESSAGE_INFO);
+			}
 		}
 		
 		
@@ -306,16 +326,26 @@ class cron_admin_ui extends e_admin_ui
 			$sql = e107::getDb();
 			
 			$cron_function = $insert['cron_function'];
-			unset($insert['cron_function']);
-					
-			if($sql->update('cron',$insert)===FALSE)
+			unset($insert['cron_function'], $insert['WHERE']);
+
+			$defs = $sql->getFieldDefs('cron');
+			$fieldTypes = isset($defs['_FIELD_TYPES']) ? $defs['_FIELD_TYPES'] : array();
+
+			$qb = $sql->createQueryBuilder()->update('cron');
+			foreach($insert as $col => $val)
+			{
+				$type = isset($fieldTypes[$col]) ? $fieldTypes[$col] : (isset($fieldTypes['_DEFAULT']) ? $fieldTypes['_DEFAULT'] : 'string');
+				$qb->setTyped($col, $val, $type);
+			}
+
+			if($qb->where('cron_function', $cron_function)->execute() === false)
 			{
 				e107::getMessage()->add(LAN_CRON_7, E_MESSAGE_ERROR);
 			}
 			else
-			{			
+			{
 				e107::getMessage()->add(LAN_CRON_8.$cron_function, E_MESSAGE_INFO);
-			}	
+			}
 		}
 		
 		
@@ -425,11 +455,14 @@ class cron_admin_ui extends e_admin_ui
 			$sql = e107::getDb();
 			$class_func = '';
 
-			if($sql->select("cron","cron_name,cron_function","cron_id = ".intval($cron_id)))
+			$row = $sql->createQueryBuilder()
+				->select('cron_name', 'cron_function')->from('cron')
+				->where('cron_id', (int) $cron_id)
+				->fetchRow();
+			if($row)
 			{
-				$row = $sql->fetch();
 				$class_func = $row['cron_function'];
-				$cron_name = $row['cron_name'];	
+				$cron_name = $row['cron_name'];
 			}
 			
 			if(!$class_func)

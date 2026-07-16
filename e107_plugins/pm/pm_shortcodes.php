@@ -702,7 +702,10 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 		public function sc_pm_blocked_senders_manage()
 		{
 			$sql = e107::getDb();
-			$count = $sql->count('private_msg_block', '(*)', 'WHERE `pm_block_to` = '.USERID);
+			$count = $sql->createQueryBuilder()
+				->from('private_msg_block')
+				->where('pm_block_to', USERID)
+				->count();
 			if (!$count) return '';
 			return LAN_PM_66;
 		}

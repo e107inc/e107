@@ -16,7 +16,6 @@ defined('MYSQL_BOTH') or define('MYSQL_BOTH', 3);
 
 require_once('e_db_interface.php');
 require_once('e_db_legacy_trait.php');
-require_once('e_db_common_trait.php');
 
 /**
  * PDO MySQL class. All legacy mysql_ methods removed.

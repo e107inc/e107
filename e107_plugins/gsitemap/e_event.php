@@ -66,17 +66,21 @@ class gsitemap_event // plugin-folder + '_event'
 		$tp = e107::getParser();
 		$id = (int) $data['id'];
 
-		$update = array(
-			'gsitemap_url' => $url,
-			'WHERE' => "gsitemap_plugin = '".$tp->filter($data['plugin'])."' 
-				AND gsitemap_table = '".$tp->filter($data['table'])."' 
-				AND gsitemap_table_id = ".$id
-		);
-
 		// todo LAN
 		$message = e107::getParser()->lanVars("Updating sitemap link for #[x] to [y]. ", array($id,$url), true);
 
-		if(e107::getDb()->update('gsitemap', $update)!==false)
+		$db = e107::getDb();
+		$fieldDefs = $db->getFieldDefs('gsitemap');
+		$fieldTypes = isset($fieldDefs['_FIELD_TYPES']) ? $fieldDefs['_FIELD_TYPES'] : array();
+
+		$updated = $db->createQueryBuilder()->update('gsitemap')
+			->valuesTyped(array('gsitemap_url' => $url), $fieldTypes)
+			->where('gsitemap_plugin', $tp->filter($data['plugin']))
+			->where('gsitemap_table', $tp->filter($data['table']))
+			->where('gsitemap_table_id', $id)
+			->execute();
+
+		if($updated !== false)
 		{
 			e107::getMessage()->addSuccess($message);
 		}

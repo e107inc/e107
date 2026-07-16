@@ -45,7 +45,12 @@ class joomla_import extends base_import_class
 	    switch ($task)
 		{
 		  case 'users' :
-		    $result = $this->ourDB->gen("SELECT * FROM {$this->DBPrefix}users");
+			// Permanent cross-database boundary (T4, dynamic identifier): $this->DBPrefix is `database`.prefix for the
+			// external (Joomla) DB, validated fail-closed in base_import_class::database(). The
+			// builder resolves only its own prefix/db by design, so its logical from() cannot express a foreign-DB/custom-prefix table reference,
+			// and the result set is consumed statefully via $this->ourDB->fetch() in getNext();
+			// keep the sanctioned bound execute() (no values to bind; === FALSE = query error only).
+		    $result = $this->ourDB->execute("SELECT * FROM {$this->DBPrefix}users");
 			if ($result === FALSE) return FALSE;
 			break;
 		  default :

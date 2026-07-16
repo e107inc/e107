@@ -8,14 +8,26 @@
  *
  */
 
+namespace e107\Database;
+
+use db_verify;
+use e107;
+use e107\Database\Platform\MysqlPlatform;
+use e107\Database\Platform\PlatformInterface;
+use e107\Database\Schema\Column;
+use e107\Database\Schema\Index;
+use e107\Database\Schema\SchemaBuilder;
+use e107_db_debug;
+use PDO;
+
 /**
- * Code shared verbatim by the two e_db backends ({@see e_db_pdo} and
+ * Code shared verbatim by the two ConnectionInterface backends ({@see e_db_pdo} and
  * {@see e_db_mysql}).
  *
  * Before this trait existed, these methods were maintained as duplicated
  * copies in both classes and drifted apart over time. Every method here is
  * driver-agnostic: anything it needs from the driver goes through methods
- * the backends implement themselves (e.g. {@see e_db::fetch()},
+ * the backends implement themselves (e.g. {@see ConnectionInterface::fetch()},
  * db_Query(), _escape()). A trait rather than a base class so the legacy
  * `class db extends ...` BC shims remain untouched.
  *
@@ -23,9 +35,9 @@
  * surfaces aligned; this trait is what makes most of that surface a single
  * implementation.
  */
-trait e_db_common
+trait ConnectionTrait
 {
-	/** @var e_db_platform|null lazily created SQL dialect object */
+	/** @var PlatformInterface|null lazily created SQL dialect object */
 	private     $platform = null;
 
 	private     $pdoBind        = false;
@@ -109,53 +121,129 @@ trait e_db_common
 	}
 
 	/**
+	 * Resolve a logical e107 table name to its physical name applying the
+	 * database prefix only, never the multi-language lan_* routing that
+	 * {@see ConnectionInterface::resolveTableName()} performs.
+	 *
+	 * Schema-maintenance tooling (db_verify, db_table_admin) addresses the
+	 * literal table it parsed from a schema file and does its own language-table
+	 * handling; routing such DDL would silently retarget it on multi-language
+	 * sites. This resolver gives those callers the prefixed physical name with
+	 * the same fail-closed identifier grammar.
+	 *
+	 * @param string $table table name with or without a leading '#'
+	 * @return string|false physical table name (unquoted, prefix only), or false
+	 *                      when the name is not a valid identifier
+	 */
+	public function resolvePhysicalTableName($table)
+	{
+		$table = ltrim((string) $table, '#');
+
+		if(!preg_match('/^[A-Za-z0-9_]+$/D', $table))
+		{
+			return false;
+		}
+
+		return $this->mySQLPrefix.$table;
+	}
+
+	/**
 	 * Validate and backtick-quote an SQL identifier (`column` or `table.column`).
-	 * Fails closed: anything outside the {@see e_db_filter::identifier()} grammar returns false.
+	 * Fails closed: anything outside the {@see IdentifierFilter::identifier()} grammar returns false.
 	 *
 	 * @param string $identifier
 	 * @return string|false
 	 */
 	public function quoteIdentifier($identifier)
 	{
-		if(!class_exists('e_db_filter'))
+		if(!class_exists(IdentifierFilter::class))
 		{
-			require_once(__DIR__.'/e_db_filter_class.php');
+			require_once(__DIR__.'/IdentifierFilter.php');
 		}
 
-		return e_db_filter::identifier($identifier);
+		return IdentifierFilter::identifier($identifier);
 	}
 
 	/**
 	 * Create a fluent query builder bound to this connection; the full
-	 * contract is documented at {@see e_db::createQueryBuilder()}.
+	 * contract is documented at {@see ConnectionInterface::createQueryBuilder()}.
 	 *
-	 * @return e_db_query
+	 * @return QueryBuilder
 	 */
 	public function createQueryBuilder()
 	{
-		if(!class_exists('e_db_query'))
+		if(!class_exists(QueryBuilder::class))
 		{
-			require_once(__DIR__.'/e_db_query_class.php');
+			// QueryBuilder hard-depends on SqlFragment (typed fragments) and ExpressionBuilder
+			// (its expression helper, extracted to its own file); load them too so
+			// the builder stays usable where the class autoloader is not active.
+			if(!class_exists(SqlFragment::class))
+			{
+				require_once(__DIR__.'/SqlFragment.php');
+			}
+
+			if(!class_exists(ExpressionBuilder::class))
+			{
+				require_once(__DIR__.'/ExpressionBuilder.php');
+			}
+
+			require_once(__DIR__.'/QueryBuilder.php');
 		}
 
-		return new e_db_query($this);
+		return new QueryBuilder($this);
+	}
+
+	/**
+	 * Create a schema/DDL builder bound to this connection; the full contract is
+	 * documented at {@see ConnectionInterface::createSchemaBuilder()}.
+	 *
+	 * @return SchemaBuilder
+	 */
+	public function createSchemaBuilder()
+	{
+		if(!class_exists(SchemaBuilder::class))
+		{
+			// SchemaBuilder accepts vouched SqlFragment fragments and structured
+			// Column/Index value objects; load them too so the builder
+			// stays usable where the class autoloader is not active.
+			if(!class_exists(SqlFragment::class))
+			{
+				require_once(__DIR__.'/SqlFragment.php');
+			}
+
+			require_once(__DIR__.'/Schema/Column.php');
+			require_once(__DIR__.'/Schema/Index.php');
+			require_once(__DIR__.'/Schema/SchemaBuilder.php');
+		}
+
+		return new SchemaBuilder($this);
+	}
+
+	/**
+	 * Shorthand for {@see ConnectionInterface::createSchemaBuilder()}.
+	 *
+	 * @return SchemaBuilder
+	 */
+	public function schema()
+	{
+		return $this->createSchemaBuilder();
 	}
 
 	/**
 	 * SQL dialect of this connection, consulted by the query builder.
 	 *
-	 * @return e_db_platform
+	 * @return PlatformInterface
 	 */
 	public function getPlatform()
 	{
 		if($this->platform === null)
 		{
-			if(!class_exists('e_db_platform_mysql'))
+			if(!class_exists(MysqlPlatform::class))
 			{
-				require_once(__DIR__.'/e_db_platform_class.php');
+				require_once(__DIR__.'/Platform/MysqlPlatform.php');
 			}
 
-			$this->platform = new e_db_platform_mysql();
+			$this->platform = new MysqlPlatform();
 		}
 
 		return $this->platform;
@@ -195,37 +283,36 @@ trait e_db_common
 	 * Pick the bind type for an execute() parameter given as a plain value.
 	 *
 	 * @param mixed $value
-	 * @return int e_db::PARAM_*
+	 * @return int ConnectionInterface::PARAM_*
 	 */
 	private function _detectParamType($value)
 	{
 		if($value === null)
 		{
-			return e_db::PARAM_NULL;
+			return ConnectionInterface::PARAM_NULL;
 		}
 
 		if(is_int($value))
 		{
-			return e_db::PARAM_INT;
+			return ConnectionInterface::PARAM_INT;
 		}
 
 		if(is_bool($value))
 		{
-			return e_db::PARAM_BOOL;
+			return ConnectionInterface::PARAM_BOOL;
 		}
 
-		return e_db::PARAM_STR;
+		return ConnectionInterface::PARAM_STR;
 	}
 
 	/**
 	 * Validate a caller-supplied identifier before it is placed in SQL, using
-	 * the same grammar as {@see e_db_filter::identifier()}. The name is
+	 * the same grammar as {@see IdentifierFilter::identifier()}. The name is
 	 * returned unquoted and unchanged, so the emitted SQL stays byte-identical
 	 * for valid input; anything outside the grammar fails closed.
 	 *
-	 * The grammar is inlined rather than delegated to e_db_filter because this
-	 * trait must stay loadable in MYSQL_LIGHT standalone mode, where
-	 * e_db_filter_class.php is unavailable.
+	 * The grammar is inlined rather than delegated to IdentifierFilter so the
+	 * check stays self-contained no matter how this trait was loaded.
 	 *
 	 * @param string $name
 	 * @param bool $allowDot true to also accept the `table.column` form
@@ -246,9 +333,9 @@ trait e_db_common
 	}
 
 	/**
-	 * Documented at {@see e_db::escape()}.
+	 * Documented at {@see ConnectionInterface::escape()}.
 	 *
-	 * @deprecated v2.4.0 Bind values instead; see {@see e_db::escape()}.
+	 * @deprecated v2.4.0 Bind values instead; see {@see ConnectionInterface::escape()}.
 	 * @return string
 	 */
 	function escape($data, $strip = true)
@@ -370,7 +457,7 @@ trait e_db_common
 	 * @param string $parent Name of the parent field
 	 * @param string $pid  Name of the primary id
 	 * @param string $where (Optional ) where condition. Caller-supplied SQL:
-	 *               never place user input here; bind it with {@see e_db::execute()} instead.
+	 *               never place user input here; bind it with {@see ConnectionInterface::execute()} instead.
 	 * @param string $order Name of the order field.
 	 * @todo Add extra params to each procedure so we only need 2 of them site-wide.
 	 * @return boolean | int with the addition of  _treesort and _depth fields in the results.
@@ -514,7 +601,7 @@ trait e_db_common
 	 * @param string $fields '*' or a comma-separated list of column names;
 	 *               every name fails closed outside the identifier grammar
 	 * @param string $args WHERE clause. Caller-supplied SQL: never place user
-	 *               input here; bind it with {@see e_db::execute()} instead.
+	 *               input here; bind it with {@see ConnectionInterface::execute()} instead.
 	 * @return int|false the copied row's id, or false on failure
 	 */
 	function copyRow($table, $fields = '*', $args='')
@@ -697,9 +784,9 @@ trait e_db_common
 	}
 
 	/**
-	 * Documented at {@see e_db::retrieve()}.
+	 * Documented at {@see ConnectionInterface::retrieve()}.
 	 *
-	 * @deprecated v2.4.0 Prefer the query builder; see {@see e_db::retrieve()}.
+	 * @deprecated v2.4.0 Prefer the query builder; see {@see ConnectionInterface::retrieve()}.
 	 * @return mixed
 	 */
 	public function retrieve($table=null, $fields = null, $where=null, $multi = false, $indexField = null, $debug = false)
@@ -867,9 +954,9 @@ trait e_db_common
 	}
 
 	/**
-	 * Documented at {@see e_db::max()}.
+	 * Documented at {@see ConnectionInterface::max()}.
 	 *
-	 * @deprecated v2.4.0 Prefer the query builder; see {@see e_db::max()}.
+	 * @deprecated v2.4.0 Prefer the query builder; see {@see ConnectionInterface::max()}.
 	 * @return mixed
 	 */
 	public function max($table, $field, $where='')
@@ -1080,10 +1167,10 @@ trait e_db_common
 	}
 
 	/**
-	 * Documented at {@see e_db::insert()}.
+	 * Documented at {@see ConnectionInterface::insert()}.
 	 *
 	 * @return int|bool Last insert ID or false on error. When using '_DUPLICATE_KEY_UPDATE' return ID, true on update, 0 on no change and false on error.
-	 * @deprecated v2.4.0 Prefer the query builder; see {@see e_db::insert()}.
+	 * @deprecated v2.4.0 Prefer the query builder; see {@see ConnectionInterface::insert()}.
 	 */
 	function insert($tableName, $arg, $debug = false, $log_type = '', $log_remark = '')
 	{
@@ -1256,10 +1343,10 @@ trait e_db_common
 	}
 
 	/**
-	 * Documented at {@see e_db::replace()}.
+	 * Documented at {@see ConnectionInterface::replace()}.
 	 *
 	 * @return int Last insert ID or false on error
-	 * @deprecated v2.4.0 Prefer the query builder; see {@see e_db::replace()}.
+	 * @deprecated v2.4.0 Prefer the query builder; see {@see ConnectionInterface::replace()}.
 	 */
 	function replace($table, $arg, $debug = false, $log_type = '', $log_remark = '')
 	{
@@ -1333,10 +1420,10 @@ trait e_db_common
 	}
 
 	/**
-	 * Documented at {@see e_db::update()}.
+	 * Documented at {@see ConnectionInterface::update()}.
 	 *
 	 * @return int|false number of affected rows, or false on error
-	 * @deprecated v2.4.0 Prefer the query builder; see {@see e_db::update()}.
+	 * @deprecated v2.4.0 Prefer the query builder; see {@see ConnectionInterface::update()}.
 	 */
 	function update($tableName, $arg, $debug = false, $log_type = '', $log_remark = '')
 	{
@@ -1546,7 +1633,7 @@ trait e_db_common
 	 * Convert FIELD_TYPE to a bind type for the prepared-statement contract.
 	 * @param $type
 	 * @param null $value
-	 * @return int e_db::PARAM_* constant (value-identical to PDO::PARAM_*)
+	 * @return int ConnectionInterface::PARAM_* constant (value-identical to PDO::PARAM_*)
 	 */
 	private function _getPDOType($type, $value = null)
 	{
@@ -1554,11 +1641,11 @@ trait e_db_common
 		{
 			case "int":
 			case "integer":
-				return e_db::PARAM_INT;
+				return ConnectionInterface::PARAM_INT;
 				break;
 
 			case 'null':
-				return ($value === null) ? e_db::PARAM_NULL : e_db::PARAM_STR;
+				return ($value === null) ? ConnectionInterface::PARAM_NULL : ConnectionInterface::PARAM_STR;
 				break;
 
 			case 'cmd':
@@ -1569,12 +1656,45 @@ trait e_db_common
 			case 'array':
 			case 'todb':
 			case 'float':
-				return e_db::PARAM_STR;
+				return ConnectionInterface::PARAM_STR;
 				break;
 
 		}
 
 		// e107::getMessage()->addDebug("MySQL Missing Field-Type: ".$type);
-		return e_db::PARAM_STR;
+		return ConnectionInterface::PARAM_STR;
+	}
+
+	/**
+	 * Apply the e107 field-type STORAGE transform to a value, returning exactly
+	 * what the deprecated array-form {@see ConnectionInterface::insert()}/{@see ConnectionInterface::update()}
+	 * would bind for that token ('int', 'float', 'array', 'todb', 'null', 'str',
+	 * 'safestr', 'escape', 'cmd', ...). This is the public face of the single
+	 * transform body {@see ConnectionTrait::_getPDOValue()}, shared with the
+	 * query builder ({@see QueryBuilder::setTyped()},
+	 * {@see QueryBuilder::valuesTyped()}) so builder writes are byte-identical to
+	 * the legacy CRUD path.
+	 *
+	 * @param string $type Field-type token.
+	 * @param mixed $fieldValue
+	 * @return mixed transformed value ready for bindValue()
+	 */
+	public function applyFieldType($type, $fieldValue)
+	{
+		return $this->_getPDOValue($type, $fieldValue);
+	}
+
+	/**
+	 * The bind type ({@see ConnectionInterface}::PARAM_*) for a field-type token, matching the
+	 * legacy bind tuple. Pass the ALREADY-transformed value (the result of
+	 * {@see ConnectionInterface::applyFieldType()}), exactly as the array-form CRUD does.
+	 *
+	 * @param string $type Field-type token.
+	 * @param mixed $value Transformed value; consulted only for the 'null' type.
+	 * @return int ConnectionInterface::PARAM_* constant
+	 */
+	public function fieldTypeBind($type, $value = null)
+	{
+		return $this->_getPDOType($type, $value);
 	}
 }

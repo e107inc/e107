@@ -46,11 +46,15 @@ class social_setup
 	private function upgrade_required_rename_xup()
 	{
 		$db = e107::getDb();
-		$whereSegment = array_map(function ($oldProviderName)
+		$qb = $db->createQueryBuilder();
+		$whereSegment = array_map(function ($oldProviderName) use ($qb)
 		{
-			return "user_xup LIKE BINARY '{$oldProviderName}\_%'";
+			// LIKE BINARY (case-sensitive) is not expressible by the builder's
+			// LIKE helpers, so build the predicate explicitly with a bound value.
+			// The pattern keeps the legacy SQL "\_" escape for a literal underscore.
+			return $qb->quoteColumn('user_xup') . ' LIKE BINARY ' . $qb->createNamedParameter($oldProviderName . '\_%');
 		}, array_keys(self::RENAMED_PROVIDERS));
-		$count = $db->count('user', '(*)', implode(' OR ', $whereSegment));
+		$count = $qb->from('user')->where($qb->raw(implode(' OR ', $whereSegment)))->count();
 		return $count >= 1;
 	}
 
@@ -60,7 +64,10 @@ class social_setup
 	private function upgrade_required_steam_xup_bug()
 	{
 		$db = e107::getDb();
-		$count = $db->count('user', '(*)', "user_xup LIKE 'Steam\_https://steamcommunity.com/openid/id/%'");
+		$qb = $db->createQueryBuilder();
+		$count = $qb->from('user')
+			->where($qb->expr()->startsWith('user_xup', 'Steam_https://steamcommunity.com/openid/id/'))
+			->count();
 		return $count >= 1;
 	}
 
@@ -130,8 +137,10 @@ class social_setup
 		$db = e107::getDb();
 		foreach (self::RENAMED_PROVIDERS as $oldProviderName => $newProviderName)
 		{
-			$db->select('user', '*', "user_xup LIKE '{$oldProviderName}\_%'");
-			$rows = $db->rows();
+			$qb = $db->createQueryBuilder();
+			$rows = $qb->select('*')->from('user')
+				->where($qb->expr()->startsWith('user_xup', $oldProviderName . '_'))
+				->fetchAll();
 			foreach ($rows as $row)
 			{
 				$old_user_xup = $row['user_xup'];
@@ -151,8 +160,10 @@ class social_setup
 	private function upgrade_pre_steam_xup_bug()
 	{
 		$db = e107::getDb();
-		$db->select('user', '*', "user_xup LIKE 'Steam\_https://steamcommunity.com/openid/id/%'");
-		$rows = $db->rows();
+		$qb = $db->createQueryBuilder();
+		$rows = $qb->select('*')->from('user')
+			->where($qb->expr()->startsWith('user_xup', 'Steam_https://steamcommunity.com/openid/id/'))
+			->fetchAll();
 		foreach ($rows as $row)
 		{
 			$old_user_xup = $row['user_xup'];
@@ -174,10 +185,10 @@ class social_setup
 	private function fixUserXup($db, $user_id, $old_user_xup, $new_user_xup)
 	{
 		$logger = e107::getMessage();
-		$status = $db->update(
-			'user',
-			"user_xup = '" . $db->escape($new_user_xup) . "' WHERE user_id = " . (int) $user_id
-		);
+		$status = $db->createQueryBuilder()->update('user')
+			->set('user_xup', $new_user_xup)
+			->where('user_id', (int) $user_id)
+			->execute();
 		if ($status !== 1)
 		{
 			$logger->addError(

@@ -237,7 +237,8 @@ class e107_db_debug
 				// $rli should always be set by caller
 				//	$sQryRes = (is_null($rli) ? mysql_query("EXPLAIN {$query}") :  mysql_query("EXPLAIN {$query}", $rli));
 
-				$sQryRes = $sql->gen("EXPLAIN {$query}");
+				// EXPLAIN's operand is a complete SQL statement (the already-executed query being profiled), not a bindable value, and the builder has no EXPLAIN; run it through the sanctioned execute() (gen()'s documented replacement). Same result-set return (rowCount()/false) and same mySQLresult for the columnCount()/fetch() below.
+				$sQryRes = $sql->execute("EXPLAIN {$query}");
 
 				if($sQryRes)  // There's something to explain
 				{

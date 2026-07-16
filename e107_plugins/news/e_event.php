@@ -53,7 +53,9 @@ class news_event // plugin-folder + '_event'
 		if(!empty($data['comment_item_id']))
 		{
 			$id = intval($data['comment_item_id']);
-			e107::getDb()->update("news", "news_comment_total=news_comment_total+1 WHERE news_id=".$id);
+			e107::getDb()->createQueryBuilder()->update('news')
+				->increment('news_comment_total')
+				->where('news_id', (int) $id)->execute();
 			e107::getCache()->clear('news_php_extend_'.$id.'_');
 		}
 
@@ -71,7 +73,9 @@ class news_event // plugin-folder + '_event'
 		if(!empty($data['comment_item_id']))
 		{
 			$id = intval($data['comment_item_id']);
-			e107::getDb()->update("news", "news_comment_total=news_comment_total-1 WHERE news_id=".$id);
+			e107::getDb()->createQueryBuilder()->update('news')
+				->decrement('news_comment_total')
+				->where('news_id', (int) $id)->execute();
 			e107::getCache()->clear('news_php_extend_'.$id.'_');
 		}
 

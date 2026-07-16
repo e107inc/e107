@@ -1544,18 +1544,18 @@ class e_model extends e_object
 		$qry = str_replace('{ID}', $id, $this->getParam('db_query'));
 		if($qry)
 		{
-			$res = $sql->gen($qry, $this->getParam('db_debug') ? true : false);
+			// Caller-built SQL (db_query param) - run it bound (no local values to bind).
+			$res = $sql->execute($qry);
 		}
 		else
 		{
-			if(!is_numeric($id)) $id = "'{$id}'";
-
-			$res = $sql->select(
-				$this->getModelTable(),
-				$this->getParam('db_fields', '*'),
-				$this->getFieldIdName().'='.$id.' '.trim($this->getParam('db_where', '')),
-				'default',
-				($this->getParam('db_debug') ? true : false)
+			// Identifiers (table/fields/id column) are developer-defined; db_where is
+			// caller-built trusted SQL. Only the id VALUE is bound.
+			$fields = $this->getParam('db_fields', '*');
+			$where = $this->getFieldIdName().' = :modelLoadId '.trim($this->getParam('db_where', ''));
+			$res = $sql->execute(
+				'SELECT '.$fields.' FROM `#'.$this->getModelTable().'` WHERE '.$where,
+				array('modelLoadId' => $id)
 			);
 		}
 
@@ -2811,7 +2811,19 @@ class e_front_model extends e_model
 		$qry = $this->toSqlQuery('update');
 		$table = $this->getModelTable();
 
-		$res = $sql->update($table, $qry, $this->getParam('db_debug', false));
+		// Field-typed array update -> builder setTyped() per column (byte-identical
+		// storage transform). Only the id VALUE is bound; $qry['WHERE'] is retained
+		// below for the audit log. The legacy db_debug flag has no builder equivalent.
+		$id = $this->getId();
+		$idValue = is_numeric($id) ? intval($id) : e107::getParser()->toDB($id);
+		$fieldTypes = isset($qry['_FIELD_TYPES']) ? $qry['_FIELD_TYPES'] : array();
+		$qb = $sql->createQueryBuilder()->update($table);
+		foreach($qry['data'] as $col => $val)
+		{
+			$type = isset($fieldTypes[$col]) ? $fieldTypes[$col] : (isset($fieldTypes['_DEFAULT']) ? $fieldTypes['_DEFAULT'] : 'str');
+			$qb->setTyped($col, $val, $type);
+		}
+		$res = $qb->where($this->getFieldIdName(), $idValue)->execute();
         $this->_db_qry = $sql->getLastQuery();
 		if(!$res)
 		{
@@ -3097,8 +3109,16 @@ class e_admin_model extends e_front_model
 		$sqlQry = $this->toSqlQuery('create');
 		$table = $this->getModelTable();
 
-		$res = $sql->insert($table, $sqlQry, $this->getParam('db_debug', false));
+		// Field-typed array insert -> builder valuesTyped() (byte-identical storage
+		// transform). lastInsertId() (already true when no auto-increment column) is
+		// read only on execute() success, reproducing the legacy insert() return.
+		// The legacy db_debug flag has no builder equivalent.
+		$fieldTypes = isset($sqlQry['_FIELD_TYPES']) ? $sqlQry['_FIELD_TYPES'] : array();
+		$ok = $sql->createQueryBuilder()->insert($table)
+			->valuesTyped($sqlQry['data'], $fieldTypes)
+			->execute();
         $this->_db_qry = $sql->getLastQuery();
+		$res = ($ok !== false) ? $sql->lastInsertId() : false;
 		if(!$res)
 		{
 			$this->_db_errno = $sql->getLastErrorNumber();
@@ -3146,7 +3166,13 @@ class e_admin_model extends e_front_model
 		}
 		$sql = e107::getDb();
 		$table = $this->getModelTable();
-		$res = $sql->insert($table, $this->toSqlQuery('replace'));
+		// Field-typed array replace -> builder replace()->valuesTyped() (byte-identical
+		// storage transform); execute() returns affected rows / false, as legacy did.
+		$replaceQry = $this->toSqlQuery('replace');
+		$fieldTypes = isset($replaceQry['_FIELD_TYPES']) ? $replaceQry['_FIELD_TYPES'] : array();
+		$res = $sql->createQueryBuilder()->replace($table)
+			->valuesTyped($replaceQry['data'], $fieldTypes)
+			->execute();
         $this->_db_qry = $sql->getLastQuery();
 		if(!$res)
 		{
@@ -3192,11 +3218,13 @@ class e_admin_model extends e_front_model
 		}
 		$sql = e107::getDb();
 		$id = $this->getId();
-		if(is_numeric($id)) $id = intval($id);
-		else  $id = "'".e107::getParser()->toDB($id)."'";
+		$idValue = is_numeric($id) ? intval($id) : e107::getParser()->toDB($id);
 		$table  = $this->getModelTable();
-		$where = $this->getFieldIdName().'='.$id;
-		$res = $sql->delete($table, $where);
+		$where = $this->getFieldIdName().'='.(is_numeric($id) ? $idValue : "'".$idValue."'");
+		$res = $sql->createQueryBuilder()
+			->delete($table)
+			->where($this->getFieldIdName(), $idValue)
+			->execute();
         $this->_db_qry = $sql->getLastQuery();
 
 		if(!$res)
@@ -3536,7 +3564,8 @@ class e_tree_model extends e_front_model
 	 */
 	protected function getRowsList($sql)
 	{
-		$success = $sql->gen($this->getParam('db_query'), $this->getParam('db_debug') ? true : false);
+		// Caller-built SQL (db_query param) - run it bound (no local values to bind).
+		$success = $sql->execute($this->getParam('db_query'));
 		if (!$success) return false;
 
 		return $sql->rows();
@@ -3553,7 +3582,8 @@ class e_tree_model extends e_front_model
 		// Workaround: Parse and modify db_query param for simulated custom ordering
 		$this->prepareSimulatedCustomOrdering();
 
-		$success = $sql->gen($this->getParam('db_query'), $this->getParam('db_debug') ? true : false);
+		// Caller-built SQL (db_query param) - run it bound (no local values to bind).
+		$success = $sql->execute($this->getParam('db_query'));
 		if (!$success) return false;
 
 		$rows_tree = self::arrayToTree($sql->rows(),
@@ -3699,7 +3729,11 @@ class e_tree_model extends e_front_model
 
 			$QRY = self::buildCountQuery($countQry);
 
-			$result = $sql->retrieve($QRY);
+			// Caller-built COUNT(*) wrapper (pre-assembled developer SQL, no values to
+			// bind) -> bound execute() + fetch(), replacing the deprecated retrieve()
+			// string form. execute($var) is an opaque dynamic-SQL passthrough boundary.
+			$result = ($sql->execute($QRY) !== false) ? $sql->fetch() : array();
+			if(!is_array($result)) $result = array();
 			$total = $result['e_tree_total'] ?? 0;
 
 			if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
@@ -4163,13 +4197,25 @@ class e_front_tree_model extends e_tree_model
 		{
 			$ids = array_map(array($tp, 'toDB'), $ids);
 			$field = $tp->toDB($field);
-			$value = "'".$tp->toDB($value)."'";
+			$value = $tp->toDB($value);
 		}
-		$idstr = implode(', ', $ids);
 
 		$table = $this->getModelTable();
 
-		$res = $sql->update($table, "{$field}={$value} WHERE ".$this->getFieldIdName().' IN ('.$idstr.')', $this->getParam('db_debug', false));
+		$qb = $sql->createQueryBuilder()->update($table);
+		if($sanitize)
+		{
+			// Sanitized value is a literal: bind it.
+			$qb->set($field, $value);
+		}
+		else
+		{
+			// Trust boundary: the caller owns $value as a literal SQL expression
+			// (e.g. "1-field_name"). raw() vouches for it so it survives the
+			// closed builder; safety of $value is the caller's responsibility.
+			$qb->setExpression($field, $qb->raw($value));
+		}
+		$res = $qb->whereIn($this->getFieldIdName(), $ids)->execute();
 		$this->_db_errno = $sql->getLastErrorNumber();
 		$this->_db_errmsg = $sql->getLastErrorText();
 		$this->_db_qry = $sql->getLastQuery();
@@ -4251,7 +4297,11 @@ class e_admin_tree_model extends e_front_tree_model
 		$table = $this->getModelTable();
 		$sqlQry = $this->getFieldIdName().' IN (\''.$idstr.'\')';
 
-		$res = $sql->delete($table, $sqlQry);
+		// Preserves the legacy single-quoted IN list: IN ('id1, id2, ...').
+		$res = $sql->createQueryBuilder()
+			->delete($table)
+			->whereIn($this->getFieldIdName(), array($idstr))
+			->execute();
 
 		$this->_db_errno = $sql->getLastErrorNumber();
 		$this->_db_errmsg = $sql->getLastErrorText();

@@ -65,7 +65,13 @@ class user_mailout
 		{
 			$ucl = intval($data['userclass']);
 
-			return e107::getDb()->select('user','*', 'FIND_IN_SET('.$ucl.',user_class) AND user_id='.intval($data['id'])." AND user_join=".intval($data['date'])." AND user_email=\"".$data['email']."\"");
+			$qb = e107::getDb()->createQueryBuilder();
+			return $qb->from('user')
+				->where($qb->expr()->findInSet('user_class', $ucl))
+				->where('user_id', (int) $data['id'])
+				->where('user_join', (int) $data['date'])
+				->where('user_email', $data['email'])
+				->count();
 		}
 
 	//	print_a($data);
@@ -124,7 +130,9 @@ class user_mailout
 	{
 		$sql = e107::getDb();
 
-		$where = array();
+		$qb = $sql->createQueryBuilder();
+
+		$hasPredicate = false;		// any WHERE predicate added (incl. extended)
 		$incExtended = array();
 
 		$emailTo = vartrue($selectVals['email_to'], false);
@@ -133,44 +141,49 @@ class user_mailout
 		{
 			// Build the query for the user database
 			case 'all' :
-				$where[] = 'u.`user_ban`=0';
+				$qb->where('u.user_ban', 0);
+				$hasPredicate = true;
 				break;
 			case  'admin' :
-				$where[] = 'u.`user_admin`=1';
+				$qb->where('u.user_admin', 1);
+				$hasPredicate = true;
 				break;
 			case 'unverified' :
-				$where[] = 'u.`user_ban`=2';
+				$qb->where('u.user_ban', 2);
+				$hasPredicate = true;
 				break;
 			case 'self' :
-				$where[] = 'u.`user_id`='.USERID;
+				$qb->where('u.user_id', USERID);
+				$hasPredicate = true;
 				break;
 			default :
 				if (is_numeric($selectVals['email_to']))
 				{
-					$where[] = "u.`user_class` REGEXP concat('(^|,)',{$selectVals['email_to']},'(,|$)')";
+					$qb->where($qb->raw("u.`user_class` REGEXP concat('(^|,)',".$qb->createNamedParameter($selectVals['email_to']).",'(,|$)')"));
+					$hasPredicate = true;
 				}
 
 		}
 
 		if (vartrue($selectVals['extended_1_name']) && vartrue($selectVals['extended_1_value']))
 		{
-			// Column name comes from POST; validate as an identifier (toDB does not
-			// strip backticks) before interpolating it inside backtick quotes.
-			$col = $sql->quoteIdentifier($selectVals['extended_1_name']);
-			if($col !== false)
+			// Column name comes from POST; validate as an identifier (fail-closed)
+			// before naming it; the value is bound.
+			if($sql->quoteIdentifier($selectVals['extended_1_name']) !== false)
 			{
-				$where[] = $col." = '".$selectVals['extended_1_value']."' ";
+				$qb->where($qb->expr()->eq($selectVals['extended_1_name'], $selectVals['extended_1_value']));
 				$incExtended[] = $selectVals['extended_1_name'];
+				$hasPredicate = true;
 			}
 		}
 
 		if (vartrue($selectVals['extended_2_name']) && vartrue($selectVals['extended_2_value']))
 		{
-			$col = $sql->quoteIdentifier($selectVals['extended_2_name']);
-			if($col !== false)
+			if($sql->quoteIdentifier($selectVals['extended_2_name']) !== false)
 			{
-				$where[] = "ue.".$col." = '".$selectVals['extended_2_value']."' ";
+				$qb->where($qb->expr()->eq('ue.'.$selectVals['extended_2_name'], $selectVals['extended_2_value']));
 				$incExtended[] = $selectVals['extended_2_name'];
+				$hasPredicate = true;
 			}
 		}
 
@@ -179,7 +192,8 @@ class user_mailout
 			// Restrict the search column to the fixed set offered by the UI.
 			if(in_array($selectVals['user_search_name'], array('user_name','user_loginname','user_email'), true))
 			{
-				$where[]= "u.`".$selectVals['user_search_name']."` LIKE '%".$selectVals['user_search_value']."%' ";
+				$qb->where($qb->expr()->contains('u.'.$selectVals['user_search_name'], $selectVals['user_search_value']));
+				$hasPredicate = true;
 			}
 		}
 
@@ -195,17 +209,19 @@ class user_mailout
 				{
 					case '<' :
 					case '>' :
-						$where[]= "u.`user_lastvisit` ".$selectVals['last_visit_match']." ".$lvDate;
+						$qb->where('u.user_lastvisit', $selectVals['last_visit_match'], $lvDate);
+						$hasPredicate = true;
 						break;
 					case '=' :
-						$where[]= "u.`user_lastvisit` >= ".$lvDate;
-						$where[]= "u.`user_lastvisit` <= ".intval($lvDate + 86400);
+						$qb->where('u.user_lastvisit', '>=', $lvDate);
+						$qb->where('u.user_lastvisit', '<=', (int) ($lvDate + 86400));
+						$hasPredicate = true;
 						break;
 				}
 			}
 		}
 
-		if(empty($where) && empty($incExtended))
+		if(!$hasPredicate)
 		{
 			$this->mail_read = 0;
 			$this->mail_count = 0;
@@ -213,33 +229,30 @@ class user_mailout
 		}
 
 
-		$where[] = "u.`user_email` != ''";			// Ignore all records with empty email address
+		$qb->where('u.user_email', '!=', '');			// Ignore all records with empty email address
 
 
 
 		// Now assemble the query from the pieces
 		// Determine which fields we actually need (u.user_sess is the signup link)
-		$qry = 'SELECT u.user_id, u.user_name, u.user_email, u.user_loginname, u.user_sess, u.user_lastvisit';
-		if (count($incExtended))
+		$qb->select('u.user_id', 'u.user_name', 'u.user_email', 'u.user_loginname', 'u.user_sess', 'u.user_lastvisit');
+		foreach ($incExtended as $if)
 		{
-			foreach ($incExtended as $if)
-			{
-				$qry .= ', ue.`'.$if.'`';
-			}
-		}
-		$qry .= " FROM `#user` AS u ";
-
-		if (count($incExtended))
-		{
-			$qry .= "LEFT JOIN `#user_extended` AS ue ON ue.`user_extended_id` = u.`user_id`";
+			$qb->addSelect('ue.'.$if);
 		}
 
-		$qry .= ' WHERE '.implode(' AND ',$where).' ORDER BY u.user_name';
-//		echo "Selector query: ".$qry.'<br />';
+		$qb->from('user', 'u');
 
-		e107::getMessage()->addDebug("Selector query: ".$qry);
+		if (count($incExtended))
+		{
+			$qb->leftJoin('user_extended', 'ue', $qb->expr()->compareColumns('ue.user_extended_id', 'u.user_id'));
+		}
 
-		if (!( $this->mailCount = $sql->gen($qry))) return FALSE;
+		$qb->orderBy('u.user_name');
+
+		e107::getMessage()->addDebug("Selector query: ".$qb->getSQL());
+
+		if (!( $this->mailCount = $qb->execute())) return FALSE;
 
 		e107::getDebug()->log($this->mailCount);
 

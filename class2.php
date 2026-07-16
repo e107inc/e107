@@ -819,7 +819,11 @@ if(($pref['membersonly_enabled'] && !isset($_E107['allow_guest'])) || ($pref['ma
 
 if(!isset($_E107['no_prunetmp']))
 {
-	$sql->delete('tmp', 'tmp_time < '.(time() - 300)." AND tmp_ip!='data' AND tmp_ip!='submitted_link'");
+	$sql->createQueryBuilder()->delete('tmp')
+		->where('tmp_time', '<', time() - 300)
+		->where('tmp_ip', '!=', 'data')
+		->where('tmp_ip', '!=', 'submitted_link')
+		->execute();
 }
 
 
@@ -852,7 +856,7 @@ if (($_SERVER['QUERY_STRING'] === 'logout'))
 	// TODO - should be done inside online handler, more core areas need it (session handler for example)
 	if (isset($pref['track_online']) && $pref['track_online'])
 	{
-		$sql->createQueryBuilder()->update('online')->set('online_user_id', 0)->setExpression('online_pagecount', 'online_pagecount + 1')->where('online_user_id', $udata)->execute();
+		$sql->createQueryBuilder()->update('online')->set('online_user_id', 0)->increment('online_pagecount')->where('online_user_id', $udata)->execute();
 	}
 	
 	// earlier event trigger with user data still available 
@@ -1447,7 +1451,10 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 		default:
 			$_user_pref = $tp->toDB($user_pref, true, true, 'pReFs');
 			$tmp = e107::serialize($_user_pref);
-			$sql->update('user', "user_prefs='$tmp' WHERE user_id=". (int)$uid);
+			$sql->createQueryBuilder()->update('user')
+				->set('user_prefs', $tmp)
+				->where('user_id', (int) $uid)
+				->execute();
 			return $tmp;
 			break;
 	}
@@ -1504,8 +1511,8 @@ class floodprotect
 
 		if (FLOODPROTECT === true)
 		{
-			$sql->select($table, '*', 'ORDER BY '.$orderfield.' DESC LIMIT 1', 'no_where');
-			$row=$sql->fetch();
+			$row = $sql->createQueryBuilder()->select('*')->from($table)
+				->orderBy($orderfield, 'DESC')->setMaxResults(1)->fetchRow();
 			return ($row[$orderfield] <= (time() - FLOODTIMEOUT));
 		}
 
@@ -1959,9 +1966,15 @@ function force_userupdate($currentUser)
 
 	if (!e107::getPref('disable_emailcheck',true) && !trim($currentUser['user_email'])) return true;
 
-	if(e107::getDb()->select('user_extended_struct', 'user_extended_struct_applicable, user_extended_struct_write, user_extended_struct_name, user_extended_struct_type', 'user_extended_struct_required = 1 AND user_extended_struct_applicable != '.e_UC_NOBODY))
+	$structRows = e107::getDb()->createQueryBuilder()
+		->select('user_extended_struct_applicable', 'user_extended_struct_write', 'user_extended_struct_name', 'user_extended_struct_type')
+		->from('user_extended_struct')
+		->where('user_extended_struct_required', 1)
+		->where('user_extended_struct_applicable', '!=', e_UC_NOBODY)
+		->fetchAll();
+	if($structRows)
 	{
-		while($row = e107::getDb()->fetch())
+		foreach($structRows as $row)
 		{
 			if (!check_class($row['user_extended_struct_applicable'])) { continue; }		// Must be applicable to this user class
 			if (!check_class($row['user_extended_struct_write'])) { continue; }				// And user must be able to change it

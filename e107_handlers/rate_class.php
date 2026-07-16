@@ -230,16 +230,17 @@ class rater
 		$table = preg_replace('/\W/', '', $table);
 		$id = intval($id);
 
-		$sql = new db;
+		$row = e107::getDb()->createQueryBuilder()
+			->select('*')->from('rate')
+			->where('rate_table', $table)->where('rate_itemid', $id)
+			->fetchRow();
 
-		if(!$sql->select("rate", "*", "rate_table = '{$table}' AND rate_itemid = '{$id}' "))
+		if(!$row)
 		{
 			return false;
 		}
 		else
 		{
-			$row = $sql->fetch();
-
 			if(preg_match("/\." . USERID . "\./", $row['rate_voters']))
 			{
 				return true;
@@ -291,7 +292,10 @@ class rater
 
 			}
 
-			$tmp = e107::getDb('rate')->retrieve("rate", "*", "rate_table = '{$table}' ",true);
+			$tmp = e107::getDb('rate')->createQueryBuilder()
+				->select('*')->from('rate')
+				->where('rate_table', $table)
+				->fetchAll();
 			$val = array();
 			foreach($tmp as $row)
 			{
@@ -312,15 +316,17 @@ class rater
 
 	//	$sep = chr(1);
 
-		$sql = new db;
-		if (!$sql->select("rate", "*", "rate_table = '{$table}' AND rate_itemid = '{$id}' ")) 
+		$rowgr = e107::getDb()->createQueryBuilder()
+			->select('*')->from('rate')
+			->where('rate_table', $table)->where('rate_itemid', $id)
+			->fetchRow();
+
+		if (!$rowgr)
 		{
 			return false;
 		}
-		 else 
+		 else
 		 {
-			$rowgr = $sql->fetch();
-
 			return $this->processRow($rowgr,$userid);
 		}
 	}
@@ -494,11 +500,19 @@ class rater
 			$totalDown	= $row['rate_down'] + (($type == 'down') ? 1 : 0);
 			$totalUp	= $row['rate_up'] + (($type == 'up') ? 1 : 0);
 					
-			$qry = ($type == 'up') ? "rate_up = {$totalUp} " : "rate_down = {$totalDown}";
-			$qry .= ", rate_voters = '{$newvoters}', rate_votes = {$totalVotes} ";
-			$qry .= " WHERE rate_table = '{$table}' AND rate_itemid = '{$itemid}'";
-			
-			if($sql->update("rate",$qry))
+			$updateQb = $sql->createQueryBuilder()->update('rate');
+			if($type == 'up')
+			{
+				$updateQb->set('rate_up', $totalUp);
+			}
+			else
+			{
+				$updateQb->set('rate_down', $totalDown);
+			}
+			$updateQb->set('rate_voters', $newvoters)->set('rate_votes', $totalVotes)
+				->where('rate_table', $table)->where('rate_itemid', $itemid);
+
+			if($updateQb->execute())
 			{
 				if($perc == true) // Percentage Mode
 				{
@@ -540,7 +554,7 @@ class rater
 					"rate_down"		=> ($type == 'down') ? 1 : 0
 			);
 				
-			if($row = $sql->insert("rate", $insert))
+			if($row = $sql->createQueryBuilder()->insert('rate')->insertGetId($insert))
 			{
                     $edata = array(
                     'like_pid' => $row,
@@ -607,10 +621,14 @@ class rater
 		$sep = chr(1); // problematic - invisible in phpmyadmin. 
 		$voter = USERID.$sep.intval($qs[3]);
 
-		if ($sql->select("rate", "*", "rate_table='{$table}' AND rate_itemid='{$itemid}' "))
+		$row = $sql->createQueryBuilder()
+			->select('*')->from('rate')
+			->where('rate_table', $table)->where('rate_itemid', $itemid)
+			->fetchRow();
+
+		if ($row)
 		{
-		
-			$row = $sql -> fetch();
+
 			$rate_voters = $row['rate_voters'].".".$voter.".";
 			$new_votes = $row['rate_votes'] + 1;
 			$new_rating = $row['rate_rating'] + $rate;
@@ -625,7 +643,12 @@ class rater
 			}
 			
 			
-			if($sql->update("rate", "rate_votes= ".$new_votes.", rate_rating='{$new_rating}', rate_voters='{$rate_voters}' WHERE rate_id='{$row['rate_id']}' "))
+			if($sql->createQueryBuilder()->update('rate')
+				->set('rate_votes', $new_votes)
+				->set('rate_rating', $new_rating)
+				->set('rate_voters', $rate_voters)
+				->where('rate_id', $row['rate_id'])
+				->execute())
 			{
                 $edata = array(
                     'rate_pid' => $row['rate_id'],
@@ -662,7 +685,7 @@ class rater
 			);
 			
 			
-			if($row = $sql->insert("rate", $insert))
+			if($row = $sql->createQueryBuilder()->insert('rate')->insertGetId($insert))
 		//	if($sql->db_Insert("rate", " 0, '$table', '$itemid', '$rate', '1', '.".$voter.".' "))
 			{
                 $edata = array(
@@ -755,6 +778,8 @@ class rater
 		global $tp, $sql;
 		$table = $tp->toDB($table, true);
 		$id = intval($id);
-		return $sql -> delete("rate", "rate_itemid='{$id}' AND rate_table='{$table}'");
+		return $sql->createQueryBuilder()->delete('rate')
+			->where('rate_itemid', $id)->where('rate_table', $table)
+			->execute();
 	}
 }

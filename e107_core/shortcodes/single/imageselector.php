@@ -43,13 +43,24 @@ function imageselector_shortcode($parm = '', $mod = '')
 		// Media manager support
 		if(!empty($parms['media']))
 		{
-			$qry = "SELECT * FROM `#core_media` WHERE media_userclass IN (".USERCLASS_LIST.") ";
-			$qry .= vartrue($parms['media']) && $parms['media'] !== 'all' ? " AND media_category='".$tp->toDB($parms['media'])."' " : " AND `media_category` NOT REGEXP '_icon_16|_icon_32|_icon_48|_icon_64' ";
-			$qry .= " AND media_url REGEXP '\.jpg$|\.png$|\.gif$|\.jpeg$|\.svn$|\.JPG$|\.PNG$|\.GIF$|\.jpeg$|\.SVN$' ORDER BY media_name";
-			// FIXME - media_type=image?
-			if($sql->gen($qry))
+			$qb = $sql->createQueryBuilder();
+			$qb->select('*')->from('core_media')
+				->whereIn('media_userclass', explode(',', USERCLASS_LIST));
+			if(vartrue($parms['media']) && $parms['media'] !== 'all')
 			{
-				while($row = $sql->fetch())
+				$qb->where('media_category', $tp->toDB($parms['media']));
+			}
+			else
+			{
+				$qb->where($qb->expr()->not($qb->expr()->regexp('media_category', '_icon_16|_icon_32|_icon_48|_icon_64')));
+			}
+			$qb->where($qb->expr()->regexp('media_url', '\.jpg$|\.png$|\.gif$|\.jpeg$|\.svn$|\.JPG$|\.PNG$|\.GIF$|\.jpeg$|\.SVN$'));
+			$qb->orderBy('media_name');
+			// FIXME - media_type=image?
+			$mediaRows = $qb->fetchAll();
+			if($mediaRows)
+			{
+				foreach($mediaRows as $row)
 				{
 					//$imagelist[$row['media_category']][$row['media_url']] = $row['media_name']. " (".$row['media_dimensions'].") ";
 					$imagelist[$row['media_category']][] = array('path' => $row['media_url'], 'fname' => $row['media_name']. " (".$row['media_dimensions'].") ");

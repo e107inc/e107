@@ -105,7 +105,11 @@ function init()
 
 	if(!empty($_GET['sef']))
 	{
-		if($newID = $sql->retrieve('forum', 'forum_id', "forum_sef= '" . $tp->toDB($_GET['sef']) . "' LIMIT 1"))
+		$newID = $sql->createQueryBuilder()
+			->select('forum_id')->from('forum')
+			->where('forum_sef', $_GET['sef'])->setMaxResults(1)
+			->fetchOne();
+		if($newID)
 		{
 			$_REQUEST['id'] = $newID;
 		}
@@ -252,8 +256,8 @@ function init()
 
 	if(varset($pref['track_online']))
 	{
-		$member_users = $sql->count('online', '(*)', "WHERE online_location LIKE('" . $tp->filter(e_REQUEST_URI, 'url') . "%') AND online_user_id != 0");
-		$guest_users = $sql->count('online', '(*)', "WHERE online_location LIKE('" . $tp->filter(e_REQUEST_URI, 'url') . "%') AND online_user_id = 0");
+		$member_users = $this->countOnline($sql, $tp->filter(e_REQUEST_URI, 'url'), '!=');
+		$guest_users = $this->countOnline($sql, $tp->filter(e_REQUEST_URI, 'url'), '=');
 		$users = $member_users + $guest_users;
 
 	}
@@ -355,7 +359,7 @@ function init()
 
 	if(!empty($_GET['srch']))
 	{
-		$threadFilter = "t.thread_name LIKE '%" . $tp->filter($_GET['srch'], 'w') . "%'";
+		$threadFilter = $tp->filter($_GET['srch'], 'w');
 	}
 
 	$threadList = $forum->forumGetThreads($forumId, $threadFrom, $view, $threadFilter);
@@ -467,6 +471,27 @@ function init()
 	return array($forum_info, $FORUM_CRUMB, $forumSCvars, $FORUM_VIEW_CAPTION);
 }
 
+
+
+	/**
+	 * Count rows in the online table whose location matches the given URL prefix,
+	 * partitioned by whether the visitor is a member ($userIdOp '!=') or a guest
+	 * ($userIdOp '=') against online_user_id = 0.
+	 *
+	 * @param e_db $sql
+	 * @param string $urlPrefix already-filtered request URI
+	 * @param string $userIdOp '!=' for members, '=' for guests
+	 * @return int
+	 */
+	private function countOnline($sql, $urlPrefix, $userIdOp)
+	{
+		$qb = $sql->createQueryBuilder();
+
+		return $qb->from('online')
+			->where($qb->expr()->startsWith('online_location', $urlPrefix))
+			->where('online_user_id', $userIdOp, 0)
+			->count();
+	}
 
 
 	function parse_thread($thread_info)

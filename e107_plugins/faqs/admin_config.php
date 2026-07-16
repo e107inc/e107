@@ -112,12 +112,14 @@ class faq_cat_ui extends e_admin_ui
 		
 		$this->categories[0] = "(".LAN_ROOT.")";
 		
-		if($sql->select('faqs_info','*', 'faq_info_parent = 0 ORDER BY faq_info_title ASC'))
+		$rows = $sql->createQueryBuilder()
+			->select('*')->from('faqs_info')
+			->where('faq_info_parent', 0)
+			->orderBy('faq_info_title', 'ASC')
+			->fetchAll();
+		foreach($rows as $row)
 		{
-			while ($row = $sql->fetch())
-			{
-				$this->categories[$row['faq_info_id']] = $row['faq_info_title'];
-			}
+			$this->categories[$row['faq_info_id']] = $row['faq_info_title'];
 		}
 		
 		$this->fields['faq_info_parent']['writeParms'] = $this->categories;
@@ -270,12 +272,10 @@ class faq_main_ui extends e_admin_ui
 
 
 		$sql = e107::getDb();
-		if($sql->select('faqs_info'))
+		$rows = $sql->createQueryBuilder()->select('*')->from('faqs_info')->fetchAll();
+		foreach($rows as $row)
 		{
-			while ($row = $sql->fetch())
-			{
-				$this->categories[$row['faq_info_id']] = $row['faq_info_title'];
-			}
+			$this->categories[$row['faq_info_id']] = $row['faq_info_title'];
 		}
 
 		$faqOrder = e107::pref('faqs','orderby');

@@ -86,16 +86,19 @@ if(!class_exists('forum_newforumposts_menu'))
 		private function getQuery()
 		{
 			$max_age = vartrue($this->menuPref['maxage'], 0);
-			$max_age = ($max_age == 0) ? '' : '(p.post_datestamp > '.(time()-(int)$max_age*86400).') AND ';
 
 			$viewPerm = $this->forumObj->getForumPermList('view');
-			$forumList = implode(',', $viewPerm);
 
 			// if forumlist is empty (no forum categories created yet), return false;
-			if(!$forumList)
+			if(empty($viewPerm))
 			{
 				return false;
 			}
+
+			$limit = (int) vartrue($this->menuPref['display'], 10);
+			$classList = array_map('intval', explode(',', USERCLASS_LIST));
+
+			$qb = e107::getDb('nfp')->createQueryBuilder();
 
 			$this->menuPref['layout'] = vartrue($this->menuPref['layout'], 'default');
 			switch($this->menuPref['layout'])
@@ -103,52 +106,61 @@ if(!class_exists('forum_newforumposts_menu'))
 				case "minimal":
 				case "default":
 
-					$qry = "
-					SELECT
-					p.post_user, p.post_id, p.post_datestamp, p.post_user_anon, p.post_entry,
-					t.*,
-					u.user_id, u.user_name, u.user_image, u.user_currentvisit,
-					lu.user_name as thread_lastuser_username, 
-					f.forum_name, f.forum_sef
-					FROM `#forum_post` as p
-					LEFT JOIN `#forum_thread` AS t ON t.thread_id = p.post_thread
-					LEFT JOIN `#forum` as f ON f.forum_id = t.thread_forum_id
-					LEFT JOIN `#user` AS u ON u.user_id = p.post_user
-					LEFT JOIN `#user` AS lu ON t.thread_lastuser = lu.user_id
-					WHERE {$max_age} p.post_forum IN ({$forumList})
-					ORDER BY p.post_datestamp DESC LIMIT 0, ".(int)vartrue($this->menuPref['display'],10);
+					$qb->select(
+						'p.post_user', 'p.post_id', 'p.post_datestamp', 'p.post_user_anon', 'p.post_entry',
+						't.*',
+						'u.user_id', 'u.user_name', 'u.user_image', 'u.user_currentvisit',
+						'lu.user_name as thread_lastuser_username',
+						'f.forum_name', 'f.forum_sef'
+					)
+						->from('forum_post', 'p')
+						->leftJoin('forum_thread', 't', $qb->expr()->compareColumns('t.thread_id', 'p.post_thread'))
+						->leftJoin('forum', 'f', $qb->expr()->compareColumns('f.forum_id', 't.thread_forum_id'))
+						->leftJoin('user', 'u', $qb->expr()->compareColumns('u.user_id', 'p.post_user'))
+						->leftJoin('user', 'lu', $qb->expr()->compareColumns('t.thread_lastuser', 'lu.user_id'));
+
+					if($max_age != 0)
+					{
+						$qb->where('p.post_datestamp', '>', time() - (int) $max_age * 86400);
+					}
+
+					$qb->whereIn('p.post_forum', $viewPerm)
+						->orderBy('p.post_datestamp', 'DESC')
+						->setFirstResult(0)->setMaxResults($limit);
 					break;
 
 				 // standardized field names.  thread_user_[user table fields without the '_')
 				default:
-					 $qry = "
-					SELECT t.thread_id, t.thread_name, t.thread_datestamp, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, t.thread_active, 
-					MAX(p.post_id) AS post_id,
-					f.forum_id, f.forum_name, f.forum_class, f.forum_sef, 
-					u.user_name as thread_user_username,  
-					u.user_image as thread_user_userimage, 
-					u.user_currentvisit as thread_user_usercurrentvisit,
-					fp.forum_class,  fp.forum_sef as forum_parent_sef,
-					lp.user_name AS thread_lastuser_username
-					FROM #forum_thread AS t
-					LEFT JOIN #forum_post AS p ON t.thread_id = p.post_thread
-					LEFT JOIN #user AS u ON t.thread_user = u.user_id
-					LEFT JOIN #user AS lp ON t.thread_lastuser = lp.user_id
-					LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
-					LEFT JOIN #forum AS fp ON f.forum_parent = fp.forum_id
-					WHERE f.forum_id = t.thread_forum_id AND f.forum_class IN (".USERCLASS_LIST.")
-					AND fp.forum_class IN (".USERCLASS_LIST.") 
-					GROUP BY t.thread_id  
-					ORDER BY t.thread_lastpost DESC LIMIT 0, ".(int)vartrue($this->menuPref['display'],10);
-					}
+					$qb->select(
+						't.thread_id', 't.thread_name', 't.thread_datestamp', 't.thread_user', 't.thread_views', 't.thread_lastpost', 't.thread_lastuser', 't.thread_total_replies', 't.thread_active',
+						'MAX(p.post_id) AS post_id',
+						'f.forum_id', 'f.forum_name', 'f.forum_class', 'f.forum_sef',
+						'u.user_name as thread_user_username',
+						'u.user_image as thread_user_userimage',
+						'u.user_currentvisit as thread_user_usercurrentvisit',
+						'fp.forum_class', 'fp.forum_sef as forum_parent_sef',
+						'lp.user_name AS thread_lastuser_username'
+					)
+						->from('forum_thread', 't')
+						->leftJoin('forum_post', 'p', $qb->expr()->compareColumns('t.thread_id', 'p.post_thread'))
+						->leftJoin('user', 'u', $qb->expr()->compareColumns('t.thread_user', 'u.user_id'))
+						->leftJoin('user', 'lp', $qb->expr()->compareColumns('t.thread_lastuser', 'lp.user_id'))
+						->leftJoin('forum', 'f', $qb->expr()->compareColumns('f.forum_id', 't.thread_forum_id'))
+						->leftJoin('forum', 'fp', $qb->expr()->compareColumns('f.forum_parent', 'fp.forum_id'))
+						->whereColumn('f.forum_id', 't.thread_forum_id')
+						->whereIn('f.forum_class', $classList)
+						->whereIn('fp.forum_class', $classList)
+						->groupBy('t.thread_id')
+						->orderBy('t.thread_lastpost', 'DESC')
+						->setFirstResult(0)->setMaxResults($limit);
+			}
 
-			return $qry;
+			return $qb;
 		}
 
 		private function render()
 		{
 			$tp = e107::getParser();
-			$sql = e107::getDb('nfp');
 		//	$pref = e107::getPref();
 
 			$qry = $this->getQuery();
@@ -181,7 +193,7 @@ if(!class_exists('forum_newforumposts_menu'))
 
 			if($qry)
 			{
-				if($results = $sql->gen($qry))
+				if($results = $qry->fetchAll())
 				{
 					/*	if($tp->thumbWidth()  > 250) // Fix for unset image size.
 					{
@@ -193,7 +205,7 @@ if(!class_exists('forum_newforumposts_menu'))
 //					$list = $tp->parseTemplate($template['start'], true);
 					$text = $tp->parseTemplate($template['start'], true);
 
-					while($row = $sql->fetch())
+					foreach($results as $row)
 					{
 //						var_dump ($row);
 //						echo "<hr>";

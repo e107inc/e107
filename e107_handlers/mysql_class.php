@@ -27,7 +27,6 @@
 
 require_once(__DIR__.'/e_db_interface.php');
 require_once(__DIR__.'/e_db_legacy_trait.php');
-require_once(__DIR__.'/e_db_common_trait.php');
 
 if(defined('MYSQL_LIGHT'))
 {

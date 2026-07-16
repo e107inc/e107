@@ -95,10 +95,11 @@ class core_news_sef_full_url extends eUrlConfig
 		
 		$sql = e107::getDb('url');
 		$name = e107::getParser()->toDB($name);
-		if($sql->select('news', 'news_id', "news_sef='{$name}'")) // TODO - it'll be news_sef (new) field
+		$row = $sql->createQueryBuilder()->select('news_id')->from('news')
+			->where('news_sef', $name)->fetchRow(); // TODO - it'll be news_sef (new) field
+		if($row)
 		{
-			$name = $sql->fetch();
-			$request->setRequestParam('name', $name['news_id']);
+			$request->setRequestParam('name', $row['news_id']);
 		}
 		else $request->setRequestParam('name', 0);
 	}

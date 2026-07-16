@@ -267,7 +267,10 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 				// Custom menu.
 				if(is_numeric($val))
 				{
-					$menu = e107::getDb()->retrieve('page', 'menu_name', 'page_id = ' . (int) $val);
+					$menu = e107::getDb()->createQueryBuilder()
+						->select('menu_name')->from('page')
+						->where('page_id', (int) $val)
+						->fetchOne();
 					$id = 'cmenu-' . $menu;
 					$inc = e107::getMenu()->renderMenu($val, null, null, true);
 				}

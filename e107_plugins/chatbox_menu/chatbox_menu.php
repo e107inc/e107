@@ -10,6 +10,8 @@
  *
 */
 
+use e107\Database\SqlFragment;
+
 if(isset($_POST['chatbox_ajax']))
 {
 	define('e_MINIMAL', true);
@@ -59,8 +61,12 @@ if((isset($_POST['chat_submit']) || e_AJAX_REQUEST) && $_POST['cmessage'] !== ''
 
 				$cmessage = $tp->toDB($cmessage);
 
-				if($sql->select('chatbox', '*',
-					"cb_message='{$cmessage}' AND cb_datestamp+84600>" . time()))
+				$duplicate = $sql->createQueryBuilder()->select('*')->from('chatbox')
+					->where('cb_message', $cmessage)
+					->where('cb_datestamp', '>', time() - 84600)
+					->fetchRow();
+
+				if($duplicate)
 				{
 
 					$emessage = CHATBOX_L17;
@@ -78,7 +84,11 @@ if((isset($_POST['chat_submit']) || e_AJAX_REQUEST) && $_POST['cmessage'] !== ''
 						$nick = USERID . '.' . USERNAME;
 
 						$postTime = time();
-						$sql->update('user', "user_chats = user_chats + 1, user_lastpost = {$postTime} WHERE user_id = " . USERID);
+						$sql->createQueryBuilder()->update('user')
+							->increment('user_chats')
+							->set('user_lastpost', $postTime)
+							->where('user_id', (int) USERID)
+							->execute();
 
 					}
 					elseif(!$nick)
@@ -106,8 +116,14 @@ if((isset($_POST['chat_submit']) || e_AJAX_REQUEST) && $_POST['cmessage'] !== ''
 					}
 					if(!$emessage)
 					{
-						$insertId = $sql->insert('chatbox',
-							"0, '{$nick}', '{$cmessage}', '{$datestamp}', 0, '{$ip}' ");
+						$insertId = $sql->createQueryBuilder()->insert('chatbox')
+							->insertGetId(array(
+								'cb_nick'       => $nick,
+								'cb_message'    => $cmessage,
+								'cb_datestamp'  => $datestamp,
+								'cb_blocked'    => 0,
+								'cb_ip'         => $ip,
+							));
 
 						if($insertId)
 						{
@@ -251,10 +267,6 @@ if(!$text = e107::getCache()->retrieve('nq_chatbox'))
 		define('CB_MOD', check_class($pref['cb_mod']));
 	}
 
-	$qry = "SELECT c.*, u.user_name, u.user_image FROM #chatbox AS c
-	LEFT JOIN #user AS u ON SUBSTRING_INDEX(c.cb_nick, '.', 1) = u.user_id
-	ORDER BY c.cb_datestamp DESC LIMIT 0, " . (int) $chatbox_posts;
-
 	global $CHATBOXSTYLE;
 
 	if($CHATBOXSTYLE)  // legacy chatbox style
@@ -283,10 +295,15 @@ if(!$text = e107::getCache()->retrieve('nq_chatbox'))
 
 	$sc = e107::getScBatch('chatbox_menu', true);
 
-	if($sql->gen($qry))
-	{
+	$cbpost = $sql->createQueryBuilder()
+		->select('c.*', 'u.user_name', 'u.user_image')->from('chatbox', 'c')
+		->leftJoin('user', 'u', SqlFragment::raw("SUBSTRING_INDEX(c.cb_nick, '.', 1) = u.user_id"))
+		->orderBy('c.cb_datestamp', 'DESC')
+		->setFirstResult(0)->setMaxResults((int) $chatbox_posts)
+		->fetchAll();
 
-		$cbpost = $sql->rows();
+	if(!empty($cbpost))
+	{
 
 		$text .= "<div id='chatbox-posts-block'>\n";
 
@@ -308,7 +325,7 @@ if(!$text = e107::getCache()->retrieve('nq_chatbox'))
 		$text .= "<span class='mediumtext'>" . CHATBOX_L11 . '</span>';
 	}
 
-	$total_chats = $sql->count('chatbox');
+	$total_chats = $sql->createQueryBuilder()->from('chatbox')->count();
 
 	if($total_chats > $chatbox_posts || CB_MOD)
 	{

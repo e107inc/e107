@@ -100,7 +100,10 @@ if (isset($_POST['update_catorder']))
 	{
 		if (is_numeric($_POST['catorder'][$key]))
 		{
-			$sql ->update("download_category", "download_category_order='".intval($order)."' WHERE download_category_id='".intval($key)."'");
+			$sql->createQueryBuilder()->update("download_category")
+				->set('download_category_order', (int) $order)
+				->where('download_category_id', (int) $key)
+				->execute();
 		}
 	}
 	e107::getLog()->add('DOWNL_08',implode(',',array_keys($_POST['catorder'])),E_LOG_INFORMATIVE,'');
@@ -167,7 +170,10 @@ $targetFields = array('gen_datestamp', 'gen_user_id', 'gen_ip', 'gen_intdata', '
 
 if (!empty($_POST['addlimit']))
 {
-	if ($sql->select('generic','gen_id',"gen_type = 'download_limit' AND gen_datestamp = ".intval($_POST['newlimit_class'])))
+	if ($sql->createQueryBuilder()->from('generic')
+		->where('gen_type', 'download_limit')
+		->where('gen_datestamp', (int) $_POST['newlimit_class'])
+		->count())
 	{
 		$message = DOWLAN_116;
 	}
@@ -180,7 +186,7 @@ if (!empty($_POST['addlimit']))
 			$vals[$targetFields[$k]] = intval($_POST[$lName]);
 		}
 		$valString = implode(',',$vals);
-		if ($sql->insert('generic',$vals))
+		if ($sql->createQueryBuilder()->insert('generic')->valuesTyped($vals, $sql->getFieldDefs('generic')['_FIELD_TYPES'])->execute())
 		{
 			$message = DOWLAN_117;
 			e107::getLog()->add('DOWNL_09',$valString,E_LOG_INFORMATIVE,'');
@@ -213,7 +219,7 @@ if (isset($_POST['updatelimits']))
 		if (!$_POST['count_num'][$idLim] && !$_POST['count_days'][$idLim] && !$_POST['bw_num'][$idLim] && !$_POST['bw_days'][$idLim])
 		{
 			//All entries empty - Remove record
-			if ($sql->delete('generic',"gen_id = {$idLim}"))
+			if ($sql->createQueryBuilder()->delete('generic')->where('gen_id', $idLim)->execute())
 			{
 				$message .= $idLim." - ".DOWLAN_119."<br/>";
 				e107::getLog()->add('DOWNL_11','ID: '.$idLim,E_LOG_INFORMATIVE,'');
@@ -226,13 +232,16 @@ if (isset($_POST['updatelimits']))
 		else
 		{
 			$vals = array();
+			$updQb = $sql->createQueryBuilder()->update('generic');
+			$genFieldTypes = $sql->getFieldDefs('generic')['_FIELD_TYPES'];
 			foreach(array('bw_num','bw_days','count_num','count_days') as $k => $lName)
 			{
 				$vals[$targetFields[$k+1]] = intval($_POST[$lName][$idLim]);
+				$updQb->setTyped($targetFields[$k+1], $vals[$targetFields[$k+1]], isset($genFieldTypes[$targetFields[$k+1]]) ? $genFieldTypes[$targetFields[$k+1]] : 'string');
 			}
 			$vals['WHERE'] = "gen_id = ".$idLim;
 
-			$sql->update('generic',$vals);
+			$updQb->where('gen_id', $idLim)->execute();
 			$valString = implode(',',$vals);
 			e107::getLog()->add('DOWNL_10',$idLim.', '.$valString,E_LOG_INFORMATIVE,'');
 			$message .= $idLim." - ".DOWLAN_121."<br/>";

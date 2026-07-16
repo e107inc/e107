@@ -59,22 +59,20 @@ function wmessage_shortcode($parm='')
 
 		if (!defined('WMFLAG'))
 		{
-			$qry = "
-			SELECT * FROM #generic
-			WHERE gen_type ='wmessage' AND gen_intdata IN (".USERCLASS_LIST.')';
 			$wmessage = array();
 			$wmessageCaption = array();
 			$wmcaption = '';
-			if($sql->gen($qry))
+			$wmRows = $sql->createQueryBuilder()->select('*')->from('generic')
+				->where('gen_type', 'wmessage')
+				->whereIn('gen_intdata', explode(',', USERCLASS_LIST))
+				->fetchAll();
+			foreach ($wmRows as $row)
 			{
-				while ($row = $sql->fetch())
+				$wmessage[] = $tp->toHTML($row['gen_chardata'], TRUE, 'BODY, defs', 'admin');
+				$wmessageCaption[] =  $tp->toHTML($row['gen_ip'], TRUE, 'TITLE');
+				if(!$wmcaption)
 				{
-					$wmessage[] = $tp->toHTML($row['gen_chardata'], TRUE, 'BODY, defs', 'admin');
-					$wmessageCaption[] =  $tp->toHTML($row['gen_ip'], TRUE, 'TITLE');
-					if(!$wmcaption)
-					{
-						$wmcaption = $tp->toHTML($row['gen_ip'], TRUE, 'TITLE');
-					}
+					$wmcaption = $tp->toHTML($row['gen_ip'], TRUE, 'TITLE');
 				}
 			}
 

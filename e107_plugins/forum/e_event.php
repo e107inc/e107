@@ -8,6 +8,8 @@
  * XXX HIGHLY EXPERIMENTAL AND SUBJECT TO CHANGE WITHOUT NOTICE. 
 */
 
+use e107\Database\SqlFragment;
+
 if (!defined('e107_INIT')) { exit; }
 
 
@@ -42,7 +44,7 @@ class forum_event
 		fclose($myfile);
 		echo('hola');
 		print_a($data);*/
-		e107::getDb()->createQueryBuilder()->update('user_extended')->setExpression('user_plugin_forum_viewed', 'NULL')->where('user_extended_id', (int) $data['user_id'])->execute();
+		e107::getDb()->createQueryBuilder()->update('user_extended')->setExpression('user_plugin_forum_viewed', SqlFragment::raw('NULL'))->where('user_extended_id', (int) $data['user_id'])->execute();
 		
 	}
 
@@ -50,7 +52,12 @@ class forum_event
 	{
 		//e107::getDb()->update('user_extended', "user_plugin_forum_viewed = REPLACE(user_plugin_forum_viewed, '{$data[post_thread]}', '0') WHERE user_extended_id != ".$data[post_user]); 
 		$postThread = (int) $data['post_thread'];
-		e107::getDb()->execute("UPDATE `#user_extended` SET user_plugin_forum_viewed = TRIM(BOTH ',' FROM REPLACE(CONCAT(',', user_plugin_forum_viewed, ','), CONCAT(',', :thread1, ','), ',')) WHERE FIND_IN_SET(:thread2, user_plugin_forum_viewed) AND user_extended_id != :postuser", array('thread1' => $postThread, 'thread2' => $postThread, 'postuser' => (int) $data['post_user']));
+		$qb = e107::getDb()->createQueryBuilder();
+		$qb->update('user_extended')
+			->setExpression('user_plugin_forum_viewed', $qb->raw("TRIM(BOTH ',' FROM REPLACE(CONCAT(',', user_plugin_forum_viewed, ','), CONCAT(',', ".$qb->createNamedParameter($postThread).", ','), ','))"))
+			->where($qb->expr()->findInSet('user_plugin_forum_viewed', $postThread))
+			->where('user_extended_id', '!=', (int) $data['post_user'])
+			->execute();
 
 	}
 

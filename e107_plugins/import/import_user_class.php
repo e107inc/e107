@@ -91,27 +91,28 @@ class user_import
 	function emptyTargetDB($inc_admin = FALSE)
 	{
 	    
-	    if ($inc_admin === TRUE)
+	    $userDelete     = $this->userDB->createQueryBuilder()->delete('user');
+		$extendedDelete = $this->userDB->createQueryBuilder()->delete('user_extended');
+
+		if ($inc_admin === TRUE)
 		{
 			$this->blockMainAdmin = FALSE;
-			$delClause = '';
-			$extClause = '';
 		}
 		else
 		{
 			$this->blockMainAdmin = TRUE;
-			$delClause = 'user_id != 1 AND user_perms != "0" ';
-			$extClause = 'user_extended_id != 1';
+			$userDelete->where('user_id', '!=', 1)->where('user_perms', '!=', '0');
+			$extendedDelete->where('user_extended_id', '!=', 1);
 		}
 
-		if($this->userDB->delete('user',$delClause))
+		if($userDelete->execute())
 		{
-			e107::getMessage()->addDebug("Emptied User table");	
+			e107::getMessage()->addDebug("Emptied User table");
 		}
-		
-		if($this->userDB->delete('user_extended',$extClause))
+
+		if($extendedDelete->execute())
 		{
-			e107::getMessage()->addDebug("Emptied User-extended table");	
+			e107::getMessage()->addDebug("Emptied User-extended table");
 		}
 	}
   
@@ -214,16 +215,16 @@ class user_import
 		$userRecord['user_realm'] 		= '';		// Never carry across these fields
 	    $userRecord['user_pwchange'] 	= 0;
 	
-		if(!$result = $this->userDB->replace('user',$userRecord))
+		if(!$result = $this->userDB->createQueryBuilder()->replace('user')->valuesTyped($userRecord, $this->userDB->getFieldDefs('user')['_FIELD_TYPES'])->execute())
 		{
 	     	return 4;
 		}
-	
+
 		if (count($extendedFields))
 		{
 			$extendedFields['user_extended_id'] = varset($userRecord['user_id'],0) ? $userRecord['user_id'] : $result;
-			
-			if($this->userDB->replace('user_extended',$extendedFields) === false)
+
+			if($this->userDB->createQueryBuilder()->replace('user_extended')->valuesTyped($extendedFields, $this->userDB->getFieldDefs('user_extended')['_FIELD_TYPES'])->execute() === false)
 			{
 				e107::getMessage()->addDebug("Failed to insert extended fields: ".print_a($extendedFields));
 				return 6;
@@ -324,7 +325,7 @@ class userclass_import
 		}
 
 
-		if(!$result = $this->ucdb->insert('userclass_classes',$row))
+		if(!$result = $this->ucdb->createQueryBuilder()->insert('userclass_classes')->valuesTyped($row, $this->ucdb->getFieldDefs('userclass_classes')['_FIELD_TYPES'])->execute())
 		{
 	     	return 4;
 		}

@@ -106,9 +106,12 @@ function sendProgress($id)
 	$mailManager->doEmailTask($perAjaxHit);
 
 	$sqld = e107::getDb('progress');
-	
-	$sqld->select("mail_content","mail_total_count,mail_togo_count,mail_sent_count,mail_fail_count","mail_source_id= ".intval($id) );
-    $row = $sqld->fetch();
+
+	$row = $sqld->createQueryBuilder()
+		->select('mail_total_count', 'mail_togo_count', 'mail_sent_count', 'mail_fail_count')
+		->from('mail_content')
+		->where('mail_source_id', (int) $id)
+		->fetchRow();
   
  	$rand 	= ($row['mail_sent_count'] + $row['mail_fail_count']);
 	$total 	= ($row['mail_total_count']);
@@ -377,7 +380,10 @@ class mailout_main_ui extends e_admin_ui
 
 	function afterDelete($deleted_data, $id, $deleted_check)
 	{
-		$result = e107::getDb()->delete('mail_recipients', 'mail_detail_id = '.intval($id));
+		$result = e107::getDb()->createQueryBuilder()
+			->delete('mail_recipients')
+			->where('mail_detail_id', (int) $id)
+			->execute();
 	//	$this->getModel()->addMessageDebug("Deleted ".$result." recipients from the deleted email #".$id);
 	//	e107::getMessage()->addDebug("Deleted ".$result." recipients from the deleted email #".$id, 'default', true);
 
@@ -680,15 +686,21 @@ class mailout_main_ui extends e_admin_ui
 				'mail_start_send'		=> '',
 				'mail_end_send'			=> '',
 				'mail_create_date'		=> time(),
-				'WHERE'					=> "mail_source_id IN (".implode(",",$num).")" // FIXME Currently modifies the original instead of the copy. 
 			);
 
-			if(!e107::getDb()->update('mail_content',$update))
+			$qb = e107::getDb()->createQueryBuilder()->update('mail_content');
+			foreach($update as $col => $val)
 			{
-				e107::getMessage()->addDebug(print_a($update,true));	
+				$qb->set($col, $val);
 			}
-			
-			
+			$qb->whereIn('mail_source_id', $num); // FIXME Currently modifies the original instead of the copy.
+
+			if(!$qb->execute())
+			{
+				e107::getMessage()->addDebug(print_a($update,true));
+			}
+
+
 		}
 
 	}
@@ -797,7 +809,10 @@ class mailout_main_ui extends e_admin_ui
 		
 		if(is_numeric($id))
 		{
-			$mailData = e107::getDb()->retrieve('mail_content','*','mail_source_id='.intval($id)." LIMIT 1");
+			$mailData = e107::getDb()->createQueryBuilder()
+				->select('*')->from('mail_content')
+				->where('mail_source_id', (int) $id)->setMaxResults(1)
+				->fetchRow();
 			
 			$shortcodes = array(
 				'USERNAME'          => 'John Example',
@@ -812,7 +827,10 @@ class mailout_main_ui extends e_admin_ui
 
 			if(!empty($user))
 			{
-				$userData = e107::getDb()->retrieve('mail_recipients','*', 'mail_detail_id = '.intval($id).' AND mail_recipient_id = '.intval($user).' LIMIT 1');
+				$userData = e107::getDb()->createQueryBuilder()
+					->select('*')->from('mail_recipients')
+					->where('mail_detail_id', (int) $id)->where('mail_recipient_id', (int) $user)->setMaxResults(1)
+					->fetchRow();
 				$shortcodes = e107::unserialize(stripslashes($userData['mail_target_info']));
 			}
 
@@ -960,8 +978,12 @@ class mailout_main_ui extends e_admin_ui
 
 		$this->getResponse()->setTitle(LAN_MAILOUT_15.SEP.'Process Mail Queue #'.$id);
 	
-		e107::getDb()->update('mail_content', 'mail_content_status='.MAIL_STATUS_PENDING.' WHERE mail_source_id = '.intval($id));
-		e107::getDb()->update('mail_recipients', 'mail_status='.MAIL_STATUS_PENDING.' WHERE mail_detail_id = '.intval($id));
+		e107::getDb()->createQueryBuilder()->update('mail_content')
+			->set('mail_content_status', MAIL_STATUS_PENDING)
+			->where('mail_source_id', (int) $id)->execute();
+		e107::getDb()->createQueryBuilder()->update('mail_recipients')
+			->set('mail_status', MAIL_STATUS_PENDING)
+			->where('mail_detail_id', (int) $id)->execute();
 	
 		if(E107_DEBUG_LEVEL > 0)
 		{
@@ -1090,8 +1112,11 @@ class mailout_main_ui extends e_admin_ui
 		
 		$id = $this->getId();
 		
-		$mailData = e107::getDb()->retrieve('mail_content','*','mail_source_id='.intval($id));
-		
+		$mailData = e107::getDb()->createQueryBuilder()
+			->select('*')->from('mail_content')
+			->where('mail_source_id', (int) $id)
+			->fetchRow();
+
 		if(empty($mailData))
 		{
 			e107::getMessage()->addError("Couldn't retrieve mail data for id: ".$id);
@@ -1104,7 +1129,10 @@ class mailout_main_ui extends e_admin_ui
 		
 		e107::getMessage()->addDebug("Regenerating recipient list");
 		
-		e107::getDb()->delete('mail_recipients','mail_detail_id='.intval($id));
+		e107::getDb()->createQueryBuilder()
+			->delete('mail_recipients')
+			->where('mail_detail_id', (int) $id)
+			->execute();
 				
 		return $this->mailAdmin->sendEmailCircular($mailData, $fromHold);
 		
@@ -1797,12 +1825,18 @@ class mailout_recipients_ui extends e_admin_ui
 		$this->mailManager = new e107MailManager;
 
 		$sql = e107::getDb();
-		$sql->gen("SELECT r.mail_detail_id,c.mail_title FROM `#mail_recipients` AS r LEFT JOIN `#mail_content` as c ON r.mail_detail_id = c.mail_source_id GROUP BY r.mail_detail_id");
-				
-		while($row = $sql->fetch())
+		$qb = $sql->createQueryBuilder();
+		$rows = $qb
+			->select('r.mail_detail_id', 'c.mail_title')
+			->from('mail_recipients', 'r')
+			->leftJoin('mail_content', 'c', $qb->expr()->compareColumns('r.mail_detail_id', 'c.mail_source_id'))
+			->groupBy('r.mail_detail_id')
+			->fetchAll();
+
+		foreach($rows as $row)
 		{
 			$id = $row['mail_detail_id'];
-			$array[$id] = $id." : ".vartrue($row['mail_title'], "(No Name)");	
+			$array[$id] = $id." : ".vartrue($row['mail_title'], "(No Name)");
 		}
 		$this->fields['mail_detail_id']['writeParms'] = varset($array, array());
 		
@@ -1831,11 +1865,15 @@ class mailout_recipients_ui extends e_admin_ui
 			return;	
 		}
 						
-		$query = "mail_total_count = mail_total_count - 1, mail_togo_count = mail_togo_count - 1 WHERE mail_source_id = ".intval($deleted_data['mail_detail_id'])." LIMIT 1";
+		$qb = e107::getDb()->createQueryBuilder()->update('mail_content');
+		$qb->decrement('mail_total_count', 1)
+			->decrement('mail_togo_count', 1)
+			->where('mail_source_id', (int) $deleted_data['mail_detail_id'])
+			->setMaxResults(1);
 
-		if(!e107::getDb()->update('mail_content',$query))
+		if(!$qb->execute())
 		{
-			e107::getMessage()->addDebug(print_a($update,true));	
+			e107::getMessage()->addDebug(print_a($qb->getSQL(), true));
 		}
 		
 		

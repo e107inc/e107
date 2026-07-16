@@ -74,19 +74,34 @@ if (varset($e107_popup) != 1)
 	{
 		if ($pref['cachestatus'])
 		{
-			if (!$sql->select('generic', '*', "gen_type='empty_cache'"))
+			$row = $sql->createQueryBuilder()
+				->select('*')->from('generic')
+				->where('gen_type', 'empty_cache')
+				->fetchRow();
+			if (!$row)
 			{
-				$sql->insert('generic', "0,'empty_cache','".time()."','0','','0',''");
+				$sql->createQueryBuilder()->insert('generic')
+					->values(array(
+						'gen_type'       => 'empty_cache',
+						'gen_datestamp'  => time(),
+						'gen_user_id'    => '0',
+						'gen_ip'         => '',
+						'gen_intdata'    => '0',
+						'gen_chardata'   => '',
+					))
+					->execute();
 			}
 			else
 			{
-				$row = $sql->fetch();
 				if (($row['gen_datestamp'] + 604800) < time()) // If cache not cleared in last 7 days, clear it.
 				{
 					require_once (e_HANDLER."cache_handler.php");
 					$ec = new ecache;
 					$ec->clear();
-					$sql->update('generic', "gen_datestamp='".time()."' WHERE gen_type='empty_cache'");
+					$sql->createQueryBuilder()->update('generic')
+						->set('gen_datestamp', time())
+						->where('gen_type', 'empty_cache')
+						->execute();
 				}
 			}
 		}

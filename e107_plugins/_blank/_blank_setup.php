@@ -60,7 +60,20 @@ if(!class_exists("_blank_setup"))
 				  `blank_class` int(10) NOT NULL,
 			 */
 
-			if($sql->insert('blank', $e107_blank))
+			// getFieldDefs() is false when the blank table could not be created on
+			// this database server (its schema uses the json type, unavailable before
+			// MySQL 5.7/MariaDB 10.2); fall back to plain bound values, as the legacy
+			// insert() did, and let the insert report its own failure below.
+			$fieldDefs = $sql->getFieldDefs('blank');
+
+			$qb = $sql->createQueryBuilder()->insert('blank');
+			$qb = is_array($fieldDefs) && isset($fieldDefs['_FIELD_TYPES'])
+				? $qb->valuesTyped($e107_blank, $fieldDefs['_FIELD_TYPES'])
+				: $qb->values($e107_blank);
+
+			$ok = $qb->execute();
+
+			if($ok !== false)
 			{
 				$mes->add("Custom - Install Message.", E_MESSAGE_SUCCESS);
 			}

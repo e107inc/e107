@@ -1839,24 +1839,28 @@ class e_form
 
 		$class = str_replace(' ', '',$class);
 
+		if((string) $class === (string) e_UC_NOBODY)
+		{
+			return '';
+		}
+
+		$qb = e107::getDb()->createQueryBuilder();
+		$qb->select(array_map('trim', explode(',', $fields)))->from('user');
+
 		switch ($class)
 		{
 			case e_UC_ADMIN:
-				$where = 'user_admin = 1';
+				$qb->where('user_admin', 1);
 				$classList = e_UC_ADMIN;
 				break;
 
 			case e_UC_MEMBER:
-				$where = 'user_ban = 0';
+				$qb->where('user_ban', 0);
 				$classList = e_UC_MEMBER;
 				break;
 
-			case e_UC_NOBODY:
-				return '';
-				break;
-
 			case 'matchclass':
-				$where = "user_class REGEXP '(^|,)(".str_replace(',', '|', USERCLASS).")(,|$)'";
+				$qb->where($qb->expr()->regexp('user_class', '(^|,)('.str_replace(',', '|', USERCLASS).')(,|$)'));
 				$classList = USERCLASS;
 				$clist = explode(',',USERCLASS);
 				if(!isset($options['group']) && count($clist) > 1) // group classes by default if more than one found.
@@ -1866,7 +1870,7 @@ class e_form
 			break;
 
 			default:
-				$where = "user_class REGEXP '(^|,)(".e107::getDb()->escape(str_replace(',', '|', $class)).")(,|$)'";
+				$qb->where($qb->expr()->regexp('user_class', '(^|,)('.str_replace(',', '|', $class).')(,|$)'));
 				$classList = $class;
 				break;
 		}
@@ -1874,10 +1878,10 @@ class e_form
 
 		if(!empty($options['return']) && $options['return'] === 'sqlWhere') // can be used by user.php ajax method..
 		{
-			return $where;
+			return $qb->getSQL();
 		}
 
-		$users =   e107::getDb()->retrieve('user',$fields, 'WHERE ' .$where. ' ORDER BY user_name LIMIT 1000',true);
+		$users = $qb->orderBy('user_name')->setMaxResults(1000)->fetchAll();
 
 		if(empty($users))
 		{

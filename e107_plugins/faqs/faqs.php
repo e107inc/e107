@@ -233,7 +233,8 @@ class faq
 		{
 			$sql = e107::getDb();
 
-			$existing = $sql->select('faqs','faq_id',"faq_answer='' AND faq_author_ip = '".USERIP."' ");
+			$existing = $sql->createQueryBuilder()->from('faqs')
+				->where('faq_answer', '')->where('faq_author_ip', USERIP)->count();
 
 			if(!empty($this->pref['submit_question_limit']) && $existing >= $this->pref['submit_question_limit'])
 			{
@@ -256,7 +257,7 @@ class faq
 				'faq_order'     => 99999
 			);
 
-			if($sql->insert('faqs', $insert))
+			if($sql->createQueryBuilder()->insert('faqs')->insertGetId($insert))
 			{
 				$message = !empty($this->pref['submit_question_acknowledgement']) ? e107::getParser()->toHTML($this->pref['submit_question_acknowledgement'],true, 'BODY') : LAN_FAQS_004;
 				e107::getMessage()->addSuccess($message);
@@ -325,16 +326,29 @@ class faq
 		$tp = e107::getParser();
 
 		$text = "";
-		
-		$insert = "";
+
 		$item = false;
 
 		$removeUrl = e107::url('faqs','index');
-		
+
+		$qb = $sql->createQueryBuilder();
+		$qb->select('f.*', 'cat.*')
+			->from('faqs', 'f')
+			->leftJoin('faqs_info', 'cat', $qb->expr()->compareColumns('f.faq_parent', 'cat.faq_info_id'))
+			->whereIn('cat.faq_info_class', explode(',', USERCLASS_LIST));
+
+		// A single, mutually-exclusive search predicate (later branches override earlier ones,
+		// preserving the legacy "$insert is overwritten, not appended" behaviour).
+		$searchPredicate = null;
+
 		if(!empty($srch))
 		{
 			$srch = $tp->toDB($srch);
-			$insert = " AND (f.faq_question LIKE '%".$srch."%' OR f.faq_answer LIKE '%".$srch."%' OR FIND_IN_SET ('".$srch."', f.faq_tags) ) ";
+			$searchPredicate = $qb->expr()->anyOf(
+				$qb->expr()->like('f.faq_question', '%'.$srch.'%'),
+				$qb->expr()->like('f.faq_answer', '%'.$srch.'%'),
+				'FIND_IN_SET ('.$qb->createNamedParameter($srch).', f.faq_tags)'
+			);
 
 
 		//	$message = "<span class='label label-lg label-info'>".$srch." <a class='e-tip' title='".LAN_FAQS_006."' href='".$removeUrl."'>×</a></span>";
@@ -346,14 +360,14 @@ class faq
 		if(!empty($_GET['id'])) // pull out just one specific FAQ.
 		{
 			$srch = intval($_GET['id']);
-		//	$insert = " AND (f.faq_id = ".$srch.") ";
+		//	$searchPredicate = $qb->expr()->eq('f.faq_id', $srch);
 			$item = $srch;
 		}
-		
+
 		if(!empty($_GET['cat']))
 		{
 			$srch = $tp->toDB($_GET['cat']);
-			$insert = " AND (cat.faq_info_sef = '".$srch."') ";
+			$searchPredicate = $qb->expr()->eq('cat.faq_info_sef', $srch);
 		}
 
 		if(!empty($_GET['tag']))
@@ -361,7 +375,7 @@ class faq
 			$srch = $tp->toDB($_GET['tag']);
 
 
-			$insert = " AND FIND_IN_SET ('".$srch."', f.faq_tags)  ";
+			$searchPredicate = $qb->expr()->findInSet('f.faq_tags', $srch);
 
 			$message = "<span class='label label-lg label-info'>".$srch." <a class='e-tip' title='".LAN_FAQS_006."' href='".$removeUrl."'>×</a></span>";
 
@@ -369,12 +383,17 @@ class faq
 			$text = e107::getMessage()->render();
 		}
 
+		if($searchPredicate !== null)
+		{
+			$qb->where($searchPredicate);
+		}
+
 
 		list($orderBy, $ascdesc) = explode('-', vartrue($this->pref['orderby'],'faq_order-ASC'));
 
-		$query = "SELECT f.*,cat.* FROM #faqs AS f LEFT JOIN #faqs_info AS cat ON f.faq_parent = cat.faq_info_id WHERE cat.faq_info_class IN (".USERCLASS_LIST.") ".$insert." ORDER BY cat.faq_info_order, f.".$orderBy." ".$ascdesc." ";
-		
-		if(!$data = $sql->retrieve($query, true))
+		$qb->orderBy('cat.faq_info_order')->addOrderBy('f.'.$orderBy, $ascdesc);
+
+		if(!$data = $qb->fetchAll())
 		{
 			$message = 	(!empty($srch)) ? e107::getParser()->lanVars(LAN_FAQS_008, $srch)."<a class='e-tip' title='".LAN_FAQS_007."' href='".$removeUrl."'>".LAN_FAQS_007."</a>" : LAN_FAQS_003;
 			return "<div class='alert alert-warning alert-block'>".$message."</div>" ; 
@@ -493,7 +512,8 @@ class faq
 		$sql 	= e107::getDb();
 		$sc 	= e107::getScBatch('faqs',TRUE);
 
-		$sql->createQueryBuilder()->select('f.*', 'cat.*')->from('faqs', 'f')->leftJoin('faqs_info', 'cat', 'f.faq_parent = cat.faq_info_id')->where('f.faq_parent', (int) $id)->execute();
+		$qb = $sql->createQueryBuilder();
+		$qb->select('f.*', 'cat.*')->from('faqs', 'f')->leftJoin('faqs_info', 'cat', $qb->expr()->compareColumns('f.faq_parent', 'cat.faq_info_id'))->where('f.faq_parent', (int) $id)->execute();
 		$sc->setVars($row);
 
 		$text = $tp->parseTemplate($FAQ_LIST_START, true);
@@ -528,20 +548,21 @@ class faq
 		$text = "<div style='text-align:center'>
 			<div style='text-align:center'>";
 
-		$qry = "SELECT dc.*,
-		COUNT(d.faq_id) AS f_count,
-		COUNT(d2.faq_id) AS f_subcount
-		FROM #faqs_info AS dc
-		LEFT JOIN #faqs AS d ON dc.faq_info_id = d.faq_parent
- 		LEFT JOIN #faqs_info as dc2 ON dc2.faq_info_parent = dc.faq_info_id
-		LEFT JOIN #faqs AS d2 ON dc2.faq_info_id = d2.faq_parent
-		WHERE dc.faq_info_class IN (".USERCLASS_LIST.")
-		GROUP by dc.faq_info_id ORDER by dc.faq_info_order,dc.faq_info_parent "; //
+		$qb = $sql->createQueryBuilder();
+		$rows = $qb
+			->select('dc.*')->selectAggregate('COUNT', 'd.faq_id', 'f_count')->selectAggregate('COUNT', 'd2.faq_id', 'f_subcount')
+			->from('faqs_info', 'dc')
+			->leftJoin('faqs', 'd', $qb->expr()->compareColumns('dc.faq_info_id', 'd.faq_parent'))
+			->leftJoin('faqs_info', 'dc2', $qb->expr()->compareColumns('dc2.faq_info_parent', 'dc.faq_info_id'))
+			->leftJoin('faqs', 'd2', $qb->expr()->compareColumns('dc2.faq_info_id', 'd2.faq_parent'))
+			->whereIn('dc.faq_info_class', explode(',', USERCLASS_LIST))
+			->groupBy('dc.faq_info_id')
+			->orderBy('dc.faq_info_order')->addOrderBy('dc.faq_info_parent')
+			->fetchAll();
 
 		$text .= $FAQ_CAT_START;
 
-		$sql->gen($qry);
-		while ($row = $sql->fetch())
+		foreach ($rows as $row)
 		{
 			$sc->setVars($row);
 
@@ -610,17 +631,29 @@ class faq
 
 			$action = "comment";
 			$table = "faq";
-			$query = ($pref['nested_comments'] ? "comment_item_id='$idx' AND (comment_type='$table' OR comment_type='3') AND comment_pid='0' ORDER BY comment_datestamp" : "comment_item_id='$idx' AND (comment_type='$table' OR comment_type='3') ORDER BY comment_datestamp");
 			unset($text);
-			
+
 			if (!is_object($sql2))
 			{
 				$sql2 = new db;
 			}
-			if ($comment_total = $sql2->select("comments", "*", $query))
+			$commentQuery = $sql2->createQueryBuilder();
+			$commentQuery->select('*')->from('comments')
+				->where('comment_item_id', $idx)
+				->where($commentQuery->expr()->anyOf(
+					$commentQuery->expr()->eq('comment_type', $table),
+					$commentQuery->expr()->eq('comment_type', '3')
+				));
+			if($pref['nested_comments'])
+			{
+				$commentQuery->where('comment_pid', '0');
+			}
+			$commentQuery->orderBy('comment_datestamp');
+			$comments = $commentQuery->fetchAll();
+			if ($comment_total = count($comments))
 			{
 				$width = 0;
-				while ($row = $sql2->fetch())
+				foreach ($comments as $row)
 				{
 					if ($pref['nested_comments'])
 					{
@@ -731,8 +764,9 @@ class faq
         <td class='forumheader3' style=\"width:80%\">";
 
 		$text .= "<select style='width:150px' class='tbox' id='faq_parent' name='faq_parent' >";
-		$sql->select("faqs_info", "*", "faq_info_parent !='0' ");
-		while ($prow = $sql->fetch())
+		$prows = $sql->createQueryBuilder()->select('*')->from('faqs_info')
+			->where('faq_info_parent', '!=', '0')->fetchAll();
+		foreach ($prows as $prow)
 		{
 			//extract($row);
 			$selected = $prow['faq_info_id'] == $id ? " selected='selected'" : "";
@@ -800,8 +834,8 @@ class faq
 
 		if(varset($faq))
 		{
-			$sql->select("faqs_info", "*", "faq_info_id='$faq'");
-			$row = $sql->fetch();
+			$row = $sql->createQueryBuilder()->select('*')->from('faqs_info')
+				->where('faq_info_id', $faq)->fetchRow();
 			extract($row); // get rid of this
 		}
 		$ns->tablerender(LAN_PLUGIN_FAQS_FRONT_NAME.$faq_info_title, "<div style='text-align:center'>".$text."</div>".$this->faq_footer());

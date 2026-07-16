@@ -10,6 +10,8 @@
 *
 */
 
+use e107\Database\SqlFragment;
+
 if (!defined('e107_INIT')) { exit; }
 
 /**
@@ -143,51 +145,52 @@ class e107_user_extended
 		$this->systemCount = 0;
 		$this->userCount = 0;
 
-		if($sql->select('user_extended_struct', '*', "user_extended_struct_text != '_system_' ORDER BY user_extended_struct_order ASC"))
+		$rows = $sql->createQueryBuilder()
+			->select('*')->from('user_extended_struct')
+			->where('user_extended_struct_text', '!=', '_system_')
+			->orderBy('user_extended_struct_order', 'ASC')
+			->fetchAll();
+
+		foreach($rows as $row)
 		{
-			while($row = $sql->fetch())
-			{
+			if ($row['user_extended_struct_type'] == 0)
+			{	// Its a category
+				$id = $row['user_extended_struct_name'];
+				$this->catDefinitions[$row['user_extended_struct_id']] = $row;
+				$this->catAttributes[$id] = array(
+					'read'          => (int) $row['user_extended_struct_read'],
+					'write'         => (int) $row['user_extended_struct_write'],
+					'applicable'    => (int) $row['user_extended_struct_applicable'],
+				);
+			}
+			else
+			{	// Its a field definition
+				$id = 'user_' . $row['user_extended_struct_name'];
+
+				$row['user_extended_struct_parent'] = (int) $row['user_extended_struct_parent'];
+
+				$this->fieldDefinitions[$row['user_extended_struct_id']] = $row;
 
 
-				if ($row['user_extended_struct_type'] == 0)
-				{	// Its a category
-					$id = $row['user_extended_struct_name'];
-					$this->catDefinitions[$row['user_extended_struct_id']] = $row;
-					$this->catAttributes[$id] = array(
+				$this->fieldAttributes[$id] = array(
 						'read'          => (int) $row['user_extended_struct_read'],
 						'write'         => (int) $row['user_extended_struct_write'],
+						'type'          => $row['user_extended_struct_type'],
+						'values'        => $row['user_extended_struct_values'],
+						'parms'         => $row['user_extended_struct_parms'],
 						'applicable'    => (int) $row['user_extended_struct_applicable'],
-					);
+						'required'      => (int) $row['user_extended_struct_required'],
+				);
+
+				$this->nameIndex['user_' . $row['user_extended_struct_name']] = $row['user_extended_struct_id'];            // Create name to ID index
+
+				if($row['user_extended_struct_text'] == '_system_')
+				{
+					$this->systemCount++;
 				}
 				else
-				{	// Its a field definition
-					$id = 'user_' . $row['user_extended_struct_name'];
-
-					$row['user_extended_struct_parent'] = (int) $row['user_extended_struct_parent'];
-
-					$this->fieldDefinitions[$row['user_extended_struct_id']] = $row;
-
-
-					$this->fieldAttributes[$id] = array(
-							'read'          => (int) $row['user_extended_struct_read'],
-							'write'         => (int) $row['user_extended_struct_write'],
-							'type'          => $row['user_extended_struct_type'],
-							'values'        => $row['user_extended_struct_values'],
-							'parms'         => $row['user_extended_struct_parms'],
-							'applicable'    => (int) $row['user_extended_struct_applicable'],
-							'required'      => (int) $row['user_extended_struct_required'],
-					);
-
-					$this->nameIndex['user_' . $row['user_extended_struct_name']] = $row['user_extended_struct_id'];            // Create name to ID index
-
-					if($row['user_extended_struct_text'] == '_system_')
-					{
-						$this->systemCount++;
-					}
-					else
-					{
-						$this->userCount++;
-					}
+				{
+					$this->userCount++;
 				}
 			}
 		}
@@ -598,18 +601,24 @@ class e107_user_extended
 	   	$ret = array();
 		$sql = e107::getDb('ue');
 		
-		if($sql->select("user_extended_struct", "*", "user_extended_struct_type = 0 ORDER BY user_extended_struct_order ASC"))
+		$rows = $sql->createQueryBuilder()
+			->select('*')->from('user_extended_struct')
+			->where('user_extended_struct_type', 0)
+			->orderBy('user_extended_struct_order', 'ASC')
+			->fetchAll();
+
+		if($rows)
 		{
 			if($byID == TRUE)
 			{
-				while($row = $sql->fetch())
+				foreach($rows as $row)
 				{
 					$ret[$row['user_extended_struct_id']][] = $row;
 				}
 			}
 			else
 			{
-				$ret = $sql->db_getList();
+				$ret = $rows;
 			}
 		}
 		return $ret;
@@ -926,7 +935,9 @@ class e107_user_extended
 	{
 	  	$sql = e107::getDb('ue');
 		$tp = e107::getParser();
-		return $sql->count('user_extended_struct','(*)', "WHERE user_extended_struct_name = '".$tp -> toDB($name, true)."'");
+		return $sql->createQueryBuilder()->from('user_extended_struct')
+			->where('user_extended_struct_name', $tp -> toDB($name, true))
+			->count();
 	}
 
 	/**
@@ -1013,19 +1024,32 @@ class e107_user_extended
 		
 		if($order === '' && $field_info)
 		{
-		  if($sql->select('user_extended_struct','MAX(user_extended_struct_order) as maxorder','1'))
+		  $row = $sql->createQueryBuilder()
+			->selectAggregate('MAX', 'user_extended_struct_order', 'maxorder')
+			->from('user_extended_struct')
+			->fetchRow();
+		  if($row && is_numeric($row['maxorder']))
 		  {
-			$row = $sql->fetch();
-			if(is_numeric($row['maxorder']))
-			{
 			  $order = $row['maxorder']+1;
-			}
 		  }
 		}
 		// field of type category
 		if($field_info)
 		{
-			$sql->gen('ALTER TABLE #user_extended ADD user_'.$tp -> toDB($name, true).' '.$field_info);
+			// The dynamic column name (user_$name) is validated fail-closed by the
+			// schema builder, replacing toDB() string-escaping of an identifier;
+			// $field_info is a vouched type fragment derived from the numeric field
+			// type. A hostile/invalid name is rejected without injection and the add
+			// continues, matching the legacy DB-error path (gen() returned false).
+			try
+			{
+				$schema = $sql->schema();
+				$schema->addColumn('user_extended', 'user_'.$name, SqlFragment::raw($field_info));
+			}
+			catch(InvalidArgumentException $e)
+			{
+				e107::getMessage()->addDebug($e->getMessage());
+			}
 		}
 
 			$extStructInsert = array(
@@ -1049,7 +1073,8 @@ class e107_user_extended
 		if(!$this->user_extended_field_exist($name))
 		{
 
-			$nid = $sql->insert('user_extended_struct', $extStructInsert);
+			$sql->createQueryBuilder()->insert('user_extended_struct')
+				->valuesTyped($extStructInsert, $sql->getFieldDefs('user_extended_struct')['_FIELD_TYPES'])->execute();
 			$this->init(); // rebuild the list.
 
 		//	$sql->insert('user_extended_struct',"null,'".$tp -> toDB($name, true)."','".$tp -> toDB($text, true)."','".intval($type)."','".$tp -> toDB($parms, true)."','".$tp -> toDB($values, true)."', '".$tp -> toDB($default, true)."', '".intval($read)."', '".intval($write)."', '".intval($required)."', '0', '".intval($applicable)."', '".intval($order)."', '".intval($parent)."'");
@@ -1095,23 +1120,35 @@ class e107_user_extended
 			// field of type category
 			if($field_info)
 			{
-				$sql->gen("ALTER TABLE #user_extended MODIFY user_".$tp -> toDB($name, true)." ".$field_info);
+				// Dynamic column name validated fail-closed by the schema builder;
+				// $field_info is a vouched type fragment from the numeric field type.
+				// A hostile/invalid name is rejected without injection and the modify
+				// continues, matching the legacy DB-error path.
+				try
+				{
+					$schema = $sql->schema();
+					$schema->modifyColumn('user_extended', 'user_'.$name, SqlFragment::raw($field_info));
+				}
+				catch(InvalidArgumentException $e)
+				{
+					e107::getMessage()->addDebug($e->getMessage());
+				}
 			}
 			
-			$newfield_info = "
-				user_extended_struct_text = '".$tp -> toDB($text, true)."',
-				user_extended_struct_type = '".intval($type)."',
-				user_extended_struct_parms = '".$tp -> toDB($parms, true)."',
-				user_extended_struct_values = '".$tp -> toDB($values, true)."',
-				user_extended_struct_default = '".$tp -> toDB($default, true)."',
-				user_extended_struct_required = '".intval($required)."',
-				user_extended_struct_read = '".intval($read)."',
-				user_extended_struct_write = '".intval($write)."',
-				user_extended_struct_applicable = '".intval($applicable)."',
-				user_extended_struct_parent = '".intval($parent)."'
-				WHERE user_extended_struct_id = '".intval($id)."'
-			";
-			return $sql->update("user_extended_struct", $newfield_info);
+			$structFieldTypes = $sql->getFieldDefs('user_extended_struct')['_FIELD_TYPES'];
+			return $sql->createQueryBuilder()->update('user_extended_struct')
+				->setTyped('user_extended_struct_text', $tp -> toDB($text, true), $structFieldTypes['user_extended_struct_text'])
+				->setTyped('user_extended_struct_type', (int) $type, $structFieldTypes['user_extended_struct_type'])
+				->setTyped('user_extended_struct_parms', $tp -> toDB($parms, true), $structFieldTypes['user_extended_struct_parms'])
+				->setTyped('user_extended_struct_values', $tp -> toDB($values, true), $structFieldTypes['user_extended_struct_values'])
+				->setTyped('user_extended_struct_default', $tp -> toDB($default, true), $structFieldTypes['user_extended_struct_default'])
+				->setTyped('user_extended_struct_required', (int) $required, $structFieldTypes['user_extended_struct_required'])
+				->setTyped('user_extended_struct_read', (int) $read, $structFieldTypes['user_extended_struct_read'])
+				->setTyped('user_extended_struct_write', (int) $write, $structFieldTypes['user_extended_struct_write'])
+				->setTyped('user_extended_struct_applicable', (int) $applicable, $structFieldTypes['user_extended_struct_applicable'])
+				->setTyped('user_extended_struct_parent', (int) $parent, $structFieldTypes['user_extended_struct_parent'])
+				->where('user_extended_struct_id', (int) $id)
+				->execute();
 		}
 
 		return false;
@@ -1132,15 +1169,27 @@ class e107_user_extended
 		{
 			// FIXME - no table structure changes for categories
 			// but no good way to detect it right now - ignore the sql error for now, fix it asap
-			$sql->gen("ALTER TABLE #user_extended DROP user_".$tp -> toDB($name, true));
+			// Dynamic column name validated fail-closed by the schema builder,
+			// replacing toDB() string-escaping of an identifier. A hostile/invalid
+			// name is rejected without injection; the struct row is still removed.
+			try
+			{
+				$sql->schema()->dropColumn('user_extended', 'user_'.$name);
+			}
+			catch(InvalidArgumentException $e)
+			{
+				e107::getMessage()->addDebug($e->getMessage());
+			}
 			
 			if(is_numeric($id))
 			{
-				$sql->delete("user_extended_struct", "user_extended_struct_id = '".intval($id)."' ");
+				$sql->createQueryBuilder()->delete('user_extended_struct')
+					->where('user_extended_struct_id', (int) $id)->execute();
 			}
 			else
 			{
-				$sql->delete("user_extended_struct", "user_extended_struct_name = '".$tp -> toDB($id, true)."' ");
+				$sql->createQueryBuilder()->delete('user_extended_struct')
+					->where('user_extended_struct_name', $tp -> toDB($id, true))->execute();
 			}
 			return !($this->user_extended_field_exist($name));
 		}
@@ -1385,30 +1434,40 @@ class e107_user_extended
 
 				$sql = e107::getDb('ue');
 
-				$order = !empty($choices[3]) ? "ORDER BY " . $tp->toDB($choices[3], true) : "";
-
-				if($sql->select($tp->toDB($choices[0], true), $tp->toDB($choices[1], true) . "," . $tp->toDB($choices[2], true), "1 $order") !== FALSE)
-				{
-					$choiceList = $sql->db_getList('ALL', false);
-					$ret = "<select id='{$fid}' {$include} name='{$fname}' {$required}  {$title}>\n";
-					$ret .= "<option value=''>&nbsp;</option>\n";  // ensures that the user chose it.
-
-					foreach($choiceList as $cArray)
-					{
-						$cID = trim($cArray[$choices[1]]);
-						$cText = trim($cArray[$choices[2]]);
-						$sel = ($curval == $cID) ? " selected='selected' " : "";
-						$ret .= "<option value='{$cID}' {$sel}>{$cText}</option>\n";
-					}
-
-					$ret .= "</select>\n";
-
-					return $ret;
-				}
-				else
+				// $choices[0..3] are table/column identifiers from the field config;
+				// validate them fail-closed before using them as identifiers.
+				if(!preg_match('/^[A-Za-z0-9_]+$/D', (string) $choices[0])
+					|| !preg_match('/^[A-Za-z0-9_]+$/D', (string) $choices[1])
+					|| !preg_match('/^[A-Za-z0-9_]+$/D', (string) $choices[2])
+					|| (!empty($choices[3]) && !preg_match('/^[A-Za-z0-9_]+$/D', (string) $choices[3])))
 				{
 					return "<span class='label label-danger'>Failed to load</span>";
 				}
+
+				$qb = $sql->createQueryBuilder()
+					->select($choices[1], $choices[2])->from($choices[0]);
+
+				if(!empty($choices[3]))
+				{
+					$qb->orderBy($choices[3]);
+				}
+
+				$choiceList = $qb->fetchAll();
+
+				$ret = "<select id='{$fid}' {$include} name='{$fname}' {$required}  {$title}>\n";
+				$ret .= "<option value=''>&nbsp;</option>\n";  // ensures that the user chose it.
+
+				foreach($choiceList as $cArray)
+				{
+					$cID = trim($cArray[$choices[1]]);
+					$cText = trim($cArray[$choices[2]]);
+					$sel = ($curval == $cID) ? " selected='selected' " : "";
+					$ret .= "<option value='{$cID}' {$sel}>{$cText}</option>\n";
+				}
+
+				$ret .= "</select>\n";
+
+				return $ret;
 
 				break;
 
@@ -1495,23 +1554,21 @@ class e107_user_extended
 			return $ueStruct;
 		}
 		
-		$tp 	= e107::getParser();
 		$sql_ue = e107::getDb('ue'); // new db;		// Use our own db to avoid interference with other objects
-		
+
 		$ret = array();
-		$parms = "";
-		
-		if($orderby != "")
+
+		$qb = $sql_ue->createQueryBuilder()->select('*')->from('user_extended_struct');
+
+		// $orderby is a dynamic ORDER BY column name; validate fail-closed before use.
+		if($orderby != "" && preg_match('/^[A-Za-z0-9_]+$/D', (string) $orderby))
 		{
-			$parms = "1 ORDER BY ".$tp -> toDB($orderby, true);
+			$qb->orderBy($orderby);
 		}
-		
-		if($sql_ue->select('user_extended_struct','*',$parms))
+
+		foreach($qb->fetchAll() as $row)
 		{
-			while($row = $sql_ue->fetch())
-			{
-				$ret['user_'.$row['user_extended_struct_name']] = $row;
-			}
+			$ret['user_'.$row['user_extended_struct_name']] = $row;
 		}
 
 		e107::setRegistry($id, $ret);
@@ -1684,22 +1741,22 @@ class e107_user_extended
 				break;
 
 			case 'escape':
-				$newvalue = "'".$sql->escape($newvalue)."'";
+				// value is bound; no manual escaping needed.
 				break;
 
 			case 'array':
 				if(is_array($newvalue))
 				{
-					$newvalue = "'".e107::serialize($newvalue, true)."'";
+					$newvalue = e107::serialize($newvalue, true);
 				}
 				else
 				{
-					$newvalue = "'". (string) $newvalue."'";
+					$newvalue = (string) $newvalue;
 				}
 			break;
 
 			default:
-				$newvalue = "'".$tp->toDB($newvalue)."'";
+				$newvalue = $tp->toDB($newvalue);
 				break;
 		}
 
@@ -1708,21 +1765,21 @@ class e107_user_extended
 			$field_name = 'user_'.$field_name;
 		}
 
-		// $field_name is used unquoted as a column identifier; reject anything that
+		// $field_name is used as a column identifier; reject anything that
 		// is not a plain identifier to prevent SQL injection via the column name.
 		if(!preg_match('/^[A-Za-z0-9_]+$/D', (string) $field_name))
 		{
 			return false;
 		}
 
+		$result = $sql->createQueryBuilder()->insert('user_extended')
+			->upsert(
+				array('user_extended_id' => $uid, $field_name => $newvalue),
+				'user_extended_id',
+				array($field_name)
+			)->execute();
 
-		$qry = "
-		INSERT INTO `#user_extended` (user_extended_id, {$field_name})
-		VALUES ({$uid}, {$newvalue})
-		ON DUPLICATE KEY UPDATE {$field_name} = {$newvalue}
-		";
-
-		if(!$result = $sql->gen($qry))
+		if(!$result)
 		{
 		//	$this->lastError = $sql->getLastErrorText();
 			echo (ADMIN) ? $this->lastError : '';
@@ -1896,14 +1953,15 @@ class e107_user_extended
 				$sql_ue = e107::getDb('euf_db');            // Use our own DB object to avoid conflicts
 
 				// $tmp[0..2] are table/column identifiers from the field config; validate
-				// them and bind $value so it cannot break out of the WHERE clause.
+				// them fail-closed and bind $value so it cannot break out of the WHERE clause.
 				if(preg_match('/^[A-Za-z0-9_]+$/D', (string) $tmp[0])
 					&& preg_match('/^[A-Za-z0-9_]+$/D', (string) $tmp[1])
-					&& preg_match('/^[A-Za-z0-9_]+$/D', (string) $tmp[2])
-					&& $sql_ue->execute("SELECT `{$tmp[1]}`, `{$tmp[2]}` FROM `#{$tmp[0]}` WHERE `{$tmp[1]}` = :value", array('value' => $value)))
+					&& preg_match('/^[A-Za-z0-9_]+$/D', (string) $tmp[2]))
 				{
-
-					$row = $sql_ue->fetch();
+					$row = $sql_ue->createQueryBuilder()
+						->select($tmp[1], $tmp[2])->from($tmp[0])
+						->where($tmp[1], $value)
+						->fetchRow();
 					$ret = varset($row[$tmp[2]]);
 				}
 

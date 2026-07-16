@@ -62,8 +62,11 @@ if (!isset($req_year)) $req_year = $cur_year;
 // --------------------------------
 // look for the first and last year
 // --------------------------------
-$bcSql->gen("SELECT news_id, news_datestamp from #news ORDER BY news_datestamp LIMIT 0,1");
-$first_post = $bcSql->fetch();
+$first_post = $bcSql->createQueryBuilder()
+	->select('news_id', 'news_datestamp')->from('news')
+	->orderBy('news_datestamp')
+	->setFirstResult(0)->setMaxResults(1)
+	->fetchRow();
 $start_year = date("Y", $first_post['news_datestamp']);
 $end_year = $cur_year;
 	
@@ -86,11 +89,17 @@ for($i = $start_year; $i <= $end_year; $i++)
 	if ($i == $req_year) 
 	{
 		$year_selector .= " selected='selected'";
-		if ($bcSql->select("news", "news_id, news_datestamp, news_class", "news_datestamp > {$start} AND news_datestamp < {$end}"))
+		$newsRows = $bcSql->createQueryBuilder()
+			->select('news_id', 'news_datestamp', 'news_class')->from('news')
+			->where('news_datestamp', '>', $start)
+			->where('news_datestamp', '<', $end)
+			->fetchEach();
+
+		if ($newsRows)
 		{
-			while ($news = $bcSql->fetch())
+			foreach ($newsRows as $news)
 			{
-				if (check_class($news['news_class'])) 
+				if (check_class($news['news_class']))
 				{
 					list($xmonth, $xday) = explode(" ", date("n j", $news['news_datestamp']));
 					if (!$day_links[$xmonth][$xday]) 

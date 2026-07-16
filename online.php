@@ -185,8 +185,9 @@
 			$tmp = explode(".", substr(strrchr($online_location, "php."), 2));
 			if($tmp[0] == "article")
 			{
-				$sql->select("content", "content_heading, content_class", "content_id='" . (int) $tmp[1] . "'");
-				$content = $sql->fetch();
+				$content = $sql->createQueryBuilder()
+					->select('content_heading', 'content_class')->from('content')
+					->where('content_id', (int) $tmp[1])->fetchRow();
 				$online_location_page = ARTICLE . ": " . $content['content_heading'];
 				$online_location = str_replace("php.", "php?", $online_location);
 				if(!check_class($content['content_class']))
@@ -197,8 +198,9 @@
 			}
 			elseif($tmp[0] == "review")
 			{
-				$sql->select("content", "content_heading, content_class", "content_id='" . (int) $tmp[1] . "'");
-				$content = $sql->fetch();
+				$content = $sql->createQueryBuilder()
+					->select('content_heading', 'content_class')->from('content')
+					->where('content_id', (int) $tmp[1])->fetchRow();
 				$online_location_page = REVIEW . ": " . $content['content_heading'];
 				$online_location = str_replace("php.", "php?", $online_location);
 				if(!check_class($content['content_class']))
@@ -209,8 +211,9 @@
 			}
 			elseif($tmp[0] == "content")
 			{
-				$sql->select("content", "content_heading, content_class", "content_id='" . intval($tmp[1]) . "'");
-				$content = $sql->fetch();
+				$content = $sql->createQueryBuilder()
+					->select('content_heading', 'content_class')->from('content')
+					->where('content_id', (int) $tmp[1])->fetchRow();
 				$online_location_page = CONTENT . ": " . $content['content_heading'];
 				$online_location = str_replace("php.", "php?", $online_location);
 				if(!check_class($content['content_class']))
@@ -228,8 +231,9 @@
 			if($tmp[1] == "news")
 			{
 				$id = ($tmp[0] == "reply" ? $tmp[3] : $tmp[2]);
-				$sql->select("news", "news_title, news_class", "news_id=" . intval($id));
-				$news = $sql->fetch();
+				$news = $sql->createQueryBuilder()
+					->select('news_title', 'news_class')->from('news')
+					->where('news_id', (int) $id)->fetchRow();
 				$online_location_page = ($tmp[0] == "reply" ? COMMENT . ": " . ONLINE_EL12 . " > " . $news['news_title'] : COMMENT . ": " . $news['news_title']);
 				$online_location = "comment.php?comment.news.$id";
 				if(!check_class($news['news_class']))
@@ -241,8 +245,9 @@
 			elseif($tmp[1] == "poll")
 			{
 				$id = ($tmp[0] == "reply" ? $tmp[3] : $tmp[2]);
-				$sql->select("poll", "poll_title", "poll_id=" . intval($id));
-				$poll = $sql->fetch();
+				$poll = $sql->createQueryBuilder()
+					->select('poll_title')->from('poll')
+					->where('poll_id', (int) $id)->fetchRow();
 				$online_location_page = POLLCOMMENT . ": " . $poll['poll_title'];
 				$online_location = "comment.php?comment.poll.$id";
 			}
@@ -267,12 +272,13 @@
 				{
 					$t_page = 1;
 				}
-				$qry = "
-			SELECT t.thread_name, f.forum_name, f.forum_class from #forum_thread AS t
-			LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
-			WHERE t.thread_id = " . intval($tmp[0]);
-				$sql->gen($qry);
-				$forum = $sql->fetch();
+				$qb = $sql->createQueryBuilder();
+				$forum = $qb
+					->select('t.thread_name', 'f.forum_name', 'f.forum_class')
+					->from('forum_thread', 't')
+					->leftJoin('forum', 'f', $qb->expr()->compareColumns('f.forum_id', 't.thread_forum_id'))
+					->where('t.thread_id', (int) $tmp[0])
+					->fetchRow();
 				$online_location_page = ONLINE_EL13 . " .:. " . $forum['forum_name'] . "->" . ONLINE_EL14 . " .:. " . $forum['thread_name'] . "->" . ONLINE_EL15 . ": " . $t_page;
 				$online_location = str_replace("php.", "php?", $online_location);
 				if(!check_class($forum['forum_class']))
@@ -283,8 +289,9 @@
 			}
 			elseif(strpos($online_location, "_viewforum") !== false)
 			{
-				$sql->select("forum", "forum_name, forum_class", "forum_id=" . intval($tmp[0]));
-				$forum = $sql->fetch();
+				$forum = $sql->createQueryBuilder()
+					->select('forum_name', 'forum_class')->from('forum')
+					->where('forum_id', (int) $tmp[0])->fetchRow();
 				$online_location_page = ONLINE_EL13 . " .:. " . $forum['forum_name'];
 				$online_location = str_replace("php.", "php?", $online_location);
 				if(!check_class($forum['forum_class']))
@@ -295,10 +302,13 @@
 			}
 			elseif(strpos($online_location, "_post") !== false)
 			{
-				$sql->select("forum_thread", "thread_name, thread_forum_id", "thread_forum_id=" . intval($tmp[0]) . " AND thread_parent=0");
-				$forum_thread = $sql->fetch();
-				$sql->createQueryBuilder()->select('forum_name')->from('forum')->where('forum_id', (int) $forum_thread['thread_forum_id'])->execute();
-				$forum = $sql->fetch();
+				$forum_thread = $sql->createQueryBuilder()
+					->select('thread_name', 'thread_forum_id')->from('forum_thread')
+					->where('thread_forum_id', (int) $tmp[0])->where('thread_parent', 0)
+					->fetchRow();
+				$forum = $sql->createQueryBuilder()
+					->select('forum_name')->from('forum')
+					->where('forum_id', (int) $forum_thread['thread_forum_id'])->fetchRow();
 				$online_location_page = ONLINE_EL12 . ": " . ONLINE_EL13 . " .:. " . $forum['forum_name'] . "->" . ONLINE_EL14 . " .:. " . $forum_thread['thread_name'];
 				$online_location = e_PLUGIN . "forum/forum_viewtopic.php?$tmp[0].$tmp[1]";
 			}
@@ -340,12 +350,15 @@
 	$scArray['ONLINE_TABLE_DATESTAMP'] = $datestamp;
 
 	$sql = e107::getDb();
-	$total_members = $sql->count("user", "(*)", "where user_ban = 0");
+	$total_members = $sql->createQueryBuilder()->from('user')->where('user_ban', 0)->count();
 
 	if($total_members > 1)
 	{
-		$newest_member = $sql->select("user", "user_id, user_name", "user_ban=0 ORDER BY user_join DESC LIMIT 0,1");
-		$row = $sql->fetch();
+		$row = $sql->createQueryBuilder()
+			->select('user_id', 'user_name')->from('user')
+			->where('user_ban', 0)
+			->orderBy('user_join', 'DESC')->setFirstResult(0)->setMaxResults(1)
+			->fetchRow();
 
 		$scArray['ONLINE_TABLE_MEMBERS_TOTAL'] = "<br />" . ONLINE_EL5 . ": " . $total_members;
 		$scArray['ONLINE_TABLE_MEMBERS_NEWEST'] = "<br />" . ONLINE_EL6 . ": " . (USER ? "<a href='" . e_BASE . "user.php?id." . $row['user_id'] . "'>" . $row['user_name'] . "</a>" : $row['user_name']);

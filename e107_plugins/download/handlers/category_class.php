@@ -14,6 +14,8 @@
  * $Author$
  */
 
+use e107\Database\SqlFragment;
+
 if (!e107::isInstalled('download')) { exit(); }
 
 class downloadCategory
@@ -55,32 +57,44 @@ class downloadCategory
 		$catlist = array();
 		$this->cat_count = 0;
 		$this->down_count = 0;
-		$temp2 = "";
-		$temp1 = "";
-		if ($load_cat_class != "")
-		{
-			$temp1 = " WHERE dc.download_category_class IN ({$load_cat_class}) ";
-			$temp2 = "AND d.download_visible IN ({$load_cat_class}) ";
-		}
 
-		$qry = "
-			SELECT dc.*,
+		$classList = ($load_cat_class != "") ? explode(',', $load_cat_class) : array();
+
+		$qb = $sql2->createQueryBuilder();
+
+		// Aggregate/expression SELECT list is developer SQL (no user input).
+		$qb->addSelect(SqlFragment::raw("dc.*,
 			dc1.download_category_parent AS d_parent1, dc1.download_category_order,
 			SUM(d.download_filesize) AS d_size,
 			COUNT(d.download_id) AS d_count,
 			MAX(d.download_datestamp) as d_last,
-			SUM(d.download_requested) as d_requests
-			FROM #download_category as dc
-			LEFT JOIN #download_category as dc1 ON dc1.download_category_id=dc.download_category_parent
-			LEFT JOIN #download_category as dc2 ON dc2.download_category_id=dc1.download_category_parent
-			LEFT JOIN #download AS d on d.download_category = dc.download_category_id AND d.download_active > 0 {$temp2}
-			{$temp1}
-			GROUP by dc.download_category_id
-			ORDER by dc2.download_category_order, dc1.download_category_order, dc.download_category_order";   // This puts main categories first, then sub-cats, then sub-sub cats
+			SUM(d.download_requested) as d_requests"))
+			->from('download_category', 'dc')
+			->leftJoin('download_category', 'dc1', $qb->expr()->compareColumns('dc1.download_category_id', 'dc.download_category_parent'))
+			->leftJoin('download_category', 'dc2', $qb->expr()->compareColumns('dc2.download_category_id', 'dc1.download_category_parent'));
 
-		if (!$sql2->gen($qry)) return $catlist;
+		$downloadOn = 'd.download_category = dc.download_category_id AND d.download_active > 0';
+		if ($classList)
+		{
+			$downloadOn .= ' AND '.$qb->expr()->in('d.download_visible', $classList);
+		}
+		$qb->leftJoin('download', 'd', $qb->raw($downloadOn));
 
-		while ($row = $sql2->fetch())
+		if ($classList)
+		{
+			$qb->where($qb->expr()->in('dc.download_category_class', $classList));
+		}
+
+		// This puts main categories first, then sub-cats, then sub-sub cats
+		$rows = $qb->groupBy('dc.download_category_id')
+			->orderBy('dc2.download_category_order')
+			->addOrderBy('dc1.download_category_order')
+			->addOrderBy('dc.download_category_order')
+			->fetchAll();
+
+		if (!$rows) return $catlist;
+
+		foreach ($rows as $row)
 		{
 			$tmp = $row['download_category_parent'];
 			if ($tmp == '0')

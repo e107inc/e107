@@ -305,8 +305,8 @@ class e_admin_log
 			$userIP = $userData['user_ip'];
 		}
 
-		// $userstring (USERNAME / user_name) is interpolated raw into the rolling-log
-		// INSERT below; escape it to prevent second-order SQLi from quotes in user names.
+		// Normalise $userstring (USERNAME / user_name) for storage; the rolling-log
+		// INSERT below binds every value, so no manual SQL escaping is required.
 		$userstring = $tp->toDB($userstring, true, false, 'no_html');
 
 		$importance = $tp->toDB($importance, true, false, 'no_html');
@@ -330,7 +330,7 @@ class e_admin_log
 		}
 
 
-		$explain = e107::getDb()->escape($tp->toDB($explain, true, false, 'no_html'));
+		$explain = $tp->toDB($explain, true, false, 'no_html');
 		$event_title = $tp->toDB($event_title, true, false, 'no_html');
 
 		//---------------------------------------
@@ -352,7 +352,7 @@ class e_admin_log
 				'dblog_remarks'   => $explain
 			);
 
-			if(!$this->rldb->insert('admin_log', $adminLogInsert))
+			if(!$this->rldb->createQueryBuilder()->insert('admin_log')->valuesTyped($adminLogInsert, $this->rldb->getFieldDefs('admin_log')['_FIELD_TYPES'])->execute())
 			{
 				trigger_error('Error inserting admin log entry: '.print_r($adminLogInsert,true), E_USER_WARNING);
 			}
@@ -441,7 +441,20 @@ class e_admin_log
 			);
 
 
-			if(!$this->rldb->insert('dblog', '0, ' . intval($time_sec) . ', ' . intval($time_usec) . ", '{$importance}', '{$eventcode}', {$userid}, '{$userstring}', '{$userIP}', '{$source_call}', '{$event_title}', '{$explain}' "))
+			$rollingLogInsert = array(
+				'dblog_datestamp' => (int) $time_sec,
+				'dblog_microtime' => (int) $time_usec,
+				'dblog_type'      => $importance,
+				'dblog_eventcode' => $eventcode,
+				'dblog_user_id'   => $userid,
+				'dblog_user_name' => $userstring,
+				'dblog_ip'        => $userIP,
+				'dblog_caller'    => $source_call,
+				'dblog_title'     => $event_title,
+				'dblog_remarks'   => $explain
+			);
+
+			if(!$this->rldb->createQueryBuilder()->insert('dblog')->valuesTyped($rollingLogInsert, $this->rldb->getFieldDefs('dblog')['_FIELD_TYPES'])->execute())
 			{
 				trigger_error("Error inserting admin rolling log entry: $eventcode", E_USER_WARNING);
 			}
@@ -449,7 +462,7 @@ class e_admin_log
 			// Now delete any old stuff
 			if(!empty($this->_roll_log_days))
 			{
-				if(!$this->rldb->delete('dblog', "dblog_datestamp < '" . intval(time() - ($this->_roll_log_days * 86400)) . "' "))
+				if(!$this->rldb->createQueryBuilder()->delete('dblog')->where('dblog_datestamp', '<', (int) (time() - ($this->_roll_log_days * 86400)))->execute())
 				{
 					// trigger_error("Error deleting old rolling log entries.", E_USER_WARNING);
 				}
@@ -577,7 +590,7 @@ class e_admin_log
 			'dblog_remarks'   => print_r($event_data, true),
 		);
 
-		if($this->rldb->insert('audit_log', $insertQry))
+		if($this->rldb->createQueryBuilder()->insert('audit_log')->valuesTyped($insertQry, $this->rldb->getFieldDefs('audit_log')['_FIELD_TYPES'])->execute())
 		{
 			return true;
 		}
@@ -608,14 +621,14 @@ class e_admin_log
 		global $sql;
 		if($days == false)
 		{ // $days is false, so truncate the log table
-			$sql->gen('TRUNCATE TABLE #dblog ');
+			$sql->truncate('dblog');
 		}
 		else
 		{ // $days is set, so remove all entries older than that.
 			$days = intval($days);
 			$mintime = $days * 24 * 60 * 60;
 			$time = time() - $mintime;
-			$sql->delete('dblog', "WHERE `dblog_datestamp` < {$time}", true);
+			$sql->createQueryBuilder()->delete('dblog')->where('dblog_datestamp', '<', (int) $time)->execute();
 		}
 	}
 
@@ -891,9 +904,10 @@ class e_admin_log
 				$table = 'admin_log';
 		}
 
-		$query = 'SELECT * FROM #' . $table . ' ORDER BY dblog_id DESC LIMIT 1';
-
-		return e107::getDb()->retrieve($query);
+		return e107::getDb()->createQueryBuilder()
+			->select('*')->from($table)
+			->orderBy('dblog_id', 'DESC')->setMaxResults(1)
+			->fetchRow();
 
 	}
 

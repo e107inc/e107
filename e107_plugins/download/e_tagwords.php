@@ -31,13 +31,16 @@ class e_tagwords_download
 		$sql = e107::getDb();
 		$this->row = '';
 
-		$qry = "SELECT d.*
-		FROM `#download` as d
-		WHERE d.download_id= :id AND d.download_class REGEXP '".e_CLASS_REGEXP."' ";
+		$qb = $sql->createQueryBuilder();
+		$row = $qb
+			->select('d.*')->from('download', 'd')
+			->where('d.download_id', (int) $id)
+			->andWhere($qb->expr()->regexp('d.download_class', e_CLASS_REGEXP))
+			->fetchRow();
 
-		if($sql->execute($qry, array('id' => (int) $id)))
+		if($row)
 		{
-			$this->row=$sql->fetch();
+			$this->row = $row;
 		}
 		return $this->row;
 	}

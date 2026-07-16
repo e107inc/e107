@@ -54,7 +54,10 @@ function loadEventTypes($table)
 {
 
 	$sql = e107::getDb();
-	$row = $sql->retrieve("SELECT DISTINCT dblog_eventcode,dblog_title FROM #".$table,true);
+	$row = $sql->createQueryBuilder()
+		->select('dblog_eventcode', 'dblog_title')->distinct()
+		->from($table)
+		->fetchAll();
 	$eventTypes = array();
 	foreach($row as $val)
 	{
@@ -378,7 +381,7 @@ class admin_log_ui extends e_admin_ui
 			{
 			//	$old_date = intval($qs[1]);
 				$old_string = $tp->toDate($old_date, "%d %B %Y");
-				$qry = "dblog_datestamp < ".$old_date; // Same field for both logs
+				$qry = "dblog_datestamp < ".$old_date; // Same field for both logs (kept for the debug/log messages below)
 
 				switch($_POST['backdeltype'])
 				{
@@ -399,7 +402,8 @@ class admin_log_ui extends e_admin_ui
 
 				e107::getMessage()->addDebug("Back delete, <br />oldest date = {$old_string} <br />Query = {$qry}");
 
-				if($del_count = $sql->delete($db_table, $qry))
+				if($del_count = $sql->createQueryBuilder()->delete($db_table)
+					->where('dblog_datestamp', '<', (int) $old_date)->execute())
 				{
 					// Add in a log event
 					$message = $db_name.str_replace(array('[x]', '[y]'), array($old_string, $del_count), RL_LAN_057);

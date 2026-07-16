@@ -22,10 +22,18 @@ $parm = eHelper::scParams($parm);
 
 $template = e107::getCoreTemplate('chapter','panel');
 
-$insert = (vartrue($parm['book'])) ? "AND chapter_parent = ".intval($parm['book']) : '';
+//TODO Limits and cache etc.
+$qb = $sql->createQueryBuilder();
+$qb->select('*')->from('page_chapters')
+	->whereIn('chapter_visibility', array_map('intval', explode(',', USERCLASS_LIST)))
+	->where('chapter_template', 'panel');
 
-//TODO Limits and cache etc. 
-$data = $sql->retrieve("SELECT * FROM #page_chapters WHERE chapter_visibility IN (".USERCLASS_LIST.") AND chapter_template = 'panel'  ".$insert. " LIMIT 24", true);
+if(vartrue($parm['book']))
+{
+	$qb->where('chapter_parent', (int) $parm['book']);
+}
+
+$data = $qb->setMaxResults(24)->fetchAll();
 $sc = null;
 
 if(!empty($data))

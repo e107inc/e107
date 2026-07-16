@@ -609,6 +609,63 @@ class e107MailManager
 
 
 	/**
+	 * Validate a developer-supplied SELECT field list fail-closed so it can be
+	 * embedded in a SQL_CALC_FOUND_ROWS query (which must stay unbound for
+	 * FOUND_ROWS()). Accepts '*' or a comma-separated list of column
+	 * identifiers; falls back to '*' if any token is not a valid identifier.
+	 *
+	 * @param e_db   $db     Connection instance providing quoteIdentifier().
+	 * @param string $fields
+	 * @return string Validated/quoted field list, or '*'.
+	 */
+	protected function validateFieldList($db, $fields)
+	{
+		$fields = trim((string) $fields);
+		if ($fields === '' || $fields === '*')
+		{
+			return '*';
+		}
+
+		$out = array();
+		foreach (explode(',', $fields) as $field)
+		{
+			$quoted = $db->quoteIdentifier(trim($field));
+			if ($quoted === false)
+			{
+				return '*';                    // Anything unexpected -> safe default
+			}
+			$out[] = $quoted;
+		}
+
+		return implode(', ', $out);
+	}
+
+
+	/**
+	 * Run a bound UPDATE that sets a map of column => value rows, filtered by a
+	 * single column = value predicate. Replaces the legacy array-form
+	 * update('table', array('data' => ..., 'WHERE' => 'col = n')) shape.
+	 *
+	 * @param e_db  $db       Connection instance to run on.
+	 * @param string $table   Logical table name (no '#', no prefix).
+	 * @param array  $data    column => value pairs to set (every value bound).
+	 * @param string $keyCol  Column for the equality WHERE predicate.
+	 * @param mixed  $keyVal  Value for the WHERE predicate (bound).
+	 * @return int|bool Affected row count on success, FALSE on error.
+	 */
+	protected function updateByKey($db, $table, array $data, $keyCol, $keyVal)
+	{
+		$qb = $db->createQueryBuilder()->update($table);
+		foreach ($data as $column => $value)
+		{
+			$qb->set($column, $value);
+		}
+
+		return $qb->where($keyCol, $keyVal)->execute();
+	}
+
+
+	/**
 	 * Select the next $count emails in the send queue
 	 * $count gives the maximum number. '*' does 'select all'
 	 * @return boolean|handle Returns FALSE on error.
@@ -617,29 +674,54 @@ class e107MailManager
 	public function selectEmails($count = 1)
 	{
 
+		$params = array(
+			'contentStatus' => MAIL_STATUS_PENDING,
+			'statusMin'     => MAIL_STATUS_PENDING,
+			'maxActive'     => MAIL_STATUS_MAX_ACTIVE,
+			'sendDate'      => time(),
+			'lastDate'      => time(),
+		);
+		$useLimit = false;
 		if (is_numeric($count))
 		{
 			if ($count < 1)
 			{
 				$count = 1;
 			}
-			$count = ' LIMIT ' . $count;
+			$params['limit'] = (int) $count;
+			$useLimit = true;
+		}
+		$this->checkDB(1);            // Make sure DB object created
+//		echo $query.'<br />';
+		// Boundary: kept on the sanctioned bound execute() - selectEmails() returns the row COUNT
+		// while getNextEmail() streams rows via $this->db->fetch() across calls; the
+		// builder's eager fetchAll() would drain the result set and break that model.
+		if ($useLimit)
+		{
+			$result = $this->db->execute(
+				"SELECT mt.*, ms.* FROM `#mail_recipients` AS mt
+							LEFT JOIN `#mail_content` AS ms ON mt.`mail_detail_id` = ms.`mail_source_id`
+							WHERE ms.`mail_content_status` = :contentStatus
+							AND mt.`mail_status` >= :statusMin
+							AND mt.`mail_status` <= :maxActive
+							AND mt.`mail_send_date` <= :sendDate
+							AND (ms.`mail_last_date` >= :lastDate OR ms.`mail_last_date`=0)
+							ORDER BY ms.`mail_e107_priority` DESC, mt.mail_target_id ASC LIMIT :limit",
+				$params);
 		}
 		else
 		{
-			$count = '';
-		}
-		$this->checkDB(1);            // Make sure DB object created
-		$query = "SELECT mt.*, ms.* FROM `#mail_recipients` AS mt
+			$result = $this->db->execute(
+				"SELECT mt.*, ms.* FROM `#mail_recipients` AS mt
 							LEFT JOIN `#mail_content` AS ms ON mt.`mail_detail_id` = ms.`mail_source_id`
-							WHERE ms.`mail_content_status` = " . MAIL_STATUS_PENDING . " 
-							AND mt.`mail_status` >= " . MAIL_STATUS_PENDING . " 
-							AND mt.`mail_status` <= " . MAIL_STATUS_MAX_ACTIVE . " 
-							AND mt.`mail_send_date` <= " . time() . " 
-							AND (ms.`mail_last_date` >= " . time() . " OR ms.`mail_last_date`=0)
-							ORDER BY ms.`mail_e107_priority` DESC, mt.mail_target_id ASC {$count}";
-//		echo $query.'<br />';
-		$result = $this->db->gen($query);
+							WHERE ms.`mail_content_status` = :contentStatus
+							AND mt.`mail_status` >= :statusMin
+							AND mt.`mail_status` <= :maxActive
+							AND mt.`mail_send_date` <= :sendDate
+							AND (ms.`mail_last_date` >= :lastDate OR ms.`mail_last_date`=0)
+							ORDER BY ms.`mail_e107_priority` DESC, mt.mail_target_id ASC",
+				$params);
+		}
 
 		if ($result !== false)
 		{
@@ -860,15 +942,19 @@ class e107MailManager
 		if (count($targetData))
 		{
 			//print_a($targetData);
-			$this->db2->update('mail_recipients', array('data' => $targetData, '_FIELD_TYPES' => $this->dbTypes['mail_recipients'], 'WHERE' => '`mail_target_id` = ' . intval($email['mail_target_id'])));
+			$this->db2->createQueryBuilder()->update('mail_recipients')
+				->valuesTyped($targetData, $this->dbTypes['mail_recipients'])
+				->where('mail_target_id', (int) $email['mail_target_id'])
+				->execute();
 		}
 
 		if (count($this->currentBatchInfo))
 		{
 			//print_a($this->currentBatchInfo);
-			$this->db2->update('mail_content', array('data'         => $this->currentBatchInfo,
-			                                         '_FIELD_TYPES' => $this->dbTypes['mail_content'],
-			                                         'WHERE'        => '`mail_source_id` = ' . intval($email['mail_source_id'])));
+			$this->db2->createQueryBuilder()->update('mail_content')
+				->valuesTyped($this->currentBatchInfo, $this->dbTypes['mail_content'])
+				->where('mail_source_id', (int) $email['mail_source_id'])
+				->execute();
 		}
 
 		if (($this->currentBatchInfo['mail_togo_count'] == 0) && ($email['mail_notify_complete'] > 0)) // Need to notify completion
@@ -888,9 +974,12 @@ class e107MailManager
 
 			if ($email['mail_notify_complete'] & 1) // Notify email initiator
 			{
-				if ($this->db2->select('user', 'user_name, user_email', '`user_id`=' . intval($email['mail_creator'])))
+				$row = $this->db2->createQueryBuilder()
+					->select('user_name', 'user_email')->from('user')
+					->where('user_id', (int) $email['mail_creator'])
+					->fetchRow();
+				if ($row)
 				{
-					$row = $this->db2->fetch();
 					e107::getEmail()->sendEmail($row['user_name'], $row['user_email'], $message, false);
 				}
 			}
@@ -1126,16 +1215,27 @@ class e107MailManager
 		if ($isNew === true)
 		{
 			unset($dbData['mail_source_id']);                // Just in case - there are circumstances where might be set
-			$result = $this->db2->insert('mail_content', array('data'         => $dbData,
-			                                                   '_FIELD_TYPES' => $this->dbTypes['mail_content'], '_NOTNULL' => $this->dbNull['mail_content']));
+			// Fill NOT NULL fields lacking a default, replicating the legacy array insert
+			foreach ($this->dbNull['mail_content'] as $f => $v)
+			{
+				if (!isset($dbData[$f]))
+				{
+					$dbData[$f] = $v;
+				}
+			}
+			$inserted = $this->db2->createQueryBuilder()->insert('mail_content')
+				->valuesTyped($dbData, $this->dbTypes['mail_content'])
+				->execute();
+			$result = ($inserted !== false) ? $this->db2->lastInsertId() : false;
 		}
 		else
 		{
 			if (isset($dbData['mail_source_id']))
 			{
-				$result = $this->db2->update('mail_content', array('data'         => $dbData,
-				                                                   '_FIELD_TYPES' => $this->dbTypes['mail_content'],
-				                                                   'WHERE'        => '`mail_source_id` = ' . intval($dbData['mail_source_id'])));
+				$result = $this->db2->createQueryBuilder()->update('mail_content')
+					->valuesTyped($dbData, $this->dbTypes['mail_content'])
+					->where('mail_source_id', (int) $dbData['mail_source_id'])
+					->execute();
 				if ($result !== false)
 				{
 					$result = $dbData['mail_source_id'];
@@ -1167,7 +1267,10 @@ class e107MailManager
 			return false;
 		}
 		$this->checkDB(2);                        // Make sure we have a DB object to use
-		if ($this->db2->select('mail_content', '*', '`mail_source_id`=' . $mailID) === false)
+		$qb = $this->db2->createQueryBuilder()
+			->select('*')->from('mail_content')
+			->where('mail_source_id', (int) $mailID);
+		if ($qb->execute() === false)
 		{
 			return false;
 		}
@@ -1203,11 +1306,11 @@ class e107MailManager
 
 		if (isset($actArray['content']))
 		{
-			$result['content'] = $this->db2->delete('mail_content', '`mail_source_id`=' . $mailID);
+			$result['content'] = $this->db2->createQueryBuilder()->delete('mail_content')->where('mail_source_id', (int) $mailID)->execute();
 		}
 		if (isset($actArray['recipients']))
 		{
-			$result['recipients'] = $this->db2->delete('mail_recipients', '`mail_detail_id`=' . $mailID);
+			$result['recipients'] = $this->db2->createQueryBuilder()->delete('mail_recipients')->where('mail_detail_id', (int) $mailID)->execute();
 		}
 
 		return $result;
@@ -1276,7 +1379,10 @@ class e107MailManager
 
 		$data = $this->targetToDb($mailRecip);
 		// Convert internal types
-		if ($this->db->insert('mail_recipients', array('data' => $data, '_FIELD_TYPES' => $this->dbTypes['mail_recipients'])))
+		$inserted = $this->db->createQueryBuilder()->insert('mail_recipients')
+			->valuesTyped($data, $this->dbTypes['mail_recipients'])
+			->execute();
+		if ($inserted !== false)
 		{
 			$this->mailCounters[$handle]['add']++;
 		}
@@ -1309,8 +1415,11 @@ class e107MailManager
 		$this->checkDB(2);            // Make sure DB object created
 
 
-		$query = '`mail_togo_count`=' . intval($this->mailCounters[$handle]['add']) . ' WHERE `mail_source_id`=' . $handle;
-		if ($this->db2->db_Update('mail_content', $query))
+		$updated = $this->db2->createQueryBuilder()->update('mail_content')
+			->set('mail_togo_count', (int) $this->mailCounters[$handle]['add'])
+			->where('mail_source_id', (int) $handle)
+			->execute();
+		if ($updated)
 		{
 			return $this->mailCounters[$handle]['add'];
 		}
@@ -1333,12 +1442,19 @@ class e107MailManager
 			return false;
 		}
 
-		$update = array(
-			'mail_' . $type . '_count' => intval($count),
-			'WHERE'                    => "mail_source_id=" . intval($id)
-		);
+		// $type composes a column name; validate fail-closed against the schema.
+		$column = 'mail_' . $type . '_count';
+		if (!isset($this->dbTypes['mail_content'][$column]))
+		{
+			return false;
+		}
 
-		return e107::getDb('mail')->update('mail_content', $update) ? $count : false;
+		$updated = e107::getDb('mail')->createQueryBuilder()->update('mail_content')
+			->set($column, (int) $count)
+			->where('mail_source_id', (int) $id)
+			->execute();
+
+		return $updated ? $count : false;
 	}
 
 
@@ -1381,8 +1497,8 @@ class e107MailManager
 			return false;
 		}
 		$this->checkDB(1);            // Make sure DB object created
-		$ft = '';
-		$lt = '';
+		$setFirstTime = false;
+		$setEndSend = false;
 		if (!$hold)
 		{        // Sending email - set sensible first and last times
 			if ($lastTime < (time() + 3600))                // Force at least an hour to send emails
@@ -1398,32 +1514,45 @@ class e107MailManager
 			}
 			if ($firstTime > 0)
 			{
-				$ft = ', `mail_send_date` = ' . $firstTime;
+				$setFirstTime = true;
 			}
-			$lt = ', `mail_end_send` = ' . $lastTime;
+			$setEndSend = true;
 		}
-		$query = '';
+
+		// Set status of email body first
+		$contentQb = $this->db->createQueryBuilder()->update('mail_content');
 		if (!$hold)
 		{
-			$query = '`mail_creator` = ' . USERID . ', `mail_create_date` = ' . time() . ', ';
-		}        // Update when we send - might be someone different
-		$query .= '`mail_notify_complete`=' . intval($notify) . ', `mail_content_status` = ' . ($hold ? MAIL_STATUS_HELD : MAIL_STATUS_PENDING) . $lt . ' WHERE `mail_source_id` = ' . intval($handle);
-		//	echo "Update mail body: {$query}<br />";
-		// Set status of email body first
-
-		if (!$this->db->update('mail_content', $query))
+			// Update when we send - might be someone different
+			$contentQb->set('mail_creator', USERID)->set('mail_create_date', time());
+		}
+		$contentQb->set('mail_notify_complete', (int) $notify)
+			->set('mail_content_status', $hold ? MAIL_STATUS_HELD : MAIL_STATUS_PENDING);
+		if ($setEndSend)
 		{
-			e107::getLog()->addEvent(10, -1, 'MAIL', 'Activate/hold mail', 'mail_content: ' . $query . '[!br!]Fail: ' . $this->db->getLastErrorText(), false, LOG_TO_ROLLING);
+			$contentQb->set('mail_end_send', $lastTime);
+		}
+		$contentQb->where('mail_source_id', (int) $handle);
+
+		if (!$contentQb->execute())
+		{
+			e107::getLog()->addEvent(10, -1, 'MAIL', 'Activate/hold mail', 'mail_content: ' . $contentQb->getSQL() . '[!br!]Fail: ' . $this->db->getLastErrorText(), false, LOG_TO_ROLLING);
 
 			return false;
 		}
 
 		// Now set status of individual emails
-		$query = '`mail_status` = ' . ($hold ? MAIL_STATUS_HELD : (MAIL_STATUS_PENDING + e107MailManager::E107_EMAIL_MAX_TRIES)) . $ft . ' WHERE `mail_detail_id` = ' . intval($handle);
-		//	echo "Update individual emails: {$query}<br />";
-		if (false === $this->db->update('mail_recipients', $query))
+		$recipQb = $this->db->createQueryBuilder()->update('mail_recipients')
+			->set('mail_status', $hold ? MAIL_STATUS_HELD : (MAIL_STATUS_PENDING + e107MailManager::E107_EMAIL_MAX_TRIES));
+		if ($setFirstTime)
 		{
-			e107::getLog()->addEvent(10, -1, 'MAIL', 'Activate/hold mail', 'mail_recipient: ' . $query . '[!br!]Fail: ' . $this->db->getLastErrorText(), false, LOG_TO_ROLLING);
+			$recipQb->set('mail_send_date', $firstTime);
+		}
+		$recipQb->where('mail_detail_id', (int) $handle);
+
+		if (false === $recipQb->execute())
+		{
+			e107::getLog()->addEvent(10, -1, 'MAIL', 'Activate/hold mail', 'mail_recipient: ' . $recipQb->getSQL() . '[!br!]Fail: ' . $this->db->getLastErrorText(), false, LOG_TO_ROLLING);
 
 			return false;
 		}
@@ -1446,12 +1575,24 @@ class e107MailManager
 		}
 		$this->checkDB(1);            // Make sure DB object created
 		// Set status of individual emails first, so we can get a count
-		if (false === ($count = $this->db->update('mail_recipients', '`mail_status` = ' . MAIL_STATUS_CANCELLED . ' WHERE `mail_detail_id` = ' . intval($handle) . ' AND `mail_status` >' . MAIL_STATUS_FAILED)))
+		$count = $this->db->createQueryBuilder()->update('mail_recipients')
+			->set('mail_status', MAIL_STATUS_CANCELLED)
+			->where('mail_detail_id', (int) $handle)
+			->where('mail_status', '>', MAIL_STATUS_FAILED)
+			->execute();
+		if (false === $count)
 		{
 			return false;
 		}
 		// Now do status of email body - no emails to go, add those not sent to fail count
-		if (!$this->db->update('mail_content', '`mail_content_status` = ' . MAIL_STATUS_PARTIAL . ', `mail_togo_count`=0, `mail_fail_count` = `mail_fail_count` + ' . intval($count) . ' WHERE `mail_source_id` = ' . intval($handle)))
+		$contentQb = $this->db->createQueryBuilder()->update('mail_content');
+		$updated = $contentQb
+			->set('mail_content_status', MAIL_STATUS_PARTIAL)
+			->set('mail_togo_count', 0)
+			->setExpression('mail_fail_count', $contentQb->raw('`mail_fail_count` + ' . $contentQb->createNamedParameter((int) $count)))
+			->where('mail_source_id', (int) $handle)
+			->execute();
+		if (!$updated)
 		{
 			return false;
 		}
@@ -1474,7 +1615,12 @@ class e107MailManager
 		}
 		$this->checkDB(1);            // Make sure DB object created
 		// Set status of individual emails first, so we can get a count
-		if (false === ($count = $this->db->update('mail_recipients', '`mail_status` = ' . MAIL_STATUS_HELD . ' WHERE `mail_detail_id` = ' . intval($handle) . ' AND `mail_status` >' . MAIL_STATUS_FAILED)))
+		$count = $this->db->createQueryBuilder()->update('mail_recipients')
+			->set('mail_status', MAIL_STATUS_HELD)
+			->where('mail_detail_id', (int) $handle)
+			->where('mail_status', '>', MAIL_STATUS_FAILED)
+			->execute();
+		if (false === $count)
 		{
 			return false;
 		}
@@ -1483,7 +1629,11 @@ class e107MailManager
 			return true;
 		}        // If zero count, must have held email just as queue being emptied, so don't touch main status
 
-		if (!$this->db->update('mail_content', '`mail_content_status` = ' . MAIL_STATUS_HELD . ' WHERE `mail_source_id` = ' . intval($handle)))
+		$updated = $this->db->createQueryBuilder()->update('mail_content')
+			->set('mail_content_status', MAIL_STATUS_HELD)
+			->where('mail_source_id', (int) $handle)
+			->execute();
+		if (!$updated)
 		{
 			return false;
 		}
@@ -1554,11 +1704,15 @@ class e107MailManager
 			{
 				$this->checkDB(1); // Look up in mailer DB if no errors so far
 
-				if (false === ($this->db->gen(
-						"SELECT mr.`mail_recipient_id`, mr.`mail_recipient_email`, mr.`mail_recipient_name`, mr.mail_target_info, 
-					mc.mail_create_date, mc.mail_start_send, mc.mail_end_send, mc.`mail_title`, mc.`mail_subject`, mc.`mail_creator`, mc.`mail_other` FROM `#mail_recipients` AS mr 
+				// Boundary: kept on the sanctioned bound execute() - the guard distinguishes a query
+				// ERROR (logs 'Not found') from a zero-row result but still fetch()es;
+				// builder fetchRow() returns array() for both, conflating the two.
+				if (false === ($this->db->execute(
+						"SELECT mr.`mail_recipient_id`, mr.`mail_recipient_email`, mr.`mail_recipient_name`, mr.mail_target_info,
+					mc.mail_create_date, mc.mail_start_send, mc.mail_end_send, mc.`mail_title`, mc.`mail_subject`, mc.`mail_creator`, mc.`mail_other` FROM `#mail_recipients` AS mr
 					LEFT JOIN `#mail_content` as mc ON mr.`mail_detail_id` = mc.`mail_source_id`
-						WHERE mr.`mail_target_id` = {$vals[2]} AND mc.`mail_source_id` = {$vals[1]}")))
+						WHERE mr.`mail_target_id` = :targetId AND mc.`mail_source_id` = :sourceId",
+						array('targetId' => (int) $vals[2], 'sourceId' => (int) $vals[1]))))
 				{    // Invalid mailer record
 					$errors[] = 'Not found in DB: ' . $vals[1] . '/' . $vals[2];
 				}
@@ -1587,13 +1741,21 @@ class e107MailManager
 					$bounceInfo['mail_recipient_name'] = $row['mail_recipient_name'];
 
 
-					if (!$this->db->update('mail_content', '`mail_bounce_count` = `mail_bounce_count` + 1 WHERE `mail_source_id` = ' . $vals[1]))
+					$bounceUpdated = $this->db->createQueryBuilder()->update('mail_content')
+						->increment('mail_bounce_count', 1)
+						->where('mail_source_id', (int) $vals[1])
+						->execute();
+					if (!$bounceUpdated)
 					{
 						e107::getLog()->add('Unable to increment bounce-count on mail_source_id=' . $vals[1], $bounceInfo, E_LOG_FATAL, 'BOUNCE', LOG_TO_ROLLING);
 					}
 
 
-					if (!$this->db->update('mail_recipients', '`mail_status` = ' . MAIL_STATUS_BOUNCED . ' WHERE `mail_target_id` = ' . $vals[2]))
+					$recipUpdated = $this->db->createQueryBuilder()->update('mail_recipients')
+						->set('mail_status', MAIL_STATUS_BOUNCED)
+						->where('mail_target_id', (int) $vals[2])
+						->execute();
+					if (!$recipUpdated)
 					{
 						e107::getLog()->add('Unable to update recipient mail_status to bounce on mail_target_id = ' . $vals[2], $bounceInfo, E_LOG_FATAL, 'BOUNCE', LOG_TO_ROLLING);
 					}
@@ -1715,7 +1877,10 @@ class e107MailManager
 		{
 			$filters = array();
 		}
-		$query = "SELECT SQL_CALC_FOUND_ROWS {$fields} FROM `#mail_content`";
+		// $fields is a developer-supplied column list (no request input); validate
+		// it fail-closed so it can be embedded in the SQL_CALC_FOUND_ROWS query.
+		$safeFields = $this->validateFieldList($this->db, $fields);
+		$query = "SELECT SQL_CALC_FOUND_ROWS {$safeFields} FROM `#mail_content`";
 		if (count($filters))
 		{
 			$query .= ' WHERE ' . implode(' AND ', $filters);
@@ -1737,10 +1902,15 @@ class e107MailManager
 		}
 		if ($count)
 		{
-			$query .= " LIMIT {$start}, {$count}";
+			// LIMIT offset/row-count cannot be bound here: SQL_CALC_FOUND_ROWS
+			// needs an unbound statement so FOUND_ROWS()/total_results works.
+			// Casting to int closes the only injectable surface in the clause.
+			$query .= " LIMIT " . (int) $start . ", " . (int) $count;
 		}
 		//echo "{$start}, {$count} Mail query: {$query}<br />";
-		$result = $this->db->gen($query);
+		// Intentionally raw: SQL_CALC_FOUND_ROWS must run UNBOUND so total_results populates;
+		// the builder cannot express it. Identifiers validated, LIMIT int-cast above.
+		$result = $this->db->execute($query);
 		if ($result !== false)
 		{
 			$this->queryCount[1] = $this->db->total_results;            // Save number of records found
@@ -1803,11 +1973,14 @@ class e107MailManager
 		$this->checkDB(2);            // Make sure DB object created
 
 		// TODO: Implement filters if needed
-		$query = "SELECT SQL_CALC_FOUND_ROWS {$fields} FROM `#mail_recipients` WHERE `mail_detail_id`={$handle}";
+		// $fields is a developer-supplied column list (no request input); validate
+		// it fail-closed so it can be embedded in the SQL_CALC_FOUND_ROWS query.
+		$safeFields = $this->validateFieldList($this->db2, $fields);
+		$query = "SELECT SQL_CALC_FOUND_ROWS {$safeFields} FROM `#mail_recipients` WHERE `mail_detail_id`=" . (int) $handle;
 		if ($orderField)
 		{
 			// $orderField is a column identifier (cannot be bound); validate it.
-			$safeOrderField = $this->db->quoteIdentifier($orderField);
+			$safeOrderField = $this->db2->quoteIdentifier($orderField);
 			if ($safeOrderField === false)
 			{
 				$safeOrderField = '`mail_source_id`';
@@ -1821,10 +1994,15 @@ class e107MailManager
 		}
 		if ($count)
 		{
-			$query .= " LIMIT {$start}, {$count}";
+			// LIMIT offset/row-count cannot be bound here: SQL_CALC_FOUND_ROWS
+			// needs an unbound statement so FOUND_ROWS()/total_results works.
+			// Casting to int closes the only injectable surface in the clause.
+			$query .= " LIMIT " . (int) $start . ", " . (int) $count;
 		}
 //		echo "{$start}, {$count} Target query: {$query}<br />";
-		$result = $this->db2->gen($query);
+		// Intentionally raw: SQL_CALC_FOUND_ROWS must run UNBOUND so total_results populates;
+		// the builder cannot express it. Identifiers validated, LIMIT int-cast above.
+		$result = $this->db2->execute($query);
 		if ($result !== false)
 		{
 			$this->queryCount[2] = $this->db2->total_results;            // Save number of records found

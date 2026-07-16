@@ -8,32 +8,41 @@
 	 *
 	 */
 
+namespace e107\Database;
+
+use e107\Database\Platform\MysqlPlatform;
+use e107\Database\Platform\PlatformInterface;
+use Generator;
+use InvalidArgumentException;
+use ReflectionMethod;
 
 	/**
-	 * DB-less tests for {@see e_db_query} and {@see e_db_expr}: every test
+	 * DB-less tests for {@see QueryBuilder} and {@see ExpressionBuilder}: every test
 	 * asserts the compiled intermediate representation (the SQL string and
 	 * the parameter map) against a stub connection, without executing
 	 * anything. Round-trip tests against the real backends live in
 	 * e_db_abstractTest.
 	 */
-	class e_db_queryTest extends \Codeception\Test\Unit
+	class QueryBuilderTest extends \Codeception\Test\Unit
 	{
 
 		protected function _before()
 		{
-			require_once(e_HANDLER."e_db_filter_class.php");
-			require_once(e_HANDLER."e_db_platform_class.php");
-			require_once(e_HANDLER."e_db_query_class.php");
+			require_once(e_HANDLER."Database/IdentifierFilter.php");
+			require_once(e_HANDLER."Database/Platform/MysqlPlatform.php");
+			require_once(e_HANDLER."Database/SqlFragment.php");
+			require_once(e_HANDLER."Database/ExpressionBuilder.php");
+			require_once(e_HANDLER."Database/QueryBuilder.php");
 		}
 
 		/**
-		 * @return e_db_query
+		 * @return QueryBuilder
 		 */
 		private function makeQb(&$stub = null)
 		{
-			$stub = new e_db_queryTest_dbStub();
+			$stub = new QueryBuilderTest_dbStub();
 
-			return new e_db_query($stub);
+			return new QueryBuilder($stub);
 		}
 
 		private function assertThrowsInvalidArgument($callback)
@@ -59,6 +68,132 @@
 
 			$this->assertSame('SELECT * FROM `e107_user`', $qb->getSQL());
 			$this->assertSame(array(), $qb->getParameters());
+		}
+
+		public function testRawSqlFragmentRoundTrips()
+		{
+			$frag = SqlFragment::raw('a = :a AND b = :b', array('a' => 1, 'b' => 2));
+
+			$this->assertInstanceOf(SqlFragment::class, $frag);
+			$this->assertSame('a = :a AND b = :b', $frag->getSql());
+			$this->assertSame(array('a' => 1, 'b' => 2), $frag->getParameters());
+		}
+
+		public function testFragmentFactoryCarriesEmptyParameters()
+		{
+			$frag = SqlFragment::fragment('`user_id` = :qb1');
+
+			$this->assertSame('`user_id` = :qb1', $frag->getSql());
+			$this->assertSame(array(), $frag->getParameters());
+		}
+
+		public function testFragmentToStringIsTotalAndEqualsGetSql()
+		{
+			$frag = SqlFragment::raw('COUNT(*)');
+
+			$this->assertSame('COUNT(*)', (string) $frag);
+			$this->assertSame($frag->getSql(), (string) $frag);
+		}
+
+		public function testFromQueryForwardsSqlAndParameters()
+		{
+			$inner = $this->makeQb();
+			$inner->select('user_id')->from('user')->where('user_id', 42);
+
+			$frag = SqlFragment::fromQuery($inner);
+
+			$this->assertSame($inner->getSQL(), $frag->getSql());
+			$this->assertSame($inner->getParameters(), $frag->getParameters());
+			$this->assertNotSame(array(), $frag->getParameters());
+		}
+
+		public function testFragmentConstructorIsPrivate()
+		{
+			$ctor = new ReflectionMethod(SqlFragment::class, '__construct');
+
+			$this->assertTrue($ctor->isPrivate());
+		}
+
+		public function testSetTypedThreadsTransformIntoExplicitBind()
+		{
+			$qb = $this->makeQb($stub);
+			$qb->update('user')->setTyped('user_id', '42', 'int');
+
+			$value = $stub->applyFieldType('int', '42');
+			$type = $stub->fieldTypeBind('int', $value);
+
+			$this->assertSame(42, $value);
+			$this->assertSame(ConnectionInterface::PARAM_INT, $type);
+			$this->assertSame('UPDATE `e107_user` SET `user_id` = :qb1', $qb->getSQL());
+			$this->assertSame(array('qb1' => array('value' => $value, 'type' => $type)), $qb->getParameters());
+		}
+
+		public function testSetTypedNullSentinelBindsSqlNull()
+		{
+			$qb = $this->makeQb();
+			$qb->update('user')->setTyped('user_ip', '_NULL_', 'null');
+
+			$this->assertSame('UPDATE `e107_user` SET `user_ip` = :qb1', $qb->getSQL());
+			$this->assertSame(
+				array('qb1' => array('value' => null, 'type' => ConnectionInterface::PARAM_NULL)),
+				$qb->getParameters()
+			);
+		}
+
+		public function testSetTypedCmdOnUpdateEmitsRawSqlWithoutBinding()
+		{
+			$qb = $this->makeQb();
+			$qb->update('user')->setTyped('user_visits', 'user_visits + 1', 'cmd');
+
+			$this->assertSame('UPDATE `e107_user` SET `user_visits` = user_visits + 1', $qb->getSQL());
+			$this->assertSame(array(), $qb->getParameters());
+		}
+
+		public function testSetTypedCmdOnInsertBindsLiteralValue()
+		{
+			$qb = $this->makeQb();
+			$qb->insert('tmp')->setTyped('tmp_data', 'NOW()', 'cmd');
+
+			$this->assertSame('INSERT INTO `e107_tmp` (`tmp_data`) VALUES (:qb1)', $qb->getSQL());
+			$this->assertSame(
+				array('qb1' => array('value' => 'NOW()', 'type' => ConnectionInterface::PARAM_STR)),
+				$qb->getParameters()
+			);
+		}
+
+		public function testValuesTypedResolvesPerColumnTypeAndDefault()
+		{
+			$qb = $this->makeQb();
+			$qb->insert('user')->valuesTyped(
+				array('user_id' => '5', 'user_name' => 'bob'),
+				array('user_id' => 'int', '_DEFAULT' => 'str')
+			);
+
+			$this->assertSame(
+				array(
+					'qb1' => array('value' => 5, 'type' => ConnectionInterface::PARAM_INT),
+					'qb2' => array('value' => 'bob', 'type' => ConnectionInterface::PARAM_STR),
+				),
+				$qb->getParameters()
+			);
+		}
+
+		public function testValuesTypedRejectsListOfRows()
+		{
+			$qb = $this->makeQb();
+
+			$this->assertThrowsInvalidArgument(function() use ($qb) {
+				$qb->insert('tmp')->valuesTyped(array(array('a' => 1), array('a' => 2)));
+			});
+		}
+
+		public function testSetTypedRejectsHostileColumn()
+		{
+			$qb = $this->makeQb();
+
+			$this->assertThrowsInvalidArgument(function() use ($qb) {
+				$qb->update('user')->setTyped('user_id; DROP TABLE x', 1, 'int');
+			});
 		}
 
 		public function testSelectQuotesIdentifiersAndKeepsExpressions()
@@ -158,17 +293,36 @@
 			);
 		}
 
-		public function testWhereSingleStringStaysRaw()
+		public function testWhereAcceptsVouchedRawFragment()
 		{
 			$qb = $this->makeQb();
 			$qb->select()->from('user')
-				->where('user_id = '.$qb->createNamedParameter(1))
+				->where($qb->raw('user_id = '.$qb->createNamedParameter(1)))
 				->where($qb->expr()->eq('user_class', 2));
 
 			$this->assertSame(
 				'SELECT * FROM `e107_user` WHERE (user_id = :qb1) AND (`user_class` = :qb2)',
 				$qb->getSQL()
 			);
+		}
+
+		public function testWhereRejectsBareString()
+		{
+			$qb = $this->makeQb();
+
+			$this->assertThrowsInvalidArgument(function() use ($qb) {
+				$qb->select()->from('user')->where('user_id = 1');
+			});
+		}
+
+		public function testRawFragmentParametersMergeIntoWhere()
+		{
+			$qb = $this->makeQb();
+			$qb->select()->from('user')
+				->where($qb->raw('user_id = :uid', array('uid' => 7)));
+
+			$this->assertSame('SELECT * FROM `e107_user` WHERE (user_id = :uid)', $qb->getSQL());
+			$this->assertSame(array('uid' => 7), $qb->getParameters());
 		}
 
 		public function testWhereUnknownOperatorThrows()
@@ -185,7 +339,7 @@
 			$qb = $this->makeQb();
 			$qb->select()->from('user')
 				->where('user_class', 1)
-				->orWhere(function (e_db_query $q)
+				->orWhere(function (QueryBuilder $q)
 				{
 					$q->where('user_admin', 1)->where('user_ban', 0);
 				});
@@ -201,7 +355,7 @@
 		public function testWhereNotAndEmptyGroup()
 		{
 			$qb = $this->makeQb();
-			$qb->select()->from('user')->where('a', 1)->whereNot(function (e_db_query $q)
+			$qb->select()->from('user')->where('a', 1)->whereNot(function (QueryBuilder $q)
 			{
 				$q->where('b', 2)->orWhere('c', 3);
 			});
@@ -212,7 +366,7 @@
 			);
 
 			$qb = $this->makeQb();
-			$qb->select()->from('user')->where(function (e_db_query $q) {});
+			$qb->select()->from('user')->where(function (QueryBuilder $q) {});
 			$this->assertSame('SELECT * FROM `e107_user` WHERE (1=1)', $qb->getSQL());
 		}
 
@@ -323,24 +477,33 @@
 		{
 			$qb = $this->makeQb();
 			$qb->select('*')->from('user', 'u')
-				->innerJoin('a', 'ax', 'ax.id = u.id')
-				->rightJoin('b', 'bx', 'bx.id = u.id')
+				->innerJoin('a', 'ax', $qb->expr()->compareColumns('ax.id', 'u.id'))
+				->rightJoin('b', 'bx', $qb->expr()->compareColumns('bx.id', 'u.id'))
 				->crossJoin('c', 'cx');
 
 			$this->assertSame(
 				'SELECT * FROM `e107_user` AS `u`'
-				.' INNER JOIN `e107_a` AS `ax` ON ax.id = u.id'
-				.' RIGHT JOIN `e107_b` AS `bx` ON bx.id = u.id'
+				.' INNER JOIN `e107_a` AS `ax` ON `ax`.`id` = `u`.`id`'
+				.' RIGHT JOIN `e107_b` AS `bx` ON `bx`.`id` = `u`.`id`'
 				.' CROSS JOIN `e107_c` AS `cx`',
 				$qb->getSQL()
 			);
+		}
+
+		public function testJoinRejectsBareStringCondition()
+		{
+			$qb = $this->makeQb();
+
+			$this->assertThrowsInvalidArgument(function() use ($qb) {
+				$qb->select('*')->from('user', 'u')->innerJoin('a', 'ax', 'ax.id = u.id');
+			});
 		}
 
 		public function testSubqueries()
 		{
 			// whereExists
 			$qb = $this->makeQb();
-			$qb->select()->from('user', 'u')->whereExists(function (e_db_query $s)
+			$qb->select()->from('user', 'u')->whereExists(function (QueryBuilder $s)
 			{
 				$s->selectRaw('1')->from('user_extended', 'ue')->where('ue.user_extended_id', '>', 0);
 			});
@@ -352,7 +515,7 @@
 
 			// subquery IN
 			$qb = $this->makeQb();
-			$qb->select()->from('user')->whereIn('user_id', function (e_db_query $s)
+			$qb->select()->from('user')->whereIn('user_id', function (QueryBuilder $s)
 			{
 				$s->select('user_id')->from('user_extended')->where('active', 1);
 			});
@@ -364,7 +527,7 @@
 
 			// fromSub
 			$qb = $this->makeQb();
-			$qb->select('*')->fromSub(function (e_db_query $s)
+			$qb->select('*')->fromSub(function (QueryBuilder $s)
 			{
 				$s->select('user_class', 'COUNT(*) AS cnt')->from('user')->groupBy('user_class');
 			}, 'counts')->where('cnt', '>', 1);
@@ -377,19 +540,19 @@
 			// joinSub and selectSub
 			$qb = $this->makeQb();
 			$qb->select('user_id')
-				->selectSub(function (e_db_query $s)
+				->selectSub(function (QueryBuilder $s)
 				{
 					$s->select('COUNT(*)')->from('user_extended')->where('active', 1);
 				}, 'ext')
 				->from('user', 'u')
-				->joinSub(function (e_db_query $s)
+				->joinSub(function (QueryBuilder $s)
 				{
 					$s->select('user_id')->from('user_extended');
-				}, 'ue', 'ue.user_id = u.user_id');
+				}, 'ue', $qb->expr()->compareColumns('ue.user_id', 'u.user_id'));
 			$this->assertSame(
 				'SELECT `user_id`, (SELECT COUNT(*) FROM `e107_user_extended` WHERE (`active` = :qb1)) AS `ext`'
 				.' FROM `e107_user` AS `u`'
-				.' INNER JOIN (SELECT `user_id` FROM `e107_user_extended`) AS `ue` ON ue.user_id = u.user_id',
+				.' INNER JOIN (SELECT `user_id` FROM `e107_user_extended`) AS `ue` ON `ue`.`user_id` = `u`.`user_id`',
 				$qb->getSQL()
 			);
 
@@ -451,6 +614,58 @@
 				.' ON DUPLICATE KEY UPDATE `user_name` = VALUES(`user_name`)',
 				$qb->getSQL()
 			);
+		}
+
+		public function testUpsertTyped()
+		{
+			$qb = $this->makeQb();
+			$qb->insert('user_extended')->upsertTyped(
+				array('user_extended_id' => '5', 'user_hidden' => 'x'),
+				'user_extended_id',
+				null,
+				array('user_extended_id' => 'int', '_DEFAULT' => 'str')
+			);
+
+			$this->assertSame(
+				'INSERT INTO `e107_user_extended` (`user_extended_id`, `user_hidden`) VALUES (:qb1, :qb2)'
+				.' ON DUPLICATE KEY UPDATE `user_hidden` = VALUES(`user_hidden`)',
+				$qb->getSQL()
+			);
+
+			// Each value passes through the field-type STORAGE transform, exactly as valuesTyped().
+			$this->assertSame(
+				array(
+					'qb1' => array('value' => 5, 'type' => ConnectionInterface::PARAM_INT),
+					'qb2' => array('value' => 'x', 'type' => ConnectionInterface::PARAM_STR),
+				),
+				$qb->getParameters()
+			);
+		}
+
+		public function testUpsertTypedExplicitUpdateColumns()
+		{
+			$qb = $this->makeQb();
+			$qb->insert('user')->upsertTyped(
+				array('user_id' => '5', 'user_name' => 'Bob', 'user_visits' => '3'),
+				'user_id',
+				array('user_visits'),
+				array('user_id' => 'int', 'user_visits' => 'int', '_DEFAULT' => 'str')
+			);
+
+			$this->assertSame(
+				'INSERT INTO `e107_user` (`user_id`, `user_name`, `user_visits`) VALUES (:qb1, :qb2, :qb3)'
+				.' ON DUPLICATE KEY UPDATE `user_visits` = VALUES(`user_visits`)',
+				$qb->getSQL()
+			);
+		}
+
+		public function testUpsertTypedRejectsListOfRows()
+		{
+			$qb = $this->makeQb();
+
+			$this->assertThrowsInvalidArgument(function() use ($qb) {
+				$qb->insert('user')->upsertTyped(array(array('user_id' => 1), array('user_id' => 2)), 'user_id');
+			});
 		}
 
 		public function testIncrementDecrement()
@@ -532,13 +747,14 @@
 			$qb = $this->makeQb();
 			$expr = $qb->expr();
 
-			$this->assertSame('`a` BETWEEN :qb1 AND :qb2', $expr->between('a', 1, 2));
-			$this->assertSame('`a` NOT BETWEEN :qb3 AND :qb4', $expr->notBetween('a', 3, 4));
-			$this->assertSame('`a` NOT LIKE :qb5', $expr->notLike('a', '%x%'));
-			$this->assertSame('`a` >= :qb6', $expr->comparison('a', '>=', 9));
-			$this->assertSame('`a` = `b`', $expr->compareColumns('a', 'b'));
-			$this->assertSame('(`a` = 1) AND (`b` = 2)', $expr->andX('`a` = 1', '`b` = 2'));
-			$this->assertSame('(`a` = 1) OR (`b` = 2)', $expr->orX('`a` = 1', '`b` = 2'));
+			$this->assertSame('`a` BETWEEN :qb1 AND :qb2', $expr->between('a', 1, 2)->getSql());
+			$this->assertSame('`a` NOT BETWEEN :qb3 AND :qb4', $expr->notBetween('a', 3, 4)->getSql());
+			$this->assertSame('`a` NOT LIKE :qb5', $expr->notLike('a', '%x%')->getSql());
+			$this->assertSame('`a` >= :qb6', $expr->comparison('a', '>=', 9)->getSql());
+			$this->assertSame('`a` = `b`', $expr->compareColumns('a', 'b')->getSql());
+			$this->assertSame('FIND_IN_SET(:qb7, `user_class`)', $expr->findInSet('user_class', 5)->getSql());
+			$this->assertSame('(`a` = 1) AND (`b` = 2)', $expr->allOf('`a` = 1', '`b` = 2')->getSql());
+			$this->assertSame('(`a` = 1) OR (`b` = 2)', $expr->anyOf('`a` = 1', '`b` = 2')->getSql());
 
 			$self = $this;
 			$this->assertThrowsInvalidArgument(function () use ($self)
@@ -547,10 +763,189 @@
 			});
 		}
 
+		public function testCombinatorsReturnFragments()
+		{
+			$qb = $this->makeQb();
+			$expr = $qb->expr();
+
+			$and = $expr->allOf($expr->eq('a', 1), $expr->eq('b', 2));
+			$this->assertInstanceOf(SqlFragment::class, $and);
+			$this->assertSame('(`a` = :qb1) AND (`b` = :qb2)', $and->getSql());
+			$this->assertSame(array(), $and->getParameters());
+
+			$or = $expr->anyOf($expr->eq('a', 1), $expr->eq('b', 2));
+			$this->assertSame('(`a` = :qb3) OR (`b` = :qb4)', $or->getSql());
+		}
+
+		public function testNotNegatesFragment()
+		{
+			$qb = $this->makeQb();
+			$expr = $qb->expr();
+
+			$frag = $expr->not($expr->eq('user_ban', 1));
+			$this->assertInstanceOf(SqlFragment::class, $frag);
+			$this->assertSame('NOT (`user_ban` = :qb1)', $frag->getSql());
+			$this->assertSame(array(), $frag->getParameters());
+
+			$qb = $this->makeQb();
+			$expr = $qb->expr();
+			$qb->select()->from('user')->where($expr->not($expr->eq('user_ban', 1)));
+			$this->assertSame('SELECT * FROM `e107_user` WHERE (NOT (`user_ban` = :qb1))', $qb->getSQL());
+			$this->assertSame(array('qb1' => 1), $qb->getParameters());
+		}
+
+		public function testAllOfCarriesRawPartParameters()
+		{
+			$qb = $this->makeQb();
+			$expr = $qb->expr();
+
+			$frag = $expr->allOf($qb->raw('x=:p', array('p' => 1)), $expr->eq('a', 2));
+
+			$this->assertSame('(x=:p) AND (`a` = :qb1)', $frag->getSql());
+			$this->assertSame(array(), $frag->getParameters());
+			$this->assertSame(array('qb1' => 2, 'p' => 1), $qb->getParameters());
+		}
+
+		public function testAggregateExpression()
+		{
+			$qb = $this->makeQb();
+			$expr = $qb->expr();
+
+			$this->assertSame('COUNT(*)', $expr->aggregate('count', '*')->getSql());
+			$this->assertSame('SUM(`a`) AS `t`', $expr->aggregate('SUM', 'a', 't')->getSql());
+			$this->assertSame(array(), $qb->getParameters());
+
+			$self = $this;
+			$this->assertThrowsInvalidArgument(function () use ($self)
+			{
+				$self->makeQb()->expr()->aggregate('SUM', '*'); // '*' only valid for COUNT
+			});
+			$this->assertThrowsInvalidArgument(function () use ($self)
+			{
+				$self->makeQb()->expr()->aggregate('BOGUS', 'a');
+			});
+			$this->assertThrowsInvalidArgument(function () use ($self)
+			{
+				$self->makeQb()->expr()->aggregate('MAX', 'a); DROP');
+			});
+		}
+
+		public function testAggregateComparison()
+		{
+			$qb = $this->makeQb();
+			$frag = $qb->expr()->aggregateComparison('AVG', 'score', '>=', 3);
+
+			$this->assertSame('AVG(`score`) >= :qb1', $frag->getSql());
+			$this->assertSame(array(), $frag->getParameters());
+			$this->assertSame(array('qb1' => 3), $qb->getParameters());
+
+			$self = $this;
+			$this->assertThrowsInvalidArgument(function () use ($self)
+			{
+				$self->makeQb()->expr()->aggregateComparison('COUNT', '*', 'IN', array(1));
+			});
+		}
+
+		public function testStructuredSelectExpressions()
+		{
+			$qb = $this->makeQb();
+			$qb->selectCount('*', 'n')->from('user');
+			$this->assertSame('SELECT COUNT(*) AS `n` FROM `e107_user`', $qb->getSQL());
+
+			$qb = $this->makeQb();
+			$qb->selectAggregate('sum', 'a', 't')->from('user');
+			$this->assertSame('SELECT SUM(`a`) AS `t` FROM `e107_user`', $qb->getSQL());
+
+			$qb = $this->makeQb();
+			$qb->selectLiteral(1, 'user_active')->from('user');
+			$this->assertSame('SELECT :qb1 AS `user_active` FROM `e107_user`', $qb->getSQL());
+			$this->assertSame(array('qb1' => 1), $qb->getParameters());
+
+			// selectAs quotes column and alias independently and interleaves with
+			// select()/addSelect() in call order (so mixed column lists keep order).
+			$qb = $this->makeQb();
+			$qb->select('t.*')->selectAs('ul.user_name', 'user_last')->addSelect('f.forum_name')
+				->from('forum_thread', 't');
+			$this->assertSame(
+				'SELECT `t`.*, `ul`.`user_name` AS `user_last`, `f`.`forum_name` FROM `e107_forum_thread` AS `t`',
+				$qb->getSQL()
+			);
+
+			$self = $this;
+			$this->assertThrowsInvalidArgument(function () use ($self)
+			{
+				$self->makeQb()->selectAggregate('SUM', '*'); // '*' only valid for COUNT
+			});
+		}
+
+		public function testStructuredHavingExpressions()
+		{
+			$qb = $this->makeQb();
+			$qb->select('user_class')->from('user')->groupBy('user_class')->havingCount('>', 5);
+			$this->assertSame(
+				'SELECT `user_class` FROM `e107_user` GROUP BY `user_class` HAVING (COUNT(*) > :qb1)',
+				$qb->getSQL()
+			);
+			$this->assertSame(array('qb1' => 5), $qb->getParameters());
+
+			$qb = $this->makeQb();
+			$qb->select('user_class')->from('user')->groupBy('user_class')
+				->havingAggregate('AVG', 'score', '>=', 3)
+				->orHavingAggregate('MAX', 'score', '<', 1);
+			$this->assertSame(
+				'SELECT `user_class` FROM `e107_user` GROUP BY `user_class`'
+				.' HAVING (AVG(`score`) >= :qb1) OR (MAX(`score`) < :qb2)',
+				$qb->getSQL()
+			);
+			$this->assertSame(array('qb1' => 3, 'qb2' => 1), $qb->getParameters());
+		}
+
+		public function testSetColumnCopiesIdentifierWithoutBinding()
+		{
+			$qb = $this->makeQb();
+			$qb->update('menu')->setColumn('menu_name', 'page_theme')->where('menu_id', 1);
+			$this->assertSame(
+				'UPDATE `e107_menu` SET `menu_name` = `page_theme` WHERE (`menu_id` = :qb1)',
+				$qb->getSQL()
+			);
+			$this->assertSame(array('qb1' => 1), $qb->getParameters());
+
+			$self = $this;
+			$this->assertThrowsInvalidArgument(function () use ($self)
+			{
+				$self->makeQb()->update('menu')->setColumn('menu_name', 'page_theme; DROP');
+			});
+		}
+
+		public function testRawSugarMintsFragment()
+		{
+			$qb = $this->makeQb();
+			$frag = $qb->raw('a = :a', array('a' => 1));
+
+			$this->assertInstanceOf(SqlFragment::class, $frag);
+			$this->assertSame('a = :a', $frag->getSql());
+			$this->assertSame(array('a' => 1), $frag->getParameters());
+		}
+
+		public function testMergeParametersAbsorbsAndRejectsDuplicates()
+		{
+			$qb = $this->makeQb();
+			$qb->mergeParameters(array('p' => 1, 'q' => 2));
+			$this->assertSame(array('p' => 1, 'q' => 2), $qb->getParameters());
+
+			$self = $this;
+			$this->assertThrowsInvalidArgument(function () use ($self)
+			{
+				$qb = $self->makeQb();
+				$qb->createNamedParameter('x'); // binds :qb1
+				$qb->mergeParameters(array('qb1' => 'clash'));
+			});
+		}
+
 		public function testInsertUsingAndInsertGetId()
 		{
 			$qb = $this->makeQb();
-			$qb->insert('archive')->insertUsing(array('id', 'name'), function (e_db_query $s)
+			$qb->insert('archive')->insertUsing(array('id', 'name'), function (QueryBuilder $s)
 			{
 				$s->select('id', 'name')->from('live')->where('expired', 1);
 			});
@@ -560,7 +955,7 @@
 			);
 
 			$qb = $this->makeQb();
-			$qb->insert('archive')->insertUsing(array(), function (e_db_query $s)
+			$qb->insert('archive')->insertUsing(array(), function (QueryBuilder $s)
 			{
 				$s->select('*')->from('live');
 			});
@@ -659,8 +1054,8 @@
 		public function testEmptyInListsCompileToConstantPredicates()
 		{
 			$qb = $this->makeQb();
-			$this->assertSame('1=0', $qb->expr()->in('user_id', array()));
-			$this->assertSame('1=1', $qb->expr()->notIn('user_id', array()));
+			$this->assertSame('1=0', $qb->expr()->in('user_id', array())->getSql());
+			$this->assertSame('1=1', $qb->expr()->notIn('user_id', array())->getSql());
 			$this->assertSame(array(), $qb->getParameters());
 		}
 
@@ -669,15 +1064,65 @@
 			$qb = $this->makeQb();
 			$qb->select('u.user_id', 'ue.user_extended_id')
 				->from('user', 'u')
-				->leftJoin('user_extended', 'ue', 'ue.user_extended_id = u.user_id')
-				->join('userclass_classes', 'uc', 'uc.userclass_id = u.user_class');
+				->leftJoin('user_extended', 'ue', $qb->expr()->compareColumns('ue.user_extended_id', 'u.user_id'))
+				->join('userclass_classes', 'uc', $qb->expr()->compareColumns('uc.userclass_id', 'u.user_class'));
 
 			$this->assertSame(
 				'SELECT `u`.`user_id`, `ue`.`user_extended_id` FROM `e107_user` AS `u`'
-				.' LEFT JOIN `e107_user_extended` AS `ue` ON ue.user_extended_id = u.user_id'
-				.' INNER JOIN `e107_userclass_classes` AS `uc` ON uc.userclass_id = u.user_class',
+				.' LEFT JOIN `e107_user_extended` AS `ue` ON `ue`.`user_extended_id` = `u`.`user_id`'
+				.' INNER JOIN `e107_userclass_classes` AS `uc` ON `uc`.`userclass_id` = `u`.`user_class`',
 				$qb->getSQL()
 			);
+		}
+
+		public function testStructuredJoinConditionsCompile()
+		{
+			// Mirrors the migrated comment_class.php get_comments() shape: equi-join
+			// ONs via compareColumns(), and a compound ON (column match AND a bound
+			// literal) via allOf(compareColumns(), eq()). The inline 'comments'
+			// literal moves from raw SQL text to a bound :qbN (a safety upgrade).
+			$qb = $this->makeQb();
+			$qb->select('c.*', 'u.*', 'ue.*', 'r.*')
+				->from('comments', 'c')
+				->leftJoin('user', 'u', $qb->expr()->compareColumns('c.comment_author_id', 'u.user_id'))
+				->leftJoin('user_extended', 'ue', $qb->expr()->compareColumns('c.comment_author_id', 'ue.user_extended_id'))
+				->leftJoin('rate', 'r', $qb->expr()->allOf(
+					$qb->expr()->compareColumns('c.comment_id', 'r.rate_itemid'),
+					$qb->expr()->eq('r.rate_table', 'comments')
+				))
+				->where('c.comment_item_id', 5)
+				->where('c.comment_type', 'news');
+
+			$this->assertSame(
+				'SELECT `c`.*, `u`.*, `ue`.*, `r`.* FROM `e107_comments` AS `c`'
+				.' LEFT JOIN `e107_user` AS `u` ON `c`.`comment_author_id` = `u`.`user_id`'
+				.' LEFT JOIN `e107_user_extended` AS `ue` ON `c`.`comment_author_id` = `ue`.`user_extended_id`'
+				.' LEFT JOIN `e107_rate` AS `r` ON (`c`.`comment_id` = `r`.`rate_itemid`) AND (`r`.`rate_table` = :qb1)'
+				.' WHERE (`c`.`comment_item_id` = :qb2) AND (`c`.`comment_type` = :qb3)',
+				$qb->getSQL()
+			);
+			$this->assertSame(array('qb1' => 'comments', 'qb2' => 5, 'qb3' => 'news'), $qb->getParameters());
+		}
+
+		public function testRawSelectExpressionPassesThroughVerbatim()
+		{
+			// Mirrors the migrated comment_class.php get_author_list() shape: a
+			// DISTINCT() select expression reaches the sanctioned raw() hatch and is
+			// emitted verbatim (no gratuitous re-quoting), so the SQL is unchanged.
+			$qb = $this->makeQb();
+			$qb->addSelect(SqlFragment::raw('DISTINCT(comment_author_id) AS author'))
+				->from('comments')
+				->where('comment_item_id', 5)
+				->where('comment_type', 'news')
+				->groupBy('author');
+
+			$this->assertSame(
+				'SELECT DISTINCT(comment_author_id) AS author FROM `e107_comments`'
+				.' WHERE (`comment_item_id` = :qb1) AND (`comment_type` = :qb2)'
+				.' GROUP BY `author`',
+				$qb->getSQL()
+			);
+			$this->assertSame(array('qb1' => 5, 'qb2' => 'news'), $qb->getParameters());
 		}
 
 		public function testGroupByAndHaving()
@@ -685,13 +1130,31 @@
 			$qb = $this->makeQb();
 			$qb->select('user_class', 'COUNT(*) AS cnt')->from('user')
 				->groupBy('user_class')
-				->having('COUNT(*) > '.$qb->createNamedParameter(1));
+				->having($qb->raw('COUNT(*) > '.$qb->createNamedParameter(1)));
 
 			$this->assertSame(
 				'SELECT `user_class`, COUNT(*) AS cnt FROM `e107_user` GROUP BY `user_class` HAVING (COUNT(*) > :qb1)',
 				$qb->getSQL()
 			);
 			$this->assertSame(array('qb1' => 1), $qb->getParameters());
+		}
+
+		public function testHavingRejectsBareString()
+		{
+			$qb = $this->makeQb();
+
+			$this->assertThrowsInvalidArgument(function() use ($qb) {
+				$qb->select('user_class')->from('user')->groupBy('user_class')->having('COUNT(*) > 1');
+			});
+		}
+
+		public function testGroupByRejectsBareExpression()
+		{
+			$qb = $this->makeQb();
+
+			$this->assertThrowsInvalidArgument(function() use ($qb) {
+				$qb->select('*')->from('user')->groupBy('COUNT(*)');
+			});
 		}
 
 		public function testOrderByTwoArgumentForm()
@@ -808,10 +1271,10 @@
 		public function testCreateNamedParameterTypeOverride()
 		{
 			$qb = $this->makeQb();
-			$placeholder = $qb->createNamedParameter('5', e_db::PARAM_INT);
+			$placeholder = $qb->createNamedParameter('5', ConnectionInterface::PARAM_INT);
 
 			$this->assertSame(':qb1', $placeholder);
-			$this->assertSame(array('qb1' => array('value' => '5', 'type' => e_db::PARAM_INT)), $qb->getParameters());
+			$this->assertSame(array('qb1' => array('value' => '5', 'type' => ConnectionInterface::PARAM_INT)), $qb->getParameters());
 		}
 
 		public function testExpressionFragments()
@@ -819,17 +1282,17 @@
 			$qb = $this->makeQb();
 			$expr = $qb->expr();
 
-			$this->assertSame('`a` = :qb1', $expr->eq('a', 1));
-			$this->assertSame('`a` <> :qb2', $expr->neq('a', 1));
-			$this->assertSame('`a` < :qb3', $expr->lt('a', 1));
-			$this->assertSame('`a` <= :qb4', $expr->lte('a', 1));
-			$this->assertSame('`a` > :qb5', $expr->gt('a', 1));
-			$this->assertSame('`a` >= :qb6', $expr->gte('a', 1));
-			$this->assertSame('`a` LIKE :qb7', $expr->like('a', 'raw%'));
-			$this->assertSame('`a` REGEXP :qb8', $expr->regexp('a', '^foo'));
-			$this->assertSame('`a` IS NULL', $expr->isNull('a'));
-			$this->assertSame('`a` IS NOT NULL', $expr->isNotNull('a'));
-			$this->assertSame('`a` NOT IN (:qb9)', $expr->notIn('a', array('x')));
+			$this->assertSame('`a` = :qb1', $expr->eq('a', 1)->getSql());
+			$this->assertSame('`a` <> :qb2', $expr->neq('a', 1)->getSql());
+			$this->assertSame('`a` < :qb3', $expr->lt('a', 1)->getSql());
+			$this->assertSame('`a` <= :qb4', $expr->lte('a', 1)->getSql());
+			$this->assertSame('`a` > :qb5', $expr->gt('a', 1)->getSql());
+			$this->assertSame('`a` >= :qb6', $expr->gte('a', 1)->getSql());
+			$this->assertSame('`a` LIKE :qb7', $expr->like('a', 'raw%')->getSql());
+			$this->assertSame('`a` REGEXP :qb8', $expr->regexp('a', '^foo')->getSql());
+			$this->assertSame('`a` IS NULL', $expr->isNull('a')->getSql());
+			$this->assertSame('`a` IS NOT NULL', $expr->isNotNull('a')->getSql());
+			$this->assertSame('`a` NOT IN (:qb9)', $expr->notIn('a', array('x'))->getSql());
 		}
 
 		public function testLikeHelpersEscapeWildcards()
@@ -981,11 +1444,56 @@
 			$this->assertNull($qb->fetchOne());
 		}
 
+		public function testFetchEachStreamsRows()
+		{
+			$rows = array(
+				array('id' => '1', 'name' => 'alpha'),
+				array('id' => '2', 'name' => 'beta'),
+			);
+
+			$stub = null;
+			$qb = $this->makeQb($stub);
+			$stub->rows = $rows;
+
+			$gen = $qb->select()->from('tmp')->fetchEach();
+			$this->assertInstanceOf('Generator', $gen);
+
+			// streams the same rows fetchAll() would return, in order
+			$collected = array();
+			foreach($gen as $row)
+			{
+				$collected[] = $row;
+			}
+			$this->assertSame($rows, $collected);
+
+			// empty result set yields nothing
+			$stub->rows = array();
+			$this->assertSame(array(), iterator_to_array($qb->fetchEach()));
+
+			// query error yields an empty stream (fail-soft, like fetchAll)
+			$stub->rows = $rows;
+			$stub->executeReturn = false;
+			$this->assertSame(array(), iterator_to_array($qb->fetchEach()));
+
+			// break stops consumption: only the first row is fetched, so the
+			// second stays queued in the stub (proof it did not materialise).
+			$stub->executeReturn = 0;
+			$stub->rows = $rows;
+			$seen = 0;
+			foreach($qb->fetchEach() as $row)
+			{
+				$seen++;
+				break;
+			}
+			$this->assertSame(1, $seen);
+			$this->assertSame(array($rows[1]), $stub->rows);
+		}
+
 		public function testPlatformMysql()
 		{
-			$platform = new e_db_platform_mysql();
+			$platform = new MysqlPlatform();
 
-			$this->assertInstanceOf('e_db_platform', $platform);
+			$this->assertInstanceOf(PlatformInterface::class, $platform);
 			$this->assertSame('`', $platform->getIdentifierQuoteCharacter());
 			$this->assertSame('REGEXP', $platform->getRegexpOperator());
 			$this->assertSame('utf8mb4', $platform->getDefaultCharset());
@@ -1031,11 +1539,11 @@
 
 
 	/**
-	 * Stand-in for an e_db connection: resolves table names with a fixed
+	 * Stand-in for a ConnectionInterface connection: resolves table names with a fixed
 	 * prefix and no language routing, records what execute() receives and
 	 * serves queued rows through fetch().
 	 */
-	class e_db_queryTest_dbStub
+	class QueryBuilderTest_dbStub
 	{
 		public $lastSql = null;
 		public $lastParams = null;
@@ -1057,12 +1565,12 @@
 
 		public function quoteIdentifier($identifier)
 		{
-			return e_db_filter::identifier($identifier);
+			return IdentifierFilter::identifier($identifier);
 		}
 
 		public function getPlatform()
 		{
-			return new e_db_platform_mysql();
+			return new MysqlPlatform();
 		}
 
 		public function execute($sql, $params = array())
@@ -1083,5 +1591,42 @@
 		public function lastInsertId()
 		{
 			return $this->insertId;
+		}
+
+		public function applyFieldType($type, $fieldValue)
+		{
+			if(is_string($fieldValue) && $fieldValue === '_NULL_')
+			{
+				$type = 'null';
+			}
+
+			switch($type)
+			{
+				case 'int':
+				case 'integer':
+					return (int) $fieldValue;
+
+				case 'null':
+					return (is_string($fieldValue) && $fieldValue !== '_NULL_' && $fieldValue !== '') ? $fieldValue : null;
+
+				default:
+					return $fieldValue;
+			}
+		}
+
+		public function fieldTypeBind($type, $value = null)
+		{
+			switch($type)
+			{
+				case 'int':
+				case 'integer':
+					return ConnectionInterface::PARAM_INT;
+
+				case 'null':
+					return ($value === null) ? ConnectionInterface::PARAM_NULL : ConnectionInterface::PARAM_STR;
+
+				default:
+					return ConnectionInterface::PARAM_STR;
+			}
 		}
 	}

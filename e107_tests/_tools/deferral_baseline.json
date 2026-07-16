@@ -1,0 +1,412 @@
+{
+    "entries": [
+        {
+            "file": "e107_admin/db.php",
+            "method": "db_Query",
+            "sql_excerpt": "{$lastQry}",
+            "count": 1
+        },
+        {
+            "file": "e107_admin/db.php",
+            "method": "db_Query",
+            "sql_excerpt": "{$q}",
+            "count": 2
+        },
+        {
+            "file": "e107_admin/db.php",
+            "method": "db_Query",
+            "sql_excerpt": "{$tab_query}",
+            "count": 1
+        },
+        {
+            "file": "e107_admin/db.php",
+            "method": "execute",
+            "sql_excerpt": "{$query}",
+            "count": 1
+        },
+        {
+            "file": "e107_admin/db.php",
+            "method": "gen",
+            "sql_excerpt": "OPTIMIZE TABLE `{expr}`",
+            "count": 1
+        },
+        {
+            "file": "e107_admin/db.php",
+            "method": "gen",
+            "sql_excerpt": "{$sql_table}",
+            "count": 1
+        },
+        {
+            "file": "e107_admin/eurl.php",
+            "method": "execute",
+            "sql_excerpt": "SELECT {$primary},{$input} FROM `#{$table}` WHERE {$input} != ''",
+            "count": 1
+        },
+        {
+            "file": "e107_admin/eurl.php",
+            "method": "execute",
+            "sql_excerpt": "UPDATE `#{$table}` SET {$output} = :sef WHERE {$primary} = :id LIMIT 1",
+            "count": 1
+        },
+        {
+            "file": "e107_admin/links.php",
+            "method": "execute",
+            "sql_excerpt": "SELECT * FROM #{expr} WHERE {expr}",
+            "count": 1
+        },
+        {
+            "file": "e107_handlers/admin_ui.php",
+            "method": "execute",
+            "sql_excerpt": "{$qry}",
+            "count": 2
+        },
+        {
+            "file": "e107_handlers/admin_ui.php",
+            "method": "execute",
+            "sql_excerpt": "{$query}",
+            "count": 1
+        },
+        {
+            "file": "e107_handlers/comment_class.php",
+            "method": "execute",
+            "sql_excerpt": "{$qryp}",
+            "count": 1
+        },
+        {
+            "file": "e107_handlers/comment_class.php",
+            "method": "execute",
+            "sql_excerpt": "{$query}",
+            "count": 1
+        },
+        {
+            "file": "e107_handlers/db_debug_class.php",
+            "method": "execute",
+            "sql_excerpt": "EXPLAIN {$query}",
+            "count": 1
+        },
+        {
+            "file": "e107_handlers/db_table_admin_class.php",
+            "method": "db_Query_all",
+            "sql_excerpt": "{$qry}",
+            "count": 1
+        },
+        {
+            "file": "e107_handlers/db_table_admin_class.php",
+            "method": "execute",
+            "sql_excerpt": "{$createText}",
+            "count": 1
+        },
+        {
+            "file": "e107_handlers/db_table_admin_class.php",
+            "method": "execute",
+            "sql_excerpt": "{$qry}",
+            "count": 2
+        },
+        {
+            "file": "e107_handlers/db_table_admin_class.php",
+            "method": "execute",
+            "sql_excerpt": "{expr}",
+            "count": 1
+        },
+        {
+            "file": "e107_handlers/db_verify_class.php",
+            "method": "execute",
+            "sql_excerpt": "{$qry}",
+            "count": 1
+        },
+        {
+            "file": "e107_handlers/db_verify_class.php",
+            "method": "execute",
+            "sql_excerpt": "{$query}",
+            "count": 1
+        },
+        {
+            "file": "e107_handlers/iphandler_class.php",
+            "method": "execute",
+            "sql_excerpt": "DELETE FROM `#banlist` WHERE {$query}",
+            "count": 1
+        },
+        {
+            "file": "e107_handlers/iphandler_class.php",
+            "method": "execute",
+            "sql_excerpt": "SELECT * FROM `#banlist` WHERE {$query} ORDER BY `banlist_bantype` DESC",
+            "count": 1
+        },
+        {
+            "file": "e107_handlers/mail_manager_class.php",
+            "method": "execute",
+            "sql_excerpt": "{$query}",
+            "count": 2
+        },
+        {
+            "file": "e107_handlers/model_class.php",
+            "method": "execute",
+            "sql_excerpt": "SELECT {$fields} FROM `#{expr}` WHERE {$where}",
+            "count": 1
+        },
+        {
+            "file": "e107_handlers/model_class.php",
+            "method": "execute",
+            "sql_excerpt": "{$QRY}",
+            "count": 1
+        },
+        {
+            "file": "e107_handlers/model_class.php",
+            "method": "execute",
+            "sql_excerpt": "{$qry}",
+            "count": 1
+        },
+        {
+            "file": "e107_handlers/model_class.php",
+            "method": "execute",
+            "sql_excerpt": "{expr}",
+            "count": 2
+        },
+        {
+            "file": "e107_handlers/plugin_class.php",
+            "method": "db_Query",
+            "sql_excerpt": "{$query}",
+            "count": 1
+        },
+        {
+            "file": "e107_handlers/plugin_class.php",
+            "method": "db_Query",
+            "sql_excerpt": "{$tab}",
+            "count": 1
+        },
+        {
+            "file": "e107_handlers/plugin_class.php",
+            "method": "db_Query_all",
+            "sql_excerpt": "{$qry}",
+            "count": 1
+        },
+        {
+            "file": "e107_handlers/plugin_class.php",
+            "method": "db_Query_all",
+            "sql_excerpt": "{$query}",
+            "count": 1
+        },
+        {
+            "file": "e107_handlers/plugin_class.php",
+            "method": "db_Query_all",
+            "sql_excerpt": "{$tab}",
+            "count": 1
+        },
+        {
+            "file": "e107_handlers/plugin_class.php",
+            "method": "execute",
+            "sql_excerpt": "{$qry}",
+            "count": 1
+        },
+        {
+            "file": "e107_handlers/plugin_class.php",
+            "method": "execute",
+            "sql_excerpt": "{$query}",
+            "count": 1
+        },
+        {
+            "file": "e107_handlers/search_class.php",
+            "method": "gen",
+            "sql_excerpt": "{$sql_query}",
+            "count": 1
+        },
+        {
+            "file": "e107_handlers/user_model.php",
+            "method": "execute",
+            "sql_excerpt": "SELECT {$safeFieldName} FROM `{$safeTable}` WHERE {$safeFieldId} = :v",
+            "count": 1
+        },
+        {
+            "file": "e107_handlers/xml_class.php",
+            "method": "execute",
+            "sql_excerpt": "{$query}",
+            "count": 1
+        },
+        {
+            "file": "e107_plugins/alt_auth/e107db_auth.php",
+            "method": "execute",
+            "sql_excerpt": "{$qry}",
+            "count": 1
+        },
+        {
+            "file": "e107_plugins/alt_auth/otherdb_auth.php",
+            "method": "execute",
+            "sql_excerpt": "{$qry}",
+            "count": 1
+        },
+        {
+            "file": "e107_plugins/banner/banner_menu.php",
+            "method": "execute",
+            "sql_excerpt": "{$query}",
+            "count": 1
+        },
+        {
+            "file": "e107_plugins/forum/forum_stats.php",
+            "method": "execute",
+            "sql_excerpt": "SHOW TABLE STATUS FROM {$dbIdentifier}",
+            "count": 1
+        },
+        {
+            "file": "e107_plugins/import/providers/PHPFusion_import_class.php",
+            "method": "gen",
+            "sql_excerpt": "SELECT * FROM {expr}user_groups",
+            "count": 1
+        },
+        {
+            "file": "e107_plugins/import/providers/PHPFusion_import_class.php",
+            "method": "gen",
+            "sql_excerpt": "SELECT * FROM {expr}users",
+            "count": 1
+        },
+        {
+            "file": "e107_plugins/import/providers/PHPNuke_import_class.php",
+            "method": "execute",
+            "sql_excerpt": "SELECT * FROM {expr}users WHERE `user_active`=1",
+            "count": 1
+        },
+        {
+            "file": "e107_plugins/import/providers/PHPNuke_import_class.php",
+            "method": "execute",
+            "sql_excerpt": "{$query}",
+            "count": 11
+        },
+        {
+            "file": "e107_plugins/import/providers/coppermine_import_class.php",
+            "method": "execute",
+            "sql_excerpt": "SELECT * FROM {expr}users WHERE `user_active`='YES'",
+            "count": 1
+        },
+        {
+            "file": "e107_plugins/import/providers/drupal_import_class.php",
+            "method": "execute",
+            "sql_excerpt": "{$query}",
+            "count": 3
+        },
+        {
+            "file": "e107_plugins/import/providers/e107_import_class.php",
+            "method": "execute",
+            "sql_excerpt": "{$query}",
+            "count": 3
+        },
+        {
+            "file": "e107_plugins/import/providers/ikonboard_import_class.php",
+            "method": "execute",
+            "sql_excerpt": "SELECT * FROM {expr}member_profiles",
+            "count": 1
+        },
+        {
+            "file": "e107_plugins/import/providers/joomla_import_class.php",
+            "method": "execute",
+            "sql_excerpt": "SELECT * FROM {expr}users",
+            "count": 1
+        },
+        {
+            "file": "e107_plugins/import/providers/mambo_import_class.php",
+            "method": "execute",
+            "sql_excerpt": "SELECT * FROM {expr}users",
+            "count": 1
+        },
+        {
+            "file": "e107_plugins/import/providers/phpbb3_import_class.php",
+            "method": "gen",
+            "sql_excerpt": "SELECT * FROM {expr}attachments",
+            "count": 1
+        },
+        {
+            "file": "e107_plugins/import/providers/phpbb3_import_class.php",
+            "method": "gen",
+            "sql_excerpt": "SELECT * FROM {expr}forums",
+            "count": 1
+        },
+        {
+            "file": "e107_plugins/import/providers/phpbb3_import_class.php",
+            "method": "gen",
+            "sql_excerpt": "SELECT * FROM {expr}forums_track",
+            "count": 1
+        },
+        {
+            "file": "e107_plugins/import/providers/phpbb3_import_class.php",
+            "method": "gen",
+            "sql_excerpt": "SELECT * FROM {expr}posts",
+            "count": 1
+        },
+        {
+            "file": "e107_plugins/import/providers/phpbb3_import_class.php",
+            "method": "gen",
+            "sql_excerpt": "SELECT * FROM {expr}topics",
+            "count": 1
+        },
+        {
+            "file": "e107_plugins/import/providers/phpbb3_import_class.php",
+            "method": "gen",
+            "sql_excerpt": "SELECT * FROM {expr}users ORDER BY user_id ASC",
+            "count": 1
+        },
+        {
+            "file": "e107_plugins/import/providers/smf_import_class.php",
+            "method": "execute",
+            "sql_excerpt": "SELECT * FROM {expr}membergroups WHERE group_name = 'Jr. Member'",
+            "count": 1
+        },
+        {
+            "file": "e107_plugins/import/providers/smf_import_class.php",
+            "method": "execute",
+            "sql_excerpt": "SELECT * FROM {expr}members WHERE `is_activated`=1",
+            "count": 1
+        },
+        {
+            "file": "e107_plugins/import/providers/smf_import_class.php",
+            "method": "execute",
+            "sql_excerpt": "{$qry}",
+            "count": 3
+        },
+        {
+            "file": "e107_plugins/import/providers/template_import_class.php",
+            "method": "execute",
+            "sql_excerpt": "{$query}",
+            "count": 1
+        },
+        {
+            "file": "e107_plugins/import/providers/wordpress_import_class.php",
+            "method": "gen",
+            "sql_excerpt": "{$query}",
+            "count": 5
+        },
+        {
+            "file": "e107_plugins/import/providers/xoops_import_class.php",
+            "method": "execute",
+            "sql_excerpt": "{$query}",
+            "count": 2
+        },
+        {
+            "file": "e107_plugins/pm/pm_class.php",
+            "method": "execute",
+            "sql_excerpt": "{$qry}",
+            "count": 2
+        },
+        {
+            "file": "e107_plugins/poll/poll_class.php",
+            "method": "execute",
+            "sql_excerpt": "{$pollArray}",
+            "count": 1
+        },
+        {
+            "file": "e107_plugins/poll/poll_class.php",
+            "method": "execute",
+            "sql_excerpt": "{$query}",
+            "count": 1
+        },
+        {
+            "file": "install.php",
+            "method": "db_Query",
+            "sql_excerpt": "{$qry}",
+            "count": 1
+        },
+        {
+            "file": "usersettings.php",
+            "method": "delete",
+            "sql_excerpt": "{$where}",
+            "count": 1
+        }
+    ]
+}

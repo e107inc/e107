@@ -227,7 +227,9 @@ class userUpload
 	                );
 
 
-	                $sql->insert("upload", $insertQry);
+	                $sql->createQueryBuilder()->insert("upload")
+	                    ->valuesTyped($insertQry, $sql->getFieldDefs("upload")['_FIELD_TYPES'])
+	                    ->execute();
 	                
 	                $edata_fu = $insertQry;
 	                $edata_fu["upload_user"] = $poster;

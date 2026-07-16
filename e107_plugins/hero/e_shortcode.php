@@ -46,7 +46,11 @@ class hero_shortcodes extends e_shortcode
 		//	$text .= print_a($parm,true); // e_menu.php form data.
 	//	}
 
-		$data = e107::getDb()->retrieve('hero','*',"hero_class IN(".USERCLASS_LIST.") ORDER BY hero_order",true);
+		$data = e107::getDb()->createQueryBuilder()
+			->select('*')->from('hero')
+			->whereIn('hero_class', array_map('intval', explode(',', USERCLASS_LIST)))
+			->orderBy('hero_order')
+			->fetchAll();
 
 		$sc = e107::getScBatch('hero', true, 'hero');
 

@@ -36,11 +36,13 @@ class news_rss // plugin-folder + '_rss'
 		);
 
 		// News categories
-		$sqli = e107::getDb();
-		if($sqli ->select("news_category", "*","category_id!='' ORDER BY category_name "))
+		$rowsi = e107::getDb()->createQueryBuilder()
+			->select('*')->from('news_category')
+			->where('category_id', '!=', '')
+			->orderBy('category_name')
+			->fetchAll();
+		foreach($rowsi as $rowi)
 		{
-			while($rowi = $sqli ->fetch())
-			{
 
 				$config[] = array(
 					'name'			=> ADLAN_0.' > '.$rowi['category_name'],
@@ -52,8 +54,7 @@ class news_rss // plugin-folder + '_rss'
 				);
 
 			}
-		}
-		
+
 		return $config;
 	}
 
@@ -71,21 +72,36 @@ class news_rss // plugin-folder + '_rss'
 		$this->showImages           = vartrue($pref['rss_shownewsimage'],false);
 		$this->summaryDescription   =  vartrue($pref['rss_summarydiz'],false);
 
-		$render         = ($pref['rss_othernews'] != 1) ? "AND (FIND_IN_SET('0', n.news_render_type) OR FIND_IN_SET(1, n.news_render_type))" : "";
-		$nobody_regexp  = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
-		$topic          = (!empty($parms['id']) && is_numeric($parms['id'])) ?  " AND news_category = ".intval($parms['id']) : '';
-		$limit          = vartrue($parms['limit'],10);
+		$nobody_regexp  = "(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)";
+		$limit          = (int) vartrue($parms['limit'],10);
+		$now            = time();
 
-		$rssQuery = "SELECT n.*, u.user_id, u.user_name, u.user_email, u.user_customtitle, nc.category_name, nc.category_sef, nc.category_icon FROM #news AS n
-				LEFT JOIN #user AS u ON n.news_author = u.user_id
-				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-				WHERE n.news_class IN (".USERCLASS_LIST.") AND NOT (n.news_class REGEXP ".$nobody_regexp.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") {$render} {$topic} ORDER BY n.news_datestamp DESC LIMIT 0,".$limit;
-		
-		$sql = e107::getDb();
-		
-		
-		$sql->gen($rssQuery);
-		$tmp = $sql->db_getList();
+		$qb = e107::getDb()->createQueryBuilder();
+		$qb->select('n.*', 'u.user_id', 'u.user_name', 'u.user_email', 'u.user_customtitle', 'nc.category_name', 'nc.category_sef', 'nc.category_icon')
+			->from('news', 'n')
+			->leftJoin('user', 'u', $qb->expr()->compareColumns('n.news_author', 'u.user_id'))
+			->leftJoin('news_category', 'nc', $qb->expr()->compareColumns('n.news_category', 'nc.category_id'))
+			->whereIn('n.news_class', array_map('intval', explode(',', USERCLASS_LIST)))
+			->where($qb->expr()->not($qb->expr()->regexp('n.news_class', $nobody_regexp)))
+			->where('n.news_start', '<', $now)
+			->where($qb->expr()->anyOf($qb->expr()->eq('n.news_end', 0), $qb->expr()->gt('n.news_end', $now)));
+
+		if($pref['rss_othernews'] != 1)
+		{
+			$qb->where($qb->expr()->anyOf(
+				$qb->expr()->findInSet('n.news_render_type', '0'),
+				$qb->expr()->findInSet('n.news_render_type', 1)
+			));
+		}
+
+		if(!empty($parms['id']) && is_numeric($parms['id']))
+		{
+			$qb->where('news_category', (int) $parms['id']);
+		}
+
+		$tmp = $qb->orderBy('n.news_datestamp', 'DESC')
+			->setFirstResult(0)->setMaxResults($limit)
+			->fetchAll();
 
 		$rss = array();
 		$i=0;

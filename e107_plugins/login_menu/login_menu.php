@@ -72,9 +72,11 @@ if (USER == TRUE || ADMIN == TRUE)
 	$loginClass = new login_menu_class();
 
     //login class ??? - TODO
-	if ($sql->select('online', 'online_ip', "`online_ip` = '{$ip}' AND `online_user_id` = '0' "))
+	if ($sql->createQueryBuilder()->select('online_ip')->from('online')
+		->where('online_ip', $ip)->where('online_user_id', '0')->fetchRow())
 	{	// User now logged in - delete 'guest' record (tough if several users on same IP)
-		$sql->delete('online', "`online_ip` = '{$ip}' AND `online_user_id` = '0' ");
+		$sql->createQueryBuilder()->delete('online')
+			->where('online_ip', $ip)->where('online_user_id', '0')->execute();
 	}
 
 	//get templates
@@ -107,8 +109,15 @@ if (USER == TRUE || ADMIN == TRUE)
 
 		if (vartrue($loginPrefs['new_news']))
 		{
-			$nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
-            $menu_data['new_news'] = $sql->count("news", "(*)", "WHERE `news_datestamp` > {$time} AND news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.")");
+			$nobody_regexp = "(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)";
+			$newsQb = $sql->createQueryBuilder();
+            $menu_data['new_news'] = $newsQb->from('news')
+				->where('news_datestamp', '>', $time)
+				->where($newsQb->expr()->regexp('news_class', e_CLASS_REGEXP))
+				->whereNot(function($q) use ($nobody_regexp) {
+					$q->where($q->expr()->regexp('news_class', $nobody_regexp));
+				})
+				->count();
 			$new_total += $menu_data['new_news'];
 		}
 
@@ -116,7 +125,8 @@ if (USER == TRUE || ADMIN == TRUE)
 
 		if (vartrue($loginPrefs['new_comments']))
 		{
-			$menu_data['new_comments'] = $sql->count('comments', '(*)', 'WHERE `comment_datestamp` > '.$time);
+			$menu_data['new_comments'] = $sql->createQueryBuilder()->from('comments')
+				->where('comment_datestamp', '>', $time)->count();
 			$new_total += $menu_data['new_comments'];
 		}
 
@@ -124,7 +134,8 @@ if (USER == TRUE || ADMIN == TRUE)
 
 		if (vartrue($loginPrefs['new_members']))
         {
-			$menu_data['new_users'] = $sql->count('user', '(user_join)', 'WHERE user_join > '.$time);
+			$menu_data['new_users'] = $sql->createQueryBuilder()->from('user')
+				->where('user_join', '>', $time)->count('user_join');
 			$new_total += $menu_data['new_users'];
 		}
 		

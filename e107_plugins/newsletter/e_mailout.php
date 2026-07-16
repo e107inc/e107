@@ -148,9 +148,11 @@ class newsletter_mailout
 			{
 				if ($uid = intval(trim($v)))
 				{	// Got a user ID here - look them up and add their data
-					if ($this->ourDB->select('user', 'user_name,user_email,user_lastvisit', '`user_id`='.$uid))
+					$row = $this->ourDB->createQueryBuilder()
+						->select('user_name', 'user_email', 'user_lastvisit')->from('user')
+						->where('user_id', (int) $uid)->fetchRow();
+					if ($row)
 					{
-						$row = $this->ourDB->fetch();
 						$ret = array('mail_recipient_id' => $uid,
 									 'mail_recipient_name' => $row['user_name'],		// Should this use realname?
 									 'mail_recipient_email' => $row['user_email'],
@@ -199,10 +201,13 @@ class newsletter_mailout
 				
 		$selects = array_flip(explode(',', $selectVals));
 
-		if ($sql->select('newsletter', 'newsletter_id, newsletter_title', '`newsletter_parent`=0'))
+		$rows = $sql->createQueryBuilder()->select('newsletter_id', 'newsletter_title')
+			->from('newsletter')->where('newsletter_parent', 0)->fetchAll();
+
+		if ($rows)
 		{
 			$c=0;
-			while ($row = $sql->fetch())
+			foreach ($rows as $row)
 			{
 				$checked = (isset($selects[$row['newsletter_id']])) ? " checked='checked'" : '';
 				

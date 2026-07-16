@@ -15,6 +15,8 @@
  *
 */
 
+use e107\Database\SqlFragment;
+
 if(!defined('e107_INIT'))
 {
 	exit;
@@ -1051,6 +1053,32 @@ class db_verify
 	)
 	{
 
+		// $table and $field become SQL identifiers below and cannot be bound. This
+		// public method no longer trusts its caller to have allowlisted them: reject
+		// anything outside the identifier grammar fail-closed (the same guard runFix()
+		// already applies to the POST keys it forwards here), so the method is safe by
+		// construction regardless of who calls it.
+		if(!preg_match('/^[A-Za-z0-9_]+$/D', (string) $table))
+		{
+			return "";
+		}
+
+		// $field is embedded as a bare `identifier` by the alter/insert/drop/indexdrop
+		// clauses; the index/create modes take it only as an array key.
+		$fieldIsIdentifier = in_array($mode, array('alter', 'insert', 'drop', 'indexdrop'), true);
+		if($fieldIsIdentifier && !preg_match('/^[A-Za-z0-9_]+$/D', (string) $field))
+		{
+			return "";
+		}
+
+		// SchemaBuilder owns the DDL envelope from here: it resolves and quotes the
+		// physical table name (prefix only, no language routing - db_verify handles
+		// language tables itself) and assembles the ALTER/CREATE statement. The
+		// clause/body text is developer-controlled schema text (from toMysql()/the
+		// sql file), passed as a vouched SqlFragment fragment so the emitted SQL stays
+		// byte-identical to the legacy hand-assembled string.
+		$schema = e107::getDb()->schema();
+
 		if(strpos($mode, 'index') === 0)
 		{
 			$fdata  = $this->getIndex($sqlFileData);
@@ -1087,30 +1115,43 @@ class db_verify
 		switch($mode)
 		{
 			case 'alter':
-				$query = "ALTER TABLE `" . MPREFIX . $table . "` CHANGE `$field` `$field` $newval";
+				$query = $schema->tablePhysical($table)
+					->addRaw(SqlFragment::raw("CHANGE `$field` `$field` $newval"))
+					->getSQL();
 				break;
 
 			case 'insert':
 				$after = ($aft = $this->getPrevious($fdata, $field)) ? " AFTER {$aft}" : "";
-				$query = "ALTER TABLE `" . MPREFIX . $table . "` ADD `$field` $newval{$after}";
+				$query = $schema->tablePhysical($table)
+					->addRaw(SqlFragment::raw("ADD `$field` $newval{$after}"))
+					->getSQL();
 				break;
 
 			case 'drop':
-				$query = "ALTER TABLE `" . MPREFIX . $table . "` DROP `$field`";
+				$query = $schema->tablePhysical($table)
+					->addRaw(SqlFragment::raw("DROP `$field`"))
+					->getSQL();
 				break;
 
 			case 'index':
 				$newval = str_replace("PRIMARY", "PRIMARY KEY", $newval);
-				$query = "ALTER TABLE `" . MPREFIX . $table . "` ADD " . $newval;
+				$query = $schema->tablePhysical($table)
+					->addRaw(SqlFragment::raw("ADD " . $newval))
+					->getSQL();
 				break;
 
 			case 'indexdrop':
-				$query = "ALTER TABLE `" . MPREFIX . $table . "` DROP INDEX `$field`";
+				$query = $schema->tablePhysical($table)
+					->addRaw(SqlFragment::raw("DROP INDEX `$field`"))
+					->getSQL();
 				break;
 
 			case 'create':
-				$query = "CREATE TABLE `" . MPREFIX . $table . "` (" . $sqlFileData . ")" .
-					" ENGINE=" . $engine . " DEFAULT CHARACTER SET=" . $charset . ";";
+				$query = $schema->buildCreateTablePhysicalRaw(
+					$table,
+					SqlFragment::raw($sqlFileData),
+					SqlFragment::raw(" ENGINE=" . $engine . " DEFAULT CHARACTER SET=" . $charset . ";")
+				);
 				break;
 
 			case 'convert':
@@ -1118,11 +1159,15 @@ class db_verify
 				$currentSchema = $this->getSqlFileTables($showCreateTable);
 				if($engine != $currentSchema['engine'][0])
 				{
-					$query .= "ALTER TABLE `" . MPREFIX . $table . "` ENGINE=" . $engine . ";";
+					$query .= $schema->tablePhysical($table)
+						->addRaw(SqlFragment::raw("ENGINE=" . $engine . ";"))
+						->getSQL();
 				}
 				if($charset != $currentSchema['charset'][0])
 				{
-					$query .= "ALTER TABLE `" . MPREFIX . $table . "` CONVERT TO CHARACTER SET " . $charset . ";";
+					$query .= $schema->tablePhysical($table)
+						->addRaw(SqlFragment::raw("CONVERT TO CHARACTER SET " . $charset . ";"))
+						->getSQL();
 				}
 				break;
 		}
@@ -1186,11 +1231,17 @@ class db_verify
 						);
 
 
-						// $mes->addDebug("Query: ".$query);		
-						// continue;	
+						// $mes->addDebug("Query: ".$query);
+						// continue;
 
 
-						if(e107::getDb()->gen($query) !== false)
+						// getFixQuery() now assembles this DDL through SchemaBuilder, which owns and
+						// fail-closed validates the physical table identifier; $field is allowlisted
+						// both here (/^[A-Za-z0-9_]+$/ above) and inside getFixQuery(), engine/charset
+						// come from validated maps, and the schema text is developer-controlled - no
+						// request values to bind. Execution stays on the sanctioned bound execute(),
+						// which returns true for DDL exactly like gen(), so the !== false guard holds.
+						if(e107::getDb()->execute($query) !== false)
 						{
 							$log->addDebug(defset('LAN_UPDATED', 'Updated') . '  [' . $query . ']');
 							$toFix--;
@@ -1487,7 +1538,11 @@ class db_verify
 
 
 		//	$z = mysql_query($qry);
-		$z = $sql->gen($qry);
+		// SHOW CREATE TABLE introspection has no builder equivalent; $tbl is verified by isTable()
+		// above and the table name is an identifier (not a bindable value), so run via the sanctioned
+		// bound execute(). execute() returns the same rowCount() and exposes the same result set as
+		// gen(), so both the if($z) guard and the fetch('num') below are unchanged.
+		$z = $sql->execute($qry);
 		if($z)
 		{
 			//	$row = mysql_fetch_row($z);
@@ -1635,7 +1690,7 @@ class db_verify
 	{
 
 		$db = e107::getDb();
-		$db->gen("SHOW ENGINES;");
+		$db->execute("SHOW ENGINES;");
 		$output = [];
 		while($row = $db->fetch())
 		{
@@ -1760,7 +1815,7 @@ class db_verify
 		}
 
 		$sql = e107::getDb();
-		$sql->gen('SET SQL_QUOTE_SHOW_CREATE = 1');
+		$sql->execute('SET SQL_QUOTE_SHOW_CREATE = 1');
 
 		if(!deftrue('e_DEBUG') && ($clearCache === false) && $tmp = e107::getCache()->retrieve(self::cachetag, 15, true, true))
 		{

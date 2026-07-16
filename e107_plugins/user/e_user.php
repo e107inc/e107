@@ -45,12 +45,14 @@ class user_user // plugin-folder + '_user'
 			'user_password'     => $us->HashPassword($us->generateRandomString("#??????????#"), 'Deleted-Login-'.$uid),
 			'user_ban'          => 5, // 'deleted' status'
 			// etc.
-			'WHERE'             => 'user_id = '.$uid,
+			// Structured WHERE: a column => value map the host binds. A raw SQL
+			// string is deprecated (third-party code cannot bind it safely).
+			'WHERE'             => array('user_id' => $uid),
 			'MODE'              => 'update'
 		);
 
 		$config['user_extended'] = array(
-			'WHERE'             => 'user_extended_id = '.$uid,
+			'WHERE'             => array('user_extended_id' => $uid),
 			'MODE'              => 'delete'
 		);
 

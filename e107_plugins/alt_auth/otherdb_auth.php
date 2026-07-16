@@ -132,6 +132,7 @@ class auth_login extends alt_auth_base
 		}
 
 		//Get record containing supplied login name
+		// Permanent raw-SQL boundary: kept as bound execute()/fetch() rather than the query builder - this is a foreign alt_auth DB, so the builder's from() prefix/language routing must NOT apply; the dynamic table/columns are quoteIdentifier()-validated fail-closed above, the only value (:uname) is bound, and the === false guard distinguishes a query error (AUTH_NOCONNECT) from an empty result (AUTH_NOUSER).
 		$qry = "SELECT ".implode(',', $columns)." FROM ".$table." WHERE ".$userColumn." = :uname";
 
 		if($db->execute($qry, array('uname' => $uname)) === false)

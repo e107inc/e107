@@ -41,25 +41,27 @@ class e_ranks
 		{
 			//force is true, or cache doesn't exist, or system cache disabled, let's get it from table
 			$this->ranks = array();
-			if($sql->select('generic', '*', "gen_type = 'user_rank_data' ORDER BY gen_intdata ASC"))
+			$rows = $sql->createQueryBuilder()
+				->select('*')->from('generic')
+				->where('gen_type', 'user_rank_data')
+				->orderBy('gen_intdata', 'ASC')
+				->fetchAll();
+			$i=1;
+			foreach($rows as $row)
 			{
-				$i=1;
-				while($row = $sql->fetch())
+				$tmp = array();
+				$tmp['name'] = $row['gen_ip'];
+				$tmp['thresh'] = $row['gen_intdata'];
+				$tmp['lan_pfx'] = $row['gen_user_id'];
+				$tmp['image'] = $row['gen_chardata'];
+				$tmp['id'] = $row['gen_id'];
+				if($row['gen_datestamp'])
 				{
-					$tmp = array();
-					$tmp['name'] = $row['gen_ip'];
-					$tmp['thresh'] = $row['gen_intdata'];
-					$tmp['lan_pfx'] = $row['gen_user_id'];
-					$tmp['image'] = $row['gen_chardata'];
-					$tmp['id'] = $row['gen_id'];
-					if($row['gen_datestamp'])
-					{
-						$this->ranks['special'][$row['gen_datestamp']] = $tmp;
-					}
-					else
-					{
-						$this->ranks['data'][$i++] = $tmp;
-					}
+					$this->ranks['special'][$row['gen_datestamp']] = $tmp;
+				}
+				else
+				{
+					$this->ranks['data'][$i++] = $tmp;
 				}
 			}
 			$ecache->set_sys('nomd5_user_ranks', e107::serialize($this->ranks, false));

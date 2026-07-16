@@ -26,13 +26,13 @@ class news_search extends e_search // include plugin-folder in the name.
 		
 		$catList[] = array('id' => 'all', 'title' => LAN_SEARCH_51);
 		
-		if ($sql ->select("news_category", "category_id, category_name")) 
+		$rows = $sql->createQueryBuilder()
+			->select('category_id', 'category_name')->from('news_category')
+			->fetchAll();
+		foreach($rows as $row)
 		{
-			while($row = $sql->fetch()) 
-			{
-				$catList[] = array('id' => $row['category_id'], 'title' => $row['category_name']);
-			//	$advanced_caption['title'][$row['category_id']] = 'News -> '.$row['category_name'];
-			}
+			$catList[] = array('id' => $row['category_id'], 'title' => $row['category_name']);
+		//	$advanced_caption['title'][$row['category_id']] = 'News -> '.$row['category_name'];
 		}
 		
 		

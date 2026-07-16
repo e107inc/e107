@@ -479,9 +479,12 @@ class mailoutAdminClass extends e107MailManager
 			// Look up user
 			$this->checkDB(2);
 			// Make sure DB object created
-			if ($this->db2->select('user', 'user_name, user_loginname', 'user_id=' . intval($uid)))
+			$row = $this->db2->createQueryBuilder()
+				->select('user_name', 'user_loginname')->from('user')
+				->where('user_id', (int) $uid)
+				->fetchRow();
+			if ($row)
 			{
-				$row = $this->db2->fetch();
 				$this->userCache[$uid] = $row['user_name'] . ' (' . $row['user_loginname'] . ')';
 			}
 			else
@@ -750,14 +753,17 @@ class mailoutAdminClass extends e107MailManager
 			$sel = ($k == $curSel) ? " selected='selected'" : '';
 			$ret .= "<option value='{$k}'{$sel}>{$v}</option>\n";
 		}
-		$query = "SELECT uc.*, count(u.user_id) AS members
+		$this->db2->execute("SELECT uc.*, count(u.user_id) AS members
 				FROM #userclass_classes AS uc
 				LEFT JOIN #user AS u ON u.user_class REGEXP concat('(^|,)',uc.userclass_id,'(,|$)')
-				WHERE NOT uc.userclass_id IN (" . e_UC_PUBLIC . ',' . e_UC_NOBODY . ',' . e_UC_READONLY . ',' . e_UC_BOTS . ")
+				WHERE NOT uc.userclass_id IN (:ucPublic, :ucNobody, :ucReadonly, :ucBots)
 				GROUP BY uc.userclass_id
-						";
-
-		$this->db2->gen($query);
+						", array(
+			'ucPublic'   => (int) e_UC_PUBLIC,
+			'ucNobody'   => (int) e_UC_NOBODY,
+			'ucReadonly' => (int) e_UC_READONLY,
+			'ucBots'     => (int) e_UC_BOTS
+		));
 		while ($row = $this->db2->fetch())
 		{
 			$public = ($row['userclass_editclass'] == e_UC_PUBLIC) ? "(" . LAN_MAILOUT_10 . ")" : "";
@@ -1133,8 +1139,11 @@ class mailoutAdminClass extends e107MailManager
 	 {
 	 // TODO - use download plugin API
 
-	 if($sql->select("download", "download_url,download_name", "download_id !=''
-	ORDER BY download_name"))
+	 $qb = $sql->createQueryBuilder();
+	 $downloads = $qb->select('download_url', 'download_name')->from('download')
+	 ->where($qb->expr()->neq('download_id', ''))
+	 ->orderBy('download_name', 'ASC')->fetchAll();
+	 if($downloads)
 	 {
 	 $text .= "<tr>
 	 <td>".LAN_MAILOUT_07.": </td>
@@ -1142,7 +1151,7 @@ class mailoutAdminClass extends e107MailManager
 	 $text .= "<select class='tbox' name='email_attachment' >
 	 <option value=''>&nbsp;</option>\n";
 
-	 while ($row = $sql->fetch())
+	 foreach ($downloads as $row)
 	 {
 	 $selected = ($mailSource['mail_attach'] == $row['download_url']) ?
 	"selected='selected'" : '';
@@ -1924,7 +1933,8 @@ class mailoutAdminClass extends e107MailManager
 		// Make sure DB object created
 
 		// First thing, delete temporary records from both tables
-		if (($res = $this->db2->db_Delete('mail_content', '`mail_content_status` = ' . MAIL_STATUS_TEMP)) === false)
+		if (($res = $this->db2->createQueryBuilder()->delete('mail_content')
+			->where('mail_content_status', MAIL_STATUS_TEMP)->execute()) === false)
 		{
 			$results[] = 'Error ' . $this->db2->getLastErrorNumber() . ':' . $this->db2->getLastErrorText() . ' deleting temporary records from mail_content';
 			$noError = false;
@@ -1942,7 +1952,8 @@ class mailoutAdminClass extends e107MailManager
 				), LAN_MAILOUT_227);
 			}
 		}
-		if (($res = $this->db2->delete('mail_recipients', '`mail_status` = ' . MAIL_STATUS_TEMP)) === false)
+		if (($res = $this->db2->createQueryBuilder()->delete('mail_recipients')
+			->where('mail_status', MAIL_STATUS_TEMP)->execute()) === false)
 		{
 			$results[] = 'Error ' . $this->db2->getLastErrorNumber() . ':' . $this->db2->getLastErrorText() . ' deleting temporary records from mail_recipients';
 			$noError = false;
@@ -1962,7 +1973,7 @@ class mailoutAdminClass extends e107MailManager
 		}
 
 		// Now look for 'orphaned' recipient records
-		if (($res = $this->db2->gen("DELETE `#mail_recipients` FROM `#mail_recipients` 
+		if (($res = $this->db2->execute("DELETE `#mail_recipients` FROM `#mail_recipients`
 					LEFT JOIN `#mail_content` ON `#mail_recipients`.`mail_detail_id` = `#mail_content`.`mail_source_id`
 					WHERE `#mail_content`.`mail_source_id` IS NULL")) === false)
 		{
@@ -1978,9 +1989,14 @@ class mailoutAdminClass extends e107MailManager
 		}
 
 		// Scan content table for anomalies, out of time records
-		if (($res = $this->db2->gen("SELECT * FROM `#mail_content` 
-					WHERE (`mail_content_status` >" . MAIL_STATUS_FAILED . ") AND (`mail_content_status` <=" . MAIL_STATUS_MAX_ACTIVE . ")
-					AND ((`mail_togo_count`=0) OR ( (`mail_last_date` != 0) AND (`mail_last_date` < " . time() . ")))")) === false)
+		if (($res = $this->db2->execute("SELECT * FROM `#mail_content`
+					WHERE (`mail_content_status` > :statusFailed) AND (`mail_content_status` <= :statusMaxActive)
+					AND ((`mail_togo_count`=0) OR ( (`mail_last_date` != 0) AND (`mail_last_date` < :now)))",
+			array(
+				'statusFailed'    => (int) MAIL_STATUS_FAILED,
+				'statusMaxActive' => (int) MAIL_STATUS_MAX_ACTIVE,
+				'now'             => time()
+			))) === false)
 		{
 			$results[] = 'Error ' . $this->db2->getLastErrorNumber() . ':' . $this->db2->getLastErrorText() . ' checking bad status in mail_content';
 			$noError = false;
@@ -2018,12 +2034,12 @@ class mailoutAdminClass extends e107MailManager
 
 		//Finally - check for inconsistent recipient and content status records -
 		// basically verify counts
-		if (($res = $this->db2->gen("SELECT COUNT(mr.`mail_status`) AS mr_count, mr.`mail_status`,
+		if (($res = $this->db2->execute("SELECT COUNT(mr.`mail_status`) AS mr_count, mr.`mail_status`,
 					mc.`mail_source_id`, mc.`mail_togo_count`, mc.`mail_sent_count`, mc.`mail_fail_count`, mc.`mail_bounce_count`, mc.`mail_source_id` FROM `#mail_recipients` AS mr
-					LEFT JOIN `#mail_content` AS mc ON mr.`mail_detail_id` = mc.`mail_source_id` 
-					WHERE mc.`mail_content_status` <= " . MAIL_STATUS_MAX_ACTIVE . "
+					LEFT JOIN `#mail_content` AS mc ON mr.`mail_detail_id` = mc.`mail_source_id`
+					WHERE mc.`mail_content_status` <= :statusMaxActive
 					GROUP BY mr.`mail_status`, mc.`mail_source_id` ORDER BY mc.`mail_source_id`
-					")) === false)
+					", array('statusMaxActive' => (int) MAIL_STATUS_MAX_ACTIVE))) === false)
 		{
 			$results[] = 'Error ' . $this->db2->getLastErrorNumber() . ':' . $this->db2->getLastErrorText() . ' assembling email counts';
 			$noError = false;
@@ -2057,11 +2073,20 @@ class mailoutAdminClass extends e107MailManager
 						{
 							// *************** Update mail record here *********************
 							$this->checkDB(1);
-							$this->db->update('mail_content', array(
-								'data'    => $changes,
-								'WHERE'   => '`mail_source_id` = ' . $lastMail,
-								'_FIELDS' => $this->dbTypes['mail_content']
-							));
+							// Field-typed array update -> per-column setTyped() so the
+							// _FIELD_TYPES storage transforms stay byte-identical to the
+							// legacy array CRUD. The legacy path ignored the (mis-keyed)
+							// '_FIELDS' element and auto-merged getFieldDefs(), so the
+							// field-type source here is getFieldDefs()['_FIELD_TYPES'].
+							$mailDefs = $this->db->getFieldDefs('mail_content');
+							$mailTypes = isset($mailDefs['_FIELD_TYPES']) ? $mailDefs['_FIELD_TYPES'] : array();
+							$qb = $this->db->createQueryBuilder()->update('mail_content');
+							foreach ($changes as $changeCol => $changeVal)
+							{
+								$changeType = isset($mailTypes[$changeCol]) ? $mailTypes[$changeCol] : (isset($mailTypes['_DEFAULT']) ? $mailTypes['_DEFAULT'] : 'string');
+								$qb->setTyped($changeCol, $changeVal, $changeType);
+							}
+							$qb->where('mail_source_id', (int) $lastMail)->execute();
 							$line = "Count update for {$saveRow['mail_source_id']} - {$saveRow['mail_togo_count']}, {$saveRow['mail_sent_count']}, {$saveRow['mail_fail_count']}, {$saveRow['mail_bounce_count']} => ";
 							$line .= implode(', ', $counters);
 							$results[] = $line;

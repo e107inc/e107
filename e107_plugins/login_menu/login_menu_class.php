@@ -185,19 +185,16 @@ class login_menu_class
         $lbox_stats[0]['stat_nonew']   = LAN_LOGINMENU_26.' '.LAN_LOGINMENU_21;
         if($get_stats) {
 
-            $nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
-        	$qry = "
-        	SELECT  count(*) as count FROM #forum_thread  as t
-        	LEFT JOIN #forum as f
-        	ON t.thread_forum_id = f.forum_id
-        	WHERE t.thread_datestamp > ".USERLV." and f.forum_class IN (".USERCLASS_LIST.") AND NOT (f.forum_class REGEXP ".$nobody_regexp.")
-        	";
-        	
-        	if($sql->gen($qry))
-			{
-        		$row = $sql->fetch();
-        		$lbox_stats['forum'][0]['stat_new'] = $row['count'];
-        	}
+            $nobody_regexp = "(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)";
+
+            $qb = $sql->createQueryBuilder();
+            $lbox_stats['forum'][0]['stat_new'] = $qb
+                ->from('forum_thread', 't')
+                ->leftJoin('forum', 'f', $qb->expr()->compareColumns('t.thread_forum_id', 'f.forum_id'))
+                ->where('t.thread_datestamp', '>', (int) USERLV)
+                ->whereIn('f.forum_class', explode(',', USERCLASS_LIST))
+                ->where($qb->expr()->not($qb->expr()->regexp('f.forum_class', $nobody_regexp)))
+                ->count();
         }
     	
     	return $lbox_stats;
@@ -218,7 +215,8 @@ class login_menu_class
 
         if(!empty($get_stats))
         {
-            $lbox_stats['chatbox_menu'][0]['stat_new']  = $sql->count('chatbox', '(*)', 'WHERE `cb_datestamp` > '.USERLV);
+            $lbox_stats['chatbox_menu'][0]['stat_new']  = $sql->createQueryBuilder()
+                ->from('chatbox')->where('cb_datestamp', '>', (int) USERLV)->count();
         }
         
         return $lbox_stats;

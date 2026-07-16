@@ -55,12 +55,15 @@ class _blank_user // plugin-folder + '_user'
 			'user_email'        => '[unique]',
 			'user_ip'           => '',
 			// etc.
-			'WHERE'             => 'user_id = '.USERID,
+			// Structured WHERE: a column => value map the host binds for you. Prefer
+			// this over a raw SQL string, which is deprecated and cannot be bound
+			// safely from third-party provider code.
+			'WHERE'             => array('user_id' => USERID),
 			'MODE'              => 'update'
 		);
 
 		$config['user_extended'] = array(
-			'WHERE'             => 'user_extended_id = '.USERID,
+			'WHERE'             => array('user_extended_id' => USERID),
 			'MODE'              => 'delete'
 		);
 

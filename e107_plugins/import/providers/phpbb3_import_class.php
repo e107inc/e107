@@ -39,7 +39,10 @@ class phpbb3_import extends base_import_class
 		$formattach = trim($_POST['forum_attachment_path'],"/" );
 		$this->forum_attachment_path	= vartrue($formattach, false);
 		
-		if($data = e107::getDb('phpbb')->retrieve('userclass_classes','userclass_id',"userclass_name='FORUM_MODERATOR' "))
+		if($data = e107::getDb('phpbb')->createQueryBuilder()
+			->select('userclass_id')->from('userclass_classes')
+			->where('userclass_name', 'FORUM_MODERATOR')
+			->fetchOne())
 		{
 			$this->forum_moderator_class = $data;
 		}

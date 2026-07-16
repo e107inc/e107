@@ -29,27 +29,31 @@ function usersearch_shortcode($parm)
 	}
 	
 	// search by email - based on site settings
-	$emailSrch = '';
+	$emailSrch = false;
 	if(e107::getPref('predefinedLoginName'))
 	{
-		if($search_field != 'user_email') 
+		if($search_field != 'user_email')
 		{
-			$emailSrch = " OR user_email LIKE '".$tp->toDb($posted)."%'";
+			$emailSrch = true;
 		}
 	}
 	$ret = "<ul>";
-	$qry = "
-		SELECT u.user_id, u.user_name, u.user_loginname, u.user_customtitle, u.user_email FROM #user AS u
-		WHERE {$search_field} LIKE '".$tp->toDb($posted)."%'{$emailSrch}
-	";
-	
-	if($sql->gen($qry))
+	$needle = $tp->toDb($posted);
+
+	$qb = $sql->createQueryBuilder();
+	$qb->select('u.user_id', 'u.user_name', 'u.user_loginname', 'u.user_customtitle', 'u.user_email')
+		->from('user', 'u')
+		->where($qb->expr()->startsWith($search_field, $needle));
+	if($emailSrch)
 	{
-		if($emailSrch) $info_field = 'user_email';
-		while($row = $sql->fetch())
-		{
-			$ret .= "<li id='{$row['user_id']}'>{$row[$search_field]}<span class='informal'> [{$row['user_id']}] ".$row[$info_field].$email." </span></li>";
-		}
+		$qb->orWhere($qb->expr()->startsWith('user_email', $needle));
+	}
+	$rows = $qb->fetchEach();
+
+	if($emailSrch) $info_field = 'user_email';
+	foreach($rows as $row)
+	{
+		$ret .= "<li id='{$row['user_id']}'>{$row[$search_field]}<span class='informal'> [{$row['user_id']}] ".$row[$info_field].$email." </span></li>";
 	}
 	$ret .= "</ul>";
 	return $ret;

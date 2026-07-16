@@ -17,9 +17,20 @@
 if (!defined('e107_INIT')) { exit; }
 
 $query = $tp -> toDB($query);
-$results = $sql->select("event", "*", "event_stake REGEXP('".$query."') OR event_ward REGEXP('".$query."') OR event_organisation REGEXP('".$query."') OR event_title REGEXP('".$query."')
-	OR event_location REGEXP('".$query."') OR event_details REGEXP('".$query."') OR event_thread REGEXP('".$query."') ");
-while (list($event_id, $event_stake, $event_ward, $event_organisation, $event_start, $event_end, $event_allday, , , $event_title, $event_location, $event_details, $event_author, $event_contact, $event_category, $event_url ) = $sql->fetch()) {
+$eventQb = $sql->createQueryBuilder();
+$eventRows = $eventQb->select('*')->from('event')
+	->where($eventQb->expr()->anyOf(
+		$eventQb->expr()->regexp('event_stake', $query),
+		$eventQb->expr()->regexp('event_ward', $query),
+		$eventQb->expr()->regexp('event_organisation', $query),
+		$eventQb->expr()->regexp('event_title', $query),
+		$eventQb->expr()->regexp('event_location', $query),
+		$eventQb->expr()->regexp('event_details', $query),
+		$eventQb->expr()->regexp('event_thread', $query)
+	))
+	->fetchAll();
+foreach($eventRows as $eventRow) {
+	list($event_id, $event_stake, $event_ward, $event_organisation, $event_start, $event_end, $event_allday, , , $event_title, $event_location, $event_details, $event_author, $event_contact, $event_category, $event_url ) = array_values($eventRow);
 	 
 	$sql2->createQueryBuilder()->select('event_cat_name', 'event_cat_icon')->from('event_cat')->where('event_cat_id', (int) $event_category)->execute();
 	list($event_cat_name, $event_cat_icon ) = $sql2->fetch();

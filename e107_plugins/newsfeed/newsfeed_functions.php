@@ -84,16 +84,19 @@ class newsfeedClass
 			}
 		}
 
-		$fieldList = '*';
-		
+		$fieldList = array('*');
+
 		if ($this->useCache)
 		{	// Get all fields except the actual news
-			$fieldList = 'newsfeed_id, newsfeed_name, newsfeed_url, newsfeed_timestamp, newsfeed_description, newsfeed_image, newsfeed_active, newsfeed_updateint';
+			$fieldList = array('newsfeed_id', 'newsfeed_name', 'newsfeed_url', 'newsfeed_timestamp', 'newsfeed_description', 'newsfeed_image', 'newsfeed_active', 'newsfeed_updateint');
 		}
-		
-		if ($sql->select("newsfeed", $fieldList, '`newsfeed_active` > 0'))		// Read in all the newsfeed info on the first go
+
+		$rows = $sql->createQueryBuilder()->select($fieldList)->from('newsfeed')
+			->where('newsfeed_active', '>', 0)->fetchAll();		// Read in all the newsfeed info on the first go
+
+		if ($rows)
 		{
-			while ($row = $sql->fetch())
+			foreach ($rows as $row)
 			{
 				$nfID = $row['newsfeed_id'];
 				
@@ -240,12 +243,14 @@ class newsfeedClass
 					
 					if (count($dbData)) // Only write the feed data to DB if not using cache. Write description if changed
 					{
+						$qb = $sql->createQueryBuilder()->update('newsfeed');
 
-						$dbData['WHERE'] = "newsfeed_id=".$feedID;
+						foreach($dbData as $col => $val)
+						{
+							$qb->set($col, $val);
+						}
 
-
-
-						if(false === $sql->update('newsfeed', $dbData))
+						if(false === $qb->where('newsfeed_id', (int) $feedID)->execute())
 						{
 							// e107::getDebug()->log("NewsFeed DB Update Failed");
 							if (NEWSFEED_DEBUG) echo NFLAN_48."<br /><br />".var_dump($dbData);

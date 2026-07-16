@@ -8,7 +8,7 @@
  *
  */
 
-if (!defined('e107_INIT')) { exit; }
+namespace e107\Database;
 
 /**
  * Database-free guard for SQL identifiers and ORDER BY fragments.
@@ -18,7 +18,7 @@ if (!defined('e107_INIT')) { exit; }
  * Intended for legacy code paths that interpolate column names or ORDER BY
  * clauses into SQL strings.
  */
-class e_db_filter
+class IdentifierFilter
 {
 	/**
 	 * Validate and backtick-quote a `column` or `table.column` identifier.

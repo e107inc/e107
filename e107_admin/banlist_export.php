@@ -80,10 +80,17 @@ function do_export($filename, $type_list='',$format_array=array(), $sep = ',', $
 	$sql = e107::getDb();
 	$tp = e107::getParser();
 	$export_text = '';
-	$qry = "SELECT * FROM `#banlist` ";
-	if ($type_list != '') $qry .= " WHERE`banlist_bantype` IN ({$type_list})";
-	if (!$sql->gen($qry)) return 'No data: '.$qry;
-	while ($row = $sql->fetch())
+
+	$qb = $sql->createQueryBuilder()->select('*')->from('banlist');
+	if ($type_list != '')
+	{
+		$qb->whereIn('banlist_bantype', array_map('intval', explode(',', $type_list)));
+	}
+
+	$qry = $qb->getSQL();
+	$rows = $qb->fetchAll();
+	if (empty($rows)) return 'No data: '.$qry;
+	foreach ($rows as $row)
 	{
 		$line = '';
 		$spacer = '';

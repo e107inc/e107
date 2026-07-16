@@ -3162,7 +3162,7 @@ class themeHandler
 
 		if($contentCheck === true)
 		{
-			$sql->delete("menus", "menu_layout !='' ");
+			$sql->createQueryBuilder()->delete('menus')->where('menu_layout', '!=', '')->execute();
 			$this->installContentCheck($name);
 		}
 

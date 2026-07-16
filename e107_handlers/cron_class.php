@@ -1281,12 +1281,9 @@ class cronScheduler
 			$this->sendMail($mail);
 		}
 
-		$update = [
-			'cron_lastrun'  => time(),
-			'WHERE'         => 'cron_id = '.$job['id']
-		];
-
-		e107::getDb()->update('cron',$update);
+		e107::getDb()->createQueryBuilder()->update('cron')
+			->set('cron_lastrun', time())
+			->where('cron_id', (int) $job['id'])->execute();
 
 		return $status;
 	}
@@ -1374,31 +1371,27 @@ class cronScheduler
 	{
 		$list = array();
 
-		$sql = e107::getDb();
-
-		$where = '1';
+		$qb = e107::getDb()->createQueryBuilder();
+		$qb->select('cron_id', 'cron_function', 'cron_tab', 'cron_active')->from('cron');
 
 		if($only_active === true)
 		{
-			$where = 'cron_active = 1';
+			$qb->where('cron_active', 1);
 		}
 
-		if($sql->select("cron", 'cron_id,cron_function,cron_tab,cron_active', $where))
+		foreach($qb->fetchAll() as $row)
 		{
-			while($row = $sql->fetch())
-			{
-				list($class, $function) = explode("::", $row['cron_function'], 2);
-				$key = $class . "__" . $function;
+			list($class, $function) = explode("::", $row['cron_function'], 2);
+			$key = $class . "__" . $function;
 
-				$list[$key] = array(
-					'path'     => $class,
-					'active'   => $row['cron_active'],
-					'tab'      => $row['cron_tab'],
-					'function' => $function,
-					'class'    => $class,
-					'id'       => (int) $row['cron_id']
-				);
-			}
+			$list[$key] = array(
+				'path'     => $class,
+				'active'   => $row['cron_active'],
+				'tab'      => $row['cron_tab'],
+				'function' => $function,
+				'class'    => $class,
+				'id'       => (int) $row['cron_id']
+			);
 		}
 
 		return $list;

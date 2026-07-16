@@ -8,6 +8,9 @@
  *
  */
 
+use e107\Database\QueryBuilder;
+use e107\Database\SqlFragment;
+
 require_once(__DIR__.'/../class2.php');
 if (!getperms("B")) 
 {
@@ -142,8 +145,19 @@ class comments_admin_ui extends e_admin_ui
 		{
 			if(($new_data['comment_type'] == 0 || $new_data['comment_type'] == 'news' ))
 			{
-				$total = e107::getDb()->select('comments', 'comment_id', "(comment_type = 0 OR comment_type = 'news') AND comment_item_id = ".$new_data['comment_item_id']." AND comment_blocked = 0");
-				e107::getDb()->update("news", "news_comment_total= ".intval($total)." WHERE news_id=".intval($new_data['comment_item_id']));
+				$total = e107::getDb()->createQueryBuilder()
+					->from('comments')
+					->where(function(QueryBuilder $q)
+					{
+						$q->where('comment_type', 0)->orWhere('comment_type', 'news');
+					})
+					->where('comment_item_id', (int) $new_data['comment_item_id'])
+					->where('comment_blocked', 0)
+					->count('comment_id');
+				e107::getDb()->createQueryBuilder()->update('news')
+					->set('news_comment_total', (int) $total)
+					->where('news_id', (int) $new_data['comment_item_id'])
+					->execute();
 				// e107::getMessage()->addInfo("Total Comments for this item: ".$total);
 			}
 		}
@@ -174,10 +188,13 @@ class comments_admin_ui extends e_admin_ui
 		{
 			$sql = e107::getDb();
 			
-			// Update 'user_comments' column in #user table 
+			// Update 'user_comments' column in #user table
 			if($deleted_data['comment_author_id'] != '0')
 			{
-				if(!$sql->update('user', 'user_comments = user_comments - 1 WHERE user_id='.$deleted_data['comment_author_id']))
+				if(!$sql->createQueryBuilder()->update('user')
+					->decrement('user_comments')
+					->where('user_id', (int) $deleted_data['comment_author_id'])
+					->execute())
 				{
 					$commentcount_update_error = $sql->getLastErrorText();
 					
@@ -190,7 +207,10 @@ class comments_admin_ui extends e_admin_ui
 			{
 				case '0' :
 				case 'news' :		// Need to update count in news record as well
-					$sql->update('news', 'news_comment_total = CAST(GREATEST(CAST(news_comment_total AS SIGNED) - 1, 0) AS UNSIGNED) WHERE news_id='.$deleted_data['comment_item_id']);
+					$sql->createQueryBuilder()->update('news')
+						->setExpression('news_comment_total', SqlFragment::raw('CAST(GREATEST(CAST(news_comment_total AS SIGNED) - 1, 0) AS UNSIGNED)'))
+						->where('news_id', (int) $deleted_data['comment_item_id'])
+						->execute();
 				break;
 			}
 
@@ -223,19 +243,21 @@ class comments_admin_ui extends e_admin_ui
 				// Recalculate the comment count
 				//
 
-				$qry = 'SELECT u.user_id, u.user_comments, COUNT(c.comment_id) as new_comments
-				FROM e107_user u 
-				LEFT JOIN e107_comments AS c ON (u.user_id = c.comment_author_id)
-				GROUP BY u.user_id';
-
-				if ($sql->gen($qry))
+				$qb = $sql->createQueryBuilder();
+				$rows = $qb->select('u.user_id', 'u.user_comments')
+					->selectCount('c.comment_id', 'new_comments')
+					->from('user', 'u')
+					->leftJoin('comments', 'c', $qb->expr()->compareColumns('u.user_id', 'c.comment_author_id'))
+					->groupBy('u.user_id')
+					->fetchEach();
+				foreach($rows as $row)
 				{
-					while($row = $sql->fetch())
+					if (intval($row['user_id'])>0 && intval($row['user_comments']) != intval($row['new_comments']))
 					{
-						if (intval($row['user_id'])>0 && intval($row['user_comments']) != intval($row['new_comments']))
-						{
-							$sql2->update('user', array('data' => array('user_comments' => $row['new_comments']), 'WHERE' => 'user_id = "'.$row['user_id'].'"'));
-						}
+						$sql2->createQueryBuilder()->update('user')
+							->set('user_comments', $row['new_comments'])
+							->where('user_id', (int) $row['user_id'])
+							->execute();
 					}
 				}
 				$mes->addSuccess(LAN_SUCC_RECALCULATE_COMMENT_COUNT);
@@ -258,9 +280,11 @@ class comments_admin_form_ui extends e_admin_form_ui
 		
 		if($mode == 'filter') // Custom Filter List for release_type
 		{
-			$sql = e107::getDb();
-			$sql->gen('SELECT * FROM #comments GROUP BY comment_type');
-			while($row = $sql->fetch())
+			$rows = e107::getDb()->createQueryBuilder()
+				->select('*')->from('comments')
+				->groupBy('comment_type')
+				->fetchAll();
+			foreach($rows as $row)
 			{
 				$id = $row['comment_type'];
 				$list[$id] = e107::getComment()->getTable($id);

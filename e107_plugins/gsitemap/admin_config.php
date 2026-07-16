@@ -198,19 +198,18 @@ class gsitemap_ui extends e_admin_ui
 			$frm 	= e107::getForm();
 			$mes 	= e107::getMessage();
 
-			$existing = array();
-			$sql->select("gsitemap");
-			while($row = $sql->fetch())
-			{
-				$existing[] = $row['gsitemap_name'];
-			}
+			$existing = $sql->createQueryBuilder()
+				->select('gsitemap_name')->from('gsitemap')
+				->fetchColumn('gsitemap_name');
 
 
 			$importArray = array();
 
 			/* sitelinks ... */
-			$sql->select("links", "*", "ORDER BY link_order ASC", "no-where");
-			$nfArray = $sql->db_getList();
+			$nfArray = $sql->createQueryBuilder()
+				->select('*')->from('links')
+				->orderBy('link_order', 'ASC')
+				->fetchAll();
 			foreach($nfArray as $row)
 			{
 				if(!in_array($row['link_name'], $existing))
@@ -226,12 +225,15 @@ class gsitemap_ui extends e_admin_ui
 			}
 
 			/* custom pages ... */
-			$query = "SELECT p.page_id, p.page_title, p.page_sef, p.page_class, p.page_chapter, ch.chapter_sef as chapter_sef, b.chapter_sef as book_sef FROM #page as p
-					LEFT JOIN #page_chapters as ch ON p.page_chapter = ch.chapter_id
-					LEFT JOIN #page_chapters as b ON ch.chapter_parent = b.chapter_id
-					WHERE page_title !='' ORDER BY page_datestamp ASC";
-
-			$data = $sql->retrieve($query,true);
+			$qb = $sql->createQueryBuilder();
+			$data = $qb
+				->select('p.page_id', 'p.page_title', 'p.page_sef', 'p.page_class', 'p.page_chapter')->selectAs('ch.chapter_sef', 'chapter_sef')->selectAs('b.chapter_sef', 'book_sef')
+				->from('page', 'p')
+				->leftJoin('page_chapters', 'ch', $qb->expr()->compareColumns('p.page_chapter', 'ch.chapter_id'))
+				->leftJoin('page_chapters', 'b', $qb->expr()->compareColumns('ch.chapter_parent', 'b.chapter_id'))
+				->where('page_title', '!=', '')
+				->orderBy('page_datestamp', 'ASC')
+				->fetchAll();
 
 			foreach($data as $row)
 			{
@@ -573,7 +575,7 @@ $text = "
 				'gsitemap_active'   => '0',
 			);
 
-			if ($sql->insert("gsitemap", $insert))
+			if ($sql->createQueryBuilder()->insert('gsitemap')->valuesTyped($insert, $sql->getFieldDefs('gsitemap')['_FIELD_TYPES'])->execute())
 			{
 				e107::getMessage()->addSuccess(LAN_CREATED);
 				$log->add('GSMAP_01', LAN_CREATED);
@@ -765,9 +767,13 @@ class gsitemap
 		
 		$gen = new convert;
 		
-		$count = $sql->select("gsitemap", "*", "gsitemap_id !=0 ORDER BY gsitemap_order ASC");
+		$glArray = $sql->createQueryBuilder()
+			->select('*')->from('gsitemap')
+			->where('gsitemap_id', '!=', 0)
+			->orderBy('gsitemap_order', 'ASC')
+			->fetchAll();
 
-		if (!$count)
+		if (!$glArray)
 		{
 			$text = "
 			<form action='".e_SELF."?import' id='import' method='post'>
@@ -808,7 +814,6 @@ class gsitemap
 				<tbody>
 			";
 
-			$glArray = $sql->db_getList();
 			foreach($glArray as $row2)
 			{
 				$datestamp = $gen->convert_date($row2['gsitemap_lastmod'], "short");
@@ -846,9 +851,13 @@ class gsitemap
 		
 		$e_idt = array_keys($_POST['edit']);
 
-		if($sql->select("gsitemap", "*", "gsitemap_id='".$e_idt[0]."' "))
+		$foo = $sql->createQueryBuilder()
+			->select('*')->from('gsitemap')
+			->where('gsitemap_id', $e_idt[0])
+			->fetchRow();
+
+		if($foo)
 		{
-			$foo = $sql->fetch();
 			$foo['gsitemap_name'] = $tp->toForm($foo['gsitemap_name']);
 			$foo['gsitemap_url'] = $tp->toForm($foo['gsitemap_url']);
 
@@ -866,8 +875,11 @@ class gsitemap
 		$mes 	= e107::getMessage();
 		
 		
-		$count = $sql->select("gsitemap", "*", "gsitemap_id !=0 ORDER BY gsitemap_id ASC");
-		
+		$count = $sql->createQueryBuilder()
+			->from('gsitemap')
+			->where('gsitemap_id', '!=', 0)
+			->count();
+
 		$text = "
 		<form action='".e_SELF."' id='form' method='post'>
 		<table class='table adminform'>
@@ -965,19 +977,28 @@ class gsitemap
 		// Check if we are updating an existing record
 		if(!empty($_POST['gsitemap_id']))
 		{
-			// Add where statement to update query 
-			$gmap['WHERE'] = "gsitemap_id= ".intval($_POST['gsitemap_id']); 
-			
-			if($sql->update("gsitemap", $gmap))
+			$defs = $sql->getFieldDefs('gsitemap')['_FIELD_TYPES'];
+			$qb = $sql->createQueryBuilder()->update('gsitemap');
+			foreach($gmap as $col => $val)
 			{
-				$this->message = LAN_UPDATED; 	
-				
+				$type = isset($defs[$col]) ? $defs[$col] : (isset($defs['_DEFAULT']) ? $defs['_DEFAULT'] : 'string');
+				$qb->setTyped($col, $val, $type);
+			}
+			$qb->where('gsitemap_id', (int) $_POST['gsitemap_id']);
+
+			// Add where statement to update query (logged below)
+			$gmap['WHERE'] = "gsitemap_id= ".intval($_POST['gsitemap_id']);
+
+			if($qb->execute())
+			{
+				$this->message = LAN_UPDATED;
+
 				// Log update
 				$log->addArray($gmap)->save('GSMAP_04');
 			}
 			else
 			{
-				$this->errortext = $sql->getLastErrorText(); 
+				$this->errortext = $sql->getLastErrorText();
 				$this->error = LAN_UPDATED_FAILED;
 			}
 		}
@@ -986,8 +1007,8 @@ class gsitemap
 		{
 			$gmap['gsitemap_img'] = vartrue($_POST['gsitemap_img']);
 			$gmap['gsitemap_cat'] = vartrue($_POST['gsitemap_cat']);
-			
-			if($sql->insert('gsitemap', $gmap))
+
+			if($sql->createQueryBuilder()->insert('gsitemap')->valuesTyped($gmap, $sql->getFieldDefs('gsitemap')['_FIELD_TYPES'])->execute())
 			{
 				$this->message = LAN_CREATED;
 
@@ -996,7 +1017,7 @@ class gsitemap
 			}
 			else
 			{
-				$this->errortext = $sql->getLastErrorText(); 
+				$this->errortext = $sql->getLastErrorText();
 				$this->error = LAN_CREATED_FAILED;
 			}
 		}
@@ -1009,7 +1030,7 @@ class gsitemap
 		
 		$d_idt = array_keys($_POST['delete']);
 
-		if($sql->delete("gsitemap", "gsitemap_id='".$d_idt[0]."'"))
+		if($sql->createQueryBuilder()->delete('gsitemap')->where('gsitemap_id', $d_idt[0])->execute())
 		{
 			$this->message = LAN_DELETED;
 			$log->add('GSMAP_02', $this->message.': '.$d_idt[0]);

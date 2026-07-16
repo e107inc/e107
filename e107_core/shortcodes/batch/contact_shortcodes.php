@@ -38,36 +38,47 @@ class contact_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 		$sql = e107::getDb();
 		$pref = e107::getPref();
-		
+
+		$qb = $sql->createQueryBuilder();
+		$qb->select('user_id', 'user_name')->from('user')->orderBy('user_name');
+
 		if(varset($pref['sitecontacts']) == e_UC_ADMIN)
 		{
-			$query = "user_admin =1 AND user_ban = 0";
+			$qb->where('user_admin', 1)->where('user_ban', 0);
 		}
 		elseif(varset($pref['sitecontacts']) == e_UC_MAINADMIN)
 		{
-		    $query = "user_admin = 1 AND (user_perms = '0' OR user_perms = '0.') ";
+		    $qb->where('user_admin', 1)
+		       ->where($qb->expr()->anyOf(
+		           $qb->expr()->eq('user_perms', '0'),
+		           $qb->expr()->eq('user_perms', '0.')
+		       ));
 		}
 		else
 		{
-			$query = "FIND_IN_SET(".intval($pref['sitecontacts']).",user_class) AND user_ban = 0 ";
+			$qb->where($qb->expr()->findInSet('user_class', (int) $pref['sitecontacts']))
+			   ->where('user_ban', 0);
 		}
 
 		$text = "<select name='contact_person' class='tbox contact_person form-control'>\n";
 
-		$count = $sql->execute("SELECT user_id,user_name FROM `#user` WHERE ".$query." ORDER BY user_name");
-		
-		if($count > 1)
+		$optionRows = "";
+		$rowCount = 0;
+		foreach($qb->fetchEach() as $row)
 		{
-		    while($row = $sql->fetch())
-			{
-		    	$text .= "<option value='".$row['user_id']."'>".$row['user_name']."</option>\n";
-		    }
+			$rowCount++;
+			$optionRows .= "<option value='".$row['user_id']."'>".$row['user_name']."</option>\n";
+		}
+
+		if($rowCount > 1)
+		{
+			$text .= $optionRows;
 		}
 		else
 		{
 			return '';
 		}
-		
+
 		$text .= "</select>";
 		return $text;
 	}

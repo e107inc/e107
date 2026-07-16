@@ -23,14 +23,21 @@ class _blank_related // include plugin-folder in the name.
 	{
 		$sql = e107::getDb();
 		$items = array();
-			
-		$tag_regexp = "'(^|,)(".str_replace(",", "|", $tags).")(,|$)'";
-		
-		$query = "SELECT * FROM `#_blank` WHERE _blank_id != ".$parm['current']." AND _blank_keywords REGEXP ".$tag_regexp."  ORDER BY _blank_datestamp DESC LIMIT ".$parm['limit'];
-			
-		if($sql->gen($query))
-		{		
-			while($row = $sql->fetch())
+
+		$tag_regexp = "(^|,)(".str_replace(",", "|", $tags).")(,|$)";
+
+		$qb = $sql->createQueryBuilder();
+		$rows = $qb
+			->select('*')->from('_blank')
+			->where('_blank_id', '!=', (int) $parm['current'])
+			->andWhere($qb->expr()->regexp('_blank_keywords', $tag_regexp))
+			->orderBy('_blank_datestamp', 'DESC')
+			->setMaxResults((int) $parm['limit'])
+			->fetchAll();
+
+		if($rows)
+		{
+			foreach($rows as $row)
 			{
 
 				$items[] = array(

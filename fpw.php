@@ -112,19 +112,27 @@ if(e_QUERY)
 	}
 
 	// Verify the password reset code
-	if ($sql->select('tmp', '*', "`tmp_ip`='pwreset' AND `tmp_info` LIKE '%".FPW_SEPARATOR.$tmpinfo."' "))
+	$qb = $sql->createQueryBuilder();
+	$row = $qb->select('*')->from('tmp')
+		->where('tmp_ip', 'pwreset')
+		->where($qb->expr()->like('tmp_info', '%'.FPW_SEPARATOR.$tmpinfo))
+		->fetchRow();
+	if ($row)
 	{
-		$row = $sql->fetch();
-
 		// Delete the record
 
 		if(time() > (int) $row['tmp_time'])
 		{
-			$sql->delete('tmp', "`tmp_time` = ".$row['tmp_time']." AND `tmp_info` = '".$row['tmp_info']."' ");
+			$sql->createQueryBuilder()->delete('tmp')
+				->where('tmp_time', (int) $row['tmp_time'])
+				->where('tmp_info', $row['tmp_info'])
+				->execute();
 			e107::getMessage()->addDebug("Tmp Password Reset Entry Deleted");
 		}
 
-		$sql->delete('tmp', "tmp_time < ".time()); // cleanup table.
+		$sql->createQueryBuilder()->delete('tmp')
+			->where('tmp_time', '<', time())
+			->execute(); // cleanup table.
 
 		list($uid, $loginName, $md5) = explode(FPW_SEPARATOR, $row['tmp_info']);
 		$loginName = $tp->toDB($loginName, true);
@@ -161,8 +169,9 @@ if(e_QUERY)
 		if((int) e107::getPref('allowEmailLogin') > 0)
 		{
 			// always show email when possible
-			$sql->select('user', 'user_email', "user_id=".intval($uid));
-			$tmp = $sql->fetch();
+			$tmp = $sql->createQueryBuilder()->select('user_email')->from('user')
+				->where('user_id', intval($uid))
+				->fetchRow();
 			$loginName = $tmp['user_email'];
 			$do_log['user_email'] =  $tmp['user_email'];
 			unset($tmp);
@@ -218,15 +227,19 @@ if (!empty($_POST['pwsubmit']))
 	$email 			= $_POST['email'];
 	$clean_email 	= check_email($tp->toDB($_POST['email']));
 	$clean_username = $tp->toDB(varset($_POST['username'], ''));
- 	
- 	$query = "`user_email`='{$clean_email}' ";
-	// Allow admins to remove 'username' from fpw_template.php if they wish.
-	$query .= (isset($_POST['username'])) ? " AND `user_loginname`='{$clean_username}'" : "";
 
-	if($sql->select('user', '*', $query))
-	{	
+ 	$userQb = $sql->createQueryBuilder();
+	$userQb->select('*')->from('user')->where('user_email', $clean_email);
+	// Allow admins to remove 'username' from fpw_template.php if they wish.
+	if(isset($_POST['username']))
+	{
+		$userQb->where('user_loginname', $clean_username);
+	}
+
+	$row = $userQb->fetchRow();
+	if($row)
+	{
 		// Found user in DB
-		$row = $sql->fetch();
 
 		// Main admin expected to be competent enough to never forget password! (And its a security check - so warn them)
 		// Sending email to admin alerting them of attempted admin password reset, and redirect user to homepage.
@@ -252,7 +265,11 @@ if (!empty($_POST['pwsubmit']))
 		}
 
 		// Check if password reset was already requested
-		if ($result = $sql->select('tmp', '*', "`tmp_ip` = 'pwreset' AND `tmp_info` LIKE '".$row['user_loginname'].FPW_SEPARATOR."%'"))
+		$existsQb = $sql->createQueryBuilder();
+		if ($existsQb->from('tmp')
+			->where('tmp_ip', 'pwreset')
+			->where($existsQb->expr()->like('tmp_info', $row['user_loginname'].FPW_SEPARATOR.'%'))
+			->count())
 		{
 			fpw_error(LAN_FPW4);
 			exit;
@@ -279,7 +296,13 @@ if (!empty($_POST['pwsubmit']))
 			'tmp_info'  => ($row['user_id'].FPW_SEPARATOR.$row['user_loginname'].FPW_SEPARATOR.$rcode)
 		);
 
-		$sql->insert('tmp', $insertQry);
+		// getFieldDefs('tmp') can return false when the table has no static field
+	// definition and live introspection fails; guard so an unauthenticated
+	// password reset never fatals on a missing _FIELD_TYPES (empty types bind
+	// every column as a string, matching the legacy insert() fallback).
+	$tmpDefs = $sql->getFieldDefs('tmp');
+	$tmpFieldTypes = (is_array($tmpDefs) && isset($tmpDefs['_FIELD_TYPES']) && is_array($tmpDefs['_FIELD_TYPES'])) ? $tmpDefs['_FIELD_TYPES'] : array();
+	$sql->createQueryBuilder()->insert('tmp')->valuesTyped($insertQry, $tmpFieldTypes)->execute();
 
 		// Setup the information to log
 		$do_log['password_action'] 	= LAN_FPW18;

@@ -62,7 +62,7 @@ class forum_setup
 
 		if(e107::getDb()->field('forum_thread', 'thread_sef'))
 		{
-			e107::getDb()->gen("ALTER TABLE `#forum_thread` DROP `thread_sef` ");
+			e107::getDb()->execute("ALTER TABLE `#forum_thread` DROP `thread_sef`");
 		}
 
 		$legacyMenuPref = e107::getConfig('menu')->getPref();

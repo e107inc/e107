@@ -1406,26 +1406,14 @@ class validatorClass
 									break;
 								}
 								$field = varset($options['dbFieldName'], $f);
-								// XXX: Different implementations due to missing API for preventing SQL injections
-								if ($u_sql instanceof e_db_mysql)
-								{
-									$v = $u_sql->escape($v);
-									$count = (int) $u_sql->count($targetTable, "(*)", "WHERE `{$f}`='$v' AND `user_id` != " . $userID);
-								}
-								else
-								{
-									$u_sql->select(
-										$targetTable,
-										"COUNT(*)",
-										"`{$f}`=:value AND `user_id` != :userID",
-										[
-											'value' => $v,
-											'userID' => $userID,
-										]
-									);
-									$row = $u_sql->fetch('num');
-									$count = (int) $row[0];
-								}
+								// $f is a dynamic column name; the builder validates it
+								// fail-closed (quoteColumn throws on anything outside the
+								// identifier grammar). $v is bound; $userID is already int.
+								$count = (int) $u_sql->createQueryBuilder()
+									->from($targetTable)
+									->where($f, $v)
+									->where('user_id', '!=', $userID)
+									->count();
 								if ($count)
 								{
 									$errMsg = ERR_DUPLICATE;

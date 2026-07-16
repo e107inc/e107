@@ -33,7 +33,9 @@ $frm = e107::getForm();
 if(e_QUERY) 
 {
 	$query_string = intval(e_QUERY);
-	$row = $sql->retrieve("banner", "*", "banner_id = '{$query_string}'"); // select the banner
+	$row = $sql->createQueryBuilder()->select('*')->from('banner')
+		->where('banner_id', $query_string)
+		->fetchRow(); // select the banner
 	$ip = e107::getIPHandler()->getIP();
 	$newip = (strpos($row['banner_ip'], "{$ip}^") !== FALSE) ? $row['banner_ip'] : "{$row['banner_ip']}{$ip}^"; // what does this do?
 	$sql->createQueryBuilder()->update('banner')->setExpression('banner_clicks', 'banner_clicks + 1')->set('banner_ip', $newip)->where('banner_id', (int) $query_string)->execute();
@@ -72,16 +74,19 @@ if (isset($_POST['clientsubmit']))
 	$clean_login 	= $tp->toDB($_POST['clientlogin']);
 	$clean_password = $tp->toDB($_POST['clientpassword']);
 	
-	// check login 
+	// check login
 	// TODO: massive clean-up (integrate e107 users, proper login handling, password encryption for new and existing records)
-	if (!$sql->select("banner", "*", "`banner_clientlogin` = '{$clean_login}' AND `banner_clientpassword` = '{$clean_password}'")) {
+	$row = $sql->createQueryBuilder()->select('*')->from('banner')
+		->where('banner_clientlogin', $clean_login)
+		->where('banner_clientpassword', $clean_password)
+		->fetchRow();
+	if (!$row) {
 		$mes->addError(BANNERLAN_20);
 		$ns->tablerender(PAGE_NAME, $mes->render());
 		require_once(FOOTERF);
 		exit;
 	}
-	 
-	$row = $sql->fetch();
+
 	$banner_total = $sql->createQueryBuilder()->select('*')->from('banner')->where('banner_clientname', $row['banner_clientname'])->execute();
 	
 	// check 

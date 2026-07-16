@@ -527,9 +527,9 @@ class admin_shortcodes extends e_shortcode
 					$pref 	= e107::getPref();
 					$mes 	= e107::getMessage();
 
-					$active_uploads 	= $sql->count('upload', '(*)', 'WHERE upload_active = 0');
-					$submitted_news 	= $sql->count('submitnews', '(*)', 'WHERE submitnews_auth = 0');
-					$comments_pending 	= $sql->count('comments', '(*)', 'WHERE comment_blocked = 2 ');
+					$active_uploads 	= $sql->createQueryBuilder()->from('upload')->where('upload_active', 0)->count();
+					$submitted_news 	= $sql->createQueryBuilder()->from('submitnews')->where('submitnews_auth', 0)->count();
+					$comments_pending 	= $sql->createQueryBuilder()->from('comments')->where('comment_blocked', 2)->count();
 
 				//	$text = "<div class='left'><div style='padding-bottom: 2px;'>".E_16_NEWS.($submitted_news ? " <a href='".e_ADMIN."newspost.php?mode=sub&amp;action=list'>".ADLAN_LAT_2.": $submitted_news</a>" : ' '.ADLAN_LAT_2.': 0').'</div>';
 				//	$text .= "<div style='padding-bottom: 2px;'>".E_16_COMMENT. " <a href='".e_ADMIN_ABS."comment.php?searchquery=&filter_options=comment_blocked__2'>".ADLAN_LAT_9.": $comments_pending</a></div>";		
@@ -554,14 +554,8 @@ class admin_shortcodes extends e_shortcode
 					}
 
 					$messageTypes = array(/*'Broken Download',*/ 'Dev Team Message');
-					$queryString = '';
-					foreach($messageTypes as $types)
-					{
-						$queryString .= " gen_type='$types' OR";
-					}
-					$queryString = substr($queryString, 0, -3);
 
-					if($amount = $sql->select('generic', '*', $queryString))
+					if($amount = $sql->createQueryBuilder()->from('generic')->whereIn('gen_type', $messageTypes)->count())
 					{
 					//	$text .= "<br /><b><a href='".e_ADMIN_ABS."message.php'>".ADLAN_LAT_8." [".$amount."]</a></b>";
 						
@@ -656,23 +650,28 @@ class admin_shortcodes extends e_shortcode
 					$sql = e107::getDb();
 					$ns = e107::getRender();
 					$text = "<ul class='list-group'><li class='list-group-item'>".defset('E_16_ADMINLOG')." <a style='cursor: pointer' onclick=\"expandit('adminlog')\">".ADLAN_116."</a></li></ul>\n";
+					$logQb = $sql->createQueryBuilder()->select('*')->from('admin_log')
+						->orderBy('dblog_datestamp', 'DESC');
 					if (e_QUERY === 'logall')
 					{
 						$text .= "<div id='adminlog'>";
-						$cnt = $sql ->select('admin_log', '*', 'ORDER BY `dblog_datestamp` DESC', 'no_where');
 					}
 					else
 					{
 						$text .= "<div style='display: none;' id='adminlog'>";
-						$cnt = $sql ->select('admin_log', '*', 'ORDER BY `dblog_datestamp` DESC LIMIT 0,10', 'no_where');
+						$logQb->setFirstResult(0)->setMaxResults(10);
+					}
+					$gen = e107::getDate();
+					$items = '';
+					$cnt = 0;
+					foreach ($logQb->fetchEach() as $row)
+					{
+						$cnt++;
+						$datestamp = $gen->convert_date($row['dblog_datestamp'], 'short');
+						$items .= "<li class='list-group-item'>{$datestamp} - ".defset($row['dblog_title'],$row['dblog_title'] ). '</li>';
 					}
 					$text .= ($cnt) ? '<ul class="list-group">' : '';
-					$gen = e107::getDate();
-					while ($row = $sql ->fetch())
-					{
-						$datestamp = $gen->convert_date($row['dblog_datestamp'], 'short');
-						$text .= "<li class='list-group-item'>{$datestamp} - ".defset($row['dblog_title'],$row['dblog_title'] ). '</li>';
-					}
+					$text .= $items;
 					$text .= ($cnt ? '</ul>' : '');
 					$text .= "<p><a class='btn btn-sm btn-primary' href='".e_ADMIN_ABS."admin_log.php'>".ADLAN_117. '</a> ';
 					$text .= "<a class='btn btn-sm btn-primary' href='".e_ADMIN_ABS."admin_log.php?mode=main&action=maintenance'>".ADLAN_118. '</a></p>';
@@ -1042,7 +1041,7 @@ class admin_shortcodes extends e_shortcode
 			return;
 		}
 
-		$pid = e107::getDb()->retrieve('plugin', 'plugin_id', "plugin_path = 'pm'");
+		$pid = e107::getDb()->createQueryBuilder()->select('plugin_id')->from('plugin')->where('plugin_path', 'pm')->fetchOne();
 
 		if(!getperms(0) && !getperms('P', 'P'.$pid))
 		{
@@ -1052,7 +1051,7 @@ class admin_shortcodes extends e_shortcode
         $sql = e107::getDb();
 		$tp = e107::getParser();
 		
-        $count =  $sql->count('private_msg','(*)','WHERE pm_read = 0 AND pm_to='.USERID);
+        $count =  $sql->createQueryBuilder()->from('private_msg')->where('pm_read', 0)->where('pm_to', (int) USERID)->count();
        
        	if ($count >0)
        	{
@@ -1220,7 +1219,8 @@ class admin_shortcodes extends e_shortcode
 
 			$nav_sql = new db;
 			$tmp = array();
-			if ($nav_sql ->select('plugin', '*', 'plugin_installflag=1'))
+			$navPlugins = $nav_sql->createQueryBuilder()->select('*')->from('plugin')->where('plugin_installflag', 1)->fetchAll();
+			if ($navPlugins)
 			{
 				$tmp = array();
 				$e107_var['plugm']['text'] = ADLAN_95;
@@ -1232,7 +1232,7 @@ class admin_shortcodes extends e_shortcode
 				$tmp['plugm']['link'] = e_ADMIN.'plugin.php';
 				$tmp['plugm']['perm'] = 'P';
 
-				while($rowplug = $nav_sql ->fetch())
+				foreach($navPlugins as $rowplug)
 				{
 					$plugin_id = $rowplug['plugin_id'];
 					$plugin_path = $rowplug['plugin_path'];
@@ -1288,17 +1288,15 @@ class admin_shortcodes extends e_shortcode
 				if (strpos(e_SELF, '/admin.php') !== false)
 				{
 					global $sql;
-					if ($sql ->select('plugin', '*', 'plugin_installflag=1'))
+					$installedPlugins = $sql->createQueryBuilder()->select('*')->from('plugin')->where('plugin_installflag', 1)->fetchAll();
+					foreach($installedPlugins as $rowplug)
 					{
-						while($rowplug = $sql->fetch())
+						extract($rowplug);
+						if(varset($rowplug['plugin_name']))
 						{
-							extract($rowplug);
-							if(varset($rowplug[1]))
-							{
-								$e107_plug[$rowplug[1]] = varset($rowplug[3]);
-							}
-
+							$e107_plug[$rowplug['plugin_name']] = varset($rowplug['plugin_path']);
 						}
+
 					}
 				}
 				if (is_array($e107_plug))
@@ -1521,10 +1519,10 @@ class admin_shortcodes extends e_shortcode
 					$pref = e107::getPref();
 					
 					
-					$members 		= $sql->count('user', '(*)', 'WHERE user_ban=0');
-					$unverified 	= $sql->count('user', '(*)', 'WHERE user_ban=2');
-					$banned 		= $sql->count('user', '(*)', 'WHERE user_ban=1');
-					$comments 		= $sql->count('comments');
+					$members 		= $sql->createQueryBuilder()->from('user')->where('user_ban', 0)->count();
+					$unverified 	= $sql->createQueryBuilder()->from('user')->where('user_ban', 2)->count();
+					$banned 		= $sql->createQueryBuilder()->from('user')->where('user_ban', 1)->count();
+					$comments 		= $sql->createQueryBuilder()->from('comments')->count();
 
 					/*
 					$unver = ($unverified ? " <a href='".e_ADMIN."users.php?searchquery=&amp;filter_options=user_ban__2&amp;filter=unverified'> ".ADLAN_111.": {$unverified}</a>" : ADLAN_111);
@@ -1551,13 +1549,13 @@ class admin_shortcodes extends e_shortcode
 					{
 						$oldconfigs['e-comments'][0] 	= array('icon' => defset('E_16_COMMENT'), 'title' =>LAN_COMMENTS, 'url' => e_ADMIN_ABS. 'comment.php', 'total' =>$comments);
 					}
-					if($flo = $sql->count('generic', '(*)', "WHERE gen_type='failed_login'"))
+					if($flo = $sql->createQueryBuilder()->from('generic')->where('gen_type', 'failed_login')->count())
 					{
 						//$text .= "\n\t\t\t\t\t<div style='padding-bottom: 2px;'>".E_16_FAILEDLOGIN." <a href='".e_ADMIN_ABS."fla.php'>".ADLAN_146.": $flo</a></div>";	
 						$oldconfigs['e-failed'][0]	= array('icon' => defset('E_16_FAILEDLOGIN'), 'title' =>ADLAN_146, 'url' =>e_ADMIN_ABS. 'banlist.php?mode=failed&action=list', 'total' =>$flo);
 					}
 
-					if($emls = $sql->count('mail_recipients', '(*)', 'WHERE mail_status = 13'))
+					if($emls = $sql->createQueryBuilder()->from('mail_recipients')->where('mail_status', 13)->count())
 					{
 						//$text .= "\n\t\t\t\t\t<div style='padding-bottom: 2px;'>".E_16_FAILEDLOGIN." <a href='".e_ADMIN_ABS."fla.php'>".ADLAN_146.": $flo</a></div>";
 						$oldconfigs['e-mailout'][0]	= array('icon' => defset('E_16_MAIL'), 'title' =>ADLAN_167, 'url' =>e_ADMIN_ABS. 'mailout.php?mode=pending&action=list', 'total' =>$emls);
@@ -2851,9 +2849,11 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		$pageMenu = array();
 		$pluginMenu = array();
 
-		$sql->select('menus', 'menu_name, menu_id, menu_pages, menu_path', '1 GROUP BY menu_name ORDER BY menu_name ASC');
+		$menuRows = $sql->createQueryBuilder()
+			->select('menu_name', 'menu_id', 'menu_pages', 'menu_path')->from('menus')
+			->groupBy('menu_name')->orderBy('menu_name', 'ASC')->fetchAll();
 
-		while ($row = $sql->fetch())
+		foreach ($menuRows as $row)
 		{
 			if(is_numeric($row['menu_path']))
 			{

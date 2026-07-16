@@ -10,6 +10,7 @@
  *
 */
 
+use e107\Database\SqlFragment;
 
 /**
  *	@package    e107
@@ -154,6 +155,11 @@ class e_online
 					if ($row['online_user_id'] == $udata)
 					{
 						//Matching user record
+						$updateWhere = function($qb) use ($row)
+						{
+							$qb->where('online_user_id', (int) $row['online_user_id']);
+						};
+
 						if ($row['online_timestamp'] < (time() - $online_timeout))
 						{
 							//It has been at least 'online_timeout' seconds since this user's info last logged
@@ -164,8 +170,7 @@ class e_online
 								'online_timestamp' => time(),
 								'online_ip'         => $ip,
 								'online_pagecount'  => 1,
-								'online_active'     => 1,
-								'WHERE'             => "online_user_id=".intval($row['online_user_id'])." LIMIT 1"
+								'online_active'     => 1
 							);
 
 
@@ -184,8 +189,7 @@ class e_online
 
 								'online_ip'         => $ip,
 								'online_pagecount'  => intval($row['online_pagecount']),
-								'online_active'     => 1,
-								'WHERE'             => "online_user_id=".intval($row['online_user_id'])." LIMIT 1"
+								'online_active'     => 1
 							);
 
 						}
@@ -193,6 +197,11 @@ class e_online
 					else
 					{
 						//Found matching visitor record (ip only) for this user
+						$updateWhere = function($qb) use ($ip)
+						{
+							$qb->where('online_ip', $ip)->where('online_user_id', '0');
+						};
+
 						if ($row['online_timestamp'] < (time() - $online_timeout))
 						{
 							// It has been at least 'timeout' seconds since this user has connected
@@ -203,8 +212,7 @@ class e_online
 								'online_timestamp' => time(),
 								'online_user_id'    => $udata,
 								'online_pagecount'  => 1,
-								'online_active'     => 1,
-								'WHERE'             => "online_ip = '".$ip."' AND online_user_id = '0' LIMIT 1"
+								'online_active'     => 1
 							);
 
 
@@ -222,8 +230,7 @@ class e_online
 							//	'online_timestamp' => time(),
 								'online_user_id'    => $udata,
 								'online_pagecount'  => intval($row['online_pagecount']),
-								'online_active'     => 1,
-								'WHERE'             => "online_ip = '".$ip."' AND online_user_id = '0' LIMIT 1"
+								'online_active'     => 1
 							);
 
 						}
@@ -236,14 +243,14 @@ class e_online
 					}
 
 					$dbg->logTime('Go online (update) Line:'.__LINE__);
-					$sql->update('online', $query);
+					$this->updateOnline($sql, $query, $updateWhere, 1);
 					$dbg->logTime('Go online (after update) Line:'.__LINE__);
 
 				}
 				else
 				{
 					$dbg->logTime('Go online (insert) Line: '.__LINE__);
-					$sql->insert('online',$insert_query);
+					$sql->createQueryBuilder()->insert('online')->valuesTyped($insert_query, $sql->getFieldDefs('online')['_FIELD_TYPES'])->execute();
 					$dbg->logTime('Go online (after insert) Line: '.__LINE__);
 				}
 
@@ -253,17 +260,16 @@ class e_online
 			elseif(!$user->getParentId())
 			{
 				//Current page request is from a guest
-				if ($sql->select('online', '*', "`online_ip` = '{$ip}' AND `online_user_id` = '0'"))
+				$row = $sql->createQueryBuilder()->select('*')->from('online')
+					->where('online_ip', $ip)->where('online_user_id', '0')->fetchRow();
+				if ($row)
 				{	// Recent visitor
-					$row = $sql->fetch();
-
 					if ($row['online_timestamp'] < (time() - $online_timeout)) //It has been at least 'timeout' seconds since this ip has connected
 					{
 						//Update record with timestamp, current page, and set pagecount to 1
 						$query = array(
 							'online_timestamp'	=> time(),
-							'online_pagecount'	=> 1,
-							'WHERE'				=> "online_ip = '".$ip."' AND online_user_id = '0'"
+							'online_pagecount'	=> 1
 						);
 					}
 					else
@@ -272,8 +278,7 @@ class e_online
 						$row['online_pagecount'] ++;
 						//   echo "here {$online_pagecount}";
 						$query = array(
-							'online_pagecount'	=> intval($row['online_pagecount']),
-							'WHERE'				=> "online_ip = '".$ip."' AND online_user_id = '0'"
+							'online_pagecount'	=> intval($row['online_pagecount'])
 						);
 					}
 					if(!empty($update_page))
@@ -281,12 +286,15 @@ class e_online
 						$query['online_location'] = $page;
 					}
 					$dbg->logTime('Go online (update) Line:'.__LINE__);
-					$sql->update('online', $query);
+					$this->updateOnline($sql, $query, function($qb) use ($ip)
+					{
+						$qb->where('online_ip', $ip)->where('online_user_id', '0');
+					});
 					$dbg->logTime('Go online (after update) Line:'.__LINE__);
 				}
 				else
 				{	// New visitor
-					$sql->insert('online',$insert_query);
+					$sql->createQueryBuilder()->insert('online')->valuesTyped($insert_query, $sql->getFieldDefs('online')['_FIELD_TYPES'])->execute();
 				}
 			}
 
@@ -327,12 +335,20 @@ class e_online
 			if(!deftrue('e_AJAX_REQUEST'))
 			{
 				$dbg->logTime('Go online (delete) Line:'.__LINE__);
-				$sql->delete('online', '`online_timestamp` < '.(time() - $online_timeout));
+				$sql->createQueryBuilder()->delete('online')
+					->where('online_timestamp', '<', time() - $online_timeout)->execute();
 
 				// FIXME - don't use constants below, save data in class vars, call e_online signleton - e107::getOnline()
 			//	$total_online = $sql->db_Count('online'); // 1 less query! :-)
 				$dbg->logTime('Go online (total_online) Line:'.__LINE__);
-				if ($total_online = $sql->gen('SELECT o.*,u.user_image FROM `#online` AS o LEFT JOIN `#user` AS u ON o.online_user_id = u.user_id WHERE o.online_pagecount > 0 ORDER BY o.online_timestamp DESC'))
+				$onlineQb = $sql->createQueryBuilder();
+				if ($total_online = $onlineQb
+					->select('o.*', 'u.user_image')
+					->from('online', 'o')
+					->leftJoin('user', 'u', $onlineQb->expr()->compareColumns('o.online_user_id', 'u.user_id'))
+					->where('o.online_pagecount', '>', 0)
+					->orderBy('o.online_timestamp', 'DESC')
+					->execute())
 			//	if ($total_online = $sql->gen('SELECT o  FROM `#online`  WHERE o.online_pagecount > 0 ORDER BY o.online_timestamp DESC'))
 				{
 					$member_list = '';
@@ -417,6 +433,37 @@ class e_online
 
 
 	/**
+	 * Run an UPDATE against the online table with bound values and a builder-built WHERE.
+	 *
+	 * @param e_db     $sql     database handle
+	 * @param array    $columns column => value assignments to SET
+	 * @param Closure  $where   applies WHERE predicates to the builder
+	 * @param int|null $limit   optional LIMIT
+	 * @return void
+	 */
+	private function updateOnline($sql, array $columns, $where, $limit = null)
+	{
+		$qb = $sql->createQueryBuilder()->update('online');
+		$fieldTypes = $sql->getFieldDefs('online')['_FIELD_TYPES'];
+
+		foreach($columns as $column => $value)
+		{
+			$type = isset($fieldTypes[$column]) ? $fieldTypes[$column] : (isset($fieldTypes['_DEFAULT']) ? $fieldTypes['_DEFAULT'] : 'string');
+			$qb->setTyped($column, $value, $type);
+		}
+
+		$where($qb);
+
+		if($limit !== null)
+		{
+			$qb->limit($limit);
+		}
+
+		$qb->execute();
+	}
+
+
+	/**
 	 * @param $debug
 	 * @return array|string
 	 */
@@ -426,7 +473,11 @@ class e_online
 		if($debug === true)
 		{
 			//print_a($this->users);
-			return e107::getDb()->retrieve('user', 'user_id,user_name,user_image, 1 as user_active, CONCAT_WS(".",user_id,user_name) as online_user_id', "LIMIT 7", true);
+			return e107::getDb()->createQueryBuilder()
+				->select('user_id', 'user_name', 'user_image')->selectLiteral(1, 'user_active')->addSelect(SqlFragment::raw('CONCAT_WS(".",user_id,user_name) as online_user_id'))
+				->from('user')
+				->setMaxResults(7)
+				->fetchAll();
 		}
 
 

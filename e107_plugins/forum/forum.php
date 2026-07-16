@@ -317,7 +317,10 @@ class forum_front
 		{
 			$type = 'forum_rules_guest';
 		}
-		$result = e107::getDb()->select('generic', 'gen_chardata', "gen_type = '$type' AND gen_intdata = 1");
+		$result = e107::getDb()->createQueryBuilder()
+			->select('gen_chardata')->from('generic')
+			->where('gen_type', $type)->where('gen_intdata', 1)
+			->fetchRow();
 		if($action == 'check')
 		{
 			return $result;
@@ -325,7 +328,7 @@ class forum_front
 
 		if($result)
 		{
-			$row = e107::getDb()->fetch();
+			$row = $result;
 			$rules_text = e107::getParser()->toHTML($row['gen_chardata'], true);
 		}
 		else
@@ -409,17 +412,21 @@ class forum_front
 
 			$viewed = $forum->threadGetUserViewed();
 
-			$qry = "SELECT t.*,th.*, f.*,u.user_name FROM `#forum_track` AS t
-		LEFT JOIN `#forum_thread` AS th ON t.track_thread = th.thread_id
-		LEFT JOIN `#forum` AS f ON th.thread_forum_id = f.forum_id
-		LEFT JOIN `#user` AS u ON th.thread_lastuser = u.user_id
-		WHERE t.track_userid = " . USERID . " ORDER BY th.thread_lastpost DESC";
+			$qb = $sql->createQueryBuilder();
+			$trackedRows = $qb
+				->select('t.*', 'th.*', 'f.*', 'u.user_name')
+				->from('forum_track', 't')
+				->leftJoin('forum_thread', 'th', $qb->expr()->compareColumns('t.track_thread', 'th.thread_id'))
+				->leftJoin('forum', 'f', $qb->expr()->compareColumns('th.thread_forum_id', 'f.forum_id'))
+				->leftJoin('user', 'u', $qb->expr()->compareColumns('th.thread_lastuser', 'u.user_id'))
+				->where('t.track_userid', (int) USERID)
+				->orderBy('th.thread_lastpost', 'DESC')
+				->fetchEach();
 
 			$forum_trackstring = '';
 			$data = array();
-			if($sql->gen($qry))
 			{
-				while($row = $sql->fetch())
+				foreach($trackedRows as $row)
 				{
 					//	e107::getDebug()->log($row);
 					$row['thread_sef'] = eHelper::title2sef($row['thread_name'], 'dashl');

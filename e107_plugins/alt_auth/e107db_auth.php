@@ -154,6 +154,7 @@ class auth_login extends alt_auth_base
 		//Get record containing supplied login name
 		$qry = "SELECT ".implode(',', $columns)." FROM ".$table." WHERE ".$userColumn." = :uname AND `user_ban` = 0";
 
+		// Permanent raw-SQL boundary: kept as bound execute() (sanctioned, non-deprecated API) - foreign-DB dynamic identifiers (prefix+'user' table, xf_ columns) validated fail-closed via quoteIdentifier(), :uname bound; the error-vs-no-row guard below distinguishes a query ERROR (AUTH_NOCONNECT) from an empty result (AUTH_NOUSER), which builder fetch (array() for both) cannot preserve.
 		if($db->execute($qry, array('uname' => $uname)) === false)
 		{
 			$this->makeErrorText('Lookup query failed');

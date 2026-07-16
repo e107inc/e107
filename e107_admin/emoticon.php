@@ -452,12 +452,13 @@ class emotec
 
 		// Pick up a list of emote packs from the database
 		$pack_local = array();
-		if ($sql->select("core", "*", "`e107_name` LIKE 'emote_%'"))
+		$qb = $sql->createQueryBuilder();
+		$rows = $qb->select('*')->from('core')
+			->where($qb->expr()->like('e107_name', 'emote_%'))
+			->fetchAll();
+		foreach ($rows as $row)
 		{
-			while ($row = $sql->fetch())
-			{
-				$pack_local[substr($row['e107_name'], 6)] = true;
-			}
+			$pack_local[substr($row['e107_name'], 6)] = true;
 		}
 
 		foreach ($this->packArray as $value)
@@ -480,7 +481,7 @@ class emotec
 				unset($pack_local[$value]);
 			}
 
-			if (($do_one == $value) || !$do_one && (!$sql->select("core", "*", "e107_name='emote_" . $value . "' ")))
+			if (($do_one == $value) || !$do_one && (!$sql->createQueryBuilder()->from('core')->where('e107_name', 'emote_' . $value)->count()))
 			{  // Pack info not in DB, or to be re-scanned
 				$no_error = true;
 				$File_type = EMOLAN_32 . ":";
@@ -654,24 +655,22 @@ class emotec
 				{
 					if ($do_one) // Assume existing pack
 					{
-						$update = array(
-							'e107_name'  => 'emote_' . $value,
-							'e107_value' => $tmp,
-							'WHERE'      => "e107_name = 'emote_" . $value . "'"
-						);
-
-						$sql->update("core", $update);
+						$sql->createQueryBuilder()->update('core')
+							->set('e107_name', 'emote_' . $value)
+							->set('e107_value', $tmp)
+							->where('e107_name', 'emote_' . $value)
+							->execute();
 
 					}
 					else
 					{    // Assume new pack
 
-						$insert = array(
-							'e107_name'  => 'emote_' . $value,
-							'e107_value' => $tmp
-						);
-
-						$sql->insert("core", $insert);
+						$sql->createQueryBuilder()->insert('core')
+							->values(array(
+								'e107_name'  => 'emote_' . $value,
+								'e107_value' => $tmp,
+							))
+							->execute();
 					}
 					$mes->addInfo("<strong>{$File_type}</strong> '{$value}'");
 				}
@@ -692,7 +691,7 @@ class emotec
 					$p = '';
 				}
 
-				if ($sql->delete("core", "`e107_name` = 'emote_{$p}'"))
+				if ($sql->createQueryBuilder()->delete('core')->where('e107_name', 'emote_' . $p)->execute())
 				{
 					$mes->addInfo(EMOLAN_34 . ":" . $p . EMOLAN_35);
 				}
