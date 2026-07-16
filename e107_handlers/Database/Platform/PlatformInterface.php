@@ -8,17 +8,22 @@
  *
  */
 
-if (!defined('e107_INIT')) { exit; }
+namespace e107\Database\Platform;
+
+use e107\Database\ConnectionInterface;
+use e107\Database\Exception\UnsupportedException;
+use e107\Database\QueryBuilder;
+use InvalidArgumentException;
 
 /**
- * Minimal SQL dialect description, consulted by {@see e_db_query}.
+ * Minimal SQL dialect description, consulted by {@see QueryBuilder}.
  *
  * Deliberately small: it answers the few dialect questions the query builder
  * needs (identifier quoting, LIMIT syntax, regular-expression operator,
  * default character set) without attempting schema abstraction or a driver
- * registry. Obtain the connection's platform via {@see e_db::getPlatform()}.
+ * registry. Obtain the connection's platform via {@see ConnectionInterface::getPlatform()}.
  */
-interface e_db_platform
+interface PlatformInterface
 {
 	/**
 	 * Character used to quote identifiers in this dialect.
@@ -86,7 +91,7 @@ interface e_db_platform
 	 * @param string[] $columns Quoted column identifiers for the inserted row.
 	 * @param string[] $tuples VALUES groups, one per row.
 	 * @param string[] $updateAssignments "quoted column = value-reference" strings
-	 *                 (see {@see e_db_platform::getUpsertValueReference()}).
+	 *                 (see {@see PlatformInterface::getUpsertValueReference()}).
 	 * @return string SQL statement.
 	 */
 	public function compileUpsert($quotedTable, array $columns, array $tuples, array $updateAssignments);
@@ -182,194 +187,80 @@ interface e_db_platform
 	 * @return string
 	 */
 	public function compileFullText(array $quotedColumns, $placeholder);
-}
-
-
-/**
- * MySQL/MariaDB dialect: the only platform e107 ships today. Both database
- * backends ({@see e_db_pdo} and {@see e_db_mysql}) speak it.
- */
-class e_db_platform_mysql implements e_db_platform
-{
-	/**
-	 * @return string
-	 */
-	public function getIdentifierQuoteCharacter()
-	{
-		return '`';
-	}
 
 	/**
-	 * @param int|null $limit
-	 * @param int|null $offset
-	 * @return string
+	 * Build an ALTER TABLE statement from one or more already-rendered clauses
+	 * (e.g. "ADD COLUMN `c` INT", "DROP INDEX `i`"). The table identifier
+	 * arrives quoted; the dialect only joins the clauses onto the statement.
+	 *
+	 * @param string $quotedTable Quoted physical table name.
+	 * @param string[] $clauses Rendered ALTER clauses, at least one.
+	 * @return string SQL statement.
 	 */
-	public function getLimitClause($limit, $offset = null)
-	{
-		if($limit === null)
-		{
-			if($offset === null || (int) $offset <= 0)
-			{
-				return '';
-			}
-
-			// MySQL has no standalone OFFSET; the manual's idiom for
-			// "skip $offset rows, no upper bound" is a huge row count.
-			return ' LIMIT '.(int) $offset.', 18446744073709551615';
-		}
-
-		$clause = ' LIMIT '.(int) $limit;
-
-		if($offset !== null && (int) $offset > 0)
-		{
-			$clause .= ' OFFSET '.(int) $offset;
-		}
-
-		return $clause;
-	}
+	public function compileAlterTable($quotedTable, array $clauses);
 
 	/**
-	 * @return string
+	 * Build a CREATE TABLE statement from already-rendered column/key definition
+	 * lines and an optional trailing options string (e.g. " ENGINE=InnoDB").
+	 *
+	 * @param string $quotedTable Quoted physical table name.
+	 * @param string[] $definitions Rendered definition lines.
+	 * @param string $options Trailing options, or '' for none.
+	 * @return string SQL statement.
 	 */
-	public function getRegexpOperator()
-	{
-		return 'REGEXP';
-	}
+	public function compileCreateTable($quotedTable, array $definitions, $options = '');
 
 	/**
-	 * @return string
+	 * Build a "rename this table" statement. Both identifiers arrive quoted.
+	 *
+	 * @param string $quotedFrom Quoted current table name.
+	 * @param string $quotedTo Quoted new table name.
+	 * @return string SQL statement.
 	 */
-	public function getDefaultCharset()
-	{
-		return 'utf8mb4';
-	}
+	public function compileRenameTable($quotedFrom, $quotedTo);
 
 	/**
-	 * @return string
+	 * Build a statement that reclaims unused space / rebuilds one or more
+	 * tables (e.g. MySQL's OPTIMIZE TABLE). Identifiers arrive quoted.
+	 *
+	 * @param string[] $quotedTables Quoted physical table names, at least one.
+	 * @return string SQL statement.
 	 */
-	public function compileReplace($quotedTable, array $columns, array $placeholders)
-	{
-		return 'REPLACE INTO '.$quotedTable
-			.' ('.implode(', ', $columns).')'
-			.' VALUES ('.implode(', ', $placeholders).')';
-	}
+	public function compileOptimizeTable(array $quotedTables);
 
 	/**
-	 * @return string
+	 * Build a CREATE DATABASE statement. The database identifier arrives quoted
+	 * and the character set already validated. Engines without the concept throw
+	 * {@see UnsupportedException}.
+	 *
+	 * @param string $quotedDatabase Quoted database name.
+	 * @param string|null $charset Validated character set, or null for the
+	 *                             server default.
+	 * @return string SQL statement.
+	 * @throws UnsupportedException when the platform has no databases.
 	 */
-	public function compileInsert($quotedTable, array $columns, array $tuples, $modifier = '')
-	{
-		$verb = ($modifier === 'IGNORE') ? 'INSERT IGNORE INTO' : 'INSERT INTO';
-
-		return $verb.' '.$quotedTable
-			.' ('.implode(', ', $columns).')'
-			.' VALUES '.implode(', ', $tuples);
-	}
+	public function compileCreateDatabase($quotedDatabase, $charset = null);
 
 	/**
-	 * @return string
+	 * Build a GRANT ALL statement scoping a user to a database. Identifiers
+	 * arrive quoted and the host already validated. Engines without a grant
+	 * system throw {@see UnsupportedException}.
+	 *
+	 * @param string $quotedDatabase Quoted database name.
+	 * @param string $quotedUser Quoted user name.
+	 * @param string $host Validated host (placed in a single-quoted literal).
+	 * @return string SQL statement.
+	 * @throws UnsupportedException when the platform has no grant system.
 	 */
-	public function compileUpsert($quotedTable, array $columns, array $tuples, array $updateAssignments)
-	{
-		return 'INSERT INTO '.$quotedTable
-			.' ('.implode(', ', $columns).')'
-			.' VALUES '.implode(', ', $tuples)
-			.' ON DUPLICATE KEY UPDATE '.implode(', ', $updateAssignments);
-	}
+	public function compileGrant($quotedDatabase, $quotedUser, $host);
 
 	/**
-	 * @return string
+	 * Build a statement that reloads the privilege tables (e.g. MySQL's FLUSH
+	 * PRIVILEGES). Engines without a grant system throw
+	 * {@see UnsupportedException}.
+	 *
+	 * @return string SQL statement.
+	 * @throws UnsupportedException when the platform has no grant system.
 	 */
-	public function getUpsertValueReference($quotedColumn)
-	{
-		return 'VALUES('.$quotedColumn.')';
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getForUpdateClause()
-	{
-		return ' FOR UPDATE';
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getSharedLockClause()
-	{
-		return ' LOCK IN SHARE MODE';
-	}
-
-	/**
-	 * @return string
-	 */
-	public function compileInsertSelect($quotedTable, array $columns, $selectSql, $modifier = '')
-	{
-		$verb = ($modifier === 'IGNORE') ? 'INSERT IGNORE INTO' : 'INSERT INTO';
-		$cols = (count($columns) > 0) ? ' ('.implode(', ', $columns).')' : '';
-
-		return $verb.' '.$quotedTable.$cols.' '.$selectSql;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getRandomFunction()
-	{
-		return 'RAND()';
-	}
-
-	/**
-	 * @return string
-	 */
-	public function compileDatePart($part, $quotedColumn)
-	{
-		$functions = array(
-			'date'  => 'DATE',
-			'year'  => 'YEAR',
-			'month' => 'MONTH',
-			'day'   => 'DAY',
-			'time'  => 'TIME',
-		);
-
-		if(!isset($functions[$part]))
-		{
-			throw new InvalidArgumentException('Unknown date part: '.$part);
-		}
-
-		return $functions[$part].'('.$quotedColumn.')';
-	}
-
-	/**
-	 * @return string
-	 */
-	public function compileJsonContains($quotedColumn, $placeholder)
-	{
-		return 'JSON_CONTAINS('.$quotedColumn.', '.$placeholder.')';
-	}
-
-	/**
-	 * @return string
-	 */
-	public function compileJsonContainsKey($quotedColumn, $placeholder)
-	{
-		return 'JSON_CONTAINS_PATH('.$quotedColumn.", 'one', ".$placeholder.')';
-	}
-
-	/**
-	 * @return string
-	 */
-	public function compileJsonLength($quotedColumn)
-	{
-		return 'JSON_LENGTH('.$quotedColumn.')';
-	}
-
-	/**
-	 * @return string
-	 */
-	public function compileFullText(array $quotedColumns, $placeholder)
-	{
-		return 'MATCH ('.implode(', ', $quotedColumns).') AGAINST ('.$placeholder.')';
-	}
+	public function compileFlushPrivileges();
 }

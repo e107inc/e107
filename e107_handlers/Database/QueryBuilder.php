@@ -8,16 +8,21 @@
  *
  */
 
-if (!defined('e107_INIT')) { exit; }
+namespace e107\Database;
+
+use Closure;
+use e107;
+use e107\Database\Platform\PlatformInterface;
+use InvalidArgumentException;
 
 /**
  * Fluent SQL query builder bound to an e107 database connection.
  *
- * Create one with {@see e_db::createQueryBuilder()}. The builder compiles to
- * SQL with bound :named placeholders and runs through {@see e_db::execute()},
+ * Create one with {@see ConnectionInterface::createQueryBuilder()}. The builder compiles to
+ * SQL with bound :named placeholders and runs through {@see ConnectionInterface::execute()},
  * so no value ever becomes SQL text. Table names are logical: no '#' marker
  * and no database prefix; both the prefix and multi-language routing are
- * applied at compile time via {@see e_db::resolveTableName()}. Identifier
+ * applied at compile time via {@see ConnectionInterface::resolveTableName()}. Identifier
  * positions (tables, aliases, assignment columns, expression columns, ORDER
  * BY) are validated against a strict grammar and throw on violation rather
  * than guessing.
@@ -40,21 +45,21 @@ if (!defined('e107_INIT')) { exit; }
  *     ->fetchOne();
  * </code>
  *
- * Conditions accumulate: each {@see e_db_query::where()} (and
- * {@see e_db_query::having()}) is ANDed onto the clause and
- * {@see e_db_query::orWhere()} ORs onto it; there is no implicit reset, so to
+ * Conditions accumulate: each {@see QueryBuilder::where()} (and
+ * {@see QueryBuilder::having()}) is ANDed onto the clause and
+ * {@see QueryBuilder::orWhere()} ORs onto it; there is no implicit reset, so to
  * start over build a new query. A condition may be written as a bound value
  * form (where('col', $value), or where('col', '>=', $value) with an operator),
- * as a column => value array, as an {@see e_db_expr} fragment, as a closure for
+ * as a column => value array, as an {@see ExpressionBuilder} fragment, as a closure for
  * a parenthesised sub-group, or, only when the builder cannot express it, as a
  * hand-written string.
  *
  * Positions that accept developer-authored SQL fragments verbatim, select()
  * expressions, join() conditions and hand-written where()/having() strings,
  * must never receive user input directly; put values through
- * {@see e_db_expr} or {@see e_db_query::createNamedParameter()} instead.
+ * {@see ExpressionBuilder} or {@see QueryBuilder::createNamedParameter()} instead.
  */
-class e_db_query
+class QueryBuilder
 {
 	const TYPE_SELECT = 0;
 	const TYPE_INSERT = 1;
@@ -63,10 +68,10 @@ class e_db_query
 	const TYPE_REPLACE = 4;
 	const TYPE_UPSERT = 5;
 
-	/** @var e_db */
+	/** @var ConnectionInterface */
 	private $db;
 
-	/** @var e_db_platform */
+	/** @var PlatformInterface */
 	private $platform;
 
 	/** @var int one of the TYPE_* constants */
@@ -93,7 +98,7 @@ class e_db_query
 	/**
 	 * @var array[] queued joins. Each entry is
 	 *      array('type', 'table', 'alias', 'condition'); 'table' may instead be
-	 *      a pre-built "(sub-select)" expression (see {@see e_db_query::joinSub()})
+	 *      a pre-built "(sub-select)" expression (see {@see QueryBuilder::joinSub()})
 	 *      and 'condition' is null for a CROSS JOIN.
 	 */
 	private $join = array();
@@ -140,26 +145,26 @@ class e_db_query
 	/** @var array[] queued UNIONs: array('all' => bool, 'sql' => string) */
 	private $unions = array();
 
-	/** @var array placeholder name => value, in the {@see e_db::execute()} shape */
+	/** @var array placeholder name => value, in the {@see ConnectionInterface::execute()} shape */
 	private $params = array();
 
 	/** @var int placeholder name counter */
 	private $paramCounter = 0;
 
 	/**
-	 * @var e_db_query|null when set, parameter creation delegates here so a
+	 * @var QueryBuilder|null when set, parameter creation delegates here so a
 	 *      sub-builder (closure group, sub-query, UNION arm) shares one counter
 	 *      and one parameter map with its parent.
 	 */
 	private $paramOwner = null;
 
-	/** @var e_db_expr|null lazily created expression helper */
+	/** @var ExpressionBuilder|null lazily created expression helper */
 	private $expr = null;
 
 	/**
-	 * @param e_db $db Connection the query compiles against and executes on.
-	 * @param e_db_platform|null $platform SQL dialect; taken from
-	 *                           {@see e_db::getPlatform()} when omitted.
+	 * @param ConnectionInterface $db Connection the query compiles against and executes on.
+	 * @param PlatformInterface|null $platform SQL dialect; taken from
+	 *                           {@see ConnectionInterface::getPlatform()} when omitted.
 	 */
 	public function __construct($db, $platform = null)
 	{
@@ -171,13 +176,13 @@ class e_db_query
 	 * Expression helper bound to this query. Every value it receives becomes
 	 * a bound parameter on this query, never SQL text.
 	 *
-	 * @return e_db_expr
+	 * @return ExpressionBuilder
 	 */
 	public function expr()
 	{
 		if($this->expr === null)
 		{
-			$this->expr = new e_db_expr($this);
+			$this->expr = new ExpressionBuilder($this);
 		}
 
 		return $this->expr;
@@ -186,7 +191,7 @@ class e_db_query
 	/**
 	 * SQL dialect this query compiles for.
 	 *
-	 * @return e_db_platform
+	 * @return PlatformInterface
 	 */
 	public function getPlatform()
 	{
@@ -202,7 +207,7 @@ class e_db_query
 	 * </code>
 	 *
 	 * @param mixed $value
-	 * @param int|null $type Optional {@see e_db}::PARAM_* override;
+	 * @param int|null $type Optional {@see ConnectionInterface}::PARAM_* override;
 	 *                       auto-detected from the PHP type when omitted.
 	 * @return string placeholder, e.g. ':qb1'
 	 */
@@ -220,8 +225,61 @@ class e_db_query
 	}
 
 	/**
+	 * Wrap developer-authored SQL as an {@see SqlFragment} fragment: thin sugar for
+	 * {@see SqlFragment::raw()}. The SOLE explicit raw-SQL hatch; the string is
+	 * spliced verbatim, so it must NEVER carry user input. Bind values with
+	 * {@see QueryBuilder::createNamedParameter()} and splice the placeholder, or
+	 * pass uniquely-named binds in $params.
+	 *
+	 * <code>
+	 * $qb->where($qb->raw('FIND_IN_SET('.$qb->createNamedParameter($id).', user_plugin)'));
+	 * </code>
+	 *
+	 * @param string $sql
+	 * @param array $params name => value | array('value' => mixed, 'type' => int)
+	 * @return SqlFragment
+	 */
+	public function raw($sql, array $params = array())
+	{
+		return SqlFragment::raw($sql, $params);
+	}
+
+	/**
+	 * Absorb a fragment's bound parameters onto this query. Delegates to the
+	 * shared parameter owner exactly like
+	 * {@see QueryBuilder::createNamedParameter()} and fails closed: a name already
+	 * present throws rather than silently overwriting (the loud backstop against
+	 * a double-drain or a placeholder clash). Builder and {@see ExpressionBuilder}
+	 * fragments carry an empty map, so only {@see QueryBuilder::raw()} /
+	 * {@see SqlFragment::fromQuery()} parts have anything to merge.
+	 *
+	 * @param array $params name => value | array('value' => mixed, 'type' => int)
+	 * @return void
+	 * @throws InvalidArgumentException on a duplicate parameter name.
+	 */
+	public function mergeParameters(array $params)
+	{
+		if($this->paramOwner !== null)
+		{
+			$this->paramOwner->mergeParameters($params);
+
+			return;
+		}
+
+		foreach($params as $name => $value)
+		{
+			if(array_key_exists($name, $this->params))
+			{
+				throw new InvalidArgumentException('Duplicate bound parameter name: '.$name);
+			}
+
+			$this->params[$name] = $value;
+		}
+	}
+
+	/**
 	 * Validate and quote a column identifier (`column` or `table.column`).
-	 * Fails closed: anything outside the {@see e_db_filter::identifier()}
+	 * Fails closed: anything outside the {@see IdentifierFilter::identifier()}
 	 * grammar throws.
 	 *
 	 * @param string $column
@@ -248,7 +306,7 @@ class e_db_query
 	 *
 	 * @param string|array $columns Column list as multiple string arguments
 	 *                              or as one array; defaults to '*'.
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function select($columns = '*')
 	{
@@ -267,10 +325,10 @@ class e_db_query
 
 	/**
 	 * Add more columns to the SELECT list without clearing it; same quoting
-	 * rules as {@see e_db_query::select()}.
+	 * rules as {@see QueryBuilder::select()}.
 	 *
 	 * @param string|array $columns As multiple string arguments or one array.
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function addSelect($columns = '*')
 	{
@@ -288,7 +346,7 @@ class e_db_query
 	 * Toggle SELECT DISTINCT.
 	 *
 	 * @param bool $distinct
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function distinct($distinct = true)
 	{
@@ -299,12 +357,12 @@ class e_db_query
 
 	/**
 	 * Start a SELECT whose column list is a single developer-authored
-	 * expression, taken verbatim. {@see e_db_query::select()} already keeps
+	 * expression, taken verbatim. {@see QueryBuilder::select()} already keeps
 	 * non-identifier expressions as-is; this is sugar that documents the intent
 	 * and must never receive user input.
 	 *
 	 * @param string $expression Raw SELECT list.
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function selectRaw($expression)
 	{
@@ -316,11 +374,11 @@ class e_db_query
 
 	/**
 	 * Add a scalar sub-query to the SELECT list as "(SELECT ...) AS alias"; see
-	 * {@see e_db_query::fromSub()} for how the sub-query is supplied.
+	 * {@see QueryBuilder::fromSub()} for how the sub-query is supplied.
 	 *
-	 * @param Closure|e_db_query $query Sub-query source.
+	 * @param Closure|QueryBuilder $query Sub-query source.
 	 * @param string $alias Column alias; validated and quoted.
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 * @throws InvalidArgumentException when the alias fails validation.
 	 */
 	public function selectSub($query, $alias)
@@ -332,11 +390,89 @@ class e_db_query
 	}
 
 	/**
+	 * Add a plain "<column> AS `alias`" projection to the SELECT list. The
+	 * column (an identifier, or table.column) and the alias are each validated
+	 * and quoted independently and fail-closed; nothing is parsed out of a bare
+	 * string, so an identifier or alias that itself contains a space or the word
+	 * "as" is handled correctly. For a function/computed/literal projection use
+	 * {@see QueryBuilder::selectAggregate()} / {@see QueryBuilder::selectLiteral()},
+	 * or addSelect({@see QueryBuilder::raw()}).
+	 *
+	 * @param string $column Column name (or table.column); validated and quoted.
+	 * @param string $alias Column alias; validated and quoted.
+	 * @return QueryBuilder $this
+	 * @throws InvalidArgumentException when the column or the alias fails validation.
+	 */
+	public function selectAs($column, $alias)
+	{
+		$this->type = self::TYPE_SELECT;
+		$this->select[] = $this->quoteColumn($column).' AS '.$this->_quotedAlias($alias);
+
+		return $this;
+	}
+
+	/**
+	 * Add a "COUNT(<col>) [AS `alias`]" expression to the SELECT list, a
+	 * structured spelling of a count-select that needs no developer SQL. The
+	 * column (or '*') and the alias are validated and quoted, nothing is bound.
+	 *
+	 * @param string $column Column name, or '*' (the default).
+	 * @param string|null $alias Optional column alias; validated and quoted.
+	 * @return QueryBuilder $this
+	 * @throws InvalidArgumentException when an identifier fails validation.
+	 */
+	public function selectCount($column = '*', $alias = null)
+	{
+		return $this->selectAggregate('COUNT', $column, $alias);
+	}
+
+	/**
+	 * Add a "FUNC(<col>) [AS `alias`]" aggregate expression to the SELECT list.
+	 * The function is checked against the allowlist {COUNT,SUM,AVG,MIN,MAX}, the
+	 * column (or, for COUNT, '*') and the alias are validated identifiers, and
+	 * nothing is bound. Built through {@see ExpressionBuilder::aggregate()}.
+	 *
+	 * @param string $function One of COUNT,SUM,AVG,MIN,MAX (case-insensitive).
+	 * @param string $column Column name, or '*' for COUNT.
+	 * @param string|null $alias Optional column alias; validated and quoted.
+	 * @return QueryBuilder $this
+	 * @throws InvalidArgumentException on a bad function, column or alias.
+	 */
+	public function selectAggregate($function, $column, $alias = null)
+	{
+		$this->type = self::TYPE_SELECT;
+
+		$fragment = $this->expr()->aggregate($function, $column, $alias);
+		$this->mergeParameters($fragment->getParameters());
+		$this->select[] = $fragment->getSql();
+
+		return $this;
+	}
+
+	/**
+	 * Add a bound literal as a SELECT expression, ":qbN AS `alias`" (e.g. the
+	 * constant "1 AS is_active"). The value is bound, never inlined, and the
+	 * alias is validated and quoted.
+	 *
+	 * @param mixed $value Bound literal value.
+	 * @param string $alias Column alias; validated and quoted.
+	 * @return QueryBuilder $this
+	 * @throws InvalidArgumentException when the alias fails validation.
+	 */
+	public function selectLiteral($value, $alias)
+	{
+		$this->type = self::TYPE_SELECT;
+		$this->select[] = $this->createNamedParameter($value).' AS '.$this->quoteColumn($alias);
+
+		return $this;
+	}
+
+	/**
 	 * Set the table to select from.
 	 *
 	 * @param string $table Logical table name, e.g. 'user' (no '#', no prefix).
 	 * @param string|null $alias Optional table alias.
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function from($table, $alias = null)
 	{
@@ -352,15 +488,15 @@ class e_db_query
 	 * Select from a derived table (sub-query) instead of a named table.
 	 *
 	 * <code>
-	 * $qb->select('*')->fromSub(function (e_db_query $sub) {
+	 * $qb->select('*')->fromSub(function (QueryBuilder $sub) {
 	 *     $sub->select('user_class', 'COUNT(*) AS cnt')->from('user')->groupBy('user_class');
 	 * }, 'counts');
 	 * </code>
 	 *
-	 * @param Closure|e_db_query $query Closure receiving a fresh builder, or a
-	 *                           builder made with {@see e_db_query::newSubQuery()}.
+	 * @param Closure|QueryBuilder $query Closure receiving a fresh builder, or a
+	 *                           builder made with {@see QueryBuilder::newSubQuery()}.
 	 * @param string $alias Alias for the derived table; validated and quoted.
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 * @throws InvalidArgumentException when the alias fails validation.
 	 */
 	public function fromSub($query, $alias)
@@ -377,12 +513,12 @@ class e_db_query
 	/**
 	 * INNER JOIN another table. The ON condition is developer-authored SQL
 	 * (it usually compares two columns); pass any values in it through
-	 * {@see e_db_query::createNamedParameter()}.
+	 * {@see QueryBuilder::createNamedParameter()}.
 	 *
 	 * @param string $table Logical table name (no '#', no prefix).
 	 * @param string $alias Alias for the joined table.
 	 * @param string $condition ON condition.
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function join($table, $alias, $condition)
 	{
@@ -390,12 +526,12 @@ class e_db_query
 	}
 
 	/**
-	 * LEFT JOIN another table; see {@see e_db_query::join()}.
+	 * LEFT JOIN another table; see {@see QueryBuilder::join()}.
 	 *
 	 * @param string $table Logical table name (no '#', no prefix).
 	 * @param string $alias Alias for the joined table.
 	 * @param string $condition ON condition.
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function leftJoin($table, $alias, $condition)
 	{
@@ -403,12 +539,12 @@ class e_db_query
 	}
 
 	/**
-	 * INNER JOIN; an explicit alias of {@see e_db_query::join()}.
+	 * INNER JOIN; an explicit alias of {@see QueryBuilder::join()}.
 	 *
 	 * @param string $table Logical table name (no '#', no prefix).
 	 * @param string $alias Alias for the joined table.
 	 * @param string $condition ON condition.
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function innerJoin($table, $alias, $condition)
 	{
@@ -416,12 +552,12 @@ class e_db_query
 	}
 
 	/**
-	 * RIGHT JOIN another table; see {@see e_db_query::join()}.
+	 * RIGHT JOIN another table; see {@see QueryBuilder::join()}.
 	 *
 	 * @param string $table Logical table name (no '#', no prefix).
 	 * @param string $alias Alias for the joined table.
 	 * @param string $condition ON condition.
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function rightJoin($table, $alias, $condition)
 	{
@@ -433,7 +569,7 @@ class e_db_query
 	 *
 	 * @param string $table Logical table name (no '#', no prefix).
 	 * @param string|null $alias Optional alias for the joined table.
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function crossJoin($table, $alias = null)
 	{
@@ -441,13 +577,13 @@ class e_db_query
 	}
 
 	/**
-	 * INNER JOIN a derived table (sub-query); see {@see e_db_query::fromSub()}
+	 * INNER JOIN a derived table (sub-query); see {@see QueryBuilder::fromSub()}
 	 * for how the sub-query is supplied.
 	 *
-	 * @param Closure|e_db_query $query Sub-query source.
+	 * @param Closure|QueryBuilder $query Sub-query source.
 	 * @param string $alias Alias for the derived table; validated and quoted.
 	 * @param string $condition ON condition.
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function joinSub($query, $alias, $condition)
 	{
@@ -455,12 +591,12 @@ class e_db_query
 	}
 
 	/**
-	 * LEFT JOIN a derived table (sub-query); see {@see e_db_query::joinSub()}.
+	 * LEFT JOIN a derived table (sub-query); see {@see QueryBuilder::joinSub()}.
 	 *
-	 * @param Closure|e_db_query $query Sub-query source.
+	 * @param Closure|QueryBuilder $query Sub-query source.
 	 * @param string $alias Alias for the derived table; validated and quoted.
 	 * @param string $condition ON condition.
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function leftJoinSub($query, $alias, $condition)
 	{
@@ -477,15 +613,15 @@ class e_db_query
 	 *   <li>a list of array(column, value) or array(column, operator, value)
 	 *       tuples;</li>
 	 *   <li>a closure receiving a fresh builder, compiled as a parenthesised
-	 *       sub-group: where(function (e_db_query $q) { ... });</li>
-	 *   <li>an {@see e_db_expr} fragment, or a hand-written string for the rare
+	 *       sub-group: where(function (QueryBuilder $q) { ... });</li>
+	 *   <li>an {@see ExpressionBuilder} fragment, or a hand-written string for the rare
 	 *       case the builder cannot express (developer SQL, never user input).</li>
 	 * </ul>
 	 * The operator in the value forms is checked against a fixed allowlist,
 	 * column names are validated, and values are always bound.
 	 *
 	 * @param mixed ...$args
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 * @throws InvalidArgumentException on an unknown operator or invalid identifier.
 	 */
 	public function where(...$args)
@@ -495,10 +631,10 @@ class e_db_query
 
 	/**
 	 * OR a condition onto the WHERE clause; takes the same forms as
-	 * {@see e_db_query::where()}.
+	 * {@see QueryBuilder::where()}.
 	 *
 	 * @param mixed ...$args
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function orWhere(...$args)
 	{
@@ -507,11 +643,11 @@ class e_db_query
 
 	/**
 	 * AND a condition onto the WHERE clause; an explicit alias of
-	 * {@see e_db_query::where()} for readers who prefer to spell out the
+	 * {@see QueryBuilder::where()} for readers who prefer to spell out the
 	 * conjunction.
 	 *
 	 * @param mixed ...$args
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function andWhere(...$args)
 	{
@@ -520,13 +656,13 @@ class e_db_query
 
 	/**
 	 * AND a "column IN (...)" condition with every value bound. The values may
-	 * be an array, or a sub-query (closure or {@see e_db_query::newSubQuery()}
+	 * be an array, or a sub-query (closure or {@see QueryBuilder::newSubQuery()}
 	 * builder) for "column IN (SELECT ...)". An empty array compiles to the
 	 * always-false predicate 1=0.
 	 *
 	 * @param string $column
-	 * @param array|Closure|e_db_query $values
-	 * @return e_db_query $this
+	 * @param array|Closure|QueryBuilder $values
+	 * @return QueryBuilder $this
 	 * @throws InvalidArgumentException when the column name fails validation.
 	 */
 	public function whereIn($column, $values)
@@ -535,11 +671,11 @@ class e_db_query
 	}
 
 	/**
-	 * OR form of {@see e_db_query::whereIn()}.
+	 * OR form of {@see QueryBuilder::whereIn()}.
 	 *
 	 * @param string $column
-	 * @param array|Closure|e_db_query $values
-	 * @return e_db_query $this
+	 * @param array|Closure|QueryBuilder $values
+	 * @return QueryBuilder $this
 	 */
 	public function orWhereIn($column, $values)
 	{
@@ -547,12 +683,12 @@ class e_db_query
 	}
 
 	/**
-	 * AND a "column NOT IN (...)" condition; see {@see e_db_query::whereIn()}.
+	 * AND a "column NOT IN (...)" condition; see {@see QueryBuilder::whereIn()}.
 	 * An empty array compiles to the always-true predicate 1=1.
 	 *
 	 * @param string $column
-	 * @param array|Closure|e_db_query $values
-	 * @return e_db_query $this
+	 * @param array|Closure|QueryBuilder $values
+	 * @return QueryBuilder $this
 	 */
 	public function whereNotIn($column, $values)
 	{
@@ -560,11 +696,11 @@ class e_db_query
 	}
 
 	/**
-	 * OR form of {@see e_db_query::whereNotIn()}.
+	 * OR form of {@see QueryBuilder::whereNotIn()}.
 	 *
 	 * @param string $column
-	 * @param array|Closure|e_db_query $values
-	 * @return e_db_query $this
+	 * @param array|Closure|QueryBuilder $values
+	 * @return QueryBuilder $this
 	 */
 	public function orWhereNotIn($column, $values)
 	{
@@ -575,7 +711,7 @@ class e_db_query
 	 * AND "column IS NULL".
 	 *
 	 * @param string $column
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function whereNull($column)
 	{
@@ -586,7 +722,7 @@ class e_db_query
 	 * OR "column IS NULL".
 	 *
 	 * @param string $column
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function orWhereNull($column)
 	{
@@ -597,7 +733,7 @@ class e_db_query
 	 * AND "column IS NOT NULL".
 	 *
 	 * @param string $column
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function whereNotNull($column)
 	{
@@ -608,7 +744,7 @@ class e_db_query
 	 * OR "column IS NOT NULL".
 	 *
 	 * @param string $column
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function orWhereNotNull($column)
 	{
@@ -621,7 +757,7 @@ class e_db_query
 	 * @param string $column
 	 * @param mixed $min
 	 * @param mixed $max
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function whereBetween($column, $min, $max)
 	{
@@ -629,12 +765,12 @@ class e_db_query
 	}
 
 	/**
-	 * OR form of {@see e_db_query::whereBetween()}.
+	 * OR form of {@see QueryBuilder::whereBetween()}.
 	 *
 	 * @param string $column
 	 * @param mixed $min
 	 * @param mixed $max
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function orWhereBetween($column, $min, $max)
 	{
@@ -647,7 +783,7 @@ class e_db_query
 	 * @param string $column
 	 * @param mixed $min
 	 * @param mixed $max
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function whereNotBetween($column, $min, $max)
 	{
@@ -655,12 +791,12 @@ class e_db_query
 	}
 
 	/**
-	 * OR form of {@see e_db_query::whereNotBetween()}.
+	 * OR form of {@see QueryBuilder::whereNotBetween()}.
 	 *
 	 * @param string $column
 	 * @param mixed $min
 	 * @param mixed $max
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function orWhereNotBetween($column, $min, $max)
 	{
@@ -675,7 +811,7 @@ class e_db_query
 	 * @param string $first
 	 * @param string $operator Operator, or the second column when $second is omitted.
 	 * @param string|null $second Second column.
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function whereColumn($first, $operator, $second = null)
 	{
@@ -683,12 +819,12 @@ class e_db_query
 	}
 
 	/**
-	 * OR form of {@see e_db_query::whereColumn()}.
+	 * OR form of {@see QueryBuilder::whereColumn()}.
 	 *
 	 * @param string $first
 	 * @param string $operator
 	 * @param string|null $second
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function orWhereColumn($first, $operator, $second = null)
 	{
@@ -697,12 +833,12 @@ class e_db_query
 
 	/**
 	 * AND "column LIKE :pattern"; the pattern is bound verbatim, so the caller
-	 * controls the % and _ wildcards. See {@see e_db_expr::contains()} for
+	 * controls the % and _ wildcards. See {@see ExpressionBuilder::contains()} for
 	 * matching a plain substring.
 	 *
 	 * @param string $column
 	 * @param string $pattern
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function whereLike($column, $pattern)
 	{
@@ -710,11 +846,11 @@ class e_db_query
 	}
 
 	/**
-	 * OR form of {@see e_db_query::whereLike()}.
+	 * OR form of {@see QueryBuilder::whereLike()}.
 	 *
 	 * @param string $column
 	 * @param string $pattern
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function orWhereLike($column, $pattern)
 	{
@@ -722,11 +858,11 @@ class e_db_query
 	}
 
 	/**
-	 * AND "column NOT LIKE :pattern"; see {@see e_db_query::whereLike()}.
+	 * AND "column NOT LIKE :pattern"; see {@see QueryBuilder::whereLike()}.
 	 *
 	 * @param string $column
 	 * @param string $pattern
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function whereNotLike($column, $pattern)
 	{
@@ -734,11 +870,11 @@ class e_db_query
 	}
 
 	/**
-	 * OR form of {@see e_db_query::whereNotLike()}.
+	 * OR form of {@see QueryBuilder::whereNotLike()}.
 	 *
 	 * @param string $column
 	 * @param string $pattern
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function orWhereNotLike($column, $pattern)
 	{
@@ -746,11 +882,11 @@ class e_db_query
 	}
 
 	/**
-	 * AND "EXISTS (sub-query)"; see {@see e_db_query::fromSub()} for how the
+	 * AND "EXISTS (sub-query)"; see {@see QueryBuilder::fromSub()} for how the
 	 * sub-query is supplied.
 	 *
-	 * @param Closure|e_db_query $query
-	 * @return e_db_query $this
+	 * @param Closure|QueryBuilder $query
+	 * @return QueryBuilder $this
 	 */
 	public function whereExists($query)
 	{
@@ -758,10 +894,10 @@ class e_db_query
 	}
 
 	/**
-	 * OR form of {@see e_db_query::whereExists()}.
+	 * OR form of {@see QueryBuilder::whereExists()}.
 	 *
-	 * @param Closure|e_db_query $query
-	 * @return e_db_query $this
+	 * @param Closure|QueryBuilder $query
+	 * @return QueryBuilder $this
 	 */
 	public function orWhereExists($query)
 	{
@@ -771,8 +907,8 @@ class e_db_query
 	/**
 	 * AND "NOT EXISTS (sub-query)".
 	 *
-	 * @param Closure|e_db_query $query
-	 * @return e_db_query $this
+	 * @param Closure|QueryBuilder $query
+	 * @return QueryBuilder $this
 	 */
 	public function whereNotExists($query)
 	{
@@ -780,10 +916,10 @@ class e_db_query
 	}
 
 	/**
-	 * OR form of {@see e_db_query::whereNotExists()}.
+	 * OR form of {@see QueryBuilder::whereNotExists()}.
 	 *
-	 * @param Closure|e_db_query $query
-	 * @return e_db_query $this
+	 * @param Closure|QueryBuilder $query
+	 * @return QueryBuilder $this
 	 */
 	public function orWhereNotExists($query)
 	{
@@ -794,7 +930,7 @@ class e_db_query
 	 * AND a negated parenthesised sub-group, NOT (...), built from a closure.
 	 *
 	 * @param Closure $callback Receives a fresh builder.
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function whereNot(Closure $callback)
 	{
@@ -802,10 +938,10 @@ class e_db_query
 	}
 
 	/**
-	 * OR form of {@see e_db_query::whereNot()}.
+	 * OR form of {@see QueryBuilder::whereNot()}.
 	 *
 	 * @param Closure $callback
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function orWhereNot(Closure $callback)
 	{
@@ -820,7 +956,7 @@ class e_db_query
 	 * @param string $column
 	 * @param string $operator Operator, or the value when $value is omitted.
 	 * @param mixed $value
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function whereDate($column, $operator, $value = null)
 	{
@@ -828,12 +964,12 @@ class e_db_query
 	}
 
 	/**
-	 * OR form of {@see e_db_query::whereDate()}.
+	 * OR form of {@see QueryBuilder::whereDate()}.
 	 *
 	 * @param string $column
 	 * @param string $operator
 	 * @param mixed $value
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function orWhereDate($column, $operator, $value = null)
 	{
@@ -842,12 +978,12 @@ class e_db_query
 
 	/**
 	 * AND a comparison against the year part of a column; see
-	 * {@see e_db_query::whereDate()}.
+	 * {@see QueryBuilder::whereDate()}.
 	 *
 	 * @param string $column
 	 * @param string $operator
 	 * @param mixed $value
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function whereYear($column, $operator, $value = null)
 	{
@@ -855,12 +991,12 @@ class e_db_query
 	}
 
 	/**
-	 * OR form of {@see e_db_query::whereYear()}.
+	 * OR form of {@see QueryBuilder::whereYear()}.
 	 *
 	 * @param string $column
 	 * @param string $operator
 	 * @param mixed $value
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function orWhereYear($column, $operator, $value = null)
 	{
@@ -869,12 +1005,12 @@ class e_db_query
 
 	/**
 	 * AND a comparison against the month part of a column; see
-	 * {@see e_db_query::whereDate()}.
+	 * {@see QueryBuilder::whereDate()}.
 	 *
 	 * @param string $column
 	 * @param string $operator
 	 * @param mixed $value
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function whereMonth($column, $operator, $value = null)
 	{
@@ -882,12 +1018,12 @@ class e_db_query
 	}
 
 	/**
-	 * OR form of {@see e_db_query::whereMonth()}.
+	 * OR form of {@see QueryBuilder::whereMonth()}.
 	 *
 	 * @param string $column
 	 * @param string $operator
 	 * @param mixed $value
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function orWhereMonth($column, $operator, $value = null)
 	{
@@ -896,12 +1032,12 @@ class e_db_query
 
 	/**
 	 * AND a comparison against the day part of a column; see
-	 * {@see e_db_query::whereDate()}.
+	 * {@see QueryBuilder::whereDate()}.
 	 *
 	 * @param string $column
 	 * @param string $operator
 	 * @param mixed $value
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function whereDay($column, $operator, $value = null)
 	{
@@ -909,12 +1045,12 @@ class e_db_query
 	}
 
 	/**
-	 * OR form of {@see e_db_query::whereDay()}.
+	 * OR form of {@see QueryBuilder::whereDay()}.
 	 *
 	 * @param string $column
 	 * @param string $operator
 	 * @param mixed $value
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function orWhereDay($column, $operator, $value = null)
 	{
@@ -923,12 +1059,12 @@ class e_db_query
 
 	/**
 	 * AND a comparison against the time part of a column; see
-	 * {@see e_db_query::whereDate()}.
+	 * {@see QueryBuilder::whereDate()}.
 	 *
 	 * @param string $column
 	 * @param string $operator
 	 * @param mixed $value
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function whereTime($column, $operator, $value = null)
 	{
@@ -936,12 +1072,12 @@ class e_db_query
 	}
 
 	/**
-	 * OR form of {@see e_db_query::whereTime()}.
+	 * OR form of {@see QueryBuilder::whereTime()}.
 	 *
 	 * @param string $column
 	 * @param string $operator
 	 * @param mixed $value
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function orWhereTime($column, $operator, $value = null)
 	{
@@ -954,7 +1090,7 @@ class e_db_query
 	 *
 	 * @param string $column
 	 * @param mixed $value
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function whereJsonContains($column, $value)
 	{
@@ -962,11 +1098,11 @@ class e_db_query
 	}
 
 	/**
-	 * OR form of {@see e_db_query::whereJsonContains()}.
+	 * OR form of {@see QueryBuilder::whereJsonContains()}.
 	 *
 	 * @param string $column
 	 * @param mixed $value
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function orWhereJsonContains($column, $value)
 	{
@@ -978,7 +1114,7 @@ class e_db_query
 	 *
 	 * @param string $column
 	 * @param mixed $value
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function whereJsonDoesntContain($column, $value)
 	{
@@ -986,11 +1122,11 @@ class e_db_query
 	}
 
 	/**
-	 * OR form of {@see e_db_query::whereJsonDoesntContain()}.
+	 * OR form of {@see QueryBuilder::whereJsonDoesntContain()}.
 	 *
 	 * @param string $column
 	 * @param mixed $value
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function orWhereJsonDoesntContain($column, $value)
 	{
@@ -1003,7 +1139,7 @@ class e_db_query
 	 *
 	 * @param string $column
 	 * @param string $path
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function whereJsonContainsKey($column, $path)
 	{
@@ -1011,11 +1147,11 @@ class e_db_query
 	}
 
 	/**
-	 * OR form of {@see e_db_query::whereJsonContainsKey()}.
+	 * OR form of {@see QueryBuilder::whereJsonContainsKey()}.
 	 *
 	 * @param string $column
 	 * @param string $path
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function orWhereJsonContainsKey($column, $path)
 	{
@@ -1027,7 +1163,7 @@ class e_db_query
 	 *
 	 * @param string $column
 	 * @param string $path
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function whereJsonDoesntContainKey($column, $path)
 	{
@@ -1035,11 +1171,11 @@ class e_db_query
 	}
 
 	/**
-	 * OR form of {@see e_db_query::whereJsonDoesntContainKey()}.
+	 * OR form of {@see QueryBuilder::whereJsonDoesntContainKey()}.
 	 *
 	 * @param string $column
 	 * @param string $path
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function orWhereJsonDoesntContainKey($column, $path)
 	{
@@ -1054,7 +1190,7 @@ class e_db_query
 	 * @param string $column
 	 * @param string $operator Operator, or the value when $value is omitted.
 	 * @param mixed $value
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function whereJsonLength($column, $operator, $value = null)
 	{
@@ -1062,12 +1198,12 @@ class e_db_query
 	}
 
 	/**
-	 * OR form of {@see e_db_query::whereJsonLength()}.
+	 * OR form of {@see QueryBuilder::whereJsonLength()}.
 	 *
 	 * @param string $column
 	 * @param string $operator
 	 * @param mixed $value
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function orWhereJsonLength($column, $operator, $value = null)
 	{
@@ -1080,7 +1216,7 @@ class e_db_query
 	 *
 	 * @param string|array $columns One column, or a list of columns.
 	 * @param string $value Search terms.
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function whereFullText($columns, $value)
 	{
@@ -1088,11 +1224,11 @@ class e_db_query
 	}
 
 	/**
-	 * OR form of {@see e_db_query::whereFullText()}.
+	 * OR form of {@see QueryBuilder::whereFullText()}.
 	 *
 	 * @param string|array $columns
 	 * @param string $value
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function orWhereFullText($columns, $value)
 	{
@@ -1104,7 +1240,7 @@ class e_db_query
 	 * expressions are kept verbatim (developer-authored, never user input).
 	 *
 	 * @param string|array $columns As multiple string arguments or one array.
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function groupBy($columns)
 	{
@@ -1124,7 +1260,7 @@ class e_db_query
 	 * Add more columns to the GROUP BY list without clearing it.
 	 *
 	 * @param string|array $columns As multiple string arguments or one array.
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function addGroupBy($columns)
 	{
@@ -1140,10 +1276,10 @@ class e_db_query
 
 	/**
 	 * AND a condition onto the HAVING clause; takes the same forms as
-	 * {@see e_db_query::where()}.
+	 * {@see QueryBuilder::where()}.
 	 *
 	 * @param mixed ...$args
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function having(...$args)
 	{
@@ -1154,7 +1290,7 @@ class e_db_query
 	 * OR a condition onto the HAVING clause.
 	 *
 	 * @param mixed ...$args
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function orHaving(...$args)
 	{
@@ -1163,10 +1299,10 @@ class e_db_query
 
 	/**
 	 * AND a condition onto the HAVING clause; an explicit alias of
-	 * {@see e_db_query::having()}.
+	 * {@see QueryBuilder::having()}.
 	 *
 	 * @param mixed ...$args
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function andHaving(...$args)
 	{
@@ -1175,10 +1311,10 @@ class e_db_query
 
 	/**
 	 * AND a hand-written HAVING fragment (developer SQL, never user input;
-	 * bind any values with {@see e_db_query::createNamedParameter()}).
+	 * bind any values with {@see QueryBuilder::createNamedParameter()}).
 	 *
 	 * @param string $fragment
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function havingRaw($fragment)
 	{
@@ -1186,14 +1322,62 @@ class e_db_query
 	}
 
 	/**
-	 * OR form of {@see e_db_query::havingRaw()}.
+	 * OR form of {@see QueryBuilder::havingRaw()}.
 	 *
 	 * @param string $fragment
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function orHavingRaw($fragment)
 	{
 		return $this->_appendHaving('OR', (string) $fragment);
+	}
+
+	/**
+	 * AND "COUNT(*) OP :value" onto the HAVING clause, a structured spelling of
+	 * the common grouped-count filter. The operator is checked against the
+	 * allowlist and the value is bound.
+	 *
+	 * @param string $operator
+	 * @param mixed $value
+	 * @return QueryBuilder $this
+	 * @throws InvalidArgumentException on an unsupported operator.
+	 */
+	public function havingCount($operator, $value)
+	{
+		return $this->havingAggregate('COUNT', '*', $operator, $value);
+	}
+
+	/**
+	 * AND "FUNC(<col>) OP :value" onto the HAVING clause. The function is checked
+	 * against the allowlist {COUNT,SUM,AVG,MIN,MAX}, the column (or '*' for
+	 * COUNT) is validated, the operator is allowlisted and the value is bound.
+	 * Built through {@see ExpressionBuilder::aggregateComparison()}.
+	 *
+	 * @param string $function One of COUNT,SUM,AVG,MIN,MAX (case-insensitive).
+	 * @param string $column Column name, or '*' for COUNT.
+	 * @param string $operator
+	 * @param mixed $value
+	 * @return QueryBuilder $this
+	 * @throws InvalidArgumentException on a bad function, column or operator.
+	 */
+	public function havingAggregate($function, $column, $operator, $value)
+	{
+		return $this->_appendHaving('AND', $this->expr()->aggregateComparison($function, $column, $operator, $value));
+	}
+
+	/**
+	 * OR form of {@see QueryBuilder::havingAggregate()}.
+	 *
+	 * @param string $function One of COUNT,SUM,AVG,MIN,MAX (case-insensitive).
+	 * @param string $column Column name, or '*' for COUNT.
+	 * @param string $operator
+	 * @param mixed $value
+	 * @return QueryBuilder $this
+	 * @throws InvalidArgumentException on a bad function, column or operator.
+	 */
+	public function orHavingAggregate($function, $column, $operator, $value)
+	{
+		return $this->_appendHaving('OR', $this->expr()->aggregateComparison($function, $column, $operator, $value));
 	}
 
 	/**
@@ -1202,7 +1386,7 @@ class e_db_query
 	 * @param string $column
 	 * @param mixed $min
 	 * @param mixed $max
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function havingBetween($column, $min, $max)
 	{
@@ -1210,12 +1394,12 @@ class e_db_query
 	}
 
 	/**
-	 * OR form of {@see e_db_query::havingBetween()}.
+	 * OR form of {@see QueryBuilder::havingBetween()}.
 	 *
 	 * @param string $column
 	 * @param mixed $min
 	 * @param mixed $max
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function orHavingBetween($column, $min, $max)
 	{
@@ -1223,14 +1407,14 @@ class e_db_query
 	}
 
 	/**
-	 * Replace the ORDER BY clause. Validated by the {@see e_db_filter}
+	 * Replace the ORDER BY clause. Validated by the {@see IdentifierFilter}
 	 * grammar and fails closed: anything outside "column [ASC|DESC]" lists
 	 * (functions, parentheses, subqueries) throws.
 	 *
 	 * @param string $sort Column name; or, when $direction is null, a full
 	 *                     legacy fragment such as 'col1 DESC, t.col2'.
 	 * @param string|null $direction 'ASC' or 'DESC' (case-insensitive).
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 * @throws InvalidArgumentException when the fragment fails validation.
 	 */
 	public function orderBy($sort, $direction = null)
@@ -1242,11 +1426,11 @@ class e_db_query
 
 	/**
 	 * Append to the ORDER BY clause; same validation as
-	 * {@see e_db_query::orderBy()}.
+	 * {@see QueryBuilder::orderBy()}.
 	 *
 	 * @param string $sort
 	 * @param string|null $direction
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 * @throws InvalidArgumentException when the fragment fails validation.
 	 */
 	public function addOrderBy($sort, $direction = null)
@@ -1255,7 +1439,7 @@ class e_db_query
 
 		if($direction !== null)
 		{
-			$quoted = e_db_filter::identifier($sort);
+			$quoted = IdentifierFilter::identifier($sort);
 
 			if($quoted === false)
 			{
@@ -1274,7 +1458,7 @@ class e_db_query
 			return $this;
 		}
 
-		$canonical = e_db_filter::orderBy($sort);
+		$canonical = IdentifierFilter::orderBy($sort);
 
 		if($canonical === false)
 		{
@@ -1290,7 +1474,7 @@ class e_db_query
 	 * Append a descending ordering; shorthand for addOrderBy($column, 'DESC').
 	 *
 	 * @param string $column
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 * @throws InvalidArgumentException when the column fails validation.
 	 */
 	public function orderByDesc($column)
@@ -1303,7 +1487,7 @@ class e_db_query
 	 * addOrderBy($column, 'DESC').
 	 *
 	 * @param string $column
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function latest($column)
 	{
@@ -1315,7 +1499,7 @@ class e_db_query
 	 * addOrderBy($column, 'ASC').
 	 *
 	 * @param string $column
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function oldest($column)
 	{
@@ -1325,7 +1509,7 @@ class e_db_query
 	/**
 	 * Append a random ordering; the dialect spells the function.
 	 *
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function inRandomOrder()
 	{
@@ -1338,7 +1522,7 @@ class e_db_query
 	 * Skip this many rows (OFFSET). Always inlined as an integer.
 	 *
 	 * @param int|null $firstResult null to clear.
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function setFirstResult($firstResult)
 	{
@@ -1351,7 +1535,7 @@ class e_db_query
 	 * Return at most this many rows (LIMIT). Always inlined as an integer.
 	 *
 	 * @param int|null $maxResults null to clear.
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function setMaxResults($maxResults)
 	{
@@ -1361,10 +1545,10 @@ class e_db_query
 	}
 
 	/**
-	 * Alias of {@see e_db_query::setMaxResults()} (LIMIT).
+	 * Alias of {@see QueryBuilder::setMaxResults()} (LIMIT).
 	 *
 	 * @param int|null $limit
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function limit($limit)
 	{
@@ -1372,10 +1556,10 @@ class e_db_query
 	}
 
 	/**
-	 * Alias of {@see e_db_query::setMaxResults()} (LIMIT).
+	 * Alias of {@see QueryBuilder::setMaxResults()} (LIMIT).
 	 *
 	 * @param int|null $limit
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function take($limit)
 	{
@@ -1383,10 +1567,10 @@ class e_db_query
 	}
 
 	/**
-	 * Alias of {@see e_db_query::setFirstResult()} (OFFSET).
+	 * Alias of {@see QueryBuilder::setFirstResult()} (OFFSET).
 	 *
 	 * @param int|null $offset
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function offset($offset)
 	{
@@ -1394,10 +1578,10 @@ class e_db_query
 	}
 
 	/**
-	 * Alias of {@see e_db_query::setFirstResult()} (OFFSET).
+	 * Alias of {@see QueryBuilder::setFirstResult()} (OFFSET).
 	 *
 	 * @param int|null $offset
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function skip($offset)
 	{
@@ -1406,10 +1590,10 @@ class e_db_query
 
 	/**
 	 * Start an INSERT query; supply the row with
-	 * {@see e_db_query::values()}.
+	 * {@see QueryBuilder::values()}.
 	 *
 	 * @param string $table Logical table name (no '#', no prefix).
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function insert($table)
 	{
@@ -1425,7 +1609,7 @@ class e_db_query
 	 * the modifier; the call site stays portable.
 	 *
 	 * @param string $table Logical table name (no '#', no prefix).
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function insertOrIgnore($table)
 	{
@@ -1449,7 +1633,7 @@ class e_db_query
 	 * </code>
 	 *
 	 * @param array $values column => value, or a list of column => value rows
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 * @throws InvalidArgumentException when a column name fails validation.
 	 */
 	public function values(array $values)
@@ -1474,19 +1658,19 @@ class e_db_query
 
 	/**
 	 * Populate this table from a SELECT (INSERT ... SELECT). Name the table
-	 * first with {@see e_db_query::insert()} or
-	 * {@see e_db_query::insertOrIgnore()}; pass the columns to fill, or an empty
+	 * first with {@see QueryBuilder::insert()} or
+	 * {@see QueryBuilder::insertOrIgnore()}; pass the columns to fill, or an empty
 	 * array for "INSERT INTO t SELECT ...".
 	 *
 	 * <code>
-	 * $qb->insert('archive')->insertUsing(array('id', 'name'), function (e_db_query $s) {
+	 * $qb->insert('archive')->insertUsing(array('id', 'name'), function (QueryBuilder $s) {
 	 *     $s->select('id', 'name')->from('live')->where('expired', 1);
 	 * });
 	 * </code>
 	 *
 	 * @param array $columns Target columns, or array() to insert every column.
-	 * @param Closure|e_db_query $query Sub-query source.
-	 * @return e_db_query $this
+	 * @param Closure|QueryBuilder $query Sub-query source.
+	 * @return QueryBuilder $this
 	 * @throws InvalidArgumentException when a column name fails validation.
 	 */
 	public function insertUsing($columns, $query)
@@ -1508,7 +1692,7 @@ class e_db_query
 
 	/**
 	 * Insert one row and return the auto-increment id of the new row. Name the
-	 * table first with {@see e_db_query::insert()}.
+	 * table first with {@see QueryBuilder::insert()}.
 	 *
 	 * @param array $values column => value
 	 * @return int|string|bool the last insert id, or false on error.
@@ -1529,12 +1713,12 @@ class e_db_query
 	/**
 	 * Start a REPLACE query: insert a row, replacing any existing row that has
 	 * the same primary or unique key. Supply the row with
-	 * {@see e_db_query::values()} (or {@see e_db_query::set()}); every value is
+	 * {@see QueryBuilder::values()} (or {@see QueryBuilder::set()}); every value is
 	 * bound. The dialect-specific statement is produced by the platform, so the
 	 * call site stays portable.
 	 *
 	 * @param string $table Logical table name (no '#', no prefix).
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function replace($table)
 	{
@@ -1546,10 +1730,10 @@ class e_db_query
 
 	/**
 	 * Start an UPDATE query; queue assignments with
-	 * {@see e_db_query::set()}.
+	 * {@see QueryBuilder::set()}.
 	 *
 	 * @param string $table Logical table name (no '#', no prefix).
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function update($table)
 	{
@@ -1562,12 +1746,12 @@ class e_db_query
 	/**
 	 * Queue one column assignment for UPDATE (or INSERT). The value is always
 	 * bound; to assign a SQL expression such as "col + 1" instead of a value,
-	 * use {@see e_db_query::setExpression()}.
+	 * use {@see QueryBuilder::setExpression()}.
 	 *
 	 * @param string $column
 	 * @param mixed $value
-	 * @param int|null $type Optional {@see e_db}::PARAM_* override.
-	 * @return e_db_query $this
+	 * @param int|null $type Optional {@see ConnectionInterface}::PARAM_* override.
+	 * @return QueryBuilder $this
 	 * @throws InvalidArgumentException when the column name fails validation.
 	 */
 	public function set($column, $value, $type = null)
@@ -1579,10 +1763,10 @@ class e_db_query
 
 	/**
 	 * Queue a SQL expression as a column assignment for UPDATE, e.g.
-	 * "user_visits = user_visits + 1". Unlike {@see e_db_query::set()}, the
+	 * "user_visits = user_visits + 1". Unlike {@see QueryBuilder::set()}, the
 	 * right-hand side is developer-authored SQL placed verbatim, so it must
 	 * never contain user input; bind any values inside it with
-	 * {@see e_db_query::createNamedParameter()}.
+	 * {@see QueryBuilder::createNamedParameter()}.
 	 *
 	 * <code>
 	 * $qb->update('user')
@@ -1594,7 +1778,7 @@ class e_db_query
 	 *
 	 * @param string $column Assignment target; validated and quoted.
 	 * @param string $expression Raw SQL expression for the right-hand side.
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 * @throws InvalidArgumentException when the column name fails validation.
 	 */
 	public function setExpression($column, $expression)
@@ -1605,11 +1789,137 @@ class e_db_query
 	}
 
 	/**
+	 * Queue a column-to-column copy for UPDATE, "SET `col` = `src`". Both sides
+	 * are validated identifiers and nothing is bound, so neither may carry user
+	 * input; this is the structured spelling that replaces a hand-written
+	 * {@see QueryBuilder::setExpression()} RHS of one bare column.
+	 *
+	 * @param string $column Assignment target; validated and quoted.
+	 * @param string $sourceColumn Source column; validated and quoted.
+	 * @return QueryBuilder $this
+	 * @throws InvalidArgumentException when an identifier fails validation.
+	 */
+	public function setColumn($column, $sourceColumn)
+	{
+		$this->set[$this->quoteColumn($column)] = $this->quoteColumn($sourceColumn);
+
+		return $this;
+	}
+
+	/**
+	 * Queue a typed column assignment, applying the e107 field-type STORAGE
+	 * transform so the bound value is byte-identical to the deprecated
+	 * array-form {@see ConnectionInterface::update()}/{@see ConnectionInterface::insert()}. Unlike
+	 * {@see QueryBuilder::set()} - whose third argument is a {@see ConnectionInterface}::PARAM_*
+	 * override - $fieldType here is a field-type TOKEN ('int', 'float', 'array',
+	 * 'todb', 'null', 'str', 'cmd', ...).
+	 *
+	 * @param string $column
+	 * @param mixed $value
+	 * @param string $fieldType Field-type token.
+	 * @return QueryBuilder $this
+	 * @throws InvalidArgumentException when the column name fails validation.
+	 */
+	public function setTyped($column, $value, $fieldType)
+	{
+		return $this->_typedParameter($column, $value, $fieldType);
+	}
+
+	/**
+	 * Queue one row of typed values, applying the e107 field-type STORAGE
+	 * transform per column so writes are byte-identical to the deprecated
+	 * array-form CRUD. Each value's token comes from $fieldTypes[$column],
+	 * falling back to $fieldTypes['_DEFAULT'] then 'string' for columns absent
+	 * from the map, mirroring the legacy lookup.
+	 *
+	 * Pass a single column => value map; a list of rows is rejected (bind the
+	 * rows individually, since each may carry different field types).
+	 *
+	 * <code>
+	 * $defs = e107::getDb()->getFieldDefs('user');
+	 * $qb->insert('user')->valuesTyped($data, $defs['_FIELD_TYPES'])->execute();
+	 * </code>
+	 *
+	 * @param array $values column => value (single row)
+	 * @param array $fieldTypes column => field-type token, optionally with a
+	 *                          '_DEFAULT' fallback.
+	 * @return QueryBuilder $this
+	 * @throws InvalidArgumentException on a list-of-rows input or a bad column.
+	 */
+	public function valuesTyped(array $values, array $fieldTypes = array())
+	{
+		if($this->_isListOfRows($values))
+		{
+			throw new InvalidArgumentException('valuesTyped() takes one row; pass a single column => value map.');
+		}
+
+		foreach($values as $column => $value)
+		{
+			$this->_typedParameter($column, $value, $this->_resolveFieldType($column, $fieldTypes));
+		}
+
+		return $this;
+	}
+
+	/**
+	 * The field-type token for a column: an explicit entry, else the '_DEFAULT'
+	 * fallback, else 'string'. All three identity-transform to a PARAM_STR bind,
+	 * matching the legacy default for an untyped field.
+	 *
+	 * @param string $column
+	 * @param array $fieldTypes
+	 * @return string
+	 */
+	private function _resolveFieldType($column, array $fieldTypes)
+	{
+		if(isset($fieldTypes[$column]))
+		{
+			return $fieldTypes[$column];
+		}
+
+		if(isset($fieldTypes['_DEFAULT']))
+		{
+			return $fieldTypes['_DEFAULT'];
+		}
+
+		return 'string';
+	}
+
+	/**
+	 * Apply one field-type transform and queue the assignment. For 'cmd' on an
+	 * UPDATE the value is developer-authored SQL emitted verbatim with no bind,
+	 * matching the legacy _prepareUpdateArg() path; every other case (including
+	 * 'cmd' on INSERT/REPLACE, where the legacy bind tuple stores the literal
+	 * value) binds the transformed value with its field-type PARAM_*, the value
+	 * transformed first and the bind type then derived from it - exactly the
+	 * legacy bind tuple.
+	 *
+	 * @param string $column
+	 * @param mixed $value
+	 * @param string $fieldType Field-type token.
+	 * @return QueryBuilder $this
+	 * @throws InvalidArgumentException when the column name fails validation.
+	 */
+	private function _typedParameter($column, $value, $fieldType)
+	{
+		if($fieldType === 'cmd' && $this->type === self::TYPE_UPDATE)
+		{
+			return $this->setExpression($column, SqlFragment::fragment((string) $value));
+		}
+
+		$transformed = $this->db->applyFieldType($fieldType, $value);
+		$bindType = $this->db->fieldTypeBind($fieldType, $transformed);
+		$this->set[$this->quoteColumn($column)] = $this->createNamedParameter($transformed, $bindType);
+
+		return $this;
+	}
+
+	/**
 	 * Start a DELETE query. As with the legacy API, compiling without a
 	 * WHERE clause deletes every row in the table.
 	 *
 	 * @param string $table Logical table name (no '#', no prefix).
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function delete($table)
 	{
@@ -1622,7 +1932,7 @@ class e_db_query
 	/**
 	 * Insert one or more rows, updating the listed columns instead when a row
 	 * would collide on a primary or unique key. Start by naming the table with
-	 * {@see e_db_query::insert()}. Every value is bound and the dialect-specific
+	 * {@see QueryBuilder::insert()}. Every value is bound and the dialect-specific
 	 * statement is produced by the platform, so the call site stays portable.
 	 *
 	 * <code>
@@ -1637,7 +1947,7 @@ class e_db_query
 	 * @param string|array $uniqueBy Column(s) identifying a collision; validated.
 	 * @param array|null $update Columns to update on collision; when null, every
 	 *                   inserted column except those in $uniqueBy.
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 * @throws InvalidArgumentException when no table is set or an identifier fails validation.
 	 */
 	public function upsert(array $values, $uniqueBy, $update = null)
@@ -1669,6 +1979,80 @@ class e_db_query
 			$updateSource = array_keys($values);
 		}
 
+		$this->_buildUpsertUpdate($updateSource, $uniqueBy, $update);
+
+		return $this;
+	}
+
+	/**
+	 * Insert one typed row, updating the listed columns instead when a row would
+	 * collide on a primary or unique key. The typed analogue of
+	 * {@see QueryBuilder::upsert()}: each value passes through the e107 field-type
+	 * STORAGE transform (as {@see QueryBuilder::valuesTyped()}) so the inserted
+	 * bytes are identical to the deprecated field-typed array
+	 * `_DUPLICATE_KEY_UPDATE` write, while the ON DUPLICATE KEY UPDATE clause
+	 * refreshes each column from the (already typed) inserted value.
+	 *
+	 * Takes a single column => value row; a list of rows is rejected (bind rows
+	 * individually, since each may carry different field types).
+	 *
+	 * <code>
+	 * $defs = e107::getDb()->getFieldDefs('user_extended');
+	 * $qb->insert('user_extended')
+	 *    ->upsertTyped($data, 'user_extended_id', null, $defs['_FIELD_TYPES'])
+	 *    ->execute();
+	 * </code>
+	 *
+	 * @param array $values One column => value row (single row only).
+	 * @param string|array $uniqueBy Column(s) identifying a collision; validated.
+	 * @param array|null $update Columns to update on collision; when null, every
+	 *                   inserted column except those in $uniqueBy.
+	 * @param array $fieldTypes column => field-type token, optionally with a
+	 *                          '_DEFAULT' fallback.
+	 * @return QueryBuilder $this
+	 * @throws InvalidArgumentException on a list-of-rows input, no table, or a bad column.
+	 */
+	public function upsertTyped(array $values, $uniqueBy, $update = null, array $fieldTypes = array())
+	{
+		if($this->table === null)
+		{
+			throw new InvalidArgumentException('upsertTyped() needs a table; start with insert($table).');
+		}
+
+		if($this->_isListOfRows($values))
+		{
+			throw new InvalidArgumentException('upsertTyped() takes one row; pass a single column => value map.');
+		}
+
+		$this->type = self::TYPE_UPSERT;
+
+		foreach((array) $uniqueBy as $column)
+		{
+			$this->quoteColumn($column); // validate, fail closed
+		}
+
+		foreach($values as $column => $value)
+		{
+			$this->_typedParameter($column, $value, $this->_resolveFieldType($column, $fieldTypes));
+		}
+
+		$this->_buildUpsertUpdate(array_keys($values), $uniqueBy, $update);
+
+		return $this;
+	}
+
+	/**
+	 * Build the ON DUPLICATE KEY UPDATE assignment list (each column refreshed
+	 * from its inserted value) shared by {@see QueryBuilder::upsert()} and
+	 * {@see QueryBuilder::upsertTyped()}.
+	 *
+	 * @param array $updateSource inserted column names, in order
+	 * @param string|array $uniqueBy collision key column(s), excluded when $update is null
+	 * @param array|null $update explicit update columns, or null to derive from $updateSource
+	 * @return void
+	 */
+	private function _buildUpsertUpdate(array $updateSource, $uniqueBy, $update)
+	{
 		$updateColumns = ($update === null)
 			? array_values(array_diff($updateSource, (array) $uniqueBy))
 			: $update;
@@ -1680,15 +2064,13 @@ class e_db_query
 			$quoted = $this->quoteColumn($column);
 			$this->upsertUpdate[] = $quoted.' = '.$this->platform->getUpsertValueReference($quoted);
 		}
-
-		return $this;
 	}
 
 	/**
 	 * Update the row matching $attributes, or insert one when none matches.
 	 * Name the table first with a write statement such as
-	 * {@see e_db_query::update()}. This issues a lookup then a write and is not
-	 * atomic; prefer {@see e_db_query::upsert()} when a unique key exists.
+	 * {@see QueryBuilder::update()}. This issues a lookup then a write and is not
+	 * atomic; prefer {@see QueryBuilder::upsert()} when a unique key exists.
 	 *
 	 * @param array $attributes column => value used to find and to seed the row
 	 * @param array $values column => value applied on update (and on insert)
@@ -1702,7 +2084,7 @@ class e_db_query
 			throw new InvalidArgumentException('updateOrInsert() needs a table; start with a write statement naming one.');
 		}
 
-		$exists = new e_db_query($this->db, $this->platform);
+		$exists = new QueryBuilder($this->db, $this->platform);
 		$exists->select('1')->from($this->table);
 
 		foreach($attributes as $column => $value)
@@ -1717,7 +2099,7 @@ class e_db_query
 				return 0;
 			}
 
-			$update = new e_db_query($this->db, $this->platform);
+			$update = new QueryBuilder($this->db, $this->platform);
 			$update->update($this->table);
 
 			foreach($values as $column => $value)
@@ -1733,19 +2115,19 @@ class e_db_query
 			return $update->execute();
 		}
 
-		$insert = new e_db_query($this->db, $this->platform);
+		$insert = new QueryBuilder($this->db, $this->platform);
 
 		return $insert->insert($this->table)->values($attributes + $values)->execute();
 	}
 
 	/**
 	 * Queue "column = column + :amount" for UPDATE; the amount is bound. Start
-	 * with {@see e_db_query::update()} and add a {@see e_db_query::where()}.
+	 * with {@see QueryBuilder::update()} and add a {@see QueryBuilder::where()}.
 	 *
 	 * @param string $column
 	 * @param int|float $amount
 	 * @param array $extra Further column => value assignments, each bound.
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 * @throws InvalidArgumentException when an identifier fails validation.
 	 */
 	public function increment($column, $amount = 1, array $extra = array())
@@ -1755,12 +2137,12 @@ class e_db_query
 
 	/**
 	 * Queue "column = column - :amount" for UPDATE; see
-	 * {@see e_db_query::increment()}.
+	 * {@see QueryBuilder::increment()}.
 	 *
 	 * @param string $column
 	 * @param int|float $amount
 	 * @param array $extra Further column => value assignments, each bound.
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 * @throws InvalidArgumentException when an identifier fails validation.
 	 */
 	public function decrement($column, $amount = 1, array $extra = array())
@@ -1770,7 +2152,7 @@ class e_db_query
 
 	/**
 	 * Compile the query to SQL. Together with
-	 * {@see e_db_query::getParameters()} this is the query's complete
+	 * {@see QueryBuilder::getParameters()} this is the query's complete
 	 * intermediate representation; no caller-supplied value remains in the
 	 * SQL text.
 	 *
@@ -1802,10 +2184,10 @@ class e_db_query
 	}
 
 	/**
-	 * Bound parameters, in the shape {@see e_db::execute()} accepts.
+	 * Bound parameters, in the shape {@see ConnectionInterface::execute()} accepts.
 	 *
 	 * @return array placeholder name => value, or
-	 *               name => array('value' => mixed, 'type' => e_db::PARAM_*)
+	 *               name => array('value' => mixed, 'type' => ConnectionInterface::PARAM_*)
 	 */
 	public function getParameters()
 	{
@@ -1815,8 +2197,8 @@ class e_db_query
 	/**
 	 * Compile and run the query on the connection.
 	 *
-	 * @return int|bool the {@see e_db::execute()} return: row count for
-	 *                  SELECT (read rows with {@see e_db::fetch()}), affected
+	 * @return int|bool the {@see ConnectionInterface::execute()} return: row count for
+	 *                  SELECT (read rows with {@see ConnectionInterface::fetch()}), affected
 	 *                  rows for INSERT/UPDATE/DELETE, false on error.
 	 * @throws InvalidArgumentException when the query fails to compile.
 	 */
@@ -1826,11 +2208,19 @@ class e_db_query
 	}
 
 	/**
-	 * Run the query and return every row.
+	 * Run the query and return every row in one array.
+	 *
+	 * This MATERIALISES the whole result set: every row is held in PHP memory at
+	 * once, so peak memory scales with the row count. For a large or unbounded
+	 * result set, prefer {@see QueryBuilder::fetchEach()}, which streams one row at
+	 * a time and keeps only the current row resident. Reach for fetchAll() when
+	 * you genuinely need the array: to key it with $indexBy, to count it or index
+	 * into it, or when the loop body must run another query on the same ConnectionInterface
+	 * handle (which would clobber a live stream; see fetchEach()).
 	 *
 	 * @param string|null $indexBy Column whose value keys the result array.
 	 * @return array rows as associative arrays; empty when no rows match or
-	 *               on error (see {@see e_db::getLastErrorText()}).
+	 *               on error (see {@see ConnectionInterface::getLastErrorText()}).
 	 */
 	public function fetchAll($indexBy = null)
 	{
@@ -1854,6 +2244,38 @@ class e_db_query
 		}
 
 		return $ret;
+	}
+
+	/**
+	 * Run the query and stream the rows one at a time.
+	 *
+	 * Unlike {@see QueryBuilder::fetchAll()}, this does NOT build an array of the
+	 * whole result set: it yields each row as it is read, so only a single row is
+	 * resident in PHP memory at once. Prefer it over fetchAll() whenever the
+	 * result set can be large or unbounded and the loop consumes rows one by one.
+	 *
+	 * The query runs lazily, on the first iteration, so nothing happens until the
+	 * generator is traversed. On a query error nothing is yielded (an empty
+	 * stream), matching fetchAll()'s fail-soft behaviour.
+	 *
+	 * Caveat: the stream reads from the shared ConnectionInterface result on this handle, so do
+	 * NOT run another query on the SAME handle while iterating over it; that
+	 * overwrites the result mid-stream. Use a second handle (e107::getDb('sql2'))
+	 * for nested queries, or fetchAll() to buffer the rows first.
+	 *
+	 * @return \Generator<int, array> each row as an associative array.
+	 */
+	public function fetchEach()
+	{
+		if($this->execute() === false)
+		{
+			return;
+		}
+
+		while($row = $this->db->fetch())
+		{
+			yield $row;
+		}
 	}
 
 	/**
@@ -1960,9 +2382,7 @@ class e_db_query
 	 */
 	public function count($column = '*')
 	{
-		$arg = ($column === '*') ? '*' : $this->quoteColumn($column);
-
-		return (int) $this->select('COUNT('.$arg.')')->fetchOne();
+		return (int) $this->_aggregateTerminal('COUNT', $column);
 	}
 
 	/**
@@ -1974,7 +2394,7 @@ class e_db_query
 	 */
 	public function max($column)
 	{
-		return $this->select('MAX('.$this->quoteColumn($column).')')->fetchOne();
+		return $this->_aggregateTerminal('MAX', $column);
 	}
 
 	/**
@@ -1986,7 +2406,7 @@ class e_db_query
 	 */
 	public function min($column)
 	{
-		return $this->select('MIN('.$this->quoteColumn($column).')')->fetchOne();
+		return $this->_aggregateTerminal('MIN', $column);
 	}
 
 	/**
@@ -1998,7 +2418,7 @@ class e_db_query
 	 */
 	public function sum($column)
 	{
-		return $this->select('SUM('.$this->quoteColumn($column).')')->fetchOne();
+		return $this->_aggregateTerminal('SUM', $column);
 	}
 
 	/**
@@ -2010,14 +2430,38 @@ class e_db_query
 	 */
 	public function avg($column)
 	{
-		return $this->select('AVG('.$this->quoteColumn($column).')')->fetchOne();
+		return $this->_aggregateTerminal('AVG', $column);
+	}
+
+	/**
+	 * Run an aggregate over a throwaway copy of this query and return the scalar
+	 * result. The aggregate select is built on a {@see clone} so calling an
+	 * aggregate terminal never rewrites this builder's SELECT list (aggregate
+	 * purity); the clone's type and select are set directly rather than through
+	 * {@see QueryBuilder::select()}, which would wipe the list. The fragment is
+	 * authored by {@see ExpressionBuilder::aggregate()} and binds nothing, so the
+	 * clone's WHERE parameters (copied by value) are the only binds.
+	 *
+	 * @param string $function One of COUNT,SUM,AVG,MIN,MAX.
+	 * @param string $column Column name, or '*' for COUNT.
+	 * @return mixed the scalar result, or null when there is no row.
+	 * @throws InvalidArgumentException when the column name fails validation.
+	 */
+	private function _aggregateTerminal($function, $column)
+	{
+		$q = clone $this;
+		$q->expr = null;
+		$q->type = self::TYPE_SELECT;
+		$q->select = array($q->expr()->aggregate($function, $column)->getSql());
+
+		return $q->fetchOne();
 	}
 
 	/**
 	 * Acquire an exclusive write lock on the selected rows (e.g. FOR UPDATE).
 	 * The dialect spells the clause.
 	 *
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function lockForUpdate()
 	{
@@ -2030,7 +2474,7 @@ class e_db_query
 	 * Acquire a shared read lock on the selected rows. The dialect spells the
 	 * clause.
 	 *
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	public function sharedLock()
 	{
@@ -2040,11 +2484,11 @@ class e_db_query
 	}
 
 	/**
-	 * Append a UNION arm. Build the arm with {@see e_db_query::newUnionQuery()}
+	 * Append a UNION arm. Build the arm with {@see QueryBuilder::newUnionQuery()}
 	 * so it shares this query's bound-parameter numbering.
 	 *
-	 * @param e_db_query $query
-	 * @return e_db_query $this
+	 * @param QueryBuilder $query
+	 * @return QueryBuilder $this
 	 * @throws InvalidArgumentException when the arm does not share parameters.
 	 */
 	public function union($query)
@@ -2053,10 +2497,10 @@ class e_db_query
 	}
 
 	/**
-	 * Append a UNION ALL arm; see {@see e_db_query::union()}.
+	 * Append a UNION ALL arm; see {@see QueryBuilder::union()}.
 	 *
-	 * @param e_db_query $query
-	 * @return e_db_query $this
+	 * @param QueryBuilder $query
+	 * @return QueryBuilder $this
 	 */
 	public function unionAll($query)
 	{
@@ -2065,9 +2509,9 @@ class e_db_query
 
 	/**
 	 * A fresh builder that shares this query's parameter numbering, for use as
-	 * a UNION arm. See {@see e_db_query::union()}.
+	 * a UNION arm. See {@see QueryBuilder::union()}.
 	 *
-	 * @return e_db_query
+	 * @return QueryBuilder
 	 */
 	public function newUnionQuery()
 	{
@@ -2076,14 +2520,14 @@ class e_db_query
 
 	/**
 	 * A fresh builder that shares this query's parameter numbering, for use as
-	 * a sub-query (e.g. {@see e_db_query::whereExists()},
-	 * {@see e_db_query::whereIn()}, {@see e_db_query::fromSub()}).
+	 * a sub-query (e.g. {@see QueryBuilder::whereExists()},
+	 * {@see QueryBuilder::whereIn()}, {@see QueryBuilder::fromSub()}).
 	 *
-	 * @return e_db_query
+	 * @return QueryBuilder
 	 */
 	public function newSubQuery()
 	{
-		$query = new e_db_query($this->db, $this->platform);
+		$query = new QueryBuilder($this->db, $this->platform);
 		$query->paramOwner = ($this->paramOwner !== null) ? $this->paramOwner : $this;
 
 		return $query;
@@ -2126,7 +2570,7 @@ class e_db_query
 	 * @param string $table
 	 * @param string $alias
 	 * @param string $condition
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	private function _join($type, $table, $alias, $condition)
 	{
@@ -2144,10 +2588,10 @@ class e_db_query
 	 * Queue a join whose source is a derived table (sub-query).
 	 *
 	 * @param string $type 'INNER' or 'LEFT'
-	 * @param Closure|e_db_query $query
+	 * @param Closure|QueryBuilder $query
 	 * @param string $alias
 	 * @param string $condition
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	private function _joinSub($type, $query, $alias, $condition)
 	{
@@ -2277,14 +2721,14 @@ class e_db_query
 	 * Build a "column IN/NOT IN (...)" fragment from an array or a sub-query.
 	 *
 	 * @param string $column
-	 * @param array|Closure|e_db_query $values
+	 * @param array|Closure|QueryBuilder $values
 	 * @param string $operator 'IN' or 'NOT IN'
 	 * @param string $emptyResult predicate for an empty array
 	 * @return string
 	 */
 	private function _inPredicate($column, $values, $operator, $emptyResult)
 	{
-		if($values instanceof Closure || $values instanceof e_db_query)
+		if($values instanceof Closure || $values instanceof QueryBuilder)
 		{
 			return $this->quoteColumn($column).' '.$operator.' '.$this->_subQuery($values);
 		}
@@ -2311,7 +2755,7 @@ class e_db_query
 	 * Embed a sub-query as a parenthesised "(SELECT ...)" string. The sub-query
 	 * shares this query's parameters, so its placeholders stay unique.
 	 *
-	 * @param Closure|e_db_query $query
+	 * @param Closure|QueryBuilder $query
 	 * @return string
 	 * @throws InvalidArgumentException
 	 */
@@ -2324,7 +2768,7 @@ class e_db_query
 	 * Compile a sub-query to SQL without surrounding parentheses (used where the
 	 * grammar forbids them, e.g. INSERT ... SELECT).
 	 *
-	 * @param Closure|e_db_query $query
+	 * @param Closure|QueryBuilder $query
 	 * @return string
 	 * @throws InvalidArgumentException
 	 */
@@ -2338,7 +2782,7 @@ class e_db_query
 			return $sub->getSQL();
 		}
 
-		if($query instanceof e_db_query)
+		if($query instanceof QueryBuilder)
 		{
 			$owner = ($this->paramOwner !== null) ? $this->paramOwner : $this;
 
@@ -2372,7 +2816,7 @@ class e_db_query
 			$operator = '=';
 		}
 
-		$op = e_db_expr::operator($operator);
+		$op = ExpressionBuilder::operator($operator);
 
 		if($op === 'IN' || $op === 'NOT IN')
 		{
@@ -2430,7 +2874,7 @@ class e_db_query
 			$operator = '=';
 		}
 
-		$op = e_db_expr::operator($operator);
+		$op = ExpressionBuilder::operator($operator);
 
 		if($op === 'IN' || $op === 'NOT IN')
 		{
@@ -2459,14 +2903,14 @@ class e_db_query
 	}
 
 	/**
-	 * @param e_db_query $query
+	 * @param QueryBuilder $query
 	 * @param bool $all
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 * @throws InvalidArgumentException
 	 */
 	private function _addUnion($query, $all)
 	{
-		if(!($query instanceof e_db_query))
+		if(!($query instanceof QueryBuilder))
 		{
 			throw new InvalidArgumentException('union() expects a builder from newUnionQuery().');
 		}
@@ -2490,7 +2934,7 @@ class e_db_query
 	 * @param string $sign '+' or '-'
 	 * @param int|float $amount
 	 * @param array $extra
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	private function _incDec($column, $sign, $amount, array $extra)
 	{
@@ -2524,7 +2968,7 @@ class e_db_query
 	 * Validate, quote and bind one INSERT/UPSERT row.
 	 *
 	 * @param array $row column => value
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 * @throws InvalidArgumentException when a column name fails validation.
 	 */
 	private function _addRow(array $row)
@@ -2633,7 +3077,7 @@ class e_db_query
 	/**
 	 * @param string $conjunction 'AND' or 'OR'
 	 * @param string $sql
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	private function _appendWhere($conjunction, $sql)
 	{
@@ -2645,7 +3089,7 @@ class e_db_query
 	/**
 	 * @param string $conjunction 'AND' or 'OR'
 	 * @param string $sql
-	 * @return e_db_query $this
+	 * @return QueryBuilder $this
 	 */
 	private function _appendHaving($conjunction, $sql)
 	{
@@ -2887,427 +3331,9 @@ class e_db_query
 	 */
 	private function _loadFilter()
 	{
-		if(!class_exists('e_db_filter'))
+		if(!class_exists(IdentifierFilter::class))
 		{
-			require_once(__DIR__.'/e_db_filter_class.php');
+			require_once(__DIR__.'/IdentifierFilter.php');
 		}
-	}
-}
-
-
-/**
- * Builds WHERE/HAVING predicate fragments for {@see e_db_query}. Column
- * names are validated against the identifier grammar and every comparison
- * value is registered as a bound parameter on the owning query, never placed
- * in the SQL text. This is a deliberate divergence from builders whose
- * expression helpers accept raw SQL on the right-hand side: here the safe
- * spelling is the only spelling.
- */
-class e_db_expr
-{
-	/** @var e_db_query owning query; parameters register on it */
-	private $qb;
-
-	/**
-	 * @var array Allowlisted comparison operators for {@see e_db_expr::comparison()}
-	 *      and the value forms of where()/having(); '!=' normalises to '<>'.
-	 *      Regular-expression matching is intentionally left to
-	 *      {@see e_db_expr::regexp()}, which sources its operator from the platform.
-	 */
-	private static $operators = array(
-		'='        => '=',
-		'<>'       => '<>',
-		'!='       => '<>',
-		'<'        => '<',
-		'<='       => '<=',
-		'>'        => '>',
-		'>='       => '>=',
-		'LIKE'     => 'LIKE',
-		'NOT LIKE' => 'NOT LIKE',
-		'IN'       => 'IN',
-		'NOT IN'   => 'NOT IN',
-	);
-
-	/**
-	 * @param e_db_query $qb
-	 */
-	public function __construct($qb)
-	{
-		$this->qb = $qb;
-	}
-
-	/**
-	 * `column` = :value
-	 *
-	 * @param string $column
-	 * @param mixed $value
-	 * @return string SQL fragment
-	 * @throws InvalidArgumentException when the column name fails validation.
-	 */
-	public function eq($column, $value)
-	{
-		return $this->_comparison($column, '=', $value);
-	}
-
-	/**
-	 * `column` <> :value
-	 *
-	 * @param string $column
-	 * @param mixed $value
-	 * @return string SQL fragment
-	 */
-	public function neq($column, $value)
-	{
-		return $this->_comparison($column, '<>', $value);
-	}
-
-	/**
-	 * `column` < :value
-	 *
-	 * @param string $column
-	 * @param mixed $value
-	 * @return string SQL fragment
-	 */
-	public function lt($column, $value)
-	{
-		return $this->_comparison($column, '<', $value);
-	}
-
-	/**
-	 * `column` <= :value
-	 *
-	 * @param string $column
-	 * @param mixed $value
-	 * @return string SQL fragment
-	 */
-	public function lte($column, $value)
-	{
-		return $this->_comparison($column, '<=', $value);
-	}
-
-	/**
-	 * `column` > :value
-	 *
-	 * @param string $column
-	 * @param mixed $value
-	 * @return string SQL fragment
-	 */
-	public function gt($column, $value)
-	{
-		return $this->_comparison($column, '>', $value);
-	}
-
-	/**
-	 * `column` >= :value
-	 *
-	 * @param string $column
-	 * @param mixed $value
-	 * @return string SQL fragment
-	 */
-	public function gte($column, $value)
-	{
-		return $this->_comparison($column, '>=', $value);
-	}
-
-	/**
-	 * `column` IN (...) with every value bound. An empty $values list
-	 * compiles to the always-false predicate 1=0, the correct semantics of
-	 * "in the empty set".
-	 *
-	 * @param string $column
-	 * @param array $values
-	 * @return string SQL fragment
-	 */
-	public function in($column, array $values)
-	{
-		return $this->_inList($column, $values, 'IN', '1=0');
-	}
-
-	/**
-	 * `column` NOT IN (...) with every value bound. An empty $values list
-	 * compiles to the always-true predicate 1=1.
-	 *
-	 * @param string $column
-	 * @param array $values
-	 * @return string SQL fragment
-	 */
-	public function notIn($column, array $values)
-	{
-		return $this->_inList($column, $values, 'NOT IN', '1=1');
-	}
-
-	/**
-	 * `column` LIKE :pattern, with $pattern bound verbatim: the caller
-	 * controls the % and _ wildcards. For matching plain substrings, use
-	 * {@see e_db_expr::contains()} instead.
-	 *
-	 * @param string $column
-	 * @param string $pattern
-	 * @return string SQL fragment
-	 */
-	public function like($column, $pattern)
-	{
-		return $this->_comparison($column, 'LIKE', $pattern);
-	}
-
-	/**
-	 * Substring match: LIKE with the needle's %, _ and \ escaped and the
-	 * result wrapped in %...%, so a literal '%' in $value matches a literal
-	 * '%' in the data.
-	 *
-	 * @param string $column
-	 * @param string $value
-	 * @return string SQL fragment
-	 */
-	public function contains($column, $value)
-	{
-		return $this->_comparison($column, 'LIKE', '%'.$this->_escapeLike($value).'%');
-	}
-
-	/**
-	 * Prefix match; see {@see e_db_expr::contains()} for wildcard handling.
-	 *
-	 * @param string $column
-	 * @param string $value
-	 * @return string SQL fragment
-	 */
-	public function startsWith($column, $value)
-	{
-		return $this->_comparison($column, 'LIKE', $this->_escapeLike($value).'%');
-	}
-
-	/**
-	 * Suffix match; see {@see e_db_expr::contains()} for wildcard handling.
-	 *
-	 * @param string $column
-	 * @param string $value
-	 * @return string SQL fragment
-	 */
-	public function endsWith($column, $value)
-	{
-		return $this->_comparison($column, 'LIKE', '%'.$this->_escapeLike($value));
-	}
-
-	/**
-	 * Regular-expression match with the whole pattern bound as one value.
-	 * The operator spelling comes from the platform.
-	 *
-	 * @param string $column
-	 * @param string $pattern
-	 * @return string SQL fragment
-	 */
-	public function regexp($column, $pattern)
-	{
-		return $this->_comparison($column, $this->qb->getPlatform()->getRegexpOperator(), $pattern);
-	}
-
-	/**
-	 * `column` IS NULL
-	 *
-	 * @param string $column
-	 * @return string SQL fragment
-	 */
-	public function isNull($column)
-	{
-		return $this->qb->quoteColumn($column).' IS NULL';
-	}
-
-	/**
-	 * `column` IS NOT NULL
-	 *
-	 * @param string $column
-	 * @return string SQL fragment
-	 */
-	public function isNotNull($column)
-	{
-		return $this->qb->quoteColumn($column).' IS NOT NULL';
-	}
-
-	/**
-	 * Generic "`column` OP :value" with OP checked against the operator
-	 * allowlist ('!=' normalises to '<>'). For IN/NOT IN, $value is taken as a
-	 * list and delegated to {@see e_db_expr::in()}/{@see e_db_expr::notIn()}.
-	 *
-	 * @param string $column
-	 * @param string $operator
-	 * @param mixed $value
-	 * @return string SQL fragment
-	 * @throws InvalidArgumentException on an unsupported operator.
-	 */
-	public function comparison($column, $operator, $value)
-	{
-		$op = self::operator($operator);
-
-		if($op === 'IN')
-		{
-			return $this->in($column, (array) $value);
-		}
-
-		if($op === 'NOT IN')
-		{
-			return $this->notIn($column, (array) $value);
-		}
-
-		return $this->_comparison($column, $op, $value);
-	}
-
-	/**
-	 * Normalise and validate a comparison operator against the allowlist
-	 * ('!=' becomes '<>'); shared by the value forms of where()/having() and
-	 * the date helpers.
-	 *
-	 * @param string $operator
-	 * @return string canonical operator
-	 * @throws InvalidArgumentException on an unsupported operator.
-	 */
-	public static function operator($operator)
-	{
-		$op = strtoupper(trim((string) $operator));
-
-		if(!isset(self::$operators[$op]))
-		{
-			throw new InvalidArgumentException('Unsupported operator: '.$operator);
-		}
-
-		return self::$operators[$op];
-	}
-
-	/**
-	 * `column` BETWEEN :min AND :max, both bounds bound.
-	 *
-	 * @param string $column
-	 * @param mixed $min
-	 * @param mixed $max
-	 * @return string SQL fragment
-	 */
-	public function between($column, $min, $max)
-	{
-		return $this->qb->quoteColumn($column).' BETWEEN '
-			.$this->qb->createNamedParameter($min).' AND '.$this->qb->createNamedParameter($max);
-	}
-
-	/**
-	 * `column` NOT BETWEEN :min AND :max.
-	 *
-	 * @param string $column
-	 * @param mixed $min
-	 * @param mixed $max
-	 * @return string SQL fragment
-	 */
-	public function notBetween($column, $min, $max)
-	{
-		return $this->qb->quoteColumn($column).' NOT BETWEEN '
-			.$this->qb->createNamedParameter($min).' AND '.$this->qb->createNamedParameter($max);
-	}
-
-	/**
-	 * `column` NOT LIKE :pattern, with $pattern bound verbatim; see
-	 * {@see e_db_expr::like()}.
-	 *
-	 * @param string $column
-	 * @param string $pattern
-	 * @return string SQL fragment
-	 */
-	public function notLike($column, $pattern)
-	{
-		return $this->_comparison($column, 'NOT LIKE', $pattern);
-	}
-
-	/**
-	 * Compare two columns, e.g. `a` < `b`. With two arguments the operator
-	 * defaults to '='. Both sides are validated identifiers and nothing is
-	 * bound, so neither may carry user input.
-	 *
-	 * @param string $first
-	 * @param string $operator Operator, or the second column when $second is null.
-	 * @param string|null $second
-	 * @return string SQL fragment
-	 * @throws InvalidArgumentException on an unsupported operator or invalid identifier.
-	 */
-	public function compareColumns($first, $operator, $second = null)
-	{
-		if($second === null)
-		{
-			$second = $operator;
-			$operator = '=';
-		}
-
-		$op = self::operator($operator);
-
-		if($op === 'IN' || $op === 'NOT IN')
-		{
-			throw new InvalidArgumentException('Unsupported column-comparison operator: '.$operator);
-		}
-
-		return $this->qb->quoteColumn($first).' '.$op.' '.$this->qb->quoteColumn($second);
-	}
-
-	/**
-	 * Combine pre-built fragments with AND, each parenthesised. The fragments
-	 * already carry their bound parameters, so this binds nothing itself.
-	 *
-	 * @param string ...$parts
-	 * @return string SQL fragment
-	 */
-	public function andX(...$parts)
-	{
-		return '('.implode(') AND (', array_map('strval', $parts)).')';
-	}
-
-	/**
-	 * Combine pre-built fragments with OR; see {@see e_db_expr::andX()}.
-	 *
-	 * @param string ...$parts
-	 * @return string SQL fragment
-	 */
-	public function orX(...$parts)
-	{
-		return '('.implode(') OR (', array_map('strval', $parts)).')';
-	}
-
-	/**
-	 * @param string $column
-	 * @param string $operator
-	 * @param mixed $value
-	 * @return string
-	 */
-	private function _comparison($column, $operator, $value)
-	{
-		return $this->qb->quoteColumn($column).' '.$operator.' '.$this->qb->createNamedParameter($value);
-	}
-
-	/**
-	 * @param string $column
-	 * @param array $values
-	 * @param string $operator 'IN' or 'NOT IN'
-	 * @param string $emptyResult predicate to emit for an empty list
-	 * @return string
-	 */
-	private function _inList($column, array $values, $operator, $emptyResult)
-	{
-		$quoted = $this->qb->quoteColumn($column); // validate even when the list is empty
-
-		if(count($values) === 0)
-		{
-			return $emptyResult;
-		}
-
-		$placeholders = array();
-
-		foreach($values as $value)
-		{
-			$placeholders[] = $this->qb->createNamedParameter($value);
-		}
-
-		return $quoted.' '.$operator.' ('.implode(', ', $placeholders).')';
-	}
-
-	/**
-	 * @param string $value
-	 * @return string $value with LIKE metacharacters escaped
-	 */
-	private function _escapeLike($value)
-	{
-		return addcslashes((string) $value, '%_\\');
 	}
 }
