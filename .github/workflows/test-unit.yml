@@ -197,3 +197,32 @@ jobs:
       with:
         name: ${{ env.ARTIFACT_NAME }}
         path: ./e107_tests/tests/_output/
+
+  sqli-gate:
+    name: SQL-injection static gate
+    runs-on: ubuntu-latest
+    container:
+      image: php:8.3-cli
+    steps:
+    - name: Install operating system dependencies
+      run: apt-get update && apt-get install -y git unzip
+
+    - uses: actions/checkout@v3
+
+    - name: Opt out of CVE-2022-24765 mitigation
+      run: git config --global safe.directory '*'
+
+    - name: Install Composer
+      run: curl -sSL https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer
+
+    - name: Install scanner dependencies
+      run: composer install --prefer-dist --no-progress
+      working-directory: ./e107_tests/_tools/
+
+    # Fail the build on any NET-NEW unsafe SQL concatenation. The reviewed,
+    # documented residue (foreign-schema importers, vouched whole-query executes,
+    # fail-closed dynamic-identifier DDL) is frozen in deferral_baseline.json;
+    # regenerate it with `--write-baseline=...` only when a site is deliberately
+    # migrated or added after review.
+    - name: SQL-injection scanner gate
+      run: php e107_tests/_tools/sqli_scan.php --quiet --baseline=e107_tests/_tools/deferral_baseline.json
