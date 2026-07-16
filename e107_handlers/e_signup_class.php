@@ -8,6 +8,7 @@
  *
  */
 
+use e107\Database\QueryBuilder;
 
 if (!defined('e107_INIT')) { exit; }
 
@@ -147,8 +148,18 @@ class e_signup
 			$new_email = FALSE;
 		}
 
+		// (`user_loginname` = X OR `user_name` = X OR `user_email` = X) - the
+		// caller-supplied identifier may be a login name, display name or email.
+		$identifierGroup = function(QueryBuilder $q) use ($clean_email)
+		{
+			$q->where('user_loginname', $clean_email)
+				->orWhere('user_name', $clean_email)
+				->orWhere('user_email', $clean_email);
+		};
+
 		// Account already activated
-		if($_POST['resend_email'] && !$new_email && $clean_email && $sql->gen("SELECT * FROM #user WHERE user_ban=0 AND user_sess='' AND (`user_loginname`= '".$clean_email."' OR `user_name` = '".$clean_email."' OR `user_email` = '".$clean_email."' ) "))
+		if($_POST['resend_email'] && !$new_email && $clean_email && e107::getDb()->createQueryBuilder()
+				->from('user')->where('user_ban', 0)->where('user_sess', '')->where($identifierGroup)->count())
 		{
 			$ns->tablerender(LAN_SIGNUP_40,LAN_SIGNUP_41."<br />");
 			return false;
@@ -156,25 +167,36 @@ class e_signup
 
 
 		// Start by looking up the user
-		if(!$sql->select("user", "*", "(`user_loginname` = '".$clean_email."' OR `user_name` = '".$clean_email."' OR `user_email` = '".$clean_email."' ) AND `user_ban`=".USER_REGISTERED_NOT_VALIDATED." AND `user_sess` !='' LIMIT 1"))
+		$row = e107::getDb()->createQueryBuilder()
+			->select('*')->from('user')
+			->where($identifierGroup)
+			->where('user_ban', USER_REGISTERED_NOT_VALIDATED)
+			->where('user_sess', '!=', '')
+			->setMaxResults(1)
+			->fetchRow();
+
+		if(!$row)
 		{
 			message_handler("ALERT",LAN_SIGNUP_64.': '.$clean_email); // email (or other info) not valid.
 			return false;
 		}
 
-		$row = $sql -> fetch();
 		// We should have a user record here
 
 		if(trim($_POST['resend_password']) !="" && $new_email) // Need to change the email address - check password to make sure
 		{
 			if ($userMethods->CheckPassword($_POST['resend_password'], $row['user_loginname'], $row['user_password']) === TRUE)
 			{
-				if ($sql->select('user', 'user_id, user_email', "user_email='".$new_email."'"))
+				if (e107::getDb()->createQueryBuilder()->from('user')->where('user_email', $new_email)->count())
 				{	// Email address already used by someone
 					message_handler("ALERT",LAN_SIGNUP_106); 	// Duplicate email
 					return false;
 				}
-				if($sql->update("user", "user_email='".$new_email."' WHERE user_id = '".$row['user_id']."' LIMIT 1 "))
+				if(e107::getDb()->createQueryBuilder()->update('user')
+					->set('user_email', $new_email)
+					->where('user_id', $row['user_id'])
+					->setMaxResults(1)
+					->execute())
 				{
 					$row['user_email'] = $new_email;
 				}
@@ -382,7 +404,9 @@ class e_signup
 			}
 
 			// When user clicks twice on the email activation link or admin manually activated the account already.
-			if($sql->select("user", "user_id", "user_id = ".intval($qs[1])." AND user_ban = 0 AND user_sess='' " ) ) //TODO XXX check within last 24 hours only?
+			if(e107::getDb()->createQueryBuilder()->from('user')
+				->where('user_id', (int) $qs[1])->where('user_ban', 0)->where('user_sess', '')
+				->count()) //TODO XXX check within last 24 hours only?
 			{
 				return 'exists';
 			}
@@ -390,49 +414,61 @@ class e_signup
 
 			e107::getCache()->clear("online_menu_totals");
 
-			if ($sql->select("user", "*", "user_sess='".$tp->toDB($qs[2], true)."' LIMIT 1"))
+			$userSess = $tp->toDB($qs[2], true);
+			$row = e107::getDb()->createQueryBuilder()
+				->select('*')->from('user')->where('user_sess', $userSess)->setMaxResults(1)->fetchRow();
+
+			if ($row)
 			{
-				if ($row = $sql->fetch())
+				$dbData = array();
+				$dbData['WHERE'] = " user_sess='".$userSess."' ";
+				$dbData['data'] = array('user_ban'=>'0', 'user_sess'=>'');
+
+
+				// Set initial classes, and any which the user can opt to join
+				if ($init_class = $userMethods->userClassUpdate($row))
 				{
-					$dbData = array();
-					$dbData['WHERE'] = " user_sess='".$tp->toDB($qs[2], true)."' ";
-					$dbData['data'] = array('user_ban'=>'0', 'user_sess'=>'');
-
-
-					// Set initial classes, and any which the user can opt to join
-					if ($init_class = $userMethods->userClassUpdate($row))
-					{
-						//print_a($init_class); exit;
-						$dbData['data']['user_class'] = $init_class;
-					}
-
-					$userMethods->addNonDefaulted($dbData);
-					validatorClass::addFieldTypes($userMethods->userVettingInfo,$dbData);
-					$newID = $sql->update('user',$dbData);
-
-					if($newID === false)
-					{
-						$log->addEvent(10,debug_backtrace(),'USER','Verification Fail', print_r($row,true),false, LOG_TO_ROLLING);
-						return 'failed';
-					}
-
-					// Log to user audit log if enabled
-					$log->user_audit(USER_AUDIT_EMAILACK,$row);
-
-					e107::getEvent()->trigger('userveri', $row);			// Legacy event
-					e107::getEvent()->trigger('user_signup_activated', $row);
-					e107::getEvent()->trigger('userfull', $row);			// 'New' event
-
-					if (!empty($this->pref['autologinpostsignup']) && !e107::isCli())
-					{
-						require_once(e_HANDLER.'login.php');
-						$usr = new userlogin();
-						$usr->login($row['user_loginname'], md5($row['user_name'].$row['user_password'].$row['user_join']), 'signup');
-					}
-
-
-					return 'success';
+					//print_a($init_class); exit;
+					$dbData['data']['user_class'] = $init_class;
 				}
+
+				$userMethods->addNonDefaulted($dbData);
+				validatorClass::addFieldTypes($userMethods->userVettingInfo,$dbData);
+
+				// Field-typed array update -> per-column setTyped() applies the same
+				// _FIELD_TYPES storage transform as the legacy array CRUD (byte-identical),
+				// reusing the envelope's own _FIELD_TYPES (legacy skipped getFieldDefs() here);
+				// only $dbData['data'] columns are written, matching _prepareUpdateArg().
+				$qb = $sql->createQueryBuilder()->update('user');
+				foreach($dbData['data'] as $col => $val)
+				{
+					$type = isset($dbData['_FIELD_TYPES'][$col]) ? $dbData['_FIELD_TYPES'][$col] : 'str';
+					$qb->setTyped($col, $val, $type);
+				}
+				$newID = $qb->where('user_sess', $userSess)->execute(); // affected rows (int) or false on error
+
+				if($newID === false)
+				{
+					$log->addEvent(10,debug_backtrace(),'USER','Verification Fail', print_r($row,true),false, LOG_TO_ROLLING);
+					return 'failed';
+				}
+
+				// Log to user audit log if enabled
+				$log->user_audit(USER_AUDIT_EMAILACK,$row);
+
+				e107::getEvent()->trigger('userveri', $row);			// Legacy event
+				e107::getEvent()->trigger('user_signup_activated', $row);
+				e107::getEvent()->trigger('userfull', $row);			// 'New' event
+
+				if (!empty($this->pref['autologinpostsignup']) && !e107::isCli())
+				{
+					require_once(e_HANDLER.'login.php');
+					$usr = new userlogin();
+					$usr->login($row['user_loginname'], md5($row['user_name'].$row['user_password'].$row['user_join']), 'signup');
+				}
+
+
+				return 'success';
 			}
 			else
 			{

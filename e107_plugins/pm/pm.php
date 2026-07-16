@@ -162,9 +162,12 @@
 				}
 
 				$sql2 = e107::getDb('sql2');
-				if($sql2->select('user', 'user_name', 'user_id = ' . intval($to_uid))) //TODO add a check for userclass.
+				$row = $sql2->createQueryBuilder()
+					->select('user_name')->from('user')
+					->where('user_id', (int) $to_uid) //TODO add a check for userclass.
+					->fetchRow();
+				if($row)
 				{
-					$row = $sql2->fetch();
 					$pm_info['from_name'] = $row['user_name'];
 					$pm_info['pm_from'] = intval($to_uid);
 				}
@@ -581,7 +584,12 @@
 						{
 							if($to_info = $this->pm_getuid($to))
 							{    // Check whether sender is blocked - if so, add one to count
-								if(!e107::getDb()->update('private_msg_block', "pm_block_count=pm_block_count+1 WHERE pm_block_from = '" . USERID . "' AND pm_block_to = '" . e107::getParser()->toDB($to) . "'"))
+								if(!e107::getDb()->createQueryBuilder()
+									->update('private_msg_block')
+									->increment('pm_block_count')
+									->where('pm_block_from', USERID)
+									->where('pm_block_to', e107::getParser()->toDB($to))
+									->execute())
 								{
 									$_POST['to_array'][] = $to_info;
 								}
@@ -599,7 +607,12 @@
 							return LAN_PM_17;
 						}
 
-						if(e107::getDb()->update('private_msg_block', "pm_block_count=pm_block_count+1 WHERE pm_block_from = '" . USERID . "' AND pm_block_to = '{$to_info['user_id']}'"))
+						if(e107::getDb()->createQueryBuilder()
+							->update('private_msg_block')
+							->increment('pm_block_count')
+							->where('pm_block_from', USERID)
+							->where('pm_block_to', $to_info['user_id'])
+							->execute())
 						{
 							return LAN_PM_18 . $to_info['user_name'];
 						}
@@ -733,18 +746,20 @@
 
 		$tp = e107::getParser();
 
-		$query = "SELECT * FROM #user WHERE user_name REGEXP '^" . $tp->filter($_POST['keyword'], 'w') . "' ";
-		if($sql->gen($query))
-		{
-			echo '[';
-			while($row = $sql->fetch())
-			{
-				$u[] = "{\"caption\":\"" . $row['user_name'] . "\",\"value\":" . $row['user_id'] . "}";
-			}
+		$qb = $sql->createQueryBuilder();
+		$rows = $qb->select('user_id', 'user_name')->from('user')
+			->where($qb->expr()->regexp('user_name', '^' . $tp->filter($_POST['keyword'], 'w')))
+			->fetchEach();
 
-			echo implode(",", $u);
-			echo ']';
+		$u = array();
+		echo '[';
+		foreach($rows as $row)
+		{
+			$u[] = "{\"caption\":\"" . $row['user_name'] . "\",\"value\":" . $row['user_id'] . "}";
 		}
+
+		echo implode(",", $u);
+		echo ']';
 		exit;
 	}
 
@@ -771,23 +786,45 @@
 	if($read_timeout > 0)
 	{
 		$timeout = time() - ($read_timeout * 86400);
-		$del_qry[] = "(pm_sent < {$timeout} AND pm_read > 0)";
+		$del_qry[] = array($timeout, '>');
 	}
 	if($unread_timeout > 0)
 	{
 		$timeout = time() - ($unread_timeout * 86400);
-		$del_qry[] = "(pm_sent < {$timeout} AND pm_read = 0)";
+		$del_qry[] = array($timeout, '=');
 	}
 	if(count($del_qry) > 0)
 	{
-		$qry = implode(' OR ', $del_qry) . ' AND (pm_from = ' . USERID . ' OR pm_to = ' . USERID . ')';
-		if($sql->select('private_msg', 'pm_id', $qry))
+		// Preserve the legacy operator precedence: the original query was
+		//   (cond1) OR (cond2) AND (pm_from = U OR pm_to = U)
+		// where AND binds tighter than OR, i.e. only the LAST timeout condition
+		// is ANDed with the ownership group; any earlier condition is ORed before it.
+		$ownerCondition = $del_qry[count($del_qry) - 1];
+		$priorConditions = array_slice($del_qry, 0, -1);
+
+		$delQb = $sql->createQueryBuilder();
+		$delQb->select('pm_id')->from('private_msg');
+
+		foreach($priorConditions as $cond)
 		{
-			$delList = $sql->db_getList();
-			foreach($delList as $p)
-			{
-				$pm->del($p['pm_id'], true);
-			}
+			$delQb->orWhere(function($g) use ($cond) {
+				$g->where('pm_sent', '<', $cond[0])
+				  ->where('pm_read', $cond[1], 0);
+			});
+		}
+
+		$delQb->orWhere(function($q) use ($ownerCondition) {
+			$q->where('pm_sent', '<', $ownerCondition[0])
+			  ->where('pm_read', $ownerCondition[1], 0)
+			  ->where(function($owner) {
+				  $owner->where('pm_from', USERID)->orWhere('pm_to', USERID);
+			  });
+		});
+
+		$delList = $delQb->fetchAll();
+		foreach($delList as $p)
+		{
+			$pm->del($p['pm_id'], true);
 		}
 	}
 

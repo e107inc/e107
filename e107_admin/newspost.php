@@ -180,16 +180,16 @@ class news_cat_ui extends e_admin_ui
 			}
 
 			$sef = e107::getParser()->toDB($new_data['category_sef']);
-			
-			if(e107::getDb()->count('news_category', '(*)', "category_sef='$sef'"))
+
+			if(e107::getDb()->createQueryBuilder()->from('news_category')->where('category_sef', $sef)->count())
 			{
 				e107::getMessage()->addError(LAN_NEWS_65);
 				return false;
 			}
-			
+
 			if(empty($new_data['category_order']))
 			{
-				$c = e107::getDb()->count('news_category');
+				$c = e107::getDb()->createQueryBuilder()->from('news_category')->count();
 				$new_data['category_order'] = $c ? $c : 0;
 			}
 			
@@ -210,7 +210,8 @@ class news_cat_ui extends e_admin_ui
 			$message .= print_r($new_data,true);
 			file_put_contents(e_LOG.'uiAjaxResponseInline.log', $message."\n\n", FILE_APPEND);*/
 
-			if(e107::getDb()->count('news_category', '(*)', "category_sef='$sef' AND category_id !=".intval($id)))
+			if(e107::getDb()->createQueryBuilder()->from('news_category')
+				->where('category_sef', $sef)->where('category_id', '!=', (int) $id)->count())
 			{
 				e107::getMessage()->addError(LAN_NEWS_65);
 				return false;
@@ -270,9 +271,9 @@ class news_sub_ui extends e_admin_ui
 	
 		function init()
 		{
-			$sql = e107::getDb();
-			$sql->gen("SELECT category_id,category_name FROM #news_category");
-			while($row = $sql->fetch())
+			$rows = e107::getDb()->createQueryBuilder()
+				->select('category_id', 'category_name')->from('news_category')->fetchAll();
+			foreach($rows as $row)
 			{
 				$cat = $row['category_id'];
 				$this->cats[$cat] = $row['category_name'];
@@ -661,10 +662,13 @@ class news_admin_ui extends e_admin_ui
 
 		if(!empty($new_data['submitted_id']))
 		{
-			e107::getDb()->update('submitnews', "submitnews_auth = 1 WHERE submitnews_id = ".intval($new_data['submitted_id'])." LIMIT 1");
+			e107::getDb()->createQueryBuilder()->update('submitnews')
+				->set('submitnews_auth', 1)
+				->where('submitnews_id', (int) $new_data['submitted_id'])
+				->setMaxResults(1)->execute();
 		}
 
-		if(!empty($new_data['news_sef']) && ($existingSef = e107::getDb()->retrieve('news', 'news_sef', "news_sef = '".$new_data['news_sef']."' AND news_id != ".$id)))
+		if(!empty($new_data['news_sef']) && ($existingSef = $this->findDuplicateSef($new_data['news_sef'], $id)) !== null)
 		{
 			$existingLAN = e107::getParser()->lanVars(LAN_NEWS_95,$existingSef,true );
 			e107::getMessage()->addWarning($existingLAN);
@@ -698,7 +702,7 @@ class news_admin_ui extends e_admin_ui
 
 		$this->clearCache();
 
-		if(!empty($new_data['news_sef']) && ($existingSef = e107::getDb()->retrieve('news', 'news_sef', "news_sef = '".$new_data['news_sef']."' AND news_id != ".$id)))
+		if(!empty($new_data['news_sef']) && ($existingSef = $this->findDuplicateSef($new_data['news_sef'], $id)) !== null)
 		{
 			$existingLAN = e107::getParser()->lanVars(LAN_NEWS_95,$existingSef,true );
 			e107::getMessage()->addWarning($existingLAN);
@@ -734,6 +738,20 @@ class news_admin_ui extends e_admin_ui
 	}
 
 
+
+	/**
+	 * Return the news_sef of another news item already using $sef, or null if none.
+	 * @param string $sef
+	 * @param int|string $id current news item id to exclude
+	 * @return string|null
+	 */
+	private function findDuplicateSef($sef, $id)
+	{
+		return e107::getDb()->createQueryBuilder()
+			->select('news_sef')->from('news')
+			->where('news_sef', $sef)->where('news_id', '!=', (int) $id)
+			->fetchOne();
+	}
 
 	public function afterDelete($deleted_data, $id, $deleted_check)
 	{
@@ -840,23 +858,25 @@ class news_admin_ui extends e_admin_ui
 
 	function handleListImageBbcodeBatch($selected, $field, $value)
 	{
-		$sql = e107::getDb();
-
 		$status = array();
 
-		$ids = implode(",", e107::getParser()->filter($selected,'int'));
+		$ids = e107::getParser()->filter($selected,'int');
 
-		if($data = $sql->retrieve("news","news_id,news_body","news_id IN (".$ids.") ",true))
+		$data = e107::getDb()->createQueryBuilder()
+			->select('news_id', 'news_body')->from('news')
+			->whereIn('news_id', $ids)->fetchAll();
+
+		if($data)
 		{
 			foreach($data as $row)
 			{
 				$id = $row['news_id'];
-				$update = array(
-					'news_body' => e107::getBB()->imgToBBcode($row['news_body'], true),
-					'WHERE' => 'news_id = '.$row['news_id']
-				);
 
-				$status[$id] = $sql->update('news',$update) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+				$updated = e107::getDb()->createQueryBuilder()->update('news')
+					->set('news_body', e107::getBB()->imgToBBcode($row['news_body'], true))
+					->where('news_id', (int) $row['news_id'])->execute();
+
+				$status[$id] = $updated ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 			}
 
 		}
@@ -943,9 +963,9 @@ class news_admin_ui extends e_admin_ui
 
 		
 		
-		$sql = e107::getDb();
-		$sql->gen("SELECT category_id,category_name FROM #news_category");
-		while($row = $sql->fetch())
+		$rows = e107::getDb()->createQueryBuilder()
+			->select('category_id', 'category_name')->from('news_category')->fetchAll();
+		foreach($rows as $row)
 		{
 			$cat = $row['category_id'];
 			$this->cats[$cat] = $row['category_name'];
@@ -1395,12 +1415,14 @@ class news_admin_ui extends e_admin_ui
 
 	function loadSubmitted($id)
 	{
-		$sql = e107::getDb();
 		$tp = e107::getParser();
 
-		if ($sql->select("submitnews", "*", "submitnews_id=".intval($id)))
+		$row = e107::getDb()->createQueryBuilder()
+			->select('*')->from('submitnews')
+			->where('submitnews_id', (int) $id)->fetchRow();
+
+		if ($row)
 		{
-			$row = $sql->fetch();
 			$data['news_title'] = $tp->filter($row['submitnews_title']);
 			$data['news_body'] = $row['submitnews_item'];
 			$data['news_category'] = intval( $row['submitnews_category']);
@@ -1452,9 +1474,12 @@ class news_admin_ui extends e_admin_ui
 		{		
 			if(!isset($_POST['submit_news']))
 			{
-				if(e107::getDb()->select('news', '*', 'news_id='.intval($_GET['id'])))
+				$row = e107::getDb()->createQueryBuilder()
+					->select('*')->from('news')
+					->where('news_id', (int) $_GET['id'])->fetchRow();
+
+				if($row)
 				{
-					$row = e107::getDb()->fetch();
 
 				//	if(!isset($this->news_categories[$row['news_category']]))
 					{
@@ -1549,42 +1574,51 @@ class news_form_ui extends e_admin_form_ui
 		{
 
 			$auth = ($curVal) ? intval($curVal) : USERID;
-			$sql->select("user", "user_name", "user_id=$auth LIMIT 1");
-			$row = $sql->fetch();
+			$row = $sql->createQueryBuilder()
+				->select('user_name')->from('user')
+				->where('user_id', (int) $auth)->setMaxResults(1)->fetchRow();
 			$text .= "<input type='hidden' name='news_author' value='".$auth.chr(35).$row['user_name']."' />";
 			$text .= "<a target='_blank' href='".e107::getUrl()->create('user/profile/view', 'name='.$row['user_name'].'&id='.$auth)."'>".$row['user_name']."</a>";
 		}
 		else // allow master admin to
 		{
 			$text .= $this->select_open('news_author', array('size'=>'xlarge'));
-			$qry = "SELECT user_id,user_name,user_admin FROM #user WHERE user_perms = '0' OR user_perms = '0.' OR user_perms REGEXP('(^|,)(H)(,|$)') ";
+
+			// REGEXP / FIND_IN_SET and the conditional ORDER BY are all expressible
+			// via the builder: regexp()/findInSet() bind the value and validate the
+			// column, and the OR chain is a flat disjunction.
+			$qb = $sql->createQueryBuilder();
+			$qb->select('user_id', 'user_name', 'user_admin')->from('user')
+				->where('user_perms', '0')
+				->orWhere('user_perms', '0.')
+				->orWhere($qb->expr()->regexp('user_perms', '(^|,)(H)(,|$)'));
 
 			if(!empty($curVal))
 			{
-				$qry .= " OR user_id = ".intval($curVal); // make sure existing author is included.
+				$qb->orWhere('user_id', (int) $curVal); // make sure existing author is included.
 			}
 
 			if($pref['subnews_class'] && $pref['subnews_class']!= e_UC_GUEST && $pref['subnews_class']!= e_UC_NOBODY)
 			{
 				if($pref['subnews_class']== e_UC_MEMBER)
 				{
-					$qry .= " OR user_ban != 1 ORDER BY user_class DESC, user_name";// limit to avoid long page loads.
+					$qb->orWhere('user_ban', '!=', 1)->orderBy('user_class', 'DESC')->addOrderBy('user_name');// limit to avoid long page loads.
 				}
 				elseif($pref['subnews_class']== e_UC_ADMIN)
 				{
-					$qry .= " OR user_admin = 1 ORDER BY user_name";
+					$qb->orWhere('user_admin', 1)->orderBy('user_name');
 				}
 				else
 				{
-					$qry .= " OR FIND_IN_SET(".intval($pref['subnews_class']).", user_class) ORDER BY user_name";
+					$qb->orWhere($qb->expr()->findInSet('user_class', (int) $pref['subnews_class']))->orderBy('user_name');
 				}
 			}
 
 	//		print_a($pref['subnews_class']);
 
 
-			$sql->gen($qry);
-			while($row = $sql->fetch())
+			$rows = $qb->fetchAll();
+			foreach($rows as $row)
 			{
 				if(vartrue($curVal))
 				{

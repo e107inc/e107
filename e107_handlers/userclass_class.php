@@ -165,9 +165,13 @@ class user_class
 		}
 		else
 		{
-			if($this->sql_r->field('userclass_classes','userclass_parent') &&  $this->sql_r->select('userclass_classes', '*', 'ORDER BY userclass_parent,userclass_name', 'nowhere')) // The order statement should give a consistent return
+			if($this->sql_r->field('userclass_classes','userclass_parent')) // The order statement should give a consistent return
 			{
-				while ($row = $this->sql_r->fetch())
+				$rows = $this->sql_r->createQueryBuilder()
+					->select('*')->from('userclass_classes')
+					->orderBy('userclass_parent')->addOrderBy('userclass_name')
+					->fetchAll();
+				foreach ($rows as $row)
 				{
 					$this->class_tree[$row['userclass_id']] = $row;
 					$this->class_tree[$row['userclass_id']]['class_children'] = array();		// Create the child array in case needed
@@ -1208,23 +1212,46 @@ class user_class
 
 		$classList = array_flip($classList);
 
-		$qry = array();
+		$sql = e107::getDb('sql_r');
+		$qb = $sql->createQueryBuilder();
+
+		// $fields and $orderBy are SQL identifiers (cannot be bound); validate each
+		// field token fail-closed and restrict $orderBy to a plain identifier
+		// (optionally ASC/DESC) so neither can inject SQL.
+		$fieldTokens = array();
+		foreach(explode(',', $fields) as $fld)
+		{
+			$fld = trim($fld);
+			if($sql->quoteIdentifier($fld) !== false)
+			{
+				$fieldTokens[] = $fld;
+			}
+		}
+		if(empty($fieldTokens))
+		{
+			$fieldTokens = array('user_name', 'user_loginname');
+		}
+
+		$qb->select(array_merge(array('user_id'), $fieldTokens))->from('user');
+
+		// Build the OR set of class-membership predicates.
+		$predicates = array();
 
 		if(isset($classList[e_UC_MEMBER]))
 		{
-			$qry[] = "user_ban = 0";
+			$predicates[] = $qb->expr()->eq('user_ban', 0);
 			unset($classList[e_UC_MEMBER]);
 		}
 
 		if(isset($classList[e_UC_ADMIN]))
 		{
-			$qry[] = "user_admin = 1";
+			$predicates[] = $qb->expr()->eq('user_admin', 1);
 			unset($classList[e_UC_ADMIN]);
 		}
 
 		if(isset($classList[e_UC_MAINADMIN]))
 		{
-			$qry[] = "user_perms = '0' OR user_perms = '0.'";
+			$predicates[] = $qb->expr()->anyOf($qb->expr()->eq('user_perms', '0'), $qb->expr()->eq('user_perms', '0.'));
 			unset($classList[e_UC_MAINADMIN]);
 		}
 
@@ -1232,53 +1259,35 @@ class user_class
 		{
 			$class_regex = implode('|', array_flip($classList));
 			$regex = "(^|,)(".e107::getParser()->toDB($class_regex).")(,|$)";
-			$qry[] = "user_class REGEXP '{$regex}' ";
+			$predicates[] = $qb->expr()->regexp('user_class', $regex);
 		}
 
-		if(empty($qry))
+		if(empty($predicates))
 		{
 			return array();
 		}
 
-		$sql = e107::getDb('sql_r');
+		$qb->where($qb->expr()->anyOf(...$predicates));
 
-		$ret = array();
-
-		$lj = strpos($fields,'ue.') !== false ? "LEFT JOIN `#user_extended` AS ue ON user_id = ue.user_extended_id " : "";
-
-		// $fields and $orderBy are SQL identifiers (cannot be bound); validate each
-		// field token and restrict $orderBy to a plain identifier (optionally ASC/DESC)
-		// so neither can inject SQL.
-		$fieldTokens = array();
-		foreach(explode(',', $fields) as $fld)
+		if(strpos($fields, 'ue.') !== false)
 		{
-			$qfld = $sql->quoteIdentifier(trim($fld));
-			if($qfld !== false)
-			{
-				$fieldTokens[] = $qfld;
-			}
+			$qb->leftJoin('user_extended', 'ue', $qb->expr()->compareColumns('user_id', 'ue.user_extended_id'));
 		}
-		if(empty($fieldTokens))
-		{
-			$fieldTokens = array('`user_name`', '`user_loginname`');
-		}
-		$safeFields = implode(', ', $fieldTokens);
 
 		if(!preg_match('/^[A-Za-z0-9_.]+( +(ASC|DESC))?$/iD', trim((string) $orderBy)))
 		{
 			$orderBy = 'user_id';
 		}
 
-		$query = "SELECT user_id,{$safeFields} FROM `#user` ".$lj." WHERE ".implode(" OR ",$qry)." ORDER BY ".$orderBy;
+		$orderParts = preg_split('/\s+/', trim((string) $orderBy));
+		$qb->orderBy($orderParts[0], isset($orderParts[1]) ? $orderParts[1] : null);
 
-		if ($sql->gen($query))
+		$ret = array();
+
+		foreach($qb->fetchAll() as $row)
 		{
-			while ($row = $sql->fetch())
-			{
-				$row['user_id'] = (int) $row['user_id'];
-				$ret[$row['user_id']] = $row;
-			}
-
+			$row['user_id'] = (int) $row['user_id'];
+			$ret[$row['user_id']] = $row;
 		}
 
 		return $ret;
@@ -1849,7 +1858,22 @@ class user_class_admin extends user_class
 				$classrec['userclass_accum'] = implode(',',$temp);
 			}
 		}
-		if ($this->sql_r->insert('userclass_classes',$this->copy_rec($classrec, TRUE)) === FALSE)
+		// Field-typed array insert: resolve the table's field definitions so
+		// valuesTyped() applies the same per-column storage transform as the
+		// legacy array CRUD, and fill any _NOTNULL defaults (e.g. userclass_perms)
+		// the legacy insert path would have supplied for absent NOT NULL columns.
+		$data = $this->copy_rec($classrec, TRUE);
+		$defs = $this->sql_r->getFieldDefs('userclass_classes');
+		if (isset($defs['_NOTNULL']))
+		{
+			foreach ($defs['_NOTNULL'] as $f => $v)
+			{
+				if (!isset($data[$f])) { $data[$f] = $v; }
+			}
+		}
+		$fieldTypes = isset($defs['_FIELD_TYPES']) ? $defs['_FIELD_TYPES'] : array();
+		if ($this->sql_r->createQueryBuilder()->insert('userclass_classes')
+			->valuesTyped($data, $fieldTypes)->execute() === FALSE)
 		{
 			return FALSE;
 		}
@@ -1970,7 +1994,7 @@ class user_class_admin extends user_class
 	{
 		if (self::queryCanDeleteClass($classID) === FALSE) return FALSE;
 
-		if ($this->sql_r->delete('userclass_classes', "`userclass_id`='{$classID}'") === FALSE) return FALSE;
+		if ($this->sql_r->createQueryBuilder()->delete('userclass_classes')->where('userclass_id', $classID)->execute() === FALSE) return FALSE;
 		$this->clearCache();
 		$this->readTree(TRUE);			// Re-read the class tree
 		return TRUE;
@@ -1987,13 +2011,18 @@ class user_class_admin extends user_class
 	{
 		if (self::delete_class($classID) === TRUE)
 		{
-			if ($this->sql_r->select('user', 'user_id, user_class', "user_class REGEXP '(^|,){$classID}(,|$)'"))
+			$qb = $this->sql_r->createQueryBuilder()->select('user_id', 'user_class')->from('user');
+			$rows = $qb->where($qb->expr()->regexp('user_class', '(^|,)'.$classID.'(,|$)'))->fetchEach();
+			if ($rows)
 			{
 				$sql2 = e107::getDb('sql2');
-				while ($row = $this->sql_r->fetch())
+				foreach ($rows as $row)
 				{
 					$newClass = self::ucRemove($classID, $row['user_class']);
-					$sql2->update('user', "user_class = '{$newClass}' WHERE user_id = {$row['user_id']} LIMIT 1");
+					$sql2->createQueryBuilder()->update('user')
+						->set('user_class', $newClass)
+						->where('user_id', (int) $row['user_id'])
+						->limit(1)->execute();
 				}
 			}
 			return TRUE;
@@ -2025,7 +2054,10 @@ class user_class_admin extends user_class
 			{
 				$new_userclass = $cid;
 			}
-			$uc_sql->update('user', "user_class='".e107::getParser()->toDB($new_userclass, true)."' WHERE user_id=".intval($uid)." LIMIT 1");
+			$uc_sql->createQueryBuilder()->update('user')
+				->set('user_class', e107::getParser()->toDB($new_userclass, true))
+				->where('user_id', (int) $uid)
+				->limit(1)->execute();
 		}
 	}
 
@@ -2045,7 +2077,10 @@ class user_class_admin extends user_class
 		{
 			$newarray = array_diff(explode(',', $curclass), array('', $cid));
 			$new_userclass = implode(',', $newarray);
-			$uc_sql->update('user', "user_class='".e107::getParser()->toDB($new_userclass, true)."' WHERE user_id=".intval($uid)." LIMIT 1");
+			$uc_sql->createQueryBuilder()->update('user')
+				->set('user_class', e107::getParser()->toDB($new_userclass, true))
+				->where('user_id', (int) $uid)
+				->limit(1)->execute();
 		}
 	}
 
@@ -2145,9 +2180,13 @@ class user_class_admin extends user_class
 
 		foreach ($init_list as $entry)
 		{
-			if ($this->sql_r->select('userclass_classes','*',"userclass_id='".$entry['userclass_id']."' "))
+			if ($this->sql_r->createQueryBuilder()->from('userclass_classes')->where('userclass_id', $entry['userclass_id'])->count())
 			{
-				$this->sql_r->update('userclass_classes', "userclass_parent='".$entry['userclass_parent']."', userclass_visibility='".$entry['userclass_visibility']."' WHERE userclass_id='".$entry['userclass_id']."'");
+				$this->sql_r->createQueryBuilder()->update('userclass_classes')
+					->set('userclass_parent', $entry['userclass_parent'])
+					->set('userclass_visibility', $entry['userclass_visibility'])
+					->where('userclass_id', $entry['userclass_id'])
+					->execute();
 			}
 			else
 			{

@@ -52,7 +52,11 @@ class banner_menu_form extends e_form
 	{
 		$sql = e107::getDb();
 
-		$sql->select("banner", "DISTINCT(banner_campaign) as banner_campaign", "ORDER BY banner_campaign", "mode=no_where");
+		$rows = $sql->createQueryBuilder()
+			->distinct()->selectAs('banner_campaign', 'banner_campaign')
+			->from('banner')
+			->orderBy('banner_campaign')
+			->fetchAll();
 
 		$text = '';
 
@@ -61,7 +65,7 @@ class banner_menu_form extends e_form
 			$curVal = array();
 		}
 
-		while ($row = $sql -> fetch())
+		foreach($rows as $row)
 		{
 			$checked = in_array($row['banner_campaign'], $curVal);
 		//	$text .= $this->radio_switch('banner_campaign[]',$row['banner_campaign'],$checked, array('label'=> $row['banner_campaign'],'class'=>'e-save')); // e-save class is required. TODO

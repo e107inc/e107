@@ -160,7 +160,8 @@ class private_msg_ui extends e_admin_ui
 			$mes = e107::getMessage();
 
 			$id = intval($_POST['newlimit_class']);
-			if($sql->select('generic','gen_id',"gen_type = 'pm_limit' AND gen_datestamp = ".$id))
+			if($sql->createQueryBuilder()->select('gen_id')->from('generic')
+				->where('gen_type', 'pm_limit')->where('gen_datestamp', $id)->fetchRow())
 			{
 				$mes->addInfo(ADLAN_PM_5); // 'Limit for selected user class already exists'
 			}
@@ -175,7 +176,7 @@ class private_msg_ui extends e_admin_ui
 					'gen_chardata' => intval($_POST['new_outbox_size'])
 					);
 
-				if($sql->insert('generic', $limArray))
+				if($sql->createQueryBuilder()->insert('generic')->valuesTyped($limArray, $sql->getFieldDefs('generic')['_FIELD_TYPES'])->execute())
 				{
 					e107::getLog()->addArray($limArray)->save('PM_ADM_05');
 					$mes->addSuccess(ADLAN_PM_6);
@@ -212,7 +213,7 @@ class private_msg_ui extends e_admin_ui
 				if($_POST['inbox_count'][$id] == '' && $_POST['outbox_count'][$id] == '' && $_POST['inbox_size'][$id] == '' && $_POST['outbox_size'][$id] == '')
 				{
 					//All entries empty - Remove record
-					if($sql->delete('generic','gen_id = '.$id))
+					if($sql->createQueryBuilder()->delete('generic')->where('gen_id', (int) $id)->execute())
 					{
 						e107::getLog()->add('PM_ADM_07', 'ID: '.$id);
 						$mes->addSuccess($id.ADLAN_PM_9);
@@ -233,7 +234,14 @@ class private_msg_ui extends e_admin_ui
 						);
 
 
-					if ($sql->update('generic',array('data' => $limArray, 'WHERE' => 'gen_id = '.$id)))
+					$updTypes = $sql->getFieldDefs('generic')['_FIELD_TYPES'];
+					$updQry = $sql->createQueryBuilder()->update('generic');
+					foreach($limArray as $updCol => $updVal)
+					{
+						$updType = isset($updTypes[$updCol]) ? $updTypes[$updCol] : (isset($updTypes['_DEFAULT']) ? $updTypes['_DEFAULT'] : 'string');
+						$updQry->setTyped($updCol, $updVal, $updType);
+					}
+					if ($updQry->where('gen_id', (int) $id)->execute())
 					{
 						e107::getLog()->addArray($limArray)->save('PM_ADM_06');
 						$mes->addSuccess($id.ADLAN_PM_11);
@@ -250,6 +258,28 @@ class private_msg_ui extends e_admin_ui
 		}
 
 
+		/**
+		 * Retrieve the configured PM limits from the 'generic' table, keyed by user class.
+		 *
+		 * @return array list of limit rows keyed by limit_classnum
+		 */
+		private function getPmLimits()
+		{
+			$limitList = array();
+
+			$rows = e107::getDb()->createQueryBuilder()
+				->selectAs('gen_id', 'limit_id')->selectAs('gen_datestamp', 'limit_classnum')->selectAs('gen_user_id', 'inbox_count')->selectAs('gen_ip', 'outbox_count')->selectAs('gen_intdata', 'inbox_size')->selectAs('gen_chardata', 'outbox_size')
+				->from('generic')
+				->where('gen_type', 'pm_limit')
+				->fetchAll();
+
+			foreach($rows as $row)
+			{
+				$limitList[$row['limit_classnum']] = $row;
+			}
+
+			return $limitList;
+		}
 
 
 		public function limitsPage()
@@ -268,19 +298,12 @@ class private_msg_ui extends e_admin_ui
 			// ---------------------
 
 
-			$sql = e107::getDb();
 			$frm = e107::getForm();
 			$pm_prefs = e107::pref('pm');
 
 			if (!isset($pm_prefs['pm_limits'])) { $pm_prefs['pm_limits'] = 0; }
 
-			if($sql->select('generic', "gen_id as limit_id, gen_datestamp as limit_classnum, gen_user_id as inbox_count, gen_ip as outbox_count, gen_intdata as inbox_size, gen_chardata as outbox_size", "gen_type = 'pm_limit'"))
-			{
-				while($row = $sql->fetch())
-				{
-					$limitList[$row['limit_classnum']] = $row;
-				}
-			}
+			$limitList = $this->getPmLimits();
 
 			$txt = "
 				<fieldset id='plugin-pm-showlimits'>
@@ -322,7 +345,7 @@ class private_msg_ui extends e_admin_ui
 
 			";
 
-			if (isset($limitList))
+			if (!empty($limitList))
 			{
 				foreach($limitList as $row)
 				{
@@ -374,17 +397,10 @@ class private_msg_ui extends e_admin_ui
 
 		function addLimitPage()
 		{
-			$sql = e107::getDb();
 			$frm = e107::getForm();
 			$pm_prefs = e107::pref('pm');
 
-			if($sql->select('generic', "gen_id as limit_id, gen_datestamp as limit_classnum, gen_user_id as inbox_count, gen_ip as outbox_count, gen_intdata as inbox_size, gen_chardata as outbox_size", "gen_type = 'pm_limit'"))
-			{
-				while($row = $sql->fetch())
-				{
-					$limitList[$row['limit_classnum']] = $row;
-				}
-			}
+			$limitList = $this->getPmLimits();
 
 			$txt = "
 				<fieldset id='plugin-pm-addlimit'>
@@ -584,7 +600,8 @@ class private_msg_ui extends e_admin_ui
 			if (isset($opts['sent']))		// Want pm_from = deleted user and pm_read_del = 1
 			{
 				$cnt = 0;
-				if ($res = $db2->gen("SELECT pm.pm_id FROM `#private_msg` AS pm LEFT JOIN `#user` AS u ON pm.`pm_from` = `#user`.`user_id`
+				// Permanent raw-SQL boundary: static LEFT JOIN anti-join; legacy string has unbalanced backticks (errors at runtime, loop never runs) so a faithful builder form is impossible and a corrected one would change behaviour - kept as bound, fully-static execute() (no user input).
+				if ($res = $db2->execute("SELECT pm.pm_id FROM `#private_msg` AS pm LEFT JOIN `#user` AS u ON pm.`pm_from` = `#user`.`user_id`
 							WHERE (pm.`pm_read_del = 1) AND `#user`.`user_id` IS NULL"))
 				{
 					while ($row = $db2->fetch())
@@ -601,7 +618,8 @@ class private_msg_ui extends e_admin_ui
 			if (isset($opts['rec']))		// Want pm_to = deleted user and pm_sent_del = 1
 			{
 				$cnt = 0;
-				if ($res = $db2->gen("SELECT pm.pm_id FROM `#private_msg` AS pm LEFT JOIN `#user` AS u ON pm.`pm_to` = `#user`.`user_id`
+				// Permanent raw-SQL boundary: static LEFT JOIN anti-join; legacy string has unbalanced backticks (errors at runtime, loop never runs) so a faithful builder form is impossible and a corrected one would change behaviour - kept as bound, fully-static execute() (no user input).
+				if ($res = $db2->execute("SELECT pm.pm_id FROM `#private_msg` AS pm LEFT JOIN `#user` AS u ON pm.`pm_to` = `#user`.`user_id`
 							WHERE (pm.`pm_sent_del = 1) AND `#user`.`user_id` IS NULL"))
 				{
 					while ($row = $db2->fetch())
@@ -619,7 +637,8 @@ class private_msg_ui extends e_admin_ui
 
 			if (isset($opts['blocked']))
 			{
-				if ($res = $db2->gen("DELETE `#private_msg_block` FROM `#private_msg_block` LEFT JOIN `#user` ON `#private_msg_block`.`pm_block_from` = `#user`.`user_id`
+				// Permanent raw-SQL boundary: multi-table DELETE...JOIN is not expressible by the query builder (delete() compiles to DELETE FROM <table> WHERE only). Static, no user input - kept as bound execute().
+				if ($res = $db2->execute("DELETE `#private_msg_block` FROM `#private_msg_block` LEFT JOIN `#user` ON `#private_msg_block`.`pm_block_from` = `#user`.`user_id`
 							WHERE `#user`.`user_id` IS NULL"))
 				{
 					$start = max($start + 1, time());
@@ -630,7 +649,8 @@ class private_msg_ui extends e_admin_ui
 					$start = max($start + 1, time());
 					$results[E_MESSAGE_SUCCESS][$start] = str_replace('[x]', $res, ADLAN_PM_69);
 				}
-				if ($res = $db2->gen("DELETE `#private_msg_block` FROM `#private_msg_block` LEFT JOIN `#user` ON `#private_msg_block`.`pm_block_to` = `#user`.`user_id`
+				// Permanent raw-SQL boundary: multi-table DELETE...JOIN is not expressible by the query builder (delete() compiles to DELETE FROM <table> WHERE only). Static, no user input - kept as bound execute().
+				if ($res = $db2->execute("DELETE `#private_msg_block` FROM `#private_msg_block` LEFT JOIN `#user` ON `#private_msg_block`.`pm_block_to` = `#user`.`user_id`
 							WHERE `#user`.`user_id` IS NULL"))
 				{
 					$start = max($start + 1, time());
@@ -646,31 +666,45 @@ class private_msg_ui extends e_admin_ui
 
 			if (isset($opts['expired']))
 			{
-				$del_qry = array();
+				$del_groups = array();
 				$read_timeout = intval($pmPrefs['read_timeout']);
 				$unread_timeout = intval($pmPrefs['unread_timeout']);
 				if($read_timeout > 0)
 				{
 					$timeout = time()-($read_timeout * 86400);
-					$del_qry[] = "(pm_sent < {$timeout} AND pm_read > 0)";
+					$del_groups[] = function($q) use ($timeout)
+					{
+						$q->where('pm_sent', '<', $timeout)->where('pm_read', '>', 0);
+					};
 				}
 				if($unread_timeout > 0)
 				{
 					$timeout = time()-($unread_timeout * 86400);
-					$del_qry[] = "(pm_sent < {$timeout} AND pm_read = 0)";
-				}
-				if(count($del_qry) > 0)
-				{
-					$qry = implode(' OR ', $del_qry);
-					$cnt = 0;
-					if($db2->select('private_msg', 'pm_id', $qry))
+					$del_groups[] = function($q) use ($timeout)
 					{
-						while ($row = $db2->fetch())
+						$q->where('pm_sent', '<', $timeout)->where('pm_read', 0);
+					};
+				}
+				if(count($del_groups) > 0)
+				{
+					$delQb = $db2->createQueryBuilder()->select('pm_id')->from('private_msg');
+					foreach($del_groups as $i => $group)
+					{
+						if($i === 0)
 						{
-							if ($pmHandler->del($row['pm_id']) !== FALSE)
-							{
-								$cnt++;
-							}
+							$delQb->where($group);
+						}
+						else
+						{
+							$delQb->orWhere($group);
+						}
+					}
+					$cnt = 0;
+					foreach($delQb->fetchEach() as $row)
+					{
+						if ($pmHandler->del($row['pm_id']) !== FALSE)
+						{
+							$cnt++;
 						}
 					}
 					$start = max($start + 1, time());
@@ -691,10 +725,10 @@ class private_msg_ui extends e_admin_ui
 				$missing = array();
 				$orphans = array();
 				$fileArray = $fl->get_files(e_PLUGIN.'pm/attachments'); //FIXME wrong path.
-				if ($db2->select('private_msg', 'pm_id, pm_attachments', "pm_attachments != ''"))
+				$attachRows = $db2->createQueryBuilder()->select('pm_id', 'pm_attachments')
+					->from('private_msg')->where('pm_attachments', '!=', '')->fetchEach();
+				foreach ($attachRows as $row)
 				{
-					while ($row = $db2->fetch())
-					{
 						$attachList = explode(chr(0), $row['pm_attachments']);
 						foreach ($attachList as $a)
 						{
@@ -713,7 +747,6 @@ class private_msg_ui extends e_admin_ui
 								$missing[] = $row['pm_id'].':'.$a;
 							}
 						}
-					}
 				}
 				// Any files left in $fileArray now are unused
 				if (count($fileArray))

@@ -16,9 +16,16 @@ if (!e107::isInstalled('featurebox'))
 }
 
 
-if($sql->select("featurebox", "*", "fb_mode=1 AND fb_class IN (".USERCLASS_LIST.") ORDER BY fb_class ASC"))
+$fbRows = e107::getDb()->createQueryBuilder()
+	->select('*')->from('featurebox')
+	->where('fb_mode', 1)
+	->whereIn('fb_class', explode(',', USERCLASS_LIST))
+	->orderBy('fb_class', 'ASC')
+	->fetchAll();
+
+if($fbRows)
 {
-	while($row = $sql->fetch())
+	foreach($fbRows as $row)
 	{
 		if($row['fb_class'] > 0 && $row['fb_class'] < 251)
 		{
@@ -35,15 +42,23 @@ if($sql->select("featurebox", "*", "fb_mode=1 AND fb_class IN (".USERCLASS_LIST.
 		extract($xentry);
 	}
 }
-else if($sql->select("featurebox", "*", "fb_mode!=1 AND fb_class IN (".USERCLASS_LIST.")"))
-{
-	$nfArray = $sql->db_getList();
-	$entry = $nfArray[array_rand($nfArray)];
-	extract($entry);
-}
 else
 {
-	return FALSE;
+	$nfArray = e107::getDb()->createQueryBuilder()
+		->select('*')->from('featurebox')
+		->where('fb_mode', '!=', 1)
+		->whereIn('fb_class', explode(',', USERCLASS_LIST))
+		->fetchAll();
+
+	if($nfArray)
+	{
+		$entry = $nfArray[array_rand($nfArray)];
+		extract($entry);
+	}
+	else
+	{
+		return FALSE;
+	}
 }
 
 $fbcc = $fb_title;

@@ -31,10 +31,16 @@ class download_rss // plugin-folder + '_rss'
 			'limit'			=> '9'
 		);
 
-		// Specific categories 		
-		if($items = $sql->select("download_category", "*","download_category_id != '' ORDER BY download_category_order"))
+		// Specific categories
+		$items = $sql->createQueryBuilder()
+			->select('*')->from('download_category')
+			->where('download_category_id', '!=', '')
+			->orderBy('download_category_order')
+			->fetchAll();
+
+		if($items)
 		{
-			while($row = $sql->fetch())
+			foreach($items as $row)
 			{
 				$config[] = array(
 					'name'		=> LAN_PLUGIN_DOWNLOAD_NAME.' > '.$row['download_category_name'],
@@ -66,19 +72,20 @@ class download_rss // plugin-folder + '_rss'
 		$i 			= 0;
 
 		// Individual download items for admin import
+		$qb = $sql->createQueryBuilder();
+		$qb->select('d.*', 'dc.*')->from('download', 'd')
+			->leftJoin('download_category', 'dc', $qb->expr()->compareColumns('d.download_category', 'dc.download_category_id'));
+
 		if($topic_id && is_numeric($topic_id))
 		{
-			$topic = "d.download_category='" . intval($topic_id) . "' AND ";
+			$qb->where('d.download_category', (int) $topic_id);
 		}
-		else
-		{
-			$topic = "";
-		}
-		
-	    $query = "SELECT d.*, dc.* FROM #download AS d LEFT JOIN #download_category AS dc ON d.download_category = dc.download_category_id WHERE {$topic} d.download_active > 0 AND d.download_class IN (".USERCLASS_LIST.") ORDER BY d.download_datestamp DESC LIMIT 0,".(int)$limit;
 
-	    $sql->gen($query);
-	 	$tmp = $sql->db_getList();
+		$tmp = $qb->where('d.download_active', '>', 0)
+			->whereIn('d.download_class', explode(',', USERCLASS_LIST))
+			->orderBy('d.download_datestamp', 'DESC')
+			->setFirstResult(0)->setMaxResults((int) $limit)
+			->fetchAll();
 				
 		foreach($tmp as $value)
 		{

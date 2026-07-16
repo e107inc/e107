@@ -10,6 +10,8 @@
  *
  */
 
+use e107\Database\SqlFragment;
+
 require_once(__DIR__.'/../../class2.php');
 
 if (!e107::isInstalled('chatbox_menu') || !getperms("P"))
@@ -50,7 +52,7 @@ if (isset($_POST['prune']))
 	$chatbox_prune = intval($_POST['chatbox_prune']);
 	$prunetime = time() - $chatbox_prune;
 
-	$sql->delete("chatbox", "cb_datestamp < '{$prunetime}' ");
+	$sql->createQueryBuilder()->delete('chatbox')->where('cb_datestamp', '<', $prunetime)->execute();
 	e107::getLog()->add('CHBLAN_02', $chatbox_prune.', '.$prunetime, E_LOG_INFORMATIVE, '');
 	e107::getCache()->clear("nq_chatbox");
 	$mes->addSuccess(LAN_AL_CHBLAN_02);
@@ -58,19 +60,20 @@ if (isset($_POST['prune']))
 
 if (isset($_POST['recalculate']))
 {
-	$sql->update("user", "user_chats = 0");
-	$qry = "SELECT u.user_id AS uid, count(c.cb_nick) AS count FROM #chatbox AS c
-		LEFT JOIN #user AS u ON SUBSTRING_INDEX(c.cb_nick,'.',1) = u.user_id
-		WHERE u.user_id > 0
-		GROUP BY uid";
+	$sql->createQueryBuilder()->update('user')->set('user_chats', 0)->execute();
 
-	if ($sql->gen($qry))
+	$list = array();
+	$rows = $sql->createQueryBuilder()
+		->addSelect(SqlFragment::raw("u.user_id AS uid, count(c.cb_nick) AS count"))
+		->from('chatbox', 'c')
+		->leftJoin('user', 'u', SqlFragment::raw("SUBSTRING_INDEX(c.cb_nick,'.',1) = u.user_id"))
+		->where('u.user_id', '>', 0)
+		->groupBy('uid')
+		->fetchAll();
+
+	foreach($rows as $row)
 	{
-		$ret = array();
-		while($row = $sql -> fetch())
-		{
-			$list[$row['uid']] = $row['count'];
-		}
+		$list[$row['uid']] = $row['count'];
 	}
 
 	foreach($list as $uid => $cnt)

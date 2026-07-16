@@ -129,7 +129,10 @@ class admin_history_ui extends e_admin_ui
 			$message = e107::getMessage();
 
 			// Query the admin_history table for the record
-			$historyRow = $db->retrieve('admin_history', '*', 'history_id = '.$id);
+			$historyRow = $db->createQueryBuilder()
+				->select('*')->from('admin_history')
+				->where('history_id', (int) $id)
+				->fetchRow();
 
 			if ($historyRow)
 			{
@@ -156,25 +159,39 @@ class admin_history_ui extends e_admin_ui
 					if($action === 'insert')
 					{
 						$originalData[$pid] = (int) $recordId;
-						$result = $db->replace($originalTable, $originalData);
+						$result = $db->createQueryBuilder()
+							->replace($originalTable)->valuesTyped($originalData, $db->getFieldDefs($originalTable)['_FIELD_TYPES'])
+							->execute();
 					}
 					else // update
 					{
-						$backup = $db->retrieve($originalTable, '*', $pid. ' = '.(int) $recordId);
+						$backup = $db->createQueryBuilder()
+							->select('*')->from($originalTable)
+							->where($pid, (int) $recordId)
+							->fetchRow();
 						if($changes = array_diff_assoc($originalData, $backup))
 	                    {
 							$old_changed_data = array_intersect_key($backup, $changes);
 							$this->backupToHistory($originalTable, $pid, $recordId, 'restore', $old_changed_data, false);
 	                    }
 
-						$originalData['WHERE'] = $pid .' = '. (int) $recordId;
-						$result = $db->update($originalTable, $originalData);
+						$updateQ = $db->createQueryBuilder()->update($originalTable);
+						$fieldTypes = $db->getFieldDefs($originalTable)['_FIELD_TYPES'];
+						foreach($originalData as $col => $val)
+						{
+							$type = isset($fieldTypes[$col]) ? $fieldTypes[$col] : (isset($fieldTypes['_DEFAULT']) ? $fieldTypes['_DEFAULT'] : 'string');
+							$updateQ->setTyped($col, $val, $type);
+						}
+						$result = $updateQ->where($pid, (int) $recordId)->execute();
 					}
 
 					if ($result)
 					{
 						$message->addSuccess("The record (ID: $id) has been successfully restored to the $originalTable table.", 'default', true);
-						$db->update('admin_history', "history_restored = ".time()." WHERE history_id = $id");
+						$db->createQueryBuilder()->update('admin_history')
+							->set('history_restored', time())
+							->where('history_id', (int) $id)
+							->execute();
 					}
 					elseif($result === 0)
 					{

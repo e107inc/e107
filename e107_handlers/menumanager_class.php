@@ -161,13 +161,15 @@ class e_menuManager
 	 */
 	private function loadMenuData()
 	{
-		$menu_qry = 'SELECT * FROM #menus WHERE menu_location > 0 AND  menu_layout = "'.$this->dbLayout.'" ORDER BY menu_location,menu_order';
-
 		$sql = e107::getDb();
 
 		$eMenuArea = array();
 
-		if($rows = $sql->retrieve($menu_qry, true))
+		$rows = $sql->createQueryBuilder()->select('*')->from('menus')
+			->where('menu_location', '>', 0)->where('menu_layout', $this->dbLayout)
+			->orderBy('menu_location')->addOrderBy('menu_order')->fetchAll();
+
+		if($rows)
 		{
 
 			$lastLoc = -1;
@@ -183,7 +185,7 @@ class e_menuManager
 
 				if($c !== intval($row['menu_order'])) // fix the order if it is off..
 				{
-					if($sql->update('menus', "menu_order= ".$c." WHERE menu_id = ".$row['menu_id']." LIMIT 1"))
+					if($sql->createQueryBuilder()->update('menus')->set('menu_order', $c)->where('menu_id', (int) $row['menu_id'])->limit(1)->execute())
 					{
 						$row['menu_order'] = $c;
 					}
@@ -385,7 +387,7 @@ class e_menuManager
 				$posId = (int) $position;
 				$menu_count = $sql->createQueryBuilder()->from('menus')->where('menu_location', $locId)->where('menu_layout', $this->dbLayout)->count();
 				$sql->createQueryBuilder()->update('menus')->set('menu_order', $menu_count + 1)->where('menu_order', $posId)->where('menu_location', $locId)->where('menu_layout', $this->dbLayout)->execute();
-				$sql->createQueryBuilder()->update('menus')->setExpression('menu_order', 'menu_order - 1')->where('menu_location', $locId)->where('menu_order', '>', $posId)->where('menu_layout', $this->dbLayout)->execute();
+				$sql->createQueryBuilder()->update('menus')->decrement('menu_order')->where('menu_location', $locId)->where('menu_order', '>', $posId)->where('menu_layout', $this->dbLayout)->execute();
 				e107::getLog()->add('MENU_06',$location.'[!br!]'.$position.'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
 			}
 
@@ -393,7 +395,7 @@ class e_menuManager
 			{
 				$locId = (int) $location;
 				$posId = (int) $position;
-				$sql->createQueryBuilder()->update('menus')->setExpression('menu_order', 'menu_order + 1')->where('menu_location', $locId)->where('menu_order', '<', $posId)->where('menu_layout', $this->dbLayout)->execute();
+				$sql->createQueryBuilder()->update('menus')->increment('menu_order')->where('menu_location', $locId)->where('menu_order', '<', $posId)->where('menu_layout', $this->dbLayout)->execute();
 				$sql->createQueryBuilder()->update('menus')->set('menu_order', 1)->where('menu_id', (int) $this->menuId)->execute();
 				e107::getLog()->add('MENU_05',$location.'[!br!]'.$position.'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
 			}
@@ -402,8 +404,8 @@ class e_menuManager
 			{
 				$locId = (int) $location;
 				$posId = (int) $position;
-				$sql->createQueryBuilder()->update('menus')->setExpression('menu_order', 'menu_order - 1')->where('menu_order', $posId + 1)->where('menu_location', $locId)->where('menu_layout', $this->dbLayout)->execute();
-				$sql->createQueryBuilder()->update('menus')->setExpression('menu_order', 'menu_order + 1')->where('menu_id', (int) $this->menuId)->where('menu_location', $locId)->where('menu_layout', $this->dbLayout)->execute();
+				$sql->createQueryBuilder()->update('menus')->decrement('menu_order')->where('menu_order', $posId + 1)->where('menu_location', $locId)->where('menu_layout', $this->dbLayout)->execute();
+				$sql->createQueryBuilder()->update('menus')->increment('menu_order')->where('menu_id', (int) $this->menuId)->where('menu_location', $locId)->where('menu_layout', $this->dbLayout)->execute();
 				e107::getLog()->add('MENU_08',$location.'[!br!]'.$position.'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
 			}
 
@@ -411,8 +413,8 @@ class e_menuManager
 			{
 				$locId = (int) $location;
 				$posId = (int) $position;
-				$sql->createQueryBuilder()->update('menus')->setExpression('menu_order', 'menu_order + 1')->where('menu_order', $posId - 1)->where('menu_location', $locId)->where('menu_layout', $this->dbLayout)->execute();
-				$sql->createQueryBuilder()->update('menus')->setExpression('menu_order', 'menu_order - 1')->where('menu_id', (int) $this->menuId)->where('menu_location', $locId)->where('menu_layout', $this->dbLayout)->execute();
+				$sql->createQueryBuilder()->update('menus')->increment('menu_order')->where('menu_order', $posId - 1)->where('menu_location', $locId)->where('menu_layout', $this->dbLayout)->execute();
+				$sql->createQueryBuilder()->update('menus')->decrement('menu_order')->where('menu_id', (int) $this->menuId)->where('menu_location', $locId)->where('menu_layout', $this->dbLayout)->execute();
 				e107::getLog()->add('MENU_07',$location.'[!br!]'.$position.'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
 			}
 
@@ -446,15 +448,22 @@ class e_menuManager
 			return false;
 		}
 
-		$sql->update("menus", "menu_location='0' WHERE menu_layout = '" . $this->dbLayout . "' "); // Clear All existing.
+		$sql->createQueryBuilder()->update('menus')->setTyped('menu_location', '0', 'int')->where('menu_layout', $this->dbLayout)->execute(); // Clear All existing.
 
 		foreach($menuAreas as $val)
 		{
-			if($sql->select("menus", 'menu_name, menu_path', "menu_name = '" . $tp->filter($val['menu_name']) . "' LIMIT 1"))
-			{
-				$row = $sql->fetch();
+			$row = $sql->createQueryBuilder()->select('menu_name', 'menu_path')->from('menus')
+				->where('menu_name', $tp->filter($val['menu_name']))->limit(1)->fetchRow();
 
-				if(!$sql->update('menus', "menu_order='" . (int) $val['menu_order'] . "', menu_location = " . (int) $val['menu_location'] . ", menu_class= " . $val['menu_class'] . " WHERE menu_name='" . $tp->filter($val['menu_name']) . "' AND menu_layout = '" . $this->dbLayout . "' LIMIT 1 "))
+			if($row)
+			{
+				if(!$sql->createQueryBuilder()->update('menus')
+					->set('menu_order', (int) $val['menu_order'])
+					->set('menu_location', (int) $val['menu_location'])
+					->set('menu_class', $val['menu_class'])
+					->where('menu_name', $tp->filter($val['menu_name']))
+					->where('menu_layout', $this->dbLayout)
+					->limit(1)->execute())
 				{
 					$insert = array(
 						'menu_id'       => 0,
@@ -468,7 +477,7 @@ class e_menuManager
 						'menu_parms'    => '',
 					);
 
-					$sql->insert("menus", $insert);
+					$sql->createQueryBuilder()->insert('menus')->valuesTyped($insert, $sql->getFieldDefs('menus')['_FIELD_TYPES'])->execute();
 					e107::getLog()->add('MENU_01', $tp->filter($row['menu_name']) . '[!br!]' . $location . '[!br!]' . varset($menu_count, 0) . '[!br!]' . $tp->filter($row['menu_path']), E_LOG_INFORMATIVE, '');
 				}
 			}
@@ -499,7 +508,7 @@ class e_menuManager
 		e107::getDebug()->log("Scanning for new menus", E107_DBG_BASIC);
 
 		$menuList = array(); // existing menus in table.
-		if($result = $sql->retrieve('menus', 'menu_name', null, true))
+		if($result = $sql->createQueryBuilder()->select('menu_name')->from('menus')->fetchAll())
 		{
 			foreach($result as $mn)
 			{
@@ -513,7 +522,7 @@ class e_menuManager
 
 		//v2.x Scan Custom Page Menus.
 
-		$pageMenus = $sql->retrieve('page', 'page_id, menu_name, menu_title', "menu_name !='' ", true);
+		$pageMenus = $sql->createQueryBuilder()->select('page_id', 'menu_name', 'menu_title')->from('page')->where('menu_name', '!=', '')->fetchAll();
 		foreach($pageMenus as $row)
 		{
 			if(!in_array($row['menu_name'], $menuList))
@@ -530,7 +539,7 @@ class e_menuManager
 					'menu_parms'    => ''
 				);
 
-				if($sql->insert("menus", $insert))
+				if($sql->createQueryBuilder()->insert('menus')->valuesTyped($insert, $sql->getFieldDefs('menus')['_FIELD_TYPES'])->execute())
 				{
 					$this->menuAddMessage(MENLAN_10 . " - " . $row['menu_name'], E_MESSAGE_DEBUG);
 				}
@@ -583,7 +592,7 @@ class e_menuManager
 						'menu_parms'    => ''
 					);
 
-					if($sql->insert("menus", $insert))
+					if($sql->createQueryBuilder()->insert('menus')->valuesTyped($insert, $sql->getFieldDefs('menus')['_FIELD_TYPES'])->execute())
 					{
 						// Could do admin logging here - but probably not needed
 						$message .= MENLAN_10 . " - " . $file['fname'] . "<br />"; //FIXME
@@ -601,31 +610,34 @@ class e_menuManager
 		{
 			$sql2 = new db;
 		}        // Shouldn't be needed
-		if(!isset($sql3) || !is_object($sql3))
-		{
-			$sql3 = new db;
-		}
 
-		$location_count = $sql3->select("menus", "menu_location", "menu_location>0 GROUP BY menu_location");
+		$location_count = count($sql->createQueryBuilder()->select('menu_location')->from('menus')
+			->where('menu_location', '>', 0)->groupBy('menu_location')->fetchAll());
 		while($location_count)
 		{
-			if($sql->select("menus", "menu_id", "menu_location={$location_count} ORDER BY menu_order ASC"))
+			$menuIds = $sql->createQueryBuilder()->select('menu_id')->from('menus')
+				->where('menu_location', $location_count)->orderBy('menu_order', 'ASC')->fetchColumn('menu_id');
+
+			if($menuIds)
 			{
 				$c = 1;
-				while($row = $sql->fetch())
+				foreach($menuIds as $menu_id)
 				{
-					$sql2->update("menus", "menu_order={$c} WHERE menu_id=" . $row['menu_id']);
+					$sql2->createQueryBuilder()->update('menus')->set('menu_order', $c)->where('menu_id', (int) $menu_id)->execute();
 					$c++;
 				}
 			}
 			$location_count--;
 		}
-		$sql->select("menus", "*", "menu_path NOT REGEXP('[0-9]+') ");
-		while(list($menu_id, $menu_name, $menu_location, $menu_order) = $sql->fetch('num'))
+		$menuQb = $sql->createQueryBuilder();
+		$rows = $menuQb->select('menu_id', 'menu_name', 'menu_location', 'menu_order')->from('menus')
+			->where($menuQb->expr()->not($menuQb->expr()->regexp('menu_path', '[0-9]+')))->fetchAll();
+		foreach($rows as $row)
 		{
+			$menu_name = $row['menu_name'];
 			if(stripos($menustr, $menu_name) === false)
 			{
-				$sql2->delete("menus", "menu_name='$menu_name'");
+				$sql2->createQueryBuilder()->delete('menus')->where('menu_name', $menu_name)->execute();
 				$message .= MENLAN_11 . " - " . $menu_name . "<br />";
 			}
 		}
@@ -710,12 +722,13 @@ class e_menuManager
 		$frm = e107::getForm();
 		$sql = e107::getDb();
 		
-		if(!$sql->select("menus", "*", "menu_id=".$id))
+		$row = $sql->createQueryBuilder()->select('*')->from('menus')->where('menu_id', (int) $id)->fetchRow();
+
+		if(!$row)
 		{
         	$this->menuAddMessage("Couldn't Load Menu",E_MESSAGE_ERROR);
             return null;
-		};
-		$row = $sql->fetch();
+		}
 
 
 
@@ -856,14 +869,14 @@ class e_menuManager
 		
 		require_once(e_HANDLER."userclass_class.php");
 		
-		if(!$sql->select("menus", "*", "menu_id=".intval($_GET['vis'])))
+		$row = $sql->createQueryBuilder()->select('*')->from('menus')->where('menu_id', (int) $_GET['vis'])->fetchRow();
+
+		if(!$row)
 		{
         	$this->menuAddMessage(MENLAN_48,E_MESSAGE_ERROR);
             return;
 		}
-		
-		$row = $sql->fetch();
-		
+
 		$listtype 	= substr($row['menu_pages'], 0, 1);
 		$menu_pages = substr($row['menu_pages'], 2);
 		$menu_pages = str_replace("|", "\n", $menu_pages);
@@ -948,9 +961,9 @@ class e_menuManager
 		foreach($this->menuActivateIds as $sel_mens)
 		{
 			//Get info from menu being activated
-			if($sql->select("menus", 'menu_name, menu_path' , "menu_id = ".intval($sel_mens)." "))
+			$row = $sql->createQueryBuilder()->select('menu_name', 'menu_path')->from('menus')->where('menu_id', (int) $sel_mens)->fetchRow();
+			if($row)
 			{
-				$row=$sql->fetch();
 				//If menu is not already activated in that area, add the record.
 				//$query = "SELECT menu_name,menu_path FROM #menus WHERE menu_name='".$row['menu_name']."' AND menu_layout = '".$this->dbLayout."' AND menu_location = ".$location." LIMIT 1 ";
 				//if(!$sql->gen($query, $this->debug))
@@ -968,7 +981,7 @@ class e_menuManager
 							'menu_parms'	=> ''
 				   );
 
-					$sql->insert("menus",$insert, $this->debug);
+					$sql->createQueryBuilder()->insert('menus')->valuesTyped($insert, $sql->getFieldDefs('menus')['_FIELD_TYPES'])->execute();
 
 					e107::getLog()->add('MENU_01',$row['menu_name'].'[!br!]'.$location.'[!br!]'.$menu_count.'[!br!]'.$row['menu_path'],E_LOG_INFORMATIVE,'');
 					$menu_count++;
@@ -1076,8 +1089,8 @@ class e_menuManager
 		if(isset($_POST['menu_parms'])) // generic params
 		{
 			$parms = $tp->filter($_POST['menu_parms']);
-			$parms = $sql->escape(strip_tags($parms));
-			$check = $sql->update("menus", "menu_parms=\"".$parms."\" WHERE menu_id=".$id."");
+			$parms = strip_tags($parms);
+			$check = $sql->createQueryBuilder()->update('menus')->setTyped('menu_parms', $parms, 'escape')->where('menu_id', (int) $id)->execute();
 		}
 		else // Save e_menu.php parameters.
 		{
@@ -1132,7 +1145,7 @@ class e_menuManager
 		$pageparms = preg_replace("#\|$#", "", $pageparms);
 		$pageparms = (trim($pageList) == '') ? '' : $pageparms;
 
-		if($sql->createQueryBuilder()->update('menus')->set('menu_class', intval($_POST['menu_class']))->set('menu_pages', $pageparms)->where('menu_id', intval($_POST['menu_id']))->execute())
+		if($sql->createQueryBuilder()->update('menus')->setTyped('menu_class', intval($_POST['menu_class']), 'escape')->setTyped('menu_pages', $pageparms, 'escape')->where('menu_id', intval($_POST['menu_id']))->execute())
 		{
 			e107::getLog()->add('MENU_02',$_POST['menu_class'].'[!br!]'.$pageparms.'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
 						
@@ -1171,15 +1184,16 @@ class e_menuManager
 		$error = false;
 		$message = '';
 
-		if($sql->gen('SELECT menu_name, menu_location, menu_order FROM #menus WHERE menu_id = '.$this->menuId.' LIMIT 1'))
-		{
-			$row = $sql->fetch();
+		$row = $sql->createQueryBuilder()->select('menu_name', 'menu_location', 'menu_order')->from('menus')
+			->where('menu_id', (int) $this->menuId)->limit(1)->fetchRow();
 
+		if($row)
+		{
 			//Check to see if there is already a menu with location = 0 (to maintain BC)
 			if($sql2->createQueryBuilder()->select('menu_id')->from('menus')->where('menu_name', $row['menu_name'])->where('menu_location', 0)->where('menu_layout', $this->dbLayout)->limit(1)->execute())
 			{
 				//menu_location=0 already exists, we can just delete this record
-				if(!$sql2->delete('menus', 'menu_id='.$this->menuId))
+				if(!$sql2->createQueryBuilder()->delete('menus')->where('menu_id', (int) $this->menuId)->execute())
 				{
 					$message = "Deletion Failed";
 					$error = true;
@@ -1188,14 +1202,14 @@ class e_menuManager
 			else
 			{
 				//menu_location=0 does NOT exist, let's just convert this to it
-				if(!$sql2->update("menus", "menu_location=0, menu_order=0, menu_class=0, menu_pages='' WHERE menu_id=".$this->menuId))
+				if(!$sql2->createQueryBuilder()->update('menus')->set('menu_location', 0)->set('menu_order', 0)->set('menu_class', 0)->set('menu_pages', '')->where('menu_id', (int) $this->menuId)->execute())
 				{
 	            	$message = "FAILED";
 					$error = true;
 				}
 			}
-			//Move all menus up (reduces order number) that have a higher menu order number than one deactivated, in the selected location. 
-			$sql->update("menus", "menu_order=menu_order-1 WHERE menu_location={$row['menu_location']} AND menu_order > {$row['menu_order']} AND menu_layout = '".$this->dbLayout."' ");
+			//Move all menus up (reduces order number) that have a higher menu order number than one deactivated, in the selected location.
+			$sql->createQueryBuilder()->update('menus')->decrement('menu_order')->where('menu_location', (int) $row['menu_location'])->where('menu_order', '>', (int) $row['menu_order'])->where('menu_layout', $this->dbLayout)->execute();
 			e107::getLog()->add('MENU_04',$row['menu_name'].'[!br!]'.$row['menu_location'].'[!br!]'.$row['menu_order'].'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
 		}
 		else
@@ -1219,9 +1233,9 @@ class e_menuManager
 
 			$sql = e107::getDb();
 
-			if($sql->select('menus', 'menu_name', 'menu_id='.$this->menuId, 'default'))
+			$row = $sql->createQueryBuilder()->select('menu_name')->from('menus')->where('menu_id', (int) $this->menuId)->fetchRow();
+			if($row)
 			{
-				$row = $sql->fetch();
 				//Check to see if menu is already active in the new area, if not then move it
 				if(!$sql->createQueryBuilder()->select('menu_id')->from('menus')->where('menu_name', $row['menu_name'])->where('menu_location', (int) $this->menuNewLoc)->where('menu_layout', $this->dbLayout)->limit(1)->execute())
 				{
@@ -1231,7 +1245,7 @@ class e_menuManager
 
 					if(isset($location) && isset($position))
 					{
-						$sql->createQueryBuilder()->update('menus')->setExpression('menu_order', 'menu_order - 1')->where('menu_location', (int) $location)->where('menu_order', '>', (int) $position)->where('menu_layout', $this->dbLayout)->execute();
+						$sql->createQueryBuilder()->update('menus')->decrement('menu_order')->where('menu_location', (int) $location)->where('menu_order', '>', (int) $position)->where('menu_layout', $this->dbLayout)->execute();
 					}
 				}
 				e107::getLog()->add('MENU_03',$row['menu_name'].'[!br!]'.$this->menuNewLoc.'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
@@ -1347,8 +1361,8 @@ class e_menuManager
 
 		$done = array();
 		
-		$sql->select("menus", "menu_name, menu_id, menu_pages, menu_path", "1 ORDER BY menu_name ASC");
-		while ($row = $sql->fetch())
+		$rows = $sql->createQueryBuilder()->select('menu_name', 'menu_id', 'menu_pages', 'menu_path')->from('menus')->orderBy('menu_name', 'ASC')->fetchAll();
+		foreach ($rows as $row)
 		{
 
 			if(in_array($row['menu_name'],$done))
@@ -1360,13 +1374,13 @@ class e_menuManager
 
 			if(is_numeric($row['menu_path']))
 			{
-				$pageMenu[] = $row;	
+				$pageMenu[] = $row;
 			}
-			else 
+			else
 			{
-				$pluginMenu[] = $row;	
+				$pluginMenu[] = $row;
 			}
-						
+
 		}
 
 		$text .= "<tr><th colspan='2'>".MENLAN_49."</th></tr>";
@@ -2042,7 +2056,7 @@ class e_menuManager
 		}
 		elseif($_POST['mode'] == 'update')
 		{
-			$sql->update("menus","menu_location = ".intval($area)." WHERE menu_id = ".intval($insertID)."",$this->debug);
+			$sql->createQueryBuilder()->update('menus')->set('menu_location', (int) $area)->where('menu_id', (int) $insertID)->execute();
 		}
 		
 		$c = 0;
@@ -2057,7 +2071,7 @@ class e_menuManager
 		{
 			list($b,$id) = explode("-",$val);
 			$order[] = $id;
-			$sql->update("menus","menu_order = ".$c." WHERE menu_id = ".intval($id)."",$this->debug);
+			$sql->createQueryBuilder()->update('menus')->set('menu_order', $c)->where('menu_id', (int) $id)->execute();
        		$c++;
 		}
 
@@ -2080,8 +2094,8 @@ class e_menuManager
 			$prev_name = '';
 			$search = array('_menu','_');
 
-			$sql -> select("menus", "*", "menu_location != 0 ORDER BY menu_path,menu_name");
-			while($row = $sql-> fetch())
+			$rows = $sql->createQueryBuilder()->select('*')->from('menus')->where('menu_location', '!=', 0)->orderBy('menu_path')->addOrderBy('menu_name')->fetchAll();
+			foreach($rows as $row)
 			{
 				$link = "";
 
@@ -2382,8 +2396,8 @@ class e_mm_layout
 		$pageMenu = array();
 		$pluginMenu = array();
 
-		$sql->select("menus", "menu_name, menu_id, menu_pages, menu_path", "1 ORDER BY menu_name ASC");
-		while($row = $sql->fetch())
+		$rows = $sql->createQueryBuilder()->select('menu_name', 'menu_id', 'menu_pages', 'menu_path')->from('menus')->orderBy('menu_name', 'ASC')->fetchAll();
+		foreach($rows as $row)
 		{
 
 			if(in_array($row['menu_name'], $done))

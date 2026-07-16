@@ -41,7 +41,10 @@ class mambo_import extends base_import_class
 	    switch ($task)
 		{
 		  case 'users' :
-		    $result = $this->ourDB->gen("SELECT * FROM {$this->DBPrefix}users");
+		    // $this->DBPrefix is a dynamic external-database table prefix (validated
+		    // fail-closed in base_import_class::database()); it is an SQL identifier
+		    // that cannot be bound. No values are interpolated here.
+		    $result = $this->ourDB->execute("SELECT * FROM {$this->DBPrefix}users");
 			if ($result === FALSE) return FALSE;
 			break;
 		  default :

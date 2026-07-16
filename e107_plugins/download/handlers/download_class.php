@@ -53,8 +53,10 @@ class download
 
 	private function loadCategories()
 	{
-		$sql = e107::getDb();
-		$data = $sql->retrieve("download_category", '*', 'ORDER BY download_category_order',true);
+		$data = e107::getDb()->createQueryBuilder()
+			->select('*')->from('download_category')
+			->orderBy('download_category_order')
+			->fetchAll();
 
 		foreach($data as $row)
 		{
@@ -400,21 +402,20 @@ class download
 
 	private function loadReport()
 	{
-		$sql = e107::getDb();
+		$qb = e107::getDb()->createQueryBuilder();
+		$row = $qb->select('d.*', 'dc.*')->from('download', 'd')
+			->leftJoin('download_category', 'dc', $qb->expr()->compareColumns('d.download_category', 'dc.download_category_id'))
+			->where('d.download_id', (int) $this->qry['id'])
+			->where('download_active', '>', 0)
+			->setMaxResults(1)
+			->fetchRow();
 
-		$query = "
-		SELECT d.*, dc.* FROM #download AS d
-		LEFT JOIN #download_category AS dc ON d.download_category = dc.download_category_id
-		WHERE d.download_id = {$this->qry['id']}
-		  AND download_active > 0
-		LIMIT 1";
-
-		if(!$sql->gen($query))
+		if(!$row)
 		{
 			return;
 		}
 
-		$this->rows = $sql->fetch();
+		$this->rows = $row;
 
 		if (isset($_POST['report_download']))
 		{
@@ -515,7 +516,6 @@ class download
 
 		// load data
 
-		$sql = e107::getDb();
 		$gen = new convert;
 
 		/** @var download_shortcodes $sc */
@@ -530,15 +530,19 @@ class download
 			$highlight_search = TRUE;
 		}
 
-	    $query = "
-			SELECT d.*, dc.* FROM #download AS d
-			LEFT JOIN #download_category AS dc ON d.download_category = dc.download_category_id
-			WHERE d.download_id = {$this->qry['id']} AND d.download_active > 0
-			AND d.download_visible IN (".USERCLASS_LIST.")
-			AND dc.download_category_class IN (".USERCLASS_LIST.")
-			LIMIT 1";
+		$classList = array_map('intval', explode(',', USERCLASS_LIST));
 
-		if(!$sql->gen($query))
+		$qb = e107::getDb()->createQueryBuilder();
+		$dlrow = $qb->select('d.*', 'dc.*')->from('download', 'd')
+			->leftJoin('download_category', 'dc', $qb->expr()->compareColumns('d.download_category', 'dc.download_category_id'))
+			->where('d.download_id', (int) $this->qry['id'])
+			->where('d.download_active', '>', 0)
+			->whereIn('d.download_visible', $classList)
+			->whereIn('dc.download_category_class', $classList)
+			->setMaxResults(1)
+			->fetchRow();
+
+		if(!$dlrow)
 		{
 			return null;
 		}
@@ -547,8 +551,6 @@ class download
 		{
 			define("DL_IMAGESTYLE","border:0px");
 		}
-
-		$dlrow = $sql->fetch();
 
 		$sc->parent = $this->getParent($dlrow['download_category_id']);
 
@@ -741,7 +743,12 @@ class download
 		
 		$dl_text = $tp->parseTemplate($this->templateHeader, TRUE, $sc);
 						
-		$total_downloads = $sql->count("download", "(*)", "WHERE download_category = '{$this->qry['id']}' AND download_active > 0 AND download_visible REGEXP '" . e_CLASS_REGEXP . "'");
+		$countQb = $sql->createQueryBuilder();
+		$total_downloads = $countQb->from("download")
+			->where('download_category', (int) $this->qry['id'])
+			->where('download_active', '>', 0)
+			->where($countQb->expr()->regexp('download_visible', e_CLASS_REGEXP))
+			->count();
 		
 		
 		/* SHOW SUBCATS ... */
@@ -749,31 +756,40 @@ class download
 		{
 
 			/* there are subcats - display them ... */
-			$qry = "
-			SELECT dc.*, dc2.download_category_name AS parent_name, dc2.download_category_icon as parent_icon, SUM(d.download_filesize) AS d_size,
-			COUNT(d.download_id) AS d_count,
-			MAX(d.download_datestamp) as d_last,
-			SUM(d.download_requested) as d_requests
-			FROM #download_category AS dc
-			LEFT JOIN #download AS d ON dc.download_category_id = d.download_category AND d.download_active > 0 AND d.download_visible IN (" . USERCLASS_LIST . ")
-			LEFT JOIN #download_category as dc2 ON dc2.download_category_id='{$this->qry['id']}'
-			WHERE dc.download_category_class IN (" . USERCLASS_LIST . ") AND dc.download_category_parent='{$this->qry['id']}'
-			GROUP by dc.download_category_id ORDER by dc.download_category_order
-			";
-			
-			if($sql->gen($qry))
+			$classList = array_map('intval', explode(',', USERCLASS_LIST));
+
+			$subQb = $sql->createQueryBuilder();
+			$subQb->select(
+					'dc.*',
+					'dc2.download_category_name AS parent_name',
+					'dc2.download_category_icon as parent_icon',
+					'SUM(d.download_filesize) AS d_size',
+					'COUNT(d.download_id) AS d_count',
+					'MAX(d.download_datestamp) as d_last',
+					'SUM(d.download_requested) as d_requests'
+				)
+				->from('download_category', 'dc')
+				->leftJoin('download', 'd', $subQb->raw('dc.download_category_id = d.download_category AND d.download_active > 0 AND '.$subQb->expr()->in('d.download_visible', $classList)))
+				->leftJoin('download_category', 'dc2', $subQb->raw('dc2.download_category_id='.$subQb->createNamedParameter((int) $this->qry['id'])))
+				->whereIn('dc.download_category_class', $classList)
+				->where('dc.download_category_parent', (int) $this->qry['id'])
+				->groupBy('dc.download_category_id')
+				->orderBy('dc.download_category_order');
+
+			$scArray = $subQb->fetchAll();
+
+			if(!empty($scArray))
 			{
-				
-				$scArray = $sql->db_getList();
+
 
 				$subText = "";
-								
+
 				/** @DEPRECATED **/
 			//	if(!defined("DL_IMAGESTYLE"))
 			//	{
 			//		define("DL_IMAGESTYLE", "border:1px solid blue");
 			//	}
-	
+
 				$download_cat_table_string = "";
 
 				if(!empty($DOWNLOAD_CAT_TABLE_PRE)) // 0.8 BC Fix.
@@ -781,21 +797,21 @@ class download
 					$subText .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_PRE, TRUE, $sc);
 				}
 				$subText .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_START, TRUE, $sc);
-				
+
 				foreach($scArray as $dlsubsubrow)
 				{
 					$sc->dlsubsubrow = $dlsubsubrow;
 					$sc->dlsubrow = $dlsubsubrow;
 					$subText .= $tp->parseTemplate($DOWNLOAD_CAT_SUBSUB_TABLE, TRUE, $sc);
-					
+
 				}
-				
+
 				$subText .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_END, TRUE, $sc);
-				
+
 		 	 //  $dl_text .= $ns->tablerender($dl_title, $subText, 'download-list', true);
 		 	     $dl_text .=  $subText;
 			}
-			
+
 		}// End of subcategory display
 
 		// Now display individual downloads
@@ -824,7 +840,28 @@ class download
 		// even if values overridden this time)
 		// $this->qry['view'] - number of entries per page
 		// $total_downloads - total number of entries matching search criteria
-		$filetotal = $sql->select("download", "*", "download_category='{$this->qry['id']}' AND download_active > 0 AND download_visible IN (" . USERCLASS_LIST . ") ORDER BY download_{$this->qry['order']} {$this->qry['sort']} LIMIT {$this->qry['from']}, ".$this->qry['view']);
+
+		// Validate the dynamic ORDER BY column fail-closed against the allowlist.
+		$orderColumn = 'download_'.$this->qry['order'];
+		if(!in_array($orderColumn, $this->orderOptions, true))
+		{
+			$orderColumn = 'download_datestamp';
+		}
+		$orderDir = (strtolower((string) $this->qry['sort']) === 'asc') ? 'ASC' : 'DESC';
+
+		$classList = array_map('intval', explode(',', USERCLASS_LIST));
+
+		$dlrows = $sql->createQueryBuilder()
+			->select('*')->from('download')
+			->where('download_category', (int) $this->qry['id'])
+			->where('download_active', '>', 0)
+			->whereIn('download_visible', $classList)
+			->orderBy($orderColumn, $orderDir)
+			->setFirstResult((int) $this->qry['from'])
+			->setMaxResults((int) $this->qry['view'])
+			->fetchAll();
+
+		$filetotal = count($dlrows);
 
 
 		$caption = varset($DOWNLOAD_LIST_CAPTION) ? $tp->parseTemplate($DOWNLOAD_LIST_CAPTION, TRUE, $sc) : LAN_PLUGIN_DOWNLOAD_NAME;
@@ -846,7 +883,7 @@ class download
 
 		$current_row = 1;
 
-		while($dlrow = $sql->fetch())
+		foreach($dlrows as $dlrow)
 		{
 				$sc->setVars($dlrow);
 
@@ -971,7 +1008,14 @@ class download
 
 			e107::getEvent()->trigger('user_download_brokendownload_reported', $brokendownload_data);
 
-			$sql->insert('generic', "0, 'Broken Download', ".time().",'".USERID."', '{$download_name}', {$download_id}, '{$report_add}'");
+			$sql->createQueryBuilder()->insert('generic')->values(array(
+				'gen_type'      => 'Broken Download',
+				'gen_datestamp' => time(),
+				'gen_user_id'   => USERID,
+				'gen_ip'        => $download_name,
+				'gen_intdata'   => $download_id,
+				'gen_chardata'  => $report_add,
+			))->execute();
 	
 
 			$text = $frm->breadcrumb($breadcrumb);
@@ -1053,21 +1097,23 @@ class download
 	//	$load_template = 'download_template';
 	//	if (!isset($DOWNLOAD_MIRROR_START)) eval($template_load_core);
 	
-		$sql->select("download_mirror");
-		$mirrorList = $sql->db_getList("ALL", 0, 200, "mirror_id");
-	
-	    $query = "
-			SELECT d.*, dc.* FROM #download AS d
-			LEFT JOIN #download_category AS dc ON d.download_category = dc.download_category_id
-			WHERE d.download_id = ".$this->qry['id']."
-			LIMIT 1";
-	
-	//	global $dlmirrorfile, $dlmirror;	
-	
-	
-		if($sql->gen($query))
+		$mirrorList = $sql->createQueryBuilder()
+			->select('*')->from('download_mirror')
+			->setMaxResults(200)
+			->fetchAll('mirror_id');
+
+	//	global $dlmirrorfile, $dlmirror;
+
+
+		$qb = $sql->createQueryBuilder();
+		$dlrow = $qb->select('d.*', 'dc.*')->from('download', 'd')
+			->leftJoin('download_category', 'dc', $qb->expr()->compareColumns('d.download_category', 'dc.download_category_id'))
+			->where('d.download_id', (int) $this->qry['id'])
+			->setMaxResults(1)
+			->fetchRow();
+
+		if($dlrow)
 		{
-			$dlrow = $sql->fetch();
 		//	$dlrow['mirrorlist'] = $mirrorList;
 			$sc->setVars($dlrow);
 
@@ -1176,24 +1222,38 @@ class download
    {
       global $sql,$parm;
      	$boxinfo = "\n";
-     	$qry = "
-        	SELECT dc.download_category_name, dc.download_category_order, dc.download_category_id, dc.download_category_parent,
-        	dc1.download_category_parent AS d_parent1
-        	FROM #download_category AS dc
-        	LEFT JOIN #download_category as dc1 ON dc1.download_category_id=dc.download_category_parent AND dc1.download_category_class IN (".USERCLASS_LIST.")
-         LEFT JOIN #download_category as dc2 ON dc2.download_category_id=dc1.download_category_parent ";
-      if (ADMIN === FALSE) $qry .= " WHERE dc.download_category_class IN (".USERCLASS_LIST.") ";
-      $qry .= " ORDER by dc2.download_category_order, dc1.download_category_order, dc.download_category_order";   // This puts main categories first, then sub-cats, then sub-sub cats
-      if (!$sql->gen($qry))
+
+      $classList = array_map('intval', explode(',', USERCLASS_LIST));
+
+      $catQb = $sql->createQueryBuilder();
+      $catQb->select(
+            'dc.download_category_name',
+            'dc.download_category_order',
+            'dc.download_category_id',
+            'dc.download_category_parent',
+            'dc1.download_category_parent AS d_parent1'
+         )
+         ->from('download_category', 'dc')
+         ->leftJoin('download_category', 'dc1', $catQb->raw('dc1.download_category_id=dc.download_category_parent AND '.$catQb->expr()->in('dc1.download_category_class', $classList)))
+         ->leftJoin('download_category', 'dc2', $catQb->expr()->compareColumns('dc2.download_category_id', 'dc1.download_category_parent'));
+      if (ADMIN === FALSE) $catQb->whereIn('dc.download_category_class', $classList);
+      // This puts main categories first, then sub-cats, then sub-sub cats
+      $catQb->orderBy('dc2.download_category_order')
+         ->addOrderBy('dc1.download_category_order')
+         ->addOrderBy('dc.download_category_order');
+
+      $catRows = $catQb->fetchAll();
+
+      if (empty($catRows))
       {
-        	return "Error reading categories<br />";
-        	exit;
+         return "Error reading categories<br />";
       }
+
       $boxinfo .= "<select name='{$name}' id='download_category' class='tbox form-control'>
       	<option value=''>{$blankText}</option>\n";
       // Its a structured display option - need a 2-step process to create a tree
       $catlist = array();
-      while ($dlrow = $sql->fetch())
+      foreach ($catRows as $dlrow)
       {
          $tmp = $dlrow['download_category_parent'];
         	if ($tmp == '0')

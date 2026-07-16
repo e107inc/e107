@@ -8,6 +8,8 @@
  *
  */
 
+use e107\Database\SqlFragment;
+
 require_once(__DIR__.'/../class2.php');
 
 if (!getperms('4'))
@@ -47,11 +49,12 @@ if(varset($_GET['mode']) == "ajax")
 					unset($tmp);
 				}
 
-				if($sql->select('user_extended_struct', '*', "user_extended_struct_id = '$sub_action'"))
-				{
-					$current = $sql->fetch();
-				}
-				else
+				$current = $sql->createQueryBuilder()
+					->select('*')->from('user_extended_struct')
+					->where('user_extended_struct_id', $sub_action)
+					->fetchRow();
+
+				if(!$current)
 				{
 					$current = 'new';
 				}
@@ -82,11 +85,10 @@ if(varset($_GET['mode']) == "ajax")
 					$text .= "<select style='width:99%' class='tbox e-select' name='field_id'>";
 					$text .= "<option value='' class='caption'>" . LAN_NONE . "</option>";
 					$table_list = !empty($_POST['table_db']) ? $_POST['table_db'] : $curVals[0];
-					if(preg_match('/^[A-Za-z0-9_]+$/D', (string) $table_list) && $sql->execute("DESCRIBE " . MPREFIX . $table_list))
+					if(preg_match('/^[A-Za-z0-9_]+$/D', (string) $table_list))
 					{
-						while($row3 = $sql->fetch())
+						foreach($sql->fields($table_list) as $field_name)
 						{
-							$field_name = $row3['Field'];
 							$selected = ($curVals[1] == $field_name) ? " selected='selected' " : "";
 							$text .= "<option value=\"$field_name\" $selected>" . $field_name . "</option>";
 						}
@@ -98,11 +100,10 @@ if(varset($_GET['mode']) == "ajax")
 					$text .= "<select style='width:99%' class='tbox e-select' name='field_value'>";
 					$text .= "<option value='' class='caption'>" . LAN_NONE . "</option>";
 					$table_list = !empty($_POST['table_db']) ? $_POST['table_db'] : $curVals[0];
-					if(preg_match('/^[A-Za-z0-9_]+$/D', (string) $table_list) && $sql->execute("DESCRIBE " . MPREFIX . $table_list))
+					if(preg_match('/^[A-Za-z0-9_]+$/D', (string) $table_list))
 					{
-						while($row3 = $sql->fetch())
+						foreach($sql->fields($table_list) as $field_name)
 						{
-							$field_name = $row3['Field'];
 							$selected = ($curVals[2] == $field_name) ? " selected='selected' " : "";
 							$text .= "<option value=\"$field_name\" $selected>" . $field_name . "</option>";
 						}
@@ -114,11 +115,10 @@ if(varset($_GET['mode']) == "ajax")
 					$text .= "<select style='width:99%' class='tbox e-select' name='field_order'>";
 					$text .= "<option value='' class='caption'>" . LAN_NONE . "</option>";
 					$table_list = !empty($_POST['table_db']) ? $_POST['table_db'] : $curVals[0];
-					if(preg_match('/^[A-Za-z0-9_]+$/D', (string) $table_list) && $sql->execute("DESCRIBE " . MPREFIX . $table_list))
+					if(preg_match('/^[A-Za-z0-9_]+$/D', (string) $table_list))
 					{
-						while($row3 = $sql->fetch())
+						foreach($sql->fields($table_list) as $field_name)
 						{
-							$field_name = $row3['Field'];
 							$selected = ($curVals[3] == $field_name) ? " selected='selected' " : "";
 							$text .= "<option value=\"$field_name\" $selected>" . $field_name . "</option>";
 						}
@@ -397,7 +397,10 @@ e107::js('footer-inline', js());
 		{
 			parent::EditObserver();
 
-			$row = e107::getDb()->retrieve('user_extended_struct', 'user_extended_struct_type,user_extended_struct_parms',"user_extended_struct_id = ".intval($_GET['id']));
+			$row = e107::getDb()->createQueryBuilder()
+				->select('user_extended_struct_type', 'user_extended_struct_parms')->from('user_extended_struct')
+				->where('user_extended_struct_id', (int) $_GET['id'])
+				->fetchRow();
 
 			$parms = $row['user_extended_struct_parms'];
 			$tmp = explode('^,^', $parms);
@@ -436,7 +439,11 @@ e107::js('footer-inline', js());
 				$this->fields['user_extended_struct_type']['title'] = LAN_TYPE;
 			}
 
-			$data = e107::getDb()->retrieve("user_extended_struct", "*", "user_extended_struct_type = 0 ORDER BY user_extended_struct_order ASC", true);
+			$data = e107::getDb()->createQueryBuilder()
+				->select('*')->from('user_extended_struct')
+				->where('user_extended_struct_type', 0)
+				->orderBy('user_extended_struct_order', 'ASC')
+				->fetchAll();
 
 			$opts = array();
 			$opts[0] = EXTLAN_36;
@@ -520,15 +527,30 @@ e107::js('footer-inline', js());
 			}
 			else
 			{
-				if(e107::getDb()->gen('ALTER TABLE #user_extended ADD user_'.e107::getParser()->toDB($new_data['user_extended_struct_name'], true).' '.$field_info)===false)
+				// The dynamic column name (user_<name>) is validated fail-closed by the
+				// schema builder, replacing toDB() identifier-escaping; $field_info is a
+				// vouched type fragment from user_extended_type_text(). A hostile/invalid
+				// name throws instead of injecting; a DB-level failure returns false,
+				// matching the legacy gen() error path.
+				try
+				{
+					if(e107::getDb()->schema()->addColumn('user_extended', 'user_'.$new_data['user_extended_struct_name'], SqlFragment::raw($field_info)) === false)
+					{
+						$mes->addError("Unable to alter table user_extended.");
+					}
+				}
+				catch(InvalidArgumentException $e)
 				{
 					$mes->addError("Unable to alter table user_extended.");
+					e107::getMessage()->addDebug($e->getMessage());
 				}
 			}
 
 			if(empty($new_data['user_extended_struct_order']))
 			{
-			    if($max = e107::getDb()->retrieve('user_extended_struct','MAX(user_extended_struct_order) as maxorder','1'))
+			    if($max = e107::getDb()->createQueryBuilder()
+				    ->selectAggregate('MAX', 'user_extended_struct_order', 'maxorder')->from('user_extended_struct')
+				    ->fetchOne())
 			    {
 					if(is_numeric($max))
 					{
@@ -596,9 +618,22 @@ e107::js('footer-inline', js());
 				}
 				else
 				{
-					if(e107::getDb()->gen("ALTER TABLE #user_extended MODIFY user_".e107::getParser()->toDB($new_data['user_extended_struct_name'], true)." ".$field_info)===false)
+					// The dynamic column name (user_<name>) is validated fail-closed by the
+					// schema builder, replacing toDB() identifier-escaping; $field_info is a
+					// vouched type fragment from user_extended_type_text(). A hostile/invalid
+					// name throws instead of injecting; a DB-level failure returns false,
+					// matching the legacy gen() error path.
+					try
+					{
+						if(e107::getDb()->schema()->modifyColumn('user_extended', 'user_'.$new_data['user_extended_struct_name'], SqlFragment::raw($field_info)) === false)
+						{
+							$mes->addError("Unable to alter table user_extended.");
+						}
+					}
+					catch(InvalidArgumentException $e)
 					{
 						$mes->addError("Unable to alter table user_extended.");
+						e107::getMessage()->addDebug($e->getMessage());
 					}
 				}
 
@@ -688,7 +723,7 @@ e107::js('footer-inline', js());
 					$ret .= EXTLAN_68." $f ".EXTLAN_72."<br />";
 					if(is_readable(e_CORE."sql/extended_".$f.".php"))
 					{
-		                $ret .= ($sql->gen("DROP TABLE ".MPREFIX."user_extended_".$f)) ? LAN_DELETED." user_extended_".$f."<br />" : LAN_DELETED_FAILED." user_extended_".$f."<br />";
+		                $ret .= ($sql->dropTable("user_extended_".$f)) ? LAN_DELETED." user_extended_".$f."<br />" : LAN_DELETED_FAILED." user_extended_".$f."<br />";
 					}
 				}
 				else
@@ -1056,11 +1091,10 @@ e107::js('footer-inline', js());
 			<option value='' class='caption'>".LAN_NONE."</option>\n";
 				$table_list = !empty($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
 
-				if(preg_match('/^[A-Za-z0-9_]+$/D', (string) $table_list) && $sql->execute("DESCRIBE ".MPREFIX.$table_list))
+				if(preg_match('/^[A-Za-z0-9_]+$/D', (string) $table_list))
 				{
-					while($row3 = $sql->fetch())
+					foreach($sql->fields($table_list) as $field_name)
 					{
-						$field_name=$row3['Field'];
 						$selected =  ($curVals[1] == $field_name) ? " selected='selected' " : "";
 						$text .="<option value=\"$field_name\" $selected>".$field_name."</option>\n";
 					}
@@ -1071,11 +1105,10 @@ e107::js('footer-inline', js());
 			<option value='' class='caption'>".LAN_NONE."</option>\n";
 				$table_list = !empty($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
 
-				if(preg_match('/^[A-Za-z0-9_]+$/D', (string) $table_list) && $sql->execute("DESCRIBE ".MPREFIX.$table_list))
+				if(preg_match('/^[A-Za-z0-9_]+$/D', (string) $table_list))
 				{
-					while($row3 = $sql->fetch())
+					foreach($sql->fields($table_list) as $field_name)
 					{
-						$field_name=$row3['Field'];
 						$selected =  ($curVals[2] == $field_name) ? " selected='selected' " : "";
 						$text .="<option value=\"$field_name\" $selected>".$field_name."</option>\n";
 					}
@@ -1086,11 +1119,10 @@ e107::js('footer-inline', js());
 			<option value='' class='caption'>".LAN_NONE."</option>\n";
 				$table_list = !empty($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
 
-				if(preg_match('/^[A-Za-z0-9_]+$/D', (string) $table_list) && $sql->execute("DESCRIBE ".MPREFIX.$table_list))
+				if(preg_match('/^[A-Za-z0-9_]+$/D', (string) $table_list))
 				{
-					while($row3 = $sql->fetch())
+					foreach($sql->fields($table_list) as $field_name)
 					{
-						$field_name=$row3['Field'];
 						$selected =  ($curVals[3] == $field_name) ? " selected='selected' " : "";
 						$text .="<option value=\"$field_name\" $selected>".$field_name."</option>\n";
 					}

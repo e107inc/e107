@@ -111,12 +111,22 @@ if(false === $cached)
 	$year_start 	= mktime(0, 0, 0, 1, 1, $req_year);
 	$year_end 		= mktime(23, 59, 59, 12, 31, $req_year);
 	
-	$sql->select("news", "news_id, news_datestamp", "news_class IN (".USERCLASS_LIST.") AND (FIND_IN_SET('0', news_render_type) OR FIND_IN_SET(1, news_render_type)) AND news_datestamp > ".intval($start)." AND news_datestamp < ".intval($end));
-	
+	$newsRows = $sql->createQueryBuilder()
+		->select('news_id', 'news_datestamp')->from('news')
+		->whereIn('news_class', explode(',', USERCLASS_LIST))
+		->where(function($q)
+		{
+			$q->where($q->expr()->findInSet('news_render_type', '0'))
+			  ->orWhere($q->expr()->findInSet('news_render_type', 1));
+		})
+		->where('news_datestamp', '>', intval($start))
+		->where('news_datestamp', '<', intval($end))
+		->fetchEach();
+
 	$links = array();
 	$months = array();
-	
-	while ($news = $sql->fetch())
+
+	foreach ($newsRows as $news)
 	{
 		$xmonth = date("n", $news['news_datestamp']);
 		$xyear = date("Y", $news['news_datestamp']);

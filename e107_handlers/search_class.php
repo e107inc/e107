@@ -281,7 +281,8 @@ class e_search
 		}
 
 
-		if ($ps['results'] = $sql->gen($sql_query)) 
+		// Intentionally raw (sqli boundary): a single gen() consumes both branches; the MySQL-sort branch uses SQL_CALC_FOUND_ROWS read via $sql->total_results (builder cannot express), and both use a dynamic table (#$table), dynamic $return_fields and a raw developer $where fragment.
+		if ($ps['results'] = $sql->gen($sql_query))
 		{
 			if (!$search_prefs['mysql_sort'])
 			 {

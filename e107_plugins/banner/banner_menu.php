@@ -90,51 +90,73 @@ if(!empty($menu_pref['banner_campaign']) /*&& !empty($menu_pref['banner_amount']
 		mt_srand ((double) microtime() * 1000000);
 		$seed = mt_rand(1,2000000000);
 		$time = time();
-	
-		$tmp = explode("|", $menu_pref['banner_campaign']); 
-		foreach($tmp as $v)
+
+		$params = array('time' => $time);
+
+		// $v is an admin-set campaign value; bind it in its e107 storage format (toDB).
+		$tmp = explode("|", $menu_pref['banner_campaign']);
+		$campaignPlaceholders = array();
+		foreach($tmp as $i => $v)
 		{
-			// $v is an admin-set campaign value concatenated into the WHERE clause; escape it.
-			$filter[] = 'banner_campaign="'.e107::getParser()->toDB($v).'"';
+			$key = 'camp'.$i;
+			$params[$key] = e107::getParser()->toDB($v);
+			$campaignPlaceholders[] = 'banner_campaign = :'.$key;
 		}
-	
-		$query = " (banner_startdate=0 OR banner_startdate <= {$time}) AND (banner_enddate=0 OR banner_enddate > {$time}) AND (banner_impurchased=0 OR banner_impressions<=banner_impurchased)";
-		$query .= (count($filter)) ? " AND (".implode(" OR ",$filter)." ) " : ""; 
+
+		// banner_active class set, bound value by value.
+		$classPlaceholders = array();
+		foreach(explode(',', USERCLASS_LIST) as $i => $class)
+		{
+			$key = 'class'.$i;
+			$params[$key] = $class;
+			$classPlaceholders[] = ':'.$key;
+		}
+
+		$query = "SELECT banner_id, banner_image, banner_clickurl, banner_campaign, banner_description FROM `#banner`";
+		$query .= " WHERE (banner_startdate=0 OR banner_startdate <= :time) AND (banner_enddate=0 OR banner_enddate > :time) AND (banner_impurchased=0 OR banner_impressions<=banner_impurchased)";
+		$query .= (count($campaignPlaceholders)) ? " AND (".implode(" OR ", $campaignPlaceholders)." ) " : "";
 	//	$query .= ($parm ? " AND banner_campaign='".$tp->toDB($parm)."'" : '');
 
-
-
-
-		$query .= "	AND banner_active IN (".USERCLASS_LIST.") ";
+		$query .= " AND banner_active IN (".implode(', ', $classPlaceholders).") ";
 
 		$query .= " ORDER BY ";
 
-
+		// ORDER BY RAND() / a REGEXP-weighted sort cannot be expressed by the query
+		// builder's validated ORDER BY, so this stays bound execute() (T3).
 		$ord = array();
 
-		if($tags =	e107::getRegistry('core/form/related'))
+		if($tags = e107::getRegistry('core/form/related'))
 		{
-			$tags_regexp = "'(^|,)(".str_replace(",", "|", $tags).")(,|$)'";
-			$ord[] = " banner_keywords REGEXP ".$tags_regexp." DESC";
+			$params['tagregexp'] = "(^|,)(".str_replace(",", "|", $tags).")(,|$)";
+			$ord[] = " banner_keywords REGEXP :tagregexp DESC";
 		}
 
-		$ord[] = " 	RAND($seed) ASC";
+		$ord[] = " RAND(".(int) $seed.") ASC";
 
-		$query .= implode(', ',$ord);
+		$query .= implode(', ', $ord);
 
 		if(!empty($menu_pref['banner_amount'])) // if empty, show unlimited
 		{
 			$query .= " LIMIT ".intval($menu_pref['banner_amount']);
 		}
-		
-		if($data = $sql->retrieve('banner', 'banner_id, banner_image, banner_clickurl,banner_campaign, banner_description', $query,true))
+
+		$data = array();
+		if(e107::getDb()->execute($query, $params))
+		{
+			while($row = e107::getDb()->fetch())
+			{
+				$data[] = $row;
+			}
+		}
+
+		if($data)
 		{
 			foreach($data as $k=>$row)
 			{
-				$var = array('BANNER' => $sc->renderBanner($row)); 
+				$var = array('BANNER' => $sc->renderBanner($row));
 				$cat = $row['banner_campaign'];
-				$ret[$cat][] = $tp->simpleParse($BANNER_MENU_ITEM, $var); 
-			}			
+				$ret[$cat][] = $tp->simpleParse($BANNER_MENU_ITEM, $var);
+			}
 		}
 		elseif(e_DEBUG == true && getperms('0'))
 		{

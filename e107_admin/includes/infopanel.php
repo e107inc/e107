@@ -522,7 +522,12 @@ class adminstyle_infopanel
 	//		return;
 	//	}
 				
-		if(!$rows = $sql->retrieve('comments','*','comment_blocked=2 ORDER BY comment_id DESC LIMIT 25',true) )
+		$rows = $sql->createQueryBuilder()
+			->select('*')->from('comments')
+			->where('comment_blocked', 2)
+			->orderBy('comment_id', 'DESC')->setMaxResults(25)
+			->fetchAll();
+		if(!$rows)
 		{
 			return null;
 		}
@@ -687,12 +692,16 @@ class adminstyle_infopanel
 		
 	
 		$text = "<div style='padding-left:20px'>";
-		$menu_qry = 'SELECT * FROM #menus WHERE menu_id!= 0  GROUP BY menu_name ORDER BY menu_name';
+		$menuRows = e107::getDb()->createQueryBuilder()
+			->select('*')->from('menus')
+			->where('menu_id', '!=', 0)
+			->groupBy('menu_name')->orderBy('menu_name')
+			->fetchAll();
 		$settings = varset($user_pref['core-infopanel-menus'],array());
-	
-		if (e107::getDb()->gen($menu_qry))
+
+		if ($menuRows)
 		{
-			while ($row = e107::getDb()->fetch())
+			foreach ($menuRows as $row)
 			{
 				// Custom menu (core).
 				if(is_numeric($row['menu_path']))

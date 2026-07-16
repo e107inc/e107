@@ -125,7 +125,10 @@ class newsletter
 
 		$text = '';
 
-		if(!$sql->select('newsletter', '*', "newsletter_parent='0'  ORDER BY newsletter_id DESC"))
+		$nlArray = $sql->createQueryBuilder()->select('*')->from('newsletter')
+			->where('newsletter_parent', '0')
+			->orderBy('newsletter_id', 'DESC')->fetchAll();
+		if(!$nlArray)
 		{
 			$mes->addInfo(NLLAN_05);
 		}
@@ -147,7 +150,6 @@ class newsletter
 			</tr>
 			";
 
-			$nlArray = $sql->db_getList(); 
 			foreach($nlArray as $data)
 			{
 				$text .= "
@@ -173,7 +175,10 @@ class newsletter
 
 		$text = '';
 
-		if(!$sql->select('newsletter', '*', "newsletter_parent!='0' ORDER BY newsletter_id DESC"))
+		$nlArray = $sql->createQueryBuilder()->select('*')->from('newsletter')
+			->where('newsletter_parent', '!=', '0')
+			->orderBy('newsletter_id', 'DESC')->fetchAll();
+		if(!$nlArray)
 		{
 			$mes->addinfo(NLLAN_11);
 		}
@@ -196,8 +201,6 @@ class newsletter
 				<td class='center options'>".LAN_OPTIONS."</td>
 			</tr>
 			";
-
-			$nlArray = $sql->db_getList();
 
 			foreach($nlArray as $data)
 			{
@@ -296,13 +299,19 @@ class newsletter
 
 		if(isset($_POST['editid']))
 		{
-			$sql ->update('newsletter', "newsletter_title='{$letter['newsletter_title']}', newsletter_text='{$letter['newsletter_text']}', newsletter_header='{$letter['newsletter_header']}', newsletter_footer='{$letter['newsletter_footer']}' WHERE newsletter_id=".intval($_POST['editid']));
+			$defs = $sql->getFieldDefs('newsletter')['_FIELD_TYPES'];
+			$sql->createQueryBuilder()->update('newsletter')
+				->setTyped('newsletter_title', $letter['newsletter_title'], $defs['newsletter_title'])
+				->setTyped('newsletter_text', $letter['newsletter_text'], $defs['newsletter_text'])
+				->setTyped('newsletter_header', $letter['newsletter_header'], $defs['newsletter_header'])
+				->setTyped('newsletter_footer', $letter['newsletter_footer'], $defs['newsletter_footer'])
+				->where('newsletter_id', (int) $_POST['editid'])->execute();
 			$mes->addSuccess(LAN_UPDATED);
 		}
 		else
 		{
 			$letter['newsletter_datestamp'] = time();
-			$sql->insert('newsletter', $letter);
+			$sql->createQueryBuilder()->insert('newsletter')->valuesTyped($letter, $sql->getFieldDefs('newsletter')['_FIELD_TYPES'])->execute();
 			$mes->addSuccess(LAN_CREATED);
 		}
 	}
@@ -324,14 +333,15 @@ class newsletter
 			$newsletter_issue = $tp->toFORM($edit['newsletter_issue']);
 		}
 
-		if(!$sql->select('newsletter', '*', "newsletter_parent='0' "))
+		$nlArray = $sql->createQueryBuilder()->select('*')->from('newsletter')
+			->where('newsletter_parent', '0')->fetchAll();
+		if(!$nlArray)
 		{
 			//$this -> message = NLLAN_05;
 			$mes->addInfo(NLLAN_05);
 		}
-		else 
+		else
 		{
-		$nlArray = $sql -> db_getList();
 
 		$text = "
 		<form action='".e_SELF."' id='newsletterform' method='post'>
@@ -395,13 +405,19 @@ class newsletter
 
 		if (isset($_POST['editid']))
 		{
-			$sql->update('newsletter', "newsletter_title='{$letter['newsletter_title']}', newsletter_text='{$letter['newsletter_text']}', newsletter_parent='".$letter['newsletter_parent']."', newsletter_issue='".$letter['newsletter_issue']."' WHERE newsletter_id=".intval($_POST['editid']));
+			$defs = $sql->getFieldDefs('newsletter')['_FIELD_TYPES'];
+			$sql->createQueryBuilder()->update('newsletter')
+				->setTyped('newsletter_title', $letter['newsletter_title'], $defs['newsletter_title'])
+				->setTyped('newsletter_text', $letter['newsletter_text'], $defs['newsletter_text'])
+				->setTyped('newsletter_parent', $letter['newsletter_parent'], $defs['newsletter_parent'])
+				->setTyped('newsletter_issue', $letter['newsletter_issue'], $defs['newsletter_issue'])
+				->where('newsletter_id', (int) $_POST['editid'])->execute();
 			$mes->addSuccess(LAN_UPDATED);
 		}
 		else
 		{
 			$letter['newsletter_datestamp'] = time();
-			$sql->insert('newsletter', $letter);
+			$sql->createQueryBuilder()->insert('newsletter')->valuesTyped($letter, $sql->getFieldDefs('newsletter')['_FIELD_TYPES'])->execute();
 			$mes->addSuccess(NLLAN_39);
 		}
 
@@ -428,18 +444,20 @@ class newsletter
 		$issue = intval(str_replace('nlmailnow_', '', $issue));
 
 		// Get details of current newsletter issue
-		if(!$sql->select('newsletter', '*', 'newsletter_id='.$issue))
+		$newsletterInfo = $sql->createQueryBuilder()->select('*')->from('newsletter')
+			->where('newsletter_id', $issue)->fetchRow();
+		if(!$newsletterInfo)
 		{
 			return FALSE;
 		}
-		$newsletterInfo = $sql->fetch();
 
 		// Get parent details - has header/footer and subscriber list
-		if(!$sql->select('newsletter', '*', "newsletter_id='".$newsletterInfo['newsletter_parent']."' "))
+		$newsletterParentInfo = $sql->createQueryBuilder()->select('*')->from('newsletter')
+			->where('newsletter_id', $newsletterInfo['newsletter_parent'])->fetchRow();
+		if(!$newsletterParentInfo)
 		{
 			return FALSE;
 		}
-		$newsletterParentInfo = $sql->fetch();
 		$memberArray = explode(chr(1), $newsletterParentInfo['newsletter_subscribers']);
 
 		require(e_HANDLER.'mail_manager_class.php');
@@ -484,9 +502,11 @@ class newsletter
 		{
 			if ($memberID = intval($memberID))
 			{
-				if($sql->select('user', 'user_name,user_email,user_loginname,user_lastvisit', 'user_id='.$memberID))
+				$row = $sql->createQueryBuilder()
+					->select('user_name', 'user_email', 'user_loginname', 'user_lastvisit')
+					->from('user')->where('user_id', $memberID)->fetchRow();
+				if($row)
 				{
-					$row = $sql->fetch();
 					$uTarget = array('mail_recipient_id' => $memberID,
 									 'mail_recipient_name' => $row['user_name'],		// Should this use realname?
 									 'mail_recipient_email' => $row['user_email'],
@@ -516,7 +536,9 @@ class newsletter
 			//$this->message = str_replace('[x]', $counters['add'],NLLAN_40);
 			$mes->addSuccess(str_replace('[x]', $counters['add'], NLLAN_40));
 		}
-		$sql->update('newsletter', "newsletter_flag='1' WHERE newsletter_id=".$issue);
+		$defs = $sql->getFieldDefs('newsletter')['_FIELD_TYPES'];
+		$sql->createQueryBuilder()->update('newsletter')
+			->setTyped('newsletter_flag', '1', $defs['newsletter_flag'])->where('newsletter_id', $issue)->execute();
 
 		$ns->tablerender($caption, $mes->render() . $text);
 	}
@@ -533,9 +555,10 @@ class newsletter
 	{
 		$sql = e107::getDb();
 
-		if($sql->select("newsletter", "*", "newsletter_id='{$id}'"))
+		$foo = $sql->createQueryBuilder()->select('*')->from('newsletter')
+			->where('newsletter_id', $id)->fetchRow();
+		if($foo)
 		{
-			$foo = $sql->fetch();
 			if(!$foo['newsletter_parent'])
 			{
 				$this -> defineNewsletter($foo);
@@ -562,14 +585,14 @@ class newsletter
 		if(strpos($tmp['key'], 'newsletter') === 0)
 		{
 			$id = intval(str_replace('newsletter_', '', $tmp['key']));
-			$sql->delete('newsletter', "newsletter_id='{$id}'");
+			$sql->createQueryBuilder()->delete('newsletter')->where('newsletter_id', $id)->execute();
 			//$this -> message = NLLAN_42;
 			$mes->addSuccess(LAN_DELETED);
 		}
 		else
 		{
 			$id = intval(str_replace('issue_', '', $tmp['key']));
-			$sql->delete('newsletter', "newsletter_id='{$id}' ");
+			$sql->createQueryBuilder()->delete('newsletter')->where('newsletter_id', $id)->execute();
 			//$this -> message = NLLAN_43;
 			$mes->addSuccess(LAN_DELETED);
 		}
@@ -613,15 +636,17 @@ class newsletter
 		$vs_text = '';
 
 
-		if(!$nl_sql->select('newsletter', '*', 'newsletter_id='.$p_id))// Check if newsletter id is available
-		{	
+		$nl_row = $nl_sql->createQueryBuilder()->select('*')->from('newsletter')
+			->where('newsletter_id', $p_id)->fetchRow();// Check if newsletter id is available
+		if(!$nl_row)
+		{
 			$mes->addError(NLLAN_56);
 			$vs_text .= "<div class='buttons-bar center'>
 							<input class='btn btn-default btn-secondary button' type=button value='".LAN_BACK."' onClick=\"window.location='".e_SELF."'\">
 						</div>";
 			$ns -> tablerender(NLLAN_65.' '.$p_id, $mes->render() . $vs_text);
 			return;
-		} 
+		}
 		else 
 		{
 		  $vs_text .= "
@@ -641,7 +666,7 @@ class newsletter
 					<td>".LAN_OPTIONS."</td>
 				</tr>";
 
-			if($nl_row = $nl_sql->fetch())
+			if($nl_row)
 			{
 				$subscribers_list = explode(chr(1), trim($nl_row['newsletter_subscribers']));
 				sort($subscribers_list);
@@ -661,8 +686,8 @@ class newsletter
 				{
 					if ($val != $_last_subscriber)
 					{
-						$nl_sql->createQueryBuilder()->select('*')->from('user')->where('user_id', (int) $val)->execute();
-						if($nl_row = $nl_sql-> fetch())
+						$nl_row = $nl_sql->createQueryBuilder()->select('*')->from('user')->where('user_id', (int) $val)->fetchRow();
+						if($nl_row)
 						{
 							//<a href='".e_BASE."user.php?id.{$val}'>".$nl_row['user_name']."</a>
 							$uparams = array('id' => $val, 'name' => $nl_row['user_name']);
@@ -682,7 +707,8 @@ class newsletter
 					{	// Duplicate user id found in the subscribers_list array!
 						newsletter::remove_subscribers($p_id, $val);	// removes all entries for this user id
 						$newsletterArray[$p_id]['newsletter_subscribers'] = chr(1).$val;	// keep this single value in the list
-						$nl_sql->createQueryBuilder()->update('newsletter')->set('newsletter_subscribers', $newsletterArray[$p_id]['newsletter_subscribers'])->where('newsletter_id', (int) $p_id)->execute();
+						$nl_defs = $nl_sql->getFieldDefs('newsletter')['_FIELD_TYPES'];
+						$nl_sql->createQueryBuilder()->update('newsletter')->setTyped('newsletter_subscribers', $newsletterArray[$p_id]['newsletter_subscribers'], $nl_defs['newsletter_subscribers'])->where('newsletter_id', (int) $p_id)->execute();
 						$subscribers_total_count --;
 						$_nl_sanatized = 1;
 					}
@@ -713,13 +739,17 @@ class newsletter
 	function remove_subscribers($p_id, $p_key) 
 	{
 		$sql = e107::getDb();
-		$sql ->select('newsletter', '*', 'newsletter_id='.intval($p_id));
-		if($nl_row = $sql->fetch())
+		$nl_row = $sql->createQueryBuilder()->select('*')->from('newsletter')
+			->where('newsletter_id', (int) $p_id)->fetchRow();
+		if($nl_row)
 		{
 			$subscribers_list = array_flip(explode(chr(1), $nl_row['newsletter_subscribers']));
 			unset($subscribers_list[$p_key]);
 			$new_subscriber_list = implode(chr(1), array_keys($subscribers_list));
-			$sql->update('newsletter', "newsletter_subscribers='{$new_subscriber_list}' WHERE newsletter_id='".$p_id."'");
+			$defs = $sql->getFieldDefs('newsletter')['_FIELD_TYPES'];
+			$sql->createQueryBuilder()->update('newsletter')
+				->setTyped('newsletter_subscribers', $new_subscriber_list, $defs['newsletter_subscribers'])
+				->where('newsletter_id', $p_id)->execute();
 		}
 	}
 }

@@ -45,7 +45,17 @@ class coppermine_import extends base_import_class
     switch ($task)
 	{
 	  case 'users' :
-	    $result = $this->ourDB->gen("SELECT * FROM {$this->DBPrefix}users WHERE `user_active`='YES' ");
+	    // Cross-database import: the FROM target is the foreign Coppermine database +
+	    // prefix (`db`.prefixusers), assembled and validated fail-closed in
+	    // base_import_class::database() (backtick-escaped db name, [A-Za-z0-9_]-stripped
+	    // prefix). The query builder cannot express this - resolveTableName() rejects a
+	    // qualified name and would force e107's own site prefix - and the result cursor
+	    // is walked incrementally later by base_import_class::getNext()'s fetch(). Use
+	    // the sanctioned bound execute() in place of the deprecated gen(): no dynamic
+	    // VALUES (the 'YES' literal is constant), so no binds, and execute() returns the
+	    // SELECT row count / FALSE on error exactly like gen(), keeping the === FALSE
+	    // query-error vs empty-result distinction and leaving the row set for fetch().
+	    $result = $this->ourDB->execute("SELECT * FROM {$this->DBPrefix}users WHERE `user_active`='YES' ");
 		if ($result === FALSE) return FALSE;
 		break;
 	  default :

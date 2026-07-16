@@ -16,6 +16,7 @@
  *	@subpackage	banner
  */
 
+use e107\Database\QueryBuilder;
 
 class banner_shortcodes extends e_shortcode
 {
@@ -24,26 +25,45 @@ class banner_shortcodes extends e_shortcode
 	function sc_banner($parm = '')
 	{
 
-		$sql = e107::getDb();
 		$tp = e107::getParser();
 		$time = time();
 		$campaign = (isset($parm['campaign']) ? $parm['campaign'] : $parm);
 
-		$query = " (banner_startdate=0 OR banner_startdate <= {$time}) AND (banner_enddate=0 OR banner_enddate > {$time}) AND (banner_impurchased=0 OR banner_impressions<=banner_impurchased)" . ($campaign ? " AND banner_campaign='" . $tp->toDB($campaign) . "'" : '') . "
-		AND banner_active IN (" . USERCLASS_LIST . ") ";
+		$qb = e107::getDb()->createQueryBuilder();
+		$qb->select('banner_id', 'banner_image', 'banner_clickurl', 'banner_description')->from('banner');
+
+		// (banner_startdate=0 OR banner_startdate <= $time)
+		$qb->where(function (QueryBuilder $q) use ($time) {
+			$q->where('banner_startdate', 0)->orWhere('banner_startdate', '<=', $time);
+		});
+		// (banner_enddate=0 OR banner_enddate > $time)
+		$qb->where(function (QueryBuilder $q) use ($time) {
+			$q->where('banner_enddate', 0)->orWhere('banner_enddate', '>', $time);
+		});
+		// (banner_impurchased=0 OR banner_impressions<=banner_impurchased)
+		$qb->where(function (QueryBuilder $q) {
+			$q->where('banner_impurchased', 0)->orWhereColumn('banner_impressions', '<=', 'banner_impurchased');
+		});
+
+		if($campaign)
+		{
+			$qb->where('banner_campaign', $tp->toDB($campaign));
+		}
+
+		$qb->whereIn('banner_active', explode(',', USERCLASS_LIST));
 
 		if($tags = e107::getRegistry('core/form/related'))
 		{
-			$tags_regexp = "'(^|,)(" . str_replace(",", "|", $tags) . ")(,|$)'";
-			$query .= " AND banner_keywords REGEXP " . $tags_regexp;
+			$tags_regexp = "(^|,)(" . str_replace(",", "|", $tags) . ")(,|$)";
+			$qb->where($qb->expr()->regexp('banner_keywords', $tags_regexp));
 		}
 
-		$query .= "	ORDER BY RAND() LIMIT 1";
+		$qb->inRandomOrder()->setMaxResults(1);
 
-		if($sql->select('banner', 'banner_id, banner_image, banner_clickurl, banner_description', $query))
+		$row = $qb->fetchRow();
+
+		if($row)
 		{
-			$row = $sql->fetch();
-
 			return $this->renderBanner($row, $parm);
 		}
 		else
@@ -65,7 +85,9 @@ class banner_shortcodes extends e_shortcode
 
 		$fileext1 = substr(strrchr($row['banner_image'], '.'), 1);
 
-		$sql->update('banner', 'banner_impressions=banner_impressions+1 WHERE banner_id=' . (int) $row['banner_id']);
+		$sql->createQueryBuilder()->update('banner')
+			->increment('banner_impressions', 1)
+			->where('banner_id', (int) $row['banner_id'])->execute();
 
 		switch($fileext1)
 		{

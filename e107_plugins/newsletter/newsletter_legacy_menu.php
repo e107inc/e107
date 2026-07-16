@@ -16,13 +16,40 @@ if (!e107::isInstalled('newsletter'))
 	return;
 }
 
+/**
+ * Fetch all top-level newsletters, keyed exactly like the legacy
+ * $sql->db_getList(): a sequential counter starting at 1 (preserving the
+ * historical 1-based indexing the menu relies on below).
+ *
+ * @return array
+ */
+$nlGetTopLevel = static function () use ($sql) {
+	$rows = $sql->createQueryBuilder()
+		->select('*')->from('newsletter')
+		->where('newsletter_parent', '0')
+		->fetchAll();
+
+	$list = array();
+	$counter = 1;
+	foreach ($rows as $row) {
+		$list[$counter] = $row;
+		$counter++;
+	}
+
+	return $list;
+};
+
 // Do not display menu when there are no newsletters defined yet
-if(!USER || !$sql->select('newsletter', '*', "newsletter_parent='0'"))
-{	
+if(!USER)
+{
 	return FALSE;
 }
 
-$newsletterArray = $sql->db_getList();
+$newsletterArray = $nlGetTopLevel();
+if(empty($newsletterArray))
+{
+	return FALSE;
+}
 $requery = false;
 //include_lan(e_PLUGIN.'newsletter/languages/'.e_LANGUAGE.'.php');
 
@@ -32,7 +59,9 @@ foreach($_POST as $key => $value)
 	{
 		$subid = str_replace('nlUnsubscribe_', '', $key);
 		$newsletterArray[$subid]['newsletter_subscribers'] = str_replace(chr(1).USERID, "", $newsletterArray[$subid]['newsletter_subscribers']);
-		$sql->update('newsletter', "newsletter_subscribers='".$newsletterArray[$subid]['newsletter_subscribers']."' WHERE newsletter_id='".intval($subid)."' ");
+		$sql->createQueryBuilder()->update('newsletter')
+			->set('newsletter_subscribers', $newsletterArray[$subid]['newsletter_subscribers'])
+			->where('newsletter_id', intval($subid))->execute();
 		$requery = true;
 	}
 	elseif(strpos($key, 'nlSubscribe_') === 0)
@@ -54,7 +83,9 @@ foreach($_POST as $key => $value)
 				$new_subscriber_list = substr($new_subscriber_list, 1);
 			}
 			
-			$sql->update('newsletter', "newsletter_subscribers='".$new_subscriber_list."' WHERE newsletter_id='".intval($subid)."' ");
+			$sql->createQueryBuilder()->update('newsletter')
+				->set('newsletter_subscribers', $new_subscriber_list)
+				->where('newsletter_id', intval($subid))->execute();
 			$requery = true;
 		}
 	}
@@ -64,11 +95,12 @@ foreach($_POST as $key => $value)
 
 if($requery)
 {
-	if($sql->select('newsletter', '*', "newsletter_parent='0' "))
+	$refreshed = $nlGetTopLevel();
+	if(!empty($refreshed))
 	{
-		$newsletterArray = $sql->db_getList();
+		$newsletterArray = $refreshed;
 	}
-}	
+}
 
 $text = '';
 foreach($newsletterArray as $nl)
@@ -93,7 +125,9 @@ foreach($newsletterArray as $nl)
 		<input class='btn btn-sm btn-primary button' type='submit' name='nlSubscribe_".$nl['newsletter_id']."' value='".NLLAN_52."' onclick=\"return jsconfirm(".$tp->toAttribute($tp->toJSON(NLLAN_53))."') \" />
 		";
 	}
-	$nl_count = $sql->count('newsletter', "(*)", "WHERE newsletter_parent='".$nl['newsletter_id']."' AND newsletter_flag='1'");
+	$nl_count = $sql->createQueryBuilder()->from('newsletter')
+		->where('newsletter_parent', $nl['newsletter_id'])
+		->where('newsletter_flag', '1')->count();
 	// display issued newsletters
 	if($nl_count > 0 && USER)
 	{	

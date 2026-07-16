@@ -82,7 +82,7 @@ if (varset($_POST['edit']) || varset($_GET['mode'])=='create' && !varset($_POST[
 			define("POLLACTION",'edit');
 		}
 			
-		$poll_total = $sql->select("polls");
+		$poll_total = $sql->createQueryBuilder()->from('polls')->count();
 		$text = $poll -> renderPollForm();
 
 		if (varset($_GET['mode'])=='create')
@@ -185,14 +185,15 @@ function poll_list()
 	$text = "
 		<form action='".e_SELF."' method='post' id='del_poll'>";
 	
-	if ($poll_total = $sql->select("polls", "*")) 
+	$poll_total = $sql->createQueryBuilder()->select('*')->from('polls')->fetchAll();
+	if ($poll_total)
 	{
 		$text .= "<table class='table adminlist'>";
 		$text .= $frm->colGroup($fields,$fieldpref).
 				$frm->thead($fields,$fieldpref);
 	    $text .= "<tbody>";		
 			
-		while ($row = $sql->fetch())
+		foreach ($poll_total as $row)
 		{
 			extract($row); // FIXME
 			

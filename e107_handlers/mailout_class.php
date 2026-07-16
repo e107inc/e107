@@ -105,49 +105,63 @@ class core_mailout
 	{
 		$sql = e107::getDb();
 
-		$where = array();
-		$incExtended = array();
-				
+		// Builder accumulates SELECT columns, the optional JOIN and WHERE
+		// predicates; every value is bound, every dynamic column is validated.
+		$qb = $sql->createQueryBuilder()
+			->select('u.user_id', 'u.user_name', 'u.user_email', 'u.user_loginname', 'u.user_sess', 'u.user_lastvisit')
+			->from('user', 'u');
+
+		$whereCount = 0;			// criteria added (excluding the trailing user_email filter)
+		$incExtended = array();		// extended field columns to add to SELECT (validated names)
+
 		$emailTo = vartrue($selectVals['email_to'], false);
-		
+
 		switch ($emailTo)
 		{
 			// Build the query for the user database
 			case 'all' :
-				$where[] = 'u.`user_ban`=0';
+				$qb->where('u.user_ban', 0);
+				$whereCount++;
 				break;
 			case  'admin' :
-				$where[] = 'u.`user_admin`=1';
-				break;	  
+				$qb->where('u.user_admin', 1);
+				$whereCount++;
+				break;
 			case 'unverified' :
-				$where[] = 'u.`user_ban`=2';
+				$qb->where('u.user_ban', 2);
+				$whereCount++;
 				break;
 			case 'self' :
-				$where[] = 'u.`user_id`='.USERID;
+				$qb->where('u.user_id', USERID);
+				$whereCount++;
 				break;
 			default :
 				if (is_numeric($selectVals['email_to']))
 				{
-					$where[] = "u.`user_class` REGEXP concat('(^|,)',{$selectVals['email_to']},'(,|$)')";
+					$qb->andWhere($qb->raw("u.`user_class` REGEXP concat('(^|,)',".$qb->createNamedParameter($selectVals['email_to']).",'(,|$)')"));
+					$whereCount++;
 				}
-			
+
 		}
 
 		if (vartrue($selectVals['extended_1_name']) && vartrue($selectVals['extended_1_value']) && preg_match('/^[A-Za-z0-9_]+$/D', (string) $selectVals['extended_1_name']))
 		{
-			$where[] = '`'.$selectVals['extended_1_name']."` = '".$sql->escape($selectVals['extended_1_value'])."' ";
+			$qb->andWhere($qb->expr()->eq($selectVals['extended_1_name'], $selectVals['extended_1_value']));
 			$incExtended[] = $selectVals['extended_1_name'];
+			$whereCount++;
 		}
 
 		if (vartrue($selectVals['extended_2_name']) && vartrue($selectVals['extended_2_value']) && preg_match('/^[A-Za-z0-9_]+$/D', (string) $selectVals['extended_2_name']))
 		{
-			$where[] = "ue.`".$selectVals['extended_2_name']."` = '".$sql->escape($selectVals['extended_2_value'])."' ";
+			$qb->andWhere($qb->expr()->eq('ue.'.$selectVals['extended_2_name'], $selectVals['extended_2_value']));
 			$incExtended[] = $selectVals['extended_2_name'];
+			$whereCount++;
 		}
 
 		if (vartrue($selectVals['user_search_name']) && vartrue($selectVals['user_search_value']) && preg_match('/^[A-Za-z0-9_]+$/D', (string) $selectVals['user_search_name']))
 		{
-			$where[]= "u.`".$selectVals['user_search_name']."` LIKE '%".$sql->escape($selectVals['user_search_value'])."%' ";
+			$qb->andWhere($qb->expr()->like('u.'.$selectVals['user_search_name'], '%'.$selectVals['user_search_value'].'%'));
+			$whereCount++;
 		}
 
 		if (vartrue($selectVals['last_visit_match']) && vartrue($selectVals['last_visit_date']))
@@ -167,50 +181,45 @@ class core_mailout
 				{
 					case '<' :
 					case '>' :
-						$where[]= "u.`user_lastvisit`".$selectVals['last_visit_match'].$lvDate;
+						$qb->where('u.user_lastvisit', $selectVals['last_visit_match'], (int) $lvDate);
+						$whereCount++;
 						break;
 					case '=' :
-						$where[]= "u.`user_lastvisit`>=".$lvDate;
-						$where[]= "u.`user_lastvisit`<=".intval($lvDate + 86400);
+						$qb->where('u.user_lastvisit', '>=', (int) $lvDate);
+						$qb->where('u.user_lastvisit', '<=', intval($lvDate + 86400));
+						$whereCount++;
 						break;
 				}
 			}
 		}
 
-		if(empty($where) && empty($incExtended))
+		if($whereCount === 0 && empty($incExtended))
 		{
 			$this->mail_read = 0;
-			$this->mail_count = 0;	
+			$this->mail_count = 0;
 			return $this->mail_count;
 		}
 
 
-		$where[] = "u.`user_email` != ''";			// Ignore all records with empty email address
+		$qb->where('u.user_email', '!=', '');			// Ignore all records with empty email address
 
-		
-		
-		// Now assemble the query from the pieces
-		// Determine which fields we actually need (u.user_sess is the signup link)
-		$qry = 'SELECT u.user_id, u.user_name, u.user_email, u.user_loginname, u.user_sess, u.user_lastvisit';
+		// Determine which extended fields we actually need (u.user_sess is the signup link)
 		if (count($incExtended))
 		{
 			foreach ($incExtended as $if)
 			{
-				$qry .= ', ue.`'.$if.'`';
+				$qb->addSelect('ue.'.$if);
 			}
-		}
-		$qry .= " FROM `#user` AS u ";
-		if (count($incExtended))
-		{
-			$qry .= "LEFT JOIN `#user_extended` AS ue ON ue.`user_extended_id` = u.`user_id`";
+			$qb->leftJoin('user_extended', 'ue', $qb->expr()->compareColumns('ue.user_extended_id', 'u.user_id'));
 		}
 
-		$qry .= ' WHERE '.implode(' AND ',$where).' ORDER BY u.user_name';
-//		echo "Selector query: ".$qry.'<br />';
-		
-		e107::getMessage()->addDebug("Selector query: ".$qry);
+		$qb->orderBy('u.user_name');
 
-		if (!( $this->mail_count = $sql->gen($qry))) return FALSE;
+		e107::getMessage()->addDebug("Selector query: ".$qb->getSQL());
+
+		// execute() runs on the shared $sql handle and returns the row count,
+		// leaving the result set open for selectAdd()'s $sql->fetch() loop.
+		if (!( $this->mail_count = $qb->execute())) return FALSE;
 		$this->mail_read = 0;
 		return $this->mail_count;
 	}

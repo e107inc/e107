@@ -174,29 +174,32 @@ class contact_front
 				$body .= "<tr><td>User:</td><td>#" . USERID . " " . USERNAME . "</td></tr>";
 			}
 
+			$qb = $sql->createQueryBuilder();
+			$qb->select('user_name', 'user_email')->from('user')->setMaxResults(1);
+
 			if(empty($_POST['contact_person']) && !empty($pref['sitecontacts'])) // only 1 person, so contact_person not posted.
 			{
 				if($pref['sitecontacts'] == e_UC_MAINADMIN)
 				{
-					$query = "user_perms = '0' OR user_perms = '0.' ";
+					$qb->where('user_perms', '0')->orWhere('user_perms', '0.');
 				}
 				elseif($pref['sitecontacts'] == e_UC_ADMIN)
 				{
-					$query = "user_admin = 1 ";
+					$qb->where('user_admin', 1);
 				}
 				else
 				{
-					$query = "FIND_IN_SET(" . intval($pref['sitecontacts']) . ",user_class) ";
+					$qb->where($qb->expr()->findInSet('user_class', intval($pref['sitecontacts'])));
 				}
 			}
 			else
 			{
-				$query = "user_id = " . intval($_POST['contact_person']);
+				$qb->where('user_id', intval($_POST['contact_person']));
 			}
 
-			if($sql->gen("SELECT user_name,user_email FROM `#user` WHERE " . $query . " LIMIT 1"))
+			$row = $qb->fetchRow();
+			if($row)
 			{
-				$row = $sql->fetch();
 				$send_to = $row['user_email'];
 				$send_to_name = $row['user_name'];
 			}

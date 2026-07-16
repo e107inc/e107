@@ -10,6 +10,8 @@
  *
 */
 
+use e107\Database\SqlFragment;
+
 /*
  Database utilities for admin tasks:
  Get structure of a table from a database
@@ -51,13 +53,18 @@ class db_table_admin
 			$prefix = MPREFIX;
 		}
 		//	echo "Get table structure for: {$table_name}, prefix: {$prefix}<br />";
-		$sql->gen('SET SQL_QUOTE_SHOW_CREATE = 1');
+		// Session pragma, not DDL: the schema builder deliberately has no SET verb, so
+		// this stays on the sanctioned execute(). Fully static, no injection surface.
+		$sql->execute('SET SQL_QUOTE_SHOW_CREATE = 1');
+		// Physical schema-policy introspection: this reads an arbitrary caller-supplied
+		// $prefix.$table (not the connection prefix) and regex-parses the raw statement,
+		// so the routed, connection-prefixed schema()->getCreateTable() cannot express it.
 		// $prefix.$table_name form a SQL identifier (inside backticks) that cannot be
 		// bound; strip to identifier-safe characters so a backtick cannot break out.
 		$safePrefix = preg_replace('/[^A-Za-z0-9_]/', '', $prefix);
 		$safeTable  = preg_replace('/[^A-Za-z0-9_]/', '', $table_name);
 		$qry = 'SHOW CREATE TABLE `'.$safePrefix.$safeTable."`";
-		if (!($z = $sql->gen($qry)))
+		if (!($z = $sql->execute($qry)))
 		{
 			return FALSE;
 		}
@@ -678,7 +685,12 @@ class db_table_admin
 				{
 					return 'Table doesn\'t exist';
 				}
-				if ($sql->gen($newStructure[0]))
+				// SchemaBuilder owns structured DDL, but $newStructure[0] is a complete, developer-authored
+				// CREATE TABLE statement (identifier, body and options already assembled); there is no
+				// identifier seam for the builder to own without re-parsing it. Run it verbatim as a
+				// vouched whole-statement DDL execute, equivalent to $qb->raw() at statement level. No
+				// request values.
+				if ($sql->execute($newStructure[0]))
 				{
 					return TRUE;
 				}
@@ -715,9 +727,26 @@ class db_table_admin
 					{
 						echo "List of changes found:<br />".$this->make_changes_list($diffs);
 					}
-					// $tableName is a SQL identifier (cannot be bound); sanitise and backtick-quote it.
-					$safeTableName = preg_replace('/[^A-Za-z0-9_]/', '', $tableName);
-					$qry = 'ALTER TABLE `'.MPREFIX.$safeTableName.'` '.implode(', ', $diffs[1]);
+					// SchemaBuilder owns the ALTER envelope: it fail-closed validates and quotes the
+					// physical table identifier (prefix only, no language routing) and joins the
+					// change clauses with ', '. $diffs[1] are builder-internal column defs from
+					// parse_field_defs() (developer schema text, not request data), passed as vouched
+					// SqlFragment fragments so the emitted SQL stays byte-identical to the legacy string.
+					// An invalid table name (Invalid*Argument*Exception) or an empty clause set
+					// (RuntimeException) is handled non-fatally, mirroring the old error return.
+					try
+					{
+						$schemaTable = $sql->schema()->tablePhysical($tableName);
+						foreach ($diffs[1] as $clause)
+						{
+							$schemaTable->addRaw(SqlFragment::raw($clause));
+						}
+						$qry = $schemaTable->getSQL();
+					}
+					catch (Exception $e)
+					{
+						return 'Error altering table: '.$tableName;
+					}
 					if ($debugLevel)
 					{
 						echo 'Update Query used: '.$qry.'<br />';
@@ -728,7 +757,7 @@ class db_table_admin
 					}
 					else
 					{
-						$ret = $sql->gen($qry);
+						$ret = $sql->execute($qry);
 					}
 					if ($ret === FALSE)
 					{
@@ -763,7 +792,11 @@ class db_table_admin
 			{
 				$createText = preg_replace('#create +table +(\w*?) +#i', 'CREATE TABLE `'.$newTableName.'` ', $createText);
 			}
-			return e107::getDb()->gen($createText);
+			// As in update_table_structure(): $createText is a complete, developer-authored CREATE
+			// TABLE statement from a trusted .sql schema file, with the table identifier sanitised
+			// above. Run it verbatim as a vouched whole-statement DDL execute; there is no identifier
+			// seam for SchemaBuilder to own without re-parsing the statement.
+			return e107::getDb()->execute($createText);
 		}
 
 

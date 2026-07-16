@@ -27,17 +27,27 @@ function iconpicker_shortcode($parm)
 	
 		// $sc_parameters is currently being used to select the media-category.
 
-		$qry = "SELECT * FROM `#core_media` WHERE media_userclass IN (".USERCLASS_LIST.") ";
-		$qry .= vartrue($sc_parameters) ? " AND media_category = '".$sc_parameters."' " : " AND `media_category` REGEXP '_icon_16|_icon_32|_icon_48|_icon_64' ";
-		$qry .= "ORDER BY media_category,media_name";
+		$qb = $sql->createQueryBuilder();
+		$qb->select('*')->from('core_media')
+			->whereIn('media_userclass', explode(',', USERCLASS_LIST));
+		if(vartrue($sc_parameters))
+		{
+			$qb->where('media_category', $sc_parameters);
+		}
+		else
+		{
+			$qb->where($qb->expr()->regexp('media_category', '_icon_16|_icon_32|_icon_48|_icon_64'));
+		}
+		$qb->orderBy('media_category')->addOrderBy('media_name');
 
 		$str = "";
 		$size_section = array();
 		$lastsize = "16";
-		
-		if($sql->gen($qry))
+
+		$iconRows = $qb->fetchAll();
+		if($iconRows)
 		{
-			while($row = $sql->fetch())
+			foreach($iconRows as $row)
 			{
 				list($tmp,$tmp2,$size) = explode("_",$row['media_category']);
 				

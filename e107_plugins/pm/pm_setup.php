@@ -31,8 +31,8 @@ class pm_setup
 	function uninstall_post()
 	{
 		$sql = e107::getDb();
-		$sql->delete('core', "e107_name = 'pm_prefs'");
-		$sql->delete('menus', "menu_name = 'private_msg_menu'");
+		$sql->createQueryBuilder()->delete('core')->where('e107_name', 'pm_prefs')->execute();
+		$sql->createQueryBuilder()->delete('menus')->where('menu_name', 'private_msg_menu')->execute();
 	}
 	
 }

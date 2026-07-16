@@ -36,15 +36,22 @@ class news_featurebox // include plugin-folder in the name.
 
 	function process() 
 	{
-		$sql = e107::getDb();
 		$fbox = array();
-		
-		$nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
-		$query = "SELECT * FROM #news WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND FIND_IN_SET(5,news_render_type) ORDER BY news_datestamp DESC LIMIT 10";
-		
-		if($sql->gen($query))
-		{		
-			while($row = $sql->fetch())
+
+		$nobody_regexp = "(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)";
+
+		$qb = e107::getDb()->createQueryBuilder();
+		$rows = $qb->select('*')->from('news')
+			->where($qb->expr()->regexp('news_class', e_CLASS_REGEXP))
+			->where($qb->expr()->not($qb->expr()->regexp('news_class', $nobody_regexp)))
+			->where($qb->expr()->findInSet('news_render_type', 5))
+			->orderBy('news_datestamp', 'DESC')
+			->setMaxResults(10)
+			->fetchAll();
+
+		if($rows)
+		{
+			foreach($rows as $row)
 			{
 				$fbox[] = array(
 					'title'			=> $row['news_title'],
@@ -54,7 +61,7 @@ class news_featurebox // include plugin-folder in the name.
 					'class'			=> $row['news_class']
 				);
 			}
-			
+
 			return $fbox;
 	    };
 	}

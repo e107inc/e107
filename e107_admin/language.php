@@ -516,8 +516,7 @@ if(!empty($_GET['iframe']))
 					if ($sql->isTable($del_table, $lang))
 					{
 						//	echo $del_table." exists<br />";
-						$qry = "DROP TABLE ".MPREFIX."lan_".$lang."_".$del_table;
-						if ($sql->gen($qry))
+						if ($sql->dropTable("lan_".$lang."_".$del_table))
 						{
 							$msg = $tp->lanVars(LANG_LAN_100, $_POST['lang_choices'].' '.$del_table);
 							$message .= $msg.'[!br!]';
@@ -576,7 +575,7 @@ if(!empty($_GET['iframe']))
 						if ($_POST['remove'])
 						{
 							// Remove table.
-							if ($sql->gen("DROP TABLE ".MPREFIX."lan_".$lang."_".$value))
+							if ($sql->dropTable("lan_".$lang."_".$value))
 							{
 								$message .= $_POST['language'].' '.$value.' '.LAN_DELETED.'[!br!]'; // can be removed?
 								$mes->addSuccess($_POST['language'].' '.$value.' '.LAN_DELETED);

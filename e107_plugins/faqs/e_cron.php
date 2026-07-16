@@ -38,9 +38,17 @@
 			$tp = e107::getParser();
 			$limit = 25;
 
-			$count = $sql->retrieve('faqs','faq_id',"faq_answer=''  ", true);
+			$count = $sql->createQueryBuilder()
+				->select('faq_id')->from('faqs')
+				->where('faq_answer', '')
+				->fetchAll();
 
-			$existing = $sql->retrieve('faqs','faq_id,faq_question,faq_datestamp',"faq_answer=''  ORDER BY faq_datestamp DESC LIMIT ".$limit, true);
+			$existing = $sql->createQueryBuilder()
+				->select('faq_id', 'faq_question', 'faq_datestamp')->from('faqs')
+				->where('faq_answer', '')
+				->orderBy('faq_datestamp', 'DESC')
+				->setMaxResults($limit)
+				->fetchAll();
 
 			if(empty($existing))
 			{

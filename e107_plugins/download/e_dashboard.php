@@ -17,7 +17,8 @@ class download_dashboard
 	function latest()
 	{
 		$sql = e107::getDb();
-		$reported_downloads = $sql->count('generic', '(*)', "WHERE gen_type='Broken Download'");
+		$reported_downloads = $sql->createQueryBuilder()->from('generic')
+			->where('gen_type', 'Broken Download')->count();
 		
 		$var[0]['icon'] 	= "<img src='".e_PLUGIN_ABS."download/images/downloads_16.png' style='width: 16px; height: 16px; vertical-align: bottom' alt='download plugin icon' /> ";
 		$var[0]['title'] 	= LAN_DL_LATEST_01;

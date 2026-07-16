@@ -340,25 +340,38 @@ class forum_shortcodes extends e_shortcode
 		$member_users = 0;
 		$guest_users = 0;
 
-		$total_topics = $sql->count("forum_thread", "(*)");
-		$total_replies = $sql->count("forum_post", "(*)");
-		$total_members = $sql->count("user");
+		$total_topics = $sql->createQueryBuilder()->from('forum_thread')->count();
+		$total_replies = $sql->createQueryBuilder()->from('forum_post')->count();
+		$total_members = $sql->createQueryBuilder()->from('user')->count();
 
 		$nuser_id = 0;
 		$nuser_name = '';
-		if ($sql->select("user", "user_id, user_name", "user_ban='0' ORDER BY user_join DESC LIMIT 0,1"))
+		$row = $sql->createQueryBuilder()
+			->select('user_id', 'user_name')->from('user')
+			->where('user_ban', '0')
+			->orderBy('user_join', 'DESC')
+			->setFirstResult(0)->setMaxResults(1)
+			->fetchRow();
+		if ($row)
 		{
-			$row = $sql->fetch('num');
-			if (is_array($row))
-			{
-				list($nuser_id, $nuser_name) = $row;
-			}
+			$nuser_id = $row['user_id'];
+			$nuser_name = $row['user_name'];
 		}
 
 		if(!defined('e_TRACKING_DISABLED'))
 		{
-			$member_users = $sql->select("online", "*", "online_location REGEXP('forum.php') AND online_user_id!='0' ");
-			$guest_users = $sql->select("online", "*", "online_location REGEXP('forum.php') AND online_user_id='0' ");
+			$qb = $sql->createQueryBuilder();
+			$member_users = $qb->from('online')
+				->where($qb->expr()->regexp('online_location', 'forum.php'))
+				->where('online_user_id', '!=', '0')
+				->count();
+
+			$qb = $sql->createQueryBuilder();
+			$guest_users = $qb->from('online')
+				->where($qb->expr()->regexp('online_location', 'forum.php'))
+				->where('online_user_id', '0')
+				->count();
+
 			$users = $member_users+$guest_users;
 		}
 

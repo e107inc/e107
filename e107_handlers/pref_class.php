@@ -476,10 +476,13 @@ class e_pref extends e_front_model
 			return $this;
 		}
 
-		if (e107::getDb()->select('core', 'e107_value', "e107_name='{$id}'"))
-		{
-			$row = e107::getDb()->fetch();
+		$row = e107::getDb()->createQueryBuilder()
+			->select('e107_value')->from('core')
+			->where('e107_name', $id)
+			->fetchRow();
 
+		if($row)
+		{
 			if($this->serial_bc)
 			{
 				$data = unserialize($row['e107_value']);
@@ -554,7 +557,9 @@ class e_pref extends e_front_model
 				$dbdata = $this->toString(false);
 			}
 
-			if(e107::getDb()->gen("REPLACE INTO `#core` (e107_name,e107_value) values ('{$this->prefid}', '".addslashes($dbdata)."') "))
+			if(e107::getDb()->createQueryBuilder()->replace('core')
+				->values(array('e107_name' => $this->prefid, 'e107_value' => $dbdata))
+				->execute())
 			{
 				$this->data_has_changed = false; //reset status
 
@@ -586,7 +591,9 @@ class e_pref extends e_front_model
 					}
 
 					// Backup 
-					if($this->set_backup === true && e107::getDb()->gen("REPLACE INTO `#core` (e107_name,e107_value) values ('".$this->prefid."_Backup', '".addslashes($dbdata)."') "))
+					if($this->set_backup === true && e107::getDb()->createQueryBuilder()->replace('core')
+						->values(array('e107_name' => $this->prefid.'_Backup', 'e107_value' => $dbdata))
+						->execute())
 					{
 					//	trigger_error("Performing a pref backup", E_USER_NOTICE);
 						if(!$disallow_logs) $log->logMessage('Backup of <strong>'.$this->alias.' ('.$this->prefid.')</strong> successfully created.', E_MESSAGE_DEBUG, E_MESSAGE_SUCCESS, $session_messages);
@@ -1011,7 +1018,9 @@ class e_plugin_pref extends e_pref
 		$ret = false;
 		if($this->plugin_id)
 		{
-			$ret = e107::getDb($this->plugin_id)->delete('core', "e107_name='{$this->plugin_id}'");
+			$ret = e107::getDb($this->plugin_id)->createQueryBuilder()->delete('core')
+				->where('e107_name', $this->plugin_id)
+				->execute();
 			$this->destroy();
 		}
 		return $ret;
@@ -1082,7 +1091,9 @@ class e_theme_pref extends e_pref
 		$ret = false;
 		if($this->theme_id)
 		{
-			$ret = e107::getDb($this->theme_id)->delete('core', "e107_name='{$this->theme_id}'");
+			$ret = e107::getDb($this->theme_id)->createQueryBuilder()->delete('core')
+				->where('e107_name', $this->theme_id)
+				->execute();
 			$this->destroy();
 		}
 		return $ret;
@@ -1120,7 +1131,7 @@ class prefs
 	var $prefArrays;
 
 	// Default prefs to load
-	var $DefaultRows = "e107_name='e107' OR e107_name='menu_pref' OR e107_name='notify_prefs'";
+	var $DefaultRows = array('e107', 'menu_pref', 'notify_prefs');
 
 	// Read prefs from DB - get as many rows as are required with a single query.
 	// $RowList is an array of pref entries to retrieve.
@@ -1135,23 +1146,30 @@ class prefs
 	function ExtractPrefs($RowList = "", $use_default = FALSE)
 	{
 		global $sql;
-		$Args = '';
+		$names = array();
 		if($use_default)
 		{
-			$Args = $this->DefaultRows;
+			$names = $this->DefaultRows;
 		}
 		if(is_array($RowList))
 		{
 			foreach($RowList as $v)
 			{
-				$Args .= ($Args ? " OR e107_name='{$v}'" : "e107_name='{$v}'");
+				$names[] = $v;
 			}
 		}
-		if (!$sql->select('core', '*', $Args, 'default'))
+
+		$qb = $sql->createQueryBuilder()->select('*')->from('core');
+		if(!empty($names))
+		{
+			$qb->whereIn('e107_name', $names);
+		}
+		$rows = $qb->fetchAll();
+		if(!$rows)
 		{
 			return FALSE;
 		}
-		while ($row = $sql->fetch())
+		foreach($rows as $row)
 		{
 			$this->prefVals['core'][$row['e107_name']] = $row['e107_value'];
 		}
@@ -1182,9 +1200,12 @@ class prefs
 
 		// Data not in cache - retrieve from DB
 		$get_sql = new db; // required so sql loops don't break using $tp->toHTML().
-		if($get_sql->select('core', '*', "`e107_name` = '{$Name}'", 'default'))
+		$row = $get_sql->createQueryBuilder()
+			->select('*')->from('core')
+			->where('e107_name', $Name)
+			->fetchRow();
+		if($row)
 		{
-			$row = $get_sql->fetch();
 			$this->prefVals['core'][$Name] = $row['e107_value'];
 			return $this->prefVals['core'][$Name];
 		}
@@ -1238,20 +1259,32 @@ class prefs
 				break;
 			}
 		}
-		$val = addslashes($val);
+		// Bound parameters handle escaping; legacy addslashes()+inline storage
+		// round-tripped to the original bytes in the DB, so bind $val raw. The
+		// runtime cache historically stored the addslashed copy - preserve that.
+		$cacheVal = addslashes($val);
 
 		switch ($table )
 		{
 			case 'core':
-			if(!$sql->update($table, "e107_value='$val' WHERE e107_name='$name'"))
+			$updated = $sql->createQueryBuilder()->update($table)
+				->set('e107_value', $val)
+				->where('e107_name', $name)
+				->execute();
+			if(!$updated)
 			{
-				$sql->insert($table, "'{$name}', '{$val}'");
+				$sql->createQueryBuilder()->insert($table)
+					->values(array('e107_name' => $name, 'e107_value' => $val))
+					->execute();
 			}
-			$this->prefVals[$table][$name] = $val;
+			$this->prefVals[$table][$name] = $cacheVal;
 			unset($this->prefArrays[$table][$name]);
 			break;
 			case 'user':
-			$sql->update($table, "user_prefs='$val' WHERE user_id=$uid");
+			$sql->createQueryBuilder()->update($table)
+				->set('user_prefs', $val)
+				->where('user_id', $uid)
+				->execute();
 			break;
 		}
 	}

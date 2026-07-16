@@ -10,6 +10,8 @@
  * Class installations to handle configuration forms on Admin UI.
  */
 
+use e107\Database\SqlFragment;
+
 $eplug_admin = true;
 
 require_once(__DIR__.'/../../class2.php');
@@ -604,20 +606,23 @@ class gallery_cat_admin_ui extends e_admin_ui
 
 		$sql = e107::getDb();
 
-		if($sql->gen("SELECT media_cat_owner,  MAX(CAST(SUBSTRING_INDEX(media_cat_category, '_', -1 ) AS UNSIGNED)) as maxnum, count(media_cat_id) as number FROM `#core_media_cat`  GROUP BY media_cat_owner"))
+		$rows = $sql->createQueryBuilder()
+			->select('media_cat_owner')->addSelect(SqlFragment::raw("MAX(CAST(SUBSTRING_INDEX(media_cat_category, '_', -1 ) AS UNSIGNED)) as maxnum"))->selectAggregate('COUNT', 'media_cat_id', 'number')
+			->from('core_media_cat')
+			->groupBy('media_cat_owner')
+			->fetchAll();
+
+		foreach($rows as $row)
 		{
-			while($row = $sql->fetch())
+			$this->ownerCount[$row['media_cat_owner']] = $row['number'];
+			$own = $row['media_cat_owner'];
+		//	if(!in_array($own,$this->restricted))
 			{
-				$this->ownerCount[$row['media_cat_owner']] = $row['number'];
-				$own = $row['media_cat_owner'];
-			//	if(!in_array($own,$this->restricted))
-				{
 //					$this->fields['media_cat_owner']['writeParms'][$own] = $own;
 
-					if($row['maxnum'] > 0)
-					{
-						$this->ownerCount[$row['media_cat_owner']] = $row['maxnum']; // $maxnum;
-					}
+				if($row['maxnum'] > 0)
+				{
+					$this->ownerCount[$row['media_cat_owner']] = $row['maxnum']; // $maxnum;
 				}
 			}
 		}

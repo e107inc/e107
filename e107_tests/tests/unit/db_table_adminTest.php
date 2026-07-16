@@ -18,13 +18,14 @@
 		protected function _before()
 		{
 
+			require_once(e_HANDLER.'db_table_admin_class.php');
 			try
 			{
 				$this->dta = $this->make('db_table_admin');
 			}
 			catch(Exception $e)
 			{
-				$this->assertTrue(false, "Couldn't load db_table_admin object");
+				$this->assertTrue(false, "Couldn't load db_table_admin object: ".$e->getMessage());
 			}
 
 		}

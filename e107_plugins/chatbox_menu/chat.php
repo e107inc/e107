@@ -9,6 +9,10 @@
  * e107 chatbox_menu Plugin
  *
 */
+
+use e107\Database\QueryBuilder;
+use e107\Database\SqlFragment;
+
 require_once(__DIR__.'/../../class2.php');
 if ( ! e107::isInstalled('chatbox_menu')) {
 	e107::redirect();
@@ -23,10 +27,13 @@ $tp = e107::getParser();
 $sql = e107::getDb();
 $ns = e107::getRender();
 
-if($sql->select('menus', "*", "menu_name='chatbox_menu'"))
-{
-	$row = $sql->fetch();
+$row = $sql->createQueryBuilder()
+	->select('*')->from('menus')
+	->where('menu_name', 'chatbox_menu')
+	->fetchRow();
 
+if($row)
+{
 	if(!check_class((int) $row['menu_class']))
 	{
 		$mes->addError(CHATBOX_L24);
@@ -54,8 +61,8 @@ if ( ! empty($_POST['moderate']) && CB_MOD) {
 			$kk[] = intval($k);
 		}
 
-		$blocklist = implode(",", $kk);
-		$sql->gen("UPDATE #chatbox SET cb_blocked=1 WHERE cb_id IN ({$blocklist})");
+		$sql->createQueryBuilder()->update('chatbox')
+			->set('cb_blocked', 1)->whereIn('cb_id', $kk)->execute();
 	}
 
 
@@ -67,8 +74,8 @@ if ( ! empty($_POST['moderate']) && CB_MOD) {
 			$kk[] = intval($k);
 		}
 
-		$unblocklist = implode(",", $kk);
-		$sql->gen("UPDATE #chatbox SET cb_blocked=0 WHERE cb_id IN ({$unblocklist})");
+		$sql->createQueryBuilder()->update('chatbox')
+			->set('cb_blocked', 0)->whereIn('cb_id', $kk)->execute();
 	}
 
 
@@ -78,22 +85,20 @@ if ( ! empty($_POST['moderate']) && CB_MOD) {
 		foreach (array_keys($_POST['delete']) as $k) {
 			$kk[] = intval($k);
 		}
-		$deletelist = implode(",", $kk);
 
-		$query = "SELECT c.cb_id, u.user_id FROM #chatbox AS c
-		LEFT JOIN #user AS u ON SUBSTRING_INDEX(c.cb_nick,'.',1) = u.user_id
-		WHERE c.cb_id IN (" . $deletelist . ")";
-
-		$sql->gen($query);
-
-		$rowlist = $sql->rows();
+		$rowlist = $sql->createQueryBuilder()
+			->select('c.cb_id', 'u.user_id')->from('chatbox', 'c')
+			->leftJoin('user', 'u', SqlFragment::raw("SUBSTRING_INDEX(c.cb_nick,'.',1) = u.user_id"))
+			->whereIn('c.cb_id', $kk)
+			->fetchAll();
 
 		foreach ($rowlist as $row) {
 		    $userId = (int)$row['user_id'];
-			$sql->gen("UPDATE #user SET user_chats=user_chats-1 WHERE user_id = {$userId} ");
+			$sql->createQueryBuilder()->update('user')
+				->decrement('user_chats', 1)->where('user_id', $userId)->execute();
 		}
 
-		$sql->gen("DELETE FROM #chatbox WHERE cb_id IN ({$deletelist})");
+		$sql->createQueryBuilder()->delete('chatbox')->whereIn('cb_id', $kk)->execute();
 	}
 
 	e107::getCache()->clear("nq_chatbox");
@@ -114,9 +119,25 @@ if (strpos(e_QUERY, "fs") !== false) {
 
 //}
 
-$chat_total = $sql->count('chatbox');
+$chat_total = $sql->createQueryBuilder()->from('chatbox')->count();
 
-$qry_where = (CB_MOD ? "1" : "cb_blocked=0");
+/**
+ * Build the base chat-post query: all columns from chatbox, newest first,
+ * restricted to visible (unblocked) posts unless the moderator view is active.
+ *
+ * @return QueryBuilder
+ */
+$chatboxQuery = static function () use ($sql) {
+	$qb = $sql->createQueryBuilder()
+		->select('*')->from('chatbox')
+		->orderBy('cb_datestamp', 'DESC');
+
+	if (!CB_MOD) {
+		$qb->where('cb_blocked', 0);
+	}
+
+	return $qb;
+};
 
 
 $from = 0;
@@ -126,9 +147,9 @@ if ($fs) {
 	$page_count = 0;
 	$row_count = 0;
 
-	$sql->select("chatbox", "*", "{$qry_where} ORDER BY cb_datestamp DESC");
+	$rows = $chatboxQuery()->fetchEach();
 
-	while ($row = $sql->fetch()) {
+	foreach ($rows as $row) {
 
 		if ($row['cb_id'] == $cgtm)
 		{
@@ -149,10 +170,9 @@ if ($fs) {
 
 
 /** Render chat posts **/
-$sql->select("chatbox", "*",
-	"{$qry_where} ORDER BY cb_datestamp DESC LIMIT " . intval($from) . ", 30");
-
-$chatList = $sql->rows();
+$chatList = $chatboxQuery()
+	->setFirstResult(intval($from))->setMaxResults(30)
+	->fetchAll();
 
 
 $CHATBOX_LIST_TEMPLATE =

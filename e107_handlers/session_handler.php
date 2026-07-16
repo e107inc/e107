@@ -1301,7 +1301,11 @@ class e_session_db implements SessionHandlerInterface
     public function read(string $id): string|false
     {
         $data = false;
-        $check = $this->_db->select($this->getTable(), 'session_data', "session_id='".$this->_sanitize($id)."' AND session_expires>".time());
+        $check = $this->_db->createQueryBuilder()
+            ->select('session_data')->from($this->getTable())
+            ->where('session_id', $this->_sanitize($id))
+            ->where('session_expires', '>', time())
+            ->execute();
         if($check)
         {
             $tmp = $this->_db->fetch();
@@ -1322,39 +1326,41 @@ class e_session_db implements SessionHandlerInterface
      */
     public function write(string $id, string $data): bool
     {
-        $session_data = array(
-            'data' => array(
-                'session_expires' => time() + $this->getLifetime(),
-                'session_data'    => base64_encode($data),
-                'session_user'    => defset('USERID'),
-            ),
-            '_FIELD_TYPES' => array(
-                'session_id'        => 'str',
-                'session_expires'   => 'int',
-                'session_user'      => 'int',
-                'session_data'      => 'str'
-            ),
-            '_DEFAULT' => 'str'
+        $values = array(
+            'session_expires' => (int) (time() + $this->getLifetime()),
+            'session_data'    => base64_encode($data),
+            'session_user'    => (int) defset('USERID'),
         );
         if(!($id = $this->_sanitize($id)))
         {
             return false;
         }
 
-        $check = $this->_db->select($this->getTable(), 'session_id', "`session_id`='$id'");
+        $check = $this->_db->createQueryBuilder()
+            ->select('session_id')->from($this->getTable())
+            ->where('session_id', $id)
+            ->count();
 
         if($check)
         {
-            $session_data['WHERE'] = "`session_id`='$id'";
-            if(false !== $this->_db->update($this->getTable(), $session_data))
+            if(false !== $this->_db->createQueryBuilder()
+                ->update($this->getTable())
+                ->set('session_expires', $values['session_expires'])
+                ->set('session_data', $values['session_data'])
+                ->set('session_user', $values['session_user'])
+                ->where('session_id', $id)
+                ->execute())
             {
                 return true;
             }
         }
         else
         {
-            $session_data['data']['session_id'] = $id;
-            if($this->_db->insert($this->getTable(), $session_data))
+            $values['session_id'] = $id;
+            if($this->_db->createQueryBuilder()
+                ->insert($this->getTable())
+                ->values($values)
+                ->execute())
             {
                 return true;
             }
@@ -1370,7 +1376,10 @@ class e_session_db implements SessionHandlerInterface
     public function destroy(string $id): bool
     {
         $id = $this->_sanitize($id);
-        $this->_db->delete($this->getTable(), "`session_id`='$id'");
+        $this->_db->createQueryBuilder()
+            ->delete($this->getTable())
+            ->where('session_id', $id)
+            ->execute();
         return true;
     }
 
@@ -1381,7 +1390,10 @@ class e_session_db implements SessionHandlerInterface
      */
     public function gc(int $max_lifetime): int|false
     {
-        return $this->_db->delete($this->getTable(), '`session_expires`<'.time());
+        return $this->_db->createQueryBuilder()
+            ->delete($this->getTable())
+            ->where('session_expires', '<', time())
+            ->execute();
     }
 
     /**

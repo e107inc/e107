@@ -22,9 +22,13 @@ class page_search extends e_search // include plugin-folder in the name.
 	function __construct()
 	{
 		$sql = e107::getDb();
-		
-		$books = $sql->retrieve("SELECT chapter_id,chapter_sef,chapter_parent, chapter_name, chapter_visibility FROM #page_chapters ORDER BY chapter_parent, chapter_order ASC" , true);
-				
+
+		$books = $sql->createQueryBuilder()
+			->select('chapter_id', 'chapter_sef', 'chapter_parent', 'chapter_name', 'chapter_visibility')
+			->from('page_chapters')
+			->orderBy('chapter_parent', 'ASC')->addOrderBy('chapter_order', 'ASC')
+			->fetchAll();
+
 		foreach($books as $row)
 		{
 			$id 						= $row['chapter_id'];		

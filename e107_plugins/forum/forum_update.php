@@ -380,12 +380,16 @@ function step4()
 		'trackcount' => 0
 	);
 	$db = new db;
-	if($db->select('user', 'user_id, user_viewed, user_realm', "user_viewed != '' OR user_realm != ''"))
+	$userRows = $db->createQueryBuilder()
+		->select('user_id', 'user_viewed', 'user_realm')->from('user')
+		->where('user_viewed', '!=', '')->orWhere('user_realm', '!=', '')
+		->fetchEach();
+	if($userRows)
 	{
 		require_once(e_HANDLER . 'user_extended_class.php');
 		$ue = new e107_user_extended;
 
-		while($row = $db->fetch())
+		foreach($userRows as $row)
 		{
 			$result['usercount']++;
 			$userId = (int) $row['user_id'];
@@ -425,7 +429,7 @@ function step4()
 						$tmp['track_userid'] = $userId;
 						$tmp['track_thread'] = $threadId;
 
-						e107::getDb()->insert('forum_track', $tmp);
+						e107::getDb()->createQueryBuilder()->insert('forum_track')->values(forum_update_null_sentinels($tmp))->execute();
 					}
 				}
 			}
@@ -479,9 +483,9 @@ function step5()
     );
 	//XXX Typo on 'parents' ?
 
-	if($sql->select('forum'))
+	$forumList = $sql->createQueryBuilder()->select('*')->from('forum')->fetchAll();
+	if($forumList)
 	{
-		$forumList = $sql->db_getList();
 		$sefs = array();
 
 		foreach($forumList as $forum)
@@ -515,7 +519,7 @@ function step5()
 			$sefs[$forum_sef] = true;
 
 			//			$tmp['_FIELD_TYPES'] = $ftypes['_FIELD_TYPES'];
-			if(!$sql->insert('forum_new', $tmp))
+			if(!$sql->createQueryBuilder()->insert('forum_new')->values(forum_update_null_sentinels($tmp))->execute())
 			{
 				$mes->addDebug("Insert failed on " . print_a($tmp, true));
 				$mes->addError($sql->getLastErrorText());
@@ -536,10 +540,12 @@ function step5()
 		</ul>
 		");
 
-	$result = $sql->gen('RENAME TABLE `#forum`  TO `#forum_old` ') ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+	// DDL through the schema builder: renameTable() validates both identifiers
+	// fail-closed and returns the execute() result for the success/error message.
+	$result = $sql->schema()->renameTable('forum', 'forum_old') ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 	$mes->add("Renaming forum to forum_old", $result);
 
-	$result = $sql->gen('RENAME TABLE `#forum_new`  TO `#forum` ') ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+	$result = $sql->schema()->renameTable('forum_new', 'forum') ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 	$mes->add("Renaming forum_new to forum", $result);
 
 	$text = "
@@ -563,7 +569,7 @@ function step6()
 
 	$stepCaption = 'Step 6: Thread and post data';
 
-	$_SESSION['forumupdate']['thread_total'] = $sql->count('forum_t', '(*)', "WHERE thread_parent = 0");
+	$_SESSION['forumupdate']['thread_total'] = $sql->createQueryBuilder()->from('forum_t')->where('thread_parent', 0)->count();
 	$_SESSION['forumupdate']['thread_count'] = 0;
 	$_SESSION['forumupdate']['thread_last'] = 0;
 
@@ -614,18 +620,15 @@ function step6_ajax()
 
 	$lastThread = vartrue($_SESSION['forumupdate']['thread_last'], 0);
 
-	$qry = "
-	SELECT thread_id FROM `#forum_t`
-	WHERE thread_parent = 0
-	AND thread_id > {$lastThread}
-	ORDER BY thread_id ASC
-	LIMIT 0, 300
-	";
+	$threadList = $sql->createQueryBuilder()
+		->select('thread_id')->from('forum_t')
+		->where('thread_parent', 0)->where('thread_id', '>', (int) $lastThread)
+		->orderBy('thread_id', 'ASC')
+		->setFirstResult(0)->setMaxResults(300)
+		->fetchAll();
 
-	if($sql->gen($qry))
+	if($threadList)
 	{
-		$threadList = $sql->db_getList();
-
 		foreach($threadList as $t)
 		{
 			$id = (int) $t['thread_id'];
@@ -706,7 +709,7 @@ function step8()
 	$stepCaption = 'Step 8: Calculate last post information';
 
 
-	$_SESSION['forumupdate']['lastpost_total'] = $sql->count('forum', '(*)', "WHERE forum_parent != 0");
+	$_SESSION['forumupdate']['lastpost_total'] = $sql->createQueryBuilder()->from('forum')->where('forum_parent', '!=', 0)->count();
 	$_SESSION['forumupdate']['lastpost_count'] = 0;
 	$_SESSION['forumupdate']['lastpost_last'] = 0;
 
@@ -735,9 +738,15 @@ function step8_ajax()
 
 	$parentList = [];
 
-	if($sql->select('forum', 'forum_id', 'forum_parent != 0 AND forum_id > ' . $lastThread . ' ORDER BY forum_id LIMIT 2'))
+	$forumRows = $sql->createQueryBuilder()
+		->select('forum_id')->from('forum')
+		->where('forum_parent', '!=', 0)->where('forum_id', '>', $lastThread)
+		->orderBy('forum_id')->setMaxResults(2)
+		->fetchAll();
+
+	if($forumRows)
 	{
-		while($row = $sql->fetch())
+		foreach($forumRows as $row)
 		{
 			$parentList[] = $row['forum_id'];
 		}
@@ -781,26 +790,29 @@ function step9()
 		return;
 	}
 
-	$qry = "
-	SELECT t.thread_id, p.poll_id FROM `#polls` AS p
-	LEFT JOIN `#forum_thread` AS t ON t.thread_id =  p.poll_datestamp
-	WHERE t.thread_id IS NOT NULL
-	";
+	$qb = $sql->createQueryBuilder();
+	$pollRows = $qb->select('t.thread_id', 'p.poll_id')->from('polls', 'p')
+		->leftJoin('forum_thread', 't', $qb->expr()->compareColumns('t.thread_id', 'p.poll_datestamp'))
+		->where($qb->expr()->isNotNull('t.thread_id'))
+		->fetchAll();
 
 	$threadList = [];
 
 
-	if($sql->gen($qry))
+	if($pollRows)
 	{
-		while($row = $sql->fetch())
+		foreach($pollRows as $row)
 		{
 			$threadList[] = $row['thread_id'];
 		}
 		foreach($threadList as $threadId)
 		{
-			if($sql->select('forum_thread', 'thread_options', 'thread_id = ' . $threadId, 'default'))
+			$row = $sql->createQueryBuilder()
+				->select('thread_options')->from('forum_thread')
+				->where('thread_id', (int) $threadId)
+				->fetchRow();
+			if($row)
 			{
-				$row = $sql->fetch();
 				if($row['thread_options'])
 				{
 					$opts = unserialize($row['thread_options']);
@@ -810,11 +822,11 @@ function step9()
 				{
 					$opts = array('poll' => 1);
 				}
-				$tmp = array();
-				$tmp['thread_options'] = serialize($opts);
-				$tmp['WHERE'] = 'thread_id = ' . $threadId;
 				//				$tmp['_FIELD_TYPES']['thread_options'] = 'escape';
-				$sql->update('forum_thread', $tmp);
+				$sql->createQueryBuilder()->update('forum_thread')
+					->set('thread_options', serialize($opts))
+					->where('thread_id', (int) $threadId)
+					->execute();
 			}
 		}
 	}
@@ -845,7 +857,8 @@ function step10()
 
 	$stepCaption = 'Step 10: Migrate forum attachments';
 
-	$_SESSION['forumupdate']['attachment_total'] = $sql->count('forum_post', '(*)', "WHERE post_entry LIKE '%public/%' ");
+	$qb = $sql->createQueryBuilder();
+	$_SESSION['forumupdate']['attachment_total'] = $qb->from('forum_post')->where($qb->expr()->like('post_entry', '%public/%'))->count();
 	$_SESSION['forumupdate']['attachment_count'] = 0;
 	$_SESSION['forumupdate']['attachment_last'] = 0;
 
@@ -896,21 +909,14 @@ function step10_ajax()//TODO
 		";
 	*/
 
-	$qry = "
-	SELECT post_id, post_thread, post_entry, post_user FROM `#forum_post`
-	WHERE post_id > {$lastPost} AND post_entry LIKE '%public/%'
-	 ORDER BY post_id LIMIT 50
-	";
+	$qb = $sql->createQueryBuilder();
+	$postList = $qb->select('post_id', 'post_thread', 'post_entry', 'post_user')->from('forum_post')
+		->where('post_id', '>', $lastPost)->where($qb->expr()->like('post_entry', '%public/%'))
+		->orderBy('post_id')->setMaxResults(50)
+		->fetchAll();
 
-	// file_put_contents(e_LOG."forum_update_step10.log",$qry."\n",FILE_APPEND);
-	$postList = [];
-
-	if($sql->gen($qry))
+	if($postList)
 	{
-		while($row = $sql->fetch())
-		{
-			$postList[] = $row;
-		}
 		$i = 0;
 		$pcount = 0;
 		$f->log("Found " . count($postList) . " posts with attachments");
@@ -1282,15 +1288,10 @@ function step12()
 
 	if(vartrue($_POST['delete_old']))
 	{
-		$qryArray = array(
-			"DROP TABLE `#forum_old`",
-			"DROP TABLE `#forum_t`",
-		);
-
-		foreach($qryArray as $qry)
-		{
-			$sql->gen($qry);
-		}
+		// DDL through the schema builder: dropTable() validates the identifier
+		// fail-closed and drops IF EXISTS (idempotent cleanup).
+		$sql->schema()->dropTable('forum_old');
+		$sql->schema()->dropTable('forum_t');
 	}
 
 	unset($_SESSION['forumUpgrade']);
@@ -1303,6 +1304,29 @@ function step12()
 	$ns->tablerender($stepCaption, $mes->render() . $text);
 
 	return;
+}
+
+
+/**
+ * Translate the legacy '_NULL_' sentinel (used by the deprecated array-form
+ * $sql->insert()/update() to write SQL NULL) into a real PHP null, so the query
+ * builder binds it as NULL. Preserves the behaviour of the old array API now
+ * that these calls go through ->values()/->set().
+ *
+ * @param array $values column => value
+ * @return array
+ */
+function forum_update_null_sentinels(array $values)
+{
+	foreach($values as $k => $v)
+	{
+		if($v === '_NULL_')
+		{
+			$values[$k] = null;
+		}
+	}
+
+	return $values;
 }
 
 
@@ -1452,9 +1476,12 @@ class forumUpgrade
 
 		$sql = e107::getDb();
 
-		if($sql->select('forum_t', '*', "thread_parent = {$threadId} OR thread_id = {$threadId}", 'default'))
+		$threadData = $sql->createQueryBuilder()
+			->select('*')->from('forum_t')
+			->where('thread_parent', $threadId)->orWhere('thread_id', $threadId)
+			->fetchAll();
+		if($threadData)
 		{
-			$threadData = $sql->db_getList();
 			foreach($threadData as $post)
 			{
 				if($post['thread_parent'] == 0)
@@ -1560,7 +1587,7 @@ class forumUpgrade
 		// double entities
 
 
-		$result = $sql->insert('forum_thread', $thread);
+		$result = $sql->createQueryBuilder()->insert('forum_thread')->values(forum_update_null_sentinels($thread))->execute();
 
 		if($result === false)
 		{
@@ -1616,7 +1643,7 @@ class forumUpgrade
 
 		$sql = e107::getDb();
 
-		$result = $sql->insert('forum_post', $newPost);
+		$result = $sql->createQueryBuilder()->insert('forum_post')->values(forum_update_null_sentinels($newPost))->execute();
 
 		if($result === false)
 		{

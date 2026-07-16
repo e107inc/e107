@@ -176,6 +176,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 			}
 		}
 
+		// Boundary: $table/$primary/$input are dynamic SQL identifiers, validated fail-closed above; kept on the sanctioned bound execute().
 		$data = $sql->execute("SELECT ".$primary.",".$input." FROM `#".$table."` WHERE ".$input." != ''") ? $sql->rows() : array();
 
 		$success = 0;
@@ -185,6 +186,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 		{
 			$sef = eHelper::title2sef($row[$input]);
 
+			// Boundary: $table/$output/$primary are dynamic SQL identifiers, validated fail-closed above; values bound via :sef/:id.
 			if($sql->execute("UPDATE `#".$table."` SET ".$output." = :sef WHERE ".$primary." = :id LIMIT 1", array('sef' => $sef, 'id' => intval($row[$primary])))!==false)
 			{
 				$success++;

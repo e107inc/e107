@@ -78,7 +78,10 @@ class forum_import
 	 */
 	function saveData($row)
 	{	
-		if(!$result = e107::getDb('forum')->insert('forum',$row))
+		$defs = e107::getDb('forum')->getFieldDefs('forum');
+		$result = e107::getDb('forum')->createQueryBuilder()->insert('forum')
+			->valuesTyped($row, $defs['_FIELD_TYPES'])->execute();
+		if($result === false)
 		{
 	     	return 4;
 		}
@@ -182,7 +185,10 @@ class forumthread_import
 	 */
 	function saveData($row)
 	{	
-		if(!$result = e107::getDb('forum')->insert('forum_thread',$row))
+		$defs = e107::getDb('forum')->getFieldDefs('forum_thread');
+		$result = e107::getDb('forum')->createQueryBuilder()->insert('forum_thread')
+			->valuesTyped($row, $defs['_FIELD_TYPES'])->execute();
+		if($result === false)
 		{
 	     	return 4;
 		}
@@ -292,7 +298,10 @@ class forumpost_import
 	 */
 	function saveData($row)
 	{	
-		if(!$result = e107::getDb('forum')->insert('forum_post',$row))
+		$defs = e107::getDb('forum')->getFieldDefs('forum_post');
+		$result = e107::getDb('forum')->createQueryBuilder()->insert('forum_post')
+			->valuesTyped($row, $defs['_FIELD_TYPES'])->execute();
+		if($result === false)
 		{
 	     	return 4;
 		}
@@ -387,7 +396,10 @@ class forumtrack_import
 	 */
 	function saveData($row)
 	{	
-		if(!$result = e107::getDb('forum')->insert('forum_track',$row))
+		$defs = e107::getDb('forum')->getFieldDefs('forum_track');
+		$result = e107::getDb('forum')->createQueryBuilder()->insert('forum_track')
+			->valuesTyped($row, $defs['_FIELD_TYPES'])->execute();
+		if($result === false)
 		{
 	     	return 4;
 		}

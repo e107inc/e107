@@ -310,7 +310,7 @@ class forum_post_handler
 		//	$url = e107::getUrl()->create('forum/thread/post', array('id' => $postId, 'name' => $postInfo['thread_name'], 'thread' => $threadId)); // both post info and thread info contain thread name
 
 		$url = e107::url('forum','topic', $this->data);
-		$result = $sql->insert('generic', $insert);
+		$result = $sql->createQueryBuilder()->insert('generic')->insertGetId($insert);
 
 		if($result)
 		{
@@ -777,16 +777,17 @@ class forum_post_handler
 	{
 		$sql = e107::getDb();
 
-		$qry = "
-		SELECT f.forum_id, f.forum_name, fp.forum_name AS forum_parent, sp.forum_name AS sub_parent
-		FROM `#forum` AS f
-		LEFT JOIN `#forum` AS fp ON f.forum_parent = fp.forum_id
-		LEFT JOIN `#forum` AS sp ON f.forum_sub = sp.forum_id
-		WHERE f.forum_parent != 0
-		ORDER BY f.forum_parent ASC, f.forum_sub, f.forum_order ASC
-		";
-
-		$fList = $sql->retrieve($qry,true);
+		$qb = $sql->createQueryBuilder();
+		$fList = $qb
+			->select('f.forum_id', 'f.forum_name')->selectAs('fp.forum_name', 'forum_parent')->selectAs('sp.forum_name', 'sub_parent')
+			->from('forum', 'f')
+			->leftJoin('forum', 'fp', $qb->expr()->compareColumns('f.forum_parent', 'fp.forum_id'))
+			->leftJoin('forum', 'sp', $qb->expr()->compareColumns('f.forum_sub', 'sp.forum_id'))
+			->where('f.forum_parent', '!=', 0)
+			->orderBy('f.forum_parent', 'ASC')
+			->addOrderBy('f.forum_sub')
+			->addOrderBy('f.forum_order', 'ASC')
+			->fetchAll();
 
 		$opts = array();
 		$currentName = "";
@@ -1404,14 +1405,13 @@ class forum_post_handler
 			$newUrl = e107::url('forum','topic', $urlInfo);
 
 			e107::getMessage()->addSuccess("Created new thread <a class='alert-link' href='".$newUrl."'>#".$ret['threadid']."</a>");
-			$update = array(
-				'post_thread' => $ret['threadid'],
-				'post_forum'  => $threadInfo['thread_forum_id'],
-				 'WHERE'   => "post_thread = ".(int)$this->data['post_thread']." AND post_id >= ".(int)$this->data['post_id']
-
-			);
-
-			if($result = e107::getDb()->update('forum_post', $update))
+			if($result = e107::getDb()->createQueryBuilder()
+				->update('forum_post')
+				->set('post_thread', $ret['threadid'])
+				->set('post_forum', $threadInfo['thread_forum_id'])
+				->where('post_thread', (int)$this->data['post_thread'])
+				->where('post_id', '>=', (int)$this->data['post_id'])
+				->execute())
 			{
 
 				e107::getMessage()->addSuccess("Moved ".$result." posts to topic #". $ret['threadid']);

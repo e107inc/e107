@@ -234,7 +234,10 @@ class plugin_ui extends e_admin_ui
 
 			$arr = e107::getParser()->filter($arr, 'int');
 
-			$data = e107::getDb()->retrieve('plugin', 'plugin_path', 'plugin_id IN ('.implode(',', $arr).')', true);
+			$data = e107::getDb()->createQueryBuilder()
+				->select('plugin_path')->from('plugin')
+				->whereIn('plugin_id', $arr)
+				->fetchAll();
 
 			if(empty($data))
 			{

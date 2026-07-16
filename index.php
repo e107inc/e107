@@ -154,7 +154,29 @@
 					'user_xup'			=> $prov_id
 				);
 
-				if($newid = $sql->insert('user',$insert,true))
+				// Field-typed user-data write: migrate via valuesTyped() so the
+				// stored bytes stay byte-identical to the legacy array insert
+				// (per-column field-type storage transform + bind type).
+				$insertData = $insert;
+				$userDefs   = $sql->getFieldDefs('user');
+				if(isset($userDefs['_NOTNULL'])) // legacy insert() fills NOT NULL defaults
+				{
+					foreach($userDefs['_NOTNULL'] as $notNullField => $notNullDefault)
+					{
+						if(!isset($insertData[$notNullField]))
+						{
+							$insertData[$notNullField] = $notNullDefault;
+						}
+					}
+				}
+				$inserted = $sql->createQueryBuilder()->insert('user')
+					->valuesTyped($insertData, isset($userDefs['_FIELD_TYPES']) ? $userDefs['_FIELD_TYPES'] : array())
+					->execute();
+
+				// Guard on the insert succeeding before reading the id: lastInsertId()
+				// alone could return a stale id from a prior insert on this connection
+				// if the write failed, whereas the legacy insert() returned false.
+				if($inserted !== false && ($newid = $sql->lastInsertId()))
 				{
 					e107::getEvent()->trigger('usersup', $insert);
 					if(!USERID)

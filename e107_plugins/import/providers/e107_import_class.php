@@ -71,21 +71,24 @@ class e107_import extends base_import_class
 		{
 		    case 'users' :
 		  	    $query =  "SELECT * FROM {$this->DBPrefix}user WHERE `user_id` != 1";
-		        $result = $this->ourDB->gen($query);
-	
+		        // Permanent cross-database boundary (T4): cross-database source table; $this->DBPrefix is the `db`.prefix qualifier validated fail-closed in base_import_class::database(). The e107 builder resolves only its own prefix/db by design, so it structurally cannot express a cross-database qualified table reference; the WHERE also has no dynamic values, so this stays on bound execute().
+		        $result = $this->ourDB->execute($query);
+
 				if ($result === false) return false;
 			break;
 
 		    case 'page' :
 		  	    $query =  "SELECT * FROM {$this->DBPrefix}pcontent WHERE `content_parent` > 0";
-		        $result = $this->ourDB->gen($query);
+		        // Permanent cross-database boundary (T4): cross-database source table; $this->DBPrefix is the `db`.prefix qualifier validated fail-closed in base_import_class::database(). The e107 builder resolves only its own prefix/db by design, so it structurally cannot express a cross-database qualified table reference; the WHERE also has no dynamic values, so this stays on bound execute().
+		        $result = $this->ourDB->execute($query);
 
 				if ($result === false) return false;
 			break;
 
 		    case 'pagechapter' :
 		  	    $query =  "SELECT * FROM {$this->DBPrefix}pcontent WHERE `content_parent` = '0'";
-		        $result = $this->ourDB->gen($query);
+		        // Permanent cross-database boundary (T4): cross-database source table; $this->DBPrefix is the `db`.prefix qualifier validated fail-closed in base_import_class::database(). The e107 builder resolves only its own prefix/db by design, so it structurally cannot express a cross-database qualified table reference; the WHERE also has no dynamic values, so this stays on bound execute().
+		        $result = $this->ourDB->execute($query);
 
 				if ($result === false) return false;
 			break;

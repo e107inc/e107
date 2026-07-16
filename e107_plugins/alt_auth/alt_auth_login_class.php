@@ -13,6 +13,8 @@
  * 
  */
 
+use e107\Database\QueryBuilder;
+
 /**
  *	e107 Alternate authorisation plugin
  *
@@ -119,7 +121,7 @@ class alt_login
 
 			$aa_sql = e107::getDb('aa');
 			$userMethods = new UserHandler;
-			$db_vals = array('user_password' => $aa_sql->escape($userMethods->HashPassword($userpass,$username)));
+			$db_vals = array('user_password' => $userMethods->HashPassword($userpass,$username));
 			$xFields = array();					// Possible extended user fields
 			
 			// See if any of the fields need processing before save
@@ -147,24 +149,47 @@ class alt_login
 					$db_vals[$k] = $v;
 				}
 			}
-			$ulogin = new userlogin();
 			if (count($xFields))
 			{	// We're going to have to do something with extended fields as well - make sure there's an object
 				require_once (e_HANDLER.'user_extended_class.php');
 				$ue = new e107_user_extended;
-				$q = 
-				$qry = "SELECT u.user_id,u.".implode(',u.',array_keys($db_vals)).", ue.user_extended_id, ue.".implode(',ue.',array_keys($xFields))." FROM `#user` AS u
-						LEFT JOIN `#user_extended` AS ue ON ue.user_extended_id = u.user_id
-						WHERE ".$ulogin->getLookupQuery($username, FALSE, 'u.');
-				if (AA_DEBUG) $this->e107->admin_log->addEvent(10,debug_backtrace(),"DEBUG","Alt auth login","Query: {$qry}[!br!]".print_r($xFields,TRUE),FALSE,LOG_TO_ROLLING);
+
+				// Column lists are built from data-derived field names. select()
+				// keeps unknown expressions verbatim (it is fail-OPEN), so each
+				// data-derived identifier is validated fail-closed here via
+				// quoteColumn() (throws InvalidArgumentException on anything
+				// outside the identifier grammar) before it reaches the query.
+				$columns = array('u.user_id');
+				foreach(array_keys($db_vals) as $col)
+				{
+					$columns[] = 'u.'.$col;
+				}
+				$columns[] = 'ue.user_extended_id';
+				foreach(array_keys($xFields) as $col)
+				{
+					$columns[] = 'ue.'.$col;
+				}
+
+				$qb = $aa_sql->createQueryBuilder();
+				foreach($columns as $col)
+				{
+					$qb->quoteColumn($col);		// fail-closed identifier validation
+				}
+				$qb->select($columns)
+					->from('user', 'u')
+					->leftJoin('user_extended', 'ue', $qb->expr()->compareColumns('ue.user_extended_id', 'u.user_id'));
+				$this->applyLookupCriteria($qb, $username, FALSE, 'u.');
+				if (AA_DEBUG) $this->e107->admin_log->addEvent(10,debug_backtrace(),"DEBUG","Alt auth login","Query: {$qb->getSQL()}[!br!]".print_r($xFields,TRUE),FALSE,LOG_TO_ROLLING);
 			}
 			else
 			{
-				$qry = "SELECT * FROM `#user` WHERE ".$ulogin->getLookupQuery($username, FALSE);
+				$qb = $aa_sql->createQueryBuilder();
+				$qb->select('*')->from('user');
+				$this->applyLookupCriteria($qb, $username, FALSE);
 			}
-			if($aa_sql->gen($qry))
+			$row = $qb->fetchRow();
+			if($row)
 			{ // Existing user - get current data, see if any changes
-				$row = $aa_sql->fetch();
 				foreach ($db_vals as $k => $v)
 				{
 					if ($row[$k] == $v) unset($db_vals[$k]);
@@ -175,7 +200,9 @@ class alt_login
 					$newUser['data'] = $db_vals;
 					validatorClass::addFieldTypes($userMethods->userVettingInfo,$newUser);
 					$newUser['WHERE'] = '`user_id`='.$row['user_id'];
-					$aa_sql->update('user',$newUser);
+					$qb = $aa_sql->createQueryBuilder()->update('user');
+					$this->applyTypedEnvelope($qb, $aa_sql, 'user', $newUser, false);
+					$qb->where('user_id', (int) $row['user_id'])->execute();
 					if (AA_DEBUG1) $this->e107->admin_log->addEvent(10,debug_backtrace(),"DEBUG","Alt auth login","User data update: ".print_r($newUser,TRUE),FALSE,LOG_TO_ROLLING);
 				}
 				foreach ($xFields as $k => $v)
@@ -193,14 +220,18 @@ class alt_login
 						$ue->addFieldTypes($xArray);		// Add in the data types for storage
 						$xArray['WHERE'] = '`user_extended_id`='.intval($row['user_id']);
 						if (AA_DEBUG) $this->e107->admin_log->addEvent(10,debug_backtrace(),"DEBUG","Alt auth login","User xtnd update: ".print_r($xFields,TRUE),FALSE,LOG_TO_ROLLING);
-						$aa_sql->update('user_extended',$xArray );
+						$qb = $aa_sql->createQueryBuilder()->update('user_extended');
+						$this->applyTypedEnvelope($qb, $aa_sql, 'user_extended', $xArray, false);
+						$qb->where('user_extended_id', (int) $row['user_id'])->execute();
 					}
 					else
 					{	// Never been an extended user fields record for this user
 						$xArray['data']['user_extended_id'] = $row['user_id'];
 						$ue->addDefaultFields($xArray);		// Add in the data types for storage, plus any default values
 						if (AA_DEBUG) $this->e107->admin_log->addEvent(10,debug_backtrace(),"DEBUG","Alt auth login","Write new extended record".print_r($xFields,TRUE),FALSE,LOG_TO_ROLLING);
-						$aa_sql->insert('user_extended',$xArray);
+						$qb = $aa_sql->createQueryBuilder()->insert('user_extended');
+						$this->applyTypedEnvelope($qb, $aa_sql, 'user_extended', $xArray, true);
+						$qb->execute();
 					}
 				}
 			}
@@ -221,7 +252,10 @@ class alt_login
 				$userMethods->addNonDefaulted($newUser['data']); 
 				validatorClass::addFieldTypes($userMethods->userVettingInfo,$newUser);
 				
-				$newID = $aa_sql->insert('user',$newUser);
+				$qb = $aa_sql->createQueryBuilder()->insert('user');
+				$this->applyTypedEnvelope($qb, $aa_sql, 'user', $newUser, true);
+				$insertOk = $qb->execute();
+				$newID = ($insertOk !== FALSE) ? $aa_sql->lastInsertId() : FALSE;
 				
 				if ($newID !== FALSE)
 				{
@@ -232,7 +266,9 @@ class alt_login
 						$xArray['data'] = $xFields;
 
 						e107::getUserExt()->addDefaultFields($xArray);		// Add in the data types for storage, plus any default values
-						$result = $aa_sql->insert('user_extended',$xArray);
+						$qb = $aa_sql->createQueryBuilder()->insert('user_extended');
+						$this->applyTypedEnvelope($qb, $aa_sql, 'user_extended', $xArray, true);
+						$result = $qb->execute();
 						if (AA_DEBUG) e107::getLog()->addEvent(10,debug_backtrace(),'DEBUG','Alt auth login',"Add extended: UID={$newID}  result={$result}",FALSE,LOG_TO_ROLLING);
 					}
 				}
@@ -275,6 +311,99 @@ class alt_login
 		}
 		$this->loginResult = LOGIN_ABORT;			// catch-all just in case
 		return;
+	}
+
+
+	/**
+	 *	Apply the user-lookup WHERE predicates to a query builder with bound
+	 *	values, mirroring the column-selection logic of
+	 *	{@see userlogin::getLookupQuery()} (which builds the same predicates as an
+	 *	inlined SQL string). The username is a bound parameter, not concatenated.
+	 *
+	 *	@param QueryBuilder $qb
+	 *	@param string $username - as entered (already toDB()/preg cleaned upstream)
+	 *	@param boolean|string $forceLogin - 'provider', or TRUE/FALSE
+	 *	@param string $dbAlias - optional table-alias prefix (e.g. 'u.') for joins
+	 *	@return void
+	 */
+	protected function applyLookupCriteria($qb, $username, $forceLogin, $dbAlias = '')
+	{
+		$pref = e107::getPref();
+
+		$username = preg_replace("/\sOR\s|\=|\#/", "", $username);
+
+		if($forceLogin === 'provider')
+		{
+			$qb->where($dbAlias.'user_xup', $username);
+			return;
+		}
+
+		// 0: username only (default), 1: email only, 2: username or email
+		$mode = (!$forceLogin && varset($pref['allowEmailLogin'], 0)) ? (int) $pref['allowEmailLogin'] : 0;
+
+		if($mode === 1)
+		{
+			$qb->where($dbAlias.'user_email', $username);
+		}
+		elseif($mode === 2 && strpos($username, '@') !== false)
+		{
+			$qb->where($dbAlias.'user_loginname', $username)
+				->orWhere($qb->expr()->eq($dbAlias.'user_email', $username));
+		}
+		else
+		{
+			$qb->where($dbAlias.'user_loginname', $username);
+		}
+	}
+
+
+	/**
+	 *	Apply an array-CRUD envelope's row to a query builder's SET list via the
+	 *	field-typed writer, so the stored bytes stay byte-identical to the
+	 *	deprecated array-form {@see e_db::insert()}/{@see e_db::update()} this
+	 *	replaces. Mirrors the legacy per-column field-type resolution
+	 *	({@see \e107\Database\ConnectionTrait::insert()} / {@see \e107\Database\ConnectionTrait::_prepareUpdateArg()}):
+	 *	the envelope's own '_FIELD_TYPES' is authoritative when present; otherwise
+	 *	the table's getFieldDefs() supply the types - and, for inserts, its
+	 *	'_NOTNULL' columns backfill any value the row omits.
+	 *
+	 *	@param QueryBuilder $qb - builder already in insert()/update() state
+	 *	@param e_db $db - connection handle (for getFieldDefs())
+	 *	@param string $table - logical table name
+	 *	@param array $env - array('data' => row[, '_FIELD_TYPES'][, '_NOTNULL'])
+	 *	@param boolean $applyNotNull - backfill '_NOTNULL' defaults (insert only)
+	 *	@return void
+	 */
+	private function applyTypedEnvelope($qb, $db, $table, array $env, $applyNotNull)
+	{
+		$data = isset($env['data']) ? $env['data'] : array();
+
+		if(isset($env['_FIELD_TYPES']))
+		{
+			$fieldTypes = $env['_FIELD_TYPES'];
+			$notNull    = isset($env['_NOTNULL']) ? $env['_NOTNULL'] : array();
+		}
+		else
+		{	// Legacy path merges the table defs when the envelope carries no types
+			$defs       = $db->getFieldDefs($table);
+			$fieldTypes = (is_array($defs) && isset($defs['_FIELD_TYPES'])) ? $defs['_FIELD_TYPES'] : array();
+			$notNull    = (is_array($defs) && isset($defs['_NOTNULL']))     ? $defs['_NOTNULL']     : array();
+		}
+
+		if($applyNotNull)
+		{
+			foreach($notNull as $f => $v)
+			{
+				if(!isset($data[$f])) { $data[$f] = $v; }
+			}
+		}
+
+		foreach($data as $col => $val)
+		{	// Absent column binds as the legacy default ('string' == 'str' == the
+			// insert null-fallback: identity transform, PARAM_STR).
+			$type = isset($fieldTypes[$col]) ? $fieldTypes[$col] : 'string';
+			$qb->setTyped($col, $val, $type);
+		}
 	}
 
 

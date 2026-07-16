@@ -1457,7 +1457,11 @@ class e_user_model extends e_admin_model
 			return false;
 		}
 
-		return e107::getDb()->update('user',"user_class='".$insert."' WHERE user_id = ".$uid." LIMIT 1");
+		return e107::getDb()->createQueryBuilder()->update('user')
+			->set('user_class', $insert)
+			->where('user_id', (int) $uid)
+			->setMaxResults(1)
+			->execute();
 
 	}
 
@@ -1496,7 +1500,11 @@ class e_user_model extends e_admin_model
 			return false;
 		}
 
-		return e107::getDb()->update('user',"user_class='".$insert."' WHERE user_id = ".$uid." LIMIT 1");
+		return e107::getDb()->createQueryBuilder()->update('user')
+			->set('user_class', $insert)
+			->where('user_id', (int) $uid)
+			->setMaxResults(1)
+			->execute();
 
 
 	}
@@ -2376,13 +2384,13 @@ class e_user extends e_user_model
 			$sql = e107::getDb();
 			$this->set('last_ip', $this->get('user_ip'));
 			$current_ip = $iph->getIP();
-			$update_ip = '';
+			$ip_changed = false;
 			$edata = [];
 
 			if($this->get('user_ip') != $current_ip)
 			{
 				$old_ip = (string) $this->get('user_ip');
-				$update_ip = ", user_ip = '".$current_ip."'";
+				$ip_changed = true;
 				$edata = [
 					'old_ip'    => $iph->ipDecode($old_ip),
 					'new_ip'    => $iph->ipDecode($current_ip),
@@ -2390,7 +2398,7 @@ class e_user extends e_user_model
 					'user_id'   => $this->getId(),
 					'user_name' => $this->get('user_name'),
 				];
-				
+
 			}
 
 			$this->set('user_ip', $current_ip);
@@ -2399,12 +2407,28 @@ class e_user extends e_user_model
 			{
 				$this->set('user_lastvisit', (int) $this->get('user_currentvisit'));
 				$this->set('user_currentvisit', time());
-				$sql->update('user', "user_visits = user_visits + 1, user_lastvisit = ".$this->get('user_lastvisit').", user_currentvisit = ".$this->get('user_currentvisit').$update_ip." WHERE user_id = ".$this->getId()." LIMIT 1 ");
+				$qb = $sql->createQueryBuilder();
+				$qb->update('user')
+					->increment('user_visits', 1)
+					->set('user_lastvisit', $this->get('user_lastvisit'))
+					->set('user_currentvisit', $this->get('user_currentvisit'));
+				if($ip_changed)
+				{
+					$qb->set('user_ip', $current_ip);
+				}
+				$qb->where('user_id', $this->getId())->setMaxResults(1)->execute();
 			}
 			else
 			{
 				$this->set('user_currentvisit', time());
-				$sql->update('user', "user_currentvisit = ".$this->get('user_currentvisit').$update_ip." WHERE user_id = ".$this->getId()." LIMIT 1 ");
+				$qb = $sql->createQueryBuilder();
+				$qb->update('user')
+					->set('user_currentvisit', $this->get('user_currentvisit'));
+				if($ip_changed)
+				{
+					$qb->set('user_ip', $current_ip);
+				}
+				$qb->where('user_id', $this->getId())->setMaxResults(1)->execute();
 			}
 
 			if(!empty($edata))
@@ -2509,12 +2533,13 @@ class e_user extends e_user_model
 	 */
 	final protected function _load($user_id)
 	{
-		$qry = 'SELECT u.*, ue.* FROM #user AS u LEFT JOIN #user_extended as ue ON u.user_id=ue.user_extended_id WHERE u.user_id='.intval($user_id);
-		if(e107::getDb()->gen($qry))
-		{
-			return e107::getDb()->fetch();
-		}
-		return array();
+		$qb = e107::getDb()->createQueryBuilder();
+
+		return $qb
+			->select('u.*', 'ue.*')->from('user', 'u')
+			->leftJoin('user_extended', 'ue', $qb->expr()->compareColumns('u.user_id', 'ue.user_extended_id'))
+			->where('u.user_id', (int) $user_id)
+			->fetchRow();
 	}
 
 	/**
@@ -3026,7 +3051,9 @@ class e_user_extended_model extends e_admin_model
 		}
 		$this->_buildManageRules();
 		// insert new record
-		if(!e107::getDb()->count('user_extended', '(user_extended_id)', "user_extended_id=".$this->getId()))
+		if(!e107::getDb()->createQueryBuilder()->from('user_extended')
+			->where('user_extended_id', (int) $this->getId())
+			->count('user_extended_id'))
 		{
 			return $this->insert(true, $session);
 		}
@@ -3381,7 +3408,10 @@ class e_user_pref extends e_front_model
 			{
 				$data = $this->toString(true);
 				$this->apply();
-				return (e107::getDb('user_prefs')->update('user', "user_prefs='{$data}' WHERE user_id=".$this->_user->getId()) ? true : false);
+				return (e107::getDb('user_prefs')->createQueryBuilder()->update('user')
+					->set('user_prefs', $data)
+					->where('user_id', (int) $this->_user->getId())
+					->execute() ? true : false);
 			}
 			return 0;
 		}

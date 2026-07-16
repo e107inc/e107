@@ -88,12 +88,15 @@ class core_page_sef_noid_url extends eUrlConfig
 		
 		$sql = e107::getDb('url');
 		$name = e107::getParser()->toDB($name);
-		
-		if($sql->select('page', 'page_id', "page_sef='{$name}'")) 
+
+		$row = $sql->createQueryBuilder()
+			->select('page_id')->from('page')
+			->where('page_sef', $name)
+			->fetchRow();
+		if($row)
 		{
-			$name = $sql->fetch();
-			$request->setRequestParam('name', $name['page_id'])
-                ->setRequestParam('id', $name['page_id']);
+			$request->setRequestParam('name', $row['page_id'])
+                ->setRequestParam('id', $row['page_id']);
 		}
 		else 
 		{
@@ -130,12 +133,15 @@ class core_page_sef_noid_url extends eUrlConfig
 			
 		$sql = e107::getDb('url');
 		$name = e107::getParser()->toDB($name);
-		
-		if($sql->select('page_chapters', 'chapter_id', "chapter_sef='{$name}'")) 
+
+		$row = $sql->createQueryBuilder()
+			->select('chapter_id')->from('page_chapters')
+			->where('chapter_sef', $name)
+			->fetchRow();
+		if($row)
 		{
-			$name = $sql->fetch();
-			$request->setRequestParam('id', $name['chapter_id'])
-                ->setRequestParam('name', $name['chapter_id']);
+			$request->setRequestParam('id', $row['chapter_id'])
+                ->setRequestParam('name', $row['chapter_id']);
 		}
 		else 
 		{

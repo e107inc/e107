@@ -79,7 +79,7 @@ class poll
 		global $admin_log;
 		$sql = e107::getDb();
 		
-		if ($sql->delete("polls", " poll_id='".intval($existing)."' "))
+		if ($sql->createQueryBuilder()->delete("polls")->where('poll_id', (int) $existing)->execute())
 		{
 			if (function_exists("admin_purge_related"))
 			{
@@ -142,19 +142,21 @@ class poll
 
 		if (defset('POLLACTION') === 'edit' || !empty($pollID))
 		{
-			$sql->update("polls", "poll_title='{$poll_title}', 
-			  				   poll_options='{$poll_options}', 
-							   poll_comment='{$poll_comment}', 
-							   poll_type={$mode},
-							   poll_allow_multiple={$multipleChoice}, 
-							   poll_result_type={$showResults}, 
-							   poll_vote_userclass={$pollUserclass}, 
-							   poll_storage_method={$storageMethod}
-							   WHERE poll_id=".$pollID);
+			$sql->createQueryBuilder()->update("polls")
+				->set('poll_title', $poll_title)
+				->set('poll_options', $poll_options)
+				->set('poll_comment', $poll_comment)
+				->set('poll_type', $mode)
+				->set('poll_allow_multiple', $multipleChoice)
+				->set('poll_result_type', $showResults)
+				->set('poll_vote_userclass', $pollUserclass)
+				->set('poll_storage_method', $storageMethod)
+				->where('poll_id', $pollID)
+				->execute();
 
 			/* update poll results - bugtracker #1124 .... */
-			$sql->select("polls", "poll_votes", "poll_id='".$pollID."' ");
-			$foo = $sql->fetch();
+			$foo = $sql->createQueryBuilder()->select('poll_votes')->from("polls")
+				->where('poll_id', $pollID)->fetchRow();
 			$voteA = explode(chr(1), $foo['poll_votes']);
 
 		//	$poll_option = varset($poll_options, 0);
@@ -166,7 +168,9 @@ class poll
 				{
 					$foo['poll_votes'] .= '0'.chr(1);
 				}
-				$sql->update("polls", "poll_votes='".$foo['poll_votes']."' WHERE poll_id='".$pollID."' ");
+				$sql->createQueryBuilder()->update("polls")
+					->set('poll_votes', $foo['poll_votes'])
+					->where('poll_id', $pollID)->execute();
 			}
 
 			e107::getLog()->add('POLL_02','ID: '.$pollID.' - '.$poll_title,'');
@@ -183,31 +187,75 @@ class poll
 			if ($mode == 1)
 			{
 				/* deactivate other polls */
-				if ($sql->select("polls", "*", "poll_type=1 AND poll_vote_userclass!=255"))
+				$deacArray = $sql->createQueryBuilder()->select("*")->from("polls")
+					->where('poll_type', 1)->where('poll_vote_userclass', '!=', 255)
+					->fetchAll();
+				foreach ($deacArray as $deacpoll)
 				{
-					$deacArray = $sql->db_getList();
-					foreach ($deacArray as $deacpoll)
-					{
-						$sql->update("polls", "poll_end_datestamp='".time()."', poll_vote_userclass='255' WHERE poll_id=".$deacpoll['poll_id']);
-					}
+					$sql->createQueryBuilder()->update("polls")
+						->set('poll_end_datestamp', time())
+						->set('poll_vote_userclass', 255)
+						->where('poll_id', $deacpoll['poll_id'])->execute();
 				}
-				$ret = $sql->insert("polls", "'0', ".time().", ".intval($active_start).", ".intval($active_end).", ".ADMINID.", '{$poll_title}', '{$poll_options}', '{$votes}', '', '1', '".$tp->toDB($poll_comment)."', '".intval($multipleChoice)."', '".intval($showResults)."', '".intval($pollUserclass)."', '".intval($storageMethod)."'");
+				$ret = $this->insertPoll(array(
+					'poll_datestamp'       => time(),
+					'poll_start_datestamp' => (int) $active_start,
+					'poll_end_datestamp'   => (int) $active_end,
+					'poll_admin_id'        => ADMINID,
+					'poll_title'           => $poll_title,
+					'poll_options'         => $poll_options,
+					'poll_votes'           => $votes,
+					'poll_ip'              => '',
+					'poll_type'            => 1,
+					'poll_comment'         => $tp->toDB($poll_comment),
+					'poll_allow_multiple'  => (int) $multipleChoice,
+					'poll_result_type'     => (int) $showResults,
+					'poll_vote_userclass'  => (int) $pollUserclass,
+					'poll_storage_method'  => (int) $storageMethod,
+				));
 				e107::getLog()->add('POLL_03','ID: '.$ret.' - '.$poll_title,'');		// Intentionally only log admin-entered polls
 			}
 			else
 			{
-				$sql->insert("polls", "'0', ".intval($_POST['iid']).", '0', '0', ".USERID.", '$poll_title', '$poll_options', '$votes', '', '2', '0', '".intval($multipleChoice)."', '0', '0', '".intval($storageMethod)."'");
+				$this->insertPoll(array(
+					'poll_datestamp'       => (int) $_POST['iid'],
+					'poll_start_datestamp' => 0,
+					'poll_end_datestamp'   => 0,
+					'poll_admin_id'        => USERID,
+					'poll_title'           => $poll_title,
+					'poll_options'         => $poll_options,
+					'poll_votes'           => $votes,
+					'poll_ip'              => '',
+					'poll_type'            => 2,
+					'poll_comment'         => 0,
+					'poll_allow_multiple'  => (int) $multipleChoice,
+					'poll_result_type'     => 0,
+					'poll_vote_userclass'  => 0,
+					'poll_storage_method'  => (int) $storageMethod,
+				));
 			}
 		}
 		return varset($message);
+	}
+
+	/**
+	 * Insert a poll row and return its new id.
+	 *
+	 * @param array $row column => value for the polls table (poll_id is auto-assigned)
+	 * @return int|string|bool new poll id, or false on error
+	 */
+	private function insertPoll(array $row)
+	{
+		return e107::getDb()->createQueryBuilder()->insert("polls")->insertGetId($row);
 	}
 
 	function get_poll($query)
 	{
 		global $e107;		
 		$sql = e107::getDb();
-		
-		if ($sql->gen($query))
+
+		// Permanent raw-SQL boundary: $query is a full pre-built SQL string assembled by the caller (poll_menu.php / forum_viewtopic.php, out of scope) - not constructible here; sanctioned execute()+fetch() keeps the error-vs-empty guard (cookbook pitfall #7 / Error-vs-no-row).
+		if ($sql->execute($query))
 		{
 			$pollArray = $sql->fetch();
 			if (!check_class($pollArray['poll_vote_userclass']))
@@ -303,7 +351,13 @@ class poll
 				$votep = implode(chr(1), $votes);
 				$pollArray['poll_votes'] = $votep;
 				$poll_ip = varset($poll_ip) . varset($userid);
-				$sql->update("polls", "poll_votes = '$votep'".($pollArray['poll_storage_method'] != POLL_MODE_COOKIE ? ", poll_ip='".$poll_ip."^'" : '')." WHERE poll_id=".varset($poll_id));
+				$voteQry = $sql->createQueryBuilder()->update("polls")
+					->set('poll_votes', $votep);
+				if ($pollArray['poll_storage_method'] != POLL_MODE_COOKIE)
+				{
+					$voteQry->set('poll_ip', $poll_ip.'^');
+				}
+				$voteQry->where('poll_id', varset($poll_id))->execute();
 				/*echo "
 				<script>
 				<!--
@@ -361,7 +415,8 @@ class poll
 				break;
 
 			case 'results' :
-				if ($sql->gen($pollArray))
+				// Permanent raw-SQL boundary: $pollArray is a full pre-built SQL string passed in by the caller (poll_menu.php, out of scope) - not constructible here; sanctioned execute()+fetch() keeps the error-vs-empty guard (cookbook pitfall #7 / Error-vs-no-row).
+				if ($sql->execute($pollArray))
 				{
 					$pollArray = $sql->fetch();
 				}
@@ -471,10 +526,13 @@ class poll
 
 		if ($pollArray['poll_comment']) // Only get comments if they're allowed on poll. And we only need the count ATM
 		{
-			$sc->pollCommentTotal = $sql->count("comments", "(*)", "WHERE `comment_item_id`='".intval($pollArray['poll_id'])."' AND `comment_type`=4");
+			$sc->pollCommentTotal = $sql->createQueryBuilder()->from("comments")
+				->where('comment_item_id', (int) $pollArray['poll_id'])
+				->where('comment_type', 4)->count();
 		}
 
-		$sc->pollCount 	    = $sql->count("polls", "(*)", "WHERE poll_id <= '".$pollArray['poll_id']."'");
+		$sc->pollCount 	    = $sql->createQueryBuilder()->from("polls")
+			->where('poll_id', '<=', $pollArray['poll_id'])->count();
 		$sc->pollRenderMode = $type;
 		$sc->pollVoteTotal  = $voteTotal;
 		$sc->pollRenderType = $type;

@@ -279,7 +279,9 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 		// check for multiple signups from the same IP address. But ignore localhost
 		if ($allData['user_ip'] != e107::LOCALHOST_IP && $allData['user_ip'] != e107::LOCALHOST_IP2)
 		{
-			if($ipcount = $sql->select('user', '*', "user_ip='".$allData['user_ip']."' and user_ban !='2' "))
+			$ipcount = $sql->createQueryBuilder()->from('user')
+				->where('user_ip', $allData['user_ip'])->where('user_ban', '!=', '2')->count();
+			if($ipcount)
 			{
 				if($ipcount >= $pref['signup_maxip'] && trim($pref['signup_maxip']) != "")
 				{
@@ -455,15 +457,29 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 		// Actually write data to DB
 		validatorClass::addFieldTypes($userMethods->userVettingInfo, $allData);
 		
-		$nid = $sql->insert('user', $allData);
-		
+		// Field-typed user-data insert: $allData carries the addFieldTypes() envelope
+		// ('data' + '_FIELD_TYPES'); valuesTyped() applies the same per-column storage
+		// transform as the legacy array insert (byte-identical), so stored bytes match.
+		$inserted = $sql->createQueryBuilder()->insert('user')
+			->valuesTyped($allData['data'], $allData['_FIELD_TYPES'])->execute();
+		// Match the legacy insert() return: the new user id on success, false on failure
+		// (lastInsertId() alone could report a stale id from a prior insert if this one failed).
+		$nid = ($inserted !== false) ? $sql->lastInsertId() : false;
+
 		if (isset($eufVals['data']) && count($eufVals['data']))
 		{
 			$usere->addFieldTypes($eufVals);		// Add in the data types for storage
-			$eufVals['WHERE'] = '`user_extended_id` = '.intval($nid);
 			//$usere->addDefaultFields($eufVals);		// Add in defaults for anything not explicitly set (commented out for now - will slightly modify behaviour)
-			$sql->gen("INSERT INTO `#user_extended` (user_extended_id) values ('{$nid}')");
-			$sql->update('user_extended', $eufVals);
+			$sql->createQueryBuilder()->insert('user_extended')->values(array('user_extended_id' => $nid))->execute();
+			// Field-typed update of the extended fields: one setTyped() per column so the
+			// per-column storage transform matches the legacy array update byte-for-byte.
+			$ueUpdate = $sql->createQueryBuilder()->update('user_extended');
+			foreach($eufVals['data'] as $eufCol => $eufVal)
+			{
+				$eufType = isset($eufVals['_FIELD_TYPES'][$eufCol]) ? $eufVals['_FIELD_TYPES'][$eufCol] : 'string';
+				$ueUpdate->setTyped($eufCol, $eufVal, $eufType);
+			}
+			$ueUpdate->where('user_extended_id', (int) $nid)->execute();
 		}
 		
 	//	if (SIGNUP_DEBUG)
@@ -568,8 +584,10 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 		{	
 			require_once(HEADERF);
 
-			if(!$sql->select("user", "user_id", "user_loginname='".$allData['data']['user_loginname']."' AND user_password='".$allData['data']['user_password']."'"))
-			{	
+			if(!$sql->createQueryBuilder()->from('user')
+				->where('user_loginname', $allData['data']['user_loginname'])
+				->where('user_password', $allData['data']['user_password'])->count())
+			{
 				// Error looking up newly created user
 				$ns->tablerender("", LAN_SIGNUP_36);
 				require_once(FOOTERF);

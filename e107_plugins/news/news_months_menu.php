@@ -87,13 +87,22 @@ if(false === $cached)
 	$month_links = array();
 	
 	e107::getDebug()->logTime('News months menu');
-	if(!$sql->select("news", "news_id, news_datestamp", "news_class IN (".USERCLASS_LIST.") AND (FIND_IN_SET('0', news_render_type) OR FIND_IN_SET(1, news_render_type)) AND news_datestamp > ".intval($start)." AND news_datestamp < ".intval($end)." ORDER BY news_datestamp DESC"))
+	$qb = $sql->createQueryBuilder();
+	$newsRows = $qb
+		->select('news_id', 'news_datestamp')->from('news')
+		->whereIn('news_class', array_map('intval', explode(',', USERCLASS_LIST)))
+		->where($qb->expr()->anyOf(
+			$qb->expr()->findInSet('news_render_type', '0'),
+			$qb->expr()->findInSet('news_render_type', 1)
+		))
+		->where('news_datestamp', '>', (int) $start)
+		->where('news_datestamp', '<', (int) $end)
+		->orderBy('news_datestamp', 'DESC')
+		->fetchEach();
+	$hasNews = false;
+	foreach($newsRows as $news)
 	{
-		e107::getCache()->set($cString, '');
-		return '';
-	}
-	while ($news = $sql->fetch())
-	{	
+		$hasNews = true;
 		$xmonth = date("n", $news['news_datestamp']);
 		if ((!isset($month_links[$xmonth]) || !$month_links[$xmonth]))
 		{
@@ -101,6 +110,12 @@ if(false === $cached)
 			$month_links[$xmonth] = e107::getUrl()->create('news/list/month', 'id='.newsFormatDate($req_year, $xmonth));
 		}
 		$xmonth_cnt[$xmonth]++;
+	}
+
+	if(!$hasNews)
+	{
+		e107::getCache()->set($cString, '');
+		return '';
 	}
 
 

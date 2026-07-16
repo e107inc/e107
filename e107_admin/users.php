@@ -164,7 +164,10 @@ JS;
 					{
 						$id = (int) $_POST['userid'];
 						$_POST['etrigger_delete'] = array($id => $id);
-						$user = e107::getDb()->retrieve('user', 'user_email, user_name', 'user_id='.$id);
+						$user = e107::getDb()->createQueryBuilder()
+							->select('user_email', 'user_name')->from('user')
+							->where('user_id', $id)
+							->fetchRow();
 						$rplc_from = array('[x]', '[y]', '[z]');
 						$rplc_to = array($user['user_name'], $user['user_email'], $id);
 						$message = str_replace($rplc_from, $rplc_to, USRLAN_222);
@@ -373,7 +376,165 @@ class users_admin_ui extends e_admin_ui
 	{
 		return $this->extendedData;
 	}
-	
+
+	/**
+	 * Turn a legacy array-form payload (array('data' => ..., '_FIELD_TYPES' => ...))
+	 * into a flat column => array('value', 'type') map, applying the same value
+	 * coercion and bind type the legacy bound insert/update path used. This keeps
+	 * the storage format (int casts, toDB, NULL handling) identical while moving
+	 * every value onto a bound query-builder parameter.
+	 *
+	 * @param array $arg legacy payload with a 'data' map and optional '_FIELD_TYPES'.
+	 * @return array column => array('value' => mixed, 'type' => e_db::PARAM_*)
+	 */
+	public static function boundFieldsFromArrayForm(array $arg)
+	{
+		$data  = isset($arg['data']) ? $arg['data'] : array();
+		$types = isset($arg['_FIELD_TYPES']) ? $arg['_FIELD_TYPES'] : array();
+		$default = isset($types['_DEFAULT']) ? $types['_DEFAULT'] : 'string';
+
+		$out = array();
+
+		foreach($data as $field => $value)
+		{
+			$type = isset($types[$field]) ? $types[$field] : $default;
+
+			$bound = self::pdoBoundValue($type, $value);
+			$bound['type'] = self::pdoBoundType($type, $bound['value']);
+
+			$out[$field] = $bound;
+		}
+
+		return $out;
+	}
+
+	/**
+	 * Coerce one value exactly as the legacy bound CRUD path did (mirrors
+	 * ConnectionTrait::_getPDOValue): the value transform depends on the
+	 * field type, and a '_NULL_' value collapses to a real NULL regardless of
+	 * type. Returns array('value' => mixed) so callers can pair it with
+	 * {@see users_admin_ui::pdoBoundType()}.
+	 *
+	 * @param string $type field type (int, todb, escape, null, array, float...).
+	 * @param mixed $value raw value.
+	 * @return array array('value' => mixed)
+	 */
+	private static function pdoBoundValue($type, $value)
+	{
+		if(is_string($value) && $value === '_NULL_')
+		{
+			$type = 'null';
+		}
+
+		switch($type)
+		{
+			case 'int':
+			case 'integer':
+				return array('value' => (int) $value);
+
+			case 'float':
+				return array('value' => e107::getParser()->toNumber($value));
+
+			case 'null':
+				$nv = (is_string($value) && ($value !== '_NULL_') && ($value !== '')) ? $value : null;
+				return array('value' => $nv);
+
+			case 'array':
+				return array('value' => is_array($value) ? e107::serialize($value) : $value);
+
+			case 'todb':
+				return array('value' => ($value == '') ? '' : e107::getParser()->toDB($value));
+
+			default:
+				return array('value' => $value);
+		}
+	}
+
+	/**
+	 * Bind-parameter type for a field, mirroring
+	 * ConnectionTrait::_getPDOType (the original field type drives the bind
+	 * type; a 'null' type emits PARAM_NULL only when the coerced value is null).
+	 *
+	 * @param string $type original field type.
+	 * @param mixed $value coerced value from {@see users_admin_ui::pdoBoundValue()}.
+	 * @return int e_db::PARAM_*
+	 */
+	private static function pdoBoundType($type, $value)
+	{
+		switch($type)
+		{
+			case 'int':
+			case 'integer':
+				return e_db::PARAM_INT;
+
+			case 'null':
+				return ($value === null) ? e_db::PARAM_NULL : e_db::PARAM_STR;
+
+			default:
+				return e_db::PARAM_STR;
+		}
+	}
+
+	/**
+	 * Insert a legacy array-form payload through the query builder, preserving the
+	 * field-type coercion the legacy bound insert applied.
+	 *
+	 * @param e_db $db connection instance.
+	 * @param string $table logical table name.
+	 * @param array $arg legacy array-form payload.
+	 * @return int|string|bool last insert id, true, or false on error (legacy shape).
+	 */
+	public static function builderInsertArrayForm($db, $table, array $arg)
+	{
+		$qb = $db->createQueryBuilder()->insert($table);
+
+		foreach(self::boundFieldsFromArrayForm($arg) as $col => $bind)
+		{
+			$qb->set($col, $bind['value'], $bind['type']);
+		}
+
+		if($qb->execute() === false)
+		{
+			return false;
+		}
+
+		$id = $db->lastInsertId();
+
+		return $id ? $id : true;
+	}
+
+	/**
+	 * Update with a legacy array-form payload through the query builder, preserving
+	 * the field-type coercion. The legacy 'WHERE' key (raw "user_extended_id=NN
+	 * [LIMIT 1]") is reduced to bound predicates here.
+	 *
+	 * @param e_db $db connection instance.
+	 * @param string $table logical table name.
+	 * @param array $arg legacy array-form payload including a 'WHERE' element.
+	 * @param int $whereId value for the (single-column) equality WHERE.
+	 * @param string $whereCol column used in the WHERE equality.
+	 * @param int|null $limit optional LIMIT carried by the legacy WHERE string.
+	 * @return int|bool affected rows / true, or false on error.
+	 */
+	public static function builderUpdateArrayForm($db, $table, array $arg, $whereCol, $whereId, $limit = null)
+	{
+		$qb = $db->createQueryBuilder()->update($table);
+
+		foreach(self::boundFieldsFromArrayForm($arg) as $col => $bind)
+		{
+			$qb->set($col, $bind['value'], $bind['type']);
+		}
+
+		$qb->where($whereCol, (int) $whereId);
+
+		if($limit !== null)
+		{
+			$qb->setMaxResults((int) $limit);
+		}
+
+		return $qb->execute();
+	}
+
 	function ListObserver()
 	{
 		parent::ListObserver(); 
@@ -421,7 +582,12 @@ class users_admin_ui extends e_admin_ui
 		
 		// Extended fields - FIXME - better field types
 		
-		if($rows = $sql->retrieve('user_extended_struct', '*', "user_extended_struct_type > 0 AND user_extended_struct_text != '_system_' ORDER BY user_extended_struct_parent ASC",true))
+		if($rows = $sql->createQueryBuilder()
+			->select('*')->from('user_extended_struct')
+			->where('user_extended_struct_type', '>', 0)
+			->where('user_extended_struct_text', '!=', '_system_')
+			->orderBy('user_extended_struct_parent', 'ASC')
+			->fetchAll())
 		{
 			// TODO FIXME use the handler to build fields and field attributes
 			// FIXME a way to load 3rd party language files for extended user fields
@@ -529,7 +695,9 @@ class users_admin_ui extends e_admin_ui
 		if(!empty($id))
 		{
 			$sql = e107::getDb();
-			$sql->delete('user_extended',"user_extended_id = ".$id);
+			$sql->createQueryBuilder()->delete('user_extended')
+				->where('user_extended_id', (int) $id)
+				->execute();
 
 			e107::getCache()->clear('online_menu_member_newest');
 			e107::getCache()->clear('online_menu_member_total');
@@ -569,7 +737,7 @@ class users_admin_ui extends e_admin_ui
 			$savePassword = $new_data['user_password'];
 			$loginname = $new_data['user_loginname'] ? $new_data['user_loginname'] : $old_data['user_loginname'];
 			$email = (isset($new_data['user_email']) && $new_data['user_email']) ? $new_data['user_email'] : $old_data['user_email'];
-			$new_data['user_password'] = e107::getDb()->escape(e107::getUserSession()->HashPassword($savePassword, $loginname), false);
+			$new_data['user_password'] = e107::getUserSession()->HashPassword($savePassword, $loginname);
 
 			e107::getMessage()->addDebug("Password Hash: ".$new_data['user_password']);
 		}
@@ -604,10 +772,14 @@ class users_admin_ui extends e_admin_ui
 		{
 			e107::getUserExt()->addFieldTypes($update);
 
-			if(!e107::getDb()->count('user_extended', '(user_extended_id)', "user_extended_id=".intval($new_data['submit_value'])))
+			$extCount = e107::getDb()->createQueryBuilder()->from('user_extended')
+				->where('user_extended_id', (int) $new_data['submit_value'])
+				->count('user_extended_id');
+
+			if(!$extCount)
 			{
 				$update['data']['user_extended_id'] = intval($new_data['submit_value']);
-				if(e107::getDb()->insert('user_extended', $update))
+				if(self::builderInsertArrayForm(e107::getDb(), 'user_extended', $update))
 				{
 					// e107::getMessage()->addSuccess(LAN_UPDATED.': '.ADLAN_78); // not needed see pull/1816
 					e107::getMessage()->addDebug(LAN_UPDATED.': '.ADLAN_78); // let's put it in debug instead
@@ -625,9 +797,7 @@ class users_admin_ui extends e_admin_ui
 			}
 			else
 			{
-				$update['WHERE'] = 'user_extended_id='. intval($new_data['submit_value']);
-
-				if(e107::getDb()->update('user_extended',$update)===false)
+				if(self::builderUpdateArrayForm(e107::getDb(), 'user_extended', $update, 'user_extended_id', (int) $new_data['submit_value'])===false)
 				{
 					e107::getMessage()->addError(LAN_UPDATED_FAILED.': '.ADLAN_78);
 					$error = e107::getDb()->getLastErrorText();
@@ -670,7 +840,9 @@ class users_admin_ui extends e_admin_ui
 		->set('user_sess', e_user_model::randomKey())
 		->save();
 		
-		$sql->delete("banlist"," banlist_ip='{$row['user_ip']}' ");
+		$sql->createQueryBuilder()->delete('banlist')
+			->where('banlist_ip', $row['user_ip'])
+			->execute();
 
 		$vars = array('x'=>$sysuser->getId(), 'y'=> $sysuser->getName(), 'z'=> $sysuser->getValue('email'));
 
@@ -708,7 +880,10 @@ class users_admin_ui extends e_admin_ui
 		}
 		else
 		{
-			if ($sql->update("user","user_ban='1' WHERE user_id='".$userid."' "))
+			if ($sql->createQueryBuilder()->update('user')
+				->set('user_ban', '1')
+				->where('user_id', (int) $userid)
+				->execute())
 			{
 				$vars = array('x'=>$row['user_id'], 'y'=> $row['user_name']);
 				e107::getLog()->add('USET_05',$tp->lanVars(USRLAN_161, $vars), E_LOG_INFORMATIVE);
@@ -720,7 +895,11 @@ class users_admin_ui extends e_admin_ui
 			}
 			else
 			{
-				if($sql->count('user', '(*)', "user_ip = '{$row['user_ip']}' AND user_ban=0 AND user_id <> {$userid}") > 0)
+				if($sql->createQueryBuilder()->from('user')
+					->where('user_ip', $row['user_ip'])
+					->where('user_ban', 0)
+					->where('user_id', '<>', (int) $userid)
+					->count() > 0)
 				{
 					// Other unbanned users have same IP address
 					$mes->addWarning(str_replace("{IP}", $iph->ipDecode($row['user_ip']), USRLAN_136));
@@ -996,7 +1175,10 @@ class users_admin_ui extends e_admin_ui
 
 		if(getperms('0') && !empty($_POST['userid']) && $originUser)
 		{
-			if(!$user = e107::getDb()->retrieve('user', 'user_name, user_admin, user_class, user_perms', 'user_id='.$originUser))
+			if(!$user = e107::getDb()->createQueryBuilder()
+				->select('user_name', 'user_admin', 'user_class', 'user_perms')->from('user')
+				->where('user_id', (int) $originUser)
+				->fetchRow())
 			{
 				e107::getMessage()->addError("Failed to retrieve user permissions.", 'default', true);
 				return;
@@ -1687,7 +1869,7 @@ class users_admin_ui extends e_admin_ui
 		$userMethods->addNonDefaulted($user_data);
 		validatorClass::addFieldTypes($userMethods->userVettingInfo, $allData);
 		
-		$userid = $sql->insert('user', $allData);
+		$userid = self::builderInsertArrayForm($sql, 'user', $allData);
 		if ($userid)
 		{
 			$this->saveExtended(array('submit_value'=>$userid));
@@ -1915,16 +2097,18 @@ class users_admin_ui extends e_admin_ui
 		}
 
 		//Delete existing rank config
-		e107::getDb()->delete('generic', "gen_type = 'user_rank_config'");
-		
+		e107::getDb()->createQueryBuilder()->delete('generic')
+			->where('gen_type', 'user_rank_config')
+			->execute();
+
 		$tmp = array();
 		$tmp['data']['gen_type'] = 'user_rank_config';
 		$tmp['data']['gen_chardata'] = serialize($cfg);
 		$tmp['_FIELD_TYPES']['gen_type'] = 'string';
 		$tmp['_FIELD_TYPES']['gen_chardata'] = 'escape';
-		
+
 		//Add the new rank config
-		e107::getDb()->insert('generic', $tmp);
+		self::builderInsertArrayForm(e107::getDb(), 'generic', $tmp);
 		
 		// save prefs
 		$config->set('ranks_calc', $ranks_calc);
@@ -1933,8 +2117,10 @@ class users_admin_ui extends e_admin_ui
 		$config->resetMessages();
 
 		//Delete existing rank data
-		e107::getDb()->delete('generic',"gen_type = 'user_rank_data'");
-		
+		e107::getDb()->createQueryBuilder()->delete('generic')
+			->where('gen_type', 'user_rank_data')
+			->execute();
+
 		//Add main site admin info
 		$tmp = array();
 		$tmp['_FIELD_TYPES']['gen_datestamp'] = 'int';
@@ -1947,8 +2133,8 @@ class users_admin_ui extends e_admin_ui
 		$tmp['data']['gen_ip'] = $_POST['calc_name']['main_admin'];
 		$tmp['data']['gen_user_id'] = varset($_POST['calc_pfx']['main_admin'],0);
 		$tmp['data']['gen_chardata'] = $_POST['calc_img']['main_admin'];
-		e107::getDb()->insert('generic',$tmp);
-		
+		self::builderInsertArrayForm(e107::getDb(), 'generic', $tmp);
+
 		//Add site admin info
 		unset ($tmp['data']);
 		$tmp['data']['gen_type'] = 'user_rank_data';
@@ -1956,8 +2142,8 @@ class users_admin_ui extends e_admin_ui
 		$tmp['data']['gen_ip'] = $_POST['calc_name']['admin'];
 		$tmp['data']['gen_user_id'] = varset($_POST['calc_pfx']['admin'],0);
 		$tmp['data']['gen_chardata'] = $_POST['calc_img']['admin'];
-		e107::getDb()->insert('generic', $tmp);
-		
+		self::builderInsertArrayForm(e107::getDb(), 'generic', $tmp);
+
 		//Add all current site defined ranks
 		if (isset ($_POST['field_id']))
 		{
@@ -1969,7 +2155,7 @@ class users_admin_ui extends e_admin_ui
 				$tmp['data']['gen_user_id'] = varset($_POST['calc_pfx'][$fid],0);
 				$tmp['data']['gen_chardata'] = varset($_POST['calc_img'][$fid],'');
 				$tmp['data']['gen_intdata'] = varset($_POST['calc_lower'][$fid],'_NULL_');
-				e107::getDb()->insert('generic', $tmp);
+				self::builderInsertArrayForm(e107::getDb(), 'generic', $tmp);
 			}
 		}
 		
@@ -1983,9 +2169,9 @@ class users_admin_ui extends e_admin_ui
 			$tmp['data']['gen_user_id'] = varset($_POST['new_calc_pfx'],0);
 			$tmp['data']['gen_chardata'] = varset($_POST['new_calc_img']);
 			$tmp['data']['gen_intdata'] = varset($_POST['new_calc_lower']);
-			e107::getDb()->insert('generic', $tmp);
+			self::builderInsertArrayForm(e107::getDb(), 'generic', $tmp);
 		}
-		
+
 		e107::getMessage()->addSuccess(LAN_UPDATED); //XXX maybe not needed see pull/1816
 		e107::getCache()->clear_sys('nomd5_user_ranks');
 	}
@@ -1995,7 +2181,9 @@ class users_admin_ui extends e_admin_ui
 		$rankId = (int) key($posted);
 		
 		e107::getCache()->clear_sys('nomd5_user_ranks');
-		if (e107::getDb()->delete('generic',"gen_id='{$rankId}'"))
+		if (e107::getDb()->createQueryBuilder()->delete('generic')
+			->where('gen_id', (int) $rankId)
+			->execute())
 		{
 			e107::getMessage()->addSuccess(LAN_DELETED);
 		}
@@ -2141,14 +2329,18 @@ class users_admin_ui extends e_admin_ui
 			}
             // TODO - move to e_userinfo.php
 			$obj = new convert;
-			$sql->select("chatbox", "*", "cb_ip='$ipd' LIMIT 0,20");
+			$chatRows = $sql->createQueryBuilder()->select('*')->from('chatbox')
+				->where('cb_ip', $ipd)
+				->setFirstResult(0)->setMaxResults(20)
+				->fetchAll();
 			$host = $e107->get_host_name($ipd);
 			$text = USFLAN_3." <b>".$ipd."</b> [ ".USFLAN_4.": $host ]<br />
 				<i><a href=\"banlist.php?".$ipd."\">".USFLAN_5."</a></i>
 
 				<br /><br />";
-			while (list($cb_id, $cb_nick, $cb_message, $cb_datestamp, $cb_blocked, $cb_ip ) = $sql->fetch())
+			foreach ($chatRows as $cbRow)
 			{
+				list($cb_id, $cb_nick, $cb_message, $cb_datestamp, $cb_blocked, $cb_ip ) = $cbRow;
 				$datestamp = $obj->convert_date($cb_datestamp, "short");
 				$post_author_id = substr($cb_nick, 0, strpos($cb_nick, "."));
 				$post_author_name = substr($cb_nick, (strpos($cb_nick, ".")+1));
@@ -2164,9 +2356,13 @@ class users_admin_ui extends e_admin_ui
 
 			$text .= "<hr />";
 
-			$sql->select("comments", "*", "comment_ip='$ipd' LIMIT 0,20");
-			while (list($comment_id, $comment_item_id, $comment_author, $comment_author_email, $comment_datestamp, $comment_comment, $comment_blocked, $comment_ip) = $sql->fetch())
+			$commentRows = $sql->createQueryBuilder()->select('*')->from('comments')
+				->where('comment_ip', $ipd)
+				->setFirstResult(0)->setMaxResults(20)
+				->fetchAll();
+			foreach ($commentRows as $commentRow)
 			{
+				list($comment_id, $comment_item_id, $comment_author, $comment_author_email, $comment_datestamp, $comment_comment, $comment_blocked, $comment_ip) = $commentRow;
 				$datestamp = $obj->convert_date($comment_datestamp, "short");
 				$post_author_id = substr($comment_author, 0, strpos($comment_author, "."));
 				$post_author_name = substr($comment_author, (strpos($comment_author, ".")+1));
@@ -2197,7 +2393,9 @@ class users_admin_ui extends e_admin_ui
 		$age = array(
 			1=> LAN_UI_1_HOUR, 3=> LAN_UI_3_HOURS, 6=> LAN_UI_6_HOURS, 12=> LAN_UI_12_HOURS, 24 => LAN_UI_24_HOURS, 48 => LAN_UI_48_HOURS, 72 => LAN_UI_3_DAYS);
 
-		$count = $sql->count('user','(*)',"user_ban = 2 ");
+		$count = $sql->createQueryBuilder()->from('user')
+			->where('user_ban', 2)
+			->count();
 		$caption = $tp->lanVars(USRLAN_252,$count);
 
 		$text = $frm->open('userMaintenance','post');
@@ -2250,22 +2448,24 @@ class users_admin_ui extends e_admin_ui
 	//	$query = "SELECT u.*, ue.* FROM `#user` AS u LEFT JOIN `#user_extended` AS ue ON ue.user_extended_id = u.user_id WHERE u.user_ban = 2 AND u.user_email != '' AND u.user_join < ".$age." ORDER BY u.user_id DESC";
 
 
-		$query = "SELECT u.* FROM `#user` AS u WHERE u.user_ban = 2 AND u.user_email != '' AND u.user_join < ".$age." ";
+		$qb = $sql->createQueryBuilder();
+		$qb->select('u.*')->from('user', 'u')
+			->where('u.user_ban', 2)
+			->where('u.user_email', '!=', '')
+			->where('u.user_join', '<', (int) $age);
 
 		if(!empty($class))
 		{
-			$query .= " AND FIND_IN_SET( ".intval($class).", u.user_class) ";
+			$qb->where($qb->expr()->findInSet('u.user_class', (int) $class));
 		}
 
-		$query .= " ORDER BY u.user_id DESC";
-
-		$sql->gen($query);
+		$rows = $qb->orderBy('u.user_id', 'DESC')->fetchAll();
 
 		$recipients = array();
 
 		$usr = e107::getUserSession();
 
-		while ($row = $sql->fetch())
+		foreach ($rows as $row)
 		{
 
 			if($resetPasswords === true)
@@ -2274,12 +2474,13 @@ class users_admin_ui extends e_admin_ui
 				$sessKey        = e_user_model::randomKey();
 
 				$updateQry = array(
-					'user_sess'     => $sessKey,
-					'user_password' => $usr->HashPassword($rawPassword, $row['user_loginname']),
-					'WHERE'         => 'user_id = '.$row['user_id']." LIMIT 1"
+					'data' => array(
+						'user_sess'     => $sessKey,
+						'user_password' => $usr->HashPassword($rawPassword, $row['user_loginname']),
+					),
 				);
 
-				if(!$sql2->update('user',$updateQry))
+				if(!self::builderUpdateArrayForm($sql2, 'user', $updateQry, 'user_id', (int) $row['user_id'], 1))
 				{
 
 					e107::getMessage()->addError("Error updating user's password. #".$row['user_id']." : ".$row['user_email']);
@@ -3087,7 +3288,11 @@ class users_admin_form_ui extends e_admin_form_ui
 			$mode = $this->getMode();
 			$action = $this->getAction();
 
-			$existing = e107::getDb()->gen("SELECT gen_id FROM #generic WHERE gen_type='user_rank_data' LIMIT 1 ");
+			$existing = e107::getDb()->createQueryBuilder()
+				->select('gen_id')->from('generic')
+				->where('gen_type', 'user_rank_data')
+				->setMaxResults(1)
+				->fetchOne();
 
 			if($mode == 'ranks' && ($action == 'list') && !$existing)
 			{
@@ -3134,7 +3339,7 @@ class users_admin_form_ui extends e_admin_form_ui
 			$tmp['data']['gen_user_id']     = 1;
 			$tmp['data']['gen_chardata']    = 'English_main_admin.png';
 			$tmp['data']['gen_intdata']     = 0;
-			e107::getDb()->insert('generic',$tmp);
+			users_admin_ui::builderInsertArrayForm(e107::getDb(), 'generic', $tmp);
 			unset ($tmp['data']);
 
 
@@ -3147,7 +3352,7 @@ class users_admin_form_ui extends e_admin_form_ui
 			$tmp['data']['gen_intdata']     = 0;
 
 
-			e107::getDb()->insert('generic', $tmp);
+			users_admin_ui::builderInsertArrayForm(e107::getDb(), 'generic', $tmp);
 
 			for($i=1; $i < 11; $i++)
 			{
@@ -3159,7 +3364,7 @@ class users_admin_form_ui extends e_admin_form_ui
 				$tmp['data']['gen_chardata']    = "lev".$i.".png";
 				$tmp['data']['gen_intdata']     = ($i * 150);
 
-				e107::getDb()->insert('generic', $tmp);
+				users_admin_ui::builderInsertArrayForm(e107::getDb(), 'generic', $tmp);
 			}
 
 

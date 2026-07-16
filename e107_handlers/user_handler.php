@@ -325,18 +325,14 @@ class UserHandler
 
 		$newPasswordHash = $this->HashPassword($password, $user['user_loginname']);
 
-		$update = array(
+		$updated = $sql->createQueryBuilder()
+			->update('user')
+			->set('user_password', $newPasswordHash)
+			->where('user_id', (int) $user['user_id'])
+			->limit(1)
+			->execute();
 
-			'data' => array(
-				'user_password' => $newPasswordHash,
-
-			),
-			'WHERE' => "user_id = ".intval($user['user_id'])." LIMIT 1",
-			'_FIELD_TYPES' => array('user_password' => 'safestr'),
-
-		);
-
-		if($sql->update('user', $update)!==false)
+		if($updated !== false)
 		{
 			return $newPasswordHash;
 		}
@@ -415,13 +411,14 @@ class UserHandler
 		$rawPassword    = $this->generateRandomString(str_repeat('*', rand(8, 12)));
 		$hash           = $this->HashPassword($rawPassword, $loginName);
 
-		$updateQry = array(
-			'data'          => array( 'user_password' => $hash ),
-			'WHERE'         => 'user_id = '.intval($uid)." LIMIT 1",
-			'_FIELD_TYPES'  => array( 'user_password' => 'safestr' 	)
-		);
+		$updated = e107::getDb()->createQueryBuilder()
+			->update('user')
+			->set('user_password', $hash)
+			->where('user_id', (int) $uid)
+			->limit(1)
+			->execute();
 
-		if(e107::getDb()->update('user', $updateQry))
+		if($updated)
 		{
 			if(!empty($options['return']) && $options['return'] == 'array')
 			{
@@ -570,7 +567,7 @@ class UserHandler
 		do
 		{
 			$newname = $this->generateRandomString($pattern, $seed);
-		} while ($ul_sql->select('user','user_id',"`user_loginname`='{$newname}'"));
+		} while ($ul_sql->createQueryBuilder()->from('user')->where('user_loginname', $newname)->count());
 		return $newname;
 	}
 
@@ -959,7 +956,12 @@ Following fields auto-filled in code as required:
 		if (isset($pref['del_unv']) && $pref['del_unv'] && intval($pref['user_reg_veri']) != 2)
 		{
 			$threshold= intval(time() - ($pref['del_unv'] * 60));
-			if(($temp1 = $sql->delete('user', 'user_ban = 2 AND user_join < '.$threshold)) > 0)
+			$temp1 = $sql->createQueryBuilder()
+				->delete('user')
+				->where('user_ban', 2)
+				->where('user_join', '<', $threshold)
+				->execute();
+			if($temp1 > 0)
 			{
 				$force = true;
 			}
@@ -967,7 +969,8 @@ Following fields auto-filled in code as required:
 
 		if ($force) // Remove 'orphaned' extended user field records
 		{
-			$sql->gen("DELETE `#user_extended` FROM `#user_extended` LEFT JOIN `#user` ON `#user_extended`.`user_extended_id` = `#user`.`user_id`
+			// Boundary: builder delete() is single-table and cannot express a multi-table DELETE ... LEFT JOIN, so this stays on the sanctioned bound execute() (SQL fully static, no values, static identifiers - injection-proof).
+			$sql->execute("DELETE `#user_extended` FROM `#user_extended` LEFT JOIN `#user` ON `#user_extended`.`user_extended_id` = `#user`.`user_id`
 					WHERE `#user`.`user_id` IS NULL");
 		}
 
@@ -1104,7 +1107,13 @@ Following fields auto-filled in code as required:
 			{	// Valid user!
 				if ($row['user_ban'] != $newVal)		// We could implement a hierarchy here, so that an important status isn't overridden by a lesser one
 				{	// Only update if needed
-					$db->update('user', '`user_ban` = '.$newVal.', `user_email` = \'\' WHERE `user_id` = '.$row['user_id'].' LIMIT 1');
+					$db->createQueryBuilder()
+						->update('user')
+						->set('user_ban', $newVal)
+						->set('user_email', '')
+						->where('user_id', (int) $row['user_id'])
+						->limit(1)
+						->execute();
 					// Add to user audit log		TODO: Should we log to admin log as well?
 					$adminLog = e107::getLog();
 					$adminLog->user_audit($logEvent, array('user_ban' => $newVal, 'user_email' => $row['user_email']), $row['user_id'], $row['user_loginname']);
@@ -1610,8 +1619,8 @@ class e_user_provider
 
 			// TODO - auto login name, shouldn't be used if system set to user_email login...
 			$userdata['user_loginname'] = $this->getProvider() . $userMethods->generateUserLogin(e107::getPref('predefinedLoginName', '_..#..#..#'));
-			$userdata['user_email'] = $sql->escape($profile->emailVerified ? $profile->emailVerified : $profile->email) ?: '';
-			$userdata['user_name'] = $sql->escape($profile->displayName);
+			$userdata['user_email'] = ($profile->emailVerified ? $profile->emailVerified : $profile->email) ?: '';
+			$userdata['user_name'] = $profile->displayName;
 			$userdata['user_login'] = $userdata['user_name'];
 			$userdata['user_customtitle'] = ''; // not used
 			$userdata['user_password'] = $userMethods->HashPassword($plainPwd, $userdata['user_loginname']); // pwd
@@ -1619,7 +1628,7 @@ class e_user_provider
 			$userdata['user_image'] = $profile->photoURL; // avatar
 			$userdata['user_signature'] = ''; // not used
 			$userdata['user_hideemail'] = 1; // hide it by default
-			$userdata['user_xup'] = $sql->escape($this->userId());
+			$userdata['user_xup'] = $this->userId();
 
 			$pref = e107::pref('core');
 
@@ -1640,9 +1649,20 @@ class e_user_provider
 
 
 			// user_name, user_xup, user_email and user_loginname shouldn't match
-			$insert = (!empty($userdata['user_email'])) ? "OR user_email='" . $userdata['user_email'] . "' " : "";
+			$uidQuery = $sql->createQueryBuilder()
+				->select('user_id')
+				->from('user')
+				->where('user_xup', $this->userId());
+			if (!empty($userdata['user_email']))
+			{
+				$uidQuery->orWhere('user_email', $userdata['user_email']);
+			}
+			$uid = $uidQuery
+				->orWhere('user_loginname', $userdata['user_loginname'])
+				->orWhere('user_name', $userdata['user_name'])
+				->fetchOne();
 
-			if ($uid = $sql->retrieve("user", "user_id", "user_xup='" . $sql->escape($this->userId()) . "' " . $insert . " OR user_loginname='{$userdata['user_loginname']}' OR user_name='{$userdata['user_name']}'"))
+			if ($uid)
 			{
 				// $this->login($redirectUrl); // auto-login
 				$result = e107::getUser()->loginProvider($this->userId());
@@ -1814,7 +1834,7 @@ class e_user_provider
 
         // query DB
         $sql = e107::getDb();
-        $where = array();
+        $xupIds = array();
         $userdata = array();
 
         foreach ($connected as $providerId)
@@ -1831,21 +1851,23 @@ class e_user_provider
 
             if (!$profile->identifier) continue;
 
-            $userdata['user_name'] = $sql->escape($profile->displayName);
+            $userdata['user_name'] = $profile->displayName;
             $userdata['user_image'] = $profile->photoURL; // avatar
             $userdata['user_email'] = $profile->email;
 
-            $id = $providerId . '_' . $profile->identifier;
-            $where[] = "user_xup='" . $sql->escape($id) . "'";
+            $xupIds[] = $providerId . '_' . $profile->identifier;
         }
         // no active session found
-        if (empty($where)) return;
+        if (empty($xupIds)) return;
 
-        $where = implode(' OR ', $where);
-        if ($sql->select('user', 'user_id, user_name, user_email, user_image, user_password, user_xup', $where))
+        $user = $sql->createQueryBuilder()
+            ->select('user_id', 'user_name', 'user_email', 'user_image', 'user_password', 'user_xup')
+            ->from('user')
+            ->whereIn('user_xup', $xupIds)
+            ->fetchRow();
+        if ($user)
         {
 
-            $user = $sql->fetch();
             e107::getUserSession()->makeUserCookie($user);
 
             $spref = e107::pref('social');
@@ -1874,9 +1896,19 @@ class e_user_provider
                     $updateQry['user_email'] = $userdata['user_email'];
                 }
 
+                $updateBuilder = $sql->createQueryBuilder()->update('user');
+                foreach ($updateQry as $updateField => $updateValue)
+                {
+                    $updateBuilder->set($updateField, $updateValue);
+                }
+                $updated = empty($updateQry) ? false : $updateBuilder
+                    ->where('user_id', (int) $user['user_id'])
+                    ->limit(1)
+                    ->execute();
+
                 $updateQry['WHERE'] = "user_id=" . $user['user_id'] . " LIMIT 1";
 
-                if ($sql->update('user', $updateQry) !== false)
+                if ($updated !== false)
                 {
                     $updatedProfile = array_replace($user, $userdata);
                     e107::getEvent()->trigger('user_xup_updated', $updatedProfile);
@@ -2740,15 +2772,15 @@ class e_userperms
 	public static function simulateHasPluginAdminPerms($db, $pluginName, $adminPermissions)
 	{
 		$arg = "0";
-		if($db->select(
-			'plugin',
-			'plugin_id',
-			"plugin_path = :plugin_path LIMIT 1",
-			["plugin_path" => $pluginName]
-		))
+		$pluginId = $db->createQueryBuilder()
+			->select('plugin_id')
+			->from('plugin')
+			->where('plugin_path', $pluginName)
+			->limit(1)
+			->fetchOne();
+		if($pluginId !== null)
 		{
-			$row = $db->fetch();
-			$arg = 'P' . $row['plugin_id'];
+			$arg = 'P' . $pluginId;
 		}
 		return self::simulateHasAdminPerms($arg, $adminPermissions);
 	}

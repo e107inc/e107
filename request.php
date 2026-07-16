@@ -30,9 +30,13 @@ if (!e_QUERY || isset($_POST['userlogin']))
 
 if(!empty($_GET['file'])) // eg. request.php?file=1
 {
+	$sql = e107::getDb();
+	$qb = $sql->createQueryBuilder();
+	$qb->select('media_url')->from('core_media');
+
 	if(is_numeric($_GET['file']))
 	{
-		$query = "media_id= ".intval($_GET['file']);
+		$qb->where('media_id', (int) $_GET['file']);
 	}
 	else // @see $tp->toFile()
 	{
@@ -43,14 +47,14 @@ if(!empty($_GET['file'])) // eg. request.php?file=1
 
 		$fileName = str_replace($srch,array_keys($srch),$_GET['file']);
 
-		$query = "media_url= \"".e107::getParser()->filter($fileName)."\"";
-
+		$qb->where('media_url', e107::getParser()->filter($fileName));
 	}
 
-	$sql = e107::getDb();
-	if ($sql->select('core_media', 'media_url', $query . " AND media_userclass IN (".USERCLASS_LIST.") LIMIT 1 "))
+	$qb->whereIn('media_userclass', array_map('intval', explode(',', USERCLASS_LIST)))->setMaxResults(1);
+
+	$row = $qb->fetchRow();
+	if (!empty($row))
 	{
-		$row = $sql->fetch();
 		// $file = $tp->replaceConstants($row['media_url'],'rel');
 		e107::getFile()->send($row['media_url']);
 	}

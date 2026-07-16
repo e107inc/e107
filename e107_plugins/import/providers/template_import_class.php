@@ -60,81 +60,57 @@ class template_import extends base_import_class
 	function setupQuery($task, $blank_user=false)
 	{
     	if ($this->ourDB == NULL) return false;
-		
+
     	switch ($task)
 		{
 	  		case 'users' :
-	  			$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
-				$result = $this->ourDB->gen($query);
-				if ($result === false) return false;
-			
+	  			if (!$this->runTableQuery('mytable', 'my_id')) return false;
+
 			break;
 
 			case 'userclass' :
-				$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
-				$result = $this->ourDB->gen($query);
-				if ($result === false) return false;
+				if (!$this->runTableQuery('mytable', 'my_id')) return false;
 			break;
-		
+
 			case 'news' :
-				$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
-				$result = $this->ourDB->gen($query);
-				if ($result === false) return false;
+				if (!$this->runTableQuery('mytable', 'my_id')) return false;
 			break;
 
 			case 'newschapter' :
-				$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
-				$result = $this->ourDB->gen($query);
-				if ($result === false) return false;
+				if (!$this->runTableQuery('mytable', 'my_id')) return false;
 			break;
-			
+
 			case 'page' :
-				$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
-				$result = $this->ourDB->gen($query);
-				if ($result === false) return false;
+				if (!$this->runTableQuery('mytable', 'my_id')) return false;
 			break;
 
 			case 'pagechapter' :
-				$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
-				$result = $this->ourDB->gen($query);
-				if ($result === false) return false;
+				if (!$this->runTableQuery('mytable', 'my_id')) return false;
 			break;
 
 			case 'media' :
-				$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
-				$result = $this->ourDB->gen($query);
-				if ($result === false) return false;
+				if (!$this->runTableQuery('mytable', 'my_id')) return false;
 			break;
-				
+
 			case 'links':
-			 	$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
-				$result = $this->ourDB->gen($query);
-				if ($result === false) return false;
+			 	if (!$this->runTableQuery('mytable', 'my_id')) return false;
 			break;
 
 
 		    case 'forum' :
-	    		$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
-				$result = $this->ourDB->gen($query);
-				if ($result === false) return false;
+	    		if (!$this->runTableQuery('mytable', 'my_id')) return false;
 	    	break;
 
 		  	case 'forumthread' :
-	    		$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
-				$result = $this->ourDB->gen($query);
-				if ($result === false) return false;
+	    		if (!$this->runTableQuery('mytable', 'my_id')) return false;
 	    	break;
 
 	  		case 'forumpost' :
-	    		$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
-				$result = $this->ourDB->gen($query);
-				if ($result === false) return false;
+	    		if (!$this->runTableQuery('mytable', 'my_id')) return false;
 	    	break;
 
 		  	case 'forumtrack' :
-	    		$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
-				$result = $this->ourDB->gen($query);
-				if ($result === false) return false;
+	    		if (!$this->runTableQuery('mytable', 'my_id')) return false;
 	    	break;
 
 
@@ -146,6 +122,35 @@ class template_import extends base_import_class
 	$this->currentTask = $task;
 	return TRUE;
   }
+
+
+	/**
+	 * Run a "SELECT * FROM <externalTable> ORDER BY <orderCol>" against the source
+	 * CMS database, leaving the result set ready for {@see getNext()}'s fetch() loop.
+	 *
+	 * The source table lives in the external database connected via database();
+	 * $this->DBPrefix is the already-sanitised `db`.prefix reference built there.
+	 * The table name and order column are static developer-supplied identifiers
+	 * (no request input), so they are validated fail-closed before use; there are
+	 * no values to bind in this query shape.
+	 *
+	 * @param string $table     unprefixed source table name (static identifier)
+	 * @param string $orderCol  ORDER BY column (static identifier)
+	 * @return bool true on success, false on query error or invalid identifier
+	 */
+	private function runTableQuery($table, $orderCol)
+	{
+		if (!preg_match('/^[A-Za-z0-9_]+$/', $table) || !preg_match('/^[A-Za-z0-9_]+$/', $orderCol))
+		{
+			return false;
+		}
+
+		$query  = "SELECT * FROM {$this->DBPrefix}{$table} ORDER BY {$orderCol}";
+		// Permanent cross-database boundary (T4): cross-database `extdb`.prefix SELECT on the external import connection with dynamic identifiers (validated fail-closed above) and no bindable values; the e107 builder resolves only its own prefix/db by design, so it structurally cannot model this query shape.
+		$result = $this->ourDB->execute($query);
+
+		return $result !== false;
+	}
 
 
   //------------------------------------

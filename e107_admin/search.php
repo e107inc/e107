@@ -144,7 +144,10 @@ if (isset($_POST['update_handler']))
 //	$tmp = addslashes(serialize($search_prefs));
 	$tmp = e107::serialize($search_prefs, true);
 
-	$check = $sql ->update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs'");
+	$check = $sql->createQueryBuilder()->update("core")
+		->set('e107_value', $tmp)
+		->where('e107_name', 'search_prefs')
+		->execute();
 	if($check)
 	{
 		$mes->addSuccess(LAN_UPDATED);

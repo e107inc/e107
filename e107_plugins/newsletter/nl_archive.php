@@ -52,12 +52,15 @@ else
 	{
 		$limit_start = intval($_POST['limit_start']);
 	}
-	$nl_count = $sql->count('newsletter', '(*)', "WHERE newsletter_parent='".$action_parent_id."' AND newsletter_flag='1'");
+	$nl_count = $sql->createQueryBuilder()->from('newsletter')
+		->where('newsletter_parent', $action_parent_id)->where('newsletter_flag', '1')
+		->count();
 	if ($nl_count > 0)
 	{
 		// Retrieve parent info
-		$sql->select('newsletter', "*", "newsletter_id='".$action_parent_id."'");
-		if ($row = $sql->fetch()) 
+		$row = $sql->createQueryBuilder()->select('*')->from('newsletter')
+			->where('newsletter_id', $action_parent_id)->fetchRow();
+		if ($row)
 		{
 			$parent_newsletter_title  = $tp->toHTML($row['newsletter_title'],true);
 			$parent_newsletter_text   = $tp->toHTML($row['newsletter_text'],true);
@@ -76,8 +79,12 @@ else
 			{	// This should only be done when action is 'showp'
 				$limit_start = $limit_start + $page_size;
 			}
-			$sql->select('newsletter', '*', "newsletter_parent='".$action_parent_id."' AND newsletter_flag='1' ORDER BY newsletter_datestamp DESC LIMIT ".$limit_start.",".$page_size);
-			while ($row = $sql->fetch()) 
+			$rows = $sql->createQueryBuilder()->select('*')->from('newsletter')
+				->where('newsletter_parent', $action_parent_id)->where('newsletter_flag', '1')
+				->orderBy('newsletter_datestamp', 'DESC')
+				->setFirstResult((int) $limit_start)->setMaxResults((int) $page_size)
+				->fetchAll();
+			foreach ($rows as $row)
 			{
 				$ga = new convert();
 				$newsletter_datestamp = $ga->convert_date($row['newsletter_datestamp'], 'long');
@@ -103,8 +110,12 @@ else
 		}
 		else // Show requested newsletter
 		{
-			$sql->select('newsletter', '*', "newsletter_parent='".$action_parent_id."' AND newsletter_id='".$action_nl_id."' AND newsletter_flag='1'");
-			if ($row = $sql->fetch()) 
+			$row = $sql->createQueryBuilder()->select('*')->from('newsletter')
+				->where('newsletter_parent', $action_parent_id)
+				->where('newsletter_id', $action_nl_id)
+				->where('newsletter_flag', '1')
+				->fetchRow();
+			if ($row)
 			{
 				// Display parent header
 				$text .= "$parent_newsletter_title<br />

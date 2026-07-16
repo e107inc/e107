@@ -19,24 +19,26 @@ class news_related // include plugin-folder in the name.
 {
 
 
-	function compile($tags,$parm=array()) 
+	function compile($tags,$parm=array())
 	{
-		$sql = e107::getDb();
 		$items = array();
-			
-		$tag_regexp = "'(^|,)(".str_replace(",", "|", $tags).")(,|$)'";
-		
-	//	$query = "SELECT * FROM #news WHERE news_id != ".$parm['current']." AND news_class REGEXP '".e_CLASS_REGEXP."'  AND news_meta_keywords REGEXP ".$tag_regexp."  ORDER BY news_datestamp DESC LIMIT ".$parm['limit'];
 
-		$query = "SELECT n.*, nc.category_id, nc.category_name, nc.category_sef 
-		FROM #news AS n
-		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-		WHERE n.news_id != ".$parm['current']." AND n.news_class REGEXP '".e_CLASS_REGEXP."'  AND n.news_meta_keywords REGEXP ".$tag_regexp."  ORDER BY n.news_datestamp DESC LIMIT ".$parm['limit'];
+		$tag_regexp = "(^|,)(".str_replace(",", "|", $tags).")(,|$)";
 
+		$qb = e107::getDb()->createQueryBuilder();
+		$rows = $qb->select('n.*', 'nc.category_id', 'nc.category_name', 'nc.category_sef')
+			->from('news', 'n')
+			->leftJoin('news_category', 'nc', $qb->expr()->compareColumns('n.news_category', 'nc.category_id'))
+			->where('n.news_id', '!=', (int) $parm['current'])
+			->where($qb->expr()->regexp('n.news_class', e_CLASS_REGEXP))
+			->where($qb->expr()->regexp('n.news_meta_keywords', $tag_regexp))
+			->orderBy('n.news_datestamp', 'DESC')
+			->setMaxResults((int) $parm['limit'])
+			->fetchAll();
 
-		if($sql->gen($query))
-		{		
-			while($row = $sql->fetch())
+		if($rows)
+		{
+			foreach($rows as $row)
 			{
 				$thumbs = !empty($row['news_thumbnail']) ?  explode(",",$row['news_thumbnail']) : array();
 
@@ -48,7 +50,7 @@ class news_related // include plugin-folder in the name.
 					'date'			=> e107::getParser()->toDate(varset($row['news_datestamp']), 'short'),
 				);
 			}
-			
+
 			return $items;
 	    }
 		//elseif(ADMIN)

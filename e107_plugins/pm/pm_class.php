@@ -10,7 +10,7 @@
  *
  */
 
-
+use e107\Database\QueryBuilder;
 
 if (!defined('e107_INIT')) { exit; }
 
@@ -59,7 +59,8 @@ class private_message
 		}
 		else
 		{
-			e107::getDb()->gen("UPDATE `#private_msg` SET `pm_read` = {$now} WHERE `pm_id`=".intval($pm_id)); // TODO does this work properly?
+			e107::getDb()->createQueryBuilder()->update('private_msg')
+				->set('pm_read', $now)->where('pm_id', (int) $pm_id)->execute(); // TODO does this work properly?
 			if(strpos($pm_info['pm_option'], '+rr') !== FALSE)
 			{
 				$this->pm_send_receipt($pm_info);
@@ -78,15 +79,22 @@ class private_message
 	 */
 	function pm_get($pmid)
 	{
-		$qry = "
-		SELECT pm.*, ut.user_image AS sent_image, ut.user_name AS sent_name, uf.user_image AS from_image, uf.user_name AS from_name, uf.user_email as from_email, ut.user_email as to_email  FROM #private_msg AS pm
-		LEFT JOIN #user AS ut ON ut.user_id = pm.pm_to
-		LEFT JOIN #user AS uf ON uf.user_id = pm.pm_from
-		WHERE pm.pm_id='".intval($pmid)."'
-		";
-		if (e107::getDb()->gen($qry))
+		$qb = e107::getDb()->createQueryBuilder();
+		$row = $qb
+			->select('pm.*')
+			->selectAs('ut.user_image', 'sent_image')
+			->selectAs('ut.user_name', 'sent_name')
+			->selectAs('uf.user_image', 'from_image')
+			->selectAs('uf.user_name', 'from_name')
+			->selectAs('uf.user_email', 'from_email')
+			->selectAs('ut.user_email', 'to_email')
+			->from('private_msg', 'pm')
+			->leftJoin('user', 'ut', $qb->expr()->compareColumns('ut.user_id', 'pm.pm_to'))
+			->leftJoin('user', 'uf', $qb->expr()->compareColumns('uf.user_id', 'pm.pm_from'))
+			->where('pm.pm_id', (int) $pmid)
+			->fetchRow();
+		if ($row)
 		{
-			$row = e107::getDb()->fetch();
 			return $row;
 		}
 		return FALSE;
@@ -114,6 +122,7 @@ class private_message
 
 		$tp = e107::getParser();
 		$sql = e107::getDb();
+		$pmFieldTypes = $sql->getFieldDefs('private_msg')['_FIELD_TYPES'];	// field-typed user-data writes -> valuesTyped (byte-identical; pitfall #4)
 		$pmsize = 0;
 		$attachlist = '';
 		$pm_options = '';
@@ -215,7 +224,7 @@ class private_message
 					$pmInfo['to_array'] = $targets[$i];			// Should be in exactly the right format
 					$genInfo['gen_intdata'] = count($targets[$i]);
 					$genInfo['gen_chardata'] = e107::serialize($pmInfo,TRUE);
-					$sql->insert('generic', array('data' => $genInfo, '_FIELD_TYPES' => array('gen_chardata' => 'string')));	// Don't want any of the clever sanitising now
+					$sql->createQueryBuilder()->insert('generic')->valuesTyped($genInfo, array('gen_chardata' => 'string'))->execute();	// Don't want any of the clever sanitising now - bound parameters store values verbatim
 				}
 				$toclass .= ' ['.$totalSend.']';
 				$tolist = $targets[count($targets) - 1];		// Send the residue now (means user probably isn't kept hanging around too long if sending lots)
@@ -226,7 +235,9 @@ class private_message
 				set_time_limit(30);
 				$info['pm_to'] = intval($u['user_id']);		// Sending to a single user now
 
-				if($pmid = $sql->insert('private_msg', $info))
+				$pmOk = $sql->createQueryBuilder()->insert('private_msg')->valuesTyped($info, $pmFieldTypes)->execute();
+				$pmid = ($pmOk !== false) ? $sql->lastInsertId() : false;	// guard lastInsertId() on execute() success
+				if($pmid)
 				{
 					$info['pm_id'] = $pmid;
 					e107::getEvent()->trigger('user_pm_sent', $info);
@@ -255,7 +266,9 @@ class private_message
 				$info['pm_to'] = $toclass;		// Class info to put into outbox
 				$info['pm_sent_del'] = 0;
 				$info['pm_read_del'] = 1;
-				if(!$pmid = $sql->insert('private_msg', $info))
+				$pmOk = $sql->createQueryBuilder()->insert('private_msg')->valuesTyped($info, $pmFieldTypes)->execute();
+				$pmid = ($pmOk !== false) ? $sql->lastInsertId() : false;	// guard lastInsertId() on execute() success
+				if(!$pmid)
 				{
 					$ret .= LAN_PM_41.'<br />';
 				}
@@ -269,7 +282,9 @@ class private_message
 
 
 
-			if($pmid = $sql->insert('private_msg', $info))
+			$pmOk = $sql->createQueryBuilder()->insert('private_msg')->valuesTyped($info, $pmFieldTypes)->execute();
+			$pmid = ($pmOk !== false) ? $sql->lastInsertId() : false;	// guard lastInsertId() on execute() success
+			if($pmid)
 			{
 				$info['pm_id'] = $pmid;
 				$info['pm_sent'] = $timestamp;
@@ -305,10 +320,15 @@ class private_message
 		$pmid = (int)$pmid;
 		$ret = '';
 		$newvals = '';
-		if($sql->select('private_msg', '*', 'pm_id = '.$pmid.' AND (pm_from = '.USERID.' OR pm_to = '.USERID.')'))
+		$row = $sql->createQueryBuilder()->select('*')->from('private_msg')
+			->where('pm_id', $pmid)
+			->where(function (QueryBuilder $q)
+			{
+				$q->where('pm_from', (int) USERID)->orWhere('pm_to', (int) USERID);
+			})
+			->fetchRow();
+		if($row)
 		{
-			$row = $sql->fetch();
-
 			// if user is the receiver of the PM
 			if (!$force && ($row['pm_to'] == USERID))
 			{
@@ -346,11 +366,17 @@ class private_message
 				//	$ret .= str_replace(array('--GOOD--', '--FAIL--'), $aCount, LAN_PM_71).'<br />';
 					$ret .= e107::getParser()->lanVars(LAN_PM_71, $aCount);
 				}
-				$sql->delete('private_msg', 'pm_id = '.$pmid);
+				$sql->createQueryBuilder()->delete('private_msg')->where('pm_id', $pmid)->execute();
 			}
 			else
 			{
-				$sql->update('private_msg', $newvals.' WHERE pm_id = '.$pmid);
+				// $newvals is one of 'pm_read_del = 1' / 'pm_sent_del = 1'; bind the value, validate the column fail-closed.
+				$newcol = trim(strtok($newvals, '='));
+				if(in_array($newcol, array('pm_read_del', 'pm_sent_del'), true))
+				{
+					$sql->createQueryBuilder()->update('private_msg')
+						->set($newcol, 1)->where('pm_id', $pmid)->execute();
+				}
 			}
 			return $ret;
 		}
@@ -485,15 +511,10 @@ class private_message
 	function block_get($to = USERID)
 	{
 		$sql = e107::getDb();
-		$ret = array();
 		$to = intval($to);		// Precautionary
-		if ($sql->select('private_msg_block', 'pm_block_from', 'pm_block_to = '.$to))
-		{
-			while($row = $sql->fetch())
-			{
-				$ret[] = $row['pm_block_from'];
-			}
-		}
+		$ret = $sql->createQueryBuilder()->select('pm_block_from')->from('private_msg_block')
+			->where('pm_block_to', $to)
+			->fetchColumn('pm_block_from');
 		return $ret;
 	}
 
@@ -508,15 +529,14 @@ class private_message
 	function block_get_user($to = USERID)
 	{
 		$sql = e107::getDb();
-		$ret = array();
 		$to = intval($to);		// Precautionary
-		if ($sql->gen('SELECT pm.*, u.user_name FROM `#private_msg_block` AS pm LEFT JOIN `#user` AS u ON `pm`.`pm_block_from` = `u`.`user_id` WHERE pm_block_to = '.$to))
-		{
-			while($row = $sql->fetch())
-			{
-				$ret[] = $row;
-			}
-		}
+		$qb = $sql->createQueryBuilder();
+		$ret = $qb
+			->select('pm.*', 'u.user_name')
+			->from('private_msg_block', 'pm')
+			->leftJoin('user', 'u', $qb->expr()->compareColumns('pm.pm_block_from', 'u.user_id'))
+			->where('pm_block_to', $to)
+			->fetchAll();
 		return $ret;
 	}
 
@@ -533,21 +553,25 @@ class private_message
 	{
 		$sql = e107::getDb();
 		$from = intval($from);
-		if($sql->select('user', 'user_name, user_perms', 'user_id = '.$from))
+		$uinfo = $sql->createQueryBuilder()->select('user_name', 'user_perms')->from('user')
+			->where('user_id', $from)->fetchRow();
+		if($uinfo)
 		{
-			$uinfo = $sql->fetch();
 			if (($uinfo['user_perms'] == '0') || ($uinfo['user_perms'] == '0.'))
 			{  // Don't allow block of main admin
 				return LAN_PM_64;
 			}
-		  
-			if(!$sql->count('private_msg_block', '(*)', 'WHERE pm_block_from = '.$from." AND pm_block_to = '".e107::getParser()->toDB($to)."'"))
+
+			if(!$sql->createQueryBuilder()->from('private_msg_block')
+				->where('pm_block_from', $from)
+				->where('pm_block_to', e107::getParser()->toDB($to))
+				->count())
 			{
-				if($sql->insert('private_msg_block', array(
+				if($sql->createQueryBuilder()->insert('private_msg_block')->valuesTyped(array(
 						'pm_block_from' => $from,
 						'pm_block_to' => $to,
 						'pm_block_datestamp' => time()
-					)))
+					), $sql->getFieldDefs('private_msg_block')['_FIELD_TYPES'])->execute() !== false)
 				{
 					return str_replace('{UNAME}', $uinfo['user_name'], LAN_PM_47);
 				}
@@ -581,13 +605,16 @@ class private_message
 	{
 		$sql = e107::getDb();
 		$from = intval($from);
-		if($sql->select('user', 'user_name', 'user_id = '.$from))
+		$uinfo = $sql->createQueryBuilder()->select('user_name')->from('user')
+			->where('user_id', $from)->fetchRow();
+		if($uinfo)
 		{
-			$uinfo = $sql->fetch();
-			if($sql->select('private_msg_block', 'pm_block_id', 'pm_block_from = '.$from.' AND pm_block_to = '.intval($to)))
+			$row = $sql->createQueryBuilder()->select('pm_block_id')->from('private_msg_block')
+				->where('pm_block_from', $from)->where('pm_block_to', (int) $to)->fetchRow();
+			if($row)
 			{
-				$row = $sql->fetch();
-				if($sql->delete('private_msg_block', 'pm_block_id = '.intval($row['pm_block_id'])))
+				if($sql->createQueryBuilder()->delete('private_msg_block')
+					->where('pm_block_id', (int) $row['pm_block_id'])->execute())
 				{
 					return str_replace('{UNAME}', $uinfo['user_name'], LAN_PM_44);
 				}
@@ -619,20 +646,23 @@ class private_message
 	{
 		$sql = e107::getDb();
 
+		$qb = $sql->createQueryBuilder()
+			->select('user_id', 'user_name', 'user_class', 'user_email')->from('user');
+
 		if(is_numeric($var))
 		{
-			$where = "user_id = ".intval($var);
+			$qb->where('user_id', (int) $var);
 		}
 		else
 		{
 		//	$var = strip_if_magic($var);
 			$var = str_replace("'", '&#039;', trim($var));		// Display name uses entities for apostrophe
-			$where = "user_name LIKE '".$sql->escape($var, FALSE)."'";
+			$qb->where($qb->expr()->like('user_name', $var));
 		}
 
-		if($sql->select('user', 'user_id, user_name, user_class, user_email', $where))
+		$row = $qb->fetchRow();
+		if($row)
 		{
-			$row = $sql->fetch();
 			return $row;
 		}
 
@@ -738,15 +768,17 @@ class private_message
 		$limit = intval($limit);
 		if ($limit < 2) { $limit = 10; }
 		$from = intval($from);
+		// T3: SQL_CALC_FOUND_ROWS / foundRows() has no builder equivalent. Values bound;
+		// LIMIT offset/count are int-cast inline (LIMIT cannot take placeholders reliably).
 		$qry = "
 		SELECT SQL_CALC_FOUND_ROWS pm.*, u.user_image, u.user_name FROM `#private_msg` AS pm
 		LEFT JOIN `#user` AS u ON u.user_id = pm.pm_from
-		WHERE pm.pm_to='{$uid}' AND pm.pm_read_del=0
+		WHERE pm.pm_to = ".(int) $uid." AND pm.pm_read_del = 0
 		ORDER BY pm.pm_sent DESC
-		LIMIT ".$from.", ".$limit."
+		LIMIT ".(int) $from.", ".(int) $limit."
 		";
 
-		if($sql->gen($qry))
+		if($sql->execute($qry))
 		{
 			$total_messages = $sql->foundRows(); 		// Total number of messages
 			$ret['messages'] = $sql->db_getList();
@@ -775,15 +807,17 @@ class private_message
 		$limit = intval($limit);
 		if ($limit < 2) { $limit = 10; }
 		$from = intval($from);
+		// T3: SQL_CALC_FOUND_ROWS / total_results has no builder equivalent. Values bound;
+		// LIMIT offset/count are int-cast inline (LIMIT cannot take placeholders reliably).
 		$qry = "
 		SELECT SQL_CALC_FOUND_ROWS pm.*, u.user_image, u.user_name FROM #private_msg AS pm
 		LEFT JOIN #user AS u ON u.user_id = pm.pm_to
-		WHERE pm.pm_from='{$uid}' AND pm.pm_sent_del = '0'
+		WHERE pm.pm_from = ".(int) $uid." AND pm.pm_sent_del = '0'
 
 		ORDER BY pm.pm_sent DESC
-		LIMIT ".$from.', '.$limit;
-		
-		if($sql->gen($qry))
+		LIMIT ".(int) $from.', '.(int) $limit;
+
+		if($sql->execute($qry))
 		{
 			$total_messages = $sql->total_results;		// Total number of messages
 			$ret['messages'] = $sql->db_getList();

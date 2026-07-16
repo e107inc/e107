@@ -78,14 +78,18 @@ $dl->init();
 // Legacy Comment Save.
 if(isset($_POST['commentsubmit']))
 {
-	if(!$sql->select("download", "download_comment", "download_id = '{$id}' "))
+	$dlrow = e107::getDb()->createQueryBuilder()
+		->select('download_comment')->from('download')
+		->where('download_id', $id)
+		->fetchRow();
+
+	if(!$dlrow)
 	{
 		e107::redirect();
 		exit;
 	}
 	else
 	{
-		$dlrow = $sql->fetch();
 		if($dlrow['download_comment'] && (ANON === true || USER === true))
 		{
 			$clean_authorname = $_POST['author_name'];

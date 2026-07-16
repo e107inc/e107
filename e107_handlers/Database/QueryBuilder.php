@@ -367,7 +367,7 @@ class QueryBuilder
 	public function selectRaw($expression)
 	{
 		$this->type = self::TYPE_SELECT;
-		$this->select = array((string) $expression);
+		$this->select = array($this->_vouchedFragment($expression));
 
 		return $this;
 	}
@@ -1250,7 +1250,7 @@ class QueryBuilder
 
 		foreach($args as $column)
 		{
-			$this->groupBy[] = $this->_quoteExpression($column);
+			$this->groupBy[] = $this->_groupByExpression($column);
 		}
 
 		return $this;
@@ -1268,7 +1268,7 @@ class QueryBuilder
 
 		foreach($args as $column)
 		{
-			$this->groupBy[] = $this->_quoteExpression($column);
+			$this->groupBy[] = $this->_groupByExpression($column);
 		}
 
 		return $this;
@@ -1318,7 +1318,7 @@ class QueryBuilder
 	 */
 	public function havingRaw($fragment)
 	{
-		return $this->_appendHaving('AND', (string) $fragment);
+		return $this->_appendHaving('AND', $this->_vouchedFragment($fragment));
 	}
 
 	/**
@@ -1329,7 +1329,7 @@ class QueryBuilder
 	 */
 	public function orHavingRaw($fragment)
 	{
-		return $this->_appendHaving('OR', (string) $fragment);
+		return $this->_appendHaving('OR', $this->_vouchedFragment($fragment));
 	}
 
 	/**
@@ -1783,7 +1783,7 @@ class QueryBuilder
 	 */
 	public function setExpression($column, $expression)
 	{
-		$this->set[$this->quoteColumn($column)] = (string) $expression;
+		$this->set[$this->quoteColumn($column)] = $this->_vouchedFragment($expression);
 
 		return $this;
 	}
@@ -2566,6 +2566,56 @@ class QueryBuilder
 	}
 
 	/**
+	 * Strict GROUP BY term: a SqlFragment (its parameters merged), or a
+	 * validated identifier ('*', 'tbl.*', 'col', 'tbl.col'). Unlike the lenient
+	 * select-expression path this rejects a bare SQL string rather than emitting
+	 * it verbatim, so GROUP BY cannot carry unvouched SQL; wrap developer SQL in
+	 * $qb->raw().
+	 *
+	 * @param SqlFragment|string $expression
+	 * @return string
+	 * @throws InvalidArgumentException on a bare SQL expression.
+	 */
+	private function _groupByExpression($expression)
+	{
+		if($expression instanceof SqlFragment)
+		{
+			$this->mergeParameters($expression->getParameters());
+
+			return $expression->getSql();
+		}
+
+		$expression = trim((string) $expression);
+
+		if($expression === '*')
+		{
+			return '*';
+		}
+
+		if(substr($expression, -2) === '.*')
+		{
+			$quoted = $this->db->quoteIdentifier(substr($expression, 0, -2));
+
+			if($quoted !== false)
+			{
+				return $quoted.'.*';
+			}
+		}
+
+		$quoted = $this->db->quoteIdentifier($expression);
+
+		if($quoted === false)
+		{
+			throw new InvalidArgumentException(
+				'groupBy() will not accept a bare SQL expression: '.$expression
+				.'. Pass a column name or wrap vouched developer SQL in $qb->raw().'
+			);
+		}
+
+		return $quoted;
+	}
+
+	/**
 	 * @param string $type 'INNER' or 'LEFT'
 	 * @param string $table
 	 * @param string $alias
@@ -2578,10 +2628,62 @@ class QueryBuilder
 			'type'      => $type,
 			'table'     => $table,
 			'alias'     => $alias,
-			'condition' => $condition,
+			'condition' => $this->_vouchedCondition($condition),
 		);
 
 		return $this;
+	}
+
+	/**
+	 * Vouch a JOIN ON condition: null for a CROSS JOIN, or a SqlFragment
+	 * (its parameters merged into the query). A bare PHP string is rejected so a
+	 * hand-built ON clause cannot reach the query unvouched; build conditions with
+	 * expr()->compareColumns()/allOf() or wrap developer SQL in $qb->raw().
+	 *
+	 * @param SqlFragment|null $condition
+	 * @return string|null
+	 * @throws InvalidArgumentException on a bare string.
+	 */
+	private function _vouchedCondition($condition)
+	{
+		if($condition === null)
+		{
+			return null;
+		}
+
+		if($condition instanceof SqlFragment)
+		{
+			$this->mergeParameters($condition->getParameters());
+
+			return $condition->getSql();
+		}
+
+		throw new InvalidArgumentException(
+			'JOIN ON condition must be an expr() comparison (e.g. '
+			.'$qb->expr()->compareColumns(...)) or vouched SQL via $qb->raw(); '
+			.'a bare string is not accepted.'
+		);
+	}
+
+	/**
+	 * Resolve a named raw-SQL hatch argument (selectRaw/havingRaw/setExpression).
+	 * The method name is itself the vouch, so a bare string is accepted; an
+	 * SqlFragment is also accepted and its parameters merged so a foreign
+	 * fragment's binds are not silently dropped.
+	 *
+	 * @param SqlFragment|string $fragment
+	 * @return string
+	 */
+	private function _vouchedFragment($fragment)
+	{
+		if($fragment instanceof SqlFragment)
+		{
+			$this->mergeParameters($fragment->getParameters());
+
+			return $fragment->getSql();
+		}
+
+		return (string) $fragment;
 	}
 
 	/**
@@ -2600,7 +2702,7 @@ class QueryBuilder
 			'table'     => null,
 			'expr'      => $this->_subQuery($query),
 			'alias'     => $alias,
-			'condition' => $condition,
+			'condition' => $this->_vouchedCondition($condition),
 		);
 
 		return $this;
@@ -2644,7 +2746,18 @@ class QueryBuilder
 				return $this->_buildArrayPredicate($arg);
 			}
 
-			return (string) $arg;
+			if($arg instanceof SqlFragment)
+			{
+				$this->mergeParameters($arg->getParameters());
+
+				return $arg;
+			}
+
+			throw new InvalidArgumentException(
+				'where()/having() will not accept a bare SQL string. Pass a structured '
+				.'comparison - (column, value) or (column, operator, value) - an array, a '
+				.'closure group, an expr() fragment, or wrap vouched developer SQL in $qb->raw().'
+			);
 		}
 
 		if($n === 2)

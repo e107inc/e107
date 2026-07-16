@@ -100,30 +100,29 @@ class forum_notify extends notify
 		switch($type)
 		{
 			case 'post':
-				$qry = 'SELECT f.forum_name, f.forum_sef, t.thread_id, t.thread_name, p.post_entry 
-						FROM `#forum_post` AS p
-						LEFT JOIN `#forum_thread` AS t ON (t.thread_id = p.post_thread)
-						LEFT JOIN `#forum` AS f ON (f.forum_id = t.thread_forum_id) 
-						WHERE p.post_id = ' . intval($id);
+				$qb = e107::getDb()->createQueryBuilder();
+				$row = $qb->select('f.forum_name', 'f.forum_sef', 't.thread_id', 't.thread_name', 'p.post_entry')
+					->from('forum_post', 'p')
+					->leftJoin('forum_thread', 't', $qb->expr()->compareColumns('t.thread_id', 'p.post_thread'))
+					->leftJoin('forum', 'f', $qb->expr()->compareColumns('f.forum_id', 't.thread_forum_id'))
+					->where('p.post_id', (int) $id)
+					->fetchRow();
 				break;
 
 			case 'thread':
-				$qry = 'SELECT f.forum_name, f.forum_sef, t.thread_id, t.thread_name
-						FROM `#forum_thread` AS t
-						LEFT JOIN `#forum` AS f ON (f.forum_id = t.thread_forum_id) 
-						WHERE t.thread_id = ' . intval($id);
+				$qb = e107::getDb()->createQueryBuilder();
+				$row = $qb->select('f.forum_name', 'f.forum_sef', 't.thread_id', 't.thread_name')
+					->from('forum_thread', 't')
+					->leftJoin('forum', 'f', $qb->expr()->compareColumns('f.forum_id', 't.thread_forum_id'))
+					->where('t.thread_id', (int) $id)
+					->fetchRow();
 				break;
 
 			default:
 				return false;
 		}
 
-		$sql = e107::getDb();
-		if($sql->gen($qry))
-		{
-			return $sql->fetch();
-		}
-		return false;
+		return $row ? $row : false;
 
 	}
 	

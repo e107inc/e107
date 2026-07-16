@@ -10,6 +10,7 @@
  *
 */
 
+use e107\Database\QueryBuilder;
 
 if (!defined('e107_INIT')) { exit; }
 
@@ -263,7 +264,7 @@ class userlogin
 		{
 			// logout any existing user of this account.
 			$mLog = '';
-			if($sql->delete('session', "session_user = ".$user_id))
+			if($sql->createQueryBuilder()->delete('session')->where('session_user', $user_id)->execute())
 			{
 				$mLog = 'Dropped existing user session: #' . $user_id. " ".$username;
 			}
@@ -404,17 +405,19 @@ class userlogin
 			return FALSE;
 		}
 
-		$query = $this->getLookupQuery($username, $forceLogin);
+		$qb = e107::getDb()->createQueryBuilder()->select('*')->from('user');
+		$this->applyLookupCriteria($qb, $username, $forceLogin);
+		$rows = $qb->fetchAll();
 
-		if (e107::getDb()->select('user', '*', $query) !== 1) 	// Handle duplicate emails as well // Invalid user
+		if (count($rows) !== 1) 	// Handle duplicate emails as well // Invalid user
 		{
-			$auditLog = array('reason'=>'query failed to return a result', 'query'=>$query, 'username'=>$username);
+			$auditLog = array('reason'=>'query failed to return a result', 'query'=>$this->getLookupQuery($username, $forceLogin), 'username'=>$username);
 			$log->user_audit(USER_AUDIT_LOGIN, $auditLog, 0, $username);
 			return $this->invalidLogin($username,LOGIN_BAD_USER);
 		}
 
 		// User is in DB here
-		$this->userData = e107::getDb()->fetch();		// Get user info
+		$this->userData = reset($rows);		// Get user info
 		$this->userData['user_perms'] = trim($this->userData['user_perms']);
 		$this->lookEmail = ($username == $this->userData['user_email']) ? 1 : 0;		// Know whether login name or email address used now
 		
@@ -446,6 +449,45 @@ class userlogin
 		// Look up user in DB - even if email addresses allowed, still look up by user name as well - user could have specified email address for their login name
         $query = (!$forceLogin && varset($pref['allowEmailLogin'],0)) ? $qry[$pref['allowEmailLogin']] : $qry[0];
 		return $query;
+	}
+
+
+	/**
+	 * Apply the user-lookup WHERE predicates to a query builder, mirroring the
+	 * selection logic of {@see userlogin::getLookupQuery()} with bound values.
+	 *
+	 * @param QueryBuilder $qb
+	 * @param string $username - as entered
+	 * @param boolean|string $forceLogin - 'provider', or TRUE/FALSE
+	 * @return void
+	 */
+	protected function applyLookupCriteria($qb, $username, $forceLogin)
+	{
+		$pref = e107::getPref();
+
+		$username = preg_replace("/\sOR\s|\=|\#/", "", $username);
+
+		if($forceLogin === 'provider')
+		{
+			$qb->where('user_xup', $username);
+			return;
+		}
+
+		// 0: username only (default), 1: email only, 2: username or email
+		$mode = (!$forceLogin && varset($pref['allowEmailLogin'], 0)) ? (int) $pref['allowEmailLogin'] : 0;
+
+		if($mode === 1)
+		{
+			$qb->where('user_email', $username);
+		}
+		elseif($mode === 2 && strpos($username, '@') !== false)
+		{
+			$qb->where('user_loginname', $username)->orWhere($qb->expr()->eq('user_email', $username));
+		}
+		else
+		{
+			$qb->where('user_loginname', $username);
+		}
 	}
 
 
@@ -674,7 +716,8 @@ class userlogin
 		{
 			if($pref['autoban'] == 1 || $pref['autoban'] == 3) // Flood + Login or Login Only.
 			{
-				$fails = e107::getDb()->count("generic", "(*)", "WHERE gen_ip='{$this->userIP}' AND gen_type='failed_login' ");
+				$fails = e107::getDb()->createQueryBuilder()->from('generic')
+					->where('gen_ip', $this->userIP)->where('gen_type', 'failed_login')->count();
 
 				$failLimit = vartrue($pref['failed_login_limit'],10);
 
@@ -683,7 +726,14 @@ class userlogin
 					$time = time();
 					$description = e107::getParser()->lanVars(LAN_LOGIN_18,$failLimit);
 					e107::getIPHandler()->add_ban(4, $description, $this->userIP, 1);
-					e107::getDb()->insert("generic", "0, 'auto_banned', '".$time."', 0, '{$this->userIP}', '{$extra_text}', '".LAN_LOGIN_20.": ".e107::getParser()->toDB($username).", ".LAN_LOGIN_17);
+					e107::getDb()->createQueryBuilder()->insert('generic')->values(array(
+						'gen_type'      => 'auto_banned',
+						'gen_datestamp' => $time,
+						'gen_user_id'   => 0,
+						'gen_ip'        => $this->userIP,
+						'gen_intdata'   => $extra_text,
+						'gen_chardata'  => LAN_LOGIN_20.": ".e107::getParser()->toDB($username).", ".LAN_LOGIN_17,
+					))->execute();
 					e107::getEvent()->trigger('user_ban_failed_login', array('time'=>$time, 'ip'=>$this->userIP, 'other'=>$extra_text)); 
 				}
 			}
@@ -725,7 +775,14 @@ class userlogin
 	protected function genNote($username, $msg1)
 	{
 		$message = e107::getParser()->toDB($msg1." ::: ".LAN_LOGIN_1.": ".$username);
-		e107::getDb()->insert("generic", "0, 'failed_login', '".time()."', 0, '{$this->userIP}', 0, '{$message}'");
+		e107::getDb()->createQueryBuilder()->insert('generic')->values(array(
+			'gen_type'      => 'failed_login',
+			'gen_datestamp' => time(),
+			'gen_user_id'   => 0,
+			'gen_ip'        => $this->userIP,
+			'gen_intdata'   => 0,
+			'gen_chardata'  => $message,
+		))->execute();
 	}
 
 

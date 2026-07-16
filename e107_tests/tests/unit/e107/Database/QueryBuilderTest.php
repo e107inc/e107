@@ -293,17 +293,36 @@ use ReflectionMethod;
 			);
 		}
 
-		public function testWhereSingleStringStaysRaw()
+		public function testWhereAcceptsVouchedRawFragment()
 		{
 			$qb = $this->makeQb();
 			$qb->select()->from('user')
-				->where('user_id = '.$qb->createNamedParameter(1))
+				->where($qb->raw('user_id = '.$qb->createNamedParameter(1)))
 				->where($qb->expr()->eq('user_class', 2));
 
 			$this->assertSame(
 				'SELECT * FROM `e107_user` WHERE (user_id = :qb1) AND (`user_class` = :qb2)',
 				$qb->getSQL()
 			);
+		}
+
+		public function testWhereRejectsBareString()
+		{
+			$qb = $this->makeQb();
+
+			$this->assertThrowsInvalidArgument(function() use ($qb) {
+				$qb->select()->from('user')->where('user_id = 1');
+			});
+		}
+
+		public function testRawFragmentParametersMergeIntoWhere()
+		{
+			$qb = $this->makeQb();
+			$qb->select()->from('user')
+				->where($qb->raw('user_id = :uid', array('uid' => 7)));
+
+			$this->assertSame('SELECT * FROM `e107_user` WHERE (user_id = :uid)', $qb->getSQL());
+			$this->assertSame(array('uid' => 7), $qb->getParameters());
 		}
 
 		public function testWhereUnknownOperatorThrows()
@@ -458,17 +477,26 @@ use ReflectionMethod;
 		{
 			$qb = $this->makeQb();
 			$qb->select('*')->from('user', 'u')
-				->innerJoin('a', 'ax', 'ax.id = u.id')
-				->rightJoin('b', 'bx', 'bx.id = u.id')
+				->innerJoin('a', 'ax', $qb->expr()->compareColumns('ax.id', 'u.id'))
+				->rightJoin('b', 'bx', $qb->expr()->compareColumns('bx.id', 'u.id'))
 				->crossJoin('c', 'cx');
 
 			$this->assertSame(
 				'SELECT * FROM `e107_user` AS `u`'
-				.' INNER JOIN `e107_a` AS `ax` ON ax.id = u.id'
-				.' RIGHT JOIN `e107_b` AS `bx` ON bx.id = u.id'
+				.' INNER JOIN `e107_a` AS `ax` ON `ax`.`id` = `u`.`id`'
+				.' RIGHT JOIN `e107_b` AS `bx` ON `bx`.`id` = `u`.`id`'
 				.' CROSS JOIN `e107_c` AS `cx`',
 				$qb->getSQL()
 			);
+		}
+
+		public function testJoinRejectsBareStringCondition()
+		{
+			$qb = $this->makeQb();
+
+			$this->assertThrowsInvalidArgument(function() use ($qb) {
+				$qb->select('*')->from('user', 'u')->innerJoin('a', 'ax', 'ax.id = u.id');
+			});
 		}
 
 		public function testSubqueries()
@@ -520,11 +548,11 @@ use ReflectionMethod;
 				->joinSub(function (QueryBuilder $s)
 				{
 					$s->select('user_id')->from('user_extended');
-				}, 'ue', 'ue.user_id = u.user_id');
+				}, 'ue', $qb->expr()->compareColumns('ue.user_id', 'u.user_id'));
 			$this->assertSame(
 				'SELECT `user_id`, (SELECT COUNT(*) FROM `e107_user_extended` WHERE (`active` = :qb1)) AS `ext`'
 				.' FROM `e107_user` AS `u`'
-				.' INNER JOIN (SELECT `user_id` FROM `e107_user_extended`) AS `ue` ON ue.user_id = u.user_id',
+				.' INNER JOIN (SELECT `user_id` FROM `e107_user_extended`) AS `ue` ON `ue`.`user_id` = `u`.`user_id`',
 				$qb->getSQL()
 			);
 
@@ -1036,13 +1064,13 @@ use ReflectionMethod;
 			$qb = $this->makeQb();
 			$qb->select('u.user_id', 'ue.user_extended_id')
 				->from('user', 'u')
-				->leftJoin('user_extended', 'ue', 'ue.user_extended_id = u.user_id')
-				->join('userclass_classes', 'uc', 'uc.userclass_id = u.user_class');
+				->leftJoin('user_extended', 'ue', $qb->expr()->compareColumns('ue.user_extended_id', 'u.user_id'))
+				->join('userclass_classes', 'uc', $qb->expr()->compareColumns('uc.userclass_id', 'u.user_class'));
 
 			$this->assertSame(
 				'SELECT `u`.`user_id`, `ue`.`user_extended_id` FROM `e107_user` AS `u`'
-				.' LEFT JOIN `e107_user_extended` AS `ue` ON ue.user_extended_id = u.user_id'
-				.' INNER JOIN `e107_userclass_classes` AS `uc` ON uc.userclass_id = u.user_class',
+				.' LEFT JOIN `e107_user_extended` AS `ue` ON `ue`.`user_extended_id` = `u`.`user_id`'
+				.' INNER JOIN `e107_userclass_classes` AS `uc` ON `uc`.`userclass_id` = `u`.`user_class`',
 				$qb->getSQL()
 			);
 		}
@@ -1102,13 +1130,31 @@ use ReflectionMethod;
 			$qb = $this->makeQb();
 			$qb->select('user_class', 'COUNT(*) AS cnt')->from('user')
 				->groupBy('user_class')
-				->having('COUNT(*) > '.$qb->createNamedParameter(1));
+				->having($qb->raw('COUNT(*) > '.$qb->createNamedParameter(1)));
 
 			$this->assertSame(
 				'SELECT `user_class`, COUNT(*) AS cnt FROM `e107_user` GROUP BY `user_class` HAVING (COUNT(*) > :qb1)',
 				$qb->getSQL()
 			);
 			$this->assertSame(array('qb1' => 1), $qb->getParameters());
+		}
+
+		public function testHavingRejectsBareString()
+		{
+			$qb = $this->makeQb();
+
+			$this->assertThrowsInvalidArgument(function() use ($qb) {
+				$qb->select('user_class')->from('user')->groupBy('user_class')->having('COUNT(*) > 1');
+			});
+		}
+
+		public function testGroupByRejectsBareExpression()
+		{
+			$qb = $this->makeQb();
+
+			$this->assertThrowsInvalidArgument(function() use ($qb) {
+				$qb->select('*')->from('user')->groupBy('COUNT(*)');
+			});
 		}
 
 		public function testOrderByTwoArgumentForm()

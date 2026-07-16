@@ -420,11 +420,16 @@ class linkwords_parse
 		{
 			$link_sql = e107::getDb('link_sql');
 
-			if($link_sql->select("linkwords", "*", "linkword_active!=1"))
+			$rows = $link_sql->createQueryBuilder()
+				->select('*')->from('linkwords')
+				->where('linkword_active', '!=', 1)
+				->fetchAll();
+
+			if($rows)
 			{
 				$this->lw_enabled = true;
 
-				while($row = $link_sql->fetch())
+				foreach($rows as $row)
 				{
 
 					$lw = $tp->ustrtolower($row['linkword_word']);                    // It was trimmed when saved		*utf

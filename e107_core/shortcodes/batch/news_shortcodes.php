@@ -159,14 +159,22 @@ class news_shortcodes extends e_shortcode
 
 		if (vartrue($pref['multilanguage']))
 		{	// Can have multilanguage news table, monlingual comment table. If the comment table is multilingual, it'll only count entries in the current language
-			$news_item['news_comment_total'] = $sql->count("comments", "(*)", "WHERE comment_item_id='".$news_item['news_id']."' AND comment_type='0' ");
+			$news_item['news_comment_total'] = $sql->createQueryBuilder()->from('comments')
+				->where('comment_item_id', $news_item['news_id'])
+				->where('comment_type', '0')
+				->count();
 		}
 
 		//XXX - ??? - another query? We should cache it in news table.
 		if ($pref['comments_icon'] && $news_item['news_comment_total'])
 		{
-			$sql->select('comments', 'comment_datestamp', "comment_item_id='".intval($news_item['news_id'])."' AND comment_type='0' ORDER BY comment_datestamp DESC LIMIT 0,1");
-			list($comments['comment_datestamp']) = $sql->fetch();
+			$comments['comment_datestamp'] = $sql->createQueryBuilder()
+				->select('comment_datestamp')->from('comments')
+				->where('comment_item_id', (int) $news_item['news_id'])
+				->where('comment_type', '0')
+				->orderBy('comment_datestamp', 'DESC')
+				->setFirstResult(0)->setMaxResults(1)
+				->fetchOne();
 			$latest_comment = $comments['comment_datestamp'];
 			if ($latest_comment > USERLV )
 			{
@@ -1318,25 +1326,40 @@ class news_shortcodes extends e_shortcode
 	 */
 	private function getNavQuery($type)
 	{
-		$nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
+		$nobody_regexp = "(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)";
 
 		$var = $this->getScVar('news_item');
 
-		$dir = ($type === 'next') ? '>=' : '<=';
-		$sort = ($type === 'next') ? 'ASC' : 'DESC';
+		$db = e107::getDb();
 
-		$query = "
+		// The comparison operator and sort direction are chosen from a fixed
+		// ternary (no user input) and inlined as static keywords. Every value is
+		// bound; the builder cannot express SQL_CALC_FOUND_ROWS, so this is a
+		// bound execute() (T3) rather than a query-builder chain.
+		$ok = $db->execute("
 				SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon,
-				nc.category_meta_keywords, nc.category_meta_description, nc.category_template 
+				nc.category_meta_keywords, nc.category_meta_description, nc.category_template
 				FROM #news AS n
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
 				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-				WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
-				AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
+				WHERE n.news_class REGEXP :classRegexp AND NOT (n.news_class REGEXP :nobodyRegexp)
+				AND n.news_start < :now1 AND (n.news_end=0 || n.news_end > :now2)
 				AND (FIND_IN_SET('0', n.news_render_type) OR FIND_IN_SET(1, n.news_render_type))
-				AND n.news_datestamp ".$dir . (int) $var['news_datestamp']. " AND n.news_id != ".(int) $var['news_id']." ORDER by n.news_datestamp ".$sort." LIMIT 1";
+				AND n.news_datestamp ".(($type === 'next') ? '>=' : '<=')." :newsDatestamp AND n.news_id != :newsId ORDER by n.news_datestamp ".(($type === 'next') ? 'ASC' : 'DESC')." LIMIT 1", array(
+			'classRegexp'   => e_CLASS_REGEXP,
+			'nobodyRegexp'  => $nobody_regexp,
+			'now1'          => time(),
+			'now2'          => time(),
+			'newsDatestamp' => (int) $var['news_datestamp'],
+			'newsId'        => (int) $var['news_id'],
+		));
 
-		return e107::getDb()->retrieve($query);
+		if($ok === false)
+		{
+			return array();
+		}
+
+		return $db->fetch();
 	}
 
 }

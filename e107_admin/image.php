@@ -11,6 +11,8 @@
  *
 */
 
+use e107\Database\SqlFragment;
+
 if(!empty($_GET['action']) && $_GET['action'] === 'dialog')
 {
 	define('e_MINIMAL',true);
@@ -240,14 +242,18 @@ class media_cat_ui extends e_admin_ui
 		}
 
 		$sql = e107::getDb();
-		
-	
-		if($sql->gen("SELECT media_cat_owner,  MAX(CAST(SUBSTRING_INDEX(media_cat_category, '_', -1 ) AS UNSIGNED)) as maxnum, count(media_cat_id) as number FROM `#core_media_cat`  GROUP BY media_cat_owner"))
+
+
+		$rows = $sql->createQueryBuilder()
+			->select('media_cat_owner')->addSelect(SqlFragment::raw("MAX(CAST(SUBSTRING_INDEX(media_cat_category, '_', -1 ) AS UNSIGNED)) as maxnum"))->selectAggregate('COUNT', 'media_cat_id', 'number')
+			->from('core_media_cat')
+			->groupBy('media_cat_owner')
+			->fetchAll();
+		foreach($rows as $row)
 		{
-			while($row = $sql->fetch())
 			{
 				$this->ownerCount[$row['media_cat_owner']] = $row['number'];
-				$own = $row['media_cat_owner']; 
+				$own = $row['media_cat_owner'];
 				if(!in_array($own,$this->restricted))
 				{		
 					$this->fields['media_cat_owner']['writeParms'][$own] = $own;	
@@ -438,9 +444,17 @@ class media_form_ui extends e_admin_form_ui
 		
 		//TODO GIF and PNG rotation. 
 		
-		if($sql->select('core_media', 'media_url', 'media_id IN (' .$ids.") AND media_type = 'image/jpeg' "))
+		$idList = array_map('intval', explode(',', $ids));
+
+		$rows = $sql->createQueryBuilder()
+			->select('media_url')->from('core_media')
+			->whereIn('media_id', $idList)
+			->where('media_type', 'image/jpeg')
+			->fetchAll();
+
+		if($rows)
 		{
-			while($row = $sql->fetch())
+			foreach($rows as $row)
 			{
 				$original = $tp->replaceConstants($row['media_url']);
 
@@ -509,29 +523,42 @@ class media_form_ui extends e_admin_form_ui
 		$img_import_w = 2816;
 		$img_import_h = 2112; 
 			
-		if($sql->select('core_media', 'media_id,media_url', 'media_id IN (' .$ids.") AND media_type = 'image/jpeg' "))
+		$idList = array_map('intval', explode(',', $ids));
+
+		$rows = $sql->createQueryBuilder()
+			->select('media_id', 'media_url')->from('core_media')
+			->whereIn('media_id', $idList)
+			->where('media_type', 'image/jpeg')
+			->fetchAll();
+
+		if($rows)
 		{
-			while($row = $sql->fetch())
+			foreach($rows as $row)
 			{
 				$path = $tp->replaceConstants($row['media_url']);
 
 				$mes->addDebug('Attempting to resize: ' .basename($path));
-				
+
 				if($this->resizeImage($path,$img_import_w,$img_import_h))
 				{
-					
+
 					$info = $fl->getFileInfo($path);
 					$mes->addSuccess(LAN_IMA_004. ': ' .basename($path));
 					$mes->addSuccess(print_a($info,true));
 					$dim = (int) $info['img-width'] . ' x ' . (int) $info['img-height'];
-					$sql2->update('core_media',"media_dimensions = '".$dim."', media_size = '". (int) $info['fsize'] ."' WHERE media_id = ". (int) $row['media_id'] . '');
+					$mediaDefs = $sql2->getFieldDefs('core_media')['_FIELD_TYPES'];
+					$sql2->createQueryBuilder()->update('core_media')
+						->setTyped('media_dimensions', $dim, $mediaDefs['media_dimensions'])
+						->setTyped('media_size', (int) $info['fsize'], $mediaDefs['media_size'])
+						->where('media_id', (int) $row['media_id'])
+						->execute();
 				}
-				else 
+				else
 				{
 					$mes->addError(LAN_IMA_004. ': ' .basename($path));
-				}	
+				}
 			}
-		}		
+		}
 		
 		
 		
@@ -543,9 +570,24 @@ class media_form_ui extends e_admin_form_ui
 		$tp = e107::getParser();
 		$mm = e107::getMedia();
 
-		$insert = empty($mode) ? 'media_id IN (' .$ids. ') AND ' : ' media_size > 225000 AND ';
+		$qb = $sql->createQueryBuilder()
+			->select('media_id', 'media_url')->from('core_media');
 
-		$data = $sql->retrieve('core_media', 'media_id,media_url', $insert."(media_type = 'image/png' OR media_type = 'image/gif') ", true, true);
+		if(empty($mode))
+		{
+			$qb->whereIn('media_id', array_map('intval', explode(',', $ids)));
+		}
+		else
+		{
+			$qb->where('media_size', '>', 225000);
+		}
+
+		$qb->where(static function($q)
+		{
+			$q->where('media_type', 'image/png')->orWhere('media_type', 'image/gif');
+		});
+
+		$data = $qb->fetchAll();
 
 		if(empty($data))
 		{
@@ -561,16 +603,15 @@ class media_form_ui extends e_admin_form_ui
 				$url = $tp->createConstants($jpegFile, 1);
 				$size = filesize($jpegFile);
 
-				$update = array (
-					'media_size'    => $size,
-					'media_url'     => $url,
-					'media_type'    => 'image/jpeg',
-					'WHERE'         => 'media_id = '.$row['media_id']
-				);
-
 				$message = basename($path).SEP.basename($url);
 
-				if($sql->update('core_media',$update))
+				$mediaDefs = $sql->getFieldDefs('core_media')['_FIELD_TYPES'];
+				if($sql->createQueryBuilder()->update('core_media')
+					->setTyped('media_size', $size, $mediaDefs['media_size'])
+					->setTyped('media_url', $url, $mediaDefs['media_url'])
+					->setTyped('media_type', 'image/jpeg', $mediaDefs['media_type'])
+					->where('media_id', (int) $row['media_id'])
+					->execute())
 				{
 					e107::getMessage()->addSuccess($message);
 				}
@@ -994,8 +1035,12 @@ class media_admin_ui extends e_admin_ui
 
 		$sql = e107::getDb();
 	//	$sql->gen("SELECT media_cat_title, media_title_nick FROM #core_media as m LEFT JOIN #core_media_cat as c ON m.media_category = c.media_cat_owner GROUP BY m.media_category");
-		$sql->gen('SELECT media_cat_title, media_cat_owner, media_cat_category FROM `#core_media_cat` WHERE media_cat_title !="" ');
-		while($row = $sql->fetch())
+		$catRows = $sql->createQueryBuilder()
+			->select('media_cat_title', 'media_cat_owner', 'media_cat_category')
+			->from('core_media_cat')
+			->where('media_cat_title', '!=', '')
+			->fetchAll();
+		foreach($catRows as $row)
 		{
 			$cat = $row['media_cat_category'];
 			$owner = $row['media_cat_owner'];
@@ -1006,9 +1051,13 @@ class media_admin_ui extends e_admin_ui
 		}
 
 		asort($this->cats);
-		
-		
-		$tmp = $sql->retrieve('core_media','media_type','media_type !="" GROUP BY media_type',true); 
+
+
+		$tmp = $sql->createQueryBuilder()
+			->select('media_type')->from('core_media')
+			->where('media_type', '!=', '')
+			->groupBy('media_type')
+			->fetchAll();
 		$mimeTypes = array(); 
 		foreach($tmp as $val)
 		{
@@ -2888,13 +2937,21 @@ class media_admin_ui extends e_admin_ui
 				//Reset all deleted user avatars with one query
 				if(!empty($tmp))
 				{
-					$sql->update('user', "user_image='' WHERE user_id IN (".implode(',', $tmp). ')');
+					$userDefs = $sql->getFieldDefs('user')['_FIELD_TYPES'];
+					$sql->createQueryBuilder()->update('user')
+						->setTyped('user_image', '', $userDefs['user_image'])
+						->whereIn('user_id', $tmp)
+						->execute();
 					$mes->addDebug("user_image='' WHERE user_id IN (".implode(',', $tmp). ')');
 				}
 				//Reset all deleted user photos with one query
 				if(!empty($tmp1))
 				{
-					$sql->update('user', "user_sess='' WHERE user_id IN (".implode(',', $tmp1). ')');
+					$userDefs = $sql->getFieldDefs('user')['_FIELD_TYPES'];
+					$sql->createQueryBuilder()->update('user')
+						->setTyped('user_sess', '', $userDefs['user_sess'])
+						->whereIn('user_id', $tmp1)
+						->execute();
 					$mes->addDebug("user_sess='' WHERE user_id IN (".implode(',', $tmp1). ')');
 				}
 				unset($tmp, $tmp1);
@@ -2965,7 +3022,10 @@ class media_admin_ui extends e_admin_ui
 		else
 		{
 
-			$tmp = $sql->retrieve('user','user_id,user_image','user_image !="" ', true);
+			$tmp = $sql->createQueryBuilder()
+				->select('user_id', 'user_image')->from('user')
+				->where('user_image', '!=', '')
+				->fetchAll();
 			$imageUsed = array();
 
 			foreach($tmp as $val)
@@ -3281,7 +3341,10 @@ class media_admin_ui extends e_admin_ui
 		$f = e107::getFile()->getFileInfo($oldpath,TRUE);
 		
 		$mes->addDebug('checkDupe(): newpath=' .$newpath. '<br />oldpath=' .$oldpath. '<br />' .print_r($newpath,TRUE));
-		if(file_exists($newpath) || e107::getDb()->select('core_media', '*',"media_url = '".$tp->createConstants($newpath,'rel')."' LIMIT 1") )
+		if(file_exists($newpath) || e107::getDb()->createQueryBuilder()
+			->from('core_media')
+			->where('media_url', $tp->createConstants($newpath,'rel'))
+			->count() )
 		{
 			$mes->addWarning($newpath. ' already exists.');
 			$file = $f['pathinfo']['filename']. '_.' .$f['pathinfo']['extension'];
@@ -3687,7 +3750,7 @@ class media_admin_ui extends e_admin_ui
 					);
 
 
-				if($sql->insert('core_media',$insert))
+				if($sql->createQueryBuilder()->insert('core_media')->valuesTyped($insert, $sql->getFieldDefs('core_media')['_FIELD_TYPES'])->execute())
 				{
 					$mes->add(IMALAN_128. ' ' .$f['fname'], E_MESSAGE_SUCCESS);
 					$this->deleteFileXml($f['fname']);
@@ -3841,7 +3904,11 @@ if (isset($_POST['submit_show_deleteall']))
 		{
 			$image_name = basename($image_name);
 			$image_todb = $tp->toDB($image_name);
-			if (!$sql->count('user', '(*)', "WHERE user_image='-upload-{$image_todb}' OR user_sess='{$image_todb}'")) {
+			$usageCount = $sql->createQueryBuilder()->from('user')
+				->where('user_image', '-upload-'.$image_todb)
+				->orWhere('user_sess', $image_todb)
+				->count();
+			if (!$usageCount) {
 				unlink(e_AVATAR_UPLOAD.$image_name);
 				$imgList .= '[!br!]'.$image_name;
 				$count++;
@@ -3873,9 +3940,13 @@ if (isset($_POST['submit_avdelete_multi']))
 	$multiaction = $tp->filter($_POST['multiaction'], 'int');
 
 	//sql queries significant reduced
-	if(!empty($multiaction) && $sql->select('user', 'user_id, user_name, user_image', 'user_id IN (' .implode(',', $multiaction). ')'))
+	$search_users = !empty($multiaction) ? $sql->createQueryBuilder()
+		->select('user_id', 'user_name', 'user_image')->from('user')
+		->whereIn('user_id', $multiaction)
+		->fetchAll('user_id') : array();
+
+	if(!empty($multiaction) && !empty($search_users))
 	{
-		$search_users = $sql->db_getList('ALL', FALSE, FALSE, 'user_id');
 		foreach($multiaction as $uid)
 		{
 			if (vartrue($search_users[$uid]))
@@ -3895,7 +3966,11 @@ if (isset($_POST['submit_avdelete_multi']))
 		//sql queries significant reduced
 		if(!empty($uids))
 		{
-			$sql->update('user', "user_image='' WHERE user_id IN (".implode(',', $uids). ')');
+			$userDefs = $sql->getFieldDefs('user')['_FIELD_TYPES'];
+			$sql->createQueryBuilder()->update('user')
+				->setTyped('user_image', '', $userDefs['user_image'])
+				->whereIn('user_id', $uids)
+				->execute();
 		}
 
 		$mes->addSuccess(IMALAN_51.'<strong>'.implode(', ', $tmp).'</strong> '.IMALAN_28);
@@ -3950,13 +4025,17 @@ if (isset($_POST['check_avatar_sizes']))
 	//
 	// Loop through avatar field for every user
 	//
-	$iUserCount = $sql->count('user');
+	$iUserCount = $sql->createQueryBuilder()->from('user')->count();
 	$found = false;
 	$allowedWidth = (int) $pref['im_width'];
 	$allowedHeight = (int) $pref['im_width'];
-	if ($sql->select('user', '*', "user_image!=''")) {
+	$avatarUsers = $sql->createQueryBuilder()
+		->select('*')->from('user')
+		->where('user_image', '!=', '')
+		->fetchEach();
+	if ($avatarUsers) {
 
-		while ($row = $sql->fetch())
+		foreach ($avatarUsers as $row)
 		{
 			//Check size
 			$avname=avatar($row['user_image']);

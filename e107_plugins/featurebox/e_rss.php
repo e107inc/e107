@@ -32,13 +32,19 @@ class featurebox_rss // plugin-folder + '_rss'
 	function data($parms='')
 	{
 		$sql = e107::getDb();
-		
+
 		$rss = array();
 		$i=0;
-					
-		if($items = $sql->select('featurebox', "*", "fb_class = '0' LIMIT 0,".$parms['limit']))		
-		{			
-			while($row = $sql->fetch())
+
+		$rows = $sql->createQueryBuilder()
+			->select('*')->from('featurebox')
+			->where('fb_class', '0')
+			->setFirstResult(0)->setMaxResults((int) $parms['limit'])
+			->fetchAll();
+
+		if($rows)
+		{
+			foreach($rows as $row)
 			{
 				$rss[$i]['author']			= '';
 				$rss[$i]['author_email']	= '';

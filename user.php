@@ -53,15 +53,18 @@ if(e_AJAX_REQUEST)
 		$q = $tp->filter($_POST['q']);
 		$l = vartrue($_POST['l']) ? intval($_POST['l']) : 10;
 
-		$where = "user_name LIKE '". $q."%' ";
-
 		//TODO FIXME Filter by userclass.  - see $frm->userlist().
 
+		$qb = $db->createQueryBuilder();
+		$rows = $qb->select('user_id', 'user_name')->from('user')
+			->where($qb->expr()->startsWith('user_name', $q))
+			->orderBy('user_name', 'ASC')->setMaxResults((int) $l)
+			->fetchAll();
 
-		if($db->select("user", "user_id,user_name", $where. " ORDER BY user_name LIMIT " . $l))
+		if($rows)
 		{
 			$data = array();
-			while($row = $db->fetch())
+			foreach($rows as $row)
 			{
 				$data[] = array(
 					'value' => $row['user_id'],
@@ -92,10 +95,11 @@ if (isset($_POST['delp']))
 	}
 	if (USERID == $tmp[1] || (ADMIN && getperms("4")))
 	{
-		$sql->select("user", "user_sess", "user_id='". USERID."'");
-		$row = $sql->fetch();
+		$row = $sql->createQueryBuilder()->select('user_sess')->from('user')
+			->where('user_id', USERID)->fetchRow();
 		@unlink(e_AVATAR_UPLOAD.$row['user_sess']);
-		$sql->update("user", "user_sess='' WHERE user_id=".intval($tmp[1]));
+		$sql->createQueryBuilder()->update('user')
+			->set('user_sess', '')->where('user_id', (int) $tmp[1])->execute();
 		e107::redirect(e_SELF."?id.".$tmp[1]);
 		exit;
 	}
@@ -183,7 +187,8 @@ if (vartrue($records) > 50)
 
 if (isset($id))
 {
-	$user_exists = $sql->count("user","(*)", "WHERE user_id = ".$id."");
+	$user_exists = $sql->createQueryBuilder()->from('user')
+		->where('user_id', (int) $id)->count();
 	if($id == 0 || $user_exists == false)
 	{
 		$text = "<div style='text-align:center'>".LAN_USER_49." ".SITENAME."</div>";
@@ -237,10 +242,18 @@ if (isset($id))
 
 	// --------------------- List Users ------------------------  //TODO Put all of this into a class.
 
-	$users_total=  $sql->count("user","(*)", "WHERE user_ban = 0");
-	$query = "SELECT u.*, ue.* FROM `#user` AS u LEFT JOIN `#user_extended` AS ue ON u.user_id = ue.user_extended_id WHERE u.user_ban = 0 ORDER BY u.user_id ".$order." LIMIT ".intval($from).",".intval($records);
+	$users_total = $sql->createQueryBuilder()->from('user')
+		->where('user_ban', 0)->count();
 
-	if (!$data = $sql->retrieve($query,true))
+	$qb = $sql->createQueryBuilder();
+	$data = $qb->select('u.*', 'ue.*')->from('user', 'u')
+		->leftJoin('user_extended', 'ue', $qb->expr()->compareColumns('u.user_id', 'ue.user_extended_id'))
+		->where('u.user_ban', 0)
+		->orderBy('u.user_id', $order)
+		->setFirstResult((int) $from)->setMaxResults((int) $records)
+		->fetchAll();
+
+	if (!$data)
 
 	// if (!$sql->select("user", "*", "user_ban = 0 ORDER BY user_id $order LIMIT $from,$records"))
 	{

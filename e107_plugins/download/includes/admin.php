@@ -10,6 +10,8 @@
  *
 */
 
+use e107\Database\SqlFragment;
+
 if (!defined('e107_INIT')){ exit; } 
 
 class plugin_download_admin extends e_admin_dispatcher
@@ -189,12 +191,11 @@ class download_cat_ui extends e_admin_ui
 
 
 		$sql = e107::getDb();
-		$qry = $this->getParentChildQry(true);
-		$sql->gen($qry);
+		$rows = $sql->createQueryBuilder()->select('*')->from('download_category')->fetchAll();
 
 		$this->downloadCats[0] = LAN_NONE;
 
-		while($row = $sql->fetch())
+		foreach($rows as $row)
 		{
 			$num = (int) $row['_depth'] - 1;
 
@@ -465,14 +466,12 @@ $columnInfo = array(
 			
 			
 			$categories = array();
-			if(e107::getDb()->select('download_category'))
+			//$categories[0] = LAN_SELECT;
+			$catRows = e107::getDb()->createQueryBuilder()->select('*')->from('download_category')->fetchAll();
+			foreach($catRows as $row)
 			{
-				//$categories[0] = LAN_SELECT;
-				while ($row = e107::getDb()->fetch())
-				{
-					$id = $row['download_category_id'];
-					$categories[$id] = $row['download_category_name'];
-				}
+				$id = $row['download_category_id'];
+				$categories[$id] = $row['download_category_name'];
 			}
 	
 			$this->fields['download_category']['writeParms'] 		= $categories;
@@ -524,10 +523,10 @@ $columnInfo = array(
 			
 			$sql = e107::getDb();
 			$count = array();
-			
-            if ($sql->gen("SELECT * FROM `#download` ORDER BY download_id"))
+
+            $rows = $sql->createQueryBuilder()->select('*')->from('download')->orderBy('download_id')->fetchEach();
             {
-               while($row = $sql->fetch())
+               foreach($rows as $row)
 			   {
                		if (!is_readable(e_DOWNLOAD.$row['download_url']))
 					{		 
@@ -594,13 +593,13 @@ $columnInfo = array(
             if($deleted_check)
             {
                 $sql = e107::getDb('mmcleanup');
-                if(strpos($deleted_data['download_url'], '{e_MEDIA_') === 0 && $sql->delete('core_media', "media_url='{$deleted_data['download_url']}'"))
+                if(strpos($deleted_data['download_url'], '{e_MEDIA_') === 0 && $sql->createQueryBuilder()->delete('core_media')->where('media_url', $deleted_data['download_url'])->execute())
                 {
                     $mediaFile = e107::getParser()->replaceConstants($deleted_data['download_url']);
                     @unlink($mediaFile);
                     e107::getMessage()->addSuccess('Associated media record successfully erased');
                 }
-                if(strpos($deleted_data['download_image'], '{e_MEDIA_') === 0 && $sql->delete('core_media', "media_url='{$deleted_data['download_image']}'"))
+                if(strpos($deleted_data['download_image'], '{e_MEDIA_') === 0 && $sql->createQueryBuilder()->delete('core_media')->where('media_url', $deleted_data['download_image'])->execute())
                 {
                     $mediaImage = e107::getParser()->replaceConstants($deleted_data['download_image']);
                     e107::getMessage()->addSuccess('Associated media image successfully erased');
@@ -653,16 +652,15 @@ $columnInfo = array(
 			
 			//global $pref;
 			
-			if ($sql->select('userclass_classes','userclass_id, userclass_name'))
+			$classList = $sql->createQueryBuilder()->select('userclass_id', 'userclass_name')->from('userclass_classes')->fetchAll();
+			$limitRows = $sql->createQueryBuilder()
+				->selectAs('gen_id', 'limit_id')->selectAs('gen_datestamp', 'limit_classnum')->selectAs('gen_user_id', 'limit_bw_num')->selectAs('gen_ip', 'limit_bw_days')->selectAs('gen_intdata', 'limit_count_num')->selectAs('gen_chardata', 'limit_count_days')
+				->from('generic')
+				->where('gen_type', 'download_limit')
+				->fetchAll();
+			foreach($limitRows as $row)
 			{
-				$classList = $sql->db_getList();
-			}
-			if ($sql->select("generic", "gen_id as limit_id, gen_datestamp as limit_classnum, gen_user_id as limit_bw_num, gen_ip as limit_bw_days, gen_intdata as limit_count_num, gen_chardata as limit_count_days", "gen_type = 'download_limit'"))
-			{
-				while($row = $sql->fetch())
-				{
-					$limitList[$row['limit_classnum']] = $row;
-				}
+				$limitList[$row['limit_classnum']] = $row;
 			}
 			$txt = "
 				<form method='post' action='".e_SELF."?".e_QUERY."'>
@@ -767,18 +765,20 @@ $columnInfo = array(
 		         case 'duplicates':
 		         {
 		            $title = DOWLAN_166;
-		            $query = 'SELECT GROUP_CONCAT(d.download_id SEPARATOR ",") as gc, d.download_id, d.download_name, d.download_url, dc.download_category_name
-		                      FROM #download as d
-		                      LEFT JOIN #download_category AS dc ON dc.download_category_id=d.download_category
-		                      GROUP BY d.download_url
-		                      HAVING COUNT(d.download_id) > 1
-		               ';
+		            $qb = $sql->createQueryBuilder();
+		            $rows = $qb
+		               ->addSelect(SqlFragment::raw('GROUP_CONCAT(d.download_id SEPARATOR ",") as gc'))->addSelect('d.download_id', 'd.download_name', 'd.download_url', 'dc.download_category_name')
+		               ->from('download', 'd')
+		               ->leftJoin('download_category', 'dc', $qb->expr()->compareColumns('dc.download_category_id', 'd.download_category'))
+		               ->groupBy('d.download_url')
+		               ->havingAggregate('COUNT', 'd.download_id', '>', 1)
+		               ->fetchAll();
 		            $text = "";
-		            $count = $sql->gen($query);
+		            $count = count($rows);
 		            $foundSome = false;
 		            if ($count) {
 		               $currentURL = "";
-		               while($row = $sql->fetch()) {
+		               foreach($rows as $row) {
 		                  if (!$foundSome) {
 		   		          //  $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
 		                     $text .= '<form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">
@@ -792,12 +792,16 @@ $columnInfo = array(
 		                     $text .= '</tr>';
 		                     $foundSome = true;
 		                  }
-		                  $query = "SELECT d.*, dc.* FROM `#download` AS d
-		                     LEFT JOIN `#download_category` AS dc ON dc.download_category_id=d.download_category
-		                     WHERE download_id IN (".$row['gc'].")
-		                     ORDER BY download_id ASC";
-		                  $count = $sql2->gen($query);
-		                  while($row = $sql2->fetch()) {
+		                  $dupIds = array_map('intval', explode(',', $row['gc']));
+		                  $qb = $sql2->createQueryBuilder();
+		                  $dupRows = $qb
+		                     ->select('d.*', 'dc.*')
+		                     ->from('download', 'd')
+		                     ->leftJoin('download_category', 'dc', $qb->expr()->compareColumns('dc.download_category_id', 'd.download_category'))
+		                     ->whereIn('download_id', $dupIds)
+		                     ->orderBy('download_id', 'ASC')
+		                     ->fetchAll();
+		                  foreach($dupRows as $row) {
 		                     $text .= '<tr>';
 		                     if ($currentURL != $row['download_url']) {
 		                        $text .= '<td>'.$tp->toHTML($row['download_url']).'</td>';
@@ -874,11 +878,15 @@ $columnInfo = array(
 		         {
 		            $title = DOWLAN_168;
 		            $text = "";
-		            $query = "SELECT d.*, dc.* FROM `#download` AS d LEFT JOIN `#download_category` AS dc ON dc.download_category_id=d.download_category";
-		            $count = $sql->gen($query);
+		            $qb = $sql->createQueryBuilder();
+		            $rows = $qb
+		               ->select('d.*', 'dc.*')
+		               ->from('download', 'd')
+		               ->leftJoin('download_category', 'dc', $qb->expr()->compareColumns('dc.download_category_id', 'd.download_category'))
+		               ->fetchEach();
 		            $foundSome = false;
-		            if ($count) {
-		               while($row = $sql->fetch()) {
+		            {
+		               foreach($rows as $row) {
 		                  if (!is_readable(e_DOWNLOAD.$row['download_url'])) {
 		                     if (!$foundSome)
 							 {
@@ -922,11 +930,16 @@ $columnInfo = array(
 		         {
 		            $title = DOWLAN_169;
 		            $text = "";
-		            $query = "SELECT d.*, dc.* FROM `#download` AS d LEFT JOIN `#download_category` AS dc ON dc.download_category_id=d.download_category WHERE download_active=0";
-		            $count = $sql->gen($query);
+		            $qb = $sql->createQueryBuilder();
+		            $rows = $qb
+		               ->select('d.*', 'dc.*')
+		               ->from('download', 'd')
+		               ->leftJoin('download_category', 'dc', $qb->expr()->compareColumns('dc.download_category_id', 'd.download_category'))
+		               ->where('download_active', 0)
+		               ->fetchEach();
 		            $foundSome = false;
-		            if ($count) {
-		               while($row = $sql->fetch()) {
+		            {
+		               foreach($rows as $row) {
 		                  if (!$foundSome)
 		                  {
 		   		           // $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
@@ -977,11 +990,10 @@ $columnInfo = array(
 		         {
 		            $title = DOWLAN_178;
 		            $text = "";
-		            $query = "SELECT * FROM `#download` WHERE download_category=0";
-		            $count = $sql->gen($query);
+		            $rows = $sql->createQueryBuilder()->select('*')->from('download')->where('download_category', 0)->fetchEach();
 		            $foundSome = false;
-		            if ($count) {
-		               while($row = $sql->fetch()) {
+		            {
+		               foreach($rows as $row) {
 		                  if (!$foundSome) {
 		   		          //  $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
 		                     $text .= '
@@ -1029,11 +1041,16 @@ $columnInfo = array(
 		         {
 		            $title = DOWLAN_66;
 		            $text = "";
-		            $query = "SELECT d.*, dc.* FROM `#download` AS d LEFT JOIN `#download_category` AS dc ON dc.download_category_id=d.download_category WHERE d.download_url<>''";
-		            $count = $sql->gen($query);
+		            $qb = $sql->createQueryBuilder();
+		            $rows = $qb
+		               ->select('d.*', 'dc.*')
+		               ->from('download', 'd')
+		               ->leftJoin('download_category', 'dc', $qb->expr()->compareColumns('dc.download_category_id', 'd.download_category'))
+		               ->where('d.download_url', '!=', '')
+		               ->fetchEach();
 		            $foundSome = false;
-		            if ($count) {
-		               while($row = $sql->fetch()) {
+		            {
+		               foreach($rows as $row) {
 		                  if (is_readable(e_DOWNLOAD.$row['download_url'])) {
 		                     $filesize = filesize(e_DOWNLOAD.$row['download_url']);
 		                     if ($filesize <> $row['download_filesize']) {
@@ -1255,7 +1272,7 @@ $columnInfo = array(
 	      $download_status[1] = DOWLAN_123;
 	      $download_status[2] = DOWLAN_124;
 	
-	      if (!$sql->select("download_category"))
+	      if (!$sql->createQueryBuilder()->from('download_category')->count())
 	      {
 	         //$ns->tablerender(ADLAN_24, "<div style='text-align:center'>".DOWLAN_5."</div>");
 	         $mes->addInfo(DOWLAN_5); 
@@ -1264,9 +1281,8 @@ $columnInfo = array(
 	      $download_active = 1;
 	      if ($_GET['action'] == "edit" && !$_POST['submit'])
 	      {
-	         if ($sql->select("download", "*", "download_id=".intval($_GET['id'])))
+	         if ($row = $sql->createQueryBuilder()->select('*')->from('download')->where('download_id', (int) $_GET['id'])->fetchRow())
 	         {
-	            $row = $sql->fetch();
 	            extract($row);
 	
 	            $mirrorArray = $this->makeMirrorArray($row['download_mirror']);
@@ -1276,9 +1292,8 @@ $columnInfo = array(
 	      if ($subAction == "dlm" && !$_POST['submit'])
 	      {
 	         require_once(e_PLUGIN.'download/download_shortcodes.php');
-	         if ($sql->select("upload", "*", "upload_id=".$id))
+	         if ($row = $sql->createQueryBuilder()->select('*')->from('upload')->where('upload_id', (int) $id)->fetchRow())
 	         {
-	            $row = $sql->fetch();
 	
 	            $download_category = $row['upload_category'];
 	            $download_name = $row['upload_name'].($row['upload_version'] ? " v" . $row['upload_version'] : "");
@@ -1388,14 +1403,14 @@ $columnInfo = array(
 	                     <td style='width:80%'>";
 	
 	      // See if any mirrors to display
-	      if (!$sql -> select("download_mirror"))
+	      $mirrorList = $sql->createQueryBuilder()->select('*')->from('download_mirror')->fetchAll();
+	      if (empty($mirrorList))
 	      {   // No mirrors defined here
 	         $text .= DOWLAN_144."</td></tr>";
 	      }
 	      else
 	      {
-	         $text .= DOWLAN_132."<div id='mirrorsection'>";
-	         $mirrorList = $sql -> db_getList();         // Get the list of possible mirrors
+	         $text .= DOWLAN_132."<div id='mirrorsection'>";         // Get the list of possible mirrors
 	         $m_count = (count($mirrorArray) ? count($mirrorArray) : 1);      // Count of mirrors actually in use (or count of 1 if none defined yet)
 	         for($count = 1; $count <= $m_count; $count++)
 	         {
@@ -1757,10 +1772,10 @@ $columnInfo = array(
 	
 	      if (!$filesize)
 	      {
-	         if ($sql->select("upload", "upload_filesize", "upload_file='{$dlInfo['download_url']}'"))
+	         $uploadFilesize = $sql->createQueryBuilder()->select('upload_filesize')->from('upload')->where('upload_file', $dlInfo['download_url'])->fetchOne();
+	         if ($uploadFilesize !== null)
 	         {
-	            $row = $sql->fetch();
-	            $filesize = $row['upload_filesize'];
+	            $filesize = $uploadFilesize;
 	         }
 	      }
 	      $dlInfo['download_filesize'] = $filesize;
@@ -1849,9 +1864,9 @@ $columnInfo = array(
 	         $mirrors = count($_POST['download_mirror_name']);
 	         $mirrorArray = array();
 	         $newMirrorArray = array();
-	         if ($id && $sql->select('download','download_mirror', 'download_id = '.$id))      // Get existing download stats
+	         if ($id)      // Get existing download stats
 	         {
-	            if ($row = $sql->fetch())
+	            if ($row = $sql->createQueryBuilder()->select('download_mirror')->from('download')->where('download_id', (int) $id)->fetchRow())
 	            {
 	               $mirrorArray = $this->makeMirrorArray($row['download_mirror'], TRUE);
 	            }
@@ -1893,9 +1908,15 @@ $columnInfo = array(
 	   			$mes->add($hooks, E_MESSAGE_SUCCESS);
 		
 				$updateArray = array_merge($dlInfo,$dlMirrors);
-				$updateArray['WHERE'] = 'download_id='.intval($id);
-				
-				$mes->addAuto($sql->update('download',$updateArray), 'update', DOWLAN_2." (<a href='".e_PLUGIN."download/download.php?view.".$id."'>".$_POST['download_name']."</a>)");
+
+				$updateQry = $sql->createQueryBuilder()->update('download');
+				foreach($updateArray as $updateField => $updateValue)
+				{
+					$updateQry->set($updateField, $updateValue);
+				}
+				$updateQry->where('download_id', (int) $id);
+
+				$mes->addAuto($updateQry->execute(), 'update', DOWLAN_2." (<a href='".e_PLUGIN."download/download.php?view.".$id."'>".$_POST['download_name']."</a>)");
 	                
 				$dlInfo['download_id'] = $id;
 				$this->downloadLog('DOWNL_06',$dlInfo,$dlMirrors);
@@ -1907,7 +1928,7 @@ $columnInfo = array(
 	      }
 	      else // Its a new entry. 
 	      {
-		         if ($download_id = $sql->insert('download',array_merge($dlInfo,$dlMirrors)))
+		         if ($download_id = $sql->createQueryBuilder()->insert('download')->insertGetId(array_merge($dlInfo,$dlMirrors)))
 		         {
 		            // Process triggers before calling admin_update so trigger messages can be shown
 		            $data = array('method'=>'create', 'table'=>'download', 'id'=>$download_id, 'plugin'=>'download', 'function'=>'create_download');
@@ -1974,12 +1995,13 @@ $columnInfo = array(
 		  
 	      if ($delete == "mirror")
 	      {
-	         $mes->addAuto($sql ->delete("download_mirror", "mirror_id=".$del_id), 'delete', DOWLAN_135);
+	         $mes->addAuto($sql->createQueryBuilder()->delete("download_mirror")->where('mirror_id', (int) $del_id)->execute(), 'delete', DOWLAN_135);
 	         e107::getLog()->add('DOWNL_14','ID: '.$del_id,E_LOG_INFORMATIVE,'');
 	      }
 	
 	
-	      if (!$sql -> select("download_mirror"))
+	      $mirrorList = $sql->createQueryBuilder()->select('*')->from('download_mirror')->fetchAll();
+	      if (empty($mirrorList))
 	      {
 	   			$mes->addInfo(DOWLAN_144);
 	         // $text = "<div style='text-align:center;'>".DOWLAN_144."</div>"; // No mirrors defined yet
@@ -1997,8 +2019,6 @@ $columnInfo = array(
 	         <td style='width: 30%; text-align: center;' class='forumheader'>".LAN_OPTIONS."</td>
 	         </tr>
 	         ";
-	
-	         $mirrorList = $sql -> db_getList();
 	
 	         foreach($mirrorList as $mirror)
 	         {
@@ -2027,8 +2047,7 @@ $columnInfo = array(
 	
 	      if ($subAction == "edit" && !defined("SUBMITTED"))
 	      {
-	         $sql -> select("download_mirror", "*", "mirror_id='".intval($id)."' ");
-	         $mirror = $sql -> fetch();
+	         $mirror = $sql->createQueryBuilder()->select('*')->from('download_mirror')->where('mirror_id', (int) $id)->fetchRow();
 	         extract($mirror);
 	         $edit = TRUE;
 	      }
@@ -2125,7 +2144,14 @@ $columnInfo = array(
 		
 		         if (isset($_POST['id']))
 		         {
-		            $mes->addAuto($sql ->update("download_mirror", "mirror_name='{$name}', mirror_url='{$url}', mirror_image='".$tp->toDB($_POST['mirror_image'])."', mirror_location='{$location}', mirror_description='{$description}' WHERE mirror_id=".intval($_POST['id'])), 'update', DOWLAN_133);
+		            $mes->addAuto($sql->createQueryBuilder()->update("download_mirror")
+		               ->set('mirror_name', $name)
+		               ->set('mirror_url', $url)
+		               ->set('mirror_image', $tp->toDB($_POST['mirror_image']))
+		               ->set('mirror_location', $location)
+		               ->set('mirror_description', $description)
+		               ->where('mirror_id', (int) $_POST['id'])
+		               ->execute(), 'update', DOWLAN_133);
 		            e107::getLog()->add('DOWNL_13','ID: '.intval($_POST['id']).'[!br!]'.$logString,E_LOG_INFORMATIVE,'');
 		         }
 		         else

@@ -14,6 +14,10 @@
  * $Author$
  *
 */
+
+use e107\Database\QueryBuilder;
+use e107\Database\SqlFragment;
+
 /*
 Notes:
 Uses $udata initially, later curVal to hold current user data
@@ -205,12 +209,10 @@ class usersettings_front // Begin Usersettings rewrite.
 
 		if(e107::getEmail()->sendEmail(USEREMAIL,USERNAME, $eml))
 		{
-			$update = array(
-				'user_sess' => $hash,
-				'WHERE' => 'user_id = '.USERID
-			);
-
-			e107::getDb()->update('user',$update);
+			e107::getDb()->createQueryBuilder()->update('user')
+				->set('user_sess', $hash)
+				->where('user_id', USERID)
+				->execute();
 
 			$alert = $tp->lanVars($message, USEREMAIL);
 			return e107::getMessage()->setTitle($caption, E_MESSAGE_INFO)->addInfo($alert)->render();
@@ -260,17 +262,53 @@ class usersettings_front // Begin Usersettings rewrite.
 
 				// $query = $this->processUserDeleteFields($query); //optional pre-processing..
 
+				$where = isset($query['WHERE']) ? $query['WHERE'] : null;
+				unset($query['WHERE']);
+
+				// e_user delete() providers may now express the WHERE as structured bound
+				// predicates ('WHERE' => array('column' => $value)) or a vouched SqlFragment
+				// fragment. Those run through the query builder, which binds every value and
+				// validates the plugin-supplied $table identifier fail-closed. A raw WHERE
+				// string is still honoured for one release for backward compatibility (the
+				// e_user addon contract is third-party-extensible), with an E_USER_DEPRECATED
+				// notice nudging providers to the structured form.
+				$whereIsStructured = is_array($where) || ($where instanceof SqlFragment);
+
 				if($mode === 'update')
 				{
-					//echo "<h3>UPDATE ".$table."</h3>";
-				//	print_a($query);
-					$sql->update($table, $query); // todo check query ran successfully.
+					if($whereIsStructured)
+					{
+						$qb = $sql->createQueryBuilder()->update($table);
+						foreach($query as $column => $value)
+						{
+							$qb->set($column, $value);
+						}
+						$this->applyUserAddonWhere($qb, $where);
+						$qb->execute(); // todo check query ran successfully.
+					}
+					else
+					{
+						if($where !== null)
+						{
+							$this->deprecateRawAddonWhere($table);
+							$query['WHERE'] = $where;
+						}
+						$sql->update($table, $query); // BC: legacy raw update. todo check query ran successfully.
+					}
 				}
 				elseif($mode === 'delete')
 				{
-					//echo "<h3>DELETE ".$table."</h3>";
-					//print_a($query);
-					$sql->delete($table, $query['WHERE']); //  todo check query ran successfully.
+					if($whereIsStructured)
+					{
+						$qb = $sql->createQueryBuilder()->delete($table);
+						$this->applyUserAddonWhere($qb, $where);
+						$qb->execute(); // todo check query ran successfully.
+					}
+					else
+					{
+						$this->deprecateRawAddonWhere($table);
+						$sql->delete($table, $where); // BC: legacy raw delete. todo check query ran successfully.
+					}
 				}
 
 			}
@@ -282,6 +320,47 @@ class usersettings_front // Begin Usersettings rewrite.
 
 		return e107::getMessage()->addSuccess($alert)->render();
 
+	}
+
+	/**
+	 * Apply an e_user delete() provider's structured WHERE to a query builder: a
+	 * map of column => value becomes one bound predicate per pair, while a vouched
+	 * SqlFragment fragment is added as-is. Used by {@see processUserDelete()}.
+	 *
+	 * @param QueryBuilder $qb
+	 * @param array|SqlFragment $where
+	 * @return void
+	 */
+	private function applyUserAddonWhere($qb, $where)
+	{
+		if($where instanceof SqlFragment)
+		{
+			$qb->where($where);
+
+			return;
+		}
+
+		foreach((array) $where as $column => $value)
+		{
+			$qb->where($column, $value);
+		}
+	}
+
+	/**
+	 * Emit the one-release deprecation notice for an e_user delete() provider that
+	 * still supplies a raw WHERE string rather than a structured predicate.
+	 *
+	 * @param string $table
+	 * @return void
+	 */
+	private function deprecateRawAddonWhere($table)
+	{
+		trigger_error(
+			'e_user delete() provider for table "'.$table.'" supplies a raw WHERE string; '
+			.'pass a structured predicate instead (\'WHERE\' => array(\'column\' => $value)). '
+			.'Raw WHERE strings are deprecated and will be removed in a future release.',
+			E_USER_DEPRECATED
+		);
 	}
 
 	/**
@@ -670,7 +749,8 @@ class usersettings_front // Begin Usersettings rewrite.
 			{
 				$loginname = $changedUserData['user_loginname'] ? $changedUserData['user_loginname'] : $udata['user_loginname'];
 				$email = (isset($changedUserData['user_email']) && $changedUserData['user_email']) ? $changedUserData['user_email'] : $udata['user_email'];
-				$changedUserData['user_password'] = $sql->escape($userMethods->HashPassword($savePassword, $loginname), false);
+				// $sql->escape() removed: this value is bound by the array-form update of 'user' below (see #user update). Binding makes pre-escaping redundant (it would double-escape).
+				$changedUserData['user_password'] = $userMethods->HashPassword($savePassword, $loginname);
 				if (varset($pref['allowEmailLogin'], FALSE))
 				{
 					$user_prefs = e107::unserialize($udata['user_prefs']);
@@ -708,8 +788,15 @@ class usersettings_front // Begin Usersettings rewrite.
 				$changedData['WHERE'] = 'user_id='.$inp;
 				validatorClass::addFieldTypes($userMethods->userVettingInfo,$changedData);
 
+				// Field-typed array update: valuesTyped() applies the same per-column storage
+				// coercion as the legacy array-form update (the _FIELD_TYPES envelope from
+				// userVettingInfo) with every value bound and the WHERE decomposed to a bound predicate.
 				// print_a($changedData);
-				if (FALSE === $sql->update('user', $changedData))
+				$updated = $sql->createQueryBuilder()->update('user')
+					->valuesTyped($changedData['data'], $changedData['_FIELD_TYPES'])
+					->where('user_id', (int) $inp)
+					->execute();
+				if (FALSE === $updated)
 				{
 					$extraErrors[] = LAN_USET_43;
 				}
@@ -731,10 +818,16 @@ class usersettings_front // Begin Usersettings rewrite.
 
 				$ue->addFieldTypes($changedEUFData);				// Add in the data types for storage
 
-				$changedEUFData['_DUPLICATE_KEY_UPDATE'] = true; // update record if key found, otherwise INSERT.
 				$changedEUFData['data']['user_extended_id'] = $inp;
 
-				if (false === $sql->insert('user_extended', $changedEUFData))
+				// Field-typed upsert: insert the extended-field values, refreshing them on a
+				// user_extended_id collision. upsertTyped() applies the same per-column
+				// _FIELD_TYPES storage coercion as the legacy _DUPLICATE_KEY_UPDATE array
+				// write, so the stored bytes are identical.
+				if (false === $sql->createQueryBuilder()
+					->insert('user_extended')
+					->upsertTyped($changedEUFData['data'], 'user_extended_id', null, $changedEUFData['_FIELD_TYPES'])
+					->execute())
 				{
 					$message .= '<br />Error updating EUF';
 				}
@@ -842,7 +935,10 @@ class usersettings_front // Begin Usersettings rewrite.
 				// If user has changed display name, update the record in the online table
 			if (isset($changedUserData['user_name']) && !$_uid)
 			{
-				$sql->update('online', "online_user_id = '".USERID.".".$changedUserData['user_name']."' WHERE online_user_id = '".USERID.".".USERNAME."'");
+				e107::getDb()->createQueryBuilder()->update('online')
+					->set('online_user_id', USERID.'.'.$changedUserData['user_name'])
+					->where('online_user_id', USERID.'.'.USERNAME)
+					->execute();
 			}
 
 
@@ -1067,13 +1163,14 @@ class usersettings_front // Begin Usersettings rewrite.
 		$tp = e107::getParser();
 		$userMethods = e107::getUserSession();
 		$uuid = USERID;
-		$qry = "
-		SELECT u.*, ue.* FROM #user AS u
-		LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id
-		WHERE u.user_id=".intval($uuid);
 
-		$sql->gen($qry); // Re-read the user data into curVal (ready for display)
-		$curVal=$sql->fetch();
+		// Re-read the user data into curVal (ready for display)
+		$qb = e107::getDb()->createQueryBuilder();
+		$curVal = $qb->select('u.*', 'ue.*')
+			->from('user', 'u')
+			->leftJoin('user_extended', 'ue', $qb->expr()->compareColumns('ue.user_extended_id', 'u.user_id'))
+			->where('u.user_id', (int) $uuid)
+			->fetchRow();
 		$curVal['user_class'] = varset($changedUserData['user_class'], $curVal['user_class']);
 		$curVal['userclass_list'] = $userMethods->addCommonClasses($curVal, FALSE);
 

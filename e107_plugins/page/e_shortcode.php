@@ -24,14 +24,25 @@ class page_shortcodes extends e_shortcode
 			
 			if(($action == 'listPages' || $action == 'listChapters') && vartrue($this->request['id']))
 			{
-				$this->var = e107::getDb()->retrieve('page_chapters','chapter_id, chapter_name, chapter_meta_description, chapter_sef','chapter_id = '.intval($this->request['id']).' LIMIT 1');	
+				$this->var = e107::getDb()->createQueryBuilder()
+					->select('chapter_id', 'chapter_name', 'chapter_meta_description', 'chapter_sef')
+					->from('page_chapters')
+					->where('chapter_id', (int) $this->request['id'])
+					->setMaxResults(1)
+					->fetchRow();
 			}
 			
 			if($action == 'showPage' && vartrue($this->request['id'])) // get chapter and description from current. 
 			{
-				$query = "SELECT p.page_id,c.chapter_name,c.chapter_meta_description FROM #page AS p LEFT JOIN #page_chapters AS c ON p.page_chapter = c.chapter_id WHERE p.page_id = ".intval($this->request['id'])." LIMIT 1 "; 
-				$rows = e107::getDb()->retrieve($query,true);
-				$this->var = $rows[0];	
+				$qb = e107::getDb()->createQueryBuilder();
+				$rows = $qb
+					->select('p.page_id', 'c.chapter_name', 'c.chapter_meta_description')
+					->from('page', 'p')
+					->leftJoin('page_chapters', 'c', $qb->expr()->compareColumns('p.page_chapter', 'c.chapter_id'))
+					->where('p.page_id', (int) $this->request['id'])
+					->setMaxResults(1)
+					->fetchAll();
+				$this->var = $rows[0];
 			}
 					
 			
@@ -167,13 +178,20 @@ class page_shortcodes extends e_shortcode
 
 			if(!$pageArray = e107::getRegistry($registry))
 			{
-				$query = "SELECT * FROM #page AS p LEFT JOIN #page_chapters as ch ON p.page_chapter=ch.chapter_id WHERE ch.chapter_visibility IN (" . USERCLASS_LIST . ") AND p.menu_class IN (" . USERCLASS_LIST . ") AND ch.chapter_sef = '" . $sef . "' ORDER BY p.page_order ASC ";
+				$qb = e107::getDb()->createQueryBuilder();
+				$qb->select('*')
+					->from('page', 'p')
+					->leftJoin('page_chapters', 'ch', $qb->expr()->compareColumns('p.page_chapter', 'ch.chapter_id'))
+					->whereIn('ch.chapter_visibility', explode(',', USERCLASS_LIST))
+					->whereIn('p.menu_class', explode(',', USERCLASS_LIST))
+					->where('ch.chapter_sef', $sef)
+					->orderBy('p.page_order', 'ASC');
 
 				e107::getDebug()->log("Loading Page Chapters (".$sef.")");
 
-				if(!$pageArray = e107::getDb()->retrieve($query, true))
+				if(!$pageArray = $qb->fetchAll())
 				{
-					e107::getDebug()->log('{CHAPTER_MENUS: name='.$parm['name'].'} failed.<br />Query: '.$query);
+					e107::getDebug()->log('{CHAPTER_MENUS: name='.$parm['name'].'} failed.<br />Query: '.$qb->getSQL());
 					return null;
 				}
 
@@ -309,20 +327,29 @@ class page_shortcodes extends e_shortcode
 
 			if(!$chapArray = e107::getRegistry($registry))
 			{
-				$bookID = e107::getDb()->retrieve('page_chapters', 'chapter_id', "chapter_sef = '" . $sef . "' LIMIT 1");
+				$bookID = e107::getDb()->createQueryBuilder()
+					->select('chapter_id')->from('page_chapters')
+					->where('chapter_sef', $sef)
+					->setMaxResults(1)
+					->fetchOne();
 
 				if(empty($bookID))
 				{
 					return null;
 				}
 
-				$query = "SELECT * FROM #page_chapters WHERE chapter_visibility IN (" . USERCLASS_LIST . ") AND chapter_parent = ".$bookID."  ORDER BY chapter_order ASC LIMIT ".$limit;
+				$qb = e107::getDb()->createQueryBuilder();
+				$qb->select('*')->from('page_chapters')
+					->whereIn('chapter_visibility', explode(',', USERCLASS_LIST))
+					->where('chapter_parent', (int) $bookID)
+					->orderBy('chapter_order', 'ASC')
+					->setMaxResults($limit);
 
 				e107::getDebug()->log("Loading sc_book_chapters(".$sef.")");
 
-				if(!$chapArray = e107::getDb()->retrieve($query, true))
+				if(!$chapArray = $qb->fetchAll())
 				{
-					e107::getDebug()->log('{BOOK_CHAPTERS: name='.$parm['name'].'} failed.<br />Query: '.$query);
+					e107::getDebug()->log('{BOOK_CHAPTERS: name='.$parm['name'].'} failed.<br />Query: '.$qb->getSQL());
 					return null;
 				}
 

@@ -54,7 +54,10 @@ $tp = e107::getParser();
 /*	RESET DISPLAY NAMES	*/
 if(isset($_POST['submit_resetdisplaynames']))
 {
-	e107::getDb()->update('user', 'user_name=user_loginname');
+	e107::getDb()->createQueryBuilder()
+		->update('user')
+		->setColumn('user_name', 'user_loginname')
+		->execute();
 	$mes->addInfo(PRFLAN_157);
 }
 
