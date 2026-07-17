@@ -445,6 +445,86 @@
 
 
 		}
+
+		/**
+		 * Regression for https://github.com/e107inc/e107/issues/5788
+		 *
+		 * A plugin may register several function-based <siteLinks> that share one
+		 * url (e.g. '#'); sitelinks_class dispatches each by its link_function, so
+		 * they are genuinely distinct. The owned-link add-dedup used to key on
+		 * (link_owner, link_url) only, swallowing every entry past the first.
+		 * All of them must install, and a second install must not duplicate them.
+		 */
+		public function testXmlSiteLinksMultipleFunctionsSameUrl()
+		{
+			$folder = 'test5788';
+
+			$plugVars = array(
+				'folder'    => $folder,
+				'siteLinks' => array(
+					'link' => array(
+						0 => array(
+							'@attributes' => array('url' => '#', 'function' => 'language', 'perm' => 'admin'),
+							'@value'      => 'Language',
+						),
+						1 => array(
+							'@attributes' => array('url' => '#', 'function' => 'currency', 'perm' => 'admin'),
+							'@value'      => 'Currency',
+						),
+					),
+				),
+			);
+
+			$db = e107::getDb();
+			// Clear any leftover from a shuffled sibling run.
+			$db->delete('links', "link_owner = 'test5788'");
+
+			$expected = array('test5788::currency', 'test5788::language');
+
+			try
+			{
+				$status = $this->ep->XmlSiteLinks('install', $plugVars);
+				$this->assertTrue($status, "Site link insertion failed");
+
+				$this->assertEquals($expected, $this->siteLinkFunctions(),
+					"Both function-based sitelinks sharing a url must install");
+
+				// Idempotency: re-installing must not create duplicates.
+				$this->ep->XmlSiteLinks('install', $plugVars);
+				$this->assertEquals($expected, $this->siteLinkFunctions(),
+					"Re-installing must not duplicate the sitelinks");
+			}
+			finally
+			{
+				$this->ep->XmlSiteLinks('uninstall', $plugVars);
+				$remaining = (int) $db->count('links', '(*)', "WHERE link_owner = 'test5788'");
+				$db->delete('links', "link_owner = 'test5788'");
+				$this->assertEquals(0, $remaining, "Links still exist after uninstall");
+			}
+		}
+
+		/**
+		 * Sorted list of link_function values owned by the test5788 fixture.
+		 *
+		 * @return array
+		 */
+		private function siteLinkFunctions()
+		{
+			$db = e107::getDb();
+			$funcs = array();
+
+			if($db->select('links', 'link_function', "link_owner = 'test5788'"))
+			{
+				while($row = $db->fetch())
+				{
+					$funcs[] = $row['link_function'];
+				}
+			}
+
+			sort($funcs);
+
+			return $funcs;
+		}
 /*
 		public function testGetIcon()
 		{
