@@ -1054,6 +1054,15 @@ class xmlClass
 			{
 				$primaryKey = '';
 				$eTable= str_replace(MPREFIX,"",$tbl);
+
+				// $eTable reaches a raw FROM identifier below (index()/select()); escape() cannot
+				// protect an identifier position, so only allow names of tables that actually exist.
+				if(!in_array($eTable, e107::getDb()->tables('all'), true))
+				{
+					e107::getMessage()->addWarning(str_replace('[x]', htmlspecialchars($eTable, ENT_QUOTES, 'utf-8'), 'Skipped unknown table "[x]".'));
+					continue;
+				}
+
 				$eQry = (!empty($options['query'])) ? $options['query'] : null;
 
 				// order by the primary-key

@@ -427,13 +427,16 @@ class emotec
 		//	$tmp = addslashes(serialize($encoded_emotes));
 		$tmp = e107::serialize($encoded_emotes, true);
 
-		if ($sql->select("core", "*", "e107_name='emote_" . $packID . "'"))
+		// filter() is an HTML sanitiser and leaves the backslash intact; escape() does not.
+		$packIDEsc = $sql->escape($packID);
+
+		if ($sql->select("core", "*", "e107_name='emote_" . $packIDEsc . "'"))
 		{
-			e107::getMessage()->addAuto($sql->update("core", "`e107_value`='{$tmp}' WHERE `e107_name`='emote_" . $packID . "' "), 'update', LAN_SETSAVED, false, false);
+			e107::getMessage()->addAuto($sql->update("core", "`e107_value`='{$tmp}' WHERE `e107_name`='emote_" . $packIDEsc . "' "), 'update', LAN_SETSAVED, false, false);
 		}
 		else
 		{
-			e107::getMessage()->addAuto($sql->insert("core", "'emote_" . $packID . "', '$tmp' "), 'insert', LAN_SETSAVED, false, false);
+			e107::getMessage()->addAuto($sql->insert("core", "'emote_" . $packIDEsc . "', '$tmp' "), 'insert', LAN_SETSAVED, false, false);
 		}
 	}
 
@@ -461,6 +464,7 @@ class emotec
 
 		foreach ($this->packArray as $value)
 		{
+			$valueEsc = $sql->escape($value);
 			if (strpos($value, ' ') !== false)
 			{    // Highlight any directory names containing spaces - not allowed
 				$msg = "
@@ -479,7 +483,7 @@ class emotec
 				unset($pack_local[$value]);
 			}
 
-			if (($do_one == $value) || !$do_one && (!$sql->select("core", "*", "e107_name='emote_" . $value . "' ")))
+			if (($do_one == $value) || !$do_one && (!$sql->select("core", "*", "e107_name='emote_" . $valueEsc . "' ")))
 			{  // Pack info not in DB, or to be re-scanned
 				$no_error = true;
 				$File_type = EMOLAN_32 . ":";
@@ -656,7 +660,7 @@ class emotec
 						$update = array(
 							'e107_name'  => 'emote_' . $value,
 							'e107_value' => $tmp,
-							'WHERE'      => "e107_name = 'emote_" . $value . "'"
+							'WHERE'      => "e107_name = 'emote_" . $valueEsc . "'"
 						);
 
 						$sql->update("core", $update);
@@ -691,7 +695,7 @@ class emotec
 					$p = '';
 				}
 
-				if ($sql->delete("core", "`e107_name` = 'emote_{$p}'"))
+				if ($sql->delete("core", "`e107_name` = 'emote_".$sql->escape($p)."'"))
 				{
 					$mes->addInfo(EMOLAN_34 . ":" . $p . EMOLAN_35);
 				}

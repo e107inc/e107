@@ -1090,7 +1090,7 @@ class e_install
 			$this->previous_steps['mysql']['overwritedb'] = 1;
 		}
 					
-		$success = $this->check_name($this->previous_steps['mysql']['db']) && $this->check_name($this->previous_steps['mysql']['prefix'], TRUE);
+		$success = $this->check_name($this->previous_steps['mysql']['db'], FALSE, FALSE) && $this->check_name($this->previous_steps['mysql']['prefix'], TRUE, TRUE);
 		
 		if ($success)
 		{
@@ -2213,6 +2213,14 @@ class e_install
 
 		$hash = $us->HashPassword($this->previous_steps['admin']['password'],$this->previous_steps['admin']['user'], $pwdEncoding);
 
+		if (!$this->check_name($this->previous_steps['mysql']['prefix'], TRUE, TRUE))
+		{
+			installLog::add('Rejected table prefix: '.$this->previous_steps['mysql']['prefix'], 'error');
+			e107::getMessage()->addError("Table prefix may only contain letters, numbers and underscores. Installation aborted.");
+			e107::getDb()->close();
+			trigger_error('e107 install aborted: illegal table prefix', E_USER_ERROR);
+		}
+
 		$ip = $_SERVER['REMOTE_ADDR'];
 		$db = e107::getDb();
 		$adminDisplay = $db->escape($this->previous_steps['admin']['display']);
@@ -2258,17 +2266,26 @@ class e_install
 	 * Return TRUE if acceptable, FALSE if unacceptable
 	 * Empty string returns the value of $blank_ok (caller should set TRUE for prefix, FALSE for DB name)
 	 *
+	 * $strict TRUE is for names reaching an unquoted SQL identifier position (table prefix).
+	 * $strict FALSE additionally allows the hyphen, for names only ever used inside backticks (DB name).
+	 *
 	 * @param string $str
 	 * @param boolean $blank_ok [optional]
+	 * @param boolean $strict [optional]
 	 * @return boolean
 	 */
-	function check_name($str, $blank_ok = FALSE)
+	function check_name($str, $blank_ok = FALSE, $strict = TRUE)
 	{
 		if ($str == '')
 		{
 			return $blank_ok;
 		}
 		if (preg_match("#^\d+[e|E]#", $str))
+		{
+			return false;
+		}
+		$allowed = $strict ? '#^[A-Za-z0-9_]+$#D' : '#^[A-Za-z0-9_-]+$#D';
+		if (!preg_match($allowed, (string) $str))
 		{
 			return false;
 		}

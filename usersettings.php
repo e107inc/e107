@@ -842,7 +842,7 @@ class usersettings_front // Begin Usersettings rewrite.
 				// If user has changed display name, update the record in the online table
 			if (isset($changedUserData['user_name']) && !$_uid)
 			{
-				$sql->update('online', "online_user_id = '".USERID.".".$changedUserData['user_name']."' WHERE online_user_id = '".USERID.".".USERNAME."'");
+				$sql->update('online', "online_user_id = '".intval(USERID).".".$sql->escape($changedUserData['user_name'])."' WHERE online_user_id = '".intval(USERID).".".$sql->escape(USERNAME)."'");
 			}
 
 
