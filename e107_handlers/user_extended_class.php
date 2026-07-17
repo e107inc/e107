@@ -980,6 +980,16 @@ class e107_user_extended
 			extract($name);
 		}
 
+		// $name becomes a column identifier in ALTER TABLE below; escape() cannot protect an identifier.
+		$name = trim((string) $name);
+
+		if(!preg_match('/^[A-Za-z0-9_]+$/D', $name))
+		{
+			trigger_error('Illegal user-extended field name: '.$name, E_USER_NOTICE);
+			e107::getMessage()->addDebug("Illegal field name: ".$name);
+			return false;
+		}
+
 	 	if(!is_numeric($type))
 	  	{
 			$type = $this->typeArray[$type];
@@ -1025,7 +1035,7 @@ class e107_user_extended
 		// field of type category
 		if($field_info)
 		{
-			$sql->gen('ALTER TABLE #user_extended ADD user_'.$tp -> toDB($name, true).' '.$field_info);
+			$sql->gen('ALTER TABLE #user_extended ADD user_'.$name.' '.$field_info);
 		}
 
 			$extStructInsert = array(
@@ -1126,13 +1136,21 @@ class e107_user_extended
 	{
 		$sql = e107::getDb('ue');
 		$tp = e107::getParser();
-		
-		$this->clear_cache(); 
+
+		// $name is concatenated into a DROP column identifier below; escape() cannot protect an identifier.
+		$name = trim((string) $name);
+
+		if(!preg_match('/^[A-Za-z0-9_]+$/D', $name))
+		{
+			return false;
+		}
+
+		$this->clear_cache();
 		if ($this->user_extended_field_exist($name))
 		{
 			// FIXME - no table structure changes for categories
 			// but no good way to detect it right now - ignore the sql error for now, fix it asap
-			$sql->gen("ALTER TABLE #user_extended DROP user_".$tp -> toDB($name, true));
+			$sql->gen("ALTER TABLE #user_extended DROP user_".$name);
 			
 			if(is_numeric($id))
 			{
@@ -1377,6 +1395,23 @@ class e107_user_extended
 					$error = true;
 				}
 
+				// These four are SQL identifiers; toDB() used to strip the surrounding whitespace here.
+				foreach(array(0, 1, 2, 3) as $c)
+				{
+					if(!isset($choices[$c]))
+					{
+						continue;
+					}
+
+					$choices[$c] = trim((string) $choices[$c]);
+
+					if($choices[$c] !== '' && !preg_match('/^[A-Za-z0-9_]+$/D', $choices[$c]))
+					{
+						e107::getDebug()->log("DB Field Choices contains an invalid identifier: ".$choices[$c]);
+						$error = true;
+					}
+				}
+
 				if(!empty($error))
 				{
 					return "<span class='label label-danger'>Failed to load (misconfigured. See debug for more info.)</span>";
@@ -1385,9 +1420,9 @@ class e107_user_extended
 
 				$sql = e107::getDb('ue');
 
-				$order = !empty($choices[3]) ? "ORDER BY " . $tp->toDB($choices[3], true) : "";
+				$order = !empty($choices[3]) ? "ORDER BY " . $choices[3] : "";
 
-				if($sql->select($tp->toDB($choices[0], true), $tp->toDB($choices[1], true) . "," . $tp->toDB($choices[2], true), "1 $order") !== FALSE)
+				if($sql->select($choices[0], $choices[1] . "," . $choices[2], "1 $order") !== FALSE)
 				{
 					$choiceList = $sql->db_getList('ALL', false);
 					$ret = "<select id='{$fid}' {$include} name='{$fname}' {$required}  {$title}>\n";
@@ -1709,7 +1744,7 @@ class e107_user_extended
 		}
 
 		// $field_name is an SQL identifier (column); reject anything outside a strict identifier allowlist.
-		if(!preg_match('/^[A-Za-z0-9_]+$/', (string) $field_name))
+		if(!preg_match('/^[A-Za-z0-9_]+$/D', (string) $field_name))
 		{
 			return false;
 		}
@@ -1893,9 +1928,9 @@ class e107_user_extended
 				}
 
 				// $tmp[0..2] are table/column identifiers from the field's db_lookup config; validate them.
-				if(!preg_match('/^[A-Za-z0-9_]+$/', (string) $tmp[0])
-					|| !preg_match('/^[A-Za-z0-9_]+$/', (string) $tmp[1])
-					|| !preg_match('/^[A-Za-z0-9_]+$/', (string) $tmp[2]))
+				if(!preg_match('/^[A-Za-z0-9_]+$/D', (string) $tmp[0])
+					|| !preg_match('/^[A-Za-z0-9_]+$/D', (string) $tmp[1])
+					|| !preg_match('/^[A-Za-z0-9_]+$/D', (string) $tmp[2]))
 				{
 					return null;
 				}
