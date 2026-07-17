@@ -672,5 +672,5 @@
         "listQry": "SELECT n.*,  nc.category_name, nc.category_sef, u.user_id,u.user_name FROM `#news` AS n \n                               LEFT JOIN `#news_category` AS nc ON n.news_category = nc.category_id \n                               LEFT JOIN `#user` AS u ON n.news_author = u.user_id ",
         "listQryBeforeFinal": "SELECT n.*,  nc.category_name, nc.category_sef, u.user_id,u.user_name FROM `#news` AS n \n                               LEFT JOIN `#news_category` AS nc ON n.news_category = nc.category_id \n                               LEFT JOIN `#user` AS u ON n.news_author = u.user_id "
     },
-    "expected": "SELECT n.*,  nc.category_name, nc.category_sef, u.user_id,u.user_name FROM `#news` AS n \n                               LEFT JOIN `#news_category` AS nc ON n.news_category = nc.category_id \n                               LEFT JOIN `#user` AS u ON n.news_author = u.user_id  WHERE news_title LIKE '%e107%'  ORDER BY news_id desc LIMIT 0, 10"
+    "expected": "SELECT n.*,  nc.category_name, nc.category_sef, u.user_id,u.user_name FROM `#news` AS n \n                               LEFT JOIN `#news_category` AS nc ON n.news_category = nc.category_id \n                               LEFT JOIN `#user` AS u ON n.news_author = u.user_id  WHERE `news_title` LIKE '%e107%'  ORDER BY news_id desc LIMIT 0, 10"
 }

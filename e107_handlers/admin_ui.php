@@ -6448,7 +6448,9 @@ class e_admin_ui extends e_admin_controller_ui
 	protected function handleListBoolreverseBatch($selected, $field)
 	{
 		$tree = $this->getTreeModel();
-		$cnt = $tree->batchUpdate($field, "1-{$field}", $selected, null, false);
+		// Raw column-arithmetic expression: pass it explicitly as a SqlFragment
+		// so batchUpdate() keeps it verbatim (the SET target validates $field).
+		$cnt = $tree->batchUpdate($field, \e107\Database\SqlFragment::raw("1-{$field}"), $selected, null, false);
 		if($cnt)
 		{
 			$caption = e107::getParser()->lanVars(LAN_UI_BATCH_REVERSED_SUCCESS, $cnt, true);
@@ -6654,14 +6656,27 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		$string = $this->getQuery('searchquery');
 
-
-
 		if(empty($string))
 		{
 			return '';
 		}
 
-		return $selected. " LIKE '%".e107::getParser()->toDB($string)."%' "; // array($selected, $this->getQuery('searchquery'));
+		// $selected is the attacker-supplied field segment of
+		// filter_options=searchfield__<field>. Only permit a declared field, and
+		// backtick-quote it fail-closed, before it lands in the raw WHERE clause.
+		$fields = $this->getFields();
+		if(!isset($fields[$selected]))
+		{
+			return '';
+		}
+
+		$column = \e107\Database\IdentifierFilter::identifier($selected);
+		if($column === false)
+		{
+			return '';
+		}
+
+		return $column. " LIKE '%".e107::getParser()->toDB($string)."%' ";
 	}
 
 	/**
@@ -6672,12 +6687,12 @@ class e_admin_ui extends e_admin_controller_ui
 	protected function handleListBatch($selected, $field, $value)
 	{
 		// special exceptions
-		
+
 		if($value === '#delete') // see admin->users
 		{
-			$val = "''";
+			$val = '';
 			$value = '(empty)';
-		}	
+		}
 		elseif($value === '#null')
 		{
 			$val = null;
@@ -6685,17 +6700,17 @@ class e_admin_ui extends e_admin_controller_ui
 		}
 		else
 		{
-			$val = "'".$value."'";	
+			$val = $value;
 		}
-		
+
 		if($field === 'options') // reserved field type. see: admin -> media-manager - batch rotate image.
 		{
 			return null;
 		}
 
 
-
-
+		// $val is a literal (already toDB'd upstream): batchUpdate() binds it, so
+		// sanitize=false only means "do not re-encode", never "splice raw".
 		$cnt = $this->getTreeModel()->batchUpdate($field, $val, $selected, true, false);
 		if($cnt)
 		{

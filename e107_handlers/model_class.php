@@ -1541,11 +1541,20 @@ class e_model extends e_object
 		}
 
 		$sql = e107::getDb();
-		$qry = str_replace('{ID}', $id, $this->getParam('db_query'));
-		if($qry)
+		$dbQuery = (string) $this->getParam('db_query');
+		if($dbQuery !== '')
 		{
-			// Caller-built SQL (db_query param) - run it bound (no local values to bind).
-			$res = $sql->execute($qry);
+			// Caller-built SQL template. The {ID} placeholder is always a value
+			// position (WHERE <idcol> = {ID}), so bind it rather than splice the
+			// id in: the placeholder became a persistent-injection conduit when
+			// callers forwarded an unvalidated request id (e.g. getSystemUser()).
+			$params = array();
+			if(strpos($dbQuery, '{ID}') !== false)
+			{
+				$dbQuery = str_replace('{ID}', ':modelLoadId', $dbQuery);
+				$params = array('modelLoadId' => $id);
+			}
+			$res = $sql->execute($dbQuery, $params);
 		}
 		else
 		{
@@ -4193,27 +4202,34 @@ class e_front_tree_model extends e_tree_model
 			$syncvalue = $value;
 		}
 
+		// A raw SQL expression must be passed EXPLICITLY as a SqlFragment (e.g.
+		// "1-`field`"); anything else is a literal and gets bound, never spliced.
+		$isExpression = $value instanceof \e107\Database\SqlFragment;
+
 		if($sanitize)
 		{
 			$ids = array_map(array($tp, 'toDB'), $ids);
 			$field = $tp->toDB($field);
-			$value = $tp->toDB($value);
+			if(!$isExpression)
+			{
+				$value = $tp->toDB($value);
+			}
 		}
 
 		$table = $this->getModelTable();
 
 		$qb = $sql->createQueryBuilder()->update($table);
-		if($sanitize)
+		if($isExpression)
 		{
-			// Sanitized value is a literal: bind it.
-			$qb->set($field, $value);
+			// Trust boundary: caller-authored raw SQL expression, never user
+			// input. The closed builder keeps the vouched fragment verbatim.
+			$qb->setExpression($field, $value);
 		}
 		else
 		{
-			// Trust boundary: the caller owns $value as a literal SQL expression
-			// (e.g. "1-field_name"). raw() vouches for it so it survives the
-			// closed builder; safety of $value is the caller's responsibility.
-			$qb->setExpression($field, $qb->raw($value));
+			// Literal value (including '' and null): bind it. Never hand-quote a
+			// value into raw() - toDB() is HTML-escaping, not SQL-escaping.
+			$qb->set($field, $value);
 		}
 		$res = $qb->whereIn($this->getFieldIdName(), $ids)->execute();
 		$this->_db_errno = $sql->getLastErrorNumber();

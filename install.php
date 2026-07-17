@@ -2415,6 +2415,20 @@ return [
 				return FALSE;		// Invalid character found
 			}
 		}
+
+		// The db name and table prefix are interpolated into SQL identifier
+		// positions (CREATE/ALTER/DROP DATABASE `db`, REPLACE INTO {prefix}user),
+		// so enforce a strict identifier grammar: a backtick or space would
+		// otherwise break out of the quoting. db is backtick-quoted so it may
+		// carry a hyphen (matching the form's pattern); prefix is unquoted.
+		if (isset($fields['db']) && $fields['db'] !== '' && !preg_match('/^[A-Za-z0-9][A-Za-z0-9_-]*$/D', $fields['db']))
+		{
+			return FALSE;
+		}
+		if (isset($fields['prefix']) && $fields['prefix'] !== '' && !preg_match('/^[A-Za-z0-9_]+$/D', $fields['prefix']))
+		{
+			return FALSE;
+		}
 		return TRUE;
 	}
 
