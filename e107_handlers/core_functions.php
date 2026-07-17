@@ -647,56 +647,353 @@ class e_array {
             return array();
         }
 
-        $data = "";
-        $ArrayData = '$data = '.$ArrayData.';';
+        $data = $this->parseVarExport($ArrayData);
 
-		if(PHP_MAJOR_VERSION > 6) // catch parser error.
-	    {
-	        try
-	        {
-			    @eval($ArrayData);
-			}
-			catch (ParseError $e)
-			{
+        if(!is_array($data))
+        {
+            if(deftrue('e_DEBUG'))
+            {
+                file_put_contents(e_LOG.'unserializeError_'.time().'.log', $sourceArrayData);
+            }
 
-				if(e_DEBUG === true)
-				{
-					$message = $e->getMessage();
-					$message .= print_a($ArrayData,true);
-					echo "<div class='alert alert-danger'><h4>e107::unserialize() Parser Error</h4>". $message. "</div>";
-					echo "<pre>";
-					debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);
-					echo "</pre>";
-					file_put_contents(e_LOG.'unserializeError_'.time().'.log', $sourceArrayData);
-				}
-
-			//	e107::getAdminLog()->addError($sourceArrayData)->toFile('unserializeError_'.time().'.log','e107::unserialize',false);
-
-
-			    return array();
-
-			}
-
-	    }
-		else
-		{
-
-			@eval($ArrayData);
-	        if (!isset($data) || !is_array($data))
-	        {
-	            if(e_DEBUG === true)
-				{
-	                file_put_contents(e_LOG.'unserializeError_'.time().'.log', $sourceArrayData);
-				}
-
-	            trigger_error("Bad stored array data - <br /><br />".htmlentities($ArrayData), E_USER_ERROR);
-
-	        }
-
-		}
+            return array();
+        }
 
 
         return $data;        
+    }
+
+
+    /**
+     * Safely reconstruct a PHP array from e_array::serialize() (var_export) output
+     * without eval().
+     *
+     * var_export() emits a restricted literal grammar: array(...) whose keys are int
+     * or single-quoted string literals and whose values are strings, ints, floats,
+     * booleans, NULL, or nested arrays. This tokenises the input and rebuilds that
+     * structure, failing closed (returning null) on any token outside the grammar, so
+     * a poisoned value such as array(0 => passthru($_GET['cmd'])) is never executed.
+     * Replaces the former eval()-based reconstruction (CVE-2026-57859).
+     *
+     * @param string $input array literal as produced by e_array::serialize()
+     * @return array|null the reconstructed array, or null when $input is not a pure
+     *                    array literal
+     */
+    protected function parseVarExport($input)
+    {
+        if(!function_exists('token_get_all'))
+        {
+            return null;
+        }
+
+        $raw = @token_get_all('<?php ' . $input);
+        $tokens = array();
+
+        foreach($raw as $token)
+        {
+            if(is_array($token))
+            {
+                if($token[0] === T_OPEN_TAG || $token[0] === T_WHITESPACE || $token[0] === T_COMMENT
+                    || (defined('T_DOC_COMMENT') && $token[0] === T_DOC_COMMENT))
+                {
+                    continue;
+                }
+
+                $tokens[] = array($token[0], $token[1]);
+            }
+            else
+            {
+                $tokens[] = array(null, $token);
+            }
+        }
+
+        $pos = 0;
+
+        try
+        {
+            $value = $this->parseVarExportValue($tokens, $pos);
+
+            if($pos < count($tokens) && $tokens[$pos][1] === ';')
+            {
+                $pos++;
+            }
+
+            if($pos !== count($tokens))
+            {
+                throw new \RuntimeException('trailing tokens');
+            }
+        }
+        catch(\Exception $e)
+        {
+            return null;
+        }
+
+        return is_array($value) ? $value : null;
+    }
+
+    /**
+     * Parse one var_export value (a scalar or a nested array) from the token stream.
+     *
+     * @param array $tokens normalised list of array($id, $text) tokens
+     * @param int   $pos    current offset, advanced in place
+     * @return mixed
+     * @throws \RuntimeException on any token outside the var_export grammar
+     */
+    protected function parseVarExportValue($tokens, &$pos)
+    {
+        $count = count($tokens);
+
+        if($pos >= $count)
+        {
+            throw new \RuntimeException('unexpected end of input');
+        }
+
+        if($tokens[$pos][0] !== T_ARRAY)
+        {
+            return $this->parseVarExportScalar($tokens, $pos);
+        }
+
+        $pos++;
+
+        if($pos >= $count || $tokens[$pos][1] !== '(')
+        {
+            throw new \RuntimeException("expected '('");
+        }
+
+        $pos++;
+        $result = array();
+
+        while(true)
+        {
+            if($pos >= $count)
+            {
+                throw new \RuntimeException('unterminated array');
+            }
+
+            if($tokens[$pos][1] === ')')
+            {
+                $pos++;
+                break;
+            }
+
+            $key = $this->parseVarExportScalar($tokens, $pos);
+
+            if($pos < $count && $tokens[$pos][0] === T_DOUBLE_ARROW)
+            {
+                $pos++;
+
+                // var_export() renders PHP_INT_MIN in key position as an int-overflow
+                // literal, which tokenises as a float. Coerce an integral float key back
+                // to int exactly as PHP does when building the array.
+                if(is_float($key) && is_finite($key) && (float) (int) $key === $key)
+                {
+                    $key = (int) $key;
+                }
+
+                if(!is_int($key) && !is_string($key))
+                {
+                    throw new \RuntimeException('invalid array key');
+                }
+
+                $result[$key] = $this->parseVarExportValue($tokens, $pos);
+            }
+            else
+            {
+                $result[] = $key;
+            }
+
+            if($pos >= $count)
+            {
+                throw new \RuntimeException('unterminated array');
+            }
+
+            if($tokens[$pos][1] === ',')
+            {
+                $pos++;
+                continue;
+            }
+
+            if($tokens[$pos][1] === ')')
+            {
+                $pos++;
+                break;
+            }
+
+            throw new \RuntimeException("expected ',' or ')'");
+        }
+
+        return $result;
+    }
+
+    /**
+     * Parse one scalar value, folding the two multi-token forms that var_export()
+     * emits: string concatenation (used only to embed NUL bytes, e.g. 'a' . "\0" . 'b')
+     * and the PHP_INT_MIN arithmetic expression (-9223372036854775807-1). Advances $pos.
+     *
+     * @param array $tokens
+     * @param int   $pos
+     * @return string|int|float|bool|null
+     * @throws \RuntimeException on anything outside the var_export grammar
+     */
+    protected function parseVarExportScalar($tokens, &$pos)
+    {
+        $value = $this->parseVarExportPrimary($tokens, $pos);
+        $count = count($tokens);
+
+        // var_export() renders NUL bytes as a concatenation of string literals joined
+        // by '.', e.g.  'a' . "\0" . 'b'. Fold the pieces back into one string.
+        if(is_string($value))
+        {
+            while($pos < $count && $tokens[$pos][1] === '.')
+            {
+                $pos++;
+                $next = $this->parseVarExportPrimary($tokens, $pos);
+
+                if(!is_string($next))
+                {
+                    throw new \RuntimeException('non-string concatenation operand');
+                }
+
+                $value .= $next;
+            }
+
+            return $value;
+        }
+
+        // var_export() renders PHP_INT_MIN as the expression -9223372036854775807-1.
+        if(is_int($value) && $pos < $count && ($tokens[$pos][1] === '-' || $tokens[$pos][1] === '+'))
+        {
+            $operator = $tokens[$pos][1];
+            $pos++;
+            $operand = $this->parseVarExportPrimary($tokens, $pos);
+
+            if(!is_int($operand))
+            {
+                throw new \RuntimeException('non-integer arithmetic operand');
+            }
+
+            $value = ($operator === '-') ? $value - $operand : $value + $operand;
+        }
+
+        return $value;
+    }
+
+    /**
+     * Parse one primary literal: a single-quoted string, the double-quoted "\0" chunk
+     * var_export() uses for a NUL byte, an optionally negative int or float, the bare
+     * float constants INF/-INF/NAN, or the bare words true/false/null. Advances $pos.
+     *
+     * @param array $tokens
+     * @param int   $pos
+     * @return string|int|float|bool|null
+     * @throws \RuntimeException on anything else
+     */
+    protected function parseVarExportPrimary($tokens, &$pos)
+    {
+        $count = count($tokens);
+
+        if($pos >= $count)
+        {
+            throw new \RuntimeException('unexpected end of input');
+        }
+
+        $negative = false;
+
+        if($tokens[$pos][1] === '-')
+        {
+            $negative = true;
+            $pos++;
+
+            if($pos >= $count)
+            {
+                throw new \RuntimeException('dangling minus');
+            }
+        }
+
+        $id   = $tokens[$pos][0];
+        $text = $tokens[$pos][1];
+
+        if($id === T_LNUMBER)
+        {
+            $pos++;
+            $number = (int) $text;
+            return $negative ? -$number : $number;
+        }
+
+        if($id === T_DNUMBER)
+        {
+            $pos++;
+            $number = (float) $text;
+            return $negative ? -$number : $number;
+        }
+
+        // Bare float constants that var_export() emits for non-finite floats.
+        if($id === T_STRING)
+        {
+            $word = strtolower($text);
+
+            if($word === 'inf')
+            {
+                $pos++;
+                return $negative ? -INF : INF;
+            }
+
+            if($word === 'nan')
+            {
+                $pos++;
+                return NAN;
+            }
+        }
+
+        if($negative)
+        {
+            throw new \RuntimeException('minus not followed by a number');
+        }
+
+        if($id === T_CONSTANT_ENCAPSED_STRING)
+        {
+            // Normal single-quoted string literal (including the empty '' pieces that
+            // border a NUL-byte concatenation).
+            if($text !== '' && $text[0] === "'")
+            {
+                $pos++;
+                return strtr(substr($text, 1, -1), array("\\'" => "'", "\\\\" => "\\"));
+            }
+
+            // var_export() emits a NUL byte only as the double-quoted chunk "\0".
+            if($text === "\"\\0\"")
+            {
+                $pos++;
+                return "\0";
+            }
+
+            throw new \RuntimeException('non single-quoted string');
+        }
+
+        if($id === T_STRING)
+        {
+            $word = strtolower($text);
+
+            if($word === 'true')
+            {
+                $pos++;
+                return true;
+            }
+
+            if($word === 'false')
+            {
+                $pos++;
+                return false;
+            }
+
+            if($word === 'null')
+            {
+                $pos++;
+                return null;
+            }
+        }
+
+        throw new \RuntimeException('unexpected token in var_export literal');
     }
     
     

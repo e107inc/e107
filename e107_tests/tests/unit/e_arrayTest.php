@@ -179,4 +179,137 @@ $data = array (
 
 
 		}
+
+
+		/**
+		 * Security regression: CVE-2026-57859.
+		 *
+		 * e_array::unserialize() must not execute attacker-controlled PHP embedded in a
+		 * stored "array(...)" value. A poisoned user_prefs column is second-order RCE
+		 * through the former eval()-based reconstruction. This payload would set an
+		 * environment variable if it executed; the safe parser must reject it and run
+		 * nothing.
+		 */
+		public function testUnserializeDoesNotEvalPayload()
+		{
+			$canary = 'E107_CVE_2026_57859';
+			putenv($canary);
+
+			$payload = "array(0 => putenv('$canary=pwned'))";
+			$result  = $this->arrObj->unserialize($payload);
+
+			$executed = (getenv($canary) === 'pwned');
+			putenv($canary);
+
+			$this->assertFalse($executed, 'e_array::unserialize() executed attacker PHP via eval() (CVE-2026-57859)');
+			$this->assertSame(array(), $result);
+		}
+
+		/**
+		 * Security regression: CVE-2026-57859, live second-order path.
+		 *
+		 * A poisoned user_prefs column detonates via e_user_pref::load(), whose
+		 * constructor deserializes the raw column value. Feeding it through the real
+		 * e_user_model -> e_user_pref chain must not execute the payload.
+		 */
+		public function testUserPrefLoadDoesNotEvalPayload()
+		{
+			$canary = 'E107_CVE_2026_57859_USERPREF';
+			putenv($canary);
+
+			$payload = "array(0 => putenv('$canary=pwned'))";
+
+			$user = new e_user_model(array('user_id' => 1, 'user_prefs' => $payload));
+			new e_user_pref($user);
+
+			$executed = (getenv($canary) === 'pwned');
+			putenv($canary);
+
+			$this->assertFalse($executed, 'e_user_pref::load() executed attacker user_prefs via eval() (CVE-2026-57859)');
+		}
+
+		/**
+		 * BC: legitimate var_export() data must round-trip unchanged through the safe
+		 * parser - nested arrays, int / negative-int keys, floats (incl. E notation),
+		 * booleans, null, and strings carrying escaped quotes and backslashes.
+		 */
+		public function testUnserializeVarExportRoundTrip()
+		{
+			$original = array(
+				'name'     => "O'Brien \\ friends",
+				'count'    => 42,
+				'balance'  => -3.5,
+				'ratio'    => 2.5,
+				'sci'      => 6.022E23,
+				'active'   => true,
+				'disabled' => false,
+				'note'     => null,
+				'empty'    => '',
+				7          => 'seven',
+				-1         => 'minus one',
+				'nested'   => array(
+					'a' => array('deep' => 'value'),
+					'b' => array(1, 2, 3),
+				),
+			);
+
+			$serialized = $this->arrObj->serialize($original);
+			$this->assertSame($original, $this->arrObj->unserialize($serialized));
+		}
+
+		/**
+		 * BC: the multi-token forms var_export() emits for edge-case scalars must
+		 * round-trip through the safe parser rather than silently blank the whole
+		 * array. Covers NUL bytes (rendered as 'a' . "\0" . 'b'), PHP_INT_MIN (an
+		 * arithmetic expression as a value, an int-overflow literal as a key), and
+		 * the non-finite floats INF / -INF / NAN.
+		 */
+		public function testUnserializeVarExportEdgeForms()
+		{
+			// NUL bytes in values and keys.
+			$nul = array(
+				'name'  => 'joe',
+				'blob'  => "secret\0byte",
+				'multi' => "a\0\0b",
+				'lead'  => "\0x",
+				"k\0y"  => 'nulkey',
+			);
+			$this->assertSame($nul, $this->arrObj->unserialize($this->arrObj->serialize($nul)));
+
+			// PHP_INT_MIN as a value (arithmetic form) and as a key (overflow literal).
+			// -PHP_INT_MAX - 1 == PHP_INT_MIN and is safe on PHP 5.6 (no PHP_INT_MIN const).
+			$intMin = -PHP_INT_MAX - 1;
+			$ints   = array('min' => $intMin, 'max' => PHP_INT_MAX, $intMin => 'minkey');
+			$this->assertSame($ints, $this->arrObj->unserialize($this->arrObj->serialize($ints)));
+
+			// INF / -INF compare by identity.
+			$inf = array('pos' => INF, 'neg' => -INF);
+			$this->assertSame($inf, $this->arrObj->unserialize($this->arrObj->serialize($inf)));
+
+			// NAN never compares equal, so verify it decoded to a NAN float.
+			$nan = $this->arrObj->unserialize($this->arrObj->serialize(array('x' => NAN)));
+			$this->assertTrue(isset($nan['x']) && is_float($nan['x']) && is_nan($nan['x']));
+		}
+
+		/**
+		 * Security: malicious "array(...)" strings that embed executable PHP must fail
+		 * closed (return an empty array), never execute, and never round-trip.
+		 */
+		public function testUnserializeRejectsCodeInjection()
+		{
+			$payloads = array(
+				"array(0 => passthru('echo pwned'))",
+				"array('x' => phpinfo())",
+				'array(0 => $GLOBALS)',
+				"array(PHP_INT_MAX => 1)",
+				"array('a' => 1) + array('b' => 2)",
+				"array(0 => (function(){ return 1; })())",
+				"array(0 => `id`)",
+			);
+
+			foreach($payloads as $payload)
+			{
+				$this->assertSame(array(), $this->arrObj->unserialize($payload), 'Payload should fail closed: '.$payload);
+			}
+		}
 	}
