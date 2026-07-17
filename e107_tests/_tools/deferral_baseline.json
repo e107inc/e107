@@ -153,7 +153,7 @@
         {
             "file": "e107_handlers/model_class.php",
             "method": "execute",
-            "sql_excerpt": "{$qry}",
+            "sql_excerpt": "{$dbQuery}",
             "count": 1
         },
         {
