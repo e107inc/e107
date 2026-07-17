@@ -1595,7 +1595,7 @@ class e107plugin
 	{
 		$sql = e107::getDb();
 
-		if ($sql->select("plugin", "plugin_id", "plugin_path = '".(string) $path."' LIMIT 1"))
+		if ($sql->select("plugin", "plugin_id", "plugin_path = '".$sql->escape((string) $path)."' LIMIT 1"))
 		{
 			$row = $sql->fetch();
 			return intval($row['plugin_id']);
@@ -2040,7 +2040,7 @@ class e107plugin
 
 
 		$qry = "plugin_id = " . $id;
-		$qry .= ($path != false) ? " OR plugin_path = '" . $path . "' " : "";
+		$qry .= ($path != false) ? " OR plugin_path = '" . $sql->escape($path) . "' " : "";
 
 		if ($sql->select('plugin', '*', $qry)) {
 			$getinfo_results[$id] = $sql->fetch();
@@ -2441,7 +2441,7 @@ class e107plugin
 		{
 			$link_t = $sql->count('links');
 
-			$countQry = !empty($options['link_owner']) ? "link_owner = '".$options['link_owner']."' AND link_url = '".$path."'" : "link_url = '{$path}' OR link_name = '".$link_name."'";
+			$countQry = !empty($options['link_owner']) ? "link_owner = '".$sql->escape($options['link_owner'])."' AND link_url = '".$path."'" : "link_url = '{$path}' OR link_name = '".$link_name."'";
 
 			if (!$sql->count('links', '(*)', "WHERE ".$countQry))
 			{
@@ -2470,9 +2470,9 @@ class e107plugin
 		if ($action == 'remove') 
 		{
 			//v2.x  
-			if(!empty($options['link_owner']) && $sql->select('links', 'link_id', "link_owner = '".$options['link_owner']."'"))
+			if(!empty($options['link_owner']) && $sql->select('links', 'link_id', "link_owner = '".$sql->escape($options['link_owner'])."'"))
 			{
-				return $sql->delete('links', "link_owner = '".$options['link_owner']."' ");	
+				return $sql->delete('links', "link_owner = '".$sql->escape($options['link_owner'])."' ");
 			}
 			
 			// Look up by URL if we can - should be more reliable. Otherwise try looking up by name (as previously)
@@ -4903,7 +4903,7 @@ class e107plugin
 			if (!empty($eplug_folder))
 			{
 				$result = e107::getFile()->rmtree(e_PLUGIN . $eplug_folder);
-				e107::getDb()->delete('plugin', "plugin_path='" . $eplug_folder . "'");
+				e107::getDb()->delete('plugin', "plugin_path='" . $sql->escape($eplug_folder) . "'");
 				$text .= ($result ? '<br />' . EPL_ADLAN_86 . e_PLUGIN . $eplug_folder : '<br />' . EPL_ADLAN_87 . '<br />' . EPL_ADLAN_31 . ' <b>' . e_PLUGIN . $eplug_folder . '</b> ' . EPL_ADLAN_32);
 			}
 		}

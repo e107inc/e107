@@ -379,6 +379,24 @@ class plugin_ui extends e_admin_ui
 		// Action Pages.
 
 
+		/**
+		 * Read the plugin folder from the query string, restricted to the legal plugin-folder charset.
+		 * Redirects to the list when the value could not be a plugin folder.
+		 * @return string
+		 */
+		private function getQueryPath()
+		{
+			$path = $this->getQuery('path');
+
+			if(!is_string($path) || !preg_match('#^[A-Za-z0-9_-]+$#', $path))
+			{
+				e107::getMessage()->addError("Invalid plugin path"); // Debug - no need for translation.
+				$this->redirectAction('list');
+				exit;
+			}
+
+			return $path;
+		}
 
 
 
@@ -390,7 +408,7 @@ class plugin_ui extends e_admin_ui
 				$this->redirectAction('list');
 			}
 
-			$id = $this->getQuery('path');
+			$id = $this->getQueryPath();
 
 			$text = e107::getPlugin()->install($id);
 
@@ -452,7 +470,7 @@ class plugin_ui extends e_admin_ui
 			}
 
 
-			$id = $this->getQuery('path');
+			$id = $this->getQueryPath();
 
 
 			if(empty($_POST['uninstall_confirm']))
@@ -503,7 +521,7 @@ class plugin_ui extends e_admin_ui
 				return null;
 			}
 
-			$id = $this->getQuery('path');
+			$id = $this->getQueryPath();
 
 			$this->repair($id);
 
@@ -528,7 +546,7 @@ class plugin_ui extends e_admin_ui
 
 		function pullPage()
 		{
-			$id = $this->getQuery('path');
+			$id = $this->getQueryPath();
 
 			if(!e107::isInstalled($id))
 			{
@@ -628,7 +646,7 @@ class plugin_ui extends e_admin_ui
 		    $sql 		= e107::getDb();
 	        $mes 		= e107::getMessage();
 
-	        $id         = $this->getQuery('path');
+	        $id         = $this->getQueryPath();
 
 			$plug 		= e107::getPlug()->load($id)->getMeta();
 

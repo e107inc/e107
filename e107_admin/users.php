@@ -625,6 +625,7 @@ class users_admin_ui extends e_admin_ui
 	 */
 	public function ListUnbanTrigger($userid)
 	{
+		$userid = intval($userid);
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 		$sysuser = e107::getSystemUser($userid, false);
@@ -659,6 +660,7 @@ class users_admin_ui extends e_admin_ui
 	 */
 	public function ListBanTrigger($userid)
 	{
+		$userid = intval($userid);
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
 		$admin_log = e107::getLog();
@@ -721,6 +723,7 @@ class users_admin_ui extends e_admin_ui
 	 */
 	public function ListVerifyTrigger($userid)
 	{
+		$userid = intval($userid);
 		$e_event = e107::getEvent();
 		$admin_log = e107::getLog();
 		$sysuser = e107::getSystemUser($userid, false);
@@ -797,6 +800,7 @@ class users_admin_ui extends e_admin_ui
 	 */
 	public function ListLoginasTrigger($userid)
 	{
+		$userid = intval($userid);
 		$mes = e107::getMessage();
 
 		if(e107::getUser()->getSessionDataAs())
@@ -868,15 +872,16 @@ class users_admin_ui extends e_admin_ui
 	 */
 	public function ListUnadminTrigger($userid)
 	{
+		$userid = intval($userid);
 		$user = e107::getUser();
-		$sysuser = e107::getSystemUser($userid, false);
 		$mes = e107::getMessage();
 		$tp = e107::getParser();
-		
+
 		if(!$user->checkAdminPerms('3'))
 		{
+			$sysuser = e107::getSystemUser($userid, false);
 			$mes->addError(USRLAN_226, 'default', true);
-			
+
 			//$search = array('--UID--', '--NAME--', '--EMAIL--', '--ADMIN_UID--', '--ADMIN_NAME--', '--ADMIN_EMAIL--');
 			$vars = array(
 				'u' => $sysuser->getId(),
@@ -890,6 +895,8 @@ class users_admin_ui extends e_admin_ui
 			e107::getLog()->add('USET_08', $tp->lanVars(USRLAN_244,$vars), E_LOG_INFORMATIVE);
 			$this->redirect('list', 'main', true);
 		}
+
+		$sysuser = e107::getSystemUser($userid, false);
 
 		if ($sysuser->isMainAdmin())
 		{
@@ -1193,7 +1200,7 @@ class users_admin_ui extends e_admin_ui
 	 */
 	protected function resendActivation($id, $lfile = '')
 	{
-
+		$id = intval($id);
 		$sysuser = e107::getSystemUser($id, false);
 		$key = $sysuser->getValue('sess');
 		$mes = e107::getMessage();
@@ -1379,6 +1386,7 @@ class users_admin_ui extends e_admin_ui
 	 */
 	public function ListReqverifyTrigger($userid)
 	{
+		$userid = intval($userid);
 		$sysuser = e107::getSystemUser($userid, false);
 		
 		if(!$sysuser->getId())

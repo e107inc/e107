@@ -3043,6 +3043,24 @@ class e_admin_controller_ui extends e_admin_controller
 	}
 
 	/**
+	 * Check that a field name is one of the controller's declared fields and is usable as an SQL
+	 * identifier. An optional single table alias prefix is permitted (e.g. 'u.user_name').
+	 * @param string $field
+	 * @return boolean
+	 */
+	protected function isFieldIdentifier($field)
+	{
+		if(!is_string($field) || !preg_match('/\A[A-Za-z0-9_]+(\.[A-Za-z0-9_]+)?\z/', $field)
+			|| !array_key_exists($field, $this->getFields()))
+		{
+			e107::getDebug()->log('Rejected batch/search field identifier: '.var_export($field, true));
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 *
 	 * @param string $field
 	 * @param string $key attribute name
@@ -3691,7 +3709,7 @@ class e_admin_controller_ui extends e_admin_controller
 				$value = $trigger[2];
 
 				//handleListBatch(); for custom handling of all field names
-				if(empty($selected))
+				if(empty($selected) || !$this->isFieldIdentifier($field))
 				{
 					return $this;
 				}
@@ -3747,6 +3765,10 @@ class e_admin_controller_ui extends e_admin_controller
 					return $this;
 				}
 				$field = $trigger[1];
+				if(!$this->isFieldIdentifier($field))
+				{
+					return $this;
+				}
 				$value = $trigger[2] ? 1 : 0;
 				//something like handleListBoolBatch(); for custom handling of 'bool' batch
 				$method = 'handle'.$actionName.'BoolBatch';
@@ -3762,6 +3784,10 @@ class e_admin_controller_ui extends e_admin_controller
 					return $this;
 				}
 				$field = $trigger[1];
+				if(!$this->isFieldIdentifier($field))
+				{
+					return $this;
+				}
 				//something like handleListBoolreverseBatch(); for custom handling of 'boolreverse' batch
 				$method = 'handle'.$actionName.'BoolreverseBatch';
 				if(method_exists($this, $method)) // callback handling
@@ -3781,7 +3807,12 @@ class e_admin_controller_ui extends e_admin_controller
 				}
 				$field = $trigger[1];
 				$value = $trigger[2];
-				
+
+				if(!$this->isFieldIdentifier($field))
+				{
+					return $this;
+				}
+
 				if($trigger[0] === 'addAll')
 				{
 					$parms = $this->getFieldAttr($field, 'writeParms', array());
@@ -3816,6 +3847,12 @@ class e_admin_controller_ui extends e_admin_controller
 				}
 				$field = $trigger[1];
 				$class = $trigger[2];
+
+				if(!$this->isFieldIdentifier($field))
+				{
+					return $this;
+				}
+
 				$user = e107::getUser();
 				$e_userclass = e107::getUserClass(); 
 				
@@ -3841,8 +3878,14 @@ class e_admin_controller_ui extends e_admin_controller
 					return $this;
 				}
 				$field = $trigger[1];
+
+				if(!$this->isFieldIdentifier($field))
+				{
+					return $this;
+				}
+
 				$user = e107::getUser();
-				$e_userclass = e107::getUserClass(); 
+				$e_userclass = e107::getUserClass();
 				$parms = $this->getFieldAttr($field, 'writeParms', array());
 				if(!is_array($parms))
 				{
@@ -3888,6 +3931,11 @@ class e_admin_controller_ui extends e_admin_controller
 
 				//handleListBatch(); for custom handling of all field names
 				//if(empty($selected)) return $this;
+				if(!$this->isFieldIdentifier($field))
+				{
+					return $this;
+				}
+
 				$method = 'handle'.$actionName.'Batch';
 				e107::getDebug()->log('Checking for batch method: ' .$method);
 				if(method_exists($this, $method))
@@ -6086,12 +6134,14 @@ class e_admin_ui extends e_admin_controller_ui
 
 
 
-		if(empty($string))
+		if(empty($string) || !$this->isFieldIdentifier($selected))
 		{
 			return null;
 		}
 
-		return $selected. " LIKE '%".e107::getParser()->toDB($string)."%' "; // array($selected, $this->getQuery('searchquery'));
+		$term = e107::getDb()->escape(e107::getParser()->toDB($string));
+
+		return $selected. " LIKE '%".$term."%' "; // array($selected, $this->getQuery('searchquery'));
 	}
 
 	/**
@@ -6115,9 +6165,9 @@ class e_admin_ui extends e_admin_controller_ui
 		}
 		else
 		{
-			$val = "'".$value."'";	
+			$val = "'".e107::getDb()->escape($value)."'";
 		}
-		
+
 		if($field === 'options') // reserved field type. see: admin -> media-manager - batch rotate image.
 		{
 			return null;
