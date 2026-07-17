@@ -688,14 +688,35 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 		}
 
 
-		public function sc_pm_nextprev($parm = null)
+		public function sc_pm_nextprev($parms = null)
 		{
 			if(empty($this->pmNextPrev['total']))
 			{
 				return null;
 			}
+	/**
+	 * The NEW way.
+	 * New parameter requirements formatted as a GET string.
+	 * Template support.
+	 */
+			if(is_string($parms))
+				{parse_str($parms, $parmsarray);}
+			else {$parmsarray = $parms; }
 
-			return e107::getParser()->parseTemplate("{NEXTPREV={$this->pmNextPrev['total']},{$this->pmPrefs['perpage']},{$this->pmNextPrev['start']},".e_SELF."?{$parm}.[FROM]}");
+			foreach (['inbox', 'outbox'] as $key) {
+    			if (array_key_exists($key, $parmsarray)) {
+        			unset($parmsarray[$key]);
+			        $parmsarray['type'] = $key;
+        			break;
+    			}
+			}
+
+			if ($parmsarray['tmpl_prefix']) {
+				$string = 'tmpl_prefix='.$parmsarray['tmpl-prefix'].'&';
+			}
+
+////			return e107::getParser()->parseTemplate("{NEXTPREV={$this->pmNextPrev['total']},{$this->pmPrefs['perpage']},{$this->pmNextPrev['start']},".e_SELF."?{$parm}.[FROM]}");
+			return $this->tp->parseTemplate("{NEXTPREV={$string}total={$this->pmNextPrev['total']}&amount={$this->pmPrefs['perpage']}&current={$this->pmNextPrev['start']}&url=?{$parmsarray["type"]}.--FROM--}");
 		}
 
 
