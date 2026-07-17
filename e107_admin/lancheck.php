@@ -472,7 +472,6 @@ class lancheck
 		}
 		else
 		{
-			// Patch (lancheck-modern-syntax): show the actual message, not the boolean error flag.
 			$msg = !empty($status['message']) ? $status['message'] : $status['error'];
 			$mes->addError($msg);
 		}
@@ -566,8 +565,6 @@ class lancheck
 		$code = file_get_contents(e_LANGUAGEDIR.$language."/".$language.".php");
 		$tmp = explode("\n",$code);
 
-		// Patch (lancheck-modern-syntax): include `const` and `=` so that
-		// modern `const CORE_LC = "es";` declarations parse correctly.
 		$srch = array("define","const","'",'"',"(",")",";","CORE_LC2","CORE_LC",",","=");
 
 		foreach($tmp as $line)
@@ -613,8 +610,6 @@ class lancheck
 			$ret = array();
 			$ret['error'] = TRUE;
 
-			// Patch (lancheck-modern-syntax): explicit breakdown so the translator
-			// knows WHAT to fix instead of just seeing "[x] missing".
 			$s = $_SESSION['lancheck'][$language];
 			$parts = array();
 			if(!empty($s['file'])) { $parts[] = $s['file'].' missing file(s)'; }
@@ -660,12 +655,6 @@ class lancheck
 		}
 
 
-		// Patch (lancheck-config-paths): resolve directory names via e107::getFolder(),
-		// which reads e107_dirs and is populated on BOTH the legacy flat config and the
-		// new $config = [...] format. The previous $e107_paths fallback was dead code:
-		// class2.php unset()s $e107_paths right after initCore(), so on every admin page
-		// the *_DIRECTORY globals collapsed to the hardcoded defaults and the
-		// non-standard-layout guard below could never fire under the new config format.
 		$handlersDir  = e107::getFolder('handlers');
 		$languagesDir = e107::getFolder('languages');
 		$themesDir    = e107::getFolder('themes');
@@ -685,10 +674,7 @@ class lancheck
 
 		$file = $this->getFileList($language);
 
-		// Patch (lancheck-xml-dedup): exclude e107_languages/<lang>/<lang>.xml from the
-		// initial file list, because right after archive creation we (re)write a fresh
-		// XML manifest into the archive with current author/version/date. Without this
-		// filter the ZIP ends up containing two copies of e107_languages/<lang>/<lang>.xml.
+		// A fresh XML manifest is added to the archive below; without this filter the zip carries two copies.
 		$metaXmlPath = e_LANGUAGEDIR.$language."/".$language.".xml";
 		$file = array_values(array_filter($file, function($p) use ($metaXmlPath) {
 			return realpath($p) !== realpath($metaXmlPath);
@@ -705,10 +691,7 @@ class lancheck
 		else
 		{
 
-			// Patch (lancheck-xml-path): e_FILE points to ./e107_files/ which does NOT
-			// exist in v2.3.5+. The structure was reorganised under e_MEDIA. Build the
-			// path under e_SYSTEM (a guaranteed-writable directory) and create the
-			// intermediate folder so file_put_contents never fails silently.
+			// e_FILE's directory no longer exists in the v2 file structure; e_SYSTEM is guaranteed writable.
 			$xmlTmpDir = e_SYSTEM."temp/lancheck/";
 			if(!is_dir($xmlTmpDir))
 			{
@@ -720,11 +703,6 @@ class lancheck
 				@unlink($fileName);
 			}
 
-			// Patch (lancheck-xml-attrs): build the manifest attributes with
-			// e_parse::toAttributes(), which performs the correct HTML/XML escaping
-			// internally. This removes the manual htmlspecialchars(..., ENT_XML1)
-			// concatenation and keeps the quoting of name/email/url consistent with
-			// the rest of the codebase.
 			$tp = e107::getParser();
 			$langAttributes = $tp->toAttributes(array(
 				'name'          => $language,
@@ -1967,9 +1945,7 @@ class lancheck
 	{
 		$retloc = array();
 
-		// Patch (lancheck-modern-syntax): always register the file entry so that
-		// modern language files (return [...] / const) that have no define()
-		// statements are NOT misreported as "File missing!".
+		// A phrase-less file must still register its type, or it reads back as "File missing!".
 		$retloc[$type] = array();
 
 		if(!is_string($data) || $data === '')
@@ -1977,14 +1953,6 @@ class lancheck
 			return $retloc;
 		}
 
-		// Patch (lancheck-tokenizer): parse the source with the PHP tokenizer instead
-		// of regular expressions. The tokenizer ignores commented-out define()/const
-		// statements automatically and is immune to the quoting/escaping edge cases
-		// that the previous preg_match_all() approach could mis-handle. It recognises
-		// three localisation forms plus setlocale():
-		//   1) define('KEY', 'value');
-		//   2) const KEY = 'value';
-		//   3) return array('KEY' => 'value', ...);  (and the short [] syntax)
 		$code = (strpos($data, '<?php') === false) ? "<?php\n".$data : $data;
 
 		try
