@@ -611,17 +611,31 @@ class lancheck
 			$ret['error'] = TRUE;
 
 			$s = $_SESSION['lancheck'][$language];
+			$counts = array(
+				'file' => deftrue('LANG_LAN_156') ? LANG_LAN_156 : "[x] missing file(s)",
+				'def'  => deftrue('LANG_LAN_157') ? LANG_LAN_157 : "[x] missing/invalid phrase(s)",
+				'bom'  => deftrue('LANG_LAN_158') ? LANG_LAN_158 : "[x] file(s) with BOM/illegal characters",
+				'utf'  => deftrue('LANG_LAN_159') ? LANG_LAN_159 : "[x] non-UTF8 phrase(s)",
+			);
 			$parts = array();
-			if(!empty($s['file'])) { $parts[] = $s['file'].' missing file(s)'; }
-			if(!empty($s['def']))  { $parts[] = $s['def'].' missing/invalid phrase(s)'; }
-			if(!empty($s['bom']))  { $parts[] = $s['bom'].' file(s) with BOM/illegal characters'; }
-			if(!empty($s['utf']))  { $parts[] = $s['utf'].' non-UTF8 phrase(s)'; }
+			foreach($counts as $key => $lan)
+			{
+				if(!empty($s[$key]))
+				{
+					$parts[] = str_replace("[x]", $s[$key], $lan);
+				}
+			}
 			$detail = $parts ? ' ('.implode(', ', $parts).')' : '';
 
 			$message = LANG_LAN_115;
+			$tip = deftrue('LANG_LAN_160') ? LANG_LAN_160 : "Tip: open the [x] tab to see the affected files/keys. Enable [y] in [z] to bypass this check and generate the pack anyway.";
+			$tip = str_replace(
+				array("[x]", "[y]", "[z]"),
+				array("<em>".(deftrue('LAN_CHECK_2') ? LAN_CHECK_2 : "Verify")."</em>", "<code>E107_DEBUG_LEVEL</code>", "<code>e107_config.php</code>"),
+				$tip
+			);
 			$ret['message']  = str_replace("[x]", $s['total'], $message).$detail;
-			$ret['message'] .= "<br /><small>Tip: open the <em>Verify</em> tab to see the affected files/keys. ".
-			                   "Enable <code>E107_DEBUG_LEVEL</code> in <code>e107_config.php</code> to bypass this check and generate the pack anyway.</small>";
+			$ret['message'] .= "<br /><small>".$tip."</small>";
 			return $ret;
 		}
 
