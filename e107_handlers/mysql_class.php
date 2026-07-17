@@ -1091,7 +1091,7 @@ class e_db_mysql implements e_db
 			break;
 
 			case 'safestr':
-				return "'{$fieldValue}'";
+				return "'".$this->escape($fieldValue, false)."'";
 			break;
 
 			case 'str':
@@ -1868,7 +1868,7 @@ class e_db_mysql implements e_db
 		// $prefix.$table is an identifier; reject anything outside a strict identifier allowlist.
 		// A secondary-database prefix may carry a backtick-quoted database qualifier (`db`.prefix),
 		// so allow an optional leading `db`. (or db.) before the identifier characters.
-		if (!preg_match('/^(`?[A-Za-z0-9_]+`?\.)?[A-Za-z0-9_]+$/', (string) ($prefix.$table)))
+		if (!preg_match('/^(`?[A-Za-z0-9_]+`?\.)?[A-Za-z0-9_]+$/D', (string) ($prefix.$table)))
 		{
 			return false;		// Error return
 		}
@@ -2478,7 +2478,7 @@ class e_db_mysql implements e_db
 		}
 		$charset = ($charset ? $charset : $mySQLcharset);
 		// $charset is used as a backtick-quoted identifier in SET NAMES; restrict to a strict charset-name allowlist.
-		if($charset && !preg_match('/^[A-Za-z0-9_]+$/', (string) $charset))
+		if($charset && !preg_match('/^[A-Za-z0-9_]+$/D', (string) $charset))
 		{
 			$charset = '';
 		}
