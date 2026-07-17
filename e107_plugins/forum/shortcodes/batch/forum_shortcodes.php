@@ -167,10 +167,11 @@ class forum_shortcodes extends e_shortcode
 	function sc_userlist()
 	{
 		$text = '';
-		if(!defined('e_TRACKING_DISABLED'))
+
+		if(defined('e_TRACKING_DISABLED'))
 		{
-		// String candidate for USERLIST wrapper
-			$text = LAN_FORUM_0036.": ";
+			return;
+		}			
 
 			global $listuserson;
 			$c = 0;
@@ -186,9 +187,7 @@ class forum_shortcodes extends e_shortcode
 				}
 
 			}
-		// String candidate for USERLIST wrapper
-			$text .= "<br /><a rel='external' href='".e_HTTP."online.php'>".LAN_FORUM_0037."</a> ".LAN_FORUM_0038;
-		}
+
 		  return $text;
 	}
 
