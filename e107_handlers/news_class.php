@@ -836,8 +836,17 @@ class e_news_tree extends e_front_tree_model
 			
 		$db_order = vartrue($params['db_order'], 'n.news_datestamp DESC');
 		$db_limit = vartrue($params['db_limit'], '0,10');
-		
-		
+
+		// db_order/db_limit can arrive from stored news menu params (order/count)
+		// that are only toDB()'d, which does not neutralise an ORDER BY or LIMIT
+		// position. Validate the ORDER BY (identifiers quoted, ASC/DESC only,
+		// fail closed to the default) and coerce LIMIT to plain integers.
+		$safeOrder = \e107\Database\IdentifierFilter::orderBy($db_order);
+		$db_order = ($safeOrder !== false) ? $safeOrder : '`n`.`news_datestamp` DESC';
+
+		$limitParts = array_map('intval', explode(',', (string) $db_limit, 2));
+		$db_limit = (count($limitParts) > 1) ? $limitParts[0] . ',' . $limitParts[1] : (string) $limitParts[0];
+
 		$query = "SELECT  SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon FROM #news AS n
 			LEFT JOIN #user AS u ON n.news_author = u.user_id
 			LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id

@@ -166,4 +166,40 @@ class sqliDeferralBurndownTest extends \Codeception\Test\Unit
 		$row = $this->batchRow();
 		$this->assertSame('orig_b', $row['a'], 'A SqlFragment expression must still evaluate (a := b).');
 	}
+
+	// ---- news ORDER BY / LIMIT injection via stored menu params ----
+
+	public function testNewsLoadJoinSanitizesOrderByAndLimit()
+	{
+		require_once(e_HANDLER . 'news_class.php');
+		$tree = new e_news_tree();
+
+		// Payloads shaped like poisoned news menu params (order / count). Both
+		// are quote-free, so toDB() leaves them intact; only the ORDER BY / LIMIT
+		// sanitiser stops them reaching the executed query.
+		$tree->loadJoin(0, true, array(
+			'db_order' => 'n.news_datestamp DESC,(SELECT SLEEP(5))',
+			'db_limit' => '0,10 PROCEDURE ANALYSE(1,1)',
+		));
+
+		$query = (string) $tree->getParam('db_query');
+
+		$this->assertStringNotContainsString('SLEEP', $query, 'ORDER BY injection must not reach the query.');
+		$this->assertStringNotContainsString('PROCEDURE', $query, 'LIMIT injection must not reach the query.');
+		// The legitimate default ordering survives, quoted.
+		$this->assertStringContainsString('news_datestamp', $query);
+		$this->assertStringContainsString('LIMIT 0,10', $query);
+	}
+
+	public function testNewsLoadJoinPreservesLegitimateOrdering()
+	{
+		require_once(e_HANDLER . 'news_class.php');
+		$tree = new e_news_tree();
+
+		$tree->loadJoin(0, true, array('db_order' => 'n.news_title ASC', 'db_limit' => '5, 20'));
+		$query = (string) $tree->getParam('db_query');
+
+		$this->assertStringContainsString('`n`.`news_title` ASC', $query, 'A valid ordering must pass through, quoted.');
+		$this->assertStringContainsString('LIMIT 5,20', $query);
+	}
 }
