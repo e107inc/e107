@@ -708,12 +708,12 @@ class lancheck
 				'name'          => $language,
 				'compatibility' => $ver,
 				'date'          => date("Y-m-d"),
-			));
+			), true);
 			$authorAttributes = $tp->toAttributes(array(
 				'name'  => USERNAME,
 				'email' => USEREMAIL,
 				'url'   => SITEURL,
-			));
+			), true);
 
 			$fileData = '<?xml version="1.0" encoding="utf-8"?>
 <e107Language'.$langAttributes.' >
