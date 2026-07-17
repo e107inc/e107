@@ -90,7 +90,7 @@
 				'return array('."\n".
 				"\t'LAN1' => 'Főadminisztrátor',"."\n".
 				"\t'LAN2' => 'Hői',"."\n".
-				'];';
+				');';
 
 			$expected = array(
 				'orig' => array(
