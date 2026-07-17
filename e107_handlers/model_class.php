@@ -4034,12 +4034,24 @@ class e_front_tree_model extends e_tree_model
 			$syncvalue = $value;
 		}
 
+		// $field is an SQL identifier in an unquoted SET clause, which escaping cannot protect.
+		// An optional single table alias prefix is permitted (e.g. 'u.user_name').
+		if(!is_string($field) || !preg_match('/\A[A-Za-z0-9_]+(\.[A-Za-z0-9_]+)?\z/', $field))
+		{
+			return false;
+		}
+
 		if($sanitize)
 		{
-			$ids = array_map(array($tp, 'toDB'), $ids);
-			$field = $tp->toDB($field);
-			$value = "'".$tp->toDB($value)."'";
+			$value = "'".$sql->escape($tp->toDB($value))."'";
 		}
+
+		// the ids land unquoted inside IN(), where escaping offers no protection.
+		foreach($ids as $i => $_id)
+		{
+			$ids[$i] = preg_replace('/[^\w\-:.]/', '', $_id);
+		}
+
 		$idstr = implode(', ', $ids);
 
 		$table = $this->getModelTable();

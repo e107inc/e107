@@ -153,10 +153,18 @@ class e107Update
 		}	
 		
 		if(varset($_POST['update']) && is_array($_POST['update'])) // Do plugin updates
-		{ 
+		{
 			$func = key($_POST['update']);
-			$this->updatePlugin($func);
-		}	
+
+			if(preg_match('#^[A-Za-z0-9_-]+$#D', (string) $func))
+			{
+				$this->updatePlugin($func);
+			}
+			else
+			{
+				$mes->addError("Invalid plugin path"); // Debug - no need for translation.
+			}
+		}
 
 			//	$dbv =  e107::getSingleton('db_verify', e_HANDLER."db_verify_class.php");
 

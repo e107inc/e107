@@ -474,7 +474,7 @@ class poll
 			$sc->pollCommentTotal = $sql->count("comments", "(*)", "WHERE `comment_item_id`='".intval($pollArray['poll_id'])."' AND `comment_type`=4");
 		}
 
-		$sc->pollCount 	    = $sql->count("polls", "(*)", "WHERE poll_id <= '".$pollArray['poll_id']."'");
+		$sc->pollCount 	    = $sql->count("polls", "(*)", "WHERE poll_id <= '".intval($pollArray['poll_id'])."'");
 		$sc->pollRenderMode = $type;
 		$sc->pollVoteTotal  = $voteTotal;
 		$sc->pollRenderType = $type;

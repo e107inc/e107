@@ -1238,6 +1238,7 @@ class e_user_model extends e_admin_model
 	 */
 	public function load($user_id = 0, $force = false)
 	{
+		$user_id = intval($user_id);
 		$qry = "SELECT u.*, ue.* FROM #user AS u LEFT JOIN #user_extended as ue ON u.user_id=ue.user_extended_id WHERE u.user_id={ID}";
 		$this->setParam('db_query', $qry);
 		parent::load($user_id, $force);
@@ -1956,6 +1957,8 @@ class e_user extends e_user_model
 	 */
 	final public function loginAs($user_id)
 	{
+		$user_id = intval($user_id);
+
 		// TODO - set session data required for loadAs()
 		if($this->getParentId()
 			|| !$this->isMainAdmin()
