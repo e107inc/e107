@@ -146,11 +146,32 @@ class e107Update
 		
 		$this->core = $core;
 
+		// CSRF: the core/plugin update routines below are state-changing and
+		// write to the database, so a forged cross-site POST must not be able
+		// to trigger them. Require a valid session token before any update runs
+		// and fail closed. check() honours the site security level, so installs
+		// with token protection disabled are unaffected.
+		if((varset($_POST['update_core']) && is_array($_POST['update_core']))
+			|| (varset($_POST['update']) && is_array($_POST['update'])))
+		{
+			if(!isset($_POST['e-token']))
+			{
+				$_POST['e-token'] = '';
+			}
+
+			if(!e107::getSession()->check(false))
+			{
+				$mes->addError('Unauthorized access - invalid or missing security token.');
+				$this->renderForm();
+				return;
+			}
+		}
+
 		if(varset($_POST['update_core']) && is_array($_POST['update_core']))
 		{
 			$func = key($_POST['update_core']);
 			$this->updateCore($func);
-		}	
+		}
 		
 		if(varset($_POST['update']) && is_array($_POST['update'])) // Do plugin updates
 		{ 
@@ -322,6 +343,7 @@ class e107Update
 		$caption = LAN_UPDATE;
 		$text = "
 		<form method='post' action='".e_ADMIN."e107_update.php'>
+			<input type='hidden' name='e-token' value='".defset('e_TOKEN')."' />
 			<fieldset id='core-e107-update'>
 			<legend>$caption</legend>
 				<table class='table adminlist'>
