@@ -278,11 +278,10 @@ class e_db_mysql implements e_db
 	}
 
 	/**
-	* @deprecated
-	* @return void
-	* @desc Enter description here...
-	* @access private
-	*/
+	 * @deprecated v2.0.0 No-op retained for backwards compatibility; query
+	 *             performance output lives in the debug panel ({@see e107_db_debug}).
+	 * @return void
+	 */
 	function db_Show_Performance()
 	{
 	//	e107::getDebug()-Show_P
@@ -797,11 +796,14 @@ class e_db_mysql implements e_db
 	}
 
 	/**
-	 * fetch() alias
-	 * @deprecated
+	 * @param string|null $type assoc|num|both
+	 * @return array|bool
+	 * @deprecated v2.0.0 Renamed; use {@see \e107\Database\ConnectionInterface::fetch()}.
 	 */
 	function db_Fetch($type = null)
 	{
+		$this->_notifyDeprecated('db_Fetch', 'Use $sql->fetch() instead.');
+
 		return $this->fetch($type);
 	}
 
