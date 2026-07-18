@@ -340,32 +340,34 @@ trait ConnectionTrait
 	 */
 	function escape($data, $strip = true)
 	{
-		$this->_notifyEscapeDeprecated();
+		$this->_notifyDeprecated('escape', 'Bind values instead of escaping them: the query builder ($sql->createQueryBuilder()) binds every value, and $sql->execute($query, $params) binds :named parameters in raw SQL.');
 
 		return $this->_escape($data);
 	}
 
 	/**
-	 * Emit one E_USER_DEPRECATED notice per escape() call site per request.
-	 * The class2.php error handler feeds these into the E107_DBG_DEPRECATED
-	 * debug panel via {@see e107_db_debug::logDeprecated()}.
+	 * Emit one E_USER_DEPRECATED notice per deprecated method per call site
+	 * per request. The class2.php error handler feeds these into the
+	 * E107_DBG_DEPRECATED debug panel via {@see e107_db_debug::logDeprecated()}.
 	 *
+	 * @param string $method Deprecated method name, without parentheses
+	 * @param string $advice One sentence naming the current replacement API
 	 * @return void
 	 */
-	private function _notifyEscapeDeprecated()
+	private function _notifyDeprecated($method, $advice)
 	{
 		static $notified = array();
 
 		$trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);
 		$site = (isset($trace[1]['file']) ? $trace[1]['file'] : '?').':'.(isset($trace[1]['line']) ? $trace[1]['line'] : '?');
 
-		if(isset($notified[$site]))
+		if(isset($notified[$method.'|'.$site]))
 		{
 			return;
 		}
 
-		$notified[$site] = true;
-		trigger_error('<b>$sql->escape() is deprecated.</b> Bind values with $sql->execute($sql, $params) instead. Called from '.$site, E_USER_DEPRECATED); // NO LAN
+		$notified[$method.'|'.$site] = true;
+		trigger_error('<b>$sql->'.$method.'() is deprecated.</b> '.$advice.' Called from '.$site, E_USER_DEPRECATED); // NO LAN
 	}
 
 	/**
