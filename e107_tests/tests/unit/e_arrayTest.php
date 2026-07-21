@@ -276,11 +276,20 @@ $data = array (
 			);
 			$this->assertSame($nul, $this->arrObj->unserialize($this->arrObj->serialize($nul)));
 
-			// PHP_INT_MIN as a value (arithmetic form) and as a key (overflow literal).
-			// -PHP_INT_MAX - 1 == PHP_INT_MIN and is safe on PHP 5.6 (no PHP_INT_MIN const).
-			$intMin = -PHP_INT_MAX - 1;
-			$ints   = array('min' => $intMin, 'max' => PHP_INT_MAX, $intMin => 'minkey');
-			$this->assertSame($ints, $this->arrObj->unserialize($this->arrObj->serialize($ints)));
+			// PHP_INT_MIN as a value and as a key. -PHP_INT_MAX - 1 == PHP_INT_MIN and
+			// is safe on PHP 5.6 (no PHP_INT_MIN constant).
+			$intMin       = -PHP_INT_MAX - 1;
+			$roundtripped = $this->arrObj->unserialize($this->arrObj->serialize(
+				array('min' => $intMin, 'max' => PHP_INT_MAX, $intMin => 'minkey')
+			));
+			// As a key it round-trips to an int on every supported PHP: var_export emits
+			// the overflow literal and PHP coerces the float key to int on array build.
+			$this->assertSame('minkey', $roundtripped[$intMin]);
+			$this->assertSame(PHP_INT_MAX, $roundtripped['max']);
+			// As a value it equals PHP_INT_MIN. On PHP < 7.2 var_export emits the plain
+			// overflow literal, which eval() and this parser both read back as a float
+			// (matching the historical behaviour), so compare by value, not strict type.
+			$this->assertEquals($intMin, $roundtripped['min']);
 
 			// INF / -INF compare by identity.
 			$inf = array('pos' => INF, 'neg' => -INF);
