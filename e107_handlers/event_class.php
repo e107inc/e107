@@ -228,6 +228,14 @@ class e107_event
 					try
 					{
 					
+						if (!class_exists($class)) // stale notify_prefs entry: plugin class removed/renamed
+						{
+							$logError = array('name'=>$eventname,'location'=>$location,'class'=>$class,'method'=>$method,'error'=>'class does not exist');
+							e107::getLog()->add('Event Trigger failed',$logError,E_LOG_WARNING,'EVENT_01');
+							trigger_error('Event Trigger failed: class does not exist: '.print_r($logError,true), E_USER_WARNING);
+							continue;
+						}
+
 						$tmp = new $class($eventname);
 						$ret = $tmp->{$method}($data, $eventname); //let callback know what event is calling it
 						unset($tmp);
@@ -238,7 +246,12 @@ class e107_event
 					}
 					catch(Exception $e)
 					{
-						e107::getLog()->add('Event Trigger failed',array('name'=>$eventname,'location'=>$location,'class'=>$class,'method'=>$method,'error'=>$e),E_LOG_WARNING,'EVENT_01'); 
+						e107::getLog()->add('Event Trigger failed',array('name'=>$eventname,'location'=>$location,'class'=>$class,'method'=>$method,'error'=>$e),E_LOG_WARNING,'EVENT_01');
+						continue;
+					}
+					catch(\Throwable $e) // PHP7+: also catch \Error; never reached on PHP5.6 where \Exception catches every throwable
+					{
+						e107::getLog()->add('Event Trigger failed',array('name'=>$eventname,'location'=>$location,'class'=>$class,'method'=>$method,'error'=>$e),E_LOG_WARNING,'EVENT_01');
 						continue;
 					}
 				}
