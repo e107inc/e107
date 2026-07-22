@@ -1243,7 +1243,14 @@ class e_media
 	public function detectType($mediaURL)
 	{
 		$mediaURL = (string) $mediaURL;
-		$type = pathinfo($mediaURL,PATHINFO_EXTENSION);
+
+		$path = $mediaURL;
+		if(strpos($path, '?') !== false) // strip the query string so remote URLs such as example.com/img.jpg?text=Label resolve by extension.
+		{
+			list($path) = explode('?', $path, 2);
+		}
+
+		$type = pathinfo($path, PATHINFO_EXTENSION);
 
 		if($type == 'glyph')
 		{
@@ -1258,11 +1265,6 @@ class e_media
 			}
 
 			return $key;
-		}
-
-		if(strpos($mediaURL, 'via.placeholder') !== false)
-		{
-			return 'image';
 		}
 
 		return null;
