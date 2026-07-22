@@ -135,4 +135,5 @@ You will need to change the file permissions to use these features",
     'LANINS_147' => "Administration",
     'LANINS_148' => "The MySQL connection details may not contain single quotes (') or semicolons (;).",
     'LANINS_149' => "The table prefix may only contain letters, numbers and underscores (_).",
+    'LANINS_150' => "The version of MySQL installed on your server does not meet the minimum requirement of [x]. Please upgrade MySQL or contact your host.",
 ];
