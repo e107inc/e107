@@ -1359,7 +1359,7 @@ class e_install
 			}
 			else
 			{
-				$mysql_help = "<span class='glyphicon glyphicon-remove'></span> ".LANINS_105;
+				$mysql_help = "<span class='glyphicon glyphicon-remove'></span> ".str_replace('[x]', MIN_MYSQL_VERSION, LANINS_150);
 			}
 		}
 

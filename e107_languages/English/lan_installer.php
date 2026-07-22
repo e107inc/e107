@@ -187,4 +187,5 @@ define("LANINS_146", "Admin-area Skin");
 define("LANINS_147", "Administration");
 define("LANINS_148", "The MySQL connection details may not contain single quotes (') or semicolons (;).");
 define("LANINS_149", "The table prefix may only contain letters, numbers and underscores (_).");
+define("LANINS_150", "The version of MySQL installed on your server does not meet the minimum requirement of [x]. Please upgrade MySQL or contact your host.");
 
