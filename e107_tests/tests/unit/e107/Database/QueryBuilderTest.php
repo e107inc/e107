@@ -196,15 +196,51 @@ use ReflectionMethod;
 			});
 		}
 
-		public function testSelectQuotesIdentifiersAndKeepsExpressions()
+		public function testSelectQuotesIdentifiersAndAcceptsVouchedFragments()
 		{
 			$qb = $this->makeQb();
-			$qb->select('user_id', 'u.user_name', 'u.*', 'COUNT(*) AS cnt')->from('user', 'u');
+			$qb->select('user_id', 'u.user_name', 'u.*')
+				->addSelect($qb->raw('COUNT(*) AS cnt'))
+				->from('user', 'u');
 
 			$this->assertSame(
 				'SELECT `user_id`, `u`.`user_name`, `u`.*, COUNT(*) AS cnt FROM `e107_user` AS `u`',
 				$qb->getSQL()
 			);
+		}
+
+		public function testSelectRejectsBareExpression()
+		{
+			$self = $this;
+
+			$this->assertThrowsInvalidArgument(function () use ($self)
+			{
+				$self->makeQb()->select('COUNT(*) AS cnt');
+			});
+
+			$this->assertThrowsInvalidArgument(function () use ($self)
+			{
+				$self->makeQb()->select('user_id, user_name');
+			});
+
+			$this->assertThrowsInvalidArgument(function () use ($self)
+			{
+				$self->makeQb()->select()->from('user')->addSelect('MAX(user_id) AS m');
+			});
+		}
+
+		public function testAddSelectMergesFragmentParameters()
+		{
+			$qb = $this->makeQb();
+			$qb->select('user_id')
+				->addSelect($qb->raw('GREATEST(user_visits, :floor) AS floor_visits', array('floor' => 5)))
+				->from('user');
+
+			$this->assertSame(
+				'SELECT `user_id`, GREATEST(user_visits, :floor) AS floor_visits FROM `e107_user`',
+				$qb->getSQL()
+			);
+			$this->assertSame(array('floor' => 5), $qb->getParameters());
 		}
 
 		public function testSelectAcceptsArray()
@@ -419,13 +455,13 @@ use ReflectionMethod;
 		public function testHavingValueFormAndOrHaving()
 		{
 			$qb = $this->makeQb();
-			$qb->select('user_class', 'COUNT(*) AS c')->from('user')
+			$qb->select('user_class')->selectCount('*', 'c')->from('user')
 				->groupBy('user_class')
 				->having('c', '>', 5)
 				->orHaving('c', '<', 1);
 
 			$this->assertSame(
-				'SELECT `user_class`, COUNT(*) AS c FROM `e107_user` GROUP BY `user_class` HAVING (`c` > :qb1) OR (`c` < :qb2)',
+				'SELECT `user_class`, COUNT(*) AS `c` FROM `e107_user` GROUP BY `user_class` HAVING (`c` > :qb1) OR (`c` < :qb2)',
 				$qb->getSQL()
 			);
 		}
@@ -529,10 +565,10 @@ use ReflectionMethod;
 			$qb = $this->makeQb();
 			$qb->select('*')->fromSub(function (QueryBuilder $s)
 			{
-				$s->select('user_class', 'COUNT(*) AS cnt')->from('user')->groupBy('user_class');
+				$s->select('user_class')->selectCount('*', 'cnt')->from('user')->groupBy('user_class');
 			}, 'counts')->where('cnt', '>', 1);
 			$this->assertSame(
-				'SELECT * FROM (SELECT `user_class`, COUNT(*) AS cnt FROM `e107_user` GROUP BY `user_class`)'
+				'SELECT * FROM (SELECT `user_class`, COUNT(*) AS `cnt` FROM `e107_user` GROUP BY `user_class`)'
 				.' AS `counts` WHERE (`cnt` > :qb1)',
 				$qb->getSQL()
 			);
@@ -542,7 +578,7 @@ use ReflectionMethod;
 			$qb->select('user_id')
 				->selectSub(function (QueryBuilder $s)
 				{
-					$s->select('COUNT(*)')->from('user_extended')->where('active', 1);
+					$s->selectCount()->from('user_extended')->where('active', 1);
 				}, 'ext')
 				->from('user', 'u')
 				->joinSub(function (QueryBuilder $s)
@@ -979,9 +1015,9 @@ use ReflectionMethod;
 			);
 
 			$qb = $this->makeQb();
-			$qb->select('a', 'COUNT(*) AS c')->from('user')->groupBy('a')->havingBetween('c', 1, 10);
+			$qb->select('a')->selectCount('*', 'c')->from('user')->groupBy('a')->havingBetween('c', 1, 10);
 			$this->assertSame(
-				'SELECT `a`, COUNT(*) AS c FROM `e107_user` GROUP BY `a` HAVING (`c` BETWEEN :qb1 AND :qb2)',
+				'SELECT `a`, COUNT(*) AS `c` FROM `e107_user` GROUP BY `a` HAVING (`c` BETWEEN :qb1 AND :qb2)',
 				$qb->getSQL()
 			);
 		}
@@ -1128,12 +1164,12 @@ use ReflectionMethod;
 		public function testGroupByAndHaving()
 		{
 			$qb = $this->makeQb();
-			$qb->select('user_class', 'COUNT(*) AS cnt')->from('user')
+			$qb->select('user_class')->selectCount('*', 'cnt')->from('user')
 				->groupBy('user_class')
 				->having($qb->raw('COUNT(*) > '.$qb->createNamedParameter(1)));
 
 			$this->assertSame(
-				'SELECT `user_class`, COUNT(*) AS cnt FROM `e107_user` GROUP BY `user_class` HAVING (COUNT(*) > :qb1)',
+				'SELECT `user_class`, COUNT(*) AS `cnt` FROM `e107_user` GROUP BY `user_class` HAVING (COUNT(*) > :qb1)',
 				$qb->getSQL()
 			);
 			$this->assertSame(array('qb1' => 1), $qb->getParameters());

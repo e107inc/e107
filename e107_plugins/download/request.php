@@ -431,7 +431,7 @@ class download_request
 		if($limits)
 		{
 			$cutoff = time() - (86400 * $limits['gen_chardata']);
-			$row = self::aggregate_download_requests('COUNT(d.download_id) AS count', $cutoff);
+			$row = self::aggregate_download_requests('COUNT', 'd.download_id', 'count', $cutoff);
 			if($row && $row['count'] >= $limits['gen_intdata'])
 			{
 				// Exceeded download count limit
@@ -458,7 +458,7 @@ class download_request
 		if($limit)
 		{
 			$cutoff = time() - (86400*$limit['gen_ip']);
-			$row = self::aggregate_download_requests('SUM(d.download_filesize) AS total_bw', $cutoff);
+			$row = self::aggregate_download_requests('SUM', 'd.download_filesize', 'total_bw', $cutoff);
 			if($row && $row['total_bw'] / 1024 > $limit['gen_user_id'])
 			{	//Exceed bandwith limit
 			//	$goUrl = e107::getUrl()->create('download/index')."?action=error&id=2";
@@ -477,15 +477,17 @@ class download_request
 	 * Aggregate a user's recent download requests, scoped to the current user
 	 * (or their IP when anonymous) since a cutoff timestamp.
 	 *
-	 * @param string $selectExpr developer-authored aggregate SELECT expression
-	 *                           (e.g. "COUNT(d.download_id) AS count"); never user input.
+	 * @param string $function aggregate function, e.g. 'COUNT' or 'SUM';
+	 *                         see {@see \e107\Database\QueryBuilder::selectAggregate()}.
+	 * @param string $column aggregated column, e.g. 'd.download_id'.
+	 * @param string $alias result column alias.
 	 * @param int $cutoff lower-bound request timestamp.
 	 * @return array|false fetched row, or false when none.
 	 */
-	private static function aggregate_download_requests($selectExpr, $cutoff)
+	private static function aggregate_download_requests($function, $column, $alias, $cutoff)
 	{
 		$qb = e107::getDb()->createQueryBuilder();
-		$qb->select($selectExpr)
+		$qb->selectAggregate($function, $column, $alias)
 			->from('download_requests', 'dr')
 			->leftJoin('download', 'd', $qb->expr()->allOf($qb->expr()->compareColumns('dr.download_request_download_id', 'd.download_id'), $qb->expr()->eq('d.download_active', 1)))
 			->where('dr.download_request_datestamp', '>', $cutoff)
