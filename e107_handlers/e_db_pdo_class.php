@@ -223,16 +223,18 @@ class e_db_pdo implements e_db
 		$this->mySQLdefaultdb 	= $database;
 		$this->mySQLPrefix 		= $prefix;
 
+		$quoted = '`'.str_replace('`', '``', $database).'`';
+
 		if($multiple === true)
 		{
-			$this->mySQLPrefix 		= "`".$database."`.".$prefix;
+			$this->mySQLPrefix 		= $quoted.".".$prefix;
 			return true;
 		}
 
 
 		try
 		{
-			$this->mySQLaccess->exec("use `".$database."`");
+			$this->mySQLaccess->exec("use ".$quoted);
        		// $this->mySQLaccess->select_db($database); $dbh->query("use newdatabase");
 	    }
 		catch (PDOException $e)
