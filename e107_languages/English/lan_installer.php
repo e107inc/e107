@@ -54,7 +54,7 @@ define("LANINS_029", "Table prefix:");
 define("LANINS_030", "The MySQL server you would like e107 to use. It can also include a port number. e.g. 'hostname:port' or a path to a local socket e.g. \":/path/to/socket\" for the localhost.");
 define("LANINS_031", "The username you wish e107 to use to connect to your MySQL server");
 define("LANINS_032", "The Password for the user you just entered. Must not contain single or double quotes.");
-define("LANINS_033", "The MySQL database you wish e107 to reside in, sometimes referred to as a schema. Must begin with a letter. If the user has database create permissions you can opt to create the database automatically if it doesn't already exist.");
+define("LANINS_033", "The MySQL database you wish e107 to reside in, sometimes referred to as a schema. If the user has database create permissions you can opt to create the database automatically if it doesn't already exist.");
 define("LANINS_034", "The prefix you wish e107 to use when creating the e107 tables. Useful for multiple installs of e107 in one database schema.");
 // define("LANINS_035", "Continue"); // LAN_CONTINUE
 define("LANINS_036", "3");
@@ -185,4 +185,6 @@ define("LANINS_145", "e107 v2.x requires the PHP [x] to be installed. Please con
 
 define("LANINS_146", "Admin-area Skin");
 define("LANINS_147", "Administration");
+define("LANINS_148", "The MySQL connection details may not contain single quotes (') or semicolons (;).");
+define("LANINS_149", "The table prefix may only contain letters, numbers and underscores (_).");
 
