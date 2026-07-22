@@ -101,43 +101,25 @@ class e_db_mysql implements e_db
 	use e_db_legacy;
 	use e_db_common;
 
-	// TODO switch to protected vars where needed
+	// Shared connection state lives in e_db_common (ConnectionTrait);
+	// only driver-specific members are declared here.
 	public      $mySQLserver;
 	public      $mySQLuser;
 	protected   $mySQLpassword;
 	protected   $mySQLdefaultdb;
 	protected   $mySQLport = 3306;
-	public      $mySQLPrefix;
 
 	/** @var mysqli */
 	protected   $mySQLaccess;
-	public      $mySQLresult;
-	public      $mySQLrows;
-	public      $mySQLerror = '';			// Error reporting mode - TRUE shows messages
+	protected   $mySQLrows;
 
-	protected   $mySQLlastErrNum = 0;		// Number of last error - now protected, use getLastErrorNumber()
-	protected   $mySQLlastErrText = '';		// Text of last error - now protected, use getLastErrorText()
 	protected   $mySQLlastQuery = '';
 
-	public      $mySQLcurTable;
-	public      $mySQLlanguage;
 	public      $mySQLinfo;
-	public      $tabset;
-	public      $mySQLtableList = array(); // list of all Db tables.
-
-	public      $mySQLtableListLanguage = array(); // Db table list for the currently selected language
 	public      $mySQLtablelist = array();
 
 	protected	$dbFieldDefs = array();		// Local cache - Field type definitions for _FIELD_DEFS and _NOTNULL arrays
-	public      $mySQLcharset;
-	public	    $mySqlServerInfo = '?';			// Server info - needed for various things
-
-	public      $total_results = false;			// Total number of results
-
-	/** @var e107_db_debug */
-	private     $dbg;
-
-	private     $debugMode      = false;
+	protected   $mySqlServerInfo = '?';			// Server info - needed for various things
 
 	private     $stringifyFetch = false;	// Prepared-statement results carry native types; stringify on fetch for PDO parity.
 
@@ -796,18 +778,6 @@ class e_db_mysql implements e_db
 	}
 
 	/**
-	 * @param string|null $type assoc|num|both
-	 * @return array|bool
-	 * @deprecated v2.0.0 Renamed; use {@see \e107\Database\ConnectionInterface::fetch()}.
-	 */
-	function db_Fetch($type = null)
-	{
-		$this->_notifyDeprecated('db_Fetch', 'Use $sql->fetch() instead.');
-
-		return $this->fetch($type);
-	}
-
-	/**
 	 * Documented at {@see e_db::count()}.
 	 *
 	 * @return int number of affected rows or false on error
@@ -1182,7 +1152,7 @@ class e_db_mysql implements e_db
 	 * @param string $data
 	 * @return string
 	 */
-	private function _escape($data)
+	protected function _escape($data)
 	{
 		$this->_getMySQLaccess();
 
@@ -1249,7 +1219,7 @@ class e_db_mysql implements e_db
 	 * TODO - better runtime cache - use e107::getRegistry() && e107::setRegistry()
 	 * @return array
 	 */
-	private function _getTableList($language='')
+	protected function _getTableList($language='')
 	{
 
 		$database = !empty($this->mySQLdefaultdb) ? "FROM  `".$this->mySQLdefaultdb."`" : "";
@@ -1654,7 +1624,7 @@ class e_db_mysql implements e_db
 	 * When the global variable has been unset like in https://github.com/e107inc/e107-test/issues/6 ,
 	 * use the "mySQLaccess" from the default e_db_mysql instance singleton.
 	 */
-	private function _getMySQLaccess()
+	protected function _getMySQLaccess()
 	{
 		if (!$this->mySQLaccess) {
 			global $db_ConnectionID;
