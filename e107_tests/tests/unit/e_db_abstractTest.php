@@ -1311,6 +1311,19 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$this->assertEquals("Can\'t", $result);
 	}
 
+	public function testQuoteStringLiteral()
+	{
+		$value = "Can't; -- \\ \"mixed\"";
+		$literal = $this->db->quoteStringLiteral($value);
+
+		$this->assertSame("'", substr($literal, 0, 1));
+		$this->assertSame("'", substr($literal, -1));
+
+		$this->db->gen('SELECT '.$literal.' AS roundtrip');
+		$row = $this->db->fetch();
+		$this->assertSame($value, $row['roundtrip']);
+	}
+
 	public function testDb_Table_exists()
 	{
 		$result = $this->db->db_Table_exists('plugin');

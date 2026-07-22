@@ -945,7 +945,29 @@ class e_db_pdo implements e_db
 	}
 
 	/**
-	 * escape() without the deprecation notice, for internal legacy paths.
+	 * Documented at {@see \e107\Database\ConnectionInterface::quoteStringLiteral()}.
+	 *
+	 * @param string $value
+	 * @return string quoted literal, including the surrounding quotes
+	 * @throws PDOException if the PDO driver does not support quoting
+	 */
+	public function quoteStringLiteral($value)
+	{
+		$this->_getMySQLaccess();
+
+		$quoted = $this->mySQLaccess->quote((string) $value);
+
+		if($quoted === false) // pdo_mysql always supports quoting
+		{
+			throw new PDOException('quoteStringLiteral() requires a PDO driver that supports quoting');
+		}
+
+		return $quoted;
+	}
+
+	/**
+	 * escape() without the deprecation notice, for internal legacy paths:
+	 * {@see e_db_pdo::quoteStringLiteral()} with the surrounding quotes stripped.
 	 *
 	 * @param string $data
 	 * @return string
@@ -953,16 +975,7 @@ class e_db_pdo implements e_db
 	 */
 	private function _escape($data)
 	{
-		$this->_getMySQLaccess();
-
-		$quoted = $this->mySQLaccess->quote((string) $data);
-
-		if($quoted === false) // pdo_mysql always supports quoting
-		{
-			throw new PDOException('escape() requires a PDO driver that supports quoting');
-		}
-
-		return substr($quoted, 1, -1);
+		return substr($this->quoteStringLiteral($data), 1, -1);
 	}
 
 	/**

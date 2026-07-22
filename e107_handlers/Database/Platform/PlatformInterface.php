@@ -189,6 +189,24 @@ interface PlatformInterface
 	public function compileFullText(array $quotedColumns, $placeholder);
 
 	/**
+	 * Build a string-aggregation expression (e.g. MySQL's GROUP_CONCAT,
+	 * PostgreSQL's string_agg). The aggregated expression and any ORDER BY
+	 * terms arrive quoted; the separator arrives as a complete quoted string
+	 * literal (see {@see ConnectionInterface::quoteStringLiteral()}), because some
+	 * dialects (MySQL's SEPARATOR clause) reject a bound parameter in that
+	 * position. Dialects that cannot spell a requested combination (e.g. no
+	 * in-aggregate ORDER BY) throw {@see UnsupportedException}.
+	 *
+	 * @param string $quotedExpression Quoted aggregated expression.
+	 * @param string[] $quotedOrderBy Quoted "identifier ASC|DESC" terms; may be empty.
+	 * @param string $separatorLiteral Quoted string literal for the separator.
+	 * @param bool $distinct Aggregate only distinct values.
+	 * @return string
+	 * @throws UnsupportedException when the dialect cannot spell the combination.
+	 */
+	public function compileGroupConcat($quotedExpression, array $quotedOrderBy, $separatorLiteral, $distinct = false);
+
+	/**
 	 * Build an ALTER TABLE statement from one or more already-rendered clauses
 	 * (e.g. "ADD COLUMN `c` INT", "DROP INDEX `i`"). The table identifier
 	 * arrives quoted; the dialect only joins the clauses onto the statement.

@@ -243,6 +243,61 @@ use ReflectionMethod;
 			$this->assertSame(array('floor' => 5), $qb->getParameters());
 		}
 
+		public function testSelectGroupConcat()
+		{
+			$qb = $this->makeQb();
+			$qb->select('user_class')
+				->selectGroupConcat('user_name', 'names')
+				->from('user')
+				->groupBy('user_class');
+
+			$this->assertSame(
+				"SELECT `user_class`, GROUP_CONCAT(`user_name` SEPARATOR ',') AS `names`"
+				." FROM `e107_user` GROUP BY `user_class`",
+				$qb->getSQL()
+			);
+
+			$qb = $this->makeQb();
+			$qb->selectGroupConcat('t.descr', 'desc_tipodent', array('t.cod' => 'ASC'), ', ', true)
+				->from('philcat_denteado', 't')
+				->groupBy('t.peca');
+
+			$this->assertSame(
+				"SELECT GROUP_CONCAT(DISTINCT `t`.`descr` ORDER BY `t`.`cod` ASC SEPARATOR ', ') AS `desc_tipodent`"
+				." FROM `e107_philcat_denteado` AS `t` GROUP BY `t`.`peca`",
+				$qb->getSQL()
+			);
+		}
+
+		public function testSelectGroupConcatEscapesSeparator()
+		{
+			$qb = $this->makeQb();
+			$qb->selectGroupConcat('user_name', 'names', array(), "','")
+				->from('user')
+				->groupBy('user_class');
+
+			$this->assertSame(
+				"SELECT GROUP_CONCAT(`user_name` SEPARATOR '\\',\\'') AS `names`"
+				." FROM `e107_user` GROUP BY `user_class`",
+				$qb->getSQL()
+			);
+		}
+
+		public function testGroupConcatRejectsBadInput()
+		{
+			$self = $this;
+
+			$this->assertThrowsInvalidArgument(function () use ($self)
+			{
+				$self->makeQb()->selectGroupConcat('user_name; DROP TABLE x', 'names');
+			});
+
+			$this->assertThrowsInvalidArgument(function () use ($self)
+			{
+				$self->makeQb()->selectGroupConcat('user_name', 'names', array('user_id' => 'SIDEWAYS'));
+			});
+		}
+
 		public function testSelectAcceptsArray()
 		{
 			$qb = $this->makeQb();
@@ -1602,6 +1657,11 @@ use ReflectionMethod;
 		public function quoteIdentifier($identifier)
 		{
 			return IdentifierFilter::identifier($identifier);
+		}
+
+		public function quoteStringLiteral($value)
+		{
+			return "'".str_replace(array('\\', "'"), array('\\\\', "\\'"), (string) $value)."'";
 		}
 
 		public function getPlatform()
