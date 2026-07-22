@@ -109,10 +109,10 @@ if(!class_exists('forum_newforumposts_menu'))
 					$qb->select(
 						'p.post_user', 'p.post_id', 'p.post_datestamp', 'p.post_user_anon', 'p.post_entry',
 						't.*',
-						'u.user_id', 'u.user_name', 'u.user_image', 'u.user_currentvisit',
-						'lu.user_name as thread_lastuser_username',
-						'f.forum_name', 'f.forum_sef'
+						'u.user_id', 'u.user_name', 'u.user_image', 'u.user_currentvisit'
 					)
+						->selectAs('lu.user_name', 'thread_lastuser_username')
+						->addSelect('f.forum_name', 'f.forum_sef')
 						->from('forum_post', 'p')
 						->leftJoin('forum_thread', 't', $qb->expr()->compareColumns('t.thread_id', 'p.post_thread'))
 						->leftJoin('forum', 'f', $qb->expr()->compareColumns('f.forum_id', 't.thread_forum_id'))
@@ -132,15 +132,16 @@ if(!class_exists('forum_newforumposts_menu'))
 				 // standardized field names.  thread_user_[user table fields without the '_')
 				default:
 					$qb->select(
-						't.thread_id', 't.thread_name', 't.thread_datestamp', 't.thread_user', 't.thread_views', 't.thread_lastpost', 't.thread_lastuser', 't.thread_total_replies', 't.thread_active',
-						'MAX(p.post_id) AS post_id',
-						'f.forum_id', 'f.forum_name', 'f.forum_class', 'f.forum_sef',
-						'u.user_name as thread_user_username',
-						'u.user_image as thread_user_userimage',
-						'u.user_currentvisit as thread_user_usercurrentvisit',
-						'fp.forum_class', 'fp.forum_sef as forum_parent_sef',
-						'lp.user_name AS thread_lastuser_username'
+						't.thread_id', 't.thread_name', 't.thread_datestamp', 't.thread_user', 't.thread_views', 't.thread_lastpost', 't.thread_lastuser', 't.thread_total_replies', 't.thread_active'
 					)
+						->selectAggregate('MAX', 'p.post_id', 'post_id')
+						->addSelect('f.forum_id', 'f.forum_name', 'f.forum_class', 'f.forum_sef')
+						->selectAs('u.user_name', 'thread_user_username')
+						->selectAs('u.user_image', 'thread_user_userimage')
+						->selectAs('u.user_currentvisit', 'thread_user_usercurrentvisit')
+						->addSelect('fp.forum_class')
+						->selectAs('fp.forum_sef', 'forum_parent_sef')
+						->selectAs('lp.user_name', 'thread_lastuser_username')
 						->from('forum_thread', 't')
 						->leftJoin('forum_post', 'p', $qb->expr()->compareColumns('t.thread_id', 'p.post_thread'))
 						->leftJoin('user', 'u', $qb->expr()->compareColumns('t.thread_user', 'u.user_id'))

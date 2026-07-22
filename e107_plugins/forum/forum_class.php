@@ -1251,14 +1251,14 @@ class e107forum
 		{
 			//TODO: Fix query to get only forum and parent info needed, with correct naming
 			$qb = $sql->createQueryBuilder();
-			$tmp = $qb->select(
-					't.*', 'f.*',
-					'fp.forum_id AS parent_id', 'fp.forum_name AS parent_name',
-					'sp.forum_id AS forum_sub', 'sp.forum_name AS sub_parent',
-					'fp.forum_sef AS parent_sef',
-					'sp.forum_sef AS sub_parent_sef',
-					'tr.track_userid'
-				)
+			$tmp = $qb->select('t.*', 'f.*')
+				->selectAs('fp.forum_id', 'parent_id')
+				->selectAs('fp.forum_name', 'parent_name')
+				->selectAs('sp.forum_id', 'forum_sub')
+				->selectAs('sp.forum_name', 'sub_parent')
+				->selectAs('fp.forum_sef', 'parent_sef')
+				->selectAs('sp.forum_sef', 'sub_parent_sef')
+				->addSelect('tr.track_userid')
 				->from('forum_thread', 't')
 				->leftJoin('forum', 'f', $qb->expr()->compareColumns('t.thread_forum_id', 'f.forum_id'))
 				->leftJoin('forum', 'fp', $qb->expr()->compareColumns('fp.forum_id', 'f.forum_parent'))
@@ -1319,10 +1319,10 @@ class e107forum
 				->select(
 					'p.*',
 					'u.user_name', 'u.user_customtitle', 'u.user_hideemail', 'u.user_email', 'u.user_signature',
-					'u.user_admin', 'u.user_image', 'u.user_join', 'ue.user_plugin_forum_posts',
-					'eu.user_name AS edit_name',
-					't.thread_name'
+					'u.user_admin', 'u.user_image', 'u.user_join', 'ue.user_plugin_forum_posts'
 				)
+				->selectAs('eu.user_name', 'edit_name')
+				->addSelect('t.thread_name')
 				->from('forum_post', 'p')
 				->leftJoin('user', 'u', $qb->expr()->compareColumns('p.post_user', 'u.user_id'))
 				->leftJoin('user', 'eu', $qb->raw('p.post_edit_user IS NOT NULL AND p.post_edit_user = eu.user_id'))
@@ -2113,11 +2113,13 @@ class e107forum
 		$forum_id = (int)$forum_id;
 		$qb = $sql->createQueryBuilder();
 		$row = $qb
-			->select(
-				'f.*', 'fp.forum_class as parent_class', 'fp.forum_name as parent_name',
-				'fp.forum_id as parent_id', 'fp.forum_postclass as parent_postclass',
-				'sp.forum_name AS sub_parent', 'sp.forum_sef AS parent_sef'
-			)
+			->select('f.*')
+			->selectAs('fp.forum_class', 'parent_class')
+			->selectAs('fp.forum_name', 'parent_name')
+			->selectAs('fp.forum_id', 'parent_id')
+			->selectAs('fp.forum_postclass', 'parent_postclass')
+			->selectAs('sp.forum_name', 'sub_parent')
+			->selectAs('sp.forum_sef', 'parent_sef')
 			->from('forum', 'f')
 			->leftJoin('forum', 'fp', $qb->expr()->compareColumns('fp.forum_id', 'f.forum_parent'))
 			->leftJoin('forum', 'sp', $qb->expr()->allOf($qb->expr()->compareColumns('f.forum_sub', 'sp.forum_id'), $qb->expr()->gt('f.forum_sub', 0)))

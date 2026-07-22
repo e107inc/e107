@@ -759,15 +759,13 @@ class download
 			$classList = array_map('intval', explode(',', USERCLASS_LIST));
 
 			$subQb = $sql->createQueryBuilder();
-			$subQb->select(
-					'dc.*',
-					'dc2.download_category_name AS parent_name',
-					'dc2.download_category_icon as parent_icon',
-					'SUM(d.download_filesize) AS d_size',
-					'COUNT(d.download_id) AS d_count',
-					'MAX(d.download_datestamp) as d_last',
-					'SUM(d.download_requested) as d_requests'
-				)
+			$subQb->select('dc.*')
+				->selectAs('dc2.download_category_name', 'parent_name')
+				->selectAs('dc2.download_category_icon', 'parent_icon')
+				->selectAggregate('SUM', 'd.download_filesize', 'd_size')
+				->selectAggregate('COUNT', 'd.download_id', 'd_count')
+				->selectAggregate('MAX', 'd.download_datestamp', 'd_last')
+				->selectAggregate('SUM', 'd.download_requested', 'd_requests')
 				->from('download_category', 'dc')
 				->leftJoin('download', 'd', $subQb->raw('dc.download_category_id = d.download_category AND d.download_active > 0 AND '.$subQb->expr()->in('d.download_visible', $classList)))
 				->leftJoin('download_category', 'dc2', $subQb->raw('dc2.download_category_id='.$subQb->createNamedParameter((int) $this->qry['id'])))
@@ -1230,9 +1228,9 @@ class download
             'dc.download_category_name',
             'dc.download_category_order',
             'dc.download_category_id',
-            'dc.download_category_parent',
-            'dc1.download_category_parent AS d_parent1'
+            'dc.download_category_parent'
          )
+         ->selectAs('dc1.download_category_parent', 'd_parent1')
          ->from('download_category', 'dc')
          ->leftJoin('download_category', 'dc1', $catQb->raw('dc1.download_category_id=dc.download_category_parent AND '.$catQb->expr()->in('dc1.download_category_class', $classList)))
          ->leftJoin('download_category', 'dc2', $catQb->expr()->compareColumns('dc2.download_category_id', 'dc1.download_category_parent'));

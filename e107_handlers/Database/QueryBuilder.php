@@ -299,14 +299,19 @@ class QueryBuilder
 	}
 
 	/**
-	 * Start a SELECT query and set the column list. Plain column names
-	 * (`col`, `tbl.col`, `tbl.*`, `*`) are validated and quoted; anything
-	 * else (e.g. "COUNT(*) AS cnt") is kept verbatim as a developer-authored
-	 * expression, so never place user input here.
+	 * Start a SELECT query and set the column list. Each entry must be a
+	 * plain column name (`col`, `tbl.col`, `tbl.*`, `*`), validated and
+	 * quoted fail-closed, or a vouched {@see SqlFragment} (its bound
+	 * parameters are merged onto this query). A bare SQL expression is
+	 * rejected: use {@see QueryBuilder::selectAs()} for aliasing,
+	 * {@see QueryBuilder::selectAggregate()} for aggregates,
+	 * {@see QueryBuilder::selectRaw()} for a whole developer-authored list,
+	 * or wrap vouched developer SQL in {@see QueryBuilder::raw()}.
 	 *
-	 * @param string|array $columns Column list as multiple string arguments
-	 *                              or as one array; defaults to '*'.
+	 * @param string|array|SqlFragment $columns Column list as multiple
+	 *                              arguments or as one array; defaults to '*'.
 	 * @return QueryBuilder $this
+	 * @throws InvalidArgumentException on a bare SQL expression.
 	 */
 	public function select($columns = '*')
 	{
@@ -324,11 +329,12 @@ class QueryBuilder
 	}
 
 	/**
-	 * Add more columns to the SELECT list without clearing it; same quoting
+	 * Add more columns to the SELECT list without clearing it; same strict
 	 * rules as {@see QueryBuilder::select()}.
 	 *
-	 * @param string|array $columns As multiple string arguments or one array.
+	 * @param string|array|SqlFragment $columns As multiple arguments or one array.
 	 * @return QueryBuilder $this
+	 * @throws InvalidArgumentException on a bare SQL expression.
 	 */
 	public function addSelect($columns = '*')
 	{
@@ -357,9 +363,9 @@ class QueryBuilder
 
 	/**
 	 * Start a SELECT whose column list is a single developer-authored
-	 * expression, taken verbatim. {@see QueryBuilder::select()} already keeps
-	 * non-identifier expressions as-is; this is sugar that documents the intent
-	 * and must never receive user input.
+	 * expression, taken verbatim: the explicit raw hatch for a SELECT list
+	 * {@see QueryBuilder::select()} refuses (it accepts only identifiers and
+	 * vouched fragments). Must never receive user input.
 	 *
 	 * @param string $expression Raw SELECT list.
 	 * @return QueryBuilder $this
@@ -2534,49 +2540,56 @@ class QueryBuilder
 	}
 
 	/**
-	 * Quote an expression for a SELECT/GROUP BY position: plain identifiers
-	 * ('col', 'tbl.col', '*', 'tbl.*') are validated and quoted, anything
-	 * else passes through verbatim as developer-authored SQL.
+	 * Strict SELECT-list term: a SqlFragment (its parameters merged), or a
+	 * validated identifier ('*', 'tbl.*', 'col', 'tbl.col'). A bare SQL
+	 * string is rejected rather than emitted verbatim, so the SELECT list
+	 * cannot carry unvouched SQL; see {@see QueryBuilder::select()} for the
+	 * structured spellings.
 	 *
-	 * @param string $expression
+	 * @param SqlFragment|string $expression
 	 * @return string
+	 * @throws InvalidArgumentException on a bare SQL expression.
 	 */
 	private function _quoteExpression($expression)
 	{
-		$expression = trim((string) $expression);
-
-		if($expression === '*')
-		{
-			return '*';
-		}
-
-		if(substr($expression, -2) === '.*')
-		{
-			$quoted = $this->db->quoteIdentifier(substr($expression, 0, -2));
-
-			if($quoted !== false)
-			{
-				return $quoted.'.*';
-			}
-		}
-
-		$quoted = $this->db->quoteIdentifier($expression);
-
-		return ($quoted !== false) ? $quoted : $expression;
+		return $this->_strictExpression(
+			$expression,
+			'select() will not accept a bare SQL expression: %s.'
+			.' Use selectAs()/selectAggregate()/selectRaw(), or wrap vouched developer SQL in $qb->raw().'
+		);
 	}
 
 	/**
-	 * Strict GROUP BY term: a SqlFragment (its parameters merged), or a
-	 * validated identifier ('*', 'tbl.*', 'col', 'tbl.col'). Unlike the lenient
-	 * select-expression path this rejects a bare SQL string rather than emitting
-	 * it verbatim, so GROUP BY cannot carry unvouched SQL; wrap developer SQL in
-	 * $qb->raw().
+	 * Strict GROUP BY term; same contract as the SELECT-list path
+	 * ({@see QueryBuilder::_quoteExpression()}), GROUP BY cannot carry
+	 * unvouched SQL either.
 	 *
 	 * @param SqlFragment|string $expression
 	 * @return string
 	 * @throws InvalidArgumentException on a bare SQL expression.
 	 */
 	private function _groupByExpression($expression)
+	{
+		return $this->_strictExpression(
+			$expression,
+			'groupBy() will not accept a bare SQL expression: %s.'
+			.' Pass a column name or wrap vouched developer SQL in $qb->raw().'
+		);
+	}
+
+	/**
+	 * Shared strict term parser behind the SELECT-list and GROUP BY seams: a
+	 * SqlFragment is accepted as vouched (its parameters merged onto this
+	 * query), a plain identifier ('*', 'tbl.*', 'col', 'tbl.col') is
+	 * validated and quoted fail-closed, and anything else throws.
+	 *
+	 * @param SqlFragment|string $expression
+	 * @param string $errorFormat sprintf format for the rejection message;
+	 *                            %s receives the offending expression.
+	 * @return string
+	 * @throws InvalidArgumentException on a bare SQL expression.
+	 */
+	private function _strictExpression($expression, $errorFormat)
 	{
 		if($expression instanceof SqlFragment)
 		{
@@ -2606,10 +2619,7 @@ class QueryBuilder
 
 		if($quoted === false)
 		{
-			throw new InvalidArgumentException(
-				'groupBy() will not accept a bare SQL expression: '.$expression
-				.'. Pass a column name or wrap vouched developer SQL in $qb->raw().'
-			);
+			throw new InvalidArgumentException(sprintf($errorFormat, $expression));
 		}
 
 		return $quoted;
