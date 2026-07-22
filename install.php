@@ -1004,7 +1004,7 @@ return [
 				<tr>
 					<td><label for='db'>".LANINS_027."</label>".HELPICON."<span class='field-help'>".LANINS_033."</span></td>
 					<td class='form-inline'>
-						<input class='form-control input-large' type='text' name='db' size='20' id='db' value='".varset($this->previous_steps['mysql']['db'])."' maxlength='100' required='required' pattern='^[a-zA-Z0-9][a-zA-Z0-9_-]*' />
+						<input class='form-control input-large' type='text' name='db' size='20' id='db' value='".varset($this->previous_steps['mysql']['db'])."' maxlength='100' required='required' pattern=\"[^';]+\" />
 						<label class='checkbox-inline'><input type='checkbox' name='createdb' value='1' ".($this->previous_steps['mysql']['createdb'] ==1 ? "checked='checked'" : "")." /><small>".LANINS_028."</small></label>
 						
 					</td>
@@ -1096,19 +1096,32 @@ return [
 			$this->previous_steps['mysql']['overwritedb'] = 1;
 		}
 					
-		$success = $this->check_name($this->previous_steps['mysql']['db']) && $this->check_name($this->previous_steps['mysql']['prefix'], TRUE);
-		
-		if ($success)
+		$dbName = $this->previous_steps['mysql']['db'];
+		$prefix = $this->previous_steps['mysql']['prefix'];
+
+		$nameError = '';
+		if (($dbName !== '' && !$this->check_name($dbName)) || ($prefix !== '' && !$this->check_name($prefix, TRUE)))
 		{
-			$success = $this->checkDbFields($this->previous_steps['mysql']);		// Check for invalid characters
+			$nameError = LANINS_105;
 		}
+		elseif ($prefix !== '' && !preg_match('/^[A-Za-z0-9_]+$/D', $prefix))
+		{
+			// Same grammar checkDbFields() enforces; tested here only to pick the message.
+			$nameError = LANINS_149;
+		}
+		elseif (!$this->checkDbFields($this->previous_steps['mysql']))
+		{
+			$nameError = LANINS_148;
+		}
+
+		$success = ($dbName !== '' && $nameError === '');
 		
 		if(!$success || $this->previous_steps['mysql']['server'] == "" || $this->previous_steps['mysql']['user'] == "")
 		{
 			$this->stage = 3;
 			$this->template->SetTag("stage_num", LANINS_021);
 			$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] === "debug" ? "?debug" : ""));
-			$head = LANINS_039."<br /><br />\n";
+			$head = ($nameError !== '' ? $nameError : LANINS_039)."<br /><br />\n";
 			$output = "
 			<div style='width: 100%; padding-left: auto; padding-right: auto;'>
 			<table class='table table-bordered table-striped'>
@@ -1142,12 +1155,7 @@ return [
 					<td><input type='text' name='prefix' id='prefix' size='20' value='{$this->previous_steps['mysql']['prefix']}'  maxlength='100' /></td>
 					<td>".LANINS_034."</td>
 				</tr>";
-				
-			if (!$success)
-			{
-				$output .= "<tr><td colspan='3'>".LANINS_105."</td></tr>";
-			}
-			
+
 			$output .= "
 			</table>
 			<br /><br />
@@ -1205,7 +1213,7 @@ return [
 				
 				if(!empty($this->previous_steps['mysql']['overwritedb']))
 				{
-					if($this->dbqry('DROP DATABASE `'.$this->previous_steps['mysql']['db'].'` '))
+					if($this->dbqry('DROP DATABASE '.$this->quoteDbName($this->previous_steps['mysql']['db']).' '))
 					{
 						$page_content .= "<br /><span class='glyphicon glyphicon-ok'></span>  ".LANINS_136;
 					}
@@ -1220,13 +1228,13 @@ return [
 				if($this->previous_steps['mysql']['createdb'] == 1)
 				{
 					$notification = "<br /><span class='glyphicon glyphicon-ok'></span> ".LANINS_044;
-				    $query = 'CREATE DATABASE `'.$this->previous_steps['mysql']['db'].'` CHARACTER SET `utf8mb4` ';
+				    $query = 'CREATE DATABASE '.$this->quoteDbName($this->previous_steps['mysql']['db']).' CHARACTER SET `utf8mb4` ';
 					
 				}
 				else
 				{
 					$notification = "<br /><span class='glyphicon glyphicon-ok'></span>  ".LANINS_137;
-				    $query = 'ALTER DATABASE `'.$this->previous_steps['mysql']['db'].'` CHARACTER SET `utf8mb4` ';
+				    $query = 'ALTER DATABASE '.$this->quoteDbName($this->previous_steps['mysql']['db']).' CHARACTER SET `utf8mb4` ';
 				}
 
 				if (!$this->dbqry($query))
@@ -1358,7 +1366,7 @@ return [
 			}
 			else
 			{
-				$mysql_help = "<span class='glyphicon glyphicon-remove'></span> ".LANINS_105;
+				$mysql_help = "<span class='glyphicon glyphicon-remove'></span> ".str_replace('[x]', MIN_MYSQL_VERSION, LANINS_150);
 			}
 		}
 
@@ -2397,6 +2405,20 @@ return [
 	}
 
 	/**
+	 * Backtick-quote a database name for interpolation into DDL.
+	 * MySQL's identifier escape is a doubled backtick, so every name the
+	 * server itself accepts survives quoting intact; no character set
+	 * restriction is needed on the caller's side.
+	 *
+	 * @param string $name
+	 * @return string
+	 */
+	function quoteDbName($name)
+	{
+		return '`'.str_replace('`', '``', (string) $name).'`';
+	}
+
+	/**
 	 * checkDbFields - Check an array of db-related fields for illegal characters
 	 *
 	 * @param array $fields
@@ -2410,21 +2432,17 @@ return [
 		}
 		foreach (array('server', 'user', 'db', 'prefix') as $key)
 		{
+			// A semicolon cannot be represented in the PDO DSN (dbname=...;),
+			// and the quote guard predates v2. The db name needs nothing more:
+			// it only ever reaches SQL backtick-quoted via quoteDbName().
 			if (isset($fields[$key]) && strtr($fields[$key], "';", '    ') != $fields[$key])
 			{
 				return FALSE;		// Invalid character found
 			}
 		}
 
-		// The db name and table prefix are interpolated into SQL identifier
-		// positions (CREATE/ALTER/DROP DATABASE `db`, REPLACE INTO {prefix}user),
-		// so enforce a strict identifier grammar: a backtick or space would
-		// otherwise break out of the quoting. db is backtick-quoted so it may
-		// carry a hyphen (matching the form's pattern); prefix is unquoted.
-		if (isset($fields['db']) && $fields['db'] !== '' && !preg_match('/^[A-Za-z0-9][A-Za-z0-9_-]*$/D', $fields['db']))
-		{
-			return FALSE;
-		}
+		// The table prefix is interpolated UNQUOTED into every query
+		// (REPLACE INTO {prefix}user), so it must stay a bare identifier.
 		if (isset($fields['prefix']) && $fields['prefix'] !== '' && !preg_match('/^[A-Za-z0-9_]+$/D', $fields['prefix']))
 		{
 			return FALSE;

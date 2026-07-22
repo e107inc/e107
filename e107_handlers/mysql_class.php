@@ -265,7 +265,7 @@ class e_db_mysql implements e_db
 
 		if($multiple === true)
 		{
-			$this->mySQLPrefix 		= "`".$database."`.".$prefix;
+			$this->mySQLPrefix 		= "`".str_replace('`', '``', $database)."`.".$prefix;
 			return true;
 		}
 
