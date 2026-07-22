@@ -206,6 +206,21 @@ class MysqlPlatform implements PlatformInterface
 	/**
 	 * @return string
 	 */
+	public function compileGroupConcat($quotedExpression, array $quotedOrderBy, $separatorLiteral, $distinct = false)
+	{
+		$sql = 'GROUP_CONCAT('.($distinct ? 'DISTINCT ' : '').$quotedExpression;
+
+		if(!empty($quotedOrderBy))
+		{
+			$sql .= ' ORDER BY '.implode(', ', $quotedOrderBy);
+		}
+
+		return $sql.' SEPARATOR '.$separatorLiteral.')';
+	}
+
+	/**
+	 * @return string
+	 */
 	public function compileAlterTable($quotedTable, array $clauses)
 	{
 		return 'ALTER TABLE '.$quotedTable.' '.implode(', ', $clauses);

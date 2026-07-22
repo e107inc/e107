@@ -299,6 +299,20 @@ class QueryBuilder
 	}
 
 	/**
+	 * Quote a string as a complete SQL string literal via the connection's own
+	 * driver quoting; see {@see ConnectionInterface::quoteStringLiteral()}. Only
+	 * for grammar positions that reject a bound parameter (e.g. GROUP_CONCAT's
+	 * SEPARATOR); developer-authored strings only, never user input.
+	 *
+	 * @param string $value
+	 * @return string quoted literal, including the surrounding quotes
+	 */
+	public function quoteStringLiteral($value)
+	{
+		return $this->db->quoteStringLiteral($value);
+	}
+
+	/**
 	 * Start a SELECT query and set the column list. Each entry must be a
 	 * plain column name (`col`, `tbl.col`, `tbl.*`, `*`), validated and
 	 * quoted fail-closed, or a vouched {@see SqlFragment} (its bound
@@ -449,6 +463,39 @@ class QueryBuilder
 		$this->type = self::TYPE_SELECT;
 
 		$fragment = $this->expr()->aggregate($function, $column, $alias);
+		$this->mergeParameters($fragment->getParameters());
+		$this->select[] = $fragment->getSql();
+
+		return $this;
+	}
+
+	/**
+	 * Add a string-aggregation expression to the SELECT list (MySQL
+	 * GROUP_CONCAT and equivalents), compiled through the platform dialect so
+	 * builder code stays portable. A structured spelling of the most common
+	 * raw() escape-hatch use; built through {@see ExpressionBuilder::groupConcat()},
+	 * which documents the argument contract.
+	 *
+	 * <code>
+	 * $qb->select('user_class')
+	 *     ->selectGroupConcat('user_name', 'names', array('user_name' => 'ASC'), ', ')
+	 *     ->from('user')
+	 *     ->groupBy('user_class');
+	 * </code>
+	 *
+	 * @param string $column Aggregated column name (or table.column).
+	 * @param string|null $alias Optional column alias; validated and quoted.
+	 * @param array $orderBy column => 'ASC'|'DESC' pairs; may be empty.
+	 * @param string $separator Separator string; defaults to ','.
+	 * @param bool $distinct Aggregate only distinct values.
+	 * @return QueryBuilder $this
+	 * @throws InvalidArgumentException on a bad column, alias or direction.
+	 */
+	public function selectGroupConcat($column, $alias = null, array $orderBy = array(), $separator = ',', $distinct = false)
+	{
+		$this->type = self::TYPE_SELECT;
+
+		$fragment = $this->expr()->groupConcat($column, $alias, $orderBy, $separator, $distinct);
 		$this->mergeParameters($fragment->getParameters());
 		$this->select[] = $fragment->getSql();
 

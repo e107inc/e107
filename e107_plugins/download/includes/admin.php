@@ -10,9 +10,7 @@
  *
 */
 
-use e107\Database\SqlFragment;
-
-if (!defined('e107_INIT')){ exit; } 
+if (!defined('e107_INIT')){ exit; }
 
 class plugin_download_admin extends e_admin_dispatcher
 {
@@ -767,7 +765,7 @@ $columnInfo = array(
 		            $title = DOWLAN_166;
 		            $qb = $sql->createQueryBuilder();
 		            $rows = $qb
-		               ->addSelect(SqlFragment::raw('GROUP_CONCAT(d.download_id SEPARATOR ",") as gc'))->addSelect('d.download_id', 'd.download_name', 'd.download_url', 'dc.download_category_name')
+		               ->selectGroupConcat('d.download_id', 'gc')->addSelect('d.download_id', 'd.download_name', 'd.download_url', 'dc.download_category_name')
 		               ->from('download', 'd')
 		               ->leftJoin('download_category', 'dc', $qb->expr()->compareColumns('dc.download_category_id', 'd.download_category'))
 		               ->groupBy('d.download_url')

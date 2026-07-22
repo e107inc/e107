@@ -458,6 +458,58 @@ class ExpressionBuilder
 	}
 
 	/**
+	 * A vouched string-aggregation expression (MySQL GROUP_CONCAT, PostgreSQL
+	 * string_agg, ...), "GROUP_CONCAT([DISTINCT ]`col`[ ORDER BY ...] SEPARATOR
+	 * 'sep')[ AS `alias`]" on MySQL, compiled through the platform dialect
+	 * ({@see PlatformInterface::compileGroupConcat()}), binding nothing.
+	 *
+	 * The column, the ORDER BY columns, and the alias are validated
+	 * identifiers; ORDER BY directions are checked against {ASC, DESC}. The
+	 * separator is inlined as a driver-quoted string literal
+	 * ({@see ConnectionInterface::quoteStringLiteral()}) because some dialects
+	 * reject a bound parameter in that position; it is developer-authored and
+	 * must never receive user input.
+	 *
+	 * @param string $column Aggregated column name (or table.column).
+	 * @param string|null $alias Optional column alias; validated and quoted.
+	 * @param array $orderBy column => 'ASC'|'DESC' pairs; may be empty.
+	 * @param string $separator Separator string; defaults to ','.
+	 * @param bool $distinct Aggregate only distinct values.
+	 * @return SqlFragment
+	 * @throws InvalidArgumentException on a bad column, alias or direction.
+	 */
+	public function groupConcat($column, $alias = null, array $orderBy = array(), $separator = ',', $distinct = false)
+	{
+		$quotedOrderBy = array();
+
+		foreach($orderBy as $orderColumn => $direction)
+		{
+			$dir = strtoupper((string) $direction);
+
+			if($dir !== 'ASC' && $dir !== 'DESC')
+			{
+				throw new InvalidArgumentException('groupConcat() ORDER BY direction must be ASC or DESC: '.$direction);
+			}
+
+			$quotedOrderBy[] = $this->qb->quoteColumn($orderColumn).' '.$dir;
+		}
+
+		$sql = $this->qb->getPlatform()->compileGroupConcat(
+			$this->qb->quoteColumn($column),
+			$quotedOrderBy,
+			$this->qb->quoteStringLiteral((string) $separator),
+			(bool) $distinct
+		);
+
+		if($alias !== null)
+		{
+			$sql .= ' AS '.$this->qb->quoteColumn($alias);
+		}
+
+		return SqlFragment::fragment($sql);
+	}
+
+	/**
 	 * Compare an aggregate against a bound value, "FUNC(`col`) OP :value". The
 	 * function and column follow {@see ExpressionBuilder::aggregate()}; the operator is
 	 * checked against the allowlist (IN/NOT IN are rejected) and the one value

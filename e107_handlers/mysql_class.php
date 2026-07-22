@@ -1190,6 +1190,17 @@ class e_db_mysql implements e_db
 	}
 
 	/**
+	 * Documented at {@see \e107\Database\ConnectionInterface::quoteStringLiteral()}.
+	 *
+	 * @param string $value
+	 * @return string quoted literal, including the surrounding quotes
+	 */
+	public function quoteStringLiteral($value)
+	{
+		return "'".$this->_escape($value)."'";
+	}
+
+	/**
 	 * Verify whether a table exists, without causing an error
 	 *
 	 * @param string $table Table name without the prefix

@@ -302,6 +302,23 @@ use PDOStatement;
 
 
 		/**
+		 * Quote a string as a complete single-quoted SQL literal, including the
+		 * surrounding quotes, using the driver's own connection-charset-aware
+		 * quoting: the literal-quoting sibling of {@see ConnectionInterface::quoteIdentifier()}.
+		 *
+		 * For values, always prefer bound parameters ({@see ConnectionInterface::execute()},
+		 * the query builder). This exists for the rare grammar positions where a
+		 * bound parameter is a syntax error, e.g. MySQL's GROUP_CONCAT
+		 * SEPARATOR clause, and is meant for developer-authored strings, never
+		 * user input. Fails closed: throws when the driver cannot quote.
+		 *
+		 * @param string $value
+		 * @return string quoted literal, e.g. "'it\'s'"
+		 */
+		public function quoteStringLiteral($value);
+
+
+		/**
 		 * Preferred entry point for database access. Create a fluent query builder
 		 * bound to this connection. It compiles to SQL with bound :named
 		 * placeholders and runs through {@see ConnectionInterface::execute()}; table names are
