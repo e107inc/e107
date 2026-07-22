@@ -39,8 +39,13 @@ use PDOStatement;
 	 *    automatically carry across backends.
 	 *
 	 * 3. The legacy CRUD methods (select, insert, update, delete, replace, gen,
-	 *    retrieve, count, max, escape) are deprecated; do not use them in new
-	 *    code. Each carries an @deprecated note mapping it to its replacement.
+	 *    retrieve, count, max, escape) are deprecated and strongly discouraged:
+	 *    avoid them in new code, and migrate the call sites you touch when
+	 *    refactoring. Each carries an @deprecated note mapping it to its
+	 *    replacement. They nevertheless remain part of the supported, tested
+	 *    surface, with no removal planned or scheduled; in this API,
+	 *    deprecation is a signpost to the replacement, never a removal
+	 *    schedule or an obligation to rewrite working code.
 	 *
 	 * Schema and DDL work (CREATE/ALTER/DROP/TRUNCATE) has its own dedicated
 	 * methods: {@see ConnectionInterface::dropTable()}, {@see ConnectionInterface::truncate()},
@@ -104,6 +109,9 @@ use PDOStatement;
 		 *             </code>
 		 *             See {@see QueryBuilder::delete()}, and {@see ConnectionInterface} for the
 		 *             full guide.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
 		 */
 		function delete($table, $arg = '', $debug = false, $log_type = '', $log_remark = '');
 
@@ -162,6 +170,9 @@ use PDOStatement;
 		 *             </code>
 		 *             See {@see QueryBuilder::replace()}, and {@see ConnectionInterface} for the
 		 *             full guide.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
 		 */
 		function replace($table, $arg, $debug = false, $log_type = '', $log_remark = '');
 
@@ -194,6 +205,9 @@ use PDOStatement;
 		 *             {@see QueryBuilder::fetchRow()} and
 		 *             {@see QueryBuilder::fetchAll()}, and {@see ConnectionInterface} for the full
 		 *             guide.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
 		 */
 		public function retrieve($table, $fields = null, $where=null, $multi = false, $indexField = null, $debug = false);
 
@@ -228,6 +242,9 @@ use PDOStatement;
 		 *             bound :named parameters. For ordinary CRUD prefer the query
 		 *             builder ({@see ConnectionInterface::createQueryBuilder()}); see {@see ConnectionInterface}
 		 *             for the full guide.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
 		 */
 		public function gen($query, $debug = false, $log_type = '', $log_remark = '');
 
@@ -449,6 +466,9 @@ use PDOStatement;
 		 *             makes unnecessary. Calls emit one E_USER_DEPRECATED notice
 		 *             per call site per request. See {@see ConnectionInterface} for the full
 		 *             guide.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
 		 * @param string $data
 		 * @param bool $strip Unused; retained for backwards compatibility
 		 * @return string
@@ -477,6 +497,9 @@ use PDOStatement;
 		 *             for SQL expressions such as user_viewed = user_viewed + 1
 		 *             use {@see QueryBuilder::setExpression()}. See {@see ConnectionInterface} for
 		 *             the full guide.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
 		 */
 		function update($tableName, $arg, $debug = false, $log_type = '', $log_remark = '');
 
@@ -540,6 +563,9 @@ use PDOStatement;
 		 *             See {@see QueryBuilder::select()} and
 		 *             {@see QueryBuilder::fetchAll()}, and {@see ConnectionInterface} for the full
 		 *             guide.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
 		 */
 		public function select($table, $fields = '*', $arg = '', $noWhere = false, $debug = false, $log_type = '', $log_remark = '');
 
@@ -580,6 +606,9 @@ use PDOStatement;
 		 *             legacy '_DUPLICATE_KEY_UPDATE' option. For inserts the builder
 		 *             still cannot express (INSERT...SELECT), fall back to
 		 *             {@see ConnectionInterface::execute()}. See {@see ConnectionInterface} for the full guide.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
 		 */
 		function insert($tableName, $arg, $debug = false, $log_type = '', $log_remark = '');
 
@@ -625,6 +654,9 @@ use PDOStatement;
 		 *             </code>
 		 *             See {@see QueryBuilder::fetchOne()}, and {@see ConnectionInterface} for the
 		 *             full guide.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
 		 */
 		function count($table, $fields = '(*)', $arg = '', $debug = FALSE, $log_type = '', $log_remark = '');
 
@@ -644,6 +676,9 @@ use PDOStatement;
 		 *             </code>
 		 *             See {@see QueryBuilder::fetchOne()}, and {@see ConnectionInterface} for the
 		 *             full guide.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
 		 */
 		public function max($table, $field, $where='');
 

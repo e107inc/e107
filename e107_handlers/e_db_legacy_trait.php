@@ -16,6 +16,16 @@
 	 * ({@see \e107\Database\ConnectionInterface::createQueryBuilder()}) for
 	 * CRUD, {@see \e107\Database\ConnectionInterface::execute()} for raw SQL,
 	 * and like-for-like renames for the rest. Do not add call sites.
+	 *
+	 * Avoid these methods in new code and migrate existing call sites when
+	 * refactoring; they nevertheless remain supported and tested, with no
+	 * removal planned, because two decades of plugins and themes depend on
+	 * them.
+	 *
+	 * The deprecation warnings the shims emit are E_USER_DEPRECATED notices:
+	 * raised once per call site per request, surfaced only in the debug
+	 * panel when the E107_DBG_DEPRECATED flag (debug bit 16384) is on, and
+	 * never shown to site visitors.
 	 */
 	trait e_db_legacy
 	{

@@ -34,6 +34,12 @@ use PDO;
  * The e_db_parityTest reflection suite keeps the two backends' public
  * surfaces aligned; this trait is what makes most of that surface a single
  * implementation.
+ *
+ * Deprecated members here carry documentation pointer stubs only; the
+ * canonical docblocks, the decision guide and the backwards-compatibility
+ * commitment (avoid deprecated methods in new code and migrate call sites
+ * when refactoring, while the methods themselves remain supported and
+ * tested, with no removal planned) live at {@see ConnectionInterface}.
  */
 trait ConnectionTrait
 {
