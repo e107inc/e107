@@ -461,14 +461,17 @@ class SqlInjectionFixesTest extends \Codeception\Test\Unit
 	// ---------------------------------------------------------------------
 
 	/**
-	 * BC guard: a hyphenated database name is legal MySQL (it only ever reaches
-	 * a backtick-quoted position) and must still pass the non-strict check.
+	 * BC guard: the non-strict check imposes no character-set restriction,
+	 * because every name the server itself accepts is legal (the db name only
+	 * ever reaches a backtick-quoted position, escaped via quoteDbName()).
+	 * Discussion #5819: a dotted name such as e107_2.3.8 must install.
 	 */
-	public function testInstallCheckNameAcceptsHyphenatedDbName()
+	public function testInstallCheckNameAcceptsServerLegalDbNames()
 	{
 		$probe = $this->installProbe();
 
-		$good = array('e107', 'e107_db', 'my-db', 'my-db-2', 'MyDb_1');
+		$good = array('e107', 'e107_db', 'my-db', 'my-db-2', 'MyDb_1',
+			'e107_2.3.8', 'a.b', 'foo bar', 'foo`bar', 'my$db', 'café', '3com', '_lead');
 
 		foreach($good as $name)
 		{
@@ -477,6 +480,22 @@ class SqlInjectionFixesTest extends \Codeception\Test\Unit
 				'check_name() must accept the legitimate db name: '.$name
 			);
 		}
+	}
+
+	/**
+	 * quoteDbName() doubles the identifier-quote character (MySQL's own
+	 * escape), so no admissible name can close the identifier early.
+	 */
+	public function testInstallQuoteDbNameNeutralisesBacktickBreakout()
+	{
+		$probe = $this->installProbe();
+
+		$this->assertSame('`sitedb`', $probe->quoteDbName('sitedb'));
+		$this->assertSame('`e107_2.3.8`', $probe->quoteDbName('e107_2.3.8'));
+		$this->assertSame(
+			'`foo`` CHARACTER SET utf8; DROP TABLE x; -- `',
+			$probe->quoteDbName('foo` CHARACTER SET utf8; DROP TABLE x; -- ')
+		);
 	}
 
 	/**
@@ -632,10 +651,11 @@ class SqlInjectionFixesTest extends \Codeception\Test\Unit
 
 	/**
 	 * install.php cannot be included (it bootstraps and runs the installer), so
-	 * lift check_name() out of the shipped source into a standalone probe. The
-	 * method has no dependency on $this, so the extracted code is the real one.
+	 * lift check_name() and quoteDbName() out of the shipped source into a
+	 * standalone probe. Neither method depends on $this, so the extracted code
+	 * is the real one.
 	 *
-	 * @return object exposing check_name()
+	 * @return object exposing check_name() and quoteDbName()
 	 */
 	protected function installProbe()
 	{
@@ -643,7 +663,9 @@ class SqlInjectionFixesTest extends \Codeception\Test\Unit
 		{
 			$src = $this->methodSource(e_BASE.'install.php', 'check_name');
 			$this->assertNotEmpty($src, 'e_install::check_name() not found in install.php');
-			eval('class SqlInjectionFixesInstallProbe { '.$src.' }');
+			$quote = $this->methodSource(e_BASE.'install.php', 'quoteDbName');
+			$this->assertNotEmpty($quote, 'e_install::quoteDbName() not found in install.php');
+			eval('class SqlInjectionFixesInstallProbe { '.$src.' '.$quote.' }');
 		}
 
 		return new SqlInjectionFixesInstallProbe();

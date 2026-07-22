@@ -998,7 +998,7 @@ class e_install
 				<tr>
 					<td><label for='db'>".LANINS_027."</label>".HELPICON."<span class='field-help'>".LANINS_033."</span></td>
 					<td class='form-inline'>
-						<input class='form-control input-large' type='text' name='db' size='20' id='db' value='".varset($this->previous_steps['mysql']['db'])."' maxlength='100' required='required' pattern='^[a-zA-Z0-9][a-zA-Z0-9_-]*' />
+						<input class='form-control input-large' type='text' name='db' size='20' id='db' value='".varset($this->previous_steps['mysql']['db'])."' maxlength='100' required='required' pattern=\"[^';]+\" />
 						<label class='checkbox-inline'><input type='checkbox' name='createdb' value='1' ".($this->previous_steps['mysql']['createdb'] ==1 ? "checked='checked'" : "")." /><small>".LANINS_028."</small></label>
 						
 					</td>
@@ -1090,19 +1090,31 @@ class e_install
 			$this->previous_steps['mysql']['overwritedb'] = 1;
 		}
 					
-		$success = $this->check_name($this->previous_steps['mysql']['db'], FALSE, FALSE) && $this->check_name($this->previous_steps['mysql']['prefix'], TRUE, TRUE);
-		
-		if ($success)
+		$dbName = $this->previous_steps['mysql']['db'];
+		$prefix = $this->previous_steps['mysql']['prefix'];
+
+		$nameError = '';
+		if (($dbName !== '' && !$this->check_name($dbName, FALSE, FALSE)) || ($prefix !== '' && !$this->check_name($prefix, TRUE, FALSE)))
 		{
-			$success = $this->checkDbFields($this->previous_steps['mysql']);		// Check for invalid characters
+			$nameError = LANINS_105;
 		}
+		elseif ($prefix !== '' && !$this->check_name($prefix, TRUE, TRUE))
+		{
+			$nameError = LANINS_149;
+		}
+		elseif (!$this->checkDbFields($this->previous_steps['mysql']))
+		{
+			$nameError = LANINS_148;
+		}
+
+		$success = ($dbName !== '' && $nameError === '');
 		
 		if(!$success || $this->previous_steps['mysql']['server'] == "" || $this->previous_steps['mysql']['user'] == "")
 		{
 			$this->stage = 3;
 			$this->template->SetTag("stage_num", LANINS_021);
 			$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] === "debug" ? "?debug" : ""));
-			$head = LANINS_039."<br /><br />\n";
+			$head = ($nameError !== '' ? $nameError : LANINS_039)."<br /><br />\n";
 			$output = "
 			<div style='width: 100%; padding-left: auto; padding-right: auto;'>
 			<table class='table table-bordered table-striped'>
@@ -1136,12 +1148,7 @@ class e_install
 					<td><input type='text' name='prefix' id='prefix' size='20' value='{$this->previous_steps['mysql']['prefix']}'  maxlength='100' /></td>
 					<td>".LANINS_034."</td>
 				</tr>";
-				
-			if (!$success)
-			{
-				$output .= "<tr><td colspan='3'>".LANINS_105."</td></tr>";
-			}
-			
+
 			$output .= "
 			</table>
 			<br /><br />
@@ -1199,7 +1206,7 @@ class e_install
 				
 				if(!empty($this->previous_steps['mysql']['overwritedb']))
 				{
-					if($this->dbqry('DROP DATABASE `'.$this->previous_steps['mysql']['db'].'` '))
+					if($this->dbqry('DROP DATABASE '.$this->quoteDbName($this->previous_steps['mysql']['db']).' '))
 					{
 						$page_content .= "<br /><span class='glyphicon glyphicon-ok'></span>  ".LANINS_136;
 					}
@@ -1214,13 +1221,13 @@ class e_install
 				if($this->previous_steps['mysql']['createdb'] == 1)
 				{
 					$notification = "<br /><span class='glyphicon glyphicon-ok'></span> ".LANINS_044;
-				    $query = 'CREATE DATABASE `'.$this->previous_steps['mysql']['db'].'` CHARACTER SET `utf8` ';
+				    $query = 'CREATE DATABASE '.$this->quoteDbName($this->previous_steps['mysql']['db']).' CHARACTER SET `utf8` ';
 					
 				}
 				else
 				{
 					$notification = "<br /><span class='glyphicon glyphicon-ok'></span>  ".LANINS_137;
-				    $query = 'ALTER DATABASE `'.$this->previous_steps['mysql']['db'].'` CHARACTER SET `utf8` ';
+				    $query = 'ALTER DATABASE '.$this->quoteDbName($this->previous_steps['mysql']['db']).' CHARACTER SET `utf8` ';
 				}
 
 				if (!$this->dbqry($query))
@@ -1352,7 +1359,7 @@ class e_install
 			}
 			else
 			{
-				$mysql_help = "<span class='glyphicon glyphicon-remove'></span> ".LANINS_105;
+				$mysql_help = "<span class='glyphicon glyphicon-remove'></span> ".str_replace('[x]', MIN_MYSQL_VERSION, LANINS_150);
 			}
 		}
 
@@ -2216,7 +2223,7 @@ class e_install
 		if (!$this->check_name($this->previous_steps['mysql']['prefix'], TRUE, TRUE))
 		{
 			installLog::add('Rejected table prefix: '.$this->previous_steps['mysql']['prefix'], 'error');
-			e107::getMessage()->addError("Table prefix may only contain letters, numbers and underscores. Installation aborted.");
+			e107::getMessage()->addError(LANINS_149);
 			e107::getDb()->close();
 			trigger_error('e107 install aborted: illegal table prefix', E_USER_ERROR);
 		}
@@ -2267,7 +2274,8 @@ class e_install
 	 * Empty string returns the value of $blank_ok (caller should set TRUE for prefix, FALSE for DB name)
 	 *
 	 * $strict TRUE is for names reaching an unquoted SQL identifier position (table prefix).
-	 * $strict FALSE additionally allows the hyphen, for names only ever used inside backticks (DB name).
+	 * $strict FALSE imposes no character-set restriction, for names only ever used inside
+	 * backticks (DB name; escaped at use via quoteDbName()).
 	 *
 	 * @param string $str
 	 * @param boolean $blank_ok [optional]
@@ -2284,12 +2292,25 @@ class e_install
 		{
 			return false;
 		}
-		$allowed = $strict ? '#^[A-Za-z0-9_]+$#D' : '#^[A-Za-z0-9_-]+$#D';
-		if (!preg_match($allowed, (string) $str))
+		if ($strict && !preg_match('#^[A-Za-z0-9_]+$#D', (string) $str))
 		{
 			return false;
 		}
 		return TRUE;
+	}
+
+	/**
+	 * Backtick-quote a database name for interpolation into DDL.
+	 * MySQL's identifier escape is a doubled backtick, so every name the
+	 * server itself accepts survives quoting intact; no character set
+	 * restriction is needed on the caller's side.
+	 *
+	 * @param string $name
+	 * @return string
+	 */
+	function quoteDbName($name)
+	{
+		return '`'.str_replace('`', '``', (string) $name).'`';
 	}
 
 	/**
