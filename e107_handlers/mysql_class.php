@@ -320,6 +320,8 @@ class e_db_mysql implements e_db
 	*/
 	public function db_Query($query, $rli = NULL, $qry_from = '', $debug = FALSE, $log_type = '', $log_remark = '')
 	{
+		$this->_notifyDeprecated('db_Query', 'Use $sql->execute($query, $params); it accepts the same SQL with a friendlier parameter map.');
+
 		global $db_time,$db_mySQLQueryCount,$queryinfo;
 		$db_mySQLQueryCount++;
 
@@ -608,6 +610,8 @@ class e_db_mysql implements e_db
 	 */
 	public function select($table, $fields = '*', $arg = '', $noWhere = false, $debug = FALSE, $log_type = '', $log_remark = '')
 	{
+		$this->_notifyDeprecated('select', 'Use the query builder: $sql->createQueryBuilder()->select(...)->from(\'table\')->where(...)->fetchAll().');
+
 		global $db_mySQLQueryCount;
 
 		// Fail closed if the table name is not a plain identifier - it is always
@@ -785,6 +789,8 @@ class e_db_mysql implements e_db
 	 */
 	function count($table, $fields = '(*)', $arg = '', $debug = FALSE, $log_type = '', $log_remark = '')
 	{
+		$this->_notifyDeprecated('count', 'Use the query builder: $sql->createQueryBuilder()->selectCount()->from(\'table\')->where(...)->fetchOne().');
+
 		// $fields === 'generic' is the documented raw-SQL escape hatch ($table holds
 		// the full query); every other path interpolates $table unquoted into FROM,
 		// so validate it as a plain identifier and fail closed otherwise.
@@ -861,6 +867,8 @@ class e_db_mysql implements e_db
 	 */
 	function delete($table, $arg = '', $debug = FALSE, $log_type = '', $log_remark = '')
 	{
+		$this->_notifyDeprecated('delete', 'Use the query builder: $sql->createQueryBuilder()->delete(\'table\')->where(...)->execute().');
+
 		// Fail closed if the table name is not a plain identifier - it is always
 		// interpolated unquoted into the DELETE statement below.
 		if($this->_safeIdentifier($table) === false)
@@ -973,6 +981,8 @@ class e_db_mysql implements e_db
 	 */
 	public function gen($query, $debug = FALSE, $log_type = '', $log_remark = '')
 	{
+		$this->_notifyDeprecated('gen', 'Use $sql->execute($query, $params) with :named parameters; for ordinary CRUD prefer the query builder ($sql->createQueryBuilder()).');
+
 		global $db_mySQLQueryCount;
 
 		$this->tabset = FALSE;
@@ -1415,6 +1425,8 @@ class e_db_mysql implements e_db
 	 */
 	function db_Set_Charset($charset = '', $debug = FALSE)
 	{
+		$this->_notifyDeprecated('db_Set_Charset', 'Use $sql->setCharset() instead.');
+
 		// Get the default user choice
 		global $mySQLcharset;
 		if (isset($mySQLcharset) && $mySQLcharset != 'utf8mb4')

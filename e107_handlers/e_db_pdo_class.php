@@ -263,6 +263,8 @@ class e_db_pdo implements e_db
 	 */
 	public function db_Query($query, $rli = NULL, $qry_from = '', $debug = false, $log_type = '', $log_remark = '')
 	{
+		$this->_notifyDeprecated('db_Query', 'Use $sql->execute($query, $params); it accepts the same SQL with a friendlier parameter map.');
+
 		global $db_time, $queryinfo;
 		self::$querycount++;
 
@@ -421,6 +423,8 @@ class e_db_pdo implements e_db
 	 */
 	public function select($table, $fields = '*', $arg = '', $noWhere = false, $debug = false, $log_type = '', $log_remark = '')
 	{
+		$this->_notifyDeprecated('select', 'Use the query builder: $sql->createQueryBuilder()->select(...)->from(\'table\')->where(...)->fetchAll().');
+
 
 		$table = $this->hasLanguage($table);
 
@@ -583,6 +587,8 @@ class e_db_pdo implements e_db
 	 */
 	function count($table, $fields = '(*)', $arg = '', $debug = false, $log_type = '', $log_remark = '')
 	{
+		$this->_notifyDeprecated('count', 'Use the query builder: $sql->createQueryBuilder()->selectCount()->from(\'table\')->where(...)->fetchOne().');
+
 		$table = $this->hasLanguage($table);
 
 		if ($fields == 'generic')
@@ -655,6 +661,8 @@ class e_db_pdo implements e_db
 	 */
 	function delete($table, $arg = '', $debug = false, $log_type = '', $log_remark = '')
 	{
+		$this->_notifyDeprecated('delete', 'Use the query builder: $sql->createQueryBuilder()->delete(\'table\')->where(...)->execute().');
+
 		$table = $this->hasLanguage($table);
 		$this->mySQLcurTable = $table;
 
@@ -754,6 +762,8 @@ class e_db_pdo implements e_db
 	 */
 	public function gen($query, $debug = false, $log_type = '', $log_remark = '')
 	{
+		$this->_notifyDeprecated('gen', 'Use $sql->execute($query, $params) with :named parameters; for ordinary CRUD prefer the query builder ($sql->createQueryBuilder()).');
+
 		$this->tabset = false;
 
 		$query .= " "; // temp fix for failing regex below, when there is no space after the table name;

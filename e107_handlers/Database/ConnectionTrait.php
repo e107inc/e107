@@ -417,6 +417,16 @@ trait ConnectionTrait
 		static $notified = array();
 
 		$trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);
+
+		// Internal routing (retrieve() driving select(), a v1 shim delegating
+		// to its replacement, the CRUD methods running through db_Query()) is
+		// not a call site to warn about; only application code is.
+		$callerFile = isset($trace[1]['file']) ? basename($trace[1]['file']) : '';
+		if(in_array($callerFile, array('ConnectionTrait.php', 'e_db_pdo_class.php', 'mysql_class.php', 'e_db_legacy_trait.php'), true))
+		{
+			return;
+		}
+
 		$site = (isset($trace[1]['file']) ? $trace[1]['file'] : '?').':'.(isset($trace[1]['line']) ? $trace[1]['line'] : '?');
 
 		if(isset($notified[$method.'|'.$site]))
@@ -851,6 +861,8 @@ trait ConnectionTrait
 	 */
 	public function retrieve($table=null, $fields = null, $where=null, $multi = false, $indexField = null, $debug = false)
 	{
+		$this->_notifyDeprecated('retrieve', 'Use the query builder: $sql->createQueryBuilder()->select(...)->from(\'table\')->where(...)->fetchAll(), ->fetchRow() or ->fetchOne().');
+
 		// fetch mode
 		if(empty($table))
 		{
@@ -1021,6 +1033,8 @@ trait ConnectionTrait
 	 */
 	public function max($table, $field, $where='')
 	{
+		$this->_notifyDeprecated('max', 'Use the query builder: $sql->createQueryBuilder()->selectAggregate(\'MAX\', \'field\')->from(\'table\')->fetchOne().');
+
 		if(($table = $this->_safeIdentifier($table)) === false || ($field = $this->_safeIdentifier($field, true)) === false)
 		{
 			return null;
@@ -1234,6 +1248,8 @@ trait ConnectionTrait
 	 */
 	function insert($tableName, $arg, $debug = false, $log_type = '', $log_remark = '')
 	{
+		$this->_notifyDeprecated('insert', 'Use the query builder: $sql->createQueryBuilder()->insert(\'table\')->values($row)->execute().');
+
 		$table = $this->hasLanguage($tableName);
 		$this->mySQLcurTable = $table;
 		$REPLACE = false; // kill any PHP notices
@@ -1410,6 +1426,8 @@ trait ConnectionTrait
 	 */
 	function replace($table, $arg, $debug = false, $log_type = '', $log_remark = '')
 	{
+		$this->_notifyDeprecated('replace', 'Use the query builder: $sql->createQueryBuilder()->replace(\'table\')->values($row)->execute().');
+
 		$arg['_REPLACE'] = TRUE;
 		return $this->insert($table, $arg, $debug, $log_type, $log_remark);
 	}
@@ -1487,6 +1505,8 @@ trait ConnectionTrait
 	 */
 	function update($tableName, $arg, $debug = false, $log_type = '', $log_remark = '')
 	{
+		$this->_notifyDeprecated('update', 'Use the query builder: $sql->createQueryBuilder()->update(\'table\')->set(\'col\', $value)->where(...)->execute().');
+
 		$table = $this->hasLanguage($tableName);
 		$this->mySQLcurTable = $table;
 

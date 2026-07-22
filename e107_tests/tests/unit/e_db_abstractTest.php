@@ -568,6 +568,40 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$this->assertStringContainsString('escape() is deprecated', $caught[0]);
 	}
 
+	public function testLegacyCrudDeprecationNotice()
+	{
+		$caught = array();
+		set_error_handler(function ($errno, $errstr) use (&$caught)
+		{
+			$caught[] = $errstr;
+			return true;
+		}, E_USER_DEPRECATED);
+
+		$this->db->select('user', 'user_name', 'user_id = 1');
+
+		restore_error_handler();
+
+		$this->assertCount(1, $caught);
+		$this->assertStringContainsString('select() is deprecated', $caught[0]);
+	}
+
+	public function testDeprecationNoticeSkipsInternalRouting()
+	{
+		$caught = array();
+		set_error_handler(function ($errno, $errstr) use (&$caught)
+		{
+			$caught[] = $errstr;
+			return true;
+		}, E_USER_DEPRECATED);
+
+		// isEmpty() is not deprecated; its internal gen() call must not warn.
+		$this->db->isEmpty('user');
+
+		restore_error_handler();
+
+		$this->assertSame(array(), $caught);
+	}
+
 
 	public function testRetrieve()
 	{

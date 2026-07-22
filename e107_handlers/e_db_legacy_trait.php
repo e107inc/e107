@@ -93,6 +93,8 @@
 		 */
 		public function db_Close()
 		{
+			$this->_notifyDeprecated('db_Close', 'Use $sql->close() instead.');
+
 			$this->close();
 		}
 
@@ -173,6 +175,8 @@
 		 */
 		function db_Rows()
 		{
+			$this->_notifyDeprecated('db_Rows', 'Use $sql->rowCount() instead.');
+
 			return $this->rowCount();
 		}
 
@@ -203,6 +207,8 @@
 		 */
 		public function db_Table_exists($table, $language='')
 		{
+			$this->_notifyDeprecated('db_Table_exists', 'Use $sql->isTable() instead.');
+
 			return $this->isTable($table, $language);
 		}
 
@@ -214,6 +220,8 @@
 		 */
 		public function db_TableList($mode='all')
 		{
+			$this->_notifyDeprecated('db_TableList', 'Use $sql->tables() instead.');
+
 			return $this->tables($mode);
 		}
 
@@ -228,6 +236,8 @@
 		 */
 		function db_Field($table, $fieldid = "", $key = "", $retinfo = false)
 		{
+			$this->_notifyDeprecated('db_Field', 'Use $sql->field() instead.');
+
 			return $this->field($table, $fieldid, $key, $retinfo);
 		}
 
@@ -242,6 +252,8 @@
 		 */
 		function db_getList($fields = 'ALL', $amount = false, $maximum = false, $ordermode=false)
 		{
+			$this->_notifyDeprecated('db_getList', 'Use $sql->rows() instead.');
+
 			return $this->rows($fields, $amount, $maximum, $ordermode);
 		}
 
@@ -273,6 +285,8 @@
 		 */
 		public function db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $newLink = false, $mySQLPrefix = MPREFIX)
 		{
+			$this->_notifyDeprecated('db_Connect', 'Use $sql->connect() and $sql->database() instead.');
+
 			if(!$this->connect($mySQLserver, $mySQLuser, $mySQLpassword, $newLink))
 			{
 				return 'e1';
@@ -331,6 +345,8 @@
 		 */
 		public function db_CopyTable($oldtable, $newtable, $drop = false, $data = false)
 		{
+			$this->_notifyDeprecated('db_CopyTable', 'Use $sql->copyTable() instead.');
+
 			return $this->copyTable($oldtable, $newtable, $drop, $data);
 		}
 
@@ -344,6 +360,8 @@
 		 */
 		public function db_FieldList($table, $prefix = '', $retinfo = FALSE)
 		{
+			$this->_notifyDeprecated('db_FieldList', 'Use $sql->fields() instead.');
+
 			return $this->fields($table, $prefix, $retinfo);
 		}
 
@@ -353,6 +371,8 @@
 		 */
 		public function db_ResetTableList()
 		{
+			$this->_notifyDeprecated('db_ResetTableList', 'Use $sql->resetTableList() instead.');
+
 			return $this->resetTableList();
 
 		}
@@ -363,6 +383,8 @@
 		 */
 		public function db_QueryCount()
 		{
+			$this->_notifyDeprecated('db_QueryCount', 'Use $sql->queryCount() instead.');
+
 			return $this->queryCount();
 		}
 
@@ -375,6 +397,8 @@
 		 */
 		public function db_Write_log($log_type = '', $log_remark = '', $log_query = '')
 		{
+			$this->_notifyDeprecated('db_Write_log', 'Use $sql->log() instead.');
+
 			$this->log($log_type, $log_remark, $log_query);
 		}
 
@@ -385,6 +409,8 @@
 		 */
 		public function db_SetErrorReporting($mode)
 		{
+			$this->_notifyDeprecated('db_SetErrorReporting', 'Use $sql->setErrorReporting() instead.');
+
 			$this->setErrorReporting($mode);
 		}
 
@@ -396,6 +422,8 @@
 		 */
 		public function db_Mark_Time($sMarker)
 		{
+			$this->_notifyDeprecated('db_Mark_Time', 'Use $sql->markTime() instead.');
+
 			return $this->markTime($sMarker);
 		}
 
@@ -405,6 +433,8 @@
 		 */
 		public function get_mySQLaccess()
 		{
+			$this->_notifyDeprecated('get_mySQLaccess', 'Raw driver-handle access has no replacement; avoid it.');
+
 			return $this->mySQLaccess;
 		}
 
