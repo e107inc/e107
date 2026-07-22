@@ -8,13 +8,15 @@
  */
 
 /**
- * Regression coverage for the installer's db-name / table-prefix intake gate.
+ * Regression coverage for the installer's db-name / table-prefix handling.
  *
- * install.php interpolates $_POST['db'] and $_POST['prefix'] into SQL identifier
- * positions (CREATE/ALTER/DROP DATABASE `db`, REPLACE INTO {prefix}user). The
- * old checkDbFields() only rejected ' and ; , so a backtick or a space in the
- * db name broke out of the identifier quoting. checkDbFields() now enforces a
- * strict identifier grammar; these tests pin that contract.
+ * The db name only ever reaches SQL backtick-quoted, and quoteDbName() doubles
+ * the backtick (MySQL's own identifier escape), so every name the server itself
+ * accepts is admissible; checkDbFields() imposes no character-set restriction
+ * on it beyond the legacy ' / ; guard (a semicolon cannot be represented in the
+ * PDO DSN). The table prefix is interpolated UNQUOTED into every query
+ * (REPLACE INTO {prefix}user), so it must remain a bare identifier. These
+ * tests pin both halves of that contract.
  *
  * install.php cannot be require()d (it runs the installer at file scope), so the
  * e_install class body is extracted from source and eval'd under a renamed name,
@@ -68,21 +70,42 @@ class sqliInstallDbFieldsTest extends \Codeception\Test\Unit
 		);
 	}
 
-	public function testRejectsBacktickInDbName()
+	public function testAcceptsEveryLegalServerSideDbName()
 	{
-		// The identifier-quote character is exactly the breakout vector the old
-		// ' / ; filter missed.
-		$this->assertFalse(
-			$this->installer()->checkDbFields(array('db' => 'foo`bar', 'prefix' => 'e107_')),
-			'A backtick in the db name must be rejected (identifier breakout).'
-		);
+		// MySQL/MariaDB accept all of these (discussion #5819: the v2.3.8-era
+		// allowlist rejected the dotted form and broke real installs).
+		$legal = array('e107_2.3.8', 'a.b', 'foo bar', 'foo`bar', 'my$db', 'café', '3com', '_lead');
+
+		foreach ($legal as $name)
+		{
+			$this->assertTrue(
+				$this->installer()->checkDbFields(array('db' => $name, 'prefix' => 'e107_')),
+				'A db name the server itself accepts must pass: '.$name
+			);
+		}
 	}
 
-	public function testRejectsSpaceInDbName()
+	public function testRejectsQuoteAndSemicolonInDbFields()
 	{
-		$this->assertFalse(
-			$this->installer()->checkDbFields(array('db' => 'foo bar', 'prefix' => 'e107_')),
-			'A space in the db name must be rejected.'
+		foreach (array("site'db", 'site;db') as $name)
+		{
+			$this->assertFalse(
+				$this->installer()->checkDbFields(array('db' => $name, 'prefix' => 'e107_')),
+				'The legacy quote/semicolon guard must survive: '.$name
+			);
+		}
+	}
+
+	public function testQuoteDbNameNeutralisesBacktickBreakout()
+	{
+		$installer = $this->installer();
+
+		$this->assertSame('`sitedb`', $installer->quoteDbName('sitedb'));
+		$this->assertSame('`e107_2.3.8`', $installer->quoteDbName('e107_2.3.8'));
+		$this->assertSame(
+			'`foo`` CHARACTER SET utf8; DROP TABLE x; -- `',
+			$installer->quoteDbName('foo` CHARACTER SET utf8; DROP TABLE x; -- '),
+			'The identifier-quote character must be doubled, never allowed to close the identifier.'
 		);
 	}
 
