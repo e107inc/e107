@@ -1404,7 +1404,10 @@ class e_db_mysql implements e_db
 	 * Check if MySQL version is utf8mb4 compatible and may be used as it accordingly to the user choice
 	 *
 	 * @TODO Simplify when the conversion script will be available
-	 * @access public
+	 * @deprecated v2.4.0 Use {@see \e107\Database\ConnectionInterface::setCharset()}.
+	 *             Avoid in new code and migrate existing call sites when
+	 *             refactoring; this method remains supported and tested, with no
+	 *             removal planned.
 	 * @param string    MySQL charset may be forced in special circumstances
 	 *                  UTF-8 encoding and decoding is left to the progammer
 	 * @param bool      TRUE enter debug mode. default FALSE
