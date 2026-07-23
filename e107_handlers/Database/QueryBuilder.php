@@ -12,6 +12,7 @@ namespace e107\Database;
 
 use Closure;
 use e107;
+use e107\Database\Exception\UnsupportedException;
 use e107\Database\Platform\PlatformInterface;
 use InvalidArgumentException;
 
@@ -172,6 +173,12 @@ class QueryBuilder
 
 	/** @var array placeholder name => value, in the {@see ConnectionInterface::execute()} shape */
 	private $params = array();
+
+	/**
+	 * @var bool compile logical tables to `#table` markers instead of physical
+	 *      names, so {@see QueryBuilder::executeAllLanguages()} can resolve them per leg
+	 */
+	private $compileTableMarkers = false;
 
 	/** @var int placeholder name counter */
 	private $paramCounter = 0;
@@ -2326,6 +2333,69 @@ class QueryBuilder
 	}
 
 	/**
+	 * Run this write once against the base tables and once against every
+	 * language that has a lan_* copy of any referenced table, resolving
+	 * every table reference afresh for each leg. The builder-level
+	 * counterpart of {@see ConnectionInterface::executeAllLanguages()}, and the modern
+	 * replacement for db_Query_all() wherever the statement fits the
+	 * builder.
+	 *
+	 * <code>
+	 * $qb = e107::getDb()->createQueryBuilder();
+	 * $legs = $qb->delete('comments')
+	 *     ->where($qb->expr()->eq('comment_item_id', 12))
+	 *     ->executeAllLanguages();
+	 * // DELETE FROM `e107_comments` ..., then `e107_lan_french_comments` ..., etc.
+	 * </code>
+	 *
+	 * SELECT builders are rejected: reading across language variants has no
+	 * single result shape. Statements embedding pre-compiled sub-queries
+	 * ({@see QueryBuilder::fromSub()}, {@see QueryBuilder::joinSub()},
+	 * {@see QueryBuilder::insertUsing()}, {@see QueryBuilder::union()}) are rejected
+	 * too, because their table names were already resolved when they were
+	 * composed and cannot be re-routed per leg.
+	 *
+	 * @return int|false number of statements executed (>= 1), or false when
+	 *                   any leg failed (see {@see ConnectionInterface::getLastErrorText()})
+	 * @throws UnsupportedException for SELECT builders and for statements
+	 *                   embedding pre-compiled sub-queries
+	 * @see \e107\Database\QueryBuilderTest::testExecuteAllLanguages()
+	 */
+	public function executeAllLanguages()
+	{
+		if($this->type === self::TYPE_SELECT)
+		{
+			throw new UnsupportedException('executeAllLanguages() runs writes; a SELECT across language variants has no single result shape.');
+		}
+
+		if($this->fromSub !== null || $this->insertSelect !== null || !empty($this->unions))
+		{
+			throw new UnsupportedException('executeAllLanguages() cannot re-route a pre-compiled sub-query; compose the statement without fromSub(), insertUsing() or union().');
+		}
+
+		foreach($this->join as $join)
+		{
+			if(isset($join['expr']))
+			{
+				throw new UnsupportedException('executeAllLanguages() cannot re-route a pre-compiled sub-query; compose the statement without joinSub().');
+			}
+		}
+
+		$this->compileTableMarkers = true;
+
+		try
+		{
+			$sql = $this->getSQL();
+		}
+		finally
+		{
+			$this->compileTableMarkers = false;
+		}
+
+		return $this->db->executeAllLanguages($sql, $this->params);
+	}
+
+	/**
 	 * Run the query and return every row in one array.
 	 *
 	 * This MATERIALISES the whole result set: every row is held in PHP memory at
@@ -3366,6 +3436,11 @@ class QueryBuilder
 		}
 
 		$quote = $this->platform->getIdentifierQuoteCharacter();
+
+		if($this->compileTableMarkers)
+		{
+			return $quote.'#'.ltrim((string) $table, '#').$quote;
+		}
 
 		return $quote.$resolved.$quote;
 	}

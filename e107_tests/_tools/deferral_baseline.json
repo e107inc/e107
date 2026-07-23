@@ -86,12 +86,6 @@
         },
         {
             "file": "e107_handlers/db_table_admin_class.php",
-            "method": "db_Query_all",
-            "sql_excerpt": "{$qry}",
-            "count": 1
-        },
-        {
-            "file": "e107_handlers/db_table_admin_class.php",
             "method": "execute",
             "sql_excerpt": "{$createText}",
             "count": 1
@@ -172,18 +166,6 @@
             "file": "e107_handlers/plugin_class.php",
             "method": "db_Query",
             "sql_excerpt": "{$tab}",
-            "count": 1
-        },
-        {
-            "file": "e107_handlers/plugin_class.php",
-            "method": "db_Query_all",
-            "sql_excerpt": "{$qry}",
-            "count": 1
-        },
-        {
-            "file": "e107_handlers/plugin_class.php",
-            "method": "db_Query_all",
-            "sql_excerpt": "{$query}",
             "count": 1
         },
         {

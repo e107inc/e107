@@ -95,6 +95,7 @@ trait ConnectionTrait
 	abstract public function isTable($table, $language = '');
 	abstract public function dbError($from);
 	abstract public function fields($table, $prefix = '', $retinfo = false);
+	abstract public function execute($sql, $params = array());
 
 	abstract protected function _escape($data);
 	abstract protected function _getTableList($language = '');
@@ -160,19 +161,34 @@ trait ConnectionTrait
 	/**
 	 * Resolve a logical e107 table name to its physical name: the database
 	 * prefix is attached and, on multi-language sites, the table is routed to
-	 * the current language's lan_* table when one exists.
+	 * a language's lan_* table when one exists.
 	 *
 	 * @param string $table table name with or without a leading '#'
+	 * @param string|null $language null: route for the connection's current
+	 *                    language, honouring the multilanguage preference (the
+	 *                    default); a language name, e.g. 'Spanish': route to
+	 *                    that language's lan_* table when it exists, regardless
+	 *                    of the current language or the multilanguage preference
 	 * @return string|false physical table name (unquoted), or false when the
 	 *                      name is not a valid identifier
 	 */
-	public function resolveTableName($table)
+	public function resolveTableName($table, $language = null)
 	{
 		$table = ltrim((string) $table, '#');
 
 		if(!preg_match('/^[A-Za-z0-9_]+$/D', $table))
 		{
 			return false;
+		}
+
+		if($language !== null)
+		{
+			if($this->isTable($table, $language))
+			{
+				return $this->mySQLPrefix.'lan_'.strtolower($language.'_'.$table);
+			}
+
+			return $this->mySQLPrefix.$table;
 		}
 
 		return $this->mySQLPrefix.$this->hasLanguage($table);
@@ -203,6 +219,52 @@ trait ConnectionTrait
 		}
 
 		return $this->mySQLPrefix.$table;
+	}
+
+	/**
+	 * Documented at {@see ConnectionInterface::executeAllLanguages()}.
+	 *
+	 * @param string $sql
+	 * @param array $parameters
+	 * @return int|false statements executed (>= 1), or false when any leg failed
+	 */
+	public function executeAllLanguages($sql, $parameters = array())
+	{
+		$legs = array(false); // false: prefix-only resolution, the base tables
+
+		$tables = $this->_markerTables($sql);
+
+		if(!empty($tables) && ($variants = $this->hasLanguage($tables, true)))
+		{
+			foreach(array_keys($variants) as $language)
+			{
+				$legs[] = $language;
+			}
+		}
+
+		$failedText = null;
+		$failedNumber = null;
+
+		foreach($legs as $language)
+		{
+			if($this->execute($this->_substituteTableNames($sql, $language), $parameters) === false
+				&& $failedText === null)
+			{
+				$failedText = $this->getLastErrorText();
+				$failedNumber = $this->getLastErrorNumber();
+			}
+		}
+
+		if($failedText !== null)
+		{
+			// later successful legs reset the error state; resurface the first failure
+			$this->mySQLlastErrText = $failedText;
+			$this->mySQLlastErrNum = $failedNumber;
+
+			return false;
+		}
+
+		return count($legs);
 	}
 
 	/**
@@ -308,33 +370,92 @@ trait ConnectionTrait
 	}
 
 	/**
+	 * Quote-aware scan for '#table' markers: string literals, backticked
+	 * identifiers and comments are consumed first, so a '#' inside them is
+	 * never treated as a marker. Group 1 captures `#table`, group 2 bare #table.
+	 *
+	 * @var string
+	 */
+	private static $markerScan = '/\'(?:[^\'\\\\]|\\\\.)*\'|"(?:[^"\\\\]|\\\\.)*"|`#([A-Za-z0-9_]+)`|`[^`]*`|\/\*[\s\S]*?\*\/|--[^\r\n]*|#([A-Za-z0-9_]+)/';
+
+	/**
 	 * Replace `#table` (and bare #table) markers with physical table names via
-	 * a quote-aware scan: string literals, backticked identifiers and comments
-	 * are consumed first, so a '#' inside them is never rewritten.
+	 * the {@see ConnectionTrait::$markerScan} scan.
 	 *
 	 * @param string $sql
+	 * @param string|false|null $language null: route for the current language;
+	 *                          false: attach the prefix only, no language
+	 *                          routing; a language name: route to that
+	 *                          language's lan_* tables where they exist
 	 * @return string
 	 */
-	private function _substituteTableNames($sql)
+	private function _substituteTableNames($sql, $language = null)
 	{
 		return preg_replace_callback(
-			'/\'(?:[^\'\\\\]|\\\\.)*\'|"(?:[^"\\\\]|\\\\.)*"|`#([A-Za-z0-9_]+)`|`[^`]*`|\/\*[\s\S]*?\*\/|--[^\r\n]*|#([A-Za-z0-9_]+)/',
-			function ($matches)
+			self::$markerScan,
+			function ($matches) use ($language)
 			{
 				if(!empty($matches[1])) // `#table`
 				{
-					return '`'.$this->resolveTableName($matches[1]).'`';
+					return '`'.$this->_resolveMarker($matches[1], $language).'`';
 				}
 
 				if(isset($matches[2]) && $matches[2] !== '') // bare #table
 				{
-					return $this->resolveTableName($matches[2]);
+					return $this->_resolveMarker($matches[2], $language);
 				}
 
 				return $matches[0];
 			},
 			$sql
 		);
+	}
+
+	/**
+	 * Resolve one marker table name for {@see ConnectionTrait::_substituteTableNames()}.
+	 *
+	 * @param string $table
+	 * @param string|false|null $language see {@see ConnectionTrait::_substituteTableNames()}
+	 * @return string|false
+	 */
+	private function _resolveMarker($table, $language)
+	{
+		if($language === false)
+		{
+			return $this->resolvePhysicalTableName($table);
+		}
+
+		return $this->resolveTableName($table, $language);
+	}
+
+	/**
+	 * Collect the logical table names referenced by '#table' markers.
+	 *
+	 * @param string $sql
+	 * @return string[] unique logical names, in order of first appearance
+	 */
+	private function _markerTables($sql)
+	{
+		$tables = array();
+
+		if(!preg_match_all(self::$markerScan, $sql, $matches, PREG_SET_ORDER))
+		{
+			return $tables;
+		}
+
+		foreach($matches as $match)
+		{
+			if(!empty($match[1]))
+			{
+				$tables[$match[1]] = true;
+			}
+			elseif(isset($match[2]) && $match[2] !== '')
+			{
+				$tables[$match[2]] = true;
+			}
+		}
+
+		return array_keys($tables);
 	}
 
 	/**

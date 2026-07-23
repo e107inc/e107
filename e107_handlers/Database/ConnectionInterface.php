@@ -311,15 +311,50 @@ use PDOStatement;
 
 
 		/**
+		 * Run a statement against every language variant of the tables it
+		 * references: once against the base tables, then once per language
+		 * that has a lan_* copy of any referenced table. The modern
+		 * replacement for {@see ConnectionInterface::db_Query_all()}.
+		 *
+		 * '#table' markers are resolved afresh for each leg, so a language
+		 * without a copy of some referenced table falls back to the base
+		 * table for that leg, and a statement with no markers runs exactly
+		 * once. Every leg is attempted even when an earlier one fails, so
+		 * maintenance reaches all copies; on failure the first failing
+		 * leg's error is kept for {@see ConnectionInterface::getLastErrorText()}.
+		 *
+		 * <code>
+		 * // Drop a plugin table and its language copies:
+		 * $sql->executeAllLanguages('DROP TABLE `#myplugin_data`');
+		 *
+		 * // Parameters bind exactly as in execute():
+		 * $sql->executeAllLanguages('UPDATE #news SET news_render_type = :type', array('type' => 0));
+		 * </code>
+		 *
+		 * @param string $sql SQL with '#table' markers and optional :named placeholders
+		 * @param array $parameters name => value, or name => array('value' => mixed, 'type' => ConnectionInterface::PARAM_*)
+		 * @return int|false number of statements executed (>= 1), or false when any leg failed
+		 * @see \e107\Database\QueryBuilder::executeAllLanguages() for the query-builder form
+		 */
+		public function executeAllLanguages($sql, $parameters = array());
+
+
+		/**
 		 * Resolve a logical e107 table name to its physical name: the database
 		 * prefix is attached and, on multi-language sites, the table is routed
-		 * to the current language's lan_* table when one exists.
+		 * to a language's lan_* table when one exists.
 		 *
 		 * @param string $table table name with or without a leading '#'
+		 * @param string|null $language null: route for the connection's current
+		 *                    language, honouring the multilanguage preference
+		 *                    (the default); a language name, e.g. 'Spanish':
+		 *                    route to that language's lan_* table when it
+		 *                    exists, regardless of the current language or the
+		 *                    multilanguage preference
 		 * @return string|false physical table name (unquoted), or false when
 		 *                      the name is not a valid identifier
 		 */
-		public function resolveTableName($table);
+		public function resolveTableName($table, $language = null);
 
 
 		/**
@@ -1002,9 +1037,18 @@ use PDOStatement;
 
 		/**
 		 * Run a query once for the main table and once per language variant of
-		 * every prefixed table it references. Multi-language maintenance helper;
-		 * no modern replacement exists.
+		 * every prefixed table it references, located by splitting the
+		 * already-substituted SQL on spaces and replacing prefixed tokens.
 		 *
+		 * @deprecated v2.4.0 Use {@see ConnectionInterface::executeAllLanguages()}: it resolves
+		 *             '#table' markers afresh per leg instead of rewriting
+		 *             substituted SQL by token scan, binds :named parameters,
+		 *             and keeps the failing leg's error readable via
+		 *             {@see ConnectionInterface::getLastErrorText()}. The builder form is
+		 *             {@see \e107\Database\QueryBuilder::executeAllLanguages()}.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
 		 * @param string $query SQL with '#' database-prefix markers
 		 * @param bool $debug
 		 * @return bool false when any leg of the query fails

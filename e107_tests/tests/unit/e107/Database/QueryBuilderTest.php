@@ -10,6 +10,7 @@
 
 namespace e107\Database;
 
+use e107\Database\Exception\UnsupportedException;
 use e107\Database\Platform\MysqlPlatform;
 use e107\Database\Platform\PlatformInterface;
 use Generator;
@@ -33,6 +34,7 @@ use ReflectionMethod;
 			require_once(e_HANDLER."Database/SqlFragment.php");
 			require_once(e_HANDLER."Database/ExpressionBuilder.php");
 			require_once(e_HANDLER."Database/QueryBuilder.php");
+			require_once(e_HANDLER."Database/Exception/UnsupportedException.php");
 		}
 
 		/**
@@ -1334,6 +1336,65 @@ use ReflectionMethod;
 			$this->assertSame(array('qb1' => 'changed', 'qb2' => '127.0.0.1'), $qb->getParameters());
 		}
 
+		public function testExecuteAllLanguages()
+		{
+			$qb = $this->makeQb($stub);
+			$legs = $qb->update('news')->set('news_title', 'changed')
+				->where($qb->expr()->eq('news_id', 1))
+				->executeAllLanguages();
+
+			$this->assertSame(2, $legs);
+			$this->assertSame(
+				'UPDATE `#news` SET `news_title` = :qb1 WHERE (`news_id` = :qb2)',
+				$stub->lastAllLanguagesSql
+			);
+			$this->assertSame(array('qb1' => 'changed', 'qb2' => 1), $stub->lastAllLanguagesParams);
+
+			// the marker mode is transient: a plain compile resolves physically again
+			$this->assertSame(
+				'UPDATE `e107_news` SET `news_title` = :qb1 WHERE (`news_id` = :qb2)',
+				$qb->getSQL()
+			);
+		}
+
+		public function testExecuteAllLanguagesRejectsSelect()
+		{
+			$qb = $this->makeQb();
+			$qb->select('user_id')->from('user');
+
+			try
+			{
+				$qb->executeAllLanguages();
+			}
+			catch(UnsupportedException $e)
+			{
+				$this->assertNotEmpty($e->getMessage());
+
+				return;
+			}
+
+			$this->fail('Expected UnsupportedException for a SELECT builder');
+		}
+
+		public function testExecuteAllLanguagesRejectsPrecompiledSubqueries()
+		{
+			$qb = $this->makeQb();
+			$qb->insert('tmp')->insertUsing(array('tmp_ip'), function (QueryBuilder $s)
+			{
+				$s->select('user_ip')->from('user');
+			});
+
+			try
+			{
+				$qb->executeAllLanguages();
+				$this->fail('Expected UnsupportedException for insertUsing()');
+			}
+			catch(UnsupportedException $e)
+			{
+				$this->assertNotEmpty($e->getMessage());
+			}
+		}
+
 		public function testUpdateSetExpression()
 		{
 			$qb = $this->makeQb();
@@ -1638,6 +1699,8 @@ use ReflectionMethod;
 	{
 		public $lastSql = null;
 		public $lastParams = null;
+		public $lastAllLanguagesSql = null;
+		public $lastAllLanguagesParams = null;
 		public $rows = array();
 		public $executeReturn = 0;
 		public $insertId = 0;
@@ -1667,6 +1730,14 @@ use ReflectionMethod;
 		public function getPlatform()
 		{
 			return new MysqlPlatform();
+		}
+
+		public function executeAllLanguages($sql, $parameters = array())
+		{
+			$this->lastAllLanguagesSql = $sql;
+			$this->lastAllLanguagesParams = $parameters;
+
+			return 2;
 		}
 
 		public function execute($sql, $params = array())
