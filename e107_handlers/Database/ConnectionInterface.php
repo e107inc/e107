@@ -1037,9 +1037,18 @@ use PDOStatement;
 
 		/**
 		 * Run a query once for the main table and once per language variant of
-		 * every prefixed table it references. Multi-language maintenance helper;
-		 * no modern replacement exists.
+		 * every prefixed table it references, located by splitting the
+		 * already-substituted SQL on spaces and replacing prefixed tokens.
 		 *
+		 * @deprecated v2.4.0 Use {@see ConnectionInterface::executeAllLanguages()}: it resolves
+		 *             '#table' markers afresh per leg instead of rewriting
+		 *             substituted SQL by token scan, binds :named parameters,
+		 *             and keeps the failing leg's error readable via
+		 *             {@see ConnectionInterface::getLastErrorText()}. The builder form is
+		 *             {@see \e107\Database\QueryBuilder::executeAllLanguages()}.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
 		 * @param string $query SQL with '#' database-prefix markers
 		 * @param bool $debug
 		 * @return bool false when any leg of the query fails

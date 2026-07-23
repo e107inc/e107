@@ -814,13 +814,15 @@ class e_db_pdo implements e_db
 
 
 	/**
-	 * Multi-language Query Function. Run a query on the same table across all languages.
-	 * @param $query
-	 * @param bool $debug
+	 * Documented at {@see e_db::db_Query_all()}.
+	 *
 	 * @return bool
+	 * @deprecated v2.4.0 Use {@see e_db::executeAllLanguages()}.
 	 */
 	public function db_Query_all($query, $debug=false)
 	{
+		$this->_notifyDeprecated('db_Query_all', 'Use $sql->executeAllLanguages($query, $params), which resolves #table markers per language leg, or the query builder\'s executeAllLanguages().');
+
         $error = "";
 
 		$query = str_replace("#", $this->mySQLPrefix, $query);

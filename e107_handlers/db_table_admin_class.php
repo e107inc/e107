@@ -753,7 +753,10 @@ class db_table_admin
 					}
 					if ($mlUpdate)
 					{
-						$ret = $sql->db_Query_all($qry); // Returns TRUE = success, FALSE = fail
+						// The compiled ALTER embeds the quoted physical name once;
+						// re-target it at the '#table' marker so every language
+						// variant resolves per leg.
+						$ret = $sql->executeAllLanguages(str_replace('`'.MPREFIX.$tableName.'`', '`#'.$tableName.'`', $qry));
 					}
 					else
 					{

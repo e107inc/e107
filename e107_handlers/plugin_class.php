@@ -2699,6 +2699,10 @@ class e107plugin
 			case 'upgrade':
 				foreach ($var as $tab)
 				{
+					// $tab is a raw statement from a legacy plugin.php
+					// ($upgrade_alter_tables); it may carry '#' markers or a
+					// hard-coded prefix, so db_Query_all()'s token scan stays
+					// the compatibility contract here.
 					if (false === $sql->db_Query_all($tab))
 					{
 						$error = true;
@@ -2709,8 +2713,7 @@ class e107plugin
 			case 'remove':
 				foreach ($var as $tab)
 				{
-					$qry = 'DROP TABLE '.MPREFIX.$tab;
-					if (!$sql->db_Query_all($qry))
+					if (!$sql->executeAllLanguages('DROP TABLE `#'.$tab.'`'))
 					{
 						$error = true;
 						$error_data[] = $tab;
@@ -3603,9 +3606,8 @@ class e107plugin
 					case "uninstall":
 						if (!empty($options['delete_tables']))
 						{
-							$query = "DROP TABLE  `".MPREFIX.$v."`; ";
 							$txt = EPL_ADLAN_240." <b> {$v} </b><br />";
-							$status = $sql->db_Query_all($query) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+							$status = $sql->executeAllLanguages('DROP TABLE `#'.$v.'`') ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 
 						}
 						else
