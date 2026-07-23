@@ -18,6 +18,8 @@ require_once(__DIR__.'/PlatformInterface.php');
 /**
  * MySQL/MariaDB dialect: the only platform e107 ships today. Both database
  * backends ({@see e_db_pdo} and {@see e_db_mysql}) speak it.
+ *
+ * An SPI implementation, not an application API; see {@see PlatformInterface}.
  */
 class MysqlPlatform implements PlatformInterface
 {

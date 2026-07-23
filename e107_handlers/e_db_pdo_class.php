@@ -27,48 +27,30 @@ class e_db_pdo implements e_db
 	use e_db_legacy;
 	use e_db_common;
 
-	// TODO switch to protected vars where needed
+	// Shared connection state lives in e_db_common (ConnectionTrait);
+	// only driver-specific members are declared here.
 	public      $mySQLserver;
 	public      $mySQLuser;
 	protected   $mySQLpassword;
 	protected   $mySQLdefaultdb;
 	protected   $mySQLport = 3306;
-	public      $mySQLPrefix;
 
 	/** @var PDO */
 	protected   $mySQLaccess;
-	public      $mySQLresult;
 	protected   $mySQLrows;
-	protected   $mySQLerror = false;			// Error reporting mode - TRUE shows messages
 
-	protected   $mySQLlastErrNum = 0;		// Number of last error - now protected, use getLastErrorNumber()
-	protected   $mySQLlastErrText = '';		// Text of last error - now protected, use getLastErrorText()
 	protected   $mySQLlastQuery = '';
 
-	protected   $mySQLcurTable;
-	public      $mySQLlanguage;
 	public      $mySQLinfo;
-	public      $tabset;
-	public      $mySQLtableList = array(); // list of all Db tables.
-
-	public      $mySQLtableListLanguage = array(); // Db table list for the currently selected language
 	public      $mySQLtablelist = array();
 
 	protected	$dbFieldDefs = array();		// Local cache - Field type definitions for _FIELD_DEFS and _NOTNULL arrays
-	public      $mySQLcharset;
 	protected   $mySqlServerInfo = '?';			// Server info - needed for various things
-
-	public      $total_results = false;			// Total number of results
 
 	private     $pdo            = true; // using PDO or not.
 
 	/** @var e107_traffic */
 	private     $traffic;
-
-	/** @var e107_db_debug */
-	private     $dbg;
-
-	private     $debugMode      = false;
 
 	protected static $querycount = 0;
 
@@ -283,6 +265,8 @@ class e_db_pdo implements e_db
 	 */
 	public function db_Query($query, $rli = NULL, $qry_from = '', $debug = false, $log_type = '', $log_remark = '')
 	{
+		$this->_notifyDeprecated('db_Query', 'Use $sql->execute($query, $params); it accepts the same SQL with a friendlier parameter map.');
+
 		global $db_time, $queryinfo;
 		self::$querycount++;
 
@@ -441,6 +425,8 @@ class e_db_pdo implements e_db
 	 */
 	public function select($table, $fields = '*', $arg = '', $noWhere = false, $debug = false, $log_type = '', $log_remark = '')
 	{
+		$this->_notifyDeprecated('select', 'Use the query builder: $sql->createQueryBuilder()->select(...)->from(\'table\')->where(...)->fetchAll().');
+
 
 		$table = $this->hasLanguage($table);
 
@@ -540,17 +526,11 @@ class e_db_pdo implements e_db
 	}
 
 	/**
-	 * @param string $type assoc|num|both
-	* @return array|bool MySQL row
-	* @desc Fetch an array containing row data (see PHP's mysql_fetch_array() docs)<br />
-	* @example
-	* Example :<br />
-	* <code>while($row = $sql->fetch()){
-	*  $text .= $row['username'];
-	* }</code>
-	*
-	* @access public
-	*/
+	 * Documented at {@see e_db::fetch()}.
+	 *
+	 * @param string|null $type 'assoc' (default), 'num' or 'both'
+	 * @return array|false
+	 */
 	function fetch($type = null)
 	{
 		switch ($type)
@@ -603,6 +583,8 @@ class e_db_pdo implements e_db
 	 */
 	function count($table, $fields = '(*)', $arg = '', $debug = false, $log_type = '', $log_remark = '')
 	{
+		$this->_notifyDeprecated('count', 'Use the query builder: $sql->createQueryBuilder()->selectCount()->from(\'table\')->where(...)->fetchOne().');
+
 		$table = $this->hasLanguage($table);
 
 		if ($fields == 'generic')
@@ -675,6 +657,8 @@ class e_db_pdo implements e_db
 	 */
 	function delete($table, $arg = '', $debug = false, $log_type = '', $log_remark = '')
 	{
+		$this->_notifyDeprecated('delete', 'Use the query builder: $sql->createQueryBuilder()->delete(\'table\')->where(...)->execute().');
+
 		$table = $this->hasLanguage($table);
 		$this->mySQLcurTable = $table;
 
@@ -774,6 +758,8 @@ class e_db_pdo implements e_db
 	 */
 	public function gen($query, $debug = false, $log_type = '', $log_remark = '')
 	{
+		$this->_notifyDeprecated('gen', 'Use $sql->execute($query, $params) with :named parameters; for ordinary CRUD prefer the query builder ($sql->createQueryBuilder()).');
+
 		$this->tabset = false;
 
 		$query .= " "; // temp fix for failing regex below, when there is no space after the table name;
@@ -975,7 +961,7 @@ class e_db_pdo implements e_db
 	 * @return string
 	 * @throws PDOException if the PDO driver does not support quoting
 	 */
-	private function _escape($data)
+	protected function _escape($data)
 	{
 		return substr($this->quoteStringLiteral($data), 1, -1);
 	}
@@ -1029,7 +1015,7 @@ class e_db_pdo implements e_db
 	 * TODO - better runtime cache - use e107::getRegistry() && e107::setRegistry()
 	 * @return array
 	 */
-	private function _getTableList($language='')
+	protected function _getTableList($language='')
 	{
 
 		$database = !empty($this->mySQLdefaultdb) ? "FROM  `".$this->mySQLdefaultdb."`" : "";
@@ -1444,7 +1430,7 @@ class e_db_pdo implements e_db
 	 * When the global variable has been unset like in https://github.com/e107inc/e107-test/issues/6 ,
 	 * use the "mySQLaccess" from the default e_db_mysql instance singleton.
 	 */
-	private function _getMySQLaccess()
+	protected function _getMySQLaccess()
 	{
 		if (!$this->mySQLaccess)
 		{

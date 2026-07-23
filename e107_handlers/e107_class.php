@@ -1660,11 +1660,12 @@ class e107
 	}
 
 	/**
-	 * Retrieve DB singleton object based on the
-	 * $instance_id
+	 * Retrieve the database connection singleton (class alias: e_db) for the
+	 * given instance id.
 	 *
-	 * @param string $instance_id
-	 * @return mixed|e_db
+	 * @param string $instance_id '' for the site database, or the id of a
+	 *                            named secondary connection.
+	 * @return \e107\Database\ConnectionInterface
 	 */
 	public static function getDb($instance_id = '')
 	{

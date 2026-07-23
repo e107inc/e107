@@ -16,7 +16,19 @@ namespace e107\Database;
  * Validates input against a strict whitelist grammar and fails closed:
  * anything outside the grammar returns false rather than a "cleaned" guess.
  * Intended for legacy code paths that interpolate column names or ORDER BY
- * clauses into SQL strings.
+ * clauses into SQL strings; new code should reach for {@see QueryBuilder},
+ * whose identifier positions run this validation automatically.
+ *
+ * <code>
+ * // Legacy string SQL with a user-influenced sort:
+ * $orderBy = IdentifierFilter::orderBy($_GET['sort'], array('user_name', 'user_join'));
+ * if($orderBy !== false)
+ * {
+ *     $sql->gen("SELECT * FROM #user ORDER BY ".$orderBy);
+ * }
+ * </code>
+ *
+ * @see \e107\Database\IdentifierFilterTest
  */
 class IdentifierFilter
 {

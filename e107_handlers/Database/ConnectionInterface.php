@@ -39,13 +39,22 @@ use PDOStatement;
 	 *    automatically carry across backends.
 	 *
 	 * 3. The legacy CRUD methods (select, insert, update, delete, replace, gen,
-	 *    retrieve, count, max, escape) are deprecated; do not use them in new
-	 *    code. Each carries an @deprecated note mapping it to its replacement.
+	 *    retrieve, count, max, escape) are deprecated and strongly discouraged:
+	 *    avoid them in new code, and migrate the call sites you touch when
+	 *    refactoring. Each carries a deprecation note mapping it to its
+	 *    replacement. They nevertheless remain part of the supported, tested
+	 *    surface, with no removal planned or scheduled; in this API,
+	 *    deprecation is a signpost to the replacement, never a removal
+	 *    schedule or an obligation to rewrite working code.
 	 *
 	 * Schema and DDL work (CREATE/ALTER/DROP/TRUNCATE) has its own dedicated
 	 * methods: {@see ConnectionInterface::dropTable()}, {@see ConnectionInterface::truncate()},
 	 * {@see ConnectionInterface::copyTable()}, {@see ConnectionInterface::field()}, {@see ConnectionInterface::fields()} and
 	 * {@see ConnectionInterface::index()}.
+	 *
+	 * The whole contract runs against both backends in
+	 * {@see \e_db_abstractTest}, whose test methods double as working examples
+	 * of every method here.
 	 */
 
 
@@ -104,6 +113,9 @@ use PDOStatement;
 		 *             </code>
 		 *             See {@see QueryBuilder::delete()}, and {@see ConnectionInterface} for the
 		 *             full guide.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
 		 */
 		function delete($table, $arg = '', $debug = false, $log_type = '', $log_remark = '');
 
@@ -112,17 +124,18 @@ use PDOStatement;
 
 
 		/**
-		 * @param string $type assoc|num|both
-		* @return array|bool MySQL row
-		* @desc Fetch an array containing row data (see PHP's mysql_fetch_array() docs)<br />
-		* @example
-		* Example :<br />
-		* <code>while($row = $sql->fetch()){
-		*  $text .= $row['username'];
-		* }</code>
-		*
-		* @access public
-		*/
+		 * Fetch the next row from the current result set.
+		 *
+		 * <code>
+		 * while($row = $sql->fetch())
+		 * {
+		 *     $text .= $row['user_name'];
+		 * }
+		 * </code>
+		 *
+		 * @param string|null $type 'assoc' (default), 'num' or 'both'
+		 * @return array|false the row, or false when no rows remain
+		 */
 		function fetch($type = null);
 
 
@@ -148,7 +161,8 @@ use PDOStatement;
 		 * unique key.
 		 *
 		 * @param string $table
-		 * @param array  $arg column => value map
+		 * @param array  $arg the same structured array as {@see ConnectionInterface::insert()};
+		 *               a '_REPLACE' key is implied
 		 * @param bool   $debug
 		 * @param string $log_type
 		 * @param string $log_remark
@@ -162,6 +176,9 @@ use PDOStatement;
 		 *             </code>
 		 *             See {@see QueryBuilder::replace()}, and {@see ConnectionInterface} for the
 		 *             full guide.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
 		 */
 		function replace($table, $arg, $debug = false, $log_type = '', $log_remark = '');
 
@@ -172,13 +189,33 @@ use PDOStatement;
 
 
 		/**
-		 * Run a SELECT and fetch the result in one call.
+		 * Run a SELECT and fetch the result in one call. The mode is detected
+		 * from the arguments:
+		 * - Empty $table: fetch-only mode, reading from the connection's
+		 *   current result set ($multi and $indexField apply as below).
+		 * - Boolean $fields with no $where: $table is a complete SQL query;
+		 *   true fetches all rows, false fetches one row.
+		 * - A single named field plus $where: returns that field's value.
+		 * - Otherwise: returns one row, or all rows when $multi is true;
+		 *   $indexField keys the multi-row result by that column.
+		 * A $where starting with an uppercase SQL keyword (ORDER, LIMIT, ...)
+		 * is treated as a trailing clause rather than a WHERE body.
 		 *
-		 * @param string $table if empty, enter fetch only mode
-		 * @param string $fields comma separated list of fields or * or single field name (get one); if $fields is of type boolean and $where is not found, $fields overrides $multi
-		 * @param string $where WHERE/ORDER/LIMIT etc clause, empty to disable
-		 * @param boolean $multi if true, fetch all (multi mode)
-		 * @param string $indexField field name to be used for indexing when in multi mode
+		 * <code>
+		 * $name = $sql->retrieve('user', 'user_name', 'user_id = 1');            // field value
+		 * $row  = $sql->retrieve('user', 'user_id, user_name', 'user_id = 1');   // one row
+		 * $rows = $sql->retrieve('user', '*', 'user_class = 0', true);           // all rows
+		 * $rows = $sql->retrieve('SELECT * FROM #user WHERE user_id > 5', true); // raw query
+		 * </code>
+		 *
+		 * @param string $table logical table name, a complete SQL query (see
+		 *        above), or empty for fetch-only mode
+		 * @param string|bool $fields comma-separated field list, '*', a single
+		 *        field name, or the all-rows flag when $table is a raw query
+		 * @param string $where WHERE clause body, or a trailing clause when it
+		 *        starts with an SQL keyword; empty to disable
+		 * @param boolean $multi if true, fetch all rows
+		 * @param string $indexField column to key the multi-row result by
 		 * @param boolean $debug
 		 * @return string|array
 		 * @deprecated v2.4.0 Prefer the query builder, which binds every value and
@@ -194,18 +231,23 @@ use PDOStatement;
 		 *             {@see QueryBuilder::fetchRow()} and
 		 *             {@see QueryBuilder::fetchAll()}, and {@see ConnectionInterface} for the full
 		 *             guide.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
 		 */
-		public function retrieve($table, $fields = null, $where=null, $multi = false, $indexField = null, $debug = false);
+		public function retrieve($table = null, $fields = null, $where=null, $multi = false, $indexField = null, $debug = false);
 
 
 		/**
-		 * @param string fields to retrieve
-		 * @param bool $amount
-		 * @param bool $maximum
-		 * @param bool $ordermode
-		 * @return array
-		 * @desc returns fields as structured array
-		 * @access public
+		 * Drain the current result set into a list of rows, keeping
+		 * string-keyed columns only.
+		 *
+		 * @param string|array $fields 'ALL', or an array of column names to keep
+		 * @param bool|int $amount stop after this many rows; false for no limit
+		 * @param bool|int $maximum hard cap on rows read; false for no cap
+		 * @param bool|string $ordermode column whose value keys the result
+		 *        array; false for a 1-based numeric index
+		 * @return array rows as associative arrays
 		 */
 		function rows($fields = 'ALL', $amount = false, $maximum = false, $ordermode=false);
 
@@ -228,6 +270,9 @@ use PDOStatement;
 		 *             bound :named parameters. For ordinary CRUD prefer the query
 		 *             builder ({@see ConnectionInterface::createQueryBuilder()}); see {@see ConnectionInterface}
 		 *             for the full guide.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
 		 */
 		public function gen($query, $debug = false, $log_type = '', $log_remark = '');
 
@@ -381,10 +426,27 @@ use PDOStatement;
 		/**
 		 * Apply the e107 field-type STORAGE transform to a value, returning what
 		 * the deprecated array-form {@see ConnectionInterface::insert()}/{@see ConnectionInterface::update()}
-		 * would bind for that token ('int', 'float', 'array', 'todb', 'null',
-		 * 'str', 'cmd', ...). Shared with {@see QueryBuilder::setTyped()} and
+		 * would bind for that token. Shared with {@see QueryBuilder::setTyped()} and
 		 * {@see QueryBuilder::valuesTyped()} so builder writes are byte-identical
 		 * to the legacy CRUD path.
+		 *
+		 * The tokens, their storage transforms, and the bind type each pairs
+		 * with ({@see ConnectionInterface::fieldTypeBind()}):
+		 * - 'int'/'integer': (int) cast; PARAM_INT.
+		 * - 'str'/'string'/'escape'/'safestr': value passes through and is
+		 *   bound as PARAM_STR (the legacy escaping distinctions between these
+		 *   tokens are moot under parameter binding).
+		 * - 'float': locale-safe number conversion; PARAM_STR.
+		 * - 'todb': HTML-aware filtering via e107::getParser()->toDB();
+		 *   PARAM_STR.
+		 * - 'array': e107::serialize(); PARAM_STR.
+		 * - 'null': empty values and the '_NULL_' sentinel become SQL NULL
+		 *   (PARAM_NULL); non-empty strings pass through as PARAM_STR.
+		 * - 'cmd': the value passes through unchanged here, but the legacy
+		 *   update() path inlines such fields into the SQL unbound; never
+		 *   place user input in one.
+		 * - '_DEFAULT' (as a _FIELD_TYPES key): the fallback token for columns
+		 *   not listed; 'string' when omitted.
 		 *
 		 * @param string $type Field-type token.
 		 * @param mixed $fieldValue
@@ -449,6 +511,9 @@ use PDOStatement;
 		 *             makes unnecessary. Calls emit one E_USER_DEPRECATED notice
 		 *             per call site per request. See {@see ConnectionInterface} for the full
 		 *             guide.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
 		 * @param string $data
 		 * @param bool $strip Unused; retained for backwards compatibility
 		 * @return string
@@ -460,7 +525,18 @@ use PDOStatement;
 		 * Update fields in one table.
 		 *
 		 * @param string       $tableName Name of table to access, without any language or general DB prefix
-		 * @param array|string $arg (array preferred)
+		 * @param array{
+		 *            data: array<string, mixed>,
+		 *            WHERE?: string,
+		 *            _FIELD_TYPES?: array<string, string>
+		 *        }|array<string, mixed>|string $arg Fields to set. A flat
+		 *        column => value map is auto-wrapped; a top-level 'WHERE' key
+		 *        survives the wrap and becomes the WHERE clause (without the
+		 *        keyword). Field-type handling matches {@see ConnectionInterface::insert()}:
+		 *        values are bound, except a 'cmd'-typed field, whose value is
+		 *        inlined into the SQL unbound (for expressions such as
+		 *        col=col+1; never place user input in one). A plain string is
+		 *        used verbatim as the SET clause (legacy, unbound; avoid).
 		 * @param bool         $debug
 		 * @param string       $log_type
 		 * @param string       $log_remark
@@ -477,42 +553,45 @@ use PDOStatement;
 		 *             for SQL expressions such as user_viewed = user_viewed + 1
 		 *             use {@see QueryBuilder::setExpression()}. See {@see ConnectionInterface} for
 		 *             the full guide.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
 		 */
 		function update($tableName, $arg, $debug = false, $log_type = '', $log_remark = '');
 
 
 
 		/**
-		 * @desc Closes the mySQL server connection.<br />
-		 * <br />
-		 * Only required if you open a second connection.<br />
-		 * Native e107 connection is closed in the footer.php file<br />
-		 * <br />
-		 * Example :<br />
+		 * Close the database connection. Only needed for secondary
+		 * connections; the native e107 connection is closed at the end of the
+		 * request.
 		 *
-		 * @access public
 		 * @return void
 		 */
 		function close();
 
 
 		/**
-		 * @desc Return the total number of results on the last query regardless of the LIMIT value when SELECT SQL_CALC_FOUND_ROWS is used.
-		 * @return bool
+		 * Total number of results of the last query regardless of its LIMIT,
+		 * when that query used SELECT SQL_CALC_FOUND_ROWS.
+		 *
+		 * @return int|false the total, or false when none was captured
 		 */
 		public function foundRows();
 
 
 		/**
-		 * @desc Return error text for last operation
+		 * Error text of the last operation; empty string when there was none.
+		 *
+		 * @return string
 		 */
 		function getLastErrorText();
 
 
-		// Return error number for last operation
-
 		/**
-		 * @return mixed
+		 * Driver error number of the last operation; 0 when there was none.
+		 *
+		 * @return int
 		 */
 		function getLastErrorNumber();
 
@@ -520,10 +599,19 @@ use PDOStatement;
 		/**
 		 * Perform a SELECT query.
 		 *
-		 * @param        $table
-		 * @param string $fields
-		 * @param string $arg
-		 * @param bool   $noWhere
+		 * @param string $table table name without the prefix
+		 * @param string $fields comma-separated column list, or '*'
+		 * @param string $arg WHERE clause body (no keyword), a full trailing
+		 *        clause (see $noWhere), or SQL with :named placeholders when
+		 *        $noWhere carries a bind array
+		 * @param bool|string|array $noWhere three modes:
+		 *        false or 'default': $arg is a WHERE clause, prepended with
+		 *        the WHERE keyword;
+		 *        any other truthy scalar: $arg is appended verbatim, for
+		 *        clauses like ORDER BY or LIMIT with no WHERE;
+		 *        array: bind mode; $arg must carry :named placeholders and
+		 *        $noWhere supplies the name => value bindings, each bound as
+		 *        a string (mirrors {@see \PDOStatement::execute()}).
 		 * @param bool   $debug
 		 * @param string $log_type
 		 * @param string $log_remark
@@ -540,18 +628,25 @@ use PDOStatement;
 		 *             See {@see QueryBuilder::select()} and
 		 *             {@see QueryBuilder::fetchAll()}, and {@see ConnectionInterface} for the full
 		 *             guide.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
 		 */
 		public function select($table, $fields = '*', $arg = '', $noWhere = false, $debug = false, $log_type = '', $log_remark = '');
 
 
 
 		/**
-		 *	@desc Determines if a table index (key) exist.
-		 *	@param string $table - table name (no prefix)
-		 *	@param string $keyname - Name of the key to
-		 *  @param array $fields - OPTIONAL list of fieldnames, the index (key) must contain
-		 *	@param boolean $retinfo = FALSE - just returns true|false. TRUE - returns all key info
-		 *	@return array|boolean - FALSE on error, key information on success
+		 * Determine whether a table index (key) exists.
+		 *
+		 * @param string $table table name (no prefix)
+		 * @param string $keyname name of the key to look for
+		 * @param array|string|null $fields optional list of field names the
+		 *        index must contain
+		 * @param boolean $retinfo false returns true|false; true returns the
+		 *        key information
+		 * @return array|boolean false on error or no match, key information on
+		 *         success
 		 */
 		function index($table, $keyname, $fields=null, $retinfo = false);
 
@@ -562,7 +657,31 @@ use PDOStatement;
 		 * Insert one row into a table.
 		 *
 		 * @param string $tableName Name of table to access, without any language or general DB prefix
-		 * @param        $arg
+		 * @param string|array{
+		 *            data: array<string, mixed>,
+		 *            _FIELD_TYPES?: array<string, string>,
+		 *            _NOTNULL?: array<string, mixed>,
+		 *            _REPLACE?: true,
+		 *            _DUPLICATE_KEY_UPDATE?: true,
+		 *            _IGNORE?: true
+		 *        }|array<string, mixed> $arg Row data. Three forms are accepted:
+		 *        a flat column => value map (auto-wrapped as array('data' => $arg));
+		 *        the structured array shown above; or a raw SQL VALUES list as a
+		 *        string (legacy, unbound; avoid). Notes:
+		 *        - A 'WHERE' key is silently removed, so one array can serve
+		 *          both insert() and {@see ConnectionInterface::update()}.
+		 *        - When '_FIELD_TYPES' is omitted, it is auto-loaded from the
+		 *          table's field definitions ({@see ConnectionInterface::getFieldDefs()});
+		 *          unlisted columns use the '_DEFAULT' token ('string'). Tokens
+		 *          are documented at {@see ConnectionInterface::applyFieldType()}.
+		 *        - The value '_NULL_' stores SQL NULL.
+		 *        - '_NOTNULL' fills NOT NULL columns missing from 'data'.
+		 *        - '_REPLACE' emits REPLACE INTO; '_IGNORE' emits INSERT IGNORE;
+		 *          '_DUPLICATE_KEY_UPDATE' appends an ON DUPLICATE KEY UPDATE
+		 *          clause built from the same data and changes the return
+		 *          contract (see @return). Values are bound, but the generated
+		 *          update clause follows update()'s rules, where a 'cmd'-typed
+		 *          field is inlined into the SQL unbound.
 		 * @param bool   $debug
 		 * @param string $log_type
 		 * @param string $log_remark
@@ -580,6 +699,9 @@ use PDOStatement;
 		 *             legacy '_DUPLICATE_KEY_UPDATE' option. For inserts the builder
 		 *             still cannot express (INSERT...SELECT), fall back to
 		 *             {@see ConnectionInterface::execute()}. See {@see ConnectionInterface} for the full guide.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
 		 */
 		function insert($tableName, $arg, $debug = false, $log_type = '', $log_remark = '');
 
@@ -587,18 +709,23 @@ use PDOStatement;
 
 
 		/**
-		 * Check if a database table is empty or not.
-		 * @param $table
+		 * Check whether a database table is empty.
+		 *
+		 * @param string|null $table table name without the prefix; fails
+		 *        closed outside the identifier grammar
 		 * @return bool
 		 */
-		function isEmpty($table);
+		function isEmpty($table = null);
 
 
 
 		/**
 		 * Truncate a table, removing all of its rows.
 		 *
-		 * @param string $table - table name without e107 prefix
+		 * @param string|null $table table name without the prefix; fails
+		 *        closed outside the identifier grammar
+		 * @return bool|int|null query result; false on an invalid name, null
+		 *         when no table was given
 		 */
 		function truncate($table=null);
 
@@ -607,9 +734,13 @@ use PDOStatement;
 		/**
 		 * Count the number of rows matching a query.
 		 *
-		 * @param string $table
-		 * @param string $fields
-		 * @param string $arg
+		 * @param string $table table name without the prefix; when
+		 *        $fields === 'generic', a complete SQL query instead, whose
+		 *        result set must expose a COUNT(*) column (legacy escape
+		 *        hatch: never place user input in it)
+		 * @param string $fields '(*)' or '(field)' to shape the COUNT();
+		 *        'generic' switches to the raw-query mode above
+		 * @param string $arg optional WHERE clause, with the keyword
 		 * @param bool   $debug
 		 * @param string $log_type
 		 * @param string $log_remark
@@ -617,7 +748,7 @@ use PDOStatement;
 		 * @deprecated v2.4.0 Prefer the query builder, which binds every value:
 		 *             <code>
 		 *             $qb = e107::getDb()->createQueryBuilder();
-		 *             $topics = $qb->select('COUNT(*)')
+		 *             $topics = $qb->selectCount()
 		 *                 ->from('forum_thread')
 		 *                 ->where($qb->expr()->eq('thread_forum_id', $forum_id))
 		 *                 ->andWhere($qb->expr()->eq('thread_parent', 0))
@@ -625,6 +756,9 @@ use PDOStatement;
 		 *             </code>
 		 *             See {@see QueryBuilder::fetchOne()}, and {@see ConnectionInterface} for the
 		 *             full guide.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
 		 */
 		function count($table, $fields = '(*)', $arg = '', $debug = FALSE, $log_type = '', $log_remark = '');
 
@@ -640,10 +774,13 @@ use PDOStatement;
 		 * @deprecated v2.4.0 Prefer the query builder, which binds every value:
 		 *             <code>
 		 *             $qb = e107::getDb()->createQueryBuilder();
-		 *             $max = $qb->select('MAX(user_id)')->from('user')->fetchOne();
+		 *             $max = $qb->selectAggregate('MAX', 'user_id')->from('user')->fetchOne();
 		 *             </code>
 		 *             See {@see QueryBuilder::fetchOne()}, and {@see ConnectionInterface} for the
 		 *             full guide.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
 		 */
 		public function max($table, $field, $where='');
 
@@ -677,8 +814,9 @@ use PDOStatement;
 
 
 		/**
-		 * @desc Returns the number of columns in the result set
-		 * @return mixed
+		 * Number of columns in the current result set.
+		 *
+		 * @return int
 		 */
 		public function columnCount();
 
@@ -729,5 +867,634 @@ use PDOStatement;
 		 * @return string
 		 */
 		function getLastQuery();
+
+
+		/* ---------------------------------------------------------------------
+		 * Shared operational surface.
+		 *
+		 * Implemented identically by both backends (enforced by e_db_parityTest)
+		 * and declared here so this interface states the complete public
+		 * contract. Members marked @internal are plumbing the backends and
+		 * shared trait need from each other; application code should not call
+		 * them directly.
+		 * ------------------------------------------------------------------ */
+
+
+		/**
+		 * Version string reported by the database server.
+		 *
+		 * @return string
+		 */
+		public function getServerInfo();
+
+
+		/**
+		 * The core preference object, consulted for multi-language settings.
+		 *
+		 * @return \e_core_pref
+		 */
+		public function getConfig();
+
+
+		/**
+		 * The connection's current sql_mode.
+		 *
+		 * @return string
+		 */
+		public function getMode();
+
+
+		/**
+		 * The intended charset of this connection, eg. 'utf8mb4'.
+		 *
+		 * @return string
+		 */
+		public function getCharset();
+
+
+		/**
+		 * Set the connection charset (SET NAMES).
+		 *
+		 * @param string $charset
+		 * @return void
+		 */
+		public function setCharset($charset = 'utf8mb4');
+
+
+		/**
+		 * Toggle error-reporting mode for this connection.
+		 *
+		 * @param bool $mode
+		 * @return void
+		 */
+		public function setErrorReporting($mode);
+
+
+		/**
+		 * Toggle debug mode for this connection.
+		 *
+		 * @param bool $bool
+		 * @return void
+		 */
+		public function debugMode($bool);
+
+
+		/**
+		 * Record a named timing marker in the debug output when debug mode is on.
+		 *
+		 * @param string $sMarker
+		 * @return null|true
+		 */
+		public function markTime($sMarker);
+
+
+		/**
+		 * Add a query entry to the system log (dblog table).
+		 *
+		 * @internal Called by the CRUD methods when a $log_type is supplied;
+		 * application code should pass $log_type/$log_remark to those instead.
+		 * @param string $log_type
+		 * @param string $log_remark
+		 * @param string $log_query
+		 * @return void
+		 */
+		public function log($log_type = '', $log_remark = '', $log_query = '');
+
+
+		/**
+		 * Capture the driver's last error state after an operation.
+		 *
+		 * @internal Bookkeeping the backends and shared trait call after each
+		 * query; read errors via {@see ConnectionInterface::getLastErrorText()} and
+		 * {@see ConnectionInterface::getLastErrorNumber()} instead.
+		 * @param string $from calling method name, used in the error text
+		 * @return string|null error description, or null when there was no error
+		 */
+		public function dbError($from);
+
+
+		/**
+		 * Execute a raw query against this connection: the engine every legacy
+		 * path routes through. Accepts a plain SQL string or the prepared form
+		 * array('PREPARE' => $sqlWithNamedPlaceholders,
+		 * 'BIND' => array(name => array('value' => $v, 'type' => ConnectionInterface::PARAM_*)))
+		 * (an 'EXECUTE' key with a plain name => value map binds everything as
+		 * PARAM_STR, mirroring {@see \PDOStatement::execute()}).
+		 *
+		 * @internal Plumbing for the legacy CRUD methods.
+		 * @deprecated v2.4.0 Use {@see ConnectionInterface::execute()}: it takes the same SQL
+		 *             with a friendlier name => value parameter map and
+		 *             substitutes '#table' markers for you. See {@see ConnectionInterface}
+		 *             for the full guide.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
+		 * @param string|array $query
+		 * @param null $rli unused; retained for backwards compatibility
+		 * @param string $qry_from calling method name, for the debug log
+		 * @param bool $debug
+		 * @param string $log_type
+		 * @param string $log_remark
+		 * @return bool|int|resource result handle or row count depending on the query; false on error
+		 */
+		public function db_Query($query, $rli = null, $qry_from = '', $debug = false, $log_type = '', $log_remark = '');
+
+
+		/**
+		 * Run a query once for the main table and once per language variant of
+		 * every prefixed table it references. Multi-language maintenance helper;
+		 * no modern replacement exists.
+		 *
+		 * @param string $query SQL with '#' database-prefix markers
+		 * @param bool $debug
+		 * @return bool false when any leg of the query fails
+		 */
+		public function db_Query_all($query, $debug = false);
+
+
+		/**
+		 * Number of rows in the last result set, or rows affected by the last
+		 * write; -1 when there is no result.
+		 *
+		 * @param null $result unused; retained for backwards compatibility
+		 * @return int
+		 */
+		public function rowCount($result = null);
+
+
+		/**
+		 * Total number of queries executed during this request.
+		 *
+		 * @return int
+		 */
+		public function queryCount();
+
+
+		/**
+		 * Whether a table exists, without raising a database error.
+		 *
+		 * @param string $table table name without the prefix
+		 * @param string $language empty for a regular table, or a language name
+		 *                         to check for that language's lan_* table
+		 * @return bool
+		 */
+		public function isTable($table, $language = '');
+
+
+		/**
+		 * Check for matching language table(s) when multi-language tables are
+		 * active.
+		 *
+		 * @param string|array $table table name(s) without the prefix
+		 * @param bool $multiple false: return the single routed table name;
+		 *                       true: return every matching language table
+		 * @return array|false|string
+		 */
+		public function hasLanguage($table, $multiple = false);
+
+
+		/**
+		 * Return a sorted parent/child tree with generated _treesort and _depth
+		 * fields, using temporary SQL functions.
+		 *
+		 * @param string $table table name without the prefix; fails closed
+		 *                      outside the identifier grammar
+		 * @param string $parent parent-id field name
+		 * @param string $pid primary-id field name
+		 * @param string $order order field name
+		 * @param string $where optional WHERE clause. Caller-supplied SQL: never
+		 *                      place user input here
+		 * @return bool|int
+		 */
+		public function selectTree($table, $parent, $pid, $order, $where = null);
+
+
+		/**
+		 * Duplicate a table row, randomising fields that carry a unique index.
+		 *
+		 * @param string $table table name without the prefix
+		 * @param string $fields '*' or a comma-separated column list
+		 * @param string $args WHERE clause selecting the source row.
+		 *                     Caller-supplied SQL: never place user input here
+		 * @return int|false the copied row's id, or false on failure
+		 */
+		public function copyRow($table, $fields = '*', $args = '');
+
+
+		/**
+		 * Clear the recorded last-error state.
+		 *
+		 * @return void
+		 */
+		public function resetLastError();
+
+
+		/* ---------------------------------------------------------------------
+		 * Legacy v1 API (deprecated shims).
+		 *
+		 * The db_* names below date from e107 v1 and delegate to the current
+		 * API; they are implemented once, in the e_db_legacy trait. Avoid them
+		 * in new code and migrate existing call sites when refactoring; they
+		 * remain supported and tested, with no removal planned.
+		 * ------------------------------------------------------------------ */
+
+
+		/**
+		 * Legacy v1 form of {@see ConnectionInterface::select()}; $mode other than 'default'
+		 * maps to select()'s $noWhere flag.
+		 *
+		 * @deprecated v2.0.0 Use the query builder, which binds every value; see
+		 *             {@see ConnectionInterface::createQueryBuilder()} and the guide at
+		 *             {@see ConnectionInterface}.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
+		 * @param string $table
+		 * @param string $fields
+		 * @param string $arg
+		 * @param string $mode
+		 * @param bool $debug
+		 * @param string $log_type
+		 * @param string $log_remark
+		 * @return false|int
+		 */
+		public function db_Select($table, $fields = '*', $arg = '', $mode = 'default', $debug = false, $log_type = '', $log_remark = '');
+
+
+		/**
+		 * Legacy v1 name for {@see ConnectionInterface::insert()}.
+		 *
+		 * @deprecated v2.0.0 Use the query builder, which binds every value; see
+		 *             {@see ConnectionInterface::createQueryBuilder()} and the guide at
+		 *             {@see ConnectionInterface}.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
+		 * @param string $tableName
+		 * @param array|string $arg
+		 * @param bool $debug
+		 * @param string $log_type
+		 * @param string $log_remark
+		 * @return bool|int
+		 */
+		public function db_Insert($tableName, $arg, $debug = false, $log_type = '', $log_remark = '');
+
+
+		/**
+		 * Legacy v1 name for {@see ConnectionInterface::update()}.
+		 *
+		 * @deprecated v2.0.0 Use the query builder, which binds every value; see
+		 *             {@see ConnectionInterface::createQueryBuilder()} and the guide at
+		 *             {@see ConnectionInterface}.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
+		 * @param string $tableName
+		 * @param array|string $arg
+		 * @param bool $debug
+		 * @param string $log_type
+		 * @param string $log_remark
+		 * @return bool|int
+		 */
+		public function db_Update($tableName, $arg, $debug = false, $log_type = '', $log_remark = '');
+
+
+		/**
+		 * Legacy v1 name for {@see ConnectionInterface::close()}.
+		 *
+		 * @deprecated v2.0.0 Renamed; use {@see ConnectionInterface::close()}.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
+		 * @return void
+		 */
+		public function db_Close();
+
+
+		/**
+		 * Legacy v1 name for {@see ConnectionInterface::fetch()}.
+		 *
+		 * @deprecated v2.0.0 Renamed; use {@see ConnectionInterface::fetch()}.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
+		 * @param string|null $type assoc|num|both
+		 * @return array|bool
+		 */
+		public function db_Fetch($type = null);
+
+
+		/**
+		 * Legacy v1 name for {@see ConnectionInterface::delete()}.
+		 *
+		 * @deprecated v2.0.0 Use the query builder, which binds every value; see
+		 *             {@see ConnectionInterface::createQueryBuilder()} and the guide at
+		 *             {@see ConnectionInterface}.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
+		 * @param string $table
+		 * @param string $arg
+		 * @param bool $debug
+		 * @param string $log_type
+		 * @param string $log_remark
+		 * @return false|int
+		 */
+		public function db_Delete($table, $arg = '', $debug = false, $log_type = '', $log_remark = '');
+
+
+		/**
+		 * Legacy v1 name for {@see ConnectionInterface::replace()}.
+		 *
+		 * @deprecated v2.0.0 Use the query builder, which binds every value; see
+		 *             {@see ConnectionInterface::createQueryBuilder()} and the guide at
+		 *             {@see ConnectionInterface}.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
+		 * @param string $table
+		 * @param array|string $arg
+		 * @param bool $debug
+		 * @param string $log_type
+		 * @param string $log_remark
+		 * @return bool|int
+		 */
+		public function db_Replace($table, $arg, $debug = false, $log_type = '', $log_remark = '');
+
+
+		/**
+		 * Legacy v1 name for {@see ConnectionInterface::count()}.
+		 *
+		 * @deprecated v2.0.0 Use the query builder, which binds every value; see
+		 *             {@see ConnectionInterface::createQueryBuilder()} and the guide at
+		 *             {@see ConnectionInterface}.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
+		 * @param string $table
+		 * @param string $fields
+		 * @param string $arg
+		 * @param bool $debug
+		 * @param string $log_type
+		 * @param string $log_remark
+		 * @return false|int
+		 */
+		public function db_Count($table, $fields = '(*)', $arg = '', $debug = false, $log_type = '', $log_remark = '');
+
+
+		/**
+		 * Legacy v1 name for {@see ConnectionInterface::rowCount()}.
+		 *
+		 * @deprecated v2.0.0 Renamed; use {@see ConnectionInterface::rowCount()}.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
+		 * @return int
+		 */
+		public function db_Rows();
+
+
+		/**
+		 * Legacy v1 name for {@see ConnectionInterface::gen()}.
+		 *
+		 * @deprecated v2.0.0 Use {@see ConnectionInterface::execute()} with bound :named
+		 *             parameters, or the query builder
+		 *             ({@see ConnectionInterface::createQueryBuilder()}) for ordinary CRUD.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
+		 * @param string $query
+		 * @param bool $debug
+		 * @param string $log_type
+		 * @param string $log_remark
+		 * @return bool|int
+		 */
+		public function db_Select_gen($query, $debug = false, $log_type = '', $log_remark = '');
+
+
+		/**
+		 * Legacy v1 name for {@see ConnectionInterface::isTable()}.
+		 *
+		 * @deprecated v2.0.0 Renamed; use {@see ConnectionInterface::isTable()}.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
+		 * @param string $table
+		 * @param string $language
+		 * @return bool
+		 */
+		public function db_Table_exists($table, $language = '');
+
+
+		/**
+		 * Legacy v1 name for {@see ConnectionInterface::tables()}.
+		 *
+		 * @deprecated v2.0.0 Renamed; use {@see ConnectionInterface::tables()}.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
+		 * @param string $mode
+		 * @return array
+		 */
+		public function db_TableList($mode = 'all');
+
+
+		/**
+		 * Legacy v1 name for {@see ConnectionInterface::field()}.
+		 *
+		 * @deprecated v2.0.0 Renamed; use {@see ConnectionInterface::field()}.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
+		 * @param string $table
+		 * @param int|string $fieldid
+		 * @param string $key
+		 * @param bool $retinfo
+		 * @return array|bool
+		 */
+		public function db_Field($table, $fieldid = "", $key = "", $retinfo = false);
+
+
+		/**
+		 * Legacy v1 name for {@see ConnectionInterface::rows()}.
+		 *
+		 * @deprecated v2.0.0 Renamed; use {@see ConnectionInterface::rows()}.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
+		 * @param string $fields
+		 * @param bool|int $amount
+		 * @param bool|int $maximum
+		 * @param bool|string $ordermode
+		 * @return array
+		 */
+		public function db_getList($fields = 'ALL', $amount = false, $maximum = false, $ordermode = false);
+
+
+		/**
+		 * Legacy v1 name for {@see ConnectionInterface::hasLanguage()}.
+		 *
+		 * @deprecated v2.2.0 Renamed; use {@see ConnectionInterface::hasLanguage()}.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
+		 * @param string $table
+		 * @param bool $multiple
+		 * @return array|false|string
+		 */
+		public function db_IsLang($table, $multiple = false);
+
+
+		/**
+		 * Legacy v1 combined form of {@see ConnectionInterface::connect()} and
+		 * {@see ConnectionInterface::database()}; returns 'e1' when the connection fails and
+		 * 'e2' when database selection fails.
+		 *
+		 * @deprecated v2.0.0 Use {@see ConnectionInterface::connect()} and
+		 *             {@see ConnectionInterface::database()}.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
+		 * @param string $mySQLserver
+		 * @param string $mySQLuser
+		 * @param string $mySQLpassword
+		 * @param string $mySQLdefaultdb
+		 * @param bool $newLink
+		 * @param string $mySQLPrefix
+		 * @return bool|string
+		 */
+		public function db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $newLink = false, $mySQLPrefix = MPREFIX);
+
+
+		/**
+		 * Legacy v1 form of {@see ConnectionInterface::update()}; $arg is folded into the
+		 * data array as its 'WHERE' key.
+		 *
+		 * @deprecated v2.0.0 Use the query builder, which binds every value; see
+		 *             {@see ConnectionInterface::createQueryBuilder()} and the guide at
+		 *             {@see ConnectionInterface}.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
+		 * @param string $table
+		 * @param array $vars
+		 * @param string $arg
+		 * @param bool $debug
+		 * @param string $log_type
+		 * @param string $log_remark
+		 * @return bool|int
+		 */
+		public function db_UpdateArray($table, $vars = array(), $arg = '', $debug = false, $log_type = '', $log_remark = '');
+
+
+		/**
+		 * Legacy v1 name for {@see ConnectionInterface::copyRow()}.
+		 *
+		 * @deprecated v2.2.0 Renamed; use {@see ConnectionInterface::copyRow()}.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
+		 * @param string $table
+		 * @param string $fields
+		 * @param string $args
+		 * @return int|false
+		 */
+		public function db_CopyRow($table, $fields = '*', $args = '');
+
+
+		/**
+		 * Legacy v1 name for {@see ConnectionInterface::copyTable()}.
+		 *
+		 * @deprecated v2.2.0 Renamed; use {@see ConnectionInterface::copyTable()}.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
+		 * @param string $oldtable
+		 * @param string $newtable
+		 * @param bool $drop
+		 * @param bool $data
+		 * @return bool|int
+		 */
+		public function db_CopyTable($oldtable, $newtable, $drop = false, $data = false);
+
+
+		/**
+		 * Legacy v1 name for {@see ConnectionInterface::fields()}.
+		 *
+		 * @deprecated v2.2.0 Renamed; use {@see ConnectionInterface::fields()}.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
+		 * @param string $table
+		 * @param string $prefix
+		 * @param bool $retinfo
+		 * @return array|bool
+		 */
+		public function db_FieldList($table, $prefix = '', $retinfo = false);
+
+
+		/**
+		 * Legacy v1 name for {@see ConnectionInterface::resetTableList()}.
+		 *
+		 * @deprecated v2.2.0 Renamed; use {@see ConnectionInterface::resetTableList()}.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
+		 * @return void
+		 */
+		public function db_ResetTableList();
+
+
+		/**
+		 * Legacy v1 name for {@see ConnectionInterface::queryCount()}.
+		 *
+		 * @deprecated v2.2.0 Renamed; use {@see ConnectionInterface::queryCount()}.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
+		 * @return int
+		 */
+		public function db_QueryCount();
+
+
+		/**
+		 * Legacy v1 name for {@see ConnectionInterface::log()}.
+		 *
+		 * @deprecated v2.2.0 Renamed; use {@see ConnectionInterface::log()}.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
+		 * @param string $log_type
+		 * @param string $log_remark
+		 * @param string $log_query
+		 * @return void
+		 */
+		public function db_Write_log($log_type = '', $log_remark = '', $log_query = '');
+
+
+		/**
+		 * Legacy v1 name for {@see ConnectionInterface::setErrorReporting()}.
+		 *
+		 * @deprecated v2.2.0 Renamed; use {@see ConnectionInterface::setErrorReporting()}.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
+		 * @param bool $mode
+		 * @return void
+		 */
+		public function db_SetErrorReporting($mode);
+
+
+		/**
+		 * Legacy v1 name for {@see ConnectionInterface::markTime()}.
+		 *
+		 * @deprecated v2.2.0 Renamed; use {@see ConnectionInterface::markTime()}.
+		 *             Avoid in new code and migrate existing call sites when
+		 *             refactoring; this method remains supported and tested, with no
+		 *             removal planned.
+		 * @param string $sMarker
+		 * @return bool|true|null
+		 */
+		public function db_Mark_Time($sMarker);
 
 }

@@ -34,6 +34,12 @@ use PDO;
  * The e_db_parityTest reflection suite keeps the two backends' public
  * surfaces aligned; this trait is what makes most of that surface a single
  * implementation.
+ *
+ * Deprecated members here carry documentation pointer stubs only; the
+ * canonical docblocks, the decision guide and the backwards-compatibility
+ * commitment (avoid deprecated methods in new code and migrate call sites
+ * when refactoring, while the methods themselves remain supported and
+ * tested, with no removal planned) live at {@see ConnectionInterface}.
  */
 trait ConnectionTrait
 {
@@ -42,9 +48,61 @@ trait ConnectionTrait
 
 	private     $pdoBind        = false;
 
+	/*
+	 * Shared connection state, kept here in a single copy for both backends.
+	 * Driver-specific members (the $mySQLaccess handle and friends) remain in
+	 * the backend classes.
+	 */
+	public      $mySQLPrefix;
+
+	/** @var \PDOStatement|\mysqli_result|resource|int|bool result handle or row count of the last query */
+	public      $mySQLresult;
+	protected   $mySQLerror = false;			// Error reporting mode - TRUE shows messages
+
+	protected   $mySQLlastErrNum = 0;		// Number of last error - now protected, use getLastErrorNumber()
+	protected   $mySQLlastErrText = '';		// Text of last error - now protected, use getLastErrorText()
+
+	protected   $mySQLcurTable;
+	public      $mySQLlanguage;
+	public      $tabset;
+	public      $mySQLtableList = array(); // list of all Db tables.
+
+	public      $mySQLtableListLanguage = array(); // Db table list for the currently selected language
+
+	public      $mySQLcharset;
+
+	public      $total_results = false;			// Total number of results
+
+	/** @var e107_db_debug */
+	private     $dbg;
+
+	private     $debugMode      = false;
+
+	/*
+	 * Backend contract: the driver-specific methods this trait calls.
+	 * Declared abstract so the dependency is explicit to readers and tooling,
+	 * and signature-checked when the trait is composed (PHP 8+), instead of
+	 * resolving invisibly at runtime. Signatures mirror the backends;
+	 * e_db_parityTest keeps the two backends' copies identical.
+	 */
+	abstract public function gen($query, $debug = false, $log_type = '', $log_remark = '');
+	abstract public function fetch($type = null);
+	abstract public function select($table, $fields = '*', $arg = '', $noWhere = false, $debug = false, $log_type = '', $log_remark = '');
+	abstract public function lastInsertId();
+	abstract public function getFieldDefs($tableName);
+	abstract public function db_Query($query, $rli = null, $qry_from = '', $debug = false, $log_type = '', $log_remark = '');
+	abstract public function rowCount($result = null);
+	abstract public function isTable($table, $language = '');
+	abstract public function dbError($from);
+	abstract public function fields($table, $prefix = '', $retinfo = false);
+
+	abstract protected function _escape($data);
+	abstract protected function _getTableList($language = '');
+	abstract protected function _getMySQLaccess();
+
 	/**
 	 * Get system config
-	 * @return e_core_pref
+	 * @return \e_core_pref
 	 */
 	public function getConfig()
 	{
@@ -359,6 +417,16 @@ trait ConnectionTrait
 		static $notified = array();
 
 		$trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);
+
+		// Internal routing (retrieve() driving select(), a v1 shim delegating
+		// to its replacement, the CRUD methods running through db_Query()) is
+		// not a call site to warn about; only application code is.
+		$callerFile = isset($trace[1]['file']) ? basename($trace[1]['file']) : '';
+		if(in_array($callerFile, array('ConnectionTrait.php', 'e_db_pdo_class.php', 'mysql_class.php', 'e_db_legacy_trait.php'), true))
+		{
+			return;
+		}
+
 		$site = (isset($trace[1]['file']) ? $trace[1]['file'] : '?').':'.(isset($trace[1]['line']) ? $trace[1]['line'] : '?');
 
 		if(isset($notified[$method.'|'.$site]))
@@ -389,10 +457,13 @@ trait ConnectionTrait
 	}
 
 	/**
-	 * @param $matches
+	 * preg_replace_callback() callback that substitutes a matched table
+	 * reference with its prefixed, language-routed physical name.
+	 *
+	 * @param array $matches
 	 * @return string
 	 */
-	function ml_check($matches)
+	protected function ml_check($matches)
 	{
 		$table = $this->hasLanguage($matches[1]);
 		if($this->tabset == false)
@@ -663,7 +734,7 @@ trait ConnectionTrait
 	{
 		if ($fields !== '*') return array($fields, $fields);
 
-		$fieldList = $this->db_FieldList($table);
+		$fieldList = $this->fields($table);
 		$unique = $this->_getUnique($table);
 
 		$flds = array();
@@ -793,6 +864,8 @@ trait ConnectionTrait
 	 */
 	public function retrieve($table=null, $fields = null, $where=null, $multi = false, $indexField = null, $debug = false)
 	{
+		$this->_notifyDeprecated('retrieve', 'Use the query builder: $sql->createQueryBuilder()->select(...)->from(\'table\')->where(...)->fetchAll(), ->fetchRow() or ->fetchOne().');
+
 		// fetch mode
 		if(empty($table))
 		{
@@ -917,12 +990,10 @@ trait ConnectionTrait
 	}
 
 	/**
-	* @return array
-	* @param string fields to retrieve
-	* @desc returns fields as structured array
-	* @access public
-	* @return array rows of the database as an array.
-	*/
+	 * Documented at {@see ConnectionInterface::rows()}.
+	 *
+	 * @return array
+	 */
 	function rows($fields = 'ALL', $amount = false, $maximum = false, $ordermode=false)
 	{
 		$list = array();
@@ -963,6 +1034,8 @@ trait ConnectionTrait
 	 */
 	public function max($table, $field, $where='')
 	{
+		$this->_notifyDeprecated('max', 'Use the query builder: $sql->createQueryBuilder()->selectAggregate(\'MAX\', \'field\')->from(\'table\')->fetchOne().');
+
 		if(($table = $this->_safeIdentifier($table)) === false || ($field = $this->_safeIdentifier($field, true)) === false)
 		{
 			return null;
@@ -1176,6 +1249,8 @@ trait ConnectionTrait
 	 */
 	function insert($tableName, $arg, $debug = false, $log_type = '', $log_remark = '')
 	{
+		$this->_notifyDeprecated('insert', 'Use the query builder: $sql->createQueryBuilder()->insert(\'table\')->values($row)->execute().');
+
 		$table = $this->hasLanguage($tableName);
 		$this->mySQLcurTable = $table;
 		$REPLACE = false; // kill any PHP notices
@@ -1352,6 +1427,8 @@ trait ConnectionTrait
 	 */
 	function replace($table, $arg, $debug = false, $log_type = '', $log_remark = '')
 	{
+		$this->_notifyDeprecated('replace', 'Use the query builder: $sql->createQueryBuilder()->replace(\'table\')->values($row)->execute().');
+
 		$arg['_REPLACE'] = TRUE;
 		return $this->insert($table, $arg, $debug, $log_type, $log_remark);
 	}
@@ -1429,6 +1506,8 @@ trait ConnectionTrait
 	 */
 	function update($tableName, $arg, $debug = false, $log_type = '', $log_remark = '')
 	{
+		$this->_notifyDeprecated('update', 'Use the query builder: $sql->createQueryBuilder()->update(\'table\')->set(\'col\', $value)->where(...)->execute().');
+
 		$table = $this->hasLanguage($tableName);
 		$this->mySQLcurTable = $table;
 

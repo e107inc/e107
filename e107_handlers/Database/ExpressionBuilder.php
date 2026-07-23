@@ -26,6 +26,21 @@ use InvalidArgumentException;
  * {@see SqlFragment::__toString()} returns the SQL string, a fragment may be
  * string-cast or concatenated exactly like the bare string these methods used
  * to return.
+ *
+ * Fragments compose:
+ * <code>
+ * $qb = e107::getDb()->createQueryBuilder();
+ * $names = $qb->select('user_name')
+ *     ->from('user')
+ *     ->where($qb->expr()->anyOf(
+ *         $qb->expr()->eq('user_admin', 1),
+ *         $qb->expr()->findInSet('user_class', 254)
+ *     ))
+ *     ->andWhere($qb->expr()->gt('user_lastvisit', $cutoff))
+ *     ->fetchAll();
+ * // WHERE ((`user_admin` = :qb1) OR (FIND_IN_SET(:qb2, `user_class`)))
+ * //   AND `user_lastvisit` > :qb3
+ * </code>
  */
 class ExpressionBuilder
 {
@@ -151,6 +166,11 @@ class ExpressionBuilder
 	 * compiles to the always-false predicate 1=0, the correct semantics of
 	 * "in the empty set".
 	 *
+	 * <code>
+	 * $qb->where($qb->expr()->in('news_category', array(1, 3, 5)));
+	 * // `news_category` IN (:qb1, :qb2, :qb3)
+	 * </code>
+	 *
 	 * @param string $column
 	 * @param array $values
 	 * @return SqlFragment
@@ -177,6 +197,11 @@ class ExpressionBuilder
 	 * `column` LIKE :pattern, with $pattern bound verbatim: the caller
 	 * controls the % and _ wildcards. For matching plain substrings, use
 	 * {@see ExpressionBuilder::contains()} instead.
+	 *
+	 * <code>
+	 * $qb->where($qb->expr()->like('user_email', '%@example.com'));
+	 * // `user_email` LIKE :qb1
+	 * </code>
 	 *
 	 * @param string $column
 	 * @param string $pattern
@@ -229,6 +254,11 @@ class ExpressionBuilder
 	 * Regular-expression match with the whole pattern bound as one value.
 	 * The operator spelling comes from the platform.
 	 *
+	 * <code>
+	 * $qb->where($qb->expr()->regexp('user_name', '^[A-Z]'));
+	 * // `user_name` REGEXP :qb1 on MySQL
+	 * </code>
+	 *
 	 * @param string $column
 	 * @param string $pattern
 	 * @return SqlFragment
@@ -280,6 +310,12 @@ class ExpressionBuilder
 	 * Generic "`column` OP :value" with OP checked against the operator
 	 * allowlist ('!=' normalises to '<>'). For IN/NOT IN, $value is taken as a
 	 * list and delegated to {@see ExpressionBuilder::in()}/{@see ExpressionBuilder::notIn()}.
+	 * Useful when the operator itself is data, e.g. from a search form.
+	 *
+	 * <code>
+	 * $qb->where($qb->expr()->comparison('download_datestamp', '>=', $since));
+	 * // `download_datestamp` >= :qb1
+	 * </code>
 	 *
 	 * @param string $column
 	 * @param string $operator
@@ -369,7 +405,14 @@ class ExpressionBuilder
 	/**
 	 * Compare two columns, e.g. `a` < `b`. With two arguments the operator
 	 * defaults to '='. Both sides are validated identifiers and nothing is
-	 * bound, so neither may carry user input.
+	 * bound, so neither may carry user input. This is the JOIN condition
+	 * workhorse:
+	 *
+	 * <code>
+	 * $qb->leftJoin('user_extended', 'ue',
+	 *     $qb->expr()->compareColumns('ue.user_extended_id', 'u.user_id'));
+	 * // LEFT JOIN `e107_user_extended` AS `ue` ON `ue`.`user_extended_id` = `u`.`user_id`
+	 * </code>
 	 *
 	 * @param string $first
 	 * @param string $operator Operator, or the second column when $second is null.
@@ -515,6 +558,14 @@ class ExpressionBuilder
 	 * checked against the allowlist (IN/NOT IN are rejected) and the one value
 	 * is bound on the owning query, so the returned fragment carries no
 	 * parameters of its own.
+	 *
+	 * <code>
+	 * $qb->select('thread_forum_id')
+	 *     ->from('forum_thread')
+	 *     ->groupBy('thread_forum_id')
+	 *     ->having($qb->expr()->aggregateComparison('COUNT', '*', '>', 10));
+	 * // ... GROUP BY `thread_forum_id` HAVING COUNT(*) > :qb1
+	 * </code>
 	 *
 	 * @param string $function One of COUNT,SUM,AVG,MIN,MAX (case-insensitive).
 	 * @param string $column Column name, or '*' for COUNT.

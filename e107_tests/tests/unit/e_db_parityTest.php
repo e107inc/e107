@@ -41,6 +41,40 @@ class e_db_parityTest extends \Codeception\Test\Unit
 	private static $allowedSignatureMismatches = array(
 	);
 
+	/**
+	 * Properties allowed to exist only on e_db_pdo.
+	 * @var string[]
+	 */
+	private static $allowedPropsOnlyInPdo = array(
+		'pdo',        // driver marker consulted by getPDO()
+		'traffic',    // e107_traffic bookkeeping specific to the PDO backend
+		'querycount', // static query counter; e_db_mysql counts via a global
+	);
+
+	/**
+	 * Properties allowed to exist only on e_db_mysql.
+	 * @var string[]
+	 */
+	private static $allowedPropsOnlyInMysql = array(
+		'stringifyFetch', // mysqli prepared results carry native types; PDO stringifies at the driver
+	);
+
+	/**
+	 * Shared properties allowed to diverge in visibility, staticness or default.
+	 * @var string[]
+	 */
+	private static $allowedPropertyMismatches = array(
+	);
+
+	/**
+	 * Shared public methods allowed to stay off the e_db interface.
+	 * @var string[]
+	 */
+	private static $allowedOffInterface = array(
+		'get_mySQLaccess', // returns the raw driver handle (PDO|mysqli), which a neutral contract cannot promise
+		'getPDO',          // driver introspection; kept off the neutral contract by maintainer decision
+	);
+
 	protected function _before()
 	{
 		require_once(e_HANDLER.'mysql_class.php');
@@ -79,6 +113,70 @@ class e_db_parityTest extends \Codeception\Test\Unit
 		$this->assertSame(array(), $mismatches, 'Shared public methods with diverging parameter lists');
 	}
 
+	public function testPropertyParity()
+	{
+		$pdo = $this->describeProperties('e_db_pdo');
+		$mysql = $this->describeProperties('e_db_mysql');
+
+		$missingFromMysql = array_values(array_diff(array_keys($pdo), array_keys($mysql), self::$allowedPropsOnlyInPdo));
+		$missingFromPdo = array_values(array_diff(array_keys($mysql), array_keys($pdo), self::$allowedPropsOnlyInMysql));
+
+		$this->assertSame(array(), $missingFromMysql, 'Properties of e_db_pdo missing from e_db_mysql');
+		$this->assertSame(array(), $missingFromPdo, 'Properties of e_db_mysql missing from e_db_pdo');
+
+		$mismatches = array();
+		foreach (array_intersect(array_keys($pdo), array_keys($mysql)) as $name)
+		{
+			if (in_array($name, self::$allowedPropertyMismatches, true)) continue;
+
+			if ($pdo[$name] !== $mysql[$name])
+			{
+				$mismatches[$name] = array('e_db_pdo' => $pdo[$name], 'e_db_mysql' => $mysql[$name]);
+			}
+		}
+
+		$this->assertSame(array(), $mismatches, 'Shared properties with diverging visibility, staticness or default');
+	}
+
+	public function testInterfaceCoverage()
+	{
+		$shared = array_intersect($this->getPublicMethods('e_db_pdo'), $this->getPublicMethods('e_db_mysql'));
+		$interface = new ReflectionClass('e_db');
+
+		$missing = array();
+		foreach ($shared as $name)
+		{
+			if (in_array($name, self::$allowedOffInterface, true)) continue;
+
+			if (!$interface->hasMethod($name))
+			{
+				$missing[] = $name;
+			}
+		}
+
+		$this->assertSame(array(), $missing, 'Shared public methods not declared on the e_db interface');
+	}
+
+	public function testInterfaceSignatureParity()
+	{
+		$interface = new ReflectionClass('e_db');
+
+		$mismatches = array();
+		foreach ($interface->getMethods() as $method)
+		{
+			$name = $method->getName();
+			$interfaceParams = $this->describeParameters($method);
+			$implParams = $this->describeParameters(new ReflectionMethod('e_db_pdo', $name));
+
+			if ($interfaceParams !== $implParams)
+			{
+				$mismatches[$name] = array('e_db' => $interfaceParams, 'e_db_pdo' => $implParams);
+			}
+		}
+
+		$this->assertSame(array(), $mismatches, 'Interface declarations with parameter lists diverging from e_db_pdo');
+	}
+
 	/**
 	 * @param string $class
 	 * @return string[] method names, sorted
@@ -108,5 +206,25 @@ class e_db_parityTest extends \Codeception\Test\Unit
 			$params[] = $param->getName() . ($param->isOptional() ? '=' : '');
 		}
 		return $params;
+	}
+
+	/**
+	 * @param string $class
+	 * @return string[] property name => "visibility[ static] = default", sorted by name
+	 */
+	private function describeProperties($class)
+	{
+		$reflection = new ReflectionClass($class);
+		$defaults = $reflection->getDefaultProperties();
+		$props = array();
+		foreach ($reflection->getProperties() as $property)
+		{
+			$name = $property->getName();
+			$visibility = $property->isPrivate() ? 'private' : ($property->isProtected() ? 'protected' : 'public');
+			$default = array_key_exists($name, $defaults) ? var_export($defaults[$name], true) : 'uninitialized';
+			$props[$name] = $visibility . ($property->isStatic() ? ' static' : '') . ' = ' . $default;
+		}
+		ksort($props);
+		return $props;
 	}
 }
