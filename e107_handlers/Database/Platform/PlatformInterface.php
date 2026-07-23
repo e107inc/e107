@@ -22,6 +22,10 @@ use InvalidArgumentException;
  * needs (identifier quoting, LIMIT syntax, regular-expression operator,
  * default character set) without attempting schema abstraction or a driver
  * registry. Obtain the connection's platform via {@see ConnectionInterface::getPlatform()}.
+ *
+ * This is an SPI, not an application API: application code reaches it only
+ * through the builders, or via getPlatform() for the rare dialect-specific
+ * edge case.
  */
 interface PlatformInterface
 {

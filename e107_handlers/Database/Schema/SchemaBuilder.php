@@ -25,6 +25,9 @@ require_once(__DIR__.'/Table.php');
 
 /**
  * Fluent schema/DDL builder bound to an e107 database connection.
+ * Every compilation behaviour asserted here is covered by
+ * {@see \e107\Database\Schema\SchemaBuilderTest}, a cookbook of working
+ * examples.
  *
  * Create one with {@see ConnectionInterface::createSchemaBuilder()} (or the {@see ConnectionInterface::schema()}
  * shorthand). It is the DDL counterpart to {@see QueryBuilder}: where the query

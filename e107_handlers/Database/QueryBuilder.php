@@ -54,10 +54,35 @@ use InvalidArgumentException;
  * a parenthesised sub-group, or, only when the builder cannot express it, as a
  * hand-written string.
  *
- * Positions that accept developer-authored SQL fragments verbatim, select()
- * expressions, join() conditions and hand-written where()/having() strings,
- * must never receive user input directly; put values through
- * {@see ExpressionBuilder} or {@see QueryBuilder::createNamedParameter()} instead.
+ * Positions that accept developer-authored SQL verbatim, {@see QueryBuilder::raw()}
+ * fragments and hand-written where()/having() strings, must never receive
+ * user input directly; put values through {@see ExpressionBuilder} or
+ * {@see QueryBuilder::createNamedParameter()} instead. SELECT lists, GROUP BY,
+ * and JOIN conditions are strict: they take validated identifiers or vouched
+ * fragments only, and throw on bare SQL strings.
+ *
+ * Joins, a derived table and platform-compiled string aggregation compose
+ * like this (one builder, sub-queries via {@see QueryBuilder::newSubQuery()}):
+ * <code>
+ * $qb = $sql->createQueryBuilder();
+ *
+ * $titles = $qb->newSubQuery()
+ *     ->select('news_category')
+ *     ->selectGroupConcat('news_title', 'titles', array('news_id' => 'ASC'), '; ')
+ *     ->from('news')
+ *     ->groupBy('news_category');
+ *
+ * $rows = $qb->select('nc.category_name')
+ *     ->selectAs('t.titles', 'category_titles')
+ *     ->from('news_category', 'nc')
+ *     ->leftJoinSub($titles, 't', $qb->expr()->compareColumns('t.news_category', 'nc.category_id'))
+ *     ->orderBy('nc.category_name', 'ASC')
+ *     ->fetchAll();
+ * </code>
+ *
+ * Every compilation behaviour asserted here is covered by
+ * {@see \e107\Database\QueryBuilderTest}; its test methods double as a
+ * cookbook of working examples.
  */
 class QueryBuilder
 {
@@ -483,6 +508,7 @@ class QueryBuilder
 	 *     ->groupBy('user_class');
 	 * </code>
 	 *
+	 * @see \e107\Database\QueryBuilderTest::testSelectGroupConcat()
 	 * @param string $column Aggregated column name (or table.column).
 	 * @param string|null $alias Optional column alias; validated and quoted.
 	 * @param array $orderBy column => 'ASC'|'DESC' pairs; may be empty.
@@ -542,10 +568,11 @@ class QueryBuilder
 	 *
 	 * <code>
 	 * $qb->select('*')->fromSub(function (QueryBuilder $sub) {
-	 *     $sub->select('user_class', 'COUNT(*) AS cnt')->from('user')->groupBy('user_class');
+	 *     $sub->select('user_class')->selectCount('*', 'cnt')->from('user')->groupBy('user_class');
 	 * }, 'counts');
 	 * </code>
 	 *
+	 * @see \e107\Database\QueryBuilderTest::testSubqueries()
 	 * @param Closure|QueryBuilder $query Closure receiving a fresh builder, or a
 	 *                           builder made with {@see QueryBuilder::newSubQuery()}.
 	 * @param string $alias Alias for the derived table; validated and quoted.
@@ -564,14 +591,23 @@ class QueryBuilder
 	}
 
 	/**
-	 * INNER JOIN another table. The ON condition is developer-authored SQL
-	 * (it usually compares two columns); pass any values in it through
-	 * {@see QueryBuilder::createNamedParameter()}.
+	 * INNER JOIN another table. The ON condition must be vouched: build it
+	 * with {@see ExpressionBuilder::compareColumns()} (or allOf() for compound
+	 * conditions), or wrap developer-authored SQL in {@see QueryBuilder::raw()};
+	 * a bare string throws.
+	 *
+	 * <code>
+	 * $qb->select('t.thread_name')
+	 *     ->selectAs('u.user_name', 'starter')
+	 *     ->from('forum_thread', 't')
+	 *     ->join('user', 'u', $qb->expr()->compareColumns('u.user_id', 't.thread_user'));
+	 * </code>
 	 *
 	 * @param string $table Logical table name (no '#', no prefix).
 	 * @param string $alias Alias for the joined table.
-	 * @param string $condition ON condition.
+	 * @param SqlFragment $condition Vouched ON condition.
 	 * @return QueryBuilder $this
+	 * @throws InvalidArgumentException on a bare-string condition.
 	 */
 	public function join($table, $alias, $condition)
 	{
@@ -583,7 +619,7 @@ class QueryBuilder
 	 *
 	 * @param string $table Logical table name (no '#', no prefix).
 	 * @param string $alias Alias for the joined table.
-	 * @param string $condition ON condition.
+	 * @param SqlFragment $condition Vouched ON condition; see {@see QueryBuilder::join()}.
 	 * @return QueryBuilder $this
 	 */
 	public function leftJoin($table, $alias, $condition)
@@ -596,7 +632,7 @@ class QueryBuilder
 	 *
 	 * @param string $table Logical table name (no '#', no prefix).
 	 * @param string $alias Alias for the joined table.
-	 * @param string $condition ON condition.
+	 * @param SqlFragment $condition Vouched ON condition; see {@see QueryBuilder::join()}.
 	 * @return QueryBuilder $this
 	 */
 	public function innerJoin($table, $alias, $condition)
@@ -609,7 +645,7 @@ class QueryBuilder
 	 *
 	 * @param string $table Logical table name (no '#', no prefix).
 	 * @param string $alias Alias for the joined table.
-	 * @param string $condition ON condition.
+	 * @param SqlFragment $condition Vouched ON condition; see {@see QueryBuilder::join()}.
 	 * @return QueryBuilder $this
 	 */
 	public function rightJoin($table, $alias, $condition)
@@ -631,11 +667,13 @@ class QueryBuilder
 
 	/**
 	 * INNER JOIN a derived table (sub-query); see {@see QueryBuilder::fromSub()}
-	 * for how the sub-query is supplied.
+	 * for how the sub-query is supplied and the class docblock for a worked
+	 * example.
 	 *
+	 * @see \e107\Database\QueryBuilderTest::testSubqueries()
 	 * @param Closure|QueryBuilder $query Sub-query source.
 	 * @param string $alias Alias for the derived table; validated and quoted.
-	 * @param string $condition ON condition.
+	 * @param SqlFragment $condition Vouched ON condition; see {@see QueryBuilder::join()}.
 	 * @return QueryBuilder $this
 	 */
 	public function joinSub($query, $alias, $condition)
@@ -648,7 +686,7 @@ class QueryBuilder
 	 *
 	 * @param Closure|QueryBuilder $query Sub-query source.
 	 * @param string $alias Alias for the derived table; validated and quoted.
-	 * @param string $condition ON condition.
+	 * @param SqlFragment $condition Vouched ON condition; see {@see QueryBuilder::join()}.
 	 * @return QueryBuilder $this
 	 */
 	public function leftJoinSub($query, $alias, $condition)
@@ -711,7 +749,13 @@ class QueryBuilder
 	 * AND a "column IN (...)" condition with every value bound. The values may
 	 * be an array, or a sub-query (closure or {@see QueryBuilder::newSubQuery()}
 	 * builder) for "column IN (SELECT ...)". An empty array compiles to the
-	 * always-false predicate 1=0.
+	 * always-false predicate 1=0. Any-arity arrays bind directly, with none of
+	 * the implode/intval ritual safe legacy string SQL needed:
+	 *
+	 * <code>
+	 * $qb->select('user_name')->from('user')->whereIn('user_id', $ids);
+	 * // `user_id` IN (:qb1, :qb2, ...), one placeholder per value
+	 * </code>
 	 *
 	 * @param string $column
 	 * @param array|Closure|QueryBuilder $values
@@ -1289,11 +1333,13 @@ class QueryBuilder
 	}
 
 	/**
-	 * Set the GROUP BY list. Identifier-shaped entries are quoted; other
-	 * expressions are kept verbatim (developer-authored, never user input).
+	 * Set the GROUP BY list. Strict: entries are validated identifiers
+	 * (quoted fail-closed) or vouched {@see QueryBuilder::raw()} fragments;
+	 * a bare SQL expression throws.
 	 *
 	 * @param string|array $columns As multiple string arguments or one array.
 	 * @return QueryBuilder $this
+	 * @throws InvalidArgumentException on a bare SQL expression.
 	 */
 	public function groupBy($columns)
 	{
@@ -1329,7 +1375,15 @@ class QueryBuilder
 
 	/**
 	 * AND a condition onto the HAVING clause; takes the same forms as
-	 * {@see QueryBuilder::where()}.
+	 * {@see QueryBuilder::where()}. For conditions on aggregates, use
+	 * {@see ExpressionBuilder::aggregateComparison()}:
+	 *
+	 * <code>
+	 * $qb->select('download_category')
+	 *     ->from('download')
+	 *     ->groupBy('download_category')
+	 *     ->having($qb->expr()->aggregateComparison('SUM', 'download_requested', '>', 100));
+	 * </code>
 	 *
 	 * @param mixed ...$args
 	 * @return QueryBuilder $this
@@ -1996,6 +2050,8 @@ class QueryBuilder
 	 * );
 	 * </code>
 	 *
+	 * @see \e107\Database\QueryBuilderTest::testUpsert()
+	 * @see \e107\Database\QueryBuilderTest::testUpsertTyped()
 	 * @param array $values One column => value row, or a list of such rows.
 	 * @param string|array $uniqueBy Column(s) identifying a collision; validated.
 	 * @param array|null $update Columns to update on collision; when null, every
@@ -2177,6 +2233,15 @@ class QueryBuilder
 	 * Queue "column = column + :amount" for UPDATE; the amount is bound. Start
 	 * with {@see QueryBuilder::update()} and add a {@see QueryBuilder::where()}.
 	 *
+	 * <code>
+	 * $qb->update('news')
+	 *     ->increment('news_comment_total')
+	 *     ->where($qb->expr()->eq('news_id', $id))
+	 *     ->execute();
+	 * // UPDATE ... SET `news_comment_total` = `news_comment_total` + :qb1 WHERE ...
+	 * </code>
+	 *
+	 * @see \e107\Database\QueryBuilderTest::testIncrementDecrement()
 	 * @param string $column
 	 * @param int|float $amount
 	 * @param array $extra Further column => value assignments, each bound.
@@ -2270,6 +2335,13 @@ class QueryBuilder
 	 * you genuinely need the array: to key it with $indexBy, to count it or index
 	 * into it, or when the loop body must run another query on the same ConnectionInterface
 	 * handle (which would clobber a live stream; see fetchEach()).
+	 *
+	 * <code>
+	 * $usersById = $qb->select('user_id', 'user_name')
+	 *     ->from('user')
+	 *     ->fetchAll('user_id');
+	 * // array(1 => array('user_id' => '1', 'user_name' => ...), 4 => ...)
+	 * </code>
 	 *
 	 * @param string|null $indexBy Column whose value keys the result array.
 	 * @return array rows as associative arrays; empty when no rows match or
@@ -2540,6 +2612,15 @@ class QueryBuilder
 	 * Append a UNION arm. Build the arm with {@see QueryBuilder::newUnionQuery()}
 	 * so it shares this query's bound-parameter numbering.
 	 *
+	 * <code>
+	 * $qb->select('user_name')->from('user')->where('user_admin', 1);
+	 * $arm = $qb->newUnionQuery()
+	 *     ->select('user_name')->from('user')
+	 *     ->where($qb->expr()->findInSet('user_class', 254));
+	 * $names = $qb->union($arm)->fetchAll();
+	 * </code>
+	 *
+	 * @see \e107\Database\QueryBuilderTest::testUnion()
 	 * @param QueryBuilder $query
 	 * @return QueryBuilder $this
 	 * @throws InvalidArgumentException when the arm does not share parameters.

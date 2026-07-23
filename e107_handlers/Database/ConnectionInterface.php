@@ -51,6 +51,10 @@ use PDOStatement;
 	 * methods: {@see ConnectionInterface::dropTable()}, {@see ConnectionInterface::truncate()},
 	 * {@see ConnectionInterface::copyTable()}, {@see ConnectionInterface::field()}, {@see ConnectionInterface::fields()} and
 	 * {@see ConnectionInterface::index()}.
+	 *
+	 * The whole contract runs against both backends in
+	 * {@see \e_db_abstractTest}, whose test methods double as working examples
+	 * of every method here.
 	 */
 
 
