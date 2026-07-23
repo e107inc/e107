@@ -41,7 +41,7 @@ use PDOStatement;
 	 * 3. The legacy CRUD methods (select, insert, update, delete, replace, gen,
 	 *    retrieve, count, max, escape) are deprecated and strongly discouraged:
 	 *    avoid them in new code, and migrate the call sites you touch when
-	 *    refactoring. Each carries an @deprecated note mapping it to its
+	 *    refactoring. Each carries a deprecation note mapping it to its
 	 *    replacement. They nevertheless remain part of the supported, tested
 	 *    surface, with no removal planned or scheduled; in this API,
 	 *    deprecation is a signpost to the replacement, never a removal
@@ -611,7 +611,7 @@ use PDOStatement;
 		 *        clauses like ORDER BY or LIMIT with no WHERE;
 		 *        array: bind mode; $arg must carry :named placeholders and
 		 *        $noWhere supplies the name => value bindings, each bound as
-		 *        a string (mirrors PDOStatement::execute()).
+		 *        a string (mirrors {@see \PDOStatement::execute()}).
 		 * @param bool   $debug
 		 * @param string $log_type
 		 * @param string $log_remark
@@ -979,7 +979,7 @@ use PDOStatement;
 		 * array('PREPARE' => $sqlWithNamedPlaceholders,
 		 * 'BIND' => array(name => array('value' => $v, 'type' => ConnectionInterface::PARAM_*)))
 		 * (an 'EXECUTE' key with a plain name => value map binds everything as
-		 * PARAM_STR, mirroring PDOStatement::execute()).
+		 * PARAM_STR, mirroring {@see \PDOStatement::execute()}).
 		 *
 		 * @internal Plumbing for the legacy CRUD methods.
 		 * @deprecated v2.4.0 Use {@see ConnectionInterface::execute()}: it takes the same SQL

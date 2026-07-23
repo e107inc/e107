@@ -102,7 +102,7 @@ trait ConnectionTrait
 
 	/**
 	 * Get system config
-	 * @return e_core_pref
+	 * @return \e_core_pref
 	 */
 	public function getConfig()
 	{
@@ -990,12 +990,10 @@ trait ConnectionTrait
 	}
 
 	/**
-	* @return array
-	* @param string fields to retrieve
-	* @desc returns fields as structured array
-	* @access public
-	* @return array rows of the database as an array.
-	*/
+	 * Documented at {@see ConnectionInterface::rows()}.
+	 *
+	 * @return array
+	 */
 	function rows($fields = 'ALL', $amount = false, $maximum = false, $ordermode=false)
 	{
 		$list = array();
