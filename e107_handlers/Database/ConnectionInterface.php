@@ -156,7 +156,8 @@ use PDOStatement;
 		 * unique key.
 		 *
 		 * @param string $table
-		 * @param array  $arg column => value map
+		 * @param array  $arg the same structured array as {@see ConnectionInterface::insert()};
+		 *               a '_REPLACE' key is implied
 		 * @param bool   $debug
 		 * @param string $log_type
 		 * @param string $log_remark
@@ -183,13 +184,33 @@ use PDOStatement;
 
 
 		/**
-		 * Run a SELECT and fetch the result in one call.
+		 * Run a SELECT and fetch the result in one call. The mode is detected
+		 * from the arguments:
+		 * - Empty $table: fetch-only mode, reading from the connection's
+		 *   current result set ($multi and $indexField apply as below).
+		 * - Boolean $fields with no $where: $table is a complete SQL query;
+		 *   true fetches all rows, false fetches one row.
+		 * - A single named field plus $where: returns that field's value.
+		 * - Otherwise: returns one row, or all rows when $multi is true;
+		 *   $indexField keys the multi-row result by that column.
+		 * A $where starting with an uppercase SQL keyword (ORDER, LIMIT, ...)
+		 * is treated as a trailing clause rather than a WHERE body.
 		 *
-		 * @param string $table if empty, enter fetch only mode
-		 * @param string $fields comma separated list of fields or * or single field name (get one); if $fields is of type boolean and $where is not found, $fields overrides $multi
-		 * @param string $where WHERE/ORDER/LIMIT etc clause, empty to disable
-		 * @param boolean $multi if true, fetch all (multi mode)
-		 * @param string $indexField field name to be used for indexing when in multi mode
+		 * <code>
+		 * $name = $sql->retrieve('user', 'user_name', 'user_id = 1');            // field value
+		 * $row  = $sql->retrieve('user', 'user_id, user_name', 'user_id = 1');   // one row
+		 * $rows = $sql->retrieve('user', '*', 'user_class = 0', true);           // all rows
+		 * $rows = $sql->retrieve('SELECT * FROM #user WHERE user_id > 5', true); // raw query
+		 * </code>
+		 *
+		 * @param string $table logical table name, a complete SQL query (see
+		 *        above), or empty for fetch-only mode
+		 * @param string|bool $fields comma-separated field list, '*', a single
+		 *        field name, or the all-rows flag when $table is a raw query
+		 * @param string $where WHERE clause body, or a trailing clause when it
+		 *        starts with an SQL keyword; empty to disable
+		 * @param boolean $multi if true, fetch all rows
+		 * @param string $indexField column to key the multi-row result by
 		 * @param boolean $debug
 		 * @return string|array
 		 * @deprecated v2.4.0 Prefer the query builder, which binds every value and
@@ -398,10 +419,27 @@ use PDOStatement;
 		/**
 		 * Apply the e107 field-type STORAGE transform to a value, returning what
 		 * the deprecated array-form {@see ConnectionInterface::insert()}/{@see ConnectionInterface::update()}
-		 * would bind for that token ('int', 'float', 'array', 'todb', 'null',
-		 * 'str', 'cmd', ...). Shared with {@see QueryBuilder::setTyped()} and
+		 * would bind for that token. Shared with {@see QueryBuilder::setTyped()} and
 		 * {@see QueryBuilder::valuesTyped()} so builder writes are byte-identical
 		 * to the legacy CRUD path.
+		 *
+		 * The tokens, their storage transforms, and the bind type each pairs
+		 * with ({@see ConnectionInterface::fieldTypeBind()}):
+		 * - 'int'/'integer': (int) cast; PARAM_INT.
+		 * - 'str'/'string'/'escape'/'safestr': value passes through and is
+		 *   bound as PARAM_STR (the legacy escaping distinctions between these
+		 *   tokens are moot under parameter binding).
+		 * - 'float': locale-safe number conversion; PARAM_STR.
+		 * - 'todb': HTML-aware filtering via e107::getParser()->toDB();
+		 *   PARAM_STR.
+		 * - 'array': e107::serialize(); PARAM_STR.
+		 * - 'null': empty values and the '_NULL_' sentinel become SQL NULL
+		 *   (PARAM_NULL); non-empty strings pass through as PARAM_STR.
+		 * - 'cmd': the value passes through unchanged here, but the legacy
+		 *   update() path inlines such fields into the SQL unbound; never
+		 *   place user input in one.
+		 * - '_DEFAULT' (as a _FIELD_TYPES key): the fallback token for columns
+		 *   not listed; 'string' when omitted.
 		 *
 		 * @param string $type Field-type token.
 		 * @param mixed $fieldValue
@@ -480,7 +518,18 @@ use PDOStatement;
 		 * Update fields in one table.
 		 *
 		 * @param string       $tableName Name of table to access, without any language or general DB prefix
-		 * @param array|string $arg (array preferred)
+		 * @param array{
+		 *            data: array<string, mixed>,
+		 *            WHERE?: string,
+		 *            _FIELD_TYPES?: array<string, string>
+		 *        }|array<string, mixed>|string $arg Fields to set. A flat
+		 *        column => value map is auto-wrapped; a top-level 'WHERE' key
+		 *        survives the wrap and becomes the WHERE clause (without the
+		 *        keyword). Field-type handling matches {@see ConnectionInterface::insert()}:
+		 *        values are bound, except a 'cmd'-typed field, whose value is
+		 *        inlined into the SQL unbound (for expressions such as
+		 *        col=col+1; never place user input in one). A plain string is
+		 *        used verbatim as the SET clause (legacy, unbound; avoid).
 		 * @param bool         $debug
 		 * @param string       $log_type
 		 * @param string       $log_remark
@@ -543,10 +592,19 @@ use PDOStatement;
 		/**
 		 * Perform a SELECT query.
 		 *
-		 * @param        $table
-		 * @param string $fields
-		 * @param string $arg
-		 * @param bool   $noWhere
+		 * @param string $table table name without the prefix
+		 * @param string $fields comma-separated column list, or '*'
+		 * @param string $arg WHERE clause body (no keyword), a full trailing
+		 *        clause (see $noWhere), or SQL with :named placeholders when
+		 *        $noWhere carries a bind array
+		 * @param bool|string|array $noWhere three modes:
+		 *        false or 'default': $arg is a WHERE clause, prepended with
+		 *        the WHERE keyword;
+		 *        any other truthy scalar: $arg is appended verbatim, for
+		 *        clauses like ORDER BY or LIMIT with no WHERE;
+		 *        array: bind mode; $arg must carry :named placeholders and
+		 *        $noWhere supplies the name => value bindings, each bound as
+		 *        a string (mirrors PDOStatement::execute()).
 		 * @param bool   $debug
 		 * @param string $log_type
 		 * @param string $log_remark
@@ -588,7 +646,31 @@ use PDOStatement;
 		 * Insert one row into a table.
 		 *
 		 * @param string $tableName Name of table to access, without any language or general DB prefix
-		 * @param        $arg
+		 * @param string|array{
+		 *            data: array<string, mixed>,
+		 *            _FIELD_TYPES?: array<string, string>,
+		 *            _NOTNULL?: array<string, mixed>,
+		 *            _REPLACE?: true,
+		 *            _DUPLICATE_KEY_UPDATE?: true,
+		 *            _IGNORE?: true
+		 *        }|array<string, mixed> $arg Row data. Three forms are accepted:
+		 *        a flat column => value map (auto-wrapped as array('data' => $arg));
+		 *        the structured array shown above; or a raw SQL VALUES list as a
+		 *        string (legacy, unbound; avoid). Notes:
+		 *        - A 'WHERE' key is silently removed, so one array can serve
+		 *          both insert() and {@see ConnectionInterface::update()}.
+		 *        - When '_FIELD_TYPES' is omitted, it is auto-loaded from the
+		 *          table's field definitions ({@see ConnectionInterface::getFieldDefs()});
+		 *          unlisted columns use the '_DEFAULT' token ('string'). Tokens
+		 *          are documented at {@see ConnectionInterface::applyFieldType()}.
+		 *        - The value '_NULL_' stores SQL NULL.
+		 *        - '_NOTNULL' fills NOT NULL columns missing from 'data'.
+		 *        - '_REPLACE' emits REPLACE INTO; '_IGNORE' emits INSERT IGNORE;
+		 *          '_DUPLICATE_KEY_UPDATE' appends an ON DUPLICATE KEY UPDATE
+		 *          clause built from the same data and changes the return
+		 *          contract (see @return). Values are bound, but the generated
+		 *          update clause follows update()'s rules, where a 'cmd'-typed
+		 *          field is inlined into the SQL unbound.
 		 * @param bool   $debug
 		 * @param string $log_type
 		 * @param string $log_remark
@@ -636,9 +718,13 @@ use PDOStatement;
 		/**
 		 * Count the number of rows matching a query.
 		 *
-		 * @param string $table
-		 * @param string $fields
-		 * @param string $arg
+		 * @param string $table table name without the prefix; when
+		 *        $fields === 'generic', a complete SQL query instead, whose
+		 *        result set must expose a COUNT(*) column (legacy escape
+		 *        hatch: never place user input in it)
+		 * @param string $fields '(*)' or '(field)' to shape the COUNT();
+		 *        'generic' switches to the raw-query mode above
+		 * @param string $arg optional WHERE clause, with the keyword
 		 * @param bool   $debug
 		 * @param string $log_type
 		 * @param string $log_remark
@@ -646,7 +732,7 @@ use PDOStatement;
 		 * @deprecated v2.4.0 Prefer the query builder, which binds every value:
 		 *             <code>
 		 *             $qb = e107::getDb()->createQueryBuilder();
-		 *             $topics = $qb->select('COUNT(*)')
+		 *             $topics = $qb->selectCount()
 		 *                 ->from('forum_thread')
 		 *                 ->where($qb->expr()->eq('thread_forum_id', $forum_id))
 		 *                 ->andWhere($qb->expr()->eq('thread_parent', 0))
@@ -672,7 +758,7 @@ use PDOStatement;
 		 * @deprecated v2.4.0 Prefer the query builder, which binds every value:
 		 *             <code>
 		 *             $qb = e107::getDb()->createQueryBuilder();
-		 *             $max = $qb->select('MAX(user_id)')->from('user')->fetchOne();
+		 *             $max = $qb->selectAggregate('MAX', 'user_id')->from('user')->fetchOne();
 		 *             </code>
 		 *             See {@see QueryBuilder::fetchOne()}, and {@see ConnectionInterface} for the
 		 *             full guide.
