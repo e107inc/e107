@@ -457,10 +457,13 @@ trait ConnectionTrait
 	}
 
 	/**
-	 * @param $matches
+	 * preg_replace_callback() callback that substitutes a matched table
+	 * reference with its prefixed, language-routed physical name.
+	 *
+	 * @param array $matches
 	 * @return string
 	 */
-	function ml_check($matches)
+	protected function ml_check($matches)
 	{
 		$table = $this->hasLanguage($matches[1]);
 		if($this->tabset == false)

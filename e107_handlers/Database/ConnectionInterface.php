@@ -881,14 +881,6 @@ use PDOStatement;
 
 
 		/**
-		 * Whether this connection runs on the PDO driver (true) or mysqli (false).
-		 *
-		 * @return bool
-		 */
-		public function getPDO();
-
-
-		/**
 		 * Version string reported by the database server.
 		 *
 		 * @return string
@@ -1059,18 +1051,6 @@ use PDOStatement;
 		 * @return array|false|string
 		 */
 		public function hasLanguage($table, $multiple = false);
-
-
-		/**
-		 * preg_replace_callback() callback that substitutes a matched table
-		 * reference with its prefixed, language-routed physical name.
-		 *
-		 * @internal Only public because the callback mechanism requires it;
-		 * never call directly.
-		 * @param array $matches
-		 * @return string
-		 */
-		public function ml_check($matches);
 
 
 		/**

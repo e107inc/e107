@@ -72,6 +72,7 @@ class e_db_parityTest extends \Codeception\Test\Unit
 	 */
 	private static $allowedOffInterface = array(
 		'get_mySQLaccess', // returns the raw driver handle (PDO|mysqli), which a neutral contract cannot promise
+		'getPDO',          // driver introspection; kept off the neutral contract by maintainer decision
 	);
 
 	protected function _before()
