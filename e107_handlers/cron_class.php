@@ -138,7 +138,7 @@ class _system_cron
 
 		$message = "<p>There is a new version of e107 available.<br />
 		 Please visit ".$data['infourl']." for further details.</p>
-		 <a class='btn btn-primary' href=''>Download v".$data['version']."</a>";
+		 <a class='btn btn-primary' href='".$data['url']."'>Download v".$data['version']."</a>";
 
 		$eml = array(
 					'subject' 		=> "e107 v".$data['version']." is now available.",
