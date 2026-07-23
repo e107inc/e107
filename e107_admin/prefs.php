@@ -103,6 +103,25 @@ if(isset($_POST['updateprefs']))
 		unset($_POST['trusted_hosts']);
 	}
 
+	// update_channel: seeded via set() for the same reason as trusted_hosts
+	// above; unexpected values fall back to the stable channel. The selector
+	// shows the resolved channel, so submitting it unchanged writes nothing:
+	// prerelease builds keep auto-detecting the preview channel until the
+	// admin explicitly picks one. The dashboard's update-check cache is not
+	// channel-aware, so a channel change invalidates it.
+	if(isset($_POST['update_channel']))
+	{
+		$update_channel = ($_POST['update_channel'] === 'preview') ? 'preview' : 'stable';
+
+		if($update_channel !== e107::updateChannel())
+		{
+			$core_pref->set('update_channel', $update_channel);
+			e107::getCache()->clear_sys('Update_core');
+		}
+
+		unset($_POST['update_channel']);
+	}
+
 	// If email verification or Email/Password Login Method - email address is required!
 	if (($_POST['user_reg_veri'] == 1 || $_POST['allowEmailLogin'] == 1) && $_POST['disable_emailcheck'])
 	{
@@ -2140,6 +2159,12 @@ $text .= "
 						<td>".PRFLAN_173."</td>
 						<td>
 							".$frm->radio_switch('check_updates', $pref['check_updates'])."
+						</td>
+					</tr>
+					<tr>
+						<td>".PRFLAN_290.$frm->help(PRFLAN_291)."</td>
+						<td>
+							".$frm->select('update_channel', array('stable' => PRFLAN_292, 'preview' => PRFLAN_293), e107::updateChannel())."
 						</td>
 					</tr>
 				</tbody>
