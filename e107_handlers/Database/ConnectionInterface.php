@@ -124,17 +124,18 @@ use PDOStatement;
 
 
 		/**
-		 * @param string $type assoc|num|both
-		* @return array|bool MySQL row
-		* @desc Fetch an array containing row data (see PHP's mysql_fetch_array() docs)<br />
-		* @example
-		* Example :<br />
-		* <code>while($row = $sql->fetch()){
-		*  $text .= $row['username'];
-		* }</code>
-		*
-		* @access public
-		*/
+		 * Fetch the next row from the current result set.
+		 *
+		 * <code>
+		 * while($row = $sql->fetch())
+		 * {
+		 *     $text .= $row['user_name'];
+		 * }
+		 * </code>
+		 *
+		 * @param string|null $type 'assoc' (default), 'num' or 'both'
+		 * @return array|false the row, or false when no rows remain
+		 */
 		function fetch($type = null);
 
 
@@ -238,13 +239,15 @@ use PDOStatement;
 
 
 		/**
-		 * @param string fields to retrieve
-		 * @param bool $amount
-		 * @param bool $maximum
-		 * @param bool $ordermode
-		 * @return array
-		 * @desc returns fields as structured array
-		 * @access public
+		 * Drain the current result set into a list of rows, keeping
+		 * string-keyed columns only.
+		 *
+		 * @param string|array $fields 'ALL', or an array of column names to keep
+		 * @param bool|int $amount stop after this many rows; false for no limit
+		 * @param bool|int $maximum hard cap on rows read; false for no cap
+		 * @param bool|string $ordermode column whose value keys the result
+		 *        array; false for a 1-based numeric index
+		 * @return array rows as associative arrays
 		 */
 		function rows($fields = 'ALL', $amount = false, $maximum = false, $ordermode=false);
 
@@ -559,36 +562,36 @@ use PDOStatement;
 
 
 		/**
-		 * @desc Closes the mySQL server connection.<br />
-		 * <br />
-		 * Only required if you open a second connection.<br />
-		 * Native e107 connection is closed in the footer.php file<br />
-		 * <br />
-		 * Example :<br />
+		 * Close the database connection. Only needed for secondary
+		 * connections; the native e107 connection is closed at the end of the
+		 * request.
 		 *
-		 * @access public
 		 * @return void
 		 */
 		function close();
 
 
 		/**
-		 * @desc Return the total number of results on the last query regardless of the LIMIT value when SELECT SQL_CALC_FOUND_ROWS is used.
-		 * @return bool
+		 * Total number of results of the last query regardless of its LIMIT,
+		 * when that query used SELECT SQL_CALC_FOUND_ROWS.
+		 *
+		 * @return int|false the total, or false when none was captured
 		 */
 		public function foundRows();
 
 
 		/**
-		 * @desc Return error text for last operation
+		 * Error text of the last operation; empty string when there was none.
+		 *
+		 * @return string
 		 */
 		function getLastErrorText();
 
 
-		// Return error number for last operation
-
 		/**
-		 * @return mixed
+		 * Driver error number of the last operation; 0 when there was none.
+		 *
+		 * @return int
 		 */
 		function getLastErrorNumber();
 
@@ -634,12 +637,16 @@ use PDOStatement;
 
 
 		/**
-		 *	@desc Determines if a table index (key) exist.
-		 *	@param string $table - table name (no prefix)
-		 *	@param string $keyname - Name of the key to
-		 *  @param array $fields - OPTIONAL list of fieldnames, the index (key) must contain
-		 *	@param boolean $retinfo = FALSE - just returns true|false. TRUE - returns all key info
-		 *	@return array|boolean - FALSE on error, key information on success
+		 * Determine whether a table index (key) exists.
+		 *
+		 * @param string $table table name (no prefix)
+		 * @param string $keyname name of the key to look for
+		 * @param array|string|null $fields optional list of field names the
+		 *        index must contain
+		 * @param boolean $retinfo false returns true|false; true returns the
+		 *        key information
+		 * @return array|boolean false on error or no match, key information on
+		 *         success
 		 */
 		function index($table, $keyname, $fields=null, $retinfo = false);
 
@@ -702,8 +709,10 @@ use PDOStatement;
 
 
 		/**
-		 * Check if a database table is empty or not.
-		 * @param $table
+		 * Check whether a database table is empty.
+		 *
+		 * @param string|null $table table name without the prefix; fails
+		 *        closed outside the identifier grammar
 		 * @return bool
 		 */
 		function isEmpty($table = null);
@@ -713,7 +722,10 @@ use PDOStatement;
 		/**
 		 * Truncate a table, removing all of its rows.
 		 *
-		 * @param string $table - table name without e107 prefix
+		 * @param string|null $table table name without the prefix; fails
+		 *        closed outside the identifier grammar
+		 * @return bool|int|null query result; false on an invalid name, null
+		 *         when no table was given
 		 */
 		function truncate($table=null);
 
@@ -802,8 +814,9 @@ use PDOStatement;
 
 
 		/**
-		 * @desc Returns the number of columns in the result set
-		 * @return mixed
+		 * Number of columns in the current result set.
+		 *
+		 * @return int
 		 */
 		public function columnCount();
 

@@ -524,17 +524,11 @@ class e_db_pdo implements e_db
 	}
 
 	/**
-	 * @param string $type assoc|num|both
-	* @return array|bool MySQL row
-	* @desc Fetch an array containing row data (see PHP's mysql_fetch_array() docs)<br />
-	* @example
-	* Example :<br />
-	* <code>while($row = $sql->fetch()){
-	*  $text .= $row['username'];
-	* }</code>
-	*
-	* @access public
-	*/
+	 * Documented at {@see e_db::fetch()}.
+	 *
+	 * @param string|null $type 'assoc' (default), 'num' or 'both'
+	 * @return array|false
+	 */
 	function fetch($type = null)
 	{
 		switch ($type)
