@@ -334,6 +334,7 @@ use PDOStatement;
 		 * @param string $sql SQL with '#table' markers and optional :named placeholders
 		 * @param array $parameters name => value, or name => array('value' => mixed, 'type' => ConnectionInterface::PARAM_*)
 		 * @return int|false number of statements executed (>= 1), or false when any leg failed
+		 * @see \e107\Database\QueryBuilder::executeAllLanguages() for the query-builder form
 		 */
 		public function executeAllLanguages($sql, $parameters = array());
 

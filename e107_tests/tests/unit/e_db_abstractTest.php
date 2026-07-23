@@ -226,6 +226,35 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 	}
 
 
+	public function testQueryBuilderExecuteAllLanguages()
+	{
+		$originalTitle = $this->db->retrieve('news', 'news_title', 'news_id = 1');
+		$this->db->copyTable('news', 'lan_spanish_news', true, true);
+		$this->db->resetTableList();
+
+		$qb = $this->db->createQueryBuilder();
+		$legs = $qb->update('news')
+			->set('news_title', 'Builder all-languages title')
+			->where($qb->expr()->eq('news_id', 1))
+			->executeAllLanguages();
+
+		$this->assertSame(2, $legs);
+
+		$this->db->gen('SELECT news_title FROM `'.MPREFIX.'news` WHERE news_id=1');
+		$row = $this->db->fetch();
+		$this->assertEquals('Builder all-languages title', $row['news_title']);
+
+		$this->db->gen('SELECT news_title FROM `'.MPREFIX.'lan_spanish_news` WHERE news_id=1');
+		$row = $this->db->fetch();
+		$this->assertEquals('Builder all-languages title', $row['news_title']);
+
+		// leave the seeded row as found; testDb_CopyTable asserts the seeded title
+		$this->db->execute('UPDATE `'.MPREFIX.'news` SET news_title = :title WHERE news_id = 1', array('title' => $originalTitle));
+		$this->db->dropTable('lan_spanish_news');
+		$this->db->resetTableList();
+	}
+
+
 
 	public function testDb_Write_log()
 	{
