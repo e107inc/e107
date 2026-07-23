@@ -6871,14 +6871,20 @@ class e107
 	        return false;
 	    }
 
+		$curVersion = str_replace(' (git)', '', $e107info['e107_version']);
+
         $xml  = self::getXml();
         $file = "https://e107.org/releases.php";
+
+		if(self::updateChannel($curVersion) === 'preview')
+		{
+			$file .= '?channel=preview';
+		}
+
         if(!$xdata = $xml->loadXMLfile($file,true))
         {
             return false;
         }
-
-		$curVersion = str_replace(' (git)', '', $e107info['e107_version']);
 
 		if(empty($xdata['core'][0]['@attributes']['version']))
 		{
@@ -6907,6 +6913,37 @@ class e107
 
 		return false;
 
+	}
+
+	/**
+	 * Resolve which release channel to poll for core updates.
+	 * The core pref 'update_channel' ('stable'|'preview') wins when set; otherwise
+	 * prerelease versions (e.g. 2.4.0-alpha1) auto-detect the preview channel.
+	 * @param string|null $curVersion - current e107 version; read from ver.php when omitted.
+	 * @return string 'stable' or 'preview'
+	 */
+	public static function updateChannel($curVersion = null)
+	{
+		$pref = self::getPref('update_channel');
+
+		if($pref === 'stable' || $pref === 'preview')
+		{
+			return $pref;
+		}
+
+		if($curVersion === null)
+		{
+			$e107info = array();
+
+			if(is_readable(e_ADMIN."ver.php"))
+			{
+				include(e_ADMIN."ver.php"); // $e107info['e107_version'];
+			}
+
+			$curVersion = isset($e107info['e107_version']) ? $e107info['e107_version'] : '';
+		}
+
+		return preg_match('/-(alpha|beta|RC)\d/i', $curVersion) ? 'preview' : 'stable';
 	}
 
 	/**

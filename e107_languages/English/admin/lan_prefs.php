@@ -268,4 +268,8 @@ return [
     'PRFLAN_287' => "Display debug button in admin area navigation bar",
     'PRFLAN_288' => "Trusted Hosts",
     'PRFLAN_289' => "Additional hostnames the site will accept in the Host header, one per line. The host parsed from Site URL is always trusted; entries here are added to that list. Paste a full URL and the saved value is normalised to the host only.",
+    'PRFLAN_290' => "Update channel",
+    'PRFLAN_291' => "The Development Preview channel includes alpha, beta and release-candidate versions. Leave on Stable for production sites.",
+    'PRFLAN_292' => "Stable",
+    'PRFLAN_293' => "Development Preview",
 ];
