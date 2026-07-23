@@ -160,19 +160,34 @@ trait ConnectionTrait
 	/**
 	 * Resolve a logical e107 table name to its physical name: the database
 	 * prefix is attached and, on multi-language sites, the table is routed to
-	 * the current language's lan_* table when one exists.
+	 * a language's lan_* table when one exists.
 	 *
 	 * @param string $table table name with or without a leading '#'
+	 * @param string|null $language null: route for the connection's current
+	 *                    language, honouring the multilanguage preference (the
+	 *                    default); a language name, e.g. 'Spanish': route to
+	 *                    that language's lan_* table when it exists, regardless
+	 *                    of the current language or the multilanguage preference
 	 * @return string|false physical table name (unquoted), or false when the
 	 *                      name is not a valid identifier
 	 */
-	public function resolveTableName($table)
+	public function resolveTableName($table, $language = null)
 	{
 		$table = ltrim((string) $table, '#');
 
 		if(!preg_match('/^[A-Za-z0-9_]+$/D', $table))
 		{
 			return false;
+		}
+
+		if($language !== null)
+		{
+			if($this->isTable($table, $language))
+			{
+				return $this->mySQLPrefix.'lan_'.strtolower($language.'_'.$table);
+			}
+
+			return $this->mySQLPrefix.$table;
 		}
 
 		return $this->mySQLPrefix.$this->hasLanguage($table);
@@ -313,28 +328,49 @@ trait ConnectionTrait
 	 * are consumed first, so a '#' inside them is never rewritten.
 	 *
 	 * @param string $sql
+	 * @param string|false|null $language null: route for the current language;
+	 *                          false: attach the prefix only, no language
+	 *                          routing; a language name: route to that
+	 *                          language's lan_* tables where they exist
 	 * @return string
 	 */
-	private function _substituteTableNames($sql)
+	private function _substituteTableNames($sql, $language = null)
 	{
 		return preg_replace_callback(
 			'/\'(?:[^\'\\\\]|\\\\.)*\'|"(?:[^"\\\\]|\\\\.)*"|`#([A-Za-z0-9_]+)`|`[^`]*`|\/\*[\s\S]*?\*\/|--[^\r\n]*|#([A-Za-z0-9_]+)/',
-			function ($matches)
+			function ($matches) use ($language)
 			{
 				if(!empty($matches[1])) // `#table`
 				{
-					return '`'.$this->resolveTableName($matches[1]).'`';
+					return '`'.$this->_resolveMarker($matches[1], $language).'`';
 				}
 
 				if(isset($matches[2]) && $matches[2] !== '') // bare #table
 				{
-					return $this->resolveTableName($matches[2]);
+					return $this->_resolveMarker($matches[2], $language);
 				}
 
 				return $matches[0];
 			},
 			$sql
 		);
+	}
+
+	/**
+	 * Resolve one marker table name for {@see ConnectionTrait::_substituteTableNames()}.
+	 *
+	 * @param string $table
+	 * @param string|false|null $language see {@see ConnectionTrait::_substituteTableNames()}
+	 * @return string|false
+	 */
+	private function _resolveMarker($table, $language)
+	{
+		if($language === false)
+		{
+			return $this->resolvePhysicalTableName($table);
+		}
+
+		return $this->resolveTableName($table, $language);
 	}
 
 	/**

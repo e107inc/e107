@@ -177,6 +177,21 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 	}
 
 
+	public function testResolveTableNamePinnedLanguage()
+	{
+		$this->db->copyTable('news', 'lan_spanish_news', true, true);
+		$this->db->resetTableList();
+
+		$this->assertEquals(MPREFIX.'lan_spanish_news', $this->db->resolveTableName('news', 'Spanish'));
+		$this->assertEquals(MPREFIX.'lan_spanish_news', $this->db->resolveTableName('#news', 'spanish'));
+		$this->assertEquals(MPREFIX.'news', $this->db->resolveTableName('news', 'German'));
+		$this->assertFalse($this->db->resolveTableName('news; DROP TABLE x', 'Spanish'));
+
+		$this->db->dropTable('lan_spanish_news');
+		$this->db->resetTableList();
+	}
+
+
 
 	public function testDb_Write_log()
 	{

@@ -313,13 +313,19 @@ use PDOStatement;
 		/**
 		 * Resolve a logical e107 table name to its physical name: the database
 		 * prefix is attached and, on multi-language sites, the table is routed
-		 * to the current language's lan_* table when one exists.
+		 * to a language's lan_* table when one exists.
 		 *
 		 * @param string $table table name with or without a leading '#'
+		 * @param string|null $language null: route for the connection's current
+		 *                    language, honouring the multilanguage preference
+		 *                    (the default); a language name, e.g. 'Spanish':
+		 *                    route to that language's lan_* table when it
+		 *                    exists, regardless of the current language or the
+		 *                    multilanguage preference
 		 * @return string|false physical table name (unquoted), or false when
 		 *                      the name is not a valid identifier
 		 */
-		public function resolveTableName($table);
+		public function resolveTableName($table, $language = null);
 
 
 		/**
