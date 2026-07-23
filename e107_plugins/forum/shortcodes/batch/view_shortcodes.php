@@ -301,14 +301,16 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 	function sc_breadcrumb()
 	{
-
-		return !empty($this->var['breadcrumb']) ? $this->var['breadcrumb'] : '';
+//		return !empty($this->var['breadcrumb']) ? $this->var['breadcrumb'] : '';
+// Now the shortcode {---BREADCRUMB---} is always available, so this shortcode is redundant.... Left here for legacy purposes...
+	    return e107::getForm()->breadcrumb(e107::breadcrumb(), true);
 	}
 
 	function sc_backlink()
 	{
-
-		return !empty($this->var['breadcrumb']) ? $this->var['breadcrumb'] : '';
+//		return !empty($this->var['breadcrumb']) ? $this->var['breadcrumb'] : '';
+// Now the shortcode {---BREADCRUMB---} is always available, so this shortcode is redundant.... Left here for legacy purposes...
+	    return e107::getForm()->breadcrumb(e107::breadcrumb(), true);
 	}
 
 	function sc_top($parm = '')
