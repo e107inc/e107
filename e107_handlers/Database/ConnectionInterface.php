@@ -311,6 +311,34 @@ use PDOStatement;
 
 
 		/**
+		 * Run a statement against every language variant of the tables it
+		 * references: once against the base tables, then once per language
+		 * that has a lan_* copy of any referenced table. The modern
+		 * replacement for {@see ConnectionInterface::db_Query_all()}.
+		 *
+		 * '#table' markers are resolved afresh for each leg, so a language
+		 * without a copy of some referenced table falls back to the base
+		 * table for that leg, and a statement with no markers runs exactly
+		 * once. Every leg is attempted even when an earlier one fails, so
+		 * maintenance reaches all copies; on failure the first failing
+		 * leg's error is kept for {@see ConnectionInterface::getLastErrorText()}.
+		 *
+		 * <code>
+		 * // Drop a plugin table and its language copies:
+		 * $sql->executeAllLanguages('DROP TABLE `#myplugin_data`');
+		 *
+		 * // Parameters bind exactly as in execute():
+		 * $sql->executeAllLanguages('UPDATE #news SET news_render_type = :type', array('type' => 0));
+		 * </code>
+		 *
+		 * @param string $sql SQL with '#table' markers and optional :named placeholders
+		 * @param array $parameters name => value, or name => array('value' => mixed, 'type' => ConnectionInterface::PARAM_*)
+		 * @return int|false number of statements executed (>= 1), or false when any leg failed
+		 */
+		public function executeAllLanguages($sql, $parameters = array());
+
+
+		/**
 		 * Resolve a logical e107 table name to its physical name: the database
 		 * prefix is attached and, on multi-language sites, the table is routed
 		 * to a language's lan_* table when one exists.
