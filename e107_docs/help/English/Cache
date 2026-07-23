@@ -1,9 +1,18 @@
+H1> About the cache
 
-Q>	What's this section for?
-A>	Setting Cache Status to on will save certain areas of your site in your database. This reduces calls to MySQL, and vastly speeds up your site.
+P> The cache stores rendered fragments of your site so e107 doesn't have to rebuild them on every request. Properly tuned, it cuts MySQL load dramatically and shortens response times.
 
-Q>	I made some alterations to the theme I'm using but it hasn't changed - is it because it's cached.
-A>	Most probably. When you change themes the cache is cleared but altering code in your theme.php won't clear the cache. Set Cache Status to off until you're finished.
+SHOT> cache/admin-cache.png | Cache status panel with the clear-cache buttons
 
-Q>	Can I save the cache to files on the hard drive?
-A>	Yes. Just make sure that your e107_files/cache directory is writable (chmod 777). And then click the option on the cache page.
+Q> What's this section for?
+A> Setting [b]Cache Status[/b] to [i]on[/i] saves certain areas of your site (menus, news lists, etc.). This reduces calls to MySQL and vastly speeds the site up.
+
+Q> I altered the theme I'm using but the change isn't visible – is it cached?
+A> Most likely yes. Switching themes clears the cache automatically, but editing `theme.php` does not. Either turn the cache off while you iterate, or click [b]Clear cache[/b] after each change.
+
+TIP> While developing a theme or plugin, set Cache Status to [i]off[/i]. Re-enable it before going live.
+
+Q> Can I save the cache to files on the hard drive?
+A> Yes. Make sure the directory `e107_system/<sitehash>/cache/` is writable (chmod 755 / 775 on Linux), then enable file caching on this page.
+
+WARN> If you accidentally cache a logged-in version of a page, log out and clear the cache immediately to avoid leaking session-bound content to guests.
