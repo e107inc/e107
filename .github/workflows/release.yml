@@ -1,0 +1,225 @@
+name: Release
+
+# Builds the release archives and, for a published GitHub Release, attaches
+# them as release assets and publishes them to SourceForge. The workflow YAML
+# for release events is read from the default branch; the build scripts under
+# .github/workflows/build-release/ run from the tag's tree.
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing tag to build (e.g. v2.3.9). Leave empty to build this ref as a development build (uploads are skipped)."
+        required: false
+        default: ""
+      dry_run:
+        description: "Build only; skip the GitHub asset attach and the SourceForge publish"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.event.release.tag_name || inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      tag: ${{ steps.meta.outputs.tag }}
+      version: ${{ steps.meta.outputs.version }}
+      uploads: ${{ steps.meta.outputs.uploads }}
+      prerelease: ${{ steps.meta.outputs.prerelease }}
+    steps:
+      - name: Install operating system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git tar gzip xz-utils zip unzip php-cli
+
+      - name: Check out code
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.release.tag_name || inputs.tag || github.ref }}
+          fetch-depth: 0
+
+      # git describe names the version, and the core integrity image walks
+      # every v* tag, so a fetch regression would silently corrupt the build.
+      - name: Assert version tags are available
+        run: |
+          count="$(git tag --list 'v*' | wc -l)"
+          if [ "$count" -lt 80 ]; then
+            echo "Only $count v* tags were fetched; the core integrity image would be built from incomplete tag history" >&2
+            exit 1
+          fi
+
+      - name: Run build script
+        run: php -dphar.readonly=0 e107_make.php
+        working-directory: ./.github/workflows/build-release/
+
+      - name: Resolve release metadata
+        id: meta
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_PRERELEASE: ${{ github.event.release.prerelease }}
+          DRY_RUN: ${{ inputs.dry_run }}
+          TAG: ${{ github.event.release.tag_name || inputs.tag }}
+        run: |
+          set -euo pipefail
+          dir="$(find .github/workflows/build-release/target/e107/release -mindepth 1 -maxdepth 1 -type d -name 'e107_*' -print)"
+          if [ -z "$dir" ]; then
+            echo "No release directory was produced by the build" >&2
+            exit 1
+          fi
+          if [ "$(printf '%s\n' "$dir" | wc -l)" -ne 1 ]; then
+            echo "Expected exactly one release directory, found:" "$dir" >&2
+            exit 1
+          fi
+          version="${dir##*/e107_}"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          if [ -z "$TAG" ]; then
+            echo "tag=" >> "$GITHUB_OUTPUT"
+            echo "uploads=false" >> "$GITHUB_OUTPUT"
+            echo "prerelease=true" >> "$GITHUB_OUTPUT"
+            echo "Development build of version $version; uploads are disabled without a tag"
+            exit 0
+          fi
+          if [ "$version" != "${TAG#v}" ]; then
+            echo "Tag $TAG does not match the built version $version; refusing to ship a mislabelled build" >&2
+            exit 1
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          if [ "$EVENT_NAME" = "release" ] || [ "$DRY_RUN" != "true" ]; then
+            echo "uploads=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "uploads=false" >> "$GITHUB_OUTPUT"
+          fi
+          if [ "$EVENT_NAME" = "release" ]; then
+            echo "prerelease=$EVENT_PRERELEASE" >> "$GITHUB_OUTPUT"
+          else
+            # Manual dispatch: look the release up; no release object means
+            # nothing is published yet, so stay off SourceForge.
+            prerelease="$(gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json isPrerelease --jq .isPrerelease 2> /dev/null || echo true)"
+            echo "prerelease=$prerelease" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Upload build artifacts to workflow run
+        uses: actions/upload-artifact@v7
+        with:
+          name: release_files
+          path: ./.github/workflows/build-release/target/e107/release/
+          if-no-files-found: error
+
+  attach:
+    needs: build
+    if: needs.build.outputs.uploads == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v7
+        with:
+          name: release_files
+          path: release
+
+      - name: Attach assets to the GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ needs.build.outputs.tag }}
+          VERSION: ${{ needs.build.outputs.version }}
+        run: |
+          set -euo pipefail
+          if ! gh release view "$TAG" --repo "$GITHUB_REPOSITORY" > /dev/null; then
+            echo "No GitHub Release exists for $TAG; create one before attaching assets" >&2
+            exit 1
+          fi
+          gh release upload "$TAG" release/e107_"$VERSION"/* --clobber --repo "$GITHUB_REPOSITORY"
+
+  sourceforge:
+    needs: build
+    if: needs.build.outputs.uploads == 'true' && needs.build.outputs.prerelease == 'false'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Install operating system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y sshpass
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v7
+        with:
+          name: release_files
+          path: release
+
+      - name: Upload archives over SFTP
+        env:
+          SSHPASS: ${{ secrets.SF_PASSWORD }}
+          SF_HOST: ${{ vars.SF_HOST }}
+          SF_USER: ${{ vars.SF_USER }}
+          SF_DIR: ${{ vars.SF_DIR }}
+          VERSION: ${{ needs.build.outputs.version }}
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh
+          # Pinned host key; fingerprint published at
+          # https://sourceforge.net/p/forge/documentation/SSH%20Key%20Fingerprints/
+          printf '%s\n' 'frs.sourceforge.net ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOQD35Ujalhh+JJkPvMckDlhu4dS7WH6NsOJ15iGCJLC' >> ~/.ssh/known_hosts
+
+          remote_dir="${SF_DIR}/e107 v${VERSION}"
+          batch="$(mktemp)"
+          {
+            printf -- '-mkdir "%s"\n' "$remote_dir"
+            printf 'cd "%s"\n' "$remote_dir"
+            for file in release/e107_"$VERSION"/*; do
+              # core_image.phar is a GitHub-only asset; SourceForge carries the archives
+              if [ "$(basename "$file")" = "core_image.phar" ]; then
+                continue
+              fi
+              printf 'put "%s"\n' "$file"
+            done
+          } > "$batch"
+
+          for attempt in 1 2 3; do
+            if sshpass -e sftp \
+              -o BatchMode=no \
+              -o StrictHostKeyChecking=yes \
+              -o PubkeyAuthentication=no \
+              -o NumberOfPasswordPrompts=1 \
+              -b "$batch" "${SF_USER}@${SF_HOST}"; then
+              exit 0
+            fi
+            echo "SFTP attempt $attempt failed; retrying in 30 seconds" >&2
+            sleep 30
+          done
+          exit 1
+
+      - name: Set default downloads
+        env:
+          SF_API_KEY: ${{ secrets.SF_API_KEY }}
+          VERSION: ${{ needs.build.outputs.version }}
+        run: |
+          set -euo pipefail
+          # https://sourceforge.net/p/forge/documentation/Using%20the%20Release%20API/
+          # The retries cover SourceForge's post-upload indexing lag.
+          set_default() {
+            file="$1"
+            shift
+            path="$(printf 'e107/e107 v%s/%s' "$VERSION" "$file" | sed 's/ /%20/g')"
+            curl --fail-with-body --silent --show-error \
+              --retry 5 --retry-delay 30 --retry-all-errors \
+              -H "Accept: application/json" -X PUT \
+              "$@" \
+              --data-urlencode "api_key=${SF_API_KEY}" \
+              "https://sourceforge.net/projects/e107/files/${path}"
+            echo
+          }
+          set_default "e107_${VERSION}_full.zip" -d "default=windows" -d "default=others"
+          set_default "e107_${VERSION}_full.tar.gz" -d "default=linux" -d "default=mac" -d "default=bsd" -d "default=solaris"
