@@ -599,7 +599,7 @@ class e_thumbnail
 	// Display a placeholder image.
 
 	/**
-	 * @param $parm
+	 * @param array $parm expects 'size' as "{width}x{height}", eg. "800x350"
 	 * @return void|null
 	 */
 	private function placeholder($parm)
@@ -610,11 +610,55 @@ class e_thumbnail
 			return null;
 		}
 
-		$getsize = isset($parm['size']) ? $parm['size'] : '100x100';
+		$size = vartrue($parm['size'], '');
+		list($width, $height) = array_pad(explode('x', $size, 2), 2, 0);
 
-		header('location: https://via.placeholder.com/'.$getsize);
-		header('Content-Length: 0');
+		$svg = $this->placeholderImage($width, $height);
+
+		header('Content-Type: image/svg+xml');
+		header('Content-Length: '.strlen($svg));
+		header('Cache-Control: public, max-age=604800');
+		header('X-Content-Type-Options: nosniff');
+		header("Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'");
+		echo $svg;
 		exit();
+	}
+
+
+	/**
+	 * Build an SVG placeholder for a missing image, generated locally so that
+	 * no third-party service is involved. Dimensions are clamped to 1-4000;
+	 * invalid input falls back to 100x100.
+	 *
+	 * @param int|string $width
+	 * @param int|string $height
+	 * @return string SVG markup
+	 */
+	public function placeholderImage($width, $height)
+	{
+		$width = (int) $width;
+		$height = (int) $height;
+
+		if($width < 1)
+		{
+			$width = 100;
+		}
+
+		if($height < 1)
+		{
+			$height = 100;
+		}
+
+		$width = min($width, 4000);
+		$height = min($height, 4000);
+
+		$fontSize = max(10, min(40, (int) (min($width, $height) / 5)));
+		$label = $width.'x'.$height;
+
+		return '<svg xmlns="http://www.w3.org/2000/svg" width="'.$width.'" height="'.$height.'" viewBox="0 0 '.$width.' '.$height.'">'
+			.'<rect width="100%" height="100%" fill="#dde0e5"/>'
+			.'<text x="50%" y="50%" dy=".35em" fill="#6e7681" font-family="sans-serif" font-size="'.$fontSize.'" text-anchor="middle">'.$label.'</text>'
+			.'</svg>';
 	}
 
 

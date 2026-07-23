@@ -403,6 +403,18 @@
 					'input'     => 'https://via.placeholder.com/728x90.png?text=Label',
 					'expected' => 'image'
 				),
+				4 => array(
+					'input'     => 'https://placehold.co/728x90.jpg?text=Label',
+					'expected' => 'image'
+				),
+				5 => array(
+					'input'     => '{e_PLUGIN}hero/images/placeholder-1.svg',
+					'expected' => 'image'
+				),
+				6 => array(
+					'input'     => 'myfile.mp4?version=2',
+					'expected' => 'video'
+				),
 
 
 
