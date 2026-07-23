@@ -144,7 +144,7 @@ jobs:
 
   sourceforge:
     needs: build
-    if: needs.build.outputs.uploads == 'true' && needs.build.outputs.prerelease == 'false'
+    if: needs.build.outputs.uploads == 'true' && needs.build.outputs.prerelease == 'false' && !contains(needs.build.outputs.tag, '-')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
