@@ -19,17 +19,33 @@ if [ -n "${E107_DB_HOST:-}" ]; then
     echo "[entrypoint] Waiting for database at ${E107_DB_HOST}:${E107_DB_PORT:-3306}..."
     attempts=60
     i=0
-    while [ "$i" -lt "$attempts" ]; do
-        # --skip-ssl: recent mariadb-client defaults to requiring TLS, but
-        # we're talking over the compose bridge network and the test server
-        # doesn't enable TLS by default. Internal-only, so this is safe.
-        if mariadb-admin ping \
+    # --skip-ssl: recent mariadb-client defaults to requiring TLS, but
+    # we're talking over the compose bridge network and the test server
+    # doesn't enable TLS by default. Internal-only, so this is safe.
+    # Stretch-era images (php:5.6/7.0) ship mysqladmin instead, which has
+    # no --skip-ssl flag and never attempts TLS.
+    if command -v mariadb-admin >/dev/null 2>&1; then
+        db_ping() {
+            mariadb-admin ping \
                 --host="${E107_DB_HOST}" \
                 --port="${E107_DB_PORT:-3306}" \
                 --user="${E107_DB_USER:-root}" \
                 --password="${E107_DB_PASSWORD:-}" \
                 --skip-ssl \
-                --silent 2>/dev/null; then
+                --silent 2>/dev/null
+        }
+    else
+        db_ping() {
+            mysqladmin ping \
+                --host="${E107_DB_HOST}" \
+                --port="${E107_DB_PORT:-3306}" \
+                --user="${E107_DB_USER:-root}" \
+                --password="${E107_DB_PASSWORD:-}" \
+                --silent 2>/dev/null
+        }
+    fi
+    while [ "$i" -lt "$attempts" ]; do
+        if db_ping; then
             echo "[entrypoint] Database is up."
             break
         fi
