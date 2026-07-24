@@ -1953,7 +1953,7 @@ class media_admin_ui extends e_admin_ui
 			{
 				foreach($items as $v)
 				{
-					if(strpos($v['title'], $option['search'])!==false)
+					if(stripos($v['title'], $option['search'])!==false)
 					{
 						$filtered[] = $v;
 					}
@@ -2036,7 +2036,7 @@ class media_admin_ui extends e_admin_ui
 			{
 				foreach($items as $v)
 				{
-					if(strpos($v['title'], $option['search'])!==false)
+					if(stripos($v['title'], $option['search'])!==false)
 					{
 						$filtered[] = $v;
 					}
@@ -2111,7 +2111,7 @@ class media_admin_ui extends e_admin_ui
 			{
 				foreach($items as $v)
 				{
-					if(strpos($v['title'], $parm['search'])!==false)
+					if(stripos($v['title'], $parm['search'])!==false)
 					{
 						$filtered[] = $v;
 					}
@@ -2178,7 +2178,7 @@ class media_admin_ui extends e_admin_ui
 			{
 				foreach($items as $v)
 				{
-					if(strpos($v['title'], $parm['search'])!==false)
+					if(stripos($v['title'], $parm['search'])!==false)
 					{
 						$filtered[] = $v;
 					}
@@ -2359,7 +2359,7 @@ class media_admin_ui extends e_admin_ui
 			{
 				foreach($items as $v)
 				{
-					if(strpos($v['title'], $parm['search'])!==false)
+					if(stripos($v['title'], $parm['search'])!==false)
 					{
 						$v['slideCaption'] = '';
 						$filtered[] = $v;
