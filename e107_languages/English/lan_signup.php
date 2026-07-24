@@ -23,7 +23,6 @@ define("LAN_185", "You left required field(s) blank");
 // define("LAN_201", "Yes");
 // define("LAN_200", "No");
 // define("LAN_399", "Continue");
-define("LAN_407", "Please keep this email for your own information. Your password has been encrypted and cannot be retrieved if you misplace or forget it. You can, however, request a new password if this happens.\n\nThank you for registering.\n\nFrom");
 //define("LAN_408", "A user with that email address already exists. Please use the "forgot password" screen to retrieve your password.");
 
 //define("LAN_409", "Invalid characters in username");

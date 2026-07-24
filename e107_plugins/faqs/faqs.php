@@ -82,7 +82,20 @@ if (isset($_POST['faq_submit']))
 		$data 			= $tp->toDB($_POST['data']);
 		$count 			= ($sql->count("faqs", "(*)", "WHERE faq_parent='".intval($_POST['faq_parent'])."' ") + 1);
 		
-		$sql->insert("faqs", " 0, '".intval($_POST['faq_parent'])."', '$faq_question', '$data', '".e107::getParser()->filter($_POST['faq_comment'], 'str')."', '".time()."', '".USERID."', '".$count."' ");
+			$insert = array(
+				'faq_id'        => 0,
+				'faq_parent'    => intval($_POST['faq_parent']),
+				'faq_question'  => $faq_question,
+				'faq_answer'    => $data,
+				'faq_comment'   => e107::getParser()->filter($_POST['faq_comment'], 'str'),
+				'faq_datestamp' => time(),
+				'faq_author'    => USERID,
+				'faq_author_ip' => USERIP,
+				'faq_tags'      => '',
+				'faq_order'     => $count
+			);
+
+			$sql->insert("faqs", $insert);
 		
 		$message = LAN_FAQS_004; // FAQ_ADLAN_32;
 		
