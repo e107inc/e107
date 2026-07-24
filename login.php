@@ -29,7 +29,8 @@ if ((USER || e_LOGIN != e_SELF || (empty($pref['user_reg']) && !e107::getUserPro
 
 e107::coreLan('login');
 
-if(!defined('e_IFRAME')) define('e_IFRAME',true);
+$loginTpl = e107::getCoreTemplate('login'); // fetched here (and re-fetched/cached below) so a theme can opt out of bare/iframe render
+if(!defined('e_IFRAME')) define('e_IFRAME', empty($loginTpl['page']['noiframe'])); // default true (bare) unchanged; set $LOGIN_TEMPLATE['page']['noiframe']=true in a theme override to render with full theme
 require_once(HEADERF);
 $use_imagecode = ($pref['logcode'] && extension_loaded("gd"));
 
