@@ -2008,7 +2008,7 @@ class media_admin_ui extends e_admin_ui
 			{
 				foreach($items as $v)
 				{
-					if(stripos($v['title'], $option['search'])!==false)
+					if(e107::getParser()->ustrpos(e107::getParser()->ustrtolower($v['title']), e107::getParser()->ustrtolower($option['search']))!==false)
 					{
 						$filtered[] = $v;
 					}
@@ -2091,7 +2091,7 @@ class media_admin_ui extends e_admin_ui
 			{
 				foreach($items as $v)
 				{
-					if(stripos($v['title'], $option['search'])!==false)
+					if(e107::getParser()->ustrpos(e107::getParser()->ustrtolower($v['title']), e107::getParser()->ustrtolower($option['search']))!==false)
 					{
 						$filtered[] = $v;
 					}
@@ -2166,7 +2166,7 @@ class media_admin_ui extends e_admin_ui
 			{
 				foreach($items as $v)
 				{
-					if(stripos($v['title'], $parm['search'])!==false)
+					if(e107::getParser()->ustrpos(e107::getParser()->ustrtolower($v['title']), e107::getParser()->ustrtolower($parm['search']))!==false)
 					{
 						$filtered[] = $v;
 					}
@@ -2233,7 +2233,7 @@ class media_admin_ui extends e_admin_ui
 			{
 				foreach($items as $v)
 				{
-					if(stripos($v['title'], $parm['search'])!==false)
+					if(e107::getParser()->ustrpos(e107::getParser()->ustrtolower($v['title']), e107::getParser()->ustrtolower($parm['search']))!==false)
 					{
 						$filtered[] = $v;
 					}
@@ -2414,7 +2414,7 @@ class media_admin_ui extends e_admin_ui
 			{
 				foreach($items as $v)
 				{
-					if(stripos($v['title'], $parm['search'])!==false)
+					if(e107::getParser()->ustrpos(e107::getParser()->ustrtolower($v['title']), e107::getParser()->ustrtolower($parm['search']))!==false)
 					{
 						$v['slideCaption'] = '';
 						$filtered[] = $v;
