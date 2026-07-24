@@ -1293,7 +1293,9 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			}
 	
 			usort($func_list, 'strcoll');
-	
+
+			$func_list = array_unique($func_list);
+
 			foreach ($func_list as $func_text)
 			{
 				foreach (array_keys($temp) as $key)
