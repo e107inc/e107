@@ -309,11 +309,18 @@ up_with_registry_fallback() {
 }
 
 assert_stack_healthy() {
-    local ps_out ok=yes
+    # Generic across stack shapes: every service must be running, and any
+    # service with a healthcheck must report healthy. db must be present.
+    local ps_out ok=yes svc state health
     ps_out=$(compose_p ps --format '{{.Service}} {{.State}} {{.Health}}' 2>/dev/null || true)
     printf '%s\n' "$ps_out" | grep -q '^db running healthy' || ok=no
-    printf '%s\n' "$ps_out" | grep -q '^web running' || ok=no
-    printf '%s\n' "$ps_out" | grep -q '^selenium running' || ok=no
+    while read -r svc state health; do
+        [ -n "$svc" ] || continue
+        [ "$state" = running ] || ok=no
+        if [ -n "$health" ] && [ "$health" != healthy ]; then
+            ok=no
+        fi
+    done <<< "$ps_out"
     if [ "$ok" != yes ]; then
         warn "stack $PROJECT is not healthy:"
         compose_p ps >&2 || true
