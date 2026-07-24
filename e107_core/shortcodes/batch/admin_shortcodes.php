@@ -122,31 +122,24 @@ class admin_shortcodes extends e_shortcode
     public function sc_admin_coreupdate($parm='')
 	{
         $che = e107::getCache();
-        $mes = e107::getMessage();
-        
         $che->setMD5(e_LANGUAGE);
-    
-        $cacheData = $che->retrieve('releasecheck',3600, TRUE); // 2.0.1 | 'up-to-date' | false ;
-    	
-  		$cacheData = 2.1; // XXX Remove to test for real. 
-    	
-    	return false;  // XXX Remove to test for real. 
-    	
-        if($cacheData)
-        {
-            return $this->cronUpdateRender($parm, $cacheData); 
-        }
-       
 
-        require_once(e_HANDLER. 'cron_class.php');
-        $cron = new _system_cron();
-        
-        if($result = $cron->checkCoreUpdate())
+        $cacheData = $che->retrieve('releasecheck', 3600, TRUE); // 2.0.1 | 'up-to-date' | false
+
+        if($cacheData === false)
         {
-           return $this->cronUpdateRender($parm, $cacheData); 
+            $update    = e107::coreUpdateAvailable();
+            $cacheData = !empty($update['version']) ? $update['version'] : 'up-to-date';
+            $che->set('releasecheck', $cacheData, TRUE);
         }
-    
-        
+
+        if($cacheData && $cacheData !== 'up-to-date')
+        {
+            return $this->cronUpdateRender($parm, $cacheData);
+        }
+
+        return '';
+
 	}
 	
 	
