@@ -315,9 +315,21 @@ class redirection
 
 		$redirectType = e107::getPref('membersonly_redirect');
 
-		$redirectURL = ($redirectType == 'splash') ? 'membersonly.php' : 'login.php';
+		// #5335: with registration Disabled (user_reg=0) and no social login, the
+		// stock login.php turns guests away and bounces them back here, looping until
+		// the browser aborts. Fall back to the members-only splash (a dead end) to
+		// break the loop; a custom login page is left to handle its own guest access.
+		if($redirectType != 'splash'
+			&& e_LOGIN === SITEURL.'login.php'
+			&& !e107::getPref('user_reg')
+			&& !e107::getUserProvider()->isSocialLoginEnabled())
+		{
+			$redirectType = 'splash';
+		}
 
-		$this->redirect(e_HTTP.$redirectURL);
+		$redirectURL = ($redirectType == 'splash') ? e_HTTP.'membersonly.php' : e_LOGIN;
+
+		$this->redirect($redirectURL);
 	}
 
 	
