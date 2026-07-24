@@ -14,16 +14,22 @@ TESTS_DIR=$(dirname -- "$SCRIPT_DIR")
 APP_PATH=$(dirname -- "$TESTS_DIR")
 DOCKER_DIR="$TESTS_DIR/docker"
 COMPOSE_FILE="$DOCKER_DIR/compose.yml"
-ENVS_DIR="$DOCKER_DIR/.envs"
-ACTIVE_LINK="$ENVS_DIR/_active"
 MANAGED_CONFIG="$TESTS_DIR/config.docker.yml"
 
-DEFAULT_PHP=8.3
+DEFAULT_PHP=8.5
 DEFAULT_DB=mariadb:10.11
 DEFAULT_DB_NAME=e107
 DEFAULT_DB_USER=e107
 DEFAULT_DB_PASSWORD=e107
 DEFAULT_DB_ROOT_PASSWORD=root
+
+# Cluster state lives in Docker, not in files: every container and volume the
+# harness creates carries these labels (see compose.yml), and all commands
+# except `up` rediscover their env from them.
+LABEL_NS=e107.tests
+
+WEB_APP_DIR=/var/www/html
+WEB_TESTS_DIR=$WEB_APP_DIR/e107_tests
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -31,6 +37,7 @@ DEFAULT_DB_ROOT_PASSWORD=root
 
 err() { printf 'error: %s\n' "$*" >&2; exit 1; }
 note() { printf '%s\n' "$*" >&2; }
+warn() { printf '!! %s\n' "$*" >&2; }
 
 have() { command -v "$1" >/dev/null 2>&1; }
 
@@ -60,89 +67,192 @@ project_name() {
         "$(slug "$db")"
 }
 
-state_dir() {
-    printf '%s/%s' "$ENVS_DIR" "$1"
+# ---------------------------------------------------------------------------
+# Env discovery (Docker labels are the source of truth)
+# ---------------------------------------------------------------------------
+
+# All harness-created projects, across every worktree on this machine.
+all_projects() {
+    docker ps -a --filter "label=$LABEL_NS=1" \
+        --format '{{.Label "com.docker.compose.project"}}' | sort -u | grep . || true
 }
 
-# Resolve the env to operate on. Order of precedence:
-#   1. --env <project> on the command line
-#   2. ENV variables E107_PHP_VERSION / E107_DB_IMAGE
-#   3. The _active symlink saved by the most recent `up`
-#   4. Defaults
+project_exists() {
+    [ -n "$(docker ps -aq --filter "label=com.docker.compose.project=$1" | head -n1)" ]
+}
+
+# Read one e107.tests.* label off any container of a project.
+project_label() {
+    docker ps -a --filter "label=com.docker.compose.project=$1" \
+        --format "{{.Label \"$LABEL_NS.$2\"}}" | grep -m1 . || true
+}
+
+load_env_from_labels() {
+    E107_PHP_VERSION=$(project_label "$PROJECT" php)
+    E107_DB_IMAGE=$(project_label "$PROJECT" db)
+    WITH_XDEBUG=$(project_label "$PROJECT" xdebug)
+    XDEBUG_TAG=$([ "$WITH_XDEBUG" = yes ] && echo '-xdebug' || true)
+}
+
+# The project this worktree's managed Codeception config points at. Written
+# by `up`, so it marks the most recently upped env for this worktree.
+worktree_marker_project() {
+    [ -f "$MANAGED_CONFIG" ] || return 1
+    sed -n 's/^# Managed by e107-tests\. Generated for project: //p' "$MANAGED_CONFIG" \
+        | head -n1 | grep .
+}
+
+# Soft resolver: sets PROJECT or returns 1. Precedence:
+#   1. --env <project> on the command line (works from any worktree)
+#   2. The project recorded in this worktree's config.docker.yml
+#   3. The only project labeled with this worktree's path
+find_project() {
+    PROJECT=
+    if [ -n "$EXPLICIT_PROJECT" ]; then
+        if project_exists "$EXPLICIT_PROJECT"; then
+            PROJECT=$EXPLICIT_PROJECT
+            return 0
+        fi
+        note "no such env: $EXPLICIT_PROJECT (see: e107-tests list)"
+        return 1
+    fi
+
+    local marker
+    marker=$(worktree_marker_project) || marker=
+    if [ -n "$marker" ]; then
+        if project_exists "$marker"; then
+            PROJECT=$marker
+            return 0
+        fi
+        note "note: config.docker.yml points at $marker, which no longer exists"
+    fi
+
+    local candidates count
+    candidates=$(docker ps -a --filter "label=$LABEL_NS.app-path=$APP_PATH" \
+        --format '{{.Label "com.docker.compose.project"}}' | sort -u | grep . || true)
+    count=$(printf '%s' "$candidates" | grep -c . || true)
+    if [ "$count" -eq 1 ]; then
+        PROJECT=$candidates
+        return 0
+    fi
+    if [ "$count" -gt 1 ]; then
+        note "multiple envs exist for this worktree; pick one with --env <project>:"
+        printf '  %s\n' $candidates >&2
+    fi
+    return 1
+}
+
+# Hard resolver: errs with guidance instead of returning.
 resolve_env() {
-    local explicit=${EXPLICIT_PROJECT:-}
-    if [ -n "$explicit" ]; then
-        PROJECT=$explicit
-        if [ ! -f "$(state_dir "$PROJECT")/stack.env" ]; then
-            err "no such env: $PROJECT (try: e107-tests list)"
-        fi
-        # shellcheck disable=SC1090
-        . "$(state_dir "$PROJECT")/stack.env"
-        return
-    fi
-
-    local php=${E107_PHP_VERSION:-} db=${E107_DB_IMAGE:-}
-    if [ -z "$php" ] || [ -z "$db" ]; then
-        if [ -L "$ACTIVE_LINK" ]; then
-            local active
-            active=$(basename -- "$(readlink -- "$ACTIVE_LINK")")
-            if [ -f "$(state_dir "$active")/stack.env" ]; then
-                # shellcheck disable=SC1090
-                . "$(state_dir "$active")/stack.env"
-                PROJECT=$active
-                return
-            fi
-        fi
-    fi
-    E107_PHP_VERSION=${php:-$DEFAULT_PHP}
-    E107_DB_IMAGE=${db:-$DEFAULT_DB}
-    PROJECT=$(project_name "$E107_PHP_VERSION" "$E107_DB_IMAGE")
-}
-
-# Write the per-env state file. Everything compose.yml needs to know
-# lives here; sourcing it is enough to bring the env back.
-write_stack_env() {
-    local dir
-    dir=$(state_dir "$PROJECT")
-    mkdir -p "$dir"
-    cat > "$dir/stack.env" <<EOF
-# Generated by e107-tests. Do not hand-edit; re-run \`e107-tests up\` instead.
-COMPOSE_PROJECT_NAME=$PROJECT
-E107_PHP_VERSION=$E107_PHP_VERSION
-E107_DB_IMAGE=$E107_DB_IMAGE
-E107_APP_PATH=$APP_PATH
-E107_DB_NAME=$DEFAULT_DB_NAME
-E107_DB_USER=$DEFAULT_DB_USER
-E107_DB_PASSWORD=$DEFAULT_DB_PASSWORD
-E107_DB_ROOT_PASSWORD=$DEFAULT_DB_ROOT_PASSWORD
-E107_WITH_XDEBUG=$WITH_XDEBUG
-E107_WITH_XDEBUG_TAG=$([ "$WITH_XDEBUG" = yes ] && echo '-xdebug' || true)
-EOF
-    # shellcheck disable=SC1090
-    . "$dir/stack.env"
-}
-
-compose() {
     require_docker
-    local dir
-    dir=$(state_dir "$PROJECT")
-    if [ -f "$dir/stack.env" ]; then
-        env $(grep -v '^#' "$dir/stack.env" | xargs -d '\n') \
-            docker compose --project-directory "$DOCKER_DIR" -f "$COMPOSE_FILE" "$@"
-    else
-        docker compose --project-directory "$DOCKER_DIR" -f "$COMPOSE_FILE" "$@"
-    fi
+    find_project || err "no active env for this worktree. Run 'e107-tests up', or pass --env <project> (see: e107-tests list)"
+    load_env_from_labels
 }
 
-mark_active() {
-    mkdir -p "$ENVS_DIR"
-    ln -sfn "$PROJECT" "$ACTIVE_LINK"
+# ---------------------------------------------------------------------------
+# Compose invocation
+# ---------------------------------------------------------------------------
+
+# Only `up` (and image builds) parse compose.yml, which is where the env
+# interpolation happens. Everything else drives compose by project name
+# alone; compose finds the containers through its own labels.
+compose_up_cmd() {
+    require_docker
+    COMPOSE_PROJECT_NAME=$PROJECT \
+    E107_PHP_VERSION=$E107_PHP_VERSION \
+    E107_DB_IMAGE=$E107_DB_IMAGE \
+    E107_APP_PATH=$APP_PATH \
+    E107_DB_NAME=$DEFAULT_DB_NAME \
+    E107_DB_USER=$DEFAULT_DB_USER \
+    E107_DB_PASSWORD=$DEFAULT_DB_PASSWORD \
+    E107_DB_ROOT_PASSWORD=$DEFAULT_DB_ROOT_PASSWORD \
+    E107_WITH_XDEBUG=$WITH_XDEBUG \
+    E107_WITH_XDEBUG_TAG=$XDEBUG_TAG \
+    E107_DB_CHARSET=$E107_DB_CHARSET \
+    E107_DB_COLLATION=$E107_DB_COLLATION \
+    E107_DB_EXTRA_ARGS=$E107_DB_EXTRA_ARGS \
+    docker compose --project-directory "$DOCKER_DIR" -f "$COMPOSE_FILE" "$@"
 }
+
+compose_p() {
+    require_docker
+    docker compose -p "$PROJECT" "$@"
+}
+
+# Long-lived containers can lose their bind mounts under podman after heavy
+# git churn on the host ("chdir to cwd" / "container breakout detected" on
+# every exec). A restart remounts. Probe cheaply and self-heal before any
+# command that execs into the stack.
+ensure_web_exec() {
+    local tmp rc=0
+    tmp=$(mktemp)
+    compose_p exec -T web true 2>"$tmp" || rc=$?
+    if [ "$rc" -ne 0 ]; then
+        if grep -qE 'chdir to cwd|container breakout detected' "$tmp"; then
+            warn "stale container mounts detected; restarting env $PROJECT"
+            docker restart $(docker ps -aq --filter "label=com.docker.compose.project=$PROJECT") >/dev/null 2>&1 || true
+            local i=0
+            rc=1
+            while [ "$i" -lt 30 ]; do
+                if compose_p exec -T web true 2>/dev/null; then
+                    rc=0
+                    break
+                fi
+                i=$((i + 1))
+                sleep 1
+            done
+            if [ "$rc" -ne 0 ]; then
+                cat "$tmp" >&2
+                rm -f "$tmp"
+                err "env $PROJECT is not responding after restart (try: e107-tests logs)"
+            fi
+        else
+            cat "$tmp" >&2
+            rm -f "$tmp"
+            err "cannot exec into env $PROJECT (is it up? try: e107-tests status)"
+        fi
+    fi
+    rm -f "$tmp"
+}
+
+# ---------------------------------------------------------------------------
+# DB flavor: charset + auth args the server needs, derived from the image
+# ---------------------------------------------------------------------------
+
+db_flavor_args() {
+    # e107 historically sticks with utf8(mb3); mariadb and mysql:8 accept the
+    # explicit alias, mysql:5 only knows it as plain utf8.
+    E107_DB_CHARSET=utf8mb3
+    E107_DB_COLLATION=utf8mb3_general_ci
+    E107_DB_EXTRA_ARGS=
+    case $E107_DB_IMAGE in
+        mysql:5*|*/mysql:5*)
+            E107_DB_CHARSET=utf8
+            E107_DB_COLLATION=utf8_general_ci
+            ;;
+        mysql:8.0*|mysql:8.1*|mysql:8.2*|mysql:8.3*|*/mysql:8.0*|*/mysql:8.1*|*/mysql:8.2*|*/mysql:8.3*)
+            # Old PHP clients can't speak caching_sha2_password.
+            E107_DB_EXTRA_ARGS=--default-authentication-plugin=mysql_native_password
+            ;;
+        mysql:8*|*/mysql:8*)
+            # 8.4 dropped --default-authentication-plugin; this at least keeps
+            # the plugin loadable. mysql:9 removed it entirely (no extra args;
+            # legacy PHP clients are unsupported against mysql:9).
+            E107_DB_EXTRA_ARGS=--mysql-native-password=ON
+            ;;
+    esac
+}
+
+# ---------------------------------------------------------------------------
+# Managed Codeception config
+# ---------------------------------------------------------------------------
 
 # Write a config.docker.yml that points Codeception at the running stack.
 # This file overrides config.yml (a user's VM setup) but is itself
 # overridable by config.local.yml (personal tweaks), so the cascade is:
 #   sample → yml → docker → local
+# Its "Generated for project:" line doubles as this worktree's active-env
+# marker for find_project().
 write_managed_config() {
     cat > "$MANAGED_CONFIG" <<EOF
 # Managed by e107-tests. Generated for project: $PROJECT
@@ -172,6 +282,209 @@ EOF
 }
 
 # ---------------------------------------------------------------------------
+# Self-heals used by `up`
+# ---------------------------------------------------------------------------
+
+# Transient registry failures ("denied", rate limits) shouldn't kill an `up`
+# when every needed image is already local.
+up_with_registry_fallback() {
+    local tmp rc=0
+    tmp=$(mktemp)
+    compose_up_cmd up -d --wait 2>&1 | tee "$tmp" || rc=${PIPESTATUS[0]}
+    if [ "$rc" -ne 0 ] && grep -qiE 'denied|unauthorized|toomanyrequests|manifest unknown' "$tmp"; then
+        local img missing=no
+        for img in "e107-web:${E107_PHP_VERSION}${XDEBUG_TAG}" \
+                   "$E107_DB_IMAGE" \
+                   "${E107_SELENIUM_IMAGE:-docker.io/selenium/standalone-chrome:latest}"; do
+            docker image inspect "$img" >/dev/null 2>&1 || missing=yes
+        done
+        if [ "$missing" = no ]; then
+            warn "registry refused the pull but all images exist locally; retrying with --pull never"
+            rc=0
+            compose_up_cmd up -d --wait --pull never || rc=$?
+        fi
+    fi
+    rm -f "$tmp"
+    return "$rc"
+}
+
+assert_stack_healthy() {
+    local ps_out ok=yes
+    ps_out=$(compose_p ps --format '{{.Service}} {{.State}} {{.Health}}' 2>/dev/null || true)
+    printf '%s\n' "$ps_out" | grep -q '^db running healthy' || ok=no
+    printf '%s\n' "$ps_out" | grep -q '^web running' || ok=no
+    printf '%s\n' "$ps_out" | grep -q '^selenium running' || ok=no
+    if [ "$ok" != yes ]; then
+        warn "stack $PROJECT is not healthy:"
+        compose_p ps >&2 || true
+        err "env failed to come up cleanly (try: e107-tests logs)"
+    fi
+}
+
+# Rootless-podman container DNS sometimes resolves compose service names but
+# not external names. Appending a public resolver (aardvark stays first, so
+# service names keep working) fixes the common case; anything worse gets the
+# diagnosis ladder.
+heal_dns() {
+    # 2>/dev/null on the probes: podman prints "Error: executing ..." for any
+    # nonzero exec, and a failed probe is an expected outcome here.
+    if compose_p exec -T web sh -c 'getent hosts getcomposer.org >/dev/null 2>&1' 2>/dev/null; then
+        return 0
+    fi
+    warn "container DNS can't resolve external names; appending nameserver 1.1.1.1 in web"
+    compose_p exec -T web sh -c 'echo "nameserver 1.1.1.1" >> /etc/resolv.conf' || true
+    if compose_p exec -T web sh -c 'getent hosts getcomposer.org >/dev/null 2>&1' 2>/dev/null; then
+        return 0
+    fi
+    if compose_p exec -T web sh -c 'curl -sI --max-time 5 https://1.1.1.1 >/dev/null 2>&1' 2>/dev/null; then
+        warn "raw-IP egress works but DNS still fails; the compose network's aardvark-dns is stuck"
+    else
+        warn "containers have no external egress at all"
+    fi
+    cat >&2 <<'EOF'
+Diagnosis ladder (host-side, mildest first):
+  1. podman run --rm alpine wget -q -T5 -O /dev/null https://1.1.1.1
+     (default network broken too? then it's host-level, not compose state)
+  2. podman network prune; pkill aardvark-dns; pkill pasta; re-run `up`
+  3. podman system reset   # nuclear: wipes ALL containers/images/volumes,
+                           # then re-run `up` (known-good fix for stale
+                           # netavark/aardvark state)
+EOF
+    return 0
+}
+
+# ---------------------------------------------------------------------------
+# Dependency management (per-env vendor volume)
+# ---------------------------------------------------------------------------
+
+# Each env owns a named volume mounted over e107_tests/vendor, so different
+# PHP versions never fight over one vendor tree and the repo's composer.lock
+# is never rewritten. Inside the volume, vendor/.e107-meta/ holds the copy of
+# composer.json (+ lock) that composer actually runs against, plus a stamp
+# recording what was installed; the stamp powers the drift preflight.
+deps_install() {
+    note ">> Installing test dependencies (composer)"
+    compose_p exec -T -w "$WEB_TESTS_DIR" web sh -euc '
+        if [ ! -f composer.json ]; then
+            echo ">> no e107_tests/composer.json in this tree; skipping composer (old-tag mode)" >&2
+            exit 0
+        fi
+        META=vendor/.e107-meta
+        mkdir -p "$META"
+        exec 9> "$META/.lock"
+        flock -w 900 9
+        cp -f composer.json "$META/composer.json"
+        if [ -f composer.lock ]; then
+            cp -f composer.lock "$META/composer.lock"
+        else
+            rm -f "$META/composer.lock"
+        fi
+        # Hash the frozen copies now: the stamp must describe what this
+        # install ran against, even if the worktree changes mid-install.
+        JSON_SHA=$(sha256sum "$META/composer.json" | cut -d" " -f1)
+        LOCK_SHA=
+        if [ -f "$META/composer.lock" ]; then
+            LOCK_SHA=$(sha256sum "$META/composer.lock" | cut -d" " -f1)
+        fi
+        export COMPOSER="$PWD/$META/composer.json"
+        export COMPOSER_VENDOR_DIR="$PWD/vendor"
+        PHPVER=$(php -r "echo PHP_MAJOR_VERSION.\".\".PHP_MINOR_VERSION;")
+        MODE=
+        if [ -f "$META/composer.lock" ] && composer check-platform-reqs --lock >/dev/null 2>&1; then
+            if composer install --prefer-dist --no-progress; then
+                MODE=install
+            fi
+        fi
+        if [ -z "$MODE" ]; then
+            echo "!! repo composer.lock not installable on PHP $PHPVER; falling back to \"composer update\" for this env (repo lock untouched)" >&2
+            composer update --prefer-dist --no-progress
+            MODE=update
+        fi
+        {
+            echo "E107_STAMP_JSON_SHA256=$JSON_SHA"
+            echo "E107_STAMP_LOCK_SHA256=$LOCK_SHA"
+            echo "E107_STAMP_PHP=$PHPVER"
+            echo "E107_STAMP_MODE=$MODE"
+        } > "$META/stamp.env"
+    '
+    if [ -e "$APP_PATH/.git" ]; then
+        ( cd "$APP_PATH" && git submodule update --init --recursive --remote >/dev/null 2>&1 ) || true
+    fi
+}
+
+# Fast drift check: did composer.json, composer.lock, or the PHP version
+# change since this env's vendor was installed? Returns 1 on drift.
+deps_preflight() {
+    compose_p exec -T -w "$WEB_TESTS_DIR" web sh -euc '
+        [ -f composer.json ] || exit 0
+        META=vendor/.e107-meta
+        [ -f "$META/stamp.env" ] || exit 1
+        [ -f vendor/autoload.php ] || exit 1
+        . "./$META/stamp.env"
+        [ "$E107_STAMP_JSON_SHA256" = "$(sha256sum composer.json | cut -d" " -f1)" ] || exit 1
+        CUR_LOCK=
+        if [ -f composer.lock ]; then
+            CUR_LOCK=$(sha256sum composer.lock | cut -d" " -f1)
+        fi
+        [ "$E107_STAMP_LOCK_SHA256" = "$CUR_LOCK" ] || exit 1
+        [ "$E107_STAMP_PHP" = "$(php -r "echo PHP_MAJOR_VERSION.\".\".PHP_MINOR_VERSION;")" ] || exit 1
+    '
+}
+
+deps_ensure() {
+    # Preflight stderr is noise (podman prints "Error: executing ..." for any
+    # nonzero exec, and drift legitimately exits nonzero); ensure_web_exec has
+    # already proven the env is reachable.
+    deps_preflight 2>/dev/null || {
+        note ">> deps drift detected (composer.json/lock or PHP changed); reinstalling"
+        deps_install
+    }
+}
+
+# ---------------------------------------------------------------------------
+# Site install (up --install-site)
+# ---------------------------------------------------------------------------
+
+install_site() {
+    note ">> Installing e107 into the stack (acceptance installer)"
+    compose_p exec -T -w "$WEB_TESTS_DIR" web \
+        ./vendor/bin/codecept run acceptance tests/acceptance/0000_InstallCest.php:installDefault --steps
+    # The install Cest cleans up its e107_config.php in _afterSuite (the DB
+    # tables persist), so render a persistent config against the same DB.
+    note ">> Writing persistent e107_config.php"
+    compose_p exec -T web sh -euc "
+        SITE_PATH=\$(php -r 'echo substr(md5(\"$DEFAULT_DB_NAME.e107_\"), 0, 10);')
+        sed -e 's/{{ mySQLserver }}/db/' \
+            -e 's/{{ mySQLuser }}/root/' \
+            -e 's/{{ mySQLpassword }}/$DEFAULT_DB_ROOT_PASSWORD/' \
+            -e 's/{{ mySQLdefaultdb }}/$DEFAULT_DB_NAME/' \
+            -e 's/{{ mySQLprefix }}/e107_/' \
+            -e \"s/000000test/\$SITE_PATH/\" \
+            $WEB_TESTS_DIR/tests/_data/e107_config.php.sample \
+            > $WEB_APP_DIR/e107_config.php
+    "
+    # The admin credentials belong to the tree's own installer Cest: modern
+    # trees define them in Helper\AdminLogin, older tags inline literals.
+    local creds
+    creds=$(compose_p exec -T -w "$WEB_TESTS_DIR" web php -r '
+        $u = "admin"; $p = null;
+        if (($h = @file_get_contents("tests/_support/Helper/AdminLogin.php")) !== false) {
+            if (preg_match("/ADMIN_USER = .([^\x27\"]+)./", $h, $m)) $u = $m[1];
+            if (preg_match("/ADMIN_PASS = .([^\x27\"]+)./", $h, $m)) $p = $m[1];
+        }
+        if ($p === null && ($c = @file_get_contents("tests/acceptance/0000_InstallCest.php")) !== false) {
+            if (preg_match("/fillField\(.u_name.,\s*.([^\x27\"]+).\)/", $c, $m)) $u = $m[1];
+            if (preg_match("/fillField\(.pass1.,\s*.([^\x27\"]+).\)/", $c, $m)) $p = $m[1];
+        }
+        echo $u, " / ", $p !== null ? $p : "(see this tree\x27s 0000_InstallCest.php)";
+    ' 2>/dev/null) || creds='(see this tree'\''s 0000_InstallCest.php)'
+    local port
+    port=$(compose_p port web 80 2>/dev/null | awk -F: '{print $NF}' | tail -n1)
+    note ">> Site installed: http://localhost:$port/  (admin login: $creds)"
+    note "   The DB is tmpfs-backed: 'down' destroys the site, 'reset' uninstalls it."
+}
+
+# ---------------------------------------------------------------------------
 # Subcommands
 # ---------------------------------------------------------------------------
 
@@ -179,28 +492,40 @@ cmd_up() {
     PHP=$DEFAULT_PHP
     DB=$DEFAULT_DB
     WITH_XDEBUG=no
+    INSTALL_SITE=no
     while [ $# -gt 0 ]; do
         case $1 in
             --php) PHP=$2; shift 2 ;;
             --db) DB=$2; shift 2 ;;
             --xdebug) WITH_XDEBUG=yes; shift ;;
+            --install-site) INSTALL_SITE=yes; shift ;;
             -h|--help) cmd_help; exit 0 ;;
             *) err "unknown flag: $1" ;;
         esac
     done
 
+    require_docker
     E107_PHP_VERSION=$PHP
     E107_DB_IMAGE=$DB
+    XDEBUG_TAG=$([ "$WITH_XDEBUG" = yes ] && echo '-xdebug' || true)
     PROJECT=$(project_name "$PHP" "$DB")
-    write_stack_env
-    mark_active
+    db_flavor_args
     write_managed_config
 
     note ">> Bringing up env: $PROJECT (PHP $PHP / $DB)"
     # `compose up` builds the web image only when it's missing, so a cached
     # image (CI) or an earlier build is reused automatically.
-    compose up -d --wait
-    cmd_install
+    if ! up_with_registry_fallback; then
+        warn "compose up failed; current stack state:"
+        compose_p ps >&2 || true
+        err "env $PROJECT failed to come up (see output above; try: e107-tests logs)"
+    fi
+    assert_stack_healthy
+    heal_dns
+    deps_install
+    if [ "$INSTALL_SITE" = yes ]; then
+        install_site
+    fi
     cmd_urls
 }
 
@@ -214,34 +539,24 @@ cmd_down() {
     done
     resolve_env
     note ">> Tearing down: $PROJECT"
-    compose down --remove-orphans $remove_volumes || true
+    compose_p down --remove-orphans $remove_volumes || true
 
     # Clean up the managed config only if it belongs to this project.
     if [ -f "$MANAGED_CONFIG" ] && grep -q "Generated for project: $PROJECT" "$MANAGED_CONFIG"; then
         rm -f "$MANAGED_CONFIG"
     fi
-    rm -rf -- "$(state_dir "$PROJECT")"
-    if [ -L "$ACTIVE_LINK" ] && [ "$(readlink -- "$ACTIVE_LINK")" = "$PROJECT" ]; then
-        rm -f "$ACTIVE_LINK"
-    fi
 }
 
 cmd_install() {
     resolve_env
-    note ">> Installing test dependencies (composer, submodules)"
-    # Matches existing CI behavior: `composer update` so the install
-    # works across PHP 8.1–8.4. composer.lock will show as modified on
-    # the host; that's expected — `e107-tests clean` restores it.
-    compose exec -T -w /var/www/html/e107_tests web composer update --prefer-dist --no-progress
-    if [ -e "$APP_PATH/.git" ]; then
-        ( cd "$APP_PATH" && git submodule update --init --recursive --remote >/dev/null 2>&1 ) || true
-    fi
+    ensure_web_exec
+    deps_install
 }
 
 cmd_urls() {
-    resolve_env
+    [ -n "${PROJECT:-}" ] || resolve_env
     local port
-    port=$(compose port web 80 2>/dev/null | awk -F: '{print $NF}' | tail -n1)
+    port=$(compose_p port web 80 2>/dev/null | awk -F: '{print $NF}' | tail -n1)
     if [ -z "$port" ]; then
         err "env $PROJECT does not appear to be running (try: e107-tests up)"
     fi
@@ -251,21 +566,28 @@ PHP version:  $E107_PHP_VERSION
 DB image:     $E107_DB_IMAGE
 App URL:      http://localhost:$port/
 Admin URL:    http://localhost:$port/e107_admin/
-DB (host):    127.0.0.1:$(compose port db 3306 2>/dev/null | awk -F: '{print $NF}' | tail -n1)
-              user=$E107_DB_USER  pw=$E107_DB_PASSWORD  db=$E107_DB_NAME
-              root pw=$E107_DB_ROOT_PASSWORD
+DB (host):    127.0.0.1:$(compose_p port db 3306 2>/dev/null | awk -F: '{print $NF}' | tail -n1)
+              user=$DEFAULT_DB_USER  pw=$DEFAULT_DB_PASSWORD  db=$DEFAULT_DB_NAME
+              root pw=$DEFAULT_DB_ROOT_PASSWORD
 DB (in-net):  db:3306 (use this from inside containers)
 EOF
 }
 
 cmd_status() {
     resolve_env
-    compose ps
+    compose_p ps
 }
 
 cmd_logs() {
+    local follow=
+    while [ $# -gt 0 ]; do
+        case $1 in
+            -f|--follow) follow=-f; shift ;;
+            *) break ;;
+        esac
+    done
     resolve_env
-    compose logs --tail=200 -f "$@"
+    compose_p logs --tail=200 $follow "$@"
 }
 
 cmd_exec() {
@@ -273,21 +595,53 @@ cmd_exec() {
     if [ $# -eq 0 ]; then
         err "usage: e107-tests exec <command>..."
     fi
-    compose exec -w /var/www/html web "$@"
+    ensure_web_exec
+    compose_p exec -w "$WEB_APP_DIR" web "$@"
 }
 
 cmd_shell() {
     resolve_env
-    compose exec -w /var/www/html web bash
+    ensure_web_exec
+    compose_p exec -w "$WEB_APP_DIR" web bash
 }
 
+# Interactive DB client. --skip-ssl by default on mariadb clients (recent
+# ones demand TLS by default, which the test server doesn't speak); old
+# mysql-image clients have no such flag and never try TLS.
 cmd_db_shell() {
     resolve_env
-    compose exec db sh -c "mariadb -uroot -p\"\$MYSQL_ROOT_PASSWORD\" \"\$MYSQL_DATABASE\""
+    ensure_web_exec
+    compose_p exec db sh -c '
+        if command -v mariadb >/dev/null 2>&1; then
+            exec mariadb --skip-ssl -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"
+        else
+            exec mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"
+        fi
+    '
+}
+
+# One-shot SQL: statement as args, or a script on stdin.
+cmd_sql() {
+    resolve_env
+    ensure_web_exec
+    local runner='
+        if command -v mariadb >/dev/null 2>&1; then
+            exec mariadb --skip-ssl -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"
+        else
+            exec mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"
+        fi
+    '
+    if [ $# -gt 0 ]; then
+        printf '%s\n' "$*" | compose_p exec -T db sh -c "$runner"
+    else
+        compose_p exec -T db sh -c "$runner"
+    fi
 }
 
 cmd_run() {
     resolve_env
+    ensure_web_exec
+    deps_ensure
     # Build: codecept run [<suite>] --steps [user args...]
     # --steps goes before user args so a trailing `--` separator (which
     # codecept uses to mark positionals) still works as intended.
@@ -295,29 +649,45 @@ cmd_run() {
     local suite=${1:-}
     case $suite in
         ''|all) ;;
-        unit|acceptance|functional)
-            cc_args+=("$suite"); shift ;;
         *)
             cc_args+=("$suite"); shift ;;
     esac
     cc_args+=(--steps "$@")
-    compose exec -w /var/www/html/e107_tests web ./vendor/bin/codecept "${cc_args[@]}"
+    compose_p exec -w "$WEB_TESTS_DIR" web ./vendor/bin/codecept "${cc_args[@]}"
+}
+
+# Replay CI's unit coverage run exactly (test-unit.yml), so base-image drift
+# like a changed default memory_limit reproduces on demand.
+cmd_ci_unit() {
+    resolve_env
+    if [ "$(project_label "$PROJECT" xdebug)" != yes ]; then
+        err "ci-unit needs the xdebug image; run: e107-tests up --php $E107_PHP_VERSION --db $E107_DB_IMAGE --xdebug"
+    fi
+    ensure_web_exec
+    deps_ensure
+    compose_p exec -w "$WEB_TESTS_DIR" web \
+        php -d memory_limit=-1 -d xdebug.mode=coverage \
+        ./vendor/bin/codecept run unit --steps --debug --coverage --coverage-xml
 }
 
 cmd_reset() {
     resolve_env
+    ensure_web_exec
     note ">> Resetting database for $PROJECT"
-    compose exec -T db sh -c '
-        mariadb -uroot -p"$MYSQL_ROOT_PASSWORD" -e "
+    compose_p exec -T db sh -c '
+        CLIENT=mariadb; command -v mariadb >/dev/null 2>&1 || CLIENT=mysql
+        SKIP_SSL=--skip-ssl; [ "$CLIENT" = mysql ] && SKIP_SSL=
+        "$CLIENT" $SKIP_SSL -uroot -p"$MYSQL_ROOT_PASSWORD" -e "
             DROP DATABASE IF EXISTS \`$MYSQL_DATABASE\`;
             CREATE DATABASE \`$MYSQL_DATABASE\`;
             GRANT ALL PRIVILEGES ON \`$MYSQL_DATABASE\`.* TO \`$MYSQL_USER\`@\`%\`;
             FLUSH PRIVILEGES;"
     '
     note ">> Removing test-written app state (e107_config.php, hash dirs)"
-    compose exec -T -w /var/www/html web sh -c '
+    compose_p exec -T -w "$WEB_APP_DIR" web sh -c '
         rm -f e107_config.php e107_config.php.bak
         rm -rf e107_system/000000test e107_media/000000test
+        rm -rf e107_system/416f4602e3 e107_media/416f4602e3
     '
 }
 
@@ -348,8 +718,8 @@ cmd_clean() {
     # Pick a remover. Prefer container-side rm if a web container is up
     # for the active env (most permissions-clean).
     local remover='host'
-    if resolve_env 2>/dev/null \
-       && compose ps --services --status running 2>/dev/null | grep -qx web; then
+    if find_project 2>/dev/null \
+       && compose_p ps --services --status running 2>/dev/null | grep -qx web; then
         remover='container'
     elif have podman; then
         remover='unshare'
@@ -359,7 +729,7 @@ cmd_clean() {
     _rm() {
         case $remover in
             container)
-                compose exec -T -w /var/www/html web rm -rf -- "$@" ;;
+                compose_p exec -T -w "$WEB_APP_DIR" web rm -rf -- "$@" ;;
             unshare)
                 podman unshare rm -rf -- "$@" ;;
             *)
@@ -384,10 +754,10 @@ cmd_clean() {
         fi
     done
 
-    # Restore tracked files modified by install / composer update.
+    # Restore tracked files modified by acceptance installs.
     # `git restore` is a no-op on files that aren't modified.
     if [ -e .git ]; then
-        for f in e107.htaccess e107_tests/composer.lock; do
+        for f in e107.htaccess; do
             if [ -f "$f" ] && ! git diff --quiet -- "$f" 2>/dev/null; then
                 git restore -- "$f" && removed=$((removed + 1))
                 note "restored $f"
@@ -399,27 +769,145 @@ cmd_clean() {
 }
 
 cmd_list() {
-    if [ ! -d "$ENVS_DIR" ]; then
+    require_docker
+    local projects
+    projects=$(all_projects)
+    if [ -z "$projects" ]; then
         echo "(no envs)"
         return
     fi
-    printf '%-50s %-8s %-22s %s\n' PROJECT PHP DB WORKTREE
-    local active_target=
-    [ -L "$ACTIVE_LINK" ] && active_target=$(readlink -- "$ACTIVE_LINK")
-    for dir in "$ENVS_DIR"/*/; do
-        [ -d "$dir" ] || continue
-        local name
-        name=$(basename -- "$dir")
-        # Skip metadata entries like the _active symlink.
-        case $name in _*) continue ;; esac
-        # shellcheck disable=SC1090
-        ( . "$dir/stack.env" 2>/dev/null
-          marker=' '
-          [ "$name" = "$active_target" ] && marker='*'
-          printf '%s %-48s %-8s %-22s %s\n' \
-              "$marker" "$name" "$E107_PHP_VERSION" "$E107_DB_IMAGE" "$E107_APP_PATH"
-        )
+    local active
+    active=$(worktree_marker_project) || active=
+    printf '%-50s %-6s %-16s %-7s %-24s %s\n' PROJECT PHP DB XDEBUG STATE WORKTREE
+    local p php db xd path state marker
+    for p in $projects; do
+        marker=' '
+        [ "$p" = "$active" ] && marker='*'
+        php=$(project_label "$p" php)
+        db=$(project_label "$p" db)
+        xd=$(project_label "$p" xdebug)
+        path=$(project_label "$p" app-path)
+        state=$(docker ps -a --filter "label=com.docker.compose.project=$p" \
+            --format '{{.State}}' | sort | uniq -c \
+            | awk '{printf "%s%s(%s)", s, $2, $1; s=","}')
+        printf '%s %-48s %-6s %-16s %-7s %-24s %s\n' \
+            "$marker" "$p" "$php" "$db" "$xd" "$state" "$path"
     done
+}
+
+# Remove leftovers: volumes of projects with no containers (a downed stack's
+# vendor/composer caches count; they rebuild on the next `up`), and with
+# --worktrees-gone, whole stacks whose worktree no longer exists.
+cmd_gc() {
+    require_docker
+    local dry=no wtgone=no
+    while [ $# -gt 0 ]; do
+        case $1 in
+            --dry-run) dry=yes; shift ;;
+            --worktrees-gone) wtgone=yes; shift ;;
+            *) err "unknown flag: $1" ;;
+        esac
+    done
+
+    local removed=0
+
+    if [ "$wtgone" = yes ]; then
+        local p path
+        for p in $(all_projects); do
+            path=$(project_label "$p" app-path)
+            [ -n "$path" ] && [ ! -d "$path" ] || continue
+            if [ "$dry" = yes ]; then
+                note "(dry-run) would tear down $p (worktree gone: $path)"
+            else
+                note ">> tearing down $p (worktree gone: $path)"
+                docker compose -p "$p" down --volumes --remove-orphans || true
+                removed=$((removed + 1))
+            fi
+        done
+    fi
+
+    # Volumes are named <project>_<volume> by compose, and project slugs never
+    # contain underscores, so the project parses straight out of the name.
+    # (Deliberately name-based: docker and podman disagree on volume-ls label
+    # template syntax.)
+    local name proj
+    while read -r name; do
+        [ -n "$name" ] || continue
+        proj=${name%_*}
+        printf '%s' "$proj" | grep -qE '^e107-[0-9a-f]{8}-php' || continue
+        project_exists "$proj" && continue
+        if [ "$dry" = yes ]; then
+            note "(dry-run) would remove volume: $name"
+        else
+            docker volume rm "$name" >/dev/null && note "removed volume: $name" \
+                && removed=$((removed + 1))
+        fi
+    done < <(docker volume ls --format '{{.Name}}')
+
+    if [ "$dry" = yes ]; then
+        note ">> gc dry-run complete (nothing removed)"
+    else
+        note ">> gc: removed $removed item(s)"
+    fi
+}
+
+# Copy the harness into a worktree that predates it (old release tags).
+cmd_graft() {
+    local force=no target= arg=
+    while [ $# -gt 0 ]; do
+        case $1 in
+            --force) force=yes; shift ;;
+            -h|--help) cmd_help; exit 0 ;;
+            -*) err "unknown flag: $1" ;;
+            *)
+                [ -z "$arg" ] || err "graft takes exactly one ref or path"
+                arg=$1; shift ;;
+        esac
+    done
+    [ -n "$arg" ] || err "usage: e107-tests graft <ref-or-path> [--force]"
+
+    if [ -d "$arg" ]; then
+        target=$(readlink -f -- "$arg")
+    else
+        local sha
+        sha=$(git -C "$APP_PATH" rev-parse --verify --quiet "$arg^{commit}") \
+            || err "not a directory or known git ref: $arg"
+        local key val wt_path= wt_head= wt_branch=
+        while read -r key val; do
+            case $key in
+                worktree) wt_path=$val; wt_head=; wt_branch= ;;
+                HEAD) wt_head=$val ;;
+                branch) wt_branch=$val ;;
+                '')
+                    if [ -n "$wt_path" ] && { [ "$wt_head" = "$sha" ] || [ "$wt_branch" = "refs/heads/$arg" ]; }; then
+                        target=$wt_path
+                        break
+                    fi
+                    wt_path= ;;
+            esac
+        done < <(git -C "$APP_PATH" worktree list --porcelain; echo)
+        [ -n "$target" ] \
+            || err "no worktree has $arg checked out (hint: git worktree add <path> $arg)"
+    fi
+
+    [ -d "$target/e107_admin" ] || err "target does not look like an e107 checkout: $target"
+    [ "$target" != "$APP_PATH" ] || err "refusing to graft a worktree onto itself"
+
+    # lib/config.php rides along because old trees' copies predate the
+    # config.docker.yml cascade entry the managed config relies on.
+    local item
+    for item in bin docker lib/preparers lib/config.php; do
+        if [ -e "$target/e107_tests/$item" ] && [ "$force" != yes ]; then
+            err "$target/e107_tests/$item already exists (use --force to overwrite)"
+        fi
+    done
+    mkdir -p "$target/e107_tests/lib"
+    for item in bin docker lib/preparers lib/config.php; do
+        rm -rf -- "${target:?}/e107_tests/$item"
+        cp -R -- "$TESTS_DIR/$item" "$target/e107_tests/$item"
+    done
+    note ">> grafted harness (bin/, docker/, lib/preparers/, lib/config.php) into $target/e107_tests"
+    note "   next: $target/e107_tests/bin/e107-tests up [--php X] [--db Y] [--install-site]"
 }
 
 cmd_help() {
@@ -428,52 +916,72 @@ e107-tests — Docker-backed test environments for e107
 
 USAGE:
   e107-tests <command> [args...]
-  e107-tests --env <project> <command> [args...]   # operate on a specific env
+  e107-tests --env <project> <command> [args...]   # any env, any worktree
 
 LIFECYCLE:
-  up [--php X] [--db Y] [--xdebug]   Start, install deps, mark active. Builds the
+  up [--php X] [--db Y] [--xdebug] [--install-site]
+                                     Start, install deps, mark active. Builds the
                                      web image if missing, else reuses it.
-                                     Default: PHP 8.3 + MariaDB 10.11.
+                                     Default: PHP 8.5 + MariaDB 10.11.
+                                     --install-site also installs e107 itself
+                                     (persistent config, admin/x107).
   down [--volumes]                   Stop and remove this env.
   reset                              Drop+recreate DB, clear written app state.
   clean                              Wipe untracked acceptance-test artifacts
                                      from the host worktree (e107_config.php,
                                      install log, hash dirs, copied themes).
-  install                            Re-run composer update inside the web container.
+  install                            Re-run composer inside the web container
+                                     (lock-respecting install; falls back to
+                                     update when the PHP can't satisfy the lock).
+  gc [--dry-run] [--worktrees-gone]  Remove volumes of downed/orphaned envs;
+                                     with --worktrees-gone, tear down stacks
+                                     whose worktree was deleted.
+  graft <ref-or-path> [--force]      Copy the harness into a worktree that
+                                     predates it (old release tags).
 
 INSPECT:
   urls                               Print URL + DB connection info.
   status                             docker compose ps for the active env.
-  logs [service]                     Tail logs (web, db, or both).
-  list                               List envs for this worktree (active marked with *).
+  logs [-f] [service]                Show recent logs (web, db, or both);
+                                     -f follows.
+  list                               List harness envs across ALL worktrees
+                                     (this worktree's active env marked *).
 
 INTERACT:
   shell                              Bash inside the web container.
-  db-shell                           Mariadb client inside the db container.
+  db-shell                           DB client inside the db container.
+  sql [statement]                    Run SQL (args or stdin) against the DB.
   exec <cmd>...                      Run a one-shot command in the web container.
 
 TEST:
-  run [unit|acceptance|functional] [args...]
-                                     Run Codeception inside the web container.
+  run [suite] [args...]              Run Codeception inside the web container.
                                      Extra args are passed through to `codecept`.
+  ci-unit                            Replay CI's exact unit coverage run
+                                     (needs an env built with `up --xdebug`).
 
   Examples:
     e107-tests run unit
     e107-tests run unit --filter ConstantsTest
     e107-tests run acceptance tests/acceptance/0000_InstallCest.php
+    e107-tests sql "SELECT * FROM e107_user"
 
 VERSIONS:
   Pick any PHP and DB image you like. Validated combos:
-    PHP:  8.1, 8.2, 8.3, 8.4
-    DB:   mariadb:10.6, mariadb:10.11, mariadb:11.4, mysql:8.0, mysql:5.7
+    PHP:  5.6, 7.0, 8.1, 8.2, 8.3, 8.4, 8.5
+    DB:   mariadb:10.6, mariadb:10.11, mariadb:11.4, mysql:5.7, mysql:8.0
 
-  Each PHP+DB combo gets its own isolated stack. You can run several
-  at once in the same worktree (e.g. for cross-version verification).
+  Notes:
+    * PHP 5.6/7.0 images build from the Debian archive (their base is EOL).
+    * mysql:8.0–8.3 get --default-authentication-plugin=mysql_native_password
+      so old PHP clients can log in; mysql:9 dropped that plugin and does not
+      support legacy PHP clients.
 
-ISOLATION:
-  Each worktree's project name is derived from the worktree path, so
-  parallel agents in different worktrees never collide. Ports on the
-  host are chosen by Docker; `e107-tests urls` reveals them.
+STATE:
+  Env state lives in Docker labels and named volumes; there are no state
+  files. Each worktree+PHP+DB combo is its own compose project with its own
+  per-env vendor volume, so parallel envs never share dependencies and the
+  repo's composer.lock is never modified. `list` sees every worktree; use
+  --env <project> to drive any env from anywhere.
 EOF
 }
 
@@ -483,6 +991,7 @@ EOF
 
 EXPLICIT_PROJECT=
 WITH_XDEBUG=no
+XDEBUG_TAG=
 
 # Pre-parse global flags that can appear before the subcommand.
 while [ $# -gt 0 ]; do
@@ -506,10 +1015,14 @@ case $CMD in
     exec)       cmd_exec "$@" ;;
     shell|bash) cmd_shell "$@" ;;
     db-shell|mysql|mariadb) cmd_db_shell "$@" ;;
+    sql)        cmd_sql "$@" ;;
     run|test)   cmd_run "$@" ;;
+    ci-unit)    cmd_ci_unit "$@" ;;
     reset)      cmd_reset "$@" ;;
     clean)      cmd_clean "$@" ;;
     list|ls)    cmd_list "$@" ;;
+    gc)         cmd_gc "$@" ;;
+    graft)      cmd_graft "$@" ;;
     help|--help|-h) cmd_help ;;
     *)          err "unknown command: $CMD (try: e107-tests help)" ;;
 esac
