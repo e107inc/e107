@@ -1,37 +1,39 @@
-# e107 test harness — docker compose stack
-#
-# Don't invoke `docker compose` against this file directly — use the
-# `e107_tests/bin/e107-tests` wrapper, which sets the per-worktree project
-# name, exports the matrix env vars, and points the bind mount at the
-# worktree's app root.
-#
-# Required env vars (the wrapper sets all of these):
-#   E107_PHP_VERSION   e.g. 8.1 / 8.2 / 8.3 / 8.4
-#   E107_DB_IMAGE      e.g. mariadb:10.11 / mysql:8.0
-#   E107_APP_PATH      absolute path to the repo root on the host
-#   E107_DB_NAME       database name to create
-#   E107_DB_USER       app db username
-#   E107_DB_PASSWORD   app db password
-#   E107_DB_ROOT_PASSWORD  root password for the db service
-#   E107_WITH_XDEBUG   "yes" to build/enable Xdebug
+# e107 test harness compose stack: db + web. Driven by the
+# e107_tests/bin/e107-tests wrapper, which sets the project name, the matrix
+# env vars, and the bind mount; see e107_tests/docker/README.md. Don't run
+# `docker compose` against this file directly.
 
-name: ${COMPOSE_PROJECT_NAME:?set via e107-tests wrapper}
+name: ${COMPOSE_PROJECT_NAME:?no active env; drive this file via e107_tests/bin/e107-tests (see docker/README.md)}
+
+# Every container and volume carries these labels. They are the harness's
+# only state store: e107-tests rediscovers envs (any worktree) from them.
+x-e107-labels: &e107-labels
+  e107.tests: "1"
+  e107.tests.php: ${E107_PHP_VERSION:-}
+  e107.tests.db: ${E107_DB_IMAGE:-}
+  e107.tests.app-path: ${E107_APP_PATH:-}
+  e107.tests.xdebug: ${E107_WITH_XDEBUG:-no}
 
 services:
   db:
     image: ${E107_DB_IMAGE:-mariadb:10.11}
     restart: unless-stopped
+    labels: *e107-labels
     environment:
       MYSQL_ROOT_PASSWORD: ${E107_DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${E107_DB_NAME}
       MYSQL_USER: ${E107_DB_USER}
       MYSQL_PASSWORD: ${E107_DB_PASSWORD}
       # MySQL 8+ accepts utf8mb4 fine; e107 sticks with utf8(mb3) historically.
-      MYSQL_CHARACTER_SET: utf8mb3
-    command:
-      - --character-set-server=utf8mb3
-      - --collation-server=utf8mb3_general_ci
-      - --max-allowed-packet=64M
+      MYSQL_CHARACTER_SET: ${E107_DB_CHARSET:-utf8mb3}
+    # String form so the wrapper can inject flavor-specific args (charset
+    # naming and auth plugin differ across mysql/mariadb versions; see
+    # db_flavor_args in bin/e107-tests).
+    command: >-
+      --character-set-server=${E107_DB_CHARSET:-utf8mb3}
+      --collation-server=${E107_DB_COLLATION:-utf8mb3_general_ci}
+      --max-allowed-packet=64M
+      ${E107_DB_EXTRA_ARGS:-}
     healthcheck:
       # mariadb-admin ships with both mariadb and recent mysql images;
       # mysqladmin is the fallback for older mysql tags.
@@ -46,8 +48,7 @@ services:
       timeout: 5s
       retries: 30
     tmpfs:
-      # Tests don't need persistent data; tmpfs is faster and means
-      # `down` truly resets to a clean slate without `--volumes` gymnastics.
+      # Ephemeral DB: faster, and `down` is a clean reset.
       - /var/lib/mysql
     ports:
       # Expose so agents/humans can connect a MySQL client from the host.
@@ -58,10 +59,11 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        PHP_VERSION: ${E107_PHP_VERSION:-8.3}
+        PHP_VERSION: ${E107_PHP_VERSION:-8.2}
         WITH_XDEBUG: ${E107_WITH_XDEBUG:-no}
-    image: e107-web:${E107_PHP_VERSION:-8.3}${E107_WITH_XDEBUG_TAG:-}
+    image: e107-web:${E107_PHP_VERSION:-8.2}${E107_WITH_XDEBUG_TAG:-}
     restart: unless-stopped
+    labels: *e107-labels
     depends_on:
       db:
         condition: service_healthy
@@ -71,24 +73,23 @@ services:
       E107_DB_USER: ${E107_DB_USER}
       E107_DB_PASSWORD: ${E107_DB_PASSWORD}
       E107_DB_NAME: ${E107_DB_NAME}
-      # Surface the URL Apache is reachable at, so codecept inside the
-      # container can self-test by hitting it via the bridge network.
+      # The URL Apache is reachable at, for in-container self-tests.
       E107_INTERNAL_URL: http://web/
     volumes:
-      # Bind-mount the worktree. Acceptance tests do real e107 installs
-      # against this mount, so the worktree will accumulate test artifacts
-      # (e107_config.php, e107Install.log, hash dirs under e107_system/
-      # and e107_media/, theme copies). Run `e107-tests clean` to wipe
-      # them between runs. (Podman :O overlay would isolate these, but
-      # docker compose silently strips the flag, so we don't bother.)
+      # Bind-mount the app root so host edits are live. Acceptance installs
+      # write artifacts here; `e107-tests clean` removes them.
       - ${E107_APP_PATH}:/var/www/html
-      # Persist composer's download cache so reinstalls between `down`/`up`
-      # cycles only re-extract instead of re-downloading.
+      # Per-env vendor tree, shadowing the (untouched) worktree vendor dir so
+      # every env resolves its own dependencies for its own PHP version.
+      - vendor:/var/www/html/e107_tests/vendor
+      # Persist composer's download cache across `down`/`up` cycles.
       - composer-cache:/root/.composer/cache
     ports:
-      # Empty host port = let Docker pick a free one. The wrapper resolves
-      # the actual port with `docker compose port web 80`.
-      - "127.0.0.1::80"
+      - "127.0.0.1:${E107_WEB_PORT:-0}:80"
+
 
 volumes:
+  vendor:
+    labels: *e107-labels
   composer-cache:
+    labels: *e107-labels
