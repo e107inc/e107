@@ -14,7 +14,7 @@ $SIGNIN_TEMPLATE['signin'] = '
 				<li class="divider-vertical"></li>
 				<li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" data-toggle="dropdown">{LAN=LAN_LOGINMENU_51} <strong class="caret"></strong></a>
-					<div class="dropdown-menu col-sm-12" style="min-width:250px; padding: 15px; padding-bottom: 0px;">
+					<div class="dropdown-menu dropdown-menu-end col-sm-12" style="min-width:250px; padding: 15px; padding-bottom: 0px;">
 					
 					{SIGNIN_FORM=start}
 					<p>{SIGNIN_INPUT_USERNAME}</p>
