@@ -78,6 +78,72 @@ class Acceptance extends E107Base
 		}
 	}
 
+	/**
+	 * Write an arbitrary file into the deployed docroot.
+	 *
+	 * Goes through the deployer rather than file_put_contents() so it works
+	 * when the app under test is remote (CI deploys over SFTP). Parent
+	 * directories are created.
+	 *
+	 * @param string $relative_path path relative to the app root
+	 * @param string $contents
+	 * @return void
+	 */
+	public function writeAppFile($relative_path, $contents)
+	{
+		$this->deployer->writeAppFile($relative_path, $contents);
+	}
+
+	/**
+	 * Remove a file previously written by writeAppFile().
+	 *
+	 * @param string $relative_path path relative to the app root
+	 * @return void
+	 */
+	public function deleteAppFile($relative_path)
+	{
+		$this->deployer->unlinkAppFile($relative_path);
+	}
+
+	/**
+	 * Create a bundled plugin's tables from its own <plugin>_sql.php.
+	 *
+	 * A fresh install only creates the core schema, so a test needing a plugin
+	 * table would otherwise have to drive the whole plugin manager. Reading the
+	 * plugin's shipped SQL keeps the schema honest without that detour.
+	 * Existing tables are left alone.
+	 *
+	 * @param string $plugin plugin folder name, e.g. 'download'
+	 * @param string $prefix table prefix used by the site under test
+	 * @return void
+	 */
+	public function havePluginTables($plugin, $prefix = 'e107_')
+	{
+		$sqlFile = APP_PATH."/e107_plugins/$plugin/{$plugin}_sql.php";
+		if (!is_readable($sqlFile))
+		{
+			throw new \RuntimeException("No SQL file for plugin \"$plugin\" at $sqlFile");
+		}
+
+		$dbh = $this->getModule('\Helper\DelayedDb')->_getDbh();
+
+		// Statements look like: CREATE TABLE <name> ( ... ) ENGINE=...;
+		$found = preg_match_all(
+			'/CREATE\s+TABLE\s+`?(\w+)`?\s*\((.*?)\)\s*(ENGINE|TYPE)\s*=\s*\w+\s*;/is',
+			file_get_contents($sqlFile), $matches, PREG_SET_ORDER);
+
+		if (!$found)
+		{
+			throw new \RuntimeException("No CREATE TABLE statements found in $sqlFile");
+		}
+
+		foreach ($matches as $match)
+		{
+			$table = $prefix.$match[1];
+			$dbh->exec("CREATE TABLE IF NOT EXISTS `$table` ({$match[2]}) ENGINE=MyISAM");
+		}
+	}
+
 	protected function writeLocalE107Config()
 	{
 		// Noop

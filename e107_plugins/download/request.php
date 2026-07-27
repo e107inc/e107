@@ -12,11 +12,74 @@ e107::lan('download','download');
 class download_request
 {
 
+	/**
+	 * Find the download row a legacy by-name request refers to.
+	 *
+	 * Replaces the old "serve it straight off disk" behaviour, so the caller
+	 * falls through to the usual userclass, active-state, limit and logging
+	 * checks instead of bypassing them.
+	 *
+	 * @param string $request relative path or file name from the query string
+	 * @return array|false download row, or false when nothing matches
+	 */
+	static function findByName($request)
+	{
+		if(!e_file::isSafeRelativePath($request))
+		{
+			return false;
+		}
+
+		$sql = e107::getDb();
+
+		// The stored value is either the bare relative path or the same path
+		// behind whichever {e_XXX} constant the media picker wrote.
+		$candidates = array($request);
+		foreach(array('{e_DOWNLOAD}', '{e_MEDIA_FILE}', '{e_UPLOAD}', '{e_FILE}') as $prefix)
+		{
+			$candidates[] = $prefix . $request;
+		}
+
+		$row = $sql->createQueryBuilder()
+			->select('download_id')->from('download')
+			->whereIn('download_url', $candidates)
+			->setMaxResults(1)
+			->fetchRow();
+
+		if($row)
+		{
+			return $row;
+		}
+
+		// Legacy pretty links quote the file name only, while the row stores a
+		// dated sub-folder. Match on the trailing segment, then confirm in PHP so
+		// a LIKE metacharacter cannot pull in a neighbouring row.
+		$qb = $sql->createQueryBuilder();
+		$rows = $qb->select('download_id', 'download_url')->from('download')
+			->where($qb->expr()->endsWith('download_url', '/' . $request))
+			->setMaxResults(25)
+			->fetchAll();
+
+		if(!empty($rows))
+		{
+			foreach($rows as $candidate)
+			{
+				if(basename($candidate['download_url']) === basename($request))
+				{
+					return $candidate;
+				}
+			}
+		}
+
+		return false;
+	}
+
+
 	static function request()
 	{
 
 		$log = e107::getLog();
 		$id = false;
+		$resolved = false;
 
 		$sql = e107::getDb();
 		$tp = e107::getParser();
@@ -24,19 +87,22 @@ class download_request
 
 		if(!is_numeric(e_QUERY) && empty($_GET['id']))
 		{
-			$row = $sql->createQueryBuilder()
-				->select('download_id')->from('download')
-				->where('download_url', $tp->toDB(e_QUERY))
-				->fetchRow();
-			if($row)
+			$names = array(e_QUERY);
+			if(strpos(e_QUERY, 'pub_') === 0)
 			{
-				$type = 'file';
-				$id = $row['download_id'];
+				$names[] = substr(e_QUERY, 4);
 			}
-			elseif(file_exists(e_DOWNLOAD . e_QUERY) && !is_dir(e_DOWNLOAD . e_QUERY))        // 1 - should we allow this?
+
+			foreach($names as $name)
 			{
-				e107::getFile()->send(e_DOWNLOAD . e_QUERY);
-				exit();
+				$row = self::findByName($name);
+				if($row)
+				{
+					$type = 'file';
+					$id = $row['download_id'];
+					$resolved = true;
+					break;
+				}
 			}
 		}
 
@@ -102,17 +168,20 @@ class download_request
 			}
 		}
 
-		$tmp = explode(".", e_QUERY);
-		if(empty($tmp[1]) || strpos(e_QUERY, "pub_") !== false)
+		if(!$resolved) // a by-name request already has its id; do not overwrite it
 		{
-			$id = intval($tmp[0]);
-			$type = "file";
-		}
-		else
-		{
-			$table = preg_replace("#\W#", "", $tp->toDB($tmp[0], true));
-			$id = intval($tmp[1]);
-			$type = "image";
+			$tmp = explode(".", e_QUERY);
+			if(empty($tmp[1]) || strpos(e_QUERY, "pub_") !== false)
+			{
+				$id = intval($tmp[0]);
+				$type = "file";
+			}
+			else
+			{
+				$table = preg_replace("#\W#", "", $tp->toDB($tmp[0], true));
+				$id = intval($tmp[1]);
+				$type = "image";
+			}
 		}
 
 		if(vartrue($_GET['id'])) // SEF URL
@@ -122,24 +191,12 @@ class download_request
 		}
 
 
-		if(preg_match("#.*\.[a-z,A-Z]{3,4}#", e_QUERY))
+		// A name that matched a download row is handled below, with the userclass,
+		// active-state and limit checks applied. Anything else that still looks
+		// like a file name has no row behind it, so it is simply not found.
+		if(!$resolved && preg_match("#.*\.[a-z,A-Z]{3,4}#", e_QUERY))
 		{
-			if(strpos(e_QUERY, "pub_") !== false)
-			{
-				$bid = str_replace("pub_", "", e_QUERY);
-				if(file_exists(e_UPLOAD . $bid))
-				{
-					e107::getFile()->send(e_UPLOAD . $bid);
-					exit();
-				}
-				$log->addError("Line" . __LINE__ . ": Couldn't find " . e_UPLOAD . $bid . "");
-			}
-			if(file_exists(e_DOWNLOAD . e_QUERY))
-			{
-				e107::getFile()->send(e_DOWNLOAD . e_QUERY);
-				exit();
-			}
-			$log->addError("Line" . __LINE__ . ": Couldn't find " . e_DOWNLOAD . e_QUERY);
+			$log->addError("Line" . __LINE__ . ": No download matches " . e_QUERY);
 			$log->toFile('download_requests', 'Download Requests', true); // Create a log file and add the log messages
 			require_once(HEADERF);
 			e107::getRender()->tablerender(LAN_ERROR, "<div style='text-align:center'>" . LAN_FILE_NOT_FOUND . "\n<br /><br />\n<a href='javascript:history.back(1)'>" . LAN_BACK . "</a></div>");
@@ -261,7 +318,7 @@ class download_request
 					{
 						if(file_exists(e_DOWNLOAD . $row['download_url']))
 						{
-							e107::getFile()->send(e_DOWNLOAD . $row['download_url']);
+							e107::getFile()->send(e_DOWNLOAD . $row['download_url'], array('roots' => array(e_DOWNLOAD)));
 							exit();
 						}
 						elseif(file_exists($row['download_url']))
@@ -271,7 +328,7 @@ class download_request
 						}
 						elseif(file_exists(e_UPLOAD . $row['download_url']))
 						{
-							e107::getFile()->send(e_UPLOAD . $row['download_url']);
+							e107::getFile()->send(e_UPLOAD . $row['download_url'], array('roots' => array(e_UPLOAD)));
 							exit();
 						}
 						$log->addError("Couldn't find " . e_DOWNLOAD . $row['download_url'] . " or " . $row['download_url'] . " or " . e_UPLOAD . $row['download_url']);

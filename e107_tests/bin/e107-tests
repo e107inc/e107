@@ -717,8 +717,12 @@ cmd_clean() {
     local docroot_files='e107_config.php e107_config.php.bak e107Install.log e107_system/e107Install.log NUL'
     local hash_dirs='e107_system/000000test e107_media/000000test
                      e107_system/416f4602e3 e107_media/416f4602e3'
+    # e107_files/public is a test fixture, never part of an install. Its
+    # absence is load-bearing when reproducing GHSA-87hm-vh32-7c3r, so an
+    # interrupted run must not leave it lying around.
     local theme_copies='e107_themes/basic-light e107_themes/testcore
-                        e107_themes/testkubrick e107_plugins/thing'
+                        e107_themes/testkubrick e107_plugins/thing
+                        e107_files/public'
 
     cd -- "$APP_PATH" || err "cannot cd to $APP_PATH"
 

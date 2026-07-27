@@ -56,7 +56,11 @@ if(!empty($_GET['file'])) // eg. request.php?file=1
 	if (!empty($row))
 	{
 		// $file = $tp->replaceConstants($row['media_url'],'rel');
-		e107::getFile()->send($row['media_url']);
+		// Registered media may sit anywhere inside the installation: plugin and
+		// theme installs both write {e_PLUGIN} / {e_THEME} rows. The row itself
+		// is the gate, matched exactly above and filtered by media_userclass.
+		$roots = array_merge(array(e_ROOT), e107::getFile()->getSendRoots());
+		e107::getFile()->send($row['media_url'], array('roots' => $roots));
 	}
 	else
 	{
