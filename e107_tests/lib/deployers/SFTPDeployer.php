@@ -42,16 +42,26 @@ class SFTPDeployer extends Deployer
 			return $prefix;
 	}
 
-	private static function runCommand($command, &$stdout = null, &$stderr = null)
+	private static function runCommand($command, &$stdout = null, &$stderr = null, $stdin = null)
 	{
 		$descriptorSpec = [
 			1 => ['pipe', 'w'],
 			2 => ['pipe', 'w'],
 		];
+		if ($stdin !== null)
+		{
+			$descriptorSpec[0] = ['pipe', 'r'];
+		}
 		$pipes = [];
 		self::println("Running this command…:");
 		self::println($command);
 		$resource = proc_open($command, $descriptorSpec, $pipes, APP_PATH);
+		if ($stdin !== null)
+		{
+			fwrite($pipes[0], $stdin);
+			fclose($pipes[0]);
+			unset($pipes[0]);
+		}
 		$stdout = stream_get_contents($pipes[1]);
 		$stderr = stream_get_contents($pipes[2]);
 		self::println("---------- stdout ----------");
@@ -88,6 +98,28 @@ class SFTPDeployer extends Deployer
 		{
 			self::println("No such file to delete: \"$relative_path\"");
 		}
+	}
+
+	public function writeAppFile($relative_path, $contents)
+	{
+		self::println("Writing file \"$relative_path\" to deployed test location…");
+		$fs_params = $this->getFsParams();
+		$remote_path = rtrim($fs_params['path'], '/')."/$relative_path";
+		// Pipe contents through ssh stdin into `cat > target` on the remote.
+		// `mkdir -p` first so paths with intermediate directories work.
+		$remote_dir = dirname($remote_path);
+		$remote_script = "mkdir -p ".escapeshellarg($remote_dir).
+			" && cat > ".escapeshellarg($remote_path);
+		$command = $this->generateSshpassPrefix().
+			$this->generateRsyncRemoteShell().
+			" ".escapeshellarg("{$fs_params['user']}@{$fs_params['host']}").
+			" ".escapeshellarg($remote_script);
+		$retcode = self::runCommand($command, $stdout, $stderr, $contents);
+		if ($retcode !== 0)
+		{
+			throw new RuntimeException("Failed to write \"$relative_path\" to deployed test location (ssh exit $retcode): ".trim((string) $stderr));
+		}
+		self::println("Wrote file \"$relative_path\" to deployed test location");
 	}
 
 	private function start_fs()

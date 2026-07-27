@@ -640,6 +640,183 @@ class e_file
 
 
 		/**
+		 * Is $path absolute on the current platform?
+		 *
+		 * Covers POSIX `/`, Windows `C:\`, and UNC `\\server\share`. e107 supports
+		 * absolute DOWNLOADS_DIRECTORY and UPLOADS_DIRECTORY overrides pointing
+		 * outside the docroot.
+		 *
+		 * @param string $path
+		 * @return bool
+		 */
+		public static function isAbsolutePath($path)
+		{
+			if(!is_string($path) || $path === '')
+			{
+				return false;
+			}
+
+			if($path[0] === '/' || $path[0] === '\\')
+			{
+				return true;
+			}
+
+			return (bool) preg_match('#^[A-Za-z]:[/\\\\]#', $path);
+		}
+
+
+		/**
+		 * Is $path a relative path with no way out of its parent directory?
+		 *
+		 * Rejects traversal components, absolute paths, NUL bytes and {e_XXX}
+		 * constants. A name such as `my..file.zip` passes: the test is on whole
+		 * path components, not on the substring.
+		 *
+		 * @param string $path
+		 * @return bool
+		 */
+		public static function isSafeRelativePath($path)
+		{
+			if(!is_string($path) || $path === '')
+			{
+				return false;
+			}
+
+			// Under e_SINGLE_ENTRY the query string reaches callers undecoded, so
+			// both forms have to be clean.
+			$forms = array($path, rawurldecode($path));
+
+			foreach($forms as $form)
+			{
+				if(strpos($form, "\0") !== false || strpbrk($form, '{}') !== false)
+				{
+					return false;
+				}
+
+				if(self::isAbsolutePath($form))
+				{
+					return false;
+				}
+
+				foreach(preg_split('#[/\\\\]#', $form) as $part)
+				{
+					if($part === '..')
+					{
+						return false;
+					}
+				}
+			}
+
+			return true;
+		}
+
+
+		/**
+		 * The directories send() will serve from when a caller does not name its own.
+		 *
+		 * Returned unresolved; resolveSendPath() canonicalises and drops whatever
+		 * does not exist. e_UPLOAD is included because the download plugin serves
+		 * user uploads from it, and an absolute UPLOADS_DIRECTORY would otherwise
+		 * fall outside every root.
+		 *
+		 * @return array
+		 */
+		public function getSendRoots()
+		{
+			$downloads = e107::getFolder('DOWNLOADS');
+			if(!self::isAbsolutePath($downloads))
+			{
+				$downloads = e_BASE . $downloads;
+			}
+
+			$uploads = e107::getFolder('UPLOADS');
+			if(!self::isAbsolutePath($uploads))
+			{
+				$uploads = e_BASE . $uploads;
+			}
+
+			return array(
+				$downloads,
+				e_BASE . e107::getFolder('FILES') . 'public/',
+				e_MEDIA,
+				e_SYSTEM,
+				$uploads,
+			);
+		}
+
+
+		/**
+		 * Canonicalise $filename and confirm one of $roots contains it.
+		 *
+		 * Returns the resolved path so callers stream from the canonical name
+		 * rather than the one they checked, which is what stops a symlink being
+		 * swapped between the check and the read.
+		 *
+		 * @param string     $filename path with {e_XXX} constants already expanded
+		 * @param array|null $roots    allowed directories, null for getSendRoots()
+		 * @return string|false canonical path, or false when no root contains it
+		 */
+		public function resolveSendPath($filename, $roots = null)
+		{
+			if(!is_string($filename) || $filename === '')
+			{
+				return false;
+			}
+
+			// realpath() throws ValueError on PHP 8 for a NUL byte, and returns NULL
+			// rather than false on PHP 5.6/7.
+			if(strpos($filename, "\0") !== false)
+			{
+				return false;
+			}
+
+			$path = @realpath($filename);
+			if(empty($path))
+			{
+				return false;
+			}
+
+			if($roots === null)
+			{
+				$roots = $this->getSendRoots();
+			}
+
+			$windows = (DIRECTORY_SEPARATOR === '\\');
+			$resolved = 0;
+
+			foreach((array) $roots as $root)
+			{
+				if(!is_string($root) || $root === '' || strpos($root, "\0") !== false)
+				{
+					continue;
+				}
+
+				$dir = @realpath($root);
+				if(empty($dir))
+				{
+					continue;
+				}
+
+				$resolved++;
+				$dir = rtrim($dir, '/\\') . DIRECTORY_SEPARATOR;
+				$len = strlen($dir);
+
+				if($windows ? (strncasecmp($path, $dir, $len) === 0) : (strncmp($path, $dir, $len) === 0))
+				{
+					return $path;
+				}
+			}
+
+			if($resolved === 0 && E107_DEBUG_LEVEL > 0)
+			{
+				e107::getLog()->addDebug('e_file::resolveSendPath(): no configured root could be resolved; refusing to send ' . $filename);
+			}
+
+			return false;
+		}
+
+
+		/**
 		 *     Grab a remote file and save it in the /temp directory. requires CURL
 		 *
 		 * @param string $remote_url
@@ -1232,7 +1409,11 @@ class e_file
 		 * File retrieval function. by Cam.
 		 *
 		 * @param string $file actual path or {e_xxxx} path to file.
-		 * @param string $opts (optional) type | disposition | encoding values.
+		 * @param array  $opts (optional) type | disposition | encoding values.
+		 *                     'roots' => array of directories to serve from, which
+		 *                     REPLACES the getSendRoots() default rather than adding
+		 *                     to it, so a caller handling untrusted input can narrow
+		 *                     itself to a single directory.
 		 *
 		 */
 		function send($file, $opts = array())
@@ -1243,14 +1424,36 @@ class e_file
 			//	$pref 					= e107::getPref();
 			$tp = e107::getParser();
 
-			$DOWNLOADS_DIR = e107::getFolder('DOWNLOADS');
-			$DOWNLOADS_DIRECTORY = ($DOWNLOADS_DIR[0] == DIRECTORY_SEPARATOR) ? $DOWNLOADS_DIR : e_BASE . $DOWNLOADS_DIR; // support for full path eg. /home/account/folder.
-			$FILES_DIRECTORY = e_BASE . e107::getFolder('FILES');
-			$MEDIA_DIRECTORY = realpath(e_MEDIA); //  could be image, file or other type.
-			$SYSTEM_DIRECTORY = realpath(e_SYSTEM); // downloading of logs or hidden files etc. via browser if required.
-
 			$file = $tp->replaceConstants($file);
 
+			$filename = $file;
+			$file = basename($file);
+
+			$roots = isset($opts['roots']) ? $opts['roots'] : null;
+			$path = $this->resolveSendPath($filename, $roots);
+
+			// Checked before the output buffers go, so a realpath() warning cannot
+			// end up inside the body of a download.
+			if($path === false)
+			{
+				if(E107_DEBUG_LEVEL > 0 && ADMIN)
+				{
+					$list = ($roots === null) ? $this->getSendRoots() : (array) $roots;
+					echo "Failed to Download <b>" . $file . "</b><br />";
+					echo "The file-path <b>" . $filename . "</b> is not inside any permitted directory:<ul>";
+					foreach($list as $root)
+					{
+						echo "<li><b>" . $root . "</b></li>";
+					}
+					echo "</ul>";
+					exit();
+				}
+				else
+				{
+					header("location: {$e107->base_path}");
+					exit();
+				}
+			}
 
 			@set_time_limit(10 * 60);
 			@session_write_close();
@@ -1261,104 +1464,78 @@ class e_file
 			}
 			@ob_implicit_flush();
 
-
-			$filename = $file;
-			$file = basename($file);
-			$path = realpath($filename);
-			$path_downloads = realpath($DOWNLOADS_DIRECTORY);
-			$path_public = realpath($FILES_DIRECTORY . "public/");
-
-
-			if(strpos($path, $path_downloads) === false && strpos($path, $path_public) === false && strpos($path, $MEDIA_DIRECTORY) === false && strpos($path, $SYSTEM_DIRECTORY) === false)
+			// $path, not $filename, from here down: the canonical name is the one
+			// that passed the containment check.
+			if(is_file($path) && is_readable($path) && connection_status() == 0)
 			{
-				if(E107_DEBUG_LEVEL > 0 && ADMIN)
+				$seek = 0;
+				if(strpos(varset($_SERVER['HTTP_USER_AGENT'], ''), "MSIE") !== false)
 				{
-					echo "Failed to Download <b>" . $file . "</b><br />";
-					echo "The file-path <b>" . $path . "<b> didn't match with either of 
-				<ul><li><b>{$path_downloads}</b></li>
-				<li><b>{$path_public}</b></li></ul><br />";
-					echo "Downloads Path: " . $path_downloads . " (" . $DOWNLOADS_DIRECTORY . ")";
-					exit();
+					$file = preg_replace('/\./', '%2e', $file, substr_count($file, '.') - 1);
 				}
-				else
+				if(isset($_SERVER['HTTP_RANGE']))
 				{
-					header("location: {$e107->base_path}");
-					exit();
+					$seek = intval(substr($_SERVER['HTTP_RANGE'], strlen('bytes=')));
 				}
+				$bufsize = 2048;
+				ignore_user_abort(true);
+				$data_len = filesize($path);
+				if($seek > ($data_len - 1))
+				{
+					$seek = 0;
+				}
+				//	if ($filename == null) { $filename = basename($this->data); }
+				$res = fopen($path, 'rb');
+				if($seek)
+				{
+					fseek($res, $seek);
+				}
+				$data_len -= $seek;
+
+				$contentType = vartrue($opts['type'], 'application/force-download');
+				$contentDisp = vartrue($opts['disposition'], 'attachment');
+
+				header('Expires: 0');
+				header("Cache-Control: max-age=30");
+				header('Content-Type: ' . $contentType);
+				header('Content-Disposition: ' . $contentDisp . '; filename="' . $file . '"');
+				header("Content-Length: {$data_len}");
+				header("Pragma: public");
+
+				if(!empty($opts['encoding']))
+				{
+					header('Content-Transfer-Encoding: ' . $opts['encoding']);
+				}
+
+				if($seek)
+				{
+					header("Accept-Ranges: bytes");
+					header("HTTP/1.0 206 Partial Content");
+					header("status: 206 Partial Content");
+					header("Content-Range: bytes {$seek}-" . ($data_len - 1) . "/{$data_len}");
+				}
+				while(!connection_aborted() && $data_len > 0)
+				{
+					echo fread($res, $bufsize);
+					$data_len -= $bufsize;
+				}
+				fclose($res);
 			}
 			else
 			{
-				if(is_file($filename) && is_readable($filename) && connection_status() == 0)
+				if(E107_DEBUG_LEVEL > 0 && ADMIN)
 				{
-					$seek = 0;
-					if(strpos($_SERVER['HTTP_USER_AGENT'], "MSIE") !== false)
-					{
-						$file = preg_replace('/\./', '%2e', $file, substr_count($file, '.') - 1);
-					}
-					if(isset($_SERVER['HTTP_RANGE']))
-					{
-						$seek = intval(substr($_SERVER['HTTP_RANGE'], strlen('bytes=')));
-					}
-					$bufsize = 2048;
-					ignore_user_abort(true);
-					$data_len = filesize($filename);
-					if($seek > ($data_len - 1))
-					{
-						$seek = 0;
-					}
-					//	if ($filename == null) { $filename = basename($this->data); }
-					$res = fopen($filename, 'rb');
-					if($seek)
-					{
-						fseek($res, $seek);
-					}
-					$data_len -= $seek;
-
-					$contentType = vartrue($opts['type'], 'application/force-download');
-					$contentDisp = vartrue($opts['disposition'], 'attachment');
-
-					header('Expires: 0');
-					header("Cache-Control: max-age=30");
-					header('Content-Type: '.$contentType);
-					header('Content-Disposition: '.$contentDisp.'; filename="'.$file.'"');
-					header("Content-Length: {$data_len}");
-					header("Pragma: public");
-
-					if(!empty($opts['encoding']))
-					{
-						header('Content-Transfer-Encoding: '.$opts['encoding']);
-					}
-
-					if($seek)
-					{
-						header("Accept-Ranges: bytes");
-						header("HTTP/1.0 206 Partial Content");
-						header("status: 206 Partial Content");
-						header("Content-Range: bytes {$seek}-" . ($data_len - 1) . "/{$data_len}");
-					}
-					while(!connection_aborted() && $data_len > 0)
-					{
-						echo fread($res, $bufsize);
-						$data_len -= $bufsize;
-					}
-					fclose($res);
+					$mes = __METHOD__ . " -- File failed: " . $file . "\n";
+					$mes .= "Path: " . $path . "\n";
+					$mes .= "Backtrace: ";
+					$mes .= print_r(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), true);
+					trigger_error($mes);
+					exit();
 				}
 				else
 				{
-					if(E107_DEBUG_LEVEL > 0 && ADMIN)
-					{
-						$mes =  __METHOD__." -- File failed: " . $file . "\n";
-						$mes .= "Path: " . $path . "\n";
-						$mes .= "Backtrace: ";
-						$mes .= print_r(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), true);
-						trigger_error($mes);
-						exit();
-					}
-					else
-					{
-						header("location: " . e_BASE . "index.php");
-						exit();
-					}
+					header("location: " . e_BASE . "index.php");
+					exit();
 				}
 			}
 		}

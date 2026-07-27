@@ -270,7 +270,7 @@ class e107forum
         // Check if file exists. Send file for download if it does, return 404 error code when file does not exist. 
  		if(file_exists($file))
  		{
- 		   e107::getFile()->send($file);
+ 		   e107::getFile()->send($file, array('roots' => array(e_MEDIA.'plugins/forum/attachments/')));
  		}
  		else
  		{
