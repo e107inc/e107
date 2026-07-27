@@ -40,34 +40,49 @@ class adminstyle_infopanel
 		$addonUpdateCheck = '';
 
 
-		if( e107::getSession()->get('core-update-status') !== true)
+		$coreUpdateFound = "
+  		    	    $('#e-admin-core-update').html('<span class=\"text-info\"><i class=\"fa fa-database\"></i></span>');
+
+  		    	     $('[data-toggle=\"popover\"]').popover('show');
+	                 $('.popover').on('click', function()
+	                 {
+	                     $('[data-toggle=\"popover\"]').popover('hide');
+	           		});
+		";
+
+		$coreUpdateNone = "
+  		    	    // Hide li element.
+  		    		$('#e-admin-core-update').parent().hide();
+		";
+
+		if( e107::getSession()->get('core-update-checked') !== true)
 		{
 			$coreUpdateCheck = "
 				$('#e-admin-core-update').html('<i title=\"".LAN_CHECKING_FOR_UPDATES."\" class=\"fa fa-spinner fa-spin\"></i>');
   		    	$.get('".e_ADMIN."admin.php?mode=core&type=update', function( data ) {
- 		    	
+
   		    	var res = $.parseJSON(data);
-		    
+
   		    	if(res === true)
   		    	{
-  		    	    $('#e-admin-core-update').html('<span class=\"text-info\"><i class=\"fa fa-database\"></i></span>');
-  		    	    
-  		    	     $('[data-toggle=\"popover\"]').popover('show');
-	                 $('.popover').on('click', function() 
-	                 {
-	                     $('[data-toggle=\"popover\"]').popover('hide');
-	           		});
+  		    	    ".$coreUpdateFound."
   		    	}
   		    	else
   		    	{
-  		    	    // Hide li element.
-  		    		$('#e-admin-core-update').parent().hide();
+  		    	    ".$coreUpdateNone."
   		    	}
-			   
+
 			});
-			
+
 			";
 
+		}
+		else
+		{
+			// Checked already this session, so show what it found instead of asking
+			// again. Every check writes the whole preference row, and the addons
+			// check below has always been guarded this way.
+			$coreUpdateCheck = (e107::getSession()->get('core-update-status') === true) ? $coreUpdateFound : $coreUpdateNone;
 		}
 
 		if( e107::getSession()->get('addons-update-checked') !== true)
