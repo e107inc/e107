@@ -599,117 +599,125 @@ class e_pref extends e_front_model
 		//Save to DB
 		if(!$this->hasError())
 		{
-			if($this->serial_bc)
+			$result = $this->persist();
+
+			if($result['status'] === 'error' || $result['status'] === 'conflict')
 			{
-				$dbdata = serialize($this->getPref());
+				if(!$disallow_logs)
+				{
+					$reason = ($result['status'] === 'conflict')
+						? 'Stored preferences changed underneath every attempt to save.'
+						: 'mySQL error #'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText();
+
+					$log->addError($reason, true, $session_messages)
+						->addError('Settings not saved.', true, $session_messages)
+						->flushMessages('PREFS_03', E_LOG_INFORMATIVE, '', $this->prefid);
+				}
+
+				e107::getMessage()->moveStack($this->prefid);
+				return false;
 			}
-			else
+
+			// Adopt what is actually stored. After a merge that carries the
+			// preferences other writers changed while this object was in memory.
+			$this->_data = $result['stored'];
+			$this->data_has_changed = false; //reset status
+			$this->resetJournal(); //stored data now matches, nothing left pending
+
+			if($result['status'] === 'unchanged')
 			{
-				$dbdata = $this->toString(false);
-			}
+				// Storage already held exactly this, so there is nothing to write
+				// and nothing to log. Reporting no change beats reporting a write
+				// that did not happen.
+				$this->setPrefCache($this->toString(false), true);
 
-			if(e107::getDb()->createQueryBuilder()->replace('core')
-				->values(array('e107_name' => $this->prefid, 'e107_value' => $dbdata))
-				->execute())
-			{
-				$this->data_has_changed = false; //reset status
-				$this->resetJournal(); //stored data now matches, nothing left pending
-
-				if(!empty($this->pref_cache))
-				{
-					$old = e107::unserialize($this->pref_cache);
-					if($this->serial_bc)
-					{
-						$dbdata = serialize($old);
-					}
-					else
-					{
-						$dbdata = $this->pref_cache;
-					}
-
-					// auto admin log
-					if(is_array($old) && !$disallow_logs) // fix install problems - no old prefs available
-					{
-						$new = $this->getPref();
-					//	$log->logArrayDiffs($new, $old, 'PREFS_02', false);
-						$log->addArray($new,$old);
-						unset($new, $old);
-						if(deftrue('e_DEBUG_PREFS'))
-						{
-							$backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2);
-							$log->logMessage(print_a($backtrace,true),  E_MESSAGE_DEBUG);
-						}
-						
-					}
-
-					// Backup 
-					if($this->set_backup === true && e107::getDb()->createQueryBuilder()->replace('core')
-						->values(array('e107_name' => $this->prefid.'_Backup', 'e107_value' => $dbdata))
-						->execute())
-					{
-					//	trigger_error("Performing a pref backup", E_USER_NOTICE);
-						if(!$disallow_logs) $log->logMessage('Backup of <strong>'.$this->alias.' ('.$this->prefid.')</strong> successfully created.', E_MESSAGE_DEBUG, E_MESSAGE_SUCCESS, $session_messages);
-						e107::getCache()->clear_sys('Config_'.$this->alias.'_backup');
-						if(deftrue('e_DEBUG_PREFS'))
-						{
-							$backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2);
-							$log->logMessage(print_a($backtrace,true),  E_MESSAGE_DEBUG);
-						}
-					}
-					
-				}
-				
-				$this->setPrefCache($this->toString(false), true); //reset pref cache - runtime & file
-				
-				if($this->alias == 'search') // Quick Fix TODO Improve. 
-				{
-					$logId = 'SEARCH_04';	
-				}
-				elseif($this->alias == 'notify')
-				{
-					$logId = 'NOTIFY_01';	
-				}
-				else
-				{
-					$logId = 'PREFS_01';	
-				}
-
-				// FIXME: Admin LAN dependency out of nowhere
-				e107::includeLan(e_LANGUAGEDIR . e_LANGUAGE . '/admin/lan_admin.php');
-
-				$log->addSuccess(LAN_SETSAVED, ($session_messages === null || $session_messages === true));
-			//	$debug = debug_backtrace(null,2);
-			//	e107::getMessage()->addDebug(print_a($debug,true));
-				$uid = defset('USERID');
-
-				if(empty($uid)) // Log extra details of any pref changes made by a non-user.
-				{
-					$log->addWarning(print_r(debug_backtrace(null,2), true), false);
-				}
-
-				$log->save($logId);
-
-			//	if(!$disallow_logs) $log->logSuccess('Settings successfully saved.', true, $session_messages)->flushMessages($logId, E_LOG_INFORMATIVE, '', $this->prefid);
-				
-				
 				//BC
 				if($this->alias === 'core')
 				{
 					$pref = $this->getPref();
 				}
+
+				if($session_messages !== false)
+				{
+					e107::getMessage()->addInfo(LAN_SETTINGS_NOT_SAVED_NO_CHANGES_MADE, $this->prefid, $session_messages);
+				}
+
 				e107::getMessage()->moveStack($this->prefid);
-				return true;
+				return 0;
 			}
-			elseif(e107::getDb()->getLastErrorNumber())
+
+			if($result['existed'])
 			{
-				if(!$disallow_logs)
-					$log->addError('mySQL error #'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText(), true, $session_messages)
-					->addError('Settings not saved.', true, $session_messages)
-					->flushMessages('PREFS_03', E_LOG_INFORMATIVE, '', $this->prefid);
-					
-				e107::getMessage()->moveStack($this->prefid);
-				return false;
+				$old = $result['base'];
+
+				// auto admin log
+				if(is_array($old) && !$disallow_logs) // fix install problems - no old prefs available
+				{
+					$new = $this->getPref();
+				//	$log->logArrayDiffs($new, $old, 'PREFS_02', false);
+					$log->addArray($new,$old);
+					unset($new, $old);
+					if(deftrue('e_DEBUG_PREFS'))
+					{
+						$backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2);
+						$log->logMessage(print_a($backtrace,true),  E_MESSAGE_DEBUG);
+					}
+
+				}
+
+				// Backup of the row as it stood before this write. Backing up this
+				// object's own copy of it would store something older still.
+				if($this->set_backup === true && e107::getDb()->createQueryBuilder()->replace('core')
+					->values(array('e107_name' => $this->prefid.'_Backup', 'e107_value' => $result['previous']))
+					->execute())
+				{
+				//	trigger_error("Performing a pref backup", E_USER_NOTICE);
+					if(!$disallow_logs) $log->logMessage('Backup of <strong>'.$this->alias.' ('.$this->prefid.')</strong> successfully created.', E_MESSAGE_DEBUG, E_MESSAGE_SUCCESS, $session_messages);
+					e107::getCache()->clear_sys('Config_'.$this->alias.'_backup');
+					if(deftrue('e_DEBUG_PREFS'))
+					{
+						$backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2);
+						$log->logMessage(print_a($backtrace,true),  E_MESSAGE_DEBUG);
+					}
+				}
+
 			}
+
+			$this->setPrefCache($this->toString(false), true); //reset pref cache - runtime & file
+
+			if($this->alias == 'search') // Quick Fix TODO Improve.
+			{
+				$logId = 'SEARCH_04';
+			}
+			elseif($this->alias == 'notify')
+			{
+				$logId = 'NOTIFY_01';
+			}
+			else
+			{
+				$logId = 'PREFS_01';
+			}
+
+			// FIXME: Admin LAN dependency out of nowhere
+			e107::includeLan(e_LANGUAGEDIR . e_LANGUAGE . '/admin/lan_admin.php');
+
+			$log->addSuccess(LAN_SETSAVED, ($session_messages === null || $session_messages === true));
+			$uid = defset('USERID');
+
+			if(empty($uid)) // Log extra details of any pref changes made by a non-user.
+			{
+				$log->addWarning(print_r(debug_backtrace(null,2), true), false);
+			}
+
+			$log->save($logId);
+
+			//BC
+			if($this->alias === 'core')
+			{
+				$pref = $this->getPref();
+			}
+			e107::getMessage()->moveStack($this->prefid);
+			return true;
 		}
 
 		if($this->hasError())
@@ -731,6 +739,176 @@ class e_pref extends e_front_model
 			e107::getMessage()->moveStack($this->prefid);
 			return 0;
 		}
+	}
+
+	/**
+	 * Write this object's preferences without discarding what another writer
+	 * stored in the meantime.
+	 *
+	 * A preference row is a single serialized array shared by every writer, so
+	 * the row is read first and the recorded mutations are replayed over it.
+	 * The write then names the value that read returned, and so only lands
+	 * while storage still holds it. Failing that test means somebody wrote in
+	 * between, and the attempt is repeated against their result rather than
+	 * over the top of it.
+	 *
+	 * Known limitation: the test compares text, and the core table inherits the
+	 * server's default collation, which is case insensitive. A rival write
+	 * differing from this one only in letter case or trailing whitespace
+	 * compares equal and is overwritten, exactly as it would have been before.
+	 *
+	 * @return array status of saved, unchanged, conflict or error, and for the
+	 *               first two the row as it stood before and after
+	 */
+	protected function persist()
+	{
+		$db = e107::getDb();
+		$attempts = 3;
+
+		while($attempts-- > 0)
+		{
+			$row = $db->createQueryBuilder()
+				->select('e107_value')->from('core')
+				->where('e107_name', $this->prefid)
+				->fetchRow();
+
+			$existed = !empty($row);
+			$previous = $existed ? (string) $row['e107_value'] : '';
+			$base = $existed ? $this->decodePref($previous) : array();
+
+			// Nothing to merge against when the caller supplied a complete array,
+			// or when there is no row yet and this object is all there is to store.
+			$stored = ($this->_journal_replaced || !$existed) ? $this->getPref() : $this->replayJournal($base);
+			$value = $this->encodePref($stored);
+
+			$result = array(
+				'existed'  => $existed,
+				'base'     => $base,
+				'previous' => $previous,
+				'stored'   => $stored,
+				'value'    => $value,
+			);
+
+			if($existed && $value === $previous)
+			{
+				// Storage already holds this. Stopping here also keeps the test
+				// below honest: rows changed is reported rather than rows matched, so
+				// writing a value identical to the stored one reports nothing written,
+				// which is indistinguishable from losing the race.
+				$result['status'] = 'unchanged';
+
+				return $result;
+			}
+
+			if($existed)
+			{
+				$written = $db->createQueryBuilder()->update('core')
+					->set('e107_value', $value)
+					->where('e107_name', $this->prefid)
+					->where('e107_value', $previous)
+					->execute();
+			}
+			else
+			{
+				$written = $db->createQueryBuilder()->insertOrIgnore('core')
+					->values(array('e107_name' => $this->prefid, 'e107_value' => $value))
+					->execute();
+			}
+
+			if($written === false)
+			{
+				return array('status' => 'error');
+			}
+
+			if($written)
+			{
+				$result['status'] = 'saved';
+
+				return $result;
+			}
+
+			// Nothing was written, so the row is no longer what it was when it was
+			// read. Read it again and replay over whatever is there now.
+		}
+
+		return array('status' => 'conflict');
+	}
+
+	/**
+	 * Apply the recorded mutations to the preferences as they currently stand in
+	 * storage.
+	 *
+	 * Each one is replayed by calling the very method the caller called, so the
+	 * path parsing, the strictness, and the conditions on add() and update() are
+	 * the ones this class already defines rather than a second implementation of
+	 * them that could drift.
+	 *
+	 * @param array $base preferences as they currently stand in storage
+	 * @return array
+	 */
+	protected function replayJournal(array $base)
+	{
+		global $pref;
+
+		$scratch = clone $this;
+		$scratch->beginReplay($base);
+
+		// Mutators keep the legacy global in step with the core preferences. A
+		// scratch object must not publish its half-built state there, so put the
+		// global back once the replay is over.
+		$saved = $pref;
+
+		foreach($this->_journal as $entry)
+		{
+			call_user_func_array(array($scratch, $entry[0]), $entry[1]);
+		}
+
+		$pref = $saved;
+
+		return $scratch->getPref();
+	}
+
+	/**
+	 * Turn this object into a scratch copy holding the given stored preferences,
+	 * recording nothing while mutations are replayed onto it.
+	 *
+	 * @param array $base
+	 * @return e_pref
+	 */
+	protected function beginReplay(array $base)
+	{
+		$this->_data = $base;
+		$this->_journal = array();
+		$this->_journal_replaced = false;
+		$this->_journal_suspended = true;
+
+		return $this;
+	}
+
+	/**
+	 * Read a stored preference value, honouring the deprecated serialize()
+	 * storage that some rows still use.
+	 *
+	 * @param string $value
+	 * @return array
+	 */
+	protected function decodePref($value)
+	{
+		$data = $this->serial_bc ? unserialize($value) : e107::unserialize($value);
+
+		return is_array($data) ? $data : array();
+	}
+
+	/**
+	 * Render preferences for storage, honouring the deprecated serialize()
+	 * storage that some rows still use.
+	 *
+	 * @param array $data
+	 * @return string
+	 */
+	protected function encodePref(array $data)
+	{
+		return $this->serial_bc ? serialize($data) : e107::serialize($data, false);
 	}
 
 	/**
