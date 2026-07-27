@@ -401,9 +401,22 @@ function update_check()
 
 	if ($dont_check_update === FALSE)
 	{
-		$dbUpdatesPref = array();
-
 		$skip = e107::getPref('db_updates');
+		$version = varset($e107info['e107_version'], '');
+
+		if(!is_array($skip) || e107::getPref('db_updates_version') !== $version || $version === '')
+		{
+			// A record of which checks have already passed belongs to the version
+			// that produced it. Any other version may have given those routines
+			// something to do again, so check the lot.
+			$skip = array();
+		}
+
+		// Carry forward what earlier runs settled. Rebuilding this empty made the
+		// preference alternate between the full list and nothing on every run,
+		// rewriting the row each time and leaving it useless as the skip list it
+		// is meant to be.
+		$dbUpdatesPref = $skip;
 
 		foreach($dbupdate as $func => $rmks) // See which core functions need update
 		{
@@ -432,7 +445,12 @@ function update_check()
 
 		}
 
-		e107::getConfig()->set('db_updates', $dbUpdatesPref)->save(false,true,false);
+		// Not forced. Once the list settles there is nothing to write, and a check
+		// that found nothing has no business rewriting site preferences at all.
+		e107::getConfig()
+			->set('db_updates', $dbUpdatesPref)
+			->set('db_updates_version', $version)
+			->save(false,false,false);
 
 
 		// Now check plugins - XXX DEPRECATED 
