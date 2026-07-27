@@ -66,6 +66,38 @@ class e_pref extends e_front_model
 	protected $set_backup = false;
 
 	/**
+	 * Ordered record of the mutations applied to this object since it was last
+	 * loaded or saved, each entry being array($method, array($argument, ...)).
+	 *
+	 * The whole point is that a preference row holds one serialized array shared
+	 * by every writer, so writing back the array this process happens to be
+	 * holding destroys whatever anybody else stored in the meantime. Replaying
+	 * this journal over a freshly read row writes only what the caller actually
+	 * asked to change.
+	 *
+	 * @var array
+	 */
+	protected $_journal = array();
+
+	/**
+	 * True once a caller has handed over a complete array rather than individual
+	 * preferences, i.e. {@link loadData()} or {@link reset()}. Such a caller is
+	 * stating the object IS the intended row, so {@link save()} writes all of it
+	 * and does not replay the journal.
+	 *
+	 * @var boolean
+	 */
+	protected $_journal_replaced = false;
+
+	/**
+	 * True while the journal is being replayed onto a freshly read row, so that
+	 * replaying a mutation does not record it again.
+	 *
+	 * @var boolean
+	 */
+	protected $_journal_suspended = false;
+
+	/**
 	 * Constructor
 	 *
 	 * @param string $prefid
@@ -141,6 +173,7 @@ class e_pref extends e_front_model
 			return $this;
 		}
 
+		$this->journal('setPref', array($pref_name, $value));
 		parent::setData($pref_name, $value, false);
 
 		//BC
@@ -159,6 +192,7 @@ class e_pref extends e_front_model
     public function reset($prefs = array())
     {
         parent::setData(array());
+        $this->journalReplaced();
 
         return $this;
     }
@@ -188,6 +222,7 @@ class e_pref extends e_front_model
 			return $this;
 		}
 
+		$this->journal('updatePref', array($pref_name, $value, $strict));
 		parent::setData($pref_name, $value, $strict);
 
 		//BC
@@ -214,6 +249,7 @@ class e_pref extends e_front_model
 			return $this;
 		}
 		
+		$this->journal('set', array($key, $value, $strict));
 		if(!isset($this->_data[$key]) || $this->_data[$key] != $value) $this->data_has_changed = true;
 		$this->_data[$key] = $value;
 
@@ -242,6 +278,9 @@ class e_pref extends e_front_model
 		}
 		if(array_key_exists($pref_name, $this->_data))
 		{
+			// Recorded only when it applies. Replaying an update of a preference
+			// this object never held would write a value the caller never set.
+			$this->journal('update', array($pref_name, $value));
 			if($this->_data[$pref_name] != $value) $this->data_has_changed = true;
 			$this->_data[$pref_name] = $value;
 		}
@@ -271,6 +310,9 @@ class e_pref extends e_front_model
 		}
 		if(!isset($this->_data[$pref_name])) 
 		{
+			// Recorded only when it applies, so that replaying it cannot revive a
+			// preference another writer removed while this object was in memory.
+			$this->journal('add', array($pref_name, $value));
 			$this->_data[$pref_name] = $value;
 			$this->data_has_changed = true;
 		}
@@ -309,6 +351,7 @@ class e_pref extends e_front_model
 	public function remove($key)
 	{
 		global $pref;
+		$this->journal('remove', array($key));
 		parent::remove((string) $key);
 
 		//BC
@@ -345,6 +388,7 @@ class e_pref extends e_front_model
 	final public function addData($key, $value = null, $override = true)
 	{
 		global $pref;
+		$this->journal('addData', array($key, $value, $override));
 		parent::addData($key, $value, false);
 		//BC
 		if($this->alias === 'core')
@@ -377,6 +421,7 @@ class e_pref extends e_front_model
 			return $this;
 		}
 
+		$this->journal('setData', array($key, $value, $strict));
 		parent::setData($key, $value, false);
 
 		//BC
@@ -397,6 +442,7 @@ class e_pref extends e_front_model
 	final public function removeData($key=null)
 	{
 		global $pref;
+		$this->journal('removeData', array($key));
 		parent::removeData((string) $key);
 
 		//BC
@@ -424,6 +470,7 @@ class e_pref extends e_front_model
 				$data = e107::getParser()->toDB($data);
 			}
 			parent::setData($data, null, false);
+			$this->journalReplaced();
 			$this->pref_cache = e107::getArrayStorage()->serialize($data, false); //runtime cache
 			//BC
 			if($this->alias === 'core')
@@ -473,6 +520,9 @@ class e_pref extends e_front_model
 		{
 			$this->pref_cache = e107::getArrayStorage()->serialize($data, false); //runtime cache
 			$this->loadData((array) $data, false);
+			// loadData() reports a complete array, but this one came from storage
+			// rather than from a caller, so there is nothing pending to write.
+			$this->resetJournal();
 			return $this;
 		}
 
@@ -501,6 +551,7 @@ class e_pref extends e_front_model
 			$data = array();
 
 		$this->loadData($data, false);
+		$this->resetJournal();
 		return $this;
 	}
 
@@ -562,6 +613,7 @@ class e_pref extends e_front_model
 				->execute())
 			{
 				$this->data_has_changed = false; //reset status
+				$this->resetJournal(); //stored data now matches, nothing left pending
 
 				if(!empty($this->pref_cache))
 				{
@@ -738,6 +790,86 @@ class e_pref extends e_front_model
 		}
 		e107::getCache()->clear_sys('Config_'.(!empty($cache_name) ? $cache_name : $this->alias));
 		return $this;
+	}
+
+	/**
+	 * Record a mutation so that {@link save()} can replay it over a freshly read
+	 * row instead of overwriting that row with this object's whole array.
+	 *
+	 * Recorded arguments are whatever the caller passed, so a replay reruns the
+	 * very same method and inherits its path parsing and strictness rules rather
+	 * than reimplementing them.
+	 *
+	 * @param string $method name of the mutator to replay
+	 * @param array $args its arguments, in order
+	 * @return e_pref
+	 */
+	protected function journal($method, array $args)
+	{
+		if($this->_journal_suspended || $this->_journal_replaced)
+		{
+			return $this;
+		}
+
+		$this->_journal[] = array($method, $args);
+
+		return $this;
+	}
+
+	/**
+	 * Note that this object now holds a complete array supplied by the caller,
+	 * so {@link save()} must write all of it rather than replaying a journal.
+	 *
+	 * @return e_pref
+	 */
+	protected function journalReplaced()
+	{
+		if($this->_journal_suspended)
+		{
+			return $this;
+		}
+
+		$this->_journal = array();
+		$this->_journal_replaced = true;
+
+		return $this;
+	}
+
+	/**
+	 * Forget every recorded mutation. Called once the object matches stored data,
+	 * i.e. after a load or a successful save.
+	 *
+	 * @return e_pref
+	 */
+	protected function resetJournal()
+	{
+		$this->_journal = array();
+		$this->_journal_replaced = false;
+
+		return $this;
+	}
+
+	/**
+	 * Recorded mutations awaiting a save.
+	 *
+	 * @internal exposed for tests and debugging, not part of the preference API
+	 * @return array
+	 */
+	public function getJournal()
+	{
+		return $this->_journal;
+	}
+
+	/**
+	 * Whether a caller has supplied a complete array, making this object the
+	 * intended row rather than a set of changes to one.
+	 *
+	 * @internal exposed for tests and debugging, not part of the preference API
+	 * @return boolean
+	 */
+	public function isJournalReplaced()
+	{
+		return $this->_journal_replaced;
 	}
 
 	/**
