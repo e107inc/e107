@@ -496,17 +496,29 @@ function update_core_prefs($type='')
 	{
 		if ($k && !array_key_exists($k,$pref))
 		{
-			$missing[] = $k;
-		//	$pref[$k] = $v;
-			e107::getConfig()->set($k,$v);
-			$admin_log->logMessage($k.' => '.$v, E_MESSAGE_NODISPLAY, E_MESSAGE_INFO);
-			$do_save = TRUE;
+			$missing[$k] = $v;
 		}
 	}
 
-	if ($just_check && !empty($missing))
+	if ($just_check)
 	{
-		return update_needed('<br>Missing prefs: <ul><li>'.implode('</li><li>',$missing).'</li></ul>');
+		// Nothing is applied while only checking. Setting the defaults here would
+		// leave them on the shared config object for whoever saves it next, and
+		// update_check() saves it moments later, so the check used to quietly
+		// apply itself and the UPDATE_03 record below never ran.
+		if (!empty($missing))
+		{
+			return update_needed('<br>Missing prefs: <ul><li>'.implode('</li><li>',array_keys($missing)).'</li></ul>');
+		}
+
+		return $just_check;
+	}
+
+	foreach ($missing as $k => $v)
+	{
+		e107::getConfig()->set($k,$v);
+		$admin_log->logMessage($k.' => '.$v, E_MESSAGE_NODISPLAY, E_MESSAGE_INFO);
+		$do_save = TRUE;
 	}
 
 	if ($do_save)
