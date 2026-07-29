@@ -98,7 +98,27 @@ class e_session
 	 * @var int unknown_type
 	 */
 	const SECURITY_LEVEL_INSANE = 10;
-	
+
+	/**
+	 * A POST carrying no token is allowed through, the behaviour before
+	 * GHSA-72q5-94gw-prww
+	 * @var int
+	 */
+	const TOKEN_CHECK_OFF = 0;
+
+	/**
+	 * A POST carrying no token is allowed through but recorded in the admin log,
+	 * so an operator can measure what would break before switching enforcement on
+	 * @var int
+	 */
+	const TOKEN_CHECK_LOG = 1;
+
+	/**
+	 * A POST carrying no token is refused
+	 * @var int
+	 */
+	const TOKEN_CHECK_ENFORCE = 2;
+
 	/**
 	 * Session save path
 	 * @var string
@@ -466,6 +486,56 @@ class e_session
 	}
 
 	/**
+	 * Runtime override of the token check mode, or null to follow the preference.
+	 *
+	 * @var int|null
+	 */
+	private static $_tokenCheckMode = null;
+
+	/**
+	 * How hard {@see e_core_session::check()} is on a request that submits no token.
+	 *
+	 * This is the designated API for the question. Read it here rather than
+	 * reaching for the preference, so the runtime override below is honoured
+	 * everywhere.
+	 *
+	 * It governs the tokenless case only. A request that presents a token which
+	 * does not validate is always refused, whatever this returns. The second lever,
+	 * for a site whose forms are being handed a token they cannot honour, is
+	 * {@see e_token_injector::setEnabled()}.
+	 *
+	 * @return int one of the TOKEN_CHECK_* constants
+	 */
+	public static function tokenCheckMode()
+	{
+		if(self::$_tokenCheckMode !== null)
+		{
+			return self::$_tokenCheckMode;
+		}
+
+		return (int) e107::getPref('csrf_enforce', self::TOKEN_CHECK_ENFORCE);
+	}
+
+	/**
+	 * Override the token check mode for the rest of this request.
+	 *
+	 * Exists so a test, or a bootstrap that knows better than the stored
+	 * preference, can set the mode without a define. Pass null to hand control
+	 * back to the preference.
+	 *
+	 * @param int|null $mode one of the TOKEN_CHECK_* constants, or null
+	 * @return int|null the override that was in force, for restoring afterwards
+	 */
+	public static function setTokenCheckMode($mode)
+	{
+		$previous = self::$_tokenCheckMode;
+
+		self::$_tokenCheckMode = ($mode === null) ? null : (int) $mode;
+
+		return $previous;
+	}
+
+	/**
 	 * Reset session options
 	 * @param array $options
 	 * @return e_session
@@ -825,7 +895,7 @@ class e_session
 	{
 		if(!$this->has('__form_token') && !defined('e_TOKEN_DISABLE'))  // TODO FIXME: SEF URL of Error page causes e-token refresh.
 		{
-			$this->set('__form_token', uniqid(md5(rand()), true));
+			$this->set('__form_token', $this->_generateFormToken());
 			if(deftrue('e_DEBUG_SESSION')) // XXX enable to troubleshoot "Unauthorized Access!" issues.
 			{
 				$message = date('r')."\t\t".e_REQUEST_URI."\n";
@@ -842,8 +912,23 @@ class e_session
 	 */
 	protected function _regenerateFormToken()
 	{
-		$this->set('__form_token', uniqid(md5(rand()), true));
+		$this->set('__form_token', $this->_generateFormToken());
 		return $this;
+	}
+
+	/**
+	 * Mint a raw XSF protection token.
+	 *
+	 * Only md5() of this value ever reaches the client, so the raw format is
+	 * unconstrained; 256 bits of CSPRNG output as hex. Aborts the request when
+	 * the platform has no CSPRNG rather than minting a guessable token.
+	 *
+	 * @see e_random::hex()
+	 * @return string 64 hex characters
+	 */
+	protected function _generateFormToken()
+	{
+		return e_random::hex(64);
 	}
 
 	/**
@@ -1037,6 +1122,12 @@ class e_core_session extends e_session
 	/**
 	 * Core CSF protection, see class2.php
 	 * Could be adopted by plugins for their own (different) protection logic
+	 *
+	 * A POST is rejected both when it carries a token that does not validate and
+	 * when it carries no token at all. The second half is governed by
+	 * {@see e_session::tokenCheckMode()} and applies only to a request that
+	 * presented a cookie, see {@see e_core_session::hasAmbientAuthority()}.
+	 *
 	 * @param boolean $die
 	 * @return boolean
 	 */
@@ -1044,15 +1135,16 @@ class e_core_session extends e_session
 	{
 		// define('e_TOKEN_NAME', 'e107_token_'.md5($_SERVER['HTTP_HOST'].e_HTTP));
 		// TODO e-token required for all system forms?
-		
+
 		// only if not disabled and not in 'cli' mod
 		if(e_SECURITY_LEVEL < e_session::SECURITY_LEVEL_LOW || e107::getE107('cli')) return true;
-		
+
 		if($this->getSessionId())
 		{
 
 			if((isset($_POST['e-token']) && !$this->checkFormToken($_POST['e-token']))
 			|| (isset($_GET['e-token']) && !$this->checkFormToken($_GET['e-token']))
+			|| (isset($_SERVER['HTTP_X_E_TOKEN']) && !$this->checkFormToken($_SERVER['HTTP_X_E_TOKEN']))
 			|| (isset($_POST['e_token']) && !$this->checkFormToken($_POST['e_token']))) // '-' is not allowed in jquery. b
 			{
 				$this->log('Unauthorized access!');
@@ -1061,14 +1153,36 @@ class e_core_session extends e_session
 				{
 					 die('Unauthorized access!');
 				}
-				
+
 				return false;
+			}
+
+			if(self::isStateChangingRequest() && self::hasAmbientAuthority() && !self::hasSubmittedToken())
+			{
+				$mode = self::tokenCheckMode();
+
+				if($mode === self::TOKEN_CHECK_LOG)
+				{
+					$this->logMissingToken($mode);
+				}
+
+				if($mode >= self::TOKEN_CHECK_ENFORCE)
+				{
+					$this->log('Unauthorized access!');
+
+					if($die == true)
+					{
+						die('Unauthorized access!');
+					}
+
+					return false;
+				}
 			}
 
 			$this->log('Session Token Okay!', defset('E_LOG_NOTICE', 1));
 
 		}
-		
+
 		if(!defined('e_TOKEN'))
 		{
 			// FREEZE token regeneration if minimal, ajax or iframe (ajax and iframe not implemented yet) request
@@ -1092,7 +1206,70 @@ class e_core_session extends e_session
 
 	
 	/**
-	 * Manually Reset the Token. 
+	 * Only POST is treated as state-changing. It is the sole method a browser will
+	 * send cross-site without a CORS preflight, so it is the whole CSRF surface,
+	 * and confining the check to it keeps every GET working exactly as before.
+	 *
+	 * @return bool
+	 */
+	private static function isStateChangingRequest()
+	{
+		return (isset($_SERVER['REQUEST_METHOD']) && strtoupper($_SERVER['REQUEST_METHOD']) === 'POST');
+	}
+
+	/**
+	 * @return bool whether the request presented a token at all, valid or not
+	 */
+	private static function hasSubmittedToken()
+	{
+		return (isset($_POST['e-token']) || isset($_GET['e-token'])
+			|| isset($_SERVER['HTTP_X_E_TOKEN']) || isset($_POST['e_token']));
+	}
+
+	/**
+	 * Does this request carry anything the browser would attach on its own?
+	 *
+	 * Cross-site request forgery works by borrowing ambient authority: the
+	 * attacker cannot read the response, so the only thing the forged request is
+	 * worth is whatever the browser attaches without being asked. A request that
+	 * presents no cookie at all has nothing to borrow, so refusing it buys no
+	 * security and breaks every machine-to-machine caller, a payment gateway's
+	 * IPN callback among them.
+	 *
+	 * @return bool
+	 */
+	private static function hasAmbientAuthority()
+	{
+		return !empty($_COOKIE);
+	}
+
+	/**
+	 * Record a tokenless POST in the admin log.
+	 *
+	 * Only ever called in log-only mode, which an operator turns on deliberately
+	 * and briefly. Writing a row for a refused request instead hands anyone who
+	 * can reach the site an unthrottled insert into an indexed table.
+	 *
+	 * Field names are recorded, values are not, because a login POST would
+	 * otherwise put a password in the log.
+	 *
+	 * @param int $mode the mode this was decided under
+	 * @return void
+	 */
+	private function logMissingToken($mode)
+	{
+		$details  = "METHOD: POST\n";
+		$details .= "URI: " . (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '') . "\n";
+		$details .= "REFERER: " . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '') . "\n";
+		$details .= "FIELDS: " . implode(', ', array_keys($_POST)) . "\n";
+		$details .= "SESSION: " . substr(sha1((string) $this->getSessionId()), 0, 12) . "\n";
+		$details .= "ACTION: " . (($mode >= self::TOKEN_CHECK_ENFORCE) ? 'refused' : 'allowed, log-only mode') . "\n";
+
+		e107::getLog()->add('CSRF_01', $details, defset('E_LOG_WARNING', 2));
+	}
+
+	/**
+	 * Manually Reset the Token.
 	 * @see e107forum::ajaxQuickReply();
 	 */
 	public function reset()
@@ -1110,9 +1287,22 @@ class e_core_session extends e_session
 	 */
 	public function challenge()
 	{
+		// could go, see _validate()
+		$user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+		if (!$this->is('ubrowser'))
+		{
+			$this->set('ubrowser', md5('E107'.$user_agent));
+		}
+
+		// Only generate CHAP challenges if CHAP authentication is enabled
+		if (!e107::pref('core', 'password_CHAP', 0))
+		{
+			return $this;
+		}
+
 		if (!$this->is('challenge'))		// TODO: Eliminate need for this
 		{
-			$this->set('challenge', sha1(time().rand().$this->getSessionId()));		// New challenge for next time
+			$this->set('challenge', e_random::hex(40)); // New challenge for next time, same 40 hex characters sha1() gave
 		}
 		if ($this->is('challenge'))
 		{	
@@ -1130,13 +1320,6 @@ class e_core_session extends e_session
 		//$extra_text = 'C: '.$this->get('challenge').' PC: '.$this->get('prevchallenge').' PPC: '.$this->get('prevprevchallenge');
 		//$logfp = fopen(e_LOG.'authlog.txt', 'a+'); fwrite($logfp, strftime('%H:%M:%S').' CHAP start: '.$extra_text."\n"); fclose($logfp);
 
-		// could go, see _validate()
-		$user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
-		$ubrowser = md5('E107'.$user_agent);
-		if (!$this->is('ubrowser'))
-		{
-			$this->set('ubrowser', $ubrowser);
-		}
 		return $this;
 	}
 }

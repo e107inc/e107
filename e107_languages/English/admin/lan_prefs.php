@@ -310,3 +310,9 @@ define("PRFLAN_285", "Display field help tips");
 define("PRFLAN_286", "Content Filters");
 define("PRFLAN_288", "Trusted Hosts");
 define("PRFLAN_289", "Additional hostnames the site will accept in the Host header, one per line. The host parsed from Site URL is always trusted; entries here are added to that list. Paste a full URL and the saved value is normalised to the host only.");
+
+define("PRFLAN_294", "Requests without a security token");
+define("PRFLAN_295", "A cross-site request forgery works by making a visitor's browser send a request the visitor did not intend. The security token is what proves a request came from a page this site rendered.\nRefuse is the safe setting. Choose Allow and log if an integration has stopped working and you need to see which requests are affected before deciding; every affected request is then written to the admin log instead of being refused.");
+define("PRFLAN_296", "Refuse (recommended)");
+define("PRFLAN_297", "Allow and log");
+define("PRFLAN_298", "Allow");

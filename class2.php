@@ -596,11 +596,32 @@ if(!isset($_E107['no_session']))
 {
 	$dbg->logTime('CHAP challenge');
 
-	$die = e_AJAX_REQUEST !== true;
-	e107::getSession()
+	// check(false) so that the refusal is answered here rather than by the die()
+	// inside check(), which would leave the response at 200 and put the status
+	// out of reach of a log analyser, a monitor or a WAF.
+	$tokenOkay = e107::getSession()
 		->challenge() // Make sure there is a unique challenge string for CHAP login
-		->check($die); // Token protection
-	unset($die);
+		->check(false); // Token protection
+
+	if($tokenOkay !== true)
+	{
+		header('HTTP/1.1 403 Forbidden', true, 403);
+
+		if(e_AJAX_REQUEST)
+		{
+			// The envelope core's own AJAX endpoints already reject with.
+			header('Content-type: application/json; charset=UTF-8');
+			echo json_encode(array('msg' => 'Unauthorized access!', 'error' => true));
+		}
+		else
+		{
+			header('Content-type: text/plain; charset=UTF-8');
+			echo 'Unauthorized access!';
+		}
+
+		exit;
+	}
+	unset($tokenOkay);
 }
 //
 // N: misc setups: online user tracking, cache
@@ -2262,9 +2283,10 @@ class e_http_header
 			if(!empty($search) && !empty($replace))
 			{
 				$this->content = str_replace($search, $replace, $this->content);
-				$this->length = strlen($this->content);
 			}
 
+			$this->content = e_token_injector::process($this->content);
+			$this->length = strlen($this->content);
 		}
 		else
 		{
