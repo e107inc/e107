@@ -10,10 +10,6 @@
  *
  */
 
-if(!empty($_POST) && !isset($_POST['e-token']))
-{
-	$_POST['e-token'] = '';
-}
 require_once (__DIR__."/../class2.php");
 
 if(isset($_POST['newver']))
@@ -120,6 +116,29 @@ if(isset($_POST['updateprefs']))
 		}
 
 		unset($_POST['update_channel']);
+	}
+
+	// csrf_enforce: seeded via set() for the same reason as trusted_hosts above.
+	// Anything outside the three known modes falls back to full enforcement.
+	if(isset($_POST['csrf_enforce']))
+	{
+		$csrfMode = (int) $_POST['csrf_enforce'];
+
+		if($csrfMode !== e_session::TOKEN_CHECK_OFF && $csrfMode !== e_session::TOKEN_CHECK_LOG)
+		{
+			$csrfMode = e_session::TOKEN_CHECK_ENFORCE;
+		}
+
+		$core_pref->set('csrf_enforce', $csrfMode);
+		unset($_POST['csrf_enforce']);
+	}
+
+	// session_cookie_samesite: seeded via set() for the same reason. Anything
+	// the browsers do not recognise is stored as an empty string, i.e. no attribute.
+	if(isset($_POST['session_cookie_samesite']))
+	{
+		$core_pref->set('session_cookie_samesite', e_session::normaliseSameSite($_POST['session_cookie_samesite']));
+		unset($_POST['session_cookie_samesite']);
 	}
 
 	// If email verification or Email/Password Login Method - email address is required!
@@ -1442,6 +1461,30 @@ $text .= "
 
 						$text .= "
 						</td>
+					</tr>
+			";
+
+		$csrfModes = array(
+			e_session::TOKEN_CHECK_ENFORCE => PRFLAN_296,
+			e_session::TOKEN_CHECK_LOG     => PRFLAN_297,
+			e_session::TOKEN_CHECK_OFF     => PRFLAN_298,
+		);
+
+		$sameSiteModes = array(
+			'Lax'    => PRFLAN_301,
+			'Strict' => PRFLAN_302,
+			'None'   => PRFLAN_303,
+			''       => PRFLAN_304,
+		);
+
+		$text .= "
+					<tr>
+						<td><label for='csrf-enforce'>".PRFLAN_294."</label>".$frm->help(PRFLAN_295)."</td>
+						<td>".$frm->select('csrf_enforce', $csrfModes, e_session::tokenCheckMode(), array('size' => 'xlarge'))."</td>
+					</tr>
+					<tr>
+						<td><label for='session-cookie-samesite'>".PRFLAN_299."</label>".$frm->help(PRFLAN_300)."</td>
+						<td>".$frm->select('session_cookie_samesite', $sameSiteModes, e_session::normaliseSameSite(varset($pref['session_cookie_samesite'], 'Lax')), array('size' => 'xlarge'))."</td>
 					</tr>
 			";
 

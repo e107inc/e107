@@ -99,6 +99,26 @@ class e_session
     const SECURITY_LEVEL_INSANE = 10;
 
     /**
+     * A POST carrying no token is allowed through, the behaviour before
+     * GHSA-72q5-94gw-prww
+     * @var int
+     */
+    const TOKEN_CHECK_OFF = 0;
+
+    /**
+     * A POST carrying no token is allowed through but recorded in the admin log,
+     * so an operator can measure what would break before switching enforcement on
+     * @var int
+     */
+    const TOKEN_CHECK_LOG = 1;
+
+    /**
+     * A POST carrying no token is refused
+     * @var int
+     */
+    const TOKEN_CHECK_ENFORCE = 2;
+
+    /**
      * Session save path
      * @var string
      */
@@ -149,6 +169,7 @@ class e_session
         'domain'     => '',
         'secure'     => false,
         'httponly'   => true,
+        'samesite'   => 'Lax',
     );
 
     /**
@@ -223,6 +244,9 @@ class e_session
             $options['lifetime']    = (int) e107::getPref('session_lifetime', 86400);
             $options['path']        = e107::getPref('session_cookie_path', ''); // FIXME - new pref
             $options['secure']      = e107::getPref('ssl_enabled', false); //
+            $options['samesite']    = defined('e_SESSION_SAMESITE')
+                ? e_SESSION_SAMESITE
+                : e107::getPref('session_cookie_samesite', 'Lax');
 
             e107::getDebug()->log("Session Save Method: ".$config['SaveMethod']);
 
@@ -502,6 +526,110 @@ public function getData($key = null, $clear = false)
     }
 
     /**
+     * Runtime override of the token check mode, or null to follow the preference.
+     *
+     * @var int|null
+     */
+    private static $_tokenCheckMode = null;
+
+    /**
+     * How hard {@see e_core_session::check()} is on a request that submits no token.
+     *
+     * This is the designated API for the question. Read it here rather than
+     * reaching for the preference, so the runtime override below is honoured
+     * everywhere.
+     *
+     * It governs the tokenless case only. A request that presents a token which
+     * does not validate is always refused, whatever this returns. The second lever,
+     * for a site whose forms are being handed a token they cannot honour, is
+     * {@see e_token_injector::setEnabled()}.
+     *
+     * @return int one of the TOKEN_CHECK_* constants
+     */
+    public static function tokenCheckMode()
+    {
+        if(self::$_tokenCheckMode !== null)
+        {
+            return self::$_tokenCheckMode;
+        }
+
+        return (int) e107::getPref('csrf_enforce', self::TOKEN_CHECK_ENFORCE);
+    }
+
+    /**
+     * Override the token check mode for the rest of this request.
+     *
+     * Exists so a test, or a bootstrap that knows better than the stored
+     * preference, can set the mode without a define. Pass null to hand control
+     * back to the preference.
+     *
+     * @param int|null $mode one of the TOKEN_CHECK_* constants, or null
+     * @return int|null the override that was in force, for restoring afterwards
+     */
+    public static function setTokenCheckMode($mode)
+    {
+        $previous = self::$_tokenCheckMode;
+
+        self::$_tokenCheckMode = ($mode === null) ? null : (int) $mode;
+
+        return $previous;
+    }
+
+    /**
+     * Reduce a configured SameSite value to one a browser understands.
+     *
+     * @param string $value
+     * @return string 'Lax', 'Strict', 'None', or an empty string for no attribute
+     */
+    public static function normaliseSameSite($value)
+    {
+        switch (strtolower(trim((string) $value)))
+        {
+            case 'lax':
+                return 'Lax';
+
+            case 'strict':
+                return 'Strict';
+
+            case 'none':
+                return 'None';
+        }
+
+        return '';
+    }
+
+    /**
+     * Is this request being served over SSL?
+     *
+     * Only used to decide whether SameSite=None may be sent. The ssl_enabled
+     * preference is honoured, but it is not the whole answer: a site behind an
+     * SSL terminating proxy is HTTPS to the browser while that preference stays
+     * unset, and that is the configuration in which SameSite=None matters most.
+     *
+     * @param mixed $prefValue [optional] the configured ssl_enabled value
+     * @return bool
+     */
+    public static function isSecureContext($prefValue = null)
+    {
+        if(!empty($prefValue))
+        {
+            return true;
+        }
+
+        if(!empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off')
+        {
+            return true;
+        }
+
+        if(isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https')
+        {
+            return true;
+        }
+
+        return (!empty($_SERVER['SERVER_PORT']) && (int) $_SERVER['SERVER_PORT'] === 443);
+    }
+
+    /**
      * Reset session options
      * @param array $options
      * @return e_session
@@ -525,6 +653,10 @@ public function getData($key = null, $clear = false)
                 case 'secure':
                 case 'httponly':
                     $v = (bool) $v;
+                    break;
+
+                case 'samesite':
+                    $v = self::normaliseSameSite($v);
                     break;
 
                 default:
@@ -620,11 +752,7 @@ public function getData($key = null, $clear = false)
         }
 
         // set session cookie params
-        session_set_cookie_params($this->_options['lifetime'],
-            $this->_options['path'],
-            $this->_options['domain'],
-            $this->_options['secure'],
-            $this->_options['httponly']);
+        $this->setSessionCookieParams();
 
         if ($this->_sessionCacheLimiter)
         {
@@ -634,6 +762,77 @@ public function getData($key = null, $clear = false)
         session_start();
         self::$_sessionStarted = true;
         return $this;
+    }
+
+    /**
+     * Apply the cookie parameters, including SameSite.
+     *
+     * session_set_cookie_params() only grew an options array in PHP 7.3, and
+     * before that there was no way to send SameSite through it at all, so the
+     * older engines get the documented path-parameter workaround, which is the
+     * same one {@see eShims::setcookie()} uses.
+     *
+     * SameSite=None is meaningless without the Secure flag and is dropped
+     * outright by current browsers, so it degrades to Lax on a site that is not
+     * served over SSL rather than silently costing everyone their session.
+     * Whether the site is served over SSL is read from the request as well as
+     * from the ssl_enabled preference, because a site behind an SSL terminating
+     * proxy is very commonly HTTPS with that preference never set, and deciding
+     * on the preference alone would degrade a working None back to Lax while the
+     * admin area went on showing None as the selected value.
+     *
+     * @return void
+     */
+    protected function setSessionCookieParams()
+    {
+        $sameSite = self::normaliseSameSite($this->_options['samesite']);
+
+        if ($sameSite === 'None')
+        {
+            if (self::isSecureContext($this->_options['secure']))
+            {
+                // Browsers reject SameSite=None outright unless Secure is set too.
+                $this->_options['secure'] = true;
+            }
+            else
+            {
+                e107::getDebug()->log('Session cookie SameSite=None degraded to Lax: the request is not over SSL.');
+                $sameSite = 'Lax';
+            }
+        }
+
+        $this->_options['samesite'] = $sameSite;
+
+        if ($sameSite === '')
+        {
+            session_set_cookie_params($this->_options['lifetime'],
+                $this->_options['path'],
+                $this->_options['domain'],
+                $this->_options['secure'],
+                $this->_options['httponly']);
+
+            return;
+        }
+
+        if (PHP_VERSION_ID >= 70300)
+        {
+            session_set_cookie_params(array(
+                'lifetime' => $this->_options['lifetime'],
+                'path'     => (string) $this->_options['path'],
+                'domain'   => (string) $this->_options['domain'],
+                'secure'   => (bool) $this->_options['secure'],
+                'httponly' => (bool) $this->_options['httponly'],
+                'samesite' => $sameSite,
+            ));
+
+            return;
+        }
+
+        session_set_cookie_params($this->_options['lifetime'],
+            $this->_options['path'] . '; samesite=' . $sameSite,
+            $this->_options['domain'],
+            $this->_options['secure'],
+            $this->_options['httponly']);
     }
 
     /**
@@ -721,7 +920,7 @@ public function getData($key = null, $clear = false)
         {
             if (!headers_sent())
             {
-                cookie(session_name(), session_id(), time() + $this->_options['lifetime'], $this->_options['path'], $this->_options['domain'], $this->_options['secure']);
+                cookie(session_name(), session_id(), time() + $this->_options['lifetime'], $this->_options['path'], $this->_options['domain'], $this->_options['secure'], $this->_options['samesite']);
                 $time = time() + round($this->_options['lifetime'] / 4);
                 $_SESSION['_cookie_session_validate'] = $time;
             }
@@ -1095,6 +1294,12 @@ class e_core_session extends e_session
     /**
      * Core CSRF protection, see class2.php
      * Could be adopted by plugins for their own (different) protection logic
+     *
+     * A POST is rejected both when it carries a token that does not validate and
+     * when it carries no token at all. The second half is governed by
+     * {@see e_session::tokenCheckMode()} and applies only to a request that
+     * presented a cookie, see {@see e_core_session::hasAmbientAuthority()}.
+     *
      * @param bool $die
      * @return bool
      */
@@ -1107,6 +1312,7 @@ class e_core_session extends e_session
         {
             if((isset($_POST['e-token']) && !$this->checkFormToken($_POST['e-token']))
             || (isset($_GET['e-token']) && !$this->checkFormToken($_GET['e-token']))
+            || (isset($_SERVER['HTTP_X_E_TOKEN']) && !$this->checkFormToken($_SERVER['HTTP_X_E_TOKEN']))
             || (isset($_POST['e_token']) && !$this->checkFormToken($_POST['e_token']))) // '-' is not allowed in jQuery
             {
                 $this->log('Unauthorized access!');
@@ -1117,6 +1323,28 @@ class e_core_session extends e_session
                 }
 
                 return false;
+            }
+
+            if(self::isStateChangingRequest() && self::hasAmbientAuthority() && !self::hasSubmittedToken())
+            {
+                $mode = self::tokenCheckMode();
+
+                if($mode === self::TOKEN_CHECK_LOG)
+                {
+                    $this->logMissingToken($mode);
+                }
+
+                if($mode >= self::TOKEN_CHECK_ENFORCE)
+                {
+                    $this->log('Unauthorized access!');
+
+                    if($die)
+                    {
+                        die('Unauthorized access!');
+                    }
+
+                    return false;
+                }
             }
 
             $this->log('Session Token Okay!', defset('E_LOG_NOTICE', 1));
@@ -1140,6 +1368,70 @@ class e_core_session extends e_session
         }
 
         return true;
+    }
+
+    /**
+     * Only POST is treated as state-changing. It is the sole method a browser will
+     * send cross-site without a CORS preflight, so it is the whole CSRF surface,
+     * and confining the check to it keeps every GET working exactly as before.
+     *
+     * @return bool
+     */
+    private static function isStateChangingRequest()
+    {
+        return (isset($_SERVER['REQUEST_METHOD']) && strtoupper($_SERVER['REQUEST_METHOD']) === 'POST');
+    }
+
+    /**
+     * @return bool whether the request presented a token at all, valid or not
+     */
+    private static function hasSubmittedToken()
+    {
+        return (isset($_POST['e-token']) || isset($_GET['e-token'])
+            || isset($_SERVER['HTTP_X_E_TOKEN']) || isset($_POST['e_token']));
+    }
+
+    /**
+     * Does this request carry anything the browser would attach on its own?
+     *
+     * Cross-site request forgery works by borrowing ambient authority: the
+     * attacker cannot read the response, so the only thing the forged request is
+     * worth is whatever the browser attaches without being asked. A request that
+     * presents no cookie at all has nothing to borrow, so refusing it buys no
+     * security and breaks every machine-to-machine caller, a payment gateway's
+     * IPN callback among them.
+     *
+     * @return bool
+     */
+    private static function hasAmbientAuthority()
+    {
+        return !empty($_COOKIE);
+    }
+
+    /**
+     * Record a tokenless POST in the admin log.
+     *
+     * Only ever called in log-only mode, which an operator turns on deliberately
+     * and briefly. Writing a row for a refused request instead hands anyone who
+     * can reach the site an unthrottled insert into an indexed table.
+     *
+     * Field names are recorded, values are not, because a login POST would
+     * otherwise put a password in the log. Everything recorded is attacker
+     * controlled, so every part of it is capped.
+     *
+     * @param int $mode the mode this was decided under
+     * @return void
+     */
+    private function logMissingToken($mode)
+    {
+        $details  = "METHOD: POST\n";
+        $details .= "URI: " . (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '') . "\n";
+        $details .= "REFERER: " . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '') . "\n";
+        $details .= "FIELDS: " . implode(', ', array_keys($_POST)) . "\n";
+        $details .= "SESSION: " . substr(sha1((string) $this->getSessionId()), 0, 12) . "\n";
+        $details .= "ACTION: " . (($mode >= self::TOKEN_CHECK_ENFORCE) ? 'refused' : 'allowed, log-only mode') . "\n";
+
+        e107::getLog()->add('CSRF_01', $details, defset('E_LOG_WARNING', 2));
     }
 
     /**
@@ -1167,7 +1459,7 @@ class e_core_session extends e_session
 
         if (!$this->is('challenge')) // TODO: Eliminate need for this
         {
-            $this->set('challenge', sha1(time().rand().$this->getSessionId())); // New challenge for next time
+            $this->set('challenge', e_random::hex(40)); // New challenge for next time, same 40 hex characters sha1() gave
         }
         if ($this->is('challenge'))
         {
