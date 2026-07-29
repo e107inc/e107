@@ -119,8 +119,9 @@ if(e_QUERY)
 		->fetchRow();
 	if ($row)
 	{
-		// Delete the record
-
+		// An expired code is spent. Delete it and refuse: execution used to fall
+		// through and reset the password anyway, which combined with the lazy
+		// prune in class2.php stretched the real window to 900 seconds.
 		if(time() > (int) $row['tmp_time'])
 		{
 			$sql->createQueryBuilder()->delete('tmp')
@@ -128,6 +129,7 @@ if(e_QUERY)
 				->where('tmp_info', $row['tmp_info'])
 				->execute();
 			e107::getMessage()->addDebug("Tmp Password Reset Entry Deleted");
+			fpw_error(LAN_FPW7);
 		}
 
 		$sql->createQueryBuilder()->delete('tmp')
@@ -137,11 +139,22 @@ if(e_QUERY)
 		list($uid, $loginName, $md5) = explode(FPW_SEPARATOR, $row['tmp_info']);
 		$loginName = $tp->toDB($loginName, true);
 
-		// This should never happen! 
-		if($md5 != $tmpinfo)
+		// The redemption lookup is a case-insensitive SQL LIKE, so a case variant
+		// of a live code reaches this point. Compare exactly, and answer exactly
+		// as a miss does: a distinguishable response here let an attacker fold
+		// the code's alphabet and then recover its casing one letter at a time.
+		if(!hash_equals((string) $md5, (string) $tmpinfo))
 		{
-			e107::getRedirect()->redirect(SITEURL);	
+			fpw_error(LAN_FPW7);
 		}
+
+		// Spend the code before it is acted on. It used to survive redemption, so
+		// anyone holding the emailed link, a mail scanner or a shared mailbox
+		// included, could reset the account again and again until it expired.
+		$sql->createQueryBuilder()->delete('tmp')
+			->where('tmp_ip', 'pwreset')
+			->where('tmp_info', $row['tmp_info'])
+			->execute();
 
 		// Generate new temporary password
 		$pwdArray = e107::getUserSession()->resetPassword($uid,$loginName, array('return'=>'array'));
@@ -275,17 +288,18 @@ if (!empty($_POST['pwsubmit']))
 			exit;
 		}
 
-		// Set unique reset code
-		$datekey 	= microtime(true);
-		$rcode =  e107::getUserSession()->generateRandomString( '############' );
-	//	$rcode 		= crypt(($_SERVER['HTTP_USER_AGENT'] . serialize($pref). $clean_email . $datekey), e_TOKEN);
+		// Set unique reset code. Must stay [A-Za-z0-9]: the redemption path runs
+		// preg_replace("#[\W_]#", "", ...) over the query string and then demands
+		// equality with it.
+		$rcode = e107::getUserSession()->generateRandomString( '############' );
 
 		// Prepare email
 		$link 		= rtrim($fpw_siteurl, '/').'/fpw.php?'.$rcode;
 		$message 	= LAN_FPW5.' '.SITENAME.' '.LAN_FPW14.': '.e107::getIPHandler()->getIP(TRUE).".\n\n".LAN_FPW15."\n\n".LAN_FPW16."\n\n".LAN_FPW17."\n\n{$link}";
 
-		// Set timestamp two days ahead so it doesn't get auto-deleted
-	//	$deltime = time()+86400 * 2;
+		// Reset codes are valid for 10 minutes, as they always nominally were. The
+		// expiry check used to fall through, so in practice a code lived for the
+		// 900 seconds the class2.php prune allowed; now the window is the stated one.
 		$deltime = strtotime("+ 10 minutes");
 		
 		// Insert the password reset request into the database
