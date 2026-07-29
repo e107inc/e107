@@ -1802,6 +1802,12 @@ class e_admin_controller
 	 */
 	protected $disallow = array();
 
+	/**
+	 * Cached result of {@see e_admin_controller::checkRequestToken()}
+	 * @var boolean|null
+	 */
+	protected $_request_token_valid = null;
+
 
 
 	/**
@@ -2264,6 +2270,13 @@ class e_admin_controller
 						$actionTriggerName = $this->toMethodName($action.$request->camelize(substr($key, 9)), 'trigger', false);
 						if(method_exists($this, $actionTriggerName))
 						{
+							if(!$this->checkRequestToken())
+							{
+								$this->_log('Rejecting ' .$actionTriggerName. '() (invalid or missing security token)');
+								e107::getMessage()->addError('Unauthorized access - invalid or missing security token.');
+								break;
+							}
+
 							$this->$actionTriggerName($value);
 						}
 						//Check if triggers are still enabled
@@ -2277,6 +2290,31 @@ class e_admin_controller
 		}
 
 		return $this;
+	}
+
+	/**
+	 * Validate the request token of a state-changing request.
+	 *
+	 * Routed through {@see e_session::check()} rather than
+	 * {@see e_session::checkFormToken()} so that the site security level and the
+	 * command line early return are both honoured.
+	 *
+	 * The tokenless case is not forced to fail here. class2.php has already put
+	 * this request through the same check(), so by the time a trigger runs the
+	 * only way a tokenless POST can have got this far is that the site's
+	 * {@see e_session::tokenCheckMode()} let it, and second-guessing that would
+	 * make log-only mode enforce.
+	 *
+	 * @return boolean true when the request is allowed to change state
+	 */
+	protected function checkRequestToken()
+	{
+		if($this->_request_token_valid === null)
+		{
+			$this->_request_token_valid = e107::getSession()->check(false);
+		}
+
+		return $this->_request_token_valid;
 	}
 
 	/**
@@ -6478,6 +6516,17 @@ class e_admin_ui extends e_admin_controller_ui
 		{
 			return;
 		}
+
+		if(!$this->checkRequestToken())
+		{
+			$protocol = isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0';
+			header($protocol.' 403 Forbidden', true, 403);
+			header('Status: 403 Forbidden', true, 403);
+			echo defset('ADLAN_86', 'Forbidden');
+			$this->logajax('Rejecting SortAjaxPage() (invalid or missing security token)');
+			return;
+		}
+
 		if(!$this->sortField)
 		{
 			echo 'Missing sort field value';
@@ -7674,7 +7723,7 @@ class e_admin_form_ui extends e_form
 			'table_rows' => '', // rows array (<td> tags)
 			'table_body' => '', // string body - used only if rows empty
 			'pre_triggers' => '',
-			'triggers' => array('hidden' => $this->hidden('etrigger_delete['.$ids.']', $ids) . $this->token(), 'delete_confirm' => array(LAN_CONFDELETE, 'confirm', $ids), 'cancel' => array(LAN_CANCEL, 'cancel')),
+			'triggers' => array('hidden' => $this->hidden('etrigger_delete['.$ids.']', $ids), 'delete_confirm' => array(LAN_CONFDELETE, 'confirm', $ids), 'cancel' => array(LAN_CANCEL, 'cancel')),
 		);
 		if($delcount > 1)
 		{
