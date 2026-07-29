@@ -25,6 +25,121 @@
 			}
 		}
 
+		/**
+		 * GHSA-72q5-94gw-prww. A missing preference has to read as full
+		 * enforcement, because that is what a site upgrading from an older
+		 * release will have.
+		 */
+		public function testTokenCheckModeDefaultsToEnforce()
+		{
+			$this::assertNull(e107::getConfig()->get('csrf_enforce'));
+			$this::assertSame(e_session::TOKEN_CHECK_ENFORCE, e_session::tokenCheckMode());
+		}
+
+		/**
+		 * The runtime override is the designated seam for a test, and for a
+		 * bootstrap that knows better than the stored preference. It replaced an
+		 * e_CSRF_ENFORCE define, which no test could set without a whole extra
+		 * PHP process.
+		 */
+		public function testSetTokenCheckModeOverridesThePreference()
+		{
+			$previous = e_session::setTokenCheckMode(e_session::TOKEN_CHECK_LOG);
+
+			try
+			{
+				$this::assertSame(e_session::TOKEN_CHECK_LOG, e_session::tokenCheckMode());
+
+				e_session::setTokenCheckMode(e_session::TOKEN_CHECK_OFF);
+				$this::assertSame(e_session::TOKEN_CHECK_OFF, e_session::tokenCheckMode());
+
+				// null hands control back to the preference, which is unset here
+				e_session::setTokenCheckMode(null);
+				$this::assertSame(e_session::TOKEN_CHECK_ENFORCE, e_session::tokenCheckMode());
+			}
+			catch(Exception $e)
+			{
+				e_session::setTokenCheckMode($previous);
+				throw $e;
+			}
+
+			e_session::setTokenCheckMode($previous);
+		}
+
+		/**
+		 * setTokenCheckMode() hands back what it displaced, so a caller can put
+		 * the previous value back without knowing what it was.
+		 */
+		public function testSetTokenCheckModeReturnsThePreviousOverride()
+		{
+			$this::assertNull(e_session::setTokenCheckMode(e_session::TOKEN_CHECK_LOG));
+			$this::assertSame(e_session::TOKEN_CHECK_LOG, e_session::setTokenCheckMode(null));
+			$this::assertNull(e_session::setTokenCheckMode(null));
+		}
+
+		/**
+		 * check() compares the mode with >=, so the order is load-bearing.
+		 */
+		public function testTokenCheckModesAreOrdered()
+		{
+			$this::assertLessThan(e_session::TOKEN_CHECK_LOG, e_session::TOKEN_CHECK_OFF);
+			$this::assertLessThan(e_session::TOKEN_CHECK_ENFORCE, e_session::TOKEN_CHECK_LOG);
+		}
+
+		public function testNormaliseSameSite()
+		{
+			$this::assertSame('Lax', e_session::normaliseSameSite('lax'));
+			$this::assertSame('Lax', e_session::normaliseSameSite(' LAX '));
+			$this::assertSame('Strict', e_session::normaliseSameSite('strict'));
+			$this::assertSame('None', e_session::normaliseSameSite('NONE'));
+			$this::assertSame('', e_session::normaliseSameSite(''));
+			$this::assertSame('', e_session::normaliseSameSite('Lax; Domain=evil.example.net'));
+		}
+
+		/**
+		 * SameSite=None is only honoured over SSL, and a site behind an SSL
+		 * terminating proxy is very commonly HTTPS with ssl_enabled never set.
+		 * Deciding on the preference alone silently degraded such a site to Lax.
+		 */
+		public function testIsSecureContext()
+		{
+			$server = $_SERVER;
+
+			try
+			{
+				unset($_SERVER['HTTPS'], $_SERVER['HTTP_X_FORWARDED_PROTO'], $_SERVER['SERVER_PORT']);
+				$this::assertFalse(e_session::isSecureContext(false));
+				$this::assertTrue(e_session::isSecureContext(1));
+
+				$_SERVER['HTTPS'] = 'off';
+				$this::assertFalse(e_session::isSecureContext(false));
+
+				$_SERVER['HTTPS'] = 'on';
+				$this::assertTrue(e_session::isSecureContext(false));
+				unset($_SERVER['HTTPS']);
+
+				$_SERVER['HTTP_X_FORWARDED_PROTO'] = 'https';
+				$this::assertTrue(e_session::isSecureContext(false));
+
+				$_SERVER['HTTP_X_FORWARDED_PROTO'] = 'http';
+				$this::assertFalse(e_session::isSecureContext(false));
+				unset($_SERVER['HTTP_X_FORWARDED_PROTO']);
+
+				$_SERVER['SERVER_PORT'] = '443';
+				$this::assertTrue(e_session::isSecureContext(false));
+
+				$_SERVER['SERVER_PORT'] = '80';
+				$this::assertFalse(e_session::isSecureContext(false));
+			}
+			catch(Exception $e)
+			{
+				$_SERVER = $server;
+				throw $e;
+			}
+
+			$_SERVER = $server;
+		}
+
 		public function testSetOption()
 		{
 			$opt = array(
@@ -33,6 +148,7 @@
 				'domain'	 => 'test.com',
 				'secure'	 => false,
 				'httponly'	 => true,
+				'samesite'	 => 'Lax',
 				'_dummy'    => 'not here'
 			);
 
