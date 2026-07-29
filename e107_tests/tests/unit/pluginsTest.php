@@ -168,6 +168,11 @@
 
 			$errors = [];
 
+			// 'NUL' is the null device on Windows only. Everywhere else it is an
+			// ordinary relative path, so redirecting to it drops a stray 'NUL'
+			// file into the docroot on every run.
+			$nullDevice = (DIRECTORY_SEPARATOR === '\\') ? 'NUL' : '/dev/null';
+
 			foreach($core as $plug)
 			{
 				$path = realpath(e107::getFolder('plugins') . $plug);
@@ -255,7 +260,7 @@
 					$requireStatements .= "require_once '" . addslashes($filePath) . "'; ";
 					$requireStatements .= "echo 'END: " . addslashes($relativePath) . "\\n'; ";
 				}
-				$runCommand = sprintf('php -r %s 1>NUL 2>&1', escapeshellarg($requireStatements));
+				$runCommand = sprintf('php -r %s 1>%s 2>&1', escapeshellarg($requireStatements), $nullDevice);
 
 			//	fwrite(STDOUT, "Debug run command:\n$runCommand\n\n\n\n");
 
@@ -290,14 +295,14 @@
 						$lastGoodFile = null;
 						foreach($pluginFiles as $relativePath => $filePath)
 						{
-							$testCommand = sprintf('php -r %s 1>NUL 2>&1', escapeshellarg(
+							$testCommand = sprintf('php -r %s 1>%s 2>&1', escapeshellarg(
 								"error_reporting(E_ALL); ini_set('display_errors', 1); " .
 								"require_once('" . addslashes($class2Path) . "'); " .
 								"e107::includeLan('" . addslashes($lanAdminPath) . "'); " .
 								"e107::plugLan('" . addslashes($plug) . "', 'global'); " .
 								"e107::getConfig()->setPref('plug_installed/" . addslashes($plug) . "', 1); " .
 								"e107::includeLan('" . addslashes($filePath) . "');"
-							));
+							), $nullDevice);
 							exec($testCommand, $testOutput, $testExitCode);
 							if($testExitCode !== 0)
 							{
