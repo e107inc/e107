@@ -1576,6 +1576,7 @@ class e_form
 				$(function() {
 				    $('#".$name_id."_prev').dropzone({ 
 				        url: '".e_JS. 'plupload/upload.php?' .$qry."',
+				        params: {'e-token': '".defset('e_TOKEN')."'},
 				        createImageThumbnails: false,
 				        uploadMultiple :false,
 						dictDefaultMessage: \"".$parms['label']. '",
@@ -3771,6 +3772,22 @@ var_dump($select_options);*/
 
 	/**
 	 * Generate hidden security field
+	 * @return string
+	 */
+	/**
+	 * The security token as a hidden input.
+	 *
+	 * @deprecated v2.3.10 Nothing needs to call this any more.
+	 *             {@see e_token_injector} adds the token to every same-origin
+	 *             POST form in the finished page, so form POST protection is
+	 *             automatic whether the markup came from e_form, from a theme
+	 *             template or from raw HTML in a plugin. Calling this as well is
+	 *             harmless, the page simply ends up with two identical hidden
+	 *             inputs, but it is no longer the way to be protected.
+	 *
+	 *             An AJAX caller that builds its own request body wants the
+	 *             token from e107.security.csrfToken() on the JavaScript side.
+	 *
 	 * @return string
 	 */
 	public function token()
@@ -7446,8 +7463,8 @@ var_dump($select_options);*/
 
 	        $text .= "
 				<form method='post' action='{$formurl}' id='{$elid}-list-form'>
-				<div>".$this->token(). '
-					' .vartrue($options['fieldset_pre'])."
+				<div>
+					".vartrue($options['fieldset_pre'])."
 					<fieldset id='{$elid}-list'>
 						<legend class='{$legend_class}'>".$options['legend']. '</legend>
 						' .vartrue($options['table_pre'])."
@@ -7611,8 +7628,8 @@ var_dump($select_options);*/
 
 	        $text .= "
 				<form method='post' action='{$formurl}' id='{$elid}-list-form'>
-				<div>".$this->token(). '
-					' .vartrue($options['fieldset_pre']);
+				<div>
+					".vartrue($options['fieldset_pre']);
 
 					$text .= "
 
@@ -7809,7 +7826,6 @@ var_dump($select_options);*/
 				<div style='display:none'><input type='text' name='lastname_74758209201093747' autocomplete='off' id='_no_autocomplete_' /></div>
 				<div id='admin-ui-edit'>
 				".vartrue($form['header']). '
-				' .$this->token(). '
 			';
 
 			foreach ($form['fieldsets'] as $elid => $data)
@@ -8194,7 +8210,6 @@ var_dump($select_options);*/
 				<form method='post' action='".$url."' id='{$form['id']}-form' enctype='multipart/form-data'>
 				<div>
 				".vartrue($form['header']). '
-				' .$this->token(). '
 			';
 
 			foreach ($form['fieldsets'] as $elid => $fieldset_data)
@@ -8365,7 +8380,7 @@ class form
 		$method = ($form_method ? "method='".$form_method."'" : '');
 		$target = ($form_target ? " target='".$form_target."'" : '');
 		$name = ($form_name ? " id='".$form_name."' " : " id='myform'");
-		return "\n<form action='".$form_action."' ".$method.$target.$name.$form_enctype.$form_js. '><div>' .e107::getForm()->token(). '</div>';
+		return "\n<form action='".$form_action."' ".$method.$target.$name.$form_enctype.$form_js. '>';
 	}
 
 	/**

@@ -843,6 +843,37 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		};
 	})();
 
+	/**
+	 * Security helpers.
+	 */
+	e107.security = {
+
+		/**
+		 * The CSRF token for this request, or an empty string when the site has
+		 * token protection switched off.
+		 *
+		 * Most code never needs this. Every eligible form in the page is given a
+		 * token before the page is sent, and every same-origin POST made through
+		 * jQuery has one attached for it. Reach for this only when driving your
+		 * own XMLHttpRequest or fetch(), as the Plupload uploader does.
+		 *
+		 * Where the value is read from is an implementation detail and may
+		 * change. Call this rather than looking for the markup yourself.
+		 *
+		 * @returns {string}
+		 */
+		csrfToken: function () {
+			var meta = document.querySelector ? document.querySelector('meta[name="e-token"]') : null;
+
+			if (meta && meta.content) {
+				return meta.content;
+			}
+
+			return $('input[name="e-token"]').first().val() || '';
+		}
+
+	};
+
 })(jQuery);
 
 $.ajaxSetup({
@@ -854,6 +885,88 @@ $.ajaxSetup({
 	},
 	cache: false // Was Really NEeded!
 });
+
+/**
+ * Attach the CSRF token to same-origin POST requests.
+ *
+ * A form built by JavaScript after load never passes through the output buffer,
+ * so it never gets a token from e_token_injector. jQuery has already resolved
+ * crossDomain and serialised an object payload by the time a prefilter runs.
+ */
+(function ($) {
+
+	/**
+	 * Would this URL be sent back to the page's own origin?
+	 *
+	 * A token attached to a cross-origin request would be handed to whoever owns
+	 * that origin, so anything that is not provably ours is refused. Deliberately
+	 * not published on e107: nothing outside this file needs it.
+	 */
+	function isSameOrigin(url) {
+		if (!url) {
+			return true;
+		}
+
+		var anchor = document.createElement('a');
+
+		try {
+			anchor.href = url;
+			anchor.href = anchor.href; // normalise the default port on older engines
+		} catch (e) {
+			return false;
+		}
+
+		if (anchor.protocol !== 'http:' && anchor.protocol !== 'https:') {
+			return false;
+		}
+
+		return (anchor.protocol + '//' + anchor.host) === (window.location.protocol + '//' + window.location.host);
+	}
+
+	$.ajaxPrefilter(function (options) {
+		if (!options.type || options.type.toUpperCase() !== 'POST') {
+			return;
+		}
+
+		if (options.crossDomain || !isSameOrigin(options.url)) {
+			return;
+		}
+
+		var token = e107.security.csrfToken();
+
+		if (!token) {
+			return;
+		}
+
+		if (typeof options.data === 'string') {
+			var urlencoded = typeof options.contentType === 'string'
+				&& options.contentType.indexOf('application/x-www-form-urlencoded') === 0;
+
+			if (urlencoded) {
+				if (!/(^|&)e-token=/.test(options.data)) {
+					options.data += (options.data.length ? '&' : '') + 'e-token=' + encodeURIComponent(token);
+				}
+				return;
+			}
+		} else if (window.FormData && options.data instanceof FormData) {
+			if (!options.data.has || !options.data.has('e-token')) {
+				options.data.append('e-token', token);
+			}
+			return;
+		}
+
+		// A body we must not rewrite, such as JSON, or no body at all. The token goes
+		// in a header rather than in the query string, which would write it into every
+		// access log in front of the site. A custom header cannot be set cross-origin
+		// without a preflight, so it is no weaker than the field.
+		options.headers = options.headers || {};
+
+		if (!options.headers['X-e-token']) {
+			options.headers['X-e-token'] = token;
+		}
+	});
+
+})(jQuery);
 
 $(document).ready(function()
 {
