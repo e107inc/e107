@@ -343,7 +343,7 @@ class cron_admin_ui extends e_admin_ui
 		{
 			//global $pref;	
 			$userMethods = e107::getUserSession();
-			$newpwd = $userMethods->generateRandomString('*^*#.**^*');
+			$newpwd = $userMethods->generateRandomString('*********');
 			$newpwd = sha1($newpwd.time());
 
 			e107::getConfig()->set('e_cron_pwd', $newpwd)->save(false);
