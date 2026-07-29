@@ -10,6 +10,7 @@ coverage:
     enabled: false
 modules:
     enabled:
+        - Asserts
         - PhpBrowser:
             url: '%url%'
         - \Helper\Acceptance:
