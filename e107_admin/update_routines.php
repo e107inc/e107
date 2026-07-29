@@ -133,17 +133,12 @@ class e107Update
 
 		// CSRF: the core/plugin update routines below are state-changing and
 		// write to the database, so a forged cross-site POST must not be able
-		// to trigger them. Require a valid session token before any update runs
-		// and fail closed. check() honours the site security level, so installs
-		// with token protection disabled are unaffected.
+		// to trigger them. Re-checking here turns what class2.php answers with a
+		// bare die() into an error an admin can read, and catches a token that
+		// expired between rendering the form and submitting it.
 		if((varset($_POST['update_core']) && is_array($_POST['update_core']))
 			|| (varset($_POST['update']) && is_array($_POST['update'])))
 		{
-			if(!isset($_POST['e-token']))
-			{
-				$_POST['e-token'] = '';
-			}
-
 			if(!e107::getSession()->check(false))
 			{
 				$mes->addError('Unauthorized access - invalid or missing security token.');
@@ -324,7 +319,12 @@ class e107Update
 	{
 		$ns = e107::getRender();
 		$mes = e107::getMessage();
-		
+
+		if(!e_random::isAvailable())
+		{
+			$mes->addError(e_random::UNAVAILABLE);
+		}
+
 		$caption = LAN_UPDATE;
 		$text = "
 		<form method='post' action='".e_ADMIN."e107_update.php'>

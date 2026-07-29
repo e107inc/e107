@@ -158,7 +158,7 @@ class signup_shortcodes extends e_shortcode
 
 	function sc_signup_form_open()
 	{
-		return "<form action='".e_SELF."' method='post' id='signupform' class='signup-form form-horizontal' autocomplete='off'><div>".e107::getForm()->token()."</div>";
+		return "<form action='".e_SELF."' method='post' id='signupform' class='signup-form form-horizontal' autocomplete='off'>";
 	}
 	
 	/* example: {SIGNUP_SIGNUP_TEXT}

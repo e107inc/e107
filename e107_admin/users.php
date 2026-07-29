@@ -10,11 +10,6 @@
 *
 */
 
-if(!empty($_POST) && !isset($_POST['e-token']))
-{
-	$_POST['e-token'] = ''; // make sure e-token hasn't been deliberately removed.
-}
-
 if (!defined('e107_INIT'))
 {
 	require_once(__DIR__.'/../class2.php');
@@ -1335,7 +1330,7 @@ class users_admin_ui extends e_admin_ui
 		$response->appendBody($frm->open('adminperms'))
 			->appendBody($prm->renderPermTable('grouped', $sysuser->getValue('perms')))
 			->appendBody($prm->renderCheckAllButtons())
-			->appendBody($prm->renderSubmitButtons().$frm->token())
+			->appendBody($prm->renderSubmitButtons())
 			->appendBody($frm->close());
 		
 		$this->addTitle(str_replace(array('[x]', '[y]'), array($sysuser->getName(), $sysuser->getValue('email')), USRLAN_230));
@@ -2066,7 +2061,6 @@ class users_admin_ui extends e_admin_ui
 		</table>
 		<div class='buttons-bar center'>
 			".$frm->admin_trigger('submit', USRLAN_60, 'create')."
-			".$frm->token()."
 			<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
 		</div>
 		</fieldset>

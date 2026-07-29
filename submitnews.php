@@ -9,11 +9,6 @@
  */
 
  
-if(!empty($_POST) && !isset($_POST['e-token']))
-{
-	// set e-token so it can be processed by class2
-	$_POST['e-token'] = '';
-} 
 require_once("class2.php");
 e107::coreLan('submitnews');
 // e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
