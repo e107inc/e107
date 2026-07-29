@@ -1393,6 +1393,7 @@ return [
 
 
 		$extensionCheck = array(
+			'csprng'   => array('label' => defset('LANINS_151', 'Secure Random Number Generator'), 'status' => e_random::isAvailable(), 'url' => 'https://www.php.net/manual/en/function.random-bytes.php'),
 			'pdo'      => array('label' => "PDO (MySQL)", 'status' => extension_loaded('pdo_mysql'), 'url' => 'https:/php.net/manual/en/book.pdo.php'),
 			'xml'      => array('label' => LANINS_050, 'status' => function_exists('utf8_encode') && class_exists('DOMDocument', false), 'url' => 'http://php.net/manual/en/ref.xml.php'),
 			'exif'     => array('label' => LANINS_048, 'status' => function_exists('exif_imagetype'), 'url' => 'http://php.net/manual/en/book.exif.php'),
@@ -1442,7 +1443,9 @@ return [
 				$output .= "
 			</table>\n";
 
-		if(!$perms_pass || (($extensionCheck['xml']['status'] !== true)))
+		// A missing CSPRNG blocks the install outright: without it e107 cannot
+		// mint the admin password, the session token or any later secret.
+		if(!$perms_pass || ($extensionCheck['xml']['status'] !== true) || ($extensionCheck['csprng']['status'] !== true))
 		{
 			$this->add_button("retest_perms", LANINS_009);
 			$this->stage = 3; // make the installer jump back a step

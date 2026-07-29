@@ -371,10 +371,11 @@ class cron_admin_ui extends e_admin_ui
 		
 		function setCronPwd()
 		{
-			//global $pref;	
-			$userMethods = e107::getUserSession();
-			$newpwd = $userMethods->generateRandomString('*^*#.**^*');
-			$newpwd = sha1($newpwd.time());
+			// 160 bits of CSPRNG output, in the same 40-hex shape the old
+			// sha1(generateRandomString().time()) produced. The pattern
+			// '*^*#.**^*' only ever yielded seven characters, because '^'
+			// appends nothing once the (never supplied) seed is exhausted.
+			$newpwd = e_random::hex(40);
 
 			e107::getConfig()->set('e_cron_pwd', $newpwd)->save(false);
 			return true;

@@ -279,11 +279,18 @@ class e_user_model extends e_admin_model
 	}
 
 	/**
-	 * @return string
+	 * Unguessable key for account activation and admin-issued user_sess values.
+	 *
+	 * 128 bits as 32 lowercase hex characters, the same shape md5() produced, so
+	 * it still fits user_sess varchar(100) and the dot-delimited activation URLs
+	 * that {@see e_signup::processActivationLink()} splits.
+	 *
+	 * @return string 32 hex characters
+	 * @throws Exception when no CSPRNG is available
 	 */
 	public static function randomKey()
 	{
-		return md5(uniqid(rand(), 1));
+		return e_random::hex(32);
 	}
 
 	/**

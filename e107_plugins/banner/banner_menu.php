@@ -87,7 +87,6 @@ if(!empty($menu_pref['banner_campaign']) /*&& !empty($menu_pref['banner_amount']
 		}
 
 
-		mt_srand ((double) microtime() * 1000000);
 		$seed = mt_rand(1,2000000000);
 		$time = time();
 

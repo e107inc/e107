@@ -72,7 +72,7 @@ class CSRFSessionHandler extends CSRFTokenHandler
 	{
 		if (!$this->session->has('__form_token') && !defined('e_TOKEN_DISABLE'))
 		{
-			$this->session->set('__form_token', uniqid(md5(rand()), true));
+			$this->session->set('__form_token', e_random::hex(64));
 			if (deftrue('e_DEBUG_SESSION'))
 			{
 				$message = date('r') . "\t\t" . e_REQUEST_URI . "\n";
@@ -90,7 +90,7 @@ class CSRFSessionHandler extends CSRFTokenHandler
 	public function validate($token)
 	{
 		$utoken = $this->getToken(false);
-		return ($token === md5($utoken));
+		return hash_equals(md5($utoken), (string) $token);
 	}
 
 	/**
@@ -99,7 +99,7 @@ class CSRFSessionHandler extends CSRFTokenHandler
 	 */
 	public function regenerate()
 	{
-		$this->session->set('__form_token', uniqid(md5(rand()), true));
+		$this->session->set('__form_token', e_random::hex(64));
 	}
 
 	/**
@@ -164,7 +164,7 @@ class CSRFCookieHandler extends CSRFTokenHandler
 			// Reuse the session's validation data collection method
 			$payload = [
 				'csrf' => $cookieToken,
-				'validation' => $this->session->getValidateData()
+				'validation' => $this->stripNetworkAddresses($this->session->getValidateData())
 			];
 
 			// Use session lifetime for JWT token TTL
@@ -201,7 +201,7 @@ class CSRFCookieHandler extends CSRFTokenHandler
 		}
 
 		// Compare values
-		if ($data['csrf'] !== $cookieToken)
+		if (!hash_equals((string) $data['csrf'], (string) $cookieToken))
 		{
 			e107::getDebug()->log('CSRF validation failed: Token mismatch');
 			return false;
@@ -230,11 +230,11 @@ class CSRFCookieHandler extends CSRFTokenHandler
 		// Get current request data
 		$currentData = $this->session->getValidateData();
 
-		// Check what should be validated based on security level
+		// Check what should be validated based on security level.
+		// The caller's network address is deliberately not among the rules, see
+		// {@see CSRFCookieHandler::stripNetworkAddresses()}.
 		$validationRules = [
-			'RemoteAddr' => (e_SECURITY_LEVEL >= e_session::SECURITY_LEVEL_BALANCED),
 			'HttpVia' => (e_SECURITY_LEVEL >= e_session::SECURITY_LEVEL_HIGH),
-			'HttpXForwardedFor' => (e_SECURITY_LEVEL >= e_session::SECURITY_LEVEL_LOW),
 			'HttpUserAgent' => (e_SECURITY_LEVEL >= e_session::SECURITY_LEVEL_HIGH)
 		];
 
@@ -253,6 +253,25 @@ class CSRFCookieHandler extends CSRFTokenHandler
 		}
 
 		return true;
+	}
+
+	/**
+	 * Drop the caller's network address from the fingerprint carried by the token.
+	 *
+	 * The token is handed to a guest, so it travels in the page. Binding it to an
+	 * IP address buys nothing against forgery, because a forged request is made by
+	 * the victim's own browser from the victim's own address, while it costs a
+	 * rejection every time a visitor moves between mobile data and Wi-Fi, and it
+	 * would publish that visitor's address in the page to anything that caches it.
+	 *
+	 * @param array $data as collected by {@see e_session::getValidateData()}
+	 * @return array
+	 */
+	protected function stripNetworkAddresses($data)
+	{
+		unset($data['RemoteAddr'], $data['HttpXForwardedFor']);
+
+		return $data;
 	}
 
 	/**
@@ -283,7 +302,7 @@ class CSRFCookieHandler extends CSRFTokenHandler
 	 */
 	protected function generateToken()
 	{
-		return bin2hex(random_bytes(16));
+		return e_random::hex(32);
 	}
 
 	/**
@@ -306,13 +325,19 @@ class CSRFCookieHandler extends CSRFTokenHandler
 		$session = e107::getSession();
 		$options = $session->getOptions();
 
+		// Outlive the browser exactly as long as the session cookie does. A
+		// browser-session cookie was thrown away on close while the page holding
+		// the matching token was not, so a restored tab submitted a token there
+		// was no longer anything to compare it with.
+		$lifetime = (int) $session->getOption('lifetime', 0);
+
 		$params = [
-			'expires' => 0,
+			'expires' => ($lifetime > 0) ? (time() + $lifetime) : 0,
 			'path' => $options['path'] ?: '/',
 			'domain' => $options['domain'] ?: '',
 			'secure' => $options['secure'] ?: false,
 			'httponly' => true,
-			'samesite' => 'Lax'
+			'samesite' => $session->getOption('samesite', 'Lax')
 		];
 
 		eShims::setcookie(self::COOKIE_NAME, $token, $params);
