@@ -27,6 +27,65 @@
 
 		}
 
+		/**
+		 * GHSA-72q5-94gw-prww. A missing preference has to read as full
+		 * enforcement, because that is what a site upgrading from an older
+		 * release will have.
+		 */
+		public function testTokenCheckModeDefaultsToEnforce()
+		{
+			$this::assertNull(e107::getConfig()->get('csrf_enforce'));
+			$this::assertSame(e_session::TOKEN_CHECK_ENFORCE, e_session::tokenCheckMode());
+		}
+
+		/**
+		 * check() compares the mode with >=, so the order is load-bearing.
+		 */
+		public function testTokenCheckModesAreOrdered()
+		{
+			$this::assertLessThan(e_session::TOKEN_CHECK_LOG, e_session::TOKEN_CHECK_OFF);
+			$this::assertLessThan(e_session::TOKEN_CHECK_ENFORCE, e_session::TOKEN_CHECK_LOG);
+		}
+
+		/**
+		 * The runtime override is the designated seam for a test, and for a
+		 * bootstrap that knows better than the stored preference.
+		 */
+		public function testSetTokenCheckModeOverridesThePreference()
+		{
+			$previous = e_session::setTokenCheckMode(e_session::TOKEN_CHECK_LOG);
+
+			try
+			{
+				$this::assertSame(e_session::TOKEN_CHECK_LOG, e_session::tokenCheckMode());
+
+				e_session::setTokenCheckMode(e_session::TOKEN_CHECK_OFF);
+				$this::assertSame(e_session::TOKEN_CHECK_OFF, e_session::tokenCheckMode());
+
+				// null hands control back to the preference, which is unset here
+				e_session::setTokenCheckMode(null);
+				$this::assertSame(e_session::TOKEN_CHECK_ENFORCE, e_session::tokenCheckMode());
+			}
+			catch(Exception $e)
+			{
+				e_session::setTokenCheckMode($previous);
+				throw $e;
+			}
+
+			e_session::setTokenCheckMode($previous);
+		}
+
+		/**
+		 * setTokenCheckMode() hands back what it displaced, so a caller can put
+		 * the previous value back without knowing what it was.
+		 */
+		public function testSetTokenCheckModeReturnsThePreviousOverride()
+		{
+			$this::assertNull(e_session::setTokenCheckMode(e_session::TOKEN_CHECK_LOG));
+			$this::assertSame(e_session::TOKEN_CHECK_LOG, e_session::setTokenCheckMode(null));
+			$this::assertNull(e_session::setTokenCheckMode(null));
+		}
+
 		public function testSetOption()
 		{
 			$opt = array(

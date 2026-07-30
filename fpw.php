@@ -122,6 +122,7 @@ if(e_QUERY)
 		{
 			$sql->delete('tmp', "`tmp_time` = ".$row['tmp_time']." AND `tmp_info` = '".$row['tmp_info']."' ");
 			e107::getMessage()->addDebug("Tmp Password Reset Entry Deleted");
+			fpw_error(LAN_FPW7);
 		}
 
 		$sql->delete('tmp', "tmp_time < ".time()); // cleanup table.
@@ -129,11 +130,16 @@ if(e_QUERY)
 		list($uid, $loginName, $md5) = explode(FPW_SEPARATOR, $row['tmp_info']);
 		$loginName = $tp->toDB($loginName, true);
 
-		// This should never happen! 
-		if($md5 != $tmpinfo)
+		// The lookup above is a case-insensitive SQL LIKE.
+		if(!hash_equals((string) $md5, (string) $tmpinfo))
 		{
-			e107::getRedirect()->redirect(SITEURL);	
+			fpw_error(LAN_FPW7);
 		}
+
+		// Spend the code before it is acted on. It used to survive redemption, so
+		// anyone holding the emailed link, a mail scanner or a shared mailbox
+		// included, could reset the account again and again until it expired.
+		$sql->delete('tmp', "`tmp_ip` = 'pwreset' AND `tmp_info` = '".$sql->escape($row['tmp_info'], false)."' ");
 
 		// Generate new temporary password
 		$pwdArray = e107::getUserSession()->resetPassword($uid,$loginName, array('return'=>'array'));

@@ -263,11 +263,19 @@ class e_user_model extends e_admin_model
 	}
 
 	/**
-	 * @return string
+	 * Mint an account activation key / user_sess value.
+	 *
+	 * 128 bits of CSPRNG output. The 32-character lowercase hexadecimal shape is
+	 * part of the contract: it is stored in user_sess and embedded in
+	 * dot-delimited activation URLs.
+	 *
+	 * @see e_random::hex()
+	 * @return string 32 characters matching [0-9a-f]
+	 * @throws e_random_exception when no CSPRNG is available
 	 */
 	public static function randomKey()
 	{
-		return md5(uniqid(rand(), 1));
+		return e_random::hex(32);
 	}
 
 	/**

@@ -410,7 +410,7 @@ class UserHandler
 			return false;
 		}
 
-		$rawPassword    = $this->generateRandomString(str_repeat('*', rand(8, 12)));
+		$rawPassword    = $this->generateRandomString(str_repeat('*', e_random::int(8, 12)));
 		$hash           = $this->HashPassword($rawPassword, $loginName);
 
 		$updateQry = array(
@@ -586,7 +586,11 @@ class UserHandler
 	 *		alphanumerics are included 'as is'
 	 *	@param int $seed - may be used with the random pattern generator
 	 *
+	 *	Every drawn character comes from {@see e_random::int()}, so the result is
+	 *	safe to use as a secret. Fails closed when the platform has no CSPRNG.
+	 *
 	 *	@return string - the required random string
+	 *	@throws e_random_exception when no CSPRNG is available
 	 */
 	public function generateRandomString($pattern='', $seed = '')
 	{
@@ -624,30 +628,30 @@ class UserHandler
 			{
 				// Symbols only.
 				case '!':
-					$t = rand(0, $symbolsLength);
+					$t = e_random::int(0, $symbolsLength);
 					$newname .= $symbols[$t];
 					break;
 
 				// Alphanumeric + Symbols (most secure)
 				case '?':
-					$t = rand(0, $alphaNumSymbolLength);
+					$t = e_random::int(0, $alphaNumSymbolLength);
 					$newname .= $alphaNumSymbol[$t];
 					break;
 
 				case '#' :
-					$t = rand(0, $alphaLength);
+					$t = e_random::int(0, $alphaLength);
 					$newname .= $alpha[$t];
 					break;
 
 				// Numeric only - [0-9]
 				case '.' :
-					$t = rand(0, $digitLength);
+					$t = e_random::int(0, $digitLength);
 					$newname .= $digit[$t];
 					break;
 
 				// Alphanumeric
 				case '*' :
-					$t = rand(0, $alphaNumLength);
+					$t = e_random::int(0, $alphaNumLength);
 					$newname .= $alphaNum[$t];
 					break;
 

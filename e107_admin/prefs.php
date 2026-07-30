@@ -10,10 +10,6 @@
  *
  */
 
-if(!empty($_POST) && !isset($_POST['e-token']))
-{
-	$_POST['e-token'] = '';
-}
 require_once (__DIR__."/../class2.php");
 
 if(isset($_POST['newver']))
@@ -98,6 +94,21 @@ if(isset($_POST['updateprefs']))
 	{
 		$core_pref->set('trusted_hosts', e107::normaliseTrustedHostList($_POST['trusted_hosts']));
 		unset($_POST['trusted_hosts']);
+	}
+
+	// csrf_enforce: seeded via set() for the same reason as trusted_hosts above.
+	// Anything outside the three known modes falls back to full enforcement.
+	if(isset($_POST['csrf_enforce']))
+	{
+		$csrfMode = (int) $_POST['csrf_enforce'];
+
+		if($csrfMode !== e_session::TOKEN_CHECK_OFF && $csrfMode !== e_session::TOKEN_CHECK_LOG)
+		{
+			$csrfMode = e_session::TOKEN_CHECK_ENFORCE;
+		}
+
+		$core_pref->set('csrf_enforce', $csrfMode);
+		unset($_POST['csrf_enforce']);
 	}
 
 	// If email verification or Email/Password Login Method - email address is required!
@@ -382,6 +393,14 @@ $text = "
 						<td>
 							".$frm->textarea('trusted_hosts', is_array(varset($pref['trusted_hosts'])) ? implode("\n", $pref['trusted_hosts']) : '', 4, 80, ['size'=>'xxlarge', 'placeholder'=>"staging.example.com\nparked-domain.com"])."
 						</td>
+					</tr>
+					<tr>
+						<td><label for='csrf-enforce'>".PRFLAN_294."</label>".$frm->help(PRFLAN_295)."</td>
+						<td>".$frm->select('csrf_enforce', array(
+							e_session::TOKEN_CHECK_ENFORCE => PRFLAN_296,
+							e_session::TOKEN_CHECK_LOG     => PRFLAN_297,
+							e_session::TOKEN_CHECK_OFF     => PRFLAN_298,
+						), e_session::tokenCheckMode(), array('size' => 'xlarge'))."</td>
 					</tr>
 					<tr>
 						<td><label for='redirectsiteurl'>".PRFLAN_134."</label>".$frm->help(PRFLAN_135)."</td>

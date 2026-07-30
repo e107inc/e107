@@ -9,10 +9,6 @@
  * Search Administration
  *
 */
-if(!empty($_POST) && !isset($_POST['e-token']))
-{
-	$_POST['e-token'] = '';
-}
 require_once(__DIR__.'/../class2.php');
 if (!getperms('X'))
 {

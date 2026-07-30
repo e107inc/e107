@@ -58,40 +58,19 @@ function install_state_decode($raw)
  * e107_config.php format). Fails closed - returns false rather than falling back
  * to a weak source - so the caller must abort the install when no CSPRNG exists.
  *
+ * @see e_random::hex()
  * @return string|false 64 hex characters, or false if no CSPRNG is available
  */
 function install_state_generate_token()
 {
-	$bytes = false;
-
-	if(function_exists('random_bytes'))
+	try
 	{
-		try
-		{
-			$bytes = random_bytes(32);
-		}
-		catch(Exception $e)
-		{
-			$bytes = false;
-		}
+		return e_random::hex(64);
 	}
-
-	if($bytes === false && function_exists('openssl_random_pseudo_bytes'))
-	{
-		$strong = false;
-		$candidate = openssl_random_pseudo_bytes(32, $strong);
-		if($strong === true && is_string($candidate) && strlen($candidate) === 32)
-		{
-			$bytes = $candidate;
-		}
-	}
-
-	if($bytes === false)
+	catch(e_random_exception $e)
 	{
 		return false;
 	}
-
-	return bin2hex($bytes);
 }
 
 /**

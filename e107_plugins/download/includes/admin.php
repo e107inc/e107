@@ -565,7 +565,7 @@ $columnInfo = array(
                if (0 == $sql->count('download', '(*)', " WHERE download_url='".$sql->escape($file['fname'])."'")) {
                   if (!$foundSome) {
    		           // $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
-                     $text .= '<form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">
+                     $text .= '<form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">'.'
                      <table class="adminlist">';
                      $text .= '<tr>';
                      $text .= '<th>'.DOWLAN_13.'</th>';
@@ -781,7 +781,7 @@ $columnInfo = array(
 		               while($row = $sql->fetch()) {
 		                  if (!$foundSome) {
 		   		          //  $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
-		                     $text .= '<form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">
+		                     $text .= '<form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">'.'
 		                     			<table class="table adminform">';
 		                     $text .= '<tr>';
 		                     $text .= '<th>'.DOWLAN_13.'</th>';
@@ -837,7 +837,7 @@ $columnInfo = array(
 		               if (0 == $sql->count('download', '(*)', " WHERE download_url='".$sql->escape($file['fname'])."'")) {
 		                  if (!$foundSome) {
 		   		           // $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
-		                     $text .= '<form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">
+		                     $text .= '<form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">'.'
 		                     <table class="table adminform">';
 		                     $text .= '<tr>';
 		                     $text .= '<th>'.DOWLAN_13.'</th>';
@@ -884,7 +884,7 @@ $columnInfo = array(
 							 {
 		   		              // $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
 								 
-		                        $text .= '<form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">
+		                        $text .= '<form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">'.'
 		                        		<table class="adminlist">';
 		                        $text .= '<tr>';
 		                        $text .= '<th>'.LAN_ID.'</th>';
@@ -930,7 +930,7 @@ $columnInfo = array(
 		                  if (!$foundSome)
 		                  {
 		   		           // $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
-		                     $text .= '<form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">
+		                     $text .= '<form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">'.'
 		                     		<table class="table adminform">';
 		                     $text .= '<tr>';
 		                     $text .= '<th>'.LAN_ID.'</th>';
@@ -985,7 +985,7 @@ $columnInfo = array(
 		                  if (!$foundSome) {
 		   		          //  $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
 		                     $text .= '
-		                     <form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">
+		                     <form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">'.'
 		                     <table class="table adminlist">';
 		                     $text .= '<tr>';
 		                     $text .= '<th>'.LAN_ID.'</th>';
@@ -1039,7 +1039,7 @@ $columnInfo = array(
 		                     if ($filesize <> $row['download_filesize']) {
 		                        if (!$foundSome) {
 		   		                 // $text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
-		                           $text .= '<form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">
+		                           $text .= '<form method="post" action="'.e_SELF.'?'.e_QUERY.'" id="myform">'.'
 		                           		<table class="table adminlist">';
 		                           $text .= '<tr>';
 		                           $text .= '<th>'.LAN_ID.'</th>';

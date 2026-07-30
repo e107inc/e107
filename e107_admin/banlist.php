@@ -10,10 +10,6 @@
  *
  *
 */
-if(!empty($_POST) && !isset($_POST['e-token']))
-{
-	$_POST['e-token'] = '';
-}
 require_once(__DIR__.'/../class2.php');
 
 if (!getperms('4'))
@@ -405,7 +401,7 @@ class banlist_ui extends e_admin_ui
 					</tbody>
 						</table>
 						<div class='buttons-bar center'>
-						" . $frm->admin_button('ban_import', LAN_IMPORT , 'import') . $frm->token(). "
+						" . $frm->admin_button('ban_import', LAN_IMPORT , 'import') . "
 						</div>
 	
 	
