@@ -108,10 +108,14 @@ if (empty($rss_type))
 			{
 				require_once(THEME.'rss_template.php');
 			}
-			else
+			elseif (is_readable(e_PLUGIN.'rss_menu/rss_template.php'))
 			{
 				require_once(e_PLUGIN.'rss_menu/rss_template.php');
 			}
+
+			$RSS_LIST_HEADER = varset($RSS_LIST_HEADER, '');
+			$RSS_LIST_TABLE  = varset($RSS_LIST_TABLE, '');
+			$RSS_LIST_FOOTER = varset($RSS_LIST_FOOTER, '');
 		}
 
 		$text = $tp->parseTemplate($RSS_LIST_HEADER);
