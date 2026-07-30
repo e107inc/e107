@@ -318,55 +318,6 @@ class e_date
 		
 		return $mask; 
 		
-		// Keep this info here: 
-		/*
-				 * $options allowed keys:
-	
-		 * 
-		 *   d - day of month (no leading zero)
-		    dd - day of month (two digit)
-		    o - day of the year (no leading zeros)
-		    oo - day of the year (three digit)
-		    D - day name short
-		    DD - day name long
-		    m - month of year (no leading zero)
-		    mm - month of year (two digit)
-		    M - month name short
-		    MM - month name long
-		    y - year (two digit)
-		    yy - year (four digit)
-		    @ - Unix timestamp (ms since 01/01/1970)
-		     ! - Windows ticks (100ns since 01/01/0001)
-		    '...' - literal text
-		    '' - single quote
-		    anything else - literal text 
-		
-		    ATOM - 'yy-mm-dd' (Same as RFC 3339/ISO 8601)
-		    COOKIE - 'D, dd M yy'
-		    ISO_8601 - 'yy-mm-dd'
-		    RFC_822 - 'D, d M y' (See RFC 822)
-		    RFC_850 - 'DD, dd-M-y' (See RFC 850)
-		    RFC_1036 - 'D, d M y' (See RFC 1036)
-		    RFC_1123 - 'D, d M yy' (See RFC 1123)
-		    RFC_2822 - 'D, d M yy' (See RFC 2822)
-		    RSS - 'D, d M y' (Same as RFC 822)
-		    TICKS - '!'
-		    TIMESTAMP - '@'
-		    W3C - 'yy-mm-dd' (Same as ISO 8601)
-		 * 
-		 * h    Hour with no leading 0
-		 * hh    Hour with leading 0
-		 * m    Minute with no leading 0
-		 * mm    Minute with leading 0
-		 * s    Second with no leading 0
-		 * ss    Second with leading 0
-		 * l    Milliseconds always with leading 0
-		 * t    a or p for AM/PM
-		 * T    A or P for AM/PM
-		 * tt    am or pm for AM/PM
-		 * TT    AM or PM for AM/PM 
-			
-			*/
 	}
 
 
@@ -420,38 +371,6 @@ class e_date
 		);
 
 
-		// also in php compat handler for plugins that might use it.
-
-		/*
-		$tdata = $this->strptime($date_string, $mask);
-		
-		
-		if(empty($tdata))
-		{
-			if(!empty($date_string) && ADMIN)
-			{
-				e107::getMessage()->addDebug( "PROBLEM WITH CONVERSION from ".$date_string." to unix timestamp");	
-			}
-			return null;
-		}
-		
-		if(STRPTIME_COMPAT !== TRUE) // returns months from 0 - 11 on Unix so we need to +1 
-		{
-			$tdata['tm_mon'] = $tdata['tm_mon'] +1;	 
-		}
-				
-		
-		$unxTimestamp = mktime( 
-			$tdata['tm_hour'], 
-			$tdata['tm_min'], 
-			$tdata['tm_sec'], 
-			$tdata['tm_mon'] , 
-			$tdata['tm_mday'], 
-			($tdata['tm_year'] + 1900) 
-		); 
-
-		return $unxTimestamp;
-		*/
 	}
 
 // -----------------------
@@ -683,99 +602,6 @@ class e_date
         }
 
 
-	//	print_r($ret);
-
-
-/*
-  If we want an absolutely accurate result, main problems arise from the varying numbers of days in a month.
-  If we go over a month boundary, then we need to add days to end of start month, plus days in 'end' month
-  If start day > end day, we cross a month boundary. Calculate last day of start date. Otherwise we can just do a simple difference.
-*/
-/*
-		$newer_date = ($newer_date === FALSE ? (time()) : $newer_date);
-		if($older_date>$newer_date)
-		{  // Just in case the wrong way round
-		  $tmp=$newer_date; 
-		  $newer_date=$older_date; 
-		  $older_date=$tmp; 
-		}
-		$new_date = getdate($newer_date);
-		$old_date = getdate($older_date);
-		$result   = array();
-		$outputArray = array();
-
-		$params   = array(
-					  6 => array('seconds',60, $sec, $secs),
-					  5 => array('minutes',60, $min, $mins),
-					  4 => array('hours',24, LANDT_05, LANDT_05s),
-					  3 => array('mday', -1, LANDT_04, LANDT_04s),
-					  2 => array('',-3, LANDT_03, LANDT_03s),
-					  1 => array('mon',12, LANDT_02, LANDT_02s),
-					  0 => array('year', -2, LANDT_01,LANDT_01s)
-					);
-
-		$cy = 0;
-		foreach ($params as $parkey => $parval)
-		{
-		  if ($parkey == 2)
-		  {
-		    $result['2'] = floor($result['3']/7);
-			$result['3'] = fmod($result['3'],7);
-		  }
-		  else
-		  {
-		    $tmp = $new_date[$parval[0]] - $old_date[$parval[0]] - $cy;
-			$scy = $cy;
-		    $cy = 0;
-		    if ($tmp < 0)
-		    {
-		      switch ($parval[1])
-			  {
-			    case -1 :    // Wrapround on months - special treatment
-			      $tempdate = getdate(mktime(0,0,0,$old_date['mon']+1,1,$old_date['year']) - 1);  // Last day of month
-				  $tmp = $tempdate['mday'] - $old_date['mday'] + $new_date['mday'] - $scy;
-				  $cy = 1;
-			      break;
-			    case -2 :		// Year wraparound - shouldn't happen
-				case -3 : 		// Week processing - this shouldn't happen either
-				  echo "Code bug!<br />";
-			      break;
-			    default :
-		          $cy = 1;
-				  $tmp += $parval[1];
-			}
-		  }
-		  $result[$parkey] = $tmp;
-		  }
-		}
-
-		// Generate output array, add text
-		for ($i = 0; $i < ($show_secs ? 7 : 6); $i++)
-		{
-		  if (($i > 4) || ($result[$i] != 0))
-		  {  // Only show non-zero values, except always show minutes/seconds
-		    $outputArray[] = $result[$i]." ".($result[$i] == 1 ? $params[$i][2] : $params[$i][3]) ;
-			
-			
-		  }
-		  if($format == 'short' && count($outputArray) == 1) { break; }
-		}
-
-		if(empty($outputArray[1]) && ($outputArray[0] == "0 ".$mins))
-		{
-			return deftrue('LANDT_10',"Just now");
-		}
-
-		// Check if it is 'past' or 'future'
-		if($older_date > $newer_date) // past
-		{
-			return ($mode ? $outputArray : implode(", ", $outputArray) . " " . LANDT_AGO);	
-		}	
-		else // future
-		{
-			return ($mode ? $outputArray : LANDT_IN ." ". implode(", ", $outputArray));
-		}
-		*/
 	}
 
 
