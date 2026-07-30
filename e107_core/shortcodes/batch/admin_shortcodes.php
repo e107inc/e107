@@ -887,7 +887,6 @@ class admin_shortcodes extends e_shortcode
 		$text .= '<li role="menuitem" class="text-right">';
 		$text .= "<p style='padding:15px'><small class='text-muted'>" . LAN_EMULATION_TEMPORARY . "</small></p>";
 		$text .= $frm->open('emulation-stop-form', 'post', e_ADMIN_ABS . 'users.php?mode=main&action=emulatestop', array('class' => 'no-margin'));
-		$text .= $frm->token();
 		$icon = '<i class="fa fa-right-from-bracket fa-fw"></i>';
 		$text .= $frm->button('stopEmulation', $icon . ' ' . LAN_EMULATION_STOP);
 		$text .= $frm->close();

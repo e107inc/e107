@@ -2543,6 +2543,9 @@ class e_admin_controller
 		{
 			if($posted = $request->getPosted())
 			{
+				$tokenChecked = false;
+				$tokenValid = false;
+
 				foreach ($posted as $key => $value)
 				{
 					if(strpos($key, 'etrigger_') === 0)
@@ -2550,7 +2553,20 @@ class e_admin_controller
 						$actionTriggerName = $this->toMethodName($action.$request->camelize(substr($key, 9)), 'trigger', false);
 						if(method_exists($this, $actionTriggerName))
 						{
-							$this->$actionTriggerName($value);
+							if($tokenChecked === false)
+							{
+								$tokenChecked = true;
+								$tokenValid = $this->checkTriggerToken();
+							}
+
+							if($tokenValid === true)
+							{
+								$this->$actionTriggerName($value);
+							}
+							else
+							{
+								$this->_log('Rejected ' .$actionTriggerName. '() (invalid security token)');
+							}
 						}
 						//Check if triggers are still enabled
 						if(!$triggerEnabled)
@@ -2563,6 +2579,33 @@ class e_admin_controller
 		}
 
 		return $this;
+	}
+
+	/**
+	 * Validate the CSRF token carried by a state-changing trigger POST.
+	 *
+	 * Routed through {@see e_session::check()} rather than
+	 * {@see e_session::checkFormToken()} because e_TOKEN is defined inside check(),
+	 * after its security level and CLI early return.
+	 *
+	 * The tokenless case is not forced to fail here. class2.php has already put
+	 * this request through the same check(), so by the time a trigger runs the
+	 * only way a tokenless POST can have got this far is that the site's
+	 * {@see e_session::tokenCheckMode()} let it, and second-guessing that would
+	 * make log-only mode enforce.
+	 *
+	 * @return bool
+	 */
+	protected function checkTriggerToken()
+	{
+		if(e107::getSession()->check(false))
+		{
+			return true;
+		}
+
+		e107::getMessage()->addError(defset('LAN_UI_INVALID_TOKEN_ERROR', 'Unauthorized access - invalid or missing security token.'));
+
+		return false;
 	}
 
 	/**
@@ -8225,7 +8268,7 @@ class e_admin_form_ui extends e_form
 			'table_rows' => '', // rows array (<td> tags)
 			'table_body' => '', // string body - used only if rows empty
 			'pre_triggers' => '',
-			'triggers' => array('hidden' => $this->hidden('etrigger_delete['.$ids.']', $ids) . $this->token(), 'delete_confirm' => array(LAN_CONFDELETE, 'confirm', $ids), 'cancel' => array(LAN_CANCEL, 'cancel')),
+			'triggers' => array('hidden' => $this->hidden('etrigger_delete['.$ids.']', $ids), 'delete_confirm' => array(LAN_CONFDELETE, 'confirm', $ids), 'cancel' => array(LAN_CANCEL, 'cancel')),
 		);
 		if($delcount > 1)
 		{

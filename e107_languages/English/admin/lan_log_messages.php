@@ -253,4 +253,5 @@ return [
     'LAN_AL_USET_101' => "Admin logged out as another user",
     'LAN_AL_USET_102' => "Admin started permission emulation of another user",
     'LAN_AL_USET_103' => "Admin stopped permission emulation of another user",
+    'LAN_AL_CSRF_01' => "POST request carried no security token",
 ];

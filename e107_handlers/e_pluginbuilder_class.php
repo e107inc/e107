@@ -1892,7 +1892,7 @@ $text .= "
 		$tp = e107::getParser();
 		
 		$text = "\n
-// Generated e107 Plugin Admin Area 
+// Generated e107 Plugin Admin Area
 
 require_once('../../class2.php');
 if (!getperms('P')) 

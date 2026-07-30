@@ -1320,7 +1320,7 @@ class cronScheduler
 			error_log("Cron Token: ".$pwd, E_NOTICE);
 		}
 
-		if(empty($this->pref['e_cron_pwd']) || (varset($this->pref['e_cron_pwd']) != $pwd))
+		if(empty($this->pref['e_cron_pwd']) || !hash_equals((string) varset($this->pref['e_cron_pwd']), (string) $pwd))
 		{
 			if(!empty($pwd))
 			{

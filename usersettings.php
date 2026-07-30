@@ -25,10 +25,6 @@ Admin log events:
 USET_01 - admin changed user data
 */
 
-if(!empty($_POST) && !isset($_POST['e-token']))
-{
-	$_POST['e-token'] = '';
-}
 require_once ('class2.php');
 
 // TODO - Remove all the adminEdit stuff. 

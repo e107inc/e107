@@ -595,11 +595,32 @@ if(!isset($_E107['no_session']))
 {
 	$dbg->logTime('CHAP challenge');
 
-	$die = e_AJAX_REQUEST !== true;
-	e107::getSession()
+	// check(false) so that the refusal is answered here rather than by the die()
+	// inside check(), which would leave the response at 200 and put the status
+	// out of reach of a log analyser, a monitor or a WAF.
+	$tokenOkay = e107::getSession()
 		->challenge() // Make sure there is a unique challenge string for CHAP login
-		->check($die); // Token protection
-	unset($die);
+		->check(false); // Token protection
+
+	if($tokenOkay !== true)
+	{
+		header('HTTP/1.1 403 Forbidden', true, 403);
+
+		if(e_AJAX_REQUEST)
+		{
+			// The envelope core's own AJAX endpoints already reject with.
+			header('Content-type: application/json; charset=UTF-8');
+			echo json_encode(array('msg' => 'Unauthorized access!', 'error' => true));
+		}
+		else
+		{
+			header('Content-type: text/plain; charset=UTF-8');
+			echo 'Unauthorized access!';
+		}
+
+		exit;
+	}
+	unset($tokenOkay);
 }
 //
 // N: misc setups: online user tracking, cache
@@ -1782,9 +1803,10 @@ if(!deftrue('e_SINGLE_ENTRY') && deftrue('e_CURRENT_PLUGIN'))
  * @param string  $path
  * @param string  $domain
  * @param int     $secure
+ * @param string  $samesite 'Lax', 'Strict' or 'None'; empty sends no attribute
  * @return void
  */
-function cookie($name, $value, $expire=0, $path = e_HTTP, $domain = '', $secure = 0)
+function cookie($name, $value, $expire=0, $path = e_HTTP, $domain = '', $secure = 0, $samesite = '')
 {
 	global $_E107;
 
@@ -1808,7 +1830,20 @@ function cookie($name, $value, $expire=0, $path = e_HTTP, $domain = '', $secure 
 		$path = '/';
 	}
 	
-	eShims::setcookie($name, $value, $expire, $path, $domain, $secure, true);
+	if($samesite === '')
+	{
+		eShims::setcookie($name, $value, $expire, $path, $domain, $secure, true);
+		return;
+	}
+
+	eShims::setcookie($name, $value, array(
+		'expires'  => $expire,
+		'path'     => $path,
+		'domain'   => $domain,
+		'secure'   => (bool) $secure,
+		'httponly' => true,
+		'samesite' => $samesite,
+	));
 }
 
 //
@@ -2282,9 +2317,10 @@ class e_http_header
 			if(!empty($search) && !empty($replace))
 			{
 				$this->content = str_replace($search, $replace, $this->content);
-				$this->length = strlen($this->content);
 			}
 
+			$this->content = e_token_injector::process($this->content);
+			$this->length = strlen($this->content);
 		}
 		else
 		{

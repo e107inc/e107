@@ -14,6 +14,8 @@ if(!defined('e107_INIT'))
 	exit;
 }
 
+require_once(__DIR__ . '/random_handler.php');
+
 /**
  * Encode installer wizard state for transport in a hidden form field.
  *
@@ -55,43 +57,22 @@ function install_state_decode($raw)
  * Generate a provisioning token: the installation lock and HMAC signing key.
  *
  * 256 bits of CSPRNG output as 64 hex characters (safe to embed in either
- * e107_config.php format). Fails closed - returns false rather than falling back
- * to a weak source - so the caller must abort the install when no CSPRNG exists.
+ * e107_config.php format), drawn from {@see e_random::hex()}. Fails closed -
+ * returns false rather than falling back to a weak source - so the caller must
+ * abort the install when no CSPRNG exists.
  *
  * @return string|false 64 hex characters, or false if no CSPRNG is available
  */
 function install_state_generate_token()
 {
-	$bytes = false;
-
-	if(function_exists('random_bytes'))
+	try
 	{
-		try
-		{
-			$bytes = random_bytes(32);
-		}
-		catch(Exception $e)
-		{
-			$bytes = false;
-		}
+		return e_random::hex(64);
 	}
-
-	if($bytes === false && function_exists('openssl_random_pseudo_bytes'))
-	{
-		$strong = false;
-		$candidate = openssl_random_pseudo_bytes(32, $strong);
-		if($strong === true && is_string($candidate) && strlen($candidate) === 32)
-		{
-			$bytes = $candidate;
-		}
-	}
-
-	if($bytes === false)
+	catch(Exception $e)
 	{
 		return false;
 	}
-
-	return bin2hex($bytes);
 }
 
 /**
