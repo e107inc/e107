@@ -163,8 +163,13 @@ class sitelinks
 
 		if(LINKDISPLAY == self::LINK_DISPLAY_SLIDER)
 		{
-			require_once(e_PLUGIN . 'ypslide_menu/ypslide_menu.php');
-			return null;
+			$sliderMenu = e_PLUGIN . 'ypslide_menu/ypslide_menu.php';
+
+			if(file_exists($sliderMenu))
+			{
+				require_once($sliderMenu);
+				return null;
+			}
 		}
 
 		$this->getlinks($cat);
