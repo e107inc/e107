@@ -28,18 +28,6 @@ define("ADMIN_GITSYNC_ICON", e107::getParser()->toGlyph('fa-refresh', array('cla
 
 
 global $user_pref;
-/*
-
-if(!deftrue('e_DEBUG_PLUGMANAGER'))
-{
-	require_once(e_HANDLER.'plugin_class.php');
-	require_once(e_HANDLER.'file_class.php');
-	$plugin = new e107plugin;
-	$pman = new pluginManager;
-
-	define("e_PAGETITLE",ADLAN_98." - ".$pman->pagetitle);
-}
-*/
 
 if(isset($_POST['uninstall_cancel']))
 {
@@ -1049,21 +1037,6 @@ class plugin_form_ui extends e_admin_form_ui
 			}
 
 		}
-	//	else
-	//	{
-/*			if($var['menuName'])
-			{
-			//	$text .= EPL_NOINSTALL . str_replace("..", "", e_PLUGIN . $var['plugin_path']) . "/ " . EPL_DIRECTORY;
-			}
-			else
-			{
-			//	$text .= EPL_NOINSTALL_1 . str_replace("..", "", e_PLUGIN . $var['plugin_path']) . "/ " . EPL_DIRECTORY;
-				if($var['plugin_installflag'] == false)
-				{
-			//		e107::getDb()->delete('plugin', "plugin_installflag=0 AND (plugin_path='{$var['plugin_path']}' OR plugin_path='{$var['plugin_path']}/' )  ");
-				}
-			}*/
-	//	}
 
 		if($var['plugin_version'] != $var['plugin_version_file'] && $var['plugin_installflag'])
 		{
@@ -1383,21 +1356,6 @@ class plugin_online_ui extends e_admin_ui
 	//	$url = e_SELF.'?mode=download&src='.base64_encode($d);
 		$dicon = '<a title="'.EPL_ADLAN_237.'" class="e-modal btn btn-default btn-secondary" href="'.$url.'" rel="external" data-loading="'.e_IMAGE.'/generic/loading_32.gif"  data-cache="false" data-modal-caption="'.$modalCaption.'"  target="_blank" >'.ADMIN_INSTALLPLUGIN_ICON.'</a>';
 
-		/*
-
-		// DEBUGGER .
-		$base64 = base64_encode($d);
-		$tmp = base64_decode($base64);
-		parse_str($tmp, $data);
-
-	//  XXX Suhosin has a 512 char limit for $_GET strings.
-		e107::getDebug()->log($data['plugin_name'].' : '.strlen($base64)."<br />".print_a($data,true)); //FIXME - enable when needed to debug.
-		*/
-
-		// Temporary Pop-up version.
-	//	$dicon = '<a class="e-modal" href="'.$data['plugin_url'].'" rel="external" data-modal-caption="'.$data['plugin_name']." ".$data['plugin_version'].'"  target="_blank" ><img class="top" src="'.e_IMAGE_ABS.'icons/download_32.png" alt=""  /></a>';
-
-	//	$dicon = "<a data-toggle='modal' data-bs-toggle='modal' data-modal-caption=\"Downloading ".$data['plugin_name']." ".$data['plugin_version']."\" href='{$url}' data-cache='false' data-target='#uiModal' title='".$LAN_DOWNLOAD."' ><img class='top' src='".e_IMAGE_ABS."icons/download_32.png' alt=''  /></a> ";
 
 		return "<div id='{$id}' class='center' >
 		{$dicon}
@@ -1557,25 +1515,6 @@ class plugin_online_ui extends e_admin_ui
 		));
 		$total = $xdata['params']['count'];
 
-		// OLD BIT OF CODE ------------------------------->
-		/*
-		//	$file = SITEURLBASE.e_PLUGIN_ABS."release/release.php";  // temporary testing
-			$file = "http://e107.org/feed?type=plugin&frm=".$from."&srch=".$srch."&limit=10";
-
-			$xml->setOptArrayTags('plugin'); // make sure 'plugin' tag always returns an array
-			$xdata = $xml->loadXMLfile($file,'advanced');
-
-			$total = $xdata['@attributes']['total'];
-
-			echo 'file='.$file;
-		//	print_a($xdata);
-
-			$xdata['data'] = $xdata['plugin'];
-			*/
-		// OLD BIT OF CODE END ------------------------------->
-
-
-		// print_a($xdata);
 
 		$c = 1;
 		foreach($xdata['data'] as $row)
@@ -2377,115 +2316,6 @@ require_once(e_ADMIN."footer.php");
 
 
 
-// --------------------------------------
-
-/*
-class pluginmanager_form extends e_form
-{
-	
-	var $plug;
-	var $plug_vars;
-		
-	//FIXME _ there's a problem with calling this. 
-	function plugin_website($parms, $value, $id, $attributes)
-	{
-		return (varset($plugURL, false)) ? "<a href='{$plugURL}' title='{$plugURL}' >".ADMIN_URL_ICON."</a>" : "";	
-		
-	}
-	
-	
-	function options($val, $curVal)
-	{
-		
-		$tp = e107::getParser();
-		
-		$_path = e_PLUGIN.$this->plug['plugin_path'].'/';
-		
-		$icon_src = (isset($this->plug_vars['plugin_php']) ? e_PLUGIN : $_path).$this->plug_vars['administration']['icon'];
-		$plugin_icon = $this->plug_vars['administration']['icon'] ? "<img src='{$icon_src}' alt='' class='icon S32' />" : $tp->toGlyph('e-cat_plugins-32');
-   		$conf_file = "#";
-		$conf_title = "";
-		
-		if ($this->plug_vars['administration']['configFile'] && $this->plug['plugin_installflag'] == true)
-		{
-			$conf_file = e_PLUGIN. $this->plug['plugin_path'].'/'.$this->plug_vars['administration']['configFile'];
-			$conf_title = LAN_CONFIGURE.' '.$tp->toHTML($this->plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable");
-			$plugin_icon = "<a title='{$conf_title}' href='{$conf_file}' >".$plugin_icon."</a>";
-			$plugin_config_icon = "<a class='btn btn-default' title='{$conf_title}' href='{$conf_file}' >".ADMIN_CONFIGURE_ICON."</a>";
-		}
-				
-		$text = "<div class='btn-group'>";
-		
-		$text .= vartrue($plugin_config_icon);
-		
-		if ($this->plug_vars['@attributes']['installRequired'])
-		{
-			
-			if ($this->plug['plugin_installflag'])
-			{
-		  		$text .= ($this->plug['plugin_installflag'] ? "<a class='btn btn-default' href=\"".e_SELF."?uninstall.{$this->plug['plugin_id']}\" title='".EPL_ADLAN_1."'  >".ADMIN_UNINSTALLPLUGIN_ICON."</a>" : "<a class='btn' href=\"".e_SELF."?install.{$this->plug['plugin_id']}\" title='".EPL_ADLAN_0."' >".ADMIN_INSTALLPLUGIN_ICON."</a>");
-                           //   $text .= ($this->plug['plugin_installflag'] ? "<button type='button' class='delete' value='no-value' onclick=\"location.href='".e_SELF."?uninstall.{$this->plug['plugin_id']}'\"><span>".EPL_ADLAN_1."</span></button>" : "<button type='button' class='update' value='no-value' onclick=\"location.href='".e_SELF."?install.{$this->plug['plugin_id']}'\"><span>".EPL_ADLAN_0."</span></button>");
-				if (e_DEBUG && !vartrue($this->plug_vars['plugin_php']))
-				{
-			//		$text .= "<br /><br /><input type='button' class='btn btn-default button' onclick=\"location.href='".e_SELF."?refresh.{$this->plug['plugin_id']}'\" title='".'Refresh plugin settings'."' value='".'Refresh plugin settings'."' /> ";
-				}
-			}
-			else
-			{
-			  //	$text .=  "<input type='button' class='btn' onclick=\"location.href='".e_SELF."?install.{$this->plug['plugin_id']}'\" title='".EPL_ADLAN_0."' value='".EPL_ADLAN_0."' />";
-			  //	$text .= "<button type='button' class='update' value='no-value' onclick=\"location.href='".e_SELF."?install.{$this->plug['plugin_id']}'\"><span>".EPL_ADLAN_0."</span></button>";
-	           	$text .= "<a class='btn btn-default' href=\"".e_SELF."?install.{$this->plug['plugin_id']}\" title='".EPL_ADLAN_0."' >".ADMIN_INSTALLPLUGIN_ICON."</a>";
-			}
-			
-		}
-		else
-		{
-			if ($this->plug_vars['menuName'])
-			{
-				$text .= EPL_NOINSTALL.str_replace("..", "", e_PLUGIN.$this->plug['plugin_path'])."/ ".EPL_DIRECTORY;
-			}
-			else
-			{
-				$text .= EPL_NOINSTALL_1.str_replace("..", "", e_PLUGIN.$this->plug['plugin_path'])."/ ".EPL_DIRECTORY;
-				if($this->plug['plugin_installflag'] == false)
-				{					
-					e107::getDb()->delete('plugin', "plugin_installflag=0 AND (plugin_path='{$this->plug['plugin_path']}' OR plugin_path='{$this->plug['plugin_path']}/' )  ");
-				}
-			}
-		}
-
-		if ($this->plug['plugin_version'] != $this->plug_vars['@attributes']['version'] && $this->plug['plugin_installflag'])
-		{
-		  //	$text .= "<br /><input type='button' class='btn' onclick=\"location.href='".e_SELF."?upgrade.{$this->plug['plugin_id']}'\" title='".EPL_UPGRADE." to v".$this->plug_vars['@attributes']['version']."' value='".EPL_UPGRADE."' />";
-		    e107::getMessage()->addInfo("<b>".$tp->toHTML($this->plug['plugin_name'],false,'TITLE')."</b> is ready to be upgraded. (see below)"); // TODO LAN
-			$text .= "<a class='btn btn-default' href='".e_SELF."?upgrade.{$this->plug['plugin_id']}' title=\"".EPL_UPGRADE." v".$this->plug_vars['@attributes']['version']."\" >".ADMIN_UPGRADEPLUGIN_ICON."</a>";
-		}
-
-		if ($this->plug['plugin_installflag'] && e_DEBUG == true)
-		{
-				$text .= "<a class='btn btn-default' href='".e_SELF."?repair.".$this->plug['plugin_id']."' title='".LAN_REPAIR_PLUGIN_SETTINGS."'> ".ADMIN_REPAIRPLUGIN_ICON."</a>";
-		}
-
-		if($this->plug['plugin_installflag'] && is_dir($_path.".git"))
-		{
-			$text .=  "<a class='plugin-manager btn btn-default' href='".e_SELF."?pull.".$this->plug['plugin_id']."' title='".LAN_SYNC_WITH_GIT_REPO."'> ".ADMIN_GITSYNC_ICON."</a>";
-		}
-
-
-		$text .="</div>	";
-				
-		return $text;
-	}	
-
-
-	
-}
-*/
-/*
-require_once("auth.php");
-$pman->pluginObserver();
-$mes = e107::getMessage();
-$frm = e107::getForm();*/
 
 require_once("footer.php");
 

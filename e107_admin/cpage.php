@@ -298,32 +298,6 @@ class page_chapters_ui extends e_admin_ui
 			return $new_data;
 		}
 
-/*
-		private function processCustomFields($newdata)
-		{
-			if(empty($newdata))
-			{
-				return null;
-			}
-
-			$new = array();
-			foreach($newdata as $fields)
-			{
-				if(empty($fields['key']) || empty($fields['type']))
-				{
-					continue;
-				}
-
-
-				$key = $fields['key'];
-				unset($fields['key']);
-				$new[$key] = $fields;
-
-
-			}
-
-			return $new;
-		}*/
 
 }
 
@@ -434,119 +408,6 @@ class page_chapters_form_ui extends e_admin_form_ui
 }
 
 
-// Menu Area. 
-/*
-class menu_admin_ui extends e_admin_ui
-{
-		protected $pluginTitle = ADLAN_42;
-		protected $pluginName = 'core';
-		protected $table = "page";
-		
-		protected $listQry = "SELECT p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id WHERE p.menu_name != '' "; // without any Order or Limit.
-		//protected $editQry = "SELECT * FROM #comments WHERE comment_id = {ID}";
-		
-		protected $pid 			= "page_id";
-		protected $listOrder 	= 'p.page_order asc'; // desc would require changes to ajax sorting. 
-		protected $perPage 		= 10;
-		protected $batchDelete 	= true;
-		protected $batchCopy 	= true;	
-	//	protected $sortField	= 'page_order';
-		protected $orderStep 	= 10;
-		
-		protected $fields = array(
-			'checkboxes'		=> array('title'=> '',				'type' => null, 		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
-			'page_id'			=> array('title'=> 'ID',			'type'=>'text',   'tab' => 0,	'width'=>'5%', 'readParms'=>'','forced'=> TRUE),
-         	'menu_name' 		=> array('title'=> "Menu Name", 	'tab' => 0,	'type' => 'text', 		'width' => 'auto','nolist'=>true),
-		
-		    'page_title'	   	=> array('title'=> LAN_TITLE, 		'tab' => 0,	'type' => 'text', 		'width'=>'25%', 'inline'=>true),
-		//	'page_template' 	=> array('title'=> 'Template', 		'tab' => 0,	'type' => 'dropdown', 	'width' => 'auto','filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>''),     
-		// 	'page_author' 		=> array('title'=> LAN_AUTHOR, 		'tab' => 0,	'type' => 'user', 		'data'=>'int','width' => 'auto', 'thclass' => 'left'),
-			'page_text' 		=> array('title'=> CUSLAN_9,		'type' => 'bbarea',		'data'=>'str',	'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), 
-			'page_datestamp' 	=> array('title'=> LAN_DATE, 		'type' => 'datestamp', 	'data'=>'int',	'width' => 'auto','writeParms'=>'auto=1&readonly=1'),
-        
-			'options' 	=> array('title'=> LAN_OPTIONS, 'type' => null,	'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center'
-		);
-	
-		protected $fieldpref = array("page_id","menu_name", "page_title", "page_text");	
-		
-		
-		function init()
-		{
-			$this->fields['page_id']['readParms'] = array('link'=> e_SELF."?mode=dialog&action=preview&id=[id]", 'target'=> 'modal', 'iframe' => true);
-			
-			
-			if(E107_DEBUG_LEVEL > 0 && e_AJAX_REQUEST)
-			{
-				echo "REQUEST = ".e_REQUEST_SELF; //XXX Why no Query String ?? FIXME
-				// $this->getAction()	
-			}
-			
-			
-			
-			if($this->getMode() == 'dialog')
-			{
-				
-				$this->getRequest()->setAction('preview');
-				
-			//	$this->setDefaultAction('previewPage');
-				
-			//	echo "ACTIOn = ".$this->getAction();
-				
-				define('e_IFRAME', TRUE);
-				
-				// return;
-			};
-				
-			
-		}
-
-		function CreateHeader()
-		{
-			// e107::css('inline',' body { background-color: green } ');	
-		}
-		
-		// Create Menu in Menu Table
-	
-		
-		
-		function previewPage() //XXX FIXME Doesn't work when in Ajax mode.. why???
-		{
-			print_a($_GET);
-			
-		//	$id = $this->getListModel()->get('page_id');
-			$tp = e107::getParser();			
-		}
-					
-				
-			
-		
-		
-}
-
-//TODO XXX FIXME // Hooks! 
-	$hooks = array(
-					'method'	=>'form', 
-					'table'		=>'page', 
-					'id'		=> $id, 
-					'plugin'	=> 'page', 
-					'function'	=> 'createPage'
-				);
-				
-				
-	//			$text .= $frm->renderHooks($hooks);
-
-
-
-class menu_form_ui extends e_admin_form_ui
-{
-
-}
-*/
-
-
-
-
-//  MAIN Pages. 
 class page_admin_ui extends e_admin_ui
 {
 		protected $pluginTitle  	= ADLAN_42;
@@ -584,21 +445,6 @@ class page_admin_ui extends e_admin_ui
 
 
 
-		/*
-		 * 	'fb_title' 			=> array('title'=> LAN_TITLE,			'type' => 'text',			'inline'=>true,  'width' => 'auto', 'thclass' => 'left'), 
-     	'fb_text' 			=> array('title'=> FBLAN_08,			'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1','writeParms'=>'template=admin'), 
-		//DEPRECATED 'fb_mode' 			=> array('title'=> FBLAN_12,			'type' => 'dropdown',		'data'=> 'int',	'width' => '5%', 'filter'=>TRUE, 'batch'=>TRUE),		
-		//DEPRECATED 'fb_rendertype' 	=> array('title'=> FBLAN_22,			'type' => 'dropdown',		'data'=> 'int',	'width' => 'auto', 'noedit' => TRUE),	
-        'fb_template' 		=> array('title'=> LAN_TEMPLATE,			'type' => 'layouts',		'data'=> 'str', 'width' => 'auto', 'writeParms' => 'plugin=featurebox', 'filter' => true, 'batch' => true),	 	// Photo
-		'fb_image' 			=> array('title'=> "Image",				'type' => 'image',			'width' => 'auto', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60'),
-		'fb_imageurl' 		=> array('title'=> "Image Link",		'type' => 'url',			'width' => 'auto'),
-		'fb_class' 	
-		 */
-		
-		
-	//		protected $listSorting = true; 
-	
-		// PAGE LIST/EDIT and MENU EDIT modes. 
 		protected $fields = array(
 			'checkboxes'		=> array('title'=> '',				'type' => null, 		'width' =>'3%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'page_id'			=> array('title'=> LAN_ID,			'type' => 'text', 'tab' => 0,	'width'=>'5%', 			'forced'=> TRUE, 'readParms'=>'link=sef&target=blank'),
@@ -1007,35 +853,6 @@ class page_admin_ui extends e_admin_ui
 		 * @param $new_data
 		 * @return null
 		 *//*
-		private function processCustomFieldData($new_data)
-		{
-			if(empty($new_data))
-			{
-				return null;
-			}
-
-			unset($new_data['page_fields']); // Reset.
-
-			foreach($new_data as $k=>$v)
-			{
-				if(substr($k,0,11) === "page_fields")
-				{
-					list($tmp,$newkey) = explode("__",$k);
-					$new_data['page_fields'][$newkey] = $v;
-					unset($new_data[$k]);
-
-
-				}
-
-			}
-
-
-
-			return $new_data;
-
-
-		}
-*/
 
 
 
