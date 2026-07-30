@@ -86,7 +86,11 @@ class e_plugin
 		'e_output', //hook into all pages at the end (after closing </html>)
 	);
 
-	protected $_core_plugins = array(
+	/**
+	 * Folder names of the plugins bundled with the core distribution.
+	 * Single source of truth, also used by e107plugin::$core_plugins.
+	 */
+	const CORE_PLUGINS = array(
 		"_blank","admin_menu","banner","blogcalendar_menu",
 		"chatbox_menu", "comment_menu",
 		"contact", "download", "featurebox", "forum","gallery",
@@ -96,6 +100,8 @@ class e_plugin
 		"rss_menu","search_menu","siteinfo", "social", "tagcloud", "tinymce4",
 		"user"
 	);
+
+	protected $_core_plugins = self::CORE_PLUGINS;
 
 
 
@@ -1487,16 +1493,7 @@ class e107plugin
 	);
 
 
-	protected $core_plugins = array(
-		"_blank","admin_menu","banner","blogcalendar_menu",
-		"chatbox_menu",	"comment_menu",
-		"contact", "download", "featurebox", "forum","gallery",
-		"gsitemap","hero", "import", "linkwords", "list_new", "log", "login_menu",
-		"metaweblog", "newforumposts_main", "news", "newsfeed",
-		"newsletter","online", "page", "pm","poll",
-		"rss_menu","search_menu","siteinfo", "social", "tagcloud", "tinymce4",
-		"user"
-	);
+	protected $core_plugins = e_plugin::CORE_PLUGINS;
 
 
 	// List of all plugin variables which need to be checked - install required if one or more set and non-empty
