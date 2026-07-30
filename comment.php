@@ -420,19 +420,6 @@ elseif ($action == 'comment')
 		switch ($table)
 		{
 			case 'news' :
-				/*if(!empty($pref['trackbackEnabled']))
-				{
-					$query = "SELECT COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
-					LEFT JOIN #user AS u ON n.news_author = u.user_id
-					LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-					LEFT JOIN #trackback AS tb ON tb.trackback_pid  = n.news_id
-					WHERE n.news_class REGEXP '".e_CLASS_REGEXP."'
-					AND n.news_id={$id}
-					AND n.news_allow_comments=0
-					GROUP by n.news_id";
-				}
-				else
-				{*/
 					$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 					LEFT JOIN #user AS u ON n.news_author = u.user_id
 					LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
@@ -563,57 +550,6 @@ if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled'] && $table == 'n
 $field = ($field ? $field : ($id ? $id : ""));			// ID of associated source item
 $width = (isset($width) && $width ? $width : "");
 $cobj->compose_comment($table, $action, $field, $width, $subject, $rate=FALSE);
-/*
-if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled'] && $table == 'news')
-{
-	if($sql->select("trackback", "*", "trackback_pid={$id}"))
-	{
-		$tbArray = $sql -> db_getList();
-
-		if (file_exists(THEME."trackback_template.php")) 
-		{
-			require_once(THEME."trackback_template.php");
-		}
-		else 
-		{
-			require_once(e_CORE."templates/trackback_template.php");
-		}
-
-		$text = "";
-
-		foreach($tbArray as $row)
-		{
-			$scArray = array(
-				'TITLE'     => $row['trackback_title'],
-				'EXCERPT'   => $row['trackback_excerpt'],
-				'BLOGNAME'  => "<a href='{$row['trackback_url']}' rel='external'>{$row['trackback_blogname']}</a>"
-			);
-			
-			$text .= $tp->parseTemplate($TRACKBACK, false, $scArray);
-		}
-
-		if($TRACKBACK_RENDER_METHOD)
-		{
-			$ns->tablerender("<a name='track'></a>".COMLAN_315, $text);
-		}
-		else
-		{
-			echo "<a name='track'></a>".$text;
-		}
-	}
-	else
-	{
-		echo "<a name='track'></a>".COMLAN_316;
-	}
-	if (ADMIN && getperms("B")) 
-	{
-		echo "<div style='text-align:right'><a href='".e_PLUGIN_ABS."trackback/modtrackback.php?".$id."'>".COMLAN_317."</a></div><br />";
-	}
-}*/
-
-
-//if (!strstr(e_QUERY, "poll"))
-// If output buffering started, cache the result
 if ($comment_ob_start)
 {
 	$cache = ob_get_contents();

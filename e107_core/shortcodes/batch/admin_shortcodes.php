@@ -364,19 +364,6 @@ class admin_shortcodes extends e_shortcode
 			{
 				e107::getRedirect()->redirect($slng->subdomainUrl($lanperms[0]));
 			}
-			/*$sql->mySQLlanguage = ($lanperms[0] != $pref['sitelanguage']) ? $lanperms[0] : "";
-			if ($pref['user_tracking'] == "session")
-			{
-				$_SESSION['e107language_'.$pref['cookie_name']] = $lanperms[0];
-				if($pref['multilanguage_subdomain']){
-					header("Location:".$slng->subdomainUrl($lanperms[0]));
-				}
-			}
-			else
-			{
-				setcookie('e107language_'.$pref['cookie_name'], $lanperms[0], time() + 86400, '/');
-				$_COOKIE['e107language_'.$pref['cookie_name']]= $lanperms[0];
-			}*/
 		}
 
 		if(varset($GLOBALS['mySQLtablelist']))
@@ -432,23 +419,6 @@ class admin_shortcodes extends e_shortcode
 			$select .= '</select>';
 
 		}
-		/*elseif(isset($params['nobutton']))
-		{
-			$select .= "
-			<form method='post' action='".e_SELF.(e_QUERY ? '?'.e_QUERY : '')."'>
-			<div>
-			<select name='sitelanguage' id='sitelanguage' class='tbox' onchange=\"location.href=this.options[selectedIndex].value\">";
-			foreach($lanperms as $lng)
-			{
-				$langval = e_SELF.'?['.$slng->convert($lng).']'.e_QUERY;
-				$selected = ($lng == $sql->mySQLlanguage || ($lng == $pref['sitelanguage'] && !$sql->mySQLlanguage)) ? " selected='selected'" : "";
-				$select .= "<option value='".$langval."'{$selected}>$lng</option>\n";
-			}
-			$select .= "</select>
-			</div>
-			</form>
-			";
-		}*/
 		else
 		{
 			$select .= "
@@ -929,33 +899,6 @@ class admin_shortcodes extends e_shortcode
         
         return $text;
         
-      //  e107_plugins/pm/pm.php
-        
-        
-        
-       /*
-        
-		$text = '
-		<li class="dropdown">
-			<a class="dropdown-toggle" title="Messages" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" href="#" >
-				<i class="icon-envelope icon-white active"></i> 3 <b class="caret"></b>
-			</a> 
-			<div id="dropdown" class="dropdown-menu pull-right e-noclick" style="padding:10px;width:300px">
-				<ul class="nav-list">
-		    		<li class="nav-header navbar-header">Unread Messages</li>
-		    		<li><a href="#">Incoming Message Number 1</a></li>
-		      		<li><a href="#">Incoming Message Number 2</a></li>
-		        	<li><a href="#">Incoming Message Number 3</a></li>
-		         	<li role="separator" class="divider"></li>
-		   		</ul>
-				<textarea class="e-tip input-block-level" title="Example Only"></textarea>
-				<button class="dropdown-toggle btn btn-primary">Send</button>	
-			</div>
-		</li>
-		';
-
-		return $text;
-       */
 	}
 
 
@@ -1368,20 +1311,6 @@ class admin_shortcodes extends e_shortcode
 					$banned 		= $sql->count('user', '(*)', 'WHERE user_ban=1');
 					$comments 		= $sql->count('comments');
 
-					/*
-					$unver = ($unverified ? " <a href='".e_ADMIN."users.php?searchquery=&amp;filter_options=user_ban__2&amp;filter=unverified'> ".ADLAN_111.": {$unverified}</a>" : ADLAN_111);
-					$lban = ($banned) ? "<a href='".e_ADMIN_ABS."users.php??searchquery=&filter_options=user_ban__1&filter=banned'>".ADLAN_112. ": ".$banned."</a>" : ADLAN_112.":";
-					$lcomment = ($comments) ? "<a href='".e_ADMIN_ABS."comment.php'>".ADLAN_114.": ".$comments."</a>" : ADLAN_114;
-					
-					$text = "
-					<div class='left'>
-						<div style='padding-bottom: 2px;'>". E_16_USER." <a href='".e_ADMIN_ABS."users.php?filter=0'>".ADLAN_110.": ".$members."</a></div>
-						<div style='padding-bottom: 2px;'>".E_16_USER." {$unver}</div>
-						<div style='padding-bottom: 2px;'>".E_16_BANLIST." ".$lban."</div>
-						<div style='padding-bottom: 2px;'>".E_16_COMMENT." ".$lcomment."</div>\n\n";
-						
-					*/
-					// for BC only. 	
 	
 					
 					$oldconfigs['e-user'][0] 		= array('icon' =>defset('E_16_USER'), 'title' =>ADLAN_110, 'url' => e_ADMIN_ABS. 'users.php?searchquery=&amp;filter_options=user_ban__0', 'total' =>$members, 'invert' =>1);
@@ -1574,32 +1503,6 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 		return "<div id='e-admin-addons-update'><!-- --></div>";
 
-/*
-
-		e107::getDb()->db_mark_time("sc_admin_addon_updates() // start");
-
-		$themes = $this->getUpdateable('theme');
-		$plugins = $this->getUpdateable('plugin');
-
-		$text = $this->renderAddonUpdate($plugins);
-		$text .= $this->renderAddonUpdate($themes);
-
-		if(empty($text))
-		{
-			return null;
-		}
-		$ns = e107::getRender();
-
-		$tp = e107::getParser();
-		$ns->setUniqueId('e-addon-updates');
-
-		e107::getDb()->db_mark_time("sc_admin_addon_updates() // end");
-
-
-
-
-
-		return $ns->tablerender($tp->toGlyph('fa-arrow-circle-o-down').LAN_UPDATE_AVAILABLE,$text,'default',true);*/
 
 
 	}
@@ -1847,276 +1750,6 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 	/**
 	 * Old Admin Navigation Routine.
 	 */
-	 /*
-	function sc_admin_navigationOld($parm=null)
-	{
-	
-		if (!ADMIN) return '';
-	//	global $admin_cat, $array_functions, $array_sub_functions, $pref;
-		
-		$pref = e107::getPref();
-
-		$admin_cat 				= e107::getNav()->adminCats();		
-		$array_functions 		= e107::getNav()->adminLinks('legacy');
-		$array_sub_functions	= e107::getNav()->adminLinks('sub');	
-		
-
-		$tp 	= e107::getParser();
-		$e107	= e107::getInstance();
-		$sql	= e107::getDb('sqlp');
-
-		parse_str($parm, $parms);
-		$tmpl = strtoupper(varset($parms['tmpl'], 'E_ADMIN_NAVIGATION'));
-		global $$tmpl;
-		
-		if($parm == self::ADMIN_NAV_HOME || $parm == self::ADMIN_NAV_LOGOUT || $parm == self::ADMIN_NAV_LANGUAGE || $parm == 'pm')
-		{
-			$template = $$tmpl;
-
-			$template['start'] = $template['start_other'];
-
-			$menu_vars = $this->getOtherNav($parm);	
-			return e107::getNav()->admin('', '', $menu_vars, $template, FALSE, FALSE);
-		}
-        
-
-        
-		// MAIN LINK
-		if($parm != 'no-main')
-		{
-			$menu_vars = array();
-			$menu_vars['adminhome']['text'] = ADLAN_151;
-			$menu_vars['adminhome']['link'] = e_ADMIN_ABS.'admin.php';
-			$menu_vars['adminhome']['image'] = "<img src='".E_16_NAV_MAIN."' alt='".ADLAN_151."' class='icon S16' />";
-			$menu_vars['adminhome']['image_src'] = ADLAN_151;
-			$menu_vars['adminhome']['perm'] = '';
-		}
-
-		//ALL OTHER ROOT LINKS - temporary data transformation - data structure will be changed in the future and this block will be removed
-
-  		foreach($admin_cat['id'] as $i => $cat)
-		{
-			
-			$id = $admin_cat['id'][$i];
-			$menu_vars[$id]['text'] = $admin_cat['title'][$i];
-			$menu_vars[$id]['description'] = $admin_cat['title'][$i];
-			$menu_vars[$id]['link'] = '#';
-			$menu_vars[$id]['image'] = "<img src='".$admin_cat['img'][$i]."' alt='".$admin_cat['title'][$i]."' class='icon S16' />";
-			$menu_vars[$id]['image_large'] = "<img src='".$admin_cat['lrg_img'][$i]."' alt='".$admin_cat['title'][$i]."' class='icon S32' />";
-			$menu_vars[$id]['image_src'] = $admin_cat['img'][$i];
-			$menu_vars[$id]['image_large_src'] = $admin_cat['lrg_img'][$i];
-			// FIX - 'perm' should not be set or navigation->admin() will be broken (bad permissions) for non main administrators
-			//$menu_vars[$id]['perm'] = '';
-			$menu_vars[$id]['sort'] = $admin_cat['sort'][$i];
-
-
-		}
-
-		//CORE SUBLINKS
-		$active = '';
-		foreach ($array_functions as $key => $subitem)
-		{
-			if(!empty($subitem[3]) && !getperms($subitem[3]))
-			{
-				continue;
-			}
-
-				$catid = $admin_cat['id'][$subitem[4]];
-				$tmp = array();
-				$tmp['text'] = $subitem[1];
-				$tmp['description'] = $subitem[2];
-				$tmp['link'] = $subitem[0];
-				$tmp['image'] = $subitem[5];
-				$tmp['image_large'] = $subitem[6];
-				$tmp['image_src'] = '';
-				$tmp['image_large_src'] = '';
-				$tmp['perm'] = $subitem[3];
-				$tmp['sub_class'] = '';
-				$tmp['sort'] = false;
-
-				if(strpos(e_REQUEST_SELF,$tmp['link'])!==false)
-				{
-					$active = $catid;
-				}
-
-
-
-			//	e107::getDebug()->log($catid);
-
-				if(vartrue($pref['admin_slidedown_subs']) && vartrue($array_sub_functions[$key]))
-				{
-					$tmp['sub_class'] = 'sub';
-					foreach ($array_sub_functions[$key] as $subkey => $subsubitem)
-					{
-						$subid = $key.'_'.$subkey;
-						$tmp['sub'][$subid]['text'] = $subsubitem[1];
-						$tmp['sub'][$subid]['description'] = $subsubitem[2];
-						$tmp['sub'][$subid]['link'] = $subsubitem[0];
-						$tmp['sub'][$subid]['image'] = $subsubitem[5];
-						$tmp['sub'][$subid]['image_large'] = $subsubitem[6];
-						$tmp['sub'][$subid]['image_src'] = '';
-						$tmp['sub'][$subid]['image_large_src'] = '';
-						$tmp['sub'][$subid]['perm'] = $subsubitem[3];
-					}
-				}
-
-				if($tmp) $menu_vars[$catid]['sub'][$key] = $tmp;
-		}
-
-
-		//PLUGINS
-		require_once(e_HANDLER.'plugin_class.php');
-		$plug = new e107plugin;
-		$tmp = array();
-
-   		if($sql->select("plugin", "*", "plugin_installflag =1 ORDER BY plugin_path"))
-		{
-			while($row = $sql->fetch())
-			{
-				
-				if($plug->parse_plugin($row['plugin_path']))
-				{
-					$plug_vars = $plug->plug_vars;
-
-				//	if($row['plugin_path']=='calendar_menu')
-				//	{
-				//		print_a($plug_vars);
-				//	}
-					
-					// moved to boot.php
-					// e107::loadLanFiles($row['plugin_path'], 'admin');
-					if(varset($plug_vars['adminLinks']['link']))
-					{
-						
-						if(!empty($row['plugin_category']) && $row['plugin_category'] == 'menu' || !vartrue($plug_vars['adminLinks']['link'][0]['@attributes']['url']))
-						{
-							continue;
-						}
-						
-						
-						$plugpath = varset($plug_vars['plugin_php']) ? e_PLUGIN_ABS : e_PLUGIN_ABS.$row['plugin_path'].'/';
-						$icon_src = varset($plug_vars['administration']['iconSmall']) ? $plugpath.$plug_vars['administration']['iconSmall'] : '';
-						$icon_src_lrg = varset($plug_vars['administration']['icon']) ? $plugpath.$plug_vars['administration']['iconSmall'] : '';
-						$id = 'plugnav-'.$row['plugin_path'];
-
-						if(!getperms('P'.$row['plugin_id']))
-						{
-							continue;
-						}
-
-           	  			$tmp[$id]['text'] = e107::getParser()->toHTML($plug_vars['@attributes']['name'], FALSE, "LINKTEXT");
-						$tmp[$id]['description'] = vartrue($plug_vars['description']['@value']);
-						$tmp[$id]['link'] = e_PLUGIN_ABS.$row['plugin_path'].'/'.$plug_vars['administration']['configFile'];
-					 	$tmp[$id]['image'] = $icon_src ? "<img src='{$icon_src}' alt=\"".varset($tmp[$id]['text'])."\" class='icon S16' />" : E_16_PLUGIN;
-						$tmp[$id]['image_large'] = $icon_src_lrg ? "<img src='{$icon_src_lrg}' alt=\"".varset($tmp[$id]['text'])."\" class='icon S32' />" : $icon_src_lrg;
-						$tmp[$id]['image_src'] = $icon_src;
-						$tmp[$id]['image_large_src'] = $icon_src_lrg;
-						$tmp[$id]['perm'] = 'P'.$row['plugin_id'];
-						$tmp[$id]['sub_class'] = '';
-						$tmp[$id]['sort'] = 2;
-						$tmp[$id]['category'] = varset($row['plugin_category']);
-
-						if($pref['admin_slidedown_subs'] && vartrue($plug_vars['adminLinks']['link']) )
-						{
-							$tmp[$id]['sub_class'] = 'sub';
-							$tmp[$id]['sort'] = false;
-							foreach ($plug_vars['adminLinks']['link'] as $subkey => $plugsub)
-							{
-								$subid = $id.'-'.$subkey;
-								$predef_icons = array('add', 'manage', 'settings');
-								$title = vartrue($plugsub['@value']);
-								$plugsub = $plugsub['@attributes'];
-
-								if(varset($plugsub['primary'])=='true') // remove primary links.
-								{
-									continue;
-								}
-
-								$icon_src = in_array($plugsub['icon'], $predef_icons) ? e_IMAGE_ABS."admin_images/{$plugsub['icon']}_16.png" : ( $plugsub['icon'] ? $plugpath.$plugsub['icon'] : '');
-
-
-								$tmp[$id]['sub'][$subid]['text'] = e107::getParser()->toHTML($title, FALSE, 'LINKTEXT');
-								$tmp[$id]['sub'][$subid]['description'] = (vartrue($plug_vars['description']['@value'])) ? e107::getParser()->toHTML($plug_vars['description']['@value']) : "";
-								$tmp[$id]['sub'][$subid]['link'] = e_PLUGIN_ABS.$row['plugin_path'].'/'.$plugsub['url'];
-								$tmp[$id]['sub'][$subid]['image'] = $icon_src ? "<img src='{$icon_src}' alt=\"".varset($tmp[$id]['sub'][$subid]['text'])."\" class='icon S16' />" : "";
-								$tmp[$id]['sub'][$subid]['image_large'] = '';
-								$tmp[$id]['sub'][$subid]['image_src'] = $icon_src;
-								$tmp[$id]['sub'][$subid]['image_large_src'] = '';
-								$tmp[$id]['sub'][$subid]['perm'] = varset($plugsub['perm']) ? $plugsub['perm'] : 'P'.$row['plugin_id'];
-								$tmp[$id]['sub'][$subid]['sub_class'] = '';
-
-							}
-						}
-					}
-				}
-			}
-
-
-
-		 	$menu_vars['plugMenu']['sub'] = multiarray_sort($tmp, 'text');
-
-		}
-
-		// ---------------- Cameron's Bit ---------------------------------
-
-		if(empty($pref['admin_separate_plugins']))
-		{
-        	// Convert Plugin Categories to Core Categories.
-			$convert = array(
-				'settings' 	=> array(1,'setMenu'),
-				'users'		=> array(2,'userMenu'),
-				'content'	=> array(3,'contMenu'),
-				'tools'		=> array(4,'toolMenu'),
-				'manage'	=> array(6,'managMenu'),
-				'misc'		=> array(7,'miscMenu'),
-				'help'		=> array(20,'helpMenu')
-			);
-
-
-             foreach($tmp as $pg)
-			 {
-			    if(!empty($pg['category']))
-			    {
-			 	    $id = $convert[$pg['category']][1];
-             	    $menu_vars[$id]['sub'][] = $pg;
-
-				    if(strpos(e_REQUEST_SELF,$pg['link'])!==false)
-					{
-						$active = $id;
-					}
-
-
-			    }
-			 }
-
-			// Clean up - remove empty main sections
-			foreach ($menu_vars as $_m => $_d)
-			{
-
-				if(!isset($_d['sub']) || empty($_d['sub']))
-				{
-					unset($menu_vars[$_m]);
-				}
-			}
-
-			unset($menu_vars['plugMenu']);
-		}
-
-		// ------------------------------------------------------------------
-
-		//added option to disable leave/logout (ll) - more flexibility for theme developers
-	//	if(!vartrue($parms['disable_ll']))
-	//	{
-		//	$menu_vars += $this->getOtherNav('home');	
-	//	}
-
-	//	 print_a($menu_vars);
-
-
-		return e107::getNav()->admin('', $active, $menu_vars, $$tmpl, FALSE, FALSE);
-		//return e_admin_men/u('', e_PAGE, $menu_vars, $$tmpl, FALSE, FALSE);
-	}
-*/
 
 	/**
 	 * New Admin Navigation Routine. v2.1.5
@@ -2194,19 +1827,6 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 		$displayLabels = (bool) varset($pref['admin_navbar_labels'], false);
 
-		// MAIN LINK
-		/*
-		if($parm != 'no-main')
-		{
-			$menu_vars = array();
-			$menu_vars['adminhome']['text'] = ADLAN_151;
-			$menu_vars['adminhome']['link'] = e_ADMIN_ABS.'admin.php';
-			$menu_vars['adminhome']['image'] = "<img src='".E_16_NAV_MAIN."' alt='".ADLAN_151."' class='icon S16' />";
-			$menu_vars['adminhome']['image_src'] = ADLAN_151;
-			$menu_vars['adminhome']['perm'] = '';
-		}*/
-
-		//ALL OTHER ROOT LINKS - temporary data transformation - data structure will be changed in the future and this block will be removed
 
   		foreach($admin_cat['id'] as $i => $cat)
 		{
@@ -2635,41 +2255,6 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 
 
-/*
-
-        $var['menumanager']['text'] = LAN_MENULAYOUT;
-		$var['menumanager']['link'] = e_ADMIN_ABS.'menus.php';
-		
-		$var['nothing']['divider'] = true;
-
-		if(vartrue($pref['menuconfig_list']))
-		{
-	        foreach($pref['menuconfig_list'] as $name=>$val)
-			{
-	           	$var[$name]['text'] = str_replace(":"," / ",$val['name']);
-	 			$var[$name]['link'] = e_PLUGIN_ABS.$val['link'];
-
-			}
-		}
-
- 		foreach($var as $key=>$link)
-		{
-        	if(varset($link['link']) && strpos(e_SELF,$link['link']))
-			{
-            	$action = $key;
-			}
-		}
-
-		if(!$action)
-		{
-        	return;
-		}
-   //		$keys = array_keys($var);
-	//	$action = (in_array($this->action,$keys)) ? $this->action : "installed";
-
-		e107::getNav()->admin("Menu Manager",$action, $var);
-
-*/
 
 
 	}
