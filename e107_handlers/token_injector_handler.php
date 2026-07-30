@@ -47,20 +47,14 @@ if(!defined('e107_INIT'))
  * Two deliberate changes to rendered HTML follow from this, on the front end as
  * well as in the admin area: every same-origin POST form gains a hidden input as
  * its FIRST child, which shifts what a theme's form > :first-child rule selects,
- * and every HTML page gains a <meta name="e-token"> before </head>. An operator
- * whose theme is disturbed by either turns the whole thing off with the
- * csrf_autotoken preference, see {@see e_token_injector::setEnabled()}.
+ * and every HTML page gains a <meta name="e-token"> before </head>. Neither is
+ * configurable: {@see e_form::token()} is deprecated and core no longer emits a
+ * token by hand anywhere, so injection is the only thing standing between a form
+ * and the refusal in {@see e_core_session::check()}.
  */
 class e_token_injector
 {
 	const FIELD_NAME = 'e-token';
-
-	/**
-	 * Runtime override of the csrf_autotoken preference, or null to follow it.
-	 *
-	 * @var bool|null
-	 */
-	private static $enabled = null;
 
 	/**
 	 * One pass over the page. The alternation order matters: a comment, a
@@ -88,7 +82,7 @@ class e_token_injector
 
 		$token = defset('e_TOKEN');
 
-		if(empty($token) || !self::isEnabled() || !self::isHtmlResponse())
+		if(empty($token) || !self::isHtmlResponse())
 		{
 			return $content;
 		}
@@ -294,40 +288,6 @@ class e_token_injector
 		$meta = '<meta name="' . self::FIELD_NAME . '" content="' . $token . '" />' . "\n";
 
 		return substr($content, 0, $position) . $meta . substr($content, $position);
-	}
-
-	/**
-	 * Is automatic injection switched on?
-	 *
-	 * @return bool
-	 */
-	public static function isEnabled()
-	{
-		if(self::$enabled !== null)
-		{
-			return self::$enabled;
-		}
-
-		return (bool) e107::getPref('csrf_autotoken', 1);
-	}
-
-	/**
-	 * Override automatic injection for the rest of this request.
-	 *
-	 * Exists so a test, or a theme that renders its own tokens, can settle the
-	 * question without a define. Pass null to hand control back to the
-	 * preference.
-	 *
-	 * @param bool|null $enabled
-	 * @return bool|null the override that was in force, for restoring afterwards
-	 */
-	public static function setEnabled($enabled)
-	{
-		$previous = self::$enabled;
-
-		self::$enabled = ($enabled === null) ? null : (bool) $enabled;
-
-		return $previous;
 	}
 
 	/**

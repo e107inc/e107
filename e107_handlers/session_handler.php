@@ -540,9 +540,10 @@ public function getData($key = null, $clear = false)
      * everywhere.
      *
      * It governs the tokenless case only. A request that presents a token which
-     * does not validate is always refused, whatever this returns. The second lever,
-     * for a site whose forms are being handed a token they cannot honour, is
-     * {@see e_token_injector::setEnabled()}.
+     * does not validate is always refused, whatever this returns. It is also the
+     * only lever: {@see e_token_injector} always injects, so a site whose forms
+     * are being handed a token they cannot honour relaxes this rather than
+     * switching injection off.
      *
      * @return int one of the TOKEN_CHECK_* constants
      */
