@@ -23,7 +23,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 
-e107::includeLan(e_PLUGIN.'/newsletter/languages/English_admin_newsletter.php');
+e107::plugLan('newsletter', 'global');
 
 /* 
 Class for newsletter mailout function
@@ -219,7 +219,7 @@ class newsletter_mailout
 				elseif($checked)
 				{
 					$var[$c]['caption'] = $row['newsletter_title'];
-					$var[$c]['html'] = NLLAN_49;
+					$var[$c]['html'] = LAN_YES;
 				}
 				$c++;
 			}
