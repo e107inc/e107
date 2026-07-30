@@ -148,12 +148,23 @@ class AdminCsrfTriggerCest
 	 * reaches the admin_ui trigger loop.
 	 *
 	 * @param AcceptanceTester $I
-	 * @param string $action form action, relative to the docroot
+	 * @param string $action form action, relative to the site root
 	 * @param array $fields name => value pairs posted as hidden inputs
 	 * @return void
 	 */
 	private function postPoc(AcceptanceTester $I, $action, array $fields)
 	{
+		// The action has to be written relative to the PoC page, which sits in
+		// the site root. PhpBrowser rewrites the paths handed to amOnPage() so
+		// that they land inside the configured base URL, but the action of a
+		// form the test itself authored is resolved the way a browser resolves
+		// it: a leading slash means the host root, not the site root. The CI
+		// acceptance environment publishes e107 at http://localhost/e107/, so
+		// "/e107_admin/links.php" posted outside the site under test and every
+		// assertion about the response or the database looked at the wrong
+		// request.
+		$action = ltrim($action, '/');
+
 		$html = "<html><body><form id='poc' method='post' action='".htmlspecialchars($action, ENT_QUOTES)."'>";
 
 		foreach($fields as $name => $value)
