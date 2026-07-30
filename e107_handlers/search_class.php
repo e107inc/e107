@@ -508,7 +508,57 @@ class e_search
 			return FALSE;
 		}
 	}
-	
-	
-	
+
+
+	/**
+	 * Resolve the file that provides a comment search handler.
+	 *
+	 * Core handlers live in e107_handlers/search/ and are named after the pref
+	 * key; plugin handlers live in the plugin folder named by 'dir'.
+	 *
+	 * @param string $key handler key from the search_prefs 'comments_handlers' array
+	 * @param array $value handler definition, eg. array('id' => 2, 'dir' => 'core', 'class' => '0')
+	 * @return string path to the handler file, which is not guaranteed to exist
+	 */
+	public static function getCommentHandlerPath($key, $value)
+	{
+		$dir = varset($value['dir'], 'core');
+
+		return ($dir === 'core') ? e_HANDLER.'search/comments_'.$key.'.php' : e_PLUGIN.$dir.'/search/search_comments.php';
+	}
+
+
+	/**
+	 * Check whether a comment search handler is backed by an installed plugin.
+	 *
+	 * Handlers are keyed by the feature that provides them, and the entries
+	 * shipped for plugin-provided handlers claim 'core' as their directory, so
+	 * the plugin that has to be installed is named by the key whenever the
+	 * directory does not name one. A handler belonging to a plugin that
+	 * requires installation is only usable while that plugin is installed: its
+	 * title comes from the plugin's global language file, and core only
+	 * auto-loads those for installed plugins.
+	 *
+	 * Nothing prunes these prefs when a plugin is uninstalled or deleted, so
+	 * entries left behind by an old install are the norm rather than the
+	 * exception and must not be loaded blindly.
+	 *
+	 * @param string $key handler key from the search_prefs 'comments_handlers' array
+	 * @param array $value handler definition, eg. array('id' => 2, 'dir' => 'core', 'class' => '0')
+	 * @return bool
+	 * @see https://github.com/e107inc/e107/issues/5267
+	 */
+	public static function isCommentHandlerAvailable($key, $value)
+	{
+		$dir = varset($value['dir'], 'core');
+		$plugin = ($dir === 'core') ? $key : $dir;
+
+		if(empty($plugin) || !e107::getPlug()->load($plugin)->getInstallRequired())
+		{
+			return true; // core feature, or a plugin that is usable without being installed
+		}
+
+		return e107::isInstalled($plugin);
+	}
+
 }
