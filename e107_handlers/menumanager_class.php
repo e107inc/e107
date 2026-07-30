@@ -782,37 +782,6 @@ class e_menuManager
 			{
 
 				return $this->menuParamForm($id, $fields,$tabs,$form,$value);
-				/*
-
-				foreach($fields as $k=>$v)
-				{
-					$text .= "<tr><td class='text-left'>".$v['title']."</td>";
-				//	$v['writeParms']['class'] = 'e-save';
-					$i = $k;
-					if(!empty($v['multilan']))
-					{
-						$i = $k.'['.e_LANGUAGE.']';
-
-						if(isset($value[$k][e_LANGUAGE]))
-						{
-							$value[$k] = varset($value[$k][e_LANGUAGE],'');
-						}
-
-					}
-
-
-					$text .= "<td class='text-left'>".$form->renderElement($i, $value[$k], $v);
-
-
-
-					if(!empty($v['help']))
-					{
-						//$v['writeParms']['title'] = e107::getParser()->toAttribute($v['help']);
-						$text .= "<div class='field-help'>".$v['help']."</div>";
-					}
-
-					$text .= "</td></tr>";
-				}*/
 
 			}
 			else
@@ -1461,45 +1430,6 @@ class e_menuManager
 
 
 
-	//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-/*	function menuSelectLayout()
-	{
-		$pref = e107::getPref();
-		
-// onchange=\"urljump(this.options[selectedIndex].value);\"
-
-		$text = "<form class='form-inline' method='post' action='".e_SELF."?configure=".$this->curLayout."'>";
-		$text .= "<div class='buttons-bar'>".MENLAN_54.": ";
-        $text .= "<select name='custom_select' style='width:auto' id='menuManagerSelect'  >\n"; //tbox class will break links.  // window.frames['menu_iframe'].location=this.options[selectedIndex].value ???
-
-
-	    $search = array("_","legacyDefault","legacyCustom");
-		$replace = array(" ",MENLAN_31,MENLAN_33);
-
-
-	    foreach($pref['sitetheme_layouts'] as $key=>$val)
-		{
-			$layoutName = str_replace($search,$replace,$key);
-			$layoutName .=($key==$pref['sitetheme_deflayout']) ? " (".MENLAN_31.")" : "";
-			$selected = ($this->curLayout == $key || ($key==$pref['sitetheme_deflayout'] && $this->curLayout=='')) ? "selected='selected'" : FALSE;
-		
-           // $url = e_SELF."?lay=".$key;
-
-			$url = e_SELF."?configure=".$key;
-			
-			$text .= "<option value='".$url."' {$selected}>".$layoutName."</option>";
-		}
-
-	    $text .= "</select>
-	    <div class='field-help'>".MENLAN_30."</div>
-		</div></form>";
-		
-		// $text .= "<div id='visibility'>Something here</div>";
-		
-		  return $text;
-	}
-*/
-		//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 	/**
 	 * @param $LAYOUT
 	 * @param $check
@@ -1613,24 +1543,6 @@ class e_menuManager
 			$ns->setStyle($style);
 
 		}
-		/*elseif(strstr($str, "SITENAME"))
-		{
-			echo "[SiteName]";
-		}*/
-		/*elseif(strstr($str, "SITETAG"))
-		{
-			echo "<div style='padding: 2px'>[SiteTag]</div>";
-		}*/
-	//	elseif(strstr($str, "SITELINKS"))
-	//	{
-	//		echo "[SiteLinks]";
-	//	}
-	//	elseif(strstr($str, "NAVIGATION"))
-	//	{
-	//		$cust = preg_replace("/\W*\{NAVIGATION(.*?)(\+.*)?\}\W*/si", "\\1", $str);
-	//		$tp->parseTemplate("{NAVIGATION".$cust."}",true);
-		//	echo "<span class='label label-info'>Navigation Area</span>";
-	//	}
 		elseif(strpos($str, '{---MODAL---}') !== false)
 		{
 			//echo "\n<!-- Modal would appear here --> \n";
@@ -2233,23 +2145,6 @@ class e_mm_layout
 			unset($HEADER,$FOOTER,$CUSTOMHEADER,$CUSTOMFOOTER,$style);
 
 			e107::loadAdminIcons();
-		//	require_once(e_CORE."templates/admin_icons_template.php");
-
-
-
-		 /*
-
-			e107::js('inline', "
-
-			win = document.getElementById('menu_iframe').contentWindow;
-			win.jQuery(dragelement,parent.document).draggable({
-				connectToSortable : $('#sortable')
-			});
-
-			",'jquery');
-
-
-		*/
 
 			$this->curLayout = vartrue($_GET['configure'], $pref['sitetheme_deflayout']);
 			$this->renderLayout($this->curLayout);
@@ -2277,44 +2172,6 @@ class e_mm_layout
 			$this->CUSTOMFOOTER = varset($CUSTOMFOOTER);
 			$this->style		= varset($style);
 
-				// XXX HELP _ i don't work with iFrames.
-		//	$("#sortable")
-		//$("iframe").contents().find(".sortable")
-
-		/*
-		e107::js('inline','
-		 $(function()
-		 {
-			$( ".sortable" ).sortable({
-				revert: true
-			});
-
-
-
-			$("iframe").load(function(){
-
-				var frameid = $("#iframe-default").contents().find(".sortable").attr("id")
-
-				$( ".draggable" ).draggable({
-					connectToSortable: "#" + frameid,
-					helper: "clone",
-					revert: "invalid",
-					cursor: "move",
-					iframeFix: true
-
-
-				});
-
-			});
-
-		 	//	$( "ul, li" ).disableSelection();
-
-
-		});
-
-
-		','jquery');
-		*/
 
 
 			$this->scanForNew();
@@ -2836,25 +2693,6 @@ class e_mm_layout
 
 		$text .= '<a class="menuOption e-menumanager-option menu-btn pull-right" data-modal-caption="'.LAN_VISIBILITY.'" href="'.$visibilityLink.'" title="'.LAN_VISIBILITY.'"><i class="icon-search"></i></a>';
 
-		/*
-
-
-		$text .= '<span class="menu-options-buttons">
-		<a class="e-menumanager-option menu-btn" data-modal-caption="'.LAN_VISIBILITY.'" href="'.$visibilityLink.'" title="'.LAN_VISIBILITY.'"><i class="S16 e-search-16"></i></a>';
-
-		if($conf)
-		{
-			$text .= '<a class="menu-btn" target="_top" href="'.e_SELF.'?lay='.$layout.'&amp;mode=conf&amp;path='.urlencode($conf).'&amp;id='.$menu_id.'"
-			title="Configure menu"><i class="S16 e-configure-16"></i></a>';
-		}
-
-		$editLink = e_SELF."?enc=".base64_encode('lay='.$layout.'&parmsId='.$menu_id.'&iframe=1');
-		$text .= '<a data-modal-caption="Configure parameters" class="e-menumanager-option menu-btn e-tip" target="_top" href="'.$editLink.'" title="Configure parameters"><i class="S16 e-edit-16" ></i></a>';
-
-		$text .= '<a title="'.LAN_DELETE.'" id="remove-'.$menu_id.'-'.$menu_location.'" class="e-tip delete e-menumanager-delete menu-btn" href="'.e_SELF.'?configure='.$layout.'&amp;mode=deac&amp;id='.$menu_id.'"><i class="S16 e-delete-16"></i></a>
-
-		</span>';
-		*/
 
 
 
@@ -2870,36 +2708,6 @@ class e_mm_layout
 
 	}
 
-/*
-	function menuSaveAjax($mode = null)
-	{
-
-		if($mode == 'visibility')
-		{
-
-			$ret = $this->menuSaveVisibility();
-		//	echo json_encode($ret);
-			return;
-		}
-
-
-		if($mode == 'parms')
-		{
-		//	echo "hi there";
-			$ret =  array('msg'=>'hi there','error'=>true);
-		//	$ret = $this->menuSaveParameters();
-			echo json_encode($ret);
-			return;
-		}
-
-
-
-     //	print_r($_POST);
-		return;
-
-
-	}
-*/
 	/**
 	 * Scan Plugin folders for new _menu files.
 	 */
@@ -3047,53 +2855,6 @@ class e_mm_layout
 	 * settings per instance later ($parm variable available for menus - same as shortcode's $parm)
 	 * @see menuInstanceParameters() in menumanager_class.php
 	 */
-/*
-	private function renderInstanceParameters()
-	{
-		if(!vartrue($_GET['parmsId'])) return;
-		$id = intval($_GET['parmsId']);
-		$frm = e107::getForm();
-		$sql = e107::getDb();
-
-		if(!$sql->select("menus", "*", "menu_id=".$id))
-		{
-        	$this->menuAddMessage("Couldn't Load Menu",E_MESSAGE_ERROR);
-            return;
-		};
-		$row = $sql->fetch();
-
-		$text = "<div style='text-align:center;'>
-		<form  id='e-save-form' method='post' action='".e_SELF."?lay=".$this->curLayout."'>
-        <fieldset id='core-menus-parametersform'>
-		<legend>".MENLAN_44." ".$row['menu_name']."</legend>
-        <table class='table adminform'>
-		<tr>
-		<td>
-		".MENLAN_45."</td><td>
-		".$frm->text('menu_parms', $row['menu_parms'], 900, 'class=e-save ')."
-		</td>
-		</tr>
-		</table>";
-
-
-		//	$text .= "
-		//	<div class='buttons-bar center'>";
-		//	$text .= $frm->admin_button('parms_submit', LAN_SAVE, 'update');
-		//	$text .= "<input type='hidden' name='menu_id' value='".$id."' />
-		//	</div>";
-
-
-		$text .= $frm->hidden('mode','parms');
-		$text .= $frm->hidden('menu_id',$id);
-		$text .= "
-		</fieldset>
-		</form>
-		</div>";
-
-		return $text;
-
-	}
-*/
 
 	/**
 	 * Render the main area with TABS and iframes.
