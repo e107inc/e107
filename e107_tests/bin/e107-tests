@@ -12,9 +12,17 @@ SCRIPT_PATH=$(readlink -f -- "$0")
 SCRIPT_DIR=$(dirname -- "$SCRIPT_PATH")
 TESTS_DIR=$(dirname -- "$SCRIPT_DIR")
 APP_PATH=$(dirname -- "$TESTS_DIR")
-DOCKER_DIR="$TESTS_DIR/docker"
-COMPOSE_FILE="$DOCKER_DIR/compose.yml"
-MANAGED_CONFIG="$TESTS_DIR/config.docker.yml"
+
+# Everything the harness reads or writes hangs off APP_PATH, including the
+# project-name hash, so retargeting a worktree is a matter of setting it.
+set_paths_from_root() {
+    APP_PATH=$1
+    TESTS_DIR="$APP_PATH/e107_tests"
+    DOCKER_DIR="$TESTS_DIR/docker"
+    COMPOSE_FILE="$DOCKER_DIR/compose.yml"
+    MANAGED_CONFIG="$TESTS_DIR/config.docker.yml"
+}
+set_paths_from_root "$APP_PATH"
 
 DEFAULT_PHP=8.2
 DEFAULT_DB=mariadb:10.11
@@ -40,6 +48,27 @@ note() { printf '%s\n' "$*" >&2; }
 warn() { printf '!! %s\n' "$*" >&2; }
 
 have() { command -v "$1" >/dev/null 2>&1; }
+
+# An e107 worktree this harness can drive: an e107 tree carrying its own copy
+# of the compose stack. A tree without one (an old release tag, before
+# `graft`) deliberately fails this test and is left to the script's own copy.
+is_harness_worktree() {
+    [ -f "$1/e107_tests/docker/compose.yml" ] && [ -d "$1/e107_handlers" ]
+}
+
+# Nearest such worktree at or above a directory.
+find_harness_worktree() {
+    local d
+    d=$(readlink -f -- "$1" 2>/dev/null) || return 1
+    while [ -n "$d" ] && [ "$d" != / ]; do
+        if is_harness_worktree "$d"; then
+            printf '%s' "$d"
+            return 0
+        fi
+        d=$(dirname -- "$d")
+    done
+    return 1
+}
 
 require_docker() {
     have docker || err "docker is required but not on PATH"
@@ -71,20 +100,76 @@ project_name() {
 # Env discovery (Docker labels are the source of truth)
 # ---------------------------------------------------------------------------
 
+# Read-only docker call. Data goes to stdout; stderr is held back and only
+# replayed when the command actually fails, so a wrapper that greets you on
+# every invocation (podman's docker shim does) cannot land in the middle of a
+# table. Nothing here matches on the text of that greeting.
+docker_q() {
+    local tmp out rc=0
+    tmp=$(mktemp)
+    out=$(docker "$@" 2>"$tmp") || rc=$?
+    [ "$rc" -eq 0 ] || cat "$tmp" >&2
+    rm -f "$tmp"
+    if [ -n "$out" ]; then printf '%s\n' "$out"; fi
+    return $rc
+}
+
+# One docker call per run, not one per question. Every env query below reads
+# this table instead of spawning its own process: project, php, db, xdebug,
+# app-path and state, one row per container. Listing a dozen envs used to
+# cost five docker invocations each.
+#
+# Cached in a file, not a variable. Nearly every caller reads the snapshot
+# from inside a command substitution, and a variable assigned there dies with
+# the subshell, which would silently put us back to one docker call per
+# question. The first line is a marker so that "loaded" and "loaded, and
+# there are no envs" stay distinguishable.
+SNAPSHOT_FILE=
+
+snapshot_invalidate() { [ -n "$SNAPSHOT_FILE" ] && : > "$SNAPSHOT_FILE" || true; }
+
+snapshot() {
+    if [ ! -s "$SNAPSHOT_FILE" ]; then
+        require_docker
+        local fmt
+        fmt='{{.Label "com.docker.compose.project"}}\t'
+        fmt=$fmt'{{.Label "'$LABEL_NS'.php"}}\t'
+        fmt=$fmt'{{.Label "'$LABEL_NS'.db"}}\t'
+        fmt=$fmt'{{.Label "'$LABEL_NS'.xdebug"}}\t'
+        fmt=$fmt'{{.Label "'$LABEL_NS'.app-path"}}\t'
+        fmt=$fmt'{{.State}}'
+        printf 'snapshot\n' > "$SNAPSHOT_FILE"
+        docker_q ps -a --filter "label=$LABEL_NS=1" --format "$fmt" >> "$SNAPSHOT_FILE" || true
+    fi
+    tail -n +2 -- "$SNAPSHOT_FILE"
+}
+
 # All harness-created projects, across every worktree on this machine.
 all_projects() {
-    docker ps -a --filter "label=$LABEL_NS=1" \
-        --format '{{.Label "com.docker.compose.project"}}' | sort -u | grep . || true
+    snapshot | awk -F'\t' '$1 != "" {print $1}' | sort -u
 }
 
 project_exists() {
-    [ -n "$(docker ps -aq --filter "label=com.docker.compose.project=$1" | head -n1)" ]
+    snapshot | awk -F'\t' -v p="$1" '$1 == p {found = 1} END {exit !found}'
 }
 
 # Read one e107.tests.* label off any container of a project.
 project_label() {
-    docker ps -a --filter "label=com.docker.compose.project=$1" \
-        --format "{{.Label \"$LABEL_NS.$2\"}}" | grep -m1 . || true
+    local col
+    case $2 in
+        php)      col=2 ;;
+        db)       col=3 ;;
+        xdebug)   col=4 ;;
+        app-path) col=5 ;;
+        *) err "unknown label: $2" ;;
+    esac
+    snapshot | awk -F'\t' -v p="$1" -v c="$col" '$1 == p && $c != "" {print $c; exit}'
+}
+
+# Containers of a project, by state, as "running(2),exited(1)".
+project_state() {
+    snapshot | awk -F'\t' -v p="$1" '$1 == p {print $6}' | sort | uniq -c \
+        | awk '{printf "%s%s(%s)", s, $2, $1; s = ","}'
 }
 
 load_env_from_labels() {
@@ -128,8 +213,7 @@ find_project() {
     fi
 
     local candidates count
-    candidates=$(docker ps -a --filter "label=$LABEL_NS.app-path=$APP_PATH" \
-        --format '{{.Label "com.docker.compose.project"}}' | sort -u | grep . || true)
+    candidates=$(snapshot | awk -F'\t' -v path="$APP_PATH" '$5 == path && $1 != "" {print $1}' | sort -u)
     count=$(printf '%s' "$candidates" | grep -c . || true)
     if [ "$count" -eq 1 ]; then
         PROJECT=$candidates
@@ -147,6 +231,19 @@ resolve_env() {
     require_docker
     find_project || err "no active env for this worktree. Run 'e107-tests up', or pass --env <project> (see: e107-tests list)"
     load_env_from_labels
+}
+
+# `up` and `down` pair up within a worktree on their own, through the marker
+# find_project() reads. `--env` is the way out of that, which is useful and is
+# also how you destroy someone else's stack by accident, so anything
+# irreversible checks whose worktree the env belongs to before doing it.
+assert_env_is_ours() {
+    local action=$1 force=$2 owner
+    owner=$(project_label "$PROJECT" app-path)
+    [ -n "$owner" ] && [ "$owner" != "$APP_PATH" ] || return 0
+    [ "$force" = yes ] || err "refusing to $action $PROJECT: it belongs to $owner, not $APP_PATH.
+       Run it from that worktree, or pass --force if you mean it."
+    warn "$action $PROJECT, which belongs to $owner"
 }
 
 # ---------------------------------------------------------------------------
@@ -517,6 +614,7 @@ cmd_up() {
         compose_p ps >&2 || true
         err "env $PROJECT failed to come up (see output above; try: e107-tests logs)"
     fi
+    snapshot_invalidate
     assert_stack_healthy
     heal_dns
     deps_install
@@ -527,16 +625,23 @@ cmd_up() {
 }
 
 cmd_down() {
-    local remove_volumes=
+    local remove_volumes= force=no
     while [ $# -gt 0 ]; do
         case $1 in
             --volumes|-v) remove_volumes=--volumes; shift ;;
+            --force|-f) force=yes; shift ;;
             *) err "unknown flag: $1" ;;
         esac
     done
     resolve_env
-    note ">> Tearing down: $PROJECT"
+    assert_env_is_ours "tear down" "$force"
+    if [ -n "$remove_volumes" ]; then
+        note ">> Tearing down: $PROJECT (with volumes: its database and caches go too)"
+    else
+        note ">> Tearing down: $PROJECT"
+    fi
     compose_p down --remove-orphans $remove_volumes || true
+    snapshot_invalidate
 
     # Clean up the managed config only if it belongs to this project.
     if [ -f "$MANAGED_CONFIG" ] && grep -q "Generated for project: $PROJECT" "$MANAGED_CONFIG"; then
@@ -668,7 +773,15 @@ cmd_ci_unit() {
 }
 
 cmd_reset() {
+    local force=no
+    while [ $# -gt 0 ]; do
+        case $1 in
+            --force|-f) force=yes; shift ;;
+            *) err "unknown flag: $1" ;;
+        esac
+    done
     resolve_env
+    assert_env_is_ours reset "$force"
     ensure_web_exec
     note ">> Resetting database for $PROJECT"
     compose_p exec -T db sh -c '
@@ -788,9 +901,7 @@ cmd_list() {
         db=$(project_label "$p" db)
         xd=$(project_label "$p" xdebug)
         path=$(project_label "$p" app-path)
-        state=$(docker ps -a --filter "label=com.docker.compose.project=$p" \
-            --format '{{.State}}' | sort | uniq -c \
-            | awk '{printf "%s%s(%s)", s, $2, $1; s=","}')
+        state=$(project_state "$p")
         printf '%s %-48s %-6s %-16s %-7s %-24s %s\n' \
             "$marker" "$p" "$php" "$db" "$xd" "$state" "$path"
     done
@@ -822,6 +933,7 @@ cmd_gc() {
             else
                 note ">> tearing down $p (worktree gone: $path)"
                 docker compose -p "$p" down --volumes --remove-orphans || true
+                snapshot_invalidate
                 removed=$((removed + 1))
             fi
         done
@@ -919,6 +1031,11 @@ USAGE:
   e107-tests <command> [args...]
   e107-tests --env <project> <command> [args...]   # any env, any worktree
 
+  Commands act on the worktree you are standing in. If that worktree carries
+  its own copy of the harness, this script hands over to it, so the stack is
+  always driven by the harness shipped alongside the tree it tests. Outside
+  any e107 worktree, the copy this script lives in is used.
+
 LIFECYCLE:
   up [--php X] [--db Y] [--xdebug] [--install-site]
                                      Start, install deps, mark active. Builds the
@@ -926,8 +1043,11 @@ LIFECYCLE:
                                      Default: PHP 8.2 + MariaDB 10.11.
                                      --install-site also installs e107 itself
                                      (persistent config, admin/x107).
-  down [--volumes]                   Stop and remove this env.
-  reset                              Drop+recreate DB, clear written app state.
+  down [--volumes] [--force]         Stop and remove this env. Removing an env
+                                     belonging to another worktree (reachable
+                                     with --env) needs --force.
+  reset [--force]                    Drop+recreate DB, clear written app state.
+                                     --force as for down.
   clean                              Wipe untracked acceptance-test artifacts
                                      from the host worktree (e107_config.php,
                                      install log, hash dirs, copied themes).
@@ -994,6 +1114,30 @@ EOF
 EXPLICIT_PROJECT=
 WITH_XDEBUG=no
 XDEBUG_TAG=
+
+# The worktree you are standing in wins over the one this script happens to
+# live in, so `cd` into a worktree and a bare `e107-tests` drives that
+# worktree rather than silently building a stack for another one. Where the
+# target carries its own harness, hand over to it: the copies drift between
+# branches (the default PHP version alone differs), and a stack should be
+# driven by the harness shipped alongside the tree it tests.
+if [ -z "${E107_TESTS_REEXEC:-}" ]; then
+    CWD_ROOT=$(find_harness_worktree "$PWD") || CWD_ROOT=
+    if [ -n "$CWD_ROOT" ] && [ "$CWD_ROOT" != "$APP_PATH" ]; then
+        if [ -x "$CWD_ROOT/e107_tests/bin/e107-tests" ]; then
+            note ">> using the harness in the current worktree: $CWD_ROOT"
+            export E107_TESTS_REEXEC=1
+            exec "$CWD_ROOT/e107_tests/bin/e107-tests" "$@"
+        fi
+        note ">> targeting the current worktree: $CWD_ROOT"
+        set_paths_from_root "$CWD_ROOT"
+    fi
+fi
+
+# Created after the hand-over above, because exec replaces this process and
+# would leave the file behind with no trap to remove it.
+SNAPSHOT_FILE=$(mktemp)
+trap 'rm -f "$SNAPSHOT_FILE"' EXIT
 
 # Pre-parse global flags that can appear before the subcommand.
 while [ $# -gt 0 ]; do
