@@ -354,6 +354,30 @@ function install_set_state_cookie($value)
 	));
 }
 
+/**
+ * Drop the resume cookie once the install has finished.
+ *
+ * Nothing can be resumed after stage 8, and the cookie is ambient authority the
+ * browser would otherwise keep attaching to the new site.
+ *
+ * @return void
+ */
+function install_clear_state_cookie()
+{
+	$secure = (!empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off');
+	$path = defined('e_HTTP') ? e_HTTP : '/';
+
+	unset($_COOKIE['e107install_state']);
+
+	eShims::setcookie('e107install_state', '', array(
+		'expires'  => 1,
+		'path'     => $path,
+		'secure'   => $secure,
+		'httponly' => true,
+		'samesite' => 'Strict',
+	));
+}
+
 $installState = install_config_state();
 
 // Fail closed: a completed installation shuts the interactive installer out.
@@ -584,6 +608,25 @@ class e_install
 			$prevStage = ($this->stage - 1);
 			$e_forms->form .= "<button class='btn btn-default btn-secondary btn-large no-validate ' name='back' value='".$prevStage."' type='submit'>&laquo; ".LAN_BACK."</button>";
 		}
+		$e_forms->form .= "</div>\n";
+	}
+
+	/**
+	 * Hand the visitor over to the finished site.
+	 *
+	 * A link, not a submit button: by this point the install is complete and
+	 * there is nothing to send, and a POST to the new site would be refused for
+	 * want of a CSRF token that install.php has no way to mint.
+	 *
+	 * @param string $title button label
+	 * @return void
+	 */
+	function add_finish_link($title)
+	{
+		global $e_forms;
+
+		$e_forms->form .= "<div class='buttons-bar inline' style='display: flex; flex-direction: row-reverse; justify-content: flex-start; gap: 5px; z-index: 10;'>";
+		$e_forms->form .= "<a id='submit' href='index.php' class='btn btn-large btn-primary'>".$title." &raquo;</a>";
 		$e_forms->form .= "</div>\n";
 	}
 
@@ -1974,40 +2017,59 @@ return [
 		$htaccessError = $this->htaccess();
 		$this->saveFileTypes();
 
-		$e_forms->start_form("confirmation", "index.php");
+		$errors = $this->create_tables();
 
-			$errors = $this->create_tables();
-			if (!empty($errors))
+		if (!empty($errors))
+		{
+			// Still a wizard step: keep the form so Back remains available.
+			$e_forms->start_form("confirmation", "index.php");
+
+			installLog::add('Errors creating tables: '.$errors);
+			$page = $errors."<br />";
+			$alertType = 'error';
+
+			$this->stats();
+			$this->finish_form();
+		}
+		else
+		{
+			// Nothing is left to submit, so this stage renders no form at all.
+			// It used to close with a submit button posting to index.php, which
+			// the site now refuses: install.php writes its own markup and so
+			// never passes through e_token_injector, leaving that POST with no
+			// CSRF token while the installer's own cookie supplied the ambient
+			// authority that makes a tokenless POST a refusal. Handing over with
+			// a link is what the step always meant anyway.
+			$e_forms->start_plain();
+
+			$alertType = 'success';
+			installLog::add('Tables created successfully');
+			$this->import_configuration();
+
+			// Write the finished config last: its database credentials are the
+			// "installed" marker the top-of-file guard keys on. The site hash
+			// is recomputed server-side, never read from the client-supplied
+			// wizard state.
+			$sitePath = $this->e107->makeSiteHash($this->previous_steps['mysql']['db'], $this->previous_steps['mysql']['prefix']);
+			$this->write_config($this->buildConfigFile($this->previous_steps, $sitePath));
+
+			$page = nl2br(LANINS_125)."<br />";
+			$page .= (is_writable('e107_config.php')) ? "<br />".str_replace("e107_config.php","<b>e107_config.php</b>",LANINS_126) : "";
+
+			if($htaccessError)
 			{
-				installLog::add('Errors creating tables: '.$errors);
-				$page = $errors."<br />";
-				$alertType = 'error';
-			}
-			else
-			{
-				$alertType = 'success';
-				installLog::add('Tables created successfully');
-				$this->import_configuration();
-
-				// Write the finished config last: its database credentials are the
-				// "installed" marker the top-of-file guard keys on. The site hash
-				// is recomputed server-side, never read from the client-supplied
-				// wizard state.
-				$sitePath = $this->e107->makeSiteHash($this->previous_steps['mysql']['db'], $this->previous_steps['mysql']['prefix']);
-				$this->write_config($this->buildConfigFile($this->previous_steps, $sitePath));
-
-				$page = nl2br(LANINS_125)."<br />";
-				$page .= (is_writable('e107_config.php')) ? "<br />".str_replace("e107_config.php","<b>e107_config.php</b>",LANINS_126) : "";
-				
-				if($htaccessError)
-				{
-					$page .= "<br />".$htaccessError;
-				}	
-				$this->add_button('submit', LAN_CONTINUE);
+				$page .= "<br />".$htaccessError;
 			}
 
-		$this->stats();
-		$this->finish_form();
+			$this->add_finish_link(LAN_CONTINUE);
+
+			$this->stats();
+
+			// The install is over, so there is no state left to resume. Dropping
+			// the cookie also takes the installer's ambient authority off the
+			// browser instead of leaving it to be sent to the new site.
+			install_clear_state_cookie();
+		}
 
 		$this->template->SetTag("stage_content", "<div class='alert alert-block alert-{$alertType}'>".$page."</div>".$e_forms->return_form());
 		installLog::add('Stage 8 completed');
@@ -2778,6 +2840,17 @@ class e_forms
 	{
 		$this->form = "\n<form method='{$method}' id='{$id}' action='{$action}'>\n";
 		$this->opened = true;
+	}
+
+	/**
+	 * Begin a stage that submits nothing, so renders no form.
+	 *
+	 * @return void
+	 */
+	function start_plain()
+	{
+		$this->form = "\n";
+		$this->opened = false;
 	}
 
 	function add_select_item($id, $labels, $selected)
