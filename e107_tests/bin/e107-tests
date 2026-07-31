@@ -1046,6 +1046,10 @@ USAGE:
   always driven by the harness shipped alongside the tree it tests. Outside
   any e107 worktree, the copy this script lives in is used.
 
+  The cwd wins over the path you typed, so calling one worktree's harness by
+  absolute path from inside another drives the one you are standing in. Set
+  E107_TESTS_NO_HANDOVER=1 to pin to the script's own worktree.
+
 LIFECYCLE:
   up [--php X] [--db Y] [--xdebug] [--install-site]
                                      Start, install deps, mark active. Builds the
@@ -1134,12 +1138,18 @@ XDEBUG_TAG=
 # target carries its own harness, hand over to it: the copies drift between
 # branches (the default PHP version alone differs), and a stack should be
 # driven by the harness shipped alongside the tree it tests.
-if [ -z "${E107_TESTS_REEXEC:-}" ]; then
+#
+# Because the cwd wins, invoking one worktree's harness by absolute path from
+# inside another drives the worktree you are standing in, not the one you
+# named. Set E107_TESTS_NO_HANDOVER=1 to pin to the script's own worktree
+# instead; that is also what stops the hand-over below recursing.
+if [ -z "${E107_TESTS_NO_HANDOVER:-}" ]; then
     CWD_ROOT=$(find_harness_worktree "$PWD") || CWD_ROOT=
     if [ -n "$CWD_ROOT" ] && [ "$CWD_ROOT" != "$APP_PATH" ]; then
         if [ -x "$CWD_ROOT/e107_tests/bin/e107-tests" ]; then
             note ">> using the harness in the current worktree: $CWD_ROOT"
-            export E107_TESTS_REEXEC=1
+            note "   (E107_TESTS_NO_HANDOVER=1 pins to $APP_PATH instead)"
+            export E107_TESTS_NO_HANDOVER=1
             exec "$CWD_ROOT/e107_tests/bin/e107-tests" "$@"
         fi
         note ">> targeting the current worktree: $CWD_ROOT"
