@@ -122,6 +122,30 @@ class SFTPDeployer extends Deployer
 		self::println("Wrote file \"$relative_path\" to deployed test location");
 	}
 
+	public function removeAppPaths(array $relative_paths)
+	{
+		if (empty($relative_paths))
+		{
+			return;
+		}
+		$fs_params = $this->getFsParams();
+		$root = rtrim($fs_params['path'], '/');
+		$targets = array();
+		foreach ($relative_paths as $relative_path)
+		{
+			self::assertPathInsideApp($relative_path);
+			$targets[] = escapeshellarg("$root/$relative_path");
+		}
+		self::println("Removing ".count($targets)." path(s) from deployed test location…");
+		// One ssh session for the whole list. A session per path would cost
+		// more than everything else the sweep does put together.
+		$command = $this->generateSshpassPrefix().
+			$this->generateRsyncRemoteShell().
+			" ".escapeshellarg("{$fs_params['user']}@{$fs_params['host']}").
+			" ".escapeshellarg("rm -rf -- ".implode(' ', $targets));
+		self::runCommand($command);
+	}
+
 	private function start_fs()
 	{
 		$fs_params = $this->getFsParams();
