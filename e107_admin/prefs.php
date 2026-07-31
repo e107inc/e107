@@ -1480,14 +1480,37 @@ $text .= "
 			";
 
 		$csrfModes = array(
-			''                                       => PRFLAN_305,
-			e_session::CSRF_CHECK_TOKEN_OR_SAME_SITE => PRFLAN_306,
-			e_session::CSRF_CHECK_SAME_SITE          => PRFLAN_307,
-			e_session::CSRF_CHECK_SAME_ORIGIN        => PRFLAN_308,
-			e_session::TOKEN_CHECK_ENFORCE           => PRFLAN_296,
-			e_session::TOKEN_CHECK_LOG               => PRFLAN_297,
-			e_session::TOKEN_CHECK_OFF               => PRFLAN_298,
+			''                                       => PRFLAN_307,
+			e_session::CSRF_CHECK_TOKEN_OR_SAME_SITE => PRFLAN_308,
+			e_session::CSRF_CHECK_SAME_SITE          => PRFLAN_309,
+			e_session::CSRF_CHECK_SAME_ORIGIN        => PRFLAN_310,
+			e_session::TOKEN_CHECK_ENFORCE           => PRFLAN_311,
+			e_session::TOKEN_CHECK_LOG               => PRFLAN_312,
+			e_session::TOKEN_CHECK_OFF               => PRFLAN_313,
 		);
+
+		// Sec-Fetch-Site is appended only to a potentially trustworthy origin, so
+		// on a site served over plain HTTP the browser-only modes ask for a proof
+		// that can never arrive. e_session::tokenCheckMode() softens them rather
+		// than letting them brick the site, but offering a choice that quietly
+		// means something else is worse than not offering it.
+		$csrfHelp     = PRFLAN_306;
+		$csrfDisabled = array();
+
+		if(!e_session::fetchMetadataReachesUs())
+		{
+			$csrfDisabled = array(e_session::CSRF_CHECK_SAME_SITE, e_session::CSRF_CHECK_SAME_ORIGIN);
+
+			// Never disable what is already stored. A disabled option is one the
+			// admin cannot re-select, so greying out the current setting would let
+			// a save made for some unrelated preference silently rewrite it.
+			if(isset($pref['csrf_enforce']))
+			{
+				$csrfDisabled = array_diff($csrfDisabled, array((int) $pref['csrf_enforce']));
+			}
+
+			$csrfHelp .= "\n".PRFLAN_314;
+		}
 
 		$sameSiteModes = array(
 			'Lax'    => PRFLAN_301,
@@ -1498,8 +1521,8 @@ $text .= "
 
 		$text .= "
 					<tr>
-						<td><label for='csrf-enforce'>".PRFLAN_294."</label>".$frm->help(PRFLAN_295)."</td>
-						<td>".$frm->select('csrf_enforce', $csrfModes, isset($pref['csrf_enforce']) ? $pref['csrf_enforce'] : '', array('size' => 'xlarge'))."</td>
+						<td><label for='csrf-enforce'>".PRFLAN_305."</label>".$frm->help($csrfHelp)."</td>
+						<td>".$frm->select('csrf_enforce', $csrfModes, isset($pref['csrf_enforce']) ? $pref['csrf_enforce'] : '', array('size' => 'xlarge', 'optDisabled' => $csrfDisabled))."</td>
 					</tr>
 					<tr>
 						<td><label for='session-cookie-samesite'>".PRFLAN_299."</label>".$frm->help(PRFLAN_300)."</td>

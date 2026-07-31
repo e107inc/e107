@@ -272,19 +272,31 @@ return [
     'PRFLAN_291' => "The Development Preview channel includes alpha, beta and release-candidate versions. Leave on Stable for production sites.",
     'PRFLAN_292' => "Stable",
     'PRFLAN_293' => "Development Preview",
-    'PRFLAN_294' => "Proof that a request came from this site",
-    'PRFLAN_295' => "A cross-site request forgery works by making a visitor's browser send a request the visitor did not intend. e107 can tell a genuine request from a forged one in two ways.\\nA security token is a value this site writes into its own pages and checks when they are submitted. It works in every browser, but only protects a page that was actually given one.\\nThe browser check reads Sec-Fetch-Site, a header the browser sets itself and which no web page is allowed to forge. Nothing has to be delivered to the page for it to work, but browsers older than Chrome 76, Firefox 90 or Safari 16.4 do not send it and cannot be protected this way.\\nLeave this on the recommended setting unless you have a reason not to. It accepts either proof, so nobody is turned away, and it follows e107's advice as that advice improves.",
-    'PRFLAN_296' => "Security token, refuse without one",
-    'PRFLAN_297' => "Security token, allow without one and log it",
-    'PRFLAN_298' => "Accept anything",
+    // PRFLAN_294 to PRFLAN_298 shipped in v2.3.10 and are left exactly as they
+    // went out. A translator already holds them, and silently changing the
+    // English under a shipped key is how a translation becomes wrong without
+    // anyone being able to see that it has. The preference they described
+    // offered three choices and now offers six, so the new wording takes new
+    // keys, PRFLAN_305 onwards.
+    'PRFLAN_294' => "Requests without a security token",
+    'PRFLAN_295' => "A cross-site request forgery works by making a visitor's browser send a request the visitor did not intend. The security token is what proves a request came from a page this site rendered.\\nRefuse is the safe setting. Choose Allow and log if an integration has stopped working and you need to see which requests are affected before deciding; every affected request is then written to the admin log instead of being refused.",
+    'PRFLAN_296' => "Refuse (recommended)",
+    'PRFLAN_297' => "Allow and log",
+    'PRFLAN_298' => "Allow",
     'PRFLAN_299' => "Session cookie SameSite",
     'PRFLAN_300' => "Controls whether the browser sends the session cookie on a request that started from another site. Lax is the safe default: the cookie still travels with an ordinary link into this site, but not with a form another site posts here.\\nChoose None if a payment gateway, single sign-on provider or similar has to post to this site and be recognised as the logged-in visitor; it requires SSL and falls back to Lax without it. Strict also drops the cookie on inbound links, so a visitor following a link from elsewhere arrives logged out.",
     'PRFLAN_301' => "Lax (recommended)",
     'PRFLAN_302' => "Strict",
     'PRFLAN_303' => "None (requires SSL)",
     'PRFLAN_304' => "Do not set",
-    'PRFLAN_305' => "e107's recommended setting",
-    'PRFLAN_306' => "Security token or browser check",
-    'PRFLAN_307' => "Browser check",
-    'PRFLAN_308' => "Browser check, this exact address only",
+    'PRFLAN_305' => "Proof that a request came from this site",
+    'PRFLAN_306' => "A cross-site request forgery works by making a visitor's browser send a request the visitor did not intend. e107 can tell a genuine request from a forged one in two ways.\\nA security token is a value this site writes into its own pages and checks when they are submitted. It works in every browser, but only protects a page that was actually given one.\\nThe browser check reads Sec-Fetch-Site, a header the browser sets itself and which no web page is allowed to forge. Nothing has to be delivered to the page for it to work, but browsers older than Chrome 76, Firefox 90 or Safari 16.4 do not send it and cannot be protected this way.\\nLeave this on the recommended setting unless you have a reason not to.",
+    'PRFLAN_307' => "e107's recommended setting",
+    'PRFLAN_308' => "Security token or browser check",
+    'PRFLAN_309' => "Browser check",
+    'PRFLAN_310' => "Browser check, this exact address only",
+    'PRFLAN_311' => "Security token, refuse without one",
+    'PRFLAN_312' => "Security token, allow without one and log it",
+    'PRFLAN_313' => "Accept anything",
+    'PRFLAN_314' => "The browser check is unavailable on this address. Browsers only send Sec-Fetch-Site to a secure address, so on a site served over plain HTTP the header never arrives and a setting that asks for nothing else would refuse every submission. Serve this site over HTTPS to use it.",
 ];
