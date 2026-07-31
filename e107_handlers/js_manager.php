@@ -1585,8 +1585,11 @@ class e_jsmanager
 							if(!e107::getPref('e_jslib_nocombine')) continue;
 						}
 
-						$path = $tp->replaceConstants($path, 'abs'); //.'?'.$this->getCacheId();
-						$path = $this->url($path, 'js');
+						$path = $tp->replaceConstants($path, 'abs');
+						// Was url($path, 'js'), and 'js' is not === true, so script
+						// URLs alone carried no cache-busting query while stylesheet
+						// URLs always had one.
+						$path = $this->url($path);
 					}
 
 					if($isExternal === true && $this->isValidUrl($path) == false)
@@ -1623,6 +1626,26 @@ class e_jsmanager
 	 * @param bool $cacheId
 	 * @return mixed|string
 	 */
+	/**
+	 * Cache-busting query for an asset URL.
+	 *
+	 * Includes the e107 version, so upgrading a site changes every core asset
+	 * URL and a browser cannot go on running the copy it cached from the
+	 * previous release. Without that, a release whose fix lives in a .js file
+	 * does not reach a returning visitor until their cache expires, which the
+	 * shipped e107.htaccess sets a month out. That is how v2.3.10 came to
+	 * enforce a CSRF token that the cached script had no code to send.
+	 *
+	 * The version is hashed rather than written out, since an asset URL is
+	 * public and the exact release is not worth advertising on every page.
+	 *
+	 * @return string
+	 */
+	private function cacheToken()
+	{
+		return $this->getCacheId().'.'.substr(md5(defset('e_VERSION', '')), 0, 8);
+	}
+
 	private function url($path, $cacheId = true)
 	{
 
@@ -1663,11 +1686,11 @@ class e_jsmanager
 		{
 			if(strpos($path,'?')!==false)
 			{
-				$path .= "&amp;".$this->getCacheId();
+				$path .= "&amp;".$this->cacheToken();
 			}
 			elseif($cacheId === true)
 			{
-				$path .= "?".$this->getCacheId();
+				$path .= "?".$this->cacheToken();
 			}
 		}
 
