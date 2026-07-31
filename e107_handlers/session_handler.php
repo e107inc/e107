@@ -894,7 +894,13 @@ class e_session
 	 */
 	public function getFormToken($in_form = true)
 	{
-		if(!$this->has('__form_token') && !defined('e_TOKEN_DISABLE'))  // TODO FIXME: SEF URL of Error page causes e-token refresh.
+		// e_TOKEN_DISABLE used to suppress this too, to stop the error page
+		// "refreshing" the token. It could never do that: the has() test already
+		// means an existing token is left alone. All it did was skip minting the
+		// FIRST one, so a session that met error.php before anything else got
+		// md5(null) stamped into every form on the page and was then refused for
+		// presenting a token that cannot validate.
+		if(!$this->has('__form_token'))
 		{
 			$this->set('__form_token', $this->_generateFormToken());
 			if(deftrue('e_DEBUG_SESSION')) // XXX enable to troubleshoot "Unauthorized Access!" issues.

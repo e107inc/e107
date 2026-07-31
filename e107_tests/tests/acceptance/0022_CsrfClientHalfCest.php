@@ -134,6 +134,67 @@ class CsrfClientHalfCest
 		}
 	}
 
+	/**
+	 * The error page used to publish a token that could never validate.
+	 *
+	 * error.php defines e_TOKEN_DISABLE, which stopped getFormToken() minting the
+	 * session's first token, so it returned md5(null). The injector then stamped
+	 * that constant into the meta tag and into every form on a fully themed error
+	 * page. A visitor whose first request of a session was a dead link got
+	 * refused on the theme's login box, search or comment form, and this lands on
+	 * the invalid-token branch, so csrf_enforce does not soften it.
+	 */
+	public function errorPageServesAUsableToken(AcceptanceTester $I)
+	{
+		$I->resetCookie('PHPSESSID');
+
+		$token = $this->grabToken($I, '/error.php?404');
+
+		$I->assertNotSame(md5(''), $token, 'the error page must mint a real token, not md5 of nothing');
+
+		$I->sendPostRequest('/index.php', array('e-token' => $token));
+		$I->dontSee('Unauthorized access!');
+	}
+
+	/**
+	 * Drag-and-drop upload runs on Dropzone, which drives its own
+	 * XMLHttpRequest, so the $.ajaxPrefilter never sees it and the token has to
+	 * be written into the init. Its sibling uploader on the same endpoint
+	 * (plupload, in mediaManager.js) was given one; this one was missed, which
+	 * left every admin image and media field unable to accept a dropped file.
+	 */
+	public function dropzoneUploadCarriesAToken(AcceptanceTester $I)
+	{
+		$this->loginAsAdmin($I);
+		$I->amOnPage('/e107_admin/newspost.php?mode=main&action=create');
+
+		$source = $I->grabPageSource();
+
+		$I->assertStringContainsString('dropzone({', $source, 'the news form should offer a drop target');
+		$I->assertStringContainsString("params: {'e-token'", $source, 'the Dropzone init must carry a token');
+	}
+
+	/**
+	 * An AJAX reply echoes and exits, so it never reaches the buffer flush where
+	 * pages are given their token. Admin list fragments carry a whole form, and
+	 * dropping one into the page replaced a tokenised form with an untokenised
+	 * one: filter a list, then use Filter or a batch action, and the write was
+	 * refused.
+	 */
+	public function ajaxListFragmentsCarryATokenisedForm(AcceptanceTester $I)
+	{
+		$this->loginAsAdmin($I);
+
+		foreach(array('/e107_admin/users.php?mode=main&action=list', '/e107_admin/cpage.php?mode=page&action=list') as $page)
+		{
+			$I->amOnPage($page.'&ajax_used=1');
+			$source = $I->grabPageSource();
+
+			$I->assertStringContainsString('<form', $source, $page.' should return a form fragment');
+			$I->assertStringContainsString('name="e-token"', $source, $page.' fragment must carry a token');
+		}
+	}
+
 	private function grabToken(AcceptanceTester $I, $page)
 	{
 		$I->amOnPage($page);
