@@ -1058,9 +1058,13 @@ LIFECYCLE:
                                      with --env) needs --force.
   reset [--force]                    Drop+recreate DB, clear written app state.
                                      --force as for down.
-  clean                              Wipe untracked acceptance-test artifacts
-                                     from the host worktree (e107_config.php,
-                                     install log, hash dirs, copied themes).
+  clean                              Full reset of a dev tree. Not needed after
+                                     a test run: the suites now sweep their own
+                                     artifacts, pass or fail. Reach for it to
+                                     drop a persistent install left by
+                                     --install-site, to clear up host-side after
+                                     a run that could not finish, or when
+                                     Codeception itself will not start.
   install                            Re-run composer inside the web container
                                      (lock-respecting install; falls back to
                                      update when the PHP can't satisfy the lock).
