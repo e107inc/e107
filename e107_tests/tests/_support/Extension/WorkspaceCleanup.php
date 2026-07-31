@@ -65,6 +65,10 @@ class WorkspaceCleanup extends Extension
 
 	public function beforeSuite(SuiteEvent $event)
 	{
+		if (!$this->appRunsInPlace())
+		{
+			return;
+		}
 		$this->restoreConfigBackup();
 		$this->htaccess = @file_get_contents(APP_PATH.'/e107.htaccess');
 		$this->sweep();
@@ -72,9 +76,31 @@ class WorkspaceCleanup extends Extension
 
 	public function afterSuite(SuiteEvent $event)
 	{
+		if (!$this->appRunsInPlace())
+		{
+			return;
+		}
 		$this->restoreConfigBackup();
 		$this->restoreHtaccess();
 		$this->sweep();
+	}
+
+	/**
+	 * Whether the app under test is the tree the developer is working in.
+	 *
+	 * Only then is there anything to sweep. A deploying deployer (sftp,
+	 * cpanel) is handed an isolated, disposable git worktree by
+	 * PreparerFactory and serves the app from somewhere else entirely, so the
+	 * developer's tree is never written to. Sweeping anyway would be pointless
+	 * on a good day and fatal on a bad one: it turns housekeeping into ssh
+	 * calls, and the continuous integration image that runs the unit suite has
+	 * no sshpass.
+	 *
+	 * @return bool
+	 */
+	private function appRunsInPlace()
+	{
+		return $this->deployer() instanceof \NoopDeployer;
 	}
 
 	private function sweep()
@@ -154,7 +180,16 @@ class WorkspaceCleanup extends Extension
 			return;
 		}
 		codecept_debug('WorkspaceCleanup: restoring e107.htaccess');
-		$this->deployer()->writeAppFile('e107.htaccess', $this->htaccess);
+		try
+		{
+			$this->deployer()->writeAppFile('e107.htaccess', $this->htaccess);
+		}
+		catch (\Exception $e)
+		{
+			// Housekeeping must never be the reason a suite stops, which is
+			// the same rule Deployer::removeAppPaths() follows.
+			codecept_debug('WorkspaceCleanup: could not restore e107.htaccess: '.$e->getMessage());
+		}
 	}
 
 	/**
