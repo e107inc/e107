@@ -19,6 +19,43 @@
  */
 class CsrfClientHalfCest
 {
+	const RESET_FILE = 'e107_tests_csrf_clienthalf_reset.php';
+
+	/**
+	 * Every test here walks several admin pages, and e107 bans an address once
+	 * it has asked for fifty. Localhost is exempt, but the client address inside
+	 * the container is the bridge, so without this the suite bans itself part
+	 * way through and every later request comes back with an empty body, which
+	 * surfaces as forms and iframes that appear not to exist.
+	 */
+	public function _before(AcceptanceTester $I)
+	{
+		$I->writeAppFile(self::RESET_FILE, $this->resetSource());
+		$I->amOnPage('/' . self::RESET_FILE);
+		$I->seeInSource('RESET_DONE');
+	}
+
+	public function _after(AcceptanceTester $I)
+	{
+		$I->deleteAppFile(self::RESET_FILE);
+	}
+
+	/**
+	 * @return string
+	 */
+	private function resetSource()
+	{
+		return <<<'PHP'
+<?php
+// Fixture for 0022_CsrfClientHalfCest. Removed again in the Cest's _after().
+$_E107['allow_guest'] = true;
+require_once(__DIR__.'/class2.php');
+e107::getDb()->delete('online');
+e107::getDb()->delete('banlist', 'banlist_bantype IN (2, -2)');
+echo 'RESET_DONE';
+PHP;
+	}
+
 	/**
 	 * A document handed a token must also be handed the code that sends it.
 	 * Either alone is useless.
@@ -208,11 +245,19 @@ class CsrfClientHalfCest
 		return $matches[1];
 	}
 
+	/**
+	 * Go through the shared helper rather than typing the credentials here.
+	 *
+	 * A hand-rolled copy of this signed in with the wrong password on master and
+	 * failed silently, because a failed sign-in re-renders the login page, and
+	 * that page carries a token, all.jquery.js and a form. Half the tests here
+	 * then asserted against the login page and passed without ever reaching what
+	 * they name. The check afterwards is what makes that impossible: it is worth
+	 * more than the assertion in any single test below.
+	 */
 	private function loginAsAdmin(AcceptanceTester $I)
 	{
-		$I->amOnPage('/e107_admin/admin.php');
-		$I->fillField('authname', 'admin');
-		$I->fillField('authpass', 'admin');
-		$I->click('authsubmit');
+		$I->loginAsAdmin();
+		$I->dontSeeElement('input[name=authpass]');
 	}
 }
