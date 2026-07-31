@@ -148,9 +148,23 @@ class e_randomTest extends \Codeception\Test\Unit
 	 * CSPRNG behind it, every method has to throw rather than hand back
 	 * something a caller would mint a secret from.
 	 *
-	 * The unavailability is injected into a child process with random_bytes()
-	 * and random_int() disabled, which is what a hardened php.ini looks like
-	 * from inside the class, so the host's own CSPRNG is never touched.
+	 * The unavailability is injected into a child process, so the host's own
+	 * CSPRNG is never touched. How it gets injected has to differ by PHP
+	 * version, because the two generations lose the CSPRNG in different places:
+	 *
+	 * - On PHP 7 and later random_bytes() and random_int() are internal
+	 *   functions, so disable_functions removes them outright and e_random
+	 *   never finds them. That is what a hardened php.ini looks like from
+	 *   inside the class.
+	 * - On PHP 5.6 they are userland functions supplied by the vendored
+	 *   paragonie/random_compat polyfill. disable_functions has only ever
+	 *   applied to internal functions, so it is silently ignored there and the
+	 *   polyfill hands the class a perfectly working CSPRNG. The probe declares
+	 *   the two functions itself instead, which claims the names before the
+	 *   polyfill can and reproduces how random_compat behaves on a host with no
+	 *   entropy source: present, and throwing when called.
+	 *
+	 * Either way e_random has to end up refusing, which is the assertion.
 	 */
 	public function testEveryAccessorThrowsWithNoCsprngAvailable()
 	{
@@ -172,7 +186,7 @@ class e_randomTest extends \Codeception\Test\Unit
 	}
 
 	/**
-	 * @param bool $disabled whether to run with random_bytes()/random_int() disabled
+	 * @param bool $disabled whether to run with the CSPRNG taken away
 	 * @return string the child process's combined output
 	 */
 	private function runProbe($disabled)
@@ -182,7 +196,19 @@ class e_randomTest extends \Codeception\Test\Unit
 			$this->markTestSkipped('No usable PHP binary to run a child process with.');
 		}
 
+		// Which of the two mechanisms described above applies. The child is the
+		// same binary as this process, so this version decides for both.
+		$polyfilled = PHP_VERSION_ID < 70000;
+
+		// Declared conditionally so that a 5.6 host which somehow already has
+		// the functions fails the assertion rather than dying on a redeclare.
+		$stubs = ' if(!function_exists("random_bytes"))'
+			. ' { function random_bytes($length) { throw new Exception("no csprng"); } }'
+			. ' if(!function_exists("random_int"))'
+			. ' { function random_int($min, $max) { throw new Exception("no csprng"); } }';
+
 		$probe = 'define("e107_INIT", true);'
+			. (($disabled && $polyfilled) ? $stubs : '')
 			. ' require ' . var_export(e_HANDLER . 'random_handler.php', true) . ';'
 			. ' echo e_random::isAvailable() ? "AVAILABLE" : "UNAVAILABLE";'
 			. ' foreach(array("bytes" => 16, "hex" => 32, "int" => 0, "pick" => 0) as $method => $arg)'
@@ -202,7 +228,7 @@ class e_randomTest extends \Codeception\Test\Unit
 			. ' }';
 
 		$command = escapeshellarg(PHP_BINARY)
-			. ($disabled ? ' -d disable_functions=random_bytes,random_int' : '')
+			. (($disabled && !$polyfilled) ? ' -d disable_functions=random_bytes,random_int' : '')
 			. ' -r ' . escapeshellarg($probe)
 			. ' 2>&1';
 
