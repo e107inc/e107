@@ -26,6 +26,23 @@ class Acceptance extends E107Base
 	}
 
 	/**
+	 * Empty the cookie jar.
+	 *
+	 * e_core_session::hasAmbientAuthority() asks whether a request carried any
+	 * cookie at all, so a test about a cookieless request has to clear all of
+	 * them. Naming them is not an option: e107's session cookie is not
+	 * PHPSESSID, it is named by the cookie_name preference, which the installer
+	 * derives per site. Codeception offers resetCookie() by name and nothing
+	 * that empties the jar, so reach for it on the BrowserKit client.
+	 *
+	 * @return void
+	 */
+	public function resetAllCookies()
+	{
+		$this->getModule('PhpBrowser')->client->getCookieJar()->clear();
+	}
+
+	/**
 	 * Assert the last response did not issue a Location redirect to a URL
 	 * containing $needle.
 	 *

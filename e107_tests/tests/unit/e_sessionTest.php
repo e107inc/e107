@@ -26,14 +26,50 @@
 		}
 
 		/**
-		 * GHSA-72q5-94gw-prww. A missing preference has to read as full
-		 * enforcement, because that is what a site upgrading from an older
-		 * release will have.
+		 * GHSA-72q5-94gw-prww. Nearly every site has never written this
+		 * preference, so what it reads as when unset is what nearly every site
+		 * runs. It resolves through a named constant rather than a literal so the
+		 * recommendation can move in a later release without an operator acting.
 		 */
-		public function testTokenCheckModeDefaultsToEnforce()
+		public function testTokenCheckModeDefaultsToTheRecommendation()
 		{
 			$this::assertNull(e107::getConfig()->get('csrf_enforce'));
-			$this::assertSame(e_session::TOKEN_CHECK_ENFORCE, e_session::tokenCheckMode());
+			$this::assertSame(e_session::CSRF_CHECK_RECOMMENDED, e_session::tokenCheckMode());
+		}
+
+		/**
+		 * The recommended mode has to accept a token, because an upgrade cannot
+		 * ask the operator's browser what it supports and a Fetch Metadata-only
+		 * mode refuses every POST from a browser too old to send the header. If
+		 * this ever fails, the default is locking those visitors out of the site.
+		 */
+		public function testTheRecommendedModeLocksNobodyOut()
+		{
+			$this::assertTrue(e_session::modeUsesToken(e_session::CSRF_CHECK_RECOMMENDED));
+		}
+
+		/**
+		 * A value out of range is a typo, a bad migration, or a preference written
+		 * by a newer release than this one. None is a reason to guess, and the
+		 * nearest number could be Off.
+		 */
+		public function testAnUnusableStoredValueFallsBackToTheRecommendation()
+		{
+			$config = e107::getConfig();
+
+			foreach(array(99, -1, 6, 'banana', '', null) as $stored)
+			{
+				$config->set('csrf_enforce', $stored);
+
+				$this::assertSame(e_session::CSRF_CHECK_RECOMMENDED, e_session::tokenCheckMode(),
+					'stored value ' . var_export($stored, true) . ' should fall back');
+			}
+
+			// A numeric string is what a form post delivers, so it has to resolve.
+			$config->set('csrf_enforce', '1');
+			$this::assertSame(e_session::TOKEN_CHECK_LOG, e_session::tokenCheckMode());
+
+			$config->remove('csrf_enforce');
 		}
 
 		/**
@@ -55,7 +91,7 @@
 
 				// null hands control back to the preference, which is unset here
 				e_session::setTokenCheckMode(null);
-				$this::assertSame(e_session::TOKEN_CHECK_ENFORCE, e_session::tokenCheckMode());
+				$this::assertSame(e_session::CSRF_CHECK_RECOMMENDED, e_session::tokenCheckMode());
 			}
 			catch(Exception $e)
 			{
@@ -78,12 +114,97 @@
 		}
 
 		/**
-		 * check() compares the mode with >=, so the order is load-bearing.
+		 * Which proof each mode asks for. The numbers are a menu rather than a
+		 * ladder, so this is stated outright rather than inferred by comparison.
 		 */
-		public function testTokenCheckModesAreOrdered()
+		public function testEachModeAsksForTheProofItNames()
 		{
-			$this::assertLessThan(e_session::TOKEN_CHECK_LOG, e_session::TOKEN_CHECK_OFF);
-			$this::assertLessThan(e_session::TOKEN_CHECK_ENFORCE, e_session::TOKEN_CHECK_LOG);
+			$token = array(
+				e_session::TOKEN_CHECK_LOG,
+				e_session::TOKEN_CHECK_ENFORCE,
+				e_session::CSRF_CHECK_TOKEN_OR_SAME_SITE,
+			);
+
+			$fetch = array(
+				e_session::CSRF_CHECK_TOKEN_OR_SAME_SITE,
+				e_session::CSRF_CHECK_SAME_SITE,
+				e_session::CSRF_CHECK_SAME_ORIGIN,
+			);
+
+			foreach(range(0, 5) as $mode)
+			{
+				$this::assertSame(in_array($mode, $token, true), e_session::modeUsesToken($mode),
+					'mode ' . $mode . ' token expectation');
+				$this::assertSame(in_array($mode, $fetch, true), e_session::modeUsesFetchMetadata($mode),
+					'mode ' . $mode . ' Fetch Metadata expectation');
+			}
+
+			// Off asks for nothing at all.
+			$this::assertFalse(e_session::modeUsesToken(e_session::TOKEN_CHECK_OFF));
+			$this::assertFalse(e_session::modeUsesFetchMetadata(e_session::TOKEN_CHECK_OFF));
+		}
+
+		/**
+		 * Sec-Fetch-Site is the whole of the browser-side proof, so what counts as
+		 * vouching is worth pinning down value by value.
+		 *
+		 * 'same-site' covers a sibling host under the same registrable domain,
+		 * which a language-per-subdomain site needs, but taken at face value it
+		 * would also vouch for a user-content host or one that has been taken
+		 * over. It is honoured only for a host this site is configured to serve.
+		 */
+		public function testOnlyTheBrowserSayingThisSiteCounts()
+		{
+			$server = $_SERVER;
+
+			$_SERVER['HTTP_HOST'] = 'example.org';
+
+			$vouches = function($site, $mode, $origin = null)
+			{
+				unset($_SERVER['HTTP_SEC_FETCH_SITE'], $_SERVER['HTTP_ORIGIN']);
+
+				if($site !== null)
+				{
+					$_SERVER['HTTP_SEC_FETCH_SITE'] = $site;
+				}
+
+				if($origin !== null)
+				{
+					$_SERVER['HTTP_ORIGIN'] = $origin;
+				}
+
+				$method = new ReflectionMethod('e_core_session', 'fetchMetadataVouches');
+				$method->setAccessible(true);
+
+				return $method->invoke(null, $mode);
+			};
+
+			// A browser that says nothing is not a browser that vouches.
+			$this::assertFalse($vouches(null, e_session::CSRF_CHECK_SAME_SITE));
+			$this::assertFalse($vouches('', e_session::CSRF_CHECK_SAME_SITE));
+
+			foreach(array('cross-site', 'none', 'nonsense') as $site)
+			{
+				$this::assertFalse($vouches($site, e_session::CSRF_CHECK_SAME_SITE), $site . ' must not vouch');
+				$this::assertFalse($vouches($site, e_session::CSRF_CHECK_SAME_ORIGIN), $site . ' must not vouch');
+			}
+
+			// Our own origin vouches in every mode that reads the header, and the
+			// comparison is case and whitespace insensitive.
+			$this::assertTrue($vouches('same-origin', e_session::CSRF_CHECK_SAME_SITE));
+			$this::assertTrue($vouches('same-origin', e_session::CSRF_CHECK_SAME_ORIGIN));
+			$this::assertTrue($vouches(' Same-Origin ', e_session::CSRF_CHECK_SAME_ORIGIN));
+
+			// A sibling host is the difference between the two Fetch Metadata modes.
+			$this::assertTrue($vouches('same-site', e_session::CSRF_CHECK_SAME_SITE, 'http://example.org'));
+			$this::assertFalse($vouches('same-site', e_session::CSRF_CHECK_SAME_ORIGIN, 'http://example.org'));
+
+			// A sibling we do not serve is exactly the case the Origin check exists
+			// for: the browser is telling the truth, and the truth is not enough.
+			$this::assertFalse($vouches('same-site', e_session::CSRF_CHECK_SAME_SITE, 'https://uploads.example.org'));
+			$this::assertFalse($vouches('same-site', e_session::CSRF_CHECK_SAME_SITE, 'null'));
+
+			$_SERVER = $server;
 		}
 
 		public function testNormaliseSameSite()
