@@ -80,6 +80,18 @@ class e_token_injector
 			return $content;
 		}
 
+		// Publishing a token that nothing will check is not merely wasted work.
+		// It is a live session token stamped into every same-origin form on the
+		// page, including one an author or an attacker put in a news item, and
+		// this pass cannot tell whose form is whose.
+		//
+		// e_TOKEN itself is still minted, because a fair amount of core writes it
+		// into a form by hand and some of those read the bare constant.
+		if(!e_session::modeUsesToken())
+		{
+			return $content;
+		}
+
 		$token = defset('e_TOKEN');
 
 		if(empty($token) || !self::isHtmlResponse())

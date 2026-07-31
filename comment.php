@@ -40,14 +40,10 @@ if(e_AJAX_REQUEST) // TODO improve security
 
 	$ret = array();
 
-	$requireToken = function()
-	{
-		if (!isset($_POST['e-token']) || !e107::getSession()->checkFormToken($_POST['e-token']))
-		{
-			echo json_encode(array('msg' => 'Unauthorized access!', 'error' => true));
-			exit;
-		}
-	};
+	// No token check here. class2.php has already refused anything that could
+	// not show this request came from the site, by whichever means the operator
+	// configured, and a second demand specifically for a token would go on
+	// refusing every write in the modes that do not issue one.
 
 	// Comment Pagination
 	if(varset($_GET['mode']) == 'list' && vartrue($_GET['id']) && vartrue($_GET['type']))
@@ -73,7 +69,6 @@ if(e_AJAX_REQUEST) // TODO improve security
 
 	if(varset($_GET['mode']) == 'delete' && !empty($_POST['id']) && ADMIN)
 	{
-		$requireToken();
 		$status 		= e107::getComment()->deleteComment($_POST['id'],$_POST['table'],$_POST['itemid']);
 		$ret['msg'] 	= ($status) ? 'Ok' : COMLAN_332;
 		$ret['error'] 	= ($status) ? false : true;
@@ -83,7 +78,6 @@ if(e_AJAX_REQUEST) // TODO improve security
 
 	if(varset($_GET['mode']) == 'approve' && vartrue($_POST['itemid']) && ADMIN)
 	{
-		$requireToken();
 		$status 		= e107::getComment()->approveComment($_POST['itemid']);
 		$ret['msg'] 	= ($status) ? COMLAN_333 : COMLAN_334;
 		$ret['error'] 	= ($status) ? false : true;
@@ -104,7 +98,6 @@ if(e_AJAX_REQUEST) // TODO improve security
 	// Update Comment
 	if(e107::getPref('allowCommentEdit') && varset($_GET['mode']) == 'edit' && vartrue($_POST['comment']) && vartrue($_POST['itemid']))
 	{
-		$requireToken();
 		$error = e107::getComment()->updateComment($_POST['itemid'],$_POST['comment']);
 
 		$ret['error'] 	= ($error) ? true : false;
