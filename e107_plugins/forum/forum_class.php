@@ -307,6 +307,8 @@ class e107forum
 			exit;
 		}
 
+		$ret = array();
+
 		if(varset($_POST['action']) == 'quickreply' && vartrue($_POST['text']))
 		{
 
@@ -350,12 +352,38 @@ class e107forum
 			$ret['msg'] = LAN_FORUM_3047; 
 		}
 
-		e107::getSession()->reset();
-
-		if(varset($ret, false))
-		{
-			$ret['e_token'] = e107::getSession()->getFormToken();
-		}
+		// The token is deliberately not rotated here.
+		//
+		// e107::getSession()->reset() was added alongside this method in
+		// 29f74508c2967f6e869dc01bb0bf0bf70a755657 ("Forum quick-reply fix.",
+		// June 2013) with no stated reason, and e_core_session::reset() was
+		// created in that same commit for this one call site. It has no other
+		// caller in core to this day.
+		//
+		// It buys nothing. The form token is a session-lifetime secret shared by
+		// every form on every page, not a one-time nonce, so rotating it after
+		// one reply prevents no replay: the new value is just as valid for
+		// everything else. Session fixation is answered by regenerating the
+		// session id, which happens in shutdown() at the higher security levels.
+		// Rotation policy lives there and is level-driven; at the default level
+		// e107 deliberately keeps the token stable, so this was an outlier rather
+		// than an application of any rule. It also bypassed e_TOKEN_FREEZE, the
+		// documented way for other code to ask that regeneration not happen.
+		//
+		// What it cost is everything else on the page. The rotation invalidated
+		// the <meta name="e-token">, every injected form, the track button and
+		// the moderator links, none of which the reply's response can reach, so a
+		// visitor who stayed on the topic page had every later write refused. A
+		// write-back of the new token was added in 2016
+		// (391f7c2148a5a19f38a51eec50728cd31ba434a3, "Fixed: bug when you use
+		// Quick Reply twice") but it only ever updated the clicked button, and
+		// only when a reply actually succeeded. An empty reply rotated the token
+		// and returned nothing to write back, which bricked the page outright.
+		//
+		// $ret is now always an array and always carries the current token, so a
+		// customised forum.js that reads e_token keeps working and simply writes
+		// back the value it already had.
+		$ret['e_token'] = e107::getSession()->getFormToken();
 
 		echo $tp->toJSON($ret);
 		exit;
