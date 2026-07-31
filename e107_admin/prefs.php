@@ -97,17 +97,32 @@ if(isset($_POST['updateprefs']))
 	}
 
 	// csrf_enforce: seeded via set() for the same reason as trusted_hosts above.
-	// Anything outside the three known modes falls back to full enforcement.
+	//
+	// The recommended setting is stored by removing the preference rather than by
+	// writing a number, so that a site which has never expressed a preference
+	// keeps following e107's recommendation when a later release moves it.
 	if(isset($_POST['csrf_enforce']))
 	{
-		$csrfMode = (int) $_POST['csrf_enforce'];
+		$csrfMode = $_POST['csrf_enforce'];
 
-		if($csrfMode !== e_session::TOKEN_CHECK_OFF && $csrfMode !== e_session::TOKEN_CHECK_LOG)
+		$known = array(
+			e_session::TOKEN_CHECK_OFF,
+			e_session::TOKEN_CHECK_LOG,
+			e_session::TOKEN_CHECK_ENFORCE,
+			e_session::CSRF_CHECK_TOKEN_OR_SAME_SITE,
+			e_session::CSRF_CHECK_SAME_SITE,
+			e_session::CSRF_CHECK_SAME_ORIGIN,
+		);
+
+		if($csrfMode === '' || !is_numeric($csrfMode) || !in_array((int) $csrfMode, $known, true))
 		{
-			$csrfMode = e_session::TOKEN_CHECK_ENFORCE;
+			$core_pref->remove('csrf_enforce');
+		}
+		else
+		{
+			$core_pref->set('csrf_enforce', (int) $csrfMode);
 		}
 
-		$core_pref->set('csrf_enforce', $csrfMode);
 		unset($_POST['csrf_enforce']);
 	}
 
@@ -397,10 +412,17 @@ $text = "
 					<tr>
 						<td><label for='csrf-enforce'>".PRFLAN_294."</label>".$frm->help(PRFLAN_295)."</td>
 						<td>".$frm->select('csrf_enforce', array(
-							e_session::TOKEN_CHECK_ENFORCE => PRFLAN_296,
-							e_session::TOKEN_CHECK_LOG     => PRFLAN_297,
-							e_session::TOKEN_CHECK_OFF     => PRFLAN_298,
-						), e_session::tokenCheckMode(), array('size' => 'xlarge'))."</td>
+							''                                     => PRFLAN_299,
+							e_session::CSRF_CHECK_TOKEN_OR_SAME_SITE => PRFLAN_300,
+							e_session::CSRF_CHECK_SAME_SITE          => PRFLAN_301,
+							e_session::CSRF_CHECK_SAME_ORIGIN        => PRFLAN_302,
+							e_session::TOKEN_CHECK_ENFORCE           => PRFLAN_296,
+							e_session::TOKEN_CHECK_LOG               => PRFLAN_297,
+							e_session::TOKEN_CHECK_OFF               => PRFLAN_298,
+						// Show what is stored, not what it resolves to, so that the
+						// recommended setting stays visibly distinct from whichever
+						// mode it happens to point at in this release.
+						), isset($pref['csrf_enforce']) ? $pref['csrf_enforce'] : '', array('size' => 'xlarge'))."</td>
 					</tr>
 					<tr>
 						<td><label for='redirectsiteurl'>".PRFLAN_134."</label>".$frm->help(PRFLAN_135)."</td>

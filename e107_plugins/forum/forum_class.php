@@ -296,10 +296,10 @@ class e107forum
 	{
 		$tp = e107::getParser();
 
-		if(!isset($_POST['e_token'])) // Set the token if not included
-		{
-			$_POST['e_token'] = '';
-		}
+		// An absent token is deliberately left absent. Filling it in with an empty
+		// string satisfies isset() and so lands on the invalid-token branch,
+		// which refuses the reply outright rather than deferring to the mode the
+		// operator chose.
 
 		if(!e107::getSession()->check(false) || !$this->checkPerm($_POST['post'], 'post'))
 		{

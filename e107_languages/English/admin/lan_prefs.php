@@ -311,8 +311,12 @@ define("PRFLAN_286", "Content Filters");
 define("PRFLAN_288", "Trusted Hosts");
 define("PRFLAN_289", "Additional hostnames the site will accept in the Host header, one per line. The host parsed from Site URL is always trusted; entries here are added to that list. Paste a full URL and the saved value is normalised to the host only.");
 
-define("PRFLAN_294", "Requests without a security token");
-define("PRFLAN_295", "A cross-site request forgery works by making a visitor's browser send a request the visitor did not intend. The security token is what proves a request came from a page this site rendered.\nRefuse is the safe setting. Choose Allow and log if an integration has stopped working and you need to see which requests are affected before deciding; every affected request is then written to the admin log instead of being refused.");
-define("PRFLAN_296", "Refuse (recommended)");
-define("PRFLAN_297", "Allow and log");
-define("PRFLAN_298", "Allow");
+define("PRFLAN_294", "Proof that a request came from this site");
+define("PRFLAN_295", "A cross-site request forgery works by making a visitor's browser send a request the visitor did not intend. e107 can tell a genuine request from a forged one in two ways.\nA security token is a value this site writes into its own pages and checks when they are submitted. It works in every browser, but only protects a page that was actually given one.\nThe browser check reads Sec-Fetch-Site, a header the browser sets itself and which no web page is allowed to forge. Nothing has to be delivered to the page for it to work, but browsers older than Chrome 76, Firefox 90 or Safari 16.4 do not send it and cannot be protected this way.\nLeave this on the recommended setting unless you have a reason not to. It accepts either proof, so nobody is turned away, and it follows e107's advice as that advice improves.");
+define("PRFLAN_296", "Security token, refuse without one");
+define("PRFLAN_297", "Security token, allow without one and log it");
+define("PRFLAN_298", "Accept anything");
+define("PRFLAN_299", "e107's recommended setting");
+define("PRFLAN_300", "Security token or browser check");
+define("PRFLAN_301", "Browser check");
+define("PRFLAN_302", "Browser check, this exact address only");
