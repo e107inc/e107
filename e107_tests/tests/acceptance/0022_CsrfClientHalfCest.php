@@ -214,5 +214,11 @@ class CsrfClientHalfCest
 		$I->fillField('authname', 'admin');
 		$I->fillField('authpass', 'admin');
 		$I->click('authsubmit');
+
+		// A failed sign-in re-renders the login page, and that page carries a
+		// token, all.jquery.js and a form, so every check below would pass
+		// against it without ever reaching what it names. Nothing here is worth
+		// anything unless this holds.
+		$I->dontSeeElement('input[name=authpass]');
 	}
 }
