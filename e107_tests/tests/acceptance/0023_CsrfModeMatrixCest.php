@@ -119,9 +119,9 @@ class CsrfModeMatrixCest
 	 * release: there is no request a working browser can make that it refuses
 	 * and the previous release accepted.
 	 */
-	public function theDefaultAcceptsEitherProof(AcceptanceTester $I)
+	public function tokenOrBrowserAcceptsEitherProof(AcceptanceTester $I)
 	{
-		$this->setMode($I, 'default');
+		$this->setMode($I, self::TOKEN_OR_SITE);
 
 		// Header alone, as a browser too new to need the token would send.
 		$this->post($I, array(), 'same-origin');
@@ -137,14 +137,55 @@ class CsrfModeMatrixCest
 	}
 
 	/**
+	 * What an unset preference does on this branch, which is what nearly every
+	 * site runs: the browser is asked and no token is read at all. A visitor
+	 * whose browser cannot answer is turned away rather than admitted on a
+	 * token, which is the deliberate difference from release/v2.3.x and the
+	 * reason install.php writes a preference outright when the browser doing the
+	 * installing could not answer either.
+	 */
+	public function theDefaultReadsTheBrowserAndNoToken(AcceptanceTester $I)
+	{
+		$this->setMode($I, 'default');
+
+		$this->post($I, array(), 'same-origin');
+		$I->seeInSource('PROBE_REACHED');
+
+		// A valid token is not a substitute here. It is not even looked at.
+		$this->post($I, array('e-token' => $this->grabToken($I)));
+		$I->seeInSource('Unauthorized access!');
+
+		$this->post($I);
+		$I->seeInSource('Unauthorized access!');
+	}
+
+	/*
+	 * There is deliberately no test here for the softening that happens when an
+	 * origin cannot carry Fetch Metadata at all.
+	 *
+	 * It cannot be written honestly at this layer. Whether the softening applies
+	 * is a property of the address the suite is served on, which differs between
+	 * the two places this suite runs: the docker harness uses http://web/, and CI
+	 * uses http://localhost/e107/. Secure Contexts counts loopback as potentially
+	 * trustworthy, so on CI the browser-only modes stay strict and any such test
+	 * would pass locally and fail there, or be quietly skipped where it matters
+	 * most.
+	 *
+	 * It is covered where it can be stated plainly instead: e_sessionTest proves
+	 * the decision for each kind of origin, and the WebDriver suite proves the
+	 * end of it, that a real browser can still log in over plain HTTP to a
+	 * non-loopback host. That is the regression this all came from.
+	 */
+
+	/**
 	 * A page cached from before an upgrade carries a token minted by the old
 	 * session, and refusing it would be the same lockout this mode replaces. The
 	 * browser is allowed to overrule a stale token, but only by affirmatively
 	 * placing the request at this origin.
 	 */
-	public function theDefaultLetsTheBrowserOverruleAStaleToken(AcceptanceTester $I)
+	public function tokenOrBrowserLetsTheBrowserOverruleAStaleToken(AcceptanceTester $I)
 	{
-		$this->setMode($I, 'default');
+		$this->setMode($I, self::TOKEN_OR_SITE);
 
 		$this->post($I, array('e-token' => 'minted-before-the-upgrade'), 'same-origin');
 		$I->seeInSource('PROBE_REACHED');

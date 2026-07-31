@@ -31,12 +31,19 @@ class CsrfClientHalfCest
 	public function _before(AcceptanceTester $I)
 	{
 		$I->writeAppFile(self::RESET_FILE, $this->resetSource());
-		$I->amOnPage('/' . self::RESET_FILE);
+
+		// Pin the mode this Cest is about. Everything below is about whether a
+		// document that has to issue a write was handed a token, which is only a
+		// question in a mode that reads one; the recommendation on this branch
+		// does not, so these tests would otherwise pass or fail on whatever the
+		// previously executed Cest happened to leave in the preference.
+		$I->amOnPage('/' . self::RESET_FILE . '?mode=3');
 		$I->seeInSource('RESET_DONE');
 	}
 
 	public function _after(AcceptanceTester $I)
 	{
+		$I->amOnPage('/' . self::RESET_FILE . '?mode=default');
 		$I->deleteAppFile(self::RESET_FILE);
 	}
 
@@ -52,6 +59,21 @@ $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
 e107::getDb()->delete('online');
 e107::getDb()->delete('banlist', 'banlist_bantype IN (2, -2)');
+if(isset($_GET['mode']))
+{
+	$config = e107::getConfig('core');
+
+	if($_GET['mode'] === 'default')
+	{
+		$config->remove('csrf_enforce');
+	}
+	else
+	{
+		$config->set('csrf_enforce', (int) $_GET['mode']);
+	}
+
+	$config->save(false, true, false);
+}
 echo 'RESET_DONE';
 PHP;
 	}
