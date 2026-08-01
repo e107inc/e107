@@ -183,6 +183,7 @@ return [
     'LAN_FORUM_2044' => "Email", // FORLAN_101",
     'LAN_FORUM_2045' => "Print", // FORLAN_102",
     'LAN_FORUM_2046' => "Report", // LAN_413",
+    'LAN_FORUM_2047' => "You have reported something very recently. Please wait a moment before sending another report.", // new",
 
 
 

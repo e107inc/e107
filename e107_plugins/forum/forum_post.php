@@ -288,12 +288,59 @@ class forum_post_handler
 
 
 	/**
+	 * Whether this reporter has sent one too recently.
+	 *
+	 * Reporting inserts a row and fires an event that mails the moderators, and
+	 * it had no throttle of any kind: a form anyone who may post could submit as
+	 * fast as they could script it, with the site's own mail server doing the
+	 * sending. Posting has answered to the site's flood setting for as long as
+	 * the plugin has existed, and this is the same rule, scoped to the reporter
+	 * so one person cannot silence everybody else's reports.
+	 *
+	 * Guests share a bucket, because a report carries no identity beyond
+	 * gen_user_id and theirs is 0. That is the conservative direction for an
+	 * unauthenticated way to send mail.
+	 *
+	 * @return bool
+	 */
+	private function reportIsFlooding()
+	{
+		if(deftrue('ADMIN') || !deftrue('FLOODPROTECT'))
+		{
+			return false;
+		}
+
+		$newest = e107::getDb()->createQueryBuilder()
+			->select('gen_datestamp')->from('generic')
+			->where('gen_type', 'reported_post')
+			->where('gen_user_id', (int) USERID)
+			->orderBy('gen_datestamp', 'DESC')->setMaxResults(1)
+			->fetchOne();
+
+		return $newest !== null && (int) $newest > (time() - FLOODTIMEOUT);
+	}
+
+
+	/**
 	 * Report a topic post.
 	 */
 	private function submitReport()
 	{
 		$tp = e107::getParser();
 		$sql = e107::getDb();
+
+		if($this->reportIsFlooding())
+		{
+			$text = "<div class='alert alert-block alert-error alert-danger'><h4>".LAN_FORUM_2047.'</h4></div>';
+			e107::getRender()->tablerender(LAN_FORUM_2023, $text, 'forum-post-report');
+
+			return;
+		}
+
+		// USERNAME is defined only for a signed-in visitor (class2.php), and
+		// both uses below were bare, so a guest reporting a post on a site that
+		// allows anonymous posting was a fatal rather than a report.
+		$reporter = defset('USERNAME', LAN_ANONYMOUS);
 
 		$report_add = $tp->toDB($_POST['report_add']);
 
@@ -325,11 +372,11 @@ class forum_post_handler
 
 
 		$report = LAN_FORUM_2018." ".SITENAME." : ".$link . "\n
-					".LAN_FORUM_2019.": ".USERNAME. "\n" . $report_add;
+					".LAN_FORUM_2019.": ".$reporter. "\n" . $report_add;
 
 		$eventData = array(
 			'reporter_id' => USERID,
-			'reporter_name' => USERNAME,
+			'reporter_name' => $reporter,
 			'report_time' => $insert['gen_datestamp'],
 			'thread_id' => $insert['gen_intdata'],
 			'thread_name' => $insert['gen_ip'],
