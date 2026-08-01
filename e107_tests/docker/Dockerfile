@@ -161,8 +161,26 @@ RUN set -eux; \
     curl -sSLf https://getcomposer.org/installer | \
         php -- --install-dir=/usr/local/bin --filename=composer
 
+# TLS as well as plain HTTP, because some behaviour only exists over one of them.
+#
+# The Fetch Metadata headers a browser sends are appended only when the request
+# URL is a potentially trustworthy URL, so a browser sends Sec-Fetch-Site over
+# HTTPS and never over plain HTTP to a name like 'web'. Anything asserting what
+# the browser-only CSRF modes do therefore has to be served over HTTPS, and
+# anything asserting that a plain-HTTP site stays usable has to be served over
+# HTTP. Both vhosts point at the same document root, so a suite chooses by URL.
+#
+# Self-signed and generated at build time. mod_ssl's ports.conf adds Listen 443
+# on its own once the module is enabled.
 RUN set -eux; \
-    a2enmod rewrite headers expires
+    a2enmod rewrite headers expires ssl; \
+    mkdir -p /etc/ssl/e107; \
+    openssl req -x509 -nodes -newkey rsa:2048 -days 3650 \
+        -subj '/CN=web' \
+        -addext 'subjectAltName=DNS:web,DNS:localhost,IP:127.0.0.1' \
+        -keyout /etc/ssl/e107/web.key \
+        -out    /etc/ssl/e107/web.crt; \
+    chmod 640 /etc/ssl/e107/web.key
 
 COPY apache-vhost.conf /etc/apache2/sites-available/000-default.conf
 COPY php-overrides.ini /usr/local/etc/php/conf.d/zz-e107-overrides.ini
