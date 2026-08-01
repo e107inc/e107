@@ -606,6 +606,9 @@ switch($act)
 	case 'flood':
 		e107::getDb()->delete('online');
 		e107::getDb()->delete('banlist', 'banlist_bantype IN (2, -2)');
+		// Reports are throttled per reporter, and guests share one bucket, so
+		// a report left by an earlier test would throttle the next one.
+		e107::getDb()->delete('generic', "gen_type = 'reported_post'");
 		echo "PROBE_OK flood\n";
 		break;
 
