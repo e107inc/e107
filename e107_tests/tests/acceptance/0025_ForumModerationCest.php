@@ -190,6 +190,24 @@ class ForumModerationCest
 	}
 
 	/**
+	 * The forum page called ajaxModerate() for any AJAX request at all as long
+	 * as the viewer was a moderator, and ajaxModerate() always ends by printing
+	 * JSON and exiting. So a moderator's poll vote, rating or plugin widget on a
+	 * forum page was swallowed and answered with a forum error, while the same
+	 * click by an ordinary member went through. It reads as a permissions fault
+	 * and is not one.
+	 */
+	public function anUnrelatedAjaxRequestIsNotSwallowedByModeration(AcceptanceTester $I)
+	{
+		$this->moderateByAjax($I, $this->ids['forumA'], array(
+			'action' => 'somethingelse',
+			'thread' => $this->ids['threadA'],
+		));
+
+		$I->dontSeeInSource('"status":"error"');
+	}
+
+	/**
 	 * @param AcceptanceTester $I
 	 * @param int $forumId the forum whose page the request is made from
 	 * @param array $fields

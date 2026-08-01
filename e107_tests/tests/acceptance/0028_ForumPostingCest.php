@@ -36,6 +36,9 @@ class ForumPostingCest
 	/** @var int */
 	private $lockedThread;
 
+	/** @var int a second thread in forum A, for the duplicate check */
+	private $threadA2;
+
 	public function _before(AcceptanceTester $I)
 	{
 		$I->resetForumFloodProtection();
@@ -56,6 +59,11 @@ class ForumPostingCest
 
 		$this->lockedThread = $I->haveForumThread('Fixture Locked Thread', $this->ids['forumA'], 1, 0);
 		$I->haveForumPost('Opening post in the locked thread', $this->lockedThread, $this->ids['forumA'], 1);
+
+		// isDuplicatePost() matches on forum, text and author, deliberately not
+		// on thread, so a second thread in forum A is what makes it reachable.
+		$this->threadA2 = $I->haveForumThread('Fixture Thread A2', $this->ids['forumA'], 1);
+		$I->haveForumPost('Opening post in A2', $this->threadA2, $this->ids['forumA'], 1);
 
 		$I->haveForumMember('postalice');
 		$I->haveForumMember('postmoda', '253,'.\Helper\ForumFixture::CLASS_MOD_A);
@@ -213,6 +221,54 @@ class ForumPostingCest
 		));
 
 		$I->dontSeeInDatabase('e107_forum_track', array('track_thread' => $this->threadC));
+	}
+
+	/**
+	 * postAdd() answers a duplicate with -1, which went straight into post_id
+	 * and was reported as a success. The reply slid into the page and was gone
+	 * on the next refresh. forum_post.php has always said so plainly.
+	 *
+	 * Two threads in one forum rather than one submission sent twice:
+	 * isDuplicatePost() ignores the thread on purpose, and the double-click
+	 * route is confounded by forum.js binding its click handler more than once.
+	 */
+	public function aDuplicateReplyIsReportedAsOneRatherThanAsASuccess(AcceptanceTester $I)
+	{
+		$this->quickReply($I, $this->ids['threadA'], array(
+			'post'   => $this->ids['forumA'],
+			'thread' => $this->ids['threadA'],
+			'text'   => 'the very same words twice',
+		));
+		$I->seeInSource('"status":"ok"');
+
+		$this->quickReply($I, $this->threadA2, array(
+			'post'   => $this->ids['forumA'],
+			'thread' => $this->threadA2,
+			'text'   => 'the very same words twice',
+		));
+
+		$I->seeInSource('"status":"error"');
+		$I->dontSeeInDatabase('e107_forum_post', array(
+			'post_thread' => $this->threadA2,
+			'post_entry like' => '%the very same words twice%',
+		));
+	}
+
+	/**
+	 * An empty reply built no response at all: no status, no msg, nothing for
+	 * the page to show. This is the same path that used to leave the topic page
+	 * unable to submit anything else.
+	 */
+	public function anEmptyReplySaysSo(AcceptanceTester $I)
+	{
+		$this->quickReply($I, $this->ids['threadA'], array(
+			'post'   => $this->ids['forumA'],
+			'thread' => $this->ids['threadA'],
+			'text'   => '',
+		));
+
+		$I->seeInSource('"status":"error"');
+		$I->seeInSource('"msg"');
 	}
 
 	/**
