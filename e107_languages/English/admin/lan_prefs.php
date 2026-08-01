@@ -311,8 +311,28 @@ define("PRFLAN_286", "Content Filters");
 define("PRFLAN_288", "Trusted Hosts");
 define("PRFLAN_289", "Additional hostnames the site will accept in the Host header, one per line. The host parsed from Site URL is always trusted; entries here are added to that list. Paste a full URL and the saved value is normalised to the host only.");
 
+// PRFLAN_294 to PRFLAN_298 shipped in v2.3.10 and are left exactly as they went
+// out. A translator already holds them, and silently changing the English under
+// a key that has shipped is how a translation becomes wrong without anyone
+// being able to see that it has. The preference they described offered three
+// choices and now offers six, so the new wording takes new keys below.
 define("PRFLAN_294", "Requests without a security token");
 define("PRFLAN_295", "A cross-site request forgery works by making a visitor's browser send a request the visitor did not intend. The security token is what proves a request came from a page this site rendered.\nRefuse is the safe setting. Choose Allow and log if an integration has stopped working and you need to see which requests are affected before deciding; every affected request is then written to the admin log instead of being refused.");
 define("PRFLAN_296", "Refuse (recommended)");
 define("PRFLAN_297", "Allow and log");
 define("PRFLAN_298", "Allow");
+
+// PRFLAN_299 to PRFLAN_304 are deliberately absent. They belong to the session
+// cookie SameSite preference, which exists on master and not on this branch.
+// Leaving the gap means a key means the same thing wherever it appears, so a
+// translation never has to be re-checked because two branches disagreed.
+define("PRFLAN_305", "Proof that a request came from this site");
+define("PRFLAN_306", "A cross-site request forgery works by making a visitor's browser send a request the visitor did not intend. e107 can tell a genuine request from a forged one in two ways.\nA security token is a value this site writes into its own pages and checks when they are submitted. It works in every browser, but only protects a page that was actually given one.\nThe browser check reads Sec-Fetch-Site, a header the browser sets itself and which no web page is allowed to forge. Nothing has to be delivered to the page for it to work, but browsers older than Chrome 76, Firefox 90 or Safari 16.4 do not send it and cannot be protected this way.\nLeave this on the recommended setting unless you have a reason not to.");
+define("PRFLAN_307", "e107's recommended setting");
+define("PRFLAN_308", "Security token or browser check");
+define("PRFLAN_309", "Browser check");
+define("PRFLAN_310", "Browser check, this exact address only");
+define("PRFLAN_311", "Security token, refuse without one");
+define("PRFLAN_312", "Security token, allow without one and log it");
+define("PRFLAN_313", "Accept anything");
+define("PRFLAN_314", "The browser check is unavailable on this address. Browsers only send Sec-Fetch-Site to a secure address, so on a site served over plain HTTP the header never arrives and a setting that asks for nothing else would refuse every submission. Serve this site over HTTPS to use it.");

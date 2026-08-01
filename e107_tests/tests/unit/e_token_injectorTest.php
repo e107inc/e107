@@ -281,4 +281,92 @@ class e_token_injectorTest extends \Codeception\Test\Unit
 			$this->assertSame(strtolower($host), $host);
 		}
 	}
+
+	/**
+	 * The scan must never start inside an attribute value.
+	 *
+	 * A browser reads `<script>` in an attribute as text, so the page renders
+	 * exactly as its author intended and nothing looks wrong. The pass used to
+	 * read it as the start of a script and skip forward to the theme's real
+	 * `</script>`, swallowing every form in between and sending them out with no
+	 * token. Anyone who can post HTML could switch off token injection for the
+	 * rest of the page by accident.
+	 */
+	public function testAScriptTagInsideAnAttributeDoesNotSwallowLaterForms()
+	{
+		$html = '<div data-x="<script>">rendered fine</div>'
+			. '<form method="post" action="/x">a</form>'
+			. '<script>var a = 1;</script>';
+
+		$this->assertInjected($html);
+	}
+
+	public function testACommentOpenerInsideAnAttributeDoesNotSwallowLaterForms()
+	{
+		$html = '<a title="<!--">x</a>'
+			. '<form method="post" action="/x">a</form>'
+			. '<!-- footer -->';
+
+		$this->assertInjected($html);
+	}
+
+	public function testATextareaTagInsideAnAttributeDoesNotSwallowLaterForms()
+	{
+		$html = '<div data-y="<textarea>">x</div>'
+			. '<form method="post" action="/x">a</form>'
+			. '<textarea name="q">hi</textarea>';
+
+		$this->assertInjected($html);
+	}
+
+	/**
+	 * A browser ends a comment at `--!>` as well as at `-->`, so the pass has to
+	 * agree with it about where the comment stops.
+	 */
+	public function testCommentClosedWithABangIsNotRunPast()
+	{
+		$html = '<!-- x --!><form method="post" action="/x">a</form><!-- y -->';
+
+		$this->assertInjected($html);
+	}
+
+	/**
+	 * `title="Don"t"` is the everyday way a tag ends up with unbalanced quotes.
+	 * A browser ends the tag at the first ">"; so must this, rather than giving
+	 * up on the tag and resuming the scan somewhere inside it.
+	 */
+	public function testATagWithUnbalancedQuotesDoesNotSuppressALaterForm()
+	{
+		$html = '<div title="Don"t">x</div><form method="post" action="/x">a</form>';
+
+		$this->assertInjected($html);
+	}
+
+	public function testAFormTagWithUnbalancedQuotesStillGetsTheToken()
+	{
+		$this->assertInjected('<form method=post action=/x?a=b\'c><input value="y" /></form>');
+	}
+
+	/**
+	 * The tag branches added for the cases above must not start matching things
+	 * that are genuinely inside a script, a textarea or a comment.
+	 */
+	public function testMarkupInsideSkippedConstructsIsStillLeftAlone()
+	{
+		$html = '<script>var m = \'<div id="a"><form method="post" action="/x"></form></div>\';</script>'
+			. '<textarea><div><form method="post" action="/y"></form></div></textarea>'
+			. '<!-- <div><form method="post" action="/z"></form></div> -->';
+
+		$this->assertSame($html, $this->inject($html));
+	}
+
+	public function testAPageOfOrdinaryTagsStillGetsExactlyOneTokenPerForm()
+	{
+		$html = str_repeat('<div class="a b" data-x="1">text</div>', 200)
+			. '<form method="post" action="/a">1</form>'
+			. str_repeat('<p><span>t</span></p>', 200)
+			. '<form method="post" action="/b">2</form>';
+
+		$this->assertSame(2, substr_count($this->inject($html), 'name="e-token"'));
+	}
 }

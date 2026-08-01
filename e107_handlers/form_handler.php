@@ -1574,8 +1574,14 @@ class e_form
 			$INLINEJS = "
 				Dropzone.autoDiscover = false;
 				$(function() {
-				    $('#".$name_id."_prev').dropzone({ 
+				    $('#".$name_id."_prev').dropzone({
 				        url: '".e_JS. 'plupload/upload.php?' .$qry."',
+				        // Dropzone drives its own XMLHttpRequest, so the
+				        // \$.ajaxPrefilter in all.jquery.js never sees this upload and
+				        // the token has to be attached by hand, exactly as
+				        // mediaManager.js does for plupload on this same endpoint.
+				        // Without it upload.php boots class2.php and refuses the file.
+				        params: {'e-token': e107.security.csrfToken()},
 				        createImageThumbnails: false,
 				        uploadMultiple :false,
 						dictDefaultMessage: \"".$parms['label']. '",
@@ -3307,7 +3313,8 @@ class e_form
 	 * @param boolean       $selected [optional]
 	 * @param string|array  $options = [
 	 *      'useValues'		=> (bool)   when true uses array values as the key.
-	 *      'disabled'		=> (array)  list of $option_array keys which should be disabled. eg. array('key_1', 'key_2');
+	 *      'optDisabled'	=> (array)  list of $option_array keys whose options should be disabled. eg. array('key_1', 'key_2');
+	 *                                  A 'disabled' key is not this: it lands on the select element itself and disables the whole control.
 	 * ]
 	 * @param bool|string   $defaultBlank [optional] set to TRUE if the first entry should be blank, or to a string to use it for the blank description.
 	 * @return string       HTML text for display

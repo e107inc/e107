@@ -139,6 +139,15 @@ if(e_MENUMANAGER_ACTIVE === true || vartrue($_GET['enc']))
 {
 	e107::callMethod('theme', 'init'); // v2.3.0+ new theme
 
+	// This branch renders through neither header: it is USER_AREA, so the admin
+	// header is skipped, and the layout is not parsed, so the front-end one is
+	// too. Core's own script therefore has to be asked for by hand. Without it
+	// the $.ajaxPrefilter that attaches the CSRF token is never registered in
+	// this document, and every menu the manager adds, moves or deletes is
+	// answered with "Unauthorized access!" even though the token is sitting in
+	// the page's own meta tag.
+	e107::js('footer', '{e_WEB}js/core/all.jquery.js', 'jquery', 5);
+
 	$JSMODAL = <<<TEMPL
 	$(function() {
 		$('.e-modal-menumanager').on('click', function(e)

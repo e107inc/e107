@@ -263,8 +263,14 @@ class InstallCest
 
 		$I->see("Installation Complete", 'h3');
 
+		// Leave the installer the way a visitor does, by operating its own
+		// control. This step used to jump straight to /index.php with
+		// amOnPage(), which never exercised the hand-over and so never noticed
+		// that it was a POST the finished site refuses.
+		$I->click('#submit');
 
-		$I->amOnPage('/index.php');
+		$I->dontSee('Unauthorized access!');
+		$I->seeInCurrentUrl('index.php');
 
 		if(!empty($params['sitetheme']))
 		{
