@@ -359,9 +359,21 @@ class e107forum
 			exit;
 		}
 
-		$ret = array();
+		// Always an answer, and always one that matches what happened.
+		//
+		// The response used to be built only on the way through the success
+		// path, so an empty reply produced neither status nor msg and the page
+		// said nothing at all, and a duplicate produced 'ok' with postAdd()'s
+		// -1 sentinel handed back as the post id: the reply slid into the page
+		// and was gone on the next refresh. forum_post.php has reported the
+		// duplicate properly since forever.
+		$ret = array('status' => 'error', 'msg' => LAN_FORUM_8027, 'html' => false);
 
-		if(varset($_POST['action']) == 'quickreply' && vartrue($_POST['text']))
+		if(varset($_POST['action']) == 'quickreply' && !vartrue($_POST['text']))
+		{
+			$ret['msg'] = LAN_FORUM_3007; // left required field(s) blank
+		}
+		elseif(varset($_POST['action']) == 'quickreply')
 		{
 
 			$postInfo = array();
@@ -381,27 +393,35 @@ class e107forum
 			$postInfo['post_datestamp'] = time();
 			$postInfo['post_thread'] = (int) $thread['thread_id'];
 
-			$postInfo['post_id'] = $this->postAdd($postInfo); // save it.
+			$postId = $this->postAdd($postInfo); // save it.
 
-			$postInfo['user_name'] = defset('USERNAME');
-			$postInfo['user_email'] = defset('USEREMAIL');
-			$postInfo['user_image'] = defset('USERIMAGE');
-			$postInfo['user_signature'] = defset('USERSIGNATURE');
-
-			if($_POST['insert'] == 1)
+			if($postId === -1)
 			{
-				$tmpl = e107::getTemplate('forum', 'forum_viewtopic', 'replies');
-				$sc = e107::getScBatch('view', 'forum');
-				$sc->setScVar('postInfo', $postInfo);
-				$ret['html'] = $tp->parseTemplate($tmpl, true, $sc) . "\n";
+				$ret['msg'] = LAN_FORUM_3006; // duplicate post
+			}
+			elseif(empty($postId))
+			{
+				$ret['msg'] = LAN_FORUM_8018; // there was a problem
 			}
 			else
 			{
-				$ret['html'] = false;
-			}
+				$postInfo['post_id'] = $postId;
+				$postInfo['user_name'] = defset('USERNAME');
+				$postInfo['user_email'] = defset('USEREMAIL');
+				$postInfo['user_image'] = defset('USERIMAGE');
+				$postInfo['user_signature'] = defset('USERSIGNATURE');
 
-			$ret['status'] = 'ok';
-			$ret['msg'] = LAN_FORUM_3047; 
+				if(varset($_POST['insert']) == 1)
+				{
+					$tmpl = e107::getTemplate('forum', 'forum_viewtopic', 'replies');
+					$sc = e107::getScBatch('view', 'forum');
+					$sc->setScVar('postInfo', $postInfo);
+					$ret['html'] = $tp->parseTemplate($tmpl, true, $sc) . "\n";
+				}
+
+				$ret['status'] = 'ok';
+				$ret['msg'] = LAN_FORUM_3047;
+			}
 		}
 
 		// The token is deliberately not rotated here.
@@ -758,6 +778,25 @@ class e107forum
 			return array_keys($this->moderatorsOfClass($row['forum_moderators']));
 		}
 		return array();
+	}
+
+
+	/**
+	 * Whether an action posted to a forum page is one ajaxModerate() owns.
+	 *
+	 * The page used to call ajaxModerate() for any AJAX request at all as long
+	 * as the viewer was a moderator, and ajaxModerate() always ends by printing
+	 * JSON and exiting. So a moderator's poll vote, rating or plugin widget on a
+	 * forum page was swallowed and answered with a forum error, while an
+	 * ordinary member's went through: a fault that reads as a permissions
+	 * problem and is not one.
+	 *
+	 * @param string $action
+	 * @return bool
+	 */
+	public static function isModerationAction($action)
+	{
+		return in_array($action, array('delete', 'lock', 'unlock', 'stick', 'unstick', 'deletepost'), true);
 	}
 
 
