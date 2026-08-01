@@ -1539,6 +1539,55 @@ class e107forum
 	}
 
 
+	/**
+	 * Remove one attachment, refusing anything that is not a bare filename in
+	 * the post owner's own attachment directory.
+	 *
+	 * post_attachments is written from $_POST['post_attachments_json'] with no
+	 * validation of any kind, so an entry is whatever the poster sent. This
+	 * concatenated it onto the attachment directory and unlinked the result, so
+	 * a member could post with a relative path, delete their own post, and have
+	 * e107 remove any file the web user could reach.
+	 *
+	 * The array form is the shape uploads actually store, and only sendFile()
+	 * ever accounted for it. Here the array was concatenated onto the path, so
+	 * every legitimate attachment was "deleted" as a file named Array while the
+	 * real one was orphaned and its record then cleared.
+	 *
+	 * @param string $baseDir attachment directory of the post's owner
+	 * @param mixed $entry stored attachment record
+	 * @param string $kind 'file' or 'image', for the log
+	 * @param object $log
+	 * @return void
+	 */
+	private function unlinkAttachment($baseDir, $entry, $kind, $log)
+	{
+		if(is_array($entry))
+		{
+			$entry = isset($entry['file']) ? $entry['file'] : '';
+		}
+
+		$entry = (string) $entry;
+
+		if($entry === '' || strpos($entry, "\0") !== false || $entry !== basename($entry)
+			|| $entry === '.' || $entry === '..')
+		{
+			$log->addWarning("Refused to delete ".$kind." with an unacceptable name: ".$entry);
+
+			return;
+		}
+
+		$path = $baseDir.$entry;
+
+		@unlink($path);
+
+		if(file_exists($path))
+		{
+			$log->addWarning("Could not delete ".$kind.": ".$path.". Please delete manually as this file is now no longer in use (orphaned).");
+		}
+	}
+
+
 	function postDeleteAttachments($type = 'post', $id = '') // postDeleteAttachments($type = 'post', $id='', $f='')
 	{
 		$e107 = e107::getInstance();
@@ -1582,43 +1631,20 @@ class e107forum
 			$tmp = $sql->fetch();
 
 			$attachment_array = e107::unserialize($tmp['post_attachments']);
-	   		$files = $attachment_array['file'];
-	   		$imgs  = $attachment_array['img']; 
-	   		
-	   		// TODO see if files/images check can be written more efficiently 
-	   		// check if there are files to be deleted 
-	   		if(is_array($files))
-	   		{
-		   		// loop through each file and delete it
-		   		foreach ($files as $file) 
-		   		{
-		   			$file = $this->getAttachmentPath($tmp['post_user']).$file;
-		   			@unlink($file);
+			$baseDir = $this->getAttachmentPath($tmp['post_user']);
 
-	   				// Confirm that file has been deleted. Add warning to log file when file could not be deleted.
-		   			if(file_exists($file))
-		   			{
-		   				$log->addWarning("Could not delete file: ".$file.". Please delete manually as this file is now no longer in use (orphaned).");
-		   			}
-		   		} 
-	   		}
-	   		
-	   		// check if there are images to be deleted
-	   		if(is_array($imgs))
-	   		{
-	   			// loop through each image and delete it
-		   		foreach ($imgs as $img) 
-		   		{
-		   			$img = $this->getAttachmentPath($tmp['post_user']).$img;
-		   			@unlink($img);
+			foreach(array('file' => 'file', 'img' => 'image') as $key => $kind)
+			{
+				if(empty($attachment_array[$key]) || !is_array($attachment_array[$key]))
+				{
+					continue;
+				}
 
-	   				// Confirm that file has been deleted. Add warning to log file when file could not be deleted.
-		   			if(file_exists($img))
-		   			{
-		   				$log->addWarning("Could not delete image: ".$img.". Please delete manually as this file is now no longer in use (orphaned).");
-		   			}
-		   		} 	
-	   		}
+				foreach($attachment_array[$key] as $entry)
+				{
+					$this->unlinkAttachment($baseDir, $entry, $kind, $log);
+				}
+			}
 
 	   		// At this point we assume that all attachments have been deleted from the post. The log file may prove otherwise (see above). 
 	   		$log->toFile('forum_delete_attachments', 'Forum plugin - Delete attachments', TRUE);

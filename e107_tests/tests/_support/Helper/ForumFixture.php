@@ -272,7 +272,11 @@ class ForumFixture extends CodeceptionModule
 	 */
 	public function haveForumThread($name, $forumId, $userId, $active = 1)
 	{
-		$now = time();
+		// Backdated, because e107's flood check compares the newest
+		// thread_datestamp against now (forum_post.php:1152). A fixture stamped
+		// "just now" makes every reply the test then tries to post look like
+		// flooding, and it is refused with nothing written.
+		$now = time() - 3600;
 
 		return $this->db()->haveInDatabase('e107_forum_thread', array(
 			'thread_name' => $name, 'thread_forum_id' => $forumId,
@@ -296,7 +300,7 @@ class ForumFixture extends CodeceptionModule
 	{
 		$row = array(
 			'post_entry' => $entry, 'post_thread' => $threadId, 'post_forum' => $forumId,
-			'post_status' => 0, 'post_datestamp' => time(),
+			'post_status' => 0, 'post_datestamp' => time() - 3600,
 			'post_user' => $userId, 'post_ip' => '127.0.0.1',
 		);
 
@@ -360,6 +364,57 @@ class ForumFixture extends CodeceptionModule
 			'user_admin' => 0, 'user_perms' => '',
 			'user_prefs' => '', 'user_signature' => '', 'user_realm' => '', 'user_xup' => '',
 		));
+	}
+
+	/**
+	 * Create a member's attachment directory, as their first upload would.
+	 *
+	 * The traversal only resolves when it does exist: the operating system
+	 * walks `user_000002/../..` component by component, so with no such
+	 * directory the unlink fails for a reason that has nothing to do with the
+	 * defect. A test that skipped this would report the bug as absent.
+	 *
+	 * @param int $userId
+	 * @return string path relative to the app root, with a trailing slash
+	 */
+	public function haveForumAttachmentDir($userId)
+	{
+		$body = $this->probe('act=attachdir&uid='.(int) $userId);
+
+		if (!preg_match('~ATTACH_DIR=(\S+)~', $body, $m))
+		{
+			throw new \RuntimeException('Fixture did not report an attachment path: '.trim(strip_tags($body)));
+		}
+
+		return ltrim($m[1], './');
+	}
+
+	/**
+	 * A post whose post_attachments is written through e107's own serialiser,
+	 * so the stored value has exactly the shape the application produces.
+	 *
+	 * @param string $entry post body
+	 * @param int $threadId
+	 * @param int $forumId
+	 * @param int $userId
+	 * @param array $attachments e.g. array('file' => array('note.txt'))
+	 * @return int post id
+	 */
+	public function haveForumPostWithAttachments($entry, $threadId, $forumId, $userId, array $attachments)
+	{
+		$body = $this->probe('act=attachpost'
+			.'&entry='.urlencode($entry)
+			.'&thread='.(int) $threadId
+			.'&forum='.(int) $forumId
+			.'&user='.(int) $userId
+			.'&payload='.urlencode(json_encode($attachments)));
+
+		if (!preg_match('/POST_ID=(\d+)/', $body, $m))
+		{
+			throw new \RuntimeException('Fixture did not report a post id: '.trim(strip_tags($body)));
+		}
+
+		return (int) $m[1];
 	}
 
 	// -----------------------------------------------------------------
@@ -471,6 +526,28 @@ switch($act)
 		e107::getDb()->delete('online');
 		e107::getDb()->delete('banlist', 'banlist_bantype IN (2, -2)');
 		echo "PROBE_OK flood\n";
+		break;
+
+	case 'attachdir':
+		require_once(e_PLUGIN.'forum/forum_class.php');
+		$forum = new e107forum();
+		$dir = $forum->getAttachmentPath((int) $_GET['uid'], true);
+		echo is_dir($dir) ? "PROBE_OK ATTACH_DIR=".$dir."\n" : "could not create ".$dir."\n";
+		break;
+
+	case 'attachpost':
+		$payload = json_decode($_GET['payload'], true);
+		e107::getDb()->insert('forum_post', array(
+			'post_entry'       => $_GET['entry'],
+			'post_thread'      => (int) $_GET['thread'],
+			'post_forum'       => (int) $_GET['forum'],
+			'post_status'      => 0,
+			'post_datestamp'   => time(),
+			'post_user'        => (int) $_GET['user'],
+			'post_ip'          => '127.0.0.1',
+			'post_attachments' => e107::serialize($payload),
+		));
+		echo "PROBE_OK POST_ID=".e107::getDb()->lastInsertId()."\n";
 		break;
 
 	case 'purge':
