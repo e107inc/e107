@@ -70,7 +70,15 @@ class CSRFSessionHandler extends CSRFTokenHandler
 	 */
 	public function getToken($in_form = true)
 	{
-		if (!$this->session->has('__form_token') && !defined('e_TOKEN_DISABLE'))
+		// e_TOKEN_DISABLE deliberately does not stop the token being minted. It is
+		// defined by error.php, and skipping the mint there did not withhold a
+		// token, it published md5(null) instead: a constant, on a fully themed
+		// error page, in the meta tag and in every form on it. A visitor whose
+		// first request of a session was a dead link then had that value submitted
+		// from the theme's login box, search or comment form, and a token that is
+		// present and wrong is refused by every mode, including the ones an
+		// operator sets to allow or merely log a request that brought none.
+		if (!$this->session->has('__form_token'))
 		{
 			$this->session->set('__form_token', e_random::hex(64));
 			if (deftrue('e_DEBUG_SESSION'))

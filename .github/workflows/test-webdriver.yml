@@ -47,8 +47,16 @@ jobs:
         if: steps.cache-web.outputs.cache-hit != 'true'
         run: docker save "e107-web:${{ matrix.php-version }}" -o /tmp/e107-web-image.tar
 
-      - name: Run WebDriver tests
-        run: e107_tests/bin/e107-tests run webdriver
+      # Both schemes. A browser sends the Sec-Fetch-* headers only to a
+      # potentially trustworthy origin, so e107's browser-only CSRF modes exist
+      # over HTTPS and soften to a token over plain HTTP. Running one scheme
+      # would leave half of that untested, and it was the untested half that
+      # locked every plain-HTTP site out. See tests/webdriver.suite.yml.
+      - name: Run WebDriver tests over HTTP
+        run: e107_tests/bin/e107-tests run webdriver --env http
+
+      - name: Run WebDriver tests over HTTPS
+        run: e107_tests/bin/e107-tests run webdriver --env tls
 
       - name: Upload Codeception output on failure
         if: failure()

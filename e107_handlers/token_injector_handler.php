@@ -61,11 +61,23 @@ class e_token_injector
 	 * textarea or a script is consumed whole and handed back untouched, so a
 	 * <form> written inside one is never seen as a form.
 	 *
+	 * The last two branches consume any other complete tag, and they are what
+	 * keeps the first three honest. Without them the scan could start inside an
+	 * attribute value, so `<div data-x="<script>">` in a news item began a script
+	 * that ran to the theme's footer and quietly swallowed every form between.
+	 * The page rendered perfectly and its forms went out with no token. Now a tag
+	 * is always consumed whole, so its attribute values are never a match start.
+	 *
+	 * Each of the tag branches is followed by a lenient twin matching to the
+	 * first ">", for a tag whose quotes do not balance (`title="Don"t"`). That is
+	 * what a browser's tokenizer does with one, and matching it is better than
+	 * skipping the tag and resuming the scan in the middle of it.
+	 *
 	 * Every repetition is possessive. A lazy .*? costs one backtrack per
 	 * character, which a page carrying a large inline script pushes past
 	 * pcre.backtrack_limit, and the whole pass would then silently do nothing.
 	 */
-	const PATTERN = '~<!--(?:[^-]++|-(?!->))*+-->|<textarea\b[^>]*+>[^<]*+(?:<(?!/textarea\s*+>)[^<]*+)*+</textarea\s*+>|<script\b[^>]*+>[^<]*+(?:<(?!/script\s*+>)[^<]*+)*+</script\s*+>|<form\b(?:[^>"\']++|"[^"]*+"|\'[^\']*+\')*+>~is';
+	const PATTERN = '~<!--(?:[^-]++|-(?!->|-!>))*+--!?>|<textarea\b[^>]*+>[^<]*+(?:<(?!/textarea\s*+>)[^<]*+)*+</textarea\s*+>|<script\b[^>]*+>[^<]*+(?:<(?!/script\s*+>)[^<]*+)*+</script\s*+>|<form\b(?:[^>"\']++|"[^"]*+"|\'[^\']*+\')*+>|<form\b[^>]*+>|<[a-z][a-z0-9:._-]*+(?:[^>"\']++|"[^"]*+"|\'[^\']*+\')*+>|<[a-z][a-z0-9:._-]*+[^>]*+>~is';
 
 	/**
 	 * Gate and transform a finished page.
@@ -76,6 +88,18 @@ class e_token_injector
 	public static function process($content)
 	{
 		if(!is_string($content) || $content === '')
+		{
+			return $content;
+		}
+
+		// Publishing a token that nothing will check is not merely wasted work.
+		// It is a live session token stamped into every same-origin form on the
+		// page, including one an author or an attacker put in a news item, and
+		// this pass cannot tell whose form is whose.
+		//
+		// e_TOKEN itself is still minted, because a fair amount of core writes it
+		// into a form by hand and some of those read the bare constant.
+		if(!e_session::modeUsesToken())
 		{
 			return $content;
 		}

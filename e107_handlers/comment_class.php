@@ -741,7 +741,10 @@ class comment
 		}
 
 
-		if(!isset($_POST['e-token'])) $_POST['e-token'] = '';		// check posted token
+		// Do not manufacture an empty token for a request that sent none. isset()
+		// is true of an empty string, so it lands on the invalid-token branch,
+		// which no mode relaxes, and a tokenless POST is refused even where the
+		// operator asked for it to be allowed or merely logged.
 		if(!e107::getSession()->check(false)) return false;			// This will return false on error
 
 		if (isset($_GET['comment']) && $_GET['comment'] == 'edit')

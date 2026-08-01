@@ -32,6 +32,10 @@ e107_tests/bin/e107-tests urls
 e107_tests/bin/e107-tests run unit
 e107_tests/bin/e107-tests run acceptance
 
+# WebDriver runs over either scheme; some tests only exist on one of them
+e107_tests/bin/e107-tests run webdriver --env http
+e107_tests/bin/e107-tests run webdriver --env tls
+
 # Want a browsable, installed e107 site instead of a bare stack?
 e107_tests/bin/e107-tests up --install-site     # admin login: admin / x107
 
@@ -40,6 +44,17 @@ e107_tests/bin/e107-tests down
 ```
 
 `e107-tests help` is the canonical command reference.
+
+### HTTP and HTTPS
+
+The web container serves the same document root on both `http://web/` and
+`https://web/`, with a self-signed certificate generated when the image is
+built. The second scheme is not a nicety: a browser appends the `Sec-Fetch-*`
+headers only when the request URL is a potentially trustworthy URL, so e107's
+browser-only CSRF modes can only be exercised over TLS, and their softening
+back to a token can only be exercised over plain HTTP. `--env tls` sets
+`acceptInsecureCerts`, which leaves the page a secure context and the headers
+intact.
 
 ## Choosing a matrix combo
 
