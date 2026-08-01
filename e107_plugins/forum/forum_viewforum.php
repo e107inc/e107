@@ -249,7 +249,7 @@ function init()
 		}
 	}
 
-	if(e_AJAX_REQUEST && MODERATOR) // see javascript above.
+	if(e_AJAX_REQUEST && MODERATOR && e107forum::isModerationAction(varset($_POST['action'], ''))) // see javascript above.
 	{
 		$forum->ajaxModerate();
 	}

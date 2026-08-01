@@ -972,14 +972,30 @@ $(document).ready(function()
 {
 
 		// Basic Delete Confirmation
-		$('input.delete,button.delete,a[data-confirm]').click(function(){
-  			answer = confirm($(this).attr("data-confirm"));
-  			return answer; // answer is a boolean
+		//
+		// stopImmediatePropagation(), not just "return false". jQuery turns a
+		// false return into preventDefault() plus stopPropagation(), and
+		// stopPropagation() only stops the event travelling to ancestors: any
+		// other handler bound to the same element still runs, whatever the
+		// visitor answered. Anything that binds its own click alongside one of
+		// these therefore went ahead on Cancel, which in the forum meant a
+		// thread deleted by someone who had just said not to.
+		$('input.delete,button.delete,a[data-confirm]').click(function(e){
+			if(!confirm($(this).attr("data-confirm")))
+			{
+				e.stopImmediatePropagation();
+
+				return false;
+			}
 		});
 
-		$(".e-confirm").click(function(){
-  			answer = confirm($(this).attr("title"));
-  			return answer; // answer is a boolean
+		$(".e-confirm").click(function(e){
+			if(!confirm($(this).attr("title")))
+			{
+				e.stopImmediatePropagation();
+
+				return false;
+			}
 		});
 
 

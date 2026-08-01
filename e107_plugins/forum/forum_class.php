@@ -87,6 +87,9 @@ class e107forum
 	private $userViewed;
 	private $permList = array();
 	public $modArray, $prefs;
+
+	/** @var array moderator rows keyed by userclass, for authorisation only */
+	private $moderatorsByClass = array();
 	private $forumData = array();
 
 	public function __construct($update= false)
@@ -344,6 +347,34 @@ class e107forum
 
 
 	/**
+	 * Where a thread lives, and whether it is still open.
+	 *
+	 * The forum a reply belongs to is a property of the thread, so it is read
+	 * back from the thread rather than taken from the request. The request used
+	 * to carry both, unrelated to each other, which let a reply be authorised
+	 * against one forum and written into a thread in another.
+	 *
+	 * @param int $threadId
+	 * @return array|false thread_forum_id and thread_active, or false if there is no such thread
+	 */
+	private function threadContext($threadId)
+	{
+		if(empty($threadId))
+		{
+			return false;
+		}
+
+		$row = e107::getDb()->createQueryBuilder()
+			->select('thread_id', 'thread_forum_id', 'thread_active')
+			->from('forum_thread')
+			->where('thread_id', (int) $threadId)
+			->fetchRow();
+
+		return $row ? $row : false;
+	}
+
+
+	/**
 	 * Handle the Ajax quick-reply.
 	 */
 	function ajaxQuickReply()
@@ -355,15 +386,48 @@ class e107forum
 		// which refuses the reply outright rather than deferring to the mode the
 		// operator chose.
 
-		if(!e107::getSession()->check(false) || !$this->checkPerm($_POST['post'], 'post'))
+		if(!e107::getSession()->check(false))
 		{
 			// Invalid token.
 			exit;
 		}
 
-		$ret = array();
+		// The thread decides the forum, and the forum decides the permission.
+		//
+		// This used to ask checkPerm() about $_POST['post'] and then write
+		// $_POST['thread'] into post_thread, with nothing tying the two ids
+		// together: naming a forum you may post in bought you a reply in any
+		// thread on the site, including one in a forum you are redirected away
+		// from. thread_active went unread as well, so a closed thread took
+		// replies through this route while the ordinary form (forum_post.php,
+		// checkPerms()) refused them.
+		$thread = $this->threadContext(varset($_POST['thread']));
 
-		if(varset($_POST['action']) == 'quickreply' && vartrue($_POST['text']))
+		if(!$thread || !$this->checkPerm($thread['thread_forum_id'], 'post'))
+		{
+			exit;
+		}
+
+		if(empty($thread['thread_active']) && !$this->canModerateThread($thread['thread_id']))
+		{
+			exit;
+		}
+
+		// Always an answer, and always one that matches what happened.
+		//
+		// The response used to be built only on the way through the success
+		// path, so an empty reply produced neither status nor msg and the page
+		// said nothing at all, and a duplicate produced 'ok' with postAdd()'s
+		// -1 sentinel handed back as the post id: the reply slid into the page
+		// and was gone on the next refresh. forum_post.php has reported the
+		// duplicate properly since forever.
+		$ret = array('status' => 'error', 'msg' => LAN_FORUM_8027, 'html' => false);
+
+		if(varset($_POST['action']) == 'quickreply' && !vartrue($_POST['text']))
+		{
+			$ret['msg'] = LAN_FORUM_3007; // left required field(s) blank
+		}
+		elseif(varset($_POST['action']) == 'quickreply')
 		{
 
 			$postInfo = array();
@@ -375,35 +439,43 @@ class e107forum
 			}
 			else
 			{
-				$postInfo['post_user_anon'] = $_POST['anonname'];
+				$postInfo['post_user_anon'] = varset($_POST['anonname'], '');
 			}
 
 			$postInfo['post_entry'] = $_POST['text'];
-			$postInfo['post_forum'] = intval($_POST['post']);
+			$postInfo['post_forum'] = (int) $thread['thread_forum_id'];
 			$postInfo['post_datestamp'] = time();
-			$postInfo['post_thread'] = intval($_POST['thread']);
+			$postInfo['post_thread'] = (int) $thread['thread_id'];
 
-			$postInfo['post_id'] = $this->postAdd($postInfo); // save it.
+			$postId = $this->postAdd($postInfo); // save it.
 
-			$postInfo['user_name'] = defset('USERNAME');
-			$postInfo['user_email'] = defset('USEREMAIL');
-			$postInfo['user_image'] = defset('USERIMAGE');
-			$postInfo['user_signature'] = defset('USERSIGNATURE');
-
-			if($_POST['insert'] == 1)
+			if($postId === -1)
 			{
-				$tmpl = e107::getTemplate('forum', 'forum_viewtopic', 'replies');
-				$sc = e107::getScBatch('view', 'forum');
-				$sc->setScVar('postInfo', $postInfo);
-				$ret['html'] = $tp->parseTemplate($tmpl, true, $sc) . "\n";
+				$ret['msg'] = LAN_FORUM_3006; // duplicate post
+			}
+			elseif(empty($postId))
+			{
+				$ret['msg'] = LAN_FORUM_8018; // there was a problem
 			}
 			else
 			{
-				$ret['html'] = false;
-			}
+				$postInfo['post_id'] = $postId;
+				$postInfo['user_name'] = defset('USERNAME');
+				$postInfo['user_email'] = defset('USEREMAIL');
+				$postInfo['user_image'] = defset('USERIMAGE');
+				$postInfo['user_signature'] = defset('USERSIGNATURE');
 
-			$ret['status'] = 'ok';
-			$ret['msg'] = LAN_FORUM_3047; 
+				if(varset($_POST['insert']) == 1)
+				{
+					$tmpl = e107::getTemplate('forum', 'forum_viewtopic', 'replies');
+					$sc = e107::getScBatch('view', 'forum');
+					$sc->setScVar('postInfo', $postInfo);
+					$ret['html'] = $tp->parseTemplate($tmpl, true, $sc) . "\n";
+				}
+
+				$ret['status'] = 'ok';
+				$ret['msg'] = LAN_FORUM_3047;
+			}
 		}
 
 		// The token is deliberately not rotated here.
@@ -452,9 +524,20 @@ class e107forum
 		$ret = array();
 		$ret['status'] 	= 'error';
 
-		$threadID = intval($_POST['thread']);
+		$threadID = intval(varset($_POST['thread']));
 
 		if(!USER || empty($threadID))
+		{
+			exit;
+		}
+
+		// Subscribing is a way of reading. trackEmail() posts every reply in the
+		// thread out to whoever is in forum_track, and asks nothing about the
+		// forum it came from, so the only check standing between a member and
+		// the contents of a forum closed to them is this one.
+		$thread = $this->threadContext($threadID);
+
+		if(!$thread || !$this->checkPerm($thread['thread_forum_id'], 'view'))
 		{
 			exit;
 		}
@@ -511,22 +594,12 @@ class e107forum
 	function usersLastPostDeletion()
 	{
 		$ret = array('hide' => false, 'msg' => LAN_FORUM_7008, 'status' => 'error');
-		$actionAllowed = false;
 
-		if (isset($_POST['post']) && is_numeric($_POST['post']))
-		{
-			$postId = intval($_POST['post']);
-			$row = e107::getDb()->createQueryBuilder()
-				->select('fp.post_user')->from('forum_post', 'fp')
-				->where('fp.post_id', $postId)
-				->fetchRow();
-			if ($row)
-			{
-				if (USERID == $row['post_user']) $actionAllowed = true;
-			}
-		}
+		$postId = (isset($_POST['post']) && is_numeric($_POST['post'])) ? (int) $_POST['post'] : 0;
+		$actionAllowed = $postId && varset($_POST['action']) === 'deletepost'
+			&& $this->userMayDeleteOwnPost($postId);
 
-		if ($actionAllowed && $_POST['action'] == 'deletepost')
+		if ($actionAllowed)
 		{
 			if ($this->postDelete($postId))
 			{
@@ -546,6 +619,66 @@ class e107forum
 
 
 	/**
+	 * The rule this endpoint's name, its docblock and the control that offers it
+	 * all describe: your own post, the last one in the thread, not the one that
+	 * started it, and the thread still open.
+	 *
+	 * None of it was enforced. The whole ownership test was `USERID ==
+	 * $row['post_user']`, and USERID is 0 for a caller with no account while an
+	 * anonymous post stores post_user 0, so an unauthenticated visitor owned
+	 * every anonymous post on the site and could delete any of them, in forums
+	 * they could not even read. Carrying no cookie, such a request is not
+	 * challenged for a token either. A member, meanwhile, could delete any post
+	 * they had ever written, including one that opened a thread, which left the
+	 * thread row behind with no first post.
+	 *
+	 * @param int $postId
+	 * @return bool
+	 */
+	private function userMayDeleteOwnPost($postId)
+	{
+		if(!deftrue('USER'))
+		{
+			return false;
+		}
+
+		$qb = e107::getDb()->createQueryBuilder();
+		$row = $qb
+			->select('fp.post_user', 'fp.post_thread', 'ft.thread_active')
+			->from('forum_post', 'fp')
+			->innerJoin('forum_thread', 'ft', $qb->expr()->compareColumns('fp.post_thread', 'ft.thread_id'))
+			->where('fp.post_id', (int) $postId)
+			->fetchRow();
+
+		if(!$row || empty($row['post_user']) || (int) $row['post_user'] !== (int) USERID)
+		{
+			return false;
+		}
+
+		if(empty($row['thread_active']))
+		{
+			return false;
+		}
+
+		$threadId = (int) $row['post_thread'];
+
+		$later = (int) e107::getDb()->createQueryBuilder()
+			->from('forum_post')
+			->where('post_thread', $threadId)
+			->where('post_id', '>', (int) $postId)
+			->count();
+
+		$earlier = (int) e107::getDb()->createQueryBuilder()
+			->from('forum_post')
+			->where('post_thread', $threadId)
+			->where('post_id', '<', (int) $postId)
+			->count();
+
+		return $later === 0 && $earlier > 0;
+	}
+
+
+	/**
 	 * get user ids with moderator permissions for the given $postId
 	 * @param $postId id of a forum post
 	 * @return array an array with user ids how have moderator permissions for the $postId
@@ -561,9 +694,100 @@ class e107forum
 			->fetchRow();
 		if ($row)
 		{
-			return array_keys($this->forumGetMods($row['forum_moderators']));
+			return array_keys($this->moderatorsOfClass($row['forum_moderators']));
 		}
 		return array();
+	}
+
+
+	/**
+	 * Moderators of one userclass, for deciding permission.
+	 *
+	 * Kept apart from forumGetMods(), which memoises a single list on the
+	 * instance whatever class it is asked for. Templates read that memo to
+	 * render a forum's moderator list, so it cannot simply be keyed without
+	 * changing what they show. The page also primes it before any write is
+	 * authorised, which meant every permission question in the request was
+	 * answered for the forum named in the URL rather than for the thread or
+	 * post being acted on.
+	 *
+	 * @param int|string $uclass value of forum.forum_moderators
+	 * @return array moderator rows keyed by user id
+	 */
+	private function moderatorsOfClass($uclass)
+	{
+		$key = (string) $uclass;
+
+		if(isset($this->moderatorsByClass[$key]))
+		{
+			return $this->moderatorsByClass[$key];
+		}
+
+		$mods = array();
+
+		if($uclass == e_UC_ADMIN || trim((string) $uclass) === '')
+		{
+			$rows = e107::getDb()->createQueryBuilder()
+				->select('user_id', 'user_name')->from('user')
+				->where('user_admin', 1)->orderBy('user_name', 'ASC')
+				->fetchAll();
+
+			foreach($rows as $row)
+			{
+				$mods[$row['user_id']] = $row;
+			}
+		}
+		else
+		{
+			$mods = e107::getUserClass()->getUsersInClass($uclass, 'user_name', true);
+		}
+
+		return $this->moderatorsByClass[$key] = $mods;
+	}
+
+
+	/**
+	 * @param array $moderatorUserIds
+	 * @return bool
+	 */
+	private function actorModerates(array $moderatorUserIds)
+	{
+		if(deftrue('USER') && in_array(USERID, $moderatorUserIds))
+		{
+			return true;
+		}
+
+		return (bool) getperms('0');
+	}
+
+
+	/**
+	 * @param int $threadId
+	 * @return bool
+	 */
+	public function canModerateThread($threadId)
+	{
+		return $this->actorModerates($this->getModeratorUserIdsByThreadId($threadId));
+	}
+
+
+	/**
+	 * @param int $postId
+	 * @return bool
+	 */
+	public function canModeratePost($postId)
+	{
+		return $this->actorModerates($this->getModeratorUserIdsByPostId($postId));
+	}
+
+
+	/**
+	 * @param int $forumId
+	 * @return bool
+	 */
+	public function canModerateForum($forumId)
+	{
+		return $this->actorModerates($this->getModeratorUserIdsByForumId($forumId));
 	}
 
 
@@ -583,7 +807,7 @@ class e107forum
 			->fetchRow();
 		if ($row)
 		{
-			return array_keys($this->forumGetMods($row['forum_moderators']));
+			return array_keys($this->moderatorsOfClass($row['forum_moderators']));
 		}
 		return array();
 	}
@@ -603,35 +827,74 @@ class e107forum
 			->fetchRow();
 		if ($row)
 		{
-			return array_keys($this->forumGetMods($row['forum_moderators']));
+			return array_keys($this->moderatorsOfClass($row['forum_moderators']));
 		}
 		return array();
+	}
+
+
+	/**
+	 * Whether an action posted to a forum page is one ajaxModerate() owns.
+	 *
+	 * The page used to call ajaxModerate() for any AJAX request at all as long
+	 * as the viewer was a moderator, and ajaxModerate() always ends by printing
+	 * JSON and exiting. So a moderator's poll vote, rating or plugin widget on a
+	 * forum page was swallowed and answered with a forum error, while an
+	 * ordinary member's went through: a fault that reads as a permissions
+	 * problem and is not one.
+	 *
+	 * @param string $action
+	 * @return bool
+	 */
+	public static function isModerationAction($action)
+	{
+		return in_array($action, array('delete', 'lock', 'unlock', 'stick', 'unstick', 'deletepost'), true);
 	}
 
 
 	public function ajaxModerate()
 	{
 		$ret = array('hide' => false, 'msg' => 'unknown', 'status' => 'error');
-		$moderatorUserIds = array();
 
-		if (isset($_POST['thread']) && is_numeric($_POST['thread']))
+		$action   = varset($_POST['action'], '');
+		$threadId = (isset($_POST['thread']) && is_numeric($_POST['thread'])) ? (int) $_POST['thread'] : 0;
+		$postId   = (isset($_POST['post']) && is_numeric($_POST['post'])) ? (int) $_POST['post'] : 0;
+
+		/* Authorise against the object the action changes, and nothing else.
+		 * This used to derive permission from whichever of the two ids arrived
+		 * last and then act on the thread regardless, so a request naming a post
+		 * in a forum you moderate could delete, lock or stick a thread in one you
+		 * do not. Requiring the id here also means the cases below can no longer
+		 * be reached without one. */
+		if(in_array($action, array('delete', 'lock', 'unlock', 'stick', 'unstick'), true))
 		{
-			$threadId = intval($_POST['thread']);
-			$moderatorUserIds = $this->getModeratorUserIdsByThreadId($threadId);
+			$targetId = $threadId;
+			$permitted = $threadId && $this->canModerateThread($threadId);
+		}
+		elseif($action === 'deletepost')
+		{
+			$targetId = $postId;
+			$permitted = $postId && $this->canModeratePost($postId);
+		}
+		else
+		{
+			$ret['msg'] = LAN_FORUM_8027;
+
+			echo json_encode($ret);
+
+			exit();
 		}
 
-		/* If both, a thread-operation and a post-operation is submitted, the
-		 * thread-permissions MUST be overwritten by the post-permissions!
-		 * Otherwise it is possible that a moderator can transfer his
-		 * permissions from one forum to another forum, where he has no permissions. */
-		if (isset($_POST['post']) && is_numeric($_POST['post']))
+		if(!$targetId)
 		{
-			$postId = intval($_POST['post']);
-			$moderatorUserIds = $this->getModeratorUserIdsByPostId($postId);
+			$ret['msg'] = LAN_FORUM_7008;
+
+			echo json_encode($ret);
+
+			exit();
 		}
 
-		// Check if user has moderator permissions for this thread
-		if(!in_array(USERID, $moderatorUserIds) && !getperms('0'))
+		if(!$permitted)
 		{
 			$ret['msg'] 	= LAN_FORUM_8030;
 			$ret['hide'] 	= false;
@@ -639,7 +902,7 @@ class e107forum
 		}
 		else
 		{
-			switch ($_POST['action']) 
+			switch ($action)
 			{
 				case 'delete':
 					if($this->threadDelete($threadId))
@@ -656,14 +919,6 @@ class e107forum
 				break;
 				
 				case 'deletepost':
-					if(!$postId)
-					{
-						// echo "No Post";
-						// exit;
-						$ret['msg'] 	= LAN_FORUM_7008;
-						$ret['status'] 	= 'error';		
-					}
-					
 					if($this->postDelete($postId))
 					{
 						$ret['msg'] 	= LAN_FORUM_8021.' #'.$postId;
@@ -1451,15 +1706,67 @@ class e107forum
 		$e107 = e107::getInstance();
 		if($uid == USERID)
 		{
-			$viewed = $e107->currentUser['user_plugin_forum_viewed'];
+			// A visitor with no account has no row and so no read state. Read
+			// defensively rather than assuming the key: forum.php?new is public.
+			$viewed = isset($e107->currentUser['user_plugin_forum_viewed'])
+				? $e107->currentUser['user_plugin_forum_viewed'] : '';
 		}
 		else
 		{
 			$tmp = e107::user($uid);
-			$viewed = $tmp['user_plugin_forum_viewed'];
+			$viewed = isset($tmp['user_plugin_forum_viewed']) ? $tmp['user_plugin_forum_viewed'] : '';
 			unset($tmp);
 		}
-		return explode(',', $viewed);
+		return explode(',', (string) $viewed);
+	}
+
+
+	/**
+	 * Remove one attachment, refusing anything that is not a bare filename in
+	 * the post owner's own attachment directory.
+	 *
+	 * post_attachments is written from $_POST['post_attachments_json'] with no
+	 * validation of any kind, so an entry is whatever the poster sent. This
+	 * concatenated it onto the attachment directory and unlinked the result, so
+	 * a member could post with a relative path, delete their own post, and have
+	 * e107 remove any file the web user could reach.
+	 *
+	 * The array form is the shape uploads actually store, and only sendFile()
+	 * ever accounted for it. Here the array was concatenated onto the path, so
+	 * every legitimate attachment was "deleted" as a file named Array while the
+	 * real one was orphaned and its record then cleared.
+	 *
+	 * @param string $baseDir attachment directory of the post's owner
+	 * @param mixed $entry stored attachment record
+	 * @param string $kind 'file' or 'image', for the log
+	 * @param object $log
+	 * @return void
+	 */
+	private function unlinkAttachment($baseDir, $entry, $kind, $log)
+	{
+		if(is_array($entry))
+		{
+			$entry = isset($entry['file']) ? $entry['file'] : '';
+		}
+
+		$entry = (string) $entry;
+
+		if($entry === '' || strpos($entry, "\0") !== false || $entry !== basename($entry)
+			|| $entry === '.' || $entry === '..')
+		{
+			$log->addWarning("Refused to delete ".$kind." with an unacceptable name: ".$entry);
+
+			return;
+		}
+
+		$path = $baseDir.$entry;
+
+		@unlink($path);
+
+		if(file_exists($path))
+		{
+			$log->addWarning("Could not delete ".$kind.": ".$path.". Please delete manually as this file is now no longer in use (orphaned).");
+		}
 	}
 
 
@@ -1508,43 +1815,20 @@ class e107forum
 			}
 
 			$attachment_array = e107::unserialize($tmp['post_attachments']);
-	   		$files = $attachment_array['file'];
-	   		$imgs  = $attachment_array['img']; 
-	   		
-	   		// TODO see if files/images check can be written more efficiently 
-	   		// check if there are files to be deleted 
-	   		if(is_array($files))
-	   		{
-		   		// loop through each file and delete it
-		   		foreach ($files as $file) 
-		   		{
-		   			$file = $this->getAttachmentPath($tmp['post_user']).$file;
-		   			@unlink($file);
+			$baseDir = $this->getAttachmentPath($tmp['post_user']);
 
-	   				// Confirm that file has been deleted. Add warning to log file when file could not be deleted.
-		   			if(file_exists($file))
-		   			{
-		   				$log->addWarning("Could not delete file: ".$file.". Please delete manually as this file is now no longer in use (orphaned).");
-		   			}
-		   		} 
-	   		}
-	   		
-	   		// check if there are images to be deleted
-	   		if(is_array($imgs))
-	   		{
-	   			// loop through each image and delete it
-		   		foreach ($imgs as $img) 
-		   		{
-		   			$img = $this->getAttachmentPath($tmp['post_user']).$img;
-		   			@unlink($img);
+			foreach(array('file' => 'file', 'img' => 'image') as $key => $kind)
+			{
+				if(empty($attachment_array[$key]) || !is_array($attachment_array[$key]))
+				{
+					continue;
+				}
 
-	   				// Confirm that file has been deleted. Add warning to log file when file could not be deleted.
-		   			if(file_exists($img))
-		   			{
-		   				$log->addWarning("Could not delete image: ".$img.". Please delete manually as this file is now no longer in use (orphaned).");
-		   			}
-		   		} 	
-	   		}
+				foreach($attachment_array[$key] as $entry)
+				{
+					$this->unlinkAttachment($baseDir, $entry, $kind, $log);
+				}
+			}
 
 	   		// At this point we assume that all attachments have been deleted from the post. The log file may prove otherwise (see above). 
 	   		$log->toFile('forum_delete_attachments', 'Forum plugin - Delete attachments', TRUE);
@@ -1644,14 +1928,24 @@ class e107forum
 						$this->forumUpdateLastpost('thread', $row['thread_id']);
 					}
 				}
+				// thread_lastpost, not thread_datestamp.
+				//
+				// forum_lastpost_info is "when the last post happened, and in
+				// which thread": postAdd() writes post_datestamp into it. This
+				// read the thread's *creation* time instead, and ordered by it,
+				// so the forum's last post was really its newest thread, dated
+				// when that thread began and credited to whoever posted in it
+				// most recently. postDelete() and threadDelete() both call this,
+				// so removing one spam post could point a busy forum at a thread
+				// nobody had touched in years.
 				$row = $sql->createQueryBuilder()
-					->select('thread_id', 'thread_lastuser', 'thread_lastuser_anon', 'thread_datestamp')->from('forum_thread')
+					->select('thread_id', 'thread_lastuser', 'thread_lastuser_anon', 'thread_lastpost')->from('forum_thread')
 					->where('thread_forum_id', $id)
-					->orderBy('thread_datestamp', 'DESC')->setMaxResults(1)
+					->orderBy('thread_lastpost', 'DESC')->setMaxResults(1)
 					->fetchRow();
 				if ($row)
 				{
-					$lp_info = $row['thread_datestamp'].'.'.$row['thread_id'];
+					$lp_info = $row['thread_lastpost'].'.'.$row['thread_id'];
 					$lp_user = $row['thread_lastuser'];
 				}
 				if(!empty($row['thread_lastuser_anon']))
@@ -1673,12 +1967,24 @@ class e107forum
 
 	
 	
+	/**
+	 * Mark threads read: one forum's worth, or the whole board when no forum is
+	 * named.
+	 *
+	 * The identity test used to be against 0, but the caller that means "all of
+	 * them" passes null (forum.php, where the id is only cast when it is
+	 * present), so "mark all forums read" took the per-forum branch, built a
+	 * list containing null, matched nothing and redirected having done nothing.
+	 * Every shipped link carries an id, so only the board-wide one was affected.
+	 *
+	 * @param int|null $forum_id
+	 */
 	function forumMarkAsRead($forum_id)
 	{
 		$sql = e107::getDb();
 		$flist = null;
 		$newIdList = array();
-		if ($forum_id !== 0)
+		if (!empty($forum_id))
 		{
 			$forum_id = (int)$forum_id;
 			$flist = array();
@@ -2343,9 +2649,42 @@ class e107forum
 
 
 
+	/**
+	 * Threads with activity the caller has not seen, for forum.php?new.
+	 *
+	 * Three things were wrong here, and the route is public, so all three were
+	 * reachable without an account:
+	 *
+	 *  - the "already read" filter compared thread ids against
+	 *    thread_forum_id, so reading one thread hid every thread in whatever
+	 *    forum shared that id. forumGetUnreadForums() has always compared the
+	 *    right column.
+	 *  - no forum_class predicate, unlike every other listing this plugin
+	 *    ships (e_search, e_rss, e_list), so the page offered thread names and
+	 *    last posters out of forums the caller cannot open.
+	 *  - USERLV is only defined for a signed-in visitor (class2.php), and it
+	 *    was dereferenced bare, which on PHP 8 is a fatal rather than a notice.
+	 *    A guest or a crawler asking for forum.php?new got a blank page.
+	 *
+	 * The permission list is the viewer's, not $uid's. The output goes to
+	 * whoever asked, so theirs is the question worth answering.
+	 *
+	 * @param int $count
+	 * @param bool $unread
+	 * @param int $uid whose read-state to filter by
+	 * @return array
+	 */
 	function threadGetNew($count = 50, $unread = true, $uid = USERID)
 	{
 		$sql = e107::getDb();
+
+		$visible = $this->getForumPermList('view');
+
+		if(empty($visible))
+		{
+			return array();
+		}
+
 		$viewedList = array();
 		if($unread)
 		{
@@ -2357,10 +2696,11 @@ class e107forum
 		$qb->select('t.*', 'u.user_name')
 			->from('forum_thread', 't')
 			->leftJoin('user', 'u', $qb->expr()->compareColumns('u.user_id', 't.thread_lastuser'))
-			->where('t.thread_lastpost', '>', USERLV);
+			->where('t.thread_lastpost', '>', (int) defset('USERLV', 0))
+			->whereIn('t.thread_forum_id', $visible);
 		if(!empty($viewedList))
 		{
-			$qb->whereNotIn('t.thread_forum_id', $viewedList);
+			$qb->whereNotIn('t.thread_id', $viewedList);
 		}
 
 		return $qb->orderBy('t.thread_lastpost', 'DESC')
@@ -2469,11 +2809,23 @@ class e107forum
 	 * @param $threadID
 	 * @return int
 	 */
+	/**
+	 * Recount a thread's replies, as splitting a topic requires.
+	 *
+	 * thread_total_replies excludes the opening post: postAdd() increments it
+	 * once per reply and every reader adds one back for the first post. This
+	 * stored the raw row count, so a split topic came out one reply heavy at
+	 * both ends, which the page turns into a phantom extra page.
+	 *
+	 * @param int $threadID
+	 * @return mixed
+	 */
 	function threadUpdateCounts($threadID)
 	{
 		$sql = e107::getDb();
 
-		$replies = $sql->createQueryBuilder()->from('forum_post')->where('post_thread', (int) $threadID)->count();
+		$posts = (int) $sql->createQueryBuilder()->from('forum_post')->where('post_thread', (int) $threadID)->count();
+		$replies = max(0, $posts - 1);
 
 		return $sql->createQueryBuilder()->update('forum_thread')
 			->set('thread_total_replies', $replies)
