@@ -19,6 +19,12 @@ modules:
             path: '%selenium.path%'
             window_size: 1366x900
             capabilities:
+                # Leave native confirm() dialogs standing until a test answers
+                # them. Chrome's default is "dismiss and notify", which answers
+                # them itself and leaves acceptPopup()/cancelPopup() with
+                # nothing to find, so a test about what the visitor answered
+                # could not ask the question.
+                unhandledPromptBehavior: ignore
                 goog:chromeOptions:
                     args:
                         - '--no-sandbox'
@@ -30,6 +36,9 @@ modules:
             populate: '%db.populate%'
             dump: '%db.dump_path%'
         - \Helper\AdminLogin
+        # The forum plugin, its rows and its members. Shared with acceptance,
+        # because neither the dump nor a fresh install ships forum tables.
+        - \Helper\ForumFixture
         # Writes e107_config.php from the dump's DB params so the served app is
         # installed (Acceptance's variant no-ops the write and installs instead).
         - \Helper\Webdriver

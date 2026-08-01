@@ -113,33 +113,6 @@ class Acceptance extends E107Base
 	}
 
 	/**
-	 * Write an arbitrary file into the deployed docroot.
-	 *
-	 * Goes through the deployer rather than file_put_contents() so it works
-	 * when the app under test is remote (CI deploys over SFTP). Parent
-	 * directories are created.
-	 *
-	 * @param string $relative_path path relative to the app root
-	 * @param string $contents
-	 * @return void
-	 */
-	public function writeAppFile($relative_path, $contents)
-	{
-		$this->deployer->writeAppFile($relative_path, $contents);
-	}
-
-	/**
-	 * Remove a file previously written by writeAppFile().
-	 *
-	 * @param string $relative_path path relative to the app root
-	 * @return void
-	 */
-	public function deleteAppFile($relative_path)
-	{
-		$this->deployer->unlinkAppFile($relative_path);
-	}
-
-	/**
 	 * Create a bundled plugin's tables from its own <plugin>_sql.php.
 	 *
 	 * A fresh install only creates the core schema, so a test needing a plugin

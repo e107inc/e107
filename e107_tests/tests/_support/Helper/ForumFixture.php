@@ -503,6 +503,18 @@ class ForumFixture extends CodeceptionModule
 		$browser->fillField('username', $name);
 		$browser->fillField('userpass', $pass === null ? self::MEMBER_PASS : $pass);
 		$browser->click('userlogin');
+
+		if (isset($browser->webDriver))
+		{
+			// A real browser returns from click() before the form's navigation
+			// has finished, so whatever the test asks for next races it and
+			// often loses: the next amOnPage() starts loading, the login
+			// response then arrives and wins, and the test finds itself back on
+			// /login.php looking for a forum. Waiting for the redirect to leave
+			// that page settles it, and times out with a useful message if the
+			// sign-in was refused.
+			$browser->waitForJS('return window.location.pathname.indexOf("/login.php") === -1;', 10);
+		}
 	}
 
 	/**
@@ -516,9 +528,12 @@ class ForumFixture extends CodeceptionModule
 	{
 		$browser = $this->browser();
 
-		if (method_exists($browser, 'deleteAllCookies'))
+		if (isset($browser->webDriver))
 		{
-			$browser->deleteAllCookies();
+			// The browser has to be on the app's domain before its cookies can
+			// be cleared, which is the same order WebDriverSession uses.
+			$browser->amOnPage('/');
+			$browser->webDriver->manage()->deleteAllCookies();
 
 			return;
 		}
