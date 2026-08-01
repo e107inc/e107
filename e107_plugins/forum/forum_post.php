@@ -1357,6 +1357,16 @@ class forum_post_handler
 		$threadId = intval($_GET['id']);
 		$toForum = intval($posted['forum_move']);
 
+		/* MODERATOR is worked out once for the page and answers for neither end
+		 * of a move. Both have to be checked: without the second, a moderator can
+		 * push a thread into a forum they have no rights over at all. */
+		if(!$this->forumObj->canModerateThread($threadId) || !$this->forumObj->canModerateForum($toForum))
+		{
+			e107::getDebug()->log("Move Thread attempted without moderator rights over both ends");
+
+			return false;
+		}
+
 		$this->forumObj->threadMove($threadId, $toForum, $newThreadTitle, $newThreadTitleType);
 
 		$message = LAN_FORUM_5005."<br />";// XXX _URL_ thread name

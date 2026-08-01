@@ -15,12 +15,31 @@ function forum_thread_moderate($p)
 {
 	$e107 = e107::getInstance();
 	$sql = e107::getDb();
+
+	require_once(e_PLUGIN.'forum/forum_class.php');
+	$forum = new e107forum;
+
 	foreach ($p as $key => $val)
 	{
 		if (preg_match("#(.*?)_(\d+)_x#", $key, $matches))
 		{
 			$act = $matches[1];
 			$id = (int)$matches[2];
+
+			/* The target comes out of the field name, so it is entirely the
+			 * caller's choice and has nothing to do with the page they are on.
+			 * The only guard used to be the MODERATOR constant, which the caller
+			 * computed for a different forum, so a moderator of one forum could
+			 * name a thread in any other and have it locked or destroyed.
+			 * Authorise the id that is about to be acted on instead. */
+			$permitted = ($act === 'deletePost')
+				? $forum->canModeratePost($id)
+				: $forum->canModerateThread($id);
+
+			if (!$permitted)
+			{
+				continue;
+			}
 
 			switch ($act)
 			{

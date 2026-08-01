@@ -87,6 +87,9 @@ class e107forum
 	private $userViewed;
 	private $permList = array();
 	public $modArray, $prefs;
+
+	/** @var array moderator rows keyed by userclass, for authorisation only */
+	private $moderatorsByClass = array();
 	private $forumData = array();
 
 	public function __construct($update= false)
@@ -561,9 +564,100 @@ class e107forum
 			->fetchRow();
 		if ($row)
 		{
-			return array_keys($this->forumGetMods($row['forum_moderators']));
+			return array_keys($this->moderatorsOfClass($row['forum_moderators']));
 		}
 		return array();
+	}
+
+
+	/**
+	 * Moderators of one userclass, for deciding permission.
+	 *
+	 * Kept apart from forumGetMods(), which memoises a single list on the
+	 * instance whatever class it is asked for. Templates read that memo to
+	 * render a forum's moderator list, so it cannot simply be keyed without
+	 * changing what they show. The page also primes it before any write is
+	 * authorised, which meant every permission question in the request was
+	 * answered for the forum named in the URL rather than for the thread or
+	 * post being acted on.
+	 *
+	 * @param int|string $uclass value of forum.forum_moderators
+	 * @return array moderator rows keyed by user id
+	 */
+	private function moderatorsOfClass($uclass)
+	{
+		$key = (string) $uclass;
+
+		if(isset($this->moderatorsByClass[$key]))
+		{
+			return $this->moderatorsByClass[$key];
+		}
+
+		$mods = array();
+
+		if($uclass == e_UC_ADMIN || trim((string) $uclass) === '')
+		{
+			$rows = e107::getDb()->createQueryBuilder()
+				->select('user_id', 'user_name')->from('user')
+				->where('user_admin', 1)->orderBy('user_name', 'ASC')
+				->fetchAll();
+
+			foreach($rows as $row)
+			{
+				$mods[$row['user_id']] = $row;
+			}
+		}
+		else
+		{
+			$mods = e107::getUserClass()->getUsersInClass($uclass, 'user_name', true);
+		}
+
+		return $this->moderatorsByClass[$key] = $mods;
+	}
+
+
+	/**
+	 * @param array $moderatorUserIds
+	 * @return bool
+	 */
+	private function actorModerates(array $moderatorUserIds)
+	{
+		if(deftrue('USER') && in_array(USERID, $moderatorUserIds))
+		{
+			return true;
+		}
+
+		return (bool) getperms('0');
+	}
+
+
+	/**
+	 * @param int $threadId
+	 * @return bool
+	 */
+	public function canModerateThread($threadId)
+	{
+		return $this->actorModerates($this->getModeratorUserIdsByThreadId($threadId));
+	}
+
+
+	/**
+	 * @param int $postId
+	 * @return bool
+	 */
+	public function canModeratePost($postId)
+	{
+		return $this->actorModerates($this->getModeratorUserIdsByPostId($postId));
+	}
+
+
+	/**
+	 * @param int $forumId
+	 * @return bool
+	 */
+	public function canModerateForum($forumId)
+	{
+		return $this->actorModerates($this->getModeratorUserIdsByForumId($forumId));
 	}
 
 
@@ -583,7 +677,7 @@ class e107forum
 			->fetchRow();
 		if ($row)
 		{
-			return array_keys($this->forumGetMods($row['forum_moderators']));
+			return array_keys($this->moderatorsOfClass($row['forum_moderators']));
 		}
 		return array();
 	}
@@ -603,7 +697,7 @@ class e107forum
 			->fetchRow();
 		if ($row)
 		{
-			return array_keys($this->forumGetMods($row['forum_moderators']));
+			return array_keys($this->moderatorsOfClass($row['forum_moderators']));
 		}
 		return array();
 	}
@@ -612,26 +706,46 @@ class e107forum
 	public function ajaxModerate()
 	{
 		$ret = array('hide' => false, 'msg' => 'unknown', 'status' => 'error');
-		$moderatorUserIds = array();
 
-		if (isset($_POST['thread']) && is_numeric($_POST['thread']))
+		$action   = varset($_POST['action'], '');
+		$threadId = (isset($_POST['thread']) && is_numeric($_POST['thread'])) ? (int) $_POST['thread'] : 0;
+		$postId   = (isset($_POST['post']) && is_numeric($_POST['post'])) ? (int) $_POST['post'] : 0;
+
+		/* Authorise against the object the action changes, and nothing else.
+		 * This used to derive permission from whichever of the two ids arrived
+		 * last and then act on the thread regardless, so a request naming a post
+		 * in a forum you moderate could delete, lock or stick a thread in one you
+		 * do not. Requiring the id here also means the cases below can no longer
+		 * be reached without one. */
+		if(in_array($action, array('delete', 'lock', 'unlock', 'stick', 'unstick'), true))
 		{
-			$threadId = intval($_POST['thread']);
-			$moderatorUserIds = $this->getModeratorUserIdsByThreadId($threadId);
+			$targetId = $threadId;
+			$permitted = $threadId && $this->canModerateThread($threadId);
+		}
+		elseif($action === 'deletepost')
+		{
+			$targetId = $postId;
+			$permitted = $postId && $this->canModeratePost($postId);
+		}
+		else
+		{
+			$ret['msg'] = LAN_FORUM_8027;
+
+			echo json_encode($ret);
+
+			exit();
 		}
 
-		/* If both, a thread-operation and a post-operation is submitted, the
-		 * thread-permissions MUST be overwritten by the post-permissions!
-		 * Otherwise it is possible that a moderator can transfer his
-		 * permissions from one forum to another forum, where he has no permissions. */
-		if (isset($_POST['post']) && is_numeric($_POST['post']))
+		if(!$targetId)
 		{
-			$postId = intval($_POST['post']);
-			$moderatorUserIds = $this->getModeratorUserIdsByPostId($postId);
+			$ret['msg'] = LAN_FORUM_7008;
+
+			echo json_encode($ret);
+
+			exit();
 		}
 
-		// Check if user has moderator permissions for this thread
-		if(!in_array(USERID, $moderatorUserIds) && !getperms('0'))
+		if(!$permitted)
 		{
 			$ret['msg'] 	= LAN_FORUM_8030;
 			$ret['hide'] 	= false;
@@ -639,7 +753,7 @@ class e107forum
 		}
 		else
 		{
-			switch ($_POST['action']) 
+			switch ($action)
 			{
 				case 'delete':
 					if($this->threadDelete($threadId))
@@ -656,14 +770,6 @@ class e107forum
 				break;
 				
 				case 'deletepost':
-					if(!$postId)
-					{
-						// echo "No Post";
-						// exit;
-						$ret['msg'] 	= LAN_FORUM_7008;
-						$ret['status'] 	= 'error';		
-					}
-					
 					if($this->postDelete($postId))
 					{
 						$ret['msg'] 	= LAN_FORUM_8021.' #'.$postId;
