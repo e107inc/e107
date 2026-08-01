@@ -514,22 +514,12 @@ class e107forum
 	function usersLastPostDeletion()
 	{
 		$ret = array('hide' => false, 'msg' => LAN_FORUM_7008, 'status' => 'error');
-		$actionAllowed = false;
 
-		if (isset($_POST['post']) && is_numeric($_POST['post']))
-		{
-			$postId = intval($_POST['post']);
-			$row = e107::getDb()->createQueryBuilder()
-				->select('fp.post_user')->from('forum_post', 'fp')
-				->where('fp.post_id', $postId)
-				->fetchRow();
-			if ($row)
-			{
-				if (USERID == $row['post_user']) $actionAllowed = true;
-			}
-		}
+		$postId = (isset($_POST['post']) && is_numeric($_POST['post'])) ? (int) $_POST['post'] : 0;
+		$actionAllowed = $postId && varset($_POST['action']) === 'deletepost'
+			&& $this->userMayDeleteOwnPost($postId);
 
-		if ($actionAllowed && $_POST['action'] == 'deletepost')
+		if ($actionAllowed)
 		{
 			if ($this->postDelete($postId))
 			{
@@ -545,6 +535,66 @@ class e107forum
 		}
 		echo json_encode($ret);
 		exit();
+	}
+
+
+	/**
+	 * The rule this endpoint's name, its docblock and the control that offers it
+	 * all describe: your own post, the last one in the thread, not the one that
+	 * started it, and the thread still open.
+	 *
+	 * None of it was enforced. The whole ownership test was `USERID ==
+	 * $row['post_user']`, and USERID is 0 for a caller with no account while an
+	 * anonymous post stores post_user 0, so an unauthenticated visitor owned
+	 * every anonymous post on the site and could delete any of them, in forums
+	 * they could not even read. Carrying no cookie, such a request is not
+	 * challenged for a token either. A member, meanwhile, could delete any post
+	 * they had ever written, including one that opened a thread, which left the
+	 * thread row behind with no first post.
+	 *
+	 * @param int $postId
+	 * @return bool
+	 */
+	private function userMayDeleteOwnPost($postId)
+	{
+		if(!deftrue('USER'))
+		{
+			return false;
+		}
+
+		$qb = e107::getDb()->createQueryBuilder();
+		$row = $qb
+			->select('fp.post_user', 'fp.post_thread', 'ft.thread_active')
+			->from('forum_post', 'fp')
+			->innerJoin('forum_thread', 'ft', $qb->expr()->compareColumns('fp.post_thread', 'ft.thread_id'))
+			->where('fp.post_id', (int) $postId)
+			->fetchRow();
+
+		if(!$row || empty($row['post_user']) || (int) $row['post_user'] !== (int) USERID)
+		{
+			return false;
+		}
+
+		if(empty($row['thread_active']))
+		{
+			return false;
+		}
+
+		$threadId = (int) $row['post_thread'];
+
+		$later = (int) e107::getDb()->createQueryBuilder()
+			->from('forum_post')
+			->where('post_thread', $threadId)
+			->where('post_id', '>', (int) $postId)
+			->count();
+
+		$earlier = (int) e107::getDb()->createQueryBuilder()
+			->from('forum_post')
+			->where('post_thread', $threadId)
+			->where('post_id', '<', (int) $postId)
+			->count();
+
+		return $later === 0 && $earlier > 0;
 	}
 
 
