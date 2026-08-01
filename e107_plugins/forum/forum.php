@@ -166,9 +166,19 @@ class forum_front
 				$FORUM_MAIN_PARENT = $FORUM_TEMPLATE['main']['parent_start'];
 			}
 
-			$FORUM_NEWPOSTS_START = $FORUM_TEMPLATE['main']['start']; // $FORUM_TEMPLATE['new-start'];
-			$FORUM_NEWPOSTS_MAIN = $FORUM_TEMPLATE['main']['forum']; // $FORUM_TEMPLATE['new-main'];
-			$FORUM_NEWPOSTS_END = $FORUM_TEMPLATE['main']['end']; // $FORUM_TEMPLATE['new-end'];
+			// The rows in the new-topics listing are threads, so they need the
+			// thread template. This used to reach for the forum row template,
+			// whose shortcodes resolve against a forum and against nothing on a
+			// thread, so forum.php?new rendered an empty table under a v2 theme.
+			//
+			// Fetched with merge on and keyed to the section, so a theme that
+			// predates it falls back to the plugin's, and one that overrides
+			// only part of it keeps the rest.
+			$FORUM_NEWPOSTS = e107::getTemplate('forum', 'forum', 'newposts', true, true);
+
+			$FORUM_NEWPOSTS_START = varset($FORUM_NEWPOSTS['start'], $FORUM_TEMPLATE['main']['start']);
+			$FORUM_NEWPOSTS_MAIN = varset($FORUM_NEWPOSTS['item'], $FORUM_TEMPLATE['main']['forum']);
+			$FORUM_NEWPOSTS_END = varset($FORUM_NEWPOSTS['end'], $FORUM_TEMPLATE['main']['end']);
 		}
 
 		require_once(HEADERF);
