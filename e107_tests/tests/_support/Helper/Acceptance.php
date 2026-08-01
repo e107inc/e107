@@ -6,6 +6,23 @@ namespace Helper;
 
 class Acceptance extends E107Base
 {
+	/**
+	 * Copy of db_verify's storage engine aliases, so a table this helper creates
+	 * uses the same engine e107 would have chosen for it.
+	 *
+	 * Duplicated rather than read from the handler because the acceptance suite
+	 * runs outside the application and cannot boot it. helperAcceptanceTest
+	 * compares this against the handler's own map, so the two cannot drift.
+	 *
+	 * @see db_verify::$storageEnginePreferenceMap
+	 */
+	const STORAGE_ENGINE_PREFERENCE = [
+		'MyISAM' => ['InnoDB', 'Aria', 'Maria', 'MyISAM'],
+		'Aria'   => ['Aria', 'Maria', 'MyISAM'],
+		'InnoDB' => ['InnoDB', 'XtraDB'],
+		'XtraDB' => ['XtraDB', 'InnoDB'],
+	];
+
 	protected $deployer_components = ['db', 'fs'];
 
 	/**
@@ -91,21 +108,127 @@ class Acceptance extends E107Base
 
 		$dbh = $this->getModule('\Helper\DelayedDb')->_getDbh();
 
-		// Statements look like: CREATE TABLE <name> ( ... ) ENGINE=...;
-		$found = preg_match_all(
-			'/CREATE\s+TABLE\s+`?(\w+)`?\s*\((.*?)\)\s*(ENGINE|TYPE)\s*=\s*\w+\s*;/is',
-			file_get_contents($sqlFile), $matches, PREG_SET_ORDER);
+		$tables = self::parseCreateTableStatements(file_get_contents($sqlFile));
 
-		if (!$found)
+		if (!$tables)
 		{
 			throw new \RuntimeException("No CREATE TABLE statements found in $sqlFile");
 		}
 
+		$available = $this->availableStorageEngines($dbh);
+
+		foreach ($tables as $table)
+		{
+			$name = $prefix.$table['name'];
+			$engine = self::intendedStorageEngine($table['engine'], $available);
+
+			if ($engine === false)
+			{
+				throw new \RuntimeException(
+					"No storage engine on this server can stand in for {$table['engine']}, wanted by `$name`");
+			}
+
+			$dbh->exec("CREATE TABLE IF NOT EXISTS `$name` ({$table['body']}) ENGINE=$engine");
+		}
+	}
+
+	/**
+	 * Every engine the server reports, unfiltered.
+	 *
+	 * db_verify::getAvailableStorageEngines() takes every row of SHOW ENGINES
+	 * without looking at the support column, so this does too. Filtering here
+	 * would make the helper pick a different engine from the one e107 picks.
+	 *
+	 * @param \PDO $dbh
+	 * @return array
+	 */
+	private function availableStorageEngines(\PDO $dbh)
+	{
+		$engines = array();
+
+		foreach ($dbh->query('SHOW ENGINES') as $row)
+		{
+			$engines[] = $row['Engine'];
+		}
+
+		return $engines;
+	}
+
+	/**
+	 * Resolve a declared engine the way e107 resolves it at install time.
+	 *
+	 * A schema saying MyISAM does not get MyISAM. db_verify treats the declared
+	 * engine as a request and satisfies it with the first entry of
+	 * STORAGE_ENGINE_PREFERENCE the server actually has, so on any current MySQL
+	 * or MariaDB the bundled MyISAM schemas are installed as InnoDB. Creating
+	 * the test's copy as MyISAM would give it no transactions and different
+	 * FULLTEXT behaviour from the table the plugin manager builds.
+	 *
+	 * Mirrors {@see db_verify::getIntendedStorageEngine()}; helperAcceptanceTest
+	 * asserts the two preference maps stay identical.
+	 *
+	 * @param string $declared engine named in the plugin's SQL
+	 * @param array $available engines the server reports
+	 * @return string|false
+	 */
+	public static function intendedStorageEngine($declared, array $available)
+	{
+		if (strtoupper($declared) === 'MYISAM')
+		{
+			$declared = 'MyISAM';
+		}
+		elseif (strtoupper($declared) === 'INNODB')
+		{
+			$declared = 'InnoDB';
+		}
+
+		if (!array_key_exists($declared, self::STORAGE_ENGINE_PREFERENCE))
+		{
+			return in_array($declared, $available) ? $declared : false;
+		}
+
+		$fit = array_intersect(self::STORAGE_ENGINE_PREFERENCE[$declared], $available);
+
+		return current($fit);
+	}
+
+	/**
+	 * Pull every CREATE TABLE out of a plugin's shipped SQL.
+	 *
+	 * Statements look like: CREATE TABLE <name> ( ... ) ENGINE=... [options];
+	 * The tail has to run to the semicolon rather than stop at the engine name,
+	 * because forum, hero, linkwords and pm all carry table options after it
+	 * (AUTO_INCREMENT, DEFAULT CHARSET). Anchoring at the engine let the lazy
+	 * body run on to the next statement that did end there: forum returned a
+	 * single match spanning all four of its tables, and the other three matched
+	 * nothing, so havePluginTables() threw for them.
+	 *
+	 * The engine is captured rather than assumed. hero ships InnoDB, and forcing
+	 * MyISAM would have given the table under test different semantics from the
+	 * one the plugin installs.
+	 *
+	 * @param string $sql contents of a <plugin>_sql.php
+	 * @return array list of ['name' => string, 'body' => string, 'engine' => string]
+	 */
+	public static function parseCreateTableStatements($sql)
+	{
+		$found = preg_match_all(
+			'/CREATE\s+TABLE\s+`?(\w+)`?\s*\((.*?)\)\s*(?:ENGINE|TYPE)\s*=\s*(\w+)[^;]*;/is',
+			$sql, $matches, PREG_SET_ORDER);
+
+		if (!$found)
+		{
+			return array();
+		}
+
+		$tables = array();
+
 		foreach ($matches as $match)
 		{
-			$table = $prefix.$match[1];
-			$dbh->exec("CREATE TABLE IF NOT EXISTS `$table` ({$match[2]}) ENGINE=MyISAM");
+			$tables[] = array('name' => $match[1], 'body' => $match[2], 'engine' => $match[3]);
 		}
+
+		return $tables;
 	}
 
 	protected function writeLocalE107Config()
