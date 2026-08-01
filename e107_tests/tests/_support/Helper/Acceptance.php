@@ -6,6 +6,7 @@ namespace Helper;
 
 class Acceptance extends E107Base
 {
+
 	protected $deployer_components = ['db', 'fs'];
 
 	/**
@@ -91,21 +92,116 @@ class Acceptance extends E107Base
 
 		$dbh = $this->getModule('\Helper\DelayedDb')->_getDbh();
 
-		// Statements look like: CREATE TABLE <name> ( ... ) ENGINE=...;
-		$found = preg_match_all(
-			'/CREATE\s+TABLE\s+`?(\w+)`?\s*\((.*?)\)\s*(ENGINE|TYPE)\s*=\s*\w+\s*;/is',
-			file_get_contents($sqlFile), $matches, PREG_SET_ORDER);
+		$tables = self::parseCreateTableStatements(file_get_contents($sqlFile));
 
-		if (!$found)
+		if (!$tables)
 		{
 			throw new \RuntimeException("No CREATE TABLE statements found in $sqlFile");
 		}
 
+		$available = $this->availableStorageEngines($dbh);
+
+		foreach ($tables as $table)
+		{
+			$name = $prefix.$table['name'];
+			$engine = self::intendedStorageEngine($table['engine'], $available);
+
+			if ($engine === false)
+			{
+				throw new \RuntimeException(
+					"No storage engine on this server can stand in for {$table['engine']}, wanted by `$name`");
+			}
+
+			$dbh->exec("CREATE TABLE IF NOT EXISTS `$name` ({$table['body']}) ENGINE=$engine");
+		}
+	}
+
+	/**
+	 * Every engine the server reports, unfiltered.
+	 *
+	 * db_verify::getAvailableStorageEngines() takes every row of SHOW ENGINES
+	 * without looking at the support column, so this does too. Filtering here
+	 * would make the helper pick a different engine from the one e107 picks.
+	 *
+	 * @param \PDO $dbh
+	 * @return array
+	 */
+	private function availableStorageEngines(\PDO $dbh)
+	{
+		$engines = array();
+
+		foreach ($dbh->query('SHOW ENGINES') as $row)
+		{
+			$engines[] = $row['Engine'];
+		}
+
+		return $engines;
+	}
+
+	/**
+	 * Resolve a declared engine the way e107 resolves it at install time.
+	 *
+	 * On this line that means: as declared. db_verify::getFixQuery() passes the
+	 * engine straight out of the plugin's SQL into the CREATE TABLE it builds,
+	 * with no substitution of any kind, so a schema saying MyISAM installs as
+	 * MyISAM. (Master resolves the declared engine through a preference map and
+	 * installs those same schemas as InnoDB; the helper there mirrors that, and
+	 * a unit test pins the two copies together. There is no map here to pin to.)
+	 *
+	 * @param string $declared engine named in the plugin's SQL
+	 * @param array $available engines the server reports
+	 * @return string|false
+	 */
+	public static function intendedStorageEngine($declared, array $available)
+	{
+		foreach ($available as $engine)
+		{
+			if (strcasecmp($engine, $declared) === 0)
+			{
+				return $engine;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Pull every CREATE TABLE out of a plugin's shipped SQL.
+	 *
+	 * Statements look like: CREATE TABLE <name> ( ... ) ENGINE=... [options];
+	 * The tail has to run to the semicolon rather than stop at the engine name,
+	 * because forum, hero, linkwords and pm all carry table options after it
+	 * (AUTO_INCREMENT, DEFAULT CHARSET). Anchoring at the engine let the lazy
+	 * body run on to the next statement that did end there: forum returned a
+	 * single match spanning all four of its tables, and the other three matched
+	 * nothing, so havePluginTables() threw for them.
+	 *
+	 * The engine is captured rather than assumed. hero ships InnoDB, and forcing
+	 * MyISAM would have given the table under test different semantics from the
+	 * one the plugin installs.
+	 *
+	 * @param string $sql contents of a <plugin>_sql.php
+	 * @return array list of ['name' => string, 'body' => string, 'engine' => string]
+	 */
+	public static function parseCreateTableStatements($sql)
+	{
+		$found = preg_match_all(
+			'/CREATE\s+TABLE\s+`?(\w+)`?\s*\((.*?)\)\s*(?:ENGINE|TYPE)\s*=\s*(\w+)[^;]*;/is',
+			$sql, $matches, PREG_SET_ORDER);
+
+		if (!$found)
+		{
+			return array();
+		}
+
+		$tables = array();
+
 		foreach ($matches as $match)
 		{
-			$table = $prefix.$match[1];
-			$dbh->exec("CREATE TABLE IF NOT EXISTS `$table` ({$match[2]}) ENGINE=MyISAM");
+			$tables[] = array('name' => $match[1], 'body' => $match[2], 'engine' => $match[3]);
 		}
+
+		return $tables;
 	}
 
 	protected function writeLocalE107Config()

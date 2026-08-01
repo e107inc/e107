@@ -100,13 +100,16 @@ if(e_AJAX_REQUEST)
 		$forum->ajaxTrack();
 	}
 
-	if(MODERATOR)
+	if(e107forum::isModerationAction(varset($_POST['action'], '')))
 	{
-		$forum->ajaxModerate();
-	}
-	else if(varset($_POST['action']) == 'deletepost')
-	{
-		$forum->usersLastPostDeletion();
+		if(MODERATOR)
+		{
+			$forum->ajaxModerate();
+		}
+		else if($_POST['action'] == 'deletepost')
+		{
+			$forum->usersLastPostDeletion();
+		}
 	}
 }
 

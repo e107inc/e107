@@ -183,6 +183,7 @@ define("LAN_FORUM_2043", "Split"); // new
 define("LAN_FORUM_2044", "Email"); // FORLAN_101
 define("LAN_FORUM_2045", "Print"); // FORLAN_102
 define("LAN_FORUM_2046", "Report"); // LAN_413
+define("LAN_FORUM_2047", "You have reported something very recently. Please wait a moment before sending another report."); // new
 
 
 

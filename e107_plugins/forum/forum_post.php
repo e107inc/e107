@@ -288,12 +288,63 @@ class forum_post_handler
 
 
 	/**
+	 * Whether this reporter has sent one too recently.
+	 *
+	 * Reporting inserts a row and fires an event that mails the moderators, and
+	 * it had no throttle of any kind: a form anyone who may post could submit as
+	 * fast as they could script it, with the site's own mail server doing the
+	 * sending. Posting has answered to the site's flood setting for as long as
+	 * the plugin has existed, and this is the same rule, scoped to the reporter
+	 * so one person cannot silence everybody else's reports.
+	 *
+	 * Guests share a bucket, because a report carries no identity beyond
+	 * gen_user_id and theirs is 0. That is the conservative direction for an
+	 * unauthenticated way to send mail.
+	 *
+	 * @return bool
+	 */
+	private function reportIsFlooding()
+	{
+		if(deftrue('ADMIN') || !deftrue('FLOODPROTECT'))
+		{
+			return false;
+		}
+
+		$sql = e107::getDb();
+
+		if(!$sql->select('generic', 'gen_datestamp',
+			"gen_type = 'reported_post' AND gen_user_id = ".(int) USERID
+			." ORDER BY gen_datestamp DESC LIMIT 1"))
+		{
+			return false;
+		}
+
+		$row = $sql->fetch();
+
+		return (int) $row['gen_datestamp'] > (time() - FLOODTIMEOUT);
+	}
+
+
+	/**
 	 * Report a topic post.
 	 */
 	private function submitReport()
 	{
 		$tp = e107::getParser();
 		$sql = e107::getDb();
+
+		if($this->reportIsFlooding())
+		{
+			$text = "<div class='alert alert-block alert-error alert-danger'><h4>".LAN_FORUM_2047.'</h4></div>';
+			e107::getRender()->tablerender(LAN_FORUM_2023, $text, 'forum-post-report');
+
+			return;
+		}
+
+		// USERNAME is defined only for a signed-in visitor (class2.php), and
+		// both uses below were bare, so a guest reporting a post on a site that
+		// allows anonymous posting was a fatal rather than a report.
+		$reporter = defset('USERNAME', LAN_ANONYMOUS);
 
 		$report_add = $tp->toDB($_POST['report_add']);
 
@@ -325,11 +376,11 @@ class forum_post_handler
 
 
 		$report = LAN_FORUM_2018." ".SITENAME." : ".$link . "\n
-					".LAN_FORUM_2019.": ".USERNAME. "\n" . $report_add;
+					".LAN_FORUM_2019.": ".$reporter. "\n" . $report_add;
 
 		$eventData = array(
 			'reporter_id' => USERID,
-			'reporter_name' => USERNAME,
+			'reporter_name' => $reporter,
 			'report_time' => $insert['gen_datestamp'],
 			'thread_id' => $insert['gen_intdata'],
 			'thread_name' => $insert['gen_ip'],
@@ -1356,6 +1407,16 @@ class forum_post_handler
 		$threadId = intval($_GET['id']);
 		$toForum = intval($posted['forum_move']);
 
+		/* MODERATOR is worked out once for the page and answers for neither end
+		 * of a move. Both have to be checked: without the second, a moderator can
+		 * push a thread into a forum they have no rights over at all. */
+		if(!$this->forumObj->canModerateThread($threadId) || !$this->forumObj->canModerateForum($toForum))
+		{
+			e107::getDebug()->log("Move Thread attempted without moderator rights over both ends");
+
+			return false;
+		}
+
 		$this->forumObj->threadMove($threadId, $toForum, $newThreadTitle, $newThreadTitleType);
 
 		$message = LAN_FORUM_5005."<br />";// XXX _URL_ thread name
@@ -1607,7 +1668,18 @@ class forum_post_handler
 
 	function isAuthor()
 	{
-		return ((USERID === (int)$this->data['post_user']) || MODERATOR);
+		if(deftrue('MODERATOR'))
+		{
+			return true;
+		}
+
+		/* USERID is 0 for a caller with no account and an anonymous post stores
+		 * post_user 0, so without the USER test every guest was the author of
+		 * every guest's post and could edit it. Same shape as the one that let a
+		 * guest delete them; this is the edit half. */
+		return deftrue('USER')
+			&& !empty($this->data['post_user'])
+			&& ((int) $this->data['post_user'] === (int) USERID);
 	}
 
 
@@ -1739,6 +1811,47 @@ class forum_post_handler
 	}
 	
 	
+	/**
+	 * Drop attachment entries that name a path rather than a file.
+	 *
+	 * post_attachments is written straight from the request, and the delete
+	 * path used to concatenate whatever it held onto a directory and unlink the
+	 * result. That is refused at the sink now, but there is no reason to store a
+	 * value that could never describe a real upload.
+	 *
+	 * @param mixed $attachments decoded post_attachments_json
+	 * @return array
+	 */
+	private function filterAttachmentNames($attachments)
+	{
+		if(!is_array($attachments))
+		{
+			return array();
+		}
+
+		foreach($attachments as $key => $entries)
+		{
+			if(!is_array($entries))
+			{
+				unset($attachments[$key]);
+				continue;
+			}
+
+			foreach($entries as $index => $entry)
+			{
+				$name = (string) (is_array($entry) ? varset($entry['file'], '') : $entry);
+
+				if($name === '' || strpos($name, "\0") !== false || $name !== basename($name))
+				{
+					unset($attachments[$key][$index]);
+				}
+			}
+		}
+
+		return $attachments;
+	}
+
+
 	//Allows directly overriding the method of adding files (or other data) as attachments
 	function processAttachmentsPosted($existingValues = '')
 	{		
@@ -1748,6 +1861,8 @@ class forum_post_handler
 			$attachmentsJsonErrors = json_last_error();
 			if($attachmentsJsonErrors === JSON_ERROR_NONE)
 			{
+				$postedAttachments = $this->filterAttachmentNames($postedAttachments);
+
 		        if($existingValues)
 		        {
 		          $existingValues = e107::unserialize($existingValues);
