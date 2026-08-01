@@ -310,13 +310,14 @@ class e107forum
 			return false;
 		}
 
-		$row = e107::getDb()->createQueryBuilder()
-			->select('thread_id', 'thread_forum_id', 'thread_active')
-			->from('forum_thread')
-			->where('thread_id', (int) $threadId)
-			->fetchRow();
+		$sql = e107::getDb();
 
-		return $row ? $row : false;
+		if(!$sql->select('forum_thread', 'thread_id, thread_forum_id, thread_active', 'thread_id='.(int) $threadId))
+		{
+			return false;
+		}
+
+		return $sql->fetch();
 	}
 
 
@@ -586,13 +587,20 @@ class e107forum
 			return false;
 		}
 
-		$qb = e107::getDb()->createQueryBuilder();
-		$row = $qb
-			->select('fp.post_user', 'fp.post_thread', 'ft.thread_active')
-			->from('forum_post', 'fp')
-			->innerJoin('forum_thread', 'ft', $qb->expr()->compareColumns('fp.post_thread', 'ft.thread_id'))
-			->where('fp.post_id', (int) $postId)
-			->fetchRow();
+		$sql = e107::getDb();
+		$postId = (int) $postId;
+
+		$query = "SELECT fp.post_user, fp.post_thread, ft.thread_active
+                  FROM #forum_post AS fp
+                  INNER JOIN #forum_thread AS ft ON fp.post_thread = ft.thread_id
+                  WHERE fp.post_id = ".$postId;
+
+		if($sql->gen($query) < 1)
+		{
+			return false;
+		}
+
+		$row = $sql->fetch();
 
 		if(!$row || empty($row['post_user']) || (int) $row['post_user'] !== (int) USERID)
 		{
@@ -606,17 +614,11 @@ class e107forum
 
 		$threadId = (int) $row['post_thread'];
 
-		$later = (int) e107::getDb()->createQueryBuilder()
-			->from('forum_post')
-			->where('post_thread', $threadId)
-			->where('post_id', '>', (int) $postId)
-			->count();
+		$later = (int) $sql->count('forum_post', '(*)',
+			'WHERE post_thread='.$threadId.' AND post_id > '.$postId);
 
-		$earlier = (int) e107::getDb()->createQueryBuilder()
-			->from('forum_post')
-			->where('post_thread', $threadId)
-			->where('post_id', '<', (int) $postId)
-			->count();
+		$earlier = (int) $sql->count('forum_post', '(*)',
+			'WHERE post_thread='.$threadId.' AND post_id < '.$postId);
 
 		return $later === 0 && $earlier > 0;
 	}
@@ -672,14 +674,14 @@ class e107forum
 
 		if($uclass == e_UC_ADMIN || trim((string) $uclass) === '')
 		{
-			$rows = e107::getDb()->createQueryBuilder()
-				->select('user_id', 'user_name')->from('user')
-				->where('user_admin', 1)->orderBy('user_name', 'ASC')
-				->fetchAll();
+			$sql = e107::getDb();
 
-			foreach($rows as $row)
+			if($sql->select('user', 'user_id, user_name', 'user_admin=1 ORDER BY user_name ASC'))
 			{
-				$mods[$row['user_id']] = $row;
+				while($row = $sql->fetch())
+				{
+					$mods[$row['user_id']] = $row;
+				}
 			}
 		}
 		else

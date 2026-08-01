@@ -586,6 +586,18 @@ switch($act)
 	case 'install':
 		e107::getPlugin()->install_plugin_xml('forum', 'install');
 		e107::getPlug()->clearCache()->buildAddonPrefLists();
+		// Empty the forum before the run starts.
+		//
+		// Two kinds of row outlive a test: the ones this fixture inserts through
+		// the probe, and the ones the application creates when a test posts. The
+		// Db module tracks neither, and the tests clean up after themselves only
+		// when they pass, so a run that failed part way through leaves rows that
+		// the next run's assertions count. That turns one real failure into a
+		// second, unrelated-looking one on the next run.
+		foreach(array('forum_post', 'forum_thread', 'forum', 'forum_track') as $table)
+		{
+			e107::getDb()->delete($table);
+		}
 		echo e107::isInstalled('forum') ? "PROBE_OK installed\n" : "not installed\n";
 		break;
 
@@ -655,13 +667,12 @@ switch($act)
 	case 'viewed':
 		$uid = (int) $_GET['uid'];
 		$db = e107::getDb();
-		if(!$db->createQueryBuilder()->from('user_extended')->where('user_extended_id', $uid)->count())
+		if(!$db->count('user_extended', '(*)', 'WHERE user_extended_id='.$uid))
 		{
 			$db->insert('user_extended', array('user_extended_id' => $uid));
 		}
-		$db->createQueryBuilder()->update('user_extended')
-			->set('user_plugin_forum_viewed', $_GET['list'])
-			->where('user_extended_id', $uid)->execute();
+		$db->update('user_extended', "user_plugin_forum_viewed = '"
+			.$db->escape($_GET['list'])."' WHERE user_extended_id=".$uid);
 		echo "PROBE_OK viewed\n";
 		break;
 

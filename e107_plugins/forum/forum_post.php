@@ -310,14 +310,18 @@ class forum_post_handler
 			return false;
 		}
 
-		$newest = e107::getDb()->createQueryBuilder()
-			->select('gen_datestamp')->from('generic')
-			->where('gen_type', 'reported_post')
-			->where('gen_user_id', (int) USERID)
-			->orderBy('gen_datestamp', 'DESC')->setMaxResults(1)
-			->fetchOne();
+		$sql = e107::getDb();
 
-		return $newest !== null && (int) $newest > (time() - FLOODTIMEOUT);
+		if(!$sql->select('generic', 'gen_datestamp',
+			"gen_type = 'reported_post' AND gen_user_id = ".(int) USERID
+			." ORDER BY gen_datestamp DESC LIMIT 1"))
+		{
+			return false;
+		}
+
+		$row = $sql->fetch();
+
+		return (int) $row['gen_datestamp'] > (time() - FLOODTIMEOUT);
 	}
 
 

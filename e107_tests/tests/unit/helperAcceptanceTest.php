@@ -71,9 +71,7 @@ class helperAcceptanceTest extends \Codeception\Test\Unit
 	}
 
 	/**
-	 * The engine is read from the file rather than assumed. hero is the one
-	 * bundled plugin that does not say MyISAM, so it is what stops this
-	 * regressing to a hardcoded value.
+	 * The engine belongs to the statement it was declared on, not to a default.
 	 */
 	public function testEngineIsReadFromTheFileRatherThanAssumed()
 	{
@@ -87,79 +85,47 @@ class helperAcceptanceTest extends \Codeception\Test\Unit
 	}
 
 	/**
-	 * What a schema declares and what e107 installs are not the same thing.
-	 * db_verify treats the declared engine as a request and satisfies it with
-	 * the best available substitute, so a MyISAM schema becomes InnoDB on any
-	 * server that has InnoDB. The helper has to make the same substitution or
-	 * the table under test has different transactional and FULLTEXT behaviour
-	 * from the one the plugin manager builds.
+	 * What a schema declares is what this line installs.
+	 *
+	 * db_verify::getFixQuery() puts the engine straight out of the plugin's SQL
+	 * into the CREATE TABLE it builds, so a MyISAM schema really does become a
+	 * MyISAM table here. The helper has to do the same, or the table under test
+	 * has different transactional and FULLTEXT behaviour from the one the plugin
+	 * manager builds. (Master substitutes InnoDB for MyISAM through a preference
+	 * map, and its copy of this file asserts that instead.)
 	 */
-	public function testDeclaredMyIsamBecomesInnoDbWhereInnoDbExists()
+	public function testTheDeclaredEngineIsUsedAsDeclared()
 	{
 		$modern = array('InnoDB', 'MyISAM', 'MEMORY', 'CSV');
 
-		$this->assertSame('InnoDB', \Helper\Acceptance::intendedStorageEngine('MyISAM', $modern));
-		$this->assertSame('InnoDB', \Helper\Acceptance::intendedStorageEngine('myisam', $modern));
+		$this->assertSame('MyISAM', \Helper\Acceptance::intendedStorageEngine('MyISAM', $modern));
 		$this->assertSame('InnoDB', \Helper\Acceptance::intendedStorageEngine('InnoDB', $modern));
+		$this->assertSame('MEMORY', \Helper\Acceptance::intendedStorageEngine('MEMORY', $modern));
 	}
 
 	/**
-	 * The fallbacks still have to work where the preferred engine is absent.
+	 * SHOW ENGINES spells them however it likes, and a plugin's SQL spells them
+	 * however its author did, so the match is case-insensitive and the server's
+	 * spelling is what gets used.
 	 */
-	public function testDeclaredEngineFallsBackThroughThePreferenceOrder()
+	public function testTheServersSpellingOfTheEngineIsWhatIsUsed()
 	{
-		$this->assertSame('Aria',
-			\Helper\Acceptance::intendedStorageEngine('MyISAM', array('Aria', 'MyISAM', 'CSV')));
-
 		$this->assertSame('MyISAM',
-			\Helper\Acceptance::intendedStorageEngine('MyISAM', array('MyISAM', 'CSV')));
+			\Helper\Acceptance::intendedStorageEngine('myisam', array('InnoDB', 'MyISAM')));
 
-		$this->assertSame('XtraDB',
-			\Helper\Acceptance::intendedStorageEngine('InnoDB', array('XtraDB', 'MyISAM')));
+		$this->assertSame('InnoDB',
+			\Helper\Acceptance::intendedStorageEngine('INNODB', array('InnoDB', 'MyISAM')));
 	}
 
 	/**
-	 * An engine nobody can supply must be refused rather than silently swapped,
-	 * so havePluginTables() reports it instead of building the wrong table.
+	 * An engine the server does not have must be refused rather than silently
+	 * swapped, so havePluginTables() reports it instead of building the wrong
+	 * table. This line has no substitution table to fall back through.
 	 */
-	public function testUnsatisfiableEngineIsRefused()
+	public function testAnEngineTheServerLacksIsRefused()
 	{
 		$this->assertFalse(\Helper\Acceptance::intendedStorageEngine('InnoDB', array('MyISAM', 'CSV')));
 		$this->assertFalse(\Helper\Acceptance::intendedStorageEngine('RocksDB', array('InnoDB')));
-	}
-
-	/**
-	 * An engine outside the map is passed through when the server has it. This
-	 * is db_verify's behaviour and the helper must not diverge from it.
-	 */
-	public function testUnmappedEngineIsUsedVerbatimWhenAvailable()
-	{
-		$this->assertSame('MEMORY',
-			\Helper\Acceptance::intendedStorageEngine('MEMORY', array('InnoDB', 'MEMORY')));
-	}
-
-	/**
-	 * The helper keeps its own copy of the alias table because the acceptance
-	 * suite runs outside the application and cannot boot db_verify. This is what
-	 * stops that copy drifting: if core ever changes its preferences, the two
-	 * stop matching and this fails.
-	 */
-	public function testStorageEnginePreferenceMatchesTheHandler()
-	{
-		require_once(e_HANDLER.'db_verify_class.php');
-
-		$this->assertTrue(class_exists('db_verify'), 'db_verify should load from e_HANDLER');
-
-		$defaults = (new \ReflectionClass('db_verify'))->getDefaultProperties();
-
-		$this->assertArrayHasKey('storageEnginePreferenceMap', $defaults,
-			'db_verify no longer declares storageEnginePreferenceMap; the helper copy needs revisiting');
-
-		$this->assertSame(
-			$defaults['storageEnginePreferenceMap'],
-			\Helper\Acceptance::STORAGE_ENGINE_PREFERENCE,
-			'Helper\Acceptance::STORAGE_ENGINE_PREFERENCE has drifted from db_verify'
-		);
 	}
 
 	/**

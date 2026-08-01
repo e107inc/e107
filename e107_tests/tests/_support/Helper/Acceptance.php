@@ -6,22 +6,6 @@ namespace Helper;
 
 class Acceptance extends E107Base
 {
-	/**
-	 * Copy of db_verify's storage engine aliases, so a table this helper creates
-	 * uses the same engine e107 would have chosen for it.
-	 *
-	 * Duplicated rather than read from the handler because the acceptance suite
-	 * runs outside the application and cannot boot it. helperAcceptanceTest
-	 * compares this against the handler's own map, so the two cannot drift.
-	 *
-	 * @see db_verify::$storageEnginePreferenceMap
-	 */
-	const STORAGE_ENGINE_PREFERENCE = [
-		'MyISAM' => ['InnoDB', 'Aria', 'Maria', 'MyISAM'],
-		'Aria'   => ['Aria', 'Maria', 'MyISAM'],
-		'InnoDB' => ['InnoDB', 'XtraDB'],
-		'XtraDB' => ['XtraDB', 'InnoDB'],
-	];
 
 	protected $deployer_components = ['db', 'fs'];
 
@@ -157,15 +141,12 @@ class Acceptance extends E107Base
 	/**
 	 * Resolve a declared engine the way e107 resolves it at install time.
 	 *
-	 * A schema saying MyISAM does not get MyISAM. db_verify treats the declared
-	 * engine as a request and satisfies it with the first entry of
-	 * STORAGE_ENGINE_PREFERENCE the server actually has, so on any current MySQL
-	 * or MariaDB the bundled MyISAM schemas are installed as InnoDB. Creating
-	 * the test's copy as MyISAM would give it no transactions and different
-	 * FULLTEXT behaviour from the table the plugin manager builds.
-	 *
-	 * Mirrors {@see db_verify::getIntendedStorageEngine()}; helperAcceptanceTest
-	 * asserts the two preference maps stay identical.
+	 * On this line that means: as declared. db_verify::getFixQuery() passes the
+	 * engine straight out of the plugin's SQL into the CREATE TABLE it builds,
+	 * with no substitution of any kind, so a schema saying MyISAM installs as
+	 * MyISAM. (Master resolves the declared engine through a preference map and
+	 * installs those same schemas as InnoDB; the helper there mirrors that, and
+	 * a unit test pins the two copies together. There is no map here to pin to.)
 	 *
 	 * @param string $declared engine named in the plugin's SQL
 	 * @param array $available engines the server reports
@@ -173,23 +154,15 @@ class Acceptance extends E107Base
 	 */
 	public static function intendedStorageEngine($declared, array $available)
 	{
-		if (strtoupper($declared) === 'MYISAM')
+		foreach ($available as $engine)
 		{
-			$declared = 'MyISAM';
-		}
-		elseif (strtoupper($declared) === 'INNODB')
-		{
-			$declared = 'InnoDB';
-		}
-
-		if (!array_key_exists($declared, self::STORAGE_ENGINE_PREFERENCE))
-		{
-			return in_array($declared, $available) ? $declared : false;
+			if (strcasecmp($engine, $declared) === 0)
+			{
+				return $engine;
+			}
 		}
 
-		$fit = array_intersect(self::STORAGE_ENGINE_PREFERENCE[$declared], $available);
-
-		return current($fit);
+		return false;
 	}
 
 	/**
