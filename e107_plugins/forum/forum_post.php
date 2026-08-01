@@ -1617,7 +1617,18 @@ class forum_post_handler
 
 	function isAuthor()
 	{
-		return ((USERID === (int)$this->data['post_user']) || MODERATOR);
+		if(deftrue('MODERATOR'))
+		{
+			return true;
+		}
+
+		/* USERID is 0 for a caller with no account and an anonymous post stores
+		 * post_user 0, so without the USER test every guest was the author of
+		 * every guest's post and could edit it. Same shape as the one that let a
+		 * guest delete them; this is the edit half. */
+		return deftrue('USER')
+			&& !empty($this->data['post_user'])
+			&& ((int) $this->data['post_user'] === (int) USERID);
 	}
 
 
