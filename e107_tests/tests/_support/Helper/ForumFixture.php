@@ -268,20 +268,23 @@ class ForumFixture extends CodeceptionModule
 	 * @param int $forumId
 	 * @param int $userId
 	 * @param int $active 0 locks the thread
+	 * @param int|null $datestamp when the thread was started
+	 * @param int|null $lastpost when it was last posted in; defaults to $datestamp
 	 * @return int thread id
 	 */
-	public function haveForumThread($name, $forumId, $userId, $active = 1)
+	public function haveForumThread($name, $forumId, $userId, $active = 1, $datestamp = null, $lastpost = null)
 	{
 		// Backdated, because e107's flood check compares the newest
 		// thread_datestamp against now (forum_post.php:1152). A fixture stamped
 		// "just now" makes every reply the test then tries to post look like
 		// flooding, and it is refused with nothing written.
-		$now = time() - 3600;
+		$started = $datestamp === null ? time() - 3600 : (int) $datestamp;
+		$latest = $lastpost === null ? $started : (int) $lastpost;
 
 		return $this->db()->haveInDatabase('e107_forum_thread', array(
 			'thread_name' => $name, 'thread_forum_id' => $forumId,
 			'thread_active' => $active, 'thread_sticky' => 0,
-			'thread_datestamp' => $now, 'thread_lastpost' => $now,
+			'thread_datestamp' => $started, 'thread_lastpost' => $latest,
 			'thread_user' => $userId, 'thread_lastuser' => $userId,
 			'thread_total_replies' => 0, 'thread_views' => 0,
 		));
@@ -371,6 +374,20 @@ class ForumFixture extends CodeceptionModule
 			'user_admin' => 0, 'user_perms' => '',
 			'user_prefs' => '', 'user_signature' => '', 'user_realm' => '', 'user_xup' => '',
 		));
+	}
+
+	/**
+	 * Recount a thread's replies through the plugin's own routine.
+	 *
+	 * Reached from the probe because its only caller is the split-topic branch
+	 * of forum_post.php, which needs an editor and a form to get to; what is
+	 * worth pinning is the count it leaves behind.
+	 *
+	 * @param int $threadId
+	 */
+	public function recountForumThread($threadId)
+	{
+		$this->probe('act=counts&thread='.(int) $threadId);
 	}
 
 	/**
@@ -597,6 +614,13 @@ switch($act)
 			'post_attachments' => e107::serialize($payload),
 		));
 		echo "PROBE_OK POST_ID=".e107::getDb()->lastInsertId()."\n";
+		break;
+
+	case 'counts':
+		require_once(e_PLUGIN.'forum/forum_class.php');
+		$forum = new e107forum();
+		$forum->threadUpdateCounts((int) $_GET['thread']);
+		echo "PROBE_OK counts\n";
 		break;
 
 	case 'newlist':

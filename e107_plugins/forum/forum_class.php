@@ -1928,14 +1928,24 @@ class e107forum
 						$this->forumUpdateLastpost('thread', $row['thread_id']);
 					}
 				}
+				// thread_lastpost, not thread_datestamp.
+				//
+				// forum_lastpost_info is "when the last post happened, and in
+				// which thread": postAdd() writes post_datestamp into it. This
+				// read the thread's *creation* time instead, and ordered by it,
+				// so the forum's last post was really its newest thread, dated
+				// when that thread began and credited to whoever posted in it
+				// most recently. postDelete() and threadDelete() both call this,
+				// so removing one spam post could point a busy forum at a thread
+				// nobody had touched in years.
 				$row = $sql->createQueryBuilder()
-					->select('thread_id', 'thread_lastuser', 'thread_lastuser_anon', 'thread_datestamp')->from('forum_thread')
+					->select('thread_id', 'thread_lastuser', 'thread_lastuser_anon', 'thread_lastpost')->from('forum_thread')
 					->where('thread_forum_id', $id)
-					->orderBy('thread_datestamp', 'DESC')->setMaxResults(1)
+					->orderBy('thread_lastpost', 'DESC')->setMaxResults(1)
 					->fetchRow();
 				if ($row)
 				{
-					$lp_info = $row['thread_datestamp'].'.'.$row['thread_id'];
+					$lp_info = $row['thread_lastpost'].'.'.$row['thread_id'];
 					$lp_user = $row['thread_lastuser'];
 				}
 				if(!empty($row['thread_lastuser_anon']))
@@ -1957,12 +1967,24 @@ class e107forum
 
 	
 	
+	/**
+	 * Mark threads read: one forum's worth, or the whole board when no forum is
+	 * named.
+	 *
+	 * The identity test used to be against 0, but the caller that means "all of
+	 * them" passes null (forum.php, where the id is only cast when it is
+	 * present), so "mark all forums read" took the per-forum branch, built a
+	 * list containing null, matched nothing and redirected having done nothing.
+	 * Every shipped link carries an id, so only the board-wide one was affected.
+	 *
+	 * @param int|null $forum_id
+	 */
 	function forumMarkAsRead($forum_id)
 	{
 		$sql = e107::getDb();
 		$flist = null;
 		$newIdList = array();
-		if ($forum_id !== 0)
+		if (!empty($forum_id))
 		{
 			$forum_id = (int)$forum_id;
 			$flist = array();
@@ -2787,11 +2809,23 @@ class e107forum
 	 * @param $threadID
 	 * @return int
 	 */
+	/**
+	 * Recount a thread's replies, as splitting a topic requires.
+	 *
+	 * thread_total_replies excludes the opening post: postAdd() increments it
+	 * once per reply and every reader adds one back for the first post. This
+	 * stored the raw row count, so a split topic came out one reply heavy at
+	 * both ends, which the page turns into a phantom extra page.
+	 *
+	 * @param int $threadID
+	 * @return mixed
+	 */
 	function threadUpdateCounts($threadID)
 	{
 		$sql = e107::getDb();
 
-		$replies = $sql->createQueryBuilder()->from('forum_post')->where('post_thread', (int) $threadID)->count();
+		$posts = (int) $sql->createQueryBuilder()->from('forum_post')->where('post_thread', (int) $threadID)->count();
+		$replies = max(0, $posts - 1);
 
 		return $sql->createQueryBuilder()->update('forum_thread')
 			->set('thread_total_replies', $replies)
