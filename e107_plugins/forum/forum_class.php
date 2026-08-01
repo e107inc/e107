@@ -347,6 +347,34 @@ class e107forum
 
 
 	/**
+	 * Where a thread lives, and whether it is still open.
+	 *
+	 * The forum a reply belongs to is a property of the thread, so it is read
+	 * back from the thread rather than taken from the request. The request used
+	 * to carry both, unrelated to each other, which let a reply be authorised
+	 * against one forum and written into a thread in another.
+	 *
+	 * @param int $threadId
+	 * @return array|false thread_forum_id and thread_active, or false if there is no such thread
+	 */
+	private function threadContext($threadId)
+	{
+		if(empty($threadId))
+		{
+			return false;
+		}
+
+		$row = e107::getDb()->createQueryBuilder()
+			->select('thread_id', 'thread_forum_id', 'thread_active')
+			->from('forum_thread')
+			->where('thread_id', (int) $threadId)
+			->fetchRow();
+
+		return $row ? $row : false;
+	}
+
+
+	/**
 	 * Handle the Ajax quick-reply.
 	 */
 	function ajaxQuickReply()
@@ -358,9 +386,30 @@ class e107forum
 		// which refuses the reply outright rather than deferring to the mode the
 		// operator chose.
 
-		if(!e107::getSession()->check(false) || !$this->checkPerm($_POST['post'], 'post'))
+		if(!e107::getSession()->check(false))
 		{
 			// Invalid token.
+			exit;
+		}
+
+		// The thread decides the forum, and the forum decides the permission.
+		//
+		// This used to ask checkPerm() about $_POST['post'] and then write
+		// $_POST['thread'] into post_thread, with nothing tying the two ids
+		// together: naming a forum you may post in bought you a reply in any
+		// thread on the site, including one in a forum you are redirected away
+		// from. thread_active went unread as well, so a closed thread took
+		// replies through this route while the ordinary form (forum_post.php,
+		// checkPerms()) refused them.
+		$thread = $this->threadContext(varset($_POST['thread']));
+
+		if(!$thread || !$this->checkPerm($thread['thread_forum_id'], 'post'))
+		{
+			exit;
+		}
+
+		if(empty($thread['thread_active']) && !$this->canModerateThread($thread['thread_id']))
+		{
 			exit;
 		}
 
@@ -378,13 +427,13 @@ class e107forum
 			}
 			else
 			{
-				$postInfo['post_user_anon'] = $_POST['anonname'];
+				$postInfo['post_user_anon'] = varset($_POST['anonname'], '');
 			}
 
 			$postInfo['post_entry'] = $_POST['text'];
-			$postInfo['post_forum'] = intval($_POST['post']);
+			$postInfo['post_forum'] = (int) $thread['thread_forum_id'];
 			$postInfo['post_datestamp'] = time();
-			$postInfo['post_thread'] = intval($_POST['thread']);
+			$postInfo['post_thread'] = (int) $thread['thread_id'];
 
 			$postInfo['post_id'] = $this->postAdd($postInfo); // save it.
 
@@ -455,9 +504,20 @@ class e107forum
 		$ret = array();
 		$ret['status'] 	= 'error';
 
-		$threadID = intval($_POST['thread']);
+		$threadID = intval(varset($_POST['thread']));
 
 		if(!USER || empty($threadID))
+		{
+			exit;
+		}
+
+		// Subscribing is a way of reading. trackEmail() posts every reply in the
+		// thread out to whoever is in forum_track, and asks nothing about the
+		// forum it came from, so the only check standing between a member and
+		// the contents of a forum closed to them is this one.
+		$thread = $this->threadContext($threadID);
+
+		if(!$thread || !$this->checkPerm($thread['thread_forum_id'], 'view'))
 		{
 			exit;
 		}
