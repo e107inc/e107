@@ -1760,6 +1760,47 @@ class forum_post_handler
 	}
 	
 	
+	/**
+	 * Drop attachment entries that name a path rather than a file.
+	 *
+	 * post_attachments is written straight from the request, and the delete
+	 * path used to concatenate whatever it held onto a directory and unlink the
+	 * result. That is refused at the sink now, but there is no reason to store a
+	 * value that could never describe a real upload.
+	 *
+	 * @param mixed $attachments decoded post_attachments_json
+	 * @return array
+	 */
+	private function filterAttachmentNames($attachments)
+	{
+		if(!is_array($attachments))
+		{
+			return array();
+		}
+
+		foreach($attachments as $key => $entries)
+		{
+			if(!is_array($entries))
+			{
+				unset($attachments[$key]);
+				continue;
+			}
+
+			foreach($entries as $index => $entry)
+			{
+				$name = (string) (is_array($entry) ? varset($entry['file'], '') : $entry);
+
+				if($name === '' || strpos($name, "\0") !== false || $name !== basename($name))
+				{
+					unset($attachments[$key][$index]);
+				}
+			}
+		}
+
+		return $attachments;
+	}
+
+
 	//Allows directly overriding the method of adding files (or other data) as attachments
 	function processAttachmentsPosted($existingValues = '')
 	{		
@@ -1769,6 +1810,8 @@ class forum_post_handler
 			$attachmentsJsonErrors = json_last_error();
 			if($attachmentsJsonErrors === JSON_ERROR_NONE)
 			{
+				$postedAttachments = $this->filterAttachmentNames($postedAttachments);
+
 		        if($existingValues)
 		        {
 		          $existingValues = e107::unserialize($existingValues);

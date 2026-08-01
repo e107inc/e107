@@ -56,6 +56,7 @@ class WorkspaceCleanup extends Extension
 		'e107_themes/testkubrick',
 		'e107_plugins/thing',      // downloaded by e_marketplaceTest
 		'e107_tests_forum_fixture_probe.php', // @see Helper\ForumFixture
+		'e107_tests_forum_canary.txt',        // @see ForumAttachmentCest
 	];
 
 	/** @var \Deployer|null */
