@@ -3,8 +3,7 @@
 /**
  * forum.php?new, the "threads with new activity" listing.
  *
- * It is a public route, and three separate things were wrong with the query
- * behind it:
+ * It is a public route, and four separate things were wrong with it:
  *
  *  - USERLV, which class2.php only defines for a signed-in visitor, was
  *    dereferenced bare. On PHP 8 an undefined constant is a fatal, so every
@@ -15,13 +14,17 @@
  *  - The already-read filter compared thread ids against thread_forum_id, so
  *    reading a single thread hid every thread in whichever forum happened to
  *    carry that id.
+ *  - The rows are threads and the page rendered them through the template
+ *    built for forum rows, whose shortcodes resolve against a forum and
+ *    against nothing on a thread, so under a v2 theme the whole section came
+ *    out as an empty table. The legacy template has always had the right
+ *    shortcodes; the v2 setup simply had no section of its own.
  *
- * The fatal is asserted against the page, because that is where it lands. The
- * other two are asserted against the query, because the page does not print
- * thread names at all: forum.php:170 hands the thread rows to the template
- * built for forum rows, so a v2 theme renders the section empty. That is a
- * fourth defect, reported separately; asserting "the name is absent" on a page
- * that prints no names would pass whatever the query returned.
+ * The last one is why the two filters are asserted twice: on the page, which
+ * is what a visitor sees, and on the query, which stays precise about *which*
+ * rows were offered even if a theme renders them differently. Until the
+ * template was wired up, a dontSee on a page that printed nothing would have
+ * passed whatever the query returned.
  *
  * The read-state filter is asserted from both sides on purpose. The two ids
  * come from separate auto-increment sequences and may collide by chance, and
@@ -87,15 +90,17 @@ class ForumNewListingCest
 
 	/**
 	 * A visitor with no account. Nothing here needs a session, so the page has
-	 * to answer rather than die reading a constant that only exists for members.
+	 * to answer rather than die reading a constant that only exists for members,
+	 * and it has to actually print the threads it found.
 	 */
-	public function theNewListingDoesNotFatalForAVisitorWithNoAccount(AcceptanceTester $I)
+	public function theNewListingRendersForAVisitorWithNoAccount(AcceptanceTester $I)
 	{
 		$I->amOnPage(self::NEW_LISTING);
 
 		$I->seeResponseCodeIs(200);
 		$I->dontSee('USERLV');
 		$I->dontSee('Fatal error');
+		$I->see('Fixture Thread A');
 	}
 
 	/**
@@ -108,6 +113,9 @@ class ForumNewListingCest
 
 		$I->assertContains($this->ids['threadA'], $I->grabForumNewThreadIds(),
 			'a member should be offered a thread in a forum they can open');
+
+		$I->amOnPage(self::NEW_LISTING);
+		$I->see('Fixture Thread A');
 	}
 
 	/**
@@ -120,6 +128,9 @@ class ForumNewListingCest
 
 		$I->assertNotContains($this->threadC, $I->grabForumNewThreadIds(),
 			'a member should not be offered a thread from a forum they are refused');
+
+		$I->amOnPage(self::NEW_LISTING);
+		$I->dontSee('Fixture Thread C');
 	}
 
 	/**
@@ -132,6 +143,10 @@ class ForumNewListingCest
 
 		$I->assertContains($this->ids['threadA'], $listed, 'a visitor should be offered the public thread');
 		$I->assertNotContains($this->threadC, $listed, 'a visitor should not be offered the restricted thread');
+
+		$I->amOnPage(self::NEW_LISTING);
+		$I->see('Fixture Thread A');
+		$I->dontSee('Fixture Thread C');
 	}
 
 	/**
@@ -148,5 +163,26 @@ class ForumNewListingCest
 
 		$I->assertNotContains($this->threadD1, $listed, 'the thread that was read should drop out');
 		$I->assertContains($this->threadD2, $listed, 'its neighbour should not drop out with it');
+
+		$I->amOnPage(self::NEW_LISTING);
+		$I->dontSee('Fixture Thread D1');
+		$I->see('Fixture Thread D2');
+	}
+
+	/**
+	 * The rows are threads, and the section used to render them through the
+	 * template written for forum rows. None of {FORUMNAME}, {THREADSX} or
+	 * {REPLIESX} resolves against a thread, so a v2 theme printed an empty
+	 * table and the whole page was decoration. Asserted on the thread's own
+	 * shortcodes: its name, and who posted in it.
+	 */
+	public function theNewListingRendersThreadsRatherThanForumColumns(AcceptanceTester $I)
+	{
+		$I->amOnPage(self::NEW_LISTING);
+
+		$I->see('Fixture Thread A');
+		$I->seeElement('#forum-newposts');
+		// {NEWSPOSTNAME} links the thread; the forum template had no such link.
+		$I->seeElement('#forum-newposts a');
 	}
 }
