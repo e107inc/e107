@@ -586,6 +586,18 @@ switch($act)
 	case 'install':
 		e107::getPlugin()->install_plugin_xml('forum', 'install');
 		e107::getPlug()->clearCache()->buildAddonPrefLists();
+		// Empty the forum before the run starts.
+		//
+		// Two kinds of row outlive a test: the ones this fixture inserts through
+		// the probe, and the ones the application creates when a test posts. The
+		// Db module tracks neither, and the tests clean up after themselves only
+		// when they pass, so a run that failed part way through leaves rows that
+		// the next run's assertions count. That turns one real failure into a
+		// second, unrelated-looking one on the next run.
+		foreach(array('forum_post', 'forum_thread', 'forum', 'forum_track') as $table)
+		{
+			e107::getDb()->delete($table);
+		}
 		echo e107::isInstalled('forum') ? "PROBE_OK installed\n" : "not installed\n";
 		break;
 
