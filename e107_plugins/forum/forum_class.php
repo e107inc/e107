@@ -1667,15 +1667,18 @@ class e107forum
 		$e107 = e107::getInstance();
 		if($uid == USERID)
 		{
-			$viewed = $e107->currentUser['user_plugin_forum_viewed'];
+			// A visitor with no account has no row and so no read state. Read
+			// defensively rather than assuming the key: forum.php?new is public.
+			$viewed = isset($e107->currentUser['user_plugin_forum_viewed'])
+				? $e107->currentUser['user_plugin_forum_viewed'] : '';
 		}
 		else
 		{
 			$tmp = e107::user($uid);
-			$viewed = $tmp['user_plugin_forum_viewed'];
+			$viewed = isset($tmp['user_plugin_forum_viewed']) ? $tmp['user_plugin_forum_viewed'] : '';
 			unset($tmp);
 		}
-		return explode(',', $viewed);
+		return explode(',', (string) $viewed);
 	}
 
 
@@ -2585,9 +2588,42 @@ class e107forum
 
 
 
+	/**
+	 * Threads with activity the caller has not seen, for forum.php?new.
+	 *
+	 * Three things were wrong here, and the route is public, so all three were
+	 * reachable without an account:
+	 *
+	 *  - the "already read" filter compared thread ids against
+	 *    thread_forum_id, so reading one thread hid every thread in whatever
+	 *    forum shared that id. forumGetUnreadForums() has always compared the
+	 *    right column.
+	 *  - no forum_class predicate, unlike every other listing this plugin
+	 *    ships (e_search, e_rss, e_list), so the page offered thread names and
+	 *    last posters out of forums the caller cannot open.
+	 *  - USERLV is only defined for a signed-in visitor (class2.php), and it
+	 *    was dereferenced bare, which on PHP 8 is a fatal rather than a notice.
+	 *    A guest or a crawler asking for forum.php?new got a blank page.
+	 *
+	 * The permission list is the viewer's, not $uid's. The output goes to
+	 * whoever asked, so theirs is the question worth answering.
+	 *
+	 * @param int $count
+	 * @param bool $unread
+	 * @param int $uid whose read-state to filter by
+	 * @return array
+	 */
 	function threadGetNew($count = 50, $unread = true, $uid = USERID)
 	{
 		$sql = e107::getDb();
+
+		$visible = $this->getForumPermList('view');
+
+		if(empty($visible))
+		{
+			return array();
+		}
+
 		$viewedList = array();
 		if($unread)
 		{
@@ -2599,10 +2635,11 @@ class e107forum
 		$qb->select('t.*', 'u.user_name')
 			->from('forum_thread', 't')
 			->leftJoin('user', 'u', $qb->expr()->compareColumns('u.user_id', 't.thread_lastuser'))
-			->where('t.thread_lastpost', '>', USERLV);
+			->where('t.thread_lastpost', '>', (int) defset('USERLV', 0))
+			->whereIn('t.thread_forum_id', $visible);
 		if(!empty($viewedList))
 		{
-			$qb->whereNotIn('t.thread_forum_id', $viewedList);
+			$qb->whereNotIn('t.thread_id', $viewedList);
 		}
 
 		return $qb->orderBy('t.thread_lastpost', 'DESC')
