@@ -358,12 +358,61 @@ class ForumFixture extends CodeceptionModule
 			'user_password' => md5(self::MEMBER_PASS),
 			'user_email' => $name.'@example.com',
 			'user_join' => time(), 'user_ban' => 0,
+			// A visit that ended yesterday, so USERLV lands there rather than on
+			// the moment of signing in. e_user::updateVisit() moves currentvisit
+			// into lastvisit when the stored one is over an hour old, and stamps
+			// lastvisit with *now* when it finds a zero, which would make every
+			// fixture row older than the member's "last visit" and empty out
+			// anything the plugin counts as new.
+			'user_lastvisit' => time() - 86400, 'user_currentvisit' => time() - 86400,
 			'user_class' => $classes,
 			// Not an admin, and no perms. getperms('0') short-circuits every
 			// MODERATOR test, so an admin would mask the bug under test.
 			'user_admin' => 0, 'user_perms' => '',
 			'user_prefs' => '', 'user_signature' => '', 'user_realm' => '', 'user_xup' => '',
 		));
+	}
+
+	/**
+	 * The thread ids forum.php?new would list for whoever holds the session.
+	 *
+	 * Asked of the query rather than read off the page, because the page hands
+	 * thread rows to a template built for forum rows (forum.php:170) and so
+	 * prints none of their names. That is a separate defect and not one this
+	 * fixture can paper over; what is testable here is which rows the caller is
+	 * offered, which is the whole of the permission question.
+	 *
+	 * @return int[]
+	 */
+	public function grabForumNewThreadIds()
+	{
+		$body = $this->probe('act=newlist');
+
+		if (!preg_match('/NEW_THREADS=([^\r\n]*)/', $body, $m))
+		{
+			throw new \RuntimeException('Fixture did not report a thread list: '.trim(strip_tags($body)));
+		}
+
+		return array_values(array_filter(array_map('intval', explode(',', trim($m[1])))));
+	}
+
+	/**
+	 * Mark threads read for a member, the way threadMarkAsRead() does.
+	 *
+	 * Call it after signing in, never before: the plugin's own login handler
+	 * (e_event.php) empties this column on every login, so a value seeded first
+	 * is gone by the time the page under test runs.
+	 *
+	 * Written through the probe rather than haveInDatabase because a member may
+	 * or may not have a user_extended row by then, and an insert on top of an
+	 * existing one collides on the primary key.
+	 *
+	 * @param int $userId
+	 * @param int[] $threadIds
+	 */
+	public function haveForumThreadsRead($userId, array $threadIds)
+	{
+		$this->probe('act=viewed&uid='.(int) $userId.'&list='.urlencode(implode(',', array_map('intval', $threadIds))));
 	}
 
 	/**
@@ -548,6 +597,30 @@ switch($act)
 			'post_attachments' => e107::serialize($payload),
 		));
 		echo "PROBE_OK POST_ID=".e107::getDb()->lastInsertId()."\n";
+		break;
+
+	case 'newlist':
+		require_once(e_PLUGIN.'forum/forum_class.php');
+		$forum = new e107forum();
+		$ids = array();
+		foreach($forum->threadGetNew(50) as $row)
+		{
+			$ids[] = (int) $row['thread_id'];
+		}
+		echo "PROBE_OK NEW_THREADS=".implode(',', $ids)."\n";
+		break;
+
+	case 'viewed':
+		$uid = (int) $_GET['uid'];
+		$db = e107::getDb();
+		if(!$db->createQueryBuilder()->from('user_extended')->where('user_extended_id', $uid)->count())
+		{
+			$db->insert('user_extended', array('user_extended_id' => $uid));
+		}
+		$db->createQueryBuilder()->update('user_extended')
+			->set('user_plugin_forum_viewed', $_GET['list'])
+			->where('user_extended_id', $uid)->execute();
+		echo "PROBE_OK viewed\n";
 		break;
 
 	case 'purge':

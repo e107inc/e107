@@ -1587,15 +1587,18 @@ class e107forum
 		$e107 = e107::getInstance();
 		if($uid == USERID)
 		{
-			$viewed = $e107->currentUser['user_plugin_forum_viewed'];
+			// A visitor with no account has no row and so no read state. Read
+			// defensively rather than assuming the key: forum.php?new is public.
+			$viewed = isset($e107->currentUser['user_plugin_forum_viewed'])
+				? $e107->currentUser['user_plugin_forum_viewed'] : '';
 		}
 		else
 		{
 			$tmp = e107::user($uid);
-			$viewed = $tmp['user_plugin_forum_viewed'];
+			$viewed = isset($tmp['user_plugin_forum_viewed']) ? $tmp['user_plugin_forum_viewed'] : '';
 			unset($tmp);
 		}
-		return explode(',', $viewed);
+		return explode(',', (string) $viewed);
 	}
 
 
@@ -2449,17 +2452,51 @@ class e107forum
 
 
 
+	/**
+	 * Threads with activity the caller has not seen, for forum.php?new.
+	 *
+	 * Three things were wrong here, and the route is public, so all three were
+	 * reachable without an account:
+	 *
+	 *  - the "already read" filter compared thread ids against
+	 *    thread_forum_id, so reading one thread hid every thread in whatever
+	 *    forum shared that id. forumGetUnreadForums() has always compared the
+	 *    right column.
+	 *  - no forum_class predicate, unlike every other listing this plugin
+	 *    ships (e_search, e_rss, e_list), so the page offered thread names and
+	 *    last posters out of forums the caller cannot open.
+	 *  - USERLV is only defined for a signed-in visitor (class2.php), and it
+	 *    was dereferenced bare, which on PHP 8 is a fatal rather than a notice.
+	 *    A guest or a crawler asking for forum.php?new got a blank page.
+	 *
+	 * The permission list is the viewer's, not $uid's. The output goes to
+	 * whoever asked, so theirs is the question worth answering.
+	 *
+	 * @param int $count
+	 * @param bool $unread
+	 * @param int $uid whose read-state to filter by
+	 * @return array
+	 */
 	function threadGetNew($count = 50, $unread = true, $uid = USERID)
 	{
 		$sql = e107::getDb();
+		$visible = $this->getForumPermList('view');
+
+		if(empty($visible))
+		{
+			return array();
+		}
+
 		$viewed = '';
 		if($unread)
 		{
-			$viewed = implode(',', $this->threadGetUserViewed($uid));
-			if($viewed != '')
+			// thread_id, not thread_forum_id: this compared thread ids against
+			// the forum column, so reading one thread hid every thread in
+			// whichever forum happened to carry that id.
+			$viewedList = array_filter($this->threadGetUserViewed($uid), 'strlen');
+			if(!empty($viewedList))
 			{
-				//$viewed = ' AND p.post_forum NOT IN ('.$viewed.')';
-				$viewed = " AND t.thread_forum_id NOT IN ({$viewed})";
+				$viewed = ' AND t.thread_id NOT IN ('.implode(',', array_map('intval', $viewedList)).')';
 			}
 		}
 		/*
@@ -2483,10 +2520,11 @@ class e107forum
 		*/
 
 		//  issue #3337 fixed usage of old v1 table names
-		$qry = "SELECT t.*, u.user_name 
+		$qry = "SELECT t.*, u.user_name
 		FROM `#forum_thread` AS t
 		LEFT JOIN `#user` AS u ON u.user_id = t.thread_lastuser
-		WHERE t.thread_lastpost > ".USERLV. "
+		WHERE t.thread_lastpost > ".(int) defset('USERLV', 0)."
+		AND t.thread_forum_id IN (".implode(',', array_map('intval', $visible)).")
 		{$viewed}
 		ORDER BY t.thread_lastpost DESC LIMIT 0, ".(int)$count;
 
