@@ -33,6 +33,7 @@ $FAQS_TEMPLATE['all']['end'] = "
 
 $FAQS_TEMPLATE['caption'] = "{FAQ_CAPTION} <small>{FAQ_COUNT}</small>";
 
+
 $FAQS_TEMPLATE['schema'] = '
 {
       "@context": "https://schema.org",
