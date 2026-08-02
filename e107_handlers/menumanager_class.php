@@ -1844,9 +1844,7 @@ class e_menuManager
 		//DEBUG remove inline style, switch to simple quoted string for title text value
 		//TODO hardcoded text
 		
-	//	$visibilityLink = e_SELF.'?'.urlencode('lay='.$this->curLayout.'&amp;vis='.$menu_id.'&amp;iframe=1');
-		
-		$visibilityLink = e_SELF."?enc=".base64_encode('lay='.$this->curLayout.'&vis='.$menu_id.'&iframe=1');
+		$visibilityLink = e_SELF.'?'.http_build_query(array('lay' => $this->curLayout, 'vis' => $menu_id, 'iframe' => 1), '', '&');
 		
 		$text .= '<span class="menu-options-buttons">
 		<a class="e-menumanager-option menu-btn" data-modal-caption="'.LAN_VISIBILITY.'" href="'.$visibilityLink.'" title="'.LAN_VISIBILITY.'"><i class="S16 e-search-16"></i></a>';
@@ -1857,7 +1855,7 @@ class e_menuManager
 			title="'.LAN_OPTIONS.'"><i class="S16 e-configure-16"></i></a>';
 		}
 		
-		$editLink = e_SELF."?enc=".base64_encode('lay='.$this->curLayout.'&parmsId='.$menu_id.'&iframe=1');
+		$editLink = e_SELF.'?'.http_build_query(array('lay' => $this->curLayout, 'parmsId' => $menu_id, 'iframe' => 1), '', '&');
 		$text .= '<a data-modal-caption="'.LAN_CONFIGURE.'" class="e-menumanager-option menu-btn" target="_top" href="'.$editLink.'" title="'.LAN_CONFIGURE.'"><i class="S16 e-edit-16" ></i></a>';
 
 		$text .= '<a title="'.LAN_DELETE.'" id="remove-'.$menu_id.'-'.$menu_location.'" class="delete e-menumanager-delete menu-btn" href="'.e_SELF.'?configure='.$this->curLayout.'&amp;mode=deac&amp;id='.$menu_id.'"><i class="S16 e-delete-16"></i></a>
@@ -2090,12 +2088,6 @@ class e_mm_layout
 				$this->processPost();
 			}
 
-
-			if(vartrue($_GET['enc']))
-			{
-				$string = base64_decode($_GET['enc']);
-				parse_str($string,$_GET);
-			}
 
 			if(vartrue($_GET['vis']))
 			{
@@ -2413,60 +2405,20 @@ class e_mm_layout
 		}
 		else // prior to v2.2.2
 		{
+			require_once(e_HANDLER."theme_layout_parser.php");
 
-			$themeFileContent = file_get_contents($file);
+			$parser = new e_theme_layout_parser();
+			$parsed = $parser->parse(file_get_contents($file), $theme);
 
-			$srch = array('<?php', '?>');
+			$HEADER = $parsed['HEADER'];
+			$FOOTER = $parsed['FOOTER'];
+			$CUSTOMHEADER = $parsed['CUSTOMHEADER'];
+			$CUSTOMFOOTER = $parsed['CUSTOMFOOTER'];
+			$LAYOUT = $parsed['LAYOUT'];
 
-			// replace LAN file load.
-			$themeFileContent = preg_replace("/e107::lan\(['|\"]theme.*\);/","e107::themeLan(null, '".$theme."');", $themeFileContent);
-		//	$themeFileContent = preg_replace("/define\(['|\"]BOOTSTRAP['|\"].*;/", '', $themeFileContent);
-		//	$themeFileContent = preg_replace("/define\(['|\"]FONTAWESOME['|\"].*;/", '', $themeFileContent);
-			$themeFileContent = preg_replace("/LAN_[\w]*/", '""', $themeFileContent);
-			$themeFileContent = preg_replace("/include_lan\(.*;/", '', $themeFileContent);
-
-			$themeFileContent = preg_replace("/define\(.*;/", '', $themeFileContent);
-
-			$themeFileContent = preg_replace('/\(\s?THEME\s?\./', '( e_THEME. "' . $theme . '/" .', str_replace($srch, '', $themeFileContent));
-
-			$themeFileContent = str_replace('USER_WIDTH', "''", $themeFileContent);
-
-			$themeFileContent = str_replace('tablestyle', $tp->filter($theme, 'wd') . "_tablestyle", $themeFileContent); // rename function to avoid conflicts while parsing.
-
-			$themeFileContent = str_replace("class " . $theme . "_theme", "class " . $theme . "__theme", $themeFileContent); // rename class to avoid conflicts while parsing.
-
-			$themeFileContent = str_replace('__DIR__', var_export(dirname($file), true), $themeFileContent);
-			$themeFileContent = str_replace('__FILE__', var_export($file, true), $themeFileContent);
-
-
-
-			if(PHP_MAJOR_VERSION > 6)
+			if(!isset($HEADER) && !isset($FOOTER) && !isset($CUSTOMHEADER) && !isset($CUSTOMFOOTER) && !isset($LAYOUT))
 			{
-				try
-				{
-					eval($themeFileContent);
-				}
-				catch(Error $e)
-				{
-
-					trigger_error("Couldn't parse theme.php file. ". $e->getMessage()."\n\n".$themeFileContent);
-					echo "<div class='alert alert-danger'>Couldn't parse theme.php: " . $e->getMessage() . " </div>";
-					file_put_contents(e_LOG."menuManagerParseDebug.log", $themeFileContent);
-				}
-			}
-			else
-			{
-				try
-				{
-					eval($themeFileContent);
-				}
-				catch(ParseError $e)
-				{
-					trigger_error("Couldn't parse theme.php file.". $e->getMessage());
-					echo "<div class='alert alert-danger'>Couldn't parse theme.php: " . $e->getMessage() . " </div>";
-
-				}
-
+				e107::getDebug()->log("No layout variables found in ".$file);
 			}
 		}
 
@@ -2686,7 +2638,7 @@ class e_mm_layout
 		$text .= $frm->hidden('data[layout][area]['.$c.'][pages]',$row['pages'], array('id'=>'pages-'.$area.'-'.$c)  );
 		$text .= $frm->hidden('data[layout][area]['.$c.'][parms]',$row['parms'], array('id'=>'parms-'.$area.'-'.$c)  );
 
-		$visibilityLink = e_SELF."?enc=".base64_encode('lay='.$layout.'&vis='.$area.'-'.$c.'&iframe=1&class='.$row['class'].'&pages='.$row['pages']);
+		$visibilityLink = e_SELF.'?'.http_build_query(array('lay' => $layout, 'vis' => $area.'-'.$c, 'iframe' => 1, 'class' => $row['class'], 'pages' => $row['pages']), '', '&');
 
 
 		$text .= "<a href='#'  class='menuOption menu-btn menu-btn-mini menu-btn-danger deleteMenu pull-right' data-area='area-".$area."' data-delete='".$uniqueId."'>&times;</a>"; // $('.hello').remove();
