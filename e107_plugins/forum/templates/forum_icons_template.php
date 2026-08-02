@@ -27,7 +27,7 @@ define('IMAGE_nonew_small',  		'{GLYPH:type=fa-comment}');
 //define('IMAGE_new_popular',  		$tp->toGlyph('fa-comments', 'size=2x'));
 define('IMAGE_new_popular',  		'{GLYPH:type=fa-comments&size=2x}');
 //define('IMAGE_nonew_popular', 		$tp->toGlyph('fa-comments-o', 'size=2x'));
-define('IMAGE_nonew_popular', 		'{GLYPH:type=fa-comments-o%size=2x}');
+define('IMAGE_nonew_popular', 		'{GLYPH:type=fa-comments-o&size=2x}');
 //define('IMAGE_new_popular_small',  	$tp->toGlyph('fa-comments'));
 define('IMAGE_new_popular_small',  	'{GLYPH:type=fa-comments}');
 //define('IMAGE_nonew_popular_small', $tp->toGlyph('fa-comments-o'));
