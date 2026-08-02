@@ -78,9 +78,13 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 		$pref = e107::getPref();
 		$post = strip_tags($tp->toHTML($this->var['post_entry'], true, 'emotes_off, no_make_clickable', '', $pref['menu_wordwrap']));
-		$post = $tp->text_truncate($post, varset($this->param['nfp_characters'], 120), varset($this->param['nfp_postfix'], '...'));
 
-		return $post;
+		// A template parm wins over the menu preference, which newforumposts_menu
+		// always fills in, so testing the preference first would never reach it.
+		$length = !empty($parm['truncate']) ? (int) $parm['truncate'] : (int) varset($this->param['nfp_characters'], 120);
+		$postfix = !empty($parm['postfix']) ? $parm['postfix'] : varset($this->param['nfp_postfix'], '...');
+
+		return $tp->truncate($post, $length, $postfix);
 	}
 
 	function sc_post_author_name($parm = null)
