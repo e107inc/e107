@@ -947,7 +947,7 @@ class e_theme
 
 		$themeArray['path'] = $path;
 		$themeArray['layouts'] = $lays;
-		$themeArray['description'] = $themeArray['info'];
+		$themeArray['description'] = varset($themeArray['info']);
 
 		if(file_exists(e_THEME.$path."/preview.jpg"))
 		{
@@ -1035,7 +1035,7 @@ class e_theme
 
 		$lays = array();
 
-		foreach($vars['layouts']['layout'] as $k=>$val)
+		foreach(varset($vars['layouts']['layout'], array()) as $k=>$val)
 		{
 			$name = $val['@attributes']['name'];
 			unset($val['@attributes']['name']);
@@ -1152,7 +1152,14 @@ class e_theme
 	 */
 	public static function getLegacyBSFA($path)
 	{
-		if(!$content = file_get_contents(e_THEME.$path.'/theme.php'))
+		$file = e_THEME.$path.'/theme.php';
+
+		if(!is_readable($file))
+		{
+			return false;
+		}
+
+		if(!$content = file_get_contents($file))
 		{
 			return false;
 		}
