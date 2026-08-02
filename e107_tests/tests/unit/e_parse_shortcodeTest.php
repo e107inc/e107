@@ -20,6 +20,10 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 	 * @var e_date
 	 */
 	private $original_e_date;
+	/**
+	 * @var string[] batch files written by a test, removed in _after()
+	 */
+	private $tempBatchFiles = array();
 
 	public function _before()
 	{
@@ -56,6 +60,15 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 	{
 		e107::setRegistry('core/e107/singleton/e_render', $this->original_e_render);
 		e107::setRegistry('core/e107/singleton/e_date', $this->original_e_date);
+
+		foreach($this->tempBatchFiles as $path)
+		{
+			if(is_file($path))
+			{
+				unlink($path);
+			}
+		}
+		$this->tempBatchFiles = array();
 	}
 
 //	public function testShortcode_SITELINKS_ALT()
@@ -1926,14 +1939,104 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
 	}
 
-	public function testParse_scbatch()
-	{
-
-	}
-
 	public function testLoadThemeShortcodes()
 	{
 
 	}
 	*/
+
+	private function writeBatchFile($dir)
+	{
+		$path = $dir . 'e107help_scbatch_' . uniqid() . '.php';
+		file_put_contents($path, "SC_BEGIN E107HELP_BATCH_PROBE\nreturn 'probe';\nSC_END\n");
+		$this->tempBatchFiles[] = $path;
+
+		return $path;
+	}
+
+	public function testParse_scbatchReadsAFileInsideAnExtensibilityRoot()
+	{
+		$path = $this->writeBatchFile(e_PLUGIN);
+
+		$codes = $this->scParser->parse_scbatch($path);
+
+		$this->assertArrayHasKey('E107HELP_BATCH_PROBE', $codes);
+	}
+
+	public function testParse_scbatchRefusesARealBatchInAWritableSystemDirectory()
+	{
+		$path = $this->writeBatchFile(e_SYSTEM);
+
+		$this->assertSame(array(), $this->scParser->parse_scbatch($path));
+	}
+
+	public function testParse_scbatchRefusesARealBatchOutsideTheDocroot()
+	{
+		$path = $this->writeBatchFile(rtrim(sys_get_temp_dir(), '/') . '/');
+
+		$this->assertSame(array(), $this->scParser->parse_scbatch($path));
+	}
+
+	/**
+	 * Each wrapper points at a batch file that parse_scbatch would otherwise
+	 * read successfully, so these fail if the containment check is removed.
+	 */
+	public function testParse_scbatchRefusesWrappersPointedAtARealBatchFile()
+	{
+		$path = $this->writeBatchFile(e_SYSTEM);
+
+		$gzPath = $path . '.gz';
+		file_put_contents($gzPath, gzencode(file_get_contents($path)));
+		$this->tempBatchFiles[] = $gzPath;
+
+		$this->assertSame(array(), $this->scParser->parse_scbatch('file://' . $path), 'file scheme');
+		$this->assertSame(array(), $this->scParser->parse_scbatch('php://filter/resource=' . $path), 'php filter');
+		$this->assertSame(array(), $this->scParser->parse_scbatch('compress.zlib://' . $gzPath), 'compress.zlib');
+	}
+
+	/**
+	 * @dataProvider scBatchInlineWrapperProvider
+	 */
+	public function testParse_scbatchRefusesInlineDataWrappers($fname)
+	{
+		$this->assertSame(array(), $this->scParser->parse_scbatch($fname));
+	}
+
+	/**
+	 * Runs at test-collection time, before class2.php defines the e_* path
+	 * constants, so these cases carry their payload inline.
+	 */
+	public function scBatchInlineWrapperProvider()
+	{
+		$body = "SC_BEGIN E107HELP_BATCH_PROBE\nreturn 'probe';\nSC_END";
+
+		return array(
+			'data wrapper'         => array('data://text/plain,' . rawurlencode($body)),
+			'data without slashes' => array('data:text/plain;base64,' . base64_encode($body)),
+		);
+	}
+
+	public function testParse_scbatchDoesNotArmTheLegacyEvalBranchForARefusedPath()
+	{
+		$payload = "SC_BEGIN E107HELP_BATCH_PROBE\nreturn 'E107HELP_EXECUTED';\nSC_END";
+
+		$codes = $this->scParser->parse_scbatch('data://text/plain,' . rawurlencode($payload));
+
+		$this->assertSame(array(), $codes);
+		$this->assertStringNotContainsString(
+			'E107HELP_EXECUTED',
+			e107::getParser()->parseTemplate('{E107HELP_BATCH_PROBE}', true, $codes)
+		);
+	}
+
+	public function testParse_scbatchStillAcceptsPreReadLines()
+	{
+		$codes = $this->scParser->parse_scbatch(array(
+			"SC_BEGIN E107HELP_BATCH_PROBE\n",
+			"return 'probe';\n",
+			"SC_END\n",
+		), 'string');
+
+		$this->assertArrayHasKey('E107HELP_BATCH_PROBE', $codes);
+	}
 }
