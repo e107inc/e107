@@ -185,6 +185,13 @@ debug by hand:
 
 ## Working in a worktree
 
+Every command acts on the worktree the script itself lives in, worked out from
+its own path. Your working directory is never consulted, so
+`/path/to/tree/e107_tests/bin/e107-tests up` drives that tree from anywhere and
+a caller with no stable working directory needs nothing else. To reach a
+different tree, name it: `e107-tests --worktree <path> <cmd>` hands over to the
+harness shipped in that tree, since the copies drift between branches.
+
 The local deployer (this harness) serves e107 from the app path itself, so it
 runs the tests in place via `E107Preparer`. Only deploy-based suites
 (sftp/cpanel) isolate the source in a disposable `git worktree`, and only when
