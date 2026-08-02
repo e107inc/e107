@@ -2405,60 +2405,20 @@ class e_mm_layout
 		}
 		else // prior to v2.2.2
 		{
+			require_once(e_HANDLER."theme_layout_parser.php");
 
-			$themeFileContent = file_get_contents($file);
+			$parser = new e_theme_layout_parser();
+			$parsed = $parser->parse(file_get_contents($file), $theme);
 
-			$srch = array('<?php', '?>');
+			$HEADER = $parsed['HEADER'];
+			$FOOTER = $parsed['FOOTER'];
+			$CUSTOMHEADER = $parsed['CUSTOMHEADER'];
+			$CUSTOMFOOTER = $parsed['CUSTOMFOOTER'];
+			$LAYOUT = $parsed['LAYOUT'];
 
-			// replace LAN file load.
-			$themeFileContent = preg_replace("/e107::lan\(['|\"]theme.*\);/","e107::themeLan(null, '".$theme."');", $themeFileContent);
-		//	$themeFileContent = preg_replace("/define\(['|\"]BOOTSTRAP['|\"].*;/", '', $themeFileContent);
-		//	$themeFileContent = preg_replace("/define\(['|\"]FONTAWESOME['|\"].*;/", '', $themeFileContent);
-			$themeFileContent = preg_replace("/LAN_[\w]*/", '""', $themeFileContent);
-			$themeFileContent = preg_replace("/include_lan\(.*;/", '', $themeFileContent);
-
-			$themeFileContent = preg_replace("/define\(.*;/", '', $themeFileContent);
-
-			$themeFileContent = preg_replace('/\(\s?THEME\s?\./', '( e_THEME. "' . $theme . '/" .', str_replace($srch, '', $themeFileContent));
-
-			$themeFileContent = str_replace('USER_WIDTH', "''", $themeFileContent);
-
-			$themeFileContent = str_replace('tablestyle', $tp->filter($theme, 'wd') . "_tablestyle", $themeFileContent); // rename function to avoid conflicts while parsing.
-
-			$themeFileContent = str_replace("class " . $theme . "_theme", "class " . $theme . "__theme", $themeFileContent); // rename class to avoid conflicts while parsing.
-
-			$themeFileContent = str_replace('__DIR__', var_export(dirname($file), true), $themeFileContent);
-			$themeFileContent = str_replace('__FILE__', var_export($file, true), $themeFileContent);
-
-
-
-			if(PHP_MAJOR_VERSION > 6)
+			if(!isset($HEADER) && !isset($FOOTER) && !isset($CUSTOMHEADER) && !isset($CUSTOMFOOTER) && !isset($LAYOUT))
 			{
-				try
-				{
-					eval($themeFileContent);
-				}
-				catch(Error $e)
-				{
-
-					trigger_error("Couldn't parse theme.php file. ". $e->getMessage()."\n\n".$themeFileContent);
-					echo "<div class='alert alert-danger'>Couldn't parse theme.php: " . $e->getMessage() . " </div>";
-					file_put_contents(e_LOG."menuManagerParseDebug.log", $themeFileContent);
-				}
-			}
-			else
-			{
-				try
-				{
-					eval($themeFileContent);
-				}
-				catch(ParseError $e)
-				{
-					trigger_error("Couldn't parse theme.php file.". $e->getMessage());
-					echo "<div class='alert alert-danger'>Couldn't parse theme.php: " . $e->getMessage() . " </div>";
-
-				}
-
+				e107::getDebug()->log("No layout variables found in ".$file);
 			}
 		}
 
