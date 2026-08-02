@@ -961,15 +961,12 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 		}
 
-		// Delete own post, if it is the last in the thread
-		if($this->thisIsTheLastPost && USER && $this->thread->threadInfo['thread_lastuser'] == USERID)
+		/* Delete own post: only when it is the last post in the thread, is not the
+		 * opening post, and the thread is still active. Moderators get their own
+		 * delete entry further down, so skip this one for them to avoid a duplicate. */
+		if($this->thisIsTheLastPost && USER && $this->thread->threadInfo['thread_lastuser'] == USERID && !defset('MODERATOR') && $this->var['thread_active'] && empty($this->postInfo['thread_start']))
 		{
-			/* only show delete button when post is not the initial post of the topic
-			 * AND if this post is the last post in the thread */
-			if($this->var['thread_active'] && empty($this->postInfo['thread_start']))
-			{
-				$text .= "<li class='text-right text-end float-right'><a class='dropdown-item' href='" . e_REQUEST_URI . "' data-forum-action='deletepost'  data-confirm='" . LAN_JSCONFIRM . "' data-forum-post='" . $postID . "'>" . LAN_DELETE . " " . $tp->toGlyph('fa-trash') . "</a></li>";
-			}
+			$text .= "<li class='text-right text-end float-right'><a class='dropdown-item' href='" . e_REQUEST_URI . "' data-forum-action='deletepost'  data-confirm='" . LAN_JSCONFIRM . "' data-forum-post='" . $postID . "'>" . LAN_DELETE . " " . $tp->toGlyph('fa-trash') . "</a></li>";
 		}
 
 		if(isset($this->postInfo['post_forum']) && $this->forum->checkperm($this->postInfo['post_forum'], 'post'))
