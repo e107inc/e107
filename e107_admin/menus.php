@@ -691,8 +691,8 @@ $e_sub_cat = 'menus';
 require_once(e_HANDLER."file_class.php");
 require_once(e_HANDLER."menumanager_class.php");
 
-$rs = new form;
 $frm = e107::getForm();
+$rs = new form;
 $men = new e_menuManager(0);   // use 1 for dragdrop.
 $mes = e107::getMessage();
 
