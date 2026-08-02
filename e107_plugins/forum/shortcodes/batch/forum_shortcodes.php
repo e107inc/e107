@@ -166,29 +166,28 @@ class forum_shortcodes extends e_shortcode
 
 	function sc_userlist()
 	{
-		$text = '';
-
+		// Returning null (not '') keeps the wrapper off: see e_parse_shortcode::doCode().
 		if(defined('e_TRACKING_DISABLED'))
 		{
-			return;
-		}			
+			return null;
+		}
 
-			global $listuserson;
-			$c = 0;
-			if(is_array($listuserson))
+		global $listuserson;
+
+		$text = '';
+		$c = 0;
+
+		if(is_array($listuserson))
+		{
+			foreach(array_keys($listuserson) as $uinfo)
 			{
-		//----	foreach($listuserson as $uinfo => $pinfo)
-			    foreach(array_keys($listuserson) as $uinfo)
-			//	foreach($listuserson as $uinfo => &$pinfo)
-				{
-					list($oid, $oname) = explode(".", $uinfo, 2);
-					$c ++;
-					$text .= "<a href='".e_HTTP."user.php?id.$oid'>$oname</a>".($c == MEMBERS_ONLINE ? "." :", ");
-				}
-
+				list($oid, $oname) = explode(".", $uinfo, 2);
+				$c ++;
+				$text .= "<a href='".e_HTTP."user.php?id.$oid'>$oname</a>".($c == MEMBERS_ONLINE ? "." :", ");
 			}
+		}
 
-		  return $text;
+		return $text;
 	}
 
 	/**
