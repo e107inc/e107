@@ -166,30 +166,28 @@ class forum_shortcodes extends e_shortcode
 
 	function sc_userlist()
 	{
-		$text = '';
-		if(!defined('e_TRACKING_DISABLED'))
+		// Returning null (not '') keeps the wrapper off: see e_parse_shortcode::doCode().
+		if(defined('e_TRACKING_DISABLED'))
 		{
-		// String candidate for USERLIST wrapper
-			$text = LAN_FORUM_0036.": ";
-
-			global $listuserson;
-			$c = 0;
-			if(is_array($listuserson))
-			{
-		//----	foreach($listuserson as $uinfo => $pinfo)
-			    foreach(array_keys($listuserson) as $uinfo)
-			//	foreach($listuserson as $uinfo => &$pinfo)
-				{
-					list($oid, $oname) = explode(".", $uinfo, 2);
-					$c ++;
-					$text .= "<a href='".e_HTTP."user.php?id.$oid'>$oname</a>".($c == MEMBERS_ONLINE ? "." :", ");
-				}
-
-			}
-		// String candidate for USERLIST wrapper
-			$text .= "<br /><a rel='external' href='".e_HTTP."online.php'>".LAN_FORUM_0037."</a> ".LAN_FORUM_0038;
+			return null;
 		}
-		  return $text;
+
+		global $listuserson;
+
+		$text = '';
+		$c = 0;
+
+		if(is_array($listuserson))
+		{
+			foreach(array_keys($listuserson) as $uinfo)
+			{
+				list($oid, $oname) = explode(".", $uinfo, 2);
+				$c ++;
+				$text .= "<a href='".e_HTTP."user.php?id.$oid'>$oname</a>".($c == MEMBERS_ONLINE ? "." :", ");
+			}
+		}
+
+		return $text;
 	}
 
 	/**

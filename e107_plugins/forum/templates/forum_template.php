@@ -29,6 +29,15 @@ if (!isset($FORUM_MAIN_FORUM))
 	$SC_WRAPPER['LASTPOST:type=url'] = " <a href='{---}'>".IMAGE_post2."</a>";
 	$FORUM_MAIN_FORUM = "<tr>\n<td style='width:5%; text-align:center' class='forumheader2'>{NEWFLAG}</td>\n<td style='width:55%' class='forumheader2'>{FORUMNAME}<br /><span class='smallblacktext'>{FORUMDESCRIPTION}</span>{FORUMSUBFORUMS}</td>\n<td style='width:10%; text-align:center' class='forumheader3'>{THREADS}</td>\n<td style='width:10%; text-align:center' class='forumheader3'>{REPLIES}</td>\n<td style='width:20%; text-align:center' class='forumheader3'><span class='smallblacktext'>{LASTPOST}</span></td>\n</tr>";
 }
+/* The label and the "who is online" link used to be concatenated inside
+ * sc_userlist(). They live here now so a theme can restyle them, but the
+ * assignment has to sit OUTSIDE the $FORUM_MAIN_END guard below: a theme that
+ * supplies its own $FORUM_MAIN_END skips that block, and would otherwise get a
+ * bare list of names with no label and no link. */
+if (!isset($SC_WRAPPER['USERLIST']))
+{
+	$SC_WRAPPER['USERLIST'] = LAN_FORUM_0036.": {---}<br /><a rel='external' href='".e_HTTP."online.php'>".LAN_FORUM_0037."</a> ".LAN_FORUM_0038;
+}
 if (!isset($FORUM_MAIN_END))
 {
 // How it should be??? (LAN Shortcodes replaced by their outputed LANS...)
