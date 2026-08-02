@@ -242,7 +242,7 @@ assert_env_is_ours() {
     owner=$(project_label "$PROJECT" app-path)
     [ -n "$owner" ] && [ "$owner" != "$APP_PATH" ] || return 0
     [ "$force" = yes ] || err "refusing to $action $PROJECT: it belongs to $owner, not $APP_PATH.
-       Run it from that worktree, or pass --force if you mean it."
+       Use --worktree $owner, or pass --force if you mean it."
     warn "$action $PROJECT, which belongs to $owner"
 }
 
@@ -1029,16 +1029,13 @@ e107-tests — Docker-backed test environments for e107
 
 USAGE:
   e107-tests <command> [args...]
-  e107-tests --env <project> <command> [args...]   # any env, any worktree
+  e107-tests --env <project> <command> [args...]      # any env, any worktree
+  e107-tests --worktree <path> <command> [args...]    # any e107 worktree
 
-  Commands act on the worktree you are standing in. If that worktree carries
-  its own copy of the harness, this script hands over to it, so the stack is
-  always driven by the harness shipped alongside the tree it tests. Outside
-  any e107 worktree, the copy this script lives in is used.
-
-  The cwd wins over the path you typed, so calling one worktree's harness by
-  absolute path from inside another drives the one you are standing in. Set
-  E107_TESTS_NO_HANDOVER=1 to pin to the script's own worktree.
+  Commands act on the worktree this script lives in, whatever your working
+  directory is, so invoking a worktree's harness by its path always drives
+  that worktree. --worktree <path> picks a different one and hands over to
+  the harness shipped in it.
 
 LIFECYCLE:
   up [--php X] [--db Y] [--xdebug] [--install-site]
@@ -1050,6 +1047,8 @@ LIFECYCLE:
   down [--volumes] [--force]         Stop and remove this env. Removing an env
                                      belonging to another worktree (reachable
                                      with --env) needs --force.
+                                     Prefer --worktree, which drives that
+                                     worktree's own harness.
   reset [--force]                    Drop+recreate DB, clear written app state.
                                      --force as for down.
   clean                              Full reset of a dev tree. Not needed after
@@ -1122,29 +1121,40 @@ EOF
 EXPLICIT_PROJECT=
 WITH_XDEBUG=no
 XDEBUG_TAG=
+TARGET_WORKTREE=
 
-# The worktree you are standing in wins over the one this script happens to
-# live in, so `cd` into a worktree and a bare `e107-tests` drives that
-# worktree rather than silently building a stack for another one. Where the
-# target carries its own harness, hand over to it: the copies drift between
-# branches (the default PHP version alone differs), and a stack should be
-# driven by the harness shipped alongside the tree it tests.
-#
-# Because the cwd wins, invoking one worktree's harness by absolute path from
-# inside another drives the worktree you are standing in, not the one you
-# named. Set E107_TESTS_NO_HANDOVER=1 to pin to the script's own worktree
-# instead; that is also what stops the hand-over below recursing.
-if [ -z "${E107_TESTS_NO_HANDOVER:-}" ]; then
-    CWD_ROOT=$(find_harness_worktree "$PWD") || CWD_ROOT=
-    if [ -n "$CWD_ROOT" ] && [ "$CWD_ROOT" != "$APP_PATH" ]; then
-        if [ -x "$CWD_ROOT/e107_tests/bin/e107-tests" ]; then
-            note ">> using the harness in the current worktree: $CWD_ROOT"
-            note "   (E107_TESTS_NO_HANDOVER=1 pins to $APP_PATH instead)"
-            export E107_TESTS_NO_HANDOVER=1
-            exec "$CWD_ROOT/e107_tests/bin/e107-tests" "$@"
+# Pre-parse global flags that can appear before the subcommand. Kept as they
+# are read, so that a hand-over below can pass on everything except the
+# --worktree that selected its target.
+HANDOVER_ARGS=()
+while [ $# -gt 0 ]; do
+    case ${1:-} in
+        --env) EXPLICIT_PROJECT=$2; HANDOVER_ARGS+=("$1" "$2"); shift 2 ;;
+        --worktree) TARGET_WORKTREE=${2:-}; shift 2 ;;
+        --help|-h|help|'') cmd_help; exit 0 ;;
+        *) break ;;
+    esac
+done
+HANDOVER_ARGS+=("$@")
+
+# A command acts on the worktree this script lives in, whatever the working
+# directory is, so a harness invoked by its path always drives its own tree
+# and a caller that cannot control its working directory still gets the stack
+# it asked for. --worktree names a different tree; where that tree carries its
+# own harness, hand over to it, because the copies drift between branches (the
+# default PHP version alone differs) and a stack should be driven by the
+# harness shipped alongside the tree it tests. The hand-over cannot recurse:
+# the target is invoked without --worktree, so it resolves to itself.
+if [ -n "$TARGET_WORKTREE" ]; then
+    TARGET_ROOT=$(find_harness_worktree "$TARGET_WORKTREE") \
+        || err "no e107 worktree at or above: $TARGET_WORKTREE"
+    if [ "$TARGET_ROOT" != "$APP_PATH" ]; then
+        if [ -x "$TARGET_ROOT/e107_tests/bin/e107-tests" ]; then
+            note ">> using the harness in $TARGET_ROOT"
+            exec "$TARGET_ROOT/e107_tests/bin/e107-tests" "${HANDOVER_ARGS[@]}"
         fi
-        note ">> targeting the current worktree: $CWD_ROOT"
-        set_paths_from_root "$CWD_ROOT"
+        note ">> targeting $TARGET_ROOT"
+        set_paths_from_root "$TARGET_ROOT"
     fi
 fi
 
@@ -1152,15 +1162,6 @@ fi
 # would leave the file behind with no trap to remove it.
 SNAPSHOT_FILE=$(mktemp)
 trap 'rm -f "$SNAPSHOT_FILE"' EXIT
-
-# Pre-parse global flags that can appear before the subcommand.
-while [ $# -gt 0 ]; do
-    case ${1:-} in
-        --env) EXPLICIT_PROJECT=$2; shift 2 ;;
-        --help|-h|help|'') cmd_help; exit 0 ;;
-        *) break ;;
-    esac
-done
 
 CMD=${1:-help}
 [ $# -gt 0 ] && shift
