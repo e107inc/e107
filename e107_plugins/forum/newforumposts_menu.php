@@ -189,7 +189,7 @@ if(!class_exists('forum_newforumposts_menu'))
 					}*/
 
 					$sc = e107::getScBatch('view', 'forum')->setScVar('param',$param);
-          $sc->wrapper('newforumposts_menu/'.$layout);
+					$sc->wrapper('newforumposts_menu/'.$layout);
 
 //					$list = $tp->parseTemplate($template['start'], true);
 					$text = $tp->parseTemplate($template['start'], true);
