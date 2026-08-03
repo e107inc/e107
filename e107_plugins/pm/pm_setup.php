@@ -27,7 +27,39 @@
 
 class pm_setup
 {
-	
+
+	/**
+	 *	Cover the attachment directories this site already holds.
+	 *
+	 *	A site whose attachments were stored before the deny rules existed has
+	 *	this and nothing else: sending a new attachment is what covers a directory
+	 *	otherwise, and the members whose files are sitting there exposed are the
+	 *	ones who are not sending any. The plugin's version is raised in plugin.xml
+	 *	so that this runs on every existing site rather than only on a fresh
+	 *	install.
+	 *
+	 *	@return	void
+	 */
+	function install_post()
+	{
+		require_once(e_PLUGIN . 'pm/pm_class.php');
+
+		$pm = new private_message();
+
+		if(!$pm->protectStoredAttachments())
+		{
+			e107::lan('pm', null);
+			e107::getMessage()->addWarning(defset('LAN_PM_116'));
+		}
+	}
+
+
+	function upgrade_post()
+	{
+		$this->install_post();
+	}
+
+
 	function uninstall_post()
 	{
 		$sql = e107::getDb();

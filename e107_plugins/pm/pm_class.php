@@ -120,6 +120,138 @@ class private_message
 	}
 
 
+	/**
+	 *	The directory every member's PM attachments are stored under.
+	 *
+	 *	Built here rather than asked of e_file::getUserDir(), which answers for
+	 *	e_CURRENT_PLUGIN. This class is instantiated from the cron handler, from
+	 *	the admin pages, from a shortcode batch rendering the PM menu on any page
+	 *	of the site and from the plugin's own setup hook, and in none of those is
+	 *	that constant reliably "pm".
+	 *
+	 *	@return	string with a trailing separator
+	 */
+	protected function attachmentRoot()
+	{
+		return e_MEDIA . 'plugins/pm/attachments/';
+	}
+
+
+	/**
+	 *	Where e_file::getUploaded() will put a given member's attachments.
+	 *
+	 *	@param	int $user - member id, zero for a guest
+	 *
+	 *	@return	string with a trailing separator
+	 */
+	protected function attachmentDir($user)
+	{
+		$name = ((int) $user > 0) ? 'user_' . e107::getParser()->leadingZeros((int) $user, 6) : 'anon';
+
+		return $this->attachmentRoot() . $name . '/';
+	}
+
+
+	/**
+	 *	Cover the directory an attachment is about to be stored in.
+	 *
+	 *	e107 keeps everything under the document root, so a deny rule is all that
+	 *	stands between a stored name and whoever can guess it or be handed it.
+	 *	The rules go down before the bytes do, and the caller is told whether they
+	 *	did, so that nothing is ever stored in a directory that is not covered.
+	 *
+	 *	The directory holding every member's is covered as well as the member's
+	 *	own, because Apache reads a rule in a parent for everything below it and
+	 *	the members who never send again are the ones with nothing else.
+	 *
+	 *	@param	int $user - id of the member whose upload directory to cover
+	 *
+	 *	@return	boolean true when the member's directory and its parent are covered
+	 */
+	public function protectAttachmentPaths($user)
+	{
+		$fl = e107::getFile();
+		$root = $this->attachmentRoot();
+		$dir = $this->attachmentDir($user);
+
+		if(!is_dir($dir))
+		{
+			@mkdir($dir, 0755, true);
+		}
+
+		if(!is_dir($dir))
+		{
+			return FALSE;
+		}
+
+		$covered = $fl->protectDirectory($root);
+
+		return $fl->protectDirectory($dir) && $covered;
+	}
+
+
+	/**
+	 *	Cover every directory this site has ever stored a PM attachment in.
+	 *
+	 *	Run from the plugin's install and upgrade hooks. Attachments that predate
+	 *	these rules have nothing else to write them: covering a directory when the
+	 *	plugin next writes into it asks a member to send another attachment before
+	 *	the one they already sent is protected, and the sites holding the exposed
+	 *	files are exactly the sites whose members are not sending any.
+	 *
+	 *	@return	boolean true when every directory found is covered
+	 */
+	public function protectStoredAttachments()
+	{
+		$fl = e107::getFile();
+		$covered = TRUE;
+
+		foreach($this->storedAttachmentDirs() as $dir)
+		{
+			$covered = $fl->protectDirectory($dir) && $covered;
+		}
+
+		return $covered;
+	}
+
+
+	/**
+	 *	Every attachment directory that exists on this site: the media root, the
+	 *	per-member directories under it, and the directory beside the plugin that
+	 *	releases predating the media tree wrote to, which send_file() and del()
+	 *	still read.
+	 *
+	 *	@return	array of paths, each with a trailing separator
+	 */
+	protected function storedAttachmentDirs()
+	{
+		$root = $this->attachmentRoot();
+		$dirs = array();
+
+		foreach(array($root, e_PLUGIN . 'pm/attachments/') as $dir)
+		{
+			if(is_dir($dir))
+			{
+				$dirs[] = $dir;
+			}
+		}
+
+		$members = glob($root . '*', GLOB_ONLYDIR);
+
+		if(empty($members))
+		{
+			return $dirs;
+		}
+
+		foreach($members as $dir)
+		{
+			$dirs[] = rtrim($dir, '/') . '/';
+		}
+
+		return $dirs;
+	}
+
+
 	/*
 	 *	Send a PM
 	 *

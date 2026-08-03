@@ -422,6 +422,56 @@ class e_fileTest extends \Codeception\Test\Unit
 		self::assertFalse(e_file::isAbsolutePath(null));
 	}
 
+	/**
+	 * The guard files land, and only once.
+	 *
+	 * Called ahead of every attachment the PM plugin stores, so rewriting a
+	 * file that is already there would be an upload's worth of pointless
+	 * writes. The rule that has to survive is that anything already in place
+	 * is left exactly as it was found: an administrator who has widened or
+	 * narrowed the rule by hand keeps their version.
+	 */
+	public function testProtectDirectory()
+	{
+		$dir = e_TEMP . 'test_protect_directory_' . uniqid() . '/';
+
+		self::assertFalse($this->fl->protectDirectory($dir),
+			'A directory that is not there must not be created');
+		self::assertDirectoryDoesNotExist($dir);
+
+		self::assertFalse($this->fl->protectDirectory(''));
+
+		mkdir($dir);
+
+		try
+		{
+			self::assertTrue($this->fl->protectDirectory(rtrim($dir, '/')),
+				'A path without a trailing separator is the same directory');
+
+			self::assertFileExists($dir . '.htaccess');
+			self::assertFileExists($dir . 'index.html');
+			self::assertSame('', file_get_contents($dir . 'index.html'));
+
+			$rule = file_get_contents($dir . '.htaccess');
+			self::assertStringContainsString('RedirectMatch 403', $rule);
+			self::assertStringContainsString('Deny from all', $rule);
+			self::assertStringNotContainsString('Require ', $rule,
+				'A guard file may ask for no AllowOverride class beyond the ones e107.htaccess already needs');
+
+			file_put_contents($dir . '.htaccess', 'an administrator wrote this');
+
+			self::assertTrue($this->fl->protectDirectory($dir));
+			self::assertSame('an administrator wrote this', file_get_contents($dir . '.htaccess'),
+				'An existing guard file must be left alone');
+		}
+		finally
+		{
+			@unlink($dir . '.htaccess');
+			@unlink($dir . 'index.html');
+			@rmdir($dir);
+		}
+	}
+
 			public function testFile_size_encode()
 			{
 				$arr = array(
@@ -969,7 +1019,9 @@ class e_fileTest extends \Codeception\Test\Unit
 
 		self::assertTrue($this->fl->protectDirectory($dir));
 		self::assertFileExists($dir.'index.html');
-		self::assertStringContainsString('Require all denied', file_get_contents($dir.'.htaccess'));
+		$rule = file_get_contents($dir.'.htaccess');
+		self::assertStringContainsString('RedirectMatch 403', $rule);
+		self::assertStringNotContainsString('Require ', $rule);
 
 		unlink($dir.'.htaccess');
 		unlink($dir.'index.html');
