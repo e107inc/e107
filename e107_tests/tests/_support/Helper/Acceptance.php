@@ -30,6 +30,17 @@ class Acceptance extends E107Base
 	 */
 	const PLUGIN_PROBE_FILE = 'e107_tests_plugin_install_probe.php';
 
+	/**
+	 * The site every acceptance Cest inherits, as 0000a_UnattendedInstallCest
+	 * leaves it. A Cest that installs again should hand back the same site, so
+	 * these are the defaults haveFreshInstall() installs with.
+	 */
+	const INSTALL_ADMIN_DISPLAY = 'admin';
+	const INSTALL_ADMIN_EMAIL   = 'admin@admin.com';
+	const INSTALL_SITENAME      = 'UnattendedInstallTest';
+	const INSTALL_SITETHEME     = 'bootstrap5';
+	const INSTALL_SITE_PATH     = '000000test';
+
 	protected $deployer_components = ['db', 'fs'];
 
 	/** @var bool */
@@ -581,6 +592,148 @@ PHP;
 		}
 
 		return $tables;
+	}
+
+	/**
+	 * Drop every table the app owns, leaving an empty database.
+	 *
+	 * @return void
+	 */
+	public function dropAllAppTables()
+	{
+		$dbh = $this->getDbModule()->_getDbh();
+
+		$dbh->exec('SET FOREIGN_KEY_CHECKS=0;');
+
+		$tables = $dbh->query("SHOW FULL TABLES WHERE TABLE_TYPE LIKE '%TABLE'")
+			->fetchAll(\PDO::FETCH_COLUMN);
+
+		foreach ($tables as $table)
+		{
+			$dbh->exec('DROP TABLE `'.$table.'`');
+		}
+
+		$dbh->exec('SET FOREIGN_KEY_CHECKS=1;');
+	}
+
+	/**
+	 * Write a v2.4 array-format e107_config.php pointing at the test database.
+	 *
+	 * @return void
+	 */
+	public function haveE107ArrayConfig()
+	{
+		$db = $this->getDbModule();
+
+		$this->writeE107ConfigToTestEnvironment("<?php\nreturn ".var_export([
+			'database' => [
+				'server'   => $db->_getDbHostname(),
+				'user'     => $db->_getDbUsername(),
+				'password' => $db->_getDbPassword(),
+				'db'       => $db->_getDbName(),
+				'prefix'   => self::E107_MYSQL_PREFIX,
+				'charset'  => 'utf8mb4',
+			],
+			'paths' => [
+				'admin'     => 'e107_admin/',
+				'files'     => 'e107_files/',
+				'images'    => 'e107_images/',
+				'themes'    => 'e107_themes/',
+				'plugins'   => 'e107_plugins/',
+				'handlers'  => 'e107_handlers/',
+				'languages' => 'e107_languages/',
+				'help'      => 'e107_docs/help/',
+				'media'     => 'e107_media/',
+				'system'    => 'e107_system/',
+			],
+			'other' => [
+				'site_path' => self::INSTALL_SITE_PATH,
+			],
+		], true).";\n");
+	}
+
+	/**
+	 * Browse to install.php's unattended route with the credentials the config
+	 * written by haveE107ArrayConfig() carries.
+	 *
+	 * @param array $overrides query parameters to change
+	 * @return array the parameters the installer was given
+	 */
+	public function visitUnattendedInstall(array $overrides = [])
+	{
+		$db = $this->getDbModule();
+
+		$params = array_merge([
+			'create_tables'  => 1,
+			'username'       => $db->_getDbUsername(),
+			'password'       => $db->_getDbPassword(),
+			'admin_user'     => AdminLogin::ADMIN_USER,
+			'admin_password' => AdminLogin::ADMIN_PASS,
+			'admin_display'  => self::INSTALL_ADMIN_DISPLAY,
+			'admin_email'    => self::INSTALL_ADMIN_EMAIL,
+			'sitename'       => self::INSTALL_SITENAME,
+			'theme'          => self::INSTALL_SITETHEME,
+			'language'       => 'English',
+			'gen'            => 1,
+			'plugins'        => 1,
+		], $overrides);
+
+		$this->getBrowserModule()->amOnPage('/install.php?'.http_build_query($params));
+
+		return $params;
+	}
+
+	/**
+	 * Drop every table and install e107 again over the empty database.
+	 *
+	 * For a test whose subject is what an install produces. Everything a Cest
+	 * before it wrote is gone afterwards, so a Cest calling this owes the suite
+	 * a call at the end of its last test as well.
+	 *
+	 * @param array $overrides install.php query parameters to change
+	 * @return array the parameters the installer was given
+	 */
+	public function haveFreshInstall(array $overrides = [])
+	{
+		$this->unlinkE107ConfigFromTestEnvironment();
+		$this->dropAllAppTables();
+
+		// e_pref keeps a copy of the preferences under e_SYSTEM and reads it in
+		// preference to the table, so a site rebuilt underneath one is served
+		// the preferences of the site that was there before.
+		$this->deployer->removeAppPaths(['e107_system/'.self::INSTALL_SITE_PATH]);
+
+		$this->haveE107ArrayConfig();
+
+		$params = $this->visitUnattendedInstall($overrides);
+
+		$this->getDbModule()->seeInDatabase(self::E107_MYSQL_PREFIX.'core',
+			['e107_name' => 'SitePrefs']);
+
+		$this->forgetInstalledPlugins();
+
+		return $params;
+	}
+
+	/**
+	 * Drop what this run remembers about which plugins are installed.
+	 *
+	 * A plugin's installed flag lives in the database, so a site installed again
+	 * underneath the suite carries none of them, while the helpers still hold the
+	 * memo that saves them the work of installing one twice. ForumFixture then
+	 * skipped the install it was asked for and every forum test after the site
+	 * was rebuilt died on a missing e107_forum table.
+	 *
+	 * @return void
+	 */
+	private function forgetInstalledPlugins()
+	{
+		$this->pluginsInstalled = [];
+
+		if ($this->hasModule('\Helper\ForumFixture'))
+		{
+			$this->getModule('\Helper\ForumFixture')->forgetForumPlugin();
+		}
 	}
 
 	protected function writeLocalE107Config()

@@ -164,18 +164,6 @@
   ),
 )]]></core>
 		<core name="url_main_module">page</core>
-		<core name="xurl"><![CDATA[array (
-  'facebook' => 'http://facebook.com/themexpose',
-  'twitter' => '#',
-  'youtube' => '#',
-  'google' => '',
-  'linkedin' => '',
-  'github' => '',
-  'flickr' => '',
-  'instagram' => '#',
-  'pinterest' => '#',
-  'vimeo' => '',
-)]]></core>
 	</prefs>
 	<pluginPrefs>
 		<social name="sharing_providers"><![CDATA[array (

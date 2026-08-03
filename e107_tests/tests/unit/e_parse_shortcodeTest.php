@@ -789,14 +789,46 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 			self::fail($e->getMessage());
 		}
 
-		$sc->__construct();
+		// Seed the preference the shortcode reads instead of taking whatever the
+		// SQL fixture happens to carry. What an icon is rendered for is the
+		// subject of the test, so a site whose xurl preference is empty (which is
+		// what a fresh install now has) would leave this asserting nothing.
+		$config = e107::getConfig('core');
+		$xurlWas = $config->get('xurl');
 
-		parse_str('type=facebook,twitter,youtube,flickr,vimeo,google-plus,github,instagram,linkedin&size=3x', $parm);
+		$config->set('xurl', array(
+			'twitter' => 'https://x.com/e107',
+			'youtube' => 'https://youtube.com/e107Inc',
+			// The placeholder e107 shipped for years, and the one an admin
+			// reaches for when a network has no account yet.
+			'linkedin' => '#',
+		));
 
-		$result = $sc->sc_xurl_icons($parm);
+		try
+		{
+			$sc->__construct();
+
+			parse_str('type=facebook,twitter,youtube,flickr,vimeo,google-plus,github,instagram,linkedin&size=3x', $parm);
+
+			$result = $sc->sc_xurl_icons($parm);
+		}
+		finally
+		{
+			$config->set('xurl', is_array($xurlWas) ? $xurlWas : array());
+		}
 
 		self::assertStringContainsString('<span class="e-social-twitter fa-3x"></span>', $result);
 		self::assertStringContainsString('<span class="e-social-youtube fa-3x"></span>', $result);
+		self::assertStringContainsString('href="https://x.com/e107"', $result);
+
+		// Asked for, but not configured, so nothing to link to.
+		self::assertStringNotContainsString('social-facebook', $result);
+
+		// Configured with a value that is not a destination, which is the same
+		// thing: an anchor whose aria-label names somewhere the visitor cannot
+		// be sent is worse than no anchor.
+		self::assertStringNotContainsString('social-linkedin', $result);
+		self::assertStringNotContainsString('href="#"', $result);
 
     }
 

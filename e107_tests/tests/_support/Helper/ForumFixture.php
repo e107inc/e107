@@ -167,6 +167,20 @@ class ForumFixture extends CodeceptionModule
 	}
 
 	/**
+	 * Forget that the forum plugin was ever installed, without uninstalling it.
+	 *
+	 * For a site that has been installed again underneath this helper, which
+	 * takes the plugin with it and leaves the memo saying otherwise.
+	 *
+	 * @see \Helper\Acceptance::haveFreshInstall()
+	 * @return void
+	 */
+	public function forgetForumPlugin()
+	{
+		$this->pluginInstalled = false;
+	}
+
+	/**
 	 * Pin csrf_enforce for the duration of a test.
 	 *
 	 * Not optional. 0023's teardown removes the preference, and it is the highest

@@ -88,7 +88,7 @@ class social_shortcodes extends e_shortcode
 		$xurls = e107::unserialize($json);
 		foreach($xurls as $k=>$val)
 		{
-			if(!empty($this->xurl[$k]))
+			if(self::isDestination(varset($this->xurl[$k])))
 			{
 				$social[$k] = ['href'=> $this->xurl[$k],   'title'=>$val['label'] ];
 			}
@@ -123,7 +123,7 @@ class social_shortcodes extends e_shortcode
 		foreach($social as $id => $data)
 		{
 
-			if(!empty($data['href']))
+			if(self::isDestination(varset($data['href'])))
 			{
 				$data['id'] = $id;
 				$data['class'] = $class;
@@ -145,26 +145,55 @@ class social_shortcodes extends e_shortcode
 
 	}
 
+	/**
+	 * Whether a configured social URL is somewhere a visitor can be sent.
+	 *
+	 * '#' is the placeholder e107 shipped for years and the one an admin reaches
+	 * for when a network has no account yet, so an icon carrying it is an anchor
+	 * with an aria-label naming a destination the site does not have.
+	 *
+	 * @param mixed $url
+	 * @return bool
+	 */
+	private static function isDestination($url)
+	{
+		return !empty($url) && $url !== '#';
+	}
+
 	// ----------- Internal Use only by sc_xurl_icons() ------------------
+
+	/**
+	 * One field of the icon sc_xurl_icons() is part way through rendering.
+	 *
+	 * Answers null rather than reading an offset off nothing, because a site
+	 * with no social URL configured never enters the loop that sets these.
+	 *
+	 * @param string $key
+	 * @return string|null
+	 */
+	private function xurlVar($key)
+	{
+		return isset($this->var[$key]) ? $this->var[$key] : null;
+	}
 
 	function sc_xurl_icons_href($parm=null)
 	{
-		return $this->var['href'];
+		return $this->xurlVar('href');
 	}
 
 	function sc_xurl_icons_id($parm=null)
 	{
-		return $this->var['id'];
+		return $this->xurlVar('id');
 	}
 
 	function sc_xurl_icons_title($parm=null)
 	{
-		return $this->var['title'];
+		return $this->xurlVar('title');
 	}
 
 	function sc_xurl_icons_class($parm=null)
 	{
-		return $this->var['class'];
+		return $this->xurlVar('class');
 	}
 
 	/** @experimental inline svg  - subject to removal at any time */
@@ -172,7 +201,7 @@ class social_shortcodes extends e_shortcode
 	{
 	//	$path = e_WEB.'lib/font-awesome/'.$this->fontawesome.'/svgs/brands/';
 
-		$path = e_PLUGIN."social/svg/".$this->var['id'].".svg";
+		$path = e_PLUGIN."social/svg/".$this->xurlVar('id').".svg";
 
 		if(!file_exists($path))
 		{

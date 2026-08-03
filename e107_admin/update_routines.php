@@ -472,6 +472,35 @@ function update_check()
 }
 
 	
+/**
+ * Core preferences a site holds in a shape nothing can read back, and what to
+ * store instead.
+ *
+ * update_core_prefs() otherwise only fills in keys a site is missing, so a value
+ * that was poisoned when the site was installed is never repaired. sitecontacts
+ * is the one that costs a site owner something: default_install.xml declared it
+ * twice for years and the declaration that won was the string "sitecontactinfo".
+ * uc_dropdown() preselects no option for a value that is not a userclass, and
+ * prefs.php stores every field on the page whether or not the admin touched it,
+ * so the next save of the preferences form writes e_UC_NOBODY and contact.php
+ * then stops rendering the contact form at all.
+ *
+ * @param array $pref
+ * @return array preference name => replacement value
+ */
+function get_unusable_core_prefs($pref)
+{
+	$repairs = array();
+
+	if (!empty($pref['sitecontacts']) && !is_numeric($pref['sitecontacts']))
+	{
+		$repairs['sitecontacts'] = (string) e_UC_MAINADMIN;
+	}
+
+	return $repairs;
+}
+
+
 function update_core_prefs($type='')
 {
 	global $e107info; // $pref,  $pref must be kept as global 
@@ -493,21 +522,35 @@ function update_core_prefs($type='')
 		}
 	}
 
+	$repairs = get_unusable_core_prefs($pref);
+
 	if ($just_check)
 	{
 		// Nothing is applied while only checking. Setting the defaults here would
 		// leave them on the shared config object for whoever saves it next, and
 		// update_check() saves it moments later, so the check used to quietly
 		// apply itself and the UPDATE_03 record below never ran.
-		if (!empty($missing))
+		if (!empty($missing) || !empty($repairs))
 		{
-			return update_needed('<br>Missing prefs: <ul><li>'.implode('</li><li>',array_keys($missing)).'</li></ul>');
+			$message = '';
+
+			if (!empty($missing))
+			{
+				$message .= '<br>Missing prefs: <ul><li>'.implode('</li><li>',array_keys($missing)).'</li></ul>';
+			}
+
+			if (!empty($repairs))
+			{
+				$message .= '<br>Unusable prefs: <ul><li>'.implode('</li><li>',array_keys($repairs)).'</li></ul>';
+			}
+
+			return update_needed($message);
 		}
 
 		return $just_check;
 	}
 
-	foreach ($missing as $k => $v)
+	foreach (array_merge($missing, $repairs) as $k => $v)
 	{
 		e107::getConfig()->set($k,$v);
 		$admin_log->logMessage($k.' => '.$v, E_MESSAGE_NODISPLAY, E_MESSAGE_INFO);
