@@ -229,6 +229,23 @@ class ForumFixture extends CodeceptionModule
 	}
 
 	/**
+	 * Replace a plugin's preferences with $values.
+	 *
+	 * A plugin config is one serialised row rather than a column per setting,
+	 * so it cannot be seeded through haveInDatabase, and several plugins build
+	 * their own defaults on first read in ways that a test has no business
+	 * relying on.
+	 *
+	 * @param string $plugin plugin folder name
+	 * @param array $values
+	 */
+	public function havePluginPrefs($plugin, array $values)
+	{
+		$this->probe('act=plugpref&plugin='.urlencode($plugin)
+			.'&payload='.urlencode(json_encode($values)));
+	}
+
+	/**
 	 * Put the mailer in dry run, so nothing is handed to a transport.
 	 *
 	 * A belt for the queue: above five recipients e107MailManager writes rows
@@ -790,6 +807,13 @@ switch($act)
 			e107::getDb()->delete($table);
 		}
 		echo "PROBE_OK mailreset\n";
+		break;
+
+	case 'plugpref':
+		$config = e107::getPlugConfig($_GET['plugin']);
+		$config->reset()->setPref(json_decode($_GET['payload'], true));
+		$config->save(false, true, false);
+		echo "PROBE_OK plugpref\n";
 		break;
 
 	case 'pref':

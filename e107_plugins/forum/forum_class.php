@@ -1012,23 +1012,62 @@ class e107forum
 
 	private function loadPermList()
 	{
+		$this->permList = self::permList();
+	}
+
+
+	/**
+	 * The permission lists for whoever holds this request, keyed by type.
+	 *
+	 * Static, and so answerable without constructing the controller: a listing
+	 * that only wants to know which forums it may name has no business entering
+	 * the forum's request handling to find out.
+	 *
+	 * Cached under forum_perms, keyed on the language and the caller's
+	 * userclass list. The forum admin's create, update and delete hooks clear
+	 * it; nothing else invalidates it.
+	 *
+	 * @return array permission type => forum ids, plus a "<type>_list" string
+	 */
+	public static function permList()
+	{
 		if($tmp = e107::getCache()->setMD5(e_LANGUAGE.USERCLASS_LIST)->retrieve('forum_perms'))
 		{
 			e107::getDebug()->log("Using Permlist cache: True");
 
-			$this->permList = e107::unserialize($tmp);
-
-		//	print_a($this->permList);
-
+			return e107::unserialize($tmp);
 		}
-		else
-		{
-			e107::getDebug()->log("Using Permlist cache: False");
-			$this->_getForumPermList();
-			$tmp = e107::serialize($this->permList, false);
-			e107::getCache()->setMD5(e_LANGUAGE.USERCLASS_LIST)->set('forum_perms', $tmp);
-		}
-		unset($tmp);
+
+		e107::getDebug()->log("Using Permlist cache: False");
+		$permList = self::buildPermList();
+		e107::getCache()->setMD5(e_LANGUAGE.USERCLASS_LIST)->set('forum_perms', e107::serialize($permList, false));
+
+		return $permList;
+	}
+
+
+	/**
+	 * The forum ids checkPerm($id, $type) accepts for this caller.
+	 *
+	 * The list holds the id of every forum whose own class column admits the
+	 * caller and whose parent row's column admits them too, plus the ids of
+	 * those parent rows, so a category containing at least one permitted forum
+	 * is a member of the list in its own right.
+	 *
+	 * Two levels only. forum_sub, the third, is not consulted here and is not
+	 * consulted by forum_viewforum.php either: a sub-forum's forum_parent names
+	 * its category, so it is the category and not the parent forum that is
+	 * asked. Feeds built on this list are therefore exactly as permissive as
+	 * the site route, which is the property that matters.
+	 *
+	 * @param string $type view, post or thread
+	 * @return int[]
+	 */
+	public static function visibleForumIds($type = 'view')
+	{
+		$permList = self::permList();
+
+		return isset($permList[$type]) ? $permList[$type] : array();
 	}
 
 
@@ -1063,9 +1102,12 @@ class e107forum
 
 
 
-	private function _getForumPermList()
+	/**
+	 * @return array permission type => forum ids, plus a "<type>_list" string
+	 */
+	private static function buildPermList()
 	{
-		$this->permList = array();
+		$permList = array();
 
 		// Static map of permission key => forum class column (identifiers are fixed literals).
 		$classColumns = array(
@@ -1091,12 +1133,11 @@ class e107forum
 				$tmp[$row['forum_parent']] = 1;
 			}
 			ksort($tmp);
-			$this->permList[$key] = array_keys($tmp);
-			$this->permList[$key.'_list'] = implode(',', array_keys($tmp));
+			$permList[$key] = array_keys($tmp);
+			$permList[$key.'_list'] = implode(',', array_keys($tmp));
 		}
 
-
-		// print_a($this->permList);
+		return $permList;
 	}
 
 	
@@ -1112,8 +1153,30 @@ class e107forum
 		return (in_array($forumId, $this->permList[$type]));
 	}
 
-	
-	
+
+	/**
+	 * "The thread sits in a forum the caller may read", as a WHERE fragment.
+	 *
+	 * For queries that are still built by concatenation. A query builder should
+	 * pass visibleForumIds() to whereIn() instead, which binds the ids and
+	 * compiles the same "nothing is readable" case to 1=0.
+	 *
+	 * @param string $alias the forum_thread alias in the query being built
+	 * @return string a WHERE fragment; "1=0" when the caller may read nothing
+	 */
+	public static function threadVisibleSql($alias = 't')
+	{
+		$visible = self::visibleForumIds('view');
+
+		if(empty($visible))
+		{
+			return '1=0';
+		}
+
+		return $alias.'.thread_forum_id IN ('.implode(',', array_map('intval', $visible)).')';
+	}
+
+
 	function threadViewed($threadId)
 	{
 		$e107 = e107::getInstance();
@@ -2330,9 +2393,9 @@ class e107forum
 	 * forum_track records a user and a thread and nothing else, so where the
 	 * subscription was taken out has to be recovered before anyone can be judged
 	 * on it. A thread names its forum, and the forum's parent carries the second
-	 * half of the view permission, exactly as _getForumPermList() reads it. The
+	 * half of the view permission, exactly as buildPermList() reads it. The
 	 * INNER JOIN to the parent is also what refuses a forum sitting at the top
-	 * level, which _getForumPermList() spells forum_parent != 0.
+	 * level, which buildPermList() spells forum_parent != 0.
 	 *
 	 * @param int $threadId
 	 * @return array|false forum_class and parent_class, or false when the thread

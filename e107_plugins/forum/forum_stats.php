@@ -94,7 +94,7 @@ class forumStats
 			}
 		}
 
-		$classList = explode(',', USERCLASS_LIST);
+		$visibleForums = $forum->getForumPermList('view');
 
 		$qb = $sql->createQueryBuilder();
 		$most_activeArray = $qb
@@ -103,7 +103,7 @@ class forumStats
 			->leftJoin('user', 'u', $qb->expr()->compareColumns('ft.thread_user', 'u.user_id'))
 			->leftJoin('forum', 'f', $qb->expr()->compareColumns('f.forum_id', 'ft.thread_forum_id'))
 			->where('ft.thread_active', '>', 0)
-			->whereIn('f.forum_class', $classList)
+			->whereIn('ft.thread_forum_id', $visibleForums)
 			->orderBy('ft.thread_total_replies', 'DESC')
 			->setFirstResult(0)->setMaxResults(10)
 			->fetchAll();
@@ -114,7 +114,7 @@ class forumStats
 			->from('forum_thread', 'ft')
 			->leftJoin('user', 'u', $qb->expr()->compareColumns('ft.thread_user', 'u.user_id'))
 			->leftJoin('forum', 'f', $qb->expr()->compareColumns('f.forum_id', 'ft.thread_forum_id'))
-			->whereIn('f.forum_class', $classList)
+			->whereIn('ft.thread_forum_id', $visibleForums)
 			->orderBy('ft.thread_views', 'DESC')
 			->setFirstResult(0)->setMaxResults(10)
 			->fetchAll();
