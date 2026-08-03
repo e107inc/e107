@@ -2204,13 +2204,194 @@ class e107forum
 
 
 	/**
+	 * The two user classes a thread's forum is read through.
+	 *
+	 * forum_track records a user and a thread and nothing else, so where the
+	 * subscription was taken out has to be recovered before anyone can be judged
+	 * on it. A thread names its forum, and the forum's parent carries the second
+	 * half of the view permission, exactly as _getForumPermList() reads it. The
+	 * INNER JOIN to the parent is also what refuses a forum sitting at the top
+	 * level, which _getForumPermList() spells forum_parent != 0.
+	 *
+	 * @param int $threadId
+	 * @return array|false forum_class and parent_class, or false when the thread
+	 *                     names no forum readable by anybody
+	 */
+	private function trackForumClasses($threadId)
+	{
+		$sql = e107::getDb('forum_track');
+
+		$qry = "SELECT f.forum_class AS forum_class, fp.forum_class AS parent_class
+			FROM `#forum_thread` AS th
+			INNER JOIN `#forum` AS f ON th.thread_forum_id = f.forum_id
+			INNER JOIN `#forum` AS fp ON f.forum_parent = fp.forum_id
+			WHERE th.thread_id = ".intval($threadId);
+
+		if(!$sql->gen($qry))
+		{
+			return false;
+		}
+
+		$row = $sql->fetch();
+
+		return empty($row) ? false : $row;
+	}
+
+
+	/**
+	 * The subscribers to a thread who may still read the forum it sits in.
+	 *
+	 * The join to user is INNER: a subscription naming an account that no longer
+	 * exists names nobody, and under the LEFT JOIN this replaced it arrived as a
+	 * recipient with a NULL address.
+	 *
+	 * @param int $threadId
+	 * @return array user rows, each with user_id, user_name, user_email and
+	 *               user_lastvisit
+	 */
+	private function trackRecipients($threadId)
+	{
+		$classes = $this->trackForumClasses($threadId);
+
+		if($classes === false)
+		{
+			return array();
+		}
+
+		$sql = e107::getDb('forum_track');
+
+		$qry = "SELECT u.user_id, u.user_name, u.user_email, u.user_lastvisit
+			FROM `#forum_track` AS t
+			INNER JOIN `#user` AS u ON t.track_userid = u.user_id
+			WHERE t.track_thread = ".intval($threadId)."
+			AND (".$this->trackClassHeld($classes['forum_class']).")
+			AND (".$this->trackClassHeld($classes['parent_class']).")";
+
+		if(!$sql->gen($qry))
+		{
+			return array();
+		}
+
+		$rows = array();
+
+		while($row = $sql->fetch())
+		{
+			$rows[] = $row;
+		}
+
+		return $rows;
+	}
+
+
+	/**
+	 * "The recipient, aliased u, holds user class $classId", as SQL.
+	 *
+	 * The rule being answered is e_user_model::_setClassList(): a signed-in user
+	 * holds every class written in user_class along with everything those
+	 * inherit, plus the fixed classes their own row answers for. So the
+	 * predicate is a match against user_class, ORed with whichever property of
+	 * the user row the class is a name for, shaped after
+	 * user_class::getUsersInClass(). It answers readability and nothing else;
+	 * whether an address is worth writing to is the mailer's question.
+	 *
+	 * e_UC_PUBLIC, e_UC_READONLY and e_UC_MEMBER are held by every account, and
+	 * the join to user is what establishes that there is one.
+	 *
+	 * e_UC_GUEST and e_UC_NOBODY answer nobody rather than being matched against
+	 * user_class, one being the absence of an account and the other the refusal
+	 * of every one. That is narrower than checkPerm(), which would grant either
+	 * to a row carrying the id literally, and deliberately so.
+	 *
+	 * @param int $classId
+	 * @return string a predicate over the recipient aliased u, without the WHERE
+	 */
+	private function trackClassHeld($classId)
+	{
+		$classId = (int) $classId;
+
+		if($classId === e_UC_PUBLIC || $classId === e_UC_READONLY || $classId === e_UC_MEMBER)
+		{
+			return '1=1';
+		}
+
+		if($classId === e_UC_GUEST || $classId === e_UC_NOBODY)
+		{
+			return '1=0';
+		}
+
+		$terms = array("u.user_class REGEXP '(^|,)("
+			.implode('|', $this->trackClassHolders($classId)).")(,|$)'");
+
+		switch($classId)
+		{
+			case e_UC_NEWUSER:
+				$period = e107::getPref('user_new_period', 0);
+				if(!empty($period))
+				{
+					$terms[] = 'u.user_join > '.(int) strtotime($period.' days ago');
+				}
+				break;
+
+			case e_UC_ADMIN:
+				$terms[] = 'u.user_admin = 1';
+				break;
+
+			case e_UC_MAINADMIN:
+				// e_userperms::simulateHasAdminPerms('0', ...): one of the
+				// dot-separated segments of user_perms is 0.
+				$terms[] = "(u.user_admin = 1 AND CONCAT('.', u.user_perms, '.') LIKE '%.0.%')";
+				break;
+		}
+
+		return implode(' OR ', $terms);
+	}
+
+
+	/**
+	 * The classes whose members hold $classId.
+	 *
+	 * get_all_user_classes() answers the other direction, "what does a member of
+	 * this class hold", and is what USERCLASS_LIST is built from; reversing it
+	 * over the class tree is what recognises a member of a child class as
+	 * holding its ancestors. FIND_IN_SET on user_class, the shorthand used by
+	 * notify::send(), asks only about the classes a user was literally given and
+	 * so misses every inherited one.
+	 *
+	 * $classId is always in the answer, including when the tree has no row for
+	 * it: _setClassList() expands user_class literally, so a class deleted from
+	 * userclass_classes while members still carry the id is still granted by
+	 * checkPerm() and still has to be honoured here.
+	 *
+	 * @param int $classId
+	 * @return int[]
+	 */
+	private function trackClassHolders($classId)
+	{
+		$userClass = e107::getUserClass();
+		$classId = (int) $classId;
+		$holders = array($classId);
+
+		foreach(array_keys($userClass->uc_get_classlist()) as $candidate)
+		{
+			$held = array_map('intval', $userClass->get_all_user_classes((string) $candidate, true));
+
+			if(in_array($classId, $held, true))
+			{
+				$holders[] = (int) $candidate;
+			}
+		}
+
+		return array_unique($holders);
+	}
+
+
+	/**
 	 * Send an email to users who are tracking the topic/thread.
 	* @param $post
 	 * @return bool
 	*/
 	function trackEmail($post)
 	{
-		$sql = e107::getDb();
 		$tp = e107::getParser();
 
 		$trackingPref = $this->prefs->get('track');
@@ -2221,7 +2402,7 @@ class e107forum
 			return false;
 		}
 
-		$data = $sql->retrieve('SELECT t.*, u.user_id, u.user_name, u.user_email, u.user_lastvisit FROM `#forum_track` AS t LEFT JOIN `#user` AS u ON t.track_userid = u.user_id WHERE t.track_thread='.intval($post['post_thread']), true);
+		$data = $this->trackRecipients(intval($post['post_thread']));
 
 		if(empty($data))
 		{
