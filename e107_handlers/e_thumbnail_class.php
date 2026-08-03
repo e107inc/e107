@@ -306,7 +306,7 @@ class e_thumbnail
 
 		if($resolved !== '' && is_file($resolved) && is_readable($resolved))
 		{
-			if($this->isRestrictedMedia($resolved))
+			if($this->isRestrictedMedia($resolved) || $this->isRestrictedByPlugin($resolved))
 			{
 				return false;
 			}
@@ -509,6 +509,77 @@ class e_thumbnail
 		$this->_classGated = true;
 
 		return !$this->callerHolds($userclass);
+	}
+
+	/**
+	 * Plugins that store user uploads in a directory this endpoint serves, and
+	 * answer for who may read them.
+	 *
+	 * The forum keeps its post attachments in e_MEDIA, which this endpoint has
+	 * to go on serving: a public forum renders its image attachments to
+	 * anonymous visitors through thumbUrl(), which is a URL to here. What the
+	 * endpoint cannot do is serve them all, because the forum an attachment
+	 * hangs off is what carries the userclass.
+	 *
+	 * Keyed by the file to include, valued by the class it defines. The class
+	 * owns its own storage paths, so a plugin that moves them does not send
+	 * anybody editing a core handler. It answers three questions: roots(),
+	 * admitsEveryone() and mayRead(array $classes).
+	 *
+	 * This is not privateRoots(). A private root is refused outright, with no
+	 * question asked of anybody; these are the roots where the answer belongs
+	 * to somebody else.
+	 *
+	 * @see forum_attachments
+	 * @return array
+	 */
+	protected function gatedPlugins()
+	{
+		return array(e_PLUGIN.'forum/forum_attachments.php' => 'forum_attachments');
+	}
+
+	/**
+	 * Whether a plugin that owns $path says the caller may not read it.
+	 *
+	 * A request for a source no gated plugin holds pays one include and one
+	 * realpath() per plugin, which for the one plugin that ships is what an
+	 * avatar request costs. The include is unconditional because the class is
+	 * what knows where its files are.
+	 *
+	 * @param string $path canonical path of a readable file
+	 * @return bool
+	 */
+	private function isRestrictedByPlugin($path)
+	{
+		foreach($this->gatedPlugins() as $gate => $class)
+		{
+			if(!is_readable($gate))
+			{
+				continue;
+			}
+
+			require_once($gate);
+
+			$roots = call_user_func(array($class, 'roots'));
+
+			if(empty($roots) || e107::getFile()->resolveSendPath($path, $roots) === false)
+			{
+				continue;
+			}
+
+			$item = new $class($path);
+
+			if($item->admitsEveryone())
+			{
+				return false;
+			}
+
+			$this->_classGated = true;
+
+			return !$item->mayRead($this->userClasses());
+		}
+
+		return false;
 	}
 
 	/**

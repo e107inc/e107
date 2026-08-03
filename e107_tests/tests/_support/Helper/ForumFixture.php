@@ -456,6 +456,30 @@ class ForumFixture extends CodeceptionModule
 	}
 
 	/**
+	 * Whether a file is in a member's attachment directory, asked of the disk.
+	 *
+	 * Not asked over HTTP. The forum covers that directory with a deny rule, so
+	 * a request for an attachment answers 403 whether the file is there or not,
+	 * and a test that read existence off a status code would be measuring the
+	 * deny rule rather than the delete it means to pin.
+	 *
+	 * @param int $userId
+	 * @param string $file name inside the member's attachment directory
+	 * @return bool
+	 */
+	public function grabForumAttachmentExists($userId, $file)
+	{
+		$body = $this->probe('act=attachfile&uid='.(int) $userId.'&file='.urlencode($file));
+
+		if (!preg_match('~ATTACH_FILE=([01])~', $body, $m))
+		{
+			throw new \RuntimeException('Fixture did not report an attachment file: '.trim(strip_tags($body)));
+		}
+
+		return $m[1] === '1';
+	}
+
+	/**
 	 * A post whose post_attachments is written through e107's own serialiser,
 	 * so the stored value has exactly the shape the application produces.
 	 *
@@ -629,6 +653,14 @@ switch($act)
 		$forum = new e107forum();
 		$dir = $forum->getAttachmentPath((int) $_GET['uid'], true);
 		echo is_dir($dir) ? "PROBE_OK ATTACH_DIR=".$dir."\n" : "could not create ".$dir."\n";
+		break;
+
+	case 'attachfile':
+		require_once(e_PLUGIN.'forum/forum_class.php');
+		$forum = new e107forum();
+		$dir = $forum->getAttachmentPath((int) $_GET['uid']);
+		$name = basename((string) $_GET['file']);
+		echo "PROBE_OK ATTACH_FILE=".(is_file($dir.$name) ? '1' : '0')."\n";
 		break;
 
 	case 'attachpost':

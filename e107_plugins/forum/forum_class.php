@@ -274,7 +274,9 @@ class e107forum
 	{
 		$user = intval($user);
 		$tp = e107::getParser();
-		$baseDir = e_MEDIA.'plugins/forum/attachments/';
+		require_once(e_PLUGIN.'forum/forum_attachments.php');
+		$paths = forum_attachments::paths();
+		$baseDir = $paths[0];
 		$baseDir .= ($user) ? "user_". $tp->leadingZeros($user, 6) : "anon";
 		
 		if($create == TRUE && !is_dir($baseDir))
@@ -318,15 +320,17 @@ class e107forum
             ->where('post_id', $post_id)
             ->fetchRow();
         $attach = e107::unserialize($array['post_attachments']);
+        $entry  = isset($attach['file'][$file_id]) ? $attach['file'][$file_id] : '';
 
-        $filename = is_array($attach['file'][$file_id]) ? $attach['file'][$file_id]['file'] : $attach['file'][$file_id];
+        $filename = is_array($entry) ? varset($entry['file'], '') : $entry;
+        $filename = basename((string) $filename);
 
-        $file 	= $this->getAttachmentPath($array['post_user']).varset($filename);
+        $file 	= $this->getAttachmentPath($array['post_user']).$filename;
 
         // Check if file exists. Send file for download if it does, return 404 error code when file does not exist.
- 		if(file_exists($file))
+ 		if($filename !== '' && is_file($file))
  		{
- 		   e107::getFile()->send($file, array('roots' => array(e_MEDIA.'plugins/forum/attachments/')));
+ 		   e107::getFile()->send($file, array('roots' => forum_attachments::paths()));
  		}
  		else
  		{
@@ -1072,23 +1076,13 @@ class e107forum
 
 		$classList = explode(',', USERCLASS_LIST);
 
+		// The predicate itself lives in forum_attachments.php, which thumb.php
+		// can load and this file cannot. One rule, asked from both sides.
+		require_once(e_PLUGIN.'forum/forum_attachments.php');
+
 		foreach($classColumns as $key => $col)
 		{
-			$qb = e107::getDb()->createQueryBuilder();
-			// Bind the class list once and reuse it in both the JOIN ON-condition and the WHERE.
-			$classPlaceholders = array();
-			foreach($classList as $class)
-			{
-				$classPlaceholders[] = $qb->createNamedParameter($class);
-			}
-			$classPlaceholders = implode(', ', $classPlaceholders);
-
-			$rows = $qb->select('f.forum_id', 'f.forum_parent')->from('forum', 'f')
-				->leftJoin('forum', 'fp', $qb->raw('f.forum_parent = fp.forum_id AND fp.'.$col.' IN ('.$classPlaceholders.')'))
-				->where($qb->raw('f.'.$col.' IN ('.$classPlaceholders.')'))
-				->where('f.forum_parent', '!=', 0)
-				->where($qb->expr()->isNotNull('fp.forum_id'))
-				->fetchAll();
+			$rows = forum_attachments::readableForumRows($classList, $col);
 
 			$tmp = array();
 			foreach($rows as $row)

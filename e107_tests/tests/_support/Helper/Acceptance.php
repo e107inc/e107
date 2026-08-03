@@ -56,6 +56,26 @@ class Acceptance extends E107Base
 	}
 
 	/**
+	 * Send a multipart POST carrying uploaded files.
+	 *
+	 * attachFile() needs a rendered file input to hang off, and e107 renders
+	 * several of them only when a preference says so, so a test about what the
+	 * upload handler does with a file would first have to rewrite the site's
+	 * configuration to make the field appear. The field is not what is under
+	 * test; the bytes PHP puts in $_FILES are.
+	 *
+	 * @param string $uri
+	 * @param array $params ordinary form fields
+	 * @param array $files as $_FILES would hold them, keyed by input name, each
+	 *                     entry an array of name/type/error/size/tmp_name
+	 * @return void
+	 */
+	public function sendPostRequestWithFiles($uri, array $params = [], array $files = [])
+	{
+		$this->getModule('PhpBrowser')->_request('POST', $uri, $params, $files);
+	}
+
+	/**
 	 * Empty the cookie jar.
 	 *
 	 * e_core_session::hasAmbientAuthority() asks whether a request carried any
