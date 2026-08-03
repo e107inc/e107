@@ -38,7 +38,7 @@ if(e_QUERY)
 	$newip = (strpos($row['banner_ip'], "{$ip}^") !== FALSE) ? $row['banner_ip'] : "{$row['banner_ip']}{$ip}^"; // what does this do?
 	$sql->update("banner", "banner_clicks = banner_clicks + 1, `banner_ip` = '".$sql->escape($newip)."' WHERE `banner_id` = '{$query_string}'");
 //	header("Location: {$row['banner_clickurl']}");
-	e107::redirect($row['banner_clickurl']);
+	e107::redirect($row['banner_clickurl'], 301, true);
 	exit;
 }
 
