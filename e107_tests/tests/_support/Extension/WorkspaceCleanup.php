@@ -68,6 +68,9 @@ class WorkspaceCleanup extends Extension
 		'e107_tests_preauth_canary.txt',       // @see AdminPreAuthCest
 		'e107_plugins/faqs/admin_e107_tests_preauth_dispatcher.php', // @see AdminPreAuthCest
 		'e107_plugins/faqs/e107_tests_preauth_dispatcher.php',       // @see AdminPreAuthCest
+		'e107_tests_routeperms_probe.php',     // @see AdminRoutePermsCest
+		'e107_tests_confirmtoken_probe.php',   // @see AdminConfirmTokenCest
+		'e107_tests_themefront_probe.php',     // @see ThemeHandlerFrontEndCest
 	];
 
 	/** @var \Deployer|null */

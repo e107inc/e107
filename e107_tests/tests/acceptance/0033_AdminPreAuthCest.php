@@ -91,6 +91,13 @@ class AdminPreAuthCest
 	const PLUGIN_PREF_SAFE = 254;   // e_UC_ADMIN
 	const PLUGIN_PREF_ATTACK = 0;   // e_UC_PUBLIC
 
+	/**
+	 * Signed post-login destination, written by redirect_class::go('admin').
+	 *
+	 * @see e107_handlers/redirection_class.php  redirection::LOGIN_DEST_COOKIE
+	 */
+	const LOGIN_DEST_COOKIE = 'e107_logindest';
+
 	/** Emitted by e_form::tabs() for the media manager's tab container. */
 	const MEDIA_MANAGER_MARKER = 'admin-ui-media-manager';
 
@@ -780,6 +787,164 @@ class AdminPreAuthCest
 		$I->seeResponseCodeIs(200);
 		$I->dontSeeElement('input[name=authpass]');
 		$I->seeElement('#lancheck');
+	}
+
+	// -----------------------------------------------------------------
+	// where the guest lands afterwards
+	// -----------------------------------------------------------------
+
+	/**
+	 * A guest turned away by the dispatcher's gate must come back to the page
+	 * they asked for once they have signed in, not to the dashboard.
+	 *
+	 * The mechanism is redirect_class::go('admin'), which calls
+	 * setLoginDestination() whenever the caller is not already an
+	 * administrator. That is not new and it is not part of the gate; what was
+	 * missing is anything that would notice it breaking. The gate is a new
+	 * caller of go('admin') on a page nothing else redirects from, so this is
+	 * the seam where a regression would show up first and be blamed on the
+	 * gate.
+	 *
+	 * The page used is the dispatcher fixture: an admin entry point with no
+	 * permission gate of its own, so the redirect under test is unambiguously
+	 * the one e_admin_dispatcher::__construct() issues.
+	 *
+	 * This test passes on the unfixed tree, because the mechanism already
+	 * works. Its value is as a regression guard, and its non-vacuity is shown
+	 * by reverting e107_handlers/redirection_class.php to the commit before
+	 * "feat(login): return users to their intended page after login", which
+	 * turns it red. Reverting that file to the commit before the dispatcher
+	 * gate would change nothing, because that package did not touch it.
+	 *
+	 * @see e107_handlers/redirection_class.php  redirection::go(), setLoginDestination()
+	 * @see e107_admin/auth.php  the login check that consumes the destination
+	 */
+	public function aGuestBouncedFromAnAdminPageReturnsToItAfterSigningIn(AcceptanceTester $I)
+	{
+		$I->wantTo('Return the administrator to the admin page they asked for as a guest');
+
+		$this->installPlugin($I);
+		$I->writeAppFile(self::DISPATCHER_FIXTURE, $this->dispatcherFixtureSource());
+		$this->reset($I);
+
+		$I->resetAllCookies();
+		$I->startFollowingRedirects();
+		$I->amOnPage('/'.self::DISPATCHER_FIXTURE);
+
+		$I->seeElement('input[name=authname]');
+		$I->seeCookie(self::LOGIN_DEST_COOKIE);
+
+		$I->fillField('authname', \Helper\AdminLogin::ADMIN_USER);
+		$I->fillField('authpass', \Helper\AdminLogin::ADMIN_PASS);
+		$I->click('authsubmit');
+
+		$I->dontSeeElement('input[name=authname]');
+		$I->seeInCurrentUrl('/'.self::DISPATCHER_FIXTURE);
+	}
+
+	/**
+	 * A POST is not a page, and must not become the place the administrator is
+	 * returned to.
+	 *
+	 * redirection::isCapturable() refuses anything that is not a top-level GET
+	 * document navigation, so this lands on the dashboard by design. Asserted
+	 * here so that a change which starts capturing it is caught rather than
+	 * welcomed: replaying a POST target as a GET after login is at best a
+	 * confusing page and at worst a form resubmission the administrator never
+	 * asked for.
+	 */
+	public function aGuestPostToAnAdminPageIsNotRememberedAsTheLoginDestination(AcceptanceTester $I)
+	{
+		$I->wantTo('Not remember a POST target as the post-login destination');
+
+		$this->installPlugin($I);
+		$I->writeAppFile(self::DISPATCHER_FIXTURE, $this->dispatcherFixtureSource());
+		$this->reset($I);
+
+		$I->resetAllCookies();
+		$I->stopFollowingRedirects();
+		$I->sendPostRequest('/'.self::DISPATCHER_FIXTURE, array());
+
+		$I->assertSame(301, $I->grabResponseCode(),
+			'The guest POST was not turned away, so there was no bounce for the destination logic to '
+			.'have captured and nothing below is being measured.');
+
+		$I->dontSeeCookie(self::LOGIN_DEST_COOKIE);
+
+		$I->startFollowingRedirects();
+		$I->loginAsAdmin();
+
+		$I->dontSeeInCurrentUrl('/'.self::DISPATCHER_FIXTURE);
+	}
+
+	/**
+	 * An iframe sub-request is not a page either.
+	 *
+	 * The media dialog is the case that matters in practice: e_form::mediaUrl()
+	 * builds it for every image and file picker in the product, and returning
+	 * an administrator to the bare dialog after login drops them into an
+	 * embedded view with no navigation. The browser tags the sub-request
+	 * Sec-Fetch-Dest: iframe, which isCapturable() honours, and the header
+	 * cannot be set by page script.
+	 */
+	public function anIframeSubRequestIsNotRememberedAsTheLoginDestination(AcceptanceTester $I)
+	{
+		$I->wantTo('Not remember an iframe sub-request as the post-login destination');
+
+		$this->reset($I);
+
+		$I->resetAllCookies();
+		$I->startFollowingRedirects();
+		$I->haveHttpHeader('Sec-Fetch-Dest', 'iframe');
+		$I->amOnPage(self::DIALOG_ROUTE);
+
+		$I->seeElement('input[name=authname]');
+		$I->dontSeeCookie(self::LOGIN_DEST_COOKIE);
+
+		// The header belongs to the sub-request, not to the login the visitor
+		// then performs in the top-level document.
+		$I->deleteHeader('Sec-Fetch-Dest');
+
+		$I->loginAsAdmin();
+
+		$I->dontSeeInCurrentUrl('/e107_admin/image.php');
+	}
+
+	/**
+	 * The same refusal, on a URL that carries no dialog marker at all.
+	 *
+	 * The media dialog is guarded twice over: by Sec-Fetch-Dest, and by the URL
+	 * marker belt that recognises ?mode=dialog off the address itself for
+	 * clients that send no Fetch Metadata. Either guard alone keeps the test
+	 * above green, so neither is witnessed by it.
+	 *
+	 * The dispatcher fixture has no marker in its URL, so the header is the
+	 * only thing that can refuse it, and a change that stops isCapturable()
+	 * reading Sec-Fetch-Dest is caught here on its own.
+	 *
+	 * @see e107_handlers/redirection_class.php  redirection::isCapturable()
+	 */
+	public function anIframeSubRequestToAnUnmarkedUrlIsNotRememberedEither(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse an iframe sub-request as the login destination without a dialog marker to go on');
+
+		$this->installPlugin($I);
+		$I->writeAppFile(self::DISPATCHER_FIXTURE, $this->dispatcherFixtureSource());
+		$this->reset($I);
+
+		$I->resetAllCookies();
+		$I->startFollowingRedirects();
+		$I->haveHttpHeader('Sec-Fetch-Dest', 'iframe');
+		$I->amOnPage('/'.self::DISPATCHER_FIXTURE);
+
+		$I->seeElement('input[name=authname]');
+		$I->dontSeeCookie(self::LOGIN_DEST_COOKIE);
+
+		$I->deleteHeader('Sec-Fetch-Dest');
+
+		$I->loginAsAdmin();
+
+		$I->dontSeeInCurrentUrl('/'.self::DISPATCHER_FIXTURE);
 	}
 
 	// -----------------------------------------------------------------
