@@ -257,8 +257,9 @@ class resize_handlerTest extends \Codeception\Test\Unit
 			$marker,
 			'The im_path preference "'.$payloadTemplate.'" reached /bin/sh: resize_image() ran '
 				.'`touch '.$marker.'` as the web account. im_path is the one interpolation on '
-				.'resize_handler.php:161 and :165 that is neither intval()\'d nor escapeshellarg()\'d, '
-				.'and e107_images/thumb.php lets an unauthenticated visitor fire it.'
+				.'resize_handler.php:161 and :165 that is neither intval()\'d nor escapeshellarg()\'d. '
+				.'No unauthenticated route reaches it since e107_images/thumb.php became a shim over '
+				.'e_thumbnail, so the remaining callers are the authenticated upload paths.'
 		);
 	}
 

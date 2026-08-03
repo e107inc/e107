@@ -18,6 +18,10 @@ if (!defined('e107_INIT')) { exit; }
 
 // Given an image file name, return the mime type string. Returns FALSE if invalid
 /**
+ * @deprecated v2.3.11 Unused by core since the stdout destination was removed
+ *             from resize_image(). Kept because this handler is required
+ *             directly by third-party plugins, which is the only place the
+ *             function can still be called from.
  * @param $fileName
  * @return false|string
  */
@@ -39,15 +43,20 @@ function mimeFromFilename($fileName)
 /**
  * @deprecated To be replaced with e107::getMedia()->resizeImage();
  * @param string $source_file
- * @param string $destination_file
+ * @param string $destination_file 'stdout' is no longer a destination; it wrote
+ *                                 the image to the browser and is removed.
  * @param string $type
  * @param string $model
  * @return bool
  */
-function resize_image($source_file, $destination_file, $type = "upload", $model = "") 
+function resize_image($source_file, $destination_file, $type = "upload", $model = "")
 {
-// $destination_file - 'stdout' sends direct to browser. Otherwise treated as file name	
-//						- if its a file, given '644' permissions
+	if ($destination_file === 'stdout')
+	{
+		return FALSE;
+	}
+
+// $destination_file - treated as a file name, given '644' permissions
 // $type	- numeric - sets new width of image
 //			- "upload" - uses preference 'im_width', or 400px if not defined
 //		 	- anything else - default preference for image width  & heightused, or failing that, 120 px x 100 px
@@ -61,7 +70,6 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 // Returns:  TRUE - essentially, if $destination_file (or a file with a modified name) is valid:
 //						- if resizing done
 //						- source and (ultimate) destination files are the same, and the image was smaller than the limits
-//						- destination was 'stdout', and file output successfully
 //			 FALSE - essentially, if there is not a valid output file available - usually, that resizing failed, or some other error.
 
 	global $pref;
@@ -118,18 +126,7 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 			case 'upsize' :		// Scale source up to required size
 				break;			// Just fall through to do that.
 			case 'noscale' :	// No scaling of small images- just want destination to be the same as source
-				if ($destination_file == 'stdout')
-				{
-					if (($result = mimeFromFilename($source_file)) === FALSE) { return FALSE; }
-					header($result);
-					if (eShims::readfile($source_file) === FALSE) { return FALSE; }
-				}
-				else
-				{
-					return copy($source_file,$destination_file);
-				}
-				return TRUE;
-				break;
+				return copy($source_file,$destination_file);
 			default :
 				return ($source_file == $destination_file);
 		}
@@ -146,7 +143,7 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 		 
 	}
 
-	if (($destination_file != 'stdout') && ($model == 'copy'))
+	if ($model == 'copy')
 	{
 		$destination_file = dirname($destination_file).'/thumb_'.basename($destination_file);
 	}
@@ -155,16 +152,7 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 	{
 	  case "ImageMagick" :
 		$convert = escapeshellarg((string) varset($pref['im_path'], '').'convert');
-	    if ($destination_file == "stdout")
-		{		// if destination is stdout, output directly to the browser
-//		  $destination_file = "jpg:-";
-		  header("Content-type: image/jpeg");
-		  passthru ($convert." -quality ".intval($im_quality)." -antialias -geometry ".intval($new_size)."x".intval($new_imageheight)." ".escapeshellarg($source_file)." jpg:-", $returnError);
-		}
-		else
-		{		// otherwise output to file
-		  exec ($convert." -quality ".intval($im_quality)." -antialias -geometry ".intval($new_size)."x".intval($new_imageheight)." ".escapeshellarg($source_file)." ".escapeshellarg($destination_file), $dummy, $returnError);
-		}
+		exec ($convert." -quality ".intval($im_quality)." -antialias -geometry ".intval($new_size)."x".intval($new_imageheight)." ".escapeshellarg($source_file)." ".escapeshellarg($destination_file), $dummy, $returnError);
 		if ($returnError) echo "ImageMagick resize/output error: {$returnError}<br />";
 		break;
 	  case 'gd1' :
@@ -208,28 +196,13 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 			return FALSE;
 		}
 
-		// Now output or save the resized file
+		// Now save the resized file
 
 		$destName = $destination_file;
-		if ($destination_file == "stdout") 
-		{
-			$destName = '';
-			if (($result = mimeFromFilename($source_file)) === FALSE) 
-			{ 
-				$returnError = -6; 
-			}
-			else
-			{
-				header($result);
-			}
-		} 
-		else
-		{
-			$fileExt = strtolower(substr(strrchr($destination_file, "."), 1));
-		}
+		$fileExt = strtolower(substr(strrchr($destination_file, "."), 1));
 
 		if ($returnError == 0)
-		{	// We can output the image, or save it to a file
+		{	// We can save the image to a file
 			switch ($fileExt)
 			{
 				case 'png' :
@@ -264,8 +237,6 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 			return FALSE;
 	}   // End switch($mode)
 
-	if ($destination_file == "stdout") return TRUE;		// Can't do anything more if file sent to stdout - assume success
-	 
 	@chmod($destination_file, 0644);
 	if ($pref['image_owner']) 
 	{
