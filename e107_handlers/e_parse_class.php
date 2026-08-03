@@ -492,18 +492,74 @@ class e_parse
 	}
 
 	/**
-	 * Converts the supplied text (presumed to be from user input) to a format suitable for storing in a database table.
+	 * Convert submitted content into the form e107 stores: clean the HTML, apply
+	 * the site's HTML and PHP posting permissions, and entity-encode the rest.
 	 *
-	 * @param mixed          $data
-	 * @param boolean        $nostrip   [optional] Assumes all data is GPC ($_GET, $_POST, $_COOKIE) unless indicate otherwise by setting this var to TRUE.
-	 *                                  If magic quotes is enabled on the server and you do not tell toDB() that the data is non GPC then slashes will be stripped when they should not be.
-	 * @param boolean        $no_encode [optional] This parameter should nearly always be FALSE. It is used by the save_prefs() function to preserve HTML content within prefs even when
-	 *                                  the save_prefs() function has been called by a non admin user / user without html posting permissions.
-	 * @param boolean|string $mod       [optional] model = admin-ui usage. The 'no_html' and 'no_php' modifiers blanket prevent HTML and PHP posting regardless of posting permissions. (used in logging)
-	 *                                  The 'pReFs' value is for internal use only, when saving prefs, to prevent sanitisation of HTML.
-	 * @param mixed          $parm      [optional]
-	 * @return mixed
-	 * @todo complete the documentation of this essential method
+	 * THIS METHOD DOES NOT ESCAPE FOR SQL, whatever the name suggests. It decides
+	 * what a given author is allowed to store, not how to put a value in a query
+	 * safely. Binding or escaping stays the database layer's job, and a value that
+	 * has been through toDB() still has to be bound like any other.
+	 *
+	 * WHAT IT STORES DEPENDS ON WHO IS POSTING, which is the fact most likely to
+	 * catch a reader out. Two different shapes come out of this method:
+	 *
+	 * - An author who holds the 'post_html' class gets HTML stored AS MARKUP, with
+	 *   only $ " ' \ and '<?' entity-encoded.
+	 * - Everyone else gets htmlspecialchars() over the lot, so HTML is stored AS
+	 *   TEXT, and unless $mod is 'pReFs' strip_tags() has already removed the tags
+	 *   in any case.
+	 *
+	 * So the same field holds markup on one row and encoded text on another,
+	 * depending on the permissions of whoever wrote it. Nothing reading the column
+	 * back can assume either shape.
+	 *
+	 * $no_encode IS NOT A REQUEST, IT IS A STARTING POINT. It is forced TRUE for
+	 * any author holding 'post_html', so passing FALSE does not guarantee the
+	 * value comes back encoded. Passing a numeric $parm puts the encoding back
+	 * when the userclass it names does not hold 'post_html'. If a caller needs a
+	 * value encoded no matter who is posting, it has to encode at the sink.
+	 *
+	 * Note also that it fails permissive on an unrecognised $mod: the modifiers
+	 * are matched with strpos(), so a misspelt 'no_htlm' silently permits HTML.
+	 *
+	 * @param mixed          $data      string or array. An array is walked
+	 *                                  recursively and its KEYS have " and '
+	 *                                  replaced as well. Any other type is
+	 *                                  returned untouched, as is the string '0'.
+	 * @param boolean        $nostrip   [optional] only consulted when the server
+	 *                                  has magic quotes on. Data is assumed to
+	 *                                  come from $_GET/$_POST/$_COOKIE and is
+	 *                                  stripslashes()'d; pass TRUE for data that
+	 *                                  did not, so its backslashes survive.
+	 * @param boolean        $no_encode [optional] skip the entity encoding and
+	 *                                  store markup. Overridden by the 'post_html'
+	 *                                  check both ways; see above.
+	 * @param boolean|string $mod       [optional] one of:
+	 *                                  'no_html'  strip HTML whatever the author
+	 *                                             may post. Used by logging.
+	 *                                  'no_php'   neutralise the [php] bbcode
+	 *                                             whatever the author may post.
+	 *                                  'model'    admin-ui usage. The ONLY value
+	 *                                             that runs the e_parse plugin
+	 *                                             hooks, which may rewrite the
+	 *                                             result again after this method
+	 *                                             is done with it.
+	 *                                  'pReFs'    internal, for saving prefs.
+	 *                                             Skips preFilter(), cleanHtml()
+	 *                                             and the strip_tags() branch
+	 *                                             entirely, so a caller passing it
+	 *                                             is asserting the data is already
+	 *                                             trusted.
+	 * @param mixed          $parm      [optional] two unrelated shapes. Numeric: a
+	 *                                  userclass to test 'post_html' against
+	 *                                  instead of the current user. Array with
+	 *                                  'type' and 'field' keys: passed to the
+	 *                                  e_parse hooks, and only read when $mod is
+	 *                                  'model'.
+	 * @return mixed the converted string, an array converted the same way, or
+	 *               $data unchanged when it is neither
+	 * @see e_parse::cleanHtml() for the HTML cleaning this applies
+	 * @see e_parse::toHTML() for the way back out, which is not an encoder either
 	 */
 	public function toDB($data = null, $nostrip = false, $no_encode = false, $mod = false, $parm = null)
 	{
@@ -1607,18 +1663,64 @@ class e_parse
 
 
 	/**
-	 * Converts the text (presumably retrieved from the database) for HTML output.
+	 * Render stored content for display: bbcode, shortcodes, {e_XXX} constants,
+	 * emotes, clickable links and any hooked parser the site has enabled.
 	 *
-	 * @param string  $text
-	 * @param boolean $parseBB   [optional]
-	 * @param string  $modifiers [optional] TITLE|SUMMARY|DESCRIPTION|BODY|RAW|LINKTEXT etc.
-	 *                           Comma-separated list, no spaces allowed
-	 *                           first modifier must be a CONTEXT modifier, in UPPER CASE.
-	 *                           subsequent modifiers are lower case - see $this->e_Modifiers for possible values
-	 * @param mixed   $postID    [optional]
-	 * @param boolean $wrap      [optional]
-	 * @return string
-	 * @todo complete the documentation of this essential method
+	 * THIS METHOD IS NOT A SANITISER AND NOT AN OUTPUT ENCODER.
+	 *
+	 * It renders content the site already trusts. Two properties in particular
+	 * surprise people, and both have produced vulnerabilities in this codebase:
+	 *
+	 * 1. Script blocks are passed through by default. 'scripts' is TRUE in
+	 *    {@see e_parse::$e_optDefault}, and a permitted <script> block is emitted
+	 *    after html_entity_decode(), so any encoding the caller applied earlier is
+	 *    undone. Only the USER_* and E_* contexts, and the 'scripts_off' modifier,
+	 *    turn that off. Every other context, and the empty modifier string, leave
+	 *    scripts enabled.
+	 * 2. Nothing here is context aware. The result is a fragment of HTML, not an
+	 *    attribute value, not a URL and not JavaScript. Placing it inside
+	 *    title='...' or href='...' is unsafe however the modifiers are set.
+	 *
+	 * So for content that came from a visitor, a remote feed or any other party
+	 * the site does not control, do NOT reach for toHTML() to make it safe:
+	 *
+	 * - Rendering it as body text: pass a USER_* context, which strips scripts.
+	 * - Putting it in an attribute: use {@see e_parse::toAttribute()}.
+	 * - Putting it in a URL: encode for the URL, not for HTML.
+	 * - Wanting plain text out: use TITLE_PLAIN or the 'no_tags' modifier.
+	 *
+	 * MODIFIER GRAMMAR. $modifiers is a comma-separated list with no spaces. The
+	 * first item may be a CONTEXT in UPPER CASE, which selects a whole option set
+	 * from {@see e_parse::$e_SuperMods}; anything after it is a lower-case
+	 * modifier from {@see e_parse::$e_Modifiers} overriding one option at a time.
+	 * 'defaults_off' starts from the NODEFAULT set rather than the usual defaults.
+	 * An unrecognised modifier is ignored silently, so a typo fails open.
+	 *
+	 * CONTEXTS, and what each is for:
+	 *
+	 *   TITLE, TITLE_PLAIN  a title the site authored. TITLE_PLAIN strips tags.
+	 *   SUMMARY, DESCRIPTION, BODY   site-authored content of increasing length.
+	 *   WYSIWYG             content round-tripping through the editor.
+	 *   USER_TITLE, USER_BODY        content a visitor supplied. Scripts stripped.
+	 *   E_TITLE, E_BODY, E_BODY_PLAIN   content leaving the site in mail, so no
+	 *                       clickable links, no emotes and no scripts.
+	 *   LINKTEXT, RAWTEXT   see $e_SuperMods for the exact option sets.
+	 *
+	 * Site preferences can still switch individual features off underneath a
+	 * context (smileys, clickable links, the profanity filter), so a context is a
+	 * ceiling on what is enabled, not a guarantee that it is.
+	 *
+	 * @param string  $text      content to render. Non-strings and empty values
+	 *                           are returned unchanged.
+	 * @param boolean $parseBB   [optional] parse bbcode in $text
+	 * @param string  $modifiers [optional] see MODIFIER GRAMMAR above
+	 * @param mixed   $postID    [optional] id passed on to bbcode handlers that
+	 *                           need to know which item they are rendering
+	 * @param boolean $wrap      [optional] apply the site's word wrap preference
+	 * @return string rendered HTML, or $text unchanged when it is empty or not a
+	 *                string
+	 * @see e_parse::toAttribute() for attribute context
+	 * @see e_parse::toText() to go the other way
 	 */
 	public function toHTML($text, $parseBB = false, $modifiers = '', $postID = '', $wrap = false)
 	{
@@ -2080,6 +2182,37 @@ class e_parse
 		}
 
 		return $text;
+	}
+
+	/**
+	 * Encode a URL for an href or src attribute, refusing any scheme that can execute.
+	 *
+	 * {@see toAttribute()} makes a value safe to sit between quotes, which is only half
+	 * the job for a URL: `javascript:` and `data:text/html` contain no character
+	 * htmlspecialchars() touches, so an encoded attribute still fires on click. Remote
+	 * and visitor-supplied URLs belong here rather than in toAttribute().
+	 *
+	 * Relative and protocol-relative URLs are kept: they cannot name a scheme, and
+	 * feeds and stored request paths legitimately use both.
+	 *
+	 * @param string $url
+	 * @param string $fallback stands in for a URL whose scheme is not allowed
+	 * @return string encoded, ready to place between quotes
+	 */
+	public function toUrlAttribute($url, $fallback = '')
+	{
+		$url = (string) $url;
+
+		// Browsers skip control characters and whitespace while reading a scheme.
+		$probe = strtolower(preg_replace('/[\x00-\x20\x7F]/', '', $url));
+
+		if (preg_match('#^([a-z][a-z0-9+.\-]*):#', $probe, $match)
+			&& !in_array($match[1], array('http', 'https', 'ftp', 'ftps', 'mailto'), true))
+		{
+			$url = $fallback;
+		}
+
+		return $this->toAttribute($url, true);
 	}
 
 	/**

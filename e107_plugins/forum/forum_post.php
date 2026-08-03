@@ -270,6 +270,29 @@ class forum_post_handler
 
 
 	/**
+	 * Where a Cancel link on a confirmation page sends the moderator back to.
+	 *
+	 * The Referer is the visitor's to choose, so it is worth nothing until it has
+	 * been through the same-origin check, and worth nothing in an attribute until
+	 * it has been encoded. A referring page can ask for the full URL to survive a
+	 * cross-origin navigation, and a browser does not encode the apostrophe.
+	 *
+	 * @return string encoded, ready to place between quotes
+	 */
+	private function backUrl()
+	{
+		$referer = e107::getRedirect()->verifyDestinationUrl(varset($_SERVER['HTTP_REFERER'], ''));
+
+		if($referer === false)
+		{
+			$referer = e_PLUGIN_ABS.'forum/forum.php';
+		}
+
+		return e107::getParser()->toUrlAttribute($referer);
+	}
+
+
+	/**
 	 *
 	 */
 	function submitPoll()
@@ -797,7 +820,7 @@ class forum_post_handler
 		</table>
 		<div class='center'>
 		<input class='btn btn-primary button' type='submit' name='split_thread' value=\"".LAN_FORUM_3052."\" />
-		<a class='btn btn-default btn-secondary button'  href='".$_SERVER['HTTP_REFERER']."' >".LAN_CANCEL."</a>
+		<a class='btn btn-default btn-secondary button'  href='".$this->backUrl()."' >".LAN_CANCEL."</a>
 		</div>
 
 		</div>
@@ -924,7 +947,7 @@ class forum_post_handler
 		</table>
 		<div class='center'>
 		<input class='btn btn-primary button' type='submit' name='move_thread' value='".LAN_FORUM_5019."' />
-		<a class='btn btn-default btn-secondary button'  href='".$_SERVER['HTTP_REFERER']."' >".LAN_CANCEL."</a>
+		<a class='btn btn-default btn-secondary button'  href='".$this->backUrl()."' >".LAN_CANCEL."</a>
 		</div>
 
 		</div>
@@ -1311,7 +1334,7 @@ class forum_post_handler
 			if($postResult === -1 || $newPostId === -1) //Duplicate post
 			{
 				require_once(HEADERF);
-				$message = LAN_FORUM_3006."<br ><a class='btn btn-default' href='".$_SERVER['HTTP_REFERER']."'>".LAN_FORUM_8028."</a>";
+				$message = LAN_FORUM_3006."<br ><a class='btn btn-default' href='".$this->backUrl()."'>".LAN_FORUM_8028."</a>";
 				$text = e107::getMessage()->addError($message)->render();
 				e107::getRender()->tablerender(LAN_PLUGIN_FORUM_NAME, $text, 'forum-post-duplicate'); // change to forum-title pref.
 				require_once(FOOTERF);

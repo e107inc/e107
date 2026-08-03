@@ -1725,9 +1725,11 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		foreach($list as $row)
 		{
 
-			$caption = LAN_DOWNLOAD. ': ' .$row['name']. ' ' .$row['version'];
+			$name = htmlspecialchars(varset($row['name'], ''), ENT_QUOTES, 'UTF-8');
+			$version = htmlspecialchars(varset($row['version'], ''), ENT_QUOTES, 'UTF-8');
+			$caption = LAN_DOWNLOAD. ': ' .$name. ' ' .$version;
 
-			$ls = '<a href="'.$row['modalDownload'].'" class="e-modal alert-link" data-modal-caption="'.$caption .'" title="'.LAN_DOWNLOAD.'">';
+			$ls = '<a href="'.$tp->toUrlAttribute(varset($row['modalDownload'], '')).'" class="e-modal alert-link" data-modal-caption="'.$caption .'" title="'.LAN_DOWNLOAD.'">';
 			$le = '</a>';
 
 			$thumb = ($row['icon']) ? $row['icon'] : $row['thumbnail'];
@@ -1736,13 +1738,13 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			  <li class="media">
 			    <div class="media-left">
 			      '.$ls.'
-			        <img class="media-object" src="'.$thumb.'" width="96" alt="'.LAN_DOWNLOAD.'" />
+			        <img class="media-object" src="'.$tp->toUrlAttribute($thumb).'" width="96" alt="'.LAN_DOWNLOAD.'" />
 			      '.$le.'
 			    </div>
 			    <div class="media-body">
-			      <h4 class="media-heading">'.$ls.$row['name'].$le.'</h4>
-			      <p>'.$row['version'].'<br />
-			       <small class="text-muted">'.LAN_RELEASED.': '.($row['date']).'</small>
+			      <h4 class="media-heading">'.$ls.$name.$le.'</h4>
+			      <p>'.$version.'<br />
+			       <small class="text-muted">'.LAN_RELEASED.': '.htmlspecialchars(varset($row['date'], ''), ENT_QUOTES, 'UTF-8').'</small>
 			       </p>
 
 			    </div>

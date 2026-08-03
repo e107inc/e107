@@ -216,7 +216,7 @@ $text .= "
 <tr>
 <td style='width:25%'>".LAN_EMAIL_8."</td>
 <td style='width:75%'>
-<textarea class='tbox' name='comment' cols='70' rows='4' style='width:95%'>".LAN_EMAIL_6." ".SITENAME." (".$emailurl.")
+<textarea class='tbox' name='comment' cols='70' rows='4' style='width:95%'>".LAN_EMAIL_6." ".SITENAME." (".htmlspecialchars($emailurl, ENT_QUOTES, 'UTF-8').")
 ";
 
 if (USER == TRUE)
@@ -249,7 +249,7 @@ $text .= "
 <td style='width:25%'></td>
 <td style='width:75%'>
 <input class='btn btn-default btn-secondary button' type='submit' name='emailsubmit' value='".LAN_EMAIL_4."' />
-<input type='hidden' name='referer' value='".$referrer."' />
+<input type='hidden' name='referer' value='".$tp->toAttribute($referrer, true)."' />
 </td>
 </tr>
 </table>

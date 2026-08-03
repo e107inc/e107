@@ -587,7 +587,25 @@ class redirection
 			return false;
 		}
 
-		$dest = $payload['dest'];
+		return $this->verifyDestinationUrl($payload['dest']);
+	}
+
+	/**
+	 * Confirm a redirect destination points somewhere on this site.
+	 *
+	 * The same-origin half of {@see verifyDestination()}, for the callers that hold
+	 * a plain URL rather than a signed token: a visitor-supplied return address is
+	 * only ever safe to redirect to once it has been through here.
+	 *
+	 * @param string $dest
+	 * @return string|false the destination unchanged, or false if it leaves this site
+	 */
+	public function verifyDestinationUrl($dest)
+	{
+		if(!is_string($dest) || $dest === '')
+		{
+			return false;
+		}
 
 		// Collapse backslashes so "/\evil" or "\\evil" cannot smuggle an off-site host.
 		$probe = str_replace('\\', '/', $dest);
