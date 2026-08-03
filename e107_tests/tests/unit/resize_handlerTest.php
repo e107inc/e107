@@ -38,9 +38,10 @@ class resize_handlerTest extends \Codeception\Test\Unit
 	private $source;
 
 	/**
-	 * Marker that _before() actually ran past markTestSkipped(); guards the
-	 * teardown so a skipped run doesn't clobber globals it never touched
-	 * (and that downstream tests in the same shuffled run rely on).
+	 * Marker that _before() actually reached the pref block; guards the
+	 * teardown so a run that bailed out earlier doesn't clobber globals it
+	 * never touched (and that downstream tests in the same shuffled run
+	 * rely on).
 	 *
 	 * @var bool
 	 */
@@ -51,11 +52,6 @@ class resize_handlerTest extends \Codeception\Test\Unit
 
 	protected function _before()
 	{
-		if (!self::imageMagickAvailable())
-		{
-			$this->markTestSkipped('ImageMagick (convert) is not installed; skipping shell-injection regression.');
-		}
-
 		require_once(e_HANDLER.'resize_handler.php');
 
 		$this->workDir = sys_get_temp_dir().'/e107-resize-ghsa-3j33-'.bin2hex(self::randomBytes(6));
@@ -84,10 +80,10 @@ class resize_handlerTest extends \Codeception\Test\Unit
 
 	protected function _after()
 	{
-		// PHPUnit/Codeception runs tearDown even when setUp short-circuited
-		// via markTestSkipped(), so we'd otherwise unset $GLOBALS['pref']
-		// (savedPref still at its default null) and break every later test
-		// in the same shuffled suite run that does `global $pref; $pref[...]`.
+		// PHPUnit/Codeception runs tearDown even when setUp short-circuited,
+		// so we'd otherwise unset $GLOBALS['pref'] (savedPref still at its
+		// default null) and break every later test in the same shuffled suite
+		// run that does `global $pref; $pref[...]`.
 		if (!$this->prefMutated)
 		{
 			return;
@@ -139,6 +135,8 @@ class resize_handlerTest extends \Codeception\Test\Unit
 	 */
 	public function testResizeImageMustNotExecuteShellMetacharactersInDestination($payloadTemplate)
 	{
+		$this->requireImageMagick();
+
 		// Marker file lives next to the source so cleanup is automatic in _after().
 		// Name uses only hex so it can't itself influence shell parsing.
 		$marker = $this->workDir.'/marker_'.bin2hex(self::randomBytes(6));
@@ -181,6 +179,8 @@ class resize_handlerTest extends \Codeception\Test\Unit
 
 	public function testResizeImageWritesLiteralDestinationFilename()
 	{
+		$this->requireImageMagick();
+
 		// A destination name that *contains* shell metacharacters but is otherwise
 		// a valid POSIX filename. After the fix the file should be written
 		// verbatim; before the fix the shell ate the `$(id)` substring.
@@ -201,6 +201,25 @@ class resize_handlerTest extends \Codeception\Test\Unit
 				.'not whatever the shell evaluates it to. Expected file: '.$destination
 		);
 		$this->assertTrue($result, 'resize_image() should report success when writing the destination.');
+	}
+
+	/**
+	 * Skip the calling case when the `convert` binary is missing.
+	 *
+	 * Only the destination-path cases need it: they drive a real resize and
+	 * then inspect what `convert` did or did not write, which proves nothing
+	 * when the binary was never there to run. Cases that attack the command
+	 * line itself, such as an injected 'im_path' preference, must not call
+	 * this: passthru() hands the string to /bin/sh, so the payload fires
+	 * before `convert` is ever looked up and the regression is observable on
+	 * a host without ImageMagick.
+	 */
+	private function requireImageMagick()
+	{
+		if (!self::imageMagickAvailable())
+		{
+			$this->markTestSkipped('ImageMagick (convert) is not installed; this case needs the real binary.');
+		}
 	}
 
 	/**
