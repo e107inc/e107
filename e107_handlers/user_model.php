@@ -242,6 +242,24 @@ class e_user_model extends e_admin_model
 	}
 
 	/**
+	 * Whether a posted 'ac' field carries the value the current administrator's
+	 * form was rendered with.
+	 *
+	 * This confirms that the submission came from a form this account was
+	 * served. It is not a forgery check, which is e-token, and it is not an
+	 * authorisation check: the value is md5 of a timestamp, it is md5('0') for
+	 * any administrator who has never changed their password, and it is
+	 * md5('') for everyone who is not an administrator at all.
+	 *
+	 * @param string $value posted value
+	 * @return bool
+	 */
+	final public function checkAdminPwchangeToken($value)
+	{
+		return hash_equals(md5((string) $this->getAdminPwchange()), (string) $value);
+	}
+
+	/**
 	 * @return false|mixed
 	 */
 	final public function getAdminPerms()

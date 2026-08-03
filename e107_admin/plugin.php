@@ -308,7 +308,7 @@ class plugin_ui extends e_admin_ui
 
         private function pluginProcessUpload()
         {
-			if (!$_POST['ac'] == md5(ADMINPWCHANGE))
+			if (!e107::getUser()->checkAdminPwchangeToken(varset($_POST['ac'])))
 			{
 				exit;
 			}

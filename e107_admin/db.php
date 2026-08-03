@@ -1182,7 +1182,6 @@ class system_tools
 					<td>".LAN_UPLOAD."</td>
 					<td>
 						<input type='hidden' name='MAX_FILE_SIZE' value='{$max_file_size}' />
-						<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
 						<input class='tbox' type='file' name='file_userfile[]' accept='text/xml' size='50' />
 					</td>
 					</tr>
