@@ -11,22 +11,22 @@
  *
  * Master only: release/v2.3.x has no webdriver suite.
  *
- * @see \Helper\P8Fixture
+ * @see \Helper\OutputEncodingFixture
  */
 class AdminDashboardOnlineXssCest
 {
 	const DASHBOARD = '/e107_admin/admin.php';
-	const BENIGN_AGENT = 'Mozilla/5.0 (P8Benign) Gecko/20100101';
+	const BENIGN_AGENT = 'Mozilla/5.0 (EncBenign) Gecko/20100101';
 	const BENIGN_LOCATION = '/index.php?p8=benign';
 
 	public function _before(\WebDriverTester $I)
 	{
-		$I->writeAppFile(\Helper\P8Fixture::PROBE_FILE, \Helper\P8Fixture::probeSource());
+		$I->writeAppFile(\Helper\OutputEncodingFixture::PROBE_FILE, \Helper\OutputEncodingFixture::probeSource());
 	}
 
 	public function _after(\WebDriverTester $I)
 	{
-		$I->deleteAppFile(\Helper\P8Fixture::PROBE_FILE);
+		$I->deleteAppFile(\Helper\OutputEncodingFixture::PROBE_FILE);
 	}
 
 	/**
@@ -38,7 +38,7 @@ class AdminDashboardOnlineXssCest
 	{
 		$I->wantTo('Load the admin dashboard with a hostile visitor User-Agent and see nothing run');
 
-		$this->seedOnlineRow($I, \Helper\P8Fixture::BREAKOUT_PAYLOAD, self::BENIGN_LOCATION);
+		$this->seedOnlineRow($I, \Helper\OutputEncodingFixture::BREAKOUT_PAYLOAD, self::BENIGN_LOCATION);
 
 		$I->loginAsAdmin();
 		$I->amOnPage(self::DASHBOARD);
@@ -55,7 +55,7 @@ class AdminDashboardOnlineXssCest
 		$I->wantTo('Load the admin dashboard with a hostile visitor location and see nothing run');
 
 		$this->seedOnlineRow($I, self::BENIGN_AGENT,
-			'/index.php?a='.\Helper\P8Fixture::BREAKOUT_PAYLOAD);
+			'/index.php?a='.\Helper\OutputEncodingFixture::BREAKOUT_PAYLOAD);
 
 		$I->loginAsAdmin();
 		$I->amOnPage(self::DASHBOARD);
@@ -89,7 +89,7 @@ class AdminDashboardOnlineXssCest
 		$I->seeInSource(self::BENIGN_LOCATION);
 
 		$I->executeJS('document.body.insertAdjacentHTML("beforeend",'
-			.' \'<img src="/e107_tests_p8_no_such_image.png" onerror="window.__p8xss=1">\');');
+			.' \'<img src="/e107_tests_encoding_no_such_image.png" onerror="window.__p8xss=1">\');');
 		$I->waitForJS('return window.__p8xss === 1;', 10);
 	}
 
@@ -105,7 +105,7 @@ class AdminDashboardOnlineXssCest
 		// has demonstrably had the same chance.
 		$I->executeJS('window.__p8sentinel = false;'
 			.' document.body.insertAdjacentHTML("beforeend",'
-			.' \'<img id="p8sentinel" src="/e107_tests_p8_no_such_image.png"'
+			.' \'<img id="p8sentinel" src="/e107_tests_encoding_no_such_image.png"'
 			.' onerror="window.__p8sentinel=true">\');');
 		$I->waitForJS('return window.__p8sentinel === true;', 10);
 
@@ -131,7 +131,7 @@ class AdminDashboardOnlineXssCest
 	 */
 	private function seedOnlineRow(\WebDriverTester $I, $agent, $location)
 	{
-		$I->amOnPage('/'.\Helper\P8Fixture::PROBE_FILE.'?p8=online'
+		$I->amOnPage('/'.\Helper\OutputEncodingFixture::PROBE_FILE.'?p8=online'
 			.'&agent='.urlencode(base64_encode($agent))
 			.'&loc='.urlencode(base64_encode($location)));
 		$I->see('P8_OK online');

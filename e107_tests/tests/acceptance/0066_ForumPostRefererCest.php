@@ -25,8 +25,8 @@
  */
 class ForumPostRefererCest
 {
-	const PAYLOAD = "https://evil.example.invalid/?a=P8FORUMREF' onmouseover='alert(1)";
-	const PAYLOAD_RAW = "P8FORUMREF' onmouseover=";
+	const PAYLOAD = "https://evil.example.invalid/?a=ENCFORUMREF' onmouseover='alert(1)";
+	const PAYLOAD_RAW = "ENCFORUMREF' onmouseover=";
 
 	/** @var array */
 	private $ids;

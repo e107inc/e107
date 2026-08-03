@@ -36,13 +36,13 @@ class TinyMceParserGateCest
 	 * Bbcode whose parse is unmistakable. If any of these bytes come back, the
 	 * request reached e107TinyMceParser::toHTML() and was served.
 	 */
-	const BBCODE_IN = '[b]P8PARSECANARY[/b]';
-	const PARSED_MARKER = 'P8PARSECANARY</strong>';
+	const BBCODE_IN = '[b]ENCPARSECANARY[/b]';
+	const PARSED_MARKER = 'ENCPARSECANARY</strong>';
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->writeAppFile(\Helper\P8Fixture::PROBE_FILE, \Helper\P8Fixture::probeSource());
-		$I->amOnPage('/'.\Helper\P8Fixture::PROBE_FILE.'?p8=reset');
+		$I->writeAppFile(\Helper\OutputEncodingFixture::PROBE_FILE, \Helper\OutputEncodingFixture::probeSource());
+		$I->amOnPage('/'.\Helper\OutputEncodingFixture::PROBE_FILE.'?p8=reset');
 		$I->see('P8_OK reset');
 		$I->stopFollowingRedirects();
 	}
@@ -50,8 +50,8 @@ class TinyMceParserGateCest
 	public function _after(AcceptanceTester $I)
 	{
 		$I->startFollowingRedirects();
-		$I->amOnPage('/'.\Helper\P8Fixture::PROBE_FILE.'?p8=cleanup');
-		$I->deleteAppFile(\Helper\P8Fixture::PROBE_FILE);
+		$I->amOnPage('/'.\Helper\OutputEncodingFixture::PROBE_FILE.'?p8=cleanup');
+		$I->deleteAppFile(\Helper\OutputEncodingFixture::PROBE_FILE);
 	}
 
 	/**
@@ -68,7 +68,7 @@ class TinyMceParserGateCest
 		));
 
 		$I->dontSeeInSource(self::PARSED_MARKER);
-		$I->dontSeeInSource('P8PARSECANARY');
+		$I->dontSeeInSource('ENCPARSECANARY');
 	}
 
 	/**
@@ -88,7 +88,7 @@ class TinyMceParserGateCest
 			'e-token' => $token,
 		));
 
-		$I->dontSeeInSource('P8PARSECANARY');
+		$I->dontSeeInSource('ENCPARSECANARY');
 	}
 
 	/**
@@ -109,7 +109,7 @@ class TinyMceParserGateCest
 			'e-token' => $token,
 		));
 
-		$I->dontSeeInSource('P8PARSECANARY');
+		$I->dontSeeInSource('ENCPARSECANARY');
 	}
 
 	/**
@@ -145,12 +145,12 @@ class TinyMceParserGateCest
 		$token = $this->loginAsAdminAndGrabToken($I);
 
 		$I->sendPostRequest(self::PARSER, array(
-			'content' => '<p>P8PARSECANARY</p>',
+			'content' => '<p>ENCPARSECANARY</p>',
 			'mode'    => 'tobbcode',
 			'e-token' => $token,
 		));
 
-		$I->seeInSource('[html]<p>P8PARSECANARY</p>[/html]');
+		$I->seeInSource('[html]<p>ENCPARSECANARY</p>[/html]');
 	}
 
 	/**
@@ -192,7 +192,7 @@ class TinyMceParserGateCest
 	private function grabProbeToken(AcceptanceTester $I)
 	{
 		$I->startFollowingRedirects();
-		$I->amOnPage('/'.\Helper\P8Fixture::PROBE_FILE.'?p8=constants');
+		$I->amOnPage('/'.\Helper\OutputEncodingFixture::PROBE_FILE.'?p8=constants');
 		$source = $I->grabPageSource();
 		$I->stopFollowingRedirects();
 
@@ -225,13 +225,13 @@ class TinyMceParserGateCest
 	private function loginAsMember(AcceptanceTester $I)
 	{
 		$I->startFollowingRedirects();
-		$I->amOnPage('/'.\Helper\P8Fixture::PROBE_FILE.'?p8=member');
+		$I->amOnPage('/'.\Helper\OutputEncodingFixture::PROBE_FILE.'?p8=member');
 		$I->see('P8_OK member');
 
 		$I->resetAllCookies();
 		$I->amOnPage('/login.php');
-		$I->fillField('username', \Helper\P8Fixture::MEMBER_NAME);
-		$I->fillField('userpass', \Helper\P8Fixture::MEMBER_PASS);
+		$I->fillField('username', \Helper\OutputEncodingFixture::MEMBER_NAME);
+		$I->fillField('userpass', \Helper\OutputEncodingFixture::MEMBER_PASS);
 		$I->click('userlogin');
 		$I->stopFollowingRedirects();
 	}

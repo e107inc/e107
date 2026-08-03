@@ -18,22 +18,22 @@ namespace Helper;
  * Every filename this class writes is registered in
  * {@see \Extension\WorkspaceCleanup} so a crashed run does not leave it behind.
  */
-class P8Fixture
+class OutputEncodingFixture
 {
 	/** Probe dropped into the docroot for as long as a Cest needs it. */
-	const PROBE_FILE = 'e107_tests_p8_probe.php';
+	const PROBE_FILE = 'e107_tests_encoding_probe.php';
 
 	/** RSS served back to e107_admin/boot.php in place of e107.org. */
-	const ADMIN_FEED_FILE = 'e107_tests_p8_feed.xml';
+	const ADMIN_FEED_FILE = 'e107_tests_encoding_feed.xml';
 
 	/** The addons listing served back to e107_admin/boot.php's ?mode=addons block. */
-	const ADDON_FEED_FILE = 'e107_tests_p8_addons.xml';
+	const ADDON_FEED_FILE = 'e107_tests_encoding_addons.xml';
 
 	/** RSS served back to the newsfeed plugin. */
-	const NEWSFEED_FILE = 'e107_tests_p8_newsfeed.xml';
+	const NEWSFEED_FILE = 'e107_tests_encoding_newsfeed.xml';
 
 	/** A TinyMce config outside both directories wysiwyg_class may read. */
-	const TINYMCE_CANARY_FILE = 'e107_tests_p8_tinymce_canary.xml';
+	const TINYMCE_CANARY_FILE = 'e107_tests_encoding_tinymce_canary.xml';
 
 	const MEMBER_NAME = 'p8member';
 	const MEMBER_PASS = 'P8memberPass1';
@@ -42,46 +42,46 @@ class P8Fixture
 	 * A single quote followed by an event handler: the shape that matters for
 	 * a single-quoted attribute, because the tag never has to be closed.
 	 */
-	const ATTR_PAYLOAD = "P8XSSA' onmouseover='alert(1)";
+	const ATTR_PAYLOAD = "ENCXSSA' onmouseover='alert(1)";
 
 	/** Encoded form the same value has to take once the sink encodes. */
-	const ATTR_PAYLOAD_ENCODED = 'P8XSSA&#039; onmouseover=&#039;alert(1)';
+	const ATTR_PAYLOAD_ENCODED = 'ENCXSSA&#039; onmouseover=&#039;alert(1)';
 
 	/** Closes the attribute and the tag, so a real browser runs the handler. */
-	const BREAKOUT_PAYLOAD = 'P8XSSB\'><img src=x onerror="window.__p8xss=1">';
+	const BREAKOUT_PAYLOAD = 'ENCXSSB\'><img src=x onerror="window.__p8xss=1">';
 
 	/** Encoded form of {@see BREAKOUT_PAYLOAD}. */
 	const BREAKOUT_PAYLOAD_ENCODED =
-		'P8XSSB&#039;&gt;&lt;img src=x onerror=&quot;window.__p8xss=1&quot;&gt;';
+		'ENCXSSB&#039;&gt;&lt;img src=x onerror=&quot;window.__p8xss=1&quot;&gt;';
 
 	/**
 	 * Text-context payload. Element text needs the angle brackets encoded; the
 	 * quote is irrelevant there, which is why it is a different string from
 	 * {@see ATTR_PAYLOAD}.
 	 */
-	const TEXT_PAYLOAD = 'P8XSSC<img src=x onerror="window.__p8xss=1">';
+	const TEXT_PAYLOAD = 'ENCXSSC<img src=x onerror="window.__p8xss=1">';
 
 	/** Encoded form of {@see TEXT_PAYLOAD}. */
 	const TEXT_PAYLOAD_ENCODED =
-		'P8XSSC&lt;img src=x onerror=&quot;window.__p8xss=1&quot;&gt;';
+		'ENCXSSC&lt;img src=x onerror=&quot;window.__p8xss=1&quot;&gt;';
 
 	/**
 	 * For a double-quoted attribute. A single quote is inert there, so the
 	 * single-quote payloads above would prove nothing about e107_admin/boot.php,
 	 * whose anchor is written with double quotes.
 	 */
-	const DQ_ATTR_PAYLOAD = 'https://example.com/?a=P8XSSD" onmouseover="alert(1)';
+	const DQ_ATTR_PAYLOAD = 'https://example.com/?a=ENCXSSD" onmouseover="alert(1)';
 
 	/** Encoded form of {@see DQ_ATTR_PAYLOAD}. */
 	const DQ_ATTR_PAYLOAD_ENCODED =
-		'https://example.com/?a=P8XSSD&quot; onmouseover=&quot;alert(1)';
+		'https://example.com/?a=ENCXSSD&quot; onmouseover=&quot;alert(1)';
 
 	/** A second element-text payload, so two text sinks fail distinguishably. */
-	const TEXT_PAYLOAD_2 = 'P8XSSE<b onmouseover="alert(1)">2026</b>';
+	const TEXT_PAYLOAD_2 = 'ENCXSSE<b onmouseover="alert(1)">2026</b>';
 
 	/** Encoded form of {@see TEXT_PAYLOAD_2}. */
 	const TEXT_PAYLOAD_2_ENCODED =
-		'P8XSSE&lt;b onmouseover=&quot;alert(1)&quot;&gt;2026&lt;/b&gt;';
+		'ENCXSSE&lt;b onmouseover=&quot;alert(1)&quot;&gt;2026&lt;/b&gt;';
 
 	/**
 	 * A single-quoted-attribute payload carrying its own marker, so a feed with
@@ -191,7 +191,7 @@ if($p8act === 'adminfeed')
 {
 	// e107_admin/boot.php guards its own define, so the dashboard feed can be
 	// pointed at a fixture served by this very container.
-	define('ADMINFEED', 'http://web/e107_tests_p8_feed.xml');
+	define('ADMINFEED', 'http://web/e107_tests_encoding_feed.xml');
 	define('e_REMOTE_FILE_ALLOW_PRIVATE', true);
 	$_SERVER['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest';
 	$_GET['mode'] = 'core';
@@ -202,7 +202,7 @@ if($p8act === 'addonsfeed')
 {
 	// boot.php guards this define exactly as it guards ADMINFEED, so the addons
 	// panel can be pointed at a fixture served by this very container.
-	define('ADDONFEED', 'http://web/e107_tests_p8_addons.xml');
+	define('ADDONFEED', 'http://web/e107_tests_encoding_addons.xml');
 	define('e_REMOTE_FILE_ALLOW_PRIVATE', true);
 	$_SERVER['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest';
 	$_GET['mode'] = 'addons';
@@ -279,7 +279,7 @@ switch($p8act)
 		// survives into the row an administrator is later shown.
 		$agent = p8_arg('agent');
 		$loc = p8_arg('loc');
-		$sql->delete('online', "online_agent LIKE '%P8XSS%' OR online_location LIKE '%P8XSS%'");
+		$sql->delete('online', "online_agent LIKE '%ENCXSS%' OR online_location LIKE '%ENCXSS%'");
 		$ok = $sql->insert('online', array(
 			'online_timestamp' => time(),
 			'online_flag'      => 0,
@@ -299,8 +299,8 @@ switch($p8act)
 		// The acceptance install is not rebuilt between Cests, so the member and
 		// the seeded rows would otherwise outlive the Cest that made them.
 		$sql->delete('user', "user_loginname='p8member'");
-		$sql->delete('online', "online_agent LIKE '%P8XSS%' OR online_location LIKE '%P8XSS%'");
-		$sql->delete('newsfeed', "newsfeed_url LIKE '%e107_tests_p8_newsfeed%'");
+		$sql->delete('online', "online_agent LIKE '%ENCXSS%' OR online_location LIKE '%ENCXSS%'");
+		$sql->delete('newsfeed', "newsfeed_url LIKE '%e107_tests_encoding_newsfeed%'");
 		header('Content-Type: text/plain');
 		echo "P8_OK cleanup\n";
 		break;
@@ -330,7 +330,7 @@ switch($p8act)
 		// patch, still inside its update interval, so getFeed() serves what is
 		// stored rather than re-fetching. What is stored must therefore be inert.
 		$stale = ($p8act === 'newsfeedstale');
-		$url = 'http://web/e107_tests_p8_newsfeed.xml';
+		$url = 'http://web/e107_tests_encoding_newsfeed.xml';
 		$sql->delete('newsfeed', "newsfeed_url='".$url."'");
 		$feedId = $sql->insert('newsfeed', array(
 			'newsfeed_name'        => 'P8 fixture feed',
@@ -441,19 +441,19 @@ XML;
 	 * RSS the newsfeed plugin is pointed at. Every value the plugin renders is a
 	 * value the feed operator chose, so every one of them carries its own marker:
 	 *
-	 *   P8NFIMGLINK   channel image  <a href='...'>
-	 *   P8NFIMGSRC    channel image  <img src='...'>
-	 *   P8NFIMGALT    channel image  <img alt='...'>
-	 *   P8NFCHANLINK  {FEEDTITLE}    <a href='...'>
-	 *   P8NFCHANTITLE {FEEDTITLE}    anchor text
-	 *   P8NFDATE      {FEEDLASTBUILDDATE}
-	 *   P8NFCOPY      {FEEDCOPYRIGHT}
-	 *   P8NFLANG      {FEEDLANGUAGE}
-	 *   P8NFITEMLINK  {FEEDITEMLINK} <a href='...'>
-	 *   P8NFITEMTITLE {FEEDITEMLINK} anchor text
-	 *   P8NFAUTHOR    {FEEDITEMCREATOR}
-	 *   P8NFDESC      {FEEDITEMTEXT}
-	 *   P8NFJSLINK    a second item whose link is a javascript: URL
+	 *   ENCNFIMGLINK   channel image  <a href='...'>
+	 *   ENCNFIMGSRC    channel image  <img src='...'>
+	 *   ENCNFIMGALT    channel image  <img alt='...'>
+	 *   ENCNFCHANLINK  {FEEDTITLE}    <a href='...'>
+	 *   ENCNFCHANTITLE {FEEDTITLE}    anchor text
+	 *   ENCNFDATE      {FEEDLASTBUILDDATE}
+	 *   ENCNFCOPY      {FEEDCOPYRIGHT}
+	 *   ENCNFLANG      {FEEDLANGUAGE}
+	 *   ENCNFITEMLINK  {FEEDITEMLINK} <a href='...'>
+	 *   ENCNFITEMTITLE {FEEDITEMLINK} anchor text
+	 *   ENCNFAUTHOR    {FEEDITEMCREATOR}
+	 *   ENCNFDESC      {FEEDITEMTEXT}
+	 *   ENCNFJSLINK    a second item whose link is a javascript: URL
 	 *
 	 * The last of those is the one an encoder alone does not answer: a
 	 * javascript: URL contains no character htmlspecialchars() touches.
@@ -466,20 +466,20 @@ XML;
 	 */
 	public static function newsfeedXml()
 	{
-		$imgLink = self::xmlText(self::attrPayload('P8NFIMGLINK'));
-		$imgSrc = self::xmlText(self::attrPayload('P8NFIMGSRC'));
-		$imgAlt = self::xmlText(self::attrPayload('P8NFIMGALT'));
-		$chanLink = self::xmlText(self::attrPayload('P8NFCHANLINK'));
-		$chanTitle = self::xmlText(self::textPayload('P8NFCHANTITLE'));
-		$date = self::xmlText(self::textPayload('P8NFDATE'));
-		$copyright = self::xmlText(self::textPayload('P8NFCOPY'));
-		$language = self::xmlText(self::textPayload('P8NFLANG'));
-		$itemLink = self::xmlText(self::attrPayload('P8NFITEMLINK'));
-		$itemTitle = self::xmlText(self::textPayload('P8NFITEMTITLE'));
-		$author = self::xmlText(self::textPayload('P8NFAUTHOR'));
-		$description = self::xmlText('P8NFDESC<script>window.__p8xss=1;</script>'
+		$imgLink = self::xmlText(self::attrPayload('ENCNFIMGLINK'));
+		$imgSrc = self::xmlText(self::attrPayload('ENCNFIMGSRC'));
+		$imgAlt = self::xmlText(self::attrPayload('ENCNFIMGALT'));
+		$chanLink = self::xmlText(self::attrPayload('ENCNFCHANLINK'));
+		$chanTitle = self::xmlText(self::textPayload('ENCNFCHANTITLE'));
+		$date = self::xmlText(self::textPayload('ENCNFDATE'));
+		$copyright = self::xmlText(self::textPayload('ENCNFCOPY'));
+		$language = self::xmlText(self::textPayload('ENCNFLANG'));
+		$itemLink = self::xmlText(self::attrPayload('ENCNFITEMLINK'));
+		$itemTitle = self::xmlText(self::textPayload('ENCNFITEMTITLE'));
+		$author = self::xmlText(self::textPayload('ENCNFAUTHOR'));
+		$description = self::xmlText('ENCNFDESC<script>window.__p8xss=1;</script>'
 			.'<img src=x onerror="window.__p8xss=1">');
-		$jsLink = self::xmlText(self::schemePayload('P8NFJSLINK'));
+		$jsLink = self::xmlText(self::schemePayload('ENCNFJSLINK'));
 
 		return <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
@@ -541,7 +541,7 @@ XML;
 					'description' => 'P8 stale item body',
 				),
 			),
-			'newsfeed_image_link' => "<a href='https://example.com/?P8NFSTALE=1' onmouseover='alert(1)'"
+			'newsfeed_image_link' => "<a href='https://example.com/?ENCNFSTALE=1' onmouseover='alert(1)'"
 				." rel='external'><img src='https://example.com/stale.png' alt='' /></a>",
 		));
 	}
@@ -559,10 +559,10 @@ XML;
 	public static function addonFeedXml()
 	{
 		$icon = self::xmlText(self::DQ_ATTR_PAYLOAD);
-		$name = self::xmlText(self::textPayload('P8ADDONNAME'));
-		$version = self::xmlText(self::textPayload('P8ADDONVER'));
-		$author = self::xmlText(self::textPayload('P8ADDONAUTH'));
-		$description = self::xmlText(self::textPayload('P8ADDONDESC'));
+		$name = self::xmlText(self::textPayload('ENCADDONNAME'));
+		$version = self::xmlText(self::textPayload('ENCADDONVER'));
+		$author = self::xmlText(self::textPayload('ENCADDONAUTH'));
+		$description = self::xmlText(self::textPayload('ENCADDONDESC'));
 
 		return <<<XML
 <?xml version="1.0" encoding="UTF-8"?>

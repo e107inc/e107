@@ -44,9 +44,9 @@ class RedirectGoOffsiteCest
 		// relying on a neighbouring Cest having sorted first and done it.
 		$I->resetForumFloodProtection();
 
-		$I->writeAppFile(\Helper\P19Fixture::PROBE_FILE, \Helper\P19Fixture::probeSource());
+		$I->writeAppFile(\Helper\RedirectFixture::PROBE_FILE, \Helper\RedirectFixture::probeSource());
 
-		$I->amOnPage('/'.\Helper\P19Fixture::PROBE_FILE.'?p19=constants');
+		$I->amOnPage('/'.\Helper\RedirectFixture::PROBE_FILE.'?p19=constants');
 		$I->see('P19_OK constants');
 		$source = $I->grabPageSource();
 		preg_match('#^SITEURL:(.*)$#m', $source, $match);
@@ -60,7 +60,7 @@ class RedirectGoOffsiteCest
 	public function _after(AcceptanceTester $I)
 	{
 		$I->startFollowingRedirects();
-		$I->deleteAppFile(\Helper\P19Fixture::PROBE_FILE);
+		$I->deleteAppFile(\Helper\RedirectFixture::PROBE_FILE);
 	}
 
 	/**
@@ -70,7 +70,7 @@ class RedirectGoOffsiteCest
 	 */
 	private function probe($dest, $external = false)
 	{
-		return '/'.\Helper\P19Fixture::PROBE_FILE.'?p19=go&dest='.rawurlencode($dest)
+		return '/'.\Helper\RedirectFixture::PROBE_FILE.'?p19=go&dest='.rawurlencode($dest)
 			.($external ? '&external=1' : '');
 	}
 
@@ -79,9 +79,9 @@ class RedirectGoOffsiteCest
 		$I->wantTo('Refuse an off-site destination handed to go() by default');
 
 		$I->resetAllCookies();
-		$I->amOnPage($this->probe(\Helper\P19Fixture::OFFSITE));
+		$I->amOnPage($this->probe(\Helper\RedirectFixture::OFFSITE));
 
-		$I->seeNoRedirectTo(\Helper\P19Fixture::OFFSITE_HOST);
+		$I->seeNoRedirectTo(\Helper\RedirectFixture::OFFSITE_HOST);
 		$I->seeRedirectTo($this->siteUrl);
 	}
 
@@ -90,9 +90,9 @@ class RedirectGoOffsiteCest
 		$I->wantTo('Refuse a protocol-relative destination handed to go()');
 
 		$I->resetAllCookies();
-		$I->amOnPage($this->probe(\Helper\P19Fixture::OFFSITE_PROTOCOL_RELATIVE));
+		$I->amOnPage($this->probe(\Helper\RedirectFixture::OFFSITE_PROTOCOL_RELATIVE));
 
-		$I->seeNoRedirectTo(\Helper\P19Fixture::OFFSITE_HOST);
+		$I->seeNoRedirectTo(\Helper\RedirectFixture::OFFSITE_HOST);
 		$I->seeRedirectTo($this->siteUrl);
 	}
 
@@ -101,9 +101,9 @@ class RedirectGoOffsiteCest
 		$I->wantTo('Refuse a backslash-smuggled destination handed to go()');
 
 		$I->resetAllCookies();
-		$I->amOnPage($this->probe(\Helper\P19Fixture::OFFSITE_BACKSLASH));
+		$I->amOnPage($this->probe(\Helper\RedirectFixture::OFFSITE_BACKSLASH));
 
-		$I->seeNoRedirectTo(\Helper\P19Fixture::OFFSITE_HOST);
+		$I->seeNoRedirectTo(\Helper\RedirectFixture::OFFSITE_HOST);
 		$I->seeRedirectTo($this->siteUrl);
 	}
 
@@ -117,9 +117,9 @@ class RedirectGoOffsiteCest
 		$I->wantTo('Refuse a tab-smuggled destination handed to go()');
 
 		$I->resetAllCookies();
-		$I->amOnPage($this->probe(\Helper\P19Fixture::OFFSITE_TAB));
+		$I->amOnPage($this->probe(\Helper\RedirectFixture::OFFSITE_TAB));
 
-		$I->seeNoRedirectTo(\Helper\P19Fixture::OFFSITE_HOST);
+		$I->seeNoRedirectTo(\Helper\RedirectFixture::OFFSITE_HOST);
 		$I->seeRedirectTo($this->siteUrl);
 	}
 
@@ -134,9 +134,9 @@ class RedirectGoOffsiteCest
 		$I->wantTo('Refuse a destination handed to go() behind leading whitespace');
 
 		$I->resetAllCookies();
-		$I->amOnPage($this->probe(\Helper\P19Fixture::OFFSITE_LEADING_SPACE));
+		$I->amOnPage($this->probe(\Helper\RedirectFixture::OFFSITE_LEADING_SPACE));
 
-		$I->seeNoRedirectTo(\Helper\P19Fixture::OFFSITE_HOST);
+		$I->seeNoRedirectTo(\Helper\RedirectFixture::OFFSITE_HOST);
 		$I->seeRedirectTo($this->siteUrl);
 	}
 
@@ -158,7 +158,7 @@ class RedirectGoOffsiteCest
 		$I->assertStringNotContainsString('/', preg_replace('#^https?://#', '', $this->siteUrlBase),
 			'SITEURLBASE must carry no path here or the prefix defect is not reachable');
 
-		$I->amOnPage('/'.\Helper\P19Fixture::PROBE_FILE.'?p19=verify&dest='
+		$I->amOnPage('/'.\Helper\RedirectFixture::PROBE_FILE.'?p19=verify&dest='
 			.rawurlencode($this->siteUrlBase.'.evil.example.invalid/phish'));
 		$I->see('P19_OK verify');
 		$I->see('VERIFY:false');
@@ -207,8 +207,8 @@ class RedirectGoOffsiteCest
 		$I->wantTo('Still redirect off site when the caller opts in');
 
 		$I->resetAllCookies();
-		$I->amOnPage($this->probe(\Helper\P19Fixture::OFFSITE, true));
+		$I->amOnPage($this->probe(\Helper\RedirectFixture::OFFSITE, true));
 
-		$I->seeRedirectTo(\Helper\P19Fixture::OFFSITE_HOST);
+		$I->seeRedirectTo(\Helper\RedirectFixture::OFFSITE_HOST);
 	}
 }

@@ -46,25 +46,25 @@ class NewsfeedEncodingCest
 {
 	public function _before(AcceptanceTester $I)
 	{
-		$I->writeAppFile(\Helper\P8Fixture::PROBE_FILE, \Helper\P8Fixture::probeSource());
-		$I->writeAppFile(\Helper\P8Fixture::NEWSFEED_FILE, \Helper\P8Fixture::newsfeedXml());
+		$I->writeAppFile(\Helper\OutputEncodingFixture::PROBE_FILE, \Helper\OutputEncodingFixture::probeSource());
+		$I->writeAppFile(\Helper\OutputEncodingFixture::NEWSFEED_FILE, \Helper\OutputEncodingFixture::newsfeedXml());
 
 		// A request to a plugin nobody installed is turned away because the
 		// plugin is absent, which looks exactly like a correct refusal.
 		$I->havePluginInstalled('newsfeed');
 
-		$I->amOnPage('/'.\Helper\P8Fixture::PROBE_FILE.'?p8=reset');
+		$I->amOnPage('/'.\Helper\OutputEncodingFixture::PROBE_FILE.'?p8=reset');
 		$I->see('P8_OK reset');
 
 	}
 
 	public function _after(AcceptanceTester $I)
 	{
-		$I->amOnPage('/'.\Helper\P8Fixture::PROBE_FILE.'?p8=cleanup');
+		$I->amOnPage('/'.\Helper\OutputEncodingFixture::PROBE_FILE.'?p8=cleanup');
 		$I->dropPluginInstall('newsfeed');
 		$I->dropPluginProbe();
-		$I->deleteAppFile(\Helper\P8Fixture::PROBE_FILE);
-		$I->deleteAppFile(\Helper\P8Fixture::NEWSFEED_FILE);
+		$I->deleteAppFile(\Helper\OutputEncodingFixture::PROBE_FILE);
+		$I->deleteAppFile(\Helper\OutputEncodingFixture::NEWSFEED_FILE);
 	}
 
 	public function theChannelLinkIsEncodedForItsAttribute(AcceptanceTester $I)
@@ -73,8 +73,8 @@ class NewsfeedEncodingCest
 
 		$this->showFeed($I);
 
-		$I->dontSeeInSource(\Helper\P8Fixture::attrPayloadRaw('P8NFCHANLINK'));
-		$I->seeInSource(\Helper\P8Fixture::attrPayloadEncoded('P8NFCHANLINK'));
+		$I->dontSeeInSource(\Helper\OutputEncodingFixture::attrPayloadRaw('ENCNFCHANLINK'));
+		$I->seeInSource(\Helper\OutputEncodingFixture::attrPayloadEncoded('ENCNFCHANLINK'));
 	}
 
 	public function theChannelTitleIsEncodedForElementText(AcceptanceTester $I)
@@ -83,8 +83,8 @@ class NewsfeedEncodingCest
 
 		$this->showFeed($I);
 
-		$I->dontSeeInSource(\Helper\P8Fixture::textPayloadRaw('P8NFCHANTITLE'));
-		$I->seeInSource(\Helper\P8Fixture::textPayloadEncoded('P8NFCHANTITLE'));
+		$I->dontSeeInSource(\Helper\OutputEncodingFixture::textPayloadRaw('ENCNFCHANTITLE'));
+		$I->seeInSource(\Helper\OutputEncodingFixture::textPayloadEncoded('ENCNFCHANTITLE'));
 	}
 
 	public function theChannelImageAttributesAreEncoded(AcceptanceTester $I)
@@ -93,14 +93,14 @@ class NewsfeedEncodingCest
 
 		$this->showFeed($I);
 
-		$I->dontSeeInSource(\Helper\P8Fixture::attrPayloadRaw('P8NFIMGLINK'));
-		$I->seeInSource(\Helper\P8Fixture::attrPayloadEncoded('P8NFIMGLINK'));
+		$I->dontSeeInSource(\Helper\OutputEncodingFixture::attrPayloadRaw('ENCNFIMGLINK'));
+		$I->seeInSource(\Helper\OutputEncodingFixture::attrPayloadEncoded('ENCNFIMGLINK'));
 
-		$I->dontSeeInSource(\Helper\P8Fixture::attrPayloadRaw('P8NFIMGSRC'));
-		$I->seeInSource(\Helper\P8Fixture::attrPayloadEncoded('P8NFIMGSRC'));
+		$I->dontSeeInSource(\Helper\OutputEncodingFixture::attrPayloadRaw('ENCNFIMGSRC'));
+		$I->seeInSource(\Helper\OutputEncodingFixture::attrPayloadEncoded('ENCNFIMGSRC'));
 
-		$I->dontSeeInSource(\Helper\P8Fixture::attrPayloadRaw('P8NFIMGALT'));
-		$I->seeInSource(\Helper\P8Fixture::attrPayloadEncoded('P8NFIMGALT'));
+		$I->dontSeeInSource(\Helper\OutputEncodingFixture::attrPayloadRaw('ENCNFIMGALT'));
+		$I->seeInSource(\Helper\OutputEncodingFixture::attrPayloadEncoded('ENCNFIMGALT'));
 	}
 
 	/**
@@ -115,8 +115,8 @@ class NewsfeedEncodingCest
 
 		$this->showFeed($I);
 
-		$I->dontSeeInSource(\Helper\P8Fixture::textPayloadRaw('P8NFDATE'));
-		$I->seeInSource(\Helper\P8Fixture::textPayloadEncoded('P8NFDATE'));
+		$I->dontSeeInSource(\Helper\OutputEncodingFixture::textPayloadRaw('ENCNFDATE'));
+		$I->seeInSource(\Helper\OutputEncodingFixture::textPayloadEncoded('ENCNFDATE'));
 	}
 
 	public function theChannelCopyrightIsEncodedForElementText(AcceptanceTester $I)
@@ -125,8 +125,8 @@ class NewsfeedEncodingCest
 
 		$this->showFeed($I);
 
-		$I->dontSeeInSource(\Helper\P8Fixture::textPayloadRaw('P8NFCOPY'));
-		$I->seeInSource(\Helper\P8Fixture::textPayloadEncoded('P8NFCOPY'));
+		$I->dontSeeInSource(\Helper\OutputEncodingFixture::textPayloadRaw('ENCNFCOPY'));
+		$I->seeInSource(\Helper\OutputEncodingFixture::textPayloadEncoded('ENCNFCOPY'));
 	}
 
 	/**
@@ -144,10 +144,10 @@ class NewsfeedEncodingCest
 		// The template addition rendered, so what follows is not vacuous.
 		$I->seeInSource("id='p8-extra'");
 
-		$I->dontSeeInSource(\Helper\P8Fixture::textPayloadRaw('P8NFLANG'));
-		$I->seeInSource(\Helper\P8Fixture::textPayloadEncoded('P8NFLANG'));
+		$I->dontSeeInSource(\Helper\OutputEncodingFixture::textPayloadRaw('ENCNFLANG'));
+		$I->seeInSource(\Helper\OutputEncodingFixture::textPayloadEncoded('ENCNFLANG'));
 
-		$I->seeInSource("<a href='".\Helper\P8Fixture::attrPayloadEncoded('P8NFCHANLINK')."'>P8 feed link</a>");
+		$I->seeInSource("<a href='".\Helper\OutputEncodingFixture::attrPayloadEncoded('ENCNFCHANLINK')."'>P8 feed link</a>");
 	}
 
 	public function theItemLinkIsEncodedForItsAttribute(AcceptanceTester $I)
@@ -156,8 +156,8 @@ class NewsfeedEncodingCest
 
 		$this->showFeed($I);
 
-		$I->dontSeeInSource(\Helper\P8Fixture::attrPayloadRaw('P8NFITEMLINK'));
-		$I->seeInSource(\Helper\P8Fixture::attrPayloadEncoded('P8NFITEMLINK'));
+		$I->dontSeeInSource(\Helper\OutputEncodingFixture::attrPayloadRaw('ENCNFITEMLINK'));
+		$I->seeInSource(\Helper\OutputEncodingFixture::attrPayloadEncoded('ENCNFITEMLINK'));
 	}
 
 	/**
@@ -170,11 +170,11 @@ class NewsfeedEncodingCest
 
 		$this->showFeed($I);
 
-		$I->dontSeeInSource(\Helper\P8Fixture::textPayloadRaw('P8NFITEMTITLE'));
-		$I->seeInSource(\Helper\P8Fixture::textPayloadEncoded('P8NFITEMTITLE'));
+		$I->dontSeeInSource(\Helper\OutputEncodingFixture::textPayloadRaw('ENCNFITEMTITLE'));
+		$I->seeInSource(\Helper\OutputEncodingFixture::textPayloadEncoded('ENCNFITEMTITLE'));
 
-		$I->dontSeeInSource(\Helper\P8Fixture::textPayloadRaw('P8NFAUTHOR'));
-		$I->seeInSource(\Helper\P8Fixture::textPayloadEncoded('P8NFAUTHOR'));
+		$I->dontSeeInSource(\Helper\OutputEncodingFixture::textPayloadRaw('ENCNFAUTHOR'));
+		$I->seeInSource(\Helper\OutputEncodingFixture::textPayloadEncoded('ENCNFAUTHOR'));
 	}
 
 	/**
@@ -192,7 +192,7 @@ class NewsfeedEncodingCest
 		$I->dontSeeInSource('<img src=x onerror');
 
 		// The body still has to be shown, or the assertions above prove nothing.
-		$I->seeInSource('P8NFDESC');
+		$I->seeInSource('ENCNFDESC');
 	}
 
 	/**
@@ -222,12 +222,12 @@ class NewsfeedEncodingCest
 	{
 		$I->wantTo('Refuse to render composed markup left in newsfeed_data by an older version');
 
-		$I->amOnPage('/'.\Helper\P8Fixture::PROBE_FILE.'?p8=newsfeedstale'
-			.'&data='.urlencode(base64_encode(\Helper\P8Fixture::staleNewsfeedData())));
+		$I->amOnPage('/'.\Helper\OutputEncodingFixture::PROBE_FILE.'?p8=newsfeedstale'
+			.'&data='.urlencode(base64_encode(\Helper\OutputEncodingFixture::staleNewsfeedData())));
 		$I->dontSeeInSource('P8_FAIL');
 		$I->seeInSource('P8_OK newsfeedstale');
 
-		$I->dontSeeInSource("P8NFSTALE=1' onmouseover=");
+		$I->dontSeeInSource("ENCNFSTALE=1' onmouseover=");
 
 		// The stored row is still the row being rendered, so the assertion above
 		// is about the image and not about the feed having been re-fetched.
@@ -262,7 +262,7 @@ class NewsfeedEncodingCest
 	 */
 	private function showFeed(AcceptanceTester $I)
 	{
-		$I->amOnPage('/'.\Helper\P8Fixture::PROBE_FILE.'?p8=newsfeed');
+		$I->amOnPage('/'.\Helper\OutputEncodingFixture::PROBE_FILE.'?p8=newsfeed');
 		$I->dontSeeInSource('P8_FAIL');
 		$I->seeInSource('P8_OK newsfeed');
 	}

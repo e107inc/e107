@@ -34,13 +34,13 @@ class XupBackRedirectCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->writeAppFile(\Helper\P8Fixture::PROBE_FILE, \Helper\P8Fixture::probeSource());
-		$I->amOnPage('/'.\Helper\P8Fixture::PROBE_FILE.'?p8=reset');
+		$I->writeAppFile(\Helper\OutputEncodingFixture::PROBE_FILE, \Helper\OutputEncodingFixture::probeSource());
+		$I->amOnPage('/'.\Helper\OutputEncodingFixture::PROBE_FILE.'?p8=reset');
 		$I->see('P8_OK reset');
 
 		// Asked of the application rather than assumed, because a refusal is
 		// measured as "bounced home" and home is whatever SITEURL says it is.
-		$I->amOnPage('/'.\Helper\P8Fixture::PROBE_FILE.'?p8=constants');
+		$I->amOnPage('/'.\Helper\OutputEncodingFixture::PROBE_FILE.'?p8=constants');
 		$I->see('P8_OK constants');
 		preg_match('#^SITEURL:(.*)$#m', $I->grabPageSource(), $match);
 		$this->siteUrl = trim($match[1]);
@@ -51,7 +51,7 @@ class XupBackRedirectCest
 	public function _after(AcceptanceTester $I)
 	{
 		$I->startFollowingRedirects();
-		$I->deleteAppFile(\Helper\P8Fixture::PROBE_FILE);
+		$I->deleteAppFile(\Helper\OutputEncodingFixture::PROBE_FILE);
 	}
 
 	public function anAbsoluteOffsiteBackUrlIsRefused(AcceptanceTester $I)

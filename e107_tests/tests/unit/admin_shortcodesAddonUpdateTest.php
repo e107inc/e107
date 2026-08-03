@@ -29,11 +29,11 @@ class admin_shortcodesAddonUpdateTest extends \Codeception\Test\Unit
 	/** @var admin_shortcodes */
 	private $sc;
 
-	const ATTR_PAYLOAD = 'https://example.com/?a=P8ADDON" onmouseover="alert(1)';
-	const ATTR_PAYLOAD_ENCODED = 'https://example.com/?a=P8ADDON&quot; onmouseover=&quot;alert(1)';
+	const ATTR_PAYLOAD = 'https://example.com/?a=ENCADDON" onmouseover="alert(1)';
+	const ATTR_PAYLOAD_ENCODED = 'https://example.com/?a=ENCADDON&quot; onmouseover=&quot;alert(1)';
 
-	const TEXT_PAYLOAD = 'P8ADDON<img src=x onerror="alert(1)">';
-	const TEXT_PAYLOAD_ENCODED = 'P8ADDON&lt;img src=x onerror=&quot;alert(1)&quot;&gt;';
+	const TEXT_PAYLOAD = 'ENCADDON<img src=x onerror="alert(1)">';
+	const TEXT_PAYLOAD_ENCODED = 'ENCADDON&lt;img src=x onerror=&quot;alert(1)&quot;&gt;';
 
 	protected function _before()
 	{
@@ -84,7 +84,7 @@ class admin_shortcodesAddonUpdateTest extends \Codeception\Test\Unit
 	{
 		$actual = $this->sc->renderAddonUpdate(array($this->hostileRow()));
 
-		$this->assertStringNotContainsString('P8ADDON" onmouseover=', $actual,
+		$this->assertStringNotContainsString('ENCADDON" onmouseover=', $actual,
 			'A marketplace URL closed the attribute it was written into.');
 		$this->assertStringContainsString(self::ATTR_PAYLOAD_ENCODED, $actual,
 			'A marketplace URL was not encoded for an attribute context.');
@@ -94,7 +94,7 @@ class admin_shortcodesAddonUpdateTest extends \Codeception\Test\Unit
 	{
 		$actual = $this->sc->renderAddonUpdate(array($this->hostileRow()));
 
-		$this->assertStringNotContainsString('P8ADDON<img', $actual,
+		$this->assertStringNotContainsString('ENCADDON<img', $actual,
 			'A marketplace name, version or date was written into element text as markup.');
 		$this->assertStringContainsString(self::TEXT_PAYLOAD_ENCODED, $actual,
 			'A marketplace name, version or date was not encoded for a text context.');

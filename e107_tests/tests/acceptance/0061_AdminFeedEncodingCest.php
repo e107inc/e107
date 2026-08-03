@@ -30,19 +30,19 @@ class AdminFeedEncodingCest
 {
 	public function _before(AcceptanceTester $I)
 	{
-		$I->writeAppFile(\Helper\P8Fixture::PROBE_FILE, \Helper\P8Fixture::probeSource());
-		$I->writeAppFile(\Helper\P8Fixture::ADMIN_FEED_FILE, \Helper\P8Fixture::adminFeedXml());
-		$I->writeAppFile(\Helper\P8Fixture::ADDON_FEED_FILE, \Helper\P8Fixture::addonFeedXml());
-		$I->amOnPage('/'.\Helper\P8Fixture::PROBE_FILE.'?p8=reset');
+		$I->writeAppFile(\Helper\OutputEncodingFixture::PROBE_FILE, \Helper\OutputEncodingFixture::probeSource());
+		$I->writeAppFile(\Helper\OutputEncodingFixture::ADMIN_FEED_FILE, \Helper\OutputEncodingFixture::adminFeedXml());
+		$I->writeAppFile(\Helper\OutputEncodingFixture::ADDON_FEED_FILE, \Helper\OutputEncodingFixture::addonFeedXml());
+		$I->amOnPage('/'.\Helper\OutputEncodingFixture::PROBE_FILE.'?p8=reset');
 		$I->see('P8_OK reset');
 		$I->loginAsAdmin();
 	}
 
 	public function _after(AcceptanceTester $I)
 	{
-		$I->deleteAppFile(\Helper\P8Fixture::PROBE_FILE);
-		$I->deleteAppFile(\Helper\P8Fixture::ADMIN_FEED_FILE);
-		$I->deleteAppFile(\Helper\P8Fixture::ADDON_FEED_FILE);
+		$I->deleteAppFile(\Helper\OutputEncodingFixture::PROBE_FILE);
+		$I->deleteAppFile(\Helper\OutputEncodingFixture::ADMIN_FEED_FILE);
+		$I->deleteAppFile(\Helper\OutputEncodingFixture::ADDON_FEED_FILE);
 	}
 
 	public function theFeedLinkIsEncodedForItsAttribute(AcceptanceTester $I)
@@ -51,8 +51,8 @@ class AdminFeedEncodingCest
 
 		$this->renderFeed($I);
 
-		$I->dontSeeInSource('P8XSSD" onmouseover=');
-		$I->seeInSource(\Helper\P8Fixture::DQ_ATTR_PAYLOAD_ENCODED);
+		$I->dontSeeInSource('ENCXSSD" onmouseover=');
+		$I->seeInSource(\Helper\OutputEncodingFixture::DQ_ATTR_PAYLOAD_ENCODED);
 	}
 
 	public function theFeedTitleIsEncodedForElementText(AcceptanceTester $I)
@@ -61,8 +61,8 @@ class AdminFeedEncodingCest
 
 		$this->renderFeed($I);
 
-		$I->dontSeeInSource('P8XSSC<img');
-		$I->seeInSource(\Helper\P8Fixture::TEXT_PAYLOAD_ENCODED);
+		$I->dontSeeInSource('ENCXSSC<img');
+		$I->seeInSource(\Helper\OutputEncodingFixture::TEXT_PAYLOAD_ENCODED);
 	}
 
 	public function theFeedPubDateIsEncodedForElementText(AcceptanceTester $I)
@@ -71,8 +71,8 @@ class AdminFeedEncodingCest
 
 		$this->renderFeed($I);
 
-		$I->dontSeeInSource('P8XSSE<b onmouseover=');
-		$I->seeInSource(\Helper\P8Fixture::TEXT_PAYLOAD_2_ENCODED);
+		$I->dontSeeInSource('ENCXSSE<b onmouseover=');
+		$I->seeInSource(\Helper\OutputEncodingFixture::TEXT_PAYLOAD_2_ENCODED);
 	}
 
 	/**
@@ -101,19 +101,19 @@ class AdminFeedEncodingCest
 
 		$this->renderAddons($I);
 
-		$I->dontSeeInSource('P8XSSD" onmouseover=');
-		$I->seeInSource(\Helper\P8Fixture::DQ_ATTR_PAYLOAD_ENCODED);
+		$I->dontSeeInSource('ENCXSSD" onmouseover=');
+		$I->seeInSource(\Helper\OutputEncodingFixture::DQ_ATTR_PAYLOAD_ENCODED);
 
-		$I->dontSeeInSource(\Helper\P8Fixture::textPayloadRaw('P8ADDONNAME'));
-		$I->seeInSource(\Helper\P8Fixture::textPayloadEncoded('P8ADDONNAME'));
+		$I->dontSeeInSource(\Helper\OutputEncodingFixture::textPayloadRaw('ENCADDONNAME'));
+		$I->seeInSource(\Helper\OutputEncodingFixture::textPayloadEncoded('ENCADDONNAME'));
 
-		$I->dontSeeInSource(\Helper\P8Fixture::textPayloadRaw('P8ADDONVER'));
-		$I->seeInSource(\Helper\P8Fixture::textPayloadEncoded('P8ADDONVER'));
+		$I->dontSeeInSource(\Helper\OutputEncodingFixture::textPayloadRaw('ENCADDONVER'));
+		$I->seeInSource(\Helper\OutputEncodingFixture::textPayloadEncoded('ENCADDONVER'));
 
-		$I->dontSeeInSource(\Helper\P8Fixture::textPayloadRaw('P8ADDONAUTH'));
-		$I->seeInSource(\Helper\P8Fixture::textPayloadEncoded('P8ADDONAUTH'));
+		$I->dontSeeInSource(\Helper\OutputEncodingFixture::textPayloadRaw('ENCADDONAUTH'));
+		$I->seeInSource(\Helper\OutputEncodingFixture::textPayloadEncoded('ENCADDONAUTH'));
 
-		$I->dontSeeInSource(\Helper\P8Fixture::textPayloadRaw('P8ADDONDESC'));
+		$I->dontSeeInSource(\Helper\OutputEncodingFixture::textPayloadRaw('ENCADDONDESC'));
 	}
 
 	/**
@@ -128,9 +128,9 @@ class AdminFeedEncodingCest
 		$this->renderAddons($I);
 		$this->renderAddons($I);
 
-		$I->dontSeeInSource('P8XSSD" onmouseover=');
-		$I->dontSeeInSource(\Helper\P8Fixture::textPayloadRaw('P8ADDONNAME'));
-		$I->seeInSource(\Helper\P8Fixture::textPayloadEncoded('P8ADDONNAME'));
+		$I->dontSeeInSource('ENCXSSD" onmouseover=');
+		$I->dontSeeInSource(\Helper\OutputEncodingFixture::textPayloadRaw('ENCADDONNAME'));
+		$I->seeInSource(\Helper\OutputEncodingFixture::textPayloadEncoded('ENCADDONNAME'));
 	}
 
 	/**
@@ -152,7 +152,7 @@ class AdminFeedEncodingCest
 	 */
 	private function renderFeed(AcceptanceTester $I)
 	{
-		$I->amOnPage('/'.\Helper\P8Fixture::PROBE_FILE.'?p8=adminfeed');
+		$I->amOnPage('/'.\Helper\OutputEncodingFixture::PROBE_FILE.'?p8=adminfeed');
 		$I->dontSeeInSource('P8_FAIL');
 	}
 
@@ -162,7 +162,7 @@ class AdminFeedEncodingCest
 	 */
 	private function renderAddons(AcceptanceTester $I)
 	{
-		$I->amOnPage('/'.\Helper\P8Fixture::PROBE_FILE.'?p8=addonsfeed');
+		$I->amOnPage('/'.\Helper\OutputEncodingFixture::PROBE_FILE.'?p8=addonsfeed');
 		$I->dontSeeInSource('P8_FAIL');
 	}
 }

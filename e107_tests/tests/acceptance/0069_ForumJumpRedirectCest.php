@@ -67,11 +67,11 @@ class ForumJumpRedirectCest
 		$this->ids = $I->haveForumStructure();
 		$I->purgeForumPermCache();
 
-		$I->writeAppFile(\Helper\P19Fixture::PROBE_FILE, \Helper\P19Fixture::probeSource());
+		$I->writeAppFile(\Helper\RedirectFixture::PROBE_FILE, \Helper\RedirectFixture::probeSource());
 
 		// Asked of the application, not derived. A refusal is measured as
 		// "bounced back onto this site", and where that is depends on SITEURL.
-		$I->amOnPage('/'.\Helper\P19Fixture::PROBE_FILE.'?p19=constants');
+		$I->amOnPage('/'.\Helper\RedirectFixture::PROBE_FILE.'?p19=constants');
 		$I->see('P19_OK constants');
 		$source = $I->grabPageSource();
 		preg_match('#^SITEURL:(.*)$#m', $source, $match);
@@ -80,7 +80,7 @@ class ForumJumpRedirectCest
 		// The legitimate jump destinations, taken from the same call the four
 		// sc_forumjump() implementations make. Two of them ask for the full
 		// form and two for the short one, and both have to keep working.
-		$I->amOnPage('/'.\Helper\P19Fixture::PROBE_FILE.'?p19=jumpurl&id='.$this->ids['forumA']);
+		$I->amOnPage('/'.\Helper\RedirectFixture::PROBE_FILE.'?p19=jumpurl&id='.$this->ids['forumA']);
 		$I->see('P19_OK jumpurl');
 		$source = $I->grabPageSource();
 		preg_match('#^FULL:(.*)$#m', $source, $match);
@@ -102,7 +102,7 @@ class ForumJumpRedirectCest
 	public function _after(AcceptanceTester $I)
 	{
 		$I->startFollowingRedirects();
-		$I->deleteAppFile(\Helper\P19Fixture::PROBE_FILE);
+		$I->deleteAppFile(\Helper\RedirectFixture::PROBE_FILE);
 		$I->dropForumProbe();
 	}
 
@@ -116,10 +116,10 @@ class ForumJumpRedirectCest
 		$I->resetAllCookies();
 		$I->sendPostRequest('/e107_plugins/forum/forum.php', array(
 			'fjsubmit'  => 'Go',
-			'forumjump' => \Helper\P19Fixture::OFFSITE,
+			'forumjump' => \Helper\RedirectFixture::OFFSITE,
 		));
 
-		$I->seeNoRedirectTo(\Helper\P19Fixture::OFFSITE_HOST);
+		$I->seeNoRedirectTo(\Helper\RedirectFixture::OFFSITE_HOST);
 		// Measured as "landed on the forum index", not as "answered with nothing
 		// at all" and not as "landed on SITEURL": only the call-site fix produces
 		// the forum index, so reverting it fails here even though go()'s default
@@ -139,10 +139,10 @@ class ForumJumpRedirectCest
 		$I->resetAllCookies();
 		$I->sendPostRequest('/e107_plugins/forum/forum.php', array(
 			'fjsubmit'  => 'Go',
-			'forumjump' => \Helper\P19Fixture::OFFSITE_PROTOCOL_RELATIVE,
+			'forumjump' => \Helper\RedirectFixture::OFFSITE_PROTOCOL_RELATIVE,
 		));
 
-		$I->seeNoRedirectTo(\Helper\P19Fixture::OFFSITE_HOST);
+		$I->seeNoRedirectTo(\Helper\RedirectFixture::OFFSITE_HOST);
 		$I->seeRedirectTo($this->jumpIndex);
 	}
 
@@ -157,10 +157,10 @@ class ForumJumpRedirectCest
 		$I->resetAllCookies();
 		$I->sendPostRequest('/e107_plugins/forum/forum.php', array(
 			'fjsubmit'  => 'Go',
-			'forumjump' => \Helper\P19Fixture::OFFSITE_BACKSLASH,
+			'forumjump' => \Helper\RedirectFixture::OFFSITE_BACKSLASH,
 		));
 
-		$I->seeNoRedirectTo(\Helper\P19Fixture::OFFSITE_HOST);
+		$I->seeNoRedirectTo(\Helper\RedirectFixture::OFFSITE_HOST);
 		$I->seeRedirectTo($this->jumpIndex);
 	}
 
@@ -178,10 +178,10 @@ class ForumJumpRedirectCest
 		$I->resetAllCookies();
 		$I->sendPostRequest('/e107_plugins/forum/forum.php', array(
 			'fjsubmit'  => 'Go',
-			'forumjump' => \Helper\P19Fixture::OFFSITE_TAB,
+			'forumjump' => \Helper\RedirectFixture::OFFSITE_TAB,
 		));
 
-		$I->seeNoRedirectTo(\Helper\P19Fixture::OFFSITE_HOST);
+		$I->seeNoRedirectTo(\Helper\RedirectFixture::OFFSITE_HOST);
 		$I->seeRedirectTo($this->jumpIndex);
 	}
 
@@ -199,11 +199,11 @@ class ForumJumpRedirectCest
 			'/e107_plugins/forum/forum_viewtopic.php?'.$this->ids['threadA'],
 			array(
 				'fjsubmit'  => 'Go',
-				'forumjump' => \Helper\P19Fixture::OFFSITE,
+				'forumjump' => \Helper\RedirectFixture::OFFSITE,
 			)
 		);
 
-		$I->seeNoRedirectTo(\Helper\P19Fixture::OFFSITE_HOST);
+		$I->seeNoRedirectTo(\Helper\RedirectFixture::OFFSITE_HOST);
 		// seeNoRedirectTo() is satisfied by no Location header at all, so a 500,
 		// a flood ban or a page that stopped constructing the forum would pass it
 		// while measuring nothing. Pair it with where the refusal has to land.
@@ -225,10 +225,10 @@ class ForumJumpRedirectCest
 		$I->resetAllCookies();
 		$I->sendPostRequest('/top.php?0.active', array(
 			'fjsubmit'  => 'Go',
-			'forumjump' => \Helper\P19Fixture::OFFSITE,
+			'forumjump' => \Helper\RedirectFixture::OFFSITE,
 		));
 
-		$I->seeNoRedirectTo(\Helper\P19Fixture::OFFSITE_HOST);
+		$I->seeNoRedirectTo(\Helper\RedirectFixture::OFFSITE_HOST);
 		$I->seeRedirectTo($this->jumpIndex);
 	}
 

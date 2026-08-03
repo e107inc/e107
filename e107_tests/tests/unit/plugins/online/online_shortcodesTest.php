@@ -37,17 +37,17 @@ class online_shortcodesTest extends \Codeception\Test\Unit
 	protected $sc;
 
 	/** Closes the href attribute, then the anchor. */
-	const ATTR_PAYLOAD = "/index.php?a=P8XSSA'><img src=x onerror=alert(1)>";
+	const ATTR_PAYLOAD = "/index.php?a=ENCXSSA'><img src=x onerror=alert(1)>";
 
 	/** htmlspecialchars(ENT_QUOTES) of {@see ATTR_PAYLOAD}. */
 	const ATTR_PAYLOAD_ENCODED =
-		'/index.php?a=P8XSSA&#039;&gt;&lt;img src=x onerror=alert(1)&gt;';
+		'/index.php?a=ENCXSSA&#039;&gt;&lt;img src=x onerror=alert(1)&gt;';
 
 	/** Element-text payload: no quote needed, the tag is enough. */
-	const TEXT_PAYLOAD = 'P8XSSC<img src=x onerror=alert(1)>';
+	const TEXT_PAYLOAD = 'ENCXSSC<img src=x onerror=alert(1)>';
 
 	/** htmlspecialchars(ENT_QUOTES) of {@see TEXT_PAYLOAD}. */
-	const TEXT_PAYLOAD_ENCODED = 'P8XSSC&lt;img src=x onerror=alert(1)&gt;';
+	const TEXT_PAYLOAD_ENCODED = 'ENCXSSC&lt;img src=x onerror=alert(1)&gt;';
 
 	protected function _before()
 	{
@@ -76,7 +76,7 @@ class online_shortcodesTest extends \Codeception\Test\Unit
 
 		$actual = $this->sc->sc_online_member_page();
 
-		$this->assertStringNotContainsString("P8XSSA'><img", $actual,
+		$this->assertStringNotContainsString("ENCXSSA'><img", $actual,
 			'The visitor location closed the href attribute it was written into.');
 		$this->assertStringContainsString(self::ATTR_PAYLOAD_ENCODED, $actual,
 			'The visitor location was not encoded for an attribute context.');
@@ -93,7 +93,7 @@ class online_shortcodesTest extends \Codeception\Test\Unit
 
 		$actual = $this->sc->sc_online_member_page();
 
-		$this->assertStringNotContainsString('P8XSSC<img', $actual,
+		$this->assertStringNotContainsString('ENCXSSC<img', $actual,
 			'The visitor page name was written into element text as markup.');
 		$this->assertStringContainsString(self::TEXT_PAYLOAD_ENCODED, $actual,
 			'The visitor page name was not encoded for a text context.');

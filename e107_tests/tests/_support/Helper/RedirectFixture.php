@@ -6,7 +6,7 @@ namespace Helper;
  * Shared probe for the P19 (open redirect) Cests.
  *
  * Not a Codeception module: it holds no state, so a module would only add a
- * suite-configuration entry to maintain. The same shape as {@see P8Fixture}.
+ * suite-configuration entry to maintain. The same shape as {@see OutputEncodingFixture}.
  *
  * Two things have to be asked of the application rather than assumed. The
  * first is SITEURL, because a refused redirect is measured as "bounced to the
@@ -24,10 +24,10 @@ namespace Helper;
  * The filename is registered in {@see \Extension\WorkspaceCleanup} so a crashed
  * run does not leave it behind.
  */
-class P19Fixture
+class RedirectFixture
 {
 	/** Probe dropped into the docroot for as long as a Cest needs it. */
-	const PROBE_FILE = 'e107_tests_p19_probe.php';
+	const PROBE_FILE = 'e107_tests_redirect_probe.php';
 
 	/**
 	 * A host that cannot resolve, so a regression cannot emit real outbound

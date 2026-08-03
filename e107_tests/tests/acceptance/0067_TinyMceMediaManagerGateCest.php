@@ -23,8 +23,8 @@ class TinyMceMediaManagerGateCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->writeAppFile(\Helper\P8Fixture::PROBE_FILE, \Helper\P8Fixture::probeSource());
-		$I->amOnPage('/'.\Helper\P8Fixture::PROBE_FILE.'?p8=reset');
+		$I->writeAppFile(\Helper\OutputEncodingFixture::PROBE_FILE, \Helper\OutputEncodingFixture::probeSource());
+		$I->amOnPage('/'.\Helper\OutputEncodingFixture::PROBE_FILE.'?p8=reset');
 		$I->see('P8_OK reset');
 		$I->stopFollowingRedirects();
 	}
@@ -32,8 +32,8 @@ class TinyMceMediaManagerGateCest
 	public function _after(AcceptanceTester $I)
 	{
 		$I->startFollowingRedirects();
-		$I->amOnPage('/'.\Helper\P8Fixture::PROBE_FILE.'?p8=cleanup');
-		$I->deleteAppFile(\Helper\P8Fixture::PROBE_FILE);
+		$I->amOnPage('/'.\Helper\OutputEncodingFixture::PROBE_FILE.'?p8=cleanup');
+		$I->deleteAppFile(\Helper\OutputEncodingFixture::PROBE_FILE);
 	}
 
 	public function aVisitorIsNotToldWhereTheAdminDirectoryIs(AcceptanceTester $I)
@@ -85,13 +85,13 @@ class TinyMceMediaManagerGateCest
 	private function loginAsMember(AcceptanceTester $I)
 	{
 		$I->startFollowingRedirects();
-		$I->amOnPage('/'.\Helper\P8Fixture::PROBE_FILE.'?p8=member');
+		$I->amOnPage('/'.\Helper\OutputEncodingFixture::PROBE_FILE.'?p8=member');
 		$I->see('P8_OK member');
 
 		$I->resetAllCookies();
 		$I->amOnPage('/login.php');
-		$I->fillField('username', \Helper\P8Fixture::MEMBER_NAME);
-		$I->fillField('userpass', \Helper\P8Fixture::MEMBER_PASS);
+		$I->fillField('username', \Helper\OutputEncodingFixture::MEMBER_NAME);
+		$I->fillField('userpass', \Helper\OutputEncodingFixture::MEMBER_PASS);
 		$I->click('userlogin');
 		$I->stopFollowingRedirects();
 	}

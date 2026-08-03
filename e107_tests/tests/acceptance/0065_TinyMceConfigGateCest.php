@@ -37,17 +37,17 @@ class TinyMceConfigGateCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->writeAppFile(\Helper\P8Fixture::PROBE_FILE, \Helper\P8Fixture::probeSource());
-		$I->writeAppFile(\Helper\P8Fixture::TINYMCE_CANARY_FILE, \Helper\P8Fixture::tinymceCanaryXml());
-		$I->amOnPage('/'.\Helper\P8Fixture::PROBE_FILE.'?p8=reset');
+		$I->writeAppFile(\Helper\OutputEncodingFixture::PROBE_FILE, \Helper\OutputEncodingFixture::probeSource());
+		$I->writeAppFile(\Helper\OutputEncodingFixture::TINYMCE_CANARY_FILE, \Helper\OutputEncodingFixture::tinymceCanaryXml());
+		$I->amOnPage('/'.\Helper\OutputEncodingFixture::PROBE_FILE.'?p8=reset');
 		$I->see('P8_OK reset');
 		$I->resetAllCookies();
 	}
 
 	public function _after(AcceptanceTester $I)
 	{
-		$I->deleteAppFile(\Helper\P8Fixture::PROBE_FILE);
-		$I->deleteAppFile(\Helper\P8Fixture::TINYMCE_CANARY_FILE);
+		$I->deleteAppFile(\Helper\OutputEncodingFixture::PROBE_FILE);
+		$I->deleteAppFile(\Helper\OutputEncodingFixture::TINYMCE_CANARY_FILE);
 	}
 
 	/**
@@ -89,7 +89,7 @@ class TinyMceConfigGateCest
 	{
 		$I->wantTo('Refuse to load an editor config from outside both template directories');
 
-		$canary = basename(\Helper\P8Fixture::TINYMCE_CANARY_FILE, '.xml');
+		$canary = basename(\Helper\OutputEncodingFixture::TINYMCE_CANARY_FILE, '.xml');
 		// Percent-encoded: an unencoded "../" in the query string is normalised
 		// away before the request leaves, so the literal spelling would test the
 		// test client rather than the application. An attacker has no such
@@ -110,7 +110,7 @@ class TinyMceConfigGateCest
 	{
 		$I->wantTo('Refuse an editor config named through a backslash traversal');
 
-		$canary = basename(\Helper\P8Fixture::TINYMCE_CANARY_FILE, '.xml');
+		$canary = basename(\Helper\OutputEncodingFixture::TINYMCE_CANARY_FILE, '.xml');
 		$I->amOnPage(self::WYSIWYG.'?config='.rawurlencode('..\\..\\..\\'.$canary));
 
 		$I->dontSeeInSource(self::CANARY_MARKER);

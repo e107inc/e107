@@ -25,27 +25,27 @@
 class AdminDashboardOnlineCest
 {
 	const DASHBOARD = '/e107_admin/admin.php';
-	const BENIGN_AGENT = 'Mozilla/5.0 (P8Benign; R&D) Gecko/20100101';
+	const BENIGN_AGENT = 'Mozilla/5.0 (EncBenign; R&D) Gecko/20100101';
 	const BENIGN_LOCATION = '/index.php?p8=benign&x=1';
 
 	/** Exactly what the two sinks have to emit for {@see BENIGN_LOCATION}. */
 	const BENIGN_LOCATION_ENCODED = '/index.php?p8=benign&amp;x=1';
 
 	/** And for {@see BENIGN_AGENT}. */
-	const BENIGN_AGENT_ENCODED = 'Mozilla/5.0 (P8Benign; R&amp;D) Gecko/20100101';
+	const BENIGN_AGENT_ENCODED = 'Mozilla/5.0 (EncBenign; R&amp;D) Gecko/20100101';
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->writeAppFile(\Helper\P8Fixture::PROBE_FILE, \Helper\P8Fixture::probeSource());
-		$I->amOnPage('/'.\Helper\P8Fixture::PROBE_FILE.'?p8=reset');
+		$I->writeAppFile(\Helper\OutputEncodingFixture::PROBE_FILE, \Helper\OutputEncodingFixture::probeSource());
+		$I->amOnPage('/'.\Helper\OutputEncodingFixture::PROBE_FILE.'?p8=reset');
 		$I->see('P8_OK reset');
 	}
 
 	public function _after(AcceptanceTester $I)
 	{
 		$I->startFollowingRedirects();
-		$I->amOnPage('/'.\Helper\P8Fixture::PROBE_FILE.'?p8=cleanup');
-		$I->deleteAppFile(\Helper\P8Fixture::PROBE_FILE);
+		$I->amOnPage('/'.\Helper\OutputEncodingFixture::PROBE_FILE.'?p8=cleanup');
+		$I->deleteAppFile(\Helper\OutputEncodingFixture::PROBE_FILE);
 	}
 
 	/**
@@ -61,13 +61,13 @@ class AdminDashboardOnlineCest
 		$I->wantTo('Store an unauthenticated visitor User-Agent verbatim in the online table');
 
 		$I->resetAllCookies();
-		$I->haveHttpHeader('User-Agent', \Helper\P8Fixture::ATTR_PAYLOAD);
+		$I->haveHttpHeader('User-Agent', \Helper\OutputEncodingFixture::ATTR_PAYLOAD);
 		$I->amOnPage('/index.php');
 		$I->deleteHeader('User-Agent');
 
 		$I->seeInDatabase('e107_online', array(
 			'online_user_id' => '0',
-			'online_agent'   => \Helper\P8Fixture::ATTR_PAYLOAD,
+			'online_agent'   => \Helper\OutputEncodingFixture::ATTR_PAYLOAD,
 		));
 	}
 
@@ -78,13 +78,13 @@ class AdminDashboardOnlineCest
 	{
 		$I->wantTo('Encode a visitor User-Agent before it lands in a title attribute');
 
-		$this->seedOnlineRow($I, \Helper\P8Fixture::ATTR_PAYLOAD, self::BENIGN_LOCATION);
+		$this->seedOnlineRow($I, \Helper\OutputEncodingFixture::ATTR_PAYLOAD, self::BENIGN_LOCATION);
 		$I->loginAsAdmin();
 		$I->amOnPage(self::DASHBOARD);
 
 		// The quote has to be gone as a quote, not merely followed by no tag.
-		$I->dontSeeInSource("P8XSSA' onmouseover=");
-		$I->seeInSource(\Helper\P8Fixture::ATTR_PAYLOAD_ENCODED);
+		$I->dontSeeInSource("ENCXSSA' onmouseover=");
+		$I->seeInSource(\Helper\OutputEncodingFixture::ATTR_PAYLOAD_ENCODED);
 	}
 
 	/**
@@ -105,12 +105,12 @@ class AdminDashboardOnlineCest
 	{
 		$I->wantTo('Encode a visitor location before it lands in href and title attributes');
 
-		$this->seedOnlineRow($I, self::BENIGN_AGENT, '/index.php?a='.\Helper\P8Fixture::BREAKOUT_PAYLOAD);
+		$this->seedOnlineRow($I, self::BENIGN_AGENT, '/index.php?a='.\Helper\OutputEncodingFixture::BREAKOUT_PAYLOAD);
 		$I->loginAsAdmin();
 		$I->amOnPage(self::DASHBOARD);
 
-		$I->dontSeeInSource("P8XSSB'><img");
-		$I->seeInSource(\Helper\P8Fixture::BREAKOUT_PAYLOAD_ENCODED);
+		$I->dontSeeInSource("ENCXSSB'><img");
+		$I->seeInSource(\Helper\OutputEncodingFixture::BREAKOUT_PAYLOAD_ENCODED);
 	}
 
 	/**
@@ -146,7 +146,7 @@ class AdminDashboardOnlineCest
 	 */
 	private function seedOnlineRow(AcceptanceTester $I, $agent, $location)
 	{
-		$I->amOnPage('/'.\Helper\P8Fixture::PROBE_FILE.'?p8=online'
+		$I->amOnPage('/'.\Helper\OutputEncodingFixture::PROBE_FILE.'?p8=online'
 			.'&agent='.urlencode(base64_encode($agent))
 			.'&loc='.urlencode(base64_encode($location)));
 		$I->see('P8_OK online');
