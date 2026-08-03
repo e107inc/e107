@@ -161,7 +161,7 @@ class download_request
 
 					if(!empty($gaddress))
 					{
-						header("Location: " . self::decorate_download_location($gaddress));
+						e107::getRedirect()->goOffsite(self::decorate_download_location($gaddress));
 					}
 					exit();
 				}
@@ -273,7 +273,7 @@ class download_request
 							->where('mirror_id', intval($mirror_id))->execute();
 						if(!empty($gaddress))
 						{
-							header("Location: " . self::decorate_download_location($gaddress));
+							e107::getRedirect()->goOffsite(self::decorate_download_location($gaddress));
 						}
 						exit();
 					}
@@ -309,7 +309,7 @@ class download_request
 					if(strpos($row['download_url'], "http://") !== false || strpos($row['download_url'], "ftp://") !== false || strpos($row['download_url'], "https://") !== false)
 					{
 						$download_url = e107::getParser()->parseTemplate($row['download_url']); // support for shortcode-driven dynamic URLS.
-						e107::redirect(self::decorate_download_location($download_url));
+						e107::redirect(self::decorate_download_location($download_url), 301, true);
 						// header("Location: {$download_url}");
 						exit();
 					}
@@ -350,7 +350,7 @@ class download_request
 					}
 					else
 					{
-						e107::redirect(trim($pref['download_denied']));
+						e107::redirect(trim($pref['download_denied']), 301, true);
 						return;
 					}
 				}
@@ -434,7 +434,10 @@ class download_request
 
 		if(strpos($image, "http") !== false)
 		{
-			e107::redirect($image);
+			// download_image is an administrator's choice through the media picker
+			// and may legitimately point off site. upload_ss arrives from the public
+			// submission form, so it stays subject to go()'s default.
+			e107::redirect($image, 301, $table === 'download');
 			exit();
 		}
 		else

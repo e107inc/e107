@@ -4903,12 +4903,15 @@ class e107
 	 *  - 304: Not Modified.
 	 *  - 305: Use Proxy.
 	 *  - 307: Temporary Redirect.
+	 * @param bool $allowOffsite
+	 *  Permit a destination on another host. Refused by default; see
+	 *  {@see redirection::go()}.
 	 * @see https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.3
 	 * @see https://tools.ietf.org/html/draft-reschke-http-status-308-07
 	 */
-	public static function redirect($url = '', $http_response_code = 301)
+	public static function redirect($url = '', $http_response_code = 301, $allowOffsite = false)
 	{
-		self::getRedirect()->go($url, true, $http_response_code);
+		self::getRedirect()->go($url, true, $http_response_code, true, $allowOffsite);
 	}
 
 	/**

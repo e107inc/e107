@@ -405,7 +405,7 @@ class eIPHandler
 					{
 						$line .= '?'.$search;			// Add on the ban reason - may be useful in the page
 					}
-					e107::redirect($line);
+					e107::redirect($line, 301, true);
 					exit();
 				}
 				// Otherwise just display any message and die

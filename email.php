@@ -19,7 +19,7 @@
 require_once('class2.php');
 if (!check_class(varset($pref['email_item_class'],e_UC_MEMBER)))
 {
-	e107::redirect('Location: '.e_BASE.'index.php');
+	e107::redirect(e_BASE.'index.php');
 	exit();
 }
 

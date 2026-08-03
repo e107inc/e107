@@ -607,8 +607,15 @@ class redirection
 			return false;
 		}
 
-		// Collapse backslashes so "/\evil" or "\\evil" cannot smuggle an off-site host.
-		$probe = str_replace('\\', '/', $dest);
+		$probe = $this->normaliseAsUrlParser($dest);
+
+		// A destination the visitor named has no reason to carry a character a URL
+		// parser deletes, so refuse rather than silently rewrite: "/\t/evil.example"
+		// reads as a rooted path here and as an authority in a browser.
+		if($probe !== str_replace('\\', '/', $dest))
+		{
+			return false;
+		}
 
 		// Reject protocol-relative ("//host") targets.
 		if(strpos($probe, '//') === 0)
@@ -618,14 +625,7 @@ class redirection
 
 		if(preg_match('#^https?://#i', $probe))
 		{
-			// An absolute URL must point at this site or one of its trusted hosts.
-			// The literal SITEURL match covers the common case; the host check
-			// additionally honours the `trusted_hosts` pref (e107inc/e107#5639),
-			// so a multi-hostname install can return a visitor to whichever of
-			// its own hosts they came in on, but never to a third-party host.
-			$host = parse_url($probe, PHP_URL_HOST);
-			$onSite = (strpos($probe, SITEURLBASE) === 0 || strpos($probe, SITEURL) === 0);
-			if(!$onSite && (!is_string($host) || $host === '' || !e107::getInstance()->isTrustedHost($host)))
+			if($this->leavesThisSite($dest))
 			{
 				return false;
 			}
@@ -637,6 +637,92 @@ class redirection
 		}
 
 		return $dest;
+	}
+
+	/**
+	 * Read a URL the way a browser does before it parses one.
+	 *
+	 * The WHATWG basic URL parser deletes every ASCII tab, LF and CR from its
+	 * input and trims leading C0 controls and space, all before it looks for a
+	 * scheme or an authority. PHP's header() rejects only LF and CR, so a tab or
+	 * a space survives into a Location value that the client then reads as
+	 * something else: "/\t/evil.example" is a rooted path to a string predicate
+	 * and an authority to a browser. Backslashes collapse for the same reason.
+	 *
+	 * @param string $url
+	 * @return string
+	 * @see https://url.spec.whatwg.org/#concept-basic-url-parser
+	 */
+	private function normaliseAsUrlParser($url)
+	{
+		$probe = str_replace(array("\t", "\n", "\r"), '', (string) $url);
+		$probe = ltrim($probe, "\x00..\x20");
+
+		return str_replace('\\', '/', $probe);
+	}
+
+	/**
+	 * Whether following a redirect destination would leave this site.
+	 *
+	 * The weaker half of {@see verifyDestinationUrl()}, and deliberately so. That
+	 * method answers "may a visitor name this destination", which additionally
+	 * requires a relative target to be site-rooted. This one answers only "does
+	 * this leave the site", because most of what the tree hands {@see go()} is
+	 * relative to the document rather than to the root: core commonly passes a
+	 * path relative to the document rather than to the root, and e107::url()
+	 * returns the same shape unless asked for the full form. None of it can
+	 * leave the site.
+	 *
+	 * A scheme other than http or https counts as leaving, so `javascript:` and
+	 * friends never reach a Location header.
+	 *
+	 * The host is compared rather than the string prefixed. SITEURLBASE carries
+	 * no trailing slash, so a prefix test would accept a third-party host that
+	 * merely starts with the site's own. Alongside the served host, the
+	 * `trusted_hosts` pref (e107inc/e107#5639) is honoured, so a multi-hostname
+	 * install can move a visitor between its own hosts.
+	 *
+	 * @param string $url
+	 * @return bool
+	 */
+	public function leavesThisSite($url)
+	{
+		if(!is_string($url) || $url === '')
+		{
+			return false;
+		}
+
+		$probe = $this->normaliseAsUrlParser($url);
+
+		if(preg_match('#^([a-z][a-z0-9+.\-]*):#i', $probe, $scheme))
+		{
+			if(strcasecmp($scheme[1], 'http') !== 0 && strcasecmp($scheme[1], 'https') !== 0)
+			{
+				return true;
+			}
+		}
+		elseif(strpos($probe, '//') !== 0)
+		{
+			return false;
+		}
+
+		$host = parse_url($probe, PHP_URL_HOST);
+
+		if(!is_string($host) || $host === '')
+		{
+			return true;
+		}
+
+		// eIPHandler is constructed before set_urls_deferred() defines the constant,
+		// so a redirect from that far up the boot has only the pref to go on.
+		$siteHost = defined('SITEURLBASE') ? parse_url(SITEURLBASE, PHP_URL_HOST) : '';
+
+		if(is_string($siteHost) && $siteHost !== '' && strcasecmp($host, $siteHost) === 0)
+		{
+			return false;
+		}
+
+		return !e107::getInstance()->isTrustedHost($host);
 	}
 
 	/**
@@ -767,12 +853,13 @@ class redirection
 	 * @param $replace
 	 * @param $http_response_code
 	 * @param $preventCache
+	 * @param bool $allowOffsite see {@see go()}
 	 * @return void
 	 */
-	public function redirect($url, $replace = TRUE, $http_response_code = NULL, $preventCache = true)
+	public function redirect($url, $replace = TRUE, $http_response_code = NULL, $preventCache = true, $allowOffsite = false)
 	{
-		$this->go($url, $replace, $http_response_code, $preventCache);
-		exit; 	
+		$this->go($url, $replace, $http_response_code, $preventCache, $allowOffsite);
+		exit;
 	}
 
 	 /**
@@ -826,13 +913,22 @@ class redirection
 	/**
 	 * Redirect to the given URI
 	 *
+	 * A destination that leaves this site is refused and replaced with SITEURL
+	 * unless the caller asks for it. Most of what reaches here is a destination
+	 * the visitor named (a return address, a jump target, a query string), and
+	 * a redirector that follows one off site is a phishing primitive carrying
+	 * this site's own domain. Off-site destinations that are the site's own
+	 * decision rather than the visitor's, such as the marketplace, a banner
+	 * click-through or an external download mirror, pass $allowOffsite.
+	 *
 	 * @param string $url or error code number. eg. 404 = Not Found. If left empty SITEURL will be used.
 	 * @param boolean $replace - default TRUE
 	 * @param int|null $http_response_code - default NULL
 	 * @param boolean $preventCache
+	 * @param boolean $allowOffsite permit a destination on another host
 	 * @return void
 	 */
-	public function go($url='', $replace = TRUE, $http_response_code = NULL, $preventCache = true)
+	public function go($url='', $replace = TRUE, $http_response_code = NULL, $preventCache = true, $allowOffsite = false)
 	{
 		if(e107::isCli())
 		{
@@ -860,6 +956,21 @@ class redirection
 				$this->setLoginDestination();
 			}
 			$url = SITEURLBASE. e_ADMIN_ABS;
+		}
+
+		// A client deletes tab, LF and CR and trims leading space before it reads
+		// the value, so the header has to carry the string that was tested.
+		$url = ltrim(str_replace(array("\t", "\n", "\r"), '', $url), "\x00..\x20");
+
+		if(!$allowOffsite && $this->leavesThisSite($url))
+		{
+			// The refusal is otherwise indistinguishable from a plugin that meant
+			// to land on the home page, and go() runs too early in the boot to
+			// reach the logging subsystem. Same channel as the host-check kill in
+			// e107::set_urls_deferred().
+			error_log('e107 redirect: refused the off-site destination '.var_export($url, true)
+				.'; a caller that means to leave the site passes $allowOffsite');
+			$url = SITEURL;
 		}
 
 
@@ -906,8 +1017,28 @@ class redirection
 		
 		// write session if needed
 		//if(session_id()) session_write_close();
-		
+
 		exit();
+	}
+
+
+	/**
+	 * Redirect to a destination that deliberately leaves this site.
+	 *
+	 * {@see go()} takes the permit as its fifth argument, and go($url, true, null,
+	 * true, true) states nothing at the call site: an author who copies it and
+	 * drops one argument turns off cache prevention rather than turning on the
+	 * permit. Say it in words instead.
+	 *
+	 * @param string $url
+	 * @param boolean $replace
+	 * @param int|null $http_response_code
+	 * @param boolean $preventCache
+	 * @return void
+	 */
+	public function goOffsite($url = '', $replace = TRUE, $http_response_code = NULL, $preventCache = true)
+	{
+		$this->go($url, $replace, $http_response_code, $preventCache, true);
 	}
 
 

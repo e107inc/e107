@@ -505,7 +505,7 @@ class theme_admin_ui extends e_admin_ui
 
 			if(!empty($data['price']))
 			{
-				e107::getRedirect()->go($data['url']);
+				e107::getRedirect()->goOffsite($data['url']);
 				return true;
 			}
 

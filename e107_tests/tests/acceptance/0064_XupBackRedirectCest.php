@@ -100,6 +100,23 @@ class XupBackRedirectCest
 	}
 
 	/**
+	 * And with a tab. A URL parser deletes every ASCII tab, LF and CR from its
+	 * input before it looks for an authority, and PHP's header() rejects only LF
+	 * and CR, so "/<TAB>/host" is a rooted path to a string predicate and an
+	 * off-site authority to the browser that reads the Location. %09 is legal in
+	 * a request line and PHP urldecodes it, so this arrives raw.
+	 */
+	public function aTabSmuggledBackUrlIsRefused(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a tab-smuggled xup back parameter');
+
+		$I->amOnPage(self::ROUTE.'&back=/%09/evil.example.invalid/phish');
+
+		$I->seeNoRedirectTo('evil.example.invalid');
+		$I->seeRedirectTo($this->siteUrl);
+	}
+
+	/**
 	 * Positive control. The parameter exists so a social login can return the
 	 * visitor to the page they came from, so an on-site destination has to keep
 	 * working or the fix has broken the feature.

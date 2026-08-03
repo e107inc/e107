@@ -97,8 +97,17 @@ class e107forum
 
 		if (!empty($_POST['fjsubmit']) && !empty($_POST['forumjump']))
 		{
-			$url = e107::getParser()->filter($_POST['forumjump'],'url');
-			e107::getRedirect()->go($_POST['forumjump']);
+			// The dropdown posts back the URL of the forum the visitor picked, so
+			// the destination arrives from the request and is validated before it
+			// is followed.
+			$url = e107::getRedirect()->verifyDestinationUrl($_POST['forumjump']);
+
+			if($url === false)
+			{
+				$url = e107::url('forum', 'index', null, array('mode' => 'full'));
+			}
+
+			e107::getRedirect()->go($url);
 			exit;
 		}
 
