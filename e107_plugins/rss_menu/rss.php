@@ -269,39 +269,7 @@ class rssCreate
 			case 'comments' : //TODO Eventually move to e107_plugins/comments
 			case 5:
 				$path='';
-				$this -> rssQuery = "SELECT * FROM `#comments` WHERE `comment_blocked` = 0 ORDER BY `comment_datestamp` DESC LIMIT 0,".$this -> limit;
-				$sql->gen($this -> rssQuery);
-				$tmp = $sql->db_getList();
-				$this -> rssItems = array();
-				$loop=0;
-
-				$HTTP = !empty($_SERVER['HTTPS']) ? 'https://' : 'http://';
-
-				foreach($tmp as $value)
-				{
-					$this -> rssItems[$loop]['title'] = $value['comment_subject'];
-					$this -> rssItems[$loop]['pubdate'] = $value['comment_datestamp'];
-
-					switch ($value['comment_type'])
-					{
-						case 0 :
-						case 'news' :
-							$this -> rssItems[$loop]['link'] = $HTTP.$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$value['comment_item_id'];
-							break;
-						case 2 :
-						case 'download' :
-							$this -> rssItems[$loop]['link'] = $HTTP.$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.download.".$value['comment_item_id'];
-							break;
-						case 4:
-						case 'poll' :
-							$this -> rssItems[$loop]['link'] = $HTTP.$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.poll.".$value['comment_item_id'];
-							break;
-					}
-
-					$this -> rssItems[$loop]['description'] = $value['comment_comment'];
-					$this -> rssItems[$loop]['author'] = substr($value['comment_author'], (strpos($value['comment_author'], ".")+1));
-					$loop++;
-				}
+				$this -> rssItems = $this->commentItems((int) $this -> limit);
 				break;
 
 			case 6:
@@ -419,6 +387,194 @@ class rssCreate
 				}
 			}
 		}
+	}
+
+	/**
+	 * The things a comment in this feed can be attached to.
+	 *
+	 * A type this list does not describe is one whose visibility the feed has no
+	 * way to establish, so comments of that type are not served. Comments of type
+	 * 'profile' are among them: they belong to a member's profile page, which is
+	 * not public, so the feed has no version of them it could publish.
+	 *
+	 * @return array
+	 */
+	private function commentParents()
+	{
+		return array(
+			'news' => array(
+				'types'  => array('0', 'news'),
+				'table'  => 'news',
+				'key'    => 'news_id',
+				'plugin' => '',
+			),
+			'download' => array(
+				'types'  => array('2', 'download'),
+				'table'  => 'download',
+				'key'    => 'download_id',
+				'plugin' => 'download',
+			),
+			'poll' => array(
+				'types'  => array('4', 'poll'),
+				'table'  => 'polls',
+				'key'    => 'poll_id',
+				'plugin' => 'poll',
+			),
+			'page' => array(
+				'types'  => array('page'),
+				'table'  => 'page',
+				'key'    => 'page_id',
+				'plugin' => '',
+			),
+		);
+	}
+
+	/**
+	 * Comments the visitor could have reached through the page they were left on.
+	 *
+	 * comment_blocked is a property of the comment. Whether the item it belongs
+	 * to has been published, and who may read it, are properties of that item, so
+	 * the feed joins to it and asks there.
+	 *
+	 * @param int $limit
+	 * @return array rss items
+	 */
+	private function commentItems($limit)
+	{
+		$http = !empty($_SERVER['HTTPS']) ? 'https://' : 'http://';
+		$base = $http.$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.";
+
+		$items = array();
+
+		foreach($this->commentParents() as $name => $parent)
+		{
+			if(!empty($parent['plugin']) && !e107::isInstalled($parent['plugin']))
+			{
+				continue;
+			}
+
+			foreach($this->visibleComments($name, $parent, $limit) as $row)
+			{
+				$author = varset($row['comment_author'], '');
+
+				$items[] = array(
+					'title'       => $row['comment_subject'],
+					'pubdate'     => $row['comment_datestamp'],
+					'link'        => $base.$name.".".$row['comment_item_id'],
+					'description' => $row['comment_comment'],
+					'author'      => substr($author, (strpos($author, ".") + 1)),
+				);
+			}
+		}
+
+		usort($items, array($this, 'byNewestFirst'));
+
+		return array_slice($items, 0, $limit);
+	}
+
+	/**
+	 * @param array $left
+	 * @param array $right
+	 * @return int
+	 */
+	private function byNewestFirst($left, $right)
+	{
+		if($left['pubdate'] == $right['pubdate'])
+		{
+			return 0;
+		}
+
+		return ($left['pubdate'] > $right['pubdate']) ? -1 : 1;
+	}
+
+	/**
+	 * The userclass predicate core states for a comma separated class column.
+	 *
+	 * The column holds a list, so it is matched as one: an IN () would make
+	 * MySQL read '254,0' as the number 254, and would admit a list that names
+	 * both a class the visitor holds and e_UC_NOBODY.
+	 *
+	 * @param string $column
+	 * @return string a predicate, without the WHERE keyword
+	 */
+	private function classPermits($column)
+	{
+		return $column." REGEXP '".e_CLASS_REGEXP."' AND ".$column." NOT REGEXP '".e_NOBODY_REGEXP."'";
+	}
+
+	/**
+	 * @param string $name key from commentParents()
+	 * @param array $parent its description
+	 * @param int $limit
+	 * @return array comment rows
+	 */
+	private function visibleComments($name, $parent, $limit)
+	{
+		// A handle of its own: the caller is in the middle of a switch that uses
+		// the default one.
+		$sql = e107::getDb('rss_comments');
+
+		$now = time();
+		$userclass = implode(',', array_map('intval', explode(',', USERCLASS_LIST)));
+
+		$types = array();
+
+		foreach($parent['types'] as $type)
+		{
+			$types[] = "'".$sql->escape($type)."'";
+		}
+
+		$join = '';
+		$where = "c.comment_blocked = 0 AND c.comment_type IN (".implode(',', $types).")";
+
+		switch($name)
+		{
+			case 'news':
+				$where .= " AND ".$this->classPermits('p.news_class')
+					." AND p.news_start < ".$now
+					." AND (p.news_end = 0 OR p.news_end > ".$now.")";
+				break;
+
+			case 'download':
+				// download_visible is who may see the item listed, which is what
+				// a feed is; download_class is who may then fetch the file.
+				$join = " INNER JOIN `#download_category` AS dc ON dc.download_category_id = p.download_category";
+				$where .= " AND p.download_visible IN (".$userclass.")"
+					." AND p.download_class IN (".$userclass.")"
+					." AND dc.download_category_class IN (".$userclass.")"
+					." AND p.download_active != 0";
+				break;
+
+			case 'poll':
+				$where .= " AND p.poll_start_datestamp <= ".$now
+					." AND (p.poll_end_datestamp = 0 OR p.poll_end_datestamp > ".$now.")";
+				break;
+
+			case 'page':
+				$where .= " AND ".$this->classPermits('p.page_class')." AND p.page_password = ''";
+				break;
+		}
+
+		// The table and the key come from commentParents(), never from a request.
+		$qry = "SELECT c.* FROM `#comments` AS c
+			INNER JOIN `#".$parent['table']."` AS p ON p.".$parent['key']." = c.comment_item_id"
+			.$join."
+			WHERE ".$where."
+			ORDER BY c.comment_datestamp DESC LIMIT 0,".(int) $limit;
+
+		if(!$sql->gen($qry))
+		{
+			return array();
+		}
+
+		$rows = array();
+
+		while($row = $sql->fetch())
+		{
+			$rows[] = $row;
+		}
+
+		return $rows;
 	}
 
 	function debug()

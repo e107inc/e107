@@ -1617,7 +1617,18 @@ class comment
 					switch ($row['comment_type'])
 					{
 						case '0': // news
-							if ($sql2->select("news", "*", "news_id='".$row['comment_item_id']."' AND news_class REGEXP '".e_CLASS_REGEXP."' "))
+							// The feed has to answer the same question the news page
+							// does: readable class, not the nobody class, and
+							// inside its publication window.
+							$now = time();
+							$qryn = "SELECT * FROM `#news`
+								WHERE news_id=".intval($row['comment_item_id'])."
+								AND news_class REGEXP '".e_CLASS_REGEXP."'
+								AND news_class NOT REGEXP '".e_NOBODY_REGEXP."'
+								AND news_start < ".$now."
+								AND (news_end = 0 OR news_end > ".$now.")";
+
+							if ($sql2->gen($qryn))
 							{
 								$row2 = $sql2->fetch();
 								require_once(e_HANDLER.'news_class.php');
@@ -1631,7 +1642,20 @@ class comment
 						case '1': //	article, review or content page - defunct category, but filter them out
 							break;
 						case '2': //	downloads
-							$qryd = "SELECT d.download_name, dc.download_category_class, dc.download_category_id, dc.download_category_name FROM #download AS d LEFT JOIN #download_category AS dc ON d.download_category=dc.download_category_id WHERE d.download_id={$row['comment_item_id']} AND dc.download_category_class REGEXP '".e_CLASS_REGEXP."' ";
+							// An inner join, so a download whose category has gone
+							// stops answering rather than answering with a null
+							// category and no class to test. The item's own
+							// download_visible and download_active are asked for
+							// as well, which is what the download page applies.
+							$classList = implode(',', array_map('intval', explode(',', USERCLASS_LIST)));
+							$qryd = "SELECT d.download_name, dc.download_category_class, dc.download_category_id, dc.download_category_name
+								FROM #download AS d
+								INNER JOIN #download_category AS dc ON d.download_category=dc.download_category_id
+								WHERE d.download_id=".intval($row['comment_item_id'])."
+								AND dc.download_category_class REGEXP '".e_CLASS_REGEXP."'
+								AND d.download_visible IN (".$classList.")
+								AND d.download_active > 0";
+
 							if ($sql2->gen($qryd))
 							{
 								$row2 = $sql2->fetch();

@@ -61,6 +61,12 @@ class e_unsubscribe
 			$listName = $ml->mailerName;
 		}
 
+		if($ml->unsubscribe('check',$data) == false)
+		{
+			$this->invalidURL();
+			return;
+		}
+
 		if(vartrue($_POST['remove']) && !empty($data))
 		{
 			if($ml->unsubscribe('process',$data)!=false)
@@ -79,25 +85,15 @@ class e_unsubscribe
 		}
 
 
-		if($ml->unsubscribe('check',$data) != false)
-		{
-			$text = "<p>We are very sorry for the inconvenience. <br />Please click the button below to remove <b>".$data['email']."</b> from <i>".$listName."</i>.</p>";
-			$text .= $frm->open('unsub','post',e_REQUEST_URI);
-			$text .= $frm->button('remove','Remove ','submit');
-			$text .= $frm->close();
-			
-			$mes->setTitle('Unsubscribe',E_MESSAGE_INFO)->addInfo($text);
-			 
-			echo "<div class='container'>".$mes->render()."</div>";
-			return;
-			
-		}
-		else
-		{
-			$this->invalidURL();
-			return;	
-		}
-	}	
+		$text = "<p>We are very sorry for the inconvenience. <br />Please click the button below to remove <b>".$data['email']."</b> from <i>".$listName."</i>.</p>";
+		$text .= $frm->open('unsub','post',e_REQUEST_URI);
+		$text .= $frm->button('remove','Remove ','submit');
+		$text .= $frm->close();
+
+		$mes->setTitle('Unsubscribe',E_MESSAGE_INFO)->addInfo($text);
+
+		echo "<div class='container'>".$mes->render()."</div>";
+	}
 	
 	
 	

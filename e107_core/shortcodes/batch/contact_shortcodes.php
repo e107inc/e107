@@ -33,12 +33,21 @@ class contact_shortcodes extends e_shortcode
 	}
 	
 
-	function sc_contact_person($parm='') 
+	/**
+	 * The users the sitecontacts preference makes reachable through the contact
+	 * form.
+	 *
+	 * The selector below offers a choice out of this set, and contact.php
+	 * resolves a submitted contact_person out of the same set, so the two cannot
+	 * drift apart into a selector that offers one list and a mailer that honours
+	 * another.
+	 *
+	 * @return string a WHERE clause over the user table, without the keyword
+	 */
+	public function recipientWhere()
 	{
-		$tp = e107::getParser();
-		$sql = e107::getDb();
 		$pref = e107::getPref();
-		
+
 		if(varset($pref['sitecontacts']) == e_UC_ADMIN)
 		{
 			$query = "user_admin =1 AND user_ban = 0";
@@ -49,9 +58,48 @@ class contact_shortcodes extends e_shortcode
 		}
 		else
 		{
-			$query = "FIND_IN_SET(".intval($pref['sitecontacts']).",user_class) AND user_ban = 0 ";
+			$query = "FIND_IN_SET(".intval(varset($pref['sitecontacts'])).",user_class) AND user_ban = 0 ";
 		}
-		
+
+		return $query;
+	}
+
+	/**
+	 * Put the CAPTCHA into a rendered contact form that has none.
+	 *
+	 * contact.php refuses a submission whose code does not verify, so the fields
+	 * that answer it cannot be left to the template: a theme that overrides
+	 * contact_template.php without {CONTACT_IMAGECODE_INPUT} would otherwise
+	 * have a form nobody can submit.
+	 *
+	 * @param string $text rendered form markup
+	 * @return string
+	 */
+	public function withImagecode($text)
+	{
+		if(strpos($text, "name='code_verify'") !== false || strpos($text, 'name="code_verify"') !== false)
+		{
+			return $text;
+		}
+
+		$block = "<div class='control-group form-group'><label for='code-verify'>".$this->sc_contact_imagecode_label()."</label> "
+			.$this->sc_contact_imagecode()."<span class='m-2'>".$this->sc_contact_imagecode_input()."</span></div>";
+
+		$close = strripos($text, '</form>');
+
+		if($close === false)
+		{
+			return $text.$block;
+		}
+
+		return substr($text, 0, $close).$block.substr($text, $close);
+	}
+
+	function sc_contact_person($parm='')
+	{
+		$sql = e107::getDb();
+		$query = $this->recipientWhere();
+
 		$text = "<select name='contact_person' class='tbox contact_person form-control'>\n";
 		
 		$count = $sql ->select("user", "user_id,user_name", $query . " ORDER BY user_name");
