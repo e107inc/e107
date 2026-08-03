@@ -57,6 +57,7 @@ class WorkspaceCleanup extends Extension
 		'e107_plugins/thing',      // downloaded by e_marketplaceTest
 		'e107_tests_forum_fixture_probe.php', // @see Helper\ForumFixture
 		'e107_tests_forum_canary.txt',        // @see ForumAttachmentCest
+		'e107_tests_pm_fixture_probe.php',    // @see PmAttachmentCest
 		'e107_tests_plugin_install_probe.php', // @see Helper\Acceptance::havePluginInstalled()
 		'e107_tests_thumb_probe.php',          // @see ThumbnailContainmentCest
 		'e107_tests_p16_probe.php',            // @see ThumbMediaUserclassCest

@@ -101,6 +101,33 @@ class private_message
 	}
 
 
+	/**
+	 *	Whether the current user is the sender or the recipient of a PM
+	 *
+	 *	pm_to is a varchar, and the outbox copy of a class or multi-recipient
+	 *	send carries a user class name or a list of display names in it rather
+	 *	than an id, so the comparison is made on strings. A loose comparison
+	 *	reads "2024 Newsletter" as the number 2024 on PHP below 8.
+	 *
+	 *	@param	array|bool $pm_info - a row as returned by pm_get()
+	 *
+	 *	@return	boolean
+	 */
+	public function isParticipant($pm_info)
+	{
+		if(empty($pm_info) || !USERID)
+		{
+			return FALSE;
+		}
+
+		$userId = (string) (int) USERID;
+		$to = isset($pm_info['pm_to']) ? (string) $pm_info['pm_to'] : '';
+		$from = isset($pm_info['pm_from']) ? (string) $pm_info['pm_from'] : '';
+
+		return $to === $userId || $from === $userId;
+	}
+
+
 	/*
 	 *	Send a PM
 	 *
@@ -112,12 +139,13 @@ class private_message
 	 *		['pm_userclass'] = target user class
 	 *		['to_info'] = recipients array of array('user_id', 'user_class')
 	 *
-	 *		May also be an array as received from the generic table, if sending via a cron job
-	 *			identified by the existence of $vars['pm_from']
+	 *	@param	boolean $bulk - TRUE when $vars is a queued row read back from the generic
+	 *		table by the cron task, in which case its pm_* keys are the columns to insert.
+	 *		Callers passing request data must leave this FALSE.
 	 *
 	 *	@return	string - text detailing result
 	 */
-	function add($vars)
+	function add($vars, $bulk = FALSE)
 	{
 
 		$tp = e107::getParser();
@@ -132,12 +160,12 @@ class private_message
 		$a_list = array();
 
 		$maxSendNow = varset($this->pmPrefs['pm_max_send'],100);	// Maximum number of PMs to send without queueing them
-		if (isset($vars['pm_from']))
+		if ($bulk)
 		{	// Doing bulk send off cron task
 			$info = array();
 			foreach ($vars as $k => $v)
 			{
-				if (strpos($k, 'pm_') === 0)
+				if (isset($pmFieldTypes[$k]))
 				{
 					$info[$k] = $v;
 					unset($vars[$k]);
@@ -830,15 +858,22 @@ class private_message
 	/**
 	 *	Send a file down to the user
 	 *
+	 *	Only the sender and the recipient of a message may fetch its attachments.
+	 *
 	 *	@param	int $pmid - PM ID
 	 *	@param	string $filenum - attachment number within the list associated with the PM
 	 *
-	 *	@return none
+	 *	@return	boolean false when there is no file to send, or the caller may not have it
 	 *
 	 */
 	function send_file($pmid, $filenum)
 	{
 		$pm_info = $this->pm_get($pmid);
+
+		if(!$this->isParticipant($pm_info))
+		{
+			return false;
+		}
 
 		$attachments = explode(chr(0), $pm_info['pm_attachments']);
 
@@ -848,14 +883,31 @@ class private_message
 		}
 
 		$fname = $attachments[$filenum];
-		list($timestamp, $fromid, $rand, $file) = explode("_", $fname, 4);
 
+		if($fname === '' || basename($fname) !== $fname)
+		{
+			return false;
+		}
+
+		$nameParts = explode("_", $fname, 4);
+
+		if(count($nameParts) < 4)
+		{
+			return false;
+		}
+
+		list($timestamp, $nameOwnerId, $rand, $file) = $nameParts;
+
+		if((string) $nameOwnerId !== (string) $pm_info['pm_from'])
+		{
+			return false;
+		}
 
 		$filename = false; // getcwd()."/attachments/{$fname}";
 
 		$pathList = array();
 		$pathList[] = e_PLUGIN."pm/attachments/"; // getcwd()."/attachments/"; // legacy path.
-		$pathList[] = e107::getFile()->getUserDir($fromid, false, 'attachments'); // new media path.
+		$pathList[] = e107::getFile()->getUserDir($nameOwnerId, false, 'attachments'); // new media path.
 
 		foreach($pathList as $path)
 		{
@@ -870,12 +922,6 @@ class private_message
 		}
 
 		if(empty($filename) || !is_file($filename))
-		{
-			return false;
-		}
-
-
-		if($fromid != $pm_info['pm_from'])
 		{
 			return false;
 		}

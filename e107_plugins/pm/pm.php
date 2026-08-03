@@ -391,15 +391,15 @@
 
 			$pm_info = $this->pm_get($pmid);
 
-			$sc = e107::getScBatch('pm', true, 'pm');
-			$sc->setVars($pm_info);
-			$sc->wrapper('pm');
-
-			if($pm_info['pm_to'] != USERID && $pm_info['pm_from'] != USERID)
+			if(!$this->isParticipant($pm_info))
 			{
 				$ns->tablerender(LAN_PM, LAN_PM_60);
 				return null;
 			}
+
+			$sc = e107::getScBatch('pm', true, 'pm');
+			$sc->setVars($pm_info);
+			$sc->wrapper('pm');
 
 			if($pm_info['pm_read'] == 0 && $pm_info['pm_to'] == USERID)
 			{    // Inbox
@@ -557,6 +557,7 @@
 			if(isset($_POST['pm_to']))
 			{
 				$msg = '';
+				$sendVars = array();
 				if(!empty($_POST['pm_userclass']))
 				{
 					if(!check_class($this->pmPrefs['opt_userclass']))
@@ -591,7 +592,7 @@
 									->where('pm_block_to', e107::getParser()->toDB($to))
 									->execute())
 								{
-									$_POST['to_array'][] = $to_info;
+									$sendVars['to_array'][] = $to_info;
 								}
 							}
 						}
@@ -600,7 +601,7 @@
 					{
 						if($to_info = $this->pm_getuid($_POST['pm_to']))
 						{
-							$_POST['to_info'] = $to_info;
+							$sendVars['to_info'] = $to_info;
 						}
 						else
 						{
@@ -619,15 +620,12 @@
 					}
 				}
 
-				if(isset($_POST['receipt']))
+				if(isset($_POST['receipt']) && check_class($this->pmPrefs['receipt_class']))
 				{
-					if(!check_class($this->pmPrefs['receipt_class']))
-					{
-						unset($_POST['receipt']);
-					}
+					$sendVars['receipt'] = $_POST['receipt'];
 				}
 
-				$totalsize = strlen($_POST['pm_message']);
+				$totalsize = strlen(varset($_POST['pm_message'], ''));
 
 				$maxsize = intval($this->pmPrefs['attach_size']) * 1024;
 
@@ -668,9 +666,9 @@
 				{
 					if(check_class($this->pmPrefs['attach_class']))
 					{
-						$_POST['uploaded'] = $this->processAttachments();
+						$sendVars['uploaded'] = $this->processAttachments();
 
-						foreach($_POST['uploaded'] as $var)
+						foreach($sendVars['uploaded'] as $var)
 						{
 							if(!empty($var['message']))
 							{
@@ -682,21 +680,37 @@
 					else
 					{
 						$msg .= LAN_PM_23 . '<br />';
-						unset($_POST['uploaded']);
-
 					}
 				}
 
-				$_POST['from_id'] = USERID;
+				$sendVars['from_id'] = USERID;
+				$sendVars['pm_subject'] = varset($_POST['pm_subject'], '');
+				$sendVars['pm_message'] = varset($_POST['pm_message'], '');
 
-				return $msg . $this->add($_POST);
+				if(!empty($_POST['pm_userclass']))
+				{
+					$sendVars['pm_userclass'] = $_POST['pm_userclass'];
+				}
+
+				return $msg . $this->add($sendVars);
 			}
 		}
 
 
+		/**
+		 *	Accept the attachments posted with a PM.
+		 *
+		 *	The random component lands in the stored name, which is the whole of
+		 *	the secrecy of an attachment sitting in a directly fetchable media
+		 *	directory. Four decimal digits are nine thousand guesses; sixteen hex
+		 *	characters are not. It carries no underscore, so send_file()'s
+		 *	explode("_", $fname, 4) reads new and already stored names alike.
+		 *
+		 *	@return array as returned by e_file::getUploaded()
+		 */
 		function processAttachments()
 		{
-			$randnum = rand(1000, 9999);
+			$randnum = e_random::hex(16);
 			$type = 'attachment+' . $randnum . '_';
 
 			return e107::getFile()->getUploaded("attachments", $type, array('max_file_count' => 3));
