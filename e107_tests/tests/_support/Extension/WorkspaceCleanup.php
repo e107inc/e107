@@ -75,6 +75,7 @@ class WorkspaceCleanup extends Extension
 		'e107_tests_confirmtoken_probe.php',   // @see AdminConfirmTokenCest
 		'e107_tests_themefront_probe.php',     // @see ThemeHandlerFrontEndCest
 		'e107_tests_comment_authz_probe.php',  // @see CommentEditAuthzCest
+		'e107_tests_p3_hop.php',              // @see e_fileOutboundRequestTest
 	];
 
 	/** @var \Deployer|null */

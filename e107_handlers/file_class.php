@@ -83,6 +83,11 @@ class e_file
 {
 
 	/**
+	 * How many redirects an outbound request may follow before it is refused.
+	 */
+	const CURL_MAX_REDIRECTS = 5;
+
+	/**
 	 * Array of directory names to ignore (in addition to any set by caller)
 	 *
 	 * @var array
@@ -553,12 +558,60 @@ class e_file
 	 */
 	public function isUrlSafe($url)
 	{
-		if(defined('e_REMOTE_FILE_ALLOW_PRIVATE') && e_REMOTE_FILE_ALLOW_PRIVATE === true)
+		return $this->resolveOutboundTarget($url) !== false;
+	}
+
+
+	/**
+	 * The addresses a single hop is allowed to reach, or false when refused.
+	 *
+	 * Two questions, because a site can give them two answers.
+	 * resolveOutboundTarget() is e107's own rule about schemes and addresses;
+	 * isUrlSafe() is the public one a site or a plugin overrides to add rules of
+	 * its own. Only the first was asked of a Location, so an overridden policy
+	 * governed the URL as typed and nothing the chain went on to reach, which is
+	 * the shape of the defect this walk exists to close.
+	 *
+	 * @param string $url
+	 * @return array|false as {@see e_file::resolveOutboundTarget()}
+	 */
+	private function permittedOutboundTarget($url)
+	{
+		$target = $this->resolveOutboundTarget($url);
+
+		if($target === false || !$this->isUrlSafe($url))
 		{
-			return true;
+			return false;
 		}
 
-		$parts = parse_url($url);
+		return $target;
+	}
+
+
+	/**
+	 * Resolve $url to the addresses an outbound request is allowed to reach.
+	 *
+	 * Half of the per-hop predicate, beside {@see e_file::isUrlSafe()}. It runs
+	 * on the URL as typed and again on every Location a redirect chain
+	 * produces, and the addresses it returns are what the connection is pinned
+	 * to: without the pin the validating lookup and the connecting lookup are
+	 * two different lookups, and an attacker owns the interval between them.
+	 *
+	 * Define `e_REMOTE_FILE_ALLOW_PRIVATE` to bypass the address check for
+	 * legitimate intranet use. The scheme check is not bypassable.
+	 *
+	 * @param string $url
+	 * @return array|false array('scheme', 'host', 'port', 'addresses'), or
+	 *                     false when the policy refuses the URL
+	 */
+	public function resolveOutboundTarget($url)
+	{
+		if(!is_string($url) || $url === '')
+		{
+			return false;
+		}
+
+		$parts = @parse_url($url);
 		if(empty($parts['host']))
 		{
 			return false;
@@ -570,37 +623,27 @@ class e_file
 			return false;
 		}
 
-		$host = $parts['host'];
-		if($host[0] === '[' && substr($host, -1) === ']')
+		$target = array(
+			'scheme'    => $scheme,
+			'host'      => $parts['host'],
+			'port'      => isset($parts['port']) ? (int) $parts['port'] : ($scheme === 'https' ? 443 : 80),
+			'addresses' => array(),
+		);
+
+		if(defined('e_REMOTE_FILE_ALLOW_PRIVATE') && e_REMOTE_FILE_ALLOW_PRIVATE === true)
 		{
-			$host = substr($host, 1, -1);
+			return $target;
 		}
 
-		$ips = array();
-		if(filter_var($host, FILTER_VALIDATE_IP))
-		{
-			$ips[] = $host;
-		}
-		else
-		{
-			$records = @dns_get_record($host, DNS_A | DNS_AAAA);
-			if(!is_array($records))
-			{
-				return false;
-			}
-			foreach($records as $r)
-			{
-				if(!empty($r['ip']))    { $ips[] = $r['ip']; }
-				if(!empty($r['ipv6']))  { $ips[] = $r['ipv6']; }
-			}
-		}
+		$literal = $this->hostLiteralIp($target['host']);
+		$addresses = ($literal !== false) ? array($literal) : $this->resolveHostname($target['host']);
 
-		if(empty($ips))
+		if(empty($addresses))
 		{
 			return false;
 		}
 
-		foreach($ips as $ip)
+		foreach($addresses as $ip)
 		{
 			$canonical = $this->canonicalizeIp($ip);
 			if($canonical === false)
@@ -613,7 +656,56 @@ class e_file
 			}
 		}
 
-		return true;
+		$target['addresses'] = $addresses;
+
+		return $target;
+	}
+
+
+	/**
+	 * Every A and AAAA address $host has.
+	 *
+	 * @param string $host
+	 * @return string[] empty when the name does not resolve
+	 */
+	protected function resolveHostname($host)
+	{
+		$records = @dns_get_record($host, DNS_A | DNS_AAAA);
+		if(!is_array($records))
+		{
+			return array();
+		}
+
+		$addresses = array();
+		foreach($records as $r)
+		{
+			if(!empty($r['ip']))    { $addresses[] = $r['ip']; }
+			if(!empty($r['ipv6']))  { $addresses[] = $r['ipv6']; }
+		}
+
+		return $addresses;
+	}
+
+
+	/**
+	 * The address an authority host is a literal for.
+	 *
+	 * @param string $host as it appears in the authority, brackets and all
+	 * @return string|false false when $host is a name rather than a literal
+	 */
+	private function hostLiteralIp($host)
+	{
+		if($host === '')
+		{
+			return false;
+		}
+
+		if($host[0] === '[' && substr($host, -1) === ']')
+		{
+			$host = substr($host, 1, -1);
+		}
+
+		return filter_var($host, FILTER_VALIDATE_IP) ? $host : false;
 	}
 
 
@@ -879,6 +971,9 @@ class e_file
 	function getRemoteFile($remote_url, $local_file, $type = 'temp', $timeout = 40)
 	{
 
+		$this->error = '';
+		$this->setErrorNum(null);
+
 		// check for cURL
 		if(!function_exists('curl_init'))
 		{
@@ -900,107 +995,88 @@ class e_file
 			return false;
 		}
 
-		$path = ($type === 'media') ? e_MEDIA : e_TEMP;
+		$fp = fopen($this->remoteFilePath($type) . $local_file, 'w'); // media-directory or temp directory is the root.
+
+		set_time_limit($timeout);
+
+		$buffer = $this->curlFollow($remote_url, array('timeout' => $timeout),
+			function($cp) use ($fp)
+			{
+				curl_setopt($cp, CURLOPT_FILE, $fp);
+			},
+			function() use ($fp)
+			{
+				// The bodies of the 3xx answers are not the download.
+				rewind($fp);
+				ftruncate($fp, 0);
+			}
+		);
+
+		fclose($fp);
+
+		if($buffer === false && !empty($this->error)) // Fixes curl_error output - here see #1936
+		{
+			error_log($this->error);
+		}
+
+		return (bool) $buffer;
+	}
+
+
+	/**
+	 * The directory getRemoteFile() writes a $type download into.
+	 *
+	 * @param string $type media, import, or temp
+	 * @return string
+	 */
+	public function remoteFilePath($type)
+	{
+
+		if($type === 'media')
+		{
+			return e_MEDIA;
+		}
 
 		if($type === 'import')
 		{
-			$path = e_IMPORT;
+			return e_IMPORT;
 		}
 
-		$fp = fopen($path . $local_file, 'w'); // media-directory or temp directory is the root.
-
-		$cp = $this->initCurl($remote_url);
-		curl_setopt($cp, CURLOPT_FILE, $fp);
-		curl_setopt($cp, CURLOPT_TIMEOUT, $timeout);
-		set_time_limit($timeout);
-
-		$buffer = curl_exec($cp);
-
-		if(curl_errno($cp)) // Fixes curl_error output - here see #1936
-		{
-			error_log('cURL error: ' . curl_error($cp));
-		}
-
-		curl_close($cp);
-		fclose($fp);
-
-		return (bool) $buffer;
+		return e_TEMP;
 	}
 
 	/**
 	 * @param string     $address
 	 * @param array|null $options
 	 *
-	 * @return CurlHandle|false
+	 * @return CurlHandle|false false when the outbound request policy refuses $address
 	 */
 	public function initCurl($address, $options = null)
 	{
 
-		$cu = curl_init();
+		return $this->curlHandle($address, $options, null);
+	}
 
-		$timeout = (int) vartrue($options['timeout'], 10);
-		$timeout = min($timeout, 120);
-		$timeout = max($timeout, 3);
 
-		$urlData = parse_url($address);
-		$referer = $urlData['scheme'] . "://" . $urlData['host'];
+	/**
+	 * initCurl(), with the option of reusing a target the caller has already
+	 * put through the policy, so that one hop costs one name lookup.
+	 *
+	 * @param string     $address
+	 * @param array|null $options
+	 * @param array|null $target  as resolveOutboundTarget()
+	 * @return CurlHandle|false
+	 */
+	private function curlHandle($address, $options, $target)
+	{
 
-		if(empty($referer))
+		$curlOptions = $this->curlOptions($address, $options, $target);
+
+		if($curlOptions === false)
 		{
-			$referer = e_REQUEST_HTTP;
-		}
+			$this->error = 'Refused to fetch URL with non-HTTP(S) scheme or private/reserved IP: ' . $address;
 
-		curl_setopt($cu, CURLOPT_URL, $address);
-		curl_setopt($cu, CURLOPT_TIMEOUT, $timeout);
-		curl_setopt($cu, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($cu, CURLOPT_HEADER, 0);
-		curl_setopt($cu, CURLOPT_REFERER, $referer);
-		curl_setopt($cu, CURLOPT_SSL_VERIFYPEER, false);
-		curl_setopt($cu, CURLOPT_FOLLOWLOCATION, true);
-		if(defined('CURLOPT_PROTOCOLS') && defined('CURLPROTO_HTTP') && defined('CURLPROTO_HTTPS'))
-		{
-			curl_setopt($cu, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
-			curl_setopt($cu, CURLOPT_REDIR_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
-		}
-		curl_setopt($cu, CURLOPT_USERAGENT, "Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0");
-		curl_setopt($cu, CURLOPT_COOKIEFILE, e_SYSTEM . 'cookies.txt');
-		curl_setopt($cu, CURLOPT_COOKIEJAR, e_SYSTEM . 'cookies.txt');
-
-		if(defined('e_CURL_PROXY'))
-		{
-			curl_setopt($cu, CURLOPT_PROXY, e_CURL_PROXY);     // PROXY details with port
-		}
-
-		if(defined('e_CURL_PROXYUSERPWD'))
-		{
-			curl_setopt($cu, CURLOPT_PROXYUSERPWD, e_CURL_PROXYUSERPWD);   // Use if proxy have username and password
-		}
-
-		if(defined('e_CURL_PROXYTYPE'))
-		{
-			curl_setopt($cu, CURLOPT_PROXYTYPE, e_CURL_PROXYTYPE); // If expected to cal
-		}
-
-		if(!empty($options['post']))
-		{
-			curl_setopt($cu, CURLOPT_POST, true);
-			// if array -> will encode the data as multipart/form-data, if URL-encoded string - application/x-www-form-urlencoded
-			curl_setopt($cu, CURLOPT_POSTFIELDS, $options['post']);
-		}
-
-		if(!empty($options['postfields']))
-		{
-			curl_setopt($cu, CURLOPT_POSTFIELDS, $options['postfields']);
-		}
-
-		if(!empty($options['customrequest'])) // ie. GET, PUT, POST
-		{
-			curl_setopt($cu, CURLOPT_CUSTOMREQUEST, $options['customrequest']);
-		}
-
-		if(isset($options['header']) && is_array($options['header']))
-		{
-			curl_setopt($cu, CURLOPT_HTTPHEADER, $options['header']);
+			return false;
 		}
 
 		if(!file_exists(e_SYSTEM . 'cookies.txt'))
@@ -1008,8 +1084,789 @@ class e_file
 			file_put_contents(e_SYSTEM . 'cookies.txt', '');
 		}
 
+		$cu = curl_init();
+
+		// curl_setopt_array() applies the options in order and stops at the
+		// first one libcurl refuses, so a handle that half took the policy
+		// would otherwise go out looking fine.
+		if(!curl_setopt_array($cu, $curlOptions))
+		{
+			curl_close($cu);
+			$this->error = 'Could not apply the outbound request options for: ' . $address;
+
+			return false;
+		}
+
 		return $cu;
 
+	}
+
+
+	/**
+	 * The cURL options an outbound request is issued with.
+	 *
+	 * Built as an array rather than applied to a handle so that the policy is
+	 * readable: a cURL handle will not tell you what was set on it, and a
+	 * default quietly flipped back is the commonest regression here.
+	 *
+	 * initCurl() is public and third-party code calls it directly, so the
+	 * refusal lives here and not only in e_file's own callers. The addresses
+	 * the connection is pinned to are the ones the policy resolved, whether
+	 * that was done here or by the redirect walk that passes $target in.
+	 *
+	 * @param string     $address
+	 * @param array|null $options as initCurl()
+	 * @param array|null $target  a target the caller has already resolved
+	 * @return array|false CURLOPT_* map, or false when the policy refuses $address
+	 */
+	public function curlOptions($address, $options = null, $target = null)
+	{
+
+		if($target === null)
+		{
+			$target = $this->resolveOutboundTarget($address);
+		}
+
+		if($target === false)
+		{
+			return false;
+		}
+
+		$options = (array) $options;
+
+		$timeout = $this->outboundTimeout($options);
+
+		$referer = $target['scheme'] . '://' . $target['host'];
+
+		$curlOptions = array(
+			CURLOPT_URL            => $address,
+			CURLOPT_TIMEOUT        => $timeout,
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_HEADER         => 0,
+			CURLOPT_REFERER        => $referer,
+			CURLOPT_SSL_VERIFYPEER => true,
+			CURLOPT_SSL_VERIFYHOST => 2,
+			CURLOPT_FOLLOWLOCATION => false,
+			CURLOPT_MAXREDIRS      => self::CURL_MAX_REDIRECTS,
+			CURLOPT_USERAGENT      => "Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0",
+			CURLOPT_COOKIEFILE     => e_SYSTEM . 'cookies.txt',
+			CURLOPT_COOKIEJAR      => e_SYSTEM . 'cookies.txt',
+		);
+
+		if(defined('CURLOPT_PROTOCOLS') && defined('CURLPROTO_HTTP') && defined('CURLPROTO_HTTPS'))
+		{
+			$curlOptions[CURLOPT_PROTOCOLS] = CURLPROTO_HTTP | CURLPROTO_HTTPS;
+			$curlOptions[CURLOPT_REDIR_PROTOCOLS] = CURLPROTO_HTTP | CURLPROTO_HTTPS;
+		}
+
+		$pin = $this->curlResolveEntry($target);
+
+		if($pin !== false)
+		{
+			$curlOptions[CURLOPT_RESOLVE] = array($pin);
+		}
+
+		if(defined('e_CURL_PROXY'))
+		{
+			$curlOptions[CURLOPT_PROXY] = e_CURL_PROXY;     // PROXY details with port
+		}
+
+		if(defined('e_CURL_PROXYUSERPWD'))
+		{
+			$curlOptions[CURLOPT_PROXYUSERPWD] = e_CURL_PROXYUSERPWD;   // Use if proxy have username and password
+		}
+
+		if(defined('e_CURL_PROXYTYPE'))
+		{
+			$curlOptions[CURLOPT_PROXYTYPE] = e_CURL_PROXYTYPE; // If expected to cal
+		}
+
+		if(!empty($options['post']))
+		{
+			$curlOptions[CURLOPT_POST] = true;
+			// if array -> will encode the data as multipart/form-data, if URL-encoded string - application/x-www-form-urlencoded
+			$curlOptions[CURLOPT_POSTFIELDS] = $options['post'];
+		}
+
+		if(!empty($options['postfields']))
+		{
+			$curlOptions[CURLOPT_POSTFIELDS] = $options['postfields'];
+		}
+
+		if(!empty($options['customrequest'])) // ie. GET, PUT, POST
+		{
+			$curlOptions[CURLOPT_CUSTOMREQUEST] = $options['customrequest'];
+		}
+
+		if(isset($options['header']) && is_array($options['header']))
+		{
+			$curlOptions[CURLOPT_HTTPHEADER] = $options['header'];
+		}
+
+		return $curlOptions;
+
+	}
+
+
+	/**
+	 * A CURLOPT_RESOLVE entry pinning $target to the addresses that passed the
+	 * policy, so cURL cannot look the name up a second time.
+	 *
+	 * @param array $target as returned by resolveOutboundTarget()
+	 * @return string|false false when there is nothing to pin
+	 */
+	private function curlResolveEntry($target)
+	{
+
+		if(empty($target['addresses']) || $this->hostLiteralIp($target['host']) !== false)
+		{
+			return false;
+		}
+
+		$addresses = array();
+
+		foreach($target['addresses'] as $ip)
+		{
+			$addresses[] = (strpos($ip, ':') !== false) ? '[' . $ip . ']' : $ip;
+		}
+
+		// Several addresses in one entry arrived in libcurl 7.59.0. An older
+		// build discards an entry it cannot parse, which would leave the
+		// connection unpinned, so offer it a single address instead.
+		if($this->curlVersionNumber() < 0x073B00)
+		{
+			$addresses = array($addresses[0]);
+		}
+
+		return $target['host'] . ':' . $target['port'] . ':' . implode(',', $addresses);
+	}
+
+
+	/**
+	 * @return int linked libcurl version as 0xMMmmpp, 0 when unknown
+	 */
+	protected function curlVersionNumber()
+	{
+
+		$version = function_exists('curl_version') ? curl_version() : null;
+
+		return isset($version['version_number']) ? (int) $version['version_number'] : 0;
+	}
+
+
+	/**
+	 * Issue $address and follow any redirect one hop at a time, putting every
+	 * Location back through the outbound request policy.
+	 *
+	 * The walk is transport neutral because the defect is. libcurl and the
+	 * stream wrappers both re-issue the request at whatever the server answers
+	 * with and revalidate nothing, which makes a policy applied to the URL as
+	 * typed exactly one hop deep on either of them. CURLOPT_PREREQFUNCTION
+	 * would be tidier than walking the chain, but it needs libcurl 7.80 and
+	 * PHP 8.2 and does nothing for the stream transport; walking works on
+	 * every build e107 supports and is testable without a live connection.
+	 *
+	 * @param string        $address
+	 * @param array|null    $options    as initCurl()
+	 * @param callable      $fetchHop   function($url, array $options, array $target)
+	 *                                  returning array('result', 'status', 'location')
+	 *                                  or false
+	 * @param callable|null $onRedirect called when a further hop is about to be issued
+	 * @return mixed the final hop's body, or false
+	 */
+	private function followOutbound($address, $options, $fetchHop, $onRedirect = null)
+	{
+
+		$options = (array) $options;
+		$url = $address;
+		$redirects = 0;
+
+		// CURLOPT_FOLLOWLOCATION spent the caller's timeout on the whole
+		// transfer, redirects included. Walking the chain by hand would
+		// otherwise multiply it by the hop cap.
+		$deadline = time() + $this->outboundTimeout($options);
+
+		while(true)
+		{
+			$target = $this->permittedOutboundTarget($url);
+
+			if($target === false)
+			{
+				$this->error = 'Refused to fetch URL with non-HTTP(S) scheme or private/reserved IP: ' . $url;
+
+				return false;
+			}
+
+			$remaining = $deadline - time();
+
+			if($remaining <= 0)
+			{
+				$this->error = 'Ran out of time following redirects from: ' . $address;
+
+				return false;
+			}
+
+			$options['timeout'] = $remaining;
+
+			$hop = call_user_func($fetchHop, $url, $options, $target);
+
+			if($hop === false)
+			{
+				return false;
+			}
+
+			$status = (int) $hop['status'];
+			$location = (string) $hop['location'];
+
+			if($status < 300 || $status > 399 || $location === '')
+			{
+				return $hop['result'];
+			}
+
+			$redirects++;
+
+			if($redirects > self::CURL_MAX_REDIRECTS)
+			{
+				$this->error = 'Refused to follow more than ' . self::CURL_MAX_REDIRECTS . ' redirects from: ' . $address;
+
+				return false;
+			}
+
+			if($status === 301 || $status === 302 || $status === 303)
+			{
+				// What CURLOPT_FOLLOWLOCATION did: drop the body and fall back
+				// to GET. CURLOPT_CUSTOMREQUEST survives a redirect in libcurl
+				// too, so it survives here.
+				unset($options['post'], $options['postfields']);
+			}
+
+			if(isset($options['header']) && is_array($options['header']))
+			{
+				$options['header'] = $this->sameOriginHeaders($options['header'], $target, $location);
+			}
+
+			$url = $location;
+
+			if($onRedirect !== null)
+			{
+				call_user_func($onRedirect);
+			}
+		}
+	}
+
+
+	/**
+	 * The seconds an outbound request is allowed, as a caller may ask for it.
+	 *
+	 * @param array $options as initCurl()
+	 * @return int
+	 */
+	private function outboundTimeout($options)
+	{
+
+		$timeout = (int) vartrue($options['timeout'], 10);
+		$timeout = min($timeout, 120);
+
+		return max($timeout, 3);
+	}
+
+
+	/**
+	 * Credential-bearing headers a caller supplied for one origin, dropped when
+	 * the next hop is somewhere else.
+	 *
+	 * Replacing CURLOPT_FOLLOWLOCATION with a walk means e107 owns the rules
+	 * libcurl used to apply across a hop, and libcurl has stripped these on a
+	 * host change since 7.58.0 (CVE-2018-1000007).
+	 *
+	 * @param string[] $headers
+	 * @param array    $from as resolveOutboundTarget()
+	 * @param string   $to   the URL the next hop goes to
+	 * @return string[]
+	 */
+	private function sameOriginHeaders($headers, $from, $to)
+	{
+
+		$parts = @parse_url($to);
+		$scheme = isset($parts['scheme']) ? strtolower($parts['scheme']) : '';
+		$host = isset($parts['host']) ? $parts['host'] : '';
+		$port = isset($parts['port']) ? (int) $parts['port'] : ($scheme === 'https' ? 443 : 80);
+
+		if($scheme === $from['scheme'] && $port === $from['port'] && strcasecmp($host, $from['host']) === 0)
+		{
+			return $headers;
+		}
+
+		$kept = array();
+
+		foreach($headers as $header)
+		{
+			if(!preg_match('#^\s*(authorization|cookie|proxy-authorization)\s*:#i', $header))
+			{
+				$kept[] = $header;
+			}
+		}
+
+		return $kept;
+	}
+
+
+	/**
+	 * Resolve a Location against the URL it was answered from.
+	 *
+	 * libcurl hands CURLINFO_REDIRECT_URL over already absolute; a stream
+	 * wrapper hands the header over as the server wrote it.
+	 *
+	 * @param string $base
+	 * @param string $location
+	 * @return string '' when there is nothing to follow
+	 */
+	private function absoluteUrl($base, $location)
+	{
+
+		$location = trim($location);
+
+		if($location === '')
+		{
+			return '';
+		}
+
+		if(preg_match('#^[a-z][a-z0-9+.-]*:#i', $location))
+		{
+			return $location;
+		}
+
+		$parts = @parse_url($base);
+
+		if(empty($parts['scheme']) || empty($parts['host']))
+		{
+			return '';
+		}
+
+		if(strpos($location, '//') === 0)
+		{
+			return $parts['scheme'] . ':' . $location;
+		}
+
+		$authority = $parts['scheme'] . '://' . $parts['host'];
+
+		if(!empty($parts['port']))
+		{
+			$authority .= ':' . (int) $parts['port'];
+		}
+
+		if($location[0] === '/')
+		{
+			return $authority . $location;
+		}
+
+		$path = (isset($parts['path']) && $parts['path'] !== '') ? $parts['path'] : '/';
+		$slash = strrpos($path, '/');
+		$path = ($slash === false) ? '/' : substr($path, 0, $slash + 1);
+
+		return $authority . $path . $location;
+	}
+
+
+	/**
+	 * getRemoteContent()'s and getRemoteFile()'s transport when ext/curl is
+	 * present.
+	 *
+	 * @param string        $address
+	 * @param array|null    $options    as initCurl()
+	 * @param callable|null $onHandle   applied to each hop's handle before it runs
+	 * @param callable|null $onRedirect called when a further hop is about to be issued
+	 * @return mixed curl_exec()'s return for the final hop, or false
+	 */
+	private function curlFollow($address, $options = null, $onHandle = null, $onRedirect = null)
+	{
+
+		return $this->followOutbound($address, $options,
+			function($url, $hopOptions, $target) use ($onHandle)
+			{
+				return $this->curlHop($url, $hopOptions, $target, $onHandle);
+			},
+			$onRedirect
+		);
+	}
+
+
+	/**
+	 * One hop over ext/curl.
+	 *
+	 * @param string        $url
+	 * @param array         $options
+	 * @param array         $target   as resolveOutboundTarget()
+	 * @param callable|null $onHandle
+	 * @return array|false array('result', 'status', 'location'), or false
+	 */
+	private function curlHop($url, $options, $target, $onHandle)
+	{
+
+		$cu = $this->curlHandle($url, $options, $target);
+
+		if($cu === false)
+		{
+			return false;
+		}
+
+		if($onHandle !== null)
+		{
+			call_user_func($onHandle, $cu);
+		}
+
+		$result = curl_exec($cu);
+
+		if(curl_errno($cu))
+		{
+			$this->setErrorNum(curl_errno($cu));
+			$this->error = "Curl error: " . curl_errno($cu) . ", " . curl_error($cu);
+			curl_close($cu);
+
+			return false;
+		}
+
+		if(!$this->peerWasPinned($cu, $target))
+		{
+			$this->error = 'Refused an answer from an address the outbound request policy did not resolve: ' . $url;
+			curl_close($cu);
+
+			return false;
+		}
+
+		$hop = array(
+			'result'   => $result,
+			'status'   => (int) curl_getinfo($cu, CURLINFO_HTTP_CODE),
+			'location' => (string) curl_getinfo($cu, CURLINFO_REDIRECT_URL),
+		);
+
+		curl_close($cu);
+
+		return $hop;
+	}
+
+
+	/**
+	 * Did the connection reach one of the addresses the policy resolved?
+	 *
+	 * CURLOPT_RESOLVE is what pins it, but libcurl discards an entry it cannot
+	 * parse and ignores the option outright behind a proxy, in both cases
+	 * without an error, so the peer libcurl actually reached is read back
+	 * rather than assumed. Behind a proxy there is nothing to read back: the
+	 * proxy performs the name resolution and the address policy is advisory.
+	 *
+	 * @param resource|CurlHandle $cu
+	 * @param array               $target as resolveOutboundTarget()
+	 * @return bool
+	 */
+	private function peerWasPinned($cu, $target)
+	{
+
+		if(empty($target['addresses']) || defined('e_CURL_PROXY'))
+		{
+			return true;
+		}
+
+		$peer = $this->canonicalizeIp((string) curl_getinfo($cu, CURLINFO_PRIMARY_IP));
+
+		if($peer === false)
+		{
+			return true;
+		}
+
+		$peer = @inet_pton($peer);
+
+		foreach($target['addresses'] as $address)
+		{
+			$address = $this->canonicalizeIp($address);
+
+			if($address !== false && @inet_pton($address) === $peer)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * getRemoteContent()'s transport when ext/curl is absent: the same walk,
+	 * the same cap, the same policy on every hop.
+	 *
+	 * @param string     $address
+	 * @param array|null $options as getRemoteContent()
+	 * @return string|false
+	 */
+	private function streamFollow($address, $options)
+	{
+
+		// This transport has always run to its own timeout rather than the
+		// caller's.
+		$timeout = 5;
+		$options = (array) $options;
+		$options['timeout'] = $timeout;
+
+		$old_timeout = ini_set('default_socket_timeout', $timeout);
+
+		$result = $this->followOutbound($address, $options,
+			function($url, $hopOptions, $target)
+			{
+				return $this->streamHop($url, $hopOptions, $target);
+			}
+		);
+
+		if($old_timeout !== false)
+		{
+			@ini_set('default_socket_timeout', $old_timeout);
+		}
+
+		return $result;
+	}
+
+
+	/**
+	 * One hop over the stream wrappers.
+	 *
+	 * @param string $url
+	 * @param array  $options
+	 * @param array  $target as resolveOutboundTarget()
+	 * @return array|false array('result', 'status', 'location'), or false
+	 */
+	private function streamHop($url, $options, $target)
+	{
+
+		$timeout = $this->outboundTimeout($options);
+
+		if(!function_exists('fopen') || !ini_get('allow_url_fopen'))
+		{
+			return $this->socketHop($url, $target, $timeout);
+		}
+
+		$request = $this->pinnedRequest($url, $target);
+
+		if($request === false)
+		{
+			$this->error = 'Refused to fetch URL with non-HTTP(S) scheme or private/reserved IP: ' . $url;
+
+			return false;
+		}
+
+		$context = array(
+			'http' => array(
+				'follow_location' => 0,
+				'max_redirects'   => 1,
+				'timeout'         => $timeout,
+			),
+			'ssl'  => array(
+				'verify_peer'      => true,
+				'verify_peer_name' => true,
+				'peer_name'        => $target['host'],
+			),
+		);
+
+		if($request['host'] !== '')
+		{
+			$context['http']['header'] = 'Host: ' . $request['host'];
+		}
+
+		$fp = @fopen($request['url'], 'r', false, stream_context_create($context));
+
+		if($fp === false)
+		{
+			$this->error = 'Unable to fetch remote file: ' . $url;
+
+			return false;
+		}
+
+		$meta = stream_get_meta_data($fp);
+		$body = stream_get_contents($fp);
+		fclose($fp);
+
+		$headers = isset($meta['wrapper_data']) ? (array) $meta['wrapper_data'] : array();
+
+		return array(
+			'result'   => $body,
+			'status'   => $this->headerStatus($headers),
+			'location' => $this->absoluteUrl($url, $this->headerValue($headers, 'location')),
+		);
+	}
+
+
+	/**
+	 * One hop over a raw socket: no ext/curl and no allow_url_fopen.
+	 *
+	 * @param string $url
+	 * @param array  $target as resolveOutboundTarget()
+	 * @param int    $timeout
+	 * @return array|false array('result', 'status', 'location'), or false
+	 */
+	private function socketHop($url, $target, $timeout)
+	{
+
+		$parts = @parse_url($url);
+
+		if(empty($parts['host']))
+		{
+			return false;
+		}
+
+		// Connect to the address that passed the policy, not to whatever the
+		// name resolves to by the time the socket opens.
+		$peer = empty($target['addresses']) ? $target['host'] : $target['addresses'][0];
+		$peer = (strpos($peer, ':') !== false) ? '[' . $peer . ']' : $peer;
+
+		$transport = ($target['scheme'] === 'https') ? 'ssl://' : 'tcp://';
+		$context = stream_context_create(array(
+			'ssl' => array(
+				'verify_peer'      => true,
+				'verify_peer_name' => true,
+				'peer_name'        => $target['host'],
+			),
+		));
+
+		$remote = @stream_socket_client($transport . $peer . ':' . $target['port'], $errno, $errstr, $timeout,
+			STREAM_CLIENT_CONNECT, $context);
+
+		if($remote === false)
+		{
+			$this->error = "Sockets: Unable to open remote XML file: " . $url;
+
+			return false;
+		}
+
+		$requestTarget = isset($parts['path']) ? $parts['path'] : '/';
+
+		if(isset($parts['query']))
+		{
+			$requestTarget .= '?' . $parts['query'];
+		}
+
+		$host = $parts['host'];
+
+		if(isset($parts['port']))
+		{
+			$host .= ':' . (int) $parts['port'];
+		}
+
+		stream_set_timeout($remote, $timeout);
+		fwrite($remote, "GET " . $requestTarget . " HTTP/1.0\r\nHost: " . $host . "\r\nConnection: close\r\n\r\n");
+
+		$response = '';
+
+		while(!feof($remote))
+		{
+			$response .= fgets($remote, 4096);
+		}
+
+		fclose($remote);
+
+		$split = explode("\r\n\r\n", $response, 2);
+		$headers = explode("\r\n", $split[0]);
+
+		return array(
+			'result'   => isset($split[1]) ? $split[1] : '',
+			'status'   => $this->headerStatus($headers),
+			'location' => $this->absoluteUrl($url, $this->headerValue($headers, 'location')),
+		);
+	}
+
+
+	/**
+	 * The URL a stream should open, and the Host header that goes with it, so
+	 * that the connection lands on an address the policy resolved.
+	 *
+	 * CURLOPT_RESOLVE has no stream equivalent: the address goes into the URL
+	 * and the name goes into the Host header and into the certificate check.
+	 *
+	 * @param string $url
+	 * @param array  $target as resolveOutboundTarget()
+	 * @return array|false array('url', 'host'), 'host' being '' when nothing
+	 *                     needed rewriting
+	 */
+	private function pinnedRequest($url, $target)
+	{
+
+		$parts = @parse_url($url);
+
+		if(empty($parts['host']) || empty($parts['scheme']))
+		{
+			return false;
+		}
+
+		if(empty($target['addresses']) || $this->hostLiteralIp($target['host']) !== false)
+		{
+			return array('url' => $url, 'host' => '');
+		}
+
+		$address = $target['addresses'][0];
+		$address = (strpos($address, ':') !== false) ? '[' . $address . ']' : $address;
+
+		$host = $parts['host'];
+
+		if(isset($parts['port']))
+		{
+			$host .= ':' . (int) $parts['port'];
+			$address .= ':' . (int) $parts['port'];
+		}
+
+		$userinfo = '';
+
+		if(isset($parts['user']))
+		{
+			$userinfo = $parts['user'];
+			$userinfo .= isset($parts['pass']) ? ':' . $parts['pass'] : '';
+			$userinfo .= '@';
+		}
+
+		$pinned = $parts['scheme'] . '://' . $userinfo . $address;
+		$pinned .= isset($parts['path']) ? $parts['path'] : '/';
+		$pinned .= isset($parts['query']) ? '?' . $parts['query'] : '';
+
+		return array('url' => $pinned, 'host' => $host);
+	}
+
+
+	/**
+	 * @param string[] $headers a response's header lines, status line included
+	 * @return int 0 when there is no status line
+	 */
+	private function headerStatus($headers)
+	{
+
+		$status = 0;
+
+		foreach($headers as $header)
+		{
+			if(preg_match('#^HTTP/[0-9.]+\s+(\d{3})#i', $header, $match))
+			{
+				$status = (int) $match[1];
+			}
+		}
+
+		return $status;
+	}
+
+
+	/**
+	 * @param string[] $headers a response's header lines
+	 * @param string   $name    lower case
+	 * @return string '' when the header is absent
+	 */
+	private function headerValue($headers, $name)
+	{
+
+		$value = '';
+
+		foreach($headers as $header)
+		{
+			if(stripos($header, $name . ':') === 0)
+			{
+				$value = trim(substr($header, strlen($name) + 1));
+			}
+		}
+
+		return $value;
 	}
 
 
@@ -1040,15 +1897,6 @@ class e_file
 
 		$address = str_replace(array("\r", "\n", "\t", '&amp;'), array('', '', '', '&'), $address);
 
-		if(!$this->isUrlSafe($address))
-		{
-			$this->error = 'Refused to fetch URL with non-HTTP(S) scheme or private/reserved IP: ' . $address;
-			return false;
-		}
-
-		// ... and there shouldn't be unprintable characters in the URL anyway
-		$requireCurl = false;
-
 		if(!empty($options['decode']))
 		{
 			$address = urldecode($address);
@@ -1057,101 +1905,10 @@ class e_file
 		// Keep this in first position.
 		if(function_exists("curl_init")) // Preferred.
 		{
-
-			$cu = $this->initCurl($address, $options);
-
-			$fileContents = curl_exec($cu);
-			if(curl_error($cu))
-			{
-				$errorCode = curl_errno($cu);
-				$this->setErrorNum($errorCode);
-				$this->error = "Curl error: " . $errorCode . ", " . curl_error($cu);
-
-				return false;
-			}
-			curl_close($cu);
-
-			return $fileContents;
+			return $this->curlFollow($address, $options);
 		}
 
-		// CURL is required, abort...
-		if($requireCurl == true)
-		{
-			return false;
-		}
-
-		$timeout = 5;
-
-		if(function_exists('file_get_contents') && ini_get('allow_url_fopen'))
-		{
-			$old_timeout = ini_set('default_socket_timeout', $timeout);
-
-			$context = array(
-				'ssl' => array(
-					'verify_peer'      => false,
-					'verify_peer_name' => false,
-				),
-			);
-
-			$data = file_get_contents($address, false, stream_context_create($context));
-
-			//		  $data = file_get_contents(htmlspecialchars($address));	// buggy - sometimes fails.
-			if($old_timeout !== false)
-			{
-				@ini_set('default_socket_timeout', $old_timeout);
-			}
-			if($data !== false)
-			{
-				//	$fileContents = $data;
-				return $data;
-			}
-			$this->error = "File_get_contents(XML) error";        // Fill in more info later
-
-			return false;
-		}
-
-		if(ini_get("allow_url_fopen"))
-		{
-			$old_timeout = ini_set('default_socket_timeout', $timeout);
-			$remote = @fopen($address, "r");
-			if(!$remote)
-			{
-				$this->error = "fopen: Unable to open remote XML file: " . $address;
-
-				return false;
-			}
-		}
-		else
-		{
-			$old_timeout = $timeout;
-			$tmp = parse_url($address);
-			if(!$remote = fsockopen($tmp['host'], 80, $errno, $errstr, $timeout))
-			{
-				$this->error = "Sockets: Unable to open remote XML file: " . $address;
-
-				return false;
-			}
-			else
-			{
-				stream_set_timeout($remote, $timeout);
-				fwrite($remote, "GET " . urlencode($address) . " HTTP/1.0\r\n\r\n");
-			}
-		}
-		$fileContents = "";
-		while(!feof($remote))
-		{
-			$fileContents .= fgets($remote, 4096);
-		}
-		fclose($remote);
-		if($old_timeout != $timeout)
-		{
-			if($old_timeout !== false)
-			{
-				ini_set('default_socket_timeout', $old_timeout);
-			}
-		}
-
-		return $fileContents;
+		return $this->streamFollow($address, $options);
 	}
 
 
@@ -2061,10 +2818,34 @@ class e_file
 	public function isValidURL($url)
 	{
 
-		ini_set('default_socket_timeout', 1);
-		$headers = get_headers($url);
+		if(!$this->isUrlSafe($url))
+		{
+			return false;
+		}
 
-		//   print_a($headers);
+		ini_set('default_socket_timeout', 1);
+
+		// get_headers() would otherwise follow redirects with nothing
+		// revalidating the target. A 302 already counts as reachable below, so
+		// reporting on the URL as handed in leaves the answer unchanged.
+		// get_headers() only takes a context argument from PHP 7.1, and this
+		// has to hold on 5.6 too, so the default context carries it: every
+		// supported version honours that.
+		$default = stream_context_get_options(stream_context_get_default());
+		$http = isset($default['http']) ? $default['http'] : array();
+
+		stream_context_set_default(array('http' => array('follow_location' => 0, 'max_redirects' => 1) + $http));
+
+		$headers = @get_headers($url);
+
+		// stream_context_set_default() merges into the standing default rather
+		// than replacing it, so putting it back has to name PHP's own defaults.
+		stream_context_set_default(array('http' => $http + array('follow_location' => 1, 'max_redirects' => 20)));
+
+		if(empty($headers[0]))
+		{
+			return false;
+		}
 
 		return (stripos($headers[0], "200 OK") || strpos($headers[0], "302"));
 	}
