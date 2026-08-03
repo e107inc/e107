@@ -183,21 +183,13 @@ class login_menu_class
         $lbox_stats[0]['stat_items']   = LAN_LOGINMENU_21;
         $lbox_stats[0]['stat_new']     = 0;
         $lbox_stats[0]['stat_nonew']   = LAN_LOGINMENU_26.' '.LAN_LOGINMENU_21;
-        if($get_stats) {
+        if($get_stats && is_readable(e_PLUGIN.'forum/forum_class.php')) {
 
-            $nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
-        	$qry = "
-        	SELECT  count(*) as count FROM #forum_thread  as t
-        	LEFT JOIN #forum as f
-        	ON t.thread_forum_id = f.forum_id
-        	WHERE t.thread_datestamp > ".USERLV." and f.forum_class IN (".USERCLASS_LIST.") AND NOT (f.forum_class REGEXP ".$nobody_regexp.")
-        	";
-        	
-        	if($sql->gen($qry))
-			{
-        		$row = $sql->fetch();
-        		$lbox_stats['forum'][0]['stat_new'] = $row['count'];
-        	}
+            require_once(e_PLUGIN.'forum/forum_class.php');
+
+            $lbox_stats['forum'][0]['stat_new'] = $sql->count('forum_thread', '(*)',
+                "WHERE thread_datestamp > " . (int) USERLV
+                . " AND " . e107forum::threadVisibleSql(''));
         }
     	
     	return $lbox_stats;

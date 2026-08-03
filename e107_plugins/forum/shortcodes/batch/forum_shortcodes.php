@@ -245,7 +245,15 @@ class forum_shortcodes extends e_shortcode
 
 		if(USER == true)
 		{
-			$total_new_threads = defined('USERLV') ? e107::getDb()->count('forum_thread', '(*)', "WHERE thread_datestamp>'" . (int) USERLV . "' ") : 0;
+			$total_new_threads = 0;
+			if(defined('USERLV'))
+			{
+				require_once(e_PLUGIN.'forum/forum_class.php');
+
+				$total_new_threads = e107::getDb()->count('forum_thread', '(*)',
+					"WHERE thread_datestamp > " . (int) USERLV
+					. " AND " . e107forum::threadVisibleSql(''));
+			}
 			$total_read_threads = 0;
 
 			if(defined('USERVIEWED') && defset('USERVIEWED') != "")

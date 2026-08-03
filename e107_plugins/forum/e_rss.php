@@ -155,6 +155,13 @@ class forum_rss // plugin-folder + '_rss'
 	{
 		$sqlrss = e107::getDb();
 
+		// A forum is readable when its own class admits the caller AND the
+		// category above it does. forum_class alone names a forum that is public
+		// in its own right inside a restricted category, and this feed serves
+		// post bodies to whoever asks.
+		require_once(e_PLUGIN.'forum/forum_class.php');
+		$visibleSql = e107forum::threadVisibleSql('t');
+
 		$rss 		= array();
 		$limit 		= $parms['limit'];
 		$topicid 	= $parms['id'];
@@ -196,7 +203,7 @@ class forum_rss // plugin-folder + '_rss'
 						#forum AS f 
 						ON f.forum_id = t.thread_forum_id
 					WHERE 
-						f.forum_class IN (".USERCLASS_LIST.") 
+						".$visibleSql." 
 					ORDER BY 
 						t.thread_datestamp DESC 
 					LIMIT 0," . $limit;
@@ -283,7 +290,7 @@ class forum_rss // plugin-folder + '_rss'
 					#forum AS f
 					ON f.forum_id = t.thread_forum_id
 				WHERE
-				    f.forum_class IN(".USERCLASS_LIST.")
+				    ".$visibleSql."
 				ORDER BY
 				    t.thread_datestamp
 				DESC
@@ -388,7 +395,7 @@ class forum_rss // plugin-folder + '_rss'
 					#forum AS f 
 					ON f.forum_id = t.thread_forum_id
 				WHERE 
-					f.forum_class IN (".USERCLASS_LIST.") 
+					".$visibleSql." 
 				AND
 				    p.post_thread = ".intval($topicid)."
 				LIMIT 0,1";
@@ -396,6 +403,12 @@ class forum_rss // plugin-folder + '_rss'
 
 				$sqlrss->gen($this->rssQuery);
 				$topic = $sqlrss->fetch();
+
+				// No such topic, or one in a forum this caller may not read.
+				if(empty($topic))
+				{
+					return false;
+				}
 
 				// Replies (exclude first post)
 				$this->rssQuery = "
@@ -430,7 +443,7 @@ class forum_rss // plugin-folder + '_rss'
 					#forum AS f 
 					ON f.forum_id = t.thread_forum_id
 				WHERE 
-					f.forum_class IN (".USERCLASS_LIST.") 
+					".$visibleSql." 
 				AND
 				    p.post_thread = ".intval($topicid);
 
@@ -548,7 +561,7 @@ class forum_rss // plugin-folder + '_rss'
 				WHERE 
 					t.thread_forum_id = ".intval($topicid)." 
 				AND 
-					f.forum_class IN (".USERCLASS_LIST.") 
+					".$visibleSql." 
 				ORDER BY 
 					t.thread_datestamp 
 				DESC 

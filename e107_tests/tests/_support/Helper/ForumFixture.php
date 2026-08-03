@@ -229,6 +229,46 @@ class ForumFixture extends CodeceptionModule
 	}
 
 	/**
+	 * Replace a plugin's preferences with $values.
+	 *
+	 * A plugin config is one serialised row rather than a column per setting,
+	 * so it cannot be seeded through haveInDatabase, and several plugins build
+	 * their own defaults on first read in ways that a test has no business
+	 * relying on.
+	 *
+	 * @param string $plugin plugin folder name
+	 * @param array $values
+	 */
+	public function havePluginPrefs($plugin, array $values)
+	{
+		$this->probe('act=plugpref&plugin='.urlencode($plugin)
+			.'&payload='.urlencode(json_encode($values)));
+	}
+
+	/**
+	 * The active front theme's directory, relative to the app root.
+	 *
+	 * Asked of the running site rather than named here. The suite installs more
+	 * than once and the last install decides the theme, so a fixture that wrote
+	 * a template into a directory named at authoring time would land where the
+	 * application never looks, and every assertion about the rendered page would
+	 * then pass for want of a page.
+	 *
+	 * @return string with a trailing slash
+	 */
+	public function grabActiveThemeDir()
+	{
+		$body = $this->probe('act=theme');
+
+		if (!preg_match('~THEME_DIR=(\S+)~', $body, $m))
+		{
+			throw new \RuntimeException('Fixture did not report the active theme: '.trim(strip_tags($body)));
+		}
+
+		return ltrim($m[1], './');
+	}
+
+	/**
 	 * Put the mailer in dry run, so nothing is handed to a transport.
 	 *
 	 * A belt for the queue: above five recipients e107MailManager writes rows
@@ -789,6 +829,17 @@ switch($act)
 			e107::getDb()->delete($table);
 		}
 		echo "PROBE_OK mailreset\n";
+		break;
+
+	case 'theme':
+		echo "PROBE_OK THEME_DIR=".str_replace(e_ROOT, '', THEME)."\n";
+		break;
+
+	case 'plugpref':
+		$config = e107::getPlugConfig($_GET['plugin']);
+		$config->reset()->setPref(json_decode($_GET['payload'], true));
+		$config->save(false, true, false);
+		echo "PROBE_OK plugpref\n";
 		break;
 
 	case 'pref':

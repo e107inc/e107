@@ -404,7 +404,26 @@ e107::css('inline',"
 		public function afterUpdate($new_data, $old_data, $id)
 		{
 			// do something
-			e107::getCache()->clear('forum_perms',true);
+			e107::getCache()->clear('forum_perms');
+		}
+
+		/**
+		 * The list page's batch dropdown writes straight to the table through
+		 * batchUpdate(), which runs no create or update hook, so restricting a
+		 * forum that way would otherwise leave every reader of the permission
+		 * list serving the old answer.
+		 *
+		 * @param array $selected
+		 * @param string $field
+		 * @param mixed $value
+		 * @return int|null
+		 */
+		protected function handleListBatch($selected, $field, $value)
+		{
+			$ret = parent::handleListBatch($selected, $field, $value);
+			e107::getCache()->clear('forum_perms');
+
+			return $ret;
 		}
 
 

@@ -230,6 +230,7 @@ class rssCreate
 
 		$this->e107 = e107::getInstance();
 
+		$this -> rssItems = array();
 		$this -> path = e_PLUGIN."rss_menu/";
 		$this -> rssType = $rss_type;
 		$this -> topicid = $topic_id;
@@ -299,8 +300,12 @@ class rssCreate
 		{	// New rss reader from e_rss.php in plugin folder
 			if (is_readable($path))
 			{
+				// A feed that has nothing to serve says so by returning nothing,
+				// and a v1 e_rss.php sets this itself while being included.
+				$eplug_rss_data = array();
+
 				require_once($path);
-				
+
 				$className = basename(dirname($path)).'_rss';
 				
 				// v2.x standard 

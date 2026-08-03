@@ -90,12 +90,21 @@ class forumStats
 			}
 		}
 
+		// The forum's own permission list, which asks the parent category as
+		// well. forum_class alone names a forum that is public in its own right
+		// inside a restricted category, which is how a thread title from one
+		// reached this panel.
+		$visibleForums = $forum->getForumPermList('view');
+		$visibleSql = empty($visibleForums)
+			? '1=0'
+			: 'ft.thread_forum_id IN ('.implode(',', array_map('intval', $visibleForums)).')';
+
 		$query = "
 		SELECT ft.thread_id, ft.thread_user, ft.thread_name, ft.thread_total_replies, ft.thread_datestamp, f.forum_sef, f.forum_class, u.user_name, u.user_id FROM #forum_thread as ft
 		LEFT JOIN #user AS u ON ft.thread_user = u.user_id
 		LEFT JOIN #forum AS f ON f.forum_id = ft.thread_forum_id
 		WHERE ft.thread_active > 0
-		AND f.forum_class IN (".USERCLASS_LIST.")
+		AND ".$visibleSql."
 		ORDER BY ft.thread_total_replies DESC LIMIT 0,10";
 
 		$sql->gen($query);
@@ -105,7 +114,7 @@ class forumStats
 		SELECT ft.*, f.forum_class, f.forum_sef, u.user_name, u.user_id FROM #forum_thread as ft
 		LEFT JOIN #user AS u ON ft.thread_user = u.user_id
 		LEFT JOIN #forum AS f ON f.forum_id = ft.thread_forum_id
-		WHERE f.forum_class IN (".USERCLASS_LIST.")
+		WHERE ".$visibleSql."
 		ORDER BY ft.thread_views DESC LIMIT 0,10";
 
 		$sql->gen($query);

@@ -75,7 +75,18 @@ class download_rss // plugin-folder + '_rss'
 			$topic = "";
 		}
 		
-	    $query = "SELECT d.*, dc.* FROM #download AS d LEFT JOIN #download_category AS dc ON d.download_category = dc.download_category_id WHERE {$topic} d.download_active > 0 AND d.download_class IN (".USERCLASS_LIST.") ORDER BY d.download_datestamp DESC LIMIT 0,".$limit;
+		// Three columns decide whether a download may be named: the category's
+		// class, the item's own class and download_visible, which is the one
+		// admin labels "Visibility". download/e_list.php and download.php's own
+		// listings filter all three, with REGEXP rather than an exact match
+		// because each column may hold a comma-separated list of classes.
+	    $query = "SELECT d.*, dc.* FROM #download AS d
+			LEFT JOIN #download_category AS dc ON d.download_category = dc.download_category_id
+			WHERE {$topic} d.download_active > 0
+			AND dc.download_category_class REGEXP '".e_CLASS_REGEXP."'
+			AND d.download_class REGEXP '".e_CLASS_REGEXP."'
+			AND d.download_visible REGEXP '".e_CLASS_REGEXP."'
+			ORDER BY d.download_datestamp DESC LIMIT 0,".intval($limit);
 
 	    $sql->gen($query);
 	 	$tmp = $sql->db_getList();
