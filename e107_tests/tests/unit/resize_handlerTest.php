@@ -193,6 +193,260 @@ class resize_handlerTest extends \Codeception\Test\Unit
 		$this->assertTrue($result, 'resize_image() should report success when writing the destination.');
 	}
 
+	// -----------------------------------------------------------------
+	// im_path: the third interpolation on the same two lines
+	// -----------------------------------------------------------------
+
+	/**
+	 * Payloads that smuggle a command into the 'im_path' preference.
+	 *
+	 * resize_handler.php:161 and :165 build the command line as
+	 *
+	 *   $pref['im_path']."convert -quality ".intval(...)." ... ".escapeshellarg(...)
+	 *
+	 * Every argument on those lines is intval()'d or escapeshellarg()'d. The
+	 * prefix is not, and it is the part a preference supplies. The fix for
+	 * GHSA-3j33-c9v4-4p42 / CVE-2026-48997 escaped the source and the
+	 * destination and left this one where it was.
+	 *
+	 * `%s` is the absolute path of a marker file the payload creates.
+	 *
+	 * @return string[][]
+	 */
+	public function imPathPayloads(): array
+	{
+		return [
+			'command separator' => ['touch %s; '],
+			'subshell'          => ['$(touch %s) '],
+			'backticks'         => ['`touch %s` '],
+			'trailing pipeline' => ['touch %s || '],
+		];
+	}
+
+	/**
+	 * @dataProvider imPathPayloads
+	 */
+	public function testResizeImageMustNotExecuteShellMetacharactersInImPath(string $payloadTemplate)
+	{
+		$this->requireWorkingShell();
+
+		$marker = $this->workDir.'/marker_'.bin2hex(random_bytes(6));
+
+		$GLOBALS['pref']['im_path'] = sprintf($payloadTemplate, $marker);
+
+		$destination = $this->workDir.'/out.jpg';
+
+		ob_start();
+		$this->runWithWarningsSuppressed(function () use ($destination)
+		{
+			resize_image($this->source, $destination, 400);
+		});
+		ob_end_clean();
+
+		$this->assertFileDoesNotExist(
+			$marker,
+			'The im_path preference "'.$payloadTemplate.'" reached /bin/sh: resize_image() ran '
+				.'`touch '.$marker.'` as the web account. im_path is the one interpolation on '
+				.'resize_handler.php:161 and :165 that is neither intval()\'d nor escapeshellarg()\'d, '
+				.'and e107_images/thumb.php lets an unauthenticated visitor fire it.'
+		);
+	}
+
+	// -----------------------------------------------------------------
+	// controls: a fix must not break ImageMagick for real sites
+	// -----------------------------------------------------------------
+
+	/**
+	 * im_path is a directory prefix, not an argument. A site that keeps
+	 * ImageMagick outside $PATH sets it to the directory holding `convert`,
+	 * with a trailing separator, and the shipped default in
+	 * e107_core/xml/default_install.xml is exactly that shape.
+	 *
+	 * escapeshellarg() on the prefix would produce `'/opt/bin/'convert`, which
+	 * no shell resolves. This case is what stops a fix that escapes everything
+	 * and silently takes ImageMagick away from every site that ever set the
+	 * preference.
+	 */
+	public function testImageMagickBranchStillWorksWithADirectoryPrefixImPath()
+	{
+		$this->requireImageMagick();
+
+		$binary = trim((string) shell_exec('command -v convert 2>/dev/null'));
+
+		$shimDir = $this->workDir.'/imagemagick/';
+		if (!mkdir($shimDir, 0700, true) || !symlink($binary, $shimDir.'convert'))
+		{
+			$this->fail("Could not build an ImageMagick directory at {$shimDir}");
+		}
+
+		$this->assertMatchesRegularExpression(
+			'~^/.*/$~',
+			$this->shippedDefaultImPath(),
+			'This case stands in for the shipped default im_path, so the two have to be the same shape.'
+		);
+
+		$destination = $this->workDir.'/prefixed.jpg';
+
+		$GLOBALS['pref']['im_path'] = $shimDir;
+
+		ob_start();
+		$result = $this->runWithWarningsSuppressed(function () use ($destination)
+		{
+			return resize_image($this->source, $destination, 400);
+		});
+		$output = ob_get_clean();
+
+		$this->assertTrue(
+			$result,
+			'resize_image() refused a legitimate directory-prefix im_path ('.$shimDir.'). Output: '.$output
+		);
+		$this->assertFileExists($destination, 'The ImageMagick branch produced no image.');
+
+		$stats = getimagesize($destination);
+		$this->assertNotFalse($stats, 'The ImageMagick branch wrote something that is not an image.');
+		$this->assertSame(IMAGETYPE_JPEG, $stats[2], 'The ImageMagick branch wrote a non-JPEG.');
+		$this->assertSame(400, $stats[0], 'The ImageMagick branch did not resize to the requested width.');
+	}
+
+	/**
+	 * The other legitimate value, and by far the commonest: empty, meaning
+	 * `convert` is on $PATH. A fix that insists on an absolute path would break
+	 * every site that never touched the preference at all.
+	 */
+	public function testImageMagickBranchStillWorksWithAnEmptyImPath()
+	{
+		$this->requireImageMagick();
+
+		$destination = $this->workDir.'/onpath.jpg';
+
+		$GLOBALS['pref']['im_path'] = '';
+
+		ob_start();
+		$result = $this->runWithWarningsSuppressed(function () use ($destination)
+		{
+			return resize_image($this->source, $destination, 400);
+		});
+		$output = ob_get_clean();
+
+		$this->assertTrue($result, 'resize_image() refused an empty im_path. Output: '.$output);
+		$this->assertFileExists($destination, 'The ImageMagick branch produced no image.');
+	}
+
+	/**
+	 * Values resize_image() has no backend for.
+	 *
+	 * resize_method is in media_admin_ui::$prefs, so an administrator writes it
+	 * from the media preferences page and it arrives at resize_image() as
+	 * whatever the request said. The switch has to keep answering "no" to
+	 * everything it does not recognise: near misses in case and whitespace, a
+	 * value carrying its own shell payload, and a backend that does not exist.
+	 *
+	 * @return string[][]
+	 */
+	public function outOfRangeResizeMethods(): array
+	{
+		return [
+			'wrong case'         => ['imagemagick'],
+			'trailing space'     => ['ImageMagick '],
+			'command appended'   => ['ImageMagick; touch'],
+			'no such backend'    => ['gd3'],
+			'numeric'            => ['1'],
+			'array-ish string'   => ['Array'],
+		];
+	}
+
+	/**
+	 * @dataProvider outOfRangeResizeMethods
+	 */
+	public function testOutOfRangeResizeMethodReachesNoBackend(string $method)
+	{
+		$this->requireWorkingShell();
+
+		$marker = $this->workDir.'/marker_'.bin2hex(random_bytes(6));
+		$destination = $this->workDir.'/out_'.bin2hex(random_bytes(4)).'.jpg';
+
+		// If an unrecognised mode were to fall through to the ImageMagick
+		// branch, this im_path would say so out loud.
+		$GLOBALS['pref']['im_path'] = 'touch '.$marker.'; ';
+		$GLOBALS['pref']['resize_method'] = $method;
+
+		ob_start();
+		$result = $this->runWithWarningsSuppressed(function () use ($destination)
+		{
+			return resize_image($this->source, $destination, 400);
+		});
+		ob_end_clean();
+
+		$this->assertFalse($result, 'resize_image() should refuse the unknown resize_method "'.$method.'".');
+		$this->assertFileDoesNotExist($marker, 'resize_method "'.$method.'" reached the ImageMagick branch.');
+		$this->assertFileDoesNotExist($destination, 'resize_method "'.$method.'" produced an output file.');
+	}
+
+	/**
+	 * The im_path default e107 installs with.
+	 *
+	 * @return string
+	 */
+	private function shippedDefaultImPath(): string
+	{
+		$xml = file_get_contents(APP_PATH.'/e107_core/xml/default_install.xml');
+
+		if (!preg_match('~<core name="im_path">([^<]*)</core>~', $xml, $matches))
+		{
+			$this->fail('default_install.xml declares no im_path default.');
+		}
+
+		return $matches[1];
+	}
+
+	/**
+	 * Refuse to draw a conclusion from an absent marker file on a host where
+	 * the shell was never reachable in the first place.
+	 *
+	 * The im_path cases do not need `convert`: the payload fires before the
+	 * shell ever looks the binary up. They do need exec() to work, and a
+	 * hardened php.ini or a read-only workdir would make every one of them
+	 * pass while proving nothing at all.
+	 */
+	private function requireWorkingShell()
+	{
+		$disabled = array_map('trim', explode(',', (string) ini_get('disable_functions')));
+
+		if (in_array('exec', $disabled, true) || in_array('passthru', $disabled, true))
+		{
+			$this->markTestSkipped('exec()/passthru() are disabled here, so an absent marker would prove nothing.');
+		}
+
+		$canary = $this->workDir.'/shell_canary_'.bin2hex(random_bytes(4));
+		$out = [];
+		$rc = 0;
+		exec('touch '.escapeshellarg($canary), $out, $rc);
+
+		$this->assertSame(0, $rc, 'exec() could not run `touch` here.');
+		$this->assertFileExists($canary, 'exec() ran `touch` and no file appeared; the marker assertions would be vacuous.');
+
+		unlink($canary);
+	}
+
+	/**
+	 * Skip the calling case when the `convert` binary is missing.
+	 *
+	 * Only the destination-path cases need it: they drive a real resize and
+	 * then inspect what `convert` did or did not write, which proves nothing
+	 * when the binary was never there to run. Cases that attack the command
+	 * line itself, such as an injected 'im_path' preference, must not call
+	 * this: passthru() hands the string to /bin/sh, so the payload fires
+	 * before `convert` is ever looked up and the regression is observable on
+	 * a host without ImageMagick.
+	 */
+	private function requireImageMagick()
+	{
+		if (!self::imageMagickAvailable())
+		{
+			$this->markTestSkipped('ImageMagick (convert) is not installed; this case needs the real binary.');
+		}
+	}
+
 	/**
 	 * Skip the calling case when the `convert` binary is missing.
 	 *
