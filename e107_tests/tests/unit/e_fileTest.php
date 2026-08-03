@@ -471,6 +471,85 @@ class e_fileTest extends \Codeception\Test\Unit
 		}
 	}
 
+	/**
+	 * The rule e107_media carries, and the promise that it is not the deny rule
+	 * above it.
+	 *
+	 * e107_media is public: avatars, site images and every {e_MEDIA_IMAGE} URL a
+	 * theme emits are fetched straight off the web server. A rule here that
+	 * refused a request for an image would take every e107 site down, so what
+	 * this asserts about the contents is as much about what is absent as what
+	 * is present.
+	 */
+	public function testBlockScriptExecution()
+	{
+		$dir = e_TEMP . 'test_block_execution_' . uniqid() . '/';
+
+		self::assertFalse($this->fl->blockScriptExecution($dir),
+			'A directory that is not there must not be created');
+		self::assertDirectoryDoesNotExist($dir);
+
+		self::assertFalse($this->fl->blockScriptExecution(''));
+
+		mkdir($dir);
+
+		try
+		{
+			self::assertTrue($this->fl->blockScriptExecution(rtrim($dir, '/')),
+				'A path without a trailing separator is the same directory');
+
+			$rule = file_get_contents($dir . '.htaccess');
+
+			self::assertStringContainsString('SetHandler none', $rule);
+			self::assertStringContainsString('RemoveHandler', $rule);
+			self::assertStringContainsString('phar|php|php[0-9]', $rule,
+				'The refusal has to name the extensions a server hands to an interpreter');
+
+			self::assertLessThan(strpos($rule, '</FilesMatch>'), strpos($rule, 'SetHandler none'),
+				'The handler is dropped inside the FilesMatch block, not at directory scope');
+			self::assertStringContainsString('RedirectMatch 403 "(?i)\.(phar|', $rule,
+				'The refusal names the same extensions and nothing else');
+
+			foreach(array('Require ', 'Deny from', 'Order ', 'php_flag', 'php_value', 'Options ') as $directive)
+			{
+				self::assertStringNotContainsString($directive, $rule,
+					$directive . ' is not AllowOverride FileInfo, and a directive the host '
+					. 'does not permit answers 500 for the whole tree');
+			}
+
+			self::assertFileDoesNotExist($dir . 'index.html',
+				'A listing guard is protectDirectory()\'s job, not this one\'s');
+
+			self::assertTrue($this->fl->blockScriptExecution($dir));
+			self::assertSame($rule, file_get_contents($dir . '.htaccess'),
+				'A rule already written is not written again');
+
+			file_put_contents($dir . '.htaccess', "Options -Indexes\n");
+
+			self::assertTrue($this->fl->blockScriptExecution($dir));
+
+			$merged = file_get_contents($dir . '.htaccess');
+
+			self::assertStringStartsWith("Options -Indexes\n", $merged,
+				'What the directory already held must survive');
+			self::assertStringContainsString('SetHandler none', $merged,
+				'A foreign .htaccess must not mean the tree goes unprotected');
+
+			@unlink($dir . '.htaccess');
+			mkdir($dir . '.htaccess');
+
+			self::assertFalse($this->fl->blockScriptExecution($dir),
+				'A rule that could not be written is reported, not warned about');
+
+			@rmdir($dir . '.htaccess');
+		}
+		finally
+		{
+			@unlink($dir . '.htaccess');
+			@rmdir($dir);
+		}
+	}
+
 			public function testFile_size_encode()
 			{
 				$arr = array(

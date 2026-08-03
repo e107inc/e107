@@ -39,29 +39,56 @@ class rss_import extends base_import_class
 	var $feedUrl			= null;
 	var $defaultClass 		= false;
 
+	/**
+	 * Whether the feed's images are downloaded into the media tree.
+	 *
+	 * Not named for the method below it. A property and a method may share a
+	 * name, and one that does is a preference nothing reads.
+	 *
+	 * @var boolean
+	 */
+	public $importImages = false;
+
 	private $foundImages = array();
-	
+
 
 	function init()
 	{
 		$this->feedUrl		= vartrue($_POST['rss_feed'],false);
-		$this->saveImages	= vartrue($_POST['rss_saveimages'],false);
+		$this->importImages	= !empty($_POST['rss_saveimages']);
 	}
 	
 	
 	
 	function config()
 	{
-		$frm = e107::getForm();
-		
-		$var[0]['caption']	= "Feed URL";
-		$var[0]['html'] 	= "<input class='tbox span7' type='text' name='rss_feed' size='180' value='{$_POST['rss_feed']}' maxlength='250' />";
+		$feed = e107::getParser()->toAttribute(varset($_POST['rss_feed'], ''));
 
-		$var[1]['caption']	= "Save Images Locally";
-		$var[1]['html'] 	= $frm->checkbox('rss_saveimages',1);
+		$var[0]['caption']	= "Feed URL";
+		$var[0]['html'] 	= "<input class='tbox span7' type='text' name='rss_feed' size='180' value='{$feed}' maxlength='250' />";
+
+		$var[1] = $this->imageOptionField();
 
 
 		return $var;
+	}
+
+
+	/**
+	 * The row that offers the administrator the image download.
+	 *
+	 * Shared, because every provider extending this one inherits saveImages()
+	 * and the preference it reads. A provider that renders its own fields and
+	 * not this one leaves that preference with no way of being set.
+	 *
+	 * @return array
+	 */
+	protected function imageOptionField()
+	{
+		return array(
+			'caption' => "Save Images Locally",
+			'html'    => e107::getForm()->checkbox('rss_saveimages', 1),
+		);
 	}
 	
 
@@ -297,103 +324,71 @@ class rss_import extends base_import_class
 	
 	
 	/** Download and Import remote images and update body text with local relative-links. eg. {e_MEDIA}
-	 * @param returns text-body with remote links replaced with local ones for the images downloaded. 
+	 *
+	 * Does nothing at all unless the administrator asked for it. What it fetches
+	 * is named by the feed, so the bytes are verified and the local extension is
+	 * taken from them; see base_import_class::importRemoteImage().
+	 *
+	 * @param string $body text body carrying the feed's img tags
+	 * @param string $cat  media category the stored images are imported into
+	 * @return string body with remote links replaced by local ones
 	 */
 	function saveImages($body,$cat='news')
 	{
+		if(empty($this->importImages))
+		{
+			return $body;
+		}
+
 		$mes = e107::getMessage();
 		$med = e107::getMedia();
 		$tp = e107::getParser();
 		$search = array();
 		$replace = array();
-		$fl = e107::getFile();
-
 
 		$result = $tp->getTags($body, 'img');
-			
-		if($result)
-		{
-			$relPath = 'images/'. substr(md5($this->feedUrl),0,10);
-		
-			if(!is_dir(e_MEDIA.$relPath))
-			{
-				mkdir(e_MEDIA.$relPath,'0755');	
-			}
-		
-			foreach($result['img'] as $att)
-			{
-				$filename = basename($att['src']);
 
-				if(file_exists(e_MEDIA.$relPath."/".$filename))
-				{
-					continue;
-				}
-					
-				$fl->getRemoteFile($att['src'], $relPath."/".$filename, 'media');
-
-				if(filesize(e_MEDIA.$relPath."/".$filename) > 0)
-				{
-					$search[] = $att['src'];
-					$src = $tp->createConstants(e_MEDIA.$relPath."/".$filename,1);
-					$this->foundImages[] = $src;
-					$replace[] = $src;
-				}
-			}	
-		
-		}
-		else
+		if(empty($result['img']))
 		{
 			$mes->addDebug("No Images Found: ".print_a($result,true));
+
+			return $body;
 		}
-		
+
+		$relPath = 'images/'. substr(md5($this->feedUrl),0,10);
+		$dir = e_MEDIA.$relPath.'/';
+
+		if(!is_dir($dir) && !mkdir($dir, 0755, true) && !is_dir($dir))
+		{
+			$mes->addError("Could not create ".$dir);
+
+			return $body;
+		}
+
+		foreach($result['img'] as $att)
+		{
+			$filename = $this->importRemoteImage($att['src'], $dir);
+
+			if($filename === false)
+			{
+				$mes->addDebug("Not an image, or could not be fetched: ".$att['src']);
+				continue;
+			}
+
+			$src = $tp->createConstants($dir.$filename,1);
+			$search[] = $att['src'];
+			$this->foundImages[] = $src;
+			$replace[] = $src;
+		}
+
 		if(count($search))
 		{
 			$mes->addDebug("Found: ".print_a($search,true));
 			$mes->addDebug("Replaced: ".print_a($replace,true));
-			$med->import($cat,e_MEDIA.$relPath);	
+			$med->import($cat,e_MEDIA.$relPath);
 		}
-		
+
 		return str_replace($search,$replace,$body);
-		
-		
-		/*
-		
-	//	echo htmlentities($body);
-		preg_match_all("/(((http:\/\/www)|(http:\/\/)|(www))[-a-zA-Z0-9@:%_\+.~#?&\/\/=]+)\.(jpg|jpeg|gif|png|svg)/im",$body,$matches);
-		$fl = e107::getFile();
-			
-		if(is_array($matches[0]))
-		{
-			$relPath = 'images/'. substr(md5($this->feedUrl),0,10);
-			
-			if(!is_dir(e_MEDIA.$relPath))
-			{
-				mkdir(e_MEDIA.$relPath,'0755');	
-			}
-			
-			foreach($matches[0] as $link)
-			{
-				$filename = basename($link);
-				
-				if(file_exists($relPath."/".$filename))
-				{
-					continue;
-				}
-				
-				$fl->getRemoteFile($link,$relPath."/".$filename, 'media');
-				
-				$search[] = $link;
-				$replace[] = $tp->createConstants(e_MEDIA.$relPath."/".$filename,1);
-			}	
-		}
-		
-		if(count($search))
-		{
-			$med->import($cat,e_MEDIA.$relPath);	
-		}
-		
-		return str_replace($search,$replace,$body);*/
-		
 	}
 	
 

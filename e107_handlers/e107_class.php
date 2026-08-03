@@ -762,6 +762,13 @@ class e107
 			$path = e_ROOT . $this->e107_dirs[$directory];
 			$file->prepareDirectory($path, FILE_CREATE_DIRECTORY);
 		}
+
+		// Written at runtime rather than shipped, so it reaches the sites that
+		// already exist and an upgrade cannot overwrite an edited copy.
+		if(isset($this->e107_dirs['MEDIA_BASE_DIRECTORY']))
+		{
+			$file->blockScriptExecution(e_ROOT . $this->e107_dirs['MEDIA_BASE_DIRECTORY']);
+		}
 	}
 
 	/**

@@ -997,6 +997,14 @@ class e_file
 
 		$fp = fopen($this->remoteFilePath($type) . $local_file, 'w'); // media-directory or temp directory is the root.
 
+		if($fp === false)
+		{
+			$this->error = 'Could not open ' . $this->remoteFilePath($type) . $local_file . ' for writing';
+			error_log($this->error);
+
+			return false;
+		}
+
 		set_time_limit($timeout);
 
 		$buffer = $this->curlFollow($remote_url, array('timeout' => $timeout),
@@ -2448,6 +2456,115 @@ class e_file
 		$baseDir = rtrim($baseDir, '/') . "/";
 
 		return $baseDir;
+	}
+
+
+	/** First line of {@see scriptExecutionRule()}, and how a written rule is recognised again. */
+	const SCRIPT_RULE_MARKER = '# e107 script execution rule';
+
+
+	/**
+	 * The rule e107_media carries, kept here rather than at the call site so a
+	 * host with a different idea of what an interpreter is has one file to edit.
+	 *
+	 * Every directive is AllowOverride FileInfo class. That is deliberate: the
+	 * rule is written without an administrator asking, onto sites nobody has
+	 * surveyed, and a directive the host does not permit in .htaccess is not
+	 * ignored but a fatal parse error, which would answer every request for
+	 * every avatar and every site image with a 500. FileInfo is the one class
+	 * e107's own e107.htaccess proves is granted, through ErrorDocument and
+	 * RewriteEngine. Require needs AuthConfig and Deny needs Limit, so neither
+	 * appears here; the refusal is RedirectMatch, which is FileInfo.
+	 *
+	 * @return string
+	 */
+	public static function scriptExecutionRule()
+	{
+
+		$scripts = "phar|php|php[0-9]|phps|phtml|pht|shtml|cgi|htaccess|htpasswd";
+
+		return self::SCRIPT_RULE_MARKER . ". Delete it and the directory runs what it holds.\n"
+			. "#\n"
+			. "# This tree is public by design: avatars, site images and every\n"
+			. "# {e_MEDIA_IMAGE} URL a theme emits are fetched from it directly, so\n"
+			. "# nothing here stops an image being read. What it stops is a file being\n"
+			. "# executed, because the bytes under this directory arrive from uploads\n"
+			. "# and from remote feeds.\n"
+			. "#\n"
+			. "# e107 appends this block once and recognises it by the line above, so\n"
+			. "# an edited copy survives an upgrade.\n"
+			. "\n"
+			. "RemoveHandler .phar .php .php3 .php4 .php5 .php6 .php7 .php8 .phps .phtml .pht .shtml .cgi\n"
+			. "RemoveType .phar .php .php3 .php4 .php5 .php6 .php7 .php8 .phps .phtml .pht .shtml .cgi\n"
+			. "\n"
+			. "<FilesMatch \"(?i)\\.(" . $scripts . ")(\\.|$)\">\n"
+			. "\tSetHandler none\n"
+			. "</FilesMatch>\n"
+			. "\n"
+			. "<IfModule mod_alias.c>\n"
+			. "\tRedirectMatch 403 \"(?i)\\.(" . $scripts . ")(\\.|$)\"\n"
+			. "</IfModule>\n"
+			. "\n"
+			. "# A directory holding an .htaccess of its own replaces the parent's\n"
+			. "# rewrite rules rather than adding to them, so the refusal e107.htaccess\n"
+			. "# makes of these two methods is repeated here.\n"
+			. "<IfModule mod_rewrite.c>\n"
+			. "\tRewriteEngine On\n"
+			. "\tRewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)\n"
+			. "\tRewriteRule .* - [F]\n"
+			. "</IfModule>\n";
+	}
+
+
+	/**
+	 * Stop a directory executing what it holds, while leaving it readable.
+	 *
+	 * The opposite of {@see protectDirectory()} in what it allows and the same in
+	 * how it is applied. That one denies every request for the directory, which
+	 * is right for a private message attachment and wrong for e107_media: a deny
+	 * rule there takes every avatar, every site image and every theme's
+	 * {e_MEDIA_IMAGE} URL off the site. This one refuses only the extensions a
+	 * web server hands to an interpreter.
+	 *
+	 * A file whose extension is not one of those is untouched, so the bytes a
+	 * site already serves go on being served byte for byte.
+	 *
+	 * Read by Apache and by nothing else. On nginx, lighttpd or IIS it is an
+	 * inert text file and the server's own configuration has to do the same job.
+	 *
+	 * The rule is appended to whatever the directory already holds rather than
+	 * skipped, because a hosting panel or a cache plugin leaving its own
+	 * .htaccess in the media tree is common and would otherwise mean the tree
+	 * never gets a rule at all. Re-running is a no-op: the block carries
+	 * {@see SCRIPT_RULE_MARKER} and is written once.
+	 *
+	 * @param string $path directory to cover; not created if it is missing
+	 * @return boolean true when the rule is in place
+	 */
+	public function blockScriptExecution($path)
+	{
+
+		if(empty($path) || !is_dir($path))
+		{
+			return false;
+		}
+
+		$file = rtrim($path, '/\\') . '/.htaccess';
+		$existing = is_file($file) ? (string) @file_get_contents($file) : '';
+
+		if(strpos($existing, self::SCRIPT_RULE_MARKER) !== false)
+		{
+			return true;
+		}
+
+		if(!is_writable(is_file($file) ? $file : $path))
+		{
+			return false;
+		}
+
+		$rule = ($existing === '' ? '' : "\n") . self::scriptExecutionRule();
+
+		return @file_put_contents($file, $rule, FILE_APPEND) !== false;
 	}
 
 

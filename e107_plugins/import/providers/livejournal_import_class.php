@@ -37,8 +37,10 @@ class livejournal_import extends rss_import
 	 */
 	function init()
 	{
+		parent::init();
+
 		$mes = e107::getMessage();
-	
+
 		if(vartrue($_POST['siteUrl']))
 		{
 			$domain = preg_replace("/https?:\/\//i",'',$_POST['siteUrl']);
@@ -58,14 +60,18 @@ class livejournal_import extends rss_import
 	
 	function config()
 	{
+		$site = e107::getParser()->toAttribute(varset($_POST['siteUrl'], ''));
+
 		$var[0]['caption']	= "Your LiveJournal URL";
-		$var[0]['html'] 	= "<input class='tbox' type='text' name='siteUrl' size='80' value='{$_POST['bloggerUrl']}' maxlength='250' />";
+		$var[0]['html'] 	= "<input class='tbox' type='text' name='siteUrl' size='80' value='{$site}' maxlength='250' />";
 		$var[0]['help']		= "eg. http://blogname.livejournal.com";
-		
+
 		$var[1]['caption']	= "Cleanup HTML in content";
 		$var[1]['html'] 	= "<input class='tbox' type='checkbox' name='siteCleanup' size='80' value='1' />";
 		$var[1]['help']		= "Tick to enable";
-		
+
+		$var[2] = $this->imageOptionField();
+
 		return $var;
 	}
 
