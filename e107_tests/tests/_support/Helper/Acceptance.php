@@ -93,6 +93,22 @@ class Acceptance extends E107Base
 	}
 
 	/**
+	 * The status code of the last response.
+	 *
+	 * PhpBrowser offers seeResponseCodeIs() and nothing that hands the code
+	 * back, so a test that has to compare two responses to each other rather
+	 * than to a literal has nowhere to read it from. Pair with
+	 * $I->stopFollowingRedirects(), or the code returned is the one at the end
+	 * of the redirect chain.
+	 *
+	 * @return int
+	 */
+	public function grabResponseCode()
+	{
+		return $this->getModule('PhpBrowser')->client->getInternalResponse()->getStatusCode();
+	}
+
+	/**
 	 * Clear the installer's resume cookie at the path it was actually set on.
 	 *
 	 * The installer scopes e107install_state to e_HTTP (the app's base path,
