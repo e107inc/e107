@@ -432,13 +432,25 @@ class forum_front
 				->leftJoin('user', 'u', $qb->expr()->compareColumns('th.thread_lastuser', 'u.user_id'))
 				->where('t.track_userid', (int) USERID)
 				->orderBy('th.thread_lastpost', 'DESC')
-				->fetchEach();
+				// Buffered, not streamed: the loop below reaches e107::url() and
+				// e107::user() on the same handle, which overwrites the result
+				// mid-stream and ends the listing after its first row.
+				->fetchAll();
 
 			$forum_trackstring = '';
 			$data = array();
 			{
 				foreach($trackedRows as $row)
 				{
+					// A subscription is not a licence to keep reading. The row
+					// carries the thread name, the forum name and who posted in
+					// it last, none of which belongs to a caller the forum is
+					// now closed to.
+					if(!$forum->checkPerm($row['thread_forum_id'], 'view'))
+					{
+						continue;
+					}
+
 					//	e107::getDebug()->log($row);
 					$row['thread_sef'] = eHelper::title2sef($row['thread_name'], 'dashl');
 
