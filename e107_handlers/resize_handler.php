@@ -67,7 +67,7 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 	global $pref;
 
 	$new_height = 0;
-	$mode = ($pref['resize_method'] ? $pref['resize_method'] : "gd2");
+	$mode = vartrue($pref['resize_method'], "gd2");
 	if ($type == "upload") 
 	{
 		$new_size = varset($pref['im_width'],400);
@@ -154,15 +154,16 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 	switch ($mode)
 	{
 	  case "ImageMagick" :
+		$convert = escapeshellarg((string) varset($pref['im_path'], '').'convert');
 	    if ($destination_file == "stdout")
 		{		// if destination is stdout, output directly to the browser
 //		  $destination_file = "jpg:-";
 		  header("Content-type: image/jpeg");
-		  passthru ($pref['im_path']."convert -quality ".intval($im_quality)." -antialias -geometry ".intval($new_size)."x".intval($new_imageheight)." ".escapeshellarg($source_file)." jpg:-", $returnError);
+		  passthru ($convert." -quality ".intval($im_quality)." -antialias -geometry ".intval($new_size)."x".intval($new_imageheight)." ".escapeshellarg($source_file)." jpg:-", $returnError);
 		}
 		else
 		{		// otherwise output to file
-		  exec ($pref['im_path']."convert -quality ".intval($im_quality)." -antialias -geometry ".intval($new_size)."x".intval($new_imageheight)." ".escapeshellarg($source_file)." ".escapeshellarg($destination_file), $dummy, $returnError);
+		  exec ($convert." -quality ".intval($im_quality)." -antialias -geometry ".intval($new_size)."x".intval($new_imageheight)." ".escapeshellarg($source_file)." ".escapeshellarg($destination_file), $dummy, $returnError);
 		}
 		if ($returnError) echo "ImageMagick resize/output error: {$returnError}<br />";
 		break;
