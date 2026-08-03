@@ -628,6 +628,48 @@ class comment
 
 
 	/**
+	 * Rewrite the text of one comment, restricted to the rows this caller may
+	 * rewrite. Deciding and writing are one call so that no route can reach the
+	 * update without the rule having been applied: updateComment() serves
+	 * comment.php's AJAX endpoint, and enter_comment() carries an update of its
+	 * own for the editsubmit route that predates it.
+	 *
+	 * A moderator holds 'B', the permission deleteComment() and approveComment()
+	 * ask for and the one the admin comment manager rewrites comment text under.
+	 * Anybody else edits their own comment, while the site allows comment
+	 * editing and while no moderator has locked that comment, which is the rule
+	 * sc_comment_edit() renders the control by.
+	 *
+	 * USERID is 0 for a caller with no account and an anonymous comment stores
+	 * comment_author_id 0, so an author predicate on its own would match every
+	 * anonymous comment on the site.
+	 *
+	 * @param int $id
+	 * @param string $comment text prepared for storage by the caller
+	 * @return bool true when a row was rewritten
+	 */
+	private function updateCommentText($id, $comment)
+	{
+		$qb = e107::getDb()->createQueryBuilder()
+			->update('comments')
+			->set('comment_comment', $comment)
+			->where('comment_id', (int) $id);
+
+		if(!$this->moderator)
+		{
+			if(!USERID || !e107::getPref('allowCommentEdit'))
+			{
+				return false;
+			}
+
+			$qb->where('comment_author_id', (int) USERID);
+			$qb->where('comment_lock', '<', 1);
+		}
+
+		return (bool) $qb->execute();
+	}
+
+	/**
 	 * @param $id
 	 * @param $comment
 	 * @return string|void|null
@@ -645,15 +687,10 @@ class comment
 		{
 			$comment = $tp->toText($comment);
 		}
-		
+
 		$comment = trim($comment);
-		
-		if(!e107::getDb()->createQueryBuilder()
-			->update('comments')
-			->set('comment_comment', $tp->toDB($comment))
-			->where('comment_id', (int) $id)
-			->where('comment_author_id', (int) USERID)
-			->execute())
+
+		if(!$this->updateCommentText($id, $tp->toDB($comment)))
 		{
 			return "Update Failed"; // trigger ajax error message.
 		}
@@ -824,12 +861,16 @@ class comment
 					if ($editpid)
 					{
 						$comment .= "\n[ ".COMLAN_319." [time=short]".time()."[/time] ]";
-						$sql->createQueryBuilder()
-							->update('comments')
-							->set('comment_comment', $comment)
-							->where('comment_id', (int) $editpid)
-							->execute();
-						e107::getCache()->clear("comment");
+
+						if($this->updateCommentText($editpid, $comment))
+						{
+							e107::getCache()->clear("comment");
+						}
+						else
+						{
+							e107::getMessage()->addStack(COMLAN_329, 'postcomment', E_MESSAGE_ERROR, true);
+						}
+
 						return;
 					}
 
