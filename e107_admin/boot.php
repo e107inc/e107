@@ -22,7 +22,10 @@ if(!e107::isCli())
 	header('Content-type: text/html; charset=utf-8', TRUE);
 }
 
-define('ADMINFEED', 'https://e107.org/adminfeed');
+if(!defined('ADMINFEED')) // Allow e107_config.php to override.
+{
+	define('ADMINFEED', 'https://e107.org/adminfeed');
+}
 
 if(!empty($_GET['iframe']) && !defined('e_IFRAME')) // global iframe support.
 {

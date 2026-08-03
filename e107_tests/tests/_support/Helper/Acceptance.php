@@ -23,7 +23,20 @@ class Acceptance extends E107Base
 		'XtraDB' => ['XtraDB', 'InnoDB'],
 	];
 
+	/**
+	 * Dropped into the docroot for as long as a plugin install is needed.
+	 * Registered in Extension\WorkspaceCleanup so a crashed run does not leave
+	 * it there.
+	 */
+	const PLUGIN_PROBE_FILE = 'e107_tests_plugin_install_probe.php';
+
 	protected $deployer_components = ['db', 'fs'];
+
+	/** @var bool */
+	private $pluginProbeWritten = false;
+
+	/** @var array plugin folders this suite has already installed */
+	private $pluginsInstalled = [];
 
 	/**
 	 * Send a plain (non-AJAX) POST request, preserving the browser session.
@@ -113,12 +126,38 @@ class Acceptance extends E107Base
 	}
 
 	/**
+	 * Assert a table is absent from the schema.
+	 *
+	 * Codeception's Db module asserts about rows, so seeNumRecords(0, $table)
+	 * is the closest it offers and it passes just as readily on an empty table
+	 * that is still there. Proving an uninstall dropped something needs a
+	 * question about the schema instead.
+	 *
+	 * @param string $table fully prefixed table name
+	 * @return void
+	 */
+	public function dontSeeTableInDatabase($table)
+	{
+		$dbh = $this->getModule('\Helper\DelayedDb')->_getDbh();
+
+		$statement = $dbh->prepare('SHOW TABLES LIKE ?');
+		$statement->execute([$table]);
+
+		\PHPUnit\Framework\Assert::assertFalse(
+			$statement->fetchColumn(), "Table `$table` still exists.");
+	}
+
+	/**
 	 * Create a bundled plugin's tables from its own <plugin>_sql.php.
 	 *
 	 * A fresh install only creates the core schema, so a test needing a plugin
 	 * table would otherwise have to drive the whole plugin manager. Reading the
 	 * plugin's shipped SQL keeps the schema honest without that detour.
 	 * Existing tables are left alone.
+	 *
+	 * Tables alone do not make a plugin reachable. Reach for
+	 * {@see havePluginInstalled()} instead whenever the page under test is one
+	 * the plugin serves.
 	 *
 	 * @param string $plugin plugin folder name, e.g. 'download'
 	 * @param string $prefix table prefix used by the site under test
@@ -156,6 +195,196 @@ class Acceptance extends E107Base
 
 			$dbh->exec("CREATE TABLE IF NOT EXISTS `$name` ({$table['body']}) ENGINE=$engine");
 		}
+	}
+
+	/**
+	 * Install a bundled plugin the way the plugin manager installs it.
+	 *
+	 * Prefer this to havePluginTables() whenever the page under test belongs to
+	 * the plugin. Tables are not what a plugin's front end asks for: it opens
+	 * with e107::isInstalled(), which is a single lookup of the plug_installed
+	 * core preference, and havePluginTables() never writes that. A request to a
+	 * plugin nobody installed is therefore turned away because the plugin is
+	 * absent, which is indistinguishable from the authorisation refusal a
+	 * security test believes it has just proved.
+	 *
+	 * Driven through the application's own installer rather than written by
+	 * hand. install_plugin_xml() sets plugin_installflag, the plug_installed
+	 * preference, the tables, admin and site links, user classes, extended
+	 * fields, plugin preferences and search indexes, and an imitation of that
+	 * would drift the first time the plugin manager changed.
+	 *
+	 * Costs one request and browses to the probe, so call it before navigating
+	 * to the page under test rather than after. Repeat calls are free.
+	 *
+	 * @param string $plugin plugin folder name, e.g. 'poll'
+	 * @return void
+	 */
+	public function havePluginInstalled($plugin)
+	{
+		if (!empty($this->pluginsInstalled[$plugin]))
+		{
+			return;
+		}
+
+		$this->runPluginProbe('install', $plugin);
+		$this->pluginsInstalled[$plugin] = true;
+	}
+
+	/**
+	 * Uninstall a plugin and drop its tables, leaving the state a fresh install
+	 * leaves. Safe to call for a plugin that was never installed.
+	 *
+	 * @param string $plugin plugin folder name
+	 * @return void
+	 */
+	public function dropPluginInstall($plugin)
+	{
+		$this->runPluginProbe('uninstall', $plugin);
+		unset($this->pluginsInstalled[$plugin]);
+	}
+
+	/**
+	 * Remove the probe from the docroot. Call from a Cest's _after().
+	 *
+	 * @return void
+	 */
+	public function dropPluginProbe()
+	{
+		if (!$this->pluginProbeWritten)
+		{
+			return;
+		}
+
+		$this->deleteAppFile(self::PLUGIN_PROBE_FILE);
+		$this->pluginProbeWritten = false;
+	}
+
+	/**
+	 * @param string $act install|uninstall
+	 * @param string $plugin plugin folder name
+	 * @return string probe output
+	 */
+	private function runPluginProbe($act, $plugin)
+	{
+		if (!$this->pluginProbeWritten)
+		{
+			$this->writeAppFile(self::PLUGIN_PROBE_FILE, self::pluginProbeSource());
+			$this->pluginProbeWritten = true;
+		}
+
+		$browser = $this->getModule('PhpBrowser');
+		$browser->amOnPage('/'.self::PLUGIN_PROBE_FILE.'?act='.$act.'&plugin='.urlencode($plugin));
+
+		$body = $browser->grabPageSource();
+
+		if (strpos($body, 'PROBE_OK') === false)
+		{
+			throw new \RuntimeException(
+				"Plugin probe failed for \"$act $plugin\": ".trim(strip_tags($body)));
+		}
+
+		return $body;
+	}
+
+	/**
+	 * @return string
+	 */
+	private static function pluginProbeSource()
+	{
+		return <<<'PHP'
+<?php
+// Fixture for Helper\Acceptance::havePluginInstalled(). Removed in dropPluginProbe().
+$_E107['allow_guest'] = true;
+require_once(__DIR__.'/class2.php');
+header('Content-Type: text/plain');
+
+$act = isset($_GET['act']) ? $_GET['act'] : '';
+$folder = isset($_GET['plugin']) ? preg_replace('/[^\w-]/', '', $_GET['plugin']) : '';
+
+if($folder === '' || !is_readable(e_PLUGIN.$folder.'/plugin.xml'))
+{
+	echo 'no plugin.xml for "'.$folder."\"\n";
+	exit;
+}
+
+/**
+ * What e107::isInstalled() will answer on the next request.
+ *
+ * Not e107::isInstalled() itself. That reads plug_installed through a path, and
+ * e_model memoises every path it resolves without invalidating the memo when an
+ * ancestor key is rewritten. install_plugin_xml() rewrites the whole of
+ * plug_installed, so one call before an uninstall makes every call after it in
+ * the same request go on answering true.
+ *
+ * @param string $folder
+ * @return bool
+ */
+function e107_test_plugin_installed($folder)
+{
+	$installed = e107::getConfig('core')->get('plug_installed');
+
+	return is_array($installed) && isset($installed[$folder]);
+}
+
+$plugin = e107::getPlugin();
+
+// install_plugin_xml() resolves a folder to a plugin_id through the plugin
+// table, and update_plugins_table() is what puts a folder in it.
+if(!e107::getDb()->createQueryBuilder()->from('plugin')->where('plugin_path', $folder)->count())
+{
+	$plugin->update_plugins_table('update');
+}
+
+$changed = false;
+
+switch($act)
+{
+	case 'install':
+		if(!e107_test_plugin_installed($folder))
+		{
+			$plugin->install_plugin_xml($folder, 'install');
+			$changed = true;
+		}
+		break;
+
+	case 'uninstall':
+		if(e107_test_plugin_installed($folder))
+		{
+			$plugin->install_plugin_xml($folder, 'uninstall', array('delete_tables' => true));
+			$changed = true;
+		}
+		break;
+
+	default:
+		echo "unknown action\n";
+		exit;
+}
+
+if($changed)
+{
+	// Belt and braces. Both of these have been commented in and out of
+	// install_plugin_xml() over the years, and repeating one it already did
+	// costs this request nothing.
+	e107::getPlug()->clearCache()->buildAddonPrefLists();
+
+	foreach(glob(e_CACHE_CONTENT.'S_Config_*.cache.php') ?: array() as $file)
+	{
+		@unlink($file);
+	}
+}
+
+$installed = e107_test_plugin_installed($folder);
+
+if($installed === ($act === 'install'))
+{
+	echo "PROBE_OK ".$folder." installed=".($installed ? 1 : 0)."\n";
+}
+else
+{
+	echo 'could not '.$act.' "'.$folder."\"\n";
+}
+PHP;
 	}
 
 	/**
