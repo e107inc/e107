@@ -795,8 +795,22 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
 		$result = $sc->sc_xurl_icons($parm);
 
-		$this->assertStringContainsString('<span class="e-social-twitter fa-3x"></span>', $result);
-		$this->assertStringContainsString('<span class="e-social-youtube fa-3x"></span>', $result);
+		// default_install.xml no longer seeds the xurl preference, because every
+		// value it carried was the '#' placeholder, so a site that has configured
+		// no social account publishes no social icons rather than a row of
+		// anchors pointing at the page the visitor is already on.
+		//
+		// Only the refusal is asserted here. This shortcode renders from the
+		// XURL_* constants class2.php defines while it boots, not from the
+		// preference, so a unit test cannot seed a working URL after the fact.
+		// The positive control, that a configured URL is still published, is
+		// InstallPrefDuplicatesCest::aConfiguredSocialUrlIsStillPublished().
+		// The fixture this suite runs against is an older install, so it still
+		// holds the '#' placeholders default_install.xml used to seed. That makes
+		// it the witness: every URL asked for above is one of them, and none of
+		// them may reach the page.
+		$this->assertStringNotContainsString('href="#"', (string) $result,
+			'A social icon must never be an anchor to the current page.');
 
     }
 

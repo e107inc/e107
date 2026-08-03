@@ -459,6 +459,35 @@ function update_check()
 }
 
 	
+/**
+ * Core preferences a site holds in a shape nothing can read back, and what to
+ * store instead.
+ *
+ * update_core_prefs() otherwise only fills in keys a site is missing, so a value
+ * that was poisoned when the site was installed is never repaired. sitecontacts
+ * is the one that costs a site owner something: default_install.xml declared it
+ * twice for years and the declaration that won was the string "sitecontactinfo".
+ * uc_dropdown() preselects no option for a value that is not a userclass, and
+ * prefs.php stores every field on the page whether or not the admin touched it,
+ * so the next save of the preferences form writes e_UC_NOBODY and contact.php
+ * then stops rendering the contact form at all.
+ *
+ * @param array $pref
+ * @return array preference name => replacement value
+ */
+function get_unusable_core_prefs($pref)
+{
+	$repairs = array();
+
+	if (!empty($pref['sitecontacts']) && !is_numeric($pref['sitecontacts']))
+	{
+		$repairs['sitecontacts'] = (string) e_UC_MAINADMIN;
+	}
+
+	return $repairs;
+}
+
+
 function update_core_prefs($type='')
 {
 	global $e107info; // $pref,  $pref must be kept as global 
@@ -481,6 +510,20 @@ function update_core_prefs($type='')
 			$do_save = TRUE;
 		}
 	}
+
+	// Repairs, in the same shape as the missing-key loop above: reported while
+	// only checking and applied only when asked to. Setting a default during a
+	// check would leave it on the shared config object for whoever saves it
+	// next, and update_check() saves it moments later.
+	foreach (get_unusable_core_prefs($pref) as $k => $v)
+	{
+		if ($just_check) return update_needed('Unusable pref: '.$k);
+
+		e107::getConfig()->set($k,$v);
+		$admin_log->logMessage($k.' => '.$v, E_MESSAGE_NODISPLAY, E_MESSAGE_INFO);
+		$do_save = TRUE;
+	}
+
 	if ($do_save)
 	{
 		//save_prefs();
