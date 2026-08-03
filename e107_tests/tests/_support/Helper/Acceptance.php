@@ -140,8 +140,13 @@ class Acceptance extends E107Base
 	}
 
 	/**
-	 * Assert the last response carried $name, and that its value contains
+	 * Assert the last response carried $name, and that its value is exactly
 	 * $value when one is given.
+	 *
+	 * Exact rather than a substring test: every call site in the security suite
+	 * passes a complete header value, and a substring test would let
+	 * "attachment; filename=secret.txt.html" satisfy an assertion written for
+	 * "attachment; filename=secret.txt".
 	 *
 	 * @param string      $name
 	 * @param string|null $value
@@ -156,8 +161,8 @@ class Acceptance extends E107Base
 
 		if ($value !== null)
 		{
-			\PHPUnit\Framework\Assert::assertStringContainsString($value, $actual,
-				"Response header $name is \"$actual\", expected it to contain \"$value\".");
+			\PHPUnit\Framework\Assert::assertSame($value, $actual,
+				"Response header $name is \"$actual\", expected \"$value\".");
 		}
 	}
 
