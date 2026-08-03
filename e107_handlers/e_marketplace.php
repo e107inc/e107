@@ -488,7 +488,8 @@ abstract class e_marketplace_adapter_abstract
 		
 		if(!$result)
 		{
-			if(filesize(e_TEMP.$localfile))
+			// A refusal by the outbound request policy leaves no file at all.
+			if(is_file(e_TEMP.$localfile) && filesize(e_TEMP.$localfile))
 			{
 				$contents = file_get_contents(e_TEMP.$localfile);
 				$contents = explode('REQ_', $contents);
@@ -542,43 +543,19 @@ abstract class e_marketplace_adapter_abstract
 	 */
 	function getRemoteFile($remote_url, $local_file, $type='temp')
 	{
-		// FIXME - different methods (see xml handler getRemoteFile()), error handling, appropriate error messages, 
-		if (!function_exists("curl_init")) 
+		$fl = e107::getFile();
+
+		// e_file::getRemoteFile() is the one download path with the outbound
+		// request policy on it: per-hop revalidation, a capped redirect chain,
+		// a pinned address and a verified TLS peer.
+		if(!$fl->getRemoteFile($remote_url, $local_file, $type))
 		{
 			return false;
 		}
-		$path = ($type == 'media') ? e_MEDIA : e_TEMP; 
-		
-        $fp = fopen($path.$local_file, 'w'); // media-directory is the root. 
-        //$fp1 = fopen(e_TEMP.'/curllog.txt', 'w'); 
 
+		$path = $fl->remoteFilePath($type);
 
-        $cp = e107::getFile()->initCurl($remote_url);
-        curl_setopt($cp, CURLOPT_FILE, $fp);
-     /*   $cp = curl_init($remote_url);
-
-		
-		//curl_setopt($ch, CURLOPT_VERBOSE, 1);
-		//curl_setopt($ch, CURLOPT_STDERR, $fp1);
-		
-		curl_setopt($cp, CURLOPT_REFERER, e_REQUEST_HTTP);
-		curl_setopt($cp, CURLOPT_HEADER, 0);
-		curl_setopt($cp, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)"); 
-		curl_setopt($cp, CURLOPT_COOKIEFILE, e_SYSTEM.'cookies.txt');*/
-
-        $buffer = curl_exec($cp);
-       	
-        curl_close($cp);
-        fclose($fp);
-		//fclose($fp1);
-		
-		if($buffer)
-		{
-			$size = filesize($path.$local_file);
-			if($size < 400) $buffer = false;
-		}
-		
-        return ($buffer) ? true : false;
+		return (filesize($path.$local_file) >= 400);
     }
 }
 
