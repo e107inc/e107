@@ -448,25 +448,6 @@ class resize_handlerTest extends \Codeception\Test\Unit
 	}
 
 	/**
-	 * Skip the calling case when the `convert` binary is missing.
-	 *
-	 * Only the destination-path cases need it: they drive a real resize and
-	 * then inspect what `convert` did or did not write, which proves nothing
-	 * when the binary was never there to run. Cases that attack the command
-	 * line itself, such as an injected 'im_path' preference, must not call
-	 * this: passthru() hands the string to /bin/sh, so the payload fires
-	 * before `convert` is ever looked up and the regression is observable on
-	 * a host without ImageMagick.
-	 */
-	private function requireImageMagick()
-	{
-		if (!self::imageMagickAvailable())
-		{
-			$this->markTestSkipped('ImageMagick (convert) is not installed; this case needs the real binary.');
-		}
-	}
-
-	/**
 	 * Run $fn with E_WARNING/E_NOTICE silenced. Codeception's ErrorHandler
 	 * promotes those to fatal test errors by default, which would mask the
 	 * actual assertion we care about.

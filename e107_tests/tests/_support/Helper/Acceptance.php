@@ -109,6 +109,59 @@ class Acceptance extends E107Base
 	}
 
 	/**
+	 * The bytes of the last response, exactly as they arrived.
+	 *
+	 * grabPageSource() goes through the page's own accessor, which is fine for
+	 * a document and wrong for anything else: a test about an image, a
+	 * downloaded file or a truncated error page needs the octets rather than a
+	 * view of them.
+	 *
+	 * @return string
+	 */
+	public function grabResponseBody()
+	{
+		return (string) $this->getModule('PhpBrowser')->client->getInternalResponse()->getContent();
+	}
+
+	/**
+	 * A response header, or '' when the response did not carry one.
+	 *
+	 * Codeception 5's PhpBrowser has no header accessor of any kind, so a test
+	 * about a security header has nowhere to read one from.
+	 *
+	 * @param string $name header name, case-insensitive
+	 * @return string
+	 */
+	public function grabHttpHeader($name)
+	{
+		$response = $this->getModule('PhpBrowser')->client->getInternalResponse();
+
+		return (string) $response->getHeader($name);
+	}
+
+	/**
+	 * Assert the last response carried $name, and that its value contains
+	 * $value when one is given.
+	 *
+	 * @param string      $name
+	 * @param string|null $value
+	 * @return void
+	 */
+	public function seeHttpHeader($name, $value = null)
+	{
+		$actual = $this->grabHttpHeader($name);
+
+		\PHPUnit\Framework\Assert::assertNotSame('', $actual,
+			"Response is missing the $name header.");
+
+		if ($value !== null)
+		{
+			\PHPUnit\Framework\Assert::assertStringContainsString($value, $actual,
+				"Response header $name is \"$actual\", expected it to contain \"$value\".");
+		}
+	}
+
+	/**
 	 * Clear the installer's resume cookie at the path it was actually set on.
 	 *
 	 * The installer scopes e107install_state to e_HTTP (the app's base path,

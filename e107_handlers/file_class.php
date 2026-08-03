@@ -781,6 +781,51 @@ class e_file
 			return false;
 		}
 
+		return $this->matchSendRoot($path, $roots, $filename) === false ? false : $path;
+	}
+
+
+	/**
+	 * Canonicalise the directory $dir and confirm it is one of $roots, or is
+	 * held by one of them.
+	 *
+	 * resolveSendPath() answers "held by", which a root does not satisfy for
+	 * itself. A caller walking up to the directory that would have held a
+	 * missing file needs the root-inclusive question instead, or a file
+	 * directly inside a root looks as though it came from outside one.
+	 *
+	 * @param string     $dir   directory path, constants already expanded
+	 * @param array|null $roots allowed directories, null for getSendRoots()
+	 * @return string|false canonical directory, or false when no root holds it
+	 */
+	public function resolveSendRoot($dir, $roots = null)
+	{
+		if(!is_string($dir) || $dir === '' || strpos($dir, "\0") !== false)
+		{
+			return false;
+		}
+
+		$path = @realpath($dir);
+		if(empty($path) || !is_dir($path))
+		{
+			return false;
+		}
+
+		$subject = rtrim($path, '/\\') . DIRECTORY_SEPARATOR;
+
+		return $this->matchSendRoot($subject, $roots, $dir) === false ? false : $path;
+	}
+
+
+	/**
+	 * @param string     $path     canonical path, with a trailing separator when
+	 *                             a root is to count as holding itself
+	 * @param array|null $roots    allowed directories, null for getSendRoots()
+	 * @param string     $filename the name the caller asked about, for the log
+	 * @return string|false
+	 */
+	private function matchSendRoot($path, $roots, $filename)
+	{
 		if($roots === null)
 		{
 			$roots = $this->getSendRoots();
@@ -808,11 +853,13 @@ class e_file
 
 			if($windows ? (strncasecmp($path, $dir, $len) === 0) : (strncmp($path, $dir, $len) === 0))
 			{
-				return $path;
+				return $dir;
 			}
 		}
 
-		if($resolved === 0 && E107_DEBUG_LEVEL > 0)
+		// deftrue() rather than the constant: thumb.php bootstraps e107_class.php
+		// without class2.php, so E107_DEBUG_LEVEL is not always defined here.
+		if($resolved === 0 && deftrue('E107_DEBUG_LEVEL'))
 		{
 			e107::getLog()->addDebug('e_file::resolveSendPath(): no configured root could be resolved; refusing to send ' . $filename);
 		}
