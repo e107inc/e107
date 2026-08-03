@@ -352,6 +352,98 @@ class e_pluginbuilderTest extends \Codeception\Test\Unit
 
 	}
 
+	/**
+	 * What actually keeps an unauthenticated visitor out of a generated admin
+	 * page is the getperms('P') gate at its head, which runs before the
+	 * dispatcher subclass is even defined.
+	 *
+	 * getperms() answers false whenever ADMIN is undefined (class2.php), so a
+	 * guest is redirected before any of the generated code below runs. Nothing
+	 * about the position of auth.php changes that: it is included after the
+	 * dispatcher is constructed on every core admin page and every bundled
+	 * plugin, because e107_admin/auth.php branches on e_ADMIN_UI, which is
+	 * defined by e_admin_dispatcher::__construct(). Emitting auth.php first
+	 * sends auth.php down its legacy branch, so header.php is never included
+	 * and the generated page renders with no admin chrome at all.
+	 *
+	 * @see e107_admin/auth.php  the e_ADMIN_UI branch
+	 * @see e107_handlers/admin_ui.php  e_admin_dispatcher::__construct()
+	 */
+	public function testBuildAdminUIGuardsTheGeneratedPageAndKeepsTheCoreOrdering()
+	{
+		$result = $this->pb->buildAdminUI($this->posted, 'pluginfolder', 'PluginTitle');
+
+		$class2 = strpos($result, "require_once('../../class2.php');");
+		$gate = strpos($result, "getperms('P')");
+		$definition = strpos($result, 'class pluginfolder_adminArea extends e_admin_dispatcher');
+
+		$this->assertNotFalse($class2, 'The generated admin page never bootstraps e107.');
+		$this->assertNotFalse($gate, "The generated admin page carries no getperms('P') gate, which is "
+			.'the only thing that refuses a caller who is not an administrator of this plugin.');
+		$this->assertNotFalse($definition, 'The generated admin page never defines its dispatcher.');
+
+		$this->assertLessThan($gate, $class2, 'The generated admin page tests a permission before it '
+			.'has bootstrapped the application that defines getperms().');
+		$this->assertLessThan($definition, $gate, "The generated admin page defines its dispatcher "
+			."before the getperms('P') gate, so the gate no longer covers the code below it.");
+
+		$construct = strpos($result, 'new pluginfolder_adminArea();');
+		$auth = strpos($result, 'require_once(e_ADMIN."auth.php");');
+		$run = strpos($result, 'e107::getAdminUI()->runPage();');
+		$footer = strpos($result, 'require_once(e_ADMIN."footer.php");');
+
+		$this->assertNotFalse($construct, 'The generated admin page never constructs its dispatcher.');
+		$this->assertNotFalse($auth, 'The generated admin page never requires auth.php.');
+		$this->assertNotFalse($run, 'The generated admin page never runs its page.');
+		$this->assertNotFalse($footer, 'The generated admin page never requires footer.php.');
+
+		$this->assertTrue($construct < $auth && $auth < $run && $run < $footer,
+			'The generated admin page must emit the tail every core admin page emits: construct the '
+			.'dispatcher, then auth.php, then runPage(), then footer.php. auth.php takes its '
+			.'header.php branch only when e_ADMIN_UI is already defined, and the dispatcher '
+			."constructor is what defines it, so any other order renders a page with no admin "
+			."header. Offsets: construct=$construct auth=$auth run=$run footer=$footer. Tail:\n"
+			.substr($result, $construct - 40, 260));
+	}
+
+	/**
+	 * Positive control for the tail above: the generated page must still be
+	 * a working admin page, and must still parse.
+	 *
+	 * Moving a require_once past a statement is the kind of edit that is easy
+	 * to make and easy to make wrong, and nothing else in this suite executes
+	 * the wizard's output.
+	 */
+	public function testBuildAdminUIStillEmitsARunnableAdminPage()
+	{
+		$result = $this->pb->buildAdminUI($this->posted, 'pluginfolder', 'PluginTitle');
+
+		$this->assertStringContainsString("require_once('../../class2.php');", $result);
+		$this->assertStringContainsString("getperms('P')", $result);
+		$this->assertStringContainsString('class pluginfolder_adminArea extends e_admin_dispatcher', $result);
+		$this->assertStringContainsString('new pluginfolder_adminArea();', $result);
+		$this->assertStringContainsString('e107::getAdminUI()->runPage();', $result);
+		$this->assertStringContainsString('footer.php', $result);
+
+		$disabled = array_map('trim', explode(',', (string) ini_get('disable_functions')));
+
+		if(in_array('exec', $disabled, true))
+		{
+			$this->markTestSkipped('exec() is disabled here, so the generated code cannot be linted.');
+		}
+
+		$file = tempnam(sys_get_temp_dir(), 'e107pb');
+		file_put_contents($file, "<?php\n".$result);
+
+		$output = array();
+		$status = 0;
+		exec('php -l '.escapeshellarg($file).' 2>&1', $output, $status);
+		unlink($file);
+
+		$this->assertSame(0, $status,
+			"The generated admin page is not valid PHP:\n".implode("\n", $output));
+	}
+
 /*	public function isValidCode($code)
 	{
 		$temp_file = tempnam(sys_get_temp_dir(), 'PHP');

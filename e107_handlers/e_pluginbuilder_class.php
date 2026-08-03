@@ -2284,7 +2284,7 @@ class " . str_replace("_ui", "_form_ui", $table) . " extends e_admin_form_ui
 
 		} // End LOOP.
 
-		$text .= '		
+		$text .= '
 new ' . $pluginFolder . '_adminArea();
 
 require_once(e_ADMIN."auth.php");
