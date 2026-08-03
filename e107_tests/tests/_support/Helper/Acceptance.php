@@ -73,6 +73,22 @@ class Acceptance extends E107Base
 	}
 
 	/**
+	 * The status code of the last response.
+	 *
+	 * PhpBrowser offers seeResponseCodeIs() and nothing that hands the code
+	 * back, so a test that has to compare two responses to each other rather
+	 * than to a literal has nowhere to read it from. Pair with
+	 * $I->stopFollowingRedirects(), or the code returned is the one at the end
+	 * of the redirect chain.
+	 *
+	 * @return int
+	 */
+	public function grabResponseCode()
+	{
+		return $this->getModule('PhpBrowser')->client->getInternalResponse()->getStatusCode();
+	}
+
+	/**
 	 * Remove a file previously written by writeAppFile().
 	 *
 	 * @param string $relative_path path relative to the app root

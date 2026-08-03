@@ -15,10 +15,15 @@ if (!defined('e107_INIT'))
 	require_once(__DIR__.'/../class2.php');
 }
 
+if (!getperms('L'))
+{
+	e107::redirect('admin');
+	exit;
+}
+
 e107::coreLan('lancheck', true);
 
 $e_sub_cat = 'language';
-// require_once("auth.php");
 
 $frm = e107::getForm();
 $mes = e107::getMessage();

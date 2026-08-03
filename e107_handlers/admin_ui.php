@@ -1060,7 +1060,21 @@ class e_admin_dispatcher
 	protected $pluginTitle = '';
 
 	/**
+	 * Optional (set by child class).
+	 * Whether an unauthenticated visitor is refused before the dispatcher runs
+	 * anything at all. Set false only by a dispatcher that has to run for a
+	 * guest and takes responsibility for its own access control.
+	 * @var bool
+	 */
+	protected $requireAuth = true;
+
+	/**
 	 * Constructor
+	 *
+	 * Authenticates before anything else the dispatcher does, because
+	 * runObservers() runs the controller's init() and its triggers, and an
+	 * admin entry point does not require auth.php until after it has
+	 * constructed its dispatcher.
 	 *
 	 * @param string|array|e_admin_request $request [optional]
 	 * @param e_admin_response $response
@@ -1076,6 +1090,18 @@ class e_admin_dispatcher
 		if(!empty($_GET['iframe']) && !defined('e_IFRAME'))
 		{
 			define('e_IFRAME', true);
+		}
+
+		if($this->requireAuth && !deftrue('ADMIN'))
+		{
+			if(e_AJAX_REQUEST)
+			{
+				require_once(e_HANDLER.'js_helper.php');
+				e_jshelper::sendAjaxError(403, defset('ADLAN_86', 'Forbidden'), defset('ADLAN_87', 'Access denied!'));
+			}
+
+			e107::redirect('admin');
+			exit;
 		}
 
 		require_once(e_ADMIN.'boot.php');

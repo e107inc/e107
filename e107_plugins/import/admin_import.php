@@ -34,6 +34,11 @@ Options supported:
 // define('IMPORT_DEBUG',TRUE);
 
 require_once(__DIR__.'/../../class2.php');
+if (!getperms('P'))
+{
+	e107::redirect('admin');
+	exit;
+}
 // define("USE_PERSISTANT_DB",TRUE);
 
 
