@@ -1401,6 +1401,18 @@ class forumUpgrade
 				}
 			}
 		}
+
+		// A v1 site being migrated is redirected here from forum_setup's
+		// upgrade_pre(), so upgrade_post() and its deny rule do not run in that
+		// pass. Every attachment this routine is about to move would otherwise
+		// arrive fetchable.
+		require_once(e_PLUGIN . 'forum/forum_attachments.php');
+
+		if(!forum_attachments::protect())
+		{
+			$this->error['attach'][] = "Directory '" . e_MEDIA . "plugins/forum/attachments/' could not be "
+				. "protected against direct download";
+		}
 	}
 
 	function getUpdateInfo()

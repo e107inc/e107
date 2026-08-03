@@ -282,6 +282,17 @@ class ThumbnailContainmentCest
 	{
 		$I->wantTo('keep serving a forum attachment through thumb.php');
 
+		// The forum releases an attachment to whoever may read the post that
+		// names it, so the fixture is the post as much as it is the bytes. A
+		// file in a poster's directory that no post names is not an attachment
+		// and is refused; asking for one here would measure that refusal
+		// instead of the containment rule this test exists for.
+		$I->haveForumPluginInstalled();
+		$ids = $I->haveForumStructure();
+		$I->haveForumPostWithAttachments('p2 attachment carrier', $ids['threadA'], $ids['forumA'], 42,
+			array('img' => array(array(
+				'file' => basename($this->forumAttachment()), 'name' => 'p2.png', 'size' => 1))));
+
 		$src = 'e_MEDIA/plugins/forum/attachments/user_000042/'.basename($this->forumAttachment());
 
 		$I->amOnPage('/thumb.php?src='.rawurlencode($src).'&w=13');

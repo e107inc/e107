@@ -227,7 +227,9 @@ class e107forum
 	{
 		$user = intval($user);
 		$tp = e107::getParser();
-		$baseDir = e_MEDIA.'plugins/forum/attachments/';
+		require_once(e_PLUGIN.'forum/forum_attachments.php');
+		$paths = forum_attachments::paths();
+		$baseDir = $paths[0];
 		$baseDir .= ($user) ? "user_". $tp->leadingZeros($user, 6) : "anon";
 		
 		if($create == TRUE && !is_dir($baseDir))
@@ -265,15 +267,17 @@ class e107forum
 
         $array 	= $sql->retrieve('forum_post','post_user,post_attachments','post_id='.$post_id);
         $attach = e107::unserialize($array['post_attachments']);
+        $entry  = isset($attach['file'][$file_id]) ? $attach['file'][$file_id] : '';
 
-        $filename = is_array($attach['file'][$file_id]) ? $attach['file'][$file_id]['file'] : $attach['file'][$file_id];
+        $filename = is_array($entry) ? varset($entry['file'], '') : $entry;
+        $filename = basename((string) $filename);
 
-        $file 	= $this->getAttachmentPath($array['post_user']).varset($filename);
+        $file 	= $this->getAttachmentPath($array['post_user']).$filename;
 
-        // Check if file exists. Send file for download if it does, return 404 error code when file does not exist. 
- 		if(file_exists($file))
+        // Check if file exists. Send file for download if it does, return 404 error code when file does not exist.
+ 		if($filename !== '' && is_file($file))
  		{
- 		   e107::getFile()->send($file, array('roots' => array(e_MEDIA.'plugins/forum/attachments/')));
+ 		   e107::getFile()->send($file, array('roots' => forum_attachments::paths()));
  		}
  		else
  		{
@@ -1012,52 +1016,33 @@ class e107forum
 
 	private function _getForumPermList()
 	{
-		$sql = e107::getDb();
-
 		$this->permList = array();
-		$qryList = array();
 
-		$qryList['view'] = "
-		SELECT f.forum_id, f.forum_parent
-		FROM `#forum` AS f
-		LEFT JOIN `#forum` AS fp ON f.forum_parent = fp.forum_id AND fp.forum_class IN (".USERCLASS_LIST.")
-		WHERE f.forum_class IN (".USERCLASS_LIST.") AND f.forum_parent != 0 AND fp.forum_id IS NOT NULL
-		";
+		$classColumns = array(
+			'view'   => 'forum_class',
+			'post'   => 'forum_postclass',
+			'thread' => 'forum_threadclass',
+		);
 
-		$qryList['post'] = "
-		SELECT f.forum_id, f.forum_parent
-		FROM `#forum` AS f
-		LEFT JOIN `#forum` AS fp ON f.forum_parent = fp.forum_id AND fp.forum_postclass IN (".USERCLASS_LIST.")
-		WHERE f.forum_postclass IN (".USERCLASS_LIST.") AND f.forum_parent != 0 AND fp.forum_id IS NOT NULL
-		";
+		$classList = explode(',', USERCLASS_LIST);
 
-		$qryList['thread'] = "
-		SELECT f.forum_id, f.forum_parent
-		FROM `#forum` AS f
-		LEFT JOIN `#forum` AS fp ON f.forum_parent = fp.forum_id AND fp.forum_threadclass IN (".USERCLASS_LIST.")
-		WHERE f.forum_threadclass IN (".USERCLASS_LIST.") AND f.forum_parent != 0 AND fp.forum_id IS NOT NULL
-		";
+		// The predicate itself lives in forum_attachments.php, which thumb.php
+		// can load and this file cannot. One rule, asked from both sides.
+		require_once(e_PLUGIN.'forum/forum_attachments.php');
 
-		foreach($qryList as $key => $qry)
+		foreach($classColumns as $key => $col)
 		{
-			if($sql->gen($qry))
+			$rows = forum_attachments::readableForumRows($classList, $col);
+
+			$tmp = array();
+			foreach($rows as $row)
 			{
-				$tmp = array();
-				while($row = $sql->fetch())
-				{
-					$tmp[$row['forum_id']] = 1;
-					$tmp[$row['forum_parent']] = 1;
-				}
-				ksort($tmp);
-				//if($key == 'post')
-			//	{
-					//echo "<h3>Raw Perms</h3>";
-				//	echo "Qry: ".$qryList['post'];
-				//	print_a($tmp);
-			//	}
-				$this->permList[$key] = array_keys($tmp);
-				$this->permList[$key.'_list'] = implode(',', array_keys($tmp));
+				$tmp[$row['forum_id']] = 1;
+				$tmp[$row['forum_parent']] = 1;
 			}
+			ksort($tmp);
+			$this->permList[$key] = array_keys($tmp);
+			$this->permList[$key.'_list'] = implode(',', array_keys($tmp));
 		}
 
 

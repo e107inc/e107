@@ -1589,6 +1589,61 @@ class e_file
 
 
 		/**
+		 * Write the guard files that keep the contents of a directory from being
+		 * fetched or listed directly.
+		 *
+		 * The caller decides, never the helper. getUserDir() is shared between
+		 * plugins with opposite requirements, and the question of whether a
+		 * directory's files may be fetched off the web server belongs to whatever
+		 * owns them.
+		 *
+		 * The deny rule is read by Apache and by nothing else. On nginx, lighttpd
+		 * or IIS it is an inert text file, and whatever else keeps those files
+		 * private has to go on doing so unaided. The blank index.html works on any
+		 * server, but only against a directory listing.
+		 *
+		 * Cheap enough to call ahead of every write: two file_exists() once the
+		 * directory is covered, and nothing already there is rewritten.
+		 *
+		 * @param string $path directory to protect; not created if it is missing
+		 * @return boolean true when both guard files are in place
+		 */
+		public function protectDirectory($path)
+		{
+
+			if(empty($path) || !is_dir($path))
+			{
+				return false;
+			}
+
+			$deny = "# Written by e107. The files in this directory are not for direct download.\n"
+				. "<IfModule mod_authz_core.c>\n\tRequire all denied\n</IfModule>\n"
+				. "<IfModule !mod_authz_core.c>\n\tOrder allow,deny\n\tDeny from all\n</IfModule>\n";
+
+			$path = rtrim($path, '/\\') . '/';
+
+			$guards = array('.htaccess' => $deny, 'index.html' => '');
+
+			$done = true;
+
+			foreach($guards as $file => $contents)
+			{
+				if(file_exists($path . $file))
+				{
+					continue;
+				}
+
+				if(file_put_contents($path . $file, $contents) === false)
+				{
+					$done = false;
+				}
+			}
+
+			return $done;
+		}
+
+
+		/**
 		 * Return a user specific file directory for the current plugin with the option to create one if it does not exist.
 		 *
 		 * @param int         $user userid

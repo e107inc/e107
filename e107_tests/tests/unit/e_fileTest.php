@@ -958,6 +958,52 @@ class e_fileTest extends \Codeception\Test\Unit
 		$this->assertStringContainsString('private/reserved IP', $this->fl->getErrorMessage());
 	}
 
+	/**
+	 * A directory holding uploads that are not for direct download gets a deny
+	 * rule and a blank index.html.
+	 */
+	public function testProtectDirectoryWritesBothGuards()
+	{
+		$dir = e_TEMP.'e107_tests_protect_'.uniqid().'/';
+		mkdir($dir);
+
+		self::assertTrue($this->fl->protectDirectory($dir));
+		self::assertFileExists($dir.'index.html');
+		self::assertStringContainsString('Require all denied', file_get_contents($dir.'.htaccess'));
+
+		unlink($dir.'.htaccess');
+		unlink($dir.'index.html');
+		rmdir($dir);
+	}
+
+	/**
+	 * A rule an administrator has edited is never rewritten, which is what
+	 * makes the call cheap enough to make ahead of every write.
+	 */
+	public function testProtectDirectoryKeepsWhatIsAlreadyThere()
+	{
+		$dir = e_TEMP.'e107_tests_protect_'.uniqid().'/';
+		mkdir($dir);
+		file_put_contents($dir.'.htaccess', 'Require ip 10.0.0.0/8');
+
+		self::assertTrue($this->fl->protectDirectory($dir));
+		self::assertSame('Require ip 10.0.0.0/8', file_get_contents($dir.'.htaccess'));
+
+		unlink($dir.'.htaccess');
+		unlink($dir.'index.html');
+		rmdir($dir);
+	}
+
+	/**
+	 * The helper never creates the directory: a caller that thought it had
+	 * protected somewhere has to be told it has not.
+	 */
+	public function testProtectDirectoryRefusesAMissingDirectory()
+	{
+		self::assertFalse($this->fl->protectDirectory(e_TEMP.'e107_tests_absent_'.uniqid().'/'));
+		self::assertFalse($this->fl->protectDirectory(''));
+	}
+
 	/*
 	public function testGetRootFolder()
 	{
