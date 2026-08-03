@@ -48,11 +48,14 @@ class Acceptance extends E107Base
 	 *
 	 * @param string $uri
 	 * @param array $params
+	 * @param array $files entries as PHP presents them in $_FILES, e.g.
+	 *   ['file_userfile' => [['tmp_name' => '/tmp/x', 'name' => 'x.pdf', 'type' => 'application/pdf']]].
+	 *   A non-empty list makes the request multipart/form-data.
 	 * @return void
 	 */
-	public function sendPostRequest($uri, array $params = [])
+	public function sendPostRequest($uri, array $params = [], array $files = [])
 	{
-		$this->getModule('PhpBrowser')->_request('POST', $uri, $params);
+		$this->getModule('PhpBrowser')->_request('POST', $uri, $params, $files);
 	}
 
 	/**

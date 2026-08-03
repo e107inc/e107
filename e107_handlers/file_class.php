@@ -1608,6 +1608,13 @@ class e_file
 	 * private has to go on doing so unaided. The blank index.html works on any
 	 * server, but only against a directory listing.
 	 *
+	 * It refuses with FileInfo and Limit class directives because those are the
+	 * only classes e107 has ever needed: e107.htaccess asks for nothing outside
+	 * FileInfo, Options, Indexes and Limit. A directive whose class the host has
+	 * not granted through AllowOverride is a fatal configuration error rather
+	 * than an ignored line, so an AuthConfig "Require all denied" would answer
+	 * 500 for the whole subtree on a host that grants e107 what e107 asks for.
+	 *
 	 * Cheap enough to call ahead of every write: two file_exists() once the
 	 * directory is covered, and nothing already there is rewritten.
 	 *
@@ -1623,7 +1630,8 @@ class e_file
 		}
 
 		$deny = "# Written by e107. The files in this directory are not for direct download.\n"
-			. "<IfModule mod_authz_core.c>\n\tRequire all denied\n</IfModule>\n"
+			. "<IfModule mod_alias.c>\n\tRedirectMatch 403 ^\n</IfModule>\n"
+			. "<IfModule mod_rewrite.c>\n\tRewriteEngine On\n\tRewriteRule .* - [F]\n</IfModule>\n"
 			. "<IfModule !mod_authz_core.c>\n\tOrder allow,deny\n\tDeny from all\n</IfModule>\n";
 
 		$path = rtrim($path, '/\\') . '/';

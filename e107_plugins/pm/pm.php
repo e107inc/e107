@@ -700,16 +700,31 @@
 		/**
 		 *	Accept the attachments posted with a PM.
 		 *
-		 *	The random component lands in the stored name, which is the whole of
-		 *	the secrecy of an attachment sitting in a directly fetchable media
-		 *	directory. Four decimal digits are nine thousand guesses; sixteen hex
-		 *	characters are not. It carries no underscore, so send_file()'s
-		 *	explode("_", $fname, 4) reads new and already stored names alike.
+		 *	The random component lands in the stored name. Four decimal digits are
+		 *	nine thousand guesses; sixteen hex characters are not. It carries no
+		 *	underscore, so send_file()'s explode("_", $fname, 4) reads new and
+		 *	already stored names alike.
+		 *
+		 *	The deny rules go down before the file does, so a directory is never
+		 *	left holding an attachment it does not yet cover. They are read by
+		 *	Apache alone; see e_file::protectDirectory().
 		 *
 		 *	@return array as returned by e_file::getUploaded()
 		 */
 		function processAttachments()
 		{
+			if(!$this->protectStoredAttachments())
+			{
+				e107::getLog()->add('PM_ADM_11', $this->attachmentRoot(), E_LOG_WARNING);
+			}
+
+			if(!$this->protectAttachmentPaths(USERID))
+			{
+				e107::getLog()->add('PM_ADM_12', $this->attachmentDir(USERID), E_LOG_WARNING);
+
+				return array(array('error' => TRUE, 'message' => LAN_PM_116));
+			}
+
 			$randnum = e_random::hex(16);
 			$type = 'attachment+' . $randnum . '_';
 
