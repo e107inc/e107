@@ -59,6 +59,9 @@ class WorkspaceCleanup extends Extension
 		'e107_tests_forum_canary.txt',        // @see ForumAttachmentCest
 		'e107_tests_plugin_install_probe.php', // @see Helper\Acceptance::havePluginInstalled()
 		'e107_tests_thumb_probe.php',          // @see ThumbnailContainmentCest
+		'e107_tests_p16_probe.php',            // @see ThumbMediaUserclassCest
+		'e107_themes/bootstrap5/images/e107_tests_p16_theme.png',       // @see ThumbMediaUserclassCest
+		'e107_themes/bootstrap5/images/e107_tests_p16_themepublic.png', // @see ThumbMediaUserclassCest
 		'e107_plugins/pm/attachments',         // @see ThumbnailContainmentCest
 		'e107_tests_preauth_probe.php',        // @see AdminPreAuthCest
 		'e107_tests_preauth_canary.txt',       // @see AdminPreAuthCest

@@ -63,6 +63,22 @@ class e_thumbnail
 	 */
 	protected $_src_cache = null;
 
+	/**
+	 * Class ids the caller holds, resolved once per request and only when a
+	 * media library row asks for them.
+	 *
+	 * @var array|null
+	 */
+	protected $_userclasses = null;
+
+	/**
+	 * Whether the source carries a media_userclass that names a class, so that
+	 * the answer depends on who asked for it.
+	 *
+	 * @var bool
+	 */
+	protected $_classGated = false;
+
 
 	/** Stores watermark prefs
 	 */
@@ -245,7 +261,11 @@ class e_thumbnail
 
 	/**
 	 * Validate and Sanitize the Request.
-	 * @return bool true when request is okay.
+	 *
+	 * @return bool true when the request may be served. False covers both an
+	 *              unusable source and one the caller is not permitted to read;
+	 *              the two are deliberately not distinguished, because the
+	 *              endpoint answers an unauthenticated caller.
 	 */
 	public function checkSrc()
 	{
@@ -286,6 +306,11 @@ class e_thumbnail
 
 		if($resolved !== '' && is_file($resolved) && is_readable($resolved))
 		{
+			if($this->isRestrictedMedia($resolved))
+			{
+				return false;
+			}
+
 			$this->_src_path = $resolved;
 			$this->_src_cache = $path;
 			return true;
@@ -329,7 +354,7 @@ class e_thumbnail
 	}
 
 	/**
-	 * Subtrees inside those roots that hold per-recipient files.
+	 * Subtrees inside those roots that this endpoint never reads from.
 	 *
 	 * pm_class::send_file() releases a private message attachment only to a
 	 * party to the message. A thumbnailer has no session to ask that question
@@ -340,12 +365,18 @@ class e_thumbnail
 	 * plugin still holds them there, and pm_class deletes from that path to
 	 * this day.
 	 *
+	 * The generated-thumbnail cache is here for a different reason. It normally
+	 * sits under e_SYSTEM, which no root holds, but e_MEDIA_STATIC relocates it
+	 * to e_MEDIA_IMAGE.'cache/' (e107_class.php), where a permitted root does
+	 * hold it and where the copies have no core_media row of their own. The
+	 * thumbnailer does not re-serve its own output under either layout.
+	 *
 	 * @see pm_class::send_file()
 	 * @return array
 	 */
 	protected function privateRoots()
 	{
-		return array(e_MEDIA.'plugins/pm/', e_PLUGIN.'pm/attachments/');
+		return array(e_MEDIA.'plugins/pm/', e_PLUGIN.'pm/attachments/', e_CACHE_IMAGE);
 	}
 
 	/**
@@ -423,6 +454,268 @@ class e_thumbnail
 		}
 
 		return false;
+	}
+
+	/**
+	 * Whether the media library holds $path behind a class the caller is not in.
+	 *
+	 * e_MEDIA has to stay a permitted root, because avatars and site images
+	 * live there and every {e_MEDIA_IMAGE} URL in every theme depends on it.
+	 * The media library lives there too, and e_media::getImages() and
+	 * request.php both gate their reads of it by media_userclass, so this
+	 * endpoint has to ask the same question of the same column or the two
+	 * disagree about who may read the same file.
+	 *
+	 * Called from checkSrc(), which every entry point runs before sendImage().
+	 * That puts the cache behind the test as well: sendCachedImage() serves a
+	 * hit without looking at the source again, so a test on the generate path
+	 * alone would let one authorised request mint an entry that any caller
+	 * could then collect.
+	 *
+	 * @param string $path canonical path of a readable file
+	 * @return bool
+	 */
+	private function isRestrictedMedia($path)
+	{
+		$key = $this->mediaKey($path);
+
+		if($key === null)
+		{
+			return false;
+		}
+
+		$row = e107::getDb()->createQueryBuilder()
+			->select('media_userclass')->from('core_media')
+			->where('media_url', $key)
+			->setMaxResults(1)
+			->fetchRow();
+
+		// Avatars, and anything uploaded outside the media manager, have no row
+		// and are not the library's to restrict.
+		if(empty($row))
+		{
+			return false;
+		}
+
+		$userclass = trim((string) $row['media_userclass']);
+
+		if($this->admitsEveryone($userclass))
+		{
+			return false;
+		}
+
+		// The answer depends on who asked, which is what sendHeaders() needs to
+		// know before it declares the response a shared cache's to keep.
+		$this->_classGated = true;
+
+		return !$this->callerHolds($userclass);
+	}
+
+	/**
+	 * $path as a core_media row would spell it, or null when no root the media
+	 * library indexes holds it.
+	 *
+	 * media_url never holds a filesystem path: e_media::import() and
+	 * e_media::importFile() store what createConstants() makes of the file's
+	 * path, so the same file is '{e_MEDIA_IMAGE}x.png' in the table whichever
+	 * of e_MEDIA_IMAGE/x.png, e_MEDIA/images/x.png or the base64 id= form the
+	 * request spelled it as. Deriving the key from the canonical path rather
+	 * than from the request is what makes those spellings one lookup, and what
+	 * keeps a same-named file in another folder out of it.
+	 *
+	 * Every root this endpoint serves from is a root the library indexes, so
+	 * every root is asked about. e107_handlers/plugin_class.php imports
+	 * {e_PLUGIN} rows on each plugin install, theme_handler.php imports
+	 * {e_THEME} rows on each theme install, and e107_admin/update_routines.php
+	 * imports {e_IMAGE} and {e_FILE} rows on an upgrade from 1.x. Their
+	 * media_userclass is edited by the same media manager as any other row's,
+	 * so restricting the query to e_MEDIA would enforce half a column.
+	 *
+	 * @param string $path canonical path
+	 * @return string|null
+	 */
+	private function mediaKey($path)
+	{
+		$windows = (DIRECTORY_SEPARATOR === '\\');
+
+		foreach($this->thumbRoots() as $root)
+		{
+			$real = @realpath($root);
+
+			if(empty($real))
+			{
+				continue;
+			}
+
+			$real = rtrim($real, '/\\').DIRECTORY_SEPARATOR;
+			$len = strlen($real);
+
+			if($windows ? (strncasecmp($path, $real, $len) !== 0) : (strncmp($path, $real, $len) !== 0))
+			{
+				continue;
+			}
+
+			$tail = str_replace(DIRECTORY_SEPARATOR, '/', substr($path, $len));
+
+			return e107::getParser()->createConstants($root.$tail, 'rel');
+		}
+
+		return null;
+	}
+
+	/**
+	 * Whether $userclass restricts nobody, which is decided without working out
+	 * who is asking.
+	 *
+	 * The empty string is the column default rather than a restriction, so it
+	 * admits everyone; e107 has shipped rows carrying it since 1.0. e_UC_PUBLIC
+	 * is what e_media::import() and e_media::importFile() write into every row
+	 * they create, so it is the value nearly every library item carries.
+	 * Answering both without resolving the caller is what keeps the ordinary
+	 * thumbnail request free of a session, and its response free of the
+	 * Set-Cookie and Pragma headers that stop a shared cache storing it.
+	 *
+	 * @param string $userclass trimmed value of core_media.media_userclass
+	 * @return bool
+	 */
+	private function admitsEveryone($userclass)
+	{
+		if($userclass === '')
+		{
+			return true;
+		}
+
+		foreach(explode(',', $userclass) as $class)
+		{
+			$class = trim($class);
+
+			if(is_numeric($class) && (int) $class === e_UC_PUBLIC)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Whether the caller holds one of the classes $userclass names.
+	 *
+	 * This is the rule request.php and e_media::getImages() apply to the same
+	 * column: a numeric comparison against the caller's class list, in which
+	 * any one member is enough. It is deliberately not check_class(): a class
+	 * name and a leading '-' are refused here rather than resolved, so that the
+	 * thumbnailer can never answer a request the listing that produced it would
+	 * have hidden.
+	 *
+	 * @param string $userclass trimmed value of core_media.media_userclass
+	 * @return bool
+	 */
+	private function callerHolds($userclass)
+	{
+		$held = $this->userClasses();
+
+		foreach(explode(',', $userclass) as $class)
+		{
+			$class = trim($class);
+
+			if(is_numeric($class) && in_array((int) $class, $held, true))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * The class ids the caller holds.
+	 *
+	 * @return array class ids
+	 */
+	protected function userClasses()
+	{
+		if($this->_userclasses === null)
+		{
+			$this->_userclasses = array_map('intval', $this->resolveUserClasses());
+		}
+
+		return $this->_userclasses;
+	}
+
+	/**
+	 * Work out who is asking.
+	 *
+	 * USERCLASS_LIST is what class2.php publishes, and e107_images/thumb.php
+	 * bootstraps through it. thumb.php at the site root does not: it builds a
+	 * bootstrap of its own, small enough to answer a thumbnail request in a
+	 * couple of milliseconds, and that bootstrap has no session and no user.
+	 * The pieces that identify one are assembled here rather than there, so
+	 * that only a request which turned out to name a restricted row pays for
+	 * them.
+	 *
+	 * A request that presented no cookie is a guest in both tracking modes,
+	 * because a login is carried by a cookie in both, so it is answered
+	 * without opening a session for it.
+	 *
+	 * @return array class ids
+	 */
+	private function resolveUserClasses()
+	{
+		if(defined('USERCLASS_LIST'))
+		{
+			return explode(',', USERCLASS_LIST);
+		}
+
+		$this->defineIdentityConstants();
+
+		if(!empty($_SERVER['HTTP_COOKIE']))
+		{
+			e107::getSession();
+		}
+
+		require_once(e_HANDLER.'userclass_class.php');
+
+		return e107::getUser()->getClassList();
+	}
+
+	/**
+	 * Define the constants class2.php defines before a session or a user class
+	 * can exist, and which thumb.php's own bootstrap does not.
+	 *
+	 * They are defined together, before either answer, because they are one
+	 * bootstrap rather than three decisions. e_LANGUAGE is the one that is
+	 * needed even when no session is opened: userclass_class.php loads a
+	 * language file at file scope, so a request that presented no cookie fatals
+	 * without it. e_session reads e_SECURITY_LEVEL while it is constructed, and
+	 * builds its session name from e_COOKIE.
+	 *
+	 * Each takes the value class2.php gives it, coercion included:
+	 * e107_admin/prefs.php stores an empty cookie_name for anyone who clears
+	 * the field, and class2.php does not let that reach e_COOKIE.
+	 *
+	 * @see class2.php
+	 * @return void
+	 */
+	private function defineIdentityConstants()
+	{
+		if(!defined('e_SECURITY_LEVEL'))
+		{
+			require_once(e_HANDLER.'session_handler.php');
+			define('e_SECURITY_LEVEL', e_session::SECURITY_LEVEL_BALANCED);
+		}
+
+		if(!defined('e_COOKIE'))
+		{
+			$cookie = e107::getPref('cookie_name');
+			define('e_COOKIE', $cookie ? $cookie : 'e107cookie');
+		}
+
+		if(!defined('e_LANGUAGE'))
+		{
+			$language = e107::getPref('sitelanguage');
+			define('e_LANGUAGE', $language ? $language : 'English');
+		}
 	}
 
 	/**
@@ -599,7 +892,15 @@ class e_thumbnail
 	}
 
 	/**
-	 * @param $thumbnfo
+	 * Send the response headers for the image about to follow.
+	 *
+	 * A thumbnail is normally the same bytes for everyone, and is declared
+	 * cacheable for a year on that basis. A source whose core_media row names a
+	 * class is not: the same URL answers 200 to a member and 403 to a guest, so
+	 * the response is the asking caller's alone and says so, rather than
+	 * leaving a shared cache to hand a member's copy to the next visitor.
+	 *
+	 * @param array $thumbnfo
 	 * @return void
 	 */
 	private function sendHeaders($thumbnfo)
@@ -616,7 +917,15 @@ class e_thumbnail
 		    date_default_timezone_set('UTC');
 		}
 
-		header('Cache-Control: must-revalidate');
+		if($this->_classGated)
+		{
+			header('Cache-Control: private, no-store, max-age=0');
+			header('Vary: Cookie');
+		}
+		else
+		{
+			header('Cache-Control: must-revalidate');
+		}
 
 		if(isset($thumbnfo['lmodified']))
 		{
@@ -638,9 +947,12 @@ class e_thumbnail
 
 		header('X-Content-Type-Options: nosniff');
 
-		// Expire header - 1 year
-		$time = time() + 365 * 86400;
-		header('Expires: '.gmdate("D, d M Y H:i:s", $time).' GMT');
+		if(!$this->_classGated)
+		{
+			// Expire header - 1 year
+			$time = time() + 365 * 86400;
+			header('Expires: '.gmdate("D, d M Y H:i:s", $time).' GMT');
+		}
 
 		if(isset($thumbnfo['md5s']))
 		{
