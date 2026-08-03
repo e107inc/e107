@@ -48,7 +48,9 @@ class contact_front
 			e107::redirect();
 		}
 
-		if(isset($_POST['send-contactus']))
+		$offered = check_class($active) && isset($pref['sitecontacts']) && $pref['sitecontacts'] != e_UC_NOBODY;
+
+		if($offered && isset($_POST['send-contactus']))
 		{
 			$this->processFormSubmit();
 		}
@@ -60,7 +62,7 @@ class contact_front
 		{
 			$info = $this->renderContactInfo();
 		}
-		if(check_class($active) && isset($pref['sitecontacts']) && $pref['sitecontacts'] != e_UC_NOBODY)
+		if($offered)
 		{
 			$form = $this->renderContactForm();
 		}
@@ -85,12 +87,72 @@ class contact_front
 	}
 
 	/**
-	 * @param $sql
-	 * @return array
+	 * Did this submission come from a document this site rendered?
+	 *
+	 * A request that carries no cookie is exempt from the core check in
+	 * class2.php, by design: it has no ambient authority to borrow, so refusing
+	 * it protects nobody and breaks machine-to-machine callers. This form is the
+	 * exception, because what a caller borrows here is not the visitor's
+	 * authority but the site's own mail server, addressed to a recipient the site
+	 * chooses. So the request has to present a cookie in every mode, and a
+	 * browser that rendered the form always does. The header is read rather than
+	 * $_COOKIE, which handlers add to as the request is served.
+	 *
+	 * Above that, the proof the site's CSRF mode asks for is required too: a
+	 * form token where tokens are read, and Sec-Fetch-Site where the browser is
+	 * asked instead, both of which {@see e_session::check()} settles.
+	 *
+	 * @return bool
+	 */
+	private function submissionIsAuthentic()
+	{
+		$session = e107::getSession();
+
+		if(empty($_SERVER['HTTP_COOKIE']) || !$session->check(false))
+		{
+			return false;
+		}
+
+		if(!e_session::modeUsesToken() || !deftrue('e_TOKEN'))
+		{
+			return true;
+		}
+
+		$token = isset($_POST['e-token']) ? $_POST['e-token'] : varset($_POST['e_token'], '');
+
+		return $session->checkFormToken($token);
+	}
+
+	/**
+	 * Resolve the person a submission is addressed to.
+	 *
+	 * The selector that offered the visitor a choice applied the sitecontacts
+	 * predicates, so the same predicates decide who may be named. A posted
+	 * contact_person narrows that set; it does not replace it.
+	 *
+	 * @return array|false user_name and user_email, or false when nobody matches
+	 */
+	private function findRecipient()
+	{
+		/** @var contact_shortcodes $sc */
+		$sc = e107::getScBatch('contact');
+
+		$qb = $sc->recipientQuery();
+		$qb->select('user_name', 'user_email')->setMaxResults(1);
+
+		if(!empty($_POST['contact_person']))
+		{
+			$qb->where('user_id', (int) $_POST['contact_person']);
+		}
+
+		return $qb->fetchRow();
+	}
+
+	/**
+	 * @return void
 	 */
 	private function processFormSubmit()
 	{
-		$sql = e107::getDb();
 		$sec_img = e107::getSecureImg();
 		$tp = e107::getParser();
 		$ns = e107::getRender();
@@ -98,6 +160,12 @@ class contact_front
 
 		$error = "";
 		$ignore = false;
+
+		if(!$this->submissionIsAuthentic())
+		{
+			message_handler("P_ALERT", LAN_CONTACT_10);
+			return;
+		}
 
 
 		// Contact Form Filter -----
@@ -132,7 +200,7 @@ class contact_front
 		$email_copy = !empty($_POST['email_copy']) ? 1 : 0;
 
 		// Check Image-Code
-		if(isset($_POST['rand_num']) && ($sec_img->invalidCode($_POST['rand_num'], $_POST['code_verify'])))
+		if($sec_img->invalidCode(varset($_POST['rand_num'], ''), varset($_POST['code_verify'], '')))
 		{
 			$error .= LAN_CONTACT_15 . "\n";
 		}
@@ -174,30 +242,7 @@ class contact_front
 				$body .= "<tr><td>User:</td><td>#" . USERID . " " . USERNAME . "</td></tr>";
 			}
 
-			$qb = $sql->createQueryBuilder();
-			$qb->select('user_name', 'user_email')->from('user')->setMaxResults(1);
-
-			if(empty($_POST['contact_person']) && !empty($pref['sitecontacts'])) // only 1 person, so contact_person not posted.
-			{
-				if($pref['sitecontacts'] == e_UC_MAINADMIN)
-				{
-					$qb->where('user_perms', '0')->orWhere('user_perms', '0.');
-				}
-				elseif($pref['sitecontacts'] == e_UC_ADMIN)
-				{
-					$qb->where('user_admin', 1);
-				}
-				else
-				{
-					$qb->where($qb->expr()->findInSet('user_class', intval($pref['sitecontacts'])));
-				}
-			}
-			else
-			{
-				$qb->where('user_id', intval($_POST['contact_person']));
-			}
-
-			$row = $qb->fetchRow();
+			$row = $this->findRecipient();
 			if($row)
 			{
 				$send_to = $row['user_email'];
@@ -214,7 +259,7 @@ class contact_front
 
 			$CONTACT_EMAIL = e107::getCoreTemplate('contact', 'email');
 
-			unset($_POST['contact_person'], $_POST['author_name'], $_POST['email_send'], $_POST['subject'], $_POST['body'], $_POST['rand_num'], $_POST['code_verify'], $_POST['send-contactus']);
+			unset($_POST['contact_person'], $_POST['author_name'], $_POST['email_send'], $_POST['subject'], $_POST['body'], $_POST['rand_num'], $_POST['code_verify'], $_POST['send-contactus'], $_POST['e-token'], $_POST['e_token']);
 
 			if(!empty($_POST)) // support for custom fields in contact template.
 			{
@@ -308,10 +353,12 @@ class contact_front
 			$CONTACT_FORM = e107::getCoreTemplate('contact', 'form'); // require_once(e_THEME."templates/contact_template.php");
 		}
 
+		/** @var contact_shortcodes $contact_shortcodes */
 		$contact_shortcodes = e107::getScBatch('contact');
 		$contact_shortcodes->wrapper('contact/form');
 
-		$text = e107::getParser()->parseTemplate($CONTACT_FORM, true, $contact_shortcodes);
+		$text = $contact_shortcodes->withImagecode(
+			e107::getParser()->parseTemplate($CONTACT_FORM, true, $contact_shortcodes));
 
 		if(trim($text) !== '')
 		{

@@ -1693,10 +1693,17 @@ class comment
 					switch ($row['comment_type'])
 					{
 						case '0': // news
+							$now = time();
 							$nqb = $sql2->createQueryBuilder();
 							$row2 = $nqb->select('*')->from('news')
 								->where('news_id', $row['comment_item_id'])
 								->where($nqb->expr()->regexp('news_class', e_CLASS_REGEXP))
+								->where($nqb->expr()->not($nqb->expr()->regexp('news_class', e_NOBODY_REGEXP)))
+								->where('news_start', '<', $now)
+								->where($nqb->expr()->anyOf(
+									$nqb->expr()->eq('news_end', 0),
+									$nqb->expr()->gt('news_end', $now)
+								))
 								->fetchRow();
 							if ($row2)
 							{
@@ -1711,12 +1718,15 @@ class comment
 						case '1': //	article, review or content page - defunct category, but filter them out
 							break;
 						case '2': //	downloads
+							$classList = array_map('intval', explode(',', USERCLASS_LIST));
 							$dqb = $sql2->createQueryBuilder();
 							$row2 = $dqb->select('d.download_name', 'dc.download_category_class', 'dc.download_category_id', 'dc.download_category_name')
 								->from('download', 'd')
-								->leftJoin('download_category', 'dc', $dqb->expr()->compareColumns('d.download_category', 'dc.download_category_id'))
+								->innerJoin('download_category', 'dc', $dqb->expr()->compareColumns('d.download_category', 'dc.download_category_id'))
 								->where('d.download_id', $row['comment_item_id'])
 								->where($dqb->expr()->regexp('dc.download_category_class', e_CLASS_REGEXP))
+								->whereIn('d.download_visible', $classList)
+								->where('d.download_active', '>', 0)
 								->fetchRow();
 							if ($row2)
 							{

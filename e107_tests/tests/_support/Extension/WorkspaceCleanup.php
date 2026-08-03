@@ -79,6 +79,13 @@ class WorkspaceCleanup extends Extension
 		'e107_tests_rss_import_probe.php',    // @see RssImportCest
 		'e107_tests_rss_fixtures',            // @see RssImportCest
 		'e107_media/.htaccess',               // written at runtime; @see e_file::blockScriptExecution()
+		'e107_tests_p6_unsubscribe_reset.php',  // @see NewsletterUnsubscribeCest
+		'e107_tests_p6_cron_probe.php',         // @see CronMisconfigMailCest
+		'e107_tests_p6_contact_probe.php',      // @see ContactFormCest
+		'e107_tests_p6_gsitemap_reset.php',     // @see GsitemapFuncCest
+		'e107_tests_p6_rss_reset.php',          // @see RssCommentsFeedCest
+		'e107_tests_p6_poll_reset.php',         // @see PollStuffingCest
+		'e107_tests_p6_download_reset.php',     // @see DownloadMirrorActiveCest
 	];
 
 	/** @var \Deployer|null */

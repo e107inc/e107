@@ -320,35 +320,35 @@ class poll
 		}
 		if (isset($_POST['pollvote']) && isset($POLLMODE) && $POLLMODE == 'notvoted' && ($POLLMODE != 'disallowed'))
 		{
-			if ($_POST['votea'])
+			$optionArray = explode(chr(1), $pollArray['poll_options']);
+			$optionArray = array_slice($optionArray, 0, -1);
+
+			$choices = $this->ballot(varset($_POST['votea']), count($optionArray), !empty($pollArray['poll_allow_multiple']));
+
+			if ($choices)
 			{
 				$row = $pollArray;
 				extract($row);
 				$poll_votes = varset($poll_votes);
 				$votes = explode(chr(1), $poll_votes);
-				if (is_array($_POST['votea']))
+
+				// Every reader sums the whole array, so a tally left longer than
+				// the ballot keeps the totals wrong until it is shortened.
+				$votes = array_slice($votes, 0, count($optionArray));
+
+				foreach ($choices as $vote)
 				{
-					/* multiple choice vote */
-					foreach ($_POST['votea'] as $vote)
-					{
-						$vote = intval($vote);
-						$votes[($vote-1)] ++;
-					}
+					$votes[($vote-1)] ++;
 				}
-				else
-				{
-					$votes[($_POST['votea']-1)] ++;
-				}
-				$optionArray = explode(chr(1), $pollArray['poll_options']);
-				$optionArray = array_slice($optionArray, 0, -1);
+
 				foreach ($optionArray as $k=>$v)
 				{
-					if (!$votes[$k])
+					if (empty($votes[$k]))
 					{
 						$votes[$k] = 0;
 					}
 				}
-				$votep = implode(chr(1), $votes);
+				$votep = implode(chr(1), $votes) . chr(1);
 				$pollArray['poll_votes'] = $votep;
 				$poll_ip = varset($poll_ip) . varset($userid);
 				$voteQry = $sql->createQueryBuilder()->update("polls")
@@ -373,6 +373,49 @@ class poll
 		}
 		$this->pollRow = $pollArray;
 		$this->pollmode = varset($POLLMODE);
+	}
+
+	/**
+	 * The distinct options a submitted ballot chooses.
+	 *
+	 * A ballot the poll's own form could not have produced is not counted at all,
+	 * rather than counted in part.
+	 *
+	 * @param mixed $posted value of votea
+	 * @param int $optionCount how many options are on the ballot
+	 * @param bool $allowMultiple whether this poll accepts more than one answer
+	 * @return array 1-based option numbers, empty when the ballot is unusable
+	 */
+	private function ballot($posted, $optionCount, $allowMultiple)
+	{
+		if (!is_array($posted))
+		{
+			$posted = array($posted);
+		}
+
+		$choices = array();
+
+		foreach ($posted as $vote)
+		{
+			if (!is_numeric($vote))
+			{
+				continue;
+			}
+
+			$vote = (int) $vote;
+
+			if ($vote >= 1 && $vote <= $optionCount)
+			{
+				$choices[$vote] = $vote;
+			}
+		}
+
+		if (!$allowMultiple && count($choices) > 1)
+		{
+			return array();
+		}
+
+		return $choices;
 	}
 
 

@@ -7,7 +7,7 @@ if (!defined('e107_INIT'))
 	require_once(__DIR__.'/../../class2.php');
 }
 
-e107::lan('download','download');
+e107::lan('download', 'front', true);
 
 class download_request
 {
@@ -124,6 +124,11 @@ class download_request
 				extract($row);
 				if(check_class($row['download_category_class']) && check_class($row['download_class']))
 				{
+					if($row['download_active'] == 0)
+					{
+						self::refuse_inactive_download();
+					}
+
 					if(!empty($pref['download_limits']) && $row['download_active'] == 1)
 					{
 						self::check_download_limits();
@@ -219,15 +224,9 @@ class download_request
 
 				if(check_class($row['download_category_class']) && check_class($row['download_class']))
 				{
-					if($row['download_active'] == 0) // Inactive download - don't allow
+					if($row['download_active'] == 0)
 					{
-						require_once(HEADERF);
-						$search = array("[", "]");
-						$replace = array("<a href='" . e_HTTP . "download.php'>", "</a>");
-
-						e107::getRender()->tablerender(LAN_ERROR, "<div class='alert alert-warning' style='text-align:center'>" . str_replace($search, $replace, LAN_dl_78) . '</div>');
-						require_once(FOOTERF);
-						exit();
+						self::refuse_inactive_download();
 					}
 
 					if($pref['download_limits'] && $row['download_active'] == 1)
@@ -385,12 +384,33 @@ class download_request
 
 		if(!empty($table) && in_array($table, array('download', 'upload'), true)) // validate dynamic table name fail-closed
 		{
-			$row = $sql->createQueryBuilder()
-				->select('*')->from($table)
-				->where($table . '_id', $id)
-				->fetchRow();
+			$qb = $sql->createQueryBuilder();
+
+			if($table === 'download')
+			{
+				$qb->select('t.*', 'dc.download_category_class')
+					->from($table, 't')
+					->leftJoin('download_category', 'dc',
+						$qb->expr()->compareColumns('dc.download_category_id', 't.download_category'));
+			}
+			else
+			{
+				$qb->select('t.*')->from($table, 't');
+			}
+
+			$row = $qb->where('t.' . $table . '_id', $id)->fetchRow();
+
 			if($row)
 			{
+				if($table === 'download')
+				{
+					self::refuse_hidden_download($row);
+				}
+				elseif($row['upload_active'] == 0)
+				{
+					self::refuse_inactive_download();
+				}
+
 				extract($row);
 				$image = ($table == "upload" ? $row['upload_ss'] : $row['download_image']);
 			}
@@ -464,6 +484,48 @@ class download_request
 				return;
 			}
 		}
+	}
+
+
+	/**
+	 * Apply the gates the file branch applies, to a request for the same row's
+	 * screenshot.
+	 *
+	 * A screenshot is served out of the download row, so it answers to the row's
+	 * userclass and to its active state, exactly as the file does.
+	 *
+	 * @param array $row download row joined to its category
+	 * @return void
+	 */
+	private static function refuse_hidden_download($row)
+	{
+		if(!check_class(varset($row['download_category_class'], 0)) || !check_class($row['download_class']))
+		{
+			e107::redirect(e107::url('download', 'index', null, array('query' => array('action' => 'error', 'id' => 1))));
+			exit();
+		}
+
+		if($row['download_active'] == 0)
+		{
+			self::refuse_inactive_download();
+		}
+	}
+
+
+	/**
+	 * Answer a request for a download that has been withdrawn.
+	 *
+	 * @return void
+	 */
+	private static function refuse_inactive_download()
+	{
+		require_once(HEADERF);
+		$search = array("[", "]");
+		$replace = array("<a href='" . e_HTTP . "download.php'>", "</a>");
+
+		e107::getRender()->tablerender(LAN_ERROR, "<div class='alert alert-warning' style='text-align:center'>" . str_replace($search, $replace, LAN_dl_78) . '</div>');
+		require_once(FOOTERF);
+		exit();
 	}
 
 
