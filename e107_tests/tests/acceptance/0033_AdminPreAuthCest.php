@@ -379,6 +379,15 @@ class AdminPreAuthCest
 	 * dispatcher's pre-auth window, then ask thumb.php for a thumbnail so the
 	 * command actually runs.
 	 *
+	 * Package P2 took the trigger half away. e107_images/thumb.php no longer
+	 * requires resize_handler.php: it translates the 0.8 grammar into an
+	 * e_thumbnail request, so no unauthenticated route reaches the exec() that
+	 * im_path is interpolated into, and the canary assertion below can no
+	 * longer fire whatever the preferences say. What still carries this test is
+	 * the pair of preference assertions after it, which are about the write
+	 * gate rather than about the shell. The escapeshellarg() sink itself is
+	 * covered directly by resize_handlerTest.
+	 *
 	 * The canary is the headline. The preferences are read back as well so that
 	 * a failure says which half fired: a refused write and an absent canary is a
 	 * pass, a landed write and an absent canary means the command did not fire
@@ -640,14 +649,18 @@ class AdminPreAuthCest
 	/**
 	 * The read side of the same preference pair, end to end.
 	 *
-	 * resize_handler.php:161 is where im_path is interpolated, and it is the
-	 * line a fix will touch. A site that runs on ImageMagick has to go on
-	 * getting a thumbnail out of e107_images/thumb.php afterwards, so this asks
-	 * for one and checks the bytes that come back are a JPEG.
+	 * This asked resize_image()'s ImageMagick branch for a thumbnail until
+	 * package P2 reduced e107_images/thumb.php to a shim over e_thumbnail. The
+	 * endpoint no longer reads resize_method or im_path at all, so what is left
+	 * here is the compatibility statement: a site that has ImageMagick selected
+	 * must still get an image out of the legacy endpoint. The ImageMagick
+	 * branch itself is covered by resize_handlerTest::
+	 * testImageMagickBranchStillWorksWithADirectoryPrefixImPath() and its empty
+	 * im_path twin, which run the branch and read the file it writes.
 	 *
 	 * The preferences are set through the application rather than through the
-	 * route the tests above attack, so this stays a statement about
-	 * resize_image() and not about who is allowed to write a preference.
+	 * route the tests above attack, so this stays a statement about the
+	 * thumbnailer and not about who is allowed to write a preference.
 	 */
 	public function theThumbnailerStillRendersThroughImageMagick(AcceptanceTester $I)
 	{
@@ -661,8 +674,8 @@ class AdminPreAuthCest
 		$body = $I->grabPageSource();
 
 		$I->assertSame("\xFF\xD8\xFF", substr($body, 0, 3),
-			'e107_images/thumb.php served no JPEG through the ImageMagick branch. First 200 bytes: '
-			.var_export(substr($body, 0, 200), true));
+			'e107_images/thumb.php served no JPEG to a site with resize_method set to ImageMagick. '
+			.'First 200 bytes: '.var_export(substr($body, 0, 200), true));
 	}
 
 	/**

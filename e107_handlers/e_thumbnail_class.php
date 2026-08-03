@@ -17,6 +17,23 @@ use Intervention\Image\ImageManagerStatic as Image;
  */
 class e_thumbnail
 {
+	/**
+	 * Largest thumbnail this class will produce, in either direction. A request
+	 * for more is clamped rather than refused, because the caller is usually a
+	 * stored URL and a page of broken images is a worse answer than a bounded
+	 * one.
+	 */
+	const MAX_DIMENSION = 4000;
+
+	/**
+	 * Encodings the caller may ask for through type=. The value reaches
+	 * e_parse::thumbCacheFile() and becomes part of a filename on disk, so an
+	 * unlisted one is dropped rather than passed on.
+	 *
+	 * @var array
+	 */
+	protected static $_types = array('gif', 'jpg', 'jpeg', 'png', 'webp');
+
 	private $_debug = false;
 
 	private $_cache = true;
@@ -36,6 +53,15 @@ class e_thumbnail
 	 * @var string source path modified/sanitized
 	 */
 	protected $_src_path = null;
+
+	/**
+	 * The source path as the request spelled it, before realpath() resolved it.
+	 * The cache filename is derived from this rather than from _src_path so it
+	 * matches the one e_parse::thumbUrl() computes from the URL.
+	 *
+	 * @var string
+	 */
+	protected $_src_cache = null;
 
 
 	/** Stores watermark prefs
@@ -63,12 +89,21 @@ class e_thumbnail
 
 	/**
 	 * Initialize the class with e107 core prefs.
-	 * @param array $pref
+	 *
+	 * @param array      $pref
+	 * @param array|null $request keys: src, w, h, aw, ah, c(rop), type. Null reads the query string.
 	 * @return null
 	 */
-	public function init($pref)
+	public function init($pref, $request = null)
 	{
-		$this->parseRequest();
+		if($request === null)
+		{
+			$this->parseRequest();
+		}
+		else
+		{
+			$this->setRequest($request);
+		}
 
 		if(!empty($this->_request['noinit']))
 		{
@@ -91,7 +126,7 @@ class e_thumbnail
 
 		$this->_upsize = ((isset($this->_request['w']) && $this->_request['w'] > 110) || (isset($this->_request['aw']) && ($this->_request['aw'] > 110))); // don't resizeUp the icon images.
 
-		$this->_forceWebP = empty($this->_request['type']) && !empty($pref['thumb_to_webp']) && (strpos( $_SERVER['HTTP_ACCEPT'], 'image/webp' ) !== false) ? true : false;
+		$this->_forceWebP = empty($this->_request['type']) && !empty($pref['thumb_to_webp']) && (strpos( varset($_SERVER['HTTP_ACCEPT'], ''), 'image/webp' ) !== false) ? true : false;
 	//	var_dump($this);
 	//	exit;
 		return null;
@@ -133,7 +168,7 @@ class e_thumbnail
 
 		$e_QUERY = !empty($_SERVER['argv'][1]) ? $_SERVER['argv'][1] : e_QUERY;
 
-		if(isset($_GET['id'])) // very-basic url-tampering prevention and path cloaking
+		if(isset($_GET['id'])) // path cloaking
 		{
 			$e_QUERY = base64_decode($_GET['id']);
 		}
@@ -142,14 +177,7 @@ class e_thumbnail
 
 		parse_str(str_replace('&amp;', '&', $e_QUERY), $this->_request);
 
-		if(isset($this->_request['w']))
-		{
-			$this->_request['w'] = (int) $this->_request['w'];
-		}
-		if(isset($this->_request['h']))
-		{
-			$this->_request['h'] = (int) $this->_request['h'];
-		}
+		$this->sanitizeRequest();
 
 		return $this;
 	}
@@ -161,6 +189,43 @@ class e_thumbnail
 	public function setRequest($array)
 	{
 		$this->_request = (array) $array;
+
+		$this->sanitizeRequest();
+	}
+
+	/**
+	 * Bound the dimensions and the encoding, whatever the request asked for.
+	 *
+	 * w, h, aw and ah reach GD from an unauthenticated caller, so an unbounded
+	 * value is an allocation of that caller's choosing.
+	 *
+	 * @return void
+	 */
+	private function sanitizeRequest()
+	{
+		$dimensions = array('w', 'h', 'aw', 'ah');
+
+		foreach($dimensions as $key)
+		{
+			if(isset($this->_request[$key]))
+			{
+				$this->_request[$key] = max(0, min((int) $this->_request[$key], self::MAX_DIMENSION));
+			}
+		}
+
+		if(isset($this->_request['type']))
+		{
+			$type = strtolower((string) $this->_request['type']);
+
+			if(in_array($type, self::$_types, true))
+			{
+				$this->_request['type'] = $type;
+			}
+			else
+			{
+				unset($this->_request['type']);
+			}
+		}
 	}
 
 	/**
@@ -198,23 +263,31 @@ class e_thumbnail
 		// convert absolute and full url to SC URL
 		$this->_src = $tp->createConstants($this->_request['src'], 'mix');
 
-		if(preg_match('#^(https?|ftps?|file)://#i', $this->_request['src']))
+		if(preg_match('#^[a-z][a-z0-9+.-]*://#i', $this->_request['src']))
 		{
 			return false;
 		}
 
 		if(!is_writable(e_CACHE_IMAGE))
 		{
-			echo 'Cache folder not writeable! ';
+			error_log('e_thumbnail: cache folder not writeable: '.e_CACHE_IMAGE);
 			return false;
 		}
 
 		// convert to relative server path
-		$path = $tp->replaceConstants(str_replace('..', '', $this->_src)); //should be safe enough
+		$path = $tp->replaceConstants(str_replace('..', '', $this->_src));
 
-		if(is_file($path) && is_readable($path))
+		$resolved = $this->containedPath($path);
+
+		if($resolved === false)
 		{
-			$this->_src_path = $path;
+			return false;
+		}
+
+		if($resolved !== '' && is_file($resolved) && is_readable($resolved))
+		{
+			$this->_src_path = $resolved;
+			$this->_src_cache = $path;
 			return true;
 		}
 
@@ -229,14 +302,138 @@ class e_thumbnail
 	}
 
 	/**
+	 * The directories this endpoint will read from.
+	 *
+	 * Deliberately narrower than e_file::getSendRoots(), which is the set the
+	 * download handler serves from and which includes e_SYSTEM.
+	 *
+	 * @return array
+	 */
+	protected function thumbRoots()
+	{
+		return array(
+			e_MEDIA,
+			e_AVATAR,
+			e_IMAGE,
+			e_THEME,
+			e_PLUGIN,
+			e_WEB,
+			// Where a v1.x site kept the images that its stored [img] bbcode and
+			// its download entries still point at. Named one subdirectory at a
+			// time: e_FILE itself also holds e107_files/downloads/, which is the
+			// download plugin's userclass-gated storage on an old install.
+			e_FILE.'public/',
+			e_FILE.'downloadimages/',
+			e_FILE.'downloadthumbs/',
+		);
+	}
+
+	/**
+	 * Subtrees inside those roots that hold per-recipient files.
+	 *
+	 * pm_class::send_file() releases a private message attachment only to a
+	 * party to the message. A thumbnailer has no session to ask that question
+	 * of, so it does not serve them at all.
+	 *
+	 * Both of the directories send_file() reads from, not just the current one:
+	 * an install upgraded from a release that stored attachments beside the
+	 * plugin still holds them there, and pm_class deletes from that path to
+	 * this day.
+	 *
+	 * @see pm_class::send_file()
+	 * @return array
+	 */
+	protected function privateRoots()
+	{
+		return array(e_MEDIA.'plugins/pm/', e_PLUGIN.'pm/attachments/');
+	}
+
+	/**
+	 * @param string $path canonical path, of a file or of a directory
+	 * @return bool
+	 */
+	private function isPrivate($path)
+	{
+		$roots = array();
+
+		foreach($this->privateRoots() as $root)
+		{
+			if(is_dir($root))
+			{
+				$roots[] = $root;
+			}
+		}
+
+		if(empty($roots))
+		{
+			return false;
+		}
+
+		$file = e107::getFile();
+
+		return $file->resolveSendPath($path, $roots) !== false
+			|| $file->resolveSendRoot($path, $roots) !== false;
+	}
+
+	/**
+	 * Canonicalise $path and decide what may be done with it.
+	 *
+	 * Returns the canonical path when a permitted root holds the file, '' when
+	 * the file is absent from a directory a permitted root holds, and false
+	 * otherwise. The empty string is the placeholder: an image that has been
+	 * deleted is not an attack, and refusing it would break every page that
+	 * still links to one.
+	 *
+	 * @param string $path path with {e_XXX} constants already expanded
+	 * @return string|false
+	 */
+	private function containedPath($path)
+	{
+		$file = e107::getFile();
+		$roots = $this->thumbRoots();
+
+		$resolved = $file->resolveSendPath($path, $roots);
+
+		if($resolved !== false)
+		{
+			return $this->isPrivate($resolved) ? false : $resolved;
+		}
+
+		$dir = $path;
+
+		for($depth = 0; $depth < 64; $depth++)
+		{
+			$parent = dirname($dir);
+
+			if($parent === $dir)
+			{
+				break;
+			}
+
+			$dir = $parent;
+
+			if(!is_dir($dir))
+			{
+				continue;
+			}
+
+			$resolved = $file->resolveSendRoot($dir, $roots);
+
+			return ($resolved === false || $this->isPrivate($resolved)) ? false : '';
+		}
+
+		return false;
+	}
+
+	/**
 	 * @return $this|false|string|void
 	 */
 	public function sendImage()
 	{
 		if($this->_placeholder == true)
 		{
-			$width = ($this->_request['aw']) ? $this->_request['aw'] : $this->_request['w'];
-			$height = ($this->_request['ah']) ? $this->_request['ah'] : $this->_request['h'];
+			$width = vartrue($this->_request['aw']) ? $this->_request['aw'] : varset($this->_request['w'], 0);
+			$height = vartrue($this->_request['ah']) ? $this->_request['ah'] : varset($this->_request['h'], 0);
 
 			$parm = array('size' => $width."x".$height);
 
@@ -253,7 +450,7 @@ class e_thumbnail
 		$thumbnfo = $this->getImageInfo();
 		$options = $this->getRequestOptions();
 
-		$fname = e107::getParser()->thumbCacheFile($this->_src_path, $options);
+		$fname = e107::getParser()->thumbCacheFile($this->_src_cache, $options);
 		$cache_filename = e_CACHE_IMAGE . $fname;
 
 		$this->sendCachedImage($cache_filename, $thumbnfo);
@@ -410,7 +607,7 @@ class e_thumbnail
 
 		if(headers_sent($filename, $linenum))
 		{
-			echo 'Headers already sent in '.$filename.' on line '.$linenum;
+			error_log('e_thumbnail: headers already sent in '.$filename.' on line '.$linenum);
 			exit;
 		}
 
@@ -438,6 +635,8 @@ class e_thumbnail
 		{
 			header('Content-Type: '.$ctype);
 		}
+
+		header('X-Content-Type-Options: nosniff');
 
 		// Expire header - 1 year
 		$time = time() + 365 * 86400;
