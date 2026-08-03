@@ -486,6 +486,36 @@ class e_admin_request
 	{
 		return implode('', array_map('ucfirst', explode('-', str_replace('_', '-', $str))));
 	}
+
+	/**
+	 * Canonical form of an action name, in which two spellings that dispatch to
+	 * the same method compare equal.
+	 *
+	 * An action reaches its method through {@see camelize()}, and PHP resolves a
+	 * method name without regard to case, so 'add', 'ADD' and 'a_d_d' all run
+	 * AddPage() and AddSubmitTrigger(). A permission or a restriction declared
+	 * for one spelling is therefore declared for all of them, and a lookup that
+	 * compares the raw query value is a lookup an attacker chooses the answer to.
+	 *
+	 * @param string $action
+	 * @return string
+	 */
+	public function canonicalizeAction($action)
+	{
+		return strtolower($this->camelize((string) $action));
+	}
+
+	/**
+	 * Canonical form of a mode name. {@see getModeName()} is what resolves the
+	 * controller, so it is what a declared mode has to be compared in.
+	 *
+	 * @param string $mode
+	 * @return string
+	 */
+	public function canonicalizeMode($mode)
+	{
+		return strtolower(str_replace('-', '_', (string) $mode));
+	}
 }
 
 /**
@@ -1197,13 +1227,17 @@ class e_admin_dispatcher
 	 */
 	public function hasModeAccess($mode)
 	{
+		$request = $this->getRequest();
+		$modes = $this->canonicalizeKeys($this->modes, array($request, 'canonicalizeMode'));
+		$mode = $request->canonicalizeMode($mode);
+
 		// mode userclass (former check_class())
-		if(isset($this->modes[$mode]['userclass']) && !e107::getUser()->checkClass($this->modes[$mode]['userclass'], false))
+		if(isset($modes[$mode]['userclass']) && !e107::getUser()->checkClass($modes[$mode]['userclass'], false))
 		{
 			return false;
 		}
 		// mode admin permission (former getperms())
-		if(isset($this->modes[$mode]['perm']) && !e107::getUser()->checkAdminPerms($this->modes[$mode]['perm']))
+		if(isset($modes[$mode]['perm']) && !e107::getUser()->checkAdminPerms($modes[$mode]['perm']))
 		{
 			return false;
 		}
@@ -1223,20 +1257,65 @@ class e_admin_dispatcher
 	 */
 	public function hasRouteAccess($route)
 	{
-		if(isset($this->access[$route]) && !e107::getUser()->checkClass($this->access[$route], false))
+		$access = $this->canonicalizeKeys($this->access, array($this, 'canonicalizeRoute'));
+		$perm = is_array($this->perm) ? $this->canonicalizeKeys($this->perm, array($this, 'canonicalizeRoute')) : $this->perm;
+		$route = $this->canonicalizeRoute($route);
+
+		if(isset($access[$route]) && !e107::getUser()->checkClass($access[$route], false))
 		{
-			e107::getMessage()->addDebug('Userclass Permissions Failed: ' .$this->access[$route]);
+			e107::getMessage()->addDebug('Userclass Permissions Failed: ' .$access[$route]);
 			return false;
 		}
 
-		if(is_array($this->perm) && isset($this->perm[$route]) && !e107::getUser()->checkAdminPerms($this->perm[$route]))
+		if(is_array($perm) && isset($perm[$route]) && !e107::getUser()->checkAdminPerms($perm[$route]))
 		{
-			e107::getMessage()->addDebug('Admin Permissions Failed.' .$this->perm[$route]);
+			e107::getMessage()->addDebug('Admin Permissions Failed.' .$perm[$route]);
 			return false;
 		}
 
 
 		return true;
+	}
+
+	/**
+	 * Canonical form of a 'mode/action' key, in which two routes that dispatch
+	 * to the same controller method compare equal.
+	 *
+	 * @param string $route
+	 * @return string
+	 */
+	public function canonicalizeRoute($route)
+	{
+		$request = $this->getRequest();
+		$parts = explode('/', (string) $route, 2);
+		$canonical = $request->canonicalizeMode($parts[0]);
+
+		if(isset($parts[1]))
+		{
+			$canonical .= '/'.$request->canonicalizeAction($parts[1]);
+		}
+
+		return $canonical;
+	}
+
+	/**
+	 * Re-key a declaration map through one of the canonical forms above, so a
+	 * lookup answers the same for every spelling the dispatcher accepts.
+	 *
+	 * @param array $map
+	 * @param callable $callback one of the canonicalize*() methods above
+	 * @return array
+	 */
+	protected function canonicalizeKeys($map, $callback)
+	{
+		$out = array();
+
+		foreach((array) $map as $key => $value)
+		{
+			$out[call_user_func($callback, $key)] = $value;
+		}
+
+		return $out;
 	}
 
 	/**
@@ -1860,19 +1939,21 @@ class e_admin_controller
 	public function checkAccess()
 	{
 		$request = $this->getRequest();
-		$currentAction = $request->getAction();
+		$currentAction = $request->canonicalizeAction($request->getAction());
+		$disallow = array_map(array($request, 'canonicalizeAction'), (array) $this->disallow);
+		$allow = array_map(array($request, 'canonicalizeAction'), (array) $this->allow);
 
 		// access based on mode setting - general controller access
-		if(!empty($this->disallow) && in_array($currentAction, $this->disallow))
+		if(!empty($disallow) && in_array($currentAction, $disallow, true))
 		{
 			$request->setAction('e403');
 			e107::getMessage()->addError(LAN_NO_PERMISSIONS)
 				->addDebug('Controller action disallowed restriction triggered.');
 			return false;
 		}
-		
+
 		// access based on $access settings - access per action
-		if(!empty($this->allow) && !in_array($currentAction, $this->allow))
+		if(!empty($allow) && !in_array($currentAction, $allow, true))
 		{
 			$request->setAction('e403');
 			e107::getMessage()->addError(LAN_NO_PERMISSIONS)
