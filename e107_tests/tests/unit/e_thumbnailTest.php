@@ -17,6 +17,14 @@
 
 		protected $thumbPath;
 
+		/** @var array media_url => the media_userclass the install shipped */
+		private $restoreRows = array();
+
+		protected function _after()
+		{
+			$this->releaseMediaRows();
+		}
+
 		protected function _before()
 		{
 			require_once(e_HANDLER."e_thumbnail_class.php");
@@ -206,6 +214,168 @@
 
 			}
 
+		}
+
+		/**
+		 * The decisions media_userclass encodes, one row per case.
+		 *
+		 * checkSrc() is the seam: it is what both entry points call and what
+		 * the permission test lives in, so the answer asserted here is the
+		 * answer the endpoints turn into 200 or 403.
+		 */
+		public function testCheckSrcAppliesMediaUserclass()
+		{
+			$cases = array(
+				// media_userclass, classes the caller holds, may read
+				array('',        array(e_UC_GUEST),  true,  'the column default is not a restriction'),
+				array('0',       array(e_UC_GUEST),  true,  'e_UC_PUBLIC admits everyone'),
+				array(' 0 ',     array(e_UC_GUEST),  true,  'a padded value is still read'),
+				array('253',     array(e_UC_GUEST),  false, 'a guest does not hold e_UC_MEMBER'),
+				array('253',     array(e_UC_MEMBER), true,  'the holder of the class reads it'),
+				array('253,254', array(e_UC_ADMIN),  true,  'any one member of the list is enough'),
+				array('253,254', array(e_UC_GUEST),  false, 'holding none of the list refuses'),
+				array('255',     array(e_UC_MAINADMIN, e_UC_ADMIN, e_UC_MEMBER), false, 'e_UC_NOBODY refuses even a main admin'),
+				array('abc',     array(e_UC_MEMBER), false, 'a value naming no class admits nobody'),
+				array('253,abc', array(e_UC_MEMBER), true,  'an unreadable entry does not cost the holder the item'),
+				array('-253',    array(e_UC_MEMBER), false, 'an inverted class is refused, not resolved'),
+			);
+
+			foreach($cases as $case)
+			{
+				list($userclass, $held, $expected, $why) = $case;
+
+				$this->restrictMediaRow('{e_IMAGE}logo.png', $userclass);
+
+				$thm = $this->thumbnailFor($held, 'e_IMAGE/logo.png');
+				$actual = $thm->checkSrc();
+
+				$this->releaseMediaRows();
+
+				self::assertSame($expected, $actual,
+					"media_userclass '".$userclass."' against class list '".implode(',', $held)."': ".$why);
+			}
+		}
+
+		/**
+		 * media_url is not confined to {e_MEDIA*}. A theme install, a plugin
+		 * install and the 1.x upgrade routines all write rows outside it, and
+		 * every directory they write about is a directory this endpoint serves
+		 * from, so the key has to be derived for all of them.
+		 *
+		 * Two of these are rows a stock install already holds, put there by the
+		 * plugin and theme installers, and the case restricts them the way the
+		 * media manager's inline editor does. The keys are spelled out rather
+		 * than computed, because the point of the case is that the thumbnailer
+		 * reads back exactly what e_media::import() wrote.
+		 */
+		public function testCheckSrcAppliesMediaUserclassOutsideMediaRoot()
+		{
+			$cases = array(
+				'{e_IMAGE}logo.png'                      => 'e_IMAGE/logo.png',
+				'{e_PLUGIN}gallery/images/butterfly.jpg' => 'e_PLUGIN/gallery/images/butterfly.jpg',
+				'{e_THEME}bootstrap5/images/lumen.png'   => 'e_THEME/bootstrap5/images/lumen.png',
+			);
+
+			foreach($cases as $key => $src)
+			{
+				$this->restrictMediaRow($key, '253');
+
+				$refused = $this->thumbnailFor(array(e_UC_GUEST), $src)->checkSrc();
+				$served = $this->thumbnailFor(array(e_UC_MEMBER), $src)->checkSrc();
+
+				$this->releaseMediaRows();
+
+				self::assertFalse($refused, "A guest was given ".$key.", which is restricted to e_UC_MEMBER.");
+				self::assertTrue($served, "The holder of the class was refused ".$key.".");
+			}
+		}
+
+		/**
+		 * An e_thumbnail whose caller identity is supplied rather than looked
+		 * up. The class resolves it from USERCLASS_LIST or from a session, and
+		 * a unit run has the first of those and no way to change it, so the
+		 * seam is stubbed. The shipped class deliberately has no public setter
+		 * for it: that would let any caller declare itself into a class.
+		 *
+		 * @param array  $held class ids the caller holds
+		 * @param string $src  request source, in e107 shortcode path form
+		 * @return e_thumbnail
+		 */
+		private function thumbnailFor(array $held, $src)
+		{
+			$thm = $this->make('e_thumbnail', array(
+				'userClasses' => function() use ($held) { return $held; },
+			));
+
+			$thm->setRequest(array('src' => $src));
+
+			return $thm;
+		}
+
+		/**
+		 * Put $url behind $class, whichever way the install got there: a plugin
+		 * or theme install has already written a row for its own images, and
+		 * media_url is unique, so an insert would be rejected and the case
+		 * would then be about the shipped row instead of the intended one.
+		 *
+		 * @param string $url   media_url, as createConstants() spells it
+		 * @param string $class media_userclass
+		 * @return void
+		 */
+		private function restrictMediaRow($url, $class)
+		{
+			$sql = e107::getDb();
+
+			$row = false;
+
+			if($sql->select('core_media', 'media_userclass', "media_url='".$sql->escape($url)."' LIMIT 1"))
+			{
+				$row = $sql->fetch();
+			}
+
+			if(empty($row))
+			{
+				$sql->insert('core_media', array('data' => array(
+					'media_type'        => 'image/png',
+					'media_name'        => basename($url),
+					'media_caption'     => 'p16unit',
+					'media_description' => '',
+					'media_category'    => '_common_image',
+					'media_datestamp'   => time(),
+					'media_author'      => 1,
+					'media_url'         => $url,
+					'media_size'        => 0,
+					'media_dimensions'  => '',
+					'media_userclass'   => $class,
+					'media_usedby'      => '',
+					'media_tags'        => '',
+				)));
+
+				return;
+			}
+
+			$this->restoreRows[$url] = $row['media_userclass'];
+
+			$sql->update('core_media', "media_userclass='".$sql->escape($class)
+				."' WHERE media_url='".$sql->escape($url)."'");
+		}
+
+		/**
+		 * @return void
+		 */
+		private function releaseMediaRows()
+		{
+			$sql = e107::getDb();
+
+			foreach($this->restoreRows as $url => $class)
+			{
+				$sql->update('core_media', "media_userclass='".$sql->escape($class)
+					."' WHERE media_url='".$sql->escape($url)."'");
+			}
+
+			$this->restoreRows = array();
+
+			$sql->delete('core_media', "media_caption='p16unit'");
 		}
 
 		public function testPlaceholderImage()
