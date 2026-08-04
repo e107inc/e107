@@ -7,7 +7,11 @@ class pageHelper
 	public static function load()
 	{
 
-		$books = e107::getDb('pageHelper')->retrieve("SELECT chapter_id,chapter_sef,chapter_name,chapter_parent FROM #page_chapters ORDER BY chapter_id ASC", true);
+		$books = e107::getDb('pageHelper')->createQueryBuilder()
+			->select('chapter_id', 'chapter_sef', 'chapter_name', 'chapter_parent')
+			->from('page_chapters')
+			->orderBy('chapter_id', 'ASC')
+			->fetchAll();
 
 		$chapter = array();
 		foreach($books as $row)

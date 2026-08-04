@@ -1,10 +1,6 @@
 <?php
 
 // Generated e107 Plugin Admin Area 
-if(!empty($_POST) && !isset($_POST['e-token']))
-{
-	$_POST['e-token'] = '';
-}
 require_once(__DIR__.'/../../class2.php');
 if (!getperms('P'))
 {
@@ -439,7 +435,6 @@ class social_ui extends e_admin_ui
 			
 				</div>";
 
-			$ret .= $frm->token();
 			$ret .= $frm->close();
 
 			return $ret;
@@ -461,7 +456,6 @@ class social_ui extends e_admin_ui
 			$text .= $this->generateSocialLoginForm($var);
 
 			$text .= "<div class='buttons-bar center'>".$frm->button('save_social_logins',1,'submit',LAN_ADD)."</div>";
-			$text .= $frm->token();
 			$text .= $frm->close();
 
 			return $text;
@@ -558,7 +552,6 @@ class social_ui extends e_admin_ui
 
 				</div>";
 
-			$ret .= $frm->token();
 			$ret .= $frm->close();
 
 			return $ret;

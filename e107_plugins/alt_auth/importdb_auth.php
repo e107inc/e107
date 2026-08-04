@@ -75,7 +75,14 @@ class auth_login extends alt_auth_base
 
 		// See if the user's in the E107 database - otherwise they can go away
 		global $sql, $tp;
-		if (!$sql->select('user', 'user_loginname, user_password', "user_loginname = '".$tp -> toDB($uname)."'"))
+		// Bound execute()+fetch() (not the builder's fetchRow()) preserves the two
+		// distinct guards below: a falsy result here means no user / query error
+		// (AUTH_NOUSER), while a failed fetch() below means a DB read error
+		// (AUTH_NOCONNECT). fetchRow() would conflate those two return codes.
+		if (!$sql->execute(
+			"SELECT user_loginname, user_password FROM `#user` WHERE user_loginname = :user_loginname",
+			array('user_loginname' => $tp->toDB($uname))
+		))
 		{	// Invalid user
 			$this->makeErrorText('User not found');
 			return AUTH_NOUSER;

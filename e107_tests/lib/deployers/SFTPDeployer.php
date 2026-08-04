@@ -122,6 +122,10 @@ class SFTPDeployer extends Deployer
 		self::println("Wrote file \"$relative_path\" to deployed test location");
 	}
 
+	// Deliberately no removeAppPaths(): the only caller sweeps the tree the
+	// developer works in, and a deploying deployer never touches that tree,
+	// so it is skipped before it can reach here. The base class no-ops.
+
 	private function start_fs()
 	{
 		$fs_params = $this->getFsParams();

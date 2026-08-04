@@ -10,7 +10,11 @@
  
 if (!defined('e107_INIT')) { exit; }
 
-$comments_title = LAN_PLUGIN_POLL_NAME;
+// Loaded from search prefs that outlive the plugin's installation, so the
+// global LAN core auto-loads for installed plugins cannot be relied on here.
+e107::plugLan('poll', 'global');
+
+$comments_title = defset('LAN_PLUGIN_POLL_NAME', 'Poll');
 $comments_type_id = 4;
 $comments_return['poll'] = "po.poll_id, po.poll_title";
 $comments_table['poll'] = "LEFT JOIN #polls AS po ON c.comment_type=4 AND po.poll_id = c.comment_item_id";

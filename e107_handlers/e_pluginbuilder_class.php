@@ -172,14 +172,18 @@ class e_pluginbuilder
 		private function buildSQLFile($table, $file)
 		{
 
-			$table = e107::getParser()->filter($table);
+			// $table is embedded inside a backtick-quoted identifier; filter() does not
+			// strip backticks, so restrict it to identifier-safe characters instead.
+			$table = preg_replace('/[^A-Za-z0-9_]/', '', e107::getParser()->filter($table));
 
-			e107::getDb()->gen("SHOW CREATE TABLE `#".$table."`");
-			$data = e107::getDb()->fetch('num');
+			// Schema introspection through the DDL builder: getCreateTable() validates
+			// the table identifier fail-closed and returns the CREATE TABLE statement
+			// (null on error), replacing the raw SHOW CREATE TABLE execute()/fetch().
+			$createData = e107::getDb()->schema()->getCreateTable($table);
 
-			if(!empty($data[1]))
+			if(!empty($createData))
 			{
-				$createData = str_replace("`".MPREFIX, '`', $data[1]);
+				$createData = str_replace("`".MPREFIX, '`', $createData);
 				$createData .= ";";
 				if(!file_exists($file)/* && empty($this->createFiles)*/)
 				{
@@ -1888,7 +1892,7 @@ $text .= "
 		$tp = e107::getParser();
 		
 		$text = "\n
-// Generated e107 Plugin Admin Area 
+// Generated e107 Plugin Admin Area
 
 require_once('../../class2.php');
 if (!getperms('P')) 

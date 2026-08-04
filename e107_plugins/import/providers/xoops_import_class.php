@@ -65,14 +65,16 @@ class xoops_import extends base_import_class
 		{
 	  		case 'users' :
 	  			$query =  "SELECT u.*, g.groupid FROM {$this->DBPrefix}users AS u LEFT JOIN {$this->DBPrefix}groups_users_link AS g ON g.uid = u.uid GROUP BY u.uid ORDER BY u.uid";
-				$result = $this->ourDB->gen($query);
+				// Permanent cross-database boundary (T4, dynamic identifier): source is an external CMS database; {$this->DBPrefix} is a validated `db`.prefix reference (sanitised in base_import_class::database()), which the builder's resolveTableName() rejects (qualified cross-database name). The e107 builder resolves only its own prefix/db by design, so it structurally cannot express this cross-database reference. Kept on bound execute(); no unbound values.
+				$result = $this->ourDB->execute($query);
 				if ($result === false) return false;
 			
 			break;
 
 			case 'userclass' :
 				$query =  "SELECT * FROM {$this->DBPrefix}groups WHERE groupid > 2 ORDER BY groupid";
-				$result = $this->ourDB->gen($query);
+				// Permanent cross-database boundary (T4, dynamic identifier): source is an external CMS database; {$this->DBPrefix} is a validated `db`.prefix reference (sanitised in base_import_class::database()), which the builder's resolveTableName() rejects (qualified cross-database name). The e107 builder resolves only its own prefix/db by design, so it structurally cannot express this cross-database reference. Kept on bound execute(); no unbound values.
+				$result = $this->ourDB->execute($query);
 				if ($result === false) return false;
 			break;
 	/*

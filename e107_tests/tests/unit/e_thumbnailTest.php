@@ -208,6 +208,25 @@
 
 		}
 
+		public function testPlaceholderImage()
+		{
+			$svg = $this->thm->placeholderImage(800, 350);
+			self::assertStringStartsWith('<svg', $svg);
+			self::assertStringContainsString('width="800"', $svg);
+			self::assertStringContainsString('height="350"', $svg);
+			self::assertStringContainsString('>800x350<', $svg);
+			self::assertStringNotContainsString('placehold', $svg); // generated locally, no external service
+
+			$svg = $this->thm->placeholderImage('', null);
+			self::assertStringContainsString('width="100"', $svg);
+			self::assertStringContainsString('height="100"', $svg);
+
+			$svg = $this->thm->placeholderImage('"><script>alert(1)</script>', '9999999');
+			self::assertStringNotContainsString('script', $svg);
+			self::assertStringContainsString('width="100"', $svg);
+			self::assertStringContainsString('height="4000"', $svg);
+		}
+
 	}
 
 /**

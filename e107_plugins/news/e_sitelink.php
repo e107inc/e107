@@ -64,22 +64,22 @@ class news_sitelink // include plugin-folder in the name.
 	{
 		$sql = e107::getDb();
 		$sublinks = array();
-		
+
 //		$nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
-		$query = "SELECT * FROM #news_category ";
-	//	$query .= "WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") ";
-		$query .= "	ORDER BY category_order ASC";
-		
+
 		if($type == null)
 		{
-			$type = 'short';	
+			$type = 'short';
 		}
-		
+
 		$urlPath = 'news/list/'.$type;
-		
-		if($sql->gen($query))
-		{		
-			while($row = $sql->fetch())
+
+		$rows = $sql->createQueryBuilder()->select('*')->from('news_category')
+			->orderBy('category_order', 'ASC')->fetchAll();
+
+		if($rows)
+		{
+			foreach($rows as $row)
 			{
 
 				$row['id'] = $row['category_id'];
@@ -117,14 +117,20 @@ class news_sitelink // include plugin-folder in the name.
 	{
 		$sql = e107::getDb();
 		$sublinks = array();
-		
-		$nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
-		$query = "SELECT * FROM #news WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") ORDER BY news_datestamp DESC LIMIT 10";
 
+		$nobody_regexp = "(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)";
 
-		if($sql->gen($query))
-		{		
-			while($row = $sql->fetch())
+		$qb = $sql->createQueryBuilder();
+		$rows = $qb->select('*')->from('news')
+			->where($qb->expr()->regexp('news_class', e_CLASS_REGEXP))
+			->whereNot(function($q) use ($nobody_regexp) {
+				$q->where($q->expr()->regexp('news_class', $nobody_regexp));
+			})
+			->orderBy('news_datestamp', 'DESC')->setMaxResults(10)->fetchAll();
+
+		if($rows)
+		{
+			foreach($rows as $row)
 			{
 				$sublinks[] = array(
 					'link_name'			=> $row['news_title'],

@@ -132,15 +132,15 @@ class e_upgrade
 	{
 		$pref = e107::getPref();
 		$sql = e107::getDB();
-        if($sql ->gen("SELECT * FROM #plugin WHERE plugin_installflag = 1 AND plugin_releaseUrl !=''"))
+        $rows = $sql->createQueryBuilder()->select('*')->from('plugin')
+			->where('plugin_installflag', 1)
+			->where('plugin_releaseUrl', '!=', '')
+			->fetchAll();
+		foreach($rows as $row)
 		{
-	        while($row = $sql->fetch())
-	        {
-				$options = array('curFolder' => $row['plugin_path'], 'curVersion' => $row['plugin_version'], 'releaseUrl' => $row['plugin_releaseUrl']);
-				$this->setOptions($options);
-				$this->releaseCheck('plugin',FALSE);
-			}
-
+			$options = array('curFolder' => $row['plugin_path'], 'curVersion' => $row['plugin_version'], 'releaseUrl' => $row['plugin_releaseUrl']);
+			$this->setOptions($options);
+			$this->releaseCheck('plugin',FALSE);
 		}
  	}
 

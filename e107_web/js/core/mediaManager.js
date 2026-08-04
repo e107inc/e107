@@ -892,6 +892,11 @@ console.log('Bbcode: '+bbcode);
 			max_file_size: $uploader.attr("data-max-size"),
 			chunk_size: "1mb",
 			unique_names: false,
+			// Plupload drives its own XMLHttpRequest, so the $.ajaxPrefilter in
+			// all.jquery.js never sees this upload and the token has to be
+			// attached by hand. upload.php boots class2.php, so without it the
+			// upload is refused.
+			multipart_params: {"e-token": e107.security.csrfToken()},
 
 			// Resize images on clientside if we can
 			// resize : {width : 320, height : 240, quality : 90},

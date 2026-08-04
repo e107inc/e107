@@ -40,14 +40,10 @@ if(e_AJAX_REQUEST) // TODO improve security
 
 	$ret = array();
 
-	$requireToken = function()
-	{
-		if (!isset($_POST['e-token']) || !e107::getSession()->checkFormToken($_POST['e-token']))
-		{
-			echo json_encode(array('msg' => 'Unauthorized access!', 'error' => true));
-			exit;
-		}
-	};
+	// No token check here. class2.php has already refused anything that could
+	// not show this request came from the site, by whichever means the operator
+	// configured, and a second demand specifically for a token would go on
+	// refusing every write in the modes that do not issue one.
 
 	// Comment Pagination
 	if(varset($_GET['mode']) == 'list' && vartrue($_GET['id']) && vartrue($_GET['type']))
@@ -73,7 +69,6 @@ if(e_AJAX_REQUEST) // TODO improve security
 
 	if(varset($_GET['mode']) == 'delete' && !empty($_POST['id']) && ADMIN)
 	{
-		$requireToken();
 		$status 		= e107::getComment()->deleteComment($_POST['id'],$_POST['table'],$_POST['itemid']);
 		$ret['msg'] 	= ($status) ? 'Ok' : COMLAN_332;
 		$ret['error'] 	= ($status) ? false : true;
@@ -83,7 +78,6 @@ if(e_AJAX_REQUEST) // TODO improve security
 
 	if(varset($_GET['mode']) == 'approve' && vartrue($_POST['itemid']) && ADMIN)
 	{
-		$requireToken();
 		$status 		= e107::getComment()->approveComment($_POST['itemid']);
 		$ret['msg'] 	= ($status) ? COMLAN_333 : COMLAN_334;
 		$ret['error'] 	= ($status) ? false : true;
@@ -104,7 +98,6 @@ if(e_AJAX_REQUEST) // TODO improve security
 	// Update Comment
 	if(e107::getPref('allowCommentEdit') && varset($_GET['mode']) == 'edit' && vartrue($_POST['comment']) && vartrue($_POST['itemid']))
 	{
-		$requireToken();
 		$error = e107::getComment()->updateComment($_POST['itemid'],$_POST['comment']);
 
 		$ret['error'] 	= ($error) ? true : false;
@@ -209,21 +202,24 @@ if (isset($_POST['commentsubmit']) || isset($_POST['editsubmit']))
 	switch ($table)
 	{
 		case 'poll' :
-			if (!$sql->select("polls", "poll_title", "`poll_id` = '{$id}' AND `poll_comment` = 1")) 
+			if (!$sql->createQueryBuilder()->select('poll_title')->from('polls')
+				->where('poll_id', $id)->where('poll_comment', 1)->fetchRow())
 			{
 				e107::redirect();
 				exit;
 			}
 			break;
 		case 'news' :
-			if (!$sql->select("news", "news_allow_comments", "`news_id` = '{$id}' AND `news_allow_comments` = 0")) 
+			if (!$sql->createQueryBuilder()->select('news_allow_comments')->from('news')
+				->where('news_id', $id)->where('news_allow_comments', 0)->fetchRow())
 			{
 				e107::redirect();
 				exit;
 			}
 			break;
 		case 'user' :
-			if (!$sql->select('user', 'user_name', '`user_id` ='.$id)) 
+			if (!$sql->createQueryBuilder()->select('user_name')->from('user')
+				->where('user_id', $id)->fetchRow())
 			{
 				e107::redirect();
 				exit;
@@ -260,15 +256,20 @@ if (isset($_POST['commentsubmit']) || isset($_POST['editsubmit']))
 
 if (isset($_POST['replysubmit']))
 {	// Reply to nested comment being posted
-	if ($table == "news" && !$sql->select("news", "news_allow_comments", "news_id='{$nid}' "))
+	$row = array();
+	if ($table == "news")
+	{
+		$row = $sql->createQueryBuilder()->select('news_allow_comments')->from('news')
+			->where('news_id', $nid)->fetchRow();
+	}
+	if ($table == "news" && !$row)
 	{
 		e107::redirect();
 		exit;
 	}
 	else
 	{
-		$row = $sql->fetch();
-		if (!$row['news_id'])
+		if (empty($row['news_id']))
 		{
 			$pid = (isset($_POST['pid']) ? $_POST['pid'] : 0);
 			$pid = intval($pid);
@@ -336,9 +337,10 @@ if ($action == "reply")
 	
 	$query = "`comment_id` = '{$id}' LIMIT 0,1";
 	
-	if ($sql->select("comments", "comment_subject", "`comment_id` = '{$id}'"))
+	$comments = $sql->createQueryBuilder()->select('comment_subject')->from('comments')
+		->where('comment_id', $id)->fetchRow();
+	if ($comments)
 	{
-		$comments = $sql->fetch();
 		$subject = $comments['comment_subject'];
 		$subject_header = $tp->toHTML($comments['comment_subject']);
 	}
@@ -348,35 +350,38 @@ if ($action == "reply")
 		switch ($table)
 		{
 			case 'news' :
-				if (!$sql->select("news", "news_title", "news_id='{$nid}' "))
-				{ 
+				$news = $sql->createQueryBuilder()->select('news_title')->from('news')
+					->where('news_id', $nid)->fetchRow();
+				if (!$news)
+				{
 					e107::redirect();
 					exit;
 				}
 				else
 				{
-					$news = $sql->fetch();
 					$subject = $news['news_title'];
 					$title = COMLAN_100;
 				}
 				break;
 			case 'poll' :
-				if (!$sql->select("polls", "poll_title", "poll_id='{$nid}' "))
+				$poll = $sql->createQueryBuilder()->select('poll_title')->from('polls')
+					->where('poll_id', $nid)->fetchRow();
+				if (!$poll)
 				{
 					e107::redirect();
 					exit;
 				}
 				else
 				{
-					$poll = $sql->fetch();
 					$subject = $poll['poll_title'];
 					$title = COMLAN_101;
 				}
 				break;
 			case 'download' :
-				if ($sql->select('download','download_name',"download_id={$nid} "))
+				$row = $sql->createQueryBuilder()->select('download_name')->from('download')
+					->where('download_id', $nid)->fetchRow();
+				if ($row)
 				{
-					$row = $sql->fetch();
 					$subject = $row['download_name'];
 					$title = COMLAN_106;
 				}
@@ -387,9 +392,10 @@ if ($action == "reply")
 				}
 				break;
 			case 'user' :
-				if ($sql->select('user','user_name',"user_id={$nid} "))
+				$row = $sql->createQueryBuilder()->select('user_name')->from('user')
+					->where('user_id', $nid)->fetchRow();
+				if ($row)
 				{
-					$row = $sql->fetch();
 					$subject = $row['user_name'];
 					$title = COMLAN_12;
 				}
@@ -420,28 +426,15 @@ elseif ($action == 'comment')
 		switch ($table)
 		{
 			case 'news' :
-				/*if(!empty($pref['trackbackEnabled']))
-				{
-					$query = "SELECT COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
+				if (!$sql->execute(
+					"SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 					LEFT JOIN #user AS u ON n.news_author = u.user_id
 					LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-					LEFT JOIN #trackback AS tb ON tb.trackback_pid  = n.news_id
-					WHERE n.news_class REGEXP '".e_CLASS_REGEXP."'
-					AND n.news_id={$id}
-					AND n.news_allow_comments=0
-					GROUP by n.news_id";
-				}
-				else
-				{*/
-					$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
-					LEFT JOIN #user AS u ON n.news_author = u.user_id
-					LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-					WHERE n.news_class REGEXP '".e_CLASS_REGEXP."'
-					AND n.news_id={$id}
-					AND n.news_allow_comments=0";
-			//	}
-
-				if (!$sql->gen($query))
+					WHERE n.news_class REGEXP :news_class
+					AND n.news_id = :news_id
+					AND n.news_allow_comments = 0",
+					array('news_class' => e_CLASS_REGEXP, 'news_id' => (int) $id)
+				))
 				{
 					e107::redirect();
 					exit;
@@ -460,14 +453,15 @@ elseif ($action == 'comment')
 				}
 				break;
 			case 'poll' :
-				if (!$sql->select("polls", "*", "poll_id='{$id}'"))
+				$row = $sql->createQueryBuilder()->select('*')->from('polls')
+					->where('poll_id', $id)->fetchRow();
+				if (!$row)
 				{
 					e107::redirect();
 					exit;
 				}
 				else
 				{
-					$row = $sql->fetch();
 					$comments_poll = $row['poll_comment'];
 					$subject = $row['poll_title'];
 					define("e_PAGETITLE", $subject.' - '.COMLAN_101." / ".LAN_COMMENTS);
@@ -483,9 +477,10 @@ elseif ($action == 'comment')
 				}
 				break;
 			case 'download' :
-				if ($sql->select('download','download_name',"download_id={$id} "))
+				$row = $sql->createQueryBuilder()->select('download_name')->from('download')
+					->where('download_id', $id)->fetchRow();
+				if ($row)
 				{
-					$row = $sql->fetch();
 					$subject = $row['download_name'];
 					$title = COMLAN_106;
 					$field = $id;
@@ -498,9 +493,10 @@ elseif ($action == 'comment')
 				}
 				break;
 			case 'user' :
-				if ($sql->select('user','user_name',"user_id={$id} "))
+				$row = $sql->createQueryBuilder()->select('user_name')->from('user')
+					->where('user_id', $id)->fetchRow();
+				if ($row)
 				{
-					$row = $sql->fetch();
 					$subject = $row['user_name'];
 					//$title = 'Edit comment about user';
 					$field = $id;
@@ -516,9 +512,11 @@ elseif ($action == 'comment')
 				$e_comment = $cobj->get_e_comment();
 				if ($table == $e_comment[$table]['eplug_comment_ids'])
 				{
-					if ($sql->select($e_comment[$table]['db_table'],$e_comment[$table]['db_title'],$e_comment[$table]['db_id']."={$id} "))
+					$row = $sql->createQueryBuilder()
+						->select($e_comment[$table]['db_title'])->from($e_comment[$table]['db_table'])
+						->where($e_comment[$table]['db_id'], $id)->fetchRow();
+					if ($row)
 					{
-						$row = $sql->fetch();
 						$subject = $row[$e_comment[$table]['db_title']];
 						$title = $e_comment[$table]['plugin_name'];
 						$field = $id;
@@ -563,57 +561,6 @@ if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled'] && $table == 'n
 $field = ($field ? $field : ($id ? $id : ""));			// ID of associated source item
 $width = (isset($width) && $width ? $width : "");
 $cobj->compose_comment($table, $action, $field, $width, $subject, $rate=FALSE);
-/*
-if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled'] && $table == 'news')
-{
-	if($sql->select("trackback", "*", "trackback_pid={$id}"))
-	{
-		$tbArray = $sql -> db_getList();
-
-		if (file_exists(THEME."trackback_template.php")) 
-		{
-			require_once(THEME."trackback_template.php");
-		}
-		else 
-		{
-			require_once(e_CORE."templates/trackback_template.php");
-		}
-
-		$text = "";
-
-		foreach($tbArray as $row)
-		{
-			$scArray = array(
-				'TITLE'     => $row['trackback_title'],
-				'EXCERPT'   => $row['trackback_excerpt'],
-				'BLOGNAME'  => "<a href='{$row['trackback_url']}' rel='external'>{$row['trackback_blogname']}</a>"
-			);
-			
-			$text .= $tp->parseTemplate($TRACKBACK, false, $scArray);
-		}
-
-		if($TRACKBACK_RENDER_METHOD)
-		{
-			$ns->tablerender("<a name='track'></a>".COMLAN_315, $text);
-		}
-		else
-		{
-			echo "<a name='track'></a>".$text;
-		}
-	}
-	else
-	{
-		echo "<a name='track'></a>".COMLAN_316;
-	}
-	if (ADMIN && getperms("B")) 
-	{
-		echo "<div style='text-align:right'><a href='".e_PLUGIN_ABS."trackback/modtrackback.php?".$id."'>".COMLAN_317."</a></div><br />";
-	}
-}*/
-
-
-//if (!strstr(e_QUERY, "poll"))
-// If output buffering started, cache the result
 if ($comment_ob_start)
 {
 	$cache = ob_get_contents();

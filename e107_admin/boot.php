@@ -42,11 +42,18 @@ if(e_AJAX_REQUEST && getperms('0') &&  varset($_GET['mode']) == 'core' && ($_GET
 
 		require_once(e_ADMIN.'update_routines.php');
 
-		e107::getSession()->set('core-update-checked',false);
-
 		$status = update_check() === true;
 
 		e107::getSession()->set('core-update-status',$status);
+
+		if(!E107_DEBUG_LEVEL)
+		{
+			// Record that the check ran, not what it answered. The dashboard used
+			// to gate on the answer, which is false on a healthy site, so the check
+			// re-ran on every single visit. Set after the check so one that died
+			// on the way is not remembered as done.
+			e107::getSession()->set('core-update-checked',true);
+		}
 
 		echo json_encode($status);
 

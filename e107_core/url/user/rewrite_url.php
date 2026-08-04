@@ -93,10 +93,16 @@ class core_user_rewrite_url extends eUrlConfig
 		$sql = e107::getDb('url');
 		$name = e107::getParser()->toDB($name);
 
-		if($sql->select('user', 'user_id', "user_name='{$name}' OR REPLACE(user_name, ' ', '-') ='{$name}' " )) // XXX - new user_sef field? Discuss.
+		$qb = $sql->createQueryBuilder();
+		$row = $qb->select('user_id')->from('user')
+			->where($qb->expr()->anyOf(
+				$qb->expr()->eq('user_name', $name),
+				"REPLACE(user_name, ' ', '-') = ".$qb->createNamedParameter($name)
+			))
+			->fetchRow(); // XXX - new user_sef field? Discuss.
+		if($row)
 		{
-			$name = $sql->fetch();
-			$request->setRequestParam('id', $name['user_id']);
+			$request->setRequestParam('id', $row['user_id']);
 		}
 	}
 }

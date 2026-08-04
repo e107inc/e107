@@ -1626,16 +1626,80 @@ class e_parse_shortcode
 
 
 	/**
-	 * @param $fname
-	 * @param string $type
+	 * The directories a site legitimately extends e107 from.
+	 *
+	 * Every writable location (media, uploads, system, the files directory) is
+	 * deliberately absent, so an upload can never become an executable batch.
+	 *
 	 * @return array
+	 */
+	protected function scBatchRoots()
+	{
+		return array(e_PLUGIN, e_THEME, e_CORE);
+	}
+
+
+	/**
+	 * Canonicalise a legacy batch path and confirm an extensibility root holds it.
+	 *
+	 * @param string $fname
+	 * @return string|false canonical path, or false when the path is refused
+	 */
+	protected function resolveScBatchPath($fname)
+	{
+		$path = e107::getFile()->resolveSendPath($fname, $this->scBatchRoots());
+
+		if($path === false && E107_DEBUG_LEVEL > 0)
+		{
+			$shown = is_string($fname) ? $fname : gettype($fname);
+			e107::getLog()->addDebug('parse_scbatch(): refused ' . $shown . ' because no extensibility root contains it.');
+		}
+
+		return $path;
+	}
+
+
+	/**
+	 * Read a legacy `SC_BEGIN` / `SC_END` batch shortcode file.
+	 *
+	 * @deprecated 2.0.0 Avoid this method in new code, and migrate away from it
+	 *             when you next touch a batch file. Declare an {@see e_shortcode}
+	 *             subclass in `<name>_shortcodes.php` and reach it through
+	 *             {@see e107::getScBatch()}, which needs no eval(), is visible to
+	 *             static analysis, and is OPcache-resident. Kept indefinitely for
+	 *             the legacy plugins that still depend on it.
+	 *
+	 * The bodies this returns are PHP, and they are evaluated later, when the
+	 * caller passes them to {@see e_parse::parseTemplate()}. Nothing dangerous
+	 * happens inside this method, so the eval is invisible at the call site: treat
+	 * $fname as trusted input and never derive it from a request. Callers should
+	 * pass `__FILE__`, which is what every known caller does.
+	 *
+	 * In file mode the path is confined to the directories a site extends e107
+	 * from ({@see e_parse_shortcode::scBatchRoots()}). Stream wrappers and paths
+	 * outside those roots are refused and yield an empty array.
+	 *
+	 * @param string|array $fname absolute path to the batch file, or an array of
+	 *                            already-read lines when $type is not 'file'
+	 * @param string       $type  'file' reads $fname from disk; any other value
+	 *                            treats $fname as the array of lines
+	 * @return array shortcode name => PHP body; empty when $fname is refused
 	 */
 	function parse_scbatch($fname, $type = 'file')
 	{
+		trigger_error('<b>' . __METHOD__ . ' is deprecated.</b> Declare an e_shortcode subclass and load it with e107::getScBatch() instead.', E_USER_DEPRECATED); // no LAN
+
 	//	global $e107cache, $eArrayStorage;
 		$cur_shortcodes = array();
 		if ($type == 'file')
 		{
+			$fname = $this->resolveScBatchPath($fname);
+
+			if($fname === false)
+			{
+				return $cur_shortcodes;
+			}
+
 			$batch_cachefile = 'nomd5_scbatch_'.md5($fname);
 			//			$cache_filename = $e107cache->cache_fname("nomd5_{$batchfile_md5}");
 			$sc_cache = e107::getCache()->retrieve_sys($batch_cachefile);
