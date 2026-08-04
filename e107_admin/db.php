@@ -485,21 +485,39 @@ class system_tools
 		$server 	= e107::getMySQLConfig('server'); // $_POST['server'];
 		$database 	= $_POST['db'];
 		$prefix		= $_POST['prefix'];
-			
+
+		// These values are used as raw SQL identifiers in DDL (CREATE DATABASE,
+		// GRANT, CREATE TABLE prefix) and cannot be parameter-bound. Validate them
+		// server-side against a strict grammar and reject anything else. The
+		// browser-side pattern attributes are not a security control.
+		if(!preg_match('/^[A-Za-z0-9_]+$/', (string) $database)
+			|| !preg_match('/^[A-Za-z0-9_]+$/', (string) $user)
+			|| !preg_match('/^[a-z0-9]+_$/', (string) $prefix))
+		{
+			$mes->addError(DBLAN_77);
+			return;
+		}
+
 		if($connect = $sql->connect($server,$user, $pass, true))
 		{
 			$mes->addSuccess(DBLAN_74);
-			
+
 			if(vartrue($_POST['createdb']))
 			{
-			
-				if($sql->gen("CREATE DATABASE ".$database." CHARACTER SET `utf8mb4`"))
+				// CREATE DATABASE / GRANT / FLUSH PRIVILEGES through the schema
+				// builder: DDL identifiers cannot be parameter-bound, so it
+				// validates the database, user and host fail-closed against their
+				// grammars ($database/$user were grammar-checked above; the builder
+				// re-validates) and spells the MySQL-only statements itself.
+				$schema = $sql->schema();
+
+				if($schema->createDatabase($database, 'utf8mb4'))
 				{
 					$mes->addSuccess(DBLAN_75);
-					
+
 				//	$sql->gen("CREATE USER ".$user."@'".$server."' IDENTIFIED BY '".$pass."';");
-					$sql->gen("GRANT ALL ON `".$database."`.* TO ".$user."@'".$server."';");
-					$sql->gen("FLUSH PRIVILEGES;");		
+					$schema->grant($database, $user, $server);
+					$schema->flushPrivileges();
 				}
 				else
 				{
@@ -546,7 +564,15 @@ class system_tools
 	private function multiSiteCreateTables($sql, $prefix)
 	{
 		$mes = e107::getMessage();
-		
+
+		// $prefix is injected verbatim into every CREATE TABLE statement, so it
+		// must be a strict table-prefix identifier. Fail closed otherwise.
+		if(!preg_match('/^[a-z0-9]+_$/', (string) $prefix))
+		{
+			$mes->addError(DBLAN_77);
+			return false;
+		}
+
 		$sql_data = file_get_contents(e_CORE."sql/core_sql.php");
 		$sql_data = preg_replace("#\/\*.*?\*\/#mis", '', $sql_data);		// Strip comments
 
@@ -558,12 +584,15 @@ class system_tools
 		preg_match_all("/create(.*?)(?:myisam|innodb);/si", $sql_data, $result );
 
 
-		$sql->gen('SET NAMES `utf8mb4`');
+		$sql->execute('SET NAMES `utf8mb4`');
 
 		foreach ($result[0] as $sql_table)
 		{
 			$sql_table = preg_replace("/create table\s/si", "CREATE TABLE ".$prefix, $sql_table);
 
+			// T4: CREATE TABLE DDL whose table name embeds the dynamic $prefix
+			// identifier (validated fail-closed above); table/DDL identifiers
+			// cannot be bound and the builder has no CREATE TABLE for raw schema.
 			if (!$sql->gen($sql_table))
 			{
 				$mes->addError($sql->getLastErrorText());
@@ -739,7 +768,7 @@ class system_tools
 		$sql 	= e107::getDb();
 		$tp = e107::getParser();
 		
-		$sql->gen('SHOW TABLE STATUS WHERE Name LIKE "'.$config['mySQLprefix'].'%" ');
+		$sql->execute('SHOW TABLE STATUS WHERE Name LIKE :prefix', array('prefix' => $config['mySQLprefix'].'%'));
 		
 		
 		$text = "<table class='table adminlist'>
@@ -847,13 +876,15 @@ class system_tools
 	//	}
 		
 	
+		$schemaParams = array('schema' => $dbtable, 'prefix' => $config['mySQLprefix'].'%');
+
 		$queries = array();
-		$queries[] = $this->getQueries("SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY ', column_name, ' ', REPLACE(column_type, 'char', 'binary'), ';') FROM information_schema.columns WHERE TABLE_SCHEMA = '".$dbtable."' AND TABLE_NAME LIKE '".$config['mySQLprefix']."%' AND  COLLATION_NAME != 'utf8mb4_general_ci'  and data_type LIKE '%char%';");
-		$queries[] = $this->getQueries("SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY ', column_name, ' ', REPLACE(column_type, 'text', 'blob'), ';') FROM information_schema.columns WHERE TABLE_SCHEMA = '".$dbtable."' AND TABLE_NAME LIKE '".$config['mySQLprefix']."%' AND  COLLATION_NAME != 'utf8mb4_general_ci' and data_type LIKE '%text%';");
+		$queries[] = $this->getQueries("SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY ', column_name, ' ', REPLACE(column_type, 'char', 'binary'), ';') FROM information_schema.columns WHERE TABLE_SCHEMA = :schema AND TABLE_NAME LIKE :prefix AND  COLLATION_NAME != 'utf8mb4_general_ci'  and data_type LIKE '%char%';", $schemaParams);
+		$queries[] = $this->getQueries("SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY ', column_name, ' ', REPLACE(column_type, 'text', 'blob'), ';') FROM information_schema.columns WHERE TABLE_SCHEMA = :schema AND TABLE_NAME LIKE :prefix AND  COLLATION_NAME != 'utf8mb4_general_ci' and data_type LIKE '%text%';", $schemaParams);
 
 		$queries2 = array();
-		$queries2[] = $this->getQueries("SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY ', column_name, ' ', column_type, ' CHARACTER SET utf8mb4;') FROM information_schema.columns WHERE TABLE_SCHEMA ='".$dbtable."' AND TABLE_NAME LIKE '".$config['mySQLprefix']."%'  AND COLLATION_NAME != 'utf8mb4_general_ci' and data_type LIKE '%char%';");
-		$queries2[] = $this->getQueries("SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY ', column_name, ' ', column_type, ' CHARACTER SET utf8mb4;') FROM information_schema.columns WHERE TABLE_SCHEMA = '".$dbtable."' AND TABLE_NAME LIKE '".$config['mySQLprefix']."%' AND  COLLATION_NAME != 'utf8mb4_general_ci' and data_type LIKE '%text%';");
+		$queries2[] = $this->getQueries("SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY ', column_name, ' ', column_type, ' CHARACTER SET utf8mb4;') FROM information_schema.columns WHERE TABLE_SCHEMA = :schema AND TABLE_NAME LIKE :prefix  AND COLLATION_NAME != 'utf8mb4_general_ci' and data_type LIKE '%char%';", $schemaParams);
+		$queries2[] = $this->getQueries("SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY ', column_name, ' ', column_type, ' CHARACTER SET utf8mb4;') FROM information_schema.columns WHERE TABLE_SCHEMA = :schema AND TABLE_NAME LIKE :prefix AND  COLLATION_NAME != 'utf8mb4_general_ci' and data_type LIKE '%text%';", $schemaParams);
 
 
 	//	$sql->gen("USE ".$dbtable);
@@ -864,12 +895,21 @@ class system_tools
 	//	return;
 
 	
-		// Convert Text tables to Binary. 
+		// Convert Text tables to Binary.
 		foreach($queries as $qry)
 		{
-					
+
 			foreach($qry as $q)
 			{
+				// $q is generated server-side from information_schema column/table
+				// names; reject anything that is not a plain ALTER TABLE ... MODIFY
+				// statement to prevent second-order injection via crafted identifiers.
+				if(!preg_match('/^ALTER TABLE `[A-Za-z0-9_]+` MODIFY /', $q))
+				{
+					$mes->addError($q);
+					$ERROR = TRUE;
+					continue;
+				}
 				if(!$sql->db_Query($q))
 				{
 					$mes->addError($q);
@@ -877,7 +917,7 @@ class system_tools
 				}
 				else
 				{
-					$mes->addDebug($q);	
+					$mes->addDebug($q);
 				}
 			}
 		}
@@ -887,7 +927,7 @@ class system_tools
 		// Convert Table Fields to utf8
 		$sql2 = e107::getDb('sql2');
 		
-		$sql->gen('SHOW TABLE STATUS WHERE Collation != "utf8mb4_general_ci" ');
+		$sql->execute('SHOW TABLE STATUS WHERE Collation != "utf8mb4_general_ci" ');
 		while ($row = $sql->fetch())
 		{
    			$table = $row['Name'];
@@ -898,7 +938,7 @@ class system_tools
 			}
 			
 			
-			$tab_query = "ALTER TABLE ".$table."  DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci; ";
+			$tab_query = "ALTER TABLE `".str_replace('`', '``', $table)."`  DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci; ";
 
 			//echo "TABQRT= ".$tab_query;
 
@@ -919,6 +959,13 @@ class system_tools
 		{
 			foreach($qry as $q)
 			{
+				// Same guard as above: only allow generated ALTER TABLE ... MODIFY statements.
+				if(!preg_match('/^ALTER TABLE `[A-Za-z0-9_]+` MODIFY /', $q))
+				{
+					$mes->addError($q);
+					$ERROR = TRUE;
+					continue;
+				}
 				if(!$sql->db_Query($q))
 				{
 					$mes->addError($q);
@@ -926,7 +973,7 @@ class system_tools
 				}
 				else
 				{
-					$mes->addDebug($q);	
+					$mes->addDebug($q);
 				}
 			}
 		}
@@ -952,15 +999,15 @@ class system_tools
 		echo $mes->render();
 	}
 
-	function getQueries($query)
+	function getQueries($query, $params = array())
 	{
-		
+
 		$mes = e107::getMessage();
 		$sql = e107::getDb('utf8-convert');
 
 		$qry = [];
-		
-		if($sql->gen($query))
+
+		if($sql->execute($query, $params))
 		{
 			while ($row = $sql->fetch('num'))
 			{
@@ -1042,7 +1089,8 @@ class system_tools
 		$sql = e107::getDb();
 
 		$del = array_keys($_POST['delplug']);
-		if($sql->delete("plugin", "plugin_id='".intval($del[0])."'"))
+		if($sql->createQueryBuilder()->delete('plugin')
+			->where('plugin_id', (int) $del[0])->execute())
 		{
 			$mes->add(LAN_DELETED, E_MESSAGE_SUCCESS);
 		}
@@ -1404,7 +1452,15 @@ class system_tools
 		
 		foreach($tables as $table)
 		{
-			e107::getDb()->gen("OPTIMIZE TABLE ".$table);
+			// OPTIMIZE TABLE with a dynamic table-name identifier from tables().
+			// Left as raw DDL on purpose: tables() returns LOGICAL (un-prefixed)
+			// names, and this statement consumes them un-prefixed (a pre-existing
+			// quirk), whereas SchemaBuilder::optimizeTable() resolves the prefix.
+			// Routing it through the schema builder would silently change which
+			// tables are optimised, so the behaviour-preserving choice is to keep
+			// the raw statement; the name is introspected (not user input) and the
+			// backtick is escaped, so there is no injection surface.
+			e107::getDb()->gen("OPTIMIZE TABLE `".str_replace('`', '``', $table)."`");
 		}
 
 		$mes->addSuccess(e107::getParser()->lanVars(DBLAN_11, $mySQLdefaultdb));
@@ -1430,6 +1486,24 @@ class system_tools
 
 		return $config;
 
+	}
+
+	/**
+	 * Fetch core config rows whose e107_name starts with the given LIKE prefix.
+	 * The prefix is a trusted, static caller-supplied pattern (e.g. 'plugin_'),
+	 * bound verbatim as a LIKE pattern.
+	 *
+	 * @param string $prefix LIKE pattern prefix, '%' is appended.
+	 * @return array list of rows, each with an 'e107_name' key.
+	 */
+	private function getConfigNamesByPrefix($prefix)
+	{
+		$qb = e107::getDb()->createQueryBuilder();
+
+		return $qb->select('e107_name')->from('core')
+			->where($qb->expr()->like('e107_name', $prefix.'%'))
+			->orderBy('e107_name')
+			->fetchAll();
 	}
 
 	/**
@@ -1465,8 +1539,7 @@ class system_tools
 
 	//	e107::getConfig($type)->aliases
 		$text .= '<optgroup label="'.LAN_PLUGIN.'">';
-		e107::getDb()->gen("SELECT e107_name FROM #core WHERE e107_name LIKE ('plugin_%') ORDER BY e107_name");
-		while ($row = e107::getDb()->fetch())
+		foreach($this->getConfigNamesByPrefix('plugin_') as $row)
 		{
 			$label = str_replace("plugin_","",$row['e107_name']);
 			$key = $row['e107_name'];
@@ -1476,8 +1549,7 @@ class system_tools
 		$text .= '</optgroup>';
 
 		$text .= '<optgroup label="'.LAN_THEME.'">';
-		e107::getDb()->gen("SELECT e107_name FROM #core WHERE e107_name LIKE ('theme_%') ORDER BY e107_name");
-		while ($row = e107::getDb()->fetch())
+		foreach($this->getConfigNamesByPrefix('theme_') as $row)
 		{
 			$label = str_replace("theme_","",$row['e107_name']);
 			$key = $row['e107_name'];
@@ -1861,7 +1933,7 @@ function table_list()
 
 	foreach($tables as $e107tab)
 	{
-		$count = (int) e107::getDb()->count($e107tab);
+		$count = (int) e107::getDb()->createQueryBuilder()->from($e107tab)->count();
 
 		if(!empty($count))
 		{

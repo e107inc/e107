@@ -105,13 +105,21 @@ class download_setup
 
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
-		$qry = "SELECT * FROM #download WHERE download_image !='' AND SUBSTRING(download_image, 1, 3) != '{e_' ";
 
-		if($sql->gen($qry))
+		$qb = $sql->createQueryBuilder();
+		$qb->from('download')
+			->where('download_image', '!=', '')
+			->where($qb->raw("SUBSTRING(download_image, 1, 3) != ".$qb->createNamedParameter('{e_')));
+
+		if($qb->count())
 		{
 			if($needed == TRUE){ return "Incorrect download image paths"; } // Signal that an update is required.
 
-			if($sql->update("download","download_image = CONCAT('{e_FILE}downloadimages/',download_image) WHERE download_image !='' "))
+			$qb = $sql->createQueryBuilder();
+			if($qb->update('download')
+				->setExpression('download_image', "CONCAT(".$qb->createNamedParameter('{e_FILE}downloadimages/').", download_image)")
+				->where('download_image', '!=', '')
+				->execute())
 			{
 				$mes->addSuccess("Updated Download-Image paths");
 			}
@@ -120,7 +128,11 @@ class download_setup
 				$mes->addError("Failed to update Download-Image paths");
 			}
 
-			if($sql->update("download"," download_thumb = CONCAT('{e_FILE}downloadthumbs/',download_thumb) WHERE download_thumb !='' "))
+			$qb = $sql->createQueryBuilder();
+			if($qb->update('download')
+				->setExpression('download_thumb', "CONCAT(".$qb->createNamedParameter('{e_FILE}downloadthumbs/').", download_thumb)")
+				->where('download_thumb', '!=', '')
+				->execute())
 			{
 				$mes->addSuccess("Updated Download-Thumbnail paths");
 			}
@@ -130,13 +142,21 @@ class download_setup
 			}
 		}
 
-		$qry = "SELECT * FROM #download_category WHERE download_category_icon !='' AND SUBSTRING(download_category_icon, 1, 3) != '{e_' ";
-		if($sql->gen($qry))
+		$qb = $sql->createQueryBuilder();
+		$qb->from('download_category')
+			->where('download_category_icon', '!=', '')
+			->where($qb->raw("SUBSTRING(download_category_icon, 1, 3) != ".$qb->createNamedParameter('{e_')));
+
+		if($qb->count())
 		{
 			// Signal that an update is required.
 			if($needed == TRUE){ return "Downloads-Category icon paths need updating"; } // Must have a value if an update is needed. Text used for debug purposes.
 
-			if($sql->update("download_category","download_category_icon = CONCAT('{e_IMAGE}icons/',download_category_icon) WHERE download_category_icon !='' "))
+			$qb = $sql->createQueryBuilder();
+			if($qb->update('download_category')
+				->setExpression('download_category_icon', "CONCAT(".$qb->createNamedParameter('{e_IMAGE}icons/').", download_category_icon)")
+				->where('download_category_icon', '!=', '')
+				->execute())
 			{
 				$mes->addSuccess("Updated Download-Image paths");
 			}

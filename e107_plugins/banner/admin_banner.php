@@ -413,13 +413,14 @@ class banner_form_ui extends e_admin_form_ui
 	function init()
 	{
 		$sql = e107::getDb();
-		if ($sql->select("banner"))
+		$banner_rows = $sql->createQueryBuilder()->select('*')->from('banner')->fetchAll();
+		if ($banner_rows)
 		{
 
 			$this->campaigns['_new_'] =  "(".LAN_ADD.")";
 
 
-			while ($banner_row = $sql->fetch())
+			foreach ($banner_rows as $banner_row)
 			{
 				if (strpos($banner_row['banner_campaign'], "^") !== FALSE) 
 				{

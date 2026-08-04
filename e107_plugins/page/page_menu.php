@@ -9,8 +9,14 @@ $tp = e107::getParser();
 
 $template = e107::getCoreTemplate('page','panel');
 
-//TODO Limits and cache etc. 
-if(!$data = $sql->retrieve("SELECT * FROM #page WHERE page_class IN (".USERCLASS_LIST.") AND FIND_IN_SET('panel', page_template) LIMIT 3", true))
+//TODO Limits and cache etc.
+$qb = $sql->createQueryBuilder();
+$data = $qb->select('*')->from('page')
+	->whereIn('page_class', explode(',', USERCLASS_LIST))
+	->where($qb->expr()->findInSet('page_template', 'panel'))
+	->setMaxResults(3)
+	->fetchAll();
+if(!$data)
 {
 	if(ADMIN)
 	{

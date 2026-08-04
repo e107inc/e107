@@ -273,9 +273,17 @@ class e_jshelper
 	 * @param string $data_text
 	 */
     public function sendTextResponse($data_text = '')
-    { 
+    {
     	header('Content-type: text/html; charset='.CHARSET);
-    	echo $this->addTextResponse($data_text)->buildTextResponse();
+
+    	// An AJAX reply echoes and exits, so it never reaches the buffer flush in
+    	// e_http_header::setContent() where pages get their CSRF token. Admin list
+    	// fragments carry a whole <form>, and dropping one of those into the page
+    	// replaced a tokenised form with an untokenised one: filter a list, then
+    	// use Filter or a batch action, and the write was refused. There is no
+    	// </head> in a fragment, so this adds the hidden inputs only, which is
+    	// what a fragment needs.
+    	echo e_token_injector::process($this->addTextResponse($data_text)->buildTextResponse());
 		while (ob_get_level() > 0)
 		{
 		    ob_end_flush();

@@ -45,6 +45,41 @@ abstract class Deployer
 	}
 
 	/**
+	 * Recursively remove paths (files or whole directories) from the app.
+	 * Absent paths are not an error.
+	 *
+	 * Takes a list instead of one path per call because a deploying deployer
+	 * pays a network round trip per invocation.
+	 *
+	 * A deployer without an app of its own has nothing to sweep, so unlike
+	 * unlinkAppFile() this is not an error: housekeeping must never be the
+	 * reason a suite stops.
+	 *
+	 * @param string[] $relative_paths paths relative to the app root
+	 * @return void
+	 */
+	public function removeAppPaths(array $relative_paths)
+	{
+		self::println(get_class($this)." cannot remove app paths; nothing swept");
+	}
+
+	/**
+	 * These paths reach an `rm -rf`, so containment is not optional even
+	 * though every caller so far passes a hard-coded name.
+	 *
+	 * @param string $relative_path
+	 * @return void
+	 */
+	protected static function assertPathInsideApp($relative_path)
+	{
+		if ($relative_path === '' || $relative_path[0] === '/'
+			|| preg_match('#(^|/)\.\.(/|$)#', $relative_path))
+		{
+			throw new RuntimeException("Refusing to remove \"$relative_path\": not a path inside the app root");
+		}
+	}
+
+	/**
 	 * Methods not implemented
 	 *
 	 * @param $method_name

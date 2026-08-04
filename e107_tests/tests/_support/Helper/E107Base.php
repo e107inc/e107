@@ -23,6 +23,36 @@ abstract class E107Base extends Base
         $this->preparer = PreparerFactory::create();
     }
 
+    /**
+     * Write an arbitrary file into the deployed docroot.
+     *
+     * Goes through the deployer rather than file_put_contents() so it works
+     * when the app under test is remote (CI deploys over SFTP). Parent
+     * directories are created.
+     *
+     * Lives here rather than on Acceptance because the webdriver suite writes
+     * probe files too; both suites reach the same app the same way.
+     *
+     * @param string $relative_path path relative to the app root
+     * @param string $contents
+     * @return void
+     */
+    public function writeAppFile($relative_path, $contents)
+    {
+        $this->deployer->writeAppFile($relative_path, $contents);
+    }
+
+    /**
+     * Remove a file previously written by writeAppFile().
+     *
+     * @param string $relative_path path relative to the app root
+     * @return void
+     */
+    public function deleteAppFile($relative_path)
+    {
+        $this->deployer->unlinkAppFile($relative_path);
+    }
+
     public function _beforeSuite($settings = [])
     {
         $this->acquireDeploymentLock();

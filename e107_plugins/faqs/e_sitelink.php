@@ -16,6 +16,9 @@
 */
 
 if (!defined('e107_INIT')) { exit; }
+
+e107::plugLan('faqs', 'global', true); // #5738 - global LAN not autoloaded in admin (config() below uses LAN_PLUGIN_FAQS_FUNCTIONNAME).
+
 /*if(!e107::isInstalled('gsitemap'))
 { 
 	return;
@@ -47,9 +50,13 @@ class faqs_sitelink // include plugin-folder in the name.
 		$tp = e107::getParser();
 		$sublinks = array();
 		
-		$sql->select("faqs_info","*","faq_info_id != '' ORDER BY faq_info_order");
-		
-		while($row = $sql->fetch())
+		$rows = $sql->createQueryBuilder()
+			->select('*')->from('faqs_info')
+			->where('faq_info_id', '!=', '')
+			->orderBy('faq_info_order')
+			->fetchAll();
+
+		foreach($rows as $row)
 		{
 			$sublinks[] = array(
 				'link_name'			=> $tp->toHTML($row['faq_info_title'],'','TITLE'),

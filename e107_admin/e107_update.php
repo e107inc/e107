@@ -32,6 +32,7 @@ require_once ("update_routines.php");
 new e107Update($dbupdate);
 
 e107::getSession()->set('core-update-status', false); // reset update status.
+e107::getSession()->set('core-update-checked', false); // and check again, since running the update changed the answer.
 
 require_once ("footer.php");
 

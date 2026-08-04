@@ -996,22 +996,32 @@ class search_front extends e_shortcode
 				$query_check = $tp->toDB($full_query);
 				$ip = e107::getIPHandler()->getIP();
 				
-				if ($sql->select("tmp", "tmp_ip, tmp_time, tmp_info", "tmp_info LIKE 'type_search%' AND tmp_ip='".$ip."'")) 
+				$row = $sql->createQueryBuilder()
+					->select('tmp_ip', 'tmp_time', 'tmp_info')->from('tmp')
+					->whereLike('tmp_info', 'type_search%')->where('tmp_ip', $ip)
+					->fetchRow();
+				if ($row)
 				{
-					$row = $sql->fetch();
-					if (($row['tmp_time'] > $time) && ($row['tmp_info'] != 'type_search '.$query_check)) 
+					if (($row['tmp_time'] > $time) && ($row['tmp_info'] != 'type_search '.$query_check))
 					{
 						$perform_search = false;
 						$this->message = LAN_SEARCH_17.$this->search_prefs['time_secs'].LAN_SEARCH_18;
-					} 
-					else 
-					{
-						$sql->update("tmp", "tmp_time='".time()."', tmp_info='type_search ".$query_check."' WHERE tmp_info LIKE 'type_search%' AND tmp_ip='".$ip."'");
 					}
-				} 
-				else 
+					else
+					{
+						$sql->createQueryBuilder()->update('tmp')
+							->set('tmp_time', time())->set('tmp_info', 'type_search '.$query_check)
+							->whereLike('tmp_info', 'type_search%')->where('tmp_ip', $ip)
+							->execute();
+					}
+				}
+				else
 				{
-					$sql->insert("tmp", "'".$ip."', '".time()."', 'type_search ".$query_check."'");
+					$sql->createQueryBuilder()->insert('tmp')->values(array(
+						'tmp_ip'   => $ip,
+						'tmp_time' => time(),
+						'tmp_info' => 'type_search '.$query_check,
+					))->execute();
 				}
 			}
 			

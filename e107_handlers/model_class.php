@@ -1541,21 +1541,30 @@ class e_model extends e_object
 		}
 
 		$sql = e107::getDb();
-		$qry = str_replace('{ID}', $id, $this->getParam('db_query'));
-		if($qry)
+		$dbQuery = (string) $this->getParam('db_query');
+		if($dbQuery !== '')
 		{
-			$res = $sql->gen($qry, $this->getParam('db_debug') ? true : false);
+			// Caller-built SQL template. The {ID} placeholder is always a value
+			// position (WHERE <idcol> = {ID}), so bind it rather than splice the
+			// id in: the placeholder became a persistent-injection conduit when
+			// callers forwarded an unvalidated request id (e.g. getSystemUser()).
+			$params = array();
+			if(strpos($dbQuery, '{ID}') !== false)
+			{
+				$dbQuery = str_replace('{ID}', ':modelLoadId', $dbQuery);
+				$params = array('modelLoadId' => $id);
+			}
+			$res = $sql->execute($dbQuery, $params);
 		}
 		else
 		{
-			if(!is_numeric($id)) $id = "'{$id}'";
-
-			$res = $sql->select(
-				$this->getModelTable(),
-				$this->getParam('db_fields', '*'),
-				$this->getFieldIdName().'='.$id.' '.trim($this->getParam('db_where', '')),
-				'default',
-				($this->getParam('db_debug') ? true : false)
+			// Identifiers (table/fields/id column) are developer-defined; db_where is
+			// caller-built trusted SQL. Only the id VALUE is bound.
+			$fields = $this->getParam('db_fields', '*');
+			$where = $this->getFieldIdName().' = :modelLoadId '.trim($this->getParam('db_where', ''));
+			$res = $sql->execute(
+				'SELECT '.$fields.' FROM `#'.$this->getModelTable().'` WHERE '.$where,
+				array('modelLoadId' => $id)
 			);
 		}
 
@@ -2811,7 +2820,19 @@ class e_front_model extends e_model
 		$qry = $this->toSqlQuery('update');
 		$table = $this->getModelTable();
 
-		$res = $sql->update($table, $qry, $this->getParam('db_debug', false));
+		// Field-typed array update -> builder setTyped() per column (byte-identical
+		// storage transform). Only the id VALUE is bound; $qry['WHERE'] is retained
+		// below for the audit log. The legacy db_debug flag has no builder equivalent.
+		$id = $this->getId();
+		$idValue = is_numeric($id) ? intval($id) : e107::getParser()->toDB($id);
+		$fieldTypes = isset($qry['_FIELD_TYPES']) ? $qry['_FIELD_TYPES'] : array();
+		$qb = $sql->createQueryBuilder()->update($table);
+		foreach($qry['data'] as $col => $val)
+		{
+			$type = isset($fieldTypes[$col]) ? $fieldTypes[$col] : (isset($fieldTypes['_DEFAULT']) ? $fieldTypes['_DEFAULT'] : 'str');
+			$qb->setTyped($col, $val, $type);
+		}
+		$res = $qb->where($this->getFieldIdName(), $idValue)->execute();
         $this->_db_qry = $sql->getLastQuery();
 		if(!$res)
 		{
@@ -3097,8 +3118,16 @@ class e_admin_model extends e_front_model
 		$sqlQry = $this->toSqlQuery('create');
 		$table = $this->getModelTable();
 
-		$res = $sql->insert($table, $sqlQry, $this->getParam('db_debug', false));
+		// Field-typed array insert -> builder valuesTyped() (byte-identical storage
+		// transform). lastInsertId() (already true when no auto-increment column) is
+		// read only on execute() success, reproducing the legacy insert() return.
+		// The legacy db_debug flag has no builder equivalent.
+		$fieldTypes = isset($sqlQry['_FIELD_TYPES']) ? $sqlQry['_FIELD_TYPES'] : array();
+		$ok = $sql->createQueryBuilder()->insert($table)
+			->valuesTyped($sqlQry['data'], $fieldTypes)
+			->execute();
         $this->_db_qry = $sql->getLastQuery();
+		$res = ($ok !== false) ? $sql->lastInsertId() : false;
 		if(!$res)
 		{
 			$this->_db_errno = $sql->getLastErrorNumber();
@@ -3146,7 +3175,13 @@ class e_admin_model extends e_front_model
 		}
 		$sql = e107::getDb();
 		$table = $this->getModelTable();
-		$res = $sql->insert($table, $this->toSqlQuery('replace'));
+		// Field-typed array replace -> builder replace()->valuesTyped() (byte-identical
+		// storage transform); execute() returns affected rows / false, as legacy did.
+		$replaceQry = $this->toSqlQuery('replace');
+		$fieldTypes = isset($replaceQry['_FIELD_TYPES']) ? $replaceQry['_FIELD_TYPES'] : array();
+		$res = $sql->createQueryBuilder()->replace($table)
+			->valuesTyped($replaceQry['data'], $fieldTypes)
+			->execute();
         $this->_db_qry = $sql->getLastQuery();
 		if(!$res)
 		{
@@ -3192,11 +3227,13 @@ class e_admin_model extends e_front_model
 		}
 		$sql = e107::getDb();
 		$id = $this->getId();
-		if(is_numeric($id)) $id = intval($id);
-		else  $id = "'".e107::getParser()->toDB($id)."'";
+		$idValue = is_numeric($id) ? intval($id) : e107::getParser()->toDB($id);
 		$table  = $this->getModelTable();
-		$where = $this->getFieldIdName().'='.$id;
-		$res = $sql->delete($table, $where);
+		$where = $this->getFieldIdName().'='.(is_numeric($id) ? $idValue : "'".$idValue."'");
+		$res = $sql->createQueryBuilder()
+			->delete($table)
+			->where($this->getFieldIdName(), $idValue)
+			->execute();
         $this->_db_qry = $sql->getLastQuery();
 
 		if(!$res)
@@ -3536,7 +3573,8 @@ class e_tree_model extends e_front_model
 	 */
 	protected function getRowsList($sql)
 	{
-		$success = $sql->gen($this->getParam('db_query'), $this->getParam('db_debug') ? true : false);
+		// Caller-built SQL (db_query param) - run it bound (no local values to bind).
+		$success = $sql->execute($this->getParam('db_query'));
 		if (!$success) return false;
 
 		return $sql->rows();
@@ -3553,7 +3591,8 @@ class e_tree_model extends e_front_model
 		// Workaround: Parse and modify db_query param for simulated custom ordering
 		$this->prepareSimulatedCustomOrdering();
 
-		$success = $sql->gen($this->getParam('db_query'), $this->getParam('db_debug') ? true : false);
+		// Caller-built SQL (db_query param) - run it bound (no local values to bind).
+		$success = $sql->execute($this->getParam('db_query'));
 		if (!$success) return false;
 
 		$rows_tree = self::arrayToTree($sql->rows(),
@@ -3697,9 +3736,13 @@ class e_tree_model extends e_front_model
 		{
 			$countQry = preg_replace('/\s+LIMIT\s+\d+(\s*,\s*\d+)?\s*$/i', "", $qry);
 
-			$QRY = "SELECT COUNT(*) AS e_tree_total FROM ($countQry) AS grouped_rows";
+			$QRY = self::buildCountQuery($countQry);
 
-			$result = $sql->retrieve($QRY);
+			// Caller-built COUNT(*) wrapper (pre-assembled developer SQL, no values to
+			// bind) -> bound execute() + fetch(), replacing the deprecated retrieve()
+			// string form. execute($var) is an opaque dynamic-SQL passthrough boundary.
+			$result = ($sql->execute($QRY) !== false) ? $sql->fetch() : array();
+			if(!is_array($result)) $result = array();
 			$total = $result['e_tree_total'] ?? 0;
 
 			if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
@@ -3713,6 +3756,120 @@ class e_tree_model extends e_front_model
 		}
 
 		return $this->_total;
+	}
+
+	/**
+	 * Wraps a list query in a duplicate-column-safe COUNT(*) derived table
+	 *
+	 * MySQL and MariaDB permit a top-level "SELECT t1.*, t2.*" to repeat a
+	 * column name, but reject duplicate names inside a derived table. Counting
+	 * the raw list query therefore fails with "1060 Duplicate column name"
+	 * whenever two joined tables share a column (e.g. user.user_timezone and
+	 * user_extended.user_timezone on an upgraded site).
+	 *
+	 * @param string $qry List query, already stripped of any trailing LIMIT
+	 * @return string COUNT(*) query exposing the total as e_tree_total
+	 */
+	protected static function buildCountQuery($qry)
+	{
+		return "SELECT COUNT(*) AS e_tree_total FROM (".self::reduceWildcardProjection($qry).") AS grouped_rows";
+	}
+
+	/**
+	 * Replaces a multi-wildcard "SELECT t1.*, t2.*" projection with a constant
+	 *
+	 * Only the projection between the leading SELECT and the first top-level
+	 * FROM is rewritten, and only when it expands two or more "alias.*"
+	 * wildcards, the one shape that can collide inside a derived table. The
+	 * constant is irrelevant to COUNT(*), so the row total is unchanged while
+	 * the duplicate name disappears. Every other query is returned untouched,
+	 * including a single wildcard sat beside computed columns such as the
+	 * Book/Chapter list's correlated subquery, and DISTINCT projections, whose
+	 * selected columns determine the row count.
+	 *
+	 * @param string $qry List query, already stripped of any trailing LIMIT
+	 * @return string
+	 */
+	protected static function reduceWildcardProjection($qry)
+	{
+		if(preg_match('/^\s*SELECT\s+DISTINCT\b/i', $qry))
+		{
+			return $qry;
+		}
+
+		$from = self::findTopLevelFrom($qry);
+		if($from < 0 || !preg_match('/^\s*SELECT\s+/i', $qry, $lead))
+		{
+			return $qry;
+		}
+
+		$projection = substr($qry, strlen($lead[0]), $from - strlen($lead[0]));
+		if(preg_match_all('/[\w`]\s*\.\s*\*/', $projection, $m) < 2)
+		{
+			return $qry;
+		}
+
+		return $lead[0]."1 ".substr($qry, $from);
+	}
+
+	/**
+	 * Returns the offset of the first FROM keyword at parenthesis depth zero
+	 *
+	 * Quoted identifiers and string literals are skipped, so a FROM inside a
+	 * correlated subquery or a literal is never matched. Returns -1 when no
+	 * top-level FROM keyword is present.
+	 *
+	 * @param string $qry
+	 * @return int
+	 */
+	protected static function findTopLevelFrom($qry)
+	{
+		$len = strlen($qry);
+		$depth = 0;
+		$quote = '';
+
+		for($i = 0; $i < $len; $i++)
+		{
+			$ch = $qry[$i];
+
+			if($quote !== '')
+			{
+				if($ch === '\\' && $quote !== '`')
+				{
+					$i++;
+				}
+				elseif($ch === $quote)
+				{
+					if($i + 1 < $len && $qry[$i + 1] === $quote) $i++;
+					else $quote = '';
+				}
+				continue;
+			}
+
+			if($ch === "'" || $ch === '"' || $ch === '`')
+			{
+				$quote = $ch;
+			}
+			elseif($ch === '(')
+			{
+				$depth++;
+			}
+			elseif($ch === ')')
+			{
+				if($depth > 0) $depth--;
+			}
+			elseif($depth === 0 && ($ch === 'f' || $ch === 'F') && strcasecmp(substr($qry, $i, 4), 'FROM') === 0)
+			{
+				$before = $i === 0 ? ' ' : $qry[$i - 1];
+				$after = $i + 4 >= $len ? ' ' : $qry[$i + 4];
+				if(!ctype_alnum($before) && $before !== '_' && !ctype_alnum($after) && $after !== '_')
+				{
+					return $i;
+				}
+			}
+		}
+
+		return -1;
 	}
 
 	/**
@@ -4045,17 +4202,36 @@ class e_front_tree_model extends e_tree_model
 			$syncvalue = $value;
 		}
 
+		// A raw SQL expression must be passed EXPLICITLY as a SqlFragment (e.g.
+		// "1-`field`"); anything else is a literal and gets bound, never spliced.
+		$isExpression = $value instanceof \e107\Database\SqlFragment;
+
 		if($sanitize)
 		{
 			$ids = array_map(array($tp, 'toDB'), $ids);
 			$field = $tp->toDB($field);
-			$value = "'".$tp->toDB($value)."'";
+			if(!$isExpression)
+			{
+				$value = $tp->toDB($value);
+			}
 		}
-		$idstr = implode(', ', $ids);
 
 		$table = $this->getModelTable();
 
-		$res = $sql->update($table, "{$field}={$value} WHERE ".$this->getFieldIdName().' IN ('.$idstr.')', $this->getParam('db_debug', false));
+		$qb = $sql->createQueryBuilder()->update($table);
+		if($isExpression)
+		{
+			// Trust boundary: caller-authored raw SQL expression, never user
+			// input. The closed builder keeps the vouched fragment verbatim.
+			$qb->setExpression($field, $value);
+		}
+		else
+		{
+			// Literal value (including '' and null): bind it. Never hand-quote a
+			// value into raw() - toDB() is HTML-escaping, not SQL-escaping.
+			$qb->set($field, $value);
+		}
+		$res = $qb->whereIn($this->getFieldIdName(), $ids)->execute();
 		$this->_db_errno = $sql->getLastErrorNumber();
 		$this->_db_errmsg = $sql->getLastErrorText();
 		$this->_db_qry = $sql->getLastQuery();
@@ -4137,7 +4313,11 @@ class e_admin_tree_model extends e_front_tree_model
 		$table = $this->getModelTable();
 		$sqlQry = $this->getFieldIdName().' IN (\''.$idstr.'\')';
 
-		$res = $sql->delete($table, $sqlQry);
+		// Preserves the legacy single-quoted IN list: IN ('id1, id2, ...').
+		$res = $sql->createQueryBuilder()
+			->delete($table)
+			->whereIn($this->getFieldIdName(), array($idstr))
+			->execute();
 
 		$this->_db_errno = $sql->getLastErrorNumber();
 		$this->_db_errmsg = $sql->getLastErrorText();

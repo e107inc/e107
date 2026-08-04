@@ -29,12 +29,12 @@ class newsfeed_frontpage // include plugin-folder in the name.
 		$frontPage['title'] = LAN_PLUGIN_NEWSFEEDS_NAME; // .': '.vartrue($row['content_heading']); LAN_PLUGIN_NEWSFEEDS_NAME ?
 		$frontPage['page'][] = array('page' => '{e_PLUGIN}newsfeed/newsfeed.php', 'title' => NWSF_FP_2);
 
-		if (e107::getDb()->select("newsfeed", "newsfeed_id, newsfeed_name"))
+		$rows = e107::getDb()->createQueryBuilder()
+			->select('newsfeed_id', 'newsfeed_name')->from('newsfeed')
+			->fetchAll();
+		foreach ($rows as $row)
 		{
-			while ($row = e107::getDb()->fetch())
-			{
-				$frontPage['page'][] = array('page' => '{e_PLUGIN}newsfeed/newsfeed.php?show.'.$row['newsfeed_id'], 'title' => $row['newsfeed_name']);
-			}
+			$frontPage['page'][] = array('page' => '{e_PLUGIN}newsfeed/newsfeed.php?show.'.$row['newsfeed_id'], 'title' => $row['newsfeed_name']);
 		}
 
 

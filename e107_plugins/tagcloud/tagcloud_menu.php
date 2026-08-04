@@ -64,11 +64,23 @@ if(!class_exists('tagcloud_menu'))
 				return $text;
 			}
 
-			$nobody_regexp = "'(^|,)(" . str_replace(",", "|", e_UC_NOBODY) . ")(,|$)'";
+			$nobody_regexp = '(^|,)(' . str_replace(",", "|", e_UC_NOBODY) . ')(,|$)';
 			$wordCount = 0;
 
-			if ($result = $sql->retrieve('news', 'news_id,news_meta_keywords', "news_meta_keywords !='' AND news_class REGEXP '" . e_CLASS_REGEXP . "' AND NOT (news_class REGEXP " . $nobody_regexp . ")
-					AND news_start < " . time() . " AND (news_end=0 || news_end>" . time() . ")", true))
+			$now = time();
+			$qb = $sql->createQueryBuilder();
+			$result = $qb->select('news_id', 'news_meta_keywords')->from('news')
+				->where('news_meta_keywords', '!=', '')
+				->where($qb->expr()->regexp('news_class', e_CLASS_REGEXP))
+				->where($qb->expr()->not($qb->expr()->regexp('news_class', $nobody_regexp)))
+				->where('news_start', '<', $now)
+				->where($qb->expr()->anyOf(
+					$qb->expr()->eq('news_end', 0),
+					$qb->expr()->gt('news_end', $now)
+				))
+				->fetchAll();
+
+			if ($result)
 			{
 				foreach ($result as $row)
 				{

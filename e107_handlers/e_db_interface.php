@@ -1,520 +1,78 @@
 <?php
-	/**
-	 * Created by PhpStorm.
-	 * Date: 2/3/2019
-	 * Time: 6:22 PM
-	 */
-
-
-	interface e_db
-	{
-		/**
-		 * Bind-parameter types for the db_Query() ['PREPARE' => ..., 'BIND' => ...]
-		 * contract. Values match the PDO::PARAM_* constants, so existing call sites
-		 * passing PDO::PARAM_* keep working while backend-neutral code can use
-		 * e_db::PARAM_* without depending on the pdo extension.
-		 */
-		const PARAM_NULL = 0;
-		const PARAM_INT  = 1;
-		const PARAM_STR  = 2;
-		const PARAM_LOB  = 3;
-		const PARAM_BOOL = 5;
-
-		/**
-		 * Connect ONLY  - used in v2.x
-		 *
-		 * @param string $mySQLserver IP Or hostname of the MySQL server
-		 * @param string $mySQLuser MySQL username
-		 * @param string $mySQLpassword MySQL Password
-		 * @param bool   $newLink force a new link connection if TRUE. Default FALSE
-		 * @return boolean true on success, false on error.
-		 */
-		public function connect($mySQLserver, $mySQLuser, $mySQLpassword, $newLink = false);
-
-
-		/**
-		 * Select the database to use.
-		 *
-		 * @param string       $database name
-		 * @param array|string $prefix
-		 * @param boolean      $multiple set to maintain connection to a secondary database.
-		 * @return boolean true when database selection was successful otherwise false.
-		 */
-		public function database($database, $prefix = MPREFIX, $multiple=false);
-
-
-		/**
-		 * @param string $table
-		 * @param string $arg
-		 * @param bool   $debug
-		 * @param string $log_type
-		 * @param string $log_remark
-		 * @return int number of affected rows, or false on error
-		 * @desc Delete rows from a table<br />
-		 * <br />
-		 * Example:
-		 * <code>$sql->delete("tmp", "tmp_ip='$ip'");</code><br />
-		 * <br />
-		 * @access public
-		 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters instead.
-		 */
-		function delete($table, $arg = '', $debug = false, $log_type = '', $log_remark = '');
-
-
-
-
-
-		/**
-		 * @param string $type assoc|num|both
-		* @return array|bool MySQL row
-		* @desc Fetch an array containing row data (see PHP's mysql_fetch_array() docs)<br />
-		* @example
-		* Example :<br />
-		* <code>while($row = $sql->fetch()){
-		*  $text .= $row['username'];
-		* }</code>
-		*
-		* @access public
-		*/
-		function fetch($type = null);
-
-
-
-
-
-
-		/**
-		 *	Determines if a plugin field (and key) exist. OR if fieldid is numeric - return the field name in that position.
-		 *
-		 *	@param string $table - table name (no prefix)
-		 *	@param string $fieldid - Numeric offset or field/key name
-		 *	@param string $key - PRIMARY|INDEX|UNIQUE - type of key when searching for key name
-		 *	@param boolean $retinfo = FALSE - just returns true|false. TRUE - returns all field info
-		 *	@return array|boolean - FALSE on error, field information on success
-		 */
-	    function field($table,$fieldid="",$key="", $retinfo = false);
-
-
-
-		/**
-		 * @param string $table
-		 * @param array  $arg
-		 * @param bool   $debug
-		 * @param string $log_type
-		 * @param string $log_remark
-		 * @return int Last insert ID or false on error
-		 * @desc Insert/REplace a row into the table<br />
-		 * <br />
-		 * Example:<br />
-		 * <code>e107::getDb()->replace("links", $array);</code>
-		 *
-		 * @access public
-		 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters instead.
-		 */
-		function replace($table, $arg, $debug = false, $log_type = '', $log_remark = '');
-
-
-
-
-
-
-
-		/**
-		 * Query and fetch at once
-		 *
-		 * Examples:
-		 * <code>
-		 * <?php
-		 *
-		 * // Get single value, $multi and indexField are ignored
-		 * $string = e107::getDb()->retrieve('user', 'user_email', 'user_id=1');
-		 *
-		 * // Get single row set, $multi and indexField are ignored
-		 * $array = e107::getDb()->retrieve('user', 'user_email, user_name', 'user_id=1');
-		 *
-		 * // Fetch all, don't append WHERE to the query, index by user_id, noWhere auto detected (string starts with upper case ORDER)
-		 * $array = e107::getDb()->retrieve('user', 'user_id, user_email, user_name', 'ORDER BY user_email LIMIT 0,20', true, 'user_id');
-		 *
-		 * // Same as above but retrieve() is only used to fetch, not useable for single return value
-		 * if(e107::getDb()->select('user', 'user_id, user_email, user_name', 'ORDER BY user_email LIMIT 0,20', true))
-		 * {
-		 *        $array = e107::getDb()->retrieve(null, null, null,  true, 'user_id');
-		 * }
-		 *
-		 * // Using whole query example, in this case default mode is 'single'
-		 * $array = e107::getDb()->retrieve('SELECT
-		 *    p.*, u.user_email, u.user_name FROM `#user` AS u
-		 *    LEFT JOIN `#myplug_table` AS p ON p.myplug_table=u.user_id
-		 *    ORDER BY u.user_email LIMIT 0,20'
-		 * );
-		 *
-		 * // Using whole query example, multi mode - $fields argument mapped to $multi
-		 * $array = e107::getDb()->retrieve('SELECT u.user_email, u.user_name FROM `#user` AS U ORDER BY user_email LIMIT 0,20', true);
-		 *
-		 * // Using whole query example, multi mode with index field
-		 * $array = e107::getDb()->retrieve('SELECT u.user_email, u.user_name FROM `#user` AS U ORDER BY user_email LIMIT 0,20', null, null, true, 'user_id');
-		 * </code>
-		 *
-		 * @param string $table if empty, enter fetch only mode
-		 * @param string $fields comma separated list of fields or * or single field name (get one); if $fields is of type boolean and $where is not found, $fields overrides $multi
-		 * @param string $where WHERE/ORDER/LIMIT etc clause, empty to disable
-		 * @param boolean $multi if true, fetch all (multi mode)
-		 * @param string $indexField field name to be used for indexing when in multi mode
-		 * @param boolean $debug
-		 * @return string|array
-		 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters, then {@see e_db::fetch()} or {@see e_db::rows()} to read the results.
-		 */
-		public function retrieve($table, $fields = null, $where=null, $multi = false, $indexField = null, $debug = false);
-
-
-		/**
-		 * @param string fields to retrieve
-		 * @param bool $amount
-		 * @param bool $maximum
-		 * @param bool $ordermode
-		 * @return array
-		 * @desc returns fields as structured array
-		 * @access public
-		 */
-		function rows($fields = 'ALL', $amount = false, $maximum = false, $ordermode=false);
-
-
-		/**
-		 * Function to handle any MySQL query
-		 *
-		 * @param string $query - the MySQL query string, where '#' represents the database prefix in front of table names.
-		 *        Strongly recommended to enclose all table names in backticks, to minimise the possibility of erroneous substitutions - its
-		 *            likely that this will become mandatory at some point
-		 * @param bool   $debug
-		 * @param string $log_type
-		 * @param string $log_remark
-		 * @return boolean | int
-		 *        Returns FALSE if there is an error in the query
-		 *        Returns TRUE if the query is successful, and it does not return a row count
-		 *        Returns the number of rows added/updated/deleted for DELETE, INSERT, REPLACE, or UPDATE
-		 * @deprecated v2.4.0 Use {@see e_db::execute()} instead; it accepts the same SQL (including '#table' markers) with values moved to bound :named parameters.
-		 */
-		public function gen($query, $debug = false, $log_type = '', $log_remark = '');
-
-
-		/**
-		 * Execute an SQL statement with bound parameters. The canonical way to
-		 * run SQL against an e107 database.
-		 *
-		 * Table names may be written as `#table` (backticks optional): the e107
-		 * database prefix is attached and multi-language routing is applied,
-		 * while a '#' inside string literals or comments is left untouched.
-		 * Values belong in $params as :named placeholders, never concatenated
-		 * into the SQL string.
-		 *
-		 * <code>
-		 * $sql->execute('SELECT user_name FROM `#user` WHERE user_id = :id', array('id' => 5));
-		 * while($row = $sql->fetch()) { ... }
-		 * </code>
-		 *
-		 * @param string $sql SQL with optional `#table` markers and :named placeholders
-		 * @param array $params name => value, or name => array('value' => mixed, 'type' => e_db::PARAM_*)
-		 * @return int|bool row count for result sets (read rows with {@see e_db::fetch()});
-		 *                  affected rows for DELETE/INSERT/REPLACE/UPDATE;
-		 *                  true for other successful statements; false on error
-		 */
-		public function execute($sql, $params = array());
-
-
-		/**
-		 * Resolve a logical e107 table name to its physical name: the database
-		 * prefix is attached and, on multi-language sites, the table is routed
-		 * to the current language's lan_* table when one exists.
-		 *
-		 * @param string $table table name with or without a leading '#'
-		 * @return string|false physical table name (unquoted), or false when
-		 *                      the name is not a valid identifier
-		 */
-		public function resolveTableName($table);
-
-
-		/**
-		 * Validate and backtick-quote an SQL identifier (`column` or `table.column`).
-		 * Fails closed: anything outside the [A-Za-z0-9_] grammar (with one
-		 * optional dot) returns false.
-		 *
-		 * @param string $identifier
-		 * @return string|false
-		 */
-		public function quoteIdentifier($identifier);
-
-
-		/**
-		 * Return a list of the field names in a table.
-		 *
-		 * @param string $table - table name (no prefix)
-		 * @param string $prefix - table prefix to apply. If empty, MPREFIX is used.
-		 * @param boolean $retinfo = false - just returns array of field names. TRUE - returns all field info
-		 * @return array|boolean - false on error, field list array on success
-		 */
-		public function fields($table, $prefix = '', $retinfo = false);
-
-
-		/**
-		 * Escape special characters in a string for use inside a quoted SQL
-		 * literal, with mysqli_real_escape_string() semantics.
-		 *
-		 * @deprecated v2.4.0 Bind values with {@see e_db::execute()} instead.
-		 *             Escaping is only safe when the result is placed inside
-		 *             quotes in the SQL string, which parameter binding makes
-		 *             unnecessary. Calls emit one E_USER_DEPRECATED notice per
-		 *             call site per request.
-		 * @param string $data
-		 * @param bool $strip Unused; retained for backwards compatibility
-		 * @return string
-		 */
-		public function escape($data, $strip = true);
-
-
-		/**
-		 * @param string       $tableName - Name of table to access, without any language or general DB prefix
-		 * @param array|string $arg (array preferred)
-		 * @param bool         $debug
-		 * @param string       $log_type
-		 * @param string       $log_remark
-		 * @return int|false number of affected rows, or false on error
-		 * @desc Update fields in ONE table of the database corresponding to your $arg variable<br />
-		 * <br />
-		 * Think to call it if you need to do an update while retrieving data.<br />
-		 * <br />
-		 * Example using a unique connection to database:<br />
-		 * <code>e107::getDb()->update("user", "user_viewed='$u_new' WHERE user_id='".USERID."' ");</code>
-		 * <br />
-		 * OR as second connection<br />
-		 * <code>
-		 * e107::getDb('sql2')->update("user", "user_viewed = '$u_new' WHERE user_id = '".USERID."' ");</code><br />
-		 *
-		 * @access public
-		 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters instead.
-		 */
-		function update($tableName, $arg, $debug = false, $log_type = '', $log_remark = '');
-
-
-
-		/**
-		 * @desc Closes the mySQL server connection.<br />
-		 * <br />
-		 * Only required if you open a second connection.<br />
-		 * Native e107 connection is closed in the footer.php file<br />
-		 * <br />
-		 * Example :<br />
-		 *
-		 * @access public
-		 * @return void
-		 */
-		function close();
-
-
-		/**
-		 * @desc Return the total number of results on the last query regardless of the LIMIT value when SELECT SQL_CALC_FOUND_ROWS is used.
-		 * @return bool
-		 */
-		public function foundRows();
-
-
-		/**
-		 * @desc Return error text for last operation
-		 */
-		function getLastErrorText();
-
-
-		// Return error number for last operation
-
-		/**
-		 * @return mixed
-		 */
-		function getLastErrorNumber();
-
-
-		/**
-		 * @desc Perform a select query()
-		 * <br />
-		 * If you need more requests think to call the class.<br />
-		 * <br />
-		 * Example using a unique connection to database:<br />
-		 * <code>e107::getDb()->select("comments", "*", "comment_item_id = '$id' AND comment_type = '1' ORDER BY comment_datestamp");</code><br />
-		 * <br />
-		 * OR as second connection:<br />
-		 * <code>
-		 * e107::getDb('sql2')->select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT $from, ".$view, true);</code>
-		 *
-		 * @param        $table
-		 * @param string $fields
-		 * @param string $arg
-		 * @param bool   $noWhere
-		 * @param bool   $debug
-		 * @param string $log_type
-		 * @param string $log_remark
-		 * @return int|false Number of rows or false on error
-		 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters instead.
-		 */
-		public function select($table, $fields = '*', $arg = '', $noWhere = false, $debug = false, $log_type = '', $log_remark = '');
-
-
-
-		/**
-		 *	@desc Determines if a table index (key) exist.
-		 *	@param string $table - table name (no prefix)
-		 *	@param string $keyname - Name of the key to
-		 *  @param array $fields - OPTIONAL list of fieldnames, the index (key) must contain
-		 *	@param boolean $retinfo = FALSE - just returns true|false. TRUE - returns all key info
-		 *	@return array|boolean - FALSE on error, key information on success
-		 */
-		function index($table, $keyname, $fields=null, $retinfo = false);
-
-
-
-
-		/**
-		 * @param string $tableName - Name of table to access, without any language or general DB prefix
-		 * @param        $arg
-		 * @param bool   $debug
-		 * @param string $log_type
-		 * @param string $log_remark
-		 * @return int|bool Last insert ID or false on error. When using '_DUPLICATE_KEY_UPDATE' return ID, true on update, 0 on no change and false on error.
-		 * @desc Insert a row into the table<br />
-		 * <br />
-		 * Example:<br />
-		 * <code>e107::getDb()->insert("links", "0, 'News', 'news.php', '', '', 1, 0, 0, 0");</code>
-		 *
-		 * @access public
-		 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters instead.
-		 */
-		function insert($tableName, $arg, $debug = false, $log_type = '', $log_remark = '');
-
-
-
-
-		/**
-		 * Check if a database table is empty or not.
-		 * @param $table
-		 * @return bool
-		 */
-		function isEmpty($table);
-
-
-
-		/**
-		 * Truncate a table
-		 * @param string $table - table name without e107 prefix
-		 */
-		function truncate($table=null);
-
-
-
-		/**
-		 * @param string $table
-		 * @param string $fields
-		 * @param string $arg
-		 * @param bool   $debug
-		 * @param string $log_type
-		 * @param string $log_remark
-		 * @return int number of affected rows or false on error
-		 * @desc Count the number of rows in a select<br />
-		 * <br />
-		 * Example:<br />
-		 * <code>$topics = e107::getDb()->count("forum_thread", "(*)", "thread_forum_id='".$forum_id."' AND thread_parent='0'");</code>
-		 *
-		 * @access public
-		 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters and {@see e_db::fetch()} instead, e.g. execute("SELECT COUNT(*) FROM `#table` WHERE field = :v", $params).
-		 */
-		function count($table, $fields = '(*)', $arg = '', $debug = FALSE, $log_type = '', $log_remark = '');
-
-
-
-		/**
-		 * Return the maximum value for a given table/field
-		 * @param $table (without the prefix)
-		 * @param $field
-		 * @param string $where (optional)
-		 * @return bool|resource
-		 * @deprecated v2.4.0 Use {@see e_db::execute()} with bound parameters and {@see e_db::fetch()} instead, e.g. execute("SELECT MAX(field) FROM `#table`").
-		 */
-		public function max($table, $field, $where='');
-
-
-
-
-		/**
-		 * Dump MySQL Table(s) to a file in the Backup folder.
-		 * @param $table string - name without the prefix or '*' for all
-		 * @param $file string - optional file name. or leave blank to generate.
-		 * @param $options - additional preferences.
-		 * @return string|bool backup file path.
-		 */
-		function backup($table='*', $file='', $options=null);
-
-
-		/**
-		 * TODO: Document this method
-		 */
-		public function resetTableList();
-
-		/**
-		 * Return a filtered list of DB tables.
-		 *
-		 * @param string $mode [optional] all|lan|nolan|nologs
-		 * @return array
-		 */
-		public function tables($mode='all');
-
-
-
-		/**
-		 * @desc Returns the number of columns in the result set
-		 * @return mixed
-		 */
-		public function columnCount();
-
-
-		/**
-		 * Set the current database language
-		 * @param string $lang English, French etc.
-		 * @return null
-		 */
-		public function setLanguage($lang);
-
-
-
-		/**
-		 * Get the current database language
-		 * @return string $lang English, French etc.
-		 */
-		public function getLanguage();
-
-
-
-		/**
-		 * XXX: e_db_pdo and e_db_mysql have differing implementations of this method.
-		 * @param string $oldtable
-		 * @param string $newtable
-		 * @param bool $drop
-		 * @param bool $data
-		 * @return bool|int|PDOStatement|resource
-		 */
-		public function copyTable($oldtable, $newtable, $drop = false, $data = false);
-
-
-
-		/**
-		 * Drop/delete table and all it's data
-		 * @param string $table name without the prefix
-		 * @return bool|int
-		 */
-		public function dropTable($table);
-
-
-
-
-		/**
-		 * Returns the last database query used.
-		 * @return string
-		 */
-		function getLastQuery();
-
-}
+/*
+ * e107 website system
+ *
+ * Copyright (C) 2008-2026 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ */
+
+/**
+ * v2 compatibility layer for the e107 SQL API.
+ *
+ * The implementation lives in the namespaced classes under
+ * e107_handlers/Database/ (the e107\Database tree), which new code should
+ * reference directly; the e107 namespaced autoloader picks them up with no
+ * registration. Loading this file registers every v2-style class name as a
+ * true alias of its namespaced class, so v2-era code keeps working
+ * unchanged: `implements e_db`, `use e_db_common`, `instanceof e_db_sql`,
+ * `catch (e_db_query_exception ...)`, parameter type hints and string class
+ * names all behave identically to the namespaced names.
+ *
+ * The connection classes (e_db_pdo_class.php, mysql_class.php) require this
+ * file before they bind the `e_db` contract, so the aliases exist on any
+ * page with a database. Standalone code that wants the v2 names without
+ * loading a connection first should require this file itself:
+ *
+ *     require_once(e_HANDLER.'e_db_interface.php');
+ *
+ * The namespaced files are required directly rather than autoloaded so the
+ * aliases also work in bootstrap contexts that run without the e107
+ * autoloader (MYSQL_LIGHT, the installer).
+ */
+
+require_once(__DIR__.'/Database/ConnectionInterface.php');
+class_alias(\e107\Database\ConnectionInterface::class, 'e_db');
+
+require_once(__DIR__.'/Database/ConnectionTrait.php');
+class_alias(\e107\Database\ConnectionTrait::class, 'e_db_common');
+
+require_once(__DIR__.'/Database/Exception/QueryException.php');
+class_alias(\e107\Database\Exception\QueryException::class, 'e_db_query_exception');
+
+require_once(__DIR__.'/Database/Exception/UnsupportedException.php');
+class_alias(\e107\Database\Exception\UnsupportedException::class, 'e_db_unsupported_exception');
+
+require_once(__DIR__.'/Database/IdentifierFilter.php');
+class_alias(\e107\Database\IdentifierFilter::class, 'e_db_filter');
+
+require_once(__DIR__.'/Database/SqlFragment.php');
+class_alias(\e107\Database\SqlFragment::class, 'e_db_sql');
+
+require_once(__DIR__.'/Database/ExpressionBuilder.php');
+class_alias(\e107\Database\ExpressionBuilder::class, 'e_db_expr');
+
+require_once(__DIR__.'/Database/QueryBuilder.php');
+class_alias(\e107\Database\QueryBuilder::class, 'e_db_query');
+
+require_once(__DIR__.'/Database/Platform/PlatformInterface.php');
+class_alias(\e107\Database\Platform\PlatformInterface::class, 'e_db_platform');
+
+require_once(__DIR__.'/Database/Platform/MysqlPlatform.php');
+class_alias(\e107\Database\Platform\MysqlPlatform::class, 'e_db_platform_mysql');
+
+require_once(__DIR__.'/Database/Schema/SchemaBuilderTrait.php');
+class_alias(\e107\Database\Schema\SchemaBuilderTrait::class, 'e_db_schema_common');
+
+require_once(__DIR__.'/Database/Schema/Column.php');
+class_alias(\e107\Database\Schema\Column::class, 'e_db_column');
+
+require_once(__DIR__.'/Database/Schema/Index.php');
+class_alias(\e107\Database\Schema\Index::class, 'e_db_index');
+
+require_once(__DIR__.'/Database/Schema/Table.php');
+class_alias(\e107\Database\Schema\Table::class, 'e_db_schema_table');
+
+require_once(__DIR__.'/Database/Schema/SchemaBuilder.php');
+class_alias(\e107\Database\Schema\SchemaBuilder::class, 'e_db_schema');

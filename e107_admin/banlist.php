@@ -10,10 +10,6 @@
  *
  *
 */
-if(!empty($_POST) && !isset($_POST['e-token']))
-{
-	$_POST['e-token'] = '';
-}
 require_once(__DIR__.'/../class2.php');
 
 if (!getperms('4'))
@@ -405,7 +401,7 @@ class banlist_ui extends e_admin_ui
 					</tbody>
 						</table>
 						<div class='buttons-bar center'>
-						" . $frm->admin_button('ban_import', LAN_IMPORT , 'import') . $frm->token(). "
+						" . $frm->admin_button('ban_import', LAN_IMPORT , 'import') . "
 						</div>
 	
 	
@@ -589,7 +585,11 @@ class banlist_ui extends e_admin_ui
 
 			if (isset($_POST['remove_expired_bans']))
 			{
-				$result = $sql->delete('banlist',"`banlist_bantype` < ".eIPHandler::BAN_TYPE_WHITELIST." AND `banlist_banexpires` > 0 AND `banlist_banexpires` < ".time());
+				$result = $sql->createQueryBuilder()->delete('banlist')
+				->where('banlist_bantype', '<', eIPHandler::BAN_TYPE_WHITELIST)
+				->where('banlist_banexpires', '>', 0)
+				->where('banlist_banexpires', '<', time())
+				->execute();
 				banlist_adminlog('12', $result);
 				$mes->addSuccess(str_replace('[y]', $result, BANLAN_48));
 			}
@@ -905,7 +905,8 @@ class banlist_form_ui extends e_admin_form_ui
 				//$e107::getDb()->insert('banlist',
 			}
 
-			$allFailedTotal = e107::getDB()->count('generic', '(*)', "gen_type='failed_login'");
+			$allFailedTotal = e107::getDB()->createQueryBuilder()->from('generic')
+				->where('gen_type', 'failed_login')->count();
 
 			$this->batchOptions = array('delete-all'=>str_replace('[x]', $allFailedTotal, BANLAN_127));
 
@@ -920,7 +921,7 @@ class banlist_form_ui extends e_admin_form_ui
 		private function deleteAllFailed()
 		{
 
-			if(e107::getDB()->delete('generic', "gen_type='failed_login'"))
+			if(e107::getDB()->createQueryBuilder()->delete('generic')->where('gen_type', 'failed_login')->execute())
 			{
 				e107::getMessage()->addSuccess(LAN_DELETED);
 			}

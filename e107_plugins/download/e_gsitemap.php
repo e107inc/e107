@@ -26,7 +26,10 @@ class download_gsitemap
 		/* public, quests */
 		$userclass_list = "0,252";
 		$_t = time();
-		$data = $sql->retrieve("download_category", "*", " ORDER BY download_category_order ASC", true);
+		$data = $sql->createQueryBuilder()
+			->select('*')->from('download_category')
+			->orderBy('download_category_order', 'ASC')
+			->fetchAll();
 
 		foreach($data as $row)
 		{
@@ -40,7 +43,12 @@ class download_gsitemap
 			);
 		}
 
-		$data = $sql->retrieve("download", "*", "download_class IN (" . $userclass_list . ")  AND  download_active != '0'  ORDER BY download_datestamp ASC", true);
+		$data = $sql->createQueryBuilder()
+			->select('*')->from('download')
+			->whereIn('download_class', explode(',', $userclass_list))
+			->where('download_active', '!=', '0')
+			->orderBy('download_datestamp', 'ASC')
+			->fetchAll();
 		foreach($data as $row)
 		{
 			$import[] = array(

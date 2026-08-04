@@ -10,6 +10,8 @@
  *
  */
 
+use e107\Database\SqlFragment;
+
 if (!defined('e107_INIT')) { exit; }
 
 class pmbox_manager
@@ -55,20 +57,32 @@ class pmbox_manager
 
 		if('inbox' == $which)
 		{
-			$qry = "SELECT count(pm.pm_id) AS total, SUM(pm.pm_size)/1024 size, SUM(pm.pm_read = 0) as unread FROM `#private_msg` as pm WHERE pm.pm_to = ".USERID." AND pm.pm_read_del = 0";
+			$infoQb = $this->pmDB->createQueryBuilder()
+				->addSelect(SqlFragment::raw('count(pm.pm_id) AS total, SUM(pm.pm_size)/1024 size, SUM(pm.pm_read = 0) as unread'))
+				->from('private_msg', 'pm')
+				->where('pm.pm_to', USERID)
+				->where('pm.pm_read_del', 0);
 		}
 		else
 		{
-			$qry = "SELECT count(pm.pm_from) AS total, SUM(pm.pm_size)/1024 size, SUM(pm.pm_read = 0) as unread FROM `#private_msg` as pm WHERE pm.pm_from = ".USERID." AND pm.pm_sent_del = 0";
+			$infoQb = $this->pmDB->createQueryBuilder()
+				->addSelect(SqlFragment::raw('count(pm.pm_from) AS total, SUM(pm.pm_size)/1024 size, SUM(pm.pm_read = 0) as unread'))
+				->from('private_msg', 'pm')
+				->where('pm.pm_from', USERID)
+				->where('pm.pm_sent_del', 0);
 		}
 
 		if(!isset($pm_info[$which]['total']))
 		{
-			$this->pmDB->gen($qry);
-			$pm_info[$which] = $this->pmDB->fetch();
+			$pm_info[$which] = $infoQb->fetchRow();
 			if ($which == 'inbox' && (!empty($this->pmPrefs['animate']) || !empty($this->pmPrefs['popup'])))
 			{
-				if($new = $this->pmDB->count('private_msg', '(*)', "WHERE pm_sent > '".USERLV."' AND pm_read = 0 AND pm_to = '".USERID."' AND pm_read_del != 1"))
+				if($new = $this->pmDB->createQueryBuilder()->from('private_msg')
+					->where('pm_sent', '>', USERLV)
+					->where('pm_read', 0)
+					->where('pm_to', USERID)
+					->where('pm_read_del', '!=', 1)
+					->count())
 				{
 					$pm_info['inbox']['new'] = $new;
 				}
@@ -83,17 +97,20 @@ class pmbox_manager
 		{
 			if(varset($this->pmPrefs['pm_limits'],0) > 0)
 			{
+				$limitQb = $this->pmDB->createQueryBuilder();
 				if($this->pmPrefs['pm_limits'] == 1)
 				{
-					$qry = "SELECT MAX(gen_user_id) AS inbox_limit, MAX(gen_ip) as outbox_limit FROM `#generic` WHERE gen_type='pm_limit' AND gen_datestamp IN (".USERCLASS_LIST.")";
+					$limitQb->addSelect($limitQb->raw('MAX(gen_user_id) AS inbox_limit, MAX(gen_ip) as outbox_limit'));
 				}
 				else
 				{
-					$qry = "SELECT MAX(gen_intdata) AS inbox_limit, MAX(gen_chardata) as outbox_limit FROM `#generic` WHERE gen_type='pm_limit' AND gen_datestamp IN (".USERCLASS_LIST.")";
+					$limitQb->addSelect($limitQb->raw('MAX(gen_intdata) AS inbox_limit, MAX(gen_chardata) as outbox_limit'));
 				}
-				if($this->pmDB->gen($qry))
+				$limitQb->from('generic')
+					->where('gen_type', 'pm_limit')
+					->whereIn('gen_datestamp', explode(',', USERCLASS_LIST));
+				if($row = $limitQb->fetchRow())
 				{
-					$row = $this->pmDB->fetch();
 					$pm_info['inbox']['limit'] =  $row['inbox_limit'];
 					$pm_info['outbox']['limit'] =  $row['outbox_limit'];
 				}

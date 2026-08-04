@@ -177,6 +177,84 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 	}
 
 
+	public function testResolveTableNamePinnedLanguage()
+	{
+		$this->db->copyTable('news', 'lan_spanish_news', true, true);
+		$this->db->resetTableList();
+
+		$this->assertEquals(MPREFIX.'lan_spanish_news', $this->db->resolveTableName('news', 'Spanish'));
+		$this->assertEquals(MPREFIX.'lan_spanish_news', $this->db->resolveTableName('#news', 'spanish'));
+		$this->assertEquals(MPREFIX.'news', $this->db->resolveTableName('news', 'German'));
+		$this->assertFalse($this->db->resolveTableName('news; DROP TABLE x', 'Spanish'));
+
+		$this->db->dropTable('lan_spanish_news');
+		$this->db->resetTableList();
+	}
+
+
+	public function testExecuteAllLanguages()
+	{
+		$originalTitle = $this->db->retrieve('news', 'news_title', 'news_id = 1');
+		$this->db->copyTable('news', 'lan_spanish_news', true, true);
+		$this->db->resetTableList();
+
+		$result = $this->db->executeAllLanguages(
+			'UPDATE #news SET news_title = :title WHERE news_id = :id',
+			array('title' => 'All-languages title', 'id' => 1)
+		);
+		$this->assertSame(2, $result);
+
+		$this->db->gen('SELECT news_title FROM `'.MPREFIX.'news` WHERE news_id=1');
+		$row = $this->db->fetch();
+		$this->assertEquals('All-languages title', $row['news_title']);
+
+		$this->db->gen('SELECT news_title FROM `'.MPREFIX.'lan_spanish_news` WHERE news_id=1');
+		$row = $this->db->fetch();
+		$this->assertEquals('All-languages title', $row['news_title']);
+
+		// no markers: the statement runs exactly once
+		$this->assertSame(1, $this->db->executeAllLanguages('SELECT 1'));
+
+		// every leg is attempted; the first failure's error survives the later legs
+		$this->assertFalse($this->db->executeAllLanguages('UPDATE #news SET news_no_such_column = 1'));
+		$this->assertNotEmpty($this->db->getLastErrorText());
+
+		// leave the seeded row as found; testDb_CopyTable asserts the seeded title
+		$this->db->execute('UPDATE `'.MPREFIX.'news` SET news_title = :title WHERE news_id = 1', array('title' => $originalTitle));
+		$this->db->dropTable('lan_spanish_news');
+		$this->db->resetTableList();
+	}
+
+
+	public function testQueryBuilderExecuteAllLanguages()
+	{
+		$originalTitle = $this->db->retrieve('news', 'news_title', 'news_id = 1');
+		$this->db->copyTable('news', 'lan_spanish_news', true, true);
+		$this->db->resetTableList();
+
+		$qb = $this->db->createQueryBuilder();
+		$legs = $qb->update('news')
+			->set('news_title', 'Builder all-languages title')
+			->where($qb->expr()->eq('news_id', 1))
+			->executeAllLanguages();
+
+		$this->assertSame(2, $legs);
+
+		$this->db->gen('SELECT news_title FROM `'.MPREFIX.'news` WHERE news_id=1');
+		$row = $this->db->fetch();
+		$this->assertEquals('Builder all-languages title', $row['news_title']);
+
+		$this->db->gen('SELECT news_title FROM `'.MPREFIX.'lan_spanish_news` WHERE news_id=1');
+		$row = $this->db->fetch();
+		$this->assertEquals('Builder all-languages title', $row['news_title']);
+
+		// leave the seeded row as found; testDb_CopyTable asserts the seeded title
+		$this->db->execute('UPDATE `'.MPREFIX.'news` SET news_title = :title WHERE news_id = 1', array('title' => $originalTitle));
+		$this->db->dropTable('lan_spanish_news');
+		$this->db->resetTableList();
+	}
+
+
 
 	public function testDb_Write_log()
 	{
@@ -358,6 +436,195 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$this->assertFalse($this->db->quoteIdentifier('a`b'));
 	}
 
+	public function testCreateQueryBuilder()
+	{
+		$qb = $this->db->createQueryBuilder();
+
+		$this->assertInstanceOf('e_db_query', $qb);
+		$this->assertInstanceOf('e_db_expr', $qb->expr());
+		$this->assertInstanceOf('e_db_platform_mysql', $this->db->getPlatform());
+		$this->assertSame($this->db->getPlatform(), $qb->getPlatform());
+	}
+
+	public function testQueryBuilderRoundTrip()
+	{
+		$db = $this->db;
+
+		// INSERT through the builder; every value is bound
+		$rows = array(
+			array('tmp_ip' => 'qb.test.1', 'tmp_time' => 1001, 'tmp_info' => 'alpha 50% off'),
+			array('tmp_ip' => 'qb.test.2', 'tmp_time' => 1002, 'tmp_info' => 'beta'),
+			array('tmp_ip' => 'qb.test.3', 'tmp_time' => 1003, 'tmp_info' => 'gamma'),
+		);
+
+		foreach($rows as $row)
+		{
+			$affected = $db->createQueryBuilder()->insert('tmp')->values($row)->execute();
+			$this->assertSame(1, $affected);
+		}
+
+		// fetchAll() with expression, ORDER BY and LIMIT
+		$qb = $db->createQueryBuilder();
+		$found = $qb->select('tmp_ip', 'tmp_time')
+			->from('tmp')
+			->where($qb->expr()->startsWith('tmp_ip', 'qb.test.'))
+			->orderBy('tmp_time', 'DESC')
+			->setMaxResults(2)
+			->fetchAll();
+
+		$this->assertCount(2, $found);
+		$this->assertSame('qb.test.3', $found[0]['tmp_ip']);
+		$this->assertSame('qb.test.2', $found[1]['tmp_ip']);
+
+		// fetchAll($indexBy)
+		$qb = $db->createQueryBuilder();
+		$indexed = $qb->select()
+			->from('tmp')
+			->where($qb->expr()->startsWith('tmp_ip', 'qb.test.'))
+			->fetchAll('tmp_ip');
+
+		$this->assertArrayHasKey('qb.test.2', $indexed);
+		$this->assertSame('beta', $indexed['qb.test.2']['tmp_info']);
+
+		// whereIn() + fetchColumn()
+		$qb = $db->createQueryBuilder();
+		$ips = $qb->select('tmp_ip')
+			->from('tmp')
+			->whereIn('tmp_time', array(1001, 1003))
+			->orderBy('tmp_time', 'ASC')
+			->fetchColumn();
+
+		$this->assertSame(array('qb.test.1', 'qb.test.3'), $ips);
+
+		// fetchPairs(); both backends stringify row values identically
+		$qb = $db->createQueryBuilder();
+		$pairs = $qb->select('tmp_ip', 'tmp_time')
+			->from('tmp')
+			->where($qb->expr()->startsWith('tmp_ip', 'qb.test.'))
+			->orderBy('tmp_time', 'ASC')
+			->fetchPairs();
+
+		$this->assertSame(array('qb.test.1' => '1001', 'qb.test.2' => '1002', 'qb.test.3' => '1003'), $pairs);
+
+		// contains() escapes LIKE wildcards: a literal '%' in the needle
+		$qb = $db->createQueryBuilder();
+		$found = $qb->select('tmp_ip')
+			->from('tmp')
+			->where($qb->expr()->contains('tmp_info', '50%'))
+			->fetchAll();
+
+		$this->assertCount(1, $found);
+		$this->assertSame('qb.test.1', $found[0]['tmp_ip']);
+
+		// ... and '_' matches only a literal underscore, not "any character"
+		$qb = $db->createQueryBuilder();
+		$found = $qb->select('tmp_ip')
+			->from('tmp')
+			->where($qb->expr()->contains('tmp_info', '5_'))
+			->fetchAll();
+
+		$this->assertCount(0, $found);
+
+		// fetchOne() / fetchRow()
+		$qb = $db->createQueryBuilder();
+		$value = $qb->select('tmp_info')
+			->from('tmp')
+			->where($qb->expr()->eq('tmp_ip', 'qb.test.2'))
+			->fetchOne();
+
+		$this->assertSame('beta', $value);
+
+		$qb = $db->createQueryBuilder();
+		$row = $qb->select()
+			->from('tmp')
+			->where($qb->expr()->eq('tmp_ip', 'qb.no.such.row'))
+			->fetchRow();
+
+		$this->assertSame(array(), $row);
+
+		$qb = $db->createQueryBuilder();
+		$none = $qb->select('tmp_info')
+			->from('tmp')
+			->where($qb->expr()->eq('tmp_ip', 'qb.no.such.row'))
+			->fetchOne();
+
+		$this->assertNull($none);
+
+		// UPDATE through the builder
+		$qb = $db->createQueryBuilder();
+		$affected = $qb->update('tmp')
+			->set('tmp_info', 'updated')
+			->where($qb->expr()->eq('tmp_ip', 'qb.test.2'))
+			->execute();
+
+		$this->assertSame(1, $affected);
+
+		$qb = $db->createQueryBuilder();
+		$this->assertSame('updated', $qb->select('tmp_info')
+			->from('tmp')
+			->where($qb->expr()->eq('tmp_ip', 'qb.test.2'))
+			->fetchOne());
+
+		// DELETE through the builder cleans up
+		$qb = $db->createQueryBuilder();
+		$affected = $qb->delete('tmp')
+			->where($qb->expr()->startsWith('tmp_ip', 'qb.test.'))
+			->execute();
+
+		$this->assertSame(3, $affected);
+	}
+
+	public function testQueryBuilderRejectsHostileInput()
+	{
+		try
+		{
+			$this->db->createQueryBuilder()->select()->from('tmp')
+				->orderBy('tmp_time; DROP TABLE `'.MPREFIX.'tmp`');
+			$this->fail('Expected InvalidArgumentException was not thrown');
+		}
+		catch(InvalidArgumentException $e)
+		{
+			$this->assertStringContainsString('ORDER BY', $e->getMessage());
+		}
+
+		try
+		{
+			$this->db->createQueryBuilder()->select()->from('tmp; DROP TABLE x')->getSQL();
+			$this->fail('Expected InvalidArgumentException was not thrown');
+		}
+		catch(InvalidArgumentException $e)
+		{
+			$this->assertStringContainsString('table name', $e->getMessage());
+		}
+	}
+
+	public function testCommonTraitRejectsHostileIdentifiers()
+	{
+		$db = $this->db;
+		$hostile = 'tmp; DROP TABLE `'.MPREFIX.'tmp`';
+
+		// identifier positions fail closed, before any SQL is executed
+		$this->assertFalse($db->truncate($hostile));
+		$this->assertFalse($db->isEmpty($hostile));
+		$this->assertFalse($db->dropTable($hostile));
+		$this->assertFalse($db->copyTable($hostile, 'tmp2'));
+		$this->assertFalse($db->copyTable('tmp', $hostile));
+		$this->assertFalse($db->copyRow($hostile, '*', "tmp_ip='x'"));
+		$this->assertFalse($db->copyRow('tmp', 'tmp_ip) SELECT tmp_ip FROM x; -- ', "tmp_ip='x'"));
+		$this->assertFalse($db->field($hostile));
+		$this->assertFalse($db->index($hostile, 'PRIMARY'));
+		$this->assertNull($db->max($hostile, 'tmp_time'));
+		$this->assertNull($db->max('tmp', 'tmp_time) FROM dual; -- '));
+		$this->assertFalse($db->selectTree($hostile, 'p', 'i', 'o'));
+		$this->assertFalse($db->selectTree('tmp', 'p)`; DROP FUNCTION x', 'i', 'o'));
+
+		// valid identifiers behave exactly as before
+		$this->assertFalse($db->isEmpty('user'));
+		$this->assertTrue($db->field('user', 'user_name'));
+		$this->assertTrue($db->index('user', 'PRIMARY'));
+		$this->assertGreaterThanOrEqual(1, (int) $db->max('user', 'user_id'));
+	}
+
 	public function testEscapeDeprecationNoticeOncePerCallSite()
 	{
 		$caught = array();
@@ -377,6 +644,40 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 
 		$this->assertCount(2, $caught);
 		$this->assertStringContainsString('escape() is deprecated', $caught[0]);
+	}
+
+	public function testLegacyCrudDeprecationNotice()
+	{
+		$caught = array();
+		set_error_handler(function ($errno, $errstr) use (&$caught)
+		{
+			$caught[] = $errstr;
+			return true;
+		}, E_USER_DEPRECATED);
+
+		$this->db->select('user', 'user_name', 'user_id = 1');
+
+		restore_error_handler();
+
+		$this->assertCount(1, $caught);
+		$this->assertStringContainsString('select() is deprecated', $caught[0]);
+	}
+
+	public function testDeprecationNoticeSkipsInternalRouting()
+	{
+		$caught = array();
+		set_error_handler(function ($errno, $errstr) use (&$caught)
+		{
+			$caught[] = $errstr;
+			return true;
+		}, E_USER_DEPRECATED);
+
+		// isEmpty() is not deprecated; its internal gen() call must not warn.
+		$this->db->isEmpty('user');
+
+		restore_error_handler();
+
+		$this->assertSame(array(), $caught);
 	}
 
 
@@ -688,17 +989,138 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$actual = $this->db->db_Update('tmp', 'tmp_ip = "127.0.0.1", tmp_time = tmp_time + 1, tmp_info = "test 3" WHERE tmp_ip="127.0.0.1"');
 		$this->assertEquals(1,$actual);
 	}
-	/*
-			public function test_getTypes()
-			{
 
-			}
+	public function testWritePathUsesBinds()
+	{
+		$this->db->delete('tmp');
 
-			public function test_getFieldValue()
-			{
+		$result = $this->db->insert('tmp', array('tmp_ip' => '127.0.0.9', 'tmp_time' => 4, 'tmp_info' => 'bind check'));
+		$this->assertNotEmpty($result, 'insert() failed');
 
-			}
-	*/
+		$last = $this->db->getLastQuery();
+		$this->assertTrue(is_array($last), 'Array-form insert() should run through the prepared-statement contract');
+		$this->assertArrayHasKey('PREPARE', $last);
+		$this->assertSame('bind check', $last['BIND']['tmp_info']['value']);
+
+		$result = $this->db->update('tmp', array('tmp_info' => 'bind check 2', 'WHERE' => 'tmp_ip = "127.0.0.9"'));
+		$this->assertEquals(1, $result);
+
+		$last = $this->db->getLastQuery();
+		$this->assertTrue(is_array($last), 'Array-form update() should run through the prepared-statement contract');
+		$this->assertArrayHasKey('PREPARE', $last);
+		$this->assertSame('bind check 2', $last['BIND']['tmp_info']['value']);
+
+		$result = $this->db->update('tmp', 'tmp_time = tmp_time + 1 WHERE tmp_ip = "127.0.0.9"');
+		$this->assertEquals(1, $result);
+		$this->assertTrue(is_string($this->db->getLastQuery()), 'Raw-string update() should remain a plain query');
+	}
+
+	public function testWritePathBindsHostileValues()
+	{
+		$hostile = "Rob'); DROP TABLE `".MPREFIX."tmp`; -- \\ \"%_";
+
+		$this->db->delete('tmp');
+
+		$result = $this->db->insert('tmp', array('tmp_ip' => '127.0.0.8', 'tmp_time' => 1, 'tmp_info' => $hostile));
+		$this->assertNotEmpty($result, 'insert() failed on special characters');
+
+		$actual = $this->db->retrieve('tmp', 'tmp_info', 'tmp_ip = "127.0.0.8"');
+		$this->assertSame($hostile, $actual, 'insert() altered the stored value');
+
+		$hostile = "O'Connor \\' OR '1'='1";
+		$result = $this->db->update('tmp', array('tmp_info' => $hostile, 'WHERE' => 'tmp_ip = "127.0.0.8"'));
+		$this->assertEquals(1, $result, 'update() failed on special characters');
+
+		$actual = $this->db->retrieve('tmp', 'tmp_info', 'tmp_ip = "127.0.0.8"');
+		$this->assertSame($hostile, $actual, 'update() altered the stored value');
+
+		$this->assertEquals(1, $this->db->count('tmp'));
+	}
+
+	public function testWritePathFieldTypes()
+	{
+		$chardata = array('k' => "v'1", 'n' => 2);
+
+		$data = array(
+			'data'          => array(
+				'gen_id'        => 0,
+				'gen_type'      => 'write-path-types',
+				'gen_datestamp' => '12abc',
+				'gen_user_id'   => 1,
+				'gen_ip'        => '127.0.0.1',
+				'gen_intdata'   => 0,
+				'gen_chardata'  => $chardata,
+			),
+			'_FIELD_TYPES'  => array(
+				'gen_id'        => 'int',
+				'gen_type'      => 'str',
+				'gen_datestamp' => 'int',
+				'gen_user_id'   => 'int',
+				'gen_ip'        => 'str',
+				'gen_intdata'   => 'int',
+				'gen_chardata'  => 'array',
+			),
+		);
+
+		$id = $this->db->insert('generic', $data);
+		$this->assertGreaterThan(0, $id);
+
+		$row = $this->db->retrieve('generic', 'gen_datestamp, gen_chardata', 'gen_id = '.(int) $id);
+		$this->assertSame('12', $row['gen_datestamp'], "'int' field type should cast the value");
+		$this->assertSame($chardata, e107::unserialize($row['gen_chardata']), "'array' field type should serialize round-trip");
+
+		$result = $this->db->update('generic', array(
+			'data'          => array('gen_datestamp' => 'gen_datestamp+5'),
+			'_FIELD_TYPES'  => array('gen_datestamp' => 'cmd'),
+			'WHERE'         => 'gen_id = '.(int) $id,
+		));
+		$this->assertEquals(1, $result, "'cmd' field type update failed");
+
+		$actual = $this->db->retrieve('generic', 'gen_datestamp', 'gen_id = '.(int) $id);
+		$this->assertSame('17', $actual, "'cmd' field type should evaluate as SQL");
+	}
+
+	public function testWritePathReturnContracts()
+	{
+		$this->db->delete('generic', 'gen_type = "write-path-contract"');
+
+		$base = array(
+			'gen_type'      => 'write-path-contract',
+			'gen_datestamp' => 100,
+			'gen_user_id'   => 1,
+			'gen_ip'        => '127.0.0.1',
+			'gen_intdata'   => 1,
+			'gen_chardata'  => 'a',
+		);
+
+		// REPLACE: 1 = added, 2 = replaced (delete + insert)
+		$first = $this->db->replace('generic', $base);
+		$this->assertEquals(1, $first, 'REPLACE of a new row should report 1');
+		$id = $this->db->lastInsertId();
+		$this->assertGreaterThan(0, $id);
+
+		$row = $base;
+		$row['gen_id'] = $id;
+		$row['gen_intdata'] = 2;
+		$second = $this->db->replace('generic', $row);
+		$this->assertEquals(2, $second, 'REPLACE of an existing row should report 2');
+
+		// _DUPLICATE_KEY_UPDATE: new ID on insert, true on update, 0 on no change
+		$update = $row;
+		$update['gen_intdata'] = 3;
+		$update['_DUPLICATE_KEY_UPDATE'] = true;
+		$result = $this->db->insert('generic', $update);
+		$this->assertTrue($result, 'Duplicate-key update with changed data should return true');
+
+		$result = $this->db->insert('generic', $update);
+		$this->assertSame(0, $result, 'Duplicate-key update with no change should return 0');
+
+		$fresh = $base;
+		$fresh['gen_intdata'] = 4;
+		$fresh['_DUPLICATE_KEY_UPDATE'] = true;
+		$result = $this->db->insert('generic', $fresh);
+		$this->assertGreaterThan(0, $result, 'Fresh duplicate-key insert should return the new ID');
+	}
 	public function testDb_QueryCount()
 	{
 		$this->db->select('user', '*');
@@ -999,6 +1421,19 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 
 		$result = $this->db->escape("Can't", true);
 		$this->assertEquals("Can\'t", $result);
+	}
+
+	public function testQuoteStringLiteral()
+	{
+		$value = "Can't; -- \\ \"mixed\"";
+		$literal = $this->db->quoteStringLiteral($value);
+
+		$this->assertSame("'", substr($literal, 0, 1));
+		$this->assertSame("'", substr($literal, -1));
+
+		$this->db->gen('SELECT '.$literal.' AS roundtrip');
+		$row = $this->db->fetch();
+		$this->assertSame($value, $row['roundtrip']);
 	}
 
 	public function testDb_Table_exists()
