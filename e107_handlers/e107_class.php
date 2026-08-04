@@ -200,7 +200,6 @@ class e107
 		'e_bbcode'                       => '{e_HANDLER}bbcode_handler.php',
 		'e_bb_base'                      => '{e_HANDLER}bbcode_handler.php',
 		'e_customfields'                 => '{e_HANDLER}e_customfields_class.php',
-		'e_db_filter'                    => '{e_HANDLER}e_db_filter_class.php',
 		'e_emote'                        => '{e_HANDLER}e_emote_class.php',
 		'e_file'                         => '{e_HANDLER}file_class.php',
 		'e_file_inspector_json_phar'     => '{e_HANDLER}e_file_inspector_json_phar.php',
@@ -221,12 +220,15 @@ class e107
 		'e_parse_shortcode'              => '{e_HANDLER}shortcode_handler.php',
 		'e_plugin'                       => '{e_HANDLER}plugin_class.php',
 		'e_profanity'                    => '{e_HANDLER}e_profanity_class.php',
+		'e_random'                       => '{e_HANDLER}random_handler.php',
+		'e_random_exception'             => '{e_HANDLER}random_handler.php',
 		'e_ranks'                        => '{e_HANDLER}e_ranks_class.php',
 		'e_render'                       => '{e_HANDLER}e_render_class.php',
 		'e_search'                       => '{e_HANDLER}search_class.php',
 		'e_shortcode'                    => '{e_HANDLER}shortcode_handler.php',
 		'e_system_user'                  => '{e_HANDLER}user_model.php',
 		'e_theme'                        => '{e_HANDLER}theme_handler.php',
+		'e_token_injector'               => '{e_HANDLER}token_injector_handler.php',
 		'e_upgrade'                      => '{e_HANDLER}e_upgrade_class.php',
 		'e_user_model'                   => '{e_HANDLER}user_model.php',
 		'e_user'                         => '{e_HANDLER}user_model.php',
@@ -1661,11 +1663,12 @@ class e107
 	}
 
 	/**
-	 * Retrieve DB singleton object based on the
-	 * $instance_id
+	 * Retrieve the database connection singleton (class alias: e_db) for the
+	 * given instance id.
 	 *
-	 * @param string $instance_id
-	 * @return mixed|e_db
+	 * @param string $instance_id '' for the site database, or the id of a
+	 *                            named secondary connection.
+	 * @return \e107\Database\ConnectionInterface
 	 */
 	public static function getDb($instance_id = '')
 	{
@@ -3969,6 +3972,7 @@ class e107
 
 		$wrapper = strtoupper($id).'_WRAPPER'; // see contact_template.php
 		$wrapperRegPath = 'templates/wrapper/'.$id;
+		$sourceRegPath = 'templates/source/'.$path;
 
 		// Use: list($pre,$post) = explode("{---}",$text,2);
 
@@ -3976,37 +3980,55 @@ class e107
 
 		if(self::getRegistry($regPath) === null)
 		{
-			(deftrue('E107_DEBUG_LEVEL') ? include_once($path) : @include_once($path));
-			self::setRegistry($regPath, (isset($$var) ? $$var : array()));
+			// One physical file can back several registry paths, e.g. the override ('/ext')
+			// and non-override flavours when the theme provides no override, but include_once()
+			// populates $$var only on the first inclusion. What the file defines is therefore
+			// captured once per $path and re-read for every later registry path it backs.
+			$source = self::getRegistry($sourceRegPath);
+
+			if($source === null)
+			{
+				(deftrue('E107_DEBUG_LEVEL') ? include_once($path) : @include_once($path));
+				$source = array(
+					'template' => (isset($$var) ? $$var : array()),
+					'info'     => (isset($$var_info) && is_array($$var_info) ? $$var_info : array()),
+					'sc_style' => (isset($SC_WRAPPER) ? $SC_WRAPPER : null),
+					'wrapper'  => (isset($$wrapper) && !empty($$wrapper) && is_array($$wrapper) ? $$wrapper : null),
+				);
+				self::setRegistry($sourceRegPath, $source);
+			}
+
+			self::setRegistry($regPath, $source['template']);
 
 			// sc_style not a global anymore and uppercase
 
             // Fix template merge issue - no-wrapper sent to avoid sc wrappers confusions
             if(!$noWrapper)
             {
-                if(isset($SC_WRAPPER))
+                if($source['sc_style'] !== null)
                 {
                     if(E107_DBG_BBSC)
                     {
-                        self::getMessage()->addDebug("Found deprecated \$SC_WRAPPER: ".print_a($SC_WRAPPER, true));
+                        self::getMessage()->addDebug("Found deprecated \$SC_WRAPPER: ".print_a($source['sc_style'], true));
                     }
-                    self::scStyle($SC_WRAPPER);
+                    self::scStyle($source['sc_style']);
                 }
 
                 // ID_WRAPPER support
-                if(isset($$wrapper) && !empty($$wrapper) && is_array($$wrapper))
+                if($source['wrapper'] !== null)
                 {
                     if(E107_DBG_BBSC)
                     {
                         self::getMessage()->addDebug("Found ID wrapper: ".$wrapper);
                     }
-                    self::setRegistry($wrapperRegPath, $$wrapper);
+                    self::setRegistry($wrapperRegPath, $source['wrapper']);
                 }
             }
 		}
 		if(self::getRegistry($regPathInfo) === null)
 		{
-			self::setRegistry($regPathInfo, (isset($$var_info) && is_array($$var_info) ? $$var_info : array()));
+			$source = self::getRegistry($sourceRegPath);
+			self::setRegistry($regPathInfo, (is_array($source) && isset($source['info']) ? $source['info'] : array()));
 		}
 
 		$ret = (!$info ? self::getRegistry($regPath) : self::getRegistry($regPathInfo));
@@ -6852,14 +6874,20 @@ class e107
 	        return false;
 	    }
 
+		$curVersion = str_replace(' (git)', '', $e107info['e107_version']);
+
         $xml  = self::getXml();
         $file = "https://e107.org/releases.php";
+
+		if(self::updateChannel($curVersion) === 'preview')
+		{
+			$file .= '?channel=preview';
+		}
+
         if(!$xdata = $xml->loadXMLfile($file,true))
         {
             return false;
         }
-
-		$curVersion = str_replace(' (git)', '', $e107info['e107_version']);
 
 		if(empty($xdata['core'][0]['@attributes']['version']))
 		{
@@ -6888,6 +6916,37 @@ class e107
 
 		return false;
 
+	}
+
+	/**
+	 * Resolve which release channel to poll for core updates.
+	 * The core pref 'update_channel' ('stable'|'preview') wins when set; otherwise
+	 * prerelease versions (e.g. 2.4.0-alpha1) auto-detect the preview channel.
+	 * @param string|null $curVersion - current e107 version; read from ver.php when omitted.
+	 * @return string 'stable' or 'preview'
+	 */
+	public static function updateChannel($curVersion = null)
+	{
+		$pref = self::getPref('update_channel');
+
+		if($pref === 'stable' || $pref === 'preview')
+		{
+			return $pref;
+		}
+
+		if($curVersion === null)
+		{
+			$e107info = array();
+
+			if(is_readable(e_ADMIN."ver.php"))
+			{
+				include(e_ADMIN."ver.php"); // $e107info['e107_version'];
+			}
+
+			$curVersion = isset($e107info['e107_version']) ? $e107info['e107_version'] : '';
+		}
+
+		return preg_match('/-(alpha|beta|RC)\d/i', $curVersion) ? 'preview' : 'stable';
 	}
 
 	/**

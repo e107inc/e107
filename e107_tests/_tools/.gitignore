@@ -1,0 +1,5 @@
+# Dependencies are restored with `composer install` (see composer.json/.lock).
+/vendor/
+
+# Generated scan output.
+/catalog.json

@@ -303,7 +303,10 @@ e107::coreLan('userclass2', true);
 			if (isset($_POST['flatten_class_tree'])) // Remove the default tree
 			{
 				$message = UCSLAN_65;
-				$sql->update('userclass_classes', "userclass_parent='0'");
+				$sql->createQueryBuilder()
+					->update('userclass_classes')
+					->set('userclass_parent', '0')
+					->execute();
 				$e_userclass->calc_tree();
 				$e_userclass->save_tree();
 				$e_userclass->readTree(TRUE);		// Need to re-read the tree to show correct info

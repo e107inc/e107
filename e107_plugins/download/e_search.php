@@ -27,14 +27,17 @@ class download_search extends e_search // include plugin-folder in the name.
 		
 		$catList[] = array('id' => 'all', 'title' => LAN_SEARCH_51);
 		
-		if ($sql ->gen("SELECT download_category_id, download_category_name FROM #download_category WHERE download_category_parent != 0 AND download_category_class IN (".USERCLASS_LIST.")")) 
+		$catRows = $sql->createQueryBuilder()
+			->select('download_category_id', 'download_category_name')->from('download_category')
+			->where('download_category_parent', '!=', 0)
+			->whereIn('download_category_class', explode(',', USERCLASS_LIST))
+			->fetchAll();
+
+		foreach($catRows as $row)
 		{
-			while($row = $sql->fetch()) 
-			{
-				$catList[] = array('id' => $row['download_category_id'], 'title' => $row['download_category_name']);
-			//	$advanced_caption['title'][$row['category_id']] = 'News -> '.$row['category_name'];
-			}
-		}			
+			$catList[] = array('id' => $row['download_category_id'], 'title' => $row['download_category_name']);
+		//	$advanced_caption['title'][$row['category_id']] = 'News -> '.$row['category_name'];
+		}
 				
 				
 		$search = array(

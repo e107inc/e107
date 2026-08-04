@@ -78,9 +78,12 @@ class _blank_sitelink // include plugin-folder in the name.
 		$tp = e107::getParser();
 		$sublinks = array();
 		
-		$sql->select("blank","*","blank_id != '' ");
-		
-		while($row = $sql->fetch())
+		$rows = $sql->createQueryBuilder()
+			->select('*')->from('blank')
+			->where('blank_id', '!=', '')
+			->fetchAll();
+
+		foreach($rows as $row)
 		{
 			$sublinks[] = array(
 				'link_name'			=> $tp->toHTML($row['blank_name'],'','TITLE'),

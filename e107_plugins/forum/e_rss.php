@@ -42,14 +42,21 @@ user_name (creator of topic in v1 in 'username' format)
 user_email (email address of user from user table) 
 */
 
-// v2.x Standard 
+// v2.x Standard
 class forum_rss // plugin-folder + '_rss'
 {
 	private $rssQuery;
 
 	/**
-	 * Admin RSS Configuration 
-	 */		
+	 * The ON-condition fragment that restricts a #forum_post join to the first
+	 * post of each thread (or, negated, to the replies). The MIN(post_id)
+	 * sub-query carries no user input; #forum_post is resolved at execute time.
+	 */
+	const FIRST_POST_SUBQUERY = '(SELECT MIN(post_id) FROM #forum_post GROUP BY post_thread)';
+
+	/**
+	 * Admin RSS Configuration
+	 */
 	function config() 
 	{
 		$config = array();
@@ -164,45 +171,21 @@ class forum_rss // plugin-folder + '_rss'
 			// List of all forum topics, including content of first post. Does not list replies. 
 			case 'forumthreads':
 			case 6:
-				$rssQuery =
-					"SELECT 
-						t.thread_id, 
-						t.thread_name, 
-						t.thread_datestamp, 
-						t.thread_user,
-						t.thread_user_anon,  
-						p.post_entry, 
-						p.post_datestamp, 
-						p.post_user_anon, 
-						p.post_user, 
-						u.user_name, 
-						u.user_email, 
-						f.forum_sef 
-					FROM 
-						#forum_thread AS t
-					LEFT JOIN
-						#forum_post as p
-						ON p.post_thread = t.thread_id 
-						AND p.post_id in 
-						(
-							SELECT MIN(post_id) 
-							FROM #forum_post 
-							GROUP BY post_thread
-						)
-					LEFT JOIN 
-						#user AS u 
-						ON t.thread_user = u.user_id
-					LEFT JOIN 
-						#forum AS f 
-						ON f.forum_id = t.thread_forum_id
-					WHERE 
-						f.forum_class IN (".USERCLASS_LIST.") 
-					ORDER BY 
-						t.thread_datestamp DESC 
-					LIMIT 0," . $limit;
-
-				$sqlrss->gen($rssQuery);
-				$tmp 	= $sqlrss->db_getList();
+				$qb = $sqlrss->createQueryBuilder();
+				$tmp = $qb
+					->select(
+						't.thread_id', 't.thread_name', 't.thread_datestamp', 't.thread_user',
+						't.thread_user_anon', 'p.post_entry', 'p.post_datestamp', 'p.post_user_anon',
+						'p.post_user', 'u.user_name', 'u.user_email', 'f.forum_sef'
+					)
+					->from('forum_thread', 't')
+					->leftJoin('forum_post', 'p', $qb->raw('p.post_thread = t.thread_id AND p.post_id IN ' . self::FIRST_POST_SUBQUERY))
+					->leftJoin('user', 'u', $qb->expr()->compareColumns('t.thread_user', 'u.user_id'))
+					->leftJoin('forum', 'f', $qb->expr()->compareColumns('f.forum_id', 't.thread_forum_id'))
+					->whereIn('f.forum_class', explode(',', USERCLASS_LIST))
+					->orderBy('t.thread_datestamp', 'DESC')
+					->setFirstResult(0)->setMaxResults((int) $limit)
+					->fetchAll();
 
 				$rss 	= array();
 				$i 		= 0;
@@ -255,42 +238,22 @@ class forum_rss // plugin-folder + '_rss'
 			// List of all forum posts (first post and replies) across all forums
 			case 'forumposts':
 			case 7:
-				$rssQuery = "
-				SELECT
-				    t.thread_id, 
-				    t.thread_name, 
-				    t.thread_datestamp, 
-				    t.thread_user,   
-				    f.forum_id, 
-				    f.forum_name, 
-				    f.forum_class, 
-				    f.forum_sef, 
-				    p.post_entry, 
-				    p.post_datestamp, 
-				    p.post_user, 
-				    p.post_user_anon, 
-				    u.user_name, 
-				    u.user_email
-				FROM
-				    #forum_thread AS t
-				LEFT JOIN 
-					#forum_post as p 
-				    ON p.post_thread = t.thread_id
-				LEFT JOIN 
-					#user AS u
-					ON p.post_user = u.user_id
-				LEFT JOIN 
-					#forum AS f
-					ON f.forum_id = t.thread_forum_id
-				WHERE
-				    f.forum_class IN(".USERCLASS_LIST.")
-				ORDER BY
-				    t.thread_datestamp
-				DESC
-				LIMIT 0," . $limit;
-
-				$sqlrss->gen($rssQuery);
-				$tmp 	= $sqlrss->db_getList();
+				$qb = $sqlrss->createQueryBuilder();
+				$tmp = $qb
+					->select(
+						't.thread_id', 't.thread_name', 't.thread_datestamp', 't.thread_user',
+						'f.forum_id', 'f.forum_name', 'f.forum_class', 'f.forum_sef',
+						'p.post_entry', 'p.post_datestamp', 'p.post_user', 'p.post_user_anon',
+						'u.user_name', 'u.user_email'
+					)
+					->from('forum_thread', 't')
+					->leftJoin('forum_post', 'p', $qb->expr()->compareColumns('p.post_thread', 't.thread_id'))
+					->leftJoin('user', 'u', $qb->expr()->compareColumns('p.post_user', 'u.user_id'))
+					->leftJoin('forum', 'f', $qb->expr()->compareColumns('f.forum_id', 't.thread_forum_id'))
+					->whereIn('f.forum_class', explode(',', USERCLASS_LIST))
+					->orderBy('t.thread_datestamp', 'DESC')
+					->setFirstResult(0)->setMaxResults((int) $limit)
+					->fetchAll();
 				
 				$rss 	= array();
 				$i 		= 0;
@@ -359,83 +322,36 @@ class forum_rss // plugin-folder + '_rss'
 				}
 
 				// Select first post (initial post in topic)
-				$this->rssQuery = "
-				SELECT 
-					t.thread_id, 
-					t.thread_name, 
-					t.thread_datestamp, 
-					t.thread_user, 
-					p.post_entry, 
-					p.post_datestamp, 
-					u.user_name, 
-					u.user_email, 
-					f.forum_sef 
-				FROM 
-					#forum_thread AS t
-				LEFT JOIN
-					#forum_post as p
-					ON p.post_thread = t.thread_id 
-					AND p.post_id IN
-					(
-						SELECT MIN(post_id) 
-						FROM #forum_post 
-						GROUP BY post_thread
+				$qb = $sqlrss->createQueryBuilder();
+				$topic = $qb
+					->select(
+						't.thread_id', 't.thread_name', 't.thread_datestamp', 't.thread_user',
+						'p.post_entry', 'p.post_datestamp', 'u.user_name', 'u.user_email', 'f.forum_sef'
 					)
-				LEFT JOIN 
-					#user AS u 
-					ON t.thread_user = u.user_id
-				LEFT JOIN 
-					#forum AS f 
-					ON f.forum_id = t.thread_forum_id
-				WHERE 
-					f.forum_class IN (".USERCLASS_LIST.") 
-				AND
-				    p.post_thread = ".intval($topicid)."
-				LIMIT 0,1";
-
-
-				$sqlrss->gen($this->rssQuery);
-				$topic = $sqlrss->fetch();
+					->from('forum_thread', 't')
+					->leftJoin('forum_post', 'p', $qb->raw('p.post_thread = t.thread_id AND p.post_id IN ' . self::FIRST_POST_SUBQUERY))
+					->leftJoin('user', 'u', $qb->expr()->compareColumns('t.thread_user', 'u.user_id'))
+					->leftJoin('forum', 'f', $qb->expr()->compareColumns('f.forum_id', 't.thread_forum_id'))
+					->whereIn('f.forum_class', explode(',', USERCLASS_LIST))
+					->where('p.post_thread', (int) $topicid)
+					->setFirstResult(0)->setMaxResults(1)
+					->fetchRow();
 
 				// Replies (exclude first post)
-				$this->rssQuery = "
-				SELECT 
-					t.thread_id, 
-					t.thread_name, 
-					t.thread_datestamp, 
-					t.thread_user, 
-					t.thread_user_anon,
-					p.post_entry, 
-					p.post_datestamp, 
-					p.post_user, 
-					p.post_user_anon,
-					u.user_name, 
-					u.user_email, 
-					f.forum_sef 
-				FROM 
-					#forum_thread AS t
-				LEFT JOIN
-					#forum_post as p
-					ON p.post_thread = t.thread_id 
-					AND p.post_id NOT IN
-					(
-						SELECT MIN(post_id) 
-						FROM #forum_post 
-						GROUP BY post_thread
+				$qb = $sqlrss->createQueryBuilder();
+				$replies = $qb
+					->select(
+						't.thread_id', 't.thread_name', 't.thread_datestamp', 't.thread_user',
+						't.thread_user_anon', 'p.post_entry', 'p.post_datestamp', 'p.post_user',
+						'p.post_user_anon', 'u.user_name', 'u.user_email', 'f.forum_sef'
 					)
-				LEFT JOIN 
-					#user AS u 
-					ON t.thread_user = u.user_id
-				LEFT JOIN 
-					#forum AS f 
-					ON f.forum_id = t.thread_forum_id
-				WHERE 
-					f.forum_class IN (".USERCLASS_LIST.") 
-				AND
-				    p.post_thread = ".intval($topicid);
-
-				$sqlrss->gen($this->rssQuery);
-				$replies = $sqlrss->db_getList();
+					->from('forum_thread', 't')
+					->leftJoin('forum_post', 'p', $qb->raw('p.post_thread = t.thread_id AND p.post_id NOT IN ' . self::FIRST_POST_SUBQUERY))
+					->leftJoin('user', 'u', $qb->expr()->compareColumns('t.thread_user', 'u.user_id'))
+					->leftJoin('forum', 'f', $qb->expr()->compareColumns('f.forum_id', 't.thread_forum_id'))
+					->whereIn('f.forum_class', explode(',', USERCLASS_LIST))
+					->where('p.post_thread', (int) $topicid)
+					->fetchAll();
 
 				$rss 	= array();
 				$i 		= 0;
@@ -514,48 +430,22 @@ class forum_rss // plugin-folder + '_rss'
 					return false;
 				}
 
-				$this->rssQuery = "
-				SELECT 
-					f.forum_id, 
-					f.forum_name, 
-					f.forum_class, 
-					f.forum_sef,
-					t.thread_id,
-					t.thread_name,
-					t.thread_datestamp, 
-					t.thread_user, 
-					t.thread_user_anon, 
-					p.post_entry,
-					u.user_name, 
-					u.user_email
-				FROM 
-					#forum_thread as t
-				LEFT JOIN 
-					#user AS u 
-					ON t.thread_user = u.user_id
-				LEFT JOIN 
-					#forum AS f 
-					ON f.forum_id = t.thread_forum_id
-				LEFT JOIN
-					#forum_post as p
-					ON p.post_thread = t.thread_id 
-					AND p.post_id IN
-					(
-						SELECT MIN(post_id) 
-						FROM #forum_post 
-						GROUP BY post_thread
+				$qb = $sqlrss->createQueryBuilder();
+				$tmp = $qb
+					->select(
+						'f.forum_id', 'f.forum_name', 'f.forum_class', 'f.forum_sef',
+						't.thread_id', 't.thread_name', 't.thread_datestamp', 't.thread_user',
+						't.thread_user_anon', 'p.post_entry', 'u.user_name', 'u.user_email'
 					)
-				WHERE 
-					t.thread_forum_id = ".intval($topicid)." 
-				AND 
-					f.forum_class IN (".USERCLASS_LIST.") 
-				ORDER BY 
-					t.thread_datestamp 
-				DESC 
-				LIMIT 0," . $limit;
-
-				$sqlrss->gen($this->rssQuery);
-				$tmp = $sqlrss->db_getList();
+					->from('forum_thread', 't')
+					->leftJoin('user', 'u', $qb->expr()->compareColumns('t.thread_user', 'u.user_id'))
+					->leftJoin('forum', 'f', $qb->expr()->compareColumns('f.forum_id', 't.thread_forum_id'))
+					->leftJoin('forum_post', 'p', $qb->raw('p.post_thread = t.thread_id AND p.post_id IN ' . self::FIRST_POST_SUBQUERY))
+					->where('t.thread_forum_id', (int) $topicid)
+					->whereIn('f.forum_class', explode(',', USERCLASS_LIST))
+					->orderBy('t.thread_datestamp', 'DESC')
+					->setFirstResult(0)->setMaxResults((int) $limit)
+					->fetchAll();
 				
 				//	$this->contentType = $this->contentType . " : " . $tmp[1]['forum_name'];
 				

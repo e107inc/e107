@@ -33,7 +33,7 @@ if (isset($_POST['update_settings']))
 		$userData['data'] = array();
 		if ($_POST['a_password'] != '' && $_POST['a_password2'] != '' && ($_POST['a_password'] == $_POST['a_password2'])) 
 		{
-			$userData['data']['user_password'] = $sql->escape($userMethods->HashPassword($_POST['a_password'], $currentUser['user_loginname']), FALSE);
+			$userData['data']['user_password'] = $userMethods->HashPassword($_POST['a_password'], $currentUser['user_loginname']);
 			unset($_POST['a_password']);
 			unset($_POST['a_password2']);
 
@@ -50,7 +50,14 @@ if (isset($_POST['update_settings']))
 			$userData['WHERE'] = 'user_id='.USERID;
 			validatorClass::addFieldTypes($userMethods->userVettingInfo,$userData, $userMethods->otherFieldTypes);
 	
-			$check = $sql->update('user',$userData);
+			$qb = $sql->createQueryBuilder();
+			$qb->update('user');
+			foreach ($userData['data'] as $col => $val)
+			{
+				$type = isset($userData['_FIELD_TYPES'][$col]) ? $userData['_FIELD_TYPES'][$col] : 'string';
+				$qb->setTyped($col, $val, $type);
+			}
+			$check = $qb->where('user_id', (int) USERID)->execute();
 			if ($check) 
 			{
 				e107::getLog()->add('ADMINPW_01', '');

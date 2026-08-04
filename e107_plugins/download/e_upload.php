@@ -69,9 +69,14 @@ class download_upload
 
 
 		$sql = e107::getDb();
-		$qry = "SELECT download_category_id,download_category_name,download_category_parent FROM `#download_category`  WHERE download_category_class IN (".USERCLASS_LIST.")  ORDER BY download_category_order, download_category_parent";
+		$data = $sql->createQueryBuilder()
+			->select('download_category_id', 'download_category_name', 'download_category_parent')
+			->from('download_category')
+			->whereIn('download_category_class', explode(',', USERCLASS_LIST))
+			->orderBy('download_category_order')->addOrderBy('download_category_parent')
+			->fetchAll();
 
-  	  	if (!$data = $sql->retrieve($qry,true))
+  	  	if (!$data)
 	  	{
 	    	return array();
 	  	}

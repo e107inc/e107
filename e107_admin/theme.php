@@ -40,25 +40,6 @@ e107::css('inline', '
 //e107::js('core','bootstrap-suggest/bootstrap-suggest.js');
 //e107::css('core','bootstrap-suggest/bootstrap-suggest.css');
 e107::library('load', 'bootstrap-suggest');
-/*
-e107::js('footer-inline', "
-$('textarea').suggest(':', {
-  data: function(q, lookup) {
- 
-      $.getJSON('theme.php', {q : q }, function(data) {
-			console.log(data);
-			console.log(lookup);
-			lookup.call(data);
-      });
-
-      // we aren't returning any
-
-  }
-  
-});
-
-
-");*/
 
 
 e107::js('footer-inline', "
@@ -185,20 +166,6 @@ class theme_admin extends e_admin_dispatcher
 				exit;
 			break;
 
-				/*
-				case 'download':
-					$string =  base64_decode($_GET['src']);
-					parse_str($string, $p);
-					$mp = $themec->getMarketplace();
-					$mp->generateAuthKey($e107SiteUsername, $e107SiteUserpass);
-					// Server flush useless. It's ajax ready state 4, we can't flush (sadly) before that (at least not for all browsers)
-					echo "<pre>Connecting...\n"; flush();
-					// download and flush
-					$mp->download($p['id'], $p['mode'], $p['type']);
-					echo "</pre>"; flush();
-					exit;
-				break;
-				*/
 
 				case 'info':
 					if(!empty($_GET['src']))
@@ -219,28 +186,6 @@ class theme_admin extends e_admin_dispatcher
 				break;
 
 			}
-		/*
-			if(vartrue($_GET['src'])) // Process Theme Download.
-			{
-				$string =  base64_decode($_GET['src']);
-				parse_str($string,$p);
-
-				if(vartrue($_GET['info']))
-				{
-					echo $themec->renderThemeInfo($p);
-				//	print_a($p);
-					exit;
-				}
-
-				$remotefile = $p['url'];
-
-				e107::getFile()->download($remotefile,'theme');
-				exit;
-
-			}
-		*/
-			// Theme Info Ajax
-			// FIXME  addd action=preview to the url, remove this block
 			if(!empty($_GET['id']))
 			{
 				$tm = (string) $_GET['id'];
@@ -519,128 +464,6 @@ class theme_admin_ui extends e_admin_ui
 			return $frm->search($name, $searchVal, $submitName, $filterName, $filterArray, $filterVal);
 
 		}
-/*
-		public function OnlinePageOld()
-		{
-			global $e107SiteUsername, $e107SiteUserpass;
-			$xml 	= e107::getXml();
-			$mes 	= e107::getMessage();
-			$frm 	= e107::getForm();
-
-			require_once(e_HANDLER.'e_marketplace.php');
-
-			$mp 	= new e_marketplace(); // autodetect the best method
-			$from 	= intval(varset($_GET['frm']));
-			$limit 	= 96; // FIXME - ajax pages load
-			$srch 	= preg_replace('/[^\w]/','', vartrue($_GET['srch']));
-
-			// check for cURL
-			if(!function_exists('curl_init'))
-			{
-				$mes->addWarning(TPVLAN_79);
-			}
-
-			// auth
-			$mp->generateAuthKey($e107SiteUsername, $e107SiteUserpass);
-
-			// do the request, retrieve and parse data
-			$xdata = $mp->call('getList', array(
-				'type' => 'theme',
-				'params' => array('limit' => $limit, 'search' => $srch, 'from' => $from)
-			));
-			$total = $xdata['params']['count'];
-
-
-
-			$amount =$limit;
-
-
-			$c = 1;*/
-
-		/*	$text = "<form class='form-search' action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='get'>";
-			$text .= '<div id="myCarousel"  class="carousel slide" data-interval="false">';
-			$text .= "<div class='form-inline clearfix row-fluid'>";
-			$text .= $this->search('srch', $srch, 'go', $filterName, $filterArray, $filterVal).$frm->hidden('mode','online');
-			$text .= '<div class="btn-group" style="margin-left:10px"><a class="btn btn-primary" href="#myCarousel" data-slide="prev">&lsaquo;</a><a class="btn btn-primary" href="#myCarousel" data-slide="next">&rsaquo;</a></div>';
-			$text .= "{CAROUSEL_INDICATORS}";
-			$text .= "</div>";
-			$text .= '<div id="shop" style="margin-top:10px;min-height:585px" class=" carousel-inner">';*/
-/*
-			if(is_array($xdata['data'] ))
-			{
-
-				$text = '<div  class="active item">';
-
-				$slides = array();
-
-				foreach($xdata['data'] as $r)
-				{
-					if(E107_DBG_PATH)
-					{
-						$mes->addDebug(print_a($r,true));
-					}
-
-					$theme = array(
-						'id'			=> $r['params']['id'],
-						'type'			=> 'theme',
-						'mode'			=> $r['params']['mode'],
-						'name'			=> stripslashes($r['name']),
-						'category'		=> $r['category'],
-						'preview' 		=> varset($r['screenshots']['image']),
-						'date'			=> $r['date'],
-						'version'		=> $r['version'],
-						'thumbnail'		=> $r['thumbnail'],
-						'url'			=> $r['urlView'],
-						'author'		=> $r['author'],
-						'website'		=> $r['authorUrl'],
-						'compatibility'	=> $r['compatibility'],
-						'description'	=> $r['description'],
-						'price'			=> $r['price'],
-						'livedemo'		=> $r['livedemo'],
-					);
-
-
-					$text .= $this->themeObj->renderTheme(FALSE, $theme);
-
-					$c++;
-
-					if($c == 19)
-					{
-						$text .= '</div><div class="item">';
-						$slides[] = 1;
-						$c = 1;
-					}
-
-				}
-
-
-				$text .= "<div class='clear'>&nbsp;</div>";
-				$text .= "</div>";
-				$text .= "</div>";
-			}
-			else
-			{
-				$mes->addInfo(TPVLAN_80);
-			}
-
-			 $indicators = '<ol class="carousel-indicators col-md-6 span6">
-				<li data-target="#myCarousel" data-slide-to="0" class="active"></li>';
-
-			foreach($slides as $key=>$v)
-			{
-				$id = $key + 1;
-				$indicators .= '<li data-target="#myCarousel" data-slide-to="'.$id.'"></li>';
-			}
-
-			$indicators .=	'</ol>';
-
-			$text = str_replace("{CAROUSEL_INDICATORS}",$indicators,$text);
-
-			$text .= "</form>";
-
-			return $text;
-		}
-*/
 
 		public function InfoPage()
 		{
@@ -1084,40 +907,6 @@ class theme_admin_form_ui extends e_admin_form_ui
 	}
 
 
-/*
-	function renderFilter($current_query = array(), $location = '', $input_options = array())
-	{
-		if($this->getController()->getAction() == 'choose')
-		{
-			return parent::renderFilter($current_query,$location,$input_options);
-		}
-		//	print_a($text);
-
-	//	return $text;
-			$text = "<form class='form-search' action='".e_SELF."' id='core-plugin-list-form' method='get'>
-			<fieldset id='admin-ui-list-filter' class='e-filter'>
-			<div class='col-md-12'>";
-		//	$text .= '<div id="myCarousel"  class="carousel slide" data-interval="false">';
-			$text .= "<div class='form-inline clearfix row-fluid'>";
-			$text .= $this->search('srch', $_GET['srch'], 'go');
-
-			$gets = $this->getController()->getQuery();
-
-			foreach($gets as $k=>$v)
-			{
-				if($k == 'srch' || $k == 'go')
-				{
-					continue;
-				}
-				$text .= $this->hidden($k,$v);
-			}
-
-			$text .= $this->renderPagination();
-			$text .= "</div>
-					</div></fieldset></form>";
-
-		return $text;
-	}*/
 
 	function options()
 	{
@@ -1984,19 +1773,4 @@ e107::getAdminUI()->runPage();
 
 require_once(e_ADMIN."footer.php");
 
-/* OBSOLETE - see admin_shortcodes::sc_admin_menu()
-function admin_config_adminmenu() 
-{
-	//global $rp;
-	//$rp->show_options();
-	e107::getRegistry('admin/blank_dispatcher')->renderMenu();
-}
-*/
-
-/* OBSOLETE - done within header.php
-function headerjs() // needed for the checkboxes - how can we remove the need to duplicate this code?
-{
-	return e107::getAdminUI()->getHeader();
-}
-*/
 

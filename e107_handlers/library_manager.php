@@ -152,10 +152,12 @@ class core_library
 					),
 				),
 			),
-			// Override library path to CDN.
-			'library_path'      => 'https://cdn.jsdelivr.net/jquery.once',
-			'path'              => '2.1.2',
-			'version'           => '2.1.2',
+			// Override library path to CDN. The legacy jsDelivr path only
+			// serves up to 2.1.2; the npm path carries 2.2.3, matching the
+			// bundled local copy (see the 'jquery.once' entry below).
+			'library_path'      => 'https://cdn.jsdelivr.net/npm/jquery-once@2.2.3',
+			'path'              => '',
+			'version'           => '2.2.3',
 		);
 
 		// jQuery Once (local).
@@ -1175,12 +1177,20 @@ class e_library_manager
 	/** @var array list of callbacks to track performance  */
 	private $callbacks = array();
 
+	/** @var e_file file handler used for directory scans and remote reads */
+	private $fileHandler;
+
 	/**
 	 * Constructor
 	 * Use {@link getInstance()}, direct instantiating is not possible for signleton objects.
+	 *
+	 * @param e_file|null $fileHandler Injectable file handler; defaults to
+	 *                                 {@see e107::getFile()}. Tests pass a stub
+	 *                                 so version detection never touches the network.
 	 */
-	public function __construct()
+	public function __construct($fileHandler = null)
 	{
+		$this->fileHandler = $fileHandler !== null ? $fileHandler : e107::getFile();
 	}
 
 	/**
@@ -1615,7 +1625,7 @@ class e_library_manager
 		$directories = array();
 
 		// Retrieve list of directories.
-		$file = e107::getFile();
+		$file = $this->fileHandler;
 		$dirs = $file->get_dirs($dir);
 
 		foreach($dirs as $dirName)
@@ -2263,7 +2273,7 @@ class e_library_manager
 		// The library will be cached with version number, so this only run once per library.
 		if(strpos($file, 'http') === 0)
 		{
-			$content = e107::getFile()->getRemoteContent($file);
+			$content = $this->fileHandler->getRemoteContent($file);
 			$tmpFile = tempnam(sys_get_temp_dir(), 'lib_');
 
 			if($tmpFile)

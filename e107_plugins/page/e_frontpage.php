@@ -23,12 +23,22 @@ class page_frontpage // include plugin-folder in the name.
 
 	//	require_once(e_PLUGIN."page/includes/pageHelper.php");
 
-		// Retrieve all custom pages 
-		if($sql->select('page', 'page_id, page_title, page_sef, page_chapter', "menu_name IS NULL OR menu_name=''"))
+		// Retrieve all custom pages
+		$qb = $sql->createQueryBuilder();
+		$rows = $qb
+			->select('page_id', 'page_title', 'page_sef', 'page_chapter')
+			->from('page')
+			->where($qb->expr()->anyOf(
+				$qb->expr()->isNull('menu_name'),
+				$qb->expr()->eq('menu_name', '')
+			))
+			->fetchAll();
+
+		if($rows)
 		{
 			$config['title'] = FRTLAN_30;
 
-			while($row = $sql->fetch())
+			foreach($rows as $row)
 			{
 				/*if(!empty($row['page_chapter']))
 				{

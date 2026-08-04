@@ -21,7 +21,11 @@ class forum_gsitemap // plugin-folder + '_rss'
 
 		$sql = e107::getDb();
 
-		$data = $sql->retrieve("forum", "*", "forum_parent!='0' ORDER BY forum_order ASC", true);
+		$data = $sql->createQueryBuilder()
+			->select('*')->from('forum')
+			->where('forum_parent', '!=', '0')
+			->orderBy('forum_order', 'ASC')
+			->fetchAll();
 
 		foreach($data as $row)
 		{

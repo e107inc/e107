@@ -17,6 +17,7 @@
 
 return [
     'GSLAN_Name' => "Sitemap",
+	/*
     'GSLAN_1' => "Site Link",
     'GSLAN_2' => "Import?",
     'GSLAN_3' => "Type",
@@ -57,4 +58,5 @@ return [
     'GSLAN_38' => "For more information on Google Sitemap protocol, go to <a href='http://www.google.com/webmasters/sitemaps/docs/en/protocol.html'>http://www.google.com/webmasters/sitemaps/docs/en/protocol.html</a>.",
     'GSLAN_39' => "No links in sitemap - import sitelinks?",
     'GSLAN_40' => "Google Sitemap Entries",
+	*/
 ];

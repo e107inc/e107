@@ -101,11 +101,11 @@ class news_import
 	 */
 	function saveData($row)
 	{
-		if(!$result = $this->newsDB->insert('news',$row))
+		if(!$result = $this->newsDB->createQueryBuilder()->insert('news')->valuesTyped($row, $this->newsDB->getFieldDefs('news')['_FIELD_TYPES'])->execute())
 		{
 	     	return 4;
 		}
-	
+
 		//if ($result === FALSE) return 6;
 	
 		return TRUE;
@@ -199,7 +199,7 @@ class newscategory_import
 	 */
 	function saveData($row)
 	{
-		if(!$result = $this->newsDB->insert('news_category',$row))
+		if(!$result = $this->newsDB->createQueryBuilder()->insert('news_category')->valuesTyped($row, $this->newsDB->getFieldDefs('news_category')['_FIELD_TYPES'])->execute())
 		{
 	     	return 4;
 		}

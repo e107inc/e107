@@ -64,8 +64,9 @@ if (isset($_POST['edit_admin']) || $action == "edit")
 {
 	$edid = array_keys($_POST['edit_admin']);
     $theid = intval(($sub_action < 0) ? $edid[0] : $sub_action);
-	if ((!$sql->select("user", "*", "user_id=".$theid))
-		|| !($row = $sql->fetch()))
+	$row = $sql->createQueryBuilder()->select('*')->from('user')
+		->where('user_id', (int) $theid)->fetchRow();
+	if (!$row)
 	{
 		$mes->addDebug("Couldn't find user ID: {$theid}, {$sub_action}, {$edid[0]}");	// Debug code - shouldn't be executed
 	}
@@ -76,8 +77,8 @@ if (isset($_POST['del_admin']) && count($_POST['del_admin']))
 {
 	$delid = array_keys($_POST['del_admin']);
 	$aID = intval($delid[0]);
-	$sql->select("user", "*", "user_id= ".$aID);
-	$row = $sql->fetch();
+	$row = $sql->createQueryBuilder()->select('*')->from('user')
+		->where('user_id', (int) $aID)->fetchRow();
 
 	if ($row['user_id'] == 1)
 	{	// Can't delete main admin
@@ -92,7 +93,9 @@ if (isset($_POST['del_admin']) && count($_POST['del_admin']))
 		exit;
 	}
 
-	$mes->addAuto($sql->update("user", "user_admin=0, user_perms='' WHERE user_id= ".$aID), 'update', ADMSLAN_61, LAN_DELETED_FAILED, false);
+	$mes->addAuto($sql->createQueryBuilder()->update('user')
+		->set('user_admin', 0)->set('user_perms', '')
+		->where('user_id', (int) $aID)->execute(), 'update', ADMSLAN_61, LAN_DELETED_FAILED, false);
 	$logMsg = str_replace(array('[x]', '[y]'),array($aID, $row['user_name']),ADMSLAN_73);
 	e107::getLog()->add('ADMIN_02',$logMsg,E_LOG_INFORMATIVE,'');
 }
@@ -119,7 +122,8 @@ function show_admins()
 
 	
 	
-	$sql->select("user", "*", "user_admin='1'");
+	$adminRows = $sql->createQueryBuilder()->select('*')->from('user')
+		->where('user_admin', '1')->fetchAll();
 
 	$text = "
 	<form action='".e_SELF."' method='post' id='del_administrator'>
@@ -144,7 +148,7 @@ function show_admins()
 
 	";
 
-	while ($row = $sql->fetch())
+	foreach ($adminRows as $row)
 	{
 		//$permtxt = "";
 		$text .= "

@@ -223,7 +223,6 @@ class listclass
 	 */
 	function getContentSections($mode='')
 	{
-		$sql = e107::getDb();
 		global $pref;
 
 		if (!$content_install = isset($pref['plug_installed']['content']))
@@ -236,10 +235,18 @@ class listclass
 		$content_types = array();
 
 		//get top level categories
-		if($mainparents = $sql->gen("SELECT content_id, content_heading FROM #pcontent WHERE content_parent = '0' AND (content_datestamp=0 || content_datestamp < ".time().") AND (content_enddate=0 || content_enddate>".time().") ORDER BY content_heading"))
+		$now = time();
+		$qb = e107::getDb()->createQueryBuilder();
+		$mainparents = $qb->select('content_id', 'content_heading')->from('pcontent')
+			->where('content_parent', '0')
+			->where($qb->expr()->anyOf($qb->expr()->eq('content_datestamp', 0), $qb->expr()->lt('content_datestamp', $now)))
+			->where($qb->expr()->anyOf($qb->expr()->eq('content_enddate', 0), $qb->expr()->gt('content_enddate', $now)))
+			->orderBy('content_heading')
+			->fetchAll();
+		if($mainparents)
 		{
 			$content_name = 'content';
-			while($row = $sql->fetch())
+			foreach($mainparents as $row)
 			{
 				$content_types[] = "content_".$row['content_id'];
 				if(vartrue($mode) == "add")

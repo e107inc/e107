@@ -99,6 +99,74 @@ class e_session
     const SECURITY_LEVEL_INSANE = 10;
 
     /**
+     * A POST carrying no token is allowed through, the behaviour before
+     * GHSA-72q5-94gw-prww
+     * @var int
+     */
+    const TOKEN_CHECK_OFF = 0;
+
+    /**
+     * A POST carrying no token is allowed through but recorded in the admin log,
+     * so an operator can measure what would break before switching enforcement on
+     * @var int
+     */
+    const TOKEN_CHECK_LOG = 1;
+
+    /**
+     * A POST carrying no token is refused
+     * @var int
+     */
+    const TOKEN_CHECK_ENFORCE = 2;
+
+    /**
+     * A POST is accepted if it carries a valid token or if the browser says the
+     * request came from this site. Nothing is locked out: a browser too old to
+     * send Fetch Metadata still has the token to fall back on.
+     * @var int
+     */
+    const CSRF_CHECK_TOKEN_OR_SAME_SITE = 3;
+
+    /**
+     * A POST is accepted only if the browser says the request came from this
+     * site. Tokens are neither minted, published nor read.
+     * @var int
+     */
+    const CSRF_CHECK_SAME_SITE = 4;
+
+    /**
+     * As above, but a sibling host does not count, only this exact origin.
+     * @var int
+     */
+    const CSRF_CHECK_SAME_ORIGIN = 5;
+
+    /**
+     * What an unset, empty or out-of-range csrf_enforce resolves to.
+     *
+     * Deliberately indirect. A site that has never touched the preference
+     * follows e107's recommendation and moves with it, so the recommendation can
+     * be raised in a later release without every operator having to act.
+     *
+     * On this branch it is CSRF_CHECK_SAME_SITE. No token is minted, published
+     * or read, which removes by construction the whole class of fault where a
+     * document that had to issue a write was never handed one. Seven of those
+     * were found in a single release; the eighth is the one nobody has found yet.
+     *
+     * What it costs is the fallback. A browser too old to send Sec-Fetch-Site is
+     * refused rather than admitted on a token, and an upgrade has no opportunity
+     * to ask anyone's browser what it supports. An operator whose visitors need
+     * the fallback sets TOKEN_CHECK_ENFORCE or CSRF_CHECK_TOKEN_OR_SAME_SITE. A
+     * fresh install is asked on its behalf: if the browser doing the installing
+     * sent no Sec-Fetch-Site, install.php writes TOKEN_CHECK_ENFORCE outright
+     * rather than leaving the preference unset.
+     *
+     * release/v2.3.x makes the opposite trade, because a hotfix to a release that
+     * is already locking people out cannot introduce a second way to be locked
+     * out.
+     * @var int
+     */
+    const CSRF_CHECK_RECOMMENDED = self::CSRF_CHECK_SAME_SITE;
+
+    /**
      * Session save path
      * @var string
      */
@@ -149,6 +217,7 @@ class e_session
         'domain'     => '',
         'secure'     => false,
         'httponly'   => true,
+        'samesite'   => 'Lax',
     );
 
     /**
@@ -223,6 +292,9 @@ class e_session
             $options['lifetime']    = (int) e107::getPref('session_lifetime', 86400);
             $options['path']        = e107::getPref('session_cookie_path', ''); // FIXME - new pref
             $options['secure']      = e107::getPref('ssl_enabled', false); //
+            $options['samesite']    = defined('e_SESSION_SAMESITE')
+                ? e_SESSION_SAMESITE
+                : e107::getPref('session_cookie_samesite', 'Lax');
 
             e107::getDebug()->log("Session Save Method: ".$config['SaveMethod']);
 
@@ -502,6 +574,378 @@ public function getData($key = null, $clear = false)
     }
 
     /**
+     * Runtime override of the token check mode, or null to follow the preference.
+     *
+     * @var int|null
+     */
+    private static $_tokenCheckMode = null;
+
+    /**
+     * Which proof {@see e_core_session::check()} demands that a POST came from
+     * this site, and how hard it is on a request that offers none.
+     *
+     * This is the designated API for the question. Read it here rather than
+     * reaching for the preference, so the runtime override below is honoured
+     * everywhere, and so an unset preference resolves in one place.
+     *
+     * The numbers are a menu, not a ladder. Modes 1 and 2 ask the document for a
+     * token; modes 4 and 5 ask the browser where the request came from; mode 3
+     * accepts either. Higher is not uniformly stricter, because a token and a
+     * Fetch Metadata header protect different populations: 4 turns away a browser
+     * too old to send the header, which 2 would have admitted on its token.
+     *
+     * @return int one of the TOKEN_CHECK_* or CSRF_CHECK_* constants
+     */
+    public static function tokenCheckMode()
+    {
+        if(self::$_tokenCheckMode !== null)
+        {
+            // An override means "use exactly this mode", which is what makes it
+            // useful for exercising a strict mode on a connection that could
+            // never satisfy it. It deliberately skips the degradation below.
+            return self::$_tokenCheckMode;
+        }
+
+        $pref = e107::getPref('csrf_enforce', null);
+
+        if($pref === null || $pref === '' || !is_numeric($pref))
+        {
+            $mode = self::CSRF_CHECK_RECOMMENDED;
+        }
+        else
+        {
+            $pref = (int) $pref;
+
+            // An out-of-range value is a typo, a bad migration or a preference
+            // written by a newer release than this one. None of those are a
+            // reason to guess, so fall back on the recommendation rather than on
+            // the nearest number, which could be Off.
+            $mode = ($pref < self::TOKEN_CHECK_OFF || $pref > self::CSRF_CHECK_SAME_ORIGIN)
+                ? self::CSRF_CHECK_RECOMMENDED
+                : $pref;
+        }
+
+        // A mode that asks only the browser cannot be satisfied where the browser
+        // is never going to answer. Sec-Fetch-Site is appended only to a
+        // potentially trustworthy origin, so on a site served over plain HTTP no
+        // browser sends it, ever, and modes 4 and 5 would refuse every write
+        // forever with no token published to fall back on. That is not a strict
+        // policy, it is an unusable site, so ask for the token instead.
+        //
+        // This applies to a stored 4 or 5 as well as to the recommendation. An
+        // operator cannot opt into being locked out, and the value may have
+        // arrived from a database, an XML import or a site that has since moved
+        // off HTTPS, none of which the preferences page ever saw.
+        if($mode !== self::TOKEN_CHECK_OFF && !self::modeUsesToken($mode) && !self::fetchMetadataReachesUs())
+        {
+            return self::CSRF_CHECK_TOKEN_OR_SAME_SITE;
+        }
+
+        return $mode;
+    }
+
+    /**
+     * Can a browser's Sec-Fetch-Site reach us on a request like this one?
+     *
+     * The Fetch Metadata headers are appended only when the request's URL is a
+     * potentially trustworthy URL, so a site on plain HTTP never receives one:
+     *
+     *   "If r's url is not a potentially trustworthy URL, return."
+     *   (w3c.github.io/webappsec-fetch-metadata, appending the metadata headers)
+     *
+     * Observed rather than assumed: a real Chrome driven against the test
+     * harness's http://web/ sends no Sec-Fetch-* header at all, on a direct
+     * navigation and on a same-origin link click alike.
+     *
+     * This reads the request and nothing else. The ssl_enabled preference and
+     * the site URL both describe how the site is meant to be reached, which is
+     * not the same as how this request arrived, and being wrong in that
+     * direction would keep exactly the lockout this exists to prevent.
+     *
+     * Spoofing a forwarded header can only make the check stricter, never
+     * laxer: claiming HTTPS on a request that truly came over HTTP leaves the
+     * caller in a mode that then demands a header it did not send.
+     *
+     * @param array|null $server defaults to $_SERVER
+     * @return bool
+     */
+    public static function fetchMetadataReachesUs(array $server = null)
+    {
+        if($server === null)
+        {
+            $server = $_SERVER;
+        }
+
+        // Ask the origin first. A browser too old to send Fetch Metadata should
+        // still be turned away by mode 4 wherever the origin can carry it, which
+        // is the trade that mode exists to make; consulting the header first
+        // would hand that browser a token instead and quietly collapse 4 into 3.
+        if(self::originIsPotentiallyTrustworthy($server))
+        {
+            return true;
+        }
+
+        // A TLS terminating proxy may forward none of the above. The browser
+        // having sent Fetch Metadata is itself proof that it considered this
+        // origin trustworthy, which is the only opinion that matters here.
+        foreach($server as $key => $unused)
+        {
+            if(is_string($key) && strpos($key, 'HTTP_SEC_FETCH_') === 0)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Would a browser treat this request's origin as potentially trustworthy?
+     *
+     * Kept separate from {@see e_session::isSecureContext()}, which honours the
+     * ssl_enabled preference and is therefore the wrong question: a preference
+     * saying HTTPS proves nothing about the request in hand.
+     *
+     * @param array $server
+     * @return bool
+     */
+    private static function originIsPotentiallyTrustworthy(array $server)
+    {
+        if(!empty($server['HTTPS']) && strtolower($server['HTTPS']) !== 'off')
+        {
+            return true;
+        }
+
+        if(!empty($server['SERVER_PORT']) && (int) $server['SERVER_PORT'] === 443)
+        {
+            return true;
+        }
+
+        // A chain of proxies appends, so the client's own protocol is first.
+        if(!empty($server['HTTP_X_FORWARDED_PROTO']))
+        {
+            $proto = strtolower(trim(strtok($server['HTTP_X_FORWARDED_PROTO'], ',')));
+
+            if($proto === 'https')
+            {
+                return true;
+            }
+        }
+
+        foreach(array('HTTP_X_FORWARDED_SSL', 'HTTP_FRONT_END_HTTPS') as $header)
+        {
+            if(!empty($server[$header]) && strtolower($server[$header]) === 'on')
+            {
+                return true;
+            }
+        }
+
+        return self::hostIsLoopback($server);
+    }
+
+    /**
+     * Secure Contexts treats loopback as potentially trustworthy, so a site
+     * developed at http://localhost does receive Fetch Metadata.
+     *
+     * @param array $server
+     * @return bool
+     */
+    private static function hostIsLoopback(array $server)
+    {
+        $host = '';
+
+        if(!empty($server['HTTP_HOST']))
+        {
+            $host = $server['HTTP_HOST'];
+        }
+        elseif(!empty($server['SERVER_NAME']))
+        {
+            $host = $server['SERVER_NAME'];
+        }
+
+        $host = strtolower(trim($host));
+
+        if(strpos($host, '[') === 0)
+        {
+            // [::1]:8080
+            $end = strpos($host, ']');
+            $host = ($end === false) ? substr($host, 1) : substr($host, 1, $end - 1);
+        }
+        elseif(substr_count($host, ':') === 1)
+        {
+            // host:port. More than one colon is a bare IPv6 literal, which
+            // cannot carry a port without brackets.
+            $host = substr($host, 0, strrpos($host, ':'));
+        }
+
+        if($host === 'localhost' || $host === '::1' || $host === '0:0:0:0:0:0:0:1')
+        {
+            return true;
+        }
+
+        return (bool) preg_match('/^127\.\d{1,3}\.\d{1,3}\.\d{1,3}$/', $host);
+    }
+
+    /**
+     * Does this mode look for a token? If not, none is minted or published, and
+     * one that arrives anyway is ignored rather than validated.
+     *
+     * @param int|null $mode defaults to the active mode
+     * @return bool
+     */
+    public static function modeUsesToken($mode = null)
+    {
+        if($mode === null)
+        {
+            $mode = self::tokenCheckMode();
+        }
+
+        return in_array((int) $mode, array(
+            self::TOKEN_CHECK_LOG,
+            self::TOKEN_CHECK_ENFORCE,
+            self::CSRF_CHECK_TOKEN_OR_SAME_SITE,
+        ), true);
+    }
+
+    /**
+     * What csrf_enforce a fresh install should be given, or null to leave it
+     * unset so the site follows e107's recommendation and moves with it.
+     *
+     * Leaving it unset is the normal answer and the one that keeps a site up to
+     * date without its operator acting. It is the wrong answer in exactly one
+     * case: when the recommendation refuses a POST that carries no
+     * Sec-Fetch-Site, and the browser doing the installing did not send one.
+     * Nobody can be asked about their visitors' browsers during an install, but
+     * the browser in front of us is the one browser certain to be used against
+     * this site, and if it cannot answer, the person installing would be locked
+     * out of the site they just built.
+     *
+     * A branch whose recommendation still reads a token returns null for
+     * everything, because there is nothing to be locked out of.
+     *
+     * @param array|null $server defaults to $_SERVER
+     * @return int|null a csrf_enforce value to store, or null to store nothing
+     */
+    public static function installTimeMode(array $server = null)
+    {
+        if($server === null)
+        {
+            $server = $_SERVER;
+        }
+
+        if(self::modeUsesToken(self::CSRF_CHECK_RECOMMENDED))
+        {
+            return null;
+        }
+
+        // Over an origin no browser considers trustworthy, the header is absent
+        // for every browser alive, so its absence says nothing about this one.
+        // Pinning here would freeze the site on a token mode for good, including
+        // long after it has grown a certificate. tokenCheckMode() already softens
+        // the recommendation for as long as it needs softening, and stops the day
+        // the site can carry the header.
+        if(!self::fetchMetadataReachesUs($server))
+        {
+            return null;
+        }
+
+        return empty($server['HTTP_SEC_FETCH_SITE']) ? self::TOKEN_CHECK_ENFORCE : null;
+    }
+
+    /**
+     * Does this mode ask the browser where the request came from?
+     *
+     * @param int|null $mode defaults to the active mode
+     * @return bool
+     */
+    public static function modeUsesFetchMetadata($mode = null)
+    {
+        if($mode === null)
+        {
+            $mode = self::tokenCheckMode();
+        }
+
+        return in_array((int) $mode, array(
+            self::CSRF_CHECK_TOKEN_OR_SAME_SITE,
+            self::CSRF_CHECK_SAME_SITE,
+            self::CSRF_CHECK_SAME_ORIGIN,
+        ), true);
+    }
+
+    /**
+     * Override the token check mode for the rest of this request.
+     *
+     * Exists so a test, or a bootstrap that knows better than the stored
+     * preference, can set the mode without a define. Pass null to hand control
+     * back to the preference.
+     *
+     * @param int|null $mode one of the TOKEN_CHECK_* constants, or null
+     * @return int|null the override that was in force, for restoring afterwards
+     */
+    public static function setTokenCheckMode($mode)
+    {
+        $previous = self::$_tokenCheckMode;
+
+        self::$_tokenCheckMode = ($mode === null) ? null : (int) $mode;
+
+        return $previous;
+    }
+
+    /**
+     * Reduce a configured SameSite value to one a browser understands.
+     *
+     * @param string $value
+     * @return string 'Lax', 'Strict', 'None', or an empty string for no attribute
+     */
+    public static function normaliseSameSite($value)
+    {
+        switch (strtolower(trim((string) $value)))
+        {
+            case 'lax':
+                return 'Lax';
+
+            case 'strict':
+                return 'Strict';
+
+            case 'none':
+                return 'None';
+        }
+
+        return '';
+    }
+
+    /**
+     * Is this request being served over SSL?
+     *
+     * Only used to decide whether SameSite=None may be sent. The ssl_enabled
+     * preference is honoured, but it is not the whole answer: a site behind an
+     * SSL terminating proxy is HTTPS to the browser while that preference stays
+     * unset, and that is the configuration in which SameSite=None matters most.
+     *
+     * @param mixed $prefValue [optional] the configured ssl_enabled value
+     * @return bool
+     */
+    public static function isSecureContext($prefValue = null)
+    {
+        if(!empty($prefValue))
+        {
+            return true;
+        }
+
+        if(!empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off')
+        {
+            return true;
+        }
+
+        if(isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https')
+        {
+            return true;
+        }
+
+        return (!empty($_SERVER['SERVER_PORT']) && (int) $_SERVER['SERVER_PORT'] === 443);
+    }
+
+    /**
      * Reset session options
      * @param array $options
      * @return e_session
@@ -525,6 +969,10 @@ public function getData($key = null, $clear = false)
                 case 'secure':
                 case 'httponly':
                     $v = (bool) $v;
+                    break;
+
+                case 'samesite':
+                    $v = self::normaliseSameSite($v);
                     break;
 
                 default:
@@ -620,11 +1068,7 @@ public function getData($key = null, $clear = false)
         }
 
         // set session cookie params
-        session_set_cookie_params($this->_options['lifetime'],
-            $this->_options['path'],
-            $this->_options['domain'],
-            $this->_options['secure'],
-            $this->_options['httponly']);
+        $this->setSessionCookieParams();
 
         if ($this->_sessionCacheLimiter)
         {
@@ -634,6 +1078,77 @@ public function getData($key = null, $clear = false)
         session_start();
         self::$_sessionStarted = true;
         return $this;
+    }
+
+    /**
+     * Apply the cookie parameters, including SameSite.
+     *
+     * session_set_cookie_params() only grew an options array in PHP 7.3, and
+     * before that there was no way to send SameSite through it at all, so the
+     * older engines get the documented path-parameter workaround, which is the
+     * same one {@see eShims::setcookie()} uses.
+     *
+     * SameSite=None is meaningless without the Secure flag and is dropped
+     * outright by current browsers, so it degrades to Lax on a site that is not
+     * served over SSL rather than silently costing everyone their session.
+     * Whether the site is served over SSL is read from the request as well as
+     * from the ssl_enabled preference, because a site behind an SSL terminating
+     * proxy is very commonly HTTPS with that preference never set, and deciding
+     * on the preference alone would degrade a working None back to Lax while the
+     * admin area went on showing None as the selected value.
+     *
+     * @return void
+     */
+    protected function setSessionCookieParams()
+    {
+        $sameSite = self::normaliseSameSite($this->_options['samesite']);
+
+        if ($sameSite === 'None')
+        {
+            if (self::isSecureContext($this->_options['secure']))
+            {
+                // Browsers reject SameSite=None outright unless Secure is set too.
+                $this->_options['secure'] = true;
+            }
+            else
+            {
+                e107::getDebug()->log('Session cookie SameSite=None degraded to Lax: the request is not over SSL.');
+                $sameSite = 'Lax';
+            }
+        }
+
+        $this->_options['samesite'] = $sameSite;
+
+        if ($sameSite === '')
+        {
+            session_set_cookie_params($this->_options['lifetime'],
+                $this->_options['path'],
+                $this->_options['domain'],
+                $this->_options['secure'],
+                $this->_options['httponly']);
+
+            return;
+        }
+
+        if (PHP_VERSION_ID >= 70300)
+        {
+            session_set_cookie_params(array(
+                'lifetime' => $this->_options['lifetime'],
+                'path'     => (string) $this->_options['path'],
+                'domain'   => (string) $this->_options['domain'],
+                'secure'   => (bool) $this->_options['secure'],
+                'httponly' => (bool) $this->_options['httponly'],
+                'samesite' => $sameSite,
+            ));
+
+            return;
+        }
+
+        session_set_cookie_params($this->_options['lifetime'],
+            $this->_options['path'] . '; samesite=' . $sameSite,
+            $this->_options['domain'],
+            $this->_options['secure'],
+            $this->_options['httponly']);
     }
 
     /**
@@ -721,7 +1236,7 @@ public function getData($key = null, $clear = false)
         {
             if (!headers_sent())
             {
-                cookie(session_name(), session_id(), time() + $this->_options['lifetime'], $this->_options['path'], $this->_options['domain'], $this->_options['secure']);
+                cookie(session_name(), session_id(), time() + $this->_options['lifetime'], $this->_options['path'], $this->_options['domain'], $this->_options['secure'], $this->_options['samesite']);
                 $time = time() + round($this->_options['lifetime'] / 4);
                 $_SESSION['_cookie_session_validate'] = $time;
             }
@@ -1095,6 +1610,12 @@ class e_core_session extends e_session
     /**
      * Core CSRF protection, see class2.php
      * Could be adopted by plugins for their own (different) protection logic
+     *
+     * A POST is rejected both when it carries a token that does not validate and
+     * when it carries no token at all. The second half is governed by
+     * {@see e_session::tokenCheckMode()} and applies only to a request that
+     * presented a cookie, see {@see e_core_session::hasAmbientAuthority()}.
+     *
      * @param bool $die
      * @return bool
      */
@@ -1105,11 +1626,10 @@ class e_core_session extends e_session
 
         if($this->getSessionId())
         {
-            if((isset($_POST['e-token']) && !$this->checkFormToken($_POST['e-token']))
-            || (isset($_GET['e-token']) && !$this->checkFormToken($_GET['e-token']))
-            || (isset($_POST['e_token']) && !$this->checkFormToken($_POST['e_token']))) // '-' is not allowed in jQuery
+            if(!$this->attest(self::tokenCheckMode()))
             {
                 $this->log('Unauthorized access!');
+
                 // do not redirect, prevent dead loop, save server resources
                 if($die)
                 {
@@ -1143,6 +1663,317 @@ class e_core_session extends e_session
     }
 
     /**
+     * Only POST is treated as state-changing. It is the sole method a browser will
+     * send cross-site without a CORS preflight, so it is the whole CSRF surface,
+     * and confining the check to it keeps every GET working exactly as before.
+     *
+     * @return bool
+     */
+    private static function isStateChangingRequest()
+    {
+        return (isset($_SERVER['REQUEST_METHOD']) && strtoupper($_SERVER['REQUEST_METHOD']) === 'POST');
+    }
+
+    /**
+     * @return bool whether the request presented a token at all, valid or not
+     */
+    private static function hasSubmittedToken()
+    {
+        return (isset($_POST['e-token']) || isset($_GET['e-token'])
+            || isset($_SERVER['HTTP_X_E_TOKEN']) || isset($_POST['e_token']));
+    }
+
+    /**
+     * Does this request carry anything the browser would attach on its own?
+     *
+     * Cross-site request forgery works by borrowing ambient authority: the
+     * attacker cannot read the response, so the only thing the forged request is
+     * worth is whatever the browser attaches without being asked. A request that
+     * presents no cookie at all has nothing to borrow, so refusing it buys no
+     * security and breaks every machine-to-machine caller, a payment gateway's
+     * IPN callback among them.
+     *
+     * @return bool
+     */
+    private static function hasAmbientAuthority()
+    {
+        return !empty($_COOKIE);
+    }
+
+    /**
+     * Decide whether this request has shown that it came from this site.
+     *
+     * Two proofs are available. A token proves the request came from a document
+     * this site rendered, and works in any browser, but only if every document
+     * that issues a write was actually given one. Sec-Fetch-Site is set by the
+     * browser and cannot be set by a document, so it needs no delivery at all,
+     * but a browser that predates it says nothing. Which of the two is asked for
+     * is the operator's choice, see {@see e_session::tokenCheckMode()}.
+     *
+     * @param int $mode
+     * @return bool false to refuse the request
+     */
+    private function attest($mode)
+    {
+        $mode = (int) $mode;
+
+        if($mode === self::TOKEN_CHECK_OFF)
+        {
+            return true;
+        }
+
+        $usesToken = self::modeUsesToken($mode);
+        $usesFetch = self::modeUsesFetchMetadata($mode);
+
+        $vouched = ($usesFetch && self::fetchMetadataVouches($mode));
+
+        // A token that does not validate is refused whatever the request was for,
+        // including a GET, because e107 has state-changing GETs whose only guard
+        // is that they carry a token at all: see the e-token tests in
+        // e107_admin/plugin.php, theme.php and language.php, which check for a
+        // value but leave validating it to this method.
+        //
+        // The browser can overrule that in a mode which asks it, but only by
+        // affirmatively vouching. A page cached from before an upgrade carries a
+        // stale token, and refusing it on a request the browser has already
+        // placed at this origin would recreate the lockout this replaces.
+        if($usesToken && self::hasSubmittedToken() && !$this->submittedTokenIsValid())
+        {
+            return $vouched;
+        }
+
+        // An e-token in the query string is e107's marker for a state-changing
+        // GET. Those endpoints test that it is not empty and leave the rest to
+        // this method, so in a mode that does not read tokens at all there would
+        // be nothing between them and any non-empty value an attacker's <img> tag
+        // cares to supply. The browser has to place the request here instead.
+        //
+        // Fetch Metadata can do what the token could not: protect a GET without
+        // every ordinary inbound link having to carry something.
+        if(!$usesToken && isset($_GET['e-token']) && self::hasAmbientAuthority())
+        {
+            return $vouched;
+        }
+
+        // Cross-site request forgery borrows ambient authority on a request the
+        // attacker cannot read. Nothing else needs proving.
+        if(!self::isStateChangingRequest() || !self::hasAmbientAuthority())
+        {
+            return true;
+        }
+
+        if($vouched)
+        {
+            return true;
+        }
+
+        if($usesToken && self::hasSubmittedToken())
+        {
+            // Validity was settled above.
+            return true;
+        }
+
+        if($mode === self::TOKEN_CHECK_LOG)
+        {
+            $this->logMissingToken($mode);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Every token the request submitted has to validate, not merely one of them,
+     * so that a good token in one place cannot cover a forged one in another.
+     *
+     * @return bool false if any submitted token failed, or if none was submitted
+     */
+    private function submittedTokenIsValid()
+    {
+        $submitted = array(
+            isset($_POST['e-token']) ? $_POST['e-token'] : null,
+            isset($_GET['e-token']) ? $_GET['e-token'] : null,
+            isset($_SERVER['HTTP_X_E_TOKEN']) ? $_SERVER['HTTP_X_E_TOKEN'] : null,
+            isset($_POST['e_token']) ? $_POST['e_token'] : null, // '-' is not allowed in jQuery
+        );
+
+        $found = false;
+
+        foreach($submitted as $token)
+        {
+            if($token === null)
+            {
+                continue;
+            }
+
+            if(!$this->checkFormToken($token))
+            {
+                return false;
+            }
+
+            $found = true;
+        }
+
+        return $found;
+    }
+
+    /**
+     * Does the browser say this request came from this site?
+     *
+     * Sec-Fetch-Site is a forbidden header name, so no document can set or forge
+     * it, and the specification downgrades it monotonically across a redirect,
+     * which means an open redirect on this site cannot launder a cross-site POST
+     * into a same-origin one. A browser that does not send it says nothing, which
+     * is not the same as vouching.
+     *
+     * @param int $mode
+     * @return bool
+     */
+    private static function fetchMetadataVouches($mode)
+    {
+        if(empty($_SERVER['HTTP_SEC_FETCH_SITE']))
+        {
+            return false;
+        }
+
+        $site = strtolower(trim($_SERVER['HTTP_SEC_FETCH_SITE']));
+
+        if($site === 'same-origin')
+        {
+            return true;
+        }
+
+        // 'same-site' covers a sibling host under the same registrable domain,
+        // which is what a language-per-subdomain site needs, but on its own it
+        // would also vouch for a user-content host or one that has been taken
+        // over. Only hosts this site knows to be its own are accepted.
+        if($site !== 'same-site' || (int) $mode === self::CSRF_CHECK_SAME_ORIGIN)
+        {
+            return false;
+        }
+
+        return self::originIsKnownHost();
+    }
+
+    /**
+     * @return bool whether the Origin header names a host this site serves
+     */
+    private static function originIsKnownHost()
+    {
+        if(empty($_SERVER['HTTP_ORIGIN']))
+        {
+            // Every browser that sends Sec-Fetch-Site sends Origin on a POST, so
+            // there is no ordinary request this rejects. It has already claimed
+            // same-site, and turning an unplaceable client into a refusal buys
+            // nothing over accepting the claim the browser made.
+            return true;
+        }
+
+        $host = parse_url($_SERVER['HTTP_ORIGIN'], PHP_URL_HOST);
+
+        if(empty($host))
+        {
+            return false;
+        }
+
+        return in_array(strtolower($host), self::knownHosts(), true);
+    }
+
+    /**
+     * Every host this site is configured to answer on.
+     *
+     * @return array lowercase hostnames without a port
+     */
+    private static function knownHosts()
+    {
+        $hosts = array();
+
+        foreach(e_token_injector::currentHosts() as $host)
+        {
+            $hosts[] = preg_replace('~:\d+$~', '', $host);
+        }
+
+        $domains = e107::getPref('multilanguage_domain');
+
+        if(!empty($domains) && is_array($domains))
+        {
+            foreach($domains as $domain)
+            {
+                $hosts[] = strtolower(trim($domain));
+            }
+        }
+
+        // Language-per-subdomain is configured as the list of domains that carry
+        // it, so the hosts it implies have to be composed: one per installed
+        // language, under each of those domains. A language can appear in a
+        // subdomain either by name or by ISO code, so both are accepted. None of
+        // this is caller-controlled; it is the operator's own configuration.
+        $subdomained = e107::getPref('multilanguage_subdomain');
+
+        if(!empty($subdomained))
+        {
+            $languages = array();
+
+            foreach(explode(',', defset('e_LANLIST', '')) as $language)
+            {
+                $language = trim($language);
+
+                if($language === '')
+                {
+                    continue;
+                }
+
+                $languages[] = $language;
+                $languages[] = e107::getLanguage()->convert($language);
+            }
+
+            foreach(explode("\n", $subdomained) as $domain)
+            {
+                $domain = strtolower(trim($domain));
+
+                if($domain === '')
+                {
+                    continue;
+                }
+
+                foreach(array_filter($languages) as $language)
+                {
+                    $hosts[] = strtolower($language) . '.' . $domain;
+                }
+            }
+        }
+
+        return array_values(array_unique(array_filter($hosts)));
+    }
+
+    /**
+     * Record a tokenless POST in the admin log.
+     *
+     * Only ever called in log-only mode, which an operator turns on deliberately
+     * and briefly. Writing a row for a refused request instead hands anyone who
+     * can reach the site an unthrottled insert into an indexed table.
+     *
+     * Field names are recorded, values are not, because a login POST would
+     * otherwise put a password in the log. Everything recorded is attacker
+     * controlled, so every part of it is capped.
+     *
+     * @param int $mode the mode this was decided under
+     * @return void
+     */
+    private function logMissingToken($mode)
+    {
+        $details  = "METHOD: POST\n";
+        $details .= "URI: " . (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '') . "\n";
+        $details .= "REFERER: " . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '') . "\n";
+        $details .= "FIELDS: " . implode(', ', array_keys($_POST)) . "\n";
+        $details .= "SESSION: " . substr(sha1((string) $this->getSessionId()), 0, 12) . "\n";
+        $details .= "ACTION: allowed, log-only mode (csrf_enforce " . (int) $mode . ")\n";
+
+        e107::getLog()->add('CSRF_01', $details, defset('E_LOG_WARNING', 2));
+    }
+
+    /**
      * Manually Reset the Token.
      * @see e107forum::ajaxQuickReply();
      * @return void
@@ -1167,7 +1998,7 @@ class e_core_session extends e_session
 
         if (!$this->is('challenge')) // TODO: Eliminate need for this
         {
-            $this->set('challenge', sha1(time().rand().$this->getSessionId())); // New challenge for next time
+            $this->set('challenge', e_random::hex(40)); // New challenge for next time, same 40 hex characters sha1() gave
         }
         if ($this->is('challenge'))
         {
@@ -1301,7 +2132,11 @@ class e_session_db implements SessionHandlerInterface
     public function read(string $id): string|false
     {
         $data = false;
-        $check = $this->_db->select($this->getTable(), 'session_data', "session_id='".$this->_sanitize($id)."' AND session_expires>".time());
+        $check = $this->_db->createQueryBuilder()
+            ->select('session_data')->from($this->getTable())
+            ->where('session_id', $this->_sanitize($id))
+            ->where('session_expires', '>', time())
+            ->execute();
         if($check)
         {
             $tmp = $this->_db->fetch();
@@ -1322,39 +2157,41 @@ class e_session_db implements SessionHandlerInterface
      */
     public function write(string $id, string $data): bool
     {
-        $session_data = array(
-            'data' => array(
-                'session_expires' => time() + $this->getLifetime(),
-                'session_data'    => base64_encode($data),
-                'session_user'    => defset('USERID'),
-            ),
-            '_FIELD_TYPES' => array(
-                'session_id'        => 'str',
-                'session_expires'   => 'int',
-                'session_user'      => 'int',
-                'session_data'      => 'str'
-            ),
-            '_DEFAULT' => 'str'
+        $values = array(
+            'session_expires' => (int) (time() + $this->getLifetime()),
+            'session_data'    => base64_encode($data),
+            'session_user'    => (int) defset('USERID'),
         );
         if(!($id = $this->_sanitize($id)))
         {
             return false;
         }
 
-        $check = $this->_db->select($this->getTable(), 'session_id', "`session_id`='$id'");
+        $check = $this->_db->createQueryBuilder()
+            ->select('session_id')->from($this->getTable())
+            ->where('session_id', $id)
+            ->count();
 
         if($check)
         {
-            $session_data['WHERE'] = "`session_id`='$id'";
-            if(false !== $this->_db->update($this->getTable(), $session_data))
+            if(false !== $this->_db->createQueryBuilder()
+                ->update($this->getTable())
+                ->set('session_expires', $values['session_expires'])
+                ->set('session_data', $values['session_data'])
+                ->set('session_user', $values['session_user'])
+                ->where('session_id', $id)
+                ->execute())
             {
                 return true;
             }
         }
         else
         {
-            $session_data['data']['session_id'] = $id;
-            if($this->_db->insert($this->getTable(), $session_data))
+            $values['session_id'] = $id;
+            if($this->_db->createQueryBuilder()
+                ->insert($this->getTable())
+                ->values($values)
+                ->execute())
             {
                 return true;
             }
@@ -1370,7 +2207,10 @@ class e_session_db implements SessionHandlerInterface
     public function destroy(string $id): bool
     {
         $id = $this->_sanitize($id);
-        $this->_db->delete($this->getTable(), "`session_id`='$id'");
+        $this->_db->createQueryBuilder()
+            ->delete($this->getTable())
+            ->where('session_id', $id)
+            ->execute();
         return true;
     }
 
@@ -1381,7 +2221,10 @@ class e_session_db implements SessionHandlerInterface
      */
     public function gc(int $max_lifetime): int|false
     {
-        return $this->_db->delete($this->getTable(), '`session_expires`<'.time());
+        return $this->_db->createQueryBuilder()
+            ->delete($this->getTable())
+            ->where('session_expires', '<', time())
+            ->execute();
     }
 
     /**

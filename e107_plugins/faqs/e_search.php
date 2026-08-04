@@ -2,7 +2,9 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-// v2 e_search addon. 
+e107::plugLan('faqs', 'global', true); // #5738 - global LAN not autoloaded in admin (config() below uses LAN_PLUGIN_FAQS_NAME).
+
+// v2 e_search addon.
 // Removes the need for search_parser.php, search_advanced.php and in most cases search language files. 
 
 class faqs_search extends e_search // include plugin-folder in the name.

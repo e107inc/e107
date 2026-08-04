@@ -77,15 +77,23 @@ class e107InlineEdit
 			$content = strip_tags($content);
 		}
 
-		$update = array(
-			$field => $content,
-			'WHERE' => $pid ." = ".$id . " LIMIT 1"
-		);
+		$fieldDefs = e107::getDb()->getFieldDefs($table);
+		$fieldType = (is_array($fieldDefs) && isset($fieldDefs['_FIELD_TYPES'][$field]))
+			? $fieldDefs['_FIELD_TYPES'][$field]
+			: null;
 
 		//	print_r($table);
-		//	print_r($update);
+		//	print_r($field);
 
-		if(e107::getDb()->update($table, $update) !== false)
+		// $table/$field/$pid are server-set identifiers (the session 'editable' map,
+		// behind the ADMIN + token + getperms() gate above); the builder validates each
+		// fail-closed and binds the intval'd row id, replacing the hand-built WHERE/LIMIT.
+		if(e107::getDb()->createQueryBuilder()
+			->update($table)
+			->setTyped($field, $content, $fieldType)
+			->where($pid, $id)
+			->limit(1)
+			->execute() !== false)
 		{
 			$ret['msg'] = "Saved"; // LAN_UPDATED; or LAN_SAVED
 			$ret['status'] = 'ok';

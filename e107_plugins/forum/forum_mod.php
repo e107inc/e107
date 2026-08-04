@@ -15,6 +15,10 @@ function forum_thread_moderate($p)
 {
 	$e107 = e107::getInstance();
 	$sql = e107::getDb();
+
+	require_once(e_PLUGIN.'forum/forum_class.php');
+	$forum = new e107forum;
+
 	foreach ($p as $key => $val)
 	{
 		if (preg_match("#(.*?)_(\d+)_x#", $key, $matches))
@@ -22,26 +26,45 @@ function forum_thread_moderate($p)
 			$act = $matches[1];
 			$id = (int)$matches[2];
 
+			/* The target comes out of the field name, so it is entirely the
+			 * caller's choice and has nothing to do with the page they are on.
+			 * The only guard used to be the MODERATOR constant, which the caller
+			 * computed for a different forum, so a moderator of one forum could
+			 * name a thread in any other and have it locked or destroyed.
+			 * Authorise the id that is about to be acted on instead. */
+			$permitted = ($act === 'deletePost')
+				? $forum->canModeratePost($id)
+				: $forum->canModerateThread($id);
+
+			if (!$permitted)
+			{
+				continue;
+			}
+
 			switch ($act)
 			{
 				case 'lock':
-				$sql->update('forum_thread', 'thread_active=0 WHERE thread_id='.$id);
-				return LAN_FORUM_CLOSE; 
+				$sql->createQueryBuilder()->update('forum_thread')
+					->set('thread_active', 0)->where('thread_id', $id)->execute();
+				return LAN_FORUM_CLOSE;
 				break;
 
 				case 'unlock':
-				$sql->update('forum_thread', 'thread_active=1 WHERE thread_id='.$id);
-				return LAN_FORUM_OPEN; 
+				$sql->createQueryBuilder()->update('forum_thread')
+					->set('thread_active', 1)->where('thread_id', $id)->execute();
+				return LAN_FORUM_OPEN;
 				break;
 
 				case 'stick':
-				$sql->update('forum_thread', 'thread_sticky=1 WHERE thread_id='.$id);
-				return LAN_FORUM_STICK; 
+				$sql->createQueryBuilder()->update('forum_thread')
+					->set('thread_sticky', 1)->where('thread_id', $id)->execute();
+				return LAN_FORUM_STICK;
 				break;
 
 				case 'unstick':
-				$sql->update('forum_thread', 'thread_sticky=0 WHERE thread_id='.$id);
-				return LAN_FORUM_UNSTICK; 
+				$sql->createQueryBuilder()->update('forum_thread')
+					->set('thread_sticky', 0)->where('thread_id', $id)->execute();
+				return LAN_FORUM_UNSTICK;
 				break;
 
 				case 'deleteThread':
