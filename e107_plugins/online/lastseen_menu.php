@@ -36,8 +36,12 @@ $menu_pref 	= e107::getConfig('menu')->getPref();
 $tp 		= e107::getParser();
 $num 		= intval(vartrue($menu_pref['online_ls_amount'], 10));
 
-$sql->select("user", "user_id, user_name, user_currentvisit", "user_currentvisit != '0' ORDER BY user_currentvisit DESC LIMIT 0,".$num);
-$lslist = $sql->db_getList();
+$lslist = $sql->createQueryBuilder()
+	->select('user_id', 'user_name', 'user_currentvisit')->from('user')
+	->where('user_currentvisit', '!=', '0')
+	->orderBy('user_currentvisit', 'DESC')
+	->setFirstResult(0)->setMaxResults($num)
+	->fetchAll();
 
 $text = $tp->parseTemplate($LASTSEEN_TEMPLATE['start'], true);
 

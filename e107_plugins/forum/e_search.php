@@ -15,12 +15,15 @@ class forum_search extends e_search // include plugin-folder in the name.
 
 		$catList[] = array('id' => 'all', 'title' => LAN_PLUGIN_FORUM_ALLFORUMS);
 
-		if ($sql ->gen("SELECT f.forum_id, f.forum_name FROM #forum AS f LEFT JOIN #forum AS fp ON fp.forum_id = f.forum_parent "))
+		$forumQb = $sql->createQueryBuilder();
+		$forums = $forumQb
+			->select('f.forum_id', 'f.forum_name')
+			->from('forum', 'f')
+			->leftJoin('forum', 'fp', $forumQb->expr()->compareColumns('fp.forum_id', 'f.forum_parent'))
+			->fetchAll();
+		foreach($forums as $row)
 		{
-			while($row = $sql->fetch())
-			{
-				$catList[] = array('id' => $row['forum_id'], 'title' => $row['forum_name']);
-			}
+			$catList[] = array('id' => $row['forum_id'], 'title' => $row['forum_name']);
 		}
 
 		$matchList = array(

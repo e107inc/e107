@@ -83,7 +83,7 @@ class e_jwt
 		];
 		
 		// Generate random bytes for additional entropy
-		$randomBytes = random_bytes(32);
+		$randomBytes = e_random::bytes(32);
 		
 		// Combine site data with random bytes
 		$combined = implode('|', $siteData) . '|' . base64_encode($randomBytes);
@@ -109,7 +109,7 @@ class e_jwt
 			'iat' => $issuedAt,             // Issued at
 			'nbf' => $issuedAt,             // Not before
 			'exp' => $expire,               // Expire
-			'jti' => uniqid('', true),     // JWT ID
+			'jti' => e_random::hex(32),     // JWT ID
 			'data' => $payload              // Custom data
 		);
 		

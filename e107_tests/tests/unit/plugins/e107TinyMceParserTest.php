@@ -197,6 +197,64 @@ Plain text paragraph 3<br />';
 		}
 
 
+		/**
+		 * Issue #5792 leg 3: the [newpage] pagination marker emitted by the
+		 * TinyMce pagebreak button must survive the HTML->DB conversion intact,
+		 * wrapped in [html] tags, and must not be doubled or rewritten to the
+		 * old <!-- pagebreak --> / [newpage=] forms.
+		 */
+		public function testNewpageMarkerSurvivesToDb()
+		{
+			$this->tm->setHtmlClass(e_UC_ADMIN);
+
+			$editorHtml = '<p>Page one ALPHA</p>[newpage]<p>Page two BRAVO</p>';
+			$db = $this->tm->toDB($editorHtml);
+
+			$this->assertStringContainsString('[newpage]', $db, 'The [newpage] marker was lost during HTML->DB conversion.');
+			$this->assertSame(1, substr_count($db, '[newpage]'), 'The [newpage] marker was duplicated during HTML->DB conversion.');
+			$this->assertStringNotContainsString('<!-- pagebreak -->', $db);
+			$this->assertStringNotContainsString('[newpage=]', $db);
+			$this->assertSame(0, strpos($db, '[html]'), 'WYSIWYG content should be wrapped in [html] before storage.');
+			$this->assertStringEndsWith('[/html]', $db);
+		}
+
+		/**
+		 * Issue #5792 leg 3: reopening stored content in the editor. The DB->HTML
+		 * conversion must hand the bare [newpage] marker back so the pagebreak
+		 * plugin can rebuild its placeholder; it must not be parsed away as bbcode.
+		 */
+		public function testNewpageMarkerSurvivesToHtml()
+		{
+			$this->tm->setHtmlClass(e_UC_ADMIN);
+
+			$db = '[html]<p>Page one ALPHA</p>[newpage]<p>Page two BRAVO</p>[/html]';
+			$html = $this->tm->toHTML($db);
+
+			$this->assertStringContainsString('[newpage]', $html, 'The [newpage] marker was lost when reopening stored content in the editor.');
+			$this->assertSame(1, substr_count($html, '[newpage]'), 'The [newpage] marker was duplicated when reopening stored content.');
+			$this->assertStringNotContainsString('[/html]', $html);
+		}
+
+		/**
+		 * Issue #5792 leg 3: a second save must not drift. Edit -> save -> reopen
+		 * -> save again has to be idempotent, so the marker cannot accumulate or
+		 * mutate across repeated round-trips through the editor.
+		 */
+		public function testNewpageRoundTripIsStable()
+		{
+			$this->tm->setHtmlClass(e_UC_ADMIN);
+
+			$editorHtml = '<p>Page one ALPHA</p>[newpage]<p>Page two BRAVO</p>';
+
+			$firstSave  = $this->tm->toDB($editorHtml);
+			$reopened   = $this->tm->toHTML($firstSave);
+			$secondSave = $this->tm->toDB($reopened);
+
+			$this->assertSame($firstSave, $secondSave, 'Re-saving reopened WYSIWYG content changed the stored value.');
+			$this->assertSame(1, substr_count($secondSave, '[newpage]'), 'The [newpage] marker count changed across a second save.');
+		}
+
+
 		public function testParsingofTable()
 		{
 				// -----------

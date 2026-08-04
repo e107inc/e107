@@ -23,7 +23,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 
-e107::includeLan(e_PLUGIN.'/newsletter/languages/English_admin_newsletter.php');
+e107::plugLan('newsletter', 'global');
 
 /* 
 Class for newsletter mailout function
@@ -96,9 +96,15 @@ class newsletter_mailout
 			return 0;				// No valid selector - so no valid records
 		}
 
-		$qry = "SELECT newsletter_id,newsletter_subscribers FROM `#newsletter` WHERE (`newsletter_parent`=0) AND (`newsletter_id` IN ({$selectVals}))";
-//		echo "Selector {$selectVals} query: ".$qry.'<br />';
-		if (!($sql->gen($qry))) return FALSE;
+		// $selectVals is a caller-supplied comma list used in an IN() clause; cast each
+		// element to an integer so no SQL can be injected, then bind it via whereIn().
+		$ids = array_map('intval', explode(',', (string) $selectVals));
+		if (empty($ids))
+		{
+			return 0;
+		}
+
+		if (!$sql->createQueryBuilder()->select('newsletter_id', 'newsletter_subscribers')->from('newsletter')->where('newsletter_parent', 0)->whereIn('newsletter_id', $ids)->execute()) return FALSE;
 		$this->selectorActive = TRUE;
 		$this->mail_count = 1;			// We have no idea of how many subscribers without reading all relevant DB records
 		$this->mail_read = 0;
@@ -142,9 +148,11 @@ class newsletter_mailout
 			{
 				if ($uid = intval(trim($v)))
 				{	// Got a user ID here - look them up and add their data
-					if ($this->ourDB->select('user', 'user_name,user_email,user_lastvisit', '`user_id`='.$uid))
+					$row = $this->ourDB->createQueryBuilder()
+						->select('user_name', 'user_email', 'user_lastvisit')->from('user')
+						->where('user_id', (int) $uid)->fetchRow();
+					if ($row)
 					{
-						$row = $this->ourDB->fetch();
 						$ret = array('mail_recipient_id' => $uid,
 									 'mail_recipient_name' => $row['user_name'],		// Should this use realname?
 									 'mail_recipient_email' => $row['user_email'],
@@ -193,10 +201,13 @@ class newsletter_mailout
 				
 		$selects = array_flip(explode(',', $selectVals));
 
-		if ($sql->select('newsletter', 'newsletter_id, newsletter_title', '`newsletter_parent`=0'))
+		$rows = $sql->createQueryBuilder()->select('newsletter_id', 'newsletter_title')
+			->from('newsletter')->where('newsletter_parent', 0)->fetchAll();
+
+		if ($rows)
 		{
 			$c=0;
-			while ($row = $sql->fetch())
+			foreach ($rows as $row)
 			{
 				$checked = (isset($selects[$row['newsletter_id']])) ? " checked='checked'" : '';
 				
@@ -208,7 +219,7 @@ class newsletter_mailout
 				elseif($checked)
 				{
 					$var[$c]['caption'] = $row['newsletter_title'];
-					$var[$c]['html'] = NLLAN_49;
+					$var[$c]['html'] = LAN_YES;
 				}
 				$c++;
 			}

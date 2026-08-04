@@ -153,9 +153,12 @@ if (isset($_POST['emailsubmit']))
 	{
 		$emailurl = strip_tags($_POST['referer']);
 		$message = '';
-		if($sql->select('news', 'news_title, news_body, news_extended', 'news_id='.((int)$parms)))
+		$row = $sql->createQueryBuilder()
+			->select('news_title', 'news_body', 'news_extended')->from('news')
+			->where('news_id', (int) $parms)
+			->fetchRow();
+		if($row)
 		{
-			$row = $sql->fetch();
 			$message = "<h3 class='email_heading'>".$row['news_title']."</h3><br />".$row['news_body']."<br />".$row['news_extended']."<br /><br /><a href='{e_BASE}news.php?extend.".$parms."'>{e_BASE}news.php?extend.".$parms."</a><br />";
 			$message = $tp->toEmail($message);
 		}

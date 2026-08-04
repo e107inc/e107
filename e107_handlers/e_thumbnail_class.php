@@ -333,127 +333,6 @@ class e_thumbnail
 
 
 
-/*
-	protected function sendImageOld() // for reference. - can be removed at a later date.
-	{
-
-		if($this->_placeholder == true)
-		{
-			$width = ($this->_request['aw']) ? $this->_request['aw'] : $this->_request['w'];
-			$height = ($this->_request['ah']) ? $this->_request['ah'] : $this->_request['h'];
-
-			$parm = array('size' => $width."x".$height);
-
-			$this->placeholder($parm);
-			return false;
-		}
-
-		if(!$this->_src_path)
-		{
-			echo "no source";
-			return $this;
-		}
-
-		$thumbnfo = pathinfo($this->_src_path);
-		$options = $this->getRequestOptions();
-		$fname = e107::getParser()->thumbCacheFile($this->_src_path, $options);
-		$cache_filename = e_CACHE_IMAGE . $fname;
-
-		$this->sendCachedImage($cache_filename,$thumbnfo);
-
-		require_once(e_HANDLER.'phpthumb/ThumbLib.inc.php');
-
-		if(!$thumb = PhpThumbFactory::create($this->_src_path))
-		{
-			if(getperms('0'))
-			{
-				echo "Couldn't load thumb factory";
-			}
-			return null;
-		}
-
-		$sizeUp = ((isset($this->_request['w']) && $this->_request['w'] > 110) || (isset($this->_request['aw']) && ($this->_request['aw'] > 110))); // don't resizeUp the icon images.
-	   	$thumb->setOptions(array(
-		   	    'correctPermissions'    => true,
-		   	    'resizeUp'              => $sizeUp,
-		   	    'jpegQuality'           => $this->_thumbQuality,
-			    'interlace'             => true // improves performance
-		    ));
-
-
-		// Image Cropping by Quadrant.
-		if(!empty($options['c'])) // $quadrant T(op), B(ottom), C(enter), L(eft), R(right)
-		{
-			if(!empty($this->_request['ah']))
-			{
-				$this->_request['h'] = $this->_request['ah'];
-			}
-
-			if(!empty($this->_request['aw']))
-			{
-				$this->_request['w'] = $this->_request['aw'];
-			}
-
-
-
-			$thumb->adaptiveResizeQuadrant((int) vartrue($this->_request['w'], 0), (int) vartrue($this->_request['h'], 0), $options['c']);
-		}
-		if(isset($this->_request['w']) || isset($this->_request['h']))
-		{
-			$thumb->resize((int) vartrue($this->_request['w'], 0), (int) vartrue($this->_request['h'], 0));
-		}
-		elseif(!empty($this->_request['ah']))
-		{
-			//Typically gives a better result with images of people than adaptiveResize().
-			$thumb->adaptiveResizeQuadrant((int) vartrue($this->_request['aw'], 0), (int) vartrue($this->_request['ah'], 0), 'T');
-		}
-		else
-		{
-			$thumb->adaptiveResize((int) vartrue($this->_request['aw'], 0), (int) vartrue($this->_request['ah'], 0));
-		}
-
-
-		if($this->_debug === true)
-		{
-			// echo "time: ".round((microtime(true) - $start),4);
-
-			var_dump($thumb);
-			return false;
-		}
-
-		// Watermark Option - See admin->MediaManager->prefs for details.
-
-	/	if(($this->_watermark['activate'] < $options['w']
-		|| $this->_watermark['activate'] < $options['aw']
-		|| $this->_watermark['activate'] < $options['h']
-		|| $this->_watermark['activate'] < $options['ah']
-		) && $this->_watermark['activate'] > 0 && $this->_watermark['font'] !='')
-		{
-			$tp = e107::getParser();
-			$this->_watermark['font'] = $tp->createConstants($this->_watermark['font'], 'mix');
-			$this->_watermark['font'] =  realpath($tp->replaceConstants($this->_watermark['font'],'rel'));
-
-		//	$thumb->WatermarkText($this->_watermark); // failing due to phpThumb::
-		}
-		//	echo "hello";
-
-
-		// set cache
-		$thumb->save($cache_filename);
-
-		$this->_request = array(); // reset the request.
-
-		if($this->_debug === true) // return the cache file path for testing.
-		{
-			return $cache_filename;
-		}
-
-		// show thumb
-		$thumb->show();
-
-		return $this;
-	}
-*/
 
 	/**
 	 * When caching is enabled, send the cached image with headers and then exit the script.
@@ -599,7 +478,7 @@ class e_thumbnail
 	// Display a placeholder image.
 
 	/**
-	 * @param $parm
+	 * @param array $parm expects 'size' as "{width}x{height}", eg. "800x350"
 	 * @return void|null
 	 */
 	private function placeholder($parm)
@@ -610,11 +489,55 @@ class e_thumbnail
 			return null;
 		}
 
-		$getsize = $parm['size'] ?? '100x100';
+		$size = vartrue($parm['size'], '');
+		list($width, $height) = array_pad(explode('x', $size, 2), 2, 0);
 
-		header('location: https://placehold.co/'.$getsize);
-		header('Content-Length: 0');
+		$svg = $this->placeholderImage($width, $height);
+
+		header('Content-Type: image/svg+xml');
+		header('Content-Length: '.strlen($svg));
+		header('Cache-Control: public, max-age=604800');
+		header('X-Content-Type-Options: nosniff');
+		header("Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'");
+		echo $svg;
 		exit();
+	}
+
+
+	/**
+	 * Build an SVG placeholder for a missing image, generated locally so that
+	 * no third-party service is involved. Dimensions are clamped to 1-4000;
+	 * invalid input falls back to 100x100.
+	 *
+	 * @param int|string $width
+	 * @param int|string $height
+	 * @return string SVG markup
+	 */
+	public function placeholderImage($width, $height)
+	{
+		$width = (int) $width;
+		$height = (int) $height;
+
+		if($width < 1)
+		{
+			$width = 100;
+		}
+
+		if($height < 1)
+		{
+			$height = 100;
+		}
+
+		$width = min($width, 4000);
+		$height = min($height, 4000);
+
+		$fontSize = max(10, min(40, (int) (min($width, $height) / 5)));
+		$label = $width.'x'.$height;
+
+		return '<svg xmlns="http://www.w3.org/2000/svg" width="'.$width.'" height="'.$height.'" viewBox="0 0 '.$width.' '.$height.'">'
+			.'<rect width="100%" height="100%" fill="#dde0e5"/>'
+			.'<text x="50%" y="50%" dy=".35em" fill="#6e7681" font-family="sans-serif" font-size="'.$fontSize.'" text-anchor="middle">'.$label.'</text>'
+			.'</svg>';
 	}
 
 

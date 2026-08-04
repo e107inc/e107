@@ -171,7 +171,11 @@ class pageClass
 			$this->debug .= "<b>pageSelected</b> ".$this->pageSelected." <br />";
 		}
 		
-		$books = e107::getDb()->retrieve("SELECT chapter_id,chapter_sef,chapter_name,chapter_parent,chapter_meta_description,chapter_image,chapter_icon FROM #page_chapters ORDER BY chapter_id ASC" , true);
+		$books = e107::getDb()->createQueryBuilder()
+			->select('chapter_id', 'chapter_sef', 'chapter_name', 'chapter_parent', 'chapter_meta_description', 'chapter_image', 'chapter_icon')
+			->from('page_chapters')
+			->orderBy('chapter_id', 'ASC')
+			->fetchAll();
 				
 		foreach($books as $row)
 		{
@@ -265,24 +269,31 @@ class pageClass
 		$sql = e107::getDb('sql2');
 		$tp = e107::getParser();
 		$frm = e107::getForm();
-		
+
 		$this->displayAllMode = true;
-		
+
 		$text = "";
-		
-		
-		if(e107::getPref('listBooks',false) && $sql->select("page_chapters", "*", "chapter_parent ='0' AND chapter_visibility IN (".USERCLASS_LIST.") ORDER BY chapter_order ASC "))
+
+
+		$books = e107::getPref('listBooks',false) ? $sql->createQueryBuilder()
+			->select('*')->from('page_chapters')
+			->where('chapter_parent', 0)
+			->whereIn('chapter_visibility', explode(',', USERCLASS_LIST))
+			->orderBy('chapter_order', 'ASC')
+			->fetchAll() : array();
+
+		if($books)
 		{
-			$layout 	= e107::getPref('listBooksTemplate','default'); 		
-			$tml 		= e107::getCoreTemplate('chapter','', true, true); // always merge	
+			$layout 	= e107::getPref('listBooksTemplate','default');
+			$tml 		= e107::getCoreTemplate('chapter','', true, true); // always merge
 			$tmpl 		= varset($tml[$layout]);
 			$template 	= $tmpl['listBooks'];
-			
+
 			$text = $tp->parseTemplate($template['start']);
-			
-			
-			
-			while($row = $sql->fetch())
+
+
+
+			foreach($books as $row)
 			{
 				
 				$sef = $row;
@@ -342,8 +353,15 @@ class pageClass
 		$tp = e107::getParser();
 		$frm = e107::getForm();
 		
-		// retrieve book information. 
-		if(!$brow = $sql->retrieve('page_chapters','chapter_name,chapter_template,chapter_meta_description,chapter_meta_keywords','chapter_id = '.intval($book).' AND chapter_visibility IN ('.USERCLASS_LIST.') LIMIT 1'))
+		// retrieve book information.
+		$brow = $sql->createQueryBuilder()
+			->select('chapter_name', 'chapter_template', 'chapter_meta_description', 'chapter_meta_keywords')
+			->from('page_chapters')
+			->where('chapter_id', (int) $book)
+			->whereIn('chapter_visibility', explode(',', USERCLASS_LIST))
+			->setMaxResults(1)
+			->fetchRow();
+		if(!$brow)
 		{
 			$layout = 'default';
 		}
@@ -390,11 +408,18 @@ class pageClass
         }
 		
 		
-		if($sql->select("page_chapters", "*", "chapter_parent = ".intval($book)."  AND chapter_visibility IN (".USERCLASS_LIST.") ORDER BY chapter_order ASC "))
+		$chapters = $sql->createQueryBuilder()
+			->select('*')->from('page_chapters')
+			->where('chapter_parent', (int) $book)
+			->whereIn('chapter_visibility', explode(',', USERCLASS_LIST))
+			->orderBy('chapter_order', 'ASC')
+			->fetchAll();
+
+		if($chapters)
 		{
 			$text = $tp->parseTemplate($template['start'],true, $bvar);
-			
-			while($row = $sql->fetch())
+
+			foreach($chapters as $row)
 			{
 				$tmp = $this->listPages(intval($row['chapter_id']));
 				
@@ -469,8 +494,13 @@ class pageClass
 		$this->batch 	= e107::getScBatch('page',null,'cpage');
 		$frm 			= e107::getForm();
 
-		// retrieve the template to use for this chapter. 
-		$row = $sql->retrieve('page_chapters','chapter_id,chapter_icon,chapter_name,chapter_parent, chapter_image, chapter_meta_description,chapter_meta_keywords,chapter_template','chapter_id = '.intval($chapt).' LIMIT 1');
+		// retrieve the template to use for this chapter.
+		$row = $sql->createQueryBuilder()
+			->select('chapter_id', 'chapter_icon', 'chapter_name', 'chapter_parent', 'chapter_image', 'chapter_meta_description', 'chapter_meta_keywords', 'chapter_template')
+			->from('page_chapters')
+			->where('chapter_id', (int) $chapt)
+			->setMaxResults(1)
+			->fetchRow();
 		
 		if($this->displayAllMode === true)
 		{
@@ -524,17 +554,30 @@ class pageClass
 	//	$tmpl = e107::getCoreTemplate('chapter','docs', true, true); // always merge	
 			$template = $tmpl['listPages'];
 		
-			$pageOnly = ($layout == 'panel') ? " menu_class IN (".USERCLASS_LIST.") " : "page_title !='' AND page_class IN (".USERCLASS_LIST.")  "; // When in 'panel' mode, allow Menus to be rendered while checking menu_class. 
-		
-			if(!$count = $sql->select("page", "*", $pageOnly."  AND page_chapter=".intval($chapt)." ORDER BY page_order ASC "))
+			$userClasses = explode(',', USERCLASS_LIST);
+			$qb = $sql->createQueryBuilder()->select('*')->from('page');
+
+			if($layout == 'panel') // When in 'panel' mode, allow Menus to be rendered while checking menu_class.
+			{
+				$qb->whereIn('menu_class', $userClasses);
+			}
+			else
+			{
+				$qb->where('page_title', '!=', '')->whereIn('page_class', $userClasses);
+			}
+
+			$pageArray = $qb->where('page_chapter', (int) $chapt)
+				->orderBy('page_order', 'ASC')
+				->fetchAll();
+
+			if(!$pageArray)
 			{
 				return array('text' => "<em>".(LAN_PAGE_2)."</em>");
 			//	$text = "<ul class='page-pages-list page-pages-none'><li>".LAN_PAGE_2."</li></ul>";
 			}
 			else
 			{
-				
-				$pageArray = $sql->db_getList();
+
 
 				$text = $tp->parseTemplate($template['start'], true, $var); // for parsing {SETIMAGE} etc.
 				
@@ -591,15 +634,16 @@ class pageClass
 		}
 		
 		$sql = e107::getDb();
-		
-		$query = "SELECT p.*, u.user_id, u.user_name, user_login FROM #page AS p
-		LEFT JOIN #user AS u ON p.page_author = u.user_id
-		WHERE p.page_id=".intval($this->pageID); // REMOVED AND p.page_class IN (".USERCLASS_LIST.") - permission check is done later 
 
+		// REMOVED AND p.page_class IN (USERCLASS_LIST) - permission check is done later
+		$qb = $sql->createQueryBuilder();
+		$pageRow = $qb->select('p.*', 'u.user_id', 'u.user_name', 'user_login')
+			->from('page', 'p')
+			->leftJoin('user', 'u', $qb->expr()->compareColumns('p.page_author', 'u.user_id'))
+			->where('p.page_id', (int) $this->pageID)
+			->fetchRow();
 
-		
-		
-		if(!$sql->gen($query))
+		if(!$pageRow)
 		{
 		 	header("HTTP/1.0 404 Not Found");
 		 //	exit; 
@@ -646,7 +690,7 @@ class pageClass
 			return;
 		}
 
-		$this->page = $sql->fetch();
+		$this->page = $pageRow;
 
 
 

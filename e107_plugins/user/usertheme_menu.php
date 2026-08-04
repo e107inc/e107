@@ -39,16 +39,21 @@ if ((USER == TRUE) && check_class(varset($pref['allow_theme_select'],FALSE)))
 		$defaulttheme = $pref['sitetheme'];
 		$count = 0;
 
-		$totalct = $sql->select("user", "user_prefs", "user_prefs REGEXP('sitetheme') ");
- 
-		while ($row = $sql->fetch()) 
+		$qb = $sql->createQueryBuilder();
+		$themeUsers = $qb->select('user_prefs')->from('user')
+			->where($qb->expr()->regexp('user_prefs', 'sitetheme'))
+			->fetchEach();
+		$totalct = 0;
+
+		foreach ($themeUsers as $row)
 		{
+			$totalct++;
             $up = (substr($row['user_prefs'],0,5) == "array") ? e107::unserialize($row['user_prefs']) : unserialize($row['user_prefs']);
 
 			if (isset($themecount[$up['sitetheme']])) { $themecount[$up['sitetheme']]++; }
 		}
  
-		$defaultusers = $sql->count("user") - $totalct;
+		$defaultusers = $sql->createQueryBuilder()->from('user')->count() - $totalct;
 		$themecount[$defaulttheme] += $defaultusers;
 	 
 		$text = "<form method='post' action='".e_SELF."'>

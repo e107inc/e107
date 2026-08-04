@@ -11,6 +11,8 @@
  * Render gallery pages.
  */
 
+use e107\Database\IdentifierFilter;
+
 require_once(__DIR__.'/../../class2.php');
 
 if(!e107::isInstalled('gallery'))
@@ -48,7 +50,16 @@ class gallery
 
 	function __construct()
 	{
-		$this->catList = e107::getMedia()->getCategories('gallery');
+		$plugPrefs = e107::getPlugConfig('gallery')->getPref();
+		$orderBy = IdentifierFilter::filterOrderBy(varset($plugPrefs['cat_orderby']), array(
+			'media_cat_id ASC',
+			'media_cat_id DESC',
+			'media_cat_order ASC',
+			'media_cat_order DESC',
+			'media_cat_title ASC',
+			'media_cat_title DESC',
+		), 'media_cat_id DESC');
+		$this->catList = e107::getMedia()->getCategories('gallery', $orderBy);
 
 		if((vartrue($_GET['cat'])) && isset($this->catList[$_GET['cat']]))
 		{

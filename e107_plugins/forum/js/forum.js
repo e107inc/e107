@@ -8,6 +8,61 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 (function ($)
 {
 
+	var QUICKREPLY = 'forum-quickreply-text';
+
+	/**
+	 * The editor behind the quick-reply box, or null when there is none.
+	 *
+	 * Every action on a forum page ran through this, moderator links on the
+	 * forum listing included, where no quick-reply box exists. It asked
+	 * tinymce for the editor whenever TinyMCE was loaded for anything at all
+	 * on the page and called getContent() on the answer, so a page carrying
+	 * TinyMCE for some other field threw before the request was ever made:
+	 * a click that did nothing, said nothing and logged nothing.
+	 *
+	 * @returns {object|null}
+	 */
+	function quickReplyEditor()
+	{
+		if (typeof tinymce === 'undefined' || !tinymce.get)
+		{
+			return null;
+		}
+
+		return tinymce.get(QUICKREPLY) || null;
+	}
+
+	/**
+	 * @returns {string} what is in the quick-reply box, or '' if there is none
+	 */
+	function quickReplyText()
+	{
+		var editor = quickReplyEditor();
+
+		if (editor)
+		{
+			return editor.getContent();
+		}
+
+		var $field = $('#' + QUICKREPLY);
+
+		return $field.length ? $field.val() : '';
+	}
+
+	function clearQuickReply()
+	{
+		var editor = quickReplyEditor();
+
+		if (editor)
+		{
+			editor.setContent('');
+
+			return;
+		}
+
+		$('#' + QUICKREPLY).val('');
+	}
+
 	/**
 	 * Behavior to bind click events on action buttons/links.
 	 *
@@ -17,7 +72,15 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	e107.behaviors.forumActions = {
 		attach: function (context, settings)
 		{
-			$('a[data-forum-action], input[data-forum-action]', context).one('data-forum-action').each(function ()
+			// once(), not one(). jQuery's one() binds a handler that fires a
+			// single time; given a name and no handler it returns the set
+			// untouched, so nothing was marked and nothing filtered. Every
+			// successful track and quick reply calls attachBehaviors() again
+			// with the default document context, so each one bound another
+			// click handler to every action on the page: two clicks on the bell
+			// sent two requests, then four, and forum_track has no unique key
+			// to stop the duplicate rows or the duplicate notification mail.
+			$('a[data-forum-action], input[data-forum-action]', context).once('data-forum-action').each(function ()
 			{
 				$(this).on('click', function (e)
 				{
@@ -27,14 +90,34 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					var action = $this.attr('data-forum-action');
 					var thread = $this.attr('data-forum-thread');
 					var post = $this.attr('data-forum-post');
-					if (typeof tinymce == 'undefined')
+
+					// Ask before destroying anything, and make sure nothing else
+					// asks or acts afterwards.
+					//
+					// Core binds its own confirm to a[data-confirm], and returning
+					// the answer from it only gets jQuery as far as
+					// stopPropagation(), which does not stop a second handler on
+					// the same element. This handler is bound first, because
+					// attachBehaviors() is registered ahead of that ready block,
+					// so a moderator who clicked Cancel on "delete this thread?"
+					// deleted the thread anyway.
+					var confirmText = $this.attr('data-confirm');
+
+					if (confirmText)
 					{
-                        var text = $('#forum-quickreply-text').val();
+						// Immediately, and on both answers: core's handler is
+						// bound to this same element, and letting it run would
+						// either ask the very same question a second time or,
+						// on Cancel, act anyway.
+						e.stopImmediatePropagation();
+
+						if (!window.confirm(confirmText))
+						{
+							return false;
+						}
 					}
-                    else
-					{
-                        var text = tinymce.get('forum-quickreply-text').getContent();
-					}
+
+					var text = quickReplyText();
 					var insert = $this.attr('data-forum-insert');
 					var token = $this.attr('data-token');
 					var script = $this.attr("src");
@@ -43,6 +126,16 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 						type: "POST",
 						url: script,
 						data: {thread: thread, action: action, post: post, text: text, insert: insert, e_token: token},
+						error: function (xhr, status, error)
+						{
+							// Without this a refused or broken request produced
+							// no message and no trace, which is indistinguishable
+							// from a click that never fired.
+							if (window.console && console.error)
+							{
+								console.error('e107 forum: ' + action + ' failed (' + xhr.status + ' ' + status + ')', error);
+							}
+						},
 						success: function (data)
 						{
 							try
@@ -99,7 +192,11 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 
 							if(action == 'track')
 							{
-								if(d.html != false)
+								// A failed untrack returns no html at all, and
+								// "!= false" is true for undefined. It only ever
+								// worked by accident: $().html(undefined) is a
+								// getter rather than a setter.
+								if(d.html)
 								{
 									$('#' + insert).html(d.html);
 									// Attach all registered behaviors to the new content.
@@ -109,21 +206,14 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 
 							if(action == 'quickreply' && d.status == 'ok')
 							{
-								if(d.html != false)
+								if(d.html)
 								{
 									$(d.html).appendTo('#forum-viewtopic').hide().slideDown(1000);
 									// Attach all registered behaviors to the new content.
 									e107.attachBehaviors();
 								}
 
-                                if (typeof tinymce == 'undefined')
-                                {
-                                    $('#forum-quickreply-text').val('');
-                                }
-                                else
-                                {
-                                    tinymce.get('forum-quickreply-text').setContent('');
-                                }
+								clearQuickReply();
 								return;
 							}
 
