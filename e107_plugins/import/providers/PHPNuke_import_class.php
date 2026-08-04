@@ -39,75 +39,87 @@ class PHPNuke_import extends base_import_class
 		switch ($task)
 		{
 		  case 'users' :
-		    $result = $this->ourDB->gen("SELECT * FROM {$this->DBPrefix}users WHERE `user_active`=1");
+		    // Permanent cross-database boundary (T4): cross-database source table; $this->DBPrefix is the `db`.prefix qualifier validated fail-closed in base_import_class::database(). The e107 builder resolves only its own prefix/db by design, so it structurally cannot express a cross-database qualified table reference; the query also has no dynamic values, so this stays on bound execute().
+		    $result = $this->ourDB->execute("SELECT * FROM {$this->DBPrefix}users WHERE `user_active`=1");
 			if ($result === false) return false;
 			break;
 
 			case 'news' :
 				$query =  "SELECT *, UNIX_TIMESTAMP(time) as datestamp FROM {$this->DBPrefix}stories  ORDER BY sid";
-				$result = $this->ourDB->gen($query);
+				// Permanent cross-database boundary (T4): cross-database source table; $this->DBPrefix is the `db`.prefix qualifier validated fail-closed in base_import_class::database(). The e107 builder resolves only its own prefix/db by design, so it structurally cannot express a cross-database qualified table reference; the query also has no dynamic values, so this stays on bound execute().
+				$result = $this->ourDB->execute($query);
 				if ($result === false) return false;
 			break;
 
 			case 'newscategory' :
 				$query =  "SELECT * FROM {$this->DBPrefix}topics  ORDER BY topicid";
-				$result = $this->ourDB->gen($query);
+				// Permanent cross-database boundary (T4): cross-database source table; $this->DBPrefix is the `db`.prefix qualifier validated fail-closed in base_import_class::database(). The e107 builder resolves only its own prefix/db by design, so it structurally cannot express a cross-database qualified table reference; the query also has no dynamic values, so this stays on bound execute().
+				$result = $this->ourDB->execute($query);
 				if ($result === false) return false;
 			break;
 
 
 			case 'userclass' :
 				$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
-				$result = $this->ourDB->gen($query);
+				// Permanent cross-database boundary (T4): cross-database source table; $this->DBPrefix is the `db`.prefix qualifier validated fail-closed in base_import_class::database(). The e107 builder resolves only its own prefix/db by design, so it structurally cannot express a cross-database qualified table reference; the query also has no dynamic values, so this stays on bound execute().
+				$result = $this->ourDB->execute($query);
 				if ($result === false) return false;
 			break;
 
 			case 'page' :
 				$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
-				$result = $this->ourDB->gen($query);
+				// Permanent cross-database boundary (T4): cross-database source table; $this->DBPrefix is the `db`.prefix qualifier validated fail-closed in base_import_class::database(). The e107 builder resolves only its own prefix/db by design, so it structurally cannot express a cross-database qualified table reference; the query also has no dynamic values, so this stays on bound execute().
+				$result = $this->ourDB->execute($query);
 				if ($result === false) return false;
 			break;
 
 			case 'pagechapter' :
 				$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
-				$result = $this->ourDB->gen($query);
+				// Permanent cross-database boundary (T4): cross-database source table; $this->DBPrefix is the `db`.prefix qualifier validated fail-closed in base_import_class::database(). The e107 builder resolves only its own prefix/db by design, so it structurally cannot express a cross-database qualified table reference; the query also has no dynamic values, so this stays on bound execute().
+				$result = $this->ourDB->execute($query);
 				if ($result === false) return false;
 			break;
 
 			case 'media' :
 				$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
-				$result = $this->ourDB->gen($query);
+				// Permanent cross-database boundary (T4): cross-database source table; $this->DBPrefix is the `db`.prefix qualifier validated fail-closed in base_import_class::database(). The e107 builder resolves only its own prefix/db by design, so it structurally cannot express a cross-database qualified table reference; the query also has no dynamic values, so this stays on bound execute().
+				$result = $this->ourDB->execute($query);
 				if ($result === false) return false;
 			break;
 
 			case 'links':
 			 	$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
-				$result = $this->ourDB->gen($query);
+				// Permanent cross-database boundary (T4): cross-database source table; $this->DBPrefix is the `db`.prefix qualifier validated fail-closed in base_import_class::database(). The e107 builder resolves only its own prefix/db by design, so it structurally cannot express a cross-database qualified table reference; the query also has no dynamic values, so this stays on bound execute().
+				$result = $this->ourDB->execute($query);
 				if ($result === false) return false;
 			break;
 
 
 		    case 'forum' :
 	    		$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
-				$result = $this->ourDB->gen($query);
+				// Permanent cross-database boundary (T4): cross-database source table; $this->DBPrefix is the `db`.prefix qualifier validated fail-closed in base_import_class::database(). The e107 builder resolves only its own prefix/db by design, so it structurally cannot express a cross-database qualified table reference; the query also has no dynamic values, so this stays on bound execute().
+				$result = $this->ourDB->execute($query);
 				if ($result === false) return false;
 	    	break;
 
 		  	case 'forumthread' :
 	    		$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
-				$result = $this->ourDB->gen($query);
+				// Permanent cross-database boundary (T4): cross-database source table; $this->DBPrefix is the `db`.prefix qualifier validated fail-closed in base_import_class::database(). The e107 builder resolves only its own prefix/db by design, so it structurally cannot express a cross-database qualified table reference; the query also has no dynamic values, so this stays on bound execute().
+				$result = $this->ourDB->execute($query);
 				if ($result === false) return false;
 	    	break;
 
 	  		case 'forumpost' :
 	    		$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
-				$result = $this->ourDB->gen($query);
+				// Permanent cross-database boundary (T4): cross-database source table; $this->DBPrefix is the `db`.prefix qualifier validated fail-closed in base_import_class::database(). The e107 builder resolves only its own prefix/db by design, so it structurally cannot express a cross-database qualified table reference; the query also has no dynamic values, so this stays on bound execute().
+				$result = $this->ourDB->execute($query);
 				if ($result === false) return false;
 	    	break;
 
 		  	case 'forumtrack' :
 	    		$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
-				$result = $this->ourDB->gen($query);
+				// Permanent cross-database boundary (T4): cross-database source table; $this->DBPrefix is the `db`.prefix qualifier validated fail-closed in base_import_class::database(). The e107 builder resolves only its own prefix/db by design, so it structurally cannot express a cross-database qualified table reference; the query also has no dynamic values, so this stays on bound execute().
+				$result = $this->ourDB->execute($query);
 				if ($result === false) return false;
 	    	break;
 

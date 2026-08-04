@@ -1576,6 +1576,7 @@ class e_form
 				$(function() {
 				    $('#".$name_id."_prev').dropzone({ 
 				        url: '".e_JS. 'plupload/upload.php?' .$qry."',
+				        params: {'e-token': '".defset('e_TOKEN')."'},
 				        createImageThumbnails: false,
 				        uploadMultiple :false,
 						dictDefaultMessage: \"".$parms['label']. '",
@@ -1839,24 +1840,28 @@ class e_form
 
 		$class = str_replace(' ', '',$class);
 
+		if((string) $class === (string) e_UC_NOBODY)
+		{
+			return '';
+		}
+
+		$qb = e107::getDb()->createQueryBuilder();
+		$qb->select(array_map('trim', explode(',', $fields)))->from('user');
+
 		switch ($class)
 		{
 			case e_UC_ADMIN:
-				$where = 'user_admin = 1';
+				$qb->where('user_admin', 1);
 				$classList = e_UC_ADMIN;
 				break;
 
 			case e_UC_MEMBER:
-				$where = 'user_ban = 0';
+				$qb->where('user_ban', 0);
 				$classList = e_UC_MEMBER;
 				break;
 
-			case e_UC_NOBODY:
-				return '';
-				break;
-
 			case 'matchclass':
-				$where = "user_class REGEXP '(^|,)(".str_replace(',', '|', USERCLASS).")(,|$)'";
+				$qb->where($qb->expr()->regexp('user_class', '(^|,)('.str_replace(',', '|', USERCLASS).')(,|$)'));
 				$classList = USERCLASS;
 				$clist = explode(',',USERCLASS);
 				if(!isset($options['group']) && count($clist) > 1) // group classes by default if more than one found.
@@ -1866,7 +1871,7 @@ class e_form
 			break;
 
 			default:
-				$where = "user_class REGEXP '(^|,)(".str_replace(',', '|', $class).")(,|$)'";
+				$qb->where($qb->expr()->regexp('user_class', '(^|,)('.str_replace(',', '|', $class).')(,|$)'));
 				$classList = $class;
 				break;
 		}
@@ -1874,10 +1879,10 @@ class e_form
 
 		if(!empty($options['return']) && $options['return'] === 'sqlWhere') // can be used by user.php ajax method..
 		{
-			return $where;
+			return $qb->getSQL();
 		}
 
-		$users =   e107::getDb()->retrieve('user',$fields, 'WHERE ' .$where. ' ORDER BY user_name LIMIT 1000',true);
+		$users = $qb->orderBy('user_name')->setMaxResults(1000)->fetchAll();
 
 		if(empty($users))
 		{
@@ -3318,7 +3323,8 @@ class e_form
 	 * @param boolean       $selected [optional]
 	 * @param string|array  $options = [
 	 *      'useValues'		=> (bool)   when true uses array values as the key.
-	 *      'disabled'		=> (array)  list of $option_array keys which should be disabled. eg. array('key_1', 'key_2');
+	 *      'optDisabled'	=> (array)  list of $option_array keys whose options should be disabled. eg. array('key_1', 'key_2');
+	 *                                  A 'disabled' key is not this: it lands on the select element itself and disables the whole control.
 	 * ]
 	 * @param bool|string   $defaultBlank [optional] set to TRUE if the first entry should be blank, or to a string to use it for the blank description.
 	 * @return string       HTML text for display
@@ -3767,6 +3773,22 @@ var_dump($select_options);*/
 
 	/**
 	 * Generate hidden security field
+	 * @return string
+	 */
+	/**
+	 * The security token as a hidden input.
+	 *
+	 * @deprecated v2.3.10 Nothing needs to call this any more.
+	 *             {@see e_token_injector} adds the token to every same-origin
+	 *             POST form in the finished page, so form POST protection is
+	 *             automatic whether the markup came from e_form, from a theme
+	 *             template or from raw HTML in a plugin. Calling this as well is
+	 *             harmless, the page simply ends up with two identical hidden
+	 *             inputs, but it is no longer the way to be protected.
+	 *
+	 *             An AJAX caller that builds its own request body wants the
+	 *             token from e107.security.csrfToken() on the JavaScript side.
+	 *
 	 * @return string
 	 */
 	public function token()
@@ -7442,8 +7464,8 @@ var_dump($select_options);*/
 
 	        $text .= "
 				<form method='post' action='{$formurl}' id='{$elid}-list-form'>
-				<div>".$this->token(). '
-					' .vartrue($options['fieldset_pre'])."
+				<div>
+					".vartrue($options['fieldset_pre'])."
 					<fieldset id='{$elid}-list'>
 						<legend class='{$legend_class}'>".$options['legend']. '</legend>
 						' .vartrue($options['table_pre'])."
@@ -7607,8 +7629,8 @@ var_dump($select_options);*/
 
 	        $text .= "
 				<form method='post' action='{$formurl}' id='{$elid}-list-form'>
-				<div>".$this->token(). '
-					' .vartrue($options['fieldset_pre']);
+				<div>
+					".vartrue($options['fieldset_pre']);
 
 					$text .= "
 
@@ -7805,7 +7827,6 @@ var_dump($select_options);*/
 				<div style='display:none'><input type='text' name='lastname_74758209201093747' autocomplete='off' id='_no_autocomplete_' /></div>
 				<div id='admin-ui-edit'>
 				".vartrue($form['header']). '
-				' .$this->token(). '
 			';
 
 			foreach ($form['fieldsets'] as $elid => $data)
@@ -8190,7 +8211,6 @@ var_dump($select_options);*/
 				<form method='post' action='".$url."' id='{$form['id']}-form' enctype='multipart/form-data'>
 				<div>
 				".vartrue($form['header']). '
-				' .$this->token(). '
 			';
 
 			foreach ($form['fieldsets'] as $elid => $fieldset_data)
@@ -8361,7 +8381,7 @@ class form
 		$method = ($form_method ? "method='".$form_method."'" : '');
 		$target = ($form_target ? " target='".$form_target."'" : '');
 		$name = ($form_name ? " id='".$form_name."' " : " id='myform'");
-		return "\n<form action='".$form_action."' ".$method.$target.$name.$form_enctype.$form_js. '><div>' .e107::getForm()->token(). '</div>';
+		return "\n<form action='".$form_action."' ".$method.$target.$name.$form_enctype.$form_js. '>';
 	}
 
 	/**

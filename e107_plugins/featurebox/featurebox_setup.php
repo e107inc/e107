@@ -15,6 +15,8 @@
 *
 */
 
+use e107\Database\SqlFragment;
+
 if (!defined('e107_INIT')) { exit; }
 
 class featurebox_setup
@@ -40,7 +42,7 @@ class featurebox_setup
 		$count = 0;
 		foreach($e107_featurebox_category as $insert)
 		{
-			$count = e107::getDb()->insert('featurebox_category', $insert) ?  $count + 1 : $count;	
+			$count = $this->insertTypedRow(e107::getDb(), 'featurebox_category', $insert) ? $count + 1 : $count;
 		}
 		
 	
@@ -60,7 +62,7 @@ class featurebox_setup
 			
 			foreach($e107_featurebox as $qry)
 			{
-				$status = e107::getDb('sql2')->insert('featurebox', $qry) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR; 	
+				$status = $this->insertTypedRow(e107::getDb('sql2'), 'featurebox', $qry) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 			}
 
 			$mes->add(LAN_DEFAULT_TABLE_DATA." <strong>featurebox</strong>", $status);
@@ -96,7 +98,10 @@ class featurebox_setup
 
 	function upgrade_pre($var)
 	{
-		e107::getDb()->gen("CREATE TABLE #featurebox_category (
+		// DDL through the schema builder: createTableRaw() owns the CREATE TABLE
+		// envelope (fail-closed table identifier + ENGINE option) while the static
+		// column/key block rides through as a vouched SqlFragment fragment.
+		e107::getDb()->schema()->createTableRaw('featurebox_category', SqlFragment::raw("
 		  `fb_category_id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
 		  `fb_category_title` varchar(200) NOT NULL DEFAULT '',
 		  `fb_category_icon` varchar(255) NOT NULL DEFAULT '',
@@ -107,7 +112,7 @@ class featurebox_setup
 		  `fb_category_parms` text NOT NULL,
 		  PRIMARY KEY (`fb_category_id`),
 		  UNIQUE KEY `fb_category_template` (`fb_category_template`)
-		) ENGINE=MyISAM;");
+		"), array('engine' => 'MyISAM'));
 	}
 
 
@@ -128,7 +133,7 @@ class featurebox_setup
 			$query['fb_category_class'] = e_UC_NOBODY;
 			$query['fb_category_limit'] = 0;
 			
-			$inserted = $sql->insert('featurebox_category', $query);
+			$inserted = $this->insertTypedRow($sql, 'featurebox_category', $query);
 			$status = $inserted ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR; 
 			e107::getMessage()->add(FBLAN_INSTALL_01, $status);
 			if($sql->getLastErrorNumber())
@@ -136,5 +141,44 @@ class featurebox_setup
 				e107::getMessage()->addDebug($sql->getLastErrorText().'<br /><pre>'.$sql->getLastQuery().'</pre>');
 			}
 		}
+	}
+
+	/**
+	 * Insert one field-typed row through the query builder, preserving the exact
+	 * stored bytes of the deprecated array-form insert() this replaces.
+	 *
+	 * Mirrors the legacy e_db::insert() behaviour for typed columns: it merges the
+	 * table's field-type tokens (so each value is stored byte-identically via
+	 * valuesTyped()) and fills any NOT NULL column without a default, exactly as
+	 * the legacy path did before binding.
+	 *
+	 * @param e_db   $db    Database handle (preserves the connection instance).
+	 * @param string $table Logical table name (no '#', no prefix).
+	 * @param array  $data  column => value row.
+	 * @return int|bool execute() result: affected rows on success, false on error
+	 *                  (same truthiness as the legacy insert() return).
+	 */
+	private function insertTypedRow($db, $table, $data)
+	{
+		$defs = $db->getFieldDefs($table);
+		if(!is_array($defs))
+		{
+			$defs = array();
+		}
+
+		if(isset($defs['_NOTNULL']))
+		{
+			foreach($defs['_NOTNULL'] as $field => $default)
+			{
+				if(!isset($data[$field]))
+				{
+					$data[$field] = $default;
+				}
+			}
+		}
+
+		$fieldTypes = isset($defs['_FIELD_TYPES']) ? $defs['_FIELD_TYPES'] : array();
+
+		return $db->createQueryBuilder()->insert($table)->valuesTyped($data, $fieldTypes)->execute();
 	}
 }

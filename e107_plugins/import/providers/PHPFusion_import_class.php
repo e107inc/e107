@@ -37,12 +37,14 @@ class PHPFusion_import extends base_import_class
 	    switch ($task)
 		{
 		  case 'users' :
+		    // Permanent cross-database boundary (T4, dynamic identifier): table reference is the cross-database name `db`.prefix built from $this->DBPrefix (validated fail-closed in base_import_class::database(): db backtick-escaped, prefix stripped to [A-Za-z0-9_]). The e107 builder resolves only its own prefix/db by design: its from() re-resolves via the connection prefix and backtick-wraps the entire resolved name, so it cannot express a cross-database `db`.prefix reference; no values to bind.
 		    $result = $this->ourDB->gen("SELECT * FROM {$this->DBPrefix}users");
 			if ($result === FALSE) return FALSE;
 			break;
 
 
 		 case 'userclass' :
+		    // Permanent cross-database boundary (T4, dynamic identifier): table reference is the cross-database name `db`.prefix built from $this->DBPrefix (validated fail-closed in base_import_class::database(): db backtick-escaped, prefix stripped to [A-Za-z0-9_]). The e107 builder resolves only its own prefix/db by design: its from() re-resolves via the connection prefix and backtick-wraps the entire resolved name, so it cannot express a cross-database `db`.prefix reference; no values to bind.
 		    $result = $this->ourDB->gen("SELECT * FROM {$this->DBPrefix}user_groups");
 			if ($result === FALSE) return FALSE;
 			break;

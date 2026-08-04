@@ -142,12 +142,16 @@
 
 		function sc_breadcrumb()
 		{
-			return $this->var['breadcrumb'];
+			// No $force: e_form::breadcrumb() returns null on THEME_VERSION 2.3 so that
+			// the theme's own {---BREADCRUMB---} stays the only trail on the page.
+			return e107::getForm()->breadcrumb(e107::breadcrumb());
 		}
 
 		function sc_backlink()
 		{
-			return $this->var['breadcrumb'];
+			// No $force: e_form::breadcrumb() returns null on THEME_VERSION 2.3 so that
+			// the theme's own {---BREADCRUMB---} stays the only trail on the page.
+			return e107::getForm()->breadcrumb(e107::breadcrumb());
 		}
 
 		function sc_forum_crumb()

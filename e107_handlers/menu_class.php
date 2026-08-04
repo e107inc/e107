@@ -136,12 +136,14 @@ class e_menu
 	 */
 	function convertMenuTable()
 	{
-		$sql = e107::getDb();
-		
-		$sql->select('menus','*','menu_location !=0 ORDER BY menu_location,menu_order');
+		$rows = e107::getDb()->createQueryBuilder()
+			->select('*')->from('menus')
+			->where('menu_location', '!=', 0)
+			->orderBy('menu_location')->addOrderBy('menu_order')
+			->fetchAll();
 		$data = array();
 
-		while($row = $sql->fetch())
+		foreach($rows as $row)
 		{
 			$layout 	= vartrue($row['menu_layout'],'default');	
 			$location 	= $row['menu_location'];
@@ -256,10 +258,18 @@ class e_menu
 	 */
 	public function setParms($plugin, $menu, $parms=array(), $location = 'all')
 	{
-		$qry = 'menu_parms="'.e107::serialize($parms).'" WHERE menu_parms="" AND menu_path="'.$plugin.'/" AND menu_name="'.$menu.'" ';
-		$qry .= ($location !== 'all') ? 'menu_location='. (int)$location : '';
+		$qb = e107::getDb()->createQueryBuilder()->update('menus')
+			->set('menu_parms', e107::serialize($parms))
+			->where('menu_parms', '')
+			->where('menu_path', $plugin.'/')
+			->where('menu_name', $menu);
 
-		return  e107::getDb()->update('menus', $qry);
+		if($location !== 'all')
+		{
+			$qb->where('menu_location', (int) $location);
+		}
+
+		return $qb->execute();
 	}
 
 
@@ -352,7 +362,7 @@ class e_menu
 			return false;
 		}
 
-		if($sql->select('menus', 'menu_id' , 'menu_path="'.$plugin.'/" AND menu_name="'.$menufile.'" LIMIT 1'))
+		if($sql->createQueryBuilder()->select('menu_id')->from('menus')->where('menu_path', $plugin.'/')->where('menu_name', $menufile)->limit(1)->execute())
 		{
 			return false;
 		}
@@ -369,7 +379,7 @@ class e_menu
 			'menu_parms'    => ''
 		);
 
-		return  $sql->insert('menus', $insert);
+		return $sql->createQueryBuilder()->insert('menus')->insertGetId($insert);
 
 
 	}
@@ -383,14 +393,14 @@ class e_menu
 	 */
 	public function remove($plugin, $menufile=null)
 	{
-		$qry = 'menu_path="'.$plugin.'/" ';
+		$qb = e107::getDb()->createQueryBuilder()->delete('menus')->where('menu_path', $plugin.'/');
 
 		if(!empty($menufile))
 		{
-			$qry .= ' AND menu_name="'.$menufile.'" ';
+			$qb->where('menu_name', $menufile);
 		}
 
-		return e107::getDb()->delete('menus', $qry);
+		return $qb->execute();
 	}
 
 
@@ -418,16 +428,21 @@ class e_menu
 		
 		if(empty($menu_data) || !is_array($menu_data))
 		{
-			$menu_qry = 'SELECT * FROM #menus WHERE menu_location > 0 AND menu_class IN ('.USERCLASS_LIST.')  ';
-			$menu_qry .= !defined('PREVIEWTHEME') ? 'AND menu_layout = "'.$menu_layout_field.'" ' : '';
-			$menu_qry .= 'ORDER BY menu_location,menu_order';
-			
-			if($sql->gen($menu_qry))
+			$qb = $sql->createQueryBuilder()
+				->select('*')->from('menus')
+				->where('menu_location', '>', 0)
+				->whereIn('menu_class', explode(',', USERCLASS_LIST));
+
+			if(!defined('PREVIEWTHEME'))
 			{
-				while($row = $sql->fetch())
-				{
-					$eMenuArea[$row['menu_location']][] = $row;
-				}
+				$qb->where('menu_layout', $menu_layout_field);
+			}
+
+			$rows = $qb->orderBy('menu_location')->addOrderBy('menu_order')->fetchAll();
+
+			foreach($rows as $row)
+			{
+				$eMenuArea[$row['menu_location']][] = $row;
 			}
 			
 			$menu_data['menu_area'] = $eMenuArea;
@@ -662,11 +677,17 @@ class e_menu
 		}
 		e107::getDebug()->logTime($mname);
 		
-		if(is_numeric($mpath) || ($mname === false)) // Custom Page/Menu 
+		if(is_numeric($mpath) || ($mname === false)) // Custom Page/Menu
 		{
-			$query = ($mname === false) ? "menu_name = '".$mpath."' " :  "page_id=". (int)$mpath ." "; // load by ID or load by menu-name (menu_name)
-			
-			$sql->select("page", "*", $query);
+			// load by ID or load by menu-name (menu_name)
+			if($mname === false)
+			{
+				$sql->createQueryBuilder()->select('*')->from('page')->where('menu_name', $mpath)->execute();
+			}
+			else
+			{
+				$sql->createQueryBuilder()->select('*')->from('page')->where('page_id', (int)$mpath)->execute();
+			}
 			$page = $sql->fetch();
 			
 			if(!empty($page['menu_class']) && !check_class($page['menu_class']))

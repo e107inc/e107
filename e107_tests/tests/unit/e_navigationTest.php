@@ -623,6 +623,45 @@
 			$this->assertSame($expected, $result);
 
 		}
+
+		public function testAdminSortDeduplicatesSameNamedEntries()
+		{
+			$vars = array(
+				'alpha' => array('text' => 'Shared Name', 'link' => '/e107_admin/alpha.php', 'icon' => ''),
+				'beta'  => array('text' => 'Shared Name', 'link' => '/e107_admin/beta.php',  'icon' => ''),
+				'gamma' => array('text' => 'Shared Name', 'link' => '/e107_admin/gamma.php', 'icon' => ''),
+				'delta' => array('text' => 'Aardvark',    'link' => '/e107_admin/delta.php', 'icon' => ''),
+			);
+
+			// Explicit template: the core admin template registry entry may hold
+			// an empty array when another test loaded it first with $override on
+			// (e107Test::testGetCoreTemplate), which would render nothing here.
+			$tmpl = array(
+				'start' => '<ul>',
+				'button' => '<li><a id="plugin-navigation-{LINK_ID}" href="{LINK_URL}">{LINK_TEXT}</a></li>',
+				'button_active' => '<li><a id="plugin-navigation-{LINK_ID}" href="{LINK_URL}">{LINK_TEXT}</a></li>',
+				'end' => '</ul>',
+			);
+
+			// Empty title returns the raw <ul> list instead of echoing a tablerender.
+			$result = e107::getNav()->admin('', 'no-active-page', $vars, $tmpl, false, true);
+
+			$this->assertSame(1, substr_count($result, 'href="/e107_admin/alpha.php"'));
+			$this->assertSame(1, substr_count($result, 'href="/e107_admin/beta.php"'));
+			$this->assertSame(1, substr_count($result, 'href="/e107_admin/gamma.php"'));
+			$this->assertSame(1, substr_count($result, 'href="/e107_admin/delta.php"'));
+			$this->assertSame(4, substr_count($result, 'id="plugin-navigation-'));
+
+			$posDelta = strpos($result, 'href="/e107_admin/delta.php"');
+			$posAlpha = strpos($result, 'href="/e107_admin/alpha.php"');
+			$posBeta  = strpos($result, 'href="/e107_admin/beta.php"');
+			$posGamma = strpos($result, 'href="/e107_admin/gamma.php"');
+
+			// 'Aardvark' sorts before 'Shared Name'; the tie group keeps insertion order.
+			$this->assertLessThan($posAlpha, $posDelta);
+			$this->assertLessThan($posBeta, $posAlpha);
+			$this->assertLessThan($posGamma, $posBeta);
+		}
 /*
 		public function testCacheBase()
 		{

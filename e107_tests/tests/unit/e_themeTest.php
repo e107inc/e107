@@ -628,6 +628,65 @@ class e_themeTest extends \Codeception\Test\Unit
 					}
 	*/
 
+	/**
+	 * A theme.php with no themename declaration used to leave the metadata array
+	 * unset, and reading it back blew up the whole theme scan on PHP 8.
+	 */
+	public function testParse_theme_php_withoutThemeName()
+	{
+		$theme = 'testnothemename';
+		$dir = e_THEME.$theme;
+
+		mkdir($dir);
+		file_put_contents($dir.'/theme.php', "<?php\n// no themename declared\n\$HEADER = '';\n");
+
+		try
+		{
+			$result = e_theme::parse_theme_php($theme);
+
+			$this->assertSame('', $result['description']);
+			$this->assertSame($theme, $result['path']);
+		}
+		finally
+		{
+			@unlink($dir.'/theme.php');
+			@rmdir($dir);
+		}
+	}
+
+	/**
+	 * A theme.xml with no <layouts> element used to do the same.
+	 */
+	public function testParse_theme_xml_withoutLayouts()
+	{
+		$theme = 'testnolayouts';
+		$dir = e_THEME.$theme;
+
+		$xml = '<?xml version="1.0" encoding="utf-8"?>'."\n"
+			.'<e107Theme name="No Layouts" version="1.0" date="2026-08-02" compatibility="2.0">'."\n"
+			."\t".'<author name="e107" />'."\n"
+			."\t".'<description>A theme.xml with no layouts element.</description>'."\n"
+			.'</e107Theme>'."\n";
+
+		mkdir($dir);
+		file_put_contents($dir.'/theme.xml', $xml);
+
+		try
+		{
+			$result = e_theme::parse_theme_xml($theme);
+
+			$this->assertSame(array(), $result['layouts']);
+			$this->assertSame(array(), $result['custompages']);
+			$this->assertSame('No Layouts', $result['name']);
+		}
+		finally
+		{
+			@unlink($dir.'/theme.xml');
+			@rmdir($dir);
+		}
+	}
+
+
 	public function testParse_theme_xml()
 	{
 		$tests = array(

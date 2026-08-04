@@ -85,11 +85,21 @@ class news {
 			$message = LAN_ERROR_48;
 			$emessage->add(LAN_ERROR_48, E_MESSAGE_ERROR, $smessages);
 		}
-		elseif($sql->count('news', '(news_id)', ($news['news_sef'] ? 'news_id<>'.intval($news['news_id']).' AND ' : '')."news_sef='".$tp->toDB($news['news_sef'])."'"))
+		else
 		{
-			$error = true;
-			$message = LAN_ERROR_49;
-			$emessage->add(LAN_ERROR_49, E_MESSAGE_ERROR, $smessages);
+			$sefDupe = $sql->createQueryBuilder()->from('news')
+				->where('news_sef', $tp->toDB($news['news_sef']));
+			if($news['news_sef'])
+			{
+				$sefDupe->where('news_id', '!=', (int) $news['news_id']);
+			}
+
+			if($sefDupe->count('news_id'))
+			{
+				$error = true;
+				$message = LAN_ERROR_49;
+				$emessage->add(LAN_ERROR_49, E_MESSAGE_ERROR, $smessages);
+			}
 		}
 
 		if(empty($news['news_category']))
@@ -172,10 +182,19 @@ class news {
 		if ($news['news_id'])
 		{
 			// Updating existing item
-			$data['WHERE'] = 'news_id='.intval($news['news_id']);
-
 			//$vals = "news_datestamp = '".intval($news['news_datestamp'])."', ".$author_insert." news_title='".$news['news_title']."', news_body='".$news['news_body']."', news_extended='".$news['news_extended']."', news_category='".intval($news['cat_id'])."', news_allow_comments='".intval($news['news_allow_comments'])."', news_start='".intval($news['news_start'])."', news_end='".intval($news['news_end'])."', news_class='".$tp->toDB($news['news_class'])."', news_render_type='".intval($news['news_rendertype'])."' , news_summary='".$news['news_summary']."', news_thumbnail='".$tp->toDB($news['news_thumbnail'])."', news_sticky='".intval($news['news_sticky'])."' WHERE news_id='".intval($news['news_id'])."' ";
-			if ($sql->update('news', $data))
+
+			// Field-typed array update: setTyped() per column applies the same per-column
+			// storage transform as the legacy array CRUD (byte-identical), values bound.
+			$qb = $sql->createQueryBuilder()->update('news');
+			foreach($data['data'] as $col => $val)
+			{
+				$type = isset($data['_FIELD_TYPES'][$col]) ? $data['_FIELD_TYPES'][$col] : 'string';
+				$qb->setTyped($col, $val, $type);
+			}
+			$qb->where('news_id', (int) $news['news_id']);
+
+			if ($qb->execute())
 			{
 				
 			
@@ -222,7 +241,11 @@ class news {
 		else
 		{
 			// Adding item
-			$data['data']['news_id'] = $sql->insert('news', $data);
+			// Field-typed array insert: valuesTyped() reproduces the legacy array CRUD
+			// storage transform (byte-identical); guard lastInsertId() on execute() success.
+			$insertOk = $sql->createQueryBuilder()->insert('news')
+				->valuesTyped($data['data'], $data['_FIELD_TYPES'])->execute();
+			$data['data']['news_id'] = ($insertOk !== false) ? $sql->lastInsertId() : false;
 			$news['news_id'] = $data['data']['news_id'];
 			//$news['news_id'] = $sql ->db_Insert('news', "0, '".$news['news_title']."', '".$news['news_body']."', '".$news['news_extended']."', ".intval($news['news_datestamp']).", ".intval($news['news_author']).", '".intval($news['cat_id'])."', '".intval($news['news_allow_comments'])."', '".intval($news['news_start'])."', '".intval($news['news_end'])."', '".$tp->toDB($news['news_class'])."', '".intval($news['news_rendertype'])."', '0' , '".$news['news_summary']."', '".$tp->toDB($news['news_thumbnail'])."', '".intval($news['news_sticky'])."' ")
 			if ($data['data']['news_id'])
@@ -813,8 +836,17 @@ class e_news_tree extends e_front_tree_model
 			
 		$db_order = vartrue($params['db_order'], 'n.news_datestamp DESC');
 		$db_limit = vartrue($params['db_limit'], '0,10');
-		
-		
+
+		// db_order/db_limit can arrive from stored news menu params (order/count)
+		// that are only toDB()'d, which does not neutralise an ORDER BY or LIMIT
+		// position. Validate the ORDER BY (identifiers quoted, ASC/DESC only,
+		// fail closed to the default) and coerce LIMIT to plain integers.
+		$safeOrder = \e107\Database\IdentifierFilter::orderBy($db_order);
+		$db_order = ($safeOrder !== false) ? $safeOrder : '`n`.`news_datestamp` DESC';
+
+		$limitParts = array_map('intval', explode(',', (string) $db_limit, 2));
+		$db_limit = (count($limitParts) > 1) ? $limitParts[0] . ',' . $limitParts[1] : (string) $limitParts[0];
+
 		$query = "SELECT  SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon FROM #news AS n
 			LEFT JOIN #user AS u ON n.news_author = u.user_id
 			LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id

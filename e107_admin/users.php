@@ -10,11 +10,6 @@
 *
 */
 
-if(!empty($_POST) && !isset($_POST['e-token']))
-{
-	$_POST['e-token'] = ''; // make sure e-token hasn't been deliberately removed.
-}
-
 if (!defined('e107_INIT'))
 {
 	require_once(__DIR__.'/../class2.php');
@@ -22,8 +17,16 @@ if (!defined('e107_INIT'))
 
 if (!getperms('4|U0|U1|U2|U3'))
 {
-	e107::redirect('admin');
-	exit;
+	// Permission-emulation escape hatch (#5745): the real main admin must
+	// always be able to reach the emulation-stop route, even when the
+	// emulated permissions deny access to this page. getEmulatedUser() is
+	// non-null only if this request's re-verification confirmed the real
+	// user is a main admin.
+	if(varset($_GET['action']) !== 'emulatestop' || null === e107::getUser()->getEmulatedUser())
+	{
+		e107::redirect('admin');
+		exit;
+	}
 }
 
 e107::coreLan('user');
@@ -156,7 +159,10 @@ JS;
 					{
 						$id = (int) $_POST['userid'];
 						$_POST['etrigger_delete'] = array($id => $id);
-						$user = e107::getDb()->retrieve('user', 'user_email, user_name', 'user_id='.$id);
+						$user = e107::getDb()->createQueryBuilder()
+							->select('user_email', 'user_name')->from('user')
+							->where('user_id', $id)
+							->fetchRow();
 						$rplc_from = array('[x]', '[y]', '[z]');
 						$rplc_to = array($user['user_name'], $user['user_email'], $id);
 						$message = str_replace($rplc_from, $rplc_to, USRLAN_222);
@@ -365,7 +371,165 @@ class users_admin_ui extends e_admin_ui
 	{
 		return $this->extendedData;
 	}
-	
+
+	/**
+	 * Turn a legacy array-form payload (array('data' => ..., '_FIELD_TYPES' => ...))
+	 * into a flat column => array('value', 'type') map, applying the same value
+	 * coercion and bind type the legacy bound insert/update path used. This keeps
+	 * the storage format (int casts, toDB, NULL handling) identical while moving
+	 * every value onto a bound query-builder parameter.
+	 *
+	 * @param array $arg legacy payload with a 'data' map and optional '_FIELD_TYPES'.
+	 * @return array column => array('value' => mixed, 'type' => e_db::PARAM_*)
+	 */
+	public static function boundFieldsFromArrayForm(array $arg)
+	{
+		$data  = isset($arg['data']) ? $arg['data'] : array();
+		$types = isset($arg['_FIELD_TYPES']) ? $arg['_FIELD_TYPES'] : array();
+		$default = isset($types['_DEFAULT']) ? $types['_DEFAULT'] : 'string';
+
+		$out = array();
+
+		foreach($data as $field => $value)
+		{
+			$type = isset($types[$field]) ? $types[$field] : $default;
+
+			$bound = self::pdoBoundValue($type, $value);
+			$bound['type'] = self::pdoBoundType($type, $bound['value']);
+
+			$out[$field] = $bound;
+		}
+
+		return $out;
+	}
+
+	/**
+	 * Coerce one value exactly as the legacy bound CRUD path did (mirrors
+	 * ConnectionTrait::_getPDOValue): the value transform depends on the
+	 * field type, and a '_NULL_' value collapses to a real NULL regardless of
+	 * type. Returns array('value' => mixed) so callers can pair it with
+	 * {@see users_admin_ui::pdoBoundType()}.
+	 *
+	 * @param string $type field type (int, todb, escape, null, array, float...).
+	 * @param mixed $value raw value.
+	 * @return array array('value' => mixed)
+	 */
+	private static function pdoBoundValue($type, $value)
+	{
+		if(is_string($value) && $value === '_NULL_')
+		{
+			$type = 'null';
+		}
+
+		switch($type)
+		{
+			case 'int':
+			case 'integer':
+				return array('value' => (int) $value);
+
+			case 'float':
+				return array('value' => e107::getParser()->toNumber($value));
+
+			case 'null':
+				$nv = (is_string($value) && ($value !== '_NULL_') && ($value !== '')) ? $value : null;
+				return array('value' => $nv);
+
+			case 'array':
+				return array('value' => is_array($value) ? e107::serialize($value) : $value);
+
+			case 'todb':
+				return array('value' => ($value == '') ? '' : e107::getParser()->toDB($value));
+
+			default:
+				return array('value' => $value);
+		}
+	}
+
+	/**
+	 * Bind-parameter type for a field, mirroring
+	 * ConnectionTrait::_getPDOType (the original field type drives the bind
+	 * type; a 'null' type emits PARAM_NULL only when the coerced value is null).
+	 *
+	 * @param string $type original field type.
+	 * @param mixed $value coerced value from {@see users_admin_ui::pdoBoundValue()}.
+	 * @return int e_db::PARAM_*
+	 */
+	private static function pdoBoundType($type, $value)
+	{
+		switch($type)
+		{
+			case 'int':
+			case 'integer':
+				return e_db::PARAM_INT;
+
+			case 'null':
+				return ($value === null) ? e_db::PARAM_NULL : e_db::PARAM_STR;
+
+			default:
+				return e_db::PARAM_STR;
+		}
+	}
+
+	/**
+	 * Insert a legacy array-form payload through the query builder, preserving the
+	 * field-type coercion the legacy bound insert applied.
+	 *
+	 * @param e_db $db connection instance.
+	 * @param string $table logical table name.
+	 * @param array $arg legacy array-form payload.
+	 * @return int|string|bool last insert id, true, or false on error (legacy shape).
+	 */
+	public static function builderInsertArrayForm($db, $table, array $arg)
+	{
+		$qb = $db->createQueryBuilder()->insert($table);
+
+		foreach(self::boundFieldsFromArrayForm($arg) as $col => $bind)
+		{
+			$qb->set($col, $bind['value'], $bind['type']);
+		}
+
+		if($qb->execute() === false)
+		{
+			return false;
+		}
+
+		$id = $db->lastInsertId();
+
+		return $id ? $id : true;
+	}
+
+	/**
+	 * Update with a legacy array-form payload through the query builder, preserving
+	 * the field-type coercion. The legacy 'WHERE' key (raw "user_extended_id=NN
+	 * [LIMIT 1]") is reduced to bound predicates here.
+	 *
+	 * @param e_db $db connection instance.
+	 * @param string $table logical table name.
+	 * @param array $arg legacy array-form payload including a 'WHERE' element.
+	 * @param int $whereId value for the (single-column) equality WHERE.
+	 * @param string $whereCol column used in the WHERE equality.
+	 * @param int|null $limit optional LIMIT carried by the legacy WHERE string.
+	 * @return int|bool affected rows / true, or false on error.
+	 */
+	public static function builderUpdateArrayForm($db, $table, array $arg, $whereCol, $whereId, $limit = null)
+	{
+		$qb = $db->createQueryBuilder()->update($table);
+
+		foreach(self::boundFieldsFromArrayForm($arg) as $col => $bind)
+		{
+			$qb->set($col, $bind['value'], $bind['type']);
+		}
+
+		$qb->where($whereCol, (int) $whereId);
+
+		if($limit !== null)
+		{
+			$qb->setMaxResults((int) $limit);
+		}
+
+		return $qb->execute();
+	}
+
 	function ListObserver()
 	{
 		parent::ListObserver(); 
@@ -413,7 +577,12 @@ class users_admin_ui extends e_admin_ui
 		
 		// Extended fields - FIXME - better field types
 		
-		if($rows = $sql->retrieve('user_extended_struct', '*', "user_extended_struct_type > 0 AND user_extended_struct_text != '_system_' ORDER BY user_extended_struct_parent ASC",true))
+		if($rows = $sql->createQueryBuilder()
+			->select('*')->from('user_extended_struct')
+			->where('user_extended_struct_type', '>', 0)
+			->where('user_extended_struct_text', '!=', '_system_')
+			->orderBy('user_extended_struct_parent', 'ASC')
+			->fetchAll())
 		{
 			// TODO FIXME use the handler to build fields and field attributes
 			// FIXME a way to load 3rd party language files for extended user fields
@@ -521,7 +690,9 @@ class users_admin_ui extends e_admin_ui
 		if(!empty($id))
 		{
 			$sql = e107::getDb();
-			$sql->delete('user_extended',"user_extended_id = ".$id);
+			$sql->createQueryBuilder()->delete('user_extended')
+				->where('user_extended_id', (int) $id)
+				->execute();
 
 			e107::getCache()->clear('online_menu_member_newest');
 			e107::getCache()->clear('online_menu_member_total');
@@ -561,7 +732,7 @@ class users_admin_ui extends e_admin_ui
 			$savePassword = $new_data['user_password'];
 			$loginname = $new_data['user_loginname'] ? $new_data['user_loginname'] : $old_data['user_loginname'];
 			$email = (isset($new_data['user_email']) && $new_data['user_email']) ? $new_data['user_email'] : $old_data['user_email'];
-			$new_data['user_password'] = e107::getDb()->escape(e107::getUserSession()->HashPassword($savePassword, $loginname), false);
+			$new_data['user_password'] = e107::getUserSession()->HashPassword($savePassword, $loginname);
 
 			e107::getMessage()->addDebug("Password Hash: ".$new_data['user_password']);
 		}
@@ -596,10 +767,14 @@ class users_admin_ui extends e_admin_ui
 		{
 			e107::getUserExt()->addFieldTypes($update);
 
-			if(!e107::getDb()->count('user_extended', '(user_extended_id)', "user_extended_id=".intval($new_data['submit_value'])))
+			$extCount = e107::getDb()->createQueryBuilder()->from('user_extended')
+				->where('user_extended_id', (int) $new_data['submit_value'])
+				->count('user_extended_id');
+
+			if(!$extCount)
 			{
 				$update['data']['user_extended_id'] = intval($new_data['submit_value']);
-				if(e107::getDb()->insert('user_extended', $update))
+				if(self::builderInsertArrayForm(e107::getDb(), 'user_extended', $update))
 				{
 					// e107::getMessage()->addSuccess(LAN_UPDATED.': '.ADLAN_78); // not needed see pull/1816
 					e107::getMessage()->addDebug(LAN_UPDATED.': '.ADLAN_78); // let's put it in debug instead
@@ -617,9 +792,7 @@ class users_admin_ui extends e_admin_ui
 			}
 			else
 			{
-				$update['WHERE'] = 'user_extended_id='. intval($new_data['submit_value']);
-
-				if(e107::getDb()->update('user_extended',$update)===false)
+				if(self::builderUpdateArrayForm(e107::getDb(), 'user_extended', $update, 'user_extended_id', (int) $new_data['submit_value'])===false)
 				{
 					e107::getMessage()->addError(LAN_UPDATED_FAILED.': '.ADLAN_78);
 					$error = e107::getDb()->getLastErrorText();
@@ -662,7 +835,9 @@ class users_admin_ui extends e_admin_ui
 		->set('user_sess', e_user_model::randomKey())
 		->save();
 		
-		$sql->delete("banlist"," banlist_ip='{$row['user_ip']}' ");
+		$sql->createQueryBuilder()->delete('banlist')
+			->where('banlist_ip', $row['user_ip'])
+			->execute();
 
 		$vars = array('x'=>$sysuser->getId(), 'y'=> $sysuser->getName(), 'z'=> $sysuser->getValue('email'));
 
@@ -700,7 +875,10 @@ class users_admin_ui extends e_admin_ui
 		}
 		else
 		{
-			if ($sql->update("user","user_ban='1' WHERE user_id='".$userid."' "))
+			if ($sql->createQueryBuilder()->update('user')
+				->set('user_ban', '1')
+				->where('user_id', (int) $userid)
+				->execute())
 			{
 				$vars = array('x'=>$row['user_id'], 'y'=> $row['user_name']);
 				e107::getLog()->add('USET_05',$tp->lanVars(USRLAN_161, $vars), E_LOG_INFORMATIVE);
@@ -712,7 +890,11 @@ class users_admin_ui extends e_admin_ui
 			}
 			else
 			{
-				if($sql->count('user', '(*)', "user_ip = '{$row['user_ip']}' AND user_ban=0 AND user_id <> {$userid}") > 0)
+				if($sql->createQueryBuilder()->from('user')
+					->where('user_ip', $row['user_ip'])
+					->where('user_ban', 0)
+					->where('user_id', '<>', (int) $userid)
+					->count() > 0)
 				{
 					// Other unbanned users have same IP address
 					$mes->addWarning(str_replace("{IP}", $iph->ipDecode($row['user_ip']), USRLAN_136));
@@ -886,24 +1068,86 @@ class users_admin_ui extends e_admin_ui
 
 
 	/**
-	 * Allows the emulation of a user ID if the current user has sufficient permissions and a user ID is provided.
-	 * If the conditions are met, a message with the emulated User ID is displayed, and the session is updated to emulate the specified user ID.
+	 * Start admin permission emulation of the posted user id (#5745).
+	 * POST + e-token are enforced (see the top of this file and the session
+	 * check in class2.php). The user model applies all rules: the real user
+	 * must be a main admin and the target must exist, must not be the
+	 * current user and must not be a main admin.
 	 *
 	 * @return void
 	 */
 	public function emulatePage()
 	{
+		$user = e107::getUser();
+		$mes = e107::getMessage();
+		$uid = !empty($_POST['userid']) ? (int) $_POST['userid'] : 0;
 
-		if(getperms('0') && !empty($_POST['userid']))
+		if($uid && $user->emulateAs($uid))
 		{
-			$uid = (int) $_POST['userid'];
-			e107::getSession()->set('emulate',$uid);
-			$user = e107::user($uid);
-			e107::getMessage()->addSuccess("Emulation of <strong>".$user['user_name']."</strong> activated.", 'default', true);;
+			$target = $user->getEmulatedUser();
+
+			// TODO - lan
+			$mes->addSuccess('Now emulating the permissions of <strong>'.$target->getName().'</strong>. Your identity is unchanged.', 'default', true);
+
+			$search = array('--UID--', '--NAME--', '--EMAIL--', '--ADMIN_UID--', '--ADMIN_NAME--', '--ADMIN_EMAIL--');
+			$replace = array($target->getId(), $target->getName(), $target->get('user_email'), $user->getId(), $user->getName(), $user->get('user_email'));
+
+			// TODO - lan
+			$lan = 'Administrator --ADMIN_EMAIL-- (#--ADMIN_UID--, --ADMIN_NAME--) started emulating the permissions of user --EMAIL-- (#--UID--, --NAME--)';
+
+			e107::getLog()->add('USET_102', str_replace($search, $replace, $lan), E_LOG_INFORMATIVE);
+
+			$eventData = array('user_id' => $target->getId(), 'admin_id' => $user->getId());
+			e107::getEvent()->trigger('admin_user_emulate', $eventData);
+		}
+		elseif($uid)
+		{
+			$mes->addError(LAN_NO_PERMISSIONS, 'default', true);
 		}
 
 		$this->redirect('list', 'main', true);
+	}
 
+	/**
+	 * Stop admin permission emulation (#5745). POST only; e-token is
+	 * enforced like every other admin POST. getEmulatedUser() is non-null
+	 * only if this request's loadEmulation() re-verification confirmed the
+	 * real user is a main admin.
+	 */
+	public function EmulatestopObserver()
+	{
+		$user = e107::getUser();
+		$target = $user->getEmulatedUser();
+
+		if($_SERVER['REQUEST_METHOD'] !== 'POST' || null === $target)
+		{
+			$this->redirect('list', 'main', true);
+			return;
+		}
+
+		if($user->stopEmulation())
+		{
+			// TODO - lan
+			e107::getMessage()->addSuccess('Stopped emulating the permissions of <strong>'.$target->getName().'</strong>.', 'default', true);
+
+			$search = array('--UID--', '--NAME--', '--EMAIL--', '--ADMIN_UID--', '--ADMIN_NAME--', '--ADMIN_EMAIL--');
+			$replace = array($target->getId(), $target->getName(), $target->get('user_email'), $user->getId(), $user->getName(), $user->get('user_email'));
+
+			// TODO - lan
+			$lan = 'Administrator --ADMIN_EMAIL-- (#--ADMIN_UID--, --ADMIN_NAME--) stopped emulating the permissions of user --EMAIL-- (#--UID--, --NAME--)';
+
+			e107::getLog()->add('USET_103', str_replace($search, $replace, $lan), E_LOG_INFORMATIVE);
+
+			$eventData = array('user_id' => $target->getId(), 'admin_id' => $user->getId());
+			e107::getEvent()->trigger('admin_user_emulate_stop', $eventData);
+		}
+
+		$this->redirect('list', 'main', true);
+	}
+
+	public function EmulatestopPage()
+	{
+		// Work done in EmulatestopObserver(); required so _preDispatch() keeps the action.
 	}
 
 	public function copypermsPage()
@@ -926,7 +1170,10 @@ class users_admin_ui extends e_admin_ui
 
 		if(getperms('0') && !empty($_POST['userid']) && $originUser)
 		{
-			if(!$user = e107::getDb()->retrieve('user', 'user_name, user_admin, user_class, user_perms', 'user_id='.$originUser))
+			if(!$user = e107::getDb()->createQueryBuilder()
+				->select('user_name', 'user_admin', 'user_class', 'user_perms')->from('user')
+				->where('user_id', (int) $originUser)
+				->fetchRow())
 			{
 				e107::getMessage()->addError("Failed to retrieve user permissions.", 'default', true);
 				return;
@@ -1083,7 +1330,7 @@ class users_admin_ui extends e_admin_ui
 		$response->appendBody($frm->open('adminperms'))
 			->appendBody($prm->renderPermTable('grouped', $sysuser->getValue('perms')))
 			->appendBody($prm->renderCheckAllButtons())
-			->appendBody($prm->renderSubmitButtons().$frm->token())
+			->appendBody($prm->renderSubmitButtons())
 			->appendBody($frm->close());
 		
 		$this->addTitle(str_replace(array('[x]', '[y]'), array($sysuser->getName(), $sysuser->getValue('email')), USRLAN_230));
@@ -1617,7 +1864,7 @@ class users_admin_ui extends e_admin_ui
 		$userMethods->addNonDefaulted($user_data);
 		validatorClass::addFieldTypes($userMethods->userVettingInfo, $allData);
 		
-		$userid = $sql->insert('user', $allData);
+		$userid = self::builderInsertArrayForm($sql, 'user', $allData);
 		if ($userid)
 		{
 			$this->saveExtended(array('submit_value'=>$userid));
@@ -1814,7 +2061,6 @@ class users_admin_ui extends e_admin_ui
 		</table>
 		<div class='buttons-bar center'>
 			".$frm->admin_trigger('submit', USRLAN_60, 'create')."
-			".$frm->token()."
 			<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
 		</div>
 		</fieldset>
@@ -1845,16 +2091,18 @@ class users_admin_ui extends e_admin_ui
 		}
 
 		//Delete existing rank config
-		e107::getDb()->delete('generic', "gen_type = 'user_rank_config'");
-		
+		e107::getDb()->createQueryBuilder()->delete('generic')
+			->where('gen_type', 'user_rank_config')
+			->execute();
+
 		$tmp = array();
 		$tmp['data']['gen_type'] = 'user_rank_config';
 		$tmp['data']['gen_chardata'] = serialize($cfg);
 		$tmp['_FIELD_TYPES']['gen_type'] = 'string';
 		$tmp['_FIELD_TYPES']['gen_chardata'] = 'escape';
-		
+
 		//Add the new rank config
-		e107::getDb()->insert('generic', $tmp);
+		self::builderInsertArrayForm(e107::getDb(), 'generic', $tmp);
 		
 		// save prefs
 		$config->set('ranks_calc', $ranks_calc);
@@ -1863,8 +2111,10 @@ class users_admin_ui extends e_admin_ui
 		$config->resetMessages();
 
 		//Delete existing rank data
-		e107::getDb()->delete('generic',"gen_type = 'user_rank_data'");
-		
+		e107::getDb()->createQueryBuilder()->delete('generic')
+			->where('gen_type', 'user_rank_data')
+			->execute();
+
 		//Add main site admin info
 		$tmp = array();
 		$tmp['_FIELD_TYPES']['gen_datestamp'] = 'int';
@@ -1877,8 +2127,8 @@ class users_admin_ui extends e_admin_ui
 		$tmp['data']['gen_ip'] = $_POST['calc_name']['main_admin'];
 		$tmp['data']['gen_user_id'] = varset($_POST['calc_pfx']['main_admin'],0);
 		$tmp['data']['gen_chardata'] = $_POST['calc_img']['main_admin'];
-		e107::getDb()->insert('generic',$tmp);
-		
+		self::builderInsertArrayForm(e107::getDb(), 'generic', $tmp);
+
 		//Add site admin info
 		unset ($tmp['data']);
 		$tmp['data']['gen_type'] = 'user_rank_data';
@@ -1886,8 +2136,8 @@ class users_admin_ui extends e_admin_ui
 		$tmp['data']['gen_ip'] = $_POST['calc_name']['admin'];
 		$tmp['data']['gen_user_id'] = varset($_POST['calc_pfx']['admin'],0);
 		$tmp['data']['gen_chardata'] = $_POST['calc_img']['admin'];
-		e107::getDb()->insert('generic', $tmp);
-		
+		self::builderInsertArrayForm(e107::getDb(), 'generic', $tmp);
+
 		//Add all current site defined ranks
 		if (isset ($_POST['field_id']))
 		{
@@ -1899,7 +2149,7 @@ class users_admin_ui extends e_admin_ui
 				$tmp['data']['gen_user_id'] = varset($_POST['calc_pfx'][$fid],0);
 				$tmp['data']['gen_chardata'] = varset($_POST['calc_img'][$fid],'');
 				$tmp['data']['gen_intdata'] = varset($_POST['calc_lower'][$fid],'_NULL_');
-				e107::getDb()->insert('generic', $tmp);
+				self::builderInsertArrayForm(e107::getDb(), 'generic', $tmp);
 			}
 		}
 		
@@ -1913,9 +2163,9 @@ class users_admin_ui extends e_admin_ui
 			$tmp['data']['gen_user_id'] = varset($_POST['new_calc_pfx'],0);
 			$tmp['data']['gen_chardata'] = varset($_POST['new_calc_img']);
 			$tmp['data']['gen_intdata'] = varset($_POST['new_calc_lower']);
-			e107::getDb()->insert('generic', $tmp);
+			self::builderInsertArrayForm(e107::getDb(), 'generic', $tmp);
 		}
-		
+
 		e107::getMessage()->addSuccess(LAN_UPDATED); //XXX maybe not needed see pull/1816
 		e107::getCache()->clear_sys('nomd5_user_ranks');
 	}
@@ -1925,7 +2175,9 @@ class users_admin_ui extends e_admin_ui
 		$rankId = (int) key($posted);
 		
 		e107::getCache()->clear_sys('nomd5_user_ranks');
-		if (e107::getDb()->delete('generic',"gen_id='{$rankId}'"))
+		if (e107::getDb()->createQueryBuilder()->delete('generic')
+			->where('gen_id', (int) $rankId)
+			->execute())
 		{
 			e107::getMessage()->addSuccess(LAN_DELETED);
 		}
@@ -2071,14 +2323,18 @@ class users_admin_ui extends e_admin_ui
 			}
             // TODO - move to e_userinfo.php
 			$obj = new convert;
-			$sql->select("chatbox", "*", "cb_ip='$ipd' LIMIT 0,20");
+			$chatRows = $sql->createQueryBuilder()->select('*')->from('chatbox')
+				->where('cb_ip', $ipd)
+				->setFirstResult(0)->setMaxResults(20)
+				->fetchAll();
 			$host = $e107->get_host_name($ipd);
 			$text = USFLAN_3." <b>".$ipd."</b> [ ".USFLAN_4.": $host ]<br />
 				<i><a href=\"banlist.php?".$ipd."\">".USFLAN_5."</a></i>
 
 				<br /><br />";
-			while (list($cb_id, $cb_nick, $cb_message, $cb_datestamp, $cb_blocked, $cb_ip ) = $sql->fetch())
+			foreach ($chatRows as $cbRow)
 			{
+				list($cb_id, $cb_nick, $cb_message, $cb_datestamp, $cb_blocked, $cb_ip ) = $cbRow;
 				$datestamp = $obj->convert_date($cb_datestamp, "short");
 				$post_author_id = substr($cb_nick, 0, strpos($cb_nick, "."));
 				$post_author_name = substr($cb_nick, (strpos($cb_nick, ".")+1));
@@ -2094,9 +2350,13 @@ class users_admin_ui extends e_admin_ui
 
 			$text .= "<hr />";
 
-			$sql->select("comments", "*", "comment_ip='$ipd' LIMIT 0,20");
-			while (list($comment_id, $comment_item_id, $comment_author, $comment_author_email, $comment_datestamp, $comment_comment, $comment_blocked, $comment_ip) = $sql->fetch())
+			$commentRows = $sql->createQueryBuilder()->select('*')->from('comments')
+				->where('comment_ip', $ipd)
+				->setFirstResult(0)->setMaxResults(20)
+				->fetchAll();
+			foreach ($commentRows as $commentRow)
 			{
+				list($comment_id, $comment_item_id, $comment_author, $comment_author_email, $comment_datestamp, $comment_comment, $comment_blocked, $comment_ip) = $commentRow;
 				$datestamp = $obj->convert_date($comment_datestamp, "short");
 				$post_author_id = substr($comment_author, 0, strpos($comment_author, "."));
 				$post_author_name = substr($comment_author, (strpos($comment_author, ".")+1));
@@ -2127,7 +2387,9 @@ class users_admin_ui extends e_admin_ui
 		$age = array(
 			1=> LAN_UI_1_HOUR, 3=> LAN_UI_3_HOURS, 6=> LAN_UI_6_HOURS, 12=> LAN_UI_12_HOURS, 24 => LAN_UI_24_HOURS, 48 => LAN_UI_48_HOURS, 72 => LAN_UI_3_DAYS);
 
-		$count = $sql->count('user','(*)',"user_ban = 2 ");
+		$count = $sql->createQueryBuilder()->from('user')
+			->where('user_ban', 2)
+			->count();
 		$caption = $tp->lanVars(USRLAN_252,$count);
 
 		$text = $frm->open('userMaintenance','post');
@@ -2180,22 +2442,24 @@ class users_admin_ui extends e_admin_ui
 	//	$query = "SELECT u.*, ue.* FROM `#user` AS u LEFT JOIN `#user_extended` AS ue ON ue.user_extended_id = u.user_id WHERE u.user_ban = 2 AND u.user_email != '' AND u.user_join < ".$age." ORDER BY u.user_id DESC";
 
 
-		$query = "SELECT u.* FROM `#user` AS u WHERE u.user_ban = 2 AND u.user_email != '' AND u.user_join < ".$age." ";
+		$qb = $sql->createQueryBuilder();
+		$qb->select('u.*')->from('user', 'u')
+			->where('u.user_ban', 2)
+			->where('u.user_email', '!=', '')
+			->where('u.user_join', '<', (int) $age);
 
 		if(!empty($class))
 		{
-			$query .= " AND FIND_IN_SET( ".intval($class).", u.user_class) ";
+			$qb->where($qb->expr()->findInSet('u.user_class', (int) $class));
 		}
 
-		$query .= " ORDER BY u.user_id DESC";
-
-		$sql->gen($query);
+		$rows = $qb->orderBy('u.user_id', 'DESC')->fetchAll();
 
 		$recipients = array();
 
 		$usr = e107::getUserSession();
 
-		while ($row = $sql->fetch())
+		foreach ($rows as $row)
 		{
 
 			if($resetPasswords === true)
@@ -2204,12 +2468,13 @@ class users_admin_ui extends e_admin_ui
 				$sessKey        = e_user_model::randomKey();
 
 				$updateQry = array(
-					'user_sess'     => $sessKey,
-					'user_password' => $usr->HashPassword($rawPassword, $row['user_loginname']),
-					'WHERE'         => 'user_id = '.$row['user_id']." LIMIT 1"
+					'data' => array(
+						'user_sess'     => $sessKey,
+						'user_password' => $usr->HashPassword($rawPassword, $row['user_loginname']),
+					),
 				);
 
-				if(!$sql2->update('user',$updateQry))
+				if(!self::builderUpdateArrayForm($sql2, 'user', $updateQry, 'user_id', (int) $row['user_id'], 1))
 				{
 
 					e107::getMessage()->addError("Error updating user's password. #".$row['user_id']." : ".$row['user_email']);
@@ -2289,226 +2554,6 @@ class users_admin_ui extends e_admin_ui
 
 	}
 
-	// ---------------------------------------------------------------------
-	//		Bounce handling - FIXME convert to cron job
-	// ---------------------------------------------------------------------
-	// $bounce_act has the task to perform:
-	//	'first_check' - initial read of list of bounces
-	//	'delnonbounce' - delete any emails that aren't bounces
-	//  'clearemailbounce' - delete email address for any user whose emails bounced
-	//	'delchecked' - delete the emails whose comma-separated IDs are in $bounce_arr
-	//	'delall' - delete all bounced emails
-
-	/*
-	function check_bounces($bounce_act = 'first_check',$bounce_arr = '')
-	{
-		### old Trigger code for bounce check
-		// $bounce_act = '';
-		// if (isset ($_POST['check_bounces']))
-			// $bounce_act = 'first_check';
-		// if (isset ($_POST['delnonbouncesubmit']))
-			// $bounce_act = 'delnonbounce';
-		// if (isset ($_POST['clearemailbouncesubmit']))
-			// $bounce_act = 'clearemailbounce';
-		// if (isset ($_POST['delcheckedsubmit']))
-			// $bounce_act = 'delchecked';
-		// if (isset ($_POST['delallsubmit']))
-			// $bounce_act = 'delall';
-		// if ($bounce_act)
-		// {
-			// $user->check_bounces($bounce_act,implode(',',$_POST['delete_email']));
-			// require_once ("footer.php");
-			// exit;
-		// }
-		
-		global $sql,$pref;
-		include (e_HANDLER.'pop3_class.php');
-		if (!trim($bounce_act))
-		{
-			$bounce_act = 'first_check';
-		}
-		//	  echo "Check bounces. Action: {$bounce_act}; Entries: {$bounce_arr}<br />";
-		$obj = new receiveMail($pref['mail_bounce_user'],$pref['mail_bounce_pass'],$pref['mail_bounce_email'],$pref['mail_bounce_pop3'],varset($pref['mail_bounce_type'],'pop3'));
-		$del_count = 0;
-		if ($bounce_act != 'first_check')
-		{
-		// Must do some deleting
-			$obj->connect();
-			$tot = $obj->getTotalMails();
-			$del_array = explode(',',$bounce_arr);
-			for ($i = 1; $i <= $tot; $i++)
-			{
-			// Scan all emails; delete current one if meets the criteria
-				$dodel = false;
-				switch ($bounce_act)
-				{
-					case 'delnonbounce' :
-						$head = $obj->getHeaders($i);
-						$dodel = (!$head['bounce']);
-						break;
-					case 'clearemailbounce' :
-						if (!in_array($i,$del_array))
-							break;
-						$head = $obj->getHeaders($i);
-						if ($head['bounce'])
-						{
-							if (preg_match("/[\._a-zA-Z0-9-]+@[\._a-zA-Z0-9-]+/i",$obj->getBody($i),$result))
-							{
-								$usr_email = trim($result[0]);
-							}
-							if ($sql->select('user','user_id, user_name, user_email',"user_email='".$usr_email."' "))
-							{
-								$row = $sql->fetch();
-								if ($sql->update('user',"`user_email`='' WHERE `user_id` = '".$row['user_id']."' ") !== false)
-								{
-								// echo "Deleting user email {$row['user_email']} for user {$row['user_name']}, id={$row['user_id']}<br />";
-									$dodel = true;
-								}
-							}
-						}
-						break;
-					case 'delall' :
-						$dodel = true;
-						break;
-					case 'delchecked' :
-						$dodel = in_array($i,$del_array);
-						break;
-				}
-				if ($dodel)
-				{
-				//			  echo "Delete email ID {$i}<br />";
-					$obj->deleteMails($i);
-					$del_count++;
-					// Keep track of number of emails deleted
-				}
-			}
-			// End - Delete one email
-			$obj->close_mailbox();
-			// This actually deletes the emails
-		}
-		// End of email deletion
-		// Now list the emails that are left
-		$obj->connect();
-		$tot = $obj->getTotalMails();
-		$found = false;
-		$DEL = ($pref['mail_bounce_delete']) ? true : false;
-		$text = "<br /><div><form  method='post' action='".e_REQUEST_URI."'><table>
-		<tr><td style='width:5%'>#</td><td>e107-id</td><td>email</td><td>Subject</td><td>Bounce</td></tr>\n";
-		
-		$identifier = deftrue('MAIL_IDENTIFIER', 'X-e107-id');
-		
-		for ($i = 1; $i <= $tot; $i++)
-		{
-			$head = $obj->getHeaders($i);
-			if ($head['bounce'])
-			{
-			// Its a 'bounce' email
-				if (preg_match('/.*'.$identifier.':(.*)MIME/',$obj->getBody($i),$result))
-				{
-					if ($result[1])
-					{
-						$id[$i] = intval($result[1]);
-						// This should be a user ID - but not on special mailers!
-						//	Try and pull out an email address from body - should be the one that failed
-						if (preg_match("/[\._a-zA-Z0-9-]+@[\._a-zA-Z0-9-]+/i",$obj->getBody($i),$result))
-						{
-							$emails[$i] = "'".$result[0]."'";
-						}
-						$found = true;
-					}
-				}
-				elseif (preg_match("/[\._a-zA-Z0-9-]+@[\._a-zA-Z0-9-]+/i",$obj->getBody($i),$result))
-				{
-					if ($result[0] && $result[0] != $pref['mail_bounce_email'])
-					{
-						$emails[$i] = "'".$result[0]."'";
-						$found = true;
-					}
-					elseif ($result[1] && $result[1] != $pref['mail_bounce_email'])
-					{
-						$emails[$i] = "'".$result[1]."'";
-						$found = true;
-					}
-				}
-				if ($DEL && $found)
-				{
-				// Auto-delete bounced emails once noticed (if option set)
-					$obj->deleteMails($i);
-					$del_count++;
-				}
-			}
-			else
-			{
-			// Its a warning message or similar
-			//			  $id[$i] = '';			// Don't worry about an ID for now
-			//				Try and pull out an email address from body - should be the one that failed
-				if (preg_match("/[\._a-zA-Z0-9-]+@[\._a-zA-Z0-9-]+/i",$obj->getBody($i),$result))
-				{
-					$wmails[$i] = "'".$result[0]."'";
-				}
-			}
-			$text .= "<tr><td>".$i."</td><td>".$id[$i]."</td><td>".(isset ($emails[$i]) ? $emails[$i] : $wmails[$i])."</td><td>".$head['subject']."</td><td>".($head['bounce'] ? ADMIN_TRUE_ICON : ADMIN_FALSE_ICON);
-			$text .= "<input type='checkbox' name='delete_email[]' value='{$i}' /></td></tr>\n";
-		}
-		if ($del_count)
-		{
-			e107::getLog()->add('USET_13', e107::getParser()->lanVars(USRLAN_169, $del_count),E_LOG_INFORMATIVE);
-		}
-		if ($tot)
-		{
-		// Option to delete emails - only if there are some in the list
-			$text .= "</table><table style='".ADMIN_WIDTH."'><tr>
-			<td style='text-align: center;'><input class='btn btn-default btn-secondary button' type='submit' name='delnonbouncesubmit' value='".USRLAN_183."' /></td>\n
-			<td style='text-align: center;'><input class='btn btn-default btn-secondary button' type='submit' name='clearemailbouncesubmit' value='".USRLAN_184."' /></td>\n
-			<td style='text-align: center;'><input class='btn btn-default btn-secondary button' type='submit' name='delcheckedsubmit' value='".USRLAN_179."' /></td>\n
-			<td style='text-align: center;'><input class='btn btn-default btn-secondary button' type='submit' name='delallsubmit' value='".USRLAN_180."' /></td>\n
-			</td></tr>";
-		}
-		$text .= "</table></form></div>";
-		array_unique($id);
-		array_unique($emails);
-		$all_ids = implode(',',$id);
-		$all_emails = implode(',',$emails);
-		$obj->close_mailbox();
-		// This will actually delete emails
-		// $tot has total number of emails in the mailbox
-		$found = count($emails);
-		// $found - Number of bounce emails found
-		// $del_count has number of emails deleted
-		// Update bounce status for users
-		$ed = $sql->db_Update('user',"user_ban=3 WHERE (`user_id` IN (".$all_ids.") OR `user_email` IN (".$all_emails.")) AND user_sess !='' ");
-		if (!$ed)
-			$ed = '0';
-		$this->show_message(str_replace(array('[w]','[x]','[y]','[z]'),array($tot,$del_count,$ed,$found),USRLAN_155).$text);
-	}
-	*/
-// ------- FIXME  Prune Users move to cron --------------
-// if (isset ($_POST['prune']))
-// {
-	// $e107cache->clear('online_menu_member_total');
-	// $e107cache->clear('online_menu_member_newest');
-	// $text = USRLAN_56.' ';
-	// $bantype = $_POST['prune_type'];
-	// if ($bantype == 30)
-		// // older than 30 days.
-	// {
-		// $bantype = 2;
-		// $ins = " AND user_join < ".strtotime("-30 days");
-	// }
-	// if ($sql->select("user","user_id, user_name","user_ban= {$bantype}".$ins))
-	// {
-		// $uList = $sql->db_getList();
-		// foreach ($uList as $u)
-		// {
-			// $text .= $u['user_name']." ";
-			// $sql->db_Delete("user","user_id='{$u['user_id']}' ");
-			// $sql->db_Delete("user_extended","user_extended_id='{$u['user_id']}' ");
-		// }
-		// e107::getLog()->add('USET_04',str_replace(array('[x]','--TYPE--'),array(count($uList),$bantype),USRLAN_160),E_LOG_INFORMATIVE);
-	// }
-	// $ns->tablerender(USRLAN_57,"<div style='text-align:center'><b>".$text."</b></div>");
-	// unset ($text);
-// }
 }
 
 
@@ -2689,85 +2734,6 @@ class users_admin_form_ui extends e_admin_form_ui
 	}	
 	
 	
-	/*
-	function user_class($curval,$mode)
-		{
-					
-			$e_userclass 	= new user_class;
-			$frm 			= e107::getForm();
-			$list 			= $e_userclass->uc_required_class_list("classes");
-							 if($mode == 'filter')
-			{
-				return $list;	
-			}
-			
-			if($mode == 'write') //FIXME userclasses are NOT be saved since they are an array. 
-			{		
-				return $frm->select('user_class', $list, $curval, 'description=1&multiple=1');
-				// return $frm->uc_select('user_class[]', $curval, 'admin,classes', 'description=1&multiple=1');// doesn't work correctly. 	
-			}
-			
-			
-			//FIXME TODO - option to append userclass to existing value. 
-			if($mode == 'batch')
-			{
-				//$list['#delete'] = "(clear userclass)"; // special 
-				return $list;	
-			}
-						  $tmp = explode(",",$curval);
-			$text = array();
-			foreach($tmp as $v)
-			{
-				$text[] = $list[$v];	
-			}
-			return implode("<br />",$text); // $list[$curval];
-					
-		}*/
-		
-	
-	/*
-	function user_status($curval,$mode)
-	{
-	
-		$row = $this->getController()->getListModel()->getData();
-	
-		$text = "";
-			if ($row['user_perms'] == "0")
-			{
-				$text .= "<div style='padding-left:3px;padding-right:3px;text-align:center;white-space:nowrap'>".LAN_MAINADMIN."</div>";
-			}
-			else
-				if ($row['user_admin'])
-				{
-					$text .= "<div style='padding-left:3px;padding-right:3px;;text-align:center'><a href='".e_SELF."?main.user_admin.".($id == "desc" ? "asc" : "desc")."'>".LAN_ADMIN."</a></div>";
-				}
-				else
-					if ($row['user_ban'] == 1)
-					{
-						$text .= "<div style='padding-left:3px;padding-right:3px;text-align:center;white-space:nowrap'><a href='".e_SELF."?main.user_ban.".($id == "desc" ? "asc" : "desc")."'>".LAN_BANNED."</a></div>";
-					}
-					else
-						if ($row['user_ban'] == 2)
-						{
-							$text .= "<div class='label' style='padding-left:3px;padding-right:3px;text-align:center;white-space:nowrap' >".LAN_NOTVERIFIED."</div>";
-						}
-						else
-							if ($row['user_ban'] == 3)
-							{
-								$text .= "<div style='padding-left:3px;padding-right:3px;text-align:center;white-space:nowrap' >".LAN_BOUNCED."</div>";
-							}
-							else
-							{
-								$text .= "&nbsp;";
-							}
-		
-		return $text;
-	
-		
-	}
-	*/
-
-	//TODO Reduce to simple edit/delete buttons only Other options included on edit page or available via inline or batch editing. 
 	function options($val, $mode) // old drop-down options. 
 	{
 		$controller = $this->getController();
@@ -2877,7 +2843,10 @@ class users_admin_form_ui extends e_admin_form_ui
 
 					if(getperms('0'))
 					{
-						$opts['emulate'] = 'Emulate permissions';
+						// To offer emulation of non-admin users too, also add
+						// $opts['emulate'] in the !$user_admin branch above and
+						// remove the isAdmin() check in e_user::_getEmulationTarget().
+						$opts['emulate'] = e107::getParser()->lanVars(USRLAN_EMU_1, $row['user_name']);
 
 						if(e107::getSession()->get('copyperms'))
 						{
@@ -3014,7 +2983,11 @@ class users_admin_form_ui extends e_admin_form_ui
 			$mode = $this->getMode();
 			$action = $this->getAction();
 
-			$existing = e107::getDb()->gen("SELECT gen_id FROM #generic WHERE gen_type='user_rank_data' LIMIT 1 ");
+			$existing = e107::getDb()->createQueryBuilder()
+				->select('gen_id')->from('generic')
+				->where('gen_type', 'user_rank_data')
+				->setMaxResults(1)
+				->fetchOne();
 
 			if($mode == 'ranks' && ($action == 'list') && !$existing)
 			{
@@ -3061,7 +3034,7 @@ class users_admin_form_ui extends e_admin_form_ui
 			$tmp['data']['gen_user_id']     = 1;
 			$tmp['data']['gen_chardata']    = 'English_main_admin.png';
 			$tmp['data']['gen_intdata']     = 0;
-			e107::getDb()->insert('generic',$tmp);
+			users_admin_ui::builderInsertArrayForm(e107::getDb(), 'generic', $tmp);
 			unset ($tmp['data']);
 
 
@@ -3074,7 +3047,7 @@ class users_admin_form_ui extends e_admin_form_ui
 			$tmp['data']['gen_intdata']     = 0;
 
 
-			e107::getDb()->insert('generic', $tmp);
+			users_admin_ui::builderInsertArrayForm(e107::getDb(), 'generic', $tmp);
 
 			for($i=1; $i < 11; $i++)
 			{
@@ -3086,7 +3059,7 @@ class users_admin_form_ui extends e_admin_form_ui
 				$tmp['data']['gen_chardata']    = "lev".$i.".png";
 				$tmp['data']['gen_intdata']     = ($i * 150);
 
-				e107::getDb()->insert('generic', $tmp);
+				users_admin_ui::builderInsertArrayForm(e107::getDb(), 'generic', $tmp);
 			}
 
 
