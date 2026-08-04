@@ -58,6 +58,46 @@
 
 		}
 
+		public function testGetCategories()
+		{
+			$sql = e107::getDb();
+			$sql->delete('core_media_cat', "media_cat_category LIKE 'mediatest_%'");
+
+			$cats = array(
+				array('media_cat_owner' => 'mediatestowner', 'media_cat_category' => 'mediatest_a', 'media_cat_title' => 'A', 'media_cat_class' => 0, 'media_cat_order' => 2),
+				array('media_cat_owner' => 'mediatestowner', 'media_cat_category' => 'mediatest_b', 'media_cat_title' => 'B', 'media_cat_class' => 0, 'media_cat_order' => 1),
+				array('media_cat_owner' => "media'test", 'media_cat_category' => 'mediatest_q', 'media_cat_title' => 'Q', 'media_cat_class' => 0, 'media_cat_order' => 3),
+			);
+
+			foreach($cats as $cat)
+			{
+				$this->assertNotFalse($sql->insert('core_media_cat', $cat));
+			}
+
+			// default order: media_cat_order ASC
+			$result = $this->md->getCategories('mediatestowner');
+			$this->assertSame(array('mediatest_b', 'mediatest_a'), array_keys($result));
+
+			// a valid column + direction passes the grammar and is honoured
+			$result = $this->md->getCategories('mediatestowner', 'media_cat_order DESC');
+			$this->assertSame(array('mediatest_a', 'mediatest_b'), array_keys($result));
+
+			// anything outside the grammar fails closed to the default order
+			$result = $this->md->getCategories('mediatestowner', 'media_cat_order; DROP TABLE `'.MPREFIX."core_media_cat`; --");
+			$this->assertSame(array('mediatest_b', 'mediatest_a'), array_keys($result));
+
+			// the owner is bound, so a quote in the owner round-trips
+			$result = $this->md->getCategories("media'test");
+			$this->assertSame(array('mediatest_q'), array_keys($result));
+
+			// no owner returns all visible categories
+			$result = $this->md->getCategories();
+			$this->assertArrayHasKey('mediatest_a', $result);
+			$this->assertArrayHasKey('mediatest_q', $result);
+
+			$sql->delete('core_media_cat', "media_cat_category LIKE 'mediatest_%'");
+		}
+
 		public function testProcessAjaxImport()
 		{
 			$tests = array(
@@ -403,6 +443,18 @@
 					'input'     => 'https://via.placeholder.com/728x90.png?text=Label',
 					'expected' => 'image'
 				),
+				4 => array(
+					'input'     => 'https://placehold.co/728x90.jpg?text=Label',
+					'expected' => 'image'
+				),
+				5 => array(
+					'input'     => '{e_PLUGIN}hero/images/placeholder-1.svg',
+					'expected' => 'image'
+				),
+				6 => array(
+					'input'     => 'myfile.mp4?version=2',
+					'expected' => 'video'
+				),
 
 
 
@@ -466,5 +518,57 @@
 		{
 			$result = $this->md->getPath('image/jpeg');
 			$this->assertStringContainsString(e_MEDIA.'images/', $result);
+		}
+
+		public function testGetImages()
+		{
+			$sql = e107::getDb();
+			$sql->delete('core_media', "media_category LIKE 'mediatestcat%'");
+
+			$rows = array(
+				'percent' => array('media_name' => 'mediatest 100% pure.jpg', 'media_category' => 'mediatestcat', 'media_url' => '{e_MEDIA_IMAGE}mediatest1.jpg'),
+				'plain'   => array('media_name' => 'mediatest 100 plain.jpg', 'media_category' => 'mediatestcat', 'media_url' => '{e_MEDIA_IMAGE}mediatest2.jpg'),
+				'quoted'  => array('media_name' => "mediatest don't panic.jpg", 'media_category' => 'mediatestcat', 'media_url' => '{e_MEDIA_IMAGE}mediatest3.jpg'),
+				'meta'    => array('media_name' => 'mediatest brackets.jpg', 'media_category' => 'mediatestcat(x)', 'media_url' => '{e_MEDIA_IMAGE}mediatest4.jpg'),
+			);
+
+			$ids = array();
+
+			foreach($rows as $key => $row)
+			{
+				$row['media_type'] = 'image/jpeg';
+				$row['media_userclass'] = 0;
+				$id = $sql->insert('core_media', $row);
+				$this->assertNotFalse($id);
+				$ids[$key] = (int) $id;
+			}
+
+			// the category pattern is bound and anchored: no bleed into 'mediatestcat(x)'
+			$list = $this->md->getImages('mediatestcat');
+			$this->assertCount(3, $list);
+
+			// regex metacharacters in a category name match literally
+			$list = $this->md->getImages('mediatestcat(x)');
+			$this->assertSame(array($ids['meta']), array_keys($list));
+
+			// LIKE wildcards in the search term match literally...
+			$this->assertSame(1, $this->md->countImages('mediatestcat', '100%'));
+
+			// ...and a quote in the search term is data, not SQL
+			$this->assertSame(1, $this->md->countImages('mediatestcat', "don't"));
+
+			// a valid ORDER BY override is honoured
+			$list = $this->md->getImages('mediatestcat', 0, 10, null, 'media_id DESC');
+			$this->assertSame(array($ids['quoted'], $ids['plain'], $ids['percent']), array_keys($list));
+
+			// anything outside the column/direction grammar fails closed to the default order
+			$list = $this->md->getImages('mediatestcat', 0, 10, null, 'media_id; DROP TABLE `'.MPREFIX.'core_media`; --');
+			$this->assertCount(3, $list);
+
+			// LIMIT arguments are cast to integers
+			$list = $this->md->getImages('mediatestcat', 0, 2, null, 'media_id ASC');
+			$this->assertSame(array($ids['percent'], $ids['plain']), array_keys($list));
+
+			$sql->delete('core_media', "media_category LIKE 'mediatestcat%'");
 		}
 	}

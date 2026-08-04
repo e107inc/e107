@@ -8,7 +8,8 @@
 	 *
 	 */
 
-
+use e107\Database\QueryBuilder;
+use e107\Database\SqlFragment;
 
 // news rewrite for v2.x
 
@@ -30,6 +31,7 @@ class news_front
 	private $from = 0;
 	private $order = 'news_datestamp';
 	private $nobody_regexp = '';
+	private $nobodyRegexpValue = '';
 	private $ix = null;
 	private $newsUrlparms = array();
 	private $text = null;
@@ -71,6 +73,7 @@ class news_front
 		}
 
 		$this->nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
+		$this->nobodyRegexpValue = "(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)"; // same pattern, unquoted for value binding
 		$this->ix = new news;
 
 		$this->setConstants();
@@ -522,11 +525,8 @@ class news_front
 
 		global $NEWSARCHIVE;
 
-		$sql = e107::getDb();
 		$tp = e107::getParser();
 		$ns = e107::getRender();
-
-		$query = $this->getQuery();
 
 		if($newsarchive = $this->checkCache('newsarchive'))
 		{
@@ -534,12 +534,7 @@ class news_front
 			return $newsarchive;
 		}
 
-		$newsAr = array();
-
-		if ($sql->gen($query))
-		{
-			$newsAr = $sql -> db_getList();
-		}
+		$newsAr = $this->newsReindex($this->getQuery()->fetchAll());
 
 	//	$i = $this->interval;
 
@@ -953,74 +948,63 @@ class news_front
 		{
 
 			$gen = new convert;
-			$sql->select("news_category", "*", "category_id='$category'");
-			if($row = $sql->fetch())
+			$row = $sql->createQueryBuilder()
+				->select('*')->from('news_category')
+				->where('category_id', $category)
+				->fetchRow();
+			if($row)
 			{
 				extract($row);  // still required for the table-render.  :(
 			}
 
 		}
 
+		$listColumns = array(
+			'n.*', 'u.user_id', 'u.user_name', 'u.user_customtitle', 'u.user_image',
+			'nc.category_id', 'nc.category_name', 'nc.category_sef', 'nc.category_icon',
+			'nc.category_meta_keywords', 'nc.category_meta_description',
+		);
+
+		$filter = null;        // action-specific WHERE, applied to both the list and the count
+		$orderBy = array();    // list of array(column, 'DESC') applied in order
+		$listLimit = (int) NEWSLIST_LIMIT;
+
 		if ($this->action == 'all') // show archive of all news items using list-style template.
 		{
-			$renTypeQry = '';
-
-			if(!empty($this->pref['news_list_templates']) && is_array($this->pref['news_list_templates']))
+			$filter = function (QueryBuilder $q)
 			{
-				$renTypeQry = " AND (n.news_render_type REGEXP '(^|,)(".implode("|", $this->pref['news_list_templates']).")(,|$)')";
-			}
-
-		//	$news_total = $sql->count("news", "(*)", "WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().")". str_replace("n.news", "news", $renTypeQry));
-			$query = "
-			SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon,
-			nc.category_meta_keywords, nc.category_meta_description
-			FROM #news AS n
-			LEFT JOIN #user AS u ON n.news_author = u.user_id
-			LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-			WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$this->nobody_regexp.") AND n.news_start < ".time()."
-			AND (n.news_end=0 || n.news_end>".time().") ";
-
-			$query .= $renTypeQry;
-
-			$query .= "
-			ORDER BY n.news_sticky DESC, n.news_datestamp DESC
-			LIMIT ". $this->from .",".deftrue('NEWSALL_LIMIT', NEWSLIST_LIMIT); // NEWSALL_LIMIT just for BC. NEWSLIST_LIMIT is sufficient.
+				if(!empty($this->pref['news_list_templates']) && is_array($this->pref['news_list_templates']))
+				{
+					$renTypePattern = "(^|,)(".implode("|", $this->pref['news_list_templates']).")(,|$)";
+					$q->where($q->expr()->regexp('n.news_render_type', $renTypePattern));
+				}
+			};
+			$orderBy = array(array('n.news_sticky', 'DESC'), array('n.news_datestamp', 'DESC'));
+			$listLimit = (int) deftrue('NEWSALL_LIMIT', NEWSLIST_LIMIT); // NEWSALL_LIMIT just for BC. NEWSLIST_LIMIT is sufficient.
 			$category_name = ($this->defaultTemplate == 'list') ? LAN_PLUGIN_NEWS_NAME : "All";
-			unset($renTypeQry);
 		}
 		elseif ($this->action == 'cat') // show archive of all news items in a particular category using list-style template.
 		{
-
-		//	$news_total = $sql->count("news", "(*)", "WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().") AND news_category=".intval($sub_action));
-
-			$query = "
-			SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords,
-			nc.category_meta_description
-			FROM #news AS n
-			LEFT JOIN #user AS u ON n.news_author = u.user_id
-			LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-			WHERE n.news_category=".intval($this->subAction)."
-			AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
-			AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$this->nobody_regexp.")
-			ORDER BY n.news_datestamp DESC
-			LIMIT ". $this->from .",".NEWSLIST_LIMIT;
+			$filter = function (QueryBuilder $q)
+			{
+				$q->where('n.news_category', (int) $this->subAction);
+			};
+			$orderBy = array(array('n.news_datestamp', 'DESC'));
 		}
 		elseif($this->action === 'tag')
 		{
 			$tagsearch = e107::getParser()->filter($_GET['tag']);
 			$tagsearch2 = str_replace('-', ' ',$tagsearch);
 
-			$query = "
-			SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords,
-			nc.category_meta_description
-			FROM #news AS n
-			LEFT JOIN #user AS u ON n.news_author = u.user_id
-			LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-			WHERE (n.news_meta_keywords LIKE '%".$tagsearch."%' OR n.news_meta_keywords LIKE '%".$tagsearch2."%')
-			AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
-			AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$this->nobody_regexp.")
-			ORDER BY n.news_datestamp DESC
-			LIMIT ". $this->from .",".NEWSLIST_LIMIT;
+			$filter = function (QueryBuilder $q) use ($tagsearch, $tagsearch2)
+			{
+				$q->where(function (QueryBuilder $g) use ($tagsearch, $tagsearch2)
+				{
+					$g->where($g->expr()->contains('n.news_meta_keywords', $tagsearch))
+						->orWhere($g->expr()->contains('n.news_meta_keywords', $tagsearch2));
+				});
+			};
+			$orderBy = array(array('n.news_datestamp', 'DESC'));
 			$category_name = defset('LAN_NEWS_309','Tag').': "'.$tagsearch.'"';
 
 			$tagsearch = $tagsearch2;
@@ -1032,17 +1016,11 @@ class news_front
 		{
 			$authorSearch = e107::getParser()->filter($_GET['author']);
 
-			$query = "
-			SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords,
-			nc.category_meta_description
-			FROM #news AS n
-			LEFT JOIN #user AS u ON n.news_author = u.user_id
-			LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-			WHERE u.user_name = '".$authorSearch."'
-			AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
-			AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$this->nobody_regexp.")
-			ORDER BY n.news_datestamp DESC
-			LIMIT ". $this->from .",".NEWSLIST_LIMIT;
+			$filter = function (QueryBuilder $q) use ($authorSearch)
+			{
+				$q->where('u.user_name', $authorSearch);
+			};
+			$orderBy = array(array('n.news_datestamp', 'DESC'));
 			$category_name = LAN_AUTHOR.': "'.$authorSearch.'"';
 
 			$this->tagAuthor = $authorSearch;
@@ -1051,10 +1029,23 @@ class news_front
 
 		$newsList = array();
 
-		if(!empty($query) && $sql->gen($query))
+		if($filter !== null)
 		{
-			$news_total = $sql->foundRows();
-			$newsList = $sql->db_getList();
+			$qb = $this->newsBaseQuery($listColumns);
+			$filter($qb);
+			foreach($orderBy as $ob)
+			{
+				$qb->addOrderBy($ob[0], $ob[1]);
+			}
+			$qb->setFirstResult((int) $this->from)->setMaxResults($listLimit);
+
+			$newsList = $this->newsReindex($qb->fetchAll());
+
+			// Total ignoring LIMIT (replaces SQL_CALC_FOUND_ROWS / foundRows()).
+			$countQb = $this->newsBaseQuery(array('n.news_id'));
+			$filter($countQb);
+			$news_total = $countQb->count();
+
 			$ogImageCount = 0;
 			foreach($newsList as $row)
 			{
@@ -1081,7 +1072,7 @@ class news_front
 		else
 		{
 
-			$this->addDebug("Query",str_replace('#',MPREFIX, $query));
+			$this->addDebug("Query", "no matching list action: ".$this->action);
 		}
 
 
@@ -1257,7 +1248,6 @@ class news_front
 			$this->addDebug("Cache",'inactive');
 		}
 
-		$sql = e107::getDb();
 		// <-- Cache
 
 	/*	if(isset($this->pref['trackbackEnabled']) && $this->pref['trackbackEnabled'])
@@ -1276,23 +1266,20 @@ class news_front
 		}
 		else
 		{*/
-			$query = "
-		    SELECT n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, u.user_login, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords,
-			nc.category_meta_description
-		    FROM #news AS n
-			LEFT JOIN #user AS u ON n.news_author = u.user_id
-			LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-			WHERE n.news_class REGEXP '".e_CLASS_REGEXP."'
-			AND NOT (n.news_class REGEXP ".$this->nobody_regexp.")
-			AND n.news_start < ".time()."
-			AND (n.news_end=0 || n.news_end>".time().")
-			AND n.news_id=".intval($this->subAction);
+			$viewColumns = array(
+				'n.*', 'u.user_id', 'u.user_name', 'u.user_customtitle', 'u.user_image', 'u.user_login',
+				'nc.category_id', 'nc.category_name', 'nc.category_sef', 'nc.category_icon',
+				'nc.category_meta_keywords', 'nc.category_meta_description',
+			);
+
+			$qb = $this->newsBaseQuery($viewColumns);
+			$qb->where('n.news_id', (int) $this->subAction);
 	//	}
 
 
-		if ($sql->gen($query))
+		$news = $qb->fetchRow();
+		if ($news)
 		{
-			$news = $sql->fetch();
 			$id = $news['news_category'];		// Use category of this news item to generate next/prev links
 
 			e107::getEvent()->trigger('user_news_item_viewed', $news);
@@ -1471,22 +1458,91 @@ class news_front
 	}
 
 
+	/**
+	 * Build the base news query builder: the SELECT/JOINs shared by every news
+	 * listing, with the common visibility predicates (class, "nobody" class,
+	 * start/end window) already applied. Every value is bound; identifiers are
+	 * static. Callers add their specific filters, ORDER BY and LIMIT.
+	 *
+	 * @param array $columns SELECT column list (qualified, e.g. 'n.*', 'u.user_id').
+	 * @return QueryBuilder
+	 */
+	private function newsBaseQuery($columns)
+	{
+		$now = time();
+		$qb  = e107::getDb()->createQueryBuilder();
+
+		$qb->select($columns)
+			->from('news', 'n')
+			->leftJoin('user', 'u', $qb->expr()->compareColumns('n.news_author', 'u.user_id'))
+			->leftJoin('news_category', 'nc', $qb->expr()->compareColumns('n.news_category', 'nc.category_id'))
+			->where($qb->expr()->regexp('n.news_class', e_CLASS_REGEXP))
+			->whereNot(function (QueryBuilder $q)
+			{
+				$q->where($q->expr()->regexp('n.news_class', $this->nobodyRegexpValue));
+			})
+			->where($qb->expr()->lt('n.news_start', $now))
+			->where(function (QueryBuilder $q) use ($now)
+			{
+				$q->where('n.news_end', 0)->orWhere($q->expr()->gt('n.news_end', $now));
+			});
+
+		return $qb;
+	}
+
+	/**
+	 * FIND_IN_SET('0', n.news_render_type) OR FIND_IN_SET(1, n.news_render_type)
+	 * as a bound predicate string for use with where().
+	 *
+	 * @param QueryBuilder $qb
+	 * @return SqlFragment
+	 */
+	private function newsRenderTypePredicate($qb)
+	{
+		return $qb->expr()->anyOf(
+			$qb->expr()->findInSet('n.news_render_type', '0'),
+			$qb->expr()->findInSet('n.news_render_type', 1)
+		);
+	}
+
+	/**
+	 * Re-key a 0-indexed builder result list to the 1-indexed shape produced by
+	 * the legacy $sql->db_getList(), so downstream $newsAr[1]/$newsAr[$i] access
+	 * is preserved.
+	 *
+	 * @param array $rows
+	 * @return array
+	 */
+	private function newsReindex($rows)
+	{
+		$list = array();
+		$counter = 1;
+
+		foreach($rows as $row)
+		{
+			$list[$counter] = $row;
+			$counter++;
+		}
+
+		return $list;
+	}
+
 	private function getQuery()
 	{
-		$query = "
-				SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon,
-				nc.category_meta_keywords, nc.category_meta_description, nc.category_template 
-				FROM #news AS n
-				LEFT JOIN #user AS u ON n.news_author = u.user_id
-				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-				WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$this->nobody_regexp.")
-				AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
-				AND (FIND_IN_SET('0', n.news_render_type) OR FIND_IN_SET(1, n.news_render_type))
-				ORDER BY n.news_sticky DESC, ".$this->order." DESC LIMIT ". $this->from .",".ITEMVIEW;
+		$columns = array(
+			'n.*', 'u.user_id', 'u.user_name', 'u.user_customtitle', 'u.user_image',
+			'nc.category_id', 'nc.category_name', 'nc.category_sef', 'nc.category_icon',
+			'nc.category_meta_keywords', 'nc.category_meta_description', 'nc.category_template',
+		);
 
-		return $query;
+		$qb = $this->newsBaseQuery($columns);
+		$qb->where($this->newsRenderTypePredicate($qb))
+			->orderBy('n.news_sticky', 'DESC')
+			->addOrderBy($this->order, 'DESC')
+			->setFirstResult((int) $this->from)
+			->setMaxResults((int) ITEMVIEW);
 
-
+		return $qb;
 	}
 
 
@@ -1495,27 +1551,39 @@ class news_front
 	{
 		$this->addDebug("Method",'renderDefaultTemplate()');
 		$tp = e107::getParser();
-		$sql = e107::getDb();
 
 		$interval = $this->pref['newsposts'];
 
 		global $NEWSSTYLE;
 
+		$defaultColumns = array(
+			'n.*', 'u.user_id', 'u.user_name', 'u.user_customtitle', 'u.user_image',
+			'nc.category_id', 'nc.category_name', 'nc.category_sef', 'nc.category_icon',
+			'nc.category_meta_keywords', 'nc.category_meta_description', 'nc.category_template',
+		);
+
+		$qb = null;        // list query builder
+		$countQb = null;   // filter-only builder for the total (null => use $news_total as-is)
+
 		switch ($this->action)
 		{
 			case "list" :
 				$sub_action = intval($this->subAction);
-				//	$news_total = $sql->db_Count("news", "(*)", "WHERE news_category={$sub_action} AND news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().")");
-				$query = "
-				SELECT  SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef,
-				nc.category_icon, nc.category_meta_keywords, nc.category_meta_description, nc.category_template 
-				FROM #news AS n
-				LEFT JOIN #user AS u ON n.news_author = u.user_id
-				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-				WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$this->nobody_regexp.")
-				AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
-				AND n.news_category={$sub_action}
-				ORDER BY n.news_sticky DESC,".$this->order." DESC LIMIT ". $this->from .",".ITEMVIEW;
+
+				$listFilter = function (QueryBuilder $q) use ($sub_action)
+				{
+					$q->where('n.news_category', $sub_action);
+				};
+
+				$qb = $this->newsBaseQuery($defaultColumns);
+				$listFilter($qb);
+				$qb->orderBy('n.news_sticky', 'DESC')
+					->addOrderBy($this->order, 'DESC')
+					->setFirstResult((int) $this->from)
+					->setMaxResults((int) ITEMVIEW);
+
+				$countQb = $this->newsBaseQuery(array('n.news_id'));
+				$listFilter($countQb);
 
 				$noNewsMessage = LAN_NEWS_463;
 				break;
@@ -1528,7 +1596,7 @@ class news_front
 				{
 					$query = "
 			    SELECT COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef,
-				nc.category_icon, nc.category_meta_keywords, nc.category_meta_description, nc.category_template 
+				nc.category_icon, nc.category_meta_keywords, nc.category_meta_description, nc.category_template
 				FROM #news AS n
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
 				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
@@ -1539,14 +1607,8 @@ class news_front
 				}
 				else
 				{*/
-					$query = "
-			    SELECT n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image,  nc.category_id, nc.category_name, nc.category_sef, nc.category_icon,
-				nc.category_meta_keywords, nc.category_meta_description, nc.category_template 
-				FROM #news AS n
-				LEFT JOIN #user AS u ON n.news_author = u.user_id
-				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-				WHERE n.news_id=".$this->subAction." AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$this->nobody_regexp.")
-				AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")";
+					$qb = $this->newsBaseQuery($defaultColumns);
+					$qb->where('n.news_id', (int) $this->subAction);
 		//		}
 
 				$noNewsMessage = LAN_NEWS_83;
@@ -1577,16 +1639,20 @@ class news_front
 
 				$enddate = mktime(23, 59, 59, $month, $lastday, $year);
 
-				$query = "
-				SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef,
-				nc.category_icon, nc.category_meta_keywords, nc.category_meta_description, nc.category_template 
-				FROM #news AS n
-				LEFT JOIN #user AS u ON n.news_author = u.user_id
-				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-				WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$this->nobody_regexp.")
-				AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
-				AND (FIND_IN_SET('0', n.news_render_type) OR FIND_IN_SET(1, n.news_render_type)) AND n.news_datestamp BETWEEN {$startdate} AND {$enddate}
-				ORDER BY ".$this->order." DESC LIMIT ". $this->from .",".ITEMVIEW;
+				$dateFilter = function (QueryBuilder $q) use ($startdate, $enddate)
+				{
+					$q->where($this->newsRenderTypePredicate($q))
+						->whereBetween('n.news_datestamp', (int) $startdate, (int) $enddate);
+				};
+
+				$qb = $this->newsBaseQuery($defaultColumns);
+				$dateFilter($qb);
+				$qb->orderBy($this->order, 'DESC')
+					->setFirstResult((int) $this->from)
+					->setMaxResults((int) ITEMVIEW);
+
+				$countQb = $this->newsBaseQuery(array('n.news_id'));
+				$dateFilter($countQb);
 
 				if($this->action == 'month')
 				{
@@ -1595,7 +1661,7 @@ class news_front
 				else
 				{
 					$noNewsMessage = LAN_NEWS_464;
-				}	
+				}
 
 				break;
 
@@ -1629,7 +1695,10 @@ class news_front
 				}
 				else
 				{*/
-					$query = $this->getQuery();
+					$qb = $this->getQuery();
+
+					$countQb = $this->newsBaseQuery(array('n.news_id'));
+					$countQb->where($this->newsRenderTypePredicate($countQb));
 
 
 			//	}
@@ -1660,22 +1729,16 @@ class news_front
 			//news archive
 			if ($this->action != "item" && $this->action != 'list' && $this->pref['newsposts_archive'])
 			{
-				$sql = e107::getDb();
+				$newsAr = $this->newsReindex($qb->fetchAll());
 
-				if ($sql->gen($query))
+				if(!empty($newsAr) && ($newsarchive = $this->checkCache('newsarchive')))
 				{
-
-					$newsAr = $sql -> db_getList();
-
-					if($newsarchive = $this->checkCache('newsarchive'))
-					{
-						$newsCachedPage = $newsCachedPage.$newsarchive;
-					}
-					//else
-				//	{
-					//	$this->show_newsarchive($newsAr,$interval);
-				//	}
+					$newsCachedPage = $newsCachedPage.$newsarchive;
 				}
+				//else
+			//	{
+				//	$this->show_newsarchive($newsAr,$interval);
+			//	}
 			}
 
 			$this->renderCache($this->caption, $newsCachedPage);
@@ -1683,15 +1746,16 @@ class news_front
 		}
 
 
-		if (!($news_total = $sql->gen($query)))  // No news items
+		$newsAr = $this->newsReindex($qb->fetchAll());
+
+		if (empty($newsAr))  // No news items
 		{
 			$this->setNewsFrontMeta(null,$this->action);
 			return "<div class='news-empty'><div class='alert alert-info' style='text-align:center'>".$noNewsMessage."</div></div>";
 
 		}
 
-		$newsAr = $sql -> db_getList();
-		$news_total=$sql->total_results;
+		$news_total = ($countQb !== null) ? $countQb->count() : $news_total;
 
 
 		$p_title = ($this->action == "item") ? $newsAr[1]['news_title'] : $tp->toHTML($newsAr[1]['category_name'],FALSE,'TITLE');

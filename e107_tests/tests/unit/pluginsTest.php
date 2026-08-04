@@ -156,6 +156,7 @@
 				'forum/forum_post.php',
 				'forum/forum_viewtopic.php',
 				'forum/index.php',
+				'navigation/navigation_menu.php',
 				'online/online_menu.php',
 				'pm/pm.php',
 				'poll/admin_config.php',
@@ -166,6 +167,11 @@
 			$focus = [];
 
 			$errors = [];
+
+			// 'NUL' is the null device on Windows only. Everywhere else it is an
+			// ordinary relative path, so redirecting to it drops a stray 'NUL'
+			// file into the docroot on every run.
+			$nullDevice = (DIRECTORY_SEPARATOR === '\\') ? 'NUL' : '/dev/null';
 
 			foreach($core as $plug)
 			{
@@ -254,7 +260,7 @@
 					$requireStatements .= "require_once '" . addslashes($filePath) . "'; ";
 					$requireStatements .= "echo 'END: " . addslashes($relativePath) . "\\n'; ";
 				}
-				$runCommand = sprintf('php -r %s 1>NUL 2>&1', escapeshellarg($requireStatements));
+				$runCommand = sprintf('php -r %s 1>%s 2>&1', escapeshellarg($requireStatements), $nullDevice);
 
 			//	fwrite(STDOUT, "Debug run command:\n$runCommand\n\n\n\n");
 
@@ -289,14 +295,14 @@
 						$lastGoodFile = null;
 						foreach($pluginFiles as $relativePath => $filePath)
 						{
-							$testCommand = sprintf('php -r %s 1>NUL 2>&1', escapeshellarg(
+							$testCommand = sprintf('php -r %s 1>%s 2>&1', escapeshellarg(
 								"error_reporting(E_ALL); ini_set('display_errors', 1); " .
 								"require_once('" . addslashes($class2Path) . "'); " .
 								"e107::includeLan('" . addslashes($lanAdminPath) . "'); " .
 								"e107::plugLan('" . addslashes($plug) . "', 'global'); " .
 								"e107::getConfig()->setPref('plug_installed/" . addslashes($plug) . "', 1); " .
 								"e107::includeLan('" . addslashes($filePath) . "');"
-							));
+							), $nullDevice);
 							exec($testCommand, $testOutput, $testExitCode);
 							if($testExitCode !== 0)
 							{
@@ -332,6 +338,62 @@
 			}
 		}
 
+
+		/**
+		 * signin (the plugin reported in #5738) plus navigation and faqs ship in
+		 * e107_plugins/ with a plugin.xml, but were missing from the bundled
+		 * core-plugin list, so getCorePluginList() reported them as third-party.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/5738
+		 */
+		public function testCorePluginListContainsBundledPlugins()
+		{
+			$core = e107::getPlug()->getCorePluginList();
+
+			foreach(['signin', 'navigation', 'faqs'] as $plug)
+			{
+				$this->assertContains($plug, $core, "'{$plug}' is a bundled plugin but is missing from getCorePluginList().");
+				$this->assertFileExists(e107::getFolder('plugins') . $plug . '/plugin.xml', "'{$plug}' should ship a plugin.xml.");
+			}
+		}
+
+		/**
+		 * The faqs admin page uses bare LAN_PLUGIN_FAQS_* constants (from the
+		 * array-style global LAN) in class-property defaults. The admin area does
+		 * not autoload plugin globals, so on PHP 8 the page fataled with
+		 * "Undefined constant LAN_PLUGIN_FAQS_NAME" until admin_config.php began
+		 * loading its own global LAN via e107::plugLan('faqs', 'global', true).
+		 *
+		 * @see https://github.com/e107inc/e107/issues/5738
+		 */
+		public function testFaqsAdminConfigLoadsWithoutUndefinedConstant()
+		{
+			$adminConfig = realpath(e107::getFolder('plugins') . 'faqs/admin_config.php');
+			$this->assertNotFalse($adminConfig, 'faqs/admin_config.php not found.');
+
+			$e107Root = realpath(dirname($adminConfig) . '/../../');
+			$class2Path = $e107Root . '/class2.php';
+			$lanAdminPath = $e107Root . '/e107_languages/English/admin/lan_admin.php';
+
+			// Reproduce the admin context: core admin LAN loaded, plugin globals
+			// NOT autoloaded (plugLan flat=false does not define the array keys).
+			$code = "error_reporting(E_ALL); ini_set('display_errors', 1); ";
+			$code .= "require_once('" . addslashes($class2Path) . "'); ";
+			$code .= "e107::includeLan('" . addslashes($lanAdminPath) . "'); ";
+			$code .= "e107::plugLan('faqs', 'global'); ";
+			$code .= "e107::getConfig()->setPref('plug_installed/faqs', 1); ";
+			$code .= "require_once '" . addslashes($adminConfig) . "'; ";
+
+			$output = [];
+			$exitCode = 0;
+			exec(sprintf('php -r %s 2>&1', escapeshellarg($code)), $output, $exitCode);
+			$out = implode("\n", $output);
+
+			$this->assertStringNotContainsString('Undefined constant "LAN_PLUGIN_FAQS', $out,
+				"faqs/admin_config.php must load its own global LAN before the class-property defaults are evaluated (#5738).\n" . $out);
+			$this->assertSame(0, $exitCode,
+				"Requiring faqs/admin_config.php should not fatal on PHP 8.\n" . $out);
+		}
 
 
 		/**

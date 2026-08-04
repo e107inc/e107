@@ -51,20 +51,19 @@ class forumStats
 
 		$forum = new e107forum;
 
-		$total_posts = $sql->count('forum_post');
-		$total_topics = $sql->count('forum_thread');
+		$total_posts = $sql->createQueryBuilder()->from('forum_post')->count();
+		$total_topics = $sql->createQueryBuilder()->from('forum_thread')->count();
 		$total_replies = $total_posts - $total_topics;
 		$total_views = 0;
 
-		$query = 'SELECT sum(thread_views) AS total FROM `#forum_thread` ';
-		if ($sql->gen($query))
-		{
-			$row = $sql->fetch();
-			$total_views = $row['total'];
-		}
+		$total_views = $sql->createQueryBuilder()->selectAggregate('SUM', 'thread_views', 'total')->from('forum_thread')->fetchOne();
 
-		$firstpost = $sql->select('forum_post', 'post_datestamp', 'post_datestamp > 0 ORDER BY post_datestamp ASC LIMIT 0,1', 'default');
-		$fp = $sql->fetch();
+		$fp = $sql->createQueryBuilder()
+			->select('post_datestamp')->from('forum_post')
+			->where('post_datestamp', '>', 0)
+			->orderBy('post_datestamp', 'ASC')
+			->setFirstResult(0)->setMaxResults(1)
+			->fetchRow();
 		$fp = is_array($fp) ? $fp : array();
 
 		$open_ds = (int) varset($fp['post_datestamp']);
@@ -75,41 +74,50 @@ class forumStats
 
 		global $mySQLdefaultdb;
 
-		$query = "SHOW TABLE STATUS FROM `{$mySQLdefaultdb}`";
-		$sql->gen($query);
-		$array = $sql -> db_getList();
 		$db_size = 0;
 		$avg_row_len = 0;
-		foreach($array as $table)
+		// SHOW TABLE STATUS cannot be expressed by the query builder; the database
+		// name is an identifier (not a bindable value), so validate it fail-closed.
+		$dbIdentifier = $sql->quoteIdentifier($mySQLdefaultdb);
+		if($dbIdentifier !== false)
 		{
-			if($table['Name'] == MPREFIX.'forum_post')
+			$sql->execute("SHOW TABLE STATUS FROM ".$dbIdentifier);
+			$array = $sql->db_getList();
+			foreach($array as $table)
 			{
-				$db_size = eHelper::parseMemorySize($table['Data_length']);
-				$avg_row_len = eHelper::parseMemorySize($table['Avg_row_length']);
-				break;
+				if($table['Name'] == MPREFIX.'forum_post')
+				{
+					$db_size = eHelper::parseMemorySize($table['Data_length']);
+					$avg_row_len = eHelper::parseMemorySize($table['Avg_row_length']);
+					break;
+				}
 			}
 		}
 
-		$query = "
-		SELECT ft.thread_id, ft.thread_user, ft.thread_name, ft.thread_total_replies, ft.thread_datestamp, f.forum_sef, f.forum_class, u.user_name, u.user_id FROM #forum_thread as ft
-		LEFT JOIN #user AS u ON ft.thread_user = u.user_id
-		LEFT JOIN #forum AS f ON f.forum_id = ft.thread_forum_id
-		WHERE ft.thread_active > 0
-		AND f.forum_class IN (".USERCLASS_LIST.")
-		ORDER BY ft.thread_total_replies DESC LIMIT 0,10";
+		$classList = explode(',', USERCLASS_LIST);
 
-		$sql->gen($query);
-		$most_activeArray = $sql->db_getList();
+		$qb = $sql->createQueryBuilder();
+		$most_activeArray = $qb
+			->select('ft.thread_id', 'ft.thread_user', 'ft.thread_name', 'ft.thread_total_replies', 'ft.thread_datestamp', 'f.forum_sef', 'f.forum_class', 'u.user_name', 'u.user_id')
+			->from('forum_thread', 'ft')
+			->leftJoin('user', 'u', $qb->expr()->compareColumns('ft.thread_user', 'u.user_id'))
+			->leftJoin('forum', 'f', $qb->expr()->compareColumns('f.forum_id', 'ft.thread_forum_id'))
+			->where('ft.thread_active', '>', 0)
+			->whereIn('f.forum_class', $classList)
+			->orderBy('ft.thread_total_replies', 'DESC')
+			->setFirstResult(0)->setMaxResults(10)
+			->fetchAll();
 
-		$query = "
-		SELECT ft.*, f.forum_class, f.forum_sef, u.user_name, u.user_id FROM #forum_thread as ft
-		LEFT JOIN #user AS u ON ft.thread_user = u.user_id
-		LEFT JOIN #forum AS f ON f.forum_id = ft.thread_forum_id
-		WHERE f.forum_class IN (".USERCLASS_LIST.")
-		ORDER BY ft.thread_views DESC LIMIT 0,10";
-
-		$sql->gen($query);
-		$most_viewedArray = $sql->db_getList();
+		$qb = $sql->createQueryBuilder();
+		$most_viewedArray = $qb
+			->select('ft.*', 'f.forum_class', 'f.forum_sef', 'u.user_name', 'u.user_id')
+			->from('forum_thread', 'ft')
+			->leftJoin('user', 'u', $qb->expr()->compareColumns('ft.thread_user', 'u.user_id'))
+			->leftJoin('forum', 'f', $qb->expr()->compareColumns('f.forum_id', 'ft.thread_forum_id'))
+			->whereIn('f.forum_class', $classList)
+			->orderBy('ft.thread_views', 'DESC')
+			->setFirstResult(0)->setMaxResults(10)
+			->fetchAll();
 
 			/*$sql->select("user", "user_id, user_name, user_forums", "ORDER BY user_forums DESC LIMIT 0, 10", "no_where");
 			$posters = $sql -> db_getList();
@@ -123,15 +131,15 @@ class forumStats
 
 
 		// get all replies
-		$query = "
-		SELECT COUNT(fp.post_id) AS post_count, u.user_name, u.user_id, fp.post_thread FROM #forum_post as fp
-		LEFT JOIN #user AS u ON fp.post_user = u.user_id
-		GROUP BY fp.post_user
-		ORDER BY post_count DESC LIMIT 0,10";
-
-		$sql->gen($query);
-	 	$top_repliers_data = $sql->db_getList('ALL', false, false, 'user_id');
-//		$top_repliers_data = $sql->retrieve($query,true);
+		$qb = $sql->createQueryBuilder();
+		$top_repliers_data = $qb
+			->selectAggregate('COUNT', 'fp.post_id', 'post_count')->addSelect('u.user_name', 'u.user_id', 'fp.post_thread')
+			->from('forum_post', 'fp')
+			->leftJoin('user', 'u', $qb->expr()->compareColumns('fp.post_user', 'u.user_id'))
+			->groupBy('fp.post_user')
+			->orderBy('post_count', 'DESC')
+			->setFirstResult(0)->setMaxResults(10)
+			->fetchAll('user_id');
 
 		// build top posters meanwhile
 		$top_posters = array();
@@ -144,16 +152,15 @@ class forumStats
 		}
 			// end build top posters
 
-		$ids = implode(',', $topReplier);
-
 		// find topics by top 10 users
-		$query = "
-		SELECT COUNT(ft.thread_id) AS thread_count, u.user_id FROM #forum_thread as ft
-		LEFT JOIN #user AS u ON ft.thread_user = u.user_id
-		WHERE u.user_id IN ({$ids})	GROUP BY ft.thread_user";
-
-		$sql->gen($query);
-		$top_repliers_data_c = $sql->db_getList('ALL', false, false, 'user_id');
+		$qb = $sql->createQueryBuilder();
+		$top_repliers_data_c = $qb
+			->selectAggregate('COUNT', 'ft.thread_id', 'thread_count')->addSelect('u.user_id')
+			->from('forum_thread', 'ft')
+			->leftJoin('user', 'u', $qb->expr()->compareColumns('ft.thread_user', 'u.user_id'))
+			->whereIn('u.user_id', $topReplier)
+			->groupBy('ft.thread_user')
+			->fetchAll('user_id');
 
 		$top_repliers = array();
 		$top_repliers_sort = array();
@@ -179,14 +186,15 @@ class forumStats
 		}
 
 		// get all replies
-		$query = "
-		SELECT COUNT(ft.thread_id) AS thread_count, u.user_name, u.user_id FROM #forum_thread as ft
-		LEFT JOIN #user AS u ON ft.thread_user = u.user_id
-		GROUP BY ft.thread_user
-		ORDER BY thread_count DESC LIMIT 0,10";
-
-		$sql->gen($query);
-		$top_topic_starters_data = $sql->db_getList();
+		$qb = $sql->createQueryBuilder();
+		$top_topic_starters_data = $qb
+			->selectAggregate('COUNT', 'ft.thread_id', 'thread_count')->addSelect('u.user_name', 'u.user_id')
+			->from('forum_thread', 'ft')
+			->leftJoin('user', 'u', $qb->expr()->compareColumns('ft.thread_user', 'u.user_id'))
+			->groupBy('ft.thread_user')
+			->orderBy('thread_count', 'DESC')
+			->setFirstResult(0)->setMaxResults(10)
+			->fetchAll();
 		$top_topic_starters = array();
 
 		foreach($top_topic_starters_data as $poster)
@@ -515,12 +523,15 @@ class forumStats
 			require_once (e_PLUGIN.'forum/forum_class.php');
 			$forum = new e107forum();
 
-			$qry = "
-			SELECT ue.*, u.* FROM `#user_extended` AS ue
-			LEFT JOIN `#user` AS u ON u.user_id = ue.user_extended_id
-			WHERE ue.user_plugin_forum_posts > 0
-			ORDER BY ue.user_plugin_forum_posts DESC LIMIT {$this->from}, {$this->view}
-			";
+			$qb = $sql2->createQueryBuilder();
+			$rows = $qb
+				->select('ue.*', 'u.*')
+				->from('user_extended', 'ue')
+				->leftJoin('user', 'u', $qb->expr()->compareColumns('u.user_id', 'ue.user_extended_id'))
+				->where('ue.user_plugin_forum_posts', '>', 0)
+				->orderBy('ue.user_plugin_forum_posts', 'DESC')
+				->setFirstResult((int) $this->from)->setMaxResults((int) $this->view)
+				->fetchAll();
 
 			$text = "
 			<div>
@@ -534,40 +545,37 @@ class forumStats
 
 			$counter = 1 + $this->from;
 
-			if ($sql2->gen($qry))
+			foreach($rows as $row)
 			{
-				while ($row = $sql2->fetch())
+				//$ldata = get_level($row['user_id'], $row['user_plugin_forum_posts'], $row['user_comments'], $row['user_chats'], $row['user_visits'], $row['user_join'], $row['user_admin'], $row['user_perms'], $pref);
+				$ldata = $rank->getRanks($row, (USER && $forum->isModerator(USERID)));
+
+				if(vartrue($ldata['special']))
 				{
-					//$ldata = get_level($row['user_id'], $row['user_plugin_forum_posts'], $row['user_comments'], $row['user_chats'], $row['user_visits'], $row['user_join'], $row['user_admin'], $row['user_perms'], $pref);
-					$ldata = $rank->getRanks($row, (USER && $forum->isModerator(USERID)));
-
-					if(vartrue($ldata['special']))
-					{
-						$r = $ldata['special'];
-					}
-					else
-					{
-						$r = $ldata['pic'] ? $ldata['pic'] : defset($ldata['name'], $ldata['name']);
-					}
-
-					if(!$r) $r = 'n/a';
-
-					$text .= "<tr>
-					<td style='width:10%; text-align:center' class='forumheader3'>{$counter}</td>
-					<td style='width:50%' class='forumheader3'><a href='".e107::url('user/profile/view', 'id='.$row['user_id'].'&name='.$row['user_name'])."'>{$row['user_name']}</a></td>
-					<td style='width:10%; text-align:center' class='forumheader3'>{$row['user_plugin_forum_posts']}</td>
-					<td style='width:30%; text-align:center' class='forumheader3'>{$r}</td>
-					</tr>";
-
-					$counter++;
+					$r = $ldata['special'];
 				}
+				else
+				{
+					$r = $ldata['pic'] ? $ldata['pic'] : defset($ldata['name'], $ldata['name']);
+				}
+
+				if(!$r) $r = 'n/a';
+
+				$text .= "<tr>
+				<td style='width:10%; text-align:center' class='forumheader3'>{$counter}</td>
+				<td style='width:50%' class='forumheader3'><a href='".e107::url('user/profile/view', 'id='.$row['user_id'].'&name='.$row['user_name'])."'>{$row['user_name']}</a></td>
+				<td style='width:10%; text-align:center' class='forumheader3'>{$row['user_plugin_forum_posts']}</td>
+				<td style='width:30%; text-align:center' class='forumheader3'>{$r}</td>
+				</tr>";
+
+				$counter++;
 			}
 
 			$text .= "</table>\n</div>";
 
 			if ($this->subaction == 'forum')
 			{
-				$ftotal = $sql->count('user', '(*)', 'WHERE `user_forums` > 0');
+				$ftotal = $sql->createQueryBuilder()->from('user')->where('user_forums', '>', 0)->count();
 				$parms = "{$ftotal},{$this->view},{$this->from},".e_SELF.'?[FROM].top.forum.'.$this->view;
 				$text .= "<div class='nextprev'>".$tp->parseTemplate("{NEXTPREV={$parms}}").'</div>';
 			}
@@ -592,22 +600,21 @@ class forumStats
 		require_once (e_PLUGIN.'forum/forum_class.php');
 		$forum = new e107forum();
 
-		$forumList = implode(',', $forum->getForumPermList('view'));
+		$forumList = $forum->getForumPermList('view');
 
-		$qry = "
-		SELECT
-			t.*, u.user_name, ul.user_name AS user_last, f.forum_name
-		FROM `#forum_thread` as t
-		LEFT JOIN `#forum` AS f ON f.forum_id = t.thread_forum_id
-		LEFT JOIN `#user` AS u ON u.user_id = t.thread_user
-		LEFT JOIN `#user` AS ul ON ul.user_id = t.thread_lastuser
-		WHERE t.thread_forum_id IN ({$forumList})
-		ORDER BY t.thread_views DESC
-		LIMIT
-			{$this->from}, {$this->view}
-		";
+		$qb = $sql->createQueryBuilder();
+		$rows = $qb
+			->select('t.*', 'u.user_name')->selectAs('ul.user_name', 'user_last')->addSelect('f.forum_name')
+			->from('forum_thread', 't')
+			->leftJoin('forum', 'f', $qb->expr()->compareColumns('f.forum_id', 't.thread_forum_id'))
+			->leftJoin('user', 'u', $qb->expr()->compareColumns('u.user_id', 't.thread_user'))
+			->leftJoin('user', 'ul', $qb->expr()->compareColumns('ul.user_id', 't.thread_lastuser'))
+			->whereIn('t.thread_forum_id', $forumList)
+			->orderBy('t.thread_views', 'DESC')
+			->setFirstResult((int) $this->from)->setMaxResults((int) $this->view)
+			->fetchAll();
 
-		if ($sql->gen($qry))
+		if ($rows)
 		{
 			$text = "<div>\n<table style='width:auto' class='table fborder'>\n";
 			$gen = e107::getDate();
@@ -621,7 +628,7 @@ class forumStats
 			<th style='width:25%; text-align:center' class='forumheader'>".LAN_5."</th>
 			</tr>\n";
 
-			while ($row = $sql->fetch())
+			foreach($rows as $row)
 			{
 				if ($row['user_name'])
 				{
@@ -658,7 +665,7 @@ class forumStats
 
 			$text .= "</table>\n</div>";
 
-			$ftotal = $sql->count('forum_thread', '(*)', 'WHERE `thread_parent` = 0');
+			$ftotal = $sql->createQueryBuilder()->from('forum_thread')->where('thread_parent', 0)->count();
 			$parms = "{$ftotal},{$this->view},{$this->from},".e_SELF.'?[FROM].active.forum.'.$this->view;
 			$text .= "<div class='nextprev'>".$tp->parseTemplate("{NEXTPREV={$parms}}").'</div>';
 

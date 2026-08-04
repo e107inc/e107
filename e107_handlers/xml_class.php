@@ -1052,23 +1052,66 @@ class xmlClass
 			$text .= "\t<database>\n";
 			foreach($tables as $tbl)
 			{
+				$sql = e107::getDb();
 				$primaryKey = '';
 				$eTable= str_replace(MPREFIX,"",$tbl);
+
+				// $options['query'] is an admin-supplied raw WHERE clause (trusted
+				// admin input); when absent we order by the primary key.
 				$eQry = (!empty($options['query'])) ? $options['query'] : null;
 
+				// Fail closed on the dynamic table identifier; skip anything that is
+				// not a plain identifier (mirrors the legacy select() guard).
+				if($sql->quoteIdentifier($eTable) === false)
+				{
+					continue;
+				}
+
 				// order by the primary-key
-				if($pri = e107::getDb()->index($eTable, 'PRIMARY', null, true))
+				if($pri = $sql->index($eTable, 'PRIMARY', null, true))
 				{
 					$primaryKey = varset($pri[0]['Column_name']);
 				}
 
-				if(empty($eQry) && !empty($primaryKey))
+				// Build the default ORDER BY only with a validated primary key.
+				if(empty($eQry) && !empty($primaryKey) && $sql->quoteIdentifier($primaryKey) !== false)
 				{
 					$eQry = " 1 ORDER BY ".$primaryKey." ASC";
 				}
 
+				// Validate the dynamic field list fail-closed: '*' passes through,
+				// otherwise every comma-separated column must be a valid identifier.
 				$fields = !empty($options['fields']) ? $options['fields'] : '*';
-				e107::getDb()->select($eTable, $fields, $eQry);
+				if($fields !== '*')
+				{
+					$cols = array();
+					foreach(explode(',', $fields) as $col)
+					{
+						$quoted = $sql->quoteIdentifier(trim($col));
+						if($quoted === false)
+						{
+							$cols = false;
+							break;
+						}
+						$cols[] = $quoted;
+					}
+					if($cols === false)
+					{
+						continue;
+					}
+					$fields = implode(', ', $cols);
+				}
+
+				// Run via execute() with the logical-table marker so prefix and
+				// multi-language routing resolve exactly as the legacy select().
+				// All identifiers above are validated; $eQry carries no bound
+				// values (default ORDER BY is static; admin query is trusted).
+				$query = 'SELECT '.$fields.' FROM `#'.$eTable.'`';
+				if(!empty($eQry))
+				{
+					$query .= ' WHERE '.$eQry;
+				}
+				$sql->execute($query);
 				$text .= "\t<dbTable name=\"".$eTable."\">\n";
 			//	$count = 1;
 				while($row = e107::getDb()->fetch())
@@ -1338,6 +1381,16 @@ class xmlClass
 					continue;
 				}
 
+				// Resolve the table's storage field types once. The legacy
+				// insert()/replace() auto-merged getFieldDefs() when the row carried
+				// no _FIELD_TYPES, so $insert_array is field-typed: the typed writers
+				// below reproduce the per-column storage transforms byte-for-byte
+				// (plain values() would bind raw). $table is import-derived; the
+				// builder validates it fail-closed.
+				$fieldDefs  = $sql->getFieldDefs($table);
+				$fieldTypes = (is_array($fieldDefs) && isset($fieldDefs['_FIELD_TYPES'])) ? $fieldDefs['_FIELD_TYPES'] : array();
+				$notNull    = (is_array($fieldDefs) && isset($fieldDefs['_NOTNULL'])) ? $fieldDefs['_NOTNULL'] : array();
+
 				foreach($val['item'] as $item)
 				{
 					$insert_array = array();
@@ -1349,11 +1402,26 @@ class xmlClass
 						$insert_array[$fieldkey] = $fieldval;
 
 					}
-					if(($mode === "replace") && $sql->replace($table, $insert_array)!==false)
+
+					// Fill NOT NULL columns absent from this row with their default,
+					// exactly as the legacy insert()/replace() did before binding.
+					foreach($notNull as $nnField => $nnDefault)
+					{
+						if(!isset($insert_array[$nnField]))
+						{
+							$insert_array[$nnField] = $nnDefault;
+						}
+					}
+
+					// Field-typed REPLACE/INSERT via valuesTyped() so the stored bytes
+					// are byte-identical to the deprecated array CRUD. The original
+					// fall-through is preserved: in replace mode a failed REPLACE still
+					// attempts an INSERT.
+					if(($mode === "replace") && $sql->createQueryBuilder()->replace($table)->valuesTyped($insert_array, $fieldTypes)->execute()!==false)
 					{
 						$ret['success'][] = $table;
 					}
-					elseif($sql->insert($table, $insert_array)!==false)
+					elseif($sql->createQueryBuilder()->insert($table)->valuesTyped($insert_array, $fieldTypes)->execute()!==false)
 					{
 						$ret['success'][] = $table;
 					}

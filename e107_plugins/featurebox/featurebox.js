@@ -27,8 +27,7 @@ var Featurebox = Class.create({
 			'ajax_nav_selector': 'a.featurebox-nav-link',
 			'ajax_loader': null,
 			'ajax_hide_onload': false,
-			'continuous': false,
-			'ajax_url': '#{e_JS}'.parsePath() + 'e_ajax.php'  
+			'continuous': false
 		}, options || {});
 		
 		this._ajax_container = this.options.ajax_container && $(this.options.ajax_container) ? $(this.options.ajax_container) : this._container.down('.body');

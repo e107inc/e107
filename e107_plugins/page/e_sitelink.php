@@ -8,6 +8,7 @@
  *
 */
 
+use e107\Database\QueryBuilder;
 
 if (!defined('e107_INIT')) { exit; }
 
@@ -44,8 +45,12 @@ class page_sitelink // include plugin-folder in the name.
 			'description' 	=> "A list of all books, chapters and pages"
 		);
 
-		$books = $sql->retrieve("SELECT * FROM #page_chapters WHERE chapter_parent =0 ORDER BY chapter_order ASC" , true);
-				
+		$books = $sql->createQueryBuilder()
+			->select('*')->from('page_chapters')
+			->where('chapter_parent', 0)
+			->orderBy('chapter_order', 'ASC')
+			->fetchAll();
+
 		foreach($books as $row)
 		{
 			$links[] = array(
@@ -63,7 +68,11 @@ class page_sitelink // include plugin-folder in the name.
 			);
 		}
 
-		$chaps = $sql->retrieve("SELECT * FROM #page_chapters WHERE chapter_parent !=0 ORDER BY chapter_order ASC" , true);
+		$chaps = $sql->createQueryBuilder()
+			->select('*')->from('page_chapters')
+			->where('chapter_parent', '!=', 0)
+			->orderBy('chapter_order', 'ASC')
+			->fetchAll();
 
 		foreach($chaps as $row)
 		{
@@ -135,16 +144,16 @@ class page_sitelink // include plugin-folder in the name.
 		$arr = array();
 
 
+		$qb = $sql->createQueryBuilder();
+		$qb->select('*')->from('page')
+			->whereIn('page_class', explode(',', USERCLASS_LIST));
+
 		if(!empty($parm))
 		{
-			$query = "SELECT * FROM `#page` WHERE page_class IN (".USERCLASS_LIST.") AND page_chapter = ".intval($parm)." ORDER BY page_order ASC" ;
-		}
-		else
-		{
-			$query = "SELECT * FROM `#page` WHERE page_class IN (".USERCLASS_LIST.") ORDER BY page_order ASC" ;
+			$qb->where('page_chapter', (int) $parm);
 		}
 
-		$pages = $sql->retrieve($query, true);
+		$pages = $qb->orderBy('page_order', 'ASC')->fetchAll();
 
 		foreach($pages as $row)
 		{
@@ -199,9 +208,14 @@ class page_sitelink // include plugin-folder in the name.
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 
-		$query = "chapter_parent = ".intval($book)." AND chapter_visibility IN (".USERCLASS_LIST.")  ORDER BY chapter_order ASC ";
+		$data = $sql->createQueryBuilder()
+			->select('*')->from('page_chapters')
+			->where('chapter_parent', (int) $book)
+			->whereIn('chapter_visibility', explode(',', USERCLASS_LIST))
+			->orderBy('chapter_order', 'ASC')
+			->fetchAll();
 
-		if($data = $sql->retrieve("page_chapters", "*", $query, true))
+		if($data)
 		{
 			$chapters = array();
 			$ids = array();
@@ -231,7 +245,13 @@ class page_sitelink // include plugin-folder in the name.
 
 			if($loadPages === true)
 			{
-				$pages = $sql->retrieve("SELECT * FROM #page WHERE page_title !='' AND page_chapter IN (".implode(",",$ids).") AND page_class IN (".USERCLASS_LIST.") ORDER BY page_order", true);
+				$pages = $sql->createQueryBuilder()
+					->select('*')->from('page')
+					->where('page_title', '!=', '')
+					->whereIn('page_chapter', $ids)
+					->whereIn('page_class', explode(',', USERCLASS_LIST))
+					->orderBy('page_order')
+					->fetchAll();
 				foreach($pages as $row)
 				{
 					$chap = $row['page_chapter'];
@@ -301,26 +321,35 @@ class page_sitelink // include plugin-folder in the name.
 		// find the chapter if required
 		if(!empty($options['page']) && empty($options['chapter']))
 		{
-			$options['chapter'] = $sql->retrieve('page', 'page_chapter', 'page_id='.intval($options['page']));
+			$options['chapter'] = $sql->createQueryBuilder()
+				->select('page_chapter')->from('page')
+				->where('page_id', (int) $options['page'])
+				->fetchOne();
 		}	
 
-		$query		= "SELECT * FROM #page WHERE ";
-		$q = array();
-		
+		$qb = $sql->createQueryBuilder();
+		$qb->select('*')->from('page');
+
 		if(vartrue($options['chapter']))
 		{
-			$q[] = "page_title !='' AND page_chapter = ".intval($options['chapter']);	 		
+			$qb->where('page_title', '!=', '')
+				->where('page_chapter', (int) $options['chapter']);
 		}
 		elseif(vartrue($options['book']))
 		{
-			$q[] = "page_title !='' && page_chapter IN (SELECT chapter_id FROM #page_chapters WHERE chapter_parent=".intval($options['book']).")";	 		
+			$book = (int) $options['book'];
+			$qb->where('page_title', '!=', '')
+				->whereIn('page_chapter', function(QueryBuilder $sub) use ($book)
+				{
+					$sub->select('chapter_id')->from('page_chapters')
+						->where('chapter_parent', $book);
+				});
 		}
 
-		$q[] 		= "page_class IN (".USERCLASS_LIST.")";
-		
-		$query 		.= implode(' AND ', $q)." ORDER BY page_order"; 
-		
-		$data 		= $sql->retrieve($query, true);
+		$qb->whereIn('page_class', explode(',', USERCLASS_LIST))
+			->orderBy('page_order');
+
+		$data 		= $qb->fetchAll();
 		$_pdata 	= array();
 /*
 		if(empty($data))
@@ -337,11 +366,15 @@ class page_sitelink // include plugin-folder in the name.
 			$sublinks[$pid][] = $_pdata[] = $this->pageArray($row,$options);
 		}
 
-		$filter = "chapter_visibility IN (".USERCLASS_LIST.") " ;
-		
+		$useBookFilter = false;
+
 		if(!empty($options['chapter']))
 		{
-			$title = $sql->retrieve('page_chapters', 'chapter_name', 'chapter_id='.intval($options['chapter']).' AND chapter_visibility IN ('.USERCLASS_LIST.')' );
+			$title = $sql->createQueryBuilder()
+				->select('chapter_name')->from('page_chapters')
+				->where('chapter_id', (int) $options['chapter'])
+				->whereIn('chapter_visibility', explode(',', USERCLASS_LIST))
+				->fetchOne();
 			$outArray 	= array();
 
 			if(!$title)
@@ -357,15 +390,26 @@ class page_sitelink // include plugin-folder in the name.
 
 		if(!empty($options['book']) || varset($options['chapters']) === false)
 		{
-			$filter = "chapter_parent = ".intval($options['book']);
+			$useBookFilter = true;
 			if($useTitle && !empty($row['book_name']))
 			{
 				$title = $row['book_name'];  // set the caption as main book title.
 			}
 		}
 
-		
-		$books = $sql->retrieve("SELECT * FROM #page_chapters WHERE ".$filter." ORDER BY chapter_order ASC" , true);
+		$qb = $sql->createQueryBuilder();
+		$qb->select('*')->from('page_chapters');
+
+		if($useBookFilter)
+		{
+			$qb->where('chapter_parent', (int) $options['book']);
+		}
+		else
+		{
+			$qb->whereIn('chapter_visibility', explode(',', USERCLASS_LIST));
+		}
+
+		$books = $qb->orderBy('chapter_order', 'ASC')->fetchAll();
 		foreach($books as $row)
 		{
 		//	$row['book_sef'] = $this->getSef($row['chapter_parent']);

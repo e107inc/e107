@@ -12,6 +12,9 @@
  * $Id$
  *
 */
+
+use e107\Database\SqlFragment;
+
 require_once('class2.php');
 
 e107::coreLan('userposts');
@@ -130,7 +133,7 @@ elseif ($action == 'forums')
 	require_once (e_PLUGIN.'forum/forum_class.php');
 	$forum = new e107forum();
 
-	$forumList = implode(',', $forum->getForumPermList('view'));
+	$forumIds = $forum->getForumPermList('view');
 
 
 	/*if(is_numeric($id))
@@ -174,30 +177,41 @@ elseif ($action == 'forums')
 	// new template engine - override in THEME/templates/userposts_template.php
 	$USERPOSTS_TEMPLATE = e107::getCoreTemplate('userposts');
 
-	$s_info = '';
+	$f_query = '';
 	$_POST['f_query'] = trim(varset($_POST['f_query']));
 	if ($_POST['f_query'] !== '')
 	{
 		$f_query = $tp->toDB($_POST['f_query']);
-		$s_info = "AND (t.thread_name REGEXP('".$f_query."') OR p.post_entry REGEXP('".$f_query."'))";
 		$fcaption = UP_LAN_12.' '.$user_name;
 	}
-
-	$qry = "
-	SELECT SQL_CALC_FOUND_ROWS p.*, t.*, f.* FROM `#forum_post` AS p
-	LEFT JOIN `#forum_thread` AS t ON t.thread_id = p.post_thread
-	LEFT JOIN `#forum` AS f ON f.forum_id = p.post_forum
-	WHERE p.post_user = {$id}
-	AND p.post_forum IN ({$forumList})
-	{$s_info}
-	ORDER BY p.post_datestamp DESC LIMIT {$from}, 10
-	";
 
 	$debug = deftrue('e_DEBUG');
 
 	$sqlp = e107::getDb('posts');
 
-	if (!$sqlp->gen($qry))
+	// SQL_CALC_FOUND_ROWS is kept so $sqlp->foundRows() still reports the total
+	// ignoring the LIMIT; the value list and search terms are all bound.
+	$qb = $sqlp->createQueryBuilder();
+	$qb->addSelect(SqlFragment::raw('SQL_CALC_FOUND_ROWS p.*, t.*, f.*'))
+		->from('forum_post', 'p')
+		->leftJoin('forum_thread', 't', $qb->expr()->compareColumns('t.thread_id', 'p.post_thread'))
+		->leftJoin('forum', 'f', $qb->expr()->compareColumns('f.forum_id', 'p.post_forum'))
+		->where('p.post_user', (int) $id)
+		->whereIn('p.post_forum', array_map('intval', $forumIds));
+
+	if ($f_query !== '')
+	{
+		$qb->where(function($q) use ($f_query)
+		{
+			$q->where($q->expr()->regexp('t.thread_name', $f_query))
+				->orWhere($q->expr()->regexp('p.post_entry', $f_query));
+		});
+	}
+
+	$qb->orderBy('p.post_datestamp', 'DESC')
+		->setFirstResult((int) $from)->setMaxResults(10);
+
+	if (!$qb->execute())
 	{
 		$ftext .= "<span class='mediumtext'>".UP_LAN_8.'</span>';
 	}

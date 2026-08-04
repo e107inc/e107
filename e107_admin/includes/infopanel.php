@@ -40,34 +40,49 @@ class adminstyle_infopanel
 		$addonUpdateCheck = '';
 
 
-		if( e107::getSession()->get('core-update-status') !== true)
+		$coreUpdateFound = "
+  		    	    $('#e-admin-core-update').html('<span class=\"text-info\"><i class=\"fa fa-database\"></i></span>');
+
+  		    	     $('[data-toggle=\"popover\"]').popover('show');
+	                 $('.popover').on('click', function()
+	                 {
+	                     $('[data-toggle=\"popover\"]').popover('hide');
+	           		});
+		";
+
+		$coreUpdateNone = "
+  		    	    // Hide li element.
+  		    		$('#e-admin-core-update').parent().hide();
+		";
+
+		if( e107::getSession()->get('core-update-checked') !== true)
 		{
 			$coreUpdateCheck = "
 				$('#e-admin-core-update').html('<i title=\"".LAN_CHECKING_FOR_UPDATES."\" class=\"fa fa-spinner fa-spin\"></i>');
   		    	$.get('".e_ADMIN."admin.php?mode=core&type=update', function( data ) {
- 		    	
+
   		    	var res = $.parseJSON(data);
-		    
+
   		    	if(res === true)
   		    	{
-  		    	    $('#e-admin-core-update').html('<span class=\"text-info\"><i class=\"fa fa-database\"></i></span>');
-  		    	    
-  		    	     $('[data-toggle=\"popover\"]').popover('show');
-	                 $('.popover').on('click', function() 
-	                 {
-	                     $('[data-toggle=\"popover\"]').popover('hide');
-	           		});
+  		    	    ".$coreUpdateFound."
   		    	}
   		    	else
   		    	{
-  		    	    // Hide li element.
-  		    		$('#e-admin-core-update').parent().hide();
+  		    	    ".$coreUpdateNone."
   		    	}
-			   
+
 			});
-			
+
 			";
 
+		}
+		else
+		{
+			// Checked already this session, so show what it found instead of asking
+			// again. Every check writes the whole preference row, and the addons
+			// check below has always been guarded this way.
+			$coreUpdateCheck = (e107::getSession()->get('core-update-status') === true) ? $coreUpdateFound : $coreUpdateNone;
 		}
 
 		if( e107::getSession()->get('addons-update-checked') !== true)
@@ -522,7 +537,12 @@ class adminstyle_infopanel
 	//		return;
 	//	}
 				
-		if(!$rows = $sql->retrieve('comments','*','comment_blocked=2 ORDER BY comment_id DESC LIMIT 25',true) )
+		$rows = $sql->createQueryBuilder()
+			->select('*')->from('comments')
+			->where('comment_blocked', 2)
+			->orderBy('comment_id', 'DESC')->setMaxResults(25)
+			->fetchAll();
+		if(!$rows)
 		{
 			return null;
 		}
@@ -687,12 +707,16 @@ class adminstyle_infopanel
 		
 	
 		$text = "<div style='padding-left:20px'>";
-		$menu_qry = 'SELECT * FROM #menus WHERE menu_id!= 0  GROUP BY menu_name ORDER BY menu_name';
+		$menuRows = e107::getDb()->createQueryBuilder()
+			->select('*')->from('menus')
+			->where('menu_id', '!=', 0)
+			->groupBy('menu_name')->orderBy('menu_name')
+			->fetchAll();
 		$settings = varset($user_pref['core-infopanel-menus'],array());
-	
-		if (e107::getDb()->gen($menu_qry))
+
+		if ($menuRows)
 		{
-			while ($row = e107::getDb()->fetch())
+			foreach ($menuRows as $row)
 			{
 				// Custom menu (core).
 				if(is_numeric($row['menu_path']))

@@ -94,7 +94,26 @@ class page_import
 	 */
 	function saveData($row)
 	{	
-		if(!$result = $this->pageDB->insert('page',$row))
+		$defs = $this->pageDB->getFieldDefs('page');
+
+		// Reproduce the legacy array-form insert's _NOTNULL default fill.
+		if(isset($defs['_NOTNULL']))
+		{
+			foreach($defs['_NOTNULL'] as $f => $v)
+			{
+				if(!isset($row[$f]))
+				{
+					$row[$f] = $v;
+				}
+			}
+		}
+
+		$ok = $this->pageDB->createQueryBuilder()->insert('page')
+			->valuesTyped($row, isset($defs['_FIELD_TYPES']) ? $defs['_FIELD_TYPES'] : array())
+			->execute();
+		$result = ($ok !== false) ? $this->pageDB->lastInsertId() : false;
+
+		if(!$result)
 		{
 	     	return 4;
 		}
@@ -178,7 +197,12 @@ class pagechapter_import
 			);
 
 
-		 $this->pageDB->insert('page_chapters',$insert); // insert a default book.
+		// All _NOTNULL columns (chapter_id, chapter_meta_description) are present in
+		// $insert, so the legacy array-form _NOTNULL fill is a no-op here.
+		$chDefs = $this->pageDB->getFieldDefs('page_chapters');
+		$this->pageDB->createQueryBuilder()->insert('page_chapters')
+			->valuesTyped($insert, isset($chDefs['_FIELD_TYPES']) ? $chDefs['_FIELD_TYPES'] : array())
+			->execute(); // insert a default book.
 	}
 
 
@@ -211,7 +235,26 @@ class pagechapter_import
 		}
 
 
-		if(!$result = $this->pageDB->insert('page_chapters',$row))
+		$defs = $this->pageDB->getFieldDefs('page_chapters');
+
+		// Reproduce the legacy array-form insert's _NOTNULL default fill.
+		if(isset($defs['_NOTNULL']))
+		{
+			foreach($defs['_NOTNULL'] as $f => $v)
+			{
+				if(!isset($row[$f]))
+				{
+					$row[$f] = $v;
+				}
+			}
+		}
+
+		$ok = $this->pageDB->createQueryBuilder()->insert('page_chapters')
+			->valuesTyped($row, isset($defs['_FIELD_TYPES']) ? $defs['_FIELD_TYPES'] : array())
+			->execute();
+		$result = ($ok !== false) ? $this->pageDB->lastInsertId() : false;
+
+		if(!$result)
 		{
 	     	return 4;
 		}

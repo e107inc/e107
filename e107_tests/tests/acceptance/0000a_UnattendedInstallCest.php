@@ -55,6 +55,29 @@ class UnattendedInstallCest
 		$this->assertUnattendedAdminAbsent($I);
 	}
 
+	public function unattendedSecondAttemptIsRefused(AcceptanceTester $I)
+	{
+		$I->wantTo("Refuse a repeat create_tables_unattended once the database already holds an e107 install");
+
+		// First unattended install succeeds and populates the database.
+		$this->writeArrayConfig($I);
+		$this->visitUnattendedInstallUrl($I);
+		$this->assertInstallSucceeded($I);
+
+		// Drop the admin user table, then replay the exact same install URL.
+		$dbh = $I->getDbModule()->_getDbh();
+		$dbh->exec('SET FOREIGN_KEY_CHECKS=0;');
+		$dbh->exec('DROP TABLE `'.self::MYSQL_PREFIX.'user`');
+		$dbh->exec('SET FOREIGN_KEY_CHECKS=1;');
+
+		$this->visitUnattendedInstallUrl($I);
+
+		// The remaining schema must make the replay a no-op: the credential check
+		// is never reached, so the user table is not recreated and the site cannot
+		// be silently re-provisioned/taken over.
+		$this->assertUnattendedAdminAbsent($I);
+	}
+
 	public function unattendedInstallWithLegacyGlobalsConfig(AcceptanceTester $I)
 	{
 		$I->wantTo("Install e107 unattended with a legacy globals-format e107_config.php");

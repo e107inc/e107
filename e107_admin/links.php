@@ -375,8 +375,10 @@ class links_admin_ui extends e_admin_ui
 		$sql2 = e107::getDb('sql2');
 
 
-		$sql->select("links", "*", "link_id=".$pid);
-		$par = $sql->fetch();
+		$par = $sql->createQueryBuilder()
+			->select('*')->from('links')
+			->where('link_id', (int) $pid)
+			->fetchRow();
 
 		//extract($par);
 		// Added option for passing of result array
@@ -419,7 +421,16 @@ class links_admin_ui extends e_admin_ui
 		}
 		else
 		{
-			$sql->select($sublink['table'], "*", $sublink['query']);
+			// $sublink['table'] is a dynamic identifier supplied by sublink_data()
+			// and plugin e_linkgen.php files; validate it fail-closed before use.
+			// $sublink['query'] is a developer-authored WHERE/ORDER fragment built
+			// by those same callers - a plugin-extensibility boundary (caller-built SQL).
+			if($sql->quoteIdentifier($sublink['table']) === false)
+			{
+				$mes->addError(LCLAN_111);
+				return;
+			}
+			$sql->execute("SELECT * FROM #".$sublink['table']." WHERE ".$sublink['query']);
 			$count = 1;
 			while($row = $sql->fetch())
 			{
@@ -453,7 +464,7 @@ class links_admin_ui extends e_admin_ui
 
 				e107::getMessage()->addDebug(print_a($insert_array,true));
 
-				if($sql2->insert("links",$insert_array))
+				if($sql2->createQueryBuilder()->insert('links')->valuesTyped($insert_array, $sql2->getFieldDefs('links')['_FIELD_TYPES'])->execute())
 				{
 					$message = LAN_CREATED." ({$name})[!br!]";
 					$mes->addSuccess(LAN_CREATED." ({$name})");
@@ -655,7 +666,10 @@ class links_admin_form_ui extends e_admin_form_ui
 			$this->linkFunctions[$cat][$newkey] = str_replace('sc_','',$func);
 		}
 
-		if($tmp = e107::getDb()->retrieve('links', 'link_owner', "GROUP BY link_owner ORDER BY link_owner", true))
+		if($tmp = e107::getDb()->createQueryBuilder()
+			->select('link_owner')->from('links')
+			->groupBy('link_owner')->orderBy('link_owner')
+			->fetchAll())
 		{
 			foreach($tmp as $arr)
 			{
@@ -684,9 +698,12 @@ class links_admin_form_ui extends e_admin_form_ui
 				{
 					if(null === $this->current_parent)
 					{
-						if(e107::getDb()->select('links', 'link_name', 'link_id='.$current))
+						$tmp = e107::getDb()->createQueryBuilder()
+							->select('link_name')->from('links')
+							->where('link_id', (int) $current)
+							->fetchRow();
+						if($tmp)
 						{
-							$tmp = e107::getDb()->fetch();
 							$this->current_parent = $tmp['link_name'];
 						}
 					}

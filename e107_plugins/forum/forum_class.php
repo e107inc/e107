@@ -10,6 +10,8 @@
 *
 */
 
+use e107\Database\SqlFragment;
+
 // TODO LAN
 
 /* Forum Header File */
@@ -85,6 +87,9 @@ class e107forum
 	private $userViewed;
 	private $permList = array();
 	public $modArray, $prefs;
+
+	/** @var array moderator rows keyed by userclass, for authorisation only */
+	private $moderatorsByClass = array();
 	private $forumData = array();
 
 	public function __construct($update= false)
@@ -141,11 +146,53 @@ class e107forum
 	}
 
 	/**
+	 * Translate the legacy '_NULL_' sentinel into a real null so values can be
+	 * bound through the query builder while preserving the old array-form
+	 * insert/update behaviour (which mapped '_NULL_' to SQL NULL).
+	 *
+	 * @param array $data column => value pairs
+	 * @return array
+	 */
+	private function nullSentinels(array $data)
+	{
+		foreach($data as $k => $v)
+		{
+			if($v === '_NULL_')
+			{
+				$data[$k] = null;
+			}
+		}
+		return $data;
+	}
+
+	/**
+	 * Run an array-form UPDATE through the query builder: every value bound,
+	 * '_NULL_' translated to SQL NULL, scoped by a single column = value WHERE.
+	 *
+	 * @param string $table logical table name
+	 * @param array $data column => value pairs to set
+	 * @param string $whereColumn column for the WHERE predicate
+	 * @param mixed $whereValue bound value for the WHERE predicate
+	 * @return int|bool affected rows, or false on error
+	 */
+	private function updateRow($table, array $data, $whereColumn, $whereValue)
+	{
+		$qb = e107::getDb()->createQueryBuilder()->update($table);
+		foreach($this->nullSentinels($data) as $col => $val)
+		{
+			$qb->set($col, $val);
+		}
+		return $qb->where($whereColumn, $whereValue)->execute();
+	}
+
+	/**
 	 * Grab the forum data up front to reduce LEFT JOIN usage. Currently only forum_id and forum_sef but may be expanded as needed.
 	 */
 	private function getForumData()
 	{
-		$data = e107::getDb()->retrieve("SELECT forum_id, forum_sef, forum_class FROM `#forum`", true); // no ordering for better performance.
+		$data = e107::getDb()->createQueryBuilder()
+			->select('forum_id', 'forum_sef', 'forum_class')->from('forum')
+			->fetchAll(); // no ordering for better performance.
 
 		$newData = array();
 		foreach($data as $row)
@@ -206,8 +253,12 @@ class e107forum
 			}
 
 
-			$qry = "SELECT user_id, user_name, user_class FROM `#user` WHERE FIND_IN_SET(".$class.", user_class) OR user_class = ".$class." ORDER by user_name LIMIT 50"; // FIND_IN_SET(user_class, ".$class.")
-			return e107::getDb()->retrieve($qry, true);
+			$qb = e107::getDb()->createQueryBuilder();
+			return $qb->select('user_id', 'user_name', 'user_class')->from('user')
+				->where($qb->expr()->findInSet('user_class', $class))
+				->orWhere($qb->expr()->eq('user_class', $class)) // FIND_IN_SET(user_class, $class)
+				->orderBy('user_name')->setMaxResults(50)
+				->fetchAll();
 		}
 
 		return false;
@@ -242,7 +293,10 @@ class e107forum
         $sql 		= e107::getDb();
         $post_id  	= intval($data['id']); // forum (post) id
         $file_id 	= intval($data['dl']); // file id
-        $forum_id 	= $sql->retrieve('forum_post','post_forum','post_id='.$post_id);
+        $forum_id 	= $sql->createQueryBuilder()
+            ->select('post_forum')->from('forum_post')
+            ->where('post_id', $post_id)
+            ->fetchOne();
 
         // Check if user is allowed to download this file (has 'view' permissions to forum)
     	if(!$this->checkPerm($forum_id, 'view'))
@@ -260,17 +314,20 @@ class e107forum
 			exit;
 		}
 
-        $array 	= $sql->retrieve('forum_post','post_user,post_attachments','post_id='.$post_id);
+        $array 	= $sql->createQueryBuilder()
+            ->select('post_user', 'post_attachments')->from('forum_post')
+            ->where('post_id', $post_id)
+            ->fetchRow();
         $attach = e107::unserialize($array['post_attachments']);
 
         $filename = is_array($attach['file'][$file_id]) ? $attach['file'][$file_id]['file'] : $attach['file'][$file_id];
 
         $file 	= $this->getAttachmentPath($array['post_user']).varset($filename);
 
-        // Check if file exists. Send file for download if it does, return 404 error code when file does not exist. 
+        // Check if file exists. Send file for download if it does, return 404 error code when file does not exist.
  		if(file_exists($file))
  		{
- 		   e107::getFile()->send($file);
+ 		   e107::getFile()->send($file, array('roots' => array(e_MEDIA.'plugins/forum/attachments/')));
  		}
  		else
  		{
@@ -290,24 +347,87 @@ class e107forum
 
 
 	/**
+	 * Where a thread lives, and whether it is still open.
+	 *
+	 * The forum a reply belongs to is a property of the thread, so it is read
+	 * back from the thread rather than taken from the request. The request used
+	 * to carry both, unrelated to each other, which let a reply be authorised
+	 * against one forum and written into a thread in another.
+	 *
+	 * @param int $threadId
+	 * @return array|false thread_forum_id and thread_active, or false if there is no such thread
+	 */
+	private function threadContext($threadId)
+	{
+		if(empty($threadId))
+		{
+			return false;
+		}
+
+		$row = e107::getDb()->createQueryBuilder()
+			->select('thread_id', 'thread_forum_id', 'thread_active')
+			->from('forum_thread')
+			->where('thread_id', (int) $threadId)
+			->fetchRow();
+
+		return $row ? $row : false;
+	}
+
+
+	/**
 	 * Handle the Ajax quick-reply.
 	 */
 	function ajaxQuickReply()
 	{
 		$tp = e107::getParser();
 
-		if(!isset($_POST['e_token'])) // Set the token if not included
-		{
-			$_POST['e_token'] = '';
-		}
+		// An absent token is deliberately left absent. Filling it in with an empty
+		// string satisfies isset() and so lands on the invalid-token branch,
+		// which refuses the reply outright rather than deferring to the mode the
+		// operator chose.
 
-		if(!e107::getSession()->check(false) || !$this->checkPerm($_POST['post'], 'post'))
+		if(!e107::getSession()->check(false))
 		{
 			// Invalid token.
 			exit;
 		}
 
-		if(varset($_POST['action']) == 'quickreply' && vartrue($_POST['text']))
+		// The thread decides the forum, and the forum decides the permission.
+		//
+		// This used to ask checkPerm() about $_POST['post'] and then write
+		// $_POST['thread'] into post_thread, with nothing tying the two ids
+		// together: naming a forum you may post in bought you a reply in any
+		// thread on the site, including one in a forum you are redirected away
+		// from. thread_active went unread as well, so a closed thread took
+		// replies through this route while the ordinary form (forum_post.php,
+		// checkPerms()) refused them.
+		$thread = $this->threadContext(varset($_POST['thread']));
+
+		if(!$thread || !$this->checkPerm($thread['thread_forum_id'], 'post'))
+		{
+			exit;
+		}
+
+		if(empty($thread['thread_active']) && !$this->canModerateThread($thread['thread_id']))
+		{
+			exit;
+		}
+
+		// Always an answer, and always one that matches what happened.
+		//
+		// The response used to be built only on the way through the success
+		// path, so an empty reply produced neither status nor msg and the page
+		// said nothing at all, and a duplicate produced 'ok' with postAdd()'s
+		// -1 sentinel handed back as the post id: the reply slid into the page
+		// and was gone on the next refresh. forum_post.php has reported the
+		// duplicate properly since forever.
+		$ret = array('status' => 'error', 'msg' => LAN_FORUM_8027, 'html' => false);
+
+		if(varset($_POST['action']) == 'quickreply' && !vartrue($_POST['text']))
+		{
+			$ret['msg'] = LAN_FORUM_3007; // left required field(s) blank
+		}
+		elseif(varset($_POST['action']) == 'quickreply')
 		{
 
 			$postInfo = array();
@@ -319,43 +439,77 @@ class e107forum
 			}
 			else
 			{
-				$postInfo['post_user_anon'] = $_POST['anonname'];
+				$postInfo['post_user_anon'] = varset($_POST['anonname'], '');
 			}
 
 			$postInfo['post_entry'] = $_POST['text'];
-			$postInfo['post_forum'] = intval($_POST['post']);
+			$postInfo['post_forum'] = (int) $thread['thread_forum_id'];
 			$postInfo['post_datestamp'] = time();
-			$postInfo['post_thread'] = intval($_POST['thread']);
+			$postInfo['post_thread'] = (int) $thread['thread_id'];
 
-			$postInfo['post_id'] = $this->postAdd($postInfo); // save it.
+			$postId = $this->postAdd($postInfo); // save it.
 
-			$postInfo['user_name'] = defset('USERNAME');
-			$postInfo['user_email'] = defset('USEREMAIL');
-			$postInfo['user_image'] = defset('USERIMAGE');
-			$postInfo['user_signature'] = defset('USERSIGNATURE');
-
-			if($_POST['insert'] == 1)
+			if($postId === -1)
 			{
-				$tmpl = e107::getTemplate('forum', 'forum_viewtopic', 'replies');
-				$sc = e107::getScBatch('view', 'forum');
-				$sc->setScVar('postInfo', $postInfo);
-				$ret['html'] = $tp->parseTemplate($tmpl, true, $sc) . "\n";
+				$ret['msg'] = LAN_FORUM_3006; // duplicate post
+			}
+			elseif(empty($postId))
+			{
+				$ret['msg'] = LAN_FORUM_8018; // there was a problem
 			}
 			else
 			{
-				$ret['html'] = false;
+				$postInfo['post_id'] = $postId;
+				$postInfo['user_name'] = defset('USERNAME');
+				$postInfo['user_email'] = defset('USEREMAIL');
+				$postInfo['user_image'] = defset('USERIMAGE');
+				$postInfo['user_signature'] = defset('USERSIGNATURE');
+
+				if(varset($_POST['insert']) == 1)
+				{
+					$tmpl = e107::getTemplate('forum', 'forum_viewtopic', 'replies');
+					$sc = e107::getScBatch('view', 'forum');
+					$sc->setScVar('postInfo', $postInfo);
+					$ret['html'] = $tp->parseTemplate($tmpl, true, $sc) . "\n";
+				}
+
+				$ret['status'] = 'ok';
+				$ret['msg'] = LAN_FORUM_3047;
 			}
-
-			$ret['status'] = 'ok';
-			$ret['msg'] = LAN_FORUM_3047; 
 		}
 
-		e107::getSession()->reset();
-
-		if(varset($ret, false))
-		{
-			$ret['e_token'] = e107::getSession()->getFormToken();
-		}
+		// The token is deliberately not rotated here.
+		//
+		// e107::getSession()->reset() was added alongside this method in
+		// 29f74508c2967f6e869dc01bb0bf0bf70a755657 ("Forum quick-reply fix.",
+		// June 2013) with no stated reason, and e_core_session::reset() was
+		// created in that same commit for this one call site. It has no other
+		// caller in core to this day.
+		//
+		// It buys nothing. The form token is a session-lifetime secret shared by
+		// every form on every page, not a one-time nonce, so rotating it after
+		// one reply prevents no replay: the new value is just as valid for
+		// everything else. Session fixation is answered by regenerating the
+		// session id, which happens in shutdown() at the higher security levels.
+		// Rotation policy lives there and is level-driven; at the default level
+		// e107 deliberately keeps the token stable, so this was an outlier rather
+		// than an application of any rule. It also bypassed e_TOKEN_FREEZE, the
+		// documented way for other code to ask that regeneration not happen.
+		//
+		// What it cost is everything else on the page. The rotation invalidated
+		// the <meta name="e-token">, every injected form, the track button and
+		// the moderator links, none of which the reply's response can reach, so a
+		// visitor who stayed on the topic page had every later write refused. A
+		// write-back of the new token was added in 2016
+		// (391f7c2148a5a19f38a51eec50728cd31ba434a3, "Fixed: bug when you use
+		// Quick Reply twice") but it only ever updated the clicked button, and
+		// only when a reply actually succeeded. An empty reply rotated the token
+		// and returned nothing to write back, which bricked the page outright.
+		//
+		// $ret is now always an array and always carries the current token, so a
+		// customised forum.js that reads e_token keeps working and simply writes
+		// back the value it already had.
+		$ret['e_token'] = e107::getSession()->getFormToken();
 
 		echo $tp->toJSON($ret);
 		exit;
@@ -370,9 +524,20 @@ class e107forum
 		$ret = array();
 		$ret['status'] 	= 'error';
 
-		$threadID = intval($_POST['thread']);
+		$threadID = intval(varset($_POST['thread']));
 
 		if(!USER || empty($threadID))
+		{
+			exit;
+		}
+
+		// Subscribing is a way of reading. trackEmail() posts every reply in the
+		// thread out to whoever is in forum_track, and asks nothing about the
+		// forum it came from, so the only check standing between a member and
+		// the contents of a forum closed to them is this one.
+		$thread = $this->threadContext($threadID);
+
+		if(!$thread || !$this->checkPerm($thread['thread_forum_id'], 'view'))
 		{
 			exit;
 		}
@@ -381,7 +546,9 @@ class e107forum
 
 		$sql = e107::getDb();
 
-		if($sql->select('forum_track', '*', "track_userid=".USERID." AND track_thread=".$threadID))
+		if($sql->createQueryBuilder()->from('forum_track')
+			->where('track_userid', (int) USERID)->where('track_thread', (int) $threadID)
+			->count())
 		{
 			if($this->track('del', USERID, $threadID))
 			{
@@ -427,23 +594,12 @@ class e107forum
 	function usersLastPostDeletion()
 	{
 		$ret = array('hide' => false, 'msg' => LAN_FORUM_7008, 'status' => 'error');
-		$actionAllowed = false;
 
-		if (isset($_POST['post']) && is_numeric($_POST['post']))
-		{
-			$postId = intval($_POST['post']);
-			$sql = e107::getDb();
-			$query = "SELECT fp.post_user
-                  FROM #forum_post AS fp
-                  WHERE fp.post_id = ". $postId;
-			if ($sql->gen($query) > 0)
-			{
-				$row = $sql->fetch();
-				if (USERID == $row['post_user']) $actionAllowed = true;
-			}
-		}
+		$postId = (isset($_POST['post']) && is_numeric($_POST['post'])) ? (int) $_POST['post'] : 0;
+		$actionAllowed = $postId && varset($_POST['action']) === 'deletepost'
+			&& $this->userMayDeleteOwnPost($postId);
 
-		if ($actionAllowed && $_POST['action'] == 'deletepost')
+		if ($actionAllowed)
 		{
 			if ($this->postDelete($postId))
 			{
@@ -463,24 +619,175 @@ class e107forum
 
 
 	/**
+	 * The rule this endpoint's name, its docblock and the control that offers it
+	 * all describe: your own post, the last one in the thread, not the one that
+	 * started it, and the thread still open.
+	 *
+	 * None of it was enforced. The whole ownership test was `USERID ==
+	 * $row['post_user']`, and USERID is 0 for a caller with no account while an
+	 * anonymous post stores post_user 0, so an unauthenticated visitor owned
+	 * every anonymous post on the site and could delete any of them, in forums
+	 * they could not even read. Carrying no cookie, such a request is not
+	 * challenged for a token either. A member, meanwhile, could delete any post
+	 * they had ever written, including one that opened a thread, which left the
+	 * thread row behind with no first post.
+	 *
+	 * @param int $postId
+	 * @return bool
+	 */
+	private function userMayDeleteOwnPost($postId)
+	{
+		if(!deftrue('USER'))
+		{
+			return false;
+		}
+
+		$qb = e107::getDb()->createQueryBuilder();
+		$row = $qb
+			->select('fp.post_user', 'fp.post_thread', 'ft.thread_active')
+			->from('forum_post', 'fp')
+			->innerJoin('forum_thread', 'ft', $qb->expr()->compareColumns('fp.post_thread', 'ft.thread_id'))
+			->where('fp.post_id', (int) $postId)
+			->fetchRow();
+
+		if(!$row || empty($row['post_user']) || (int) $row['post_user'] !== (int) USERID)
+		{
+			return false;
+		}
+
+		if(empty($row['thread_active']))
+		{
+			return false;
+		}
+
+		$threadId = (int) $row['post_thread'];
+
+		$later = (int) e107::getDb()->createQueryBuilder()
+			->from('forum_post')
+			->where('post_thread', $threadId)
+			->where('post_id', '>', (int) $postId)
+			->count();
+
+		$earlier = (int) e107::getDb()->createQueryBuilder()
+			->from('forum_post')
+			->where('post_thread', $threadId)
+			->where('post_id', '<', (int) $postId)
+			->count();
+
+		return $later === 0 && $earlier > 0;
+	}
+
+
+	/**
 	 * get user ids with moderator permissions for the given $postId
 	 * @param $postId id of a forum post
 	 * @return array an array with user ids how have moderator permissions for the $postId
 	 */
 	public function getModeratorUserIdsByPostId($postId)
 	{
-		$sql = e107::getDb();
-		$query = "SELECT f.forum_moderators
-                  FROM #forum AS f
-                  INNER JOIN #forum_thread AS ft ON f.forum_id = ft.thread_forum_id
-                  INNER JOIN #forum_post AS fp ON ft.thread_id = fp.post_thread
-                  WHERE fp.post_id = ". $postId;
-		if ($sql->gen($query) > 0)
+		$qb = e107::getDb()->createQueryBuilder();
+		$row = $qb
+			->select('f.forum_moderators')->from('forum', 'f')
+			->innerJoin('forum_thread', 'ft', $qb->expr()->compareColumns('f.forum_id', 'ft.thread_forum_id'))
+			->innerJoin('forum_post', 'fp', $qb->expr()->compareColumns('ft.thread_id', 'fp.post_thread'))
+			->where('fp.post_id', $postId)
+			->fetchRow();
+		if ($row)
 		{
-			$row = $sql->fetch();
-			return array_keys($this->forumGetMods($row['forum_moderators']));
+			return array_keys($this->moderatorsOfClass($row['forum_moderators']));
 		}
 		return array();
+	}
+
+
+	/**
+	 * Moderators of one userclass, for deciding permission.
+	 *
+	 * Kept apart from forumGetMods(), which memoises a single list on the
+	 * instance whatever class it is asked for. Templates read that memo to
+	 * render a forum's moderator list, so it cannot simply be keyed without
+	 * changing what they show. The page also primes it before any write is
+	 * authorised, which meant every permission question in the request was
+	 * answered for the forum named in the URL rather than for the thread or
+	 * post being acted on.
+	 *
+	 * @param int|string $uclass value of forum.forum_moderators
+	 * @return array moderator rows keyed by user id
+	 */
+	private function moderatorsOfClass($uclass)
+	{
+		$key = (string) $uclass;
+
+		if(isset($this->moderatorsByClass[$key]))
+		{
+			return $this->moderatorsByClass[$key];
+		}
+
+		$mods = array();
+
+		if($uclass == e_UC_ADMIN || trim((string) $uclass) === '')
+		{
+			$rows = e107::getDb()->createQueryBuilder()
+				->select('user_id', 'user_name')->from('user')
+				->where('user_admin', 1)->orderBy('user_name', 'ASC')
+				->fetchAll();
+
+			foreach($rows as $row)
+			{
+				$mods[$row['user_id']] = $row;
+			}
+		}
+		else
+		{
+			$mods = e107::getUserClass()->getUsersInClass($uclass, 'user_name', true);
+		}
+
+		return $this->moderatorsByClass[$key] = $mods;
+	}
+
+
+	/**
+	 * @param array $moderatorUserIds
+	 * @return bool
+	 */
+	private function actorModerates(array $moderatorUserIds)
+	{
+		if(deftrue('USER') && in_array(USERID, $moderatorUserIds))
+		{
+			return true;
+		}
+
+		return (bool) getperms('0');
+	}
+
+
+	/**
+	 * @param int $threadId
+	 * @return bool
+	 */
+	public function canModerateThread($threadId)
+	{
+		return $this->actorModerates($this->getModeratorUserIdsByThreadId($threadId));
+	}
+
+
+	/**
+	 * @param int $postId
+	 * @return bool
+	 */
+	public function canModeratePost($postId)
+	{
+		return $this->actorModerates($this->getModeratorUserIdsByPostId($postId));
+	}
+
+
+	/**
+	 * @param int $forumId
+	 * @return bool
+	 */
+	public function canModerateForum($forumId)
+	{
+		return $this->actorModerates($this->getModeratorUserIdsByForumId($forumId));
 	}
 
 
@@ -492,15 +799,15 @@ class e107forum
 	public function getModeratorUserIdsByThreadId($threadId)
 	{
 		// get moderator-class for the thread to check permissions of the user
-		$sql = e107::getDb();
-		$query = "SELECT f.forum_moderators
-                  FROM #forum AS f
-                  INNER JOIN #forum_thread AS ft ON f.forum_id = ft.thread_forum_id
-                  WHERE ft.thread_id = ". $threadId;
-		if ($sql->gen($query) > 0)
+		$qb = e107::getDb()->createQueryBuilder();
+		$row = $qb
+			->select('f.forum_moderators')->from('forum', 'f')
+			->innerJoin('forum_thread', 'ft', $qb->expr()->compareColumns('f.forum_id', 'ft.thread_forum_id'))
+			->where('ft.thread_id', $threadId)
+			->fetchRow();
+		if ($row)
 		{
-			$row = $sql->fetch();
-			return array_keys($this->forumGetMods($row['forum_moderators']));
+			return array_keys($this->moderatorsOfClass($row['forum_moderators']));
 		}
 		return array();
 	}
@@ -514,42 +821,80 @@ class e107forum
 	public function getModeratorUserIdsByForumId($forumId)
 	{
 		// get moderator-class for the thread to check permissions of the user
-		$sql = e107::getDb();
-		$query = "SELECT f.forum_moderators
-                  FROM #forum AS f
-                  WHERE f.forum_id = ". $forumId;
-		if ($sql->gen($query) > 0)
+		$row = e107::getDb()->createQueryBuilder()
+			->select('f.forum_moderators')->from('forum', 'f')
+			->where('f.forum_id', $forumId)
+			->fetchRow();
+		if ($row)
 		{
-			$row = $sql->fetch();
-			return array_keys($this->forumGetMods($row['forum_moderators']));
+			return array_keys($this->moderatorsOfClass($row['forum_moderators']));
 		}
 		return array();
+	}
+
+
+	/**
+	 * Whether an action posted to a forum page is one ajaxModerate() owns.
+	 *
+	 * The page used to call ajaxModerate() for any AJAX request at all as long
+	 * as the viewer was a moderator, and ajaxModerate() always ends by printing
+	 * JSON and exiting. So a moderator's poll vote, rating or plugin widget on a
+	 * forum page was swallowed and answered with a forum error, while an
+	 * ordinary member's went through: a fault that reads as a permissions
+	 * problem and is not one.
+	 *
+	 * @param string $action
+	 * @return bool
+	 */
+	public static function isModerationAction($action)
+	{
+		return in_array($action, array('delete', 'lock', 'unlock', 'stick', 'unstick', 'deletepost'), true);
 	}
 
 
 	public function ajaxModerate()
 	{
 		$ret = array('hide' => false, 'msg' => 'unknown', 'status' => 'error');
-		$moderatorUserIds = array();
 
-		if (isset($_POST['thread']) && is_numeric($_POST['thread']))
+		$action   = varset($_POST['action'], '');
+		$threadId = (isset($_POST['thread']) && is_numeric($_POST['thread'])) ? (int) $_POST['thread'] : 0;
+		$postId   = (isset($_POST['post']) && is_numeric($_POST['post'])) ? (int) $_POST['post'] : 0;
+
+		/* Authorise against the object the action changes, and nothing else.
+		 * This used to derive permission from whichever of the two ids arrived
+		 * last and then act on the thread regardless, so a request naming a post
+		 * in a forum you moderate could delete, lock or stick a thread in one you
+		 * do not. Requiring the id here also means the cases below can no longer
+		 * be reached without one. */
+		if(in_array($action, array('delete', 'lock', 'unlock', 'stick', 'unstick'), true))
 		{
-			$threadId = intval($_POST['thread']);
-			$moderatorUserIds = $this->getModeratorUserIdsByThreadId($threadId);
+			$targetId = $threadId;
+			$permitted = $threadId && $this->canModerateThread($threadId);
+		}
+		elseif($action === 'deletepost')
+		{
+			$targetId = $postId;
+			$permitted = $postId && $this->canModeratePost($postId);
+		}
+		else
+		{
+			$ret['msg'] = LAN_FORUM_8027;
+
+			echo json_encode($ret);
+
+			exit();
 		}
 
-		/* If both, a thread-operation and a post-operation is submitted, the
-		 * thread-permissions MUST be overwritten by the post-permissions!
-		 * Otherwise it is possible that a moderator can transfer his
-		 * permissions from one forum to another forum, where he has no permissions. */
-		if (isset($_POST['post']) && is_numeric($_POST['post']))
+		if(!$targetId)
 		{
-			$postId = intval($_POST['post']);
-			$moderatorUserIds = $this->getModeratorUserIdsByPostId($postId);
+			$ret['msg'] = LAN_FORUM_7008;
+
+			echo json_encode($ret);
+
+			exit();
 		}
 
-		// Check if user has moderator permissions for this thread
-		if(!in_array(USERID, $moderatorUserIds) && !getperms('0'))
+		if(!$permitted)
 		{
 			$ret['msg'] 	= LAN_FORUM_8030;
 			$ret['hide'] 	= false;
@@ -557,7 +902,7 @@ class e107forum
 		}
 		else
 		{
-			switch ($_POST['action']) 
+			switch ($action)
 			{
 				case 'delete':
 					if($this->threadDelete($threadId))
@@ -574,14 +919,6 @@ class e107forum
 				break;
 				
 				case 'deletepost':
-					if(!$postId)
-					{
-						// echo "No Post";
-						// exit;
-						$ret['msg'] 	= LAN_FORUM_7008;
-						$ret['status'] 	= 'error';		
-					}
-					
 					if($this->postDelete($postId))
 					{
 						$ret['msg'] 	= LAN_FORUM_8021.' #'.$postId;
@@ -596,9 +933,9 @@ class e107forum
 				break;
 				
 				case 'lock':
-					if(e107::getDb()->update('forum_thread', 'thread_active=0 WHERE thread_id='.$threadId))
+					if(e107::getDb()->createQueryBuilder()->update('forum_thread')->set('thread_active', 0)->where('thread_id', (int) $threadId)->execute())
 					{
-						$ret['msg'] 	= LAN_FORUM_CLOSE; 
+						$ret['msg'] 	= LAN_FORUM_CLOSE;
 						$ret['status'] 	= 'ok';	
 					}
 					else
@@ -609,9 +946,9 @@ class e107forum
 				break;
 
 				case 'unlock':
-					if(e107::getDb()->update('forum_thread', 'thread_active=1 WHERE thread_id='.$threadId))
+					if(e107::getDb()->createQueryBuilder()->update('forum_thread')->set('thread_active', 1)->where('thread_id', (int) $threadId)->execute())
 					{
-						$ret['msg'] = LAN_FORUM_OPEN; 
+						$ret['msg'] = LAN_FORUM_OPEN;
 						$ret['status'] 	= 'ok';	
 					}
 					else
@@ -622,9 +959,9 @@ class e107forum
 				break;
 
 				case 'stick':
-					if(e107::getDb()->update('forum_thread', 'thread_sticky=1 WHERE thread_id='.$threadId))
+					if(e107::getDb()->createQueryBuilder()->update('forum_thread')->set('thread_sticky', 1)->where('thread_id', (int) $threadId)->execute())
 					{
-						$ret['msg'] = LAN_FORUM_STICK; 
+						$ret['msg'] = LAN_FORUM_STICK;
 						$ret['status'] 	= 'ok';	
 					}
 					else
@@ -635,9 +972,9 @@ class e107forum
 				break;
 
 				case 'unstick':
-					if(e107::getDb()->update('forum_thread', 'thread_sticky=0 WHERE thread_id='.$threadId))
+					if(e107::getDb()->createQueryBuilder()->update('forum_thread')->set('thread_sticky', 0)->where('thread_id', (int) $threadId)->execute())
 					{
-						$ret['msg'] = LAN_FORUM_UNSTICK; 
+						$ret['msg'] = LAN_FORUM_UNSTICK;
 						$ret['status'] 	= 'ok';		
 					}
 					else
@@ -725,52 +1062,44 @@ class e107forum
 
 	private function _getForumPermList()
 	{
-		$sql = e107::getDb();
-
 		$this->permList = array();
-		$qryList = array();
 
-		$qryList['view'] = "
-		SELECT f.forum_id, f.forum_parent
-		FROM `#forum` AS f
-		LEFT JOIN `#forum` AS fp ON f.forum_parent = fp.forum_id AND fp.forum_class IN (".USERCLASS_LIST.")
-		WHERE f.forum_class IN (".USERCLASS_LIST.") AND f.forum_parent != 0 AND fp.forum_id IS NOT NULL
-		";
+		// Static map of permission key => forum class column (identifiers are fixed literals).
+		$classColumns = array(
+			'view'   => 'forum_class',
+			'post'   => 'forum_postclass',
+			'thread' => 'forum_threadclass',
+		);
 
-		$qryList['post'] = "
-		SELECT f.forum_id, f.forum_parent
-		FROM `#forum` AS f
-		LEFT JOIN `#forum` AS fp ON f.forum_parent = fp.forum_id AND fp.forum_postclass IN (".USERCLASS_LIST.")
-		WHERE f.forum_postclass IN (".USERCLASS_LIST.") AND f.forum_parent != 0 AND fp.forum_id IS NOT NULL
-		";
+		$classList = explode(',', USERCLASS_LIST);
 
-		$qryList['thread'] = "
-		SELECT f.forum_id, f.forum_parent
-		FROM `#forum` AS f
-		LEFT JOIN `#forum` AS fp ON f.forum_parent = fp.forum_id AND fp.forum_threadclass IN (".USERCLASS_LIST.")
-		WHERE f.forum_threadclass IN (".USERCLASS_LIST.") AND f.forum_parent != 0 AND fp.forum_id IS NOT NULL
-		";
-
-		foreach($qryList as $key => $qry)
+		foreach($classColumns as $key => $col)
 		{
-			if($sql->gen($qry))
+			$qb = e107::getDb()->createQueryBuilder();
+			// Bind the class list once and reuse it in both the JOIN ON-condition and the WHERE.
+			$classPlaceholders = array();
+			foreach($classList as $class)
 			{
-				$tmp = array();
-				while($row = $sql->fetch())
-				{
-					$tmp[$row['forum_id']] = 1;
-					$tmp[$row['forum_parent']] = 1;
-				}
-				ksort($tmp);
-				//if($key == 'post')
-			//	{
-					//echo "<h3>Raw Perms</h3>";
-				//	echo "Qry: ".$qryList['post'];
-				//	print_a($tmp);
-			//	}
-				$this->permList[$key] = array_keys($tmp);
-				$this->permList[$key.'_list'] = implode(',', array_keys($tmp));
+				$classPlaceholders[] = $qb->createNamedParameter($class);
 			}
+			$classPlaceholders = implode(', ', $classPlaceholders);
+
+			$rows = $qb->select('f.forum_id', 'f.forum_parent')->from('forum', 'f')
+				->leftJoin('forum', 'fp', $qb->raw('f.forum_parent = fp.forum_id AND fp.'.$col.' IN ('.$classPlaceholders.')'))
+				->where($qb->raw('f.'.$col.' IN ('.$classPlaceholders.')'))
+				->where('f.forum_parent', '!=', 0)
+				->where($qb->expr()->isNotNull('fp.forum_id'))
+				->fetchAll();
+
+			$tmp = array();
+			foreach($rows as $row)
+			{
+				$tmp[$row['forum_id']] = 1;
+				$tmp[$row['forum_parent']] = 1;
+			}
+			ksort($tmp);
+			$this->permList[$key] = array_keys($tmp);
+			$this->permList[$key.'_list'] = implode(',', array_keys($tmp));
 		}
 
 
@@ -813,11 +1142,15 @@ class e107forum
 		$sql = e107::getDb();
 
 		$id = (int)$id;
-		if($sql->select('forum_track', 'track_thread', 'track_userid = '.$id))
+		$rows = $sql->createQueryBuilder()
+			->select('track_thread')->from('forum_track')
+			->where('track_userid', $id)
+			->fetchAll();
+		if($rows)
 		{
 			$ret = array();
 
-			while($row = $sql->fetch())
+			foreach($rows as $row)
 			{
 				$ret[] = $row['track_thread'];
 			}
@@ -836,7 +1169,14 @@ class e107forum
 
 		$post = $tp->toDB($postInfo['post_entry']);
 
-		if($sql->select('forum_post', 'post_id', "post_forum = ".intval($postInfo['post_forum'])." AND post_entry='".$post."' AND post_user = ".USERID." LIMIT 1"))
+		$found = $sql->createQueryBuilder()
+			->select('post_id')->from('forum_post')
+			->where('post_forum', intval($postInfo['post_forum']))
+			->where('post_entry', $post)
+			->where('post_user', (int) USERID)
+			->setMaxResults(1)
+			->fetchOne();
+		if($found !== null)
 		{
 			return true;
 		}
@@ -877,7 +1217,7 @@ class e107forum
 		$postInfo['post_entry'] = $tp->toDB($postInfo['post_entry']);
 
 		$info['data'] = $postInfo;
-		$postId = $sql->insert('forum_post', $info);
+		$postId = $sql->createQueryBuilder()->insert('forum_post')->insertGetId($this->nullSentinels($info['data']));
 
 		$info['data']['post_id'] = $postId; // Append last inserted ID to data array for passing it to event callbacks.
 
@@ -922,10 +1262,20 @@ class e107forum
 			$info = array();
 			$info['data'] = $threadInfo;
 			$info['WHERE'] = 'thread_id = '.$postInfo['post_thread'];
-//			$info['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
-			$info['_FIELD_TYPES']['thread_total_replies'] = 'cmd';
 
-			$result = $sql->update('forum_thread', $info);
+			$qb = $sql->createQueryBuilder()->update('forum_thread');
+			foreach($this->nullSentinels($threadInfo) as $col => $val)
+			{
+				if($col === 'thread_total_replies')
+				{
+					$qb->increment('thread_total_replies');
+				}
+				else
+				{
+					$qb->set($col, $val);
+				}
+			}
+			$result = $qb->where('thread_id', (int) $postInfo['post_thread'])->execute();
 
 			e107::getMessage()->addDebug("Updating Thread with: ".print_a($info,true));
 
@@ -963,17 +1313,32 @@ class e107forum
 			$info['data'] = $forumInfo;
 			$info['data']['forum_lastpost_info'] = $postInfo['post_datestamp'].'.'.$postInfo['post_thread'];
 			$info['WHERE'] = 'forum_id = '.$postInfo['post_forum'];
-			$result = $sql->update('forum', $info);
+
+			$qb = $sql->createQueryBuilder()->update('forum');
+			foreach($this->nullSentinels($info['data']) as $col => $val)
+			{
+				if($col === 'forum_replies' || $col === 'forum_threads')
+				{
+					$qb->increment($col);
+				}
+				else
+				{
+					$qb->set($col, $val);
+				}
+			}
+			$result = $qb->where('forum_id', (int) $postInfo['post_forum'])->execute();
 		}
 
 		if($result && USER && $addUserPostCount)
 		{
-			$qry = '
-			INSERT INTO `#user_extended` (user_extended_id, user_plugin_forum_posts)
-			VALUES ('.USERID.', 1)
-			ON DUPLICATE KEY UPDATE user_plugin_forum_posts = IFNULL(user_plugin_forum_posts, 0) + 1
-			';
-			$result = $sql->gen($qry);
+			// ON DUPLICATE KEY UPDATE with a column-referencing expression (IFNULL(...) + 1)
+			// is not expressible by the query builder; use a bound execute().
+			$result = e107::getDb()->execute(
+				'INSERT INTO `#user_extended` (user_extended_id, user_plugin_forum_posts)
+				VALUES (:uid, 1)
+				ON DUPLICATE KEY UPDATE user_plugin_forum_posts = IFNULL(user_plugin_forum_posts, 0) + 1',
+				array('uid' => (int) USERID)
+			);
 		}
 
 
@@ -994,18 +1359,18 @@ class e107forum
 			return false;
 		}
 
-		$sql = e107::getDb();
-
 		$threadId = intval($threadId);
 
-		$query = "UPDATE `#user_extended`
+		// Vendor functions (TRIM/REPLACE/CONCAT/FIND_IN_SET) are not expressible by the
+		// query builder; use a bound execute(). $threadId is bound as :tid.
+		e107::getDb()->execute(
+			"UPDATE `#user_extended`
 			SET
-			user_plugin_forum_viewed = TRIM(BOTH ',' FROM REPLACE(CONCAT(',', user_plugin_forum_viewed, ','), ',".$threadId.",', ','))
+			user_plugin_forum_viewed = TRIM(BOTH ',' FROM REPLACE(CONCAT(',', user_plugin_forum_viewed, ','), CONCAT(',', :tid, ','), ','))
 			WHERE
-			FIND_IN_SET(".$threadId.", user_plugin_forum_viewed)
-		  ";
-
-		$sql->gen($query);
+			FIND_IN_SET(:tid, user_plugin_forum_viewed)",
+			array('tid' => $threadId)
+		);
 
 	}
 
@@ -1022,7 +1387,7 @@ class e107forum
 		$info['data'] = $threadInfo;
 
 
-		if($newThreadId = e107::getDb()->insert('forum_thread', $info))
+		if($newThreadId = e107::getDb()->createQueryBuilder()->insert('forum_thread')->insertGetId($this->nullSentinels($info['data'])))
 		{
 			if($postInfo !== false)
 			{
@@ -1047,7 +1412,7 @@ class e107forum
 			$triggerData['post_id']     = $newPostId;
 
 
-			if (e107::getDb()->count('forum_post', '(post_id)', 'WHERE post_user = "'.USERID.'"') > 1)
+			if (e107::getDb()->createQueryBuilder()->from('forum_post')->where('post_user', (int) USERID)->count('post_id') > 1)
 			{
 				e107::getEvent()->trigger('user_forum_topic_created', $triggerData);
 			}
@@ -1072,35 +1437,40 @@ class e107forum
 	function threadMove($threadId, $newForumId, $threadTitle= '', $titleType=0)
 	{
 		$sql = e107::getDb();
+		// IDs are SQL-injection-sensitive integer columns; enforce int regardless of caller.
+		$threadId   = (int) $threadId;
+		$newForumId = (int) $newForumId;
 		$threadInfo = $this->threadGet($threadId);
-		$oldForumId = $threadInfo['thread_forum_id'];
+		$oldForumId = (int) $threadInfo['thread_forum_id'];
 
 		//Move thread to new forum, changing thread title if needed
+		$qb = $sql->createQueryBuilder()->update('forum_thread')->set('thread_forum_id', $newForumId);
 		if(!empty($threadTitle))
 		{
+			// toDB() is the storage transform for thread_name; the value is bound.
+			$threadTitle = e107::getParser()->toDB($threadTitle);
 
 			if($titleType == 0)
 			{
 				//prepend to existing title
-				$threadTitle = ", thread_name = CONCAT('{$threadTitle} ', thread_name)";
+				$qb->setExpression('thread_name', $qb->raw('CONCAT('.$qb->createNamedParameter($threadTitle.' ').', thread_name)'));
 			}
 			else
 			{
 				//Replace title
-				$threadTitle = ", thread_name = '{$threadTitle}' "; // , thread_sef='".eHelper::title2sef($threadTitle,'dashl')."' ";
+				$qb->set('thread_name', $threadTitle); // , thread_sef='".eHelper::title2sef($threadTitle,'dashl')."' ";
 			}
 		}
-
-		$sql->update('forum_thread', "thread_forum_id={$newForumId} {$threadTitle} WHERE thread_id={$threadId}");
+		$qb->where('thread_id', $threadId)->execute();
 
 		//Move all posts to new forum
-		$posts = $sql->update('forum_post', "post_forum={$newForumId} WHERE post_thread={$threadId}");
+		$posts = $sql->createQueryBuilder()->update('forum_post')->set('post_forum', $newForumId)->where('post_thread', $threadId)->execute();
 		$replies = $posts-1;
 		if($replies < 0) { $replies = 0; }
 
 		//change thread counts accordingly
-		$sql->update('forum', "forum_threads=forum_threads-1, forum_replies=forum_replies-$replies WHERE forum_id={$oldForumId}");
-		$sql->update('forum', "forum_threads=forum_threads+1, forum_replies=forum_replies+$replies WHERE forum_id={$newForumId}");
+		$sql->createQueryBuilder()->update('forum')->decrement('forum_threads')->decrement('forum_replies', (int) $replies)->where('forum_id', $oldForumId)->execute();
+		$sql->createQueryBuilder()->update('forum')->increment('forum_threads')->increment('forum_replies', (int) $replies)->where('forum_id', $newForumId)->execute();
 
 		// update lastpost information for old and new forums
 		$this->forumUpdateLastpost('forum', $oldForumId, false);
@@ -1123,7 +1493,7 @@ class e107forum
 //		$info['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
 		$info['WHERE'] = 'thread_id = '.(int)$threadId;
 
-		if(e107::getDb()->update('forum_thread', $info)===false)
+		if($this->updateRow('forum_thread', $info['data'], 'thread_id', (int)$threadId)===false)
 		{
 			e107::getMessage()->addDebug("Thread Update Failed: ".print_a($info,true));
 		}
@@ -1142,7 +1512,7 @@ class e107forum
 //		$info['_FIELD_TYPES'] = $this->fieldTypes['forum_post'];
 		$info['WHERE'] = 'post_id = '.(int)$postId;
 
-		if(e107::getDb()->update('forum_post', $info)===false)
+		if($this->updateRow('forum_post', $info['data'], 'post_id', (int)$postId)===false)
 		{
 			e107::getMessage()->addDebug("Post Update Failed: ".print_a($info,true));
 		}
@@ -1163,50 +1533,46 @@ class e107forum
 		if($joinForum)
 		{
 			//TODO: Fix query to get only forum and parent info needed, with correct naming
-			$qry = '
-			SELECT t.*, f.*,
-			fp.forum_id AS parent_id, fp.forum_name AS parent_name,
-			sp.forum_id AS forum_sub, sp.forum_name AS sub_parent,
-			fp.forum_sef AS parent_sef,
-			sp.forum_sef AS sub_parent_sef,
-			tr.track_userid
-			FROM `#forum_thread` AS t
-			LEFT JOIN `#forum` AS f ON t.thread_forum_id = f.forum_id
-			LEFT JOIN `#forum` AS fp ON fp.forum_id = f.forum_parent
-			LEFT JOIN `#forum` AS sp ON sp.forum_id = f.forum_sub
-			LEFT JOIN `#forum_track` AS tr ON tr.track_thread = t.thread_id AND tr.track_userid = '.$uid.'
-			WHERE thread_id = '.$id;
+			$qb = $sql->createQueryBuilder();
+			$tmp = $qb->select('t.*', 'f.*')
+				->selectAs('fp.forum_id', 'parent_id')
+				->selectAs('fp.forum_name', 'parent_name')
+				->selectAs('sp.forum_id', 'forum_sub')
+				->selectAs('sp.forum_name', 'sub_parent')
+				->selectAs('fp.forum_sef', 'parent_sef')
+				->selectAs('sp.forum_sef', 'sub_parent_sef')
+				->addSelect('tr.track_userid')
+				->from('forum_thread', 't')
+				->leftJoin('forum', 'f', $qb->expr()->compareColumns('t.thread_forum_id', 'f.forum_id'))
+				->leftJoin('forum', 'fp', $qb->expr()->compareColumns('fp.forum_id', 'f.forum_parent'))
+				->leftJoin('forum', 'sp', $qb->expr()->compareColumns('sp.forum_id', 'f.forum_sub'))
+				->leftJoin('forum_track', 'tr', $qb->raw('tr.track_thread = t.thread_id AND tr.track_userid = '.$qb->createNamedParameter($uid)))
+				->where('thread_id', $id)
+				->fetchRow();
 		}
 		else
 		{
-			$qry = '
-			SELECT *
-			FROM `#forum_thread`
-			WHERE thread_id = '.$id;
+			$tmp = $sql->createQueryBuilder()
+				->select('*')->from('forum_thread')
+				->where('thread_id', $id)
+				->fetchRow();
 		}
-		if($sql->gen($qry)!==false)
+
+		if($tmp)
 		{
-			$tmp = $sql->fetch();
-			if($tmp)
+			if(trim($tmp['thread_options']) != '')
 			{
-				if(trim($tmp['thread_options']) != '')
-				{
-					$tmp['thread_options'] = unserialize($tmp['thread_options']);
-				}
-
-				$tmp['thread_sef'] = eHelper::title2sef($tmp['thread_name'],'dashl');
-
-				if($joinForum && empty($tmp['forum_sef']))
-				{
-					e107::getDebug()->log("Forum ".$tmp['forum_name']." is missing a SEF URL. Please add one via the admin area. ");
-				}
-
-				return $tmp;
+				$tmp['thread_options'] = unserialize($tmp['thread_options']);
 			}
-		}
-		else
-		{
-			e107::getMessage()->addDebug('Query failed ('.__METHOD__.' ): '.str_replace('#', MPREFIX,$qry));
+
+			$tmp['thread_sef'] = eHelper::title2sef($tmp['thread_name'],'dashl');
+
+			if($joinForum && empty($tmp['forum_sef']))
+			{
+				e107::getDebug()->log("Forum ".$tmp['forum_name']." is missing a SEF URL. Please add one via the admin area. ");
+			}
+
+			return $tmp;
 		}
 		return false;
 	}
@@ -1220,46 +1586,42 @@ class e107forum
 
 		if('post' === $start)
 		{
-			$qry = '
-			SELECT u.user_name, t.thread_active, t.thread_datestamp, t.thread_name, t.thread_user, t.thread_id, t.thread_sticky, p.* FROM `#forum_post` AS p
-			LEFT JOIN `#forum_thread` AS t ON t.thread_id = p.post_thread
-			LEFT JOIN `#user` AS u ON u.user_id = p.post_user
-			WHERE p.post_id = '.$id;
+			$qb = $sql->createQueryBuilder();
+			$ret = $qb
+				->select('u.user_name', 't.thread_active', 't.thread_datestamp', 't.thread_name', 't.thread_user', 't.thread_id', 't.thread_sticky', 'p.*')
+				->from('forum_post', 'p')
+				->leftJoin('forum_thread', 't', $qb->expr()->compareColumns('t.thread_id', 'p.post_thread'))
+				->leftJoin('user', 'u', $qb->expr()->compareColumns('u.user_id', 'p.post_user'))
+				->where('p.post_id', $id)
+				->fetchAll();
 		}
 		else
 		{
-			$qry = "
-				SELECT p.*,
-				u.user_name, u.user_customtitle, u.user_hideemail, u.user_email, u.user_signature,
-				u.user_admin, u.user_image, u.user_join, ue.user_plugin_forum_posts,
-				eu.user_name AS edit_name,
-				t.thread_name
-				FROM `#forum_post` AS p
-				LEFT JOIN `#user` AS u ON p.post_user = u.user_id
-				LEFT JOIN `#user` AS eu ON p.post_edit_user IS NOT NULL AND p.post_edit_user = eu.user_id
-				LEFT JOIN `#user_extended` AS ue ON ue.user_extended_id = p.post_user
-				LEFT JOIN `#forum_thread` AS t ON t.thread_id = p.post_thread
-				WHERE p.post_thread = {$id}
-				ORDER BY p.post_datestamp ASC
-				LIMIT {$start}, {$num}
-			";
+			$qb = $sql->createQueryBuilder();
+			$ret = $qb
+				->select(
+					'p.*',
+					'u.user_name', 'u.user_customtitle', 'u.user_hideemail', 'u.user_email', 'u.user_signature',
+					'u.user_admin', 'u.user_image', 'u.user_join', 'ue.user_plugin_forum_posts'
+				)
+				->selectAs('eu.user_name', 'edit_name')
+				->addSelect('t.thread_name')
+				->from('forum_post', 'p')
+				->leftJoin('user', 'u', $qb->expr()->compareColumns('p.post_user', 'u.user_id'))
+				->leftJoin('user', 'eu', $qb->raw('p.post_edit_user IS NOT NULL AND p.post_edit_user = eu.user_id'))
+				->leftJoin('user_extended', 'ue', $qb->expr()->compareColumns('ue.user_extended_id', 'p.post_user'))
+				->leftJoin('forum_thread', 't', $qb->expr()->compareColumns('t.thread_id', 'p.post_thread'))
+				->where('p.post_thread', $id)
+				->orderBy('p.post_datestamp', 'ASC')
+				->setFirstResult((int) $start)->setMaxResults((int) $num)
+				->fetchAll();
 		}
 
-		if($sql->gen($qry)!==false)
+		foreach($ret as $k => $row)
 		{
-			$ret = array();
-			while($row = $sql->fetch())
-			{
+			$row['thread_sef'] = $this->getThreadSef($row); // eHelper::title2sef($row['thread_name'],'dashl');
 
-				$row['thread_sef'] = $this->getThreadSef($row); // eHelper::title2sef($row['thread_name'],'dashl');
-
-				$ret[] = $row;
-			}
-		}
-		else
-		{
-			e107::getMessage()->addDebug('Query failed ('.__METHOD__.' ): '.str_replace('#', MPREFIX,$qry));
-
+			$ret[$k] = $row;
 		}
 
 	//	print_a($ret);
@@ -1290,9 +1652,15 @@ class e107forum
 	{
 		$sql = e107::getDb();
 		$postId = (int)$postId;
-		$threadId = $sql->retrieve('forum_post', 'post_thread', 'post_id = '.$postId);
+		$threadId = $sql->createQueryBuilder()
+			->select('post_thread')->from('forum_post')
+			->where('post_id', $postId)
+			->fetchOne();
 
-		if($rows = $sql->retrieve('forum_post', 'post_id', 'post_thread = '.$threadId, TRUE))
+		if($rows = $sql->createQueryBuilder()
+			->select('post_id')->from('forum_post')
+			->where('post_thread', (int) $threadId)
+			->fetchAll())
 		{
 			$postids = array();
 
@@ -1316,15 +1684,15 @@ class e107forum
 		$threadId = (int)$threadId;
 		$sql = e107::getDb();
 		$ret = false;
-		$qry = "
-		SELECT post_user, count(post_user) AS post_count FROM `#forum_post`
-		WHERE post_thread = {$threadId} AND post_user IS NOT NULL
-		GROUP BY post_user
-		";
-		if($sql->gen($qry))
+		$rows = $sql->createQueryBuilder()
+			->select('post_user')->selectAggregate('COUNT', 'post_user', 'post_count')->from('forum_post')
+			->where('post_thread', $threadId)->whereNotNull('post_user')
+			->groupBy('post_user')
+			->fetchAll();
+		if($rows)
 		{
 			$ret = array();
-			while($row = $sql->fetch())
+			foreach($rows as $row)
 			{
 				$ret[$row['post_user']] = $row['post_count'];
 			}
@@ -1338,15 +1706,67 @@ class e107forum
 		$e107 = e107::getInstance();
 		if($uid == USERID)
 		{
-			$viewed = $e107->currentUser['user_plugin_forum_viewed'];
+			// A visitor with no account has no row and so no read state. Read
+			// defensively rather than assuming the key: forum.php?new is public.
+			$viewed = isset($e107->currentUser['user_plugin_forum_viewed'])
+				? $e107->currentUser['user_plugin_forum_viewed'] : '';
 		}
 		else
 		{
 			$tmp = e107::user($uid);
-			$viewed = $tmp['user_plugin_forum_viewed'];
+			$viewed = isset($tmp['user_plugin_forum_viewed']) ? $tmp['user_plugin_forum_viewed'] : '';
 			unset($tmp);
 		}
-		return explode(',', $viewed);
+		return explode(',', (string) $viewed);
+	}
+
+
+	/**
+	 * Remove one attachment, refusing anything that is not a bare filename in
+	 * the post owner's own attachment directory.
+	 *
+	 * post_attachments is written from $_POST['post_attachments_json'] with no
+	 * validation of any kind, so an entry is whatever the poster sent. This
+	 * concatenated it onto the attachment directory and unlinked the result, so
+	 * a member could post with a relative path, delete their own post, and have
+	 * e107 remove any file the web user could reach.
+	 *
+	 * The array form is the shape uploads actually store, and only sendFile()
+	 * ever accounted for it. Here the array was concatenated onto the path, so
+	 * every legitimate attachment was "deleted" as a file named Array while the
+	 * real one was orphaned and its record then cleared.
+	 *
+	 * @param string $baseDir attachment directory of the post's owner
+	 * @param mixed $entry stored attachment record
+	 * @param string $kind 'file' or 'image', for the log
+	 * @param object $log
+	 * @return void
+	 */
+	private function unlinkAttachment($baseDir, $entry, $kind, $log)
+	{
+		if(is_array($entry))
+		{
+			$entry = isset($entry['file']) ? $entry['file'] : '';
+		}
+
+		$entry = (string) $entry;
+
+		if($entry === '' || strpos($entry, "\0") !== false || $entry !== basename($entry)
+			|| $entry === '.' || $entry === '..')
+		{
+			$log->addWarning("Refused to delete ".$kind." with an unacceptable name: ".$entry);
+
+			return;
+		}
+
+		$path = $baseDir.$entry;
+
+		@unlink($path);
+
+		if(file_exists($path))
+		{
+			$log->addWarning("Could not delete ".$kind.": ".$path.". Please delete manually as this file is now no longer in use (orphaned).");
+		}
 	}
 
 
@@ -1385,57 +1805,36 @@ class e107forum
 		// if we are deleting just a single post
 		if($type == 'post')
 		{
-			if(!$sql->select('forum_post', 'post_user, post_attachments', 'post_id = '.$id))
+			$tmp = $sql->createQueryBuilder()
+				->select('post_user', 'post_attachments')->from('forum_post')
+				->where('post_id', $id)
+				->fetchRow();
+			if(!$tmp)
 			{
 				return true;
 			}
 
-			$tmp = $sql->fetch();
-
 			$attachment_array = e107::unserialize($tmp['post_attachments']);
-	   		$files = $attachment_array['file'];
-	   		$imgs  = $attachment_array['img']; 
-	   		
-	   		// TODO see if files/images check can be written more efficiently 
-	   		// check if there are files to be deleted 
-	   		if(is_array($files))
-	   		{
-		   		// loop through each file and delete it
-		   		foreach ($files as $file) 
-		   		{
-		   			$file = $this->getAttachmentPath($tmp['post_user']).$file;
-		   			@unlink($file);
+			$baseDir = $this->getAttachmentPath($tmp['post_user']);
 
-	   				// Confirm that file has been deleted. Add warning to log file when file could not be deleted.
-		   			if(file_exists($file))
-		   			{
-		   				$log->addWarning("Could not delete file: ".$file.". Please delete manually as this file is now no longer in use (orphaned).");
-		   			}
-		   		} 
-	   		}
-	   		
-	   		// check if there are images to be deleted
-	   		if(is_array($imgs))
-	   		{
-	   			// loop through each image and delete it
-		   		foreach ($imgs as $img) 
-		   		{
-		   			$img = $this->getAttachmentPath($tmp['post_user']).$img;
-		   			@unlink($img);
+			foreach(array('file' => 'file', 'img' => 'image') as $key => $kind)
+			{
+				if(empty($attachment_array[$key]) || !is_array($attachment_array[$key]))
+				{
+					continue;
+				}
 
-	   				// Confirm that file has been deleted. Add warning to log file when file could not be deleted.
-		   			if(file_exists($img))
-		   			{
-		   				$log->addWarning("Could not delete image: ".$img.". Please delete manually as this file is now no longer in use (orphaned).");
-		   			}
-		   		} 	
-	   		}
+				foreach($attachment_array[$key] as $entry)
+				{
+					$this->unlinkAttachment($baseDir, $entry, $kind, $log);
+				}
+			}
 
 	   		// At this point we assume that all attachments have been deleted from the post. The log file may prove otherwise (see above). 
 	   		$log->toFile('forum_delete_attachments', 'Forum plugin - Delete attachments', TRUE);
 
 	   		// Empty the post_attachments field for this post in the database (prevents loop when deleting entire thread)
-	   		$sql->update("forum_post", "post_attachments = NULL WHERE post_id = ".$id);
+	   		$sql->createQueryBuilder()->update('forum_post')->set('post_attachments', null)->where('post_id', $id)->execute();
 
 		}
 	}
@@ -1449,7 +1848,9 @@ class e107forum
 	{
 		$threadId = (int)$threadId;
 		$postId = (int)$postId;
-		return e107::getDb()->count('forum_post', '(*)', "WHERE post_id <= {$postId} AND post_thread = {$threadId} ORDER BY post_id ASC");
+		return e107::getDb()->createQueryBuilder()->from('forum_post')
+			->where('post_id', '<=', $postId)->where('post_thread', $threadId)
+			->count();
 	}
 
 
@@ -1478,12 +1879,8 @@ class e107forum
 			}
 
 			$tmp['thread_lastpost'] = $lpInfo['post_datestamp'];
-			$info = array();
-			$info['data'] = $tmp;
-//			$info['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
-			$info['WHERE'] = 'thread_id = '.$id;
 
-			$sql->update('forum_thread', $info);
+			$this->updateRow('forum_thread', $tmp, 'thread_id', $id);
 
 			return $lpInfo;
 		}
@@ -1494,9 +1891,14 @@ class e107forum
 		{
 			if ($id == 'all')
 			{
-				if ($sql->select('forum', 'forum_id', 'forum_parent != 0'))
+				$rows = $sql->createQueryBuilder()
+					->select('forum_id')->from('forum')
+					->where('forum_parent', '!=', 0)
+					->fetchAll();
+				if ($rows)
 				{
-					while ($row = $sql->fetch())
+					$parentList = array();
+					foreach ($rows as $row)
 					{
 						$parentList[] = $row['forum_id'];
 					}
@@ -1516,28 +1918,48 @@ class e107forum
 				{
 					//if ($sql2->select('forum_t', 'thread_id', "thread_forum_id = $id AND thread_parent = 0")) // forum_t used in forum_update
 					//  issue #3337 fixed usage of old v1 table names
-					if ($sql2->select('forum_thread', 'thread_id', "thread_forum_id = $id"))
+					$threadRows = $sql2->createQueryBuilder()
+						->select('thread_id')->from('forum_thread')
+						->where('thread_forum_id', $id)
+						->fetchEach();
+					foreach ($threadRows as $row)
 					{
-						while ($row = $sql2->fetch())
-						{
-							set_time_limit(60);
-							$this->forumUpdateLastpost('thread', $row['thread_id']);
-						}
+						set_time_limit(60);
+						$this->forumUpdateLastpost('thread', $row['thread_id']);
 					}
 				}
-				if ($sql->select('forum_thread', 'thread_id, thread_lastuser, thread_lastuser_anon, thread_datestamp', 'thread_forum_id='.$id.' ORDER BY thread_datestamp DESC LIMIT 1'))
+				// thread_lastpost, not thread_datestamp.
+				//
+				// forum_lastpost_info is "when the last post happened, and in
+				// which thread": postAdd() writes post_datestamp into it. This
+				// read the thread's *creation* time instead, and ordered by it,
+				// so the forum's last post was really its newest thread, dated
+				// when that thread began and credited to whoever posted in it
+				// most recently. postDelete() and threadDelete() both call this,
+				// so removing one spam post could point a busy forum at a thread
+				// nobody had touched in years.
+				$row = $sql->createQueryBuilder()
+					->select('thread_id', 'thread_lastuser', 'thread_lastuser_anon', 'thread_lastpost')->from('forum_thread')
+					->where('thread_forum_id', $id)
+					->orderBy('thread_lastpost', 'DESC')->setMaxResults(1)
+					->fetchRow();
+				if ($row)
 				{
-					$row = $sql->fetch();
-					$lp_info = $row['thread_datestamp'].'.'.$row['thread_id'];
+					$lp_info = $row['thread_lastpost'].'.'.$row['thread_id'];
 					$lp_user = $row['thread_lastuser'];
 				}
-				if($row['thread_lastuser_anon'])
+				if(!empty($row['thread_lastuser_anon']))
 				{
-					$sql->update('forum', "forum_lastpost_user = 0, forum_lastpost_user_anon = '{$row['thread_lastuser_anon']}', forum_lastpost_info = '{$lp_info}' WHERE forum_id=".$id);
+					$sql->createQueryBuilder()->update('forum')->set('forum_lastpost_user', 0)->set('forum_lastpost_user_anon', $row['thread_lastuser_anon'])->set('forum_lastpost_info', $lp_info)->where('forum_id', (int) $id)->execute();
 				}
 				else
 				{
-					$sql->update('forum', "forum_lastpost_user = {$lp_user}, forum_lastpost_user_anon = NULL, forum_lastpost_info = '{$lp_info}' WHERE forum_id=".$id);
+					// $lp_user is either the literal 'NULL' (no row) or a numeric user id from the row above.
+					$sql->createQueryBuilder()->update('forum')
+						->set('forum_lastpost_user', ($lp_user === 'NULL' ? null : (int) $lp_user))
+						->set('forum_lastpost_user_anon', null)
+						->set('forum_lastpost_info', $lp_info)
+						->where('forum_id', (int) $id)->execute();
 				}
 			}
 		}
@@ -1545,12 +1967,24 @@ class e107forum
 
 	
 	
+	/**
+	 * Mark threads read: one forum's worth, or the whole board when no forum is
+	 * named.
+	 *
+	 * The identity test used to be against 0, but the caller that means "all of
+	 * them" passes null (forum.php, where the id is only cast when it is
+	 * present), so "mark all forums read" took the per-forum branch, built a
+	 * list containing null, matched nothing and redirected having done nothing.
+	 * Every shipped link carries an id, so only the board-wide one was affected.
+	 *
+	 * @param int|null $forum_id
+	 */
 	function forumMarkAsRead($forum_id)
 	{
 		$sql = e107::getDb();
-		$extra = '';
+		$flist = null;
 		$newIdList = array();
-		if ($forum_id !== 0)
+		if (!empty($forum_id))
 		{
 			$forum_id = (int)$forum_id;
 			$flist = array();
@@ -1562,14 +1996,20 @@ class e107forum
 					$flist[] = $sub['forum_id'];
 				}
 			}
-			$forumList = implode(',', $flist);
-			$extra = " AND thread_forum_id IN($forumList)";
 		}
-		$qry = 'thread_lastpost > '.USERLV.$extra;
 
-		if ($sql->select('forum_thread', 'thread_id', $qry))
+		$qb = $sql->createQueryBuilder()
+			->select('thread_id')->from('forum_thread')
+			->where('thread_lastpost', '>', USERLV);
+		if($flist !== null)
 		{
-			while ($row = $sql->fetch())
+			$qb->whereIn('thread_forum_id', $flist);
+		}
+		$rows = $qb->fetchAll();
+
+		if ($rows)
+		{
+			foreach ($rows as $row)
 			{
 		  		$newIdList[] = $row['thread_id'];
 			}
@@ -1586,7 +2026,10 @@ class e107forum
 		}
 		else
 		{
-			$forum_sef = e107::getDb()->retrieve('forum', 'forum_sef', 'WHERE forum_id='.$forum_id);
+			$forum_sef = e107::getDb()->createQueryBuilder()
+				->select('forum_sef')->from('forum')
+				->where('forum_id', $forum_id)
+				->fetchOne();
 			header('location: '.e107::url('forum', 'forum', array('forum_id' => $forum_id, 'forum_sef' => $forum_sef)));
 		}
 		exit;
@@ -1608,17 +2051,24 @@ class e107forum
 		// issue #3338 fixed typo, that caused issue with not marking threads are read
 		$viewed = trim(implode(',', $tmp), ',');
 		$currentUser['user_plugin_forum_viewed'] =  $viewed;
-		return e107::getDb()->update('user_extended', "user_plugin_forum_viewed = '{$viewed}' WHERE user_extended_id = ".USERID);
+		return e107::getDb()->createQueryBuilder()->update('user_extended')
+			->set('user_plugin_forum_viewed', $viewed)
+			->where('user_extended_id', (int) USERID)
+			->execute();
 	}
 
 
 
 	function forum_getparents()
 	{
-		if (e107::getDb()->select('forum', '*', 'forum_parent=0 ORDER BY forum_order ASC'))
+		$rows = e107::getDb()->createQueryBuilder()
+			->select('*')->from('forum')
+			->where('forum_parent', 0)->orderBy('forum_order', 'ASC')
+			->fetchAll();
+		if ($rows)
 		{
 			$ret = [];
-			while ($row = e107::getDb()->fetch())
+			foreach ($rows as $row)
 			{
 				$ret[] = $row;
 			}
@@ -1638,8 +2088,11 @@ class e107forum
 		}
 		if($uclass == e_UC_ADMIN || trim($uclass) == '')
 		{
-			$sql->select('user', 'user_id, user_name','user_admin = 1 ORDER BY user_name ASC');
-			while($row = $sql->fetch())
+			$rows = $sql->createQueryBuilder()
+				->select('user_id', 'user_name')->from('user')
+				->where('user_admin', 1)->orderBy('user_name', 'ASC')
+				->fetchAll();
+			foreach($rows as $row)
 			{
 				$this->modArray[$row['user_id']] = $row;
 			}
@@ -1666,19 +2119,18 @@ class e107forum
 	{
 		$sql = e107::getDb();
 
-		$where = '';
-		if(!empty($this->permList['view_list']))
+		$qb = $sql->createQueryBuilder()
+			->select('f.*', 'u.user_name')->from('forum', 'f')
+			->leftJoin('user', 'u', SqlFragment::raw('f.forum_lastpost_user IS NOT NULL AND u.user_id = f.forum_lastpost_user'));
+		if(!$all && !empty($this->permList['view_list']))
 		{
-			$where = ($all ? '' : " WHERE forum_id IN ({$this->permList['view_list']}) ");
+			$qb->whereIn('forum_id', $this->permList['view']);
 		}
-
-		$qry = 'SELECT f.*, u.user_name FROM `#forum` AS f
-		LEFT JOIN `#user` AS u ON f.forum_lastpost_user IS NOT NULL AND u.user_id = f.forum_lastpost_user
-		'.$where.'ORDER BY f.forum_order ASC';
-		if ($sql->gen($qry))
+		$rows = $qb->orderBy('f.forum_order', 'ASC')->fetchAll();
+		if ($rows)
 		{
 			$ret = array();
-			while ($row = $sql->fetch())
+			foreach ($rows as $row)
 			{
 
 				if(!$row['forum_parent'])
@@ -1706,17 +2158,17 @@ class e107forum
 	function forum_getforums($type = 'all')
 	{
 		$sql = e107::getDb();
-		$qry = "
-		SELECT f.*, u.user_name FROM #forum AS f
-		LEFT JOIN #user AS u ON SUBSTRING_INDEX(f.forum_lastpost_user,'.',1) = u.user_id
-		WHERE forum_parent != 0 AND forum_sub = 0
-		ORDER BY f.forum_order ASC
-		";
-		if ($sql->gen($qry))
+		$rows = $sql->createQueryBuilder()
+			->select('f.*', 'u.user_name')->from('forum', 'f')
+			->leftJoin('user', 'u', SqlFragment::raw("SUBSTRING_INDEX(f.forum_lastpost_user,'.',1) = u.user_id"))
+			->where('forum_parent', '!=', 0)->where('forum_sub', 0)
+			->orderBy('f.forum_order', 'ASC')
+			->fetchAll();
+		if ($rows)
 		{
 			$ret = [];
 
-			while ($row = $sql->fetch())
+			foreach ($rows as $row)
 			{
 				if($type == 'all')
 				{
@@ -1737,17 +2189,19 @@ class e107forum
 	function forumGetSubs($forum_id = '')
 	{
 		$sql = e107::getDb();
-		$where = ($forum_id != '' && $forum_id != 'bysub' ? 'AND forum_sub = '.(int)$forum_id : '');
-		$qry = "
-		SELECT f.*, u.user_name FROM `#forum` AS f
-		LEFT JOIN `#user` AS u ON f.forum_lastpost_user = u.user_id
-		WHERE forum_sub != 0 {$where}
-		ORDER BY f.forum_order ASC
-		";
-		if ($sql->gen($qry))
+		$qb = $sql->createQueryBuilder();
+		$qb->select('f.*', 'u.user_name')->from('forum', 'f')
+			->leftJoin('user', 'u', $qb->expr()->compareColumns('f.forum_lastpost_user', 'u.user_id'))
+			->where('forum_sub', '!=', 0);
+		if($forum_id != '' && $forum_id != 'bysub')
+		{
+			$qb->where('forum_sub', (int)$forum_id);
+		}
+		$rows = $qb->orderBy('f.forum_order', 'ASC')->fetchAll();
+		if ($rows)
 		{
 			$ret = [];
-			while ($row = $sql->fetch())
+			foreach ($rows as $row)
 			{
 				if($forum_id == '')
 				{
@@ -1782,27 +2236,26 @@ class e107forum
 		if (!USER) {return false; }		// Can't determine new threads for non-logged in users
 		$e107 = e107::getInstance();
 		$sql = e107::getDb();
-		$viewed = '';
 
 		$forumViewed = e107::getUserExt()->get(USERID, 'user_plugin_forum_viewed' );
 
+		$qb = $sql->createQueryBuilder();
+		$qb->select('f.forum_sub', 'ft.thread_forum_id')->distinct()->from('forum_thread', 'ft')
+			->leftJoin('forum', 'f', $qb->expr()->compareColumns('f.forum_id', 'ft.thread_forum_id'))
+			->where('ft.thread_lastpost', '>', defset('USERLV', strtotime('1 month ago')));
 		if($forumViewed)
 		{
-			$viewed = " AND thread_id NOT IN (".$forumViewed.")";
+			$qb->whereNotIn('thread_id', explode(',', $forumViewed));
 		}
-
-		$_newqry = 	'
-		SELECT DISTINCT f.forum_sub, ft.thread_forum_id FROM `#forum_thread` AS ft
-		LEFT JOIN `#forum` AS f ON f.forum_id = ft.thread_forum_id
-		WHERE ft.thread_lastpost > '.defset('USERLV', strtotime('1 month ago') ).' '.$viewed;
 
 		$ret = array();
 
 	//	e107::getDebug()->log(e107::getParser()->toDate(USERLV,'relative'));
 
-		if($sql->gen($_newqry))
+		$rows = $qb->fetchAll();
+		if(!empty($rows))
 		{
-			while($row = $sql->fetch())
+			foreach($rows as $row)
 			{
 				$ret[] = $row['thread_forum_id'];
 				if($row['forum_sub'])
@@ -1854,20 +2307,25 @@ class e107forum
 		switch($which)
 		{
 			case 'add':
-				$tmp = array();
-				$tmp['data']['track_userid'] = $uid;
-				$tmp['data']['track_thread'] = $threadId;
-				$result = $sql->insert('forum_track', $tmp);
-				unset($tmp);
+				// forum_track has no auto-increment key; use execute() (affected rows)
+				// so success returns a truthy count, matching the legacy insert().
+				$result = $sql->createQueryBuilder()->insert('forum_track')->values(array(
+					'track_userid' => $uid,
+					'track_thread' => $threadId,
+				))->execute();
 				break;
 
 			case 'delete':
 			case 'del':
-			 	$result = $sql->delete('forum_track', "`track_userid` = {$uid} AND `track_thread` = {$threadId}");
+			 	$result = $sql->createQueryBuilder()->delete('forum_track')
+			 		->where('track_userid', $uid)->where('track_thread', $threadId)
+			 		->execute();
 			 	break;
 
 			case 'check':
-				$result = $sql->count('forum_track', '(*)', "WHERE `track_userid` = {$uid} AND `track_thread` = {$threadId}");
+				$result = $sql->createQueryBuilder()->from('forum_track')
+					->where('track_userid', $uid)->where('track_thread', $threadId)
+					->count();
 				break;
 		}
 		return $result;
@@ -1892,7 +2350,11 @@ class e107forum
 			return false;
 		}
 
-		$data = $sql->retrieve('SELECT t.*, u.user_id, u.user_name, u.user_email, u.user_lastvisit FROM `#forum_track` AS t LEFT JOIN `#user` AS u ON t.track_userid = u.user_id WHERE t.track_thread='.intval($post['post_thread']), true);
+		$qb = $sql->createQueryBuilder();
+		$data = $qb->select('t.*', 'u.user_id', 'u.user_name', 'u.user_email', 'u.user_lastvisit')->from('forum_track', 't')
+			->leftJoin('user', 'u', $qb->expr()->compareColumns('t.track_userid', 'u.user_id'))
+			->where('t.track_thread', intval($post['post_thread']))
+			->fetchAll();
 
 		if(empty($data))
 		{
@@ -1983,20 +2445,22 @@ class e107forum
 	{
 		$sql = e107::getDb();
 		$forum_id = (int)$forum_id;
-		$qry = "
-		SELECT f.*, fp.forum_class as parent_class, fp.forum_name as parent_name,
-		fp.forum_id as parent_id, fp.forum_postclass as parent_postclass,
-		sp.forum_name AS sub_parent, sp.forum_sef AS parent_sef
-		FROM #forum AS f
-		LEFT JOIN #forum AS fp ON fp.forum_id = f.forum_parent
-		LEFT JOIN #forum AS sp ON f.forum_sub = sp.forum_id AND f.forum_sub > 0
-		WHERE f.forum_id = {$forum_id}
-		";
-		if ($sql->gen($qry))
+		$qb = $sql->createQueryBuilder();
+		$row = $qb
+			->select('f.*')
+			->selectAs('fp.forum_class', 'parent_class')
+			->selectAs('fp.forum_name', 'parent_name')
+			->selectAs('fp.forum_id', 'parent_id')
+			->selectAs('fp.forum_postclass', 'parent_postclass')
+			->selectAs('sp.forum_name', 'sub_parent')
+			->selectAs('sp.forum_sef', 'parent_sef')
+			->from('forum', 'f')
+			->leftJoin('forum', 'fp', $qb->expr()->compareColumns('fp.forum_id', 'f.forum_parent'))
+			->leftJoin('forum', 'sp', $qb->expr()->allOf($qb->expr()->compareColumns('f.forum_sub', 'sp.forum_id'), $qb->expr()->gt('f.forum_sub', 0)))
+			->where('f.forum_id', $forum_id)
+			->fetchRow();
+		if ($row)
 		{
-
-			$row =  $sql->fetch();
-
 			if(empty($row['forum_sef']))
 			{
 				e107::getDebug()->log("Forum ".$row['forum_name']." is missing a SEF URL. Please add one via the admin area. ");
@@ -2016,20 +2480,15 @@ class e107forum
 		}
 
 		$sql = e107::getDb();
-		$forumList = implode(',', $this->permList[$type]);
-		$qry = "
-		SELECT forum_id, forum_name, forum_sef FROM `#forum`
-		WHERE forum_id IN ({$forumList}) AND forum_parent != 0
-		";
+		$rows = $sql->createQueryBuilder()
+			->select('forum_id', 'forum_name', 'forum_sef')->from('forum')
+			->whereIn('forum_id', $this->permList[$type])->where('forum_parent', '!=', 0)
+			->fetchAll();
 
 		$ret = [];
-		if ($sql->gen($qry))
+		foreach($rows as $row)
 		{
-			while($row = $sql->fetch())
-			{
-				$ret[$row['forum_id']] = $row;
-			}
-
+			$ret[$row['forum_id']] = $row;
 		}
 		return $ret;
 	}
@@ -2047,39 +2506,37 @@ class e107forum
 		$e107 = e107::getInstance();
 		$sql = e107::getDb();
 		$forumId = (int)$forumId;
-		$qry = "
-		SELECT t.*, f.forum_id, f.forum_sef,f.forum_name, u.user_name, lpu.user_name AS lastpost_username, MAX(p.post_id) AS lastpost_id FROM `#forum_thread` as t
-		LEFT JOIN `#forum` AS f ON t.thread_forum_id = f.forum_id
-		LEFT JOIN `#forum_post` AS p ON t.thread_id = p.post_thread
-		LEFT JOIN `#user` AS u ON t.thread_user = u.user_id
-		LEFT JOIN `#user` AS lpu ON t.thread_lastuser = lpu.user_id
-		WHERE t.thread_forum_id = {$forumId}
-		";
+
+		$qb = $sql->createQueryBuilder();
+		$qb->select('t.*', 'f.forum_id', 'f.forum_sef', 'f.forum_name', 'u.user_name')->selectAs('lpu.user_name', 'lastpost_username')->selectAggregate('MAX', 'p.post_id', 'lastpost_id')
+			->from('forum_thread', 't')
+			->leftJoin('forum', 'f', $qb->expr()->compareColumns('t.thread_forum_id', 'f.forum_id'))
+			->leftJoin('forum_post', 'p', $qb->expr()->compareColumns('t.thread_id', 'p.post_thread'))
+			->leftJoin('user', 'u', $qb->expr()->compareColumns('t.thread_user', 'u.user_id'))
+			->leftJoin('user', 'lpu', $qb->expr()->compareColumns('t.thread_lastuser', 'lpu.user_id'))
+			->where('t.thread_forum_id', $forumId);
 
 		if(!empty($filter))
 		{
-			$qry .= " AND ".$filter;
+			// $filter is a free-text thread-name search term (see forum_viewforum.php);
+			// bind it as a LIKE so the value can never reach SQL unescaped.
+			$qb->where($qb->expr()->contains('t.thread_name', $filter));
 		}
 
-		$qry .= "
-		GROUP BY thread_id
-		ORDER BY
-		t.thread_sticky DESC,
-		t.thread_lastpost DESC
-		LIMIT ".(int)$from.','.(int)$view;
+		$rows = $qb->groupBy('thread_id')
+			->orderBy('t.thread_sticky', 'DESC')->addOrderBy('t.thread_lastpost', 'DESC')
+			->setFirstResult((int)$from)->setMaxResults((int)$view)
+			->fetchAll();
 
 		$ret = array();
-		if ($sql->gen($qry))
+		foreach ($rows as $row)
 		{
-			while ($row = $sql->fetch())
+			if(empty($row['forum_sef']))
 			{
-				if(empty($row['forum_sef']))
-				{
-					e107::getDebug()->log("Forum ".$row['forum_name']." is missing a SEF URL. Please add one via the admin area. ");
-				}
-
-				$ret[] = $row;
+				e107::getDebug()->log("Forum ".$row['forum_name']." is missing a SEF URL. Please add one via the admin area. ");
 			}
+
+			$ret[] = $row;
 		}
 		return $ret;
 	}
@@ -2090,16 +2547,17 @@ class e107forum
 		$e107 = e107::getInstance();
 		$sql = e107::getDb();
 		$id = (int)$id;
-		$qry = "
-		SELECT p.post_user, p.post_id, p.post_user_anon, p.post_datestamp, p.post_thread, t.thread_name, u.user_name FROM `#forum_post` AS p
-		LEFT JOIN `#forum_thread` AS t ON p.post_thread = t.thread_id
-		LEFT JOIN `#user` AS u ON u.user_id = p.post_user
-		WHERE p.post_thread = {$id}
-		ORDER BY p.post_datestamp DESC LIMIT 0,1
-		";
-		if ($sql->gen($qry))
+		$qb = $sql->createQueryBuilder();
+		$row = $qb
+			->select('p.post_user', 'p.post_id', 'p.post_user_anon', 'p.post_datestamp', 'p.post_thread', 't.thread_name', 'u.user_name')
+			->from('forum_post', 'p')
+			->leftJoin('forum_thread', 't', $qb->expr()->compareColumns('p.post_thread', 't.thread_id'))
+			->leftJoin('user', 'u', $qb->expr()->compareColumns('u.user_id', 'p.post_user'))
+			->where('p.post_thread', $id)
+			->orderBy('p.post_datestamp', 'DESC')->setFirstResult(0)->setMaxResults(1)
+			->fetchRow();
+		if ($row)
 		{
-			$row = $sql->fetch();
 			$row['thread_sef'] = eHelper::title2sef($row['thread_name'],'dashl');
 			return $row;
 		}
@@ -2123,21 +2581,21 @@ class e107forum
 		$dir = ($which == 'next') ? '<' : '>';
 
 
-		$qry = "
-			SELECT t.thread_id, t.thread_name, f.forum_id, f.forum_sef FROM `#forum_thread` AS t
-			LEFT JOIN `#forum` AS f ON t.thread_forum_id = f.forum_id
-			WHERE t.thread_forum_id = $forumId
-			AND t.thread_lastpost {$dir} $lastpost
-			ORDER BY
-			t.thread_sticky DESC,
-			t.thread_lastpost ASC
-			LIMIT 1";
+		$qb = $sql->createQueryBuilder();
+		$row = $qb
+			->select('t.thread_id', 't.thread_name', 'f.forum_id', 'f.forum_sef')
+			->from('forum_thread', 't')
+			->leftJoin('forum', 'f', $qb->expr()->compareColumns('t.thread_forum_id', 'f.forum_id'))
+			->where('t.thread_forum_id', $forumId)
+			->where('t.thread_lastpost', $dir, $lastpost)
+			->orderBy('t.thread_sticky', 'DESC')->addOrderBy('t.thread_lastpost', 'ASC')
+			->setMaxResults(1)
+			->fetchRow();
 
 	//		e107::getMessage()->addDebug(ucfirst($which)." Thread Qry: ".$qry);
 
-			if ($sql->gen($qry))
+			if ($row)
 			{
-				$row = $sql->fetch();
 				$row['thread_sef'] = eHelper::title2sef($row['thread_name'],'dashl');
 		//		e107::getMessage()->addInfo(ucfirst($which).print_a($row,true));
 				return $row;
@@ -2156,7 +2614,9 @@ class e107forum
 	function threadIncView($id)
 	{
 		$id = (int)$id;
-		return e107::getDb()->update('forum_thread', 'thread_views=thread_views+1 WHERE thread_id='.$id);
+		return e107::getDb()->createQueryBuilder()->update('forum_thread')
+			->increment('thread_views')
+			->where('thread_id', $id)->execute();
 	}
 
 
@@ -2164,63 +2624,88 @@ class e107forum
 	function _forum_lp_update($lp_type, $lp_user, $lp_info, $lp_forum_id, $lp_forum_sub)
 	{
 		$sql = e107::getDb();
-		$sql->update('forum', "{$lp_type}={$lp_type}+1, forum_lastpost_user='{$lp_user}', forum_lastpost_info = '{$lp_info}' WHERE forum_id='".intval($lp_forum_id)."' ");
+
+		// $lp_type is a dynamic column name; validate it fail-closed before use.
+		$lpTypeQuoted = $sql->quoteIdentifier($lp_type);
+		if($lpTypeQuoted === false)
+		{
+			return;
+		}
+
+		$sql->createQueryBuilder()->update('forum')
+			->setExpression($lp_type, SqlFragment::raw($lpTypeQuoted.'+1'))
+			->set('forum_lastpost_user', $lp_user)
+			->set('forum_lastpost_info', $lp_info)
+			->where('forum_id', intval($lp_forum_id))->execute();
 		if($lp_forum_sub)
 		{
-			$sql->update('forum', "forum_lastpost_user = '{$lp_user}', forum_lastpost_info = '{$lp_info}' WHERE forum_id='".intval($lp_forum_sub)."' ");
+			$sql->createQueryBuilder()->update('forum')
+				->set('forum_lastpost_user', $lp_user)
+				->set('forum_lastpost_info', $lp_info)
+				->where('forum_id', intval($lp_forum_sub))->execute();
 		}
 	}
 
 
 
 
+	/**
+	 * Threads with activity the caller has not seen, for forum.php?new.
+	 *
+	 * Three things were wrong here, and the route is public, so all three were
+	 * reachable without an account:
+	 *
+	 *  - the "already read" filter compared thread ids against
+	 *    thread_forum_id, so reading one thread hid every thread in whatever
+	 *    forum shared that id. forumGetUnreadForums() has always compared the
+	 *    right column.
+	 *  - no forum_class predicate, unlike every other listing this plugin
+	 *    ships (e_search, e_rss, e_list), so the page offered thread names and
+	 *    last posters out of forums the caller cannot open.
+	 *  - USERLV is only defined for a signed-in visitor (class2.php), and it
+	 *    was dereferenced bare, which on PHP 8 is a fatal rather than a notice.
+	 *    A guest or a crawler asking for forum.php?new got a blank page.
+	 *
+	 * The permission list is the viewer's, not $uid's. The output goes to
+	 * whoever asked, so theirs is the question worth answering.
+	 *
+	 * @param int $count
+	 * @param bool $unread
+	 * @param int $uid whose read-state to filter by
+	 * @return array
+	 */
 	function threadGetNew($count = 50, $unread = true, $uid = USERID)
 	{
 		$sql = e107::getDb();
-		$viewed = '';
+
+		$visible = $this->getForumPermList('view');
+
+		if(empty($visible))
+		{
+			return array();
+		}
+
+		$viewedList = array();
 		if($unread)
 		{
-			$viewed = implode(',', $this->threadGetUserViewed($uid));
-			if($viewed != '')
-			{
-				//$viewed = ' AND p.post_forum NOT IN ('.$viewed.')';
-				$viewed = " AND t.thread_forum_id NOT IN ({$viewed})";
-			}
+			$viewedList = array_filter($this->threadGetUserViewed($uid), 'strlen');
 		}
-		/*
-		$qry = "
-		SELECT ft.*, fp.thread_name as post_subject, fp.thread_total_replies as replies, u.user_id, u.user_name, f.forum_class
-		FROM #forum_t AS ft
-		LEFT JOIN #forum_thread as fp ON fp.thread_id = ft.thread_parent
-		LEFT JOIN #user as u ON u.user_id = SUBSTRING_INDEX(ft.thread_user,'.',1)
-		LEFT JOIN #forum as f ON f.forum_id = ft.thread_forum_id
-		WHERE ft.thread_datestamp > ".USERLV. "
-		AND f.forum_class IN (".USERCLASS_LIST.")
-		{$viewed}
-		ORDER BY ft.thread_datestamp DESC LIMIT 0, ".intval($count);
-
-		$qry = "
-		SELECT t.*, u.user_name FROM `#forum_thread` AS t
-		LEFT JOIN `#user` AS u ON u.user_id = t.thread_lastuser
-		WHERE t.thread_lastpost > ".USERLV. "
-		{$viewed}
-		ORDER BY t.thread_lastpost DESC LIMIT 0, ".(int)$count;
-		*/
 
 		//  issue #3337 fixed usage of old v1 table names
-		$qry = "SELECT t.*, u.user_name 
-		FROM `#forum_thread` AS t
-		LEFT JOIN `#user` AS u ON u.user_id = t.thread_lastuser
-		WHERE t.thread_lastpost > ".USERLV. "
-		{$viewed}
-		ORDER BY t.thread_lastpost DESC LIMIT 0, ".(int)$count;
-
-		$ret = array();
-		if($sql->gen($qry))
+		$qb = $sql->createQueryBuilder();
+		$qb->select('t.*', 'u.user_name')
+			->from('forum_thread', 't')
+			->leftJoin('user', 'u', $qb->expr()->compareColumns('u.user_id', 't.thread_lastuser'))
+			->where('t.thread_lastpost', '>', (int) defset('USERLV', 0))
+			->whereIn('t.thread_forum_id', $visible);
+		if(!empty($viewedList))
 		{
-			$ret = $sql->db_getList();
+			$qb->whereNotIn('t.thread_id', $viewedList);
 		}
-		return $ret;
+
+		return $qb->orderBy('t.thread_lastpost', 'DESC')
+			->setFirstResult(0)->setMaxResults((int)$count)
+			->fetchAll();
 	}
 
 
@@ -2231,19 +2716,24 @@ class e107forum
 		$tp = e107::getParser();
 
 		$prunedate = time() - (int)$days * 86400;
-		$forumList = implode(',', $tp->filter($forumArray,'int'));
+		$forumList = $tp->filter($forumArray,'int');
 
 		if($type == 'delete')
 		{
 			//Get list of threads to prune
-			if ($sql->select('forum_thread', 'thread_id', "thread_lastpost < {$prunedate} AND thread_sticky != 1 AND thread_forum_id IN ({$forumList})"))
+			$threadList = $sql->createQueryBuilder()
+				->select('thread_id')->from('forum_thread')
+				->where('thread_lastpost', '<', $prunedate)
+				->where('thread_sticky', '!=', 1)
+				->whereIn('thread_forum_id', $forumList)
+				->fetchAll();
+			if ($threadList)
 			{
-				$threadList = $sql->db_getList();
 				$thread_count = count($threadList);
 				$reply_count = 0;
 				foreach($threadList as $thread)
 				{
-					$reply_count += $sql->count('forum_post', '(*)', 'WHERE post_thread = '.$thread['thread_id']);
+					$reply_count += $sql->createQueryBuilder()->from('forum_post')->where('post_thread', $thread['thread_id'])->count();
 					$this->threadDelete($thread['thread_id'], false);
 				}
 				foreach($forumArray as $fid)
@@ -2261,7 +2751,11 @@ class e107forum
 		}
 		if($type == 'make_inactive')
 		{
-			$pruned = $sql->update('forum_thread', "thread_active=0 WHERE thread_lastpost < {$prunedate} thread_forum_id IN ({$forumList})");
+			$pruned = $sql->createQueryBuilder()->update('forum_thread')
+				->set('thread_active', 0)
+				->where('thread_lastpost', '<', $prunedate)
+				->whereIn('thread_forum_id', $forumList)
+				->execute();
 			return FORLAN_8.' '.$pruned.' '.FORLAN_91;
 		}
 	}
@@ -2273,8 +2767,10 @@ class e107forum
 		$sql = e107::getDb();
 		if($forumId == 'all')
 		{
-			$sql->select('forum', 'forum_id', 'forum_parent != 0');
-			$flist = $sql->db_getList();
+			$flist = $sql->createQueryBuilder()
+				->select('forum_id')->from('forum')
+				->where('forum_parent', '!=', 0)
+				->fetchAll();
 			foreach($flist as $f)
 			{
 				set_time_limit(60);
@@ -2283,21 +2779,27 @@ class e107forum
 			return;
 		}
 		$forumId = (int)$forumId;
-		$threads = $sql->count('forum_thread', '(*)', 'WHERE thread_forum_id='.$forumId);
-		$replies = $sql->count('forum_post', '(*)', 'WHERE post_forum='.$forumId);
-		$replies = $replies - $threads; 
-		
-		$sql->update('forum', "forum_threads={$threads}, forum_replies={$replies} WHERE forum_id={$forumId}");
+		$threads = $sql->createQueryBuilder()->from('forum_thread')->where('thread_forum_id', $forumId)->count();
+		$replies = $sql->createQueryBuilder()->from('forum_post')->where('post_forum', $forumId)->count();
+		$replies = $replies - $threads;
+
+		$sql->createQueryBuilder()->update('forum')
+			->set('forum_threads', $threads)->set('forum_replies', $replies)
+			->where('forum_id', $forumId)->execute();
 		if($recalcThreads == true)
 		{
 			set_time_limit(60);
-			$sql->select('forum_post', 'post_thread, count(post_thread) AS replies', "post_forum={$forumId} GROUP BY post_thread");
-			$tlist = $sql->db_getList();
+			$tlist = $sql->createQueryBuilder()
+				->select('post_thread')->selectAggregate('COUNT', 'post_thread', 'replies')->from('forum_post')
+				->where('post_forum', $forumId)->groupBy('post_thread')
+				->fetchAll();
 			foreach($tlist as $t)
 			{
 				$tid = $t['post_thread'];
 				$replies = (int)$t['replies'] - 1;
-				$sql->update('forum_thread', "thread_total_replies={$replies} WHERE thread_id={$tid}");
+				$sql->createQueryBuilder()->update('forum_thread')
+					->set('thread_total_replies', $replies)
+					->where('thread_id', $tid)->execute();
 			}
 		}
 	}
@@ -2307,13 +2809,27 @@ class e107forum
 	 * @param $threadID
 	 * @return int
 	 */
+	/**
+	 * Recount a thread's replies, as splitting a topic requires.
+	 *
+	 * thread_total_replies excludes the opening post: postAdd() increments it
+	 * once per reply and every reader adds one back for the first post. This
+	 * stored the raw row count, so a split topic came out one reply heavy at
+	 * both ends, which the page turns into a phantom extra page.
+	 *
+	 * @param int $threadID
+	 * @return mixed
+	 */
 	function threadUpdateCounts($threadID)
 	{
 		$sql = e107::getDb();
 
-		$replies = $sql->count('forum_post', '(*)', 'WHERE post_thread='.$threadID);
+		$posts = (int) $sql->createQueryBuilder()->from('forum_post')->where('post_thread', (int) $threadID)->count();
+		$replies = max(0, $posts - 1);
 
-		return $sql->update('forum_thread', "thread_total_replies={$replies} WHERE thread_id=".$threadID);
+		return $sql->createQueryBuilder()->update('forum_thread')
+			->set('thread_total_replies', $replies)
+			->where('thread_id', (int) $threadID)->execute();
 
 	}
 
@@ -2323,22 +2839,18 @@ class e107forum
 	function getUserCounts()
 	{
 		$sql = e107::getDb();
-		$qry = "
-		SELECT post_user, count(post_user) AS cnt FROM `#forum_post`
-		WHERE post_user > 0
-		GROUP BY post_user
-		";
+		$rows = $sql->createQueryBuilder()
+			->select('post_user')->selectAggregate('COUNT', 'post_user', 'cnt')->from('forum_post')
+			->where('post_user', '>', 0)
+			->groupBy('post_user')
+			->fetchAll();
 
-		if($sql->gen($qry))
+		$ret = array();
+		foreach($rows as $row)
 		{
-			$ret = array();
-			while($row = $sql->fetch())
-			{
-				$ret[$row['post_user']] = $row['cnt'];
-			}
-			return $ret;
+			$ret[$row['post_user']] = $row['cnt'];
 		}
-		return FALSE;
+		return $ret;
 	}
 
 
@@ -2515,26 +3027,34 @@ class e107forum
 		
 		if ($threadInfo = $this->threadGet($threadId))
 		{
+			$threadId = (int) $threadId;
+
 			// delete poll if there is one
-			if($sql->select('polls', '*', 'poll_datestamp='.$threadId))
+			if($sql->createQueryBuilder()->from('polls')->where('poll_datestamp', $threadId)->count())
 			{
-				$sql->delete('polls', 'poll_datestamp='.$threadId);
-			} 
-	
+				$sql->createQueryBuilder()->delete('polls')->where('poll_datestamp', $threadId)->execute();
+			}
+
 			// decrement user post counts
 			if ($postCount = $this->threadGetUserPostcount($threadId))
 			{
 				foreach ($postCount as $k => $v)
 				{
-					$sql->update('user_extended', 'user_plugin_forum_posts=GREATEST(user_plugin_forum_posts-'.$v.',0) WHERE user_extended_id='.$k);
+					$sql->createQueryBuilder()->update('user_extended')
+						->setExpression('user_plugin_forum_posts', SqlFragment::raw('GREATEST(user_plugin_forum_posts-'.(int) $v.',0)'))
+						->where('user_extended_id', (int) $k)->execute();
 				}
 			}
 
 			// delete all posts
-			if($sql->select('forum_post', 'post_id', 'post_thread = '.$threadId))
+			$postRows = $sql->createQueryBuilder()
+				->select('post_id')->from('forum_post')
+				->where('post_thread', $threadId)
+				->fetchAll();
+			if($postRows)
 			{
 				$postList = array();
-				while($row = $sql->fetch())
+				foreach($postRows as $row)
 				{
 					$postList[] = $row['post_id'];
 				}
@@ -2546,20 +3066,23 @@ class e107forum
 			}
 
 			// delete the thread itself
-			if($sql->delete('forum_thread', 'thread_id='.$threadId))
+			if($sql->createQueryBuilder()->delete('forum_thread')->where('thread_id', $threadId)->execute())
 			{
 				$status = true;
 			  	e107::getEvent()->trigger('user_forum_topic_deleted', $threadInfo);
 			}
 
 			//Delete any thread tracking
-			if($sql->select('forum_track', '*', 'track_thread='.$threadId))
-			{	
-				$sql->delete('forum_track', 'track_thread='.$threadId);
+			if($sql->createQueryBuilder()->from('forum_track')->where('track_thread', $threadId)->count())
+			{
+				$sql->createQueryBuilder()->delete('forum_track')->where('track_thread', $threadId)->execute();
 			}
-			
+
 			// update forum with correct thread/reply counts
-			$sql->update('forum', "forum_threads=GREATEST(forum_threads-1,0), forum_replies=GREATEST(forum_replies-{$threadInfo['thread_total_replies']},0) WHERE forum_id=".$threadInfo['thread_forum_id']);
+			$sql->createQueryBuilder()->update('forum')
+				->setExpression('forum_threads', SqlFragment::raw('GREATEST(forum_threads-1,0)'))
+				->setExpression('forum_replies', SqlFragment::raw('GREATEST(forum_replies-'.(int) $threadInfo['thread_total_replies'].',0)'))
+				->where('forum_id', (int) $threadInfo['thread_forum_id'])->execute();
 
 			if($updateForumLastpost)
 			{
@@ -2583,7 +3106,10 @@ class e107forum
 		$sql 		= e107::getDb();
 		$deleted 	= false;
 
-		$postInfo   = $sql->retrieve('forum_post', '*', 'post_id = '.$postId);
+		$postInfo   = $sql->createQueryBuilder()
+			->select('*')->from('forum_post')
+			->where('post_id', $postId)
+			->fetchRow();
 
 		if(!is_array($postInfo) || empty($postInfo))
 		{
@@ -2597,7 +3123,7 @@ class e107forum
 		}
 
 		// delete post from database
-		if($sql->delete('forum_post', 'post_id='.$postId))
+		if($sql->createQueryBuilder()->delete('forum_post')->where('post_id', $postId)->execute())
 		{
 			$deleted = true;
 		  	e107::getEvent()->trigger('user_forum_post_deleted', $postInfo);
@@ -2609,14 +3135,20 @@ class e107forum
 			// decrement user post counts
 			if ($postInfo['post_user'])
 			{
-				$sql->update('user_extended', 'user_plugin_forum_posts=GREATEST(user_plugin_forum_posts-1,0) WHERE user_extended_id='.$postInfo['post_user']);
+				$sql->createQueryBuilder()->update('user_extended')
+					->setExpression('user_plugin_forum_posts', SqlFragment::raw('GREATEST(user_plugin_forum_posts-1,0)'))
+					->where('user_extended_id', (int) $postInfo['post_user'])->execute();
 			}
 
 			// update thread with correct reply counts
-			$sql->update('forum_thread', "thread_total_replies=GREATEST(thread_total_replies-1,0) WHERE thread_id=".$postInfo['post_thread']);
+			$sql->createQueryBuilder()->update('forum_thread')
+				->setExpression('thread_total_replies', SqlFragment::raw('GREATEST(thread_total_replies-1,0)'))
+				->where('thread_id', (int) $postInfo['post_thread'])->execute();
 
 			// update forum with correct thread/reply counts
-			$sql->update('forum', "forum_replies=GREATEST(forum_replies-1,0) WHERE forum_id=".$postInfo['post_forum']);
+			$sql->createQueryBuilder()->update('forum')
+				->setExpression('forum_replies', SqlFragment::raw('GREATEST(forum_replies-1,0)'))
+				->where('forum_id', (int) $postInfo['post_forum'])->execute();
 
 			// update thread lastpost info
 			$this->forumUpdateLastpost('thread', $postInfo['post_thread']);

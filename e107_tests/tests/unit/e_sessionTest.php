@@ -25,6 +25,484 @@
 			}
 		}
 
+		/**
+		 * GHSA-72q5-94gw-prww. Nearly every site has never written this
+		 * preference, so what it reads as when unset is what nearly every site
+		 * runs. It resolves through a named constant rather than a literal so the
+		 * recommendation can move in a later release without an operator acting.
+		 */
+		public function testTokenCheckModeDefaultsToTheRecommendation()
+		{
+			$this::assertNull(e107::getConfig()->get('csrf_enforce'));
+
+			// Over an origin that can carry Fetch Metadata, which is where the
+			// recommendation on this branch is asking for something obtainable.
+			$this->withRequest(array('HTTPS' => 'on'), function() {
+				$this::assertSame(e_session::CSRF_CHECK_RECOMMENDED, e_session::tokenCheckMode());
+			});
+		}
+
+		/**
+		 * Run a closure against a given request environment.
+		 *
+		 * tokenCheckMode() now reads $_SERVER, because whether a browser can send
+		 * Sec-Fetch-Site at all is a property of the connection rather than of the
+		 * preference. The CLI runner's own $_SERVER is neither HTTPS nor loopback,
+		 * so anything asserting an unsoftened mode has to say so.
+		 *
+		 * @param array    $server
+		 * @param callable $fn
+		 * @return void
+		 */
+		private function withRequest(array $server, $fn)
+		{
+			$previous = $_SERVER;
+			$_SERVER = $server;
+
+			try
+			{
+				$fn();
+			}
+			finally
+			{
+				$_SERVER = $previous;
+			}
+		}
+
+		/**
+		 * The whole reason this softening exists.
+		 *
+		 * Sec-Fetch-Site is appended only to a potentially trustworthy origin, so
+		 * on a site served over plain HTTP no browser ever sends it. A mode that
+		 * asks for nothing else would refuse every write for good, and because
+		 * such a mode publishes no token there would be nothing to fall back on.
+		 * Verified against a real Chrome, which sends no Sec-Fetch-* header at all
+		 * over plain HTTP to a named host.
+		 *
+		 * This is what CI caught: master's recommendation is mode 4, so without
+		 * this every plain-HTTP site would have been locked out by the upgrade.
+		 */
+		public function testABrowserOnlyModeSoftensWhereTheBrowserCannotAnswer()
+		{
+			$config = e107::getConfig();
+			$insecure = array('HTTP_HOST' => 'example.org');
+
+			foreach(array(e_session::CSRF_CHECK_SAME_SITE, e_session::CSRF_CHECK_SAME_ORIGIN) as $mode)
+			{
+				$config->set('csrf_enforce', $mode);
+
+				$this->withRequest($insecure, function() use ($mode) {
+					$this::assertSame(e_session::CSRF_CHECK_TOKEN_OR_SAME_SITE, e_session::tokenCheckMode(),
+						'mode ' . $mode . ' must soften where Sec-Fetch-Site can never arrive');
+
+					// The point of softening to the hybrid rather than to nothing:
+					// a token is now both asked for and published, so the injector
+					// hands one to the very documents that will be asked for it.
+					$this::assertTrue(e_session::modeUsesToken(), 'the softened mode has to publish a token');
+				});
+
+				// Nothing is softened where the header can actually arrive.
+				$this->withRequest(array('HTTPS' => 'on'), function() use ($mode) {
+					$this::assertSame($mode, e_session::tokenCheckMode(),
+						'mode ' . $mode . ' must be left alone on a trustworthy origin');
+				});
+			}
+
+			// A mode that already reads a token is satisfiable anywhere, and Off
+			// asks for nothing, so neither is rewritten.
+			foreach(array(
+				e_session::TOKEN_CHECK_OFF,
+				e_session::TOKEN_CHECK_LOG,
+				e_session::TOKEN_CHECK_ENFORCE,
+				e_session::CSRF_CHECK_TOKEN_OR_SAME_SITE,
+			) as $mode)
+			{
+				$config->set('csrf_enforce', $mode);
+
+				$this->withRequest($insecure, function() use ($mode) {
+					$this::assertSame($mode, e_session::tokenCheckMode(),
+						'mode ' . $mode . ' has nothing to soften');
+				});
+			}
+
+			$config->remove('csrf_enforce');
+		}
+
+		/**
+		 * What counts as an origin a browser would send Fetch Metadata to.
+		 *
+		 * Deliberately reads the request and nothing else. A preference saying the
+		 * site is HTTPS describes how it is meant to be reached, not how this
+		 * request arrived, and believing it about a request that truly came over
+		 * HTTP would preserve the lockout this exists to prevent.
+		 */
+		public function testFetchMetadataReachesUsReadsTheRequestAlone()
+		{
+			$reaches = function(array $server) {
+				return e_session::fetchMetadataReachesUs($server);
+			};
+
+			// Plain HTTP to a named host is the case that started all this.
+			$this::assertFalse($reaches(array('HTTP_HOST' => 'example.org')));
+			$this::assertFalse($reaches(array()));
+			$this::assertFalse($reaches(array('HTTPS' => 'off', 'HTTP_HOST' => 'example.org')));
+
+			// Straightforwardly secure.
+			$this::assertTrue($reaches(array('HTTPS' => 'on')));
+			$this::assertTrue($reaches(array('HTTPS' => '1')));
+			$this::assertTrue($reaches(array('SERVER_PORT' => 443)));
+			$this::assertTrue($reaches(array('SERVER_PORT' => '443')));
+
+			// Secure Contexts counts loopback as potentially trustworthy, so a
+			// site developed at http://localhost does receive the header.
+			foreach(array('localhost', 'localhost:8080', '127.0.0.1', '127.0.0.1:8080', '127.1.2.3', '[::1]', '[::1]:8080', '::1') as $host)
+			{
+				$this::assertTrue($reaches(array('HTTP_HOST' => $host)), $host . ' is loopback');
+			}
+
+			foreach(array('notlocalhost', 'localhost.example.org', '128.0.0.1', 'example.org:80') as $host)
+			{
+				$this::assertFalse($reaches(array('HTTP_HOST' => $host)), $host . ' is not loopback');
+			}
+
+			// A TLS terminating proxy. The first entry is the client's own.
+			$this::assertTrue($reaches(array('HTTP_HOST' => 'example.org', 'HTTP_X_FORWARDED_PROTO' => 'https')));
+			$this::assertTrue($reaches(array('HTTP_HOST' => 'example.org', 'HTTP_X_FORWARDED_PROTO' => 'HTTPS')));
+			$this::assertTrue($reaches(array('HTTP_HOST' => 'example.org', 'HTTP_X_FORWARDED_PROTO' => 'https, http')));
+			$this::assertFalse($reaches(array('HTTP_HOST' => 'example.org', 'HTTP_X_FORWARDED_PROTO' => 'http, https')));
+			$this::assertTrue($reaches(array('HTTP_HOST' => 'example.org', 'HTTP_X_FORWARDED_SSL' => 'on')));
+			$this::assertTrue($reaches(array('HTTP_HOST' => 'example.org', 'HTTP_FRONT_END_HTTPS' => 'on')));
+
+			// The rescue: a proxy that forwards none of the above still gives
+			// itself away, because the browser sending Fetch Metadata is proof
+			// that the browser considered this origin trustworthy.
+			$this::assertTrue($reaches(array('HTTP_HOST' => 'example.org', 'HTTP_SEC_FETCH_SITE' => 'same-origin')));
+			$this::assertTrue($reaches(array('HTTP_HOST' => 'example.org', 'HTTP_SEC_FETCH_SITE' => 'cross-site')));
+			$this::assertTrue($reaches(array('HTTP_HOST' => 'example.org', 'HTTP_SEC_FETCH_DEST' => 'document')));
+			$this::assertTrue($reaches(array('HTTP_HOST' => 'example.org', 'HTTP_SEC_FETCH_MODE' => 'navigate')));
+
+			// A header that merely looks similar is not the rescue.
+			$this::assertFalse($reaches(array('HTTP_HOST' => 'example.org', 'HTTP_SEC_WEBSOCKET_KEY' => 'x')));
+		}
+
+		/**
+		 * The recommendation on this branch reads the browser and not a token.
+		 * That removes the whole class of fault where a document that had to
+		 * issue a write was never handed a token, and in exchange it turns away a
+		 * browser too old to send Sec-Fetch-Site.
+		 *
+		 * It is the opposite of the trade release/v2.3.x makes, and it is the
+		 * kind of decision that should not be arrived at by editing a constant
+		 * and finding out later, so it is stated here rather than inferred.
+		 */
+		public function testTheRecommendationReadsTheBrowserRatherThanAToken()
+		{
+			$this::assertSame(e_session::CSRF_CHECK_SAME_SITE, e_session::CSRF_CHECK_RECOMMENDED);
+			$this::assertFalse(e_session::modeUsesToken(e_session::CSRF_CHECK_RECOMMENDED));
+			$this::assertTrue(e_session::modeUsesFetchMetadata(e_session::CSRF_CHECK_RECOMMENDED));
+		}
+
+		/**
+		 * A fresh install is normally left with no preference at all, so it keeps
+		 * following e107's recommendation as that changes. The exception is the
+		 * one that would lock the installer out of the site they just built: the
+		 * recommendation refuses a POST without Sec-Fetch-Site, and the browser
+		 * doing the installing did not send one.
+		 *
+		 * install.php does nothing but call this, so this is where it is proven.
+		 */
+		public function testAFreshInstallIsPinnedOnlyWhenTheBrowserCannotAnswer()
+		{
+			$this::assertSame(e_session::TOKEN_CHECK_ENFORCE, e_session::installTimeMode(array('HTTPS' => 'on')),
+				'a browser that sent no Sec-Fetch-Site must not be left on a mode that requires it');
+
+			$this::assertSame(e_session::TOKEN_CHECK_ENFORCE, e_session::installTimeMode(array('HTTPS' => 'on', 'HTTP_SEC_FETCH_SITE' => '')),
+				'an empty header is no answer either');
+
+			foreach(array('same-origin', 'same-site', 'cross-site', 'none') as $site)
+			{
+				$this::assertNull(e_session::installTimeMode(array('HTTPS' => 'on', 'HTTP_SEC_FETCH_SITE' => $site)),
+					$site.' proves the browser sends the header, so leave the preference unset');
+			}
+		}
+
+		/**
+		 * Installing over plain HTTP must pin nothing.
+		 *
+		 * The header is absent for every browser on such an origin, so its absence
+		 * says nothing about the one in front of us, and pinning would freeze the
+		 * site on a token mode for good, including long after it has grown a
+		 * certificate. tokenCheckMode() softens the recommendation for exactly as
+		 * long as it needs softening and stops of its own accord.
+		 */
+		public function testAnInstallOverPlainHttpIsLeftFollowingTheRecommendation()
+		{
+			$this::assertNull(e_session::installTimeMode(array('HTTP_HOST' => 'example.org')),
+				'plain HTTP tells us nothing about the browser, so store nothing');
+
+			$this::assertNull(e_session::installTimeMode(array()));
+
+			// Loopback can carry the header, so a browser silent there really is
+			// a browser that cannot answer.
+			$this::assertSame(e_session::TOKEN_CHECK_ENFORCE, e_session::installTimeMode(array('HTTP_HOST' => 'localhost')));
+		}
+
+		/**
+		 * The pinning exists only because the recommendation reads no token. A
+		 * branch whose recommendation still accepts one has nobody to lock out,
+		 * and must leave every install following the recommendation.
+		 */
+		public function testNothingIsPinnedWhenTheRecommendationAcceptsAToken()
+		{
+			$previous = e_session::setTokenCheckMode(null);
+
+			try
+			{
+				// On an origin that can carry the header, so the only thing under
+				// test here is what the recommendation asks for.
+				$secure = array('HTTPS' => 'on');
+
+				if(e_session::modeUsesToken(e_session::CSRF_CHECK_RECOMMENDED))
+				{
+					$this::assertNull(e_session::installTimeMode($secure));
+				}
+				else
+				{
+					$this::assertNotNull(e_session::installTimeMode($secure));
+					$this::assertTrue(e_session::modeUsesToken(e_session::installTimeMode($secure)),
+						'the mode an install is pinned to has to be one that works without the header');
+				}
+			}
+			catch(Exception $e)
+			{
+				e_session::setTokenCheckMode($previous);
+				throw $e;
+			}
+
+			e_session::setTokenCheckMode($previous);
+		}
+
+		/**
+		 * A value out of range is a typo, a bad migration, or a preference written
+		 * by a newer release than this one. None is a reason to guess, and the
+		 * nearest number could be Off.
+		 */
+		public function testAnUnusableStoredValueFallsBackToTheRecommendation()
+		{
+			$config = e107::getConfig();
+
+			// On a trustworthy origin, so the recommendation is read as written
+			// rather than softened for want of a header.
+			$this->withRequest(array('HTTPS' => 'on'), function() use ($config) {
+				foreach(array(99, -1, 6, 'banana', '', null) as $stored)
+				{
+					$config->set('csrf_enforce', $stored);
+
+					$this::assertSame(e_session::CSRF_CHECK_RECOMMENDED, e_session::tokenCheckMode(),
+						'stored value ' . var_export($stored, true) . ' should fall back');
+				}
+
+				// A numeric string is what a form post delivers, so it has to resolve.
+				$config->set('csrf_enforce', '1');
+				$this::assertSame(e_session::TOKEN_CHECK_LOG, e_session::tokenCheckMode());
+			});
+
+			$config->remove('csrf_enforce');
+		}
+
+		/**
+		 * The runtime override is the designated seam for a test, and for a
+		 * bootstrap that knows better than the stored preference. It replaced an
+		 * e_CSRF_ENFORCE define, which no test could set without a whole extra
+		 * PHP process.
+		 */
+		public function testSetTokenCheckModeOverridesThePreference()
+		{
+			$previous = e_session::setTokenCheckMode(e_session::TOKEN_CHECK_LOG);
+
+			try
+			{
+				$this::assertSame(e_session::TOKEN_CHECK_LOG, e_session::tokenCheckMode());
+
+				e_session::setTokenCheckMode(e_session::TOKEN_CHECK_OFF);
+				$this::assertSame(e_session::TOKEN_CHECK_OFF, e_session::tokenCheckMode());
+
+				// null hands control back to the preference, which is unset here.
+				// Asked on a trustworthy origin, so what is under test is the
+				// handover and not the softening that applies without one.
+				e_session::setTokenCheckMode(null);
+				$this->withRequest(array('HTTPS' => 'on'), function() {
+					$this::assertSame(e_session::CSRF_CHECK_RECOMMENDED, e_session::tokenCheckMode());
+				});
+			}
+			catch(Exception $e)
+			{
+				e_session::setTokenCheckMode($previous);
+				throw $e;
+			}
+
+			e_session::setTokenCheckMode($previous);
+		}
+
+		/**
+		 * setTokenCheckMode() hands back what it displaced, so a caller can put
+		 * the previous value back without knowing what it was.
+		 */
+		public function testSetTokenCheckModeReturnsThePreviousOverride()
+		{
+			$this::assertNull(e_session::setTokenCheckMode(e_session::TOKEN_CHECK_LOG));
+			$this::assertSame(e_session::TOKEN_CHECK_LOG, e_session::setTokenCheckMode(null));
+			$this::assertNull(e_session::setTokenCheckMode(null));
+		}
+
+		/**
+		 * Which proof each mode asks for. The numbers are a menu rather than a
+		 * ladder, so this is stated outright rather than inferred by comparison.
+		 */
+		public function testEachModeAsksForTheProofItNames()
+		{
+			$token = array(
+				e_session::TOKEN_CHECK_LOG,
+				e_session::TOKEN_CHECK_ENFORCE,
+				e_session::CSRF_CHECK_TOKEN_OR_SAME_SITE,
+			);
+
+			$fetch = array(
+				e_session::CSRF_CHECK_TOKEN_OR_SAME_SITE,
+				e_session::CSRF_CHECK_SAME_SITE,
+				e_session::CSRF_CHECK_SAME_ORIGIN,
+			);
+
+			foreach(range(0, 5) as $mode)
+			{
+				$this::assertSame(in_array($mode, $token, true), e_session::modeUsesToken($mode),
+					'mode ' . $mode . ' token expectation');
+				$this::assertSame(in_array($mode, $fetch, true), e_session::modeUsesFetchMetadata($mode),
+					'mode ' . $mode . ' Fetch Metadata expectation');
+			}
+
+			// Off asks for nothing at all.
+			$this::assertFalse(e_session::modeUsesToken(e_session::TOKEN_CHECK_OFF));
+			$this::assertFalse(e_session::modeUsesFetchMetadata(e_session::TOKEN_CHECK_OFF));
+		}
+
+		/**
+		 * Sec-Fetch-Site is the whole of the browser-side proof, so what counts as
+		 * vouching is worth pinning down value by value.
+		 *
+		 * 'same-site' covers a sibling host under the same registrable domain,
+		 * which a language-per-subdomain site needs, but taken at face value it
+		 * would also vouch for a user-content host or one that has been taken
+		 * over. It is honoured only for a host this site is configured to serve.
+		 */
+		public function testOnlyTheBrowserSayingThisSiteCounts()
+		{
+			$server = $_SERVER;
+
+			$_SERVER['HTTP_HOST'] = 'example.org';
+
+			$vouches = function($site, $mode, $origin = null)
+			{
+				unset($_SERVER['HTTP_SEC_FETCH_SITE'], $_SERVER['HTTP_ORIGIN']);
+
+				if($site !== null)
+				{
+					$_SERVER['HTTP_SEC_FETCH_SITE'] = $site;
+				}
+
+				if($origin !== null)
+				{
+					$_SERVER['HTTP_ORIGIN'] = $origin;
+				}
+
+				$method = new ReflectionMethod('e_core_session', 'fetchMetadataVouches');
+				$method->setAccessible(true);
+
+				return $method->invoke(null, $mode);
+			};
+
+			// A browser that says nothing is not a browser that vouches.
+			$this::assertFalse($vouches(null, e_session::CSRF_CHECK_SAME_SITE));
+			$this::assertFalse($vouches('', e_session::CSRF_CHECK_SAME_SITE));
+
+			foreach(array('cross-site', 'none', 'nonsense') as $site)
+			{
+				$this::assertFalse($vouches($site, e_session::CSRF_CHECK_SAME_SITE), $site . ' must not vouch');
+				$this::assertFalse($vouches($site, e_session::CSRF_CHECK_SAME_ORIGIN), $site . ' must not vouch');
+			}
+
+			// Our own origin vouches in every mode that reads the header, and the
+			// comparison is case and whitespace insensitive.
+			$this::assertTrue($vouches('same-origin', e_session::CSRF_CHECK_SAME_SITE));
+			$this::assertTrue($vouches('same-origin', e_session::CSRF_CHECK_SAME_ORIGIN));
+			$this::assertTrue($vouches(' Same-Origin ', e_session::CSRF_CHECK_SAME_ORIGIN));
+
+			// A sibling host is the difference between the two Fetch Metadata modes.
+			$this::assertTrue($vouches('same-site', e_session::CSRF_CHECK_SAME_SITE, 'http://example.org'));
+			$this::assertFalse($vouches('same-site', e_session::CSRF_CHECK_SAME_ORIGIN, 'http://example.org'));
+
+			// A sibling we do not serve is exactly the case the Origin check exists
+			// for: the browser is telling the truth, and the truth is not enough.
+			$this::assertFalse($vouches('same-site', e_session::CSRF_CHECK_SAME_SITE, 'https://uploads.example.org'));
+			$this::assertFalse($vouches('same-site', e_session::CSRF_CHECK_SAME_SITE, 'null'));
+
+			$_SERVER = $server;
+		}
+
+		public function testNormaliseSameSite()
+		{
+			$this::assertSame('Lax', e_session::normaliseSameSite('lax'));
+			$this::assertSame('Lax', e_session::normaliseSameSite(' LAX '));
+			$this::assertSame('Strict', e_session::normaliseSameSite('strict'));
+			$this::assertSame('None', e_session::normaliseSameSite('NONE'));
+			$this::assertSame('', e_session::normaliseSameSite(''));
+			$this::assertSame('', e_session::normaliseSameSite('Lax; Domain=evil.example.net'));
+		}
+
+		/**
+		 * SameSite=None is only honoured over SSL, and a site behind an SSL
+		 * terminating proxy is very commonly HTTPS with ssl_enabled never set.
+		 * Deciding on the preference alone silently degraded such a site to Lax.
+		 */
+		public function testIsSecureContext()
+		{
+			$server = $_SERVER;
+
+			try
+			{
+				unset($_SERVER['HTTPS'], $_SERVER['HTTP_X_FORWARDED_PROTO'], $_SERVER['SERVER_PORT']);
+				$this::assertFalse(e_session::isSecureContext(false));
+				$this::assertTrue(e_session::isSecureContext(1));
+
+				$_SERVER['HTTPS'] = 'off';
+				$this::assertFalse(e_session::isSecureContext(false));
+
+				$_SERVER['HTTPS'] = 'on';
+				$this::assertTrue(e_session::isSecureContext(false));
+				unset($_SERVER['HTTPS']);
+
+				$_SERVER['HTTP_X_FORWARDED_PROTO'] = 'https';
+				$this::assertTrue(e_session::isSecureContext(false));
+
+				$_SERVER['HTTP_X_FORWARDED_PROTO'] = 'http';
+				$this::assertFalse(e_session::isSecureContext(false));
+				unset($_SERVER['HTTP_X_FORWARDED_PROTO']);
+
+				$_SERVER['SERVER_PORT'] = '443';
+				$this::assertTrue(e_session::isSecureContext(false));
+
+				$_SERVER['SERVER_PORT'] = '80';
+				$this::assertFalse(e_session::isSecureContext(false));
+			}
+			catch(Exception $e)
+			{
+				$_SERVER = $server;
+				throw $e;
+			}
+
+			$_SERVER = $server;
+		}
+
 		public function testSetOption()
 		{
 			$opt = array(
@@ -33,6 +511,7 @@
 				'domain'	 => 'test.com',
 				'secure'	 => false,
 				'httponly'	 => true,
+				'samesite'	 => 'Lax',
 				'_dummy'    => 'not here'
 			);
 

@@ -96,13 +96,12 @@ class user_dashboard // plugin-folder + '_url'
 		$dayarray[$td] = array();
 		$pagearray = array();
 
-		$qry = "
+		// Permanent raw-SQL boundary (builder API gap): function-expression ORDER BY (CONCAT/LEFT/SUBSTRING/LPAD) has no builder equivalent; kept as a fully-static, injection-proof execute().
+		if($sql->execute("
 		SELECT * from #logstats WHERE log_id REGEXP('[[:digit:]]+\-[[:digit:]]+\-[[:digit:]]+')
 		ORDER BY CONCAT(LEFT(log_id,4), SUBSTRING(log_id, 6, 2), LPAD(SUBSTRING(log_id, 9), 2, '0'))
 		DESC LIMIT 0,9
-		";
-
-		if($amount = $sql->gen($qry))
+		"))
 		{
 			$array = $sql->db_getList();
 
@@ -308,13 +307,16 @@ class user_dashboard // plugin-folder + '_url'
 			$month_end = strtotime('last day of last month', mktime(23,59,59));	
 		}*/
 		
-		if(!$sql->gen("SELECT user_id,user_ban,user_join FROM `#user` WHERE user_join BETWEEN ".$month_start." AND ".$month_end." AND user_ban = 0"))
-		{
-			return false;
-		}
+		$rows = $sql->createQueryBuilder()
+			->select('user_id', 'user_ban', 'user_join')->from('user')
+			->whereBetween('user_join', $month_start, $month_end)
+			->where('user_ban', 0)
+			->fetchEach();
 
-		while($row = $sql->fetch())
+		$hasRows = false;
+		foreach($rows as $row)
 		{
+			$hasRows = true;
 
 			$diz = date('j', $row['user_join']);
 
@@ -325,6 +327,11 @@ class user_dashboard // plugin-folder + '_url'
 
 			$amt[$diz] += 1; 
 			$dateName[$diz] = date('jS', $row['user_join']);
+		}
+
+		if(!$hasRows)
+		{
+			return false;
 		}
 
 		$monthNumber = date('n',$month_start);

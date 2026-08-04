@@ -10,10 +10,6 @@
  *
  */
 
-if(!empty($_POST) && !isset($_POST['e-token']))
-{
-	$_POST['e-token'] = '';
-}
 require_once (__DIR__."/../class2.php");
 
 if(isset($_POST['newver']))
@@ -54,7 +50,10 @@ $tp = e107::getParser();
 /*	RESET DISPLAY NAMES	*/
 if(isset($_POST['submit_resetdisplaynames']))
 {
-	e107::getDb()->update('user', 'user_name=user_loginname');
+	e107::getDb()->createQueryBuilder()
+		->update('user')
+		->setColumn('user_name', 'user_loginname')
+		->execute();
 	$mes->addInfo(PRFLAN_157);
 }
 
@@ -98,6 +97,63 @@ if(isset($_POST['updateprefs']))
 	{
 		$core_pref->set('trusted_hosts', e107::normaliseTrustedHostList($_POST['trusted_hosts']));
 		unset($_POST['trusted_hosts']);
+	}
+
+	// update_channel: seeded via set() for the same reason as trusted_hosts
+	// above; unexpected values fall back to the stable channel. The selector
+	// shows the resolved channel, so submitting it unchanged writes nothing:
+	// prerelease builds keep auto-detecting the preview channel until the
+	// admin explicitly picks one. The dashboard's update-check cache is not
+	// channel-aware, so a channel change invalidates it.
+	if(isset($_POST['update_channel']))
+	{
+		$update_channel = ($_POST['update_channel'] === 'preview') ? 'preview' : 'stable';
+
+		if($update_channel !== e107::updateChannel())
+		{
+			$core_pref->set('update_channel', $update_channel);
+			e107::getCache()->clear_sys('Update_core');
+		}
+
+		unset($_POST['update_channel']);
+	}
+
+	// csrf_enforce: seeded via set() for the same reason as trusted_hosts above.
+	//
+	// The recommended setting is stored by removing the preference rather than by
+	// writing a number, so that a site which has never expressed a preference
+	// keeps following e107's recommendation when a later release moves it.
+	if(isset($_POST['csrf_enforce']))
+	{
+		$csrfMode = $_POST['csrf_enforce'];
+
+		$known = array(
+			e_session::TOKEN_CHECK_OFF,
+			e_session::TOKEN_CHECK_LOG,
+			e_session::TOKEN_CHECK_ENFORCE,
+			e_session::CSRF_CHECK_TOKEN_OR_SAME_SITE,
+			e_session::CSRF_CHECK_SAME_SITE,
+			e_session::CSRF_CHECK_SAME_ORIGIN,
+		);
+
+		if($csrfMode === '' || !is_numeric($csrfMode) || !in_array((int) $csrfMode, $known, true))
+		{
+			$core_pref->remove('csrf_enforce');
+		}
+		else
+		{
+			$core_pref->set('csrf_enforce', (int) $csrfMode);
+		}
+
+		unset($_POST['csrf_enforce']);
+	}
+
+	// session_cookie_samesite: seeded via set() for the same reason. Anything
+	// the browsers do not recognise is stored as an empty string, i.e. no attribute.
+	if(isset($_POST['session_cookie_samesite']))
+	{
+		$core_pref->set('session_cookie_samesite', e_session::normaliseSameSite($_POST['session_cookie_samesite']));
+		unset($_POST['session_cookie_samesite']);
 	}
 
 	// If email verification or Email/Password Login Method - email address is required!
@@ -1423,6 +1479,57 @@ $text .= "
 					</tr>
 			";
 
+		$csrfModes = array(
+			''                                       => PRFLAN_307,
+			e_session::CSRF_CHECK_TOKEN_OR_SAME_SITE => PRFLAN_308,
+			e_session::CSRF_CHECK_SAME_SITE          => PRFLAN_309,
+			e_session::CSRF_CHECK_SAME_ORIGIN        => PRFLAN_310,
+			e_session::TOKEN_CHECK_ENFORCE           => PRFLAN_311,
+			e_session::TOKEN_CHECK_LOG               => PRFLAN_312,
+			e_session::TOKEN_CHECK_OFF               => PRFLAN_313,
+		);
+
+		// Sec-Fetch-Site is appended only to a potentially trustworthy origin, so
+		// on a site served over plain HTTP the browser-only modes ask for a proof
+		// that can never arrive. e_session::tokenCheckMode() softens them rather
+		// than letting them brick the site, but offering a choice that quietly
+		// means something else is worse than not offering it.
+		$csrfHelp     = PRFLAN_306;
+		$csrfDisabled = array();
+
+		if(!e_session::fetchMetadataReachesUs())
+		{
+			$csrfDisabled = array(e_session::CSRF_CHECK_SAME_SITE, e_session::CSRF_CHECK_SAME_ORIGIN);
+
+			// Never disable what is already stored. A disabled option is one the
+			// admin cannot re-select, so greying out the current setting would let
+			// a save made for some unrelated preference silently rewrite it.
+			if(isset($pref['csrf_enforce']))
+			{
+				$csrfDisabled = array_diff($csrfDisabled, array((int) $pref['csrf_enforce']));
+			}
+
+			$csrfHelp .= "\n".PRFLAN_314;
+		}
+
+		$sameSiteModes = array(
+			'Lax'    => PRFLAN_301,
+			'Strict' => PRFLAN_302,
+			'None'   => PRFLAN_303,
+			''       => PRFLAN_304,
+		);
+
+		$text .= "
+					<tr>
+						<td><label for='csrf-enforce'>".PRFLAN_305."</label>".$frm->help($csrfHelp)."</td>
+						<td>".$frm->select('csrf_enforce', $csrfModes, isset($pref['csrf_enforce']) ? $pref['csrf_enforce'] : '', array('size' => 'xlarge', 'optDisabled' => $csrfDisabled))."</td>
+					</tr>
+					<tr>
+						<td><label for='session-cookie-samesite'>".PRFLAN_299."</label>".$frm->help(PRFLAN_300)."</td>
+						<td>".$frm->select('session_cookie_samesite', $sameSiteModes, e_session::normaliseSameSite(varset($pref['session_cookie_samesite'], 'Lax')), array('size' => 'xlarge'))."</td>
+					</tr>
+			";
+
 	// Secure Image/ Captcha
 	$secureImage = array('signcode'=>PRFLAN_76, 'logcode'=>PRFLAN_81, "fpwcode"=>PRFLAN_138,'admincode'=>PRFLAN_222);
 	
@@ -2137,6 +2244,12 @@ $text .= "
 						<td>".PRFLAN_173."</td>
 						<td>
 							".$frm->radio_switch('check_updates', $pref['check_updates'])."
+						</td>
+					</tr>
+					<tr>
+						<td>".PRFLAN_290.$frm->help(PRFLAN_291)."</td>
+						<td>
+							".$frm->select('update_channel', array('stable' => PRFLAN_292, 'preview' => PRFLAN_293), e107::updateChannel())."
 						</td>
 					</tr>
 				</tbody>

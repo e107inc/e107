@@ -48,6 +48,10 @@ abstract class e_file_inspector implements e_file_inspector_interface
         e_PLUGIN . "pm/sendpm.sc",
         e_PLUGIN . "pm/shortcodes/",
         e_PLUGIN . "social/e_header.php",
+        e_FILE . "e_ajax.php",
+        e_FILE . "e_js.php",
+        e_WEB . "js/e_ajax.php",
+        e_WEB . "js/e_js.php",
     ];
 
     private $existingInsecureFiles = array();

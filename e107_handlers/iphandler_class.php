@@ -796,8 +796,15 @@ class eIPHandler
 		}
 
 
-		$sanitized_domain = strtolower($domain);
+		// $domain may originate from attacker-controlled reverse-DNS (PTR) data and is
+		// later interpolated into SQL by callers (e.g. ban()). Restrict it to valid
+		// hostname characters so no SQL metacharacter can survive into the query.
+		$sanitized_domain = preg_replace('/[^a-z0-9.\-]/', '', strtolower($domain));
 
+		if($sanitized_domain === '' || strpos($sanitized_domain, '.') === false)
+		{
+			return $fieldName ? false : [];
+		}
 
 		$parts = array_reverse(explode('.', $sanitized_domain));
 
@@ -897,7 +904,7 @@ class eIPHandler
 		if ($this->clearBan !== FALSE)
 		{	// Expired ban to clear - match exactly the address which triggered this action - could be a wildcard
 			$clearAddress = $this->ip6AddWildcards($this->clearBan);
-			if ($sql->delete('banlist',"`banlist_ip`='{$clearAddress}'"))
+			if ($sql->createQueryBuilder()->delete('banlist')->where('banlist_ip', $clearAddress)->execute())
 			{
 				$this->actionCount--;		// One less item on list
 				$this->logBanItem(0,'Ban cleared: '.$clearAddress);
@@ -990,7 +997,9 @@ class eIPHandler
 		$full_query = "SELECT * FROM banlist WHERE $query ORDER BY `banlist_bantype` DESC";
 
 		$result = true;
-		$sqlResult = $sql->select('banlist', '*', $query . ' ORDER BY `banlist_bantype` DESC');
+		// $query is a caller-supplied WHERE clause (the value IS the whole predicate);
+		// it cannot be bound locally. Callers must hand over already-safe SQL.
+		$sqlResult = $sql->execute('SELECT * FROM `#banlist` WHERE ' . $query . ' ORDER BY `banlist_bantype` DESC');
 	//	$log->addEvent(4, __FILE__ . "|" . __FUNCTION__ . "@" . __LINE__, "DBG", "SQL Select Result (Call: $call_id)", "Query: $query, Result: " . ($sqlResult !== false ? 'Found' : 'Not Found'), false, LOG_TO_ROLLING);
 
 		if($sqlResult)
@@ -1004,7 +1013,8 @@ class eIPHandler
 			}
 			elseif(($row['banlist_banexpires'] > 0) && ($row['banlist_banexpires'] < time()))
 			{
-				$sql->delete('banlist', $query);
+				// $query is a caller-supplied WHERE clause (cannot be bound locally).
+				$sql->execute('DELETE FROM `#banlist` WHERE ' . $query);
 				$log->addEvent(4, __FILE__ . "|" . __FUNCTION__ . "@" . __LINE__, "DBG", "Ban Expired ", $row['banlist_ip']."\nCall: $call_id", false, LOG_TO_ROLLING);
 
 				$this->regenerateFiles();
@@ -1014,11 +1024,10 @@ class eIPHandler
 				if(!empty($pref['ban_retrigger']) && !empty($pref['ban_durations'][$row['banlist_bantype']]))
 				{
 					$dur = (int) $pref['ban_durations'][$row['banlist_bantype']];
-					$updateQry = array(
-						'banlist_banexpires' => (time() + ($dur * 60 * 60)),
-						'WHERE'              => "banlist_ip ='" . $row['banlist_ip'] . "'"
-					);
-					$sql->update('banlist', $updateQry);
+					$sql->createQueryBuilder()->update('banlist')
+						->setTyped('banlist_banexpires', time() + ($dur * 60 * 60), 'int')
+						->where('banlist_ip', $row['banlist_ip'])
+						->execute();
 					$this->regenerateFiles();
 
 					$log->addEvent(4, __FILE__ . "|" . __FUNCTION__ . "@" . __LINE__, "DBG", "Retrigger Ban ", $row['banlist_ip']."\nCall: $call_id", false, LOG_TO_ROLLING);
@@ -1122,9 +1131,13 @@ class eIPHandler
 			return FALSE;
 		}
 		// See if address already in the banlist
-		if ($sql->select('banlist', '`banlist_bantype`', "`banlist_ip`='{$ban_ip}'"))
+		$banRow = $sql->createQueryBuilder()
+			->select('banlist_bantype')->from('banlist')
+			->where('banlist_ip', $ban_ip)
+			->fetchRow();
+		if ($banRow)
 		{
-			list($banType) = $sql->fetch();
+			$banType = $banRow['banlist_bantype'];
 
 			if ($banType >= eIPHandler::BAN_TYPE_WHITELIST) // Got a whitelist entry for this
 			{
@@ -1144,8 +1157,10 @@ class eIPHandler
 		{
 			$ban_message .= 'Host: '.$this->get_host_name($ban_ip);
 		}
-		// Add using an array - handles DB changes better
-		if(!$sql->insert('banlist',
+		// Add using an array - handles DB changes better. valuesTyped() applies the same
+		// per-column storage transform as the legacy array insert, so writes stay byte-identical.
+		$banlistFieldTypes = $sql->getFieldDefs('banlist')['_FIELD_TYPES'];
+		if(!$sql->createQueryBuilder()->insert('banlist')->valuesTyped(
 			array(
 				'banlist_id'			=> 0,
 				'banlist_ip' 			=> $ban_ip ,
@@ -1155,7 +1170,7 @@ class eIPHandler
 				'banlist_admin' 		=> $ban_user ,
 				'banlist_reason' 		=> $ban_message ,
 				'banlist_notes' 		=> $ban_notes
-			)))
+			), $banlistFieldTypes)->execute())
 		{
 			trigger_error("Error adding ban to banlist table", E_USER_WARNING);;
 			// dbg("Error adding ban to banlist table");
@@ -1287,12 +1302,13 @@ class eIPHandler
 	{
 		$ourDB = e107::getDb('olcheckDB');			// @todo is this OK, or should an existing one be used?
 
-		$result = $ourDB->select('online', '*', "`user_ip` = '{$ip}' OR `user_token` = '{$browser}'");
-		if ($result === FALSE) return FALSE;
+		$rows = $ourDB->createQueryBuilder()->select('*')->from('online')
+			->where('user_ip', $ip)->orWhere('user_token', $browser)
+			->fetchAll();
 		$gotIP = FALSE;
 		$gotBrowser = FALSE;
 		$bestRow = FALSE;
-		while (FALSE !== ($row = $ourDB->fetch()))
+		foreach ($rows as $row)
 		{
 			if ($row['user_token'] == $browser)
 			{
@@ -1403,9 +1419,12 @@ class banlistManager
 
 		$fileNameList = array('ip' => eIPHandler::BAN_FILE_IP_NAME, 'htaccess' => eIPHandler::BAN_FILE_HTACCESS, 'csv' => eIPHandler::BAN_FILE_CSV_NAME);
 
-		$qry = 'SELECT * FROM `#banlist` ';
-		if ($typeList != '') $qry .= " WHERE`banlist_bantype` IN ({$typeList})";
-		$qry .= ' ORDER BY `banlist_bantype` DESC';			// Order ensures whitelisted addresses appear first
+		$qb = $sql->createQueryBuilder()->select('*')->from('banlist');
+		if ($typeList != '')
+		{
+			$qb->whereIn('banlist_bantype', array_map('intval', explode(',', $typeList)));
+		}
+		$qb->orderBy('banlist_bantype', 'DESC');			// Order ensures whitelisted addresses appear first
 
 		// Create a temporary file for each type as demanded. Vet the options array on this pass, as well
 		foreach($optList as $k => $opt)
@@ -1430,33 +1449,30 @@ class banlistManager
 			}
 		}
 
-		if ($sql->gen($qry))
+		foreach ($qb->fetchEach() as $row)
 		{
-			while ($row = $sql->fetch())
+			$row['banlist_ip'] = $this->trimWildcard($row['banlist_ip']);
+			if ($row['banlist_ip'] == '') continue;								// Ignore empty IP addresses
+			if ($ipManager->whatIsThis($row['banlist_ip']) != 'ip') continue;		// Ignore non-numeric IP Addresses
+			if ($row['banlist_bantype'] == eIPHandler::BAN_TYPE_LEGACY) $row['banlist_bantype'] = eIPHandler::BAN_TYPE_UNKNOWN;		// Handle legacy bans
+			foreach ($optList as $opt)
 			{
-				$row['banlist_ip'] = $this->trimWildcard($row['banlist_ip']);
-				if ($row['banlist_ip'] == '') continue;								// Ignore empty IP addresses
-				if ($ipManager->whatIsThis($row['banlist_ip']) != 'ip') continue;		// Ignore non-numeric IP Addresses
-				if ($row['banlist_bantype'] == eIPHandler::BAN_TYPE_LEGACY) $row['banlist_bantype'] = eIPHandler::BAN_TYPE_UNKNOWN;		// Handle legacy bans
-				foreach ($optList as $opt)
+				$line = '';
+				switch ($opt)
 				{
-					$line = '';
-					switch ($opt)
-					{
-						case 'ip' :
-							// IP_address	action	expiry_time additional_parameters
-							$line = $row['banlist_ip'].' '.$row['banlist_bantype'].' '.$row['banlist_banexpires']."\n";
-							break;
-						case 'htaccess' :
-							$line = (($row['banlist_bantype'] > 0) ? 'allow from ' : 'deny from ').$row['banlist_ip']."\n";
-							break;
-						case 'csv' :		/// @todo - when PHP5.1 is minimum, can use fputcsv() function
-							$line = $row['banlist_ip'].','.$this->dateFormat($row['banlist_datestamp']).','.$this->dateFormat($row['banlist_expires']).',';
-							$line .= $row['banlist_bantype'].',"'.$row['banlist_reason'].'","'.$row['banlist_notes'].'"'."\n";
-							break;
-					}
-					fwrite($fileList[$opt], $line);
+					case 'ip' :
+						// IP_address	action	expiry_time additional_parameters
+						$line = $row['banlist_ip'].' '.$row['banlist_bantype'].' '.$row['banlist_banexpires']."\n";
+						break;
+					case 'htaccess' :
+						$line = (($row['banlist_bantype'] > 0) ? 'allow from ' : 'deny from ').$row['banlist_ip']."\n";
+						break;
+					case 'csv' :		/// @todo - when PHP5.1 is minimum, can use fputcsv() function
+						$line = $row['banlist_ip'].','.$this->dateFormat($row['banlist_datestamp']).','.$this->dateFormat($row['banlist_expires']).',';
+						$line .= $row['banlist_bantype'].',"'.$row['banlist_reason'].'","'.$row['banlist_notes'].'"'."\n";
+						break;
 				}
+				fwrite($fileList[$opt], $line);
 			}
 		}
 
@@ -1713,13 +1729,16 @@ class banlistManager
 
 		foreach ($ipAction as $ipKey => $ipInfo)
 		{
-			if ($ourDb->select('banlist', '*', "`banlist_ip`='".$ipKey."'") === 1)
+			if ($ourDb->createQueryBuilder()->select('*')->from('banlist')->where('banlist_ip', $ipKey)->execute() === 1)
 			{
 				if ($row = $ourDb->fetch())
 				{
 					// @todo check next line
-					$writeDb->update('banlist',
-					'`banlist_banexpires` = '.intval($row['banlist_banexpires'] + $pref['ban_durations'][$row['banlist_banreason']]));
+					// NOTE: behaviour-preserving - the original update had no WHERE clause,
+					// so this still updates every banlist row (pre-existing behaviour).
+					$writeDb->createQueryBuilder()->update('banlist')
+						->set('banlist_banexpires', intval($row['banlist_banexpires'] + $pref['ban_durations'][$row['banlist_banreason']]))
+						->execute();
 					$numRet++;
 				}
 			}
