@@ -135,7 +135,7 @@ e107::coreLan('menus', true);
 e107::coreLan('admin', true);
 
 
-if(e_MENUMANAGER_ACTIVE === true || vartrue($_GET['enc']))
+if(e_MENUMANAGER_ACTIVE === true || vartrue($_GET['vis']) || vartrue($_GET['parmsId']))
 {
 	e107::callMethod('theme', 'init'); // v2.3.0+ new theme
 
@@ -691,22 +691,16 @@ $e_sub_cat = 'menus';
 require_once(e_HANDLER."file_class.php");
 require_once(e_HANDLER."menumanager_class.php");
 
-$rs = new form;
 $frm = e107::getForm();
+$rs = new form;
 $men = new e_menuManager(0);   // use 1 for dragdrop.
 $mes = e107::getMessage();
 
 if(e_AJAX_REQUEST)
 {
 	
-	if(!empty($_GET['enc']))
-	{
-		$string = base64_decode($_GET['enc']);
-		parse_str($string,$_GET);
-
-	}
 //	print_a($_POST);
-	
+
 	if(!empty($_GET['vis']))
 	{
 		$text = $men->menuVisibilityOptions();
