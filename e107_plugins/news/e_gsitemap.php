@@ -9,6 +9,8 @@
 *	gSitemap addon
 */
 
+use e107\Database\QueryBuilder;
+
 if (!defined('e107_INIT'))
 {
 	exit;
@@ -40,16 +42,24 @@ class news_gsitemap
 	private function getNewsPosts()
 	{
 		/* public, guests */
-		$userclass_list = "0,252";
+		$userclass_list = array(0, 252);
 		$_t = time();		/* public, quests */
 
-        $query = "SELECT n.*, nc.category_name, nc.category_sef FROM #news AS n 
-                LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id 
-				WHERE n.news_class IN (". $userclass_list.") AND n.news_start < ".$_t." AND (n.news_end=0 || n.news_end>".time().") ORDER BY n.news_datestamp ASC ";
+		$now = time();
 
-	//	$data = $sql->retrieve("news", "*", "news_class IN (" . $userclass_list . ") AND news_start < " . $_t . "   ORDER BY news_datestamp ASC", true);
+		$qb = e107::getDb()->createQueryBuilder();
 
-		return e107::getDb()->retrieve($query,true);
+		return $qb
+			->select('n.*', 'nc.category_name', 'nc.category_sef')
+			->from('news', 'n')
+			->leftJoin('news_category', 'nc', $qb->expr()->compareColumns('n.news_category', 'nc.category_id'))
+			->whereIn('n.news_class', $userclass_list)
+			->where('n.news_start', '<', $_t)
+			->where(function (QueryBuilder $q) use ($now) {
+				$q->where('n.news_end', 0)->orWhere('n.news_end', '>', $now);
+			})
+			->orderBy('n.news_datestamp', 'ASC')
+			->fetchAll();
 
 	}
 
@@ -62,7 +72,10 @@ class news_gsitemap
 		/* public, quests */
 		$userclass_list = "0,252";
 		$_t = time();
-		$data = $sql->retrieve("news_category", "*", " ORDER BY category_order ASC", true);
+		$data = $sql->createQueryBuilder()
+			->select('*')->from('news_category')
+			->orderBy('category_order', 'ASC')
+			->fetchAll();
 
 		foreach($data as $row)
 		{

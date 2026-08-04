@@ -122,31 +122,24 @@ class admin_shortcodes extends e_shortcode
     public function sc_admin_coreupdate($parm='')
 	{
         $che = e107::getCache();
-        $mes = e107::getMessage();
-        
         $che->setMD5(e_LANGUAGE);
-    
-        $cacheData = $che->retrieve('releasecheck',3600, TRUE); // 2.0.1 | 'up-to-date' | false ;
-    	
-  		$cacheData = 2.1; // XXX Remove to test for real. 
-    	
-    	return false;  // XXX Remove to test for real. 
-    	
-        if($cacheData)
-        {
-            return $this->cronUpdateRender($parm, $cacheData); 
-        }
-       
 
-        require_once(e_HANDLER. 'cron_class.php');
-        $cron = new _system_cron();
-        
-        if($result = $cron->checkCoreUpdate())
+        $cacheData = $che->retrieve('releasecheck', 3600, TRUE); // 2.0.1 | 'up-to-date' | false
+
+        if($cacheData === false)
         {
-           return $this->cronUpdateRender($parm, $cacheData); 
+            $update    = e107::coreUpdateAvailable();
+            $cacheData = !empty($update['version']) ? $update['version'] : 'up-to-date';
+            $che->set('releasecheck', $cacheData, TRUE);
         }
-    
-        
+
+        if($cacheData && $cacheData !== 'up-to-date')
+        {
+            return $this->cronUpdateRender($parm, $cacheData);
+        }
+
+        return '';
+
 	}
 	
 	
@@ -392,19 +385,6 @@ class admin_shortcodes extends e_shortcode
 			{
 				e107::getRedirect()->redirect($slng->subdomainUrl($lanperms[0]));
 			}
-			/*$sql->mySQLlanguage = ($lanperms[0] != $pref['sitelanguage']) ? $lanperms[0] : "";
-			if ($pref['user_tracking'] == "session")
-			{
-				$_SESSION['e107language_'.$pref['cookie_name']] = $lanperms[0];
-				if($pref['multilanguage_subdomain']){
-					header("Location:".$slng->subdomainUrl($lanperms[0]));
-				}
-			}
-			else
-			{
-				setcookie('e107language_'.$pref['cookie_name'], $lanperms[0], time() + 86400, '/');
-				$_COOKIE['e107language_'.$pref['cookie_name']]= $lanperms[0];
-			}*/
 		}
 
 		if(varset($GLOBALS['mySQLtablelist']))
@@ -460,23 +440,6 @@ class admin_shortcodes extends e_shortcode
 			$select .= '</select>';
 
 		}
-		/*elseif(isset($params['nobutton']))
-		{
-			$select .= "
-			<form method='post' action='".e_SELF.(e_QUERY ? '?'.e_QUERY : '')."'>
-			<div>
-			<select name='sitelanguage' id='sitelanguage' class='tbox' onchange=\"location.href=this.options[selectedIndex].value\">";
-			foreach($lanperms as $lng)
-			{
-				$langval = e_SELF.'?['.$slng->convert($lng).']'.e_QUERY;
-				$selected = ($lng == $sql->mySQLlanguage || ($lng == $pref['sitelanguage'] && !$sql->mySQLlanguage)) ? " selected='selected'" : "";
-				$select .= "<option value='".$langval."'{$selected}>$lng</option>\n";
-			}
-			$select .= "</select>
-			</div>
-			</form>
-			";
-		}*/
 		else
 		{
 			$select .= "
@@ -527,9 +490,9 @@ class admin_shortcodes extends e_shortcode
 					$pref 	= e107::getPref();
 					$mes 	= e107::getMessage();
 
-					$active_uploads 	= $sql->count('upload', '(*)', 'WHERE upload_active = 0');
-					$submitted_news 	= $sql->count('submitnews', '(*)', 'WHERE submitnews_auth = 0');
-					$comments_pending 	= $sql->count('comments', '(*)', 'WHERE comment_blocked = 2 ');
+					$active_uploads 	= $sql->createQueryBuilder()->from('upload')->where('upload_active', 0)->count();
+					$submitted_news 	= $sql->createQueryBuilder()->from('submitnews')->where('submitnews_auth', 0)->count();
+					$comments_pending 	= $sql->createQueryBuilder()->from('comments')->where('comment_blocked', 2)->count();
 
 				//	$text = "<div class='left'><div style='padding-bottom: 2px;'>".E_16_NEWS.($submitted_news ? " <a href='".e_ADMIN."newspost.php?mode=sub&amp;action=list'>".ADLAN_LAT_2.": $submitted_news</a>" : ' '.ADLAN_LAT_2.': 0').'</div>';
 				//	$text .= "<div style='padding-bottom: 2px;'>".E_16_COMMENT. " <a href='".e_ADMIN_ABS."comment.php?searchquery=&filter_options=comment_blocked__2'>".ADLAN_LAT_9.": $comments_pending</a></div>";		
@@ -554,14 +517,8 @@ class admin_shortcodes extends e_shortcode
 					}
 
 					$messageTypes = array(/*'Broken Download',*/ 'Dev Team Message');
-					$queryString = '';
-					foreach($messageTypes as $types)
-					{
-						$queryString .= " gen_type='$types' OR";
-					}
-					$queryString = substr($queryString, 0, -3);
 
-					if($amount = $sql->select('generic', '*', $queryString))
+					if($amount = $sql->createQueryBuilder()->from('generic')->whereIn('gen_type', $messageTypes)->count())
 					{
 					//	$text .= "<br /><b><a href='".e_ADMIN_ABS."message.php'>".ADLAN_LAT_8." [".$amount."]</a></b>";
 						
@@ -656,23 +613,28 @@ class admin_shortcodes extends e_shortcode
 					$sql = e107::getDb();
 					$ns = e107::getRender();
 					$text = "<ul class='list-group'><li class='list-group-item'>".defset('E_16_ADMINLOG')." <a style='cursor: pointer' onclick=\"expandit('adminlog')\">".ADLAN_116."</a></li></ul>\n";
+					$logQb = $sql->createQueryBuilder()->select('*')->from('admin_log')
+						->orderBy('dblog_datestamp', 'DESC');
 					if (e_QUERY === 'logall')
 					{
 						$text .= "<div id='adminlog'>";
-						$cnt = $sql ->select('admin_log', '*', 'ORDER BY `dblog_datestamp` DESC', 'no_where');
 					}
 					else
 					{
 						$text .= "<div style='display: none;' id='adminlog'>";
-						$cnt = $sql ->select('admin_log', '*', 'ORDER BY `dblog_datestamp` DESC LIMIT 0,10', 'no_where');
+						$logQb->setFirstResult(0)->setMaxResults(10);
+					}
+					$gen = e107::getDate();
+					$items = '';
+					$cnt = 0;
+					foreach ($logQb->fetchEach() as $row)
+					{
+						$cnt++;
+						$datestamp = $gen->convert_date($row['dblog_datestamp'], 'short');
+						$items .= "<li class='list-group-item'>{$datestamp} - ".defset($row['dblog_title'],$row['dblog_title'] ). '</li>';
 					}
 					$text .= ($cnt) ? '<ul class="list-group">' : '';
-					$gen = e107::getDate();
-					while ($row = $sql ->fetch())
-					{
-						$datestamp = $gen->convert_date($row['dblog_datestamp'], 'short');
-						$text .= "<li class='list-group-item'>{$datestamp} - ".defset($row['dblog_title'],$row['dblog_title'] ). '</li>';
-					}
+					$text .= $items;
 					$text .= ($cnt ? '</ul>' : '');
 					$text .= "<p><a class='btn btn-sm btn-primary' href='".e_ADMIN_ABS."admin_log.php'>".ADLAN_117. '</a> ';
 					$text .= "<a class='btn btn-sm btn-primary' href='".e_ADMIN_ABS."admin_log.php?mode=main&action=maintenance'>".ADLAN_118. '</a></p>';
@@ -823,16 +785,12 @@ class admin_shortcodes extends e_shortcode
 
 	public function sc_admin_perm_emulation()
 	{
-
-		if(!$id = e107::getSession()->get('emulate'))
+		// Re-verified on every request by e_user::loadEmulation() (#5745);
+		// null whenever emulation is not active or no longer allowed.
+		$emulated = e107::getUser()->getEmulatedUser();
+		if(null === $emulated)
 		{
-			return null; // Return nothing if not in emulation mode
-		}
-
-		$emulatedUser = e107::user($id);
-		if(empty($emulatedUser))
-		{
-			return null; // Return nothing if user data is invalid
+			return null;
 		}
 
 		// Initialize e107 parser and form helper
@@ -842,9 +800,9 @@ class admin_shortcodes extends e_shortcode
 		// Prepare the navbar dropdown
 		$text = "<ul class='nav nav-admin navbar-nav navbar-right admin-icon-emulation'>
                 <li class='dropdown'>
-                    <a class='dropdown-toggle' title='User Access Emulation Mode' role='button' data-toggle='dropdown' href='#'>";
+                    <a class='dropdown-toggle' title='" . LAN_EMULATION_MODE . "' role='button' data-toggle='dropdown' href='#'>";
 
-		$name = $emulatedUser['user_login'] ?? $emulatedUser['user_name'];
+		$name = $emulated->getRealName();
 		// Add warning glyph and emulated username (with fa-beat modification)
 		$text .= $tp->toGlyph('fa-user-secret', ['class' => 'fa-fade text-warning']) .
 			"<span class='text-warning hidden-xs hidden-sm hidden-md' style='margin-left: 5px'>" . $tp->toHTML($name) . "</span>" .
@@ -855,14 +813,14 @@ class admin_shortcodes extends e_shortcode
 
 		// Emulated user details with fixed height and scrollbar
 		$text .= '<li role="menuitem" class="text-left"><div style="padding: 10px; max-height: 300px; overflow-y: auto;">';
-		$text .= "<p><strong>Emulated Admin:</strong><br />";
-		$text .= '<ul class="list-unstyled" style="margin-left: 20px"><li>' . $tp->toHTML($emulatedUser['user_name']) . '</li></ul></p>';
+		$text .= "<p><strong>" . LAN_EMULATION_EMULATING . "</strong><br />";
+		$text .= '<ul class="list-unstyled" style="margin-left: 20px"><li>' . $tp->toHTML($emulated->getName()) . '</li></ul></p>';
 
-		// User Classes as bullets, sorted alphabetically, excluding PUBLIC (0), MAINADMIN (250), READONLY (251), GUEST (252), MEMBER (253), ADMIN (254), NOBODY (255)
-		$text .= "<p><strong>User Classes:</strong><br />";
-		$classIds = array_filter(explode(',', $emulatedUser['user_class']));
-		$excludedClasses = ['0', '250', '251', '252', '253', '254', '255']; // PUBLIC, MAINADMIN, READONLY, GUEST, MEMBER, ADMIN, NOBODY
-		$classIds = array_diff($classIds, $excludedClasses);
+		// Effective user classes (including inherited and implicit ones) as
+		// bullets, sorted alphabetically, minus the fixed system classes.
+		$text .= "<p><strong>" . LAN_EMULATION_USERCLASSES . "</strong><br />";
+		$excludedClasses = [e_UC_PUBLIC, e_UC_MAINADMIN, e_UC_READONLY, e_UC_GUEST, e_UC_MEMBER, e_UC_ADMIN, e_UC_NOBODY, e_UC_ADMINMOD, e_UC_MODS, e_UC_NEWUSER, e_UC_BOTS];
+		$classIds = array_diff($emulated->getClassList(), $excludedClasses);
 		if(!empty($classIds))
 		{
 			$classNames = [];
@@ -881,15 +839,16 @@ class admin_shortcodes extends e_shortcode
 		}
 		else
 		{
-			$text .= 'None';
+			$text .= LAN_NONE;
 		}
 		$text .= "</p>";
 
 		// Admin Permissions as bullets, sorted alphabetically
-		$text .= "<p><strong>Admin Permissions:</strong><br />";
-		if(!empty($emulatedUser['user_perms']) && $emulatedUser['user_perms'] !== '.')
+		$text .= "<p><strong>" . LAN_EMULATION_ADMINPERMS . "</strong><br />";
+		$perms = $emulated->getAdminPerms();
+		if(!empty($perms) && $perms !== '.')
 		{
-			$permKeys = array_filter(explode('.', $emulatedUser['user_perms']));
+			$permKeys = array_filter(explode('.', $perms));
 			$permdiz = e107::getUserPerms()->getPermList('all');
 			$permNames = [];
 			foreach($permKeys as $p)
@@ -909,12 +868,12 @@ class admin_shortcodes extends e_shortcode
 			}
 			else
 			{
-				$text .= 'None';
+				$text .= LAN_NONE;
 			}
 		}
 		else
 		{
-			$text .= 'None';
+			$text .= LAN_NONE;
 		}
 		$text .= "</p>";
 
@@ -924,12 +883,12 @@ class admin_shortcodes extends e_shortcode
 		// Divider
 		$text .= '<li class="divider"></li>';
 
-		// Stop Emulation button using form helper with correct implementation
+		// Stop Emulation button posting to the dedicated admin route (with CSRF token)
 		$text .= '<li role="menuitem" class="text-right">';
-		$text .= "<p style='padding:15px'><small class='text-muted'>This is a temporary emulation mode and will be cleared when you log out.</small></p>";
-		$text .= $frm->open('emulation-form', 'post', e_REQUEST_URI, array('class' => 'no-margin'));
+		$text .= "<p style='padding:15px'><small class='text-muted'>" . LAN_EMULATION_TEMPORARY . "</small></p>";
+		$text .= $frm->open('emulation-stop-form', 'post', e_ADMIN_ABS . 'users.php?mode=main&action=emulatestop', array('class' => 'no-margin'));
 		$icon = '<i class="fa fa-right-from-bracket fa-fw"></i>';
-		$text .= $frm->button('stopEmulation', $icon . ' Stop Emulating');
+		$text .= $frm->button('stopEmulation', $icon . ' ' . LAN_EMULATION_STOP);
 		$text .= $frm->close();
 		$text .= '</li>';
 
@@ -1044,7 +1003,7 @@ class admin_shortcodes extends e_shortcode
 			return;
 		}
 
-		$pid = e107::getDb()->retrieve('plugin', 'plugin_id', "plugin_path = 'pm'");
+		$pid = e107::getDb()->createQueryBuilder()->select('plugin_id')->from('plugin')->where('plugin_path', 'pm')->fetchOne();
 
 		if(!getperms(0) && !getperms('P', 'P'.$pid))
 		{
@@ -1054,7 +1013,7 @@ class admin_shortcodes extends e_shortcode
         $sql = e107::getDb();
 		$tp = e107::getParser();
 		
-        $count =  $sql->count('private_msg','(*)','WHERE pm_read = 0 AND pm_to='.USERID);
+        $count =  $sql->createQueryBuilder()->from('private_msg')->where('pm_read', 0)->where('pm_to', (int) USERID)->count();
        
        	if ($count >0)
        	{
@@ -1087,33 +1046,6 @@ class admin_shortcodes extends e_shortcode
         
         return $text;
         
-      //  e107_plugins/pm/pm.php
-        
-        
-        
-       /*
-        
-		$text = '
-		<li class="dropdown">
-			<a class="dropdown-toggle" title="Messages" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" href="#" >
-				<i class="icon-envelope icon-white active"></i> 3 <b class="caret"></b>
-			</a> 
-			<div id="dropdown" class="dropdown-menu pull-right e-noclick" style="padding:10px;width:300px">
-				<ul class="nav-list">
-		    		<li class="nav-header navbar-header">Unread Messages</li>
-		    		<li><a href="#">Incoming Message Number 1</a></li>
-		      		<li><a href="#">Incoming Message Number 2</a></li>
-		        	<li><a href="#">Incoming Message Number 3</a></li>
-		         	<li role="separator" class="divider"></li>
-		   		</ul>
-				<textarea class="e-tip input-block-level" title="Example Only"></textarea>
-				<button class="dropdown-toggle btn btn-primary">Send</button>	
-			</div>
-		</li>
-		';
-
-		return $text;
-       */
 	}
 
 
@@ -1222,7 +1154,8 @@ class admin_shortcodes extends e_shortcode
 
 			$nav_sql = new db;
 			$tmp = array();
-			if ($nav_sql ->select('plugin', '*', 'plugin_installflag=1'))
+			$navPlugins = $nav_sql->createQueryBuilder()->select('*')->from('plugin')->where('plugin_installflag', 1)->fetchAll();
+			if ($navPlugins)
 			{
 				$tmp = array();
 				$e107_var['plugm']['text'] = ADLAN_95;
@@ -1234,7 +1167,7 @@ class admin_shortcodes extends e_shortcode
 				$tmp['plugm']['link'] = e_ADMIN.'plugin.php';
 				$tmp['plugm']['perm'] = 'P';
 
-				while($rowplug = $nav_sql ->fetch())
+				foreach($navPlugins as $rowplug)
 				{
 					$plugin_id = $rowplug['plugin_id'];
 					$plugin_path = $rowplug['plugin_path'];
@@ -1290,17 +1223,15 @@ class admin_shortcodes extends e_shortcode
 				if (strpos(e_SELF, '/admin.php') !== false)
 				{
 					global $sql;
-					if ($sql ->select('plugin', '*', 'plugin_installflag=1'))
+					$installedPlugins = $sql->createQueryBuilder()->select('*')->from('plugin')->where('plugin_installflag', 1)->fetchAll();
+					foreach($installedPlugins as $rowplug)
 					{
-						while($rowplug = $sql->fetch())
+						extract($rowplug);
+						if(varset($rowplug['plugin_name']))
 						{
-							extract($rowplug);
-							if(varset($rowplug[1]))
-							{
-								$e107_plug[$rowplug[1]] = varset($rowplug[3]);
-							}
-
+							$e107_plug[$rowplug['plugin_name']] = varset($rowplug['plugin_path']);
 						}
+
 					}
 				}
 				if (is_array($e107_plug))
@@ -1523,25 +1454,11 @@ class admin_shortcodes extends e_shortcode
 					$pref = e107::getPref();
 					
 					
-					$members 		= $sql->count('user', '(*)', 'WHERE user_ban=0');
-					$unverified 	= $sql->count('user', '(*)', 'WHERE user_ban=2');
-					$banned 		= $sql->count('user', '(*)', 'WHERE user_ban=1');
-					$comments 		= $sql->count('comments');
+					$members 		= $sql->createQueryBuilder()->from('user')->where('user_ban', 0)->count();
+					$unverified 	= $sql->createQueryBuilder()->from('user')->where('user_ban', 2)->count();
+					$banned 		= $sql->createQueryBuilder()->from('user')->where('user_ban', 1)->count();
+					$comments 		= $sql->createQueryBuilder()->from('comments')->count();
 
-					/*
-					$unver = ($unverified ? " <a href='".e_ADMIN."users.php?searchquery=&amp;filter_options=user_ban__2&amp;filter=unverified'> ".ADLAN_111.": {$unverified}</a>" : ADLAN_111);
-					$lban = ($banned) ? "<a href='".e_ADMIN_ABS."users.php??searchquery=&filter_options=user_ban__1&filter=banned'>".ADLAN_112. ": ".$banned."</a>" : ADLAN_112.":";
-					$lcomment = ($comments) ? "<a href='".e_ADMIN_ABS."comment.php'>".ADLAN_114.": ".$comments."</a>" : ADLAN_114;
-					
-					$text = "
-					<div class='left'>
-						<div style='padding-bottom: 2px;'>". E_16_USER." <a href='".e_ADMIN_ABS."users.php?filter=0'>".ADLAN_110.": ".$members."</a></div>
-						<div style='padding-bottom: 2px;'>".E_16_USER." {$unver}</div>
-						<div style='padding-bottom: 2px;'>".E_16_BANLIST." ".$lban."</div>
-						<div style='padding-bottom: 2px;'>".E_16_COMMENT." ".$lcomment."</div>\n\n";
-						
-					*/
-					// for BC only. 	
 	
 					
 					$oldconfigs['e-user'][0] 		= array('icon' =>defset('E_16_USER'), 'title' =>ADLAN_110, 'url' => e_ADMIN_ABS. 'users.php?searchquery=&amp;filter_options=user_ban__0', 'total' =>$members, 'invert' =>1);
@@ -1553,13 +1470,13 @@ class admin_shortcodes extends e_shortcode
 					{
 						$oldconfigs['e-comments'][0] 	= array('icon' => defset('E_16_COMMENT'), 'title' =>LAN_COMMENTS, 'url' => e_ADMIN_ABS. 'comment.php', 'total' =>$comments);
 					}
-					if($flo = $sql->count('generic', '(*)', "WHERE gen_type='failed_login'"))
+					if($flo = $sql->createQueryBuilder()->from('generic')->where('gen_type', 'failed_login')->count())
 					{
 						//$text .= "\n\t\t\t\t\t<div style='padding-bottom: 2px;'>".E_16_FAILEDLOGIN." <a href='".e_ADMIN_ABS."fla.php'>".ADLAN_146.": $flo</a></div>";	
 						$oldconfigs['e-failed'][0]	= array('icon' => defset('E_16_FAILEDLOGIN'), 'title' =>ADLAN_146, 'url' =>e_ADMIN_ABS. 'banlist.php?mode=failed&action=list', 'total' =>$flo);
 					}
 
-					if($emls = $sql->count('mail_recipients', '(*)', 'WHERE mail_status = 13'))
+					if($emls = $sql->createQueryBuilder()->from('mail_recipients')->where('mail_status', 13)->count())
 					{
 						//$text .= "\n\t\t\t\t\t<div style='padding-bottom: 2px;'>".E_16_FAILEDLOGIN." <a href='".e_ADMIN_ABS."fla.php'>".ADLAN_146.": $flo</a></div>";
 						$oldconfigs['e-mailout'][0]	= array('icon' => defset('E_16_MAIL'), 'title' =>ADLAN_167, 'url' =>e_ADMIN_ABS. 'mailout.php?mode=pending&action=list', 'total' =>$emls);
@@ -1734,32 +1651,6 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 		return "<div id='e-admin-addons-update'><!-- --></div>";
 
-/*
-
-		e107::getDb()->db_mark_time("sc_admin_addon_updates() // start");
-
-		$themes = $this->getUpdateable('theme');
-		$plugins = $this->getUpdateable('plugin');
-
-		$text = $this->renderAddonUpdate($plugins);
-		$text .= $this->renderAddonUpdate($themes);
-
-		if(empty($text))
-		{
-			return null;
-		}
-		$ns = e107::getRender();
-
-		$tp = e107::getParser();
-		$ns->setUniqueId('e-addon-updates');
-
-		e107::getDb()->db_mark_time("sc_admin_addon_updates() // end");
-
-
-
-
-
-		return $ns->tablerender($tp->toGlyph('fa-arrow-circle-o-down').LAN_UPDATE_AVAILABLE,$text,'default',true);*/
 
 
 	}
@@ -2007,276 +1898,6 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 	/**
 	 * Old Admin Navigation Routine.
 	 */
-	 /*
-	function sc_admin_navigationOld($parm=null)
-	{
-	
-		if (!ADMIN) return '';
-	//	global $admin_cat, $array_functions, $array_sub_functions, $pref;
-		
-		$pref = e107::getPref();
-
-		$admin_cat 				= e107::getNav()->adminCats();		
-		$array_functions 		= e107::getNav()->adminLinks('legacy');
-		$array_sub_functions	= e107::getNav()->adminLinks('sub');	
-		
-
-		$tp 	= e107::getParser();
-		$e107	= e107::getInstance();
-		$sql	= e107::getDb('sqlp');
-
-		parse_str($parm, $parms);
-		$tmpl = strtoupper(varset($parms['tmpl'], 'E_ADMIN_NAVIGATION'));
-		global $$tmpl;
-		
-		if($parm == self::ADMIN_NAV_HOME || $parm == self::ADMIN_NAV_LOGOUT || $parm == self::ADMIN_NAV_LANGUAGE || $parm == 'pm')
-		{
-			$template = $$tmpl;
-
-			$template['start'] = $template['start_other'];
-
-			$menu_vars = $this->getOtherNav($parm);	
-			return e107::getNav()->admin('', '', $menu_vars, $template, FALSE, FALSE);
-		}
-        
-
-        
-		// MAIN LINK
-		if($parm != 'no-main')
-		{
-			$menu_vars = array();
-			$menu_vars['adminhome']['text'] = ADLAN_151;
-			$menu_vars['adminhome']['link'] = e_ADMIN_ABS.'admin.php';
-			$menu_vars['adminhome']['image'] = "<img src='".E_16_NAV_MAIN."' alt='".ADLAN_151."' class='icon S16' />";
-			$menu_vars['adminhome']['image_src'] = ADLAN_151;
-			$menu_vars['adminhome']['perm'] = '';
-		}
-
-		//ALL OTHER ROOT LINKS - temporary data transformation - data structure will be changed in the future and this block will be removed
-
-  		foreach($admin_cat['id'] as $i => $cat)
-		{
-			
-			$id = $admin_cat['id'][$i];
-			$menu_vars[$id]['text'] = $admin_cat['title'][$i];
-			$menu_vars[$id]['description'] = $admin_cat['title'][$i];
-			$menu_vars[$id]['link'] = '#';
-			$menu_vars[$id]['image'] = "<img src='".$admin_cat['img'][$i]."' alt='".$admin_cat['title'][$i]."' class='icon S16' />";
-			$menu_vars[$id]['image_large'] = "<img src='".$admin_cat['lrg_img'][$i]."' alt='".$admin_cat['title'][$i]."' class='icon S32' />";
-			$menu_vars[$id]['image_src'] = $admin_cat['img'][$i];
-			$menu_vars[$id]['image_large_src'] = $admin_cat['lrg_img'][$i];
-			// FIX - 'perm' should not be set or navigation->admin() will be broken (bad permissions) for non main administrators
-			//$menu_vars[$id]['perm'] = '';
-			$menu_vars[$id]['sort'] = $admin_cat['sort'][$i];
-
-
-		}
-
-		//CORE SUBLINKS
-		$active = '';
-		foreach ($array_functions as $key => $subitem)
-		{
-			if(!empty($subitem[3]) && !getperms($subitem[3]))
-			{
-				continue;
-			}
-
-				$catid = $admin_cat['id'][$subitem[4]];
-				$tmp = array();
-				$tmp['text'] = $subitem[1];
-				$tmp['description'] = $subitem[2];
-				$tmp['link'] = $subitem[0];
-				$tmp['image'] = $subitem[5];
-				$tmp['image_large'] = $subitem[6];
-				$tmp['image_src'] = '';
-				$tmp['image_large_src'] = '';
-				$tmp['perm'] = $subitem[3];
-				$tmp['sub_class'] = '';
-				$tmp['sort'] = false;
-
-				if(strpos(e_REQUEST_SELF,$tmp['link'])!==false)
-				{
-					$active = $catid;
-				}
-
-
-
-			//	e107::getDebug()->log($catid);
-
-				if(vartrue($pref['admin_slidedown_subs']) && vartrue($array_sub_functions[$key]))
-				{
-					$tmp['sub_class'] = 'sub';
-					foreach ($array_sub_functions[$key] as $subkey => $subsubitem)
-					{
-						$subid = $key.'_'.$subkey;
-						$tmp['sub'][$subid]['text'] = $subsubitem[1];
-						$tmp['sub'][$subid]['description'] = $subsubitem[2];
-						$tmp['sub'][$subid]['link'] = $subsubitem[0];
-						$tmp['sub'][$subid]['image'] = $subsubitem[5];
-						$tmp['sub'][$subid]['image_large'] = $subsubitem[6];
-						$tmp['sub'][$subid]['image_src'] = '';
-						$tmp['sub'][$subid]['image_large_src'] = '';
-						$tmp['sub'][$subid]['perm'] = $subsubitem[3];
-					}
-				}
-
-				if($tmp) $menu_vars[$catid]['sub'][$key] = $tmp;
-		}
-
-
-		//PLUGINS
-		require_once(e_HANDLER.'plugin_class.php');
-		$plug = new e107plugin;
-		$tmp = array();
-
-   		if($sql->select("plugin", "*", "plugin_installflag =1 ORDER BY plugin_path"))
-		{
-			while($row = $sql->fetch())
-			{
-				
-				if($plug->parse_plugin($row['plugin_path']))
-				{
-					$plug_vars = $plug->plug_vars;
-
-				//	if($row['plugin_path']=='calendar_menu')
-				//	{
-				//		print_a($plug_vars);
-				//	}
-					
-					// moved to boot.php
-					// e107::loadLanFiles($row['plugin_path'], 'admin');
-					if(varset($plug_vars['adminLinks']['link']))
-					{
-						
-						if(!empty($row['plugin_category']) && $row['plugin_category'] == 'menu' || !vartrue($plug_vars['adminLinks']['link'][0]['@attributes']['url']))
-						{
-							continue;
-						}
-						
-						
-						$plugpath = varset($plug_vars['plugin_php']) ? e_PLUGIN_ABS : e_PLUGIN_ABS.$row['plugin_path'].'/';
-						$icon_src = varset($plug_vars['administration']['iconSmall']) ? $plugpath.$plug_vars['administration']['iconSmall'] : '';
-						$icon_src_lrg = varset($plug_vars['administration']['icon']) ? $plugpath.$plug_vars['administration']['iconSmall'] : '';
-						$id = 'plugnav-'.$row['plugin_path'];
-
-						if(!getperms('P'.$row['plugin_id']))
-						{
-							continue;
-						}
-
-           	  			$tmp[$id]['text'] = e107::getParser()->toHTML($plug_vars['@attributes']['name'], FALSE, "LINKTEXT");
-						$tmp[$id]['description'] = vartrue($plug_vars['description']['@value']);
-						$tmp[$id]['link'] = e_PLUGIN_ABS.$row['plugin_path'].'/'.$plug_vars['administration']['configFile'];
-					 	$tmp[$id]['image'] = $icon_src ? "<img src='{$icon_src}' alt=\"".varset($tmp[$id]['text'])."\" class='icon S16' />" : E_16_PLUGIN;
-						$tmp[$id]['image_large'] = $icon_src_lrg ? "<img src='{$icon_src_lrg}' alt=\"".varset($tmp[$id]['text'])."\" class='icon S32' />" : $icon_src_lrg;
-						$tmp[$id]['image_src'] = $icon_src;
-						$tmp[$id]['image_large_src'] = $icon_src_lrg;
-						$tmp[$id]['perm'] = 'P'.$row['plugin_id'];
-						$tmp[$id]['sub_class'] = '';
-						$tmp[$id]['sort'] = 2;
-						$tmp[$id]['category'] = varset($row['plugin_category']);
-
-						if($pref['admin_slidedown_subs'] && vartrue($plug_vars['adminLinks']['link']) )
-						{
-							$tmp[$id]['sub_class'] = 'sub';
-							$tmp[$id]['sort'] = false;
-							foreach ($plug_vars['adminLinks']['link'] as $subkey => $plugsub)
-							{
-								$subid = $id.'-'.$subkey;
-								$predef_icons = array('add', 'manage', 'settings');
-								$title = vartrue($plugsub['@value']);
-								$plugsub = $plugsub['@attributes'];
-
-								if(varset($plugsub['primary'])=='true') // remove primary links.
-								{
-									continue;
-								}
-
-								$icon_src = in_array($plugsub['icon'], $predef_icons) ? e_IMAGE_ABS."admin_images/{$plugsub['icon']}_16.png" : ( $plugsub['icon'] ? $plugpath.$plugsub['icon'] : '');
-
-
-								$tmp[$id]['sub'][$subid]['text'] = e107::getParser()->toHTML($title, FALSE, 'LINKTEXT');
-								$tmp[$id]['sub'][$subid]['description'] = (vartrue($plug_vars['description']['@value'])) ? e107::getParser()->toHTML($plug_vars['description']['@value']) : "";
-								$tmp[$id]['sub'][$subid]['link'] = e_PLUGIN_ABS.$row['plugin_path'].'/'.$plugsub['url'];
-								$tmp[$id]['sub'][$subid]['image'] = $icon_src ? "<img src='{$icon_src}' alt=\"".varset($tmp[$id]['sub'][$subid]['text'])."\" class='icon S16' />" : "";
-								$tmp[$id]['sub'][$subid]['image_large'] = '';
-								$tmp[$id]['sub'][$subid]['image_src'] = $icon_src;
-								$tmp[$id]['sub'][$subid]['image_large_src'] = '';
-								$tmp[$id]['sub'][$subid]['perm'] = varset($plugsub['perm']) ? $plugsub['perm'] : 'P'.$row['plugin_id'];
-								$tmp[$id]['sub'][$subid]['sub_class'] = '';
-
-							}
-						}
-					}
-				}
-			}
-
-
-
-		 	$menu_vars['plugMenu']['sub'] = multiarray_sort($tmp, 'text');
-
-		}
-
-		// ---------------- Cameron's Bit ---------------------------------
-
-		if(empty($pref['admin_separate_plugins']))
-		{
-        	// Convert Plugin Categories to Core Categories.
-			$convert = array(
-				'settings' 	=> array(1,'setMenu'),
-				'users'		=> array(2,'userMenu'),
-				'content'	=> array(3,'contMenu'),
-				'tools'		=> array(4,'toolMenu'),
-				'manage'	=> array(6,'managMenu'),
-				'misc'		=> array(7,'miscMenu'),
-				'help'		=> array(20,'helpMenu')
-			);
-
-
-             foreach($tmp as $pg)
-			 {
-			    if(!empty($pg['category']))
-			    {
-			 	    $id = $convert[$pg['category']][1];
-             	    $menu_vars[$id]['sub'][] = $pg;
-
-				    if(strpos(e_REQUEST_SELF,$pg['link'])!==false)
-					{
-						$active = $id;
-					}
-
-
-			    }
-			 }
-
-			// Clean up - remove empty main sections
-			foreach ($menu_vars as $_m => $_d)
-			{
-
-				if(!isset($_d['sub']) || empty($_d['sub']))
-				{
-					unset($menu_vars[$_m]);
-				}
-			}
-
-			unset($menu_vars['plugMenu']);
-		}
-
-		// ------------------------------------------------------------------
-
-		//added option to disable leave/logout (ll) - more flexibility for theme developers
-	//	if(!vartrue($parms['disable_ll']))
-	//	{
-		//	$menu_vars += $this->getOtherNav('home');	
-	//	}
-
-	//	 print_a($menu_vars);
-
-
-		return e107::getNav()->admin('', $active, $menu_vars, $$tmpl, FALSE, FALSE);
-		//return e_admin_men/u('', e_PAGE, $menu_vars, $$tmpl, FALSE, FALSE);
-	}
-*/
 
 	/**
 	 * New Admin Navigation Routine. v2.1.5
@@ -2354,19 +1975,6 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 		$displayLabels = (bool) varset($pref['admin_navbar_labels'], false);
 
-		// MAIN LINK
-		/*
-		if($parm != 'no-main')
-		{
-			$menu_vars = array();
-			$menu_vars['adminhome']['text'] = ADLAN_151;
-			$menu_vars['adminhome']['link'] = e_ADMIN_ABS.'admin.php';
-			$menu_vars['adminhome']['image'] = "<img src='".E_16_NAV_MAIN."' alt='".ADLAN_151."' class='icon S16' />";
-			$menu_vars['adminhome']['image_src'] = ADLAN_151;
-			$menu_vars['adminhome']['perm'] = '';
-		}*/
-
-		//ALL OTHER ROOT LINKS - temporary data transformation - data structure will be changed in the future and this block will be removed
 
   		foreach($admin_cat['id'] as $i => $cat)
 		{
@@ -2795,41 +2403,6 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 
 
-/*
-
-        $var['menumanager']['text'] = LAN_MENULAYOUT;
-		$var['menumanager']['link'] = e_ADMIN_ABS.'menus.php';
-		
-		$var['nothing']['divider'] = true;
-
-		if(vartrue($pref['menuconfig_list']))
-		{
-	        foreach($pref['menuconfig_list'] as $name=>$val)
-			{
-	           	$var[$name]['text'] = str_replace(":"," / ",$val['name']);
-	 			$var[$name]['link'] = e_PLUGIN_ABS.$val['link'];
-
-			}
-		}
-
- 		foreach($var as $key=>$link)
-		{
-        	if(varset($link['link']) && strpos(e_SELF,$link['link']))
-			{
-            	$action = $key;
-			}
-		}
-
-		if(!$action)
-		{
-        	return;
-		}
-   //		$keys = array_keys($var);
-	//	$action = (in_array($this->action,$keys)) ? $this->action : "installed";
-
-		e107::getNav()->admin("Menu Manager",$action, $var);
-
-*/
 
 
 	}
@@ -2853,9 +2426,11 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		$pageMenu = array();
 		$pluginMenu = array();
 
-		$sql->select('menus', 'menu_name, menu_id, menu_pages, menu_path', '1 GROUP BY menu_name ORDER BY menu_name ASC');
+		$menuRows = $sql->createQueryBuilder()
+			->select('menu_name', 'menu_id', 'menu_pages', 'menu_path')->from('menus')
+			->groupBy('menu_name')->orderBy('menu_name', 'ASC')->fetchAll();
 
-		while ($row = $sql->fetch())
+		foreach ($menuRows as $row)
 		{
 			if(is_numeric($row['menu_path']))
 			{

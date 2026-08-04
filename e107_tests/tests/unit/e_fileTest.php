@@ -173,12 +173,254 @@ class e_fileTest extends \Codeception\Test\Unit
 		}
 
 	}
-	/*
-			public function testSend()
-			{
+	/**
+	 * Traversal out of the downloads directory must not resolve, however the
+	 * separators are spelled. The dot-padded form is the one that never
+	 * contained the literal `../../` the QUERY_STRING filter looks for, which
+	 * is why containment, not the filter, is the boundary.
+	 *
+	 * Ref: GHSA-87hm-vh32-7c3r.
+	 */
+	public function testResolveSendPathRejectsTraversal()
+	{
+		$payloads = array(
+			'../../../e107_config.php',
+			'.././.././../e107_config.php',
+			'../../../class2.php',
+			'..\\..\\..\\e107_config.php',
+			'sub/../../../../e107_config.php',
+		);
 
-			}
-*/
+		foreach($payloads as $payload)
+		{
+			self::assertFalse($this->fl->resolveSendPath(e_DOWNLOAD . $payload),
+				"resolveSendPath() must reject traversal payload: " . $payload);
+		}
+	}
+
+	/**
+	 * Files that exist but sit outside every permitted root.
+	 *
+	 * Ref: GHSA-87hm-vh32-7c3r.
+	 */
+	public function testResolveSendPathRejectsPathsOutsideRoots()
+	{
+		self::assertFalse($this->fl->resolveSendPath('/etc/passwd'));
+		self::assertFalse($this->fl->resolveSendPath(e_ROOT . 'class2.php'));
+		self::assertFalse($this->fl->resolveSendPath(e_PLUGIN . 'download/request.php'));
+	}
+
+	/**
+	 * A NUL byte must be rejected before realpath() sees it: PHP 8 raises a
+	 * ValueError there, which would turn an unauthenticated request into a
+	 * fatal. PHP 5.6/7 return NULL rather than false, so the guard cannot be a
+	 * `=== false` test either.
+	 *
+	 * Ref: GHSA-87hm-vh32-7c3r.
+	 */
+	public function testResolveSendPathRejectsNullByteWithoutFatal()
+	{
+		self::assertFalse($this->fl->resolveSendPath(e_SYSTEM . "filetypes.xml\0.jpg"));
+		self::assertFalse($this->fl->resolveSendPath("\0"));
+	}
+
+	/**
+	 * Stream wrappers never survive realpath(), and must not be served.
+	 *
+	 * Ref: GHSA-87hm-vh32-7c3r.
+	 */
+	public function testResolveSendPathRejectsStreamWrappers()
+	{
+		self::assertFalse($this->fl->resolveSendPath('php://filter/read=convert.base64-encode/resource=' . e_ROOT . 'class2.php'));
+		self::assertFalse($this->fl->resolveSendPath('phar://' . e_SYSTEM . 'nope.phar/x'));
+		self::assertFalse($this->fl->resolveSendPath('data://text/plain;base64,SGVsbG8='));
+	}
+
+	/**
+	 * Empty and non-string input must return false rather than raising.
+	 *
+	 * Ref: GHSA-87hm-vh32-7c3r.
+	 */
+	public function testResolveSendPathRejectsEmptyInput()
+	{
+		self::assertFalse($this->fl->resolveSendPath(''));
+		self::assertFalse($this->fl->resolveSendPath(null));
+		self::assertFalse($this->fl->resolveSendPath(array()));
+		self::assertFalse($this->fl->resolveSendPath(e_MEDIA), 'a directory is not a file to send');
+	}
+
+	/**
+	 * A sibling directory sharing a root's name prefix must not pass. This is
+	 * what the old strpos()-anywhere test got wrong.
+	 *
+	 * Ref: GHSA-87hm-vh32-7c3r.
+	 */
+	public function testResolveSendPathRejectsSiblingPrefix()
+	{
+		$sibling = rtrim(e_SYSTEM, '/\\') . '_sibling';
+		@mkdir($sibling, 0755, true);
+		$file = $sibling . '/secret.txt';
+		file_put_contents($file, 'nope');
+
+		try
+		{
+			self::assertFalse($this->fl->resolveSendPath($file),
+				'a directory that merely shares a prefix with a root must not pass');
+		}
+		catch (Exception $e)
+		{
+			@unlink($file);
+			@rmdir($sibling);
+			throw $e;
+		}
+
+		@unlink($file);
+		@rmdir($sibling);
+	}
+
+	/**
+	 * Legitimate files inside the permitted roots must still be served: this is
+	 * the backwards-compatibility guard, since the old check never actually
+	 * enforced anything on a default install.
+	 *
+	 * Ref: GHSA-87hm-vh32-7c3r.
+	 */
+	public function testResolveSendPathAcceptsPermittedRoots()
+	{
+		$expected = realpath($this->filetypesFile);
+		self::assertSame($expected, $this->fl->resolveSendPath($this->filetypesFile),
+			'a file under e_SYSTEM must still be sendable');
+
+		$mediaFile = e_MEDIA . 'ghsa87hm_probe.txt';
+		file_put_contents($mediaFile, 'ok');
+		$actual = $this->fl->resolveSendPath($mediaFile);
+		@unlink($mediaFile);
+
+		self::assertSame(realpath(e_MEDIA) . DIRECTORY_SEPARATOR . 'ghsa87hm_probe.txt', $actual,
+			'a file under e_MEDIA must still be sendable');
+	}
+
+	/**
+	 * An explicit roots list replaces the defaults, so a caller handling
+	 * untrusted input can pin itself to one directory.
+	 *
+	 * Ref: GHSA-87hm-vh32-7c3r.
+	 */
+	public function testResolveSendPathNarrowsToSuppliedRoots()
+	{
+		self::assertFalse($this->fl->resolveSendPath($this->filetypesFile, array(e_DOWNLOAD)),
+			'an e_SYSTEM file must not pass when the caller pinned itself to e_DOWNLOAD');
+
+		self::assertSame(realpath($this->filetypesFile),
+			$this->fl->resolveSendPath($this->filetypesFile, array(e_SYSTEM)));
+	}
+
+	/**
+	 * Widening to e_ROOT is what keeps {e_PLUGIN} and {e_THEME} media rows
+	 * downloadable through request.php, and must still refuse to leave the
+	 * installation.
+	 *
+	 * Ref: GHSA-87hm-vh32-7c3r.
+	 */
+	public function testResolveSendPathHonoursRootWidening()
+	{
+		$pluginFile = e_PLUGIN . 'download/request.php';
+		self::assertSame(realpath($pluginFile), $this->fl->resolveSendPath($pluginFile, array(e_ROOT)));
+		self::assertFalse($this->fl->resolveSendPath('/etc/passwd', array(e_ROOT)));
+	}
+
+	/**
+	 * Root lists that cannot be resolved must fail closed rather than letting
+	 * everything through, which is exactly how the original check failed.
+	 *
+	 * Ref: GHSA-87hm-vh32-7c3r.
+	 */
+	public function testResolveSendPathFailsClosedOnUnusableRoots()
+	{
+		self::assertFalse($this->fl->resolveSendPath($this->filetypesFile, array()));
+		self::assertFalse($this->fl->resolveSendPath($this->filetypesFile, array('/definitely/not/here/')));
+		self::assertFalse($this->fl->resolveSendPath($this->filetypesFile, array(false, null, '')));
+	}
+
+	/**
+	 * A trailing separator on a supplied root must not change the outcome.
+	 *
+	 * Ref: GHSA-87hm-vh32-7c3r.
+	 */
+	public function testResolveSendPathIgnoresTrailingSeparatorOnRoots()
+	{
+		$with = $this->fl->resolveSendPath($this->filetypesFile, array(rtrim(e_SYSTEM, '/\\') . '/'));
+		$without = $this->fl->resolveSendPath($this->filetypesFile, array(rtrim(e_SYSTEM, '/\\')));
+
+		self::assertSame($with, $without);
+		self::assertSame(realpath($this->filetypesFile), $with);
+	}
+
+	/**
+	 * Names the download plugin may look up. Traversal, absolute paths, NUL
+	 * bytes and {e_XXX} constants are refused; ordinary file names, including
+	 * ones with dots inside a component, are not.
+	 *
+	 * Ref: GHSA-87hm-vh32-7c3r.
+	 */
+	public function testIsSafeRelativePath()
+	{
+		$reject = array(
+			'../e107_config.php',
+			'.././.././../e107_config.php',
+			'..%2f..%2fe107_config.php',
+			'%2e%2e%2fe107_config.php',
+			'a/../../b',
+			'..\\..\\e107_config.php',
+			'/etc/passwd',
+			'\\\\server\\share\\x',
+			'C:\\windows\\win.ini',
+			"x\0.zip",
+			'{e_BASE}e107_config.php',
+			'{e_MEDIA_FILE}x.zip',
+			'',
+			null,
+		);
+
+		foreach($reject as $path)
+		{
+			self::assertFalse(e_file::isSafeRelativePath($path),
+				"isSafeRelativePath() must reject: " . var_export($path, true));
+		}
+
+		$accept = array(
+			'myfile.zip',
+			'sub/dir/myfile.zip',
+			'2026-07/foo.tar.gz',
+			'pub_file.zip',
+			'my..file.zip',
+			'.hidden.zip',
+			'..file.zip',
+		);
+
+		foreach($accept as $path)
+		{
+			self::assertTrue(e_file::isSafeRelativePath($path),
+				"isSafeRelativePath() must accept: " . $path);
+		}
+	}
+
+	/**
+	 * Ref: GHSA-87hm-vh32-7c3r.
+	 */
+	public function testIsAbsolutePath()
+	{
+		self::assertTrue(e_file::isAbsolutePath('/home/account/files'));
+		self::assertTrue(e_file::isAbsolutePath('\\\\server\\share\\x'));
+		self::assertTrue(e_file::isAbsolutePath('C:\\xampp\\htdocs'));
+		self::assertTrue(e_file::isAbsolutePath('c:/xampp/htdocs'));
+
+		self::assertFalse(e_file::isAbsolutePath('e107_media/files/'));
+		self::assertFalse(e_file::isAbsolutePath('../e107_media/'));
+		self::assertFalse(e_file::isAbsolutePath(''));
+		self::assertFalse(e_file::isAbsolutePath(null));
+	}
+
 			public function testFile_size_encode()
 			{
 				$arr = array(

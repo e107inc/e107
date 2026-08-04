@@ -132,7 +132,8 @@ class online_shortcodes extends e_shortcode
 		$total_members = e107::getCache()->retrieve("online_menu_member_total", 120);
 		if($total_members == false) 
 		{
-			$total_members = e107::getDb()->count('user','(*)',"where user_ban='0'");
+			$total_members = e107::getDb()->createQueryBuilder()
+				->from('user')->where('user_ban', '0')->count();
 			e107::getCache()->set("online_menu_member_total", $total_members);
 		}
 		return $total_members;
@@ -147,8 +148,11 @@ class online_shortcodes extends e_shortcode
 		if($ret == false) 
 		{
 
-			$sql->select('user', 'user_id, user_name,user_image', "user_ban='0' ORDER BY user_join DESC LIMIT 1");
-			$row = $sql->fetch();
+			$row = $sql->createQueryBuilder()
+				->select('user_id', 'user_name', 'user_image')->from('user')
+				->where('user_ban', '0')
+				->orderBy('user_join', 'DESC')->setMaxResults(1)
+				->fetchRow();
 			//$ret = "<a href='".e_HTTP."user.php?id.".$row['user_id']."'>".$row['user_name']."</a>";
 
 			if(varset($parm['type']) == 'avatar')
@@ -284,7 +288,8 @@ class online_shortcodes extends e_shortcode
 
 	function sc_online_members_registered()
 	{
-		return e107::getDb()->count('user','(*)','user_ban = 0');
+		return e107::getDb()->createQueryBuilder()
+			->from('user')->where('user_ban', 0)->count();
 
 	}
 

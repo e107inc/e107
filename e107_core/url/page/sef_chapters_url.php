@@ -96,12 +96,11 @@ class core_page_sef_chapters_url extends eUrlConfig
 		$sql = e107::getDb('url');
 		$name = e107::getParser()->toDB($name);
 		
-		if($sql->select('page', 'page_id', "page_sef='{$name}'")) // First check for pages. 
+		if($row = $sql->createQueryBuilder()->select('page_id')->from('page')->where('page_sef', $name)->fetchRow()) // First check for pages.
 		{
-			$name = $sql->fetch();
 			//$request->setRequestParam('legacyQuery','{name}.{page}');
-			$request->setRequestParam('name', $name['page_id']);
-			e107::getMessage()->addDebug("Set PAGE ID =  '".$name['page_id']."'");
+			$request->setRequestParam('name', $row['page_id']);
+			e107::getMessage()->addDebug("Set PAGE ID =  '".$row['page_id']."'");
 		}
 	
 	/*
@@ -152,19 +151,17 @@ class core_page_sef_chapters_url extends eUrlConfig
 		$sql = e107::getDb('url');
 		$name = e107::getParser()->toDB($name);
 		
-		if($sql->select('page_chapters', 'chapter_id', "chapter_sef='{$name}'")) // First check books and chapters. 
+		if($row = $sql->createQueryBuilder()->select('chapter_id')->from('page_chapters')->where('chapter_sef', $name)->fetchRow()) // First check books and chapters.
 		{
-			$name = $sql->fetch();
-			$request->setRequestParam('id', $name['chapter_id']);
+			$request->setRequestParam('id', $row['chapter_id']);
 			$request->setRequestParam('type', 'bk');
-			e107::getDebug()->log("Set CHAPTER ID =  '".$name['chapter_id']."'");
+			e107::getDebug()->log("Set CHAPTER ID =  '".$row['chapter_id']."'");
 		}
-		elseif($sql->select('page', 'page_id', "page_sef='{$name}'")) // fall back to pages. 
+		elseif($row = $sql->createQueryBuilder()->select('page_id')->from('page')->where('page_sef', $name)->fetchRow()) // fall back to pages.
 		{
-			$name = $sql->fetch();
-			$request->setRequestParam('id', $name['page_id']);
+			$request->setRequestParam('id', $row['page_id']);
 			$request->setRequestParam('type', 'id');
-			e107::getDebug()->log("Set PAGE ID =  '".$name['page_id']."'");
+			e107::getDebug()->log("Set PAGE ID =  '".$row['page_id']."'");
 		}
 		else 
 		{

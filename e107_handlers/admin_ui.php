@@ -1177,13 +1177,13 @@ class e_admin_dispatcher
 			return false;
 		}
 		// mode admin permission (former getperms())
-		if(isset($this->modes[$mode]['perm']) && !e107::getUser()->checkAdminPerms($this->modes[$mode]['perm']))
+		if(isset($this->modes[$mode]['perm']) && !$this->checkAdminPermCode($this->modes[$mode]['perm']))
 		{
 			return false;
 		}
-		
+
 		// generic dispatcher admin permission  (former getperms())
-		if($this->perm !== null && is_string($this->perm) && !e107::getUser()->checkAdminPerms($this->perm))
+		if($this->perm !== null && is_string($this->perm) && !$this->checkAdminPermCode($this->perm))
 		{
 			return false;
 		}
@@ -1202,19 +1202,39 @@ class e_admin_dispatcher
 		    return true;
 		}
 
-		if(isset($this->access[$route]) && !check_class($this->access[$route]))
+		if(isset($this->access[$route]) && !e107::getUser()->checkClass($this->access[$route], false))
 		{
 			e107::getMessage()->addDebug('Userclass Permissions Failed: ' .$this->access[$route]);
 			return false;
 		}
 
-		if(is_array($this->perm) && isset($this->perm[$route]) && !getperms($this->perm[$route]))
+		if(is_array($this->perm) && isset($this->perm[$route]) && !$this->checkAdminPermCode($this->perm[$route]))
 		{
 			e107::getMessage()->addDebug('Admin Permissions Failed.' .$this->perm[$route]);
 			return false;
 		}
 
 		return true;
+	}
+
+	/**
+	 * Check a dispatcher perm code against the current user model, resolving
+	 * the special 'P' code (admin permission for the plugin being dispatched)
+	 * the same way getperms() does from the request path. The model carries
+	 * the permission-emulation overlay (#5745), so these checks stay faithful
+	 * during emulation.
+	 *
+	 * @param string $perm
+	 * @return bool
+	 */
+	protected function checkAdminPermCode($perm)
+	{
+		if($perm === 'P' && deftrue('e_CURRENT_PLUGIN'))
+		{
+			return e107::getUser()->checkPluginAdminPerms(e_CURRENT_PLUGIN);
+		}
+
+		return e107::getUser()->checkAdminPerms($perm);
 	}
 
 	/**
@@ -2523,6 +2543,9 @@ class e_admin_controller
 		{
 			if($posted = $request->getPosted())
 			{
+				$tokenChecked = false;
+				$tokenValid = false;
+
 				foreach ($posted as $key => $value)
 				{
 					if(strpos($key, 'etrigger_') === 0)
@@ -2530,7 +2553,20 @@ class e_admin_controller
 						$actionTriggerName = $this->toMethodName($action.$request->camelize(substr($key, 9)), 'trigger', false);
 						if(method_exists($this, $actionTriggerName))
 						{
-							$this->$actionTriggerName($value);
+							if($tokenChecked === false)
+							{
+								$tokenChecked = true;
+								$tokenValid = $this->checkTriggerToken();
+							}
+
+							if($tokenValid === true)
+							{
+								$this->$actionTriggerName($value);
+							}
+							else
+							{
+								$this->_log('Rejected ' .$actionTriggerName. '() (invalid security token)');
+							}
 						}
 						//Check if triggers are still enabled
 						if(!$triggerEnabled)
@@ -2543,6 +2579,33 @@ class e_admin_controller
 		}
 
 		return $this;
+	}
+
+	/**
+	 * Validate the CSRF token carried by a state-changing trigger POST.
+	 *
+	 * Routed through {@see e_session::check()} rather than
+	 * {@see e_session::checkFormToken()} because e_TOKEN is defined inside check(),
+	 * after its security level and CLI early return.
+	 *
+	 * The tokenless case is not forced to fail here. class2.php has already put
+	 * this request through the same check(), so by the time a trigger runs the
+	 * only way a tokenless POST can have got this far is that the site's
+	 * {@see e_session::tokenCheckMode()} let it, and second-guessing that would
+	 * make log-only mode enforce.
+	 *
+	 * @return bool
+	 */
+	protected function checkTriggerToken()
+	{
+		if(e107::getSession()->check(false))
+		{
+			return true;
+		}
+
+		e107::getMessage()->addError(defset('LAN_UI_INVALID_TOKEN_ERROR', 'Unauthorized access - invalid or missing security token.'));
+
+		return false;
 	}
 
 	/**
@@ -4494,9 +4557,12 @@ class e_admin_controller_ui extends e_admin_controller
 			$this->_log('Filter ListQry: ' .$qry);
 			//file_put_contents(e_LOG.'uiAjaxResponseSQL.log', $qry."\n\n", FILE_APPEND);
 
-			// Make query
+			// Make query. $qry is a fully-assembled list query from _modifyListQry()
+			// (the request search term is escaped via toDB() upstream); this is an
+			// opaque passthrough of an already-built query string, so it stays on the
+			// sanctioned bound execute() - not a deprecated raw-SQL call.
 			$sql = e107::getDb();
-			if($qry && $sql->gen($qry, $debug))
+			if($qry && $sql->execute($qry))
 			{
 				while ($res = $sql->fetch())
 				{
@@ -4896,7 +4962,7 @@ class e_admin_controller_ui extends e_admin_controller
 		];
 
 		// Insert the record into the admin_history table
-		if (!e107::getDb()->insert('admin_history', $historyData))
+		if (!e107::getDb()->createQueryBuilder()->insert('admin_history')->valuesTyped($historyData, e107::getDb()->getFieldDefs('admin_history')['_FIELD_TYPES'])->execute())
 		{
 			e107::getMessage()->addError("Failed to save history for table '{$table}', record ID {$id}");
 			e107::getMessage()->addError(e107::getDb()->getLastErrorText());
@@ -4981,7 +5047,7 @@ class e_admin_controller_ui extends e_admin_controller
 		if( !empty($this->sortField) && empty($this->sortParent) && empty($_posted[$this->sortField]) && ($this->getAction() === 'create'))
 		{
 
-			$incVal = e107::getDb()->max($this->table, $this->sortField) + 1;
+			$incVal = e107::getDb()->createQueryBuilder()->from($this->table)->max($this->sortField) + 1;
 			$_posted[$this->sortField] = $incVal;
 		//	$model->addMessageInfo(print_a($_posted,true));
 		}
@@ -6261,8 +6327,8 @@ class e_admin_ui extends e_admin_controller_ui
                 'link_sefurl'		=> e107::getParser()->toDB($urlData['route'].'?'.$id),
             );
             
-            $res = $sql->insert('links', $linkArray);
-            
+            $res = $sql->createQueryBuilder()->insert('links')->valuesTyped($linkArray, $sql->getFieldDefs('links')['_FIELD_TYPES'])->execute();
+
             if($res !== FALSE)
             {
 				e107::getMessage()->addSuccess(LAN_CREATED. ': ' .LAN_NAVIGATION. ': ' .($name ? $name : 'n/a'));
@@ -6343,7 +6409,7 @@ class e_admin_ui extends e_admin_controller_ui
 			}
 			$name = $model->get($data['name']);
 			
-			$category = e107::getDb()->retrieve('featurebox_category', 'fb_category_id', "fb_category_template='unassigned'");
+			$category = e107::getDb()->createQueryBuilder()->select('fb_category_id')->from('featurebox_category')->where('fb_category_template', 'unassigned')->fetchOne();
 			
             $fbArray = array (
                 	'fb_title' 		=> $name, 
@@ -6356,7 +6422,7 @@ class e_admin_ui extends e_admin_controller_ui
 					'fb_order' 		=> $scount, 
             );
 
-            $res = $sql->insert('featurebox', $fbArray);
+            $res = $sql->createQueryBuilder()->insert('featurebox')->valuesTyped($fbArray, $sql->getFieldDefs('featurebox')['_FIELD_TYPES'])->execute();
 
             if($res !== FALSE)
             {
@@ -6425,7 +6491,9 @@ class e_admin_ui extends e_admin_controller_ui
 	protected function handleListBoolreverseBatch($selected, $field)
 	{
 		$tree = $this->getTreeModel();
-		$cnt = $tree->batchUpdate($field, "1-{$field}", $selected, null, false);
+		// Raw column-arithmetic expression: pass it explicitly as a SqlFragment
+		// so batchUpdate() keeps it verbatim (the SET target validates $field).
+		$cnt = $tree->batchUpdate($field, \e107\Database\SqlFragment::raw("1-{$field}"), $selected, null, false);
 		if($cnt)
 		{
 			$caption = e107::getParser()->lanVars(LAN_UI_BATCH_REVERSED_SUCCESS, $cnt, true);
@@ -6631,14 +6699,27 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		$string = $this->getQuery('searchquery');
 
-
-
 		if(empty($string))
 		{
 			return '';
 		}
 
-		return $selected. " LIKE '%".e107::getParser()->toDB($string)."%' "; // array($selected, $this->getQuery('searchquery'));
+		// $selected is the attacker-supplied field segment of
+		// filter_options=searchfield__<field>. Only permit a declared field, and
+		// backtick-quote it fail-closed, before it lands in the raw WHERE clause.
+		$fields = $this->getFields();
+		if(!isset($fields[$selected]))
+		{
+			return '';
+		}
+
+		$column = \e107\Database\IdentifierFilter::identifier($selected);
+		if($column === false)
+		{
+			return '';
+		}
+
+		return $column. " LIKE '%".e107::getParser()->toDB($string)."%' ";
 	}
 
 	/**
@@ -6649,12 +6730,12 @@ class e_admin_ui extends e_admin_controller_ui
 	protected function handleListBatch($selected, $field, $value)
 	{
 		// special exceptions
-		
+
 		if($value === '#delete') // see admin->users
 		{
-			$val = "''";
+			$val = '';
 			$value = '(empty)';
-		}	
+		}
 		elseif($value === '#null')
 		{
 			$val = null;
@@ -6662,17 +6743,17 @@ class e_admin_ui extends e_admin_controller_ui
 		}
 		else
 		{
-			$val = "'".$value."'";	
+			$val = $value;
 		}
-		
+
 		if($field === 'options') // reserved field type. see: admin -> media-manager - batch rotate image.
 		{
 			return null;
 		}
 
 
-
-
+		// $val is a literal (already toDB'd upstream): batchUpdate() binds it, so
+		// sanitize=false only means "do not re-encode", never "splice raw".
 		$cnt = $this->getTreeModel()->batchUpdate($field, $val, $selected, true, false);
 		if($cnt)
 		{
@@ -6991,9 +7072,10 @@ class e_admin_ui extends e_admin_controller_ui
 		}
 		else // Reset all the order fields first.
 		{
-			$resetQry = $this->sortField ."= 999 WHERE 1"; // .$this->sortField;
-			$sql->update($this->table, $resetQry );
-			$this->_log('Sort Qry ('.$this->table.'): '.$resetQry);
+			$sql->createQueryBuilder()->update($this->table)
+				->set($this->sortField, 999)
+				->execute();
+			$this->_log('Sort Qry ('.$this->table.'): '.$this->sortField.' = 999 WHERE 1');
 		}
 
 
@@ -7008,18 +7090,16 @@ class e_admin_ui extends e_admin_controller_ui
 
 			list($tmp,$id) = explode('-', $row, 2);
 			$id = preg_replace('/[^\w\-:.]/', '', $id);
-			if(!is_numeric($id))
-			{
-				$id = "'{$id}'";
-			}
-			$updateQry = $this->sortField." = {$c} WHERE ".$this->pid. ' = ' .$id;
 
-			if($sql->update($this->table, $updateQry) !==false)
+			if($sql->createQueryBuilder()->update($this->table)
+				->set($this->sortField, $c)
+				->where($this->pid, $id)
+				->execute() !== false)
 			{
 				$updated[] = '#' .$id. '  --  ' .$this->sortField. ' = ' .$c;
 			}
 
-			$this->_log('Sort Qry ('.$this->table.'): '.$updateQry);
+			$this->_log('Sort Qry ('.$this->table.'): '.$this->sortField.' = '.$c.' WHERE '.$this->pid.' = '.$id);
 
 			$c += $step;
 
@@ -7035,10 +7115,26 @@ class e_admin_ui extends e_admin_controller_ui
 		// Increment every record after the current page of records.
 
 		$changed = $c - $step;
-		$qry = 'UPDATE `#' .$this->table. '` e, (SELECT @n := ' .($changed). ') m  SET e.' .$this->sortField. ' = @n := @n + ' .$step. ' WHERE ' .$this->sortField. ' > ' .($changed);
 
-		$result = $sql->gen($qry);
-		$this->_log('Sort Qry: '.$qry);
+		// User-variable derived-table UPDATE (vendor-specific @n counter) that the
+		// query builder cannot express; values are bound, the dynamic sort column
+		// identifier is validated fail-closed via quoteIdentifier().
+		$sortFieldId = $sql->quoteIdentifier($this->sortField);
+		if($sortFieldId === false)
+		{
+			$this->_log('Sort Qry: invalid sort field identifier: '.$this->sortField);
+			$result = false;
+		}
+		else
+		{
+			$qry = 'UPDATE `#' .$this->table. '` e, (SELECT @n := :n_init) m  SET e.' .$sortFieldId. ' = @n := @n + :step WHERE ' .$sortFieldId. ' > :threshold';
+			$result = $sql->execute($qry, array(
+				'n_init'    => (int) $changed,
+				'step'      => (int) $step,
+				'threshold' => (int) $changed,
+			));
+			$this->_log('Sort Qry: '.$qry);
+		}
 
 
 		// ------------ Fix Child Order when parent is used. ----------------
@@ -7195,7 +7291,6 @@ class e_admin_ui extends e_admin_controller_ui
 	public function EditHeader()
 	{
 		// e107::getJs()->requireCoreLib('core/admin.js');
-		e107::js('core','core/admin.js','prototype');
 	}
 
 	/**
@@ -7346,7 +7441,6 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		// TODO - invoke it on className (not all textarea elements)
 		//e107::getJs()->requireCoreLib('core/admin.js');
-		e107::js('core','core/admin.js','prototype');
 	}
 
 	/**
@@ -8174,7 +8268,7 @@ class e_admin_form_ui extends e_form
 			'table_rows' => '', // rows array (<td> tags)
 			'table_body' => '', // string body - used only if rows empty
 			'pre_triggers' => '',
-			'triggers' => array('hidden' => $this->hidden('etrigger_delete['.$ids.']', $ids) . $this->token(), 'delete_confirm' => array(LAN_CONFDELETE, 'confirm', $ids), 'cancel' => array(LAN_CANCEL, 'cancel')),
+			'triggers' => array('hidden' => $this->hidden('etrigger_delete['.$ids.']', $ids), 'delete_confirm' => array(LAN_CONFDELETE, 'confirm', $ids), 'cancel' => array(LAN_CANCEL, 'cancel')),
 		);
 		if($delcount > 1)
 		{
@@ -8353,7 +8447,6 @@ class e_admin_form_ui extends e_form
 		';
 
 	
-		e107::js('core','scriptaculous/controls.js','prototype', 2);
 		//TODO - external JS
 		e107::js('footer-inline',"
 	
@@ -9092,9 +9185,23 @@ class e_admin_form_ui extends e_form
 					
 						$sql = e107::getDb();
 						$field = $val['field'];
-						
-						$query = 'SELECT d.' .$field. ', u.user_name FROM #' .$val['table']. ' AS d LEFT JOIN #user AS u ON d.' .$field. ' = u.user_id  GROUP BY d.' .$field. ' ORDER BY u.user_name';
-						$row = $sql->retrieve($query,true);
+
+						// Dynamic table/column identifiers from the filter config; validate
+						// each fail-closed before interpolating, then bind via execute().
+						$fieldId = $sql->quoteIdentifier($field);
+						$tableId = $sql->quoteIdentifier($val['table']);
+						$row = array();
+						if($fieldId !== false && $tableId !== false)
+						{
+							$query = 'SELECT d.' .$fieldId. ', u.user_name FROM #' .$val['table']. ' AS d LEFT JOIN #user AS u ON d.' .$fieldId. ' = u.user_id  GROUP BY d.' .$fieldId. ' ORDER BY u.user_name';
+							if($sql->execute($query) !== false)
+							{
+								while($r = $sql->fetch())
+								{
+									$row[] = $r;
+								}
+							}
+						}
 						foreach($row as $data)
 						{
 							$k = $data[$field];

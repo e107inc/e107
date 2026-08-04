@@ -1315,18 +1315,13 @@ class eAuth
 	}
 
 	/**
-	 * @param $bits
-	 * @return string
+	 * @param int $bits
+	 * @return string raw bytes
+	 * @throws Exception when no CSPRNG is available
 	 */
 	function random($bits = 256)
 	{
-	    $bytes = ceil($bits / 8);
-	    $ret = '';
-	    for ($i = 0; $i < $bytes; $i++) 
-	    {
-	        $ret .= chr(mt_rand(0, 255));
-	    }
-	    return $ret;
+		return e_random::bytes((int) ceil($bits / 8));
 	}
 
 	/**

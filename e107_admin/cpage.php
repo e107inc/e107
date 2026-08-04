@@ -231,11 +231,13 @@ class page_chapters_ui extends e_admin_ui
 				$this->fields['chapter_sef']['help'] = 'May also be used in shortcode {CHAPTER_MENUS: name=x}';
 			}
 
-			$sql = e107::getDb();
-			$sql->gen("SELECT chapter_id,chapter_name FROM #page_chapters WHERE chapter_parent =0");
+			$rows = e107::getDb()->createQueryBuilder()
+				->select('chapter_id', 'chapter_name')->from('page_chapters')
+				->where('chapter_parent', 0)
+				->fetchAll();
 			$this->books[0] = CUSLAN_5;
-			
-			while($row = $sql->fetch())
+
+			foreach($rows as $row)
 			{
 				$bk = $row['chapter_id'];
 				$this->books[$bk] = $row['chapter_name'];
@@ -274,7 +276,8 @@ class page_chapters_ui extends e_admin_ui
 			
 			$sef = e107::getParser()->toDB($new_data['chapter_sef']);
 			
-			if(e107::getDb()->count('page_chapters', '(*)', "chapter_sef='{$sef}'"))
+			if(e107::getDb()->createQueryBuilder()->from('page_chapters')
+				->where('chapter_sef', $sef)->count())
 			{
 				e107::getMessage()->addError(CUSLAN_57);
 				return false;
@@ -295,32 +298,6 @@ class page_chapters_ui extends e_admin_ui
 			return $new_data;
 		}
 
-/*
-		private function processCustomFields($newdata)
-		{
-			if(empty($newdata))
-			{
-				return null;
-			}
-
-			$new = array();
-			foreach($newdata as $fields)
-			{
-				if(empty($fields['key']) || empty($fields['type']))
-				{
-					continue;
-				}
-
-
-				$key = $fields['key'];
-				unset($fields['key']);
-				$new[$key] = $fields;
-
-
-			}
-
-			return $new;
-		}*/
 
 }
 
@@ -431,119 +408,6 @@ class page_chapters_form_ui extends e_admin_form_ui
 }
 
 
-// Menu Area. 
-/*
-class menu_admin_ui extends e_admin_ui
-{
-		protected $pluginTitle = ADLAN_42;
-		protected $pluginName = 'core';
-		protected $table = "page";
-		
-		protected $listQry = "SELECT p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id WHERE p.menu_name != '' "; // without any Order or Limit.
-		//protected $editQry = "SELECT * FROM #comments WHERE comment_id = {ID}";
-		
-		protected $pid 			= "page_id";
-		protected $listOrder 	= 'p.page_order asc'; // desc would require changes to ajax sorting. 
-		protected $perPage 		= 10;
-		protected $batchDelete 	= true;
-		protected $batchCopy 	= true;	
-	//	protected $sortField	= 'page_order';
-		protected $orderStep 	= 10;
-		
-		protected $fields = array(
-			'checkboxes'		=> array('title'=> '',				'type' => null, 		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
-			'page_id'			=> array('title'=> 'ID',			'type'=>'text',   'tab' => 0,	'width'=>'5%', 'readParms'=>'','forced'=> TRUE),
-         	'menu_name' 		=> array('title'=> "Menu Name", 	'tab' => 0,	'type' => 'text', 		'width' => 'auto','nolist'=>true),
-		
-		    'page_title'	   	=> array('title'=> LAN_TITLE, 		'tab' => 0,	'type' => 'text', 		'width'=>'25%', 'inline'=>true),
-		//	'page_template' 	=> array('title'=> 'Template', 		'tab' => 0,	'type' => 'dropdown', 	'width' => 'auto','filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>''),     
-		// 	'page_author' 		=> array('title'=> LAN_AUTHOR, 		'tab' => 0,	'type' => 'user', 		'data'=>'int','width' => 'auto', 'thclass' => 'left'),
-			'page_text' 		=> array('title'=> CUSLAN_9,		'type' => 'bbarea',		'data'=>'str',	'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), 
-			'page_datestamp' 	=> array('title'=> LAN_DATE, 		'type' => 'datestamp', 	'data'=>'int',	'width' => 'auto','writeParms'=>'auto=1&readonly=1'),
-        
-			'options' 	=> array('title'=> LAN_OPTIONS, 'type' => null,	'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center'
-		);
-	
-		protected $fieldpref = array("page_id","menu_name", "page_title", "page_text");	
-		
-		
-		function init()
-		{
-			$this->fields['page_id']['readParms'] = array('link'=> e_SELF."?mode=dialog&action=preview&id=[id]", 'target'=> 'modal', 'iframe' => true);
-			
-			
-			if(E107_DEBUG_LEVEL > 0 && e_AJAX_REQUEST)
-			{
-				echo "REQUEST = ".e_REQUEST_SELF; //XXX Why no Query String ?? FIXME
-				// $this->getAction()	
-			}
-			
-			
-			
-			if($this->getMode() == 'dialog')
-			{
-				
-				$this->getRequest()->setAction('preview');
-				
-			//	$this->setDefaultAction('previewPage');
-				
-			//	echo "ACTIOn = ".$this->getAction();
-				
-				define('e_IFRAME', TRUE);
-				
-				// return;
-			};
-				
-			
-		}
-
-		function CreateHeader()
-		{
-			// e107::css('inline',' body { background-color: green } ');	
-		}
-		
-		// Create Menu in Menu Table
-	
-		
-		
-		function previewPage() //XXX FIXME Doesn't work when in Ajax mode.. why???
-		{
-			print_a($_GET);
-			
-		//	$id = $this->getListModel()->get('page_id');
-			$tp = e107::getParser();			
-		}
-					
-				
-			
-		
-		
-}
-
-//TODO XXX FIXME // Hooks! 
-	$hooks = array(
-					'method'	=>'form', 
-					'table'		=>'page', 
-					'id'		=> $id, 
-					'plugin'	=> 'page', 
-					'function'	=> 'createPage'
-				);
-				
-				
-	//			$text .= $frm->renderHooks($hooks);
-
-
-
-class menu_form_ui extends e_admin_form_ui
-{
-
-}
-*/
-
-
-
-
-//  MAIN Pages. 
 class page_admin_ui extends e_admin_ui
 {
 		protected $pluginTitle  	= ADLAN_42;
@@ -581,21 +445,6 @@ class page_admin_ui extends e_admin_ui
 
 
 
-		/*
-		 * 	'fb_title' 			=> array('title'=> LAN_TITLE,			'type' => 'text',			'inline'=>true,  'width' => 'auto', 'thclass' => 'left'), 
-     	'fb_text' 			=> array('title'=> FBLAN_08,			'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1','writeParms'=>'template=admin'), 
-		//DEPRECATED 'fb_mode' 			=> array('title'=> FBLAN_12,			'type' => 'dropdown',		'data'=> 'int',	'width' => '5%', 'filter'=>TRUE, 'batch'=>TRUE),		
-		//DEPRECATED 'fb_rendertype' 	=> array('title'=> FBLAN_22,			'type' => 'dropdown',		'data'=> 'int',	'width' => 'auto', 'noedit' => TRUE),	
-        'fb_template' 		=> array('title'=> LAN_TEMPLATE,			'type' => 'layouts',		'data'=> 'str', 'width' => 'auto', 'writeParms' => 'plugin=featurebox', 'filter' => true, 'batch' => true),	 	// Photo
-		'fb_image' 			=> array('title'=> "Image",				'type' => 'image',			'width' => 'auto', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60'),
-		'fb_imageurl' 		=> array('title'=> "Image Link",		'type' => 'url',			'width' => 'auto'),
-		'fb_class' 	
-		 */
-		
-		
-	//		protected $listSorting = true; 
-	
-		// PAGE LIST/EDIT and MENU EDIT modes. 
 		protected $fields = array(
 			'checkboxes'		=> array('title'=> '',				'type' => null, 		'width' =>'3%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'page_id'			=> array('title'=> LAN_ID,			'type' => 'text', 'tab' => 0,	'width'=>'5%', 			'forced'=> TRUE, 'readParms'=>'link=sef&target=blank'),
@@ -730,7 +579,8 @@ class page_admin_ui extends e_admin_ui
 				if($key)
 				{
 					//e107::getDb()->update('page',"menu_name = '' WHERE page_id=".intval($key)." LIMIT 1");
-					e107::getDb()->delete('page',"page_id=".intval($key));
+					e107::getDb()->createQueryBuilder()->delete('page')
+						->where('page_id', (int) $key)->execute();
 				}
 			}
 
@@ -824,10 +674,12 @@ class page_admin_ui extends e_admin_ui
 			
 			$this->prefs['listBooksTemplate']['writeParms'] = $tmpl; 
 			
-			$sql = e107::getDb();
-
-			$sql->gen("SELECT chapter_id,chapter_name,chapter_parent, chapter_sef, chapter_fields FROM #page_chapters ORDER BY chapter_parent asc, chapter_order");
-			while($row = $sql->fetch())
+			$rows = e107::getDb()->createQueryBuilder()
+				->select('chapter_id', 'chapter_name', 'chapter_parent', 'chapter_sef', 'chapter_fields')
+				->from('page_chapters')
+				->orderBy('chapter_parent', 'asc')->addOrderBy('chapter_order')
+				->fetchAll();
+			foreach($rows as $row)
 			{
 				$cat = $row['chapter_id'];
 
@@ -930,9 +782,22 @@ class page_admin_ui extends e_admin_ui
 			e107::getCustomFields()->setAdminUIConfig('page_fields',$this);
 		}
 
+		/**
+		 * Fetch the page_chapter and page_fields columns for the current page id.
+		 *
+		 * @return array associative row, or empty array when no row.
+		 */
+		private function getPageChapterFields()
+		{
+			return e107::getDb()->createQueryBuilder()
+				->select('page_chapter', 'page_fields')->from('page')
+				->where('page_id', (int) $this->getId())
+				->fetchRow();
+		}
+
 		private function loadCustomFieldsData()
 		{
-			$row = e107::getDb()->retrieve('page', 'page_chapter, page_fields', 'page_id='.$this->getId());
+			$row = $this->getPageChapterFields();
 
 			$cf = e107::getCustomFields();
 
@@ -959,7 +824,7 @@ class page_admin_ui extends e_admin_ui
 
 			parent::EditObserver();
 
-			$row = e107::getDb()->retrieve('page', 'page_chapter, page_fields', 'page_id='.$this->getId());
+			$row = $this->getPageChapterFields();
 			$chap = intval($row['page_chapter']);
 
 			$this->initCustomFields($chap);
@@ -988,35 +853,6 @@ class page_admin_ui extends e_admin_ui
 		 * @param $new_data
 		 * @return null
 		 *//*
-		private function processCustomFieldData($new_data)
-		{
-			if(empty($new_data))
-			{
-				return null;
-			}
-
-			unset($new_data['page_fields']); // Reset.
-
-			foreach($new_data as $k=>$v)
-			{
-				if(substr($k,0,11) === "page_fields")
-				{
-					list($tmp,$newkey) = explode("__",$k);
-					$new_data['page_fields'][$newkey] = $v;
-					unset($new_data[$k]);
-
-
-				}
-
-			}
-
-
-
-			return $new_data;
-
-
-		}
-*/
 
 
 
@@ -1058,23 +894,23 @@ class page_admin_ui extends e_admin_ui
 		function afterCreate($new_data, $old_data, $id)
 		{
 			$tp = e107::getParser();
-			$sql = e107::getDb();
 			$mes = e107::getMessage();
-			
+
 			$menu_name = $tp->toDB($new_data['menu_name']); // not to be confused with menu-caption.
 			$menu_path = intval($id);
-				
-			if (!$sql->select('menus', 'menu_name', "`menu_path` = ".$menu_path." LIMIT 1")) 	
-			{		
+
+			if (!e107::getDb()->createQueryBuilder()->from('menus')
+				->where('menu_path', $menu_path)->count())
+			{
 				$insert = array('menu_name' => $menu_name, 'menu_path' => $menu_path);
-			
-				if($sql->insert('menus', $insert) !== false)
+
+				if(e107::getDb()->createQueryBuilder()->insert('menus')->valuesTyped($insert, e107::getDb()->getFieldDefs('menus')['_FIELD_TYPES'])->execute() !== false)
 				{
 					$mes->addDebug(CUSLAN_73);
 					return true;
 				}
-			}	
-			
+			}
+
 			return $new_data;
 			
 		}
@@ -1115,16 +951,17 @@ class page_admin_ui extends e_admin_ui
 				return false;
 			}
 
-			if(e107::getDb()->count('page', '(*)', "page_sef='{$sef}'"))
+			if(e107::getDb()->createQueryBuilder()->from('page')
+				->where('page_sef', $sef)->count())
 			{
 				e107::getMessage()->addError(CUSLAN_57);
 				return false;
 			}
 
 
-			return $new_data;	
+			return $new_data;
 		}
-		
+
 		function beforeUpdate($new_data,$old_data, $id)
 		{
 
@@ -1148,29 +985,30 @@ class page_admin_ui extends e_admin_ui
 		function afterUpdate($new_data, $old_data, $id)
 		{
 			$tp = e107::getParser();
-			$sql = e107::getDb();
 			$mes = e107::getMessage();
 
 			if(!isset($new_data['menu_name']))
 			{
 				return true;
 			}
-					
+
 			$menu_name = $tp->toDB($new_data['menu_name']); // not to be confused with menu-caption.
-				
-			if ($sql->select('menus', 'menu_name', "`menu_path` = ".$id." LIMIT 1")) 	
-			{		
-				if($sql->update('menus', "menu_name='{$menu_name}' WHERE menu_path=".$id." ") !== false)
+
+			if (e107::getDb()->createQueryBuilder()->from('menus')
+				->where('menu_path', $id)->count())
+			{
+				if(e107::getDb()->createQueryBuilder()->update('menus')
+					->set('menu_name', $menu_name)->where('menu_path', $id)->execute() !== false)
 				{
 					$mes->addDebug(CUSLAN_74);
 					return true;
 				}
 			}
-			else // missing menu record so create it.  
+			else // missing menu record so create it.
 			{
 				$mes->addDebug(CUSLAN_75." ".$id);
 				return $this->afterCreate($new_data,$old_data,$id);
-				
+
 			}
 		}
 
@@ -1179,11 +1017,11 @@ class page_admin_ui extends e_admin_ui
 
 		public function afterDelete($deleted_data, $id, $deleted_check)
 		{
-			$sql = e107::getDb();
-
-			if ($sql->select('menus', 'menu_name', "`menu_path` = ".$id." LIMIT 1"))
+			if (e107::getDb()->createQueryBuilder()->from('menus')
+				->where('menu_path', $id)->count())
 			{
-				if($sql->delete('menus', " menu_path=".intval($id)." ") !== false)
+				if(e107::getDb()->createQueryBuilder()->delete('menus')
+					->where('menu_path', (int) $id)->execute() !== false)
 				{
 					e107::getMessage()->addDebug(CUSLAN_76."".$id." ".CUSLAN_77);
 					return true;

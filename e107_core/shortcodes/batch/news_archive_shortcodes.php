@@ -40,8 +40,10 @@ class news_archive_shortcodes extends e_shortcode
 	
 	function sc_archive_link()
 	{
-		return "<a href='news.php?item.".$this->var['news_id']."'>".$this->var['news_title']."</a>";
-	
+		$url = e107::getUrl()->create('news/view/item', $this->var);
+		$title = e107::getParser()->toHTML($this->var['news_title'], TRUE, 'TITLE');
+
+		return "<a href='".$url."'>".$title."</a>";
 	}
 
 	
@@ -59,7 +61,7 @@ class news_archive_shortcodes extends e_shortcode
 
 	function sc_archive_category()
 	{
-		return $this->var['category_name'];
+		return !empty($this->var['category_name']) ? e107::getParser()->toHTML($this->var['category_name'], FALSE, 'defs') : '';
 	}
 
 

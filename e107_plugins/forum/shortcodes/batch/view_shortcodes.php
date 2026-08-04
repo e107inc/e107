@@ -78,9 +78,13 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 		$pref = e107::getPref();
 		$post = strip_tags($tp->toHTML($this->var['post_entry'], true, 'emotes_off, no_make_clickable', '', $pref['menu_wordwrap']));
-		$post = $tp->text_truncate($post, varset($this->param['nfp_characters'], 120), varset($this->param['nfp_postfix'], '...'));
 
-		return $post;
+		// A template parm wins over the menu preference, which newforumposts_menu
+		// always fills in, so testing the preference first would never reach it.
+		$length = !empty($parm['truncate']) ? (int) $parm['truncate'] : (int) varset($this->param['nfp_characters'], 120);
+		$postfix = !empty($parm['postfix']) ? $parm['postfix'] : varset($this->param['nfp_postfix'], '...');
+
+		return $tp->truncate($post, $length, $postfix);
 	}
 
 	function sc_post_author_name($parm = null)
@@ -301,14 +305,16 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 	function sc_breadcrumb()
 	{
-
-		return !empty($this->var['breadcrumb']) ? $this->var['breadcrumb'] : '';
+		// No $force: e_form::breadcrumb() returns null on THEME_VERSION 2.3 so that
+		// the theme's own {---BREADCRUMB---} stays the only trail on the page.
+		return e107::getForm()->breadcrumb(e107::breadcrumb());
 	}
 
 	function sc_backlink()
 	{
-
-		return !empty($this->var['breadcrumb']) ? $this->var['breadcrumb'] : '';
+		// No $force: e_form::breadcrumb() returns null on THEME_VERSION 2.3 so that
+		// the theme's own {---BREADCRUMB---} stays the only trail on the page.
+		return e107::getForm()->breadcrumb(e107::breadcrumb());
 	}
 
 	function sc_top($parm = '')
@@ -961,15 +967,12 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 		}
 
-		// Delete own post, if it is the last in the thread
-		if($this->thisIsTheLastPost && USER && $this->thread->threadInfo['thread_lastuser'] == USERID)
+		/* Delete own post: only when it is the last post in the thread, is not the
+		 * opening post, and the thread is still active. Moderators get their own
+		 * delete entry further down, so skip this one for them to avoid a duplicate. */
+		if($this->thisIsTheLastPost && USER && $this->thread->threadInfo['thread_lastuser'] == USERID && !defset('MODERATOR') && $this->var['thread_active'] && empty($this->postInfo['thread_start']))
 		{
-			/* only show delete button when post is not the initial post of the topic
-			 * AND if this post is the last post in the thread */
-			if($this->var['thread_active'] && empty($this->postInfo['thread_start']))
-			{
-				$text .= "<li class='text-right text-end float-right'><a class='dropdown-item' href='" . e_REQUEST_URI . "' data-forum-action='deletepost'  data-confirm='" . LAN_JSCONFIRM . "' data-forum-post='" . $postID . "'>" . LAN_DELETE . " " . $tp->toGlyph('fa-trash') . "</a></li>";
-			}
+			$text .= "<li class='text-right text-end float-right'><a class='dropdown-item' href='" . e_REQUEST_URI . "' data-forum-action='deletepost'  data-confirm='" . LAN_JSCONFIRM . "' data-forum-post='" . $postID . "'>" . LAN_DELETE . " " . $tp->toGlyph('fa-trash') . "</a></li>";
 		}
 
 		if(isset($this->postInfo['post_forum']) && $this->forum->checkperm($this->postInfo['post_forum'], 'post'))
@@ -1319,8 +1322,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 	function sc_quickreply()
 	{
-
-		global $forum, $forum_quickreply, $thread;
+		global $forum_quickreply;
 
 		// Define which tinymce4 template should be used, depending if the current user is registered or a guest
 		if(!deftrue('e_TINYMCE_TEMPLATE'))
@@ -1333,60 +1335,73 @@ class plugin_forum_view_shortcodes extends e_shortcode
 			//XXX Show only on the last page??
 			if(!vartrue($forum_quickreply))
 			{
-				$ajaxInsert = ($thread->pages == $thread->page || $thread->pages == 0) ? 1 : 0;
-				//	$ajaxInsert = 1;
-				//	echo "AJAX-INSERT=".$ajaxInsert ."(".$thread->pages." vs ".$thread->page.")";
-//Orphan $frm variable????		$frm = e107::getForm();
-
 				$urlParms = array('f' => 'rp', 'id' => $this->var['thread_id'], 'post' => $this->var['thread_id']);
-				$url = e107::url('forum', 'post', null, array('query' => $urlParms));; // ."?f=rp&amp;id=".$thread->threadInfo['thread_id']."&amp;post=".$thread->threadInfo['thread_id'];
 
-				$qr = e107::getPlugPref('forum', 'quickreply', 'default');
-				if($qr == 'default')
+				// Merged, so a theme that overrides forum_viewtopic_template.php without
+				// declaring 'quickreply' still gets the core block instead of nothing.
+				$template = e107::getTemplate('forum', 'forum_viewtopic', 'quickreply', true, true);
+
+				if(empty($template))
 				{
-
-					return "
-						<form action='" . $url . "' method='post'>
-						<div class='form-group'>
-							<textarea cols='80' placeholder='" . LAN_FORUM_2007 . "' rows='4' id='forum-quickreply-text' class='tbox input-xxlarge form-control' name='post' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
-						</div>
-						<div class='center text-center form-group'>
-							<input type='submit' data-token='" . e_TOKEN . "' data-forum-insert='" . $ajaxInsert . "' data-forum-post='" . $this->var['thread_forum_id'] . "' data-forum-thread='" . $this->var['thread_id'] . "' data-forum-action='quickreply' name='reply' value='" . LAN_FORUM_2007 . "' class='btn btn-success button' />
-							<input type='hidden' name='thread_id' value='" . $this->var['thread_id'] . "' />
-						</div>
-	
-						</form>";
-				}
-				else
-				{
-					$editor = varset($this->pref['editor'], null);
-					$editor = is_null($editor) ? 'default' : $editor;
-					$text = "
-						<form action='" . $url . "' method='post'>
-						<div class='form-group'>" .
-//						e107::getForm()->bbarea('post','','forum', '_common', 'small', array('id' => 'forum-quickreply-text', 'wysiwyg' => $editor)) .
-						e107::getForm()->bbarea('post', '', 'forum', 'forum', 'medium', array('id' => 'forum-quickreply-text', 'wysiwyg' => $editor)) .
-						"</div>
-						<div class='center text-center form-group'>
-							<input type='submit' data-token='" . e_TOKEN . "' data-forum-insert='" . $ajaxInsert . "' data-forum-post='" . $this->var['thread_forum_id'] . "' data-forum-thread='" . $this->var['thread_id'] . "' data-forum-action='quickreply' name='reply' value='" . LAN_FORUM_2006 . "' class='btn btn-success button' />
-							<input type='hidden' name='thread_id' value='" . $this->var['thread_id'] . "' />
-						</div>
-	
-						</form>";
-
-					return $text;
+					$template = e107::getTemplate('forum', 'forum_viewtopic', 'quickreply', false);
 				}
 
+				// The form cannot be submitted without the thread id, so put it back if
+				// the template author dropped it.
+				if(strpos($template, '{QR_HIDDEN}') === false)
+				{
+					$template .= '{QR_HIDDEN}';
+				}
+
+				$url = e107::url('forum', 'post', null, array('query' => $urlParms));
+
+				return "<form action='" . $url . "' method='post'>" . e107::getParser()->parseTemplate($template, true, $this) . "</form>";
 				// Preview should be reserved for the full 'Post reply' page. <input type='submit' name='fpreview' value='" . Preview . "' /> &nbsp;
 			}
-//----	else
-//----	{
+
 			return $forum_quickreply;
-//----	}
 		}
 	}
 
+
+	function sc_qr_textarea($parms = null)
+	{
+		if(e107::getPlugPref('forum', 'quickreply', 'default') === 'default')
+		{
+			$placeholder = isset($parms['placeholder']) ? $parms['placeholder'] : LAN_FORUM_2007;
+
+			return "<textarea cols='80' placeholder='" . $placeholder . "' rows='4' id='forum-quickreply-text' class='tbox input-xxlarge form-control' name='post' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>";
+		}
+
+		$editor = varset($this->pref['editor'], null);
+		$editor = is_null($editor) ? 'default' : $editor;
+
+		return e107::getForm()->bbarea('post', '', 'forum', 'forum', 'medium', array('id' => 'forum-quickreply-text', 'wysiwyg' => $editor));
+	}
+
+
+	function sc_qr_sbutton($parms = null)
+	{
+		global $thread;
+
+		// The reply is inserted into the page only when the reader is on the last page.
+		$ajaxInsert = (is_object($thread) && $thread->pages != $thread->page && $thread->pages != 0) ? 0 : 1;
+
+		if(isset($parms['value']))
+		{
+			$value = $parms['value'];
+		}
+		else
+		{
+			$value = (e107::getPlugPref('forum', 'quickreply', 'default') === 'default') ? LAN_FORUM_2007 : LAN_FORUM_2006;
+		}
+
+		return "<input type='submit' data-token='" . defset('e_TOKEN') . "' data-forum-insert='" . $ajaxInsert . "' data-forum-post='" . $this->var['thread_forum_id'] . "' data-forum-thread='" . $this->var['thread_id'] . "' data-forum-action='quickreply' name='reply' value='" . $value . "' class='btn btn-success button' />";
+	}
+
+
+	function sc_qr_hidden($parms = null)
+	{
+		return "<input type='hidden' name='thread_id' value='".$this->var['thread_id']."' />";
+	}
 }
-
-
-

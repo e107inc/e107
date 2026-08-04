@@ -167,9 +167,17 @@ if(empty($PLUGINS_DIRECTORY))
 
 //define("MPREFIX", $mySQLprefix); moved to $e107->set_constants()
 
-if(empty($mySQLdefaultdb) && empty($config))
+// Positively detect a completed installation: real database credentials must be
+// present (v2.4 'database.db' or the legacy $mySQLdefaultdb). Anything else - a
+// missing/empty/0-byte file, or an install-pending lock holding only a
+// provisioning token - is not installed, so redirect to the installer. (An
+// include() of a 0-byte config returns int(1), which the old emptiness test let
+// slip through.)
+$e107_installed = !empty($mySQLdefaultdb) || (is_array($config) && !empty($config['database']['db']));
+$e107_install_pending = (is_array($config) && !empty($config['other']['install_pending'])) || !empty($E107_CONFIG['install_pending']);
+
+if($e107_install_pending || !$e107_installed)
 {
-  // e107_config.php is either empty, not valid or doesn't exist so redirect to installer..
   header('Location: install.php');
   exit();
 }
@@ -522,25 +530,6 @@ if(!isset($_E107['no_session']) && !isset($_E107['no_lan']))
 
 	$dbg->logTime('Set User Language Session');
 	e107::getLanguage()->set();  // set e_LANGUAGE, USERLAN, Language Session / Cookies etc. requires $pref;
-
-	if(deftrue('e_ADMIN_AREA') && ($id = e107::getSession()->get('emulate')))
-	{
-	    if(!empty($_POST['stopEmulation']))
-	    {
-	        e107::getSession()->clear('emulate');
-	        e107::getMessage()->addSuccess("Admin access emulation mode has been stopped.");
-	    }
-	    else
-	    {
-	        $emulatedUser = e107::user($id);
-	        define('USERCLASS_LIST', $emulatedUser['user_class']);
-	        define('ADMINPERMS', $emulatedUser['user_perms']);
-	        // define('USERID', $emulatedUser['user_id']); // Don't emulate user id. It will mess with logs.
-	        define('USERNAME', $emulatedUser['user_name']);
-	    }
-
-	    unset($id);
-	}
 }
 else
 {
@@ -606,11 +595,32 @@ if(!isset($_E107['no_session']))
 {
 	$dbg->logTime('CHAP challenge');
 
-	$die = e_AJAX_REQUEST !== true;
-	e107::getSession()
+	// check(false) so that the refusal is answered here rather than by the die()
+	// inside check(), which would leave the response at 200 and put the status
+	// out of reach of a log analyser, a monitor or a WAF.
+	$tokenOkay = e107::getSession()
 		->challenge() // Make sure there is a unique challenge string for CHAP login
-		->check($die); // Token protection
-	unset($die);
+		->check(false); // Token protection
+
+	if($tokenOkay !== true)
+	{
+		header('HTTP/1.1 403 Forbidden', true, 403);
+
+		if(e_AJAX_REQUEST)
+		{
+			// The envelope core's own AJAX endpoints already reject with.
+			header('Content-type: application/json; charset=UTF-8');
+			echo json_encode(array('msg' => 'Unauthorized access!', 'error' => true));
+		}
+		else
+		{
+			header('Content-type: text/plain; charset=UTF-8');
+			echo 'Unauthorized access!';
+		}
+
+		exit;
+	}
+	unset($tokenOkay);
 }
 //
 // N: misc setups: online user tracking, cache
@@ -830,7 +840,11 @@ if(($pref['membersonly_enabled'] && !isset($_E107['allow_guest'])) || ($pref['ma
 
 if(!isset($_E107['no_prunetmp']))
 {
-	$sql->delete('tmp', 'tmp_time < '.(time() - 300)." AND tmp_ip!='data' AND tmp_ip!='submitted_link'");
+	$sql->createQueryBuilder()->delete('tmp')
+		->where('tmp_time', '<', time() - 300)
+		->where('tmp_ip', '!=', 'data')
+		->where('tmp_ip', '!=', 'submitted_link')
+		->execute();
 }
 
 
@@ -863,7 +877,7 @@ if (($_SERVER['QUERY_STRING'] === 'logout'))
 	// TODO - should be done inside online handler, more core areas need it (session handler for example)
 	if (isset($pref['track_online']) && $pref['track_online'])
 	{
-		$sql->update('online', "online_user_id = 0, online_pagecount=online_pagecount+1 WHERE online_user_id = '{$udata}'");
+		$sql->createQueryBuilder()->update('online')->set('online_user_id', 0)->increment('online_pagecount')->where('online_user_id', $udata)->execute();
 	}
 	
 	// earlier event trigger with user data still available 
@@ -1458,7 +1472,10 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 		default:
 			$_user_pref = $tp->toDB($user_pref, true, true, 'pReFs');
 			$tmp = e107::serialize($_user_pref);
-			$sql->update('user', "user_prefs='$tmp' WHERE user_id=". (int)$uid);
+			$sql->createQueryBuilder()->update('user')
+				->set('user_prefs', $tmp)
+				->where('user_id', (int) $uid)
+				->execute();
 			return $tmp;
 			break;
 	}
@@ -1515,8 +1532,8 @@ class floodprotect
 
 		if (FLOODPROTECT === true)
 		{
-			$sql->select($table, '*', 'ORDER BY '.$orderfield.' DESC LIMIT 1', 'no_where');
-			$row=$sql->fetch();
+			$row = $sql->createQueryBuilder()->select('*')->from($table)
+				->orderBy($orderfield, 'DESC')->setMaxResults(1)->fetchRow();
 			return ($row[$orderfield] <= (time() - FLOODTIMEOUT));
 		}
 
@@ -1633,10 +1650,7 @@ function init_session()
 	define('ADMIN', $user->isAdmin());
 	define('ADMINID', $user->getAdminId());
 	define('ADMINNAME', $user->getAdminName());
-	if(!defined('ADMINPERMS'))
-	{
-		define('ADMINPERMS', $user->getAdminPerms());
-	}
+	define('ADMINPERMS', $user->getAdminPerms());
 	define('ADMINEMAIL', $user->getAdminEmail());
 	define('ADMINPWCHANGE', $user->getAdminPwchange());
 
@@ -1660,16 +1674,8 @@ function init_session()
 	else
 	{
 		// we shouldn't use getValue() here, it's there for e.g. shortcodes, profile page render etc.
-		if(!defined('USERID'))
-		{
-			define('USERID', $user->getId());
-		}
-
-		if(!defined('USERNAME'))
-		{
-			define('USERNAME', $user->get('user_name'));
-		}
-
+		define('USERID', $user->getId());
+		define('USERNAME', $user->get('user_name'));
 		define('USERURL', $user->get('user_homepage', false)); //required for BC
 		define('USEREMAIL', $user->get('user_email'));
 		define('USER', true);
@@ -1745,10 +1751,7 @@ function init_session()
 	}
 
 	e107::getDebug()->logTime('[init_session: getClassList]');
-	if(!defined('USERCLASS_LIST'))
-	{
-		define('USERCLASS_LIST', $user->getClassList(true));
-	}
+	define('USERCLASS_LIST', $user->getClassList(true));
 	define('e_CLASS_REGEXP', $user->getClassRegex());
 	define('e_NOBODY_REGEXP', '(^|,)'.e_UC_NOBODY.'(,|$)');
 
@@ -1800,9 +1803,10 @@ if(!deftrue('e_SINGLE_ENTRY') && deftrue('e_CURRENT_PLUGIN'))
  * @param string  $path
  * @param string  $domain
  * @param int     $secure
+ * @param string  $samesite 'Lax', 'Strict' or 'None'; empty sends no attribute
  * @return void
  */
-function cookie($name, $value, $expire=0, $path = e_HTTP, $domain = '', $secure = 0)
+function cookie($name, $value, $expire=0, $path = e_HTTP, $domain = '', $secure = 0, $samesite = '')
 {
 	global $_E107;
 
@@ -1826,7 +1830,20 @@ function cookie($name, $value, $expire=0, $path = e_HTTP, $domain = '', $secure 
 		$path = '/';
 	}
 	
-	eShims::setcookie($name, $value, $expire, $path, $domain, $secure, true);
+	if($samesite === '')
+	{
+		eShims::setcookie($name, $value, $expire, $path, $domain, $secure, true);
+		return;
+	}
+
+	eShims::setcookie($name, $value, array(
+		'expires'  => $expire,
+		'path'     => $path,
+		'domain'   => $domain,
+		'secure'   => (bool) $secure,
+		'httponly' => true,
+		'samesite' => $samesite,
+	));
 }
 
 //
@@ -1984,9 +2001,15 @@ function force_userupdate($currentUser)
 
 	if (!e107::getPref('disable_emailcheck',true) && !trim($currentUser['user_email'])) return true;
 
-	if(e107::getDb()->select('user_extended_struct', 'user_extended_struct_applicable, user_extended_struct_write, user_extended_struct_name, user_extended_struct_type', 'user_extended_struct_required = 1 AND user_extended_struct_applicable != '.e_UC_NOBODY))
+	$structRows = e107::getDb()->createQueryBuilder()
+		->select('user_extended_struct_applicable', 'user_extended_struct_write', 'user_extended_struct_name', 'user_extended_struct_type')
+		->from('user_extended_struct')
+		->where('user_extended_struct_required', 1)
+		->where('user_extended_struct_applicable', '!=', e_UC_NOBODY)
+		->fetchAll();
+	if($structRows)
 	{
-		while($row = e107::getDb()->fetch())
+		foreach($structRows as $row)
 		{
 			if (!check_class($row['user_extended_struct_applicable'])) { continue; }		// Must be applicable to this user class
 			if (!check_class($row['user_extended_struct_write'])) { continue; }				// And user must be able to change it
@@ -2294,9 +2317,10 @@ class e_http_header
 			if(!empty($search) && !empty($replace))
 			{
 				$this->content = str_replace($search, $replace, $this->content);
-				$this->length = strlen($this->content);
 			}
 
+			$this->content = e_token_injector::process($this->content);
+			$this->length = strlen($this->content);
 		}
 		else
 		{

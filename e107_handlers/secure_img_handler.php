@@ -240,9 +240,9 @@ class secure_image
 		}
 
 		// Compare solution (case-sensitive)
-		$solution = $data['solution'] ?? '';
+		$solution = isset($data['solution']) ? $data['solution'] : '';
 
-		return ($solution === $userInput);
+		return hash_equals((string) $solution, (string) $userInput);
 	}
 
 

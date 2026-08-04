@@ -49,7 +49,7 @@ class sitedown_shortcodes extends e_shortcode
 
 	function sc_sitedown_social_css($parm=null)
 	{
-		return e_PLUGIN_ABS."social/css/fontello.css";
+		return e_PLUGIN_ABS."social/style.css";
 	}
 
 	function sc_sitedown_e107_css($parm=null)

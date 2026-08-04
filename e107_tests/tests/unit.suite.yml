@@ -3,6 +3,12 @@
 # Suite for unit or integration tests.
 
 actor: UnitTester
+extensions:
+    enabled:
+        # Several tests here copy theme and plugin fixtures out of tests/_data
+        # into the app root. Sweep them on the way in and on the way out, pass
+        # or fail, so a unit run leaves no dirt in the worktree.
+        - Extension\WorkspaceCleanup
 modules:
     enabled:
         - Asserts

@@ -162,7 +162,64 @@ class GitPreparer implements Preparer
 			}
 		}
 
-		$this->runCommand('git worktree prune');
+		$this->pruneOwnOrphanEntries();
+	}
+
+	/**
+	 * Drop worktree registrations belonging to this preparer whose directory
+	 * has gone.
+	 *
+	 * Deliberately not `git worktree prune`. That judges every registered
+	 * worktree by whether its path exists from where the command runs, and
+	 * the suite runs inside a container with the repository mounted at a
+	 * different path. Every worktree the developer keeps on the host is
+	 * therefore invisible from in here, so a bare prune unregisters the lot
+	 * of them: directories survive, but their administrative files do not,
+	 * and submodules make the damage awkward to undo. Only entries pointing
+	 * at our own temporary worktrees are considered here.
+	 */
+	private function pruneOwnOrphanEntries()
+	{
+		$stdout = '';
+		if ($this->runCommand('git rev-parse --git-common-dir', $stdout) !== 0)
+		{
+			return;
+		}
+
+		$common = trim($stdout);
+		if ($common === '')
+		{
+			return;
+		}
+		if (substr($common, 0, 1) !== '/')
+		{
+			$common = $this->appPath . '/' . $common;
+		}
+
+		$entries = glob($common . '/worktrees/*', GLOB_ONLYDIR);
+		if (!is_array($entries))
+		{
+			return;
+		}
+
+		foreach ($entries as $entry)
+		{
+			if (!is_file($entry . '/gitdir'))
+			{
+				continue;
+			}
+
+			$dir = preg_replace('#/\.git$#', '',
+				trim((string) file_get_contents($entry . '/gitdir')));
+
+			if (strpos(basename($dir), self::WORKTREE_PREFIX) !== 0 || is_dir($dir))
+			{
+				continue;
+			}
+
+			$this->debug('Removing stale worktree registration: ' . $entry);
+			$this->deleteDir($entry);
+		}
 	}
 
 	private function overlayDirtyFiles()
@@ -188,7 +245,7 @@ class GitPreparer implements Preparer
 		if (is_dir($path))
 		{
 			$this->deleteDir($path);
-			$this->runCommand('git worktree prune');
+			$this->pruneOwnOrphanEntries();
 		}
 	}
 

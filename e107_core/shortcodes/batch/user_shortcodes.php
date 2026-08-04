@@ -35,16 +35,14 @@ class user_shortcodes extends e_shortcode
 	}
 
 
-	function sc_total_chatposts($parm = null) 
+	function sc_total_chatposts($parm = null)
 	{
-		$sql = e107::getDb();
-
 		if(!$chatposts = e107::getRegistry('total_chatposts'))
 		{
 		  $chatposts = 0; // In case plugin not installed
 		  if(e107::isInstalled("chatbox_menu"))
 		  {
-			$chatposts = $sql->count("chatbox");
+			$chatposts = e107::getDb()->createQueryBuilder()->from('chatbox')->count();
 		  }
 		  e107::setRegistry('total_chatposts', $chatposts);
 		}
@@ -53,13 +51,11 @@ class user_shortcodes extends e_shortcode
 	}
 		
 	
-	function sc_total_commentposts($parm = null) 
+	function sc_total_commentposts($parm = null)
 	{
-		$sql = e107::getDb();
-
 		if(!$commentposts = e107::getRegistry('total_commentposts'))
 		{
-			$commentposts = $sql->count("comments");
+			$commentposts = e107::getDb()->createQueryBuilder()->from('comments')->count();
 			e107::setRegistry('total_commentposts', $commentposts);
 		}
 
@@ -67,13 +63,11 @@ class user_shortcodes extends e_shortcode
 	}
 	
 	
-	function sc_total_forumposts($parm = null) 
+	function sc_total_forumposts($parm = null)
 	{
-		$sql = e107::getDb();
-
 		if(!$forumposts = e107::getRegistry('total_forumposts'))
 		{
-			$forumposts = $sql->count("forum_thread");
+			$forumposts = e107::getDb()->createQueryBuilder()->from('forum_thread')->count();
 			e107::setRegistry('total_forumposts', $forumposts);
 		}
 
@@ -95,7 +89,10 @@ class user_shortcodes extends e_shortcode
 	{
 		//return $this->var['user_forums']; //FIXME column not present in v2. Possible fix on next line.
 		//return e107::getDb()->count("forum_thread","(*)","where thread_user=".$this->var['user_id']); // Does not account for pruned posts? #716. Possible fix on next line.
-		return e107::getDb()->retrieve('user_extended', 'user_plugin_forum_posts', 'user_extended_id = '.$this->var['user_id']);
+		return e107::getDb()->createQueryBuilder()
+			->select('user_plugin_forum_posts')->from('user_extended')
+			->where('user_extended_id', (int) $this->var['user_id'])
+			->fetchOne();
 	}
 	
 	
@@ -107,20 +104,20 @@ class user_shortcodes extends e_shortcode
 
 	function sc_user_downloads($parm = null) 
 	{
-		return e107::getDb()->count("download_requests","(*)","where download_request_userid=".$this->var['user_id']);
+		return e107::getDb()->createQueryBuilder()->from('download_requests')
+			->where('download_request_userid', (int) $this->var['user_id'])
+			->count();
 	}
 	
 
-	function sc_user_chatper($parm = null) 
+	function sc_user_chatper($parm = null)
 	{
-		$sql = e107::getDb();
-		
 		if(!$chatposts = e107::getRegistry('total_chatposts'))
 		{
 			$chatposts = 0; // In case plugin not installed
 	  		if (e107::isInstalled("chatbox_menu"))
 	  		{
-				$chatposts = intval($sql->count("chatbox"));
+				$chatposts = intval(e107::getDb()->createQueryBuilder()->from('chatbox')->count());
 	  		}
 	  		e107::setRegistry('total_chatposts', $chatposts);
 		}
@@ -136,10 +133,9 @@ class user_shortcodes extends e_shortcode
 		}
 
 
-		$sql = e107::getDb();
 		if(!$commentposts = e107::getRegistry('total_commentposts'))
 		{
-			$commentposts = intval($sql->count("comments"));
+			$commentposts = intval(e107::getDb()->createQueryBuilder()->from('comments')->count());
 			e107::setRegistry('total_commentposts', $commentposts);
 		}
 		return ($commentposts > 0) ? "<a href='".e_HTTP."userposts.php?0.comments.".$this->var['user_id']."'>".round(($this->var['user_comments']/$commentposts) * 100, 2)."</a>" : 0;
@@ -148,13 +144,15 @@ class user_shortcodes extends e_shortcode
 	
 	function sc_user_forumper($parm='')
 	{
-		$sql = e107::getDb();
 		if(!$total_forumposts = e107::getRegistry('total_forumposts'))
 		{
-			$total_forumposts = (e107::isInstalled("forum")) ? intval($sql->count("forum_post")) : 0;
+			$total_forumposts = (e107::isInstalled("forum")) ? intval(e107::getDb()->createQueryBuilder()->from('forum_post')->count()) : 0;
 			e107::setRegistry('total_forumposts', $total_forumposts);
 			//$user_forumposts = $sql->count("forum_thread","(*)","where thread_user=".$this->var['user_id']);
-			$user_forumposts = e107::getDb()->retrieve('user_extended', 'user_plugin_forum_posts', 'user_extended_id = '.$this->var['user_id']);
+			$user_forumposts = e107::getDb()->createQueryBuilder()
+				->select('user_plugin_forum_posts')->from('user_extended')
+				->where('user_extended_id', (int) $this->var['user_id'])
+				->fetchOne();
 
 		}
 		return ($total_forumposts > 0) ? round(($user_forumposts/$total_forumposts) * 100, 2) : 0;
@@ -455,7 +453,9 @@ class user_shortcodes extends e_shortcode
 
 	function sc_user_forum_link($parm=null)
 	{
-		$user_forumposts = e107::getDb()->count("forum_thread","(*)","where thread_user=".$this->var['user_id']);
+		$user_forumposts = e107::getDb()->createQueryBuilder()->from('forum_thread')
+			->where('thread_user', (int) $this->var['user_id'])
+			->count();
 		return $user_forumposts ? "<a href='".e_HTTP."userposts.php?0.forums.".$this->var['user_id']."'>".LAN_USER_37."</a>" : "";
 	}
 
@@ -568,14 +568,14 @@ class user_shortcodes extends e_shortcode
 		$url = e107::getUrl();
 		if(!$userjump = e107::getRegistry('userjump'))
 		{
-		  $sql->gen("SELECT user_id, user_name FROM `#user` FORCE INDEX (PRIMARY) WHERE `user_id` > ".intval($this->var['user_id'])." AND `user_ban`=0 ORDER BY user_id ASC LIMIT 1 ");
+		  $sql->execute("SELECT user_id, user_name FROM `#user` FORCE INDEX (PRIMARY) WHERE `user_id` > :userId AND `user_ban`=0 ORDER BY user_id ASC LIMIT 1", array('userId' => (int) $this->var['user_id']));
 		  if ($row = $sql->fetch())
 		  {
 			$userjump['next']['id'] = $row['user_id'];
 			$userjump['next']['name'] = $row['user_name'];
 		  }
 
-		  $sql->gen("SELECT user_id, user_name FROM `#user` FORCE INDEX (PRIMARY) WHERE `user_id` < ".intval($this->var['user_id'])." AND `user_ban`=0 ORDER BY user_id DESC LIMIT 1 ");
+		  $sql->execute("SELECT user_id, user_name FROM `#user` FORCE INDEX (PRIMARY) WHERE `user_id` < :userId AND `user_ban`=0 ORDER BY user_id DESC LIMIT 1", array('userId' => (int) $this->var['user_id']));
 		  if ($row = $sql->fetch())
 		  {
 			$userjump['prev']['id'] = $row['user_id'];

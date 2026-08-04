@@ -38,14 +38,17 @@ class user_select
 
 		global $sql, $tp;
 		if($class === FALSE) { $class = e_UC_MEMBER;}
+
+		$qb = $sql->createQueryBuilder()->select('user_name')->from('user');
+
 		switch ($class)
 		{
 			case e_UC_ADMIN:
-				$where = "user_admin = 1";
+				$qb->where('user_admin', 1);
 				break;
 
 			case e_UC_MEMBER:
-				$where = "user_ban != 1";
+				$qb->where('user_ban', '!=', 1);
 				break;
 				
 			case e_UC_NOBODY:
@@ -53,18 +56,17 @@ class user_select
 				break;
 				
 			default:
-				$where = "user_class REGEXP '(^|,)(".$tp -> toDB($class, true).")(,|$)'";
+				$qb->where($qb->expr()->regexp('user_class', '(^|,)('.$tp -> toDB($class, true).')(,|$)'));
 				break;
 		}
 
-
+		$qb->orderBy('user_name', 'ASC');
 
 
 		$text = "<select class='tbox form-control' id='user' name='user' onchange=\"uc_switch('class')\">";
 		$text .= "<option value=''>".US_LAN_1."</option>";
-		$sql ->select("user", "user_name", $where." ORDER BY user_name");
 
-		while ($row = $sql ->fetch())
+		foreach ($qb->fetchAll() as $row)
 		{
 			$text .= "<option value='".$row['user_name']."'>".$row['user_name']."</option>";
 		}
@@ -96,21 +98,24 @@ class user_select
 		{
 			$text .= "<option value='all'>".US_LAN_3."</option>";
 		}
-		if ($class == e_UC_MEMBER) 
+		if ($class == e_UC_MEMBER)
 		{
-			$sql -> select("userclass_classes", "userclass_id, userclass_name", "ORDER BY userclass_name", "nowhere");
-			while ($row = $sql -> fetch())
+			$rows = $sql->createQueryBuilder()->select('userclass_id', 'userclass_name')->from('userclass_classes')
+				->orderBy('userclass_name', 'ASC')->fetchAll();
+			foreach ($rows as $row)
 			{
-				if (check_class($row['userclass_id']) || ADMINPERMS == '0') 
+				if (check_class($row['userclass_id']) || ADMINPERMS == '0')
 				{
 					$text .= "<option value='".$row['userclass_id'].":".$row['userclass_name']."'>".$row['userclass_name']."</option>";
 				}
 			}
-		} 
-		else 
+		}
+		else
 		{
-			$sql -> select("userclass_classes", "userclass_id, userclass_name", "userclass_id='".intval($class)."' ORDER BY userclass_name");
-			while ($row = $sql -> fetch())
+			$rows = $sql->createQueryBuilder()->select('userclass_id', 'userclass_name')->from('userclass_classes')
+				->where('userclass_id', (int) $class)
+				->orderBy('userclass_name', 'ASC')->fetchAll();
+			foreach ($rows as $row)
 			{
 				$text .= "<option value='".$row['userclass_id'].":".$row['userclass_name']."'>".$row['userclass_name']."</option>";
 			}
@@ -191,10 +196,11 @@ class user_select
 	function real_name($_id)
 	{
 		global $sql;
-		$sql ->select("user", "user_name", "user_id='".intval($_id)."' ");
-		if ($row = $sql ->fetch())
+		$userName = $sql->createQueryBuilder()->select('user_name')->from('user')
+			->where('user_id', (int) $_id)->fetchOne();
+		if ($userName !== null)
 		{
-			return $row['user_name'];
+			return $userName;
 		}
 	}
 
@@ -309,10 +315,17 @@ class user_select
 	 */
 	function findusers($s, $banned=FALSE) {
 		global $sql, $tp;
-		$inc = ($banned == FALSE) ? " AND user_ban != 1" : "";
-		if ($sql->select("user", "*", "user_name LIKE '%".$tp -> toDB($s)."%'".$inc))
+		$qb = $sql->createQueryBuilder()->select('*')->from('user');
+		$qb->where($qb->expr()->contains('user_name', $tp->toDB($s)));
+		if ($banned == FALSE)
 		{
-			while ($row = $sql ->fetch()) {
+			$qb->where('user_ban', '!=', 1);
+		}
+		$rows = $qb->fetchAll();
+		if ($rows)
+		{
+			$ret = array();
+			foreach ($rows as $row) {
 				$ret[strtolower($row['user_name'])] = $row['user_name'];
 			}
 			ksort($ret);
