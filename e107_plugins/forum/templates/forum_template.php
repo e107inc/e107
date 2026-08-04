@@ -29,6 +29,15 @@ if (!isset($FORUM_MAIN_FORUM))
 	$SC_WRAPPER['LASTPOST:type=url'] = " <a href='{---}'>".IMAGE_post2."</a>";
 	$FORUM_MAIN_FORUM = "<tr>\n<td style='width:5%; text-align:center' class='forumheader2'>{NEWFLAG}</td>\n<td style='width:55%' class='forumheader2'>{FORUMNAME}<br /><span class='smallblacktext'>{FORUMDESCRIPTION}</span>{FORUMSUBFORUMS}</td>\n<td style='width:10%; text-align:center' class='forumheader3'>{THREADS}</td>\n<td style='width:10%; text-align:center' class='forumheader3'>{REPLIES}</td>\n<td style='width:20%; text-align:center' class='forumheader3'><span class='smallblacktext'>{LASTPOST}</span></td>\n</tr>";
 }
+/* The label and the "who is online" link used to be concatenated inside
+ * sc_userlist(). They live here now so a theme can restyle them, but the
+ * assignment has to sit OUTSIDE the $FORUM_MAIN_END guard below: a theme that
+ * supplies its own $FORUM_MAIN_END skips that block, and would otherwise get a
+ * bare list of names with no label and no link. */
+if (!isset($SC_WRAPPER['USERLIST']))
+{
+	$SC_WRAPPER['USERLIST'] = LAN_FORUM_0036.": {---}<br /><a rel='external' href='".e_HTTP."online.php'>".LAN_FORUM_0037."</a> ".LAN_FORUM_0038;
+}
 if (!isset($FORUM_MAIN_END))
 {
 // How it should be??? (LAN Shortcodes replaced by their outputed LANS...)
@@ -143,6 +152,40 @@ $FORUM_TEMPLATE['main']['forum']			= 	"<tr>
 $FORUM_TEMPLATE['main']['end']				= "</table><div class='forum-footer center'><small>{USERINFOX}</small></div></div>";
 
 // $FORUM_WRAPPER['main']['forum']['USERINFOX'] = "{FORUM_BREADCRUMB}(html before){---}(html after)";
+
+// New topics (forum.php?new)
+//
+// These rows are threads, not forums, so they need thread shortcodes. The v2
+// setup had no section of its own and forum.php handed the thread rows to
+// $FORUM_TEMPLATE['main']['forum'] above, which asks for {FORUMNAME},
+// {THREADSX} and the rest; none of them resolve against a thread, so the whole
+// listing came out blank. The legacy $FORUM_NEWPOSTS_MAIN further up this file
+// has always had the right shortcodes, and this is that layout in the v2 style.
+//
+// No {FORUM_BREADCRUMB} here on purpose: this block renders before forum.php
+// builds $breadarray, and the forum listing underneath carries one anyway.
+$FORUM_TEMPLATE['newposts']['start']    = "<div id='forum-newposts'>
+											<table class='table table-striped table-bordered table-hover'>
+											<colgroup>
+											<col style='width:3%' />
+											<col />
+											<col style='width:27%' />
+											</colgroup>
+											<thead>
+											<tr>
+												<th>&nbsp;</th>
+												<th>{LAN=FORUM_0075}</th>
+												<th class='text-center'>{LAN=FORUM_0074}</th>
+											</tr>
+											</thead>";
+
+$FORUM_TEMPLATE['newposts']['item']     = "<tr>
+											<td>{NEWIMAGE}</td>
+											<td>{NEWSPOSTNAME}</td>
+											<td class='text-center'><small>{STARTERTITLE}</small></td>
+											</tr>";
+
+$FORUM_TEMPLATE['newposts']['end']      = "</table>\n</div>";
 
 // Tracking
 $FORUM_TEMPLATE['track']['start']       = "{FORUM_BREADCRUMB}<div id='forum-track'>

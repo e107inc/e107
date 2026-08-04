@@ -445,24 +445,6 @@ class mailoutAdminClass extends e107MailManager
 	 * @param $target - display mode
 	 * @return none
 	 */
-	/*
-	 public function mailbodySaveColumnPref($target)
-	 {
-	 global $user_pref;
-	 if (!$target) return;
-	 if (!isset($this->tasks[$target]))
-	 {
-	 echo "Invalid prefs target: {$target}<br />";
-	 return;
-	 }
-	 if (isset ($_POST['etrigger_ecolumns']))
-	 {
-	 $user_pref['admin_mailout_columns'][$target] = $_POST['e-columns'];
-	 save_prefs('user');
-	 $this->fieldPref = $user_pref['admin_mailout_columns'][$target];
-	 }
-	 }
-	 */
 	/**
 	 *    Get the user name associated with a user ID.
 	 *    The result is cached in case required again
@@ -479,9 +461,12 @@ class mailoutAdminClass extends e107MailManager
 			// Look up user
 			$this->checkDB(2);
 			// Make sure DB object created
-			if ($this->db2->select('user', 'user_name, user_loginname', 'user_id=' . intval($uid)))
+			$row = $this->db2->createQueryBuilder()
+				->select('user_name', 'user_loginname')->from('user')
+				->where('user_id', (int) $uid)
+				->fetchRow();
+			if ($row)
 			{
-				$row = $this->db2->fetch();
 				$this->userCache[$uid] = $row['user_name'] . ' (' . $row['user_loginname'] . ')';
 			}
 			else
@@ -750,14 +735,17 @@ class mailoutAdminClass extends e107MailManager
 			$sel = ($k == $curSel) ? " selected='selected'" : '';
 			$ret .= "<option value='{$k}'{$sel}>{$v}</option>\n";
 		}
-		$query = "SELECT uc.*, count(u.user_id) AS members
+		$this->db2->execute("SELECT uc.*, count(u.user_id) AS members
 				FROM #userclass_classes AS uc
 				LEFT JOIN #user AS u ON u.user_class REGEXP concat('(^|,)',uc.userclass_id,'(,|$)')
-				WHERE NOT uc.userclass_id IN (" . e_UC_PUBLIC . ',' . e_UC_NOBODY . ',' . e_UC_READONLY . ',' . e_UC_BOTS . ")
+				WHERE NOT uc.userclass_id IN (:ucPublic, :ucNobody, :ucReadonly, :ucBots)
 				GROUP BY uc.userclass_id
-						";
-
-		$this->db2->gen($query);
+						", array(
+			'ucPublic'   => (int) e_UC_PUBLIC,
+			'ucNobody'   => (int) e_UC_NOBODY,
+			'ucReadonly' => (int) e_UC_READONLY,
+			'ucBots'     => (int) e_UC_BOTS
+		));
 		while ($row = $this->db2->fetch())
 		{
 			$public = ($row['userclass_editclass'] == e_UC_PUBLIC) ? "(" . LAN_MAILOUT_10 . ")" : "";
@@ -1040,197 +1028,6 @@ class mailoutAdminClass extends e107MailManager
 	 * @param $mailSource - array of mail information
 	 * @return text for display
 	 */
-	/*
-	 function show_mailform(&$mailSource)
-	 {
-	 global $HANDLERS_DIRECTORY;
-	 global $mailAdmin;
-
-	 $sql 	= e107::getDb();
-	 $ns 	= e107::getRender();
-	 $tp 	= e107::getParser();
-	 $frm 	= e107::getForm();
-	 $mes 	= e107::getMessage();
-	 $pref 	= e107::getPref();
-
-	 if (!is_array($mailSource))
-	 {
-	 $mes->addError('Coding error - mail not array (521)');
-	 //$ns->tablerender('ERROR!!', );
-	 //exit;
-	 }
-
-	 $email_subject = varset($mailSource['mail_subject'], '');
-	 $email_body = $tp->toForm(varset($mailSource['mail_body'],''));
-	 $email_id = varset($mailSource['mail_source_id'],'');
-
-	 $text = '';
-
-	 if(strpos($_SERVER['SERVER_SOFTWARE'],'mod_gzip') &&
-	!is_readable(e_HANDLER.'phpmailer/.htaccess'))
-	 {
-	 $warning = LAN_MAILOUT_40.' '.$HANDLERS_DIRECTORY.'phpmailer/ '.LAN_MAILOUT_41;
-	 $ns->tablerender(LAN_MAILOUT_42, $mes->render().$warning);
-	 }
-
-	 $debug = (e_MENU == "debug") ? "?[debug]" : "";
-
-	 $text .= "<div>
-	 <form method='post' action='".e_SELF."?mode=makemail' id='mailout_form'>";
-
-	 $text .= $this->emailSelector('all', varset($mailSource['mail_selectors'],
-	FALSE));
-
-	 $text .= "<table class='table'>
-	 <colgroup>
-	 <col class='col-label' />
-	 <col class='col-control' />
-	 </colgroup>
-	 <tr>
-	 <td>".LAN_MAILOUT_111.": </td>
-	 <td>".$frm->text('email_title',varset($mailSource['mail_title'],''))."</td>
-	 </tr>
-
-	 <tr>
-	 <td>".LAN_MAILOUT_01.": </td>
-	 <td>".$frm->text('email_from_name',varset($mailSource['mail_from_name'],USERNAME))."</td>
-	 </tr>
-
-	 <tr>
-	 <td>".LAN_MAILOUT_02.": </td>
-	 <td
-	>".$frm->text('email_from_email',varset($mailSource['mail_from_email'],USEREMAIL))."</td>
-	 </tr>";
-
-	 // Add in the core and any plugin selectors here
-	 */
-	/*$text .= "
-
-	 <tr>
-	 <td>".LAN_MAILOUT_03.": </td>
-	 <td>".$this->emailSelector('all', varset($mailSource['mail_selectors'],
-	FALSE))."</td>
-	 </tr>";*/
-	/*
-	 $text .= "
-	 <tr>
-	 <td>".LAN_MAILOUT_04.": </td>
-	 <td>".$frm->text('email_cc',varset($mailSource['mail_cc'],''))."</td>
-	 </tr>
-
-	 <tr>
-	 <td>".LAN_MAILOUT_05.": </td>
-	 <td>".$frm->text('email_bcc',varset($mailSource['mail_bcc'],''))."</td>
-	 </tr>
-
-	 <tr>
-	 <td>".LAN_MAILOUT_51.": </td>
-	 <td>".$frm->text('email_subject',varset($email_subject,''),255,'required=1&size=xxlarge')."</td>
-	 </tr>";
-
-	 // Attachment.
-	 if (e107::isInstalled('download'))
-	 {
-	 // TODO - use download plugin API
-
-	 if($sql->select("download", "download_url,download_name", "download_id !=''
-	ORDER BY download_name"))
-	 {
-	 $text .= "<tr>
-	 <td>".LAN_MAILOUT_07.": </td>
-	 <td >";
-	 $text .= "<select class='tbox' name='email_attachment' >
-	 <option value=''>&nbsp;</option>\n";
-
-	 while ($row = $sql->fetch())
-	 {
-	 $selected = ($mailSource['mail_attach'] == $row['download_url']) ?
-	"selected='selected'" : '';
-	 //				$text .= "<option value='".urlencode($row['download_url'])."'
-	// {$selected}>".htmlspecialchars($row['download_name'])."</option>\n";
-	 $text .= "<option value='".$row['download_url']."'
-	{$selected}>".htmlspecialchars($row['download_name'])."</option>\n";
-	 }
-	 $text .= " </select>";
-
-	 $text .= "</td>
-	 </tr>";
-	 }
-
-	 }
-	 // TODO File-Picker from Media-Manager.
-
-	 $text .= "
-	 <tr>
-	 <td>".LAN_MAILOUT_09.": </td>
-	 <td >\n";
-
-	 global $eplug_bb;
-
-	 $eplug_bb[] = array(
-	 'name'		=> 'shortcode',
-	 'onclick'	=> 'expandit',
-	 'onclick_var' => 'sc_selector',
-	 'icon'		=> e_IMAGE.'generic/bbcode/shortcode.png',
-	 'helptext'	=> LAN_MAILOUT_11,
-	 'function'	=> array($this,'sc_Select'),
-	 'function_var'	=> 'sc_selector'
-	 );
-
-	 $text .= $this->sendStyleSelect(varset($mailSource['mail_send_style'], ''));
-	 $checked = (isset($mailSource['mail_include_images']) &&
-	$mailSource['mail_include_images']) ? " checked='checked'" : '';
-	 $text .= "&nbsp;&nbsp;<input type='checkbox' name='email_include_images'
-	value='1' {$checked} />".LAN_MAILOUT_225;
-	 $text .="
-	 </td></tr>\n
-	 <tr>
-
-	 <td
-	colspan='2'>".$frm->bbarea('email_body',$email_body,'mailout','helpb')."</td>
-	 </tr>";
-
-	 $text .="
-	 <tr>
-	 <td colspan='2'>
-	 <div>";
-
-	 //	$text .= display_help('helpb','mailout');
-
-	 $text .="
-	 </div></td>
-	 </tr>
-	 </table> ";
-
-	 $text .= "<div class='buttons-bar center'>";
-
-	 if($email_id)
-	 {
-	 $text .= $frm->hidden('mail_source_id',$email_id);
-	 $text .= $frm->admin_button('update_email',LAN_UPDATE);
-	 //$text .= "<input type='hidden' name='mail_source_id' value='".$email_id."'
-	// />";
-	 //$text .= "<input  type='submit' name='update_email' value=\"".LAN_UPDATE."\"
-	// />";
-	 }
-	 else
-	 {
-	 $text .= $frm->admin_button('save_email',LAN_SAVE,'other');
-	 }
-
-	 $text .= $frm->admin_button('send_email',LAN_MAILOUT_08); //
-
-	 $text .= "</div>
-
-	 </form>
-	 </div>";
-
-	 return $text;
-
-	 // $ns->tablerender(ADLAN_136.SEP.LAN_MAILOUT_15, $mes->render(). $text);		//
-	// Render the complete form
-	 }
-	 */
 
 	/**
 	 *        Helper function manages the shortcodes which can be inserted
@@ -1404,113 +1201,6 @@ class mailoutAdminClass extends e107MailManager
 	 * @param $amount - number to return
 	 * @return text for display
 	 */
-	/*
-	 public function showEmailList($type, $from = 0, $amount = 10)
-	 {
-	 // Need to select main email entries; count number of addresses attached to each
-	 $gen = new convert;
-	 $frm = e107::getForm();
-	 $ns = e107::getRender();
-	 $mes = e107::getMessage();
-	 $tp = e107::getParser();
-
-	 switch ($type)
-	 {
-	 case 'sent' :
-	 $searchType = 'allcomplete';
-	 break;
-	 default :
-	 $searchType = $type;
-	 }
-
-	 if ($from < 0) { $from = $this->showFrom; }
-	 if ($amount < 0) { $amount = $this->showCount; }
-	 // in $_GET, so = sort order, sf = sort field
-	 $count = $this->selectEmailStatus($from, $amount, '*', $searchType,
-	$this->sortField, $this->sortOrder);
-	 $totalCount = $this->getEmailCount();
-
-	 $emails_found = array();			// Log ID and count for later
-
-	 if (!$count)
-	 {
-	 $mes->addInfo(LAN_MAILOUT_79);
-	 $ns->tablerender($this->tasks[$type]['title'], $mes->render() . $text);
-	 return;
-	 }
-
-	 $text = "
-	 <form action='".e_SELF.'?'.e_QUERY."' id='email_list' method='post'>
-	 <fieldset id='emails-list'>
-	 <table class='table adminlist'>";
-
-	 $fieldPrefs = $this->calcFieldSpec($type, TRUE);			// Get columns to display
-
-	 // Must use '&' rather than '&amp;' in query pattern
-	 $text .=
-	$frm->colGroup($this->fields['mail_content'],$this->fieldPref).$frm->thead($this->fields['mail_content'],$this->fieldPref,'mode='.$type."&fld=[FIELD]&asc=[ASC]&frm=[FROM]")."<tbody>";
-
-	 while ($row = $this->getNextEmailStatus(FALSE))
-	 {
-	 //print_a($row);
-	 $text .= '<tr>';
-	 foreach ($fieldPrefs as $fieldName)
-	 {	// Output column data value
-	 $text .= '<td>';
-	 if (isset($row[$fieldName]))
-	 {
-	 $proctype = varset($this->fields['mail_content'][$fieldName]['proc'],
-	'default');
-	 switch ($proctype)
-	 {
-	 case 'username' :
-	 $text .= $this->getUserName($row[$fieldName]);
-	 break;
-	 case 'sdatetime' :
-	 $text .= $gen->convert_date($row[$fieldName], 'short');
-	 break;
-	 case 'trunc200' :
-	 $text .= $tp->text_truncate($row[$fieldName], 200, '...');
-	 break;
-	 case 'chars' :			// Show generated html as is
-	 $text .= htmlspecialchars($row[$fieldName], ENT_COMPAT, 'UTF-8');
-	 break;
-	 case 'contentstatus' :
-	 $text .= $this->statusToText($row[$fieldName]);
-	 break;
-	 case 'selectors' :
-	 $text .= 'cannot display';
-	 break;
-	 case 'yesno' :
-	 $text .= $row[$fieldName] ? LAN_YES : LAN_NO;
-	 break;
-	 case 'default' :
-	 default :
-	 $text .= $row[$fieldName];
-	 }
-	 }
-	 else
-	 {	// Special stuff
-	 }
-	 $text .= '</td>';
-	 }
-	 // Add in options here
-	 $text .= '<td>'.$this->makeMailOptions($type,$row).'</td>';
-	 $text .= '</tr>';
-	 }
-	 $text .= "</tbody></table><br /><br />\n";
-
-	 if ($totalCount > $count)
-	 {
-	 $parms =
-	"{$totalCount},{$amount},{$from},".e_SELF."?mode={$type}&amp;count={$amount}&amp;frm=[FROM]&amp;fld={$this->sortField}&amp;asc={$this->sortOrder}";
-	 $text .= $tp->parseTemplate("{NEXTPREV={$parms}}");
-	 }
-
-	 $text .= '</fieldset></form>';
-	 $ns->tablerender(ADLAN_136.SEP.$this->tasks[$type]['title'], $text);
-	 }
-	 */
 
 	/**
 	 * Generate a list of emails to send
@@ -1549,21 +1239,6 @@ class mailoutAdminClass extends e107MailManager
 		}
 		else
 		{
-			// Start by saving the email
-			/*
-			$mailData['mail_content_status'] = MAIL_STATUS_TEMP;
-			$mailData['mail_create_app'] = 'core';
-			$result = $this->saveEmail($mailData, TRUE);
-		//	$result = $this->saveEmail($mailData, false); // false = update, not insert. 
-			if(is_numeric($result))
-			{
-				$mailMainID = $mailData['mail_source_id'] = $result;
-			}
-			else
-			{
-				e107::getMessage()->addDebug("Couldn't save email. (".__FILE__." Line: ".__LINE__.")");
-			}
-			*/
 
 			$mailMainID = $mailData['mail_source_id'];
 
@@ -1768,145 +1443,6 @@ class mailoutAdminClass extends e107MailManager
 	 * @param $nextPage - 'mode' specification for page to return to following delete
 	 * @return text for display
 	 */
-	/*
-	public function showmailRecipients($mailID, $nextPage = 'saved')
-	{
-		$gen = new convert;
-		$frm = e107::getForm();
-		$mes = e107::getMessage();
-		$tp = e107::getParser();
-		$ns = e107::getRender();
-
-		$mailData = $this->retrieveEmail($mailID);
-
-		if($mailData === FALSE)
-		{
-			$mes->addInfo(LAN_MAILOUT_79);
-			$ns->tablerender(ADLAN_136 . SEP . LAN_MAILOUT_171, $mes->render() . $text);
-			exit ;
-		}
-
-		$text .= "
-			<form action='" . e_SELF . '?' . e_QUERY . "' id='email_recip_header' method='post'>
-			<fieldset id='email-recip_header'>
-			<table class='table adminlist'>
-			<colgroup>
-				<col class='col-label' />
-				<col class='col-control' />
-			</colgroup>
-			
-			<tbody>";
-
-		$text .= $this->showMailDetail($mailData, 'basic');
-		$text .= '<tr><td>' . LAN_MAILOUT_172 . '</td><td>' . $this->statusToText($mailData['mail_content_status']) . "<input type='hidden' name='mailIDConf' value='{$mailID}' /></td></tr>";
-		if($mailData['mail_content_status'] != MAIL_STATUS_SAVED)
-		{
-			$text .= '<tr><td>' . LAN_MAILOUT_173 . '</td><td>' . ($mailData['mail_togo_count'] + $mailData['mail_sent_count'] + $mailData['mail_fail_count']) . '</td></tr>';
-		}
-
-		$text .= "</tbody></table>\n</fieldset></form>";
-
-		// List of recipients
-		// in $_GET, asc = sort order, fld = sort field
-		$count = $this->selectTargetStatus($mailID, $this->showFrom, $this->showCount, '*', FALSE, $this->sortField, $this->sortOrder);
-		$totalCount = $this->getTargetCount();
-
-		if($count == 0)
-		{
-			$text .= "<span class='required'>" . LAN_MAILOUT_253 . '</span>';
-		}
-		else
-		{
-			$text .= "
-				<form action='" . e_SELF . "?mode=recipients&amp;m={$mailID}&amp;count={$count}&amp;frm={$this->showFrom}&amp;fld={$this->sortField}&amp;asc={$this->sortOrder}&amp;savepage={$nextPage}' id='email_recip_body' method='post'>
-				<fieldset id='email-recip_body'>
-				<table class='table adminlist'>";
-
-			$fieldPrefs = $this->calcFieldSpec('recipients', TRUE);
-			// Get columns to display
-
-			// Must use '&' rather than '&amp;' in query pattern
-			$text .= $frm->colGroup($this->fields['mail_recipients'], $this->fieldPref) . $frm->thead($this->fields['mail_recipients'], $this->fieldPref, 'mode=' . 'recipients&amp;m=' . $mailID . "&fld=[FIELD]&asc=[ASC]&frm=[FROM]") . "<tbody>";
-
-			while($row = $this->getNextTargetStatus(FALSE))
-			{
-				//	print_a($row);
-				$text .= '<tr>';
-				foreach($fieldPrefs as $fieldName)
-				{
-					// Output column data value
-					$text .= '<td>';
-					if(isset($row[$fieldName]))
-					{
-						$proctype = varset($this->fields['mail_recipients'][$fieldName]['proc'], 'default');
-						switch ($proctype)
-						{
-							case 'username':
-								$text .= $this->getUserName($row[$fieldName]);
-							break;
-							case 'sdatetime':
-								$text .= $gen->convert_date($row[$fieldName], 'short');
-							break;
-							case 'trunc200':
-								$text .= $tp->text_truncate($row[$fieldName], 200, '...');
-							break;
-							case 'chars':
-								// Show generated html as is
-								$text .= htmlspecialchars($row[$fieldName], ENT_COMPAT, 'UTF-8');
-							break;
-							case 'contentstatus':
-								$text .= $this->statusToText($row[$fieldName]);
-							break;
-							case 'selectors':
-								$text .= 'cannot display';
-							break;
-							case 'array':
-								if(is_array($row[$fieldName]))
-								{
-									$nl = '';
-									foreach($row[$fieldName] as $k => $v)
-									{
-										if($v)
-										{
-											$text .= $nl . $k . ' => ' . $v;
-											$nl = '<br />';
-										}
-									}
-								}
-								else
-								{
-									$text .= 'bad data: ';
-								}
-							break;
-							case 'default':
-							default:
-								$text .= $row[$fieldName];
-						}
-					}
-					else
-					{
-						// Special stuff
-						$text .= 'special';
-					}
-					$text .= '</td>';
-				}
-				// Add in options here
-				$text .= '<td>' . $this->makeTargetOptions('recipients', $row) . '</td>';
-				$text .= '</tr>';
-			}
-
-			$text .= "</tbody></table>\n</fieldset></form><br /><br />";
-
-			if($totalCount > $count)
-			{
-				$parms = "{$totalCount},{$this->showCount},{$this->showFrom}," . e_SELF . "?mode=recipients&amp;m={$mailID}&amp;count={$this->showCount}&amp;frm=[FROM]&amp;fld={$this->sortField}&amp;asc={$this->sortOrder}&amp;savepage={$nextPage}";
-				$text .= $tp->parseTemplate("{NEXTPREV={$parms}}");
-			}
-		}
-
-		$ns->tablerender(ADLAN_136 . SEP . LAN_MAILOUT_181, $mes->render() . $text);
-	}
-	*/
 
 
 	/**
@@ -1924,7 +1460,8 @@ class mailoutAdminClass extends e107MailManager
 		// Make sure DB object created
 
 		// First thing, delete temporary records from both tables
-		if (($res = $this->db2->db_Delete('mail_content', '`mail_content_status` = ' . MAIL_STATUS_TEMP)) === false)
+		if (($res = $this->db2->createQueryBuilder()->delete('mail_content')
+			->where('mail_content_status', MAIL_STATUS_TEMP)->execute()) === false)
 		{
 			$results[] = 'Error ' . $this->db2->getLastErrorNumber() . ':' . $this->db2->getLastErrorText() . ' deleting temporary records from mail_content';
 			$noError = false;
@@ -1942,7 +1479,8 @@ class mailoutAdminClass extends e107MailManager
 				), LAN_MAILOUT_227);
 			}
 		}
-		if (($res = $this->db2->delete('mail_recipients', '`mail_status` = ' . MAIL_STATUS_TEMP)) === false)
+		if (($res = $this->db2->createQueryBuilder()->delete('mail_recipients')
+			->where('mail_status', MAIL_STATUS_TEMP)->execute()) === false)
 		{
 			$results[] = 'Error ' . $this->db2->getLastErrorNumber() . ':' . $this->db2->getLastErrorText() . ' deleting temporary records from mail_recipients';
 			$noError = false;
@@ -1962,7 +1500,7 @@ class mailoutAdminClass extends e107MailManager
 		}
 
 		// Now look for 'orphaned' recipient records
-		if (($res = $this->db2->gen("DELETE `#mail_recipients` FROM `#mail_recipients` 
+		if (($res = $this->db2->execute("DELETE `#mail_recipients` FROM `#mail_recipients`
 					LEFT JOIN `#mail_content` ON `#mail_recipients`.`mail_detail_id` = `#mail_content`.`mail_source_id`
 					WHERE `#mail_content`.`mail_source_id` IS NULL")) === false)
 		{
@@ -1978,9 +1516,14 @@ class mailoutAdminClass extends e107MailManager
 		}
 
 		// Scan content table for anomalies, out of time records
-		if (($res = $this->db2->gen("SELECT * FROM `#mail_content` 
-					WHERE (`mail_content_status` >" . MAIL_STATUS_FAILED . ") AND (`mail_content_status` <=" . MAIL_STATUS_MAX_ACTIVE . ")
-					AND ((`mail_togo_count`=0) OR ( (`mail_last_date` != 0) AND (`mail_last_date` < " . time() . ")))")) === false)
+		if (($res = $this->db2->execute("SELECT * FROM `#mail_content`
+					WHERE (`mail_content_status` > :statusFailed) AND (`mail_content_status` <= :statusMaxActive)
+					AND ((`mail_togo_count`=0) OR ( (`mail_last_date` != 0) AND (`mail_last_date` < :now)))",
+			array(
+				'statusFailed'    => (int) MAIL_STATUS_FAILED,
+				'statusMaxActive' => (int) MAIL_STATUS_MAX_ACTIVE,
+				'now'             => time()
+			))) === false)
 		{
 			$results[] = 'Error ' . $this->db2->getLastErrorNumber() . ':' . $this->db2->getLastErrorText() . ' checking bad status in mail_content';
 			$noError = false;
@@ -2018,12 +1561,12 @@ class mailoutAdminClass extends e107MailManager
 
 		//Finally - check for inconsistent recipient and content status records -
 		// basically verify counts
-		if (($res = $this->db2->gen("SELECT COUNT(mr.`mail_status`) AS mr_count, mr.`mail_status`,
+		if (($res = $this->db2->execute("SELECT COUNT(mr.`mail_status`) AS mr_count, mr.`mail_status`,
 					mc.`mail_source_id`, mc.`mail_togo_count`, mc.`mail_sent_count`, mc.`mail_fail_count`, mc.`mail_bounce_count`, mc.`mail_source_id` FROM `#mail_recipients` AS mr
-					LEFT JOIN `#mail_content` AS mc ON mr.`mail_detail_id` = mc.`mail_source_id` 
-					WHERE mc.`mail_content_status` <= " . MAIL_STATUS_MAX_ACTIVE . "
+					LEFT JOIN `#mail_content` AS mc ON mr.`mail_detail_id` = mc.`mail_source_id`
+					WHERE mc.`mail_content_status` <= :statusMaxActive
 					GROUP BY mr.`mail_status`, mc.`mail_source_id` ORDER BY mc.`mail_source_id`
-					")) === false)
+					", array('statusMaxActive' => (int) MAIL_STATUS_MAX_ACTIVE))) === false)
 		{
 			$results[] = 'Error ' . $this->db2->getLastErrorNumber() . ':' . $this->db2->getLastErrorText() . ' assembling email counts';
 			$noError = false;
@@ -2057,11 +1600,20 @@ class mailoutAdminClass extends e107MailManager
 						{
 							// *************** Update mail record here *********************
 							$this->checkDB(1);
-							$this->db->update('mail_content', array(
-								'data'    => $changes,
-								'WHERE'   => '`mail_source_id` = ' . $lastMail,
-								'_FIELDS' => $this->dbTypes['mail_content']
-							));
+							// Field-typed array update -> per-column setTyped() so the
+							// _FIELD_TYPES storage transforms stay byte-identical to the
+							// legacy array CRUD. The legacy path ignored the (mis-keyed)
+							// '_FIELDS' element and auto-merged getFieldDefs(), so the
+							// field-type source here is getFieldDefs()['_FIELD_TYPES'].
+							$mailDefs = $this->db->getFieldDefs('mail_content');
+							$mailTypes = isset($mailDefs['_FIELD_TYPES']) ? $mailDefs['_FIELD_TYPES'] : array();
+							$qb = $this->db->createQueryBuilder()->update('mail_content');
+							foreach ($changes as $changeCol => $changeVal)
+							{
+								$changeType = isset($mailTypes[$changeCol]) ? $mailTypes[$changeCol] : (isset($mailTypes['_DEFAULT']) ? $mailTypes['_DEFAULT'] : 'string');
+								$qb->setTyped($changeCol, $changeVal, $changeType);
+							}
+							$qb->where('mail_source_id', (int) $lastMail)->execute();
 							$line = "Count update for {$saveRow['mail_source_id']} - {$saveRow['mail_togo_count']}, {$saveRow['mail_sent_count']}, {$saveRow['mail_fail_count']}, {$saveRow['mail_bounce_count']} => ";
 							$line .= implode(', ', $counters);
 							$results[] = $line;
@@ -2154,37 +1706,6 @@ class mailoutAdminClass extends e107MailManager
 		}
 
 		return $ret;
-		/*
-
-		 foreach (array(e_CORE.'templates/email_template.php',
-		THEME.'templates/email_template.php') as $templateFileName )	// Override file
-		then defaults
-		 if (is_readable($templateFileName))
-		 {
-		 require($templateFileName);
-		 $tVars = get_defined_vars();
-		 if (isset($tVars['GLOBALS'])) unset($tVars['GLOBALS']);
-		 foreach ($tVars as $tKey => $tData)
-		 {
-		 if (is_array($tData) && isset($tData['template_name']))
-		 {
-		 if (!isset($tData['template_type']) || ($tData['template_type'] == 'all') ||
-		($tData['template_type'] == $sel))
-		 {
-		 $ret[$tKey] = $tData['template_name'];
-		 }
-		 }
-		 if ($tKey != 'ret')
-		 {
-		 unset($tVars[$tKey]);
-		 }
-		 }
-		 }
-
-		 print_a($ret);
-		 return $ret;
-
-		 */
 	}
 
 
@@ -2267,20 +1788,6 @@ class mailoutAdminClass extends e107MailManager
 			</tr>
 			</table></div>";
 
-		/* FIXME - posting SENDMAIL path triggers Mod-Security rules. use define() in e107_config.php instead.
-			// Sendmail. -------------->
-
-				$text .= "<div id='sendmail' {$senddisp}><table style='margin-right:0px;margin-left:auto;border:0px'>";
-				$text .= "
-				<tr>
-				<td>".LAN_MAILOUT_20.":&nbsp;&nbsp;</td>
-				<td>
-				<input class='tbox' type='text' name='sendmail' size='60' value=\"".(!$pref['sendmail'] ? "/usr/sbin/sendmail -t -i -r ".$pref['siteadminemail'] : $pref['sendmail'])."\" maxlength='80' />
-				</td>
-				</tr>
-
-				</table></div>";
-			*/
 
 		e107::js('footer-inline', "
 

@@ -47,7 +47,7 @@ class _blank_front
 	//	$template = e107::getTemplate('_blank','_blank','default');
 	//	$text = $tp->parseTemplate($template['start'],true, $sc);
 
-		if($rows = $sql->retrieve('blank','*',false,true)) 	// combined select and fetch function - returns an array.
+		if($rows = $sql->createQueryBuilder()->select('*')->from('blank')->fetchAll()) 	// combined select and fetch function - returns an array.
 		{
 			// print_a($rows);
 			foreach($rows as $key=>$value)		// loop throug

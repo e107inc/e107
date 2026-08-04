@@ -47,12 +47,16 @@ class _blank_dashboard // include plugin-folder in the name.
 
 		$label          = date('M Y', $month_start)." - ".date('M Y', $month_end);
 
-		if(!$sql->gen("SELECT blank_id,blank_date,blank_folder FROM `#blank` WHERE blank_date BETWEEN ".$month_start." AND ".$month_end))
+		$rows = $sql->createQueryBuilder()
+			->select('blank_id', 'blank_date', 'blank_folder')->from('blank')
+			->whereBetween('blank_date', $month_start, $month_end)
+			->fetchAll();
+		if(!$rows)
 		{
 			return false;
 		}
 
-		while($row = $sql->fetch())
+		foreach($rows as $row)
 		{
 
 			$key = date('Y-n-j', $row['blank_date']);

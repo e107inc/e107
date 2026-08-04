@@ -184,34 +184,34 @@ class notify
 		}
 		elseif (is_numeric($notifyTarget))
 		{
+			$qb = $sql->createQueryBuilder();
+			$qb->select('user_id', 'user_name', 'user_email', 'user_join', 'user_lastvisit')->from('user');
+
 			switch ($notifyTarget)
 			{
 				case e_UC_MAINADMIN :
-					$qry = "`user_admin` = 1 AND `user_perms` = '0' AND `user_ban` = 0";
+					$qb->where('user_admin', 1)->where('user_perms', '0')->where('user_ban', 0);
 					break;
 				case e_UC_ADMIN :
-					$qry = "`user_admin` = 1 AND `user_ban` = 0";
+					$qb->where('user_admin', 1)->where('user_ban', 0);
 					break;
 				case e_UC_MEMBER :
-					$qry = "`user_ban` = 0";
+					$qb->where('user_ban', 0);
 					break;
 				default :
-					$qry = "user_ban = 0 AND user_class REGEXP '(^|,)(".$notifyTarget.")(,|$)'";
+					$qb->where('user_ban', 0)
+						->where($qb->expr()->regexp('user_class', '(^|,)('.$notifyTarget.')(,|$)'));
 					break;
 			}
-
-			$qry = 'SELECT user_id,user_name,user_email,user_join,user_lastvisit FROM `#user` WHERE '.$qry;
 
 			if ($blockOriginator)
 			{
-				$qry .= ' AND `user_id` != '.USERID;
+				$qb->where('user_id', '!=', USERID);
 			}
 
-			if (false !== ($count = $sql->gen($qry)))
+			// Now add email addresses to the list
+			foreach ($qb->fetchAll() as $row)
 			{
-				// Now add email addresses to the list
-				while ($row = $sql->fetch())
-				{
 					if ($row['user_email'] != $emailFilter)
 					{
 
@@ -243,7 +243,6 @@ class notify
 						);
 					}
 				}
-			}
 
 		}
 
@@ -479,7 +478,11 @@ class notify
 		$tp = e107::getParser();
 		$sql = e107::getDb();
 
-		$author = $sql->retrieve('user','user_name','user_id = '.intval($data['news_author'])." LIMIT 1");
+		$author = $sql->createQueryBuilder()
+			->select('user_name')->from('user')
+			->where('user_id', (int) $data['news_author'])
+			->setMaxResults(1)
+			->fetchOne();
 
 
 		$template = "<h4><a href='{NEWS_URL}'>{NEWS_TITLE}</a></h4>

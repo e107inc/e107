@@ -166,7 +166,8 @@ class drupal_import extends base_import_class
 				$query = "SELECT * FROM " . $this->DBPrefix . "users AS u ";
 				$query .= "WHERE u.status = 1 AND u.uid > 1 ";
 
-				return $this->ourDB->gen($query);
+				// Foreign Drupal DB: $this->DBPrefix is a dynamic cross-database table identifier validated fail-closed in base_import_class::database(); WHERE values are static literals (no request input). The builder cannot map a foreign cross-DB/custom-prefix table, so use bound execute() (result consumed statefully via getNext()->fetch()).
+				return $this->ourDB->execute($query);
 				break;
 
 			case 7:
@@ -181,7 +182,8 @@ class drupal_import extends base_import_class
 				$query .= "LEFT JOIN " . $this->DBPrefix . "variable AS public ON public.name = 'file_public_path'";
 				$query .= "WHERE u.status = 1 AND u.uid > 1 ";
 
-				return $this->ourDB->gen($query);
+				// Foreign Drupal DB: $this->DBPrefix is a dynamic cross-database table identifier validated fail-closed in base_import_class::database(); WHERE values are static literals (no request input). The builder cannot map a foreign cross-DB/custom-prefix table, so use bound execute() (result consumed statefully via getNext()->fetch()).
+				return $this->ourDB->execute($query);
 				break;
 
 			case 8:
@@ -193,7 +195,8 @@ class drupal_import extends base_import_class
 				$query .= "LEFT JOIN " . $this->DBPrefix . "users_field_data AS ufd ON u.uid = ufd.uid";
 				$query .= "WHERE ufd.status = 1 AND ufd.uid > 1 ";
 
-				return $this->ourDB->gen($query);
+				// Foreign Drupal DB: $this->DBPrefix is a dynamic cross-database table identifier validated fail-closed in base_import_class::database(); WHERE values are static literals (no request input). The builder cannot map a foreign cross-DB/custom-prefix table, so use bound execute() (result consumed statefully via getNext()->fetch()).
+				return $this->ourDB->execute($query);
 				break;
 
 			default:

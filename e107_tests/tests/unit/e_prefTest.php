@@ -160,7 +160,303 @@
 
 		}
 
+		/**
+		 * A preference row holds one serialized array shared by every writer, so
+		 * save() has to know which preferences this object actually changed rather
+		 * than writing back the whole array it happens to be holding. These pin the
+		 * record it keeps to answer that.
+		 */
 
+		public function testJournalIsEmptyAfterLoad()
+		{
+			$this->assertSame(array(), $this->pref->getJournal());
+			$this->assertFalse($this->pref->isJournalReplaced());
+		}
 
+		public function testJournalRecordsSimpleSetters()
+		{
+			$this->pref->set('journal_a', 'one');
+			$this->pref->setPref('journal_b', 'two');
+
+			$this->assertSame(array(
+				array('set', array('journal_a', 'one', false)),
+				array('setPref', array('journal_b', 'two')),
+			), $this->pref->getJournal());
+		}
+
+		public function testJournalRecordsRemovals()
+		{
+			$this->pref->set('journal_gone', 'here');
+			$this->pref->remove('journal_gone');
+			$this->pref->removePref('journal_path/leaf');
+
+			$journal = $this->pref->getJournal();
+
+			$this->assertSame(array('remove', array('journal_gone')), $journal[1]);
+			$this->assertSame(array('removeData', array('journal_path/leaf')), $journal[2]);
+		}
+
+		public function testJournalRecordsArraySetterPerKey()
+		{
+			$this->pref->setPref(array('journal_x' => 1, 'journal_y' => 2));
+
+			// Recorded per key, not as one array write, so a replay merges rather
+			// than replacing preferences the caller never mentioned.
+			$this->assertSame(array(
+				array('setData', array('journal_x', 1, false)),
+				array('setData', array('journal_y', 2, false)),
+			), $this->pref->getJournal());
+		}
+
+		public function testJournalSkipsAddOfAnExistingPreference()
+		{
+			$this->pref->set('journal_taken', 'original');
+			$this->pref->add('journal_taken', 'ignored');
+
+			// add() did nothing, so replaying it must not revive the preference if
+			// another writer removed it in the meantime.
+			$this->assertSame(array(
+				array('set', array('journal_taken', 'original', false)),
+			), $this->pref->getJournal());
+			$this->assertSame('original', $this->pref->get('journal_taken'));
+		}
+
+		public function testJournalSkipsUpdateOfAMissingPreference()
+		{
+			$this->pref->update('journal_absent', 'nope');
+
+			// update() did nothing, so replaying it must not write a value this
+			// object never held.
+			$this->assertSame(array(), $this->pref->getJournal());
+		}
+
+		public function testLoadDataMarksTheObjectAsAWholeRow()
+		{
+			$this->pref->set('journal_before', 'recorded');
+			$this->pref->loadData(array('journal_whole' => 'row'), false);
+
+			// The caller handed over a complete array, so it is the row to write and
+			// the individual changes recorded before it no longer describe anything.
+			$this->assertTrue($this->pref->isJournalReplaced());
+			$this->assertSame(array(), $this->pref->getJournal());
+		}
+
+		public function testResetMarksTheObjectAsAWholeRow()
+		{
+			$this->pref->reset();
+
+			$this->assertTrue($this->pref->isJournalReplaced());
+			$this->assertSame(array(), $this->pref->getJournal());
+		}
+
+		public function testWholeRowObjectStopsRecording()
+		{
+			$this->pref->reset();
+			$this->pref->set('journal_after_reset', 'value');
+
+			$this->assertTrue($this->pref->isJournalReplaced());
+			$this->assertSame(array(), $this->pref->getJournal());
+		}
+
+		/**
+		 * Rows written by these live on in the shared fixture database, so each one
+		 * is removed again along with the cache file save() writes for it.
+		 *
+		 * @var string[]
+		 */
+		protected $rows = array();
+
+		protected function _after()
+		{
+			foreach($this->rows as $prefid)
+			{
+				e107::getDb()->createQueryBuilder()->delete('core')->where('e107_name', $prefid)->execute();
+				e107::getCache()->clear_sys('Config_'.$prefid);
+			}
+
+			$this->rows = array();
+		}
+
+		/**
+		 * A preference object standing alone, on its own row, the way a second
+		 * request would hold one.
+		 *
+		 * @param string $prefid
+		 * @param string $class
+		 * @return e_pref
+		 */
+		private function openPref($prefid, $class = 'e_pref')
+		{
+			$this->rows[$prefid] = $prefid;
+
+			$pref = $this->make($class);
+			$pref->__construct($prefid);
+			$pref->load();
+
+			return $pref;
+		}
+
+		/**
+		 * Read a row back from the database rather than from the cache file, which
+		 * is where a lost write would still be hiding.
+		 *
+		 * @param string $prefid
+		 * @return array
+		 */
+		private function readStored($prefid)
+		{
+			$row = e107::getDb()->createQueryBuilder()
+				->select('e107_value')->from('core')
+				->where('e107_name', $prefid)
+				->fetchRow();
+
+			return empty($row) ? array() : e107::unserialize($row['e107_value']);
+		}
+
+		public function testConcurrentWritersBothSurvive()
+		{
+			$id = 'test_pref_concurrent';
+			$this->openPref($id)->set('shared', 'seed')->save(false, true, false);
+
+			// Two requests holding the row as it stood before either of them wrote.
+			$first = $this->openPref($id);
+			$second = $this->openPref($id);
+
+			$first->set('by_first', 'one')->save(false, true, false);
+			$second->set('by_second', 'two')->save(false, true, false);
+
+			$stored = $this->readStored($id);
+
+			// The second writer must not take the first one's preference with it.
+			$this->assertSame('seed', $stored['shared']);
+			$this->assertSame('one', $stored['by_first']);
+			$this->assertSame('two', $stored['by_second']);
+		}
+
+		public function testConcurrentWritersOnNestedPaths()
+		{
+			$id = 'test_pref_nested';
+			$this->openPref($id)->set('branch', array('keep' => 'kept'))->save(false, true, false);
+
+			$first = $this->openPref($id);
+			$second = $this->openPref($id);
+
+			$first->setPref('branch/from_first', 'one')->save(false, true, false);
+			$second->setPref('branch/from_second', 'two')->save(false, true, false);
+
+			$stored = $this->readStored($id);
+
+			$this->assertSame('kept', $stored['branch']['keep']);
+			$this->assertSame('one', $stored['branch']['from_first']);
+			$this->assertSame('two', $stored['branch']['from_second']);
+		}
+
+		public function testRemovalIsNotUndoneByAConcurrentWriter()
+		{
+			$id = 'test_pref_removal';
+			$this->openPref($id)->setPref(array('doomed' => 'here', 'other' => 'stays'))->save(false, true, false);
+
+			$remover = $this->openPref($id);
+			$writer = $this->openPref($id);
+
+			$remover->remove('doomed')->save(false, true, false);
+			$writer->set('added', 'yes')->save(false, true, false);
+
+			$stored = $this->readStored($id);
+
+			// The writer still held 'doomed' in memory. Replaying only what it
+			// changed must not put it back.
+			$this->assertArrayNotHasKey('doomed', $stored);
+			$this->assertSame('stays', $stored['other']);
+			$this->assertSame('yes', $stored['added']);
+		}
+
+		public function testSavingAnUnchangedObjectWritesNothing()
+		{
+			$id = 'test_pref_unchanged';
+			$this->openPref($id)->set('value', 'same')->save(false, true, false);
+
+			$pref = $this->openPref($id);
+			$pref->set('value', 'same');
+
+			// Forced, but there is nothing to write, so it reports no change rather
+			// than rewriting every preference in the row.
+			$this->assertSame(0, $pref->save(false, true, false));
+			$this->assertSame('same', $this->readStored($id)['value']);
+		}
+
+		public function testWholeRowCallerStillReplacesEverything()
+		{
+			$id = 'test_pref_whole';
+			$this->openPref($id)->setPref(array('old' => 'gone', 'other' => 'also gone'))->save(false, true, false);
+
+			// loadData() states the object IS the row, so it is written entire and
+			// preferences absent from it are meant to go.
+			$replacer = $this->openPref($id);
+			$replacer->loadData(array('only' => 'this'), false);
+			$replacer->save(false, true, false);
+
+			$this->assertSame(array('only' => 'this'), $this->readStored($id));
+		}
+
+		/**
+		 * Declared here rather than at the top of the file because Codeception
+		 * parses test files before e107 has defined e_pref.
+		 */
+		private function defineRaceProbe()
+		{
+			if(class_exists('e_pref_race_probe', false))
+			{
+				return;
+			}
+
+			// Lands another writer's row in between this object's read and its
+			// write, which is the window the compare-and-swap exists to close.
+			eval('
+				class e_pref_race_probe extends e_pref
+				{
+					public $raceArmed = true;
+
+					protected function replayJournal(array $base)
+					{
+						if($this->raceArmed)
+						{
+							$this->raceArmed = false;
+
+							$rival = $base;
+							$rival["rival"] = "won";
+
+							e107::getDb()->createQueryBuilder()->update("core")
+								->set("e107_value", e107::serialize($rival, false))
+								->where("e107_name", $this->prefid)
+								->execute();
+						}
+
+						return parent::replayJournal($base);
+					}
+				}
+			');
+		}
+
+		public function testWriteIsRetriedWhenTheRowChangesUnderneathIt()
+		{
+			$this->defineRaceProbe();
+
+			$id = 'test_pref_race';
+			$this->openPref($id)->set('shared', 'seed')->save(false, true, false);
+
+			$pref = $this->openPref($id, 'e_pref_race_probe');
+
+			$this->assertTrue($pref->set('ours', 'kept')->save(false, true, false));
+
+			$stored = $this->readStored($id);
+
+			// The rival landed between this save's read and its write, so the first
+			// attempt wrote nothing and the retry merged over the rival's result.
+			$this->assertSame('won', $stored['rival']);
+			$this->assertSame('kept', $stored['ours']);
+			$this->assertSame('seed', $stored['shared']);
+			$this->assertFalse($pref->raceArmed, 'the race should have been run exactly once');
+		}
 
 	}

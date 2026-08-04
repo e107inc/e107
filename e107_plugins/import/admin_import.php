@@ -619,8 +619,16 @@ class import_main_ui extends e_admin_ui
 	
 	private function getDatabases()
 	{
-		$tmp = e107::getDb()->gen("SHOW DATABASES");
-		$databases = e107::getDb()->db_getList();
+		// SHOW DATABASES is a vendor administrative statement with no builder
+		// expression (apiGap); run it as a static, value-free bound execute().
+		$sql = e107::getDb();
+		$sql->execute("SHOW DATABASES");
+
+		$databases = array();
+		while($row = $sql->fetch())
+		{
+			$databases[] = $row;
+		}
 
 		$arr = array();
 

@@ -40,5 +40,10 @@ return [
     'LANG_LAN_117' => "You should correct the remaining errors before contributing your language pack.",
     'LANG_LAN_119' => "Please check that CORE_LC and CORE_LC2 have values in [x] and try again.",
     'LANG_LAN_120' => "Please make sure you are using default folder names in e107_config.php (eg. e107_languages/, e107_plugins/ etc.) and try again.",
+    'LANG_LAN_156' => "[x] missing file(s)",
+    'LANG_LAN_157' => "[x] missing/invalid phrase(s)",
+    'LANG_LAN_158' => "[x] file(s) with BOM/illegal characters",
+    'LANG_LAN_159' => "[x] non-UTF8 phrase(s)",
+    'LANG_LAN_160' => "Tip: open the [x] tab to see the affected files/keys. Enable [y] in [z] to bypass this check and generate the pack anyway.",
     'LANG_LAN_AGR' => "Note: By using these tools you agree to share your language pack(s) with the e107 community.",
 ];

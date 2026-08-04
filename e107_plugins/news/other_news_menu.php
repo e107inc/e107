@@ -14,6 +14,8 @@
  * $Author$
  */
 
+use e107\Database\SqlFragment;
+
 if (!defined('e107_INIT')) { exit; }
 
 // Load Data
@@ -143,12 +145,20 @@ $style 					= defset('OTHERNEWS_CELL');
 $nbr_cols 				= defset('OTHERNEWS_COLS');
 
 $_t = time();
-$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon FROM #news AS n
-LEFT JOIN #user AS u ON n.news_author = u.user_id
-LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".$_t." AND (n.news_end=0 || n.news_end>".$_t.") AND FIND_IN_SET(2, n.news_render_type)  ORDER BY n.news_datestamp DESC LIMIT 0,".OTHERNEWS_LIMIT;
+$qb = $sql->createQueryBuilder();
+$qb->addSelect(SqlFragment::raw('n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon'))
+	->from('news', 'n')
+	->leftJoin('user', 'u', $qb->expr()->compareColumns('n.news_author', 'u.user_id'))
+	->leftJoin('news_category', 'nc', $qb->expr()->compareColumns('n.news_category', 'nc.category_id'))
+	->whereIn('n.news_class', array_map('intval', explode(',', USERCLASS_LIST)))
+	->where('n.news_start', '<', $_t)
+	->where($qb->expr()->anyOf($qb->expr()->eq('n.news_end', 0), $qb->expr()->gt('n.news_end', $_t)))
+	->where($qb->expr()->findInSet('n.news_render_type', 2))
+	->orderBy('n.news_datestamp', 'DESC')
+	->setFirstResult(0)->setMaxResults(OTHERNEWS_LIMIT);
+$otherNewsRows = $qb->fetchAll();
 
-if ($sql->gen($query))
+if ($otherNewsRows)
 {
 	$text = $tp->parseTemplate($template['start'],true);
 		
@@ -158,7 +168,7 @@ if ($sql->gen($query))
 		$t = 0;		
 		
 		$wid = floor(100/$nbr_cols);
-		while ($row = $sql->fetch()) 
+		foreach ($otherNewsRows as $row)
 		{
 			$text .= ($t % $nbr_cols == 0) ? "<tr>" : "";
 			$text .= "\n<td style='$style ; width:$wid%;'>\n";
@@ -188,9 +198,9 @@ if ($sql->gen($query))
 	else // perfect for divs. 
 	{
 		$loop = 0;
-		while ($row = $sql->fetch()) 
+		foreach ($otherNewsRows as $row)
 		{
-			$active = ($loop == 0) ? 'active' : '';		
+			$active = ($loop == 0) ? 'active' : '';
 			
 			$TMPL = str_replace("{ACTIVE}", $active, $OTHERNEWS_STYLE);	
 			
