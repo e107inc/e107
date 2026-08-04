@@ -86,6 +86,13 @@
 			}
 		}
 
+		/**
+		 * Asserting only that the literal answer is absent from the markup
+		 * would have passed against the signed JWT this replaced, where the
+		 * answer sat base64 encoded in the hidden field and in the image URL.
+		 * So every run of base64 characters in the page, whether it came from
+		 * the field or from the query string, is decoded and read.
+		 */
 		public function testTheAnswerIsNotInTheRenderedForm()
 		{
 			$si = new secure_image();
@@ -101,6 +108,19 @@
 			$this->assertStringNotContainsString(urlencode($answer), $markup);
 			$this->assertStringContainsString($si->getToken(secure_image::FORM_CONTACT), $markup,
 				'the input must carry the token the image was drawn from');
+
+			$candidates = array();
+			preg_match_all('#[A-Za-z0-9+/=_-]{8,}#', urldecode($markup), $candidates);
+
+			$this->assertNotEmpty($candidates[0], 'the markup carried nothing worth decoding');
+
+			foreach($candidates[0] as $candidate)
+			{
+				$decoded = base64_decode(strtr($candidate, '-_', '+/'));
+
+				$this->assertStringNotContainsString($answer, (string) $decoded,
+					'something in the rendered form decoded to the answer: ' . $candidate);
+			}
 		}
 
 		public function testACorrectAnswerIsAccepted()
@@ -197,6 +217,117 @@
 			));
 
 			$this->assertFalse($si->verify_code($token, 'AbC12', secure_image::FORM_CONTACT));
+		}
+
+		/**
+		 * At e_SECURITY_LEVEL 10 the session replaces its form token on every
+		 * request, before any page body runs. A challenge was once bound to that
+		 * token, so one issued during a request was answered during the next
+		 * against a value that no longer existed: every CAPTCHA on the site was
+		 * refused and spent, admin login among them.
+		 *
+		 * Nothing binds a challenge to a client any more, so this passes by
+		 * construction. It stays because the binding was reintroduced once
+		 * already and this is what caught it.
+		 */
+		public function testAChallengeSurvivesTheFormTokenBeingRotated()
+		{
+			$si = new secure_image();
+
+			$token = $si->getToken(secure_image::FORM_CONTACT);
+			$answer = $si->getSecret(secure_image::FORM_CONTACT);
+
+			// What e_session::_regenerateFormToken() does, for both kinds of
+			// visitor: a new cookie for a guest, a new session value for a member.
+			$_COOKIE[CSRFCookieHandler::COOKIE_NAME] = e_random::hex(32);
+			e107::getSession()->set('__form_token', e_random::hex(64));
+
+			$this->assertTrue($si->verify_code($token, $answer, secure_image::FORM_CONTACT),
+				'rotating the form token must not invalidate a challenge already in a visitor\'s hands');
+		}
+
+		/**
+		 * A CAPTCHA costs the visitor no cookie, in either direction.
+		 *
+		 * Drawing one sets nothing, and answering one needs nothing. A binding
+		 * to a cookie of this class was tried and removed: both halves of it
+		 * were strings the client held, so it never stopped a solved challenge
+		 * being passed on, and a client that simply omitted the cookie skipped
+		 * the check outright.
+		 */
+		public function testACaptchaNeitherSetsNorNeedsACookie()
+		{
+			$si = new secure_image();
+
+			$before = $_COOKIE;
+			$token  = $si->getToken(secure_image::FORM_CONTACT);
+			$answer = $si->getSecret(secure_image::FORM_CONTACT);
+
+			$this->assertSame($before, $_COOKIE, 'drawing a challenge must set no cookie');
+
+			$_COOKIE = array();
+
+			$this->assertTrue($si->verify_code($token, $answer, secure_image::FORM_CONTACT),
+				'answering a challenge must not require a cookie');
+
+			$_COOKIE = $before;
+		}
+
+		/**
+		 * A preference of zero seconds would seal a challenge whose expiry
+		 * equals its issue time, so every CAPTCHA on the site would be refused
+		 * the instant it was drawn.
+		 */
+		public function testATimeToLivePreferenceOfZeroFallsBackToTheDefault()
+		{
+			$config = e107::getConfig();
+			$restore = $config->get(secure_image::PREF_CAPTCHA_TTL);
+			$config->set(secure_image::PREF_CAPTCHA_TTL, 0);
+
+			try
+			{
+				$si = new secure_image();
+
+				$token = $si->getToken(secure_image::FORM_CONTACT);
+				$claims = e107::getSealedToken(secure_image::TOKEN_PURPOSE)->open($token);
+
+				$this->assertIsArray($claims, 'a zero preference sealed a challenge nothing can open');
+				$this->assertSame(secure_image::DEFAULT_TTL, $claims['exp'] - $claims['iat']);
+			}
+
+			finally
+			{
+				$config->set(secure_image::PREF_CAPTCHA_TTL, $restore);
+			}
+		}
+
+		/**
+		 * The marker recording a spent challenge is named after that
+		 * challenge's own expiry, and the sweep reads the name, so a marker
+		 * stops occupying the disk at the moment the token it records stops
+		 * being openable. Without this an anonymous visitor could leave a
+		 * permanent file behind for the price of one wrong answer.
+		 */
+		public function testAnExpiredSpentMarkerIsSweptAway()
+		{
+			$si = new secure_image();
+
+			$directory = e_CACHE_CONTENT . secure_image::SPENT_DIRECTORY;
+
+			$si->verify_code($si->getToken(secure_image::FORM_CONTACT), 'not-the-answer', secure_image::FORM_CONTACT);
+
+			$this->assertDirectoryExists($directory);
+
+			$stale = $directory . sprintf('%010d', time() - 3600) . '-' . str_repeat('b', 32) . secure_image::SPENT_SUFFIX;
+			$this->assertNotFalse(file_put_contents($stale, ''));
+
+			// The sweep runs at most once a minute, and one has just run.
+			@unlink($directory . secure_image::SWEEP_STAMP);
+
+			$si->verify_code($si->getToken(secure_image::FORM_CONTACT), 'not-the-answer', secure_image::FORM_CONTACT);
+
+			clearstatcache();
+			$this->assertFileDoesNotExist($stale);
 		}
 
 		public function testAChallengeSealedForAnotherPurposeIsRefused()

@@ -93,6 +93,7 @@ class WorkspaceCleanup extends Extension
 		'e107_tests_encoding_addons.xml',
 		'e107_tests_encoding_newsfeed.xml',
 		'e107_tests_encoding_tinymce_canary.xml',
+		'e107_tests_captcha_probe.php',        // @see CaptchaLifecycleCest
 		'e107_tests_redirect_probe.php',           // @see Helper\RedirectFixture
 	];
 
