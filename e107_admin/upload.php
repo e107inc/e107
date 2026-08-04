@@ -226,7 +226,10 @@ class upload_ui extends e_admin_ui
         if($did)
         {
             $sql = e107::getDb('activate');
-            if(!$sql->update('upload', 'upload_active = 1 WHERE upload_id='.$id))
+            if(!$sql->createQueryBuilder()->update('upload')
+                ->set('upload_active', 1)
+                ->where('upload_id', (int) $id)
+                ->execute())
             {
                 e107::getMessage()
                     ->addError(UPLLAN_68.' #'.$sql->getLastErrorNumber().' '.$sql->getLastErrorText(), 'default', $isSession)
@@ -314,7 +317,7 @@ class upload_ui extends e_admin_ui
 
         if(!empty($dl) && !empty($config['table']))
         {
-             $id = $sql->insert($config['table'], $dl);
+             $id = $sql->createQueryBuilder()->insert($config['table'])->insertGetId($dl);
 
 	        if(!$id)
 	        {

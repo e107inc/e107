@@ -135,9 +135,18 @@ e107::coreLan('menus', true);
 e107::coreLan('admin', true);
 
 
-if(e_MENUMANAGER_ACTIVE === true || vartrue($_GET['enc']))
+if(e_MENUMANAGER_ACTIVE === true || vartrue($_GET['vis']) || vartrue($_GET['parmsId']))
 {
 	e107::callMethod('theme', 'init'); // v2.3.0+ new theme
+
+	// This branch renders through neither header: it is USER_AREA, so the admin
+	// header is skipped, and the layout is not parsed, so the front-end one is
+	// too. Core's own script therefore has to be asked for by hand. Without it
+	// the $.ajaxPrefilter that attaches the CSRF token is never registered in
+	// this document, and every menu the manager adds, moves or deletes is
+	// answered with "Unauthorized access!" even though the token is sitting in
+	// the page's own meta tag.
+	e107::js('footer', '{e_WEB}js/core/all.jquery.js', 'jquery', 5);
 
 	$JSMODAL = <<<TEMPL
 	$(function() {
@@ -682,22 +691,16 @@ $e_sub_cat = 'menus';
 require_once(e_HANDLER."file_class.php");
 require_once(e_HANDLER."menumanager_class.php");
 
-$rs = new form;
 $frm = e107::getForm();
+$rs = new form;
 $men = new e_menuManager(0);   // use 1 for dragdrop.
 $mes = e107::getMessage();
 
 if(e_AJAX_REQUEST)
 {
 	
-	if(!empty($_GET['enc']))
-	{
-		$string = base64_decode($_GET['enc']);
-		parse_str($string,$_GET);
-
-	}
 //	print_a($_POST);
-	
+
 	if(!empty($_GET['vis']))
 	{
 		$text = $men->menuVisibilityOptions();

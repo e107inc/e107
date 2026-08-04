@@ -34,13 +34,13 @@
 	}
 
 
-	if(deftrue('e_CURRENT_PLUGIN')  && $res = $sql->retrieve("rss", "rss_path,rss_url", " rss_path = '".e_CURRENT_PLUGIN."' LIMIT 1"))
+	if(deftrue('e_CURRENT_PLUGIN')  && ($res = $sql->createQueryBuilder()->select('rss_path', 'rss_url')->from('rss')->where('rss_path', e_CURRENT_PLUGIN)->limit(1)->fetchRow()))
 	{
 		$caption = e107::getParser()->lanVars(LAN_PLUGIN_RSS_SUBSCRIBE_TO, deftrue('LAN_PLUGIN_'.strtoupper(e_CURRENT_PLUGIN).'_NAME'));
 		$type = $res['rss_url'];
 		$plug = $res['rss_path'];
 	}
-	elseif($sql->select("rss", "rss_path", " rss_path = 'news' LIMIT 1")) // Fall back to news, if available.
+	elseif($sql->createQueryBuilder()->select('rss_path')->from('rss')->where('rss_path', 'news')->limit(1)->execute()) // Fall back to news, if available.
 	{
 		$caption = LAN_PLUGIN_RSS_SUBSCRIBE;
 		$type = 'news';

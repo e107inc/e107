@@ -166,30 +166,28 @@ class forum_shortcodes extends e_shortcode
 
 	function sc_userlist()
 	{
-		$text = '';
-		if(!defined('e_TRACKING_DISABLED'))
+		// Returning null (not '') keeps the wrapper off: see e_parse_shortcode::doCode().
+		if(defined('e_TRACKING_DISABLED'))
 		{
-		// String candidate for USERLIST wrapper
-			$text = LAN_FORUM_0036.": ";
-
-			global $listuserson;
-			$c = 0;
-			if(is_array($listuserson))
-			{
-		//----	foreach($listuserson as $uinfo => $pinfo)
-			    foreach(array_keys($listuserson) as $uinfo)
-			//	foreach($listuserson as $uinfo => &$pinfo)
-				{
-					list($oid, $oname) = explode(".", $uinfo, 2);
-					$c ++;
-					$text .= "<a href='".e_HTTP."user.php?id.$oid'>$oname</a>".($c == MEMBERS_ONLINE ? "." :", ");
-				}
-
-			}
-		// String candidate for USERLIST wrapper
-			$text .= "<br /><a rel='external' href='".e_HTTP."online.php'>".LAN_FORUM_0037."</a> ".LAN_FORUM_0038;
+			return null;
 		}
-		  return $text;
+
+		global $listuserson;
+
+		$text = '';
+		$c = 0;
+
+		if(is_array($listuserson))
+		{
+			foreach(array_keys($listuserson) as $uinfo)
+			{
+				list($oid, $oname) = explode(".", $uinfo, 2);
+				$c ++;
+				$text .= "<a href='".e_HTTP."user.php?id.$oid'>$oname</a>".($c == MEMBERS_ONLINE ? "." :", ");
+			}
+		}
+
+		return $text;
 	}
 
 	/**
@@ -247,7 +245,11 @@ class forum_shortcodes extends e_shortcode
 
 		if(USER == true)
 		{
-			$total_new_threads = defined('USERLV') ? e107::getDb()->count('forum_thread', '(*)', "WHERE thread_datestamp>'" . USERLV . "' ") : 0;
+			$total_new_threads = 0;
+			if(defined('USERLV'))
+			{
+				$total_new_threads = e107::getDb()->createQueryBuilder()->from('forum_thread')->where('thread_datestamp', '>', (int) USERLV)->count();
+			}
 			$total_read_threads = 0;
 
 			if(defined('USERVIEWED') && defset('USERVIEWED') != "")
@@ -336,25 +338,38 @@ class forum_shortcodes extends e_shortcode
 		$member_users = 0;
 		$guest_users = 0;
 
-		$total_topics = $sql->count("forum_thread", "(*)");
-		$total_replies = $sql->count("forum_post", "(*)");
-		$total_members = $sql->count("user");
+		$total_topics = $sql->createQueryBuilder()->from('forum_thread')->count();
+		$total_replies = $sql->createQueryBuilder()->from('forum_post')->count();
+		$total_members = $sql->createQueryBuilder()->from('user')->count();
 
 		$nuser_id = 0;
 		$nuser_name = '';
-		if ($sql->select("user", "user_id, user_name", "user_ban='0' ORDER BY user_join DESC LIMIT 0,1"))
+		$row = $sql->createQueryBuilder()
+			->select('user_id', 'user_name')->from('user')
+			->where('user_ban', '0')
+			->orderBy('user_join', 'DESC')
+			->setFirstResult(0)->setMaxResults(1)
+			->fetchRow();
+		if ($row)
 		{
-			$row = $sql->fetch('num');
-			if (is_array($row))
-			{
-				list($nuser_id, $nuser_name) = $row;
-			}
+			$nuser_id = $row['user_id'];
+			$nuser_name = $row['user_name'];
 		}
 
 		if(!defined('e_TRACKING_DISABLED'))
 		{
-			$member_users = $sql->select("online", "*", "online_location REGEXP('forum.php') AND online_user_id!='0' ");
-			$guest_users = $sql->select("online", "*", "online_location REGEXP('forum.php') AND online_user_id='0' ");
+			$qb = $sql->createQueryBuilder();
+			$member_users = $qb->from('online')
+				->where($qb->expr()->regexp('online_location', 'forum.php'))
+				->where('online_user_id', '!=', '0')
+				->count();
+
+			$qb = $sql->createQueryBuilder();
+			$guest_users = $qb->from('online')
+				->where($qb->expr()->regexp('online_location', 'forum.php'))
+				->where('online_user_id', '0')
+				->count();
+
 			$users = $member_users+$guest_users;
 		}
 
@@ -631,9 +646,9 @@ class forum_shortcodes extends e_shortcode
 
 	function sc_forum_breadcrumb()
 	{
-        global $breadarray;
-		$frm = e107::getForm();
-		return $frm->breadcrumb($breadarray);
+		// No $force: e_form::breadcrumb() returns null on THEME_VERSION 2.3 so that
+		// the theme's own {---BREADCRUMB---} stays the only trail on the page.
+		return e107::getForm()->breadcrumb(e107::breadcrumb());
 	}
 
 	function sc_avatar($opts=null)

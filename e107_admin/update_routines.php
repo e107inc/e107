@@ -8,6 +8,9 @@
  *
  */
 
+use e107\Database\Schema\Index;
+use e107\Database\SqlFragment;
+
 /**
  *
  *	Update routines from older e107 versions to current.
@@ -53,24 +56,6 @@ if(is_readable(e_ADMIN.'ver.php'))
 }
 
 $mes = e107::getMessage();
-/*
-// If $dont_check_update is both defined and TRUE on entry, a check for update is done only once per 24 hours.
-$dont_check_update = varset($dont_check_update, FALSE);
-
-
-if ($dont_check_update === TRUE)
-{
-	$dont_check_update = FALSE;
-	if ($tempData = $e107cache->retrieve_sys('nq_admin_updatecheck',3600, TRUE))
-	{	// See when we last checked for an admin update
-		list($last_time, $dont_check_update, $last_ver) = explode(',',$tempData);
-		if ($last_ver != $e107info['e107_version'])
-		{
-			$dont_check_update = FALSE;		// Do proper check on version change
-		}
-	}
-}
-*/
 
 $dont_check_update = false;
 
@@ -146,11 +131,27 @@ class e107Update
 		
 		$this->core = $core;
 
+		// CSRF: the core/plugin update routines below are state-changing and
+		// write to the database, so a forged cross-site POST must not be able
+		// to trigger them. Re-checking here turns what class2.php answers with a
+		// bare die() into an error an admin can read, and catches a token that
+		// expired between rendering the form and submitting it.
+		if((varset($_POST['update_core']) && is_array($_POST['update_core']))
+			|| (varset($_POST['update']) && is_array($_POST['update'])))
+		{
+			if(!e107::getSession()->check(false))
+			{
+				$mes->addError('Unauthorized access - invalid or missing security token.');
+				$this->renderForm();
+				return;
+			}
+		}
+
 		if(varset($_POST['update_core']) && is_array($_POST['update_core']))
 		{
 			$func = key($_POST['update_core']);
 			$this->updateCore($func);
-		}	
+		}
 		
 		if(varset($_POST['update']) && is_array($_POST['update'])) // Do plugin updates
 		{ 
@@ -318,10 +319,16 @@ class e107Update
 	{
 		$ns = e107::getRender();
 		$mes = e107::getMessage();
-		
+
+		if(!e_random::isAvailable())
+		{
+			$mes->addError(e_random::UNAVAILABLE);
+		}
+
 		$caption = LAN_UPDATE;
 		$text = "
 		<form method='post' action='".e_ADMIN."e107_update.php'>
+			<input type='hidden' name='e-token' value='".defset('e_TOKEN')."' />
 			<fieldset id='core-e107-update'>
 			<legend>$caption</legend>
 				<table class='table adminlist'>
@@ -376,9 +383,22 @@ function update_check()
 
 	if ($dont_check_update === FALSE)
 	{
-		$dbUpdatesPref = array();
-
 		$skip = e107::getPref('db_updates');
+		$version = varset($e107info['e107_version'], '');
+
+		if(!is_array($skip) || e107::getPref('db_updates_version') !== $version || $version === '')
+		{
+			// A record of which checks have already passed belongs to the version
+			// that produced it. Any other version may have given those routines
+			// something to do again, so check the lot.
+			$skip = array();
+		}
+
+		// Carry forward what earlier runs settled. Rebuilding this empty made the
+		// preference alternate between the full list and nothing on every run,
+		// rewriting the row each time and leaving it useless as the skip list it
+		// is meant to be.
+		$dbUpdatesPref = $skip;
 
 		foreach($dbupdate as $func => $rmks) // See which core functions need update
 		{
@@ -407,7 +427,12 @@ function update_check()
 
 		}
 
-		e107::getConfig()->set('db_updates', $dbUpdatesPref)->save(false,true,false);
+		// Not forced. Once the list settles there is nothing to write, and a check
+		// that found nothing has no business rewriting site preferences at all.
+		e107::getConfig()
+			->set('db_updates', $dbUpdatesPref)
+			->set('db_updates_version', $version)
+			->save(false,false,false);
 
 
 		// Now check plugins - XXX DEPRECATED 
@@ -442,18 +467,6 @@ function update_check()
 }
 
 	
-//XXX to be reworked eventually - for checking remote 'new versions' of plugins and installed theme. 
-// require_once(e_HANDLER.'e_upgrade_class.php');
-//	$upg = new e_upgrade;
-
-//	$upg->checkSiteTheme();
-//	$upg->checkAllPlugins();
-
-
-
-//--------------------------------------------
-//	Check current prefs against latest list
-//--------------------------------------------
 function update_core_prefs($type='')
 {
 	global $e107info; // $pref,  $pref must be kept as global 
@@ -471,17 +484,29 @@ function update_core_prefs($type='')
 	{
 		if ($k && !array_key_exists($k,$pref))
 		{
-			$missing[] = $k;
-		//	$pref[$k] = $v;
-			e107::getConfig()->set($k,$v);
-			$admin_log->logMessage($k.' => '.$v, E_MESSAGE_NODISPLAY, E_MESSAGE_INFO);
-			$do_save = TRUE;
+			$missing[$k] = $v;
 		}
 	}
 
-	if ($just_check && !empty($missing))
+	if ($just_check)
 	{
-		return update_needed('<br>Missing prefs: <ul><li>'.implode('</li><li>',$missing).'</li></ul>');
+		// Nothing is applied while only checking. Setting the defaults here would
+		// leave them on the shared config object for whoever saves it next, and
+		// update_check() saves it moments later, so the check used to quietly
+		// apply itself and the UPDATE_03 record below never ran.
+		if (!empty($missing))
+		{
+			return update_needed('<br>Missing prefs: <ul><li>'.implode('</li><li>',array_keys($missing)).'</li></ul>');
+		}
+
+		return $just_check;
+	}
+
+	foreach ($missing as $k => $v)
+	{
+		e107::getConfig()->set($k,$v);
+		$admin_log->logMessage($k.' => '.$v, E_MESSAGE_NODISPLAY, E_MESSAGE_INFO);
+		$do_save = TRUE;
 	}
 
 	if ($do_save)
@@ -563,27 +588,6 @@ function update_core_database($type = '')
 	return $just_check;
 }
 
-/*
-	function update_218_to_219($type='')
-	{
-		$sql = e107::getDb();
-		$just_check = ($type == 'do') ? false : true;
-
-		// add common video and audio media categories if missing.
-		$count = $sql->select("core_media_cat","*","media_cat_category = '_common_video' LIMIT 1 ");
-
-		if(!$count)
-		{
-			if ($just_check) return update_needed('Media-Manager is missing the video and audio categories and needs to be updated.');
-
-			$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, '_common', '_common_video', '(Common Videos)', '', 'Media in this category will be available in all areas of admin. ', 253, '', 0);");
-			$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, '_common', '_common_audio', '(Common Audio)', '', 'Media in this category will be available in all areas of admin. ', 253, '', 0);");
-		}
-
-
-
-		return $just_check;
-	}*/
 
 
 
@@ -592,43 +596,6 @@ function update_core_database($type = '')
 	 * @param string $type
 	 * @return bool true = no update required, and false if update required.
 	 */
-/*	 function update_217_to_218($type='')
-	{
-		$just_check = ($type == 'do') ? false : true;
-
-		$e_user_list = e107::getPref('e_user_list');
-
-			e107::getPlug()->clearCache()->buildAddonPrefLists();
-			if(empty($e_user_list['user'])) // check e107_plugins/user/e_user.php is registered.
-			{
-				if($just_check)
-				{
-					return update_needed("user/e_user.php need to be registered"); // NO LAN.
-				}
-
-			}
-
-
-		// Make sure, that the pref "post_script" contains one of the allowed userclasses
-		// Close possible security hole
-		if (!array_key_exists(e107::getPref('post_script'), e107::getUserClass()->uc_required_class_list('nobody,admin,main,classes,no-excludes', true)))
-		{
-			if ($just_check)
-			{
-				return update_needed("Pref 'Class which can post < script > and similar tags' contains an invalid value"); // NO LAN.
-			}
-			else
-			{
-				e107::getConfig()->setPref('post_script', 255)->save(false, true);
-			}
-		}
-
-
-		return $just_check;
-
-
-
-	}*/
 
 
 
@@ -678,16 +645,23 @@ function update_core_database($type = '')
 		}
 
 
-		if(!$sql->select('core_media_cat', 'media_cat_id', "media_cat_category = '_icon_svg' LIMIT 1"))
+		if(!$sql->createQueryBuilder()->select('media_cat_id')->from('core_media_cat')->where('media_cat_category', '_icon_svg')->setMaxResults(1)->fetchRow())
 		{
 			if($just_check)
 			{
 				return update_needed("Missing Media-category for SVG");
 			}
 
-			$query = "INSERT INTO `#core_media_cat` (media_cat_id, media_cat_owner, media_cat_category, media_cat_title, media_cat_sef, media_cat_diz, media_cat_class, media_cat_image, media_cat_order) VALUES (NULL, '_icon', '_icon_svg', 'Icons SVG', '', 'Available where icons are used in admin.', '253', '', '0');";
-
-			$sql->gen($query);
+			$sql->createQueryBuilder()->insert('core_media_cat')->values(array(
+				'media_cat_owner'    => '_icon',
+				'media_cat_category' => '_icon_svg',
+				'media_cat_title'    => 'Icons SVG',
+				'media_cat_sef'      => '',
+				'media_cat_diz'      => 'Available where icons are used in admin.',
+				'media_cat_class'    => '253',
+				'media_cat_image'    => '',
+				'media_cat_order'    => '0',
+			))->execute();
 
 		}
 
@@ -727,14 +701,14 @@ function update_core_database($type = '')
 
 
 		// User is marked as not installed.
-		if($sql->select('plugin', 'plugin_id', "plugin_path = 'user' AND plugin_installflag != 1 LIMIT 1"))
+		if($sql->createQueryBuilder()->select('plugin_id')->from('plugin')->where('plugin_path', 'user')->where('plugin_installflag', '!=', 1)->setMaxResults(1)->fetchRow())
 		{
 			if($just_check)
 			{
 				return update_needed("Plugin table 'user' value needs to be reset.");
 			}
 
-			$sql->delete('plugin', "plugin_path = 'user'");
+			$sql->createQueryBuilder()->delete('plugin')->where('plugin_path', 'user')->execute();
 
 			//e107::getPlug()->clearCache();
 		}
@@ -756,14 +730,32 @@ function update_core_database($type = '')
 
 
 		// add common video and audio media categories if missing.
-		$count = $sql->select("core_media_cat","*","media_cat_category = '_common_video' LIMIT 1 ");
+		$count = $sql->createQueryBuilder()->from('core_media_cat')->where('media_cat_category', '_common_video')->count();
 
 		if(!$count)
 		{
 			if ($just_check) return update_needed('Media-Manager is missing the video and audio categories and needs to be updated.');
 
-			$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, '_common', '_common_video', '(Common Videos)', '', 'Media in this category will be available in all areas of admin. ', 253, '', 0);");
-			$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, '_common', '_common_audio', '(Common Audio)', '', 'Media in this category will be available in all areas of admin. ', 253, '', 0);");
+			$sql->createQueryBuilder()->insert('core_media_cat')->values(array(
+				'media_cat_owner'    => '_common',
+				'media_cat_category' => '_common_video',
+				'media_cat_title'    => '(Common Videos)',
+				'media_cat_sef'      => '',
+				'media_cat_diz'      => 'Media in this category will be available in all areas of admin. ',
+				'media_cat_class'    => 253,
+				'media_cat_image'    => '',
+				'media_cat_order'    => 0,
+			))->execute();
+			$sql->createQueryBuilder()->insert('core_media_cat')->values(array(
+				'media_cat_owner'    => '_common',
+				'media_cat_category' => '_common_audio',
+				'media_cat_title'    => '(Common Audio)',
+				'media_cat_sef'      => '',
+				'media_cat_diz'      => 'Media in this category will be available in all areas of admin. ',
+				'media_cat_class'    => 253,
+				'media_cat_image'    => '',
+				'media_cat_order'    => 0,
+			))->execute();
 		}
 
 
@@ -824,37 +816,6 @@ function update_706_to_800($type='')
 
 
 
-	// List of changed DB tables (defined in core_sql.php)
-	// No Longer required. - automatically checked against core_sql.php. 
-	// (primarily those which have changed significantly; for the odd field write some explicit code - it'll run faster)
-	// $changed_tables = array('user', 'dblog', 'admin_log', 'userclass_classes', 'banlist', 'menus',
-							 // 'plugin', 'news', 'news_category', 'online', 'page', 'links', 'comments');
-
-
-	// List of changed DB tables from core plugins (defined in pluginname_sql.php file)
-	// key = plugin directory name. Data = comma-separated list of tables to check
-	// (primarily those which have changed significantly; for the odd field write some explicit code - it'll run faster)
-	// No Longer required. - automatically checked by db-verify 
-	/* $pluginChangedTables = array('linkwords' => 'linkwords',
-								'featurebox' => 'featurebox',
-								'links_page' => 'links_page',
-								'poll' => 'polls',
-								'content' => 'pcontent'
-								);
-	 
-	 */
-/*
-	$setCorePrefs = array( //modified prefs during upgrade.
-		'adminstyle' 		=> 'infopanel',
-		'admintheme' 		=> 'bootstrap',
-		'admincss'			=> 'admin_style.css',
-		'resize_dimensions' => array(
-			'news-image' 	=> array('w' => 250, 'h' => 250),
-			'news-bbcode' 	=> array('w' => 250, 'h' => 250),
-			'page-bbcode' 	=> array('w' => 250, 'h' => 250)
-		)
-	);
-*/
 
 
 
@@ -927,25 +888,32 @@ function update_706_to_800($type='')
 	}
 	
 	// convert all serialized core prefs to e107 ArrayStorage;
-	$serialz_qry = "SUBSTRING( e107_value,1,5)!='array' AND e107_value !='' ";
-    $serialz_qry .= "AND e107_name IN (".implode(",",$serialized_prefs).") ";
-	if(e107::getDb()->select("core", "*", $serialz_qry))
+	$serialz_names = array_map(static function($v){ return trim($v, "'"); }, $serialized_prefs);
+	$serialz_qb = $sql->createQueryBuilder();
+	$serialz_rows = $serialz_qb->select('*')->from('core')
+		->where($serialz_qb->raw("SUBSTRING(e107_value,1,5) != ".$serialz_qb->createNamedParameter('array')))
+		->where('e107_value', '!=', '')
+		->whereIn('e107_name', $serialz_names)
+		->fetchAll();
+	if($serialz_rows)
 	{
 		if($just_check) return update_needed('Convert serialized core prefs');
-		while ($row = e107::getDb()->fetch())
+		foreach ($serialz_rows as $row)
 		{
 
-			$status = e107::getDb('sql2')->update('core',"e107_value=\"".convert_serialized($row['e107_value'])."\" WHERE e107_name='".$row['e107_name']."'") ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-			
+			$status = e107::getDb('sql2')->createQueryBuilder()->update('core')
+				->set('e107_value', convert_serialized($row['e107_value']))
+				->where('e107_name', $row['e107_name'])->execute() ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+
 			$log->addDebug(LAN_UPDATE_22.$row['e107_name'].": ". $status);
-		}	
-	}	
-	
-	
-	if(e107::getDb()->select("core", "*", "e107_name='pm_prefs' LIMIT 1"))
+		}
+	}
+
+
+	if($sql->createQueryBuilder()->select('*')->from('core')->where('e107_name', 'pm_prefs')->setMaxResults(1)->fetchRow())
 	{
-		if ($just_check) return update_needed('Rename the pm prefs');	
-		e107::getDb()->update("core",  "e107_name='plugin_pm' WHERE e107_name = 'pm_prefs'");
+		if ($just_check) return update_needed('Rename the pm prefs');
+		$sql->createQueryBuilder()->update('core')->set('e107_name', 'plugin_pm')->where('e107_name', 'pm_prefs')->execute();
 	}
 	
 	
@@ -957,8 +925,14 @@ function update_706_to_800($type='')
 	if(!$sql->field('banlist','banlist_id'))
 	{
 		if ($just_check) return update_needed('Banlist table requires updating.');	
-		$sql->gen("ALTER TABLE #banlist DROP PRIMARY KEY");
-		$sql->gen("ALTER TABLE `#banlist` ADD `banlist_id` INT( 11 ) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST");
+		// Two changes, one per ALTER as before: drop the old PRIMARY KEY, then add
+		// the new auto-increment id. The schema builder owns the table identifier;
+		// the second clause keeps its exact text via addRaw(), as an inline PRIMARY
+		// KEY at the FIRST position is outside the structured verbs.
+		$sql->schema()->dropPrimaryKey('banlist');
+		$sql->schema()->table('banlist')
+			->addRaw(SqlFragment::raw("ADD `banlist_id` INT( 11 ) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST"))
+			->execute();
 	}
 	
 	
@@ -1018,48 +992,71 @@ function update_706_to_800($type='')
 	{		
 		foreach($changeMenuPaths as $val)
 		{
-			$qry = "SELECT menu_path FROM `#menus` WHERE menu_name = '".$val['menu']."' AND (menu_path='".$val['oldpath']."' || menu_path='".$val['oldpath']."/' ) LIMIT 1";
-			if($sql->gen($qry))
+			$oldpath = $val['oldpath'];
+			if($sql->createQueryBuilder()->select('menu_path')->from('menus')
+				->where('menu_name', $val['menu'])
+				->where(function($q) use ($oldpath) {
+					$q->where('menu_path', $oldpath)->orWhere('menu_path', $oldpath.'/');
+				})
+				->setMaxResults(1)->fetchRow())
 			{
 				if ($just_check) return update_needed('Menu path changed required:  '.$val['menu'].' ');
-				$updqry = "menu_path='".$val['newpath']."/' WHERE menu_name = '".$val['menu']."' AND (menu_path='".$val['oldpath']."' || menu_path='".$val['oldpath']."/' ) ";
-				$status = $sql->update('menus', $updqry) ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
-				$log->logMessage(LAN_UPDATE_23.'<b>'.$val['menu'].'</b> : '.$val['oldpath'].' => '.$val['newpath'], $status); // LAN_UPDATE_25;				
+				$status = $sql->createQueryBuilder()->update('menus')
+					->set('menu_path', $val['newpath'].'/')
+					->where('menu_name', $val['menu'])
+					->where(function($q) use ($oldpath) {
+						$q->where('menu_path', $oldpath)->orWhere('menu_path', $oldpath.'/');
+					})
+					->execute() ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
+				$log->logMessage(LAN_UPDATE_23.'<b>'.$val['menu'].'</b> : '.$val['oldpath'].' => '.$val['newpath'], $status); // LAN_UPDATE_25;
 				// catch_error($sql);
-			}	
+			}
 		}
 	}
 
 	// Leave this one here.. just in case.. 
 	//delete record for online_extended_menu (now only using one online menu)
-	if($sql->select('menus', '*', "menu_path='online_extended_menu' || menu_path='online_extended_menu/'"))
+	$onlineExtRow = $sql->createQueryBuilder()->select('*')->from('menus')
+		->where('menu_path', 'online_extended_menu')->orWhere('menu_path', 'online_extended_menu/')
+		->fetchRow();
+	if($onlineExtRow)
 	{
 		if ($just_check) return update_needed("The Menu table needs to have some paths corrected in its data.");
 
-		$row=$sql->fetch();
+		$row = $onlineExtRow;
 
 		//if online_extended is activated, we need to activate the new 'online' menu, and delete this record
 		if($row['menu_location']!=0)
 		{
-			$status = $sql->update('menus', "menu_name='online_menu', menu_path='online/' WHERE menu_path='online_extended_menu' || menu_path='online_extended_menu/' ") ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
-			$log->logMessage(LAN_UPDATE_23."<b>online_menu</b> : online/", $status); 				
+			$status = $sql->createQueryBuilder()->update('menus')
+				->set('menu_name', 'online_menu')->set('menu_path', 'online/')
+				->where('menu_path', 'online_extended_menu')->orWhere('menu_path', 'online_extended_menu/')
+				->execute() ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
+			$log->logMessage(LAN_UPDATE_23."<b>online_menu</b> : online/", $status);
 		}
 		else
 		{	//else if the menu is not active
 			//we need to delete the online_extended menu row, and change the online_menu to online
-			$sql->delete('menus', " menu_path='online_extended_menu' || menu_path='online_extended_menu/' ");
+			$sql->createQueryBuilder()->delete('menus')
+				->where('menu_path', 'online_extended_menu')->orWhere('menu_path', 'online_extended_menu/')
+				->execute();
 			$log->logMessage(LAN_UPDATE_23, E_MESSAGE_DEBUG);
 		}
 		catch_error($sql);
 	}
 
 	//change menu_path for online_menu (if it still exists)
-	if($sql->select('menus', 'menu_path', "menu_path='online_menu' || menu_path='online_menu/'"))
+	if($sql->createQueryBuilder()->select('menu_path')->from('menus')
+		->where('menu_path', 'online_menu')->orWhere('menu_path', 'online_menu/')
+		->fetchRow())
 	{
 		if ($just_check) return update_needed('change menu_path for online menu');
 
-		$status = $sql->update('menus', "menu_path='online/' WHERE menu_path='online_menu' || menu_path='online_menu/' ") ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
-		$log->logMessage(LAN_UPDATE_23."<b>online_menu</b> : online/", $status); 		
+		$status = $sql->createQueryBuilder()->update('menus')
+			->set('menu_path', 'online/')
+			->where('menu_path', 'online_menu')->orWhere('menu_path', 'online_menu/')
+			->execute() ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
+		$log->logMessage(LAN_UPDATE_23."<b>online_menu</b> : online/", $status);
 		catch_error($sql);
 	}
 
@@ -1100,28 +1097,34 @@ function update_706_to_800($type='')
 	{
 		if ($just_check) return update_needed('Comment table author field update');
 
+		// Add the two replacement columns in one ALTER via the schema builder; the
+		// type fragments keep their exact legacy text as vouched fragments.
 		if ((!$sql->db_Field('comments','comment_author_id'))		// Check to see whether new fields already added - maybe data copy failed part way through
-			&& (!$sql->gen("ALTER TABLE `#comments`
-				ADD COLUMN comment_author_id int(10) unsigned NOT NULL default '0' AFTER `comment_author`,
-				ADD COLUMN comment_author_name varchar(100) NOT NULL default '' AFTER `comment_author_id`")))
+			&& (!$sql->schema()->table('comments')
+				->addColumn('comment_author_id', SqlFragment::raw("int(10) unsigned NOT NULL default '0'"), 'comment_author')
+				->addColumn('comment_author_name', SqlFragment::raw("varchar(100) NOT NULL default ''"), 'comment_author_id')
+				->execute()))
 		{
 			// Flag error
 			// $commentMessage = LAN_UPDAXXTE_34;
-			$log->logMessage(LAN_UPDATE_21."comments", E_MESSAGE_ERROR); 	
+			$log->logMessage(LAN_UPDATE_21."comments", E_MESSAGE_ERROR);
 		}
 		else
 		{
-			if (FALSE ===$sql->update('comments',"comment_author_id=SUBSTRING_INDEX(`comment_author`,'.',1),  comment_author_name=SUBSTRING(`comment_author` FROM POSITION('.' IN `comment_author`)+1)"))
+			if (FALSE === $sql->createQueryBuilder()->update('comments')
+				->setExpression('comment_author_id', SqlFragment::raw("SUBSTRING_INDEX(`comment_author`,'.',1)"))
+				->setExpression('comment_author_name', SqlFragment::raw("SUBSTRING(`comment_author` FROM POSITION('.' IN `comment_author`)+1)"))
+				->execute())
 			{
 				// Flag error
-				$log->logMessage(LAN_UPDATE_21.'comments', E_MESSAGE_ERROR); 	
+				$log->logMessage(LAN_UPDATE_21.'comments', E_MESSAGE_ERROR);
 			}
 			else
 			{	// Delete superceded field - comment_author
-				if (!$sql->gen("ALTER TABLE `#comments` DROP COLUMN `comment_author`"))
+				if (!$sql->schema()->dropColumn('comments', 'comment_author'))
 				{
 					// Flag error
-					$log->logMessage(LAN_UPDATE_24.'comments - comment_author', E_MESSAGE_ERROR); 	
+					$log->logMessage(LAN_UPDATE_24.'comments - comment_author', E_MESSAGE_ERROR);
 				}
 			}
 		}
@@ -1131,37 +1134,6 @@ function update_706_to_800($type='')
 
 	 
 
-	//	Add index to download history
-	// Deprecated by db-verify-class
-	// if (FALSE !== ($temp = addIndexToTable('download_requests', 'download_request_datestamp', $just_check, $updateMessages)))
-	// {
-		// if ($just_check)
-		// {
-			// return update_needed($temp);
-		// }
-	// }
-
-	// Extra index to tmp table
-	// Deprecated by db-verify-class
-	// if (FALSE !== ($temp = addIndexToTable('tmp', 'tmp_time', $just_check, $updateMessages)))
-	// {
-		// if ($just_check)
-		// {
-			// return update_needed($temp);
-		// }
-	// }
-
-	// Extra index to rss table (if used)
-	// Deprecated by db-verify-class
-	// if (FALSE !== ($temp = addIndexToTable('rss', 'rss_name', $just_check, $updateMessages, TRUE)))
-	// {
-		// if ($just_check)
-		// {
-			// return update_needed($temp);
-		// }
-	// }
-
-	// Front page prefs (logic has changed)
 	if (!isset($pref['frontpage_force'])) // Just set basic options; no real method of converting the existing
 	{	
 		if ($just_check) return update_needed('Change front page prefs');
@@ -1204,7 +1176,7 @@ function update_706_to_800($type='')
 	if ($sql->isTable('rl_history') && !$sql->isTable('dblog'))
 	{
 		if ($just_check) return update_needed('Rename rl_history to dblog');
-		$sql->gen('ALTER TABLE `'.MPREFIX.'rl_history` RENAME `'.MPREFIX.'dblog`');
+		$sql->schema()->renameTable('rl_history', 'dblog');
 		//$updateMessages[] = LAN_UPDATE_44; 
 		$log->logMessage(LAN_UPDATE_44, E_MESSAGE_DEBUG);
 		catch_error($sql);
@@ -1216,7 +1188,7 @@ function update_706_to_800($type='')
 	if ($sql->isTable('dblog') && !$sql->isTable('admin_log'))
 	{
 		if ($just_check) return update_needed('Rename dblog to admin_log');
-		$sql->gen('ALTER TABLE `'.MPREFIX.'dblog` RENAME `'.MPREFIX.'admin_log`');
+		$sql->schema()->renameTable('dblog', 'admin_log');
 		catch_error($sql);
 		//$updateMessages[] = LAN_UPDATE_43; 
 		$log->logMessage(LAN_UPDATE_43, E_MESSAGE_DEBUG);
@@ -1240,8 +1212,8 @@ function update_706_to_800($type='')
 		{
 			if ($just_check) return update_needed("Delete table: ".$ot);
 			
-			$status = $sql->gen('DROP TABLE `'.MPREFIX.$ot.'`') ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
-			$log->logMessage(LAN_UPDATE_25.$ot, $status);			
+			$status = $sql->dropTable($ot) ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
+			$log->logMessage(LAN_UPDATE_25.$ot, $status);
 		}
 	}
 
@@ -1257,8 +1229,17 @@ function update_706_to_800($type='')
 		  if (strtolower($field_info['Type']) != 'varchar(45)')
 		  {
             if ($just_check) return update_needed('Update IP address field '.$f.' in table '.$t);
-			$status = $sql->gen("ALTER TABLE `".MPREFIX.$t."` MODIFY `$f` VARCHAR(45) NOT NULL DEFAULT '';") ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
-			$log->logMessage(LAN_UPDATE_26.$t.' - '.$f, $status);				
+			if($sql->quoteIdentifier($t) === false || $sql->quoteIdentifier($f) === false)
+			{
+				$log->logMessage(LAN_UPDATE_26.$t.' - '.$f, E_MESSAGE_ERROR);
+			}
+			else
+			{
+				// The schema builder validates the dynamic table and column
+				// identifiers fail-closed; the VARCHAR(45) type keeps its exact text.
+				$status = $sql->schema()->modifyColumn($t, $f, SqlFragment::raw("VARCHAR(45) NOT NULL DEFAULT ''")) ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
+				$log->logMessage(LAN_UPDATE_26.$t.' - '.$f, $status);
+			}
 			// catch_error($sql);
 		  }
 	    }
@@ -1337,16 +1318,24 @@ function update_706_to_800($type='')
 	//TODO - send notification messages to Log. 
 
 
-	if($sql->field('page','page_theme') && $sql->gen("SELECT * FROM `#page` WHERE page_theme != '' AND menu_title = '' LIMIT 1"))
+	if($sql->field('page','page_theme') && $sql->createQueryBuilder()->select('*')->from('page')->where('page_theme', '!=', '')->where('menu_title', '')->setMaxResults(1)->fetchRow())
 	{
 		if ($just_check)
 		{
-			return update_needed("Pages/Menus Table requires updating.");	
+			return update_needed("Pages/Menus Table requires updating.");
 		}
-		
-		if($sql->update('page',"menu_name = page_theme, menu_title = page_title, menu_text = page_text, menu_template='default', page_title = '', page_text = '' WHERE page_theme !='' AND menu_title = '' AND menu_text IS NULL "))
+
+		if($sql->createQueryBuilder()->update('page')
+			->setColumn('menu_name', 'page_theme')
+			->setColumn('menu_title', 'page_title')
+			->setColumn('menu_text', 'page_text')
+			->set('menu_template', 'default')
+			->set('page_title', '')
+			->set('page_text', '')
+			->where('page_theme', '!=', '')->where('menu_title', '')->whereNull('menu_text')
+			->execute())
 		{
-			$sql->gen("ALTER TABLE `#page` DROP page_theme ");
+			$sql->schema()->dropColumn('page', 'page_theme');
 			$mes = e107::getMessage();
 			$log->addDebug("Successfully updated pages/menus table to new format. ");
 		}
@@ -1355,17 +1344,17 @@ function update_706_to_800($type='')
 			$log->addDebug("FAILED to update pages/menus table to new format. ");
 			//$sql->gen("ALTER TABLE `#page` DROP page_theme ");
 		}
-	
+
 	}
-	
+
 	if($sql->field('plugin','plugin_releaseUrl'))
 	{
 		if ($just_check) return update_needed('plugin_releaseUrl is deprecated and needs to be removed. ');
-		if($sql->gen("ALTER TABLE `#plugin` DROP `plugin_releaseUrl`"))
+		if($sql->schema()->dropColumn('plugin', 'plugin_releaseUrl'))
 		{
 			$log->addDebug("Successfully removed plugin_releaseUrl. ");
 		}
-		
+
 	}
 	
 
@@ -1411,7 +1400,7 @@ function update_706_to_800($type='')
 		$s_prefs = $tp -> toDB($notify_prefs);
 		$s_prefs = e107::serialize($s_prefs, true);
 		// Could we use $sysprefs->set($s_prefs,'notify_prefs') instead - avoids caching problems  ????
-		$status = ($sql -> update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'") !== FALSE) ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
+		$status = ($sql->createQueryBuilder()->update('core')->set('e107_value', $s_prefs)->where('e107_name', 'notify_prefs')->execute() !== FALSE) ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
 		$message = str_replace('[x]',$nt_changed,LAN_UPDATE_20);
 		$log->logMessage($message, $status);
 	}
@@ -1433,13 +1422,14 @@ function update_706_to_800($type='')
 		
 	// ---------------  Saved emails - copy across
 	
-	if (!$just_check && $sql->select('generic', '*', "gen_type='massmail'"))
+	$massmailRows = (!$just_check) ? $sql->createQueryBuilder()->select('*')->from('generic')->where('gen_type', 'massmail')->fetchAll() : array();
+	if (!$just_check && $massmailRows)
 	{
 		if ($just_check) return update_needed('Copy across saved emails');
 		require_once(e_HANDLER.'mail_manager_class.php');
 		$mailHandler = new e107MailManager;
 		$i = 0;
-		while ($row = $sql->fetch())
+		foreach ($massmailRows as $row)
 		{
 			$mailRecord = array(
 				'mail_create_date' => $row['gen_datestamp'],
@@ -1451,7 +1441,7 @@ function update_706_to_800($type='')
 			);
 			$mailHandler->mailToDb($mailRecord, TRUE);
 			$mailHandler->saveEmail($mailRecord, TRUE);
-			$sql2->delete('generic', 'gen_id='.intval($row['gen_id']));		// Delete as we go in case operation fails part way through
+			$sql2->createQueryBuilder()->delete('generic')->where('gen_id', (int) $row['gen_id'])->execute();		// Delete as we go in case operation fails part way through
 			$i++;
 		}
 		unset($mailHandler);
@@ -1482,7 +1472,7 @@ function update_706_to_800($type='')
 	 	
 	
 	// This has to be done after the table is upgraded
-	if($sql->select('plugin', 'plugin_category', "plugin_category = ''"))
+	if($sql->createQueryBuilder()->select('plugin_category')->from('plugin')->where('plugin_category', '')->fetchRow())
 	{
 		if ($just_check) return update_needed('Update plugin table');
 		require_once(e_HANDLER.'plugin_class.php');
@@ -1559,9 +1549,9 @@ function update_706_to_800($type='')
 	
 	// -------------------------------
 
-	if (!e107::isInstalled('download') && $sql->gen("SELECT * FROM #links WHERE link_url LIKE 'download.php%' AND link_class != '".e_UC_NOBODY."' LIMIT 1"))
+	if (!e107::isInstalled('download') && $sql->createQueryBuilder()->select('*')->from('links')->whereLike('link_url', 'download.php%')->where('link_class', '!=', e_UC_NOBODY)->setMaxResults(1)->fetchRow())
 	{
-		if ($just_check) return update_needed('Download Plugin needs to be installed.');	
+		if ($just_check) return update_needed('Download Plugin needs to be installed.');
 	//	e107::getSingleton('e107plugin')->install('download',array('nolinks'=>true));
 		e107::getSingleton('e107plugin')->refresh('download');
 	}
@@ -1582,19 +1572,35 @@ function update_706_to_800($type='')
 	// Media Category Update
 	if($sql->db_Field("core_media_cat","media_cat_nick"))
 	{
-		$count = $sql->gen("SELECT * FROM `#core_media_cat` WHERE media_cat_nick = '_common'  ");
+		$count = $sql->createQueryBuilder()->from('core_media_cat')->where('media_cat_nick', '_common')->count();
 		if($count ==1)
 		{
-			if ($just_check) return update_needed('Media-Manager Categories needs to be updated.');	
-			$sql->update('core_media_cat', "media_cat_owner = media_cat_nick, media_cat_category = media_cat_nick WHERE media_cat_nick REGEXP '_common|news|page|_icon_16|_icon_32|_icon_48|_icon_64' ");
-			$sql->update('core_media_cat', "media_cat_owner = '_icon', media_cat_category = media_cat_nick WHERE media_cat_nick REGEXP '_icon_16|_icon_32|_icon_48|_icon_64' ");
-			$sql->update('core_media_cat', "media_cat_owner = 'download', media_cat_category='download_image' WHERE media_cat_nick = 'download' ");
-			$sql->update('core_media_cat', "media_cat_owner = 'download', media_cat_category='download_thumb' WHERE media_cat_nick = 'downloadthumb' ");
-			$sql->update('core_media_cat', "media_cat_owner = 'news', media_cat_category='news_thumb' WHERE media_cat_nick = 'newsthumb' ");
+			if ($just_check) return update_needed('Media-Manager Categories needs to be updated.');
+			$qb = $sql->createQueryBuilder();
+			$qb->update('core_media_cat')
+				->setColumn('media_cat_owner', 'media_cat_nick')
+				->setColumn('media_cat_category', 'media_cat_nick')
+				->where($qb->expr()->regexp('media_cat_nick', '_common|news|page|_icon_16|_icon_32|_icon_48|_icon_64'))
+				->execute();
+			$qb = $sql->createQueryBuilder();
+			$qb->update('core_media_cat')
+				->set('media_cat_owner', '_icon')
+				->setColumn('media_cat_category', 'media_cat_nick')
+				->where($qb->expr()->regexp('media_cat_nick', '_icon_16|_icon_32|_icon_48|_icon_64'))
+				->execute();
+			$sql->createQueryBuilder()->update('core_media_cat')
+				->set('media_cat_owner', 'download')->set('media_cat_category', 'download_image')
+				->where('media_cat_nick', 'download')->execute();
+			$sql->createQueryBuilder()->update('core_media_cat')
+				->set('media_cat_owner', 'download')->set('media_cat_category', 'download_thumb')
+				->where('media_cat_nick', 'downloadthumb')->execute();
+			$sql->createQueryBuilder()->update('core_media_cat')
+				->set('media_cat_owner', 'news')->set('media_cat_category', 'news_thumb')
+				->where('media_cat_nick', 'newsthumb')->execute();
 			$log->addDebug("core-media-cat Categories and Ownership updated");
-			if($sql->gen("ALTER TABLE `".MPREFIX."core_media_cat` DROP `media_cat_nick`"))
+			if($sql->schema()->dropColumn('core_media_cat', 'media_cat_nick'))
 			{
-				$log->addDebug("core-media-cat `media_cat_nick` field removed.");	
+				$log->addDebug("core-media-cat `media_cat_nick` field removed.");
 			}
 			
 	//		$query = "INSERT INTO `".MPREFIX."core_media_cat` (`media_cat_id`, `media_cat_owner`, `media_cat_category`, `media_cat_title`, `media_cat_diz`, `media_cat_class`, `media_cat_image`, `media_cat_order`) VALUES
@@ -1610,41 +1616,47 @@ function update_706_to_800($type='')
 	 	
 	
 	// Media Update
-	$count = $sql->gen("SELECT * FROM `#core_media` WHERE media_category = 'newsthumb' OR media_category = 'downloadthumb'  LIMIT 1 ");
+	$count = $sql->createQueryBuilder()->select('*')->from('core_media')->where('media_category', 'newsthumb')->orWhere('media_category', 'downloadthumb')->setMaxResults(1)->fetchRow() ? 1 : 0;
 	if($count ==1)
 	{
 		if ($just_check) return update_needed('Media-Manager Data needs to be updated.');
-		$sql->update('core_media', "media_category='download_image' WHERE media_category = 'download' ");
-		$sql->update('core_media', "media_category='download_thumb' WHERE media_category = 'downloadthumb' ");
-		$sql->update('core_media', "media_category='news_thumb' WHERE media_category = 'newsthumb' ");		
+		$sql->createQueryBuilder()->update('core_media')->set('media_category', 'download_image')->where('media_category', 'download')->execute();
+		$sql->createQueryBuilder()->update('core_media')->set('media_category', 'download_thumb')->where('media_category', 'downloadthumb')->execute();
+		$sql->createQueryBuilder()->update('core_media')->set('media_category', 'news_thumb')->where('media_category', 'newsthumb')->execute();
 		$log->addDebug("core-media Category names updated");
 	}
 
 
-	// Media Update - core media and core-file.
-	/*
-	$count = $sql->gen("SELECT * FROM `#core_media` WHERE media_category = '_common' LIMIT 1 ");
+	$count = $sql->createQueryBuilder()->select('*')->from('core_media_cat')->where('media_cat_category', '_common')->setMaxResults(1)->fetchRow() ? 1 : 0;
 	if($count ==1)
 	{
 		if ($just_check) return update_needed('Media-Manager Category Data needs to be updated.');
-		$sql->update('core_media', "media_category='_common_image' WHERE media_category = '_common' ");
-		$log->addDebug("core-media _common Category updated");
-	}
-	*/
-	
-	
-	// Media Update - core media and core-file. CATEGORY
-	$count = $sql->gen("SELECT * FROM `#core_media_cat` WHERE media_cat_category = '_common' LIMIT 1 ");
-	if($count ==1)
-	{
-		if ($just_check) return update_needed('Media-Manager Category Data needs to be updated.');
-		$sql->update('core_media_cat', "media_cat_category='_common_image' WHERE media_cat_category = '_common' ");
-		$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, '_common', '_common_file', '(Common Area)', 'Media in this category will be available in all areas of admin. ', 253, '', 0);");
-		$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'download', 'download_file', 'Download Files', '', 253, '', 0);");		
+		$sql->createQueryBuilder()->update('core_media_cat')->set('media_cat_category', '_common_image')->where('media_cat_category', '_common')->execute();
+		// Legacy positional VALUES omitted the media_cat_sef column (8 values for a 9-column table); mapped to schema with media_cat_sef = ''.
+		$sql->createQueryBuilder()->insert('core_media_cat')->values(array(
+			'media_cat_owner'    => '_common',
+			'media_cat_category' => '_common_file',
+			'media_cat_title'    => '(Common Area)',
+			'media_cat_sef'      => '',
+			'media_cat_diz'      => 'Media in this category will be available in all areas of admin. ',
+			'media_cat_class'    => 253,
+			'media_cat_image'    => '',
+			'media_cat_order'    => 0,
+		))->execute();
+		$sql->createQueryBuilder()->insert('core_media_cat')->values(array(
+			'media_cat_owner'    => 'download',
+			'media_cat_category' => 'download_file',
+			'media_cat_title'    => 'Download Files',
+			'media_cat_sef'      => '',
+			'media_cat_diz'      => '',
+			'media_cat_class'    => 253,
+			'media_cat_image'    => '',
+			'media_cat_order'    => 0,
+		))->execute();
 		$log->addDebug("core-media-cat _common Category updated");
 	}
-			
-	$count = $sql->gen("SELECT * FROM `#core_media_cat` WHERE `media_cat_owner` = '_common' LIMIT 1 ");
+
+	$count = $sql->createQueryBuilder()->select('*')->from('core_media_cat')->where('media_cat_owner', '_common')->setMaxResults(1)->fetchRow() ? 1 : 0;
 
 	if($count != 1)
 	{
@@ -1664,25 +1676,12 @@ function update_706_to_800($type='')
 		
 		foreach($e107_core_media_cat as $insert)
 		{
-			$sql->insert('core_media_cat', $insert);	
+			$sql->createQueryBuilder()->insert('core_media_cat')->valuesTyped($insert, $sql->getFieldDefs('core_media_cat')['_FIELD_TYPES'])->execute();
 		}
 		
 		
 		
 		
-	//	$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, '_common', '_common_image', '(Common Images)', '', 'Media in this category will be available in all areas of admin. ', 253, '', 1);");
-	//	$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, '_common', '_common_file', '(Common Files)', '', 'Media in this category will be available in all areas of admin. ', 253, '', 2);");
-	
-	//	$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'news', 'news', 'News', '', 'Will be available in the news area. ', 253, '', 3);");
-	//	$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'page', 'page', 'Custom Pages', '', 'Will be available in the custom pages area of admin. ', 253, '', 4);");
-		
-	//	$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'download', 'download_image','', 'Download Images', '', 253, '', 5);");
-	//	$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'download', 'download_thumb', '', 'Download Thumbnails', '', 253, '', 6);");
-	//	$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'download', 'download_file', '', 'Download Files', '', 253, '', 7);");
-				
-	//	mysql_query("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'gallery', 'gallery_1', 'Gallery', 'Visible to the public at /gallery.php', 0, '', 0);");
-		
-	//	$sql->gen("INSERT INTO `".MPREFIX."core_media_cat` VALUES(0, 'news', 'news_thumb', 'News Thumbnails (Legacy)', '', 'Legacy news thumbnails. ', 253, '', 8);");		
 		
 		$med->import('news_thumb', e_IMAGE.'newspost_images',"^thumb_");
 		$med->import('news',e_IMAGE.'newspost_images');
@@ -1699,7 +1698,7 @@ function update_706_to_800($type='')
 	$fl = e107::getFile();
 	$dl_images = $fl->get_files(e_FILE.'downloadimages');
 
-	if(count($dl_images) && !$sql->gen("SELECT * FROM `#core_media` WHERE `media_category` = 'download_image' "))
+	if(count($dl_images) && !$sql->createQueryBuilder()->select('*')->from('core_media')->where('media_category', 'download_image')->fetchRow())
 	{
 		if ($just_check) return update_needed('Import Download Images into Media Manager');
 		$med->import('download_image',e_FILE.'downloadimages');
@@ -1713,31 +1712,34 @@ function update_706_to_800($type='')
 //	$publicFilter = array(1);
 	$public_files = $fl->get_files(e_FILE.'public','',$publicFilter);
 	
-	if((count($dl_files) || count($public_files)) && !$sql->gen("SELECT * FROM `#core_media` WHERE `media_category` = 'download_file' OR  `media_category` = '_common_file' "))
+	if((count($dl_files) || count($public_files)) && !$sql->createQueryBuilder()->select('*')->from('core_media')->where('media_category', 'download_file')->orWhere('media_category', '_common_file')->fetchRow())
 	{
 		if ($just_check) return update_needed('Import '.count($dl_files).' Download File(s) and '.count($public_files).' Public File(s) into Media Manager');
 
-		if($sql->gen("SELECT download_url FROM `#download` "))
-		{
-			$allowed_types = array();
-			
-			while($row = $sql->fetch())
-			{
-				$ext = strrchr($row['download_url'], "."); 
-				$suffix = ltrim($ext,".");
+		$downloadRows = $sql->createQueryBuilder()->select('download_url')->from('download')->fetchEach();
+		$allowed_types = array();
+		$hasDownloads = false;
 
-				if(!isset($allowed_types[$suffix]))
-				{
-					$allowed_types[$suffix] = $suffix;		
-				}
-				
+		foreach($downloadRows as $row)
+		{
+			$hasDownloads = true;
+			$ext = strrchr($row['download_url'], ".");
+			$suffix = ltrim($ext,".");
+
+			if(!isset($allowed_types[$suffix]))
+			{
+				$allowed_types[$suffix] = $suffix;
 			}
-			
+
+		}
+
+		if($hasDownloads)
+		{
 			$allowed_types = array_unique($allowed_types);
-		}		
+		}
 		else
 		{
-			$allowed_types = array('zip','gz','pdf');	
+			$allowed_types = array('zip','gz','pdf');
 		}
 		
 		$fmask = '[a-zA-Z0-9_.-]+\.('.implode('|',$allowed_types).')$';
@@ -1762,20 +1764,19 @@ function update_706_to_800($type='')
 
 	 
 			
-	$count = $sql->gen("SELECT * FROM `#core_media_cat` WHERE media_cat_owner='_icon'  ");
-	
+	$count = $sql->createQueryBuilder()->select('*')->from('core_media_cat')->where('media_cat_owner', '_icon')->fetchRow() ? 1 : 0;
+
 	if(!$count)
 	{
 		if ($just_check) return update_needed('Add icons to media-manager');
-			
-		$query = "INSERT INTO `".MPREFIX."core_media_cat` (`media_cat_id`, `media_cat_owner`, `media_cat_category`, `media_cat_title`, `media_cat_diz`, `media_cat_class`, `media_cat_image`, `media_cat_order`) VALUES
-		(0, '_icon', '_icon_16', 'Icons 16px', 'Available where icons are used in admin. ', 253, '', 0),
-		(0, '_icon', '_icon_32', 'Icons 32px', 'Available where icons are used in admin. ', 253, '', 0),
-		(0, '_icon', '_icon_48', 'Icons 48px', 'Available where icons are used in admin. ', 253, '', 0),
-		(0, '_icon', '_icon_64', 'Icons 64px', 'Available where icons are used in admin. ', 253, '', 0);
-		";
 
-		$sql->gen($query);
+		// Legacy multi-row INSERT named 8 of 9 columns (omitting media_cat_sef); preserved via the same column list.
+		$sql->createQueryBuilder()->insert('core_media_cat')->values(array(
+			array('media_cat_id' => 0, 'media_cat_owner' => '_icon', 'media_cat_category' => '_icon_16', 'media_cat_title' => 'Icons 16px', 'media_cat_diz' => 'Available where icons are used in admin. ', 'media_cat_class' => 253, 'media_cat_image' => '', 'media_cat_order' => 0),
+			array('media_cat_id' => 0, 'media_cat_owner' => '_icon', 'media_cat_category' => '_icon_32', 'media_cat_title' => 'Icons 32px', 'media_cat_diz' => 'Available where icons are used in admin. ', 'media_cat_class' => 253, 'media_cat_image' => '', 'media_cat_order' => 0),
+			array('media_cat_id' => 0, 'media_cat_owner' => '_icon', 'media_cat_category' => '_icon_48', 'media_cat_title' => 'Icons 48px', 'media_cat_diz' => 'Available where icons are used in admin. ', 'media_cat_class' => 253, 'media_cat_image' => '', 'media_cat_order' => 0),
+			array('media_cat_id' => 0, 'media_cat_owner' => '_icon', 'media_cat_category' => '_icon_64', 'media_cat_title' => 'Icons 64px', 'media_cat_diz' => 'Available where icons are used in admin. ', 'media_cat_class' => 253, 'media_cat_image' => '', 'media_cat_order' => 0),
+		))->execute();
 
 	//	if(!$sql->gen($query))
 	//	{
@@ -1813,10 +1814,10 @@ function update_706_to_800($type='')
 	}
 	
 	// Clean up news keywords. - remove spaces between commas.
-	if($sql->select('news', 'news_id', "news_meta_keywords LIKE '%, %' LIMIT 1"))
+	if($sql->createQueryBuilder()->select('news_id')->from('news')->whereLike('news_meta_keywords', '%, %')->setMaxResults(1)->fetchRow())
 	{
 		if ($just_check) return update_needed('News keywords contain spaces between commas and needs to be updated. ');
-		$sql->update('news', "news_meta_keywords = REPLACE(news_meta_keywords, ', ', ',')");
+		$sql->createQueryBuilder()->update('news')->setExpression('news_meta_keywords', SqlFragment::raw("REPLACE(news_meta_keywords, ', ', ',')"))->execute();
 	}
 	
 	
@@ -1886,56 +1887,6 @@ function update_706_to_800($type='')
 	return $just_check;
 }
 
-/* No Longed Used I think 
-function core_media_import($cat,$epath)
-{
-	if(!vartrue($cat)){ return;}
-	
-	if(!is_readable($epath))
-	{
-		return;
-	}
-	
-	$fl = e107::getFile();
-	$tp = e107::getParser();
-	$sql = e107::getDb();
-	$mes = e107::getMessage();
-	
-	$fl->setFileInfo('all');
-	$img_array = $fl->get_files($epath,'','',2);
-	
-	if(!count($img_array)){ return;}
-		
-	foreach($img_array as $f)
-	{
-		$fullpath = $tp->createConstants($f['path'].$f['fname'],1);
-		
-		$insert = array(
-		'media_caption'		=> $f['fname'], 
-		'media_description'	=> '', 
-		'media_category'	=> $cat, 
-		'media_datestamp'	=> $f['modified'], 
-		'media_url'	=> $fullpath, 
-		'media_userclass'	=> 0, 
-		'media_name'	=> $f['fname'], 
-		'media_author'	=> USERID, 
-		'media_size'	=> $f['fsize'], 
-		'media_dimensions'	=> $f['img-width']." x ".$f['img-height'], 
-		'media_usedby'	=> '', 
-		'media_tags'	=> '', 
-		'media_type'	=> $f['mime']
-		);
-
-		if(!$sql->select('core_media','media_url',"media_url = '".$fullpath."' LIMIT 1"))
-		{
-			if($sql->insert("core_media",$insert))
-			{
-				$mes->add("Importing Media: ".$f['fname'], E_MESSAGE_SUCCESS); 	
-			}
-		}
-	}	
-}
-*/
 
 function update_70x_to_706($type='')
 {
@@ -1946,7 +1897,7 @@ function update_70x_to_706($type='')
 	if(!$sql->db_Field("plugin",5))  // not plugin_rss so just add the new one.
 	{
 	  if ($just_check) return update_needed();
-      $sql->gen("ALTER TABLE `".MPREFIX."plugin` ADD `plugin_addons` TEXT NOT NULL ;");
+      $sql->schema()->addColumn('plugin', 'plugin_addons', SqlFragment::raw("TEXT NOT NULL"));
 	  catch_error($sql);
 	}
 
@@ -1954,7 +1905,7 @@ function update_70x_to_706($type='')
 	if($sql->db_Field("plugin",5) == "plugin_rss")
 	{
 	  if ($just_check) return update_needed();
-	  $sql->gen("ALTER TABLE `".MPREFIX."plugin` CHANGE `plugin_rss` `plugin_addons` TEXT NOT NULL;");
+	  $sql->schema()->changeColumn('plugin', 'plugin_rss', 'plugin_addons', SqlFragment::raw("TEXT NOT NULL"));
 	  catch_error($sql);
 	}
 
@@ -1962,16 +1913,18 @@ function update_70x_to_706($type='')
 	if($sql->db_Field("dblog",5) == "dblog_query")
 	{
       if ($just_check) return update_needed();
-	  $sql->gen("ALTER TABLE `".MPREFIX."dblog` CHANGE `dblog_query` `dblog_title` VARCHAR( 255 ) NOT NULL DEFAULT '';");
+	  $sql->schema()->changeColumn('dblog', 'dblog_query', 'dblog_title', SqlFragment::raw("VARCHAR( 255 ) NOT NULL DEFAULT ''"));
 	  catch_error($sql);
-	  $sql->gen("ALTER TABLE `".MPREFIX."dblog` CHANGE `dblog_remarks` `dblog_remarks` TEXT NOT NULL;");
+	  $sql->schema()->changeColumn('dblog', 'dblog_remarks', 'dblog_remarks', SqlFragment::raw("TEXT NOT NULL"));
 	  catch_error($sql);
 	}
 
 	if(!$sql->db_Field("plugin","plugin_path","UNIQUE"))
 	{
       if ($just_check) return update_needed();
-      if(!$sql->gen("ALTER TABLE `".MPREFIX."plugin` ADD UNIQUE (`plugin_path`);"))
+      // ADD UNIQUE without a name (MySQL auto-names it after the column); kept as
+      // a vouched index fragment so the emitted key stays exactly as before.
+      if(!$sql->schema()->addIndex('plugin', Index::raw(SqlFragment::raw("UNIQUE (`plugin_path`)"))))
 	  {
 		$mesg = LAN_UPDATE_12." : <a href='".e_ADMIN."db.php?plugin'>".ADLAN_145."</a>.";
         //$ns -> tablerender(LAN_ERROR,$mes);
@@ -1983,19 +1936,26 @@ function update_70x_to_706($type='')
 	if(!$sql->db_Field("online",6)) // online_active field
 	{
 	  if ($just_check) return update_needed();
-	  $sql->gen("ALTER TABLE ".MPREFIX."online ADD online_active INT(10) UNSIGNED NOT NULL DEFAULT '0'");
+	  $sql->schema()->addColumn('online', 'online_active', SqlFragment::raw("INT(10) UNSIGNED NOT NULL DEFAULT '0'"));
 	  catch_error($sql);
 	}
 
-	if ($sql -> db_Query("SHOW INDEX FROM ".MPREFIX."tmp"))
+	// Schema introspection through the DDL builder: scan the tmp table's index rows
+	// (getIndexes returns every SHOW INDEX row) for the tmp_ip key, guarding on
+	// isTable() so a missing table stays a no-op as with the former execute() guard.
+	if ($sql->isTable('tmp'))
 	{
-	  $row = $sql ->fetch();
-	  if (!in_array('tmp_ip', $row))
+	  $hasTmpIp = FALSE;
+	  foreach ($sql->schema()->getIndexes('tmp') as $indexRow)
+	  {
+		if (in_array('tmp_ip', $indexRow, true)) { $hasTmpIp = TRUE; break; }
+	  }
+	  if (!$hasTmpIp)
 	  {
 		if ($just_check) return update_needed();
-		$sql->gen("ALTER TABLE `".MPREFIX."tmp` ADD INDEX `tmp_ip` (`tmp_ip`);");
-		$sql->gen("ALTER TABLE `".MPREFIX."upload` ADD INDEX `upload_active` (`upload_active`);");
-		$sql->gen("ALTER TABLE `".MPREFIX."generic` ADD INDEX `gen_type` (`gen_type`);");
+		$sql->schema()->addIndex('tmp', Index::index('tmp_ip', 'tmp_ip'));
+		$sql->schema()->addIndex('upload', Index::index('upload_active', 'upload_active'));
+		$sql->schema()->addIndex('generic', Index::index('gen_type', 'gen_type'));
 	  }
 	}
 
@@ -2055,11 +2015,12 @@ function copy_user_timezone()
 
 	e107::getMessage()->addDebug("Line:".__LINE__);
 	// Created the field - now copy existing data
-	if ($sql->select('user','user_id, user_timezone'))
+	$userRows = $sql->createQueryBuilder()->select('user_id', 'user_timezone')->from('user')->fetchEach();
+	if ($userRows)
 	{
-		while ($row = $sql->fetch())
+		foreach ($userRows as $row)
 		{
-			$sql2->update('user_extended',"`user_timezone`='{$row['user_timezone']}' WHERE `user_extended_id`={$row['user_id']}");
+			$sql2->createQueryBuilder()->update('user_extended')->set('user_timezone', $row['user_timezone'])->where('user_extended_id', (int) $row['user_id'])->execute();
 		}
 	}
 	return true;		// All done!
@@ -2100,24 +2061,32 @@ function addIndexToTable($target, $indexSpec, $just_check, &$updateMessages, $op
 		$updateMessages[] = str_replace(array('[y]','[x]'),array($target,$indexSpec),LAN_UPDATE_54);
 		return !$just_check;		// No point carrying on - return 'nothing to do'
 	}
-	if ($sql->gen("SHOW INDEX FROM ".MPREFIX.$target))
+	// Dynamic identifiers: validate fail-closed before use (cannot be bound).
+	$safeTarget = $sql->quoteIdentifier($target);
+	$safeIndex  = $sql->quoteIdentifier($indexSpec);
+	if ($safeTarget === false || $safeIndex === false)
 	{
-		$found = FALSE;
-		while ($row = $sql ->fetch())
-		{		// One index per field
-			if (in_array($indexSpec, $row))
-			{
-				return !$just_check;		// Found - nothing to do
-			}
-		}
-		// Index not found here
-		if ($just_check)
-		{
-			return 'Required to add index to '.$target;
-		}
-		$sql->gen("ALTER TABLE `".MPREFIX.$target."` ADD INDEX `".$indexSpec."` (`".$indexSpec."`);");
-		$updateMessages[] = str_replace(array('[y]','[x]'),array($target,$indexSpec),LAN_UPDATE_37);
+		return FALSE;
 	}
+	// Schema introspection through the DDL builder: getIndexes() returns every
+	// SHOW INDEX row for $target (confirmed to exist by the isTable() guard above),
+	// so scan them for the index/column named $indexSpec.
+	foreach ($sql->schema()->getIndexes($target) as $row)
+	{		// One index per field
+		if (in_array($indexSpec, $row))
+		{
+			return !$just_check;		// Found - nothing to do
+		}
+	}
+	// Index not found here
+	if ($just_check)
+	{
+		return 'Required to add index to '.$target;
+	}
+	// The schema builder validates the dynamic table and index identifiers
+	// fail-closed; the index is named after its single column, as before.
+	$sql->schema()->addIndex($target, Index::index($indexSpec, $indexSpec));
+	$updateMessages[] = str_replace(array('[y]','[x]'),array($target,$indexSpec),LAN_UPDATE_37);
 	return FALSE;
 }
 

@@ -122,7 +122,7 @@ class fb_category_ui extends e_admin_ui
 			return false;
 		}
 
-		if (e107::getDb()->count('featurebox', '(*)', 'fb_category='.intval($id)))
+		if (e107::getDb()->createQueryBuilder()->from('featurebox')->where('fb_category', (int) $id)->count())
 		{
 			$this->getTreeModel()->addMessageWarning("Can't delete <strong>{$data['fb_category_title']}</strong> - category is in use!");
 			return false;
@@ -257,15 +257,15 @@ class fb_main_ui extends e_admin_ui
 		$categories = array();
 		$menuCat = array();
 
-		if(e107::getDb()->select('featurebox_category'))
+		$rows = e107::getDb()->createQueryBuilder()
+			->select('*')->from('featurebox_category')
+			->fetchAll();
+		foreach($rows as $row)
 		{
-			while ($row = e107::getDb()->fetch())
-			{
-				$id = $row['fb_category_id'];
-				$tmpl = $row['fb_category_template'];
-				$categories[$id] = $row['fb_category_title'];
-				$menuCat[$tmpl] = $row['fb_category_title'];
-			}
+			$id = $row['fb_category_id'];
+			$tmpl = $row['fb_category_template'];
+			$categories[$id] = $row['fb_category_title'];
+			$menuCat[$tmpl] = $row['fb_category_title'];
 		}
 
 		$this->fields['fb_category']['writeParms'] 		= $categories;	

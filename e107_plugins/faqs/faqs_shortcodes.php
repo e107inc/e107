@@ -383,7 +383,12 @@ class faqs_shortcodes extends e_shortcode
 		{
 			$tp = e107::getParser();
 
-			$list = e107::getDb()->retrieve('faqs','faq_question,faq_datestamp',"faq_answer='' AND faq_author_ip = '".USERIP."' ORDER BY faq_datestamp DESC ", true);
+			$list = e107::getDb()->createQueryBuilder()
+				->select('faq_question', 'faq_datestamp')->from('faqs')
+				->where('faq_answer', '')
+				->where('faq_author_ip', USERIP)
+				->orderBy('faq_datestamp', 'DESC')
+				->fetchAll();
 
 			$text = "";
 

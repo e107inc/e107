@@ -10,6 +10,8 @@
  *
  */
 
+use e107\Database\SqlFragment;
+
 if (!defined('e107_INIT'))
 {
 	exit;
@@ -146,14 +148,18 @@ class comment
 		}
 
 		$sql = e107::getDb();
-		if($sql->select("comments","*","comment_id= ".intval($id)." LIMIT 1"))
+		$row = $sql->createQueryBuilder()
+			->select('*')->from('comments')
+			->where('comment_id', (int) $id)
+			->setMaxResults(1)
+			->fetchRow();
+		if($row)
 		{
-			$row = $sql->fetch();
 			// [comment_id] =&gt; 65
 
 			return $this->form_comment('reply', $row['comment_type'], $row['comment_item_id'], $row['comment_subject'], false, true,false,false,$id);
-	
-		}			
+
+		}
 	}
 			
 		
@@ -226,8 +232,10 @@ class comment
 			if (isset($eaction) && $eaction == "edit")
 			{ // Get existing comment
 				$id = intval($id);
-				$sql->select("comments", "*", "comment_id='{$id}' ");
-				$ecom = $sql->fetch();
+				$ecom = $sql->createQueryBuilder()
+					->select('*')->from('comments')
+					->where('comment_id', $id)
+					->fetchRow();
 				if (isset($ecom['comment_author']))
 				{ // Old comment DB format
 					list($prid, $pname) = explode(".", $ecom['comment_author'], 2);
@@ -587,7 +595,11 @@ class comment
 
 		$table = e107::getParser()->filter($table,'w');
 
-		$status = e107::getDb()->update("comments","comment_blocked=1 WHERE comment_id = ".intval($id)."");
+		$status = e107::getDb()->createQueryBuilder()
+			->update('comments')
+			->set('comment_blocked', 1)
+			->where('comment_id', (int) $id)
+			->execute();
 
 		$data = array('comment_id'=>intval($id), 'comment_type'=>$table, 'comment_item_id'=> intval($itemid));
 		e107::getEvent()->trigger('user_comment_deleted', $data);
@@ -607,7 +619,11 @@ class comment
 			return;	
 		}
 		
-		return e107::getDb()->update("comments","comment_blocked=0 WHERE comment_id = ".intval($id)."");
+		return e107::getDb()->createQueryBuilder()
+			->update('comments')
+			->set('comment_blocked', 0)
+			->where('comment_id', (int) $id)
+			->execute();
 	}
 
 
@@ -632,10 +648,15 @@ class comment
 		
 		$comment = trim($comment);
 		
-		if(!e107::getDb()->update("comments","comment_comment=\"".$tp->toDB($comment)."\" WHERE comment_id = ".(int) $id.' AND comment_author_id = '.(int) USERID))
+		if(!e107::getDb()->createQueryBuilder()
+			->update('comments')
+			->set('comment_comment', $tp->toDB($comment))
+			->where('comment_id', (int) $id)
+			->where('comment_author_id', (int) USERID)
+			->execute())
 		{
-			return "Update Failed"; // trigger ajax error message. 
-		}		
+			return "Update Failed"; // trigger ajax error message.
+		}
 	}
 
 
@@ -720,7 +741,10 @@ class comment
 		}
 
 
-		if(!isset($_POST['e-token'])) $_POST['e-token'] = '';		// check posted token
+		// Do not manufacture an empty token for a request that sent none. isset()
+		// is true of an empty string, so it lands on the invalid-token branch,
+		// which no mode relaxes, and a tokenless POST is refused even where the
+		// operator asked for it to be allowed or merely logged.
 		if(!e107::getSession()->check(false)) return false;			// This will return false on error
 
 		if (isset($_GET['comment']) && $_GET['comment'] == 'edit')
@@ -750,7 +774,13 @@ class comment
 		$cuser_name = 'Anonymous'; // Preset as an anonymous comment
 		$cuser_mail = '';
 		
-		if (!$sql->select("comments", "*", "comment_comment='".$comment."' AND comment_item_id='".intval($id)."' AND comment_type='".$tp->toDB($type, true)."' "))
+		$existing = $sql->createQueryBuilder()
+			->from('comments')
+			->where('comment_comment', $comment)
+			->where('comment_item_id', (int) $id)
+			->where('comment_type', $tp->toDB($type, true))
+			->count();
+		if (!$existing)
 		{
 			if ($_POST['comment'])
 			{
@@ -762,12 +792,16 @@ class comment
 				}
 				elseif ($_POST['author_name'] != '') // See if author name is registered user
 				{ 
-					if ($sql2->select("user", "*", "user_name='".$tp->toDB($_POST['author_name'])."' "))
+					if ($sql2->createQueryBuilder()->from('user')->where('user_name', $tp->toDB($_POST['author_name']))->count())
 					{
-						if ($sql2->select("user", "*", "user_name='".$tp->toDB($_POST['author_name'])."' AND user_ip='".USERIP."' "))
+						$tmp = $sql2->createQueryBuilder()
+							->select('*')->from('user')
+							->where('user_name', $tp->toDB($_POST['author_name']))
+							->where('user_ip', USERIP)
+							->fetchRow();
+						if ($tmp)
 						{
 							//list($cuser_id, $cuser_name) = $sql2->fetch();
-							$tmp = $sql2->fetch();
 							$cuser_id = $tmp['user_id'];
 							$cuser_name = $tmp['user_name'];
 							$cuser_mail = $tmp['user_email'];
@@ -790,7 +824,11 @@ class comment
 					if ($editpid)
 					{
 						$comment .= "\n[ ".COMLAN_319." [time=short]".time()."[/time] ]";
-						$sql->update("comments", "comment_comment='{$comment}' WHERE comment_id='".intval($editpid)."' ");
+						$sql->createQueryBuilder()
+							->update('comments')
+							->set('comment_comment', $comment)
+							->where('comment_id', (int) $editpid)
+							->execute();
 						e107::getCache()->clear("comment");
 						return;
 					}
@@ -838,7 +876,14 @@ class comment
 					}
 					unset($edata_li_hook);
 
-					if (!($inserted_id = $sql->insert("comments", $edata_li)))
+					$cFieldDefs = $sql->getFieldDefs('comments');
+					// User-data write: valuesTyped() applies the same per-column storage transform
+					// as the deprecated array-form insert (byte-identical). Guard lastInsertId() on
+					// execute() success so a failed write returns false - reproducing the legacy
+					// insert() return contract instead of a stale id from a prior insert.
+					$inserted = $sql->createQueryBuilder()->insert('comments')->valuesTyped($edata_li, $cFieldDefs['_FIELD_TYPES'])->execute();
+					$inserted_id = ($inserted !== false) ? $sql->lastInsertId() : false;
+					if (!$inserted_id)
 					{
 						//echo "<b>".COMLAN_323."</b> ".COMLAN_11;
 						if(e_AJAX_REQUEST)
@@ -853,7 +898,12 @@ class comment
 					{
 						if (USER == true)
 						{
-							$sql->update("user", "user_comments=user_comments+1, user_lastpost='".time()."' WHERE user_id='".USERID."' ");
+							$sql->createQueryBuilder()
+								->update('user')
+								->increment('user_comments')
+								->set('user_lastpost', time())
+								->where('user_id', (int) USERID)
+								->execute();
 						}
 						// Next item for backward compatibility
 						$edata_li["comment_nick"] = $cuser_id.'.'.$cuser_name;
@@ -985,7 +1035,11 @@ class comment
 		$tp = e107::getParser();
 
 		$type = $this->getCommentType($table);
-		$count_comments = $sql->count("comments", "(*)", "WHERE comment_item_id='".intval($id)."' AND comment_type='".$tp->toDB($type, true)."' ");
+		$count_comments = $sql->createQueryBuilder()
+			->from('comments')
+			->where('comment_item_id', (int) $id)
+			->where('comment_type', $tp->toDB($type, true))
+			->count();
 
 		return (int) $count_comments;
 	}
@@ -1252,36 +1306,21 @@ class comment
 		$rate		= varset($att['rate']);
 			
 		$type = $this->getCommentType($table);
+		// $sort is appended raw to ORDER BY; restrict to a known-safe direction.
 		$sort = vartrue($pref['comments_sort'],'desc');
-		
-		if(!empty($pref['nested_comments']))
-		{
-			$query = "SELECT c.*, u.*, ue.*, r.* FROM #comments AS c
-			LEFT JOIN #user AS u ON c.comment_author_id = u.user_id
-			LEFT JOIN #user_extended AS ue ON c.comment_author_id = ue.user_extended_id 
-			LEFT JOIN #rate AS r ON c.comment_id = r.rate_itemid AND r.rate_table = 'comments' 
-			
-			WHERE c.comment_item_id='".intval($id)."' AND c.comment_type='".$tp->toDB($type, true)."' AND c.comment_pid='0' 
-			ORDER BY c.comment_datestamp ".$sort;
-		}
-		else
-		{
-			$query = "SELECT c.*, u.*, ue.*, r.* FROM #comments AS c
-			LEFT JOIN #user AS u ON c.comment_author_id = u.user_id
-			LEFT JOIN #user_extended AS ue ON c.comment_author_id = ue.user_extended_id 		
-			LEFT JOIN #rate AS r ON c.comment_id = r.rate_itemid AND r.rate_table = 'comments' 	";			
-			$query .= "WHERE c.comment_item_id='".intval($id)."' AND c.comment_type='".$tp->toDB($type, true)."' 		
-			ORDER BY c.comment_datestamp ".$sort;
-		}
-		
-		$this->totalComments = $sql->gen($query);
-			
-		$query .= " LIMIT ".$from.",".$this->commentsPerPage;
-		
+		$sort = in_array(strtoupper($sort), array('ASC','DESC'), true) ? strtoupper($sort) : 'DESC';
+
+		// Total count uses the unlimited query as a COUNT (matches legacy gen()
+		// row count) without materialising every joined row just to size it.
+		$this->totalComments = $this->commentsQuery($id, $type, $sort, !empty($pref['nested_comments']), null, null, true);
+
+		// Page of comments.
+		$rows = $this->commentsQuery($id, $type, $sort, !empty($pref['nested_comments']), (int) $from, $this->commentsPerPage);
+
 		$text 			= "";
 		$lock 			= '';
 
-		if ($rows = $sql->retrieve($query,true))
+		if ($rows)
 		{
 			if($pref['nested_comments'])
 			{
@@ -1310,7 +1349,60 @@ class comment
 			
 		} // end if
 
-		return array('comments'=> $text,'lock'=> $lock);		
+		return array('comments'=> $text,'lock'=> $lock);
+	}
+
+
+	/**
+	 * Build and run the joined comment listing query used by getComments().
+	 *
+	 * @param int        $id      comment_item_id
+	 * @param int|string $type    comment_type (raw; toDB() applied here)
+	 * @param string     $sort    ASC | DESC (validated by caller)
+	 * @param bool       $topOnly true to restrict to top-level comments (comment_pid = 0)
+	 * @param int|null   $from    LIMIT offset, or null for no limit
+	 * @param int|null   $perPage LIMIT row count, or null for no limit
+	 * @return array rows
+	 */
+	private function commentsQuery($id, $type, $sort, $topOnly, $from = null, $perPage = null, $countOnly = false)
+	{
+		$tp = e107::getParser();
+
+		// $sort is appended raw to ORDER BY; restrict to a known-safe direction.
+		$sort = in_array(strtoupper($sort), array('ASC','DESC'), true) ? strtoupper($sort) : 'DESC';
+
+		$qb = e107::getDb()->createQueryBuilder();
+		$qb->select('c.*', 'u.*', 'ue.*', 'r.*')
+			->from('comments', 'c')
+			->leftJoin('user', 'u', $qb->expr()->compareColumns('c.comment_author_id', 'u.user_id'))
+			->leftJoin('user_extended', 'ue', $qb->expr()->compareColumns('c.comment_author_id', 'ue.user_extended_id'))
+			->leftJoin('rate', 'r', $qb->expr()->allOf(
+				$qb->expr()->compareColumns('c.comment_id', 'r.rate_itemid'),
+				$qb->expr()->eq('r.rate_table', 'comments')
+			))
+			->where('c.comment_item_id', (int) $id)
+			->where('c.comment_type', $tp->toDB($type, true));
+
+		if($topOnly)
+		{
+			$qb->where('c.comment_pid', 0);
+		}
+
+		// The total is a COUNT over the same joined rows, so it never
+		// materialises the result set the way count(fetchAll()) would.
+		if($countOnly)
+		{
+			return $qb->count();
+		}
+
+		$qb->orderBy('c.comment_datestamp', $sort);
+
+		if($from !== null && $perPage !== null)
+		{
+			$qb->setFirstResult((int) $from)->setMaxResults((int) $perPage);
+		}
+
+		return $qb->fetchAll();
 	}
 
 
@@ -1358,16 +1450,9 @@ class comment
 				}
 				return;
 			}
-			$qry = "
-		SELECT COUNT(*) AS count
-		FROM #comments
-		WHERE comment_author_id = '{$id}'
-		";
-			if ($sql->gen($qry))
-			{
-				$row = $sql->fetch();
-				$sql->update("user", "user_comments = '{$row['count']}' WHERE user_id = '{$id}'");
-			}
+			$id = (int) $id;
+			$commentCount = $sql->createQueryBuilder()->from('comments')->where('comment_author_id', $id)->count();
+			$sql->createQueryBuilder()->update('user')->set('user_comments', $commentCount)->where('user_id', $id)->execute();
 		}
 
 
@@ -1379,21 +1464,15 @@ class comment
 	function get_author_list($id, $comment_type)
 		{
 			$sql = e107::getDb();
-			
-			$authors = array();
-			$qry = "
-		SELECT DISTINCT(comment_author_id) AS author
-		FROM #comments
-		WHERE comment_item_id='{$id}' AND comment_type='{$comment_type}'
-		GROUP BY author
-		";
-			if ($sql->gen($qry))
-			{
-				while ($row = $sql->fetch())
-				{
-					$authors[] = $row['author'];
-				}
-			}
+
+			$authors = $sql->createQueryBuilder()
+				->addSelect(SqlFragment::raw('DISTINCT(comment_author_id) AS author'))
+				->from('comments')
+				->where('comment_item_id', $id)
+				->where('comment_type', $comment_type)
+				->groupBy('author')
+				->fetchColumn('author');
+
 			return $authors;
 		}
 
@@ -1413,8 +1492,12 @@ class comment
 			$id 	= intval($id);
 			
 			$author_list = $this->get_author_list($id, $type);
-			$num_deleted = $sql->delete("comments", "comment_item_id='{$id}' AND comment_type='{$type}'");
-			
+			$num_deleted = $sql->createQueryBuilder()
+				->delete('comments')
+				->where('comment_item_id', $id)
+				->where('comment_type', $type)
+				->execute();
+
 			$this->recalc_user_comments($author_list);
 			
 			return $num_deleted;
@@ -1541,12 +1624,15 @@ class comment
 			 LEFT JOIN #user_extended AS ue ON c.comment_author = ue.user_extended_id
 			 WHERE c.comment_id!='' ".$qry1." ORDER BY c.comment_datestamp DESC LIMIT ".intval($from1).",".intval($amount1)." ";
 			 */
+			// NOTE: $qry1 is a caller-supplied SQL fragment (the $qry parameter); it is
+			// interpolated as developer/caller SQL. LIMIT bounds are integer-cast and inlined,
+			// matching the query builder's own handling of LIMIT/OFFSET.
 			$query = "
 		SELECT c.*, u.*, ue.* FROM #comments AS c
 		LEFT JOIN #user AS u ON c.comment_author_id = u.user_id
 		LEFT JOIN #user_extended AS ue ON c.comment_author_id = ue.user_extended_id
 		WHERE c.comment_id!='' AND c.comment_blocked = 0 ".$qry1." ORDER BY c.comment_datestamp DESC LIMIT ".intval($from1).",".intval($amount1)." ";
-			if ($comment_total = $sql->gen($query))
+			if ($comment_total = $sql->execute($query))
 			{
 				$width = 0;
 				while ($row = $sql->fetch())
@@ -1568,9 +1654,13 @@ class comment
 					switch ($row['comment_type'])
 					{
 						case '0': // news
-							if ($sql2->select("news", "*", "news_id='".$row['comment_item_id']."' AND news_class REGEXP '".e_CLASS_REGEXP."' "))
+							$nqb = $sql2->createQueryBuilder();
+							$row2 = $nqb->select('*')->from('news')
+								->where('news_id', $row['comment_item_id'])
+								->where($nqb->expr()->regexp('news_class', e_CLASS_REGEXP))
+								->fetchRow();
+							if ($row2)
 							{
-								$row2 = $sql2->fetch();
 								require_once(e_HANDLER.'news_class.php');
 								$ret['comment_type'] = COMLAN_TYPE_1;
 								$ret['comment_title'] = $tp->toHTML($row2['news_title'], true, 'emotes_off, no_make_clickable');
@@ -1582,10 +1672,15 @@ class comment
 						case '1': //	article, review or content page - defunct category, but filter them out
 							break;
 						case '2': //	downloads
-							$qryd = "SELECT d.download_name, dc.download_category_class, dc.download_category_id, dc.download_category_name FROM #download AS d LEFT JOIN #download_category AS dc ON d.download_category=dc.download_category_id WHERE d.download_id={$row['comment_item_id']} AND dc.download_category_class REGEXP '".e_CLASS_REGEXP."' ";
-							if ($sql2->gen($qryd))
+							$dqb = $sql2->createQueryBuilder();
+							$row2 = $dqb->select('d.download_name', 'dc.download_category_class', 'dc.download_category_id', 'dc.download_category_name')
+								->from('download', 'd')
+								->leftJoin('download_category', 'dc', $dqb->expr()->compareColumns('d.download_category', 'dc.download_category_id'))
+								->where('d.download_id', $row['comment_item_id'])
+								->where($dqb->expr()->regexp('dc.download_category_class', e_CLASS_REGEXP))
+								->fetchRow();
+							if ($row2)
 							{
-								$row2 = $sql2->fetch();
 								$ret['comment_type'] = COMLAN_TYPE_2;
 								$ret['comment_title'] = $tp->toHTML($row2['download_name'], true, 'emotes_off, no_make_clickable');
 								$ret['comment_url'] = e_HTTP."download.php?view.".$row['comment_item_id'];
@@ -1595,9 +1690,12 @@ class comment
 							break;
 						// '3' was FAQ
 						case '4': //	poll
-							if ($sql2->select("polls", "*", "poll_id='".$row['comment_item_id']."' "))
+							$row2 = $sql2->createQueryBuilder()
+								->select('*')->from('polls')
+								->where('poll_id', $row['comment_item_id'])
+								->fetchRow();
+							if ($row2)
 							{
-								$row2 = $sql2->fetch();
 								$ret['comment_type'] = COMLAN_TYPE_4;
 								$ret['comment_title'] = $tp->toHTML($row2['poll_title'], true, 'emotes_off, no_make_clickable');
 								$ret['comment_url'] = e_HTTP."comment.php?comment.poll.".$row['comment_item_id'];
@@ -1616,10 +1714,13 @@ class comment
 							}
 							break;
 						case 'page': //	Custom Page
-							if ($sql2->select("page", "*", "page_id='".$row['comment_item_id']."' AND page_class REGEXP '".e_CLASS_REGEXP."' "))
+							$pqb = $sql2->createQueryBuilder();
+							$row2 = $pqb->select('*')->from('page')
+								->where('page_id', $row['comment_item_id'])
+								->where($pqb->expr()->regexp('page_class', e_CLASS_REGEXP))
+								->fetchRow();
+							if ($row2)
 							{
-								$row2 = $sql2->fetch();
-
 								$row2 = pageHelper::addSefFields($row2);
 
 								$route = empty($row2['page_chapter']) ? "page/view/other" : "page/view/index"; // Determine if page belongs to book/chapter.
@@ -1640,8 +1741,10 @@ class comment
 								{
 									if ($installed = isset($pref['plug_installed'][$var['plugin_path']]))
 									{
+										// $var['qry'] is plugin-supplied SQL (from e_comment.php) with a
+										// {NID} placeholder; it is the whole query, so it stays raw here.
 										$qryp = str_replace("{NID}", $row['comment_item_id'], $var['qry']);
-										if ($sql2->gen($qryp))
+										if ($sql2->execute($qryp))
 										{
 											$row2 = $sql2->fetch();
 											$ret['comment_type'] = $var['plugin_name'];
@@ -1655,9 +1758,15 @@ class comment
 								}
 								else
 								{
-									if ($sql2->select($var['db_table'], $var['db_title'], $var['db_id']." = '".$row['comment_item_id']."' "))
+									// $var['db_table'], $var['db_title'] and $var['db_id'] are plugin-supplied
+									// identifiers (from e_comment.php); the builder validates them fail-closed
+									// (throws on anything outside the identifier grammar). The value is bound.
+									$row2 = $sql2->createQueryBuilder()
+										->select($var['db_title'])->from($var['db_table'])
+										->where($var['db_id'], $row['comment_item_id'])
+										->fetchRow();
+									if ($row2)
 									{
-										$row2 = $sql2->fetch();
 										$ret['comment_type'] = $var['plugin_name'];
 										$ret['comment_title'] = $tp->toHTML($row2[$var['db_title']], true, 'emotes_off, no_make_clickable');
 										$ret['comment_url'] = str_replace("{NID}", $row['comment_item_id'], $var['reply_location']);
@@ -1713,17 +1822,27 @@ class comment
 		$tp = e107::getParser();
 		$this->nestedComments = array();
 
-		$query = "SELECT c.*, u.*, ue.*, r.* FROM #comments AS c
-					LEFT JOIN #user AS u ON c.comment_author_id = u.user_id
-					LEFT JOIN #user_extended AS ue ON c.comment_author_id = ue.user_extended_id 
-					LEFT JOIN #rate AS r ON c.comment_id = r.rate_itemid AND r.rate_table = 'comments' 
-					
-					WHERE c.comment_item_id='" . intval($id) . "' AND c.comment_type='" . $tp->toDB($type, true) . "' AND c.comment_pid > 0 
-					ORDER BY c.comment_datestamp " . $sort;
+		// $sort is appended raw to ORDER BY; restrict to a known-safe direction.
+		$sort = in_array(strtoupper($sort), array('ASC','DESC'), true) ? strtoupper($sort) : 'DESC';
 
-		if($nested = e107::getDb()->retrieve($query, true))
+		$nested = e107::getDb()->createQueryBuilder();
+		$rows = $nested->select('c.*', 'u.*', 'ue.*', 'r.*')
+			->from('comments', 'c')
+			->leftJoin('user', 'u', $nested->expr()->compareColumns('c.comment_author_id', 'u.user_id'))
+			->leftJoin('user_extended', 'ue', $nested->expr()->compareColumns('c.comment_author_id', 'ue.user_extended_id'))
+			->leftJoin('rate', 'r', $nested->expr()->allOf(
+				$nested->expr()->compareColumns('c.comment_id', 'r.rate_itemid'),
+				$nested->expr()->eq('r.rate_table', 'comments')
+			))
+			->where('c.comment_item_id', (int) $id)
+			->where('c.comment_type', $type)
+			->where('c.comment_pid', '>', 0)
+			->orderBy('c.comment_datestamp', $sort)
+			->fetchAll();
+
+		if($rows)
 		{
-			foreach($nested as $row)
+			foreach($rows as $row)
 			{
 				if($this->isPending($row))
 				{

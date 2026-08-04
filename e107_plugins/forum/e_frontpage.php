@@ -17,19 +17,20 @@ class forum_frontpage // include plugin-folder in the name.
 		$config['page'][] = array('page' => e107::url('forum', 'index'), 'title' => "Main forum index"); 
 
 		// Retrieve all forums (exclude parents)
-		if($sql->select('forum', 'forum_id, forum_name, forum_sef', "forum_parent != 0"))
+		$rows = $sql->createQueryBuilder()
+			->select('forum_id', 'forum_name', 'forum_sef')->from('forum')
+			->where('forum_parent', '!=', 0)
+			->fetchAll();
+		foreach($rows as $row)
 		{
-			while($row = $sql->fetch())
-			{
-				$url =  e107::url('forum', 'forum', 
-							array(
-								'forum_id' => $row['forum_id'], 
-								'forum_sef' => $row['forum_sef']
-							)
-						);
+			$url =  e107::url('forum', 'forum',
+						array(
+							'forum_id' => $row['forum_id'],
+							'forum_sef' => $row['forum_sef']
+						)
+					);
 
-				$config['page'][] = array('page' => $url, 'title' => $row['forum_sef']);
-			}
+			$config['page'][] = array('page' => $url, 'title' => $row['forum_sef']);
 		}
 
 		return $config;

@@ -41,10 +41,16 @@ class _blank_rss // plugin-folder + '_rss'
 		$rss = array();
 		$i=0;
 
-		if($items = $sql->select('blank', "*", "blank_field = 1 LIMIT 0,".$parms['limit']))
+		$rows = $sql->createQueryBuilder()
+			->select('*')->from('blank')
+			->where('blank_field', 1)
+			->setFirstResult(0)->setMaxResults((int) $parms['limit'])
+			->fetchAll();
+
+		if($rows)
 		{
 
-			while($row = $sql->fetch())
+			foreach($rows as $row)
 			{
 
 				$rss[$i]['author']			= $row['blank_user_id'];

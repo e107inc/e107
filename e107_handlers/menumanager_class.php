@@ -161,13 +161,15 @@ class e_menuManager
 	 */
 	private function loadMenuData()
 	{
-		$menu_qry = 'SELECT * FROM #menus WHERE menu_location > 0 AND  menu_layout = "'.$this->dbLayout.'" ORDER BY menu_location,menu_order';
-
 		$sql = e107::getDb();
 
 		$eMenuArea = array();
 
-		if($rows = $sql->retrieve($menu_qry, true))
+		$rows = $sql->createQueryBuilder()->select('*')->from('menus')
+			->where('menu_location', '>', 0)->where('menu_layout', $this->dbLayout)
+			->orderBy('menu_location')->addOrderBy('menu_order')->fetchAll();
+
+		if($rows)
 		{
 
 			$lastLoc = -1;
@@ -183,7 +185,7 @@ class e_menuManager
 
 				if($c !== intval($row['menu_order'])) // fix the order if it is off..
 				{
-					if($sql->update('menus', "menu_order= ".$c." WHERE menu_id = ".$row['menu_id']." LIMIT 1"))
+					if($sql->createQueryBuilder()->update('menus')->set('menu_order', $c)->where('menu_id', (int) $row['menu_id'])->limit(1)->execute())
 					{
 						$row['menu_order'] = $c;
 					}
@@ -381,30 +383,38 @@ class e_menuManager
 
 			if (isset($location) && isset($position) && $menu_act == "bot")
 			{
-				$menu_count = $sql->count("menus", "(*)", " WHERE menu_location='{$location}' AND menu_layout = '".$this->dbLayout."'  ");
-				$sql->update("menus", "menu_order=".($menu_count+1)." WHERE menu_order='{$position}' AND menu_location='{$location}' AND menu_layout = '$this->dbLayout'  ");
-				$sql->update("menus", "menu_order=menu_order-1 WHERE menu_location='{$location}' AND menu_order > {$position} AND menu_layout = '".$this->dbLayout."' ");
+				$locId = (int) $location;
+				$posId = (int) $position;
+				$menu_count = $sql->createQueryBuilder()->from('menus')->where('menu_location', $locId)->where('menu_layout', $this->dbLayout)->count();
+				$sql->createQueryBuilder()->update('menus')->set('menu_order', $menu_count + 1)->where('menu_order', $posId)->where('menu_location', $locId)->where('menu_layout', $this->dbLayout)->execute();
+				$sql->createQueryBuilder()->update('menus')->decrement('menu_order')->where('menu_location', $locId)->where('menu_order', '>', $posId)->where('menu_layout', $this->dbLayout)->execute();
 				e107::getLog()->add('MENU_06',$location.'[!br!]'.$position.'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
 			}
 
 			if (isset($location) && isset($position) && $menu_act == "top")
 			{
-				$sql->update("menus", "menu_order=menu_order+1 WHERE menu_location='{$location}' AND menu_order < {$position} AND menu_layout = '".$this->dbLayout."' ",$this->debug);
-				$sql->update("menus", "menu_order=1 WHERE menu_id='{$this->menuId}' ");
+				$locId = (int) $location;
+				$posId = (int) $position;
+				$sql->createQueryBuilder()->update('menus')->increment('menu_order')->where('menu_location', $locId)->where('menu_order', '<', $posId)->where('menu_layout', $this->dbLayout)->execute();
+				$sql->createQueryBuilder()->update('menus')->set('menu_order', 1)->where('menu_id', (int) $this->menuId)->execute();
 				e107::getLog()->add('MENU_05',$location.'[!br!]'.$position.'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
 			}
 
 			if (isset($location) && isset($position) && $menu_act == "dec")
 			{
-				$sql->update("menus", "menu_order=menu_order-1 WHERE menu_order='".($position+1)."' AND menu_location='{$location}' AND menu_layout = '".$this->dbLayout."' ",$this->debug);
-				$sql->update("menus", "menu_order=menu_order+1 WHERE menu_id='{$this->menuId}' AND menu_location='{$location}' AND menu_layout = '".$this->dbLayout."' ");
+				$locId = (int) $location;
+				$posId = (int) $position;
+				$sql->createQueryBuilder()->update('menus')->decrement('menu_order')->where('menu_order', $posId + 1)->where('menu_location', $locId)->where('menu_layout', $this->dbLayout)->execute();
+				$sql->createQueryBuilder()->update('menus')->increment('menu_order')->where('menu_id', (int) $this->menuId)->where('menu_location', $locId)->where('menu_layout', $this->dbLayout)->execute();
 				e107::getLog()->add('MENU_08',$location.'[!br!]'.$position.'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
 			}
 
 			if (isset($location) && isset($position) && $menu_act == "inc")
 			{
-				$sql->update("menus", "menu_order=menu_order+1 WHERE menu_order='".($position-1)."' AND menu_location='{$location}' AND menu_layout = '".$this->dbLayout."' ",$this->debug);
-				$sql->update("menus", "menu_order=menu_order-1 WHERE menu_id='{$this->menuId}' AND menu_location='{$location}' AND menu_layout = '".$this->dbLayout."' ");
+				$locId = (int) $location;
+				$posId = (int) $position;
+				$sql->createQueryBuilder()->update('menus')->increment('menu_order')->where('menu_order', $posId - 1)->where('menu_location', $locId)->where('menu_layout', $this->dbLayout)->execute();
+				$sql->createQueryBuilder()->update('menus')->decrement('menu_order')->where('menu_id', (int) $this->menuId)->where('menu_location', $locId)->where('menu_layout', $this->dbLayout)->execute();
 				e107::getLog()->add('MENU_07',$location.'[!br!]'.$position.'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
 			}
 
@@ -438,15 +448,22 @@ class e_menuManager
 			return false;
 		}
 
-		$sql->update("menus", "menu_location='0' WHERE menu_layout = '" . $this->dbLayout . "' "); // Clear All existing.
+		$sql->createQueryBuilder()->update('menus')->setTyped('menu_location', '0', 'int')->where('menu_layout', $this->dbLayout)->execute(); // Clear All existing.
 
 		foreach($menuAreas as $val)
 		{
-			if($sql->select("menus", 'menu_name, menu_path', "menu_name = '" . $tp->filter($val['menu_name']) . "' LIMIT 1"))
-			{
-				$row = $sql->fetch();
+			$row = $sql->createQueryBuilder()->select('menu_name', 'menu_path')->from('menus')
+				->where('menu_name', $tp->filter($val['menu_name']))->limit(1)->fetchRow();
 
-				if(!$sql->update('menus', "menu_order='" . (int) $val['menu_order'] . "', menu_location = " . (int) $val['menu_location'] . ", menu_class= " . $val['menu_class'] . " WHERE menu_name='" . $tp->filter($val['menu_name']) . "' AND menu_layout = '" . $this->dbLayout . "' LIMIT 1 "))
+			if($row)
+			{
+				if(!$sql->createQueryBuilder()->update('menus')
+					->set('menu_order', (int) $val['menu_order'])
+					->set('menu_location', (int) $val['menu_location'])
+					->set('menu_class', $val['menu_class'])
+					->where('menu_name', $tp->filter($val['menu_name']))
+					->where('menu_layout', $this->dbLayout)
+					->limit(1)->execute())
 				{
 					$insert = array(
 						'menu_id'       => 0,
@@ -460,7 +477,7 @@ class e_menuManager
 						'menu_parms'    => '',
 					);
 
-					$sql->insert("menus", $insert);
+					$sql->createQueryBuilder()->insert('menus')->valuesTyped($insert, $sql->getFieldDefs('menus')['_FIELD_TYPES'])->execute();
 					e107::getLog()->add('MENU_01', $tp->filter($row['menu_name']) . '[!br!]' . $location . '[!br!]' . varset($menu_count, 0) . '[!br!]' . $tp->filter($row['menu_path']), E_LOG_INFORMATIVE, '');
 				}
 			}
@@ -491,7 +508,7 @@ class e_menuManager
 		e107::getDebug()->log("Scanning for new menus", E107_DBG_BASIC);
 
 		$menuList = array(); // existing menus in table.
-		if($result = $sql->retrieve('menus', 'menu_name', null, true))
+		if($result = $sql->createQueryBuilder()->select('menu_name')->from('menus')->fetchAll())
 		{
 			foreach($result as $mn)
 			{
@@ -505,7 +522,7 @@ class e_menuManager
 
 		//v2.x Scan Custom Page Menus.
 
-		$pageMenus = $sql->retrieve('page', 'page_id, menu_name, menu_title', "menu_name !='' ", true);
+		$pageMenus = $sql->createQueryBuilder()->select('page_id', 'menu_name', 'menu_title')->from('page')->where('menu_name', '!=', '')->fetchAll();
 		foreach($pageMenus as $row)
 		{
 			if(!in_array($row['menu_name'], $menuList))
@@ -522,7 +539,7 @@ class e_menuManager
 					'menu_parms'    => ''
 				);
 
-				if($sql->insert("menus", $insert))
+				if($sql->createQueryBuilder()->insert('menus')->valuesTyped($insert, $sql->getFieldDefs('menus')['_FIELD_TYPES'])->execute())
 				{
 					$this->menuAddMessage(MENLAN_10 . " - " . $row['menu_name'], E_MESSAGE_DEBUG);
 				}
@@ -575,7 +592,7 @@ class e_menuManager
 						'menu_parms'    => ''
 					);
 
-					if($sql->insert("menus", $insert))
+					if($sql->createQueryBuilder()->insert('menus')->valuesTyped($insert, $sql->getFieldDefs('menus')['_FIELD_TYPES'])->execute())
 					{
 						// Could do admin logging here - but probably not needed
 						$message .= MENLAN_10 . " - " . $file['fname'] . "<br />"; //FIXME
@@ -593,31 +610,34 @@ class e_menuManager
 		{
 			$sql2 = new db;
 		}        // Shouldn't be needed
-		if(!isset($sql3) || !is_object($sql3))
-		{
-			$sql3 = new db;
-		}
 
-		$location_count = $sql3->select("menus", "menu_location", "menu_location>0 GROUP BY menu_location");
+		$location_count = count($sql->createQueryBuilder()->select('menu_location')->from('menus')
+			->where('menu_location', '>', 0)->groupBy('menu_location')->fetchAll());
 		while($location_count)
 		{
-			if($sql->select("menus", "menu_id", "menu_location={$location_count} ORDER BY menu_order ASC"))
+			$menuIds = $sql->createQueryBuilder()->select('menu_id')->from('menus')
+				->where('menu_location', $location_count)->orderBy('menu_order', 'ASC')->fetchColumn('menu_id');
+
+			if($menuIds)
 			{
 				$c = 1;
-				while($row = $sql->fetch())
+				foreach($menuIds as $menu_id)
 				{
-					$sql2->update("menus", "menu_order={$c} WHERE menu_id=" . $row['menu_id']);
+					$sql2->createQueryBuilder()->update('menus')->set('menu_order', $c)->where('menu_id', (int) $menu_id)->execute();
 					$c++;
 				}
 			}
 			$location_count--;
 		}
-		$sql->select("menus", "*", "menu_path NOT REGEXP('[0-9]+') ");
-		while(list($menu_id, $menu_name, $menu_location, $menu_order) = $sql->fetch('num'))
+		$menuQb = $sql->createQueryBuilder();
+		$rows = $menuQb->select('menu_id', 'menu_name', 'menu_location', 'menu_order')->from('menus')
+			->where($menuQb->expr()->not($menuQb->expr()->regexp('menu_path', '[0-9]+')))->fetchAll();
+		foreach($rows as $row)
 		{
+			$menu_name = $row['menu_name'];
 			if(stripos($menustr, $menu_name) === false)
 			{
-				$sql2->delete("menus", "menu_name='$menu_name'");
+				$sql2->createQueryBuilder()->delete('menus')->where('menu_name', $menu_name)->execute();
 				$message .= MENLAN_11 . " - " . $menu_name . "<br />";
 			}
 		}
@@ -702,12 +722,13 @@ class e_menuManager
 		$frm = e107::getForm();
 		$sql = e107::getDb();
 		
-		if(!$sql->select("menus", "*", "menu_id=".$id))
+		$row = $sql->createQueryBuilder()->select('*')->from('menus')->where('menu_id', (int) $id)->fetchRow();
+
+		if(!$row)
 		{
         	$this->menuAddMessage("Couldn't Load Menu",E_MESSAGE_ERROR);
             return null;
-		};
-		$row = $sql->fetch();
+		}
 
 
 
@@ -761,37 +782,6 @@ class e_menuManager
 			{
 
 				return $this->menuParamForm($id, $fields,$tabs,$form,$value);
-				/*
-
-				foreach($fields as $k=>$v)
-				{
-					$text .= "<tr><td class='text-left'>".$v['title']."</td>";
-				//	$v['writeParms']['class'] = 'e-save';
-					$i = $k;
-					if(!empty($v['multilan']))
-					{
-						$i = $k.'['.e_LANGUAGE.']';
-
-						if(isset($value[$k][e_LANGUAGE]))
-						{
-							$value[$k] = varset($value[$k][e_LANGUAGE],'');
-						}
-
-					}
-
-
-					$text .= "<td class='text-left'>".$form->renderElement($i, $value[$k], $v);
-
-
-
-					if(!empty($v['help']))
-					{
-						//$v['writeParms']['title'] = e107::getParser()->toAttribute($v['help']);
-						$text .= "<div class='field-help'>".$v['help']."</div>";
-					}
-
-					$text .= "</td></tr>";
-				}*/
 
 			}
 			else
@@ -848,14 +838,14 @@ class e_menuManager
 		
 		require_once(e_HANDLER."userclass_class.php");
 		
-		if(!$sql->select("menus", "*", "menu_id=".intval($_GET['vis'])))
+		$row = $sql->createQueryBuilder()->select('*')->from('menus')->where('menu_id', (int) $_GET['vis'])->fetchRow();
+
+		if(!$row)
 		{
         	$this->menuAddMessage(MENLAN_48,E_MESSAGE_ERROR);
             return;
 		}
-		
-		$row = $sql->fetch();
-		
+
 		$listtype 	= substr($row['menu_pages'], 0, 1);
 		$menu_pages = substr($row['menu_pages'], 2);
 		$menu_pages = str_replace("|", "\n", $menu_pages);
@@ -932,17 +922,17 @@ class e_menuManager
 	{
 		$sql = e107::getDb();
 
-		$location = $this->menuActivateLoc;
+		$location = (int) $this->menuActivateLoc;
 
-		$menu_count = $sql->count("menus", "(*)", " WHERE menu_location=".$location." AND menu_layout = '".$this->dbLayout."' ");
+		$menu_count = $sql->createQueryBuilder()->from('menus')->where('menu_location', $location)->where('menu_layout', $this->dbLayout)->count();
 		$menu_count++; // Need to add 1 to create NEW order number.
 		
 		foreach($this->menuActivateIds as $sel_mens)
 		{
 			//Get info from menu being activated
-			if($sql->select("menus", 'menu_name, menu_path' , "menu_id = ".intval($sel_mens)." "))
+			$row = $sql->createQueryBuilder()->select('menu_name', 'menu_path')->from('menus')->where('menu_id', (int) $sel_mens)->fetchRow();
+			if($row)
 			{
-				$row=$sql->fetch();
 				//If menu is not already activated in that area, add the record.
 				//$query = "SELECT menu_name,menu_path FROM #menus WHERE menu_name='".$row['menu_name']."' AND menu_layout = '".$this->dbLayout."' AND menu_location = ".$location." LIMIT 1 ";
 				//if(!$sql->gen($query, $this->debug))
@@ -960,7 +950,7 @@ class e_menuManager
 							'menu_parms'	=> ''
 				   );
 
-					$sql->insert("menus",$insert, $this->debug);
+					$sql->createQueryBuilder()->insert('menus')->valuesTyped($insert, $sql->getFieldDefs('menus')['_FIELD_TYPES'])->execute();
 
 					e107::getLog()->add('MENU_01',$row['menu_name'].'[!br!]'.$location.'[!br!]'.$menu_count.'[!br!]'.$row['menu_path'],E_LOG_INFORMATIVE,'');
 					$menu_count++;
@@ -1068,8 +1058,8 @@ class e_menuManager
 		if(isset($_POST['menu_parms'])) // generic params
 		{
 			$parms = $tp->filter($_POST['menu_parms']);
-			$parms = $sql->escape(strip_tags($parms));
-			$check = $sql->update("menus", "menu_parms=\"".$parms."\" WHERE menu_id=".$id."");
+			$parms = strip_tags($parms);
+			$check = $sql->createQueryBuilder()->update('menus')->setTyped('menu_parms', $parms, 'escape')->where('menu_id', (int) $id)->execute();
 		}
 		else // Save e_menu.php parameters.
 		{
@@ -1124,7 +1114,7 @@ class e_menuManager
 		$pageparms = preg_replace("#\|$#", "", $pageparms);
 		$pageparms = (trim($pageList) == '') ? '' : $pageparms;
 
-		if($sql->update("menus", "menu_class='".intval($_POST['menu_class'])."', menu_pages='{$pageparms}' WHERE menu_id=".intval($_POST['menu_id'])))
+		if($sql->createQueryBuilder()->update('menus')->setTyped('menu_class', intval($_POST['menu_class']), 'escape')->setTyped('menu_pages', $pageparms, 'escape')->where('menu_id', intval($_POST['menu_id']))->execute())
 		{
 			e107::getLog()->add('MENU_02',$_POST['menu_class'].'[!br!]'.$pageparms.'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
 						
@@ -1163,15 +1153,16 @@ class e_menuManager
 		$error = false;
 		$message = '';
 
-		if($sql->gen('SELECT menu_name, menu_location, menu_order FROM #menus WHERE menu_id = '.$this->menuId.' LIMIT 1'))
-		{
-			$row = $sql->fetch();
+		$row = $sql->createQueryBuilder()->select('menu_name', 'menu_location', 'menu_order')->from('menus')
+			->where('menu_id', (int) $this->menuId)->limit(1)->fetchRow();
 
+		if($row)
+		{
 			//Check to see if there is already a menu with location = 0 (to maintain BC)
-			if($sql2->select('menus', 'menu_id', "menu_name='{$row['menu_name']}' AND menu_location = 0 AND menu_layout ='".$this->dbLayout."' LIMIT 1"))
+			if($sql2->createQueryBuilder()->select('menu_id')->from('menus')->where('menu_name', $row['menu_name'])->where('menu_location', 0)->where('menu_layout', $this->dbLayout)->limit(1)->execute())
 			{
 				//menu_location=0 already exists, we can just delete this record
-				if(!$sql2->delete('menus', 'menu_id='.$this->menuId))
+				if(!$sql2->createQueryBuilder()->delete('menus')->where('menu_id', (int) $this->menuId)->execute())
 				{
 					$message = "Deletion Failed";
 					$error = true;
@@ -1180,14 +1171,14 @@ class e_menuManager
 			else
 			{
 				//menu_location=0 does NOT exist, let's just convert this to it
-				if(!$sql2->update("menus", "menu_location=0, menu_order=0, menu_class=0, menu_pages='' WHERE menu_id=".$this->menuId))
+				if(!$sql2->createQueryBuilder()->update('menus')->set('menu_location', 0)->set('menu_order', 0)->set('menu_class', 0)->set('menu_pages', '')->where('menu_id', (int) $this->menuId)->execute())
 				{
 	            	$message = "FAILED";
 					$error = true;
 				}
 			}
-			//Move all menus up (reduces order number) that have a higher menu order number than one deactivated, in the selected location. 
-			$sql->update("menus", "menu_order=menu_order-1 WHERE menu_location={$row['menu_location']} AND menu_order > {$row['menu_order']} AND menu_layout = '".$this->dbLayout."' ");
+			//Move all menus up (reduces order number) that have a higher menu order number than one deactivated, in the selected location.
+			$sql->createQueryBuilder()->update('menus')->decrement('menu_order')->where('menu_location', (int) $row['menu_location'])->where('menu_order', '>', (int) $row['menu_order'])->where('menu_layout', $this->dbLayout)->execute();
 			e107::getLog()->add('MENU_04',$row['menu_name'].'[!br!]'.$row['menu_location'].'[!br!]'.$row['menu_order'].'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
 		}
 		else
@@ -1211,18 +1202,19 @@ class e_menuManager
 
 			$sql = e107::getDb();
 
-			if($sql->select('menus', 'menu_name', 'menu_id='.$this->menuId, 'default'))
+			$row = $sql->createQueryBuilder()->select('menu_name')->from('menus')->where('menu_id', (int) $this->menuId)->fetchRow();
+			if($row)
 			{
-				$row = $sql->fetch();
 				//Check to see if menu is already active in the new area, if not then move it
-				if(!$sql->select('menus', 'menu_id', "menu_name='{$row['menu_name']}' AND menu_location = ".$this->menuNewLoc." AND menu_layout='".$this->dbLayout ."' LIMIT 1"))
+				if(!$sql->createQueryBuilder()->select('menu_id')->from('menus')->where('menu_name', $row['menu_name'])->where('menu_location', (int) $this->menuNewLoc)->where('menu_layout', $this->dbLayout)->limit(1)->execute())
 				{
-					$menu_count = $sql->count("menus", "(*)", " WHERE menu_location=".$this->menuNewLoc);
-					$sql->update("menus", "menu_location='{$this->menuNewLoc}', menu_order=".($menu_count+1)." WHERE menu_id=".$this->menuId);
+					$newLocId = (int) $this->menuNewLoc;
+					$menu_count = $sql->createQueryBuilder()->from('menus')->where('menu_location', $newLocId)->count();
+					$sql->createQueryBuilder()->update('menus')->set('menu_location', $newLocId)->set('menu_order', $menu_count + 1)->where('menu_id', (int) $this->menuId)->execute();
 
 					if(isset($location) && isset($position))
 					{
-						$sql->update("menus", "menu_order=menu_order-1 WHERE menu_location='{$location}' AND menu_order > {$position} AND menu_layout='".$this->dbLayout ."' ");
+						$sql->createQueryBuilder()->update('menus')->decrement('menu_order')->where('menu_location', (int) $location)->where('menu_order', '>', (int) $position)->where('menu_layout', $this->dbLayout)->execute();
 					}
 				}
 				e107::getLog()->add('MENU_03',$row['menu_name'].'[!br!]'.$this->menuNewLoc.'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
@@ -1338,8 +1330,8 @@ class e_menuManager
 
 		$done = array();
 		
-		$sql->select("menus", "menu_name, menu_id, menu_pages, menu_path", "1 ORDER BY menu_name ASC");
-		while ($row = $sql->fetch())
+		$rows = $sql->createQueryBuilder()->select('menu_name', 'menu_id', 'menu_pages', 'menu_path')->from('menus')->orderBy('menu_name', 'ASC')->fetchAll();
+		foreach ($rows as $row)
 		{
 
 			if(in_array($row['menu_name'],$done))
@@ -1351,13 +1343,13 @@ class e_menuManager
 
 			if(is_numeric($row['menu_path']))
 			{
-				$pageMenu[] = $row;	
+				$pageMenu[] = $row;
 			}
-			else 
+			else
 			{
-				$pluginMenu[] = $row;	
+				$pluginMenu[] = $row;
 			}
-						
+
 		}
 
 		$text .= "<tr><th colspan='2'>".MENLAN_49."</th></tr>";
@@ -1438,45 +1430,6 @@ class e_menuManager
 
 
 
-	//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-/*	function menuSelectLayout()
-	{
-		$pref = e107::getPref();
-		
-// onchange=\"urljump(this.options[selectedIndex].value);\"
-
-		$text = "<form class='form-inline' method='post' action='".e_SELF."?configure=".$this->curLayout."'>";
-		$text .= "<div class='buttons-bar'>".MENLAN_54.": ";
-        $text .= "<select name='custom_select' style='width:auto' id='menuManagerSelect'  >\n"; //tbox class will break links.  // window.frames['menu_iframe'].location=this.options[selectedIndex].value ???
-
-
-	    $search = array("_","legacyDefault","legacyCustom");
-		$replace = array(" ",MENLAN_31,MENLAN_33);
-
-
-	    foreach($pref['sitetheme_layouts'] as $key=>$val)
-		{
-			$layoutName = str_replace($search,$replace,$key);
-			$layoutName .=($key==$pref['sitetheme_deflayout']) ? " (".MENLAN_31.")" : "";
-			$selected = ($this->curLayout == $key || ($key==$pref['sitetheme_deflayout'] && $this->curLayout=='')) ? "selected='selected'" : FALSE;
-		
-           // $url = e_SELF."?lay=".$key;
-
-			$url = e_SELF."?configure=".$key;
-			
-			$text .= "<option value='".$url."' {$selected}>".$layoutName."</option>";
-		}
-
-	    $text .= "</select>
-	    <div class='field-help'>".MENLAN_30."</div>
-		</div></form>";
-		
-		// $text .= "<div id='visibility'>Something here</div>";
-		
-		  return $text;
-	}
-*/
-		//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 	/**
 	 * @param $LAYOUT
 	 * @param $check
@@ -1590,24 +1543,6 @@ class e_menuManager
 			$ns->setStyle($style);
 
 		}
-		/*elseif(strstr($str, "SITENAME"))
-		{
-			echo "[SiteName]";
-		}*/
-		/*elseif(strstr($str, "SITETAG"))
-		{
-			echo "<div style='padding: 2px'>[SiteTag]</div>";
-		}*/
-	//	elseif(strstr($str, "SITELINKS"))
-	//	{
-	//		echo "[SiteLinks]";
-	//	}
-	//	elseif(strstr($str, "NAVIGATION"))
-	//	{
-	//		$cust = preg_replace("/\W*\{NAVIGATION(.*?)(\+.*)?\}\W*/si", "\\1", $str);
-	//		$tp->parseTemplate("{NAVIGATION".$cust."}",true);
-		//	echo "<span class='label label-info'>Navigation Area</span>";
-	//	}
 		elseif(strpos($str, '{---MODAL---}') !== false)
 		{
 			//echo "\n<!-- Modal would appear here --> \n";
@@ -1909,9 +1844,7 @@ class e_menuManager
 		//DEBUG remove inline style, switch to simple quoted string for title text value
 		//TODO hardcoded text
 		
-	//	$visibilityLink = e_SELF.'?'.urlencode('lay='.$this->curLayout.'&amp;vis='.$menu_id.'&amp;iframe=1');
-		
-		$visibilityLink = e_SELF."?enc=".base64_encode('lay='.$this->curLayout.'&vis='.$menu_id.'&iframe=1');
+		$visibilityLink = e_SELF.'?'.http_build_query(array('lay' => $this->curLayout, 'vis' => $menu_id, 'iframe' => 1), '', '&');
 		
 		$text .= '<span class="menu-options-buttons">
 		<a class="e-menumanager-option menu-btn" data-modal-caption="'.LAN_VISIBILITY.'" href="'.$visibilityLink.'" title="'.LAN_VISIBILITY.'"><i class="S16 e-search-16"></i></a>';
@@ -1922,7 +1855,7 @@ class e_menuManager
 			title="'.LAN_OPTIONS.'"><i class="S16 e-configure-16"></i></a>';
 		}
 		
-		$editLink = e_SELF."?enc=".base64_encode('lay='.$this->curLayout.'&parmsId='.$menu_id.'&iframe=1');
+		$editLink = e_SELF.'?'.http_build_query(array('lay' => $this->curLayout, 'parmsId' => $menu_id, 'iframe' => 1), '', '&');
 		$text .= '<a data-modal-caption="'.LAN_CONFIGURE.'" class="e-menumanager-option menu-btn" target="_top" href="'.$editLink.'" title="'.LAN_CONFIGURE.'"><i class="S16 e-edit-16" ></i></a>';
 
 		$text .= '<a title="'.LAN_DELETE.'" id="remove-'.$menu_id.'-'.$menu_location.'" class="delete e-menumanager-delete menu-btn" href="'.e_SELF.'?configure='.$this->curLayout.'&amp;mode=deac&amp;id='.$menu_id.'"><i class="S16 e-delete-16"></i></a>
@@ -1979,8 +1912,8 @@ class e_menuManager
 		
 			if($_POST['area'] == 'remove')
 			{
-				list($tmp,$deleteID) = explode("-",$_POST['removeid']);	
-				$this->menuId = $deleteID;
+				list($tmp,$deleteID) = explode("-",$_POST['removeid']);
+				$this->menuId = (int) $deleteID;
 
 				$ret = $this->menuDeactivate();	
 			//	echo json_encode($ret);
@@ -2033,7 +1966,7 @@ class e_menuManager
 		}
 		elseif($_POST['mode'] == 'update')
 		{
-			$sql->update("menus","menu_location = ".intval($area)." WHERE menu_id = ".intval($insertID)."",$this->debug);
+			$sql->createQueryBuilder()->update('menus')->set('menu_location', (int) $area)->where('menu_id', (int) $insertID)->execute();
 		}
 		
 		$c = 0;
@@ -2048,7 +1981,7 @@ class e_menuManager
 		{
 			list($b,$id) = explode("-",$val);
 			$order[] = $id;
-			$sql->update("menus","menu_order = ".$c." WHERE menu_id = ".intval($id)."",$this->debug);
+			$sql->createQueryBuilder()->update('menus')->set('menu_order', $c)->where('menu_id', (int) $id)->execute();
        		$c++;
 		}
 
@@ -2071,8 +2004,8 @@ class e_menuManager
 			$prev_name = '';
 			$search = array('_menu','_');
 
-			$sql -> select("menus", "*", "menu_location != 0 ORDER BY menu_path,menu_name");
-			while($row = $sql-> fetch())
+			$rows = $sql->createQueryBuilder()->select('*')->from('menus')->where('menu_location', '!=', 0)->orderBy('menu_path')->addOrderBy('menu_name')->fetchAll();
+			foreach($rows as $row)
 			{
 				$link = "";
 
@@ -2156,12 +2089,6 @@ class e_mm_layout
 			}
 
 
-			if(vartrue($_GET['enc']))
-			{
-				$string = base64_decode($_GET['enc']);
-				parse_str($string,$_GET);
-			}
-
 			if(vartrue($_GET['vis']))
 			{
 				$text = $this->renderVisibilityOptions();
@@ -2210,23 +2137,6 @@ class e_mm_layout
 			unset($HEADER,$FOOTER,$CUSTOMHEADER,$CUSTOMFOOTER,$style);
 
 			e107::loadAdminIcons();
-		//	require_once(e_CORE."templates/admin_icons_template.php");
-
-
-
-		 /*
-
-			e107::js('inline', "
-
-			win = document.getElementById('menu_iframe').contentWindow;
-			win.jQuery(dragelement,parent.document).draggable({
-				connectToSortable : $('#sortable')
-			});
-
-			",'jquery');
-
-
-		*/
 
 			$this->curLayout = vartrue($_GET['configure'], $pref['sitetheme_deflayout']);
 			$this->renderLayout($this->curLayout);
@@ -2254,44 +2164,6 @@ class e_mm_layout
 			$this->CUSTOMFOOTER = varset($CUSTOMFOOTER);
 			$this->style		= varset($style);
 
-				// XXX HELP _ i don't work with iFrames.
-		//	$("#sortable")
-		//$("iframe").contents().find(".sortable")
-
-		/*
-		e107::js('inline','
-		 $(function()
-		 {
-			$( ".sortable" ).sortable({
-				revert: true
-			});
-
-
-
-			$("iframe").load(function(){
-
-				var frameid = $("#iframe-default").contents().find(".sortable").attr("id")
-
-				$( ".draggable" ).draggable({
-					connectToSortable: "#" + frameid,
-					helper: "clone",
-					revert: "invalid",
-					cursor: "move",
-					iframeFix: true
-
-
-				});
-
-			});
-
-		 	//	$( "ul, li" ).disableSelection();
-
-
-		});
-
-
-		','jquery');
-		*/
 
 
 			$this->scanForNew();
@@ -2373,8 +2245,8 @@ class e_mm_layout
 		$pageMenu = array();
 		$pluginMenu = array();
 
-		$sql->select("menus", "menu_name, menu_id, menu_pages, menu_path", "1 ORDER BY menu_name ASC");
-		while($row = $sql->fetch())
+		$rows = $sql->createQueryBuilder()->select('menu_name', 'menu_id', 'menu_pages', 'menu_path')->from('menus')->orderBy('menu_name', 'ASC')->fetchAll();
+		foreach($rows as $row)
 		{
 
 			if(in_array($row['menu_name'], $done))
@@ -2533,60 +2405,20 @@ class e_mm_layout
 		}
 		else // prior to v2.2.2
 		{
+			require_once(e_HANDLER."theme_layout_parser.php");
 
-			$themeFileContent = file_get_contents($file);
+			$parser = new e_theme_layout_parser();
+			$parsed = $parser->parse(file_get_contents($file), $theme);
 
-			$srch = array('<?php', '?>');
+			$HEADER = $parsed['HEADER'];
+			$FOOTER = $parsed['FOOTER'];
+			$CUSTOMHEADER = $parsed['CUSTOMHEADER'];
+			$CUSTOMFOOTER = $parsed['CUSTOMFOOTER'];
+			$LAYOUT = $parsed['LAYOUT'];
 
-			// replace LAN file load.
-			$themeFileContent = preg_replace("/e107::lan\(['|\"]theme.*\);/","e107::themeLan(null, '".$theme."');", $themeFileContent);
-		//	$themeFileContent = preg_replace("/define\(['|\"]BOOTSTRAP['|\"].*;/", '', $themeFileContent);
-		//	$themeFileContent = preg_replace("/define\(['|\"]FONTAWESOME['|\"].*;/", '', $themeFileContent);
-			$themeFileContent = preg_replace("/LAN_[\w]*/", '""', $themeFileContent);
-			$themeFileContent = preg_replace("/include_lan\(.*;/", '', $themeFileContent);
-
-			$themeFileContent = preg_replace("/define\(.*;/", '', $themeFileContent);
-
-			$themeFileContent = preg_replace('/\(\s?THEME\s?\./', '( e_THEME. "' . $theme . '/" .', str_replace($srch, '', $themeFileContent));
-
-			$themeFileContent = str_replace('USER_WIDTH', "''", $themeFileContent);
-
-			$themeFileContent = str_replace('tablestyle', $tp->filter($theme, 'wd') . "_tablestyle", $themeFileContent); // rename function to avoid conflicts while parsing.
-
-			$themeFileContent = str_replace("class " . $theme . "_theme", "class " . $theme . "__theme", $themeFileContent); // rename class to avoid conflicts while parsing.
-
-			$themeFileContent = str_replace('__DIR__', var_export(dirname($file), true), $themeFileContent);
-			$themeFileContent = str_replace('__FILE__', var_export($file, true), $themeFileContent);
-
-
-
-			if(PHP_MAJOR_VERSION > 6)
+			if(!isset($HEADER) && !isset($FOOTER) && !isset($CUSTOMHEADER) && !isset($CUSTOMFOOTER) && !isset($LAYOUT))
 			{
-				try
-				{
-					eval($themeFileContent);
-				}
-				catch(Error $e)
-				{
-
-					trigger_error("Couldn't parse theme.php file. ". $e->getMessage()."\n\n".$themeFileContent);
-					echo "<div class='alert alert-danger'>Couldn't parse theme.php: " . $e->getMessage() . " </div>";
-					file_put_contents(e_LOG."menuManagerParseDebug.log", $themeFileContent);
-				}
-			}
-			else
-			{
-				try
-				{
-					eval($themeFileContent);
-				}
-				catch(ParseError $e)
-				{
-					trigger_error("Couldn't parse theme.php file.". $e->getMessage());
-					echo "<div class='alert alert-danger'>Couldn't parse theme.php: " . $e->getMessage() . " </div>";
-
-				}
-
+				e107::getDebug()->log("No layout variables found in ".$file);
 			}
 		}
 
@@ -2806,32 +2638,13 @@ class e_mm_layout
 		$text .= $frm->hidden('data[layout][area]['.$c.'][pages]',$row['pages'], array('id'=>'pages-'.$area.'-'.$c)  );
 		$text .= $frm->hidden('data[layout][area]['.$c.'][parms]',$row['parms'], array('id'=>'parms-'.$area.'-'.$c)  );
 
-		$visibilityLink = e_SELF."?enc=".base64_encode('lay='.$layout.'&vis='.$area.'-'.$c.'&iframe=1&class='.$row['class'].'&pages='.$row['pages']);
+		$visibilityLink = e_SELF.'?'.http_build_query(array('lay' => $layout, 'vis' => $area.'-'.$c, 'iframe' => 1, 'class' => $row['class'], 'pages' => $row['pages']), '', '&');
 
 
 		$text .= "<a href='#'  class='menuOption menu-btn menu-btn-mini menu-btn-danger deleteMenu pull-right' data-area='area-".$area."' data-delete='".$uniqueId."'>&times;</a>"; // $('.hello').remove();
 
 		$text .= '<a class="menuOption e-menumanager-option menu-btn pull-right" data-modal-caption="'.LAN_VISIBILITY.'" href="'.$visibilityLink.'" title="'.LAN_VISIBILITY.'"><i class="icon-search"></i></a>';
 
-		/*
-
-
-		$text .= '<span class="menu-options-buttons">
-		<a class="e-menumanager-option menu-btn" data-modal-caption="'.LAN_VISIBILITY.'" href="'.$visibilityLink.'" title="'.LAN_VISIBILITY.'"><i class="S16 e-search-16"></i></a>';
-
-		if($conf)
-		{
-			$text .= '<a class="menu-btn" target="_top" href="'.e_SELF.'?lay='.$layout.'&amp;mode=conf&amp;path='.urlencode($conf).'&amp;id='.$menu_id.'"
-			title="Configure menu"><i class="S16 e-configure-16"></i></a>';
-		}
-
-		$editLink = e_SELF."?enc=".base64_encode('lay='.$layout.'&parmsId='.$menu_id.'&iframe=1');
-		$text .= '<a data-modal-caption="Configure parameters" class="e-menumanager-option menu-btn e-tip" target="_top" href="'.$editLink.'" title="Configure parameters"><i class="S16 e-edit-16" ></i></a>';
-
-		$text .= '<a title="'.LAN_DELETE.'" id="remove-'.$menu_id.'-'.$menu_location.'" class="e-tip delete e-menumanager-delete menu-btn" href="'.e_SELF.'?configure='.$layout.'&amp;mode=deac&amp;id='.$menu_id.'"><i class="S16 e-delete-16"></i></a>
-
-		</span>';
-		*/
 
 
 
@@ -2847,36 +2660,6 @@ class e_mm_layout
 
 	}
 
-/*
-	function menuSaveAjax($mode = null)
-	{
-
-		if($mode == 'visibility')
-		{
-
-			$ret = $this->menuSaveVisibility();
-		//	echo json_encode($ret);
-			return;
-		}
-
-
-		if($mode == 'parms')
-		{
-		//	echo "hi there";
-			$ret =  array('msg'=>'hi there','error'=>true);
-		//	$ret = $this->menuSaveParameters();
-			echo json_encode($ret);
-			return;
-		}
-
-
-
-     //	print_r($_POST);
-		return;
-
-
-	}
-*/
 	/**
 	 * Scan Plugin folders for new _menu files.
 	 */
@@ -3024,53 +2807,6 @@ class e_mm_layout
 	 * settings per instance later ($parm variable available for menus - same as shortcode's $parm)
 	 * @see menuInstanceParameters() in menumanager_class.php
 	 */
-/*
-	private function renderInstanceParameters()
-	{
-		if(!vartrue($_GET['parmsId'])) return;
-		$id = intval($_GET['parmsId']);
-		$frm = e107::getForm();
-		$sql = e107::getDb();
-
-		if(!$sql->select("menus", "*", "menu_id=".$id))
-		{
-        	$this->menuAddMessage("Couldn't Load Menu",E_MESSAGE_ERROR);
-            return;
-		};
-		$row = $sql->fetch();
-
-		$text = "<div style='text-align:center;'>
-		<form  id='e-save-form' method='post' action='".e_SELF."?lay=".$this->curLayout."'>
-        <fieldset id='core-menus-parametersform'>
-		<legend>".MENLAN_44." ".$row['menu_name']."</legend>
-        <table class='table adminform'>
-		<tr>
-		<td>
-		".MENLAN_45."</td><td>
-		".$frm->text('menu_parms', $row['menu_parms'], 900, 'class=e-save ')."
-		</td>
-		</tr>
-		</table>";
-
-
-		//	$text .= "
-		//	<div class='buttons-bar center'>";
-		//	$text .= $frm->admin_button('parms_submit', LAN_SAVE, 'update');
-		//	$text .= "<input type='hidden' name='menu_id' value='".$id."' />
-		//	</div>";
-
-
-		$text .= $frm->hidden('mode','parms');
-		$text .= $frm->hidden('menu_id',$id);
-		$text .= "
-		</fieldset>
-		</form>
-		</div>";
-
-		return $text;
-
-	}
-*/
 
 	/**
 	 * Render the main area with TABS and iframes.

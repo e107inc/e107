@@ -39,5 +39,6 @@ return [
     'POLLAN_42' => "This poll is restricted to administrators only",
     'POLLAN_43' => "You do not have the required permissions to vote in this poll",
     'POLLAN_50' => "Active from [x] to [y]",
+    'POLLAN_POST_POLL' => "Post Poll",
     'LAN_FORUM_3029' => "If you do not wish to add a poll to your topic, leave the fields blank.",
 ];

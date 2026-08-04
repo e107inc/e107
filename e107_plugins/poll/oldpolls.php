@@ -39,14 +39,16 @@ class oldpolls_front
 
 			require_once('poll_class.php');
 
-			$query = "SELECT p.*, u.user_id, u.user_name FROM #polls AS p
-			LEFT JOIN #user AS u ON p.poll_admin_id = u.user_id
-			WHERE p.poll_type=1 AND p.poll_id=" . intval(e_QUERY);
+			$qb = $sql->createQueryBuilder();
+			$row = $qb
+				->select('p.*', 'u.user_id', 'u.user_name')->from('polls', 'p')
+				->leftJoin('user', 'u', $qb->expr()->compareColumns('p.poll_admin_id', 'u.user_id'))
+				->where('p.poll_type', 1)->where('p.poll_id', (int) e_QUERY)
+				->fetchRow();
 
-			if($sql->gen($query))
+			if($row)
 			{
 				$pl = new poll;
-				$row = $sql->fetch();
 
 				$start_datestamp = $tp->toDate($row['poll_datestamp'], "long");
 				$end_datestamp = $tp->toDate($row['poll_end_datestamp'], "long");
@@ -100,12 +102,15 @@ class oldpolls_front
 		// Render List of Polls.
 
 
-		$query = "SELECT p.*, u.user_name FROM #polls AS p
-		LEFT JOIN #user AS u ON p.poll_admin_id = u.user_id
-		WHERE p.poll_type=1
-		ORDER BY p.poll_datestamp DESC";
+		$qb = $sql->createQueryBuilder();
+		$array = $qb
+			->select('p.*', 'u.user_name')->from('polls', 'p')
+			->leftJoin('user', 'u', $qb->expr()->compareColumns('p.poll_admin_id', 'u.user_id'))
+			->where('p.poll_type', 1)
+			->orderBy('p.poll_datestamp', 'DESC')
+			->fetchAll();
 
-		if(!$array = $sql->retrieve($query, true))
+		if(!$array)
 		{
 			$ns->tablerender(POLLAN_28, "<div style='text-align:center'>" . LAN_NO_RECORDS_FOUND . "</div>");
 			return null;

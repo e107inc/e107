@@ -76,6 +76,24 @@ class wysiwygTest extends \Codeception\Test\Unit
 
 
 	}
+	/**
+	 * Issue #5792 leg 1: the generated tinymce.init() config must set
+	 * pagebreak_separator to e107's own [newpage] marker, as a quoted JS
+	 * string. Without it TinyMce's pagebreak button emits its default
+	 * <!-- pagebreak --> comment, which e107's pagination never parses.
+	 * The value starts with "[", which convertBoolean() would otherwise emit
+	 * as a bare JS array literal, so this also guards the serialisation.
+	 */
+	public function testRenderConfigSetsNewpagePagebreakSeparator()
+	{
+		$config = $this->tm->renderConfig('mainadmin');
+
+		$this->assertStringContainsString('pagebreak_separator: "[newpage]"', $config,
+			'The pagebreak button must insert e107\'s [newpage] marker as a quoted JS string.');
+		$this->assertStringNotContainsString('pagebreak_separator: [newpage]', $config,
+			'The separator must be a quoted string, not a bare JS array literal.');
+	}
+
 	/*
 			public function testGetTemplates()
 			{

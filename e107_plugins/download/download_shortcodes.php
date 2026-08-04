@@ -1078,6 +1078,28 @@ class download_shortcodes extends e_shortcode
 	//  -----------  Download View : Previous and Next  ---------------
 
 	/**
+	 * Fetch the adjacent (previous/next) active, visible download in the same
+	 * category, ordered by datestamp.
+	 *
+	 * @param string $operator  comparison against the current download_id ('<' or '>')
+	 * @param string $direction ORDER BY direction ('DESC' or 'ASC')
+	 * @param int    $dlrow_id  current download id
+	 * @return array the adjacent row, or an empty array when there is none
+	 */
+	private function getAdjacentDownload($operator, $direction, $dlrow_id)
+	{
+		return e107::getDb()->createQueryBuilder()
+			->select('*')->from('download')
+			->where('download_category', (int) $this->var['download_category_id'])
+			->where('download_id', $operator, (int) $dlrow_id)
+			->where('download_active', '>', 0)
+			->whereIn('download_visible', explode(',', USERCLASS_LIST))
+			->orderBy('download_datestamp', $direction)
+			->setMaxResults(1)
+			->fetchRow();
+	}
+
+	/**
 	 * {DOWNLOAD_VIEW_PREV: x=y}
 	 */
 	function sc_download_view_prev($parm = '')
@@ -1090,10 +1112,10 @@ class download_shortcodes extends e_shortcode
 		$icon = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('fa-chevron-left') : '&lt;&lt;';
 		$class = empty($parm['class']) ? 'e-tip page-link' : $parm['class'];
 
-		if ($sql->select("download", "*", "download_category='" . intval($this->var['download_category_id']) . "' AND download_id < {$dlrow_id} AND download_active > 0 && download_visible IN (" . USERCLASS_LIST . ") ORDER BY download_datestamp DESC LIMIT 1"))
-		{
-			$dlrowrow = $sql->fetch();
+		$dlrowrow = $this->getAdjacentDownload('<', 'DESC', $dlrow_id);
 
+		if ($dlrowrow)
+		{
 			$url = e107::url('download', 'item', $dlrowrow);
 
 
@@ -1120,9 +1142,10 @@ class download_shortcodes extends e_shortcode
 		$icon = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('fa-chevron-right') : '&gt;&gt;';
 		$class = empty($parm['class']) ? 'e-tip page-link' : $parm['class'];
 
-		if ($sql->select("download", "*", "download_category='" . intval($this->var['download_category_id']) . "' AND download_id > {$dlrow_id} AND download_active > 0 && download_visible IN (" . USERCLASS_LIST . ") ORDER BY download_datestamp ASC LIMIT 1"))
+		$dlrowrow = $this->getAdjacentDownload('>', 'ASC', $dlrow_id);
+
+		if ($dlrowrow)
 		{
-			$dlrowrow = $sql->fetch();
 			extract($dlrowrow);
 			$url = e107::url('download', 'item', $dlrowrow);
 

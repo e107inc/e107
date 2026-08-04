@@ -129,7 +129,10 @@ class admin_history_ui extends e_admin_ui
 			$message = e107::getMessage();
 
 			// Query the admin_history table for the record
-			$historyRow = $db->retrieve('admin_history', '*', 'history_id = '.$id);
+			$historyRow = $db->createQueryBuilder()
+				->select('*')->from('admin_history')
+				->where('history_id', (int) $id)
+				->fetchRow();
 
 			if ($historyRow)
 			{
@@ -138,32 +141,57 @@ class admin_history_ui extends e_admin_ui
 				$pid = $historyRow['history_pid'];
 				$recordId = $historyRow['history_record_id'];
 
+				// $originalTable and $pid are SQL identifiers sourced from a DB row and
+				// cannot be bound as values; validate them before use to prevent
+				// second-order identifier injection if admin_history were ever poisoned.
+				$tableValid = in_array($originalTable, $db->tables(), true);
+				$pidValid   = ($db->quoteIdentifier($pid) !== false);
 
+				if (!$tableValid || !$pidValid)
+				{
+					$message->addError("Restoration aborted: invalid table or key identifier for Record ID: $id.", 'default', true);
+					e107::getRedirect()->go(e_SELF);
+					return;
+				}
 
 				if (!empty($originalTable) && !empty($originalData) && !empty($pid) && !empty($recordId))
 				{
 					if($action === 'insert')
 					{
 						$originalData[$pid] = (int) $recordId;
-						$result = $db->replace($originalTable, $originalData);
+						$result = $db->createQueryBuilder()
+							->replace($originalTable)->valuesTyped($originalData, $db->getFieldDefs($originalTable)['_FIELD_TYPES'])
+							->execute();
 					}
 					else // update
 					{
-						$backup = $db->retrieve($originalTable, '*', $pid. ' = '.(int) $recordId);
+						$backup = $db->createQueryBuilder()
+							->select('*')->from($originalTable)
+							->where($pid, (int) $recordId)
+							->fetchRow();
 						if($changes = array_diff_assoc($originalData, $backup))
 	                    {
 							$old_changed_data = array_intersect_key($backup, $changes);
 							$this->backupToHistory($originalTable, $pid, $recordId, 'restore', $old_changed_data, false);
 	                    }
 
-						$originalData['WHERE'] = $pid .' = '. (int) $recordId;
-						$result = $db->update($originalTable, $originalData);
+						$updateQ = $db->createQueryBuilder()->update($originalTable);
+						$fieldTypes = $db->getFieldDefs($originalTable)['_FIELD_TYPES'];
+						foreach($originalData as $col => $val)
+						{
+							$type = isset($fieldTypes[$col]) ? $fieldTypes[$col] : (isset($fieldTypes['_DEFAULT']) ? $fieldTypes['_DEFAULT'] : 'string');
+							$updateQ->setTyped($col, $val, $type);
+						}
+						$result = $updateQ->where($pid, (int) $recordId)->execute();
 					}
 
 					if ($result)
 					{
 						$message->addSuccess("The record (ID: $id) has been successfully restored to the $originalTable table.", 'default', true);
-						$db->update('admin_history', "history_restored = ".time()." WHERE history_id = $id");
+						$db->createQueryBuilder()->update('admin_history')
+							->set('history_restored', time())
+							->where('history_id', (int) $id)
+							->execute();
 					}
 					elseif($result === 0)
 					{
@@ -218,101 +246,6 @@ class admin_history_ui extends e_admin_ui
 		return ['caption' => $caption, 'text' => $text];
 	}
 			
-	/*	
-		// optional - a custom page.  
-		public function customPage()
-		{
-			if($this->getPosted('custom-submit')) // after form is submitted. 
-			{
-				e107::getMessage()->addSuccess('Changes made: '. $this->getPosted('example'));
-			}
-
-			$this->addTitle('My Custom Title');
-
-
-			$frm = $this->getUI();
-			$text = $frm->open('my-form', 'post');
-
-				$tab1 = "<table class='table table-bordered adminform'>
-					<colgroup>
-						<col class='col-label'>
-						<col class='col-control'>
-					</colgroup>
-					<tr>
-						<td>Label ".$frm->help('A help tip')."</td>
-						<td>".$frm->text('example', $this->getPosted('example'), 80, ['size'=>'xlarge'])."</td>
-					</tr>
-					</table>";
-
-			// Display Tab
-			$text .= $frm->tabs([
-				'general'   => ['caption'=>LAN_GENERAL, 'text' => $tab1],
-			]);
-
-			$text .= "<div class='buttons-bar text-center'>".$frm->button('custom-submit', 'submit', 'submit', LAN_CREATE)."</div>";
-			$text .= $frm->close();
-
-			return $text;
-			
-		}
-		
-	
-	 // Handle batch options as defined in admin_history_form_ui::history_data;  'handle' + action + field + 'Batch'
-	 // @important $fields['history_data']['batch'] must be true for this method to be detected. 
-	 // @param $selected
-	 // @param $type
-	function handleListHistoryDataBatch($selected, $type)
-	{
-
-		$ids = implode(',', $selected);
-
-		switch($type)
-		{
-			case 'custombatch_1':
-				// do something
-				e107::getMessage()->addSuccess('Executed custombatch_1');
-				break;
-
-			case 'custombatch_2':
-				// do something
-				e107::getMessage()->addSuccess('Executed custombatch_2');
-				break;
-
-		}
-
-
-	}
-
-	
-	 // Handle filter options as defined in admin_history_form_ui::history_data;  'handle' + action + field + 'Filter'
-	 // @important $fields['history_data']['filter'] must be true for this method to be detected. 
-	 // @param $selected
-	 // @param $type
-	function handleListHistoryDataFilter($type)
-	{
-
-		$this->listOrder = 'history_data ASC';
-	
-		switch($type)
-		{
-			case 'customfilter_1':
-				// return ' history_data != 'something' '; 
-				e107::getMessage()->addSuccess('Executed customfilter_1');
-				break;
-
-			case 'customfilter_2':
-				// return ' history_data != 'something' '; 
-				e107::getMessage()->addSuccess('Executed customfilter_2');
-				break;
-
-		}
-
-
-	}
-	
-		
-		
-	*/
 			
 }
 				

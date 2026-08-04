@@ -86,16 +86,22 @@ class e_plugin
 		'e_output', //hook into all pages at the end (after closing </html>)
 	);
 
-	protected $_core_plugins = array(
+	/**
+	 * Folder names of the plugins bundled with the core distribution.
+	 * Single source of truth, also used by e107plugin::$core_plugins.
+	 */
+	const CORE_PLUGINS = array(
 		"_blank","admin_menu","banner","blogcalendar_menu",
 		"chatbox_menu", "comment_menu",
-		"contact", "download", "featurebox", "forum","gallery",
+		"contact", "download", "faqs", "featurebox", "forum","gallery",
 		"gsitemap", "hero", "import", "linkwords", "list_new",  "login_menu",
-		 "newforumposts_main", "news", "newsfeed",
+		"navigation", "newforumposts_main", "news", "newsfeed",
 		"newsletter","online", "page", "pm","poll",
-		"rss_menu","search_menu","siteinfo", "social", "tagcloud", "tinymce4",
+		"rss_menu","search_menu","signin","siteinfo", "social", "tagcloud", "tinymce4",
 		"user"
 	);
+
+	protected $_core_plugins = self::CORE_PLUGINS;
 
 
 
@@ -613,7 +619,12 @@ class e_plugin
 		$toRemove = array();
 
 		$save = false;
-		if ($rows = $sql->retrieve("plugin", "*", "plugin_id != 0 ORDER by plugin_path ", true))
+		$rows = $sql->createQueryBuilder()
+			->select('*')->from('plugin')
+			->where('plugin_id', '!=', 0)
+			->orderBy('plugin_path')
+			->fetchAll();
+		if ($rows)
 		{
 
 			foreach($rows as $row)
@@ -659,7 +670,7 @@ class e_plugin
 			$runUpdate = true;
 			$delList = implode(",", $toRemove);
 
-			if($sql->delete('plugin', "plugin_id IN (".$delList.")"))
+			if($sql->createQueryBuilder()->delete('plugin')->whereIn('plugin_id', $toRemove)->execute())
 			{
 				e107::getLog()->addDebug("Deleted missing plugins with id(s): ".$delList)->save("Plugin Table Updated");
 				// e107::getDebug()->log("Deleted missing plugins with id(s): ".$delList);
@@ -682,7 +693,7 @@ class e_plugin
 				$row = $this->getFields();
 
 //var_dump($row);
-				if(!$id = $sql->insert('plugin',$row))
+				if(!$id = $sql->createQueryBuilder()->insert('plugin')->insertGetId($row))
 				{
 					e107::getDebug()->log("Unable to insert plugin data into table".print_a($row,true));
 					e107::getLog()->addDebug("Unable to insert plugin data into table".print_a($row,true))->save("plug_installed pref updated");
@@ -1487,16 +1498,7 @@ class e107plugin
 	);
 
 
-	protected $core_plugins = array(
-		"_blank","admin_menu","banner","blogcalendar_menu",
-		"chatbox_menu",	"comment_menu",
-		"contact", "download", "featurebox", "forum","gallery",
-		"gsitemap","hero", "import", "linkwords", "list_new", "log", "login_menu",
-		"metaweblog", "newforumposts_main", "news", "newsfeed",
-		"newsletter","online", "page", "pm","poll",
-		"rss_menu","search_menu","siteinfo", "social", "tagcloud", "tinymce4",
-		"user"
-	);
+	protected $core_plugins = e_plugin::CORE_PLUGINS;
 
 
 	// List of all plugin variables which need to be checked - install required if one or more set and non-empty
@@ -1595,12 +1597,16 @@ class e107plugin
 	{
 		$sql = e107::getDb();
 
-		if ($sql->select("plugin", "plugin_id", "plugin_path = '".(string) $path."' LIMIT 1"))
+		$row = $sql->createQueryBuilder()
+			->select('plugin_id')->from('plugin')
+			->where('plugin_path', (string) $path)
+			->setMaxResults(1)
+			->fetchRow();
+		if ($row)
 		{
-			$row = $sql->fetch();
 			return intval($row['plugin_id']);
 		}
-		
+
 		return false;
 	}
 	
@@ -1725,15 +1731,12 @@ class e107plugin
 		$sp = FALSE;
 
 		$pluginDBList = array();
-		if ($sql->select('plugin', "*")) // Read all the plugin DB info into an array to save lots of accesses
-
+		// Read all the plugin DB info into an array to save lots of accesses
+		foreach ($sql->createQueryBuilder()->select('*')->from('plugin')->fetchAll() as $row)
 		{
-			while ($row = $sql->fetch())
-			{
-				$pluginDBList[$row['plugin_path']] = $row;
-				$pluginDBList[$row['plugin_path']]['status'] = 'read';
-				//	echo "Found plugin: ".$row['plugin_path']." in DB<br />";
-				}
+			$pluginDBList[$row['plugin_path']] = $row;
+			$pluginDBList[$row['plugin_path']]['status'] = 'read';
+			//	echo "Found plugin: ".$row['plugin_path']." in DB<br />";
 		}
 		e107::getDebug()->logTime('Start Scanning Plugin Files');
 		$plugList = $fl->get_files(e_PLUGIN, "^plugin\.(php|xml)$", "standard", 1);
@@ -1864,8 +1867,7 @@ class e107plugin
 							'plugin_category'		=> $this->manage_category($plug_info['category'])
 						);
 						
-					//		if (e107::getDb()->db_Insert("plugin", "0, '".$tp->toDB($pName, true)."', '".$tp->toDB($plug_info['@attributes']['version'], true)."', '".$tp->toDB($plugin_path, true)."',{$_installed}, '{$eplug_addons}', '".$this->manage_category($plug_info['category'])."' "))
-							if (e107::getDb()->insert("plugin", $pInsert))
+							if (e107::getDb()->createQueryBuilder()->insert('plugin')->insertGetId($pInsert))
 							{
 								$log->addDebug("Added <b>".$tp->toHTML($pName,false,"defs")."</b> to the plugin table.");
 							}
@@ -1891,17 +1893,19 @@ class e107plugin
 		{
 			if ($plug_info['status'] == 'read')
 			{ // In table, not on server - delete it
-				$sql->delete('plugin', "`plugin_id`={$plug_info['plugin_id']}");
+				$sql->createQueryBuilder()->delete('plugin')->where('plugin_id', (int) $plug_info['plugin_id'])->execute();
 				//			echo "Deleted: ".$plug_path."<br />";
 				}
 			if ($plug_info['status'] == 'update')
 			{
-				$temp = array();
+				$qb = $sql->createQueryBuilder()->update('plugin');
 				foreach ($this->all_editable_db_fields as $p_f)
 				{
-					$temp[] = "`{$p_f}` = '{$plug_info[$p_f]}'";
+					// $p_f is from a fixed internal column list (safe identifier);
+					// bind the value to prevent injection from parsed plugin data.
+					$qb->set($p_f, $plug_info[$p_f]);
 				}
-				$sql->update('plugin', implode(", ", $temp)."  WHERE `plugin_id`={$plug_info['plugin_id']}");
+				$qb->where('plugin_id', (int) $plug_info['plugin_id'])->execute();
 				//			echo "Updated: ".$plug_path."<br />";
 				}
 		}
@@ -2043,11 +2047,14 @@ class e107plugin
 		$getinfo_results = array();
 
 
-		$qry = "plugin_id = " . $id;
-		$qry .= ($path != false) ? " OR plugin_path = '" . $path . "' " : "";
+		$qb = $sql->createQueryBuilder()->select('*')->from('plugin')->where('plugin_id', $id);
+		if ($path != false)
+		{
+			$qb->orWhere('plugin_path', $path);
+		}
 
-		if ($sql->select('plugin', '*', $qry)) {
-			$getinfo_results[$id] = $sql->fetch();
+		if ($row = $qb->fetchRow()) {
+			$getinfo_results[$id] = $row;
 		}
 
 		return $getinfo_results[$id];
@@ -2311,19 +2318,23 @@ class e107plugin
 		    preg_match_all("/create(.*?)myisam;/si", $sql_data, $creation);
 		    foreach($creation[0] as $tab)
 		    {
+				// Whole-statement CREATE TABLE DDL read from a trusted core SQL
+				// file; no separable values to bind. execute() runs raw SQL.
 				$query = str_replace($search,$replace,$tab);
-		      	if(!$sql->gen($query))
+		      	if(!$sql->execute($query))
 		      	{
 		        	$error = TRUE;
 				}
 				$count++;
 			}
-	
+
 		    preg_match_all("/insert(.*?);/si", $sql_data, $inserts);
 			foreach($inserts[0] as $ins)
 			{
+				// Whole-statement INSERT DDL read from a trusted core SQL file;
+				// no separable values to bind. execute() runs raw SQL.
 				$qry = str_replace($search,$replace,$ins);
-				if(!$sql->gen($qry))
+				if(!$sql->execute($qry))
 				{
 				  	$error = TRUE;
 				}
@@ -2339,7 +2350,8 @@ class e107plugin
 		if($action == 'remove')
 		{
 			// executed only if the sql file exists!
-			return $sql->gen("DROP TABLE ".MPREFIX."user_extended_".$field_name) ? true : false;
+			// dropTable() validates the dynamic table name fail-closed and resolves the prefix.
+			return $sql->dropTable("user_extended_".$field_name) ? true : false;
 		}
 	}
 
@@ -2443,11 +2455,26 @@ class e107plugin
 		
 		if ($action == 'add')
 		{
-			$link_t = $sql->count('links');
+			$link_t = $sql->createQueryBuilder()->from('links')->count();
 
-			$countQry = !empty($options['link_owner']) ? "link_owner = '".$options['link_owner']."' AND link_url = '".$path."'" : "link_url = '{$path}' OR link_name = '".$link_name."'";
+			$countQb = $sql->createQueryBuilder()->from('links');
+			if (!empty($options['link_owner']))
+			{
+				$countQb->where('link_owner', $options['link_owner'])->where('link_url', $path);
 
-			if (!$sql->count('links', '(*)', "WHERE ".$countQry))
+				// Sitelinks are dispatched by link_function, so links sharing a url
+				// under one owner are still distinct when their functions differ. #5788
+				if (!empty($options['link_function']))
+				{
+					$countQb->where('link_function', $options['link_function']);
+				}
+			}
+			else
+			{
+				$countQb->where('link_url', $path)->orWhere('link_name', $link_name);
+			}
+
+			if (!$countQb->count())
 			{
 					$linkData = array(
 						'link_name'			 => $link_name,
@@ -2463,28 +2490,36 @@ class e107plugin
 						'link_sefurl'		 => vartrue($options['link_sef']),
 						'link_owner'		 => vartrue($options['link_owner'])
 					);
-					return $sql->insert('links', $linkData); 
+					return $sql->createQueryBuilder()->insert('links')->insertGetId($linkData);
 			}
 			else
 			{
-				e107::getMessage()->addDebug("Skipped inserting of sitelink. Count Qry: ".$countQry);
+				e107::getMessage()->addDebug("Skipped inserting of sitelink. Count Qry: ".$countQb->getSQL()." Params: ".json_encode($countQb->getParameters()));
 				return null;
 			}
 		}
-		if ($action == 'remove') 
+		if ($action == 'remove')
 		{
-			//v2.x  
-			if(!empty($options['link_owner']) && $sql->select('links', 'link_id', "link_owner = '".$options['link_owner']."'"))
+			//v2.x
+			if(!empty($options['link_owner']) && $sql->createQueryBuilder()->from('links')->where('link_owner', $options['link_owner'])->count())
 			{
-				return $sql->delete('links', "link_owner = '".$options['link_owner']."' ");	
+				return $sql->createQueryBuilder()->delete('links')->where('link_owner', $options['link_owner'])->execute();
 			}
-			
+
 			// Look up by URL if we can - should be more reliable. Otherwise try looking up by name (as previously)
-			if (($path && $sql->select('links', 'link_id,link_order', "link_url = '{$path}'")) || $sql->select('links', 'link_id,link_order', "link_name = '{$link_name}'"))
+			$row = array();
+			if ($path)
 			{
-					$row = $sql->fetch();
-					$sql->update('links', "link_order = link_order - 1 WHERE link_order > {$row['link_order']}");
-					return $sql->delete('links', "link_id = {$row['link_id']}");
+				$row = $sql->createQueryBuilder()->select('link_id', 'link_order')->from('links')->where('link_url', $path)->fetchRow();
+			}
+			if (!$row)
+			{
+				$row = $sql->createQueryBuilder()->select('link_id', 'link_order')->from('links')->where('link_name', $link_name)->fetchRow();
+			}
+			if ($row)
+			{
+					$sql->createQueryBuilder()->update('links')->decrement('link_order')->where('link_order', '>', $row['link_order'])->execute();
+					return $sql->createQueryBuilder()->delete('links')->where('link_id', $row['link_id'])->execute();
 			}
 		}
 	}
@@ -2607,11 +2642,10 @@ class e107plugin
 		{
 			foreach ($comment_id as $com)
 			{
-				$tmp[] = "comment_type='".$tp->toDB($com, true)."'";
+				$tmp[] = $tp->toDB($com, true);
 			}
-			$qry = implode(" OR ", $tmp);
-			//			echo $qry."<br />";
-			return $sql->delete('comments', $qry);
+			//			echo implode(" OR ", $tmp)."<br />";
+			return $sql->createQueryBuilder()->delete('comments')->whereIn('comment_type', $tmp)->execute();
 		}
 	}
 
@@ -2662,6 +2696,10 @@ class e107plugin
 			case 'upgrade':
 				foreach ($var as $tab)
 				{
+					// $tab is a raw statement from a legacy plugin.php
+					// ($upgrade_alter_tables); it may carry '#' markers or a
+					// hard-coded prefix, so db_Query_all()'s token scan stays
+					// the compatibility contract here.
 					if (false === $sql->db_Query_all($tab))
 					{
 						$error = true;
@@ -2672,8 +2710,7 @@ class e107plugin
 			case 'remove':
 				foreach ($var as $tab)
 				{
-					$qry = 'DROP TABLE '.MPREFIX.$tab;
-					if (!$sql->db_Query_all($qry))
+					if (!$sql->executeAllLanguages('DROP TABLE `#'.$tab.'`'))
 					{
 						$error = true;
 						$error_data[] = $tab;
@@ -3124,7 +3161,7 @@ class e107plugin
 
 		if ($function == 'install' || $function == 'upgrade' || $function == 'refresh')
 		{
-			$sql->update('plugin', "plugin_installflag = 1, plugin_addons = '{$eplug_addons}', plugin_version = '{$plug_vars['@attributes']['version']}', plugin_category ='".$this->manage_category($plug_vars['category'])."' WHERE plugin_id = ".$id);
+			$sql->createQueryBuilder()->update('plugin')->set('plugin_installflag', 1)->set('plugin_addons', $eplug_addons)->set('plugin_version', $plug_vars['@attributes']['version'])->set('plugin_category', $this->manage_category($plug_vars['category']))->where('plugin_id', (int) $id)->execute();
 			$p_installed[$plug['plugin_path']] = $plug_vars['@attributes']['version'];
 
 			e107::getConfig('core')->setPref('plug_installed', $p_installed);
@@ -3133,7 +3170,7 @@ class e107plugin
 
 		if ($function == 'uninstall')
 		{
-			$sql->update('plugin', "plugin_installflag = 0, plugin_addons = '{$eplug_addons}', plugin_version = '{$plug_vars['@attributes']['version']}', plugin_category ='".$this->manage_category($plug_vars['category'])."' WHERE plugin_id = ".$id);
+			$sql->createQueryBuilder()->update('plugin')->set('plugin_installflag', 0)->set('plugin_addons', $eplug_addons)->set('plugin_version', $plug_vars['@attributes']['version'])->set('plugin_category', $this->manage_category($plug_vars['category']))->where('plugin_id', (int) $id)->execute();
 			unset($p_installed[$plug['plugin_path']]);
 			
 			e107::getConfig('core')->setPref('plug_installed', $p_installed);
@@ -3258,7 +3295,8 @@ class e107plugin
 			return false;
 		}
 
-		if(e107::getDb()->delete('cron', 'cron_function LIKE "'. $plug_vars['folder'] . '::%"'))
+		$qb = e107::getDb()->createQueryBuilder();
+		if($qb->delete('cron')->where($qb->expr()->startsWith('cron_function', $plug_vars['folder'].'::'))->execute())
 		{
 			$this->log($plug_vars['folder']." crons removed successfully."); // no LANs.
 			e107::getMessage()->addDebug($plug_vars['folder']." crons removed successfully."); // No LAN necessary
@@ -3565,9 +3603,8 @@ class e107plugin
 					case "uninstall":
 						if (!empty($options['delete_tables']))
 						{
-							$query = "DROP TABLE  `".MPREFIX.$v."`; ";
 							$txt = EPL_ADLAN_240." <b> {$v} </b><br />";
-							$status = $sql->db_Query_all($query) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+							$status = $sql->executeAllLanguages('DROP TABLE `#'.$v.'`') ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 
 						}
 						else
@@ -3600,7 +3637,22 @@ class e107plugin
 		}
 				
 			
-						
+
+	}
+
+
+	/**
+	 * Fetch every row in the plugin table, ordered by plugin_path ASC.
+	 *
+	 * @return array list of plugin rows
+	 */
+	private function allPluginRows()
+	{
+		return e107::getDb()->createQueryBuilder()
+			->select('*')->from('plugin')
+			->where('plugin_id', '!=', '')
+			->orderBy('plugin_path', 'ASC')
+			->fetchAll();
 	}
 
 
@@ -3626,8 +3678,7 @@ class e107plugin
 		$usedBy = array();
 
 		// Get list of enabled plugins.
-		$db->select("plugin", "*", "plugin_id !='' order by plugin_path ASC");
-		while($row = $db->fetch())
+		foreach($this->allPluginRows() as $row)
 		{
 			if($row['plugin_installflag'] == 1)
 			{
@@ -3706,8 +3757,7 @@ class e107plugin
 		$error = array();
 
 		// Get list of enabled plugins.
-		$db->select("plugin", "*", "plugin_id !='' order by plugin_path ASC");
-		while($row = $db->fetch())
+		foreach($this->allPluginRows() as $row)
 		{
 			if($row['plugin_installflag'] == 1)
 			{
@@ -4655,7 +4705,7 @@ class e107plugin
 
 		$eplug_addons = $this->getAddons($eplug_folder);
 
-		$sql->update('plugin', "plugin_installflag = 1, plugin_addons = '{$eplug_addons}' WHERE plugin_id = ".(int) $id);
+		$sql->createQueryBuilder()->update('plugin')->set('plugin_installflag', 1)->set('plugin_addons', $eplug_addons)->where('plugin_id', (int) $id)->execute();
 
 		$p_installed = e107::getPref('plug_installed', array()); // load preference;
 		$p_installed[$plug['plugin_path']] = $plug['plugin_version'];
@@ -4939,7 +4989,7 @@ class e107plugin
 					$this->manage_userclass('remove', $eplug_userclass);
 				}
 
-				$sql->update('plugin', "plugin_installflag=0, plugin_version='{$eplug_version}' WHERE plugin_path='{$eplug_folder}' ");
+				$sql->createQueryBuilder()->update('plugin')->set('plugin_installflag', 0)->set('plugin_version', (string) $eplug_version)->where('plugin_path', (string) $eplug_folder)->execute();
 				$this->manage_search('remove', $eplug_folder);
 
 				$this->manage_notify('remove', $eplug_folder);
@@ -4967,7 +5017,7 @@ class e107plugin
 			if (!empty($eplug_folder))
 			{
 				$result = e107::getFile()->rmtree(e_PLUGIN . $eplug_folder);
-				e107::getDb()->delete('plugin', "plugin_path='" . $eplug_folder . "'");
+				e107::getDb()->createQueryBuilder()->delete('plugin')->where('plugin_path', $eplug_folder)->execute();
 				$text .= ($result ? '<br />' . EPL_ADLAN_86 . e_PLUGIN . $eplug_folder : '<br />' . EPL_ADLAN_87 . '<br />' . EPL_ADLAN_31 . ' <b>' . e_PLUGIN . $eplug_folder . '</b> ' . EPL_ADLAN_32);
 			}
 		}
@@ -5020,11 +5070,13 @@ class e107plugin
 			 ->set('shortcode_legacy_list', array())
 			 ->set('shortcode_list', array());
 		
-		$query = "SELECT * FROM #plugin WHERE plugin_addons !='' ORDER BY plugin_path ASC";
+		$rows = $sql->createQueryBuilder()
+			->select('*')->from('plugin')
+			->where('plugin_addons', '!=', '')
+			->orderBy('plugin_path', 'ASC')
+			->fetchAll();
 
-		if ($sql->gen($query))
-		{
-			while ($row = $sql->fetch())
+			foreach ($rows as $row)
 			{
 				$is_installed = ($row['plugin_installflag'] == 1);
 				$tmp = explode(",", $row['plugin_addons']);
@@ -5121,7 +5173,6 @@ class e107plugin
 					$core->setPref('shortcode_list/'.$path, $sc_array);
 				}
 			}
-		}
 
 		$core->save(FALSE, false, false);
 /*

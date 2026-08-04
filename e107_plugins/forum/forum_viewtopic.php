@@ -100,13 +100,16 @@ if(e_AJAX_REQUEST)
 		$forum->ajaxTrack();
 	}
 
-	if(MODERATOR)
+	if(e107forum::isModerationAction(varset($_POST['action'], '')))
 	{
-		$forum->ajaxModerate();
-	}
-	else if(varset($_POST['action']) == 'deletepost')
-	{
-		$forum->usersLastPostDeletion();
+		if(MODERATOR)
+		{
+			$forum->ajaxModerate();
+		}
+		else if($_POST['action'] == 'deletepost')
+		{
+			$forum->usersLastPostDeletion();
+		}
 	}
 }
 
@@ -194,7 +197,11 @@ if($thread->message)
 if(e107::isInstalled('poll'))
 {
 	$_qry = 'SELECT p.*, u.user_id, u.user_name FROM `#polls` AS p LEFT JOIN `#user` AS u ON p.poll_admin_id = u.user_id WHERE p.poll_datestamp = ' . $thread->threadId;
-	if($sql->gen($_qry))
+	$pollExists = e107::getDb()->createQueryBuilder()
+		->from('polls')
+		->where('poll_datestamp', (int) $thread->threadId)
+		->count();
+	if($pollExists)
 	{
 		if (!defined('POLLCLASS'))
 		{
