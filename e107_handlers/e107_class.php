@@ -224,6 +224,8 @@ class e107
 		'e_random_exception'             => '{e_HANDLER}random_handler.php',
 		'e_ranks'                        => '{e_HANDLER}e_ranks_class.php',
 		'e_render'                       => '{e_HANDLER}e_render_class.php',
+		'e_sealed_token'                 => '{e_HANDLER}sealed_token_handler.php',
+		'e_sealed_token_exception'       => '{e_HANDLER}sealed_token_handler.php',
 		'e_search'                       => '{e_HANDLER}search_class.php',
 		'e_shortcode'                    => '{e_HANDLER}shortcode_handler.php',
 		'e_system_user'                  => '{e_HANDLER}user_model.php',
@@ -1633,6 +1635,26 @@ class e107
 	}
 
 	/**
+	 * Retrieve the handler that seals server-side state into a token a client
+	 * can be trusted to carry, and opens it again.
+	 *
+	 * The claims are encrypted, not merely signed, so a CAPTCHA answer or a
+	 * session fingerprint may be sealed. One instance per purpose is kept for
+	 * the request, because the key derivation is paid for on construction.
+	 *
+	 * @param string $purpose what the token is for. A token sealed under one
+	 *                purpose cannot be opened under any other, so give every
+	 *                feature its own and never take this from a visitor
+	 * @return e_sealed_token
+	 */
+	public static function getSealedToken($purpose = 'general')
+	{
+		$purpose = (string) $purpose;
+
+		return self::getSingleton('e_sealed_token', true, $purpose, $purpose);
+	}
+
+	/**
 	 * Retrieve registered sc object (batch) by class name
 	 * Note - '_shortcodes' part of the class/override is added by the method
 	 * Override is possible only if class is not already instantiated by shortcode parser
@@ -2887,6 +2909,9 @@ class e107
 	/**
 	 * Get the handler that can encrypt and decrypt a string secret that only the e107 server can read
 	 *
+	 * @deprecated Signs but does not encrypt, despite what that sentence says. Use
+	 *             {@see e107::getSealedToken()}, which does both. Removed once
+	 *             redirection_class, secure_img_handler and csrf_handler have moved.
 	 * @return e_jwt JWT handler
 	 */
 	public static function getJWT()

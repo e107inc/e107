@@ -2367,6 +2367,19 @@ return [
 		e107::getConfig()->save(FALSE,TRUE, FALSE); // save preferences made during install.
 		installLog::add('Core prefs set to install choices');
 
+		// Sealed tokens can provision their own key on first use, but a site
+		// that has never had one is a site whose first CAPTCHA pays for it.
+		try
+		{
+			require_once(e_HANDLER.'sealed_token_handler.php');
+			e_sealed_token::provision();
+			installLog::add('Sealed token secret provisioned');
+		}
+		catch(e_sealed_token_exception $e)
+		{
+			installLog::add('Sealed token secret could not be provisioned: '.$e->getMessage());
+		}
+
 		// Create the admin user - replacing any that may be been included in the XML.
 
 		$hash = $us->HashPassword($this->previous_steps['admin']['password'],$this->previous_steps['admin']['user'], $pwdEncoding);
