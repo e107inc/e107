@@ -39,8 +39,7 @@ foreach($imgtypes as $t)
 
 if ($use_imagecode)
 {
-	require_once(e_HANDLER.'secure_img_handler.php');
-	$sec_img = new secure_image;
+	$sec_img = e107::getSecureImg();
 }
 
 if (e_QUERY)
@@ -89,17 +88,17 @@ if (isset($_POST['emailsubmit']))
 		$error .= LAN_EMAIL_106;
 	}
 
+	// A wrong or expired code is answered with the form again, and the form
+	// below issues a fresh challenge. Bouncing to the front page instead threw
+	// away everything the visitor had typed, and since a challenge is now spent
+	// by the attempt that failed, the page they went back to carried one that
+	// could never succeed.
 	if($use_imagecode)
 	{
-		if(!isset($_POST['code_verify']) || !isset($_POST['rand_num']))
+		if(!isset($_POST['code_verify']) || !isset($_POST['rand_num'])
+			|| !$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify'], secure_image::FORM_EMAILFRIEND))
 		{
-			e107::redirect();
-			exit;
-		}
-		if (!$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify']))
-		{
-			e107::redirect();
-			exit;
+			$error .= LAN_INVALID_CODE;
 		}
 	}
 
@@ -239,9 +238,9 @@ $text .= "</textarea>
 if($use_imagecode)
 {
 	$text .= "<tr><td>".LAN_EMAIL_190."</td><td>";
-	$text .= $sec_img->r_image();
+	$text .= $sec_img->r_image(secure_image::FORM_EMAILFRIEND);
 	$text .= " <input class='tbox' type='text' name='code_verify' size='15' maxlength='20' />
-	<input type='hidden' name='rand_num' value='".$sec_img->random_number."' /></td></tr>";
+	<input type='hidden' name='rand_num' value='".$sec_img->getToken(secure_image::FORM_EMAILFRIEND)."' /></td></tr>";
 }
 
 $text .= "

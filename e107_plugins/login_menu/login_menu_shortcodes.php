@@ -160,7 +160,7 @@ e107::getLanguage()->bcDefs($bcDefs);
 			{
 				if($this->use_imagecode)
 				{
-					return e107::getSecureImg()->renderImage();
+					return e107::getSecureImg()->renderImage(secure_image::FORM_LOGIN);
 				 /*   return '<input type="hidden" name="rand_num" id="rand_num" value="'.$this->sec->random_number.'" />
 				        '.$this->sec->r_image();*/
 				}
@@ -172,7 +172,7 @@ e107::getLanguage()->bcDefs($bcDefs);
 			{
 				if($this->use_imagecode)
 				{
-					return e107::getSecureImg()->renderInput();
+					return e107::getSecureImg()->renderInput(secure_image::FORM_LOGIN);
 					// $placeholder = LAN_ENTER_CODE;
 				  //  return '<input class="form-control tbox login verify" type="text" name="code_verify" id="code_verify" size="15" maxlength="20" placeholder="'.$placeholder.'" />';
 				}

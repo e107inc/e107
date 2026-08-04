@@ -121,10 +121,11 @@ class ContactFormCest
 	/**
 	 * A CAPTCHA answer that the application will accept.
 	 *
-	 * The CAPTCHA is a signed JWT carrying its own solution, so the fixture can
-	 * mint a matching pair rather than read an image. Without this there is no
-	 * way to send a request that is legitimate in every respect except the one
-	 * under test, and no way to tell a fix from a form that no longer works.
+	 * The answer is sealed inside the token, so only the site can read it back;
+	 * the probe runs in the site and mints a matching pair rather than reading
+	 * an image. Without this there is no way to send a request that is
+	 * legitimate in every respect except the one under test, and no way to tell
+	 * a fix from a form that no longer works.
 	 *
 	 * @param AcceptanceTester $I
 	 * @return array rand_num and code_verify
@@ -179,10 +180,12 @@ class ContactFormCest
 	/**
 	 * The CAPTCHA pair a rendered document actually carries.
 	 *
-	 * The token is a JWT and the answer is its own payload, so a test can answer
-	 * the CAPTCHA the visitor was given rather than minting a fresh one out of
-	 * the application. That is the only way to measure the fields the template
-	 * produced.
+	 * A test has to be able to answer the CAPTCHA the visitor was given rather
+	 * than mint a fresh one, because that is the only way to measure the fields
+	 * the template produced. The answer is not in the document any more, so it
+	 * is read back through the probe, which runs inside the site and is the only
+	 * party holding the key. That the probe is needed at all is the point: this
+	 * used to be a base64 decode any visitor could do.
 	 *
 	 * @param AcceptanceTester $I
 	 * @param string $source rendered markup
@@ -193,13 +196,16 @@ class ContactFormCest
 		$matched = preg_match('/name=[\'"]rand_num[\'"] value=[\'"]([^\'"]+)[\'"]/', $source, $m);
 		$I->assertSame(1, $matched, 'the rendered form must carry a rand_num field');
 
-		$parts = explode('.', $m[1]);
-		$I->assertCount(3, $parts, 'rand_num must be a JWT');
+		$I->assertCount(5, explode('.', $m[1]), 'rand_num must be a compact JWE');
 
-		$payload = json_decode(base64_decode(strtr($parts[1], '-_', '+/')), true);
-		$I->assertNotEmpty($payload['data']['solution'], 'the CAPTCHA token must carry its own solution');
+		$out = $this->probe($I, 'act=solve&t='.urlencode($m[1]));
+		preg_match('/CODE=(\S+)/', $out, $code);
+		$I->assertNotEmpty($code, 'the site must be able to open the challenge it just issued');
 
-		return array('rand_num' => $m[1], 'code_verify' => $payload['data']['solution']);
+		$I->assertStringNotContainsString($code[1], $source,
+			'the answer must not be anywhere in the document the visitor was served');
+
+		return array('rand_num' => $m[1], 'code_verify' => $code[1]);
 	}
 
 	/**
@@ -560,12 +566,22 @@ switch(\$act)
 		break;
 
 	case 'captcha':
-		// The CAPTCHA is a signed JWT that carries its own solution, so a valid
-		// answer can be minted here instead of read off an image.
+		// The answer is sealed inside the token, so a valid pair can be minted
+		// here, inside the site, instead of read off an image. The challenge is
+		// deliberately not named for a form, which is what a theme rendering its
+		// own CAPTCHA markup does and what contact.php must therefore accept.
 		\$img = e107::getSecureImg();
 		echo "PROBE_OK\n";
 		echo "RAND=".\$img->getToken()."\n";
 		echo "CODE=".\$img->getSecret()."\n";
+		break;
+
+	case 'solve':
+		// Read the answer out of a challenge some other document was served.
+		// Only the site can do this now.
+		\$claims = e107::getSealedToken(secure_image::TOKEN_PURPOSE)->open(\$_GET['t']);
+		echo "PROBE_OK\n";
+		echo "CODE=".(isset(\$claims['solution']) ? \$claims['solution'] : '')."\n";
 		break;
 
 	case 'clearmaillog':

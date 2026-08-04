@@ -772,6 +772,46 @@ function update_core_database($type = '')
 		}
 
 
+		// The CAPTCHA policy preferences have to exist before the preferences
+		// page can change them: its generic loop uses e_pref::update(), which
+		// silently does nothing for a key the site does not already hold. A
+		// fresh install gets them from default_install.xml, an upgraded one
+		// from here, and both are seeded with the values secure_image would
+		// have assumed anyway, so seeding changes no behaviour.
+		$captchaDefaults = array(
+			secure_image::PREF_CAPTCHA_TTL       => secure_image::DEFAULT_TTL,
+			secure_image::PREF_CAPTCHA_VERIFY_IP => 1,
+		);
+
+		$captchaMissing = array();
+
+		foreach($captchaDefaults as $captchaKey => $captchaValue)
+		{
+			if(!isset($pref[$captchaKey]))
+			{
+				$captchaMissing[$captchaKey] = $captchaValue;
+			}
+		}
+
+		if(!empty($captchaMissing))
+		{
+			if ($just_check)
+			{
+				return update_needed("The CAPTCHA preferences need to be added.");
+			}
+
+			$captchaConfig = e107::getConfig();
+
+			foreach($captchaMissing as $captchaKey => $captchaValue)
+			{
+				$captchaConfig->set($captchaKey, $captchaValue);
+			}
+
+			$captchaConfig->save(false, false, false);
+			$log->addDebug('CAPTCHA preferences added.');
+		}
+
+
 		// User is marked as not installed.
 		if($sql->createQueryBuilder()->select('plugin_id')->from('plugin')->where('plugin_path', 'user')->where('plugin_installflag', '!=', 1)->setMaxResults(1)->fetchRow())
 		{

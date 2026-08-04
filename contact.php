@@ -200,7 +200,7 @@ class contact_front
 		$email_copy = !empty($_POST['email_copy']) ? 1 : 0;
 
 		// Check Image-Code
-		if($sec_img->invalidCode(varset($_POST['rand_num'], ''), varset($_POST['code_verify'], '')))
+		if($sec_img->invalidCode(varset($_POST['rand_num'], ''), varset($_POST['code_verify'], ''), secure_image::FORM_CONTACT))
 		{
 			$error .= LAN_CONTACT_15 . "\n";
 		}

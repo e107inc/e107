@@ -49,14 +49,22 @@ class redirection
 	const LOGIN_DEST_TTL = 1800;
 
 	/**
-	 * Name of the cookie carrying the signed post-login destination token.
+	 * Name of the cookie carrying the sealed post-login destination token.
 	 */
 	const LOGIN_DEST_COOKIE = 'e107_logindest';
 
 	/**
-	 * Name of the form field carrying the signed post-login destination token.
+	 * Name of the form field carrying the sealed post-login destination token.
 	 */
 	const LOGIN_DEST_FIELD = '__logindest';
+
+	/**
+	 * Sealed token purpose for the post-login destination.
+	 *
+	 * Naming the purpose here keeps a destination token unopenable as anything
+	 * else this site seals, and vice versa.
+	 */
+	const LOGIN_DEST_PURPOSE = 'login-destination';
 
 	/**
 	 * Static-asset extensions that must never be captured as a return destination.
@@ -74,9 +82,9 @@ class redirection
 	);
 
 	/**
-	 * Per-request cache of signed destination tokens, so repeated renders (e.g. two
-	 * login forms on one page) emit the same value instead of minting a fresh JWT
-	 * on every call.
+	 * Per-request cache of sealed destination tokens, so repeated renders (e.g. two
+	 * login forms on one page) emit the same value instead of sealing a fresh
+	 * token on every call.
 	 *
 	 * @var array
 	 */
@@ -340,7 +348,7 @@ class redirection
 		*/
 		
 		$this->saveMembersOnlyUrl();
-		// Also capture through the unified signed-destination path, so a members-only
+		// Also capture through the unified sealed-destination path, so a members-only
 		// site returns the visitor via the same mechanism as every other login seam.
 		$this->setLoginDestination();
 
@@ -525,17 +533,19 @@ class redirection
 	}
 
 	/**
-	 * Sign the current (or a given) destination URL into a stateless token.
+	 * Seal the current (or a given) destination URL into a stateless token.
 	 *
-	 * The token is a JWT signed with the site secret (see {@see e_jwt}), so the
-	 * destination is server-certified: a visitor cannot forge or alter it. That is
-	 * what makes it safe to carry in a hidden form field or a cookie without
-	 * opening a redirect-injection hole. Returns '' when the request is not a
-	 * capturable target (see self::isCapturable()).
+	 * The token is sealed with the site secret (see {@see \e107\Security\SealedToken}),
+	 * so the destination is server-certified: a visitor cannot forge or alter it.
+	 * That is what makes it safe to carry in a hidden form field or a cookie
+	 * without opening a redirect-injection hole. Returns '' when the request is
+	 * not a capturable target (see self::isCapturable()), and also when the site
+	 * has no key to seal with, because a page that cannot capture a destination
+	 * still has to render.
 	 *
 	 * @param string|null $url defaults to the current request URI (relative, query preserved)
 	 * @param int $ttl token lifetime in seconds
-	 * @return string signed token, or '' when nothing should be captured
+	 * @return string sealed token, or '' when nothing should be captured
 	 */
 	public function getLoginDestinationToken($url = null, $ttl = self::LOGIN_DEST_TTL)
 	{
@@ -556,19 +566,26 @@ class redirection
 			return '';
 		}
 
-		$token = e107::getJWT()->encode(array('dest' => $url), (int) $ttl);
+		$token = e107::getSealedToken(self::LOGIN_DEST_PURPOSE)->seal(array('dest' => $url), (int) $ttl);
+
+		if($token === false)
+		{
+			$token = '';
+		}
+
 		$this->destination_token_cache[$cacheKey] = $token;
 
 		return $token;
 	}
 
 	/**
-	 * Decode a destination token and confirm it points somewhere on this site.
+	 * Open a destination token and confirm it points somewhere on this site.
 	 *
-	 * Signature, issuer and expiry are verified by {@see e_jwt}. On top of that we
-	 * enforce a same-origin / site-rooted target as defence-in-depth, so the
-	 * redirect can never be turned into an off-site (open-redirect) jump even if a
-	 * signed token somehow carried one.
+	 * Authenticity, issuer and expiry are settled by
+	 * {@see \e107\Security\SealedToken}. On top of that we enforce a same-origin
+	 * / site-rooted target as defence-in-depth, so the redirect can never be
+	 * turned into an off-site (open-redirect) jump even if a sealed token somehow
+	 * carried one.
 	 *
 	 * @param string $token
 	 * @return string|false the verified destination URL, or false
@@ -580,7 +597,7 @@ class redirection
 			return false;
 		}
 
-		$payload = e107::getJWT()->decode($token);
+		$payload = e107::getSealedToken(self::LOGIN_DEST_PURPOSE)->open($token);
 
 		if(empty($payload['dest']) || !is_string($payload['dest']))
 		{
@@ -594,7 +611,7 @@ class redirection
 	 * Confirm a redirect destination points somewhere on this site.
 	 *
 	 * The same-origin half of {@see verifyDestination()}, for the callers that hold
-	 * a plain URL rather than a signed token: a visitor-supplied return address is
+	 * a plain URL rather than a sealed token: a visitor-supplied return address is
 	 * only ever safe to redirect to once it has been through here.
 	 *
 	 * @param string $dest
@@ -727,7 +744,7 @@ class redirection
 
 	/**
 	 * Capture the current (or a given) URL as the page to return the user to after
-	 * they log in. Stateless: stored as a signed token in a cookie, so guests never
+	 * they log in. Stateless: stored as a sealed token in a cookie, so guests never
 	 * create a server-side session row. No-op when the request is not capturable.
 	 *
 	 * @param string|null $url defaults to the current request URI
@@ -750,7 +767,7 @@ class redirection
 	/**
 	 * Return the verified post-login destination, or false.
 	 *
-	 * Reads the signed token from the submitted form first (so it still works with
+	 * Reads the sealed token from the submitted form first (so it still works with
 	 * cookies disabled), then the cookie. The result is always same-origin (see
 	 * self::verifyDestination()).
 	 *
@@ -778,7 +795,7 @@ class redirection
 	}
 
 	/**
-	 * Raw signed destination token currently stored in the cookie, or '' if there
+	 * Raw sealed destination token currently stored in the cookie, or '' if there
 	 * is none or it no longer verifies. Used to re-emit the destination as a hidden
 	 * form field so it survives the login POST even if the cookie later expires.
 	 *

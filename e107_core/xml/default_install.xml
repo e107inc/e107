@@ -26,6 +26,8 @@
 		<core name="ban_max_online_access">100,200</core>
 		<core name="ban_retrigger">0</core>
 		<core name="cachestatus"></core>
+		<core name="captcha_ttl">86400</core>
+		<core name="captcha_verify_ip">1</core>
 		<core name="check_updates">1</core>
 		<core name="comments_disabled">0</core>
 		<core name="comments_emoticons">0</core>

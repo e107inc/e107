@@ -309,8 +309,8 @@ class redirectionTest extends \Codeception\Test\Unit
 
 	public function testVerifyDestinationRejectsExpired()
 	{
-		// Sign directly with a negative TTL to force an already-expired token.
-		$expired = e107::getJWT()->encode(array('dest' => '/news.php'), -100);
+		// Seal directly with a negative TTL to force an already-expired token.
+		$expired = e107::getSealedToken(redirection::LOGIN_DEST_PURPOSE)->seal(array('dest' => '/news.php'), -100);
 		self::assertFalse($this->rd->verifyDestination($expired));
 	}
 
@@ -327,16 +327,16 @@ class redirectionTest extends \Codeception\Test\Unit
 
 		foreach($offsite as $dest)
 		{
-			$token = e107::getJWT()->encode(array('dest' => $dest), 600);
+			$token = e107::getSealedToken(redirection::LOGIN_DEST_PURPOSE)->seal(array('dest' => $dest), 600);
 			self::assertFalse($this->rd->verifyDestination($token), "Should reject off-site: $dest");
 		}
 
 		// Same-origin relative and absolute are accepted.
-		$relToken = e107::getJWT()->encode(array('dest' => '/profile.php'), 600);
+		$relToken = e107::getSealedToken(redirection::LOGIN_DEST_PURPOSE)->seal(array('dest' => '/profile.php'), 600);
 		self::assertSame('/profile.php', $this->rd->verifyDestination($relToken));
 
 		$abs = SITEURL . 'news.php';
-		$absToken = e107::getJWT()->encode(array('dest' => $abs), 600);
+		$absToken = e107::getSealedToken(redirection::LOGIN_DEST_PURPOSE)->seal(array('dest' => $abs), 600);
 		self::assertSame($abs, $this->rd->verifyDestination($absToken));
 	}
 
@@ -352,10 +352,10 @@ class redirectionTest extends \Codeception\Test\Unit
 		try
 		{
 			$good = 'https://staging.example.test/members/area?x=1';
-			$goodToken = e107::getJWT()->encode(array('dest' => $good), 600);
+			$goodToken = e107::getSealedToken(redirection::LOGIN_DEST_PURPOSE)->seal(array('dest' => $good), 600);
 			self::assertSame($good, $this->rd->verifyDestination($goodToken), 'a configured trusted host should be accepted');
 
-			$badToken = e107::getJWT()->encode(array('dest' => 'https://not-trusted.example.test/x'), 600);
+			$badToken = e107::getSealedToken(redirection::LOGIN_DEST_PURPOSE)->seal(array('dest' => 'https://not-trusted.example.test/x'), 600);
 			self::assertFalse($this->rd->verifyDestination($badToken), 'an untrusted third-party host must be rejected');
 		}
 		finally

@@ -1550,7 +1550,18 @@ $text .= "
 		
 		$text .= "
 		</td></tr>\n";
-		
+
+	}
+
+	if($hasGD)
+	{
+		$text .= "<tr><td><label for='captcha-ttl'>".PRFLAN_315."</label>".$frm->help(PRFLAN_316)."</td><td>"
+			.$frm->number('captcha_ttl', varset($pref['captcha_ttl'], secure_image::DEFAULT_TTL), 3600, array('min' => 10))
+			."</td></tr>\n";
+
+		$text .= "<tr><td><label for='captcha-verify-ip'>".PRFLAN_317."</label>".$frm->help(PRFLAN_318)."</td><td>"
+			.$frm->radio_switch('captcha_verify_ip', varset($pref['captcha_verify_ip'], 1))
+			."</td></tr>\n";
 	}
 
 

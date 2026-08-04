@@ -133,7 +133,7 @@ class plugin_signin_signin_shortcodes extends e_shortcode
 
 		if ($this->use_imagecode)
 		{
-			return e107::getSecureImg()->renderImage();
+			return e107::getSecureImg()->renderImage(secure_image::FORM_LOGIN);
 		}
 
 		return null;
@@ -149,7 +149,7 @@ class plugin_signin_signin_shortcodes extends e_shortcode
 
 		if ($this->use_imagecode)
 		{
-			return e107::getSecureImg()->renderInput();
+			return e107::getSecureImg()->renderInput(secure_image::FORM_LOGIN);
 		}
 
 		return null;
