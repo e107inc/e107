@@ -23,13 +23,23 @@ class page_related // replace 'e_' with 'plugin-folder_'
 		$sql = e107::getDb();
 		$items = array();
 
-		$tag_regexp = "'(^|,)(".str_replace(",", "|", $tags).")(,|$)'";
-		
-		$query = "SELECT * FROM #page WHERE page_id != ".$parm['current']." AND page_class REGEXP '".e_CLASS_REGEXP."'  AND page_metakeys REGEXP ".$tag_regexp."  ORDER BY page_datestamp DESC LIMIT ".$parm['limit'];
-				
-		if($sql->gen($query))
-		{		
-			while($row = $sql->fetch())
+		// $tags is admin-set DB content; preserve e107's storage transform (toDB)
+		// applied to the original query, then bind the assembled REGEXP pattern.
+		$tags = e107::getParser()->toDB($tags);
+		$tag_regexp = "(^|,)(".str_replace(",", "|", $tags).")(,|$)";
+
+		$qb = $sql->createQueryBuilder();
+		$rows = $qb->select('*')->from('page')
+			->where('page_id', '!=', (int) $parm['current'])
+			->where($qb->expr()->regexp('page_class', e_CLASS_REGEXP))
+			->where($qb->expr()->regexp('page_metakeys', $tag_regexp))
+			->orderBy('page_datestamp', 'DESC')
+			->setMaxResults((int) $parm['limit'])
+			->fetchAll();
+
+		if($rows)
+		{
+			foreach($rows as $row)
 			{
 				$row    = pageHelper::addSefFields($row);
 				

@@ -57,22 +57,21 @@ if ($action == 'active')
 	require_once (e_PLUGIN.'forum/forum_class.php');
 	$forum = new e107forum();
 
-	$forumList = implode(',', $forum->getForumPermList('view'));
+	$forumList = $forum->getForumPermList('view');
 
-	$qry = "
-	SELECT
-		t.*, u.user_name, ul.user_name AS user_last, f.forum_name
-	FROM `#forum_thread` as t
-	LEFT JOIN `#forum` AS f ON f.forum_id = t.thread_forum_id
-	LEFT JOIN `#user` AS u ON u.user_id = t.thread_user
-	LEFT JOIN `#user` AS ul ON ul.user_id = t.thread_lastuser
-	WHERE t.thread_forum_id IN ({$forumList})
-	ORDER BY t.thread_views DESC
-	LIMIT
-		{$from}, {$view}
-	";
+	$qb = $sql->createQueryBuilder();
+	$rows = $qb
+		->select('t.*', 'u.user_name')->selectAs('ul.user_name', 'user_last')->addSelect('f.forum_name')
+		->from('forum_thread', 't')
+		->leftJoin('forum', 'f', $qb->expr()->compareColumns('f.forum_id', 't.thread_forum_id'))
+		->leftJoin('user', 'u', $qb->expr()->compareColumns('u.user_id', 't.thread_user'))
+		->leftJoin('user', 'ul', $qb->expr()->compareColumns('ul.user_id', 't.thread_lastuser'))
+		->whereIn('t.thread_forum_id', $forumList)
+		->orderBy('t.thread_views', 'DESC')
+		->setFirstResult((int) $from)->setMaxResults((int) $view)
+		->fetchAll();
 
-	if ($sql->gen($qry))
+	if ($rows)
 	{
 		$text = "<div>\n<table style='width:auto' class='table fborder'>\n";
 		$gen = e107::getDate();
@@ -86,7 +85,7 @@ if ($action == 'active')
 			<th style='width:25%; text-align:center' class='forumheader'>".LAN_5."</th>
 			</tr>\n";
 
-		while ($row = $sql->fetch())
+		foreach ($rows as $row)
 		{
 			if ($row['user_name'])
 			{
@@ -122,7 +121,8 @@ if ($action == 'active')
 
 		$text .= "</table>\n</div>";
 
-		$ftotal = $sql->count('forum_thread', '(*)', 'WHERE `thread_parent` = 0');
+		$ftotal = $sql->createQueryBuilder()->from('forum_thread')
+			->where('thread_parent', 0)->count();
 		$parms = "{$ftotal},{$view},{$from},".e_SELF.'?[FROM].active.forum.'.$view;
 		$text .= "<div class='nextprev'>".$tp->parseTemplate("{NEXTPREV={$parms}}").'</div>';
 		$ns->tablerender(LAN_7, $text, 'nfp');
@@ -156,13 +156,6 @@ if ($action == 'top')
 		require_once (e_PLUGIN.'forum/forum_class.php');
 		$forum = new e107forum();
 
-		$qry = "
-		SELECT ue.*, u.* FROM `#user_extended` AS ue
-		LEFT JOIN `#user` AS u ON u.user_id = ue.user_extended_id
-		WHERE ue.user_plugin_forum_posts > 0
-		ORDER BY ue.user_plugin_forum_posts DESC LIMIT {$from}, {$view}
-		";
-
 		$text = "
 			<div>
 			<table style='width:95%' class='table table-striped fborder'>
@@ -174,9 +167,17 @@ if ($action == 'top')
 			</tr>\n";
 		$counter = 1 + $from;
 		$sql2 = e107::getDb('sql2');
-		if ($sql2->gen($qry))
+		$qb2 = $sql2->createQueryBuilder();
+		$rows = $qb2
+			->select('ue.*', 'u.*')->from('user_extended', 'ue')
+			->leftJoin('user', 'u', $qb2->expr()->compareColumns('u.user_id', 'ue.user_extended_id'))
+			->where('ue.user_plugin_forum_posts', '>', 0)
+			->orderBy('ue.user_plugin_forum_posts', 'DESC')
+			->setFirstResult((int) $from)->setMaxResults((int) $view)
+			->fetchAll();
+		if ($rows)
 		{
-			while ($row = $sql2->fetch())
+			foreach ($rows as $row)
 			{
 				//$ldata = get_level($row['user_id'], $row['user_plugin_forum_posts'], $row['user_comments'], $row['user_chats'], $row['user_visits'], $row['user_join'], $row['user_admin'], $row['user_perms'], $pref);
 				$ldata = $rank->getRanks($row['user_id'], (USER && $forum->isModerator(USERID)));
@@ -203,7 +204,8 @@ if ($action == 'top')
 		if ($subaction == 'forum') 
 		{
 			//$ftotal = $sql->db_Count('user', '(*)', 'WHERE `user_forums` > 0');
-			$ftotal = $sql->count('user_extended', '(*)', 'WHERE `user_plugin_forum_posts` > 0');
+			$ftotal = $sql->createQueryBuilder()->from('user_extended')
+				->where('user_plugin_forum_posts', '>', 0)->count();
 			$parms = "{$ftotal},{$view},{$from},".e_SELF.'?[FROM].top.forum.'.$view;
 			$text .= "<div class='nextprev'>".$tp->parseTemplate("{NEXTPREV={$parms}}").'</div>';
 		}
@@ -220,7 +222,12 @@ if ($action == 'top')
 
 	if ($subaction == 'comment' || $subaction == 'all')
 	{
-		$top_forum_posters = $sql->select("user", "*", "`user_comments` > 0 ORDER BY user_comments DESC LIMIT 0, 10");
+		$top_forum_posters = $sql->createQueryBuilder()
+			->select('*')->from('user')
+			->where('user_comments', '>', 0)
+			->orderBy('user_comments', 'DESC')
+			->setFirstResult(0)->setMaxResults(10)
+			->fetchAll();
 		$text = "
 			<div style='text-align:center'>
 			<table style='width:95%' class='fborder'>
@@ -233,7 +240,7 @@ if ($action == 'top')
 		$counter = 1;
 		if($top_forum_posters)
 		{
-			while ($row = $sql->fetch())
+			foreach ($top_forum_posters as $row)
 			{
 				// TODO - Custom ranking (comments), LANs
 				$ldata = $rank->getRanks($row['user_id']);
@@ -268,7 +275,12 @@ if ($action == 'top')
 	 
 	if ($subaction == 'chat' || $subaction == 'all') 
 	{
-		$top_forum_posters = $sql->select("user", "*", "`user_chats` > 0 ORDER BY user_chats DESC LIMIT 0, 10");
+		$top_forum_posters = $sql->createQueryBuilder()
+			->select('*')->from('user')
+			->where('user_chats', '>', 0)
+			->orderBy('user_chats', 'DESC')
+			->setFirstResult(0)->setMaxResults(10)
+			->fetchAll();
 		$text = "
 			<div style='text-align:center'>
 			<table style='width:95%' class='fborder'>
@@ -281,7 +293,7 @@ if ($action == 'top')
 		$counter = 1;
 		if($top_forum_posters)
 		{
-			while ($row = $sql->fetch())
+			foreach ($top_forum_posters as $row)
 			{
 				// TODO - Custom ranking (chat), LANs
 				$ldata = $rank->getRanks($row['user_id']);

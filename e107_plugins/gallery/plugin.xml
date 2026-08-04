@@ -23,6 +23,7 @@
 		<pref name="slideshow_freq">4000</pref>
 		<pref name="slideshow_effect">scrollHorz</pref>	
 		<pref name="perpage">12</pref>
+		<pref name="cat_orderby">media_cat_id DESC</pref>
 		<pref name="orderby">media_id DESC</pref>
 		<pref name="pp_global">0</pref>
 		<pref name="pp_hook">data-gal</pref>

@@ -3,23 +3,37 @@
 # env vars, and the bind mount; see e107_tests/docker/README.md. Don't run
 # `docker compose` against this file directly.
 
-name: ${COMPOSE_PROJECT_NAME:?set via e107-tests wrapper}
+name: ${COMPOSE_PROJECT_NAME:?no active env; drive this file via e107_tests/bin/e107-tests (see docker/README.md)}
+
+# Every container and volume carries these labels. They are the harness's
+# only state store: e107-tests rediscovers envs (any worktree) from them.
+x-e107-labels: &e107-labels
+  e107.tests: "1"
+  e107.tests.php: ${E107_PHP_VERSION:-}
+  e107.tests.db: ${E107_DB_IMAGE:-}
+  e107.tests.app-path: ${E107_APP_PATH:-}
+  e107.tests.xdebug: ${E107_WITH_XDEBUG:-no}
 
 services:
   db:
     image: ${E107_DB_IMAGE:-mariadb:10.11}
     restart: unless-stopped
+    labels: *e107-labels
     environment:
       MYSQL_ROOT_PASSWORD: ${E107_DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${E107_DB_NAME}
       MYSQL_USER: ${E107_DB_USER}
       MYSQL_PASSWORD: ${E107_DB_PASSWORD}
       # MySQL 8+ accepts utf8mb4 fine; e107 sticks with utf8(mb3) historically.
-      MYSQL_CHARACTER_SET: utf8mb3
-    command:
-      - --character-set-server=utf8mb3
-      - --collation-server=utf8mb3_general_ci
-      - --max-allowed-packet=64M
+      MYSQL_CHARACTER_SET: ${E107_DB_CHARSET:-utf8mb3}
+    # String form so the wrapper can inject flavor-specific args (charset
+    # naming and auth plugin differ across mysql/mariadb versions; see
+    # db_flavor_args in bin/e107-tests).
+    command: >-
+      --character-set-server=${E107_DB_CHARSET:-utf8mb3}
+      --collation-server=${E107_DB_COLLATION:-utf8mb3_general_ci}
+      --max-allowed-packet=64M
+      ${E107_DB_EXTRA_ARGS:-}
     healthcheck:
       # mariadb-admin ships with both mariadb and recent mysql images;
       # mysqladmin is the fallback for older mysql tags.
@@ -45,10 +59,11 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        PHP_VERSION: ${E107_PHP_VERSION:-8.3}
+        PHP_VERSION: ${E107_PHP_VERSION:-8.5}
         WITH_XDEBUG: ${E107_WITH_XDEBUG:-no}
-    image: e107-web:${E107_PHP_VERSION:-8.3}${E107_WITH_XDEBUG_TAG:-}
+    image: e107-web:${E107_PHP_VERSION:-8.5}${E107_WITH_XDEBUG_TAG:-}
     restart: unless-stopped
+    labels: *e107-labels
     depends_on:
       db:
         condition: service_healthy
@@ -64,6 +79,9 @@ services:
       # Bind-mount the app root so host edits are live. Acceptance installs
       # write artifacts here; `e107-tests clean` removes them.
       - ${E107_APP_PATH}:/var/www/html
+      # Per-env vendor tree, shadowing the (untouched) worktree vendor dir so
+      # every env resolves its own dependencies for its own PHP version.
+      - vendor:/var/www/html/e107_tests/vendor
       # Persist composer's download cache across `down`/`up` cycles.
       - composer-cache:/root/.composer/cache
     ports:
@@ -74,6 +92,7 @@ services:
   selenium:
     image: ${E107_SELENIUM_IMAGE:-docker.io/selenium/standalone-chrome:latest}
     restart: unless-stopped
+    labels: *e107-labels
     # Run as root to dodge a rootless-Podman supervisord EPERM crash-loop.
     user: root
     depends_on:
@@ -91,4 +110,7 @@ services:
       start_period: 10s
 
 volumes:
+  vendor:
+    labels: *e107-labels
   composer-cache:
+    labels: *e107-labels

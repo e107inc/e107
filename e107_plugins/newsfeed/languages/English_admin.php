@@ -43,7 +43,7 @@ return [
 
 	[h=4]Path to Image[/h]
 
-	If the provider specifies an image to use, enter 'default' to use it or choose use your own image by entering the immage address. Leave blank to use no image at all.
+	If the provider specifies an image to use, enter 'default' to use it or choose use your own image by entering the image address. Leave blank to use no image at all.
 
 	[h=4]Description[/h]
 
@@ -57,11 +57,7 @@ return [
 
 	[h=4]Activation[/h]
 
-	Newsfeeds can be displayed in the menu only or on the newsfeed page. Enter the details where feeds should be displayed. To see newsfeeds in e107 menus you will need to activate the [b]Newsfeeds Menu[/b] in [link=\".e_ADMIN.\"menus.php]Menu Manager[/link].
-
-	[h=4]Tip[/h]
-
-There are many feed direcotries on the web, try [link=https://www.dmoz.org/Computers/Internet/On_the_Web/Syndication_and_Feeds/RSS/Directories/ external]dmoz[/link] or [link=http://www.feedster.com/ external]feedster.com[/link]",
+	Newsfeeds can be displayed in the menu only or on the newsfeed page. Enter the details where feeds should be displayed. To see newsfeeds in e107 menus you will need to activate the [b]Newsfeeds Menu[/b] in [link=\".e_ADMIN.\"menus.php]Menu Manager[/link].",
     'NFLAN_45' => "Number of items to show in menu",
     'NFLAN_46' => "Number of items to show on main page",
 ];

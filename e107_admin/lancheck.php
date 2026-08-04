@@ -22,273 +22,6 @@ $e_sub_cat = 'language';
 
 $frm = e107::getForm();
 $mes = e107::getMessage();
-// $lck = new lancheck;
-
-
-/*
-$qry = explode("|",e_QUERY);
-$f = $qry[0];
-$lan = $qry[1];
-$mode = $qry[2];
-
-// Write the language file.
-if(isset($_POST['submit']))
-{
-	unset($input);
-	$kom_start = chr(47)."*";
-	$kom_end = "*".chr(47);
-
-	if($_POST['root'])
-	{
-		$writeit = $_POST['root'];
-	}
-
-	$old_kom = "";
-	$in_kom=0;
-	$data = file($writeit);
-	foreach($data as $line)
-	{
-
-		if (strpos($line,$kom_start) !== False && $old_kom == "")
-		{
-			$in_kom=1;
-		}
-		if ($in_kom) { $old_kom.=$line; }
-		if (strpos($line,$kom_end) !== False && $in_kom) {$in_kom = 0;}
-	}
-
-
-	$message = "<div style='text-align:left'><br />";
-	$input .= chr(60)."?php\n";
-	if ($old_kom == "")
-	{
-		// create CVS compatible description.
-		$diz = chr(47)."*\n";
-		$diz .= " * e107 website system\n";
-		$diz .= " *\n";
-		$diz .= " * Copyright (C) 2008-2009 e107 Inc (e107.org)\n";
-		$diz .= " * Released under the terms and conditions of the\n";
-		$diz .= " * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)\n";
-		$diz .= " *\n";
-		$diz .= " * Language File\n";
-		$diz .= " *\n";
-		$diz .= " * ".chr(36)."Source: ".str_replace(array(e_LANGUAGEDIR, e_PLUGIN), array(e_LANGUAGEDIR_ABS, e_PLUGIN_ABS), $writeit)." ".chr(36)."\n";
-		$diz .= " * ".chr(36)."Revision: 1.0 ".chr(36)."\n";
-		$diz .= " * ".chr(36)."Date: ".date("Y/m/d H:i:s")." ".chr(36)."\n";
-		$diz .= " *  ".chr(36)."Author: ".USERNAME." ".chr(36)."\n";
-		$diz .= " *\n";
-		$diz .= "*".chr(47)."\n\n";
-	}
-	else
-	{
-		$diz = $old_kom;
-	}
-
-	$input .= $diz;
-	$message .= str_replace("\n","<br />",$diz);
-
-	for ($i=0; $i<count($_POST['newlang']); $i++)
-	{
-		$notdef_start = "";
-		$notdef_end = "\n";
-		$deflang = (MAGIC_QUOTES_GPC === TRUE) ? stripslashes($_POST['newlang'][$i]) : $_POST['newlang'][$i];
-		$func = "define";
-		$quote = chr(34);
-
-		if (strpos($_POST['newdef'][$i],"ndef++") !== FALSE )
-		{
-			$defvar = str_replace("ndef++","",$_POST['newdef'][$i]);
-			$notdef_start = "if (!defined(".chr(34).$defvar.chr(34).")) {";
-			$notdef_end = "}\n";
-		}
-		else
-		{
-			$defvar = $_POST['newdef'][$i];
-		}
-
-		if($_POST['newdef'][$i] == "LC_ALL" && isset($_POST['root']))
-		{
-			$message .= $notdef_start.'setlocale('.htmlentities($defvar).','.$deflang.');<br />'.$notdef_end;
-			$input .= $notdef_start."setlocale(".$defvar.",".$deflang.");".$notdef_end;
-		}
-		else
-		{
-			$message .= $notdef_start.$func.'('.$quote.htmlentities($defvar).$quote.',"'.$deflang.'");<br />'.$notdef_end;
-			$input .= $notdef_start.$func."(".$quote.$defvar.$quote.", ".chr(34).$deflang.chr(34).");".$notdef_end;
-		}
-	}
-
-	$message .="<br />";
-	$message .="</div>";
-	$input .= "\n\n?>";
-
-	// Write to file.
-	$fp = @fopen($writeit,"w");
-	if(!@fwrite($fp, $input))
-	{
-		$caption = LAN_CHECK_PAGE_TITLE.' - '.LAN_ERROR;
-		$message = '';
-		$mes->addError(LAN_CHECK_17);
-	}
-	else
-	{
-		$caption = LAN_CHECK_PAGE_TITLE.' - '.LAN_SUMMARY;
-		$mes->addSuccess(sprintXXX(str_replace("[x]", "%s", LAN_CHECK_23), basename($writeit)));
-	}
-	fclose($writeit);
-
-	$message .= "
-	<form method='post' action='".e_SELF."' id='core-lancheck-save-file-form'>
-	<div class='center'>
-		".$frm->admin_button('language_sel', LAN_BACK)."
-		".$frm->hidden('language', $lan)."
-	</div>
-	</form>";
-	
-
-
-	$ns->tablerender($caption, $mes->render().$message);
-//	require_once(e_ADMIN."footer.php");
-	exit;
-}
-
-// ============================================================================
-
-// Edit the Language File.
-
-if($f != ""){
-
-	if (!$mode)
-	{
-		$dir1 =  e_BASE.$LANGUAGES_DIRECTORY."English/";
-		$f1=$f;
-		$dir2 =  e_BASE.$LANGUAGES_DIRECTORY.$lan."/";
-		$f2=$f;
-	}
-	else
-	{
-		$fullpath_orig = $f;
-		$fullpath_trans = str_replace("English",$lan,$f);
-
-		$f1 = basename($fullpath_orig);
-		$f2 = basename($fullpath_trans);
-		$dir1 = dirname($fullpath_orig)."/";
-		$dir2 = dirname($fullpath_trans)."/";
-	}
-
-	$lck->edit_lanfiles($dir1,$dir2,$f1,$f2);
-
-}
-
-// ===========================================================================
-
-$core_plugins = array(
-	"alt_auth", "banner_menu", "blogcalendar_menu", "calendar_menu", "chatbox_menu",
-	"clock_menu", "comment_menu", "content", 'download', "featurebox", "forum",
-	"gsitemap", "links_page", "linkwords", "list_new", "log", "login_menu",
-	"newforumposts_main", "newsfeed", "newsletter", "online", "other_news_menu",
-	"pdf", "pm", "poll", "rss_menu", "search_menu", "siteinfo", "trackback",
-	"tree_menu", "user_menu"
-);
-
-$core_themes = array("bootstrap", $pref['sitetheme']);
-
-
-if(isset($_POST['language_sel']) && isset($_POST['language']))
-{
-
-	$text = $lck->check_core_lanfiles($_POST['language']).$lck->check_core_lanfiles($_POST['language'],"admin/");
-
-	$text .= "
-		<fieldset id='core-lancheck-plugin'>
-			<legend>".ADLAN_CL_7."</legend>
-			<table class='table adminlist'>
-				<colgroup>
-					<col style='width: 25%' />
-					<col style='width: 25%' />
-					<col style='width: 40%' />
-					<col style='width: 10%' />
-				</colgroup>
-				<thead>
-					<tr>
-						<th>".LAN_PLUGIN."</th>
-						<th>".LAN_CHECK_16."</th>
-						<th>".$_POST['language']."</th>
-						<th class='center last'>".LAN_OPTIONS."</th>
-					</tr>
-				</thead>
-				<tbody>
-	";
-
-	foreach($core_plugins as $plugs)
-	{
-		if(is_readable(e_PLUGIN.$plugs))
-		{
-			$text .= $lck->check_lanfiles('P',$plugs,"English",$_POST['language']);
-		}
-	}
-	$text .= "
-				</tbody>
-			</table>
-		</fieldset>
-	";
-
-	$text .= "
-		<fieldset id='core-lancheck-theme'>
-			<legend>".LAN_THEME."</legend>
-			<table class='table adminlist'>
-				<colgroup>
-					<col style='width: 25%' />
-					<col style='width: 25%' />
-					<col style='width: 40%' />
-					<col style='width: 10%' />
-				</colgroup>
-				<thead>
-					<tr>
-						<th>".LAN_CHECK_21."</th>
-						<th>".LAN_CHECK_16."</th>
-						<th>".$_POST['language']."</th>
-						<th class='center last'>".LAN_OPTIONS."</th>
-					</tr>
-				</thead>
-				<tbody>
-	";
-	foreach($core_themes as $them)
-	{
-		if(is_readable(e_THEME.$them))
-		{
-			$text .= $lck->check_lanfiles('T',$them,"English",$_POST['language']);
-		}
-	}
-	$text .= "
-				</tbody>
-			</table>
-		</fieldset>
-	";
-	
-	$mes = e107::getMessage();
-	if($lck->error_count == 0)
-	{
-		e107::getConfig()->setPref('lancheck/'.$_POST['language'],1);
-		e107::getConfig()->save(FALSE);
-		$mes->addSuccess(LAN_CHECK_27.'<b>: '.$lck->error_count.'</b>');		
-	}
-	else  
-	{
-		$mes->addWarning(LAN_CHECK_27.'<b>: '.$lck->error_count.'</b>');
-	}
-	
-
-	$ns->tablerender(LAN_THEMES, $mes->render(). $text);
-
-
-	
-	require_once(e_ADMIN."footer.php");
-	exit;
-}
-
-
-*/
 
 class lancheck
 {
@@ -435,22 +168,6 @@ class lancheck
 	{
 		$mes = e107::getMessage();
 
-		/* NO LONGER USED
-
-		$certVal = isset($_POST['contribute_pack']) ? 1 : 0;
-
-		if(!varset($_COOKIE['e107_certified']))
-		{
-			cookie('e107_certified',$certVal,(time() + 3600 * 24 * 30));
-		}
-		else
-		{
-			$_COOKIE['e107_certified'] = $certVal;
-		}*/
-
-		//	$_POST['language'] = key($_POST['ziplang']);
-
-		// If no session data, scan before zipping.
 		if(!isset($_SESSION['lancheck'][$language]['total']) || $_SESSION['lancheck'][$language]['total']!='0')
 		{
 			$this->check_all('norender', $language);
@@ -472,7 +189,8 @@ class lancheck
 		}
 		else
 		{
-			$mes->addError($status['error']);
+			$msg = !empty($status['message']) ? $status['message'] : $status['error'];
+			$mes->addError($msg);
 		}
 
 		return array('text'=> $mes->render(), 'caption'=>'');
@@ -564,7 +282,7 @@ class lancheck
 		$code = file_get_contents(e_LANGUAGEDIR.$language."/".$language.".php");
 		$tmp = explode("\n",$code);
 
-		$srch = array("define","'",'"',"(",")",";","CORE_LC2","CORE_LC",",");
+		$srch = array("define","const","'",'"',"(",")",";","CORE_LC2","CORE_LC",",","=");
 
 		foreach($tmp as $line)
 		{
@@ -608,8 +326,33 @@ class lancheck
 		{
 			$ret = array();
 			$ret['error'] = TRUE;
+
+			$s = $_SESSION['lancheck'][$language];
+			$counts = array(
+				'file' => deftrue('LANG_LAN_156') ? LANG_LAN_156 : "[x] missing file(s)",
+				'def'  => deftrue('LANG_LAN_157') ? LANG_LAN_157 : "[x] missing/invalid phrase(s)",
+				'bom'  => deftrue('LANG_LAN_158') ? LANG_LAN_158 : "[x] file(s) with BOM/illegal characters",
+				'utf'  => deftrue('LANG_LAN_159') ? LANG_LAN_159 : "[x] non-UTF8 phrase(s)",
+			);
+			$parts = array();
+			foreach($counts as $key => $lan)
+			{
+				if(!empty($s[$key]))
+				{
+					$parts[] = str_replace("[x]", $s[$key], $lan);
+				}
+			}
+			$detail = $parts ? ' ('.implode(', ', $parts).')' : '';
+
 			$message = LANG_LAN_115;
-			$ret['message'] = str_replace("[x]",$_SESSION['lancheck'][$language]['total'],$message);
+			$tip = deftrue('LANG_LAN_160') ? LANG_LAN_160 : "Tip: open the [x] tab to see the affected files/keys. Enable [y] in [z] to bypass this check and generate the pack anyway.";
+			$tip = str_replace(
+				array("[x]", "[y]", "[z]"),
+				array("<em>".(deftrue('LAN_CHECK_2') ? LAN_CHECK_2 : "Verify")."</em>", "<code>E107_DEBUG_LEVEL</code>", "<code>e107_config.php</code>"),
+				$tip
+			);
+			$ret['message']  = str_replace("[x]", $s['total'], $message).$detail;
+			$ret['message'] .= "<br /><small>".$tip."</small>";
 			return $ret;
 		}
 
@@ -643,9 +386,13 @@ class lancheck
 		}
 
 
-		global $THEMES_DIRECTORY, $PLUGINS_DIRECTORY, $LANGUAGES_DIRECTORY, $HANDLERS_DIRECTORY, $HELP_DIRECTORY;
+		$handlersDir  = e107::getFolder('handlers');
+		$languagesDir = e107::getFolder('languages');
+		$themesDir    = e107::getFolder('themes');
+		$helpDir      = e107::getFolder('help');
+		$pluginsDir   = e107::getFolder('plugins');
 
-		if(($HANDLERS_DIRECTORY != "e107_handlers/") || ( $LANGUAGES_DIRECTORY != "e107_languages/") || ($THEMES_DIRECTORY != "e107_themes/") || ($HELP_DIRECTORY != "e107_docs/help/") || ($PLUGINS_DIRECTORY != "e107_plugins/"))
+		if(($handlersDir != "e107_handlers/") || ($languagesDir != "e107_languages/") || ($themesDir != "e107_themes/") || ($helpDir != "e107_docs/help/") || ($pluginsDir != "e107_plugins/"))
 		{
 			$ret['error'] = TRUE;
 			$ret['message'] = (defined('LANG_LAN_26')) ? LANG_LAN_26 : LANG_LAN_120;
@@ -658,6 +405,12 @@ class lancheck
 
 		$file = $this->getFileList($language);
 
+		// A fresh XML manifest is added to the archive below; without this filter the zip carries two copies.
+		$metaXmlPath = e_LANGUAGEDIR.$language."/".$language.".xml";
+		$file = array_values(array_filter($file, function($p) use ($metaXmlPath) {
+			return realpath($p) !== realpath($metaXmlPath);
+		}));
+
 		$data = implode(",", $file);
 
 		if ($archive->create($data,PCLZIP_OPT_REMOVE_PATH,e_BASE) == 0)
@@ -669,20 +422,38 @@ class lancheck
 		else
 		{
 
-			$fileName = e_FILE."public/".$language.".xml";
+			// e_FILE's directory no longer exists in the v2 file structure; e_SYSTEM is guaranteed writable.
+			$xmlTmpDir = e_SYSTEM."temp/lancheck/";
+			if(!is_dir($xmlTmpDir))
+			{
+				@mkdir($xmlTmpDir, 0755, true);
+			}
+			$fileName = $xmlTmpDir.$language.".xml";
 			if(is_readable($fileName))
 			{
 				@unlink($fileName);
 			}
 
+			$tp = e107::getParser();
+			$langAttributes = $tp->toAttributes(array(
+				'name'          => $language,
+				'compatibility' => $ver,
+				'date'          => date("Y-m-d"),
+			), true);
+			$authorAttributes = $tp->toAttributes(array(
+				'name'  => USERNAME,
+				'email' => USEREMAIL,
+				'url'   => SITEURL,
+			), true);
+
 			$fileData = '<?xml version="1.0" encoding="utf-8"?>
-<e107Language name="'.$language.'" compatibility="'.$ver.'" date="'.date("Y-m-d").'" >
-<author name ="'.USERNAME.'" email="'.USEREMAIL.'" url="'.SITEURL.'" />
+<e107Language'.$langAttributes.' >
+<author'.$authorAttributes.' />
 </e107Language>';
 
 			if(file_put_contents($fileName,$fileData))
 			{
-				$addTag = $archive->add($fileName, PCLZIP_OPT_ADD_PATH, 'e107_languages/'.$language, PCLZIP_OPT_REMOVE_PATH, e_FILE.'public/');
+				$addTag = $archive->add($fileName, PCLZIP_OPT_ADD_PATH, 'e107_languages/'.$language, PCLZIP_OPT_REMOVE_PATH, $xmlTmpDir);
 				$_SESSION['lancheck'][$language]['xml'] = "Yes";
 			}
 			else
@@ -1902,41 +1673,158 @@ class lancheck
 	
 	
 	function fill_phrases_array($data,$type)
-	{	
+	{
 		$retloc = array();
-		
-		if(preg_match_all('/(\/\*[\s\S]*?\*\/)/i',$data, $multiComment))
+
+		// A phrase-less file must still register its type, or it reads back as "File missing!".
+		$retloc[$type] = array();
+
+		if(!is_string($data) || $data === '')
 		{
-			$data = str_replace($multiComment[1],'',$data);	// strip multi-line comments. 	
+			return $retloc;
 		}
-					
-		if(preg_match('/^\s*?setlocale\s*?\(\s*?([\w]+)\s*?,\s*?(.+)\s*?\)\s*?;/im',$data,$locale)) // check for setlocale();
+
+		$code = (strpos($data, '<?php') === false) ? "<?php\n".$data : $data;
+
+		try
 		{
-			$retloc[$type][$locale[1]]= $locale[2];	
+			$tokens = token_get_all($code);
 		}
-				
-		if(preg_match_all('/^\s*?define\s*?\(\s*?(\'|\")([\w]+)(\'|\")\s*?,\s*?(\'|\")([\s\S]*?)\s*?(\'|\")\s*?\)\s*?;/imu',$data,$matches))
+		catch (\Throwable $e)
 		{
-			$def = $matches[2];
-			$values = $matches[5];	
-	
-			foreach($def as $k=>$d)
+			return $retloc;
+		}
+
+		// Drop whitespace and comments so the matcher can look at adjacent tokens.
+		$sig = array();
+		foreach($tokens as $tk)
+		{
+			if(is_array($tk))
 			{
-				$retloc[$type][$d]= $values[$k];
-			}	
+				if($tk[0] === T_WHITESPACE || $tk[0] === T_COMMENT || $tk[0] === T_DOC_COMMENT)
+				{
+					continue;
+				}
+				$sig[] = array($tk[0], $tk[1]);
+			}
+			else
+			{
+				$sig[] = array(null, $tk);
+			}
 		}
-			
+
+		$count = count($sig);
+		for($i = 0; $i < $count; $i++)
+		{
+			$id   = $sig[$i][0];
+			$text = $sig[$i][1];
+
+			// setlocale(LC_*, 'value', ...);
+			if($id === T_STRING && strcasecmp($text, 'setlocale') === 0
+				&& isset($sig[$i + 1]) && $sig[$i + 1][1] === '('
+				&& isset($sig[$i + 2]) && $sig[$i + 2][0] === T_STRING)
+			{
+				$lcKey = $sig[$i + 2][1];
+				$lcVal = '';
+				for($j = $i + 3; $j < $count; $j++)
+				{
+					if($sig[$j][1] === ')')
+					{
+						break;
+					}
+					if($sig[$j][0] === T_CONSTANT_ENCAPSED_STRING)
+					{
+						$lcVal = $this->decodeStringToken($sig[$j][1]);
+						break;
+					}
+				}
+				$retloc[$type][$lcKey] = $lcVal;
+				continue;
+			}
+
+			// 1) Legacy: define('KEY', 'value');
+			if($id === T_STRING && strcasecmp($text, 'define') === 0
+				&& isset($sig[$i + 1]) && $sig[$i + 1][1] === '('
+				&& isset($sig[$i + 2]) && $sig[$i + 2][0] === T_CONSTANT_ENCAPSED_STRING
+				&& isset($sig[$i + 3]) && $sig[$i + 3][1] === ','
+				&& isset($sig[$i + 4]) && $sig[$i + 4][0] === T_CONSTANT_ENCAPSED_STRING)
+			{
+				$key = $this->decodeStringToken($sig[$i + 2][1]);
+				if(preg_match('/^\w+$/', $key))
+				{
+					$retloc[$type][$key] = $this->decodeStringToken($sig[$i + 4][1]);
+				}
+				continue;
+			}
+
+			// 2) Modern: const KEY = 'value';
+			if($id === T_CONST
+				&& isset($sig[$i + 1]) && $sig[$i + 1][0] === T_STRING
+				&& isset($sig[$i + 2]) && $sig[$i + 2][1] === '='
+				&& isset($sig[$i + 3]) && $sig[$i + 3][0] === T_CONSTANT_ENCAPSED_STRING)
+			{
+				$key = $sig[$i + 1][1];
+				if(preg_match('/^[A-Z_][A-Z0-9_]*$/', $key))
+				{
+					$retloc[$type][$key] = $this->decodeStringToken($sig[$i + 3][1]);
+				}
+				continue;
+			}
+
+			// 3) Modern: 'KEY' => 'value' inside a returned array.
+			if($id === T_CONSTANT_ENCAPSED_STRING
+				&& isset($sig[$i + 1]) && $sig[$i + 1][0] === T_DOUBLE_ARROW
+				&& isset($sig[$i + 2]) && $sig[$i + 2][0] === T_CONSTANT_ENCAPSED_STRING)
+			{
+				$key = $this->decodeStringToken($text);
+				if(preg_match('/^[A-Z][A-Z0-9_]*$/', $key))
+				{
+					$retloc[$type][$key] = $this->decodeStringToken($sig[$i + 2][1]);
+				}
+				continue;
+			}
+		}
+
 		return $retloc;
-		
-		/*
-		echo "<h2>Raw Data ".$type."</h2><pre>";
-		echo htmlentities($data);
-		echo "</pre>";	
-	
-		*/
-			
 	}
-	
+
+	/**
+	 * Decode a single PHP string-literal token (T_CONSTANT_ENCAPSED_STRING) into its
+	 * runtime value, handling the common single- and double-quote escape sequences.
+	 *
+	 * @param string $raw The raw token text, including its surrounding quotes.
+	 * @return string
+	 */
+	private function decodeStringToken($raw)
+	{
+		if(!is_string($raw) || strlen($raw) < 2)
+		{
+			return $raw;
+		}
+
+		$quote = $raw[0];
+		$inner = substr($raw, 1, -1);
+
+		if($quote === "'")
+		{
+			return strtr($inner, array("\\'" => "'", "\\\\" => "\\"));
+		}
+
+		if($quote === '"')
+		{
+			return strtr($inner, array(
+				'\\"'  => '"',
+				'\\\\' => '\\',
+				'\\n'  => "\n",
+				'\\t'  => "\t",
+				'\\r'  => "\r",
+				'\\$'  => '$',
+			));
+		}
+
+		return $inner;
+	}
+
 	
 	
 	//--------------------------------------------------------------------

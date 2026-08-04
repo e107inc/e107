@@ -42,7 +42,12 @@ class banner_setup
 			'banner_campaign'       => 'e107promo'
 		);
 
-		$status = ($sql->insert('banner', $insert)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+		// Field-typed array insert: valuesTyped() reproduces the legacy array CRUD
+		// storage transform (byte-identical). Insert execute() returns affected rows
+		// on success / false on error, matching the legacy insert() truthiness.
+		$inserted = $sql->createQueryBuilder()->insert('banner')
+			->valuesTyped($insert, $sql->getFieldDefs('banner')['_FIELD_TYPES'])->execute();
+		$status = ($inserted) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 		$mes->add(LAN_DEFAULT_TABLE_DATA." banner", $status);
 
 

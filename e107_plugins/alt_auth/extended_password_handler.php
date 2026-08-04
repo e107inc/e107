@@ -98,17 +98,7 @@ class ExtendedPasswordHandler extends UserHandler
 	 */
 	private function get_random_bytes($count)
 	{
-		$this->random_state = md5($this->random_state.microtime().random_int(0,10000));  // This will 'auto seed'
-
-		$output = '';
-		for ($i = 0; $i < $count; $i += 16) 
-		{	// Only do this loop once unless we need more than 16 bytes
-		  $this->random_state = md5(microtime() . $this->random_state);
-		  $output .= pack('H*', md5($this->random_state));		// Becomes an array of 16 bytes
-		}
-		$output = substr($output, 0, $count);
-
-		return $output;
+		return e_random::bytes($count);
 	}
 
 

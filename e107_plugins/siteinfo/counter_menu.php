@@ -56,26 +56,25 @@ if (isset($pref['statActivate']) && $pref['statActivate'] == true)
 		$text = "";
 		require($logfile);
 		
-		if($sql->select("logstats", "*", "log_id='statTotal' OR log_id='statUnique' OR log_id='pageTotal'"))
+		$rows = $sql->createQueryBuilder()->select('*')->from('logstats')
+			->whereIn('log_id', array('statTotal', 'statUnique', 'pageTotal'))->fetchAll();
+		foreach($rows as $row)
 		{
-			while($row = $sql->fetch())
+			if($row['log_id'] == "statTotal")
 			{
-				if($row['log_id'] == "statTotal")
-				{
-					$siteTotal += $row['log_data'];
-				}
-				else if($row['log_id'] == "statUnique")
-				{
-					$siteUnique += $row['log_data'];
-				}
-				else
-				{
-					e107::getDebug()->log("Found Log Data");
+				$siteTotal += $row['log_data'];
+			}
+			else if($row['log_id'] == "statUnique")
+			{
+				$siteUnique += $row['log_data'];
+			}
+			else
+			{
+				e107::getDebug()->log("Found Log Data");
 
-					$dbPageInfo = unserialize($row['log_data']);
-					$totalPageEver = ($dbPageInfo[$pageName]['ttlv'] ? $dbPageInfo[$pageName]['ttlv'] : 0);
-					$uniquePageEver = ($dbPageInfo[$pageName]['unqv'] ? $dbPageInfo[$pageName]['unqv'] : 0);
-				}
+				$dbPageInfo = unserialize($row['log_data']);
+				$totalPageEver = ($dbPageInfo[$pageName]['ttlv'] ? $dbPageInfo[$pageName]['ttlv'] : 0);
+				$uniquePageEver = ($dbPageInfo[$pageName]['unqv'] ? $dbPageInfo[$pageName]['unqv'] : 0);
 			}
 		}
 		

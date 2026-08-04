@@ -101,7 +101,7 @@ class redirection
 	function __construct()
 	{
 		$this->self_exceptions = array(e_SIGNUP, SITEURL.'fpw.php', e_LOGIN, SITEURL.'membersonly.php');
-		$this->page_exceptions = array('e_ajax.php', 'e_js.php', 'e_jslib.php', 'sitedown.php',e_LOGIN, 'secimg.php');
+		$this->page_exceptions = array('e_jslib.php', 'sitedown.php',e_LOGIN, 'secimg.php');
 		$this->query_exceptions = array('logout');
 		$this->staticDomains    = defset('e_HTTP_STATIC');
 		$this->domain           = defset('e_DOMAIN');

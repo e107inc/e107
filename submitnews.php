@@ -9,11 +9,6 @@
  */
 
  
-if(!empty($_POST) && !isset($_POST['e-token']))
-{
-	// set e-token so it can be processed by class2
-	$_POST['e-token'] = '';
-} 
 require_once("class2.php");
 e107::coreLan('submitnews');
 // e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
@@ -194,7 +189,11 @@ class submitNews
                 'submitnews_media'          => json_encode($_POST['submitnews_media'],JSON_PRETTY_PRINT)
 			);
 
-			if(!$sql->insert("submitnews", $insertQry))
+			$insertResult = $sql->createQueryBuilder()->insert('submitnews')
+				->valuesTyped($insertQry, $sql->getFieldDefs('submitnews')['_FIELD_TYPES'])
+				->execute();
+
+			if(!$insertResult)
 			{
 				$mes->addError(LAN_134);
 				return false;
@@ -270,15 +269,21 @@ class submitNews
 			  <td style='width:20%' class='forumheader3'>".LAN_CATEGORY."</td>
 				<td style='width:80%' class='forumheader3'>";
 
-			if (!$sql->select("news_category"))
+			$catList = $sql->createQueryBuilder()
+				->select('category_id', 'category_name')->from('news_category')
+				->fetchAll();
+
+			if (!$catList)
 			{
 				$text .= NWSLAN_10;
 			}
 			else
 			{
 				$text .= "<select name='cat_id' class='tbox form-control'>";
-				while (list($cat_id, $cat_name, $cat_icon) = $sql->fetch('num'))
+				foreach ($catList as $cat)
 				{
+					$cat_id   = $cat['category_id'];
+					$cat_name = $cat['category_name'];
 					$sel = (varset($_POST['cat_id'],'') == $cat_id) ? "selected='selected'" : "";
 					$text .= "<option value='{$cat_id}' {$sel}>".$tp->toHTML($cat_name, FALSE, "defs")."</option>";
 				}

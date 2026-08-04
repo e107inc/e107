@@ -8,9 +8,15 @@ actor: AcceptanceTester
 shuffle: false
 coverage:
     enabled: false
+extensions:
+    enabled:
+        # Sweeps the artifacts an acceptance run writes into the app root, on
+        # the way in and on the way out, pass or fail.
+        - Extension\WorkspaceCleanup
 modules:
     enabled:
         - PhpBrowser:
             url: '%url%'
         - \Helper\Acceptance:
         - \Helper\AdminLogin:
+        - \Helper\ForumFixture:

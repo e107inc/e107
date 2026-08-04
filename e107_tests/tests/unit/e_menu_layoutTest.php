@@ -142,6 +142,36 @@
 
 
 				),
+
+				// $LAYOUT built with heredocs, plus _header_ and _footer_ wrappers.
+				'voux' => array(
+					'templates' => array(
+						'jumbotron_home',
+						'modern_business_home',
+						'jumbotron_full',
+						'jumbotron_sidebar_right'
+					),
+					'menus' => array(
+						'jumbotron_home'          => array('1','2','3','4','5','6','7','8','9','10','11','12','13','14','100','101','102','110','111','112','113','114','115','116'),
+						'modern_business_home'    => array('1','100','101','102','110','111','112','113','114','115','116'),
+						'jumbotron_full'          => array('1','100','101','102','110','111','112','113','114','115','116'),
+						'jumbotron_sidebar_right' => array('1','2','3','4','5','6','7','8','100','101','102','110','111','112','113','114','115','116'),
+					),
+				),
+
+				// $HEADER/$FOOTER declared as empty arrays, then filled per key with heredocs.
+				'_blank' => array(
+					'templates' => array(
+						'default',
+						'home',
+						'full'
+					),
+					'menus' => array(
+						'default' => array('1'),
+						'home'    => array(),
+						'full'    => array(),
+					),
+				),
 			);
 
 			foreach($tests as $theme=>$vars)

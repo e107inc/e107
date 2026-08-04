@@ -56,9 +56,13 @@ if(!empty($msg))
 $fi = new e_file;
 $mask = ".*_".USERID."_FT.*";
 $fileList = $fi->get_files(e_UPLOAD, $mask);
-if($sql->select('forum_thread','thread_id, thread_thread, thread_parent', "thread_thread REGEXP '.*_".USERID."_FT.*'")) // FIXME new forum db structure
+$qb = $sql->createQueryBuilder();
+$threadRows = $qb->select('thread_id', 'thread_thread', 'thread_parent')->from('forum_thread')
+	->where($qb->expr()->regexp('thread_thread', '.*_'.USERID.'_FT.*')) // FIXME new forum db structure
+	->fetchAll();
+if($threadRows)
 {
-	$threadList = $sql->db_getList();
+	$threadList = $threadRows;
 }
 
 $filecount = 0;

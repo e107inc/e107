@@ -41,7 +41,15 @@ class ikonboard_import extends base_import_class
     switch ($task)
 	{
 	  case 'users' :
-	    $result = $this->ourDB->gen("SELECT * FROM {$this->DBPrefix}member_profiles");
+	    // Permanent cross-database boundary (T4, dynamic identifier): the e107 builder resolves only its own prefix/db by design and cannot express this cross-database,
+	    // dynamically-prefixed table reference (`db`.prefixtable on the secondary 'ourDB'
+	    // connection); resolveTableName() fails closed on the dot/backtick and would force
+	    // this connection's prefix + language routing. The result set is also consumed by
+	    // $this->ourDB->fetch() in the parent getNext(), which a builder fetch terminal would
+	    // break. $this->DBPrefix is validated fail-closed in base_import_class::database() and
+	    // there are no values to bind. Deprecated gen() -> sanctioned, non-deprecated execute()
+	    // preserves the error-vs-empty (=== FALSE) guard and leaves the result readable.
+	    $result = $this->ourDB->execute("SELECT * FROM {$this->DBPrefix}member_profiles");
 		if ($result === FALSE) return FALSE;
 		break;
 

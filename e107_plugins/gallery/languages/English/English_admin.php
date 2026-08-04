@@ -80,4 +80,11 @@ return [
     'LAN_GALLERY_ADMIN_69' => "Facebook",
     'LAN_GALLERY_ADMIN_70' => "Load prettyPhoto globally",
     'LAN_GALLERY_ADMIN_71' => "prettyPhoto attribute (hook)",
+    'LAN_GALLERY_ADMIN_72' => "Order categories by",
+    'LAN_GALLERY_ADMIN_73' => "Category ID ASC",
+    'LAN_GALLERY_ADMIN_74' => "Category ID DESC",
+    'LAN_GALLERY_ADMIN_75' => "Category Name ASC",
+    'LAN_GALLERY_ADMIN_76' => "Category Name DESC",
+    'LAN_GALLERY_ADMIN_77' => "Category Order ASC",
+    'LAN_GALLERY_ADMIN_78' => "Category Order DESC",
 ];

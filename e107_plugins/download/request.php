@@ -1,4 +1,7 @@
 <?php
+
+use e107\Database\SqlFragment;
+
 if (!defined('e107_INIT'))
 {
 	require_once(__DIR__.'/../../class2.php');
@@ -9,11 +12,74 @@ e107::lan('download','download');
 class download_request
 {
 
+	/**
+	 * Find the download row a legacy by-name request refers to.
+	 *
+	 * Replaces the old "serve it straight off disk" behaviour, so the caller
+	 * falls through to the usual userclass, active-state, limit and logging
+	 * checks instead of bypassing them.
+	 *
+	 * @param string $request relative path or file name from the query string
+	 * @return array|false download row, or false when nothing matches
+	 */
+	static function findByName($request)
+	{
+		if(!e_file::isSafeRelativePath($request))
+		{
+			return false;
+		}
+
+		$sql = e107::getDb();
+
+		// The stored value is either the bare relative path or the same path
+		// behind whichever {e_XXX} constant the media picker wrote.
+		$candidates = array($request);
+		foreach(array('{e_DOWNLOAD}', '{e_MEDIA_FILE}', '{e_UPLOAD}', '{e_FILE}') as $prefix)
+		{
+			$candidates[] = $prefix . $request;
+		}
+
+		$row = $sql->createQueryBuilder()
+			->select('download_id')->from('download')
+			->whereIn('download_url', $candidates)
+			->setMaxResults(1)
+			->fetchRow();
+
+		if($row)
+		{
+			return $row;
+		}
+
+		// Legacy pretty links quote the file name only, while the row stores a
+		// dated sub-folder. Match on the trailing segment, then confirm in PHP so
+		// a LIKE metacharacter cannot pull in a neighbouring row.
+		$qb = $sql->createQueryBuilder();
+		$rows = $qb->select('download_id', 'download_url')->from('download')
+			->where($qb->expr()->endsWith('download_url', '/' . $request))
+			->setMaxResults(25)
+			->fetchAll();
+
+		if(!empty($rows))
+		{
+			foreach($rows as $candidate)
+			{
+				if(basename($candidate['download_url']) === basename($request))
+				{
+					return $candidate;
+				}
+			}
+		}
+
+		return false;
+	}
+
+
 	static function request()
 	{
 
 		$log = e107::getLog();
 		$id = false;
+		$resolved = false;
 
 		$sql = e107::getDb();
 		$tp = e107::getParser();
@@ -21,21 +87,22 @@ class download_request
 
 		if(!is_numeric(e_QUERY) && empty($_GET['id']))
 		{
-			if($sql->select('download', 'download_id', "download_url='" . $tp->toDB(e_QUERY) . "'"))
+			$names = array(e_QUERY);
+			if(strpos(e_QUERY, 'pub_') === 0)
 			{
-				$row = $sql->fetch();
-				$type = 'file';
-				$id = $row['download_id'];
+				$names[] = substr(e_QUERY, 4);
 			}
-			elseif((strpos(e_QUERY, "http://") === 0) || (strpos(e_QUERY, "ftp://") === 0) || (strpos(e_QUERY, "https://") === 0))
+
+			foreach($names as $name)
 			{
-				header("location: " . e_QUERY);
-				exit();
-			}
-			elseif(file_exists(e_DOWNLOAD . e_QUERY) && !is_dir(e_DOWNLOAD . e_QUERY))        // 1 - should we allow this?
-			{
-				e107::getFile()->send(e_DOWNLOAD . e_QUERY);
-				exit();
+				$row = self::findByName($name);
+				if($row)
+				{
+					$type = 'file';
+					$id = $row['download_id'];
+					$resolved = true;
+					break;
+				}
 			}
 		}
 
@@ -45,10 +112,15 @@ class download_request
 			list($action, $download_id, $mirror_id) = explode(".", e_QUERY);
 			$download_id = intval($download_id);
 			$mirror_id = intval($mirror_id);
-			$qry = "SELECT d.*, dc.download_category_class FROM #download as d LEFT JOIN #download_category AS dc ON dc.download_category_id = d.download_category WHERE d.download_id = {$download_id}";
-			if($sql->gen($qry))
+			$qb = $sql->createQueryBuilder();
+			$row = $qb
+				->select('d.*', 'dc.download_category_class')
+				->from('download', 'd')
+				->leftJoin('download_category', 'dc', $qb->expr()->compareColumns('dc.download_category_id', 'd.download_category'))
+				->where('d.download_id', (int) $download_id)
+				->fetchRow();
+			if($row)
 			{
-				$row = $sql->fetch();
 				extract($row);
 				if(check_class($row['download_category_class']) && check_class($row['download_class']))
 				{
@@ -74,8 +146,13 @@ class download_request
 							$mstr .= $mid . "," . $address . "," . $requests . chr(1);
 						}
 					}
-					$sql->update("download", "download_requested = download_requested + 1, download_mirror = '{$mstr}' WHERE download_id = '" . intval($download_id) . "'");
-					$sql->update("download_mirror", "mirror_count = mirror_count + 1 WHERE mirror_id = '" . intval($mirror_id) . "'");
+					$sql->createQueryBuilder()->update('download')
+						->increment('download_requested')
+						->set('download_mirror', $mstr)
+						->where('download_id', (int) $download_id)->execute();
+					$sql->createQueryBuilder()->update('download_mirror')
+						->increment('mirror_count')
+						->where('mirror_id', (int) $mirror_id)->execute();
 
 					if(!empty($gaddress))
 					{
@@ -91,17 +168,20 @@ class download_request
 			}
 		}
 
-		$tmp = explode(".", e_QUERY);
-		if(empty($tmp[1]) || strpos(e_QUERY, "pub_") !== false)
+		if(!$resolved) // a by-name request already has its id; do not overwrite it
 		{
-			$id = intval($tmp[0]);
-			$type = "file";
-		}
-		else
-		{
-			$table = preg_replace("#\W#", "", $tp->toDB($tmp[0], true));
-			$id = intval($tmp[1]);
-			$type = "image";
+			$tmp = explode(".", e_QUERY);
+			if(empty($tmp[1]) || strpos(e_QUERY, "pub_") !== false)
+			{
+				$id = intval($tmp[0]);
+				$type = "file";
+			}
+			else
+			{
+				$table = preg_replace("#\W#", "", $tp->toDB($tmp[0], true));
+				$id = intval($tmp[1]);
+				$type = "image";
+			}
 		}
 
 		if(vartrue($_GET['id'])) // SEF URL
@@ -111,24 +191,12 @@ class download_request
 		}
 
 
-		if(preg_match("#.*\.[a-z,A-Z]{3,4}#", e_QUERY))
+		// A name that matched a download row is handled below, with the userclass,
+		// active-state and limit checks applied. Anything else that still looks
+		// like a file name has no row behind it, so it is simply not found.
+		if(!$resolved && preg_match("#.*\.[a-z,A-Z]{3,4}#", e_QUERY))
 		{
-			if(strpos(e_QUERY, "pub_") !== false)
-			{
-				$bid = str_replace("pub_", "", e_QUERY);
-				if(file_exists(e_UPLOAD . $bid))
-				{
-					e107::getFile()->send(e_UPLOAD . $bid);
-					exit();
-				}
-				$log->addError("Line" . __LINE__ . ": Couldn't find " . e_UPLOAD . $bid . "");
-			}
-			if(file_exists(e_DOWNLOAD . e_QUERY))
-			{
-				e107::getFile()->send(e_DOWNLOAD . e_QUERY);
-				exit();
-			}
-			$log->addError("Line" . __LINE__ . ": Couldn't find " . e_DOWNLOAD . e_QUERY);
+			$log->addError("Line" . __LINE__ . ": No download matches " . e_QUERY);
 			$log->toFile('download_requests', 'Download Requests', true); // Create a log file and add the log messages
 			require_once(HEADERF);
 			e107::getRender()->tablerender(LAN_ERROR, "<div style='text-align:center'>" . LAN_FILE_NOT_FOUND . "\n<br /><br />\n<a href='javascript:history.back(1)'>" . LAN_BACK . "</a></div>");
@@ -138,11 +206,15 @@ class download_request
 
 		if($type == "file")
 		{
-			$qry = "SELECT d.*, dc.download_category_class FROM #download as d LEFT JOIN #download_category AS dc ON dc.download_category_id = d.download_category WHERE d.download_id = {$id}";
-			if($sql->gen($qry))
+			$qb = $sql->createQueryBuilder();
+			$row = $qb
+				->select('d.*', 'dc.download_category_class')
+				->from('download', 'd')
+				->leftJoin('download_category', 'dc', $qb->expr()->compareColumns('dc.download_category_id', 'd.download_category'))
+				->where('d.download_id', (int) $id)
+				->fetchRow();
+			if($row)
 			{
-				$row = $sql->fetch();
-
 				$row['download_url'] = $tp->replaceConstants($row['download_url']); // must be relative file-path.
 
 				if(check_class($row['download_category_class']) && check_class($row['download_class']))
@@ -193,8 +265,13 @@ class download_request
 								$mstr .= $mid . "," . $address . "," . $requests . chr(1);
 							}
 						}
-						$sql->update("download", "download_requested = download_requested + 1, download_mirror = '{$mstr}' WHERE download_id = '" . intval($download_id) . "'");
-						$sql->update("download_mirror", "mirror_count = mirror_count + 1 WHERE mirror_id = '" . intval($mirror_id) . "'");
+						$sql->createQueryBuilder()->update('download')
+							->increment('download_requested')
+							->set('download_mirror', $mstr)
+							->where('download_id', intval($download_id))->execute();
+						$sql->createQueryBuilder()->update('download_mirror')
+							->increment('mirror_count')
+							->where('mirror_id', intval($mirror_id))->execute();
 						if(!empty($gaddress))
 						{
 							header("Location: " . self::decorate_download_location($gaddress));
@@ -203,12 +280,19 @@ class download_request
 					}
 
 					// increment download count
-					$sql->update("download", "download_requested = download_requested + 1 WHERE download_id = '{$id}'");
+					$sql->createQueryBuilder()->update('download')
+						->increment('download_requested')
+						->where('download_id', (int) $id)->execute();
 					$user_id = USER ? USERID : 0;
 					$ip = e107::getIPHandler()->getIP(false);
-					$request_data = "'0', '{$user_id}', '{$ip}', '{$id}', '" . time() . "'";
 					//add request info to db
-					$sql->insert("download_requests", $request_data);
+					$sql->createQueryBuilder()->insert('download_requests')
+						->values(array(
+							'download_request_userid'      => $user_id,
+							'download_request_ip'          => $ip,
+							'download_request_download_id' => $id,
+							'download_request_datestamp'   => time(),
+						))->execute();
 					//	if (preg_match("/Binary\s(.*?)\/.*/", $download_url, $result))
 					//	{
 					//		$bid = $result[1];
@@ -234,7 +318,7 @@ class download_request
 					{
 						if(file_exists(e_DOWNLOAD . $row['download_url']))
 						{
-							e107::getFile()->send(e_DOWNLOAD . $row['download_url']);
+							e107::getFile()->send(e_DOWNLOAD . $row['download_url'], array('roots' => array(e_DOWNLOAD)));
 							exit();
 						}
 						elseif(file_exists($row['download_url']))
@@ -244,7 +328,7 @@ class download_request
 						}
 						elseif(file_exists(e_UPLOAD . $row['download_url']))
 						{
-							e107::getFile()->send(e_UPLOAD . $row['download_url']);
+							e107::getFile()->send(e_UPLOAD . $row['download_url'], array('roots' => array(e_UPLOAD)));
 							exit();
 						}
 						$log->addError("Couldn't find " . e_DOWNLOAD . $row['download_url'] . " or " . $row['download_url'] . " or " . e_UPLOAD . $row['download_url']);
@@ -299,10 +383,13 @@ class download_request
 			return;
 		}
 
-		if(!empty($table))
+		if(!empty($table) && in_array($table, array('download', 'upload'), true)) // validate dynamic table name fail-closed
 		{
-			$sql->select($table, "*", "{$table}_id = '{$id}'");
-			if($row = $sql->fetch())
+			$row = $sql->createQueryBuilder()
+				->select('*')->from($table)
+				->where($table . '_id', $id)
+				->fetchRow();
+			if($row)
 			{
 				extract($row);
 				$image = ($table == "upload" ? $row['upload_ss'] : $row['download_image']);
@@ -386,72 +473,93 @@ class download_request
 		$sql = e107::getDb();
 		$pref = e107::getPref();
 
+		$classList = explode(',', USERCLASS_LIST);
+
 		// Check download count limits
-		$qry = "SELECT gen_intdata, gen_chardata, (gen_intdata/gen_chardata) as count_perday FROM #generic WHERE gen_type = 'download_limit' AND gen_datestamp IN (".USERCLASS_LIST.") AND (gen_chardata >= 0 AND gen_intdata >= 0) ORDER BY count_perday DESC";
-		if($sql->gen($qry))
+		$limits = $sql->createQueryBuilder()
+			->select('gen_intdata', 'gen_chardata')->addSelect(SqlFragment::raw('(gen_intdata/gen_chardata) AS count_perday'))
+			->from('generic')
+			->where('gen_type', 'download_limit')
+			->whereIn('gen_datestamp', $classList)
+			->where('gen_chardata', '>=', 0)
+			->where('gen_intdata', '>=', 0)
+			->orderBy('count_perday', 'DESC')
+			->fetchRow();
+		if($limits)
 		{
-			$limits = $sql->fetch();
 			$cutoff = time() - (86400 * $limits['gen_chardata']);
-			if(USER)
+			$row = self::aggregate_download_requests('COUNT', 'd.download_id', 'count', $cutoff);
+			if($row && $row['count'] >= $limits['gen_intdata'])
 			{
-				$where = "dr.download_request_datestamp > {$cutoff} AND dr.download_request_userid = ".USERID;
-			}
-			else
-			{
-				$ip = e107::getIPHandler()->getIP();
-				$where = "dr.download_request_datestamp > {$cutoff} AND dr.download_request_ip = '{$ip}'";
-			}
-			$qry = "SELECT COUNT(d.download_id) as count FROM #download_requests as dr LEFT JOIN #download as d ON dr.download_request_download_id = d.download_id AND d.download_active = 1 WHERE {$where} GROUP by dr.download_request_userid";
-			if($sql->gen($qry))
-			{
-				$row = $sql->fetch();
-				if($row['count'] >= $limits['gen_intdata'])
-				{
-					// Exceeded download count limit
-				//	$goUrl = e107::getUrl()->create('download/index')."?action=error&id=2";
-					$goUrl = e107::url('download', 'index', null, array('query'=>array('action'=>'error','id'=>2)));
-					e107::redirect($goUrl);
-				 // 	e107::redirect(e_BASE."download.php?error.{$cutoff}.2");
-					/* require_once(HEADERF);
-					$ns->tablerender(LAN_ERROR, LAN_dl_62);
-					require(FOOTERF);  */
-					exit();
-				}
+				// Exceeded download count limit
+			//	$goUrl = e107::getUrl()->create('download/index')."?action=error&id=2";
+				$goUrl = e107::url('download', 'index', null, array('query'=>array('action'=>'error','id'=>2)));
+				e107::redirect($goUrl);
+			 // 	e107::redirect(e_BASE."download.php?error.{$cutoff}.2");
+				/* require_once(HEADERF);
+				$ns->tablerender(LAN_ERROR, LAN_dl_62);
+				require(FOOTERF);  */
+				exit();
 			}
 		}
 		// Check download bandwidth limits
-		$qry = "SELECT gen_user_id, gen_ip, (gen_user_id/gen_ip) as bw_perday FROM #generic WHERE gen_type='download_limit' AND gen_datestamp IN (".USERCLASS_LIST.") AND (gen_user_id >= 0 AND gen_ip >= 0) ORDER BY bw_perday DESC";
-		if($sql->gen($qry))
+		$limit = $sql->createQueryBuilder()
+			->select('gen_user_id', 'gen_ip')->addSelect(SqlFragment::raw('(gen_user_id/gen_ip) AS bw_perday'))
+			->from('generic')
+			->where('gen_type', 'download_limit')
+			->whereIn('gen_datestamp', $classList)
+			->where('gen_user_id', '>=', 0)
+			->where('gen_ip', '>=', 0)
+			->orderBy('bw_perday', 'DESC')
+			->fetchRow();
+		if($limit)
 		{
-			$limit = $sql->fetch();
 			$cutoff = time() - (86400*$limit['gen_ip']);
-			if(USER)
-			{
-				$where = "dr.download_request_datestamp > {$cutoff} AND dr.download_request_userid = ".USERID;
-			}
-			else
-			{
-				$ip = e107::getIPHandler()->getIP();
-				$where = "dr.download_request_datestamp > {$cutoff} AND dr.download_request_ip = '{$ip}'";
-			}
-			$qry = "SELECT SUM(d.download_filesize) as total_bw FROM #download_requests as dr LEFT JOIN #download as d ON dr.download_request_download_id = d.download_id AND d.download_active = 1 WHERE {$where} GROUP by dr.download_request_userid";
-			if($sql->gen($qry))
-			{
-				$row = $sql->fetch();
-
-				if($row['total_bw'] / 1024 > $limit['gen_user_id'])
-				{	//Exceed bandwith limit
-				//	$goUrl = e107::getUrl()->create('download/index')."?action=error&id=2";
-					$goUrl = e107::url('download', 'index', null, array('query'=>array('action'=>'error','id'=>2)));
-					 e107::redirect($goUrl);
-				 // e107::redirect(e_BASE."download.php?error.{$cutoff}.2");
-					/* require(HEADERF);
-					$ns->tablerender(LAN_ERROR, LAN_dl_62);
-					require(FOOTERF); */
-					exit();
-				}
+			$row = self::aggregate_download_requests('SUM', 'd.download_filesize', 'total_bw', $cutoff);
+			if($row && $row['total_bw'] / 1024 > $limit['gen_user_id'])
+			{	//Exceed bandwith limit
+			//	$goUrl = e107::getUrl()->create('download/index')."?action=error&id=2";
+				$goUrl = e107::url('download', 'index', null, array('query'=>array('action'=>'error','id'=>2)));
+				 e107::redirect($goUrl);
+			 // e107::redirect(e_BASE."download.php?error.{$cutoff}.2");
+				/* require(HEADERF);
+				$ns->tablerender(LAN_ERROR, LAN_dl_62);
+				require(FOOTERF); */
+				exit();
 			}
 		}
+	}
+
+	/**
+	 * Aggregate a user's recent download requests, scoped to the current user
+	 * (or their IP when anonymous) since a cutoff timestamp.
+	 *
+	 * @param string $function aggregate function, e.g. 'COUNT' or 'SUM';
+	 *                         see {@see \e107\Database\QueryBuilder::selectAggregate()}.
+	 * @param string $column aggregated column, e.g. 'd.download_id'.
+	 * @param string $alias result column alias.
+	 * @param int $cutoff lower-bound request timestamp.
+	 * @return array|false fetched row, or false when none.
+	 */
+	private static function aggregate_download_requests($function, $column, $alias, $cutoff)
+	{
+		$qb = e107::getDb()->createQueryBuilder();
+		$qb->selectAggregate($function, $column, $alias)
+			->from('download_requests', 'dr')
+			->leftJoin('download', 'd', $qb->expr()->allOf($qb->expr()->compareColumns('dr.download_request_download_id', 'd.download_id'), $qb->expr()->eq('d.download_active', 1)))
+			->where('dr.download_request_datestamp', '>', $cutoff)
+			->groupBy('dr.download_request_userid');
+
+		if(USER)
+		{
+			$qb->where('dr.download_request_userid', USERID);
+		}
+		else
+		{
+			$qb->where('dr.download_request_ip', e107::getIPHandler()->getIP());
+		}
+
+		return $qb->fetchRow();
 	}
 
 	private static function decorate_download_location($url)

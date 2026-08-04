@@ -128,9 +128,14 @@ class plugin_featurebox_category extends e_model
 	{
 		if($force || null === $this->_loaded_data)
 		{
-			if(e107::getDb()->select('featurebox_category', '*', 'fb_category_class IN ('.USERCLASS_LIST.') AND fb_category_template=\''.e107::getParser()->toDB($template).'\''))
+			$row = e107::getDb()->createQueryBuilder()
+				->select('*')->from('featurebox_category')
+				->whereIn('fb_category_class', array_map('intval', explode(',', USERCLASS_LIST)))
+				->where('fb_category_template', e107::getParser()->toDB($template))
+				->fetchRow();
+			if($row)
 			{
-				$this->setData(e107::getDb()->fetch());
+				$this->setData($row);
 				$this->_loaded_data = true;
 			}
 		}
