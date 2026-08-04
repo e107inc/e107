@@ -35,24 +35,20 @@ if (isset($_GET['author']) && $_GET['author'] != '') {
 //basic
 $return_fields = 'c.comment_item_id, c.comment_author_id, comment_author_name, c.comment_datestamp, c.comment_comment, c.comment_type';
 
+$in = array();
+$join = array();
+
 foreach($search_prefs['comments_handlers'] as $h_key => $value)
 {
 	if(check_class($value['class']))
 	{
-		if($value['dir'] == 'core')
+		if(!e_search::isCommentHandlerAvailable($h_key, $value))
 		{
-			$path = e_HANDLER . 'search/comments_' . $h_key . '.php';
+			continue;
 		}
-		else
-		{
-			if(!e107::isInstalled($value['dir']))
-			{
-				continue;
-			}
 
-			$path = e_PLUGIN . $value['dir'] . '/search/search_comments.php';
-		}
-		$path = ($value['dir'] == 'core') ? e_HANDLER . 'search/comments_' . $h_key . '.php' : e_PLUGIN . $value['dir'] . '/search/search_comments.php';
+		$path = e_search::getCommentHandlerPath($h_key, $value);
+
 		if(is_readable($path)) // TODO Rework this to use e_search.php
 		{
 			require_once($path);
@@ -67,13 +63,22 @@ foreach($search_prefs['comments_handlers'] as $h_key => $value)
 $search_fields = array('c.comment_comment', 'c.comment_author_name');
 $weights = array('1.2', '0.6');
 $no_results = "<div class='alert alert-danger'>".LAN_198."</div>"; //LAN_198;
-$where = "comment_type IN (".implode(',', $in).") AND".$advanced_where;
-$order = array('comment_datestamp' => 'DESC');
-$table = "comments AS c ".implode(' ', $join);
 
-$ps = $sch -> parsesearch($table, $return_fields, $search_fields, $weights, 'search_comment', $no_results, $where, $order);
-$text .= $ps['text'];
-$results = $ps['results'];
+if(empty($in)) // nothing left to search: every handler is unavailable or out of reach of this user
+{
+	$text .= $no_results;
+	$results = 0;
+}
+else
+{
+	$where = "comment_type IN (".implode(',', $in).") AND".$advanced_where;
+	$order = array('comment_datestamp' => 'DESC');
+	$table = "comments AS c ".implode(' ', $join);
+
+	$ps = $sch -> parsesearch($table, $return_fields, $search_fields, $weights, 'search_comment', $no_results, $where, $order);
+	$text .= $ps['text'];
+	$results = $ps['results'];
+}
 
 	/**
 	 * @param $row

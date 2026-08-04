@@ -55,13 +55,17 @@ class smf_import extends base_import_class
 		{
 			case 'users' :
 				
-				// Set up Userclasses. 
-				if($this->ourDB && $this->ourDB->gen("SELECT * FROM {$this->DBPrefix}membergroups WHERE group_name = 'Jr. Member' "))
+				// Set up Userclasses.
+				// $this->DBPrefix is a dynamic external-database table prefix (validated
+				// fail-closed in base_import_class::database()); it is an SQL identifier
+				// that cannot be bound. No values are interpolated here.
+				if($this->ourDB && $this->ourDB->execute("SELECT * FROM {$this->DBPrefix}membergroups WHERE group_name = 'Jr. Member' "))
 				{
-					e107::getMessage()->addDebug("Userclasses Found");	
-				}	
-				
-		    	$result = $this->ourDB->gen("SELECT * FROM {$this->DBPrefix}members WHERE `is_activated`=1");
+					e107::getMessage()->addDebug("Userclasses Found");
+				}
+
+		    	// Permanent cross-database boundary (dynamic external-DB identifier): same fail-closed-validated $this->DBPrefix as above; the e107 builder resolves only its own prefix/db by design, so it cannot route a cross-database-qualified source table. The is_activated literal is static.
+		    	$result = $this->ourDB->execute("SELECT * FROM {$this->DBPrefix}members WHERE `is_activated`=1");
 				if ($result === false)
 				{
 					$message = $this->ourDB->getLastErrorText();
@@ -72,9 +76,10 @@ class smf_import extends base_import_class
 				
 				
  			case 'forum' :
+ 			    // Permanent cross-database boundary (T4, dynamic identifier): $this->DBPrefix is a cross-database-qualified external SMF prefix, validated fail-closed in base_import_class::database(); the e107 builder resolves only its own prefix/db by design, so its from()/leftJoin() reject database-qualified names and apply e107 prefix/language routing and cannot target the source DB. No bound values (static columns/joins only).
  			    $qry = "SELECT f.*, m.id_member, m.poster_name, m.poster_time FROM {$this->DBPrefix}boards AS f LEFT JOIN {$this->DBPrefix}messages AS m ON f.id_last_msg = m.id_msg GROUP BY f.id_board ";
 
-				$result = $this->ourDB->gen($qry);
+				$result = $this->ourDB->execute($qry);
 				if ($result === false)
 				{
 					$message = $this->ourDB->getLastErrorText();
@@ -85,23 +90,25 @@ class smf_import extends base_import_class
 				
 			case 'forumthread' :
 
+				// Permanent cross-database boundary (T4, dynamic identifier): $this->DBPrefix is a cross-database-qualified external SMF prefix, validated fail-closed in base_import_class::database(); the e107 builder resolves only its own prefix/db by design, so its from()/leftJoin() reject database-qualified names and apply e107 prefix/language routing and cannot target the source DB. No bound values (static columns/joins only).
 				$qry = "SELECT t.*, m.poster_name, m.subject, m.poster_time, m.id_member, l.poster_name as lastpost_name, l.poster_time as lastpost_time, l.id_member as lastpost_user FROM {$this->DBPrefix}topics AS t
 						LEFT JOIN {$this->DBPrefix}messages AS m ON t.id_first_msg = m.id_msg
 						LEFT JOIN {$this->DBPrefix}messages AS l ON t.id_last_msg = l.id_msg
 						GROUP BY t.id_topic";
 
-				$result = $this->ourDB->gen($qry);
+				$result = $this->ourDB->execute($qry);
 				if ($result === false) return false;
 
 			break;
 				
 			case 'forumpost' :
 
+				// Permanent cross-database boundary (T4, dynamic identifier): $this->DBPrefix is a cross-database-qualified external SMF prefix, validated fail-closed in base_import_class::database(); the e107 builder resolves only its own prefix/db by design, so its from()/leftJoin() reject database-qualified names and apply e107 prefix/language routing and cannot target the source DB. No bound values (static columns/joins only).
 				$qry = "SELECT m.*, a.filename, a.fileext, a.size FROM {$this->DBPrefix}messages AS m LEFT JOIN {$this->DBPrefix}attachments AS a ON m.id_msg = a.id_msg GROUP BY m.id_msg ORDER BY m.id_msg ASC ";
 
-				$result = $this->ourDB->gen($qry);
+				$result = $this->ourDB->execute($qry);
 				if ($result === false) return false;
-			break;				
+			break;
 
 			case 'forumtrack' :
 				//$result = $this->ourDB->gen("SELECT * FROM `{$this->DBPrefix}forums_track`");

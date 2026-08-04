@@ -30,13 +30,17 @@ function sublinks_shortcode($parm)
 
 	$text = "\n\n<!-- Sublinks Start -->\n\n";
 	$text .= varset($style['prelink']);
-	if($sql->select("links", "link_id", "link_url= '{$page}' AND link_category = {$cat} LIMIT 1"))
+	if($sql->createQueryBuilder()->select('link_id')->from('links')->where('link_url', $page)->where('link_category', (int) $cat)->limit(1)->execute())
 	{
 		$row = $sql->fetch();
 		$parent = (int) $row['link_id'];
 
-		$link_total = $sql->select("links", "*", "link_class IN (" . USERCLASS_LIST . ") AND link_parent={$parent} ORDER BY link_order ASC");
-		while($linkInfo = $sql->fetch())
+		$linkRows = $sql->createQueryBuilder()->select('*')->from('links')
+			->whereIn('link_class', explode(',', USERCLASS_LIST))
+			->where('link_parent', $parent)
+			->orderBy('link_order', 'ASC')
+			->fetchAll();
+		foreach($linkRows as $linkInfo)
 		{
 			$text .= $sublinks->makeLink($linkInfo, true, $style);
 		}

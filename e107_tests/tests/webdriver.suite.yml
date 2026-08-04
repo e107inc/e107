@@ -19,6 +19,12 @@ modules:
             path: '%selenium.path%'
             window_size: 1366x900
             capabilities:
+                # Leave native confirm() dialogs standing until a test answers
+                # them. Chrome's default is "dismiss and notify", which answers
+                # them itself and leaves acceptPopup()/cancelPopup() with
+                # nothing to find, so a test about what the visitor answered
+                # could not ask the question.
+                unhandledPromptBehavior: ignore
                 goog:chromeOptions:
                     args:
                         - '--no-sandbox'
@@ -30,6 +36,9 @@ modules:
             populate: '%db.populate%'
             dump: '%db.dump_path%'
         - \Helper\AdminLogin
+        # The forum plugin, its rows and its members. Shared with acceptance,
+        # because neither the dump nor a fresh install ships forum tables.
+        - \Helper\ForumFixture
         # Writes e107_config.php from the dump's DB params so the served app is
         # installed (Acceptance's variant no-ops the write and installs instead).
         - \Helper\Webdriver
@@ -38,3 +47,38 @@ modules:
         # After PrefCacheReset: starts each test logged out.
         - \Helper\WebDriverSession
 step_decorators: ~
+# Two environments, because some behaviour only exists over one scheme.
+#
+# A browser appends the Sec-Fetch-* headers only when the request URL is a
+# potentially trustworthy URL. Over HTTPS it sends them, so e107's browser-only
+# CSRF modes can be exercised as written; over plain HTTP to a name like 'web'
+# it never sends them at all, so those modes soften to the hybrid and the site
+# has to stay usable on a token. Neither half can be tested on the other's
+# scheme, so a test that cares carries an @env matching one of these. A test
+# that does not care carries no @env and runs under both.
+#
+#   e107-tests run webdriver --env http
+#   e107-tests run webdriver --env tls
+#
+# The TLS URL is spelled out rather than parameterised because that vhost and
+# its certificate belong to this harness's own image (see docker/Dockerfile), so
+# there is nothing a user's config.local.yml could usefully say about it.
+#
+# acceptInsecureCerts is enough. The certificate is self-signed, and the worry
+# would be that a certificate error costs the page its secure-context status and
+# with it the very headers under test; it does not. Verified by probing a real
+# Chrome, which sends Sec-Fetch-Site: same-origin on a same-origin navigation
+# here, and no Sec-Fetch-* header of any kind over plain HTTP.
+env:
+    http:
+        modules:
+            config:
+                WebDriver:
+                    url: '%url%'
+    tls:
+        modules:
+            config:
+                WebDriver:
+                    url: 'https://web/'
+                    capabilities:
+                        acceptInsecureCerts: true

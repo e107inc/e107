@@ -607,17 +607,6 @@
 			<field name="menu_parms"></field>
 		</item>
 		<item>
-			<field name="menu_id">10</field>
-			<field name="menu_name">clock_menu</field>
-			<field name="menu_location">0</field>
-			<field name="menu_order">0</field>
-			<field name="menu_class">0</field>
-			<field name="menu_pages"></field>
-			<field name="menu_path">clock_menu/</field>
-			<field name="menu_layout"></field>
-			<field name="menu_parms"></field>
-		</item>
-		<item>
 			<field name="menu_id">11</field>
 			<field name="menu_name">other_news2_menu</field>
 			<field name="menu_location">0</field>
@@ -924,17 +913,6 @@
 		<item>
 			<field name="menu_id">38</field>
 			<field name="menu_name">fb_like_menu</field>
-			<field name="menu_location">0</field>
-			<field name="menu_order">0</field>
-			<field name="menu_class">0</field>
-			<field name="menu_pages"></field>
-			<field name="menu_path">social/</field>
-			<field name="menu_layout"></field>
-			<field name="menu_parms"></field>
-		</item>
-		<item>
-			<field name="menu_id">39</field>
-			<field name="menu_name">instafeed_menu</field>
 			<field name="menu_location">0</field>
 			<field name="menu_order">0</field>
 			<field name="menu_class">0</field>

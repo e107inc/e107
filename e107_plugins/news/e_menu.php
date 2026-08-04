@@ -36,7 +36,9 @@ class news_menu
 
 		$sources = array('latest'=> LAN_NEWS_ADMIN_00, 'sticky' => LAN_NEWS_ADMIN_01, 'template'=> LAN_NEWS_ADMIN_02);
 
-		$tmp =  e107::getDb()->retrieve('news_category','category_id,category_name',null, true);
+		$tmp =  e107::getDb()->createQueryBuilder()
+			->select('category_id', 'category_name')->from('news_category')
+			->fetchAll();
 
 		$templates = e107::getLayouts('news','news_grid', 'front', null, false, false);
 

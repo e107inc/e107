@@ -191,11 +191,12 @@ e107::css('inline',"
 		{
 			$sql = e107::getDb();
 			$sql2 = e107::getDb('sql2');
-			$count = $sql->select('forum', 'forum_id', 'forum_order = 0');
+			$count = $sql->createQueryBuilder()->from('forum')->where('forum_order', 0)->count();
 
 			if($count > 1)
 			{
-				$sql->gen("SELECT forum_id,forum_name,forum_parent,forum_order FROM `#forum` ORDER BY COALESCE(NULLIF(forum_parent,0), forum_id), forum_parent > 0, forum_order ");
+				// ORDER BY uses SQL expressions the builder cannot validate as identifiers; no values to bind.
+				$sql->execute("SELECT forum_id,forum_name,forum_parent,forum_order FROM `#forum` ORDER BY COALESCE(NULLIF(forum_parent,0), forum_id), forum_parent > 0, forum_order ");
 
 				$c = 0;
 				while($row = $sql->fetch())
@@ -211,7 +212,7 @@ e107::css('inline',"
 						$c = $c+1;
 					}
 
-					$sql2->update('forum', 'forum_order = '.$c.' WHERE forum_id = '.$row['forum_id'].' LIMIT 1');
+					$sql2->createQueryBuilder()->update('forum')->set('forum_order', (int) $c)->where('forum_id', (int) $row['forum_id'])->limit(1)->execute();
 				}
 			}
 		}
@@ -278,7 +279,7 @@ e107::css('inline',"
 				$this->fields['forum_order']['noedit'] = true;
 			}
 
-			$data = e107::getDb()->retrieve('forum', 'forum_id,forum_name,forum_parent', 'forum_id != 0',true);
+			$data = e107::getDb()->createQueryBuilder()->select('forum_id', 'forum_name', 'forum_parent')->from('forum')->where('forum_id', '!=', 0)->fetchAll();
 			$this->forumParents[0] = FORLAN_216;
 			$forumSubParents = array();
 
@@ -312,7 +313,7 @@ e107::css('inline',"
 
 			$sql = e107::getDb();
 
-			$data2 = $sql->retrieve('forum','forum_id,forum_name,forum_parent,forum_order','forum_parent = 0',true);
+			$data2 = $sql->createQueryBuilder()->select('forum_id', 'forum_name', 'forum_parent', 'forum_order')->from('forum')->where('forum_parent', 0)->fetchAll();
 			foreach($data2 as $val)
 			{
 				$id = $val['forum_id'];
@@ -321,7 +322,7 @@ e107::css('inline',"
 
 			$previous = 0;
 
-			$data = $sql->retrieve('forum','*','forum_parent != 0 ORDER BY forum_order',true);
+			$data = $sql->createQueryBuilder()->select('*')->from('forum')->where('forum_parent', '!=', 0)->orderBy('forum_order')->fetchAll();
 			foreach($data as $row)
 			{
 				$p = $row['forum_parent'];
@@ -335,7 +336,7 @@ e107::css('inline',"
 				$previous = $p;
 
 			//	echo "<br />".$row['forum_name']." with parent: ".$p." old: ".$row['forum_order']."  new: ".$c;
-				$sql->update('forum','forum_order = '.$c.' WHERE forum_id = '.intval($row['forum_id']).' LIMIT 1');
+				$sql->createQueryBuilder()->update('forum')->set('forum_order', (int) $c)->where('forum_id', (int) $row['forum_id'])->limit(1)->execute();
 			}
 		}
 
@@ -344,7 +345,7 @@ e107::css('inline',"
 		public function beforeCreate($new_data, $old_data)
 		{
 			$sql = e107::getDb();
-			$parentOrder = $sql->retrieve('forum','forum_order','forum_id='.$new_data['forum_parent']." LIMIT 1");
+			$parentOrder = (int) $sql->createQueryBuilder()->select('forum_order')->from('forum')->where('forum_id', (int) $new_data['forum_parent'])->limit(1)->fetchOne();
 
 			$new_data['forum_order'] = $parentOrder + 50;
 
@@ -427,16 +428,17 @@ e107::css('inline',"
 			$frm = e107::getForm();
 
 			//		$sql->select("forum", "forum_id, forum_name", "forum_parent!=0 ORDER BY forum_order ASC");
-				$qry = "
-			SELECT f.forum_id, f.forum_name, sp.forum_name AS sub_parent, fp.forum_name AS forum_parent
-			FROM #forum AS f
-			LEFT JOIN #forum AS sp ON sp.forum_id = f.forum_sub
-			LEFT JOIN #forum AS fp ON fp.forum_id = f.forum_parent
-			WHERE f.forum_parent != 0
-			ORDER BY f.forum_parent ASC, f.forum_sub, f.forum_order ASC
-			";
-
-			$forums = $sql->retrieve($qry, true);
+			$qb = $sql->createQueryBuilder();
+			$forums = $qb
+				->select('f.forum_id', 'f.forum_name')->selectAs('sp.forum_name', 'sub_parent')->selectAs('fp.forum_name', 'forum_parent')
+				->from('forum', 'f')
+				->leftJoin('forum', 'sp', $qb->expr()->compareColumns('sp.forum_id', 'f.forum_sub'))
+				->leftJoin('forum', 'fp', $qb->expr()->compareColumns('fp.forum_id', 'f.forum_parent'))
+				->where('f.forum_parent', '!=', 0)
+				->orderBy('f.forum_parent', 'ASC')
+				->addOrderBy('f.forum_sub')
+				->addOrderBy('f.forum_order', 'ASC')
+				->fetchAll();
 			// 	$forums = $sql->db_getList();
 
 			e107::getMessage()->addWarning(FORLAN_60);
@@ -496,17 +498,17 @@ e107::css('inline',"
 			$memberrules 	= $tp->toDB($_POST['memberrules']);
 			$adminrules 	= $tp->toDB($_POST['adminrules']);
 
-			if(!$sql->update("generic", "gen_chardata ='$guestrules', gen_intdata='".$_POST['guest_active']."' WHERE gen_type='forum_rules_guest' "))
+			if(!$sql->createQueryBuilder()->update('generic')->set('gen_chardata', $guestrules)->set('gen_intdata', (int) $_POST['guest_active'])->where('gen_type', 'forum_rules_guest')->execute())
 			{
-				$sql->insert("generic", "0, 'forum_rules_guest', '".time()."', 0, '', '".$_POST['guest_active']."', '$guestrules' ");
+				$sql->createQueryBuilder()->insert('generic')->values(array('gen_type' => 'forum_rules_guest', 'gen_datestamp' => time(), 'gen_user_id' => 0, 'gen_ip' => '', 'gen_intdata' => (int) $_POST['guest_active'], 'gen_chardata' => $guestrules))->execute();
 			}
-			if(!$sql->update("generic", "gen_chardata ='$memberrules', gen_intdata='".$_POST['member_active']."' WHERE gen_type='forum_rules_member' "))
+			if(!$sql->createQueryBuilder()->update('generic')->set('gen_chardata', $memberrules)->set('gen_intdata', (int) $_POST['member_active'])->where('gen_type', 'forum_rules_member')->execute())
 			{
-				$sql->insert("generic", "0, 'forum_rules_member', '".time()."', 0, '', '".$_POST['member_active']."', '$memberrules' ");
+				$sql->createQueryBuilder()->insert('generic')->values(array('gen_type' => 'forum_rules_member', 'gen_datestamp' => time(), 'gen_user_id' => 0, 'gen_ip' => '', 'gen_intdata' => (int) $_POST['member_active'], 'gen_chardata' => $memberrules))->execute();
 			}
-			if(!$sql->update("generic", "gen_chardata ='$adminrules', gen_intdata='".$_POST['admin_active']."' WHERE gen_type='forum_rules_admin' "))
+			if(!$sql->createQueryBuilder()->update('generic')->set('gen_chardata', $adminrules)->set('gen_intdata', (int) $_POST['admin_active'])->where('gen_type', 'forum_rules_admin')->execute())
 			{
-				$sql->insert("generic", "0, 'forum_rules_admin', '".time()."', 0, '', '".$_POST['admin_active']."', '$adminrules' ");
+				$sql->createQueryBuilder()->insert('generic')->values(array('gen_type' => 'forum_rules_admin', 'gen_datestamp' => time(), 'gen_user_id' => 0, 'gen_ip' => '', 'gen_intdata' => (int) $_POST['admin_active'], 'gen_chardata' => $adminrules))->execute();
 			}
 
 			e107::getMessage()->addSuccess(LAN_SAVED);
@@ -532,17 +534,17 @@ e107::css('inline',"
 			list($id, $adminrules, $wm_active6) = $sql->fetch();
 			*/
 
-			if($sql->select('generic','*',"gen_type='forum_rules_guest'"))
+			if($row = $sql->createQueryBuilder()->select('*')->from('generic')->where('gen_type', 'forum_rules_guest')->fetchRow())
 			{
-				$guest_rules = $sql->fetch();
+				$guest_rules = $row;
 			}
-			if($sql->select('generic','*',"gen_type='forum_rules_member'"))
+			if($row = $sql->createQueryBuilder()->select('*')->from('generic')->where('gen_type', 'forum_rules_member')->fetchRow())
 			{
-				$member_rules = $sql->fetch();
+				$member_rules = $row;
 			}
-			if($sql->select('generic','*',"gen_type='forum_rules_admin'"))
+			if($row = $sql->createQueryBuilder()->select('*')->from('generic')->where('gen_type', 'forum_rules_admin')->fetchRow())
 			{
-				$admin_rules = $sql->fetch();
+				$admin_rules = $row;
 			}
 
 			$guesttext 	= $tp->toForm(vartrue($guest_rules['gen_chardata']));
@@ -778,9 +780,9 @@ e107::css('inline',"
 
 				<td colspan='2'>
 				";
-				if($sql->select("forum", "*", "1 ORDER BY forum_order"))
+				$fList = $sql->createQueryBuilder()->select('*')->from('forum')->orderBy('forum_order')->fetchAll();
+				if($fList)
 				{
-					$fList = $sql->db_getList();
 					foreach($fList as $f)
 					{
 						$key = 'forumlist['.$f['forum_id'].']';

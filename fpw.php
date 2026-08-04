@@ -112,28 +112,49 @@ if(e_QUERY)
 	}
 
 	// Verify the password reset code
-	if ($sql->select('tmp', '*', "`tmp_ip`='pwreset' AND `tmp_info` LIKE '%".FPW_SEPARATOR.$tmpinfo."' "))
+	$qb = $sql->createQueryBuilder();
+	$row = $qb->select('*')->from('tmp')
+		->where('tmp_ip', 'pwreset')
+		->where($qb->expr()->like('tmp_info', '%'.FPW_SEPARATOR.$tmpinfo))
+		->fetchRow();
+	if ($row)
 	{
-		$row = $sql->fetch();
-
-		// Delete the record
-
+		// An expired code is spent. Delete it and refuse: execution used to fall
+		// through and reset the password anyway, which combined with the lazy
+		// prune in class2.php stretched the real window to 900 seconds.
 		if(time() > (int) $row['tmp_time'])
 		{
-			$sql->delete('tmp', "`tmp_time` = ".$row['tmp_time']." AND `tmp_info` = '".$row['tmp_info']."' ");
+			$sql->createQueryBuilder()->delete('tmp')
+				->where('tmp_time', (int) $row['tmp_time'])
+				->where('tmp_info', $row['tmp_info'])
+				->execute();
 			e107::getMessage()->addDebug("Tmp Password Reset Entry Deleted");
+			fpw_error(LAN_FPW7);
 		}
 
-		$sql->delete('tmp', "tmp_time < ".time()); // cleanup table.
+		$sql->createQueryBuilder()->delete('tmp')
+			->where('tmp_time', '<', time())
+			->execute(); // cleanup table.
 
 		list($uid, $loginName, $md5) = explode(FPW_SEPARATOR, $row['tmp_info']);
 		$loginName = $tp->toDB($loginName, true);
 
-		// This should never happen! 
-		if($md5 != $tmpinfo)
+		// The redemption lookup is a case-insensitive SQL LIKE, so a case variant
+		// of a live code reaches this point. Compare exactly, and answer exactly
+		// as a miss does: a distinguishable response here let an attacker fold
+		// the code's alphabet and then recover its casing one letter at a time.
+		if(!hash_equals((string) $md5, (string) $tmpinfo))
 		{
-			e107::getRedirect()->redirect(SITEURL);	
+			fpw_error(LAN_FPW7);
 		}
+
+		// Spend the code before it is acted on. It used to survive redemption, so
+		// anyone holding the emailed link, a mail scanner or a shared mailbox
+		// included, could reset the account again and again until it expired.
+		$sql->createQueryBuilder()->delete('tmp')
+			->where('tmp_ip', 'pwreset')
+			->where('tmp_info', $row['tmp_info'])
+			->execute();
 
 		// Generate new temporary password
 		$pwdArray = e107::getUserSession()->resetPassword($uid,$loginName, array('return'=>'array'));
@@ -161,8 +182,9 @@ if(e_QUERY)
 		if((int) e107::getPref('allowEmailLogin') > 0)
 		{
 			// always show email when possible
-			$sql->select('user', 'user_email', "user_id=".intval($uid));
-			$tmp = $sql->fetch();
+			$tmp = $sql->createQueryBuilder()->select('user_email')->from('user')
+				->where('user_id', intval($uid))
+				->fetchRow();
 			$loginName = $tmp['user_email'];
 			$do_log['user_email'] =  $tmp['user_email'];
 			unset($tmp);
@@ -218,15 +240,19 @@ if (!empty($_POST['pwsubmit']))
 	$email 			= $_POST['email'];
 	$clean_email 	= check_email($tp->toDB($_POST['email']));
 	$clean_username = $tp->toDB(varset($_POST['username'], ''));
- 	
- 	$query = "`user_email`='{$clean_email}' ";
-	// Allow admins to remove 'username' from fpw_template.php if they wish.
-	$query .= (isset($_POST['username'])) ? " AND `user_loginname`='{$clean_username}'" : "";
 
-	if($sql->select('user', '*', $query))
-	{	
+ 	$userQb = $sql->createQueryBuilder();
+	$userQb->select('*')->from('user')->where('user_email', $clean_email);
+	// Allow admins to remove 'username' from fpw_template.php if they wish.
+	if(isset($_POST['username']))
+	{
+		$userQb->where('user_loginname', $clean_username);
+	}
+
+	$row = $userQb->fetchRow();
+	if($row)
+	{
 		// Found user in DB
-		$row = $sql->fetch();
 
 		// Main admin expected to be competent enough to never forget password! (And its a security check - so warn them)
 		// Sending email to admin alerting them of attempted admin password reset, and redirect user to homepage.
@@ -252,23 +278,28 @@ if (!empty($_POST['pwsubmit']))
 		}
 
 		// Check if password reset was already requested
-		if ($result = $sql->select('tmp', '*', "`tmp_ip` = 'pwreset' AND `tmp_info` LIKE '".$row['user_loginname'].FPW_SEPARATOR."%'"))
+		$existsQb = $sql->createQueryBuilder();
+		if ($existsQb->from('tmp')
+			->where('tmp_ip', 'pwreset')
+			->where($existsQb->expr()->like('tmp_info', $row['user_loginname'].FPW_SEPARATOR.'%'))
+			->count())
 		{
 			fpw_error(LAN_FPW4);
 			exit;
 		}
 
-		// Set unique reset code
-		$datekey 	= microtime(true);
-		$rcode =  e107::getUserSession()->generateRandomString( '############' );
-	//	$rcode 		= crypt(($_SERVER['HTTP_USER_AGENT'] . serialize($pref). $clean_email . $datekey), e_TOKEN);
+		// Set unique reset code. Must stay [A-Za-z0-9]: the redemption path runs
+		// preg_replace("#[\W_]#", "", ...) over the query string and then demands
+		// equality with it.
+		$rcode = e107::getUserSession()->generateRandomString( '############' );
 
 		// Prepare email
 		$link 		= rtrim($fpw_siteurl, '/').'/fpw.php?'.$rcode;
 		$message 	= LAN_FPW5.' '.SITENAME.' '.LAN_FPW14.': '.e107::getIPHandler()->getIP(TRUE).".\n\n".LAN_FPW15."\n\n".LAN_FPW16."\n\n".LAN_FPW17."\n\n{$link}";
 
-		// Set timestamp two days ahead so it doesn't get auto-deleted
-	//	$deltime = time()+86400 * 2;
+		// Reset codes are valid for 10 minutes, as they always nominally were. The
+		// expiry check used to fall through, so in practice a code lived for the
+		// 900 seconds the class2.php prune allowed; now the window is the stated one.
 		$deltime = strtotime("+ 10 minutes");
 		
 		// Insert the password reset request into the database
@@ -279,7 +310,13 @@ if (!empty($_POST['pwsubmit']))
 			'tmp_info'  => ($row['user_id'].FPW_SEPARATOR.$row['user_loginname'].FPW_SEPARATOR.$rcode)
 		);
 
-		$sql->insert('tmp', $insertQry);
+		// getFieldDefs('tmp') can return false when the table has no static field
+	// definition and live introspection fails; guard so an unauthenticated
+	// password reset never fatals on a missing _FIELD_TYPES (empty types bind
+	// every column as a string, matching the legacy insert() fallback).
+	$tmpDefs = $sql->getFieldDefs('tmp');
+	$tmpFieldTypes = (is_array($tmpDefs) && isset($tmpDefs['_FIELD_TYPES']) && is_array($tmpDefs['_FIELD_TYPES'])) ? $tmpDefs['_FIELD_TYPES'] : array();
+	$sql->createQueryBuilder()->insert('tmp')->valuesTyped($insertQry, $tmpFieldTypes)->execute();
 
 		// Setup the information to log
 		$do_log['password_action'] 	= LAN_FPW18;

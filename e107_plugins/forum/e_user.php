@@ -21,11 +21,14 @@ class forum_user // plugin-folder + '_user'
 		
 		if(!$total_forumposts = e107::getRegistry('total_forumposts'))
 		{
-			$total_forumposts = intval($sql->count("forum_post"));
+			$total_forumposts = intval($sql->createQueryBuilder()->from('forum_post')->count());
 			e107::setRegistry('total_forumposts', $total_forumposts);
 		}
-		
-		$count = $sql->retrieve('user_extended', 'user_plugin_forum_posts', 'user_extended_id = '.$udata['user_id']);
+
+		$count = $sql->createQueryBuilder()
+			->select('user_plugin_forum_posts')->from('user_extended')
+			->where('user_extended_id', (int) $udata['user_id'])
+			->fetchOne();
 		
 		$perc = ($total_forumposts > 0 && $count) ? round(($count / $total_forumposts) * 100, 2) : 0;
 

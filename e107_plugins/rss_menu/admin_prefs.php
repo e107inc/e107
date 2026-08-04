@@ -139,7 +139,7 @@ class rss_ui extends e_admin_ui
 			$rssVals['rss_class'] = intval(varset($_POST['class'][$key], '0'));
 			$rssVals['rss_limit'] = intval(varset($_POST['limit'][$key], '0'));
 
-			$sql->insert("rss", $rssVals);
+			$sql->createQueryBuilder()->insert('rss')->valuesTyped($rssVals, $sql->getFieldDefs('rss')['_FIELD_TYPES'])->execute();
 			e107::getLog()->addArray($rssVals)->save('RSS_04');
 			//	e107::getLog()->logArrayAll('RSS_04',$rssVals);
 		}
@@ -253,7 +253,7 @@ class rss_ui extends e_admin_ui
 			$feed['url'] = $tp->toDB($feed['url']);
 
 			// Check if feed is not yet present
-			if(!$sql->select("rss", "*", "rss_path='" . $feed['path'] . "' AND rss_url='" . $feed['url'] . "' AND rss_topicid='" . $feed['topic_id'] . "' "))
+			if(!$sql->createQueryBuilder()->select('*')->from('rss')->where('rss_path', $feed['path'])->where('rss_url', $feed['url'])->where('rss_topicid', $feed['topic_id'])->execute())
 			{
 				$render = true;
 				$rss_shortcodes->setVars($feed);
