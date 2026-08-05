@@ -981,6 +981,34 @@ class e_formTest extends \Codeception\Test\Unit
 
 				self::assertSame($expected, $result);
 			}
+
+			/**
+			 * A caller that names its own Bootstrap variant must not have the
+			 * action's default colour appended on top of it.
+			 */
+			public function testAdmin_buttonKeepsCallerButtonVariant()
+			{
+				$expected = array(
+					'btn-secondary'         => 'btn update btn-secondary',
+					'btn-light'             => 'btn update btn-light',
+					'btn-dark'              => 'btn update btn-dark',
+					'btn-outline-primary'   => 'btn update btn-outline-primary',
+					'btn-outline-danger'    => 'btn update btn-outline-danger',
+					'btn-primary'           => 'btn update btn-primary',
+					'my-theme-button'       => 'btn update my-theme-button btn-success',
+				);
+
+				$actual = array();
+
+				foreach(array_keys($expected) as $class)
+				{
+					$button = $this->_frm->admin_button('update_id', 'Update', 'update', '', array('class' => $class));
+					preg_match("/class='([^']*)'/", $button, $match);
+					$actual[$class] = $match[1];
+				}
+
+				self::assertSame($expected, $actual);
+			}
 /*
 			public function testDefaultButtonClassExists()
 			{
