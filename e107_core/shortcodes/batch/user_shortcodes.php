@@ -153,10 +153,14 @@ class user_shortcodes extends e_shortcode
 		{
 			$total_forumposts = (e107::isInstalled("forum")) ? intval($sql->count("forum_post")) : 0;
 			e107::setRegistry('total_forumposts', $total_forumposts);
-			//$user_forumposts = $sql->count("forum_thread","(*)","where thread_user=".$this->var['user_id']);
-			$user_forumposts = e107::getDb()->retrieve('user_extended', 'user_plugin_forum_posts', 'user_extended_id = '.$this->var['user_id']);
-
 		}
+
+		// Only the site-wide total may be cached. This member's own tally
+		// changes with every row a member list renders, so it is read on each
+		// call, cache hit or miss.
+		//$user_forumposts = $sql->count("forum_thread","(*)","where thread_user=".$this->var['user_id']);
+		$user_forumposts = (int) e107::getDb()->retrieve('user_extended', 'user_plugin_forum_posts', 'user_extended_id = '.intval($this->var['user_id']));
+
 		return ($total_forumposts > 0) ? round(($user_forumposts/$total_forumposts) * 100, 2) : 0;
 	}
 
