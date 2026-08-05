@@ -3910,13 +3910,20 @@ var_dump($select_options);*/
 			    '.($label ?: LAN_NO_LABEL_PROVIDED).'
 			    <span class="caret"></span>
 			    </a>
-			    <ul class="dropdown-menu '.$options['class_ul'].'">
+			    <ul class="'.trim('dropdown-menu '.varset($options['class_ul'])).'">
 			    ';
-// Added class_ul to add classes to the UL tag
+
+			$liClass = trim('dropdown-item '.varset($options['class_li']));
+
 			foreach($value as $k=>$v)
 			{
-// Added class_li to add classes to the LI tag and a small enhancement ;)
-				$text .= '<li class="dropdown-item '.$options['class_li'].($v == '--' || $v == 'divider'?'divider"><hr class="dropdown-divider">':'>'.$v).'</li>';
+				if($v === '--' || $v === 'divider')
+				{
+					$text .= '<li class="'.$liClass.' divider"><hr class="dropdown-divider" /></li>';
+					continue;
+				}
+
+				$text .= '<li class="'.$liClass.'">'.$v.'</li>';
 			}
 			
 			$text .= '
@@ -4043,14 +4050,10 @@ var_dump($select_options);*/
 			$btype = 'button';
 		}
 
-		// added attributes for tooltip dispaly under BS
 		$attributes = [
 			'type'  => $btype,
 			'name'  => $name,
 			'value' => $value,
-			'data-toggle' 		=> $options['data-toggle'],
-			'data-bs-toggle' 	=> $options['data-bs-toggle'],
-			'title' 			=> $options['title'],
 		];
 
 		if (isset($options['loading']) && ($options['loading'] == false))
