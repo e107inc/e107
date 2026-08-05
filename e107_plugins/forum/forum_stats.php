@@ -42,6 +42,14 @@ class forumStats
 	 * opened a thread, work out each one's share of all replies, and sort on
 	 * what is left.
 	 *
+	 * The two sets do not line up. Posters are every author in forum_post;
+	 * thread counts only exist for authors who have opened a thread, so a
+	 * member who has only ever replied has no row there at all. A post whose
+	 * author has since been deleted is keyed on the empty string, because the
+	 * LEFT JOIN that named the author hands back NULL for it, and no thread
+	 * count is ever keyed that way. Both cases mean the same thing: this
+	 * member opened no threads, so take nothing off.
+	 *
 	 * @param array $posters      forum_post rows keyed by user id, each with post_count
 	 * @param array $threadCounts forum_thread counts keyed by user id, each with thread_count
 	 * @param int   $totalReplies replies across the whole forum
@@ -53,7 +61,8 @@ class forumStats
 
 		foreach($posters as $uid => $poster)
 		{
-			$replies = $poster['post_count'] - $threadCounts[$uid]['thread_count'];
+			$threads = isset($threadCounts[$uid]['thread_count']) ? (int) $threadCounts[$uid]['thread_count'] : 0;
+			$replies = $poster['post_count'] - $threads;
 
 			$sortByReplies[$uid] = $replies;
 			$posters[$uid]['user_forums'] = $replies;
