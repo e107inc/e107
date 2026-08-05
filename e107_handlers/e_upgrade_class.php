@@ -67,11 +67,14 @@ class e_upgrade
 
         $cacheString = $mode. 'UpdateCheck';
 
+		// Both paths announce what they find, so the handler is wanted on
+		// both. The cache-miss path is the one that finds a new release.
+		$mes = e107::getMessage();
+
 		$e107cache->CachePageMD5 = md5($cacheString.$this->getOption('curFolder').$this->getOption('curVersion', 1.0));
 
 		if(($cache==TRUE) && ($cacheData = $e107cache->retrieve($cacheString, 3600, TRUE)))
 		{
-			$mes = e107::getMessage();
 			$mes->addInfo($cacheData);
 			$e107cache->CachePageMD5  = "";
 			return;
