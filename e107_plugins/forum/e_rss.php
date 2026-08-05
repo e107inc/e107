@@ -55,6 +55,22 @@ class forum_rss // plugin-folder + '_rss'
 	const FIRST_POST_SUBQUERY = '(SELECT MIN(post_id) FROM #forum_post GROUP BY post_thread)';
 
 	/**
+	 * Numeric feed keys this plugin answered to before v0.7.6.
+	 *
+	 * @see rss_addons::legacyKeys()
+	 * @return array old numeric key => canonical text key
+	 */
+	function legacy()
+	{
+		return array(
+			6  => 'forumthreads',
+			7  => 'forumposts',
+			8  => 'forumtopic',
+			11 => 'forumname',
+		);
+	}
+
+	/**
 	 * Admin RSS Configuration
 	 */
 	function config() 
