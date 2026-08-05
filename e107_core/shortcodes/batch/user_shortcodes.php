@@ -71,9 +71,13 @@ class user_shortcodes extends e_shortcode
 	{
 		$sql = e107::getDb();
 
+		// forum_post holds one row per post, forum_thread one per topic. The
+		// tally this total is compared against, user_plugin_forum_posts, is
+		// stepped once per forum_post row, and sc_user_forumper() caches its
+		// denominator under this same key, so both have to count posts.
 		if(!$forumposts = e107::getRegistry('total_forumposts'))
 		{
-			$forumposts = $sql->count("forum_thread");
+			$forumposts = (e107::isInstalled("forum")) ? intval($sql->count("forum_post")) : 0;
 			e107::setRegistry('total_forumposts', $forumposts);
 		}
 

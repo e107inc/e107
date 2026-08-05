@@ -23,6 +23,12 @@ class user_shortcodesTest extends \Codeception\Test\Unit
 	/** @var array user_extended_id => user_plugin_forum_posts, served by the stub db */
 	private $forumPostCounts = array();
 
+	/** @var array table name => row count, served by the stub db */
+	private $tableCounts = array();
+
+	/** @var array|null the plug_installed pref as found, restored in _after() */
+	private $savedInstalled = null;
+
 	public function _before()
 	{
 		require_once(e_CORE."shortcodes/batch/user_shortcodes.php");
@@ -42,6 +48,8 @@ class user_shortcodesTest extends \Codeception\Test\Unit
 		{
 			$this->savedRegistry[$key] = e107::getRegistry($key);
 		}
+
+		$this->savedInstalled = e107::getConfig()->get('plug_installed');
 	}
 
 	public function _after()
@@ -50,6 +58,16 @@ class user_shortcodesTest extends \Codeception\Test\Unit
 		{
 			e107::setRegistry($key, $value);
 		}
+
+		e107::getConfig()->set('plug_installed', $this->savedInstalled);
+	}
+
+	/**
+	 * Let e107::isInstalled('forum') answer yes without an install.
+	 */
+	private function haveForumInstalled()
+	{
+		e107::getConfig()->setPref('plug_installed/forum', '2.0');
 	}
 
 	/**
@@ -63,11 +81,33 @@ class user_shortcodesTest extends \Codeception\Test\Unit
 	private function haveForumPostCounts(array $counts)
 	{
 		$this->forumPostCounts = $counts;
-		$counts_ref = $this->forumPostCounts;
+		$this->installStubDb();
+	}
+
+	/**
+	 * Stand in for $sql->count(), so a test can say how many rows each forum
+	 * table holds without writing any.
+	 *
+	 * @param array $counts table name => row count
+	 */
+	private function haveTableCounts(array $counts)
+	{
+		$this->tableCounts = $counts;
+		$this->installStubDb();
+	}
+
+	private function installStubDb()
+	{
+		$forumPostCounts = $this->forumPostCounts;
+		$tableCounts = $this->tableCounts;
 
 		$db = e107::getDb();
 		$stub = $this->make(get_class($db), array(
-			'retrieve' => function($table, $fields = null, $where = null) use ($counts_ref)
+			'count' => function($table, $fields = '(*)', $where = '') use ($tableCounts)
+			{
+				return isset($tableCounts[$table]) ? $tableCounts[$table] : 0;
+			},
+			'retrieve' => function($table, $fields = null, $where = null) use ($forumPostCounts)
 			{
 				if($table !== 'user_extended' || $fields !== 'user_plugin_forum_posts')
 				{
@@ -79,7 +119,7 @@ class user_shortcodesTest extends \Codeception\Test\Unit
 					return false;
 				}
 
-				return isset($counts_ref[$m[1]]) ? $counts_ref[$m[1]] : false;
+				return isset($forumPostCounts[$m[1]]) ? $forumPostCounts[$m[1]] : false;
 			},
 		));
 
@@ -136,5 +176,69 @@ class user_shortcodesTest extends \Codeception\Test\Unit
 		$this->assertEquals(4, $rendered[90003], '8 of 200 forum posts is 4%.');
 		$this->assertEquals(1, $rendered[90004], '2 of 200 forum posts is 1%.');
 		$this->assertEquals(20, $rendered[90005], '40 of 200 forum posts is 20%.');
+	}
+
+	/**
+	 * {TOTAL_FORUMPOSTS} names forum posts, and the tally it is compared
+	 * against, user_extended.user_plugin_forum_posts, is stepped once per row
+	 * written to forum_post. So the total has to come from forum_post too,
+	 * not from forum_thread, which holds one row per topic.
+	 */
+	public function testTotalForumPostsCountsPostsNotTopics()
+	{
+		$this->haveForumInstalled();
+		$this->haveTableCounts(array('forum_post' => 42, 'forum_thread' => 7));
+		e107::setRegistry('total_forumposts', null);
+
+		$this->assertEquals(42, $this->sc->sc_total_forumposts(),
+			'{TOTAL_FORUMPOSTS} must report posts, not topics.');
+	}
+
+	/**
+	 * Both shortcodes cache under the registry key total_forumposts, so
+	 * whichever renders first decides what the key means for the other. They
+	 * have to mean the same thing, or the percentage silently depends on
+	 * template order.
+	 */
+	public function testTotalForumPostsLeavesUserForumPerADenominatorItAgreesWith()
+	{
+		$this->haveForumInstalled();
+		$this->haveForumPostCounts(array(90006 => 21));
+		$this->haveTableCounts(array('forum_post' => 42, 'forum_thread' => 7));
+		e107::setRegistry('total_forumposts', null);
+
+		// {TOTAL_FORUMPOSTS} first, as a template listing site totals above a
+		// member table would place it.
+		$total = $this->sc->sc_total_forumposts();
+
+		$this->sc->setVars(array('user_id' => 90006));
+		$percentage = $this->sc->sc_user_forumper();
+
+		$this->assertEquals(42, $total);
+		$this->assertEquals(50, $percentage,
+			'21 of the 42 posts {TOTAL_FORUMPOSTS} just reported is 50%.');
+	}
+
+	/**
+	 * And the other way round, to show the answer no longer turns on which
+	 * shortcode the template happens to reach first.
+	 */
+	public function testUserForumPerIsTheSameWhicheverShortcodeWarmsTheRegistry()
+	{
+		$this->haveForumInstalled();
+		$this->haveForumPostCounts(array(90007 => 21));
+		$this->haveTableCounts(array('forum_post' => 42, 'forum_thread' => 7));
+
+		$this->sc->setVars(array('user_id' => 90007));
+
+		e107::setRegistry('total_forumposts', null);
+		$perFirst = $this->sc->sc_user_forumper();
+
+		e107::setRegistry('total_forumposts', null);
+		$this->sc->sc_total_forumposts();
+		$perSecond = $this->sc->sc_user_forumper();
+
+		$this->assertEquals($perFirst, $perSecond,
+			'Template order must not change the percentage.');
 	}
 }
