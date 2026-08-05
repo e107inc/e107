@@ -31,7 +31,7 @@ if($rssMetaRows)
 
 	foreach($rssMetaRows as $row)
 	{
-		if(strpos($row['rss_url'], "*") === false) // Wildcard topic_id's should not be listed
+		if(strpos($row['rss_topicid'], "*") === false) // Wildcard topic_id's should not be listed
 		{
 			$name = $tp->toHTML($row['rss_name'], TRUE, 'no_hook, emotes_off');
 			$title = htmlspecialchars(SITENAME, ENT_QUOTES, 'utf-8')." ".htmlspecialchars($name, ENT_QUOTES, 'utf-8');
