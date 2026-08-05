@@ -5829,22 +5829,60 @@ class e107
 	 *
 	 * @return e107
 	 */
+	/**
+	 * The hosts this installation answers to: the one the siteurl preference
+	 * names, plus whatever the trusted_hosts preference adds.
+	 *
+	 * Stated once, because {@see set_urls_deferred()} decides whether to trust the
+	 * host a request arrived on and {@see redirection::verifyDestinationUrl()}
+	 * decides whether a visitor may be sent to one, and the two must not be able
+	 * to disagree.
+	 *
+	 * @return array host names, possibly empty
+	 */
+	public static function trustedHosts()
+	{
+		$hosts = array();
+
+		$configured_host = parse_url(self::getPref('siteurl'), PHP_URL_HOST);
+
+		if(!empty($configured_host))
+		{
+			$hosts[] = $configured_host;
+		}
+
+		$trusted_hosts_pref = self::getPref('trusted_hosts');
+
+		if(!empty($trusted_hosts_pref))
+		{
+			$hosts = array_merge($hosts, (array) $trusted_hosts_pref);
+		}
+
+		return $hosts;
+	}
+
+	/**
+	 * Whether $host is one this installation answers to.
+	 *
+	 * @see e107::isAllowedHost() the comparison rule, including how a leading
+	 *                            `www.`, a trailing `:port` and a subdomain are
+	 *                            treated
+	 * @param string $host
+	 * @return bool
+	 */
+	public function isTrustedHost($host)
+	{
+		return $this->isAllowedHost(self::trustedHosts(), $host);
+	}
+
+
 	public function set_urls_deferred()
 	{
 		$siteurl = self::getPref('siteurl');
 		$configured_host = parse_url($siteurl, PHP_URL_HOST);
 		$http_host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
 
-		$allowed_hosts = array();
-		if(!empty($configured_host))
-		{
-			$allowed_hosts[] = $configured_host;
-		}
-		$trusted_hosts_pref = self::getPref('trusted_hosts');
-		if(!empty($trusted_hosts_pref))
-		{
-			$allowed_hosts = array_merge($allowed_hosts, (array) $trusted_hosts_pref);
-		}
+		$allowed_hosts = self::trustedHosts();
 
 		if(self::isCli())
 		{

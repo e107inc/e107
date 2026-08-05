@@ -514,6 +514,54 @@ class redirection
 
 
 	/**
+	 * Confirm a redirect destination points somewhere on this site.
+	 *
+	 * A visitor-supplied return address is only ever safe to redirect to once it
+	 * has been through here.
+	 *
+	 * @param string $dest
+	 * @return string|false the destination unchanged, or false if it leaves this site
+	 */
+	public function verifyDestinationUrl($dest)
+	{
+		if(!is_string($dest) || $dest === '')
+		{
+			return false;
+		}
+
+		// Collapse backslashes so "/\evil" or "\\evil" cannot smuggle an off-site host.
+		$probe = str_replace('\\', '/', $dest);
+
+		// Reject protocol-relative ("//host") targets.
+		if(strpos($probe, '//') === 0)
+		{
+			return false;
+		}
+
+		if(preg_match('#^https?://#i', $probe))
+		{
+			// An absolute URL must point at this site or one of its trusted hosts.
+			// The literal SITEURL match covers the common case; the host check
+			// additionally honours the `trusted_hosts` pref (e107inc/e107#5639),
+			// so a multi-hostname install can return a visitor to whichever of
+			// its own hosts they came in on, but never to a third-party host.
+			$host = parse_url($probe, PHP_URL_HOST);
+			$onSite = (strpos($probe, SITEURLBASE) === 0 || strpos($probe, SITEURL) === 0);
+			if(!$onSite && (!is_string($host) || $host === '' || !e107::getInstance()->isTrustedHost($host)))
+			{
+				return false;
+			}
+		}
+		elseif(strpos($probe, '/') !== 0)
+		{
+			// Otherwise it must be a site-rooted relative path.
+			return false;
+		}
+
+		return $dest;
+	}
+
+	/**
 	 * If a static subdomain is detected, returns the equivalent non-static domain.
 	 * @return string|false
 	 */

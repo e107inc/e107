@@ -86,6 +86,11 @@ class WorkspaceCleanup extends Extension
 		'e107_themes/bootstrap5/online_template.php', // @see ForumNamesOutsideTheFeedCest
 		'e107_themes/voux/online_template.php',       // @see ForumNamesOutsideTheFeedCest
 		'e107_themes/bootstrap3/online_template.php', // @see ForumNamesOutsideTheFeedCest
+		'e107_tests_p8_probe.php',            // @see Helper\P8Fixture
+		'e107_tests_p8_feed.xml',
+		'e107_tests_p8_addons.xml',
+		'e107_tests_p8_newsfeed.xml',
+		'e107_tests_p8_tinymce_canary.xml',
 	];
 
 	/** @var \Deployer|null */

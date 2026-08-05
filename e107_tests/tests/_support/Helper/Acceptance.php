@@ -170,6 +170,23 @@ class Acceptance extends E107Base
 	}
 
 	/**
+	 * Assert the last response issued a Location redirect to a URL containing
+	 * $needle. The positive counterpart of {@see seeNoRedirectTo()}, so a test
+	 * that refuses an off-site destination can pair the refusal with a control
+	 * proving the on-site destination still works.
+	 *
+	 * @param string $needle
+	 * @return void
+	 */
+	public function seeRedirectTo($needle)
+	{
+		$response = $this->getModule('PhpBrowser')->client->getInternalResponse();
+		$location = (string) $response->getHeader('Location');
+		\PHPUnit\Framework\Assert::assertStringContainsString(
+			$needle, $location, "Response must redirect to: $needle");
+	}
+
+	/**
 	 * Remove a file previously written by writeAppFile().
 	 *
 	 * @param string $relative_path path relative to the app root

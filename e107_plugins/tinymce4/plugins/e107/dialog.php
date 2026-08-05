@@ -7,7 +7,9 @@ define("e_IFRAME",true);
 //require_once(e_ADMIN."auth.php");			
 
 
-if(!USER || check_class($pref['post_html']) == FALSE){
+require_once(__DIR__."/../../wysiwyg_class.php");
+
+if(!USER || !wysiwyg::isAllowed()){
 exit;
 }
 

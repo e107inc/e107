@@ -213,15 +213,12 @@ class newsfeedClass
 						}
 					}
 
-					if ($newsfeed_image == 'default')
-					{
-						$temp['newsfeed_image_link'] =  "<a href='".$rss->image['link']."' rel='external'><img src='".$rss->image['url']."' alt='".$rss->image['title']."' style='vertical-align: middle;' /></a>";
-					}
-					else
-					{
-						$temp['newsfeed_image_link'] = !empty($newsfeed_image) ? "<img src='".$newsfeed_image."' alt='' />" : '';
-					}
-					
+					$temp['channel_image'] = array(
+						'link'  => varset($rss->image['link'], ''),
+						'url'   => varset($rss->image['url'], ''),
+						'title' => varset($rss->image['title'], ''),
+					);
+
 					$serializedArray = e107::serialize($temp, 'json');
 
 					$now = time();
@@ -323,9 +320,11 @@ class newsfeedClass
 					$url = e107::url('newsfeed','source',$feed);
 
 					$vars['FEEDNAME'] = "<a href='".$url."'>".$tp->toHTML($feed['newsfeed_name'],false,'TITLE')."</a>";
-					$vars['FEEDDESCRIPTION'] = $feed['newsfeed_description'];
-					$vars['FEEDIMAGE'] = $rss['newsfeed_image_link'];
-					$vars['FEEDLANGUAGE'] = $rss['channel']['language'];
+					$vars['FEEDDESCRIPTION'] = htmlspecialchars($feed['newsfeed_description'], ENT_QUOTES, 'UTF-8', false);
+					$vars['FEEDIMAGE'] = ($newsfeed_image === 'default')
+						? $this->renderChannelImage(varset($rss['channel_image'], array()))
+						: (!empty($newsfeed_image) ? "<img src='".$tp->toUrlAttribute($newsfeed_image)."' alt='' />" : '');
+					$vars['FEEDLANGUAGE'] = htmlspecialchars(varset($rss['channel']['language'], ''), ENT_QUOTES, 'UTF-8');
 					
 					if($rss['channel']['lastbuilddate'])
 					{
@@ -345,10 +344,10 @@ class newsfeedClass
 					    $rss['channel']['link'] = $feed['newsfeed_url'];
 					}
 
-					$vars['FEEDLASTBUILDDATE']  = NFLAN_33.$pubbed;
-					$vars['FEEDCOPYRIGHT']      = $tp -> toHTML(vartrue($rss['channel']['copyright']), FALSE);
-					$vars['FEEDTITLE']          = "<a href='".$rss['channel']['link']."' rel='external'>".vartrue($rss['channel']['title'])."</a>";
-					$vars['FEEDLINK']           = $rss['channel']['link'] ;
+					$vars['FEEDLASTBUILDDATE']  = NFLAN_33.htmlspecialchars($pubbed, ENT_QUOTES, 'UTF-8');
+					$vars['FEEDCOPYRIGHT']      = htmlspecialchars(vartrue($rss['channel']['copyright'], ''), ENT_QUOTES, 'UTF-8');
+					$vars['FEEDTITLE']          = "<a href='".$tp->toUrlAttribute($rss['channel']['link'])."' rel='external'>".htmlspecialchars(vartrue($rss['channel']['title'], ''), ENT_QUOTES, 'UTF-8')."</a>";
+					$vars['FEEDLINK']           = $tp->toUrlAttribute($rss['channel']['link']);
 
 
 					if($feed['newsfeed_active'] == 2 or $feed['newsfeed_active'] == 3)
@@ -370,29 +369,29 @@ class newsfeedClass
 
 
 						
-						$vars['FEEDITEMLINK']       = "<a href='".$item['link']."' rel='external'>".$tp -> toHTML($item['title'], FALSE)."</a>\n";
-						$vars['FEEDITEMLINK']       = str_replace('&', '&amp;', $vars['FEEDITEMLINK']);
-						$feeditemtext               = preg_replace("#\[[a-z0-9=]+\]|\[\/[a-z]+\]|\{[A-Z_]+\}#si", "", strip_tags($item['description']));
-						$vars['FEEDITEMCREATOR']    = $tp -> toHTML(vartrue($item['author']), FALSE);
-						
+						$itemTitle                  = htmlspecialchars(varset($item['title'], ''), ENT_QUOTES, 'UTF-8');
+						$itemLink                   = $tp->toUrlAttribute(varset($item['link'], ''));
+
+						$vars['FEEDITEMLINK']       = "<a href='".$itemLink."' rel='external'>".$itemTitle."</a>\n";
+						$feeditemtext               = preg_replace("#\[[a-z0-9=]+\]|\[\/[a-z]+\]|\{[A-Z_]+\}#si", "", strip_tags(varset($item['description'], '')));
+						$vars['FEEDITEMCREATOR']    = htmlspecialchars(vartrue($item['author'], ''), ENT_QUOTES, 'UTF-8');
+
 						if ($where == 'main')
 						{
 							if(!empty($NEWSFEED_COLLAPSE))
 							{
-								$vars['FEEDITEMLINK'] = "<a href='#' onclick='expandit(this)'>".$tp -> toHTML($item['title'], FALSE)."</a>
+								$vars['FEEDITEMLINK'] = "<a href='#' onclick='expandit(this)'>".$itemTitle."</a>
 								<div style='display:none' >
 								";
 
-								$vars['FEEDITEMTEXT'] = preg_replace("/&#091;.*]/", "", $tp -> toHTML($item['description'], FALSE))."
-								<br /><br /><a href='".$item['link']."' rel='external'>".LAN_CLICK_TO_VIEW."</a><br /><br />
+								$vars['FEEDITEMTEXT'] = preg_replace("/&#091;.*]/", "", $tp->toHTML($feeditemtext, FALSE, 'scripts_off'))."
+								<br /><br /><a href='".$itemLink."' rel='external'>".LAN_CLICK_TO_VIEW."</a><br /><br />
 								</div>";
 							}
 							else
 							{
-								$vars['FEEDITEMLINK']   = "<a href='".$item['link']."' rel='external'>".$tp -> toHTML($item['title'], FALSE)."</a>\n";
-								$vars['FEEDITEMLINK']   = str_replace('&', '&amp;', $vars['FEEDITEMLINK']);
-								$feeditemtext           = preg_replace("#\[[a-z0-9=]+\]|\[\/[a-z]+\]|\{[A-Z_]+\}#si", "", $item['description']);
-								$vars['FEEDITEMTEXT']   = $tp -> toHTML($feeditemtext, FALSE)."\n";
+								$vars['FEEDITEMLINK']   = "<a href='".$itemLink."' rel='external'>".$itemTitle."</a>\n";
+								$vars['FEEDITEMTEXT']   = $tp->toHTML($feeditemtext, FALSE, 'scripts_off')."\n";
 							}
 							$data .= $tp->simpleParse( $NEWSFEED_MAIN, $vars);
 						}
@@ -437,6 +436,32 @@ class newsfeedClass
 		$ret['text'] = $text;
 
 		return $ret;
+	}
+
+	/**
+	 * Compose the channel image anchor from the values the remote feed supplied.
+	 *
+	 * Composed on the way out rather than on the way in, so that nothing held in
+	 * the newsfeed_data column or the feed cache is markup. A row written before
+	 * this changed holds a finished, unencoded anchor under a different key and is
+	 * therefore never rendered; the next successful fetch replaces it.
+	 *
+	 * @param array $image link, url and title as the feed gave them
+	 * @return string
+	 */
+	private function renderChannelImage($image)
+	{
+		if(empty($image['url']))
+		{
+			return '';
+		}
+
+		$tp = e107::getParser();
+
+		return "<a href='".$tp->toUrlAttribute(varset($image['link'], ''))."' rel='external'><img src='"
+			.$tp->toUrlAttribute($image['url'])."' alt='"
+			.$tp->toAttribute(varset($image['title'], ''), true)
+			."' style='vertical-align: middle;' /></a>";
 	}
 }
 

@@ -8,6 +8,22 @@ class wysiwyg
 	private $configName;
 	private $bootstrapVersion;
 
+	/**
+	 * Whether this request may use the editor and the endpoints that serve it.
+	 *
+	 * post_html is the preference that governs who may write HTML, and so who the
+	 * editor is offered to. getperms('P') additionally covers the plugin manager
+	 * reaching e107_plugins/tinymce4/admin_config.php, which loads the editor to
+	 * preview it no matter what post_html says.
+	 *
+	 * @see e107_plugins/tinymce4/admin_config.php the 'P' perm on its menu entries
+	 * @return bool
+	 */
+	public static function isAllowed()
+	{
+		return check_class(e107::getPref('post_html', e_UC_NOBODY)) || getperms('P');
+	}
+
 	function renderConfig($config='')
 	{
 		$this->getConfig($config);
@@ -224,7 +240,10 @@ class wysiwyg
 
 		if($config !== false)
 		{
-			$template = $tp->filter($config).".xml";
+			// 'file' maps everything outside [\w_.-] to '-', so no separator of any
+			// kind survives. basename() would not do: it is not a separator on
+			// Linux, so a Windows host would still resolve "..\..\somefile".
+			$template = $tp->filter($config, 'file').".xml";
 		}
 		else
 		{
@@ -248,13 +267,30 @@ class wysiwyg
 
 		}
 
-		if(($template == 'mainadmin.xml' && !getperms('0')) || ($template == 'admin.xml' && !ADMIN))
+		// Compared case-insensitively, because the file system underneath may be.
+		$requested = strtolower($template);
+
+		if(($requested === 'mainadmin.xml' && !getperms('0')) || ($requested === 'admin.xml' && !ADMIN))
 		{
 			$template = 'public.xml';
 		}
 
+		$themeConfig = THEME."templates/tinymce/".$template;
+		$pluginConfig = e_PLUGIN."tinymce4/templates/".$template;
 
-		$configPath = (is_readable(THEME."templates/tinymce/".$template)) ? THEME."templates/tinymce/".$template : e_PLUGIN."tinymce4/templates/".$template;
+		if(is_readable($themeConfig))
+		{
+			$configPath = $themeConfig;
+		}
+		elseif(is_readable($pluginConfig))
+		{
+			$configPath = $pluginConfig;
+		}
+		else
+		{
+			$configPath = e_PLUGIN."tinymce4/templates/public.xml";
+		}
+
 		$config 	= e107::getXml()->loadXMLfile($configPath, true);
 
 		//TODO Cache!

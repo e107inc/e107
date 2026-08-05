@@ -441,13 +441,19 @@ class user_dashboard // plugin-folder + '_url'
 
 		foreach ($online as $val)
 		{
+			$href = $tp->toUrlAttribute($val['user_location']);
+			$location = $tp->toAttribute($val['user_location'], true);
+			// html_truncate() counts and preserves entity runs, so its output is not
+			// raw text: encoding it again would turn a stored &amp; into &amp;amp;.
+			$page = htmlspecialchars($tp->html_truncate(basename($val['user_location']), 50, '...'), ENT_QUOTES, 'UTF-8', false);
+
 			$panelOnline .= "
 			<tr>
 				<td class='nowrap'>".e107::getDateConvert()->convert_date($val['user_currentvisit'],'%H:%M:%S')."</td>
 				<td>".$this->renderOnlineName($val['online_user_id'])."</td>
 				<td>".e107::getIPHandler()->ipDecode($val['user_ip'])."</td>
-				<td><a class='e-tip' href='".$val['user_location']."' title='".$val['user_location']."'>".$tp->html_truncate(basename($val['user_location']),50,"...")."</a></td>
-				<td class='center'><a class='e-tip' href='#' title='".$val['user_agent']."'>".$this->browserIcon($val)."</a></td>";
+				<td><a class='e-tip' href='".$href."' title='".$location."'>".$page."</a></td>
+				<td class='center'><a class='e-tip' href='#' title='".$tp->toAttribute($val['user_agent'], true)."'>".$this->browserIcon($val)."</a></td>";
 
 			$panelOnline .= (!empty($multilan)) ? "<td class='center'><a class='e-tip' href='#' title=\"".$lng->convert($val['user_language'])."\">".$val['user_language']."</a></td>" : "";
 
