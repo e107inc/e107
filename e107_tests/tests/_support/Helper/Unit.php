@@ -36,4 +36,38 @@ class Unit extends E107Base
 
 		}
 	}
+
+	/**
+	 * Start each test with shortcode batches that hold nobody else's data.
+	 *
+	 * The suite runs its whole file list in one PHP process and shuffles the
+	 * order on purpose. The shortcode parser lives for that whole run and keeps
+	 * every batch object it has built, each still holding the vars it was last
+	 * rendered with. A shortcode that reads a var it never set therefore passes
+	 * whenever an earlier test happened to leave one behind and warns whenever
+	 * the shuffle puts that test later. One unlucky order raised seventeen
+	 * errors and eight failures on a tree whose other runs were clean.
+	 *
+	 * The batches are emptied rather than discarded. Building one again reruns
+	 * the plugin's include_lan(), and a language file that has already defined
+	 * its constants cannot define them twice.
+	 *
+	 * @param \Codeception\TestInterface|null $test
+	 * @return void
+	 */
+	public function _before(\Codeception\TestInterface $test = null)
+	{
+		parent::_before($test);
+
+		$scClasses = new \ReflectionProperty('e_parse_shortcode', 'scClasses');
+		$scClasses->setAccessible(true);
+
+		foreach($scClasses->getValue(\e107::getScParser()) as $batch)
+		{
+			if($batch instanceof \e_shortcode)
+			{
+				$batch->setParserVars(array());
+			}
+		}
+	}
 }

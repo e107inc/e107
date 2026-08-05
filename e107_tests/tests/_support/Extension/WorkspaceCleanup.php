@@ -55,6 +55,10 @@ class WorkspaceCleanup extends Extension
 		'e107_themes/testcore',
 		'e107_themes/testkubrick',
 		'e107_plugins/thing',      // downloaded by e_marketplaceTest
+		'e107_plugins/nofollow',   // downloaded by pluginsTest::testRemotePlugin, which
+		                           // asserts it is absent before it downloads it, so a
+		                           // run that died before its uninstall fails every run
+		                           // after it until the directory goes
 		'e107_tests_forum_fixture_probe.php', // @see Helper\ForumFixture
 		'e107_tests_forum_canary.txt',        // @see ForumAttachmentCest
 		'e107_tests_pm_fixture_probe.php',    // @see PmAttachmentCest
