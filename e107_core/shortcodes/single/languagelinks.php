@@ -51,24 +51,22 @@ function languagelinks_shortcode($parm = '')
 		define('LANGLINKS_SEPARATOR', '&nbsp;|&nbsp;');
 	}
 
+	$parms = array();
+
 	if(is_string($parm))
 	{
 		$tmp = explode('|', $parm, 2);
 		$parm = $tmp[0];
-		$parms = array();
 		if(isset($tmp[1])) parse_str($tmp[1], $parms);
 	}
 
-	// ignore Query string if required by parms or external code, false by default
-	if(!defined('LANGLINKS_NOQUERY'))
-	{
-		define('LANGLINKS_NOQUERY', isset($parms['noquery']));
-	}
-
-	if(!defined('LANGLINKS_HOME'))
-	{
-		define('LANGLINKS_HOME', isset($parms['home']));
-	}
+	// Ignore the query string, or point at the site index, if this call's
+	// parms say so. External code may still set the defaults by defining the
+	// constants, but a parm has to win: these are per-call options, and a
+	// constant, once defined, would freeze the first call's parms onto every
+	// later call in the same request.
+	$noQuery = isset($parms['noquery']) ? true : (defined('LANGLINKS_NOQUERY') && LANGLINKS_NOQUERY);
+	$home    = isset($parms['home'])    ? true : (defined('LANGLINKS_HOME') && LANGLINKS_HOME);
 
 	$slng = e107::getLanguage();
 
@@ -96,13 +94,13 @@ function languagelinks_shortcode($parm = '')
 		if(e107::getPref('multilanguage_subdomain'))
 		{
 			$code = ($languageFolder == e107::getPref('sitelanguage')) ? 'www' : $code;
-			if(LANGLINKS_HOME)
+			if($home)
 			{
 				$link = str_replace($_SERVER['HTTP_HOST'], $code.'.'.e_DOMAIN, SITEURL);
 			}
 			else
 			{
-				$link = (!LANGLINKS_NOQUERY)
+				$link = (!$noQuery)
 			        ? str_replace($_SERVER['HTTP_HOST'], $code.'.'.e_DOMAIN, e_REQUEST_URL) // includes query string
 			        : str_replace($_SERVER['HTTP_HOST'], $code.'.'.e_DOMAIN, e_REQUEST_SELF); // excludes query string
 			}
@@ -110,14 +108,14 @@ function languagelinks_shortcode($parm = '')
 		else
 		{
 			// TODO - switch to elan=Language query when possible (now it'll break the old DOT query string format)
-			if(LANGLINKS_HOME)
+			if($home)
 			{
 				$link = SITEURL.'?elan='.$code;
 			}
 			else
 			{
 				$e_QUERY = str_replace('['.e_MENU.']',"",e_QUERY);
-				$link = (!LANGLINKS_NOQUERY) ? e_REQUEST_SELF.'?['.$code.']'.$e_QUERY : e_REQUEST_SELF.'?elan='.$code;
+				$link = (!$noQuery) ? e_REQUEST_SELF.'?['.$code.']'.$e_QUERY : e_REQUEST_SELF.'?elan='.$code;
 			}
 		}
 		
