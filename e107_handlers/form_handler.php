@@ -4119,6 +4119,9 @@ var_dump($select_options);*/
 	/**
 	 * Helper function to check if a (CSS) class already contains a button class?
 	 *
+	 * Covers the Bootstrap 3 variants and those added in Bootstrap 4 and 5,
+	 * including the whole `btn-outline-*` family.
+	 *
 	 * @param string $class
 	 *  The class we want to check.
 	 *
@@ -4128,15 +4131,19 @@ var_dump($select_options);*/
 	private function defaultButtonClassExists($class = '')
 	{
 		// Bootstrap button classes.
-		// @see http://getbootstrap.com/css/#buttons-options
+		// @see https://getbootstrap.com/docs/5.3/components/buttons/#variants
 		$btnClasses = array(
 			'btn-default',
 			'btn-primary',
+			'btn-secondary',
 			'btn-success',
 			'btn-info',
 			'btn-warning',
 			'btn-danger',
+			'btn-light',
+			'btn-dark',
 			'btn-link',
+			'btn-outline-',
 		);
 
 		foreach($btnClasses as $btnClass)
