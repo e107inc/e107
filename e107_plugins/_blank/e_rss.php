@@ -9,9 +9,9 @@
  * RSS feed addon: template and developer reference.
  *
  * Copy this file into your plugin folder as e_rss.php and adapt it. It
- * documents the two-method contract the rss_menu plugin expects from every
- * feed provider. The example bodies are illustrative: replace the placeholder
- * table and columns with your own.
+ * documents the two methods the rss_menu plugin expects from every feed
+ * provider, plus the optional legacy() one. The example bodies are
+ * illustrative: replace the placeholder table and columns with your own.
  */
 
 if (!defined('e107_INIT')) { exit; }
@@ -29,6 +29,34 @@ if (!defined('e107_INIT')) { exit; }
 class _blank_rss
 {
 	/**
+	 * Optional. Numeric feed keys this plugin used to answer to.
+	 *
+	 * Feeds were keyed by number before v0.7.6, so a site upgraded from that
+	 * era still has rss_url values like '6' in its rss table, and subscribers
+	 * still hold URLs like rss.php?6.2. Map each old number onto the text key
+	 * config() now declares and rss_menu resolves the old URL to the new feed,
+	 * handing data() the canonical key. You then only implement the text
+	 * spelling.
+	 *
+	 *   function legacy()
+	 *   {
+	 *       return array(6 => 'forumthreads', 7 => 'forumposts');
+	 *   }
+	 *
+	 * Declaring the map is the opt-in. Omit the method and the raw key is
+	 * passed through untouched, exactly as before.
+	 *
+	 * This is an escape hatch for pre-2009 URLs, not a way to key a new feed.
+	 * The numeric namespace is global and finite, so the first plugin to claim
+	 * a number keeps it: pick text keys for anything new. Unless your plugin
+	 * predates v0.7.6, delete this method.
+	 *
+	 * @see rss_addons::legacyKeys()
+	 * @return array old numeric key => canonical text key
+	 */
+	// function legacy() { return array(); }
+
+	/**
 	 * Declares the feed(s) this plugin offers.
 	 *
 	 * Called by the RSS admin Import page so an administrator can add the feed
@@ -39,7 +67,8 @@ class _blank_rss
 	 *   'name'        Admin-facing feed name. Prefer a LAN constant.
 	 *   'url'         The feed key. Stored in rss_url and handed back to data()
 	 *                 as $parms['url']. Use a text key; the numeric keys some
-	 *                 older feeds carry are legacy and are not worth copying.
+	 *                 older feeds carry are legacy. If yours are among them,
+	 *                 declare them in legacy() above rather than here.
 	 *   'topic_id'    '' for the base feed, or a category id for a
 	 *                 category-scoped feed. A literal '*' marks the row as a
 	 *                 template needing a topic id supplied at request time;

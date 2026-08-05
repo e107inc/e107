@@ -161,9 +161,10 @@ class rss_ui extends e_admin_ui
 		$tp = e107::getParser();
 		$frm = e107::getForm();
 
-		global $i, $rss_shortcodes, $feed, $pref;
+		global $i, $rss_shortcodes, $feed;
 
 		require_once(e_PLUGIN . 'rss_menu/rss_shortcodes.php');
+		require_once(e_PLUGIN . 'rss_menu/rss_addons.php');
 		$rss_shortcodes = e107::getScBatch('rss_menu', true);
 
 		$RSS_ADMIN_IMPORT_HEADER = "
@@ -215,33 +216,8 @@ class rss_ui extends e_admin_ui
 		$feed['limit'] = '9';
 		$feedlist[] = $feed;
 
-		// Plugin rss feed, using e_rss.php in plugin folder
-		$plugin_feedlist = array();
-		foreach($pref['e_rss_list'] as $val)
-		{
-			$eplug_rss_feed = array();
-			if(is_readable(e_PLUGIN . $val . "/e_rss.php"))
-			{
-				require_once(e_PLUGIN . $val . "/e_rss.php");
-
-				$className = $val . "_rss";
-				$data = false;
-
-				if(!$data = e107::callMethod($className, 'config'))
-				{
-					$data = $eplug_rss_feed;
-				}
-
-				foreach($data as $v)
-				{
-					$v['path'] = $val;
-					array_push($plugin_feedlist, $v);
-				}
-
-			}
-		}
-
-		$feedlist = array_merge($feedlist, $plugin_feedlist);
+		// Plugin rss feeds, using e_rss.php in each plugin folder
+		$feedlist = array_merge($feedlist, rss_addons::feeds());
 
 //		print_a($feedlist);
 

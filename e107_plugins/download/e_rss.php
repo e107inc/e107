@@ -14,9 +14,22 @@ if (!defined('e107_INIT')) { exit; }
 class download_rss // plugin-folder + '_rss' 
 {
 	/**
-	 * Admin RSS Configuration 
-	 */		
-	function config() 
+	 * Numeric feed key this plugin answered to before v0.7.6.
+	 *
+	 * @see rss_addons::legacyKeys()
+	 * @return array old numeric key => canonical text key
+	 */
+	function legacy()
+	{
+		return array(
+			12 => 'download',
+		);
+	}
+
+	/**
+	 * Admin RSS Configuration
+	 */
+	function config()
 	{
 		$sql = e107::getDb();
 		$config = array();

@@ -11,10 +11,12 @@
 */
 
 /*
-Query string: content_type.rss_type.[topic id]
-1: news
-5: comments
-12: downloads (option: specify category)
+Query string: feed_key.rss_type.[topic id]
+
+feed_key matches an rss_url value in the rss table, and rss_path on that row
+names the plugin folder whose e_rss.php builds the feed. Feeds were keyed by
+number before v0.7.6; a plugin declares the numbers it still answers to in the
+legacy() method of its e_rss.php, which rss_addons::legacyKeys() collects.
 
 Plugins should use an e_rss.php file in their plugin folder
 ----------------------------------------------------------------
@@ -142,29 +144,16 @@ if (empty($rss_type))
 	}
 
 // Returning feeds here
-// Conversion table for old urls -------
-$conversion[1] 	= 'news';
-$conversion[5] 	= 'comments';
-$conversion[10] = 'bugtracker';
-$conversion[12] = 'download';
-//-------------------------------------
 
-// Convert certain old urls so we can check the db entries
-// Rss.php?1.2 (news, rss-2) --> check = news (check conversion table)
-
-if(is_numeric($content_type) && isset($conversion[$content_type]) )
-{
-	$content_type = $conversion[$content_type];
-}
-
+require_once(e_PLUGIN.'rss_menu/rss_addons.php');
 
 // Look up the feed for this content type, optionally constrained to a topic id.
-$rssFeedLookup = function($topicValue) use ($sql, $content_type)
+$rssFeedLookup = function($contentType, $topicValue) use ($sql)
 {
 	$qb = $sql->createQueryBuilder();
 	$qb->select('*')->from('rss')
 		->where('rss_class', '!=', 2)
-		->where('rss_url', $content_type)
+		->where('rss_url', $contentType)
 		->where($qb->expr()->gt('rss_limit', 0));
 
 	if($topicValue)
@@ -175,11 +164,38 @@ $rssFeedLookup = function($topicValue) use ($sql, $content_type)
 	return $qb->fetchRow();
 };
 
-$row = $rssFeedLookup($topic_id ? $topic_id : false);
+// Numeric feed keys are a pre-0.7.6 spelling that each plugin now declares for
+// itself. Built on demand, so a modern text URL never pays for it.
+$rssLegacyKeys = function()
+{
+	static $map = null;
+
+	if($map === null)
+	{
+		// Feeds core serves inline rather than through a plugin addon.
+		$map = array(5 => array('plugin' => null, 'url' => 'comments'))
+			+ rss_addons::legacyKeys();
+	}
+
+	return $map;
+};
+
+$row = $rssFeedLookup($content_type, $topic_id ? $topic_id : false);
+
+if(empty($row) && is_numeric($content_type))
+{	// No feed is keyed by this number; ask whoever answers to it now.
+	$legacyKeys = $rssLegacyKeys();
+
+	if(isset($legacyKeys[$content_type]))
+	{
+		$content_type = $legacyKeys[$content_type]['url'];
+		$row = $rssFeedLookup($content_type, $topic_id ? $topic_id : false);
+	}
+}
 
 if(empty($row))
 {	// Check if wildcard present for topic_id
-	$row = $rssFeedLookup($topic_id ? str_replace($topic_id, "*", $topic_id) : false);
+	$row = $rssFeedLookup($content_type, $topic_id ? '*' : false);
 
 	if(empty($row))
 	{
@@ -191,6 +207,23 @@ if(empty($row))
 
 		require_once(FOOTERF);
 		exit;
+	}
+}
+
+if(is_numeric($content_type))
+{	// The row is keyed by a legacy number. Hand the addon its canonical key so
+	// it only has to implement one, but only where that addon claimed the number.
+	$legacyKeys = $rssLegacyKeys();
+
+	if(isset($legacyKeys[$content_type]))
+	{
+		$owner = $legacyKeys[$content_type];
+		$rowPath = explode('|', (string) varset($row['rss_path'], ''));
+
+		if($owner['plugin'] === null || $owner['plugin'] === $rowPath[0])
+		{
+			$content_type = $owner['url'];
+		}
 	}
 }
 
@@ -325,14 +358,14 @@ class rssCreate
 				require_once($path);
 
 				$className = basename(dirname($path)).'_rss';
-				
-				// v2.x standard 
+
+				// v2.x standard
 				if($data = e107::callMethod($className,'data', array('url' => $content_type, 'id' => $this->topicid, 'limit' => $this->limit)))
-				{			
+				{
 					$eplug_rss_data = array(0 => $data);
-					unset($data);			
+					unset($data);
 				}
-								
+
 				foreach($eplug_rss_data as $key=>$rs)
 				{
 					foreach($rs as $k=>$row)
