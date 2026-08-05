@@ -584,23 +584,34 @@ class user_shortcodes extends e_shortcode
 		  e107::setRegistry('userjump', $userjump);
 		}
 		
-		$class  = empty($parms[2]['class']) ? 'e-tip page-link' : $parms[2]['class'];
-	
-		if($parms[1] == 'prev')
+		$class = empty($parms[2]['class']) ? 'e-tip page-link' : $parms[2]['class'];
+		$dir   = (varset($parms[1]) === 'prev') ? 'prev' : 'next';
+
+		if(!isset($userjump[$dir]['id']))
 		{
-		
+			return "&nbsp;";
+		}
+
+		if(!empty($parms[2]['link'])) // {USER_JUMP_LINK=prev|link=1}
+		{
+			return $url->create('user/profile/view', $userjump[$dir]);
+		}
+
+		if(!empty($parms[2]['title'])) // {USER_JUMP_LINK=prev|title=1}
+		{
+			return $userjump[$dir]['name'];
+		}
+
+		if($dir === 'prev')
+		{
 			$icon = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('fa-chevron-left') : '&lt;&lt;';
-	    	return isset($userjump['prev']['id']) ? "<a class='".$class."' href='".$url->create('user/profile/view', $userjump['prev']) ."' title=\"".$userjump['prev']['name']."\">".$icon." ".LAN_USER_40."</a>\n" : "&nbsp;";
-		
-			// return isset($userjump['prev']['id']) ? "&lt;&lt; ".LAN_USER_40." [ <a href='".$url->create('user/profile/view', $userjump['prev'])."'>".$userjump['prev']['name']."</a> ]" : "&nbsp;";
-		
+
+			return "<a class='".$class."' href='".$url->create('user/profile/view', $userjump['prev']) ."' title=\"".$userjump['prev']['name']."\">".$icon." ".LAN_USER_40."</a>\n";
 		}
-		else
-		{
-			$icon = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('fa-chevron-right') : '&gt;&gt;';
-			return isset($userjump['next']['id']) ? "<a class='".$class."' href='".$url->create('user/profile/view', $userjump['next'])."' title=\"".$userjump['next']['name']."\">".LAN_USER_41." ".$icon."</a>\n" : "&nbsp;";
-			// return isset($userjump['next']['id']) ? "[ <a href='".$url->create('user/profile/view', $userjump['next'])."'>".$userjump['next']['name']."</a> ] ".LAN_USER_41." &gt;&gt;" : "&nbsp;";
-		}
+
+		$icon = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('fa-chevron-right') : '&gt;&gt;';
+
+		return "<a class='".$class."' href='".$url->create('user/profile/view', $userjump['next'])."' title=\"".$userjump['next']['name']."\">".LAN_USER_41." ".$icon."</a>\n";
 	}
 	
 
