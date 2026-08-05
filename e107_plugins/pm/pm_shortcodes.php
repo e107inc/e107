@@ -688,35 +688,45 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 		}
 
 
+		/**
+		 * {PM_NEXTPREV=inbox}
+		 * {PM_NEXTPREV: type=outbox&tmpl_prefix=dropdown}
+		 *
+		 * @param string|array $parms
+		 * @return string|null
+		 */
 		public function sc_pm_nextprev($parms = null)
 		{
 			if(empty($this->pmNextPrev['total']))
 			{
 				return null;
 			}
-	/**
-	 * The NEW way.
-	 * New parameter requirements formatted as a GET string.
-	 * Template support.
-	 */
+
 			if(is_string($parms))
-				{parse_str($parms, $parmsarray);}
-			else {$parmsarray = $parms; }
-
-			foreach (['inbox', 'outbox'] as $key) {
-    			if (array_key_exists($key, $parmsarray)) {
-        			unset($parmsarray[$key]);
-			        $parmsarray['type'] = $key;
-        			break;
-    			}
+			{
+				parse_str($parms, $parmsarray);
+			}
+			else
+			{
+				$parmsarray = (array) $parms;
 			}
 
-			if ($parmsarray['tmpl_prefix']) {
-				$string = 'tmpl_prefix='.$parmsarray['tmpl-prefix'].'&';
+			// BC: {PM_NEXTPREV=inbox} names the mailbox as a bare key rather than as type=.
+			foreach(array('inbox', 'outbox') as $key)
+			{
+				if(array_key_exists($key, $parmsarray))
+				{
+					unset($parmsarray[$key]);
+					$parmsarray['type'] = $key;
+					break;
+				}
 			}
 
-////			return e107::getParser()->parseTemplate("{NEXTPREV={$this->pmNextPrev['total']},{$this->pmPrefs['perpage']},{$this->pmNextPrev['start']},".e_SELF."?{$parm}.[FROM]}");
-			return $this->tp->parseTemplate("{NEXTPREV={$string}total={$this->pmNextPrev['total']}&amount={$this->pmPrefs['perpage']}&current={$this->pmNextPrev['start']}&url=?{$parmsarray["type"]}.--FROM--}");
+			$type   = !empty($parmsarray['type']) ? $parmsarray['type'] : 'inbox';
+			$prefix = !empty($parmsarray['tmpl_prefix']) ? 'tmpl_prefix='.$parmsarray['tmpl_prefix'].'&' : '';
+			$url    = rawurlencode(e_SELF.'?'.$type.'.--FROM--');
+
+			return e107::getParser()->parseTemplate("{NEXTPREV=".$prefix."total={$this->pmNextPrev['total']}&amount={$this->pmPrefs['perpage']}&current={$this->pmNextPrev['start']}&url=".$url."}");
 		}
 
 
