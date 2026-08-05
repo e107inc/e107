@@ -49,6 +49,81 @@ class Acceptance extends E107Base
 	/** @var array plugin folders this suite has already installed */
 	private $pluginsInstalled = [];
 
+	/** @var bool whether this run has stood a site up yet */
+	private $siteInstalled = false;
+
+	public function _before(?\Codeception\TestInterface $test = null)
+	{
+		parent::_before($test);
+		$this->haveInstalledSite();
+	}
+
+	/**
+	 * Stand a site up once per run, so a Cest can be named on its own.
+	 *
+	 * A run starts from an uninstalled app every time: Extension\WorkspaceCleanup
+	 * removes e107_system/000000test and e107_media/000000test on the way in, and
+	 * E107Base parks e107_config.php beside it. Only the two install Cests put a
+	 * site back, so naming any later Cest on its own answered with the installer's
+	 * language page for every one of its tests, and the whole suite had to be run
+	 * to check one file.
+	 *
+	 * Both install Cests drop the tables again in their own _before, so they still
+	 * begin from the empty database they are written against. A full run pays for
+	 * one install it then throws away.
+	 *
+	 * @return bool whether this call was the one that installed
+	 */
+	public function haveInstalledSite()
+	{
+		if ($this->siteInstalled)
+		{
+			return false;
+		}
+
+		$this->siteInstalled = true;
+
+		if ($this->hasInstalledSite())
+		{
+			return false;
+		}
+
+		$this->haveFreshInstall();
+
+		return true;
+	}
+
+	/**
+	 * Whether the app the suite points at is already installed.
+	 *
+	 * Asked of the database rather than of the application, because a request is
+	 * what this answer decides the worth of. The table is missing on an empty
+	 * database, which is a question and not a fault, so the query is allowed to
+	 * fail.
+	 *
+	 * @return bool
+	 */
+	private function hasInstalledSite()
+	{
+		if (!file_exists(self::APP_PATH_E107_CONFIG))
+		{
+			return false;
+		}
+
+		try
+		{
+			$found = $this->getDbModule()->_getDbh()
+				->query('SELECT 1 FROM `'.self::E107_MYSQL_PREFIX."core` WHERE `e107_name` = 'SitePrefs'")
+				->fetchColumn();
+		}
+		catch (\PDOException $e)
+		{
+			return false;
+		}
+
+		return !empty($found);
+	}
+
 	/**
 	 * Send a plain (non-AJAX) POST request, preserving the browser session.
 	 *
