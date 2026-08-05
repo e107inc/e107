@@ -37,6 +37,42 @@ class forumStats
 	}
 
 
+	/**
+	 * Turn the top posters into the top repliers: take off the posts that
+	 * opened a thread, work out each one's share of all replies, and sort on
+	 * what is left.
+	 *
+	 * @param array $posters      forum_post rows keyed by user id, each with post_count
+	 * @param array $threadCounts forum_thread counts keyed by user id, each with thread_count
+	 * @param int   $totalReplies replies across the whole forum
+	 * @return array top repliers, most replies first
+	 */
+	public function buildTopRepliers($posters, $threadCounts, $totalReplies)
+	{
+		$sortByReplies = array();
+
+		foreach($posters as $uid => $poster)
+		{
+			$replies = $poster['post_count'] - $threadCounts[$uid]['thread_count'];
+
+			$sortByReplies[$uid] = $replies;
+			$posters[$uid]['user_forums'] = $replies;
+			$posters[$uid]['percentage'] = round(($replies / $totalReplies) * 100, 2);
+		}
+
+		arsort($sortByReplies, SORT_NUMERIC);
+
+		$topRepliers = array();
+
+		foreach($sortByReplies as $uid => $replies)
+		{
+			$topRepliers[] = $posters[$uid];
+		}
+
+		return $topRepliers;
+	}
+
+
 	function init()
 	{
 
@@ -164,28 +200,7 @@ class forumStats
 		$sql->gen($query);
 		$top_repliers_data_c = $sql->db_getList('ALL', false, false, 'user_id');
 
-		$top_repliers = array();
-		$top_repliers_sort = array();
-		foreach($top_repliers_data as $uid => $poster)
-		{
-			$poster['post_count'] = $poster['post_count'] - $top_repliers_data_c[$uid]['thread_count'];
-			$percent = round(($poster['post_count'] / $total_replies) * 100, 2);
-			$top_repliers_sort[$uid] = $poster['post_count'];
-			//$top_repliers[$uid] = $poster;
-			$top_repliers_data[$uid]['user_forums'] = $poster['post_count'];
-			$top_repliers_data[$uid]['percentage'] = $percent;
-			//$top_repliers_data[$uid] = array("user_id" => $poster['user_id'], "user_name" => $poster['user_name'], "user_forums" => $poster['post_count'], "percentage" => $percent);
-		}
-
-		// sort
-
-		arsort($top_repliers_sort, SORT_NUMERIC);
-
-		// build top repliers
-		foreach ($top_repliers_sort as $uid => $c)
-		{
-			$top_repliers[] = $top_repliers_data[$uid];
-		}
+		$top_repliers = $this->buildTopRepliers($top_repliers_data, $top_repliers_data_c, $total_replies);
 
 		// get all replies
 		$query = "
