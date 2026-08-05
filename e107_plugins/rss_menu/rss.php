@@ -146,6 +146,7 @@ if (empty($rss_type))
 // Returning feeds here
 
 require_once(e_PLUGIN.'rss_menu/rss_addons.php');
+require_once(e_PLUGIN.'rss_menu/rss_resolver.php');
 
 // Look up the feed for this content type, optionally constrained to a topic id.
 $rssFeedLookup = function($contentType, $topicValue) use ($sql)
@@ -164,68 +165,23 @@ $rssFeedLookup = function($contentType, $topicValue) use ($sql)
 	return $qb->fetchRow();
 };
 
-// Numeric feed keys are a pre-0.7.6 spelling that each plugin now declares for
-// itself. Built on demand, so a modern text URL never pays for it.
-$rssLegacyKeys = function()
+$resolver = new rss_feed_resolver($rssFeedLookup);
+$resolved = $resolver->resolve($content_type, $topic_id);
+
+if($resolved === false)
 {
-	static $map = null;
+	require_once(HEADERF);
 
-	if($map === null)
-	{
-		// Feeds core serves inline rather than through a plugin addon.
-		$map = array(5 => array('plugin' => null, 'url' => 'comments'))
-			+ rss_addons::legacyKeys();
-	}
+	$repl  		= array("<br /><br /><a href='".e_REQUEST_SELF."'>", "</a>");
+	$message 	= str_replace(array("[","]"), $repl, RSS_LAN_ERROR_1);
+	e107::getRender()->tablerender('', $message);
 
-	return $map;
-};
-
-$row = $rssFeedLookup($content_type, $topic_id ? $topic_id : false);
-
-if(empty($row) && is_numeric($content_type))
-{	// No feed is keyed by this number; ask whoever answers to it now.
-	$legacyKeys = $rssLegacyKeys();
-
-	if(isset($legacyKeys[$content_type]))
-	{
-		$content_type = $legacyKeys[$content_type]['url'];
-		$row = $rssFeedLookup($content_type, $topic_id ? $topic_id : false);
-	}
+	require_once(FOOTERF);
+	exit;
 }
 
-if(empty($row))
-{	// Check if wildcard present for topic_id
-	$row = $rssFeedLookup($content_type, $topic_id ? '*' : false);
-
-	if(empty($row))
-	{
-		require_once(HEADERF);
-
-		$repl  		= array("<br /><br /><a href='".e_REQUEST_SELF."'>", "</a>");
-		$message 	= str_replace(array("[","]"), $repl, RSS_LAN_ERROR_1);
-		e107::getRender()->tablerender('', $message);
-
-		require_once(FOOTERF);
-		exit;
-	}
-}
-
-if(is_numeric($content_type))
-{	// The row is keyed by a legacy number. Hand the addon its canonical key so
-	// it only has to implement one, but only where that addon claimed the number.
-	$legacyKeys = $rssLegacyKeys();
-
-	if(isset($legacyKeys[$content_type]))
-	{
-		$owner = $legacyKeys[$content_type];
-		$rowPath = explode('|', (string) varset($row['rss_path'], ''));
-
-		if($owner['plugin'] === null || $owner['plugin'] === $rowPath[0])
-		{
-			$content_type = $owner['url'];
-		}
-	}
-}
+$row          = $resolved['row'];
+$content_type = $resolved['key'];
 
 
 // ----------------------------------------------------------------------------
@@ -290,22 +246,20 @@ class rssCreate
 
 		if(!is_numeric($content_type))
 		{
-			$path = e_PLUGIN.$row['rss_path'].'/e_rss.php';
+			$path = $this->addonPath($content_type, $row);
 		}
-		if(strpos($row['rss_path'],'|')!==FALSE) //FIXME remove this check completely. 
+		if(strpos($row['rss_path'],'|')!==FALSE) //FIXME remove this check completely.
 		{
 			$tmp = explode("|", $row['rss_path']);
 			$path = e_PLUGIN.$tmp[0]."/e_rss.php";
 			$this->parm = $tmp[1];	// FIXME @Deprecated - use $parm['url'] instead in data() method within e_rss.php.  Parm is used in e_rss.php to define which feed you need to prepare
 		}
 
+		// Feed keys a plugin serves are resolved from the row above. What is left
+		// here is what core still answers to itself: three content types from 0.7
+		// that never became plugins, and the inline comments feed.
 		switch ($content_type)
 		{
-			case 'news' :
-			case 1:
-				$path = e_PLUGIN."news/e_rss.php";
-				$this->contentType = "news";
-				break;
 			case 2:
 				$path='';
 				$this -> contentType = "articles";
@@ -319,31 +273,8 @@ class rssCreate
 				$this -> contentType = "content";
 				break;
 			case 'comments' : //TODO Eventually move to e107_plugins/comments
-			case 5:
 				$path='';
 				$this -> rssItems = $this->commentItems((int) $this -> limit);
-				break;
-
-			case 6:
-			case 7:
-				$path = e_PLUGIN."forum/e_rss.php";
-				break;
-
-
-			case 8:
-			case 11:
-				if(!$this -> topicid)
-				{
-					return FALSE;
-				}
-				$path = e_PLUGIN."forum/e_rss.php";
-				break;
-
-			// case 10 was bugtracker
-
-			case 'download':
-			case 12:
-				$path = e_PLUGIN."download/e_rss.php";
 				break;
 		}
 
@@ -617,6 +548,48 @@ class rssCreate
 		return $qb->orderBy('c.comment_datestamp', 'DESC')
 			->setFirstResult(0)->setMaxResults($limit)
 			->fetchAll();
+	}
+
+	/**
+	 * Locates the e_rss.php that serves a feed.
+	 *
+	 * rss_path names the plugin folder and is normally enough. It is empty on
+	 * rows that predate the column, including the news feed the installer still
+	 * ships, and those are the rows the removed hardcoded arms were catching. So
+	 * fall back to the canonical keys the addons declare in legacy(), which names
+	 * the same plugins without core holding the list.
+	 *
+	 * {@see rss_addons::feeds()} is deliberately not used for this. Addons label
+	 * their feeds with admin language constants, so calling config() from a front
+	 * end request is fatal. legacy() returns plain arrays and is safe anywhere.
+	 *
+	 * @param string $content_type feed key
+	 * @param array  $row          rss table row
+	 * @return string path to the addon, or '' when none serves the feed
+	 */
+	private function addonPath($content_type, $row)
+	{
+		$folder = (string) varset($row['rss_path'], '');
+
+		if($folder !== '' && is_readable(e_PLUGIN.$folder.'/e_rss.php'))
+		{
+			return e_PLUGIN.$folder.'/e_rss.php';
+		}
+
+		foreach(rss_addons::legacyKeys() as $owner)
+		{
+			if($owner['url'] !== (string) $content_type || empty($owner['plugin']))
+			{
+				continue;
+			}
+
+			if(is_readable(e_PLUGIN.$owner['plugin'].'/e_rss.php'))
+			{
+				return e_PLUGIN.$owner['plugin'].'/e_rss.php';
+			}
+		}
+
+		return '';
 	}
 
 	function debug()
