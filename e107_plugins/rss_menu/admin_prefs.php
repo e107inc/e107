@@ -91,7 +91,7 @@ class rss_ui extends e_admin_ui
 		'rss_name'    => array('title' => LAN_TITLE, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',),
 		'rss_path'    => array('title' => LAN_PLUGIN_FOLDER, 'type' => 'text', 'data' => 'str', 'readonly' => 1, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',),
 		'rss_url'     => array('title' => LAN_URL, 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',),
-		'rss_topicid' => array('title' => RSS_LAN_ADMIN_12, 'type' => 'text', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',),
+		'rss_topicid' => array('title' => RSS_LAN_ADMIN_12, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',),
 
 		'rss_text'      => array('title' => LAN_DESCRIPTION, 'type' => 'textarea', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',),
 		'rss_datestamp' => array('title' => LAN_DATESTAMP, 'type' => 'datestamp', 'data' => 'int', 'readonly' => true, 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',),
