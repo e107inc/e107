@@ -4249,9 +4249,18 @@ class e107
 		$fname = ($admin ? 'admin/' : '').'lan_'.preg_replace('/[\W]/', '', trim($fname, '/')).'.php';
 		$path = e_LANGUAGEDIR.e_LANGUAGE.'/'.$fname;
 
+		// Marked loaded after the include, not before. An error part way through
+		// a language file leaves every constant below that point undefined, and
+		// PHP keeps the file in get_included_files() regardless, so include_once
+		// will not retry it. Recording success before the attempt turned that
+		// into a permanent hole: every later caller was told the file was
+		// already loaded and no constant below the failure could ever be
+		// defined again. Recursion is still safe, because include_once guards it.
+		$ret = self::includeLan($path);
+
 		self::setRegistry($cstring, true);
 
-		return self::includeLan($path);
+		return $ret;
 	}
 
 	/**
@@ -4356,10 +4365,11 @@ class e107
 		}
 
 
-			self::setRegistry($cstring, true);
-
+		// After the include, not before. @see coreLan()
 		$ret = self::includeLan($path);
-		
+
+		self::setRegistry($cstring, true);
+
 		if(($ret === false) && deftrue('E107_DBG_INCLUDES') && strpos($path, '_global.php') === false )
 		{
 			$result = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 4);
@@ -4429,9 +4439,12 @@ class e107
 			self::getMessage()->addDebug("Attempting to Load: ".$path);
 		}
 
+		// After the include, not before. @see coreLan()
+		$ret = self::includeLan($path);
+
 		self::setRegistry($cstring, true);
 
-		return self::includeLan($path);
+		return $ret;
 	}
 
 
