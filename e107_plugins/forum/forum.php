@@ -415,9 +415,10 @@ class forum_front
 		$tp = e107::getParser();
 
 		$trackDiz = ($trackEmailPref) ? LAN_FORUM_3040 : LAN_FORUM_3041;
+		$tracktext = '';
 
 
-		if($trackedThreadList = $forum->getTrackedThreadList(USERID, 'list'))
+		if($forum->getTrackedThreadList(USERID, 'list'))
 		{
 
 			$viewed = $forum->threadGetUserViewed();

@@ -103,7 +103,6 @@ class e107forum
 		}
 
 		$this->e107 = e107::getInstance();
-		$tp = e107::getParser();
 		$this->userViewed = array();
 		$this->modArray = array();
 		
@@ -1138,7 +1137,6 @@ class e107forum
 	
 	function getTrackedThreadList($id, $retType = 'array')
 	{
-		$e107 = e107::getInstance();
 		$sql = e107::getDb();
 
 		$id = (int)$id;
