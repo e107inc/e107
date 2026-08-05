@@ -25,7 +25,7 @@ class user_shortcodes extends e_shortcode
 		parent::__construct();
 
 		$pref = e107::getPref();
-		$tp = e107::getParser();
+
 		$this->commentsDisabled = vartrue($pref['comments_disabled']);
 
 		if(!empty($pref['comments_engine']))
@@ -460,19 +460,28 @@ class user_shortcodes extends e_shortcode
 	}
 
 	
+	/**
+	 * {USER_SENDPM}
+	 * {USER_SENDPM: class=btn btn-lg&glyph=fa-envelope}
+	 *
+	 * Parms are forwarded to {SENDPM}, which understands 'class' and 'glyph'
+	 * alongside the user id.
+	 *
+	 * @param string|array $parm
+	 * @return string|null
+	 */
 	function sc_user_sendpm($parm=null)
 	{
-//		$pref = e107::getPref();
-//		why is this orphan $pref here?
-//		$tp = e107::getParser();
 		if(e107::isInstalled("pm") && ($this->var['user_id'] > 0))
 		{
-			$parm['user']=$this->var['user_id'];
+			if(!is_array($parm))
+			{
+				$parm = array();
+			}
 
-			return $this->tp->parseTemplate("{SENDPM:".http_build_query($parm).'}');
-//			return $tp->parseTemplate("{SENDPM:".$parms_str.'}');
-			
-//		  return $tp->parseTemplate("{SENDPM={$this->var['user_id']}}");
+			$parm['user'] = $this->var['user_id'];
+
+			return e107::getParser()->parseTemplate("{SENDPM:".http_build_query($parm).'}');
 		}
 	}
 
