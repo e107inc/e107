@@ -106,7 +106,8 @@ class rss_ui extends e_admin_ui
 	protected $prefs = array(
 		'rss_othernews'     => array('title' => RSS_LAN_ADMIN_13, 'type' => 'boolean', 'data' => 'int'),
 		'rss_summarydiz'    => array('title' => RSS_LAN_ADMIN_19, 'type' => 'boolean', 'data' => 'integer'),
-		'rss_shownewsimage' => array('title' => RSS_LAN_ADMIN_33, 'type' => 'boolean', 'data' => 'int')
+		'rss_shownewsimage' => array('title' => RSS_LAN_ADMIN_33, 'type' => 'boolean', 'data' => 'int'),
+		'rss_newscats'      => array('title' => RSS_LAN_ADMIN_34, 'type' => 'boolean', 'data' => 'int')
 	);
 
 
