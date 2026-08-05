@@ -408,4 +408,31 @@
 				e107::setRegistry('core/e107/singleton/e107_event', $originalEventHandler);
 			}
 		}
+
+		/**
+		 * load() registers the model under core/e107/user/<id> so that later
+		 * lookups reuse it. destroy() has to release that entry, or the
+		 * emptied model is handed to every caller for the rest of the request.
+		 */
+		public function testDestroyReleasesTheRegisteredUser()
+		{
+			$uid = 1;
+			e107::setRegistry('core/e107/user/'.$uid, null);
+
+			$user = e107::getSystemUser($uid, false);
+			$this->assertEquals($uid, $user->getId(), 'Precondition: user 1 loads.');
+			$this->assertNotNull(e107::getRegistry('core/e107/user/'.$uid),
+				'Precondition: loading registers the model.');
+
+			$user->destroy();
+
+			$this->assertNull(e107::getRegistry('core/e107/user/'.$uid),
+				'destroy() must release the model it registered.');
+
+			$fresh = e107::getSystemUser($uid, false);
+			$this->assertEquals($uid, $fresh->getId(),
+				'The next lookup must load the user again, not hand back the emptied model.');
+
+			e107::setRegistry('core/e107/user/'.$uid, null);
+		}
 	}
