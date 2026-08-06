@@ -754,9 +754,12 @@ cmd_run() {
     resolve_env
     ensure_web_exec
     deps_ensure
-    # Build: codecept run [<suite>] --steps [user args...]
-    # --steps goes before user args so a trailing `--` separator (which
-    # codecept uses to mark positionals) still works as intended.
+    # Build: codecept run [<suite>] [user args...]
+    #
+    # No --steps by default. It printed every step of every test, so a passing
+    # acceptance run was 13k lines and 700 KB to say "OK". A failure prints its
+    # own "Scenario Steps" trace and dumps the response either way, so nothing
+    # needed to diagnose one is lost. Pass --steps to get the old output.
     local cc_args=(run)
     local suite=${1:-}
     case $suite in
@@ -764,7 +767,22 @@ cmd_run() {
         *)
             cc_args+=("$suite"); shift ;;
     esac
-    cc_args+=(--steps "$@")
+    cc_args+=("$@")
+
+    # Colour when a person is watching, plain text when the output is going to
+    # a file, a pipe or an agent's transcript. Codeception cannot tell the
+    # difference itself: `compose exec` hands it a pseudo-terminal whatever is
+    # on the other end, so it colours everything. The escape sequences are
+    # about a third of the bytes of a run.
+    local arg colour_set=no
+    for arg in "$@"; do
+        case $arg in
+            --colors|--no-colors) colour_set=yes ;;
+        esac
+    done
+    if [ "$colour_set" = no ] && [ ! -t 1 ]; then
+        cc_args+=(--no-colors)
+    fi
     compose_p exec -w "$WEB_TESTS_DIR" web ./vendor/bin/codecept "${cc_args[@]}"
 }
 
@@ -1094,13 +1112,16 @@ INTERACT:
 TEST:
   run [suite] [args...]              Run Codeception inside the web container.
                                      Extra args are passed through to `codecept`.
+                                     Add --steps to trace every step; a failing
+                                     test prints its own trace either way.
   ci-unit                            Replay CI's exact unit coverage run
                                      (needs an env built with `up --xdebug`).
 
   Examples:
     e107-tests run unit
-    e107-tests run unit --filter ConstantsTest
+    e107-tests run unit tests/unit/ConstantsTest.php
     e107-tests run acceptance tests/acceptance/0000_InstallCest.php
+    e107-tests run acceptance --steps
     e107-tests sql "SELECT * FROM e107_user"
 
 VERSIONS:
