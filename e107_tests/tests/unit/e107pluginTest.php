@@ -44,6 +44,22 @@
 		}
 
 
+		/**
+		 * Ensure every addon type declared in $_addon_types has a description
+		 * returned by getAddonsDiz(). Regression guard for e_print (added in v2.3.1)
+		 * which was missing from the description map and rendered an empty tooltip
+		 * in the Plugin Builder wizard.
+		 */
+		public function testGetAddonsDizCoversEPrint()
+		{
+			$result = $this->ep->getAddonsDiz('e_print');
+
+			$this->assertNotNull($result, "getAddonsDiz('e_print') must return a description, not null.");
+			$this->assertIsString($result);
+			$this->assertNotEmpty(trim($result));
+		}
+
+
 /*
 
 		public function testDisplayArray()
