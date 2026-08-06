@@ -7,8 +7,25 @@
 		/** @var e_pref */
 		protected $pref;
 
+		/** @var bool whether the global $pref existed on entry */
+		protected $hadGlobalPref = false;
+
+		/** @var mixed the global $pref as found, restored in _after() */
+		protected $savedGlobalPref = null;
+
+		/**
+		 * The object under test is aliased 'core', and every mutator on a
+		 * core-aliased e_pref mirrors its own data into the global $pref for
+		 * backward compatibility. So reset(), loadData() and set() here do not
+		 * just change this object, they replace the array the rest of the
+		 * process reads, and the journal tests deliberately reduce it to a
+		 * single key. Note the constructor mirrors too, by way of loadData(),
+		 * so the value has to be taken before that runs.
+		 */
 		protected function _before()
 		{
+			$this->hadGlobalPref = array_key_exists('pref', $GLOBALS);
+			$this->savedGlobalPref = $this->hadGlobalPref ? $GLOBALS['pref'] : null;
 
 			try
 			{
@@ -275,6 +292,15 @@
 			}
 
 			$this->rows = array();
+
+			if($this->hadGlobalPref)
+			{
+				$GLOBALS['pref'] = $this->savedGlobalPref;
+			}
+			else
+			{
+				unset($GLOBALS['pref']);
+			}
 		}
 
 		/**
