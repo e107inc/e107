@@ -128,10 +128,11 @@
 
 			$result = $this->pluginInstall('_blank');
 
-		//	print_r($result);
-		//	$this->pluginUninstall('_blank');
-
-
+			// Uninstalled again, unlike when this was written. e107Test::testUrl()
+			// walks every route in e107::getAddonConfig('e_url'), so leaving _blank
+			// installed added its two routes to whatever ran afterwards and changed
+			// how much that test covered.
+			$this->pluginUninstall('_blank');
 		}
 
 		public function testSortOrderPeriodUnderscore()
