@@ -2895,6 +2895,10 @@ class e_form
 		{
 			$tmp = explode(',', $current_value);
 		}
+		else
+		{
+			$tmp = $current_value;
+		}
 
 		$classIndex = abs($classnum);			// Handle negative class values
 		$classSign = (strpos($classnum, '-') === 0) ? '-' : '';
