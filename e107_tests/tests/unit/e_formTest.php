@@ -1548,4 +1548,24 @@ class e_formTest extends \Codeception\Test\Unit
 			'Column selector icon should be rendered through toGlyph(), not hardcoded');
 	}
 
+	/**
+	 * uc_checkbox() hands $current_value straight to _uc_checkbox_cb(), which
+	 * branches on is_array() and so has to answer both shapes. uc_select()
+	 * accepts the array form for the same field, and admin_ui hands classes
+	 * around as arrays, so a caller reaching for either is doing nothing
+	 * unusual.
+	 */
+	public function testUcCheckboxTakesTheArrayFormOfTheCurrentValue()
+	{
+		$options = 'public,member,nobody';
+
+		$fromString = $this->_frm->uc_checkbox('e107help_classes', (string) e_UC_MEMBER, $options);
+		$fromArray = $this->_frm->uc_checkbox('e107help_classes', array(e_UC_MEMBER), $options);
+
+		self::assertStringContainsString("checked='checked'", $fromString,
+			'precondition: the comma-separated form ticks the class it names');
+		self::assertSame($fromString, $fromArray,
+			'the array form has to tick the same boxes as the string form');
+	}
+
 }
