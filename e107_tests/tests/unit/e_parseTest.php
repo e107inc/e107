@@ -3278,6 +3278,22 @@ Your browser does not support the audio tag.
 	}
 
 	/**
+	 * The parser is a singleton and cleanHtml() reuses one DOMDocument, so the
+	 * node lists it fills while walking a document have to be emptied before it
+	 * walks the next one. A <pre> or <code> inside a tag that gets stripped is
+	 * collected but never replaced, so it is still holding a node of the old
+	 * document when the next call reparses over the top of it.
+	 */
+	public function testCleanHtmlDoesNotReuseNodesOfThePreviousDocument()
+	{
+		$first = $this->tp->cleanHtml('<center><pre>kept</pre></center>');
+		self::assertSame('', $first, 'the stripped tag takes its <pre> child with it');
+
+		self::assertSame('<p>plain</p>', $this->tp->cleanHtml('<p>plain</p>'), 'second call on a reused parser');
+		self::assertSame('<pre>later</pre>', $this->tp->cleanHtml('<pre>later</pre>'), 'third call on a reused parser');
+	}
+
+	/**
 	 * libxml < 2.13 mis-parsed <source> and other HTML5 void elements as
 	 * non-void, making following text become the element's child content
 	 * AND making the serializer emit a closing `</source>` tag. cleanHtml()
