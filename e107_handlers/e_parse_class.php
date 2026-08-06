@@ -5761,6 +5761,8 @@ class e_parse
 
 		$this->nodesToConvert = array(); // required.
 		$this->nodesToDelete = array(); // required.
+		$this->nodesToDisableSC = array(); // required.
+		$this->pathList = array(); // required.
 		$this->removedList = array();
 
 		$tmp = $doc->getElementsByTagName('*');
