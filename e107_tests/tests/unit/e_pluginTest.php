@@ -15,6 +15,9 @@
 		/** @var e_plugin */
 		private $ep;
 
+		/** @var string[] plugins this test installed, to be given back in _after() */
+		private $installedPlugins = array();
+
 		protected function _before()
 		{
 			// require_once(e_HANDLER."e_marketplace.php");
@@ -28,6 +31,47 @@
 			{
 				static::fail("Couldn't load e_plugin object: $e");
 			}
+		}
+
+		/**
+		 * Install a plugin for the length of one test.
+		 *
+		 * e107Test::testUrl() builds its assertions by walking every route in
+		 * e107::getAddonConfig('e_url'), so a plugin installed and left behind
+		 * silently changes how much that test covers. Recording the install
+		 * here, rather than pairing it with an uninstall at the end of the test
+		 * body, gives the plugin back when the test fails part way through too.
+		 *
+		 * @param string $plugin plugin folder name
+		 * @return void
+		 */
+		private function havePluginInstalled($plugin)
+		{
+			// plugin_installflag, not e107::isInstalled(). The plug_installed
+			// preference still names a plugin.xml plugin after it has been
+			// uninstalled in the same process, so it would report gallery as
+			// installed here and this test would give back something it never
+			// took.
+			$wasInstalled = (bool) e107::getDb()->createQueryBuilder()
+				->select('plugin_installflag')->from('plugin')
+				->where('plugin_path', $plugin)->fetchOne();
+
+			e107::getPlugin()->install($plugin);
+
+			if(!$wasInstalled)
+			{
+				$this->installedPlugins[] = $plugin;
+			}
+		}
+
+		protected function _after()
+		{
+			foreach($this->installedPlugins as $plugin)
+			{
+				e107::getPlugin()->uninstall($plugin);
+			}
+
+			$this->installedPlugins = array();
 		}
 
 		public function testGetInstalledWysiwygEditors()
@@ -105,7 +149,7 @@
 
 		public function testBuildAddonPrefList()
 		{
-			e107::getPlugin()->install('gallery');
+			$this->havePluginInstalled('gallery');
 
             $newUrls = array('gallery'=>0, 'news'=>'news', 'rss_menu'=>0);
 

@@ -55,6 +55,12 @@ class WorkspaceCleanup extends Extension
 		'e107_themes/testcore',
 		'e107_themes/testkubrick',
 		'e107_plugins/thing',      // downloaded by e_marketplaceTest
+		// Plugin folders a unit test creates and removes itself. A test that
+		// fails part way leaves one behind, and the next run's plugin scan
+		// detects it, so the leftover turns one failure into a different one.
+		'e107_plugins/nofollow',      // @see pluginsTest::testRemotePlugin
+		'e107_plugins/temptest',      // @see e_pluginTest::testIgnoringOfInvalidPlugin
+		'e107_plugins/temptest5709',  // @see e107pluginTest
 		'e107_tests_forum_fixture_probe.php', // @see Helper\ForumFixture
 		'e107_tests_forum_canary.txt',        // @see ForumAttachmentCest
 		'e107_tests_pm_fixture_probe.php',    // @see PmAttachmentCest

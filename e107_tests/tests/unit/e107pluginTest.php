@@ -15,6 +15,9 @@
 		/** @var e107plugin */
 		protected $ep;
 
+		/** @var array<string,bool> installed state of each plugin before this test touched it */
+		private $pluginState = array();
+
 		protected function _before()
 		{
 			try
@@ -28,6 +31,81 @@
 
 
 
+		}
+
+		/**
+		 * Install a plugin for the length of one test, from a known state.
+		 *
+		 * e107Test::testUrl() builds its assertions by walking every route in
+		 * e107::getAddonConfig('e_url'), and the forum ships twelve of them, so
+		 * a plugin installed and left behind silently changes how much that
+		 * test covers. Recording the state here, rather than pairing the
+		 * install with an uninstall at the end of the test body, gives the
+		 * plugin back when the test fails part way through too.
+		 *
+		 * @param string $plugin plugin folder name
+		 * @return mixed whatever install_plugin_xml() returned
+		 */
+		private function havePluginInstalled($plugin)
+		{
+			$this->rememberPlugin($plugin);
+
+			if($this->pluginIsInstalled($plugin))
+			{
+				e107::getPlugin()->install_plugin_xml($plugin, 'uninstall', array('delete_tables' => true));
+			}
+
+			return e107::getPlugin()->install_plugin_xml($plugin, 'install');
+		}
+
+		/**
+		 * @param string $plugin plugin folder name
+		 * @return void
+		 */
+		private function rememberPlugin($plugin)
+		{
+			if(!array_key_exists($plugin, $this->pluginState))
+			{
+				$this->pluginState[$plugin] = $this->pluginIsInstalled($plugin);
+			}
+		}
+
+		/**
+		 * plugin_installflag, not e107::isInstalled(). The plug_installed
+		 * preference still names a plugin.xml plugin after it has been
+		 * uninstalled in the same process, so it would report the forum as
+		 * installed for every test after the first one here.
+		 *
+		 * @param string $plugin plugin folder name
+		 * @return bool
+		 */
+		private function pluginIsInstalled($plugin)
+		{
+			return (bool) e107::getDb()->createQueryBuilder()
+				->select('plugin_installflag')->from('plugin')
+				->where('plugin_path', $plugin)->fetchOne();
+		}
+
+		/**
+		 * Put back the installed state every plugin was in, pass or fail.
+		 */
+		protected function _after()
+		{
+			foreach($this->pluginState as $plugin => $wasInstalled)
+			{
+				$isInstalled = $this->pluginIsInstalled($plugin);
+
+				if($wasInstalled && !$isInstalled)
+				{
+					e107::getPlugin()->install_plugin_xml($plugin, 'install');
+				}
+				elseif(!$wasInstalled && $isInstalled)
+				{
+					e107::getPlugin()->install_plugin_xml($plugin, 'uninstall', array('delete_tables' => true));
+				}
+			}
+
+			$this->pluginState = array();
 		}
 
 
@@ -662,19 +740,9 @@
 				$this->markTestSkipped('Forum plugin not available');
 			}
 
-			// Get plugin handlers
-			$plug = e107::getPlug();  // e_plugin - for checking installed status
-			$plugin = e107::getPlugin();  // e107plugin - for install/uninstall
+			$plug = e107::getPlug();  // e_plugin - for the addon pref lists
 
-			// Check if forum is already installed and uninstall it first
-			$installed = $plug->load($pluginPath)->isInstalled();
-			if($installed)
-			{
-				$plugin->install_plugin_xml($pluginPath, 'uninstall', array('delete_tables' => true));
-			}
-
-			// Install the forum plugin
-			$installResult = $plugin->install_plugin_xml($pluginPath, 'install');
+			$installResult = $this->havePluginInstalled($pluginPath);
 			$this->assertNotFalse($installResult, 'Forum plugin installation should succeed');
 
 			// Refresh plugin cache so e_search_list is current
@@ -711,9 +779,6 @@
 					}
 				}
 			}
-
-			// Clean up: uninstall the forum plugin
-			$plugin->install_plugin_xml($pluginPath, 'uninstall', array('delete_tables' => true));
 
 			// Assert no FULLTEXT indexes are missing
 			$this->assertEmpty(

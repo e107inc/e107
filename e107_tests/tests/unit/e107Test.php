@@ -16,8 +16,8 @@ class e107Test extends \Codeception\Test\Unit
 	/** @var e107 */
 	private $e107;
 
-	/** @var bool whether this test installed the forum plugin for its routes */
-	private $forumInstalled = false;
+	/** @var string[] plugins this test installed, to be given back in _after() */
+	private $installedPlugins = [];
 
 	protected function _before()
 	{
@@ -34,32 +34,34 @@ class e107Test extends \Codeception\Test\Unit
 	}
 
 	/**
-	 * Install the forum plugin for the length of one test.
+	 * Install a plugin for the length of one test.
 	 *
 	 * testUrl() builds its assertions by walking every route in
 	 * e107::getAddonConfig('e_url'), so a plugin installed and left behind
-	 * silently changes how much that test covers. Three tests here need the
-	 * forum's routes; without this they added twelve of them to whatever ran
-	 * afterwards, which is half of why the suite's assertion count was never
-	 * the same twice.
+	 * silently changes how much that test covers. Four tests here need routes
+	 * a plugin brings with it; without this they added those routes to whatever
+	 * ran afterwards, which is part of why the suite's assertion count was
+	 * never the same twice.
 	 *
+	 * @param string $plugin plugin folder name
 	 * @return void
 	 */
-	private function haveForumRoutes()
+	private function havePluginInstalled($plugin)
 	{
-		e107::getPlugin()->install('forum');
-		$this->forumInstalled = true;
+		e107::getPlugin()->install($plugin);
+		$this->installedPlugins[] = $plugin;
 	}
 
 	protected function _after()
 	{
 		error_reporting(E_ALL);
 
-		if($this->forumInstalled)
+		foreach($this->installedPlugins as $plugin)
 		{
-			e107::getPlugin()->uninstall('forum');
-			$this->forumInstalled = false;
+			e107::getPlugin()->uninstall($plugin);
 		}
+
+		$this->installedPlugins = [];
 
 		// Clean up temporary files
 		foreach($this->tempFiles as $file)
@@ -1648,7 +1650,7 @@ class e107Test extends \Codeception\Test\Unit
 	function testDetectRoute()
 	{
 
-		$this->haveForumRoutes();
+		$this->havePluginInstalled('forum');
 
 		$tests = array(
 			0 => array(
@@ -1862,10 +1864,9 @@ class e107Test extends \Codeception\Test\Unit
 
 		$obj = $this->e107;
 
-		e107::getPlugin()->install('_blank');
+		$this->havePluginInstalled('_blank');
 		$result = $obj::url('_blank', 'parked', null, ['mode' => 'full']);
 		self::assertSame('https://parked-domain.com/custom', $result);
-		e107::getPlugin()->uninstall('_blank');
 
 	}
 
@@ -2039,7 +2040,7 @@ class e107Test extends \Codeception\Test\Unit
 	{
 
 		$e107 = $this->e107;
-		$this->haveForumRoutes();
+		$this->havePluginInstalled('forum');
 		$url = $e107::url('forum', 'topic', [], array(
 			'query' => array(
 				'f'  => 'post',
@@ -2057,7 +2058,7 @@ class e107Test extends \Codeception\Test\Unit
 	{
 
 		$e107 = $this->e107;
-		$this->haveForumRoutes();
+		$this->havePluginInstalled('forum');
 		$url = $e107::url('forum', 'post', [], array(
 			'query' => array(
 				"didn't" => '<tag attr="such wow"></tag>',
@@ -2076,7 +2077,7 @@ class e107Test extends \Codeception\Test\Unit
 	{
 
 		$e107 = $this->e107;
-		$this->haveForumRoutes();
+		$this->havePluginInstalled('forum');
 		$url = $e107::url('forum', 'forum', [
 			'forum_sef' => '<>',
 		], array(
