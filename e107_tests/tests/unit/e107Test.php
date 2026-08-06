@@ -1581,14 +1581,14 @@ class e107Test extends \Codeception\Test\Unit
 			mkdir($flatLangDir, 0777, true);
 		}
 
-		file_put_contents($flatLangFile, "<?php return ['TESTPLUGIN_FLAT_LAN' => 'Flat Language Loaded'];");
+		file_put_contents($flatLangFile, "<?php return ['TESTPLUGIN_FLAT_ARR_LAN' => 'Flat Language Loaded'];");
 		$this->tempFiles[] = $flatLangFile;
 
 		$this->assertTrue(is_readable($flatLangFile), 'Flat language file exists and is readable.');
 		$retFlat = e107::plugLan($pluginName, 'flatfile', true);
 		$this->assertTrue($retFlat, 'Flat file inclusion via plugLan(true, flatfile) should return true');
-		$this->assertTrue(defined('TESTPLUGIN_FLAT_LAN'), 'Constant TESTPLUGIN_FLAT_LAN should be defined.');
-		$this->assertEquals('Flat Language Loaded', constant('TESTPLUGIN_FLAT_LAN'));
+		$this->assertTrue(defined('TESTPLUGIN_FLAT_ARR_LAN'), 'Constant TESTPLUGIN_FLAT_ARR_LAN should be defined.');
+		$this->assertEquals('Flat Language Loaded', constant('TESTPLUGIN_FLAT_ARR_LAN'));
 
 		$returnedPath = e107::plugLan($pluginName, 'global', false, true);
 		$expectedPath = e_PLUGIN . $pluginName . '/languages/English_global.php';
