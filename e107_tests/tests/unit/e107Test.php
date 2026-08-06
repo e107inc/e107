@@ -1396,13 +1396,12 @@ class e107Test extends \Codeception\Test\Unit
 		$constant = 'LAN_MEMBERS_0';
 		$expected = "restricted area";
 
-		// First, ensure the constant is not already defined (clean test scenario).
-		if(defined($constant))
-		{
-			$this::markTestSkipped("Constant '$constant' was already defined. Skipped for accurate isolation.");
-		}
-
-		// Call the method you need to test.
+		// Whether this language file has already been read in this process is a
+		// property of the run order rather than of coreLan(), and skipping on it
+		// left the suite making a different number of assertions from one
+		// shuffle to the next. Both assertions below hold either way, because
+		// includeLanArray() guards every define(): a constant already in place
+		// still has to carry the value the language file gives it.
 		$this->e107::coreLan('membersonly'); // 'admin' is an example; adjust if needed based on your actual language files
 
 		// Check if the constant is correctly defined afterward.
