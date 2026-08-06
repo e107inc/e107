@@ -103,12 +103,16 @@ class WorkspaceCleanup extends Extension
 	/** @var string|false bytes of e107.htaccess as the suite found them */
 	private $htaccess = false;
 
+	/** @var resource|null the exclusive hold this run has on the app tree */
+	private $lock;
+
 	public function beforeSuite(SuiteEvent $event)
 	{
 		if (!$this->appRunsInPlace())
 		{
 			return;
 		}
+		$this->acquireWorkspaceLock();
 		$this->restoreConfigBackup();
 		$this->htaccess = @file_get_contents(APP_PATH.'/e107.htaccess');
 		$this->sweep();
@@ -123,6 +127,71 @@ class WorkspaceCleanup extends Extension
 		$this->restoreConfigBackup();
 		$this->restoreHtaccess();
 		$this->sweep();
+		$this->releaseWorkspaceLock();
+	}
+
+	/**
+	 * Hold the app tree for the length of the suite.
+	 *
+	 * The sweep deletes e107_system/<site_path> and e107_media/<site_path>,
+	 * which is another run's live state whenever two runs share one tree. What
+	 * that produces does not look like a locking problem: it looks like
+	 * ordinary flakes, scattered over unrelated tests, with counts that move
+	 * every time. It has cost this project two wrong conclusions, one of them
+	 * a whole afternoon spent believing a correct fix had made things worse.
+	 *
+	 * Helper\E107Base already takes a lock, but it is keyed on the browser
+	 * URL and returns early without one, so the unit suite, which has no
+	 * browser module and sweeps the same two directories, was never covered.
+	 * This one is keyed on the tree the sweep actually deletes.
+	 *
+	 * @return void
+	 */
+	private function acquireWorkspaceLock()
+	{
+		$path = sys_get_temp_dir().'/e107-workspace-'.md5(APP_PATH).'.lock';
+
+		$this->lock = fopen($path, 'w');
+		if ($this->lock === false)
+		{
+			$this->lock = null;
+			codecept_debug('WorkspaceCleanup: cannot open '.$path.', running unlocked');
+
+			return;
+		}
+
+		if (!flock($this->lock, LOCK_EX | LOCK_NB))
+		{
+			codecept_debug('WorkspaceCleanup: another run holds '.APP_PATH.', waiting for it to finish');
+			flock($this->lock, LOCK_EX);
+		}
+
+		ftruncate($this->lock, 0);
+		fwrite($this->lock, json_encode([
+			'pid'      => getmypid(),
+			'app'      => APP_PATH,
+			'acquired' => time(),
+		]));
+		fflush($this->lock);
+	}
+
+	/**
+	 * Released after the closing sweep, and after Helper\E107Base has given
+	 * back the deployment lock it took second. Both are always taken in that
+	 * order, which is what keeps a pair of runs from deadlocking on each other.
+	 *
+	 * @return void
+	 */
+	private function releaseWorkspaceLock()
+	{
+		if ($this->lock === null)
+		{
+			return;
+		}
+
+		flock($this->lock, LOCK_UN);
+		fclose($this->lock);
+		$this->lock = null;
 	}
 
 	/**
