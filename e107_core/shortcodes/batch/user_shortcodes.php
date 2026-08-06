@@ -589,7 +589,8 @@ class user_shortcodes extends e_shortcode
 		
 		if (!$full_perms) return;
 		$url = e107::getUrl();
-		if(!$userjump = e107::getRegistry('userjump'))
+		$cacheKey = 'userjump/'.intval($this->var['user_id']);
+		if(!$userjump = e107::getRegistry($cacheKey))
 		{
 		  $sql->execute("SELECT user_id, user_name FROM `#user` FORCE INDEX (PRIMARY) WHERE `user_id` > :userId AND `user_ban`=0 ORDER BY user_id ASC LIMIT 1", array('userId' => (int) $this->var['user_id']));
 		  if ($row = $sql->fetch())
@@ -604,7 +605,7 @@ class user_shortcodes extends e_shortcode
 			$userjump['prev']['id'] = $row['user_id'];
 			$userjump['prev']['name'] = $row['user_name'];
 		  }
-		  e107::setRegistry('userjump', $userjump);
+		  e107::setRegistry($cacheKey, $userjump);
 		}
 		
 		$class = empty($parms[2]['class']) ? 'e-tip page-link' : $parms[2]['class'];

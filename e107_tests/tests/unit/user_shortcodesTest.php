@@ -32,6 +32,18 @@ class user_shortcodesTest extends \Codeception\Test\Unit
 	/** @var string the real connection class, noted before any stub replaces it */
 	private $dbClass;
 
+	/** @var bool whether $full_perms was set on entry, restored in _after() */
+	private $hadFullPerms = false;
+
+	/** @var mixed $full_perms as found, restored in _after() */
+	private $savedFullPerms = null;
+
+	/** @var array user_id => user_name, served by the stub db's gen()/fetch() */
+	private $userRows = array();
+
+	/** @var array|false the row the next fetch() hands back */
+	private $pendingRow = false;
+
 	public function _before()
 	{
 		require_once(e_CORE."shortcodes/batch/user_shortcodes.php");
@@ -47,13 +59,16 @@ class user_shortcodesTest extends \Codeception\Test\Unit
 
 		$this->sc->__construct();
 
-		foreach(array('total_forumposts', 'core/e107/singleton/db') as $key)
+		foreach(array('total_forumposts', 'userjump', 'core/e107/singleton/db') as $key)
 		{
 			$this->savedRegistry[$key] = e107::getRegistry($key);
 		}
 
 		$this->savedInstalled = e107::getConfig()->get('plug_installed');
 		$this->dbClass = get_class(e107::getDb());
+
+		$this->hadFullPerms = array_key_exists('full_perms', $GLOBALS);
+		$this->savedFullPerms = $this->hadFullPerms ? $GLOBALS['full_perms'] : null;
 	}
 
 	public function _after()
@@ -63,7 +78,21 @@ class user_shortcodesTest extends \Codeception\Test\Unit
 			e107::setRegistry($key, $value);
 		}
 
+		foreach(array_keys($this->userRows) as $userId)
+		{
+			e107::setRegistry('userjump/'.$userId, null);
+		}
+
 		e107::getConfig()->set('plug_installed', $this->savedInstalled);
+
+		if($this->hadFullPerms)
+		{
+			$GLOBALS['full_perms'] = $this->savedFullPerms;
+		}
+		else
+		{
+			unset($GLOBALS['full_perms']);
+		}
 	}
 
 	/**
@@ -100,15 +129,65 @@ class user_shortcodesTest extends \Codeception\Test\Unit
 		$this->installStubDb();
 	}
 
+	/**
+	 * Stand in for the user table, so USER_JUMP_LINK can look for the member
+	 * either side of the one being rendered without any rows being written.
+	 *
+	 * @param array $rows user_id => user_name, none of them banned
+	 */
+	private function haveUsers(array $rows)
+	{
+		$this->userRows = $rows;
+		$this->installStubDb();
+	}
+
 	private function installStubDb()
 	{
 		$forumPostCounts = $this->forumPostCounts;
 		$tableCounts = $this->tableCounts;
+		$userRows = $this->userRows;
+		$pending = array('row' => false);
 
 		$stub = $this->make($this->dbClass, array(
 			'createQueryBuilder' => function() use ($forumPostCounts, $tableCounts)
 			{
 				return new user_shortcodesTestQueryBuilder($forumPostCounts, $tableCounts);
+			},
+			'execute' => function($query, $params = array()) use (&$pending, $userRows)
+			{
+				$pending['row'] = false;
+
+				if(!preg_match('/`user_id`\s*([<>])\s*:userId/', (string) $query, $m))
+				{
+					return 0;
+				}
+
+				$pivot = isset($params['userId']) ? (int) $params['userId'] : 0;
+
+				$ids = array_keys($userRows);
+				sort($ids);
+				if($m[1] === '<')
+				{
+					$ids = array_reverse($ids);
+				}
+
+				foreach($ids as $id)
+				{
+					if(($m[1] === '>' && $id > $pivot) || ($m[1] === '<' && $id < $pivot))
+					{
+						$pending['row'] = array('user_id' => $id, 'user_name' => $userRows[$id]);
+						break;
+					}
+				}
+
+				return $pending['row'] ? 1 : 0;
+			},
+			'fetch' => function() use (&$pending)
+			{
+				$row = $pending['row'];
+				$pending['row'] = false;
+
+				return $row;
 			},
 		));
 
@@ -229,6 +308,53 @@ class user_shortcodesTest extends \Codeception\Test\Unit
 
 		$this->assertEquals($perFirst, $perSecond,
 			'Template order must not change the percentage.');
+	}
+
+	/**
+	 * USER_JUMP_LINK looks up the member either side of the one being
+	 * rendered, which is a per-member answer, but it caches it in the registry
+	 * under one key for the whole request. The second member rendered gets the
+	 * first member's neighbours.
+	 */
+	public function testUserJumpLinkIsCachedPerMemberNotPerRequest()
+	{
+		// Build the URL machinery against the real handlers, before the stub db
+		// is standing in for them.
+		e107::getUrl()->create('user/profile/view', array('id' => 1, 'name' => 'warm'));
+
+		$this->haveUsers(array(90101 => 'alpha', 90102 => 'bravo', 90103 => 'charlie'));
+		$GLOBALS['full_perms'] = true;
+
+		$this->sc->setVars(array('user_id' => 90101));
+		$first = $this->sc->sc_user_jump_link('next');
+
+		$this->sc->setVars(array('user_id' => 90102));
+		$second = $this->sc->sc_user_jump_link('next');
+
+		$this->assertStringContainsString('title="bravo"', $first,
+			'the member after alpha is bravo');
+		$this->assertStringContainsString('title="charlie"', $second,
+			'the member after bravo is charlie, not whoever followed the member rendered first');
+	}
+
+	/**
+	 * And backwards, because prev and next are cached together under the same
+	 * key and a member with no one in front of them has to be told so.
+	 */
+	public function testUserJumpLinkLooksBackwardsFromTheRightMember()
+	{
+		e107::getUrl()->create('user/profile/view', array('id' => 1, 'name' => 'warm'));
+
+		$this->haveUsers(array(90101 => 'alpha', 90102 => 'bravo', 90103 => 'charlie'));
+		$GLOBALS['full_perms'] = true;
+
+		$this->sc->setVars(array('user_id' => 90103));
+		$this->assertStringContainsString('title="bravo"', $this->sc->sc_user_jump_link('prev'),
+			'the member before charlie is bravo');
+
+		$this->sc->setVars(array('user_id' => 90101));
+		$this->assertSame('&nbsp;', $this->sc->sc_user_jump_link('prev'),
+			'nobody comes before alpha');
 	}
 }
 
