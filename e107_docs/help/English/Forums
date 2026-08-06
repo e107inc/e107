@@ -1,15 +1,26 @@
+H1> Forum administration
 
-Q>	What are forum parents?
-A>	A parent is a heading to group other forums under, this makes it easier to navigate your forums.
+P> Forums are organised under [b]parents[/b] (categories), with optional moderators, tracking and pruning policies per forum.
 
-Q>	I want to make a certain administrator a forum moderator but his name isn't in the list - why?
-A>	Administrators will only be listed if they have the correct permission set to be a forum moderator. Go to the Administrators section and edit the admin in question, and make sure 'Moderate forums' is ticked.
+SHOT> forums/forum-admin.png | Forum tree with parents and child forums
 
-Q>	What's tracking?
-A>	If you have this enabled, it allows users to track a forum thread; they will receive an email when someone replies to the thread.
+Q> What are forum parents?
+A> A parent is a heading used to group other forums together. Parents make navigation easier when you have many forums.
 
-Q>	What's pruning?
-A>	This allows you to remove old threads that haven't received a reply in a certain time. Please be careful with this function, once threads are deleted they cannot be retrieved.
+H1> Moderation
 
-Q>	What are reported posts?
-A>	Users can report posts that they find to contain objectionable material. You can open the reported thread and moderate as you wish.
+Q> I want to make a certain administrator a forum moderator but their name isn't in the list – why?
+A> An administrator only appears as a candidate moderator if they hold the [b]Moderate forums[/b] permission. Open [b]Admin → Administrators[/b], edit the admin and tick that permission.
+
+Q> What are reported posts?
+A> Users can flag posts they consider objectionable. The reported thread appears in the moderation queue where you can read it in context and act (delete, lock, warn the user, etc.).
+
+H1> Subscriptions and clean-up
+
+Q> What's tracking?
+A> When tracking is enabled, users can subscribe to a thread and receive an email whenever a new reply is posted.
+
+Q> What's pruning?
+A> Pruning automatically removes threads that have not received a reply within a configurable timeframe.
+
+WARN> Pruning is destructive – deleted threads cannot be recovered. Test on a low-traffic forum first and keep regular database backups.

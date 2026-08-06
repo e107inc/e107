@@ -1,6 +1,15 @@
+H1> Managing downloads
 
-Q>	What's a download parent?
-A>	This allows you to group your downloads into different categories.
+P> The Downloads admin organises files into categories ("download parents") and links them to images and descriptions for the public download page.
 
-Q>	I want to add a download but the file doesn't appear in the list - why?
-A>	Only files in the e107_files/downloads folder appear in the dropdown list. Copy the file into this folder and it will appear. The same applies to images; they must be in the e107_files/downloadimages folder.
+SHOT> downloads/admin-download.png | List view of downloads grouped by parent category
+
+Q> What's a download parent?
+A> A parent groups your downloads into categories (e.g. "Documentation", "Themes", "Tools"). Visitors browse by category, which keeps long lists manageable.
+
+Q> I want to add a download but the file doesn't appear in the list – why?
+A> Only files placed in `e107_files/downloads/` show up in the dropdown. Copy the file there and it will appear. Images for the download work the same way but live in `e107_files/downloadimages/`.
+
+TIP> If you maintain many downloads, consider uploading via SFTP/SSH directly into `e107_files/downloads/` rather than the web uploader – it's faster and bypasses PHP's `upload_max_filesize` limit.
+
+WARN> Files placed in `e107_files/downloads/` are publicly downloadable through e107 once linked. Do not stage private documents in that folder.

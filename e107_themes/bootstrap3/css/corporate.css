@@ -5653,3 +5653,15 @@ button.close {
 .phpinfo-wrapper td.e            { background-color: #f5f5f5; }
 .phpinfo-wrapper td.v            { background-color: #fff; }
 .phpinfo-wrapper td.alert-danger { background-color: #f2dede; color: #a94442; }
+
+/* System Docs (admin) palette - keep in sync with .docs-item structural styles in e107_admin/docs.php */
+.docs-item h2.docs-title                                          { border-bottom-color: #ddd; }
+.docs-item h3.docs-section                                        { border-bottom-color: #eee; }
+.docs-item p.lead                                                 { color: #555; }
+.docs-item .docs-figure figcaption                                { color: #777; }
+.docs-item ol.docs-steps > li                                     { background: #f8f9fa; border-left-color: #428bca; }
+.docs-item ol.docs-steps > li:before                              { background: #428bca; color: #fff; }
+.docs-item pre.docs-code                                          { background: #2d2d2d; color: #f2f2f2; }
+.docs-item .docs-toc                                              { background: #fafafa; border-color: #e5e5e5; }
+.docs-item .docs-toc-title                                        { color: #555; }
+.docs-item .docs-toc a                                            { color: #428bca; }
