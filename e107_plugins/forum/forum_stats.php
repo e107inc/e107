@@ -66,7 +66,9 @@ class forumStats
 
 			$sortByReplies[$uid] = $replies;
 			$posters[$uid]['user_forums'] = $replies;
-			$posters[$uid]['percentage'] = round(($replies / $totalReplies) * 100, 2);
+			// A forum whose threads have never been replied to has no replies
+			// to take a share of.
+			$posters[$uid]['percentage'] = ($totalReplies > 0) ? round(($replies / $totalReplies) * 100, 2) : 0;
 		}
 
 		arsort($sortByReplies, SORT_NUMERIC);

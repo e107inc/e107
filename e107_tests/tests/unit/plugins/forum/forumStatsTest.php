@@ -126,4 +126,32 @@ class forumStatsTest extends \Codeception\Test\Unit
 
 		$this->assertEquals(50, $result[0]['percentage'], '35 of 70 replies is 50%.');
 	}
+
+	/**
+	 * A forum whose threads have never been replied to has posts but no
+	 * replies, so the share of all replies has no denominator. On PHP 8 that
+	 * is a DivisionByZeroError, which takes the whole page down.
+	 *
+	 * @see e107_tests/tests/acceptance/0052_ForumFeedParentClassCest.php,
+	 *      whose fixture has to plant a reply to get past this.
+	 */
+	public function testAForumWithNoRepliesYetStillRenders()
+	{
+		$posters = array(
+			1 => array('user_id' => 1, 'post_count' => 3),
+			2 => array('user_id' => 2, 'post_count' => 1),
+		);
+
+		$threadCounts = array(
+			1 => array('thread_count' => 3),
+			2 => array('thread_count' => 1),
+		);
+
+		$result = $this->stats->buildTopRepliers($posters, $threadCounts, 0);
+
+		$this->assertCount(2, $result);
+		$this->assertEquals(0, $result[0]['user_forums']);
+		$this->assertEquals(0, $result[0]['percentage'],
+			'No replies at all is 0%, not a fatal error.');
+	}
 }
