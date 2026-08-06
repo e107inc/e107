@@ -87,7 +87,7 @@ $PM_WRAPPER['PM_RECEIPT']= "<tr><td class='forumheader3'>".LAN_PM_9.": </td><td 
 $PM_WRAPPER['PM_REPLY']= "<tr><td class='forumheader' style='text-align:center'>{---}</td></tr>";
 
 //$PM_SEND_PM = "<div id='pm-send-pm'>
-$PM_TEMPLATE['send'] = "<div id='pm-send-pm'>
+$PM_TEMPLATE['send'] = "{PM_BREADCRUMB}<div id='pm-send-pm'>
 <table class='table fborder'>
 <thead>
 <tr>
@@ -117,7 +117,7 @@ $PM_TEMPLATE['send'] = "<div id='pm-send-pm'>
 ";
 
 //$PM_INBOX_HEADER = "
-$PM_TEMPLATE['inbox']['start'] = "
+$PM_TEMPLATE['inbox']['start'] = "{PM_BREADCRUMB}
 <table class='table table-striped fborder'>
 <thead>
 <tr>
@@ -168,7 +168,7 @@ $PM_TEMPLATE['inbox']['end'] = "
 ";
 
 //$PM_OUTBOX_HEADER = "
-$PM_TEMPLATE['outbox']['start'] = "
+$PM_TEMPLATE['outbox']['start'] = "{PM_BREADCRUMB}
 <table class='table table-striped fborder'>
 <thead>
 <tr>
@@ -231,7 +231,7 @@ $PM_TEMPLATE['outbox']['end'] = "
 
 
 
-$PM_TEMPLATE['blocked']['start'] = "
+$PM_TEMPLATE['blocked']['start'] = "{PM_BREADCRUMB}
 <table class='table table-striped fborder'>
 <tr>
 	<td class='fcaption' style='width:5%'>&nbsp;</td>
@@ -269,7 +269,7 @@ $PM_TEMPLATE['blocked']['end'] = "
 
 //$PM_SHOW =
 $PM_TEMPLATE['show'] =
-"<div class='pm-show' style='text-align: center'>
+"{PM_BREADCRUMB}<div class='pm-show' style='text-align: center'>
 <table class='table table-bordered table-striped fborder'>
 <tr>
 	<td class='fcaption text-left'>
