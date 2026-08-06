@@ -1733,11 +1733,15 @@ class banlistManager
 			{
 				if ($row = $ourDb->fetch())
 				{
-					// @todo check next line
-					// NOTE: behaviour-preserving - the original update had no WHERE clause,
-					// so this still updates every banlist row (pre-existing behaviour).
+					if (empty($pref['ban_durations'][$row['banlist_bantype']]))
+					{
+						continue;
+					}
+
+					$dur = (int) $pref['ban_durations'][$row['banlist_bantype']];
 					$writeDb->createQueryBuilder()->update('banlist')
-						->set('banlist_banexpires', intval($row['banlist_banexpires'] + $pref['ban_durations'][$row['banlist_banreason']]))
+						->setTyped('banlist_banexpires', time() + ($dur * 60 * 60), 'int')
+						->where('banlist_ip', $row['banlist_ip'])
 						->execute();
 					$numRet++;
 				}
