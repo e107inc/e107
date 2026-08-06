@@ -535,7 +535,7 @@ class forum_front
 
 		$tp = e107::getParser();
 
-		if(!empty($forumList['subs']) && is_array($forumList['subs'][$f['forum_id']]))
+		if(isset($forumList['subs'][$f['forum_id']]) && is_array($forumList['subs'][$f['forum_id']]))
 		{
 			$lastPost = explode('.', $f['forum_lastpost_info']);
 			$lastpost_datestamp = reset($lastPost);
