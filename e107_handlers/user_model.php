@@ -1326,7 +1326,7 @@ class e_user_model extends e_admin_model
 	 */
 	protected function clearTarget()
 	{
-		e107::setRegistry('core/e107/user'.$this->getId(), null);
+		e107::setRegistry('core/e107/user/'.$this->getId(), null);
 		return $this;
 	}
 
