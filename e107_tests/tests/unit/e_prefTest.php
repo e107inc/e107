@@ -37,7 +37,12 @@
 				$this->assertTrue(false, $e->getMessage());
 			}
 
-			$this->pref->__construct('core');
+			// 'core' is the alias; the row it stands for is SitePrefs, per
+			// e_core_pref::$aliases. Constructed with 'core' as the prefid the
+			// object looked for a row of that name, which no e107 database has,
+			// and so loaded nothing whenever the alias-keyed cache happened to
+			// be cold. It read real preferences only by borrowing that cache.
+			$this->pref->__construct('SitePrefs', 'core');
 			$this->pref->load();
 
 		}
