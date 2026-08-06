@@ -71,10 +71,11 @@
 		}
 
 		/**
-		 * plugin_installflag, not e107::isInstalled(). The plug_installed
-		 * preference still names a plugin.xml plugin after it has been
-		 * uninstalled in the same process, so it would report the forum as
-		 * installed for every test after the first one here.
+		 * plugin_installflag, not e107::isInstalled(). Tests elsewhere in this
+		 * suite write plug_installed directly to make a plugin look installed
+		 * without installing one, so the preference answers for those fixtures
+		 * as well as for real installs. The flag is the column the product's
+		 * own uninstall gates on, and so the record of what was really there.
 		 *
 		 * @param string $plugin plugin folder name
 		 * @return bool

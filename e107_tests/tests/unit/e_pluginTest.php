@@ -47,11 +47,10 @@
 		 */
 		private function havePluginInstalled($plugin)
 		{
-			// plugin_installflag, not e107::isInstalled(). The plug_installed
-			// preference still names a plugin.xml plugin after it has been
-			// uninstalled in the same process, so it would report gallery as
-			// installed here and this test would give back something it never
-			// took.
+			// plugin_installflag, not e107::isInstalled(). Tests elsewhere write
+			// plug_installed directly to make a plugin look installed without
+			// installing one, so the preference answers for those fixtures as
+			// well, and this test would give back something it never took.
 			$wasInstalled = (bool) e107::getDb()->createQueryBuilder()
 				->select('plugin_installflag')->from('plugin')
 				->where('plugin_path', $plugin)->fetchOne();
