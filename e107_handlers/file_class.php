@@ -992,7 +992,20 @@ class e_file
 
 			$fp = fopen($this->remoteFilePath($type) . $local_file, 'w'); // media-directory or temp directory is the root.
 
-			set_time_limit($timeout);
+			// The transfer's own budget belongs to cURL: curlOptions() sets
+			// CURLOPT_TIMEOUT from this same value, and curlFollow() spends one
+			// budget across the whole redirect chain. PHP's execution limit is a
+			// different thing and applies to the whole process, so it is only ever
+			// raised here, never lowered. set_time_limit($timeout) re-armed it at
+			// exactly $timeout, which turned this file's own ten minute grant
+			// above into 40 seconds for everything that ran after the first
+			// download, and 0, meaning no limit at all, into 40 seconds on CLI.
+			$executionLimit = (int) ini_get('max_execution_time');
+
+			if($executionLimit > 0 && $executionLimit < $timeout)
+			{
+				@set_time_limit($timeout);
+			}
 
 			$buffer = $this->curlFollow($remote_url, array('timeout' => $timeout),
 				function($cp) use ($fp)
