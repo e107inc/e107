@@ -1366,7 +1366,17 @@ class ThumbnailContainmentCest
 			return false;
 		}
 
-		$raster = array(IMAGETYPE_GIF, IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_BMP, IMAGETYPE_WEBP);
+		$raster = array(IMAGETYPE_GIF, IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_BMP);
+
+		// IMAGETYPE_WEBP arrived in PHP 7.1, and this branch still supports
+		// 5.6, where naming it is an undefined-constant notice that PHPUnit
+		// turns into a test error. getimagesizefromstring() on that
+		// interpreter cannot return the type either, so the entry is only
+		// ever useful where the constant exists.
+		if(defined('IMAGETYPE_WEBP'))
+		{
+			$raster[] = IMAGETYPE_WEBP;
+		}
 
 		return in_array($info[2], $raster, true) ? $info[2] : false;
 	}

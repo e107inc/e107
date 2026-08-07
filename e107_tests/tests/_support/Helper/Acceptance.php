@@ -108,7 +108,15 @@ class Acceptance extends E107Base
 	 */
 	public function grabResponseCode()
 	{
-		return $this->getModule('PhpBrowser')->client->getInternalResponse()->getStatusCode();
+		$response = $this->getModule('PhpBrowser')->client->getInternalResponse();
+
+		// getStatusCode() is Symfony BrowserKit 4.3 and later. This branch's
+		// PHP 5.6 leg resolves Codeception 4 against BrowserKit 3, where the
+		// accessor is getStatus(); asking the object rather than the PHP
+		// version keeps this right whichever Codeception composer picks.
+		return method_exists($response, 'getStatusCode')
+			? $response->getStatusCode()
+			: $response->getStatus();
 	}
 
 	/**
@@ -182,8 +190,15 @@ class Acceptance extends E107Base
 	{
 		$response = $this->getModule('PhpBrowser')->client->getInternalResponse();
 		$location = (string) $response->getHeader('Location');
-		\PHPUnit\Framework\Assert::assertStringContainsString(
-			$needle, $location, "Response must redirect to: $needle");
+		// strpos rather than assertStringContainsString: that name arrived in
+		// PHPUnit 7.5, this branch runs PHPUnit 5.7 under PHP 5.6, and the
+		// phpunit-wrapper polyfill only covers calls made through a test case,
+		// not a static call on Assert like this one. Codeception loads every
+		// file in the suite before running any of it, so the undefined method
+		// is not one failing test, it is the whole suite not starting.
+		\PHPUnit\Framework\Assert::assertTrue(
+			strpos($location, $needle) !== false,
+			"Response must redirect to: $needle (Location: $location)");
 	}
 
 	/**
@@ -576,8 +591,11 @@ PHP;
 	{
 		$response = $this->getModule('PhpBrowser')->client->getInternalResponse();
 		$location = (string) $response->getHeader('Location');
-		\PHPUnit\Framework\Assert::assertStringNotContainsString(
-			$needle, $location, "Response must not redirect to: $needle");
+		// See seeRedirectTo() for why this is strpos and not
+		// assertStringNotContainsString.
+		\PHPUnit\Framework\Assert::assertFalse(
+			strpos($location, $needle) !== false,
+			"Response must not redirect to: $needle (Location: $location)");
 	}
 
 	/**
