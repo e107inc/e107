@@ -630,7 +630,7 @@ class ForumAttachmentServingCest
 
 		$I->assertSame('', self::env($left, 'POST'),
 			'The preview stored a post, so the copy it left behind is not an orphan after all.');
-		$I->assertMatchesRegularExpression('~(\d+_1_[0-9a-f]{16}_preview\.png)~', $onDisk,
+		$I->assertSame(1, preg_match('~(\d+_1_[0-9a-f]{16}_preview\.png)~', $onDisk),
 			'The preview uploaded nothing, so there is no leftover copy to refuse. On disk: '.$onDisk);
 
 		preg_match('~(\d+_1_[0-9a-f]{16}_preview\.png)~', $onDisk, $m);
@@ -772,7 +772,7 @@ class ForumAttachmentServingCest
 
 		$name = self::env($stored, 'STORED');
 
-		$I->assertMatchesRegularExpression('/^\d+_1_[0-9a-f]{16}_holiday\.png$/', $name,
+		$I->assertSame(1, preg_match('/^\d+_1_[0-9a-f]{16}_holiday\.png$/', $name),
 			'The stored attachment name carries no random component, so anybody who knows '
 			.'when the post was made, who made it and what the file was called can ask for '
 			.'it by name: '.$name);

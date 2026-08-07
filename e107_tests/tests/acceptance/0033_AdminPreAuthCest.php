@@ -460,7 +460,7 @@ class AdminPreAuthCest
 			.var_export($before['resize_method'], true).' and is now '.var_export($after['resize_method'], true).'.');
 
 		// Secondary, and only meaningful when the app under test is this tree.
-		$I->assertFileDoesNotExist($canary,
+		$I->assertFalse(is_file($canary),
 			'The canary landed in the runner\'s own tree at '.$canary.'.');
 	}
 

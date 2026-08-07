@@ -243,8 +243,8 @@ class resize_handlerTest extends \Codeception\Test\Unit
 		});
 		ob_end_clean();
 
-		$this->assertFileDoesNotExist(
-			$marker,
+		$this->assertFalse(
+			is_file($marker),
 			'The im_path preference "'.$payloadTemplate.'" reached /bin/sh: resize_image() ran '
 				.'`touch '.$marker.'` as the web account. im_path is the one interpolation on '
 				.'resize_handler.php:161 and :165 that is neither intval()\'d nor escapeshellarg()\'d. '
@@ -280,9 +280,9 @@ class resize_handlerTest extends \Codeception\Test\Unit
 			$this->fail("Could not build an ImageMagick directory at {$shimDir}");
 		}
 
-		$this->assertMatchesRegularExpression(
-			'~^/.*/$~',
-			$this->shippedDefaultImPath(),
+		$this->assertSame(
+			1,
+			preg_match('~^/.*/$~', $this->shippedDefaultImPath()),
 			'This case stands in for the shipped default im_path, so the two have to be the same shape.'
 		);
 
@@ -379,8 +379,8 @@ class resize_handlerTest extends \Codeception\Test\Unit
 		ob_end_clean();
 
 		$this->assertFalse($result, 'resize_image() should refuse the unknown resize_method "'.$method.'".');
-		$this->assertFileDoesNotExist($marker, 'resize_method "'.$method.'" reached the ImageMagick branch.');
-		$this->assertFileDoesNotExist($destination, 'resize_method "'.$method.'" produced an output file.');
+		$this->assertFalse(is_file($marker), 'resize_method "'.$method.'" reached the ImageMagick branch.');
+		$this->assertFalse(is_file($destination), 'resize_method "'.$method.'" produced an output file.');
 	}
 
 	/**
