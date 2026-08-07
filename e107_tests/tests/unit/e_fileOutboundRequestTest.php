@@ -65,6 +65,15 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	/** RFC 6761 reserves .test: nothing anywhere resolves this name. */
 	const PINNED_HOST = 'p3-pin.test';
 
+	/**
+	 * A second name for the negative controls, because libcurl before 7.62
+	 * keeps a process-wide DNS cache that CURLOPT_RESOLVE writes into. On PHP
+	 * 5.6 (libcurl 7.52) the pinned fetch therefore resolves the name for the
+	 * unpinned fetch that follows it, and the control passes for the wrong
+	 * reason. A name of its own cannot be poisoned by the pin.
+	 */
+	const UNPINNED_HOST = 'p3-unpinned.test';
+
 	/** The vhost certificate the harness generates. @see docker/Dockerfile */
 	const CA_BUNDLE = '/etc/ssl/e107/web.crt';
 
@@ -284,6 +293,28 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 		self::assertTrue($this->fixtureAnswers(self::$authority, 'http'),
 			'The redirect fixture is not being served from ' . $this->fixtureUrl()
 			. '. Every chain assertion below would be vacuous, so stop here.');
+	}
+
+	/**
+	 * libcurl only started rejecting out-of-range option values around 7.62.
+	 * Older builds, which is what PHP 5.6 ships against, accept every value
+	 * this file can offer without complaint, so curl_setopt_array() cannot be
+	 * made to fail and there is nothing to observe. The production behaviour is
+	 * unchanged there; only the trigger is missing.
+	 *
+	 * @return void
+	 */
+	private function requireOptionValidatingLibcurl()
+	{
+		$probe = curl_init('http://127.0.0.1/');
+
+		if(@curl_setopt($probe, CURLOPT_MAXREDIRS, -2))
+		{
+			$version = curl_version();
+			self::markTestSkipped(
+				'libcurl ' . $version['version'] . ' does not validate option values, so no option can be'
+				. ' offered that it will refuse. Needs libcurl 7.62 or later.');
+		}
 	}
 
 	/**
@@ -731,6 +762,8 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	 */
 	public function testInitCurlFailsClosedWhenLibcurlRefusesAnOption()
 	{
+		$this->requireOptionValidatingLibcurl();
+
 		// Positive control: without the refused option the same URL builds a handle.
 		self::assertNotFalse($this->fl->initCurl('http://' . self::PUBLIC_IP . '/'));
 
@@ -760,7 +793,7 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 		$unpinned = new E107P3PinnedFile();
 		$unpinned->addresses = array();
 
-		self::assertFalse($unpinned->getRemoteContent($this->pinnedUrl()));
+		self::assertFalse($unpinned->getRemoteContent($this->pinnedUrl(self::UNPINNED_HOST)));
 		self::assertStringContainsString('Curl error: ' . CURLE_COULDNT_RESOLVE_HOST, $unpinned->getErrorMessage());
 	}
 
@@ -1076,9 +1109,9 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	/**
 	 * @return string a URL on a name that resolves nowhere
 	 */
-	private function pinnedUrl()
+	private function pinnedUrl($host = self::PINNED_HOST)
 	{
-		return 'http://' . self::PINNED_HOST . $this->fixturePort() . '/' . self::HOP_FIXTURE . '?hop=0&stop=0';
+		return 'http://' . $host . $this->fixturePort() . '/' . self::HOP_FIXTURE . '?hop=0&stop=0';
 	}
 
 	/**
