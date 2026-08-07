@@ -68,7 +68,8 @@ class private_messageAttachmentPathsTest extends \Codeception\Test\Unit
 		file_put_contents($file, 'not a directory');
 
 		self::assertFalse($this->pm->protectAttachmentPaths(12));
-		self::assertFileDoesNotExist($file . '/user_000012/.htaccess');
+		self::assertFalse(is_file($file . '/user_000012/.htaccess'),
+			'A guard file was written below a path that is a file, not a directory');
 	}
 
 	/**
@@ -97,7 +98,7 @@ class private_messageAttachmentPathsTest extends \Codeception\Test\Unit
 	public function testProtectStoredAttachmentsIsHappyWithNothingToDo()
 	{
 		self::assertTrue($this->pm->protectStoredAttachments());
-		self::assertDirectoryDoesNotExist($this->root);
+		self::assertFalse(is_dir($this->root), 'Nothing to protect must not mean a directory gets made');
 	}
 
 	/**

@@ -437,7 +437,7 @@ class e_fileTest extends \Codeception\Test\Unit
 
 		self::assertFalse($this->fl->protectDirectory($dir),
 			'A directory that is not there must not be created');
-		self::assertDirectoryDoesNotExist($dir);
+		self::assertFalse(is_dir($dir), 'protectDirectory() must not create the directory it was asked to guard');
 
 		self::assertFalse($this->fl->protectDirectory(''));
 
