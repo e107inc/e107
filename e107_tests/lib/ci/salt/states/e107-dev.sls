@@ -111,12 +111,40 @@ Create MariaDB grants for the local user:
     - require:
       - mysql_user: Create MariaDB local user
 
+# Ubuntu ships `AllowOverride None` for /var/www/, which makes every .htaccess
+# in the tree an inert text file. e107 is not installable on such a host: it
+# ships e107.htaccess for its own rewriting, and e_file::protectDirectory()
+# keeps private uploads private with a deny rule Apache has to be allowed to
+# read. Granting the override classes e107 actually asks for (FileInfo,
+# Options, Indexes, Limit) is what makes this box resemble a real e107 host,
+# and without it the attachment and media suites test nothing.
+Allow e107 its .htaccess directives:
+  file.managed:
+    - name: /etc/apache2/conf-available/e107-override.conf
+    - makedirs: True
+    - contents: |
+        <Directory {{ salt['pillar.get']('fs:path') }}>
+            AllowOverride All
+            Require all granted
+        </Directory>
+    - require:
+      - pkg: Install LAMP stack
+
+Enable the e107 override configuration:
+  cmd.run:
+    - name: a2enconf e107-override
+    - unless: test -L /etc/apache2/conf-enabled/e107-override.conf
+    - require:
+      - file: Allow e107 its .htaccess directives
+
 Start and enable the web server:
   service.running:
     - name: apache2
     - enable: True
     - watch:
       - pkg: Install LAMP stack
+      - file: Allow e107 its .htaccess directives
+      - cmd: Enable the e107 override configuration
 
 Configure Apache user:
   user.present:
