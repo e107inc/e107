@@ -581,35 +581,91 @@ PHP;
 	}
 
 	/**
-	 * Clear the installer's resume cookie at the path it was actually set on.
+	 * The paths an application cookie can be sitting on in the jar.
 	 *
-	 * The installer scopes e107install_state to e_HTTP (the app's base path,
-	 * e.g. /e107/), but Codeception's resetCookie() defaults to "/" and so
-	 * leaves the app-path cookie in the jar. Derive the base path from the
-	 * suite URL and expire the cookie there (and at "/").
+	 * e107 scopes its cookies to e_HTTP, the app's base path: "/" on a docroot
+	 * install and "/e107/" on one that lives in a subdirectory. Codeception
+	 * defaults every cookie lookup to "/", and Symfony's jar matches a stored
+	 * cookie only when the path being asked for starts with the path it was
+	 * stored under, so "/" never finds a cookie set on "/e107/". CI installs
+	 * into a subdirectory and a developer's stack usually does not, which is
+	 * how an assertion of this shape passes at home and cannot pass in CI.
+	 *
+	 * @return array Longest first, so the app path is offered before "/".
+	 */
+	private function siteCookiePaths()
+	{
+		$base = parse_url((string) $this->getModule('PhpBrowser')->_getConfig('url'), PHP_URL_PATH);
+		$dir  = is_string($base) ? trim($base, '/') : '';
+
+		$paths = array();
+
+		if ($dir !== '')
+		{
+			// With and without the trailing slash, because e_HTTP and the suite
+			// URL need not normalise it the same way.
+			$paths[] = '/'.$dir.'/';
+			$paths[] = '/'.$dir;
+		}
+
+		$paths[] = '/';
+
+		return array_values(array_unique($paths));
+	}
+
+	/**
+	 * Assert a cookie the application set is in the jar.
+	 *
+	 * Looks on the app's own base path. A lookup there also matches a cookie
+	 * stored on "/", so this is the right question on either install shape.
+	 *
+	 * @param string $name
+	 * @return void
+	 */
+	public function seeSiteCookie($name)
+	{
+		$paths = $this->siteCookiePaths();
+		$this->getModule('PhpBrowser')->seeCookie($name, array('path' => $paths[0]));
+	}
+
+	/**
+	 * Assert a cookie the application would have set is not in the jar.
+	 *
+	 * @param string $name
+	 * @return void
+	 */
+	public function dontSeeSiteCookie($name)
+	{
+		$paths = $this->siteCookiePaths();
+		$this->getModule('PhpBrowser')->dontSeeCookie($name, array('path' => $paths[0]));
+	}
+
+	/**
+	 * Expire a cookie the application set, wherever it was set.
+	 *
+	 * Unlike a lookup, expiry needs the exact path the jar filed the cookie
+	 * under, so offer every candidate.
+	 *
+	 * @param string $name
+	 * @return void
+	 */
+	public function resetSiteCookie($name)
+	{
+		$browser = $this->getModule('PhpBrowser');
+
+		foreach ($this->siteCookiePaths() as $path)
+		{
+			$browser->resetCookie($name, array('path' => $path));
+		}
+	}
+
+	/**
+	 * Clear the installer's resume cookie at the path it was actually set on.
 	 *
 	 * @return void
 	 */
 	public function resetInstallStateCookie()
 	{
-		$browser = $this->getModule('PhpBrowser');
-		$base = parse_url((string) $browser->_getConfig('url'), PHP_URL_PATH);
-		if (!is_string($base) || $base === '')
-		{
-			$base = '/';
-		}
-
-		// Clear the base path with and without a trailing slash, plus "/", so
-		// the jar entry is removed however e_HTTP and the suite URL normalise it.
-		$paths = array('/');
-		if ($base !== '/')
-		{
-			$paths[] = '/'.trim($base, '/');
-			$paths[] = '/'.trim($base, '/').'/';
-		}
-		foreach (array_unique($paths) as $path)
-		{
-			$browser->resetCookie('e107install_state', array('path' => $path));
-		}
+		$this->resetSiteCookie('e107install_state');
 	}
 }
