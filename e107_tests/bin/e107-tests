@@ -39,6 +39,14 @@ LABEL_NS=e107.tests
 WEB_APP_DIR=/var/www/html
 WEB_TESTS_DIR=$WEB_APP_DIR/e107_tests
 
+# Codeception 4 refuses to start unless register_argc_argv is On, but the
+# setting must stay Off for the Apache SAPI: PHP 8.5 deprecates deriving
+# $_SERVER['argv'] from the query string, and the notice is printed above
+# every response carrying one, failing any assertion on page content. A
+# conf.d entry cannot tell the two SAPIs apart, so it goes here, on the only
+# command that reads it.
+CODECEPT=(php -d register_argc_argv=1 ./vendor/bin/codecept)
+
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -571,7 +579,7 @@ deps_ensure() {
 install_site() {
     note ">> Installing e107 into the stack (acceptance installer)"
     compose_p exec -T -w "$WEB_TESTS_DIR" web \
-        ./vendor/bin/codecept run acceptance tests/acceptance/0000_InstallCest.php:installDefault --steps
+        "${CODECEPT[@]}" run acceptance tests/acceptance/0000_InstallCest.php:installDefault --steps
     # The install Cest cleans up its e107_config.php in _afterSuite (the DB
     # tables persist), so render a persistent config against the same DB.
     note ">> Writing persistent e107_config.php"
@@ -816,7 +824,7 @@ cmd_run() {
             cc_args+=("$suite"); shift ;;
     esac
     cc_args+=(--steps "$@")
-    compose_p exec -w "$WEB_TESTS_DIR" web ./vendor/bin/codecept "${cc_args[@]}"
+    compose_p exec -w "$WEB_TESTS_DIR" web "${CODECEPT[@]}" "${cc_args[@]}"
 }
 
 # Replay CI's unit coverage run exactly (test-unit.yml), so base-image drift
@@ -829,7 +837,7 @@ cmd_ci_unit() {
     ensure_web_exec
     deps_ensure
     compose_p exec -w "$WEB_TESTS_DIR" web \
-        php -d memory_limit=-1 -d xdebug.mode=coverage \
+        php -d memory_limit=-1 -d xdebug.mode=coverage -d register_argc_argv=1 \
         ./vendor/bin/codecept run unit --steps --debug --coverage --coverage-xml
 }
 
