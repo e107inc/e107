@@ -223,7 +223,7 @@ class resize_handlerTest extends \Codeception\Test\Unit
 	 *
 	 * @return string[][]
 	 */
-	public function imPathPayloads(): array
+	public function imPathPayloads()
 	{
 		return [
 			'command separator' => ['touch %s; '],
@@ -236,11 +236,11 @@ class resize_handlerTest extends \Codeception\Test\Unit
 	/**
 	 * @dataProvider imPathPayloads
 	 */
-	public function testResizeImageMustNotExecuteShellMetacharactersInImPath(string $payloadTemplate)
+	public function testResizeImageMustNotExecuteShellMetacharactersInImPath($payloadTemplate)
 	{
 		$this->requireWorkingShell();
 
-		$marker = $this->workDir.'/marker_'.bin2hex(random_bytes(6));
+		$marker = $this->workDir.'/marker_'.bin2hex(self::randomBytes(6));
 
 		$GLOBALS['pref']['im_path'] = sprintf($payloadTemplate, $marker);
 
@@ -354,7 +354,7 @@ class resize_handlerTest extends \Codeception\Test\Unit
 	 *
 	 * @return string[][]
 	 */
-	public function outOfRangeResizeMethods(): array
+	public function outOfRangeResizeMethods()
 	{
 		return [
 			'wrong case'         => ['imagemagick'],
@@ -369,12 +369,12 @@ class resize_handlerTest extends \Codeception\Test\Unit
 	/**
 	 * @dataProvider outOfRangeResizeMethods
 	 */
-	public function testOutOfRangeResizeMethodReachesNoBackend(string $method)
+	public function testOutOfRangeResizeMethodReachesNoBackend($method)
 	{
 		$this->requireWorkingShell();
 
-		$marker = $this->workDir.'/marker_'.bin2hex(random_bytes(6));
-		$destination = $this->workDir.'/out_'.bin2hex(random_bytes(4)).'.jpg';
+		$marker = $this->workDir.'/marker_'.bin2hex(self::randomBytes(6));
+		$destination = $this->workDir.'/out_'.bin2hex(self::randomBytes(4)).'.jpg';
 
 		// If an unrecognised mode were to fall through to the ImageMagick
 		// branch, this im_path would say so out loud.
@@ -398,7 +398,7 @@ class resize_handlerTest extends \Codeception\Test\Unit
 	 *
 	 * @return string
 	 */
-	private function shippedDefaultImPath(): string
+	private function shippedDefaultImPath()
 	{
 		$xml = file_get_contents(APP_PATH.'/e107_core/xml/default_install.xml');
 
@@ -428,7 +428,7 @@ class resize_handlerTest extends \Codeception\Test\Unit
 			$this->markTestSkipped('exec()/passthru() are disabled here, so an absent marker would prove nothing.');
 		}
 
-		$canary = $this->workDir.'/shell_canary_'.bin2hex(random_bytes(4));
+		$canary = $this->workDir.'/shell_canary_'.bin2hex(self::randomBytes(4));
 		$out = [];
 		$rc = 0;
 		exec('touch '.escapeshellarg($canary), $out, $rc);
