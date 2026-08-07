@@ -268,6 +268,8 @@ compose_up_cmd() {
     E107_DB_CHARSET=$E107_DB_CHARSET \
     E107_DB_COLLATION=$E107_DB_COLLATION \
     E107_DB_EXTRA_ARGS=$E107_DB_EXTRA_ARGS \
+    E107_BASE_PATH=$BASE_PATH \
+    E107_INTERNAL_URL=$(base_url) \
     docker compose --project-directory "$DOCKER_DIR" -f "$COMPOSE_FILE" "$@"
 }
 
@@ -310,6 +312,31 @@ ensure_web_exec() {
         fi
     fi
     rm -f "$tmp"
+}
+
+# ---------------------------------------------------------------------------
+# Base path: serve the site from a subdirectory, as most shared hosts do
+# ---------------------------------------------------------------------------
+
+# e107 derives e_HTTP from the request, and scopes cookies, redirects and
+# generated links to it, so a site at /e107/ exercises code paths a docroot
+# install never reaches. Accepts "/e107/", "/e107" or "e107"; normalises to the
+# bare directory ("" for a docroot install), which is what the container's
+# Apache alias and the suite URL are both built from.
+normalise_base_path() {
+    BASE_PATH=$(printf '%s' "${1:-}" | sed 's#^/*##; s#/*$##')
+    case $BASE_PATH in
+        *[!A-Za-z0-9_/-]*) err "--base-path may only contain letters, digits, '_', '-' and '/': $1" ;;
+    esac
+}
+
+# The suite URL for the current base path.
+base_url() {
+    if [ -n "$BASE_PATH" ]; then
+        printf 'http://localhost/%s/' "$BASE_PATH"
+    else
+        printf 'http://localhost/'
+    fi
 }
 
 # ---------------------------------------------------------------------------
@@ -357,7 +384,9 @@ write_managed_config() {
 ---
 app_path: '../'
 deployer: 'local'
-url: 'http://localhost/'
+# The path component follows --base-path: the container aliases it onto the
+# same docroot, so a subdirectory install needs no separate deployment.
+url: '$(base_url)'
 db:
   host: 'db'
   port: '3306'
@@ -378,7 +407,7 @@ EOF
 up_with_registry_fallback() {
     local tmp rc=0
     tmp=$(mktemp)
-    compose_up_cmd up -d --wait 2>&1 | tee "$tmp" || rc=${PIPESTATUS[0]}
+    compose_up_cmd up -d --wait "${UP_SERVICES[@]}" 2>&1 | tee "$tmp" || rc=${PIPESTATUS[0]}
     if [ "$rc" -ne 0 ] && grep -qiE 'denied|unauthorized|toomanyrequests|manifest unknown' "$tmp"; then
         local img missing=no
         for img in "e107-web:${E107_PHP_VERSION}${XDEBUG_TAG}" \
@@ -587,12 +616,16 @@ cmd_up() {
     DB=$DEFAULT_DB
     WITH_XDEBUG=no
     INSTALL_SITE=no
+    local base=
     while [ $# -gt 0 ]; do
         case $1 in
             --php) PHP=$2; shift 2 ;;
             --db) DB=$2; shift 2 ;;
             --xdebug) WITH_XDEBUG=yes; shift ;;
             --install-site) INSTALL_SITE=yes; shift ;;
+            --base-path) base=$2; shift 2 ;;
+            --no-selenium) WITH_SELENIUM=no; shift ;;
+            --rebuild) REBUILD=yes; shift ;;
             -h|--help) cmd_help; exit 0 ;;
             *) err "unknown flag: $1" ;;
         esac
@@ -603,10 +636,32 @@ cmd_up() {
     E107_DB_IMAGE=$DB
     XDEBUG_TAG=$([ "$WITH_XDEBUG" = yes ] && echo '-xdebug' || true)
     PROJECT=$(project_name "$PHP" "$DB")
+    normalise_base_path "$base"
     db_flavor_args
     write_managed_config
 
-    note ">> Bringing up env: $PROJECT (PHP $PHP / $DB)"
+    # Built as its own step, not as `up --build`. A failed build there leaves
+    # any existing image in place and the stack comes up on it, so a Dockerfile
+    # that cannot build looks healthy: exactly how an openssl flag that Debian
+    # Stretch does not have sat unnoticed in the php:5.6 image for two days.
+    if [ "$REBUILD" = yes ]; then
+        note ">> Rebuilding the web image for PHP $PHP"
+        compose_up_cmd build web \
+            || err "the web image failed to build; the stack was left alone (see output above)"
+    fi
+
+    # This branch's stack is db + web only, so the subset is everything; the
+    # flag exists so the CI workflow reads the same on both branches.
+    UP_SERVICES=()
+    if [ "$WITH_SELENIUM" != yes ]; then
+        UP_SERVICES=(db web)
+    fi
+
+    if [ -n "$BASE_PATH" ]; then
+        note ">> Bringing up env: $PROJECT (PHP $PHP / $DB, site at /$BASE_PATH/)"
+    else
+        note ">> Bringing up env: $PROJECT (PHP $PHP / $DB)"
+    fi
     # `compose up` builds the web image only when it's missing, so a cached
     # image (CI) or an earlier build is reused automatically.
     if ! up_with_registry_fallback; then
@@ -662,12 +717,18 @@ cmd_urls() {
     if [ -z "$port" ]; then
         err "env $PROJECT does not appear to be running (try: e107-tests up)"
     fi
+    # The site's own path, read back from the managed config rather than from
+    # this invocation's flags: `urls` is usually run long after `up`.
+    local base=
+    if [ -f "$MANAGED_CONFIG" ]; then
+        base=$(sed -n "s#^url: 'http://localhost/\([^']*\)'#\1#p" "$MANAGED_CONFIG" | head -n1)
+    fi
     cat <<EOF
 Project:      $PROJECT
 PHP version:  $E107_PHP_VERSION
 DB image:     $E107_DB_IMAGE
-App URL:      http://localhost:$port/
-Admin URL:    http://localhost:$port/e107_admin/
+App URL:      http://localhost:$port/$base
+Admin URL:    http://localhost:$port/${base}e107_admin/
 DB (host):    127.0.0.1:$(compose_p port db 3306 2>/dev/null | awk -F: '{print $NF}' | tail -n1)
               user=$DEFAULT_DB_USER  pw=$DEFAULT_DB_PASSWORD  db=$DEFAULT_DB_NAME
               root pw=$DEFAULT_DB_ROOT_PASSWORD
@@ -1122,6 +1183,16 @@ EXPLICIT_PROJECT=
 WITH_XDEBUG=no
 XDEBUG_TAG=
 TARGET_WORKTREE=
+# Docroot install and the full stack unless `up` is told otherwise. Only `up`
+# reads these; every later command drives the containers it left behind.
+BASE_PATH=
+WITH_SELENIUM=yes
+UP_SERVICES=()
+# compose builds the web image only when it is missing, so a change under
+# docker/ is invisible to a worktree that already has one -- and the image is
+# shared by every env on the same PHP version, so deleting it is not enough
+# while another stack still holds the tag.
+REBUILD=no
 
 # Pre-parse global flags that can appear before the subcommand. Kept as they
 # are read, so that a hand-over below can pass on everything except the
