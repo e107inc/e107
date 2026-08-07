@@ -38,22 +38,26 @@ jobs:
         # may well still run on 8.0 -- nothing here says otherwise -- but CI
         # cannot demonstrate it, so treat ">=8.0" as unverified.
         #
-        # The MySQL floor is 5.7 because the installer cannot create the
-        # schema on anything older, which this job is the only thing that
-        # checks: the unit suite loads a dump and never runs CREATE TABLE.
-        #   mysql:5.5  error 1214, InnoDB had no FULLTEXT index before 5.6
-        #   mysql:5.6  error 1071, "key was too long; max key length is 767
-        #              bytes" -- the InnoDB COMPACT row format limit that 5.7
-        #              relaxes by default
-        # release/v2.3.x still installs on 5.5, so this is drift since 2.3 and
-        # not a property of e107 generally.
+        # The MySQL floor is 5.5, the oldest release the installer can build
+        # the schema on, and this job is the only thing that checks: the unit
+        # suite loads a dump and never runs CREATE TABLE.
+        #
+        # It used to be 5.7. Two barriers stood in the way and db_verify now
+        # settles both against what the server reports rather than assuming:
+        #   error 1214  InnoDB had no FULLTEXT index before MySQL 5.6, so the
+        #               tables declaring one fall back to an engine that has it
+        #   error 1071  "key was too long; max key length is 767 bytes", the
+        #               InnoDB limit that 5.7 relaxes, so a table whose widest
+        #               index would not fit at utf8mb4 gets utf8 instead
+        # Keeping 5.5 here is what stops that regressing, since it is the only
+        # row where the FULLTEXT fallback is exercised at all.
         include:
           - php: '8.1'
-            db: 'mysql:5.7'
+            db: 'mysql:5.5'
             layout: docroot
             base_path: ''
           - php: '8.1'
-            db: 'mysql:5.7'
+            db: 'mysql:5.5'
             layout: subdirectory
             base_path: 'e107'
           - php: '8.5'
