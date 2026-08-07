@@ -2785,22 +2785,35 @@ class e_file
 
 			ini_set('default_socket_timeout', 1);
 
-			// get_headers() would otherwise follow redirects with nothing
-			// revalidating the target. A 302 already counts as reachable below, so
+			// The probe must not follow redirects: nothing would revalidate the
+			// target it lands on. A 302 already counts as reachable below, so
 			// reporting on the URL as handed in leaves the answer unchanged.
+			//
 			// get_headers() only takes a context argument from PHP 7.1, and this
-			// has to hold on 5.6 too, so the default context carries it: every
-			// supported version honours that.
-			$default = stream_context_get_options(stream_context_get_default());
-			$http = isset($default['http']) ? $default['http'] : array();
+			// has to hold on 5.6 too. The *default* context is the wrong place to
+			// carry it: on 5.6, once a stream has read through the default
+			// context, stream_context_set_default() no longer reaches the copy
+			// later reads take, so putting it back silently does nothing and every
+			// subsequent stream read in the request stops following redirects.
+			// fopen() has taken a context on every supported version, so the
+			// option travels with this one request and nothing global is touched.
+			$context = stream_context_create(array('http' => array(
+				'follow_location' => 0,
+				'max_redirects'   => 1,
+				// Without this a 3xx or 4xx is an fopen() failure and the status
+				// line, which is the whole answer, never arrives.
+				'ignore_errors'   => true,
+			)));
 
-			stream_context_set_default(array('http' => array('follow_location' => 0, 'max_redirects' => 1) + $http));
+			$headers = array();
+			$stream  = @fopen($url, 'r', false, $context);
 
-			$headers = @get_headers($url);
-
-			// stream_context_set_default() merges into the standing default rather
-			// than replacing it, so putting it back has to name PHP's own defaults.
-			stream_context_set_default(array('http' => $http + array('follow_location' => 1, 'max_redirects' => 20)));
+			if($stream !== false)
+			{
+				// The HTTP wrapper declares this in the scope fopen() ran in.
+				$headers = isset($http_response_header) ? $http_response_header : array();
+				fclose($stream);
+			}
 
 			if(empty($headers[0]))
 			{
