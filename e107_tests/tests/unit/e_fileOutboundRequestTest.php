@@ -12,8 +12,10 @@
  * The published fix validates the URL as typed and then hands it to cURL with
  * CURLOPT_FOLLOWLOCATION on, so libcurl re-issues the request at whatever the
  * server answers with. The validation is therefore one redirect deep. These
- * tests drive a real redirect chain against the container's own Apache, so
- * "every hop is revalidated" is measured rather than asserted.
+ * tests drive a real redirect chain against a real web server, so "every hop
+ * is revalidated" is measured rather than asserted. The server is the docker
+ * harness's own Apache where there is one, and PHP's built-in server started
+ * over the prepared tree where there is not. @see locateFixtureServer()
  *
  * COVERAGE GAPS left behind by this file, deliberately and knowingly:
  *
@@ -42,7 +44,7 @@
 
 class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 {
-	/** Fixture served by the container's own Apache. @see WorkspaceCleanup */
+	/** Fixture written into the served tree. @see WorkspaceCleanup */
 	const HOP_FIXTURE = 'e107_tests_p3_hop.php';
 
 	/** Emitted by the fixture only once it has stopped redirecting. */
@@ -78,6 +80,15 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	/** @var string file the fixture appends to when asked to count its hits */
 	private $hitPath;
 
+	/** @var string|false authority the fixture answers on, or false for none */
+	private static $authority;
+
+	/** @var bool whether the harness's HTTPS vhost answers for the fixture */
+	private static $tls = false;
+
+	/** @var resource|null the `php -S` child, when this class had to start one */
+	private static $server;
+
 	protected function _before()
 	{
 		require_once(codecept_data_dir('e_fileOutboundRequestProbes.php'));
@@ -93,10 +104,7 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 		$this->fixturePath = APP_PATH . '/' . self::HOP_FIXTURE;
 		file_put_contents($this->fixturePath, $this->fixtureSource());
 
-		$reachable = @file_get_contents($this->hopUrl(0, 0));
-		self::assertSame(self::FINAL_SENTINEL, $reachable,
-			'The redirect fixture is not being served from ' . $this->hopUrl(0, 0)
-			. '. Every chain assertion below would be vacuous, so stop here.');
+		$this->locateFixtureServer();
 	}
 
 	protected function _after()
@@ -104,6 +112,193 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 		@unlink($this->fixturePath);
 		@unlink($this->downloadPath);
 		@unlink($this->hitPath);
+	}
+
+	/**
+	 * Find something that serves the prepared tree over HTTP, once per process.
+	 *
+	 * The docker harness has its own Apache on port 80 across the tree, plus
+	 * the HTTPS vhost the TLS cases need. Nothing else does: the unit suite in
+	 * CI runs in a bare PHP container, and the tree it runs against is a git
+	 * worktree under /tmp that no web server was ever told about. So where
+	 * Apache is absent, PHP serves the tree itself.
+	 *
+	 * @return void
+	 */
+	private function locateFixtureServer()
+	{
+		if(self::$authority !== null)
+		{
+			return;
+		}
+
+		self::$authority = false;
+
+		if($this->fixtureAnswers('127.0.0.1', 'http'))
+		{
+			self::$authority = '127.0.0.1';
+			self::$tls = is_file(self::CA_BUNDLE) && $this->fixtureAnswers('127.0.0.1', 'https');
+
+			return;
+		}
+
+		self::$authority = $this->startBuiltInServer();
+	}
+
+	/**
+	 * @param string $authority host, with a port when it is not the default
+	 * @param string $scheme
+	 * @return bool whether the fixture is what answers there
+	 */
+	private function fixtureAnswers($authority, $scheme)
+	{
+		// The harness vhost is self signed, and this probe is not the test:
+		// what it establishes is only that the fixture is being served.
+		$context = stream_context_create(array(
+			'http' => array('timeout' => 5),
+			'ssl'  => array('verify_peer' => false, 'verify_peer_name' => false),
+		));
+
+		$url = $scheme . '://' . $authority . '/' . self::HOP_FIXTURE . '?hop=0&stop=0';
+
+		return @file_get_contents($url, false, $context) === self::FINAL_SENTINEL;
+	}
+
+	/**
+	 * @return string|false the authority the built-in server ended up on
+	 */
+	private function startBuiltInServer()
+	{
+		if(!function_exists('proc_open'))
+		{
+			return false;
+		}
+
+		$php = (defined('PHP_BINARY') && is_executable(PHP_BINARY)) ? PHP_BINARY : 'php';
+
+		for($attempt = 0; $attempt < 2; $attempt++)
+		{
+			$port = $this->freePort();
+			if($port === false)
+			{
+				return false;
+			}
+
+			// 0.0.0.0 rather than 127.0.0.1: the cross-origin case reaches the
+			// same server on a second loopback literal.
+			$command = escapeshellarg($php) . ' -S 0.0.0.0:' . $port . ' -t ' . escapeshellarg(APP_PATH);
+			$quiet   = array(
+				0 => array('file', '/dev/null', 'r'),
+				1 => array('file', '/dev/null', 'w'),
+				2 => array('file', '/dev/null', 'w'),
+			);
+
+			$pipes  = array();
+			$server = @proc_open($command, $quiet, $pipes);
+
+			if(!is_resource($server))
+			{
+				return false;
+			}
+
+			self::$server = $server;
+			register_shutdown_function(array(__CLASS__, 'stopBuiltInServer'));
+
+			$authority = '127.0.0.1:' . $port;
+			for($waited = 0; $waited < 50; $waited++)
+			{
+				if($this->fixtureAnswers($authority, 'http'))
+				{
+					return $authority;
+				}
+
+				$status = proc_get_status($server);
+				if(!$status['running'])
+				{
+					break; // the port was taken between the probe and here
+				}
+
+				usleep(100000);
+			}
+
+			self::stopBuiltInServer();
+		}
+
+		return false;
+	}
+
+	/**
+	 * @return int|false a port nothing was listening on a moment ago
+	 */
+	private function freePort()
+	{
+		$errno  = 0;
+		$errstr = '';
+		$probe  = @stream_socket_server('tcp://127.0.0.1:0', $errno, $errstr);
+
+		if(!is_resource($probe))
+		{
+			return false;
+		}
+
+		$name = stream_socket_get_name($probe, false);
+		fclose($probe);
+
+		$port = (int) substr($name, strrpos($name, ':') + 1);
+
+		return ($port > 0) ? $port : false;
+	}
+
+	/**
+	 * @return void
+	 */
+	public static function stopBuiltInServer()
+	{
+		if(is_resource(self::$server))
+		{
+			proc_terminate(self::$server);
+			proc_close(self::$server);
+		}
+
+		self::$server = null;
+	}
+
+	/**
+	 * Guard for every case that drives the fixture over HTTP. A server that is
+	 * there but serving something else is still a failure: that is the vacuous
+	 * pass this file exists to prevent. Having no server at all is not, because
+	 * the policy cases below it are the ones that carry the security assertions
+	 * and they run either way.
+	 *
+	 * @return void
+	 */
+	private function requireFixtureServer()
+	{
+		if(self::$authority === false)
+		{
+			self::markTestSkipped(
+				'Nothing serves ' . APP_PATH . ' over HTTP and PHP\'s own server could not be started here, '
+				. 'so the redirect chain cannot be driven.');
+		}
+
+		self::assertTrue($this->fixtureAnswers(self::$authority, 'http'),
+			'The redirect fixture is not being served from ' . $this->fixtureUrl()
+			. '. Every chain assertion below would be vacuous, so stop here.');
+	}
+
+	/**
+	 * @return void
+	 */
+	private function requireTlsFixture()
+	{
+		$this->requireFixtureServer();
+
+		if(!self::$tls)
+		{
+			self::markTestSkipped(
+				'The TLS cases need the harness\'s own HTTPS vhost and its certificate at ' . self::CA_BUNDLE
+				. '; PHP\'s built-in server speaks no TLS, so refusing a peer here would prove nothing.');
+		}
 	}
 
 	/**
@@ -141,7 +336,14 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 		$php .= "\texit;\n}\n";
 		$php .= "echo '" . self::FINAL_SENTINEL . "';\n";
 		$php .= "if(!\$echo)\n{\n\texit;\n}\n";
+		// getallheaders() is an Apache thing until PHP 7.3, so the built-in
+		// server needs the $_SERVER route or the header cases read vacuously.
 		$php .= "\$headers = function_exists('getallheaders') ? getallheaders() : array();\n";
+		$php .= "if(empty(\$headers))\n{\n";
+		$php .= "\tforeach(\$_SERVER as \$key => \$value)\n\t{\n";
+		$php .= "\t\tif(strpos(\$key, 'HTTP_') === 0)\n\t\t{\n";
+		$php .= "\t\t\t\$headers[str_replace('_', '-', substr(\$key, 5))] = \$value;\n";
+		$php .= "\t\t}\n\t}\n}\n";
 		$php .= "\$headers = array_change_key_case(\$headers, CASE_LOWER);\n";
 		$php .= "echo '|method=' . \$_SERVER['REQUEST_METHOD'];\n";
 		$php .= "echo '|body=' . file_get_contents('php://input');\n";
@@ -160,7 +362,29 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	 */
 	private function hopUrl($hop, $stop, $scheme = 'http', $extra = '')
 	{
-		return $scheme . '://127.0.0.1/' . self::HOP_FIXTURE . '?hop=' . $hop . '&stop=' . $stop . $extra;
+		return $this->fixtureUrl($scheme) . '?hop=' . $hop . '&stop=' . $stop . $extra;
+	}
+
+	/**
+	 * @param string $scheme
+	 * @return string the fixture's own URL, query excluded
+	 */
+	private function fixtureUrl($scheme = 'http')
+	{
+		// TLS is only ever the harness's vhost, which is on the default port.
+		$authority = ($scheme === 'https' || !self::$authority) ? '127.0.0.1' : self::$authority;
+
+		return $scheme . '://' . $authority . '/' . self::HOP_FIXTURE;
+	}
+
+	/**
+	 * @return string ':port', or '' when the fixture is on the default port
+	 */
+	private function fixturePort()
+	{
+		$colon = strpos((string) self::$authority, ':');
+
+		return ($colon === false) ? '' : substr(self::$authority, $colon);
 	}
 
 	/**
@@ -381,6 +605,8 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	 */
 	public function testGetRemoteContentValidatesEveryRedirectHop()
 	{
+		$this->requireFixtureServer();
+
 		$fl = new E107P3RecordingFile();
 
 		$body = $fl->getRemoteContent($this->hopUrl(0, 2));
@@ -399,6 +625,8 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	 */
 	public function testGetRemoteContentRefusesAHopThePolicyRejects()
 	{
+		$this->requireFixtureServer();
+
 		$permissive = new E107P3RecordingFile();
 		self::assertSame(self::FINAL_SENTINEL, $permissive->getRemoteContent($this->hopUrl(0, 2)),
 			'Positive control: the same chain succeeds when the policy allows every hop.');
@@ -419,6 +647,8 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	 */
 	public function testGetRemoteContentCapsTheRedirectChain()
 	{
+		$this->requireFixtureServer();
+
 		$atCap = new E107P3RecordingFile();
 		self::assertSame(self::FINAL_SENTINEL, $atCap->getRemoteContent($this->hopUrl(0, self::MAX_REDIRECTS)),
 			'Positive control: a chain exactly at the cap still resolves.');
@@ -436,6 +666,8 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	 */
 	public function testGetRemoteFileValidatesEveryRedirectHop()
 	{
+		$this->requireFixtureServer();
+
 		$fl = new E107P3RecordingFile();
 
 		$result = $fl->getRemoteFile($this->hopUrl(0, 2), basename($this->downloadPath), 'temp');
@@ -454,6 +686,8 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	 */
 	public function testGetRemoteFileRefusesAHopThePolicyRejects()
 	{
+		$this->requireFixtureServer();
+
 		// Positive control: the same chain lands, and lands complete, when the
 		// policy allows every hop.
 		$permissive = new E107P3RecordingFile();
@@ -513,6 +747,8 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	 */
 	public function testCurlConnectsToThePinnedAddress()
 	{
+		$this->requireFixtureServer();
+
 		$fl = new E107P3PinnedFile();
 		$fl->addresses = array('127.0.0.1');
 
@@ -535,6 +771,8 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	 */
 	public function testCurlRefusesAPeerTheAddressPolicyDidNotResolve()
 	{
+		$this->requireFixtureServer();
+
 		// An address literal carries no CURLOPT_RESOLVE entry, so this is what
 		// a silently discarded pin looks like from e107's side of libcurl.
 		$fl = new E107P3PinnedFile();
@@ -555,6 +793,8 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	 */
 	public function testCurlFollowCarriesAPostAndDowngradesItOnA302()
 	{
+		$this->requireFixtureServer();
+
 		$fl = new E107P3RecordingFile();
 		$echo = $fl->getRemoteContent($this->hopUrl(0, 0, 'http', '&echo=1'), array('post' => 'p3=posted'));
 		self::assertStringContainsString('|method=POST', $echo, 'A POST has to reach the server as a POST.');
@@ -580,6 +820,8 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	 */
 	public function testCurlFollowDropsCredentialHeadersOnACrossOriginHop()
 	{
+		$this->requireFixtureServer();
+
 		$headers = array('Authorization: Bearer p3-secret', 'X-P3-Mark: kept');
 
 		// Positive control: same scheme, same host, same port, nothing dropped.
@@ -589,7 +831,7 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 		self::assertStringContainsString('|mark=kept', $echo);
 
 		$fl = new E107P3RecordingFile();
-		$echo = $fl->getRemoteContent($this->hopUrl(0, 1, 'http', '&host=' . self::OTHER_HOST . '&echo=1'),
+		$echo = $fl->getRemoteContent($this->hopUrl(0, 1, 'http', '&host=' . self::OTHER_HOST . $this->fixturePort() . '&echo=1'),
 			array('header' => $headers));
 		self::assertStringContainsString('|authorization=|', $echo,
 			'A credential a caller supplied for one origin must not be replayed at another.');
@@ -604,6 +846,8 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	 */
 	public function testTheRedirectWalkSpendsOneTimeBudgetOnTheWholeChain()
 	{
+		$this->requireFixtureServer();
+
 		// Positive control: the same chain, with the budget to finish it.
 		$roomy = new E107P3RecordingFile();
 		self::assertSame(self::FINAL_SENTINEL,
@@ -625,8 +869,10 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	 */
 	public function testTheDecodeOptionRunsBeforeThePolicy()
 	{
+		$this->requireFixtureServer();
+
 		$fl = new E107P3RecordingFile();
-		$encoded = 'http://127.0.0.1/' . self::HOP_FIXTURE . '%3Fhop%3D0%26stop%3D0';
+		$encoded = $this->fixtureUrl() . '%3Fhop%3D0%26stop%3D0';
 
 		self::assertSame(self::FINAL_SENTINEL, $fl->getRemoteContent($encoded, array('decode' => true)),
 			'Positive control: the decoded URL is the one that gets fetched.');
@@ -641,6 +887,8 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	 */
 	public function testCurlRefusesAnUnverifiableTlsPeer()
 	{
+		$this->requireTlsFixture();
+
 		$fl = new E107P3RecordingFile();
 
 		// Positive control over plain HTTP: the same fixture, same policy.
@@ -660,6 +908,8 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	 */
 	public function testCurlAcceptsATlsPeerItCanVerify()
 	{
+		$this->requireTlsFixture();
+
 		self::assertFileExists(self::CA_BUNDLE, 'The harness generates this at build time.');
 
 		$body = "\$fl = new E107P3RecordingFile(); ";
@@ -680,6 +930,8 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	 */
 	public function testStreamFallbackVerifiesTheTlsPeer()
 	{
+		$this->requireTlsFixture();
+
 		// Positive control: the fallback is reached and does fetch.
 		self::assertSame(self::FINAL_SENTINEL, $this->fetchWithoutCurl($this->hopUrl(0, 0)));
 
@@ -698,6 +950,8 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	 */
 	public function testStreamFallbackValidatesEveryRedirectHop()
 	{
+		$this->requireFixtureServer();
+
 		$body = "\$fl = new E107P3RecordingFile(); ";
 		$body .= "\$r = \$fl->getRemoteContent('" . addslashes($this->hopUrl(0, 2)) . "'); ";
 		$body .= $this->reportResult();
@@ -715,6 +969,8 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	 */
 	public function testStreamFallbackRefusesAHopThePolicyRejects()
 	{
+		$this->requireFixtureServer();
+
 		$body = "\$fl = new E107P3RecordingFile(); \$fl->allowHops = 2; ";
 		$body .= "\$r = \$fl->getRemoteContent('" . addslashes($this->hopUrl(0, 2)) . "'); ";
 		$body .= $this->reportResult();
@@ -731,6 +987,8 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	 */
 	public function testStreamFallbackCapsTheRedirectChain()
 	{
+		$this->requireFixtureServer();
+
 		$body = "\$fl = new E107P3RecordingFile(); ";
 		$body .= "\$r = \$fl->getRemoteContent('" . addslashes($this->hopUrl(0, self::MAX_REDIRECTS + 1)) . "'); ";
 		$body .= $this->reportResult();
@@ -749,6 +1007,8 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	 */
 	public function testStreamFallbackConnectsToThePinnedAddress()
 	{
+		$this->requireFixtureServer();
+
 		$body = "\$fl = new E107P3PinnedFile(); \$fl->addresses = array('127.0.0.1'); ";
 		$body .= "\$r = \$fl->getRemoteContent('" . addslashes($this->pinnedUrl()) . "'); ";
 		$body .= $this->reportResult();
@@ -770,6 +1030,8 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	 */
 	public function testIsValidUrlDoesNotFollowRedirects()
 	{
+		$this->requireFixtureServer();
+
 		$fl = new E107P3RecordingFile();
 
 		// Positive control: a URL that answers 200 is still reported valid.
@@ -804,8 +1066,9 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	{
 		@unlink($this->hitPath);
 
-		// The fixture is answered by Apache, which is not the user running the
-		// suite, so the file it appends to has to exist and be writable first.
+		// Apache answers the fixture as its own user, not as the one running
+		// the suite, so the file it appends to has to exist and be writable
+		// first. PHP's built-in server needs neither, and neither minds.
 		@touch($this->hitPath);
 		@chmod($this->hitPath, 0666);
 	}
@@ -815,7 +1078,7 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	 */
 	private function pinnedUrl()
 	{
-		return 'http://' . self::PINNED_HOST . '/' . self::HOP_FIXTURE . '?hop=0&stop=0';
+		return 'http://' . self::PINNED_HOST . $this->fixturePort() . '/' . self::HOP_FIXTURE . '?hop=0&stop=0';
 	}
 
 	/**
