@@ -187,11 +187,33 @@ function p8_arg($name)
 	return isset($_GET[$name]) ? base64_decode($_GET[$name]) : '';
 }
 
+/**
+ * The base URL this very request arrived on, trailing slash included.
+ *
+ * The fixtures the application is pointed at are served by the same server
+ * that is serving this probe, but where that server lives is not knowable from
+ * here: the docker harness answers to http://web/ at the docroot, and CI
+ * answers to http://localhost/e107/ in a subdirectory. Hard-coding either one
+ * makes the other environment fetch nothing at all, which reads as an encoder
+ * that dropped the payload rather than as a feed that never arrived.
+ *
+ * @return string
+ */
+function p8_base_url()
+{
+	$https  = (!empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off');
+	$scheme = $https ? 'https' : 'http';
+	$host   = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost';
+	$dir    = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
+
+	return $scheme.'://'.$host.rtrim($dir, '/').'/';
+}
+
 if($p8act === 'adminfeed')
 {
 	// e107_admin/boot.php guards its own define, so the dashboard feed can be
 	// pointed at a fixture served by this very container.
-	define('ADMINFEED', 'http://web/e107_tests_encoding_feed.xml');
+	define('ADMINFEED', p8_base_url().'e107_tests_encoding_feed.xml');
 	define('e_REMOTE_FILE_ALLOW_PRIVATE', true);
 	$_SERVER['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest';
 	$_GET['mode'] = 'core';
@@ -202,7 +224,7 @@ if($p8act === 'addonsfeed')
 {
 	// boot.php guards this define exactly as it guards ADMINFEED, so the addons
 	// panel can be pointed at a fixture served by this very container.
-	define('ADDONFEED', 'http://web/e107_tests_encoding_addons.xml');
+	define('ADDONFEED', p8_base_url().'e107_tests_encoding_addons.xml');
 	define('e_REMOTE_FILE_ALLOW_PRIVATE', true);
 	$_SERVER['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest';
 	$_GET['mode'] = 'addons';
@@ -330,7 +352,7 @@ switch($p8act)
 		// patch, still inside its update interval, so getFeed() serves what is
 		// stored rather than re-fetching. What is stored must therefore be inert.
 		$stale = ($p8act === 'newsfeedstale');
-		$url = 'http://web/e107_tests_encoding_newsfeed.xml';
+		$url = p8_base_url().'e107_tests_encoding_newsfeed.xml';
 		$sql->delete('newsfeed', "newsfeed_url='".$url."'");
 		$feedId = $sql->insert('newsfeed', array(
 			'newsfeed_name'        => 'P8 fixture feed',
