@@ -232,7 +232,7 @@ class ThumbMediaUserclassCest
 
 		$session = self::env($this->env, 'SESSION');
 		$I->assertNotSame('', $session, 'The probe did not report the session name.');
-		$I->dontSeeCookie($session);
+		$I->dontSeeSiteCookie($session);
 
 		$I->amOnPage('/thumb.php?src=e_MEDIA_IMAGE/'.basename($this->publicImage()));
 
@@ -272,7 +272,7 @@ class ThumbMediaUserclassCest
 
 		$session = self::env($this->env, 'SESSION');
 		$this->probe($I, 'session');
-		$I->seeCookie($session);
+		$I->seeSiteCookie($session);
 
 		$I->amOnPage('/thumb.php?src=e_MEDIA_IMAGE/'.basename($this->publicImage()));
 
@@ -397,7 +397,7 @@ class ThumbMediaUserclassCest
 
 		$session = self::env($this->env, 'SESSION');
 		$this->probe($I, 'session');
-		$I->seeCookie($session);
+		$I->seeSiteCookie($session);
 
 		$I->amOnPage('/thumb.php?src=e_MEDIA_IMAGE/'.basename($this->restrictedImage()));
 

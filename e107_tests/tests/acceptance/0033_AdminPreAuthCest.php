@@ -832,7 +832,7 @@ class AdminPreAuthCest
 		$I->amOnPage('/'.self::DISPATCHER_FIXTURE);
 
 		$I->seeElement('input[name=authname]');
-		$I->seeCookie(self::LOGIN_DEST_COOKIE);
+		$I->seeSiteCookie(self::LOGIN_DEST_COOKIE);
 
 		$I->fillField('authname', \Helper\AdminLogin::ADMIN_USER);
 		$I->fillField('authpass', \Helper\AdminLogin::ADMIN_PASS);
