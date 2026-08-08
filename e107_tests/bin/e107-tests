@@ -572,6 +572,29 @@ deps_ensure() {
     }
 }
 
+# Generate tests/_support/_generated/*Actions.php in a process of its own.
+#
+# Codeception writes those files on demand at the start of a `run` when they are
+# missing, which they always are on a fresh checkout: .gitignore excludes them.
+# On PHP 8.2 the Codeception 4 generator assigns undeclared properties, so PHP
+# emits "Creation of dynamic property Codeception\Lib\Generator\Actions::$di is
+# deprecated" and display_errors puts it on stdout. That output lands before
+# class2.php is loaded, so e107::prepare_request()'s ini_set() on the session
+# settings warns "headers already sent", and Codeception's error handler turns
+# that warning into an exception that kills the suite before a single test runs.
+#
+# Building first costs one short process and leaves the run with a clean output
+# buffer, which is what the hand-rolled workflow this replaced did with its own
+# `codecept build` step. Nothing here is version-specific: a build that has
+# already happened is a no-op everywhere.
+build_actions() {
+    local out
+    if ! out=$(compose_p exec -T -w "$WEB_TESTS_DIR" web "${CODECEPT[@]}" build 2>&1); then
+        printf '%s\n' "$out" >&2
+        err "codecept build failed"
+    fi
+}
+
 # ---------------------------------------------------------------------------
 # Site install (up --install-site)
 # ---------------------------------------------------------------------------
@@ -813,6 +836,7 @@ cmd_run() {
     resolve_env
     ensure_web_exec
     deps_ensure
+    build_actions
     # Build: codecept run [<suite>] --steps [user args...]
     # --steps goes before user args so a trailing `--` separator (which
     # codecept uses to mark positionals) still works as intended.
@@ -836,6 +860,7 @@ cmd_ci_unit() {
     fi
     ensure_web_exec
     deps_ensure
+    build_actions
     compose_p exec -w "$WEB_TESTS_DIR" web \
         php -d memory_limit=-1 -d xdebug.mode=coverage -d register_argc_argv=1 \
         ./vendor/bin/codecept run unit --steps --debug --coverage --coverage-xml
