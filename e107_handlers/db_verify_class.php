@@ -56,6 +56,21 @@ class db_verify
 		"XtraDB" => ["XtraDB", "InnoDB"],
 	];
 
+	/**
+	 * Engines to fall back through for a table that declares a FULLTEXT index
+	 * when nothing in its own preference order can carry one here.
+	 *
+	 * Kept apart from the preference map on purpose. Widening that map would
+	 * also change what a table without a FULLTEXT index gets, and an engine
+	 * nobody can supply is meant to be refused rather than silently swapped.
+	 *
+	 * @var string[]
+	 */
+	private $fulltextStorageEngineFallback = ["Aria", "Maria", "MyISAM"];
+
+	/** @var array|null Memoised server capability probe; see getServerCapabilities() */
+	private $serverCapabilities = null;
+
 	/** @var e_search_fulltext_indexer|null */
 	private $fulltextIndexer = null;
 
@@ -88,13 +103,23 @@ class db_verify
 	/**
 	 * Setup
 	 */
-	function __construct()
+	/**
+	 * @param bool $init false to skip {@see init()}, which reads preferences and
+	 *                   therefore needs the core tables to exist. The installer
+	 *                   consults this class while creating those tables, so it
+	 *                   asks for an object that can answer engine and character
+	 *                   set questions and nothing else.
+	 */
+	function __construct($init = true)
 	{
 
 
 		$this->backUrl = e_SELF;
 
-		$this->init();
+		if($init)
+		{
+			$this->init();
+		}
 
 
 		return $this;
@@ -429,12 +454,22 @@ class db_verify
 
 			$sqlData['index']  = $this->getIndex($sqlDataArr['data'][0]);
 
+			// What this table needs decides which engine and character set it can
+			// have on this server, so the comparison has to expect the same
+			// answer the installer reached. Without this, a table deliberately
+			// created as MyISAM on a server whose InnoDB has no FULLTEXT would
+			// be reported as drift, and "fixing" it would put the site back into
+			// the state that could not be created in the first place.
+			$requirements = $this->deriveTableRequirements($fileData['field'], $fileData['index']);
+
 			$maybeEngine = isset($sqlDataArr['engine'][0]) ? $sqlDataArr['engine'][0] : 'INTERNAL_ERROR:ENGINE';
-			$fileData['engine'] = $this->getIntendedStorageEngine($this->sqlFileTables[$selection]['engine'][$key]);
+			$fileData['engine'] = $this->getIntendedStorageEngine($this->sqlFileTables[$selection]['engine'][$key], $requirements);
 			$sqlData['engine'] = $this->getCanonicalStorageEngine($maybeEngine);
 
+			$requirements['engine'] = $fileData['engine'];
+
 			$maybeCharset = isset($sqlDataArr['charset'][0]) ? $sqlDataArr['charset'][0] : 'INTERNAL_ERROR:CHARSET';
-			$fileData['charset'] = $this->getIntendedCharset($this->sqlFileTables[$selection]['charset'][$key]);
+			$fileData['charset'] = $this->getIntendedCharset($this->sqlFileTables[$selection]['charset'][$key], $requirements);
 			$sqlData['charset'] = $sqlDataArr['charset'][0]; // check the actual charset. $this->getCanonicalCharset($maybeCharset);
 
 			/*
@@ -1686,7 +1721,7 @@ class db_verify
 	 *
 	 * @return string[] An unordered list of the storage engines supported by the current MySQL server
 	 */
-	private function getAvailableStorageEngines()
+	public function getAvailableStorageEngines()
 	{
 
 		$db = e107::getDb();
@@ -1706,12 +1741,12 @@ class db_verify
 	 * @param string|null $maybeStorageEngine The requested storage engine
 	 * @return string|false The MySQL storage engine that should actually be used. false if no match found.
 	 */
-	public function getIntendedStorageEngine($maybeStorageEngine = null)
+	public function getIntendedStorageEngine($maybeStorageEngine = null, array $requirements = array())
 	{
 
 		if($maybeStorageEngine === null)
 		{
-			return $this->getIntendedStorageEngine(self::MOST_PREFERRED_STORAGE_ENGINE);
+			return $this->getIntendedStorageEngine(self::MOST_PREFERRED_STORAGE_ENGINE, $requirements);
 		}
 
 		if(strtoupper($maybeStorageEngine) === 'MYISAM')
@@ -1733,9 +1768,66 @@ class db_verify
 			return false;
 		}
 
-		$fit = array_intersect($this->storageEnginePreferenceMap[$maybeStorageEngine], $this->availableStorageEngines);
+		$fit = array_values(
+			array_intersect($this->storageEnginePreferenceMap[$maybeStorageEngine], $this->availableStorageEngines)
+		);
 
-		return current($fit);
+		if(empty($fit))
+		{
+			return false;
+		}
+
+		// A table that declares a FULLTEXT index cannot live on an engine that
+		// has no FULLTEXT on this server, so walk past the preferred engine to
+		// the first one that can carry it. MySQL gave InnoDB FULLTEXT in 5.6;
+		// before that only MyISAM has it, and the whole table has to follow the
+		// index.
+		if(!empty($requirements['needsFulltext']))
+		{
+			foreach($fit as $candidate)
+			{
+				if($this->engineSupportsFulltext($candidate))
+				{
+					return $candidate;
+				}
+			}
+
+			// Nothing in this table's own preference order can carry a FULLTEXT
+			// index here, which on MySQL before 5.6 is every table that asks
+			// InnoDB for one. Take the first engine that can.
+			$capable = array_intersect($this->fulltextStorageEngineFallback, $this->availableStorageEngines);
+
+			foreach($capable as $candidate)
+			{
+				if($this->engineSupportsFulltext($candidate))
+				{
+					return $candidate;
+				}
+			}
+		}
+
+		return $fit[0];
+	}
+
+	/**
+	 * Whether the named storage engine can carry a FULLTEXT index on this server
+	 *
+	 * @param string $engine
+	 * @return bool
+	 */
+	public function engineSupportsFulltext($engine)
+	{
+
+		$engine = strtolower((string) $engine);
+
+		if($engine === 'innodb' || $engine === 'xtradb')
+		{
+			return $this->innodbSupportsFulltext();
+		}
+
+		// MyISAM has carried FULLTEXT for as long as it has existed, and Aria
+		// is MyISAM's successor in MariaDB.
+		return in_array($engine, array('myisam', 'aria', 'maria'), true);
 	}
 
 	/**
@@ -1764,15 +1856,116 @@ class db_verify
 	 * @param string|null $maybeCharset The requested character set. null to retrieve the default
 	 * @return string The MySQL character set that should actually be used
 	 */
-	public function getIntendedCharset($maybeCharset = null)
+	public function getIntendedCharset($maybeCharset = null, array $requirements = array())
 	{
 
-		if(empty($maybeCharset))
+		$charset = empty($maybeCharset)
+			? self::MOST_PREFERRED_CHARSET
+			: $this->getCanonicalCharset($maybeCharset);
+
+		return $this->narrowCharsetToIndexLimit($charset, $requirements);
+	}
+
+	/**
+	 * Step a table down to a narrower character set when its widest index would
+	 * not fit this server's key limit at four bytes per character.
+	 *
+	 * MySQL before 5.7 and MariaDB before 10.1 cap an InnoDB index at 767
+	 * bytes, so a UNIQUE key over varchar(250) needs 1000 bytes and is refused
+	 * with error 1071. Three-byte utf8 brings the same column to 750 and it
+	 * fits. Servers with that limit never allowed 4-byte characters in an index
+	 * anyway, so nothing that used to fit stops fitting.
+	 *
+	 * @param string $charset      the character set the table would otherwise get
+	 * @param array  $requirements widestIndexChars, and engine to measure against
+	 * @return string
+	 */
+	private function narrowCharsetToIndexLimit($charset, array $requirements)
+	{
+
+		if($charset !== self::MOST_PREFERRED_CHARSET || empty($requirements['widestIndexChars']))
 		{
-			return self::MOST_PREFERRED_CHARSET;
+			return $charset;
 		}
 
-		return $this->getCanonicalCharset($maybeCharset);
+		// The limit depends on the engine, so the engine has to be decided
+		// first; callers that adapt a table pass the engine they settled on.
+		$engine = isset($requirements['engine']) ? $requirements['engine'] : self::MOST_PREFERRED_STORAGE_ENGINE;
+		$limit = $this->maxIndexKeyBytes($engine);
+		$chars = (int) $requirements['widestIndexChars'];
+
+		if(($chars * 4) <= $limit)
+		{
+			return $charset;
+		}
+
+		// If even three bytes per character will not fit, narrowing solves
+		// nothing: keep the preferred character set and let the CREATE TABLE
+		// fail loudly rather than quietly building something else.
+		return (($chars * 3) <= $limit) ? 'utf8' : $charset;
+	}
+
+	/**
+	 * Derive what a table needs from its parsed fields and indexes, for
+	 * {@see getIntendedStorageEngine()} and {@see getIntendedCharset()}.
+	 *
+	 * Only character columns are counted towards the index width, because they
+	 * are the only ones whose byte cost changes with the character set.
+	 *
+	 * @param array $fields  as returned by {@see getFields()}
+	 * @param array $indexes as returned by {@see getIndex()}
+	 * @return array{needsFulltext:bool, widestIndexChars:int}
+	 */
+	public function deriveTableRequirements($fields, $indexes)
+	{
+
+		$needsFulltext = false;
+		$widest = 0;
+
+		if(empty($indexes) || !is_array($indexes))
+		{
+			return array('needsFulltext' => false, 'widestIndexChars' => 0);
+		}
+
+		foreach($indexes as $index)
+		{
+			if(!empty($index['type']) && strtoupper($index['type']) === 'FULLTEXT')
+			{
+				// A FULLTEXT index is not held to the key-length limit, so it
+				// contributes the requirement but never the width.
+				$needsFulltext = true;
+				continue;
+			}
+
+			$chars = 0;
+			$columns = isset($index['keyname']) ? explode(',', $index['keyname']) : array();
+
+			foreach($columns as $column)
+			{
+				$column = trim($column);
+
+				if(!isset($fields[$column]['type']))
+				{
+					continue;
+				}
+
+				$type = strtoupper($fields[$column]['type']);
+
+				if($type !== 'VARCHAR' && $type !== 'CHAR')
+				{
+					continue;
+				}
+
+				$chars += (int) $fields[$column]['value'];
+			}
+
+			if($chars > $widest)
+			{
+				$widest = $chars;
+			}
+		}
+
+		return array('needsFulltext' => $needsFulltext, 'widestIndexChars' => $widest);
 	}
 
 	/**
@@ -1790,6 +1983,121 @@ class db_verify
 		}
 
 		return $maybeCharset;
+	}
+
+	/**
+	 * Ask the server which of the two limits that break old MySQL apply here.
+	 *
+	 * Memoised for the request rather than written to the db_verify file cache:
+	 * these are two cheap queries, and a cached answer would outlive a server
+	 * upgrade for the life of the cache entry.
+	 *
+	 * @return array{version:string, isMariaDb:bool, innodbLargePrefix:string|null}
+	 */
+	private function getServerCapabilities()
+	{
+
+		if($this->serverCapabilities !== null)
+		{
+			return $this->serverCapabilities;
+		}
+
+		$sql = e107::getDb();
+
+		$version = '';
+		$sql->execute('SELECT VERSION() AS server_version');
+		if($row = $sql->fetch())
+		{
+			$version = (string) varset($row['server_version'], '');
+		}
+
+		// Dropped once a large index prefix became unconditional (MySQL 8.0,
+		// MariaDB 10.3), so an absent variable means "no 767-byte limit", not
+		// "limit in force".
+		$largePrefix = null;
+		$sql->execute("SHOW VARIABLES LIKE 'innodb_large_prefix'");
+		if($row = $sql->fetch())
+		{
+			$largePrefix = strtoupper((string) varset($row['Value'], ''));
+		}
+
+		$this->serverCapabilities = array(
+			'version'           => $version,
+			'isMariaDb'         => stripos($version, 'mariadb') !== false,
+			'innodbLargePrefix' => $largePrefix,
+		);
+
+		return $this->serverCapabilities;
+	}
+
+	/**
+	 * The server version as a bare x.y.z string, without the vendor suffix
+	 *
+	 * @return string empty when the server did not report one
+	 */
+	private function getServerVersionNumber()
+	{
+
+		$caps = $this->getServerCapabilities();
+
+		return preg_match('/^(\d+\.\d+(?:\.\d+)?)/', $caps['version'], $m) ? $m[1] : '';
+	}
+
+	/**
+	 * Whether this server's InnoDB can carry a FULLTEXT index.
+	 *
+	 * MySQL gained InnoDB FULLTEXT in 5.6 and MariaDB in 10.0.5. Measured
+	 * against mysql:5.5 (no), mysql:5.6 (yes) and mariadb:10.0 (yes).
+	 *
+	 * @return bool
+	 */
+	public function innodbSupportsFulltext()
+	{
+
+		$version = $this->getServerVersionNumber();
+
+		if($version === '')
+		{
+			// An unreadable version is far more likely to mean a server this
+			// code has never seen than a fifteen-year-old one, so assume the
+			// capability and keep the previous behaviour.
+			return true;
+		}
+
+		$caps = $this->getServerCapabilities();
+
+		return $caps['isMariaDb']
+			? version_compare($version, '10.0.5', '>=')
+			: version_compare($version, '5.6', '>=');
+	}
+
+	/**
+	 * The widest index in bytes that the given storage engine accepts here.
+	 *
+	 * @param string $engine
+	 * @return int
+	 */
+	public function maxIndexKeyBytes($engine)
+	{
+
+		$engine = strtolower((string) $engine);
+
+		if($engine === 'innodb' || $engine === 'xtradb')
+		{
+			$caps = $this->getServerCapabilities();
+
+			if($caps['innodbLargePrefix'] === null)
+			{
+				return 3072;
+			}
+
+			return ($caps['innodbLargePrefix'] === 'ON') ? 3072 : 767;
+		}
+
+		// MyISAM and Aria cap at 1000 on every server old enough for one of
+		// them to be chosen here. Newer servers allow more; treating their
+		// limit as 1000 only narrows a character set sooner, which is safe.
+		return 1000;
 	}
 
 	/**

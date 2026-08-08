@@ -55,6 +55,31 @@ class forumSubForumGuardTest extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * forum_sql.php declares four tables, and installing the plugin has to
+	 * produce all four.
+	 *
+	 * The installer used to record each failed CREATE TABLE and carry on, so on
+	 * a server whose InnoDB has no FULLTEXT this plugin reported itself
+	 * installed with only forum_track: `forum` was refused with 1071 for a
+	 * unique key over varchar(250) at utf8mb4, and forum_thread and forum_post
+	 * with 1214 for their FULLTEXT indexes. Nothing said so until the first
+	 * query against a missing table died with 1146, which is what this test
+	 * used to fail on, several steps away from the cause.
+	 */
+	public function testInstallingTheForumCreatesEveryTableItDeclares()
+	{
+		$sql = e107::getDb();
+
+		foreach(array('forum', 'forum_thread', 'forum_post', 'forum_track') as $table)
+		{
+			self::assertNotEmpty(
+				$sql->gen("SHOW TABLES LIKE '".MPREFIX.$table."'"),
+				$table." is declared in forum_sql.php, so installing the plugin must create it"
+			);
+		}
+	}
+
+	/**
 	 * @param string $name
 	 * @param string $sef
 	 * @param int $parent 0 for a category

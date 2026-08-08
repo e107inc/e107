@@ -24,6 +24,13 @@ class Acceptance extends E107Base
 	];
 
 	/**
+	 * Mirrors db_verify::$fulltextStorageEngineFallback.
+	 *
+	 * @var string[]
+	 */
+	const FULLTEXT_ENGINE_FALLBACK = ['Aria', 'Maria', 'MyISAM'];
+
+	/**
 	 * Dropped into the docroot for as long as a plugin install is needed.
 	 * Registered in Extension\WorkspaceCleanup so a crashed run does not leave
 	 * it there.
@@ -437,11 +444,15 @@ class Acceptance extends E107Base
 		}
 
 		$available = $this->availableStorageEngines($dbh);
+		$limits    = $this->serverIndexLimits($dbh);
 
 		foreach ($tables as $table)
 		{
 			$name = $prefix.$table['name'];
-			$engine = self::intendedStorageEngine($table['engine'], $available);
+			$needsFulltext = (bool) preg_match('/\bFULLTEXT\b/i', $table['body']);
+
+			$engine = self::intendedStorageEngine(
+				$table['engine'], $available, $needsFulltext, $limits['innodbFulltext']);
 
 			if ($engine === false)
 			{
@@ -449,8 +460,110 @@ class Acceptance extends E107Base
 					"No storage engine on this server can stand in for {$table['engine']}, wanted by `$name`");
 			}
 
-			$dbh->exec("CREATE TABLE IF NOT EXISTS `$name` ({$table['body']}) ENGINE=$engine");
+			// The database default is utf8mb4 (install.php sets it), so a table
+			// created without an explicit character set inherits four bytes per
+			// character. On a server that caps an index at 767 bytes that is
+			// how `download`, whose unique key is over a varchar(255), came
+			// back as error 1071. State the character set the same way the
+			// plugin manager now does.
+			$charset = self::intendedCharset($table['body'], $engine, $limits);
+
+			$dbh->exec("CREATE TABLE IF NOT EXISTS `$name` ({$table['body']}) "
+				."ENGINE=$engine DEFAULT CHARSET=$charset");
 		}
+	}
+
+	/**
+	 * What this server can do with indexes, probed rather than assumed.
+	 *
+	 * Mirrors db_verify::innodbSupportsFulltext() and maxIndexKeyBytes(), which
+	 * read the same two facts from the server version and innodb_large_prefix.
+	 *
+	 * @param \PDO $dbh
+	 * @return array{innodbFulltext:bool, innodbBytes:int, otherBytes:int}
+	 */
+	private function serverIndexLimits(\PDO $dbh)
+	{
+		$version = (string) $dbh->query('SELECT VERSION()')->fetchColumn();
+		$number  = preg_match('/^(\d+\.\d+(?:\.\d+)?)/', $version, $m) ? $m[1] : '';
+		$maria   = stripos($version, 'mariadb') !== false;
+
+		$fulltext = true;
+		if ($number !== '')
+		{
+			$fulltext = $maria
+				? version_compare($number, '10.0.5', '>=')
+				: version_compare($number, '5.6', '>=');
+		}
+
+		$largePrefix = $dbh->query("SHOW VARIABLES LIKE 'innodb_large_prefix'")->fetch(\PDO::FETCH_ASSOC);
+
+		$innodbBytes = 3072;
+		if (!empty($largePrefix) && strtoupper($largePrefix['Value']) !== 'ON')
+		{
+			$innodbBytes = 767;
+		}
+
+		return array(
+			'innodbFulltext' => $fulltext,
+			'innodbBytes'    => $innodbBytes,
+			'otherBytes'     => 1000,
+		);
+	}
+
+	/**
+	 * Pick the character set the plugin manager would give this table.
+	 *
+	 * Mirrors db_verify::getIntendedCharset() with the requirements derived from
+	 * the table body: utf8mb4 unless the widest index over character columns
+	 * would pass the server's key limit, in which case three-byte utf8.
+	 *
+	 * @param string $body   the table body, fields and indexes
+	 * @param string $engine the engine already settled on
+	 * @param array  $limits from serverIndexLimits()
+	 * @return string
+	 */
+	private static function intendedCharset($body, $engine, array $limits)
+	{
+		$engine = strtolower($engine);
+		$limit  = ($engine === 'innodb' || $engine === 'xtradb')
+			? $limits['innodbBytes']
+			: $limits['otherBytes'];
+
+		$widths = array();
+		if (preg_match_all('/`?(\w+)`?\s+(?:var)?char\((\d+)\)/i', $body, $cm, PREG_SET_ORDER))
+		{
+			foreach ($cm as $c)
+			{
+				$widths[strtolower($c[1])] = (int) $c[2];
+			}
+		}
+
+		$widest = 0;
+		preg_match_all(
+			'/(PRIMARY\s+KEY|UNIQUE\s+KEY|UNIQUE|KEY|INDEX)\s+`?\w*`?\s*\(([^)]+)\)/i',
+			$body, $im, PREG_SET_ORDER);
+
+		foreach ($im as $index)
+		{
+			$chars = 0;
+			foreach (explode(',', $index[2]) as $column)
+			{
+				$column = strtolower(trim($column, " `\t\n"));
+				if (isset($widths[$column]))
+				{
+					$chars += $widths[$column];
+				}
+			}
+			$widest = max($widest, $chars);
+		}
+
+		if ($widest === 0 || ($widest * 4) <= $limit)
+		{
+			return 'utf8mb4';
+		}
+
+		return (($widest * 3) <= $limit) ? 'utf8' : 'utf8mb4';
 	}
 
 	/**
@@ -678,11 +791,13 @@ PHP;
 	 * Mirrors {@see db_verify::getIntendedStorageEngine()}; helperAcceptanceTest
 	 * asserts the two preference maps stay identical.
 	 *
-	 * @param string $declared engine named in the plugin's SQL
-	 * @param array $available engines the server reports
+	 * @param string $declared      engine named in the plugin's SQL
+	 * @param array  $available     engines the server reports
+	 * @param bool   $needsFulltext true when the table declares a FULLTEXT index
+	 * @param bool   $innodbFulltext whether this server's InnoDB can carry one
 	 * @return string|false
 	 */
-	public static function intendedStorageEngine($declared, array $available)
+	public static function intendedStorageEngine($declared, array $available, $needsFulltext = false, $innodbFulltext = true)
 	{
 		if (strtoupper($declared) === 'MYISAM')
 		{
@@ -698,9 +813,52 @@ PHP;
 			return in_array($declared, $available) ? $declared : false;
 		}
 
-		$fit = array_intersect(self::STORAGE_ENGINE_PREFERENCE[$declared], $available);
+		$fit = array_values(array_intersect(self::STORAGE_ENGINE_PREFERENCE[$declared], $available));
 
-		return current($fit);
+		if (!$fit)
+		{
+			return false;
+		}
+
+		if ($needsFulltext)
+		{
+			foreach ($fit as $candidate)
+			{
+				if (self::engineCarriesFulltext($candidate, $innodbFulltext))
+				{
+					return $candidate;
+				}
+			}
+
+			foreach (array_intersect(self::FULLTEXT_ENGINE_FALLBACK, $available) as $candidate)
+			{
+				if (self::engineCarriesFulltext($candidate, $innodbFulltext))
+				{
+					return $candidate;
+				}
+			}
+		}
+
+		return $fit[0];
+	}
+
+	/**
+	 * Mirrors db_verify::engineSupportsFulltext().
+	 *
+	 * @param string $engine
+	 * @param bool   $innodbFulltext whether this server's InnoDB can carry one
+	 * @return bool
+	 */
+	private static function engineCarriesFulltext($engine, $innodbFulltext)
+	{
+		$engine = strtolower($engine);
+
+		if ($engine === 'innodb' || $engine === 'xtradb')
+		{
+			return (bool) $innodbFulltext;
+		}
+
+		return in_array($engine, array('myisam', 'aria', 'maria'), true);
 	}
 
 	/**

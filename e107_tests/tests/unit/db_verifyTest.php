@@ -1263,6 +1263,123 @@ DATA;
 		self::assertEquals("MEMORY", $output);
 	}
 
+	/**
+	 * The capability probes have to reach the real server. If they silently
+	 * answered "modern" for everything, every fallback below would go untaken
+	 * and the only symptom would be an install failing on an old server.
+	 */
+	public function testServerCapabilityProbesReachTheServer()
+	{
+
+		$innodb = $this->dbv->maxIndexKeyBytes('InnoDB');
+		self::assertContains($innodb, array(767, 3072),
+			"InnoDB key limit must be one of the two values MySQL actually uses");
+
+		self::assertEquals(1000, $this->dbv->maxIndexKeyBytes('MyISAM'));
+
+		// MyISAM has always had FULLTEXT; whether InnoDB does is the question,
+		// and either answer is legitimate depending on the server under test.
+		self::assertTrue($this->dbv->engineSupportsFulltext('MyISAM'));
+		self::assertIsBool($this->dbv->innodbSupportsFulltext());
+		self::assertSame(
+			$this->dbv->innodbSupportsFulltext(),
+			$this->dbv->engineSupportsFulltext('InnoDB')
+		);
+
+		// Every server in the matrix that can carry a 3072-byte index also has
+		// InnoDB FULLTEXT, so a large prefix implies the newer engine.
+		if($innodb === 3072)
+		{
+			self::assertTrue($this->dbv->innodbSupportsFulltext(),
+				"a server with large index prefixes is well past MySQL 5.6");
+		}
+	}
+
+	public function testDeriveTableRequirements()
+	{
+
+		$fields = $this->dbv->getFields(
+			"forum_id int(10) unsigned NOT NULL auto_increment,
+  forum_name varchar(250) NOT NULL default '',
+  forum_sef varchar(250) default NULL,
+  forum_description text,
+"
+		);
+
+		$plain = $this->dbv->deriveTableRequirements($fields, $this->dbv->getIndex(
+			"PRIMARY KEY  (`forum_id`),
+  UNIQUE KEY `forum_sef` (`forum_sef`),
+"
+		));
+		self::assertFalse($plain['needsFulltext']);
+		self::assertEquals(250, $plain['widestIndexChars'],
+			"the unique key over varchar(250) is the widest, and it is what trips error 1071");
+
+		$ft = $this->dbv->deriveTableRequirements($fields, $this->dbv->getIndex(
+			"PRIMARY KEY  (`forum_id`),
+  FULLTEXT (`forum_name`),
+"
+		));
+		self::assertTrue($ft['needsFulltext']);
+		self::assertEquals(0, $ft['widestIndexChars'],
+			"a FULLTEXT index is not held to the key-length limit, so it adds no width");
+
+		// An int-only index costs nothing that a character set could change.
+		$ints = $this->dbv->deriveTableRequirements($fields, $this->dbv->getIndex(
+			"PRIMARY KEY  (`forum_id`),
+"
+		));
+		self::assertEquals(0, $ints['widestIndexChars']);
+	}
+
+	/**
+	 * A table needing FULLTEXT must not be put on an engine that has none here.
+	 */
+	public function testGetIntendedStorageEngineHonoursAFulltextRequirement()
+	{
+
+		$needsFulltext = array('needsFulltext' => true);
+
+		$engine = $this->dbv->getIntendedStorageEngine("InnoDB", $needsFulltext);
+		self::assertTrue($this->dbv->engineSupportsFulltext($engine),
+			"chosen engine must be able to carry the FULLTEXT index the table declares");
+
+		$engine = $this->dbv->getIntendedStorageEngine("MyISAM", $needsFulltext);
+		self::assertTrue($this->dbv->engineSupportsFulltext($engine));
+
+		// Without the requirement the preferred engine still wins, whether or
+		// not it could carry a FULLTEXT index.
+		self::assertEquals("InnoDB", $this->dbv->getIntendedStorageEngine("InnoDB"));
+		self::assertEquals("InnoDB", $this->dbv->getIntendedStorageEngine("MyISAM"));
+	}
+
+	/**
+	 * varchar(250) unique needs 1000 bytes at utf8mb4 and 750 at utf8, so on a
+	 * 767-byte server the table has to step down to keep the index.
+	 */
+	public function testGetIntendedCharsetNarrowsOnlyWhenTheIndexWouldNotFit()
+	{
+
+		$wide = array('widestIndexChars' => 250, 'engine' => 'InnoDB');
+		$expected = ($this->dbv->maxIndexKeyBytes('InnoDB') >= 1000) ? 'utf8mb4' : 'utf8';
+		self::assertEquals($expected, $this->dbv->getIntendedCharset('utf8mb4', $wide));
+
+		// Comfortably inside every limit, so never narrowed.
+		$narrow = array('widestIndexChars' => 100, 'engine' => 'InnoDB');
+		self::assertEquals('utf8mb4', $this->dbv->getIntendedCharset('utf8mb4', $narrow));
+
+		// No index width means nothing to measure against.
+		self::assertEquals('utf8mb4', $this->dbv->getIntendedCharset('utf8mb4', array()));
+
+		// A character set that was never utf8mb4 is left alone; narrowing only
+		// ever steps down from the preferred one.
+		self::assertEquals('latin1', $this->dbv->getIntendedCharset('latin1', $wide));
+
+		// MyISAM's 1000-byte limit fits varchar(250) at utf8mb4 exactly.
+		$myisam = array('widestIndexChars' => 250, 'engine' => 'MyISAM');
+		self::assertEquals('utf8mb4', $this->dbv->getIntendedCharset('utf8mb4', $myisam));
+	}
+
 	public function testGetIntendedCharset()
 	{
 
