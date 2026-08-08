@@ -1009,6 +1009,58 @@ class e_formTest extends \Codeception\Test\Unit
 
 				self::assertSame($expected, $actual);
 			}
+
+			/**
+			 * The Bootstrap dropdown form of button() builds its markup by
+			 * hand. Lock the bare rendering byte-for-byte, and check that a
+			 * caller's title, id and data-* reach the toggle anchor while the
+			 * dropdown's own wiring keys and non-anchor keys stay off it.
+			 */
+			public function testButtonDropdown()
+			{
+				if(!deftrue('BOOTSTRAP'))
+				{
+					self::markTestSkipped('BOOTSTRAP is not defined; the dropdown form never renders.');
+				}
+
+				$items = array('<a href="#">One</a>', '--', '<a href="#">Two</a>');
+
+				$bare = trim(preg_replace('/\s+/', ' ', $this->_frm->button('drop_bare', $items, 'dropdown', 'Menu')));
+
+				self::assertSame('<div class="btn-group pull-left"> '
+					.'<a class="btn dropdown-toggle " data-toggle="dropdown" data-bs-toggle="dropdown" href="#"> '
+					.'Menu <span class="caret"></span> </a> '
+					.'<ul class="dropdown-menu"> '
+					.'<li class="dropdown-item"><a href="#">One</a></li>'
+					.'<li class="dropdown-item divider"><hr class="dropdown-divider" /></li>'
+					.'<li class="dropdown-item"><a href="#">Two</a></li> '
+					.'</ul> </div>', $bare);
+
+				$decorated = $this->_frm->button('drop_opts', array('<a href="#">One</a>'), 'dropdown', 'Menu', array(
+					'class'          => 'btn-info',
+					'align'          => 'right',
+					'class_ul'       => 'my-ul',
+					'class_li'       => 'my-li',
+					'title'          => 'Pick one',
+					'id'             => 'my-drop',
+					'data-e-test'    => 'yes',
+					'data-bs-toggle' => 'tooltip', // collides with the dropdown's own wiring; must not duplicate
+					'tabindex'       => 7,         // not an anchor key here; must not appear
+				));
+
+				preg_match('/<a ([^>]+)>/', $decorated, $match);
+				$anchor = $match[1];
+
+				self::assertStringContainsString('class="btn dropdown-toggle btn-info"', $anchor);
+				self::assertStringContainsString("title='Pick one'", $anchor);
+				self::assertStringContainsString("id='my-drop'", $anchor);
+				self::assertStringContainsString("data-e-test='yes'", $anchor);
+				self::assertSame(1, substr_count($anchor, 'data-bs-toggle'));
+				self::assertStringNotContainsString('tabindex', $anchor);
+				self::assertStringContainsString('pull-right', $decorated);
+				self::assertStringContainsString('class="dropdown-menu my-ul"', $decorated);
+				self::assertStringContainsString('class="dropdown-item my-li"', $decorated);
+			}
 /*
 			public function testDefaultButtonClassExists()
 			{

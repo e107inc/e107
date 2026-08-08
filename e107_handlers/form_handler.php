@@ -3902,25 +3902,47 @@ var_dump($select_options);*/
 	 * @param string $label [optional]
 	 * @param string|array $options [optional] passed through to
 	 *               {@see e_form::admin_button()}, which documents the supported keys.
-	 *               The dropdown form is the exception: it honours only
+	 *               The dropdown form is the exception: it honours
 	 *               - 'class'    (string) extra classes on the toggle <a>
 	 *               - 'align'    (string) pull- alignment, 'left' (default) or 'right'
 	 *               - 'class_ul' (string) extra classes on the dropdown <ul>
 	 *               - 'class_li' (string) extra classes on each <li>
-	 *               and currently discards every other key, title and data-* included.
+	 *               plus 'title', 'id' and any 'data-*' key, applied to the toggle <a>.
+	 *               The remaining admin_button() keys do not apply to an anchor and
+	 *               are ignored.
 	 * @return string
 	 */
 	public function button($name, $value, $action = 'submit', $label = '', $options = array())
 	{
 		if($action === 'dropdown' && deftrue('BOOTSTRAP') && is_array($value))
 		{
-		//	$options = $this->format_options('admin_button', $name, $options);
+			if(is_string($options))
+			{
+				parse_str($options, $options);
+			}
+
 			$options['class'] = vartrue($options['class']);
-			
+
 			$align = vartrue($options['align'],'left');
-					
+
+			// The attribute keys that belong on the toggle anchor.
+			$passthrough = array();
+
+			foreach($options as $k => $v)
+			{
+				if($k === 'data-toggle' || $k === 'data-bs-toggle')
+				{
+					continue; // the dropdown's own wiring, hardcoded on the anchor
+				}
+
+				if($k === 'title' || strpos($k, 'data-') === 0 || ($k === 'id' && $v !== ''))
+				{
+					$passthrough[$k] = $v;
+				}
+			}
+
 			$text = '<div class="btn-group pull-'.$align.'">
-			    <a class="btn dropdown-toggle '.$options['class'].'" data-toggle="dropdown" data-bs-toggle="dropdown" href="#">
+			    <a class="btn dropdown-toggle '.$options['class'].'"'.$this->get_attributes($passthrough, $name).' data-toggle="dropdown" data-bs-toggle="dropdown" href="#">
 			    '.($label ?: LAN_NO_LABEL_PROVIDED).'
 			    <span class="caret"></span>
 			    </a>
