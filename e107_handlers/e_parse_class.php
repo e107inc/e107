@@ -2887,8 +2887,6 @@ class e_parse
 	{
 		$url = (string) $url;
 
-		$this->staticCount++; // increment counter.
-
 		$ext = pathinfo($url, PATHINFO_EXTENSION);
 
 		if ($ext === 'svg')

@@ -2221,6 +2221,29 @@ EXPECTED;
 		);
 	}
 
+	public function testThumbUrlDoesNotAdvanceTheStaticDomainCounter()
+	{
+		$this->tp->setStaticUrl([
+			'https://static1.mydomain.com/',
+			'https://static2.mydomain.com/',
+			'https://static3.mydomain.com/',
+		]);
+
+		self::assertStringStartsWith(
+			'https://static1.mydomain.com/',
+			$this->tp->thumbUrl('{e_MEDIA_IMAGE}myimage.jpg', ['w' => 100, 'h' => 0]),
+			"The first thumbnail skipped the first configured static domain."
+		);
+
+		self::assertSame(
+			'https://static2.mydomain.com/e107_themes/bootstrap3/images/myimage.jpg',
+			$this->tp->staticUrl('{THEME}images/myimage.jpg'),
+			"Generating a thumbnail moved the round-robin on by more than the one domain it consumed."
+		);
+
+		$this->tp->setStaticUrl(null);
+	}
+
 	/*
 			public function testGetUrlConstants()
 			{
