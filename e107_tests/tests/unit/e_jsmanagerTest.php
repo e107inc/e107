@@ -398,20 +398,20 @@ class e_jsmanagerTest extends \Codeception\Test\Unit
 				'cacheid'  => true,
 				'static'   => true,
 			),
-			1 => array(
-				'expected' => '<link rel="preload" as="image" type="image/jpeg" href="https://static.mydomain.com/e107_themes/bootstrap3/image/header.jpg" media="(max-width: 415px)" />',
+			1 => array( // the second distinct path, so the second configured domain. Entries 2 and 3 repeat it and must not move off that domain.
+				'expected' => '<link rel="preload" as="image" type="image/jpeg" href="https://static2.mydomain.com/e107_themes/bootstrap3/image/header.jpg" media="(max-width: 415px)" />',
 				'input'    => ['rel'=>'preload', 'as'=>'image', 'type'=> "image/jpeg", 'href'=>THEME_ABS.'image/header.jpg', 'media'=>"(max-width: 415px)"],
 				'cacheid'  => false,
 				'static'   => true,
 			),
 			2 => array(
-				'expected' => '<link rel="preload" as="image" type="image/jpeg" href="https://static.mydomain.com/e107_themes/bootstrap3/image/header.jpg" media="(max-width: 415px)" />',
+				'expected' => '<link rel="preload" as="image" type="image/jpeg" href="https://static2.mydomain.com/e107_themes/bootstrap3/image/header.jpg" media="(max-width: 415px)" />',
 				'input'    => ['rel'=>'preload', 'as'=>'image', 'type'=> "image/jpeg", 'href'=>THEME_ABS.'image/header.jpg', 'media'=>"(max-width: 415px)"],
 				'cacheid'  => false,
 				'static'   => true,
 			),
 			3 => array(
-				'expected' => '<link rel="preload" as="image" type="image/jpeg" href="https://static.mydomain.com/e107_themes/bootstrap3/image/header.jpg" media="(max-width: 415px)" />',
+				'expected' => '<link rel="preload" as="image" type="image/jpeg" href="https://static2.mydomain.com/e107_themes/bootstrap3/image/header.jpg" media="(max-width: 415px)" />',
 				'input'    => ['rel'=>'preload', 'as'=>'image', 'type'=> "image/jpeg", 'href'=>THEME_ABS.'image/header.jpg', 'media'=>"(max-width: 415px)"],
 				'cacheid'  => false,
 				'static'   => true,
