@@ -11,10 +11,12 @@
 */
 
 /*
-Query string: content_type.rss_type.[topic id]
-1: news
-5: comments
-12: downloads (option: specify category)
+Query string: feed_key.rss_type.[topic id]
+
+feed_key matches an rss_url value in the rss table, and rss_path on that row
+names the plugin folder whose e_rss.php builds the feed. Feeds were keyed by
+number before v0.7.6; a plugin declares the numbers it still answers to in the
+legacy() method of its e_rss.php, which rss_addons::legacyKeys() collects.
 
 Plugins should use an e_rss.php file in their plugin folder
 ----------------------------------------------------------------
@@ -142,29 +144,17 @@ if (empty($rss_type))
 	}
 
 // Returning feeds here
-// Conversion table for old urls -------
-$conversion[1] 	= 'news';
-$conversion[5] 	= 'comments';
-$conversion[10] = 'bugtracker';
-$conversion[12] = 'download';
-//-------------------------------------
 
-// Convert certain old urls so we can check the db entries
-// Rss.php?1.2 (news, rss-2) --> check = news (check conversion table)
-
-if(is_numeric($content_type) && isset($conversion[$content_type]) )
-{
-	$content_type = $conversion[$content_type];
-}
-
+require_once(e_PLUGIN.'rss_menu/rss_addons.php');
+require_once(e_PLUGIN.'rss_menu/rss_resolver.php');
 
 // Look up the feed for this content type, optionally constrained to a topic id.
-$rssFeedLookup = function($topicValue) use ($sql, $content_type)
+$rssFeedLookup = function($contentType, $topicValue) use ($sql)
 {
 	$qb = $sql->createQueryBuilder();
 	$qb->select('*')->from('rss')
 		->where('rss_class', '!=', 2)
-		->where('rss_url', $content_type)
+		->where('rss_url', $contentType)
 		->where($qb->expr()->gt('rss_limit', 0));
 
 	if($topicValue)
@@ -175,24 +165,23 @@ $rssFeedLookup = function($topicValue) use ($sql, $content_type)
 	return $qb->fetchRow();
 };
 
-$row = $rssFeedLookup($topic_id ? $topic_id : false);
+$resolver = new rss_feed_resolver($rssFeedLookup);
+$resolved = $resolver->resolve($content_type, $topic_id);
 
-if(empty($row))
-{	// Check if wildcard present for topic_id
-	$row = $rssFeedLookup($topic_id ? str_replace($topic_id, "*", $topic_id) : false);
+if($resolved === false)
+{
+	require_once(HEADERF);
 
-	if(empty($row))
-	{
-		require_once(HEADERF);
+	$repl  		= array("<br /><br /><a href='".e_REQUEST_SELF."'>", "</a>");
+	$message 	= str_replace(array("[","]"), $repl, RSS_LAN_ERROR_1);
+	e107::getRender()->tablerender('', $message);
 
-		$repl  		= array("<br /><br /><a href='".e_REQUEST_SELF."'>", "</a>");
-		$message 	= str_replace(array("[","]"), $repl, RSS_LAN_ERROR_1);
-		e107::getRender()->tablerender('', $message);
-
-		require_once(FOOTERF);
-		exit;
-	}
+	require_once(FOOTERF);
+	exit;
 }
+
+$row          = $resolved['row'];
+$content_type = $resolved['key'];
 
 
 // ----------------------------------------------------------------------------
@@ -257,22 +246,20 @@ class rssCreate
 
 		if(!is_numeric($content_type))
 		{
-			$path = e_PLUGIN.$row['rss_path'].'/e_rss.php';
+			$path = $this->addonPath($content_type, $row);
 		}
-		if(strpos($row['rss_path'],'|')!==FALSE) //FIXME remove this check completely. 
+		if(strpos($row['rss_path'],'|')!==FALSE) //FIXME remove this check completely.
 		{
 			$tmp = explode("|", $row['rss_path']);
 			$path = e_PLUGIN.$tmp[0]."/e_rss.php";
 			$this->parm = $tmp[1];	// FIXME @Deprecated - use $parm['url'] instead in data() method within e_rss.php.  Parm is used in e_rss.php to define which feed you need to prepare
 		}
 
+		// Feed keys a plugin serves are resolved from the row above. What is left
+		// here is what core still answers to itself: three content types from 0.7
+		// that never became plugins, and the inline comments feed.
 		switch ($content_type)
 		{
-			case 'news' :
-			case 1:
-				$path = e_PLUGIN."news/e_rss.php";
-				$this->contentType = "news";
-				break;
 			case 2:
 				$path='';
 				$this -> contentType = "articles";
@@ -286,31 +273,8 @@ class rssCreate
 				$this -> contentType = "content";
 				break;
 			case 'comments' : //TODO Eventually move to e107_plugins/comments
-			case 5:
 				$path='';
 				$this -> rssItems = $this->commentItems((int) $this -> limit);
-				break;
-
-			case 6:
-			case 7:
-				$path = e_PLUGIN."forum/e_rss.php";
-				break;
-
-
-			case 8:
-			case 11:
-				if(!$this -> topicid)
-				{
-					return FALSE;
-				}
-				$path = e_PLUGIN."forum/e_rss.php";
-				break;
-
-			// case 10 was bugtracker
-
-			case 'download':
-			case 12:
-				$path = e_PLUGIN."download/e_rss.php";
 				break;
 		}
 
@@ -325,14 +289,14 @@ class rssCreate
 				require_once($path);
 
 				$className = basename(dirname($path)).'_rss';
-				
-				// v2.x standard 
+
+				// v2.x standard
 				if($data = e107::callMethod($className,'data', array('url' => $content_type, 'id' => $this->topicid, 'limit' => $this->limit)))
-				{			
+				{
 					$eplug_rss_data = array(0 => $data);
-					unset($data);			
+					unset($data);
 				}
-								
+
 				foreach($eplug_rss_data as $key=>$rs)
 				{
 					foreach($rs as $k=>$row)
@@ -584,6 +548,48 @@ class rssCreate
 		return $qb->orderBy('c.comment_datestamp', 'DESC')
 			->setFirstResult(0)->setMaxResults($limit)
 			->fetchAll();
+	}
+
+	/**
+	 * Locates the e_rss.php that serves a feed.
+	 *
+	 * rss_path names the plugin folder and is normally enough. It is empty on
+	 * rows that predate the column, including the news feed the installer still
+	 * ships, and those are the rows the removed hardcoded arms were catching. So
+	 * fall back to the canonical keys the addons declare in legacy(), which names
+	 * the same plugins without core holding the list.
+	 *
+	 * {@see rss_addons::feeds()} is deliberately not used for this. Addons label
+	 * their feeds with admin language constants, so calling config() from a front
+	 * end request is fatal. legacy() returns plain arrays and is safe anywhere.
+	 *
+	 * @param string $content_type feed key
+	 * @param array  $row          rss table row
+	 * @return string path to the addon, or '' when none serves the feed
+	 */
+	private function addonPath($content_type, $row)
+	{
+		$folder = (string) varset($row['rss_path'], '');
+
+		if($folder !== '' && is_readable(e_PLUGIN.$folder.'/e_rss.php'))
+		{
+			return e_PLUGIN.$folder.'/e_rss.php';
+		}
+
+		foreach(rss_addons::legacyKeys() as $owner)
+		{
+			if($owner['url'] !== (string) $content_type || empty($owner['plugin']))
+			{
+				continue;
+			}
+
+			if(is_readable(e_PLUGIN.$owner['plugin'].'/e_rss.php'))
+			{
+				return e_PLUGIN.$owner['plugin'].'/e_rss.php';
+			}
+		}
+
+		return '';
 	}
 
 	function debug()
