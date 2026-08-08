@@ -94,7 +94,6 @@ class forumStats
 
 
 		require_once(e_PLUGIN.'forum/forum_class.php');
-		$gen = e107::getDate();
 
 		$forum = new e107forum;
 
@@ -114,8 +113,6 @@ class forumStats
 		$fp = is_array($fp) ? $fp : array();
 
 		$open_ds = (int) varset($fp['post_datestamp']);
-		$open_date = $gen->convert_date($open_ds, 'long');
-		$open_since = $gen -> computeLapse($open_ds);
 		$open_days = floor((time()-$open_ds) / 86400);
 		$postsperday = ($open_days < 1 ? $total_posts : round($total_posts / $open_days));
 
@@ -165,16 +162,6 @@ class forumStats
 			->orderBy('ft.thread_views', 'DESC')
 			->setFirstResult(0)->setMaxResults(10)
 			->fetchAll();
-
-			/*$sql->select("user", "user_id, user_name, user_forums", "ORDER BY user_forums DESC LIMIT 0, 10", "no_where");
-			$posters = $sql -> db_getList();
-			$top_posters = array();
-			foreach($posters as $poster)
-			{
-				$percen = round(($poster['user_forums'] / $total_posts) * 100, 2);
-				$top_posters[] = array("user_id" => $poster['user_id'], "user_name" => $poster['user_name'], "user_forums" => $poster['user_forums'], "percentage" => $percen);
-			}*/
-
 
 
 		// get all replies
@@ -229,271 +216,63 @@ class forumStats
 			$top_topic_starters[] = array("user_id" => $poster['user_id'], "user_name" => vartrue($poster['user_name'],LAN_ANONYMOUS), "user_forums" => $poster['thread_count'], "percentage" => $percent);
 		}
 
-			/*
-			$query = "
-			SELECT SUBSTRING_INDEX(thread_user,'.',1) AS t_user, COUNT(SUBSTRING_INDEX(ft.thread_user,'.',1)) AS ucount, u.user_name, u.user_id FROM #forum_t as ft
-			LEFT JOIN #user AS u ON SUBSTRING_INDEX(ft.thread_user,'.',1) = u.user_id
-			WHERE ft.thread_parent=0
-			GROUP BY t_user
-			ORDER BY ucount DESC
-			LIMIT 0,10";
-			$sql -> gen($query);
-			$posters = $sql -> db_getList();
-			$top_topic_starters = array();
-			foreach($posters as $poster)
-			{
-				$percen = round(($poster['ucount'] / $total_topics) * 100, 2);
-				$top_topic_starters[] = array("user_id" => $poster['user_id'], "user_name" => $poster['user_name'], "user_forums" => $poster['ucount'], "percentage" => $percen);
-			}*/
-
-			/*
-			$query = "
-			SELECT SUBSTRING_INDEX(thread_user,'.',1) AS t_user, COUNT(SUBSTRING_INDEX(ft.thread_user,'.',1)) AS ucount, u.user_name, u.user_id FROM #forum_t as ft
-			LEFT JOIN #user AS u ON SUBSTRING_INDEX(ft.thread_user,'.',1) = u.user_id
-			WHERE ft.thread_parent!=0
-			GROUP BY t_user
-			ORDER BY ucount DESC
-			LIMIT 0,10";
-			$sql -> gen($query);
-			$posters = $sql -> db_getList();
-
-			$top_repliers = array();
-			foreach($posters as $poster)
-			{
-				$percen = round(($poster['ucount'] / $total_replies) * 100, 2);
-				$top_repliers[] = array("user_id" => $poster['user_id'], "user_name" => $poster['user_name'], "user_forums" => $poster['ucount'], "percentage" => $percen);
-			}
-			*/
 
 
 
 
 
-		$text_0 = "
-		<table style='width: 100%;' class='fborder table'>
-			<tr><td style='width: 50%; text-align: right;'><b>".LAN_FORUM_6001.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$open_date}</td></tr>
-			<tr><td style='width: 50%; text-align: right;'><b>".LAN_FORUM_6002.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$open_since}</td></tr>
-			<tr><td style='width: 50%; text-align: right;'><b>".LAN_FORUM_6003.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$total_posts}</td></tr>
-			<tr><td style='width: 50%; text-align: right;'><b>".LAN_FORUM_1007.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$total_topics}</td></tr>
-			<tr><td style='width: 50%; text-align: right;'><b>".LAN_FORUM_6004.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$total_replies}</td></tr>
-			<tr><td style='width: 50%; text-align: right;'><b>".LAN_FORUM_6005.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$total_views}</td></tr>
-			<tr><td style='width: 50%; text-align: right;'><b>".LAN_FORUM_6014.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$postsperday}</td></tr>
-			<tr><td style='width: 50%; text-align: right;'><b>".LAN_FORUM_6006.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$db_size}</td></tr>
-			<tr><td style='width: 50%; text-align: right;'><b>".LAN_FORUM_6007.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>{$avg_row_len}</td></tr>
-		</table>";
+		$sc = e107::getScBatch('stats', 'forum');
 
+		$template = e107::getTemplate('forum', 'forum_stats', null, true, true);
 
+		$panels = array();
 
+		$panels['summary'] = array(array(
+			'open_ds'       => $open_ds,
+			'total_posts'   => $total_posts,
+			'total_topics'  => $total_topics,
+			'total_replies' => $total_replies,
+			'total_views'   => $total_views,
+			'postsperday'   => $postsperday,
+			'db_size'       => $db_size,
+			'avg_row_len'   => $avg_row_len,
+		));
 
-		$text_1 = "
-		<table style='width: 100%;' class='fborder table'>
-		<thead>
-		<tr>
-		<th style='width: 10%; text-align: center;' class='fcaption'>".LAN_FORUM_6008."</th>
-		<th style='width: 40%;' class='fcaption'>".LAN_FORUM_1003."</th>
-		<th style='width: 10%; text-align: center;' class='fcaption'>".LAN_FORUM_0003."</th>
-		<th style='width: 20%; text-align: center;' class='fcaption'>".LAN_FORUM_6009."</th>
-		<th style='width: 20%; text-align: center;' class='fcaption'>".LAN_DATE."</th>
-		</tr>
-		</thead>
-		";
+		$panels['most_active']  = $most_activeArray;
+		$panels['most_viewed']  = $most_viewedArray;
+		$panels['top_posters']  = $top_posters;
+		$panels['top_starters'] = $top_topic_starters;
+		$panels['top_repliers'] = $top_repliers;
 
-		$count=1;
+		$rendered = array();
 
-		foreach($most_activeArray as $ma)
+		foreach($panels as $key => $rows)
 		{
-			if($ma['user_name'])
+			if(empty($template[$key]))
 			{
-				//$uinfo = "<a href='".e_HTTP."user.php ?id.{$ma['user_id']}'>{$ma['user_name']}</a>"; //TODO SEf Url .
-				$uparams = array('id' => $ma['user_id'], 'name' => $ma['user_name']);
-				$link = e107::getUrl()->create('user/profile/view', $uparams);
-				$uinfo = "<a href='".$link."'>".$ma['user_name']."</a>";
-			}
-			else
-			{
-				$tmp = explode(chr(1), $ma['thread_anon']);
-				$uinfo = $tp->toHTML($tmp[0]);
+				continue;
 			}
 
-			$ma['thread_sef'] = eHelper::title2sef($ma['thread_name'],'dashl');
-			$url = e107::url('forum','topic', $ma);
+			$block = $tp->parseTemplate(varset($template[$key]['start']), true, $sc);
+			$count = 1;
 
-			$text_1 .= "
-			<tr>
-			<td style='width: 10%; text-align: center;' class='forumheader3'>$count</td>
-			<td style='width: 40%;' class='forumheader3'><a href='".$url."'>{$ma['thread_name']}</a></td>
-			<td style='width: 10%; text-align: center;' class='forumheader3'>{$ma['thread_total_replies']}</td>
-			<td style='width: 20%; text-align: center;' class='forumheader3'>{$uinfo}</td>
-			<td style='width: 20%; text-align: center;' class='forumheader3'>".$gen->convert_date($ma['thread_datestamp'], "forum")."</td>
-			</tr>
-			";
-
-			$count++;
-		}
-
-		$text_1 .= "</table>";
-
-
-		$text_2 = "
-		<table style='width: 100%;' class='fborder table'>
-		<thead>
-		<tr>
-		<th style='width: 10%; text-align: center;' class='fcaption'>".LAN_FORUM_6008."</th>
-		<th style='width: 40%;' class='fcaption'>".LAN_FORUM_1003."</th>
-		<th style='width: 10%; text-align: center;' class='fcaption'>".LAN_FORUM_1005."</th>
-		<th style='width: 20%; text-align: center;' class='fcaption'>".LAN_FORUM_6009."</th>
-		<th style='width: 20%; text-align: center;' class='fcaption'>".LAN_DATE."</th>
-		</tr>
-		</thead>
-		";
-
-		$count=1;
-
-		foreach($most_viewedArray as $ma)
-		{
-			if($ma['user_name'])
+			foreach($rows as $row)
 			{
-				//$uinfo = "<a href='".e_HTTP."user.php ?id.{$ma['user_id']}'>".$ma['user_name']."</a>";  //TODO SEf Url .
-				$uparams = array('id' => $ma['user_id'], 'name' => $ma['user_name']);
-				$link = e107::getUrl()->create('user/profile/view', $uparams);
-				$uinfo = "<a href='".$link."'>".$ma['user_name']."</a>";
-			}
-			else
-			{
-				$tmp = explode(chr(1), $ma['thread_anon']);
-				$uinfo = $tp->toHTML($tmp[0]);
+				$row['count'] = $count++;
+				$sc->setVars($row);
+				$block .= $tp->parseTemplate(varset($template[$key]['item']), true, $sc);
 			}
 
-			$ma['thread_sef'] = eHelper::title2sef($ma['thread_name'],'dashl');
-			$url = e107::url('forum','topic', $ma);
+			$block .= $tp->parseTemplate(varset($template[$key]['end']), true, $sc);
 
-			$text_2 .= "
-			<tr>
-			<td style='width: 10%; text-align: center;' class='forumheader3'>$count</td>
-			<td style='width: 40%;' class='forumheader3'><a href='".$url."'>".$ma['thread_name']."</a></td>
-			<td style='width: 10%; text-align: center;' class='forumheader3'>".$ma['thread_views']."</td>
-			<td style='width: 20%; text-align: center;' class='forumheader3'>".$uinfo."</td>
-			<td style='width: 20%; text-align: center;' class='forumheader3'>".$gen->convert_date($ma['thread_datestamp'], "forum")."</td>
-			</tr>
-			";
-				$count++;
+			$rendered[$key] = array(
+				'caption' => varset($template[$key]['caption'], ''),
+				'text'    => $block,
+			);
 		}
-
-		$text_2 .= "</table>";
-
-
-
-
-		$text_3 = "
-		<table style='width: 100%;' class='fborder table'>
-		<thead>
-		<tr>
-		<th style='width: 10%; text-align: center;' class='fcaption'>".LAN_FORUM_6008."</th>
-		<th style='width: 20%;' class='fcaption'>".LAN_NAME."</th>
-		<th style='width: 10%; text-align: center;' class='fcaption'>".LAN_FORUM_2032."</th>
-		<th style='width: 10%; text-align: center;' class='fcaption'>%</th>
-		<th style='width: 50%; text-align: center;' class='fcaption'>&nbsp;</th>
-		</tr>
-		</thead>
-		<tbody>
-		";
-
-		$count=1;
-		foreach($top_posters as $ma)
-		{
-			$text_3 .= "<tr>
-			<td style='width: 10%; text-align: center;' class='forumheader3'>$count</td>
-			<td style='width: 20%;' class='forumheader3'><a href='".e107::url('user/profile/view', $ma)."'>".$ma['user_name']."</a></td>
-			<td style='width: 10%; text-align: center;' class='forumheader3'>".$ma['user_forums']."</td>
-			<td style='width: 10%; text-align: center;' class='forumheader3'>".$ma['percentage']."%</td>
-			<td style='width: 50%;' class='forumheader3'>".$this->showBar($ma['percentage'])."
-			</td>
-			</tr>
-			";
-
-			$count++;
-		}
-
-		$text_3 .= "</tbody>
-		</table>
-		";
-
-
-		$text_4 = "
-		<table style='width: 100%;' class='fborder table'>
-		<thead>
-		<tr>
-		<th style='width: 10%; text-align: center;' class='fcaption'>".LAN_FORUM_6008."</th>
-		<th style='width: 20%;' class='fcaption'>".LAN_NAME."</th>
-		<th style='width: 10%; text-align: center;' class='fcaption'>".LAN_FORUM_2032."</th>
-		<th style='width: 10%; text-align: center;' class='fcaption'>%</th>
-		<th style='width: 50%; text-align: center;' class='fcaption'>&nbsp;</th>
-		</tr>
-		</thead>
-		";
-
-		$count=1;
-		foreach($top_topic_starters as $ma)
-		{
-			$text_4 .= "<tr>
-			<td style='width: 10%; text-align: center;' class='forumheader3'>$count</td>
-			<td style='width: 20%;' class='forumheader3'><a href='".e107::url('user/profile/view', $ma)."'>".$ma['user_name']."</a></td>
-			<td style='width: 10%; text-align: center;' class='forumheader3'>".$ma['user_forums']."</td>
-			<td style='width: 10%; text-align: center;' class='forumheader3'>".$ma['percentage']."%</td>
-			<td style='width: 50%; text-align: center;' class='forumheader3'>".$this->showBar($ma['percentage'])."</td>
-			</tr>
-			";
-			$count++;
-		}
-
-		$text_4 .= "</table>";
-
-
-		$text_5 = "
-		<table style='width: 100%;' class='fborder table'>
-		<thead>
-		<tr>
-		<th style='width: 10%; text-align: center;' class='fcaption'>".LAN_FORUM_6008."</th>
-		<th style='width: 20%;' class='fcaption'>".LAN_NAME."</th>
-		<th style='width: 10%; text-align: center;' class='fcaption'>".LAN_FORUM_2032."</th>
-		<th style='width: 10%; text-align: center;' class='fcaption'>%</th>
-		<th style='width: 50%; text-align: center;' class='fcaption'>&nbsp;</th>
-		</tr>
-		</thead>
-		";
-
-		$count=1;
-		foreach($top_repliers as $ma)
-		{
-			$text_5 .= "
-			<tr>
-			<td style='width: 10%; text-align: center;' class='forumheader3'>$count</td>
-			<td style='width: 20%;' class='forumheader3'><a href='".e107::url('user/profile/view', $ma)."'>".$ma['user_name']."</a></td>
-			<td style='width: 10%; text-align: center;' class='forumheader3'>".$ma['user_forums']."</td>
-			<td style='width: 10%; text-align: center;' class='forumheader3'>".$ma['percentage']."%</td>
-			<td style='width: 50%; text-align: center;' class='forumheader3'>".$this->showBar($ma['percentage'])."</td>
-			</tr>
-			";
-
-			$count++;
-		}
-
-		$text_5 .= '</table>';
-
 
 		if(deftrue('BOOTSTRAP'))
 		{
-			$tabs = array();
-
-			$tabs[0] = array('caption'=>LAN_FORUM_6000, 'text'=>$text_0);
-			$tabs[1] = array('caption'=>LAN_FORUM_0011, 'text'=>$text_1);
-			$tabs[2] = array('caption'=>LAN_FORUM_6010, 'text'=>$text_2);
-			$tabs[3] = array('caption'=>LAN_FORUM_0010, 'text'=>$text_3);
-			$tabs[4] = array('caption'=>LAN_FORUM_6011, 'text'=>$text_4);
-			$tabs[5] = array('caption'=>LAN_FORUM_6012, 'text'=>$text_5);
-
-			$frm = e107::getForm();
-
 			$breadarray = array(
 				array('text'=> e107::pref('forum','title', defset('LAN_PLUGIN_FORUM_NAME')), 'url' => e107::url('forum','index') ),
 				array('text'=>LAN_FORUM_6013, 'url'=>null)
@@ -502,18 +281,16 @@ class forumStats
 			$text = $frm->breadcrumb($breadarray);
 			e107::breadcrumb($breadarray); // assign to {---BREADCRUMB---}
 
-
-			$text = "<div id='forum-stats'>". $text . e107::getForm()->tabs($tabs)."</div>";
+			$text = "<div id='forum-stats'>". $text . $frm->tabs(array_values($rendered))."</div>";
 		}
 		else
 		{
-			$text ="
-			<h3>".LAN_FORUM_6000."</h3>". $text_0 .
-			"<h3>".LAN_FORUM_0011."</h3>". $text_1 .
-			"<h3>".LAN_FORUM_6010."</h3>". $text_2 .
-			"<h3>".LAN_FORUM_0010."</h3>".$text_3 .
-			"<h3>".LAN_FORUM_6011."</h3>". $text_4 .
-			"<h3>".LAN_FORUM_6012."</h3>". $text_5;
+			$text = '';
+
+			foreach($rendered as $panel)
+			{
+				$text .= "<h3>".$panel['caption']."</h3>".$panel['text'];
+			}
 		}
 
 		$text .= "<div class='center'>".e107::getForm()->pagination(e107::url('forum','index'), LAN_BACK)."</div>";
@@ -522,6 +299,12 @@ class forumStats
 
 	}
 
+	/**
+	 * @deprecated v2.4.0 The statistics tables render from
+	 *             forum_stats_template.php, where the bar is
+	 *             {PERCENTAGE_BAR}. Retained for callers outside core.
+	 *             Use {@see e_form::progressBar()} directly.
+	 */
 	function showBar($perc)
 	{
 		return e107::getForm()->progressBar('prog',$perc);
