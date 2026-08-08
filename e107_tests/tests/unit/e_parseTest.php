@@ -2178,6 +2178,49 @@ EXPECTED;
 		e107::getParser()->setStaticUrl(null);
 	}
 
+	public function testSetStaticUrlDiscardsThePreviousConfigurationsState()
+	{
+		$first = [
+			'https://static1.mydomain.com/',
+			'https://static2.mydomain.com/',
+			'https://static3.mydomain.com/',
+		];
+
+		$this->tp->setStaticUrl($first);
+
+		self::assertSame(
+			'https://static1.mydomain.com/e107_themes/bootstrap3/images/one.jpg',
+			$this->tp->staticUrl('{THEME}images/one.jpg')
+		);
+		self::assertSame(
+			'https://static2.mydomain.com/e107_themes/bootstrap3/images/two.jpg',
+			$this->tp->staticUrl('{THEME}images/two.jpg')
+		);
+
+		$this->tp->setStaticUrl(['https://cdn.othersite.com/']);
+
+		self::assertSame(
+			'https://cdn.othersite.com/e107_themes/bootstrap3/images/one.jpg',
+			$this->tp->staticUrl('{THEME}images/one.jpg'),
+			"A path already resolved kept the domain it was given under the previous configuration."
+		);
+
+		$this->tp->setStaticUrl($first);
+
+		self::assertSame(
+			'https://static1.mydomain.com/e107_themes/bootstrap3/images/three.jpg',
+			$this->tp->staticUrl('{THEME}images/three.jpg'),
+			"The round-robin resumed from the position the previous configuration left it at."
+		);
+
+		$this->tp->setStaticUrl(null);
+
+		self::assertSame(
+			e_THEME_ABS . 'bootstrap3/images/one.jpg',
+			$this->tp->staticUrl('{THEME}images/one.jpg')
+		);
+	}
+
 	/*
 			public function testGetUrlConstants()
 			{

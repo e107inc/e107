@@ -2846,11 +2846,19 @@ class e_parse
 	/**
 	 * Used internally to store e_HTTP_STATIC.
 	 *
-	 * @param string|null $url The static URL ie. e_HTTP_STATIC
+	 * Discards the state {@see e_parse::staticUrl()} derived from the previous
+	 * value: the map of domains already issued per path, and the round-robin
+	 * position within the configured domains. Both describe the configuration
+	 * being replaced, so carrying them over would serve a path a domain the
+	 * caller has just stopped configuring.
+	 *
+	 * @param string|string[]|null $url The static URL ie. e_HTTP_STATIC
 	 */
 	public function setStaticUrl($url)
 	{
 		$this->staticUrl = $url;
+		$this->staticUrlMap = [];
+		$this->staticCount(0);
 	}
 
 	public function getStaticUrlMap()
