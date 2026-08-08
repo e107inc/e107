@@ -19,9 +19,10 @@ on:
 # serves its own HTTPS vhost with a certificate at /etc/ssl/e107/web.crt, so the
 # e_fileOutboundRequest TLS peer-verification cases do too. Nine tests that the
 # hand-built container skipped are real coverage again.
-
-env:
-  CC_TEST_REPORTER_ID: 8948074581c1ffe7f4e47995c65d7d303882310256edd73536723d7c92adb1e3
+#
+# Coverage is still measured and coverage.xml still travels with the failure
+# artefacts, but nothing consumes it off the runner: the Code Climate reporter
+# that used to receive it is gone, and its download URL now answers 404.
 
 jobs:
   test-unit:
@@ -73,31 +74,8 @@ jobs:
             --xdebug \
             --no-selenium
 
-      - name: Download Code Climate test reporter
-        run: |
-          curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-          chmod +x ./cc-test-reporter
-        working-directory: ./e107_tests/vendor/bin/
-        continue-on-error: true
-
-      - name: Code Climate report before build
-        run: ./e107_tests/vendor/bin/cc-test-reporter before-build
-        continue-on-error: true
-
       - name: Run unit tests with coverage
         run: ./e107_tests/bin/e107-tests ci-unit
-
-      # The worktree is bind-mounted into the container, so coverage.xml written
-      # inside it is already here on the runner.
-      - name: Send code coverage report to Code Climate
-        run: |
-          ./e107_tests/vendor/bin/cc-test-reporter format-coverage \
-            --input-type clover \
-            --output ./e107_tests/tests/_output/coverage/codeclimate.json \
-            ./e107_tests/tests/_output/coverage.xml
-          ./e107_tests/vendor/bin/cc-test-reporter upload-coverage \
-            --input ./e107_tests/tests/_output/coverage/codeclimate.json
-        continue-on-error: true
 
       - name: Collect container logs
         if: failure()
