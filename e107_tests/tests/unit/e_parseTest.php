@@ -1640,6 +1640,80 @@ EXPECTED;
 
 	}
 
+	/**
+	 * search_highlight is created by e107_admin/search.php and by nothing else, so
+	 * a site whose administrator has never saved the search settings page reaches
+	 * the highlighting test without it. Absent has to mean off, not a warning on
+	 * every parsed string.
+	 */
+	public function testCheckHighlightingTreatsAMissingSearchHighlightPreferenceAsOff()
+	{
+		$restore = $this->overrideSitePrefs(array('sitename' => 'e107'), 'https://example.com/news.php?q=needle');
+
+		try
+		{
+			self::assertFalse($this->tp->checkHighlighting());
+		}
+		finally
+		{
+			$restore();
+		}
+	}
+
+	public function testCheckHighlightingIsOnWhenTheSearchHighlightPreferenceIsSet()
+	{
+		$restore = $this->overrideSitePrefs(array('search_highlight' => 1), 'https://example.com/news.php?q=needle');
+
+		try
+		{
+			self::assertTrue($this->tp->checkHighlighting());
+		}
+		finally
+		{
+			$restore();
+		}
+	}
+
+	/**
+	 * Swap in the legacy $pref global and the referrer that checkHighlighting()
+	 * reads, and hand back the callable that puts both back as they were found.
+	 *
+	 * @param array  $prefs
+	 * @param string $referer
+	 * @return callable
+	 */
+	private function overrideSitePrefs(array $prefs, $referer)
+	{
+		$hadPref = array_key_exists('pref', $GLOBALS);
+		$savedPref = $hadPref ? $GLOBALS['pref'] : null;
+		$hadReferer = array_key_exists('HTTP_REFERER', $_SERVER);
+		$savedReferer = $hadReferer ? $_SERVER['HTTP_REFERER'] : null;
+
+		$GLOBALS['pref'] = $prefs;
+		$_SERVER['HTTP_REFERER'] = $referer;
+
+		return static function () use ($hadPref, $savedPref, $hadReferer, $savedReferer)
+		{
+			if($hadPref)
+			{
+				$GLOBALS['pref'] = $savedPref;
+			}
+			else
+			{
+				unset($GLOBALS['pref']);
+			}
+
+			if($hadReferer)
+			{
+				$_SERVER['HTTP_REFERER'] = $savedReferer;
+			}
+			else
+			{
+				unset($_SERVER['HTTP_REFERER']);
+			}
+		};
+	}
+
 	public function testTruncate()
 	{
 		// html
