@@ -3914,12 +3914,20 @@ var_dump($select_options);*/
 			    '.($label ?: LAN_NO_LABEL_PROVIDED).'
 			    <span class="caret"></span>
 			    </a>
-			    <ul class="dropdown-menu">
+			    <ul class="'.trim('dropdown-menu '.varset($options['class_ul'])).'">
 			    ';
-			
+
+			$liClass = trim('dropdown-item '.varset($options['class_li']));
+
 			foreach($value as $k=>$v)
 			{
-				$text .= '<li class="dropdown-item">'.$v.'</li>';
+				if($v === '--' || $v === 'divider')
+				{
+					$text .= '<li class="'.$liClass.' divider"><hr class="dropdown-divider" /></li>';
+					continue;
+				}
+
+				$text .= '<li class="'.$liClass.'">'.$v.'</li>';
 			}
 			
 			$text .= '
@@ -3928,11 +3936,8 @@ var_dump($select_options);*/
 			
 			return $text;	
 		}			
-				
 
-		
 		return $this->admin_button($name, $value, $action, $label, $options);
-		
 	}
 
 	/**
@@ -4086,14 +4091,12 @@ var_dump($select_options);*/
 			$class .= ' ' . $this->getDefaultButtonClassByAction($action);
 		}
 
-
 		$options['class'] = $class;
 
 		if(empty($label))
 		{
 			$label = $value;
 		}
-
 
 		switch ($action)
 		{
