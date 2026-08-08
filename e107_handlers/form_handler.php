@@ -3892,12 +3892,22 @@ var_dump($select_options);*/
 
 
 	/**
-	 * Generic Button Element. 
+	 * Generic Button Element.
+	 *
 	 * @param string $name
-	 * @param string|array $value
-	 * @param string $action [optional] default is submit - use 'dropdown' for a bootstrap dropdown button. 
+	 * @param string|array $value form value attribute, or, for the dropdown form, the array
+	 *               of menu items, each rendered inside its own <li>. An item of '--' or
+	 *               'divider' becomes a menu divider.
+	 * @param string $action [optional] default is submit - use 'dropdown' for a bootstrap dropdown button.
 	 * @param string $label [optional]
-	 * @param string|array $options [optional]
+	 * @param string|array $options [optional] passed through to
+	 *               {@see e_form::admin_button()}, which documents the supported keys.
+	 *               The dropdown form is the exception: it honours only
+	 *               - 'class'    (string) extra classes on the toggle <a>
+	 *               - 'align'    (string) pull- alignment, 'left' (default) or 'right'
+	 *               - 'class_ul' (string) extra classes on the dropdown <ul>
+	 *               - 'class_li' (string) extra classes on each <li>
+	 *               and currently discards every other key, title and data-* included.
 	 * @return string
 	 */
 	public function button($name, $value, $action = 'submit', $label = '', $options = array())
@@ -4038,11 +4048,31 @@ var_dump($select_options);*/
 
 	/**
 	 * Admin Button - for front-end, use button();
-	 * @param string $name
-	 * @param string $value
-	 * @param string $action [optional] default is submit
-	 * @param string $label [optional]
-	 * @param string|array $options [optional]
+	 *
+	 * @param string $name form name attribute
+	 * @param string $value form value attribute; also the button text when $label is empty
+	 * @param string $action [optional] default is submit. Sets the base classes and, unless
+	 *               $options['class'] already names a Bootstrap button variant, the button's
+	 *               colour via {@see e_form::getDefaultButtonClassByAction()}. 'button' or a
+	 *               string starting 'action' renders type='button' instead of type='submit'.
+	 * @param string $label [optional] button text; defaults to $value
+	 * @param string|array $options [optional] attributes for the button element. A string is
+	 *               parsed with parse_str(). Keys honoured include:
+	 *               - 'class'    (string) appended after the base 'btn <action>' classes. A
+	 *                            Bootstrap variant here (btn-primary, btn-outline-danger, ...)
+	 *                            suppresses the action's default colour.
+	 *               - 'title'    (string) title attribute
+	 *               - 'data-*'   (string) any data attribute, passed through verbatim,
+	 *                            e.g. 'data-bs-toggle' => 'tooltip'
+	 *               - 'id'       (string) element id; generated from $name when omitted
+	 *               - 'tabindex' (int) explicit tab order; assigned automatically when omitted
+	 *               - 'disabled', 'required', 'autofocus' (bool)
+	 *               - 'other'    (string) raw attribute string appended as-is
+	 *               - 'loading'  (bool) false removes the data-loading-icon spinner
+	 *               - 'confirm'  (string) confirmation text for the delete/danger actions;
+	 *                            defaults to LAN_JSCONFIRM
+	 *               Unrecognised keys other than data-* are discarded by
+	 *               {@see e_form::format_options()}.
 	 * @return string
 	 */
 	public function admin_button($name, $value, $action = 'submit', $label = '', $options = array())
