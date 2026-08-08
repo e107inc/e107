@@ -1505,7 +1505,7 @@ class e_parse
 		{
 			$this->e_highlighting = false;
 			$shr = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '');
-			if ($pref['search_highlight'] && (strpos(e_SELF, 'search.php') === false) && ((strpos($shr, 'q=') !== false) || (strpos($shr, 'p=') !== false)))
+			if (!empty($pref['search_highlight']) && (strpos(e_SELF, 'search.php') === false) && ((strpos($shr, 'q=') !== false) || (strpos($shr, 'p=') !== false)))
 			{
 				$this->e_highlighting = true;
 				if (!isset($this->e_query))
