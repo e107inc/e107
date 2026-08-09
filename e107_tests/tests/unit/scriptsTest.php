@@ -1,6 +1,18 @@
 <?php
 
 
+	/**
+	 * Sweeps every admin/front script through a subprocess and fails on any
+	 * error output. The sweep's catch-and-continue wrapper leans on engine
+	 * errors being Throwable, which exists on PHP 7+ only: on PHP 5 a missing
+	 * function is an uncatchable fatal, so the same wrapper would fail scripts
+	 * for depending on their including page's context (admin.php's helpers),
+	 * which is a fact about the wrapper, not about the scripts. The floor
+	 * lint already proves parseability on old PHP, so the sweep runs on the
+	 * modern cells only.
+	 *
+	 * @group requires-modern-php
+	 */
 	class scriptsTest extends \Test\Unit
 	{
 
