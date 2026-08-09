@@ -56,10 +56,10 @@ if(isset($_E107['cli'], $_SERVER["HTTP_USER_AGENT"]) && !isset($_E107['debug']))
 	exit();
 }
 
-if (PHP_MAJOR_VERSION < 8)
+if (version_compare(PHP_VERSION, '5.6', '<'))
 {
 	echo "Configuration Error. Check error log for details.";
-    error_log('PHP 8 or higher is required. Current version: ' . PHP_VERSION);
+    error_log('PHP 5.6 or higher is required. Current version: ' . PHP_VERSION);
     exit();
 }
 
