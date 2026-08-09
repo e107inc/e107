@@ -354,7 +354,10 @@ class base_import_class
 		$name = empty($path) ? '' : basename($path);
 		$name = preg_replace('/\.[^.]*$/', '', $name);
 		$name = trim(preg_replace('/[^A-Za-z0-9_-]/', '_', $name), '_');
-		$name = substr($name, 0, 60);
+		// The cast keeps the empty-name check honest on PHP 5.6, where
+		// substr('' , 0, 60) is false rather than the '' every later PHP
+		// returns; false would slip the === '' test and lose the fallback.
+		$name = (string) substr($name, 0, 60);
 
 		if($name === '')
 		{

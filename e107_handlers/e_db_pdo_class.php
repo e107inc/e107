@@ -308,7 +308,12 @@ class e_db_pdo implements e_db
 			{
 				foreach($query['BIND'] as $k=>$v)
 				{
-					$prep->bindValue(':'.$k, $v['value'], $v['type']);
+					// A PARAM_NULL bind must carry a null value: PHP's modern
+					// PDO discards the value and sends SQL NULL either way,
+					// but PHP 5's pdo_mysql sends whatever value it was
+					// handed, silently un-nulling the bind.
+					$value = ($v['type'] === PDO::PARAM_NULL) ? null : $v['value'];
+					$prep->bindValue(':'.$k, $value, $v['type']);
 				}
 			}
 
