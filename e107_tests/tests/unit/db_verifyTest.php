@@ -511,28 +511,12 @@ DATA;
   news_body text NOT NULL,
   PRIMARY KEY (news_id)";
 
-		// Stand in for the e_search-derived FULLTEXT indexer so the test does not
-		// depend on which plugins ship a search config. It only knows the base
-		// table "news"; the language-prefixed name resolves to nothing, mirroring
-		// production where no e_search config exists under lan_dutch_news.
-		$fakeIndexer = new class {
-			public function getIndexesForTable($tableName)
-			{
-
-				if($tableName === 'news')
-				{
-					return array(
-						'ft_news_news_title' => array(
-							'type'    => 'FULLTEXT',
-							'keyname' => 'news_title',
-							'field'   => 'ft_news_news_title',
-						),
-					);
-				}
-
-				return array();
-			}
-		};
+		// Stand in for the e_search-derived FULLTEXT indexer; the fixture only
+		// knows the base "news" table, so the language-prefixed name resolves
+		// to nothing, mirroring production where no e_search config exists
+		// under lan_dutch_news.
+		require_once(__DIR__ . '/fixtures/FakeFulltextIndexerFixture.php');
+		$fakeIndexer = new FakeFulltextIndexerFixture();
 
 		// $this->dbv is a Codeception mock subclass, so reflect the declaring
 		// class to reach the private property rather than the mock instance.
