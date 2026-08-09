@@ -9,7 +9,7 @@
 	 */
 
 
-	class e_customfieldsTest extends \Codeception\Test\Unit
+	class e_customfieldsTest extends \Test\Unit
 	{
 
 		/** @var e_customfields  */

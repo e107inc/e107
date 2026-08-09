@@ -20,7 +20,7 @@
  * class_alias onto e107\Security\Random), so the coverage moves between the
  * branches unchanged. Keep it that way.
  */
-class e_randomTest extends \Codeception\Test\Unit
+class e_randomTest extends \Test\Unit
 {
 	protected function _before()
 	{

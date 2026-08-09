@@ -18,7 +18,7 @@ namespace e107\Security\Cipher;
  * on a host without it, which only holds if both backends agree octet for
  * octet.
  */
-class CipherFactoryTest extends \Codeception\Test\Unit
+class CipherFactoryTest extends \Test\Unit
 {
 	protected function _before()
 	{

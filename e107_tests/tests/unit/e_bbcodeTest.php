@@ -9,7 +9,7 @@
 	 */
 
 
-	class e_bbcodeTest extends \Codeception\Test\Unit
+	class e_bbcodeTest extends \Test\Unit
 	{
 
 		/** @var e_bbcode */

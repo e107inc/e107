@@ -1,7 +1,8 @@
 <?php
 
-class TreeModelTest extends \Codeception\Test\Unit
+class TreeModelTest extends \Test\Unit
 {
+
     /**
      * @var \UnitTester
      */

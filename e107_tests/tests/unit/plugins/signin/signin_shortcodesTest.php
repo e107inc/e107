@@ -12,7 +12,7 @@
  * cope with pm being listed as installed while its shortcode batch is not
  * loaded, because those two facts come from different places and can disagree.
  */
-class signin_shortcodesTest extends \Codeception\Test\Unit
+class signin_shortcodesTest extends \Test\Unit
 {
 	/** @var plugin_signin_signin_shortcodes */
 	private $sc;

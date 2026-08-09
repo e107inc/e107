@@ -9,7 +9,7 @@
  */
 
 
-class e_fileTest extends \Codeception\Test\Unit
+class e_fileTest extends \Test\Unit
 {
 
 	/** @var e_file  */

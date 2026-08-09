@@ -25,7 +25,7 @@ use RuntimeException;
 	 * identifiers and "structured value object or vouched fragment, never a bare
 	 * string" - plus byte-exact SQL skeletons for each verb.
 	 */
-	class SchemaBuilderTest extends \Codeception\Test\Unit
+	class SchemaBuilderTest extends \Test\Unit
 	{
 
 		protected function _before()

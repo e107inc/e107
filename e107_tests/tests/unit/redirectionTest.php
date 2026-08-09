@@ -1,7 +1,7 @@
 <?php
 
 
-class redirectionTest extends \Codeception\Test\Unit
+class redirectionTest extends \Test\Unit
 {
 
 	/** @var redirection */

@@ -12,7 +12,7 @@
  * it from procBanRetrigger(), it reads the action file eIPHandler appends to
  * when a banned address comes back, and it pushes those bans out again.
  */
-class banlistManagerTest extends \Codeception\Test\Unit
+class banlistManagerTest extends \Test\Unit
 {
 	/** @var banlistManager */
 	private $mgr;

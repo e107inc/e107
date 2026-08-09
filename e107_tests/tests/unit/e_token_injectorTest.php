@@ -14,8 +14,9 @@
  * cosmetic one: writing into a textarea corrupts what the operator saves, and
  * writing into an off-site form hands the session's CSRF token to a third party.
  */
-class e_token_injectorTest extends \Codeception\Test\Unit
+class e_token_injectorTest extends \Test\Unit
 {
+
 	const TOKEN = 'abcdef0123456789abcdef0123456789';
 
 	private $hosts = array('example.com');

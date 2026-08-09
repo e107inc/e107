@@ -8,7 +8,7 @@
 	 *
 	 */
 
-	class e_sessionTest extends \Codeception\Test\Unit
+	class e_sessionTest extends \Test\Unit
 	{
 		/** @var e_session */
 		private $sess;

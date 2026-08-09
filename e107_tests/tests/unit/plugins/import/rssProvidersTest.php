@@ -16,8 +16,9 @@
  * by the inherited method is reachable only if the subclass renders the field
  * that posts it and takes the value that init() reads. Neither did.
  */
-class rssProvidersTest extends \Codeception\Test\Unit
+class rssProvidersTest extends \Test\Unit
 {
+
 	protected function _before()
 	{
 		require_once(e_PLUGIN.'import/providers/blogger_import_class.php');

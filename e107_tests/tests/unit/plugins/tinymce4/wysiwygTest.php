@@ -1,7 +1,7 @@
 <?php
 
 
-class wysiwygTest extends \Codeception\Test\Unit
+class wysiwygTest extends \Test\Unit
 {
 
 	/** @var wysiwyg */

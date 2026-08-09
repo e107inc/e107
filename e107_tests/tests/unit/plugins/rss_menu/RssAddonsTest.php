@@ -3,8 +3,9 @@
 /**
  * @see https://github.com/e107inc/e107/issues/5870
  */
-class RssAddonsTest extends \Codeception\Test\Unit
+class RssAddonsTest extends \Test\Unit
 {
+
 	protected function _before()
 	{
 		require_once(e_PLUGIN . 'rss_menu/rss_addons.php');

@@ -9,7 +9,7 @@
 	 */
 
 
-	class pluginsTest extends \Codeception\Test\Unit
+	class pluginsTest extends \Test\Unit
 	{
 
 		protected $_debugPlugin = ''; // 'linkwords'; // add plugin-dir for full report.

@@ -9,7 +9,7 @@
 	 */
 
 
-	class e_pluginTest extends \Codeception\Test\Unit
+	class e_pluginTest extends \Test\Unit
 	{
 
 		/** @var e_plugin */

@@ -19,8 +19,9 @@
  * one. A theme with the shortcode in both a menu and the footer got one of
  * them wrong, and which one depended on render order.
  */
-class languagelinksTest extends \Codeception\Test\Unit
+class languagelinksTest extends \Test\Unit
 {
+
 	public function _before()
 	{
 		require_once(e_CORE.'shortcodes/single/languagelinks.php');

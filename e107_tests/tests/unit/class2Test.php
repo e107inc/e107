@@ -9,8 +9,9 @@
 	 */
 
 
-	class class2Test extends \Codeception\Test\Unit
+	class class2Test extends \Test\Unit
 	{
+
 		public $usr;
 		/*protected function _before()
 		{

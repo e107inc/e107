@@ -1,7 +1,7 @@
 <?php
 
 
-	class commentTest extends \Codeception\Test\Unit
+	class commentTest extends \Test\Unit
 	{
 
 		/** @var comment */

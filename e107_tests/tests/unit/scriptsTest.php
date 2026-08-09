@@ -1,7 +1,7 @@
 <?php
 
 
-	class scriptsTest extends \Codeception\Test\Unit
+	class scriptsTest extends \Test\Unit
 	{
 
 

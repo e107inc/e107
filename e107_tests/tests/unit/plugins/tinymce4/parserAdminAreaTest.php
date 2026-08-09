@@ -40,7 +40,7 @@
  * @see \TinyMceParserGateCest::theParseOutputIsUnchangedByTheAdminAreaFlag
  *      for the byte-exact control on what the removal must not change.
  */
-class parserAdminAreaTest extends \Codeception\Test\Unit
+class parserAdminAreaTest extends \Test\Unit
 {
 	const PARSER = 'tinymce4/plugins/e107/parser.php';
 

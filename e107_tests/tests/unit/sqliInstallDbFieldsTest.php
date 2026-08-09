@@ -22,7 +22,7 @@
  * e_install class body is extracted from source and eval'd under a renamed name,
  * mirroring installStage7HashTest.
  */
-class sqliInstallDbFieldsTest extends \Codeception\Test\Unit
+class sqliInstallDbFieldsTest extends \Test\Unit
 {
 	/** @var string */
 	private static $renamedClass = 'e_install_for_dbfields_test';

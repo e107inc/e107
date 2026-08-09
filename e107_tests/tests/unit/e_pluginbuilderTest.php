@@ -1,7 +1,7 @@
 <?php
 
 
-class e_pluginbuilderTest extends \Codeception\Test\Unit
+class e_pluginbuilderTest extends \Test\Unit
 {
 
 	/** @var e_pluginbuilder */

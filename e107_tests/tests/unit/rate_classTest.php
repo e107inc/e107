@@ -3,8 +3,9 @@
  * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
  */
 
-class rate_classTest extends \Codeception\Test\Unit
+class rate_classTest extends \Test\Unit
 {
+
 	/** @var rater */
 	protected $rater;
 

@@ -8,7 +8,7 @@
  */
 
 
-class e_search_fulltext_indexerTest extends \Codeception\Test\Unit
+class e_search_fulltext_indexerTest extends \Test\Unit
 {
 
 	/** @var e_search_fulltext_indexer */

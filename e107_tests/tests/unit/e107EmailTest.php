@@ -9,7 +9,7 @@
  */
 
 
-	class e107EmailTest extends \Codeception\Test\Unit
+	class e107EmailTest extends \Test\Unit
 	{
 
 		/** @var e107Email */

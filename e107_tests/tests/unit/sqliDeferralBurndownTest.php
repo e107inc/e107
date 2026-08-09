@@ -14,8 +14,9 @@
  *   - e_model::load() {ID} conduit (group 2)
  *   - e_front_tree_model::batchUpdate() value side (group 3)
  */
-class sqliDeferralBurndownTest extends \Codeception\Test\Unit
+class sqliDeferralBurndownTest extends \Test\Unit
 {
+
 	/** @var string prefixed scratch table for the batchUpdate test */
 	private $batchTable;
 

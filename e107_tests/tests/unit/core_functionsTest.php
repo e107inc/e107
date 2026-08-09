@@ -9,7 +9,7 @@
 	 */
 
 
-	class core_functionsTest extends \Codeception\Test\Unit
+	class core_functionsTest extends \Test\Unit
 	{
 		protected function _before()
 		{

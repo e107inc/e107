@@ -9,7 +9,7 @@
  */
 
 
-class e107Test extends \Codeception\Test\Unit
+class e107Test extends \Test\Unit
 {
 
 	protected $tempFiles = [];

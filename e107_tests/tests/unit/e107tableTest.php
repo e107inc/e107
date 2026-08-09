@@ -13,7 +13,7 @@
  * This is a BC test for e107table, now e_render
  * Class e107tableTest
  */
-class e107tableTest extends \Codeception\Test\Unit
+class e107tableTest extends \Test\Unit
 {
 
 	/** @var e107table */

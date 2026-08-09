@@ -10,7 +10,7 @@
 
 
 
-	class e_admin_controller_uiTest extends \Codeception\Test\Unit
+	class e_admin_controller_uiTest extends \Test\Unit
 	{
 
 		/** @var e_admin_ui */

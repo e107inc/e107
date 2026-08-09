@@ -17,7 +17,7 @@ namespace e107\Security\Jwe;
  * reached by anonymous visitors on the CAPTCHA image endpoint, so an
  * exception here is a 500 that anybody can trigger with a query string.
  */
-class CompactTest extends \Codeception\Test\Unit
+class CompactTest extends \Test\Unit
 {
 	/**
 	 * @var array

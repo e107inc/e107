@@ -1,7 +1,7 @@
 <?php
 
 
-	class e_navigationTest extends \Codeception\Test\Unit
+	class e_navigationTest extends \Test\Unit
 	{
 
 		protected function _before()

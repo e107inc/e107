@@ -29,7 +29,7 @@ use ReflectionClass;
 	 * instanceof and catch checks - the guarantees v2-era core and plugin
 	 * code rely on.
 	 */
-	class V2AliasTest extends \Codeception\Test\Unit
+	class V2AliasTest extends \Test\Unit
 	{
 		/**
 		 * Every v2 name registered by the e_db_interface.php compatibility

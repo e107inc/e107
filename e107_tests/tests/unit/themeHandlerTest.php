@@ -6,7 +6,7 @@
 	 */
 
 
-	class themeHandlerTest extends \Codeception\Test\Unit
+	class themeHandlerTest extends \Test\Unit
 	{
 
 		/** @var themeHandler */

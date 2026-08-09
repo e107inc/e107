@@ -9,7 +9,7 @@
  */
 
 
-class db_verifyTest extends \Codeception\Test\Unit
+class db_verifyTest extends \Test\Unit
 {
 
 	/** @var db_verify */

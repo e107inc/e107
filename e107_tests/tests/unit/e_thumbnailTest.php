@@ -9,7 +9,7 @@
 	 */
 
 
-	class e_thumbnailTest extends \Codeception\Test\Unit
+	class e_thumbnailTest extends \Test\Unit
 	{
 
 		/** @var e_thumbnail */

@@ -18,7 +18,7 @@ namespace e107\Security\Jwe;
  * A.3 is A128CBC-HS256 throughout, as its own title, section A.3.6 and the
  * arithmetic here all agree.
  */
-class AesCbcHmacSha2Test extends \Codeception\Test\Unit
+class AesCbcHmacSha2Test extends \Test\Unit
 {
 	/**
 	 * @var array

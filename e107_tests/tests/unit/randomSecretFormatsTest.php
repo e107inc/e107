@@ -16,7 +16,7 @@
  * back through preg_replace("#[\W_]#", "", ...) before the comparison, so a
  * widened alphabet would silently break redemption rather than fail loudly.
  */
-class randomSecretFormatsTest extends \Codeception\Test\Unit
+class randomSecretFormatsTest extends \Test\Unit
 {
 	/** @var UserHandler */
 	private $usr;

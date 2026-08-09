@@ -9,7 +9,7 @@
 	 */
 
 
-	class UserHandlerTest extends \Codeception\Test\Unit
+	class UserHandlerTest extends \Test\Unit
 	{
 
 		/** @var UserHandler */

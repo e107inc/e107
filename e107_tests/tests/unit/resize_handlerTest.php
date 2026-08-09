@@ -21,8 +21,9 @@
  * destinations and checking that no command substitution leaked into
  * the filesystem.
  */
-class resize_handlerTest extends \Codeception\Test\Unit
+class resize_handlerTest extends \Test\Unit
 {
+
 	/** @var string */
 	private $workDir;
 

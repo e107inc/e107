@@ -9,7 +9,7 @@
 	 */
 
 
-	class e_searchTest extends \Codeception\Test\Unit
+	class e_searchTest extends \Test\Unit
 	{
 		/** @var array */
 		private $installedBefore;

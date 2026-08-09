@@ -8,9 +8,7 @@
 	 *
 	 */
 
-	use PHPUnit\Framework\TestCase;
-
-	class e107PathsTest extends TestCase
+	class e107PathsTest extends \Test\Unit
 	{
 		public function testPathToClass2()
 		{

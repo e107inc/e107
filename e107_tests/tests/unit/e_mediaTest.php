@@ -9,7 +9,7 @@
 	 */
 
 
-	class e_mediaTest extends \Codeception\Test\Unit
+	class e_mediaTest extends \Test\Unit
 	{
 
 		/** @var e_media  */

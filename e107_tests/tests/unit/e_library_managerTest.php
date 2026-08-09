@@ -1,7 +1,7 @@
 <?php
 
 
-	class e_library_managerTest extends \Codeception\Test\Unit
+	class e_library_managerTest extends \Test\Unit
 	{
 
 		/**

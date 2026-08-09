@@ -9,7 +9,7 @@
 	 */
 
 
-	class e_signup_classTest extends \Codeception\Test\Unit
+	class e_signup_classTest extends \Test\Unit
 	{
 
 		/** @var e_signup */

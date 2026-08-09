@@ -9,7 +9,7 @@
  */
 
 
-class eIPHandlerTest extends \Codeception\Test\Unit
+class eIPHandlerTest extends \Test\Unit
 {
 
 	/** @var eIPHandler */

@@ -17,7 +17,7 @@ namespace e107\Security;
  * text programmatically and recomputed from the algorithm definition before
  * being trusted. If one of these fails, the implementation is wrong.
  */
-class HkdfTest extends \Codeception\Test\Unit
+class HkdfTest extends \Test\Unit
 {
 	/**
 	 * @var array

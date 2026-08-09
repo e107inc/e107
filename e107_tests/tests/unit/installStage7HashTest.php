@@ -29,8 +29,9 @@
  */
 
 
-class installStage7HashTest extends \Codeception\Test\Unit
+class installStage7HashTest extends \Test\Unit
 {
+
 	/** @var string */
 	private static $renamedClass = 'e_install_for_5631_test';
 

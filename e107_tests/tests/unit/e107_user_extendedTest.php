@@ -9,7 +9,7 @@
 	 */
 
 
-	class e107_user_extendedTest extends \Codeception\Test\Unit
+	class e107_user_extendedTest extends \Test\Unit
 	{
 
 		private $structTypes;

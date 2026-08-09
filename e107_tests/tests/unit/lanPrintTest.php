@@ -14,7 +14,7 @@
  */
 
 
-class lanPrintTest extends \Codeception\Test\Unit
+class lanPrintTest extends \Test\Unit
 {
 
 	public function testLanPrintDoesNotCarryPAGE_NAME()

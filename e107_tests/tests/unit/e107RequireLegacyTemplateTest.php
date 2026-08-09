@@ -10,8 +10,9 @@
  * and the underlying e107::_extractLanConstantsFromSource() tokeniser
  * — added for issue #5653 (Undefined constant LAN_112 in fpw_template.php).
  */
-class e107RequireLegacyTemplateTest extends \Codeception\Test\Unit
+class e107RequireLegacyTemplateTest extends \Test\Unit
 {
+
 	/** @var string[] */
 	protected $tempFiles = array();
 

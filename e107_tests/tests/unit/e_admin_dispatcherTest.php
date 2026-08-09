@@ -8,7 +8,7 @@
  */
 
 
-class e_admin_dispatcherTest extends \Codeception\Test\Unit
+class e_admin_dispatcherTest extends \Test\Unit
 {
 
 	protected $dp;

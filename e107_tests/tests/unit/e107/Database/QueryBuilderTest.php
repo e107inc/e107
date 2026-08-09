@@ -24,7 +24,7 @@ use ReflectionMethod;
 	 * anything. Round-trip tests against the real backends live in
 	 * e_db_abstractTest.
 	 */
-	class QueryBuilderTest extends \Codeception\Test\Unit
+	class QueryBuilderTest extends \Test\Unit
 	{
 
 		protected function _before()

@@ -25,8 +25,9 @@
  * subprocess that defines MYSQL_LIGHT or E107_INSTALL and then includes
  * the handler against an array-format config.
  */
-class mysqlClassConfigFormatTest extends \Codeception\Test\Unit
+class mysqlClassConfigFormatTest extends \Test\Unit
 {
+
 	/** @var string */
 	private $tmpDir;
 

@@ -1,7 +1,7 @@
 <?php
 
 
-class notifyTest extends \Codeception\Test\Unit
+class notifyTest extends \Test\Unit
 {
 
 	/** @var notify */

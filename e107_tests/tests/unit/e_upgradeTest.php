@@ -14,8 +14,9 @@
  * reads the cache. Every other path, which is the one that actually finds a
  * new release, reached the announcement with nothing to announce it through.
  */
-class e_upgradeTest extends \Codeception\Test\Unit
+class e_upgradeTest extends \Test\Unit
 {
+
 	/** @var mixed */
 	private $savedXml;
 

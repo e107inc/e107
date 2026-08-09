@@ -25,7 +25,7 @@
 	 *   getAdminPerms()    -> ADMINPERMS    (emulated)
 	 *   getClassList(true) -> USERCLASS_LIST (emulated)
 	 */
-	class e_userEmulationTest extends \Codeception\Test\Unit
+	class e_userEmulationTest extends \Test\Unit
 	{
 
 		/** @var array fixture user ids keyed by role */

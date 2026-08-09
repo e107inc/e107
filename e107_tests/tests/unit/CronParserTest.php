@@ -1,7 +1,7 @@
 <?php
 
 
-class CronParserTest extends \Codeception\Test\Unit
+class CronParserTest extends \Test\Unit
 {
 
 	/** @var CronParser */

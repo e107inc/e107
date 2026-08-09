@@ -1,7 +1,7 @@
 <?php
 
 
-class ecacheTest extends \Codeception\Test\Unit
+class ecacheTest extends \Test\Unit
 {
 
 	/** @var ecache */

@@ -10,7 +10,7 @@
 
 namespace e107\Shims;
 
-class eShimsTest extends \Codeception\Test\Unit
+class eShimsTest extends \Test\Unit
 {
 	public function testReadfile()
 	{

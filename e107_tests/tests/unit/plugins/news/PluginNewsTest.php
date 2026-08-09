@@ -1,7 +1,7 @@
 <?php
 
 
-class PluginNewsTest extends \Codeception\Test\Unit
+class PluginNewsTest extends \Test\Unit
 {
 
 	/**

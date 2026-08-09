@@ -22,8 +22,9 @@
  * in the project root.
  */
 
-class eJslibCachePathTest extends \Codeception\Test\Unit
+class eJslibCachePathTest extends \Test\Unit
 {
+
 	/** @var string */
 	private $scratchRoot;
 

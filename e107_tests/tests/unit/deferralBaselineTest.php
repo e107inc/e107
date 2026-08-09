@@ -17,8 +17,9 @@
 	 * while tolerating the reviewed, documented residue. Pure logic - it needs
 	 * only the CallSite value object and DeferralBaseline, not the AST parser.
 	 */
-	class deferralBaselineTest extends \Codeception\Test\Unit
+	class deferralBaselineTest extends \Test\Unit
 	{
+
 		protected function _before()
 		{
 			require_once(e_BASE.'e107_tests/_tools/src/CallSite.php');
