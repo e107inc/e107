@@ -1386,6 +1386,7 @@ class e107Test extends \Test\Unit
 			}
 */
 	/**
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 * @return void
 	 */
@@ -1413,6 +1414,7 @@ class e107Test extends \Test\Unit
 
 
 	/**
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 */
 	public function testCoreLanArray()
@@ -1460,6 +1462,7 @@ class e107Test extends \Test\Unit
 
 
 	/**
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 * @return void
 	 */
@@ -1525,10 +1528,12 @@ class e107Test extends \Test\Unit
 
 
 	/**
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 * @return void
 	 */
 	/**
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 * @return void
 	 */
@@ -1596,6 +1601,7 @@ class e107Test extends \Test\Unit
 
 
 	/**
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 * @return void
 	 */
@@ -2476,6 +2482,7 @@ class e107Test extends \Test\Unit
 	/**
 	 * Test old-style language file with define()
 	 *
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 */
 	public function testIncludeLanOldStyle()
@@ -2501,6 +2508,7 @@ class e107Test extends \Test\Unit
 	/**
 	 * Test missing file
 	 *
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 */
 	public function testIncludeLanMissingFile()
@@ -2539,6 +2547,7 @@ class e107Test extends \Test\Unit
 	/**
 	 * Test non-English new-style file with English fallback (plugin-style path)
 	 *
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 */
 	public function testIncludeLanNonEnglishWithFallback()
@@ -2580,6 +2589,7 @@ class e107Test extends \Test\Unit
 	/**
 	 * Test non-English new-style file with English fallback (custom path)
 	 *
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 */
 	public function testIncludeLanCustomPathWithFallback()
@@ -2621,6 +2631,7 @@ class e107Test extends \Test\Unit
 	/**
 	 * Test includeLanArray directly with reflection
 	 *
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 */
 	public function testIncludeLanArrayDirectly()
@@ -2716,6 +2727,7 @@ class e107Test extends \Test\Unit
 	 * English-only constants undefined and emitting as their literal token
 	 * names. Keying the cache on the resolved English path fixes it.
 	 *
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 */
 	public function testIncludeLanFallbackBasenameCollision()
@@ -2760,6 +2772,7 @@ class e107Test extends \Test\Unit
 	 * The derivation must only rewrite the language directory and the language
 	 * file token, leaving the rest of the path untouched.
 	 *
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 */
 	public function testIncludeLanFallbackDocrootContainsLanguageName()

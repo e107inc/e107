@@ -16,6 +16,10 @@
 	 * mechanism that lets the CI gate fail only on NET-NEW unsafe-concat sites
 	 * while tolerating the reviewed, documented residue. Pure logic - it needs
 	 * only the CallSite value object and DeferralBaseline, not the AST parser.
+	 *
+	 * _before() loads e107_tests/_tools/src (PHP 8.1-only), so never a legacy cell.
+	 *
+	 * @group requires-modern-php
 	 */
 	class deferralBaselineTest extends \Test\Unit
 	{

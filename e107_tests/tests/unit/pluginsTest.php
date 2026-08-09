@@ -212,6 +212,7 @@
 		}
 
 		/**
+		 * @group runs-in-separate-process
 		 * @runInSeparateProcess
 		 * @return void
 		 */
@@ -717,6 +718,7 @@
 
 
 		/**
+		 * @group runs-in-separate-process
 		 * @runInSeparateProcess
 		 * @return void
 		 */
