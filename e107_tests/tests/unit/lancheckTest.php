@@ -13,6 +13,9 @@
 		/** @var lancheck */
 		protected $lan;
 
+		/** @var string Scratch language file for the write_lanfile() tests. */
+		protected $target;
+
 		protected function _before()
 		{
 			require_once(e_ADMIN."lancheck.php");
@@ -25,6 +28,91 @@
 			{
 				$this->fail("Couldn't load lancheck object");
 			}
+
+			// write_lanfile() ends in `global $ns; $ns->tablerender(...)`, and the
+			// unit bootstrap loads class2.php inside a method, so $ns never reaches
+			// the global scope.
+			global $ns;
+			$ns = e107::getRender();
+
+			$this->target = sys_get_temp_dir().'/e107-lancheck-'.uniqid('', true).'.php';
+		}
+
+		protected function _after()
+		{
+			if($this->target && is_file($this->target))
+			{
+				unlink($this->target);
+			}
+
+			unset($_SESSION['lancheck-edit-file'], $_POST['newlang'], $_POST['newdef']);
+			e107::getMessage()->reset();
+		}
+
+		/**
+		 * Drive write_lanfile() over the scratch file and hand back what it wrote.
+		 *
+		 * @param array $newdef  values for the hidden newdef[] field (constant names)
+		 * @param array $newlang values for the newlang[] textareas (translations)
+		 * @param bool  $fresh   start from an empty file rather than reusing the last one
+		 * @return string the generated language file
+		 */
+		protected function writeLanFile($newdef, $newlang, $fresh = true)
+		{
+			if($fresh)
+			{
+				file_put_contents($this->target, "<?php\n");
+			}
+
+			$_SESSION['lancheck-edit-file'] = $this->target;
+			$_POST['newdef']                = $newdef;
+			$_POST['newlang']               = $newlang;
+
+			ob_start();
+			$this->lan->write_lanfile('English');
+			ob_end_clean();
+
+			return file_get_contents($this->target);
+		}
+
+		/**
+		 * Include the generated file in a clean subprocess and report what it did.
+		 *
+		 * A syntax check alone proves nothing here: an injected payload is valid
+		 * PHP. This runs the file and reports the constant's value plus anything
+		 * the file echoed on its own account.
+		 *
+		 * @param string $constant the constant the file is expected to define
+		 * @return array {stdout: string, exit: int}
+		 */
+		protected function includeGenerated($constant)
+		{
+			$disabled = array_map('trim', explode(',', (string) ini_get('disable_functions')));
+
+			if(in_array('exec', $disabled, true))
+			{
+				$this->markTestSkipped('exec() is disabled here, so the generated file cannot be executed.');
+			}
+
+			$php = 'error_reporting(0);'
+				.'include '.var_export($this->target, true).';'
+				.'echo "[VALUE]".(defined('.var_export($constant, true).') ? constant('.var_export($constant, true).') : "[UNDEFINED]");';
+
+			$output = array();
+			$status = 0;
+			exec('php -r '.escapeshellarg($php).' 2>&1', $output, $status);
+
+			return array('stdout' => implode("\n", $output), 'exit' => $status);
+		}
+
+		/** @return int 0 when the generated file is syntactically valid PHP */
+		protected function lintGenerated()
+		{
+			$output = array();
+			$status = 0;
+			exec('php -l '.escapeshellarg($this->target).' 2>&1', $output, $status);
+
+			return $status;
 		}
 
 
@@ -114,12 +202,179 @@
 
 		}
 
-/*
-		public function testWrite_lanfile()
+		/**
+		 * GHSA-pf37-7c5m-mpg3: the translation lands inside a double-quoted PHP
+		 * string literal, so a value carrying a quote used to close define() early
+		 * and run whatever followed, for every visitor to a page loading the file.
+		 */
+		public function testWrite_lanfileEscapesTheTranslation()
 		{
+			$payload = 'x"); echo "INJECTED_VALUE"; //';
 
+			$this->writeLanFile(array('LAN_X'), array($payload));
+
+			$this->assertSame(0, $this->lintGenerated(), 'Generated language file is not valid PHP.');
+
+			$result = $this->includeGenerated('LAN_X');
+
+			$this->assertSame('[VALUE]'.$payload, $result['stdout'],
+				'The translation must survive verbatim as data and nothing else may run.');
 		}
 
+		/**
+		 * The constant name arrives in the hidden newdef[] field, which is just as
+		 * client-controlled as the textarea, and it is written into define("...")
+		 * as well as into the if(!defined("...")) guard.
+		 */
+		public function testWrite_lanfileRejectsAnInjectedConstantName()
+		{
+			$payload = 'LAN_X", "x"); echo "INJECTED_NAME"; //';
+
+			$this->writeLanFile(array($payload), array('harmless'));
+
+			$this->assertSame(0, $this->lintGenerated(), 'Generated language file is not valid PHP.');
+
+			$result = $this->includeGenerated('LAN_X');
+
+			$this->assertStringNotContainsString('INJECTED_NAME', $result['stdout'],
+				'A constant name that is not an identifier must never reach the generated file.');
+		}
+
+		/** The same name is also interpolated into the ndef++ "if (!defined(...))" guard. */
+		public function testWrite_lanfileRejectsAnInjectedNdefGuard()
+		{
+			$payload = 'ndef++LAN_X")) { echo "INJECTED_NDEF"; } if (true) { //';
+
+			$this->writeLanFile(array($payload), array('harmless'));
+
+			$this->assertSame(0, $this->lintGenerated(), 'Generated language file is not valid PHP.');
+
+			$result = $this->includeGenerated('LAN_X');
+
+			$this->assertStringNotContainsString('INJECTED_NDEF', $result['stdout'],
+				'The ndef++ guard must not be a second injection point for the constant name.');
+		}
+
+		/**
+		 * The LC_ALL branch interpolates the value with no quotes at all, so this
+		 * one never even needed a quote to break out of.
+		 */
+		public function testWrite_lanfileQuotesTheSetlocaleValue()
+		{
+			$payload = "'en_GB.UTF-8'); echo \"INJECTED_LOCALE\"; //";
+
+			$this->writeLanFile(array('LC_ALL'), array($payload));
+
+			$this->assertSame(0, $this->lintGenerated(), 'Generated language file is not valid PHP.');
+
+			$result = $this->includeGenerated('LAN_UNUSED');
+
+			$this->assertStringNotContainsString('INJECTED_LOCALE', $result['stdout'],
+				'The setlocale() arguments must be written as quoted literals, not as source.');
+		}
+
+		/**
+		 * The reader hands the whole argument list back as one blob, so every
+		 * locale in it has to survive the round trip and the file has to stay
+		 * loadable.
+		 */
+		public function testWrite_lanfileKeepsEverySetlocaleArgument()
+		{
+			$written = $this->writeLanFile(array('LC_ALL'),
+				array("'en_GB.UTF-8', 'en_GB.utf8', 'eng_eng.utf8', 'en'"));
+
+			$this->assertSame(0, $this->lintGenerated(), 'Generated language file is not valid PHP.');
+
+			$result = $this->includeGenerated('LAN_UNUSED');
+			$this->assertSame(0, $result['exit'], 'Including the generated file must not fatal.');
+
+			foreach(array('en_GB.UTF-8', 'en_GB.utf8', 'eng_eng.utf8', 'en') as $locale)
+			{
+				$this->assertStringContainsString('"'.$locale.'"', $written,
+					'Locale dropped from the rewritten setlocale() call: '.$locale);
+			}
+		}
+
+		/**
+		 * Whatever the escaping does, an ordinary translation has to come back out
+		 * of lancheck's own reader unchanged, or saving twice corrupts the file.
+		 *
+		 * On this branch fill_phrases_array() returns the body of the literal
+		 * rather than its value, so the property to hold is that feeding that body
+		 * straight back in leaves the phrase itself untouched.
+		 */
+		public function testWrite_lanfileRoundTripsThroughItsOwnReader()
+		{
+			// The field holds the body of the literal on this branch, not the phrase,
+			// so an escape sequence typed into it means what it means in PHP source.
+			// Each case is (what the editor shows, what the phrase must come out as).
+			$values = array(
+				'plain'         => array('Hello world', 'Hello world'),
+				'apostrophe'    => array("It's fine", "It's fine"),
+				'escaped quote' => array('say \"hi\"', 'say "hi"'),
+				'escaped slash' => array('C:\\\\path', 'C:\\path'),
+				'dollar'        => array('Cost $5', 'Cost $5'),
+				'utf8'          => array('Főadminisztrátor', 'Főadminisztrátor'),
+			);
+
+			foreach($values as $label => $pair)
+			{
+				list($typed, $value) = $pair;
+
+				$first = $this->writeLanFile(array('LAN_X'), array($typed));
+
+				$this->assertSame(0, $this->lintGenerated(), 'Invalid PHP for case: '.$label);
+
+				$result = $this->includeGenerated('LAN_X');
+				$this->assertSame('[VALUE]'.$value, $result['stdout'],
+					'Runtime value drifted for case: '.$label);
+
+				$back = $this->lan->fill_phrases_array($first, 'tran');
+				$this->assertArrayHasKey('LAN_X', $back['tran'], 'Phrase went missing for case: '.$label);
+
+				// Save again with exactly what the editor would have shown. Escapes
+				// that were re-escaped rather than carried across would multiply here.
+				$this->writeLanFile(array('LAN_X'), array($back['tran']['LAN_X']), false);
+
+				$again = $this->includeGenerated('LAN_X');
+				$this->assertSame('[VALUE]'.$value, $again['stdout'],
+					'Saving an untouched phrase a second time changed it for case: '.$label);
+			}
+		}
+
+		/** A NUL cannot be written into the literal, so it is dropped rather than left to truncate the phrase. */
+		public function testWrite_lanfileDropsNullBytesFromTheTranslation()
+		{
+			$this->writeLanFile(array('LAN_X'), array('a'.chr(0).'b'));
+
+			$this->assertSame(0, $this->lintGenerated(), 'Generated language file is not valid PHP.');
+
+			$result = $this->includeGenerated('LAN_X');
+
+			$this->assertSame('[VALUE]ab', $result['stdout'], 'The NUL must be stripped, not kept or truncated at.');
+		}
+
+		/**
+		 * The confirmation screen echoes back what was written; the translation was
+		 * interpolated into that HTML raw.
+		 */
+		public function testWrite_lanfileEscapesTheConfirmationHtml()
+		{
+			file_put_contents($this->target, "<?php\n");
+
+			$_SESSION['lancheck-edit-file'] = $this->target;
+			$_POST['newdef']                = array('LAN_X');
+			$_POST['newlang']               = array('<script>alert(1)</script>');
+
+			ob_start();
+			$this->lan->write_lanfile('English');
+			$rendered = ob_get_clean();
+
+			$this->assertStringNotContainsString('<script>', $rendered,
+				'The saved translation must be escaped before it is echoed back.');
+		}
+
+/*
 		public function testCountFiles()
 		{
 
