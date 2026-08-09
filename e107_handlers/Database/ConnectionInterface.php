@@ -433,7 +433,7 @@ use PDOStatement;
 		 *
 		 * <code>
 		 * e107::getDb()->schema()->addColumn('user_extended', 'user_twitter',
-		 *     Column::define('VARCHAR', 255)->notNull()->default(''));
+		 *     Column::define('VARCHAR', 255)->notNull()->defaultValue(''));
 		 * </code>
 		 *
 		 * @return SchemaBuilder

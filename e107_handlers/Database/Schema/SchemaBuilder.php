@@ -43,7 +43,7 @@ require_once(__DIR__.'/Table.php');
  * <code>
  * $schema = e107::getDb()->schema();
  * $schema->addColumn('user_extended', 'user_twitter',
- *     Column::define('VARCHAR', 255)->notNull()->default(''));
+ *     Column::define('VARCHAR', 255)->notNull()->defaultValue(''));
  * $schema->dropColumn('user_extended', 'user_twitter');
  * </code>
  *
@@ -51,8 +51,8 @@ require_once(__DIR__.'/Table.php');
  * {@see SchemaBuilder::table()}:
  * <code>
  * $schema->table('comments')
- *     ->addColumn('comment_author_id', Column::define('INT', 10)->unsigned()->notNull()->default('0'), 'comment_author')
- *     ->addColumn('comment_author_name', Column::define('VARCHAR', 100)->notNull()->default(''), 'comment_author_id')
+ *     ->addColumn('comment_author_id', Column::define('INT', 10)->unsigned()->notNull()->defaultValue('0'), 'comment_author')
+ *     ->addColumn('comment_author_name', Column::define('VARCHAR', 100)->notNull()->defaultValue(''), 'comment_author_id')
  *     ->execute();
  * </code>
  *
