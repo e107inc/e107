@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+#
+# rector-downgrade: run the PHP 8.x -> 5.6 source downgrade to convergence.
+#
+# Rector rewrites one file per pass, resolving each file against the other
+# files' *current* signatures. Removing a type declaration from a method is
+# only valid once the same declaration is gone from the parent it overrides
+# (PHP 7.x rejects an incompatible child declaration otherwise), so a
+# downgrade that spans an inheritance chain -- e.g. a vendored interface and
+# the class implementing it -- needs one pass per level before it settles. We
+# therefore run `rector process` repeatedly until a pass changes nothing,
+# which is the downgrade's fixed point.
+#
+# A run that has not settled within RECTOR_MAX_PASSES passes is treated as a
+# failure: that is almost always a non-idempotent rule re-rewriting its own
+# output. Raise the cap deliberately (and investigate first) only if a
+# genuinely deeper inheritance chain ever needs it.
+#
+# Usage:
+#   bin/rector-downgrade
+#
+# Env:
+#   RECTOR_MAX_PASSES    convergence cap (default 5)
+#   RECTOR_MEMORY_LIMIT  php memory_limit for each pass (default 2G)
+#
+set -euo pipefail
+
+RECTOR_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)" # bin -> rector
+MAX_PASSES="${RECTOR_MAX_PASSES:-5}"
+MEMORY_LIMIT="${RECTOR_MEMORY_LIMIT:-2G}"
+
+cd "$RECTOR_DIR"
+
+# Reflection reads the whole worktree, not just the paths Rector rewrites.
+# A host-side e107_tests/vendor (the README's IDE-autocomplete install)
+# carries modern, fully typed copies of interfaces this downgrade also
+# ships under e107_handlers/vendor (PSR-7 among them); when it is present,
+# the type-declaration rules see the typed copy, judge the strip an LSP
+# violation, and silently leave 7.x syntax behind. CI checkouts never have
+# the directory; locally, refuse rather than converge on a weaker tree.
+if [ -e "$RECTOR_DIR/../../vendor" ]; then
+    echo "rector-downgrade: e107_tests/vendor exists (host-side dev install)." >&2
+    echo "It shadows shipped vendor classes during reflection and weakens the" >&2
+    echo "downgrade. Move it aside for the run, e.g.:" >&2
+    echo "  mv e107_tests/vendor /tmp/e107_tests-vendor" >&2
+    exit 1
+fi
+
+pass=1
+while [ "$pass" -le "$MAX_PASSES" ]; do
+    printf '== rector-downgrade: pass %d/%d ==\n' "$pass" "$MAX_PASSES"
+
+    # Rector's changed-files cache marks a file clean once seen, keyed on its
+    # own content. A file whose downgrade was DECLINED in pass N (its parent
+    # still carried the type declaration at pass start) does not change, so
+    # the cache would skip it in pass N+1 even though the parent's strip has
+    # unblocked it, and the run would declare convergence with work left.
+    # Re-evaluate everything, every pass.
+    rm -rf .rector-cache
+
+    set +e
+    out="$(php -d error_reporting='E_ALL&~E_DEPRECATED' -d memory_limit="$MEMORY_LIMIT" \
+        ./vendor/bin/rector process --no-progress-bar 2>&1)"
+    status=$?
+    set -e
+    printf '%s\n' "$out" | tail -n 4
+
+    if [ "$status" -ne 0 ] || printf '%s' "$out" | grep -q '\[ERROR\]'; then
+        echo "rector-downgrade: Rector reported an error on pass ${pass}." >&2
+        exit 1
+    fi
+
+    # "[OK] Rector is done!" => the pass changed nothing => fixed point reached.
+    if printf '%s' "$out" | grep -q 'Rector is done!'; then
+        printf 'rector-downgrade: converged after %d pass(es).\n' "$pass"
+        exit 0
+    fi
+
+    pass=$((pass + 1))
+done
+
+echo "rector-downgrade: did not converge within ${MAX_PASSES} passes." >&2
+echo "This usually means a non-idempotent rule is re-rewriting its own output." >&2
+echo "Raise RECTOR_MAX_PASSES only if a deeper inheritance chain genuinely needs it." >&2
+exit 1

@@ -1,0 +1,59 @@
+name: Rector Idempotency
+
+on:
+  push:
+  pull_request:
+
+# Gates merges on the PHP 5.6 downgrade being at its fixed point: running the
+# downgrade against the already-downgraded shipping source has to produce no
+# changes at all. A diff means a contributor committed source the downgrade
+# still wants to rewrite, so the next release build would ship something other
+# than what was reviewed here.
+#
+# bin/rector-downgrade does not run Rector once. It runs it until a pass changes
+# nothing, because removing a type declaration from a method is only valid once
+# the same declaration is gone from the parent it overrides, so a downgrade
+# spanning an inheritance chain needs one pass per level to settle. That makes
+# this job fail two ways, both of them the same bug class: the tree is not
+# downgraded, or a rule is not idempotent and keeps rewriting its own output
+# until the runner gives up on convergence.
+
+jobs:
+  rector-idempotency:
+    name: Downgrade is at its fixed point
+    runs-on: ubuntu-latest
+    container:
+      # Matches the platform pin in e107_tests/_tools/rector/composer.json, so
+      # the runner resolves the same dependency versions a contributor does.
+      image: php:8.2
+
+    steps:
+      - name: Install operating system dependencies
+        run: apt-get update && apt-get install -y git unzip
+
+      - uses: actions/checkout@v6
+
+      - name: Opt out of CVE-2022-24765 mitigation
+        run: git config --global safe.directory '*'
+
+      - name: Install Composer
+        run: curl -sSL https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer
+
+      - name: Install Rector tooling dependencies
+        run: composer install --no-progress
+        working-directory: ./e107_tests/_tools/rector/
+
+      - name: Run the downgrade to convergence
+        run: ./bin/rector-downgrade
+        working-directory: ./e107_tests/_tools/rector/
+
+      - name: Verify the downgrade made no changes
+        run: |
+          if ! git diff --exit-code; then
+            echo ""
+            echo "ERROR: the downgrade above rewrote the diff printed here, so the"
+            echo "committed tree is not PHP 5.6 source yet. Run"
+            echo "  e107_tests/_tools/rector/bin/rector-downgrade"
+            echo "locally and commit the result."
+            exit 1
+          fi

@@ -1,0 +1,31 @@
+name: PHP Version Floor Lint
+
+on:
+  push:
+  pull_request:
+
+# Asks the oldest PHP e107 supports to parse every file the release archive
+# will contain, which is the tracked tree minus the tooling paths listed in
+# e107_tests/_tools/rector/modern-paths.txt.
+#
+# This is not a slower copy of the Rector idempotency gate. That gate proves
+# the downgrade has nothing left to do; this one proves the result of the
+# downgrade actually parses on the floor. A rule that never fires -- because
+# no rule covers a construct, or because a file is outside the paths Rector
+# is pointed at -- leaves the idempotency gate perfectly green and still ships
+# a white screen. Only a 5.6 parser can tell the difference.
+#
+# Reproduce locally with the same script the job runs:
+#
+#   e107_tests/_tools/rector/bin/php-floor-lint
+
+jobs:
+  php-floor-lint:
+    name: Shipping tree parses on the floor PHP
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Parse the shipping tree on the floor PHP
+        run: ./e107_tests/_tools/rector/bin/php-floor-lint
