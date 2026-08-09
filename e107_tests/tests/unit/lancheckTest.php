@@ -46,6 +46,7 @@
 			}
 
 			unset($_SESSION['lancheck-edit-file'], $_POST['newlang'], $_POST['newdef']);
+			unset($_GET['sub'], $_GET['lan'], $_GET['file'], $_GET['type']);
 			e107::getMessage()->reset();
 		}
 
@@ -286,6 +287,58 @@
 			}
 
 
+		}
+
+		/**
+		 * The file to edit comes off the query string and is never checked, while
+		 * toDB() leaves ../ completely intact (it encodes for HTML, not for the
+		 * filesystem). The path decides where a directory gets created, where a
+		 * stub .php file is written, and where the save lands.
+		 */
+		public function testInitRefusesATraversingFile()
+		{
+			$traversals = array(
+				'../../../../tmp/e107-escape.php',
+				'..\\..\\tmp\\e107-escape.php',
+				'/etc/e107-escape.php',
+				'admin/../../../../tmp/e107-escape.php',
+				'lan_online.php'."\0".'.txt',
+			);
+
+			foreach($traversals as $file)
+			{
+				$_GET['sub']  = 'edit';
+				$_GET['lan']  = 'English';
+				$_GET['file'] = $file;
+
+				$this->assertFalse($this->lan->init(),
+					'The editor opened a file outside the language roots: '.$file);
+				$this->assertArrayNotHasKey('lancheck-edit-file', $_SESSION,
+					'A traversing path was handed to the save step: '.$file);
+			}
+		}
+
+		/** The guard must not be so tight that the feature stops working. */
+		public function testInitStillOpensAnOrdinaryLanguageFile()
+		{
+			// The edit screen's caption is built from language.php's own language
+			// file and from SEP, which the admin theme defines. Neither is present
+			// in a unit run, and neither has anything to do with the guard.
+			e107::coreLan('language', true);
+
+			if(!defined('SEP'))
+			{
+				define('SEP', ' &raquo; ');
+			}
+
+			$_GET['sub']  = 'edit';
+			$_GET['lan']  = 'English';
+			$_GET['file'] = 'lan_online.php';
+
+			$result = $this->lan->init();
+
+			$this->assertIsArray($result, 'An ordinary language file should still open.');
+			$this->assertSame('edit', $result['mode']);
 		}
 
 		/**
