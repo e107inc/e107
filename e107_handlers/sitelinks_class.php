@@ -873,11 +873,17 @@ class e_navigation
 	function adminCats()
 	{
 		$tp = e107::getParser();
-		
+
 		if(count($this->admin_cat))
 		{
 			 return $this->admin_cat;
 		}
+
+		// Every title below is an ADLAN_CL_* constant. Deep-linked admin
+		// includes reach here without auth.php's language load having run,
+		// and an undefined constant is a notice-and-wrong-label on PHP 5,
+		// an uncaught Error on PHP 8. Load the file this method depends on.
+		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
 		
 		$pref = e107::getPref();
 		
