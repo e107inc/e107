@@ -856,6 +856,56 @@ class lancheck
 
 
 
+	/**
+	 * Is this a name that may be written into generated PHP as a constant?
+	 *
+	 * Matches what fill_phrases_array() is willing to read back, so a name that
+	 * passes here survives a save/reload cycle.
+	 *
+	 * @param string $name candidate constant name from the newdef[] field
+	 * @return bool
+	 */
+	private function isConstantName($name)
+	{
+		return is_string($name) && preg_match('/^\w+$/', $name) === 1;
+	}
+
+	/**
+	 * Turn the setlocale() field into a list of quoted PHP string literals.
+	 *
+	 * The field reaches us either as a bare locale name or as the argument list
+	 * lifted out of the file, so accept both and re-quote every name found.
+	 * Anything that is not shaped like a locale is dropped rather than written.
+	 *
+	 * @param string $raw contents of the LC_ALL textarea
+	 * @return array PHP literals, ready to join with commas
+	 */
+	private function localeArguments($raw)
+	{
+		if(preg_match_all('/[\'"]([^\'"]*)[\'"]/', $raw, $quoted))
+		{
+			$candidates = $quoted[1];
+		}
+		else
+		{
+			$candidates = explode(',', $raw);
+		}
+
+		$args = array();
+
+		foreach($candidates as $candidate)
+		{
+			$candidate = trim($candidate);
+
+			if($candidate !== '' && preg_match('/^[A-Za-z0-9_.@+-]+$/', $candidate))
+			{
+				$args[] = var_export($candidate, true);
+			}
+		}
+
+		return $args;
+	}
+
 	function write_lanfile($lan='')
 	{
 		if(!$lan){ 	return; }
@@ -929,34 +979,47 @@ class lancheck
 			$notdef_end = "\n";
 			$deflang = (MAGIC_QUOTES_GPC === TRUE) ? stripslashes($_POST['newlang'][$i]) : $_POST['newlang'][$i];
 			$func = "define";
-			$quote = chr(34);
-	
-			if (strpos($_POST['newdef'][$i],"ndef++") !== FALSE )
+
+			$rawdef = isset($_POST['newdef'][$i]) ? $_POST['newdef'][$i] : '';
+			$guarded = (strpos($rawdef,"ndef++") !== FALSE);
+			$defvar = $guarded ? str_replace("ndef++","",$rawdef) : $rawdef;
+
+			if(!is_string($deflang) || !$this->isConstantName($defvar))
 			{
-				$defvar = str_replace("ndef++","",$_POST['newdef'][$i]);
-				$notdef_start = "if (!defined(".chr(34).$defvar.chr(34).")) {";
-				$notdef_end = "}\n";
+				continue;
 			}
-			else
-			{
-				$defvar = $_POST['newdef'][$i];
-			}
+
+			$deflang = str_replace(chr(0), '', $deflang);
 
 			if(empty($deflang))
 			{
 				continue; 
 			}
-	
-			if($_POST['newdef'][$i] == "LC_ALL" && vartrue($_SESSION['lancheck-edit-file']))
+
+			if($guarded)
 			{
-				$message .= $notdef_start.'setlocale('.htmlentities($defvar).','.$deflang.');<br />'.$notdef_end;
-				$input .= $notdef_start."setlocale(".$defvar.",".$deflang.");".$notdef_end;
+				$notdef_start = "if (!defined(".var_export($defvar, true).")) {";
+				$notdef_end = "}\n";
+			}
+
+			if($rawdef == "LC_ALL" && vartrue($_SESSION['lancheck-edit-file']))
+			{
+				$locales = $this->localeArguments($deflang);
+
+				if(empty($locales))
+				{
+					continue;
+				}
+
+				$statement = "setlocale(".$defvar.", ".implode(", ", $locales).");";
 			}
 			else
 			{
-				$message .= $notdef_start.$func.'('.$quote.htmlentities($defvar).$quote.',"'.$deflang.'");<br />'.$notdef_end;
-				$input .= $notdef_start.$func."(".$quote.$defvar.$quote.", ".chr(34).$deflang.chr(34).");".$notdef_end;
+				$statement = $func."(".var_export($defvar, true).", ".var_export($deflang, true).");";
 			}
+
+			$message .= htmlspecialchars($notdef_start.$statement, ENT_QUOTES, 'UTF-8').'<br />'.$notdef_end;
+			$input .= $notdef_start.$statement.$notdef_end;
 		}
 	
 		$message .="<br />";
@@ -969,7 +1032,7 @@ class lancheck
 		$writeit = str_replace("//","/",$writeit); // Quick Fix. 
 		
 		$fp = @fopen($writeit,"w");
-		if(!@fwrite($fp, $input))
+		if($fp === false || !@fwrite($fp, $input))
 		{
 			$caption = LAN_ERROR;
 			$message = LAN_CHECK_17;
@@ -981,7 +1044,10 @@ class lancheck
 			$caption = LAN_SAVED." <b>".str_replace('..','',$writeit)."</b>";
 			$status = e107::getMessage()->addSuccess($caption)->render();
 		}
-		fclose($fp);
+		if($fp !== false)
+		{
+			fclose($fp);
+		}
 
 	/*
 		$message .= "<form method='post' action='".e_SELF."?tools' id='select_lang'>
