@@ -13,6 +13,13 @@ on:
 # `ci-unit` exists to replay this job exactly, coverage flags and all, so base
 # image drift such as a changed default memory_limit reproduces on demand.
 #
+# The legacy cells hand it two --skip-group flags (see the step for why), and a
+# repro of one of those has to hand it the same ones or it runs a different
+# suite from the one that failed:
+#
+#   e107_tests/bin/e107-tests up --php 5.6 --db mysql:5.5 --xdebug --no-selenium
+#   e107_tests/bin/e107-tests ci-unit --skip-group runs-in-separate-process --skip-group requires-modern-php
+#
 # The harness image carries what this suite needs to stop skipping tests: it
 # ships ImageMagick, so the resize_handler cases that assert a shell
 # metacharacter in a destination filename is not executed actually run, and it
@@ -30,7 +37,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['8.1', '8.2', '8.3', '8.4']
+        # 5.6 and 7.0 are here because they are what e107 v2 claims to support,
+        # and a claim nothing exercises is a guess. Their images build from the
+        # Debian archive, which the Dockerfile already handles for `graft`.
+        php: ['5.6', '7.0', '8.1', '8.2', '8.3', '8.4']
         # mysql:5.5 and mariadb:10.0 are here because e107 can be installed on
         # them again: db_verify now settles a table's storage engine and
         # character set against what the server can actually do, so the tables
@@ -74,8 +84,25 @@ jobs:
             --xdebug \
             --no-selenium
 
+      # Two groups come off on 5.6 and 7.0. Neither is a hole in e107's support
+      # for those runtimes; both are the test tooling failing to reach the code
+      # under test.
+      #
+      # runs-in-separate-process: Codeception 4 is what composer can install on
+      # these versions, and there a @runInSeparateProcess case is re-bootstrapped
+      # by PHPUnit in a child process that never loads the project autoloader, so
+      # it dies on a missing class before any e107 code runs.
+      #
+      # requires-modern-php: cases that load dev tooling requiring PHP 8.1, which
+      # an older runtime cannot even parse.
       - name: Run unit tests with coverage
-        run: ./e107_tests/bin/e107-tests ci-unit
+        run: |
+          set --
+          case '${{ matrix.php }}' in
+            5.6|7.0) set -- --skip-group runs-in-separate-process \
+                            --skip-group requires-modern-php ;;
+          esac
+          ./e107_tests/bin/e107-tests ci-unit "$@"
 
       - name: Collect container logs
         if: failure()

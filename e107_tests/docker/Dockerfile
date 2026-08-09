@@ -178,9 +178,9 @@ RUN set -eux; \
     # The SAN goes through a config file rather than -addext, which needs
     # OpenSSL 1.1.1. The php:5.6 and php:7.0 images are Debian Stretch with
     # 1.1.0, where -addext is parsed as a digest name and the build dies with
-    # "req: Unknown digest addext". `graft` builds those images from this
-    # Dockerfile, so it has to work there even though this branch's own
-    # matrix starts at 8.1. A config file works on every version.
+    # "req: Unknown digest addext". The unit matrix starts at 5.6 and `graft`
+    # builds old release tags from this Dockerfile too, so both reach this
+    # line. A config file works on every version.
     printf '%s\n' \
         '[req]' \
         'distinguished_name = dn' \
