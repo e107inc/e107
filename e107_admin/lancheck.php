@@ -120,7 +120,12 @@ class lancheck
 		// Edit the Language File.
 		if($mode == 'edit' && vartrue($file) && !empty($lan) && in_array($lan, $acceptedLans))
 		{
-			
+			if(!$this->isLanFileTarget($file))
+			{
+				e107::getMessage()->addError(LAN_ERROR);
+				return false;
+			}
+
 			if (empty($_GET['type']))
 			{
 				$dir1 =  e_LANGUAGEDIR."English/";
@@ -893,6 +898,65 @@ class lancheck
 		return $args;
 	}
 
+	/**
+	 * Is this a language file the editor may open?
+	 *
+	 * The value arrives on the query string and ends up inside the path this
+	 * class creates directories at, writes stub files to, and finally saves
+	 * over, so it has to be a plain relative path to a .php file.
+	 *
+	 * @param string $file candidate path, relative to a language root
+	 * @return bool
+	 */
+	private function isLanFileTarget($file)
+	{
+		if(!is_string($file) || $file === '' || strlen($file) > 255)
+		{
+			return false;
+		}
+
+		if(strpos($file, "\0") !== false || strpos($file, '..') !== false || strpos($file, '\\') !== false)
+		{
+			return false;
+		}
+
+		if($file[0] === '/' || strtolower(substr($file, -4)) !== '.php')
+		{
+			return false;
+		}
+
+		return preg_match('#^[\w./-]+$#', $file) === 1;
+	}
+
+	/**
+	 * Does this directory still sit under one of the roots language files are
+	 * kept in?
+	 *
+	 * The roots themselves are relative to the calling script (e_LANGUAGEDIR
+	 * reads as ../e107_languages/ from the admin area), so this compares
+	 * against the constants rather than trying to reason about the path.
+	 *
+	 * @param string $dir directory built from one of the language roots
+	 * @return bool
+	 */
+	private function withinLanRoots($dir)
+	{
+		if(!is_string($dir) || $dir === '' || strpos($dir, "\0") !== false)
+		{
+			return false;
+		}
+
+		foreach(array(e_LANGUAGEDIR, e_PLUGIN, e_THEME) as $root)
+		{
+			if($root !== '' && strpos($dir, $root) === 0)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	function write_lanfile($lan='')
 	{
 		if(!$lan){ 	return; }
@@ -1599,6 +1663,12 @@ class lancheck
 			$dir2 = e_THEME.$dir2;
 		}
 		
+		if(!$this->withinLanRoots($dir1) || !$this->withinLanRoots($dir2))
+		{
+			e107::getMessage()->addError(LAN_ERROR);
+			return null;
+		}
+
 	//	$ns = e107::getRender();
 		$sql = e107::getDb();
 
