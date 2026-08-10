@@ -4,33 +4,21 @@ class UnattendedInstallCest
 {
 	const ADMIN_USER     = \Helper\AdminLogin::ADMIN_USER;
 	const ADMIN_PASSWORD = \Helper\AdminLogin::ADMIN_PASS;
-	const ADMIN_DISPLAY  = 'admin';
-	const ADMIN_EMAIL    = 'admin@admin.com';
-	const SITENAME       = 'UnattendedInstallTest';
-	const SITETHEME      = 'bootstrap5';
-	const SITE_PATH      = '000000test';
-	const MYSQL_PREFIX   = 'e107_';
+	const ADMIN_DISPLAY  = \Helper\Acceptance::INSTALL_ADMIN_DISPLAY;
+	const ADMIN_EMAIL    = \Helper\Acceptance::INSTALL_ADMIN_EMAIL;
+	const SITENAME       = \Helper\Acceptance::INSTALL_SITENAME;
+	const SITETHEME      = \Helper\Acceptance::INSTALL_SITETHEME;
+	const SITE_PATH      = \Helper\Acceptance::INSTALL_SITE_PATH;
+	const MYSQL_PREFIX   = \Helper\E107Base::E107_MYSQL_PREFIX;
 
 	public function _before(AcceptanceTester $I)
 	{
 		$I->unlinkE107ConfigFromTestEnvironment();
-		$this->dropAllAppTables($I);
+		$I->dropAllAppTables();
 	}
 
 	public function _after(AcceptanceTester $I)
 	{
-	}
-
-	private function dropAllAppTables(AcceptanceTester $I)
-	{
-		$dbh = $I->getDbModule()->_getDbh();
-		$dbh->exec('SET FOREIGN_KEY_CHECKS=0;');
-		$tables = $dbh->query("SHOW FULL TABLES WHERE TABLE_TYPE LIKE '%TABLE'")->fetchAll(PDO::FETCH_COLUMN);
-		foreach ($tables as $table)
-		{
-			$dbh->exec('DROP TABLE `'.$table.'`');
-		}
-		$dbh->exec('SET FOREIGN_KEY_CHECKS=1;');
 	}
 
 	// Test order matters: the "rejects" cases leave the database empty,
@@ -50,7 +38,7 @@ class UnattendedInstallCest
 	{
 		$I->wantTo("Reject create_tables_unattended when the URL credentials don't match the config");
 
-		$this->writeArrayConfig($I);
+		$I->haveE107ArrayConfig();
 		$I->amOnPage('/install.php?create_tables=1&username=wrong&password=wrong');
 		$this->assertUnattendedAdminAbsent($I);
 	}
@@ -60,8 +48,8 @@ class UnattendedInstallCest
 		$I->wantTo("Refuse a repeat create_tables_unattended once the database already holds an e107 install");
 
 		// First unattended install succeeds and populates the database.
-		$this->writeArrayConfig($I);
-		$this->visitUnattendedInstallUrl($I);
+		$I->haveE107ArrayConfig();
+		$I->visitUnattendedInstall();
 		$this->assertInstallSucceeded($I);
 
 		// Drop the admin user table, then replay the exact same install URL.
@@ -70,7 +58,7 @@ class UnattendedInstallCest
 		$dbh->exec('DROP TABLE `'.self::MYSQL_PREFIX.'user`');
 		$dbh->exec('SET FOREIGN_KEY_CHECKS=1;');
 
-		$this->visitUnattendedInstallUrl($I);
+		$I->visitUnattendedInstall();
 
 		// The remaining schema must make the replay a no-op: the credential check
 		// is never reached, so the user table is not recreated and the site cannot
@@ -83,7 +71,7 @@ class UnattendedInstallCest
 		$I->wantTo("Install e107 unattended with a legacy globals-format e107_config.php");
 
 		$this->writeLegacyConfig($I);
-		$this->visitUnattendedInstallUrl($I);
+		$I->visitUnattendedInstall();
 		$this->assertInstallSucceeded($I);
 	}
 
@@ -91,41 +79,9 @@ class UnattendedInstallCest
 	{
 		$I->wantTo("Install e107 unattended with a v2.4 array-format e107_config.php");
 
-		$this->writeArrayConfig($I);
-		$this->visitUnattendedInstallUrl($I);
+		$I->haveE107ArrayConfig();
+		$I->visitUnattendedInstall();
 		$this->assertInstallSucceeded($I);
-	}
-
-	private function writeArrayConfig(AcceptanceTester $I)
-	{
-		$db = $I->getDbModule();
-		$contents = "<?php\nreturn "
-			.var_export([
-				'database' => [
-					'server'   => $db->_getDbHostname(),
-					'user'     => $db->_getDbUsername(),
-					'password' => $db->_getDbPassword(),
-					'db'       => $db->_getDbName(),
-					'prefix'   => self::MYSQL_PREFIX,
-					'charset'  => 'utf8mb4',
-				],
-				'paths' => [
-					'admin'     => 'e107_admin/',
-					'files'     => 'e107_files/',
-					'images'    => 'e107_images/',
-					'themes'    => 'e107_themes/',
-					'plugins'   => 'e107_plugins/',
-					'handlers'  => 'e107_handlers/',
-					'languages' => 'e107_languages/',
-					'help'      => 'e107_docs/help/',
-					'media'     => 'e107_media/',
-					'system'    => 'e107_system/',
-				],
-				'other' => [
-					'site_path' => self::SITE_PATH,
-				],
-			], true).";\n";
-		$I->writeE107ConfigToTestEnvironment($contents);
 	}
 
 	private function writeLegacyConfig(AcceptanceTester $I)
@@ -157,26 +113,6 @@ class UnattendedInstallCest
 \$E107_CONFIG = ['site_path' => '$sitePath'];
 PHP;
 		$I->writeE107ConfigToTestEnvironment($contents);
-	}
-
-	private function visitUnattendedInstallUrl(AcceptanceTester $I)
-	{
-		$db = $I->getDbModule();
-		$params = http_build_query([
-			'create_tables'  => 1,
-			'username'       => $db->_getDbUsername(),
-			'password'       => $db->_getDbPassword(),
-			'admin_user'     => self::ADMIN_USER,
-			'admin_password' => self::ADMIN_PASSWORD,
-			'admin_display'  => self::ADMIN_DISPLAY,
-			'admin_email'    => self::ADMIN_EMAIL,
-			'sitename'       => self::SITENAME,
-			'theme'          => self::SITETHEME,
-			'language'       => 'English',
-			'gen'            => 1,
-			'plugins'        => 1,
-		]);
-		$I->amOnPage('/install.php?'.$params);
 	}
 
 	private function assertInstallSucceeded(AcceptanceTester $I)

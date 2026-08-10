@@ -57,6 +57,19 @@ if [ -n "${E107_DB_HOST:-}" ]; then
     fi
 fi
 
+# Serve the docroot from a subdirectory as well, when asked. Most e107 sites
+# live under one, and e107 derives e_HTTP from the request, so cookies,
+# redirects and generated links all take a different shape there. An alias
+# rather than a second copy of the tree: one docroot, reachable both ways, so
+# the only variable is the request path.
+BASE_CONF=/etc/apache2/conf-enabled/e107-base-path.conf
+if [ -n "${E107_BASE_PATH:-}" ]; then
+    printf 'Alias /%s /var/www/html\n' "$E107_BASE_PATH" > "$BASE_CONF"
+    echo "[entrypoint] Serving /var/www/html at /${E107_BASE_PATH}/ as well as /."
+else
+    rm -f "$BASE_CONF"
+fi
+
 if [ -d /var/www/html ]; then
     # The docroot itself must be writable: the acceptance test deployer
     # creates and deletes /var/www/html/e107_config.php directly.

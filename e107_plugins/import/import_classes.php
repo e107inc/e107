@@ -273,6 +273,216 @@ class base_import_class
 	}
 
 	/**
+	 * Extensions this importer is willing to write, keyed by the constant
+	 * getimagesize() reports. Anything else is refused rather than stored under
+	 * a name nobody verified.
+	 *
+	 * WEBP is only reported from PHP 7.1, and SVG is never reported at all
+	 * because getimagesize() cannot read it. An SVG carries script, so a format
+	 * that cannot be verified is a format this does not import.
+	 *
+	 * BMP and ICO are here because e107's own media tables carry them and
+	 * getimagesize() reports both: refusing a format the site already accepts
+	 * would narrow the importer for no gain.
+	 *
+	 * @return array
+	 */
+	protected function importableImageTypes()
+	{
+		$types = array(
+			IMAGETYPE_GIF  => 'gif',
+			IMAGETYPE_JPEG => 'jpg',
+			IMAGETYPE_PNG  => 'png',
+			IMAGETYPE_BMP  => 'bmp',
+			IMAGETYPE_ICO  => 'ico',
+		);
+
+		if(defined('IMAGETYPE_WEBP'))
+		{
+			$types[IMAGETYPE_WEBP] = 'webp';
+		}
+
+		return $types;
+	}
+
+	/**
+	 * The extension a file's own bytes call for.
+	 *
+	 * @param string $path absolute path of a downloaded file
+	 * @return string|false extension without a dot, or false when the bytes are
+	 *                      not an image this importer stores
+	 */
+	protected function verifiedImageExtension($path)
+	{
+		if(!is_file($path) || filesize($path) < 1)
+		{
+			return false;
+		}
+
+		$info = @getimagesize($path);
+		$types = $this->importableImageTypes();
+
+		if(empty($info[2]) || !isset($types[$info[2]]))
+		{
+			return false;
+		}
+
+		return $types[$info[2]];
+	}
+
+	/**
+	 * The stored name without its extension.
+	 *
+	 * Everything the remote host chose is dropped except the stem of the path,
+	 * which is kept only so an administrator can recognise the file later. A
+	 * digest of the whole address follows it, because a stem is not unique: one
+	 * feed carrying 2020/01/header.jpg and 2021/05/header.jpg has two images and
+	 * has to end up with two files.
+	 *
+	 * The same address always gives the same answer, which is what lets a second
+	 * run of a feed recognise what it already holds.
+	 *
+	 * @param string $url    address the image came from
+	 * @param string $prefix caller's own leader, e.g. the member id an avatar
+	 *                       belongs to; sanitised as well, since a name assembled
+	 *                       from two sources is only as safe as the looser one
+	 * @return string
+	 */
+	protected function localImageBase($url, $prefix = '')
+	{
+		$path = parse_url($url, PHP_URL_PATH);
+		$name = empty($path) ? '' : basename($path);
+		$name = preg_replace('/\.[^.]*$/', '', $name);
+		$name = trim(preg_replace('/[^A-Za-z0-9_-]/', '_', $name), '_');
+		$name = substr($name, 0, 60);
+
+		if($name === '')
+		{
+			$name = 'image';
+		}
+
+		return preg_replace('/[^A-Za-z0-9_-]/', '', $prefix).$name.'_'.substr(md5($url), 0, 10);
+	}
+
+	/**
+	 * The name a downloaded image is stored under. The extension is the
+	 * caller's, taken from the bytes.
+	 *
+	 * @param string $url    address the image came from
+	 * @param string $ext    verified extension, without a dot
+	 * @param string $prefix caller's own leader
+	 * @return string
+	 */
+	protected function localImageName($url, $ext, $prefix = '')
+	{
+		return $this->localImageBase($url, $prefix).'.'.$ext;
+	}
+
+	/**
+	 * The name this address is already stored under, if it is.
+	 *
+	 * Asked before the download, so a feed read twice does not fetch every
+	 * image it already holds a second time. The extension is not known until
+	 * the bytes arrive, so each one this importer writes is tried in turn.
+	 *
+	 * @param string $dir    absolute directory, with a trailing slash
+	 * @param string $url    address the image came from
+	 * @param string $prefix caller's own leader
+	 * @return string|false
+	 */
+	protected function storedImageName($dir, $url, $prefix = '')
+	{
+		$base = $this->localImageBase($url, $prefix);
+
+		foreach($this->importableImageTypes() as $ext)
+		{
+			if(is_file($dir.$base.'.'.$ext))
+			{
+				return $base.'.'.$ext;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Download a remote file into the temporary directory.
+	 *
+	 * Its own method so a test can put bytes in place without a network, and so
+	 * every importer fetches through the one call that {@see e_file::isUrlSafe()}
+	 * guards.
+	 *
+	 * @param string $url
+	 * @param string $localName file name relative to e_TEMP
+	 * @return boolean
+	 */
+	protected function fetchRemoteFile($url, $localName)
+	{
+		return (bool) e107::getFile()->getRemoteFile($url, $localName, 'temp');
+	}
+
+	/**
+	 * Fetch an image named by a feed and store it, under a name and an extension
+	 * this side decided.
+	 *
+	 * The remote host chooses the URL, the Content-Type header and the payload.
+	 * None of the three names the file: an extension a feed asks for is an
+	 * extension the web server may hand to an interpreter, and e_MEDIA is inside
+	 * the document root. The bytes are staged in e_TEMP, which is not served,
+	 * and moved into place only once getimagesize() has said what they are.
+	 *
+	 * @param string $url    image address taken from the feed
+	 * @param string $dir    absolute directory to store into, with a trailing slash
+	 * @param string $prefix leader for the stored name, chosen by the caller
+	 * @return string|false the stored file name, or false when nothing was stored
+	 */
+	protected function importRemoteImage($url, $dir, $prefix = '')
+	{
+		$stored = $this->storedImageName($dir, $url, $prefix);
+
+		if($stored !== false)
+		{
+			return $stored;
+		}
+
+		$staged = 'import_'.md5($url.'.'.microtime()).'.tmp';
+
+		if(!$this->fetchRemoteFile($url, $staged))
+		{
+			@unlink(e_TEMP.$staged);
+
+			return false;
+		}
+
+		$ext = $this->verifiedImageExtension(e_TEMP.$staged);
+
+		if($ext === false)
+		{
+			@unlink(e_TEMP.$staged);
+
+			return false;
+		}
+
+		$name = $this->localImageName($url, $ext, $prefix);
+
+		if(file_exists($dir.$name))
+		{
+			@unlink(e_TEMP.$staged);
+
+			return $name;
+		}
+
+		if(!rename(e_TEMP.$staged, $dir.$name))
+		{
+			@unlink(e_TEMP.$staged);
+
+			return false;
+		}
+
+		return $name;
+	}
+
+	/**
 	 * @param $source
 	 * @param $target
 	 */

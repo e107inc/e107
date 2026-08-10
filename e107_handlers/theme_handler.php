@@ -1450,6 +1450,16 @@ class themeHandler
 		$mes = e107::getMessage();
 		$pref = e107::getPref();
 
+		// The constructor calls this unconditionally, and class2.php constructs a
+		// themeHandler on the front end for any member the allow_theme_select
+		// pref admits. Everything below writes to the site, so it belongs to the
+		// caller who may manage themes, not to whoever asked for a new one.
+		if(!deftrue('E107_INSTALL') && !getperms('1|TMP'))
+		{
+			$this->themeArray = e107::getTheme()->getList();
+			return;
+		}
+
 		if(!empty($_POST['upload']))
 		{
 			$unzippedTheme = $this->themeUpload();
@@ -1606,7 +1616,7 @@ class themeHandler
 	 */
 	function themeUpload()
 	{
-		if(!$_POST['ac'] == md5(ADMINPWCHANGE))
+		if(!e107::getUser()->checkAdminPwchangeToken(varset($_POST['ac'])))
 		{
 			exit;
 		}

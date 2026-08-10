@@ -11,13 +11,12 @@
  * @file
  * Handles incoming requests to fire off regularly-scheduled tasks (cron jobs).
  *
+ * Command line only. A request that arrives through a web server is refused,
+ * whichever SAPI that server uses. The test is the request, not the SAPI name:
+ * on a great deal of shared hosting the command line binary is a CGI build, and
+ * a crontab line calling it is a shell invocation like any other.
+ *
  * @example
- * Using wget:
- *   /usr/bin/wget -O - -q http://example.com/cron.php?token=TOKEN > /dev/null 2>&1
- * Using curl:
- *   /usr/bin/curl --silent --compressed http://example.com/cron.php?token=TOKEN > /dev/null 2>&1
- * Using lynx:
- *   /usr/bin/lynx -source http://example.com/cron.php?token=TOKEN > /dev/null 2>&1
  * Using PHP:
  *   /usr/bin/php -q /var/www/example.com/cron.php token=TOKEN
  *   /usr/bin/php -q /var/www/example.com/cron.php TOKEN
@@ -34,12 +33,16 @@ $_E107['no_menus'] = true;
 $_E107['allow_guest'] = true; // allow crons to run while in members-only mode.
 $_E107['no_maintenance'] = true;
 
-if ((PHP_SAPI === "apache" || PHP_SAPI === "litespeed"))
+// A web server states the request in the environment it hands PHP, and a shell
+// states none of it, whichever binary the shell is running.
+$viaHttp = PHP_SAPI === "cli-server"
+	|| !empty($_SERVER['REQUEST_METHOD'])
+	|| !empty($_SERVER['HTTP_HOST'])
+	|| !empty($_SERVER['SERVER_PROTOCOL']);
+
+if ($viaHttp)
 {
-	if($_E107['debug'])
-	{
-		error_log("e107: cron.php was blocked from executing with PHP_SAPI: ".php_sapi_name());
-	}
+	error_log("e107: cron.php refused a request that arrived over HTTP (PHP_SAPI: ".PHP_SAPI."); cron.php is command line only");
 	echo "<h1>Access Denied</h1>";
     exit;
 }

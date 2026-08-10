@@ -1074,6 +1074,8 @@ class e_model extends e_object
      */
     protected function _setData($key, $value = null, $strict = false, $data_src = '_data')
     {
+        $this->_resetParsedKeys();
+
         if(is_array($key))
         {
             if($strict)
@@ -1185,6 +1187,8 @@ class e_model extends e_object
      */
 	protected function _setDataSimple($key, $value = null, $strict = false, $data_src = '_data')
     {
+        $this->_resetParsedKeys();
+
     	$key = $key.'';//smart toString
     	if(!$strict)
     	{
@@ -1262,6 +1266,8 @@ class e_model extends e_object
      */
     protected function _unsetData($key = null, $data_src = '_data')
     {
+        $this->_resetParsedKeys();
+
         if (null === $key)
         {
         	if('_data' === $data_src && !empty($this->_data))
@@ -1294,7 +1300,7 @@ class e_model extends e_object
 	        	{
 	        		$this->data_has_changed = true;
 	        	}
-	        	unset($data[$unskey], $this->_parsed_keys[$data_src.'/'.$key]);
+	        	unset($data[$unskey]);
 	        }
         }
         else
@@ -1317,6 +1323,8 @@ class e_model extends e_object
      */
     protected function _unsetDataSimple($key, $data_src = '_data')
     {
+        $this->_resetParsedKeys();
+
 		if('_data' === $data_src && isset($this->{$data_src}[$key]))
        	{
        		$this->data_has_changed = true;
@@ -1353,6 +1361,25 @@ class e_model extends e_object
     protected function _isData($key, $data_src = '_data')
     {
         return (null !== $this->_getData($key, null, null, $data_src));
+    }
+
+    /**
+     * Forget every path lookup {@link _getData()} has resolved so far.
+     *
+     * Those lookups are remembered under their full path, and a write anywhere
+     * can contradict one: replacing 'a' makes a remembered 'a/b' wrong, and
+     * writing 'a/b' makes a remembered 'a' wrong, so no part of the memo is
+     * reliably untouched by a given write. It saves walking a few array levels
+     * and the next read fills it again, so it is dropped whole rather than
+     * reasoned about.
+     *
+     * @return e_model
+     */
+    protected function _resetParsedKeys()
+    {
+        $this->_parsed_keys = array();
+
+        return $this;
     }
 
 	/**

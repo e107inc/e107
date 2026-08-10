@@ -9,6 +9,11 @@
  */
 
 require_once(__DIR__.'/../../class2.php');
+if (!getperms('P'))
+{
+	e107::redirect('admin');
+	exit;
+}
 
 e107::lan('faqs', 'admin',true);
 e107::plugLan('faqs', 'global', true); // #5738 - admin does not autoload plugin globals; LAN_PLUGIN_FAQS_* used in property defaults below.

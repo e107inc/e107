@@ -34,7 +34,10 @@ class core_system_xup_controller extends eController
 
 	public function init()
 	{
-		$this->backUrl = isset($_GET['back']) ? $_GET['back'] : null;
+		$back = isset($_GET['back']) ? $_GET['back'] : null;
+		$verified = e107::getRedirect()->verifyDestinationUrl($back);
+
+		$this->backUrl = ($verified === false) ? null : $verified;
 	}
 	
 	public function actionLogin()

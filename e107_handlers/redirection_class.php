@@ -49,14 +49,22 @@ class redirection
 	const LOGIN_DEST_TTL = 1800;
 
 	/**
-	 * Name of the cookie carrying the signed post-login destination token.
+	 * Name of the cookie carrying the sealed post-login destination token.
 	 */
 	const LOGIN_DEST_COOKIE = 'e107_logindest';
 
 	/**
-	 * Name of the form field carrying the signed post-login destination token.
+	 * Name of the form field carrying the sealed post-login destination token.
 	 */
 	const LOGIN_DEST_FIELD = '__logindest';
+
+	/**
+	 * Sealed token purpose for the post-login destination.
+	 *
+	 * Naming the purpose here keeps a destination token unopenable as anything
+	 * else this site seals, and vice versa.
+	 */
+	const LOGIN_DEST_PURPOSE = 'login-destination';
 
 	/**
 	 * Static-asset extensions that must never be captured as a return destination.
@@ -74,9 +82,9 @@ class redirection
 	);
 
 	/**
-	 * Per-request cache of signed destination tokens, so repeated renders (e.g. two
-	 * login forms on one page) emit the same value instead of minting a fresh JWT
-	 * on every call.
+	 * Per-request cache of sealed destination tokens, so repeated renders (e.g. two
+	 * login forms on one page) emit the same value instead of sealing a fresh
+	 * token on every call.
 	 *
 	 * @var array
 	 */
@@ -340,7 +348,7 @@ class redirection
 		*/
 		
 		$this->saveMembersOnlyUrl();
-		// Also capture through the unified signed-destination path, so a members-only
+		// Also capture through the unified sealed-destination path, so a members-only
 		// site returns the visitor via the same mechanism as every other login seam.
 		$this->setLoginDestination();
 
@@ -525,17 +533,19 @@ class redirection
 	}
 
 	/**
-	 * Sign the current (or a given) destination URL into a stateless token.
+	 * Seal the current (or a given) destination URL into a stateless token.
 	 *
-	 * The token is a JWT signed with the site secret (see {@see e_jwt}), so the
-	 * destination is server-certified: a visitor cannot forge or alter it. That is
-	 * what makes it safe to carry in a hidden form field or a cookie without
-	 * opening a redirect-injection hole. Returns '' when the request is not a
-	 * capturable target (see self::isCapturable()).
+	 * The token is sealed with the site secret (see {@see \e107\Security\SealedToken}),
+	 * so the destination is server-certified: a visitor cannot forge or alter it.
+	 * That is what makes it safe to carry in a hidden form field or a cookie
+	 * without opening a redirect-injection hole. Returns '' when the request is
+	 * not a capturable target (see self::isCapturable()), and also when the site
+	 * has no key to seal with, because a page that cannot capture a destination
+	 * still has to render.
 	 *
 	 * @param string|null $url defaults to the current request URI (relative, query preserved)
 	 * @param int $ttl token lifetime in seconds
-	 * @return string signed token, or '' when nothing should be captured
+	 * @return string sealed token, or '' when nothing should be captured
 	 */
 	public function getLoginDestinationToken($url = null, $ttl = self::LOGIN_DEST_TTL)
 	{
@@ -556,19 +566,26 @@ class redirection
 			return '';
 		}
 
-		$token = e107::getJWT()->encode(array('dest' => $url), (int) $ttl);
+		$token = e107::getSealedToken(self::LOGIN_DEST_PURPOSE)->seal(array('dest' => $url), (int) $ttl);
+
+		if($token === false)
+		{
+			$token = '';
+		}
+
 		$this->destination_token_cache[$cacheKey] = $token;
 
 		return $token;
 	}
 
 	/**
-	 * Decode a destination token and confirm it points somewhere on this site.
+	 * Open a destination token and confirm it points somewhere on this site.
 	 *
-	 * Signature, issuer and expiry are verified by {@see e_jwt}. On top of that we
-	 * enforce a same-origin / site-rooted target as defence-in-depth, so the
-	 * redirect can never be turned into an off-site (open-redirect) jump even if a
-	 * signed token somehow carried one.
+	 * Authenticity, issuer and expiry are settled by
+	 * {@see \e107\Security\SealedToken}. On top of that we enforce a same-origin
+	 * / site-rooted target as defence-in-depth, so the redirect can never be
+	 * turned into an off-site (open-redirect) jump even if a sealed token somehow
+	 * carried one.
 	 *
 	 * @param string $token
 	 * @return string|false the verified destination URL, or false
@@ -580,17 +597,42 @@ class redirection
 			return false;
 		}
 
-		$payload = e107::getJWT()->decode($token);
+		$payload = e107::getSealedToken(self::LOGIN_DEST_PURPOSE)->open($token);
 
 		if(empty($payload['dest']) || !is_string($payload['dest']))
 		{
 			return false;
 		}
 
-		$dest = $payload['dest'];
+		return $this->verifyDestinationUrl($payload['dest']);
+	}
 
-		// Collapse backslashes so "/\evil" or "\\evil" cannot smuggle an off-site host.
-		$probe = str_replace('\\', '/', $dest);
+	/**
+	 * Confirm a redirect destination points somewhere on this site.
+	 *
+	 * The same-origin half of {@see verifyDestination()}, for the callers that hold
+	 * a plain URL rather than a sealed token: a visitor-supplied return address is
+	 * only ever safe to redirect to once it has been through here.
+	 *
+	 * @param string $dest
+	 * @return string|false the destination unchanged, or false if it leaves this site
+	 */
+	public function verifyDestinationUrl($dest)
+	{
+		if(!is_string($dest) || $dest === '')
+		{
+			return false;
+		}
+
+		$probe = $this->normaliseAsUrlParser($dest);
+
+		// A destination the visitor named has no reason to carry a character a URL
+		// parser deletes, so refuse rather than silently rewrite: "/\t/evil.example"
+		// reads as a rooted path here and as an authority in a browser.
+		if($probe !== str_replace('\\', '/', $dest))
+		{
+			return false;
+		}
 
 		// Reject protocol-relative ("//host") targets.
 		if(strpos($probe, '//') === 0)
@@ -600,14 +642,7 @@ class redirection
 
 		if(preg_match('#^https?://#i', $probe))
 		{
-			// An absolute URL must point at this site or one of its trusted hosts.
-			// The literal SITEURL match covers the common case; the host check
-			// additionally honours the `trusted_hosts` pref (e107inc/e107#5639),
-			// so a multi-hostname install can return a visitor to whichever of
-			// its own hosts they came in on, but never to a third-party host.
-			$host = parse_url($probe, PHP_URL_HOST);
-			$onSite = (strpos($probe, SITEURLBASE) === 0 || strpos($probe, SITEURL) === 0);
-			if(!$onSite && (!is_string($host) || $host === '' || !e107::getInstance()->isTrustedHost($host)))
+			if($this->leavesThisSite($dest))
 			{
 				return false;
 			}
@@ -622,8 +657,94 @@ class redirection
 	}
 
 	/**
+	 * Read a URL the way a browser does before it parses one.
+	 *
+	 * The WHATWG basic URL parser deletes every ASCII tab, LF and CR from its
+	 * input and trims leading C0 controls and space, all before it looks for a
+	 * scheme or an authority. PHP's header() rejects only LF and CR, so a tab or
+	 * a space survives into a Location value that the client then reads as
+	 * something else: "/\t/evil.example" is a rooted path to a string predicate
+	 * and an authority to a browser. Backslashes collapse for the same reason.
+	 *
+	 * @param string $url
+	 * @return string
+	 * @see https://url.spec.whatwg.org/#concept-basic-url-parser
+	 */
+	private function normaliseAsUrlParser($url)
+	{
+		$probe = str_replace(array("\t", "\n", "\r"), '', (string) $url);
+		$probe = ltrim($probe, "\x00..\x20");
+
+		return str_replace('\\', '/', $probe);
+	}
+
+	/**
+	 * Whether following a redirect destination would leave this site.
+	 *
+	 * The weaker half of {@see verifyDestinationUrl()}, and deliberately so. That
+	 * method answers "may a visitor name this destination", which additionally
+	 * requires a relative target to be site-rooted. This one answers only "does
+	 * this leave the site", because most of what the tree hands {@see go()} is
+	 * relative to the document rather than to the root: core commonly passes a
+	 * path relative to the document rather than to the root, and e107::url()
+	 * returns the same shape unless asked for the full form. None of it can
+	 * leave the site.
+	 *
+	 * A scheme other than http or https counts as leaving, so `javascript:` and
+	 * friends never reach a Location header.
+	 *
+	 * The host is compared rather than the string prefixed. SITEURLBASE carries
+	 * no trailing slash, so a prefix test would accept a third-party host that
+	 * merely starts with the site's own. Alongside the served host, the
+	 * `trusted_hosts` pref (e107inc/e107#5639) is honoured, so a multi-hostname
+	 * install can move a visitor between its own hosts.
+	 *
+	 * @param string $url
+	 * @return bool
+	 */
+	public function leavesThisSite($url)
+	{
+		if(!is_string($url) || $url === '')
+		{
+			return false;
+		}
+
+		$probe = $this->normaliseAsUrlParser($url);
+
+		if(preg_match('#^([a-z][a-z0-9+.\-]*):#i', $probe, $scheme))
+		{
+			if(strcasecmp($scheme[1], 'http') !== 0 && strcasecmp($scheme[1], 'https') !== 0)
+			{
+				return true;
+			}
+		}
+		elseif(strpos($probe, '//') !== 0)
+		{
+			return false;
+		}
+
+		$host = parse_url($probe, PHP_URL_HOST);
+
+		if(!is_string($host) || $host === '')
+		{
+			return true;
+		}
+
+		// eIPHandler is constructed before set_urls_deferred() defines the constant,
+		// so a redirect from that far up the boot has only the pref to go on.
+		$siteHost = defined('SITEURLBASE') ? parse_url(SITEURLBASE, PHP_URL_HOST) : '';
+
+		if(is_string($siteHost) && $siteHost !== '' && strcasecmp($host, $siteHost) === 0)
+		{
+			return false;
+		}
+
+		return !e107::getInstance()->isTrustedHost($host);
+	}
+
+	/**
 	 * Capture the current (or a given) URL as the page to return the user to after
-	 * they log in. Stateless: stored as a signed token in a cookie, so guests never
+	 * they log in. Stateless: stored as a sealed token in a cookie, so guests never
 	 * create a server-side session row. No-op when the request is not capturable.
 	 *
 	 * @param string|null $url defaults to the current request URI
@@ -646,7 +767,7 @@ class redirection
 	/**
 	 * Return the verified post-login destination, or false.
 	 *
-	 * Reads the signed token from the submitted form first (so it still works with
+	 * Reads the sealed token from the submitted form first (so it still works with
 	 * cookies disabled), then the cookie. The result is always same-origin (see
 	 * self::verifyDestination()).
 	 *
@@ -674,7 +795,7 @@ class redirection
 	}
 
 	/**
-	 * Raw signed destination token currently stored in the cookie, or '' if there
+	 * Raw sealed destination token currently stored in the cookie, or '' if there
 	 * is none or it no longer verifies. Used to re-emit the destination as a hidden
 	 * form field so it survives the login POST even if the cookie later expires.
 	 *
@@ -749,12 +870,13 @@ class redirection
 	 * @param $replace
 	 * @param $http_response_code
 	 * @param $preventCache
+	 * @param bool $allowOffsite see {@see go()}
 	 * @return void
 	 */
-	public function redirect($url, $replace = TRUE, $http_response_code = NULL, $preventCache = true)
+	public function redirect($url, $replace = TRUE, $http_response_code = NULL, $preventCache = true, $allowOffsite = false)
 	{
-		$this->go($url, $replace, $http_response_code, $preventCache);
-		exit; 	
+		$this->go($url, $replace, $http_response_code, $preventCache, $allowOffsite);
+		exit;
 	}
 
 	 /**
@@ -808,13 +930,22 @@ class redirection
 	/**
 	 * Redirect to the given URI
 	 *
+	 * A destination that leaves this site is refused and replaced with SITEURL
+	 * unless the caller asks for it. Most of what reaches here is a destination
+	 * the visitor named (a return address, a jump target, a query string), and
+	 * a redirector that follows one off site is a phishing primitive carrying
+	 * this site's own domain. Off-site destinations that are the site's own
+	 * decision rather than the visitor's, such as the marketplace, a banner
+	 * click-through or an external download mirror, pass $allowOffsite.
+	 *
 	 * @param string $url or error code number. eg. 404 = Not Found. If left empty SITEURL will be used.
 	 * @param boolean $replace - default TRUE
 	 * @param int|null $http_response_code - default NULL
 	 * @param boolean $preventCache
+	 * @param boolean $allowOffsite permit a destination on another host
 	 * @return void
 	 */
-	public function go($url='', $replace = TRUE, $http_response_code = NULL, $preventCache = true)
+	public function go($url='', $replace = TRUE, $http_response_code = NULL, $preventCache = true, $allowOffsite = false)
 	{
 		if(e107::isCli())
 		{
@@ -842,6 +973,21 @@ class redirection
 				$this->setLoginDestination();
 			}
 			$url = SITEURLBASE. e_ADMIN_ABS;
+		}
+
+		// A client deletes tab, LF and CR and trims leading space before it reads
+		// the value, so the header has to carry the string that was tested.
+		$url = ltrim(str_replace(array("\t", "\n", "\r"), '', $url), "\x00..\x20");
+
+		if(!$allowOffsite && $this->leavesThisSite($url))
+		{
+			// The refusal is otherwise indistinguishable from a plugin that meant
+			// to land on the home page, and go() runs too early in the boot to
+			// reach the logging subsystem. Same channel as the host-check kill in
+			// e107::set_urls_deferred().
+			error_log('e107 redirect: refused the off-site destination '.var_export($url, true)
+				.'; a caller that means to leave the site passes $allowOffsite');
+			$url = SITEURL;
 		}
 
 
@@ -888,8 +1034,28 @@ class redirection
 		
 		// write session if needed
 		//if(session_id()) session_write_close();
-		
+
 		exit();
+	}
+
+
+	/**
+	 * Redirect to a destination that deliberately leaves this site.
+	 *
+	 * {@see go()} takes the permit as its fifth argument, and go($url, true, null,
+	 * true, true) states nothing at the call site: an author who copies it and
+	 * drops one argument turns off cache prevention rather than turning on the
+	 * permit. Say it in words instead.
+	 *
+	 * @param string $url
+	 * @param boolean $replace
+	 * @param int|null $http_response_code
+	 * @param boolean $preventCache
+	 * @return void
+	 */
+	public function goOffsite($url = '', $replace = TRUE, $http_response_code = NULL, $preventCache = true)
+	{
+		$this->go($url, $replace, $http_response_code, $preventCache, true);
 	}
 
 

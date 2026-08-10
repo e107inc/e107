@@ -144,7 +144,7 @@ class pm_cron // include plugin-folder in the name.
 			$pmData = e107::unserialize($pmRow['gen_chardata']);
 			unset($pmRow);
 			$this->pmClass = new private_message;
-			$this->pmClass->add($pmData);
+			$this->pmClass->add($pmData, TRUE);
 			$this->logLine(' .. Run completed',TRUE, TRUE);
 		}
 		return TRUE;

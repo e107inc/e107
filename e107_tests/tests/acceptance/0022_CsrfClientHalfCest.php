@@ -205,7 +205,7 @@ PHP;
 	 */
 	public function errorPageServesAUsableToken(AcceptanceTester $I)
 	{
-		$I->resetCookie('PHPSESSID');
+		$I->resetSiteCookie('PHPSESSID');
 
 		$token = $this->grabToken($I, '/error.php?404');
 

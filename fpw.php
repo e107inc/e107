@@ -69,17 +69,64 @@ $user_info = e107::getUserSession();
 
 require_once(HEADERF);
 
-function fpw_error($txt)
+/**
+ * The password reset request form.
+ *
+ * Rendered by the tail of this script and again by {@see fpw_error()}. A
+ * verification uses the CAPTCHA challenge up, so an error page that did not
+ * offer a form left the visitor with nothing but the browser's Back button and
+ * a page still carrying the challenge they had just spent: every retry failed,
+ * and password recovery is the one route a locked-out user has no alternative
+ * to. secure_image mints a fresh challenge here because nothing in it ever
+ * remembers a submitted token.
+ *
+ * @return string
+ */
+function fpw_form()
 {
+	global $tp, $FPW_TABLE, $caption;
+
 	if(deftrue('BOOTSTRAP'))
 	{
-		e107::getMessage()->addError($txt);
-		e107::getRender()->tablerender(LAN_03, e107::getMessage()->render());
-		require_once(FOOTERF);
-		exit;
+		$FPW_TABLE = "<form method='post' action='".SITEURL."fpw.php' autocomplete='off'>";
+
+		if(getperms('0'))
+		{
+			$FPW_TABLE .= "<div class='alert alert-danger'>Logged in as admin</div>";
+		}
+
+		$FPW_TABLE .= e107::getCoreTemplate('fpw','form');
+		$FPW_TABLE .= "</form>";
+		$caption = deftrue('LAN_FPW_100',"Forgot your password?");
+	}
+	elseif(!$FPW_TABLE)
+	{
+		$fpwTmpl = e107::coreTemplatePath('fpw');
+		e107::predefineLegacyLans($fpwTmpl); // #5653
+		require_once ($fpwTmpl); //correct way to load a core template.
+		$caption = LAN_03;
 	}
 
-	e107::getRender()->tablerender(LAN_03, "<div class='fpw-page'>".$txt."</div>", 'fpw');
+	$sc = e107::getScBatch('fpw'); // fpw_shortcodes;
+	$sc->wrapper('fpw/form');
+
+	// New Shortcode names in v2. BC Fix.
+	$bcShortcodes 	= array('{FPW_TABLE_SECIMG_LAN}', '{FPW_TABLE_SECIMG_HIDDEN}', '{FPW_TABLE_SECIMG_SECIMG}', '{FPW_TABLE_SECIMG_TEXTBOC}');
+	$nwShortcodes 	= array('{FPW_CAPTCHA_LAN}', '{FPW_CAPTCHA_HIDDEN}', '{FPW_CAPTCHA_IMG}', '{FPW_CAPTCHA_INPUT}');
+	$FPW_TABLE 		= str_replace($bcShortcodes,$nwShortcodes,$FPW_TABLE);
+
+	return $tp->parseTemplate($FPW_TABLE, true, $sc);
+}
+
+function fpw_error($txt)
+{
+	global $caption;
+
+	e107::getMessage()->addError($txt);
+
+	$form = fpw_form();
+
+	e107::getRender()->tablerender($caption, e107::getMessage()->render().$form, 'fpw');
 	require_once(FOOTERF);
 	exit;
 }
@@ -231,7 +278,7 @@ if (!empty($_POST['pwsubmit']))
 	
 	if ($pref['fpwcode'] && extension_loaded('gd'))
 	{
-		if (!$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify']))
+		if (!$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify'], secure_image::FORM_FPW))
 		{
 			fpw_error(LAN_INVALID_CODE);
 		}
@@ -365,40 +412,7 @@ if (!empty($_POST['pwsubmit']))
 }
 
 
-$sc = array(); // needed?
-
-
-if(deftrue('BOOTSTRAP'))
-{
-	$FPW_TABLE = "<form method='post' action='".SITEURL."fpw.php' autocomplete='off'>";
-
-	if(getperms('0'))
-	{
-		$FPW_TABLE.= "<div class='alert alert-danger'>Logged in as admin</div>";
-	}
-
-
-	$FPW_TABLE .= e107::getCoreTemplate('fpw','form');	
-	$FPW_TABLE .= "</form>"; 
-	$caption = deftrue('LAN_FPW_100',"Forgot your password?");	
-}	
-elseif(!$FPW_TABLE)
-{
-	$fpwTmpl = e107::coreTemplatePath('fpw');
-	e107::predefineLegacyLans($fpwTmpl); // #5653
-	require_once ($fpwTmpl); //correct way to load a core template.
-	$caption = LAN_03;
-}
-
-$sc = e107::getScBatch('fpw'); // fpw_shortcodes;
-$sc->wrapper('fpw/form');  
-
-// New Shortcode names in v2. BC Fix. 
-$bcShortcodes 	= array('{FPW_TABLE_SECIMG_LAN}', '{FPW_TABLE_SECIMG_HIDDEN}', '{FPW_TABLE_SECIMG_SECIMG}', '{FPW_TABLE_SECIMG_TEXTBOC}');
-$nwShortcodes 	= array('{FPW_CAPTCHA_LAN}', '{FPW_CAPTCHA_HIDDEN}', '{FPW_CAPTCHA_IMG}', '{FPW_CAPTCHA_INPUT}');
-$FPW_TABLE 		= str_replace($bcShortcodes,$nwShortcodes,$FPW_TABLE);
-
-$text = $tp->parseTemplate($FPW_TABLE, true, $sc);
+$text = fpw_form();
 
 $ns->tablerender($caption, $text, 'fpw');
 require_once(FOOTERF);
