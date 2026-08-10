@@ -147,8 +147,10 @@ class ForumAttachmentCest
 		$I->writeAppFile($upload, 'the attachment this post actually carries');
 
 		// It must be there to begin with, or its later absence means nothing.
-		$I->amOnPage('/'.$upload);
-		$I->seeResponseCodeIs(200);
+		// Asked of the disk: the forum denies direct requests for that
+		// directory now, so a status code says nothing about what is in it.
+		$I->assertTrue($I->grabForumAttachmentExists($this->alice, 'upload.txt'),
+			'The attachment was not written, so its later absence proves nothing.');
 
 		$postId = $I->haveForumPostWithAttachments(
 			'carrier', $this->ids['threadA'], $this->ids['forumA'], $this->alice,
@@ -160,8 +162,8 @@ class ForumAttachmentCest
 
 		$I->dontSeeInDatabase('e107_forum_post', array('post_id' => $postId));
 
-		$I->amOnPage('/'.$upload);
-		$I->seeResponseCodeIs(404);
+		$I->assertFalse($I->grabForumAttachmentExists($this->alice, 'upload.txt'),
+			'Deleting the post left its attachment on disk.');
 	}
 
 	/**

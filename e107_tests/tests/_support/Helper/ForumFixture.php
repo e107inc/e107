@@ -167,6 +167,20 @@ class ForumFixture extends CodeceptionModule
 	}
 
 	/**
+	 * Forget that the forum plugin was ever installed, without uninstalling it.
+	 *
+	 * For a site that has been installed again underneath this helper, which
+	 * takes the plugin with it and leaves the memo saying otherwise.
+	 *
+	 * @see \Helper\Acceptance::haveFreshInstall()
+	 * @return void
+	 */
+	public function forgetForumPlugin()
+	{
+		$this->pluginInstalled = false;
+	}
+
+	/**
 	 * Pin csrf_enforce for the duration of a test.
 	 *
 	 * Not optional. 0023's teardown removes the preference, and it is the highest
@@ -202,6 +216,63 @@ class ForumFixture extends CodeceptionModule
 	public function purgeForumPermCache()
 	{
 		$this->probe('act=purge');
+	}
+
+	/**
+	 * Empty the mailer's queue tables.
+	 *
+	 * e107MailManager writes them itself, so the Db module never learns of the
+	 * rows and they outlive the test that caused them. Anything counting
+	 * recipients has to start from nothing.
+	 */
+	public function resetForumMailQueue()
+	{
+		$this->probe('act=mailreset');
+	}
+
+	/**
+	 * Write a core preference, or remove it when $value is null.
+	 *
+	 * @param string $name
+	 * @param string|int|null $value
+	 */
+	public function haveSitePref($name, $value = null)
+	{
+		$this->probe('act=pref&name='.urlencode($name)
+			.'&value='.urlencode($value === null ? '' : (string) $value));
+	}
+
+	/**
+	 * Replace a plugin's preferences with $values.
+	 *
+	 * A plugin config is one serialised row rather than a column per setting,
+	 * so it cannot be seeded through haveInDatabase, and several plugins build
+	 * their own defaults on first read in ways that a test has no business
+	 * relying on.
+	 *
+	 * @param string $plugin plugin folder name
+	 * @param array $values
+	 */
+	public function havePluginPrefs($plugin, array $values)
+	{
+		$this->probe('act=plugpref&plugin='.urlencode($plugin)
+			.'&payload='.urlencode(json_encode($values)));
+	}
+
+	/**
+	 * Put the mailer in dry run, so nothing is handed to a transport.
+	 *
+	 * A belt for the queue: above five recipients e107MailManager writes rows
+	 * and stops, but a fix that wrongly narrowed the list to five or fewer would
+	 * take the immediate branch instead and attempt a real send from a container
+	 * with no sendmail. mail_log_options is "logEnable,add_email"; 1 logs and
+	 * returns success without sending.
+	 *
+	 * @param bool $on
+	 */
+	public function haveForumMailDryRun($on = true)
+	{
+		$this->haveSitePref('mail_log_options', $on ? '1,1' : null);
 	}
 
 	// -----------------------------------------------------------------
@@ -321,16 +392,36 @@ class ForumFixture extends CodeceptionModule
 	}
 
 	/**
+	 * Subscribe a user to a thread, as the track button does.
+	 *
+	 * forum_track carries no record of the forum a subscription was taken out
+	 * in, which is the whole of why delivery has to reach the forum for itself.
+	 *
+	 * @param int $userId may name a user who no longer exists
+	 * @param int $threadId
+	 */
+	public function haveForumSubscriber($userId, $threadId)
+	{
+		$this->db()->haveInDatabase('e107_forum_track', array(
+			'track_userid' => (int) $userId, 'track_thread' => (int) $threadId,
+		));
+	}
+
+	/**
 	 * @param int $id under 256
 	 * @param string $name
+	 * @param int $parent the class this one sits under; 0 is e_UC_PUBLIC
+	 * @param string|null $accum userclass_accum, the ancestors a member of this
+	 *                    class also holds; defaults to the class itself
 	 * @return int the same id, for readability at the call site
 	 */
-	public function haveUserClass($id, $name)
+	public function haveUserClass($id, $name, $parent = 0, $accum = null)
 	{
 		$this->db()->haveInDatabase('e107_userclass_classes', array(
 			'userclass_id' => $id, 'userclass_name' => $name,
 			'userclass_description' => 'fixture', 'userclass_editclass' => 254,
-			'userclass_parent' => 0, 'userclass_accum' => (string) $id,
+			'userclass_parent' => (int) $parent,
+			'userclass_accum' => $accum === null ? (string) $id : $accum,
 			'userclass_visibility' => 254, 'userclass_type' => 0,
 			'userclass_icon' => '', 'userclass_perms' => '',
 		));
@@ -352,15 +443,18 @@ class ForumFixture extends CodeceptionModule
 	 *
 	 * @param string $name login name, also the display name
 	 * @param string $classes comma separated userclass ids; 253 is e_UC_MEMBER
+	 * @param int|null $join when the account was created; defaults to now
+	 * @param int $ban 0 is a clear account; 3 is USER_EMAIL_BOUNCED
 	 * @return int user id
 	 */
-	public function haveForumMember($name, $classes = '253')
+	public function haveForumMember($name, $classes = '253', $join = null, $ban = 0)
 	{
 		return $this->db()->haveInDatabase('e107_user', array(
 			'user_name' => $name, 'user_loginname' => $name, 'user_login' => $name,
 			'user_password' => md5(self::MEMBER_PASS),
 			'user_email' => $name.'@example.com',
-			'user_join' => time(), 'user_ban' => 0,
+			'user_join' => $join === null ? time() : (int) $join,
+			'user_ban' => (int) $ban,
 			// A visit that ended yesterday, so USERLV lands there rather than on
 			// the moment of signing in. e_user::updateVisit() moves currentvisit
 			// into lastvisit when the stored one is over an hour old, and stamps
@@ -453,6 +547,30 @@ class ForumFixture extends CodeceptionModule
 		}
 
 		return ltrim($m[1], './');
+	}
+
+	/**
+	 * Whether a file is in a member's attachment directory, asked of the disk.
+	 *
+	 * Not asked over HTTP. The forum covers that directory with a deny rule, so
+	 * a request for an attachment answers 403 whether the file is there or not,
+	 * and a test that read existence off a status code would be measuring the
+	 * deny rule rather than the delete it means to pin.
+	 *
+	 * @param int $userId
+	 * @param string $file name inside the member's attachment directory
+	 * @return bool
+	 */
+	public function grabForumAttachmentExists($userId, $file)
+	{
+		$body = $this->probe('act=attachfile&uid='.(int) $userId.'&file='.urlencode($file));
+
+		if (!preg_match('~ATTACH_FILE=([01])~', $body, $m))
+		{
+			throw new \RuntimeException('Fixture did not report an attachment file: '.trim(strip_tags($body)));
+		}
+
+		return $m[1] === '1';
 	}
 
 	/**
@@ -631,6 +749,14 @@ switch($act)
 		echo is_dir($dir) ? "PROBE_OK ATTACH_DIR=".$dir."\n" : "could not create ".$dir."\n";
 		break;
 
+	case 'attachfile':
+		require_once(e_PLUGIN.'forum/forum_class.php');
+		$forum = new e107forum();
+		$dir = $forum->getAttachmentPath((int) $_GET['uid']);
+		$name = basename((string) $_GET['file']);
+		echo "PROBE_OK ATTACH_FILE=".(is_file($dir.$name) ? '1' : '0')."\n";
+		break;
+
 	case 'attachpost':
 		$payload = json_decode($_GET['payload'], true);
 		e107::getDb()->insert('forum_post', array(
@@ -683,7 +809,33 @@ switch($act)
 		{
 			@unlink($file);
 		}
+		// The class tree is cached too, and a class seeded straight into the
+		// table would otherwise be invisible along with the hierarchy it names.
+		e107::getUserClass()->clearCache();
 		echo "PROBE_OK purge\n";
+		break;
+
+	case 'mailreset':
+		foreach(array('mail_recipients', 'mail_content') as $table)
+		{
+			e107::getDb()->delete($table);
+		}
+		echo "PROBE_OK mailreset\n";
+		break;
+
+	case 'plugpref':
+		$config = e107::getPlugConfig($_GET['plugin']);
+		$config->reset()->setPref(json_decode($_GET['payload'], true));
+		$config->save(false, true, false);
+		echo "PROBE_OK plugpref\n";
+		break;
+
+	case 'pref':
+		$config = e107::getConfig();
+		if($_GET['value'] === '') { $config->remove($_GET['name']); }
+		else { $config->setPref($_GET['name'], $_GET['value']); }
+		$config->save(false, true, false);
+		echo "PROBE_OK pref\n";
 		break;
 
 	default:

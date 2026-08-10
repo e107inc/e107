@@ -183,7 +183,7 @@ class userlogin
 		// Check secure image
 		if (!$forceLogin && !empty($pref[$this->secImageType]) && extension_loaded('gd'))
 		{
-			if ($secImgResult = e107::getSecureImg()->invalidCode($_POST['rand_num'], $_POST['code_verify'])) // Invalid code
+			if ($secImgResult = e107::getSecureImg()->invalidCode($_POST['rand_num'], $_POST['code_verify'], secure_image::FORM_LOGIN)) // Invalid code
 			{
 				return $this->invalidLogin($username, LOGIN_BAD_CODE, $secImgResult);
 			}

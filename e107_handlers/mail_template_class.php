@@ -69,6 +69,48 @@ class e107MailTemplate
 
 
 	/**
+	 *	Read an email template file and hand back the variables it defines.
+	 *
+	 *	The file is still only included once per request. Its variables are
+	 *	kept, because require_once does nothing at all the second time it is
+	 *	asked for a file, and this method needs those variables on every call,
+	 *	not only on the call that happened to be first.
+	 *
+	 *	@param string $templateFileName
+	 *	@return array variable name => value
+	 */
+	protected function readTemplateFile($templateFileName)
+	{
+		static $cache = array();
+
+		if (!isset($cache[$templateFileName]))
+		{
+			$cache[$templateFileName] = self::includeTemplateVars($templateFileName);
+		}
+
+		return $cache[$templateFileName];
+	}
+
+
+	/**
+	 *	Include a template file in a scope of its own and return what it left
+	 *	behind.
+	 *
+	 *	@param string $templateFileName
+	 *	@return array variable name => value
+	 */
+	private static function includeTemplateVars($templateFileName)
+	{
+		require_once($templateFileName);
+
+		$vars = get_defined_vars();
+		unset($vars['templateFileName']);
+
+		return $vars;
+	}
+
+
+	/**
 	 *	Given a template name, assembles the array of data required by sendTemplated() and saves in our cache
 	 *
 	 *	Template file name is 'email_template.php'
@@ -113,33 +155,32 @@ class e107MailTemplate
 				$fileList[] = $extraFile;
 			}
 			$fileList[] = e_CORE.'templates/email_template.php';
+			$allVars = array();
+
 			foreach ($fileList as $templateFileName )		// Override file, optional plugin file then defaults
 			{
 
 				if (($found < count($requiredFields)) && is_readable($templateFileName))
 				{
-					require_once($templateFileName);
+					$templateVars = $this->readTemplateFile($templateFileName);
+					$allVars = array_merge($allVars, $templateVars);	// Later files win, as re-including them used to
 
-					//$tVars = get_defined_vars();
-					//if (isset($tVars['GLOBALS'])) unset($tVars['GLOBALS']);
-					//print_a($tVars);
-
-					if (isset($$templateName))
+					if (isset($templateVars[$templateName]))
 					{
-						if (is_array($$templateName))
+						if (is_array($templateVars[$templateName]))
 						{
 							foreach ($requiredFields as $k)
 							{
-								if (!$ret[$k] && isset(${$templateName}[$k]))
+								if (!$ret[$k] && isset($templateVars[$templateName][$k]))
 								{
-									$ret[$k] = ${$templateName}[$k];
+									$ret[$k] = $templateVars[$templateName][$k];
 									$found++;
 								}
 							}
 						}
 						else
 						{
-							$ret['email_body'] = $$templateName;		// Non-array just defines body of email
+							$ret['email_body'] = $templateVars[$templateName];		// Non-array just defines body of email
 							$found++;
 						}
 					}
@@ -152,9 +193,9 @@ class e107MailTemplate
 				foreach ($requiredFields as $k)
 				{
 					$override = strtoupper($k);
-					if (!$ret[$k] && isset($$override))
+					if (!$ret[$k] && isset($allVars[$override]))
 					{
-						$ret[$k] = $$override;
+						$ret[$k] = $allVars[$override];
 						$found++;
 					}
 				}

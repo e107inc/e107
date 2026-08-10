@@ -44,19 +44,27 @@ class randomSecretFormatsTest extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * One assertion whatever the value's length, so that the number of
+	 * assertions a run makes does not depend on the values it drew.
+	 * testResetPasswordShape() draws a random length, so asserting per
+	 * character left the suite's total a sum of fifty random draws. That moved
+	 * it by a few dozen between two runs of an identical tree, which was enough
+	 * to hide every other source of drift behind it.
+	 *
 	 * @param string $value
 	 * @param string $set every character of $value must come from this set
 	 * @return void
 	 */
 	private function assertDrawnFrom($value, $set)
 	{
-		for($i = 0, $length = strlen($value); $i < $length; $i++)
-		{
-			$this->assertNotFalse(
-				strpos($set, $value[$i]),
-				'Character ' . var_export($value[$i], true) . ' is outside the documented alphabet.'
-			);
-		}
+		$stray = count_chars($value, 3);
+		$stray = str_replace(str_split($set), '', $stray);
+
+		$this->assertSame(
+			'',
+			$stray,
+			'Characters ' . var_export($stray, true) . ' are outside the documented alphabet.'
+		);
 	}
 
 	public function testAlphaPattern()

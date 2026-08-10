@@ -97,13 +97,21 @@ class e107forum
 
 		if (!empty($_POST['fjsubmit']) && !empty($_POST['forumjump']))
 		{
-			$url = e107::getParser()->filter($_POST['forumjump'],'url');
-			e107::getRedirect()->go($_POST['forumjump']);
+			// The dropdown posts back the URL of the forum the visitor picked, so
+			// the destination arrives from the request and is validated before it
+			// is followed.
+			$url = e107::getRedirect()->verifyDestinationUrl($_POST['forumjump']);
+
+			if($url === false)
+			{
+				$url = e107::url('forum', 'index', null, array('mode' => 'full'));
+			}
+
+			e107::getRedirect()->go($url);
 			exit;
 		}
 
 		$this->e107 = e107::getInstance();
-		$tp = e107::getParser();
 		$this->userViewed = array();
 		$this->modArray = array();
 		
@@ -275,7 +283,9 @@ class e107forum
 	{
 		$user = intval($user);
 		$tp = e107::getParser();
-		$baseDir = e_MEDIA.'plugins/forum/attachments/';
+		require_once(e_PLUGIN.'forum/forum_attachments.php');
+		$paths = forum_attachments::paths();
+		$baseDir = $paths[0];
 		$baseDir .= ($user) ? "user_". $tp->leadingZeros($user, 6) : "anon";
 		
 		if($create == TRUE && !is_dir($baseDir))
@@ -319,15 +329,17 @@ class e107forum
             ->where('post_id', $post_id)
             ->fetchRow();
         $attach = e107::unserialize($array['post_attachments']);
+        $entry  = isset($attach['file'][$file_id]) ? $attach['file'][$file_id] : '';
 
-        $filename = is_array($attach['file'][$file_id]) ? $attach['file'][$file_id]['file'] : $attach['file'][$file_id];
+        $filename = is_array($entry) ? varset($entry['file'], '') : $entry;
+        $filename = basename((string) $filename);
 
-        $file 	= $this->getAttachmentPath($array['post_user']).varset($filename);
+        $file 	= $this->getAttachmentPath($array['post_user']).$filename;
 
         // Check if file exists. Send file for download if it does, return 404 error code when file does not exist.
- 		if(file_exists($file))
+ 		if($filename !== '' && is_file($file))
  		{
- 		   e107::getFile()->send($file, array('roots' => array(e_MEDIA.'plugins/forum/attachments/')));
+ 		   e107::getFile()->send($file, array('roots' => forum_attachments::paths()));
  		}
  		else
  		{
@@ -1009,23 +1021,62 @@ class e107forum
 
 	private function loadPermList()
 	{
+		$this->permList = self::permList();
+	}
+
+
+	/**
+	 * The permission lists for whoever holds this request, keyed by type.
+	 *
+	 * Static, and so answerable without constructing the controller: a listing
+	 * that only wants to know which forums it may name has no business entering
+	 * the forum's request handling to find out.
+	 *
+	 * Cached under forum_perms, keyed on the language and the caller's
+	 * userclass list. The forum admin's create, update and delete hooks clear
+	 * it; nothing else invalidates it.
+	 *
+	 * @return array permission type => forum ids, plus a "<type>_list" string
+	 */
+	public static function permList()
+	{
 		if($tmp = e107::getCache()->setMD5(e_LANGUAGE.USERCLASS_LIST)->retrieve('forum_perms'))
 		{
 			e107::getDebug()->log("Using Permlist cache: True");
 
-			$this->permList = e107::unserialize($tmp);
-
-		//	print_a($this->permList);
-
+			return e107::unserialize($tmp);
 		}
-		else
-		{
-			e107::getDebug()->log("Using Permlist cache: False");
-			$this->_getForumPermList();
-			$tmp = e107::serialize($this->permList, false);
-			e107::getCache()->setMD5(e_LANGUAGE.USERCLASS_LIST)->set('forum_perms', $tmp);
-		}
-		unset($tmp);
+
+		e107::getDebug()->log("Using Permlist cache: False");
+		$permList = self::buildPermList();
+		e107::getCache()->setMD5(e_LANGUAGE.USERCLASS_LIST)->set('forum_perms', e107::serialize($permList, false));
+
+		return $permList;
+	}
+
+
+	/**
+	 * The forum ids checkPerm($id, $type) accepts for this caller.
+	 *
+	 * The list holds the id of every forum whose own class column admits the
+	 * caller and whose parent row's column admits them too, plus the ids of
+	 * those parent rows, so a category containing at least one permitted forum
+	 * is a member of the list in its own right.
+	 *
+	 * Two levels only. forum_sub, the third, is not consulted here and is not
+	 * consulted by forum_viewforum.php either: a sub-forum's forum_parent names
+	 * its category, so it is the category and not the parent forum that is
+	 * asked. Feeds built on this list are therefore exactly as permissive as
+	 * the site route, which is the property that matters.
+	 *
+	 * @param string $type view, post or thread
+	 * @return int[]
+	 */
+	public static function visibleForumIds($type = 'view')
+	{
+		$permList = self::permList();
+
+		return isset($permList[$type]) ? $permList[$type] : array();
 	}
 
 
@@ -1060,9 +1111,12 @@ class e107forum
 
 
 
-	private function _getForumPermList()
+	/**
+	 * @return array permission type => forum ids, plus a "<type>_list" string
+	 */
+	private static function buildPermList()
 	{
-		$this->permList = array();
+		$permList = array();
 
 		// Static map of permission key => forum class column (identifiers are fixed literals).
 		$classColumns = array(
@@ -1073,23 +1127,13 @@ class e107forum
 
 		$classList = explode(',', USERCLASS_LIST);
 
+		// The predicate itself lives in forum_attachments.php, which thumb.php
+		// can load and this file cannot. One rule, asked from both sides.
+		require_once(e_PLUGIN.'forum/forum_attachments.php');
+
 		foreach($classColumns as $key => $col)
 		{
-			$qb = e107::getDb()->createQueryBuilder();
-			// Bind the class list once and reuse it in both the JOIN ON-condition and the WHERE.
-			$classPlaceholders = array();
-			foreach($classList as $class)
-			{
-				$classPlaceholders[] = $qb->createNamedParameter($class);
-			}
-			$classPlaceholders = implode(', ', $classPlaceholders);
-
-			$rows = $qb->select('f.forum_id', 'f.forum_parent')->from('forum', 'f')
-				->leftJoin('forum', 'fp', $qb->raw('f.forum_parent = fp.forum_id AND fp.'.$col.' IN ('.$classPlaceholders.')'))
-				->where($qb->raw('f.'.$col.' IN ('.$classPlaceholders.')'))
-				->where('f.forum_parent', '!=', 0)
-				->where($qb->expr()->isNotNull('fp.forum_id'))
-				->fetchAll();
+			$rows = forum_attachments::readableForumRows($classList, $col);
 
 			$tmp = array();
 			foreach($rows as $row)
@@ -1098,12 +1142,11 @@ class e107forum
 				$tmp[$row['forum_parent']] = 1;
 			}
 			ksort($tmp);
-			$this->permList[$key] = array_keys($tmp);
-			$this->permList[$key.'_list'] = implode(',', array_keys($tmp));
+			$permList[$key] = array_keys($tmp);
+			$permList[$key.'_list'] = implode(',', array_keys($tmp));
 		}
 
-
-		// print_a($this->permList);
+		return $permList;
 	}
 
 	
@@ -1119,8 +1162,30 @@ class e107forum
 		return (in_array($forumId, $this->permList[$type]));
 	}
 
-	
-	
+
+	/**
+	 * "The thread sits in a forum the caller may read", as a WHERE fragment.
+	 *
+	 * For queries that are still built by concatenation. A query builder should
+	 * pass visibleForumIds() to whereIn() instead, which binds the ids and
+	 * compiles the same "nothing is readable" case to 1=0.
+	 *
+	 * @param string $alias the forum_thread alias in the query being built
+	 * @return string a WHERE fragment; "1=0" when the caller may read nothing
+	 */
+	public static function threadVisibleSql($alias = 't')
+	{
+		$visible = self::visibleForumIds('view');
+
+		if(empty($visible))
+		{
+			return '1=0';
+		}
+
+		return $alias.'.thread_forum_id IN ('.implode(',', array_map('intval', $visible)).')';
+	}
+
+
 	function threadViewed($threadId)
 	{
 		$e107 = e107::getInstance();
@@ -1138,7 +1203,6 @@ class e107forum
 	
 	function getTrackedThreadList($id, $retType = 'array')
 	{
-		$e107 = e107::getInstance();
 		$sql = e107::getDb();
 
 		$id = (int)$id;
@@ -2333,13 +2397,179 @@ class e107forum
 
 
 	/**
+	 * The two user classes a thread's forum is read through.
+	 *
+	 * forum_track records a user and a thread and nothing else, so where the
+	 * subscription was taken out has to be recovered before anyone can be judged
+	 * on it. A thread names its forum, and the forum's parent carries the second
+	 * half of the view permission, exactly as buildPermList() reads it. The
+	 * INNER JOIN to the parent is also what refuses a forum sitting at the top
+	 * level, which buildPermList() spells forum_parent != 0.
+	 *
+	 * @param int $threadId
+	 * @return array|false forum_class and parent_class, or false when the thread
+	 *                     names no forum readable by anybody
+	 */
+	private function trackForumClasses($threadId)
+	{
+		$qb = e107::getDb()->createQueryBuilder();
+		$expr = $qb->expr();
+
+		$row = $qb->selectAs('f.forum_class', 'forum_class')->selectAs('fp.forum_class', 'parent_class')
+			->from('forum_thread', 'th')
+			->innerJoin('forum', 'f', $expr->compareColumns('th.thread_forum_id', 'f.forum_id'))
+			->innerJoin('forum', 'fp', $expr->compareColumns('f.forum_parent', 'fp.forum_id'))
+			->where('th.thread_id', (int) $threadId)
+			->fetchRow();
+
+		return empty($row) ? false : $row;
+	}
+
+
+	/**
+	 * The subscribers to a thread who may still read the forum it sits in.
+	 *
+	 * The join to user is INNER: a subscription naming an account that no longer
+	 * exists names nobody, and under the LEFT JOIN this replaced it arrived as a
+	 * recipient with a NULL address.
+	 *
+	 * @param int $threadId
+	 * @return array user rows, each with user_id, user_name, user_email and
+	 *               user_lastvisit
+	 */
+	private function trackRecipients($threadId)
+	{
+		$classes = $this->trackForumClasses($threadId);
+
+		if($classes === false)
+		{
+			return array();
+		}
+
+		$qb = e107::getDb()->createQueryBuilder();
+
+		return $qb->select('u.user_id', 'u.user_name', 'u.user_email', 'u.user_lastvisit')
+			->from('forum_track', 't')
+			->innerJoin('user', 'u', $qb->expr()->compareColumns('t.track_userid', 'u.user_id'))
+			->where('t.track_thread', (int) $threadId)
+			->where($this->trackClassHeld($qb, $classes['forum_class']))
+			->where($this->trackClassHeld($qb, $classes['parent_class']))
+			->fetchAll();
+	}
+
+
+	/**
+	 * "The recipient, aliased u, holds user class $classId", as SQL.
+	 *
+	 * The rule being answered is e_user_model::_setClassList(): a signed-in user
+	 * holds every class written in user_class along with everything those
+	 * inherit, plus the fixed classes their own row answers for. So the
+	 * predicate is a match against user_class, ORed with whichever property of
+	 * the user row the class is a name for, shaped after
+	 * user_class::getUsersInClass(). It answers readability and nothing else;
+	 * whether an address is worth writing to is the mailer's question.
+	 *
+	 * e_UC_PUBLIC, e_UC_READONLY and e_UC_MEMBER are held by every account, and
+	 * the join to user is what establishes that there is one.
+	 *
+	 * e_UC_GUEST and e_UC_NOBODY answer nobody rather than being matched against
+	 * user_class, one being the absence of an account and the other the refusal
+	 * of every one. That is narrower than checkPerm(), which would grant either
+	 * to a row carrying the id literally, and deliberately so.
+	 *
+	 * @param QueryBuilder $qb the query the recipient is aliased u in
+	 * @param int $classId
+	 * @return SqlFragment
+	 */
+	private function trackClassHeld($qb, $classId)
+	{
+		$expr = $qb->expr();
+		$classId = (int) $classId;
+
+		if($classId === e_UC_PUBLIC || $classId === e_UC_READONLY || $classId === e_UC_MEMBER)
+		{
+			return $qb->raw('1=1');
+		}
+
+		if($classId === e_UC_GUEST || $classId === e_UC_NOBODY)
+		{
+			return $qb->raw('1=0');
+		}
+
+		$terms = array($expr->regexp('u.user_class',
+			'(^|,)('.implode('|', $this->trackClassHolders($classId)).')(,|$)'));
+
+		switch($classId)
+		{
+			case e_UC_NEWUSER:
+				$period = e107::getPref('user_new_period', 0);
+				if(!empty($period))
+				{
+					$terms[] = $expr->gt('u.user_join', strtotime($period.' days ago'));
+				}
+				break;
+
+			case e_UC_ADMIN:
+				$terms[] = $expr->eq('u.user_admin', 1);
+				break;
+
+			case e_UC_MAINADMIN:
+				// e_userperms::simulateHasAdminPerms('0', ...): one of the
+				// dot-separated segments of user_perms is 0.
+				$terms[] = $expr->allOf($expr->eq('u.user_admin', 1),
+					$qb->raw("CONCAT('.', u.user_perms, '.') LIKE ".$qb->createNamedParameter('%.0.%')));
+				break;
+		}
+
+		return call_user_func_array(array($expr, 'anyOf'), $terms);
+	}
+
+
+	/**
+	 * The classes whose members hold $classId.
+	 *
+	 * get_all_user_classes() answers the other direction, "what does a member of
+	 * this class hold", and is what USERCLASS_LIST is built from; reversing it
+	 * over the class tree is what recognises a member of a child class as
+	 * holding its ancestors. FIND_IN_SET on user_class, the shorthand used by
+	 * notify::send(), asks only about the classes a user was literally given and
+	 * so misses every inherited one.
+	 *
+	 * $classId is always in the answer, including when the tree has no row for
+	 * it: _setClassList() expands user_class literally, so a class deleted from
+	 * userclass_classes while members still carry the id is still granted by
+	 * checkPerm() and still has to be honoured here.
+	 *
+	 * @param int $classId
+	 * @return int[]
+	 */
+	private function trackClassHolders($classId)
+	{
+		$userClass = e107::getUserClass();
+		$classId = (int) $classId;
+		$holders = array($classId);
+
+		foreach(array_keys($userClass->uc_get_classlist()) as $candidate)
+		{
+			$held = array_map('intval', $userClass->get_all_user_classes((string) $candidate, true));
+
+			if(in_array($classId, $held, true))
+			{
+				$holders[] = (int) $candidate;
+			}
+		}
+
+		return array_unique($holders);
+	}
+
+
+	/**
 	 * Send an email to users who are tracking the topic/thread.
 	* @param $post
 	 * @return bool
 	*/
 	function trackEmail($post)
 	{
-		$sql = e107::getDb();
 		$tp = e107::getParser();
 
 		$trackingPref = $this->prefs->get('track');
@@ -2350,11 +2580,7 @@ class e107forum
 			return false;
 		}
 
-		$qb = $sql->createQueryBuilder();
-		$data = $qb->select('t.*', 'u.user_id', 'u.user_name', 'u.user_email', 'u.user_lastvisit')->from('forum_track', 't')
-			->leftJoin('user', 'u', $qb->expr()->compareColumns('t.track_userid', 'u.user_id'))
-			->where('t.track_thread', intval($post['post_thread']))
-			->fetchAll();
+		$data = $this->trackRecipients(intval($post['post_thread']));
 
 		if(empty($data))
 		{

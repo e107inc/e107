@@ -16,6 +16,9 @@ class e107Test extends \Codeception\Test\Unit
 	/** @var e107 */
 	private $e107;
 
+	/** @var string[] plugins this test installed, to be given back in _after() */
+	private $installedPlugins = [];
+
 	protected function _before()
 	{
 		error_reporting(E_ALL & ~E_USER_WARNING);
@@ -30,9 +33,36 @@ class e107Test extends \Codeception\Test\Unit
 
 	}
 
+	/**
+	 * Install a plugin for the length of one test.
+	 *
+	 * testUrl() builds its assertions by walking every route in
+	 * e107::getAddonConfig('e_url'), so a plugin installed and left behind
+	 * silently changes how much that test covers. Four tests here need routes
+	 * a plugin brings with it; without this they added those routes to whatever
+	 * ran afterwards, which is part of why the suite's assertion count was
+	 * never the same twice.
+	 *
+	 * @param string $plugin plugin folder name
+	 * @return void
+	 */
+	private function havePluginInstalled($plugin)
+	{
+		e107::getPlugin()->install($plugin);
+		$this->installedPlugins[] = $plugin;
+	}
+
 	protected function _after()
 	{
 		error_reporting(E_ALL);
+
+		foreach($this->installedPlugins as $plugin)
+		{
+			e107::getPlugin()->uninstall($plugin);
+		}
+
+		$this->installedPlugins = [];
+
 		// Clean up temporary files
 		foreach($this->tempFiles as $file)
 		{
@@ -1366,13 +1396,12 @@ class e107Test extends \Codeception\Test\Unit
 		$constant = 'LAN_MEMBERS_0';
 		$expected = "restricted area";
 
-		// First, ensure the constant is not already defined (clean test scenario).
-		if(defined($constant))
-		{
-			$this::markTestSkipped("Constant '$constant' was already defined. Skipped for accurate isolation.");
-		}
-
-		// Call the method you need to test.
+		// Whether this language file has already been read in this process is a
+		// property of the run order rather than of coreLan(), and skipping on it
+		// left the suite making a different number of assertions from one
+		// shuffle to the next. Both assertions below hold either way, because
+		// includeLanArray() guards every define(): a constant already in place
+		// still has to carry the value the language file gives it.
 		$this->e107::coreLan('membersonly'); // 'admin' is an example; adjust if needed based on your actual language files
 
 		// Check if the constant is correctly defined afterward.
@@ -1551,14 +1580,14 @@ class e107Test extends \Codeception\Test\Unit
 			mkdir($flatLangDir, 0777, true);
 		}
 
-		file_put_contents($flatLangFile, "<?php return ['TESTPLUGIN_FLAT_LAN' => 'Flat Language Loaded'];");
+		file_put_contents($flatLangFile, "<?php return ['TESTPLUGIN_FLAT_ARR_LAN' => 'Flat Language Loaded'];");
 		$this->tempFiles[] = $flatLangFile;
 
 		$this->assertTrue(is_readable($flatLangFile), 'Flat language file exists and is readable.');
 		$retFlat = e107::plugLan($pluginName, 'flatfile', true);
 		$this->assertTrue($retFlat, 'Flat file inclusion via plugLan(true, flatfile) should return true');
-		$this->assertTrue(defined('TESTPLUGIN_FLAT_LAN'), 'Constant TESTPLUGIN_FLAT_LAN should be defined.');
-		$this->assertEquals('Flat Language Loaded', constant('TESTPLUGIN_FLAT_LAN'));
+		$this->assertTrue(defined('TESTPLUGIN_FLAT_ARR_LAN'), 'Constant TESTPLUGIN_FLAT_ARR_LAN should be defined.');
+		$this->assertEquals('Flat Language Loaded', constant('TESTPLUGIN_FLAT_ARR_LAN'));
 
 		$returnedPath = e107::plugLan($pluginName, 'global', false, true);
 		$expectedPath = e_PLUGIN . $pluginName . '/languages/English_global.php';
@@ -1620,7 +1649,7 @@ class e107Test extends \Codeception\Test\Unit
 	function testDetectRoute()
 	{
 
-		e107::getPlugin()->install('forum');
+		$this->havePluginInstalled('forum');
 
 		$tests = array(
 			0 => array(
@@ -1647,9 +1676,6 @@ class e107Test extends \Codeception\Test\Unit
 
 			$this::assertSame($var['expected'], $result);
 		}
-
-
-		e107::getPlugin()->uninstall('forum');
 
 	}
 
@@ -1837,10 +1863,9 @@ class e107Test extends \Codeception\Test\Unit
 
 		$obj = $this->e107;
 
-		e107::getPlugin()->install('_blank');
+		$this->havePluginInstalled('_blank');
 		$result = $obj::url('_blank', 'parked', null, ['mode' => 'full']);
 		self::assertSame('https://parked-domain.com/custom', $result);
-		e107::getPlugin()->uninstall('_blank');
 
 	}
 
@@ -2014,7 +2039,7 @@ class e107Test extends \Codeception\Test\Unit
 	{
 
 		$e107 = $this->e107;
-		$e107::getPlugin()->install('forum');
+		$this->havePluginInstalled('forum');
 		$url = $e107::url('forum', 'topic', [], array(
 			'query' => array(
 				'f'  => 'post',
@@ -2032,7 +2057,7 @@ class e107Test extends \Codeception\Test\Unit
 	{
 
 		$e107 = $this->e107;
-		$e107::getPlugin()->install('forum');
+		$this->havePluginInstalled('forum');
 		$url = $e107::url('forum', 'post', [], array(
 			'query' => array(
 				"didn't" => '<tag attr="such wow"></tag>',
@@ -2051,7 +2076,7 @@ class e107Test extends \Codeception\Test\Unit
 	{
 
 		$e107 = $this->e107;
-		$e107::getPlugin()->install('forum');
+		$this->havePluginInstalled('forum');
 		$url = $e107::url('forum', 'forum', [
 			'forum_sef' => '<>',
 		], array(

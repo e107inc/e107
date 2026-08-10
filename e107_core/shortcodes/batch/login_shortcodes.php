@@ -110,7 +110,7 @@ class login_shortcodes extends e_shortcode
 		}
 
 		if(!$this->secImg){ return; }
-		return e107::getSecureImg()->renderImage();
+		return e107::getSecureImg()->renderImage(secure_image::FORM_LOGIN);
 		// return e107::getSecureImg()->r_image();	
 	}
 	
@@ -122,7 +122,7 @@ class login_shortcodes extends e_shortcode
 		}
 
 		if(!$this->secImg){ return null; }
-		return 	e107::getSecureImg()->renderInput();
+		return 	e107::getSecureImg()->renderInput(secure_image::FORM_LOGIN);
 		// return "<input class='tbox' type='text' name='code_verify' size='15' maxlength='20' />";	
 	}
 

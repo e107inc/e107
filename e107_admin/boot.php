@@ -22,7 +22,15 @@ if(!e107::isCli())
 	header('Content-type: text/html; charset=utf-8', TRUE);
 }
 
-define('ADMINFEED', 'https://e107.org/adminfeed');
+if(!defined('ADMINFEED')) // Allow e107_config.php to override.
+{
+	define('ADMINFEED', 'https://e107.org/adminfeed');
+}
+
+if(!defined('ADDONFEED')) // Allow e107_config.php to override.
+{
+	define('ADDONFEED', 'https://e107.org/feed/');
+}
 
 if(!empty($_GET['iframe']) && !defined('e_IFRAME')) // global iframe support.
 {
@@ -119,12 +127,12 @@ if(e_AJAX_REQUEST &&  ADMIN && varset($_GET['mode']) == 'core' && ($_GET['type']
 		{
 			if($count > $limit){ break; }
 
-			$description = $tp->toText($row['description']);
+			$description = $tp->text_truncate($tp->toText($row['description']), 150);
 			$text .= '
 			<div class="media">
 			  <div class="media-body">
-			    <h4 class="media-heading"><a target="_blank" href="'.$row['link'].'">'.$row['title'].'</a> <small>— '.$row['pubDate'].'</small></h4>
-			   '.$tp->text_truncate($description,150).'
+			    <h4 class="media-heading"><a target="_blank" href="'.$tp->toUrlAttribute($row['link']).'">'.htmlspecialchars($row['title'], ENT_QUOTES, 'UTF-8').'</a> <small>— '.htmlspecialchars($row['pubDate'], ENT_QUOTES, 'UTF-8').'</small></h4>
+			   '.htmlspecialchars($description, ENT_QUOTES, 'UTF-8', false).'
 			  </div></div>';
 			  $count++;
 		}
@@ -147,11 +155,14 @@ if(e_AJAX_REQUEST &&  ADMIN && varset($_GET['mode']) == 'core' && ($_GET['type']
 if(ADMIN && (e_AJAX_REQUEST || deftrue('e_DEBUG_FEEDS')) && varset($_GET['mode']) == 'addons' )
 {
 	$type = ($_GET['type'] == 'plugin') ? 'plugin' : 'theme';
-	$tag = 'Infopanel_'.$type;
+	// Versioned: the composed HTML is what gets cached, so an install upgrading
+	// into the encoding below must not be handed three more hours of the bytes
+	// it composed before it.
+	$tag = 'Infopanel_'.$type.'_v2';
 
 	$cache = e107::getCache();
 
-	$feed = 'https://e107.org/feed/?limit=3&type='.$type;
+	$feed = ADDONFEED.'?limit=3&type='.$type;
 
 	if($text = $cache->retrieve($tag,180,true, true)) // check every 3 hours.
 	{
@@ -174,19 +185,22 @@ if(ADMIN && (e_AJAX_REQUEST || deftrue('e_DEBUG_FEEDS')) && varset($_GET['mode']
 
 		$text = "<div style='margin-top:10px'>";
 
+		$tp = e107::getParser();
+
 		foreach($rows[$type] as $val)
 		{
 			$meta = $val['@attributes'];
 			$img = ($type == 'theme') ? $meta['thumbnail'] : $meta['icon'];
+			$description = $tp->text_truncate($tp->toText(varset($val['description'], '')), 150);
 			$text .= '<div class="media">';
 			$text .= '<div class="media-left">
 		    <a href="'.$link.'">
-		      <img class="media-object img-rounded rounded" src="'.$img.'" style="width:100px" alt="" />
+		      <img class="media-object img-rounded rounded" src="'.$tp->toUrlAttribute($img).'" style="width:100px" alt="" />
 		    </a>
 		  </div>
 		  <div class="media-body">
-		    <h4 class="media-heading"><a href="'.$link.'">'.$meta['name'].' v'.$meta['version'].'</a> <small>&mdash; '.$meta['author'].'</small></h4>
-		    '.$val['description'].'
+		    <h4 class="media-heading"><a href="'.$link.'">'.htmlspecialchars(varset($meta['name'], ''), ENT_QUOTES, 'UTF-8').' v'.htmlspecialchars(varset($meta['version'], ''), ENT_QUOTES, 'UTF-8').'</a> <small>&mdash; '.htmlspecialchars(varset($meta['author'], ''), ENT_QUOTES, 'UTF-8').'</small></h4>
+		    '.htmlspecialchars($description, ENT_QUOTES, 'UTF-8', false).'
 		  </div>';
 			$text .= '</div>';
 		}

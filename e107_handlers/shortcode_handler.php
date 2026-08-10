@@ -1285,6 +1285,13 @@ class e_parse_shortcode
 					// Code is not registered, let's look for .sc or .php file
 					// .php file takes precedence over .sc file
 					$codeLower = strtolower($code);
+
+					// The name becomes a filename below, so it has to be a name.
+					if(!preg_match('/^[a-z0-9_]+$/', $codeLower))
+					{
+						return $matches[0];
+					}
+
 					if (is_readable(e_CORE.'shortcodes/single/'.$codeLower.'.php'))
 					{
 						$_function = $codeLower.'_shortcode';

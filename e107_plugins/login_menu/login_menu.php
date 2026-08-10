@@ -58,9 +58,11 @@ $use_imagecode = ($pref['logcode'] && extension_loaded('gd'));
 
 if ($use_imagecode)
 {
+	// The shortcodes reach the singleton, and a second instance would hand out
+	// a second challenge for the same form: the image would show one answer and
+	// the input would carry the token for another.
 	global $sec_img;
-	include_once(e_HANDLER.'secure_img_handler.php');
-	$sec_img = new secure_image;
+	$sec_img = e107::getSecureImg();
 }
 
 $text = '';
