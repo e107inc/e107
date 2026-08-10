@@ -342,6 +342,126 @@ class e_pluginbuilderTest extends \Codeception\Test\Unit
 
 	}*/
 
+	/**
+	 * Lint a generated fragment and hand back the exit status.
+	 *
+	 * @param string $code generated PHP, without its opening tag
+	 * @return int 0 when the fragment is valid PHP
+	 */
+	protected function lintGenerated($code)
+	{
+		$disabled = array_map('trim', explode(',', (string) ini_get('disable_functions')));
+
+		if(in_array('exec', $disabled, true))
+		{
+			$this->markTestSkipped('exec() is disabled here, so the generated code cannot be linted.');
+		}
+
+		$file = tempnam(sys_get_temp_dir(), 'e107pb');
+		file_put_contents($file, "<?php\n".$code);
+
+		$output = array();
+		$status = 0;
+		exec('php -l '.escapeshellarg($file).' 2>&1', $output, $status);
+		unlink($file);
+
+		return $status;
+	}
+
+	/**
+	 * The wizard writes PHP source, and the table name lands in bare `class X`
+	 * position where no quote is needed to break out. PHP mangles space, dot and
+	 * `[` in a top-level POST key and nothing else, so a payload that avoids
+	 * those three characters arrives intact.
+	 */
+	public function testBuildAdminUIRefusesAHostileTableName()
+	{
+		$posted = $this->posted;
+		$posted['X{}echo"INJECTED_TABLE";class Y'] = $posted['example_ui'];
+
+		$result = $this->pb->buildAdminUI($posted, 'pluginfolder', 'PluginTitle');
+
+		$this->assertStringNotContainsString('INJECTED_TABLE', $result,
+			'A table name that is not an identifier reached the generated class declaration.');
+		$this->assertSame(0, $this->lintGenerated($result),
+			'The generated admin page is not valid PHP.');
+	}
+
+	/**
+	 * Field names are nested POST keys, which PHP does not mangle at all: they
+	 * arrive byte for byte, quotes included. This one lands inside the
+	 * single-quoted key of the generated $fields array.
+	 */
+	public function testBuildAdminUIRefusesAHostileFieldName()
+	{
+		$posted = $this->posted;
+		$posted['example_ui']['fields']["x'=>1);echo\"INJECTED_FIELD\";\$z=array('y"]
+			= $posted['example_ui']['fields']['example_id'];
+
+		$result = $this->pb->buildAdminUI($posted, 'pluginfolder', 'PluginTitle');
+
+		$this->assertStringNotContainsString('INJECTED_FIELD', $result,
+			'A field name that is not an identifier reached the generated $fields array.');
+		$this->assertSame(0, $this->lintGenerated($result),
+			'The generated admin page is not valid PHP.');
+	}
+
+	/**
+	 * filter() is htmlspecialchars(strip_tags()), which neutralises the quote
+	 * but leaves the backslash alone, so a value ending in one escapes the
+	 * closing quote of the literal it was placed in.
+	 */
+	public function testBuildAdminUIEscapesAValueEndingInABackslash()
+	{
+		$result = $this->pb->buildAdminUI($this->posted, 'pluginfolder', 'PluginTitle\\');
+
+		$this->assertSame(0, $this->lintGenerated($result),
+			'A plugin title ending in a backslash broke out of its string literal.');
+	}
+
+	/**
+	 * The shortcode batch is the one generated file that is loaded on the front
+	 * end rather than behind the admin gate, and the field name is written into
+	 * it as a method name.
+	 */
+	public function testBuildShortcodesFileRefusesAHostileFieldName()
+	{
+		$_POST['bullets_ui']['fields'] = array(
+			'legitimate_field' => array('title' => 'Legit'),
+			'x(){}}echo"INJECTED_SC";class Z{public function w' => array('title' => 'Bad'),
+		);
+
+		// The plugin name becomes part of a class name, so it has to be one.
+		$name = 'e107pbtest'.bin2hex(random_bytes(4));
+		$dir  = e_PLUGIN.$name;
+		mkdir($dir);
+
+		try
+		{
+			$this->pb->pluginName = $name;
+
+			$build = new ReflectionMethod('e_pluginbuilder', 'buildShortcodesFile');
+			$build->setAccessible(true);
+			$build->invoke($this->pb);
+
+			$file = $dir.'/'.$name.'_shortcodes.php';
+			$written = is_file($file) ? file_get_contents($file) : '';
+
+			$this->assertStringNotContainsString('INJECTED_SC', $written,
+				'A field name that is not an identifier became part of the shortcode batch.');
+			$this->assertStringContainsString('sc_legitimate_field', $written,
+				'The ordinary field was dropped along with the hostile one.');
+			$this->assertSame(0, $this->lintGenerated(substr($written, strlen("<?php\n"))),
+				'The generated shortcode batch is not valid PHP.');
+		}
+		finally
+		{
+			foreach((array) glob($dir.'/*') as $f) { @unlink($f); }
+			@rmdir($dir);
+			unset($_POST['bullets_ui']);
+		}
+	}
+
 	public function testBuildAdminUI()
 	{
 		$result = $this->pb->buildAdminUI($this->posted, 'pluginfolder', 'PluginTitle');

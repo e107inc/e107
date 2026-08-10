@@ -52,7 +52,9 @@ else
 	e107::redirect();
 	exit;
 }
-$source = $qs[0];
+// $source selects a plugin directory to include from, the same as it does in
+// print.php, which has always narrowed it first.
+$source = preg_replace('/[^\w:-]/', '', $qs[0]);
 $parms = varset($qs[1], '');
 unset($qs);
 $error = '';
