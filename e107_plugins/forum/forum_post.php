@@ -270,6 +270,29 @@ class forum_post_handler
 
 
 	/**
+	 * Where a Cancel link on a confirmation page sends the moderator back to.
+	 *
+	 * The Referer is the visitor's to choose, so it is worth nothing until it has
+	 * been through the same-origin check, and worth nothing in an attribute until
+	 * it has been encoded. A referring page can ask for the full URL to survive a
+	 * cross-origin navigation, and a browser does not encode the apostrophe.
+	 *
+	 * @return string encoded, ready to place between quotes
+	 */
+	private function backUrl()
+	{
+		$referer = e107::getRedirect()->verifyDestinationUrl(varset($_SERVER['HTTP_REFERER'], ''));
+
+		if($referer === false)
+		{
+			$referer = e_PLUGIN_ABS.'forum/forum.php';
+		}
+
+		return e107::getParser()->toUrlAttribute($referer);
+	}
+
+
+	/**
 	 *
 	 */
 	function submitPoll()
@@ -797,7 +820,7 @@ class forum_post_handler
 		</table>
 		<div class='center'>
 		<input class='btn btn-primary button' type='submit' name='split_thread' value=\"".LAN_FORUM_3052."\" />
-		<a class='btn btn-default btn-secondary button'  href='".$_SERVER['HTTP_REFERER']."' >".LAN_CANCEL."</a>
+		<a class='btn btn-default btn-secondary button'  href='".$this->backUrl()."' >".LAN_CANCEL."</a>
 		</div>
 
 		</div>
@@ -924,7 +947,7 @@ class forum_post_handler
 		</table>
 		<div class='center'>
 		<input class='btn btn-primary button' type='submit' name='move_thread' value='".LAN_FORUM_5019."' />
-		<a class='btn btn-default btn-secondary button'  href='".$_SERVER['HTTP_REFERER']."' >".LAN_CANCEL."</a>
+		<a class='btn btn-default btn-secondary button'  href='".$this->backUrl()."' >".LAN_CANCEL."</a>
 		</div>
 
 		</div>
@@ -1247,10 +1270,10 @@ class forum_post_handler
 			}
 			
 			//Allows directly overriding the method of adding files (or other data) as attachments
-			if($attachmentsPosted = $this->processAttachmentsPosted())
+			if($attachmentsPosted = $this->processAttachmentsPosted('', (array) $uploadResult))
 			{
 				$postInfo['post_attachments'] = $attachmentsPosted;
-			}	
+			}
 			
 //		var_dump($uploadResult);
 
@@ -1311,7 +1334,7 @@ class forum_post_handler
 			if($postResult === -1 || $newPostId === -1) //Duplicate post
 			{
 				require_once(HEADERF);
-				$message = LAN_FORUM_3006."<br ><a class='btn btn-default' href='".$_SERVER['HTTP_REFERER']."'>".LAN_FORUM_8028."</a>";
+				$message = LAN_FORUM_3006."<br ><a class='btn btn-default' href='".$this->backUrl()."'>".LAN_FORUM_8028."</a>";
 				$text = e107::getMessage()->addError($message)->render();
 				e107::getRender()->tablerender(LAN_PLUGIN_FORUM_NAME, $text, 'forum-post-duplicate'); // change to forum-title pref.
 				require_once(FOOTERF);
@@ -1554,11 +1577,11 @@ class forum_post_handler
 			}
 			
 			//Allows directly overriding the method of adding files (or other data) as attachments
-			if($attachmentsPosted = $this->processAttachmentsPosted($this->data['post_attachments']))
+			if($attachmentsPosted = $this->processAttachmentsPosted($this->data['post_attachments'], (array) $uploadResult))
 			{
 				$postVals['post_attachments'] = $attachmentsPosted;
-			}	
-      
+			}
+
 			$postVals['post_edit_datestamp']    = time();
 			$postVals['post_edit_user']         = USERID;
 			$postVals['post_entry']             = $_POST['post'];
@@ -1630,10 +1653,10 @@ class forum_post_handler
 		}
 		
 		//Allows directly overriding the method of adding files (or other data) as attachments
-		if($attachmentsPosted = $this->processAttachmentsPosted($this->data['post_attachments']))
+		if($attachmentsPosted = $this->processAttachmentsPosted($this->data['post_attachments'], (array) $uploadResult))
 		{
 			$postVals['post_attachments'] = $attachmentsPosted;
-		}		
+		}
 
 		$this->forumObj->postUpdate($this->data['post_id'], $postVals);
 
@@ -1680,6 +1703,41 @@ class forum_post_handler
 
 
 	/**
+	 * Whether the caller may attach a file to a post at all.
+	 *
+	 * @return bool
+	 */
+	private function mayAttach()
+	{
+		if(!is_object($this->forumObj) || !$this->forumObj->prefs->get('attach'))
+		{
+			return false;
+		}
+
+		return check_class(e107::pref('core', 'upload_class')) || getperms('0');
+	}
+
+
+	/**
+	 * Accept the files posted with a forum post.
+	 *
+	 * The random component lands in the stored name. upload_handler.php builds
+	 * that name out of the upload time, the poster's user id and the name the
+	 * file was uploaded under, and a reader of the thread knows all three, so
+	 * an attachment in a restricted forum was addressable by anyone who had
+	 * ever seen the post. Sixteen hex characters are what stops that on a
+	 * server the deny rule cannot reach.
+	 *
+	 * The deny rule goes down before the file does, so an attachment is never
+	 * fetchable off the web server, not even between being stored and the next
+	 * write covering the directory.
+	 *
+	 * The permission test is the one sc_forumattachment() applies to the field
+	 * that produces these files. It was on the field and not on the sink, so a
+	 * site whose administrator had never turned attachments on still took them
+	 * from anybody who could post.
+	 *
+	 * @see forum_shortcodes::sc_forumattachment()
 	 * @return array
 	 */
 	function processAttachments()
@@ -1695,13 +1753,21 @@ class forum_post_handler
 
 				e107::getMessage()->addDebug("Attachment Detected");
 
-			// retrieve and create attachment directory if needed
-			//$attachmentDir = $this->forumObj->getAttachmentPath(USERID, true);
-
-		//	e107::getMessage()->addDebug("Attachment Directory: ".$attachmentDir);
-
-			if($uploaded = e107::getFile()->getUploaded('attachments', 'attachment', array( 'max_file_count' => 5)))
+			if(!$this->mayAttach())
 			{
+				e107::getMessage()->addError(LAN_NO_PERMISSIONS);
+
+				return $ret;
+			}
+
+			require_once(e_PLUGIN.'forum/forum_attachments.php');
+			forum_attachments::protect();
+
+			$type = 'attachment+'.e_random::hex(16).'_';
+
+			if($uploaded = e107::getFile()->getUploaded('attachments', $type, array( 'max_file_count' => 5)))
+			{
+				e107::getFile()->protectDirectory($this->forumObj->getAttachmentPath(USERID));
 
 				e107::getMessage()->addDebug("Uploaded Data: ".print_a($uploaded,true));
 
@@ -1848,9 +1914,69 @@ class forum_post_handler
 	}
 
 
+	/**
+	 * Drop names a guest did not put there.
+	 *
+	 * post_attachments is the authorisation record for both routes to the
+	 * bytes: sendFile() resolves it against the poster's directory and
+	 * forum_attachments asks which forums name the file in the directory it
+	 * sits in. A registered poster owns that directory alone, so naming a file
+	 * in it names a file of their own. Every guest shares one directory, so a
+	 * guest naming a file may be naming another guest's, and a post in a public
+	 * forum would then release an attachment from a restricted one.
+	 *
+	 * @param array $attachments
+	 * @param string $existingValues serialised post_attachments already stored
+	 * @param array $uploaded rows processAttachments() returned this request
+	 * @return array
+	 */
+	private function filterGuestAttachmentNames($attachments, $existingValues, array $uploaded)
+	{
+		if(USERID || !is_array($attachments))
+		{
+			return $attachments;
+		}
+
+		$allowed = array();
+
+		foreach($uploaded as $row)
+		{
+			$allowed[] = (string) varset($row['file'], '');
+		}
+
+		$stored = e107::unserialize($existingValues);
+
+		if(is_array($stored))
+		{
+			foreach($stored as $entries)
+			{
+				foreach((array) $entries as $entry)
+				{
+					$allowed[] = (string) (is_array($entry) ? varset($entry['file'], '') : $entry);
+				}
+			}
+		}
+
+		foreach($attachments as $key => $entries)
+		{
+			foreach((array) $entries as $index => $entry)
+			{
+				$name = (string) (is_array($entry) ? varset($entry['file'], '') : $entry);
+
+				if(!in_array($name, $allowed, true))
+				{
+					unset($attachments[$key][$index]);
+				}
+			}
+		}
+
+		return $attachments;
+	}
+
+
 	//Allows directly overriding the method of adding files (or other data) as attachments
-	function processAttachmentsPosted($existingValues = '')
-	{		
+	function processAttachmentsPosted($existingValues = '', $uploaded = array())
+	{
 		if(isset($_POST['post_attachments_json']) && trim($_POST['post_attachments_json']))
 		{
 			$postedAttachments = json_decode($_POST['post_attachments_json'], true);
@@ -1858,6 +1984,7 @@ class forum_post_handler
 			if($attachmentsJsonErrors === JSON_ERROR_NONE)
 			{
 				$postedAttachments = $this->filterAttachmentNames($postedAttachments);
+				$postedAttachments = $this->filterGuestAttachmentNames($postedAttachments, $existingValues, $uploaded);
 
 		        if($existingValues)
 		        {

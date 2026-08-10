@@ -48,12 +48,59 @@ class AdminLogin extends CodeceptionModule
 
 		if (method_exists($browser, 'waitForText'))
 		{
-			$browser->waitForText(self::CONTROL_PANEL_MARKER, 10);
+			$this->waitForTextInSource($browser, self::CONTROL_PANEL_MARKER, 10);
 		}
 		else
 		{
 			$browser->see(self::CONTROL_PANEL_MARKER);
 		}
+	}
+
+	/**
+	 * Wait for text to turn up anywhere in the page source.
+	 *
+	 * WebDriver's own waitForText() resolves `//body` once and then polls
+	 * getText() on that one handle. The click that gets us here submits a
+	 * form, so the document is replaced while the wait is still running and
+	 * the handle stops belonging to it. Chrome reports that as UnknownError
+	 * "Node with given id does not belong to the document", and the condition
+	 * only knows to swallow StaleElementReferenceException, so the wait dies
+	 * rather than looking again. Reproduced about one run in three, on Chrome
+	 * 149 locally and 150 in CI.
+	 *
+	 * Reading the page source takes no element handle at all, so there is
+	 * nothing left to go stale.
+	 *
+	 * @param mixed  $browser browser module, already resolved
+	 * @param string $marker  text to wait for
+	 * @param int    $timeout seconds
+	 * @return void
+	 */
+	private function waitForTextInSource($browser, $marker, $timeout)
+	{
+		$deadline = microtime(true) + $timeout;
+
+		do
+		{
+			try
+			{
+				if (strpos((string) $browser->grabPageSource(), $marker) !== false)
+				{
+					return;
+				}
+			}
+			catch (\Exception $e)
+			{
+				// The document was swapped out mid-read. Look again.
+			}
+
+			usleep(200000);
+		}
+		while (microtime(true) < $deadline);
+
+		// Nothing arrived in time. Let the module report it, so the failure
+		// carries its own screenshot and page dump.
+		$browser->see($marker);
 	}
 
 	/**

@@ -24,40 +24,61 @@
 const e107_INIT = true;
 
 
+/**
+ * Answer the caller with a status and nothing else. The caller is
+ * unauthenticated, so everything worth knowing goes to the error log.
+ *
+ * @param int    $status
+ * @param string $message
+ * @return void
+ */
+function thumbFail($status, $message)
+{
+	if(!headers_sent())
+	{
+		http_response_code($status);
+		header('Content-Type: text/plain; charset=utf-8');
+		header('X-Content-Type-Options: nosniff');
+	}
+
+	echo $message;
+}
+
 function thumbExceptionHandler(Throwable $e)
 {
-	http_response_code(500);
-	echo "Fatal Thumbnail Error\n";
+	error_log(sprintf(
+		'thumb.php: %s in %s on line %d%s%s',
+		$e->getMessage(),
+		$e->getFile(),
+		$e->getLine(),
+		PHP_EOL,
+		$e->getTraceAsString()
+	));
 
-	 $message = sprintf(
-        "Exception: %s, File: %s, Line: %d, Trace: %s",
-        $e->getMessage(),
-        $e->getFile(),
-        $e->getLine(),
-        $e->getTraceAsString()
-    );
-    var_dump($message);
-	error_log($message);
+	thumbFail(500, 'Thumbnail error');
 }
 
 function thumbErrorHandler($errno, $errstr, $errfile, $errline)
 {
-
-	switch($errno)
+	// A handler is called for a diagnostic the caller suppressed with @ as
+	// well, so the mask has to be read rather than assumed.
+	if(!(error_reporting() & $errno))
 	{
-		case E_USER_ERROR:
-			echo "<b>My ERROR</b> [$errno] $errstr<br />\n";
-			echo "  Fatal error on line $errline in file $errfile";
-			echo ", PHP " . PHP_VERSION . " (" . PHP_OS . ")<br />\n";
-			echo "Aborting...<br />\n";
-			thumbExceptionHandler(new Exception);
-			exit(1);
-			break;
-
-		default:
+		return true;
 	}
 
+	error_log(sprintf('thumb.php: [%d] %s in %s on line %d', $errno, $errstr, $errfile, $errline));
+
+	if($errno === E_USER_ERROR)
+	{
+		thumbFail(500, 'Thumbnail error');
+		exit(1);
+	}
+
+	return true;
 }
+
+@ini_set('display_errors', '0'); // this endpoint answers in bytes, not in prose.
 
 set_exception_handler('thumbExceptionHandler'); // disable to troubleshoot.
 set_error_handler("thumbErrorHandler"); // disable to troubleshoot.
@@ -164,7 +185,8 @@ class e_thumbpage
 
 		if(!$thm->checkSrc())
 		{
-			die('Bad URL');
+			thumbFail(403, 'Bad URL');
+			exit;
 		}
 
 		$thm->sendImage();

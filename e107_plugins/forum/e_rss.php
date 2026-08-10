@@ -55,6 +55,22 @@ class forum_rss // plugin-folder + '_rss'
 	const FIRST_POST_SUBQUERY = '(SELECT MIN(post_id) FROM #forum_post GROUP BY post_thread)';
 
 	/**
+	 * Numeric feed keys this plugin answered to before v0.7.6.
+	 *
+	 * @see rss_addons::legacyKeys()
+	 * @return array old numeric key => canonical text key
+	 */
+	function legacy()
+	{
+		return array(
+			6  => 'forumthreads',
+			7  => 'forumposts',
+			8  => 'forumtopic',
+			11 => 'forumname',
+		);
+	}
+
+	/**
 	 * Admin RSS Configuration
 	 */
 	function config() 
@@ -162,6 +178,9 @@ class forum_rss // plugin-folder + '_rss'
 	{
 		$sqlrss = e107::getDb();
 
+		require_once(e_PLUGIN.'forum/forum_class.php');
+		$visibleForums = e107forum::visibleForumIds();
+
 		$rss 		= array();
 		$limit 		= $parms['limit'];
 		$topicid 	= $parms['id'];
@@ -182,7 +201,7 @@ class forum_rss // plugin-folder + '_rss'
 					->leftJoin('forum_post', 'p', $qb->raw('p.post_thread = t.thread_id AND p.post_id IN ' . self::FIRST_POST_SUBQUERY))
 					->leftJoin('user', 'u', $qb->expr()->compareColumns('t.thread_user', 'u.user_id'))
 					->leftJoin('forum', 'f', $qb->expr()->compareColumns('f.forum_id', 't.thread_forum_id'))
-					->whereIn('f.forum_class', explode(',', USERCLASS_LIST))
+					->whereIn('t.thread_forum_id', $visibleForums)
 					->orderBy('t.thread_datestamp', 'DESC')
 					->setFirstResult(0)->setMaxResults((int) $limit)
 					->fetchAll();
@@ -250,7 +269,7 @@ class forum_rss // plugin-folder + '_rss'
 					->leftJoin('forum_post', 'p', $qb->expr()->compareColumns('p.post_thread', 't.thread_id'))
 					->leftJoin('user', 'u', $qb->expr()->compareColumns('p.post_user', 'u.user_id'))
 					->leftJoin('forum', 'f', $qb->expr()->compareColumns('f.forum_id', 't.thread_forum_id'))
-					->whereIn('f.forum_class', explode(',', USERCLASS_LIST))
+					->whereIn('t.thread_forum_id', $visibleForums)
 					->orderBy('t.thread_datestamp', 'DESC')
 					->setFirstResult(0)->setMaxResults((int) $limit)
 					->fetchAll();
@@ -332,10 +351,16 @@ class forum_rss // plugin-folder + '_rss'
 					->leftJoin('forum_post', 'p', $qb->raw('p.post_thread = t.thread_id AND p.post_id IN ' . self::FIRST_POST_SUBQUERY))
 					->leftJoin('user', 'u', $qb->expr()->compareColumns('t.thread_user', 'u.user_id'))
 					->leftJoin('forum', 'f', $qb->expr()->compareColumns('f.forum_id', 't.thread_forum_id'))
-					->whereIn('f.forum_class', explode(',', USERCLASS_LIST))
+					->whereIn('t.thread_forum_id', $visibleForums)
 					->where('p.post_thread', (int) $topicid)
 					->setFirstResult(0)->setMaxResults(1)
 					->fetchRow();
+
+				// No such topic, or one in a forum this caller may not read.
+				if(empty($topic))
+				{
+					return false;
+				}
 
 				// Replies (exclude first post)
 				$qb = $sqlrss->createQueryBuilder();
@@ -349,7 +374,7 @@ class forum_rss // plugin-folder + '_rss'
 					->leftJoin('forum_post', 'p', $qb->raw('p.post_thread = t.thread_id AND p.post_id NOT IN ' . self::FIRST_POST_SUBQUERY))
 					->leftJoin('user', 'u', $qb->expr()->compareColumns('t.thread_user', 'u.user_id'))
 					->leftJoin('forum', 'f', $qb->expr()->compareColumns('f.forum_id', 't.thread_forum_id'))
-					->whereIn('f.forum_class', explode(',', USERCLASS_LIST))
+					->whereIn('t.thread_forum_id', $visibleForums)
 					->where('p.post_thread', (int) $topicid)
 					->fetchAll();
 
@@ -442,7 +467,7 @@ class forum_rss // plugin-folder + '_rss'
 					->leftJoin('forum', 'f', $qb->expr()->compareColumns('f.forum_id', 't.thread_forum_id'))
 					->leftJoin('forum_post', 'p', $qb->raw('p.post_thread = t.thread_id AND p.post_id IN ' . self::FIRST_POST_SUBQUERY))
 					->where('t.thread_forum_id', (int) $topicid)
-					->whereIn('f.forum_class', explode(',', USERCLASS_LIST))
+					->whereIn('t.thread_forum_id', $visibleForums)
 					->orderBy('t.thread_datestamp', 'DESC')
 					->setFirstResult(0)->setMaxResults((int) $limit)
 					->fetchAll();

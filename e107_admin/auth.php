@@ -315,8 +315,8 @@ class auth
 				$text .= "
 				<div class='field'>
 					<label for='code-verify'>".LAN_ENTER_CODE."</label>"
-					.$sec_img->renderImage().
-					$sec_img->renderInput()."	
+					.$sec_img->renderImage(secure_image::FORM_LOGIN).
+					$sec_img->renderInput(secure_image::FORM_LOGIN)."	
 				</div>";
 			}
 			    

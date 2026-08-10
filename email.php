@@ -19,7 +19,7 @@
 require_once('class2.php');
 if (!check_class(varset($pref['email_item_class'],e_UC_MEMBER)))
 {
-	e107::redirect('Location: '.e_BASE.'index.php');
+	e107::redirect(e_BASE.'index.php');
 	exit();
 }
 
@@ -39,8 +39,7 @@ foreach($imgtypes as $t)
 
 if ($use_imagecode)
 {
-	require_once(e_HANDLER.'secure_img_handler.php');
-	$sec_img = new secure_image;
+	$sec_img = e107::getSecureImg();
 }
 
 if (e_QUERY)
@@ -52,7 +51,9 @@ else
 	e107::redirect();
 	exit;
 }
-$source = $qs[0];
+// $source selects a plugin directory to include from, the same as it does in
+// print.php, which has always narrowed it first.
+$source = preg_replace('/[^\w:-]/', '', $qs[0]);
 $parms = varset($qs[1], '');
 unset($qs);
 $error = '';
@@ -89,17 +90,17 @@ if (isset($_POST['emailsubmit']))
 		$error .= LAN_EMAIL_106;
 	}
 
+	// A wrong or expired code is answered with the form again, and the form
+	// below issues a fresh challenge. Bouncing to the front page instead threw
+	// away everything the visitor had typed, and since a challenge is now spent
+	// by the attempt that failed, the page they went back to carried one that
+	// could never succeed.
 	if($use_imagecode)
 	{
-		if(!isset($_POST['code_verify']) || !isset($_POST['rand_num']))
+		if(!isset($_POST['code_verify']) || !isset($_POST['rand_num'])
+			|| !$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify'], secure_image::FORM_EMAILFRIEND))
 		{
-			e107::redirect();
-			exit;
-		}
-		if (!$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify']))
-		{
-			e107::redirect();
-			exit;
+			$error .= LAN_INVALID_CODE;
 		}
 	}
 
@@ -216,7 +217,7 @@ $text .= "
 <tr>
 <td style='width:25%'>".LAN_EMAIL_8."</td>
 <td style='width:75%'>
-<textarea class='tbox' name='comment' cols='70' rows='4' style='width:95%'>".LAN_EMAIL_6." ".SITENAME." (".$emailurl.")
+<textarea class='tbox' name='comment' cols='70' rows='4' style='width:95%'>".LAN_EMAIL_6." ".SITENAME." (".htmlspecialchars($emailurl, ENT_QUOTES, 'UTF-8').")
 ";
 
 if (USER == TRUE)
@@ -239,9 +240,9 @@ $text .= "</textarea>
 if($use_imagecode)
 {
 	$text .= "<tr><td>".LAN_EMAIL_190."</td><td>";
-	$text .= $sec_img->r_image();
+	$text .= $sec_img->r_image(secure_image::FORM_EMAILFRIEND);
 	$text .= " <input class='tbox' type='text' name='code_verify' size='15' maxlength='20' />
-	<input type='hidden' name='rand_num' value='".$sec_img->random_number."' /></td></tr>";
+	<input type='hidden' name='rand_num' value='".$sec_img->getToken(secure_image::FORM_EMAILFRIEND)."' /></td></tr>";
 }
 
 $text .= "
@@ -249,7 +250,7 @@ $text .= "
 <td style='width:25%'></td>
 <td style='width:75%'>
 <input class='btn btn-default btn-secondary button' type='submit' name='emailsubmit' value='".LAN_EMAIL_4."' />
-<input type='hidden' name='referer' value='".$referrer."' />
+<input type='hidden' name='referer' value='".$tp->toAttribute($referrer, true)."' />
 </td>
 </tr>
 </table>

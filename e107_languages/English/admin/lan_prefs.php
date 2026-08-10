@@ -299,4 +299,8 @@ return [
     'PRFLAN_312' => "Security token, allow without one and log it",
     'PRFLAN_313' => "Accept anything",
     'PRFLAN_314' => "The browser check is unavailable on this address. Browsers only send Sec-Fetch-Site to a secure address, so on a site served over plain HTTP the header never arrives and a setting that asks for nothing else would refuse every submission. Serve this site over HTTPS to use it.",
+    'PRFLAN_315' => "Seconds to answer the code",
+    'PRFLAN_316' => "How long a visitor has between the code being drawn and the form being submitted. Each code may be answered once, right or wrong, so a short window is not a second chance. Raise it if visitors using a magnifier or a screen reader report that the code has expired by the time they submit.",
+    'PRFLAN_317' => "Answer from the same address",
+    'PRFLAN_318' => "Refuse a code answered from a different network address than it was drawn to. It stops a code being solved elsewhere and passed on, and it also refuses a genuine visitor whose address changes between the two requests, which happens on mobile data, on carrier-grade NAT, with rotating IPv6 privacy addresses and over Tor.",
 ];

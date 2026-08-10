@@ -30,7 +30,9 @@ class bb_h extends e_bb_base
 		$h = $bparms[1] ? intval($bparms[1]) : 2;
 		$parms = $bparms[2];
 		unset($bparms);
-		
+
+		$safe = array();
+
 		if(!empty($parms['class']))
 		{
 			$safe['class'] = eHelper::secureClassAttr($parms['class']);

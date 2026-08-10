@@ -33,14 +33,23 @@ class contact_shortcodes extends e_shortcode
 	}
 	
 
-	function sc_contact_person($parm='') 
+	/**
+	 * The users the sitecontacts preference makes reachable through the contact
+	 * form.
+	 *
+	 * The selector below offers a choice out of this set, and contact.php
+	 * resolves a submitted contact_person out of the same set, so the two cannot
+	 * drift apart into a selector that offers one list and a mailer that honours
+	 * another.
+	 *
+	 * @return \e107\Database\QueryBuilder with the table and the predicates set
+	 */
+	public function recipientQuery()
 	{
-		$tp = e107::getParser();
-		$sql = e107::getDb();
 		$pref = e107::getPref();
 
-		$qb = $sql->createQueryBuilder();
-		$qb->select('user_id', 'user_name')->from('user')->orderBy('user_name');
+		$qb = e107::getDb()->createQueryBuilder();
+		$qb->from('user')->orderBy('user_name');
 
 		if(varset($pref['sitecontacts']) == e_UC_ADMIN)
 		{
@@ -56,9 +65,48 @@ class contact_shortcodes extends e_shortcode
 		}
 		else
 		{
-			$qb->where($qb->expr()->findInSet('user_class', (int) $pref['sitecontacts']))
+			$qb->where($qb->expr()->findInSet('user_class', (int) varset($pref['sitecontacts'])))
 			   ->where('user_ban', 0);
 		}
+
+		return $qb;
+	}
+
+	/**
+	 * Put the CAPTCHA into a rendered contact form that has none.
+	 *
+	 * contact.php refuses a submission whose code does not verify, so the fields
+	 * that answer it cannot be left to the template: a theme that overrides
+	 * contact_template.php without {CONTACT_IMAGECODE_INPUT} would otherwise
+	 * have a form nobody can submit.
+	 *
+	 * @param string $text rendered form markup
+	 * @return string
+	 */
+	public function withImagecode($text)
+	{
+		if(strpos($text, "name='code_verify'") !== false || strpos($text, 'name="code_verify"') !== false)
+		{
+			return $text;
+		}
+
+		$block = "<div class='control-group form-group'><label for='code-verify'>".$this->sc_contact_imagecode_label()."</label> "
+			.$this->sc_contact_imagecode()."<span class='m-2'>".$this->sc_contact_imagecode_input()."</span></div>";
+
+		$close = strripos($text, '</form>');
+
+		if($close === false)
+		{
+			return $text.$block;
+		}
+
+		return substr($text, 0, $close).$block.substr($text, $close);
+	}
+
+	function sc_contact_person($parm='')
+	{
+		$qb = $this->recipientQuery();
+		$qb->select('user_id', 'user_name');
 
 		$text = "<select name='contact_person' class='tbox contact_person form-control'>\n";
 
@@ -88,7 +136,7 @@ class contact_shortcodes extends e_shortcode
 	{
 		//return e107::getSecureImg()->r_image()."<div>".e107::getSecureImg()->renderInput()."</div>"; 
 		//return "<input type='hidden' name='rand_num' value='".e107::getSecureImg()->random_number."' />".e107::getSecureImg()->r_image(); // See #3980
-		return e107::getSecureImg()->renderImage();
+		return e107::getSecureImg()->renderImage(secure_image::FORM_CONTACT);
 	}
 	
 	function sc_contact_imagecode_label($parm='')
@@ -98,7 +146,7 @@ class contact_shortcodes extends e_shortcode
 	
 	function sc_contact_imagecode_input($parm='') 
 	{
-		return e107::getSecureImg()->renderInput();
+		return e107::getSecureImg()->renderInput(secure_image::FORM_CONTACT);
 	}
 	
 	

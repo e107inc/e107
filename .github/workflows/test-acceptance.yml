@@ -4,122 +4,117 @@ on:
   push:
   pull_request:
 
+# The acceptance suite runs on the same harness developers use locally
+# (e107_tests/bin/e107-tests), so a CI failure reproduces with two commands:
+#
+#   e107_tests/bin/e107-tests up --php 8.5 --db mariadb:12.3 --no-selenium
+#   e107_tests/bin/e107-tests run acceptance
+#
+# Add --base-path e107 for the subdirectory legs. That flag is not decoration:
+# e107 derives e_HTTP from the request and scopes cookies, redirects and
+# generated links to it, so a site under a subdirectory reaches code a docroot
+# install never does, and most e107 sites are installed that way.
+#
+# The matrix is the ends of the supported range rather than every point in it.
+# A version break is nearly always "too old to have it" or "too new to still
+# have it"; the middle of the range rarely disagrees with both ends.
+
 jobs:
   test-acceptance:
+    name: PHP ${{ matrix.php }}, ${{ matrix.db }}, ${{ matrix.layout }}
     strategy:
       fail-fast: false
       matrix:
-        php-version: ['8.1', '8.3'] # PHP versions matrix
+        # Spelled out rather than built from axes: four entries are easier to
+        # read, and to add one to, than the rules for how `include` merges.
+        # Old PHP is paired with old MySQL and new with new, which is how
+        # these are actually deployed.
+        #
+        # The PHP floor is 8.1, not composer.json's declared 8.0, because the
+        # test suite cannot be installed on 8.0: every twig release that
+        # supports 8.0 is blocked by composer's security-advisory policy, and
+        # the only unaffected releases require 8.1. Testing on 8.0 would mean
+        # shipping CI a dependency with published vulnerabilities. e107 itself
+        # may well still run on 8.0 -- nothing here says otherwise -- but CI
+        # cannot demonstrate it, so treat ">=8.0" as unverified.
+        #
+        # The MySQL floor is 5.5, the oldest release the installer can build
+        # the schema on, and this job is the only thing that checks: the unit
+        # suite loads a dump and never runs CREATE TABLE.
+        #
+        # It used to be 5.7. Two barriers stood in the way and db_verify now
+        # settles both against what the server reports rather than assuming:
+        #   error 1214  InnoDB had no FULLTEXT index before MySQL 5.6, so the
+        #               tables declaring one fall back to an engine that has it
+        #   error 1071  "key was too long; max key length is 767 bytes", the
+        #               InnoDB limit that 5.7 relaxes, so a table whose widest
+        #               index would not fit at utf8mb4 gets utf8 instead
+        # Keeping 5.5 here is what stops that regressing, since it is the only
+        # row where the FULLTEXT fallback is exercised at all.
         include:
-          - php-version: '8.1'
-            operating_system:
-              image: docker.io/jrei/systemd-ubuntu:22.04
-          - php-version: '8.3'
-            operating_system:
-              image: docker.io/jrei/systemd-ubuntu:24.04  # Ubuntu 24.04 contains PHP 8.3 by default
+          - php: '8.1'
+            db: 'mysql:5.5'
+            layout: docroot
+            base_path: ''
+          - php: '8.1'
+            db: 'mysql:5.5'
+            layout: subdirectory
+            base_path: 'e107'
+          - php: '8.5'
+            db: 'mariadb:12.3'
+            layout: docroot
+            base_path: ''
+          - php: '8.5'
+            db: 'mariadb:12.3'
+            layout: subdirectory
+            base_path: 'e107'
 
     runs-on: ubuntu-latest
 
     steps:
-      - name: Replace Docker with Podman
-        run: sudo apt-get -o Dpkg::Options::="--force-overwrite" install -y podman-docker
-
       - uses: actions/checkout@v6
-
-      - name: Restore container image cache
-        id: cache-container
-        uses: actions/cache@v5
         with:
-          path: /tmp/container-image.tar
-          key: container-${{ matrix.php-version }}-${{ hashFiles('.github/workflows/test-acceptance.yml', 'e107_tests/lib/ci/salt/salt-bootstrap.go', 'e107_tests/lib/ci/salt/master', 'e107_tests/lib/ci/salt/pillars/top.sls', 'e107_tests/lib/ci/salt/states/**', 'e107_tests/lib/ci/config.acceptance.ci.yml') }}
+          submodules: recursive
 
-      - name: Load cached container image
-        if: steps.cache-container.outputs.cache-hit == 'true'
-        run: |
-          docker load -i /tmp/container-image.tar
-          docker run -d -it --name target -v .:/app/ e107-provisioned:${{ matrix.php-version }}
+      - uses: docker/setup-buildx-action@v4
 
-      - name: Wait for services to be ready
-        if: steps.cache-container.outputs.cache-hit == 'true'
-        run: |
-          for i in $(seq 1 30); do
-            if docker exec target sh -c '! test -e /run/nologin && systemctl is-active --quiet mariadb && systemctl is-active --quiet apache2 && systemctl is-active --quiet ssh' 2>/dev/null; then
-              echo "All services are active and user logins are permitted."
-              break
-            fi
-            if [ "$i" -eq 30 ]; then
-              echo "ERROR: Timed out waiting for services."
-              docker exec target systemctl --no-pager status mariadb apache2 ssh systemd-user-sessions || true
-              docker exec target ls -la /run/nologin || true
-              exit 1
-            fi
-            echo "Attempt $i/30: waiting for services..."
-            sleep 2
-          done
-
-      - uses: actions/setup-go@v6
-        if: steps.cache-container.outputs.cache-hit != 'true'
+      # Built here rather than by `compose up` so the layers survive between
+      # runs. compose builds the web image only when it is missing, so loading
+      # it under the tag compose expects turns that build into a no-op.
+      - name: Build the web image
+        uses: docker/build-push-action@v7
         with:
-          go-version: "^1.26"
+          context: ./e107_tests/docker
+          build-args: PHP_VERSION=${{ matrix.php }}
+          tags: e107-web:${{ matrix.php }}
+          load: true
+          cache-from: type=gha,scope=web-${{ matrix.php }}
+          cache-to: type=gha,mode=max,scope=web-${{ matrix.php }}
 
-      - name: Compile SaltStack bootstrap wrapper
-        if: steps.cache-container.outputs.cache-hit != 'true'
-        run: CGO_ENABLED=0 go build -ldflags "-s -w" -o ./salt-bootstrap salt-bootstrap.go
-        working-directory: ./e107_tests/lib/ci/salt/
-
-      - name: Launch test container
-        if: steps.cache-container.outputs.cache-hit != 'true'
-        run: docker run -d -it --name target -v .:/app/ ${{ matrix.operating_system.image }}
-
-      - name: Install SaltStack
-        if: steps.cache-container.outputs.cache-hit != 'true'
-        run: docker exec target /app/e107_tests/lib/ci/salt/salt-bootstrap onedir
-
-      - name: Apply Salt state
-        if: steps.cache-container.outputs.cache-hit != 'true'
+      # --no-selenium: the browser image is over a gigabyte and only the
+      # WebDriver suite needs it. An empty --base-path means a docroot install.
+      - name: Bring up the stack
         run: |
-          ln -v -s master minion
-          rm -fv pillars/config.sls
-          touch pillars/config.sls
-          rm -fv pillars/config-sample.sls
-          touch pillars/config-sample.sls
-          ln -v -s -f ../../config.acceptance.ci.yml pillars/config-local.sls
-          docker exec -w /app/e107_tests/lib/ci/salt/ target /bin/sh -c "
-            salt-call -c ./ --id=e107-dev --local state.apply e107-dev ||
-            salt-call -c ./ --id=e107-dev --local state.apply e107-dev
-          "
-        working-directory: ./e107_tests/lib/ci/salt/
-
-      - name: Install PHP extensions
-        if: steps.cache-container.outputs.cache-hit != 'true'
-        run: |
-          docker exec target apt-get update
-          docker exec target apt-get install -y \
-            php${{ matrix.php-version }}-zip \
-            php${{ matrix.php-version }}-curl \
-            php${{ matrix.php-version }}-mbstring \
-            php${{ matrix.php-version }}-xml
-
-      - name: Save provisioned container image for caching
-        if: steps.cache-container.outputs.cache-hit != 'true'
-        run: |
-          docker commit target e107-provisioned:${{ matrix.php-version }}
-          docker save e107-provisioned:${{ matrix.php-version }} -o /tmp/container-image.tar
-
-      - name: Verify PHP version
-        run: docker exec target php -v
-
-      - name: Install test dependencies
-        run: |
-          docker exec -w /app/e107_tests/ -e COMPOSER_ALLOW_SUPERUSER=1 target \
-            composer update --prefer-dist --no-progress
-
-      - name: Download Git submodule dependencies
-        run: git submodule update --init --recursive --remote
-
-      - name: Install the CI test configuration file
-        run: |
-          ln -v -s -f ./lib/ci/config.acceptance.ci.yml ./e107_tests/config.yml
+          ./e107_tests/bin/e107-tests up \
+            --php '${{ matrix.php }}' \
+            --db '${{ matrix.db }}' \
+            --base-path '${{ matrix.base_path }}' \
+            --no-selenium
 
       - name: Run acceptance tests
-        run: docker exec -w /app/e107_tests/ target php ./vendor/bin/codecept run acceptance --steps
+        run: ./e107_tests/bin/e107-tests run acceptance
+
+      - name: Collect container logs
+        if: failure()
+        run: ./e107_tests/bin/e107-tests logs > /tmp/container.log 2>&1 || true
+
+      - name: Upload failure output
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: acceptance-php${{ matrix.php }}-${{ matrix.layout }}
+          path: |
+            e107_tests/tests/_output/
+            /tmp/container.log
+          if-no-files-found: ignore
+          retention-days: 7

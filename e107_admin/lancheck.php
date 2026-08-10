@@ -15,10 +15,15 @@ if (!defined('e107_INIT'))
 	require_once(__DIR__.'/../class2.php');
 }
 
+if (!getperms('L'))
+{
+	e107::redirect('admin');
+	exit;
+}
+
 e107::coreLan('lancheck', true);
 
 $e_sub_cat = 'language';
-// require_once("auth.php");
 
 $frm = e107::getForm();
 $mes = e107::getMessage();
@@ -115,7 +120,12 @@ class lancheck
 		// Edit the Language File.
 		if($mode == 'edit' && vartrue($file) && !empty($lan) && in_array($lan, $acceptedLans))
 		{
-			
+			if(!$this->isLanFileTarget($file))
+			{
+				e107::getMessage()->addError(LAN_ERROR);
+				return false;
+			}
+
 			if (empty($_GET['type']))
 			{
 				$dir1 =  e_LANGUAGEDIR."English/";
@@ -851,6 +861,115 @@ class lancheck
 
 
 
+	/**
+	 * Is this a name that may be written into generated PHP as a constant?
+	 *
+	 * Matches what fill_phrases_array() is willing to read back, so a name that
+	 * passes here survives a save/reload cycle.
+	 *
+	 * @param string $name candidate constant name from the newdef[] field
+	 * @return bool
+	 */
+	private function isConstantName($name)
+	{
+		return is_string($name) && preg_match('/^\w+$/', $name) === 1;
+	}
+
+	/**
+	 * Turn the setlocale() field into a list of quoted PHP string literals.
+	 *
+	 * The field reaches us either as a bare locale name or as the argument list
+	 * lifted out of the file, so accept both and re-quote every name found.
+	 * Anything that is not shaped like a locale is dropped rather than written.
+	 *
+	 * @param string $raw contents of the LC_ALL textarea
+	 * @return array PHP literals, ready to join with commas
+	 */
+	private function localeArguments($raw)
+	{
+		if(preg_match_all('/[\'"]([^\'"]*)[\'"]/', $raw, $quoted))
+		{
+			$candidates = $quoted[1];
+		}
+		else
+		{
+			$candidates = explode(',', $raw);
+		}
+
+		$args = array();
+
+		foreach($candidates as $candidate)
+		{
+			$candidate = trim($candidate);
+
+			if($candidate !== '' && preg_match('/^[A-Za-z0-9_.@+-]+$/', $candidate))
+			{
+				$args[] = var_export($candidate, true);
+			}
+		}
+
+		return $args;
+	}
+
+	/**
+	 * Is this a language file the editor may open?
+	 *
+	 * The value arrives on the query string and ends up inside the path this
+	 * class creates directories at, writes stub files to, and finally saves
+	 * over, so it has to be a plain relative path to a .php file.
+	 *
+	 * @param string $file candidate path, relative to a language root
+	 * @return bool
+	 */
+	private function isLanFileTarget($file)
+	{
+		if(!is_string($file) || $file === '' || strlen($file) > 255)
+		{
+			return false;
+		}
+
+		if(strpos($file, "\0") !== false || strpos($file, '..') !== false || strpos($file, '\\') !== false)
+		{
+			return false;
+		}
+
+		if($file[0] === '/' || strtolower(substr($file, -4)) !== '.php')
+		{
+			return false;
+		}
+
+		return preg_match('#^[\w./-]+$#', $file) === 1;
+	}
+
+	/**
+	 * Does this directory still sit under one of the roots language files are
+	 * kept in?
+	 *
+	 * The roots themselves are relative to the calling script (e_LANGUAGEDIR
+	 * reads as ../e107_languages/ from the admin area), so this compares
+	 * against the constants rather than trying to reason about the path.
+	 *
+	 * @param string $dir directory built from one of the language roots
+	 * @return bool
+	 */
+	private function withinLanRoots($dir)
+	{
+		if(!is_string($dir) || $dir === '' || strpos($dir, "\0") !== false)
+		{
+			return false;
+		}
+
+		foreach(array(e_LANGUAGEDIR, e_PLUGIN, e_THEME) as $root)
+		{
+			if($root !== '' && strpos($dir, $root) === 0)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	function write_lanfile($lan='')
 	{
 		if(!$lan){ 	return; }
@@ -924,34 +1043,47 @@ class lancheck
 			$notdef_end = "\n";
 			$deflang = (MAGIC_QUOTES_GPC === TRUE) ? stripslashes($_POST['newlang'][$i]) : $_POST['newlang'][$i];
 			$func = "define";
-			$quote = chr(34);
-	
-			if (strpos($_POST['newdef'][$i],"ndef++") !== FALSE )
+
+			$rawdef = isset($_POST['newdef'][$i]) ? $_POST['newdef'][$i] : '';
+			$guarded = (strpos($rawdef,"ndef++") !== FALSE);
+			$defvar = $guarded ? str_replace("ndef++","",$rawdef) : $rawdef;
+
+			if(!is_string($deflang) || !$this->isConstantName($defvar))
 			{
-				$defvar = str_replace("ndef++","",$_POST['newdef'][$i]);
-				$notdef_start = "if (!defined(".chr(34).$defvar.chr(34).")) {";
-				$notdef_end = "}\n";
+				continue;
 			}
-			else
-			{
-				$defvar = $_POST['newdef'][$i];
-			}
+
+			$deflang = str_replace(chr(0), '', $deflang);
 
 			if(empty($deflang))
 			{
 				continue; 
 			}
-	
-			if($_POST['newdef'][$i] == "LC_ALL" && vartrue($_SESSION['lancheck-edit-file']))
+
+			if($guarded)
 			{
-				$message .= $notdef_start.'setlocale('.htmlentities($defvar).','.$deflang.');<br />'.$notdef_end;
-				$input .= $notdef_start."setlocale(".$defvar.",".$deflang.");".$notdef_end;
+				$notdef_start = "if (!defined(".var_export($defvar, true).")) {";
+				$notdef_end = "}\n";
+			}
+
+			if($rawdef == "LC_ALL" && vartrue($_SESSION['lancheck-edit-file']))
+			{
+				$locales = $this->localeArguments($deflang);
+
+				if(empty($locales))
+				{
+					continue;
+				}
+
+				$statement = "setlocale(".$defvar.", ".implode(", ", $locales).");";
 			}
 			else
 			{
-				$message .= $notdef_start.$func.'('.$quote.htmlentities($defvar).$quote.',"'.$deflang.'");<br />'.$notdef_end;
-				$input .= $notdef_start.$func."(".$quote.$defvar.$quote.", ".chr(34).$deflang.chr(34).");".$notdef_end;
+				$statement = $func."(".var_export($defvar, true).", ".var_export($deflang, true).");";
 			}
+
+			$message .= htmlspecialchars($notdef_start.$statement, ENT_QUOTES, 'UTF-8').'<br />'.$notdef_end;
+			$input .= $notdef_start.$statement.$notdef_end;
 		}
 	
 		$message .="<br />";
@@ -964,7 +1096,7 @@ class lancheck
 		$writeit = str_replace("//","/",$writeit); // Quick Fix. 
 		
 		$fp = @fopen($writeit,"w");
-		if(!@fwrite($fp, $input))
+		if($fp === false || !@fwrite($fp, $input))
 		{
 			$caption = LAN_ERROR;
 			$message = LAN_CHECK_17;
@@ -976,7 +1108,10 @@ class lancheck
 			$caption = LAN_SAVED." <b>".str_replace('..','',$writeit)."</b>";
 			$status = e107::getMessage()->addSuccess($caption)->render();
 		}
-		fclose($fp);
+		if($fp !== false)
+		{
+			fclose($fp);
+		}
 
 	/*
 		$message .= "<form method='post' action='".e_SELF."?tools' id='select_lang'>
@@ -1541,6 +1676,12 @@ class lancheck
 			$dir2 = e_THEME.$dir2;
 		}
 		
+		if(!$this->withinLanRoots($dir1) || !$this->withinLanRoots($dir2))
+		{
+			e107::getMessage()->addError(LAN_ERROR);
+			return null;
+		}
+
 	//	$ns = e107::getRender();
 		$sql = e107::getDb();
 
