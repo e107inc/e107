@@ -281,7 +281,7 @@ class poll
 
 					case POLL_MODE_IP:
 						$userid = e107::getIPHandler()->getIP(FALSE);
-						$voted_ids = explode('^', substr($pollArray['poll_ip'], 0, -1));
+						$voted_ids = explode('^', (string) substr($pollArray['poll_ip'], 0, -1));
 						if (in_array($userid, $voted_ids))
 						{
 							$POLLMODE = 'voted';
@@ -300,7 +300,7 @@ class poll
 						else
 						{
 							$userid = USERID;
-							$voted_ids = explode('^', substr($pollArray['poll_ip'], 0, -1));
+							$voted_ids = explode('^', (string) substr($pollArray['poll_ip'], 0, -1));
 							if (in_array($userid, $voted_ids))
 							{
 								$POLLMODE = 'voted';

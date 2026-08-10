@@ -1946,7 +1946,7 @@ class lancheck
 		}
 
 		$quote = $raw[0];
-		$inner = substr($raw, 1, -1);
+		$inner = (string) substr($raw, 1, -1);
 
 		if($quote === "'")
 		{

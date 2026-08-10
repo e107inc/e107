@@ -245,7 +245,7 @@ class ANSI
                         }
                         // fall-through
                     case "\x1B[K": // Clear screen from cursor right
-                        $this->screen[$this->y] = substr($this->screen[$this->y], 0, $this->x);
+                        $this->screen[$this->y] = (string) substr($this->screen[$this->y], 0, $this->x);
 
                         array_splice($this->attrs[$this->y], $this->x + 1, $this->max_x - $this->x, array_fill($this->x, $this->max_x - ($this->x - 1), $this->base_attr_cell));
                         break;
@@ -375,7 +375,7 @@ class ANSI
                 case "\x0F": // shift
                     break;
                 case "\x1B": // start ANSI escape code
-                    $this->tokenization[count($this->tokenization) - 1] = substr($this->tokenization[count($this->tokenization) - 1], 0, -1);
+                    $this->tokenization[count($this->tokenization) - 1] = (string) substr($this->tokenization[count($this->tokenization) - 1], 0, -1);
                     //if (!strlen($this->tokenization[count($this->tokenization) - 1])) {
                     //    array_pop($this->tokenization);
                     //}
@@ -508,7 +508,7 @@ class ANSI
             }
             $output .= "\r\n";
         }
-        $output = substr($output, 0, -2);
+        $output = (string) substr($output, 0, -2);
         // close any remaining open tags
         $output .= $this->processCoordinate($last_attr, $this->base_attr_cell, '');
         return rtrim($output);

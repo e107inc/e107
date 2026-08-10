@@ -138,6 +138,6 @@
 		{
 			$root = codecept_root_dir();
 
-			return strpos($path, $root) === 0 ? substr($path, strlen($root)) : $path;
+			return strpos($path, $root) === 0 ? (string) substr($path, strlen($root)) : $path;
 		}
 	}

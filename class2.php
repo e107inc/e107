@@ -477,7 +477,7 @@ if(!empty($pref['redirectsiteurl']) && !empty($pref['siteurl'])) {
 
 	if(isset($pref['multilanguage_subdomain']) && $pref['multilanguage_subdomain'])
 	{
-   		if(substr(e_REQUEST_URL, 7, 4) === 'www.' || substr(e_REQUEST_URL, 8, 4) === 'www.')
+   		if((string) substr(e_REQUEST_URL, 7, 4) === 'www.' || (string) substr(e_REQUEST_URL, 8, 4) === 'www.')
 		{
 			$self = e_REQUEST_URL;
 			//if(e_QUERY){ $self .= '?'.e_QUERY; }
@@ -1272,7 +1272,7 @@ function check_class($var, $userclass = null, $uid = 0)
 			if ($v[0] === '-')
 			{
 				$invert = true;
-				$v = substr($v, 1);
+				$v = (string) substr($v, 1);
 			}
 			$v = $e107->user_class->ucGetClassIDFromName($v);
 		}

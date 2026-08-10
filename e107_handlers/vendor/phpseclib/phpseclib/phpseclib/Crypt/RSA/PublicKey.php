@@ -204,7 +204,7 @@ final class PublicKey extends RSA implements Common\PublicKey
 
         $hash = $decoded['digestAlgorithm']['algorithm'];
         $hash = substr($hash, 0, 3) == 'id-' ?
-            substr($hash, 3) :
+            (string) substr($hash, 3) :
             $hash;
         $hash = new Hash($hash);
         $em = $hash->hash($m);
@@ -240,8 +240,8 @@ final class PublicKey extends RSA implements Common\PublicKey
             return false;
         }
 
-        $maskedDB = substr($em, 0, -$this->hLen - 1);
-        $h = substr($em, -$this->hLen - 1, $this->hLen);
+        $maskedDB = (string) substr($em, 0, -$this->hLen - 1);
+        $h = (string) substr($em, -$this->hLen - 1, $this->hLen);
         $temp = chr(256 - (1 << ($emBits & 7)));
         if ((~$maskedDB[0] & $temp) != $temp) {
             return false;
@@ -253,7 +253,7 @@ final class PublicKey extends RSA implements Common\PublicKey
         if (substr($db, 0, $temp) != str_repeat(chr(0), $temp) || ord($db[$temp]) != 1) {
             return false;
         }
-        $salt = substr($db, $temp + 1); // should be $sLen long
+        $salt = (string) substr($db, $temp + 1); // should be $sLen long
         $m2 = "\0\0\0\0\0\0\0\0" . $mHash . $salt;
         $h2 = $this->hash->hash($m2);
         return hash_equals($h, $h2);

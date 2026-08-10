@@ -2657,7 +2657,7 @@ class e_admin_controller
 				{
 					if(strpos($key, 'etrigger_') === 0)
 					{
-						$actionTriggerName = $this->toMethodName($action.$request->camelize(substr($key, 9)), 'trigger', false);
+						$actionTriggerName = $this->toMethodName($action.$request->camelize((string) substr($key, 9)), 'trigger', false);
 						if(method_exists($this, $actionTriggerName))
 						{
 							if($tokenChecked === false)
@@ -4965,11 +4965,11 @@ class e_admin_controller_ui extends e_admin_controller
 		// strip wildcard on the beginning and the end
 		while (strpos($search, '*') === 0)
 		{
-			$search = substr($search, 1);
+			$search = (string) substr($search, 1);
 		}
 		while (substr($search, -1) === '*')
 		{
-			$search = substr($search, 0, -1);
+			$search = (string) substr($search, 0, -1);
 		}
 
 		if(strpos($search,'&quot')===0 || strpos($search,'&#039;')===0)

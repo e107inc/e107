@@ -896,7 +896,7 @@ class e107Email extends PHPMailer
 		{
 			if(substr($k,0,6) == 'email_')
 			{
-				$nkey = substr($k,6);
+				$nkey = (string) substr($k,6);
 				$eml[$nkey] = $v;	
 				unset($eml[$k]);
 			}		

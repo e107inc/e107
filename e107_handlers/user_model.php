@@ -964,7 +964,7 @@ class e_user_model extends e_admin_model
 		}
 		else
 		{
-			$mfield = substr($field, 5);
+			$mfield = (string) substr($field, 5);
 		}
 
 		// check for BC/override method first e.g. getSingatureValue($default, $system = false, $rawExtended);
@@ -1001,7 +1001,7 @@ class e_user_model extends e_admin_model
 		}
 		else
 		{
-			$mfield = substr($field, 5);
+			$mfield = (string) substr($field, 5);
 		}
 
 		// check for BC/override method first e.g. setSingatureValue($value, $system = false);
@@ -1045,7 +1045,7 @@ class e_user_model extends e_admin_model
 		}
 		else
 		{
-			$mfield = substr($field, 5);
+			$mfield = (string) substr($field, 5);
 		}
 
 		// check for BC/override method first e.g. getSingatureValue($default, $system = true, $rawExtended);
@@ -1081,7 +1081,7 @@ class e_user_model extends e_admin_model
 		}
 		else
 		{
-			$mfield = substr($field, 5);
+			$mfield = (string) substr($field, 5);
 		}
 
 		// check for BC/override method first e.g. setSingatureValue($value, $system = true);

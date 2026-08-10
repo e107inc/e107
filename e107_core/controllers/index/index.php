@@ -49,7 +49,7 @@ class core_index_index_controller extends eController
 		// new url format; if set to 'url:' only it'll resolve current main module (if any)
 		if(strpos($location, 'url:') === 0)
 		{
-			$url = substr($location, 4);
+			$url = (string) substr($location, 4);
 			$request->setPathInfo($url)->setRequestParams(array());
 			$router = eFront::instance()->getRouter();
 			

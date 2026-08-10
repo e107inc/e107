@@ -1813,7 +1813,7 @@ class SSH2
         if (strpos($this->kex_algorithm, 'curve25519-sha256') === 0 || strpos($this->kex_algorithm, 'ecdh-sha2-nistp') === 0) {
             $curve = strpos($this->kex_algorithm, 'curve25519-sha256') === 0 ?
                 'Curve25519' :
-                substr($this->kex_algorithm, 10);
+                (string) substr($this->kex_algorithm, 10);
             $ourPrivate = EC::createKey($curve);
             $ourPublicBytes = $ourPrivate->getPublicKey()->getEncodedCoordinates();
             $clientKexInitMessage = 'NET_SSH2_MSG_KEX_ECDH_INIT';
@@ -1897,11 +1897,11 @@ class SSH2
             throw new \LengthException('The signature needs at least four bytes');
         }
         $temp = unpack('Nlength', substr($this->signature, 0, 4));
-        $this->signature_format = substr($this->signature, 4, $temp['length']);
+        $this->signature_format = (string) substr($this->signature, 4, $temp['length']);
 
         $keyBytes = DH::computeSecret($ourPrivate, $theirPublicBytes);
         if (($keyBytes & "\xFF\x80") === "\x00\x00") {
-            $keyBytes = substr($keyBytes, 1);
+            $keyBytes = (string) substr($keyBytes, 1);
         } elseif (($keyBytes[0] & "\x80") === "\x80") {
             $keyBytes = "\0$keyBytes";
         }
@@ -1974,7 +1974,7 @@ class SSH2
                 while ($this->encrypt_block_size > strlen($iv)) {
                     $iv .= $kexHash->hash($keyBytes . $this->exchange_hash . $iv);
                 }
-                $this->encrypt->setIV(substr($iv, 0, $this->encrypt_block_size));
+                $this->encrypt->setIV((string) substr($iv, 0, $this->encrypt_block_size));
             }
 
             switch ($encrypt) {
@@ -1982,7 +1982,7 @@ class SSH2
                 case 'aes256-gcm@openssh.com':
                     $nonce = $kexHash->hash($keyBytes . $this->exchange_hash . 'A' . $this->session_id);
                     $this->encryptFixedPart = substr($nonce, 0, 4);
-                    $this->encryptInvocationCounter = substr($nonce, 4, 8);
+                    $this->encryptInvocationCounter = (string) substr($nonce, 4, 8);
                     // fall-through
                 case 'chacha20-poly1305@openssh.com':
                     break;
@@ -1998,9 +1998,9 @@ class SSH2
                 case 'chacha20-poly1305@openssh.com':
                     $encryptKeyLength = 32;
                     $this->lengthEncrypt = self::encryption_algorithm_to_crypt_instance($encrypt);
-                    $this->lengthEncrypt->setKey(substr($key, 32, 32));
+                    $this->lengthEncrypt->setKey((string) substr($key, 32, 32));
             }
-            $this->encrypt->setKey(substr($key, 0, $encryptKeyLength));
+            $this->encrypt->setKey((string) substr($key, 0, $encryptKeyLength));
             $this->encryptName = $encrypt;
         }
 
@@ -2019,7 +2019,7 @@ class SSH2
                 while ($this->decrypt_block_size > strlen($iv)) {
                     $iv .= $kexHash->hash($keyBytes . $this->exchange_hash . $iv);
                 }
-                $this->decrypt->setIV(substr($iv, 0, $this->decrypt_block_size));
+                $this->decrypt->setIV((string) substr($iv, 0, $this->decrypt_block_size));
             }
 
             switch ($decrypt) {
@@ -2028,7 +2028,7 @@ class SSH2
                     // see https://tools.ietf.org/html/rfc5647#section-7.1
                     $nonce = $kexHash->hash($keyBytes . $this->exchange_hash . 'B' . $this->session_id);
                     $this->decryptFixedPart = substr($nonce, 0, 4);
-                    $this->decryptInvocationCounter = substr($nonce, 4, 8);
+                    $this->decryptInvocationCounter = (string) substr($nonce, 4, 8);
                     // fall-through
                 case 'chacha20-poly1305@openssh.com':
                     break;
@@ -2044,9 +2044,9 @@ class SSH2
                 case 'chacha20-poly1305@openssh.com':
                     $decryptKeyLength = 32;
                     $this->lengthDecrypt = self::encryption_algorithm_to_crypt_instance($decrypt);
-                    $this->lengthDecrypt->setKey(substr($key, 32, 32));
+                    $this->lengthDecrypt->setKey((string) substr($key, 32, 32));
             }
-            $this->decrypt->setKey(substr($key, 0, $decryptKeyLength));
+            $this->decrypt->setKey((string) substr($key, 0, $decryptKeyLength));
             $this->decryptName = $decrypt;
         }
 
@@ -2078,7 +2078,7 @@ class SSH2
             while ($createKeyLength > strlen($key)) {
                 $key .= $kexHash->hash($keyBytes . $this->exchange_hash . $key);
             }
-            $this->hmac_create->setKey(substr($key, 0, $createKeyLength));
+            $this->hmac_create->setKey((string) substr($key, 0, $createKeyLength));
             $this->hmac_create_name = $mac_algorithm_out;
             $this->hmac_create_etm = preg_match('#-etm@openssh\.com$#', $mac_algorithm_out);
         }
@@ -2099,7 +2099,7 @@ class SSH2
             while ($checkKeyLength > strlen($key)) {
                 $key .= $kexHash->hash($keyBytes . $this->exchange_hash . $key);
             }
-            $this->hmac_check->setKey(substr($key, 0, $checkKeyLength));
+            $this->hmac_check->setKey((string) substr($key, 0, $checkKeyLength));
             $this->hmac_check_name = $mac_algorithm_in;
             $this->hmac_check_etm = preg_match('#-etm@openssh\.com$#', $mac_algorithm_in);
         }
@@ -3735,7 +3735,7 @@ class SSH2
         if ($this->hmac_check instanceof Hash) {
             $reconstructed = !$this->hmac_check_etm ?
                 pack('Na*', $packet->packet_length, $packet->plain) :
-                substr($packet->raw, 0, -$this->hmac_size);
+                (string) substr($packet->raw, 0, -$this->hmac_size);
             if (($this->hmac_check->getHash() & "\xFF\xFF\xFF\xFF") == 'umac') {
                 $this->hmac_check->setNonce("\0\0\0\0" . pack('N', $this->get_seq_no));
                 if (!hash_equals($hmac, $this->hmac_check->hash($reconstructed))) {
@@ -3795,7 +3795,7 @@ class SSH2
                     $flevel = ($flg & 0xC0) >> 6;
 
                     $this->decompress_context = inflate_init(ZLIB_ENCODING_RAW, ['window' => $cinfo + 8]);
-                    $payload = substr($payload, 2);
+                    $payload = (string) substr($payload, 2);
                 }
                 if ($this->decompress_context) {
                     $payload = inflate_add($this->decompress_context, $payload, ZLIB_PARTIAL_FLUSH);
@@ -3851,7 +3851,7 @@ class SSH2
                         if (strlen($packet->raw) < $this->decrypt_block_size) {
                             return;
                         }
-                        $packet->plain = $this->decrypt->decrypt(substr($packet->raw, 0, $this->decrypt_block_size));
+                        $packet->plain = $this->decrypt->decrypt((string) substr($packet->raw, 0, $this->decrypt_block_size));
                         $packet_length = unpack('Npacket_length', Strings::shift($packet->plain, $packet_length_header_size))['packet_length'];
                         $packet->size = $packet_length_header_size + $packet_length;
                         $added_validation_length = $packet_length_header_size;
@@ -3991,7 +3991,7 @@ class SSH2
                         $channel = $unpacked['channel'];
                         $length = $unpacked['length'];
                         if (substr($payload, 9, $length) == 'keepalive@openssh.com' && isset($this->server_channels[$channel])) {
-                            if (ord(substr($payload, 9 + $length))) { // want reply
+                            if (ord((string) substr($payload, 9 + $length))) { // want reply
                                 $this->send_binary_packet(pack('CN', NET_SSH2_MSG_CHANNEL_SUCCESS, $this->server_channels[$channel]));
                             }
                             $payload = $this->get_binary_packet();
@@ -4163,12 +4163,12 @@ class SSH2
                             case NET_SSH2_MSG_CHANNEL_SUCCESS:
                             case NET_SSH2_MSG_CHANNEL_FAILURE:
                                 unset($this->channel_buffers[$client_channel][$i]);
-                                return substr($packet, 1);
+                                return (string) substr($packet, 1);
                         }
                     }
                     break;
                 default:
-                    return substr(array_shift($this->channel_buffers[$client_channel]), 1);
+                    return (string) substr(array_shift($this->channel_buffers[$client_channel]), 1);
             }
         }
 
@@ -4454,7 +4454,7 @@ class SSH2
                     );
                     Strings::increment_str($this->encryptInvocationCounter);
                     $this->encrypt->setAAD($temp = ($packet & "\xFF\xFF\xFF\xFF"));
-                    $packet = $temp . $this->encrypt->encrypt(substr($packet, 4));
+                    $packet = $temp . $this->encrypt->encrypt((string) substr($packet, 4));
                     break;
                 case 'chacha20-poly1305@openssh.com':
                     // This should be impossible, but we are checking anyway to narrow the type for Psalm.
@@ -4478,11 +4478,11 @@ class SSH2
                     );
                     $this->encrypt->setAAD($length);
                     $this->encrypt->setCounter(1);
-                    $packet = $length . $this->encrypt->encrypt(substr($packet, 4));
+                    $packet = $length . $this->encrypt->encrypt((string) substr($packet, 4));
                     break;
                 default:
                     $packet = $this->hmac_create instanceof Hash && $this->hmac_create_etm ?
-                        ($packet & "\xFF\xFF\xFF\xFF") . $this->encrypt->encrypt(substr($packet, 4)) :
+                        ($packet & "\xFF\xFF\xFF\xFF") . $this->encrypt->encrypt((string) substr($packet, 4)) :
                         $this->encrypt->encrypt($packet);
             }
         }
@@ -4673,7 +4673,7 @@ class SSH2
             && strpos($data, $this->channel_buffers_write[$client_channel]) === 0
         ) {
             // if buffer holds identical initial data content, resume send from the unmatched data portion
-            $data = substr($data, strlen($this->channel_buffers_write[$client_channel]));
+            $data = (string) substr($data, strlen($this->channel_buffers_write[$client_channel]));
         } else {
             $this->channel_buffers_write[$client_channel] = '';
         }
@@ -4858,7 +4858,7 @@ class SSH2
                     $output .= str_pad(dechex($j), 7, '0', STR_PAD_LEFT) . '0  ';
                 }
                 $fragment = Strings::shift($current_log, $this->log_short_width);
-                $hex = substr(preg_replace_callback('#.#s', function ($matches) {
+                $hex = (string) substr(preg_replace_callback('#.#s', function ($matches) {
                     return $this->log_boundary . str_pad(dechex(ord($matches[0])), 2, '0', STR_PAD_LEFT);
                 }, $fragment), strlen($this->log_boundary));
                 // replace non ASCII printable characters with dots

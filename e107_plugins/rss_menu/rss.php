@@ -449,7 +449,7 @@ class rssCreate
 					'pubdate'     => $row['comment_datestamp'],
 					'link'        => $base.$name.".".$row['comment_item_id'],
 					'description' => $row['comment_comment'],
-					'author'      => substr($author, (strpos($author, ".") + 1)),
+					'author'      => (string) substr($author, (strpos($author, ".") + 1)),
 				);
 			}
 		}

@@ -690,7 +690,7 @@ abstract class RSA extends AsymmetricKey
             $t .= $this->mgfHash->hash($mgfSeed . $c);
         }
 
-        return substr($t, 0, $maskLen);
+        return (string) substr($t, 0, $maskLen);
     }
 
     /**

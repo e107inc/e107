@@ -114,8 +114,8 @@ final class PublicKey extends EC implements Common\PublicKey
                 return false;
             }
 
-            $R = substr($signature, 0, $curve::SIZE);
-            $S = substr($signature, $curve::SIZE);
+            $R = (string) substr($signature, 0, $curve::SIZE);
+            $S = (string) substr($signature, $curve::SIZE);
 
             try {
                 $R = PKCS1::extractPoint($R, $curve);

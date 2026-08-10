@@ -765,7 +765,7 @@ TMPO;
 					{
 						if (is_dir($dir."/".$file) == FALSE && !in_array($file,$exceptions))
 						{
-							$fext = substr(strrchr($file, "."), 1);
+							$fext = (string) substr(strrchr($file, "."), 1);
 							if (!array_key_exists(strtolower($fext),$this->allowed_types) )
 							{
 								if ($file == 'index.html' || $file == "null.txt")

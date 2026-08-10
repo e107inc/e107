@@ -979,7 +979,7 @@ class e_db_pdo implements e_db
 	 */
 	protected function _escape($data)
 	{
-		return substr($this->quoteStringLiteral($data), 1, -1);
+		return (string) substr($this->quoteStringLiteral($data), 1, -1);
 	}
 
 	/**
@@ -1073,7 +1073,7 @@ class e_db_pdo implements e_db
 				$length = strlen($prefix);
 				while($rows = $this->fetch('num'))
 				{
-					$table[] = substr($rows[0],$length);
+					$table[] = (string) substr($rows[0],$length);
 				}
 			}
 			return $table;

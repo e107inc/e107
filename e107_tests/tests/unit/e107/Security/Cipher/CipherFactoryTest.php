@@ -167,7 +167,7 @@ class CipherFactoryTest extends \Test\Unit
 		$this->assertFalse($backend->encrypt($key, substr($iv, 1), 'x'), 'a 15-octet iv');
 		$this->assertFalse($backend->encrypt('', $iv, 'x'), 'an empty key');
 		$this->assertFalse($backend->decrypt($key, $iv, ''), 'an empty ciphertext');
-		$this->assertFalse($backend->decrypt($key, $iv, substr($ciphertext, 1)), 'a ragged ciphertext');
+		$this->assertFalse($backend->decrypt($key, $iv, (string) substr($ciphertext, 1)), 'a ragged ciphertext');
 	}
 
 	/**

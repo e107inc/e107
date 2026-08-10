@@ -290,7 +290,7 @@ abstract class Base32 implements EncoderInterface
         // Main loop (no padding):
         for ($i = 0; $i + 8 <= $srcLen; $i += 8) {
             /** @var array<int, int> $chunk */
-            $chunk = unpack('C*', substr($src, $i, 8));
+            $chunk = unpack('C*', (string) substr($src, $i, 8));
             /** @var int $c0 */
             $c0 = static::$method($chunk[1]);
             /** @var int $c1 */
@@ -321,7 +321,7 @@ abstract class Base32 implements EncoderInterface
         // The last chunk, which may have padding:
         if ($i < $srcLen) {
             /** @var array<int, int> $chunk */
-            $chunk = unpack('C*', substr($src, $i, $srcLen - $i));
+            $chunk = unpack('C*', (string) substr($src, $i, $srcLen - $i));
             /** @var int $c0 */
             $c0 = static::$method($chunk[1]);
 
@@ -476,7 +476,7 @@ abstract class Base32 implements EncoderInterface
         // Main loop (no padding):
         for ($i = 0; $i + 5 <= $srcLen; $i += 5) {
             /** @var array<int, int> $chunk */
-            $chunk = unpack('C*', substr($src, $i, 5));
+            $chunk = unpack('C*', (string) substr($src, $i, 5));
             $b0 = $chunk[1];
             $b1 = $chunk[2];
             $b2 = $chunk[3];
@@ -495,7 +495,7 @@ abstract class Base32 implements EncoderInterface
         // The last chunk, which may have padding:
         if ($i < $srcLen) {
             /** @var array<int, int> $chunk */
-            $chunk = unpack('C*', substr($src, $i, $srcLen - $i));
+            $chunk = unpack('C*', (string) substr($src, $i, $srcLen - $i));
             $b0 = $chunk[1];
             if ($i + 3 < $srcLen) {
                 $b1 = $chunk[2];

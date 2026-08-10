@@ -1340,7 +1340,7 @@ class db_verify
 		{
 			if(strpos($k, 'e107_') === 0) // remove prefix if found in sql dump.
 			{
-				$k = substr($k, 5);
+				$k = (string) substr($k, 5);
 			}
 
 			$tables[$c] = $k;

@@ -958,7 +958,7 @@ class e_model extends e_object
         $simple = false;
         if(strpos($key, '//') === 0)
         {
-        	$key = substr($key, 2);
+        	$key = (string) substr($key, 2);
         	$simple = true;
         }
         /*elseif($key[0] == '/')
@@ -1110,7 +1110,7 @@ class e_model extends e_object
         	// Example: '//some/key'; NOTE: '//some/key//more/depth' is NOT parsed
         	// if you wish to have array('some/key' => array('more/depth' => value))
         	// right syntax is 'some/key//more/depth'
-        	$key = substr($key, 2);
+        	$key = (string) substr($key, 2);
         	$simple = true;
         }
         /*elseif($key[0] == '/')
@@ -3830,7 +3830,7 @@ class e_tree_model extends e_front_model
 			return $qry;
 		}
 
-		$projection = substr($qry, strlen($lead[0]), $from - strlen($lead[0]));
+		$projection = (string) substr($qry, strlen($lead[0]), $from - strlen($lead[0]));
 		if(preg_match_all('/[\w`]\s*\.\s*\*/', $projection, $m) < 2)
 		{
 			return $qry;
@@ -3885,7 +3885,7 @@ class e_tree_model extends e_front_model
 			{
 				if($depth > 0) $depth--;
 			}
-			elseif($depth === 0 && ($ch === 'f' || $ch === 'F') && strcasecmp(substr($qry, $i, 4), 'FROM') === 0)
+			elseif($depth === 0 && ($ch === 'f' || $ch === 'F') && strcasecmp((string) substr($qry, $i, 4), 'FROM') === 0)
 			{
 				$before = $i === 0 ? ' ' : $qry[$i - 1];
 				$after = $i + 4 >= $len ? ' ' : $qry[$i + 4];

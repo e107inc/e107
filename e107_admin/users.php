@@ -2502,8 +2502,8 @@ class users_admin_ui extends e_admin_ui
 			{
 				list($cb_id, $cb_nick, $cb_message, $cb_datestamp, $cb_blocked, $cb_ip ) = $cbRow;
 				$datestamp = $obj->convert_date($cb_datestamp, "short");
-				$post_author_id = substr($cb_nick, 0, strpos($cb_nick, "."));
-				$post_author_name = substr($cb_nick, (strpos($cb_nick, ".")+1));
+				$post_author_id = (string) substr($cb_nick, 0, strpos($cb_nick, "."));
+				$post_author_name = (string) substr($cb_nick, (strpos($cb_nick, ".")+1));
 				$text .= $bullet."
 					<span class=\"defaulttext\"><i>".$post_author_name." (".USFLAN_6.": ".$post_author_id.")</i></span>
 					<div class=\"mediumtext\">
@@ -2524,8 +2524,8 @@ class users_admin_ui extends e_admin_ui
 			{
 				list($comment_id, $comment_item_id, $comment_author, $comment_author_email, $comment_datestamp, $comment_comment, $comment_blocked, $comment_ip) = $commentRow;
 				$datestamp = $obj->convert_date($comment_datestamp, "short");
-				$post_author_id = substr($comment_author, 0, strpos($comment_author, "."));
-				$post_author_name = substr($comment_author, (strpos($comment_author, ".")+1));
+				$post_author_id = (string) substr($comment_author, 0, strpos($comment_author, "."));
+				$post_author_name = (string) substr($comment_author, (strpos($comment_author, ".")+1));
 				$text .= $bullet."
 					<span class=\"defaulttext\"><i>".$post_author_name." (".USFLAN_6.": ".$post_author_id.")</i></span>
 					<div class=\"mediumtext\">

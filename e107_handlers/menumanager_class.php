@@ -758,7 +758,7 @@ class e_menuManager
 			}
 			else
 			{
-				$menuName = substr($row['menu_name'],0,-5);
+				$menuName = (string) substr($row['menu_name'],0,-5);
 			}
 
 			$menuName = varset($menuName);
@@ -847,7 +847,7 @@ class e_menuManager
 		}
 
 		$listtype 	= substr($row['menu_pages'], 0, 1);
-		$menu_pages = substr($row['menu_pages'], 2);
+		$menu_pages = (string) substr($row['menu_pages'], 2);
 		$menu_pages = str_replace("|", "\n", $menu_pages);
 
 		$text = "<div>
@@ -2009,7 +2009,7 @@ class e_menuManager
 			{
 				$link = "";
 
-				$id = substr($row['menu_path'],0,-1);
+				$id = (string) substr($row['menu_path'],0,-1);
 
 				if (file_exists(e_PLUGIN."{$row['menu_path']}{$row['menu_name']}_menu_config.php"))
 				{
@@ -2736,7 +2736,7 @@ class e_mm_layout
 
 
 		$listtype 	= substr($_GET['pages'], 0, 1);
-		$menu_pages = substr($_GET['pages'], 2);
+		$menu_pages = (string) substr($_GET['pages'], 2);
 		$menu_pages = str_replace("|", "\n", $menu_pages);
 
 		$text = "<div>

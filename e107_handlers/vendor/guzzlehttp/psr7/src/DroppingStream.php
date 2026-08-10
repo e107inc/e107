@@ -45,6 +45,6 @@ final class DroppingStream implements StreamInterface
             return $this->stream->write($string);
         }
 
-        return $this->stream->write(substr($string, 0, $diff));
+        return $this->stream->write((string) substr($string, 0, $diff));
     }
 }

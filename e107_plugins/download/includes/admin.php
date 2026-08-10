@@ -1302,7 +1302,7 @@ $columnInfo = array(
 	            $download_image = $row['upload_ss'];
 	            $download_filesize = $row['upload_filesize'];
 	            $image_array[] = array("path" => "", "fname" => $row['upload_ss']);
-	            $download_author = substr($row['upload_poster'], (strpos($row['upload_poster'], ".")+1));
+	            $download_author = (string) substr($row['upload_poster'], (strpos($row['upload_poster'], ".")+1));
 	         }
 	      }
 	

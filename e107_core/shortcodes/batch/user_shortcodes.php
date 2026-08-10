@@ -995,7 +995,7 @@ class user_shortcodes extends e_shortcode
 			
 			//if the first char of parm is an ! mark, it means it should not render the following parms
 			if(strpos($parm,'!')===0){
-				$tmp = explode(",", substr($parm,1) );
+				$tmp = explode(",", (string) substr($parm,1) );
 				foreach($tmp as $not){
 					$not=trim($not);
 					if(isset($key[$not])){

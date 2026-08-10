@@ -99,7 +99,7 @@ class CompactTest extends \Test\Unit
 		$this->assertSame($iv, $parsed['iv']);
 		$this->assertSame($ciphertext, $parsed['ciphertext']);
 		$this->assertSame($tag, $parsed['tag']);
-		$this->assertSame(substr($token, 0, strpos($token, '.')), $parsed['aad'], 'the aad is the header part');
+		$this->assertSame((string) substr($token, 0, strpos($token, '.')), $parsed['aad'], 'the aad is the header part');
 	}
 
 	/**

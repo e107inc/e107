@@ -2805,7 +2805,7 @@ class QueryBuilder
 
 		if(substr($expression, -2) === '.*')
 		{
-			$quoted = $this->db->quoteIdentifier(substr($expression, 0, -2));
+			$quoted = $this->db->quoteIdentifier((string) substr($expression, 0, -2));
 
 			if($quoted !== false)
 			{

@@ -721,7 +721,7 @@ class search_front extends e_shortcode
 				{
 					if (isset($_SERVER['HTTP_REFERER'])) 
 					{
-						if (!$refpage = substr($_SERVER['HTTP_REFERER'], (strrpos($_SERVER['HTTP_REFERER'], "/")+1))) 
+						if (!$refpage = (string) substr($_SERVER['HTTP_REFERER'], (strrpos($_SERVER['HTTP_REFERER'], "/")+1))) 
 						{
 							$refpage = "index.php";
 						}

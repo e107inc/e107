@@ -422,7 +422,7 @@ class cron_admin_ui extends e_admin_ui
 			// extensions of exe, com, bat and cmd.
 			
 			$isWin = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
-			$actualPerm = substr(decoct(fileperms(e_BASE."cron.php")),3);
+			$actualPerm = (string) substr(decoct(fileperms(e_BASE."cron.php")),3);
 
 			if($isWin)
 			{

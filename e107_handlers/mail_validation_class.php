@@ -49,8 +49,8 @@ class email_validation_class
 		}
 		if(IsSet($found))
 		{
-			$this->next_token=substr($string,$found+1);
-			return(substr($string,0,$found));
+			$this->next_token=(string) substr($string,$found+1);
+			return((string) substr($string,0,$found));
 		}
 		else
 		{
@@ -87,7 +87,7 @@ class email_validation_class
 			if($length>=2
 			&& substr($line,$length-2,2)=="\r\n")
 			{
-				$line=substr($line,0,$length-2);
+				$line=(string) substr($line,0,$length-2);
 				if($this->debug)
 					$this->OutputDebug("S $line");
 				return($line);
@@ -171,7 +171,7 @@ class email_validation_class
 			$this->last_code=$this->Tokenize($line," -");
 			if(strcmp($this->last_code,$code))
 				return(0);
-			if(!strcmp(substr($line, strlen($this->last_code), 1)," "))
+			if(!strcmp((string) substr($line, strlen($this->last_code), 1)," "))
 				return(1);
 		}
 		return(-1);

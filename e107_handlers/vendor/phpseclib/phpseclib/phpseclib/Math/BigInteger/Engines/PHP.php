@@ -108,7 +108,7 @@ abstract class PHP extends Engine
 
                 if ($x[0] == '-') {
                     $this->is_negative = true;
-                    $x = substr($x, 1);
+                    $x = (string) substr($x, 1);
                 }
 
                 $x = str_pad(
@@ -119,8 +119,8 @@ abstract class PHP extends Engine
                 );
                 while (strlen($x)) {
                     $temp = $temp->multiply($multiplier);
-                    $temp = $temp->add(new static($this->int2bytes(substr($x, 0, static::MAX10LEN)), 256));
-                    $x = substr($x, static::MAX10LEN);
+                    $temp = $temp->add(new static($this->int2bytes((string) substr($x, 0, static::MAX10LEN)), 256));
+                    $x = (string) substr($x, static::MAX10LEN);
                 }
 
                 $this->value = $temp->value;
@@ -202,7 +202,7 @@ abstract class PHP extends Engine
 
         return $this->precision > 0 ?
             str_pad(
-                substr($result, -(($this->precision + 7) >> 3)),
+                (string) substr($result, -(($this->precision + 7) >> 3)),
                 ($this->precision + 7) >> 3,
                 chr(0),
                 STR_PAD_LEFT

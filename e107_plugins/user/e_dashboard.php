@@ -115,7 +115,7 @@ class user_dashboard // plugin-folder + '_url'
 				$log_data = $value['log_data'];
 			//	extract($value);
 
-				$log_id = substr($log_id, 0, 4).'-'.substr($log_id, 5, 2).'-'.str_pad(substr($log_id, 8), 2, '0', STR_PAD_LEFT);
+				$log_id = substr($log_id, 0, 4).'-'.substr($log_id, 5, 2).'-'.str_pad((string) substr($log_id, 8), 2, '0', STR_PAD_LEFT);
 				if(is_array($log_data)) {
 					$entries[0] = $log_data['host'];
 					$entries[1] = $log_data['date'];
@@ -142,7 +142,7 @@ class user_dashboard // plugin-folder + '_url'
 						list($url, $total, $unique) = explode("|", $entry);
 						if(strpos($url, "/") !== false)
 						{
-							$urlname = preg_replace("/\.php|\?.*/", "", substr($url, (strrpos($url, "/")+1)));
+							$urlname = preg_replace("/\.php|\?.*/", "", (string) substr($url, (strrpos($url, "/")+1)));
 						}
 						else
 						{

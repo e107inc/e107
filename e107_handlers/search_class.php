@@ -71,10 +71,10 @@ class e_search
 				}
 				if ($key[0] == '+') {
 					$this -> keywords['boolean'][$k_key] = '+';
-					$this -> keywords['match'][$k_key] = substr($key, 1);
+					$this -> keywords['match'][$k_key] = (string) substr($key, 1);
 				} else if ($key[0] == '-') {
 					$this -> keywords['boolean'][$k_key] = '-';
-					$this -> keywords['match'][$k_key] = substr($key, 1);
+					$this -> keywords['match'][$k_key] = (string) substr($key, 1);
 				} else {
 					$this -> keywords['boolean'][$k_key] = FALSE;
 					$this -> keywords['match'][$k_key] = $key;

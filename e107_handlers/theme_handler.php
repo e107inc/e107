@@ -642,7 +642,7 @@ class e_theme
 						{
 							return $lyout;
 						}
-						elseif(substr($c_url, - strlen($kpage)) === $kpage)
+						elseif((string) substr($c_url, - strlen($kpage)) === $kpage)
 						{
 							$def = $lyout;
 						}

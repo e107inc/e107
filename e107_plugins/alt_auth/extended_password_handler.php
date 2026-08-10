@@ -108,7 +108,7 @@ class ExtendedPasswordHandler extends UserHandler
 	 */
 	private function encode64($input, $count)
 	{
-		return base64_encode(substr($input, 0, $count));	// @todo - check this works OK
+		return base64_encode((string) substr($input, 0, $count));	// @todo - check this works OK
 		/*
 		$output = '';
 		$i = 0;
@@ -170,7 +170,7 @@ class ExtendedPasswordHandler extends UserHandler
 
 		$count = 1 << $count_log2;
 
-		$salt = substr($stored_password, 4, 8);						// Salt is characters 5..12
+		$salt = (string) substr($stored_password, 4, 8);						// Salt is characters 5..12
 		if (strlen($salt) != 8)
 		{
 			return $output;
@@ -327,7 +327,7 @@ class ExtendedPasswordHandler extends UserHandler
 				{
 					return PASSWORD_INVALID;
 				}
-				$stored_hash = substr($stored_hash,12);
+				$stored_hash = (string) substr($stored_hash,12);
 				break;
 
 			case self::PASSWORD_PHPFUSION_SALT:

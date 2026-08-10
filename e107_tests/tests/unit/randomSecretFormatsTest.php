@@ -136,7 +136,7 @@ class randomSecretFormatsTest extends \Test\Unit
 
 		$this->assertSame(4, strlen($value));
 		$this->assertSame('ab', substr($value, 0, 2));
-		$this->assertSame(1, preg_match('/^[0-9]{2}$/', substr($value, 2)));
+		$this->assertSame(1, preg_match('/^[0-9]{2}$/', (string) substr($value, 2)));
 	}
 
 	/**
@@ -154,7 +154,7 @@ class randomSecretFormatsTest extends \Test\Unit
 
 		$this->assertSame(6, strlen($value));
 		$this->assertDrawnFrom(substr($value, 0, 2), self::ALPHA);
-		$this->assertSame(1, preg_match('/^[0-9]{4}$/', substr($value, 2)));
+		$this->assertSame(1, preg_match('/^[0-9]{4}$/', (string) substr($value, 2)));
 	}
 
 	public function testConsecutiveCallsDiffer()

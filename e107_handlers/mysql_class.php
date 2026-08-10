@@ -1285,7 +1285,7 @@ class e_db_mysql implements e_db
 				$length = strlen($prefix);
 				while($rows = $this->fetch('num'))
 				{
-					$table[] = substr($rows[0],$length);
+					$table[] = (string) substr($rows[0],$length);
 				}
 			}
 			return $table;

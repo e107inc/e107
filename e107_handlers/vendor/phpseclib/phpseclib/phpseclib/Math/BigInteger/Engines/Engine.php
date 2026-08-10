@@ -163,7 +163,7 @@ abstract class Engine implements \JsonSerializable
             case 16:
                 if ($base > 0 && $x[0] == '-') {
                     $this->is_negative = true;
-                    $x = substr($x, 1);
+                    $x = (string) substr($x, 1);
                 }
 
                 $x = preg_replace('#^(?:0x)?([A-Fa-f0-9]*).*#s', '$1', $x);
@@ -197,7 +197,7 @@ abstract class Engine implements \JsonSerializable
             case 2:
                 if ($base > 0 && $x[0] == '-') {
                     $this->is_negative = true;
-                    $x = substr($x, 1);
+                    $x = (string) substr($x, 1);
                 }
 
                 $x = preg_replace('#^([01]*).*#s', '$1', $x);
@@ -286,7 +286,7 @@ abstract class Engine implements \JsonSerializable
         $hex = $this->toBytes($twos_compliment);
         $bits = Strings::bin2bits($hex);
 
-        $result = $this->precision > 0 ? substr($bits, -$this->precision) : ltrim($bits, '0');
+        $result = $this->precision > 0 ? (string) substr($bits, -$this->precision) : ltrim($bits, '0');
 
         if ($twos_compliment && $this->compare(new static()) > 0 && $this->precision <= 0) {
             return '0' . $result;
@@ -508,7 +508,7 @@ abstract class Engine implements \JsonSerializable
         $temp = ~$temp;
         $msb = decbin(ord($temp[0]));
         if (strlen($msb) == 8) {
-            $msb = substr($msb, strpos($msb, '0'));
+            $msb = (string) substr($msb, strpos($msb, '0'));
         }
         $temp[0] = chr(bindec($msb));
 
@@ -754,7 +754,7 @@ abstract class Engine implements \JsonSerializable
                     $result = static::squareReduce($result, $n_value, $class);
                 }
 
-                $result = static::multiplyReduce($result, $powers[bindec(substr($e_bits, $i, $j + 1))], $n_value, $class);
+                $result = static::multiplyReduce($result, $powers[bindec((string) substr($e_bits, $i, $j + 1))], $n_value, $class);
 
                 $i += $j + 1;
             }

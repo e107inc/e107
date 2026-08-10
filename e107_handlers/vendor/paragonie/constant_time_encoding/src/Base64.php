@@ -141,7 +141,7 @@ abstract class Base64 implements EncoderInterface
         // Main loop (no padding):
         for ($i = 0; $i + 3 <= $srcLen; $i += 3) {
             /** @var array<int, int> $chunk */
-            $chunk = unpack('C*', substr($src, $i, 3));
+            $chunk = unpack('C*', (string) substr($src, $i, 3));
             $b0 = $chunk[1];
             $b1 = $chunk[2];
             $b2 = $chunk[3];
@@ -155,7 +155,7 @@ abstract class Base64 implements EncoderInterface
         // The last chunk, which may have padding:
         if ($i < $srcLen) {
             /** @var array<int, int> $chunk */
-            $chunk = unpack('C*', substr($src, $i, $srcLen - $i));
+            $chunk = unpack('C*', (string) substr($src, $i, $srcLen - $i));
             $b0 = $chunk[1];
             if ($i + 1 < $srcLen) {
                 $b1 = $chunk[2];
@@ -234,7 +234,7 @@ abstract class Base64 implements EncoderInterface
                 }
                 if ($variant > 0) {
                     try {
-                        return sodium_base642bin(substr($encodedString, 0, $srcLen), $variant);
+                        return sodium_base642bin((string) substr($encodedString, 0, $srcLen), $variant);
                     } catch (SodiumException $ex) {
                         throw new RangeException($ex->getMessage(), $ex->getCode(), $ex);
                     }
@@ -251,7 +251,7 @@ abstract class Base64 implements EncoderInterface
         // Main loop (no padding):
         for ($i = 0; $i + 4 <= $srcLen; $i += 4) {
             /** @var array<int, int> $chunk */
-            $chunk = unpack('C*', substr($encodedString, $i, 4));
+            $chunk = unpack('C*', (string) substr($encodedString, $i, 4));
             $c0 = static::decode6Bits($chunk[1]);
             $c1 = static::decode6Bits($chunk[2]);
             $c2 = static::decode6Bits($chunk[3]);
@@ -268,7 +268,7 @@ abstract class Base64 implements EncoderInterface
         // The last chunk, which may have padding:
         if ($i < $srcLen) {
             /** @var array<int, int> $chunk */
-            $chunk = unpack('C*', substr($encodedString, $i, $srcLen - $i));
+            $chunk = unpack('C*', (string) substr($encodedString, $i, $srcLen - $i));
             $c0 = static::decode6Bits($chunk[1]);
 
             if ($i + 2 < $srcLen) {

@@ -581,7 +581,7 @@ class CommentEditAuthzCest
 			throw new \RuntimeException('The comment page served no comment form');
 		}
 
-		if (!preg_match('/name=[\'"]e-token[\'"][^>]*value=[\'"]([^\'"]+)[\'"]/', substr($source, $form), $m))
+		if (!preg_match('/name=[\'"]e-token[\'"][^>]*value=[\'"]([^\'"]+)[\'"]/', (string) substr($source, $form), $m))
 		{
 			throw new \RuntimeException('No e-token published in the comment form');
 		}

@@ -114,7 +114,7 @@ final class CachingStream implements StreamInterface
 
             if ($this->skipReadBytes) {
                 $len = strlen($remoteData);
-                $remoteData = substr($remoteData, $this->skipReadBytes);
+                $remoteData = (string) substr($remoteData, $this->skipReadBytes);
                 $this->skipReadBytes = max(0, $this->skipReadBytes - $len);
             }
 

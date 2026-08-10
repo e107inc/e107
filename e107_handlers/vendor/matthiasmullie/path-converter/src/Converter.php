@@ -73,7 +73,7 @@ class Converter implements ConverterInterface
 
         // remove leading current directory.
         if (substr($path, 0, 2) === './') {
-            $path = substr($path, 2);
+            $path = (string) substr($path, 2);
         }
 
         // remove references to current directory in the path.

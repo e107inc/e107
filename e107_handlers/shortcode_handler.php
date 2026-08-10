@@ -171,7 +171,7 @@ class e_parse_shortcode
 			{
 				if (strpos($c, 'sc_') === 0)
 				{
-					$codes[] = substr($c, 3);
+					$codes[] = (string) substr($c, 3);
 				}
 			}
 			unset($tmp);
@@ -708,7 +708,7 @@ class e_parse_shortcode
 		{
 			if (strpos($c, 'sc_') === 0)
 			{
-				$sc_func = substr($c, 3);
+				$sc_func = (string) substr($c, 3);
 				$code = strtoupper($sc_func);
 				if ($force || !$this->isRegistered($code))
 				{

@@ -481,7 +481,7 @@ class X509
             return false;
         }
 
-        $this->signatureSubject = substr($cert, $decoded[0]['content'][0]['start'], $decoded[0]['content'][0]['length']);
+        $this->signatureSubject = (string) substr($cert, $decoded[0]['content'][0]['start'], $decoded[0]['content'][0]['length']);
 
         if ($this->isSubArrayValid($x509, 'tbsCertificate/extensions')) {
             $this->mapInExtensions($x509, 'tbsCertificate/extensions');
@@ -1372,7 +1372,7 @@ class X509
                     $signingCert['tbsCertificate']['subjectPublicKeyInfo']['algorithm']['algorithm'],
                     $signingCert['tbsCertificate']['subjectPublicKeyInfo']['subjectPublicKey'],
                     $this->currentCert['signatureAlgorithm']['algorithm'],
-                    substr($this->currentCert['signature'], 1),
+                    (string) substr($this->currentCert['signature'], 1),
                     $this->signatureSubject
                 );
             case isset($this->currentCert['certificationRequestInfo']):
@@ -1380,7 +1380,7 @@ class X509
                     $this->currentCert['certificationRequestInfo']['subjectPKInfo']['algorithm']['algorithm'],
                     $this->currentCert['certificationRequestInfo']['subjectPKInfo']['subjectPublicKey'],
                     $this->currentCert['signatureAlgorithm']['algorithm'],
-                    substr($this->currentCert['signature'], 1),
+                    (string) substr($this->currentCert['signature'], 1),
                     $this->signatureSubject
                 );
             case isset($this->currentCert['publicKeyAndChallenge']):
@@ -1388,7 +1388,7 @@ class X509
                     $this->currentCert['publicKeyAndChallenge']['spki']['algorithm']['algorithm'],
                     $this->currentCert['publicKeyAndChallenge']['spki']['subjectPublicKey'],
                     $this->currentCert['signatureAlgorithm']['algorithm'],
-                    substr($this->currentCert['signature'], 1),
+                    (string) substr($this->currentCert['signature'], 1),
                     $this->signatureSubject
                 );
             case isset($this->currentCert['tbsCertList']):
@@ -1420,7 +1420,7 @@ class X509
                     $signingCert['tbsCertificate']['subjectPublicKeyInfo']['algorithm']['algorithm'],
                     $signingCert['tbsCertificate']['subjectPublicKeyInfo']['subjectPublicKey'],
                     $this->currentCert['signatureAlgorithm']['algorithm'],
-                    substr($this->currentCert['signature'], 1),
+                    (string) substr($this->currentCert['signature'], 1),
                     $this->signatureSubject
                 );
             default:
@@ -1567,8 +1567,8 @@ class X509
     public static function decodeNameConstraintIP($ip)
     {
         $size = strlen($ip) >> 1;
-        $mask = substr($ip, $size);
-        $ip = substr($ip, 0, $size);
+        $mask = (string) substr($ip, $size);
+        $ip = (string) substr($ip, 0, $size);
         return [inet_ntop($ip), inet_ntop($mask)];
     }
 
@@ -2300,7 +2300,7 @@ class X509
 
         $this->dn = $csr['certificationRequestInfo']['subject'];
 
-        $this->signatureSubject = substr($orig, $decoded[0]['content'][0]['start'], $decoded[0]['content'][0]['length']);
+        $this->signatureSubject = (string) substr($orig, $decoded[0]['content'][0]['start'], $decoded[0]['content'][0]['length']);
 
         $key = $csr['certificationRequestInfo']['subjectPKInfo'];
         $key = ASN1::encodeDER($key, Maps\SubjectPublicKeyInfo::MAP);
@@ -2411,7 +2411,7 @@ class X509
             return false;
         }
 
-        $this->signatureSubject = substr($orig, $decoded[0]['content'][0]['start'], $decoded[0]['content'][0]['length']);
+        $this->signatureSubject = (string) substr($orig, $decoded[0]['content'][0]['start'], $decoded[0]['content'][0]['length']);
 
         $key = $spkac['publicKeyAndChallenge']['spki'];
         $key = ASN1::encodeDER($key, Maps\SubjectPublicKeyInfo::MAP);
@@ -2510,7 +2510,7 @@ class X509
             return false;
         }
 
-        $this->signatureSubject = substr($orig, $decoded[0]['content'][0]['start'], $decoded[0]['content'][0]['length']);
+        $this->signatureSubject = (string) substr($orig, $decoded[0]['content'][0]['start'], $decoded[0]['content'][0]['length']);
 
         $this->mapInDNs($crl, 'tbsCertList/issuer/rdnSequence');
         if ($this->isSubArrayValid($crl, 'tbsCertList/crlExtensions')) {

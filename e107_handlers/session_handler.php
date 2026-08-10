@@ -353,7 +353,7 @@ public function get($key, $clear = false)
     foreach ($this->_data as $dataKey => $value) {
         if (strpos($dataKey, $key . '/') === 0) {
             // Normalize multiple slashes to a single slash
-            $subKeyString = preg_replace('#/+#', '/', substr($dataKey, strlen($key . '/')));
+            $subKeyString = preg_replace('#/+#', '/', (string) substr($dataKey, strlen($key . '/')));
             $subKeys = explode('/', $subKeyString);
             // Remove empty segments
             $subKeys = array_filter($subKeys, function($k) { return $k !== ''; });
@@ -769,13 +769,13 @@ public function getData($key = null, $clear = false)
         {
             // [::1]:8080
             $end = strpos($host, ']');
-            $host = ($end === false) ? substr($host, 1) : substr($host, 1, $end - 1);
+            $host = ($end === false) ? (string) substr($host, 1) : (string) substr($host, 1, $end - 1);
         }
         elseif(substr_count($host, ':') === 1)
         {
             // host:port. More than one colon is a bare IPv6 literal, which
             // cannot carry a port without brackets.
-            $host = substr($host, 0, strrpos($host, ':'));
+            $host = (string) substr($host, 0, strrpos($host, ':'));
         }
 
         if($host === 'localhost' || $host === '::1' || $host === '0:0:0:0:0:0:0:1')

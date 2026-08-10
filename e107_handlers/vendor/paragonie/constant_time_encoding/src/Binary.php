@@ -76,9 +76,9 @@ abstract class Binary
         }
         // Unlike mb_substr(), substr() doesn't accept NULL for length
         if ($length !== null) {
-            return substr($str, $start, $length);
+            return (string) substr($str, $start, $length);
         } else {
-            return substr($str, $start);
+            return (string) substr($str, $start);
         }
     }
 }

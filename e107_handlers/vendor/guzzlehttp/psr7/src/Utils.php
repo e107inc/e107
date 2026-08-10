@@ -262,7 +262,7 @@ final class Utils
         $userInfo = $uri->getUserInfo();
 
         if (false !== ($pos = \strpos($userInfo, ':'))) {
-            return $uri->withUserInfo(\substr($userInfo, 0, $pos), '***');
+            return $uri->withUserInfo((string) \substr($userInfo, 0, $pos), '***');
         }
 
         return $uri;

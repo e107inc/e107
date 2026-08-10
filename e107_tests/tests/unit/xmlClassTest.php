@@ -350,7 +350,7 @@
 		 */
 		private static function relativePath($file)
 		{
-			return strpos($file, e_BASE) === 0 ? substr($file, strlen(e_BASE)) : $file;
+			return strpos($file, e_BASE) === 0 ? (string) substr($file, strlen(e_BASE)) : $file;
 		}
 
 		/**

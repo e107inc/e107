@@ -698,12 +698,12 @@ class admin_log_form_ui extends e_admin_form_ui
 					
 					if(strpos($text,'\n') === 0) // cleanup (not sure of the cause)
 					{
-						$text = substr($text,2);	
+						$text = (string) substr($text,2);	
 					}
 					
 					if(substr($text,-2) == '\n') // cleanup (not sure of the cause)
 					{
-						$text = substr($text,0,-2);	
+						$text = (string) substr($text,0,-2);	
 					}
 					
 					$text = print_a($text,true);	
@@ -859,7 +859,7 @@ class dblog_ui extends e_admin_ui
 				case 'br':
 					return '<br />';
 				case 'link':
-					$temp = substr($matches[2], 1);
+					$temp = (string) substr($matches[2], 1);
 					return "<a href='{$temp}'>{$temp}</a>";
 				case 'test':
 					return '----TEST----';

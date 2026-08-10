@@ -59,7 +59,7 @@ unset($qs);
 
 if(strpos($source,'plugin:') !== false)
 {
-	$plugin = substr($source, 7);
+	$plugin = (string) substr($source, 7);
 
 	if($obj = e107::getAddon($plugin, 'e_print'))
 	{

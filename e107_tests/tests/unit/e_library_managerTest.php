@@ -92,7 +92,7 @@
 			{
 				$coded = $this->lib->detect($name);
 
-				$localName = strpos($name, 'cdn.') === 0 ? substr($name, strlen('cdn.')) : $name;
+				$localName = strpos($name, 'cdn.') === 0 ? (string) substr($name, strlen('cdn.')) : $name;
 				$detected = $this->lib->detect($localName, true);
 
 				$this->assertNotEmpty($coded['version'], "No coded version in core_library:config() -- $name");

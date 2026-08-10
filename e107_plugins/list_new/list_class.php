@@ -151,7 +151,7 @@ class listclass
 		{
 			if(substr($key,-$len) == "_{$mode}_display" && $value == "1")
 			{
-				$sections[] = substr($key,0,-$len);
+				$sections[] = (string) substr($key,0,-$len);
 			}
 		}
 		return $sections;

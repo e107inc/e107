@@ -378,7 +378,7 @@ class file_inspector {
 
 		if(substr($this->root_dir, -1) == '/')
 		{
-			$this->root_dir = substr($this->root_dir, 0, -1);
+			$this->root_dir = (string) substr($this->root_dir, 0, -1);
 		}
 
 		if(isset($_POST['core']) && $_POST['core'] == 'integrity_fail_only')

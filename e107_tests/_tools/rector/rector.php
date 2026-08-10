@@ -127,11 +127,6 @@ return static function (RectorConfig $rectorConfig): void {
         // moment the class loads. Keep the hints.
         \Rector\DowngradePhp72\Rector\ClassMethod\DowngradeParameterTypeWideningRector::class,
 
-        // Quarantined. A later commit removes this skip entry and carries the
-        // (string) casts the rule produces, so that commit reverts cleanly on
-        // its own and leaves the tree at a consistent fixed point.
-        \Rector\DowngradePhp80\Rector\FuncCall\DowngradeSubstrFalsyRector::class,
-
         // e107 v2 commits its vendored dependencies and serves the tree as-is,
         // so every shipped package under e107_handlers/vendor must parse on PHP
         // 5.6 and is downgraded in place. (e107 v3's build chain, which does not

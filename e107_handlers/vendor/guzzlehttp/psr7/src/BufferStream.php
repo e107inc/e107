@@ -144,8 +144,8 @@ final class BufferStream implements StreamInterface
             $this->buffer = '';
         } else {
             // Slice up the result to provide a subset of the buffer.
-            $result = substr($this->buffer, 0, $length);
-            $this->buffer = substr($this->buffer, $length);
+            $result = (string) substr($this->buffer, 0, $length);
+            $this->buffer = (string) substr($this->buffer, $length);
         }
 
         return $result;

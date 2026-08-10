@@ -98,7 +98,7 @@ class AesCbcHmacSha2Test extends \Test\Unit
 				$enc . ' vector tag length'
 			);
 			$this->assertSame(
-				substr($vector['M'], 0, AesCbcHmacSha2::tagLength($enc) * 2),
+				(string) substr($vector['M'], 0, AesCbcHmacSha2::tagLength($enc) * 2),
 				$vector['T'],
 				$enc . ' tag is a leading truncation of the MAC'
 			);
@@ -115,8 +115,8 @@ class AesCbcHmacSha2Test extends \Test\Unit
 		{
 			$half = AesCbcHmacSha2::keyLength($enc) / 2;
 
-			$this->assertSame(substr($vector['K'], 0, $half * 2), $vector['MAC_KEY'], $enc);
-			$this->assertSame(substr($vector['K'], $half * 2), $vector['ENC_KEY'], $enc);
+			$this->assertSame((string) substr($vector['K'], 0, $half * 2), $vector['MAC_KEY'], $enc);
+			$this->assertSame((string) substr($vector['K'], $half * 2), $vector['ENC_KEY'], $enc);
 		}
 	}
 
@@ -234,8 +234,8 @@ class AesCbcHmacSha2Test extends \Test\Unit
 		$this->assertFalse(AesCbcHmacSha2::encrypt(null, $key, $iv, 'x', ''), 'null enc');
 
 		$this->assertFalse(AesCbcHmacSha2::decrypt('A256CBC-HS512', $key, $iv, '', $result['tag'], ''), 'empty ciphertext');
-		$this->assertFalse(AesCbcHmacSha2::decrypt('A256CBC-HS512', $key, $iv, substr($result['ciphertext'], 1), $result['tag'], ''), 'ragged ciphertext');
-		$this->assertFalse(AesCbcHmacSha2::decrypt('A256CBC-HS512', $key, $iv, $result['ciphertext'], substr($result['tag'], 1), ''), 'short tag');
+		$this->assertFalse(AesCbcHmacSha2::decrypt('A256CBC-HS512', $key, $iv, (string) substr($result['ciphertext'], 1), $result['tag'], ''), 'ragged ciphertext');
+		$this->assertFalse(AesCbcHmacSha2::decrypt('A256CBC-HS512', $key, $iv, $result['ciphertext'], (string) substr($result['tag'], 1), ''), 'short tag');
 		$this->assertFalse(AesCbcHmacSha2::decrypt('A256CBC-HS512', $key, $iv, $result['ciphertext'], $result['tag'] . "\0", ''), 'long tag');
 	}
 

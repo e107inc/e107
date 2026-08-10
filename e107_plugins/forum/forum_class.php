@@ -3158,12 +3158,12 @@ class e107forum
 
 			if($forumInfo['sub_parent'])
 			{
-				$forum_sub_parent = (substr($forumInfo['sub_parent'], 0, 1) == '*' ? substr($forumInfo['sub_parent'], 1) : $forumInfo['sub_parent']);
+				$forum_sub_parent = (substr($forumInfo['sub_parent'], 0, 1) == '*' ? (string) substr($forumInfo['sub_parent'], 1) : $forumInfo['sub_parent']);
 				$BREADCRUMB .= "<a class='forumlink' href='".e_PLUGIN_ABS."forum/forum_viewforum.php?{$forumInfo['forum_sub']}'>{$forum_sub_parent}</a>".$dfltsep;
 			}
 
 			$tmpFname = $forumInfo['forum_name'];
-			if(substr($tmpFname, 0, 1) == "*") { $tmpFname = substr($tmpFname, 1); }
+			if(substr($tmpFname, 0, 1) == "*") { $tmpFname = (string) substr($tmpFname, 1); }
 
 			if ($forum_href)
 			{
@@ -3192,7 +3192,7 @@ class e107forum
 		
 		if($forumInfo['sub_parent'])
 		{
-				$forum_sub_parent = (substr($forumInfo['sub_parent'], 0, 1) == '*' ? substr($forumInfo['sub_parent'], 1) : $forumInfo['sub_parent']);
+				$forum_sub_parent = (substr($forumInfo['sub_parent'], 0, 1) == '*' ? (string) substr($forumInfo['sub_parent'], 1) : $forumInfo['sub_parent']);
 		}
 		
 		$breadcrumb[]	= array('text'=>$tp->toHTML($forumInfo['parent_name'])		, 'url'=> e107::url('forum', 'index')."#".$frm->name2id($forumInfo['parent_name']));

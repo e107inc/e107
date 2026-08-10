@@ -626,7 +626,7 @@ class e_thumbnail
 				continue;
 			}
 
-			$tail = str_replace(DIRECTORY_SEPARATOR, '/', substr($path, $len));
+			$tail = str_replace(DIRECTORY_SEPARATOR, '/', (string) substr($path, $len));
 
 			return e107::getParser()->createConstants($root.$tail, 'rel');
 		}

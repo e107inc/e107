@@ -416,7 +416,7 @@ class e_fileOutboundRequestTest extends \Test\Unit
 	{
 		$colon = strpos((string) self::$authority, ':');
 
-		return ($colon === false) ? '' : substr(self::$authority, $colon);
+		return ($colon === false) ? '' : (string) substr(self::$authority, $colon);
 	}
 
 	/**

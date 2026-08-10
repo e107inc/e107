@@ -277,7 +277,7 @@ class CachedKeySet implements ArrayAccess
 
         // Hash keys if they exceed $maxKeyLength of 64
         if (\strlen($key) > $this->maxKeyLength) {
-            $key = substr(hash('sha256', $key), 0, $this->maxKeyLength);
+            $key = (string) substr(hash('sha256', $key), 0, $this->maxKeyLength);
         }
 
         $this->cacheKey = $key;
@@ -288,7 +288,7 @@ class CachedKeySet implements ArrayAccess
 
             // Hash keys if they exceed $maxKeyLength of 64
             if (\strlen($rateLimitKey) > $this->maxKeyLength) {
-                $rateLimitKey = substr(hash('sha256', $rateLimitKey), 0, $this->maxKeyLength);
+                $rateLimitKey = (string) substr(hash('sha256', $rateLimitKey), 0, $this->maxKeyLength);
             }
 
             $this->rateLimitCacheKey = $rateLimitKey;

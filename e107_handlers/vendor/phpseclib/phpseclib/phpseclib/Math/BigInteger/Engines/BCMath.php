@@ -149,7 +149,7 @@ class BCMath extends Engine
         $current = $this->value;
 
         if ($current[0] == '-') {
-            $current = substr($current, 1);
+            $current = (string) substr($current, 1);
         }
 
         while (bccomp($current, '0', 0) > 0) {
@@ -159,7 +159,7 @@ class BCMath extends Engine
         }
 
         return $this->precision > 0 ?
-            substr(str_pad($value, $this->precision >> 3, chr(0), STR_PAD_LEFT), -($this->precision >> 3)) :
+            (string) substr(str_pad($value, $this->precision >> 3, chr(0), STR_PAD_LEFT), -($this->precision >> 3)) :
             ltrim($value, chr(0));
     }
 
@@ -225,7 +225,7 @@ class BCMath extends Engine
         $remainder->value = self::BCMOD_THREE_PARAMS ? bcmod($this->value, $y->value, 0) : bcmod($this->value, $y->value);
 
         if ($remainder->value[0] == '-') {
-            $remainder->value = bcadd($remainder->value, $y->value[0] == '-' ? substr($y->value, 1) : $y->value, 0);
+            $remainder->value = bcadd($remainder->value, $y->value[0] == '-' ? (string) substr($y->value, 1) : $y->value, 0);
         }
 
         return [$this->normalize($quotient), $this->normalize($remainder)];
@@ -315,7 +315,7 @@ class BCMath extends Engine
     {
         $temp = new static();
         $temp->value = strlen($this->value) && $this->value[0] == '-' ?
-            substr($this->value, 1) :
+            (string) substr($this->value, 1) :
             $this->value;
 
         return $temp;
@@ -694,7 +694,7 @@ class BCMath extends Engine
         }
 
         $temp->value = $temp->value[0] == '-' ?
-            substr($this->value, 1) :
+            (string) substr($this->value, 1) :
             '-' . $this->value;
 
         return $temp;
