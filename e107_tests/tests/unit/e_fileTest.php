@@ -836,9 +836,11 @@ class e_fileTest extends \Codeception\Test\Unit
 		/**
 		 * @var e_file
 		 */
+		$requestedTimeout = null;
 		$e_file = $this->make('e_file', [
-			'getRemoteFile' => function($remote_url, $local_file, $type='temp') use ($fake_e107_files, $prefix)
+			'getRemoteFile' => function($remote_url, $local_file, $type='temp', $timeout=40) use ($fake_e107_files, $prefix, &$requestedTimeout)
 			{
+				$requestedTimeout = $timeout;
 				touch(e_TEMP.$local_file);
 				$archive = new ZipArchive();
 				$archive->open(e_TEMP.$local_file, ZipArchive::OVERWRITE);
@@ -853,6 +855,13 @@ class e_fileTest extends \Codeception\Test\Unit
 		$e_file->removeDir($destination);
 		$e_file->mkDir($destination);
 		$results = $e_file->unzipGithubArchive('core', $destination);
+
+		// One budget covers the whole transfer, and these archives run to tens
+		// of megabytes, so the default asks for a sustained rate a home
+		// connection does not always have. The download failing is answered
+		// with a bare "Couldn't download .zip file".
+		$this->assertGreaterThan(40, $requestedTimeout,
+			"unzipGithubArchive() must ask getRemoteFile() for more than its default budget");
 
 		$this->assertEmpty($results['error'], "Errors not expected from Git remote update");
 		$results['success'] = array_map(function($path)
