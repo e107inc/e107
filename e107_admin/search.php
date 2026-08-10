@@ -232,13 +232,13 @@ if ($query[0] == 'settings')
 					<tr>
 						<td>".SEALAN_15.": </td>
 						<td>
-							".$e_userclass->uc_dropdown('search_restrict', $pref['search_restrict'], 'public,guest,nobody,member,admin,classes', "tabindex='".$frm->getNext()."'")."
+							".$e_userclass->uc_dropdown('search_restrict', varset($pref['search_restrict'], 0), 'public,guest,nobody,member,admin,classes', "tabindex='".$frm->getNext()."'")."
 						</td>
 					</tr>
 					<tr>
 						<td>".SEALAN_30."</td>
 						<td>
-							".$frm->radio_switch('search_highlight', $pref['search_highlight'])."
+							".$frm->radio_switch('search_highlight', varset($pref['search_highlight'], 0))."
 						</td>
 					</tr>
 					<tr>

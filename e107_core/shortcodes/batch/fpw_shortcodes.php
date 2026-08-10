@@ -78,7 +78,7 @@ class fpw_shortcodes extends e_shortcode
 
 		if($this->imageCode)
 		{
-			return $this->secImg->renderImage();
+			return $this->secImg->renderImage(secure_image::FORM_FPW);
 		}
 
 		return null;
@@ -93,7 +93,7 @@ class fpw_shortcodes extends e_shortcode
 
 		if($this->imageCode)
 		{
-			return $this->secImg->renderInput();
+			return $this->secImg->renderInput(secure_image::FORM_FPW);
 		}
 
 		return null;

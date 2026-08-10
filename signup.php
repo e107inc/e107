@@ -199,7 +199,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 	
 	if ($signup_imagecode)
 	{	
-		if ($badCodeMsg = e107::getSecureImg()->invalidCode($_POST['rand_num'], $_POST['code_verify'])) // better: allows class to return the error. 
+		if ($badCodeMsg = e107::getSecureImg()->invalidCode($_POST['rand_num'], $_POST['code_verify'], secure_image::FORM_SIGNUP)) // better: allows class to return the error. 
 		{
 			//$extraErrors[] = LAN_SIGNUP_3."\\n";
 			$extraErrors[] = $badCodeMsg."\\n";

@@ -35,13 +35,14 @@ class gsitemap_xml
 		// Gsitemap Addon.
 		if(!empty($_GET['plug']) && !empty($_GET['func']))
 		{
-			if(!e107::isInstalled($_GET['plug']))
+			if(!is_string($_GET['plug']) || !is_string($_GET['func']) || !e107::isInstalled($_GET['plug']))
 			{
 				exit;
 			}
 
 			$obj = e107::getAddon($_GET['plug'], 'e_gsitemap');
-			if($items = e107::callMethod($obj, $_GET['func']))
+
+			if($this->isPublishedSitemap($obj, $_GET['func']) && ($items = e107::callMethod($obj, $_GET['func'])))
 			{
 				$this->renderXML($items);
 			}
@@ -57,6 +58,42 @@ class gsitemap_xml
 		}
 
 
+	}
+
+	/**
+	 * Has the addon offered this method as a sitemap of its own?
+	 *
+	 * e_gsitemap::config() is where a plugin names the methods it means to be
+	 * fetched over the web. Anything else on the class is internal, and
+	 * method_exists() on its own hands an anonymous caller every one of them.
+	 *
+	 * @param object|null $obj e_gsitemap addon instance
+	 * @param string $func method name from the query string
+	 * @return bool
+	 */
+	private function isPublishedSitemap($obj, $func)
+	{
+		if(!is_object($obj) || !method_exists($obj, 'config'))
+		{
+			return false;
+		}
+
+		$config = $obj->config();
+
+		if(empty($config) || !is_array($config))
+		{
+			return false;
+		}
+
+		foreach($config as $sitemap)
+		{
+			if(!empty($sitemap['function']) && $sitemap['function'] === $func)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -95,6 +132,16 @@ class gsitemap_xml
 
 
 
+	/**
+	 * @param array $data rows from the gsitemap table, or items from an addon
+	 * @param string $prefix column prefix of the rows in $data
+	 * @return string
+	 *
+	 * The stored table states its userclass in gsitemap_active, which
+	 * {@see gsitemap_xml::renderXML()} filters in the query. The 'class' key an
+	 * addon may attach to an item it generates has no column behind it, so it is
+	 * answered here.
+	 */
 	function renderXMLItems($data, $prefix = '')
 	{
 		$tp = e107::getParser();
@@ -103,6 +150,11 @@ class gsitemap_xml
 
 		foreach($data as $sm)
 		{
+			if(isset($sm[$prefix.'class']) && !check_class($sm[$prefix.'class']))
+			{
+				continue;
+			}
+
 			$url = $sm[$prefix.'url'];
 
 			if($url[0] === '/')

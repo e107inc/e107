@@ -1584,6 +1584,27 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$this->assertEquals(0, $num);
 
 	}
+
+	/**
+	 * The recorded error belongs to the query that just ran, not to the last
+	 * one that failed. The PDO driver only ever wrote this state on failure, so
+	 * a single failed query left every later success still reporting it, and
+	 * the callers that branch on it, model_class and news_class among them,
+	 * announced an error over work that had succeeded.
+	 */
+	public function testASuccessfulQueryClearsAnEarlierError()
+	{
+		$this->db->select('doesnt_exists');
+
+		$this->assertNotEquals(0, $this->db->getLastErrorNumber(),
+			'precondition: querying a table that is not there has to register an error');
+
+		$this->db->select('user', 'user_id', '`user_id` = 1');
+
+		$this->assertEquals(0, $this->db->getLastErrorNumber(),
+			'a query that succeeded must not still be reporting the previous failure');
+		$this->assertSame('', $this->db->getLastErrorText());
+	}
 	/*
 			public function testGetLastQuery()
 			{

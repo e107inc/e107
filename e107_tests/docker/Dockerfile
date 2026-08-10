@@ -175,11 +175,27 @@ RUN set -eux; \
 RUN set -eux; \
     a2enmod rewrite headers expires ssl; \
     mkdir -p /etc/ssl/e107; \
+    # The SAN goes through a config file rather than -addext, which needs
+    # OpenSSL 1.1.1. The php:5.6 and php:7.0 images are Debian Stretch with
+    # 1.1.0, where -addext is parsed as a digest name and the build dies with
+    # "req: Unknown digest addext". `graft` builds those images from this
+    # Dockerfile, so it has to work there even though this branch's own
+    # matrix starts at 8.1. A config file works on every version.
+    printf '%s\n' \
+        '[req]' \
+        'distinguished_name = dn' \
+        'x509_extensions = v3' \
+        'prompt = no' \
+        '[dn]' \
+        'CN = web' \
+        '[v3]' \
+        'subjectAltName = DNS:web,DNS:localhost,IP:127.0.0.1' \
+        > /tmp/e107-ssl.cnf; \
     openssl req -x509 -nodes -newkey rsa:2048 -days 3650 \
-        -subj '/CN=web' \
-        -addext 'subjectAltName=DNS:web,DNS:localhost,IP:127.0.0.1' \
+        -config /tmp/e107-ssl.cnf \
         -keyout /etc/ssl/e107/web.key \
         -out    /etc/ssl/e107/web.crt; \
+    rm -f /tmp/e107-ssl.cnf; \
     chmod 640 /etc/ssl/e107/web.key
 
 COPY apache-vhost.conf /etc/apache2/sites-available/000-default.conf

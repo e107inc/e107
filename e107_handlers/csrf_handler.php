@@ -122,15 +122,18 @@ class CSRFSessionHandler extends CSRFTokenHandler
 
 /**
  * Cookie-based CSRF token handler for guest users
- * Uses double-submit cookie pattern with JWT tokens
+ * Uses the double-submit cookie pattern with sealed tokens
  */
 class CSRFCookieHandler extends CSRFTokenHandler
 {
 	/** @var string Cookie name for CSRF token */
 	const COOKIE_NAME = 'e107_csrf';
 
-	/** @var e_jwt */
-	protected $jwt;
+	/** @var string Sealed token purpose, keeping these tokens unopenable elsewhere */
+	const TOKEN_PURPOSE = 'csrf';
+
+	/** @var e_sealed_token */
+	protected $sealedToken;
 
 	/** @var string Current token value */
 	protected $currentToken = null;
@@ -143,13 +146,13 @@ class CSRFCookieHandler extends CSRFTokenHandler
 	 */
 	public function __construct()
 	{
-		$this->jwt = e107::getJWT();
+		$this->sealedToken = e107::getSealedToken(self::TOKEN_PURPOSE);
 		$this->session = e107::getSession();
 	}
 
 	/**
 	 * Get the CSRF token for forms
-	 * @param bool $in_form If true, return JWT; if false, return raw value
+	 * @param bool $in_form If true, return the sealed token; if false, return raw value
 	 * @return string
 	 */
 	public function getToken($in_form = true)
@@ -168,16 +171,36 @@ class CSRFCookieHandler extends CSRFTokenHandler
 
 		if ($in_form)
 		{
-			// Create JWT containing the cookie value and validation data
-			// Reuse the session's validation data collection method
+			// Seal the cookie value together with the validation data, reusing
+			// the session's own collection method. Sealing rather than signing
+			// keeps the visitor's User-Agent and Via headers out of the page.
 			$payload = [
 				'csrf' => $cookieToken,
 				'validation' => $this->stripNetworkAddresses($this->session->getValidateData())
 			];
 
-			// Use session lifetime for JWT token TTL
-			$ttl = $this->session->getOption('lifetime', 3600);
-			return $this->jwt->encode($payload, $ttl);
+			// Use session lifetime for the sealed token's TTL. A lifetime of 0
+			// is a supported setting meaning "until the browser closes", and
+			// getOption() only falls back to its default when the key is
+			// absent, which setDefaultSystemConfig() guarantees it never is. Fed
+			// through unaltered it would seal every guest token with exp equal
+			// to iat, so every guest POST on the site would be refused.
+			$ttl = (int) $this->session->getOption('lifetime', 3600);
+
+			if ($ttl <= 0)
+			{
+				$ttl = 3600;
+			}
+
+			$sealed = $this->sealedToken->seal($payload, $ttl);
+
+			if ($sealed === false)
+			{
+				e107::getDebug()->log('CSRF token could not be sealed');
+				return '';
+			}
+
+			return $sealed;
 		}
 
 		return $cookieToken;
@@ -185,17 +208,16 @@ class CSRFCookieHandler extends CSRFTokenHandler
 
 	/**
 	 * Validate a submitted token
-	 * @param string $token The JWT token to validate
+	 * @param string $token The sealed token to validate
 	 * @return bool
 	 */
 	public function validate($token)
 	{
-		// Decode JWT
-		$data = $this->jwt->decode($token);
+		$data = $this->sealedToken->open($token);
 
 		if ($data === false || !isset($data['csrf']))
 		{
-			e107::getDebug()->log('CSRF validation failed: Invalid JWT token');
+			e107::getDebug()->log('CSRF validation failed: Invalid sealed token');
 			return false;
 		}
 
@@ -227,12 +249,11 @@ class CSRFCookieHandler extends CSRFTokenHandler
 
 	/**
 	 * Validate request fingerprint using the same logic as session validation in {@see e_session::_validate()}
-	 * @param array|stdClass $storedData The validation data stored in the JWT
+	 * @param array|stdClass $storedData The validation data carried in the sealed token
 	 * @return bool
 	 */
 	protected function validateRequestFingerprint($storedData)
 	{
-		// Convert stdClass to array if needed (JWT decode returns objects)
 		$storedData = (array) $storedData;
 
 		// Get current request data

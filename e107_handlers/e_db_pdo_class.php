@@ -252,6 +252,13 @@ class e_db_pdo implements e_db
 	 * The array ['PREPARE' => ..., 'BIND' => ..., 'EXECUTE' => ...] contract is
 	 * internal plumbing; new code should call {@see e_db::execute()} instead.
 	 *
+	 * The recorded error state describes this query and no earlier one. It is
+	 * cleared before the statement runs, so a caller reading
+	 * {@see ConnectionInterface::getLastErrorNumber()} afterwards gets this
+	 * query's outcome rather than the last failure the connection ever saw.
+	 * The mysqli driver already behaves this way, refreshing the state from
+	 * mysqli_errno() after every statement.
+	 *
 	 * @param string|array  $query ['BIND'] eg. array['my_field'] = array('value'=>'whatever', 'type'=>'str');
 	 * @param object $rli connection resource.
 	 * @param string $qry_from eg. SELECT, INSERT, UPDATE mode.
@@ -286,6 +293,8 @@ class e_db_pdo implements e_db
 		{
 			$this->log($log_type, $log_remark, $query);
 		}
+
+		$this->resetLastError();
 
 		$b = microtime();
 

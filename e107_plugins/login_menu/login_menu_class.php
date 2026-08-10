@@ -183,17 +183,14 @@ class login_menu_class
         $lbox_stats[0]['stat_items']   = LAN_LOGINMENU_21;
         $lbox_stats[0]['stat_new']     = 0;
         $lbox_stats[0]['stat_nonew']   = LAN_LOGINMENU_26.' '.LAN_LOGINMENU_21;
-        if($get_stats) {
+        if($get_stats && is_readable(e_PLUGIN.'forum/forum_class.php')) {
 
-            $nobody_regexp = "(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)";
+            require_once(e_PLUGIN.'forum/forum_class.php');
 
-            $qb = $sql->createQueryBuilder();
-            $lbox_stats['forum'][0]['stat_new'] = $qb
+            $lbox_stats['forum'][0]['stat_new'] = $sql->createQueryBuilder()
                 ->from('forum_thread', 't')
-                ->leftJoin('forum', 'f', $qb->expr()->compareColumns('t.thread_forum_id', 'f.forum_id'))
                 ->where('t.thread_datestamp', '>', (int) USERLV)
-                ->whereIn('f.forum_class', explode(',', USERCLASS_LIST))
-                ->where($qb->expr()->not($qb->expr()->regexp('f.forum_class', $nobody_regexp)))
+                ->whereIn('t.thread_forum_id', e107forum::visibleForumIds())
                 ->count();
         }
     	
