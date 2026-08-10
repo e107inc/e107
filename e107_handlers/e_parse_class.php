@@ -2926,6 +2926,16 @@ class e_parse
 			$url = $this->createConstants($url, 'mix');
 		}
 
+		// Again, because createConstants() above has just minted the very form
+		// the check at the top of this method converts away. e107::set_request()
+		// strips { and } out of every query string, so a src= that still carries
+		// braces reaches thumb.php as e_IMAGEgeneric/blank_avatar.jpg and names
+		// nothing at all.
+		if (strpos($url, '{e_') === 0)
+		{
+			$url = str_replace($this->getUrlConstants('sc'), $this->getUrlConstants('raw'), $url);
+		}
+
 		$baseurl = ($full ? SITEURL : e_HTTP) . 'thumb.php?';
 
 		if (!empty($this->staticUrl))
