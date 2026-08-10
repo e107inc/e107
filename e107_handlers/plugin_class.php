@@ -3089,8 +3089,17 @@ class e107plugin
 			$txt .= $ret;
 		}
 		
-		// Handle tables
-		$this->XmlTables($function, $plug, $options);
+		// Handle tables. A null return means there was nothing to do (no
+		// {plugin}_sql.php), which is normal; false means a table could not be
+		// created, and a plugin whose tables are missing is not installed, so
+		// stop before the rest of this registers it as though it were.
+		if($this->XmlTables($function, $plug, $options) === false)
+		{
+			e107::getMessage()->addError("Aborted ".$function." of ".$plug['plugin_path'].": its tables could not be created.");
+			$this->log("Aborted ".$function." of ".$plug['plugin_path'].": table creation failed");
+
+			return false;
+		}
 
 		if (varset($plug_vars['adminLinks']))
 		{
@@ -3586,8 +3595,20 @@ class e107plugin
 
 			foreach($tableData['tables'] as $k=>$v)
 			{
-				$engine = $dbv->getIntendedStorageEngine($tableData['engine'][$k]);
-				$charset = $dbv->getIntendedCharset($tableData['charset'][$k]);
+				// Settle the engine before the character set: how wide an index
+				// may be depends on the engine that ends up holding it, so a
+				// table pushed onto MyISAM for its FULLTEXT index is measured
+				// against MyISAM's limit and not InnoDB's.
+				$requirements = $dbv->deriveTableRequirements(
+					$dbv->getFields($tableData['data'][$k]),
+					$dbv->getIndex($tableData['data'][$k])
+				);
+
+				$engine = $dbv->getIntendedStorageEngine($tableData['engine'][$k], $requirements);
+
+				$requirements['engine'] = $engine;
+
+				$charset = $dbv->getIntendedCharset($tableData['charset'][$k], $requirements);
 
 				switch($function)
 				{
@@ -3597,7 +3618,38 @@ class e107plugin
 						$query .= "\n) ENGINE=$engine DEFAULT CHARSET=$charset ";
 
 						$txt = EPL_ADLAN_239." <b>{$v}</b> ";
-						$status = $sql->db_Query($query) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+
+						if(!$sql->db_Query($query))
+						{
+							$errno = (string) $sql->getLastErrorNumber();
+							$error = $sql->getLastErrorText();
+
+							// "Table already exists" is normal rather than a
+							// failure: uninstalling a plugin leaves its tables in
+							// place unless delete_tables was asked for, so every
+							// reinstall meets them again, and the table being
+							// there is all this step wanted. PDO reports it as
+							// SQLSTATE 42S01 and mysqli as 1050, so take either.
+							if(in_array($errno, array('42S01', '1050'), true))
+							{
+								$txt = "Table {$v} already present.";
+								$status = E_MESSAGE_INFO;
+								break;
+							}
+
+							// Anything else means the table is not there. Carrying
+							// on is what let a plugin report itself installed with
+							// one table out of four, so that the first query
+							// against a missing one died with "table doesn't
+							// exist" long after anything named the cause.
+							e107::getMessage()->addError("Could not create table `".MPREFIX.$v."`: ".$error);
+							e107::getMessage()->addDebug($query);
+							$this->log("Failed to create table ".MPREFIX.$v." (".$errno."): ".$error);
+
+							return false;
+						}
+
+						$status = E_MESSAGE_SUCCESS;
 						break;
 
 					case "uninstall":

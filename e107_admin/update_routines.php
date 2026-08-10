@@ -23,6 +23,11 @@ use e107\Database\SqlFragment;
 // [debug=8] shows the operations on major table update
 
 require_once(__DIR__.'/../class2.php');
+if (!getperms('0'))
+{
+	e107::redirect('admin');
+	exit;
+}
 require_once(e_HANDLER.'db_table_admin_class.php');
 e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_e107_update.php');
 // Modified update routine - combines checking and update code into one block per function
@@ -467,6 +472,35 @@ function update_check()
 }
 
 	
+/**
+ * Core preferences a site holds in a shape nothing can read back, and what to
+ * store instead.
+ *
+ * update_core_prefs() otherwise only fills in keys a site is missing, so a value
+ * that was poisoned when the site was installed is never repaired. sitecontacts
+ * is the one that costs a site owner something: default_install.xml declared it
+ * twice for years and the declaration that won was the string "sitecontactinfo".
+ * uc_dropdown() preselects no option for a value that is not a userclass, and
+ * prefs.php stores every field on the page whether or not the admin touched it,
+ * so the next save of the preferences form writes e_UC_NOBODY and contact.php
+ * then stops rendering the contact form at all.
+ *
+ * @param array $pref
+ * @return array preference name => replacement value
+ */
+function get_unusable_core_prefs($pref)
+{
+	$repairs = array();
+
+	if (!empty($pref['sitecontacts']) && !is_numeric($pref['sitecontacts']))
+	{
+		$repairs['sitecontacts'] = (string) e_UC_MAINADMIN;
+	}
+
+	return $repairs;
+}
+
+
 function update_core_prefs($type='')
 {
 	global $e107info; // $pref,  $pref must be kept as global 
@@ -488,21 +522,35 @@ function update_core_prefs($type='')
 		}
 	}
 
+	$repairs = get_unusable_core_prefs($pref);
+
 	if ($just_check)
 	{
 		// Nothing is applied while only checking. Setting the defaults here would
 		// leave them on the shared config object for whoever saves it next, and
 		// update_check() saves it moments later, so the check used to quietly
 		// apply itself and the UPDATE_03 record below never ran.
-		if (!empty($missing))
+		if (!empty($missing) || !empty($repairs))
 		{
-			return update_needed('<br>Missing prefs: <ul><li>'.implode('</li><li>',array_keys($missing)).'</li></ul>');
+			$message = '';
+
+			if (!empty($missing))
+			{
+				$message .= '<br>Missing prefs: <ul><li>'.implode('</li><li>',array_keys($missing)).'</li></ul>';
+			}
+
+			if (!empty($repairs))
+			{
+				$message .= '<br>Unusable prefs: <ul><li>'.implode('</li><li>',array_keys($repairs)).'</li></ul>';
+			}
+
+			return update_needed($message);
 		}
 
 		return $just_check;
 	}
 
-	foreach ($missing as $k => $v)
+	foreach (array_merge($missing, $repairs) as $k => $v)
 	{
 		e107::getConfig()->set($k,$v);
 		$admin_log->logMessage($k.' => '.$v, E_MESSAGE_NODISPLAY, E_MESSAGE_INFO);
@@ -700,6 +748,70 @@ function update_core_database($type = '')
 		}
 
 
+		// Sealed tokens provision their own key on first use. Doing it here
+		// means an upgraded site is never the one paying for that, and an
+		// operator finds out now if the preference cannot be written.
+		$tokenSecret = varset($pref[e_sealed_token::PREF_SECRET], '');
+
+		if(!is_string($tokenSecret) || strlen($tokenSecret) !== e_sealed_token::SECRET_LENGTH || !ctype_xdigit($tokenSecret))
+		{
+			if ($just_check)
+			{
+				return update_needed("A sealed token secret needs to be generated.");
+			}
+
+			try
+			{
+				e_sealed_token::provision();
+				$log->addDebug('Sealed token secret provisioned.');
+			}
+			catch(e_sealed_token_exception $e)
+			{
+				$log->addError($e->getMessage());
+			}
+		}
+
+
+		// The CAPTCHA policy preferences have to exist before the preferences
+		// page can change them: its generic loop uses e_pref::update(), which
+		// silently does nothing for a key the site does not already hold. A
+		// fresh install gets them from default_install.xml, an upgraded one
+		// from here, and both are seeded with the values secure_image would
+		// have assumed anyway, so seeding changes no behaviour.
+		$captchaDefaults = array(
+			secure_image::PREF_CAPTCHA_TTL       => secure_image::DEFAULT_TTL,
+			secure_image::PREF_CAPTCHA_VERIFY_IP => 1,
+		);
+
+		$captchaMissing = array();
+
+		foreach($captchaDefaults as $captchaKey => $captchaValue)
+		{
+			if(!isset($pref[$captchaKey]))
+			{
+				$captchaMissing[$captchaKey] = $captchaValue;
+			}
+		}
+
+		if(!empty($captchaMissing))
+		{
+			if ($just_check)
+			{
+				return update_needed("The CAPTCHA preferences need to be added.");
+			}
+
+			$captchaConfig = e107::getConfig();
+
+			foreach($captchaMissing as $captchaKey => $captchaValue)
+			{
+				$captchaConfig->set($captchaKey, $captchaValue);
+			}
+
+			$captchaConfig->save(false, false, false);
+			$log->addDebug('CAPTCHA preferences added.');
+		}
+
+
 		// User is marked as not installed.
 		if($sql->createQueryBuilder()->select('plugin_id')->from('plugin')->where('plugin_path', 'user')->where('plugin_installflag', '!=', 1)->setMaxResults(1)->fetchRow())
 		{
@@ -798,7 +910,7 @@ function update_706_to_800($type='')
 	$obs_prefs = array('frontpage_type','rss_feeds', 'log_lvcount', 'zone', 'upload_allowedfiletype', 'real', 'forum_user_customtitle',
 						'utf-compatmode','frontpage_method','standards_mode','image_owner','im_quality', 'signup_option_timezone',
 						'modules', 'plug_sc', 'plug_bb', 'plug_status', 'plug_latest', 'subnews_hide_news', 'upload_storagetype',
-						'signup_remote_emailcheck'
+						'signup_remote_emailcheck', 'jwt_secret'
 
 				);
 

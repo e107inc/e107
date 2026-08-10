@@ -2367,6 +2367,19 @@ return [
 		e107::getConfig()->save(FALSE,TRUE, FALSE); // save preferences made during install.
 		installLog::add('Core prefs set to install choices');
 
+		// Sealed tokens can provision their own key on first use, but a site
+		// that has never had one is a site whose first CAPTCHA pays for it.
+		try
+		{
+			require_once(e_HANDLER.'sealed_token_handler.php');
+			e_sealed_token::provision();
+			installLog::add('Sealed token secret provisioned');
+		}
+		catch(e_sealed_token_exception $e)
+		{
+			installLog::add('Sealed token secret could not be provisioned: '.$e->getMessage());
+		}
+
 		// Create the admin user - replacing any that may be been included in the XML.
 
 		$hash = $us->HashPassword($this->previous_steps['admin']['password'],$this->previous_steps['admin']['user'], $pwdEncoding);
@@ -2768,6 +2781,8 @@ return [
 		{
 			$sql_table = preg_replace("/create table\s/si", "CREATE TABLE {$this->previous_steps['mysql']['prefix']}", $sql_table);
 
+			$sql_table = $this->adaptTableToServer($sql_table);
+
 			// Drop existing tables before creating.
 			$tmp = explode("\n",$sql_table);
 			$drop_table = str_replace($srch,$repl,$tmp[0]);
@@ -2782,6 +2797,78 @@ return [
 
 		return FALSE;
 
+	}
+
+	/** @var db_verify|null Engine and charset adviser, built once per install */
+	private $tableAdviser = null;
+
+	/**
+	 * Fit one CREATE TABLE statement to what this server can actually do.
+	 *
+	 * core_sql.php declares InnoDB for all 30 tables and names no character set,
+	 * so they inherit the database default. That has worked by luck rather than
+	 * design: where InnoDB has no FULLTEXT (MySQL before 5.6) the four tables
+	 * declaring one are refused with error 1214, and where the database defaults
+	 * to utf8mb4 the five widest indexes pass the 767-byte limit and are refused
+	 * with 1071. db_verify already knows which engine and character set this
+	 * server can give a table, so ask it and say the answer out loud.
+	 *
+	 * If it cannot be consulted the statement is used exactly as written, which
+	 * is how installation behaved before.
+	 *
+	 * @param string $statement one CREATE TABLE, already prefixed
+	 * @return string
+	 */
+	private function adaptTableToServer($statement)
+	{
+		try
+		{
+			if ($this->tableAdviser === null)
+			{
+				require_once(e_HANDLER . 'db_verify_class.php');
+
+				// Built without init(): that reads preferences, and the core
+				// tables this is helping to create do not exist yet.
+				$this->tableAdviser = new db_verify(false);
+				$this->tableAdviser->availableStorageEngines = $this->tableAdviser->getAvailableStorageEngines();
+			}
+
+			$dbv = $this->tableAdviser;
+
+			if (!preg_match('/^(.*\))\s*ENGINE\s*=\s*(\w+)(.*?);?\s*$/is', $statement, $m))
+			{
+				return $statement;
+			}
+
+			$body     = $m[1];
+			$declared = $m[2];
+			$trailing = trim($m[3]);
+
+			// Engine first: how wide an index may be depends on the engine that
+			// ends up holding it.
+			$requirements = $dbv->deriveTableRequirements($dbv->getFields($body), $dbv->getIndex($body));
+
+			$engine = $dbv->getIntendedStorageEngine($declared, $requirements);
+
+			if (empty($engine))
+			{
+				return $statement;
+			}
+
+			$requirements['engine'] = $engine;
+
+			$charset = $dbv->getIntendedCharset('', $requirements);
+
+			return $body . ' ENGINE=' . $engine . ' DEFAULT CHARSET=' . $charset
+				. ($trailing !== '' ? ' ' . $trailing : '') . ';';
+		}
+		catch (Exception $e)
+		{
+			installLog::add('Could not fit a table definition to this server, using it as written: '
+				. $e->getMessage(), 'error');
+
+			return $statement;
+		}
 	}
 
 	function write_config($data)

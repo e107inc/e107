@@ -385,8 +385,8 @@ class CsrfModeMatrixCest
 	{
 		$I->amOnPage('/' . self::PROBE_FILE);
 
-		// A guest's token is a JWT on master and an md5 on release/v2.3.x, so this
-		// accepts base64url and the dots that separate a JWT's three parts.
+		// A guest's token is a sealed token on master and an md5 on release/v2.3.x,
+		// so this accepts base64url and the dots that separate a sealed token's parts.
 		if(!preg_match('/TOKEN:([A-Za-z0-9._-]+)/', $I->grabPageSource(), $matches))
 		{
 			throw new \RuntimeException('The probe did not publish a token');

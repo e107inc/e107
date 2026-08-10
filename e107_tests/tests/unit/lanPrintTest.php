@@ -22,6 +22,15 @@ class lanPrintTest extends \Codeception\Test\Unit
 		$path = e_LANGUAGEDIR . 'English/lan_print.php';
 		$this->assertFileExists($path);
 
+		// Let e107 be the first to reach the file. lan_print.php defines
+		// nothing itself, it returns its terms and e107::includeLan() turns
+		// them into constants; but includeLan() reads the file with
+		// include_once, so a plain include here first would hand it true
+		// rather than the array and no LAN_PRINT_* constant could be defined
+		// for the rest of the process. Once the constants exist, reading the
+		// file again for the array below costs nothing.
+		e107::includeLan($path);
+
 		$terms = include $path;
 
 		$this->assertIsArray(

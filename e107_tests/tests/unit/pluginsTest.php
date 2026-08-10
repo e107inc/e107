@@ -14,6 +14,9 @@
 
 		protected $_debugPlugin = ''; // 'linkwords'; // add plugin-dir for full report.
 
+		/** @var array<string,bool> installed state of each plugin before this test touched it */
+		private $pluginState = array();
+
 		protected function _before()
 		{
 			e107::loadAdminIcons(); // for plugin admin area scripts.
@@ -25,6 +28,69 @@
 			{
 				$this->assertTrue(false, "Couldn't load e107plugin object");
 			}*/
+		}
+
+		/**
+		 * Note a plugin's installed state before this test changes it.
+		 *
+		 * Every test here pairs an install with an uninstall inside the test
+		 * body, so a test that fails part way through hands the next one a
+		 * plugin it never asked for. It cuts the other way too: gallery,
+		 * featurebox, rss_menu and social arrive installed in the sample dump,
+		 * and a test that uninstalls one and stops there takes it away from
+		 * everything after it. Either way e107::getAddonConfig() answers
+		 * differently, and e107Test::testUrl() builds its assertions by walking
+		 * every route that answer holds.
+		 *
+		 * @param string $pluginDir plugin folder name
+		 * @return void
+		 */
+		private function rememberPlugin($pluginDir)
+		{
+			if(!array_key_exists($pluginDir, $this->pluginState))
+			{
+				$this->pluginState[$pluginDir] = $this->pluginIsInstalled($pluginDir);
+			}
+		}
+
+		/**
+		 * plugin_installflag, not e107::isInstalled(). Tests elsewhere in this
+		 * suite write plug_installed directly to make a plugin look installed
+		 * without installing one, so the preference answers for those fixtures
+		 * as well as for real installs, and the restore below would act on a
+		 * plugin nobody here installed. The flag is the column the product's
+		 * own uninstall gates on, and so the record of what was really there.
+		 *
+		 * @param string $pluginDir plugin folder name
+		 * @return bool
+		 */
+		private function pluginIsInstalled($pluginDir)
+		{
+			return (bool) e107::getDb()->createQueryBuilder()
+				->select('plugin_installflag')->from('plugin')
+				->where('plugin_path', $pluginDir)->fetchOne();
+		}
+
+		/**
+		 * Put back the installed state every plugin was in, pass or fail.
+		 */
+		protected function _after()
+		{
+			foreach($this->pluginState as $pluginDir => $wasInstalled)
+			{
+				$isInstalled = $this->pluginIsInstalled($pluginDir);
+
+				if($wasInstalled && !$isInstalled)
+				{
+					e107::getPlugin()->install($pluginDir);
+				}
+				elseif(!$wasInstalled && $isInstalled)
+				{
+					e107::getPlugin()->uninstall($pluginDir, array('delete_tables' => 1, 'delete_files' => 0));
+				}
+			}
+
+			$this->pluginState = array();
 		}
 
 		private function makePluginReport($pluginDir)
@@ -128,10 +194,11 @@
 
 			$result = $this->pluginInstall('_blank');
 
-		//	print_r($result);
-		//	$this->pluginUninstall('_blank');
-
-
+			// Uninstalled again, unlike when this was written. e107Test::testUrl()
+			// walks every route in e107::getAddonConfig('e_url'), so leaving _blank
+			// installed added its two routes to whatever ran afterwards and changed
+			// how much that test covered.
+			$this->pluginUninstall('_blank');
 		}
 
 		public function testSortOrderPeriodUnderscore()
@@ -614,6 +681,8 @@
 		{
 			$sql = e107::getDb();
 
+			$this->rememberPlugin('tagcloud');
+
 			$plg = e107::getPlug()->clearCache();
 			$plg->load('tagcloud');
 
@@ -757,6 +826,8 @@
 
 		private function pluginInstall($pluginDir)
 		{
+			$this->rememberPlugin($pluginDir);
+
 			e107::setRegistry('core/form/related'); // reset.
 
 			e107::getPlugin()->uninstall($pluginDir);
@@ -778,6 +849,8 @@
 
 		private function pluginUninstall($pluginDir, $opts=array())
 		{
+			$this->rememberPlugin($pluginDir);
+
 			if(empty($opts))
 			{
 				$opts = array(

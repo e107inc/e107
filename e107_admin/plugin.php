@@ -308,7 +308,7 @@ class plugin_ui extends e_admin_ui
 
         private function pluginProcessUpload()
         {
-			if (!$_POST['ac'] == md5(ADMINPWCHANGE))
+			if (!e107::getUser()->checkAdminPwchangeToken(varset($_POST['ac'])))
 			{
 				exit;
 			}
@@ -1175,7 +1175,7 @@ class plugin_online_ui extends e_admin_ui
 
 			if(!empty($data['plugin_price']))
 			{
-				e107::getRedirect()->go($pluginUrl);
+				e107::getRedirect()->goOffsite($pluginUrl);
 				return true;
 			}
 

@@ -14,9 +14,22 @@ if (!defined('e107_INIT')) { exit; }
 class download_rss // plugin-folder + '_rss' 
 {
 	/**
-	 * Admin RSS Configuration 
-	 */		
-	function config() 
+	 * Numeric feed key this plugin answered to before v0.7.6.
+	 *
+	 * @see rss_addons::legacyKeys()
+	 * @return array old numeric key => canonical text key
+	 */
+	function legacy()
+	{
+		return array(
+			12 => 'download',
+		);
+	}
+
+	/**
+	 * Admin RSS Configuration
+	 */
+	function config()
 	{
 		$sql = e107::getDb();
 		$config = array();
@@ -81,8 +94,15 @@ class download_rss // plugin-folder + '_rss'
 			$qb->where('d.download_category', (int) $topic_id);
 		}
 
+		// Three columns decide whether a download may be named: the category's
+		// class, the item's own class and download_visible, which is the one
+		// admin labels "Visibility". download/e_list.php and download.php's own
+		// listings filter all three, with REGEXP rather than an exact match
+		// because each column may hold a comma-separated list of classes.
 		$tmp = $qb->where('d.download_active', '>', 0)
-			->whereIn('d.download_class', explode(',', USERCLASS_LIST))
+			->where($qb->expr()->regexp('dc.download_category_class', e_CLASS_REGEXP))
+			->where($qb->expr()->regexp('d.download_class', e_CLASS_REGEXP))
+			->where($qb->expr()->regexp('d.download_visible', e_CLASS_REGEXP))
 			->orderBy('d.download_datestamp', 'DESC')
 			->setFirstResult(0)->setMaxResults((int) $limit)
 			->fetchAll();

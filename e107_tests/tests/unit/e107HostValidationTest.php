@@ -27,8 +27,24 @@ class e107HostValidationTest extends \Codeception\Test\Unit
 	/** @var ReflectionMethod */
 	private $resolveHttpHost;
 
+	/** @var bool whether the global $pref existed on entry */
+	private $hadGlobalPref = false;
+
+	/** @var mixed the global $pref as found, restored in _after() */
+	private $savedGlobalPref = null;
+
+	/**
+	 * The preference tests below hold a core-aliased e_pref, and every mutator on
+	 * one of those mirrors its own data into the global $pref for backward
+	 * compatibility. Take the array before anything constructs or loads such an
+	 * object, and put it back afterwards, so the rest of the run keeps reading the
+	 * site's preferences rather than this test's fixture.
+	 */
 	protected function _before()
 	{
+		$this->hadGlobalPref = array_key_exists('pref', $GLOBALS);
+		$this->savedGlobalPref = $this->hadGlobalPref ? $GLOBALS['pref'] : null;
+
 		try
 		{
 			$this->e107 = e107::getInstance();
@@ -43,6 +59,18 @@ class e107HostValidationTest extends \Codeception\Test\Unit
 		$this->isAllowedHost->setAccessible(true);
 		$this->resolveHttpHost = $reflection->getMethod('resolveHttpHost');
 		$this->resolveHttpHost->setAccessible(true);
+	}
+
+	protected function _after()
+	{
+		if($this->hadGlobalPref)
+		{
+			$GLOBALS['pref'] = $this->savedGlobalPref;
+		}
+		else
+		{
+			unset($GLOBALS['pref']);
+		}
 	}
 
 	/**
@@ -167,7 +195,9 @@ class e107HostValidationTest extends \Codeception\Test\Unit
 	public function testPrefUpdateSilentlyDropsNewKeys()
 	{
 		$pref = $this->make('e_pref');
-		$pref->__construct('core');
+		// 'core' is the alias of the row named SitePrefs, not a row name of its
+		// own. Passing it as the prefid gave an object that read nothing.
+		$pref->__construct('SitePrefs', 'core');
 		$pref->load();
 
 		self::assertArrayNotHasKey('trusted_hosts_fixture', $pref->getPref(),
@@ -192,7 +222,7 @@ class e107HostValidationTest extends \Codeception\Test\Unit
 	public function testTrustedHostsSaveRoundTripsThroughPref()
 	{
 		$pref = $this->make('e_pref');
-		$pref->__construct('core');
+		$pref->__construct('SitePrefs', 'core');
 		$pref->load();
 
 		$input = "127.0.0.1\nlocalhost\nhttps://Staging.Example.com/foo\nwww.parked-domain.com\n\nlocalhost";

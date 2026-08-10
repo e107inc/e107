@@ -13,11 +13,6 @@ if(empty($_POST['content']) && empty($_GET['debug']) && !defined('TINYMCE_DEBUG'
 	exit;
 }
 
-if(!defined('e_ADMIN_AREA'))
-{
-	define('e_ADMIN_AREA', true);
-}
-
 if(!defined('TINYMCE_DEBUG') && !defined('TINYMCE_UNIT_TEST'))
 {
 	$_E107['no_online'] = true;
@@ -27,6 +22,14 @@ if(!defined('TINYMCE_DEBUG') && !defined('TINYMCE_UNIT_TEST'))
 	$_E107['minimal'] = true;
 
 	require_once(__DIR__."/../../../../class2.php");
+	require_once(__DIR__."/../../wysiwyg_class.php");
+
+	if(!wysiwyg::isAllowed())
+	{
+		http_response_code(403);
+		header('Content-Length: 0');
+		exit;
+	}
 }
 
 /**

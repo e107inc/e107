@@ -133,7 +133,7 @@ class plugin_signin_signin_shortcodes extends e_shortcode
 
 		if ($this->use_imagecode)
 		{
-			return e107::getSecureImg()->renderImage();
+			return e107::getSecureImg()->renderImage(secure_image::FORM_LOGIN);
 		}
 
 		return null;
@@ -149,7 +149,7 @@ class plugin_signin_signin_shortcodes extends e_shortcode
 
 		if ($this->use_imagecode)
 		{
-			return e107::getSecureImg()->renderInput();
+			return e107::getSecureImg()->renderInput(secure_image::FORM_LOGIN);
 		}
 
 		return null;
@@ -238,9 +238,17 @@ class plugin_signin_signin_shortcodes extends e_shortcode
 
 		$sc = e107::getScBatch('pm', true);
 
-		return $sc->sc_pm_nav($parm);;
+		// Being listed in plug_installed is not the same as having the batch
+		// loaded: the class this needs lives in the plugin's e_shortcode.php,
+		// which is only read when pm is in the e_shortcode addon list. The two
+		// disagree after a failed install and after an uninstall in the same
+		// request, and the menu is no reason to end the page.
+		if(!is_object($sc))
+		{
+			return null;
+		}
 
-
+		return $sc->sc_pm_nav($parm);
 	}
 
 	function sc_signin_admin_href($parm = '')

@@ -396,10 +396,21 @@
 
 		}
 
+		/**
+		 * Both categories the fixture creates are writable by admins only, and
+		 * loadUECatData() falls back to USERCLASS_LIST when the batch carries no
+		 * userclass_list of its own. The batch is a singleton, so this asked for
+		 * whatever classes the last test to call setVars() happened to leave
+		 * behind, and counted one category rather than three whenever that was
+		 * nobody.
+		 */
 		public function testloadUECatData()
 		{
 			/** @var usersettings_shortcodes $sc */
 			$sc = e107::getScBatch('usersettings');
+
+			$perms = array(e_UC_PUBLIC, e_UC_MEMBER, e_UC_ADMIN, e_UC_MAINADMIN);
+			$sc->setVars(array('userclass_list' => implode(',', $perms)));
 
 			$data = $sc->loadUECatData('write');
 			$this->assertCount(3, $data); // 3 categories including "Misc"

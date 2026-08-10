@@ -43,7 +43,7 @@ class list_download
 		   dc.download_category_id, dc.download_category_name, dc.download_category_class
 		   FROM #download AS d
 		   LEFT JOIN #download_category AS dc ON d.download_category=dc.download_category_id
-		   WHERE dc.download_category_class REGEXP '".e_CLASS_REGEXP."' AND d.download_class REGEXP '".e_CLASS_REGEXP."' AND d.download_active != '0' ".$qry."
+		   WHERE dc.download_category_class REGEXP '".e_CLASS_REGEXP."' AND d.download_class REGEXP '".e_CLASS_REGEXP."' AND d.download_visible REGEXP '".e_CLASS_REGEXP."' AND d.download_active != '0' ".$qry."
 		   ORDER BY download_datestamp DESC LIMIT 0,".intval($this->parent->settings['amount'])." ";
 
 		$downloads = $this->parent->e107->sql->gen($qry);
