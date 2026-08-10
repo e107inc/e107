@@ -441,6 +441,23 @@ if (!defined('e107_INIT')) { exit; }
 
 
 
+		/**
+		 * Is this name safe to write into generated PHP as an identifier?
+		 *
+		 * Field and table names come from POST keys, and PHP mangles only space,
+		 * dot and `[` in a top-level key while leaving nested keys untouched
+		 * entirely. They land in method, class and array-key positions, where
+		 * escaping is not available, so anything that is not an identifier is
+		 * dropped rather than written.
+		 *
+		 * @param string $name candidate identifier from posted data
+		 * @return bool
+		 */
+		private function isIdentifier($name)
+		{
+			return is_string($name) && preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/', $name) === 1;
+		}
+
 		private function buildShortcodesFile()
 		{
 			$file    = e_PLUGIN.$this->pluginName. "/".$this->pluginName."_shortcodes.php";
@@ -466,7 +483,7 @@ class plugin_".$this->pluginName."_".$this->pluginName."_shortcodes extends e_sh
 			foreach($_POST['bullets_ui']['fields'] as $key=>$row)
 			{
 
-				if($key === 'options' || $key === 'checkboxes')
+				if($key === 'options' || $key === 'checkboxes' || !$this->isIdentifier($key))
 				{
 					continue;
 				}
@@ -513,6 +530,7 @@ $content .= '}';
 
 			foreach($list as $addon)
 			{
+				$addon     = e107::getParser()->filter($addon, 'file');
 				$addonDest = str_replace("_blank",$this->pluginName,$addon);
 				$source         = e_PLUGIN."_blank/".$addon.".php";
 				$destination    = e_PLUGIN.$this->pluginName. "/".$addonDest.".php";
@@ -1867,6 +1885,11 @@ $text .= "
 
 			foreach($vars['fields'] as $key=>$val)
 			{
+				if(!$this->isIdentifier($key))
+				{
+					continue;
+				}
+
 				$FIELDS .= "\t\t\t'".str_pad($key."'",25)."=> ".str_replace($srch,$repl,var_export($val,true)).",\n";
 			}
 
@@ -1915,7 +1938,7 @@ class " . $pluginFolder . "_adminArea extends e_admin_dispatcher
 
 		foreach($post as $table => $vars) // LOOP Through Tables.
 		{
-			if(!empty($vars['mode']) && $vars['mode'] != 'exclude')
+			if(!empty($vars['mode']) && $vars['mode'] != 'exclude' && $this->isIdentifier($table))
 			{
 
 				$vars['mode'] = $tp->filter($vars['mode']);
@@ -1977,7 +2000,7 @@ class " . $pluginFolder . "_adminArea extends e_admin_dispatcher
 		'main/edit'	=> 'main/list'				
 	);	
 	
-	protected \$menuTitle = '" . vartrue($pluginTitle, $pluginFolder) . "';
+	protected \$menuTitle = " . var_export(vartrue($pluginTitle, $pluginFolder), true) . ";
 }
 
 
@@ -1989,7 +2012,7 @@ class " . $pluginFolder . "_adminArea extends e_admin_dispatcher
 		foreach($post as $table => $vars) // LOOP Through Tables.
 		{
 
-			if($table == 'pluginPrefs' || $vars['mode'] == 'exclude')
+			if($table == 'pluginPrefs' || $vars['mode'] == 'exclude' || !$this->isIdentifier($table))
 			{
 				continue;
 			}
@@ -2005,7 +2028,7 @@ class " . $pluginFolder . "_adminArea extends e_admin_dispatcher
 			foreach($vars['fields'] as $k => $v)
 			{
 
-				if(isset($v['fieldpref']) && $k != 'checkboxes' && $k != 'options')
+				if(isset($v['fieldpref']) && $k != 'checkboxes' && $k != 'options' && $this->isIdentifier($k))
 				{
 					$FIELDPREF[] = "'" . $k . "'";
 				}
@@ -2017,11 +2040,11 @@ class " . $pluginFolder . "_adminArea extends e_admin_dispatcher
 class " . $table . " extends e_admin_ui
 {
 			
-		protected \$pluginTitle		= '" . $pluginTitle . "';
-		protected \$pluginName		= '" . $vars['pluginName'] . "';
-	//	protected \$eventName		= '" . $vars['pluginName'] . "-" . $vars['table'] . "'; // remove comment to enable event triggers in admin. 		
-		protected \$table			= '" . $vars['table'] . "';
-		protected \$pid				= '" . $vars['pid'] . "';
+		protected \$pluginTitle		= " . var_export($pluginTitle, true) . ";
+		protected \$pluginName		= " . var_export($vars['pluginName'], true) . ";
+	//	protected \$eventName		= " . var_export($vars['pluginName'] . "-" . $vars['table'], true) . "; // remove comment to enable event triggers in admin. 		
+		protected \$table			= " . var_export($vars['table'], true) . ";
+		protected \$pid				= " . var_export($vars['pid'], true) . ";
 		protected \$perPage			= 10; 
 		protected \$batchDelete		= true;
 		protected \$batchExport     = true;
@@ -2062,7 +2085,7 @@ class " . $table . " extends e_admin_ui
 						$type = vartrue($val['type'], 'text');
 						$help = str_replace("'", '', vartrue($val['help']));
 
-						$text .= "\t\t\t'" . $index . "'\t\t=> array('title'=> '" . ucfirst($index) . "', 'tab'=>0, 'type'=>'" . $tp->filter($type) . "', 'data' => 'str', 'help'=>'" . $tp->filter($help) . "', 'writeParms' => []),\n";
+						$text .= "\t\t\t" . var_export($index, true) . "\t\t=> array('title'=> " . var_export(ucfirst($index), true) . ", 'tab'=>0, 'type'=>" . var_export($tp->filter($type), true) . ", 'data' => 'str', 'help'=>" . var_export($tp->filter($help), true) . ", 'writeParms' => []),\n";
 					}
 
 				}
@@ -2087,7 +2110,7 @@ class " . $table . " extends e_admin_ui
 
 			foreach($vars['fields'] as $k => $v)
 			{
-				if(isset($v['type']) && ($v['type'] === 'dropdown'))
+				if(isset($v['type']) && ($v['type'] === 'dropdown') && $this->isIdentifier($k))
 				{
 					$text .= "\t\t\t\$this->fields['" . $k . "']['writeParms']['optArray'] = array('" . $k . "_0','" . $k . "_1', '" . $k . "_2'); // Example Drop-down array. \n";
 				}
@@ -2252,6 +2275,11 @@ class " . str_replace("_ui", "_form_ui", $table) . " extends e_admin_form_ui
 				}
 
 				$index = $tp->filter($val['index']);
+
+				if(!$this->isIdentifier($index))
+				{
+					continue;
+				}
 
 				$text .= "
 	

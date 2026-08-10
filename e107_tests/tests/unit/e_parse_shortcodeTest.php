@@ -108,6 +108,43 @@ class e_parse_shortcodeTest extends \Codeception\Test\Unit
 
 	}
 */
+	/**
+	 * An unregistered shortcode name is turned straight into a filename and
+	 * included, with no check on what is in it.
+	 *
+	 * Nothing exploits this today, and the reason is structural rather than
+	 * deliberate: e107_core/shortcodes/single/ is flat, and POSIX will not
+	 * resolve ".." through a path component that does not exist. This test
+	 * creates the subdirectory that removes that accident, which is what any
+	 * plugin, override layer or refactor dropping a directory in there would
+	 * do. The parser is reached by members, not just admins, through
+	 * toEmail(), which turns parse_sc on by default.
+	 */
+	public function testParseCodesRefusesAShortcodeNameThatIsAPath()
+	{
+		$suffix = bin2hex(random_bytes(4));
+		$subdir = e_CORE.'shortcodes/single/scdir'.$suffix;
+		$marker = e_CORE.'shortcodes/reached'.$suffix.'.php';
+
+		mkdir($subdir);
+		file_put_contents($marker, "<?php\ndefine('E107_SC_TRAVERSAL_".strtoupper($suffix)."', true);\n");
+
+		try
+		{
+			$code = 'SCDIR'.strtoupper($suffix).'/../../REACHED'.strtoupper($suffix);
+
+			$this->scParser->parseCodes('{'.$code.'}');
+
+			$this->assertFalse(defined('E107_SC_TRAVERSAL_'.strtoupper($suffix)),
+				'A shortcode name containing a path was resolved to a file and included.');
+		}
+		finally
+		{
+			@unlink($marker);
+			@rmdir($subdir);
+		}
+	}
+
 	public function testParseCodesWithArray()
 	{
 		$text = '<ul class="dropdown-menu {LINK_SUB_OVERSIZED}" role="menu" >';
