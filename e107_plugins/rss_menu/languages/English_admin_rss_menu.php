@@ -64,6 +64,7 @@ return [
     'RSS_LAN_ADMIN_27' => "Uncheck All",
     'RSS_LAN_ADMIN_31' => "rss entries limits updated",
     'RSS_LAN_ADMIN_33' => "Show image in News Feed?",
+    'RSS_LAN_ADMIN_34' => "Enable separate feeds for each news category?",
     'RSS_LAN_0' => "RSS",
     'RSS_LAN_2' => "@nospam.com",
     'RSS_LAN_3' => "noauthor@nospam.com",

@@ -26,4 +26,6 @@ return [
     'LAN_AL_PM_ADM_08' => "PM: Error creating limit data",
     'LAN_AL_PM_ADM_09' => "PM: Error updating limit data",
     'LAN_AL_PM_ADM_10' => "PM: Error deleting limit data",
+    'LAN_AL_PM_ADM_11' => "PM: Stored attachments could not be protected from direct download",
+    'LAN_AL_PM_ADM_12' => "PM: Attachment refused, its directory could not be protected from direct download",
 ];

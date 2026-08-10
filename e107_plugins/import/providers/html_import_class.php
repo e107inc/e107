@@ -87,8 +87,10 @@ class html_import extends base_import_class
 	
 	function config()
 	{
+		$site = e107::getParser()->toAttribute(varset($_POST['siteUrl'], ''));
+
 		$var[0]['caption']	= "Website Home-page URL";
-		$var[0]['html'] 	= "<input class='tbox' type='text' name='siteUrl' size='80' value='{$_POST['rss_feed']}' maxlength='250' />";
+		$var[0]['html'] 	= "<input class='tbox' type='text' name='siteUrl' size='80' value='{$site}' maxlength='250' />";
 
 		return $var;
 	}
@@ -492,42 +494,44 @@ class html_import extends base_import_class
 		$tp = e107::getParser();
 		$search = array();
 		$replace = array();
-		
-		
-	//	echo htmlentities($body);
+
 		preg_match_all("/(((http:\/\/www)|(http:\/\/)|(www))[-a-zA-Z0-9@:%_\+.~#?&\/\/=]+)\.(jpg|jpeg|gif|png|svg)/im",$body,$matches);
-		$fl = e107::getFile();
-			
-		if(is_array($matches[0]))
+
+		if(empty($matches[0]))
 		{
-			$relPath = 'images/'.md5($this->feedUrl);
-			
-			if(!is_dir(e_MEDIA.$relPath))
-			{
-				mkdir(e_MEDIA.$relPath,'0755');	
-			}
-			
-			foreach($matches[0] as $link)
-			{
-				if(file_exists($relPath."/".$filename))
-				{
-					continue;
-				}
-				
-				$filename = basename($link);
-				$fl->getRemoteFile($link,$relPath."/".$filename);
-				$search[] = $link;
-				$replace[] = $tp->createConstants(e_MEDIA.$relPath."/".$filename,1);
-			}	
+			return $body;
 		}
-		
+
+		$relPath = 'images/'.md5($this->feedUrl);
+		$dir = e_MEDIA.$relPath.'/';
+
+		if(!is_dir($dir) && !mkdir($dir, 0755, true) && !is_dir($dir))
+		{
+			$mes->addError("Could not create ".$dir);
+
+			return $body;
+		}
+
+		foreach($matches[0] as $link)
+		{
+			$filename = $this->importRemoteImage($link, $dir);
+
+			if($filename === false)
+			{
+				$mes->addDebug("Not an image, or could not be fetched: ".$link);
+				continue;
+			}
+
+			$search[] = $link;
+			$replace[] = $tp->createConstants($dir.$filename,1);
+		}
+
 		if(count($search))
 		{
-			$med->import($cat,e_MEDIA.$relPath);	
+			$med->import($cat,e_MEDIA.$relPath);
 		}
-		
+
 		return str_replace($search,$replace,$body);
-		
 	}
 	
 

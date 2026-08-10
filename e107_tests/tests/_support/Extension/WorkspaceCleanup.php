@@ -55,8 +55,52 @@ class WorkspaceCleanup extends Extension
 		'e107_themes/testcore',
 		'e107_themes/testkubrick',
 		'e107_plugins/thing',      // downloaded by e_marketplaceTest
+		// Plugin folders a unit test creates and removes itself. A test that
+		// fails part way leaves one behind, and the next run's plugin scan
+		// detects it, so the leftover turns one failure into a different one.
+		'e107_plugins/nofollow',      // @see pluginsTest::testRemotePlugin
+		'e107_plugins/temptest',      // @see e_pluginTest::testIgnoringOfInvalidPlugin
+		'e107_plugins/temptest5709',  // @see e107pluginTest
 		'e107_tests_forum_fixture_probe.php', // @see Helper\ForumFixture
 		'e107_tests_forum_canary.txt',        // @see ForumAttachmentCest
+		'e107_tests_pm_fixture_probe.php',    // @see PmAttachmentCest
+		'e107_tests_pm_storage_probe.php',    // @see PmAttachmentStorageCest
+		'e107_plugins/pm/attachments',        // legacy attachment path; @see PmAttachmentStorageCest
+		'e107_tests_plugin_install_probe.php', // @see Helper\Acceptance::havePluginInstalled()
+		'e107_tests_thumb_probe.php',          // @see ThumbnailContainmentCest
+		'e107_tests_p16_probe.php',            // @see ThumbMediaUserclassCest
+		'e107_tests_p18_probe.php',            // @see ForumAttachmentServingCest
+		'e107_themes/bootstrap5/images/e107_tests_p16_theme.png',       // @see ThumbMediaUserclassCest
+		'e107_themes/bootstrap5/images/e107_tests_p16_themepublic.png', // @see ThumbMediaUserclassCest
+		'e107_plugins/pm/attachments',         // @see ThumbnailContainmentCest
+		'e107_tests_preauth_probe.php',        // @see AdminPreAuthCest
+		'e107_tests_preauth_canary.txt',       // @see AdminPreAuthCest
+		'e107_plugins/faqs/admin_e107_tests_preauth_dispatcher.php', // @see AdminPreAuthCest
+		'e107_plugins/faqs/e107_tests_preauth_dispatcher.php',       // @see AdminPreAuthCest
+		'e107_tests_routeperms_probe.php',     // @see AdminRoutePermsCest
+		'e107_tests_confirmtoken_probe.php',   // @see AdminConfirmTokenCest
+		'e107_tests_themefront_probe.php',     // @see ThemeHandlerFrontEndCest
+		'e107_tests_comment_authz_probe.php',  // @see CommentEditAuthzCest
+		'e107_tests_p3_hop.php',              // @see e_fileOutboundRequestTest
+		'e107_tests_rss_import_probe.php',    // @see RssImportCest
+		'e107_tests_rss_fixtures',            // @see RssImportCest
+		'e107_media/.htaccess',               // written at runtime; @see e_file::blockScriptExecution()
+		'e107_tests_p6_unsubscribe_reset.php',  // @see NewsletterUnsubscribeCest
+		'e107_tests_p6_cron_probe.php',         // @see CronMisconfigMailCest
+		'e107_tests_p6_contact_probe.php',      // @see ContactFormCest
+		'e107_tests_p6_gsitemap_reset.php',     // @see GsitemapFuncCest
+		'e107_tests_p6_rss_reset.php',          // @see RssCommentsFeedCest
+		'e107_tests_p6_poll_reset.php',         // @see PollStuffingCest
+		'e107_tests_p6_download_reset.php',     // @see DownloadMirrorActiveCest
+		'e107_themes/bootstrap5/online_template.php', // @see ForumNamesOutsideTheFeedCest
+		'e107_tests_install_prefs_probe.php',  // @see InstallPrefDuplicatesCest
+		'e107_tests_encoding_probe.php',            // @see Helper\OutputEncodingFixture
+		'e107_tests_encoding_feed.xml',
+		'e107_tests_encoding_addons.xml',
+		'e107_tests_encoding_newsfeed.xml',
+		'e107_tests_encoding_tinymce_canary.xml',
+		'e107_tests_captcha_probe.php',        // @see CaptchaLifecycleCest
+		'e107_tests_redirect_probe.php',           // @see Helper\RedirectFixture
 	];
 
 	/** @var \Deployer|null */
@@ -65,12 +109,16 @@ class WorkspaceCleanup extends Extension
 	/** @var string|false bytes of e107.htaccess as the suite found them */
 	private $htaccess = false;
 
+	/** @var resource|null the exclusive hold this run has on the app tree */
+	private $lock;
+
 	public function beforeSuite(SuiteEvent $event)
 	{
 		if (!$this->appRunsInPlace())
 		{
 			return;
 		}
+		$this->acquireWorkspaceLock();
 		$this->restoreConfigBackup();
 		$this->htaccess = @file_get_contents(APP_PATH.'/e107.htaccess');
 		$this->sweep();
@@ -85,6 +133,71 @@ class WorkspaceCleanup extends Extension
 		$this->restoreConfigBackup();
 		$this->restoreHtaccess();
 		$this->sweep();
+		$this->releaseWorkspaceLock();
+	}
+
+	/**
+	 * Hold the app tree for the length of the suite.
+	 *
+	 * The sweep deletes e107_system/<site_path> and e107_media/<site_path>,
+	 * which is another run's live state whenever two runs share one tree. What
+	 * that produces does not look like a locking problem: it looks like
+	 * ordinary flakes, scattered over unrelated tests, with counts that move
+	 * every time. It has cost this project two wrong conclusions, one of them
+	 * a whole afternoon spent believing a correct fix had made things worse.
+	 *
+	 * Helper\E107Base already takes a lock, but it is keyed on the browser
+	 * URL and returns early without one, so the unit suite, which has no
+	 * browser module and sweeps the same two directories, was never covered.
+	 * This one is keyed on the tree the sweep actually deletes.
+	 *
+	 * @return void
+	 */
+	private function acquireWorkspaceLock()
+	{
+		$path = sys_get_temp_dir().'/e107-workspace-'.md5(APP_PATH).'.lock';
+
+		$this->lock = fopen($path, 'w');
+		if ($this->lock === false)
+		{
+			$this->lock = null;
+			codecept_debug('WorkspaceCleanup: cannot open '.$path.', running unlocked');
+
+			return;
+		}
+
+		if (!flock($this->lock, LOCK_EX | LOCK_NB))
+		{
+			codecept_debug('WorkspaceCleanup: another run holds '.APP_PATH.', waiting for it to finish');
+			flock($this->lock, LOCK_EX);
+		}
+
+		ftruncate($this->lock, 0);
+		fwrite($this->lock, json_encode([
+			'pid'      => getmypid(),
+			'app'      => APP_PATH,
+			'acquired' => time(),
+		]));
+		fflush($this->lock);
+	}
+
+	/**
+	 * Released after the closing sweep, and after Helper\E107Base has given
+	 * back the deployment lock it took second. Both are always taken in that
+	 * order, which is what keeps a pair of runs from deadlocking on each other.
+	 *
+	 * @return void
+	 */
+	private function releaseWorkspaceLock()
+	{
+		if ($this->lock === null)
+		{
+			return;
+		}
+
+		flock($this->lock, LOCK_UN);
+		fclose($this->lock);
+		$this->lock = null;
 	}
 
 	/**

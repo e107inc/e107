@@ -342,9 +342,11 @@ class online_shortcodes extends e_shortcode
 
 		$ADMIN_DIRECTORY = e107::getFolder('admin');
 		$pinfo = (isset($currentMember['pinfo'])) ? $currentMember['pinfo'] : '';
+		$page = htmlspecialchars($currentMember['page'], ENT_QUOTES, 'UTF-8');
+
 		return strpos($pinfo, $ADMIN_DIRECTORY) === false ?
-			"<a href='".$pinfo."'>".$currentMember['page']."</a>" :
-			$currentMember['page'];
+			"<a href='".e107::getParser()->toUrlAttribute($pinfo)."'>".$page."</a>" :
+			$page;
 	}
 }
 

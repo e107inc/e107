@@ -73,8 +73,14 @@ services:
       E107_DB_USER: ${E107_DB_USER}
       E107_DB_PASSWORD: ${E107_DB_PASSWORD}
       E107_DB_NAME: ${E107_DB_NAME}
-      # The URL Apache is reachable at, for in-container self-tests.
-      E107_INTERNAL_URL: http://web/
+      # Empty for a docroot install; a bare directory name (no slashes) to
+      # also serve the site from a subdirectory. The entrypoint turns this
+      # into an Apache alias. See bin/e107-tests --base-path.
+      E107_BASE_PATH: ${E107_BASE_PATH:-}
+      # The URL Apache is reachable at, for in-container self-tests. Follows
+      # E107_BASE_PATH, so a fixture that fetches the site reaches the same
+      # site the suite is driving.
+      E107_INTERNAL_URL: ${E107_INTERNAL_URL:-http://web/}
     volumes:
       # Bind-mount the app root so host edits are live. Acceptance installs
       # write artifacts here; `e107-tests clean` removes them.

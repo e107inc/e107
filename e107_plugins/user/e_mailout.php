@@ -15,8 +15,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-
-/* 
+/*
 Class for user mailout function
 
 Allows admins to send mail to those subscribed to one or more newsletters
@@ -28,7 +27,7 @@ Allows admins to send mail to those subscribed to one or more newsletters
 class user_mailout
 {
 	public $mailerSource    = 'user';	// Plugin name (core mailer is special case) Must be directory for this file
-	public $mailerName      = LAN_MAILOUT_68;	// Text to identify the source of selector (displayed on left of admin page)
+	public $mailerName      = '';		// Text to identify the source of selector (displayed on left of admin page)
 	public $mailerEnabled   = true;		// Mandatory - set to FALSE to disable this plugin (e.g. due to permissions restrictions)
 
 	protected $mailCount = 0;
@@ -45,7 +44,21 @@ class user_mailout
 
 
 	/**
-	 * Manage Bounces. 
+	 * The selector's own name comes from the mailout language file, which the
+	 * admin area loads for its own reasons and the front end does not. Reading it
+	 * here rather than at declaration time keeps unsubscribe.php, which needs
+	 * nothing else from that file, able to load the class at all.
+	 */
+	public function __construct()
+	{
+		e107::includeLan(e_LANGUAGEDIR . e_LANGUAGE . '/admin/lan_mailout.php');
+
+		$this->mailerName = defset('LAN_MAILOUT_68', 'Registered Users');
+	}
+
+
+	/**
+	 * Manage Bounces.
 	 */
 	public function bounce($data)
 	{
@@ -61,6 +74,11 @@ class user_mailout
 	 */
 	function unsubscribe($mode, $data=null)
 	{
+		if($mode == 'process' && !$this->unsubscribe('check', $data))
+		{
+			return false;
+		}
+
 		if($mode == 'check') // check that a matching email,id,creation-date exists.
 		{
 			$ucl = intval($data['userclass']);

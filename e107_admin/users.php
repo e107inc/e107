@@ -33,12 +33,6 @@ e107::coreLan('user');
 e107::coreLan('users', true);
 e107::coreLan('date');
 
-// TODO List of permissions to be implemented
-// "options" - getperms('4|U2')
-// "create" - getperms('4|U1|U0')
-// "ranks" - getperms('4|U3')
-// "default" - getperms('4|U1|U0')
-
 e107::css('inline', "
 
  .label-status, .label-password { width:100%; display:block; padding-bottom:5px; padding-top:5px }
@@ -59,9 +53,24 @@ class users_admin extends e_admin_dispatcher
 			'path' 			=> null,
 			'ui' 			=> 'users_ranks_ui_form',
 			'uipath' 		=> null,
-			//'perm'			=> '0',
+			'perm'			=> '4|U3',
 		)
-	);	
+	);
+
+
+	// Route access. (equivalent of getperms() for each mode/action )
+	//
+	// TODO main/list and main/edit are still unmapped, so the file-top
+	// getperms('4|U0|U1|U2|U3') remains the whole of their authorisation. The
+	// permission code the listing and the editor should carry is a decision for
+	// the route-authorisation work, not for a security release: what the writes
+	// on those routes may do is constrained at the model instead, in
+	// beforeUpdate() and in the batch guard below.
+	protected $perm = array(
+		'main/add'          => '4|U1|U0',
+		'main/prefs'        => '4|U2',
+		'main/maintenance'  => '4',
+	);
 
 
 	protected $adminMenu = array(
@@ -555,7 +564,9 @@ class users_admin_ui extends e_admin_ui
 		$tp = e107::getParser();
 
 
-		if(!empty($_POST['resendToAll']))
+		// init() runs whatever the route, including one the dispatcher has already
+		// rewritten to e403, so main/maintenance is enforced here as well.
+		if(!empty($_POST['resendToAll']) && getperms('4'))
 		{
 			$resetPasswords = !empty($_POST['resetPasswords']);
 			$age = vartrue($_POST['resendAge'], 24);
@@ -706,9 +717,56 @@ class users_admin_ui extends e_admin_ui
 
 
 
+	/**
+	 * Whether the caller may grant or revoke administrator status. '3' is
+	 * "Modify Admin perms", which is what ListUnadminTrigger() and
+	 * AdminObserver() already require, and what the permission widgets already
+	 * render against.
+	 *
+	 * Routed through the user model rather than getperms() so the permission
+	 * emulation overlay is honoured.
+	 *
+	 * @return bool
+	 */
+	private function canGrantAdmin()
+	{
+		return e107::getUser()->checkAdminPerms('3');
+	}
+
+	/**
+	 * Record the refusal of a privileged action the way the rest of this file
+	 * records it, so an administrator sees why nothing happened and the attempt
+	 * is in the admin log.
+	 *
+	 * @param string $detail what was refused
+	 * @return void
+	 */
+	private function refuseAdminAction($detail)
+	{
+		$user = e107::getUser();
+
+		e107::getMessage()->addError(USRLAN_226);
+		e107::getLog()->add('USET_08', $detail.' ('.$user->getId().' '.$user->getName().')', E_LOG_INFORMATIVE);
+	}
+
+	/**
+	 * @param array $new_data posted data, merged over the record on return
+	 * @param array $old_data the record as it stands
+	 * @param int $id
+	 * @return array|false false refuses the save outright
+	 */
 	public function beforeUpdate($new_data, $old_data, $id)
 	{
 		$tp = e107::getParser();
+
+		// An account this caller may not unadmin is an account this caller may
+		// not rewrite: user_password and user_email are on the same form, and
+		// either of them is a takeover of the administrator being edited.
+		if(!$this->canGrantAdmin() && !empty($old_data['user_admin']) && (int) $id !== (int) USERID)
+		{
+			$this->refuseAdminAction('Refused an edit of administrator '.(int) $id);
+			return false;
+		}
 
 		$pwdField = 'user_password_'.$id;
 
@@ -737,12 +795,20 @@ class users_admin_ui extends e_admin_ui
 			e107::getMessage()->addDebug("Password Hash: ".$new_data['user_password']);
 		}
 		
-		if(!empty($new_data['perms']))
+		if($this->canGrantAdmin())
 		{
-			$new_data['user_perms']	= implode(".",$new_data['perms']);
+			if(!empty($new_data['perms']))
+			{
+				$new_data['user_perms']	= implode(".",$new_data['perms']);
+			}
 		}
-		
-		// Handle the Extended Fields. 
+		else
+		{
+			$new_data['user_admin'] = varset($old_data['user_admin'], 0);
+			$new_data['user_perms'] = varset($old_data['user_perms'], '');
+		}
+
+		// Handle the Extended Fields.
 		$this->saveExtended($new_data);
 
 		
@@ -1196,7 +1262,100 @@ class users_admin_ui extends e_admin_ui
 
 	}
 
-	
+
+	/**
+	 * Column names a batch may address on this page.
+	 *
+	 * e_admin_ui::handleListBatch() takes the target column straight out of the
+	 * posted trigger string and hands it to the tree model, which writes it
+	 * without passing through beforeUpdate() and without consulting the field
+	 * declaration. The rendered batch menu is therefore not the limit of what
+	 * can be posted: user_password and user_email are as reachable as
+	 * user_admin. Confine a batch to the columns this page declares batchable.
+	 *
+	 * @param string $batch_trigger
+	 * @return bool true when the batch must not run
+	 */
+	private function refusesBatch($batch_trigger)
+	{
+		$batch_trigger = (string) $batch_trigger;
+
+		// A plugin batch addon, dispatched by e_admin_ui rather than written to
+		// a column of this table.
+		if(strpos($batch_trigger, 'batch_') === 0)
+		{
+			return false;
+		}
+
+		$trigger = explode('__', $batch_trigger);
+		$type = $trigger[0];
+
+		// Neither of these names a column. handleListDeleteBatch() has its own
+		// guard, and the export batch reads.
+		if($type === 'delete' || $type === 'export')
+		{
+			return false;
+		}
+
+		$typed = array('sefgen', 'bool', 'boolreverse', 'attach', 'deattach', 'addAll',
+			'clearAll', 'ucadd', 'ucremove', 'ucaddall', 'ucdelall');
+
+		$field = in_array($type, $typed, true) ? varset($trigger[1], '') : $type;
+
+		if(!$this->getFieldAttr($field, 'batch', false))
+		{
+			return true;
+		}
+
+		return ($field === 'user_admin' || $field === 'user_perms') && !$this->canGrantAdmin();
+	}
+
+	/**
+	 * @param string $batch_trigger
+	 * @return void
+	 */
+	public function ListBatchTrigger($batch_trigger)
+	{
+		if($this->refusesBatch($batch_trigger))
+		{
+			$this->refuseBatch($batch_trigger);
+			return;
+		}
+
+		parent::ListBatchTrigger($batch_trigger);
+	}
+
+	/**
+	 * The grid route reaches the same handler through its own trigger, so it
+	 * needs the same guard.
+	 *
+	 * @param string $batch_trigger
+	 * @return void
+	 */
+	public function GridBatchTrigger($batch_trigger)
+	{
+		if($this->refusesBatch($batch_trigger))
+		{
+			$this->refuseBatch($batch_trigger);
+			return;
+		}
+
+		parent::GridBatchTrigger($batch_trigger);
+	}
+
+	/**
+	 * Drop the whole submission, which is what a batch that ran would have done
+	 * through setTriggersEnabled(false).
+	 *
+	 * @param string $batch_trigger
+	 * @return void
+	 */
+	private function refuseBatch($batch_trigger)
+	{
+		$this->refuseAdminAction('Refused the batch '.e107::getParser()->toDB($batch_trigger));
+		$this->setPosted(array());
+	}
+
 	/**
 	 * Remove admin status trigger
 	 */
@@ -1761,7 +1920,7 @@ class users_admin_ui extends e_admin_ui
 		$admin_log		= e107::getLog();
 		$pref = e107::getPref();
 		
-		if (!$_POST['ac'] == md5(ADMINPWCHANGE))
+		if (!e107::getUser()->checkAdminPwchangeToken(varset($_POST['ac'])))
 		{
 			exit;
 		}
@@ -1835,8 +1994,15 @@ class users_admin_ui extends e_admin_ui
 		
 		if(varset($_POST['perms']))
 		{
-			$allData['data']['user_admin'] = 1;
-			$allData['data']['user_perms'] = implode('.',$_POST['perms']);
+			if($this->canGrantAdmin())
+			{
+				$allData['data']['user_admin'] = 1;
+				$allData['data']['user_perms'] = implode('.',$_POST['perms']);
+			}
+			else
+			{
+				$this->refuseAdminAction('Refused an administrator grant on the quick-add route');
+			}
 		}
 
 
@@ -2036,8 +2202,8 @@ class users_admin_ui extends e_admin_ui
 			</tr>\n";
 		}
 
-		// Make Admin.
-		if(getperms('4|U0')) // Quick Add User access should not be allowed to create new users with escalated perms.
+		// Make Admin. '3' is "Modify Admin perms", which is what AddSubmitTrigger() honours.
+		if($this->canGrantAdmin())
 		{
 			$text .= "
 			<tr>

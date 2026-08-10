@@ -26,6 +26,8 @@
 		<core name="ban_max_online_access">100,200</core>
 		<core name="ban_retrigger">0</core>
 		<core name="cachestatus"></core>
+		<core name="captcha_ttl">86400</core>
+		<core name="captcha_verify_ip">1</core>
 		<core name="check_updates">1</core>
 		<core name="comments_disabled">0</core>
 		<core name="comments_emoticons">0</core>
@@ -145,7 +147,6 @@
 		<core name="enable_rdns">0</core>
 		<core name="enable_rdns_on_ban">0</core>
         <core name="failed_login_limit">10</core>
-		<core name="filter_script">0</core>
 		<core name="flood_hits">100</core>
 		<core name="flood_time">30</core>
 		<core name="flood_timeout">5</core>
@@ -159,7 +160,7 @@
 )]]></core>
 		<core name="gdpr_privacypolicy"></core>
 		<core name="gdpr_termsandconditions"></core>
-		<core name="html_abuse">0</core>
+		<core name="html_abuse">1</core>
 		<core name="im_height">80</core>
 		<core name="im_path">/usr/X11R6/bin/</core>
 		<core name="im_width">80</core>
@@ -254,8 +255,6 @@
 		<core name="post_html">254</core>
 		<core name="post_script">255</core>
 		<core name="filter_script">1</core>
-		<core name="html_abuse">1</core>
-		<core name="pageCookieExpire">84600</core>	
 		<core name="predefinedLoginName"></core>
 		<core name="profanity_filter">0</core>
 		<core name="profanity_replace">[censored]</core>
@@ -294,16 +293,13 @@
 		<core name="siteadminemail">user@yoursite.com</core>
 		<core name="sitebutton">{e_IMAGE}button.png</core>
 		<core name="sitecontacts">250</core>
-		<core name="sitecontacts">sitecontactinfo</core>
 		<core name="sitedescription"></core>
 		<core name="sitedisclaimer"></core>
 		<core name="sitelang_init">English</core>
 		<core name="sitelanguage">English</core>
 		<core name="sitelogo"></core>
-		<core name="sitename">e107 Website System</core>
-		<core name="sitetag">e107 Website System</core>
 		<core name='sitename'>My Website</core>
-		<core name='sitetag'>e107 Website System</core>
+		<core name="sitetag">e107 Website System</core>
 		<core name='sitetheme'>bootstrap</core>
 		<core name='sitetheme_custompages'><![CDATA[array (
 )]]></core>
@@ -430,18 +426,6 @@
 		<core name="xurl"><![CDATA[array ()]]></core>
 		<core name="xmlfeed_languagepacks">https://www.e107.org/themeupdate.php</core>
 		<core name="xmlfeed_security">https://www.e107.org/themeupdate.php</core>
-		<core name="xurl"><![CDATA[array (
-		  'facebook' => '#',
-		  'twitter' => '#',
-		  'youtube' => '#',
-		  'google' => '#',
-		  'linkedin' => '',
-		  'github' => '',
-		  'flickr' => '',
-		  'instagram' => '',
-		  'pinterest' => '',
-		  'vimeo' => '',
-		)]]></core>
 		<core name="avatar_upload">0</core>
 		<core name="photo_upload">0</core>
 		<core name="profile_rate">0</core>

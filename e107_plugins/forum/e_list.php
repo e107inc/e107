@@ -33,6 +33,9 @@ class list_forum
 
 		$bullet = $this->parent->getBullet($this->parent->settings['icon']);
 
+		require_once(e_PLUGIN.'forum/forum_class.php');
+		$visible = e107forum::threadVisibleSql('t');
+
 		if($this->parent->mode == 'new_page' || $this->parent->mode == 'new_menu')
 		{    // New posts since last visit, up to limit
 			$lvisit = $this->parent->getlvisit();
@@ -47,7 +50,7 @@ class list_forum
 			LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
 			LEFT JOIN #user AS u ON tp.post_user = u.user_id
 			LEFT JOIN #user AS lp ON t.thread_lastuser = lp.user_id
-			WHERE find_in_set(forum_class, '" . USERCLASS_LIST . "')
+			WHERE " . $visible . "
 			AND t.thread_lastpost > {$lvisit}
 			ORDER BY tp.post_datestamp DESC LIMIT 0," . intval($this->parent->settings['amount']);
 
@@ -61,7 +64,7 @@ class list_forum
 			LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
 			LEFT JOIN #user AS u ON t.thread_user = u.user_id
 			LEFT JOIN #user AS lp ON t.thread_lastuser = lp.user_id
-			WHERE find_in_set(f.forum_class, '" . USERCLASS_LIST . "')
+			WHERE " . $visible . "
 			ORDER BY t.thread_lastpost DESC LIMIT 0," . intval($this->parent->settings['amount']);
 		}
 

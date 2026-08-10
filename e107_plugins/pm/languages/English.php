@@ -85,4 +85,5 @@ return [
     'LAN_PM_113' => "Read Message",
     'LAN_PM_114' => "You do not have access to send to this user.",
     'LAN_PM_115' => "User Not Found",
+    'LAN_PM_116' => "Attachments cannot be stored privately on this site - nothing was attached. Please tell the site administrator.",
 ];

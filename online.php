@@ -260,6 +260,18 @@
 
 		if(strpos($online_location, "forum") !== false)
 		{
+			// A forum is readable when its own class admits the caller AND the
+			// category above it does, which is the pair forum_viewforum.php asks
+			// through checkPerm(). forum_class alone names a forum that is public
+			// in its own right inside a restricted category. An absent plugin
+			// leaves the list empty, so every forum location reads as restricted.
+			$visibleForums = array();
+			if(is_readable(e_PLUGIN.'forum/forum_class.php'))
+			{
+				require_once(e_PLUGIN.'forum/forum_class.php');
+				$visibleForums = e107forum::visibleForumIds();
+			}
+
 			$tmp = explode(".", substr(strrchr($online_location, "php."), 2));
 			if(strpos($online_location, "_viewtopic") !== false)
 			{
@@ -274,14 +286,14 @@
 				}
 				$qb = $sql->createQueryBuilder();
 				$forum = $qb
-					->select('t.thread_name', 'f.forum_name', 'f.forum_class')
+					->select('t.thread_name', 't.thread_forum_id', 'f.forum_name')
 					->from('forum_thread', 't')
 					->leftJoin('forum', 'f', $qb->expr()->compareColumns('f.forum_id', 't.thread_forum_id'))
 					->where('t.thread_id', (int) $tmp[0])
 					->fetchRow();
 				$online_location_page = ONLINE_EL13 . " .:. " . $forum['forum_name'] . "->" . ONLINE_EL14 . " .:. " . $forum['thread_name'] . "->" . ONLINE_EL15 . ": " . $t_page;
 				$online_location = str_replace("php.", "php?", $online_location);
-				if(!check_class($forum['forum_class']))
+				if(!in_array((int) $forum['thread_forum_id'], $visibleForums))
 				{
 					$class_check = false;
 					$online_location_page = ONLINE_EL13 . ": \"" . CLASSRESTRICTED . "\"";
@@ -290,11 +302,11 @@
 			elseif(strpos($online_location, "_viewforum") !== false)
 			{
 				$forum = $sql->createQueryBuilder()
-					->select('forum_name', 'forum_class')->from('forum')
+					->select('forum_name')->from('forum')
 					->where('forum_id', (int) $tmp[0])->fetchRow();
 				$online_location_page = ONLINE_EL13 . " .:. " . $forum['forum_name'];
 				$online_location = str_replace("php.", "php?", $online_location);
-				if(!check_class($forum['forum_class']))
+				if(!in_array((int) $tmp[0], $visibleForums))
 				{
 					$class_check = false;
 					$online_location_page = ONLINE_EL13 . ": \"" . CLASSRESTRICTED . "\"";
@@ -311,6 +323,11 @@
 					->where('forum_id', (int) $forum_thread['thread_forum_id'])->fetchRow();
 				$online_location_page = ONLINE_EL12 . ": " . ONLINE_EL13 . " .:. " . $forum['forum_name'] . "->" . ONLINE_EL14 . " .:. " . $forum_thread['thread_name'];
 				$online_location = e_PLUGIN . "forum/forum_viewtopic.php?$tmp[0].$tmp[1]";
+				if(!in_array((int) $tmp[0], $visibleForums))
+				{
+					$class_check = false;
+					$online_location_page = ONLINE_EL13 . ": \"" . CLASSRESTRICTED . "\"";
+				}
 			}
 		}
 

@@ -421,6 +421,135 @@ class e_fileTest extends \Codeception\Test\Unit
 		self::assertFalse(e_file::isAbsolutePath(null));
 	}
 
+	/**
+	 * The guard files land, and only once.
+	 *
+	 * Called ahead of every attachment the PM plugin stores, so rewriting a
+	 * file that is already there would be an upload's worth of pointless
+	 * writes. The rule that has to survive is that anything already in place
+	 * is left exactly as it was found: an administrator who has widened or
+	 * narrowed the rule by hand keeps their version.
+	 */
+	public function testProtectDirectory()
+	{
+		$dir = e_TEMP . 'test_protect_directory_' . uniqid() . '/';
+
+		self::assertFalse($this->fl->protectDirectory($dir),
+			'A directory that is not there must not be created');
+		self::assertFalse(is_dir($dir), 'protectDirectory() must not create the directory it was asked to guard');
+
+		self::assertFalse($this->fl->protectDirectory(''));
+
+		mkdir($dir);
+
+		try
+		{
+			self::assertTrue($this->fl->protectDirectory(rtrim($dir, '/')),
+				'A path without a trailing separator is the same directory');
+
+			self::assertFileExists($dir . '.htaccess');
+			self::assertFileExists($dir . 'index.html');
+			self::assertSame('', file_get_contents($dir . 'index.html'));
+
+			$rule = file_get_contents($dir . '.htaccess');
+			self::assertStringContainsString('RedirectMatch 403', $rule);
+			self::assertStringContainsString('Deny from all', $rule);
+			self::assertStringNotContainsString('Require ', $rule,
+				'A guard file may ask for no AllowOverride class beyond the ones e107.htaccess already needs');
+
+			file_put_contents($dir . '.htaccess', 'an administrator wrote this');
+
+			self::assertTrue($this->fl->protectDirectory($dir));
+			self::assertSame('an administrator wrote this', file_get_contents($dir . '.htaccess'),
+				'An existing guard file must be left alone');
+		}
+		finally
+		{
+			@unlink($dir . '.htaccess');
+			@unlink($dir . 'index.html');
+			@rmdir($dir);
+		}
+	}
+
+	/**
+	 * The rule e107_media carries, and the promise that it is not the deny rule
+	 * above it.
+	 *
+	 * e107_media is public: avatars, site images and every {e_MEDIA_IMAGE} URL a
+	 * theme emits are fetched straight off the web server. A rule here that
+	 * refused a request for an image would take every e107 site down, so what
+	 * this asserts about the contents is as much about what is absent as what
+	 * is present.
+	 */
+	public function testBlockScriptExecution()
+	{
+		$dir = e_TEMP . 'test_block_execution_' . uniqid() . '/';
+
+		self::assertFalse($this->fl->blockScriptExecution($dir),
+			'A directory that is not there must not be created');
+		self::assertDirectoryDoesNotExist($dir);
+
+		self::assertFalse($this->fl->blockScriptExecution(''));
+
+		mkdir($dir);
+
+		try
+		{
+			self::assertTrue($this->fl->blockScriptExecution(rtrim($dir, '/')),
+				'A path without a trailing separator is the same directory');
+
+			$rule = file_get_contents($dir . '.htaccess');
+
+			self::assertStringContainsString('SetHandler none', $rule);
+			self::assertStringContainsString('RemoveHandler', $rule);
+			self::assertStringContainsString('phar|php|php[0-9]', $rule,
+				'The refusal has to name the extensions a server hands to an interpreter');
+
+			self::assertLessThan(strpos($rule, '</FilesMatch>'), strpos($rule, 'SetHandler none'),
+				'The handler is dropped inside the FilesMatch block, not at directory scope');
+			self::assertStringContainsString('RedirectMatch 403 "(?i)\.(phar|', $rule,
+				'The refusal names the same extensions and nothing else');
+
+			foreach(array('Require ', 'Deny from', 'Order ', 'php_flag', 'php_value', 'Options ') as $directive)
+			{
+				self::assertStringNotContainsString($directive, $rule,
+					$directive . ' is not AllowOverride FileInfo, and a directive the host '
+					. 'does not permit answers 500 for the whole tree');
+			}
+
+			self::assertFileDoesNotExist($dir . 'index.html',
+				'A listing guard is protectDirectory()\'s job, not this one\'s');
+
+			self::assertTrue($this->fl->blockScriptExecution($dir));
+			self::assertSame($rule, file_get_contents($dir . '.htaccess'),
+				'A rule already written is not written again');
+
+			file_put_contents($dir . '.htaccess', "Options -Indexes\n");
+
+			self::assertTrue($this->fl->blockScriptExecution($dir));
+
+			$merged = file_get_contents($dir . '.htaccess');
+
+			self::assertStringStartsWith("Options -Indexes\n", $merged,
+				'What the directory already held must survive');
+			self::assertStringContainsString('SetHandler none', $merged,
+				'A foreign .htaccess must not mean the tree goes unprotected');
+
+			@unlink($dir . '.htaccess');
+			mkdir($dir . '.htaccess');
+
+			self::assertFalse($this->fl->blockScriptExecution($dir),
+				'A rule that could not be written is reported, not warned about');
+
+			@rmdir($dir . '.htaccess');
+		}
+		finally
+		{
+			@unlink($dir . '.htaccess');
+			@rmdir($dir);
+		}
+	}
+
 			public function testFile_size_encode()
 			{
 				$arr = array(
@@ -842,9 +971,11 @@ class e_fileTest extends \Codeception\Test\Unit
 		/**
 		 * @var e_file
 		 */
+		$requestedTimeout = null;
 		$e_file = $this->make('e_file', [
-			'getRemoteFile' => function($remote_url, $local_file, $type='temp') use ($fake_e107_files, $prefix)
+			'getRemoteFile' => function($remote_url, $local_file, $type='temp', $timeout=40) use ($fake_e107_files, $prefix, &$requestedTimeout)
 			{
+				$requestedTimeout = $timeout;
 				touch(e_TEMP.$local_file);
 				$archive = new ZipArchive();
 				$archive->open(e_TEMP.$local_file, ZipArchive::OVERWRITE);
@@ -859,6 +990,13 @@ class e_fileTest extends \Codeception\Test\Unit
 		$e_file->removeDir($destination);
 		$e_file->mkDir($destination);
 		$results = $e_file->unzipGithubArchive('core', $destination);
+
+		// One budget covers the whole transfer, and these archives run to tens
+		// of megabytes, so the default asks for a sustained rate a home
+		// connection does not always have. The download failing is answered
+		// with a bare "Couldn't download .zip file".
+		self::assertGreaterThan(40, $requestedTimeout,
+			"unzipGithubArchive() must ask getRemoteFile() for more than its default budget");
 
 		self::assertEmpty($results['error'], "Errors not expected from Git remote update");
 		$results['success'] = array_map(function($path)
@@ -1012,6 +1150,54 @@ class e_fileTest extends \Codeception\Test\Unit
 		$result = $this->fl->getRemoteContent('http://10.0.0.1/');
 		self::assertFalse($result);
 		self::assertStringContainsString('private/reserved IP', $this->fl->getErrorMessage());
+	}
+
+	/**
+	 * A directory holding uploads that are not for direct download gets a deny
+	 * rule and a blank index.html.
+	 */
+	public function testProtectDirectoryWritesBothGuards()
+	{
+		$dir = e_TEMP.'e107_tests_protect_'.uniqid().'/';
+		mkdir($dir);
+
+		self::assertTrue($this->fl->protectDirectory($dir));
+		self::assertFileExists($dir.'index.html');
+		$rule = file_get_contents($dir.'.htaccess');
+		self::assertStringContainsString('RedirectMatch 403', $rule);
+		self::assertStringNotContainsString('Require ', $rule);
+
+		unlink($dir.'.htaccess');
+		unlink($dir.'index.html');
+		rmdir($dir);
+	}
+
+	/**
+	 * A rule an administrator has edited is never rewritten, which is what
+	 * makes the call cheap enough to make ahead of every write.
+	 */
+	public function testProtectDirectoryKeepsWhatIsAlreadyThere()
+	{
+		$dir = e_TEMP.'e107_tests_protect_'.uniqid().'/';
+		mkdir($dir);
+		file_put_contents($dir.'.htaccess', 'Require ip 10.0.0.0/8');
+
+		self::assertTrue($this->fl->protectDirectory($dir));
+		self::assertSame('Require ip 10.0.0.0/8', file_get_contents($dir.'.htaccess'));
+
+		unlink($dir.'.htaccess');
+		unlink($dir.'index.html');
+		rmdir($dir);
+	}
+
+	/**
+	 * The helper never creates the directory: a caller that thought it had
+	 * protected somewhere has to be told it has not.
+	 */
+	public function testProtectDirectoryRefusesAMissingDirectory()
+	{
+		self::assertFalse($this->fl->protectDirectory(e_TEMP.'e107_tests_absent_'.uniqid().'/'));
+		self::assertFalse($this->fl->protectDirectory(''));
 	}
 
 	/*

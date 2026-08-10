@@ -1640,6 +1640,80 @@ EXPECTED;
 
 	}
 
+	/**
+	 * search_highlight is created by e107_admin/search.php and by nothing else, so
+	 * a site whose administrator has never saved the search settings page reaches
+	 * the highlighting test without it. Absent has to mean off, not a warning on
+	 * every parsed string.
+	 */
+	public function testCheckHighlightingTreatsAMissingSearchHighlightPreferenceAsOff()
+	{
+		$restore = $this->overrideSitePrefs(array('sitename' => 'e107'), 'https://example.com/news.php?q=needle');
+
+		try
+		{
+			self::assertFalse($this->tp->checkHighlighting());
+		}
+		finally
+		{
+			$restore();
+		}
+	}
+
+	public function testCheckHighlightingIsOnWhenTheSearchHighlightPreferenceIsSet()
+	{
+		$restore = $this->overrideSitePrefs(array('search_highlight' => 1), 'https://example.com/news.php?q=needle');
+
+		try
+		{
+			self::assertTrue($this->tp->checkHighlighting());
+		}
+		finally
+		{
+			$restore();
+		}
+	}
+
+	/**
+	 * Swap in the legacy $pref global and the referrer that checkHighlighting()
+	 * reads, and hand back the callable that puts both back as they were found.
+	 *
+	 * @param array  $prefs
+	 * @param string $referer
+	 * @return callable
+	 */
+	private function overrideSitePrefs(array $prefs, $referer)
+	{
+		$hadPref = array_key_exists('pref', $GLOBALS);
+		$savedPref = $hadPref ? $GLOBALS['pref'] : null;
+		$hadReferer = array_key_exists('HTTP_REFERER', $_SERVER);
+		$savedReferer = $hadReferer ? $_SERVER['HTTP_REFERER'] : null;
+
+		$GLOBALS['pref'] = $prefs;
+		$_SERVER['HTTP_REFERER'] = $referer;
+
+		return static function () use ($hadPref, $savedPref, $hadReferer, $savedReferer)
+		{
+			if($hadPref)
+			{
+				$GLOBALS['pref'] = $savedPref;
+			}
+			else
+			{
+				unset($GLOBALS['pref']);
+			}
+
+			if($hadReferer)
+			{
+				$_SERVER['HTTP_REFERER'] = $savedReferer;
+			}
+			else
+			{
+				unset($_SERVER['HTTP_REFERER']);
+			}
+		};
+	}
+
 	public function testTruncate()
 	{
 		// html
@@ -2102,6 +2176,72 @@ EXPECTED;
 
 		$this->tp->setStaticUrl(null);
 		e107::getParser()->setStaticUrl(null);
+	}
+
+	public function testSetStaticUrlDiscardsThePreviousConfigurationsState()
+	{
+		$first = [
+			'https://static1.mydomain.com/',
+			'https://static2.mydomain.com/',
+			'https://static3.mydomain.com/',
+		];
+
+		$this->tp->setStaticUrl($first);
+
+		self::assertSame(
+			'https://static1.mydomain.com/e107_themes/bootstrap3/images/one.jpg',
+			$this->tp->staticUrl('{THEME}images/one.jpg')
+		);
+		self::assertSame(
+			'https://static2.mydomain.com/e107_themes/bootstrap3/images/two.jpg',
+			$this->tp->staticUrl('{THEME}images/two.jpg')
+		);
+
+		$this->tp->setStaticUrl(['https://cdn.othersite.com/']);
+
+		self::assertSame(
+			'https://cdn.othersite.com/e107_themes/bootstrap3/images/one.jpg',
+			$this->tp->staticUrl('{THEME}images/one.jpg'),
+			"A path already resolved kept the domain it was given under the previous configuration."
+		);
+
+		$this->tp->setStaticUrl($first);
+
+		self::assertSame(
+			'https://static1.mydomain.com/e107_themes/bootstrap3/images/three.jpg',
+			$this->tp->staticUrl('{THEME}images/three.jpg'),
+			"The round-robin resumed from the position the previous configuration left it at."
+		);
+
+		$this->tp->setStaticUrl(null);
+
+		self::assertSame(
+			e_THEME_ABS . 'bootstrap3/images/one.jpg',
+			$this->tp->staticUrl('{THEME}images/one.jpg')
+		);
+	}
+
+	public function testThumbUrlDoesNotAdvanceTheStaticDomainCounter()
+	{
+		$this->tp->setStaticUrl([
+			'https://static1.mydomain.com/',
+			'https://static2.mydomain.com/',
+			'https://static3.mydomain.com/',
+		]);
+
+		self::assertStringStartsWith(
+			'https://static1.mydomain.com/',
+			$this->tp->thumbUrl('{e_MEDIA_IMAGE}myimage.jpg', ['w' => 100, 'h' => 0]),
+			"The first thumbnail skipped the first configured static domain."
+		);
+
+		self::assertSame(
+			'https://static2.mydomain.com/e107_themes/bootstrap3/images/myimage.jpg',
+			$this->tp->staticUrl('{THEME}images/myimage.jpg'),
+			"Generating a thumbnail moved the round-robin on by more than the one domain it consumed."
+		);
+
+		$this->tp->setStaticUrl(null);
 	}
 
 	/*
@@ -2621,7 +2761,7 @@ EXPECTED;
 				'input'    => array('user_image' => '-upload-avatartest.png'),
 				'parms'    => array('w' => 50, 'h' => 50, 'crop' => false),
 				'expected' => array(
-					"thumb.php?src=%7Be_AVATAR%7Dupload%2Favatartest.png&amp;w=50&amp;h=50",
+					"thumb.php?src=e_AVATAR%2Fupload%2Favatartest.png&amp;w=50&amp;h=50",
 					"class='img-rounded rounded user-avatar'"
 				)
 			),
@@ -2629,7 +2769,7 @@ EXPECTED;
 				'input'    => array('user_image' => 'avatartest.png'),
 				'parms'    => array('w' => 50, 'h' => 50, 'crop' => false),
 				'expected' => array(
-					"thumb.php?src=%7Be_AVATAR%7Ddefault%2Favatartest.png&amp;w=50&amp;h=50",
+					"thumb.php?src=e_AVATAR%2Fdefault%2Favatartest.png&amp;w=50&amp;h=50",
 					"class='img-rounded rounded user-avatar'"
 				)
 			),
@@ -2637,7 +2777,7 @@ EXPECTED;
 				'input'    => array('user_image' => ''),
 				'parms'    => array('w' => 50, 'h' => 50, 'crop' => false),
 				'expected' => array(
-					"thumb.php?src=%7Be_IMAGE%7Dgeneric%2Fblank_avatar.jpg&amp;w=50&amp;h=50",
+					"thumb.php?src=e_IMAGE%2Fgeneric%2Fblank_avatar.jpg&amp;w=50&amp;h=50",
 					"class='img-rounded rounded user-avatar'"
 				)
 			),
@@ -2654,7 +2794,7 @@ EXPECTED;
 				'input'    => array('user_image' => '', 'user_id' => 1),
 				'parms'    => array('w' => 50, 'h' => 50, 'crop' => false, 'link' => true),
 				'expected' => array(
-					"thumb.php?src=%7Be_IMAGE%7Dgeneric%2Fblank_avatar.jpg&amp;w=50&amp;h=50",
+					"thumb.php?src=e_IMAGE%2Fgeneric%2Fblank_avatar.jpg&amp;w=50&amp;h=50",
 					"class='img-rounded rounded user-avatar'",
 					"<a class='e-tip' title=",
 					e107::getUrl()->create('user/myprofile/edit')
@@ -2664,7 +2804,7 @@ EXPECTED;
 				'input'    => array('user_image' => 'avatartest.png'),
 				'parms'    => array('w' => 30, 'h' => 20, 'crop' => true, 'shape' => 'rounded'),
 				'expected' => array(
-					"thumb.php?src=%7Be_AVATAR%7Ddefault%2Favatartest.png&amp;aw=30&amp;ah=20",
+					"thumb.php?src=e_AVATAR%2Fdefault%2Favatartest.png&amp;aw=30&amp;ah=20",
 					"class='img-rounded user-avatar'"
 				)
 			),
@@ -2672,7 +2812,7 @@ EXPECTED;
 				'input'    => array('user_image' => 'avatartest.png'),
 				'parms'    => array('w' => 30, 'h' => 30, 'crop' => false, 'shape' => 'circle', 'alt' => 'mytitle'),
 				'expected' => array(
-					"thumb.php?src=%7Be_AVATAR%7Ddefault%2Favatartest.png&amp;w=30&amp;h=30",
+					"thumb.php?src=e_AVATAR%2Fdefault%2Favatartest.png&amp;w=30&amp;h=30",
 					"class='img-circle rounded-circle user-avatar'",
 					'alt="mytitle"',
 				)
@@ -3275,6 +3415,22 @@ Your browser does not support the audio tag.
 
 		$this->tp->setScriptAccess(false);
 
+	}
+
+	/**
+	 * The parser is a singleton and cleanHtml() reuses one DOMDocument, so the
+	 * node lists it fills while walking a document have to be emptied before it
+	 * walks the next one. A <pre> or <code> inside a tag that gets stripped is
+	 * collected but never replaced, so it is still holding a node of the old
+	 * document when the next call reparses over the top of it.
+	 */
+	public function testCleanHtmlDoesNotReuseNodesOfThePreviousDocument()
+	{
+		$first = $this->tp->cleanHtml('<center><pre>kept</pre></center>');
+		self::assertSame('', $first, 'the stripped tag takes its <pre> child with it');
+
+		self::assertSame('<p>plain</p>', $this->tp->cleanHtml('<p>plain</p>'), 'second call on a reused parser');
+		self::assertSame('<pre>later</pre>', $this->tp->cleanHtml('<pre>later</pre>'), 'third call on a reused parser');
 	}
 
 	/**
