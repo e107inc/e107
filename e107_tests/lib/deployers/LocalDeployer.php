@@ -23,7 +23,7 @@ class LocalDeployer extends NoopDeployer
 		$dir = dirname($target);
 		if (!is_dir($dir))
 		{
-			mkdir($dir, 0755, true);
+			self::makeAppDir($dir);
 		}
 		if (file_put_contents($target, $contents) === false)
 		{
@@ -34,6 +34,44 @@ class LocalDeployer extends NoopDeployer
 		// production (e.g. e107_config.php written by a same-user installer).
 		@chmod($target, 0666);
 		self::println("Wrote file \"$relative_path\" to deployed test location");
+	}
+
+	/**
+	 * Create a directory, and every parent it needs, that the app can write into.
+	 *
+	 * The same reasoning as the file mode above, which was applied to the file
+	 * and not to the directory holding it. mkdir()'s mode argument is masked by
+	 * the umask, so each level is set afterwards rather than asked for. A
+	 * fixture seeded into a plugin's attachment directory left it owned by this
+	 * runner at 0755, and every later test that asked the application to store
+	 * an attachment of its own there was refused by the filesystem.
+	 *
+	 * @param string $dir
+	 * @return void
+	 */
+	private static function makeAppDir($dir)
+	{
+		$missing = array();
+
+		for ($path = $dir; !is_dir($path); $path = dirname($path))
+		{
+			$missing[] = $path;
+
+			if (dirname($path) === $path)
+			{
+				break;
+			}
+		}
+
+		if (!mkdir($dir, 0777, true) && !is_dir($dir))
+		{
+			throw new RuntimeException("Failed to create \"$dir\" in the deployed test location");
+		}
+
+		foreach ($missing as $path)
+		{
+			@chmod($path, 0777);
+		}
 	}
 
 	public function removeAppPaths(array $relative_paths)

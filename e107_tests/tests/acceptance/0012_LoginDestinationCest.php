@@ -3,7 +3,7 @@
 /**
  * Issue #5694: a visitor who hits a class-restricted page while logged out should
  * be returned to that page after logging in, instead of being dumped on the front
- * page. The destination travels as a signed (JWT) token in a hidden field + cookie.
+ * page. The destination travels as a sealed token in a hidden field + cookie.
  */
 class LoginDestinationCest
 {

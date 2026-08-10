@@ -271,13 +271,36 @@ class ecache {
 
 
 	/**
-	 * Deletes cache files. If $query is set, deletes files named {$CacheTag}*.cache.php, if not it deletes all cache files - (*.cache.php)
+	 * Delete cached entries whose tag begins with $CacheTag, or every entry when
+	 * $CacheTag is empty.
 	 *
-	 * @param string $CacheTag
-	 * @param boolean $syscache
-	 * @param boolean $related clear also 'nq_' and 'nomd5_' entries
-	 * @return bool
+	 * THE SECOND ARGUMENT IS $syscache, NOT $related. Getting that wrong is silent
+	 * and total: content and system entries live in separate namespaces, spelled
+	 * 'C_' and 'S_' by {@see ecache::delete()}, so clear($tag, true) looks like it
+	 * worked while every entry {@see ecache::set()} wrote is still on disk and
+	 * still being served. Nothing returns an error, because clearing a namespace
+	 * that holds nothing succeeds.
 	 *
+	 * Pass $syscache TRUE only to clear what set_sys()/retrieve_sys() wrote. To
+	 * clear ordinary content, which is what a plugin or an admin page almost
+	 * always wants, leave it FALSE.
+	 *
+	 * @param string $CacheTag prefix to match. Non-word characters are replaced
+	 *                         with underscores before matching, so the tag here
+	 *                         must be spelled as {@see ecache::set()} spelled it.
+	 *                         Empty clears the whole namespace.
+	 * @param boolean $syscache TRUE clears the system namespace ('S_'), FALSE the
+	 *                          content namespace ('C_'). Not a "related entries"
+	 *                          flag; see above.
+	 * @param boolean $related also clear 'nq_'.$CacheTag and 'nomd5_'.$CacheTag.
+	 *                         Those prefixes are chosen by whoever cached the
+	 *                         entry, and {@see ecache::cache_fname()} reads them to
+	 *                         decide whether e_QUERY joins the filename hash, so
+	 *                         the same content can be held under all three
+	 *                         spellings at once
+	 * @return bool TRUE when the cache directory was readable, whether or not any
+	 *              entry actually matched. Not a report that anything was deleted.
+	 * @see ecache::clear_sys() for the system namespace without the boolean
 	 */
 	public function clear($CacheTag = '', $syscache = false, $related = false)
 	{

@@ -3,6 +3,7 @@
 # Suite for unit or integration tests.
 
 actor: UnitTester
+shuffle: true
 extensions:
     enabled:
         # Several tests here copy theme and plugin fixtures out of tests/_data

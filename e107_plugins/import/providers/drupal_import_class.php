@@ -363,23 +363,6 @@ class drupal_import extends base_import_class
 			return $local_path;
 		}
 
-		// Try remote file to open for reading.
-		if ($stream = fopen($src_pth, 'r'))
-		{
-			$file_contents = stream_get_contents($stream);
-			fclose($stream);
-		}
-		else
-		{
-			return $local_path;
-		}
-
-		// If no contents, return...
-		if (!$file_contents)
-		{
-			return $local_path;
-		}
-
 		// Get upload directory.
 		$uploaddir = e_AVATAR_UPLOAD;
 		$uploaddir = realpath($uploaddir);
@@ -391,14 +374,19 @@ class drupal_import extends base_import_class
 
 		$tp = isset($tp) ? $tp : new e_parse();
 
-		$base_name = basename($src_pth);
-		$base_name = preg_replace("/[^\w\pL.-]/u", '', str_replace(' ', '_', str_replace('%20', '_', $tp->ustrtolower($base_name))));
-		$file_name = 'ap_' . $tp->leadingZeros($row['uid'], 7) . '_' . $base_name;
+		// The avatar directory is inside the document root and the source site
+		// chooses both the bytes and the name.
+		$file_name = $this->importRemoteImage($src_pth, $uploaddir . '/',
+			'ap_' . $tp->leadingZeros($row['uid'], 7) . '_');
 
-		$uploaded = file_put_contents($uploaddir . '/' . $file_name, $file_contents);
-
-		if ($uploaded === false)
+		if ($file_name === false)
 		{
+			// A migration usually reads from a site on the same host, and
+			// e_file::isUrlSafe() refuses private addresses unless
+			// e_REMOTE_FILE_ALLOW_PRIVATE is defined. Say so rather than
+			// finishing with every avatar quietly missing.
+			e107::getMessage()->addWarning("Avatar not imported: " . $src_pth);
+
 			return $local_path;
 		}
 

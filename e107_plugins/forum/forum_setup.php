@@ -26,10 +26,35 @@ class forum_setup
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
 
+		$this->protectAttachments();
+
 		/*if($sql -> db_Update("user", "user_forums='0'")) // deprecated in 0.8
 		{
 			$mes->add("Setting all user_forums to 0.", E_MESSAGE_SUCCESS);
 		}*/
+	}
+
+	/**
+	 * Cover the attachment directory with a deny rule.
+	 *
+	 * Runs on install and on upgrade, because the sites this matters to are the
+	 * ones already holding attachments: a post's attachments are readable
+	 * through a route that asks which forum the post is in, and were readable a
+	 * second way that asks nothing, by their raw path. Nothing a member does is
+	 * needed for the cover to go down.
+	 *
+	 * @return void
+	 */
+	private function protectAttachments()
+	{
+		require_once(e_PLUGIN.'forum/forum_attachments.php');
+
+		if(!forum_attachments::protect())
+		{
+			e107::getMessage()->addWarning(
+				'Could not write the deny rule for '.e_MEDIA.'plugins/forum/attachments/. '
+				.'Post attachments there remain fetchable by their direct URL.');
+		}
 	}
 
 	function uninstall_post($var)
@@ -103,6 +128,8 @@ class forum_setup
 	function upgrade_post($var)
 	{
 		$sql = e107::getDb();
+
+		$this->protectAttachments();
 
 		$config = e107::getPref('url_config');
 

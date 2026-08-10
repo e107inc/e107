@@ -1322,23 +1322,11 @@ class cronScheduler
 
 		if(empty($this->pref['e_cron_pwd']) || !hash_equals((string) varset($this->pref['e_cron_pwd']), (string) $pwd))
 		{
-			if(!empty($pwd))
+			if(!empty($pwd) && $this->noticeIsDue('token-mismatch'))
 			{
 				$msg = "Your Cron Schedule is not configured correctly. Your passwords do not match.";
 				$msg .= "<br /><br />";
-				$msg .= "Sent from cron: " . $pwd;
-				$msg .= "<br />";
-				$msg .= "Stored in e107: " . varset($this->pref['e_cron_pwd'], "(none set)");
-				$msg .= "<br /><br />";
 				$msg .= "You should regenerate the cron command in admin and enter it again in your server configuration.";
-
-				$msg .= "<h2>" . "Debug Info" . "</h2>";
-				$msg .= "<h3>_SERVER</h3>";
-				$msg .= print_a($_SERVER, true);
-				$msg .= "<h3>_ENV</h3>";
-				$msg .= print_a($_ENV, true);
-				$msg .= "<h3>_GET</h3>";
-				$msg .= print_a($_GET, true);
 
 				$mail = array(
 					'to_mail'   => $this->pref['siteadminemail'],
@@ -1356,6 +1344,37 @@ class cronScheduler
 		}
 
 		return true;
+	}
+
+	/**
+	 * Whether a notice about the scheduler's own configuration may be mailed again.
+	 *
+	 * Anything the scheduler reports before it has accepted a token is reported
+	 * on behalf of a caller who has not authenticated, so each condition is
+	 * recorded and repeats of it stay unreported for an interval. A record that
+	 * cannot be written means the notice is not sent, because an unthrottled
+	 * mailer is worse than a missed warning.
+	 *
+	 * @param string $signature
+	 *   Identifies the condition being reported.
+	 * @param int $interval
+	 *   Seconds for which a repeat of the same condition stays unreported.
+	 *
+	 * @return bool
+	 *   TRUE when the notice is due to be sent.
+	 */
+	protected function noticeIsDue($signature, $interval = 86400)
+	{
+		$file = e_CACHE . 'cronNotice_' . preg_replace('#\W#', '', $signature) . '.php';
+
+		clearstatcache(true, $file);
+
+		if(is_readable($file) && (time() - (int) @filemtime($file)) < $interval)
+		{
+			return false;
+		}
+
+		return (bool) @file_put_contents($file, time());
 	}
 
 	/**

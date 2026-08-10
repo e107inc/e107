@@ -2904,6 +2904,10 @@ class e_form
 		{
 			$tmp = explode(',', $current_value);
 		}
+		else
+		{
+			$tmp = $current_value;
+		}
 
 		$classIndex = abs($classnum);			// Handle negative class values
 		$classSign = (strpos($classnum, '-') === 0) ? '-' : '';
@@ -3888,34 +3892,74 @@ var_dump($select_options);*/
 
 
 	/**
-	 * Generic Button Element. 
+	 * Generic Button Element.
+	 *
 	 * @param string $name
-	 * @param string|array $value
-	 * @param string $action [optional] default is submit - use 'dropdown' for a bootstrap dropdown button. 
+	 * @param string|array $value form value attribute, or, for the dropdown form, the array
+	 *               of menu items, each rendered inside its own <li>. An item of '--' or
+	 *               'divider' becomes a menu divider.
+	 * @param string $action [optional] default is submit - use 'dropdown' for a bootstrap dropdown button.
 	 * @param string $label [optional]
-	 * @param string|array $options [optional]
+	 * @param string|array $options [optional] passed through to
+	 *               {@see e_form::admin_button()}, which documents the supported keys.
+	 *               The dropdown form is the exception: it honours
+	 *               - 'class'    (string) extra classes on the toggle <a>
+	 *               - 'align'    (string) pull- alignment, 'left' (default) or 'right'
+	 *               - 'class_ul' (string) extra classes on the dropdown <ul>
+	 *               - 'class_li' (string) extra classes on each <li>
+	 *               plus 'title', 'id' and any 'data-*' key, applied to the toggle <a>.
+	 *               The remaining admin_button() keys do not apply to an anchor and
+	 *               are ignored.
 	 * @return string
 	 */
 	public function button($name, $value, $action = 'submit', $label = '', $options = array())
 	{
 		if($action === 'dropdown' && deftrue('BOOTSTRAP') && is_array($value))
 		{
-		//	$options = $this->format_options('admin_button', $name, $options);
+			if(is_string($options))
+			{
+				parse_str($options, $options);
+			}
+
 			$options['class'] = vartrue($options['class']);
-			
+
 			$align = vartrue($options['align'],'left');
-					
+
+			// The attribute keys that belong on the toggle anchor.
+			$passthrough = array();
+
+			foreach($options as $k => $v)
+			{
+				if($k === 'data-toggle' || $k === 'data-bs-toggle')
+				{
+					continue; // the dropdown's own wiring, hardcoded on the anchor
+				}
+
+				if($k === 'title' || strpos($k, 'data-') === 0 || ($k === 'id' && $v !== ''))
+				{
+					$passthrough[$k] = $v;
+				}
+			}
+
 			$text = '<div class="btn-group pull-'.$align.'">
-			    <a class="btn dropdown-toggle '.$options['class'].'" data-toggle="dropdown" data-bs-toggle="dropdown" href="#">
+			    <a class="btn dropdown-toggle '.$options['class'].'"'.$this->get_attributes($passthrough, $name).' data-toggle="dropdown" data-bs-toggle="dropdown" href="#">
 			    '.($label ?: LAN_NO_LABEL_PROVIDED).'
 			    <span class="caret"></span>
 			    </a>
-			    <ul class="dropdown-menu">
+			    <ul class="'.trim('dropdown-menu '.varset($options['class_ul'])).'">
 			    ';
-			
+
+			$liClass = trim('dropdown-item '.varset($options['class_li']));
+
 			foreach($value as $k=>$v)
 			{
-				$text .= '<li class="dropdown-item">'.$v.'</li>';
+				if($v === '--' || $v === 'divider')
+				{
+					$text .= '<li class="'.$liClass.' divider"><hr class="dropdown-divider" /></li>';
+					continue;
+				}
+
+				$text .= '<li class="'.$liClass.'">'.$v.'</li>';
 			}
 			
 			$text .= '
@@ -3924,11 +3968,8 @@ var_dump($select_options);*/
 			
 			return $text;	
 		}			
-				
 
-		
 		return $this->admin_button($name, $value, $action, $label, $options);
-		
 	}
 
 	/**
@@ -4029,11 +4070,31 @@ var_dump($select_options);*/
 
 	/**
 	 * Admin Button - for front-end, use button();
-	 * @param string $name
-	 * @param string $value
-	 * @param string $action [optional] default is submit
-	 * @param string $label [optional]
-	 * @param string|array $options [optional]
+	 *
+	 * @param string $name form name attribute
+	 * @param string $value form value attribute; also the button text when $label is empty
+	 * @param string $action [optional] default is submit. Sets the base classes and, unless
+	 *               $options['class'] already names a Bootstrap button variant, the button's
+	 *               colour via {@see e_form::getDefaultButtonClassByAction()}. 'button' or a
+	 *               string starting 'action' renders type='button' instead of type='submit'.
+	 * @param string $label [optional] button text; defaults to $value
+	 * @param string|array $options [optional] attributes for the button element. A string is
+	 *               parsed with parse_str(). Keys honoured include:
+	 *               - 'class'    (string) appended after the base 'btn <action>' classes. A
+	 *                            Bootstrap variant here (btn-primary, btn-outline-danger, ...)
+	 *                            suppresses the action's default colour.
+	 *               - 'title'    (string) title attribute
+	 *               - 'data-*'   (string) any data attribute, passed through verbatim,
+	 *                            e.g. 'data-bs-toggle' => 'tooltip'
+	 *               - 'id'       (string) element id; generated from $name when omitted
+	 *               - 'tabindex' (int) explicit tab order; assigned automatically when omitted
+	 *               - 'disabled', 'required', 'autofocus' (bool)
+	 *               - 'other'    (string) raw attribute string appended as-is
+	 *               - 'loading'  (bool) false removes the data-loading-icon spinner
+	 *               - 'confirm'  (string) confirmation text for the delete/danger actions;
+	 *                            defaults to LAN_JSCONFIRM
+	 *               Unrecognised keys other than data-* are discarded by
+	 *               {@see e_form::format_options()}.
 	 * @return string
 	 */
 	public function admin_button($name, $value, $action = 'submit', $label = '', $options = array())
@@ -4082,14 +4143,12 @@ var_dump($select_options);*/
 			$class .= ' ' . $this->getDefaultButtonClassByAction($action);
 		}
 
-
 		$options['class'] = $class;
 
 		if(empty($label))
 		{
 			$label = $value;
 		}
-
 
 		switch ($action)
 		{
@@ -4119,6 +4178,9 @@ var_dump($select_options);*/
 	/**
 	 * Helper function to check if a (CSS) class already contains a button class?
 	 *
+	 * Covers the Bootstrap 3 variants and those added in Bootstrap 4 and 5,
+	 * including the whole `btn-outline-*` family.
+	 *
 	 * @param string $class
 	 *  The class we want to check.
 	 *
@@ -4128,15 +4190,19 @@ var_dump($select_options);*/
 	private function defaultButtonClassExists($class = '')
 	{
 		// Bootstrap button classes.
-		// @see http://getbootstrap.com/css/#buttons-options
+		// @see https://getbootstrap.com/docs/5.3/components/buttons/#variants
 		$btnClasses = array(
 			'btn-default',
 			'btn-primary',
+			'btn-secondary',
 			'btn-success',
 			'btn-info',
 			'btn-warning',
 			'btn-danger',
+			'btn-light',
+			'btn-dark',
 			'btn-link',
+			'btn-outline-',
 		);
 
 		foreach($btnClasses as $btnClass)

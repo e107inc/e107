@@ -101,6 +101,165 @@ class private_message
 	}
 
 
+	/**
+	 *	Whether the current user is the sender or the recipient of a PM
+	 *
+	 *	pm_to is a varchar, and the outbox copy of a class or multi-recipient
+	 *	send carries a user class name or a list of display names in it rather
+	 *	than an id, so the comparison is made on strings. A loose comparison
+	 *	reads "2024 Newsletter" as the number 2024 on PHP below 8.
+	 *
+	 *	@param	array|bool $pm_info - a row as returned by pm_get()
+	 *
+	 *	@return	boolean
+	 */
+	public function isParticipant($pm_info)
+	{
+		if(empty($pm_info) || !USERID)
+		{
+			return FALSE;
+		}
+
+		$userId = (string) (int) USERID;
+		$to = isset($pm_info['pm_to']) ? (string) $pm_info['pm_to'] : '';
+		$from = isset($pm_info['pm_from']) ? (string) $pm_info['pm_from'] : '';
+
+		return $to === $userId || $from === $userId;
+	}
+
+
+	/**
+	 *	The directory every member's PM attachments are stored under.
+	 *
+	 *	Built here rather than asked of e_file::getUserDir(), which answers for
+	 *	e_CURRENT_PLUGIN. This class is instantiated from the cron handler, from
+	 *	the admin pages, from a shortcode batch rendering the PM menu on any page
+	 *	of the site and from the plugin's own setup hook, and in none of those is
+	 *	that constant reliably "pm".
+	 *
+	 *	@return	string with a trailing separator
+	 */
+	protected function attachmentRoot()
+	{
+		return e_MEDIA . 'plugins/pm/attachments/';
+	}
+
+
+	/**
+	 *	Where e_file::getUploaded() will put a given member's attachments.
+	 *
+	 *	@param	int $user - member id, zero for a guest
+	 *
+	 *	@return	string with a trailing separator
+	 */
+	protected function attachmentDir($user)
+	{
+		$name = ((int) $user > 0) ? 'user_' . e107::getParser()->leadingZeros((int) $user, 6) : 'anon';
+
+		return $this->attachmentRoot() . $name . '/';
+	}
+
+
+	/**
+	 *	Cover the directory an attachment is about to be stored in.
+	 *
+	 *	e107 keeps everything under the document root, so a deny rule is all that
+	 *	stands between a stored name and whoever can guess it or be handed it.
+	 *	The rules go down before the bytes do, and the caller is told whether they
+	 *	did, so that nothing is ever stored in a directory that is not covered.
+	 *
+	 *	The directory holding every member's is covered as well as the member's
+	 *	own, because Apache reads a rule in a parent for everything below it and
+	 *	the members who never send again are the ones with nothing else.
+	 *
+	 *	@param	int $user - id of the member whose upload directory to cover
+	 *
+	 *	@return	boolean true when the member's directory and its parent are covered
+	 */
+	public function protectAttachmentPaths($user)
+	{
+		$fl = e107::getFile();
+		$root = $this->attachmentRoot();
+		$dir = $this->attachmentDir($user);
+
+		if(!is_dir($dir))
+		{
+			@mkdir($dir, 0755, true);
+		}
+
+		if(!is_dir($dir))
+		{
+			return FALSE;
+		}
+
+		$covered = $fl->protectDirectory($root);
+
+		return $fl->protectDirectory($dir) && $covered;
+	}
+
+
+	/**
+	 *	Cover every directory this site has ever stored a PM attachment in.
+	 *
+	 *	Run from the plugin's install and upgrade hooks. Attachments that predate
+	 *	these rules have nothing else to write them: covering a directory when the
+	 *	plugin next writes into it asks a member to send another attachment before
+	 *	the one they already sent is protected, and the sites holding the exposed
+	 *	files are exactly the sites whose members are not sending any.
+	 *
+	 *	@return	boolean true when every directory found is covered
+	 */
+	public function protectStoredAttachments()
+	{
+		$fl = e107::getFile();
+		$covered = TRUE;
+
+		foreach($this->storedAttachmentDirs() as $dir)
+		{
+			$covered = $fl->protectDirectory($dir) && $covered;
+		}
+
+		return $covered;
+	}
+
+
+	/**
+	 *	Every attachment directory that exists on this site: the media root, the
+	 *	per-member directories under it, and the directory beside the plugin that
+	 *	releases predating the media tree wrote to, which send_file() and del()
+	 *	still read.
+	 *
+	 *	@return	array of paths, each with a trailing separator
+	 */
+	protected function storedAttachmentDirs()
+	{
+		$root = $this->attachmentRoot();
+		$dirs = array();
+
+		foreach(array($root, e_PLUGIN . 'pm/attachments/') as $dir)
+		{
+			if(is_dir($dir))
+			{
+				$dirs[] = $dir;
+			}
+		}
+
+		$members = glob($root . '*', GLOB_ONLYDIR);
+
+		if(empty($members))
+		{
+			return $dirs;
+		}
+
+		foreach($members as $dir)
+		{
+			$dirs[] = rtrim($dir, '/') . '/';
+		}
+
+		return $dirs;
+	}
+
+
 	/*
 	 *	Send a PM
 	 *
@@ -112,12 +271,13 @@ class private_message
 	 *		['pm_userclass'] = target user class
 	 *		['to_info'] = recipients array of array('user_id', 'user_class')
 	 *
-	 *		May also be an array as received from the generic table, if sending via a cron job
-	 *			identified by the existence of $vars['pm_from']
+	 *	@param	boolean $bulk - TRUE when $vars is a queued row read back from the generic
+	 *		table by the cron task, in which case its pm_* keys are the columns to insert.
+	 *		Callers passing request data must leave this FALSE.
 	 *
 	 *	@return	string - text detailing result
 	 */
-	function add($vars)
+	function add($vars, $bulk = FALSE)
 	{
 
 		$tp = e107::getParser();
@@ -132,12 +292,12 @@ class private_message
 		$a_list = array();
 
 		$maxSendNow = varset($this->pmPrefs['pm_max_send'],100);	// Maximum number of PMs to send without queueing them
-		if (isset($vars['pm_from']))
+		if ($bulk)
 		{	// Doing bulk send off cron task
 			$info = array();
 			foreach ($vars as $k => $v)
 			{
-				if (strpos($k, 'pm_') === 0)
+				if (isset($pmFieldTypes[$k]))
 				{
 					$info[$k] = $v;
 					unset($vars[$k]);
@@ -830,15 +990,22 @@ class private_message
 	/**
 	 *	Send a file down to the user
 	 *
+	 *	Only the sender and the recipient of a message may fetch its attachments.
+	 *
 	 *	@param	int $pmid - PM ID
 	 *	@param	string $filenum - attachment number within the list associated with the PM
 	 *
-	 *	@return none
+	 *	@return	boolean false when there is no file to send, or the caller may not have it
 	 *
 	 */
 	function send_file($pmid, $filenum)
 	{
 		$pm_info = $this->pm_get($pmid);
+
+		if(!$this->isParticipant($pm_info))
+		{
+			return false;
+		}
 
 		$attachments = explode(chr(0), $pm_info['pm_attachments']);
 
@@ -848,14 +1015,31 @@ class private_message
 		}
 
 		$fname = $attachments[$filenum];
-		list($timestamp, $fromid, $rand, $file) = explode("_", $fname, 4);
 
+		if($fname === '' || basename($fname) !== $fname)
+		{
+			return false;
+		}
+
+		$nameParts = explode("_", $fname, 4);
+
+		if(count($nameParts) < 4)
+		{
+			return false;
+		}
+
+		list($timestamp, $nameOwnerId, $rand, $file) = $nameParts;
+
+		if((string) $nameOwnerId !== (string) $pm_info['pm_from'])
+		{
+			return false;
+		}
 
 		$filename = false; // getcwd()."/attachments/{$fname}";
 
 		$pathList = array();
 		$pathList[] = e_PLUGIN."pm/attachments/"; // getcwd()."/attachments/"; // legacy path.
-		$pathList[] = e107::getFile()->getUserDir($fromid, false, 'attachments'); // new media path.
+		$pathList[] = e107::getFile()->getUserDir($nameOwnerId, false, 'attachments'); // new media path.
 
 		foreach($pathList as $path)
 		{
@@ -870,12 +1054,6 @@ class private_message
 		}
 
 		if(empty($filename) || !is_file($filename))
-		{
-			return false;
-		}
-
-
-		if($fromid != $pm_info['pm_from'])
 		{
 			return false;
 		}

@@ -39,11 +39,34 @@ e107_tests/bin/e107-tests run webdriver --env tls
 # Want a browsable, installed e107 site instead of a bare stack?
 e107_tests/bin/e107-tests up --install-site     # admin login: admin / x107
 
+# Serve the site from a subdirectory, the way most e107 installs are deployed
+e107_tests/bin/e107-tests up --base-path e107   # site at http://web/e107/
+
+# Editing anything under docker/? compose keeps the image it already has
+e107_tests/bin/e107-tests up --rebuild
+
 # When you're done
 e107_tests/bin/e107-tests down
 ```
 
 `e107-tests help` is the canonical command reference.
+
+### Docroot or subdirectory
+
+`--base-path DIR` aliases `DIR` onto the same document root and points the
+suites at it. One tree, reachable both ways, so the only thing that changes is
+the request path.
+
+That is worth having because e107 derives `e_HTTP` from the request and scopes
+its session cookie, its redirects and every generated link to it. A test that
+assumes `/` therefore passes on a docroot stack and cannot pass on a
+subdirectory one, and the failure looks like the application misbehaving rather
+than the test asking the wrong question. CI runs both layouts for exactly this
+reason: the subdirectory legs have already caught assertions that were quietly
+passing for the wrong reason.
+
+`--no-selenium` brings up `db` and `web` only. The browser image is over a
+gigabyte and nothing but the WebDriver suite needs it.
 
 ### HTTP and HTTPS
 
