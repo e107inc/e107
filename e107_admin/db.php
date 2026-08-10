@@ -390,16 +390,24 @@ class system_tools
 	// Developer Mode ONly.. No LANS.
 	private function githubSyncProcess()
 	{
-		$result = e107::getFile()->unzipGithubArchive('core');
+		$fl = e107::getFile();
+		$result = $fl->unzipGithubArchive('core');
 
 		if($result === false)
 		{
-			e107::getMessage()->addError( DBLAN_118 );
+			$reason = $fl->getErrorMessage();
+
+			// Queuing the message without rendering it answers the administrator
+			// with the admin furniture and an empty content area.
+			e107::getMessage()->addError(DBLAN_118 . (!empty($reason) ? '<br />' . e107::getParser()->toHTML($reason) : ''));
+			e107::getRender()->tablerender(DBLAN_10 . SEP . DBLAN_112, e107::getMessage()->render());
+
 			return null;
 		}
 
 		$success = $result['success'];
 		$error = $result['error'];
+		$skipped = $result['skipped'];
 
 	//		$message = e107::getParser()->lanVars(DBLAN_121, array('x'=>$oldPath, 'y'=>$newPath));
 
