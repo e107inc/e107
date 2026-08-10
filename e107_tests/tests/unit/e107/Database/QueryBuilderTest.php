@@ -112,6 +112,9 @@ use ReflectionMethod;
 		public function testFragmentConstructorIsPrivate()
 		{
 			$ctor = new ReflectionMethod(SqlFragment::class, '__construct');
+            if (PHP_VERSION_ID < 80100) {
+                $ctor->setAccessible(true);
+            }
 
 			$this->assertTrue($ctor->isPrivate());
 		}

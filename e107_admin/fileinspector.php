@@ -51,7 +51,7 @@ $css .= ".d { margin: 2px 0px 1px 8px; cursor: default; white-space: nowrap }
     .e { width: 9px; height: 9px }
     i.fa-folder-open-o, i.fa-times-circle-o { cursor:pointer }
     span.tree-node { cursor: pointer } 
-    
+
 ";
 
 e107::css('inline', $css);

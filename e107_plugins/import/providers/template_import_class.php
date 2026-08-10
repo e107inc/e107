@@ -182,7 +182,7 @@ class template_import extends base_import_class
 		$target['user_lastpost'] 	    = $source[''];
 		$target['user_chats'] 		    = $source[''];
 		$target['user_comments'] 	    = $source[''];
-	
+
 		$target['user_ip'] 			    = $source[''];
 		$target['user_prefs'] 		    = $source[''];
 		$target['user_visits'] 		    = $source[''];
@@ -201,7 +201,7 @@ class template_import extends base_import_class
 		$target['user_timezone'] 	    = $source[''];
 
 		$this->debug($source,$target);
-		
+
 		//return $target;
 	}
 

@@ -1580,13 +1580,13 @@ class users_admin_ui extends e_admin_ui
 					}
 				}
 				if ($messaccess == '') $messaccess = UCSLAN_12."\n";
-				
+
 				$message = USRLAN_256." ".$sysuser->getName().",\n\n".UCSLAN_4." ".SITENAME."\n( ".SITEURL." )\n\n".UCSLAN_5.": \n\n".$messaccess."\n".UCSLAN_10."\n".SITEADMIN;
 				//    $admin_log->addEvent(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","User class change",str_replace("\n","<br />",$message),FALSE,LOG_TO_ROLLING);
-				
+
 				$options['mail_subject'] = UCSLAN_2;
 				$options['mail_body'] = nl2br($message);
-				
+
 				$sysuser->email('email', $options);
 				//sendemail($send_to,$subject,$message);
 			}
@@ -2128,9 +2128,9 @@ class users_admin_ui extends e_admin_ui
 		$e_userclass = e107::getUserClass();
 		$pref = e107::getPref();
 		$user_data = $this->getParam('user_data');
-		
+
 	// 	$this->addTitle(LAN_USER_QUICKADD);
-		
+
 		$text = "<div>".$frm->open("core-user-adduser-form",null,null,'autocomplete=0')."
 		<div style='display:none'><input type='password' id='_no_autocomplete_' /></div>
 		<fieldset id='core-user-adduser'>
@@ -2166,7 +2166,7 @@ class users_admin_ui extends e_admin_ui
 			<td>".$frm->password('password', '', 128, array('size' => 'xlarge', 'class' => 'tbox e-password', 'generate' => 1, 'strength' => 1, 'autocomplete' => 'new-password'))."
  			</td>
 		</tr>";
-		
+
 
 
 		$text .= "
@@ -2176,7 +2176,7 @@ class users_admin_ui extends e_admin_ui
 				".$frm->text('email', varset($user_data['user_email']), 100, array('size'=>'xlarge'))."
 				</td>
 			</tr>
-	
+
 			<tr>
 				<td>".USRLAN_239."</td>
 				<td>
@@ -2233,8 +2233,8 @@ class users_admin_ui extends e_admin_ui
 		</form>
 		</div>
 		";
-		
-		
+
+
 		return $text;
 		//$ns->tablerender(USRLAN_59,$mes->render().$text);
 	}	
@@ -2877,7 +2877,7 @@ class users_admin_form_ui extends e_admin_form_ui
 			"<span class='label label-info label-status'>".LAN_BOUNCED."</span>",
 			"<span class='label label-important label-danger label-status'>".USRLAN_56."</span>", // Deleted
 		);
-		
+
 		if($mode == 'filter' || $mode == 'batch')
 		{
 			return 	$bo;
@@ -2895,7 +2895,7 @@ class users_admin_form_ui extends e_admin_form_ui
 
 			return $this->select('user_ban',$bo,$curval);
 		}	
-			
+
 		return vartrue($bo[$curval],' '); // ($curval == 1) ? ADMIN_TRUE_ICON : '';	
 	}	
 	
@@ -2903,13 +2903,13 @@ class users_admin_form_ui extends e_admin_form_ui
 	function options($val, $mode) // old drop-down options. 
 	{
 		$controller = $this->getController();
-		
+
 		if($controller->getMode() != 'main' || $controller->getAction() != 'list') return;
 		$row = $controller->getListModel()->getData();
-		
 
-	
-		
+
+
+
 	//	extract($row);
 
 		$user_id = intval($row['user_id']);
@@ -3048,7 +3048,7 @@ class users_admin_form_ui extends e_admin_form_ui
 			$opts['deldiv'] = 'divider';
 			$opts['deluser'] = LAN_DELETE;
 		}
-		
+
 	//	$foot = "</select>";
 	//	$foot = "</div>";
 
@@ -3088,7 +3088,7 @@ class users_admin_form_ui extends e_admin_form_ui
 		{
 			return '';
 		}
-		
+
 		// return ($text) ? $head.$text.$foot . $btn : "";
 	}
 

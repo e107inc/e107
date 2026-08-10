@@ -52,7 +52,7 @@ if (defined('CORRUPT_COOKIE') && CORRUPT_COOKIE == TRUE)
 	{$bullet} <a href='".SITEURL."index.php?logout'>".LAN_LOGOUT."</a></div>";
 	$ns->tablerender(LAN_LOGINMENU_9, $text, 'login_error');
 }
-    
+
 //Image code
 $use_imagecode = ($pref['logcode'] && extension_loaded('gd'));
 
@@ -66,7 +66,7 @@ if ($use_imagecode)
 }
 
 $text = '';
-    
+
 // START LOGGED CODE
 if (USER == TRUE || ADMIN == TRUE)
 {
@@ -140,16 +140,16 @@ if (USER == TRUE || ADMIN == TRUE)
 				->where('user_join', '>', $time)->count('user_join');
 			$new_total += $menu_data['new_users'];
 		}
-		
+
 		// ------------ Enable stats / other ---------------
-		
+
 		$menu_data['enable_stats'] = $menu_data || vartrue($loginPrefs['external_stats']) ? true : false;
 		$menu_data['new_total'] = $new_total + $loginClass->get_stats_total();
 		$menu_data['link_bullet'] = $bullet;
 		$menu_data['link_bullet_src'] = $bullet_src;
-		
+
 		// ------------ List New Link ---------------
-		
+
 		$menu_data['listnew_link'] = '';
 		if ($menu_data['new_total'] && array_key_exists('list_new', $pref['plug_installed'])) 
         {
@@ -159,14 +159,14 @@ if (USER == TRUE || ADMIN == TRUE)
 		// ------------ Pass the data & parse ------------
 		e107::setRegistry('login_menu_data', $menu_data);
 		$text = $tp->parseTemplate($LOGIN_MENU_LOGGED, true, $login_menu_shortcodes);
-    
+
     //menu caption
 	if (file_exists(THEME.'images/login_menu.png')) {
 		$caption = '<img src="'.THEME_ABS.'images/login_menu.png" alt="" />'.LAN_LOGINMENU_5.' '.USERNAME;
 	} else {
 		$caption = LAN_LOGINMENU_5.' '.USERNAME;
 	}
-	
+
 
 	$ns->tablerender($caption, $text, 'login');
 

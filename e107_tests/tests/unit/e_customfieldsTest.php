@@ -229,7 +229,7 @@
 			  19 => 'Userclass',
 			  20 => 'Progress Bar',
 			);
-			
+
 		$expectedValues = array (
 		  'image'       => '<img class="img-responsive img-fluid"',
 		  'video'       => '<div class="embed-responsive embed-responsive-16by9',

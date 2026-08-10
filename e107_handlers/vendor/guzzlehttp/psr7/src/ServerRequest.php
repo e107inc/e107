@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace GuzzleHttp\Psr7;
 
 use InvalidArgumentException;
@@ -65,11 +63,11 @@ class ServerRequest extends Request implements ServerRequestInterface
      * @param array                                $serverParams Typically the $_SERVER superglobal
      */
     public function __construct(
-        string $method,
+        $method,
         $uri,
         array $headers = [],
         $body = null,
-        string $version = '1.1',
+        $version = '1.1',
         array $serverParams = []
     ) {
         $this->serverParams = $serverParams;
@@ -83,8 +81,9 @@ class ServerRequest extends Request implements ServerRequestInterface
      * @param array $files An array which respect $_FILES structure
      *
      * @throws InvalidArgumentException for unrecognized values
+     * @return mixed[]
      */
-    public static function normalizeFiles(array $files): array
+    public static function normalizeFiles(array $files)
     {
         $normalized = [];
 
@@ -137,17 +136,17 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @return UploadedFileInterface[]
      */
-    private static function normalizeNestedFileSpec(array $files = []): array
+    private static function normalizeNestedFileSpec(array $files = [])
     {
         $normalizedFiles = [];
 
         foreach (array_keys($files['tmp_name']) as $key) {
             $spec = [
                 'tmp_name' => $files['tmp_name'][$key],
-                'size' => $files['size'][$key] ?? null,
-                'error' => $files['error'][$key] ?? null,
-                'name' => $files['name'][$key] ?? null,
-                'type' => $files['type'][$key] ?? null,
+                'size' => isset($files['size'][$key]) ? $files['size'][$key] : null,
+                'error' => isset($files['error'][$key]) ? $files['error'][$key] : null,
+                'name' => isset($files['name'][$key]) ? $files['name'][$key] : null,
+                'type' => isset($files['type'][$key]) ? $files['type'][$key] : null,
             ];
             $normalizedFiles[$key] = self::createUploadedFileFromSpec($spec);
         }
@@ -162,10 +161,11 @@ class ServerRequest extends Request implements ServerRequestInterface
      * $_COOKIE
      * $_FILES
      * $_SERVER
+     * @return \Psr\Http\Message\ServerRequestInterface
      */
-    public static function fromGlobals(): ServerRequestInterface
+    public static function fromGlobals()
     {
-        $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+        $method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
         $headers = getallheaders();
         $uri = self::getUriFromGlobals();
         $body = new CachingStream(new LazyOpenStream('php://input', 'r+'));
@@ -180,7 +180,11 @@ class ServerRequest extends Request implements ServerRequestInterface
             ->withUploadedFiles(self::normalizeFiles($_FILES));
     }
 
-    private static function extractHostAndPortFromAuthority(string $authority): array
+    /**
+     * @param string $authority
+     * @return mixed[]
+     */
+    private static function extractHostAndPortFromAuthority($authority)
     {
         $uri = 'http://'.$authority;
         $parts = parse_url($uri);
@@ -188,16 +192,17 @@ class ServerRequest extends Request implements ServerRequestInterface
             return [null, null];
         }
 
-        $host = $parts['host'] ?? null;
-        $port = $parts['port'] ?? null;
+        $host = isset($parts['host']) ? $parts['host'] : null;
+        $port = isset($parts['port']) ? $parts['port'] : null;
 
         return [$host, $port];
     }
 
     /**
      * Get a Uri populated with values from $_SERVER.
+     * @return \Psr\Http\Message\UriInterface
      */
-    public static function getUriFromGlobals(): UriInterface
+    public static function getUriFromGlobals()
     {
         $uri = new Uri('');
 
@@ -205,7 +210,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 
         $hasPort = false;
         if (isset($_SERVER['HTTP_HOST'])) {
-            [$host, $port] = self::extractHostAndPortFromAuthority($_SERVER['HTTP_HOST']);
+            list($host, $port) = self::extractHostAndPortFromAuthority($_SERVER['HTTP_HOST']);
             if ($host !== null) {
                 $uri = $uri->withHost($host);
             }
@@ -241,17 +246,26 @@ class ServerRequest extends Request implements ServerRequestInterface
         return $uri;
     }
 
-    public function getServerParams(): array
+    /**
+     * @return mixed[]
+     */
+    public function getServerParams()
     {
         return $this->serverParams;
     }
 
-    public function getUploadedFiles(): array
+    /**
+     * @return mixed[]
+     */
+    public function getUploadedFiles()
     {
         return $this->uploadedFiles;
     }
 
-    public function withUploadedFiles(array $uploadedFiles): ServerRequestInterface
+    /**
+     * @return \Psr\Http\Message\ServerRequestInterface
+     */
+    public function withUploadedFiles(array $uploadedFiles)
     {
         $new = clone $this;
         $new->uploadedFiles = $uploadedFiles;
@@ -259,12 +273,18 @@ class ServerRequest extends Request implements ServerRequestInterface
         return $new;
     }
 
-    public function getCookieParams(): array
+    /**
+     * @return mixed[]
+     */
+    public function getCookieParams()
     {
         return $this->cookieParams;
     }
 
-    public function withCookieParams(array $cookies): ServerRequestInterface
+    /**
+     * @return \Psr\Http\Message\ServerRequestInterface
+     */
+    public function withCookieParams(array $cookies)
     {
         $new = clone $this;
         $new->cookieParams = $cookies;
@@ -272,12 +292,18 @@ class ServerRequest extends Request implements ServerRequestInterface
         return $new;
     }
 
-    public function getQueryParams(): array
+    /**
+     * @return mixed[]
+     */
+    public function getQueryParams()
     {
         return $this->queryParams;
     }
 
-    public function withQueryParams(array $query): ServerRequestInterface
+    /**
+     * @return \Psr\Http\Message\ServerRequestInterface
+     */
+    public function withQueryParams(array $query)
     {
         $new = clone $this;
         $new->queryParams = $query;
@@ -293,7 +319,10 @@ class ServerRequest extends Request implements ServerRequestInterface
         return $this->parsedBody;
     }
 
-    public function withParsedBody($data): ServerRequestInterface
+    /**
+     * @return \Psr\Http\Message\ServerRequestInterface
+     */
+    public function withParsedBody($data)
     {
         $new = clone $this;
         $new->parsedBody = $data;
@@ -301,7 +330,10 @@ class ServerRequest extends Request implements ServerRequestInterface
         return $new;
     }
 
-    public function getAttributes(): array
+    /**
+     * @return mixed[]
+     */
+    public function getAttributes()
     {
         return $this->attributes;
     }
@@ -318,7 +350,10 @@ class ServerRequest extends Request implements ServerRequestInterface
         return $this->attributes[$attribute];
     }
 
-    public function withAttribute($attribute, $value): ServerRequestInterface
+    /**
+     * @return \Psr\Http\Message\ServerRequestInterface
+     */
+    public function withAttribute($attribute, $value)
     {
         $new = clone $this;
         $new->attributes[$attribute] = $value;
@@ -326,7 +361,10 @@ class ServerRequest extends Request implements ServerRequestInterface
         return $new;
     }
 
-    public function withoutAttribute($attribute): ServerRequestInterface
+    /**
+     * @return \Psr\Http\Message\ServerRequestInterface
+     */
+    public function withoutAttribute($attribute)
     {
         if (false === array_key_exists($attribute, $this->attributes)) {
             return $this;

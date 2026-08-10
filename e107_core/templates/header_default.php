@@ -236,11 +236,11 @@ if (is_array($pref['e_meta_list']))
 {	
 	// $pref = e107::getPref();
 	ob_start();
-	
+
 	foreach($pref['e_meta_list'] as $val)
 	{		
 		$fname = e_PLUGIN.$val."/e_meta.php"; // Do not place inside a function - BC $pref required. . 
-		
+
 		if(is_readable($fname))
 		{
 			$ret = (deftrue('e_DEBUG') || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
@@ -298,7 +298,7 @@ else
 	else 
 	{
 		// Theme default
-		
+
 		$e_js->themeCSS(THEME_STYLE, $css_default);
 
 		// Support for style.css - override theme default CSS
@@ -318,7 +318,7 @@ else
 			$e_js->themeCSS('style_print.css', 'print');
 		}
 	}
-	
+
 	// possibility to overwrite some CSS definition according to TEXTDIRECTION
 	// especially usefull for rtl.css
 	// see _blank theme for examples
@@ -617,7 +617,7 @@ echo "</head>\n";
 			{
 				continue;	
 			}
-			
+
 			if(strpos($template,'{---}') !==false)
 			{
 				list($hd,$ft) = explode("{---}",$template);
@@ -664,7 +664,7 @@ echo "</head>\n";
 	        echo e107::getMessage()->addError("There is no layout in theme.php with the key: <b>".$def."</b> or your layout is missing {---}. ")->render();
 	    }
     }
-    
+
     if(deftrue('e_IFRAME'))
     {
         $HEADER = deftrue('e_IFRAME_HEADER');
@@ -728,7 +728,7 @@ if(deftrue('BOOTSTRAP'))
 				            <div class="modal-header">
 				            	<h4 class="modal-caption modal-title col-sm-11">&nbsp;</h4>
 				                <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
-				                
+
 				             </div>
 				             <div class="modal-body">
 				             <p>Loading…</p>
@@ -833,7 +833,7 @@ e107::getDebug()->logTime('Render Other');
 		// echo "<div class='installer alert alert-danger alert-block alert-dismissible text-center'>".e107::getParser()->toHTML(LAN_DEVELOPERMODE_CHECK, true)."<button type='button' class='close btn-close' data-bs-dismiss='alert' data-dismiss='alert' aria-label='".LAN_CLOSE."'></button></div>";
 	}
 
-	
+
 	//XXX TODO LAN in English.php 
 	echo "<noscript><div class='alert alert-block alert-error alert-danger'><strong>This web site requires that javascript be enabled. <a rel='external' href='https://enablejavascript.io'>Click here for instructions.</a>.</strong></div></noscript>";
 

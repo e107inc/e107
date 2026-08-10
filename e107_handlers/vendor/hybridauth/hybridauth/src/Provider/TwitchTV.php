@@ -75,7 +75,7 @@ class TwitchTV extends OAuth2
         $userProfile->identifier = $data->get('sub');
         $userProfile->displayName = $data->get('preferred_username');
         $userProfile->email = $data->get('email');
-        $userProfile->firstName = $data->get('name') ?? $data->get('nickname');
+        $userProfile->firstName = $data->get('name') !== null ? $data->get('name') : $data->get('nickname');
         $userProfile->emailVerified = $data->get('email_verified');
 
         $userProfile->photoURL = $data->get('picture');

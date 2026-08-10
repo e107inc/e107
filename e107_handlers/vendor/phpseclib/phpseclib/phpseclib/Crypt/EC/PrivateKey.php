@@ -340,6 +340,9 @@ final class PrivateKey extends EC implements Common\PrivateKey
         $format = $this->sigFormat;
 
         $temp = new \ReflectionMethod($format, 'save');
+        if (PHP_VERSION_ID < 80100) {
+            $temp->setAccessible(true);
+        }
         $paramCount = $temp->getNumberOfRequiredParameters();
 
         // @codingStandardsIgnoreStart

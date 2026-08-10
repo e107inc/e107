@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace GuzzleHttp\Psr7;
 
 use Psr\Http\Message\StreamInterface;
@@ -29,17 +27,23 @@ final class BufferStream implements StreamInterface
      *                 but will return 0 to inform writers to slow down
      *                 until the buffer has been drained by reading from it.
      */
-    public function __construct(int $hwm = 16384)
+    public function __construct($hwm = 16384)
     {
         $this->hwm = $hwm;
     }
 
-    public function __toString(): string
+    /**
+     * @return string
+     */
+    public function __toString()
     {
         return $this->getContents();
     }
 
-    public function getContents(): string
+    /**
+     * @return string
+     */
+    public function getContents()
     {
         $buffer = $this->buffer;
         $this->buffer = '';
@@ -47,7 +51,10 @@ final class BufferStream implements StreamInterface
         return $buffer;
     }
 
-    public function close(): void
+    /**
+     * @return void
+     */
+    public function close()
     {
         $this->buffer = '';
     }
@@ -59,50 +66,75 @@ final class BufferStream implements StreamInterface
         return null;
     }
 
-    public function getSize(): ?int
+    /**
+     * @return int|null
+     */
+    public function getSize()
     {
         return strlen($this->buffer);
     }
 
-    public function isReadable(): bool
+    /**
+     * @return bool
+     */
+    public function isReadable()
     {
         return true;
     }
 
-    public function isWritable(): bool
+    /**
+     * @return bool
+     */
+    public function isWritable()
     {
         return true;
     }
 
-    public function isSeekable(): bool
+    /**
+     * @return bool
+     */
+    public function isSeekable()
     {
         return false;
     }
 
-    public function rewind(): void
+    /**
+     * @return void
+     */
+    public function rewind()
     {
         $this->seek(0);
     }
 
-    public function seek($offset, $whence = SEEK_SET): void
+    /**
+     * @return void
+     */
+    public function seek($offset, $whence = SEEK_SET)
     {
         throw new \RuntimeException('Cannot seek a BufferStream');
     }
 
-    public function eof(): bool
+    /**
+     * @return bool
+     */
+    public function eof()
     {
         return strlen($this->buffer) === 0;
     }
 
-    public function tell(): int
+    /**
+     * @return int
+     */
+    public function tell()
     {
         throw new \RuntimeException('Cannot determine the position of a BufferStream');
     }
 
     /**
      * Reads data from the buffer.
+     * @return string
      */
-    public function read($length): string
+    public function read($length)
     {
         $currentLength = strlen($this->buffer);
 
@@ -121,8 +153,9 @@ final class BufferStream implements StreamInterface
 
     /**
      * Writes data to the buffer.
+     * @return int
      */
-    public function write($string): int
+    public function write($string)
     {
         $this->buffer .= $string;
 

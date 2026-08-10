@@ -232,7 +232,7 @@ PROBE;
 			$probePath,
 		];
 
-		$process = proc_open($cmd, $descriptors, $pipes, $this->scratchRoot);
+		$process = proc_open(is_array($cmd) ? implode(' ', array_map('escapeshellarg', $cmd)) : $cmd, $descriptors, $pipes, $this->scratchRoot);
 		$this->assertIsResource($process, 'proc_open() must return a resource');
 
 		fclose($pipes[0]);

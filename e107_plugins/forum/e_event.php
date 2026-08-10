@@ -45,7 +45,7 @@ class forum_event
 		echo('hola');
 		print_a($data);*/
 		e107::getDb()->createQueryBuilder()->update('user_extended')->setExpression('user_plugin_forum_viewed', SqlFragment::raw('NULL'))->where('user_extended_id', (int) $data['user_id'])->execute();
-		
+
 	}
 
 	function forum_eventnewpost($data) // Remove thread id from user_plugin_forum_viewed when a new reply is posted

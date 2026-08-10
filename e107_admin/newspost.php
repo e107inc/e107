@@ -961,8 +961,8 @@ class news_admin_ui extends e_admin_ui
 	//	e107::getMessage()->addInfo($info);
 
 
-		
-		
+
+
 		$rows = e107::getDb()->createQueryBuilder()
 			->select('category_id', 'category_name')->from('news_category')->fetchAll();
 		foreach($rows as $row)

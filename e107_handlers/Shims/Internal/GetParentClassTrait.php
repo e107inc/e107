@@ -36,6 +36,8 @@ trait GetParentClassTrait
 		catch (\Throwable $_)
 		{
 			return false;
-		}
+		} catch (\Exception $_) {
+            return false;
+        }
 	}
 }

@@ -167,7 +167,7 @@ class rss_import extends base_import_class
 	function copyNewsData(&$target, &$source)
 	{
 		$this->foundImages = array();
-		
+
 		if(!$content = $this->process('content_encoded',$source))
 		{
 			$body = $this->process('description',$source);	
@@ -176,11 +176,11 @@ class rss_import extends base_import_class
 		{
 			$body = $content;
 		}
-				
+
 		$body 			= $this->saveImages($body,'news');
 		$keywords 		= $this->process('category',$source);
 		$sef            = $this->process('sef',$source);
-							
+
 		if(!vartrue($source['title'][0]))
 		{
 			list($title,$newbody) = explode("<br />",$body,2);
@@ -194,7 +194,7 @@ class rss_import extends base_import_class
 		{
 			$title = $source['title'][0];
 		}
-		
+
 		$target['news_title']					= $title;
 		$target['news_sef']					    = $sef;
 		$target['news_body']					= "[html]".$body."[/html]";
@@ -214,12 +214,12 @@ class rss_import extends base_import_class
 			$target['news_thumbnail']			= !empty($this->foundImages[0]) ? $this->foundImages[0] : '';
 		//	$target['news_sticky']				= '';
 
-		
-		
+
+
 		return $target;  // comment out to debug 
-		
+
 	//	$this->renderDebug($source,$target);
-		
+
 		// DEBUG INFO BELOW. 		
 		
 	}

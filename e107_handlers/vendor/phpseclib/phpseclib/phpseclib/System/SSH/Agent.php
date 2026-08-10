@@ -191,8 +191,7 @@ class Agent
             }
             // resources are passed by reference by default
             if (isset($key)) {
-                $identity = (new Identity($this->fsock))
-                    ->withPublicKey($key)
+                $identity = (new Identity($this->fsock))->withPublicKey($key)
                     ->withPublicKeyBlob($key_blob)
                     ->withComment($comment);
                 $identities[] = $identity;

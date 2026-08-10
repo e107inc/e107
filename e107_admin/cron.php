@@ -194,7 +194,7 @@ class cron_admin_ui extends e_admin_ui
 	
 			if(!vartrue($_GET['action']) || $_GET['action'] == 'refresh')
 			{
-				
+
 				$this->cronImport($cronDefaults);	// import Core Crons (if missing)
 				$this->cronImport(e107::getAddonConfig('e_cron'));	// Import plugin Crons
 				$this->cronImportLegacy(); // Import Legacy Cron Tab Settings	

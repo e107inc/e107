@@ -106,7 +106,7 @@ class SFTPDeployer extends Deployer
 		$pipes = [];
 		self::println("Running this command…:");
 		self::println($command);
-		$resource = proc_open($command, $descriptorSpec, $pipes, APP_PATH);
+		$resource = proc_open(is_array($command) ? implode(' ', array_map('escapeshellarg', $command)) : $command, $descriptorSpec, $pipes, APP_PATH);
 		if ($stdin !== null)
 		{
 			fwrite($pipes[0], $stdin);

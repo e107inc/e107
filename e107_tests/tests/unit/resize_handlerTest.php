@@ -114,7 +114,7 @@ class resize_handlerTest extends \Test\Unit
 	 *
 	 * @return string[][]
 	 */
-	public function destinationPayloads(): array
+	public function destinationPayloads()
 	{
 		return [
 			'dollar parens' => ['out_$(touch %s).jpg'],
@@ -124,9 +124,10 @@ class resize_handlerTest extends \Test\Unit
 	}
 
 	/**
-	 * @dataProvider destinationPayloads
-	 */
-	public function testResizeImageMustNotExecuteShellMetacharactersInDestination(string $payloadTemplate)
+     * @dataProvider destinationPayloads
+     * @param string $payloadTemplate
+     */
+    public function testResizeImageMustNotExecuteShellMetacharactersInDestination($payloadTemplate)
 	{
 		$this->requireImageMagick();
 
@@ -214,7 +215,7 @@ class resize_handlerTest extends \Test\Unit
 	 *
 	 * @return string[][]
 	 */
-	public function imPathPayloads(): array
+	public function imPathPayloads()
 	{
 		return [
 			'command separator' => ['touch %s; '],
@@ -225,9 +226,10 @@ class resize_handlerTest extends \Test\Unit
 	}
 
 	/**
-	 * @dataProvider imPathPayloads
-	 */
-	public function testResizeImageMustNotExecuteShellMetacharactersInImPath(string $payloadTemplate)
+     * @dataProvider imPathPayloads
+     * @param string $payloadTemplate
+     */
+    public function testResizeImageMustNotExecuteShellMetacharactersInImPath($payloadTemplate)
 	{
 		$this->requireWorkingShell();
 
@@ -345,7 +347,7 @@ class resize_handlerTest extends \Test\Unit
 	 *
 	 * @return string[][]
 	 */
-	public function outOfRangeResizeMethods(): array
+	public function outOfRangeResizeMethods()
 	{
 		return [
 			'wrong case'         => ['imagemagick'],
@@ -358,9 +360,10 @@ class resize_handlerTest extends \Test\Unit
 	}
 
 	/**
-	 * @dataProvider outOfRangeResizeMethods
-	 */
-	public function testOutOfRangeResizeMethodReachesNoBackend(string $method)
+     * @dataProvider outOfRangeResizeMethods
+     * @param string $method
+     */
+    public function testOutOfRangeResizeMethodReachesNoBackend($method)
 	{
 		$this->requireWorkingShell();
 
@@ -389,7 +392,7 @@ class resize_handlerTest extends \Test\Unit
 	 *
 	 * @return string
 	 */
-	private function shippedDefaultImPath(): string
+	private function shippedDefaultImPath()
 	{
 		$xml = file_get_contents(APP_PATH.'/e107_core/xml/default_install.xml');
 
@@ -469,7 +472,12 @@ class resize_handlerTest extends \Test\Unit
 		}
 	}
 
-	private function createSourceImage(string $path, int $width, int $height)
+	/**
+     * @param string $path
+     * @param int $width
+     * @param int $height
+     */
+    private function createSourceImage($path, $width, $height)
 	{
 		$img = imagecreatetruecolor($width, $height);
 		imagefill($img, 0, 0, imagecolorallocate($img, 135, 206, 235));
@@ -478,12 +486,13 @@ class resize_handlerTest extends \Test\Unit
 	}
 
 	/**
-	 * Filenames in $dir that contain output from the `id` command,
-	 * which only appears if command substitution actually fired.
-	 *
-	 * @return string[]
-	 */
-	private function findInjectedFiles(string $dir): array
+     * Filenames in $dir that contain output from the `id` command,
+     * which only appears if command substitution actually fired.
+     *
+     * @return string[]
+     * @param string $dir
+     */
+    private function findInjectedFiles($dir)
 	{
 		$leaked = [];
 		foreach (scandir($dir) as $entry)
@@ -502,7 +511,10 @@ class resize_handlerTest extends \Test\Unit
 		return $leaked;
 	}
 
-	private function rmrf(string $dir)
+	/**
+     * @param string $dir
+     */
+    private function rmrf($dir)
 	{
 		foreach (scandir($dir) as $entry)
 		{
@@ -516,7 +528,10 @@ class resize_handlerTest extends \Test\Unit
 		@rmdir($dir);
 	}
 
-	private static function imageMagickAvailable(): bool
+	/**
+     * @return bool
+     */
+    private static function imageMagickAvailable()
 	{
 		$which = trim((string) shell_exec('command -v convert 2>/dev/null'));
 		return $which !== '';

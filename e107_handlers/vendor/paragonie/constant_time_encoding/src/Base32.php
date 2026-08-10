@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 namespace ParagonIE\ConstantTime;
 
 use InvalidArgumentException;
@@ -53,10 +52,9 @@ abstract class Base32 implements EncoderInterface
      */
     #[Override]
     public static function decode(
-        #[SensitiveParameter]
-        string $encodedString,
-        bool $strictPadding = false
-    ): string {
+        $encodedString,
+        $strictPadding = false
+    ) {
         return static::doDecode($encodedString, false, $strictPadding);
     }
 
@@ -68,10 +66,9 @@ abstract class Base32 implements EncoderInterface
      * @return string
      */
     public static function decodeUpper(
-        #[SensitiveParameter]
-        string $src,
-        bool $strictPadding = false
-    ): string {
+        $src,
+        $strictPadding = false
+    ) {
         return static::doDecode($src, true, $strictPadding);
     }
 
@@ -84,9 +81,8 @@ abstract class Base32 implements EncoderInterface
      */
     #[Override]
     public static function encode(
-        #[SensitiveParameter]
-        string $binString
-    ): string {
+        $binString
+    ) {
         return static::doEncode($binString, false, true);
     }
 
@@ -99,9 +95,8 @@ abstract class Base32 implements EncoderInterface
      * @api
      */
     public static function encodeUnpadded(
-        #[SensitiveParameter]
-        string $src
-    ): string {
+        $src
+    ) {
         return static::doEncode($src, false, false);
     }
 
@@ -114,9 +109,8 @@ abstract class Base32 implements EncoderInterface
      * @api
      */
     public static function encodeUpper(
-        #[SensitiveParameter]
-        string $src
-    ): string {
+        $src
+    ) {
         return static::doEncode($src, true, true);
     }
 
@@ -129,9 +123,8 @@ abstract class Base32 implements EncoderInterface
      * @api
      */
     public static function encodeUpperUnpadded(
-        #[SensitiveParameter]
-        string $src
-    ): string {
+        $src
+    ) {
         return static::doEncode($src, true, false);
     }
 
@@ -143,7 +136,7 @@ abstract class Base32 implements EncoderInterface
      * @return int
      * @api
      */
-    protected static function decode5Bits(int $src): int
+    protected static function decode5Bits($src)
     {
         $ret = -1;
 
@@ -166,7 +159,7 @@ abstract class Base32 implements EncoderInterface
      * @return int
      * @api
      */
-    protected static function decode5BitsUpper(int $src): int
+    protected static function decode5BitsUpper($src)
     {
         $ret = -1;
 
@@ -187,7 +180,7 @@ abstract class Base32 implements EncoderInterface
      * @return string
      * @api
      */
-    protected static function encode5Bits(int $src): string
+    protected static function encode5Bits($src)
     {
         $diff = 0x61;
 
@@ -207,7 +200,7 @@ abstract class Base32 implements EncoderInterface
      * @return string
      * @api
      */
-    protected static function encode5BitsUpper(int $src): string
+    protected static function encode5BitsUpper($src)
     {
         $diff = 0x41;
 
@@ -224,10 +217,9 @@ abstract class Base32 implements EncoderInterface
      * @api
      */
     public static function decodeNoPadding(
-        #[SensitiveParameter]
-        string $encodedString,
-        bool $upper = false
-    ): string {
+        $encodedString,
+        $upper = false
+    ) {
         $srcLen = strlen($encodedString);
         if ($srcLen === 0) {
             return '';
@@ -259,11 +251,10 @@ abstract class Base32 implements EncoderInterface
      * @throws TypeError
      */
     protected static function doDecode(
-        #[SensitiveParameter]
-        string $src,
-        bool $upper = false,
-        bool $strictPadding = false
-    ): string {
+        $src,
+        $upper = false,
+        $strictPadding = false
+    ) {
         // We do this to reduce code duplication:
         $method = $upper
             ? 'decode5BitsUpper'
@@ -470,11 +461,10 @@ abstract class Base32 implements EncoderInterface
      * @throws TypeError
      */
     protected static function doEncode(
-        #[SensitiveParameter]
-        string $src,
-        bool $upper = false,
-        bool $pad = true
-    ): string {
+        $src,
+        $upper = false,
+        $pad = true
+    ) {
         // We do this to reduce code duplication:
         $method = $upper
             ? 'encode5BitsUpper'

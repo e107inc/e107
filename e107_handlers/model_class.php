@@ -3770,7 +3770,7 @@ class e_tree_model extends e_front_model
 			// string form. execute($var) is an opaque dynamic-SQL passthrough boundary.
 			$result = ($sql->execute($QRY) !== false) ? $sql->fetch() : array();
 			if(!is_array($result)) $result = array();
-			$total = $result['e_tree_total'] ?? 0;
+			$total = isset($result['e_tree_total']) ? $result['e_tree_total'] : 0;
 
 			if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
 			{

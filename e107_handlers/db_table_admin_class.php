@@ -394,7 +394,7 @@ class db_table_admin
 							}
 							//			echo " - no match<br />";
 						}
-						
+
 						if (!$found)
 						{ // Field in existing DB no longer required
 							$error_list[] = 'Obsolete field: '.$list2[0]['name'];
@@ -402,7 +402,7 @@ class db_table_admin
 							array_shift($list2);
 							continue;
 						}
-						
+
 						$found = FALSE;
 						for ($k = 0, $kMax = count($list2); $k < $kMax; $k++)
 						{
@@ -438,7 +438,7 @@ class db_table_admin
 									$created_list[$j] = $list1[$i]['name'];
 									$j++;
 								break;
-								
+
 								case 'field':
 									$change_list[] = 'ADD '.$this->make_def($list1[$i]).(count($created_list) ? ' AFTER '.$created_list[count($created_list) - 1] : ' FIRST');
 									$error_list[] = 'Missing field: '.$list1[$i]['name'].' (found: '.$list2[0]['type'].' '.$list2[0]['name'].')';
@@ -506,18 +506,18 @@ class db_table_admin
 								$j++;
 							}
 						break;
-						
+
 						case 'field': // Require a field - got a key. so add a field at the end
 							$error_list[] = 'Missing field: '.$list1[$i]['name'].' (found: '.$list2[0]['type'].' '.$list2[0]['name'].')';
 							$change_list[] = 'ADD '.$this->make_def($list1[$i]);
 						break;
-						
+
 						default:
 							$error_list[] = 'Unknown field type: '.$list1[$i]['type'];
 							$change_list[] = ''; // Null entry to keep them in step
 					}
 				} // End - missing or extra field
-				
+
 				$i++; // On to next field
 			}
 			if (count($list2))
@@ -714,7 +714,7 @@ class db_table_admin
 				{
 					echo 'Actual table structure: <br />'.$this->make_field_list($actualFields);
 				}
-				
+
 				$diffs = $this->compare_field_lists($reqFields, $actualFields); // Work out any differences
 				if (count($diffs[0]))
 				{ // Changes needed

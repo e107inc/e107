@@ -38,24 +38,24 @@ if(defined('MYSQL_LIGHT'))
 	if(is_array($config) && !empty($config['database'])) // New e107_config.php format. v2.4+
 	{
 		$dbInfo = $config['database'];
-		define('MPREFIX', $dbInfo['prefix'] ?? '');
+		define('MPREFIX', isset($dbInfo['prefix']) ? $dbInfo['prefix'] : '');
 		$sql = new db;
 		$sql->db_Connect(
-			$dbInfo['server']   ?? '',
-			$dbInfo['user']     ?? '',
-			$dbInfo['password'] ?? '',
-			$dbInfo['db']       ?? ''
+			isset($dbInfo['server']) ? $dbInfo['server'] : '',
+			isset($dbInfo['user']) ? $dbInfo['user'] : '',
+			isset($dbInfo['password']) ? $dbInfo['password'] : '',
+			isset($dbInfo['db']) ? $dbInfo['db'] : ''
 		);
 	}
 	else // old e107_config.php format with legacy globals.
 	{
-		define('MPREFIX', $mySQLprefix ?? '');
+		define('MPREFIX', isset($mySQLprefix) ? $mySQLprefix : '');
 		$sql = new db;
 		$sql->db_Connect(
-			$mySQLserver   ?? '',
-			$mySQLuser     ?? '',
-			$mySQLpassword ?? '',
-			$mySQLdefaultdb ?? ''
+			isset($mySQLserver) ? $mySQLserver : '',
+			isset($mySQLuser) ? $mySQLuser : '',
+			isset($mySQLpassword) ? $mySQLpassword : '',
+			isset($mySQLdefaultdb) ? $mySQLdefaultdb : ''
 		);
 	}
 }
@@ -75,10 +75,10 @@ elseif(defined('E107_INSTALL'))
 	e107::getInstance()->initInstallSql($sql_info);
 	$sql = new db;
 	$sql->db_Connect(
-		$sql_info['server']   ?? ($sql_info['mySQLserver']   ?? ''),
-		$sql_info['user']     ?? ($sql_info['mySQLuser']     ?? ''),
-		$sql_info['password'] ?? ($sql_info['mySQLpassword'] ?? ''),
-		$sql_info['db']       ?? ($sql_info['mySQLdefaultdb'] ?? '')
+		isset($sql_info['server']) ? $sql_info['server'] : (isset($sql_info['mySQLserver']) ? $sql_info['mySQLserver'] : ''),
+		isset($sql_info['user']) ? $sql_info['user'] : (isset($sql_info['mySQLuser']) ? $sql_info['mySQLuser'] : ''),
+		isset($sql_info['password']) ? $sql_info['password'] : (isset($sql_info['mySQLpassword']) ? $sql_info['mySQLpassword'] : ''),
+		isset($sql_info['db']) ? $sql_info['db'] : (isset($sql_info['mySQLdefaultdb']) ? $sql_info['mySQLdefaultdb'] : '')
 	);
 }
 else

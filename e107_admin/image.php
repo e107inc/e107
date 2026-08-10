@@ -356,16 +356,16 @@ class media_cat_form_ui extends e_admin_form_ui
 		{
 			return;
 		}	
-		
+
 		$owner = $this->getController()->getListModel()->get('media_cat_owner');	
 		if(!in_array($owner,$this->restrictedOwners))
 		{
 
 			return $this->renderValue('options',$value,null,$id);
 		}
-			
-		
-		
+
+
+
 
 	//	$save = ($_GET['bbcode']!='file')  ? "e-dialog-save" : "";
 	// e-dialog-close
@@ -401,8 +401,8 @@ class media_form_ui extends e_admin_form_ui
 
 
 		}
-		
-		
+
+
 		if(!empty($_POST['multiselect']) && varset($_POST['e__execute_batch']) && (varset($_POST['etrigger_batch']) == 'options__resize_2048' ))
 		{
 			$type = str_replace('options__','',$_POST['etrigger_batch']);
@@ -423,9 +423,9 @@ class media_form_ui extends e_admin_form_ui
 			$ids = implode(",", e107::getParser()->filter($_POST['multiselect'],'int'));
 			$this->convertImagesToJpeg($ids,'all');
 		}*/
-		
+
 	}
-	
+
 	function resize_method($curval)
 	{
 		$frm = e107::getForm();
@@ -434,7 +434,7 @@ class media_form_ui extends e_admin_form_ui
 
 		return $frm->selectbox('resize_method',$options,$curval)."<div class='field-help'>".IMALAN_4. '</div>';
 	}
-	
+
 	public function rotateImages($ids,$type)
 	{
 		$sql = e107::getDb();
@@ -442,13 +442,13 @@ class media_form_ui extends e_admin_form_ui
 		$mes = e107::getMessage();
 		ini_set('memory_limit', '150M');
 		ini_set('gd.jpeg_ignore_warning', 1);
-		
+
 		$degrees = ($type === 'rotate_cw') ? 270 : 90;
-		
+
 	//	$mes->addDebug("Rotate Mode Set: ".$type);
-		
+
 		//TODO GIF and PNG rotation. 
-		
+
 		$idList = array_map('intval', explode(',', $ids));
 
 		$rows = $sql->createQueryBuilder()
@@ -464,9 +464,9 @@ class media_form_ui extends e_admin_form_ui
 				$original = $tp->replaceConstants($row['media_url']);
 
 				$mes->addDebug("Attempting to rotate by {$degrees} degrees: ".basename($original));
-				
+
 				$source = imagecreatefromjpeg($original);
-							
+
 				try 
 				{
 					$rotate = imagerotate($source, $degrees, 0);
@@ -476,10 +476,10 @@ class media_form_ui extends e_admin_form_ui
 					$mes->addError(LAN_IMA_002. ': ' .basename($original));
 					return null;
 				}  
-							
+
 				$srch = array('.jpg', '.jpeg');
 				$cacheFile = str_replace($srch, '',strtolower(basename($original)))."_(.*)\.cache\.bin";
-				
+
 				try 
 				{
 					imagejpeg($rotate,$original,80);
@@ -517,17 +517,17 @@ class media_form_ui extends e_admin_form_ui
 
 	public function resizeImages($ids,$type)
 	{
-		
+
 		$sql = e107::getDb();
 		$sql2 = e107::getDb('sql2');
 		$mes = e107::getMessage();
 		$tp = e107::getParser();
 		$fl = e107::getFile();
-				
+
 		// Max size is 6 megapixel. 
 		$img_import_w = 2816;
 		$img_import_h = 2112; 
-			
+
 		$idList = array_map('intval', explode(',', $ids));
 
 		$rows = $sql->createQueryBuilder()
@@ -564,9 +564,9 @@ class media_form_ui extends e_admin_form_ui
 				}
 			}
 		}
-		
-		
-		
+
+
+
 	}
 
 	public function convertImagesToJpeg($ids,$mode=null)
@@ -631,15 +631,15 @@ class media_form_ui extends e_admin_form_ui
 
 
 	}
-	
-	
+
+
 	public function resize_dimensions($curval) // ie. never manually resize another image again!
 	{
 
 		$text = '';
 
 		$pref 	= e107::getPref();
-		
+
 	//	$options = array(
 	//		"news-image" 			=> LAN_IMA_O_001,
 	//		"news-bbcode" 			=> LAN_IMA_O_002,
@@ -674,7 +674,7 @@ class media_form_ui extends e_admin_form_ui
 			$title = ucwords(str_replace('-', ' ',$key));
 			$valW = !empty($curval[$key]['w']) ? $curval[$key]['w'] : 400;
 			$valH = !empty($curval[$key]['h']) ? $curval[$key]['h'] : 400;
-		
+
 			$text .= "<tr><td style='width:45%'>".$title."</td><td class='text-right'>";
 			$text .= "<input class='e-tip e-spinner input-small' placeholder='ex. 400' style='text-align:right' type='text' name='resize_dimensions[{$key}][w]' value='$valW' size='5' title='maximum width in pixels' />";
 			$text .= "</td><td class='text-right'><input class='e-tip e-spinner input-small' placeholder='ex. 400' style='text-align:right' type='text' name='resize_dimensions[{$key}][h]' value='$valH' size='5' title='maximum height in pixels' />";
@@ -682,14 +682,14 @@ class media_form_ui extends e_admin_form_ui
 
 		}
 		$text .= '</table>';
-		
+
 	//	$text .= "<div><br />Warning: This feature is experimental.</div>";
-		
+
 		return $text;
-		
-		
+
+
 	}
-	
+
 
 	function options($parms, $value, $id)
 	{
@@ -710,12 +710,12 @@ class media_form_ui extends e_admin_form_ui
 
 			return $arr;
 		}
-		
+
 		if($_GET['action'] === 'edit')
 		{
 			return null;
 		}	
-		
+
 		$tagid = vartrue($_GET['tagid']);
 		$tagid = e107::getParser()->filter($tagid);
 		$model =  $this->getController()->getListModel();
@@ -724,11 +724,11 @@ class media_form_ui extends e_admin_form_ui
 		$id = $model->get('media_id');
 
 		$preview = basename($path);
-		
+
 		$bbcode = (vartrue($_GET['bbcode']) === 'file')  ? 'file' : '';
 	//	$save = ($_GET['bbcode']!='file')  ? "e-dialog-save" : "";
 	// e-dialog-close
-	
+
 		$for = (string) $this->getController()->getQuery('for');
 
 
@@ -783,7 +783,7 @@ class media_form_ui extends e_admin_form_ui
 		}
 
 		return "<div class='nowrap'>".$text. '</div>';
-		
+
 	}
 
 
@@ -867,9 +867,9 @@ class media_form_ui extends e_admin_form_ui
 /*
 	function media_category($curVal,$mode) // not really necessary since we can use 'dropdown' - but just an example of a custom function.
 	{
-		
+
 		$curVal = explode(",",$curVal);
-		
+
 		if($mode == 'read')
 		{
 			return $this->getController()->getMediaCategory($curVal);
@@ -889,7 +889,7 @@ class media_form_ui extends e_admin_form_ui
 
 		$text = "<select class='tbox' name='media_category[]' multiple='multiple'>";
 		$cats = $this->getController()->getMediaCategory();
-		
+
 		foreach($cats as $key => $val)
 		{
 			$selected = (in_array($key,$curVal)) ? "selected='selected'" : "";
@@ -3400,9 +3400,9 @@ class media_admin_ui extends e_admin_ui
 	function getFileXml($imgFile)
 	{
 		list($file,$ext) = explode('.',$imgFile);
-		
+
 		$xmlFile = e_IMPORT.$file. '.xml';
-		
+
 		if(is_readable($xmlFile))
 		{
 			$data = file_get_contents($xmlFile);
@@ -3410,7 +3410,7 @@ class media_admin_ui extends e_admin_ui
 			preg_match("/email=(?:'|\")([^'\"]*)/i",$data,$authorEmail);
 			preg_match("/<title>(.*)<\/title>/i",$data,$title);
 			preg_match("/<description>(.*)<\/description>/i",$data,$diz);
-			
+
 			return array(
 				'title'			=> $title[1],
 				'description'	=> $diz[1],
@@ -3418,18 +3418,18 @@ class media_admin_ui extends e_admin_ui
 				'authorEmail'	=> $authorEmail[1]
 			);				
 		}
-			
+
 		$srch = array('_', '-');
 		$description = str_replace($srch, ' ',$file);
-		
+
 		$file = utf8_encode($file);
 		$description = utf8_encode($description); 
-			
+
 		return array('title'=>basename($file),'description'=>$description,'authorName'=>USERNAME,'authorEmail'=>'');
-		
+
 		/*
 		Example: matchingfilename.xml (ie. same name as jpg|.gif|.png etc)
-		 
+
 		<?xml version='1.0' encoding='utf-8' ?>
 		<e107Media>
 			<item file='filename.jpg' date='2012-10-25'>

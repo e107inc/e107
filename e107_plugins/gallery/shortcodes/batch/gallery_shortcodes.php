@@ -10,16 +10,16 @@ if (!defined('e107_INIT')) { exit; }
 
 /*
 // SEE e_shortcode.php instead. 
-  
- 
+
+
 class gallery_shortcodes extends e_shortcode
 {
-	
+
 	public $total = 0;
 	public $amount = 3;
 	public $from = 0;
 	public $curCat = null;
-			
+
 	function sc_gallery_caption($parm='')
 	{
 		$tp = e107::getParser();
@@ -28,7 +28,7 @@ class gallery_shortcodes extends e_shortcode
 		$text .= "</a>";
 		return $text;
 	}
-	
+
 	function sc_gallery_thumb($parm='')
 	{
 		$tp = e107::getParser();
@@ -38,7 +38,7 @@ class gallery_shortcodes extends e_shortcode
 		$text .= "</a>";
 		return $text;	
 	}
-	
+
 	function sc_gallery_cat_title($parm='')
 	{
 		$tp = e107::getParser();
@@ -47,7 +47,7 @@ class gallery_shortcodes extends e_shortcode
 		$text .= "</a>";
 		return $text;	
 	}
-	
+
 	function sc_gallery_cat_thumb($parm='')
 	{
 		$att = ($parm) ?$parm : 'aw=190&ah=150';
@@ -56,7 +56,7 @@ class gallery_shortcodes extends e_shortcode
 		$text .= "</a>";
 		return $text;		
 	}
-	
+
 	function sc_gallery_nextprev($parm='')
 	{
 		$url = e_SELF."?cat=".$this->curCat."--AMP--frm=--FROM--";
@@ -64,7 +64,7 @@ class gallery_shortcodes extends e_shortcode
 		$text .= e107::getParser()->parseTemplate("{NEXTPREV=".$parm."}");
 		return $text;	
 	}
-	
-	
+
+
 }
 */

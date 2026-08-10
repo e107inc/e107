@@ -170,7 +170,7 @@ class eIPHandler
 
 		$this->ourIP = $this->ipEncode($this->getCurrentIP());
 
-		$this->serverIP = $this->ipEncode($_SERVER['SERVER_ADDR'] ?? 'x.x.x.x');
+		$this->serverIP = $this->ipEncode(isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : 'x.x.x.x');
 
 		$this->makeUserToken();
 
@@ -311,8 +311,8 @@ class eIPHandler
     {
         if(!$this->ourIP)
         {
-            $server = $server ?? $_SERVER;
-            $ip = $server['REMOTE_ADDR'] ?? 'x.x.x.x';
+            $server = isset($server) ? $server : $_SERVER;
+            $ip = isset($server['REMOTE_ADDR']) ? $server['REMOTE_ADDR'] : 'x.x.x.x';
 
             if ($ip4 = getenv('HTTP_X_FORWARDED_FOR'))
             {
@@ -780,7 +780,7 @@ class eIPHandler
 	 * @param string $fieldName - if non-empty, each array entry is a comparison with this field
 	 * @return array|bool - array of network ban patterns, or false if invalid domain
 	 */
-	function makeDomainQuery($domain, $fieldName = 'banlist_ip'): array|bool
+	function makeDomainQuery($domain, $fieldName = 'banlist_ip')
 	{
 
 		$domain = trim($domain);

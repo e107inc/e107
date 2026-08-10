@@ -81,7 +81,7 @@ class E107TestSuiteBootstrap
         // Ask the preparer where the app runs: in place, or in an isolated
         // git worktree for deploy-based suites. The factory decides which.
         require_once(codecept_root_dir() . "/lib/preparers/PreparerFactory.php");
-        $deployer = $params['deployer'] ?? 'local';
+        $deployer = isset($params['deployer']) ? $params['deployer'] : 'local';
         $preparer = PreparerFactory::createForPath($original_app_path, $deployer);
         $effective_app_path = $preparer->getAppPath();
 
@@ -131,7 +131,7 @@ class E107TestSuiteBootstrap
             }
             foreach ($unitDirs as $testDir)
             {
-                $pluginName = basename(dirname($testDir, 2));
+                $pluginName = basename(dirname(dirname($testDir)));
                 $relativePath = '../e107_plugins/' . $pluginName . '/tests/unit';
                 $pluginUnitDirs[] = $relativePath;
                 $namespace = "E107\\Plugins\\" . ucfirst($pluginName) . "\\Tests\\Unit";
@@ -166,7 +166,7 @@ class E107TestSuiteBootstrap
             }
             foreach ($acceptanceDirs as $testDir)
             {
-                $pluginName = basename(dirname($testDir, 2));
+                $pluginName = basename(dirname(dirname($testDir)));
                 $relativePath = '../e107_plugins/' . $pluginName . '/tests/acceptance';
                 $pluginAcceptanceDirs[] = $relativePath;
                 $namespace = "E107\\Plugins\\" . ucfirst($pluginName) . "\\Tests\\Acceptance";
@@ -191,11 +191,11 @@ if(!function_exists('dbg'))
 	 * @param mixed $data
 	 * @return void
 	 */
-	function dbg($data): void
+	function dbg($data)
 	{
 
 		$bt = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1);
-		$line = $bt[0]['line'] ?? '?';
+		$line = isset($bt[0]['line']) ? $bt[0]['line'] : '?';
 
 		if(is_array($data) || is_object($data))
 		{

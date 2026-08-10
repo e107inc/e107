@@ -11,7 +11,7 @@ class featurebox_rss // plugin-folder + '_rss'
 	function config() 
 	{
 		$config = array();
-	
+
 		$config[] = array(
 			'name'			=> LAN_PLUGIN_FEATUREBOX_NAME,
 			'url'			=> 'featurebox',
@@ -20,10 +20,10 @@ class featurebox_rss // plugin-folder + '_rss'
 			'class'			=> '0',
 			'limit'			=> '9'
 		);
-		
+
 		return $config;
 	}
-	
+
 	/**
 	 * Compile RSS Data
 	 * @param $parms array	url, limit, id 
@@ -62,10 +62,10 @@ class featurebox_rss // plugin-folder + '_rss'
 			}
 
 		}				
-					
+
 		return $rss;
 	}
-	
+
 }
 
 /* OLD V1 CODE

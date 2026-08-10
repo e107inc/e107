@@ -413,7 +413,7 @@ class wysiwyg
                     {title: 'Image Right', selector: 'img', classes: 'bbcode-img-right', icon: 'alignright'}
 
                 ]},
-                
+
                 {title: 'Glyphs', items: [
                     {title: 'Size 2x', selector: 'i', classes: 'fa-2x'},
                     {title: 'Size 3x', selector: 'i', classes: 'fa-3x'},
@@ -463,9 +463,9 @@ class wysiwyg
 				 {title: 'Hover', selector: 'table', classes: 'table-hover'},
                  {title: 'Striped', selector: 'table', classes: 'table-striped'},
                 ]},
-                
 
-                
+
+
                 {title: 'Animate.css Style', items: [
 					{title: 'bounce',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated bounce'},
 					{title: 'flash',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated flash'},
@@ -544,7 +544,7 @@ class wysiwyg
 					{title: 'slideOutLeft',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated slideOutLeft'},
 					{title: 'slideOutRight',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated slideOutRight'},
 					{title: 'slideOutUp',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated slideOutUp'}, */
-		
+
                 ]},
 
 
@@ -758,7 +758,7 @@ class wysiwyg
 
 		$this->config = implode(",\n",$text);
 
-		
+
 
 		// -------------------------------------------------------------------------------------
 

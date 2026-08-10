@@ -242,12 +242,12 @@ class page_chapters_ui extends e_admin_ui
 				$bk = $row['chapter_id'];
 				$this->books[$bk] = $row['chapter_name'];
 			}
-			
+
 			asort($this->books);
-			
+
 			$this->fields['chapter_parent']['writeParms'] = $this->books;	
-			
-			
+
+
 			$tmp = e107::getLayouts('', 'chapter', 'front', '', true, false);
 			$tmpl = array();
 			foreach($tmp as $key=>$val)
@@ -257,7 +257,7 @@ class page_chapters_ui extends e_admin_ui
 					$tmpl[$key] = $val;	
 				}	
 			}
-			
+
 			$this->fields['chapter_template']['writeParms'] = $tmpl; // e107::getLayouts('', 'chapter', 'front', '', true, false); // e107::getLayouts('', 'page', 'books', 'front', true, false); 
 			
 		}

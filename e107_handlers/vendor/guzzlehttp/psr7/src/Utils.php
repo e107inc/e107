@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace GuzzleHttp\Psr7;
 
 use Psr\Http\Message\RequestInterface;
@@ -15,8 +13,9 @@ final class Utils
      * Remove the items given by the keys, case insensitively from the data.
      *
      * @param (string|int)[] $keys
+     * @return mixed[]
      */
-    public static function caselessRemove(array $keys, array $data): array
+    public static function caselessRemove(array $keys, array $data)
     {
         $result = [];
 
@@ -43,8 +42,9 @@ final class Utils
      *                                to read the entire stream.
      *
      * @throws \RuntimeException on error.
+     * @return void
      */
-    public static function copyToStream(StreamInterface $source, StreamInterface $dest, int $maxLen = -1): void
+    public static function copyToStream(StreamInterface $source, StreamInterface $dest, $maxLen = -1)
     {
         $bufferSize = 8192;
 
@@ -77,8 +77,9 @@ final class Utils
      *                                to read the entire stream.
      *
      * @throws \RuntimeException on error.
+     * @return string
      */
-    public static function copyToString(StreamInterface $stream, int $maxLen = -1): string
+    public static function copyToString(StreamInterface $stream, $maxLen = -1)
     {
         $buffer = '';
 
@@ -118,8 +119,9 @@ final class Utils
      * @param bool            $rawOutput Whether or not to use raw output
      *
      * @throws \RuntimeException on error.
+     * @return string
      */
-    public static function hash(StreamInterface $stream, string $algo, bool $rawOutput = false): string
+    public static function hash(StreamInterface $stream, $algo, $rawOutput = false)
     {
         $pos = $stream->tell();
 
@@ -155,8 +157,9 @@ final class Utils
      *
      * @param RequestInterface $request Request to clone and modify.
      * @param array            $changes Changes to apply.
+     * @return \Psr\Http\Message\RequestInterface
      */
-    public static function modifyRequest(RequestInterface $request, array $changes): RequestInterface
+    public static function modifyRequest(RequestInterface $request, array $changes)
     {
         if (!$changes) {
             return $request;
@@ -197,14 +200,13 @@ final class Utils
 
         if ($request instanceof ServerRequestInterface) {
             $new = (new ServerRequest(
-                $changes['method'] ?? $request->getMethod(),
+                isset($changes['method']) ? $changes['method'] : $request->getMethod(),
                 $uri,
                 $headers,
-                $changes['body'] ?? $request->getBody(),
-                $changes['version'] ?? $request->getProtocolVersion(),
+                isset($changes['body']) ? $changes['body'] : $request->getBody(),
+                isset($changes['version']) ? $changes['version'] : $request->getProtocolVersion(),
                 $request->getServerParams()
-            ))
-            ->withParsedBody($request->getParsedBody())
+            ))->withParsedBody($request->getParsedBody())
             ->withQueryParams($request->getQueryParams())
             ->withCookieParams($request->getCookieParams())
             ->withUploadedFiles($request->getUploadedFiles());
@@ -217,11 +219,11 @@ final class Utils
         }
 
         return new Request(
-            $changes['method'] ?? $request->getMethod(),
+            isset($changes['method']) ? $changes['method'] : $request->getMethod(),
             $uri,
             $headers,
-            $changes['body'] ?? $request->getBody(),
-            $changes['version'] ?? $request->getProtocolVersion()
+            isset($changes['body']) ? $changes['body'] : $request->getBody(),
+            isset($changes['version']) ? $changes['version'] : $request->getProtocolVersion()
         );
     }
 
@@ -230,8 +232,9 @@ final class Utils
      *
      * @param StreamInterface $stream    Stream to read from
      * @param int|null        $maxLength Maximum buffer length
+     * @return string
      */
-    public static function readLine(StreamInterface $stream, ?int $maxLength = null): string
+    public static function readLine(StreamInterface $stream, $maxLength = null)
     {
         $buffer = '';
         $size = 0;
@@ -252,8 +255,9 @@ final class Utils
 
     /**
      * Redact the password in the user info part of a URI.
+     * @return \Psr\Http\Message\UriInterface
      */
-    public static function redactUserInfo(UriInterface $uri): UriInterface
+    public static function redactUserInfo(UriInterface $uri)
     {
         $userInfo = $uri->getUserInfo();
 
@@ -297,8 +301,9 @@ final class Utils
      * @param array{size?: int, metadata?: array}                                    $options  Additional options
      *
      * @throws \InvalidArgumentException if the $resource arg is not valid.
+     * @return \Psr\Http\Message\StreamInterface
      */
-    public static function streamFor($resource = '', array $options = []): StreamInterface
+    public static function streamFor($resource = '', array $options = [])
     {
         if (is_scalar($resource)) {
             $stream = self::tryFopen('php://temp', 'r+');
@@ -318,7 +323,7 @@ final class Utils
                  */
 
                 /** @var resource $resource */
-                if ((\stream_get_meta_data($resource)['uri'] ?? '') === 'php://input') {
+                if ((isset(\stream_get_meta_data($resource)['uri']) ? \stream_get_meta_data($resource)['uri'] : '') === 'php://input') {
                     $stream = self::tryFopen('php://temp', 'w+');
                     stream_copy_to_stream($resource, $stream);
                     fseek($stream, 0);
@@ -368,10 +373,10 @@ final class Utils
      *
      * @throws \RuntimeException if the file cannot be opened
      */
-    public static function tryFopen(string $filename, string $mode)
+    public static function tryFopen($filename, $mode)
     {
         $ex = null;
-        set_error_handler(static function (int $errno, string $errstr) use ($filename, $mode, &$ex): bool {
+        set_error_handler(static function ($errno, $errstr) use ($filename, $mode, &$ex) {
             $ex = new \RuntimeException(sprintf(
                 'Unable to open "%s" using mode "%s": %s',
                 $filename,
@@ -386,6 +391,13 @@ final class Utils
             /** @var resource $handle */
             $handle = fopen($filename, $mode);
         } catch (\Throwable $e) {
+            $ex = new \RuntimeException(sprintf(
+                'Unable to open "%s" using mode "%s": %s',
+                $filename,
+                $mode,
+                $e->getMessage()
+            ), 0, $e);
+        } catch (\Exception $e) {
             $ex = new \RuntimeException(sprintf(
                 'Unable to open "%s" using mode "%s": %s',
                 $filename,
@@ -414,11 +426,12 @@ final class Utils
      * @param resource $stream
      *
      * @throws \RuntimeException if the stream cannot be read
+     * @return string
      */
-    public static function tryGetContents($stream): string
+    public static function tryGetContents($stream)
     {
         $ex = null;
-        set_error_handler(static function (int $errno, string $errstr) use (&$ex): bool {
+        set_error_handler(static function ($errno, $errstr) use (&$ex) {
             $ex = new \RuntimeException(sprintf(
                 'Unable to read stream contents: %s',
                 $errstr
@@ -435,6 +448,11 @@ final class Utils
                 $ex = new \RuntimeException('Unable to read stream contents');
             }
         } catch (\Throwable $e) {
+            $ex = new \RuntimeException(sprintf(
+                'Unable to read stream contents: %s',
+                $e->getMessage()
+            ), 0, $e);
+        } catch (\Exception $e) {
             $ex = new \RuntimeException(sprintf(
                 'Unable to read stream contents: %s',
                 $e->getMessage()
@@ -461,8 +479,9 @@ final class Utils
      * @param string|UriInterface $uri
      *
      * @throws \InvalidArgumentException
+     * @return \Psr\Http\Message\UriInterface
      */
-    public static function uriFor($uri): UriInterface
+    public static function uriFor($uri)
     {
         if ($uri instanceof UriInterface) {
             return $uri;

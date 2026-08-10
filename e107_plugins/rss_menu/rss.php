@@ -318,12 +318,12 @@ class rssCreate
 						}
 
 						$this -> rssItems[$k]['description'] = $row['description'];
-						
+
 						if($row['enc_url'])
 						{
 							$this -> rssItems[$k]['enc_url'] = SITEURLBASE.e_PLUGIN_ABS.$row['enc_url'].$row['item_id'];
 						}
-						
+
 						if($row['enc_leng'])
 						{
 							$this -> rssItems[$k]['enc_leng'] = $row['enc_leng'];
@@ -339,7 +339,7 @@ class rssCreate
 						}
 
 						$this -> rssItems[$k]['category_name'] = $row['category_name'];
-						
+
 						if($row['category_link'])
 						{
 							if(stripos($row['category_link'], 'http') !== FALSE)
@@ -351,7 +351,7 @@ class rssCreate
 								$this -> rssItems[$k]['category_link'] = SITEURLBASE.e_PLUGIN_ABS.$row['category_link'];
 							}
 						}
-						
+
 						if(!empty($row['datestamp']))
 						{
 							$this -> rssItems[$k]['pubdate'] = $row['datestamp'];

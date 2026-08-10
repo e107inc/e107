@@ -288,25 +288,25 @@ class user_dashboard // plugin-folder + '_url'
 
 
 		$cht->setProvider('google');
-		
+
 		$width='100%'; $height = 380; 
-	
+
 		$data[] = array('Day', "Registered" );
-		
+
 		$amt = array();
-		
+
 	//	if($when == 'this')
 		{
 			$month_start = strtotime('first day of this month', mktime(0,0,0));		
 			$month_end = strtotime('last day of this month', mktime(23,59,59));
 		}
-		
+
 	/*	if($when == 'last')
 		{
 			$month_start = strtotime('first day of last month', mktime(0,0,0));		
 			$month_end = strtotime('last day of last month', mktime(23,59,59));	
 		}*/
-		
+
 		$rows = $sql->createQueryBuilder()
 			->select('user_id', 'user_ban', 'user_join')->from('user')
 			->whereBetween('user_join', $month_start, $month_end)
@@ -339,13 +339,13 @@ class user_dashboard // plugin-folder + '_url'
 	//	print_a($monthNumber);
 
 		$sum = array_sum($amt);
-		
+
 	//	$this->title = 'Registered '.date('M Y',$month_start).' ('.$sum.')';
 
 		$this->title = UC_LAN_9.' ('.$sum.')';
-	
+
 		$totalDays = date('t', $month_start);
-	
+
 		for ($i=1; $i < ($totalDays +1); $i++) 
 		{
 			$diz = date('D jS', mktime(1,1,1,$monthNumber,$i, $yearNumber));
@@ -353,9 +353,9 @@ class user_dashboard // plugin-folder + '_url'
 			$data[] = array($diz, $val); //	$dateName[$i]
 			$ticks[] = $i;
 		}
-		
+
 	//	print_a($data);
-			
+
 		$options = array(
 			'chartArea'	=>array('left'=>'60', 'width'=>'100%', 'top'=>'25'),
 			'legend'	=> array('position'=> 'none', 'alignment'=>'center', 'textStyle' => array('fontSize' => 14, 'color' => '#ccc')),
@@ -364,29 +364,29 @@ class user_dashboard // plugin-folder + '_url'
 			'colors'	=> array('#77acd9','#EDA0B6', '#EE8D21', '#5CB85C'),
 			'animation'	=> array('duration'=>1000, 'easing' => 'out'), 
 			'areaOpacity'	=> 0.8,
-	
+
 			'backgroundColor' => array('fill' => 'transparent' )
 		);
 		//
 		$cht->setType('column');
 		$cht->setOptions($options);
 		$cht->setData($data);
-		
+
 		// redraw to fix sizing issue.
 	/*	e107::js('footer-inline', "
-		
-			
+
+
 			$('a[data-toggle=\"tab\"]').on('shown.bs.tab', function (e) {
 			  	//	drawLast();
 			  		drawThismonth();
 			})
-						
-			
+
+
 		");*/
-		
-		
+
+
 		return "<div class='height:50%'>".$cht->render($id, $width, $height)."</div>";
-		
+
 		// return "<div class='height:50%'>".$cht->render('projection', 320, 380)."</div>";
 		
 	}

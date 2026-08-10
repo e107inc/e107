@@ -229,7 +229,7 @@ else // New e107_config.php format. v2.4+
 {
 	$e107_paths = $config['paths'];
 	$sql_info = $config['database'];
-	$E107_CONFIG = $config['other'] ?? [];
+	$E107_CONFIG = isset($config['other']) ? $config['other'] : [];
 
 	if(isset($sql_info['defaultdb']))
 	{
@@ -1215,9 +1215,9 @@ function check_email($email)
 	{
 		return $email;	
 	}
-	
+
 	return false; 
-	
+
 	// return preg_match("/^([_a-zA-Z0-9-+]+)(\.[_a-zA-Z0-9-]+)*@([a-zA-Z0-9-]+)(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,6})$/" , $email) ? $email : false;
 }
 

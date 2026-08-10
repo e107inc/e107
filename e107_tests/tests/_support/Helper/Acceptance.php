@@ -59,7 +59,10 @@ class Acceptance extends E107Base
 	/** @var bool whether this run has stood a site up yet */
 	private $siteInstalled = false;
 
-	public function _before(?\Codeception\TestInterface $test = null)
+	/**
+     * @param \Codeception\TestInterface|null $test
+     */
+    public function _before($test = null)
 	{
 		parent::_before($test);
 		$this->haveInstalledSite();

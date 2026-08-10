@@ -30,13 +30,27 @@
 			require_once(e_BASE.'e107_tests/_tools/src/DeferralBaseline.php');
 		}
 
-		private function unsafe(string $file, int $line, string $method, string $excerpt): CallSite
+		/**
+         * @param string $file
+         * @param int $line
+         * @param string $method
+         * @param string $excerpt
+         * @return \E107\SqliScan\CallSite
+         */
+        private function unsafe($file, $line, $method, $excerpt)
 		{
 			return new CallSite($file, $line, $method, '$sql', CallSite::SAFETY_UNSAFE,
 				CallSite::TIER_EXECUTE_BINDS, $excerpt, 'test', false);
 		}
 
-		private function safeSite(string $file, int $line, string $method, string $excerpt): CallSite
+		/**
+         * @param string $file
+         * @param int $line
+         * @param string $method
+         * @param string $excerpt
+         * @return \E107\SqliScan\CallSite
+         */
+        private function safeSite($file, $line, $method, $excerpt)
 		{
 			return new CallSite($file, $line, $method, '$sql', CallSite::SAFETY_STATIC,
 				CallSite::TIER_STATIC_EXECUTE, $excerpt, 'test', false);

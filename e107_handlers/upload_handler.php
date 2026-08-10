@@ -146,7 +146,7 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 		{
 	//		e107::getLog()->addEvent(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Invalid directory: ".$uploaddir, FALSE, FALSE);
 		}
-		
+
 		return FALSE; // Need a valid directory
 	}
 	if (UH_DEBUG)
@@ -282,12 +282,12 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 					{ // Need to move file to our own temporary directory
 						$tempfilename = $uploadfile;
 						$uploadfile = $ul_temp_dir.basename($uploadfile);
-						
+
 						if (UH_DEBUG)
 						{
 							e107::getLog()->addEvent(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Move {$tempfilename} to {$uploadfile} ", FALSE, LOG_TO_ROLLING);
 						}
-						
+
 						@move_uploaded_file($tempfilename, $uploadfile); // This should work on all hosts
 					}
 					
@@ -854,7 +854,7 @@ function get_image_mime($filename, $extended = false)
 	{
 		if ($filename != '')
 		{
-			
+
 			if (strtolower(substr($filename, -4) == '.xml'))
 			{
 				return get_XML_filetypes($filename, $file_mask);

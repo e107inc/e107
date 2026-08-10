@@ -1617,7 +1617,7 @@ class e_parse
 			$parm .= '<' . $tag . '>';
 		}
 
-		return strip_tags($html, $parm);
+		return strip_tags($html, $parm !== null && is_array($parm) ? '<' . implode('><', $parm) . '>' : $parm);
 	}
 
 	/**

@@ -355,7 +355,7 @@ class e_search
 					$endcrop = FALSE;
 					$output = ''; // <!-- Start Search Block -->';
 					$title = TRUE;
-					
+
 					if(!empty($matches))
 					{
 
@@ -368,10 +368,10 @@ class e_search
 							$s_replace = array(' ', '<', '>');
 							$search = array_merge($t_search, $s_search);
 							$replace = array_merge($t_replace, $s_replace);
-							
+
 							$this -> text = strip_tags(str_replace($search, $replace, $this -> text));
-							
-							
+
+
 							if(!empty($this->keywords['match']))
 							{
 
@@ -396,8 +396,8 @@ class e_search
 									}
 								}
 							}
-							
-							
+
+
 							if($title) 
 							{
 								if ($pre_title == 0) 
@@ -412,14 +412,14 @@ class e_search
 								{
 									$pre_title_output = $pre_title;
 								}
-								
+
 								$this -> text = $this -> bullet."<h4><a class='title visit' href='".$res['link']."'>".$pre_title_output.$this -> text."</a></h4>{DETAILS}<div>".$res['pre_summary'];
 							} 
 							elseif (!$endcrop) 
 							{
 								$this -> parsesearch_crop();
 							}
-							
+
 							$output .= $this -> text;
 							$title = FALSE;
 						}

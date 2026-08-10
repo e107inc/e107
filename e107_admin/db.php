@@ -487,7 +487,7 @@ class system_tools
 	{	
 		$sql 		= e107::getDb('new');
 		$mes 		= e107::getMessage();
-		
+
 		$user 		= $_POST['name'];
 		$pass 		= $_POST['password'];
 		$server 	= e107::getMySQLConfig('server'); // $_POST['server'];
@@ -533,32 +533,32 @@ class system_tools
 					return;
 				}
 			}
-			
+
 			if(!$sql->database($database))
 			{
 				$mes->addError(DBLAN_76);
 			}
-					
+
 			$mes->addSuccess(DBLAN_76);
-					
+
 			if($this->multiSiteCreateTables($sql, $prefix))
 			{
 				$coreConfig = e_CORE. "xml/default_install.xml";		
 				$ret = e107::getXml()->e107Import($coreConfig, 'add', true, false, $sql); // Add core pref values
 				$mes->addInfo(print_a($ret,true));
 			}	
-				
+
 		}
 		else
 		{
 			$mes->addSuccess(DBLAN_74);
 		}
-		
+
 		if($error = $sql->getLastErrorText())
 		{
 			$mes->addError($error);
 		}
-			
+
 		//	print_a($_POST);
 
 		
@@ -1028,8 +1028,8 @@ class system_tools
 		}
 
 		return $qry;
-		
-		
+
+
 		/*
 		if(!$result = mysql_query($query))
 		{

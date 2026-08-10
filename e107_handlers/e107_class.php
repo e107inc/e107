@@ -1975,6 +1975,17 @@ class e107
                 "Error message: " .
                 $e->getMessage()
             );
+        } catch (\Exception $e) {
+            // TODO: LAN
+            self::getMessage()->addWarning(
+                "The core integrity image is corrupt. " .
+                "File Inspector will be inoperative. " .
+                "Resolve this issue by uploading a good copy of the core image to " .
+                escapeshellarg($fileInspectorPath) . ". " .
+                "If uploading with FTP, use binary transfer mode. " .
+                "Error message: " .
+                $e->getMessage()
+            );
         }
 
         return $fileInspector;
@@ -5272,14 +5283,14 @@ class e107
 			str_replace(
 				array('ajax_used=1', '&&'),
 				array('', '&'),
-				($_SERVER['QUERY_STRING'] ?? '')
+				(isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '')
 			), '&');
 
 
 		// If url contains a .php in it, PHP_SELF is set wrong (imho), affecting all paths.  We need to 'fix' it if it does.
 		$_SERVER['PHP_SELF'] = (($pos = stripos($_SERVER['PHP_SELF'], '.php')) !== false ? substr($_SERVER['PHP_SELF'], 0, $pos+4) : $_SERVER['PHP_SELF']);
-		$_SERVER['SERVER_NAME'] = $_SERVER['SERVER_NAME'] ?? '';
-		$_SERVER['HTTP_HOST'] = $_SERVER['HTTP_HOST'] ?? '';
+		$_SERVER['SERVER_NAME'] = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '';
+		$_SERVER['HTTP_HOST'] = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
 		// Prefer the client `Host` header so a non-standard port survives into
 		// every URL built from HTTP_HOST (form actions, SITEURL, redirects); a
 		// malformed/crafted Host falls back to SERVER_NAME. See resolveHttpHost().
@@ -6987,7 +6998,7 @@ class e107
 	 * @param array $sqlinfo
 	 * @return void
 	 */
-	private function setMySQLConfig($sqlinfo): void
+	private function setMySQLConfig($sqlinfo)
 	{
 		if(!empty($sqlinfo['server']))
 		{

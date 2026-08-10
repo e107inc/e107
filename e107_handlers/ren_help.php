@@ -31,9 +31,9 @@ function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help")
  */
 function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $helpfunc = "help", $helpsize = '')
 {
-	
+
 	$options = array('trigger' => $addtextfunc );
-	
+
 	return e107::getBB()->renderButtons($mode,'data',$options); // guessing the name of the textarea as 'data' no indicator unfortunately. 
 	
 }

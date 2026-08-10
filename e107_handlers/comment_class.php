@@ -38,13 +38,13 @@ class comment
 	);
 
 	private $template;
-	
+
 	private $totalComments = 0;
-	
+
 	private $moderator = false;
-	
+
 	private $commentsPerPage = 5;
-	
+
 	private $table = null;
 
 	private $engine;
@@ -53,7 +53,7 @@ class comment
 
 	function __construct()
 	{
-		
+
 		if(getperms('B')) // moderator perms. 
 		{
 			$this->moderator = true;	
@@ -66,9 +66,9 @@ class comment
 
 		//TODO - add a pref for comments per page. 
 		// $this->commentsPerPage = pref; 
-				
+
 		global $COMMENTSTYLE;
-			
+
 		if (empty($COMMENTSTYLE) || !deftrue('THEME_LEGACY')) // v2.x
 		{		
 			//require(e107::coreTemplatePath('comment'));	 // using require_once() could cause an empty template if the template is already loaded, for example, by the comment-menu al
@@ -101,9 +101,9 @@ class comment
 				</table>
 				<br />";
 			*/	
-			
+
 			$COMMENT_TEMPLATE['ITEM'] 		= $COMMENTSTYLE;	
-			
+
 			$COMMENT_TEMPLATE['LAYOUT'] 	= "{COMMENTS}{COMMENTFORM}{MODERATE}{COMMENTNAV}";
 			$COMMENT_TEMPLATE['FORM']			= "<table style='width:100%'>
 													{SUBJECT_INPUT}
@@ -112,27 +112,27 @@ class comment
 													{COMMENT_INPUT}
 													{COMMENT_BUTTON}
 												</table>";
-			
+
 			$sc_style['SUBJECT_INPUT']['pre']		= "<tr><td style='width:20%'>".COMLAN_324."</td><td style='width:80%'>";
 			$sc_style['SUBJECT_INPUT']['post']		= "</td></tr>";
-			
+
 			$sc_style['AUTHOR_INPUT']['pre']		= "<tr><td style='width:20%; vertical-align:top;'>".COMLAN_16."</td><td style='width:80%'>";
 			$sc_style['AUTHOR_INPUT']['post']		= "</td></tr>";
-			
+
 			$sc_style['RATE_INPUT']['pre']			= "<tr><td style='width:20%; vertical-align:top;'>".LAN_RATING.":</td><td style='width:80%;'>";
 			$sc_style['RATE_INPUT']['post']			= "</td></tr>";
-			
+
 			$sc_style['COMMENT_INPUT']['pre']		= "<tr><td style='width:20%; vertical-align:top;'>".COMLAN_8.":</td><td id='commentform' style='width:80%;'>";
 			$sc_style['COMMENT_INPUT']['post']		= "</td></tr>";
-			
+
 			$sc_style['COMMENT_BUTTON']['pre']		= "<tr style='vertical-align:top'><td style='width:20%; vertical-align:top;'>&nbsp;</td><td id='commentformbutton' style='width:80%;'>";
 			$sc_style['COMMENT_BUTTON']['post']		= "</td></tr>";
-					
+
 		}	
-		
+
 		$this->template = array_change_key_case($COMMENT_TEMPLATE);
-		
-		
+
+
 	}
 
 
@@ -161,8 +161,8 @@ class comment
 
 		}
 	}
-			
-		
+
+
 
 	/**
 	 * Display the comment editing form
@@ -195,8 +195,8 @@ class comment
 		}
 
 	// 	require_once(e_HANDLER."ren_help.php");
-	
-	
+
+
 		if ($this->getCommentPermissions() == 'rw')
 		{
 			$itemid = $id;
@@ -207,7 +207,7 @@ class comment
 			}
 			//FIXME - e_REQUEST_URI?
 			//e_SELF."?".e_QUERY
-			
+
 			if (vartrue($_GET['comment']) == 'edit')
 			{
 				$eaction = 'edit';
@@ -273,21 +273,21 @@ class comment
 					$rater = new rater;
 				}
 				$rate = $rater->composerating($table, $itemid, $enter = true, USERID, true);
-				
-			
+
+
 			} //end rating area
 			*/
-			
+
 			// -------------------------------------------------------------
-			
+
 			$indent = ($action == 'reply') ? " class='media offset-md-1 col-md-offset-1 offset1' " : " class='media' ";
 			$formid = ($action == 'reply') ? "e-comment-form-reply" : "e-comment-form";
-			
+
 			$text = "\n<div{$indent}>\n".e107::getMessage()->render('postcomment', true, false);//temporary here
-			
+
 		//	$text .= "Indent = ".$indent;
 			$text .= "<form id='{$formid}' method='post' action='".str_replace('http:', '', e_REQUEST_URI)."'  >";
-					
+
 			$data = array(
 				'action'	=> $action,
 				'subject' 	=> $subject,
@@ -303,27 +303,27 @@ class comment
 			$sc->setVars($data);
 			$sc->setMode('edit');
 			$sc->wrapper('comment/form');
-	
+
 			$text .= $tp->parseTemplate($this->template['form'], true, $sc);
-			
+
 			$text .= "\n<div>\n"; // All Hidden Elements. 
-			
+
 			$text .= (varset($action) == "reply" && $pid ? "<input type='hidden' name='pid' value='{$pid}' />" : '');
 			$text .=(isset($eaction) && $eaction == "edit" ? "<input type='hidden' name='editpid' value='{$id}' />" : "");
 			$text .=(isset($content_type) && $content_type ? "<input type='hidden' name='content_type' value='{$content_type}' />" : '');
 		//	$text .= (!$pref['nested_comments']) ? "<input type='hidden' name='subject' value='".$tp->toForm($subject)."'  />\n" : "";
-	
+
 			$text .= "
 			<input type='hidden' name='subject' value='".$tp->toForm($subject)."'  />
 			<input type='hidden' name='e-token' value='".defset('e_TOKEN')."' />
 			<input type='hidden' name='table' value='".$table."' />
 			<input type='hidden' name='itemid' value='".$itemid."' />
-			
+
 			</div>
 			</form>\n";
-			
+
 			$text .= "</div>";
-			
+
 			if ($tablerender)
 			{
 				$text = e107::getRender()->tablerender($caption, $text, '', true);
@@ -393,12 +393,12 @@ class comment
 			$this->totalComments = $this->totalComments - 1;
 			return true;
 		}
-		
+
 		return false;		
 	}
-		
-	
-	
+
+
+
 	/**
 	 * Render a single comment and any nested comments it may have. 
 	 *
@@ -426,19 +426,19 @@ class comment
 
 		//addrating	: boolean, to show rating system in rendered comment
 		global $sc_style, $gen;
-			
+
 		$tp 	= e107::getParser();
 		$sql 	= e107::getDb();
 		$pref 	= e107::getPref();
-		
+
 		if (!empty($pref['comments_disabled']))
 		{
 			return null;
 		}
-				
+
 		global $NEWIMAGE, $USERNAME, $RATING, $datestamp;
 		global $thisaction,$thistable,$thisid,$e107;
-				
+
 		$comrow 		= $row;			
 		$thistable 		= $table;
 		$thisid 		= $id;
@@ -455,30 +455,30 @@ class comment
 		{
 			define("IMAGE_new_comments", (file_exists(THEME."images/new_comments.png") ? "<img src='".THEME_ABS."images/new_comments.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."generic/new_comments.png' alt=''  /> "));
 		}
-		
+
 //		$ns = new e107table;
-		
+
 		if (!$gen || !is_object($gen))
 		{
 			$gen = new convert;
 		}	
-		
+
 		$row['rating_enabled'] = true; // Toggles rating shortcode. //TODO add pref
 
 		$comment_shortcodes = e107::getScBatch('comment');
 		$comment_shortcodes->setVars($row);
 		$comment_shortcodes->wrapper('comment/item');
-		
-		
+
+
 		$COMMENT_TEMPLATE 					= $this->template; 
-		
+
 	//	$COMMENT_TEMPLATE['ITEM_START'] 	= "\n\n<div id='{COMMENT_ITEMID}' class='comment-box clearfix'>\n";
 	//	$COMMENT_TEMPLATE['ITEM_END']		= "\n</div><div class='clear_b'><!-- --></div>\n";
-		
+
 		//XXX Do NOT add to template - too important to allow for modification. 
 		$COMMENT_TEMPLATE['item_start'] 	= "\n\n<li id='{COMMENT_ITEMID}' class='media comment-box d-flex clearfix'>\n";
 		$COMMENT_TEMPLATE['item_end']		= "\n</li>\n";
-		
+
 		if(defset('BOOTSTRAP') === 2 || defset('BOOTSTRAP') === true) // Convert Bootstrap3 to Bootstrap 2 when detected. 
 		{
 			$COMMENT_TEMPLATE['item'] = str_replace("row", "row-fluid", $COMMENT_TEMPLATE['item']);
@@ -499,7 +499,7 @@ class comment
 			}
 			else
 			{
-					
+
 				$renderstyle = $COMMENT_TEMPLATE['item_start'].$COMMENT_TEMPLATE['item'].$COMMENT_TEMPLATE['item_end'];
 
 			}
@@ -524,13 +524,13 @@ class comment
 			$renderstyle = $COMMENT_TEMPLATE['item'];
 		}
 		$highlight_search = FALSE;
-		
-		
+
+
 		if (isset($_POST['highlight_search']))
 		{
 			$highlight_search = true;
 		}
-		
+
 		if (!defined("IMAGE_rank_main_admin_image"))
 		{
 			define("IMAGE_rank_main_admin_image", (isset($pref['rank_main_admin_image']) && $pref['rank_main_admin_image'] && file_exists(THEME."forum/".$pref['rank_main_admin_image']) ? "<img src='".THEME_ABS."forum/".$pref['rank_main_admin_image']."' alt='' />" : "<img src='".e_PLUGIN_ABS."forum/images/lite/main_admin.png' alt='' />"));
@@ -543,11 +543,11 @@ class comment
 		{
 			define("IMAGE_rank_admin_image", (isset($pref['rank_admin_image']) && $pref['rank_admin_image'] && file_exists(THEME."forum/".$pref['rank_admin_image']) ? "<img src='".THEME_ABS."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_PLUGIN_ABS."forum/images/lite/admin.png' alt='' />"));
 		}
-		
-	//	$RATING = ($addrating == true && $comrow['user_id'] ? $rater->composerating($thistable, $thisid, FALSE, $comrow['user_id']) : "");
-		
 
-		
+	//	$RATING = ($addrating == true && $comrow['user_id'] ? $rater->composerating($thistable, $thisid, FALSE, $comrow['user_id']) : "");
+
+
+
 		$text = $tp->parseTemplate($renderstyle, true, $comment_shortcodes);
 
 		if ($action == "comment" && !empty($pref['nested_comments']))
@@ -566,7 +566,7 @@ class comment
 
 				$this->totalComments += count($nested);
 			}
-			
+
 
 		} // End (nested comment handling)
 
@@ -618,7 +618,7 @@ class comment
 		{
 			return;	
 		}
-		
+
 		return e107::getDb()->createQueryBuilder()
 			->update('comments')
 			->set('comment_blocked', 0)
@@ -707,15 +707,15 @@ class comment
 		{
 			return (USER == true && ADMIN == false);
 		}
-		
+
 		return check_class($var);
 	}
-			
-		
-	
-	
-	
-	
+
+
+
+
+
+
 	/**
 	 * Add a comment to an item
 	 * e-token POST value should be always valid when using this method.
@@ -757,7 +757,7 @@ class comment
 		}
 
 
-		
+
 		global $e107,$rater;
 
 		$sql 		= e107::getDb();
@@ -810,7 +810,7 @@ class comment
 		$cuser_id = 0;
 		$cuser_name = 'Anonymous'; // Preset as an anonymous comment
 		$cuser_mail = '';
-		
+
 		$existing = $sql->createQueryBuilder()
 			->from('comments')
 			->where('comment_comment', $comment)
@@ -989,8 +989,8 @@ class comment
 			{
 				return emessage;	
 			}
-			
-			
+
+
 			message_handler("ALERT", emessage);
 		}
 		return false;
@@ -1100,7 +1100,7 @@ class comment
 
 		if(isset($pref['comments_disabled']) && $pref['comments_disabled'] == true)
 		{
-			
+
         	return false;
 		}
 		if (isset($pref['comments_class']))
@@ -1154,7 +1154,7 @@ class comment
 		//rate				: boolean, to show/hide rating system in comment, default false
 		global  $totcc;
 
-		
+
 		$tp = e107::getParser();
 		$ns = e107::getRender();
 		$pref = e107::getPref();
@@ -1211,7 +1211,7 @@ class comment
 			'rate'		=> $rate
 		);
 		$text = $lock = $modcomment ='';
-		
+
 		if($action != 'reply')
 		{
 			$tmp = $this->getComments($table,$id,0,$options); // render all comments;
@@ -1220,17 +1220,17 @@ class comment
 			unset($tmp);
 		}
 		// -------------------------------------------------------
-		
+
 		if($text)
 		{
 			$modcomment = "<div class='comment-options'>";		
 			if($this->totalComments && getperms("B"))
 			{
-					
+
 				//	$modcomment .= "<a href='".e_ADMIN_ABS."modcomment.php?$table.$id'>".COMLAN_314."</a>";
 					$modcomment .= "<a class='btn btn-default btn-secondary btn-mini btn-sm' href='".e_ADMIN_ABS."comment.php?searchquery={$id}&filter_options=comment_type__".$this->getCommentType($table)."'>".COMLAN_314."</a>";
-					
-					
+
+
 			}
 
 			$from = 0;
@@ -1238,7 +1238,7 @@ class comment
 			$modcomment .= "</div>";
 		}	
 	// ---------------------------
-		
+
 		if ($lock != '1')
 		{
 			$comment = $this->form_comment($action, $table, $id, $subject, "", true, $rate, false); // tablerender turned off.
@@ -1278,7 +1278,7 @@ class comment
 		{		
 			if ($tablerender)
 			{
-					
+
 					echo $ns->tablerender("<span id='e-comment-total'>".$this->totalComments."</span> ".LAN_COMMENTS, $TEMPL, 'comment', true);
 			}
 			else
@@ -1298,7 +1298,7 @@ class comment
 			$comment = $ns->tablerender(COMLAN_9, $comment, 'comment', true );
 		}
 
-		
+
 
 		$ret = array();
 		$ret['comment'] = $text;
@@ -1339,11 +1339,11 @@ class comment
 		$sql 		= e107::getDb();
 		$tp 		= e107::getParser();
 		$pref 		= e107::getPref();
-		
+
 		$action 	= varset($att['action']);
 		$subject 	= varset($att['subject']);
 		$rate		= varset($att['rate']);
-			
+
 		$type = $this->getCommentType($table);
 		// $sort is appended raw to ORDER BY; restrict to a known-safe direction.
 		$sort = vartrue($pref['comments_sort'],'desc');
@@ -1367,25 +1367,25 @@ class comment
 			}
 
 		//	$text .= "<ul class='comments'>";
-						
+
 			$width = 0; 	
-			
+
 			foreach ($rows as $row)
 			{
-				
+
 				if($this->isPending($row))
 				{
 				 	continue;	
 				}					
-									
+
 				$lock = $row['comment_lock'];
 
 				$text .= $this->render_comment($row, $table, $action, $id, $width, $tp->toHTML($subject), $rate);
 
 			} // end loop
-			
+
 		//	$text .= "</ul>";
-			
+
 		} // end if
 
 		return array('comments'=> $text,'lock'=> $lock);
@@ -1469,7 +1469,7 @@ class comment
 			return "<a class='e-ajax btn btn-default btn-secondary btn-mini btn-sm {$navid}' href='#' data-nav-id='{$navid}' data-nav-total='{$this->totalComments}' data-nav-dir='down' data-nav-inc='{$this->commentsPerPage}' data-target='{$target}' data-src='{$prev}'>" . LAN_PREVIOUS . "</a>
 			<a class='e-ajax btn btn-default btn-secondary btn-mini btn-sm {$navid}' href='#' data-nav-id='{$navid}' data-nav-total='{$this->totalComments}' data-nav-dir='up' data-nav-inc='{$this->commentsPerPage}' data-target='{$target}' data-src='{$next}'>" . LAN_NEXT . "</a>";
 		}
-		
+
 	}
 
 
@@ -1529,7 +1529,7 @@ class comment
 			$type 	= $this->getCommentType($table);
 			$type 	= $tp->toDB($type, true);
 			$id 	= intval($id);
-			
+
 			$author_list = $this->get_author_list($id, $type);
 			$num_deleted = $sql->createQueryBuilder()
 				->delete('comments')
@@ -1538,7 +1538,7 @@ class comment
 				->execute();
 
 			$this->recalc_user_comments($author_list);
-			
+
 			return $num_deleted;
 		}
 
@@ -1602,7 +1602,7 @@ class comment
 						}
 					}
 				}
-				
+
 				e107::setRegistry('e_comment', $data);
 				return $data;
 			}

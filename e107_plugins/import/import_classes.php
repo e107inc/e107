@@ -544,7 +544,7 @@ class base_import_class
 	  $bbphpbb = (strpos($options,'phpbb') !== FALSE) ? TRUE : FALSE;		// Strip values as phpbb
 	  $nextchar = 0;
 	  $loopcount = 0;
-	 
+
 	  while ($nextchar < strlen($value))
 	  {
 	    $firstbit = '';

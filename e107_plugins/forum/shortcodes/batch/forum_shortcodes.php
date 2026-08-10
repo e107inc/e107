@@ -631,7 +631,7 @@ class forum_shortcodes extends e_shortcode
 
 		$datestamp = !empty($this->var['thread_lastpost']) ? $this->gen->convert_date($this->var['thread_lastpost'], 'forum') : '';
 
-  
+
 		if(!empty($this->var['user_name']))
 		{
 			return $author_name.'<br />'.$datestamp;
