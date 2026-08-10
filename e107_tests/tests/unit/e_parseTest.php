@@ -2389,7 +2389,7 @@ EXPECTED;
 				'input'    => array('user_image' => '-upload-avatartest.png'),
 				'parms'    => array('w' => 50, 'h' => 50, 'crop' => false),
 				'expected' => array(
-					"thumb.php?src=%7Be_AVATAR%7Dupload%2Favatartest.png&amp;w=50&amp;h=50",
+					"thumb.php?src=e_AVATAR%2Fupload%2Favatartest.png&amp;w=50&amp;h=50",
 					"class='img-rounded rounded user-avatar'"
 				)
 			),
@@ -2397,7 +2397,7 @@ EXPECTED;
 				'input'    => array('user_image' => 'avatartest.png'),
 				'parms'    => array('w' => 50, 'h' => 50, 'crop' => false),
 				'expected' => array(
-					"thumb.php?src=%7Be_AVATAR%7Ddefault%2Favatartest.png&amp;w=50&amp;h=50",
+					"thumb.php?src=e_AVATAR%2Fdefault%2Favatartest.png&amp;w=50&amp;h=50",
 					"class='img-rounded rounded user-avatar'"
 				)
 			),
@@ -2405,7 +2405,7 @@ EXPECTED;
 				'input'    => array('user_image' => ''),
 				'parms'    => array('w' => 50, 'h' => 50, 'crop' => false),
 				'expected' => array(
-					"thumb.php?src=%7Be_IMAGE%7Dgeneric%2Fblank_avatar.jpg&amp;w=50&amp;h=50",
+					"thumb.php?src=e_IMAGE%2Fgeneric%2Fblank_avatar.jpg&amp;w=50&amp;h=50",
 					"class='img-rounded rounded user-avatar'"
 				)
 			),
@@ -2422,7 +2422,7 @@ EXPECTED;
 				'input'    => array('user_image' => '', 'user_id' => 1),
 				'parms'    => array('w' => 50, 'h' => 50, 'crop' => false, 'link' => true),
 				'expected' => array(
-					"thumb.php?src=%7Be_IMAGE%7Dgeneric%2Fblank_avatar.jpg&amp;w=50&amp;h=50",
+					"thumb.php?src=e_IMAGE%2Fgeneric%2Fblank_avatar.jpg&amp;w=50&amp;h=50",
 					"class='img-rounded rounded user-avatar'",
 					"<a class='e-tip' title=",
 					e107::getUrl()->create('user/myprofile/edit')
@@ -2432,7 +2432,7 @@ EXPECTED;
 				'input'    => array('user_image' => 'avatartest.png'),
 				'parms'    => array('w' => 30, 'h' => 20, 'crop' => true, 'shape' => 'rounded'),
 				'expected' => array(
-					"thumb.php?src=%7Be_AVATAR%7Ddefault%2Favatartest.png&amp;aw=30&amp;ah=20",
+					"thumb.php?src=e_AVATAR%2Fdefault%2Favatartest.png&amp;aw=30&amp;ah=20",
 					"class='img-rounded user-avatar'"
 				)
 			),
@@ -2440,7 +2440,7 @@ EXPECTED;
 				'input'    => array('user_image' => 'avatartest.png'),
 				'parms'    => array('w' => 30, 'h' => 30, 'crop' => false, 'shape' => 'circle', 'alt' => 'mytitle'),
 				'expected' => array(
-					"thumb.php?src=%7Be_AVATAR%7Ddefault%2Favatartest.png&amp;w=30&amp;h=30",
+					"thumb.php?src=e_AVATAR%2Fdefault%2Favatartest.png&amp;w=30&amp;h=30",
 					"class='img-circle rounded-circle user-avatar'",
 					'alt="mytitle"',
 				)
