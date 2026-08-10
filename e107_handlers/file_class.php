@@ -3206,7 +3206,10 @@ class e_file
 			unlink(e_TEMP . $localfile);
 		}
 
-		$result = $this->getRemoteFile($remotefile, $localfile);
+		// One budget covers the whole transfer, and these archives run to tens of
+		// megabytes, so the 40 second default asks for a sustained rate a home
+		// connection does not always have. 120 is what outboundTimeout() allows.
+		$result = $this->getRemoteFile($remotefile, $localfile, 'temp', 120);
 
 		if($result === false)
 		{
