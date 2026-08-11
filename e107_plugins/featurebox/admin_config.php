@@ -201,7 +201,7 @@ class fb_category_ui extends e_admin_ui
 			$msg = e107::getMessage();
 			$msg->addError('Layout <strong>'.vartrue($templates[$new_data['fb_category_template']], 'n/a').'</strong> is in use by another category. Layout should be unique per category. ');
 			$msg->addError($mod == 'create' ? LAN_CREATED_FAILED : LAN_UPDATED_FAILED);
-			
+
 			return (!E107_DEBUG_LEVEL); // suppress messages (TRUE) only when not in debug mod
 		}
 		return false;

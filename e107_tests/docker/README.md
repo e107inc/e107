@@ -115,10 +115,12 @@ are throwaway test containers), picks version-appropriate gd/xdebug builds,
 and installs the same Composer bootstrap, which auto-selects Composer 2.2 LTS
 on old PHP.
 
-Note that current `master` needs PHP 8 for its test dependencies, so legacy
-containers are for `release/v2.3.x` worktrees and grafted old tags. On a tree
-whose composer constraints can't resolve on the container's PHP, `install`
-surfaces composer's error untouched.
+`master`'s `e107_tests/composer.json` carries union constraints (for example
+`codeception/codeception: "^4.2 || >=5.0.11"`), so legacy containers resolve a
+working dependency set on this branch too: see "Which PHP resolves what"
+below. Grafted old tags and `release/v2.3.x` worktrees bring their own
+constraints; on a tree whose constraints can't resolve on the container's
+PHP, `install` surfaces composer's error untouched.
 
 ## Dependencies: per-env vendor, no lock churn
 
@@ -138,6 +140,25 @@ switches, PHP changes) and reinstalls automatically.
 The worktree's own `e107_tests/vendor/` directory is yours: the harness
 neither writes nor reads it. If you want IDE autocompletion for Codeception,
 run `composer install` in `e107_tests/` on the host yourself.
+
+### Which PHP resolves what
+
+`composer.json` uses union constraints because one file has to serve every
+cell in the PHP 5.6-8.5 matrix, and composer picks the highest branch the
+running PHP can satisfy (JSON can't carry comments, so the rationale lives
+here):
+
+- PHP 8.4+: the committed `composer.lock` applies as-is (`composer install`,
+  CI parity).
+- PHP 8.1-8.3: the lock's PHPUnit pin wants 8.4, so the fallback
+  `composer update` resolves Codeception 5.x fresh.
+- PHP 5.6 / 7.0: the fallback resolves Codeception 4.2 with the 1.x modules
+  and Twig 1.x; Codeception's phpunit-wrapper then selects PHPUnit 5.7 (on
+  5.6) or 6.5 (on 7.0) by itself.
+
+There is deliberately no `behat/gherkin` cap: gherkin >=4.13 requires PHP
+8.1, so legacy cells can never reach the release that breaks Codeception
+4.x's loader, and modern cells run Codeception 5.x, which is fine with it.
 
 ### Bumping the canon composer.lock
 

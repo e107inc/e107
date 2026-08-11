@@ -9,7 +9,7 @@
  */
 
 
-class e_jsmanagerTest extends \Codeception\Test\Unit
+class e_jsmanagerTest extends \Test\Unit
 {
 
 	/** @var e_jsmanager */

@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 namespace ParagonIE\ConstantTime;
 
 use Override;
@@ -53,9 +52,8 @@ abstract class Hex implements EncoderInterface
      */
     #[Override]
     public static function encode(
-        #[SensitiveParameter]
-        string $binString
-    ): string {
+        $binString
+    ) {
         if (extension_loaded('sodium')) {
             try {
                 return sodium_bin2hex($binString);
@@ -89,9 +87,8 @@ abstract class Hex implements EncoderInterface
      * @throws TypeError
      */
     public static function encodeUpper(
-        #[SensitiveParameter]
-        string $binString
-    ): string {
+        $binString
+    ) {
         $hex = '';
         $len = strlen($binString);
 
@@ -121,10 +118,9 @@ abstract class Hex implements EncoderInterface
      */
     #[Override]
     public static function decode(
-        #[SensitiveParameter]
-        string $encodedString,
-        bool $strictPadding = false
-    ): string {
+        $encodedString,
+        $strictPadding = false
+    ) {
         if (extension_loaded('sodium') && $strictPadding) {
             try {
                 return sodium_hex2bin($encodedString);

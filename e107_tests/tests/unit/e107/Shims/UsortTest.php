@@ -10,7 +10,7 @@
 
 namespace e107\Shims;
 
-class UsortTest extends \Codeception\Test\Unit
+class UsortTest extends \Test\Unit
 {
 	public function testUsortDefault()
 	{

@@ -12,8 +12,9 @@
  * takes the hit path.
  */
 
-class user_shortcodesTest extends \Codeception\Test\Unit
+class user_shortcodesTest extends \Test\Unit
 {
+
 	/** @var user_shortcodes */
 	private $sc;
 

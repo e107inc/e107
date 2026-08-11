@@ -25,7 +25,7 @@ use RuntimeException;
 	 * identifiers and "structured value object or vouched fragment, never a bare
 	 * string" - plus byte-exact SQL skeletons for each verb.
 	 */
-	class SchemaBuilderTest extends \Codeception\Test\Unit
+	class SchemaBuilderTest extends \Test\Unit
 	{
 
 		protected function _before()
@@ -70,7 +70,7 @@ use RuntimeException;
 		{
 			$schema = $this->makeSchema($stub);
 			$schema->addColumn('user_extended', 'user_twitter',
-				Column::define('VARCHAR', 255)->notNull()->default(''));
+				Column::define('VARCHAR', 255)->notNull()->defaultValue(''));
 
 			$this->assertEquals(
 				"ALTER TABLE `e107_user_extended` ADD COLUMN `user_twitter` VARCHAR(255) NOT NULL DEFAULT ''",
@@ -82,7 +82,7 @@ use RuntimeException;
 		{
 			$schema = $this->makeSchema($stub);
 			$schema->addColumn('comments', 'comment_author_id',
-				Column::define('INT', 10)->unsigned()->notNull()->default('0'),
+				Column::define('INT', 10)->unsigned()->notNull()->defaultValue('0'),
 				'comment_author');
 
 			$this->assertEquals(
@@ -140,7 +140,7 @@ use RuntimeException;
 		{
 			$schema = $this->makeSchema($stub);
 			$schema->modifyColumn('pm_messages', 'pm_subject',
-				Column::define('VARCHAR', 45)->notNull()->default(''));
+				Column::define('VARCHAR', 45)->notNull()->defaultValue(''));
 
 			$this->assertEquals(
 				"ALTER TABLE `e107_pm_messages` MODIFY COLUMN `pm_subject` VARCHAR(45) NOT NULL DEFAULT ''",
@@ -177,8 +177,8 @@ use RuntimeException;
 		{
 			$schema = $this->makeSchema($stub);
 			$schema->table('comments')
-				->addColumn('comment_author_id', Column::define('INT', 10)->unsigned()->notNull()->default('0'), 'comment_author')
-				->addColumn('comment_author_name', Column::define('VARCHAR', 100)->notNull()->default(''), 'comment_author_id')
+				->addColumn('comment_author_id', Column::define('INT', 10)->unsigned()->notNull()->defaultValue('0'), 'comment_author')
+				->addColumn('comment_author_name', Column::define('VARCHAR', 100)->notNull()->defaultValue(''), 'comment_author_id')
 				->execute();
 
 			$this->assertEquals(
@@ -339,7 +339,7 @@ use RuntimeException;
 			$schema->createTable('foo',
 				array(
 					'foo_id'   => Column::define('INT', 10)->unsigned()->notNull()->autoIncrement(),
-					'foo_name' => Column::define('VARCHAR', 100)->notNull()->default(''),
+					'foo_name' => Column::define('VARCHAR', 100)->notNull()->defaultValue(''),
 				),
 				array(
 					Index::primary('foo_id'),
@@ -594,7 +594,7 @@ use RuntimeException;
 		public function testColumnRendersAllPieces()
 		{
 			$col = Column::define('INT', 10)->unsigned()->zerofill()->notNull()
-				->default(0)->autoIncrement()->comment("it's fine");
+				->defaultValue(0)->autoIncrement()->comment("it's fine");
 
 			$this->assertEquals(
 				"INT(10) UNSIGNED ZEROFILL NOT NULL DEFAULT 0 AUTO_INCREMENT COMMENT 'it''s fine'",
@@ -604,14 +604,14 @@ use RuntimeException;
 
 		public function testColumnDefaultNull()
 		{
-			$col = Column::define('VARCHAR', 255)->nullable()->default(null);
+			$col = Column::define('VARCHAR', 255)->nullable()->defaultValue(null);
 
 			$this->assertEquals("VARCHAR(255) NULL DEFAULT NULL", $col->getDefinition());
 		}
 
 		public function testColumnStringDefaultIsEscaped()
 		{
-			$col = Column::define('VARCHAR', 50)->notNull()->default("a'b\\c");
+			$col = Column::define('VARCHAR', 50)->notNull()->defaultValue("a'b\\c");
 
 			$this->assertEquals("VARCHAR(50) NOT NULL DEFAULT 'a''b\\\\c'", $col->getDefinition());
 		}

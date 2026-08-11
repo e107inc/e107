@@ -175,7 +175,11 @@ class core_news_url extends eUrlConfig
 		return $url;
 	}
 	
-	public function parse($pathInfo, $params = array(), eRequest|null $request = null, eRouter|null $router = null, $config = array())
+	/**
+     * @param \eRequest|null $request
+     * @param \eRouter|null $router
+     */
+    public function parse($pathInfo, $params = array(), $request = null, $router = null, $config = array())
 	{
 		// this config doesn't support parsing, it's done by the module entry script (news.php)
 		// this means News are not available via single entry point if this config is currently active

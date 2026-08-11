@@ -19,8 +19,9 @@
  * These tests read the shipped SQL rather than a fixture: the point is that the
  * helper agrees with what e107 really ships, and a fixture could drift.
  */
-class helperAcceptanceTest extends \Codeception\Test\Unit
+class helperAcceptanceTest extends \Test\Unit
 {
+
 	/**
 	 * Every CREATE TABLE in the file must come back, whatever trails the engine.
 	 */

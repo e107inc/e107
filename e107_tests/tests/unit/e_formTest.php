@@ -9,8 +9,9 @@
  */
 
 
-class e_formTest extends \Codeception\Test\Unit
+class e_formTest extends \Test\Unit
 {
+
 	/** @var e_form */
 	protected $_frm;
 

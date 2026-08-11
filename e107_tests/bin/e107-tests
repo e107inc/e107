@@ -869,6 +869,10 @@ cmd_run() {
 
 # Replay CI's unit coverage run exactly (test-unit.yml), so base-image drift
 # like a changed default memory_limit reproduces on demand.
+#
+# Trailing args go to `codecept`, so a workflow's own extras -- the legacy
+# matrix cells' --skip-group, say -- can be replayed too. No --no-colors
+# handling: CI parity means the colours exactly as CI gets them.
 cmd_ci_unit() {
     resolve_env
     if [ "$(project_label "$PROJECT" xdebug)" != yes ]; then
@@ -878,7 +882,7 @@ cmd_ci_unit() {
     deps_ensure
     compose_p exec -w "$WEB_TESTS_DIR" web \
         php -d memory_limit=-1 -d xdebug.mode=coverage -d register_argc_argv=1 \
-        ./vendor/bin/codecept run unit --steps --debug --coverage --coverage-xml
+        ./vendor/bin/codecept run unit --steps --debug --coverage --coverage-xml "$@"
 }
 
 cmd_reset() {
@@ -1208,14 +1212,19 @@ TEST:
                                      Extra args are passed through to `codecept`.
                                      Add --steps to trace every step; a failing
                                      test prints its own trace either way.
-  ci-unit                            Replay CI's exact unit coverage run
+  ci-unit [args...]                  Replay CI's exact unit coverage run
                                      (needs an env built with `up --xdebug`).
+                                     Extra args are passed through to
+                                     `codecept`, as with `run`, so an --env
+                                     after the subcommand is codecept's
+                                     environment selector, not this script's.
 
   Examples:
     e107-tests run unit
     e107-tests run unit tests/unit/ConstantsTest.php
     e107-tests run acceptance tests/acceptance/0000_InstallCest.php
     e107-tests run acceptance --steps
+    e107-tests ci-unit --skip-group runs-in-separate-process
     e107-tests sql "SELECT * FROM e107_user"
 
 VERSIONS:

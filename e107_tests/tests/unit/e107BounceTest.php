@@ -9,7 +9,7 @@
 	 */
 
 
-	class e107BounceTest extends \Codeception\Test\Unit
+	class e107BounceTest extends \Test\Unit
 	{
 
 		/** @var e107Bounce */

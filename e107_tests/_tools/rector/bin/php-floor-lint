@@ -1,0 +1,128 @@
+#!/usr/bin/env bash
+#
+# php-floor-lint: parse every shipping PHP file on the oldest PHP e107 supports.
+#
+# The committed tree is PHP 5.6 source (bin/rector-downgrade puts it there), and
+# the only thing that proves it still is, is handing it to a 5.6 parser. `php -l`
+# is enough for that: syntax the floor does not have is a parse error there and
+# nowhere else, and a parse error is a white screen on a live site rather than a
+# failing test, because it kills the file before any test can reach into it.
+#
+# The file set is `git ls-files`, because the tracked set IS the shipping set.
+# That deliberately covers e107_handlers/vendor and e107_plugins/*/vendor too: a
+# dependency ships in the release archive exactly as it was committed, so its
+# syntax is e107's problem and not upstream's. Paths that are tooling rather
+# than product -- never loaded by a running site -- are listed in
+# ../modern-paths.txt and skipped.
+#
+# Usage:
+#   e107_tests/_tools/rector/bin/php-floor-lint
+#
+# Env:
+#   FLOOR_PHP   version to lint against, as the php:<version>-cli tag (default 5.6)
+#
+set -euo pipefail
+
+TOOL_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)" # bin -> rector
+EXCLUDE_FILE="$TOOL_DIR/modern-paths.txt"
+FLOOR_PHP="${FLOOR_PHP:-5.6}"
+IMAGE="php:${FLOOR_PHP}-cli"
+
+command -v docker >/dev/null 2>&1 \
+    || { echo "php-floor-lint: docker is required to run PHP $FLOOR_PHP." >&2; exit 1; }
+
+REPO_ROOT="$(git -C "$TOOL_DIR" rev-parse --show-toplevel)"
+cd "$REPO_ROOT"
+
+# modern-paths.txt is one repo-relative path prefix per line; blank lines and
+# lines starting with `#` are comments. A missing file is not an error: the
+# exclusions only ever subtract from the sweep, so linting everything is the
+# safe reading, and saying so beats silently widening the gate.
+prefixes=()
+if [ -f "$EXCLUDE_FILE" ]; then
+    while IFS= read -r line || [ -n "$line" ]; do
+        line="${line#"${line%%[![:space:]]*}"}" # trim leading whitespace
+        line="${line%"${line##*[![:space:]]}"}" # trim trailing whitespace
+        case $line in
+            ''|'#'*) continue ;;
+        esac
+        prefixes+=("$line")
+    done < "$EXCLUDE_FILE"
+else
+    echo "php-floor-lint: no ${EXCLUDE_FILE#"$REPO_ROOT/"}; linting every tracked PHP file." >&2
+fi
+
+files=()
+while IFS= read -r -d '' file; do
+    skip=no
+    for prefix in ${prefixes[@]+"${prefixes[@]}"}; do
+        case $file in
+            "$prefix"*) skip=yes; break ;;
+        esac
+    done
+    if [ "$skip" = no ]; then
+        files+=("$file")
+    fi
+done < <(git ls-files -z -- '*.php')
+
+if [ "${#files[@]}" -eq 0 ]; then
+    echo "php-floor-lint: no tracked PHP files to lint." >&2
+    exit 1
+fi
+
+# One `php -l -n` per file, but one container for the whole sweep: starting a
+# container per file would cost far more than the parsing does. -n skips
+# php.ini, so the verdict depends on the language version alone and not on
+# whatever the image happens to enable.
+#
+# The per-batch loop is what keeps the sweep going: `php -l` exits 255 on a
+# parse error, and xargs abandons the run on a 255. Normalising that to 1 lets
+# xargs report "some batch failed" (123) at the end while still linting every
+# file, so one bad file does not hide the rest.
+lint_batch='
+rc=0
+for file in "$@"; do
+    if ! error="$(php -l -n "$file" 2>&1)"; then
+        rc=1
+        printf "FAIL %s\n" "$file"
+        printf "%s\n" "$error" | sed "s/^/      /"
+    fi
+done
+exit $rc
+'
+
+log="$(mktemp)"
+trap 'rm -f "$log"' EXIT
+
+printf 'php-floor-lint: parsing %d tracked PHP file(s) with %s\n' "${#files[@]}" "$IMAGE"
+
+set +e
+printf '%s\0' "${files[@]}" \
+    | docker run --rm -i \
+        -v "$PWD":/src:ro -w /src \
+        -e LINT_BATCH="$lint_batch" \
+        "$IMAGE" \
+        sh -c 'exec xargs -0 -n 100 sh -c "$LINT_BATCH" php-floor-lint' \
+    | tee "$log"
+docker_status=${PIPESTATUS[1]}
+set -e
+
+failed="$(grep -c '^FAIL ' "$log" || true)"
+
+if [ "$failed" -gt 0 ]; then
+    printf '\nphp-floor-lint: %d of %d file(s) do not parse on PHP %s.\n' \
+        "$failed" "${#files[@]}" "$FLOOR_PHP" >&2
+    echo "The committed tree has to be PHP $FLOOR_PHP source. Run" >&2
+    echo "  e107_tests/_tools/rector/bin/rector-downgrade" >&2
+    echo "locally and commit the result." >&2
+    exit 1
+fi
+
+# No failures reported and the container still came back unhappy: the sweep
+# itself broke (image pull, mount, OOM), which is not a pass.
+if [ "$docker_status" -ne 0 ]; then
+    echo "php-floor-lint: the lint could not be completed (exit $docker_status)." >&2
+    exit 1
+fi
+
+printf 'php-floor-lint: %d files OK on PHP %s.\n' "${#files[@]}" "$FLOOR_PHP"

@@ -9,8 +9,9 @@
  */
 
 
-class e_parseTest extends \Codeception\Test\Unit
+class e_parseTest extends \Test\Unit
 {
+
 	/** @var e_parse */
 	private $tp;
 

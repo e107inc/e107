@@ -16,7 +16,7 @@
  * RCE. These tests pin the codec's behaviour: JSON in, arrays/scalars out,
  * objects impossible.
  */
-class installStateTest extends \Codeception\Test\Unit
+class installStateTest extends \Test\Unit
 {
 	protected function _before()
 	{

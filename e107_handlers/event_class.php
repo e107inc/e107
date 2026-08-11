@@ -238,7 +238,7 @@ class e107_event
 
 						if (strpos($method, '::') !== false)    // If $method contains "::", call it statically
 						{
-						    [$staticClass, $staticMethod] = explode('::', $method, 2);
+						    list($staticClass, $staticMethod) = explode('::', $method, 2);
 						    $ret = $staticClass::$staticMethod($data, $eventname);
 						}
 						elseif(is_callable([$class, $method]))
@@ -263,7 +263,12 @@ class e107_event
 						e107::getLog()->add('Event Trigger failed',$logError,E_LOG_WARNING,'EVENT_01');
 						trigger_error('Event Trigger failed: '.print_r($logError,true), E_USER_WARNING);
 						continue;
-					}
+					} catch (\Exception $e) {
+                        $logError = array('name'=>$eventname,'location'=>$location,'class'=>$class,'method'=>$method,'error'=>$e);
+                        e107::getLog()->add('Event Trigger failed',$logError,E_LOG_WARNING,'EVENT_01');
+                        trigger_error('Event Trigger failed: '.print_r($logError,true), E_USER_WARNING);
+                        continue;
+                    }
 				}
 				elseif (function_exists($evt_func))
 				{
@@ -282,7 +287,7 @@ class e107_event
 				
 			}
 		}
-		return ($ret ?? false);
+		return (isset($ret) ? $ret : false);
 	}
 
 	/**

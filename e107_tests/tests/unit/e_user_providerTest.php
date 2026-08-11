@@ -9,7 +9,7 @@
  */
 
 
-class e_user_providerTest extends \Codeception\Test\Unit
+class e_user_providerTest extends \Test\Unit
 {
 
 	/** @var e_user_provider */

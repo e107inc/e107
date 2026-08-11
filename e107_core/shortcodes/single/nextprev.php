@@ -457,7 +457,7 @@ function nextprev_shortcode($parm = null)
 
 		while(substr($url, -1) == '.')
 		{
-			$url=substr($url, 0, -1);
+			$url=(string) substr($url, 0, -1);
 		}
 
 	}

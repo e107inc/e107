@@ -17,7 +17,7 @@ namespace e107\Security\Jwe;
  * reached by anonymous visitors on the CAPTCHA image endpoint, so an
  * exception here is a 500 that anybody can trigger with a query string.
  */
-class CompactTest extends \Codeception\Test\Unit
+class CompactTest extends \Test\Unit
 {
 	/**
 	 * @var array
@@ -99,7 +99,7 @@ class CompactTest extends \Codeception\Test\Unit
 		$this->assertSame($iv, $parsed['iv']);
 		$this->assertSame($ciphertext, $parsed['ciphertext']);
 		$this->assertSame($tag, $parsed['tag']);
-		$this->assertSame(substr($token, 0, strpos($token, '.')), $parsed['aad'], 'the aad is the header part');
+		$this->assertSame((string) substr($token, 0, strpos($token, '.')), $parsed['aad'], 'the aad is the header part');
 	}
 
 	/**

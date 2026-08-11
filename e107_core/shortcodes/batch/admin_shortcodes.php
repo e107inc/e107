@@ -36,7 +36,7 @@ class admin_shortcodes extends e_shortcode
             {	//TODO LANVARS
 				$text = ADLAN_122.'  v'.$cacheData.'</a>.
 					<a class="btn btn-success" href="'.$installUrl.'">'.ADLAN_121.'</a>'; //Install
-				
+
 				$mes->addInfo($text);
 				return null; //  $mes->render();
 			}

@@ -8,8 +8,9 @@
  *
  */
 
-class social_setupTest extends \Codeception\Test\Unit
+class social_setupTest extends \Test\Unit
 {
+
 	public function _before()
 	{
 		include_once(e_PLUGIN . "social/includes/social_login_config.php");

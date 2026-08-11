@@ -56,10 +56,10 @@ if(isset($_E107['cli'], $_SERVER["HTTP_USER_AGENT"]) && !isset($_E107['debug']))
 	exit();
 }
 
-if (PHP_MAJOR_VERSION < 8)
+if (version_compare(PHP_VERSION, '5.6', '<'))
 {
 	echo "Configuration Error. Check error log for details.";
-    error_log('PHP 8 or higher is required. Current version: ' . PHP_VERSION);
+    error_log('PHP 5.6 or higher is required. Current version: ' . PHP_VERSION);
     exit();
 }
 
@@ -229,7 +229,7 @@ else // New e107_config.php format. v2.4+
 {
 	$e107_paths = $config['paths'];
 	$sql_info = $config['database'];
-	$E107_CONFIG = $config['other'] ?? [];
+	$E107_CONFIG = isset($config['other']) ? $config['other'] : [];
 
 	if(isset($sql_info['defaultdb']))
 	{
@@ -477,7 +477,7 @@ if(!empty($pref['redirectsiteurl']) && !empty($pref['siteurl'])) {
 
 	if(isset($pref['multilanguage_subdomain']) && $pref['multilanguage_subdomain'])
 	{
-   		if(substr(e_REQUEST_URL, 7, 4) === 'www.' || substr(e_REQUEST_URL, 8, 4) === 'www.')
+   		if((string) substr(e_REQUEST_URL, 7, 4) === 'www.' || (string) substr(e_REQUEST_URL, 8, 4) === 'www.')
 		{
 			$self = e_REQUEST_URL;
 			//if(e_QUERY){ $self .= '?'.e_QUERY; }
@@ -1215,9 +1215,9 @@ function check_email($email)
 	{
 		return $email;	
 	}
-	
+
 	return false; 
-	
+
 	// return preg_match("/^([_a-zA-Z0-9-+]+)(\.[_a-zA-Z0-9-]+)*@([a-zA-Z0-9-]+)(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,6})$/" , $email) ? $email : false;
 }
 
@@ -1272,7 +1272,7 @@ function check_class($var, $userclass = null, $uid = 0)
 			if ($v[0] === '-')
 			{
 				$invert = true;
-				$v = substr($v, 1);
+				$v = (string) substr($v, 1);
 			}
 			$v = $e107->user_class->ucGetClassIDFromName($v);
 		}

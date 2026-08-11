@@ -1,7 +1,7 @@
 <?php
 
 
-	class e_prefTest extends \Codeception\Test\Unit
+	class e_prefTest extends \Test\Unit
 	{
 
 		/** @var e_pref */

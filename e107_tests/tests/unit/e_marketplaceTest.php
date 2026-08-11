@@ -9,7 +9,7 @@
 	 */
 
 
-	class e_marketplaceTest extends \Codeception\Test\Unit
+	class e_marketplaceTest extends \Test\Unit
 	{
 		/** @var e_marketplace */
 		private $mp;

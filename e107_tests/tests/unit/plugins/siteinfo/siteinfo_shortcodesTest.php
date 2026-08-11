@@ -4,7 +4,7 @@
 /**
  * @group plugins
  */
-class siteinfo_shortcodesTest extends \Codeception\Test\Unit
+class siteinfo_shortcodesTest extends \Test\Unit
 {
 
 	/** @var siteinfo_shortcodes */

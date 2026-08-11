@@ -108,7 +108,7 @@ class OAuthUtil
                     // this is chaos, basically it is just there to capitalize the first
                     // letter of every word that is not an initial HTTP and strip HTTP
                     // code from przemek
-                    $key       = str_replace(" ", "-", ucwords(strtolower(str_replace("_", " ", substr($key, 5)))));
+                    $key       = str_replace(" ", "-", ucwords(strtolower(str_replace("_", " ", (string) substr($key, 5)))));
                     $out[$key] = $value;
                 }
             }

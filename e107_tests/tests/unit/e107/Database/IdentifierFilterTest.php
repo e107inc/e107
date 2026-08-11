@@ -10,7 +10,7 @@
 
 namespace e107\Database;
 
-	class IdentifierFilterTest extends \Codeception\Test\Unit
+	class IdentifierFilterTest extends \Test\Unit
 	{
 
 		protected function _before()

@@ -19,8 +19,9 @@
  * subprocess, the way e_fileOutboundRequestTest drives class2.php, so nothing
  * the front page touches is left behind in this one.
  */
-class forumSubForumGuardTest extends \Codeception\Test\Unit
+class forumSubForumGuardTest extends \Test\Unit
 {
+
 	const MARKER = 'e107help sub-forum guard probe';
 
 	/** @var bool whether this test installed the forum plugin for its tables */

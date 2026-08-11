@@ -1,7 +1,7 @@
 <?php
 
 
-class page_sitelinkTest extends \Codeception\Test\Unit
+class page_sitelinkTest extends \Test\Unit
 {
 
 	/** @var page_sitelink */

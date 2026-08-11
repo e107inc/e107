@@ -18,7 +18,7 @@
  * the file's scope; without a per-file capture, whichever flavour loads
  * second caches array() and every later lookup on it returns false.
  */
-class e107TemplateSourceTest extends \Codeception\Test\Unit
+class e107TemplateSourceTest extends \Test\Unit
 {
 	public function testGetCoreTemplateOverrideThenPlain()
 	{

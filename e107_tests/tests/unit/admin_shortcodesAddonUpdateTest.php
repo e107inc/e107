@@ -24,8 +24,9 @@
  * All three sinks in that file take double-quoted attributes or element text,
  * so the payloads here carry a double quote and an angle bracket respectively.
  */
-class admin_shortcodesAddonUpdateTest extends \Codeception\Test\Unit
+class admin_shortcodesAddonUpdateTest extends \Test\Unit
 {
+
 	/** @var admin_shortcodes */
 	private $sc;
 

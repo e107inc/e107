@@ -813,7 +813,7 @@ class mailout_main_ui extends e_admin_ui
 				->select('*')->from('mail_content')
 				->where('mail_source_id', (int) $id)->setMaxResults(1)
 				->fetchRow();
-			
+
 			$shortcodes = array(
 				'USERNAME'          => 'John Example',
 			    'DISPLAYNAME'       => 'John Example',
@@ -839,9 +839,9 @@ class mailout_main_ui extends e_admin_ui
 				$shortcodes['MAILREF'] =  intval($_GET['id']);
 			}
 
-						
+
 			$data = $this->mailAdmin->dbToMail($mailData);
-	
+
 			$eml = array(
 				'subject'		=> $data['mail_subject'],
 				'body' 			=> $data['mail_body'],
@@ -849,7 +849,7 @@ class mailout_main_ui extends e_admin_ui
 				'shortcodes'	=> $shortcodes,
 				'media'			=> $data['mail_media'],
 			);
-			
+
 		//	return print_a($data,true);
 		}
 		else
@@ -1145,11 +1145,11 @@ class mailout_main_ui extends e_admin_ui
 		{
 			return;
 		}
-		
+
 		$mes = e107::getMessage();
 		$ns = e107::getRender();
 		$frm = e107::getForm();
-		
+
 		$text = "
 				<form action='".e_SELF."?mode=maint' id='email_maint' method='post'>
 				<fieldset id='email-maint'>
@@ -1158,17 +1158,17 @@ class mailout_main_ui extends e_admin_ui
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>
-				
+
 				<tbody>";
 
 		$text .= "<tr><td>".LAN_MAILOUT_182."</td><td>
-		
+
 		".$frm->admin_button('email_dross','no-value','delete', LAN_RUN)."
 		<br /><span class='field-help'>".LAN_MAILOUT_252."</span></td></tr>";
 		$text .= "</tbody></table>\n</fieldset></form>";
 
 		return $text;
-		
+
 		// return $ns->tablerender(ADLAN_136.SEP.ADLAN_40, $text, 'maint',true);
 		
 	}
@@ -1184,7 +1184,7 @@ class mailout_main_ui extends e_admin_ui
 	$frm = e107::getForm();
 	$mes = e107::getMessage();
 	$ns = e107::getRender();
-	
+
 	if($pref['mail_bounce'] == 'auto' && !empty($pref['mail_bounce_email']) && !is_executable(e_HANDLER."bounce_handler.php"))
 	{
 		$mes->addWarning('Your bounce_handler.php file is NOT executable');	
@@ -1194,7 +1194,7 @@ class mailout_main_ui extends e_admin_ui
 	e107::getCache()->CachePageMD5 = '_';
 	$lastload = e107::getCache()->retrieve('emailLastBounce',FALSE,TRUE,TRUE);
 	$lastBounce = round((time() - $lastload) / 60);
-	
+
 	$lastBounceText = ($lastBounce > 1256474) ? "<span class='label label-important label-danger'>Never</span>" : "<span class='label label-success'>".$lastBounce . " minutes ago.</span>";
 
 	$text = "
@@ -1218,9 +1218,9 @@ class mailout_main_ui extends e_admin_ui
 		<tr>
 		<td>".LAN_MAILOUT_77."</td>
 		<td> ";
-		
+
 		$mail_enable = explode(',',vartrue($pref['mailout_enabled'],'core'));
-		
+
 		$coreCheck = (in_array('core',$mail_enable)) ? "checked='checked'" : "";
 	//	$text .= $frm->checkbox('mail_mailer_enabled[]','core', $coreCheck, 'users');
 
@@ -1239,16 +1239,16 @@ class mailout_main_ui extends e_admin_ui
 
 
 		$text .= "</td></tr>
-		
-		
+
+
 		<tr>
 		<td style='vertical-align:top'>".LAN_MAILOUT_115."<br /></td>
 		<td>";
 
 
 		$text .= mailoutAdminClass::mailerPrefsTable($pref, 'bulkmailer');
-		
-	
+
+
 	/* FIXME - posting SENDMAIL path triggers Mod-Security rules. 
 	// Sendmail. -------------->
 		$senddisp = ($pref['mailer'] != 'sendmail') ? "style='display:none;'" : '';
@@ -1260,7 +1260,7 @@ class mailout_main_ui extends e_admin_ui
 		<input class='tbox' type='text' name='sendmail' size='60' value=\"".(!$pref['sendmail'] ? "/usr/sbin/sendmail -t -i -r ".$pref['siteadminemail'] : $pref['sendmail'])."\" maxlength='80' />
 		</td>
 		</tr>
-	
+
 		</table></div>";
 	*/
 
@@ -1277,7 +1277,7 @@ class mailout_main_ui extends e_admin_ui
 		</td>
 	</tr>\n
 
-	
+
 	<tr>
 		<td>".LAN_MAILOUT_25."</td>
 		<td class='form-inline'> ".LAN_MAILOUT_26." ".$frm->number('mail_pause', $pref['mail_pause'])." ".LAN_MAILOUT_27." ".
@@ -1285,23 +1285,23 @@ class mailout_main_ui extends e_admin_ui
 		<span class='field-help'>".LAN_MAILOUT_30."</span>
 		</td>
 	</tr>\n
-	
+
 	<tr>
 		<td>".LAN_MAILOUT_156."</td>
 		<td>".$frm->number('mail_workpertick',varset($pref['mail_workpertick'],5))."<span class='field-help'>".LAN_MAILOUT_157."</span>
 		</td>
 	</tr>
-	
-	
+
+
 	";
 
 	list($mail_log_option,$mail_log_email) = explode(',',varset($pref['mail_log_options'],'0,0'));
-	
+
 	$check = ($mail_log_email == 1) ? " checked='checked'" : "";
-	
-	
+
+
 	$logOptions = array(LAN_MAILOUT_73,LAN_MAILOUT_74,LAN_MAILOUT_75,LAN_MAILOUT_119);
-	
+
 	$text .= "<tr>
 		<td>".LAN_MAILOUT_72."</td>
 		<td class='form-inline'>
@@ -1344,7 +1344,7 @@ class mailout_main_ui extends e_admin_ui
 		<tbody>
 	<tr>
 		<td>".LAN_MAILOUT_231."</td><td>";
-		
+
 	// bounce divs = mail_bounce_none, mail_bounce_auto, mail_bounce_mail
 	$autoDisp = ($pref['mail_bounce'] != 'auto') ? "style='display:none;'" : '';
 	$autoMail = ($pref['mail_bounce'] != 'mail') ? "style='display:none;'" : '';
@@ -1368,20 +1368,20 @@ class mailout_main_ui extends e_admin_ui
 		<tr>
 			<td>".LAN_EMAIL."</td>
 			<td><div class='input-append'>".$frm->text('mail_bounce_email2', $pref['mail_bounce_email'], 40, 'size=xlarge');
-			
+
 			if(!empty($pref['mail_bounce_email']))
 			{
 				$text .= $frm->admin_button('send_bounce_test','Send Test','primary','Test');	
 			}
-			
+
 			$text .= "</div></td>
 		</tr>
-	
+
 	<tr>
 		<td>".LAN_MAILOUT_233."</td><td><b>".(e_ROOT).e107::getFolder('handlers')."bounce_handler.php</b>";
-	
+
 	$status = '';
-	
+
 	if(!is_readable(e_HANDLER.'bounce_handler.php'))
 	{
 		$status = LAN_MAILOUT_161;
@@ -1391,17 +1391,17 @@ class mailout_main_ui extends e_admin_ui
 		$status = LAN_MAILOUT_162;
 	}
 
-	
+
 	if(!empty($status))
 	{
 		$text .= "&nbsp;&nbsp;<span class='label label-warning'>".$status."</span>"; 
 	}
-			
-		
-	
+
+
+
 	$text .= "<div>".LAN_MAILOUT_235."</div>
-	
-	
+
+
 	</td></tr>
 	<tr><td>".LAN_MAILOUT_236."</td><td>".$lastBounceText."</td></tr>";
 
@@ -1420,14 +1420,14 @@ class mailout_main_ui extends e_admin_ui
 			<col class='col-control' />
 		</colgroup>
 		<tbody>";
-	
+
 	$bouncePrefs = array('mail_bounce_email'=>LAN_EMAIL, 'mail_bounce_pop3'=>LAN_MAILOUT_33, 'mail_bounce_user'=>LAN_MAILOUT_34, 'mail_bounce_pass'=>LAN_PASSWORD);
-	
+
 	foreach($bouncePrefs as $key =>$label)
 	{
 		$text .= "<tr><td>".$label."</td><td>".$frm->text($key,$pref[$key],40,'size=xlarge')."</td></tr>";
 	}	
-	
+
 	/*	
 	$text .= "
 		<tr><td>".LAN_MAILOUT_32."</td><td><input class='tbox' size='40' type='text' name='mail_bounce_email' value=\"".$pref['mail_bounce_email']."\" /></td></tr>
@@ -1436,7 +1436,7 @@ class mailout_main_ui extends e_admin_ui
 		<tr><td>".LAN_PASSWORD."</td><td><input class='tbox' size='40' type='text' name='mail_bounce_pass' value=\"".$pref['mail_bounce_pass']."\" /></td></tr>
 	";
 	*/
-		
+
 	$text .= "	
 		<tr><td>".LAN_MAILOUT_120."</td><td><select class='tbox' name='mail_bounce_type'>\n
 			<option value=''>&nbsp;</option>\n

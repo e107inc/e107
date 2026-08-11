@@ -1,7 +1,7 @@
 <?php
 
 
-	class secure_imageTest extends \Codeception\Test\Unit
+	class secure_imageTest extends \Test\Unit
 	{
 
 		/** @var secure_image */

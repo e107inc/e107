@@ -33,11 +33,11 @@ class blogger_import extends rss_import
 	public $description	= 'Import up to 500 items from yourblog.blogspot.com';
 	public $supported	=  array('news');
 	public $mprefix		= false;
-	
+
 	public $cleanupHtml = false;
 	public $defaultClass = false;
 
-	
+
 	/*
 	 If the first 500 posts of your blog feed are here:
 
@@ -63,7 +63,7 @@ class blogger_import extends rss_import
 		{			
 			$this->feedUrl = rtrim($_POST['bloggerUrl'],"/")."/feeds/posts/default?max-results=999&alt=rss";	
 		}
-		
+
 		if(vartrue($_POST['bloggerCleanup']))
 		{
 			$this->cleanupHtml = true;
@@ -77,8 +77,8 @@ class blogger_import extends rss_import
 			return;
 		}
 	}
-		
-	
+
+
 	function config()
 	{
 		$var[0]['caption']	= "Blogger URL";
@@ -162,13 +162,13 @@ class blogger_import extends rss_import
 
 				return "";
 			break;
-			
+
 			default:
 				return $source[$type][0];
 			break;
 		}		
-		
-		
+
+
 	}
 
 

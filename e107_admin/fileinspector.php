@@ -51,7 +51,7 @@ $css .= ".d { margin: 2px 0px 1px 8px; cursor: default; white-space: nowrap }
     .e { width: 9px; height: 9px }
     i.fa-folder-open-o, i.fa-times-circle-o { cursor:pointer }
     span.tree-node { cursor: pointer } 
-    
+
 ";
 
 e107::css('inline', $css);
@@ -378,7 +378,7 @@ class file_inspector {
 
 		if(substr($this->root_dir, -1) == '/')
 		{
-			$this->root_dir = substr($this->root_dir, 0, -1);
+			$this->root_dir = (string) substr($this->root_dir, 0, -1);
 		}
 
 		if(isset($_POST['core']) && $_POST['core'] == 'integrity_fail_only')

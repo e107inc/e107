@@ -329,9 +329,12 @@ class eFront
 	}
 	
 	/**
-	 * Dispatch
-	 */
-	public function dispatch(eRequest|null $request = null, eResponse|null $response = null, eDispatcher|null $dispatcher = null)
+     * Dispatch
+     * @param \eRequest|null $request
+     * @param \eResponse|null $response
+     * @param \eDispatcher|null $dispatcher
+     */
+    public function dispatch($request = null, $response = null, $dispatcher = null)
 	{
 		if(null === $request)
 		{
@@ -579,7 +582,7 @@ class eDispatcher
 	 * @return void
 	 * @throws eException
 	 */
-	public function dispatch(eRequest|null $request = null, eResponse|null $response = null)
+	public function dispatch($request = null, $response = null)
 	{
 		$controllerName = $request->getControllerName();
 		$moduleName = $request->getModuleName();
@@ -959,7 +962,7 @@ class eDispatcher
 		
 		if(($pos = strpos($location, '/'))) //can't be 0
 		{
-			return substr($location, 0, $pos);
+			return (string) substr($location, 0, $pos);
 		}
 		return $location;
 	}
@@ -1408,7 +1411,7 @@ class eRouter
 					$ret[$module] = $current[$module];
 					continue;
 				}
-				
+
 				// in all other cases additional re-check will be made - see below
 			}
 			
@@ -2472,14 +2475,14 @@ class eRouter
 			// array support
 			if (($pos = strpos($key, '[')) !== false && ($pos2 = strpos($key, ']', $pos + 1)) !== false)
 			{
-				$name = substr($key, 0, $pos);
+				$name = (string) substr($key, 0, $pos);
 				// numerical array
 				if ($pos2 === $pos + 1)
 					$ret[$name][] = $value;
 				// associative array
 				else
 				{
-					$key = substr($key, $pos + 1, $pos2 - $pos - 1);
+					$key = (string) substr($key, $pos + 1, $pos2 - $pos - 1);
 					$ret[$name][$key] = $value;
 				}
 			}
@@ -2501,7 +2504,7 @@ class eRouter
 	 */
 	public function removeUrlSuffix($pathInfo, $urlSuffix)
 	{
-		if ('' !== $urlSuffix && substr($pathInfo, -strlen($urlSuffix)) === $urlSuffix) return substr($pathInfo, 0, -strlen($urlSuffix));
+		if ('' !== $urlSuffix && (string) substr($pathInfo, -strlen($urlSuffix)) === $urlSuffix) return (string) substr($pathInfo, 0, -strlen($urlSuffix));
 		else return $pathInfo;
 	}
 }
@@ -2914,7 +2917,7 @@ class eUrlRule
 			
 			if ($pathInfo !== $matches[0])	# Additional GET params exist
 			{
-				$manager->parsePathInfo($request, ltrim(substr($pathInfo, strlen($matches[0])), '/'));
+				$manager->parsePathInfo($request, ltrim((string) substr($pathInfo, strlen($matches[0])), '/'));
 			}
 			return (null !== $this->routePattern ? strtr($this->route, $tr) : $this->route);
 		}
@@ -2971,7 +2974,7 @@ abstract class eUrlConfig
 	 * @param array $config
 	 * @return false string route or false on error
 	 */
-	public function parse($pathInfo, $params = array(), eRequest|null $request = null, eRouter|null $router = null, $config = array())
+	public function parse($pathInfo, $params = array(), $request = null, $router = null, $config = array())
 	{
 		return false;
 	}
@@ -3047,7 +3050,7 @@ class eController
 	 * @param eRequest $request
 	 * @param eResponse|null $response
 	 */
-	public function __construct(eRequest $request, eResponse|null $response = null)
+	public function __construct(eRequest $request, $response = null)
 	{
 		$this->setRequest($request)
 			->setResponse($response)
@@ -3188,7 +3191,7 @@ class eController
 			else 
 			{
 				//TODO not found method by controller or default one
-				$action = substr($actionMethodName, 6);
+				$action = (string) substr($actionMethodName, 6);
 				throw new eException('Action "'.$action.'" does not exist');
 			}
 		}
@@ -3201,7 +3204,7 @@ class eController
 	 * @return eResponse
 	 * @throws eException
 	 */
-	public function run(eRequest|null $request = null, eResponse|null $response = null)
+	public function run($request = null, $response = null)
 	{
 		if(null === $request) $request = $this->getRequest();
 		else $this->setRequest($request);
@@ -3291,7 +3294,7 @@ class eController
     {
         if (strpos($methodName, 'action') === 0)
         {
-            $action = substr($methodName, 6);
+            $action = (string) substr($methodName, 6);
             throw new eException('Action "'.$action.'" does not exist', 2404);
         }
 
@@ -3367,9 +3370,10 @@ class eControllerFront extends eController
 	protected $filter = array();
 	
 	/**
-	 * Base constructor - set 404/403 locations
-	 */
-	public function __construct(eRequest $request, eResponse|null $response = null)
+     * Base constructor - set 404/403 locations
+     * @param \eResponse|null $response
+     */
+    public function __construct(eRequest $request, $response = null)
 	{
 		parent::__construct($request, $response);
 		$this->_init();
@@ -3653,7 +3657,7 @@ class eRequest
 				$this->_pathInfo = ''; // map to indexRoute
 				
 			else 
-				$this->_pathInfo = substr($this->getRequestInfo(), strlen($this->getBasePath()));
+				$this->_pathInfo = (string) substr($this->getRequestInfo(), strlen($this->getBasePath()));
 			
 			if($this->_pathInfo && trim($this->_pathInfo, '/') == trim($this->singleEntry, '/')) $this->_pathInfo = '';
 		}
@@ -3919,7 +3923,7 @@ class eRequest
 		$this->setModule($parts[0])
 			->setController(vartrue($parts[1], 'index'))
 			->setAction(vartrue($parts[2], 'index'));
-			
+
 		return $this;//->getRoute(true);
 	}
 

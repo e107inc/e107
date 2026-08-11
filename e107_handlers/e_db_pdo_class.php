@@ -71,10 +71,10 @@ class e_db_pdo implements e_db
 		$config =  e107::getMySQLConfig();
 
 
-		$this->mySQLserver      = $config['mySQLserver'] ?? '';
-		$this->mySQLuser        = $config['mySQLuser'] ?? '';
-		$this->mySQLpassword    = $config['mySQLpassword'] ?? '';
-		$this->mySQLdefaultdb   = $config['mySQLdefaultdb'] ?? '';
+		$this->mySQLserver      = isset($config['mySQLserver']) ? $config['mySQLserver'] : '';
+		$this->mySQLuser        = isset($config['mySQLuser']) ? $config['mySQLuser'] : '';
+		$this->mySQLpassword    = isset($config['mySQLpassword']) ? $config['mySQLpassword'] : '';
+		$this->mySQLdefaultdb   = isset($config['mySQLdefaultdb']) ? $config['mySQLdefaultdb'] : '';
 		$this->mySQLport        = varset($config['port'], 3306);
 		$this->mySQLPrefix      = varset($config['mySQLprefix'], 'e107_');
 
@@ -308,7 +308,12 @@ class e_db_pdo implements e_db
 			{
 				foreach($query['BIND'] as $k=>$v)
 				{
-					$prep->bindValue(':'.$k, $v['value'], $v['type']);
+					// A PARAM_NULL bind must carry a null value: PHP's modern
+					// PDO discards the value and sends SQL NULL either way,
+					// but PHP 5's pdo_mysql sends whatever value it was
+					// handed, silently un-nulling the bind.
+					$value = ($v['type'] === PDO::PARAM_NULL) ? null : $v['value'];
+					$prep->bindValue(':'.$k, $value, $v['type']);
 				}
 			}
 
@@ -974,7 +979,7 @@ class e_db_pdo implements e_db
 	 */
 	protected function _escape($data)
 	{
-		return substr($this->quoteStringLiteral($data), 1, -1);
+		return (string) substr($this->quoteStringLiteral($data), 1, -1);
 	}
 
 	/**
@@ -1068,7 +1073,7 @@ class e_db_pdo implements e_db
 				$length = strlen($prefix);
 				while($rows = $this->fetch('num'))
 				{
-					$table[] = substr($rows[0],$length);
+					$table[] = (string) substr($rows[0],$length);
 				}
 			}
 			return $table;

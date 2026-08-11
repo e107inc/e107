@@ -206,7 +206,7 @@ class e_token_injector
 
 		if(strncmp($action, '//', 2) === 0)
 		{
-			return self::hostMatches(substr($action, 2), $hosts);
+			return self::hostMatches((string) substr($action, 2), $hosts);
 		}
 
 		if($action[0] === '/')
@@ -216,7 +216,7 @@ class e_token_injector
 
 		if(preg_match('~^https?://~i', $action, $match))
 		{
-			return self::hostMatches(substr($action, strlen($match[0])), $hosts);
+			return self::hostMatches((string) substr($action, strlen($match[0])), $hosts);
 		}
 
 		if(preg_match('~^[a-z][a-z0-9+.\-]*:~i', $action))
@@ -234,13 +234,13 @@ class e_token_injector
 	 */
 	private static function hostMatches($rest, array $hosts)
 	{
-		$authority = substr($rest, 0, strcspn($rest, '/?#'));
+		$authority = (string) substr($rest, 0, strcspn($rest, '/?#'));
 
 		$at = strrpos($authority, '@');
 
 		if($at !== false)
 		{
-			$authority = substr($authority, $at + 1);
+			$authority = (string) substr($authority, $at + 1);
 		}
 
 		if($authority === '')
@@ -331,7 +331,7 @@ class e_token_injector
 		{
 			if(strncasecmp($header, 'Content-Type:', 13) === 0)
 			{
-				$type = substr($header, 13);
+				$type = (string) substr($header, 13);
 			}
 		}
 
@@ -345,7 +345,7 @@ class e_token_injector
 
 		if($semicolon !== false)
 		{
-			$type = substr($type, 0, $semicolon);
+			$type = (string) substr($type, 0, $semicolon);
 		}
 
 		$type = strtolower(trim($type));

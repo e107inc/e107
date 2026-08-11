@@ -48,7 +48,7 @@ class rss_menu_setup
 /*	
 	function uninstall_options()
 	{
-	
+
 	}
 
 

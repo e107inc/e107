@@ -7,7 +7,7 @@
  */
 
 
-class e_themeTest extends \Codeception\Test\Unit
+class e_themeTest extends \Test\Unit
 {
 
 	/** @var e_theme */

@@ -304,17 +304,17 @@ class user_shortcodes extends e_shortcode
 	{
 		$boot = deftrue('BOOTSTRAP');
 		$tp = e107::getParser();
-		
+
 		switch ($parm) 
 		{
 			case 'email':
 				return ($boot) ? $tp->toGlyph('fa-envelope') : $this->sc_user_email_icon();
 			break;
-			
+
 			case 'lastvisit':
 				return ($boot) ? $tp->toGlyph('fa fa-clock-o') : '';
 			break;
-			
+
 			case 'birthday':
 				return ($boot) ? $tp->toGlyph('fa-calendar') : $this->sc_user_birthday_icon();
 			break;
@@ -322,11 +322,11 @@ class user_shortcodes extends e_shortcode
 			case 'level':
 				return ($boot) ? $tp->toGlyph('fa-signal') : '';
 			break;
-			
+
 			case 'website':
 				return ($boot) ? $tp->toGlyph('fa-home') : '';
 			break;
-			
+
 			case 'location':
 				return ($boot) ? $tp->toGlyph('fa-map-marker') : '';
 			break;
@@ -343,7 +343,7 @@ class user_shortcodes extends e_shortcode
 			break;
 		}
 
-	
+
 		/*
 		if(defined("USER_ICON"))
 		{
@@ -353,7 +353,7 @@ class user_shortcodes extends e_shortcode
 		{
 			return "<img src='".THEME_ABS."images/user.png' alt='' style='vertical-align:middle;' /> ";
 		}
-		
+
 		return "<img src='".e_IMAGE_ABS."user_icons/user.png' alt='' style='vertical-align:middle;' /> ";
 		*/
 	}
@@ -654,7 +654,7 @@ class user_shortcodes extends e_shortcode
 		/*
 
 		return $tp->parseTemplate("{USER_AVATAR=".$this->var['user_sess']."}",true);
-		
+
 		if ($this->var['user_sess'] && file_exists(e_MEDIA."avatars/".$this->var['user_sess']))
 		{
 			//return $tp->parseTemplate("{USER_AVATAR=".$this->var['user_image']."}", true); // this one will resize. 
@@ -995,7 +995,7 @@ class user_shortcodes extends e_shortcode
 			
 			//if the first char of parm is an ! mark, it means it should not render the following parms
 			if(strpos($parm,'!')===0){
-				$tmp = explode(",", substr($parm,1) );
+				$tmp = explode(",", (string) substr($parm,1) );
 				foreach($tmp as $not){
 					$not=trim($not);
 					if(isset($key[$not])){
@@ -1003,7 +1003,7 @@ class user_shortcodes extends e_shortcode
 						unset($key[$not]);
 					}
 				}
-			
+
 			//else it means we render only the following parms
 			}else{
 				$tmp = explode(",", $parm );

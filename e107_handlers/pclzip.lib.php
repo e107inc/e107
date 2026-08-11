@@ -3023,7 +3023,7 @@ class PclZip
                         $p_remove_dir = "./" . $p_remove_dir;
                     }
                     if ((substr($p_filename, 0, 2) != "./") && (substr($p_remove_dir, 0, 2) == "./")) {
-                        $p_remove_dir = substr($p_remove_dir, 2);
+                        $p_remove_dir = (string) substr($p_remove_dir, 2);
                     }
                 }
 
@@ -3032,7 +3032,7 @@ class PclZip
                     if ($v_compare == 2) {
                         $v_stored_filename = "";
                     } else {
-                        $v_stored_filename = substr($v_stored_filename, strlen($p_remove_dir));
+                        $v_stored_filename = (string) substr($v_stored_filename, strlen($p_remove_dir));
                     }
                 }
             }
@@ -3340,7 +3340,7 @@ class PclZip
         if (($p_path != "./") && ($p_path != "/")) {
             // ----- Look for the path end '/'
             while (substr($p_path, -1) == "/") {
-                $p_path = substr($p_path, 0, -1);
+                $p_path = (string) substr($p_path, 0, -1);
             }
         }
 
@@ -3684,7 +3684,7 @@ class PclZip
             if (substr($p_entry['filename'], 0, $p_remove_path_size) == $p_remove_path) {
 
                 // ----- Remove the path
-                $p_entry['filename'] = substr($p_entry['filename'], $p_remove_path_size);
+                $p_entry['filename'] = (string) substr($p_entry['filename'], $p_remove_path_size);
 
             }
         }
@@ -4981,7 +4981,7 @@ class PclZip
 
         // ----- Remove the final '/'
         if (($p_is_dir) && (substr($p_dir, -1) == '/')) {
-            $p_dir = substr($p_dir, 0, -1);
+            $p_dir = (string) substr($p_dir, 0, -1);
         }
 
         // ----- Check the directory availability
@@ -5673,7 +5673,7 @@ function PclZipUtilTranslateWinPath($p_path, $p_remove_disk_letter = true)
     if (stripos(php_uname(), 'windows') !== false) {
         // ----- Look for potential disk letter
         if (($p_remove_disk_letter) && (($v_position = strpos($p_path, ':')) != false)) {
-            $p_path = substr($p_path, $v_position + 1);
+            $p_path = (string) substr($p_path, $v_position + 1);
         }
         // ----- Change potential windows directory separator
         if ((strpos($p_path, '\\') > 0) || (substr($p_path, 0, 1) == '\\')) {

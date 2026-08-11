@@ -169,7 +169,7 @@ class bb_youtube extends e_bb_base
 				$params[] = 'autoplay='.intval($vals['autoplay']);
 			}
 
-			$picRef = substr($url, strrpos($url, '/') + 1);
+			$picRef = (string) substr($url, strrpos($url, '/') + 1);
 		}
 
 

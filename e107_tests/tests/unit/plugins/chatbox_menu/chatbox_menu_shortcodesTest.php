@@ -16,8 +16,9 @@
  * a reachable thumb.php (since non-numeric crop forces nosef=true at
  * e_parse_class.php:2754-2758).
  */
-class chatbox_menu_shortcodesTest extends \Codeception\Test\Unit
+class chatbox_menu_shortcodesTest extends \Test\Unit
 {
+
 	/** @var chatbox_menu_shortcodes */
 	protected $sc;
 

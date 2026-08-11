@@ -620,7 +620,7 @@ class SMTP
                     return false;
                 }
                 //Get the challenge
-                $challenge = base64_decode(substr($this->last_reply, 4));
+                $challenge = base64_decode((string) substr($this->last_reply, 4));
 
                 //Build the response
                 $response = $username . ' ' . $this->hmac($challenge, $password);
@@ -765,7 +765,7 @@ class SMTP
          * process all lines before a blank line as headers.
          */
 
-        $field = substr($lines[0], 0, strpos($lines[0], ':'));
+        $field = (string) substr($lines[0], 0, strpos($lines[0], ':'));
         $in_headers = false;
         if (!empty($field) && strpos($field, ' ') === false) {
             $in_headers = true;
@@ -787,12 +787,12 @@ class SMTP
                     //No nice break found, add a hard break
                     $pos = self::MAX_LINE_LENGTH - 1;
                     $lines_out[] = substr($line, 0, $pos);
-                    $line = substr($line, $pos);
+                    $line = (string) substr($line, $pos);
                 } else {
                     //Break at the found point
-                    $lines_out[] = substr($line, 0, $pos);
+                    $lines_out[] = (string) substr($line, 0, $pos);
                     //Move along by the amount we dealt with
-                    $line = substr($line, $pos + 1);
+                    $line = (string) substr($line, $pos + 1);
                 }
                 //If processing headers add a LWSP-char to the front of new line RFC822 section 3.1.1
                 if ($in_headers) {
@@ -887,7 +887,7 @@ class SMTP
 
         foreach ($lines as $n => $s) {
             //First 4 chars contain response code followed by - or space
-            $s = trim(substr($s, 4));
+            $s = trim((string) substr($s, 4));
             if (empty($s)) {
                 continue;
             }
@@ -1081,7 +1081,7 @@ class SMTP
             //Fall back to simple parsing if regex fails
             $code = (int) substr($this->last_reply, 0, 3);
             $code_ex = null;
-            $detail = substr($this->last_reply, 4);
+            $detail = (string) substr($this->last_reply, 4);
         }
 
         $this->edebug('SERVER -> CLIENT: ' . $this->last_reply, self::DEBUG_SERVER);

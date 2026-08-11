@@ -9,7 +9,7 @@
 	 */
 
 
-	class bb_imgTest extends \Codeception\Test\Unit
+	class bb_imgTest extends \Test\Unit
 	{
 
 		/** @var bb_img */

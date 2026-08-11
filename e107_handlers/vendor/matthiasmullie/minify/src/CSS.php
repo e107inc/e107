@@ -259,7 +259,7 @@ class CSS extends Minify
 
             // loop the matches
             foreach ($matches as $match) {
-                $extension = substr(strrchr($match[2], '.'), 1);
+                $extension = (string) substr(strrchr($match[2], '.'), 1);
                 if ($extension && !array_key_exists($extension, $this->importExtensions)) {
                     continue;
                 }
@@ -441,7 +441,7 @@ class CSS extends Minify
             if ($this->canImportByPath($url)) {
                 // attempting to interpret GET-params makes no sense, so let's discard them for awhile
                 $params = strrchr($url, '?');
-                $url = $params ? substr($url, 0, -strlen($params)) : $url;
+                $url = $params ? (string) substr($url, 0, -strlen($params)) : $url;
 
                 // fix relative url
                 $url = $converter->convert($url);
@@ -797,7 +797,7 @@ class CSS extends Minify
             // now that we've figured out where the calc() starts and ends, extract it
             $count = count($minifier->extracted);
             $placeholder = 'math(' . $count . ')';
-            $minifier->extracted[$placeholder] = $function . '(' . trim(substr($expr, 1, -1)) . ')';
+            $minifier->extracted[$placeholder] = $function . '(' . trim((string) substr($expr, 1, -1)) . ')';
 
             // and since we've captured more code than required, we may have some leftover
             // calc() in here too - go recursive on the remaining but of code to go figure

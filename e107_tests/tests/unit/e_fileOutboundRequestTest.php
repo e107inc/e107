@@ -42,8 +42,9 @@
  *     and untested here; see the advisory.
  */
 
-class e_fileOutboundRequestTest extends \Codeception\Test\Unit
+class e_fileOutboundRequestTest extends \Test\Unit
 {
+
 	/** Fixture written into the served tree. @see WorkspaceCleanup */
 	const HOP_FIXTURE = 'e107_tests_p3_hop.php';
 
@@ -415,7 +416,7 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	{
 		$colon = strpos((string) self::$authority, ':');
 
-		return ($colon === false) ? '' : substr(self::$authority, $colon);
+		return ($colon === false) ? '' : (string) substr(self::$authority, $colon);
 	}
 
 	/**

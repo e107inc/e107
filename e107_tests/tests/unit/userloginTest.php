@@ -1,7 +1,7 @@
 <?php
 
 
-	class userloginTest extends \Codeception\Test\Unit
+	class userloginTest extends \Test\Unit
 	{
 
 		/** @var userlogin */

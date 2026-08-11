@@ -525,7 +525,7 @@ class Blowfish extends BlockCipher
                 $output .= $result[$i];
             }
         }
-        return substr($output, 0, $keylen);
+        return (string) substr($output, 0, $keylen);
     }
 
     /**

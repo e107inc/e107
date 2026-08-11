@@ -535,7 +535,10 @@ class db_verify
 
 	}
 
-	public function hasSyntaxIssue($sqlFileData): bool
+	/**
+     * @return bool
+     */
+    public function hasSyntaxIssue($sqlFileData)
 	{
 
 		return false; // TODO check syntax for errrors.
@@ -1337,7 +1340,7 @@ class db_verify
 		{
 			if(strpos($k, 'e107_') === 0) // remove prefix if found in sql dump.
 			{
-				$k = substr($k, 5);
+				$k = (string) substr($k, 5);
 			}
 
 			$tables[$c] = $k;
@@ -2101,15 +2104,16 @@ class db_verify
 	}
 
 	/**
-	 * Initialize db_verify with table definitions and storage engine info
-	 *
-	 * @param bool $clearCache When true, clears all caches that db_verify depends on:
-	 *                         - MySQL table list cache (for accurate isTable() checks)
-	 *                         - Core preference cache (for fresh e_sql_list and e_search_list)
-	 *                         - db_verify's own file cache
-	 *                         Use this after creating/dropping tables or changing plugin preferences.
-	 */
-	public function init($clearCache = false): void
+     * Initialize db_verify with table definitions and storage engine info
+     *
+     * @param bool $clearCache When true, clears all caches that db_verify depends on:
+     *                         - MySQL table list cache (for accurate isTable() checks)
+     *                         - Core preference cache (for fresh e_sql_list and e_search_list)
+     *                         - db_verify's own file cache
+     *                         Use this after creating/dropping tables or changing plugin preferences.
+     * @return void
+     */
+    public function init($clearCache = false)
 	{
 		if($clearCache)
 		{

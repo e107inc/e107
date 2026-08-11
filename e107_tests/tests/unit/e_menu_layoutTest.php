@@ -9,7 +9,7 @@
 	 */
 
 
-	class e_menu_layoutTest extends \Codeception\Test\Unit
+	class e_menu_layoutTest extends \Test\Unit
 	{
 
 		protected $menu;

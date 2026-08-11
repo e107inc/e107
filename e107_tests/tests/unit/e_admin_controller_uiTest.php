@@ -10,7 +10,7 @@
 
 
 
-	class e_admin_controller_uiTest extends \Codeception\Test\Unit
+	class e_admin_controller_uiTest extends \Test\Unit
 	{
 
 		/** @var e_admin_ui */
@@ -60,7 +60,7 @@
 					OR e.calls_from = REPLACE(m.mem_phone_other1 , '-', '') 
 					OR e.calls_from = REPLACE(m.mem_phone_other2 , '-', '')
 				)
-			
+
 			) 
 			LEFT JOIN `#member_calender` AS cl ON 
 			(
@@ -69,7 +69,7 @@
 					cl.cal_by_phone = REPLACE(m.mem_phone_day, '-', '') 
 					OR cl.cal_by_cell = REPLACE(m.mem_phone_cell , '-', '') 
 				)
-			
+
 			) ";
 
 			$this->ui->joinAlias($qry2);

@@ -37,8 +37,8 @@ abstract class Strings
      */
     public static function shift(&$string, $index = 1)
     {
-        $substr = substr($string, 0, $index);
-        $string = substr($string, $index);
+        $substr = (string) substr($string, 0, $index);
+        $string = (string) substr($string, $index);
         return $substr;
     }
 
@@ -53,8 +53,8 @@ abstract class Strings
      */
     public static function pop(&$string, $index = 1)
     {
-        $substr = substr($string, -$index);
-        $string = substr($string, 0, -$index);
+        $substr = (string) substr($string, -$index);
+        $string = (string) substr($string, 0, -$index);
         return $substr;
     }
 
@@ -382,7 +382,7 @@ abstract class Strings
         }
 
         for ($i = 4; $i <= strlen($var); $i += 4) {
-            $temp = substr($var, -$i, 4);
+            $temp = (string) substr($var, -$i, 4);
             switch ($temp) {
                 case "\xFF\xFF\xFF\xFF":
                     $var = substr_replace($var, "\x00\x00\x00\x00", -$i, 4);
@@ -403,8 +403,8 @@ abstract class Strings
             return $var;
         }
 
-        $temp = unpack('Nnum', str_pad(substr($var, 0, $remainder), 4, "\0", STR_PAD_LEFT));
-        $temp = substr(pack('N', $temp['num'] + 1), -$remainder);
+        $temp = unpack('Nnum', str_pad((string) substr($var, 0, $remainder), 4, "\0", STR_PAD_LEFT));
+        $temp = (string) substr(pack('N', $temp['num'] + 1), -$remainder);
         $var = substr_replace($var, $temp, 0, $remainder);
 
         return $var;

@@ -8,8 +8,9 @@
  *
  */
 
-class e_parse_shortcodeTest extends \Codeception\Test\Unit
+class e_parse_shortcodeTest extends \Test\Unit
 {
+
 	/** @var e_parse_shortcode */
 	private $scParser;
 	/**

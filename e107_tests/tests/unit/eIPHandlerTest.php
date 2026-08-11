@@ -9,7 +9,7 @@
  */
 
 
-class eIPHandlerTest extends \Codeception\Test\Unit
+class eIPHandlerTest extends \Test\Unit
 {
 
 	/** @var eIPHandler */
@@ -312,6 +312,7 @@ class eIPHandlerTest extends \Codeception\Test\Unit
 
 
 	/**
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 * @preserveGlobalState disabled
 	 * @return void
@@ -340,6 +341,7 @@ class eIPHandlerTest extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 * @preserveGlobalState disabled
 	 * @return void
@@ -366,6 +368,7 @@ class eIPHandlerTest extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 * @preserveGlobalState disabled
 	 * @return void
@@ -396,6 +399,7 @@ class eIPHandlerTest extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * @group runs-in-separate-process
 	 * @runInSeparateProcess
 	 * @preserveGlobalState disabled
 	 * @return void

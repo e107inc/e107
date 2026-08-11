@@ -8,8 +8,9 @@
  *
  */
 
-abstract class e_db_abstractTest extends \Codeception\Test\Unit
+abstract class e_db_abstractTest extends \Test\Unit
 {
+
 	/** @var e_db */
 	protected $db;
 	protected $dbConfig = array();

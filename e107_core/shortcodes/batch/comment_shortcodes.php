@@ -183,7 +183,7 @@ class comment_shortcodes extends e_shortcode
 			$this->var['user_image'] = '';
 		}
 		return $this->var['user_image'];
-		
+
 		 */
 
 	}
@@ -254,12 +254,12 @@ class comment_shortcodes extends e_shortcode
 		return $text;
 		/*
 		$url 		= e_PAGE."?".e_QUERY;
-		
+
 		$unblock 	= "[<a href='".e_ADMIN_ABS."comment.php?unblock-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".COMLAN_1."</a>] ";
 		$block 		= "[<a href='".e_ADMIN_ABS."comment.php?block-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".COMLAN_2."</a>] ";
 		$delete 	= "[<a href='".e_ADMIN_ABS."comment.php?delete-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".LAN_DELETE."</a>] ";
 		$userinfo 	= "[<a href='".e_ADMIN_ABS."userinfo.php?".e107::getIPHandler()->ipDecode($comrow['comment_ip'])."'>".COMLAN_4."</a>]";
-			
+
 		return $unblock.$block.$delete.$userinfo;
 		 * */
 	}

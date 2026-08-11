@@ -972,7 +972,7 @@ class ForumAttachmentServingCest
 	 */
 	private function legacyThumb()
 	{
-		$media = substr($this->dir, 0, strpos($this->dir, 'plugins/'));
+		$media = (string) substr($this->dir, 0, strpos($this->dir, 'plugins/'));
 
 		return $media.'files/'.self::LEGACY_THUMB_DIR.self::ORPHAN_IMAGE_FILE;
 	}

@@ -16,7 +16,7 @@
  * Backs the Host-Header Injection killswitch in e107::set_urls_deferred()
  * (GHSA-7pmw-jwvr-cq2x).
  */
-class e107HostValidationTest extends \Codeception\Test\Unit
+class e107HostValidationTest extends \Test\Unit
 {
 	/** @var e107 */
 	private $e107;

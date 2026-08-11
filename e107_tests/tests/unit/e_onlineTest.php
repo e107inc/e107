@@ -7,7 +7,7 @@
  */
 
 
-class e_onlineTest extends \Codeception\Test\Unit
+class e_onlineTest extends \Test\Unit
 {
 
 	/** @var e_online */

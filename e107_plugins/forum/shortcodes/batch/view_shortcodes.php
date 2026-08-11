@@ -283,7 +283,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 		if(substr($this->var['forum_name'], 0, 1) === '*')
 		{
-			$this->var['forum_name'] = substr($this->var['forum_name'], 1);
+			$this->var['forum_name'] = (string) substr($this->var['forum_name'], 1);
 		}
 
 		$this->var['forum_name'] = e107::getParser()->toHTML($this->var['forum_name'], true, 'no_hook');

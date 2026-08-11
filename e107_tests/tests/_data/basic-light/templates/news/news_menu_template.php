@@ -83,7 +83,7 @@ $NEWS_MENU_TEMPLATE['other2']['item'] 	= "<li class='media'>
 										<div class='media-body'><h5>{NEWSTITLELINK}</h5>
 										</div>
 										</li>\n";
-										
+
 $NEWS_MENU_TEMPLATE['other2']['end'] 	= "</ul>";
 
 

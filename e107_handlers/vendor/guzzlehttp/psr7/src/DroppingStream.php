@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace GuzzleHttp\Psr7;
 
 use Psr\Http\Message\StreamInterface;
@@ -24,13 +22,16 @@ final class DroppingStream implements StreamInterface
      * @param StreamInterface $stream    Underlying stream to decorate.
      * @param int             $maxLength Maximum size before dropping data.
      */
-    public function __construct(StreamInterface $stream, int $maxLength)
+    public function __construct(StreamInterface $stream, $maxLength)
     {
         $this->stream = $stream;
         $this->maxLength = $maxLength;
     }
 
-    public function write($string): int
+    /**
+     * @return int
+     */
+    public function write($string)
     {
         $diff = $this->maxLength - $this->stream->getSize();
 
@@ -44,6 +45,6 @@ final class DroppingStream implements StreamInterface
             return $this->stream->write($string);
         }
 
-        return $this->stream->write(substr($string, 0, $diff));
+        return $this->stream->write((string) substr($string, 0, $diff));
     }
 }

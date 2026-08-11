@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace GuzzleHttp\Psr7;
 
 use Psr\Http\Message\StreamInterface;
@@ -36,7 +34,10 @@ final class AppendStream implements StreamInterface
         }
     }
 
-    public function __toString(): string
+    /**
+     * @return string
+     */
+    public function __toString()
     {
         try {
             $this->rewind();
@@ -49,6 +50,12 @@ final class AppendStream implements StreamInterface
             trigger_error(sprintf('%s::__toString exception: %s', self::class, (string) $e), E_USER_ERROR);
 
             return '';
+        } catch (\Exception $e) {
+            if (\PHP_VERSION_ID >= 70400) {
+                throw $e;
+            }
+            trigger_error(sprintf('%s::__toString exception: %s', self::class, (string) $e), E_USER_ERROR);
+            return '';
         }
     }
 
@@ -58,8 +65,9 @@ final class AppendStream implements StreamInterface
      * @param StreamInterface $stream Stream to append. Must be readable.
      *
      * @throws \InvalidArgumentException if the stream is not readable
+     * @return void
      */
-    public function addStream(StreamInterface $stream): void
+    public function addStream(StreamInterface $stream)
     {
         if (!$stream->isReadable()) {
             throw new \InvalidArgumentException('Each stream must be readable');
@@ -73,15 +81,19 @@ final class AppendStream implements StreamInterface
         $this->streams[] = $stream;
     }
 
-    public function getContents(): string
+    /**
+     * @return string
+     */
+    public function getContents()
     {
         return Utils::copyToString($this);
     }
 
     /**
      * Closes each attached stream.
+     * @return void
      */
-    public function close(): void
+    public function close()
     {
         $this->pos = $this->current = 0;
         $this->seekable = true;
@@ -112,7 +124,10 @@ final class AppendStream implements StreamInterface
         return null;
     }
 
-    public function tell(): int
+    /**
+     * @return int
+     */
+    public function tell()
     {
         return $this->pos;
     }
@@ -122,8 +137,9 @@ final class AppendStream implements StreamInterface
      *
      * If any of the streams do not return a valid number, then the size of the
      * append stream cannot be determined and null is returned.
+     * @return int|null
      */
-    public function getSize(): ?int
+    public function getSize()
     {
         $size = 0;
 
@@ -138,22 +154,29 @@ final class AppendStream implements StreamInterface
         return $size;
     }
 
-    public function eof(): bool
+    /**
+     * @return bool
+     */
+    public function eof()
     {
         return !$this->streams
             || ($this->current >= count($this->streams) - 1
              && $this->streams[$this->current]->eof());
     }
 
-    public function rewind(): void
+    /**
+     * @return void
+     */
+    public function rewind()
     {
         $this->seek(0);
     }
 
     /**
      * Attempts to seek to the given position. Only supports SEEK_SET.
+     * @return void
      */
-    public function seek($offset, $whence = SEEK_SET): void
+    public function seek($offset, $whence = SEEK_SET)
     {
         if (!$this->seekable) {
             throw new \RuntimeException('This AppendStream is not seekable');
@@ -184,8 +207,9 @@ final class AppendStream implements StreamInterface
 
     /**
      * Reads from all of the appended streams until the length is met or EOF.
+     * @return string
      */
-    public function read($length): string
+    public function read($length)
     {
         $buffer = '';
         $total = count($this->streams) - 1;
@@ -218,22 +242,34 @@ final class AppendStream implements StreamInterface
         return $buffer;
     }
 
-    public function isReadable(): bool
+    /**
+     * @return bool
+     */
+    public function isReadable()
     {
         return true;
     }
 
-    public function isWritable(): bool
+    /**
+     * @return bool
+     */
+    public function isWritable()
     {
         return false;
     }
 
-    public function isSeekable(): bool
+    /**
+     * @return bool
+     */
+    public function isSeekable()
     {
         return $this->seekable;
     }
 
-    public function write($string): int
+    /**
+     * @return int
+     */
+    public function write($string)
     {
         throw new \RuntimeException('Cannot write to an AppendStream');
     }

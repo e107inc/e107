@@ -67,14 +67,14 @@ class PHP32 extends PHP
                 if ($i == -4) {
                     break;
                 }
-                $val = substr($val, 0, 4 + $i);
+                $val = (string) substr($val, 0, 4 + $i);
                 $val = str_pad($val, 4, "\0", STR_PAD_LEFT);
                 if ($val == "\0\0\0\0") {
                     break;
                 }
                 $i = 0;
             }
-            list(, $digit) = unpack('N', substr($val, $i, 4));
+            list(, $digit) = unpack('N', (string) substr($val, $i, 4));
             if ($digit < 0) {
                 $digit += 0xFFFFFFFF + 1;
             }

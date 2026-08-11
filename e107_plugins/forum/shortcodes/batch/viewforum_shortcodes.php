@@ -122,7 +122,7 @@
 			</button>
 		    	<ul class="dropdown-menu pull-right float-right dropdown-menu-end">
 		    	';
-			
+
 			//--	foreach($jumpList as $key => $val)
 			foreach($jumpList as $val)
 			{

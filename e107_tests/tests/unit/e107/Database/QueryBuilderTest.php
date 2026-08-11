@@ -24,7 +24,7 @@ use ReflectionMethod;
 	 * anything. Round-trip tests against the real backends live in
 	 * e_db_abstractTest.
 	 */
-	class QueryBuilderTest extends \Codeception\Test\Unit
+	class QueryBuilderTest extends \Test\Unit
 	{
 
 		protected function _before()
@@ -112,6 +112,9 @@ use ReflectionMethod;
 		public function testFragmentConstructorIsPrivate()
 		{
 			$ctor = new ReflectionMethod(SqlFragment::class, '__construct');
+            if (PHP_VERSION_ID < 80100) {
+                $ctor->setAccessible(true);
+            }
 
 			$this->assertTrue($ctor->isPrivate());
 		}

@@ -528,8 +528,8 @@ class Hash
         // we could use ord() but per https://paragonie.com/blog/2016/06/constant-time-encoding-boring-cryptography-rfc-4648-and-you
         // unpack() doesn't leak timing info
         return $taglen <= 8 ?
-            substr($t, unpack('C', $index)[1] * $taglen, $taglen) :
-            substr($t, 0, $taglen);
+            (string) substr($t, unpack('C', $index)[1] * $taglen, $taglen) :
+            (string) substr($t, 0, $taglen);
     }
 
     /**
@@ -562,10 +562,10 @@ class Hash
         //
         $y = '';
         for ($i = 0; $i < $iters; $i++) {
-            $L1Key_i  = substr($L1Key, $i * 16, 1024);
-            $L2Key_i  = substr($L2Key, $i * 24, 24);
-            $L3Key1_i = substr($L3Key1, $i * 64, 64);
-            $L3Key2_i = substr($L3Key2, $i * 4, 4);
+            $L1Key_i  = (string) substr($L1Key, $i * 16, 1024);
+            $L2Key_i  = (string) substr($L2Key, $i * 24, 24);
+            $L3Key1_i = (string) substr($L3Key1, $i * 64, 64);
+            $L3Key2_i = (string) substr($L3Key2, $i * 4, 4);
 
             $a = self::L1Hash($L1Key_i, $m);
             $b = strlen($m) <= 1024 ? "\0\0\0\0\0\0\0\0$a" : self::L2Hash($L2Key_i, $a);
@@ -984,8 +984,8 @@ class Hash
 
         $y = $factory->newInteger(new BigInteger());
         for ($i = 0; $i < 8; $i++) {
-            $m_i = $factory->newInteger(new BigInteger(substr($m, 2 * $i, 2), 256));
-            $k_i = $factory->newInteger(new BigInteger(substr($k1, 8 * $i, 8), 256));
+            $m_i = $factory->newInteger(new BigInteger((string) substr($m, 2 * $i, 2), 256));
+            $k_i = $factory->newInteger(new BigInteger((string) substr($k1, 8 * $i, 8), 256));
             $y = $y->add($m_i->multiply($k_i));
         }
         $y = str_pad(substr($y->toBytes(), -4), 4, "\0", STR_PAD_LEFT);
@@ -1120,7 +1120,7 @@ class Hash
 
         if (is_array($algo)) {
             if (empty($this->key) || !is_string($this->key)) {
-                return substr($algo($text, ...array_values($this->parameters)), 0, $this->length);
+                return (string) substr($algo($text, ...array_values($this->parameters)), 0, $this->length);
             }
 
             // SHA3 HMACs are discussed at https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf#page=30
@@ -1128,12 +1128,12 @@ class Hash
             $key    = str_pad($this->computedKey, $b, chr(0));
             $temp   = $this->ipad ^ $key;
             $temp  .= $text;
-            $temp   = substr($algo($temp, ...array_values($this->parameters)), 0, $this->length);
+            $temp   = (string) substr($algo($temp, ...array_values($this->parameters)), 0, $this->length);
             $output = $this->opad ^ $key;
             $output .= $temp;
             $output = $algo($output, ...array_values($this->parameters));
 
-            return substr($output, 0, $this->length);
+            return (string) substr($output, 0, $this->length);
         }
 
         $output = !empty($this->key) || is_string($this->key) ?
@@ -1141,7 +1141,7 @@ class Hash
             hash($algo, $text, true);
 
         return strlen($output) > $this->length
-            ? substr($output, 0, $this->length)
+            ? (string) substr($output, 0, $this->length)
             : $output;
     }
 

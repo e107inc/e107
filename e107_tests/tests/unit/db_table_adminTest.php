@@ -9,7 +9,7 @@
 	 */
 
 
-	class db_table_adminTest extends \Codeception\Test\Unit
+	class db_table_adminTest extends \Test\Unit
 	{
 
 		/** @var db_table_admin */

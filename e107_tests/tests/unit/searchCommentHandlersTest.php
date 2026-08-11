@@ -13,8 +13,9 @@
  *
  * @see https://github.com/e107inc/e107/issues/5267
  */
-class searchCommentHandlersTest extends \Codeception\Test\Unit
+class searchCommentHandlersTest extends \Test\Unit
 {
+
 	/**
 	 * The news handler ships with e107 and stands in for a handler that is
 	 * always usable, so a test can tell "the table skipped one row" apart from

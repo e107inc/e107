@@ -21,8 +21,9 @@ use e107\Security\Jwe\Compact;
  * token hygiene; {@see SealedTokenTest::testTheSealedValuesAreNowhereInTheToken()}
  * is the one that matters.
  */
-class SealedTokenTest extends \Codeception\Test\Unit
+class SealedTokenTest extends \Test\Unit
 {
+
 	/**
 	 * @var SealedToken
 	 */

@@ -1,12 +1,12 @@
 <?php
 
 
-class e_pluginbuilderTest extends \Codeception\Test\Unit
+class e_pluginbuilderTest extends \Test\Unit
 {
 
 	/** @var e_pluginbuilder */
 	protected $pb;
-	
+
 	protected $posted;
 
 	protected function _before()
@@ -21,7 +21,7 @@ class e_pluginbuilderTest extends \Codeception\Test\Unit
 		{
 			$this->fail($e->getMessage());
 		}
-		
+
 		$this->posted = array (
 		  'xml' => 
 		  array (
@@ -451,7 +451,7 @@ class e_pluginbuilderTest extends \Codeception\Test\Unit
 				'A field name that is not an identifier became part of the shortcode batch.');
 			$this->assertStringContainsString('sc_legitimate_field', $written,
 				'The ordinary field was dropped along with the hostile one.');
-			$this->assertSame(0, $this->lintGenerated(substr($written, strlen("<?php\n"))),
+			$this->assertSame(0, $this->lintGenerated((string) substr($written, strlen("<?php\n"))),
 				'The generated shortcode batch is not valid PHP.');
 		}
 		finally

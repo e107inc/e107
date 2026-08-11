@@ -660,7 +660,7 @@ class download_shortcodes extends e_shortcode
 
 		if ($parm)
 		{
-			return substr($text, 0, $parm);
+			return (string) substr($text, 0, $parm);
 		}
 		else
 		{
@@ -726,7 +726,7 @@ class download_shortcodes extends e_shortcode
 
 		if ($maxlen)
 		{
-			return substr($text, 0, $maxlen);
+			return (string) substr($text, 0, $maxlen);
 		}
 		else
 		{
@@ -872,7 +872,7 @@ class download_shortcodes extends e_shortcode
 		/*
       	require_once(e_HANDLER."rate_class.php");
       	$rater = new rater;
-      	
+
       	$text = "
       		<table style='width:100%'>
       		<tr>

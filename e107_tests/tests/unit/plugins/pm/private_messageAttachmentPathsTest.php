@@ -8,7 +8,7 @@
  *
  */
 
-class private_messageAttachmentPathsTest extends \Codeception\Test\Unit
+class private_messageAttachmentPathsTest extends \Test\Unit
 {
 	/** @var private_message_attachment_double */
 	private $pm;

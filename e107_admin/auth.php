@@ -86,10 +86,10 @@ if (ADMIN)
 		if(e107::getUser()->getSessionDataAs())
 		{  
 			$asuser = e107::getSystemUser(e107::getUser()->getSessionDataAs(), false);
-			
+
 			$lanVars = array ('x' => ($asuser->getId() ? $asuser->getName().' ('.$asuser->getValue('email').')' : 'unknown')) ;
 			e107::getMessage()->addInfo(e107::getParser()->lanVars(ADLAN_164, $lanVars).' <a href="'.e_ADMIN_ABS.'users.php?mode=main&amp;action=logoutas">['.LAN_LOGOUT.']</a>');
-			
+
 		}
 		// NEW, legacy 3rd party code fix, header called inside the footer o.O
 		if(deftrue('e_ADMIN_UI'))

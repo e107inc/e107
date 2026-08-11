@@ -43,7 +43,7 @@ class comment_menu_shortcodes extends e_shortcode
 	{
 		return e107::getParser()->toDate($this->var['comment_datestamp'], "relative");
 	}
-		
+
 	function sc_cm_heading($parm=null)
 	{
 		if(!empty($parm['limit'])) // new v2.1.5
@@ -57,7 +57,7 @@ class comment_menu_shortcodes extends e_shortcode
 
 		return e107::getParser()->toHTML($text,false,'TITLE');
 	}
-		
+
 	function sc_cm_url_pre()
 	{
 		return ($this->var['comment_url'] ? "<a href='".$this->var['comment_url']."'>" : "");
@@ -67,17 +67,17 @@ class comment_menu_shortcodes extends e_shortcode
 	{
 		return (!empty($this->var['comment_url'])) ? $this->var['comment_url'] : '#';
 	}
-		
+
 	function sc_cm_url_post()
 	{
 		return ($this->var['comment_url'] ? "</a>" : "");
 	}
-		
+
 	function sc_cm_type()
 	{
 		return $this->var['comment_type'];
 	}
-		
+
 	function sc_cm_author()
 	{
 		return $this->var['comment_author'];
@@ -95,8 +95,8 @@ class comment_menu_shortcodes extends e_shortcode
 
 		return e107::getParser()->toAvatar($data, $parm);
 	}
-	
-	
+
+
 	function sc_cm_comment($parm=null)
 	{
 		$menu_pref 	= e107::getConfig('menu')->getPref();
@@ -109,7 +109,7 @@ class comment_menu_shortcodes extends e_shortcode
 			$menu_pref['comment_characters'] = intval($parm['limit']);
 		}
 
-		
+
 		if($menu_pref['comment_characters'] > 0)
 		{
 			$COMMENT = strip_tags($tp->toHTML($this->var['comment_comment'], TRUE, "emotes_off, no_make_clickable", "", e107::getPref('menu_wordwrap')));
@@ -118,10 +118,10 @@ class comment_menu_shortcodes extends e_shortcode
 				$COMMENT = $tp->text_truncate($COMMENT, $menu_pref['comment_characters'],'').($this->var['comment_url'] ? " <a href='".$this->var['comment_url']."'>" : "").defset($menu_pref['comment_postfix'], $menu_pref['comment_postfix']).($this->var['comment_url'] ? "</a>" : "");
 			}
 		}
-		
+
 		return $COMMENT;	
 	}
-	
+
 }
 
 

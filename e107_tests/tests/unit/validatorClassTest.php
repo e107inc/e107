@@ -1,7 +1,7 @@
 <?php
 
 
-	class validatorClassTest extends \Codeception\Test\Unit
+	class validatorClassTest extends \Test\Unit
 	{
 
 		/** @var validatorClass */

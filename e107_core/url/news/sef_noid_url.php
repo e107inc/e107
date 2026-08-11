@@ -158,15 +158,17 @@ class core_news_sef_noid_url extends eUrlConfig
 	}
 	
 	/**
-	 * Manually parse request
-	 * Pathinfo DOESN'T contain leading 'module' (e.g news or alias 'Blog')
-	 * Retruned route shouldn't contain module as well, unless you manipulate $request directly and set $request->routed to true
-	 * Mapped URLs:
-	 * - news/News-Item -> extend.xxx
-	 * - news/Category/Category-Name?page=10 -> list.xxx.10
-	 * - news/Day|Month-xxx -> day|month-xxx
-	 */
-	public function parse($pathInfo, $params = array(), eRequest|null $request = null, eRouter|null $router = null, $config = array())
+     * Manually parse request
+     * Pathinfo DOESN'T contain leading 'module' (e.g news or alias 'Blog')
+     * Retruned route shouldn't contain module as well, unless you manipulate $request directly and set $request->routed to true
+     * Mapped URLs:
+     * - news/News-Item -> extend.xxx
+     * - news/Category/Category-Name?page=10 -> list.xxx.10
+     * - news/Day|Month-xxx -> day|month-xxx
+     * @param \eRequest|null $request
+     * @param \eRouter|null $router
+     */
+    public function parse($pathInfo, $params = array(), $request = null, $router = null, $config = array())
 	{
 
 		$page = !empty($params['page']) ? intval($params['page']) : '0';

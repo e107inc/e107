@@ -38,6 +38,9 @@ class SourceContract
 	public static function methodBody($class, $method)
 	{
 		$reflection = new \ReflectionMethod($class, $method);
+        if (PHP_VERSION_ID < 80100) {
+            $reflection->setAccessible(true);
+        }
 		$lines = file($reflection->getFileName());
 		$start = $reflection->getStartLine() - 1;
 

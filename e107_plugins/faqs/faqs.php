@@ -604,7 +604,7 @@ class faq
 		$sql 	= e107::getDb();
 		$tp 	= e107::getParser();
 		//require_once (e_PLUGIN."faqs/faqs_shortcodes.php");
-		
+
 		$sc = e107::getScBatch('faqs',TRUE);
 
 		$sql->createQueryBuilder()->select('*')->from('faqs')->where('faq_id', (int) $idx)->limit(1)->execute();
@@ -684,7 +684,7 @@ class faq
 	function faq_footer($id='')
 	{
         global $faqpref,$timing_start,$cust_footer, $CUSTOMPAGES, $CUSTOMHEADER, $CUSTOMHEADER;
-        
+
         $tp = e107::getParser();
 
         $text_menu .= "<div style='text-align:center;' ><br />
@@ -693,11 +693,11 @@ class faq
         if(check_class($faqpref['add_faq'])){
                 $text_menu .="[&nbsp;<a href='faqs.php?new.$id'>".LAN_FAQS_ASK_A_QUESTION."</a>&nbsp;]";
         }
-        
+
         $text_menu .="</div>";
 
 		$text_menu .= "<div style='text-align:center'><br />".$tp->parseTemplate("{SEARCH=faqs}")."</div>";
-       	
+
        	return $text_menu;
 
 		// require_once (FOOTERF);

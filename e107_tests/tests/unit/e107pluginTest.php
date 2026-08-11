@@ -9,7 +9,7 @@
 	 */
 
 
-	class e107pluginTest extends \Codeception\Test\Unit
+	class e107pluginTest extends \Test\Unit
 	{
 
 		/** @var e107plugin */
@@ -274,7 +274,7 @@
 			      ),
 		     )
 			);
-			
+
 			$expected = array ( 
 				0 => array (  
 					'name' => 'plugin_test_custom',  
@@ -292,8 +292,8 @@
 					'source' => 'plugin_test',
 				), 
 			); 
-			
-			
+
+
 
 			$result = $this->ep->XmlExtendedFields('test', $extendedVars);
 

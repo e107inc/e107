@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace GuzzleHttp\Psr7;
 
 final class Header
@@ -13,8 +11,9 @@ final class Header
      * contains a key, this function will inject a key with a '' string value.
      *
      * @param string|array $header Header to parse into components.
+     * @return mixed[]
      */
-    public static function parse($header): array
+    public static function parse($header)
     {
         static $trimmed = "\"'  \n\t\r";
         $params = $matches = [];
@@ -48,8 +47,9 @@ final class Header
      * @param string|array $header Header to normalize.
      *
      * @deprecated Use self::splitList() instead.
+     * @return mixed[]
      */
-    public static function normalize($header): array
+    public static function normalize($header)
     {
         $result = [];
         foreach ((array) $header as $value) {
@@ -74,7 +74,7 @@ final class Header
      *
      * @return string[]
      */
-    public static function splitList($values): array
+    public static function splitList($values)
     {
         if (!\is_array($values)) {
             $values = [$values];

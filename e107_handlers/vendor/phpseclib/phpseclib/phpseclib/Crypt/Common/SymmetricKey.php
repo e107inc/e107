@@ -947,8 +947,8 @@ abstract class SymmetricKey
 
                 $key = Blowfish::bcrypt_pbkdf($password, $salt, $keylen + $this->block_size, $rounds);
 
-                $this->setKey(substr($key, 0, $keylen));
-                $this->setIV(substr($key, $keylen));
+                $this->setKey((string) substr($key, 0, $keylen));
+                $this->setIV((string) substr($key, $keylen));
 
                 return true;
             case 'pkcs12': // from https://tools.ietf.org/html/rfc7292#appendix-B.2
@@ -1015,7 +1015,7 @@ abstract class SymmetricKey
                                 $s .= $salt;
                             }
                         }
-                        $s = substr($s, 0, $blockLength);
+                        $s = (string) substr($s, 0, $blockLength);
 
                         $p = '';
                         if (strlen($password)) {
@@ -1023,7 +1023,7 @@ abstract class SymmetricKey
                                 $p .= $password;
                             }
                         }
-                        $p = substr($p, 0, $blockLength);
+                        $p = (string) substr($p, 0, $blockLength);
 
                         $i = $s . $p;
 
@@ -1041,11 +1041,11 @@ abstract class SymmetricKey
                         for ($i = 0; $i < $count; ++$i) {
                             $t = $hashObj->hash($t);
                         }
-                        $key = substr($t, 0, $dkLen);
+                        $key = (string) substr($t, 0, $dkLen);
 
-                        $this->setKey(substr($key, 0, $dkLen >> 1));
+                        $this->setKey((string) substr($key, 0, $dkLen >> 1));
                         if ($this->usesIV()) {
-                            $this->setIV(substr($key, $dkLen >> 1));
+                            $this->setIV((string) substr($key, $dkLen >> 1));
                         }
 
                         return true;
@@ -1060,7 +1060,7 @@ abstract class SymmetricKey
                             }
                             $key .= $f;
                         }
-                        $key = substr($key, 0, $dkLen);
+                        $key = (string) substr($key, 0, $dkLen);
                         break;
                     default:
                         $key = hash_pbkdf2($hash, $password, $salt, $count, $dkLen, true);
@@ -1110,11 +1110,11 @@ abstract class SymmetricKey
             while (strlen($b) < $blockLength) {
                 $b .= $ai;
             }
-            $b = substr($b, 0, $blockLength);
+            $b = (string) substr($b, 0, $blockLength);
             $b = new BigInteger($b, 256);
             $newi = '';
             for ($k = 0; $k < strlen($i); $k += $blockLength) {
-                $temp = substr($i, $k, $blockLength);
+                $temp = (string) substr($i, $k, $blockLength);
                 $temp = new BigInteger($temp, 256);
                 $temp->setPrecision($blockLength << 3);
                 $temp = $temp->add($b);
@@ -1125,7 +1125,7 @@ abstract class SymmetricKey
             $a .= $ai;
         }
 
-        return substr($a, 0, $n);
+        return (string) substr($a, 0, $n);
     }
 
     /**
@@ -1193,7 +1193,7 @@ abstract class SymmetricKey
                 case self::MODE_CBC:
                     $result = openssl_encrypt($plaintext, $this->cipher_name_openssl, $this->key, OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING, $this->encryptIV);
                     if ($this->continuousBuffer) {
-                        $this->encryptIV = substr($result, -$this->block_size);
+                        $this->encryptIV = (string) substr($result, -$this->block_size);
                     }
                     return $result;
                 case self::MODE_CTR:
@@ -1226,7 +1226,7 @@ abstract class SymmetricKey
                         // ie. $i = min($max, $len), $len-= $i, $pos+= $i, $pos%= $blocksize
                         $ciphertext = substr($iv, $orig_pos) ^ $plaintext;
                         $iv = substr_replace($iv, $ciphertext, $orig_pos, $i);
-                        $plaintext = substr($plaintext, $i);
+                        $plaintext = (string) substr($plaintext, $i);
                     }
 
                     $overflow = $len % $this->block_size;
@@ -1242,7 +1242,7 @@ abstract class SymmetricKey
                         $pos = $overflow;
                     } elseif ($len) {
                         $ciphertext = openssl_encrypt($plaintext, $this->cipher_name_openssl, $this->key, OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING, $iv);
-                        $iv = substr($ciphertext, -$this->block_size);
+                        $iv = (string) substr($ciphertext, -$this->block_size);
                     }
 
                     return $ciphertext;
@@ -1250,7 +1250,7 @@ abstract class SymmetricKey
                     $ciphertext = openssl_encrypt($plaintext, $this->cipher_name_openssl, $this->key, OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING, $this->encryptIV);
                     if ($this->continuousBuffer) {
                         if (($len = strlen($ciphertext)) >= $this->block_size) {
-                            $this->encryptIV = substr($ciphertext, -$this->block_size);
+                            $this->encryptIV = (string) substr($ciphertext, -$this->block_size);
                         } else {
                             $this->encryptIV = substr($this->encryptIV, $len - $this->block_size) . substr($ciphertext, -$len);
                         }
@@ -1316,8 +1316,8 @@ abstract class SymmetricKey
                             mcrypt_generic_init($this->enmcrypt, $this->key, $iv);
                             $this->enbuffer['enmcrypt_init'] = false;
                         }
-                        $ciphertext .= mcrypt_generic($this->enmcrypt, substr($plaintext, $i, $len - $len % $block_size));
-                        $iv = substr($ciphertext, -$block_size);
+                        $ciphertext .= mcrypt_generic($this->enmcrypt, (string) substr($plaintext, $i, $len - $len % $block_size));
+                        $iv = (string) substr($ciphertext, -$block_size);
                         $len %= $block_size;
                     } else {
                         while ($len >= $block_size) {
@@ -1364,13 +1364,13 @@ abstract class SymmetricKey
         switch ($this->mode) {
             case self::MODE_ECB:
                 for ($i = 0; $i < strlen($plaintext); $i += $block_size) {
-                    $ciphertext .= $this->encryptBlock(substr($plaintext, $i, $block_size));
+                    $ciphertext .= $this->encryptBlock((string) substr($plaintext, $i, $block_size));
                 }
                 break;
             case self::MODE_CBC:
                 $xor = $this->encryptIV;
                 for ($i = 0; $i < strlen($plaintext); $i += $block_size) {
-                    $block = substr($plaintext, $i, $block_size);
+                    $block = (string) substr($plaintext, $i, $block_size);
                     $block = $this->encryptBlock($block ^ $xor);
                     $xor = $block;
                     $ciphertext .= $block;
@@ -1383,7 +1383,7 @@ abstract class SymmetricKey
                 $xor = $this->encryptIV;
                 if (strlen($buffer['ciphertext'])) {
                     for ($i = 0; $i < strlen($plaintext); $i += $block_size) {
-                        $block = substr($plaintext, $i, $block_size);
+                        $block = (string) substr($plaintext, $i, $block_size);
                         if (strlen($block) > strlen($buffer['ciphertext'])) {
                             $buffer['ciphertext'] .= $this->encryptBlock($xor);
                             Strings::increment_str($xor);
@@ -1393,7 +1393,7 @@ abstract class SymmetricKey
                     }
                 } else {
                     for ($i = 0; $i < strlen($plaintext); $i += $block_size) {
-                        $block = substr($plaintext, $i, $block_size);
+                        $block = (string) substr($plaintext, $i, $block_size);
                         $key = $this->encryptBlock($xor);
                         Strings::increment_str($xor);
                         $ciphertext .= $block ^ $key;
@@ -1460,7 +1460,7 @@ abstract class SymmetricKey
 
                 if ($this->continuousBuffer) {
                     if ($len >= $block_size) {
-                        $this->encryptIV = substr($ciphertext, -$block_size);
+                        $this->encryptIV = (string) substr($ciphertext, -$block_size);
                     } else {
                         $this->encryptIV = substr($this->encryptIV, $len - $block_size) . substr($ciphertext, -$len);
                     }
@@ -1485,7 +1485,7 @@ abstract class SymmetricKey
                 $xor = $this->encryptIV;
                 if (strlen($buffer['xor'])) {
                     for ($i = 0; $i < strlen($plaintext); $i += $block_size) {
-                        $block = substr($plaintext, $i, $block_size);
+                        $block = (string) substr($plaintext, $i, $block_size);
                         if (strlen($block) > strlen($buffer['xor'])) {
                             $xor = $this->encryptBlock($xor);
                             $buffer['xor'] .= $xor;
@@ -1583,7 +1583,7 @@ abstract class SymmetricKey
                     $offset = $this->block_size;
                     $plaintext = openssl_decrypt($ciphertext, $this->cipher_name_openssl, $this->key, OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING, $this->decryptIV);
                     if ($this->continuousBuffer) {
-                        $this->decryptIV = substr($ciphertext, -$offset, $this->block_size);
+                        $this->decryptIV = (string) substr($ciphertext, -$offset, $this->block_size);
                     }
                     break;
                 case self::MODE_CTR:
@@ -1616,29 +1616,29 @@ abstract class SymmetricKey
                         }
                         // ie. $i = min($max, $len), $len-= $i, $pos+= $i, $pos%= $this->blocksize
                         $plaintext = substr($iv, $orig_pos) ^ $ciphertext;
-                        $iv = substr_replace($iv, substr($ciphertext, 0, $i), $orig_pos, $i);
-                        $ciphertext = substr($ciphertext, $i);
+                        $iv = substr_replace($iv, (string) substr($ciphertext, 0, $i), $orig_pos, $i);
+                        $ciphertext = (string) substr($ciphertext, $i);
                     }
                     $overflow = $len % $this->block_size;
                     if ($overflow) {
-                        $plaintext .= openssl_decrypt(substr($ciphertext, 0, -$overflow), $this->cipher_name_openssl, $this->key, OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING, $iv);
+                        $plaintext .= openssl_decrypt((string) substr($ciphertext, 0, -$overflow), $this->cipher_name_openssl, $this->key, OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING, $iv);
                         if ($len - $overflow) {
-                            $iv = substr($ciphertext, -$overflow - $this->block_size, -$overflow);
+                            $iv = (string) substr($ciphertext, -$overflow - $this->block_size, -$overflow);
                         }
                         $iv = openssl_encrypt(str_repeat("\0", $this->block_size), $this->cipher_name_openssl, $this->key, OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING, $iv);
                         $plaintext .= $iv ^ substr($ciphertext, -$overflow);
-                        $iv = substr_replace($iv, substr($ciphertext, -$overflow), 0, $overflow);
+                        $iv = substr_replace($iv, (string) substr($ciphertext, -$overflow), 0, $overflow);
                         $pos = $overflow;
                     } elseif ($len) {
                         $plaintext .= openssl_decrypt($ciphertext, $this->cipher_name_openssl, $this->key, OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING, $iv);
-                        $iv = substr($ciphertext, -$this->block_size);
+                        $iv = (string) substr($ciphertext, -$this->block_size);
                     }
                     break;
                 case self::MODE_CFB8:
                     $plaintext = openssl_decrypt($ciphertext, $this->cipher_name_openssl, $this->key, OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING, $this->decryptIV);
                     if ($this->continuousBuffer) {
                         if (($len = strlen($ciphertext)) >= $this->block_size) {
-                            $this->decryptIV = substr($ciphertext, -$this->block_size);
+                            $this->decryptIV = (string) substr($ciphertext, -$this->block_size);
                         } else {
                             $this->decryptIV = substr($this->decryptIV, $len - $this->block_size) . substr($ciphertext, -$len);
                         }
@@ -1695,18 +1695,18 @@ abstract class SymmetricKey
                     }
                     // ie. $i = min($max, $len), $len-= $i, $pos+= $i, $pos%= $blocksize
                     $plaintext = substr($iv, $orig_pos) ^ $ciphertext;
-                    $iv = substr_replace($iv, substr($ciphertext, 0, $i), $orig_pos, $i);
+                    $iv = substr_replace($iv, (string) substr($ciphertext, 0, $i), $orig_pos, $i);
                 }
                 if ($len >= $block_size) {
-                    $cb = substr($ciphertext, $i, $len - $len % $block_size);
+                    $cb = (string) substr($ciphertext, $i, $len - $len % $block_size);
                     $plaintext .= mcrypt_generic($this->ecb, $iv . $cb) ^ $cb;
-                    $iv = substr($cb, -$block_size);
+                    $iv = (string) substr($cb, -$block_size);
                     $len %= $block_size;
                 }
                 if ($len) {
                     $iv = mcrypt_generic($this->ecb, $iv);
                     $plaintext .= $iv ^ substr($ciphertext, -$len);
-                    $iv = substr_replace($iv, substr($ciphertext, -$len), 0, $len);
+                    $iv = substr_replace($iv, (string) substr($ciphertext, -$len), 0, $len);
                     $pos = $len;
                 }
 
@@ -1738,13 +1738,13 @@ abstract class SymmetricKey
         switch ($this->mode) {
             case self::MODE_ECB:
                 for ($i = 0; $i < strlen($ciphertext); $i += $block_size) {
-                    $plaintext .= $this->decryptBlock(substr($ciphertext, $i, $block_size));
+                    $plaintext .= $this->decryptBlock((string) substr($ciphertext, $i, $block_size));
                 }
                 break;
             case self::MODE_CBC:
                 $xor = $this->decryptIV;
                 for ($i = 0; $i < strlen($ciphertext); $i += $block_size) {
-                    $block = substr($ciphertext, $i, $block_size);
+                    $block = (string) substr($ciphertext, $i, $block_size);
                     $plaintext .= $this->decryptBlock($block) ^ $xor;
                     $xor = $block;
                 }
@@ -1756,7 +1756,7 @@ abstract class SymmetricKey
                 $xor = $this->decryptIV;
                 if (strlen($buffer['ciphertext'])) {
                     for ($i = 0; $i < strlen($ciphertext); $i += $block_size) {
-                        $block = substr($ciphertext, $i, $block_size);
+                        $block = (string) substr($ciphertext, $i, $block_size);
                         if (strlen($block) > strlen($buffer['ciphertext'])) {
                             $buffer['ciphertext'] .= $this->encryptBlock($xor);
                             Strings::increment_str($xor);
@@ -1766,7 +1766,7 @@ abstract class SymmetricKey
                     }
                 } else {
                     for ($i = 0; $i < strlen($ciphertext); $i += $block_size) {
-                        $block = substr($ciphertext, $i, $block_size);
+                        $block = (string) substr($ciphertext, $i, $block_size);
                         $key = $this->encryptBlock($xor);
                         Strings::increment_str($xor);
                         $plaintext .= $block ^ $key;
@@ -1803,11 +1803,11 @@ abstract class SymmetricKey
                     }
                     // ie. $i = min($max, $len), $len-= $i, $pos+= $i, $pos%= $blocksize
                     $plaintext = substr($iv, $orig_pos) ^ $ciphertext;
-                    $iv = substr_replace($iv, substr($ciphertext, 0, $i), $orig_pos, $i);
+                    $iv = substr_replace($iv, (string) substr($ciphertext, 0, $i), $orig_pos, $i);
                 }
                 while ($len >= $block_size) {
                     $iv = $this->encryptBlock($iv);
-                    $cb = substr($ciphertext, $i, $block_size);
+                    $cb = (string) substr($ciphertext, $i, $block_size);
                     $plaintext .= $iv ^ $cb;
                     $iv = $cb;
                     $len -= $block_size;
@@ -1816,7 +1816,7 @@ abstract class SymmetricKey
                 if ($len) {
                     $iv = $this->encryptBlock($iv);
                     $plaintext .= $iv ^ substr($ciphertext, $i);
-                    $iv = substr_replace($iv, substr($ciphertext, $i), 0, $len);
+                    $iv = substr_replace($iv, (string) substr($ciphertext, $i), 0, $len);
                     $pos = $len;
                 }
                 break;
@@ -1832,7 +1832,7 @@ abstract class SymmetricKey
 
                 if ($this->continuousBuffer) {
                     if ($len >= $block_size) {
-                        $this->decryptIV = substr($ciphertext, -$block_size);
+                        $this->decryptIV = (string) substr($ciphertext, -$block_size);
                     } else {
                         $this->decryptIV = substr($this->decryptIV, $len - $block_size) . substr($ciphertext, -$len);
                     }
@@ -1857,7 +1857,7 @@ abstract class SymmetricKey
                 $xor = $this->decryptIV;
                 if (strlen($buffer['xor'])) {
                     for ($i = 0; $i < strlen($ciphertext); $i += $block_size) {
-                        $block = substr($ciphertext, $i, $block_size);
+                        $block = (string) substr($ciphertext, $i, $block_size);
                         if (strlen($block) > strlen($buffer['xor'])) {
                             $xor = $this->encryptBlock($xor);
                             $buffer['xor'] .= $xor;
@@ -1918,7 +1918,7 @@ abstract class SymmetricKey
 
         return $length == 16 ?
             $this->newtag :
-            substr($this->newtag, 0, $length);
+            (string) substr($this->newtag, 0, $length);
     }
 
     /**
@@ -1989,7 +1989,7 @@ abstract class SymmetricKey
             $xor = $encryptIV;
             if (strlen($buffer['ciphertext'])) {
                 for ($i = 0; $i < strlen($plaintext); $i += $block_size) {
-                    $block = substr($plaintext, $i, $block_size);
+                    $block = (string) substr($plaintext, $i, $block_size);
                     if (strlen($block) > strlen($buffer['ciphertext'])) {
                         $buffer['ciphertext'] .= openssl_encrypt($xor, $this->cipher_name_openssl_ecb, $key, OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING);
                     }
@@ -1999,7 +1999,7 @@ abstract class SymmetricKey
                 }
             } else {
                 for ($i = 0; $i < strlen($plaintext); $i += $block_size) {
-                    $block = substr($plaintext, $i, $block_size);
+                    $block = (string) substr($plaintext, $i, $block_size);
                     $otp = openssl_encrypt($xor, $this->cipher_name_openssl_ecb, $key, OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING);
                     Strings::increment_str($xor);
                     $ciphertext .= $block ^ $otp;
@@ -2017,7 +2017,7 @@ abstract class SymmetricKey
 
         if (strlen($buffer['ciphertext'])) {
             $ciphertext = $plaintext ^ Strings::shift($buffer['ciphertext'], strlen($plaintext));
-            $plaintext = substr($plaintext, strlen($ciphertext));
+            $plaintext = (string) substr($plaintext, strlen($ciphertext));
 
             if (!strlen($plaintext)) {
                 return $ciphertext;
@@ -2031,7 +2031,7 @@ abstract class SymmetricKey
             $temp = Strings::pop($encrypted, $block_size);
             $ciphertext .= $encrypted . ($plaintext2 ^ $temp);
             if ($this->continuousBuffer) {
-                $buffer['ciphertext'] = substr($temp, $overflow);
+                $buffer['ciphertext'] = (string) substr($temp, $overflow);
                 $encryptIV = $temp;
             }
         } elseif (!strlen($buffer['ciphertext'])) {
@@ -2069,8 +2069,8 @@ abstract class SymmetricKey
     {
         if (strlen($buffer['xor'])) {
             $ciphertext = $plaintext ^ $buffer['xor'];
-            $buffer['xor'] = substr($buffer['xor'], strlen($ciphertext));
-            $plaintext = substr($plaintext, strlen($ciphertext));
+            $buffer['xor'] = (string) substr($buffer['xor'], strlen($ciphertext));
+            $plaintext = (string) substr($plaintext, strlen($ciphertext));
         } else {
             $ciphertext = '';
         }
@@ -2600,7 +2600,7 @@ abstract class SymmetricKey
             throw new BadDecryptionException("The ciphertext has an invalid padding length ($length) compared to the block size ({$this->block_size})");
         }
 
-        return substr($text, 0, -$length);
+        return (string) substr($text, 0, -$length);
     }
 
     /**
@@ -3309,7 +3309,7 @@ abstract class SymmetricKey
             $t = $y[$n] ^ $xn;
             $temp = self::$gcmField->newInteger($t);
             $y[++$n] = $temp->multiply($h)->toBytes();
-            $y[$n] = substr($y[$n], 1);
+            $y[$n] = (string) substr($y[$n], 1);
         }
         $y[$n] = Strings::switchEndianness($y[$n]);
         return $y[$n];

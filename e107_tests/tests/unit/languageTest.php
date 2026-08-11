@@ -1,7 +1,7 @@
 <?php
 
 
-	class languageTest extends \Codeception\Test\Unit
+	class languageTest extends \Test\Unit
 	{
 
 		/** @var language */

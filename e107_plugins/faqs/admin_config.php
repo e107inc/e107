@@ -114,9 +114,9 @@ class faq_cat_ui extends e_admin_ui
 	public function init()
 	{
 		$sql = e107::getDb();
-		
+
 		$this->categories[0] = "(".LAN_ROOT.")";
-		
+
 		$rows = $sql->createQueryBuilder()
 			->select('*')->from('faqs_info')
 			->where('faq_info_parent', 0)
@@ -126,9 +126,9 @@ class faq_cat_ui extends e_admin_ui
 		{
 			$this->categories[$row['faq_info_id']] = $row['faq_info_title'];
 		}
-		
+
 		$this->fields['faq_info_parent']['writeParms'] = $this->categories;
-		
+
 		/*
 		if(e_AJAX_REQUEST) // ajax link sorting. 
 		{
@@ -142,8 +142,8 @@ class faq_cat_ui extends e_admin_ui
 					$c++;		
 				}	
 			}
-			
-		
+
+
 			exit;
 		}		
 		*/

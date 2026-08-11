@@ -282,7 +282,7 @@ class e_menuManager
 			}	
 			unset($hd,$ft);
 		}
-			
+
       	if(($this->curLayout == 'legacyCustom' || $this->curLayout=='legacyDefault') && (isset($CUSTOMHEADER) || isset($CUSTOMFOOTER)) )  // 0.6 themes.
 		{
 		 	if($this->curLayout == 'legacyCustom')
@@ -758,7 +758,7 @@ class e_menuManager
 			}
 			else
 			{
-				$menuName = substr($row['menu_name'],0,-5);
+				$menuName = (string) substr($row['menu_name'],0,-5);
 			}
 
 			$menuName = varset($menuName);
@@ -835,9 +835,9 @@ class e_menuManager
 		$frm = e107::getForm();
 		$tp = e107::getParser();
 
-		
+
 		require_once(e_HANDLER."userclass_class.php");
-		
+
 		$row = $sql->createQueryBuilder()->select('*')->from('menus')->where('menu_id', (int) $_GET['vis'])->fetchRow();
 
 		if(!$row)
@@ -847,7 +847,7 @@ class e_menuManager
 		}
 
 		$listtype 	= substr($row['menu_pages'], 0, 1);
-		$menu_pages = substr($row['menu_pages'], 2);
+		$menu_pages = (string) substr($row['menu_pages'], 2);
 		$menu_pages = str_replace("|", "\n", $menu_pages);
 
 		$text = "<div>
@@ -865,45 +865,45 @@ class e_menuManager
 			<tr><td><div class='radio'>
 		";
 		$checked = ($listtype == 1) ? " checked='checked' " : "";
-		
+
 		$text .= $frm->radio('listtype', 1, $checked, array('label'=>$tp->toHTML(MENLAN_26,true), 'class'=> 'e-save'));
 		$text .= "<br />";
 	//	$text .= "<input type='radio' class='e-save' {$checked} name='listtype' value='1' /> ".MENLAN_26."<br />";
 		$checked = ($listtype == 2) ? " checked='checked' " : "";
-		
+
 		$text .= $frm->radio('listtype', 2, $checked, array('label'=> $tp->toHTML(MENLAN_27,true), 'class'=> 'e-save'));
-		
-		
+
+
 		// $text .= "<input type='radio' class='e-save' {$checked} name='listtype' value='2' /> ".MENLAN_27."<br />";
-		
+
 		$text .= "</div>
 		<div class='row' style='padding:10px'>
-			
+
 			<div class='pull-left span3' >
-		
+
 				<textarea name='pagelist' class='e-save span3 tbox' cols='60' rows='8'>" . $menu_pages . "</textarea>
 			</div>
 			<div class='  span4 col-md-4'><small>".MENLAN_28."</small></div>
 		</div></td></tr>
 		</table>";
-		
+
 		$text .= $frm->hidden('mode','visibility'); 
 		$text .= $frm->hidden('menu_id',intval($_GET['vis'])); // "<input type='hidden' name='menu_id' value='".intval($_GET['vis'])."' />";
-		
+
 		/*
 		$text .= "
 		<div class='buttons-bar center'>";
         $text .= $frm->admin_button('class_submit', MENLAN_6, 'update');
 
-		
+
 		</div>";
 		 */ 
 		$text .= "
 		</fieldset>
 		</form>
 		</div>";
-	
-		
+
+
 		return $text;
 		//$caption = MENLAN_7." ".$row['menu_name'];
 		//$ns->tablerender($caption, $text);
@@ -1117,7 +1117,7 @@ class e_menuManager
 		if($sql->createQueryBuilder()->update('menus')->setTyped('menu_class', intval($_POST['menu_class']), 'escape')->setTyped('menu_pages', $pageparms, 'escape')->where('menu_id', intval($_POST['menu_id']))->execute())
 		{
 			e107::getLog()->add('MENU_02',$_POST['menu_class'].'[!br!]'.$pageparms.'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
-						
+
 			return array('msg'=>LAN_UPDATED, 'error'=> false);
 			//$this->menuAddMessage($message,E_MESSAGE_SUCCESS);
 		}
@@ -1293,7 +1293,7 @@ class e_menuManager
 
 	//	echo "<div id='portal'>";
 		$this->parseheader($HEADER);  // $layouts_str;
-		
+
 		$layout = ($this->curLayout);
 		$menuPreset = $this->getMenuPreset();
 
@@ -1307,8 +1307,8 @@ class e_menuManager
 		<td style='color:#2F2F2F;width:50%;padding-bottom:8px;text-align:center'>...".MENLAN_37."</td></tr>";
 		$text .= "<tr><td  style='width:35%;vertical-align:top;text-align:center'>";
 
-	 
-		
+
+
 
 
 
@@ -1329,7 +1329,7 @@ class e_menuManager
 		$pluginMenu = array();
 
 		$done = array();
-		
+
 		$rows = $sql->createQueryBuilder()->select('menu_name', 'menu_id', 'menu_pages', 'menu_path')->from('menus')->orderBy('menu_name', 'ASC')->fetchAll();
 		foreach ($rows as $row)
 		{
@@ -1358,7 +1358,7 @@ class e_menuManager
 		{	
 			$text .= $this->renderOptionRow($row);	
 		}
-		
+
 		$text .= "<tr><th colspan='2' >".MENLAN_50."</th></tr>";
 		foreach($pluginMenu as $row)
 		{	
@@ -1393,13 +1393,13 @@ class e_menuManager
 		{
 			$text = "<div class='alert alert-block alert-warning text-left'>";
 			$text .= MENLAN_51."<br />";
-			
+
 			if(isset($this->customMenu) && count($this->customMenu))
 			{
 				$text .= "<p>".MENLAN_52."<ul ><li>".implode("</li><li>",$this->customMenu)."</li></ul></p>";	
 				$text .= "<p><a href='".e_ADMIN."cpage.php?mode=menu&action=list&tab=2' class='button btn btn-primary'>".MENLAN_53."</a></p>";
 			}
-			
+
 			$text .= "</div>";
 		}
 	//	$ns -> tablerender(MENLAN_22.'blabla', $text);
@@ -1550,7 +1550,7 @@ class e_menuManager
 
 			//TODO Store in a central area - currently used in header.php, header_default.php and here.
 			echo '
-       
+
 	         <div id="uiModal" class="modal  fade" tabindex="-1" role="dialog"  aria-hidden="true">
 	            <div class="modal-dialog modal-lg">
 					<div class="modal-content">
@@ -1558,11 +1558,11 @@ class e_menuManager
 	                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 	                        <h4 class="modal-caption">&nbsp;</h4>
 	                     </div>
-	
+
 	                    <div class="modal-body">
 	                        <p>Loading…</p>
 	                    </div>
-	
+
 	                    <div class="modal-footer">
 	                        <a href="#" data-dismiss="modal" class="btn btn-primary">Close</a>
 	                    </div>
@@ -1629,12 +1629,12 @@ class e_menuManager
 			{
 				$link = e_PLUGIN . "{$plug}/{$plug}_config.php";
 			}
-			
+
 			if(file_exists((e_PLUGIN . $plug . "/config.php")))
 			{
 				$link = e_PLUGIN . $plug . "/config.php";
 			}
-			
+
 		//	$plugtext = "<div class='menu-panel'>";
 		//	$plugtext .= "<div class='menu-panel-header' title=\"".MENLAN_34."\">".$plug."</div>";
 			$plugtext = (varset($link)) ? "(" . MENLAN_34 . ":<a href='$link btn-menu' title='" . LAN_CONFIGURE . "'>" . LAN_CONFIGURE . "</a>)" : "";
@@ -1673,7 +1673,7 @@ class e_menuManager
 					{
 						unset($text);
 						$menuText .= $rs->form_open("post", e_SELF . "?configure=" . $this->curLayout, "frm_menu_" . intval($menu));
-						
+
 					//	$rows = $sql9->retrieve("menus", "*", "menu_location='$menu' AND menu_layout='" . $this->dbLayout . "' ORDER BY menu_order",true);
 						$rows = $this->menuData[$menu];
 					//	$menu_count = $sql9->db_Rows();
@@ -1686,24 +1686,24 @@ class e_menuManager
 						}
 
 						$cl = ($this->dragDrop) ? "'portlet" : "regularMenu";
-						
+
 						$menuText .= "\n<div class='column' id='area-".$menu."'>\n\n";
 					//	while($row = $sql9->fetch())
 						foreach($rows as $row)
 						{
 							$menuText .= "\n\n\n <!-- Menu Start ".$row['menu_name']. "-->\n";
 							$menuText .= "<div class='{$cl}' id='block-".$row['menu_id']."-".$menu."'>\n";
-		
+
 						//	echo "<div class='ggportal'>";
-							
+
 						//	$menuText .= "hi there";
 							$menuText .= $this->menuRenderMenu($row, $menu_count);
-							
+
 						//	echo "\n</div>";
 							$menuText .= "\n</div>\n";
 							$menuText .= "<!-- Menu end -->\n\n\n";
 							// echo "<div><br /></div>";
-						
+
 						}
 						$menuText .= "\n\n</div>\n\n"; // End Column 
 						$menuText .= $rs->form_close();
@@ -1712,18 +1712,18 @@ class e_menuManager
 					{	// placeholder
 						$menuText .=  "<div class='column' id='area-" . $menu . "'><!-- --></div>";
 					}
-					
+
 					$menuText .= "</div><!-- END OF AREA -->\n\n";
-					
+
 					// ---------------
-					
-					
+
+
 					if(isset($sc_style['MENU']['post']) && strpos($str, 'ret') !== false)
 					{
 						$menuText .= $sc_style['MENU']['post'];
 					}
-					
-					
+
+
 				}
 
 				echo $menuText;
@@ -1869,10 +1869,10 @@ class e_menuManager
 		
 		if(!$this->dragDrop)
 		{
-				
+
 			return "<span class='muted'>".$caption."</span><br />". $text;
 		//	return;
-	
+
 
 		//	return $ns->tablerender($caption, $text,'', true); Theme style too unpredictable. 
 			
@@ -1896,20 +1896,20 @@ class e_menuManager
 	 */
 	function menuSaveAjax($mode = null)
 	{
-		
-		
+
+
 		if($mode == 'visibility')
 		{
-		
+
 			$ret = $this->menuSaveVisibility();	
 		//	echo json_encode($ret);
 			return null;
 		}		
-		
+
 		if($mode == 'delete')
 		{
 			list($tmp,$area) = explode("-",$_POST['area']);
-		
+
 			if($_POST['area'] == 'remove')
 			{
 				list($tmp,$deleteID) = explode("-",$_POST['removeid']);
@@ -1917,13 +1917,13 @@ class e_menuManager
 
 				$ret = $this->menuDeactivate();	
 			//	echo json_encode($ret);
-				
+
 				return null;
 			}	
-			
+
 		}
-		
-		
+
+
 		if($mode == 'parms') 
 		{
 			$ret = $this->menuSaveParameters();
@@ -1933,19 +1933,19 @@ class e_menuManager
 			}
 			return null;
 		}
-		
-		
-		
+
+
+
     // 	print_r($_POST);
 		return;
-	 
-	 
+
+
 		$this->debug = TRUE;
-		
+
 		$sql = e107::getDb();
 
 
-		
+
 
 		// Allow deletion by ajax, but not the rest when drag/drop disabled.  
 
@@ -1955,27 +1955,27 @@ class e_menuManager
 		list($tmp,$insertID) = explode("-",$_POST['insert']);	
 		$insert[] = $insertID;
 
-		
+
 
 		if($_POST['mode'] == 'insert'  && count($insert) && $area) // clear out everything before rewriting everything to db. 
 		{
 		 	$this->menuActivateLoc = $area;  // location
 			$this->menuActivateIds = $insert;  // array of ids, in order.
 			$this->menuActivate(); 
-			
+
 		}
 		elseif($_POST['mode'] == 'update')
 		{
 			$sql->createQueryBuilder()->update('menus')->set('menu_location', (int) $area)->where('menu_id', (int) $insertID)->execute();
 		}
-		
+
 		$c = 0;
-		
+
 		if(count($_POST['list'])<2)
 		{
 			return;
 		}
-		
+
 		// resort the menus in this 'Area"
 		foreach($_POST['list'] as $val)
 		{
@@ -2009,7 +2009,7 @@ class e_menuManager
 			{
 				$link = "";
 
-				$id = substr($row['menu_path'],0,-1);
+				$id = (string) substr($row['menu_path'],0,-1);
 
 				if (file_exists(e_PLUGIN."{$row['menu_path']}{$row['menu_name']}_menu_config.php"))
 				{
@@ -2149,7 +2149,7 @@ class e_mm_layout
 		{
 			e107::css('inline',"
 				.menuOption { display: none }
-			
+
 			");
 
 
@@ -2736,7 +2736,7 @@ class e_mm_layout
 
 
 		$listtype 	= substr($_GET['pages'], 0, 1);
-		$menu_pages = substr($_GET['pages'], 2);
+		$menu_pages = (string) substr($_GET['pages'], 2);
 		$menu_pages = str_replace("|", "\n", $menu_pages);
 
 		$text = "<div>
@@ -2767,9 +2767,9 @@ class e_mm_layout
 
 		$text .= "</div>
 		<div class='row' style='padding:10px'>
-			
+
 			<div class='pull-left span3' >
-		
+
 				<textarea name='pagelist' class='e-save span3' cols='60' rows='8' class='tbox'>".$menu_pages."</textarea>
 			</div>
 			<div class='  span4 col-md-4'><small>".MENLAN_28."</small></div>
@@ -2832,7 +2832,7 @@ class e_mm_layout
 					cursor: "move",
 					iframeFix: true,
 			        refreshPositions: true
-			       
+
 				});
 		 })'
 		 );

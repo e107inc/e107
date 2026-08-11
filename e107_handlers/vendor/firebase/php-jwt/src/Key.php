@@ -10,13 +10,23 @@ use TypeError;
 class Key
 {
     /**
+     * @var string|resource|OpenSSLAsymmetricKey|OpenSSLCertificate
+     */
+    private $keyMaterial;
+    /**
+     * @var string
+     */
+    private $algorithm;
+    /**
      * @param string|resource|OpenSSLAsymmetricKey|OpenSSLCertificate $keyMaterial
      * @param string $algorithm
      */
     public function __construct(
-        private $keyMaterial,
-        private string $algorithm
+        $keyMaterial,
+        $algorithm
     ) {
+        $this->keyMaterial = $keyMaterial;
+        $this->algorithm = $algorithm;
         if (
             !\is_string($keyMaterial)
             && !$keyMaterial instanceof OpenSSLAsymmetricKey
@@ -40,7 +50,7 @@ class Key
      *
      * @return string
      */
-    public function getAlgorithm(): string
+    public function getAlgorithm()
     {
         return $this->algorithm;
     }

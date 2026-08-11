@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 namespace ParagonIE\ConstantTime;
 
 use SensitiveParameter;
@@ -49,9 +48,8 @@ abstract class Binary
      * @return int
      */
     public static function safeStrlen(
-        #[SensitiveParameter]
-        string $str
-    ): int {
+        $str
+    ) {
         return strlen($str);
     }
 
@@ -69,19 +67,18 @@ abstract class Binary
      * @throws TypeError
      */
     public static function safeSubstr(
-        #[SensitiveParameter]
-        string $str,
-        int $start = 0,
-        ?int $length = null
-    ): string {
+        $str,
+        $start = 0,
+        $length = null
+    ) {
         if ($length === 0) {
             return '';
         }
         // Unlike mb_substr(), substr() doesn't accept NULL for length
         if ($length !== null) {
-            return substr($str, $start, $length);
+            return (string) substr($str, $start, $length);
         } else {
-            return substr($str, $start);
+            return (string) substr($str, $start);
         }
     }
 }

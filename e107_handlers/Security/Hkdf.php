@@ -158,7 +158,7 @@ class Hkdf
 			$okm .= $block;
 		}
 
-		return substr($okm, 0, $length);
+		return (string) substr($okm, 0, $length);
 	}
 
 	/**

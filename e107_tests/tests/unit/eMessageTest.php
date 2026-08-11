@@ -1,7 +1,7 @@
 <?php
 
 
-	class eMessageTest extends \Codeception\Test\Unit
+	class eMessageTest extends \Test\Unit
 	{
 
 		/** @var eMessage */

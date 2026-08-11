@@ -552,7 +552,7 @@ abstract class AsymmetricKey
         if (strlen($out) < $rolen) {
             return str_pad($out, $rolen, "\0", STR_PAD_LEFT);
         } elseif (strlen($out) > $rolen) {
-            return substr($out, -$rolen);
+            return (string) substr($out, -$rolen);
         } else {
             return $out;
         }

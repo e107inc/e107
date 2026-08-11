@@ -7,7 +7,7 @@
 	 */
 
 
-	class lancheckTest extends \Codeception\Test\Unit
+	class lancheckTest extends \Test\Unit
 	{
 
 		/** @var lancheck */

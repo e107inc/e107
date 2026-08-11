@@ -16,22 +16,41 @@
 	 * mechanism that lets the CI gate fail only on NET-NEW unsafe-concat sites
 	 * while tolerating the reviewed, documented residue. Pure logic - it needs
 	 * only the CallSite value object and DeferralBaseline, not the AST parser.
+	 *
+	 * _before() loads e107_tests/_tools/src (PHP 8.1-only), so never a legacy cell.
+	 *
+	 * @group requires-modern-php
 	 */
-	class deferralBaselineTest extends \Codeception\Test\Unit
+	class deferralBaselineTest extends \Test\Unit
 	{
+
 		protected function _before()
 		{
 			require_once(e_BASE.'e107_tests/_tools/src/CallSite.php');
 			require_once(e_BASE.'e107_tests/_tools/src/DeferralBaseline.php');
 		}
 
-		private function unsafe(string $file, int $line, string $method, string $excerpt): CallSite
+		/**
+         * @param string $file
+         * @param int $line
+         * @param string $method
+         * @param string $excerpt
+         * @return \E107\SqliScan\CallSite
+         */
+        private function unsafe($file, $line, $method, $excerpt)
 		{
 			return new CallSite($file, $line, $method, '$sql', CallSite::SAFETY_UNSAFE,
 				CallSite::TIER_EXECUTE_BINDS, $excerpt, 'test', false);
 		}
 
-		private function safeSite(string $file, int $line, string $method, string $excerpt): CallSite
+		/**
+         * @param string $file
+         * @param int $line
+         * @param string $method
+         * @param string $excerpt
+         * @return \E107\SqliScan\CallSite
+         */
+        private function safeSite($file, $line, $method, $excerpt)
 		{
 			return new CallSite($file, $line, $method, '$sql', CallSite::SAFETY_STATIC,
 				CallSite::TIER_STATIC_EXECUTE, $excerpt, 'test', false);

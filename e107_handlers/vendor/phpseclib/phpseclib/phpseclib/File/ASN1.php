@@ -271,7 +271,7 @@ abstract class ASN1
             // technically, the long form of the length can be represented by up to 126 octets (bytes), but we'll only
             // support it up to four.
             $length &= 0x7F;
-            $temp = substr($encoded, $encoded_pos, $length);
+            $temp = (string) substr($encoded, $encoded_pos, $length);
             $encoded_pos += $length;
             // tags of indefinte length don't really have a header length; this length includes the tag
             $current += ['headerlength' => $length + 2];
@@ -285,7 +285,7 @@ abstract class ASN1
             return false;
         }
 
-        $content = substr($encoded, $encoded_pos, $length);
+        $content = (string) substr($encoded, $encoded_pos, $length);
         $content_pos = 0;
 
         // at this point $length can be overwritten. it's only accurate for definite length things as is
@@ -530,7 +530,7 @@ abstract class ASN1
                 $intype = $decoded['type'];
                 // !isset(self::ANY_MAP[$intype]) produces a fatal error on PHP 5.6
                 if (isset($decoded['constant']) || !array_key_exists($intype, self::ANY_MAP) || (ord(self::$encoded[$decoded['start']]) & 0x20)) {
-                    return new Element(substr(self::$encoded, $decoded['start'], $decoded['length']));
+                    return new Element((string) substr(self::$encoded, $decoded['start'], $decoded['length']));
                 }
                 $inmap = self::ANY_MAP[$intype];
                 if (is_string($inmap)) {
