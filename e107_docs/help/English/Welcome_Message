@@ -1,3 +1,37 @@
+H1> What is the Welcome Message?
 
-Q>	What's this section for?
-A>	You can enter some text here that will always be displayed above your news items on the front page. You can enter a different message for Guests, Members and Administrators.
+P> The Welcome Message is a block of text that always appears above your news items on the front page. You can tailor it to three different audiences so each visitor sees exactly what is relevant to them.
+
+SHOT> welcome/message-welcome.png | The welcome block as visitors see it on the front page
+
+NOTE> You can use BBCode and even [b]inline HTML[/b] in your welcome message. Keep it short – this is the first thing your visitors read.
+
+H1> Where to configure it
+
+STEP> Log in to the Admin Area.
+STEP> Open [b]Welcome Message[/b] from the admin menu.
+STEP> Edit the message for each user class (Guests, Members, Administrators).
+STEP> Save. The new text appears immediately on the front page.
+
+SHOT> welcome/message-welcome-edit.png | Welcome Message editor with the three user-class tabs
+
+H2> Why three variants?
+
+Each audience has different needs:
+
+TIP> [b]Guests[/b]: invite them to register, highlight public content.
+TIP> [b]Members[/b]: show shortcuts, announcements, community links.
+TIP> [b]Administrators[/b]: surface pending moderation tasks or maintenance notes.
+
+H1> Common questions
+
+Q> Can I leave a welcome message empty?
+A> Yes. If a variant is empty the corresponding audience simply sees no welcome block at all.
+
+Q> Does the message support images?
+A> Absolutely. Use the standard BBCode [i][img]…[/img][/i] tag or paste a full URL.
+
+Q> How do I hide the message on specific pages?
+A> The welcome message only renders on the front page controller (news.php by default). Other pages are unaffected.
+
+WARN> Avoid pasting long blocks of JavaScript or unfiltered HTML – e107 sanitizes the output, and anything stripped will simply disappear from view.
