@@ -202,4 +202,37 @@ class e_db_pdoTest extends e_db_abstractTest
 
 		e107::setRegistry('core/e107/singleton/UserHandler', $original_user_handler);
 	}
+
+	/**
+	 * A statement with nothing in it has to come back false, the way any refused
+	 * query does. It must never escape as an error the caller cannot catch.
+	 *
+	 * PHP 8's PDO answers an empty statement with a ValueError and a non-string
+	 * one with a TypeError. Neither descends from PDOException, so neither was
+	 * caught by db_Query(), and callers that reach it directly rather than
+	 * through gen() got an uncaught fatal: a blank HTTP 500 with no output at
+	 * all. The database character set conversion tool in e107_admin/db.php is
+	 * one such caller, and it feeds db_Query() strings a CONCAT() produced,
+	 * which are NULL whenever any argument was.
+	 *
+	 * @see https://github.com/e107inc/e107/discussions/5904
+	 */
+	public function testAnEmptyStatementIsRefusedRatherThanFatal()
+	{
+		$this->assertFalse($this->db->db_Query(''),
+			'db_Query() has to refuse an empty statement');
+
+		$this->assertFalse($this->db->db_Query("  \n\t "),
+			'db_Query() has to refuse a statement that is only whitespace');
+
+		$this->assertFalse($this->db->db_Query(null),
+			'db_Query() has to refuse a statement that is not a string');
+
+		$this->assertFalse($this->db->gen(''),
+			'gen() has to refuse an empty statement');
+
+		// The guard rejects nothing that was working before.
+		$this->assertNotFalse($this->db->select('user', 'user_id', '`user_id` = 1'),
+			'a real query still has to run');
+	}
 }
