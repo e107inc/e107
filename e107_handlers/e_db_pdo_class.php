@@ -296,6 +296,27 @@ class e_db_pdo implements e_db
 
 		$this->resetLastError();
 
+		// PDO raises a ValueError on an empty statement and a TypeError on one that
+		// is not a string. Neither descends from PDOException, so neither is caught
+		// below, and a caller that would have read back false instead loses the
+		// whole request to an uncaught fatal (#5904). Every caller here already
+		// tests the return value, so answer them the way a refused query does.
+		//
+		// Both shapes need checking. A bare empty string reaches PDO::query()
+		// directly; an array whose PREPARE is empty or absent fails the branch
+		// below and lands in the string path, where preg_match() is handed an
+		// array and raises a TypeError of its own.
+		$statement = is_array($query)
+			? (isset($query['PREPARE']) ? $query['PREPARE'] : null)
+			: $query;
+
+		if(!is_string($statement) || trim($statement) === '')
+		{
+			$this->mySQLlastErrText = 'Empty or non-string query passed to '.__FUNCTION__.'()';
+
+			return false;
+		}
+
 		$b = microtime();
 
 
