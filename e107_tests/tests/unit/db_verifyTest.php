@@ -1387,6 +1387,89 @@ DATA;
 		self::assertEquals("latin1", $output);
 	}
 
+	/**
+	 * A 'convert' whose engine and character set already match has no clause to
+	 * add, so getFixQuery() hands back the empty string it started with. That is
+	 * correct; what mattered is that runFix() used to hand it straight to PDO,
+	 * where an empty statement is a ValueError, not a PDOException, and so took
+	 * the whole request down instead of being reported.
+	 *
+	 * @see https://github.com/e107inc/e107/discussions/5904
+	 */
+	public function testGetFixQueryReturnsNothingForAConvertWithNothingToChange()
+	{
+
+		$live = $this->dbv->getSqlFileTables($this->dbv->getSqlData('user'));
+
+		self::assertNotEmpty($live['engine'][0],
+			'precondition: the user table has to be readable to compare against');
+
+		$actual = $this->dbv->getFixQuery(
+			'convert',
+			'user',
+			'all',
+			'',
+			$live['engine'][0],
+			$live['charset'][0]
+		);
+
+		self::assertSame('', $actual,
+			'nothing differs, so there is no statement to build');
+	}
+
+	/**
+	 * compare() decides whether a table is wrong and runFix() decides what to
+	 * change it to. Both have to reach the same engine and character set, or
+	 * compare() queues a 'convert' that getFixQuery() then cannot build.
+	 *
+	 * The order is the part that goes wrong when this is spelled out twice: the
+	 * engine sets the index key limit, and the key limit is what narrows the
+	 * character set, so the engine has to be settled first and fed back in.
+	 * Asking for the character set without the table's requirements skips the
+	 * narrowing entirely and answers something compare() never would.
+	 */
+	public function testIntendedEngineAndCharsetNarrowsUsingTheEngineItJustChose()
+	{
+
+		$method = new ReflectionMethod('db_verify', 'intendedEngineAndCharset');
+		$method->setAccessible(true);
+
+		$fields = $this->dbv->getFields(
+			"forum_id int(10) unsigned NOT NULL auto_increment,
+  forum_sef varchar(250) default NULL,
+"
+		);
+
+		// A unique key over varchar(250) needs 1000 bytes at four bytes per
+		// character, which is exactly MyISAM's limit and over InnoDB's older one.
+		$indexes = $this->dbv->getIndex(
+			"PRIMARY KEY  (`forum_id`),
+  UNIQUE KEY `forum_sef` (`forum_sef`),
+"
+		);
+
+		$intended = $method->invoke($this->dbv, $fields, $indexes, 'MyISAM', 'utf8mb4');
+
+		self::assertArrayHasKey('engine', $intended);
+		self::assertArrayHasKey('charset', $intended);
+
+		$expected = $this->dbv->getIntendedCharset('utf8mb4', array(
+			'widestIndexChars' => 250,
+			'engine'           => $intended['engine'],
+		));
+
+		self::assertSame($expected, $intended['charset'],
+			'the character set has to be settled against the engine that was just chosen');
+
+		// And the thing that actually broke: asking without the requirements
+		// gives a different answer whenever narrowing applies.
+		if($expected !== 'utf8mb4')
+		{
+			self::assertNotSame($this->dbv->getIntendedCharset('utf8mb4'), $intended['charset'],
+				'dropping the requirements is what made the two passes disagree');
+		}
+	}
+
 	/*function testGetAvailableStorageEngines()
 	{
 		$result = $this->dbv->getAvailableStorageEngines();
