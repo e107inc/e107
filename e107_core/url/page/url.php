@@ -91,7 +91,7 @@ class core_page_url extends eUrlConfig
 					 $page = '--FROM--';
 				}
 				
-				$url .= "id=".intval($params['id']).($page ? '.'.$page : '');	
+				$url .= "id=".intval(varset($params['id'])).($page ? '.'.$page : '');	
 			break;
 			
 			
