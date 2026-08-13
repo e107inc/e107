@@ -185,8 +185,8 @@ class ForumFixture extends CodeceptionModule
 	 *
 	 * Not optional. 0023's teardown removes the preference, and it is the highest
 	 * numbered Cest with shuffle off, so anything after it inherits an unset
-	 * value. Unset resolves to the recommended mode, which reads no token and
-	 * wants a Sec-Fetch-Site header PhpBrowser never sends.
+	 * value. Pin the mode this fixture needs rather than depend on whatever the
+	 * recommendation happens to be in this release.
 	 *
 	 * @param int|string $mode a csrf_enforce value, or 'default' to remove it
 	 */

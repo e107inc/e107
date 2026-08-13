@@ -186,100 +186,19 @@
 		}
 
 		/**
-		 * The recommendation on this branch reads the browser and not a token.
-		 * That removes the whole class of fault where a document that had to
-		 * issue a write was never handed a token, and in exchange it turns away a
-		 * browser too old to send Sec-Fetch-Site.
+		 * The recommendation keeps the token fallback, because an upgrade never
+		 * gets to ask anyone's browser what it supports and an install only ever
+		 * meets the installer's, not the visitors' who would be the ones refused.
 		 *
-		 * It is the opposite of the trade release/v2.3.x makes, and it is the
-		 * kind of decision that should not be arrived at by editing a constant
-		 * and finding out later, so it is stated here rather than inferred.
+		 * This is the kind of decision that should not be arrived at by editing a
+		 * constant and finding out later, so it is stated here rather than inferred.
 		 */
-		public function testTheRecommendationReadsTheBrowserRatherThanAToken()
+		public function testTheRecommendationKeepsTheTokenFallback()
 		{
-			$this::assertSame(e_session::CSRF_CHECK_SAME_SITE, e_session::CSRF_CHECK_RECOMMENDED);
-			$this::assertFalse(e_session::modeUsesToken(e_session::CSRF_CHECK_RECOMMENDED));
+			$this::assertSame(e_session::CSRF_CHECK_TOKEN_OR_SAME_SITE, e_session::CSRF_CHECK_RECOMMENDED);
+			$this::assertTrue(e_session::modeUsesToken(e_session::CSRF_CHECK_RECOMMENDED),
+				'a browser too old to send Sec-Fetch-Site has to have something left to send');
 			$this::assertTrue(e_session::modeUsesFetchMetadata(e_session::CSRF_CHECK_RECOMMENDED));
-		}
-
-		/**
-		 * A fresh install is normally left with no preference at all, so it keeps
-		 * following e107's recommendation as that changes. The exception is the
-		 * one that would lock the installer out of the site they just built: the
-		 * recommendation refuses a POST without Sec-Fetch-Site, and the browser
-		 * doing the installing did not send one.
-		 *
-		 * install.php does nothing but call this, so this is where it is proven.
-		 */
-		public function testAFreshInstallIsPinnedOnlyWhenTheBrowserCannotAnswer()
-		{
-			$this::assertSame(e_session::TOKEN_CHECK_ENFORCE, e_session::installTimeMode(array('HTTPS' => 'on')),
-				'a browser that sent no Sec-Fetch-Site must not be left on a mode that requires it');
-
-			$this::assertSame(e_session::TOKEN_CHECK_ENFORCE, e_session::installTimeMode(array('HTTPS' => 'on', 'HTTP_SEC_FETCH_SITE' => '')),
-				'an empty header is no answer either');
-
-			foreach(array('same-origin', 'same-site', 'cross-site', 'none') as $site)
-			{
-				$this::assertNull(e_session::installTimeMode(array('HTTPS' => 'on', 'HTTP_SEC_FETCH_SITE' => $site)),
-					$site.' proves the browser sends the header, so leave the preference unset');
-			}
-		}
-
-		/**
-		 * Installing over plain HTTP must pin nothing.
-		 *
-		 * The header is absent for every browser on such an origin, so its absence
-		 * says nothing about the one in front of us, and pinning would freeze the
-		 * site on a token mode for good, including long after it has grown a
-		 * certificate. tokenCheckMode() softens the recommendation for exactly as
-		 * long as it needs softening and stops of its own accord.
-		 */
-		public function testAnInstallOverPlainHttpIsLeftFollowingTheRecommendation()
-		{
-			$this::assertNull(e_session::installTimeMode(array('HTTP_HOST' => 'example.org')),
-				'plain HTTP tells us nothing about the browser, so store nothing');
-
-			$this::assertNull(e_session::installTimeMode(array()));
-
-			// Loopback can carry the header, so a browser silent there really is
-			// a browser that cannot answer.
-			$this::assertSame(e_session::TOKEN_CHECK_ENFORCE, e_session::installTimeMode(array('HTTP_HOST' => 'localhost')));
-		}
-
-		/**
-		 * The pinning exists only because the recommendation reads no token. A
-		 * branch whose recommendation still accepts one has nobody to lock out,
-		 * and must leave every install following the recommendation.
-		 */
-		public function testNothingIsPinnedWhenTheRecommendationAcceptsAToken()
-		{
-			$previous = e_session::setTokenCheckMode(null);
-
-			try
-			{
-				// On an origin that can carry the header, so the only thing under
-				// test here is what the recommendation asks for.
-				$secure = array('HTTPS' => 'on');
-
-				if(e_session::modeUsesToken(e_session::CSRF_CHECK_RECOMMENDED))
-				{
-					$this::assertNull(e_session::installTimeMode($secure));
-				}
-				else
-				{
-					$this::assertNotNull(e_session::installTimeMode($secure));
-					$this::assertTrue(e_session::modeUsesToken(e_session::installTimeMode($secure)),
-						'the mode an install is pinned to has to be one that works without the header');
-				}
-			}
-			catch(Exception $e)
-			{
-				e_session::setTokenCheckMode($previous);
-				throw $e;
-			}
-
-			e_session::setTokenCheckMode($previous);
 		}
 
 		/**
@@ -445,6 +364,70 @@
 			// for: the browser is telling the truth, and the truth is not enough.
 			$this::assertFalse($vouches('same-site', e_session::CSRF_CHECK_SAME_SITE, 'https://uploads.example.org'));
 			$this::assertFalse($vouches('same-site', e_session::CSRF_CHECK_SAME_SITE, 'null'));
+
+			$_SERVER = $server;
+		}
+
+		/**
+		 * A browser that answers 'somewhere else' has to be believed over a
+		 * token, or the token half of mode 3 becomes the whole of it and anyone
+		 * holding a leaked token can forge from their own site.
+		 *
+		 * Silence is not an answer and must fall through to the token, because
+		 * the browsers that cannot answer are the only reason mode 3 exists.
+		 */
+		public function testFetchMetadataDisavowsOnlyWhenTheBrowserActuallySaidSo()
+		{
+			$server = $_SERVER;
+			$_SERVER['HTTP_HOST'] = 'example.org';
+
+			$disavows = function($site, $mode, $origin = null)
+			{
+				unset($_SERVER['HTTP_SEC_FETCH_SITE'], $_SERVER['HTTP_ORIGIN']);
+
+				if($site !== null)
+				{
+					$_SERVER['HTTP_SEC_FETCH_SITE'] = $site;
+				}
+
+				if($origin !== null)
+				{
+					$_SERVER['HTTP_ORIGIN'] = $origin;
+				}
+
+				$method = new ReflectionMethod('e_core_session', 'fetchMetadataDisavows');
+				$method->setAccessible(true);
+
+				return $method->invoke(null, $mode);
+			};
+
+			$mode = e_session::CSRF_CHECK_TOKEN_OR_SAME_SITE;
+
+			// Silence, in either shape. The token fallback is for exactly this.
+			$this::assertFalse($disavows(null, $mode));
+			$this::assertFalse($disavows('', $mode));
+
+			// 'none' is a user typing an address or opening a bookmark, which is
+			// the opposite of forgery.
+			$this::assertFalse($disavows('none', $mode));
+			$this::assertFalse($disavows(' None ', $mode));
+
+			// The browser naming another site is the case this exists for.
+			$this::assertTrue($disavows('cross-site', $mode));
+			$this::assertTrue($disavows('nonsense', $mode));
+
+			// Anything the mode would have vouched for is not a denial.
+			$this::assertFalse($disavows('same-origin', $mode));
+			$this::assertFalse($disavows('same-site', $mode, 'http://example.org'));
+
+			// A sibling host this site does not serve is a denial, which is what
+			// keeps a token from rescuing a cookie-tossing neighbour.
+			$this::assertTrue($disavows('same-site', $mode, 'https://uploads.example.org'));
+
+			// A mode that reads nothing but a token was chosen deliberately and
+			// is left alone, header or no header.
+			$this::assertFalse($disavows('cross-site', e_session::TOKEN_CHECK_ENFORCE));
+			$this::assertFalse($disavows('cross-site', e_session::TOKEN_CHECK_OFF));
 
 			$_SERVER = $server;
 		}

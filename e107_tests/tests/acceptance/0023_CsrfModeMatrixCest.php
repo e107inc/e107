@@ -137,26 +137,52 @@ class CsrfModeMatrixCest
 	}
 
 	/**
-	 * What an unset preference does on this branch, which is what nearly every
-	 * site runs: the browser is asked and no token is read at all. A visitor
-	 * whose browser cannot answer is turned away rather than admitted on a
-	 * token, which is the deliberate difference from release/v2.3.x and the
-	 * reason install.php writes a preference outright when the browser doing the
-	 * installing could not answer either.
+	 * What an unset preference does, which is what nearly every site runs. It is
+	 * mode 3, so either proof is accepted and nobody is locked out for having an
+	 * old browser.
 	 */
-	public function theDefaultReadsTheBrowserAndNoToken(AcceptanceTester $I)
+	public function theDefaultAcceptsEitherProof(AcceptanceTester $I)
 	{
 		$this->setMode($I, 'default');
 
 		$this->post($I, array(), 'same-origin');
 		$I->seeInSource('PROBE_REACHED');
 
-		// A valid token is not a substitute here. It is not even looked at.
 		$this->post($I, array('e-token' => $this->grabToken($I)));
-		$I->seeInSource('Unauthorized access!');
+		$I->seeInSource('PROBE_REACHED');
 
 		$this->post($I);
 		$I->seeInSource('Unauthorized access!');
+	}
+
+	/**
+	 * The token half of mode 3 is there for browsers that cannot say where a
+	 * request came from. A browser that can say, and says it came from somewhere
+	 * else, is not one of those, and its word settles it.
+	 *
+	 * Without this a valid token is enough on its own, which hands the whole
+	 * mode to anyone who has obtained one: tokens leak through logs, referrers
+	 * and shared screens, and reach a sibling host that can set a cookie on the
+	 * registrable domain. Silence still falls through to the token, so the
+	 * fallback keeps serving exactly the browsers it exists for.
+	 */
+	public function aValidTokenDoesNotOverruleTheBrowsersWord(AcceptanceTester $I)
+	{
+		foreach(array(self::TOKEN_OR_SITE, 'default') as $mode)
+		{
+			$this->setMode($I, $mode);
+
+			$this->post($I, array('e-token' => $this->grabToken($I)), 'cross-site');
+			$I->seeInSource('Unauthorized access!');
+
+			// Not answering is not the same as answering 'somewhere else'.
+			$this->post($I, array('e-token' => $this->grabToken($I)));
+			$I->seeInSource('PROBE_REACHED');
+
+			// Nor is 'the user started this themselves'.
+			$this->post($I, array('e-token' => $this->grabToken($I)), 'none');
+			$I->seeInSource('PROBE_REACHED');
+		}
 	}
 
 	/*
@@ -175,6 +201,9 @@ class CsrfModeMatrixCest
 	 * the decision for each kind of origin, and the WebDriver suite proves the
 	 * end of it, that a real browser can still log in over plain HTTP to a
 	 * non-loopback host. That is the regression this all came from.
+	 *
+	 * The default no longer depends on it either way: mode 3 reads a token, so
+	 * the softening at tokenCheckMode() has nothing left to soften.
 	 */
 
 	/**

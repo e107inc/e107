@@ -338,13 +338,13 @@ class ContactFormCest
 	}
 
 	/**
-	 * Positive control for the mode-independent half: in the recommended mode
+	 * Positive control for the mode-independent half: in a browser-only mode
 	 * there is no token to present, so a browser that vouches for the request
 	 * with Sec-Fetch-Site must still be able to send a message.
 	 */
-	public function aVouchedSubmissionIsStillDeliveredInTheRecommendedMode(AcceptanceTester $I)
+	public function aVouchedSubmissionIsStillDeliveredInABrowserOnlyMode(AcceptanceTester $I)
 	{
-		$I->wantTo('keep a real browser sending contact mail in the recommended CSRF mode');
+		$I->wantTo('keep a real browser sending contact mail in a browser-only CSRF mode');
 
 		$this->probe($I, 'act=csrf&m=4');
 		$this->probe($I, 'act=clearmaillog');

@@ -2352,18 +2352,6 @@ return [
 		// Set prefs, save
 		e107::getConfig()->setPref($this->previous_steps['prefs']);
 
-		// csrf_enforce is normally left unset so the site follows e107's
-		// recommendation and moves with it. The one case where that is the wrong
-		// thing to hand a new site is decided in e_session, where it can be
-		// tested; see e_session::installTimeMode().
-		$csrfInstallMode = e_session::installTimeMode($_SERVER);
-
-		if($csrfInstallMode !== null)
-		{
-			e107::getConfig()->set('csrf_enforce', $csrfInstallMode);
-			installLog::add('Installing browser sent no Sec-Fetch-Site; csrf_enforce pinned to '.$csrfInstallMode);
-		}
-
 		e107::getConfig()->save(FALSE,TRUE, FALSE); // save preferences made during install.
 		installLog::add('Core prefs set to install choices');
 
