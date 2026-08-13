@@ -146,25 +146,20 @@ class e_session
      * follows e107's recommendation and moves with it, so the recommendation can
      * be raised in a later release without every operator having to act.
      *
-     * On this branch it is CSRF_CHECK_SAME_SITE. No token is minted, published
-     * or read, which removes by construction the whole class of fault where a
-     * document that had to issue a write was never handed one. Seven of those
-     * were found in a single release; the eighth is the one nobody has found yet.
+     * It sits at CSRF_CHECK_TOKEN_OR_SAME_SITE rather than CSRF_CHECK_SAME_SITE
+     * because an upgrade has no opportunity to ask the operator's browser what it
+     * supports, and a mode that refuses a POST without Fetch Metadata would lock
+     * out every visitor whose browser predates it. An install cannot be asked on
+     * their behalf either: it only ever sees the installer's own browser, and it
+     * is the visitors who would be turned away.
      *
-     * What it costs is the fallback. A browser too old to send Sec-Fetch-Site is
-     * refused rather than admitted on a token, and an upgrade has no opportunity
-     * to ask anyone's browser what it supports. An operator whose visitors need
-     * the fallback sets TOKEN_CHECK_ENFORCE or CSRF_CHECK_TOKEN_OR_SAME_SITE. A
-     * fresh install is asked on its behalf: if the browser doing the installing
-     * sent no Sec-Fetch-Site, install.php writes TOKEN_CHECK_ENFORCE outright
-     * rather than leaving the preference unset.
-     *
-     * release/v2.3.x makes the opposite trade, because a hotfix to a release that
-     * is already locking people out cannot introduce a second way to be locked
-     * out.
+     * What the token half costs is that a valid token would otherwise be enough
+     * on its own, including on a request the browser has told us came from
+     * somewhere else. attest() refuses that case, so the fallback serves only the
+     * browsers that cannot answer, which is the whole reason it is here.
      * @var int
      */
-    const CSRF_CHECK_RECOMMENDED = self::CSRF_CHECK_SAME_SITE;
+    const CSRF_CHECK_RECOMMENDED = self::CSRF_CHECK_TOKEN_OR_SAME_SITE;
 
     /**
      * Session save path
@@ -805,51 +800,6 @@ public function getData($key = null, $clear = false)
             self::TOKEN_CHECK_ENFORCE,
             self::CSRF_CHECK_TOKEN_OR_SAME_SITE,
         ), true);
-    }
-
-    /**
-     * What csrf_enforce a fresh install should be given, or null to leave it
-     * unset so the site follows e107's recommendation and moves with it.
-     *
-     * Leaving it unset is the normal answer and the one that keeps a site up to
-     * date without its operator acting. It is the wrong answer in exactly one
-     * case: when the recommendation refuses a POST that carries no
-     * Sec-Fetch-Site, and the browser doing the installing did not send one.
-     * Nobody can be asked about their visitors' browsers during an install, but
-     * the browser in front of us is the one browser certain to be used against
-     * this site, and if it cannot answer, the person installing would be locked
-     * out of the site they just built.
-     *
-     * A branch whose recommendation still reads a token returns null for
-     * everything, because there is nothing to be locked out of.
-     *
-     * @param array|null $server defaults to $_SERVER
-     * @return int|null a csrf_enforce value to store, or null to store nothing
-     */
-    public static function installTimeMode(array $server = null)
-    {
-        if($server === null)
-        {
-            $server = $_SERVER;
-        }
-
-        if(self::modeUsesToken(self::CSRF_CHECK_RECOMMENDED))
-        {
-            return null;
-        }
-
-        // Over an origin no browser considers trustworthy, the header is absent
-        // for every browser alive, so its absence says nothing about this one.
-        // Pinning here would freeze the site on a token mode for good, including
-        // long after it has grown a certificate. tokenCheckMode() already softens
-        // the recommendation for as long as it needs softening, and stops the day
-        // the site can carry the header.
-        if(!self::fetchMetadataReachesUs($server))
-        {
-            return null;
-        }
-
-        return empty($server['HTTP_SEC_FETCH_SITE']) ? self::TOKEN_CHECK_ENFORCE : null;
     }
 
     /**
@@ -1767,6 +1717,15 @@ class e_core_session extends e_session
             return true;
         }
 
+        // The token fallback is for browsers that cannot say where a request
+        // came from, not for one that says it came from somewhere else. Tokens
+        // leak through logs, referrers and shared screens, so a token must not
+        // talk over an answer the browser has already given.
+        if(self::fetchMetadataDisavows($mode))
+        {
+            return false;
+        }
+
         if($usesToken && self::hasSubmittedToken())
         {
             // Validity was settled above.
@@ -1854,6 +1813,37 @@ class e_core_session extends e_session
         }
 
         return self::originIsKnownHost();
+    }
+
+    /**
+     * Has the browser affirmatively told us this request came from somewhere
+     * that is not this site?
+     *
+     * The inverse of fetchMetadataVouches() only where the browser actually
+     * answered. An absent or empty header is not a denial, it is silence, and
+     * silence is what the token fallback exists to serve. 'none' is not a denial
+     * either: it means the user started this themselves, from a bookmark or the
+     * address bar, which is the opposite of forgery.
+     *
+     * Only modes that ask the browser at all can be answered by it. A mode that
+     * reads nothing but a token was chosen for a reason and is left alone.
+     *
+     * @param int $mode
+     * @return bool
+     */
+    private static function fetchMetadataDisavows($mode)
+    {
+        if(!self::modeUsesFetchMetadata($mode) || empty($_SERVER['HTTP_SEC_FETCH_SITE']))
+        {
+            return false;
+        }
+
+        if(strtolower(trim($_SERVER['HTTP_SEC_FETCH_SITE'])) === 'none')
+        {
+            return false;
+        }
+
+        return !self::fetchMetadataVouches($mode);
     }
 
     /**

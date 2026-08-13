@@ -93,11 +93,11 @@ class CommentEditAuthzCest
 		// e107 bans an address once it has been seen enough times in a window.
 		$this->probe($I, 'act=flood');
 
-		// Pin the CSRF mode rather than inherit it. Unset resolves to the
-		// recommended browser check, which wants a Sec-Fetch-Site header
-		// PhpBrowser never sends, so the POSTs below would be refused before
-		// authorisation was ever considered and every refusal here would pass
-		// for the wrong reason.
+		// Pin the CSRF mode rather than inherit it. What an unset preference
+		// resolves to is a decision that moves between releases, and these tests
+		// are about authorisation: a POST refused by the CSRF gate would never
+		// reach the check under test, and every refusal here would pass for the
+		// wrong reason.
 		$this->probe($I, 'act=pref&k=csrf_enforce&v='.self::CSRF_TOKEN_ENFORCE);
 
 		// The AJAX edit route is behind this preference, and a fresh install
