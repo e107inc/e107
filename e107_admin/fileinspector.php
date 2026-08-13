@@ -446,7 +446,7 @@ class file_inspector {
 		$frm 	= e107::getForm();
 		$pref 	= e107::pref('core');
 
-		if($_GET['mode'] == 'run')
+		if(varset($_GET['mode']) == 'run')
 		{
 			return;
 		}
