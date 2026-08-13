@@ -1550,6 +1550,15 @@ class e_core_session extends e_session
 			return true;
 		}
 
+		// The token fallback is for browsers that cannot say where a request
+		// came from, not for one that says it came from somewhere else. Tokens
+		// leak through logs, referrers and shared screens, so a token must not
+		// talk over an answer the browser has already given.
+		if(self::fetchMetadataDisavows($mode))
+		{
+			return false;
+		}
+
 		if($usesToken && self::hasSubmittedToken())
 		{
 			// Validity was settled above.
@@ -1637,6 +1646,37 @@ class e_core_session extends e_session
 		}
 
 		return self::originIsKnownHost();
+	}
+
+	/**
+	 * Has the browser affirmatively told us this request came from somewhere
+	 * that is not this site?
+	 *
+	 * The inverse of fetchMetadataVouches() only where the browser actually
+	 * answered. An absent or empty header is not a denial, it is silence, and
+	 * silence is what the token fallback exists to serve. 'none' is not a denial
+	 * either: it means the user started this themselves, from a bookmark or the
+	 * address bar, which is the opposite of forgery.
+	 *
+	 * Only modes that ask the browser at all can be answered by it. A mode that
+	 * reads nothing but a token was chosen for a reason and is left alone.
+	 *
+	 * @param int $mode
+	 * @return bool
+	 */
+	private static function fetchMetadataDisavows($mode)
+	{
+		if(!self::modeUsesFetchMetadata($mode) || empty($_SERVER['HTTP_SEC_FETCH_SITE']))
+		{
+			return false;
+		}
+
+		if(strtolower(trim($_SERVER['HTTP_SEC_FETCH_SITE'])) === 'none')
+		{
+			return false;
+		}
+
+		return !self::fetchMetadataVouches($mode);
 	}
 
 	/**
