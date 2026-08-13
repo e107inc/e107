@@ -633,7 +633,9 @@ class db_verify
 
 		foreach($this->results as $tabs => $field)
 		{
-			$file = varset($this->results[$tabs]['_file'], $tabs);
+			// The table-level source file is recorded on $errors, not on $results,
+			// whose second level is field names.
+			$file = varset($this->errors[$tabs]['_file'], $tabs);
 			$errorStatus = is_int($this->errors[$tabs]['_status']) ?
 				$this->errors[$tabs]['_status'] : self::STATUS_TABLE_OK;
 
