@@ -1470,6 +1470,43 @@ DATA;
 		}
 	}
 
+	/**
+	 * runFix() reads the top level of fixList as an SQL file name, so a
+	 * whole-table fix filed under the table's own name resolves to nothing and
+	 * is skipped. It only ever appeared to work for the handful of tables that
+	 * share a name with the file that declares them, `core` among them.
+	 *
+	 * @see https://github.com/e107inc/e107/discussions/5904
+	 */
+	public function testAWholeTableFixIsFiledUnderTheSqlFileThatDeclaredIt()
+	{
+
+		$sql = e107::getDb();
+
+		$sql->execute('SHOW TABLE STATUS WHERE Name = "' . MPREFIX . 'core_media"');
+		$before = $sql->fetch('assoc');
+		self::assertNotEmpty($before['Collation'],
+			'precondition: core_media has to exist to be broken and put back');
+
+		$sql->execute('ALTER TABLE `#core_media` CONVERT TO CHARACTER SET latin1 COLLATE latin1_swedish_ci');
+
+		$this->dbv->__construct();
+		$this->dbv->compare('core');
+		$this->dbv->compileResults();
+		$fixList = $this->dbv->fixList;
+
+		$charset = substr($before['Collation'], 0, strpos($before['Collation'], '_'));
+		$sql->execute('ALTER TABLE `#core_media` CONVERT TO CHARACTER SET ' . $charset .
+			' COLLATE ' . $before['Collation']);
+
+		self::assertArrayNotHasKey('core_media', $fixList,
+			'core_media is a table, not an SQL file, and runFix() looks this key up in sqlFileTables');
+
+		self::assertArrayHasKey('core_media', $fixList['core'],
+			'precondition: the character set change has to have been noticed at all');
+		self::assertContains('convert', $fixList['core']['core_media']['all']);
+	}
+
 	/*function testGetAvailableStorageEngines()
 	{
 		$result = $this->dbv->getAvailableStorageEngines();
