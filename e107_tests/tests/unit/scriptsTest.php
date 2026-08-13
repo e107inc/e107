@@ -89,6 +89,9 @@
 				);
 
 			$this->loadScripts(e_BASE, array(), $include);
+
+			$this->assertTrue(isset($_POST),
+				'Loading the front end scripts left $_POST unset, which every later test in the run inherits.');
 		}
 
 
@@ -122,6 +125,17 @@
 			$_E107['cli'] = true;
 		//	$_E107['no_theme'] = true; //FIXME unable to change to admin theme in testing environment.
 
+			// These are real front end entry points and they are entitled to
+			// mutate the request they think they are serving. usersettings.php
+			// ends its save path on unset($_POST), and a superglobal that has been
+			// unset stays unset for the rest of the process, so without this every
+			// later test in the run inherits it.
+			$request = array(
+				'_POST'    => isset($_POST) ? $_POST : array(),
+				'_GET'     => isset($_GET) ? $_GET : array(),
+				'_REQUEST' => isset($_REQUEST) ? $_REQUEST : array(),
+			);
+
 			foreach($list as $file)
 			{
 				$ext = pathinfo($folder.$file, PATHINFO_EXTENSION);
@@ -146,6 +160,13 @@
 					$error = true;
 				}
 				ob_end_clean();
+
+				// Only repair a superglobal that has been destroyed. A script that
+				// merely writes to the request is left alone: the admin scripts
+				// read $_GET that earlier ones in the same sweep set.
+				if(!isset($_POST))    { $_POST    = $request['_POST']; }
+				if(!isset($_GET))     { $_GET     = $request['_GET']; }
+				if(!isset($_REQUEST)) { $_REQUEST = $request['_REQUEST']; }
 
 				if($error)
 				{
