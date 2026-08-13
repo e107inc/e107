@@ -159,6 +159,36 @@ class CsrfModeMatrixCest
 	}
 
 	/**
+	 * The token half of mode 3 is there for browsers that cannot say where a
+	 * request came from. A browser that can say, and says it came from somewhere
+	 * else, is not one of those, and its word settles it.
+	 *
+	 * Without this a valid token is enough on its own, which hands the whole
+	 * mode to anyone who has obtained one: tokens leak through logs, referrers
+	 * and shared screens, and reach a sibling host that can set a cookie on the
+	 * registrable domain. Silence still falls through to the token, so the
+	 * fallback keeps serving exactly the browsers it exists for.
+	 */
+	public function aValidTokenDoesNotOverruleTheBrowsersWord(AcceptanceTester $I)
+	{
+		foreach(array(self::TOKEN_OR_SITE, 'default') as $mode)
+		{
+			$this->setMode($I, $mode);
+
+			$this->post($I, array('e-token' => $this->grabToken($I)), 'cross-site');
+			$I->seeInSource('Unauthorized access!');
+
+			// Not answering is not the same as answering 'somewhere else'.
+			$this->post($I, array('e-token' => $this->grabToken($I)));
+			$I->seeInSource('PROBE_REACHED');
+
+			// Nor is 'the user started this themselves'.
+			$this->post($I, array('e-token' => $this->grabToken($I)), 'none');
+			$I->seeInSource('PROBE_REACHED');
+		}
+	}
+
+	/**
 	 * The Fetch Metadata modes mint no token and publish none, so they must not
 	 * read one either. A site running mode 4 with a token arriving from anywhere
 	 * would be trusting a value it no longer maintains.

@@ -313,6 +313,66 @@
 		}
 
 		/**
+		 * The token fallback serves browsers that cannot answer. One that answers,
+		 * and names another site, is not one of them.
+		 */
+		public function testFetchMetadataDisavowsOnlyWhenTheBrowserActuallySaidSo()
+		{
+			$server = $_SERVER;
+			$_SERVER['HTTP_HOST'] = 'example.org';
+
+			$disavows = function($site, $mode, $origin = null)
+			{
+				unset($_SERVER['HTTP_SEC_FETCH_SITE'], $_SERVER['HTTP_ORIGIN']);
+
+				if($site !== null)
+				{
+					$_SERVER['HTTP_SEC_FETCH_SITE'] = $site;
+				}
+
+				if($origin !== null)
+				{
+					$_SERVER['HTTP_ORIGIN'] = $origin;
+				}
+
+				$method = new ReflectionMethod('e_core_session', 'fetchMetadataDisavows');
+				$method->setAccessible(true);
+
+				return $method->invoke(null, $mode);
+			};
+
+			$mode = e_session::CSRF_CHECK_TOKEN_OR_SAME_SITE;
+
+			// Silence, in either shape. The token fallback is for exactly this.
+			$this::assertFalse($disavows(null, $mode));
+			$this::assertFalse($disavows('', $mode));
+
+			// 'none' is a user typing an address or opening a bookmark, which is
+			// the opposite of forgery.
+			$this::assertFalse($disavows('none', $mode));
+			$this::assertFalse($disavows(' None ', $mode));
+
+			// The browser naming another site is the case this exists for.
+			$this::assertTrue($disavows('cross-site', $mode));
+			$this::assertTrue($disavows('nonsense', $mode));
+
+			// Anything the mode would have vouched for is not a denial.
+			$this::assertFalse($disavows('same-origin', $mode));
+			$this::assertFalse($disavows('same-site', $mode, 'http://example.org'));
+
+			// A sibling host this site does not serve is a denial, which is what
+			// keeps a token from rescuing a cookie-tossing neighbour.
+			$this::assertTrue($disavows('same-site', $mode, 'https://uploads.example.org'));
+
+			// A mode that reads nothing but a token was chosen deliberately and
+			// is left alone, header or no header.
+			$this::assertFalse($disavows('cross-site', e_session::TOKEN_CHECK_ENFORCE));
+			$this::assertFalse($disavows('cross-site', e_session::TOKEN_CHECK_OFF));
+
+			$_SERVER = $server;
+		}
+
+		/**
 		 * The runtime override is the designated seam for a test, and for a
 		 * bootstrap that knows better than the stored preference.
 		 */
