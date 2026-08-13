@@ -1495,7 +1495,7 @@ DATA;
 		$this->dbv->compileResults();
 		$fixList = $this->dbv->fixList;
 
-		$charset = substr($before['Collation'], 0, strpos($before['Collation'], '_'));
+		$charset = (string) substr($before['Collation'], 0, strpos($before['Collation'], '_'));
 		$sql->execute('ALTER TABLE `#core_media` CONVERT TO CHARACTER SET ' . $charset .
 			' COLLATE ' . $before['Collation']);
 
