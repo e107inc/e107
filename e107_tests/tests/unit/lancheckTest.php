@@ -45,6 +45,18 @@
 				unlink($this->target);
 			}
 
+			// Unsetting a key inside a variable that does not exist raises
+			// "Undefined variable" on PHP 7 and below, and the suite turns that
+			// notice into a test error. These are superglobals, so they are
+			// normally always there, but PHPUnit's global backup restores the
+			// state it snapshotted and can leave one of them undefined. Which
+			// test that lands on depends on the order they run in, which is why
+			// it moves between matrix cells instead of failing the same one
+			// every time.
+			if(!isset($_POST))    { $_POST = array(); }
+			if(!isset($_GET))     { $_GET = array(); }
+			if(!isset($_SESSION)) { $_SESSION = array(); }
+
 			unset($_SESSION['lancheck-edit-file'], $_POST['newlang'], $_POST['newdef']);
 			unset($_GET['sub'], $_GET['lan'], $_GET['file'], $_GET['type']);
 			e107::getMessage()->reset();
