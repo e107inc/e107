@@ -345,6 +345,22 @@ class e_db_mysql implements e_db
 
 		$this->stringifyFetch = false;
 
+		// Refuse a statement there is nothing to run, the same way the PDO driver
+		// does, so the two answer a caller identically (#5904). @mysqli_query()
+		// already returns false for an empty string, but an array whose PREPARE
+		// is empty or absent fails the branch below and reaches mysqli_query() as
+		// an array, which is a TypeError the @ does not suppress.
+		$statement = is_array($query)
+			? (isset($query['PREPARE']) ? $query['PREPARE'] : null)
+			: $query;
+
+		if(!is_string($statement) || trim($statement) === '')
+		{
+			$this->mySQLlastErrText = 'Empty or non-string query passed to '.__FUNCTION__.'()';
+
+			return false;
+		}
+
 		$b = microtime();
 
 		if(is_array($query) && !empty($query['PREPARE']))

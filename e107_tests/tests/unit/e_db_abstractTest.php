@@ -1606,6 +1606,51 @@ abstract class e_db_abstractTest extends \Test\Unit
 			'a query that succeeded must not still be reporting the previous failure');
 		$this->assertSame('', $this->db->getLastErrorText());
 	}
+
+	/**
+	 * A statement with nothing in it has to come back false, the way any refused
+	 * query does. It must never escape as an error the caller cannot catch.
+	 *
+	 * PHP 8's PDO answers an empty statement with a ValueError and a non-string
+	 * one with a TypeError. Neither descends from PDOException, so neither was
+	 * caught by the driver, and db_verify handing one through took the whole
+	 * request down: every admin whose database update reached that point got a
+	 * blank HTTP 500 instead of a report.
+	 *
+	 * @see https://github.com/e107inc/e107/discussions/5904
+	 */
+	public function testAnEmptyStatementIsRefusedRatherThanFatal()
+	{
+		$empties = array(
+			'an empty string'      => '',
+			'whitespace only'      => "  \n\t ",
+		);
+
+		foreach($empties as $label => $query)
+		{
+			$this->assertFalse($this->db->gen($query),
+				"gen() has to refuse ".$label);
+			$this->assertFalse($this->db->execute($query),
+				"execute() has to refuse ".$label);
+		}
+
+		// With parameters, execute() takes the prepared path and wraps the
+		// statement in an array. An empty one fails the PREPARE branch and
+		// lands in the plain-string path, where the array itself is the
+		// argument that blows up.
+		$this->assertFalse($this->db->execute('', array('user_id' => 1)),
+			'execute() has to refuse an empty prepared statement');
+
+		// What the refusal *says* is not asserted here. e_db_mysql::dbError()
+		// rewrites the message from the connection every time it is called, and
+		// with no query run there is nothing there to read, so the reason set at
+		// the point of refusal survives on one driver and not the other. The
+		// contract both drivers do owe a caller is this: false, not a fatal.
+
+		// The guard rejects nothing that was working before.
+		$this->assertNotFalse($this->db->select('user', 'user_id', '`user_id` = 1'),
+			'a real query still has to run');
+	}
 	/*
 			public function testGetLastQuery()
 			{

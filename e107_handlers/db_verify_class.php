@@ -460,16 +460,19 @@ class db_verify
 			// created as MyISAM on a server whose InnoDB has no FULLTEXT would
 			// be reported as drift, and "fixing" it would put the site back into
 			// the state that could not be created in the first place.
-			$requirements = $this->deriveTableRequirements($fileData['field'], $fileData['index']);
+			$intended = $this->intendedEngineAndCharset(
+				$fileData['field'],
+				$fileData['index'],
+				$this->sqlFileTables[$selection]['engine'][$key],
+				$this->sqlFileTables[$selection]['charset'][$key]
+			);
 
 			$maybeEngine = isset($sqlDataArr['engine'][0]) ? $sqlDataArr['engine'][0] : 'INTERNAL_ERROR:ENGINE';
-			$fileData['engine'] = $this->getIntendedStorageEngine($this->sqlFileTables[$selection]['engine'][$key], $requirements);
+			$fileData['engine'] = $intended['engine'];
 			$sqlData['engine'] = $this->getCanonicalStorageEngine($maybeEngine);
 
-			$requirements['engine'] = $fileData['engine'];
-
 			$maybeCharset = isset($sqlDataArr['charset'][0]) ? $sqlDataArr['charset'][0] : 'INTERNAL_ERROR:CHARSET';
-			$fileData['charset'] = $this->getIntendedCharset($this->sqlFileTables[$selection]['charset'][$key], $requirements);
+			$fileData['charset'] = $intended['charset'];
 			$sqlData['charset'] = $sqlDataArr['charset'][0]; // check the actual charset. $this->getCanonicalCharset($maybeCharset);
 
 			/*
@@ -672,6 +675,16 @@ class db_verify
 						{
 							continue;
 						}
+
+						// Same guard the field loop above uses. $modes carries an entry
+						// with no mode behind it ('mismatch_index'), and a status with no
+						// entry at all answers null; either would queue a fix nothing can
+						// build, which getFixQuery() can only answer with an empty string.
+						if(empty($this->modes[$f['_status']]))
+						{
+							continue;
+						}
+
 						$this->fixList[$f['_file']][$tabs][$k][] = $this->modes[$f['_status']];
 					}
 				}
@@ -1248,6 +1261,24 @@ class db_verify
 
 				$toFix = count($val);
 
+				// Ask for the engine and character set the same way compare() did,
+				// from what this table needs, or the two disagree and the 'convert'
+				// compare() queued comes back with nothing in it.
+				$fileIndexes = $this->getIndex($this->sqlFileTables[$j]['data'][$id]);
+				$derivedIndexes = $this->getSearchFieldIndexes($table);
+
+				if(!empty($derivedIndexes))
+				{
+					$fileIndexes = array_merge($fileIndexes, $derivedIndexes);
+				}
+
+				$intended = $this->intendedEngineAndCharset(
+					$this->getFields($this->sqlFileTables[$j]['data'][$id]),
+					$fileIndexes,
+					$this->sqlFileTables[$j]['engine'][$id],
+					$this->sqlFileTables[$j]['charset'][$id]
+				);
+
 				foreach($val as $field => $fixes)
 				{
 					// $field is likewise a POST array key; only allow plain identifiers.
@@ -1264,14 +1295,26 @@ class db_verify
 							$table,
 							$field,
 							$this->sqlFileTables[$j]['data'][$id],
-							$this->getIntendedStorageEngine($this->sqlFileTables[$j]['engine'][$id]),
-							$this->getIntendedCharset($this->sqlFileTables[$j]['charset'][$id])
+							$intended['engine'],
+							$intended['charset']
 						);
 
 
 						// $mes->addDebug("Query: ".$query);
 						// continue;
 
+
+						// getFixQuery() returns an empty string when it has nothing to say: a
+						// 'convert' whose engine and character set both already match, an
+						// identifier it refused, or a mode it has no clause for. An empty
+						// statement is not a query. Handing one to PDO raises a ValueError,
+						// which is not a PDOException and so escapes db_Query()'s catch and
+						// takes the whole request down (#5904). Nothing to run, nothing to fix.
+						if(trim((string) $query) === '')
+						{
+							$log->addDebug('No statement for ' . $mode . ' on `' . $table . '`.' . $field . ', nothing to run.');
+							continue;
+						}
 
 						// getFixQuery() now assembles this DDL through SchemaBuilder, which owns and
 						// fail-closed validates the physical table identifier; $field is allowlisted
@@ -1906,6 +1949,43 @@ class db_verify
 		// nothing: keep the preferred character set and let the CREATE TABLE
 		// fail loudly rather than quietly building something else.
 		return (($chars * 3) <= $limit) ? 'utf8' : $charset;
+	}
+
+	/**
+	 * Settle the storage engine and character set a table should have on this
+	 * server, from what the table itself needs.
+	 *
+	 * compare() and runFix() both have to reach this answer, and they have to
+	 * reach the same one: compare() decides whether a table is wrong, runFix()
+	 * decides what to change it to. When they disagree, compare() queues a
+	 * 'convert' and getFixQuery() then finds nothing to change and hands back
+	 * an empty statement. Doing the calculation in one place is what stops the
+	 * two drifting apart.
+	 *
+	 * The order matters and is the reason this is not two independent calls:
+	 * the engine decides the index key limit, and the key limit is what can
+	 * narrow the character set, so the engine has to be settled first and fed
+	 * back in.
+	 *
+	 * @param array  $fields          as returned by {@see getFields()}
+	 * @param array  $indexes         as returned by {@see getIndex()}, with any derived indexes merged in
+	 * @param string $declaredEngine  storage engine named by the .sql file
+	 * @param string $declaredCharset character set named by the .sql file
+	 * @return array{engine:string|false, charset:string}
+	 */
+	private function intendedEngineAndCharset($fields, $indexes, $declaredEngine, $declaredCharset)
+	{
+
+		$requirements = $this->deriveTableRequirements($fields, $indexes);
+
+		$engine = $this->getIntendedStorageEngine($declaredEngine, $requirements);
+
+		$requirements['engine'] = $engine;
+
+		return array(
+			'engine'  => $engine,
+			'charset' => $this->getIntendedCharset($declaredCharset, $requirements),
+		);
 	}
 
 	/**
