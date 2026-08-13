@@ -5,15 +5,14 @@
  *
  * The Fetch Metadata headers are appended only when the request's URL is a
  * potentially trustworthy URL, so on a plain-HTTP site served from a name that
- * is not loopback, Sec-Fetch-Site never arrives from any browser at all. This
- * branch recommends mode 4, which reads nothing else, so taken literally every
- * authenticated write on every such site would be refused for good, with no
- * token published to fall back on.
+ * is not loopback, Sec-Fetch-Site never arrives from any browser at all. The
+ * recommended mode reads a token as well, and this is the origin where that is
+ * the only proof anyone can offer: these tests are a real browser, on a real
+ * plain-HTTP origin, getting a token and being allowed to use it.
  *
- * e_session::tokenCheckMode() softens a browser-only mode to the hybrid exactly
- * where the header can never arrive, and these tests are the end of that: a real
- * browser, on a real plain-HTTP origin, getting a token and being allowed to use
- * it.
+ * An operator who chooses a browser-only mode outright lands here too.
+ * e_session::tokenCheckMode() softens one to the hybrid exactly where the header
+ * can never arrive, which is what keeps that choice from turning into a lockout.
  *
  * This is the layer that caught the regression. The acceptance suite could not
  * have: it runs against http://localhost/e107/ on CI, and loopback is
@@ -26,10 +25,10 @@
 class CsrfPlainHttpCest
 {
 	/**
-	 * The softening is only worth anything if the token it falls back on is
-	 * actually delivered. e_token_injector publishes one when the active mode
-	 * reads one, so a token in the page is the visible proof that the mode
-	 * softened rather than staying strict and refusing everything.
+	 * The fallback is only worth anything if the token is actually delivered.
+	 * e_token_injector publishes one when the active mode reads one, so a token
+	 * in the page is the visible proof that a visitor here has something to
+	 * submit at all.
 	 *
 	 * @param \WebDriverTester $I
 	 * @return void
