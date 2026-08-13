@@ -358,7 +358,10 @@ class ecache {
  			$d = opendir($dir);
 			while ($file = readdir($d)) {
 				if (is_file($dir.$file) && preg_match("/^{$pattern}$/", $file)) {
-					unlink($dir.$file);
+					// Another request clearing the same cache can take the file
+					// between the is_file() above and here, and the intent is
+					// only that it end up gone.
+					@unlink($dir.$file);
 				}
 			}
 			closedir($d);
