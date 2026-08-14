@@ -817,8 +817,8 @@ class e_user_model extends e_admin_model
 		// revised - don't call extended object, no permission checks, just return joined user data
 		$ret = $this->getData();
 		// $ret = array_merge($this->getExtendedModel()->getExtendedData(), $this->getData());
-		if ($ret['user_perms'] == '0.') $ret['user_perms'] = '0';
-		$ret['user_baseclasslist'] = $ret['user_class'];
+		if (varset($ret['user_perms']) == '0.') $ret['user_perms'] = '0';
+		$ret['user_baseclasslist'] = varset($ret['user_class']);
 		$ret['user_class'] = $this->getRealClassList(true); // identity data; never the emulation overlay (#5745)
 		return $ret;
 	}
