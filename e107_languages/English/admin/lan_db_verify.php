@@ -33,4 +33,5 @@ return [
     'DBVLAN_26' => "[x] table(s) have problems.",
     'DBVLAN_27' => "Table inconsistency",
     'DBVLAN_28' => "Not applicable",
+    'DBVLAN_RESULT_INCOMPLETE' => "Some tables could not be checked, so this result is incomplete. Enable debug mode for the reason.",
 ];

@@ -15,6 +15,26 @@
  *
 */
 
+use e107\Database\Exception\QueryException;
+use e107\Database\Schema\Declared\DeclaredTable;
+use e107\Database\Schema\Declared\EngineCharsetResolverInterface;
+use e107\Database\Schema\Declared\Materialiser;
+use e107\Database\Schema\Declared\SqlFileCatalogue;
+use e107\Database\Schema\Diff\SchemaDiffer;
+use e107\Database\Schema\Diff\TableDiff;
+use e107\Database\Schema\Introspect\ColumnSchema;
+use e107\Database\Schema\Introspect\IndexSchema;
+use e107\Database\Schema\Introspect\SchemaReader;
+use e107\Database\Schema\Introspect\TableSchema;
+use e107\Database\Schema\Plan\Change\AddColumn;
+use e107\Database\Schema\Plan\Change\AddIndex;
+use e107\Database\Schema\Plan\Change\ConvertTable;
+use e107\Database\Schema\Plan\Change\CreateTable;
+use e107\Database\Schema\Plan\Change\DropIndex;
+use e107\Database\Schema\Plan\Change\ModifyColumn;
+use e107\Database\Schema\Plan\ChangeInterface;
+use e107\Database\Schema\Plan\FixPlan;
+use e107\Database\Schema\Plan\PlanBuilder;
 use e107\Database\SqlFragment;
 
 if(!defined('e107_INIT'))
@@ -28,7 +48,7 @@ e107::includeLan(e_LANGUAGEDIR . e_LANGUAGE . '/admin/lan_db_verify.php');
 /**
  *
  */
-class db_verify
+class db_verify implements EngineCharsetResolverInterface
 {
 
 	var    $backUrl       = "";
@@ -76,6 +96,36 @@ class db_verify
 
 	/** @var array Derived index definitions keyed by table then index name */
 	private $derivedIndexDefinitions = array();
+
+	/** @var SqlFileCatalogue|null the one parser for *_sql.php text */
+	private $sqlFileCatalogue = null;
+
+	/** @var SchemaReader|null reads both sides of every comparison */
+	private $schemaReader = null;
+
+	/** @var Materialiser|null builds a declared body as a scratch table */
+	private $materialiser = null;
+
+	/** @var SchemaDiffer|null */
+	private $schemaDiffer = null;
+
+	/** @var PlanBuilder|null */
+	private $planBuilder = null;
+
+	/** @var bool whether leaked scratch tables have been swept for this instance */
+	private $scratchSwept = false;
+
+	/** @var TableDiff[] keyed by table name, lan_<language>_ prefixed where applicable */
+	private $tableDiffs = array();
+
+	/** @var array table name => ['engine' => string, 'charset' => string] */
+	private $intendedByTable = array();
+
+	/** @var FixPlan|null every change {@see compileResults()} has planned */
+	private $fixPlan = null;
+
+	/** @var TableSchema[] materialised declarations, keyed by file, table, engine and charset */
+	private $expectedSchemas = array();
 
 	var $fieldTypes = array('time', 'timestamp', 'datetime', 'year', 'tinyblob', 'blob',
 		'mediumblob', 'longblob', 'tinytext', 'mediumtext', 'longtext', 'text', 'date', 'json');
@@ -218,6 +268,8 @@ class db_verify
 
 	/**
 	 * Permissive field validation
+	 *
+	 * @deprecated v2.4.0 Every rule here cancels out once both sides are read from one server through {@see SchemaReader}.
 	 */
 	private function diffStructurePermissive($expected, $actual)
 	{
@@ -310,6 +362,11 @@ class db_verify
 			}
 		}
 
+		if($this->internalError === true)
+		{
+			$mes->add(defset('DBVLAN_RESULT_INCOMPLETE', 'Some tables could not be checked, so this result is incomplete. Enable debug mode for the reason.'), E_MESSAGE_WARNING);
+		}
+
 		if($cnt = $this->errors())
 		{
 			$message = str_replace("[x]", $cnt, DBVLAN_26); // Found [x] issues.
@@ -381,16 +438,16 @@ class db_verify
 
 
 	/**
-	 * @param $selection
-	 * @param $language
-	 * @return false|void
+	 * Compare every table one schema file declares against the live database.
+	 *
+	 * @param string $selection 'core' or a plugin folder, keying {@see $sqlFileTables}.
+	 * @param string $language language whose lan_<language>_ tables to compare; a language table that does not exist is not an error.
+	 * @return false|void false when the selection declares nothing to compare.
 	 */
 	public function compare($selection, $language = '')
 	{
 
 		$this->currentTable = $selection;
-
-		//	var_dump($this->sqlFileTables[$selection]);
 
 		if(!isset($this->sqlFileTables[$selection])) // doesn't have an SQL file.
 		{
@@ -398,8 +455,7 @@ class db_verify
 			return false;
 		}
 
-
-		if(empty($this->sqlFileTables[$selection]['tables']))
+		if(!is_array($this->sqlFileTables[$selection]) || empty($this->sqlFileTables[$selection]['tables']))
 		{
 			//$this->internalError = true;
 			e107::getMessage()->addDebug("Couldn't read table data for " . $selection);
@@ -407,114 +463,597 @@ class db_verify
 			return false;
 		}
 
+		$declared = array();
+		$physical = array();
+
 		foreach($this->sqlFileTables[$selection]['tables'] as $key => $tbl)
 		{
-			$rawSqlData = $this->getSqlData($tbl, $language);
+			$table = $this->declaredTable($selection, $key);
 
-
-			if($rawSqlData === false)
+			if($table === null)
 			{
-				if($language)
-				{
-					continue;
-				}
-
-
-				$this->errors[$tbl]['_status'] = self::STATUS_TABLE_MISSING;
-				$this->errors[$tbl]['_file'] = $selection;
-				$this->results[$tbl] = [];
-				// echo "missing table: $tbl";
 				continue;
 			}
 
-			//	echo "<h4>RAW</h4>";
-			//	print_a($rawSqlData);
-			//	$this->currentTable = $tbl;v
-
-			$sqlDataArr = $this->getSqlFileTables($rawSqlData);
-
-			//	echo "<h4>PARSED</h4>";
-			//	print_a($sqlDataArr);
-
-			$fileData['field'] = $this->getFields($this->sqlFileTables[$selection]['data'][$key]);
-			$sqlData['field'] = $this->getFields($sqlDataArr['data'][0]);
-
-			$fileData['index'] = $this->getIndex($this->sqlFileTables[$selection]['data'][$key]);
-
-			// Inject derived FULLTEXT indexes from e_search configurations
-			$derivedIndexes = $this->getSearchFieldIndexes($tbl);
-			if(!empty($derivedIndexes))
-			{
-				$fileData['index'] = array_merge($fileData['index'], $derivedIndexes);
-			}
-
-			$sqlData['index']  = $this->getIndex($sqlDataArr['data'][0]);
-
-			// What this table needs decides which engine and character set it can
-			// have on this server, so the comparison has to expect the same
-			// answer the installer reached. Without this, a table deliberately
-			// created as MyISAM on a server whose InnoDB has no FULLTEXT would
-			// be reported as drift, and "fixing" it would put the site back into
-			// the state that could not be created in the first place.
-			$intended = $this->intendedEngineAndCharset(
-				$fileData['field'],
-				$fileData['index'],
-				$this->sqlFileTables[$selection]['engine'][$key],
-				$this->sqlFileTables[$selection]['charset'][$key]
-			);
-
-			$maybeEngine = isset($sqlDataArr['engine'][0]) ? $sqlDataArr['engine'][0] : 'INTERNAL_ERROR:ENGINE';
-			$fileData['engine'] = $intended['engine'];
-			$sqlData['engine'] = $this->getCanonicalStorageEngine($maybeEngine);
-
-			$maybeCharset = isset($sqlDataArr['charset'][0]) ? $sqlDataArr['charset'][0] : 'INTERNAL_ERROR:CHARSET';
-			$fileData['charset'] = $intended['charset'];
-			$sqlData['charset'] = $sqlDataArr['charset'][0]; // check the actual charset. $this->getCanonicalCharset($maybeCharset);
-
-			/*
-				$debugA = print_r($fileFieldData,TRUE);	// Extracted Field Arrays
-				$debugA .= "<h2>Index</h2>";
-				$debugA .= print_r($fileIndexData,TRUE);
-				$debugB = print_r($sqlFieldData,TRUE); // Extracted Field Arrays
-				$debugB .= "<h2>Index</h2>";
-				$debugB .= print_r($sqlIndexData,TRUE);
-			*/
-
-			$debugA = $this->sqlFileTables[$selection]['data'][$key];    // Extracted Raw Field Text
-			//	$debugB = $rawSqlData;
-			$debugB = $sqlDataArr['data'][0];    // Extracted Raw Field Text
-
-			if(isset($debugA) && (e_PAGE === 'db.php'))
-			{
-				$engineA = !empty($this->sqlFileTables[$selection]['engine'][0]) ? $this->sqlFileTables[$selection]['engine'][0] : 'unknown';
-				$engineB = !empty($sqlDataArr['engine'][0]) ? $sqlDataArr['engine'][0] : 'unknown';
-
-				$charsetA = !empty($this->sqlFileTables[$selection]['charset'][0]) ? $this->sqlFileTables[$selection]['charset'][0] : 'not specified';
-				$charsetB = !empty($sqlDataArr['charset'][0]) ? $sqlDataArr['charset'][0] : 'unknown';
-
-				$debug = "<table class='table table-bordered table-condensed'>
-				<tr><td style='padding:5px;font-weight:bold'>FILE: $tbl (key=$key) <span class='badge'>$engineA</span> $charsetA</td>
-				<td style='padding:5px;font-weight:bold'>SQL: $tbl <span class='badge'>$engineB</span> $charsetB</td>
-				</tr>
-				<tr><td style='width:50%'><pre>" . $debugA . "</pre></td>
-				  <td style='width:50%'><pre>" . $debugB . "</pre></td></tr></table>";
-
-				$mes = e107::getMessage();
-				$mes->add($debug, E_MESSAGE_DEBUG);
-			}
-
-			if($language)
-			{
-				$tbl = "lan_" . $language . "_" . $tbl;
-			}
-
-			$this->prepareResults($tbl, $selection, $sqlData, $fileData);
-
-			unset($data);
-
+			$declared[$key] = $table;
+			$physical[$key] = MPREFIX . ($language ? 'lan_' . $language . '_' : '') . $table->getName();
 		}
 
+		try
+		{
+			$live = $this->schemaReader()->readMany($physical);
+		}
+		catch(Exception $e)
+		{
+			e107::getMessage()->addDebug('Could not read the live schema for ' . $selection . ': ' . $e->getMessage());
+			$this->internalError = true;
 
+			return false;
+		}
+
+		foreach($declared as $key => $table)
+		{
+			$actual = isset($live[$physical[$key]]) ? $live[$physical[$key]] : null;
+
+			if($actual === null && $language)
+			{
+				continue;
+			}
+
+			$logical = $language ? 'lan_' . $language . '_' . $table->getName() : $table->getName();
+
+			$intended = $this->resolve($table);
+			$this->intendedByTable[$logical] = $intended;
+
+			try
+			{
+				$expected = $this->expectedSchema($table, $intended);
+				$diff = $this->schemaDiffer()->diff($selection, $expected, $actual, $logical);
+			}
+			catch(Exception $e)
+			{
+				e107::getMessage()->addDebug('Could not verify ' . $logical . ': ' . $e->getMessage());
+				$this->internalError = true;
+				$this->projectUnverifiable($logical, $selection);
+
+				continue;
+			}
+
+			$this->tableDiffs[$logical] = $diff;
+			$this->projectDiff($diff);
+		}
+
+	}
+
+
+	/**
+	 * @param string $sqlFile key of {@see $sqlFileTables}.
+	 * @param int|string $key ordinal within that file.
+	 * @return DeclaredTable|null null when the file has no such declaration.
+	 */
+	private function declaredTable($sqlFile, $key)
+	{
+
+		$file = $this->sqlFileTables[$sqlFile];
+
+		if(!isset($file['tables'][$key]) || !isset($file['data'][$key]) || trim((string) $file['tables'][$key]) === '')
+		{
+			return null;
+		}
+
+		return new DeclaredTable(
+			$sqlFile,
+			$file['tables'][$key],
+			$file['data'][$key],
+			isset($file['engine'][$key]) ? $file['engine'][$key] : null,
+			isset($file['charset'][$key]) ? $file['charset'][$key] : null
+		);
+	}
+
+
+	/**
+	 * The engine and character set this server should build a declared table with, derived indexes included.
+	 *
+	 * @param DeclaredTable $table
+	 * @return array ['engine' => string, 'charset' => string]
+	 */
+	public function resolve(DeclaredTable $table)
+	{
+
+		$fields = $this->getFields($table->getBody());
+		$indexes = $this->getIndex($table->getBody());
+
+		$derived = $this->getSearchFieldIndexes($table->getName());
+
+		if(!empty($derived))
+		{
+			$indexes = array_merge($indexes, $derived);
+		}
+
+		return $this->intendedEngineAndCharset(
+			$fields,
+			$indexes,
+			$table->getDeclaredEngine(),
+			$table->getDeclaredCharset()
+		);
+	}
+
+
+	/**
+	 * The declared shape of a table, as this server builds it.
+	 *
+	 * Memoised on the table and the engine and character set given.
+	 *
+	 * @param DeclaredTable $table
+	 * @param array $intended ['engine' => string, 'charset' => string], neither half null.
+	 * @return TableSchema
+	 * @throws QueryException when the server refuses the declared body.
+	 */
+	private function expectedSchema(DeclaredTable $table, array $intended)
+	{
+
+		$engine = isset($intended['engine']) ? $intended['engine'] : null;
+		$charset = isset($intended['charset']) ? $intended['charset'] : null;
+
+		$key = $table->getSqlFile() . "\0" . $table->getName() . "\0" . $engine . "\0" . $charset;
+
+		if(!isset($this->expectedSchemas[$key]))
+		{
+			$this->expectedSchemas[$key] = $this->materialiser()->materialise(
+				$this->withDerivedIndexes($table),
+				$engine,
+				$charset
+			);
+		}
+
+		return $this->expectedSchemas[$key];
+	}
+
+
+	/**
+	 * The declaration with its e_search FULLTEXT indexes appended to the body.
+	 *
+	 * Those indexes are not in the schema file: a plugin asks for them through
+	 * its e_search configuration. Appending them to the body before it is
+	 * materialised lets the server name and normalise them exactly as it would
+	 * on the real table, which merging them into a parsed model afterwards
+	 * cannot do.
+	 *
+	 * Both identifiers reach a DDL string and neither is bindable, so both are
+	 * allowlisted and anything failing is dropped. They come from developer
+	 * configuration rather than from a request, but an unchecked identifier in
+	 * DDL is exactly what this tree's injection audit was about.
+	 *
+	 * @param DeclaredTable $table
+	 * @return DeclaredTable the same table when it has no derived indexes.
+	 */
+	private function withDerivedIndexes(DeclaredTable $table)
+	{
+
+		$derived = $this->getSearchFieldIndexes($table->getName());
+
+		if(empty($derived))
+		{
+			return $table;
+		}
+
+		$known = array('FULLTEXT', 'UNIQUE', 'SPATIAL', 'INDEX', 'KEY');
+		$extra = array();
+
+		foreach($derived as $def)
+		{
+			$field = isset($def['field']) ? (string) $def['field'] : '';
+			$keyname = isset($def['keyname']) ? (string) $def['keyname'] : '';
+			$type = empty($def['type']) ? 'INDEX' : strtoupper((string) $def['type']);
+
+			if(!preg_match('/^[A-Za-z0-9_]+$/D', $field) || !preg_match('/^[A-Za-z0-9_,]+$/D', $keyname))
+			{
+				continue;
+			}
+
+			if(!in_array($type, $known, true))
+			{
+				continue;
+			}
+
+			$extra[] = $type . ' `' . $field . '` (' . $keyname . ')';
+		}
+
+		if(empty($extra))
+		{
+			return $table;
+		}
+
+		$body = rtrim(rtrim($table->getBody()), ',') . ",\n  " . implode(",\n  ", $extra);
+
+		return new DeclaredTable(
+			$table->getSqlFile(),
+			$table->getName(),
+			$body,
+			$table->getDeclaredEngine(),
+			$table->getDeclaredCharset()
+		);
+	}
+
+
+	/**
+	 * Project one {@see TableDiff} into the legacy $results, $indices and $errors arrays the admin screen, {@see errors()} and {@see compileResults()} read.
+	 *
+	 * All three gain an entry for every compared table, sound ones included.
+	 *
+	 * @param TableDiff $diff
+	 * @return void
+	 */
+	private function projectDiff(TableDiff $diff)
+	{
+
+		$table = $diff->getTableName();
+		$file = $diff->getSqlFile();
+
+		$entry = array('_status' => self::STATUS_TABLE_OK, '_file' => $file);
+		$status = self::STATUS_TABLE_OK;
+
+		if($diff->isMissing())
+		{
+			$status |= self::STATUS_TABLE_MISSING;
+		}
+
+		$engineChange = $diff->getEngineChange();
+
+		if($engineChange !== null)
+		{
+			$status |= self::STATUS_TABLE_MISMATCH_STORAGE_ENGINE;
+			$entry['_valid_' . self::STATUS_TABLE_MISMATCH_STORAGE_ENGINE] = $engineChange['expected'];
+			$entry['_invalid_' . self::STATUS_TABLE_MISMATCH_STORAGE_ENGINE] = $engineChange['actual'];
+		}
+
+		$charsetChange = $diff->getCharsetChange();
+
+		if($charsetChange !== null)
+		{
+			$status |= self::STATUS_TABLE_MISMATCH_DEFAULT_CHARSET;
+			$entry['_valid_' . self::STATUS_TABLE_MISMATCH_DEFAULT_CHARSET] = $charsetChange['expected'];
+			$entry['_invalid_' . self::STATUS_TABLE_MISMATCH_DEFAULT_CHARSET] = $charsetChange['actual'];
+		}
+
+		$entry['_status'] = $status;
+
+		$this->errors[$table] = $entry;
+		$this->results[$table] = $this->projectColumns($diff);
+		$this->indices[$table] = $this->projectIndexes($diff);
+	}
+
+
+	/**
+	 * A table nothing could be said about: recorded as sound, in all three legacy arrays.
+	 *
+	 * @param string $table
+	 * @param string $file
+	 * @return void
+	 */
+	private function projectUnverifiable($table, $file)
+	{
+
+		unset($this->tableDiffs[$table]);
+
+		$this->errors[$table] = array('_status' => self::STATUS_TABLE_OK, '_file' => $file);
+		$this->results[$table] = array();
+		$this->indices[$table] = array();
+	}
+
+
+	/**
+	 * Every declared column of a table, keyed by name, in the legacy $results shape.
+	 *
+	 * A live column nothing declares is not reported.
+	 *
+	 * @param TableDiff $diff
+	 * @return array
+	 */
+	private function projectColumns(TableDiff $diff)
+	{
+
+		$expected = $diff->getExpectedTable();
+
+		if($diff->isMissing() || !$expected instanceof TableSchema)
+		{
+			return array();
+		}
+
+		$file = $diff->getSqlFile();
+		$missing = $diff->getMissingColumns();
+		$modified = $diff->getModifiedColumns();
+		$fields = array();
+
+		foreach($expected->getColumns() as $name => $column)
+		{
+			if(isset($missing[$name]))
+			{
+				$fields[$name] = array(
+					'_status' => 'missing_field',
+					'_valid'  => $this->legacyField($column),
+					'_file'   => $file,
+				);
+
+				continue;
+			}
+
+			if(!isset($modified[$name]))
+			{
+				$fields[$name] = array('_status' => 'ok');
+
+				continue;
+			}
+
+			$valid = $this->legacyField($modified[$name]->getExpected());
+			$invalid = $this->legacyField($modified[$name]->getActual());
+
+			$fields[$name] = array(
+				'_status'  => 'mismatch',
+				'_diff'    => $this->legacyDiff($valid, $invalid, $modified[$name]),
+				'_valid'   => $valid,
+				'_invalid' => $invalid,
+				'_file'    => $file,
+			);
+		}
+
+		return $fields;
+	}
+
+
+	/**
+	 * Every declared index of a table, keyed by the name the server gives it, in
+	 * the legacy $indices shape.
+	 *
+	 * @param TableDiff $diff
+	 * @return array
+	 */
+	private function projectIndexes(TableDiff $diff)
+	{
+
+		$expected = $diff->getExpectedTable();
+
+		if($diff->isMissing() || !$expected instanceof TableSchema)
+		{
+			return array();
+		}
+
+		$file = $diff->getSqlFile();
+		$missing = $diff->getMissingIndexes();
+		$modified = $diff->getModifiedIndexes();
+		$indices = array();
+
+		foreach($expected->getIndexes() as $name => $index)
+		{
+			if(isset($missing[$name]))
+			{
+				$indices[$name] = array(
+					'_status' => 'missing_index',
+					'_valid'  => $this->legacyIndex($index),
+					'_file'   => $file,
+				);
+
+				continue;
+			}
+
+			if(!isset($modified[$name]))
+			{
+				$indices[$name] = array('_status' => 'ok');
+
+				continue;
+			}
+
+			$valid = $this->legacyIndex($modified[$name]->getExpected());
+			$invalid = $this->legacyIndex($modified[$name]->getActual());
+
+			$indices[$name] = array(
+				'_status'  => 'mismatch',
+				'_diff'    => $this->legacyDiff($valid, $invalid, $modified[$name]),
+				'_valid'   => $valid,
+				'_invalid' => $invalid,
+				'_file'    => $file,
+			);
+		}
+
+		return $indices;
+	}
+
+
+	/**
+	 * Which keys of a legacy pair differ, for the admin screen.
+	 *
+	 * $objectDiff is consulted when the two arrays are identical, the legacy shape carrying no character set, collation or comment of its own.
+	 *
+	 * @param array $valid
+	 * @param array $invalid
+	 * @param \e107\Database\Schema\Diff\ColumnDiff|\e107\Database\Schema\Diff\IndexDiff $objectDiff
+	 * @return array differing key => expected value.
+	 */
+	private function legacyDiff(array $valid, array $invalid, $objectDiff)
+	{
+
+		$changed = array_diff_assoc($valid, $invalid);
+
+		if(!empty($changed))
+		{
+			return $changed;
+		}
+
+		$expected = $objectDiff->getExpected()->toArray();
+
+		foreach($objectDiff->getChangedFields() as $field)
+		{
+			$changed[$field] = isset($expected[$field]) ? $expected[$field] : null;
+		}
+
+		return $changed;
+	}
+
+
+	/**
+	 * A {@see ColumnSchema} in the five-key array {@see toMysql()} renders and {@see renderNotes()} feeds it.
+	 *
+	 * For rendering only: nothing compares these, and no fix is built from them.
+	 *
+	 * @param ColumnSchema $column
+	 * @return array{type:string, value:string, attributes:string, null:string, default:string}
+	 */
+	private function legacyField(ColumnSchema $column)
+	{
+
+		$type = trim($column->getColumnType());
+		$value = '';
+		$attributes = '';
+
+		if(preg_match('/^([A-Za-z0-9_]+)\s*(?:\((.*)\))?\s*(.*)$/s', $type, $m))
+		{
+			$type = $m[1];
+			$value = isset($m[2]) ? $m[2] : '';
+			$attributes = isset($m[3]) ? trim($m[3]) : '';
+		}
+
+		$default = ($column->getDefault() === null) ? '' : 'DEFAULT ' . $column->getDefault();
+		$extra = strtoupper($column->getExtra());
+
+		return array(
+			'type'       => strtoupper($type),
+			'value'      => $value,
+			'attributes' => strtoupper($attributes),
+			'null'       => $column->isNullable() ? 'NULL' : 'NOT NULL',
+			'default'    => trim($default . ' ' . $extra),
+		);
+	}
+
+
+	/**
+	 * An {@see IndexSchema} in the three-key array {@see getIndex()} returns and {@see toMysql()} renders.
+	 *
+	 * For rendering only: a primary key states no name, and an indexed expression is spelled `(expression)`.
+	 *
+	 * @param IndexSchema $index
+	 * @return array{type:string, keyname:string, field:string}
+	 */
+	private function legacyIndex(IndexSchema $index)
+	{
+
+		$kind = $index->getKind();
+		$columns = array();
+
+		foreach($index->getColumnNames() as $column)
+		{
+			$columns[] = ($column === null) ? '(expression)' : $column;
+		}
+
+		return array(
+			'type'    => ($kind === IndexSchema::KIND_INDEX) ? '' : $kind,
+			'keyname' => implode(',', $columns),
+			'field'   => ($kind === IndexSchema::KIND_PRIMARY) ? '' : $index->getName(),
+		);
+	}
+
+
+	/**
+	 * @return SchemaReader
+	 */
+	private function schemaReader()
+	{
+
+		if($this->schemaReader === null)
+		{
+			$this->schemaReader = new SchemaReader(e107::getDb());
+		}
+
+		return $this->schemaReader;
+	}
+
+
+	/**
+	 * The materialiser, with any scratch table a killed run left behind swept away the first time it is asked for.
+	 *
+	 * @return Materialiser
+	 */
+	private function materialiser()
+	{
+
+		if($this->materialiser === null)
+		{
+			$this->materialiser = new Materialiser(e107::getDb(), $this->schemaReader(), MPREFIX);
+		}
+
+		if($this->scratchSwept === false)
+		{
+			$this->scratchSwept = true;
+
+			try
+			{
+				$this->materialiser->sweep();
+			}
+			catch(QueryException $e)
+			{
+				e107::getMessage()->addDebug('Could not sweep leaked scratch tables: ' . $e->getMessage());
+			}
+		}
+
+		return $this->materialiser;
+	}
+
+
+	/**
+	 * @return SchemaDiffer
+	 */
+	private function schemaDiffer()
+	{
+
+		if($this->schemaDiffer === null)
+		{
+			$this->schemaDiffer = new SchemaDiffer();
+		}
+
+		return $this->schemaDiffer;
+	}
+
+
+	/**
+	 * @return PlanBuilder
+	 */
+	private function planBuilder()
+	{
+
+		if($this->planBuilder === null)
+		{
+			$this->planBuilder = new PlanBuilder();
+		}
+
+		return $this->planBuilder;
+	}
+
+
+	/**
+	 * The difference {@see compare()} found for every table it looked at.
+	 *
+	 * @return TableDiff[] keyed by table name.
+	 */
+	public function getTableDiffs()
+	{
+
+		return $this->tableDiffs;
+	}
+
+
+	/**
+	 * Every change {@see compileResults()} has planned, in application order.
+	 *
+	 * @return FixPlan empty until compileResults() has run.
+	 */
+	public function getFixPlan()
+	{
+
+		if($this->fixPlan === null)
+		{
+			$this->fixPlan = new FixPlan();
+		}
+
+		return $this->fixPlan;
 	}
 
 
@@ -535,12 +1074,38 @@ class db_verify
 	}
 
 	/**
-     * @return bool
-     */
-    public function hasSyntaxIssue($sqlFileData)
+	 * Whether this server refuses the declared body outright, by building it as a scratch table.
+	 *
+	 * Never throws.
+	 *
+	 * @param mixed $sqlFileData the text between the outer parentheses of a CREATE TABLE.
+	 * @return bool false for anything that is not a body to try, and for a check that could not be made.
+	 */
+	public function hasSyntaxIssue($sqlFileData)
 	{
 
-		return false; // TODO check syntax for errrors.
+		if(!is_string($sqlFileData) || trim($sqlFileData) === '')
+		{
+			return false;
+		}
+
+		try
+		{
+			$table = new DeclaredTable('core', 'dbvsyntaxcheck', $sqlFileData);
+			$intended = $this->resolve($table);
+
+			$this->materialiser()->materialise($table, $intended['engine'], $intended['charset']);
+		}
+		catch(QueryException $e)
+		{
+			return true;
+		}
+		catch(Exception $e)
+		{
+			return false;
+		}
+
+		return false;
 	}
 
 	/**
@@ -548,6 +1113,7 @@ class db_verify
 	 * @param string $selection 'core' OR plugin-folder name.
 	 * @param array  $sqlData   ie. array('field'=>getFields($data), 'index'=>getFields($data));
 	 * @param array  $fileData  ie. array('field'=>getFields($data), 'index'=>getFields($data));
+	 * @deprecated v2.4.0 {@see compare()} projects a {@see TableDiff} into the same arrays.
 	 * @todo Check for additional fields in SQL that should be removed.
 	 * @todo Add support for MYSQL 5 table layout .eg. journal_id INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 	 */
@@ -623,73 +1189,115 @@ class db_verify
 
 	/**
 	 * Compile Results into a complete list of Fixes that could be run without the need of a form selection.
+	 *
+	 * Idempotent: calling it twice does not queue anything twice.
+	 *
+	 * @return void
 	 */
 	function compileResults()
 	{
 
-		foreach($this->results as $tabs => $field)
-		{
-			// The table-level source file is recorded on $errors, not on $results,
-			// whose second level is field names.
-			$file = varset($this->errors[$tabs]['_file'], $tabs);
-			$errorStatus = is_int($this->errors[$tabs]['_status']) ?
-				$this->errors[$tabs]['_status'] : self::STATUS_TABLE_OK;
+		$this->fixList = array();
+		$plan = new FixPlan();
 
-			if($errorStatus & self::STATUS_TABLE_MISSING) // Missing Table
+		foreach($this->tableDiffs as $table => $diff)
+		{
+			if(!$diff->hasDrift())
 			{
-				$this->fixList[$file][$tabs]['all'][] = 'create';
+				continue;
 			}
-			elseif(
-				$errorStatus & self::STATUS_TABLE_MISMATCH_STORAGE_ENGINE ||
-				$errorStatus & self::STATUS_TABLE_MISMATCH_DEFAULT_CHARSET
-			)
+
+			$intended = isset($this->intendedByTable[$table]) ? $this->intendedByTable[$table] : array();
+
+			try
 			{
-				$this->fixList[$file][$tabs]['all'][] = 'convert';
+				$tablePlan = $this->planBuilder()->build(
+					$diff,
+					isset($intended['engine']) ? $intended['engine'] : null,
+					isset($intended['charset']) ? $intended['charset'] : null
+				);
 			}
-			foreach($field as $k => $f)
+			catch(Exception $e)
 			{
-				if($f['_status'] == 'ok')
+				e107::getMessage()->addDebug('Could not plan a repair for ' . $table . ': ' . $e->getMessage());
+				$this->internalError = true;
+
+				continue;
+			}
+
+			$plan = $plan->merge($tablePlan);
+
+			foreach($tablePlan->getChanges() as $change)
+			{
+				$slot = $this->changeSlot($change, $diff);
+				$field = $slot['field'];
+				$mode = $slot['modes'][0];
+
+				if(!isset($this->fixList[$change->getSqlFile()][$change->getTable()][$field]))
 				{
-					continue;
+					$this->fixList[$change->getSqlFile()][$change->getTable()][$field] = array();
 				}
-				$status = $f['_status'];
-				if(!empty($this->modes[$status]))
+
+				if(!in_array($mode, $this->fixList[$change->getSqlFile()][$change->getTable()][$field], true))
 				{
-					$this->fixList[$f['_file']][$tabs][$k][] = $this->modes[$status];
+					$this->fixList[$change->getSqlFile()][$change->getTable()][$field][] = $mode;
 				}
 			}
 		}
 
-		// Index
-		if(count($this->indices))
+		$this->fixPlan = $plan;
+	}
+
+
+	/**
+	 * Where one planned change is filed in $fixList, and which of the legacy modes a request has to name to select it back out again.
+	 *
+	 * @param ChangeInterface $change
+	 * @param TableDiff $diff the difference the change was planned from.
+	 * @return array{field:string, modes:string[]} The first mode is the one the change is filed under; the rest are spellings the admin form may post for the same repair.
+	 */
+	private function changeSlot(ChangeInterface $change, TableDiff $diff)
+	{
+
+		if($change instanceof CreateTable)
 		{
-			foreach($this->indices as $tabs => $field)
-			{
-				if($this->errors[$tabs] != 'ok')
-				{
-					foreach($field as $k => $f)
-					{
-						if($f['_status'] == 'ok')
-						{
-							continue;
-						}
-
-						// Same guard the field loop above uses. $modes carries an entry
-						// with no mode behind it ('mismatch_index'), and a status with no
-						// entry at all answers null; either would queue a fix nothing can
-						// build, which getFixQuery() can only answer with an empty string.
-						if(empty($this->modes[$f['_status']]))
-						{
-							continue;
-						}
-
-						$this->fixList[$f['_file']][$tabs][$k][] = $this->modes[$f['_status']];
-					}
-				}
-			}
+			return array('field' => 'all', 'modes' => array('create'));
 		}
 
+		if($change instanceof ConvertTable)
+		{
+			return array('field' => 'all', 'modes' => array('convert'));
+		}
 
+		if($change instanceof AddColumn)
+		{
+			return array('field' => $change->getColumn()->getName(), 'modes' => array('insert'));
+		}
+
+		if($change instanceof ModifyColumn)
+		{
+			$name = $change->getColumn()->getName();
+			$modified = $diff->getModifiedColumns();
+
+			if(isset($modified[$name]))
+			{
+				return array('field' => $name, 'modes' => array('alter'));
+			}
+
+			return array('field' => 'all', 'modes' => array('convert'));
+		}
+
+		if($change instanceof DropIndex)
+		{
+			return array('field' => $change->getIndex()->getName(), 'modes' => array('indexdrop', 'index', 'alter'));
+		}
+
+		if($change instanceof AddIndex)
+		{
+			return array('field' => $change->getIndex()->getName(), 'modes' => array('index', 'indexdrop', 'alter'));
+		}
+
+		return array('field' => 'all', 'modes' => array('alter'));
 	}
 
 	/**
@@ -1229,121 +1837,45 @@ class db_verify
 	/**
 	 * Fix tables
 	 * FixArray eg. [core][table][field] = alter|create|index| etc.
+	 *
+	 * A named table is compared again here, so a request applies only what is still outstanding.
+	 *
+	 * @param array|string $fixArray [sqlFile][table][field][] = mode, or anything that is not an array to apply the whole plan.
+	 * @return void
 	 */
 	function runFix($fixArray = '')
 	{
 
-		$mes = e107::getMessage();
 		$log = e107::getLog();
 
 		if(!is_array($fixArray))
 		{
-			$fixArray = $this->fixList;    // Fix All
-		}
+			$this->settle($this->applyPlan($this->getFixPlan()));
+			$log->flushMessages("Database Table(s) Modified");
 
+			return;
+		}
 
 		foreach($fixArray as $j => $file)
 		{
+			if(!is_array($file) || !isset($this->sqlFileTables[$j]['tables']))
+			{
+				continue;
+			}
 
 			foreach($file as $table => $val)
 			{
-
 				$id = $this->getId($this->sqlFileTables[$j]['tables'], $table);
 
 				// $table is an attacker-controllable POST array key: reject anything that
 				// is not a known table identifier before it reaches the SQL string.
-				if($id === null || !preg_match('/^[A-Za-z0-9_]+$/D', (string) $table))
+				if($id === null || !is_array($val) || !preg_match('/^[A-Za-z0-9_]+$/D', (string) $table))
 				{
 					continue;
 				}
 
-				$toFix = count($val);
-
-				// Ask for the engine and character set the same way compare() did,
-				// from what this table needs, or the two disagree and the 'convert'
-				// compare() queued comes back with nothing in it.
-				$fileIndexes = $this->getIndex($this->sqlFileTables[$j]['data'][$id]);
-				$derivedIndexes = $this->getSearchFieldIndexes($table);
-
-				if(!empty($derivedIndexes))
-				{
-					$fileIndexes = array_merge($fileIndexes, $derivedIndexes);
-				}
-
-				$intended = $this->intendedEngineAndCharset(
-					$this->getFields($this->sqlFileTables[$j]['data'][$id]),
-					$fileIndexes,
-					$this->sqlFileTables[$j]['engine'][$id],
-					$this->sqlFileTables[$j]['charset'][$id]
-				);
-
-				foreach($val as $field => $fixes)
-				{
-					// $field is likewise a POST array key; only allow plain identifiers.
-					if(!preg_match('/^[A-Za-z0-9_]+$/D', (string) $field))
-					{
-						continue;
-					}
-
-					foreach($fixes as $mode)
-					{
-
-						$query = $this->getFixQuery(
-							$mode,
-							$table,
-							$field,
-							$this->sqlFileTables[$j]['data'][$id],
-							$intended['engine'],
-							$intended['charset']
-						);
-
-
-						// $mes->addDebug("Query: ".$query);
-						// continue;
-
-
-						// getFixQuery() returns an empty string when it has nothing to say: a
-						// 'convert' whose engine and character set both already match, an
-						// identifier it refused, or a mode it has no clause for. An empty
-						// statement is not a query. Handing one to PDO raises a ValueError,
-						// which is not a PDOException and so escapes db_Query()'s catch and
-						// takes the whole request down (#5904). Nothing to run, nothing to fix.
-						if(trim((string) $query) === '')
-						{
-							$log->addDebug('No statement for ' . $mode . ' on `' . $table . '`.' . $field . ', nothing to run.');
-							continue;
-						}
-
-						// getFixQuery() now assembles this DDL through SchemaBuilder, which owns and
-						// fail-closed validates the physical table identifier; $field is allowlisted
-						// both here (/^[A-Za-z0-9_]+$/ above) and inside getFixQuery(), engine/charset
-						// come from validated maps, and the schema text is developer-controlled - no
-						// request values to bind. Execution stays on the sanctioned bound execute(),
-						// which returns true for DDL exactly like gen(), so the !== false guard holds.
-						if(e107::getDb()->execute($query) !== false)
-						{
-							$log->addDebug(defset('LAN_UPDATED', 'Updated') . '  [' . $query . ']');
-							$toFix--;
-						}
-						else
-						{
-							$log->addWarning(defset('LAN_UPDATED_FAILED', 'Update Failed') . '  [' . $query . ']');
-							$log->addWarning(e107::getDb()->getLastErrorText()); // PDO compatible.
-							/*if(mysql_errno())
-							{
-								$log->addWarning('SQL #'.mysql_errno().': '.mysql_error());
-							}*/
-						}
-					}
-				}
-
-				if(empty($toFix))
-				{
-					unset($this->errors[$table], $this->fixList[$j][$table]); // remove from error list since we are using a singleton
-				}
+				$this->settle($this->applyPlan($this->requestedPlan($j, $id, $table, $val)));
 			}    //
-
-
 		}
 
 		$log->flushMessages("Database Table(s) Modified");
@@ -1352,8 +1884,199 @@ class db_verify
 
 
 	/**
-	 * @param $sql_data
-	 * @return array|false
+	 * The changes one form submission asked for, planned afresh against the database as it stands now.
+	 *
+	 * @param string $sqlFile key of {@see $sqlFileTables}.
+	 * @param int|string $id ordinal of the table within that file.
+	 * @param string $table table name as the form named it, lan_<language>_ prefix included.
+	 * @param array $requested field => list of modes.
+	 * @return FixPlan empty when the table cannot be compared, or when nothing requested is still outstanding.
+	 */
+	private function requestedPlan($sqlFile, $id, $table, array $requested)
+	{
+
+		$declared = $this->declaredTable($sqlFile, $id);
+
+		if($declared === null)
+		{
+			return new FixPlan();
+		}
+
+		foreach(array_keys($requested) as $field)
+		{
+			if(!preg_match('/^[A-Za-z0-9_]+$/D', (string) $field))
+			{
+				unset($requested[$field]);
+			}
+		}
+
+		if(empty($requested))
+		{
+			return new FixPlan();
+		}
+
+		try
+		{
+			$intended = $this->resolve($declared);
+			$expected = $this->expectedSchema($declared, $intended);
+			$actual = $this->schemaReader()->read(MPREFIX . $table);
+			$diff = $this->schemaDiffer()->diff($sqlFile, $expected, $actual, $table);
+			$plan = $this->planBuilder()->build($diff, $intended['engine'], $intended['charset']);
+		}
+		catch(Exception $e)
+		{
+			e107::getLog()->addWarning('Could not plan a repair for `' . $table . '`: ' . $e->getMessage());
+			$this->internalError = true;
+
+			return new FixPlan();
+		}
+
+		$matched = array();
+
+		foreach($plan->getChanges() as $change)
+		{
+			$slot = $this->changeSlot($change, $diff);
+
+			if(!isset($requested[$slot['field']]))
+			{
+				continue;
+			}
+
+			$modes = is_array($requested[$slot['field']]) ? $requested[$slot['field']] : array($requested[$slot['field']]);
+
+			if(count(array_intersect($modes, $slot['modes'])) > 0)
+			{
+				$matched[] = $change;
+			}
+		}
+
+		return new FixPlan($matched);
+	}
+
+
+	/**
+	 * Run a plan, in order, and report what each table's changes did.
+	 *
+	 * @param FixPlan $plan
+	 * @return array table => ['applied' => int, 'failed' => int]
+	 */
+	private function applyPlan(FixPlan $plan)
+	{
+
+		$log = e107::getLog();
+		$sql = e107::getDb();
+		$schema = $sql->schema();
+		$outcome = array();
+
+		foreach($plan->getChanges() as $change)
+		{
+			$table = $change->getTable();
+
+			if(!isset($outcome[$table]))
+			{
+				$outcome[$table] = array('applied' => 0, 'failed' => 0);
+			}
+
+			try
+			{
+				$statements = new FixPlan(array($change));
+				$statements = $statements->toSqlStatements($schema);
+			}
+			catch(Exception $e)
+			{
+				$log->addWarning('Could not build the SQL for ' . $change->describe() . ' on `' . $table . '`: ' . $e->getMessage());
+				$outcome[$table]['failed']++;
+
+				continue;
+			}
+
+			foreach($statements as $query)
+			{
+				if(trim((string) $query) === '')
+				{
+					$log->addDebug('No statement for ' . $change->describe() . ' on `' . $table . '`, nothing to run.');
+
+					continue;
+				}
+
+				if($sql->execute($query) !== false)
+				{
+					$log->addDebug(defset('LAN_UPDATED', 'Updated') . '  [' . $query . ']');
+					$outcome[$table]['applied']++;
+				}
+				else
+				{
+					$log->addWarning(defset('LAN_UPDATED_FAILED', 'Update Failed') . '  [' . $query . ']');
+					$log->addWarning($sql->getLastErrorText()); // PDO compatible.
+					$outcome[$table]['failed']++;
+				}
+			}
+		}
+
+		return $outcome;
+	}
+
+
+	/**
+	 * Drop a repaired table from every outstanding list, the {@see FixPlan} included, so that a later report or fix on this instance no longer sees it.
+	 *
+	 * @param array $outcome as {@see applyPlan()} returns.
+	 * @return void
+	 */
+	private function settle(array $outcome)
+	{
+
+		$settled = array();
+
+		foreach($outcome as $table => $counts)
+		{
+			if($counts['failed'] > 0)
+			{
+				continue;
+			}
+
+			$settled[] = $table;
+
+			unset($this->errors[$table], $this->tableDiffs[$table]);
+
+			foreach(array_keys($this->fixList) as $file)
+			{
+				unset($this->fixList[$file][$table]);
+			}
+		}
+
+		if(!empty($settled) && $this->fixPlan instanceof FixPlan)
+		{
+			$this->fixPlan = $this->fixPlan->exceptTables($settled);
+		}
+	}
+
+
+	/**
+	 * Every table a `*_sql.php` file declares, in the legacy four parallel arrays, parsed by {@see SqlFileCatalogue}.
+	 *
+	 * The parsing itself belongs to {@see SqlFileCatalogue}, which is a port of
+	 * the expressions that used to live here; this method is the projection of
+	 * its answer back into the shape `load()`, the plugin installer
+	 * ({@see e107plugin}) and the plugin builder have always indexed by ordinal.
+	 * Keeping one parser is what keeps the two from drifting apart: the engine
+	 * and character set arrays used to be appended to while `tables` and `data`
+	 * were keyed, so a declaration stating no table options at all shifted every
+	 * later engine onto the table before it, and the installer then built a table
+	 * with another table's character set. On an object each fact sits on the
+	 * table that stated it and there is no index left to slip.
+	 *
+	 * Two differences from the expression this replaces, both deliberate: a file
+	 * declaring the same table twice now yields one entry, the last declaration,
+	 * which is what everything downstream keyed by table name already settled on;
+	 * and a statement naming no table at all is refused rather than recorded
+	 * under the empty name.
+	 *
+	 * @param string $sql_data contents of a `*_sql.php` file, or a SHOW CREATE
+	 *                         TABLE statement with a semicolon appended.
+	 * @return array|false ['tables'=>[], 'data'=>[], 'engine'=>[], 'charset'=>[]],
+	 *                     all keyed by the same ordinals; false when there is
+	 *                     nothing to read or the text cannot be parsed.
 	 */
 	function getSqlFileTables($sql_data)
 	{
@@ -1365,92 +2088,51 @@ class db_verify
 			return false;
 		}
 
-		$ret = array();
+		$sqlFile = ($this->currentTable === null || $this->currentTable === '') ? 'core' : $this->currentTable;
 
-		$sql_data = preg_replace("#\/\*.*?\*\/#mis", '', $sql_data);    // remove comments
-
-		//	$regex = "/CREATE TABLE (?:IF NOT EXISTS )?`?([\w]*)`?\s*?\(([^;]*)\)\s*((?:[\w\s]+=[^\s]+)+\s*)*;/i";
-		// 	$regex = "/CREATE TABLE (?:IF NOT EXISTS )?`?(\w*)`?\s*?\(([^;]*)\)\s*((?:[\w\s]+=\S+)+\s*)*;/i";
-		$regex = "/CREATE TABLE (?:IF NOT EXISTS )?`?(\w*)`?\s*?\(([^;]*)\)\s*((?:[\w\s]+=[^;]+)+\s*)*;/i";
-
-		preg_match_all($regex, $sql_data, $match);
-
-		$tables = array();
-
-		foreach($match[1] as $c => $k)
+		try
 		{
-			if(strpos($k, 'e107_') === 0) // remove prefix if found in sql dump.
-			{
-				$k = (string) substr($k, 5);
-			}
+			$declared = $this->sqlFileCatalogue()->parse($sql_data, $sqlFile);
+		}
+		catch(Exception $e)
+		{
+			e107::getMessage()->addError("Unable to parse " . $sqlFile . "_sql.php file data: " . $e->getMessage());
 
-			$tables[$c] = $k;
+			return false;
 		}
 
+		$ret = array('tables' => array(), 'data' => array(), 'engine' => array(), 'charset' => array());
 
-		$ret['tables'] = $tables;
-
-		$data = array();
-
-		if(!empty($match[2])) // clean/trim data.
+		foreach(array_values($declared) as $ordinal => $table)
 		{
-			foreach($match[2] as $dat)
-			{
-				$dat = str_replace("\t", '', $dat); // remove tab chars.
-				$data[] = trim($dat);
-			}
-		}
-
-		$ret['data'] = $data;
-
-		$ret['engine'] = array();
-		$ret['charset'] = array();
-
-		foreach($match[3] as $rawTableOptions)
-		{
-			if(empty($rawTableOptions))
-			{
-				continue;
-			}
-
-			$engine = null;
-			$charset = null;
-
-			//	$tableOptionsRegex = "/([\w\s]+=[\w]+)+?\s*/";
-			$tableOptionsRegex = "/([\w\s]+=\s?\w+)+?\s*/";
-			preg_match_all($tableOptionsRegex, $rawTableOptions, $tableOptionsSplit);
-			$tableOptionsSplit = current($tableOptionsSplit);
-			foreach($tableOptionsSplit as $rawTableOption)
-			{
-				list($tableOptionName, $tableOptionValue) = explode("=", $rawTableOption, 2);
-				$tableOptionName = strtoupper(trim($tableOptionName));
-				$tableOptionValue = trim($tableOptionValue);
-				switch($tableOptionName)
-				{
-					case "ENGINE":
-					case "TYPE":
-						$engine = $tableOptionValue;
-						break;
-					case "DEFAULT CHARSET":
-					case "DEFAULT CHARACTER SET":
-					case "CHARSET":
-					case "CHARACTER SET":
-						$charset = $tableOptionValue;
-						break;
-				}
-			}
-
-			$ret['engine'][] = str_replace('MYISAM', 'MyISAM', $engine);
-			$ret['charset'][] = $charset;
+			$ret['tables'][$ordinal] = $table->getName();
+			$ret['data'][$ordinal] = $table->getBody();
+			$ret['engine'][$ordinal] = $table->getDeclaredEngine();
+			$ret['charset'][$ordinal] = $table->getDeclaredCharset();
 		}
 
 		if(empty($ret['tables']))
 		{
 			e107::getMessage()->addDebug("Unable to parse " . $this->currentTable . "_sql.php file data. Possibly missing a ';' at the end?");
-			e107::getMessage()->addDebug(print_a($regex, true));
+			e107::getMessage()->addDebug(print_a(SqlFileCatalogue::TABLE_REGEX, true));
 		}
 
 		return $ret;
+	}
+
+
+	/**
+	 * @return SqlFileCatalogue
+	 */
+	private function sqlFileCatalogue()
+	{
+
+		if($this->sqlFileCatalogue === null)
+		{
+			$this->sqlFileCatalogue = new SqlFileCatalogue();
+		}
+
+		return $this->sqlFileCatalogue;
 	}
 
 
