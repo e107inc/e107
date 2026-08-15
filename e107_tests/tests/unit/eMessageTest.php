@@ -155,6 +155,38 @@
 			$this->assertFalse($result);
 
 		}
+
+		/**
+		 * e_pref::save() reports "no changes were made" as a session message on
+		 * the prefid stack and then moves that stack, so a stack that exists only
+		 * in the session has to move too.
+		 *
+		 * @see https://github.com/e107inc/e107/issues/5921
+		 */
+		public function testMoveStackMergesSessionOnlyStack()
+		{
+			if(!session_id())
+			{
+				$this->markTestSkipped('No session to hold session messages');
+			}
+
+			$this->mes->reset(false, 'default', true);
+			$this->mes->resetSession(false, 'default');
+			$this->mes->resetSession(false, 'e107-5921');
+
+			$this->mes->addSessionStack('Settings not saved.', 'e107-5921', E_MESSAGE_INFO);
+			$this->assertSame(array('Settings not saved.'),
+				$this->mes->getSession(E_MESSAGE_INFO, 'e107-5921', true, false));
+			$this->assertFalse($this->mes->hasMessage(E_MESSAGE_INFO, 'e107-5921', false));
+
+			$this->mes->moveStack('e107-5921');
+
+			$this->assertSame('', $this->mes->getSession(E_MESSAGE_INFO, 'e107-5921', true, false));
+			$this->assertSame(array('Settings not saved.'),
+				$this->mes->getSession(E_MESSAGE_INFO, 'default', true, false));
+
+			$this->mes->resetSession(false, 'default');
+		}
 /*
 		public function testGetInstance()
 		{
