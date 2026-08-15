@@ -876,7 +876,8 @@ class e_thumbnail
 		*/
 
 
-		$img->save($cache_filename, $this->_thumbQuality, $thumbnfo['extension']);
+		$imageData = (string) $img->encode($thumbnfo['extension'], $this->_thumbQuality);
+		e107::writeFileAtomic($cache_filename, $imageData);
 
 		$this->_request = array(); // reset the request.
 
@@ -885,8 +886,6 @@ class e_thumbnail
 			return $cache_filename;
 		}
 
-
-		$imageData = $img->encode($thumbnfo['extension'], $this->_thumbQuality);
 		$thumbnfo['fsize'] = strlen($imageData);
 
 		$this->sendHeaders($thumbnfo);
@@ -911,9 +910,14 @@ class e_thumbnail
 			return null;
 		}
 
-		$thumbnfo['lmodified'] = filemtime($cache_filename);
-		$thumbnfo['md5s'] = md5_file($cache_filename);
-		$thumbnfo['fsize'] = filesize($cache_filename);
+		$thumbnfo['lmodified'] = @filemtime($cache_filename);
+		$thumbnfo['md5s'] = @md5_file($cache_filename);
+		$thumbnfo['fsize'] = @filesize($cache_filename);
+
+		if($thumbnfo['lmodified'] === false || $thumbnfo['md5s'] === false || $thumbnfo['fsize'] === false)
+		{
+			return null;
+		}
 
 			// Send required headers
 		if($this->_debug !== true)
