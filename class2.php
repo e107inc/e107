@@ -312,7 +312,6 @@ $sql->db_SetErrorReporting(false);
 $dbg->logTime('SQL Connect');
 
 $merror=$sql->db_Connect($sql_info['server'], $sql_info['user'], $sql_info['password'], varset($sql_info['db'], $sql_info['db']));
-unset($sql_info);
 // create after the initial connection.
 //DEPRECATED, BC, call the method only when needed
 $sql2 = e107::getDb('sql2'); //TODO find & replace all $sql2 calls
@@ -326,15 +325,16 @@ if(!isset($_E107['no_log']))
 }
 	if($merror === 'e1')
 	{
-		message_handler('CRITICAL_ERROR', 6, ': generic, ', 'class2.php');
-		exit;
+		error_log('e107: unable to connect to the database server '.$sql_info['server'].' as '.$sql_info['user'].': '.$sql->getLastErrorText().'. Check the database settings in e107_config.php.');
+		$e107->renderConfigurationIssue();
 	}
 
 	if ($merror === 'e2')
 	{
-		message_handler("CRITICAL_ERROR", 7, ': generic, ', 'class2.php');
-		exit;
+		error_log('e107: connected to the database server '.$sql_info['server'].' but the database '.$sql_info['db'].' could not be selected: '.$sql->getLastErrorText().'. Check the database name in e107_config.php.');
+		$e107->renderConfigurationIssue();
 	}
+unset($sql_info);
 
 //
 // K: Load compatability mode.
@@ -376,10 +376,14 @@ $dbg->logTime('Load Core Prefs');
 
 
 // Check core preferences
-//FIXME - message_handler is dying after message_handler(CRITICAL_ERROR) call
 e107::getConfig()->load(); // extra load, required if mysql handler already called e107::getConfig()
 if(!e107::getConfig()->hasData())
 {
+	if(!$sql->isTable('core'))
+	{
+		error_log('e107: no e107 tables were found in the database '.e107::getMySQLConfig('defaultdb').' with the table prefix '.e107::getMySQLConfig('prefix').'. For a new site, remove e107_config.php and open install.php; for an existing site, check the database name and table prefix in e107_config.php.');
+		$e107->renderConfigurationIssue();
+	}
 
 	// Core prefs error - admin log
 	e107::getLog()->add('CORE_LAN8', 'CORE_LAN7', E_LOG_WARNING);
@@ -391,7 +395,7 @@ if(!e107::getConfig()->hasData())
 		e107::getConfig()->loadData(e107::getConfig('core_backup')->getPref(), false)
 			->save(false, true);
 
-		message_handler('CRITICAL_ERROR', 3, __LINE__, __FILE__);
+		error_log('e107: the core preferences were empty and have been restored from the automatic backup.');
 	}
 	else
 	{
@@ -401,11 +405,8 @@ if(!e107::getConfig()->hasData())
 			// Core could not restore from automatic backup. Execution halted.
 			e107::getLog()->add('CORE_LAN8', 'CORE_LAN9', E_LOG_FATAL);
 
-			message_handler('CRITICAL_ERROR', 3, __LINE__, __FILE__);
-			// No old system, so point in the direction of resetcore :(
-			message_handler('CRITICAL_ERROR', 4, __LINE__, __FILE__); //this will never appear till message_handler() is fixed
-
-			exit;
+			error_log('e107: the core preferences are empty and the database holds no automatic backup of them. Restore the database from a backup.');
+			$e107->renderConfigurationIssue();
 		}
 
 // resurrect core from old prefs

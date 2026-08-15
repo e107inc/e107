@@ -6066,7 +6066,7 @@ class e107
 		elseif(!empty($configured_host) && strpos($siteurl,'http')!== false && !$this->isAllowedHost($allowed_hosts, $http_host))
 		{
 			error_log('e107 host check: HTTP_HOST '.var_export($http_host, true).' is not allowed by the configured siteurl preference '.var_export($siteurl, true).' or any of the configured `trusted_hosts` pref entries');
-			$this->renderHostMismatchKillswitch();
+			$this->renderConfigurationIssue();
 		}
 		else
 		{
@@ -6283,18 +6283,21 @@ class e107
 	/**
 	 * Emit a 503 Service Unavailable response and terminate the request.
 	 *
-	 * Fires when `set_urls_deferred()` rejects the incoming `Host` header. The
-	 * response is rendered inline because none of the theme, plugin, or session
-	 * bootstrap has run yet at this point.
+	 * The page for a request e107 cannot serve because its own configuration
+	 * or database is not in a state to serve it: a `Host` header rejected by
+	 * {@see e107::set_urls_deferred()}, a database server that cannot be
+	 * reached, a database that holds no e107 tables. The response is rendered
+	 * inline because none of the theme, plugin, or session bootstrap has run
+	 * yet at this point.
 	 *
 	 * The body intentionally carries no diagnostic detail (no echo of the
-	 * incoming `Host`, no configured hostname, no admin URL). The diagnostic
-	 * detail is sent to `error_log()` by the caller, which is the channel that
-	 * already requires server access.
+	 * incoming `Host`, no configured hostname, no database name, no path). The
+	 * caller sends the diagnostic detail to `error_log()` first, which is the
+	 * channel that already requires server access.
 	 *
 	 * @return void
 	 */
-	private function renderHostMismatchKillswitch()
+	public function renderConfigurationIssue()
 	{
 		if(!headers_sent())
 		{
