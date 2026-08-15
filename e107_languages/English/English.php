@@ -85,6 +85,9 @@ return [
     "LAN_BACK" => "Back",
     "LAN_NAME" => "Name",
     "LAN_DESCRIPTION" => "Description",
+    // Also in admin/lan_admin.php, which a front-end page never loads.
+    // submitnews.php renders a field with it: see #5912.
+    "LAN_META_DESCRIPTION" => "Meta Description",
     "LAN_CANCEL" => "Cancel",
     "LAN_DATE" => "Date",
     "LAN_DATE_POSTED" => "Date posted",

@@ -399,7 +399,7 @@ class mailout_main_ui extends e_admin_ui
 
 
 
-		if($_GET['action'] == 'preview')
+		if(varset($_GET['action']) == 'preview')
 		{
 			$tp = e107::getParser();
 			echo $this->previewPage($tp->filter($_GET['id']), $tp->filter($_GET['user']));

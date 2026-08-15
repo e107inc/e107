@@ -35,10 +35,19 @@ class plugin_gallery_url extends eUrlConfig
 
 	/**
 	 * Admin callback
-	 * Language file not loaded as all language data is inside the lan_eurl.php (loaded by default on administration URL page)
+	 *
+	 * The labels below are this plugin's own, out of its
+	 * languages/English/English_global.php, and not lan_eurl.php as this
+	 * docblock used to claim. That file only reaches an admin page when the
+	 * plugin is in the lan_global_list pref, so on the URL configuration page
+	 * of a site where it is not, every one of them is an undefined constant,
+	 * which PHP 8 makes fatal. Loading it here costs a cached registry lookup
+	 * and makes the module answerable for its own strings.
 	 */
 	public function admin()
 	{
+		e107::plugLan('gallery', 'global', true);
+
 		// static may be used for performance - XXX LANS
 		static $admin = array(
 			'labels'    => array(
