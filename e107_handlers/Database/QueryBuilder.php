@@ -1946,25 +1946,35 @@ class QueryBuilder
 	 * falling back to $fieldTypes['_DEFAULT'] then 'string' for columns absent
 	 * from the map, mirroring the legacy lookup.
 	 *
+	 * Omit $fieldTypes and the map is the connection's own for this query's
+	 * table ({@see ConnectionInterface::getFieldTypes()}), which is empty when the
+	 * table has no definition on record. Pass a map to override it, or array()
+	 * to bind every column as a string.
+	 *
 	 * Pass a single column => value map; a list of rows is rejected (bind the
 	 * rows individually, since each may carry different field types).
 	 *
 	 * <code>
-	 * $defs = e107::getDb()->getFieldDefs('user');
-	 * $qb->insert('user')->valuesTyped($data, $defs['_FIELD_TYPES'])->execute();
+	 * $qb->insert('user')->valuesTyped($data)->execute();
+	 * $qb->insert('user')->valuesTyped($data, $ownTypes)->execute();
 	 * </code>
 	 *
 	 * @param array $values column => value (single row)
-	 * @param array $fieldTypes column => field-type token, optionally with a
-	 *                          '_DEFAULT' fallback.
+	 * @param array|null $fieldTypes column => field-type token, optionally with a
+	 *                          '_DEFAULT' fallback; null for the table's own.
 	 * @return QueryBuilder $this
 	 * @throws InvalidArgumentException on a list-of-rows input or a bad column.
 	 */
-	public function valuesTyped(array $values, array $fieldTypes = array())
+	public function valuesTyped(array $values, array $fieldTypes = null)
 	{
 		if($this->_isListOfRows($values))
 		{
 			throw new InvalidArgumentException('valuesTyped() takes one row; pass a single column => value map.');
+		}
+
+		if($fieldTypes === null)
+		{
+			$fieldTypes = $this->_tableFieldTypes();
 		}
 
 		foreach($values as $column => $value)
@@ -1973,6 +1983,17 @@ class QueryBuilder
 		}
 
 		return $this;
+	}
+
+	/**
+	 * The connection's field-type map for this query's table, empty until a
+	 * table is set; see {@see ConnectionInterface::getFieldTypes()}.
+	 *
+	 * @return array
+	 */
+	private function _tableFieldTypes()
+	{
+		return ($this->table === null) ? array() : $this->db->getFieldTypes($this->table);
 	}
 
 	/**
@@ -2112,10 +2133,12 @@ class QueryBuilder
 	 * Takes a single column => value row; a list of rows is rejected (bind rows
 	 * individually, since each may carry different field types).
 	 *
+	 * Omit $fieldTypes and the map is the connection's own for this query's
+	 * table, exactly as in {@see QueryBuilder::valuesTyped()}.
+	 *
 	 * <code>
-	 * $defs = e107::getDb()->getFieldDefs('user_extended');
 	 * $qb->insert('user_extended')
-	 *    ->upsertTyped($data, 'user_extended_id', null, $defs['_FIELD_TYPES'])
+	 *    ->upsertTyped($data, 'user_extended_id')
 	 *    ->execute();
 	 * </code>
 	 *
@@ -2123,12 +2146,12 @@ class QueryBuilder
 	 * @param string|array $uniqueBy Column(s) identifying a collision; validated.
 	 * @param array|null $update Columns to update on collision; when null, every
 	 *                   inserted column except those in $uniqueBy.
-	 * @param array $fieldTypes column => field-type token, optionally with a
-	 *                          '_DEFAULT' fallback.
+	 * @param array|null $fieldTypes column => field-type token, optionally with a
+	 *                          '_DEFAULT' fallback; null for the table's own.
 	 * @return QueryBuilder $this
 	 * @throws InvalidArgumentException on a list-of-rows input, no table, or a bad column.
 	 */
-	public function upsertTyped(array $values, $uniqueBy, $update = null, array $fieldTypes = array())
+	public function upsertTyped(array $values, $uniqueBy, $update = null, array $fieldTypes = null)
 	{
 		if($this->table === null)
 		{
@@ -2141,6 +2164,11 @@ class QueryBuilder
 		}
 
 		$this->type = self::TYPE_UPSERT;
+
+		if($fieldTypes === null)
+		{
+			$fieldTypes = $this->_tableFieldTypes();
+		}
 
 		foreach((array) $uniqueBy as $column)
 		{

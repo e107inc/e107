@@ -165,7 +165,7 @@ class e_media
 			if(!$sql->createQueryBuilder()->select('media_url')->from('core_media')->where('media_url', $fullpath)->limit(1)->fetchRow())
 			{
 
-				if($sql->createQueryBuilder()->insert('core_media')->valuesTyped($insert, $sql->getFieldDefs('core_media')['_FIELD_TYPES'])->execute())
+				if($sql->createQueryBuilder()->insert('core_media')->valuesTyped($insert)->execute())
 				{
 					$count++;
 					$mes->addDebug("Imported Media: ".$f['fname']);
@@ -1454,7 +1454,7 @@ class e_media
 		$img_data['media_description'] 	= vartrue($new_data['media_description']);
 		$img_data['media_userclass'] 	= '0';
 
-		if($sql->createQueryBuilder()->insert('core_media')->valuesTyped($img_data, $sql->getFieldDefs('core_media')['_FIELD_TYPES'])->execute())
+		if($sql->createQueryBuilder()->insert('core_media')->valuesTyped($img_data)->execute())
 		{
 			$mes->add("Importing Media: ".$file, E_MESSAGE_SUCCESS);
 			$this->log("Importing Media: ".$file." successful");

@@ -386,7 +386,7 @@ class alt_login
 		else
 		{	// Legacy path merges the table defs when the envelope carries no types
 			$defs       = $db->getFieldDefs($table);
-			$fieldTypes = (is_array($defs) && isset($defs['_FIELD_TYPES'])) ? $defs['_FIELD_TYPES'] : array();
+			$fieldTypes = $db->getFieldTypes($table);
 			$notNull    = (is_array($defs) && isset($defs['_NOTNULL']))     ? $defs['_NOTNULL']     : array();
 		}
 

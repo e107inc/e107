@@ -215,7 +215,7 @@ class user_import
 		$userRecord['user_realm'] 		= '';		// Never carry across these fields
 	    $userRecord['user_pwchange'] 	= 0;
 	
-		if(!$result = $this->userDB->createQueryBuilder()->replace('user')->valuesTyped($userRecord, $this->userDB->getFieldDefs('user')['_FIELD_TYPES'])->execute())
+		if(!$result = $this->userDB->createQueryBuilder()->replace('user')->valuesTyped($userRecord)->execute())
 		{
 	     	return 4;
 		}
@@ -224,7 +224,7 @@ class user_import
 		{
 			$extendedFields['user_extended_id'] = varset($userRecord['user_id'],0) ? $userRecord['user_id'] : $result;
 
-			if($this->userDB->createQueryBuilder()->replace('user_extended')->valuesTyped($extendedFields, $this->userDB->getFieldDefs('user_extended')['_FIELD_TYPES'])->execute() === false)
+			if($this->userDB->createQueryBuilder()->replace('user_extended')->valuesTyped($extendedFields)->execute() === false)
 			{
 				e107::getMessage()->addDebug("Failed to insert extended fields: ".print_a($extendedFields));
 				return 6;
@@ -325,7 +325,7 @@ class userclass_import
 		}
 
 
-		if(!$result = $this->ucdb->createQueryBuilder()->insert('userclass_classes')->valuesTyped($row, $this->ucdb->getFieldDefs('userclass_classes')['_FIELD_TYPES'])->execute())
+		if(!$result = $this->ucdb->createQueryBuilder()->insert('userclass_classes')->valuesTyped($row)->execute())
 		{
 	     	return 4;
 		}

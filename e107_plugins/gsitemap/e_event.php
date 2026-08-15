@@ -70,11 +70,8 @@ class gsitemap_event // plugin-folder + '_event'
 		$message = e107::getParser()->lanVars("Updating sitemap link for #[x] to [y]. ", array($id,$url), true);
 
 		$db = e107::getDb();
-		$fieldDefs = $db->getFieldDefs('gsitemap');
-		$fieldTypes = isset($fieldDefs['_FIELD_TYPES']) ? $fieldDefs['_FIELD_TYPES'] : array();
-
 		$updated = $db->createQueryBuilder()->update('gsitemap')
-			->valuesTyped(array('gsitemap_url' => $url), $fieldTypes)
+			->valuesTyped(array('gsitemap_url' => $url))
 			->where('gsitemap_plugin', $tp->filter($data['plugin']))
 			->where('gsitemap_table', $tp->filter($data['table']))
 			->where('gsitemap_table_id', $id)

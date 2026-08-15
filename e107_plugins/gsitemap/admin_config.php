@@ -575,7 +575,7 @@ $text = "
 				'gsitemap_active'   => '0',
 			);
 
-			if ($sql->createQueryBuilder()->insert('gsitemap')->valuesTyped($insert, $sql->getFieldDefs('gsitemap')['_FIELD_TYPES'])->execute())
+			if ($sql->createQueryBuilder()->insert('gsitemap')->valuesTyped($insert)->execute())
 			{
 				e107::getMessage()->addSuccess(LAN_CREATED);
 				$log->add('GSMAP_01', LAN_CREATED);

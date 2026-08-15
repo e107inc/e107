@@ -1871,9 +1871,8 @@ class user_class_admin extends user_class
 				if (!isset($data[$f])) { $data[$f] = $v; }
 			}
 		}
-		$fieldTypes = isset($defs['_FIELD_TYPES']) ? $defs['_FIELD_TYPES'] : array();
 		if ($this->sql_r->createQueryBuilder()->insert('userclass_classes')
-			->valuesTyped($data, $fieldTypes)->execute() === FALSE)
+			->valuesTyped($data)->execute() === FALSE)
 		{
 			return FALSE;
 		}

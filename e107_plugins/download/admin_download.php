@@ -186,7 +186,7 @@ if (!empty($_POST['addlimit']))
 			$vals[$targetFields[$k]] = intval($_POST[$lName]);
 		}
 		$valString = implode(',',$vals);
-		if ($sql->createQueryBuilder()->insert('generic')->valuesTyped($vals, $sql->getFieldDefs('generic')['_FIELD_TYPES'])->execute())
+		if ($sql->createQueryBuilder()->insert('generic')->valuesTyped($vals)->execute())
 		{
 			$message = DOWLAN_117;
 			e107::getLog()->add('DOWNL_09',$valString,E_LOG_INFORMATIVE,'');
@@ -233,7 +233,7 @@ if (isset($_POST['updatelimits']))
 		{
 			$vals = array();
 			$updQb = $sql->createQueryBuilder()->update('generic');
-			$genFieldTypes = $sql->getFieldDefs('generic')['_FIELD_TYPES'];
+			$genFieldTypes = $sql->getFieldTypes('generic');
 			foreach(array('bw_num','bw_days','count_num','count_days') as $k => $lName)
 			{
 				$vals[$targetFields[$k+1]] = intval($_POST[$lName][$idLim]);

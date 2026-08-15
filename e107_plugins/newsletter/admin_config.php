@@ -299,7 +299,7 @@ class newsletter
 
 		if(isset($_POST['editid']))
 		{
-			$defs = $sql->getFieldDefs('newsletter')['_FIELD_TYPES'];
+			$defs = $sql->getFieldTypes('newsletter');
 			$sql->createQueryBuilder()->update('newsletter')
 				->setTyped('newsletter_title', $letter['newsletter_title'], $defs['newsletter_title'])
 				->setTyped('newsletter_text', $letter['newsletter_text'], $defs['newsletter_text'])
@@ -311,7 +311,7 @@ class newsletter
 		else
 		{
 			$letter['newsletter_datestamp'] = time();
-			$sql->createQueryBuilder()->insert('newsletter')->valuesTyped($letter, $sql->getFieldDefs('newsletter')['_FIELD_TYPES'])->execute();
+			$sql->createQueryBuilder()->insert('newsletter')->valuesTyped($letter)->execute();
 			$mes->addSuccess(LAN_CREATED);
 		}
 	}
@@ -405,7 +405,7 @@ class newsletter
 
 		if (isset($_POST['editid']))
 		{
-			$defs = $sql->getFieldDefs('newsletter')['_FIELD_TYPES'];
+			$defs = $sql->getFieldTypes('newsletter');
 			$sql->createQueryBuilder()->update('newsletter')
 				->setTyped('newsletter_title', $letter['newsletter_title'], $defs['newsletter_title'])
 				->setTyped('newsletter_text', $letter['newsletter_text'], $defs['newsletter_text'])
@@ -417,7 +417,7 @@ class newsletter
 		else
 		{
 			$letter['newsletter_datestamp'] = time();
-			$sql->createQueryBuilder()->insert('newsletter')->valuesTyped($letter, $sql->getFieldDefs('newsletter')['_FIELD_TYPES'])->execute();
+			$sql->createQueryBuilder()->insert('newsletter')->valuesTyped($letter)->execute();
 			$mes->addSuccess(NLLAN_39);
 		}
 
@@ -536,7 +536,7 @@ class newsletter
 			//$this->message = str_replace('[x]', $counters['add'],NLLAN_40);
 			$mes->addSuccess(str_replace('[x]', $counters['add'], NLLAN_40));
 		}
-		$defs = $sql->getFieldDefs('newsletter')['_FIELD_TYPES'];
+		$defs = $sql->getFieldTypes('newsletter');
 		$sql->createQueryBuilder()->update('newsletter')
 			->setTyped('newsletter_flag', '1', $defs['newsletter_flag'])->where('newsletter_id', $issue)->execute();
 
@@ -707,7 +707,7 @@ class newsletter
 					{	// Duplicate user id found in the subscribers_list array!
 						newsletter::remove_subscribers($p_id, $val);	// removes all entries for this user id
 						$newsletterArray[$p_id]['newsletter_subscribers'] = chr(1).$val;	// keep this single value in the list
-						$nl_defs = $nl_sql->getFieldDefs('newsletter')['_FIELD_TYPES'];
+						$nl_defs = $nl_sql->getFieldTypes('newsletter');
 						$nl_sql->createQueryBuilder()->update('newsletter')->setTyped('newsletter_subscribers', $newsletterArray[$p_id]['newsletter_subscribers'], $nl_defs['newsletter_subscribers'])->where('newsletter_id', (int) $p_id)->execute();
 						$subscribers_total_count --;
 						$_nl_sanatized = 1;
@@ -746,7 +746,7 @@ class newsletter
 			$subscribers_list = array_flip(explode(chr(1), $nl_row['newsletter_subscribers']));
 			unset($subscribers_list[$p_key]);
 			$new_subscriber_list = implode(chr(1), array_keys($subscribers_list));
-			$defs = $sql->getFieldDefs('newsletter')['_FIELD_TYPES'];
+			$defs = $sql->getFieldTypes('newsletter');
 			$sql->createQueryBuilder()->update('newsletter')
 				->setTyped('newsletter_subscribers', $new_subscriber_list, $defs['newsletter_subscribers'])
 				->where('newsletter_id', $p_id)->execute();

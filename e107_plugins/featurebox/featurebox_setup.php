@@ -177,8 +177,6 @@ class featurebox_setup
 			}
 		}
 
-		$fieldTypes = isset($defs['_FIELD_TYPES']) ? $defs['_FIELD_TYPES'] : array();
-
-		return $db->createQueryBuilder()->insert($table)->valuesTyped($data, $fieldTypes)->execute();
+		return $db->createQueryBuilder()->insert($table)->valuesTyped($data)->execute();
 	}
 }

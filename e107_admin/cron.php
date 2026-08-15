@@ -286,7 +286,6 @@ class cron_admin_ui extends e_admin_ui
 			}
 
 			$defs = $sql->getFieldDefs('cron');
-			$fieldTypes = isset($defs['_FIELD_TYPES']) ? $defs['_FIELD_TYPES'] : array();
 
 			// Honour NOT NULL columns the legacy array insert auto-filled (e.g. cron_lastrun).
 			if(isset($defs['_NOTNULL']) && is_array($defs['_NOTNULL']))
@@ -301,7 +300,7 @@ class cron_admin_ui extends e_admin_ui
 			}
 
 			$result = $sql->createQueryBuilder()->insert('cron')
-				->valuesTyped($insert, $fieldTypes)->execute();
+				->valuesTyped($insert)->execute();
 
 			if($result === false)
 			{
@@ -328,8 +327,7 @@ class cron_admin_ui extends e_admin_ui
 			$cron_function = $insert['cron_function'];
 			unset($insert['cron_function'], $insert['WHERE']);
 
-			$defs = $sql->getFieldDefs('cron');
-			$fieldTypes = isset($defs['_FIELD_TYPES']) ? $defs['_FIELD_TYPES'] : array();
+			$fieldTypes = $sql->getFieldTypes('cron');
 
 			$qb = $sql->createQueryBuilder()->update('cron');
 			foreach($insert as $col => $val)

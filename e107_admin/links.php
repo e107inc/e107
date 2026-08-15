@@ -464,7 +464,7 @@ class links_admin_ui extends e_admin_ui
 
 				e107::getMessage()->addDebug(print_a($insert_array,true));
 
-				if($sql2->createQueryBuilder()->insert('links')->valuesTyped($insert_array, $sql2->getFieldDefs('links')['_FIELD_TYPES'])->execute())
+				if($sql2->createQueryBuilder()->insert('links')->valuesTyped($insert_array)->execute())
 				{
 					$message = LAN_CREATED." ({$name})[!br!]";
 					$mes->addSuccess(LAN_CREATED." ({$name})");

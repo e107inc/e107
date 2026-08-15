@@ -1159,7 +1159,6 @@ class eIPHandler
 		}
 		// Add using an array - handles DB changes better. valuesTyped() applies the same
 		// per-column storage transform as the legacy array insert, so writes stay byte-identical.
-		$banlistFieldTypes = $sql->getFieldDefs('banlist')['_FIELD_TYPES'];
 		if(!$sql->createQueryBuilder()->insert('banlist')->valuesTyped(
 			array(
 				'banlist_id'			=> 0,
@@ -1170,7 +1169,7 @@ class eIPHandler
 				'banlist_admin' 		=> $ban_user ,
 				'banlist_reason' 		=> $ban_message ,
 				'banlist_notes' 		=> $ban_notes
-			), $banlistFieldTypes)->execute())
+			))->execute())
 		{
 			trigger_error("Error adding ban to banlist table", E_USER_WARNING);;
 			// dbg("Error adding ban to banlist table");

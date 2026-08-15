@@ -5069,7 +5069,7 @@ class e_admin_controller_ui extends e_admin_controller
 		];
 
 		// Insert the record into the admin_history table
-		if (!e107::getDb()->createQueryBuilder()->insert('admin_history')->valuesTyped($historyData, e107::getDb()->getFieldDefs('admin_history')['_FIELD_TYPES'])->execute())
+		if (!e107::getDb()->createQueryBuilder()->insert('admin_history')->valuesTyped($historyData)->execute())
 		{
 			e107::getMessage()->addError("Failed to save history for table '{$table}', record ID {$id}");
 			e107::getMessage()->addError(e107::getDb()->getLastErrorText());
@@ -6434,7 +6434,7 @@ class e_admin_ui extends e_admin_controller_ui
                 'link_sefurl'		=> e107::getParser()->toDB($urlData['route'].'?'.$id),
             );
 
-            $res = $sql->createQueryBuilder()->insert('links')->valuesTyped($linkArray, $sql->getFieldDefs('links')['_FIELD_TYPES'])->execute();
+            $res = $sql->createQueryBuilder()->insert('links')->valuesTyped($linkArray)->execute();
 
             if($res !== FALSE)
             {
@@ -6529,7 +6529,7 @@ class e_admin_ui extends e_admin_controller_ui
 					'fb_order' 		=> $scount, 
             );
 
-            $res = $sql->createQueryBuilder()->insert('featurebox')->valuesTyped($fbArray, $sql->getFieldDefs('featurebox')['_FIELD_TYPES'])->execute();
+            $res = $sql->createQueryBuilder()->insert('featurebox')->valuesTyped($fbArray)->execute();
 
             if($res !== FALSE)
             {

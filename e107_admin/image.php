@@ -551,7 +551,7 @@ class media_form_ui extends e_admin_form_ui
 					$mes->addSuccess(LAN_IMA_004. ': ' .basename($path));
 					$mes->addSuccess(print_a($info,true));
 					$dim = (int) $info['img-width'] . ' x ' . (int) $info['img-height'];
-					$mediaDefs = $sql2->getFieldDefs('core_media')['_FIELD_TYPES'];
+					$mediaDefs = $sql2->getFieldTypes('core_media');
 					$sql2->createQueryBuilder()->update('core_media')
 						->setTyped('media_dimensions', $dim, $mediaDefs['media_dimensions'])
 						->setTyped('media_size', (int) $info['fsize'], $mediaDefs['media_size'])
@@ -610,7 +610,7 @@ class media_form_ui extends e_admin_form_ui
 
 				$message = basename($path).SEP.basename($url);
 
-				$mediaDefs = $sql->getFieldDefs('core_media')['_FIELD_TYPES'];
+				$mediaDefs = $sql->getFieldTypes('core_media');
 				if($sql->createQueryBuilder()->update('core_media')
 					->setTyped('media_size', $size, $mediaDefs['media_size'])
 					->setTyped('media_url', $url, $mediaDefs['media_url'])
@@ -2772,7 +2772,7 @@ class media_admin_ui extends e_admin_ui
 				//Reset all deleted user avatars with one query
 				if(!empty($tmp))
 				{
-					$userDefs = $sql->getFieldDefs('user')['_FIELD_TYPES'];
+					$userDefs = $sql->getFieldTypes('user');
 					$sql->createQueryBuilder()->update('user')
 						->setTyped('user_image', '', $userDefs['user_image'])
 						->whereIn('user_id', $tmp)
@@ -2782,7 +2782,7 @@ class media_admin_ui extends e_admin_ui
 				//Reset all deleted user photos with one query
 				if(!empty($tmp1))
 				{
-					$userDefs = $sql->getFieldDefs('user')['_FIELD_TYPES'];
+					$userDefs = $sql->getFieldTypes('user');
 					$sql->createQueryBuilder()->update('user')
 						->setTyped('user_sess', '', $userDefs['user_sess'])
 						->whereIn('user_id', $tmp1)
@@ -3585,7 +3585,7 @@ class media_admin_ui extends e_admin_ui
 					);
 
 
-				if($sql->createQueryBuilder()->insert('core_media')->valuesTyped($insert, $sql->getFieldDefs('core_media')['_FIELD_TYPES'])->execute())
+				if($sql->createQueryBuilder()->insert('core_media')->valuesTyped($insert)->execute())
 				{
 					$mes->add(IMALAN_128. ' ' .$f['fname'], E_MESSAGE_SUCCESS);
 					$this->deleteFileXml($f['fname']);
@@ -3770,7 +3770,7 @@ if (isset($_POST['submit_avdelete_multi']))
 		//sql queries significant reduced
 		if(!empty($uids))
 		{
-			$userDefs = $sql->getFieldDefs('user')['_FIELD_TYPES'];
+			$userDefs = $sql->getFieldTypes('user');
 			$sql->createQueryBuilder()->update('user')
 				->setTyped('user_image', '', $userDefs['user_image'])
 				->whereIn('user_id', $uids)
