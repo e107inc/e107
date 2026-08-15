@@ -1156,12 +1156,16 @@ USAGE:
   the harness shipped in it.
 
 LIFECYCLE:
-  up [--php X] [--db Y] [--xdebug] [--install-site]
+  up [--php X] [--db Y] [--xdebug] [--install-site] [--rebuild]
                                      Start, install deps, mark active. Builds the
                                      web image if missing, else reuses it.
                                      Default: PHP 8.2 + MariaDB 10.11.
                                      --install-site also installs e107 itself
                                      (persistent config, admin/x107).
+                                     --rebuild rebuilds the web image; needed
+                                     after editing anything under docker/,
+                                     which compose otherwise ignores while an
+                                     image with that tag exists.
   down [--volumes] [--force]         Stop and remove this env. Removing an env
                                      belonging to another worktree (reachable
                                      with --env) needs --force.
