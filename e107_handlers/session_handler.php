@@ -617,7 +617,7 @@ class e_session
 	 * @param array|null $server defaults to $_SERVER
 	 * @return bool
 	 */
-	public static function fetchMetadataReachesUs(array $server = null)
+	public static function fetchMetadataReachesUs($server = null)
 	{
 		if($server === null)
 		{
