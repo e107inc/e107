@@ -1074,7 +1074,7 @@ class e107_user_extended
 		{
 
 			$sql->createQueryBuilder()->insert('user_extended_struct')
-				->valuesTyped($extStructInsert, $sql->getFieldDefs('user_extended_struct')['_FIELD_TYPES'])->execute();
+				->valuesTyped($extStructInsert)->execute();
 			$this->init(); // rebuild the list.
 
 		//	$sql->insert('user_extended_struct',"null,'".$tp -> toDB($name, true)."','".$tp -> toDB($text, true)."','".intval($type)."','".$tp -> toDB($parms, true)."','".$tp -> toDB($values, true)."', '".$tp -> toDB($default, true)."', '".intval($read)."', '".intval($write)."', '".intval($required)."', '0', '".intval($applicable)."', '".intval($order)."', '".intval($parent)."'");
@@ -1135,7 +1135,7 @@ class e107_user_extended
 				}
 			}
 			
-			$structFieldTypes = $sql->getFieldDefs('user_extended_struct')['_FIELD_TYPES'];
+			$structFieldTypes = $sql->getFieldTypes('user_extended_struct');
 			return $sql->createQueryBuilder()->update('user_extended_struct')
 				->setTyped('user_extended_struct_text', $tp -> toDB($text, true), $structFieldTypes['user_extended_struct_text'])
 				->setTyped('user_extended_struct_type', (int) $type, $structFieldTypes['user_extended_struct_type'])

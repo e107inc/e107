@@ -477,7 +477,7 @@ class e_menuManager
 						'menu_parms'    => '',
 					);
 
-					$sql->createQueryBuilder()->insert('menus')->valuesTyped($insert, $sql->getFieldDefs('menus')['_FIELD_TYPES'])->execute();
+					$sql->createQueryBuilder()->insert('menus')->valuesTyped($insert)->execute();
 					e107::getLog()->add('MENU_01', $tp->filter($row['menu_name']) . '[!br!]' . $location . '[!br!]' . varset($menu_count, 0) . '[!br!]' . $tp->filter($row['menu_path']), E_LOG_INFORMATIVE, '');
 				}
 			}
@@ -539,7 +539,7 @@ class e_menuManager
 					'menu_parms'    => ''
 				);
 
-				if($sql->createQueryBuilder()->insert('menus')->valuesTyped($insert, $sql->getFieldDefs('menus')['_FIELD_TYPES'])->execute())
+				if($sql->createQueryBuilder()->insert('menus')->valuesTyped($insert)->execute())
 				{
 					$this->menuAddMessage(MENLAN_10 . " - " . $row['menu_name'], E_MESSAGE_DEBUG);
 				}
@@ -592,7 +592,7 @@ class e_menuManager
 						'menu_parms'    => ''
 					);
 
-					if($sql->createQueryBuilder()->insert('menus')->valuesTyped($insert, $sql->getFieldDefs('menus')['_FIELD_TYPES'])->execute())
+					if($sql->createQueryBuilder()->insert('menus')->valuesTyped($insert)->execute())
 					{
 						// Could do admin logging here - but probably not needed
 						$message .= MENLAN_10 . " - " . $file['fname'] . "<br />"; //FIXME
@@ -950,7 +950,7 @@ class e_menuManager
 							'menu_parms'	=> ''
 				   );
 
-					$sql->createQueryBuilder()->insert('menus')->valuesTyped($insert, $sql->getFieldDefs('menus')['_FIELD_TYPES'])->execute();
+					$sql->createQueryBuilder()->insert('menus')->valuesTyped($insert)->execute();
 
 					e107::getLog()->add('MENU_01',$row['menu_name'].'[!br!]'.$location.'[!br!]'.$menu_count.'[!br!]'.$row['menu_path'],E_LOG_INFORMATIVE,'');
 					$menu_count++;

@@ -1388,7 +1388,6 @@ class xmlClass
 				// (plain values() would bind raw). $table is import-derived; the
 				// builder validates it fail-closed.
 				$fieldDefs  = $sql->getFieldDefs($table);
-				$fieldTypes = (is_array($fieldDefs) && isset($fieldDefs['_FIELD_TYPES'])) ? $fieldDefs['_FIELD_TYPES'] : array();
 				$notNull    = (is_array($fieldDefs) && isset($fieldDefs['_NOTNULL'])) ? $fieldDefs['_NOTNULL'] : array();
 
 				foreach($val['item'] as $item)
@@ -1417,11 +1416,11 @@ class xmlClass
 					// are byte-identical to the deprecated array CRUD. The original
 					// fall-through is preserved: in replace mode a failed REPLACE still
 					// attempts an INSERT.
-					if(($mode === "replace") && $sql->createQueryBuilder()->replace($table)->valuesTyped($insert_array, $fieldTypes)->execute()!==false)
+					if(($mode === "replace") && $sql->createQueryBuilder()->replace($table)->valuesTyped($insert_array)->execute()!==false)
 					{
 						$ret['success'][] = $table;
 					}
-					elseif($sql->createQueryBuilder()->insert($table)->valuesTyped($insert_array, $fieldTypes)->execute()!==false)
+					elseif($sql->createQueryBuilder()->insert($table)->valuesTyped($insert_array)->execute()!==false)
 					{
 						$ret['success'][] = $table;
 					}

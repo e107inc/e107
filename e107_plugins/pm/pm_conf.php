@@ -192,7 +192,7 @@ if(isset($_POST['addlimit']))
 			'gen_chardata' => intval($_POST['new_outbox_size'])
 			);
 
-		if($sql->createQueryBuilder()->insert('generic')->valuesTyped($limArray, $sql->getFieldDefs('generic')['_FIELD_TYPES'])->execute() !== false)
+		if($sql->createQueryBuilder()->insert('generic')->valuesTyped($limArray)->execute() !== false)
 		{
 			e107::getLog()->addArray($limArray)->save('PM_ADM_05');
 			$mes->addSuccess(ADLAN_PM_6);
@@ -239,7 +239,7 @@ if(isset($_POST['updatelimits']))
 				'gen_intdata' => intval($_POST['inbox_size'][$id]),
 				'gen_chardata' => intval($_POST['outbox_size'][$id])
 				);
-			$genDefs = $sql->getFieldDefs('generic')['_FIELD_TYPES'];
+			$genDefs = $sql->getFieldTypes('generic');
 			$upd = $sql->createQueryBuilder()->update('generic');
 			foreach($limArray as $col => $val)
 			{

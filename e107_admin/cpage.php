@@ -904,7 +904,7 @@ class page_admin_ui extends e_admin_ui
 			{
 				$insert = array('menu_name' => $menu_name, 'menu_path' => $menu_path);
 
-				if(e107::getDb()->createQueryBuilder()->insert('menus')->valuesTyped($insert, e107::getDb()->getFieldDefs('menus')['_FIELD_TYPES'])->execute() !== false)
+				if(e107::getDb()->createQueryBuilder()->insert('menus')->valuesTyped($insert)->execute() !== false)
 				{
 					$mes->addDebug(CUSLAN_73);
 					return true;

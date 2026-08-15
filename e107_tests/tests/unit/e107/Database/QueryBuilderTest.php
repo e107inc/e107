@@ -192,6 +192,89 @@ use ReflectionMethod;
 			});
 		}
 
+		public function testValuesTypedSourcesTheTablesOwnTypesWhenNoneArePassed()
+		{
+			$qb = $this->makeQb($stub);
+			$stub->fieldTypes['user'] = array('user_id' => 'int', '_DEFAULT' => 'str');
+
+			$qb->insert('user')->valuesTyped(array('user_id' => '5', 'user_name' => 'bob'));
+
+			$this->assertSame('user', $stub->fieldTypesAskedFor);
+			$this->assertSame(
+				array(
+					'qb1' => array('value' => 5, 'type' => ConnectionInterface::PARAM_INT),
+					'qb2' => array('value' => 'bob', 'type' => ConnectionInterface::PARAM_STR),
+				),
+				$qb->getParameters()
+			);
+		}
+
+		public function testValuesTypedWithNoDefinitionOnRecordBindsEveryColumnAsAString()
+		{
+			$qb = $this->makeQb($stub);
+
+			$qb->insert('e107_tests_no_such_table')->valuesTyped(array('id' => '5'));
+
+			$this->assertSame('e107_tests_no_such_table', $stub->fieldTypesAskedFor);
+			$this->assertSame(
+				array('qb1' => array('value' => '5', 'type' => ConnectionInterface::PARAM_STR)),
+				$qb->getParameters()
+			);
+		}
+
+		public function testValuesTypedPassedAMapDoesNotAskTheConnection()
+		{
+			$qb = $this->makeQb($stub);
+			$stub->fieldTypes['user'] = array('user_id' => 'int');
+
+			$qb->insert('user')->valuesTyped(array('user_id' => '5'), array());
+
+			$this->assertNull($stub->fieldTypesAskedFor);
+			$this->assertSame(
+				array('qb1' => array('value' => '5', 'type' => ConnectionInterface::PARAM_STR)),
+				$qb->getParameters()
+			);
+		}
+
+		public function testValuesTypedStillRefusesAMapThatIsNotAnArray()
+		{
+			$qb = $this->makeQb($stub);
+
+			$this->assertThrowsInvalidArgument(function() use ($qb) {
+				$qb->insert('user')->valuesTyped(array('user_id' => '5'), false);
+			});
+			$this->assertNull($stub->fieldTypesAskedFor);
+			$this->assertSame(array(), $qb->getParameters());
+		}
+
+		public function testUpsertTypedStillRefusesAMapThatIsNotAnArray()
+		{
+			$qb = $this->makeQb($stub);
+
+			$this->assertThrowsInvalidArgument(function() use ($qb) {
+				$qb->insert('user')->upsertTyped(array('user_id' => '5'), 'user_id', null, false);
+			});
+			$this->assertNull($stub->fieldTypesAskedFor);
+			$this->assertSame(array(), $qb->getParameters());
+		}
+
+		public function testUpsertTypedSourcesTheTablesOwnTypesWhenNoneArePassed()
+		{
+			$qb = $this->makeQb($stub);
+			$stub->fieldTypes['user_extended'] = array('user_extended_id' => 'int', '_DEFAULT' => 'str');
+
+			$qb->insert('user_extended')->upsertTyped(array('user_extended_id' => '5', 'user_hidden' => 'x'), 'user_extended_id');
+
+			$this->assertSame('user_extended', $stub->fieldTypesAskedFor);
+			$this->assertSame(
+				array(
+					'qb1' => array('value' => 5, 'type' => ConnectionInterface::PARAM_INT),
+					'qb2' => array('value' => 'x', 'type' => ConnectionInterface::PARAM_STR),
+				),
+				$qb->getParameters()
+			);
+		}
+
 		public function testSetTypedRejectsHostileColumn()
 		{
 			$qb = $this->makeQb();
@@ -1707,6 +1790,8 @@ use ReflectionMethod;
 		public $rows = array();
 		public $executeReturn = 0;
 		public $insertId = 0;
+		public $fieldTypes = array();
+		public $fieldTypesAskedFor = null;
 
 		public function resolveTableName($table)
 		{
@@ -1761,6 +1846,13 @@ use ReflectionMethod;
 		public function lastInsertId()
 		{
 			return $this->insertId;
+		}
+
+		public function getFieldTypes($table)
+		{
+			$this->fieldTypesAskedFor = $table;
+
+			return isset($this->fieldTypes[$table]) ? $this->fieldTypes[$table] : array();
 		}
 
 		public function applyFieldType($type, $fieldValue)

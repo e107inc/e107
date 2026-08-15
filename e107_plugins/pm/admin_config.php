@@ -176,7 +176,7 @@ class private_msg_ui extends e_admin_ui
 					'gen_chardata' => intval($_POST['new_outbox_size'])
 					);
 
-				if($sql->createQueryBuilder()->insert('generic')->valuesTyped($limArray, $sql->getFieldDefs('generic')['_FIELD_TYPES'])->execute())
+				if($sql->createQueryBuilder()->insert('generic')->valuesTyped($limArray)->execute())
 				{
 					e107::getLog()->addArray($limArray)->save('PM_ADM_05');
 					$mes->addSuccess(ADLAN_PM_6);
@@ -234,7 +234,7 @@ class private_msg_ui extends e_admin_ui
 						);
 
 
-					$updTypes = $sql->getFieldDefs('generic')['_FIELD_TYPES'];
+					$updTypes = $sql->getFieldTypes('generic');
 					$updQry = $sql->createQueryBuilder()->update('generic');
 					foreach($limArray as $updCol => $updVal)
 					{

@@ -282,7 +282,7 @@ class private_message
 
 		$tp = e107::getParser();
 		$sql = e107::getDb();
-		$pmFieldTypes = $sql->getFieldDefs('private_msg')['_FIELD_TYPES'];	// field-typed user-data writes -> valuesTyped (byte-identical; pitfall #4)
+		$pmFieldTypes = $sql->getFieldTypes('private_msg');	// field-typed user-data writes -> valuesTyped (byte-identical; pitfall #4)
 		$pmsize = 0;
 		$attachlist = '';
 		$pm_options = '';
@@ -395,7 +395,7 @@ class private_message
 				set_time_limit(30);
 				$info['pm_to'] = intval($u['user_id']);		// Sending to a single user now
 
-				$pmOk = $sql->createQueryBuilder()->insert('private_msg')->valuesTyped($info, $pmFieldTypes)->execute();
+				$pmOk = $sql->createQueryBuilder()->insert('private_msg')->valuesTyped($info)->execute();
 				$pmid = ($pmOk !== false) ? $sql->lastInsertId() : false;	// guard lastInsertId() on execute() success
 				if($pmid)
 				{
@@ -426,7 +426,7 @@ class private_message
 				$info['pm_to'] = $toclass;		// Class info to put into outbox
 				$info['pm_sent_del'] = 0;
 				$info['pm_read_del'] = 1;
-				$pmOk = $sql->createQueryBuilder()->insert('private_msg')->valuesTyped($info, $pmFieldTypes)->execute();
+				$pmOk = $sql->createQueryBuilder()->insert('private_msg')->valuesTyped($info)->execute();
 				$pmid = ($pmOk !== false) ? $sql->lastInsertId() : false;	// guard lastInsertId() on execute() success
 				if(!$pmid)
 				{
@@ -442,7 +442,7 @@ class private_message
 
 
 
-			$pmOk = $sql->createQueryBuilder()->insert('private_msg')->valuesTyped($info, $pmFieldTypes)->execute();
+			$pmOk = $sql->createQueryBuilder()->insert('private_msg')->valuesTyped($info)->execute();
 			$pmid = ($pmOk !== false) ? $sql->lastInsertId() : false;	// guard lastInsertId() on execute() success
 			if($pmid)
 			{
@@ -731,7 +731,7 @@ class private_message
 						'pm_block_from' => $from,
 						'pm_block_to' => $to,
 						'pm_block_datestamp' => time()
-					), $sql->getFieldDefs('private_msg_block')['_FIELD_TYPES'])->execute() !== false)
+					))->execute() !== false)
 				{
 					return str_replace('{UNAME}', $uinfo['user_name'], LAN_PM_47);
 				}

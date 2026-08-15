@@ -250,7 +250,7 @@ class e_online
 				else
 				{
 					$dbg->logTime('Go online (insert) Line: '.__LINE__);
-					$sql->createQueryBuilder()->insert('online')->valuesTyped($insert_query, $sql->getFieldDefs('online')['_FIELD_TYPES'])->execute();
+					$sql->createQueryBuilder()->insert('online')->valuesTyped($insert_query)->execute();
 					$dbg->logTime('Go online (after insert) Line: '.__LINE__);
 				}
 
@@ -294,7 +294,7 @@ class e_online
 				}
 				else
 				{	// New visitor
-					$sql->createQueryBuilder()->insert('online')->valuesTyped($insert_query, $sql->getFieldDefs('online')['_FIELD_TYPES'])->execute();
+					$sql->createQueryBuilder()->insert('online')->valuesTyped($insert_query)->execute();
 				}
 			}
 
@@ -444,7 +444,7 @@ class e_online
 	private function updateOnline($sql, array $columns, $where, $limit = null)
 	{
 		$qb = $sql->createQueryBuilder()->update('online');
-		$fieldTypes = $sql->getFieldDefs('online')['_FIELD_TYPES'];
+		$fieldTypes = $sql->getFieldTypes('online');
 
 		foreach($columns as $column => $value)
 		{

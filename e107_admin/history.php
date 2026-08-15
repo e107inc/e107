@@ -160,7 +160,7 @@ class admin_history_ui extends e_admin_ui
 					{
 						$originalData[$pid] = (int) $recordId;
 						$result = $db->createQueryBuilder()
-							->replace($originalTable)->valuesTyped($originalData, $db->getFieldDefs($originalTable)['_FIELD_TYPES'])
+							->replace($originalTable)->valuesTyped($originalData)
 							->execute();
 					}
 					else // update
@@ -176,7 +176,7 @@ class admin_history_ui extends e_admin_ui
 	                    }
 
 						$updateQ = $db->createQueryBuilder()->update($originalTable);
-						$fieldTypes = $db->getFieldDefs($originalTable)['_FIELD_TYPES'];
+						$fieldTypes = $db->getFieldTypes($originalTable);
 						foreach($originalData as $col => $val)
 						{
 							$type = isset($fieldTypes[$col]) ? $fieldTypes[$col] : (isset($fieldTypes['_DEFAULT']) ? $fieldTypes['_DEFAULT'] : 'string');

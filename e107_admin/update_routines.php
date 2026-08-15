@@ -1788,7 +1788,7 @@ function update_706_to_800($type='')
 		
 		foreach($e107_core_media_cat as $insert)
 		{
-			$sql->createQueryBuilder()->insert('core_media_cat')->valuesTyped($insert, $sql->getFieldDefs('core_media_cat')['_FIELD_TYPES'])->execute();
+			$sql->createQueryBuilder()->insert('core_media_cat')->valuesTyped($insert)->execute();
 		}
 		
 		

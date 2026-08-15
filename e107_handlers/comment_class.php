@@ -917,12 +917,11 @@ class comment
 					}
 					unset($edata_li_hook);
 
-					$cFieldDefs = $sql->getFieldDefs('comments');
 					// User-data write: valuesTyped() applies the same per-column storage transform
 					// as the deprecated array-form insert (byte-identical). Guard lastInsertId() on
 					// execute() success so a failed write returns false - reproducing the legacy
 					// insert() return contract instead of a stale id from a prior insert.
-					$inserted = $sql->createQueryBuilder()->insert('comments')->valuesTyped($edata_li, $cFieldDefs['_FIELD_TYPES'])->execute();
+					$inserted = $sql->createQueryBuilder()->insert('comments')->valuesTyped($edata_li)->execute();
 					$inserted_id = ($inserted !== false) ? $sql->lastInsertId() : false;
 					if (!$inserted_id)
 					{

@@ -1604,9 +1604,8 @@ class mailoutAdminClass extends e107MailManager
 							// _FIELD_TYPES storage transforms stay byte-identical to the
 							// legacy array CRUD. The legacy path ignored the (mis-keyed)
 							// '_FIELDS' element and auto-merged getFieldDefs(), so the
-							// field-type source here is getFieldDefs()['_FIELD_TYPES'].
-							$mailDefs = $this->db->getFieldDefs('mail_content');
-							$mailTypes = isset($mailDefs['_FIELD_TYPES']) ? $mailDefs['_FIELD_TYPES'] : array();
+							// field-type source here is the table's own map.
+							$mailTypes = $this->db->getFieldTypes('mail_content');
 							$qb = $this->db->createQueryBuilder()->update('mail_content');
 							foreach ($changes as $changeCol => $changeVal)
 							{
