@@ -877,10 +877,12 @@ cmd_run() {
 # like a changed default memory_limit reproduces on demand.
 cmd_ci_unit() {
     resolve_env
-    if [ "$(project_label "$PROJECT" xdebug)" != yes ]; then
-        err "ci-unit needs the xdebug image; run: e107-tests up --php $E107_PHP_VERSION --db $E107_DB_IMAGE --xdebug"
-    fi
     ensure_web_exec
+    # 2>/dev/null: podman prints "Error: executing ..." for any nonzero exec.
+    if ! compose_p exec -T web php -r 'exit(extension_loaded("xdebug") ? 0 : 1);' >/dev/null 2>&1; then
+        err "ci-unit needs the xdebug image, and PHP in $PROJECT has no xdebug loaded (env records xdebug=$(project_label "$PROJECT" xdebug)).
+       Run: e107-tests up --php $E107_PHP_VERSION --db $E107_DB_IMAGE --xdebug"
+    fi
     deps_ensure
     build_actions
     compose_p exec -w "$WEB_TESTS_DIR" web \
