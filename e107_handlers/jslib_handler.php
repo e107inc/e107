@@ -239,9 +239,8 @@ class e_jslib
         if (e107::getPref('e_jslib_nocache') == '0')
         {
             $cacheFile = $this->cache_filename($encoding);
-			if(!$lmodified) $lmodified = time(); 
-            @file_put_contents($cacheFile, $contents);
-            @chmod($cacheFile, 0775);
+			if(!$lmodified) $lmodified = time();
+            e107::writeFileAtomic($cacheFile, $contents, 0775);
             if($lmodified) @touch($cacheFile, $lmodified);
         }
     }

@@ -1769,7 +1769,7 @@ class e_jsmanager
 					$content .= "\n\n";
 				}
 
-				if(!@file_put_contents($saveFilePath, $content))
+				if(!e107::writeFileAtomic($saveFilePath, $content))
 				{
 					e107::getMessage()->addDebug("Couldn't save js/css cache file: ".$saveFilePath);
 				}
