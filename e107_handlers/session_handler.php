@@ -2099,6 +2099,7 @@ class e_session_db implements SessionHandlerInterface
      * @param string $name
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function open($path, $name)
     {
         return true;
@@ -2108,6 +2109,7 @@ class e_session_db implements SessionHandlerInterface
      * Close session
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function close()
     {
         $this->gc($this->getLifetime());
@@ -2119,6 +2121,7 @@ class e_session_db implements SessionHandlerInterface
      * @param string $id
      * @return string|false
      */
+    #[\ReturnTypeWillChange]
     public function read($id)
     {
         $data = false;
@@ -2145,6 +2148,7 @@ class e_session_db implements SessionHandlerInterface
      * @param string $data
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function write($id, $data)
     {
         $values = array(
@@ -2194,6 +2198,7 @@ class e_session_db implements SessionHandlerInterface
      * @param string $id
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function destroy($id)
     {
         $id = $this->_sanitize($id);
@@ -2209,6 +2214,7 @@ class e_session_db implements SessionHandlerInterface
      * @param int $max_lifetime
      * @return int|false
      */
+    #[\ReturnTypeWillChange]
     public function gc($max_lifetime)
     {
         return $this->_db->createQueryBuilder()
