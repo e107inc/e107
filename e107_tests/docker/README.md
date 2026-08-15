@@ -210,6 +210,21 @@ and every command except `up` rediscovers its env from those labels via
   (a downed stack's vendor/composer caches rebuild on the next `up`), and
   `gc --worktrees-gone` tears down stacks whose worktree was deleted.
 
+Changing a flag on an env that already exists is supported: `up --xdebug` on
+a stack brought up without it recreates the containers on the xdebug image
+rather than erroring or quietly doing nothing, and says which way it is
+switching the env as it goes. The catch is that `up` only rewrites the labels
+of the services it brings up, so a partial-scope `up` leaves the others
+carrying the labels of the run that created them; `--no-selenium` is the
+reachable case, its browser container surviving the switch untouched. `up`
+fails if the labels it leaves behind disagree with the flags it was given, and
+the answer when that happens is `down` followed by `up` with the flags you
+want.
+
+Every diagnostic the harness prints goes to stderr, and stdout carries only a
+command's own data. A refusal is therefore invisible to a caller capturing
+stdout alone: read verdicts with `2>&1`.
+
 ## Self-healing
 
 `up` and the exec-ish commands absorb the environmental flakes we used to

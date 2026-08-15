@@ -1176,7 +1176,7 @@ USAGE:
 
 LIFECYCLE:
   up [--php X] [--db Y] [--xdebug] [--install-site]
-     [--base-path DIR] [--no-selenium]
+     [--base-path DIR] [--no-selenium] [--rebuild]
                                      Start, install deps, mark active. Builds the
                                      web image if missing, else reuses it.
                                      Default: PHP 8.5 + MariaDB 10.11.
