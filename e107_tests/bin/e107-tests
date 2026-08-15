@@ -695,6 +695,12 @@ cmd_up() {
         UP_SERVICES=(db web)
     fi
 
+    local was_xdebug
+    was_xdebug=$(project_label "$PROJECT" xdebug)
+    if [ -n "$was_xdebug" ] && [ "$was_xdebug" != "$WITH_XDEBUG" ]; then
+        note ">> switching $PROJECT from xdebug=$was_xdebug to xdebug=$WITH_XDEBUG; its containers are recreated"
+    fi
+
     if [ -n "$BASE_PATH" ]; then
         note ">> Bringing up env: $PROJECT (PHP $PHP / $DB, site at /$BASE_PATH/)"
     else
@@ -709,6 +715,14 @@ cmd_up() {
     fi
     snapshot_invalidate
     assert_stack_healthy
+    local recorded_xdebug
+    recorded_xdebug=$(project_label "$PROJECT" xdebug)
+    if [ "$recorded_xdebug" != "$WITH_XDEBUG" ]; then
+        err "env $PROJECT still records xdebug=$recorded_xdebug after an up asking for xdebug=$WITH_XDEBUG.
+       A container from an earlier up is holding stale labels. Recreate the stack:
+         e107-tests --env $PROJECT down
+         e107-tests up --php $PHP --db $DB${XDEBUG_TAG:+ --xdebug}"
+    fi
     heal_dns
     deps_install
     if [ "$INSTALL_SITE" = yes ]; then
