@@ -18,6 +18,9 @@ class e107Test extends \Codeception\Test\Unit
 	/** @var bool whether this test installed the forum plugin for its routes */
 	private $forumInstalled = false;
 
+	/** @var string[] files and scratch directories to remove in _after() */
+	private $tempFiles = array();
+
 	protected function _before()
 	{
 
@@ -57,6 +60,19 @@ class e107Test extends \Codeception\Test\Unit
 			e107::getPlugin()->uninstall('forum');
 			$this->forumInstalled = false;
 		}
+
+		foreach($this->tempFiles as $file)
+		{
+			if(is_dir($file))
+			{
+				$this->removeScratchDir($file);
+			}
+			elseif(file_exists($file))
+			{
+				unlink($file);
+			}
+		}
+		$this->tempFiles = array();
 	}
 
 	public function testGetInstance()
@@ -2190,4 +2206,94 @@ class e107Test extends \Codeception\Test\Unit
 
 
 	*/
+
+	/**
+	 * A fresh, empty directory under the system temp dir, removed by
+	 * {@see e107Test::_after()}.
+	 *
+	 * @return string with a trailing slash
+	 */
+	private function makeScratchDir($label)
+	{
+		$dir = sys_get_temp_dir() . '/e107_' . $label . '_' . uniqid('', true) . '/';
+		mkdir($dir, 0777, true);
+		$this->tempFiles[] = $dir;
+
+		return $dir;
+	}
+
+	private function removeScratchDir($dir)
+	{
+		@chmod($dir, 0755);
+		foreach(array_diff(scandir($dir), array('.', '..')) as $entry)
+		{
+			$path = rtrim($dir, '/') . '/' . $entry;
+			if(is_dir($path))
+			{
+				$this->removeScratchDir($path);
+			}
+			else
+			{
+				@unlink($path);
+			}
+		}
+		@rmdir($dir);
+	}
+
+	public function testWriteFileAtomicWritesTheContentAndLeavesNothingElseBehind()
+	{
+		$dir = $this->makeScratchDir('atomic');
+		$file = $dir . 'entry.cache.php';
+
+		$this->assertTrue(e107::writeFileAtomic($file, 'first'));
+		$this->assertSame('first', file_get_contents($file));
+
+		$this->assertTrue(e107::writeFileAtomic($file, 'second'), 'an existing file is replaced');
+		$this->assertSame('second', file_get_contents($file));
+
+		$this->assertSame(array('entry.cache.php'), array_values(array_diff(scandir($dir), array('.', '..'))), 'no temporary file survives the write');
+	}
+
+	public function testWriteFileAtomicHonoursAnExplicitMode()
+	{
+		$dir = $this->makeScratchDir('atomic');
+		$file = $dir . 'entry.cache.php';
+
+		$this->assertTrue(e107::writeFileAtomic($file, 'x', 0755));
+		clearstatcache();
+		$this->assertSame('0755', substr(sprintf('%o', fileperms($file)), -4));
+	}
+
+	public function testWriteFileAtomicDefaultsToWhatAPlainWriteWouldGive()
+	{
+		$dir = $this->makeScratchDir('atomic');
+		$atomic = $dir . 'atomic';
+		$plain = $dir . 'plain';
+
+		$this->assertTrue(e107::writeFileAtomic($atomic, 'x'));
+		file_put_contents($plain, 'x');
+		clearstatcache();
+
+		$this->assertSame(fileperms($plain) & 0777, fileperms($atomic) & 0777);
+	}
+
+	public function testWriteFileAtomicReportsAnUnwritableDirectory()
+	{
+		if(function_exists('posix_geteuid') && posix_geteuid() === 0)
+		{
+			$this->markTestSkipped('root can write anywhere, so there is no unwritable directory to try');
+		}
+
+		$dir = $this->makeScratchDir('atomic');
+		$locked = $dir . 'locked/';
+		mkdir($locked, 0555);
+		$file = $locked . 'entry.cache.php';
+
+		$this->assertFalse(e107::writeFileAtomic($file, 'x'));
+		$this->assertFileNotExists($file);
+		$this->assertSame(array(), array_values(array_diff(scandir($locked), array('.', '..'))), 'nothing was left in the directory, and nothing went to the system temp dir under a name we would not know');
+
+		chmod($locked, 0755);
+	}
+
 }
