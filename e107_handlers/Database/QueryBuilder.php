@@ -1963,19 +1963,18 @@ class QueryBuilder
 	 * @param array|null $fieldTypes column => field-type token, optionally with a
 	 *                          '_DEFAULT' fallback; null for the table's own.
 	 * @return QueryBuilder $this
-	 * @throws InvalidArgumentException on a list-of-rows input or a bad column.
+	 * @throws InvalidArgumentException on a list-of-rows input, a $fieldTypes
+	 *                                  that is neither an array nor null, or a
+	 *                                  bad column.
 	 */
-	public function valuesTyped(array $values, array $fieldTypes = null)
+	public function valuesTyped(array $values, $fieldTypes = null)
 	{
 		if($this->_isListOfRows($values))
 		{
 			throw new InvalidArgumentException('valuesTyped() takes one row; pass a single column => value map.');
 		}
 
-		if($fieldTypes === null)
-		{
-			$fieldTypes = $this->_tableFieldTypes();
-		}
+		$fieldTypes = $this->_fieldTypesArgument('valuesTyped', $fieldTypes);
 
 		foreach($values as $column => $value)
 		{
@@ -1983,6 +1982,37 @@ class QueryBuilder
 		}
 
 		return $this;
+	}
+
+	/**
+	 * The map a $fieldTypes argument stands for: null is the table's own
+	 * ({@see QueryBuilder::_tableFieldTypes()}) and an array is taken as given.
+	 * Anything else is a caller mistake and says so, rather than binding a row
+	 * of unintended types.
+	 *
+	 * The parameter itself carries no `array` type hint: a nullable one has no
+	 * spelling that PHP 5.6 and PHP 8.4 both accept, since `?array` is a 7.1
+	 * syntax and `array $x = null` is deprecated as of 8.4. The check lives
+	 * here instead.
+	 *
+	 * @param string $method Calling method, named in the error message.
+	 * @param array|null $fieldTypes
+	 * @return array
+	 * @throws InvalidArgumentException when $fieldTypes is neither an array nor null.
+	 */
+	private function _fieldTypesArgument($method, $fieldTypes)
+	{
+		if($fieldTypes === null)
+		{
+			return $this->_tableFieldTypes();
+		}
+
+		if(!is_array($fieldTypes))
+		{
+			throw new InvalidArgumentException($method."() takes a column => field-type map, or null for the table's own; ".gettype($fieldTypes).' given.');
+		}
+
+		return $fieldTypes;
 	}
 
 	/**
@@ -2149,9 +2179,11 @@ class QueryBuilder
 	 * @param array|null $fieldTypes column => field-type token, optionally with a
 	 *                          '_DEFAULT' fallback; null for the table's own.
 	 * @return QueryBuilder $this
-	 * @throws InvalidArgumentException on a list-of-rows input, no table, or a bad column.
+	 * @throws InvalidArgumentException on a list-of-rows input, no table, a
+	 *                                  $fieldTypes that is neither an array nor
+	 *                                  null, or a bad column.
 	 */
-	public function upsertTyped(array $values, $uniqueBy, $update = null, array $fieldTypes = null)
+	public function upsertTyped(array $values, $uniqueBy, $update = null, $fieldTypes = null)
 	{
 		if($this->table === null)
 		{
@@ -2165,10 +2197,7 @@ class QueryBuilder
 
 		$this->type = self::TYPE_UPSERT;
 
-		if($fieldTypes === null)
-		{
-			$fieldTypes = $this->_tableFieldTypes();
-		}
+		$fieldTypes = $this->_fieldTypesArgument('upsertTyped', $fieldTypes);
 
 		foreach((array) $uniqueBy as $column)
 		{

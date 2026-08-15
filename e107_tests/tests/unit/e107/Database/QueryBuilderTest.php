@@ -238,15 +238,24 @@ use ReflectionMethod;
 
 		public function testValuesTypedStillRefusesAMapThatIsNotAnArray()
 		{
-			if(PHP_MAJOR_VERSION < 7)
-			{
-				$this->markTestSkipped('A scalar type violation is a catchable fatal on PHP 5, not a TypeError');
-			}
+			$qb = $this->makeQb($stub);
 
-			$qb = $this->makeQb();
+			$this->assertThrowsInvalidArgument(function() use ($qb) {
+				$qb->insert('user')->valuesTyped(array('user_id' => '5'), false);
+			});
+			$this->assertNull($stub->fieldTypesAskedFor);
+			$this->assertSame(array(), $qb->getParameters());
+		}
 
-			$this->expectException('TypeError');
-			$qb->insert('user')->valuesTyped(array('user_id' => '5'), false);
+		public function testUpsertTypedStillRefusesAMapThatIsNotAnArray()
+		{
+			$qb = $this->makeQb($stub);
+
+			$this->assertThrowsInvalidArgument(function() use ($qb) {
+				$qb->insert('user')->upsertTyped(array('user_id' => '5'), 'user_id', null, false);
+			});
+			$this->assertNull($stub->fieldTypesAskedFor);
+			$this->assertSame(array(), $qb->getParameters());
 		}
 
 		public function testUpsertTypedSourcesTheTablesOwnTypesWhenNoneArePassed()
