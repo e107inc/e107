@@ -1947,6 +1947,57 @@ class e107
 	}
 
 	/**
+	 * Write $data to $file so that a concurrent reader gets the old file or
+	 * the new one, never a partial one.
+	 *
+	 * Falls back to a plain file_put_contents() when the temporary file or the
+	 * rename() cannot be made, so on such a host the write can still be torn.
+	 * The read side is not covered: a reader that checks a file exists and
+	 * then opens it can still lose to a delete in between.
+	 *
+	 * @param string   $file absolute path
+	 * @param string   $data
+	 * @param int|null $mode chmod() mode for the result; null gives what a plain
+	 *                       write would have under the current umask
+	 * @return bool true when $file holds $data
+	 */
+	public static function writeFileAtomic($file, $data, $mode = null)
+	{
+		$dir = dirname($file);
+		$tmp = @tempnam($dir, 'e107');
+
+		if($tmp !== false && realpath(dirname($tmp)) === realpath($dir))
+		{
+			if(@file_put_contents($tmp, $data) !== false)
+			{
+				@chmod($tmp, $mode === null ? 0666 & ~umask() : $mode);
+
+				if(@rename($tmp, $file))
+				{
+					return true;
+				}
+			}
+		}
+
+		if($tmp !== false)
+		{
+			@unlink($tmp);
+		}
+
+		if(@file_put_contents($file, $data) === false)
+		{
+			return false;
+		}
+
+		if($mode !== null)
+		{
+			@chmod($file, $mode);
+		}
+
+		return true;
+	}
+
+	/**
 	 * Create a new file inspector object
 	 *
 	 * Note: Only the core file inspector is supported right now.
