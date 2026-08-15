@@ -314,6 +314,20 @@ trait ConnectionTrait
 	}
 
 	/**
+	 * Field-type map for a table; the full contract is documented at
+	 * {@see ConnectionInterface::getFieldTypes()}.
+	 *
+	 * @param string $tableName
+	 * @return array
+	 */
+	public function getFieldTypes($tableName)
+	{
+		$defs = $this->getFieldDefs($tableName);
+
+		return (is_array($defs) && isset($defs['_FIELD_TYPES'])) ? $defs['_FIELD_TYPES'] : array();
+	}
+
+	/**
 	 * Create a schema/DDL builder bound to this connection; the full contract is
 	 * documented at {@see ConnectionInterface::createSchemaBuilder()}.
 	 *

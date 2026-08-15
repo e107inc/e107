@@ -1684,6 +1684,29 @@ abstract class e_db_abstractTest extends \Test\Unit
 		$this->assertEquals($expected, $actual);
 	}
 
+	public function testGetFieldDefsIsFalseForATableWithNoDefinition()
+	{
+		$this->assertFalse($this->db->getFieldDefs('e107_tests_no_such_table'));
+	}
+
+	public function testGetFieldTypesIsTheFieldTypesMapAlone()
+	{
+		$this->assertSame($this->db->getFieldDefs('plugin')['_FIELD_TYPES'], $this->db->getFieldTypes('plugin'));
+	}
+
+	/**
+	 * A typed insert into a table with no definition on record binds every
+	 * column as a string, as the array-form insert() always has, and fails on
+	 * the missing table rather than on the missing definition.
+	 */
+	public function testGetFieldTypesIsEmptyForATableWithNoDefinition()
+	{
+		$types = $this->db->getFieldTypes('e107_tests_no_such_table');
+
+		$this->assertSame(array(), $types);
+		$this->assertFalse($this->db->createQueryBuilder()->insert('e107_tests_no_such_table')->valuesTyped(array('id' => 1), $types)->execute());
+	}
+
 
 	/**
 	 * @desc Test primary methods against a secondary database instance (ensures mysqlPrefix is working correctly)
