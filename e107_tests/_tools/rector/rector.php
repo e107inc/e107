@@ -33,6 +33,7 @@ use E107\Rector\DowngradePhp71\Rector\Array_\SymmetricArrayDestructuringToListRe
 use E107\Rector\DowngradePhp71\Rector\ClassConst\DowngradeClassConstantVisibilityRector;
 use E107\Rector\DowngradePhp71\Rector\ConstFetch\DowngradePhp71JsonConstRector;
 use E107\Rector\DowngradePhp71\Rector\FuncCall\DowngradeIsIterableRector;
+use E107\Rector\DowngradePhp71\Rector\FunctionLike\DowngradeImplicitlyNullableTypeDeclarationRector;
 use E107\Rector\DowngradePhp71\Rector\FunctionLike\DowngradeIterablePseudoTypeDeclarationRector;
 use E107\Rector\DowngradePhp71\Rector\FunctionLike\DowngradeNullableTypeDeclarationRector;
 use E107\Rector\DowngradePhp71\Rector\FunctionLike\DowngradeVoidTypeDeclarationRector;
@@ -67,6 +68,8 @@ return static function (RectorConfig $rectorConfig): void {
     // end are re-vendored stock rules whose upstream copies are skipped below.
     $rectorConfig->rules([
         DowngradeNullableTypeDeclarationRector::class,
+        // The rule above, for the implicit spelling `T $x = null`.
+        DowngradeImplicitlyNullableTypeDeclarationRector::class,
         DowngradeVoidTypeDeclarationRector::class,
         DowngradeClassConstantVisibilityRector::class,
         DowngradePipeToMultiCatchExceptionRector::class,

@@ -25,7 +25,10 @@ class core_system_xup_controller extends eController
 	 */
 	private $social_login_config_manager;
 
-	public function __construct(eRequest $request, eResponse $response = null)
+	/**
+     * @param \eResponse|null $response
+     */
+    public function __construct(eRequest $request, $response = null)
 	{
 		parent::__construct($request, $response);
 		require_once(e_PLUGIN."social/includes/social_login_config.php");
