@@ -144,42 +144,42 @@ class ecache {
 		{
 			$cache_file = (isset($this) && $this instanceof ecache ? $this->cache_fname($CacheTag, $syscache) : self::cache_fname($CacheTag, $syscache));
 
-			if(file_exists($cache_file))
-			{
-				if ($MaximumAge !== false && (filemtime($cache_file) + ($MaximumAge * 60)) < time()) {
-					unlink($cache_file);
-					return false;
-				}
-				else
-				{
-					$ret = file_get_contents($cache_file);
+			$mtime = @filemtime($cache_file);
 
-					if($ret === false)
-					{
-						$this->lastError = "Couldn't read ".$cache_file;
-					}
-
-					if (strpos($ret, self::CACHE_PREFIX) === 0)
-					{
-						$ret = (string) substr($ret, strlen(self::CACHE_PREFIX));
-					}
-					elseif(strpos($ret, '<?php exit;') === 0)
-					{
-						$ret = (string) substr($ret, 11);
-					}
-					elseif(strpos($ret,'<?php') === 0)
-					{
-						$ret = (string) substr($ret, 5);		// Handle the history for now
-					}
-
-					return $ret;
-				}
-			}
-			else
+			if($mtime === false)
 			{
 				$this->lastError = "Cache file not found: ".$cache_file;
 				return false;
 			}
+
+			if ($MaximumAge !== false && ($mtime + ($MaximumAge * 60)) < time())
+			{
+				@unlink($cache_file);
+				return false;
+			}
+
+			$ret = @file_get_contents($cache_file);
+
+			if($ret === false)
+			{
+				$this->lastError = "Couldn't read ".$cache_file;
+				return false;
+			}
+
+			if (strpos($ret, self::CACHE_PREFIX) === 0)
+			{
+				$ret = (string) substr($ret, strlen(self::CACHE_PREFIX));
+			}
+			elseif(strpos($ret, '<?php exit;') === 0)
+			{
+				$ret = (string) substr($ret, 11);
+			}
+			elseif(strpos($ret,'<?php') === 0)
+			{
+				$ret = (string) substr($ret, 5);		// Handle the history for now
+			}
+
+			return $ret;
 		}
 		return false;
 	}
@@ -242,9 +242,7 @@ class ecache {
 		if(($ForceCache != false ) || ($syscache == false && $this->UserCacheActive) || ($syscache == true && $this->SystemCacheActive) && !e107::getParser()->checkHighlighting())
 		{
 			$cache_file = (isset($this) && $this instanceof ecache ? $this->cache_fname($CacheTag, $syscache) : self::cache_fname($CacheTag, $syscache));
-			@file_put_contents($cache_file, ($bRaw? $Data : self::CACHE_PREFIX.$Data) );
-			@chmod($cache_file, 0755); //Cache should not be world-writeable
-			@touch($cache_file);
+			e107::writeFileAtomic($cache_file, ($bRaw? $Data : self::CACHE_PREFIX.$Data), 0755);
 		}
 	}
 
@@ -448,7 +446,7 @@ class ecache {
 		{
 			foreach ($files as $file)
 			{
-				unlink($path.$file);
+				@unlink($path.$file);
 			}
 		}
 
