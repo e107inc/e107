@@ -21,6 +21,11 @@ coverage:
         - './**'
         - '%app_path%/e107_handlers/vendor/**/*.php'
         - '%app_path%/e107_tests/**'
+        # Generated cache, not source. These are .php files that get included,
+        # so coverage records them, and anything that clears a cache mid-run
+        # then deletes a file the analyser still means to read. It reports that
+        # as "Failed to open stream" and Codeception turns it into a fatal.
+        - '%app_path%/e107_system/**'
 params:
     - lib/config.php
 extensions:
