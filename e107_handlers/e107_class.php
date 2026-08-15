@@ -3493,12 +3493,7 @@ class e107
 		elseif($cacheFile !== null)
 		{
 			$payload = "<?php\nreturn " . var_export($names, true) . ";\n";
-			// Atomic-ish write: temp + rename.
-			$tmp = $cacheFile . '.' . getmypid() . '.tmp';
-			if(@file_put_contents($tmp, $payload, LOCK_EX) !== false)
-			{
-				@rename($tmp, $cacheFile);
-			}
+			self::writeFileAtomic($cacheFile, $payload);
 		}
 
 		$local[$key] = $names;
