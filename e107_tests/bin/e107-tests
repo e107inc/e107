@@ -124,8 +124,8 @@ docker_q() {
 
 # One docker call per run, not one per question. Every env query below reads
 # this table instead of spawning its own process: project, php, db, xdebug,
-# app-path and state, one row per container. Listing a dozen envs used to
-# cost five docker invocations each.
+# app-path, state and compose service, one row per container. Listing a dozen
+# envs used to cost five docker invocations each.
 #
 # Cached in a file, not a variable. Nearly every caller reads the snapshot
 # from inside a command substitution, and a variable assigned there dies with
@@ -145,7 +145,8 @@ snapshot() {
         fmt=$fmt'{{.Label "'$LABEL_NS'.db"}}\t'
         fmt=$fmt'{{.Label "'$LABEL_NS'.xdebug"}}\t'
         fmt=$fmt'{{.Label "'$LABEL_NS'.app-path"}}\t'
-        fmt=$fmt'{{.State}}'
+        fmt=$fmt'{{.State}}\t'
+        fmt=$fmt'{{.Label "com.docker.compose.service"}}'
         printf 'snapshot\n' > "$SNAPSHOT_FILE"
         docker_q ps -a --filter "label=$LABEL_NS=1" --format "$fmt" >> "$SNAPSHOT_FILE" || true
     fi
@@ -161,7 +162,7 @@ project_exists() {
     snapshot | awk -F'\t' -v p="$1" '$1 == p {found = 1} END {exit !found}'
 }
 
-# Read one e107.tests.* label off any container of a project.
+# Read one e107.tests.* label off a project, preferring its web container's row.
 project_label() {
     local col
     case $2 in
@@ -171,7 +172,14 @@ project_label() {
         app-path) col=5 ;;
         *) err "unknown label: $2" ;;
     esac
-    snapshot | awk -F'\t' -v p="$1" -v c="$col" '$1 == p && $c != "" {print $c; exit}'
+    # awk runs END even after `exit`, hence the found flag.
+    snapshot | awk -F'\t' -v p="$1" -v c="$col" '
+        $1 == p && $c != "" {
+            if ($7 == "web") { print $c; found = 1; exit }
+            if (fallback == "") fallback = $c
+        }
+        END { if (!found && fallback != "") print fallback }
+    '
 }
 
 # Containers of a project, by state, as "running(2),exited(1)".
