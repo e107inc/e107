@@ -147,17 +147,19 @@ class SchemaDiffValueObjectTest extends \Test\Unit
 		$missingIndex = $this->fake('index');
 		$modifiedIndex = $this->fake('indexDiff');
 		$extraIndex = $this->fake('index');
+		$redundantIndex = $this->fake('index');
 
 		$diff = new TableDiff('core', 'news', array(
-			'expectedTable'   => $expectedTable,
-			'engineChange'    => array('expected' => 'InnoDB', 'actual' => 'MyISAM'),
-			'charsetChange'   => array('expected' => 'utf8mb4', 'actual' => 'utf8mb3'),
-			'missingColumns'  => array('news_thumbnail' => $missingColumn),
-			'modifiedColumns' => array('news_id' => $modifiedColumn),
-			'extraColumns'    => array('news_plugin_field' => $extraColumn),
-			'missingIndexes'  => array('news_datestamp' => $missingIndex),
-			'modifiedIndexes' => array('PRIMARY' => $modifiedIndex),
-			'extraIndexes'    => array('news_plugin_idx' => $extraIndex),
+			'expectedTable'    => $expectedTable,
+			'engineChange'     => array('expected' => 'InnoDB', 'actual' => 'MyISAM'),
+			'charsetChange'    => array('expected' => 'utf8mb4', 'actual' => 'utf8mb3'),
+			'missingColumns'   => array('news_thumbnail' => $missingColumn),
+			'modifiedColumns'  => array('news_id' => $modifiedColumn),
+			'extraColumns'     => array('news_plugin_field' => $extraColumn),
+			'missingIndexes'   => array('news_datestamp' => $missingIndex),
+			'modifiedIndexes'  => array('PRIMARY' => $modifiedIndex),
+			'extraIndexes'     => array('news_plugin_idx' => $extraIndex),
+			'redundantIndexes' => array('ft_news_news_title' => $redundantIndex),
 		));
 
 		$this->assertSame('news', $diff->getTableName());
@@ -172,6 +174,7 @@ class SchemaDiffValueObjectTest extends \Test\Unit
 		$this->assertSame(array('news_datestamp' => $missingIndex), $diff->getMissingIndexes());
 		$this->assertSame(array('PRIMARY' => $modifiedIndex), $diff->getModifiedIndexes());
 		$this->assertSame(array('news_plugin_idx' => $extraIndex), $diff->getExtraIndexes());
+		$this->assertSame(array('ft_news_news_title' => $redundantIndex), $diff->getRedundantIndexes());
 	}
 
 	public function testATableDiffWithNoPartsIsClean()
@@ -188,6 +191,7 @@ class SchemaDiffValueObjectTest extends \Test\Unit
 		$this->assertSame(array(), $diff->getMissingIndexes());
 		$this->assertSame(array(), $diff->getModifiedIndexes());
 		$this->assertSame(array(), $diff->getExtraIndexes());
+		$this->assertSame(array(), $diff->getRedundantIndexes());
 		$this->assertFalse($diff->hasDrift());
 	}
 
@@ -260,16 +264,31 @@ class SchemaDiffValueObjectTest extends \Test\Unit
 		$this->assertFalse($diff->hasDrift());
 	}
 
+	/**
+	 * A redundant index is one e107 derived that the declaration now covers, so dropping it is the fix.
+	 */
+	public function testARedundantIndexIsDriftWhereTheSameExtraOneIsNot()
+	{
+		$index = $this->fake('index');
+
+		$redundant = new TableDiff('core', 'news', array('redundantIndexes' => array('ft_news_news_title' => $index)));
+		$extra = new TableDiff('core', 'news', array('extraIndexes' => array('ft_news_news_title' => $index)));
+
+		$this->assertTrue($redundant->hasDrift());
+		$this->assertFalse($extra->hasDrift());
+	}
+
 	public function testEveryOtherDifferenceIsDrift()
 	{
 		$drifting = array(
-			'missing'         => true,
-			'engineChange'    => array('expected' => 'InnoDB', 'actual' => 'MyISAM'),
-			'charsetChange'   => array('expected' => 'utf8mb4', 'actual' => 'utf8mb3'),
-			'missingColumns'  => array($this->fake('column')),
-			'modifiedColumns' => array($this->fake('columnDiff')),
-			'missingIndexes'  => array($this->fake('index')),
-			'modifiedIndexes' => array($this->fake('indexDiff')),
+			'missing'          => true,
+			'engineChange'     => array('expected' => 'InnoDB', 'actual' => 'MyISAM'),
+			'charsetChange'    => array('expected' => 'utf8mb4', 'actual' => 'utf8mb3'),
+			'missingColumns'   => array($this->fake('column')),
+			'modifiedColumns'  => array($this->fake('columnDiff')),
+			'missingIndexes'   => array($this->fake('index')),
+			'modifiedIndexes'  => array($this->fake('indexDiff')),
+			'redundantIndexes' => array($this->fake('index')),
 		);
 
 		foreach($drifting as $part => $value)

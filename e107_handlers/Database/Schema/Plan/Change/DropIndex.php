@@ -14,17 +14,11 @@ use e107\Database\Schema\Introspect\IndexSchema;
 use e107\Database\Schema\SchemaBuilder;
 
 /**
- * Drop a live index whose definition has drifted, so the declared one can be
- * added back in its place.
+ * Drop a live index: one whose definition has drifted, so the declared one can
+ * be added back in its place, or one e107 derived itself and the declaration has
+ * since covered ({@see \e107\Database\Schema\Diff\TableDiff::getRedundantIndexes()}).
  *
- * Only ever queued for an index that exists on both sides and differs. An index
- * nothing declares is not drift and is never dropped: on a live site it is
- * usually a plugin's or an administrator's, and no amount of verifying makes it
- * ours to remove.
- *
- * It is built from the live {@see IndexSchema}, because that is the thing being
- * dropped, and the kind decides the spelling: the primary key has no name to
- * drop by.
+ * Built from the live {@see IndexSchema}, not the declared one.
  */
 final class DropIndex extends AbstractChange
 {

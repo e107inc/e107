@@ -426,6 +426,51 @@ class SchemaDifferTest extends \Test\Unit
 		$this->assertSame(array('news_title_local'), array_keys($diff->getExtraIndexes()));
 	}
 
+	// --- disowned indexes --------------------------------------------------
+
+	/**
+	 * A disowned index is one e107 derived from an e_search configuration that the schema file has since covered.
+	 */
+	public function testADisownedIndexTheDeclarationDoesNotCarryIsRedundant()
+	{
+		$diff = $this->diff('core', $this->table(), $this->withDerivedFulltext(), 'news', array('ft_news_news_title'));
+
+		$this->assertTrue($diff->hasDrift(), 'A redundant index is drift: dropping it is the fix.');
+		$this->assertSame($this->counts(array('redundantIndexes' => 1)), $this->countsOf($diff));
+		$this->assertSame(array('ft_news_news_title'), array_keys($diff->getRedundantIndexes()));
+		$this->assertSame(array(), $diff->getExtraIndexes(), 'A redundant index is not also an extra.');
+	}
+
+	public function testTheSameIndexNotDisownedIsStillMerelyExtra()
+	{
+		$diff = $this->diff('core', $this->table(), $this->withDerivedFulltext(), 'news');
+
+		$this->assertFalse($diff->hasDrift());
+		$this->assertSame($this->counts(array('extraIndexes' => 1)), $this->countsOf($diff));
+		$this->assertSame(array('ft_news_news_title'), array_keys($diff->getExtraIndexes()));
+	}
+
+	public function testADisownedNameTheDeclarationCarriesIsComparedNormally()
+	{
+		$expected = $this->withDerivedFulltext();
+		$disowned = array('ft_news_news_title');
+
+		$matching = $this->diff('core', $expected, $this->withDerivedFulltext(), 'news', $disowned);
+
+		$this->assertFalse($matching->hasDrift());
+		$this->assertSame($this->counts(), $this->countsOf($matching));
+
+		$absent = $this->diff('core', $expected, $this->table(), 'news', $disowned);
+
+		$this->assertSame($this->counts(array('missingIndexes' => 1)), $this->countsOf($absent));
+		$this->assertSame(array('ft_news_news_title'), array_keys($absent->getMissingIndexes()));
+
+		$drifted = $this->diff('core', $expected, $this->withDerivedFulltext('news_datestamp'), 'news', $disowned);
+
+		$this->assertSame($this->counts(array('modifiedIndexes' => 1)), $this->countsOf($drifted));
+		$this->assertSame(array('ft_news_news_title'), array_keys($drifted->getModifiedIndexes()));
+	}
+
 	// --- engine and character set ------------------------------------------
 
 	public function testEngineDriftAloneIsDrift()
@@ -484,13 +529,14 @@ class SchemaDifferTest extends \Test\Unit
 	 * @param TableSchema|null $expected
 	 * @param TableSchema|null $actual
 	 * @param string|null $tableName
+	 * @param string[] $disownedIndexNames derived indexes the declaration covers.
 	 * @return TableDiff
 	 */
-	private function diff($sqlFile, $expected, $actual, $tableName = null)
+	private function diff($sqlFile, $expected, $actual, $tableName = null, array $disownedIndexNames = array())
 	{
 		$differ = new SchemaDiffer();
 
-		return $differ->diff($sqlFile, $expected, $actual, $tableName);
+		return $differ->diff($sqlFile, $expected, $actual, $tableName, $disownedIndexNames);
 	}
 
 	/**
@@ -566,8 +612,20 @@ class SchemaDifferTest extends \Test\Unit
 	}
 
 	/**
-	 * A three-column InnoDB news table with a PRIMARY KEY and one ordinary
-	 * index, with any field replaced.
+	 * The news table with one more index, named as {@see \e_search_fulltext_indexer::generateIndexDefinition()} does.
+	 *
+	 * @param string $column the column it indexes.
+	 * @return TableSchema
+	 */
+	private function withDerivedFulltext($column = 'news_title')
+	{
+		return $this->table(array('indexes' => array_merge($this->newsIndexes(), array(
+			$this->index('ft_news_news_title', IndexSchema::KIND_FULLTEXT, array($column)),
+		))));
+	}
+
+	/**
+	 * A three-column InnoDB news table with a PRIMARY KEY and one ordinary index.
 	 *
 	 * @param array $overrides name, engine, charset, collation, columns, indexes.
 	 * @return TableSchema
@@ -600,12 +658,13 @@ class SchemaDifferTest extends \Test\Unit
 	private function counts(array $overrides = array())
 	{
 		return array_merge(array(
-			'missingColumns'  => 0,
-			'modifiedColumns' => 0,
-			'extraColumns'    => 0,
-			'missingIndexes'  => 0,
-			'modifiedIndexes' => 0,
-			'extraIndexes'    => 0,
+			'missingColumns'   => 0,
+			'modifiedColumns'  => 0,
+			'extraColumns'     => 0,
+			'missingIndexes'   => 0,
+			'modifiedIndexes'  => 0,
+			'extraIndexes'     => 0,
+			'redundantIndexes' => 0,
 		), $overrides);
 	}
 
@@ -616,12 +675,13 @@ class SchemaDifferTest extends \Test\Unit
 	private function countsOf(TableDiff $diff)
 	{
 		return array(
-			'missingColumns'  => count($diff->getMissingColumns()),
-			'modifiedColumns' => count($diff->getModifiedColumns()),
-			'extraColumns'    => count($diff->getExtraColumns()),
-			'missingIndexes'  => count($diff->getMissingIndexes()),
-			'modifiedIndexes' => count($diff->getModifiedIndexes()),
-			'extraIndexes'    => count($diff->getExtraIndexes()),
+			'missingColumns'   => count($diff->getMissingColumns()),
+			'modifiedColumns'  => count($diff->getModifiedColumns()),
+			'extraColumns'     => count($diff->getExtraColumns()),
+			'missingIndexes'   => count($diff->getMissingIndexes()),
+			'modifiedIndexes'  => count($diff->getModifiedIndexes()),
+			'extraIndexes'     => count($diff->getExtraIndexes()),
+			'redundantIndexes' => count($diff->getRedundantIndexes()),
 		);
 	}
 

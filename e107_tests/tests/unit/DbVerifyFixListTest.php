@@ -31,12 +31,13 @@ class DbVerifyFixListTest extends \Test\Unit
 
 	const EXTRA_COLUMN = 'dbv_undeclared_column';
 
-	/**
-	 * What a failed vacuity guard means. The corpus assertions below are about a
-	 * database that has drifted, and the suite shuffles, so an earlier test that
-	 * repaired the fixture and did not put it back leaves them with nothing to
-	 * look at.
-	 */
+	/** The core table that both declares a FULLTEXT index and has one derived for the same column from e_search. */
+	const REDUNDANT_INDEX_TABLE = 'user';
+
+	const REDUNDANT_INDEX = 'ft_user_user_signature';
+
+	const REDUNDANT_INDEX_COLUMN = 'user_signature';
+
 	const DRIFTED_FIXTURE = 'The unit database is the v2.3.0 dump and is drifted by design, so a corpus-wide verify must find something to fix. '
 		. 'Finding nothing means an earlier test in this shuffled run repaired the fixture without restoring it.';
 
@@ -50,6 +51,7 @@ class DbVerifyFixListTest extends \Test\Unit
 	{
 
 		$this->dropUndeclaredColumn();
+		$this->dropRedundantIndex();
 	}
 
 	// --- 1. the filing invariant (#5910) ----------------------------------
@@ -298,6 +300,46 @@ class DbVerifyFixListTest extends \Test\Unit
 		}
 	}
 
+	// --- 5. a derived index the declaration covers ------------------------
+
+	public function testARedundantDerivedIndexIsFiledForDroppingAndNothingElse()
+	{
+
+		$table = self::REDUNDANT_INDEX_TABLE;
+		$index = self::REDUNDANT_INDEX;
+
+		$before = $this->verifiedCorpus();
+
+		$this->assertArrayNotHasKey(
+			$index,
+			isset($before->fixList['core'][$table]) ? $before->fixList['core'][$table] : array(),
+			'`' . $index . '` duplicates a declared FULLTEXT index, so nothing may plan to create it.'
+		);
+
+		$this->addRedundantIndex();
+
+		try
+		{
+			$after = $this->verifiedCorpus();
+
+			$this->assertArrayHasKey($table, $after->fixList['core']);
+			$this->assertSame(
+				array('indexdrop'),
+				$after->fixList['core'][$table][$index],
+				'A redundant index is offered for dropping, and dropping is the only thing offered for it.'
+			);
+
+			$diffs = $after->getTableDiffs();
+
+			$this->assertArrayHasKey($index, $diffs[$table]->getRedundantIndexes());
+			$this->assertArrayNotHasKey($index, $diffs[$table]->getExtraIndexes());
+		}
+		finally
+		{
+			$this->dropRedundantIndex();
+		}
+	}
+
 	// --- helpers ----------------------------------------------------------
 
 	/**
@@ -384,5 +426,43 @@ class DbVerifyFixListTest extends \Test\Unit
 		}
 
 		$sql->execute('ALTER TABLE `' . MPREFIX . self::EXTRA_COLUMN_TABLE . '` DROP COLUMN `' . self::EXTRA_COLUMN . '`');
+	}
+
+	/**
+	 * @return void
+	 */
+	private function addRedundantIndex()
+	{
+
+		$sql = e107::getDb();
+
+		$this->assertNotFalse($sql->execute(
+			'ALTER TABLE `' . MPREFIX . self::REDUNDANT_INDEX_TABLE . '` '
+			. 'ADD FULLTEXT `' . self::REDUNDANT_INDEX . '` (`' . self::REDUNDANT_INDEX_COLUMN . '`)'
+		));
+	}
+
+	/**
+	 * @return void
+	 */
+	private function dropRedundantIndex()
+	{
+
+		$sql = e107::getDb();
+
+		$sql->execute(
+			'SELECT COUNT(*) AS hits FROM information_schema.STATISTICS'
+			. ' WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = :name AND INDEX_NAME = :index',
+			array('name' => MPREFIX . self::REDUNDANT_INDEX_TABLE, 'index' => self::REDUNDANT_INDEX)
+		);
+
+		$row = $sql->fetch();
+
+		if(empty($row['hits']))
+		{
+			return;
+		}
+
+		$sql->execute('ALTER TABLE `' . MPREFIX . self::REDUNDANT_INDEX_TABLE . '` DROP INDEX `' . self::REDUNDANT_INDEX . '`');
 	}
 }

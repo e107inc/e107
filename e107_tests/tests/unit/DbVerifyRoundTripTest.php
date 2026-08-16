@@ -326,6 +326,89 @@ class DbVerifyRoundTripTest extends \Test\Unit
 		);
 	}
 
+	// --- derived FULLTEXT indexes -----------------------------------------
+
+	public function testADerivedFulltextIndexTheDeclarationCoversIsDroppedRatherThanBuilt()
+	{
+
+		$this->skipWithoutFulltext();
+		$this->snapshot('user');
+
+		$pristine = $this->indicesOf('user');
+
+		$this->assertArrayNotHasKey(
+			'ft_user_user_signature',
+			$pristine,
+			'core_sql.php declares FULLTEXT (user_signature), so nothing may derive a second index over the same column.'
+		);
+		$this->assertSame(
+			'missing_index',
+			$pristine['ft_user_user_name']['_status'],
+			'The derived index over a column no FULLTEXT declaration covers is still wanted.'
+		);
+		$this->assertSame(
+			'missing_index',
+			$pristine['user_signature']['_status'],
+			'precondition: the declared FULLTEXT index is absent from the v2.3.0 dump.'
+		);
+
+		$this->runStatement('ALTER TABLE `' . MPREFIX . 'user` ADD FULLTEXT `ft_user_user_signature` (`user_signature`)');
+
+		$reported = $this->indicesOf('user');
+
+		$this->assertSame(
+			'redundant_index',
+			$reported['ft_user_user_signature']['_status'],
+			'A derived index already on the table, whose columns the declaration covers, is reported as redundant.'
+		);
+		$this->assertSame('user_signature', $reported['ft_user_user_signature']['_duplicates']);
+		$this->assertSame('missing_index', $reported['ft_user_user_name']['_status']);
+
+		$this->repair('user');
+
+		$this->assertSame(
+			array('user_signature'),
+			$this->fulltextIndexNamesOver('user', 'user_signature'),
+			'Exactly one FULLTEXT index over user_signature must be left, and it is the declared one.'
+		);
+		$this->assertSame(
+			array('user_name'),
+			$this->indexColumns('user', 'ft_user_user_name'),
+			'The genuinely derived index is built as it always was.'
+		);
+
+		$this->assertFalse($this->driftOf('user')->hasDrift(), 'The repaired user table must verify clean.');
+
+		$settled = $this->indicesOf('user');
+
+		$this->assertArrayNotHasKey('ft_user_user_signature', $settled, 'The dropped duplicate is not wanted back on the next run.');
+		$this->assertSame('ok', $settled['user_signature']['_status']);
+		$this->assertSame('ok', $settled['ft_user_user_name']['_status']);
+	}
+
+	/**
+	 * `indexdrop` is what the screen's checkbox for a redundant index posts, per {@see \db_verify::$modes}.
+	 */
+	public function testTheFormPathDropsARedundantIndexAndNothingElse()
+	{
+
+		$this->skipWithoutFulltext();
+		$this->snapshot('user');
+
+		$this->runStatement('ALTER TABLE `' . MPREFIX . 'user` ADD FULLTEXT `ft_user_user_signature` (`user_signature`)');
+
+		$dbv = $this->verifierFor('user');
+		$dbv->runFix(array('core' => array('user' => array('ft_user_user_signature' => array('indexdrop')))));
+
+		$this->assertSame(
+			array(),
+			$this->fulltextIndexNamesOver('user', 'user_signature'),
+			'The duplicate must be gone, and the declared index the request did not ask for must not have been built.'
+		);
+		$this->assertSame(array(), $this->indexColumns('user', 'ft_user_user_name'), 'An index the form did not ask about is left alone.');
+		$this->assertEquals('MyISAM', $this->engineOf('user'), 'nor is the table converted behind the request.');
+	}
+
 	// --- helpers ----------------------------------------------------------
 
 	/**
@@ -607,5 +690,68 @@ class DbVerifyRoundTripTest extends \Test\Unit
 	{
 
 		return $this->engineOf($table) !== null;
+	}
+
+	/**
+	 * One table's indexes in the legacy $indices shape the admin screen renders from.
+	 *
+	 * @param string $table unprefixed table name.
+	 * @return array index name => entry.
+	 */
+	private function indicesOf($table)
+	{
+
+		$dbv = $this->verifierFor($table);
+		$dbv->compare('core');
+
+		$indices = $dbv->getResults('indices');
+
+		$this->assertArrayHasKey($table, $indices, 'compare() must have reached `' . $table . '`.');
+
+		return $indices[$table];
+	}
+
+	/**
+	 * @param string $table unprefixed table name.
+	 * @param string $column
+	 * @return string[] sorted names of the live FULLTEXT indexes over exactly that one column.
+	 */
+	private function fulltextIndexNamesOver($table, $column)
+	{
+
+		$rows = $this->rows(
+			'SELECT INDEX_NAME FROM information_schema.STATISTICS'
+			. ' WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = :name'
+			. ' AND COLUMN_NAME = :column AND INDEX_TYPE = :type',
+			array('name' => MPREFIX . $table, 'column' => $column, 'type' => 'FULLTEXT')
+		);
+
+		$names = array();
+
+		foreach($rows as $row)
+		{
+			$names[] = $row['INDEX_NAME'];
+		}
+
+		sort($names);
+
+		return $names;
+	}
+
+	/**
+	 * Skips the test on the mysql:5.5 and mariadb:10.0 that CI also runs, whose InnoDB has no FULLTEXT.
+	 *
+	 * @return void
+	 */
+	private function skipWithoutFulltext()
+	{
+
+		$dbv = $this->verifierFor('user');
+		$engine = $dbv->getIntendedStorageEngine('InnoDB', array('needsFulltext' => true));
+
+		if($engine === false || !$dbv->engineSupportsFulltext($engine))
+		{
+			$this->markTestSkipped('No storage engine on this server can carry the FULLTEXT index `user` declares.');
+		}
 	}
 }

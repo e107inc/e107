@@ -233,11 +233,54 @@ class PlanBuilderTest extends \Test\Unit
 		$this->assertSame(7 + 1, count($plan->toSqlStatements($this->schema())), 'ConvertTable renders two statements, every other change one.');
 	}
 
-	/**
-	 * Missing columns are added in declared ordinal order so that each one's
-	 * AFTER anchor exists by the time it is named, even in a run of
-	 * consecutive missing columns.
-	 */
+	public function testARedundantIndexIsDroppedAfterEveryKeyHasBeenAdded()
+	{
+		$expected = $this->newsTable();
+
+		$diff = new TableDiff('core', 'news', array(
+			'expectedTable'    => $expected,
+			'missingIndexes'   => array('u_summary' => $expected->getIndex('u_summary')),
+			'modifiedIndexes'  => array('k_title' => new IndexDiff(
+				$expected->getIndex('k_title'),
+				$this->idx('k_title', IndexSchema::KIND_INDEX, array('news_summary'))
+			)),
+			'redundantIndexes' => array('ft_news_news_title' => $this->idx('ft_news_news_title', IndexSchema::KIND_FULLTEXT, array('news_title'))),
+		));
+
+		$described = array();
+
+		foreach($this->planner()->build($diff, 'InnoDB', 'utf8mb4')->getChanges() as $change)
+		{
+			$described[] = $change->describe();
+		}
+
+		$this->assertSame(
+			array(
+				'Drop index `k_title`',
+				'Add index `u_summary`',
+				'Add index `k_title`',
+				'Drop index `ft_news_news_title`',
+			),
+			$described
+		);
+	}
+
+	public function testARedundantIndexAloneIsTheWholePlan()
+	{
+		$diff = new TableDiff('core', 'news', array(
+			'expectedTable'    => $this->newsTable(array('news_id', 'news_title')),
+			'redundantIndexes' => array('ft_news_news_title' => $this->idx('ft_news_news_title', IndexSchema::KIND_FULLTEXT, array('news_title'))),
+		));
+
+		$plan = $this->planner()->build($diff, 'InnoDB', 'utf8mb4');
+		$changes = $plan->getChanges();
+
+		$this->assertTrue($diff->hasDrift());
+		$this->assertSame(1, $plan->count());
+		$this->assertInstanceOf('e107\Database\Schema\Plan\Change\DropIndex', $changes[0]);
+		$this->assertSame('Drop index `ft_news_news_title`', $changes[0]->describe());
+	}
+
 	public function testMissingColumnsAreAddedInDeclaredOrderEachAfterItsPredecessor()
 	{
 		$plan = $this->planner()->build($this->driftedDiff(), 'InnoDB', 'utf8mb4');

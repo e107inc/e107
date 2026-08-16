@@ -17,60 +17,23 @@ use InvalidArgumentException;
  * Compares one declared table against its live counterpart and reports the
  * difference as a {@see TableDiff}.
  *
- * There is no equivalence rule in this class, and there is nowhere to put one.
- * Both sides arrive as a {@see TableSchema} read by the same reader from the
- * same server - the live table on one side, the scratch table materialised from
- * the declared DDL on the other - so `int(11)` against `int`, `utf8` against
- * `utf8mb3`, `CURRENT_TIMESTAMP()` against `CURRENT_TIMESTAMP` and every other
- * spelling the old `db_verify::diffStructurePermissive()` patched by hand have
- * already cancelled out. What is left is a field-by-field comparison of value
- * objects.
- *
- * Three decisions this class owns:
- *
- * - The engine is compared case-insensitively, through
- *   {@see TableSchema::hasEngine()}, because the declared spelling is whatever a
- *   *_sql.php author typed. The character set is compared exactly, because the
- *   reader has already canonicalised both sides.
- * - Columns and indexes are matched by name into three categories: declared but
- *   absent (missing), present on both sides and different (modified), and live
- *   but undeclared (extra). Extras are recorded and never count as drift, so a
- *   site whose plugin added a column still reports clean.
- * - An index is compared whole, by its ordered parts. KEY (a, b) and KEY (b, a)
- *   are different indexes, and two indexes over the same leading column are two
- *   indexes. The old `db_verify::getIndex()` flattened an index to a
- *   comma-joined string keyed by its first column and could express neither.
+ * Compares field by field and applies no equivalence rules of its own, so both
+ * sides must be read by the same reader from the same server.
  *
  * Stateless; one instance may diff any number of tables.
  */
 final class SchemaDiffer
 {
 	/**
-	 * The difference between the declared shape of a table and its live shape.
-	 *
-	 * @param string $sqlFile 'core' or the plugin folder that declared the table,
-	 *                     recorded on the diff so a fix can never be filed under
-	 *                     the wrong schema file (#5910).
-	 * @param TableSchema|null $expected The declared shape, materialised and read
-	 *                     back. Required: a table nothing declares is not this
-	 *                     class's business, so null is a programming error rather
-	 *                     than an empty diff. Untyped in the signature, and
-	 *                     checked here instead, because the 5.6 floor cannot spell
-	 *                     ?TableSchema and the implicitly-nullable form PHP 8.4
-	 *                     deprecates would warn on every call.
-	 * @param TableSchema|null $actual The live shape, or null when the table is
-	 *                     absent from the database altogether. Untyped for the same
-	 *                     reason.
-	 * @param string|null $tableName The unprefixed logical name to record on the
-	 *                     diff. Pass it: neither TableSchema carries it reliably,
-	 *                     the live one being prefixed and the declared one being
-	 *                     whatever the materialiser named its scratch table. When
-	 *                     null, the declared schema's name is used, falling back
-	 *                     to the live one.
+	 * @param string $sqlFile 'core' or the plugin folder that declared the table.
+	 * @param TableSchema|null $expected The declared shape, materialised and read back; required.
+	 * @param TableSchema|null $actual The live shape, or null when the table is absent.
+	 * @param string|null $tableName Unprefixed logical name; neither TableSchema carries it reliably, so pass it.
+	 * @param array $disownedIndexNames Live index names to file as redundant rather than extra when $expected omits them.
 	 * @return TableDiff
 	 * @throws InvalidArgumentException when a side is neither a TableSchema nor null, or when $expected is null or has no columns.
 	 */
-	public function diff($sqlFile, $expected = null, $actual = null, $tableName = null)
+	public function diff($sqlFile, $expected = null, $actual = null, $tableName = null, array $disownedIndexNames = array())
 	{
 		if($expected !== null && !$expected instanceof TableSchema)
 		{
@@ -112,7 +75,11 @@ final class SchemaDiffer
 			'charsetChange' => $this->_charsetChange($expected, $actual),
 		);
 
-		$parts = array_merge($parts, $this->_columnParts($expected, $actual), $this->_indexParts($expected, $actual));
+		$parts = array_merge(
+			$parts,
+			$this->_columnParts($expected, $actual),
+			$this->_indexParts($expected, $actual, $disownedIndexNames)
+		);
 
 		return new TableDiff($sqlFile, $name, $parts);
 	}
@@ -226,21 +193,23 @@ final class SchemaDiffer
 	}
 
 	/**
-	 * Indexes sorted into missing, modified and extra, each list keyed by index
-	 * name.
+	 * Indexes sorted into missing, modified, extra and redundant, each list keyed
+	 * by index name.
 	 *
 	 * Matching is by name alone, and an index is then compared whole through
 	 * {@see \e107\Database\Schema\Introspect\IndexSchema::equals()}.
 	 *
 	 * @param TableSchema $expected
 	 * @param TableSchema $actual
+	 * @param array $disownedIndexNames see {@see SchemaDiffer::diff()}.
 	 * @return array TableDiff parts.
 	 */
-	private function _indexParts(TableSchema $expected, TableSchema $actual)
+	private function _indexParts(TableSchema $expected, TableSchema $actual, array $disownedIndexNames = array())
 	{
 		$missing = array();
 		$modified = array();
 		$extra = array();
+		$redundant = array();
 
 		foreach($expected->getIndexes() as $indexName => $declaredIndex)
 		{
@@ -260,16 +229,26 @@ final class SchemaDiffer
 
 		foreach($actual->getIndexes() as $indexName => $liveIndex)
 		{
-			if($expected->getIndex($indexName) === null)
+			if($expected->getIndex($indexName) !== null)
 			{
-				$extra[$indexName] = $liveIndex;
+				continue;
 			}
+
+			if(in_array($indexName, $disownedIndexNames, true))
+			{
+				$redundant[$indexName] = $liveIndex;
+
+				continue;
+			}
+
+			$extra[$indexName] = $liveIndex;
 		}
 
 		return array(
-			'missingIndexes'  => $missing,
-			'modifiedIndexes' => $modified,
-			'extraIndexes'    => $extra,
+			'missingIndexes'   => $missing,
+			'modifiedIndexes'  => $modified,
+			'extraIndexes'     => $extra,
+			'redundantIndexes' => $redundant,
 		);
 	}
 }

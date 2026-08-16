@@ -30,15 +30,8 @@ use InvalidArgumentException;
  * $withExtras = $diff->withParts(array('extraColumns' => $extras));
  * </code>
  *
- * Recognised part keys, all optional: `missing` (bool), `expectedTable`
- * ({@see TableSchema}|null), `engineChange` and `charsetChange`
- * (['expected'=>s,'actual'=>s]|null), `missingColumns` and `extraColumns`
- * ({@see ColumnSchema}[]), `modifiedColumns` ({@see ColumnDiff}[]),
- * `missingIndexes` and `extraIndexes` ({@see IndexSchema}[]),
- * `modifiedIndexes` ({@see IndexDiff}[]). An unrecognised key throws, so a
- * typo is a loud failure rather than a silently ignored difference. List keys
- * are preserved as supplied; `SchemaDiffer` keys column lists by column name
- * and index lists by index name.
+ * List parts come back keyed as they were supplied; {@see SchemaDiffer} keys
+ * columns by column name and indexes by index name.
  */
 final class TableDiff
 {
@@ -51,9 +44,10 @@ final class TableDiff
 		'missingColumns'  => array(),
 		'modifiedColumns' => array(),
 		'extraColumns'    => array(),
-		'missingIndexes'  => array(),
-		'modifiedIndexes' => array(),
-		'extraIndexes'    => array(),
+		'missingIndexes'   => array(),
+		'modifiedIndexes'  => array(),
+		'extraIndexes'     => array(),
+		'redundantIndexes' => array(),
 	);
 
 	/** @var string */
@@ -217,16 +211,20 @@ final class TableDiff
 	}
 
 	/**
+	 * Live indexes covering the same columns as a declared index under another
+	 * name. Drift, and the one thing a plan ever drops outright.
+	 *
+	 * @return IndexSchema[]
+	 */
+	public function getRedundantIndexes()
+	{
+		return $this->parts['redundantIndexes'];
+	}
+
+	/**
 	 * Whether this table needs fixing.
 	 *
-	 * True when the table is missing, when its engine or character set differs,
-	 * or when a declared column or index is missing or modified.
-	 *
-	 * Extra columns and extra indexes are deliberately excluded. A site whose
-	 * plugin added a column has always reported clean, because the legacy differ
-	 * only ever walked the declared side; counting extras as drift would flag a
-	 * large share of live sites on upgrade day for something no fix will ever
-	 * remove.
+	 * Extra columns and extra indexes do not count; a redundant index does.
 	 *
 	 * @return bool
 	 */
@@ -238,7 +236,8 @@ final class TableDiff
 			|| count($this->parts['missingColumns']) > 0
 			|| count($this->parts['modifiedColumns']) > 0
 			|| count($this->parts['missingIndexes']) > 0
-			|| count($this->parts['modifiedIndexes']) > 0;
+			|| count($this->parts['modifiedIndexes']) > 0
+			|| count($this->parts['redundantIndexes']) > 0;
 	}
 
 	/**

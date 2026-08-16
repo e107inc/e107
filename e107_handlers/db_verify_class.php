@@ -127,6 +127,12 @@ class db_verify implements EngineCharsetResolverInterface
 	/** @var TableSchema[] materialised declarations, keyed by file, table, engine and charset */
 	private $expectedSchemas = array();
 
+	/** @var TableSchema[] the same declarations without their derived indexes, keyed alike */
+	private $declaredSchemas = array();
+
+	/** @var array logical table name => names of the derived indexes the declaration covers */
+	private $disownedIndexes = array();
+
 	var $fieldTypes = array('time', 'timestamp', 'datetime', 'year', 'tinyblob', 'blob',
 		'mediumblob', 'longblob', 'tinytext', 'mediumtext', 'longtext', 'text', 'date', 'json');
 
@@ -139,11 +145,12 @@ class db_verify implements EngineCharsetResolverInterface
 	const STATUS_TABLE_MISMATCH_DEFAULT_CHARSET = 0x1 << 3;
 
 	var $modes = array(
-		'missing_table'  => 'create',
-		'mismatch'       => 'alter',
-		'missing_field'  => 'insert',
-		'missing_index'  => 'index',
-		'mismatch_index' => '', // TODO
+		'missing_table'   => 'create',
+		'mismatch'        => 'alter',
+		'missing_field'   => 'insert',
+		'missing_index'   => 'index',
+		'mismatch_index'  => '', // TODO
+		'redundant_index' => 'indexdrop',
 	);
 
 	var $errors = array();
@@ -502,13 +509,9 @@ class db_verify implements EngineCharsetResolverInterface
 
 			$logical = $language ? 'lan_' . $language . '_' . $table->getName() : $table->getName();
 
-			$intended = $this->resolve($table);
-			$this->intendedByTable[$logical] = $intended;
-
 			try
 			{
-				$expected = $this->expectedSchema($table, $intended);
-				$diff = $this->schemaDiffer()->diff($selection, $expected, $actual, $logical);
+				$compared = $this->diffFor($table, $selection, $logical, $actual);
 			}
 			catch(Exception $e)
 			{
@@ -519,8 +522,9 @@ class db_verify implements EngineCharsetResolverInterface
 				continue;
 			}
 
-			$this->tableDiffs[$logical] = $diff;
-			$this->projectDiff($diff);
+			$this->intendedByTable[$logical] = $compared['intended'];
+			$this->tableDiffs[$logical] = $compared['diff'];
+			$this->projectDiff($compared['diff']);
 		}
 
 	}
@@ -580,7 +584,32 @@ class db_verify implements EngineCharsetResolverInterface
 
 
 	/**
-	 * The declared shape of a table, as this server builds it.
+	 * The engine and character set one declared table was compared under, and the difference from the live shape given.
+	 *
+	 * @param DeclaredTable $table
+	 * @param string $sqlFile 'core' or the plugin folder that declared it.
+	 * @param string $logical table name as it is reported, lan_<language>_ prefix included.
+	 * @param TableSchema|null $actual the live shape, or null when the table is absent.
+	 * @return array ['intended' => ['engine' => string, 'charset' => string], 'diff' => TableDiff]
+	 * @throws Exception when the server will not build the declared body.
+	 */
+	private function diffFor(DeclaredTable $table, $sqlFile, $logical, $actual)
+	{
+
+		$intended = $this->resolve($table);
+		$expected = $this->expectedSchema($table, $intended);
+
+		$this->disownedIndexes[$logical] = array_map('strval', array_keys($this->derivedIndexPartition($table, $intended)['redundant']));
+
+		return array(
+			'intended' => $intended,
+			'diff'     => $this->schemaDiffer()->diff($sqlFile, $expected, $actual, $logical, $this->disownedIndexes[$logical]),
+		);
+	}
+
+
+	/**
+	 * The declared shape of a table, as this server builds it, carrying every e_search FULLTEXT index the declaration does not already cover.
 	 *
 	 * Memoised on the table and the engine and character set given.
 	 *
@@ -592,18 +621,19 @@ class db_verify implements EngineCharsetResolverInterface
 	private function expectedSchema(DeclaredTable $table, array $intended)
 	{
 
-		$engine = isset($intended['engine']) ? $intended['engine'] : null;
-		$charset = isset($intended['charset']) ? $intended['charset'] : null;
-
-		$key = $table->getSqlFile() . "\0" . $table->getName() . "\0" . $engine . "\0" . $charset;
+		$key = $this->schemaKey($table, $intended);
 
 		if(!isset($this->expectedSchemas[$key]))
 		{
-			$this->expectedSchemas[$key] = $this->materialiser()->materialise(
-				$this->withDerivedIndexes($table),
-				$engine,
-				$charset
-			);
+			$surviving = $this->derivedIndexPartition($table, $intended)['surviving'];
+
+			$this->expectedSchemas[$key] = empty($surviving)
+				? $this->declaredSchema($table, $intended)
+				: $this->materialiser()->materialise(
+					$this->withDerivedIndexes($table, $surviving),
+					isset($intended['engine']) ? $intended['engine'] : null,
+					isset($intended['charset']) ? $intended['charset'] : null
+				);
 		}
 
 		return $this->expectedSchemas[$key];
@@ -611,26 +641,153 @@ class db_verify implements EngineCharsetResolverInterface
 
 
 	/**
-	 * The declaration with its e_search FULLTEXT indexes appended to the body.
-	 *
-	 * Those indexes are not in the schema file: a plugin asks for them through
-	 * its e_search configuration. Appending them to the body before it is
-	 * materialised lets the server name and normalise them exactly as it would
-	 * on the real table, which merging them into a parsed model afterwards
-	 * cannot do.
-	 *
-	 * Both identifiers reach a DDL string and neither is bindable, so both are
-	 * allowlisted and anything failing is dropped. They come from developer
-	 * configuration rather than from a request, but an unchecked identifier in
-	 * DDL is exactly what this tree's injection audit was about.
+	 * The declared body alone, with no derived index appended, memoised as {@see expectedSchema()} is.
 	 *
 	 * @param DeclaredTable $table
-	 * @return DeclaredTable the same table when it has no derived indexes.
+	 * @param array $intended ['engine' => string, 'charset' => string]
+	 * @return TableSchema
+	 * @throws QueryException when the server refuses the declared body.
 	 */
-	private function withDerivedIndexes(DeclaredTable $table)
+	private function declaredSchema(DeclaredTable $table, array $intended)
 	{
 
+		$key = $this->schemaKey($table, $intended);
+
+		if(!isset($this->declaredSchemas[$key]))
+		{
+			$this->declaredSchemas[$key] = $this->materialiser()->materialise(
+				$table,
+				isset($intended['engine']) ? $intended['engine'] : null,
+				isset($intended['charset']) ? $intended['charset'] : null
+			);
+		}
+
+		return $this->declaredSchemas[$key];
+	}
+
+
+	/**
+	 * Memoisation key of one declaration built with one engine and character set.
+	 *
+	 * @param DeclaredTable $table
+	 * @param array $intended ['engine' => string, 'charset' => string]
+	 * @return string
+	 */
+	private function schemaKey(DeclaredTable $table, array $intended)
+	{
+
+		$engine = isset($intended['engine']) ? $intended['engine'] : null;
+		$charset = isset($intended['charset']) ? $intended['charset'] : null;
+
+		return $table->getSqlFile() . "\0" . $table->getName() . "\0" . $engine . "\0" . $charset;
+	}
+
+
+	/**
+	 * The table's e_search FULLTEXT indexes sorted into the ones worth building and the ones the declaration has made redundant, both keyed by index name.
+	 *
+	 * Redundant means the declared body already carries a FULLTEXT index over the same columns in the same order, whatever it is called.
+	 *
+	 * @param DeclaredTable $table
+	 * @param array $intended ['engine' => string, 'charset' => string]
+	 * @return array ['surviving' => array, 'redundant' => array]
+	 * @throws QueryException when the server refuses the declared body.
+	 */
+	private function derivedIndexPartition(DeclaredTable $table, array $intended)
+	{
+
+		$partition = array('surviving' => array(), 'redundant' => array());
 		$derived = $this->getSearchFieldIndexes($table->getName());
+
+		if(empty($derived))
+		{
+			return $partition;
+		}
+
+		$declared = $this->declaredSchema($table, $intended);
+
+		foreach($derived as $key => $definition)
+		{
+			$name = empty($definition['field']) ? $key : (string) $definition['field'];
+			$slot = ($this->declaredIndexCovering($declared, $definition) === null) ? 'surviving' : 'redundant';
+
+			$partition[$slot][$name] = $definition;
+		}
+
+		return $partition;
+	}
+
+
+	/**
+	 * @param TableSchema $declared the declared body, materialised.
+	 * @param array $definition one entry of {@see getSearchFieldIndexes()}.
+	 * @return string|null Name of the declared FULLTEXT index covering the same columns, null when the declaration has none.
+	 */
+	private function declaredIndexCovering(TableSchema $declared, array $definition)
+	{
+
+		$type = empty($definition['type']) ? '' : strtoupper((string) $definition['type']);
+
+		if($type !== IndexSchema::KIND_FULLTEXT)
+		{
+			return null;
+		}
+
+		$columns = self::indexColumnList(isset($definition['keyname']) ? $definition['keyname'] : '');
+
+		if(empty($columns))
+		{
+			return null;
+		}
+
+		foreach($declared->getIndexes() as $name => $index)
+		{
+			if($index->getKind() === IndexSchema::KIND_FULLTEXT && $index->getColumnNames() === $columns)
+			{
+				return $name;
+			}
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * The column names of a legacy index definition's `keyname`, in order.
+	 *
+	 * @param string $keyname one column, or several separated by commas.
+	 * @return string[]
+	 */
+	private static function indexColumnList($keyname)
+	{
+
+		$columns = array();
+
+		foreach(explode(',', (string) $keyname) as $column)
+		{
+			$column = trim($column);
+
+			if($column !== '')
+			{
+				$columns[] = $column;
+			}
+		}
+
+		return $columns;
+	}
+
+
+	/**
+	 * The declaration with the given e_search FULLTEXT indexes appended to the body.
+	 *
+	 * A definition whose index name or column list falls outside `[A-Za-z0-9_,]` is dropped rather than appended.
+	 *
+	 * @param DeclaredTable $table
+	 * @param array $derived definitions to append, from {@see derivedIndexPartition()}.
+	 * @return DeclaredTable the same table when there is nothing to append.
+	 */
+	private function withDerivedIndexes(DeclaredTable $table, array $derived)
+	{
 
 		if(empty($derived))
 		{
@@ -802,8 +959,7 @@ class db_verify implements EngineCharsetResolverInterface
 
 
 	/**
-	 * Every declared index of a table, keyed by the name the server gives it, in
-	 * the legacy $indices shape.
+	 * Every declared index of a table in the legacy $indices shape, followed by the live indexes the declaration has made redundant, all keyed by the name the server gives them.
 	 *
 	 * @param TableDiff $diff
 	 * @return array
@@ -855,7 +1011,40 @@ class db_verify implements EngineCharsetResolverInterface
 			);
 		}
 
+		foreach($diff->getRedundantIndexes() as $name => $index)
+		{
+			$indices[$name] = array(
+				'_status'     => 'redundant_index',
+				'_invalid'    => $this->legacyIndex($index),
+				'_valid'      => array(),
+				'_duplicates' => $this->declaredDuplicateOf($expected, $index),
+				'_file'       => $file,
+			);
+		}
+
 		return $indices;
+	}
+
+
+	/**
+	 * The name of the declared index a redundant one duplicates.
+	 *
+	 * @param TableSchema $expected the declared shape.
+	 * @param IndexSchema $index the live index being reported.
+	 * @return string empty when the declaration turns out to carry no such index.
+	 */
+	private function declaredDuplicateOf(TableSchema $expected, IndexSchema $index)
+	{
+
+		foreach($expected->getIndexes() as $name => $declared)
+		{
+			if($declared->getKind() === $index->getKind() && $declared->getColumnNames() === $index->getColumnNames())
+			{
+				return $name;
+			}
+		}
+
+		return '';
 	}
 
 
@@ -1385,6 +1574,7 @@ class db_verify implements EngineCharsetResolverInterface
 			'missing_field'                             => DBVLAN_11,
 			'ok'                                        => defset('ADMIN_TRUE_ICON', 'true'),
 			'missing_index'                             => DBVLAN_25,
+			'redundant_index'                           => defset('DBVLAN_INDEX_REDUNDANT', 'Redundant index'),
 		);
 
 
@@ -1548,8 +1738,10 @@ class db_verify implements EngineCharsetResolverInterface
 
 
 	/**
-	 * @param $data
-	 * @param $mode
+	 * The Notes cell of one row: what is there now, and what belongs there, or for a redundant index which declared index covers it.
+	 *
+	 * @param array $data one entry of $results or $indices.
+	 * @param string $mode 'field' or 'index'.
 	 * @return string
 	 */
 	function renderNotes($data, $mode = 'field')
@@ -1568,6 +1760,15 @@ class db_verify implements EngineCharsetResolverInterface
 		{
 			$text .= "<strong>" . DBVLAN_9 . "</strong>
 				<div class='indent'>" . $invalid . "</div>";
+		}
+
+		if(isset($data['_status']) && $data['_status'] === 'redundant_index')
+		{
+			$note = defset('DBVLAN_INDEX_REDUNDANT_NOTE', 'Duplicates the FULLTEXT index [x]; the schema declares that one, so this one can be removed.');
+
+			return $text . "<div class='indent'>"
+				. str_replace('[x]', '<code>' . $data['_duplicates'] . '</code>', $note)
+				. "</div>";
 		}
 
 		$text .= "<strong>" . DBVLAN_10 . "</strong>
@@ -1917,11 +2118,10 @@ class db_verify implements EngineCharsetResolverInterface
 
 		try
 		{
-			$intended = $this->resolve($declared);
-			$expected = $this->expectedSchema($declared, $intended);
 			$actual = $this->schemaReader()->read(MPREFIX . $table);
-			$diff = $this->schemaDiffer()->diff($sqlFile, $expected, $actual, $table);
-			$plan = $this->planBuilder()->build($diff, $intended['engine'], $intended['charset']);
+			$compared = $this->diffFor($declared, $sqlFile, $table, $actual);
+			$diff = $compared['diff'];
+			$plan = $this->planBuilder()->build($diff, $compared['intended']['engine'], $compared['intended']['charset']);
 		}
 		catch(Exception $e)
 		{

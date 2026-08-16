@@ -25,36 +25,8 @@ use RuntimeException;
 /**
  * Turns one {@see TableDiff} into the ordered {@see FixPlan} that repairs it.
  *
- * The order is the whole of what this class knows, and it is the only order in
- * which the statements apply cleanly:
- *
- * 1. {@see CreateTable}, and nothing else - a table that does not exist has no
- *    columns to alter.
- * 2. {@see ConvertTable}: the engine, then the character set, as one change,
- *    because the index key-byte limit depends on the engine.
- * 3. {@see DropIndex} for every modified index - a key must go before its
- *    replacement can be added, and a UNIQUE that has drifted would refuse the
- *    new one outright.
- * 4. {@see AddColumn} for every missing column, in declared ordinal order, each
- *    placed after the column that precedes it in the declaration. Going in
- *    declared order is what makes those AFTER clauses resolve: a run of
- *    consecutive missing columns is added front to back, so each one's anchor
- *    exists by the time it is named.
- * 5. {@see ModifyColumn} for every modified column - after the additions, so an
- *    index added in step 6 finds every column it names - and then, when step 2
- *    converted the character set, for the long string columns that conversion
- *    has just widened ({@see PlanBuilder::_restoredStringColumns()}).
- * 6. {@see AddIndex} for the missing indexes and then the modified ones, whose
- *    declared form replaces what step 3 dropped.
- *
- * Nothing is ever dropped except an index that is being put back. Extra columns
- * and extra indexes are not drift ({@see TableDiff::hasDrift()}) and no plan
- * removes them.
- *
- * A diff with no drift plans to nothing, and an empty plan renders to zero
- * statements ({@see FixPlan::toSqlStatements()}). Between that and every change
- * throwing rather than rendering '', there is no path from "something to fix"
- * to an empty statement reaching the database (#5905, #5797).
+ * The only things a plan ever drops are an index it is about to put back and a
+ * redundant index. A diff with no drift plans to nothing.
  */
 final class PlanBuilder
 {
@@ -112,6 +84,11 @@ final class PlanBuilder
 		foreach($diff->getModifiedIndexes() as $indexDiff)
 		{
 			$changes[] = new AddIndex($diff->getSqlFile(), $diff->getTableName(), $indexDiff->getExpected());
+		}
+
+		foreach($diff->getRedundantIndexes() as $index)
+		{
+			$changes[] = new DropIndex($diff->getSqlFile(), $diff->getTableName(), $index);
 		}
 
 		return new FixPlan($changes);
