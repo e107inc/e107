@@ -38,8 +38,9 @@ cd "$RECTOR_DIR"
 # the type-declaration rules see the typed copy, judge the strip an LSP
 # violation, and silently leave 7.x syntax behind. CI checkouts never have
 # the directory; locally, refuse rather than converge on a weaker tree.
-if [ -e "$RECTOR_DIR/../../vendor" ]; then
-    echo "rector-downgrade: e107_tests/vendor exists (host-side dev install)." >&2
+# The docker harness leaves the directory behind, empty, as a mount point.
+if [ -n "$(find "$RECTOR_DIR/../../vendor" -name '*.php' -print -quit 2>/dev/null)" ]; then
+    echo "rector-downgrade: e107_tests/vendor holds PHP files (host-side dev install)." >&2
     echo "It shadows shipped vendor classes during reflection and weakens the" >&2
     echo "downgrade. Move it aside for the run, e.g.:" >&2
     echo "  mv e107_tests/vendor /tmp/e107_tests-vendor" >&2
