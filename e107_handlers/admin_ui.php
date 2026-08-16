@@ -5051,7 +5051,7 @@ class e_admin_controller_ui extends e_admin_controller
 			$rawData['joinsFrom'] = $tableSJoinArr;
 			$rawData['joins'] = $joins;
 			$rawData['groupField'] = $groupField;
-			$rawData['orderField'] = isset($this->fields[$orderField]) ? $this->fields[$orderField]['__tableField'] : '';
+			$rawData['orderField'] = $orderField !== null && isset($this->fields[$orderField]) ? $this->fields[$orderField]['__tableField'] : '';
 			$rawData['orderType'] = $request->getQuery('asc') === 'desc' ? 'DESC' : 'ASC';
 			$rawData['limitFrom'] = $forceFrom === false ? (int) $request->getQuery('from', 0) : (int) $forceFrom;
 			$rawData['limitTo'] = $forceTo === false ? (int) $this->getPerPage() : (int) $forceTo;
@@ -5113,7 +5113,7 @@ class e_admin_controller_ui extends e_admin_controller
 		{
 			$orderField = $request->getQuery('field', $this->getDefaultOrderField());
 			$orderDef = ($request->getQuery('asc') === null ? $this->getDefaultOrder() : $request->getQuery('asc'));
-			if(isset($this->fields[$orderField]) && strpos($this->listQry,'ORDER BY')==FALSE) //override ORDER using listQry (admin->sitelinks)
+			if($orderField !== null && isset($this->fields[$orderField]) && strpos($this->listQry,'ORDER BY')==FALSE) //override ORDER using listQry (admin->sitelinks)
 			{
 				// no need of sanitize - it's found in field array
 				$qry .= ' ORDER BY '.$this->fields[$orderField]['__tableField'].' '.(strtolower($orderDef) === 'desc' ? 'DESC' : 'ASC');

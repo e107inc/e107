@@ -789,7 +789,7 @@ class admin_shortcodes extends e_shortcode
 		}
 
 		$current = e107_debug::getShortcut();
-		$currentAlias = !empty($items[$current]) ? ' (' .$items[$current]. ')' : '';
+		$currentAlias = $current !== null && !empty($items[$current]) ? ' (' .$items[$current]. ')' : '';
 
 		$active = deftrue('e_DEBUG') ? 'text-warning' : null;
 
