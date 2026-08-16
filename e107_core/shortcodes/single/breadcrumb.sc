@@ -2,7 +2,7 @@
 
 global $$parm;
 $bc = $$parm;
-$flist = explode(",", $bc['fieldlist']);
+$flist = explode(",", varset($bc['fieldlist']));
 $ret = "";
 
 $opt = array();
