@@ -1373,7 +1373,7 @@ class eRouter
 				foreach ($ret['override'] as $i => $l) 
 				{
 					// it's a plugin override, but not listed in current plugin array - remove
-					if(in_array($l, $plugins) && !in_array($l, $ret['plugin']))
+					if(!in_array($l, $ret['core']) && in_array($l, $plugins) && !in_array($l, $ret['plugin']))
 					{
 						unset($ret['override'][$i]);
 					}
