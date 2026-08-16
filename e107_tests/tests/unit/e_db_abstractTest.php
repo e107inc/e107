@@ -654,12 +654,28 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$result = $this->db->db_Count('SELECT COUNT(*) FROM '.MPREFIX.'missing ','generic');
 		$this->assertFalse($result);
 	}
-	/*
-			public function testClose()
-			{
+	public function testCloseEndsTheServerConnectionWithAResultOutstanding()
+	{
+		$id = (int) $this->db->retrieve('SELECT CONNECTION_ID()');
+		$this->assertGreaterThan(0, $id);
+		$this->assertNotFalse($this->db->select('user', 'user_id', 'user_id > 0'));
 
-			}
-	*/
+		$this->db->close();
+
+		$probe = e107::getDb();
+		$this->assertNotSame($id, (int) $probe->retrieve('SELECT CONNECTION_ID()'), 'the probe must not be the connection under test');
+
+		$deadline = microtime(true) + 2;
+		do
+		{
+			$alive = $probe->retrieve('SELECT ID FROM information_schema.PROCESSLIST WHERE ID = ' . $id, false);
+			if(empty($alive)) { break; }
+			usleep(50000);
+		}
+		while(microtime(true) < $deadline);
+
+		$this->assertEmpty($alive, "server connection $id survived close()");
+	}
 
 	public function testDelete()
 	{
@@ -1016,6 +1032,59 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		);
 
 		$this->assertEquals($expected, $actual);
+	}
+
+	public function testGetFieldDefsRebuildsACacheFileThatWasReadHalfWritten()
+	{
+		$file = e_CACHE_DB . 'plugin.php';
+		$whole = $this->db->getFieldDefs('plugin');
+		$this->assertNotEmpty($whole);
+
+		$backup = is_file($file) ? file_get_contents($file) : null;
+		$this->assertNotNull($backup, 'reading the definition should have left a cache file to tear');
+
+		try
+		{
+			file_put_contents($file, substr($backup, 0, (int) (strlen($backup) / 2)));
+
+			$fresh = $this->makeDb();
+			$fresh->__construct();
+
+			$this->assertEquals($whole, $fresh->getFieldDefs('plugin'), 'a torn cache file was memoised instead of rebuilt');
+			$this->assertEquals($whole, e107::unserialize(file_get_contents($file)), 'the rebuild did not rewrite the torn file');
+		}
+		finally
+		{
+			file_put_contents($file, $backup);
+		}
+	}
+
+	/**
+	 * {@see e_db_pdo::loadTableDef()} writes a zero-byte file for a table its
+	 * definition file leaves untyped.
+	 */
+	public function testGetFieldDefsKeepsAZeroByteCacheFileAsAnUntypedTable()
+	{
+		$file = e_CACHE_DB . 'plugin.php';
+		$this->db->getFieldDefs('plugin');
+		$backup = is_file($file) ? file_get_contents($file) : null;
+		$this->assertNotNull($backup);
+
+		try
+		{
+			file_put_contents($file, '');
+
+			$fresh = $this->makeDb();
+			$fresh->__construct();
+
+			$this->assertSame(array(), $fresh->getFieldDefs('plugin'));
+			clearstatcache();
+			$this->assertSame(0, filesize($file), 'an untyped table was treated as a torn cache and rebuilt');
+		}
+		finally
+		{
+			file_put_contents($file, $backup);
+		}
 	}
 
 

@@ -27,21 +27,10 @@
 	class scriptsTest extends \Codeception\Test\Unit
 	{
 		/**
-		 * Children in flight at once.
-		 *
-		 * One, because e107's file cache is not safe against concurrent
-		 * requests and this sweep is the only thing that makes many at once.
-		 * Two were caught: cache_handler::delete() unlinks a file another
-		 * request has already taken, and e_plugin::_init() reads a cache
-		 * another request is midway through writing, gets a truncated
-		 * serialised blob and warns "plugin cache failed to load". Both are
-		 * real defects on a live site and neither belongs to this test, so
-		 * the sweep stops manufacturing them rather than papering over them.
-		 *
-		 * Raising this is a one-line change once those writes are atomic. It
-		 * bought roughly half the sweep's wall clock when it was 8.
+		 * Children in flight at once. Eight is also what surfaces a race in
+		 * code every request touches, so lowering it hides those.
 		 */
-		const CONCURRENCY = 1;
+		const CONCURRENCY = 8;
 
 		/** Generous for a script that loads in well under a second. */
 		const TIMEOUT_SECONDS = 60;
