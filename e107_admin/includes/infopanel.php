@@ -32,7 +32,7 @@ class adminstyle_infopanel
 
 		if(!ADMIN)
 		{
-			return null;
+			return;
 		}
 
 

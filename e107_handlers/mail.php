@@ -376,8 +376,6 @@ class e107Email extends PHPMailer
 				}
 			}
 		}
-
-		return null;
 	}
 
 

@@ -89,7 +89,7 @@ class forum_post_handler
 
 		if($this->processPosted() === false)
 		{
-			return false;
+			return;
 		}
 
 		if($this->action == 'report')

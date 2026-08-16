@@ -120,10 +120,6 @@ class db_verify
 		{
 			$this->init();
 		}
-
-
-		return $this;
-
 	}
 
 	/**
