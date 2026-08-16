@@ -82,6 +82,7 @@ class WorkspaceCleanup extends Extension
 		'e107_tests_p3_hop.php',              // @see e_fileOutboundRequestTest
 		'e107_tests_p6_unsubscribe_reset.php',  // @see NewsletterUnsubscribeCest
 		'e107_tests_p6_cron_probe.php',         // @see CronMisconfigMailCest
+		'e107_plugins/e107_tests_cronprobe',    // @see CronMisconfigMailCest
 		'e107_tests_p6_contact_probe.php',      // @see ContactFormCest
 		'e107_tests_p6_gsitemap_reset.php',     // @see GsitemapFuncCest
 		'e107_tests_p6_rss_reset.php',          // @see RssCommentsFeedCest
