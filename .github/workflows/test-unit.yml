@@ -31,7 +31,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['5.6', '7.0', '7.4', '8.1', '8.2']
+        # The ends of the supported range and two points inside it. 8.5 is
+        # the newest PHP an e107 v2.3 site is likely to meet, and 8.0 is the
+        # release that turned a long list of PHP's warnings into Errors, so
+        # those two are where a version break tends to show. The 8.1 and 8.2
+        # cells they replace now sit between two cells that do run.
+        php: ['5.6', '7.0', '7.4', '8.0', '8.5']
         db: ['mysql:5.5', 'mysql:8.0', 'mariadb:10.0', 'mariadb:10.6', 'mariadb:10.11']
 
     runs-on: ubuntu-latest
