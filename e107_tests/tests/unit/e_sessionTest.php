@@ -8,6 +8,8 @@
 	 *
 	 */
 
+	use e107\Reflection\ReflectionMethod;
+
 	class e_sessionTest extends \Test\Unit
 	{
 		/** @var e_session */
@@ -335,7 +337,6 @@
 				}
 
 				$method = new ReflectionMethod('e_core_session', 'fetchMetadataVouches');
-				$method->setAccessible(true);
 
 				return $method->invoke(null, $mode);
 			};
@@ -396,7 +397,6 @@
 				}
 
 				$method = new ReflectionMethod('e_core_session', 'fetchMetadataDisavows');
-				$method->setAccessible(true);
 
 				return $method->invoke(null, $mode);
 			};

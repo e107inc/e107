@@ -8,6 +8,7 @@
  *
  */
 
+use e107\Reflection\ReflectionProperty;
 
 class e_db_mysqlTest extends e_db_abstractTest
 {
@@ -91,9 +92,7 @@ class e_db_mysqlTest extends e_db_abstractTest
 
 	private function getDbImplementation()
 	{
-		$reflection_object = new ReflectionObject($this->db);
-		$db_property = $reflection_object->getProperty('mySQLaccess');
-		$db_property->setAccessible(true);
+		$db_property = new ReflectionProperty($this->db, 'mySQLaccess');
 		return $db_property->getValue($this->db);
 	}
 

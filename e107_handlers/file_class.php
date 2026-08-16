@@ -1112,7 +1112,6 @@ class e_file
 		// would otherwise go out looking fine.
 		if(!curl_setopt_array($cu, $curlOptions))
 		{
-			curl_close($cu);
 			$this->error = 'Could not apply the outbound request options for: ' . $address;
 
 			return false;
@@ -1542,7 +1541,6 @@ class e_file
 		{
 			$this->setErrorNum(curl_errno($cu));
 			$this->error = "Curl error: " . curl_errno($cu) . ", " . curl_error($cu);
-			curl_close($cu);
 
 			return false;
 		}
@@ -1550,7 +1548,6 @@ class e_file
 		if(!$this->peerWasPinned($cu, $target))
 		{
 			$this->error = 'Refused an answer from an address the outbound request policy did not resolve: ' . $url;
-			curl_close($cu);
 
 			return false;
 		}
@@ -1560,8 +1557,6 @@ class e_file
 			'status'   => (int) curl_getinfo($cu, CURLINFO_HTTP_CODE),
 			'location' => (string) curl_getinfo($cu, CURLINFO_REDIRECT_URL),
 		);
-
-		curl_close($cu);
 
 		return $hop;
 	}
@@ -2920,8 +2915,8 @@ class e_file
 		$mes->addDebug($cmd3);
 
 		//	$text = `$cmd1 2>&1`;
-		$text .= `$cmd2 2>&1`;
-		$text .= `$cmd3 2>&1`;
+		$text .= shell_exec($cmd2 . " 2>&1");
+		$text .= shell_exec($cmd3 . " 2>&1");
 
 
 		if(deftrue('e_DEBUG') || deftrue('e_GIT_DEBUG'))
@@ -2981,8 +2976,8 @@ class e_file
 
 		if($stream !== false)
 		{
-			// The HTTP wrapper declares this in the scope fopen() ran in.
-			$headers = isset($http_response_header) ? $http_response_header : array();
+			$meta    = stream_get_meta_data($stream);
+			$headers = isset($meta['wrapper_data']) && is_array($meta['wrapper_data']) ? $meta['wrapper_data'] : array();
 			fclose($stream);
 		}
 

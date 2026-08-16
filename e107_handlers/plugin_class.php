@@ -2364,26 +2364,21 @@ class e107plugin
 	private function manage_userclass($action, $class_name, $class_description='')
 	{
 		$this->log("Running ".__FUNCTION__);
-		$e107 = e107::getInstance();
 		$tp = e107::getParser();
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
+		$userClass = e107::getSingleton('user_class_admin');
 
 		$mes->addDebug("Userclass: ".$action.": ".$class_name." : ".$class_description);
-
-		if (!$e107->user_class->isAdmin())
-		{
-			$e107->user_class = new user_class_admin; // We need the extra methods of the admin extension
-		}
 
 		$class_name = strip_tags(strtoupper($class_name));
 		if ($action == 'add')
 		{
-			if ($e107->user_class->ucGetClassIDFromName($class_name) !== FALSE)
+			if ($userClass->ucGetClassIDFromName($class_name) !== FALSE)
 			{ // Class already exists.
 				return TRUE; // That's probably OK
 			}
-			$i = $e107->user_class->findNewClassID();
+			$i = $userClass->findNewClassID();
 			if ($i !== FALSE)
 			{
 				$tmp = array();
@@ -2398,7 +2393,7 @@ class e107plugin
 				$tmp['_FIELD_TYPES']['userclass_visibility'] = 'int';
 				$tmp['_FIELD_TYPES']['userclass_id'] = 'int';
 				$tmp['_FIELD_TYPES']['_DEFAULT'] = 'todb';
-				return $e107->user_class->add_new_class($tmp);
+				return $userClass->add_new_class($tmp);
 			}
 			else
 			{
@@ -2407,8 +2402,8 @@ class e107plugin
 		}
 		if ($action == 'remove')
 		{
-			$classID = $e107->user_class->ucGetClassIDFromName($class_name);
-			if (($classID !== FALSE) && ($e107->user_class->deleteClassAndUsers($classID) === TRUE))
+			$classID = $userClass->ucGetClassIDFromName($class_name);
+			if (($classID !== FALSE) && ($userClass->deleteClassAndUsers($classID) === TRUE))
 			{
 				return TRUE;
 			}
@@ -5571,9 +5566,9 @@ class e107plugin
 		}
 
 		// For BC.
-		$ret['administration']['icon'] = str_replace($plugName."/","",$eplug_icon);
+		$ret['administration']['icon'] = str_replace($plugName."/","",varset($eplug_icon));
 		$ret['administration']['caption'] = varset($eplug_caption);
-		$ret['administration']['iconSmall'] = str_replace($plugName."/","",$eplug_icon_small);
+		$ret['administration']['iconSmall'] = str_replace($plugName."/","",varset($eplug_icon_small));
 		$ret['administration']['configFile'] = varset($eplug_conffile);
 
 		if(varset($eplug_conffile))

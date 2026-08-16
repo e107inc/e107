@@ -7,6 +7,8 @@
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  */
 
+use e107\Reflection\ReflectionMethod;
+
 /**
  * Coverage for GHSA-72q5-94gw-prww.
  *
@@ -231,7 +233,6 @@ class e_token_injectorTest extends \Test\Unit
 	public function testNonHtmlResponsesAreSkipped()
 	{
 		$method = new ReflectionMethod('e_token_injector', 'isHtmlResponse');
-		$method->setAccessible(true);
 
 		$mimetype = ini_get('default_mimetype');
 

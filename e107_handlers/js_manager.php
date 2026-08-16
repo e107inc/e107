@@ -2076,7 +2076,7 @@ class e_jsmanager
 	 */
 	public function setInAdmin($is)
 	{
-		$this->_in_admin = (boolean) $is;
+		$this->_in_admin = (bool) $is;
 		return $this;
 	}
 

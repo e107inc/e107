@@ -2129,7 +2129,6 @@ class e_media
 			}
 
 		//	e107::getLog()->addSuccess("Converting <b>".$oldFile."</b> to <b>".$jpgFile."</b>");
-			imagedestroy($image);
 		}
 
 

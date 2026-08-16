@@ -1575,8 +1575,8 @@ class e_admin_dispatcher
 
 			case 'ajax':
 			case 'ajax_text':
-			case 'ajax_xml';
-			case 'ajax_json';
+			case 'ajax_xml':
+			case 'ajax_json':
 				$options = array(
 					'messages' => false,
 					'render' => false,
@@ -4441,23 +4441,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 				e107::getMessage()->addDebug('Searching for custom filter method: ' .$method. '(' .implode(', ', $args). ')');
 
-				if (property_exists($this, $method)) // dynamic property handling
-				{
-					e107::getMessage()->addDebug('Accessing filter property <strong>' . get_class($this) . '::$' . $method . '</strong>');
-
-					if (is_callable($this->$method))
-					{
-						e107::getMessage()->addDebug('Executing callable property <strong>' . get_class($this) . '::$' . $method . '(' . implode(', ', $args) . ')</strong>');
-
-						return call_user_func_array($this->$method, $args);
-					}
-
-					// If not callable, return the property value as is (could be a query fragment or other data)
-					e107::getMessage()->addDebug('Returning property value from <strong>' . get_class($this) . '::$' . $method . '</strong>');
-
-					return $this->$method;
-				}
-				elseif (method_exists($this, $method)) // method handling
+				if (method_exists($this, $method)) // method handling
 				{
 					e107::getMessage()->addDebug('Executing filter callback <strong>' . get_class($this) . '::' . $method . '(' . implode(', ', $args) . ')</strong>');
 
@@ -5559,15 +5543,6 @@ class e_admin_controller_ui extends e_admin_controller
 					$filter[] = call_user_func_array([$this, $customSearchMethod], $args);
 					continue;
 				}
-				elseif (property_exists($this, $customSearchMethod)) // check for dynamic property
-				{
-
-					e107::getMessage()->addDebug('Using custom search property <strong>' . $className . '::$' . $customSearchMethod . '</strong>');
-
-					$filter[] = call_user_func_array($this->$customSearchMethod, $args);
-
-					continue;
-				}
 
 
 				if($var['data'] === 'int' || $var['data'] === 'integer' || $var['type'] === 'int' || $var['type'] === 'integer')
@@ -5760,7 +5735,7 @@ class e_admin_controller_ui extends e_admin_controller
 			$rawData['joinsFrom']  = $tableSJoinArr;
 			$rawData['joins']      = $joins;
 			$rawData['groupField'] = $groupField;
-			$rawData['orderField'] = isset($fields[$orderField]) ? $fields[$orderField]['__tableField'] : '';
+			$rawData['orderField'] = $orderField !== null && isset($fields[$orderField]) ? $fields[$orderField]['__tableField'] : '';
 			$rawData['orderType']  = $qryAsc === 'desc' ? 'DESC' : 'ASC';
 			$rawData['limitFrom']  = $forceFrom === false ? $qryFrom : (int) $forceFrom;
 			$rawData['limitTo']    = $forceTo === false ? $perPage : (int) $forceTo;
@@ -5826,7 +5801,7 @@ class e_admin_controller_ui extends e_admin_controller
 		{
 			$orderField = !empty($qryField) ? $qryField : $this->getDefaultOrderField();
 			$orderDef   = ($qryAsc === null ? $this->getDefaultOrder() : $qryAsc);
-			if(isset($fields[$orderField]) && strpos($this->listQry, 'ORDER BY') == false) //override ORDER using listQry (admin->sitelinks)
+			if($orderField !== null && isset($fields[$orderField]) && strpos($this->listQry, 'ORDER BY') == false) //override ORDER using listQry (admin->sitelinks)
 			{
 				// no need of sanitize - it's found in field array
 				$qry .= ' ORDER BY ' . $fields[$orderField]['__tableField'] . ' ' . (strtolower($orderDef) === 'desc' ? 'DESC' : 'ASC');
@@ -8929,7 +8904,7 @@ class e_admin_form_ui extends e_form
 			switch($val['type'])
 			{
 
-					case 'text';
+					case 'text':
 
 						if(!empty($parms['sef']))
 						{
@@ -8941,7 +8916,7 @@ class e_admin_form_ui extends e_form
 					break;
 
 
-					case 'number';
+					case 'number':
 						if($type === 'filter')
 						{
 							$option[$key.'___ISEMPTY_'] = LAN_UI_FILTER_IS_EMPTY;

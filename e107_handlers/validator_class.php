@@ -1048,7 +1048,7 @@ class e_validator
 	public function setIsValidData($status)
 	{
 
-		$this->_is_valid_data = (boolean) $status;
+		$this->_is_valid_data = (bool) $status;
 
 		return $this;
 	}

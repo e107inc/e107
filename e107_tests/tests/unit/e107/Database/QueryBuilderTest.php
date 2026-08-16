@@ -15,7 +15,7 @@ use e107\Database\Platform\MysqlPlatform;
 use e107\Database\Platform\PlatformInterface;
 use Generator;
 use InvalidArgumentException;
-use ReflectionMethod;
+use e107\Reflection\ReflectionMethod;
 
 	/**
 	 * DB-less tests for {@see QueryBuilder} and {@see ExpressionBuilder}: every test
@@ -112,9 +112,6 @@ use ReflectionMethod;
 		public function testFragmentConstructorIsPrivate()
 		{
 			$ctor = new ReflectionMethod(SqlFragment::class, '__construct');
-            if (PHP_VERSION_ID < 80100) {
-                $ctor->setAccessible(true);
-            }
 
 			$this->assertTrue($ctor->isPrivate());
 		}

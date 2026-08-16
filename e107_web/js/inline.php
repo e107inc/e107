@@ -32,7 +32,7 @@ class e107InlineEdit
 			$ret['msg'] = "Access Denied";
 			$ret['status'] = 'error';
 			echo json_encode($ret);
-			return false;
+			return;
 
 		}
 
@@ -58,7 +58,7 @@ class e107InlineEdit
 			$ret['msg'] = "Missing Data";
 			$ret['status'] = 'error';
 			echo json_encode($ret);
-			return false;
+			return;
 		}
 
 
@@ -102,14 +102,11 @@ class e107InlineEdit
 		{
 			$ret['msg'] = "Saving Failed"; // LAN_UPDATED_FAILED;
 			$ret['status'] = 'error';
-			return false;
+			return;
 		}
 
 
 		echo json_encode($ret);
-
-		return true;
-
 	}
 
 

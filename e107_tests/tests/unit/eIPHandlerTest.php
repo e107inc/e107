@@ -8,6 +8,7 @@
  *
  */
 
+use e107\Reflection\ReflectionMethod;
 
 class eIPHandlerTest extends \Test\Unit
 {
@@ -68,9 +69,7 @@ class eIPHandlerTest extends \Test\Unit
 	public function testGetCurrentIP()
 	{
 
-		$reflection = new ReflectionClass($this->ip);
-		$method = $reflection->getMethod('getCurrentIP');
-		$method->setAccessible(true);
+		$method = new ReflectionMethod($this->ip, 'getCurrentIP');
 
 		$tests = [
 			0 => [

@@ -1,5 +1,6 @@
 <?php
 
+use e107\Reflection\ReflectionMethod;
 
 class e_pluginbuilderTest extends \Test\Unit
 {
@@ -441,7 +442,6 @@ class e_pluginbuilderTest extends \Test\Unit
 			$this->pb->pluginName = $name;
 
 			$build = new ReflectionMethod('e_pluginbuilder', 'buildShortcodesFile');
-			$build->setAccessible(true);
 			$build->invoke($this->pb);
 
 			$file = $dir.'/'.$name.'_shortcodes.php';

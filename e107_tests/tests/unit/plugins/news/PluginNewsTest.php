@@ -1,5 +1,7 @@
 <?php
 
+use e107\Reflection\ReflectionMethod;
+use e107\Reflection\ReflectionProperty;
 
 class PluginNewsTest extends \Test\Unit
 {
@@ -100,13 +102,10 @@ class PluginNewsTest extends \Test\Unit
 		include_once e_PLUGIN . "news/news.php";
 		$news = new news_front();
 
-		$reflection = new ReflectionClass($news);
-		$property   = $reflection->getProperty("subAction");
-		$property->setAccessible(true);
+		$property = new ReflectionProperty($news, "subAction");
 		$property->setValue($news, current($rows)["news_id"]);
 
-		$method = $reflection->getMethod("renderViewTemplate");
-		$method->setAccessible(true);
+		$method = new ReflectionMethod($news, "renderViewTemplate");
 		try
 		{
 			$method->invoke($news);
@@ -116,8 +115,7 @@ class PluginNewsTest extends \Test\Unit
 			$this->fail("ReflectionException: " . $e->getMessage());
 		}
 
-		$property = $reflection->getProperty("currentRow");
-		$property->setAccessible(true);
+		$property = new ReflectionProperty($news, "currentRow");
 
 		return $property->getValue($news);
 	}

@@ -10,6 +10,8 @@
 
 namespace e107\Security\Cipher;
 
+use e107\Reflection\ReflectionProperty;
+
 /**
  * A real backend that counts the calls made to it.
  *
@@ -89,8 +91,7 @@ class SpyCipher implements CbcCipherInterface
 	{
 		$spy = new self(CipherFactory::create());
 
-		$property = new \ReflectionProperty('e107\\Security\\Cipher\\CipherFactory', 'instance');
-		$property->setAccessible(true);
+		$property = new ReflectionProperty('e107\\Security\\Cipher\\CipherFactory', 'instance');
 		$property->setValue(null, $spy);
 
 		return $spy;

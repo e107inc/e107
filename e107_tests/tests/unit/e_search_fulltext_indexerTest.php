@@ -7,6 +7,7 @@
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  */
 
+use e107\Reflection\ReflectionProperty;
 
 class e_search_fulltext_indexerTest extends \Test\Unit
 {
@@ -265,14 +266,10 @@ class e_search_fulltext_indexerTest extends \Test\Unit
 	{
 
 		// Access private properties via reflection to verify cache clearing
-		$reflection = new ReflectionClass($this->indexer);
-
-		$searchConfigsProp = $reflection->getProperty('searchConfigs');
-		$searchConfigsProp->setAccessible(true);
+		$searchConfigsProp = new ReflectionProperty($this->indexer, 'searchConfigs');
 		$searchConfigsProp->setValue($this->indexer, array('test' => 'data'));
 
-		$derivedIndexesProp = $reflection->getProperty('derivedIndexes');
-		$derivedIndexesProp->setAccessible(true);
+		$derivedIndexesProp = new ReflectionProperty($this->indexer, 'derivedIndexes');
 		$derivedIndexesProp->setValue($this->indexer, array('test' => 'indexes'));
 
 		// Clear cache
@@ -290,9 +287,7 @@ class e_search_fulltext_indexerTest extends \Test\Unit
 	{
 
 		// Use reflection to set empty derived indexes
-		$reflection = new ReflectionClass($this->indexer);
-		$derivedIndexesProp = $reflection->getProperty('derivedIndexes');
-		$derivedIndexesProp->setAccessible(true);
+		$derivedIndexesProp = new ReflectionProperty($this->indexer, 'derivedIndexes');
 		$derivedIndexesProp->setValue($this->indexer, array('news' => array('test' => 'index')));
 
 		$actual = $this->indexer->getIndexesForTable('nonexistent_table');
