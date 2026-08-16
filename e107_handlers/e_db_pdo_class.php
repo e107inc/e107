@@ -669,14 +669,17 @@ class e_db_pdo implements e_db
 	 * Example :<br />
 	 * <code>$sql->db_Close();</code>
 	 *
+	 * Releases the last result set as well; a PDOStatement keeps its
+	 * connection alive, so nothing fetched before close() is readable after it.
+	 *
 	 * @access public
 	 * @return void
 	 */
 	function close()
 	{
-		$this->_getMySQLaccess();
 		$this->traffic->BumpWho('db Close', 1);
-		$this->mySQLaccess = null; // correct way to do it when using shared links.
+		$this->mySQLresult = null;
+		$this->mySQLaccess = null;
 		$this->dbError('dbClose');
 	}
 
