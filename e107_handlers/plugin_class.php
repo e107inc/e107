@@ -2474,7 +2474,7 @@ class e107plugin
 					$linkData = array(
 						'link_name'			 => $link_name,
 						'link_url'			 => $path,
-						'link_description'	 => vartrue($options['link_desription']),
+						'link_description'	 => vartrue($options['link_description']),
 						'link_button'		 => vartrue($options['link_icon']),
 						'link_category'		 => vartrue($options['link_category'],'1'),
 						'link_order'		 => $link_t + 1,
