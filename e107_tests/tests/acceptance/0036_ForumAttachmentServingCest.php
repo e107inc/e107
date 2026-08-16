@@ -1278,7 +1278,6 @@ PHP;
 		ob_start();
 		imagepng($image);
 		$png = ob_get_clean();
-		imagedestroy($image);
 
 		return $png."\n".$text."\n";
 	}
@@ -1347,7 +1346,6 @@ PHP;
 
 		if($width !== strlen(self::SECRET_IMAGE)) // both image sentinels are this long
 		{
-			imagedestroy($image);
 
 			return null;
 		}
@@ -1370,7 +1368,6 @@ PHP;
 			}
 		}
 
-		imagedestroy($image);
 
 		return $text;
 	}

@@ -1099,7 +1099,6 @@ class e_file
 			// would otherwise go out looking fine.
 			if(!curl_setopt_array($cu, $curlOptions))
 			{
-				curl_close($cu);
 				$this->error = 'Could not apply the outbound request options for: ' . $address;
 
 				return false;
@@ -1529,7 +1528,6 @@ class e_file
 			{
 				$this->setErrorNum(curl_errno($cu));
 				$this->error = "Curl error: " . curl_errno($cu) . ", " . curl_error($cu);
-				curl_close($cu);
 
 				return false;
 			}
@@ -1537,7 +1535,6 @@ class e_file
 			if(!$this->peerWasPinned($cu, $target))
 			{
 				$this->error = 'Refused an answer from an address the outbound request policy did not resolve: ' . $url;
-				curl_close($cu);
 
 				return false;
 			}
@@ -1547,8 +1544,6 @@ class e_file
 				'status'   => (int) curl_getinfo($cu, CURLINFO_HTTP_CODE),
 				'location' => (string) curl_getinfo($cu, CURLINFO_REDIRECT_URL),
 			);
-
-			curl_close($cu);
 
 			return $hop;
 		}

@@ -224,8 +224,6 @@ function resize_image($source_file, $destination_file, $type = "upload", $model 
 			}
 		}
 
-		if (!imagedestroy($src_img)) { $returnError = -2; }
-		if (!imagedestroy($dst_img)) { $returnError = -3; }
 		if ($returnError)
 		{
 			echo "Resizing error (2): {$returnError} - {$outputFunc} -> {$destName}<br />";
