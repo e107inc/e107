@@ -28,7 +28,7 @@ class UserSignupCest
 		$I->amOnPage('/signup.php');
 		$I->wantTo("Test user signup process");
 
-		$I->selectOption('coppa',1);
+		$I->selectOption('coppa','1');
 		$I->click('newver');
 
 
