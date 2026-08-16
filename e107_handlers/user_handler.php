@@ -61,6 +61,8 @@ class UserHandler
 	private $otherFields = array();
 	private $passwordAPI = false;
 
+	private $otherFieldTypes = array();
+
 	// Constructor
 	public function __construct()
 	{

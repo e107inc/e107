@@ -85,6 +85,7 @@ class e107forum
 	private $userViewed;
 	private $permList = array();
 	public $modArray, $prefs;
+	public $e107;
 
 	/** @var array moderator rows keyed by userclass, for authorisation only */
 	private $moderatorsByClass = array();
