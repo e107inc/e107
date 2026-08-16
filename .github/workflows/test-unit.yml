@@ -40,7 +40,7 @@ jobs:
         # 5.6 and 7.0 are here because they are what e107 v2 claims to support,
         # and a claim nothing exercises is a guess. Their images build from the
         # Debian archive, which the Dockerfile already handles for `graft`.
-        php: ['5.6', '7.0', '8.1', '8.2', '8.3', '8.4']
+        php: ['5.6', '7.0', '8.1', '8.2', '8.3', '8.4', '8.5']
         # mysql:5.5 and mariadb:10.0 are here because e107 can be installed on
         # them again: db_verify now settles a table's storage engine and
         # character set against what the server can actually do, so the tables
