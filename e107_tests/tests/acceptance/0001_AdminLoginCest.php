@@ -79,6 +79,8 @@ class AdminLoginCest
 		$urls = array(
 			'admin.php?[debug=basic+]',
 			'cache.php',
+			'cron.php',
+			'cron.php?mode=main&action=setup',
 			'emoticon.php',
 			'frontpage.php',
 			'frontpage.php?mode=create',

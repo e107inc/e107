@@ -12,6 +12,7 @@ if (!defined("PAGE_NAME")) { define("PAGE_NAME", "Schedule Tasks"); }
 
 // Menu
 define("LAN_CRON_M_02", "Refresh");
+define("LAN_CRON_M_SETUP", "Setup");
 
 // Table heading
 
@@ -49,11 +50,7 @@ define("LAN_CRON_10", "[y] seconds ago.");
 
 define("LAN_CRON_11", "Active Crons");
 define("LAN_CRON_12", "Last cron refresh");
-define("LAN_CRON_13", "Please be sure cron.php is executable.");
-define("LAN_CRON_14", "Please CHMOD /cron.php to 755.");
 
-define("LAN_CRON_15", "Use the following Cron Command");
-define("LAN_CRON_16", "Using your server control panel (eg. cPanel, DirectAdmin, Plesk etc.) please create a crontab to run this command on your server every minute.");
 
 // leave some room for additions/changes
 
@@ -91,15 +88,15 @@ define("LAN_CRON_54", "Weekday(s):");
 define("LAN_CRON_55", "Database Backup Failed");
 define("LAN_CRON_56", "Database Backup Complete");
 
-define("LAN_CRON_60", "Go to cPanel");
 define("LAN_CRON_61", "Generate new cron token");
 define("LAN_CRON_62", "Executing config function [b][x][/b]");
 define("LAN_CRON_63", "Config function [b][x][/b] NOT found.");
-define("LAN_CRON_64", "An administrator can automate tasks using e107 Schedule Tasks. [br]
-In the Manage Tab, you can edit, delete and run tasks. [br]
-When you edit a task you can set the minutes, hours, days, month or day of the week you want the task to run. Use * to run for each period. Use the Active property to Enabled the Task.[br]
-Note: You are advised not to delete standard jobs.[br]
-");
+define("LAN_CRON_64", "An administrator can automate tasks using e107 Schedule Tasks.[br]
+Nothing here runs until your server calls [b]cron.php[/b] once a minute. The Setup tab shows how to arrange that, and gives you the command to copy.[br]
+In the Manage tab you can edit, delete and run tasks.[br]
+When you edit a task you can set the minutes, hours, days, month or day of the week on which it runs. Use * for every period, and the Active property to enable the task.[br]
+
+Note: You are advised not to delete the standard tasks.[br]");
 
 define("LAN_CRON_BACKUP", "Backup");
 define("LAN_CRON_LOGGING", "Logging");
@@ -108,3 +105,41 @@ define("LAN_CRON_RUNNING", "Running");
 define("LAN_CRON_65", "Update git theme repository");
 define("LAN_CRON_66", "No git repo found");
 define("LAN_CRON_67", "No git repo found in theme folder");
+
+define("LAN_CRON_SETUP_INTRO", "Your server has to call [b]cron.php[/b] once a minute for scheduled tasks to run. Pick one of the options below, copy what it shows into your server's scheduler, and use one option only, or tasks that are due will run twice.");
+define("LAN_CRON_SETUP_HTTP_TITLE", "Web request");
+define("LAN_CRON_SETUP_HTTP_WHY", "Your scheduler fetches a URL every minute. It runs under the PHP version selected for this site, needs no file permissions, and works with control-panel cron jobs and external cron services alike.");
+define("LAN_CRON_SETUP_CLI_TITLE", "PHP command line");
+define("LAN_CRON_SETUP_CLI_WHY", "Your scheduler runs the PHP interpreter on cron.php. It runs under whichever PHP binary the command names, so keep the command in step with the site's PHP version.");
+define("LAN_CRON_SETUP_SHEBANG_TITLE", "Shell script");
+define("LAN_CRON_SETUP_SHEBANG_WHY", "Your scheduler runs cron.php directly and its first line picks whichever php is on the PATH. The file has to be executable, and cron's PATH is short, so it may find no php or the wrong one.");
+define("LAN_CRON_SETUP_COMMAND_LABEL", "Command (paste into your control panel's cron job)");
+define("LAN_CRON_SETUP_CRONTAB_LABEL", "Crontab line (runs every minute)");
+define("LAN_CRON_SETUP_URL_LABEL", "URL (for external cron services such as cron-job.org or EasyCron)");
+define("LAN_CRON_SETUP_WINDOWS_COMMAND_LABEL", "Command (for a Windows Task Scheduler action)");
+define("LAN_CRON_SETUP_SCHTASKS_LABEL", "Create the task in one go (administrator command prompt)");
+define("LAN_CRON_SETUP_RECOMMENDED", "Recommended");
+define("LAN_CRON_SETUP_PANEL_HOWTO", "In cPanel, DirectAdmin or Plesk, open the cron jobs page and add a job that runs every minute with this command. Without a control panel, run [b]crontab -e[/b] and add the crontab line.");
+define("LAN_CRON_SETUP_WGET_LABEL", "With wget instead of curl");
+define("LAN_CRON_SETUP_HTTP_FALLBACK_NOTE", "If your server cannot fetch its own site URL (some hosts block that), use the PHP command line option instead.");
+define("LAN_CRON_SETUP_PHP_FOUND", "PHP [x] was found at [y].");
+define("LAN_CRON_SETUP_PHP_NOT_FOUND", "No PHP binary could be verified, so the command assumes [b]php[/b] is on the PATH. Ask your host for the path to the PHP [x] command-line binary if it is not.");
+define("LAN_CRON_SETUP_OPEN_BASEDIR_NOTE", "open_basedir prevented checking for PHP binaries.");
+define("LAN_CRON_SETUP_EXECUTABLE", "cron.php is executable.");
+define("LAN_CRON_SETUP_NOT_EXECUTABLE", "cron.php is not executable. Make it executable first:");
+define("LAN_CRON_SETUP_REGENERATE_WARNING", "Generating a new token invalidates the command you have already set up. Copy the new one into your scheduler afterwards.");
+define("LAN_CRON_REFUSED_SUMMARY", "[x] request(s) to cron.php have been refused since [y], the last at [z].");
+define("LAN_CRON_REFUSED_LAST_FROM", "The last one came from [x].");
+define("LAN_CRON_REFUSED_TOKEN_INCORRECT", "They carried a token that does not match.");
+define("LAN_CRON_REFUSED_TOKEN_MISSING", "They carried no token.");
+define("LAN_CRON_REFUSED_COPY_AGAIN", "Copy the command again from the [x] tab.");
+define("LAN_CRON_NEVER_REPORTED", "No scheduled task has reported in yet. Follow the [x] tab to schedule cron.php on your server.");
+define("LAN_CRON_LASTRUN_HTTP", "over HTTP");
+define("LAN_CRON_LASTRUN_HTTP_FROM", "over HTTP from [x]");
+define("LAN_CRON_LASTRUN_CLI", "from the command line");
+define("LAN_CRON_SETUP_DETECTED_ENVIRONMENT", "Detected environment: [x]");
+define("LAN_CRON_SETUP_OPEN_PANEL", "Open [x]");
+define("LAN_CRON_SETUP_CONTROL_PANEL", "Control panel");
+define("LAN_CRON_SETUP_SCHTASKS_ACCOUNT_NOTE", "Task Scheduler runs the command as the account you choose; use one that can read the site's files.");
+define("LAN_CRON_SETUP_CURL_EXE_NOTE", "curl.exe ships with Windows 10 and later; on older systems use the PHP command line option.");
+define("LAN_CRON_TOKEN_REGENERATED", "A new cron token has been generated. Update the command in your server's scheduler.");

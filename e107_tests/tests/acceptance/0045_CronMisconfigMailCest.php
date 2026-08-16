@@ -1,28 +1,25 @@
 <?php
 
 /**
- * P6 item 2. cron.php answers an unauthenticated request, and a request with
- * the wrong token makes it mail the site owner.
+ * cron.php over HTTP and from the command line.
  *
- * cronScheduler::validateToken() (cron_class.php:1323-1353) builds that mail
- * out of print_a($_SERVER), print_a($_ENV) and print_a($_GET), and sends it
- * with no throttle and no deduplication. An anonymous caller therefore decides
- * how often the site owner is mailed, and each of those mails carries the web
- * server's environment, the site owner's own cron password and whatever the
- * caller put in the query string.
- *
- * The guard at cron.php:37 is the reason any of this is reachable over HTTP: it
- * names 'apache', which is the Apache 1 SAPI, and 'litespeed'. Every SAPI a
- * current site actually runs (apache2handler, fpm-fcgi, cgi-fcgi) is not on the
- * list, so the endpoint answers the web.
+ * Both entry points share one token. Over HTTP an accepted token answers
+ * 200 "OK" and runs the due tasks as a guest; a missing or wrong token answers
+ * 403 with nothing the caller sent echoed back, is recorded for the admin
+ * page, and mails the site owner at most once a day without an environment
+ * dump (P6 item 2: cronScheduler::validateToken() used to mail print_a($_SERVER),
+ * print_a($_ENV) and print_a($_GET), unthrottled, on every wrong-token
+ * request). From the command line the tasks run as the first administrator
+ * and a refused token exits 1.
  *
  * The mail assertions are driven through a probe that calls validateToken()
- * directly rather than through cron.php, so that closing the SAPI guard does
- * not turn them into tests that measure nothing.
+ * directly as well as through cron.php, so that neither entry point can turn
+ * them into tests that measure nothing.
  */
 class CronMisconfigMailCest
 {
 	const PROBE_FILE = 'e107_tests_p6_cron_probe.php';
+	const ADDON_DIR = 'e107_plugins/e107_tests_cronprobe';
 
 	/**
 	 * @var string the wrong token every request in a burst presents.
@@ -63,6 +60,19 @@ class CronMisconfigMailCest
 	}
 
 	/**
+	 * @param AcceptanceTester $I
+	 * @param string $query
+	 * @return array|null the JSON the probe printed after PROBE_OK
+	 */
+	private function probeJson(AcceptanceTester $I, $query)
+	{
+		$out = $this->probe($I, $query);
+		$json = trim((string) substr($out, strpos($out, "\n")));
+
+		return json_decode($json, true);
+	}
+
+	/**
 	 * One test, not four, because a rate limiter is stateful: a separate test
 	 * asserting "the owner is told at least once" would run with the budget
 	 * already spent by the test above it and fail for a reason that is not the
@@ -83,16 +93,22 @@ class CronMisconfigMailCest
 		}
 
 		$log = $this->probe($I, 'act=maillog');
-		$sent = substr_count($log, 'Mail-ID=');
 
-		// Every complaint is collected before anything is asserted, because
-		// PHPUnit stops at the first failed assertion and each of these is a
-		// separate defect. Fixing one of them leaves the list non-empty, so no
-		// fix can appear to cover the others.
+		$I->assertSame(array(), $this->mailProblems($log, $burst),
+			"cron misconfiguration mail, after $burst anonymous requests with the wrong token:\n  - "
+			.implode("\n  - ", $this->mailProblems($log, $burst))."\n");
+	}
+
+	/**
+	 * @param string $log the mail log
+	 * @param int $burst how many refused requests preceded it
+	 * @return string[] every defect the log shows, so that fixing one cannot hide the others
+	 */
+	private function mailProblems($log, $burst)
+	{
+		$sent = substr_count($log, 'Mail-ID=');
 		$problems = array();
 
-		// Positive control. The owner still has to be told, or "send nothing,
-		// ever" would satisfy everything else here.
 		if($sent < 1)
 		{
 			$problems[] = 'no mail was sent at all: a misconfigured cron must still tell the site owner once';
@@ -114,33 +130,15 @@ class CronMisconfigMailCest
 			$problems[] = 'the mail body carries the site\'s own cron password';
 		}
 
-		if(strpos($log, '_SERVER') !== false)
+		foreach(array('_SERVER', '_ENV', 'DOCUMENT_ROOT', 'DB_PASSWORD') as $dump)
 		{
-			$problems[] = 'the mail body dumps $_SERVER';
+			if(strpos($log, $dump) !== false)
+			{
+				$problems[] = 'the mail body carries '.$dump;
+			}
 		}
 
-		if(strpos($log, '_ENV') !== false)
-		{
-			$problems[] = 'the mail body dumps $_ENV';
-		}
-
-		if(strpos($log, 'DOCUMENT_ROOT') !== false)
-		{
-			$problems[] = 'the mail body carries the server environment';
-		}
-
-		// Not container trivia. The harness passes the database credentials in
-		// as environment variables, which is how a great many php-fpm and
-		// container deployments are configured, and $_SERVER carries them
-		// straight into the mail.
-		if(strpos($log, 'DB_PASSWORD') !== false)
-		{
-			$problems[] = 'the mail body carries the database credentials';
-		}
-
-		$I->assertSame(array(), $problems,
-			"cron misconfiguration mail, after $burst anonymous requests with the wrong token:\n  - "
-			.implode("\n  - ", $problems)."\n");
+		return $problems;
 	}
 
 	/**
@@ -161,57 +159,175 @@ class CronMisconfigMailCest
 			'a cron run with the right token must mail nobody');
 	}
 
-	/**
-	 * The SAPI guard. Every request in this suite arrives at Apache, so if the
-	 * endpoint answers here it answers the internet.
-	 */
-	public function cronPhpIsNotReachableOverHttp(AcceptanceTester $I)
+	public function cronPhpRunsOverHttpWithTheToken(AcceptanceTester $I)
 	{
-		$I->wantTo('refuse cron.php when it is requested over HTTP');
+		$I->wantTo('run the scheduled tasks from a web request that carries the token');
 
-		foreach(array('', '?token='.$this->marker, '?token='.$this->cronPassword()) as $query)
-		{
-			$I->amOnPage('/cron.php'.$query);
-			$I->seeInSource('Access Denied');
-		}
+		$this->probe($I, 'act=unlinkstamp');
+
+		$I->amOnPage('/cron.php?token='.$this->cronPassword());
+		$I->seeResponseCodeIs(200);
+		$I->assertStringContainsString('text/plain', $I->grabHttpHeader('Content-Type'));
+		$I->assertStringContainsString('no-store', $I->grabHttpHeader('Cache-Control'));
+		$I->assertSame("OK\n", $I->grabResponseBody());
+
+		$I->assertStringContainsString('STAMP=1', $this->probe($I, 'act=stamp'),
+			'an accepted web request must reach the scheduler');
+
+		$run = $this->probeJson($I, 'act=lastrun');
+		$I->assertSame('http', $run['via']);
 	}
 
-	/**
-	 * Positive control for the guard: refusing every SAPI would satisfy the test
-	 * above and leave every site's scheduled tasks dead.
-	 */
+	public function aWrongTokenOverHttpIs403AndStillMailsOnce(AcceptanceTester $I)
+	{
+		$I->wantTo('refuse a wrong token over HTTP without saying anything useful to the caller');
+
+		$this->probe($I, 'act=clearmaillog');
+		$this->probe($I, 'act=clearrefusals');
+		$this->probe($I, 'act=unlinkstamp');
+
+		$burst = 6;
+		for($i = 0; $i < $burst; $i++)
+		{
+			$I->amOnPage('/cron.php?token='.$this->marker);
+			$I->seeResponseCodeIs(403);
+			$body = $I->grabResponseBody();
+			$I->assertStringNotContainsString($this->marker, $body, 'the refusal must not echo the token sent');
+			$I->assertStringNotContainsString($this->cronPassword(), $body, 'the refusal must not leak the real token');
+			$I->assertStringNotContainsString('OK', $body);
+		}
+
+		$I->assertStringContainsString('STAMP=0', $this->probe($I, 'act=stamp'),
+			'a refused request must not reach the scheduler');
+
+		$log = $this->probe($I, 'act=maillog');
+		$I->assertSame(array(), $this->mailProblems($log, $burst),
+			"after $burst wrong-token web requests:\n  - ".implode("\n  - ", $this->mailProblems($log, $burst))."\n");
+
+		$refusal = $this->probeJson($I, 'act=refusal');
+		$I->assertNotNull($refusal, 'the refusals must be recorded for the admin page');
+		$I->assertGreaterThanOrEqual($burst, $refusal['count']);
+		$I->assertSame('wrong', $refusal['token']);
+		$I->assertSame('http', $refusal['via']);
+	}
+
+	public function aMissingTokenOverHttpIs403AndMailsNobody(AcceptanceTester $I)
+	{
+		$I->wantTo('refuse a request with no token at all, silently');
+
+		$this->probe($I, 'act=clearmaillog');
+		$this->probe($I, 'act=clearrefusals');
+
+		$I->amOnPage('/cron.php');
+		$I->seeResponseCodeIs(403);
+		$I->assertStringNotContainsString($this->cronPassword(), $I->grabResponseBody());
+
+		$log = $this->probe($I, 'act=maillog');
+		$I->assertSame(0, substr_count($log, 'Mail-ID='), 'a request without a token is noise, not a misconfiguration');
+
+		$refusal = $this->probeJson($I, 'act=refusal');
+		$I->assertSame('missing', $refusal['token']);
+	}
+
 	public function cronPhpStillRunsFromTheCommandLine(AcceptanceTester $I)
 	{
 		$I->wantTo('keep cron.php runnable from the command line');
 
 		$out = $this->probe($I, 'act=cli&token='.$this->cronPassword());
 
-		$I->assertStringNotContainsString('Access Denied', $out,
-			'the command line must not be turned away');
 		$I->assertStringContainsString('CLI_STATUS=0', $out,
 			'a command line run must finish, and within its timeout');
 		$I->assertStringContainsString('CLI_RAN=1', $out,
 			'a command line run must reach the scheduler');
+		$I->assertStringNotContainsString('OK', (string) substr($out, strpos($out, 'CLI_OUT:')),
+			'a command line run does not print the HTTP answer');
+
+		$run = $this->probeJson($I, 'act=lastrun');
+		$I->assertSame('cli', $run['via']);
+	}
+
+	public function aWrongTokenFromTheCommandLineExitsNonZero(AcceptanceTester $I)
+	{
+		$I->wantTo('tell a crontab that its token was refused through the exit status');
+
+		$this->probe($I, 'act=clearmaillog');
+		$out = $this->probe($I, 'act=cli&token='.$this->marker);
+
+		$I->assertStringContainsString('CLI_STATUS=1', $out);
+		$I->assertStringContainsString('CLI_RAN=0', $out);
 	}
 
 	/**
-	 * The guard has to read the request, not PHP_SAPI: on a great deal of shared
+	 * The split has to read the request, not PHP_SAPI: on a great deal of shared
 	 * hosting the command line binary is a CGI build, and a crontab line calling
-	 * it would be turned away by a guard that went by name. The container has
-	 * only a cli binary, so the two shapes are told apart here the way the CGI
-	 * SAPI itself tells them apart - by the request variables a web server puts
-	 * in the environment and a shell does not.
+	 * it would otherwise be answered as a web request. The container has only a
+	 * cli binary, so the two shapes are told apart here the way the CGI SAPI
+	 * itself tells them apart, by the request variables a web server puts in
+	 * the environment and a shell does not.
 	 */
-	public function cronPhpRefusesAShellRunThatCarriesARequest(AcceptanceTester $I)
+	public function aShellRunThatCarriesARequestAnswersAsHttp(AcceptanceTester $I)
 	{
-		$I->wantTo('refuse cron.php whenever the environment says a web server sent the request');
+		$I->wantTo('answer as a web request whenever the environment says a web server sent it');
 
 		$out = $this->probe($I, 'act=cli&env=1&token='.$this->cronPassword());
 
-		$I->assertStringContainsString('Access Denied', $out,
-			'an invocation carrying REQUEST_METHOD must be refused whatever the SAPI is');
-		$I->assertStringContainsString('CLI_RAN=0', $out,
-			'a refused invocation must not reach the scheduler');
+		$I->assertStringContainsString('CLI_RAN=1', $out, 'the request environment must still reach the scheduler');
+		$I->assertStringContainsString('OK', (string) substr($out, strpos($out, 'CLI_OUT:')),
+			'an invocation carrying REQUEST_METHOD answers as HTTP whatever the SAPI is');
+
+		$run = $this->probeJson($I, 'act=lastrun');
+		$I->assertSame('http', $run['via']);
+	}
+
+	public function cronJobsRunAsAGuestOverHttpAndAsTheAdministratorFromTheCommandLine(AcceptanceTester $I)
+	{
+		$I->wantTo('run tasks as a guest over HTTP and as the administrator from the command line');
+
+		$I->writeAppFile(self::ADDON_DIR.'/e_cron.php', $this->addonSource());
+		$this->probe($I, 'act=addcron');
+
+		try
+		{
+			$this->waitForTheDueWindow();
+			$this->probe($I, 'act=delrecord');
+			$I->amOnPage('/cron.php?token='.$this->cronPassword());
+			$I->seeResponseCodeIs(200);
+
+			$http = $this->probeJson($I, 'act=readrecord');
+			$I->assertNotNull($http, 'the probe task must have run over HTTP');
+			$I->assertFalse($http['admin'], 'a web request must not run tasks as an administrator');
+			$I->assertSame(0, $http['userid']);
+			$I->assertFalse($http['cli']);
+
+			$this->waitForTheDueWindow();
+			$this->probe($I, 'act=delrecord');
+			$out = $this->probe($I, 'act=cli&token='.$this->cronPassword());
+			$I->assertStringContainsString('CLI_STATUS=0', $out);
+
+			$cli = $this->probeJson($I, 'act=readrecord');
+			$I->assertNotNull($cli, 'the probe task must have run from the command line');
+			$I->assertTrue($cli['admin']);
+			$I->assertSame(1, $cli['userid']);
+			$I->assertTrue($cli['cli']);
+		}
+		finally
+		{
+			$this->probe($I, 'act=delcron');
+			$I->deleteAppFile(self::ADDON_DIR.'/e_cron.php');
+		}
+	}
+
+	/**
+	 * A task on '* * * * *' is due for the first 45 seconds of each minute.
+	 */
+	private function waitForTheDueWindow()
+	{
+		$second = (int) date('s');
+
+		if($second >= 38)
+		{
+			sleep(61 - $second);
+		}
 	}
 
 	/**
@@ -225,15 +341,44 @@ class CronMisconfigMailCest
 	/**
 	 * @return string
 	 */
+	private function addonSource()
+	{
+		return <<<'PHP'
+<?php
+// Fixture for 0045_CronMisconfigMailCest. Removed again by the Cest.
+if(!defined('e107_INIT')) { exit; }
+
+class e107_tests_cronprobe_cron
+{
+	public function record()
+	{
+		file_put_contents(e_CACHE.'e107_tests_cronprobe.json', json_encode(array(
+			'admin'  => defined('ADMIN') ? (bool) ADMIN : null,
+			'userid' => defined('USERID') ? (int) USERID : null,
+			'classes' => defined('USERCLASS_LIST') ? USERCLASS_LIST : null,
+			'sapi'   => PHP_SAPI,
+			'cli'    => e107::isCli(),
+		)));
+
+		return true;
+	}
+}
+PHP;
+	}
+
+	/**
+	 * @return string
+	 */
 	private function probeSource()
 	{
 		$pwd = $this->cronPassword();
 
 		return <<<PHP
 <?php
-// Fixture for 0034_CronMisconfigMailCest. Removed again in the Cest's _after().
+// Fixture for 0045_CronMisconfigMailCest. Removed again in the Cest's _after().
 \$_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
+require_once(e_HANDLER.'cron_class.php');
 header('Content-Type: text/plain');
 
 // Every request in the container arrives from the bridge address, so a Cest
@@ -244,6 +389,8 @@ e107::getDb()->delete('banlist', 'banlist_bantype IN (2, -2)');
 \$act = isset(\$_GET['act']) ? \$_GET['act'] : '';
 \$config = e107::getConfig('core');
 \$logFile = e_LOG.'mailoutlog.log';
+\$stamp = e_CACHE.'cronLastLoad.php';
+\$record = e_CACHE.'e107_tests_cronprobe.json';
 
 switch(\$act)
 {
@@ -267,6 +414,8 @@ switch(\$act)
 		\$config->remove('e107_tests_p6_cron_backup');
 		\$config->save(false, true, false);
 		@unlink(\$logFile);
+		@unlink(\$record);
+		cronScheduler::clearRefusals();
 		echo "PROBE_OK\n";
 		break;
 
@@ -288,16 +437,67 @@ switch(\$act)
 		break;
 
 	case 'validate':
-		require_once(e_HANDLER.'cron_class.php');
 		\$cron = new cronScheduler();
 		echo "PROBE_OK VALIDATE=".(\$cron->validateToken() ? 1 : 0)."\n";
 		break;
 
+	case 'unlinkstamp':
+		@unlink(\$stamp);
+		@unlink(e_CACHE.'cronLastRun.php');
+		echo "PROBE_OK\n";
+		break;
+
+	case 'stamp':
+		clearstatcache();
+		echo "PROBE_OK STAMP=".(file_exists(\$stamp) ? 1 : 0)."\n";
+		break;
+
+	case 'lastrun':
+		echo "PROBE_OK\n".json_encode(cronScheduler::lastRun())."\n";
+		break;
+
+	case 'refusal':
+		echo "PROBE_OK\n".json_encode(cronScheduler::lastRefusal())."\n";
+		break;
+
+	case 'clearrefusals':
+		cronScheduler::clearRefusals();
+		echo "PROBE_OK\n";
+		break;
+
+	case 'addcron':
+		e107::getDb()->delete('cron', "cron_function='e107_tests_cronprobe::record'");
+		e107::getDb()->insert('cron', array(
+			'cron_name' => 'e107_tests probe',
+			'cron_category' => 'plugin',
+			'cron_description' => 'Fixture for 0045_CronMisconfigMailCest',
+			'cron_function' => 'e107_tests_cronprobe::record',
+			'cron_tab' => '* * * * *',
+			'cron_active' => 1,
+		));
+		echo "PROBE_OK\n";
+		break;
+
+	case 'delcron':
+		e107::getDb()->delete('cron', "cron_function='e107_tests_cronprobe::record'");
+		@unlink(\$record);
+		echo "PROBE_OK\n";
+		break;
+
+	case 'delrecord':
+		@unlink(\$record);
+		echo "PROBE_OK\n";
+		break;
+
+	case 'readrecord':
+		clearstatcache();
+		echo "PROBE_OK\n".(is_readable(\$record) ? file_get_contents(\$record) : 'null')."\n";
+		break;
+
 	case 'cli':
-		// The positive control for the SAPI guard. cronLastLoad.php is written
+		// The positive control for the mode split. cronLastLoad.php is written
 		// by cronScheduler::run() once the token is accepted, so its
 		// reappearance is proof the command line reached the scheduler.
-		\$stamp = e_CACHE.'cronLastLoad.php';
 		@unlink(\$stamp);
 		\$token = isset(\$_GET['token']) ? \$_GET['token'] : '';
 		// Bounded: the child runs the site's whole scheduler, and a job that
@@ -305,11 +505,12 @@ switch(\$act)
 		// gives up, which reads as a hung suite rather than a failure.
 		// env=1 puts a web server's request variables in the child's
 		// environment, which is what the CGI SAPI reads a request out of.
-		\$env = empty(\$_GET['env']) ? '' : 'REQUEST_METHOD=GET SERVER_PROTOCOL=HTTP/1.1 HTTP_HOST=example.com ';
+		\$env = empty(\$_GET['env']) ? '' : 'REQUEST_METHOD=GET SERVER_PROTOCOL=HTTP/1.1 HTTP_HOST='.escapeshellarg(\$_SERVER['HTTP_HOST']).' ';
 		\$cmd = 'cd '.escapeshellarg(e_ROOT).' && '.\$env.'timeout 30 php cron.php token='.escapeshellarg(\$token).' 2>&1';
 		\$out = array();
 		\$status = 1;
 		exec(\$cmd, \$out, \$status);
+		clearstatcache();
 		echo "PROBE_OK CLI_RAN=".(file_exists(\$stamp) ? 1 : 0)." CLI_STATUS=".\$status."\n";
 		echo "CLI_OUT:".implode("\n", \$out)."\n";
 		break;

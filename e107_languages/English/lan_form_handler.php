@@ -25,4 +25,5 @@ define("LAN_EFORM_013", "go to list");
 define("LAN_EFORM_014", "create another");
 define("LAN_EFORM_015", "edit current");
 define("LAN_EFORM_016", "After submit:");
-
+define("LAN_EFORM_COPY", "Copy");
+define("LAN_EFORM_COPIED", "Copied");
