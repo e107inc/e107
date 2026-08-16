@@ -55,7 +55,7 @@ class Unit extends E107Base
 	 * @param \Codeception\TestInterface|null $test
 	 * @return void
 	 */
-	public function _before(\Codeception\TestInterface $test = null)
+	public function _before($test = null)
 	{
 		parent::_before($test);
 

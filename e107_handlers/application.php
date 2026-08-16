@@ -326,8 +326,12 @@ class eFront
 	
 	/**
 	 * Dispatch
+	 *
+	 * @param eRequest|null $request
+	 * @param eResponse|null $response
+	 * @param eDispatcher|null $dispatcher
 	 */
-	public function dispatch(eRequest $request = null, eResponse $response = null, eDispatcher $dispatcher = null)
+	public function dispatch($request = null, $response = null, $dispatcher = null)
 	{
 		if(null === $request)
 		{
@@ -575,7 +579,7 @@ class eDispatcher
 	 * @return void
 	 * @throws eException
 	 */
-	public function dispatch(eRequest $request = null, eResponse $response = null)
+	public function dispatch($request = null, $response = null)
 	{
 		$controllerName = $request->getControllerName();
 		$moduleName = $request->getModuleName();
@@ -2958,7 +2962,7 @@ abstract class eUrlConfig
 	 * @param array $config
 	 * @return string route or false on error
 	 */
-	public function parse($pathInfo, $params = array(), eRequest $request = null, eRouter $router = null, $config = array())
+	public function parse($pathInfo, $params = array(), $request = null, $router = null, $config = array())
 	{
 		return false;
 	}
@@ -3034,13 +3038,35 @@ class eController
 	 * @param eRequest $request
 	 * @param eResponse|null $response
 	 */
-	public function __construct(eRequest $request, eResponse $response = null)
+	public function __construct(eRequest $request, $response = null)
 	{
+		$this->_objectArgument(__METHOD__, 'eResponse', $response);
+
 		$this->setRequest($request)
 			->setResponse($response)
 			->init();
 	}
 	
+	/**
+	 * Refuse an argument that is neither null nor of the expected class
+	 *
+	 * Stands in for the type hint the signature cannot carry: `eResponse $x = null`
+	 * is the only nullable spelling PHP 5.6 accepts and the one PHP 8.4 deprecates.
+	 *
+	 * @param string $method the caller, for the message
+	 * @param string $class the class the argument must be an instance of
+	 * @param mixed $value
+	 * @return void
+	 * @throws InvalidArgumentException
+	 */
+	protected function _objectArgument($method, $class, $value)
+	{
+		if($value !== null && !($value instanceof $class))
+		{
+			throw new InvalidArgumentException($method.'() expects a '.$class.' or null, '.gettype($value).' given');
+		}
+	}
+
 	/**
 	 * Custom init, always called in the constructor, no matter what is the request dispatch status
 	 */
@@ -3188,8 +3214,11 @@ class eController
 	 * @return eResponse
 	 * @throws eException
 	 */
-	public function run(eRequest $request = null, eResponse $response = null)
+	public function run($request = null, $response = null)
 	{
+		$this->_objectArgument(__METHOD__, 'eRequest', $request);
+		$this->_objectArgument(__METHOD__, 'eResponse', $response);
+
 		if(null === $request) $request = $this->getRequest();
 		else $this->setRequest($request);
 		
@@ -3355,8 +3384,11 @@ class eControllerFront extends eController
 	
 	/**
 	 * Base constructor - set 404/403 locations
+	 *
+	 * @param eRequest $request
+	 * @param eResponse|null $response
 	 */
-	public function __construct(eRequest $request, eResponse $response = null)
+	public function __construct(eRequest $request, $response = null)
 	{
 		parent::__construct($request, $response);
 		$this->_init();

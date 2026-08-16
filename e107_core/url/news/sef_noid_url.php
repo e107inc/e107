@@ -166,7 +166,7 @@ class core_news_sef_noid_url extends eUrlConfig
 	 * - news/Category/Category-Name?page=10 -> list.xxx.10
 	 * - news/Day|Month-xxx -> day|month-xxx
 	 */
-	public function parse($pathInfo, $params = array(), eRequest $request = null, eRouter $router = null, $config = array())
+	public function parse($pathInfo, $params = array(), $request = null, $router = null, $config = array())
 	{
 
 		$page = !empty($params['page']) ? intval($params['page']) : '0';
