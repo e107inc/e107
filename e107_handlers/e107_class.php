@@ -6598,6 +6598,13 @@ class e107
 	 */
 	public function __get($name)
 	{
+		static $instances = array();
+
+		if(isset($instances[$name]))
+		{
+			return $instances[$name];
+		}
+
 		switch ($name)
 		{
 			case 'tp':
@@ -6658,7 +6665,8 @@ class e107
 			break;
 		}
 
-		$this->$name = $ret;
+		$instances[$name] = $ret;
+
 		return $ret;
 	}
 
