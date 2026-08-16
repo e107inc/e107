@@ -5760,7 +5760,7 @@ class e_admin_controller_ui extends e_admin_controller
 			$rawData['joinsFrom']  = $tableSJoinArr;
 			$rawData['joins']      = $joins;
 			$rawData['groupField'] = $groupField;
-			$rawData['orderField'] = isset($fields[$orderField]) ? $fields[$orderField]['__tableField'] : '';
+			$rawData['orderField'] = $orderField !== null && isset($fields[$orderField]) ? $fields[$orderField]['__tableField'] : '';
 			$rawData['orderType']  = $qryAsc === 'desc' ? 'DESC' : 'ASC';
 			$rawData['limitFrom']  = $forceFrom === false ? $qryFrom : (int) $forceFrom;
 			$rawData['limitTo']    = $forceTo === false ? $perPage : (int) $forceTo;
@@ -5826,7 +5826,7 @@ class e_admin_controller_ui extends e_admin_controller
 		{
 			$orderField = !empty($qryField) ? $qryField : $this->getDefaultOrderField();
 			$orderDef   = ($qryAsc === null ? $this->getDefaultOrder() : $qryAsc);
-			if(isset($fields[$orderField]) && strpos($this->listQry, 'ORDER BY') == false) //override ORDER using listQry (admin->sitelinks)
+			if($orderField !== null && isset($fields[$orderField]) && strpos($this->listQry, 'ORDER BY') == false) //override ORDER using listQry (admin->sitelinks)
 			{
 				// no need of sanitize - it's found in field array
 				$qry .= ' ORDER BY ' . $fields[$orderField]['__tableField'] . ' ' . (strtolower($orderDef) === 'desc' ? 'DESC' : 'ASC');
