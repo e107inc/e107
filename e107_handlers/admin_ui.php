@@ -4441,23 +4441,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 				e107::getMessage()->addDebug('Searching for custom filter method: ' .$method. '(' .implode(', ', $args). ')');
 
-				if (property_exists($this, $method)) // dynamic property handling
-				{
-					e107::getMessage()->addDebug('Accessing filter property <strong>' . get_class($this) . '::$' . $method . '</strong>');
-
-					if (is_callable($this->$method))
-					{
-						e107::getMessage()->addDebug('Executing callable property <strong>' . get_class($this) . '::$' . $method . '(' . implode(', ', $args) . ')</strong>');
-
-						return call_user_func_array($this->$method, $args);
-					}
-
-					// If not callable, return the property value as is (could be a query fragment or other data)
-					e107::getMessage()->addDebug('Returning property value from <strong>' . get_class($this) . '::$' . $method . '</strong>');
-
-					return $this->$method;
-				}
-				elseif (method_exists($this, $method)) // method handling
+				if (method_exists($this, $method)) // method handling
 				{
 					e107::getMessage()->addDebug('Executing filter callback <strong>' . get_class($this) . '::' . $method . '(' . implode(', ', $args) . ')</strong>');
 
@@ -5557,15 +5541,6 @@ class e_admin_controller_ui extends e_admin_controller
 					e107::getMessage()->addDebug('Executing custom search callback <strong>' . $className . '::' . $customSearchMethod . '(' . implode(', ', $args) . ')</strong>');
 
 					$filter[] = call_user_func_array([$this, $customSearchMethod], $args);
-					continue;
-				}
-				elseif (property_exists($this, $customSearchMethod)) // check for dynamic property
-				{
-
-					e107::getMessage()->addDebug('Using custom search property <strong>' . $className . '::$' . $customSearchMethod . '</strong>');
-
-					$filter[] = call_user_func_array($this->$customSearchMethod, $args);
-
 					continue;
 				}
 
