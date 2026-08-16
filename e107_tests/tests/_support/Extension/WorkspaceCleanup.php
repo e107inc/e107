@@ -95,6 +95,7 @@ class WorkspaceCleanup extends Extension
 		'e107_tests_p6_download_reset.php',     // @see DownloadMirrorActiveCest
 		'e107_themes/bootstrap5/online_template.php', // @see ForumNamesOutsideTheFeedCest
 		'e107_tests_install_prefs_probe.php',  // @see InstallPrefDuplicatesCest
+		'e107_tests_5928_pref_probe.php',      // @see MissingCorePrefCest
 		'e107_tests_encoding_probe.php',            // @see Helper\OutputEncodingFixture
 		'e107_tests_encoding_feed.xml',
 		'e107_tests_encoding_addons.xml',
