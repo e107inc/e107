@@ -183,7 +183,7 @@ class e_db_pdo implements e_db
 		catch(PDOException $ex)
 		{
 			$this->mySQLlastErrText = $ex->getMessage();
-			$this->mySQLLastErrNum = $ex->getCode();
+			$this->mySQLlastErrNum = $ex->getCode();
 			$this->dbg->log($this->mySQLlastErrText);
 			return false;
 		}
@@ -2368,7 +2368,7 @@ class e_db_pdo implements e_db
 			list($fieldList, $fieldList2) = $this->generateCopyRowFieldLists($table, $fields);
 
 			if (empty($fieldList)) {
-				$this->mysqlLastErrText = "copyRow \$fields list was empty";
+				$this->mySQLlastErrText = "copyRow \$fields list was empty";
 				return false;
 			}
 
@@ -2487,7 +2487,7 @@ class e_db_pdo implements e_db
 /*
 		if($this->pdo === false)
 		{
-			$this->mysqlLastErrText = "PDO is required to use the mysql backup() method";
+			$this->mySQLlastErrText = "PDO is required to use the mysql backup() method";
 			return false;
 		}*/
 
@@ -2547,7 +2547,7 @@ class e_db_pdo implements e_db
 		}
 		catch (\Exception $e)
 		{
-			$this->mysqlLastErrText = 'mysqldump-php error: ' .$e->getMessage();
+			$this->mySQLlastErrText = 'mysqldump-php error: ' .$e->getMessage();
 		    return false;
 		}
 
