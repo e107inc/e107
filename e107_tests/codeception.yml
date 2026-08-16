@@ -8,24 +8,24 @@ actor_suffix: Tester
 bootstrap: _bootstrap.php
 coverage:
     enabled: true
+    # Codeception subtracts exclude from include as path strings, so every
+    # pattern here has to be spelt the same way. app_path ends in a slash
+    # (lib/config.php sees to it); do not put another one after %app_path%.
     include:
-        - '%app_path%/*.php'
-        - '%app_path%/e107_admin/**/*.php'
-        - '%app_path%/e107_core/**/*.php'
-        - '%app_path%/e107_handlers/**/*.php'
-        - '%app_path%/e107_images/**/*.php'
-        - '%app_path%/e107_plugins/**/*.php'
-        - '%app_path%/e107_themes/**/*.php'
-        - '%app_path%/e107_web/**/*.php'
+        - '%app_path%*.php'
+        - '%app_path%e107_admin/**/*.php'
+        - '%app_path%e107_core/**/*.php'
+        - '%app_path%e107_handlers/**/*.php'
+        - '%app_path%e107_images/**/*.php'
+        - '%app_path%e107_plugins/**/*.php'
+        - '%app_path%e107_themes/**/*.php'
+        - '%app_path%e107_web/**/*.php'
     exclude:
-        - './**'
-        - '%app_path%/e107_handlers/vendor/**/*.php'
-        - '%app_path%/e107_tests/**'
-        # Generated cache, not source. These are .php files that get included,
-        # so coverage records them, and anything that clears a cache mid-run
-        # then deletes a file the analyser still means to read. It reports that
-        # as "Failed to open stream" and Codeception turns it into a fatal.
-        - '%app_path%/e107_system/**'
+        - '%app_path%e107_handlers/vendor/**'
+        - '%app_path%e107_tests/**'
+        # Generated cache, not source: a cache cleared mid-run is a file the
+        # analyser still means to read, and that warning ends the run.
+        - '%app_path%e107_system/**'
 params:
     - lib/config.php
 extensions:
