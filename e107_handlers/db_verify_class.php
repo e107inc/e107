@@ -80,9 +80,6 @@ class db_verify
 		$this->sqlLanguageTables = $this->getSqlLanguages();
 
 	//	$this->loadCreateTableData();
-
-		return $this;
-		
 	}
 
 	/**

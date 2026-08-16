@@ -283,7 +283,7 @@ class rssCreate
 			case 11:
 				if(!$this -> topicid)
 				{
-					return FALSE;
+					return;
 				}
 				$path = e_PLUGIN."forum/e_rss.php";
 				break;

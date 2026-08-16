@@ -64,7 +64,7 @@ if(!class_exists('forum_newforumposts_menu'))
                 e107::getDebug()->log("New Forum Posts Menu Cache Rendered");
                 $caption = $this->getCaption();
                 e107::getRender()->tablerender($caption, $text, 'nfp_menu');
-                return null;
+                return;
             }
 
 /*

@@ -65,7 +65,7 @@ class news_front
 
 		if(isset($NEWSHEADER))
 		{
-			return false;
+			return;
 		}
 
 		$this->nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
@@ -77,8 +77,6 @@ class news_front
 		$this->setPagination();
 		$this->detect();
 		$this->setBreadcrumb();
-
-		return null;
 	}
 
 

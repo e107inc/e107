@@ -159,8 +159,6 @@ class UserHandler
 				$this->passwordOpts = 0;		// In case it got set to some stupid value
 			break;
 		}
-
-		return false;
 	}
 
 
