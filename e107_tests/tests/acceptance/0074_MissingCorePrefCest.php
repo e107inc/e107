@@ -2,8 +2,11 @@
 
 /**
  * Admin > Database > Preferences editor deletes any core preference the
- * administrator picks, and url_config used to take the front end down when
- * gone: e_url::isLegacy() ran array_keys() on null.
+ * administrator picks, and two of them used to take the front end down when
+ * gone: url_config (e_url::isLegacy() ran array_keys() on null) and
+ * lan_global_list (news.php read LAN_PLUGIN_NEWS_NAME, which only that list
+ * loads). Every other core preference was swept the same way on 2026-08-17 and
+ * none fatals a front-end page, so these two are the whole class.
  */
 class MissingCorePrefCest
 {
@@ -29,6 +32,14 @@ class MissingCorePrefCest
 
 		$this->seePageWithoutAFatal($I, '/');
 		$this->seePageWithoutAFatal($I, '/index.php');
+	}
+
+	public function theNewsPageStillAnswersWithoutLanGlobalList(AcceptanceTester $I)
+	{
+		$I->wantTo('keep the news page up when lan_global_list has been deleted');
+
+		$this->seePageWithoutAFatal($I, '/news.php');
+		$this->seePageWithoutAFatal($I, '/news');
 	}
 
 	/**
@@ -58,7 +69,7 @@ header('Content-Type: text/plain');
 
 $act = isset($_GET['act']) ? $_GET['act'] : '';
 $config = e107::getConfig('core');
-$prefs = array('url_config');
+$prefs = array('url_config', 'lan_global_list');
 
 switch($act)
 {
