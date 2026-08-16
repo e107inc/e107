@@ -5566,9 +5566,9 @@ class e107plugin
 		}
 
 		// For BC.
-		$ret['administration']['icon'] = str_replace($plugName."/","",$eplug_icon);
+		$ret['administration']['icon'] = str_replace($plugName."/","",varset($eplug_icon));
 		$ret['administration']['caption'] = varset($eplug_caption);
-		$ret['administration']['iconSmall'] = str_replace($plugName."/","",$eplug_icon_small);
+		$ret['administration']['iconSmall'] = str_replace($plugName."/","",varset($eplug_icon_small));
 		$ret['administration']['configFile'] = varset($eplug_conffile);
 
 		if(varset($eplug_conffile))
