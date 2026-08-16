@@ -124,8 +124,8 @@ docker_q() {
 
 # One docker call per run, not one per question. Every env query below reads
 # this table instead of spawning its own process: project, php, db, xdebug,
-# app-path and state, one row per container. Listing a dozen envs used to
-# cost five docker invocations each.
+# app-path, state and compose service, one row per container. Listing a dozen
+# envs used to cost five docker invocations each.
 #
 # Cached in a file, not a variable. Nearly every caller reads the snapshot
 # from inside a command substitution, and a variable assigned there dies with
@@ -145,7 +145,8 @@ snapshot() {
         fmt=$fmt'{{.Label "'$LABEL_NS'.db"}}\t'
         fmt=$fmt'{{.Label "'$LABEL_NS'.xdebug"}}\t'
         fmt=$fmt'{{.Label "'$LABEL_NS'.app-path"}}\t'
-        fmt=$fmt'{{.State}}'
+        fmt=$fmt'{{.State}}\t'
+        fmt=$fmt'{{.Label "com.docker.compose.service"}}'
         printf 'snapshot\n' > "$SNAPSHOT_FILE"
         docker_q ps -a --filter "label=$LABEL_NS=1" --format "$fmt" >> "$SNAPSHOT_FILE" || true
     fi
@@ -161,7 +162,7 @@ project_exists() {
     snapshot | awk -F'\t' -v p="$1" '$1 == p {found = 1} END {exit !found}'
 }
 
-# Read one e107.tests.* label off any container of a project.
+# Read one e107.tests.* label off a project, preferring its web container's row.
 project_label() {
     local col
     case $2 in
@@ -171,7 +172,14 @@ project_label() {
         app-path) col=5 ;;
         *) err "unknown label: $2" ;;
     esac
-    snapshot | awk -F'\t' -v p="$1" -v c="$col" '$1 == p && $c != "" {print $c; exit}'
+    # awk runs END even after `exit`, hence the found flag.
+    snapshot | awk -F'\t' -v p="$1" -v c="$col" '
+        $1 == p && $c != "" {
+            if ($7 == "web") { print $c; found = 1; exit }
+            if (fallback == "") fallback = $c
+        }
+        END { if (!found && fallback != "") print fallback }
+    '
 }
 
 # Containers of a project, by state, as "running(2),exited(1)".
@@ -687,6 +695,12 @@ cmd_up() {
         UP_SERVICES=(db web)
     fi
 
+    local was_xdebug
+    was_xdebug=$(project_label "$PROJECT" xdebug)
+    if [ -n "$was_xdebug" ] && [ "$was_xdebug" != "$WITH_XDEBUG" ]; then
+        note ">> switching $PROJECT from xdebug=$was_xdebug to xdebug=$WITH_XDEBUG; its containers are recreated"
+    fi
+
     if [ -n "$BASE_PATH" ]; then
         note ">> Bringing up env: $PROJECT (PHP $PHP / $DB, site at /$BASE_PATH/)"
     else
@@ -701,6 +715,14 @@ cmd_up() {
     fi
     snapshot_invalidate
     assert_stack_healthy
+    local recorded_xdebug
+    recorded_xdebug=$(project_label "$PROJECT" xdebug)
+    if [ "$recorded_xdebug" != "$WITH_XDEBUG" ]; then
+        err "env $PROJECT still records xdebug=$recorded_xdebug after an up asking for xdebug=$WITH_XDEBUG.
+       A container from an earlier up is holding stale labels. Recreate the stack:
+         e107-tests --env $PROJECT down
+         e107-tests up --php $PHP --db $DB${XDEBUG_TAG:+ --xdebug}"
+    fi
     heal_dns
     deps_install
     if [ "$INSTALL_SITE" = yes ]; then
@@ -875,10 +897,12 @@ cmd_run() {
 # handling: CI parity means the colours exactly as CI gets them.
 cmd_ci_unit() {
     resolve_env
-    if [ "$(project_label "$PROJECT" xdebug)" != yes ]; then
-        err "ci-unit needs the xdebug image; run: e107-tests up --php $E107_PHP_VERSION --db $E107_DB_IMAGE --xdebug"
-    fi
     ensure_web_exec
+    # 2>/dev/null: podman prints "Error: executing ..." for any nonzero exec.
+    if ! compose_p exec -T web php -r 'exit(extension_loaded("xdebug") ? 0 : 1);' >/dev/null 2>&1; then
+        err "ci-unit needs the xdebug image, and PHP in $PROJECT has no xdebug loaded (env records xdebug=$(project_label "$PROJECT" xdebug)).
+       Run: e107-tests up --php $E107_PHP_VERSION --db $E107_DB_IMAGE --xdebug"
+    fi
     deps_ensure
     compose_p exec -w "$WEB_TESTS_DIR" web \
         php -d memory_limit=-1 -d xdebug.mode=coverage -d register_argc_argv=1 \
@@ -1152,7 +1176,7 @@ USAGE:
 
 LIFECYCLE:
   up [--php X] [--db Y] [--xdebug] [--install-site]
-     [--base-path DIR] [--no-selenium]
+     [--base-path DIR] [--no-selenium] [--rebuild]
                                      Start, install deps, mark active. Builds the
                                      web image if missing, else reuses it.
                                      Default: PHP 8.5 + MariaDB 10.11.
