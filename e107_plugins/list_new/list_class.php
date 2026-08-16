@@ -35,6 +35,9 @@ class listclass
 	var $shortcodes = FALSE;
 	private $pf; // profanity filter class.
 	public $data;
+	public $plugin_dir;
+	public $e107;
+	public $template;
 
 	/**
 	 * constructor
