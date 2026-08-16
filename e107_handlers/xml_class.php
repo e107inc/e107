@@ -367,7 +367,7 @@ class xmlClass
 	 */
 	public function setOptAddRoot($flag)
 	{
-		$this->_optAddRoot = (boolean) $flag;
+		$this->_optAddRoot = (bool) $flag;
 		return $this;
 	}
 
@@ -401,7 +401,7 @@ class xmlClass
 	 */
 	public function setOptForceArray($flag)
 	{
-		$this->_optForceArray = (boolean) $flag;
+		$this->_optForceArray = (bool) $flag;
 		return $this;
 	}
 
@@ -425,7 +425,7 @@ class xmlClass
 	 */
 	public function setOptStripComments($flag)
 	{
-		$this->stripComments = (boolean) $flag;
+		$this->stripComments = (bool) $flag;
 		return $this;
 	}
 

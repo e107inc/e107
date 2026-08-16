@@ -576,13 +576,13 @@ class e_validator
 				}
 				// BC! Will be removed after we replace '-' with ':' separator!
 				$tmp = $this->parseMinMax($cond);
-				if (is_numeric($tmp[0]) && (integer) $tmp[0] > (integer) $value)
+				if (is_numeric($tmp[0]) && (int) $tmp[0] > (int) $value)
 				{
 					$this->addValidateResult($name, self::ERR_TOO_LOW);
 
 					return false;
 				}
-				if (is_numeric(varset($tmp[1])) && (integer) $tmp[1] < (integer) $value)
+				if (is_numeric(varset($tmp[1])) && (int) $tmp[1] < (int) $value)
 				{
 					$this->addValidateResult($name, self::ERR_TOO_HIGH);
 
@@ -600,7 +600,7 @@ class e_validator
 				$tmp = $this->parseMinMax($cond);
 
 				$length = e107::getParser()->ustrlen($value);
-				if (is_numeric($tmp[0]) && (integer) $tmp[0] > $length)
+				if (is_numeric($tmp[0]) && (int) $tmp[0] > $length)
 				{
 					$this->addValidateResult($name, self::ERR_TOO_SHORT);
 
@@ -612,7 +612,7 @@ class e_validator
 					$tmp[1] = 255;
 				}
 
-				if (is_numeric(varset($tmp[1])) && (integer) $tmp[1] < $length)
+				if (is_numeric(varset($tmp[1])) && (int) $tmp[1] < $length)
 				{
 					$this->addValidateResult($name, self::ERR_TOO_LONG);
 
@@ -674,7 +674,7 @@ class e_validator
 				}
 				$length = count($value);
 				$tmp = $this->parseMinMax($cond);
-				if (is_numeric($tmp[0]) && (integer) $tmp[0] > $length)
+				if (is_numeric($tmp[0]) && (int) $tmp[0] > $length)
 				{
 					$this->addValidateResult($name, self::ERR_ARRCOUNT_LOW);
 
@@ -710,20 +710,20 @@ class e_validator
 				{
 					$tmp = $this->parseMinMax($cond);
 					$fs = filesize($path);
-					if (!$fs || (integer) $tmp[0] > $fs)
+					if (!$fs || (int) $tmp[0] > $fs)
 					{
 						$this->addValidateResult($name, self::ERR_SIZEMIN_FILE);
 
 						return false;
 					}
-					elseif (is_numeric(varset($tmp[1])) && (integer) $tmp[1] < $fs)
+					elseif (is_numeric(varset($tmp[1])) && (int) $tmp[1] < $fs)
 					{
 						$this->addValidateResult($name, self::ERR_SIZEMAX_FILE);
 
 						return false;
 					}
 				}
-				if (is_numeric(varset($params['maxlen'])) && (integer) $params['maxlen'] < e107::getParser()->ustrlen($value))
+				if (is_numeric(varset($params['maxlen'])) && (int) $params['maxlen'] < e107::getParser()->ustrlen($value))
 				{
 					$this->addValidateResult($name, self::ERR_TOO_LONG);
 
@@ -754,13 +754,13 @@ class e_validator
 				{
 					$tmp = $this->parseMinMax($cond);
 					$length = e107::getParser()->ustrlen($value[0]);
-					if (is_numeric($tmp[0]) && (integer) $tmp[0] > $length)
+					if (is_numeric($tmp[0]) && (int) $tmp[0] > $length)
 					{
 						$this->addValidateResult($name, self::ERR_TOO_SHORT);
 
 						return false;
 					}
-					if (is_numeric(varset($tmp[1])) && (integer) $tmp[1] < $length)
+					if (is_numeric(varset($tmp[1])) && (int) $tmp[1] < $length)
 					{
 						$this->addValidateResult($name, self::ERR_TOO_LONG);
 
@@ -791,13 +791,13 @@ class e_validator
 				{
 					$tmp = $this->parseMinMax($cond);
 					$length = e107::getParser()->ustrlen($value[0]);
-					if (is_numeric($tmp[0]) && (integer) $tmp[0] > $length)
+					if (is_numeric($tmp[0]) && (int) $tmp[0] > $length)
 					{
 						$this->addValidateResult($name, self::ERR_TOO_SHORT);
 
 						return false;
 					}
-					if (is_numeric(varset($tmp[1])) && (integer) $tmp[1] < $length)
+					if (is_numeric(varset($tmp[1])) && (int) $tmp[1] < $length)
 					{
 						$this->addValidateResult($name, self::ERR_TOO_LONG);
 
@@ -1048,7 +1048,7 @@ class e_validator
 	public function setIsValidData($status)
 	{
 
-		$this->_is_valid_data = (boolean) $status;
+		$this->_is_valid_data = (bool) $status;
 
 		return $this;
 	}

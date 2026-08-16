@@ -261,10 +261,10 @@ class bb_youtube extends e_bb_base
 			
 			default: // maximum 1920 x 1080 (+25)
 				$dim = explode(',', $dimensions, 2);
-				$params['w'] = (integer) varset($dim[0], 445);
+				$params['w'] = (int) varset($dim[0], 445);
 				if($params['w'] > 1920 || $params['w'] < 100) $params['w'] = 640;
 				
-				$params['h'] = (integer) varset($dim[1], 364);
+				$params['h'] = (int) varset($dim[1], 364);
 				if($params['h'] > 1105 || $params['h'] < 67) $params['h'] = 385;
 			break;
 		}

@@ -3429,7 +3429,7 @@ class e_tree_model extends e_front_model
 	{
 		if(isset($array['total']))
 		{
-			$this->setTotal((integer) $array['total']);
+			$this->setTotal((int) $array['total']);
 			unset($array['total']);
 		}
 		$class_name = $this->getParam('model_class', 'e_model');
