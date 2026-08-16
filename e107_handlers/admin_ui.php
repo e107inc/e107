@@ -1519,8 +1519,8 @@ class e_admin_dispatcher
 
 			case 'ajax':
 			case 'ajax_text':
-			case 'ajax_xml';
-			case 'ajax_json';
+			case 'ajax_xml':
+			case 'ajax_json':
 				$options = array(
 					'messages' => false,
 					'render' => false,
@@ -8358,7 +8358,7 @@ class e_admin_form_ui extends e_form
 			switch($val['type'])
 			{
 
-					case 'text';
+					case 'text':
 
 						if(!empty($parms['sef']))
 						{
@@ -8370,7 +8370,7 @@ class e_admin_form_ui extends e_form
 					break;
 
 
-					case 'number';
+					case 'number':
 						if($type === 'filter')
 						{
 							$option[$key.'___ISEMPTY_'] = LAN_UI_FILTER_IS_EMPTY;
