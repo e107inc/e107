@@ -1299,7 +1299,7 @@ class eRouter
 		$ret = array('core' => array(), 'plugin' => array(), 'override' => array());
 		$plugins = array();
 		
-		if($type == 'all' || $type = 'core')
+		if($type == 'all' || $type == 'core')
 		{
 			$location = eDispatcher::getDispatchLocationPath('core');
 			// search for controllers first
@@ -1317,7 +1317,7 @@ class eRouter
 			sort($ret['core']);
 		}
 		
-		if($type == 'all' || $type = 'plugin')
+		if($type == 'all' || $type == 'plugin')
 		{
 			$plugins = $f->get_dirs(e_PLUGIN);
 			foreach ($plugins as $plugin) 
@@ -1350,7 +1350,7 @@ class eRouter
 			sort($ret['plugin']);
 		}
 		
-		if($type == 'all' || $type = 'override')
+		if($type == 'all' || $type == 'override')
 		{
 			// search for controllers first
 			$location = eDispatcher::getDispatchLocationPath('override');

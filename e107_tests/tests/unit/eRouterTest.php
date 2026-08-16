@@ -56,6 +56,15 @@ class eRouterTest extends \Test\Unit
 		self::assertNotContains($plugin, $modules['override']);
 	}
 
+	public function testAdminReadModulesReadsOnlyTheRequestedType()
+	{
+		$modules = eRouter::adminReadModules('core');
+
+		self::assertNotEmpty($modules['core']);
+		self::assertSame(array(), $modules['plugin']);
+		self::assertSame(array(), $modules['override']);
+	}
+
 	/**
 	 * @param string $module
 	 * @param string $profile
