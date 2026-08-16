@@ -91,9 +91,6 @@ class installLog
 		    case E_USER_NOTICE:
 		        self::add($error, "notice");
 		        break;
-		    case E_STRICT:
-		        self::add($error, "debug");
-		        break;
 		    default:
 		        if(!empty($errno))
 		        {
