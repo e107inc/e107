@@ -765,13 +765,13 @@ class e_db_mysql implements e_db
 					break;
 
 					case 'num':
-					case 2; // MYSQL_NUM: // 2
+					case 2: // MYSQL_NUM: // 2
 						$type = MYSQL_NUM;
 					break;
 
 					default:
 					case 'assoc':
-					case 1; //: // 1
+					case 1: //: // 1
 						$type = MYSQL_ASSOC;
 					break;
 				}

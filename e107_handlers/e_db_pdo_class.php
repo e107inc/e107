@@ -576,13 +576,13 @@ class e_db_pdo implements e_db
 				break;
 
 				case 'num':
-				case 2; // MYSQL_NUM: // 2
+				case 2: // MYSQL_NUM: // 2
 					$type = PDO::FETCH_NUM;
 				break;
 
 				default:
 				case 'assoc':
-				case 1; // MYSQL_ASSOC // 1
+				case 1: // MYSQL_ASSOC // 1
 					$type =  PDO::FETCH_ASSOC;
 				break;
 		}
