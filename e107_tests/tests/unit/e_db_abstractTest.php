@@ -654,12 +654,28 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$result = $this->db->db_Count('SELECT COUNT(*) FROM '.MPREFIX.'missing ','generic');
 		$this->assertFalse($result);
 	}
-	/*
-			public function testClose()
-			{
+	public function testCloseEndsTheServerConnectionWithAResultOutstanding()
+	{
+		$id = (int) $this->db->retrieve('SELECT CONNECTION_ID()');
+		$this->assertGreaterThan(0, $id);
+		$this->assertNotFalse($this->db->select('user', 'user_id', 'user_id > 0'));
 
-			}
-	*/
+		$this->db->close();
+
+		$probe = e107::getDb();
+		$this->assertNotSame($id, (int) $probe->retrieve('SELECT CONNECTION_ID()'), 'the probe must not be the connection under test');
+
+		$deadline = microtime(true) + 2;
+		do
+		{
+			$alive = $probe->retrieve('SELECT ID FROM information_schema.PROCESSLIST WHERE ID = ' . $id, false);
+			if(empty($alive)) { break; }
+			usleep(50000);
+		}
+		while(microtime(true) < $deadline);
+
+		$this->assertEmpty($alive, "server connection $id survived close()");
+	}
 
 	public function testDelete()
 	{
