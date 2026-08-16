@@ -4419,8 +4419,7 @@ class e107plugin
 			if (class_exists($class_name))
 			{
 				$obj = new $class_name;
-				$obj->version_from = $this;
-				
+
 				if (method_exists($obj, $method_name))
 				{
 					if(e_PAGE == 'e107_update.php' && E107_DBG_INCLUDES)
