@@ -189,7 +189,7 @@ class _system_cron
 		$message .= $this->renderTable($userVars);
 
 		$message .= "<h3>_SERVER</h3>";
-		$message .= $this->renderTable($_SERVER);
+		$message .= $this->renderTable($this->withoutSecrets($_SERVER));
 		$message .= "<h3>_ENV</h3>";
 		$message .= $this->renderTable($_ENV);
 		$message .= "<h3>LAST ERROR</h3>";
@@ -220,6 +220,24 @@ class _system_cron
 		}
 
 	   // sendemail($pref['siteadminemail'], "e107 - TEST Email Sent by cron.".date("r"), $message, $pref['siteadmin'],SITEEMAIL, $pref['siteadmin']);
+	}
+
+	/**
+	 * @param array $vars
+	 * @return array
+	 *   $vars without the keys that carry the request's token, its HTTP credentials or the request line.
+	 */
+	private function withoutSecrets(array $vars)
+	{
+		foreach(array_keys($vars) as $key)
+		{
+			if(preg_match('/token|auth|argv|query_string|request_uri/i', $key))
+			{
+				unset($vars[$key]);
+			}
+		}
+
+		return $vars;
 	}
 
 	/**
@@ -1054,15 +1072,23 @@ class CronParser
 /**
  * Class cronScheduler.
  *
- * @see cron.php
+ * Runs the tasks in the cron table that are due. Entered from cron.php once a
+ * minute, from the command line or over HTTP; see that file for the calling
+ * conventions.
  *
- * TODO:
- * - Log error in admin log.
- * - Pref for sending email to Administrator.
- * - LANs
+ * Tasks run under whatever identity the entry point established: the first
+ * administrator from the command line, a guest over HTTP. A task must not read
+ * ADMIN, USERID, USERNAME or USERCLASS_LIST, and must not assume that
+ * {@see e107::redirect()} is a no-op, because over HTTP it is not.
+ *
+ * @see cron.php
  */
 class cronScheduler
 {
+	const VIA_CLI = 'cli';
+	const VIA_HTTP = 'http';
+	const STAMP_PREFIX = '<?php exit; ?>';
+	const REFUSAL_WINDOW = 86400;
 
 	/**
 	 * Cron parser class.
@@ -1086,6 +1112,20 @@ class cronScheduler
 	private $pref;
 
 	/**
+	 * How the current run arrived, one of the VIA_* constants, or null before {@see cronScheduler::run()}.
+	 *
+	 * @var string|null
+	 */
+	private $via;
+
+	/**
+	 * Whether the last {@see cronScheduler::validateToken()} call saw a token at all.
+	 *
+	 * @var bool
+	 */
+	private $tokenPresented = false;
+
+	/**
 	 * Constructor.
 	 */
 	public function __construct()
@@ -1093,26 +1133,29 @@ class cronScheduler
 		global $_E107;
 
 		$this->cron = new CronParser();
-		$this->debug = $_E107['debug'];
-		$this->cron->setDebug($_E107['debug']);
+		$this->debug = !empty($_E107['debug']);
+		$this->cron->setDebug($this->debug);
 		$this->pref = e107::getPref();
 	}
 
 	/**
-	 * Runs all cron jobs.
+	 * Runs all cron jobs that are due.
+	 *
+	 * @param string $via
+	 *   {@see cronScheduler::VIA_CLI} or {@see cronScheduler::VIA_HTTP}.
 	 *
 	 * @return bool
+	 *   TRUE when the token was accepted and the due jobs were run, FALSE when the run was refused.
 	 */
-	public function run()
+	public function run($via = self::VIA_CLI)
 	{
-		$valid = $this->validateToken();
+		$this->via = $via;
 
-		if(!$valid)
+		if(!$this->validateToken())
 		{
-			if($this->debug)
-			{
-				$this->cron->debug('e107: Invalid token used for cron class');
-			}
+			$this->recordRefusal($via);
+			$this->cron->debug('e107: Invalid token used for cron class');
+
 			return false;
 		}
 
@@ -1121,8 +1164,8 @@ class cronScheduler
 			$this->cron->debug('e107: Unable to write to: '.e_CACHE . 'cronLastLoad.php. Permissions issue?');
 		}
 
+		$this->recordRun($via);
 
-		// Get active cron jobs.
 		$cron_jobs = $this->getCronJobs(true);
 
 		if($this->debug)
@@ -1135,7 +1178,57 @@ class cronScheduler
 			$this->runJob($job);
 		}
 
-		return null;
+		return true;
+	}
+
+	/**
+	 * The HTTP status and text/plain body that answer a run over HTTP.
+	 *
+	 * @param bool $ran
+	 *   What {@see cronScheduler::run()} returned.
+	 * @param bool $tokenPresented
+	 *   Whether the request carried a token at all.
+	 *
+	 * @return array
+	 *   array(int status, string body)
+	 */
+	public static function httpResponse($ran, $tokenPresented)
+	{
+		if($ran)
+		{
+			return array(200, "OK\n");
+		}
+
+		if($tokenPresented)
+		{
+			return array(403, "Refused: the token does not match the one in Admin > Schedule Tasks.\n");
+		}
+
+		return array(403, "Refused: no token. Copy the URL from Admin > Schedule Tasks > Setup.\n");
+	}
+
+	/**
+	 * Sends the answer to a run over HTTP; the caller exits afterwards.
+	 *
+	 * @param bool $ran
+	 *   What {@see cronScheduler::run()} returned.
+	 *
+	 * @return void
+	 */
+	public function sendHttpResponse($ran)
+	{
+		list($status, $body) = self::httpResponse($ran, $this->tokenPresented);
+
+		if(!headers_sent())
+		{
+			http_response_code($status);
+			header('Content-Type: text/plain; charset=UTF-8');
+			header('Cache-Control: no-store');
+			header('X-Content-Type-Options: nosniff');
+			header('X-Robots-Tag: noindex');
+		}
+
+		echo $body;
 	}
 
 	/**
@@ -1163,7 +1256,7 @@ class cronScheduler
 		{
 			if($this->debug)
 			{
-				error_log('e107: Cron job not active: '.print_r($job,true), E_NOTICE);
+				$this->cron->debug('e107: Cron job not active: '.print_r($job,true));
 			}
 
 			return false;
@@ -1193,13 +1286,13 @@ class cronScheduler
 
 		if($job['path'] != '_system' && !is_readable(e_PLUGIN . $job['path'] . "/e_cron.php"))
 		{
-			$this->cron->debug('e107: Cron file not readable: '.e_PLUGIN . $job['path'] . "/e_cron.php", E_ERROR);
+			$this->cron->debug('e107: Cron file not readable: '.e_PLUGIN . $job['path'] . "/e_cron.php");
 			return false;
 		}
 
 		if($this->debug)
 		{
-			$this->cron->debug('e107: Cron is running: '.print_r($job,true), E_NOTICE);
+			$this->cron->debug('e107: Cron is running: '.print_r($job,true));
 		}
 
 		// This is correct.
@@ -1212,10 +1305,7 @@ class cronScheduler
 
 		if(!class_exists($class, false))
 		{
-			if($this->debug)
-			{
-				$this->cron->debug('e107: Cron could not find class: '.$class, E_ERROR);
-			}
+			$this->cron->debug('e107: Cron could not find class: '.$class);
 
 			return $status;
 		}
@@ -1224,40 +1314,24 @@ class cronScheduler
 
 		if(!method_exists($obj, $job['function']))
 		{
-			if($this->debug)
-			{
-				$this->cron->debug('Cron could not find method: '.$job['function'], E_ERROR);
-			}
+			$this->cron->debug('Cron could not find method: '.$job['function']);
 
 			return $status;
 		}
 
-
-		// Exception handling.
 		$method = $job['function'];
 
 		try
 		{
 			$status = $obj->$method();
 		}
-		catch(Exception $e)
+		catch(\Throwable $e)
 		{
-			$msg = $e->getFile() . ' ' . $e->getLine();
-			$msg .= "\n\n" . $e->getCode() . ' ' . $e->getMessage();
-			$msg .= "\n\n" . implode("\n", $e->getTrace());
-
-			$mail = array(
-				'to_mail'   => $this->pref['siteadminemail'],
-				'to_name'   => $this->pref['siteadmin'],
-				'from_mail' => $this->pref['siteadminemail'],
-				'from_name' => $this->pref['siteadmin'],
-				'message'   => $msg,
-				'subject'   => 'e107 - Cron Schedule Exception',
-			);
-
-			error_log('e107: Cron Exception occurred: '.$msg, E_ERROR);
-
-			$this->sendMail($mail);
+			$this->reportJobFailure($job, $e);
+		}
+		catch(\Exception $e)
+		{
+			$this->reportJobFailure($job, $e);
 		}
 
 		// If task returns value which is not boolean (BC), it will be used as a
@@ -1267,7 +1341,7 @@ class cronScheduler
 
 			$msg = 'Method returned message: [{' . $class . '}::' . $job['function'] . '] ' . $status;
 
-			error_log('e107: Cron Method returned message: '.$msg, E_NOTICE);
+			error_log('e107: Cron Method returned message: '.$msg);
 
 			$mail = array(
 				'to_mail'   => $this->pref['siteadminemail'],
@@ -1289,44 +1363,74 @@ class cronScheduler
 	}
 
 	/**
+	 * @param array $job
+	 * @param \Throwable|\Exception $e
+	 * @return void
+	 */
+	private function reportJobFailure($job, $e)
+	{
+		$msg = $job['class'].'::'.$job['function'].' failed: '.get_class($e).' '.$e->getCode().' '.$e->getMessage();
+		$msg .= "\n\n" . $e->getFile() . ' ' . $e->getLine();
+		$msg .= "\n\n" . $e->getTraceAsString();
+
+		error_log('e107: Cron Exception occurred: '.$msg);
+
+		$this->sendMail(array(
+			'to_mail'   => $this->pref['siteadminemail'],
+			'to_name'   => $this->pref['siteadmin'],
+			'from_mail' => $this->pref['siteadminemail'],
+			'from_name' => $this->pref['siteadmin'],
+			'message'   => $msg,
+			'subject'   => 'e107 - Cron Schedule Exception',
+		));
+	}
+
+	/**
+	 * The token a request presents, or '' when it presents none.
+	 *
+	 * Reads `$get['token']`, then the first command line argument with or
+	 * without a leading `token=`.
+	 *
+	 * @param array $get
+	 *   Normally $_GET.
+	 * @param array $server
+	 *   Normally $_SERVER.
+	 *
+	 * @return string
+	 */
+	public static function tokenFromRequest(array $get, array $server)
+	{
+		if(isset($get['token']) && is_string($get['token']) && $get['token'] !== '')
+		{
+			return $get['token'];
+		}
+
+		if(isset($server['argv'][1]) && is_string($server['argv'][1]))
+		{
+			return preg_replace('#^token=#', '', trim($server['argv'][1]));
+		}
+
+		return '';
+	}
+
+	/**
 	 * Validate Cron Token.
 	 *
 	 * @return bool
 	 */
 	public function validateToken()
 	{
-		$pwd = '';
+		$pwd = self::tokenFromRequest($_GET, $_SERVER);
+		$this->tokenPresented = ($pwd !== '');
 
-		if($this->debug && !empty($_SERVER['QUERY_STRING']))
+		if(empty($this->pref['e_cron_pwd']) || !hash_equals((string) $this->pref['e_cron_pwd'], $pwd))
 		{
-			$pwd = $_SERVER['QUERY_STRING'];
-		}
-		elseif(!empty($_SERVER['argv'][1]))
-		{
-			$pwd = trim($_SERVER['argv'][1]);
-		}
-
-		if(!empty($_GET['token']))
-		{
-			$pwd = e107::getParser()->filter($_GET['token']);
-		}
-		else
-		{
-			$pwd = str_replace('token=', '', $pwd);
-		}
-
-		if($this->debug)
-		{
-			error_log("Cron Token: ".$pwd, E_NOTICE);
-		}
-
-		if(empty($this->pref['e_cron_pwd']) || !hash_equals((string) varset($this->pref['e_cron_pwd']), (string) $pwd))
-		{
-			if(!empty($pwd) && $this->noticeIsDue('token-mismatch'))
+			if($this->tokenPresented && $this->noticeIsDue('token-mismatch'))
 			{
 				$msg = "Your Cron Schedule is not configured correctly. Your passwords do not match.";
 				$msg .= "<br /><br />";
-				$msg .= "You should regenerate the cron command in admin and enter it again in your server configuration.";
+				$msg .= $this->arrivalDescription();
+				$msg .= "You should copy the cron command or URL from Admin > Schedule Tasks > Setup and enter it again in your server configuration.";
 
 				$mail = array(
 					'to_mail'   => $this->pref['siteadminemail'],
@@ -1344,6 +1448,196 @@ class cronScheduler
 		}
 
 		return true;
+	}
+
+	/**
+	 * @return string
+	 *   A sentence for the misconfiguration mail, or '' when the run has not been entered through {@see cronScheduler::run()}.
+	 */
+	private function arrivalDescription()
+	{
+		if($this->via === self::VIA_HTTP)
+		{
+			$ip = $this->requestIp();
+
+			return "The request arrived over HTTP".($ip !== '' ? " from ".$ip : "").".<br /><br />";
+		}
+
+		if($this->via === self::VIA_CLI)
+		{
+			return "The request came from the command line.<br /><br />";
+		}
+
+		return '';
+	}
+
+	/**
+	 * @return string
+	 *   The caller's IP address, or '' when there is none or it does not parse.
+	 */
+	protected function requestIp()
+	{
+		$ip = (string) e107::getIPHandler()->getIP(true);
+
+		return filter_var($ip, FILTER_VALIDATE_IP) === false ? '' : $ip;
+	}
+
+	/**
+	 * Records a refused run and, at most once an hour per entry point, writes a line to the error log.
+	 *
+	 * @param string $via
+	 *   {@see cronScheduler::VIA_CLI} or {@see cronScheduler::VIA_HTTP}.
+	 *
+	 * @return void
+	 */
+	protected function recordRefusal($via)
+	{
+		$now = time();
+		$previous = self::lastRefusal();
+		$continues = ($previous !== null && ($now - $previous['first']) < self::REFUSAL_WINDOW);
+		$ip = ($via === self::VIA_HTTP) ? $this->requestIp() : '';
+		$token = $this->tokenPresented ? 'wrong' : 'missing';
+
+		$this->stampWrite('cronRefused', array(
+			'first' => $continues ? $previous['first'] : $now,
+			'last'  => $now,
+			'count' => $continues ? $previous['count'] + 1 : 1,
+			'via'   => $via,
+			'ip'    => $ip,
+			'token' => $token,
+		));
+
+		if($this->noticeIsDue('refused-'.$via, 3600))
+		{
+			error_log('e107: cron.php refused a '.$via.' run: token '.$token.($ip !== '' ? ' (from '.$ip.')' : ''));
+		}
+	}
+
+	/**
+	 * Records an accepted run.
+	 *
+	 * @param string $via
+	 *   {@see cronScheduler::VIA_CLI} or {@see cronScheduler::VIA_HTTP}.
+	 *
+	 * @return void
+	 */
+	protected function recordRun($via)
+	{
+		$this->stampWrite('cronLastRun', array(
+			'time' => time(),
+			'via'  => $via,
+			'ip'   => ($via === self::VIA_HTTP) ? $this->requestIp() : '',
+		));
+	}
+
+	/**
+	 * The most recent refused run, if any has been recorded.
+	 *
+	 * @return array|null
+	 *   array('first' => int, 'last' => int, 'count' => int, 'via' => string, 'ip' => string, 'token' => 'missing'|'wrong'), or null.
+	 */
+	public static function lastRefusal()
+	{
+		$data = self::stampRead('cronRefused');
+
+		if($data === null || !isset($data['first'], $data['last'], $data['count'], $data['via'], $data['token']))
+		{
+			return null;
+		}
+
+		if(!in_array($data['via'], array(self::VIA_CLI, self::VIA_HTTP), true) || !in_array($data['token'], array('missing', 'wrong'), true))
+		{
+			return null;
+		}
+
+		$ip = isset($data['ip']) && is_string($data['ip']) && filter_var($data['ip'], FILTER_VALIDATE_IP) !== false ? $data['ip'] : '';
+
+		return array(
+			'first' => (int) $data['first'],
+			'last'  => (int) $data['last'],
+			'count' => max(1, (int) $data['count']),
+			'via'   => $data['via'],
+			'ip'    => $ip,
+			'token' => $data['token'],
+		);
+	}
+
+	/**
+	 * The most recent accepted run, if any has been recorded.
+	 *
+	 * Falls back to the cronLastLoad.php stamp older versions wrote, with 'via' and 'ip' empty.
+	 *
+	 * @return array|null
+	 *   array('time' => int, 'via' => string, 'ip' => string), or null.
+	 */
+	public static function lastRun()
+	{
+		$data = self::stampRead('cronLastRun');
+
+		if($data !== null && isset($data['time']) && in_array(varset($data['via']), array(self::VIA_CLI, self::VIA_HTTP), true))
+		{
+			$ip = isset($data['ip']) && is_string($data['ip']) && filter_var($data['ip'], FILTER_VALIDATE_IP) !== false ? $data['ip'] : '';
+
+			return array('time' => (int) $data['time'], 'via' => $data['via'], 'ip' => $ip);
+		}
+
+		$file = e_CACHE.'cronLastLoad.php';
+		clearstatcache(true, $file);
+
+		if(!is_readable($file))
+		{
+			return null;
+		}
+
+		$time = (int) @file_get_contents($file);
+
+		return $time > 0 ? array('time' => $time, 'via' => '', 'ip' => '') : null;
+	}
+
+	/**
+	 * Forgets the recorded refusals.
+	 *
+	 * @return void
+	 */
+	public static function clearRefusals()
+	{
+		@unlink(e_CACHE.'cronRefused.php');
+	}
+
+	/**
+	 * @param string $name
+	 * @return array|null
+	 */
+	private static function stampRead($name)
+	{
+		$file = e_CACHE.$name.'.php';
+		clearstatcache(true, $file);
+
+		if(!is_readable($file))
+		{
+			return null;
+		}
+
+		$raw = (string) @file_get_contents($file);
+
+		if(strpos($raw, self::STAMP_PREFIX) !== 0)
+		{
+			return null;
+		}
+
+		$data = json_decode((string) substr($raw, strlen(self::STAMP_PREFIX)), true);
+
+		return is_array($data) ? $data : null;
+	}
+
+	/**
+	 * @param string $name
+	 * @param array $data
+	 * @return bool
+	 */
+	private function stampWrite($name, array $data)
+	{
+		return (bool) @file_put_contents(e_CACHE.$name.'.php', self::STAMP_PREFIX.json_encode($data), LOCK_EX);
 	}
 
 	/**
@@ -1376,7 +1670,6 @@ class cronScheduler
 
 		return (bool) @file_put_contents($file, time());
 	}
-
 	/**
 	 * Get available Cron jobs.
 	 *
