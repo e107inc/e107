@@ -1721,3 +1721,349 @@ class cronScheduler
 	}
 
 }
+
+
+/**
+ * Class cronSetup.
+ *
+ * Works out how this server can be made to call cron.php once a minute, and
+ * builds the commands that Admin > Schedule Tasks > Setup offers for copying.
+ *
+ * {@see cronSetup::detectEnvironment()} is the only part that looks at the
+ * machine; {@see cronSetup::options()} and {@see cronSetup::candidatePaths()}
+ * take everything they need as arguments, so a caller can ask what a different
+ * server would be told.
+ *
+ * @see e107_admin/cron.php
+ */
+class cronSetup
+{
+	/**
+	 * What this server says about itself.
+	 *
+	 * Every probe is suppressed: open_basedir turns a stat outside the site into
+	 * a warning, and a warning is not worth a broken admin page.
+	 *
+	 * @return array
+	 *   array('os' => 'unix'|'windows', 'panel' => 'cpanel'|'directadmin'|'plesk'|null,
+	 *   'panel_url' => string|null, 'php_version' => string, 'php_cli' => string|null,
+	 *   'php_cli_pinned' => bool, 'open_basedir' => bool, 'cron_executable' => bool,
+	 *   'cron_mode' => string|null, 'root' => string, 'siteurl' => string,
+	 *   'https' => bool, 'host' => string)
+	 */
+	public static function detectEnvironment()
+	{
+		$os = (DIRECTORY_SEPARATOR === '\\') ? 'windows' : 'unix';
+		$siteurl = rtrim(SITEURL, '/').'/';
+		$host = (string) parse_url($siteurl, PHP_URL_HOST);
+
+		$panel = null;
+		$panelPort = null;
+
+		foreach(self::panelProbes() as $name => $probe)
+		{
+			if(@is_file($probe['file']))
+			{
+				$panel = $name;
+				$panelPort = $probe['port'];
+				break;
+			}
+		}
+
+		$cli = null;
+
+		foreach(self::candidatePaths($os, PHP_VERSION, PHP_BINDIR) as $candidate)
+		{
+			if(@is_file($candidate) && @is_executable($candidate))
+			{
+				$cli = $candidate;
+				break;
+			}
+		}
+
+		$cronFile = e_BASE.'cron.php';
+		$mode = @fileperms($cronFile);
+
+		return array(
+			'os'              => $os,
+			'panel'           => $panel,
+			'panel_url'       => ($panel !== null && $host !== '') ? 'https://'.$host.':'.$panelPort.'/' : null,
+			'php_version'     => PHP_VERSION,
+			'php_cli'         => $cli,
+			'php_cli_pinned'  => ($cli !== null && self::namesVersion($cli)),
+			'open_basedir'    => ((string) ini_get('open_basedir') !== ''),
+			'cron_executable' => (bool) @is_executable($cronFile),
+			'cron_mode'       => ($mode === false) ? null : substr(decoct($mode), -3),
+			'root'            => e_ROOT,
+			'siteurl'         => $siteurl,
+			'https'           => (stripos($siteurl, 'https://') === 0),
+			'host'            => $host,
+		);
+	}
+
+	/**
+	 * Where a PHP binary of this version might live, most specific first.
+	 *
+	 * @param string $os
+	 *   'unix' or 'windows'.
+	 * @param string $version
+	 *   A full PHP version such as '8.3.1'.
+	 * @param string $bindir
+	 *   PHP_BINDIR of the interpreter serving the site.
+	 * @param string $binary
+	 *   PHP_BINARY of that interpreter, read on Windows only.
+	 *
+	 * @return array
+	 *   Absolute paths, deduplicated, none of them verified.
+	 */
+	public static function candidatePaths($os, $version, $bindir, $binary = PHP_BINARY)
+	{
+		$parts = explode('.', (string) $version);
+		$major = isset($parts[0]) ? $parts[0] : '';
+		$minor = isset($parts[1]) ? $parts[1] : '0';
+		$dotted = $major.'.'.$minor;
+		$joined = $major.$minor;
+		$bindir = rtrim((string) $bindir, '/\\');
+		$paths = array();
+
+		if($os === 'windows')
+		{
+			if($bindir !== '')
+			{
+				$paths[] = $bindir.'\\php.exe';
+			}
+
+			$binaryDir = preg_replace('#[/\\\\][^/\\\\]*$#', '', (string) $binary);
+
+			if($binaryDir !== '' && $binaryDir !== (string) $binary)
+			{
+				$paths[] = $binaryDir.'\\php.exe';
+			}
+
+			return array_values(array_unique($paths));
+		}
+
+		if($bindir !== '')
+		{
+			$paths[] = $bindir.'/php'.$dotted;
+			$paths[] = $bindir.'/php';
+		}
+
+		$paths[] = '/usr/local/bin/ea-php'.$joined;
+		$paths[] = '/opt/cpanel/ea-php'.$joined.'/root/usr/bin/php';
+		$paths[] = '/usr/local/php'.$joined.'/bin/php';
+		$paths[] = '/opt/plesk/php/'.$dotted.'/bin/php';
+		$paths[] = '/opt/remi/php'.$joined.'/root/usr/bin/php';
+		$paths[] = '/usr/bin/php'.$dotted;
+		$paths[] = '/usr/local/bin/php';
+		$paths[] = '/usr/bin/php';
+
+		return array_values(array_unique($paths));
+	}
+
+	/**
+	 * The ways this server can be told to call cron.php, best first.
+	 *
+	 * @param array $env
+	 *   As {@see cronSetup::detectEnvironment()} returns it.
+	 * @param string $token
+	 *   The e_cron_pwd preference.
+	 *
+	 * @return array
+	 *   Descriptors keyed 'id', 'title', 'why', 'recommended', 'notes', and
+	 *   whichever of 'url', 'command', 'alt_command', 'crontab_line',
+	 *   'schtasks', 'status' and 'chmod' the option and the server support.
+	 */
+	public static function options(array $env, $token)
+	{
+		$options = array(self::httpOption($env, $token), self::cliOption($env, $token));
+
+		if($env['os'] !== 'windows')
+		{
+			$options[] = self::shebangOption($env, $token);
+		}
+
+		return $options;
+	}
+
+	/**
+	 * @return array
+	 */
+	private static function panelProbes()
+	{
+		return array(
+			'cpanel'      => array('file' => '/usr/local/cpanel/version', 'port' => 2083),
+			'directadmin' => array('file' => '/usr/local/directadmin/conf/directadmin.conf', 'port' => 2222),
+			'plesk'       => array('file' => '/usr/local/psa/version', 'port' => 8443),
+		);
+	}
+
+	/**
+	 * @param string $path
+	 * @return bool
+	 *   Whether the path names a PHP version, so that the command it appears in stops working on an upgrade.
+	 */
+	private static function namesVersion($path)
+	{
+		return (bool) preg_match('#php[-/\\\\]?\d#i', (string) $path);
+	}
+
+	/**
+	 * @param array $env
+	 * @param string $token
+	 * @return array
+	 */
+	private static function httpOption(array $env, $token)
+	{
+		$url = $env['siteurl'].'cron.php?token='.rawurlencode($token);
+
+		$option = array(
+			'id'          => 'http',
+			'title'       => LAN_CRON_SETUP_HTTP_TITLE,
+			'why'         => LAN_CRON_SETUP_HTTP_WHY,
+			'recommended' => true,
+			'url'         => $url,
+		);
+
+		$notes = array(LAN_CRON_SETUP_HTTP_FALLBACK_NOTE);
+
+		if($env['os'] === 'windows')
+		{
+			$option['command'] = 'curl.exe -fsS "'.$url.'"';
+			$option['schtasks'] = self::schtasks('curl.exe -fsS \"'.$url.'\"');
+			$notes[] = LAN_CRON_SETUP_CURL_EXE_NOTE;
+		}
+		else
+		{
+			$option['command'] = "curl -fsS '".$url."' >/dev/null 2>&1";
+			$option['alt_command'] = "wget -qO /dev/null '".$url."'";
+			$option['crontab_line'] = self::crontabLine($option['command']);
+		}
+
+		$option['notes'] = $notes;
+
+		return $option;
+	}
+
+	/**
+	 * @param array $env
+	 * @param string $token
+	 * @return array
+	 */
+	private static function cliOption(array $env, $token)
+	{
+		$php = ($env['php_cli'] === null) ? 'php' : $env['php_cli'];
+		$cron = $env['root'].'cron.php';
+
+		$option = array(
+			'id'          => 'cli',
+			'title'       => LAN_CRON_SETUP_CLI_TITLE,
+			'why'         => LAN_CRON_SETUP_CLI_WHY,
+			'recommended' => false,
+		);
+
+		if($env['os'] === 'windows')
+		{
+			$option['command'] = '"'.$php.'" "'.$cron.'" token='.$token;
+			$option['schtasks'] = self::schtasks('\"'.$php.'\" \"'.$cron.'\" token='.$token);
+		}
+		else
+		{
+			$option['command'] = self::shellArg($php).' -q '.self::shellArg($cron).' token='.$token.' >/dev/null 2>&1';
+			$option['crontab_line'] = self::crontabLine($option['command']);
+		}
+
+		$option['notes'] = self::cliNotes($env);
+
+		return $option;
+	}
+
+	/**
+	 * @param array $env
+	 * @param string $token
+	 * @return array
+	 */
+	private static function shebangOption(array $env, $token)
+	{
+		$cron = self::shellArg($env['root'].'cron.php');
+		$executable = !empty($env['cron_executable']);
+
+		$option = array(
+			'id'           => 'shebang',
+			'title'        => LAN_CRON_SETUP_SHEBANG_TITLE,
+			'why'          => LAN_CRON_SETUP_SHEBANG_WHY,
+			'recommended'  => false,
+			'command'      => $cron.' token='.$token.' >/dev/null 2>&1',
+		);
+
+		$option['crontab_line'] = self::crontabLine($option['command']);
+		$option['status'] = $executable ? LAN_CRON_SETUP_EXECUTABLE : LAN_CRON_SETUP_NOT_EXECUTABLE;
+
+		if(!$executable)
+		{
+			$option['chmod'] = 'chmod 755 '.$cron;
+		}
+
+		$option['notes'] = array(LAN_CRON_SETUP_PANEL_HOWTO);
+
+		return $option;
+	}
+
+	/**
+	 * @param array $env
+	 * @return array
+	 */
+	private static function cliNotes(array $env)
+	{
+		$notes = array();
+
+		if($env['php_cli'] === null)
+		{
+			$parts = explode('.', (string) $env['php_version']);
+			$notes[] = str_replace('[x]', $parts[0].'.'.(isset($parts[1]) ? $parts[1] : '0'), LAN_CRON_SETUP_PHP_NOT_FOUND);
+		}
+		else
+		{
+			$notes[] = str_replace(array('[x]', '[y]'), array($env['php_version'], $env['php_cli']), LAN_CRON_SETUP_PHP_FOUND);
+		}
+
+		if(!empty($env['open_basedir']))
+		{
+			$notes[] = LAN_CRON_SETUP_OPEN_BASEDIR_NOTE;
+		}
+
+		$notes[] = ($env['os'] === 'windows') ? LAN_CRON_SETUP_SCHTASKS_ACCOUNT_NOTE : LAN_CRON_SETUP_PANEL_HOWTO;
+
+		return $notes;
+	}
+
+	/**
+	 * @param string $command
+	 * @return string
+	 */
+	private static function crontabLine($command)
+	{
+		return '* * * * * '.$command;
+	}
+
+	/**
+	 * @param string $action
+	 *   The command line for /tr, with its own quotes already escaped for cmd.
+	 * @return string
+	 */
+	private static function schtasks($action)
+	{
+		return 'schtasks /create /sc minute /mo 1 /tn "e107 cron" /tr "'.$action.'"';
+	}
+
+	/**
+	 * @param string $path
+	 * @return string
+	 *   $path, quoted for sh only when it holds something sh would read.
+	 */
+	private static function shellArg($path)
+	{
+		return preg_match('#^[A-Za-z0-9_/.:@%+=,-]+$#', (string) $path) ? $path : escapeshellarg($path);
+	}
+
+}

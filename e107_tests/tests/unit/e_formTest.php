@@ -362,6 +362,27 @@ class e_formTest extends \Test\Unit
 
 	}
 
+	public function testCopyable()
+	{
+		$result = $this->_frm->copyable('curl -fsS \'http://x/cron.php?token=a<script>alert(1)</script>\'', ['label'=>'Command']);
+
+		self::assertStringContainsString('<div class="e-copyable">', $result);
+		self::assertStringContainsString('<label class="e-copyable-label">Command</label>', $result);
+		self::assertStringContainsString('<pre class="e-copyable-text" dir="ltr">', $result);
+		self::assertStringContainsString('e-copyable-btn', $result);
+		self::assertStringContainsString('data-copied="'.LAN_EFORM_COPIED.'"', $result);
+		self::assertStringContainsString('>'.LAN_EFORM_COPY.'</button>', $result);
+
+		self::assertStringNotContainsString('<script>', $result, 'the text must not be able to open a tag');
+		self::assertStringContainsString('&lt;script&gt;alert(1)&lt;/script&gt;', $result);
+		self::assertStringNotContainsString('curl -fsS \'', $result, 'the quotes around the URL must be escaped too');
+
+		$plain = $this->_frm->copyable('* * * * * php -q cron.php');
+
+		self::assertStringNotContainsString('e-copyable-label', $plain, 'no label was asked for');
+		self::assertStringContainsString('<pre class="e-copyable-text" dir="ltr">* * * * * php -q cron.php</pre>', $plain);
+	}
+
 /*
 			public function testUrl()
 			{

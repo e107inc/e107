@@ -68,6 +68,7 @@ class e_form
 	protected   $_cached_attributes = array();
 	protected   $_field_warnings = array();
 	private     $_inline_token;
+	private static $_copyable_assets = false;
 	public      $_snippets = false; // use snippets or not. - experimental, and may be removed -  use at own risk.
 	private     $_fontawesome = false;
 	private     $_bootstrap;
@@ -3266,6 +3267,112 @@ class e_form
 		$ret .= '<div class="field-help" data-placement="left" style="display:none">'.defset($text,$text).'</div>'; // display:none to prevent visibility during page load. 
 
 		return $ret;
+	}
+
+	/**
+	 * Render a block of text with a button that copies it to the clipboard.
+	 *
+	 * For a command, a URL or anything else the reader has to reproduce exactly.
+	 * The text is rendered, never linked, so a URL carrying a secret is not
+	 * followed by a preview fetch or leaked in a Referer header. The supporting
+	 * script and styles are emitted once per page, on the first call.
+	 *
+	 * @param string $text
+	 * @param array $parms = [
+	 *      'label' => (string) rendered above the text.
+	 * ]
+	 * @return string
+	 */
+	public function copyable($text, $parms = array())
+	{
+		$class = ($this->_bootstrap > 3) ? 'btn btn-secondary btn-sm' : 'btn btn-default btn-xs';
+		$copy = defset('LAN_EFORM_COPY', 'Copy');
+		$copied = defset('LAN_EFORM_COPIED', 'Copied');
+
+		$ret = '<div class="e-copyable">';
+
+		if(!empty($parms['label']))
+		{
+			$ret .= '<label class="e-copyable-label">'.$parms['label'].'</label>';
+		}
+
+		$ret .= '<pre class="e-copyable-text" dir="ltr">'.$this->tp->toAttribute($text, true).'</pre>';
+		$ret .= '<button type="button" class="'.$class.' e-copyable-btn" data-copied="'.$this->tp->toAttribute($copied, true)
+			.'" aria-label="'.$this->tp->toAttribute($copy, true).'">'.$copy.'</button>';
+		$ret .= '</div>';
+
+		self::copyableAssets();
+
+		return $ret;
+	}
+
+	/**
+	 * Emit the script and styles {@see e_form::copyable()} needs, once per page.
+	 *
+	 * @return void
+	 */
+	private static function copyableAssets()
+	{
+		if(self::$_copyable_assets)
+		{
+			return;
+		}
+
+		self::$_copyable_assets = true;
+
+		e107::css('inline', '.e-copyable{position:relative;margin-bottom:10px}'
+			.'.e-copyable-label{display:block;margin:0 0 4px;font-weight:bold}'
+			.'.e-copyable-text{white-space:pre-wrap;word-break:break-all;user-select:all;padding-right:90px;margin:0}'
+			.'.e-copyable-btn{position:absolute;right:8px;bottom:8px}');
+
+		e107::js('footer-inline', '(function(){
+	function flash(btn)
+	{
+		var original = btn.getAttribute("data-original");
+		if(original === null)
+		{
+			original = btn.textContent;
+			btn.setAttribute("data-original", original);
+		}
+		btn.textContent = btn.getAttribute("data-copied");
+		window.setTimeout(function(){ btn.textContent = original; }, 1500);
+	}
+	function fallback(box, text)
+	{
+		var area = document.createElement("textarea");
+		var copied = false;
+		area.value = text;
+		area.setAttribute("readonly", "readonly");
+		area.style.position = "fixed";
+		area.style.left = "-9999px";
+		document.body.appendChild(area);
+		area.select();
+		try { copied = document.execCommand("copy"); } catch(err) { copied = false; }
+		document.body.removeChild(area);
+		if(!copied && window.getSelection && document.createRange)
+		{
+			var range = document.createRange();
+			range.selectNodeContents(box);
+			var selection = window.getSelection();
+			selection.removeAllRanges();
+			selection.addRange(range);
+		}
+	}
+	document.addEventListener("click", function(ev){
+		var btn = (ev.target && ev.target.closest) ? ev.target.closest(".e-copyable-btn") : null;
+		if(!btn) { return; }
+		var box = btn.parentNode.querySelector(".e-copyable-text");
+		if(!box) { return; }
+		var text = box.textContent;
+		if(window.isSecureContext && navigator.clipboard)
+		{
+			navigator.clipboard.writeText(text).then(function(){ flash(btn); }, function(){ fallback(box, text); flash(btn); });
+			return;
+		}
+		fallback(box, text);
+		flash(btn);
+	});
+})();');
 	}
 
 	/**
