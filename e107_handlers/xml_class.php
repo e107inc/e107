@@ -120,7 +120,7 @@ class parseXml extends xmlClass // BC with v1.x
 				return FALSE;
             }
         }
-		xml_parser_free( $this->parser );
+		$this->parser = null;
 		return $this -> xmlData;
 	}
 
@@ -1642,7 +1642,7 @@ class XMLParse
             $this->isError = true;
             $this->error = 'error: '.xml_error_string(xml_get_error_code($parser)).' at line '.xml_get_current_line_number($parser);
         }
-        xml_parser_free($parser);
+        $this->parser = null;
 
         return $res;
     }

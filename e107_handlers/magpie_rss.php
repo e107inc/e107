@@ -138,7 +138,7 @@ class MagpieRSS {
             }
         }
         
-        xml_parser_free( $this->parser );
+        $this->parser = null;
 
         $this->normalize();
     }

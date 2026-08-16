@@ -655,7 +655,6 @@ class ThumbMediaUserclassCest
 		ob_start();
 		imagepng($image);
 		$png = ob_get_clean();
-		imagedestroy($image);
 
 		return $png;
 	}
@@ -714,7 +713,6 @@ class ThumbMediaUserclassCest
 
 		if($width !== strlen(self::SECRET_MEMBER)) // every sentinel is this long
 		{
-			imagedestroy($image);
 
 			return null;
 		}
@@ -737,7 +735,6 @@ class ThumbMediaUserclassCest
 			}
 		}
 
-		imagedestroy($image);
 
 		return $text;
 	}
