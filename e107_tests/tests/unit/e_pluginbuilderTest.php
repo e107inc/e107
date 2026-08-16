@@ -440,8 +440,7 @@ class e_pluginbuilderTest extends \Codeception\Test\Unit
 		{
 			$this->pb->pluginName = $name;
 
-			$build = new ReflectionMethod('e_pluginbuilder', 'buildShortcodesFile');
-			$build->setAccessible(true);
+			$build = new \e107\Reflection\ReflectionMethod('e_pluginbuilder', 'buildShortcodesFile');
 			$build->invoke($this->pb);
 
 			$file = $dir.'/'.$name.'_shortcodes.php';

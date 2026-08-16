@@ -116,10 +116,8 @@ class e_file_inspectorTest extends \Codeception\Test\Unit
     {
         /** @var e_file_inspector $object */
         $object = $this->make('e_file_inspector_json');
-        $class = new ReflectionClass(get_class($object));
         $object->customPathToDefaultPath('populate_cache');
-        $member = $class->getProperty('customDirsCache');
-        $member->setAccessible(true);
+        $member = new \e107\Reflection\ReflectionProperty($object, 'customDirsCache');
         $customDirs = $member->getValue($object);
         $customDirs['ADMIN_DIRECTORY'] = 'e963_admin/';
         $member->setValue($object, $customDirs);

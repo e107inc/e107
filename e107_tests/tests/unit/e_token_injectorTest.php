@@ -229,8 +229,7 @@ class e_token_injectorTest extends \Codeception\Test\Unit
 	 */
 	public function testNonHtmlResponsesAreSkipped()
 	{
-		$method = new ReflectionMethod('e_token_injector', 'isHtmlResponse');
-		$method->setAccessible(true);
+		$method = new \e107\Reflection\ReflectionMethod('e_token_injector', 'isHtmlResponse');
 
 		$mimetype = ini_get('default_mimetype');
 

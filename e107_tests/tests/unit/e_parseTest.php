@@ -3056,10 +3056,8 @@ Your browser does not support the audio tag.
 	 */
 	public function testCleanHtmlNormalizesVoidElementsOnOldLibxml()
 	{
-		$normalize = new ReflectionMethod('e_parse', 'normalizeVoidElements');
-		$normalize->setAccessible(true);
-		$strip = new ReflectionMethod('e_parse', 'stripVoidClosingTags');
-		$strip->setAccessible(true);
+		$normalize = new \e107\Reflection\ReflectionMethod('e_parse', 'normalizeVoidElements');
+		$strip = new \e107\Reflection\ReflectionMethod('e_parse', 'stripVoidClosingTags');
 
 		$doc = new DOMDocument();
 		$doc->loadHTML('<body><video><source src="x.mp4" type="video/mp4"></source></video></body>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);

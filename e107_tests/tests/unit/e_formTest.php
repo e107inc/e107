@@ -1428,10 +1428,7 @@ class e_formTest extends \Codeception\Test\Unit
 
 	public function testInlineTokenGeneratedOnlyOnce()
 	{
-		$class = new \ReflectionClass('e_form');
-
-		$method = $class->getMethod('inlineToken');
-		$method->setAccessible(true);
+		$method = new \e107\Reflection\ReflectionMethod('e_form', 'inlineToken');
 
 		$results = [];
 		$results[] = $method->invoke($this->_frm);

@@ -59,8 +59,7 @@ class Unit extends E107Base
 	{
 		parent::_before($test);
 
-		$scClasses = new \ReflectionProperty('e_parse_shortcode', 'scClasses');
-		$scClasses->setAccessible(true);
+		$scClasses = new \e107\Reflection\ReflectionProperty('e_parse_shortcode', 'scClasses');
 
 		foreach($scClasses->getValue(\e107::getScParser()) as $batch)
 		{
