@@ -29,6 +29,9 @@ class user_shortcodesTest extends \Codeception\Test\Unit
 	/** @var array|null the plug_installed pref as found, restored in _after() */
 	private $savedInstalled = null;
 
+	/** @var string the real db class, noted before {@see installStubDb()} replaces the instance */
+	private $dbClass;
+
 	public function _before()
 	{
 		require_once(e_CORE."shortcodes/batch/user_shortcodes.php");
@@ -50,6 +53,7 @@ class user_shortcodesTest extends \Codeception\Test\Unit
 		}
 
 		$this->savedInstalled = e107::getConfig()->get('plug_installed');
+		$this->dbClass = get_class(e107::getDb());
 	}
 
 	public function _after()
@@ -101,8 +105,7 @@ class user_shortcodesTest extends \Codeception\Test\Unit
 		$forumPostCounts = $this->forumPostCounts;
 		$tableCounts = $this->tableCounts;
 
-		$db = e107::getDb();
-		$stub = $this->make(get_class($db), array(
+		$stub = $this->make($this->dbClass, array(
 			'count' => function($table, $fields = '(*)', $where = '') use ($tableCounts)
 			{
 				return isset($tableCounts[$table]) ? $tableCounts[$table] : 0;
