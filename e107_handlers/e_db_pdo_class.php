@@ -669,14 +669,17 @@ class e_db_pdo implements e_db
 	 * Example :<br />
 	 * <code>$sql->db_Close();</code>
 	 *
+	 * Releases the last result set as well; a PDOStatement keeps its
+	 * connection alive, so nothing fetched before close() is readable after it.
+	 *
 	 * @access public
 	 * @return void
 	 */
 	function close()
 	{
-		$this->_getMySQLaccess();
 		$this->traffic->BumpWho('db Close', 1);
-		$this->mySQLaccess = null; // correct way to do it when using shared links.
+		$this->mySQLresult = null;
+		$this->mySQLaccess = null;
 		$this->dbError('dbClose');
 	}
 
@@ -1336,15 +1339,29 @@ class e_db_pdo implements e_db
 	{
 		if (!isset($this->dbFieldDefs[$tableName]))
 		{
+			$cached = null;
 			if (is_readable(e_CACHE_DB.$tableName.'.php'))
 			{
-				$temp = file_get_contents(e_CACHE_DB.$tableName.'.php');
-				if ($temp !== false)
+				$temp = @file_get_contents(e_CACHE_DB.$tableName.'.php');
+				$tableIsUntyped = ($temp === '');
+				if ($tableIsUntyped)
+				{
+					$cached = array();
+				}
+				elseif ($temp !== false)
 				{
 					$typeDefs = e107::unserialize($temp);
-					unset($temp);
-					$this->dbFieldDefs[$tableName] = $typeDefs;
+					if (!empty($typeDefs))
+					{
+						$cached = $typeDefs;
+					}
 				}
+				unset($temp);
+			}
+
+			if ($cached !== null)
+			{
+				$this->dbFieldDefs[$tableName] = $cached;
 			}
 			else
 			{		// Need to try and find a table definition
@@ -1408,7 +1425,7 @@ class e_db_pdo implements e_db
 
 					$fileData = e107::serialize($typeDefs[$tableName], false);
 
-					if (false === file_put_contents(e_CACHE_DB.$tableName.'.php', $fileData))
+					if (false === e107::writeFileAtomic(e_CACHE_DB.$tableName.'.php', (string) $fileData))
 					{	// Could do something with error - but mustn't return false - would trigger auto-generated structure
 
 					}
@@ -1448,7 +1465,7 @@ class e_db_pdo implements e_db
 		$this->dbFieldDefs[$tableName] = $outDefs;
 		$toSave = e107::serialize($outDefs, false);	// 2nd parameter to TRUE if needs to be written to DB
 
-		if (false === file_put_contents(e_CACHE_DB.$tableName.'.php', $toSave))
+		if (false === e107::writeFileAtomic(e_CACHE_DB.$tableName.'.php', (string) $toSave))
 		{	// Could do something with error - but mustn't return false - would trigger auto-generated structure
 			$mes = e107::getMessage();
 			$mes->addDebug("Error writing file: ".e_CACHE_DB.$tableName.'.php'); //Fix for during v1.x -> 2.x upgrade.

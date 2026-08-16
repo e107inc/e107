@@ -1232,8 +1232,8 @@ class eRouter
 		{
 			$fileContent = '<?php'."\n### Auto-generated - DO NOT EDIT ### \nreturn ";
 			$fileContent .= trim(var_export($config, true)).';';
-			
-			file_put_contents(e_CACHE_URL.'config.php', $fileContent);
+
+			e107::writeFileAtomic(e_CACHE_URL.'config.php', $fileContent);
 		}
 		return $config;
 	}
