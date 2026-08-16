@@ -605,19 +605,22 @@ class private_message
 
 		$url = e107::url('pm','index', null, array('mode'=>'full')).'?show.'.$pmid;
 
+		$sender = e107::user((int) varset($pmInfo['from_id']));
+		$senderName = !empty($sender['user_name']) ? $sender['user_name'] : defset('USERNAME', '');
+
 		$data = array();
 		$data['PM_SUBJECT']     = $pmInfo['pm_subject'];
 		$data['PM_ATTACHMENTS'] = intval($attach_count);
 		$data['PM_DATE']        = e107::getParser()->toDate($pmInfo['pm_sent'], 'long');
 		$data['SITENAME']       = SITENAME;
-		$data['USERNAME']       = USERNAME;
+		$data['USERNAME']       = $senderName;
 		$data['PM_URL']         = $url;// e107::url('pm','index', null, array('mode'=>'full')).'?show.'.$pmid;
 		$data['PM_BUTTON']      = "<a class='btn btn-primary' href='".$url."'>".LAN_PM_113."</a>";// e107::url('pm','index', null, array('mode'=>'full')).'?show.'.$pmid;
 
 		$text = e107::getParser()->simpleParse($PM_NOTIFY, $data);
 
 		$eml = array();
-		$eml['email_subject']		= LAN_PM_100." ".USERNAME;
+		$eml['email_subject']		= LAN_PM_100." ".$senderName;
 		$eml['send_html']			= true;
 		$eml['email_body']			= $text;
 		$eml['template']			= 'default';

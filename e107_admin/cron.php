@@ -33,8 +33,9 @@ class cron_admin extends e_admin_dispatcher
 
 
 	protected $adminMenu = array(
-		'main/list'		=> array('caption'=> LAN_MANAGE, 'perm' => '0'),
-		'main/refresh' 	=> array('caption'=> LAN_CRON_M_02, 'perm' => '0','url'=>'cron.php', 'icon'=>'fa-refresh'),
+		'main/list'		=> array('caption'=> LAN_MANAGE, 'perm' => 'U'),
+		'main/setup'	=> array('caption'=> LAN_CRON_M_SETUP, 'perm' => 'U', 'icon'=>'fa-wrench'),
+		'main/refresh' 	=> array('caption'=> LAN_CRON_M_02, 'perm' => 'U','url'=>'cron.php', 'icon'=>'fa-refresh'),
 	//	'main/prefs' 	=> array('caption'=> 'Settings', 'perm' => '0'),
 	//	'main/custom'	=> array('caption'=> 'Custom Page', 'perm' => '0')		
 	);
@@ -93,7 +94,12 @@ class cron_admin_ui extends e_admin_ui
 			}
 	
 			
-			if (empty(e107::getPref('e_cron_pwd')) || !empty($_POST['generate_pwd']))
+			if(!empty($_POST['generate_pwd']))
+			{
+				$this->setCronPwd();
+				e107::getMessage()->addSuccess(LAN_CRON_TOKEN_REGENERATED);
+			}
+			elseif(empty(e107::getPref('e_cron_pwd')))
 			{
 				$this->setCronPwd();
 			}
@@ -384,69 +390,241 @@ class cron_admin_ui extends e_admin_ui
 		
 		function lastRefresh()
 		{
-			$pref 	= e107::getPref();
-			$mes 	= e107::getMessage();
-			$frm = e107::getForm();
-			
-			if(file_exists(e_CACHE.'cronLastLoad.php'))
+			require_once(e_HANDLER.'cron_class.php');
+
+			$mes = e107::getMessage();
+			$tp  = e107::getParser();
+
+			$run = cronScheduler::lastRun();
+			$lastload = ($run === null) ? 0 : $run['time'];
+
+			$ago = (time() - $lastload);
+
+			$active = ($ago < 1200); // longer than 20 minutes, so lets assume it's inactive.
+			$status = ($active) ? "<span class='label label-success'>".LAN_ENABLED."</span>" : "<span class='label label-danger'>".LAN_DISABLED."</span>";
+
+			$mins = floor($ago / 60);
+			$secs = $ago % 60;
+			$lastRun = str_replace(array("[x]", "[y]"), array($mins, $secs), ($mins) ? LAN_CRON_9 : LAN_CRON_10);
+
+			if($ago < 10000)
 			{
-				$lastload = intval(@file_get_contents(e_CACHE.'cronLastLoad.php'));
+				$detail = date('g:i A', $lastload);
+
+				if($run['via'] === cronScheduler::VIA_HTTP)
+				{
+					$detail .= ', '.(($run['ip'] !== '') ? str_replace('[x]', $run['ip'], LAN_CRON_LASTRUN_HTTP_FROM) : LAN_CRON_LASTRUN_HTTP);
+				}
+				elseif($run['via'] === cronScheduler::VIA_CLI)
+				{
+					$detail .= ', '.LAN_CRON_LASTRUN_CLI;
+				}
+
+				$when = "<b>".$lastRun."</b> <small>(".$detail.")</small>";
 			}
 			else
 			{
-				$lastload = 0;
+				$when = "<b>".LAN_NEVER."</b>";
 			}
 
-			$ago = (time() - $lastload);
-	
-			$active = ($ago < 1200) ? true : false; // longer than 20 minutes, so lets assume it's inactive.
-			$status = ($active) ? "<span class='label label-success'>".LAN_ENABLED."</span>" : "<span class='label label-danger'>".LAN_DISABLED."</span>"; // "Enabled" : "Offline";
-	
-			$mins = floor($ago / 60);
-			$secs = $ago % 60;
+			$mes->setTitle(LAN_STATUS, E_MESSAGE_INFO);
+			$mes->addInfo("<b>".LAN_STATUS.":</b> ".$status."<br />"
+				."<b>".LAN_CRON_11.":</b> <span class='badge'>".$this->activeCrons."</span><br />"
+				."<b>".LAN_CRON_12.":</b> ".$when);
 
-			$srch = array("[x]","[y]");
-			$repl = array($mins,$secs);
-	
-			$lastRun = ($mins) ? str_replace($srch,$repl,LAN_CRON_9) : str_replace($srch,$repl,LAN_CRON_10); // FIX: check syntax
+			$refusal = cronScheduler::lastRefusal();
+			$onSetup = (varset($_GET['action']) === 'setup');
 
-			$lastRefresh = ($ago < 10000) ? "<p><span class='pull-right;'><b>$lastRun</b><small>(".date('g:i A',$lastload).")</small></span>" : "<span class='pull-right'><b>".LAN_NEVER."</b></span>";
-	
-			$mes->addInfo('<p>'.LAN_STATUS.":<span class='pull-right'><b>".$status."</b></span></p>");
-			$mes->addInfo('<p>'.LAN_CRON_11.":<span class='pull-right'><spab class='badge'>".$this->activeCrons."</span></span></p><br />");
-			$mes->addInfo(LAN_CRON_12.":".$lastRefresh."<br /><br />");
-
-
-			// extensions of exe, com, bat and cmd.
-			
-			$isWin = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
-			$actualPerm = (string) substr(decoct(fileperms(e_BASE."cron.php")),3);
-
-			if($isWin)
+			if($refusal !== null && $refusal['last'] >= $lastload)
 			{
-				$mes->addWarning(LAN_CRON_13);
-			}
-			if (!$isWin && $actualPerm != 755) // is_executable() is not reliable. 
-			{
-				$mes->addWarning(LAN_CRON_14);
-			}
-			elseif (!$active) // show instructions
-			{
-				$setpwd_message = $frm->open("generate").LAN_CRON_15.":
-				<br /><pre style='user-select:all; cursor:pointer; padding-top:20px; padding-bottom:25px; max-width:326px; overflow-x:scroll'>".e_ROOT."cron.php token=".$pref['e_cron_pwd'].' >/dev/null 2>&1';
-				
-				$setpwd_message .= "</pre>". LAN_CRON_16;
-				if(e_DOMAIN && file_exists("/usr/local/cpanel/version"))
+				$warning = str_replace(
+					array('[x]', '[y]', '[z]'),
+					array($refusal['count'], $tp->toDate($refusal['first'], 'short'), $tp->toDate($refusal['last'], 'short')),
+					LAN_CRON_REFUSED_SUMMARY
+				);
+
+				if($refusal['ip'] !== '')
 				{
-					$setpwd_message .= "<div style='margin-top:10px'><a rel='external' class='btn btn-primary' href='".e_HTTP."cpanel'>".LAN_CRON_60."</a></div>";
-					
+					$warning .= ' '.str_replace('[x]', $refusal['ip'], LAN_CRON_REFUSED_LAST_FROM);
 				}
-				$setpwd_message .= "<br /><br />".$frm->admin_button('generate_pwd', 1, 'delete', LAN_CRON_61 ,array('class'=>'btn btn-sm'));
-				$setpwd_message .= $frm->close();	
-				
-				$mes->add($setpwd_message, E_MESSAGE_INFO);
+
+				$warning .= ' '.(($refusal['token'] === 'wrong') ? LAN_CRON_REFUSED_TOKEN_INCORRECT : LAN_CRON_REFUSED_TOKEN_MISSING);
+				$warning .= ' '.str_replace('[x]', $this->setupLink($onSetup), LAN_CRON_REFUSED_COPY_AGAIN);
+
+				$mes->addWarning($warning);
 			}
-	
+
+			if(!$active && $refusal === null && !$onSetup)
+			{
+				$mes->addWarning(str_replace('[x]', $this->setupLink(false), LAN_CRON_NEVER_REPORTED));
+			}
+		}
+
+		/**
+		 * @param bool $onSetup
+		 *   True while the Setup tab is the one being read, so no link to it.
+		 * @return string
+		 */
+		private function setupLink($onSetup)
+		{
+			if($onSetup)
+			{
+				return LAN_CRON_M_SETUP;
+			}
+
+			return "<a href='".e_SELF."?mode=main&action=setup'>".LAN_CRON_M_SETUP."</a>";
+		}
+
+		/**
+		 * The Setup tab: what to give this server so that it calls cron.php every minute.
+		 *
+		 * @return string
+		 */
+		public function SetupPage()
+		{
+			require_once(e_HANDLER.'cron_class.php');
+
+			$frm = e107::getForm();
+			$tp  = e107::getParser();
+
+			$env     = cronSetup::detectEnvironment();
+			$options = cronSetup::options($env, e107::getPref('e_cron_pwd'));
+
+			e107::css('inline', '.cron-setup-option{padding-top:15px}');
+
+			$text = "<p>".$tp->toHTML(LAN_CRON_SETUP_INTRO, true)."</p>";
+			$text .= $this->setupEnvironment($env);
+
+			$tabs = array();
+			$number = 0;
+
+			foreach($options as $option)
+			{
+				$number++;
+				$caption = $number.". ".$option['title'];
+
+				if(!empty($option['recommended']))
+				{
+					$caption .= " <span class='label label-success'>".LAN_CRON_SETUP_RECOMMENDED."</span>";
+				}
+
+				$tabs[$option['id']] = array('caption' => $caption, 'text' => $this->setupOption($option, $env));
+			}
+
+			$text .= $frm->tabs($tabs);
+
+			$text .= "<p>".$tp->toHTML(LAN_CRON_SETUP_REGENERATE_WARNING, true)."</p>";
+			$text .= $frm->open('cron-token');
+			$text .= $frm->admin_button('generate_pwd', 1, 'delete', LAN_CRON_61, array('confirm'=>LAN_CRON_SETUP_REGENERATE_WARNING));
+			$text .= $frm->close();
+
+			return $text;
+		}
+
+		/**
+		 * @param array $env
+		 * @return string
+		 */
+		private function setupEnvironment($env)
+		{
+			$panel = $this->panelName($env['panel']);
+			$parts = array(($env['os'] === 'windows') ? 'Windows' : PHP_OS, 'PHP '.$env['php_version']);
+
+			if($panel !== '')
+			{
+				$parts[] = $panel;
+			}
+
+			$text = "<p>".str_replace('[x]', implode(', ', $parts), LAN_CRON_SETUP_DETECTED_ENVIRONMENT);
+
+			if(!empty($env['panel_url']))
+			{
+				$text .= " <a class='btn btn-default btn-sm' rel='external' target='_blank' href='".$env['panel_url']."'>".str_replace('[x]', $panel, LAN_CRON_SETUP_OPEN_PANEL)."</a>";
+			}
+
+			return $text."</p>";
+		}
+
+		/**
+		 * @param string|null $panel
+		 * @return string
+		 *   Empty when no control panel was detected.
+		 */
+		private function panelName($panel)
+		{
+			if($panel === null)
+			{
+				return '';
+			}
+
+			$names = array('cpanel' => 'cPanel', 'directadmin' => 'DirectAdmin', 'plesk' => 'Plesk');
+
+			return isset($names[$panel]) ? $names[$panel] : LAN_CRON_SETUP_CONTROL_PANEL;
+		}
+
+		/**
+		 * @param array $option
+		 *   One descriptor from {@see cronSetup::options()}.
+		 * @param array $env
+		 * @return string
+		 */
+		private function setupOption($option, $env)
+		{
+			$frm = e107::getForm();
+			$tp  = e107::getParser();
+
+			$commandLabel = ($env['os'] === 'windows') ? LAN_CRON_SETUP_WINDOWS_COMMAND_LABEL : LAN_CRON_SETUP_COMMAND_LABEL;
+			$text = "<div class='cron-setup-option'><p>".$tp->toHTML($option['why'], true)."</p>";
+
+			if(isset($option['status']))
+			{
+				$class = empty($env['cron_executable']) ? 'label-warning' : 'label-success';
+				$text .= "<p><span class='label ".$class."'>".$option['status']."</span></p>";
+			}
+
+			if(isset($option['chmod']))
+			{
+				$text .= $frm->copyable($option['chmod']);
+			}
+
+			if(isset($option['url']))
+			{
+				$text .= $frm->copyable($option['url'], array('label' => LAN_CRON_SETUP_URL_LABEL));
+			}
+
+			if(isset($option['command']))
+			{
+				$text .= $frm->copyable($option['command'], array('label' => $commandLabel));
+			}
+
+			if(isset($option['crontab_line']))
+			{
+				$text .= $frm->copyable($option['crontab_line'], array('label' => LAN_CRON_SETUP_CRONTAB_LABEL));
+			}
+
+			if(isset($option['alt_command']))
+			{
+				$text .= $frm->copyable($option['alt_command'], array('label' => LAN_CRON_SETUP_WGET_LABEL));
+			}
+
+			if(isset($option['schtasks']))
+			{
+				$text .= $frm->copyable($option['schtasks'], array('label' => LAN_CRON_SETUP_SCHTASKS_LABEL));
+			}
+
+			if(!empty($option['notes']))
+			{
+				$text .= "<ul>";
+
+				foreach($option['notes'] as $note)
+				{
+					$text .= "<li>".$tp->toHTML($note, true)."</li>";
+				}
+
+				$text .= "</ul>";
+			}
+
+			return $text."</div>";
 		}
 
 		function cronExecute($cron_id)
