@@ -2132,9 +2132,7 @@ class e107
 		trigger_error('<b>'.__METHOD__.' is deprecated.</b>  Use the e_user_provider interfaces instead (e107::getUserProvider())', E_USER_DEPRECATED); // NO LAN
 
 		$e_user_provider = new e_user_provider(null, $config);
-		$reflection = new ReflectionClass('e_user_provider');
-		$reflection_property = $reflection->getProperty('hybridauth');
-		$reflection_property->setAccessible(true);
+		$reflection_property = new \e107\Reflection\ReflectionProperty('e_user_provider', 'hybridauth');
 		return $reflection_property->getValue($e_user_provider);
 	}
 

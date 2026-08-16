@@ -7,6 +7,8 @@
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  */
 
+use e107\Reflection\ReflectionProperty;
+
 /**
  * Regression coverage for GHSA-c8h6-wpj3-4cr8.
  *
@@ -214,14 +216,14 @@ class installStateTest extends \Test\Unit
 	{
 		$bs = new ReflectionClass('GuzzleHttp\\Psr7\\BufferStream');
 		$buffer = $bs->newInstanceWithoutConstructor();
-		$p = $bs->getProperty('hwm');    $p->setAccessible(true); $p->setValue($buffer, 16384);
-		$p = $bs->getProperty('buffer'); $p->setAccessible(true); $p->setValue($buffer, '');
+		$p = new ReflectionProperty($buffer, 'hwm');    $p->setValue($buffer, 16384);
+		$p = new ReflectionProperty($buffer, 'buffer'); $p->setValue($buffer, '');
 
 		$ps = new ReflectionClass('GuzzleHttp\\Psr7\\PumpStream');
 		$stream = $ps->newInstanceWithoutConstructor();
 		foreach (array('source' => $sink, 'buffer' => $buffer, 'size' => null, 'tellPos' => 0, 'metadata' => array()) as $k => $v)
 		{
-			$p = $ps->getProperty($k); $p->setAccessible(true); $p->setValue($stream, $v);
+			$p = new ReflectionProperty($stream, $k); $p->setValue($stream, $v);
 		}
 
 		return base64_encode(serialize(array('paths' => array('hash' => $stream))));

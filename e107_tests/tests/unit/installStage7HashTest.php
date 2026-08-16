@@ -28,6 +28,8 @@
  * helper touches (e107_dirs and site_path).
  */
 
+use e107\Reflection\ReflectionMethod;
+use e107\Reflection\ReflectionProperty;
 
 class installStage7HashTest extends \Test\Unit
 {
@@ -234,18 +236,8 @@ class installStage7HashTest extends \Test\Unit
 		$fakeE107->e107_dirs = $dirs;
 		$fakeE107->site_path = $sitePath;
 
-		// Private members are reachable by ReflectionProperty/Method
-		// directly since PHP 8.1; setAccessible() is a no-op there and
-		// emits a deprecation notice on 8.5+. The legacy 5.6 / 7.0
-		// cells still enforce the visibility check, so call it
-		// conditionally to satisfy both ends of the matrix.
-		$e107Property = $reflectionClass->getProperty('e107');
-		$method = $reflectionClass->getMethod('resolveSitePathPlaceholders');
-		if (PHP_VERSION_ID < 80100)
-		{
-			$e107Property->setAccessible(true);
-			$method->setAccessible(true);
-		}
+		$e107Property = new ReflectionProperty(self::$renamedClass, 'e107');
+		$method = new ReflectionMethod(self::$renamedClass, 'resolveSitePathPlaceholders');
 		$e107Property->setValue($instance, $fakeE107);
 		$method->invoke($instance);
 

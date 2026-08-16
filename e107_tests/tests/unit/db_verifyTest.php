@@ -8,6 +8,8 @@
  *
  */
 
+use e107\Reflection\ReflectionMethod;
+use e107\Reflection\ReflectionProperty;
 
 class db_verifyTest extends \Test\Unit
 {
@@ -520,9 +522,7 @@ DATA;
 
 		// $this->dbv is a Codeception mock subclass, so reflect the declaring
 		// class to reach the private property rather than the mock instance.
-		$reflection = new ReflectionClass('db_verify');
-		$prop = $reflection->getProperty('fulltextIndexer');
-		$prop->setAccessible(true);
+		$prop = new ReflectionProperty('db_verify', 'fulltextIndexer');
 		$prop->setValue($this->dbv, $fakeIndexer);
 
 		$actual = $this->dbv->getFixQuery('index', 'lan_dutch_news', 'ft_news_news_title', $sqlFileData);
@@ -1432,7 +1432,6 @@ DATA;
 	{
 
 		$method = new ReflectionMethod('db_verify', 'intendedEngineAndCharset');
-		$method->setAccessible(true);
 
 		$fields = $this->dbv->getFields(
 			"forum_id int(10) unsigned NOT NULL auto_increment,

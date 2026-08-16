@@ -7,6 +7,7 @@
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  */
 
+use e107\Reflection\ReflectionProperty;
 
 class e_admin_dispatcherTest extends \Test\Unit
 {
@@ -60,9 +61,7 @@ class e_admin_dispatcherTest extends \Test\Unit
 				->willReturnCallback(function ()
 				{
 
-					$reflection = new ReflectionClass($this->dp);
-					$adminMenuProperty = $reflection->getProperty('adminMenu');
-					$adminMenuProperty->setAccessible(true);
+					$adminMenuProperty = new ReflectionProperty($this->dp, 'adminMenu');
 
 					return $adminMenuProperty->getValue($this->dp) ?: [];
 				});

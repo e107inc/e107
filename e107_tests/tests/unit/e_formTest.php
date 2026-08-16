@@ -8,6 +8,7 @@
  *
  */
 
+use e107\Reflection\ReflectionMethod;
 
 class e_formTest extends \Test\Unit
 {
@@ -1488,10 +1489,7 @@ class e_formTest extends \Test\Unit
 
 	public function testInlineTokenGeneratedOnlyOnce()
 	{
-		$class = new \ReflectionClass('e_form');
-
-		$method = $class->getMethod('inlineToken');
-		$method->setAccessible(true);
+		$method = new ReflectionMethod('e_form', 'inlineToken');
 
 		$results = [];
 		$results[] = $method->invoke($this->_frm);

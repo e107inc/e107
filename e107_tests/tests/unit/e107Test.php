@@ -8,6 +8,7 @@
  *
  */
 
+use e107\Reflection\ReflectionMethod;
 
 class e107Test extends \Test\Unit
 {
@@ -2666,10 +2667,7 @@ PHP
 ;
 		$spanish_path = $this->createTempLanguageFile($spanish_content, 'Spanish', 'lan_test_direct', 'e107_plugins/testplugin/languages/');
 
-		// Use ReflectionClass to access private static method
-		$reflection = new ReflectionClass('e107');
-		$method = $reflection->getMethod('includeLanArray');
-		$method->setAccessible(true);
+		$method = new ReflectionMethod('e107', 'includeLanArray');
 
 		// Load Spanish first, then English as fallback
 		$spanish_terms = require($spanish_path);

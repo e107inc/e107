@@ -1,5 +1,7 @@
 <?php
 
+use e107\Reflection\ReflectionMethod;
+
 class TreeModelTest extends \Test\Unit
 {
 
@@ -14,10 +16,7 @@ class TreeModelTest extends \Test\Unit
 
     protected function _before()
     {
-        $class = new \ReflectionClass('e_tree_model');
-
-        $method = $class->getMethod('arrayToTree');
-        $method->setAccessible(true);
+        $method = new ReflectionMethod('e_tree_model', 'arrayToTree');
         $this->tree = $method->invoke(null, $this->sample_rows, $this->sample_key, $this->sample_parent_key);
     }
 
@@ -65,10 +64,7 @@ class TreeModelTest extends \Test\Unit
 
     public function testTreeValuesAreFlattenedInExpectedOrder()
     {
-        $class = new \ReflectionClass('e_tree_model');
-
-        $method = $class->getMethod('flattenTree');
-        $method->setAccessible(true);
+        $method = new ReflectionMethod('e_tree_model', 'flattenTree');
         $rows = $method->invoke(null, $this->tree, 'link_order', 1);
 
 	$expected = ['General', 'Home', 'Downloads', 'Members', 'Online Users',
@@ -90,9 +86,7 @@ class TreeModelTest extends \Test\Unit
         $tree_model = $this->make('e_tree_model');
         $tree_model->setParam('db_query', 'ORDER BY n.news_sticky DESC, n.news_datestamp DESC LIMIT 4');
 
-        $class = new \ReflectionClass(get_class($tree_model));
-        $method = $class->getMethod('prepareSimulatedPagination');
-        $method->setAccessible(true);
+        $method = new ReflectionMethod($tree_model, 'prepareSimulatedPagination');
         $method->invoke($tree_model);
 
         $this->assertEquals('ORDER BY n.news_sticky DESC, n.news_datestamp DESC', trim($tree_model->getParam('db_query')));
@@ -105,9 +99,7 @@ class TreeModelTest extends \Test\Unit
         $tree_model = $this->make('e_tree_model');
         $tree_model->setParam('db_query', 'ORDER BY n.news_sticky DESC, n.news_datestamp DESC LIMIT 79,163');
 
-        $class = new \ReflectionClass(get_class($tree_model));
-        $method = $class->getMethod('prepareSimulatedPagination');
-        $method->setAccessible(true);
+        $method = new ReflectionMethod($tree_model, 'prepareSimulatedPagination');
         $method->invoke($tree_model);
 
         $this->assertEquals('ORDER BY n.news_sticky DESC, n.news_datestamp DESC', trim($tree_model->getParam('db_query')));
@@ -118,9 +110,7 @@ class TreeModelTest extends \Test\Unit
     public function testMultiFieldCompareWithSortFieldsReturnsExpectedValues()
     {
     	$tree_model = $this->make('e_tree_model');
-	$class = new \ReflectionClass(get_class($tree_model));
-	$method = $class->getMethod('multiFieldCmp');
-	$method->setAccessible(true);
+	$method = new ReflectionMethod($tree_model, 'multiFieldCmp');
 
 	$row1 = array(
 	    'field1' => '0',
@@ -155,9 +145,7 @@ class TreeModelTest extends \Test\Unit
     public function testMultiFieldCompareWithSortFieldReturnsExpectedValues()
     {
     	$tree_model = $this->make('e_tree_model');
-	$class = new \ReflectionClass(get_class($tree_model));
-	$method = $class->getMethod('multiFieldCmp');
-	$method->setAccessible(true);
+	$method = new ReflectionMethod($tree_model, 'multiFieldCmp');
 
 	$row1 = array(
 	    'field1' => '0',
@@ -186,9 +174,7 @@ class TreeModelTest extends \Test\Unit
 
 	protected function invokeBuildCountQuery($qry)
 	{
-		$class = new \ReflectionClass('e_tree_model');
-		$method = $class->getMethod('buildCountQuery');
-		$method->setAccessible(true);
+		$method = new ReflectionMethod('e_tree_model', 'buildCountQuery');
 		return $method->invoke(null, $qry);
 	}
 
@@ -274,9 +260,7 @@ class TreeModelTest extends \Test\Unit
 		$tree->setModelTable('tmp_5761_a');
 		$tree->setParam('db_query', "SELECT a.*, b.* FROM tmp_5761_a AS a LEFT JOIN tmp_5761_b AS b ON a.id = b.ext_id ORDER BY a.id ASC");
 
-		$class = new \ReflectionClass('e_tree_model');
-		$method = $class->getMethod('countResults');
-		$method->setAccessible(true);
+		$method = new ReflectionMethod('e_tree_model', 'countResults');
 		$total = $method->invoke($tree, $sql);
 
 		$this->assertEquals(0, $sql->getLastErrorNumber(), $sql->getLastErrorText());
@@ -308,9 +292,7 @@ class TreeModelTest extends \Test\Unit
 		$tree->setModelTable('tmp_5761_chapters');
 		$tree->setParam('db_query', "SELECT a.*, CASE WHEN a.chapter_parent = 0 THEN 0 ELSE 1 END AS is_child, (SELECT COUNT(*) FROM tmp_5761_pages p WHERE p.page_chapter = a.chapter_id) AS chapter_page_count FROM tmp_5761_chapters AS a ORDER BY a.chapter_order");
 
-		$class = new \ReflectionClass('e_tree_model');
-		$method = $class->getMethod('countResults');
-		$method->setAccessible(true);
+		$method = new ReflectionMethod('e_tree_model', 'countResults');
 		$total = $method->invoke($tree, $sql);
 
 		$this->assertEquals(0, $sql->getLastErrorNumber(), $sql->getLastErrorText());
