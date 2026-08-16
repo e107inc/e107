@@ -2818,8 +2818,8 @@ class e_file
 
 			if($stream !== false)
 			{
-				// The HTTP wrapper declares this in the scope fopen() ran in.
-				$headers = isset($http_response_header) ? $http_response_header : array();
+				$meta    = stream_get_meta_data($stream);
+				$headers = isset($meta['wrapper_data']) && is_array($meta['wrapper_data']) ? $meta['wrapper_data'] : array();
 				fclose($stream);
 			}
 
