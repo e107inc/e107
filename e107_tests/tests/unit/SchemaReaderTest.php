@@ -31,17 +31,24 @@ class SchemaReaderTest extends \Test\Unit
 	/** @var string prefixed name of the scratch table these tests own */
 	private $scratch;
 
+	/** @var string[] prefixed names of the generated-column scratch tables, by the expression each holds */
+	private $generated;
+
 	protected function _before()
 	{
 		$this->reader = new SchemaReader(e107::getDb());
 		$this->scratch = MPREFIX.'schemareader_scratch';
+		$this->generated = array(
+			'sum'        => MPREFIX.'schemareader_generated_sum',
+			'difference' => MPREFIX.'schemareader_generated_difference',
+		);
 
-		$this->dropScratchTable();
+		$this->dropScratchTables();
 	}
 
 	protected function _after()
 	{
-		$this->dropScratchTable();
+		$this->dropScratchTables();
 	}
 
 	// --- reading a real table ---------------------------------------------
@@ -270,12 +277,10 @@ class SchemaReaderTest extends \Test\Unit
 	}
 
 	/**
-	 * More than ten tables on purpose. The placeholders are named :t0, :t1, ...
-	 * and a driver that substituted them by plain string replacement would
-	 * corrupt :t1 while filling :t10, so the boundary is crossed here rather
-	 * than left to a caller to discover.
+	 * The reader is read through once before anything is counted, so the one-time
+	 * GENERATION_EXPRESSION probe is spent outside both counts.
 	 */
-	public function testReadManyCostsThreeQueriesHoweverManyTablesAreAskedFor()
+	public function testReadManyCostsThreeQueriesPerReadOnceTheProbeIsSpent()
 	{
 		$db = e107::getDb();
 		$names = array();
@@ -284,6 +289,8 @@ class SchemaReaderTest extends \Test\Unit
 		{
 			$names[] = MPREFIX.$table;
 		}
+
+		$this->reader->read(MPREFIX.'news');
 
 		$before = $db->queryCount();
 		$one = $this->reader->readMany(array(MPREFIX.'news'));
@@ -298,7 +305,7 @@ class SchemaReaderTest extends \Test\Unit
 		sort($read);
 
 		$this->assertCount(1, $one);
-		$this->assertSame(3, $forOne, 'One TABLES query, one COLUMNS query, one STATISTICS query.');
+		$this->assertSame(3, $forOne, 'One TABLES query, one COLUMNS query, one STATISTICS query, the probe already spent.');
 		$this->assertSame(3, $forMany, 'Still three: a whole-site verify is three round trips, not three per table.');
 		$this->assertSame($names, $read, 'Every one of the twelve is read, and keyed by the name it was asked for.');
 	}
@@ -325,6 +332,69 @@ class SchemaReaderTest extends \Test\Unit
 			);
 			$this->assertNotSame(array(), $batch[$name]->getColumns(), $name.' must carry its columns.');
 		}
+	}
+
+	// --- a generated column's expression ----------------------------------
+
+	public function testAGeneratedColumnIsReadWithItsExpression()
+	{
+		$table = $this->readGeneratedScratchTable($this->generated['sum'], 'scratch_a + scratch_b');
+
+		$this->assertGeneratedAs('scratch_a + scratch_b', $table->getColumn('scratch_stored'));
+		$this->assertGeneratedAs('scratch_a * 2', $table->getColumn('scratch_virtual'));
+		$this->assertNotSame('', $table->getColumn('scratch_stored')->getExtra(), 'EXTRA still says it is generated.');
+		$this->assertNotSame('', $table->getColumn('scratch_virtual')->getExtra());
+	}
+
+	public function testAnOrdinaryColumnComputesNothing()
+	{
+		$table = $this->readGeneratedScratchTable($this->generated['sum'], 'scratch_a + scratch_b');
+
+		$this->assertNull($table->getColumn('scratch_a')->getGenerationExpression());
+		$this->assertNull($table->getColumn('scratch_b')->getGenerationExpression());
+
+		foreach($this->reader->read(MPREFIX.'admin_log')->getColumns() as $name => $column)
+		{
+			$this->assertNull($column->getGenerationExpression(), $name.' is an ordinary column.');
+		}
+	}
+
+	public function testTwoColumnsThatDifferOnlyInTheirExpressionAreNotEqual()
+	{
+		$sum = $this->readGeneratedScratchTable($this->generated['sum'], 'scratch_a + scratch_b');
+		$difference = $this->readGeneratedScratchTable($this->generated['difference'], 'scratch_a - scratch_b');
+
+		$one = $sum->getColumn('scratch_stored');
+		$other = $difference->getColumn('scratch_stored');
+
+		$this->assertSame($one->getColumnType(), $other->getColumnType());
+		$this->assertSame($one->getExtra(), $other->getExtra(), 'EXTRA cannot tell a + b from a - b.');
+		$this->assertFalse($one->equals($other), 'A column that computes something else is a different column.');
+		$this->assertTrue(
+			$sum->getColumn('scratch_virtual')->equals($difference->getColumn('scratch_virtual')),
+			'The generated column whose expression did not change still matches.'
+		);
+	}
+
+	/**
+	 * The probe's own cost is deliberately not pinned: e107's SQL debug profiler
+	 * EXPLAINs an unbound statement, so it counts twice with the profiler on.
+	 */
+	public function testTheGenerationExpressionProbeIsAskedOncePerReader()
+	{
+		$db = e107::getDb();
+		$reader = new SchemaReader($db);
+
+		$before = $db->queryCount();
+		$reader->read(MPREFIX.'news');
+		$first = $db->queryCount() - $before;
+
+		$before = $db->queryCount();
+		$reader->read(MPREFIX.'user');
+		$second = $db->queryCount() - $before;
+
+		$this->assertSame(3, $second, 'Every read after the first is three queries again, so the probe is not per read.');
+		$this->assertGreaterThan($second, $first, 'The first read pays for the probe on top of its three queries.');
 	}
 
 	// --- failing to read is never "no such table" -------------------------
@@ -617,9 +687,94 @@ class SchemaReaderTest extends \Test\Unit
 		return $table;
 	}
 
-	private function dropScratchTable()
+	/**
+	 * Create a table with a STORED and a VIRTUAL generated column and read it back.
+	 *
+	 * Skips the test on a server that cannot hold one.
+	 *
+	 * @param string $physicalTableName prefixed name, one of {@see SchemaReaderTest::$generated}.
+	 * @param string $storedExpression what the STORED column computes, unquoted.
+	 * @return \e107\Database\Schema\Introspect\TableSchema
+	 */
+	private function readGeneratedScratchTable($physicalTableName, $storedExpression)
 	{
-		e107::getDb()->execute('DROP TABLE IF EXISTS `'.$this->scratch.'`');
+		if(!$this->serverReportsGenerationExpressions())
+		{
+			$this->markTestSkipped(
+				'This server has no information_schema.COLUMNS.GENERATION_EXPRESSION: MySQL before 5.7 and '
+				.'MariaDB before 10.2 report nothing about what a generated column computes.'
+			);
+		}
+
+		$created = e107::getDb()->execute(
+			'CREATE TABLE `'.$physicalTableName.'` ('
+			.' `scratch_a` int(11) DEFAULT NULL,'
+			.' `scratch_b` int(11) DEFAULT NULL,'
+			.' `scratch_stored` int(11) AS ('.$storedExpression.') STORED,'
+			.' `scratch_virtual` int(11) AS (`scratch_a` * 2) VIRTUAL'
+			.')'
+		);
+
+		if($created === false)
+		{
+			$this->markTestSkipped('This server refuses a generated column: '.e107::getDb()->getLastErrorText());
+		}
+
+		$table = $this->reader->read($physicalTableName);
+
+		$this->assertNotNull($table, 'The scratch table must be readable once created.');
+
+		return $table;
+	}
+
+	/**
+	 * @return bool whether information_schema.COLUMNS has a GENERATION_EXPRESSION column.
+	 */
+	private function serverReportsGenerationExpressions()
+	{
+		$db = e107::getDb();
+
+		$asked = $db->execute(
+			'SELECT COLUMN_NAME FROM information_schema.COLUMNS'
+			." WHERE TABLE_SCHEMA = 'information_schema' AND TABLE_NAME = 'COLUMNS'"
+			." AND COLUMN_NAME = 'GENERATION_EXPRESSION'"
+		);
+
+		return ($asked !== false) && ($db->fetch() !== false);
+	}
+
+	/**
+	 * @param string $declared the expression as the CREATE stated it.
+	 * @param \e107\Database\Schema\Introspect\ColumnSchema $column
+	 */
+	private function assertGeneratedAs($declared, $column)
+	{
+		$this->assertSame(
+			self::withoutSpelling($declared),
+			self::withoutSpelling($column->getGenerationExpression()),
+			'MySQL 8 states (`a` + `b`) where MariaDB 10.11 states `a` + `b`, so the two are compared without '
+			.'their backticks, brackets and spacing. Both sides of a verify come from one server, so the reader '
+			.'itself needs no such rule.'
+		);
+	}
+
+	/**
+	 * @param string|null $expression
+	 * @return string the expression without its backticks, brackets or spacing.
+	 */
+	private static function withoutSpelling($expression)
+	{
+		return preg_replace('/[\s`()]+/', '', (string) $expression);
+	}
+
+	private function dropScratchTables()
+	{
+		$db = e107::getDb();
+
+		foreach(array_merge(array($this->scratch), array_values($this->generated)) as $table)
+		{
+			$db->execute('DROP TABLE IF EXISTS `'.$table.'`');
+		}
 	}
 
 	/**

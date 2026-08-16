@@ -57,6 +57,9 @@ final class ColumnSchema
 	/** @var string|null the server's own definition line; never part of {@see ColumnSchema::equals()} */
 	private $ddl;
 
+	/** @var string|null GENERATION_EXPRESSION, null when the column is not generated */
+	private $generationExpression;
+
 	/**
 	 * @param string $name COLUMN_NAME.
 	 * @param string $columnType COLUMN_TYPE as one opaque token, kept verbatim.
@@ -67,11 +70,10 @@ final class ColumnSchema
 	 * @param string|null $collation COLLATION_NAME, or null when it is the table default.
 	 * @param string $comment COLUMN_COMMENT, '' when absent.
 	 * @param int $position ORDINAL_POSITION.
-	 * @param string|null $ddl This column's line from SHOW CREATE TABLE, without
-	 *                           the trailing comma. Null on the live side, where
-	 *                           nothing renders from it.
+	 * @param string|null $ddl This column's line from SHOW CREATE TABLE, without the trailing comma; null on the live side.
+	 * @param string|null $generationExpression GENERATION_EXPRESSION, null when the column is not generated.
 	 */
-	public function __construct($name, $columnType, $nullable, $default, $extra, $charset, $collation, $comment, $position, $ddl = null)
+	public function __construct($name, $columnType, $nullable, $default, $extra, $charset, $collation, $comment, $position, $ddl = null, $generationExpression = null)
 	{
 		$this->name = (string) $name;
 		$this->columnType = trim((string) $columnType);
@@ -83,6 +85,7 @@ final class ColumnSchema
 		$this->comment = (string) $comment;
 		$this->position = (int) $position;
 		$this->ddl = ($ddl === null) ? null : (string) $ddl;
+		$this->generationExpression = ($generationExpression === null) ? null : (string) $generationExpression;
 	}
 
 	/**
@@ -103,7 +106,8 @@ final class ColumnSchema
 			$this->collation,
 			$this->comment,
 			$this->position,
-			$ddl
+			$ddl,
+			$this->generationExpression
 		);
 	}
 
@@ -193,6 +197,17 @@ final class ColumnSchema
 	}
 
 	/**
+	 * The body of a generated column's AS (...), in the server's own spelling, so
+	 * it is comparable only against a column read from the same server.
+	 *
+	 * @return string|null null when the column is not generated, and on any server that does not report it.
+	 */
+	public function getGenerationExpression()
+	{
+		return $this->generationExpression;
+	}
+
+	/**
 	 * Value equality over every field except {@see ColumnSchema::$position} and
 	 * {@see ColumnSchema::$ddl}.
 	 *
@@ -213,29 +228,29 @@ final class ColumnSchema
 			&& $this->extra === $other->extra
 			&& $this->charset === $other->charset
 			&& $this->collation === $other->collation
-			&& $this->comment === $other->comment;
+			&& $this->comment === $other->comment
+			&& $this->generationExpression === $other->generationExpression;
 	}
 
 	/**
-	 * Every identifying field, in constructor order, keyed by property name.
-	 * Includes position, which {@see ColumnSchema::equals()} ignores, and omits
-	 * the DDL, which is derived rather than identifying and is reached through
-	 * {@see ColumnSchema::getDdl()}.
+	 * Every identifying field, keyed by property name, with position included and
+	 * the DDL omitted.
 	 *
 	 * @return array
 	 */
 	public function toArray()
 	{
 		return array(
-			'name'       => $this->name,
-			'columnType' => $this->columnType,
-			'nullable'   => $this->nullable,
-			'default'    => $this->default,
-			'extra'      => $this->extra,
-			'charset'    => $this->charset,
-			'collation'  => $this->collation,
-			'comment'    => $this->comment,
-			'position'   => $this->position,
+			'name'                 => $this->name,
+			'columnType'           => $this->columnType,
+			'nullable'             => $this->nullable,
+			'default'              => $this->default,
+			'extra'                => $this->extra,
+			'charset'              => $this->charset,
+			'collation'            => $this->collation,
+			'comment'              => $this->comment,
+			'generationExpression' => $this->generationExpression,
+			'position'             => $this->position,
 		);
 	}
 }

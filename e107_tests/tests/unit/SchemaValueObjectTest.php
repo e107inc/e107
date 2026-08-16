@@ -67,14 +67,15 @@ class SchemaValueObjectTest extends \Test\Unit
 	public function testEveryOtherColumnFieldMakesColumnsUnequal()
 	{
 		$changes = array(
-			'name'       => 'user_name',
-			'columnType' => 'int(11)',
-			'nullable'   => true,
-			'default'    => '0',
-			'extra'      => '',
-			'charset'    => 'utf8mb4',
-			'collation'  => 'utf8mb4_general_ci',
-			'comment'    => 'the id',
+			'name'                 => 'user_name',
+			'columnType'           => 'int(11)',
+			'nullable'             => true,
+			'default'              => '0',
+			'extra'                => '',
+			'charset'              => 'utf8mb4',
+			'collation'            => 'utf8mb4_general_ci',
+			'comment'              => 'the id',
+			'generationExpression' => '`a` + `b`',
 		);
 
 		foreach($changes as $field => $value)
@@ -120,21 +121,23 @@ class SchemaValueObjectTest extends \Test\Unit
 	public function testColumnToArrayRoundTrips()
 	{
 		$column = $this->column(array(
-			'name'       => 'user_email',
-			'columnType' => 'varchar(100)',
-			'nullable'   => true,
-			'default'    => 'NULL',
-			'extra'      => '',
-			'charset'    => 'utf8mb4',
-			'collation'  => 'utf8mb4_unicode_ci',
-			'comment'    => 'primary address',
-			'position'   => 7,
+			'name'                 => 'user_email',
+			'columnType'           => 'varchar(100)',
+			'nullable'             => true,
+			'default'              => 'NULL',
+			'extra'                => '',
+			'charset'              => 'utf8mb4',
+			'collation'            => 'utf8mb4_unicode_ci',
+			'comment'              => 'primary address',
+			'generationExpression' => null,
+			'position'             => 7,
 		));
 
 		$fields = $column->toArray();
 
 		$this->assertSame(
-			array('name', 'columnType', 'nullable', 'default', 'extra', 'charset', 'collation', 'comment', 'position'),
+			array('name', 'columnType', 'nullable', 'default', 'extra', 'charset', 'collation', 'comment',
+				'generationExpression', 'position'),
 			array_keys($fields)
 		);
 		$this->assertSame('user_email', $fields['name']);
@@ -145,6 +148,7 @@ class SchemaValueObjectTest extends \Test\Unit
 		$this->assertSame('utf8mb4', $fields['charset']);
 		$this->assertSame('utf8mb4_unicode_ci', $fields['collation']);
 		$this->assertSame('primary address', $fields['comment']);
+		$this->assertNull($fields['generationExpression']);
 		$this->assertSame(7, $fields['position']);
 
 		$rebuilt = new ColumnSchema(
@@ -156,11 +160,66 @@ class SchemaValueObjectTest extends \Test\Unit
 			$fields['charset'],
 			$fields['collation'],
 			$fields['comment'],
-			$fields['position']
+			$fields['position'],
+			null,
+			$fields['generationExpression']
 		);
 
 		$this->assertTrue($rebuilt->equals($column));
 		$this->assertSame($fields, $rebuilt->toArray());
+	}
+
+	// --- a generated column's expression ----------------------------------
+
+	public function testAGeneratedColumnCarriesItsExpression()
+	{
+		$column = $this->column(array('columnType' => 'int(11)', 'extra' => 'stored generated',
+			'generationExpression' => '`a` + `b`'));
+
+		$this->assertSame('`a` + `b`', $column->getGenerationExpression());
+		$this->assertNull($this->column()->getGenerationExpression(), 'An ordinary column computes nothing.');
+	}
+
+	public function testTwoColumnsDifferingOnlyInTheirGenerationExpressionAreNotEqual()
+	{
+		$sum = $this->column(array('extra' => 'stored generated', 'generationExpression' => '`a` + `b`'));
+		$difference = $this->column(array('extra' => 'stored generated', 'generationExpression' => '`a` - `b`'));
+
+		$this->assertFalse($sum->equals($difference));
+		$this->assertFalse($difference->equals($sum));
+		$this->assertSame($sum->getExtra(), $difference->getExtra(), 'EXTRA cannot tell them apart.');
+		$this->assertFalse($sum->equals($this->column(array('extra' => 'stored generated'))),
+			'A generated column is not the same as one that computes nothing.');
+	}
+
+	public function testWithDdlKeepsTheGenerationExpression()
+	{
+		$column = $this->column(array('extra' => 'stored generated', 'generationExpression' => '`a` + `b`'));
+		$materialised = $column->withDdl('`total` int(11) GENERATED ALWAYS AS (`a` + `b`) STORED');
+
+		$this->assertSame('`a` + `b`', $materialised->getGenerationExpression());
+		$this->assertTrue($materialised->equals($column), 'The DDL is the only thing withDdl() adds.');
+	}
+
+	public function testTheGenerationExpressionIsAnIdentifyingField()
+	{
+		$fields = $this->column(array('generationExpression' => '`a` + `b`'))->toArray();
+		$keys = array_keys($fields);
+
+		$this->assertSame('`a` + `b`', $fields['generationExpression']);
+		$this->assertSame('generationExpression', $keys[8], 'It sits between the comment and the position.');
+	}
+
+	public function testAColumnBuiltWithoutAnExpressionHasNone()
+	{
+		$nine = new ColumnSchema('user_id', 'int(10) unsigned', false, null, 'auto_increment', null, null, '', 1);
+		$ten = new ColumnSchema('user_id', 'int(10) unsigned', false, null, 'auto_increment', null, null, '', 1,
+			'`user_id` int(10) unsigned NOT NULL AUTO_INCREMENT');
+
+		$this->assertNull($nine->getGenerationExpression());
+		$this->assertNull($ten->getGenerationExpression());
+		$this->assertTrue($nine->equals($ten));
+		$this->assertTrue($nine->equals($this->column()));
 	}
 
 	// --- IndexPart --------------------------------------------------------
@@ -562,16 +621,17 @@ class SchemaValueObjectTest extends \Test\Unit
 	private function column(array $overrides = array())
 	{
 		$fields = array_merge(array(
-			'name'       => 'user_id',
-			'columnType' => 'int(10) unsigned',
-			'nullable'   => false,
-			'default'    => null,
-			'extra'      => 'auto_increment',
-			'charset'    => null,
-			'collation'  => null,
-			'comment'    => '',
-			'position'   => 1,
-			'ddl'        => null,
+			'name'                 => 'user_id',
+			'columnType'           => 'int(10) unsigned',
+			'nullable'             => false,
+			'default'              => null,
+			'extra'                => 'auto_increment',
+			'charset'              => null,
+			'collation'            => null,
+			'comment'              => '',
+			'generationExpression' => null,
+			'position'             => 1,
+			'ddl'                  => null,
 		), $overrides);
 
 		return new ColumnSchema(
@@ -584,7 +644,8 @@ class SchemaValueObjectTest extends \Test\Unit
 			$fields['collation'],
 			$fields['comment'],
 			$fields['position'],
-			$fields['ddl']
+			$fields['ddl'],
+			$fields['generationExpression']
 		);
 	}
 
