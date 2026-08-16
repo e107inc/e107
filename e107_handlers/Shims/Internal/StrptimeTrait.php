@@ -43,9 +43,8 @@ trait StrptimeTrait
 	public static function strptime($date, $format)
 	{
 		$result = false;
-		if (function_exists('strptime') && (new \ReflectionFunction('strptime'))->isInternal())
-			// @ to suppress PHP 8.1 deprecation warning
-			$result = @strptime($date, $format);
+		if (PHP_VERSION_ID < 80100 && function_exists('strptime') && (new \ReflectionFunction('strptime'))->isInternal())
+			$result = strptime($date, $format);
 		if (!is_array($result))
 			$result = self::strptime_alt($date, $format);
 		return $result;
