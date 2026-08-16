@@ -14,31 +14,7 @@ use InvalidArgumentException;
 use RuntimeException;
 
 /**
- * Splits a `*_sql.php` schema file into one {@see DeclaredTable} per
- * `CREATE TABLE` statement.
- *
- * This is a statement splitter, not a schema parser. It finds where each
- * declaration starts and ends, lifts the table name and the table options, and
- * hands the body on verbatim; it never looks inside the body, because the
- * server is the only thing entitled to say what a column declaration means.
- *
- * The statement and table-option expressions are ported unchanged from
- * `db_verify::getSqlFileTables()`, along with the behaviour that has grown
- * around them over the years: block comments stripped first, the `e107_`
- * prefix dropped from the table name, `TYPE=` accepted as the pre-4.0 spelling
- * of `ENGINE=`, four spellings of the character-set option, tabs stripped from
- * the body, and `MYISAM` folded back to `MyISAM`. That expression is the one
- * part of the legacy parser worth keeping: it has been read against every
- * schema file e107 and its plugins ship for well over a decade.
- *
- * What is not ported is the shape of the answer. The legacy method returns four
- * parallel arrays keyed by ordinal, and the engine and character set arrays omit
- * any table that declares no options at all, so once one such table appears every
- * later engine in the file is attributed to the table before it. #5910 is the
- * same class of mistake one level up - a table filed under the wrong schema
- * file - and both come of keeping a table's facts beside it rather than on it.
- * Here each table is one object carrying its own declaring file, name, body,
- * engine and character set, so there is no index left to slip.
+ * Splits a `*_sql.php` schema file into one {@see DeclaredTable} per `CREATE TABLE` statement.
  *
  * <code>
  * $tables = (new SqlFileCatalogue())->parse(file_get_contents(e_CORE.'sql/core_sql.php'), 'core');
@@ -50,17 +26,17 @@ final class SqlFileCatalogue
 	/** @var string block comments, stripped before splitting */
 	const COMMENT_REGEX = "#\/\*.*?\*\/#mis";
 
-	/**
-	 * @var string one `CREATE TABLE` statement: 1 = name, 2 = body, 3 = the raw
-	 *      table-options tail. Ported verbatim from `db_verify::getSqlFileTables()`.
-	 */
-	const TABLE_REGEX = "/CREATE TABLE (?:IF NOT EXISTS )?`?(\w*)`?\s*?\(([^;]*)\)\s*((?:[\w\s]+=[^;]+)+\s*)*;/i";
+	/** @var string the head of one `CREATE TABLE` statement, up to and including its opening parenthesis: 1 = name */
+	const TABLE_REGEX = "/CREATE TABLE (?:IF NOT EXISTS )?`?(\w*)`?\s*?\(/i";
 
-	/** @var string one `name=value` table option within that tail */
-	const OPTION_REGEX = "/([\w\s]+=\s?\w+)+?\s*/";
+	/** @var string one token of the table-options tail: a quoted string, an `=`, or a bare word */
+	const OPTION_TOKEN_REGEX = "/'(?:\\\\.|''|[^'\\\\])*'|\"(?:\\\\.|\"\"|[^\"\\\\])*\"|`(?:``|[^`])*`|=|\w+/";
 
 	/** @var string the dump prefix a schema file may spell its tables with */
 	const DUMP_PREFIX = 'e107_';
+
+	/** @var string[] the quote characters a table option or a column comment may be wrapped in */
+	private static $quotes = array("'", '"', '`');
 
 	/**
 	 * A file that declares the same table twice keeps the last declaration.
@@ -88,32 +64,53 @@ final class SqlFileCatalogue
 		}
 
 		$tables = array();
+		$length = strlen($sqlText);
+		$offset = 0;
+		$statement = 0;
 
-		if(preg_match_all(self::TABLE_REGEX, $sqlText, $match) === false)
+		while($offset <= $length)
 		{
-			throw new RuntimeException('Could not read the CREATE TABLE statements in "'.$sqlFile.'": '.$this->_pcreError().'.');
-		}
+			$head = $this->_findHead($sqlText, $offset, $sqlFile);
 
-		if(empty($match[1]))
-		{
-			return $tables;
-		}
+			if($head === null)
+			{
+				break;
+			}
 
-		foreach($match[1] as $i => $rawName)
-		{
-			$name = $this->_stripPrefix($rawName);
+			$bodyStart = $head['offset'] + strlen($head['text']);
+			$offset = $bodyStart;
+
+			$bodyEnd = $this->_findBodyEnd($sqlText, $bodyStart);
+
+			if($bodyEnd === null)
+			{
+				continue;
+			}
+
+			$next = $this->_findHead($sqlText, $bodyEnd + 1, $sqlFile);
+			$end = $this->_findStatementEnd($sqlText, $bodyEnd + 1, $next === null ? $length : $next['offset']);
+
+			if($end === null)
+			{
+				continue;
+			}
+
+			$statement++;
+			$offset = $end + 1;
+
+			$name = $this->_stripPrefix($head['name']);
 
 			if($name === '')
 			{
-				throw new InvalidArgumentException('Unnamed CREATE TABLE statement in "'.$sqlFile.'" (statement '.($i + 1).').');
+				throw new InvalidArgumentException('Unnamed CREATE TABLE statement in "'.$sqlFile.'" (statement '.$statement.').');
 			}
 
-			$options = $this->_parseTableOptions(isset($match[3][$i]) ? $match[3][$i] : '');
+			$options = $this->_parseTableOptions((string) substr($sqlText, $bodyEnd + 1, $end - $bodyEnd - 1), $sqlFile);
 
 			$tables[$name] = new DeclaredTable(
 				$sqlFile,
 				$name,
-				$this->_cleanBody($match[2][$i]),
+				$this->_cleanBody((string) substr($sqlText, $bodyStart, $bodyEnd - $bodyStart)),
 				$options['engine'],
 				$options['charset']
 			);
@@ -123,9 +120,112 @@ final class SqlFileCatalogue
 	}
 
 	/**
-	 * Drop the dump prefix a schema file may have been exported with, so that
-	 * `e107_news` and `news` are the same table.
-	 *
+	 * @param string $sqlText
+	 * @param int $offset
+	 * @param string $sqlFile named in the refusal when PCRE gives up
+	 * @return array|null ['offset'=>int, 'text'=>string, 'name'=>string] for the next head at or after $offset, null when there is no further head
+	 * @throws RuntimeException
+	 */
+	private function _findHead($sqlText, $offset, $sqlFile)
+	{
+		$found = preg_match(self::TABLE_REGEX, $sqlText, $match, PREG_OFFSET_CAPTURE, $offset);
+
+		if($found === false)
+		{
+			throw new RuntimeException('Could not read the CREATE TABLE statements in "'.$sqlFile.'": '.$this->_pcreError().'.');
+		}
+
+		if(!$found)
+		{
+			return null;
+		}
+
+		return array('offset' => $match[0][1], 'text' => $match[0][0], 'name' => $match[1][0]);
+	}
+
+	/**
+	 * @param string $sqlText
+	 * @param int $bodyStart first character after the opening parenthesis
+	 * @return int|null offset of the parenthesis balancing the one the head opened, null when the body never closes
+	 */
+	private function _findBodyEnd($sqlText, $bodyStart)
+	{
+		$length = strlen($sqlText);
+		$depth = 1;
+
+		for($i = $bodyStart; $i < $length; $i++)
+		{
+			if(in_array($sqlText[$i], self::$quotes, true))
+			{
+				$i = $this->_skipQuoted($sqlText, $i);
+			}
+			elseif($sqlText[$i] === '(')
+			{
+				$depth++;
+			}
+			elseif($sqlText[$i] === ')' && --$depth === 0)
+			{
+				return $i;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * @param string $sqlText
+	 * @param int $tailStart first character after the closing parenthesis
+	 * @param int $limit offset the search stops at, being where the next declaration begins
+	 * @return int|null offset of the terminating semicolon, null when the statement never terminates
+	 */
+	private function _findStatementEnd($sqlText, $tailStart, $limit)
+	{
+		for($i = $tailStart; $i < $limit; $i++)
+		{
+			if(in_array($sqlText[$i], self::$quotes, true))
+			{
+				$i = $this->_skipQuoted($sqlText, $i);
+			}
+			elseif($sqlText[$i] === ';')
+			{
+				return $i;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * @param string $sqlText
+	 * @param int $start offset of the opening quote
+	 * @return int offset of the closing quote, or the end of the text when the string never closes
+	 */
+	private function _skipQuoted($sqlText, $start)
+	{
+		$length = strlen($sqlText);
+		$quote = $sqlText[$start];
+
+		for($i = $start + 1; $i < $length; $i++)
+		{
+			if($sqlText[$i] === '\\' && $quote !== '`')
+			{
+				$i++;
+			}
+			elseif($sqlText[$i] === $quote)
+			{
+				if(!isset($sqlText[$i + 1]) || $sqlText[$i + 1] !== $quote)
+				{
+					return $i;
+				}
+
+				$i++;
+			}
+		}
+
+		return $length;
+	}
+
+	/**
 	 * @param string $name
 	 * @return string $name without a leading `e107_`
 	 */
@@ -151,50 +251,42 @@ final class SqlFileCatalogue
 	}
 
 	/**
-	 * Engine and character set from the raw table-options tail.
+	 * Only `ENGINE` (or `TYPE`) and the character set are read; every other table option is walked past.
 	 *
-	 * Only the options the verify acts on are read; `AUTO_INCREMENT`, `COLLATE`,
-	 * `COMMENT` and the rest are matched and discarded. An option the expression
-	 * cannot see - most notably the equals-less `DEFAULT CHARACTER SET utf8mb4`
-	 * spelling - reads as "not declared", exactly as it did before.
-	 *
-	 * @param string $raw
-	 * @return array ['engine' => string|null, 'charset' => string|null]
+	 * @param string $raw everything between the closing parenthesis and the semicolon
+	 * @param string $sqlFile named in the refusal when PCRE gives up
+	 * @return array ['engine' => string|null, 'charset' => string|null], null where the file states nothing
+	 * @throws RuntimeException
 	 */
-	private function _parseTableOptions($raw)
+	private function _parseTableOptions($raw, $sqlFile)
 	{
 		$engine = null;
 		$charset = null;
 
-		$raw = (string) $raw;
-
-		if($raw !== '' && preg_match_all(self::OPTION_REGEX, $raw, $split))
+		if(preg_match_all(self::OPTION_TOKEN_REGEX, (string) $raw, $found) === false)
 		{
-			foreach($split[0] as $option)
+			throw new RuntimeException('Could not read the table options in "'.$sqlFile.'": '.$this->_pcreError().'.');
+		}
+
+		$tokens = $found[0];
+		$count = count($tokens);
+
+		for($i = 0; $i < $count; $i++)
+		{
+			$keyword = strtoupper($tokens[$i]);
+
+			if($keyword === 'ENGINE' || $keyword === 'TYPE')
 			{
-				$parts = explode('=', $option, 2);
-
-				if(count($parts) < 2)
-				{
-					continue;
-				}
-
-				$optionName = strtoupper(trim($parts[0]));
-				$optionValue = trim($parts[1]);
-
-				switch($optionName)
-				{
-					case 'ENGINE':
-					case 'TYPE':
-						$engine = $optionValue;
-						break;
-					case 'DEFAULT CHARSET':
-					case 'DEFAULT CHARACTER SET':
-					case 'CHARSET':
-					case 'CHARACTER SET':
-						$charset = $optionValue;
-						break;
-				}
+				$engine = $this->_optionValue($tokens, $i);
+			}
+			elseif($keyword === 'CHARSET')
+			{
+				$charset = $this->_optionValue($tokens, $i);
+			}
+			elseif($keyword === 'CHARACTER' && isset($tokens[$i + 1]) && strtoupper($tokens[$i + 1]) === 'SET')
+			{
+				$i++;
+				$charset = $this->_optionValue($tokens, $i);
 			}
 		}
 
@@ -207,8 +299,30 @@ final class SqlFileCatalogue
 	}
 
 	/**
-	 * The last PCRE failure, named where the runtime can name it.
-	 *
+	 * @param array $tokens
+	 * @param int $i index of the option name, advanced onto the value when one is found
+	 * @return string|null null when the value is quoted or missing
+	 */
+	private function _optionValue(array $tokens, &$i)
+	{
+		$at = $i + 1;
+
+		if(isset($tokens[$at]) && $tokens[$at] === '=')
+		{
+			$at++;
+		}
+
+		if(!isset($tokens[$at]) || in_array($tokens[$at][0], self::$quotes, true))
+		{
+			return null;
+		}
+
+		$i = $at;
+
+		return $tokens[$at];
+	}
+
+	/**
 	 * @return string
 	 */
 	private function _pcreError()

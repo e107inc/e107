@@ -2055,28 +2055,10 @@ class db_verify implements EngineCharsetResolverInterface
 	/**
 	 * Every table a `*_sql.php` file declares, in the legacy four parallel arrays, parsed by {@see SqlFileCatalogue}.
 	 *
-	 * The parsing itself belongs to {@see SqlFileCatalogue}, which is a port of
-	 * the expressions that used to live here; this method is the projection of
-	 * its answer back into the shape `load()`, the plugin installer
-	 * ({@see e107plugin}) and the plugin builder have always indexed by ordinal.
-	 * Keeping one parser is what keeps the two from drifting apart: the engine
-	 * and character set arrays used to be appended to while `tables` and `data`
-	 * were keyed, so a declaration stating no table options at all shifted every
-	 * later engine onto the table before it, and the installer then built a table
-	 * with another table's character set. On an object each fact sits on the
-	 * table that stated it and there is no index left to slip.
+	 * A file declaring the same table twice yields one entry, the last declaration; a statement naming no table is refused.
 	 *
-	 * Two differences from the expression this replaces, both deliberate: a file
-	 * declaring the same table twice now yields one entry, the last declaration,
-	 * which is what everything downstream keyed by table name already settled on;
-	 * and a statement naming no table at all is refused rather than recorded
-	 * under the empty name.
-	 *
-	 * @param string $sql_data contents of a `*_sql.php` file, or a SHOW CREATE
-	 *                         TABLE statement with a semicolon appended.
-	 * @return array|false ['tables'=>[], 'data'=>[], 'engine'=>[], 'charset'=>[]],
-	 *                     all keyed by the same ordinals; false when there is
-	 *                     nothing to read or the text cannot be parsed.
+	 * @param string $sql_data contents of a `*_sql.php` file, or a SHOW CREATE TABLE statement with a semicolon appended.
+	 * @return array|false ['tables'=>[], 'data'=>[], 'engine'=>[], 'charset'=>[]] keyed by the same ordinals; false when there is nothing to read or the text cannot be parsed.
 	 */
 	function getSqlFileTables($sql_data)
 	{
@@ -2114,7 +2096,6 @@ class db_verify implements EngineCharsetResolverInterface
 		if(empty($ret['tables']))
 		{
 			e107::getMessage()->addDebug("Unable to parse " . $this->currentTable . "_sql.php file data. Possibly missing a ';' at the end?");
-			e107::getMessage()->addDebug(print_a(SqlFileCatalogue::TABLE_REGEX, true));
 		}
 
 		return $ret;

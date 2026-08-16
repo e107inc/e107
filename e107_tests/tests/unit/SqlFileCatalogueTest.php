@@ -15,21 +15,8 @@ use e107\Database\Schema\Declared\SqlFileCatalogue;
  * {@see SqlFileCatalogue} read against a frozen copy of the parser it replaces,
  * over every `CREATE TABLE` e107 ships. Nothing here touches the database.
  *
- * `getSqlFileTables()` now delegates here, which means comparing the two at
- * runtime would be comparing this class against a projection of itself and
- * would pass however wrong the port was. The reference implementation is
- * therefore frozen into this file: {@see SqlFileCatalogueTest::legacyReferenceParse()}
- * is the body of `db_verify::getSqlFileTables()` as it stood on `master`
- * (@ ea0762ac7d), expressions and all, and the differential runs against that.
- * It is a fixture, not a dependency; it is not maintained alongside the class
- * under test, and that is the point.
- *
- * The examples that follow pin the cases the corpus happens not to contain,
- * including two legacy behaviours that are deliberately preserved rather than
- * quietly fixed, and one defect of the reference that the new return shape makes
- * unrepresentable.
- *
- * Nothing here touches the database.
+ * {@see SqlFileCatalogueTest::legacyReferenceParse()} is that frozen copy: a
+ * fixture, deliberately not maintained alongside the class under test.
  */
 class SqlFileCatalogueTest extends \Test\Unit
 {
@@ -171,18 +158,23 @@ class SqlFileCatalogueTest extends \Test\Unit
 	}
 
 	/**
-	 * The four spellings the legacy switch knows, all of which reach the same
-	 * field.
+	 * Every spelling MySQL accepts for the option, `=` optional and `DEFAULT` irrelevant.
 	 *
 	 * @return array
 	 */
 	public function charsetSpellings()
 	{
 		return array(
-			'DEFAULT CHARSET'       => array('DEFAULT CHARSET=utf8mb4'),
-			'DEFAULT CHARACTER SET' => array('DEFAULT CHARACTER SET=utf8mb4'),
-			'CHARSET'               => array('CHARSET=utf8mb4'),
-			'CHARACTER SET'         => array('CHARACTER SET=utf8mb4'),
+			'DEFAULT CHARSET'                  => array('DEFAULT CHARSET=utf8mb4'),
+			'DEFAULT CHARACTER SET'            => array('DEFAULT CHARACTER SET=utf8mb4'),
+			'CHARSET'                          => array('CHARSET=utf8mb4'),
+			'CHARACTER SET'                    => array('CHARACTER SET=utf8mb4'),
+			'DEFAULT CHARSET, no equals'       => array('DEFAULT CHARSET utf8mb4'),
+			'DEFAULT CHARACTER SET, no equals' => array('DEFAULT CHARACTER SET utf8mb4'),
+			'CHARSET, no equals'               => array('CHARSET utf8mb4'),
+			'CHARACTER SET, no equals'         => array('CHARACTER SET utf8mb4'),
+			'CHARSET, spaced equals'           => array('CHARSET = utf8mb4'),
+			'CHARACTER SET, spaced equals'     => array('CHARACTER SET = utf8mb4'),
 		);
 	}
 
@@ -197,30 +189,89 @@ class SqlFileCatalogueTest extends \Test\Unit
 		$this->assertSame('utf8mb4', $table->getDeclaredCharset());
 	}
 
-	/**
-	 * A legacy limitation, preserved on purpose. MySQL accepts
-	 * `DEFAULT CHARACTER SET utf8mb4` without an equals sign, but the ported
-	 * statement expression requires `name=value` in the options tail, so a
-	 * statement whose only option is spelled that way is not seen as a
-	 * `CREATE TABLE` at all. Widening the expression would change how every
-	 * body in the corpus is captured, which is a bigger change than this file
-	 * is allowed to make; it is recorded here so the next reader finds it
-	 * stated rather than discovers it.
-	 */
-	public function testCharacterSetWithoutAnEqualsSignIsInvisibleToTheSplitter()
+	public function testACharacterSetWithoutAnEqualsSignDeclaresTheTable()
 	{
 		$sql = "CREATE TABLE e107_foo (foo_id int(10) NOT NULL) DEFAULT CHARACTER SET utf8mb4;";
 
-		$this->assertSame(array(), $this->catalogue->parse($sql, 'core'));
-		$this->assertSame(array(), (new db_verify(false))->getSqlFileTables($sql)['tables'], 'The legacy parser misses it too.');
+		$table = $this->parseOne($sql);
+
+		$this->assertSame('foo', $table->getName());
+		$this->assertSame('utf8mb4', $table->getDeclaredCharset());
+		$this->assertNull($table->getDeclaredEngine());
+		$this->assertSame('foo_id int(10) NOT NULL', $table->getBody());
+
+		$reference = self::legacyReferenceParse($sql);
+
+		$this->assertSame(array(), $reference['tables'], 'The reference missed the statement entirely.');
 	}
 
-	public function testAnEqualsLessCharacterSetBesideAnEngineReadsAsNoCharset()
+	public function testAnEqualsLessCharacterSetBesideAnEngineReadsBoth()
 	{
 		$table = $this->parseOne("CREATE TABLE e107_foo (foo_id int(10) NOT NULL) ENGINE=InnoDB DEFAULT CHARACTER SET utf8mb4;");
 
 		$this->assertSame('InnoDB', $table->getDeclaredEngine());
+		$this->assertSame('utf8mb4', $table->getDeclaredCharset());
+	}
+
+	public function testAnEngineWithoutAnEqualsSignIsRead()
+	{
+		$table = $this->parseOne("CREATE TABLE e107_foo (foo_id int(10) NOT NULL) ENGINE InnoDB;");
+
+		$this->assertSame('InnoDB', $table->getDeclaredEngine());
 		$this->assertNull($table->getDeclaredCharset());
+	}
+
+	public function testTheLegacyTypeSpellingIsReadWithoutAnEqualsSignToo()
+	{
+		$table = $this->parseOne("CREATE TABLE e107_foo (foo_id int(10) NOT NULL) TYPE MYISAM;");
+
+		$this->assertSame('MyISAM', $table->getDeclaredEngine());
+	}
+
+	public function testAQuotedTableCommentDisturbsNeitherTheBodyNorTheOptions()
+	{
+		$sql = "CREATE TABLE e107_foo (foo_id int(10) NOT NULL) ENGINE=InnoDB COMMENT='has (parens) and ; semicolon' DEFAULT CHARSET=utf8mb4;";
+
+		$table = $this->parseOne($sql);
+
+		$this->assertSame('foo_id int(10) NOT NULL', $table->getBody());
+		$this->assertSame('InnoDB', $table->getDeclaredEngine());
+		$this->assertSame('utf8mb4', $table->getDeclaredCharset());
+	}
+
+	public function testAQuotedColumnCommentMayContainAParenthesisAndASemicolon()
+	{
+		$sql = "CREATE TABLE e107_foo (\n\tfoo_id int(10) NOT NULL COMMENT 'closes ) and ends ; nothing',\n\tfoo_name varchar(20) NOT NULL\n) ENGINE=InnoDB;";
+
+		$table = $this->parseOne($sql);
+
+		$this->assertSame(
+			"foo_id int(10) NOT NULL COMMENT 'closes ) and ends ; nothing',\nfoo_name varchar(20) NOT NULL",
+			$table->getBody()
+		);
+		$this->assertSame('InnoDB', $table->getDeclaredEngine());
+
+		$reference = self::legacyReferenceParse($sql);
+
+		$this->assertSame(array(), $reference['tables'], 'The reference missed the statement entirely.');
+	}
+
+	public function testUninterestingTableOptionsAreWalkedPast()
+	{
+		$table = $this->parseOne("CREATE TABLE e107_foo (foo_id int(10) NOT NULL) ENGINE=Aria AUTO_INCREMENT=17 DEFAULT CHARSET utf8mb4 COLLATE=utf8mb4_general_ci PAGE_CHECKSUM=1 TRANSACTIONAL=1 ROW_FORMAT=DYNAMIC;");
+
+		$this->assertSame('Aria', $table->getDeclaredEngine());
+		$this->assertSame('utf8mb4', $table->getDeclaredCharset());
+	}
+
+	public function testAStatementWithoutASemicolonDoesNotSwallowTheNextDeclaration()
+	{
+		$sql = "CREATE TABLE e107_a (a int) ENGINE=MyISAM\nCREATE TABLE e107_b (b int) ENGINE=InnoDB;";
+
+		$tables = $this->catalogue->parse($sql, 'core');
+
+		$this->assertSame(array('b'), array_keys($tables));
+		$this->assertSame('InnoDB', $tables['b']->getDeclaredEngine());
 	}
 
 	public function testTheUppercaseEngineSpellingIsCanonicalised()
@@ -233,6 +284,14 @@ class SqlFileCatalogueTest extends \Test\Unit
 	public function testTableOptionKeywordsAreReadCaseInsensitively()
 	{
 		$table = $this->parseOne("CREATE TABLE e107_foo (foo_id int(10) NOT NULL) engine=InnoDB default charset=utf8mb4;");
+
+		$this->assertSame('InnoDB', $table->getDeclaredEngine());
+		$this->assertSame('utf8mb4', $table->getDeclaredCharset());
+	}
+
+	public function testLowercaseKeywordsWithoutEqualsSignsAreReadToo()
+	{
+		$table = $this->parseOne("CREATE TABLE e107_foo (foo_id int(10) NOT NULL) engine InnoDB default character set utf8mb4;");
 
 		$this->assertSame('InnoDB', $table->getDeclaredEngine());
 		$this->assertSame('utf8mb4', $table->getDeclaredCharset());
@@ -261,25 +320,6 @@ class SqlFileCatalogueTest extends \Test\Unit
 
 	// --- the shape change ---------------------------------------------------
 
-	/**
-	 * The reference implementation returns `tables`, `data`, `engine` and
-	 * `charset` as parallel ordinal arrays, and appends to the last two rather
-	 * than keying them, skipping any table that declares no options at all. From
-	 * that table onwards every engine belongs to the wrong table: below, the
-	 * engine declared by `b` is reported against `a`, and `b` has none.
-	 *
-	 * That is not cosmetic. `db_verify::compare()` feeds the pair to the
-	 * materialiser, and `e107plugin`'s installer creates the table with it, so a
-	 * plugin schema file with one option-less declaration built every later table
-	 * in that file with another table's character set.
-	 *
-	 * This is the one place the catalogue is allowed to disagree with the
-	 * reference, and it is why the assertion below is on the frozen copy rather
-	 * than on the shipped method: each engine is a field on the table that
-	 * declared it, so there is no index left to slip, and
-	 * {@see SqlFileCatalogueTest::testTheLegacyProjectionKeepsEveryArrayInStepOverTheWholeCorpus()}
-	 * shows the shipped projection now keys them too.
-	 */
 	public function testTheLegacyOrdinalSlipIsUnrepresentable()
 	{
 		$sql = "CREATE TABLE e107_a (a int);\nCREATE TABLE e107_b (b int) ENGINE=MyISAM;";
@@ -352,26 +392,34 @@ class SqlFileCatalogueTest extends \Test\Unit
 		$this->catalogue->parse("CREATE TABLE e107_ (x int) ENGINE=MyISAM;", 'core');
 	}
 
-	/**
-	 * "This file declares no tables" and "the expression could not be run over
-	 * this file" are different answers, and reading the second as the first is
-	 * how a drifted table passes as clean: `db_verify` verifies what the
-	 * catalogue reports and nothing else. PCRE abandons a subject rather than
-	 * answering wrongly, and so does this.
-	 */
-	public function testAStatementExpressionThatPcreAbandonsIsRefused()
+	public function testALongBodyIsScannedRatherThanBacktrackedOver()
 	{
 		$sql = "CREATE TABLE e107_foo (".str_repeat("a int NOT NULL, ", 200)."b int) ENGINE=MyISAM;";
 
-		$this->assertCount(1, $this->catalogue->parse($sql, 'core'), 'The text parses at the default PCRE limits.');
+		$was = ini_get('pcre.backtrack_limit');
+		ini_set('pcre.backtrack_limit', '10');
 
-		$this->assertPcreFailureIsRefused($sql, 'CREATE TABLE statements');
+		try
+		{
+			$tables = $this->catalogue->parse($sql, 'core');
+			$reference = self::legacyReferenceParse($sql);
+			$thrown = null;
+		}
+		catch(\Exception $e)
+		{
+			$tables = array();
+			$reference = array('tables' => array('unread'));
+			$thrown = $e;
+		}
+
+		ini_set('pcre.backtrack_limit', $was);
+
+		$this->assertNull($thrown, 'The splitter must not need a backtrack budget to read a long body.');
+		$this->assertSame(array('foo'), array_keys($tables));
+		$this->assertSame('MyISAM', $tables['foo']->getDeclaredEngine());
+		$this->assertSame(array(), $reference['tables'], 'The reference gave up on the same text.');
 	}
 
-	/**
-	 * The same rule for the comment strip, which runs first and exhausts its
-	 * own budget.
-	 */
 	public function testACommentStripThatPcreAbandonsIsRefused()
 	{
 		$sql = "/*".str_repeat('x', 5000)."*/\nCREATE TABLE e107_foo (x int) ENGINE=MyISAM;";
@@ -423,13 +471,7 @@ class SqlFileCatalogueTest extends \Test\Unit
 	 * The body of `db_verify::getSqlFileTables()` as it stood on `master` at
 	 * ea0762ac7d, with the messages and the `$this->currentTable` reference dropped.
 	 *
-	 * A frozen fixture, deliberately not refactored and deliberately not shared
-	 * with the class it tests. `getSqlFileTables()` now delegates to
-	 * {@see SqlFileCatalogue}, so comparing the shipped method against the
-	 * catalogue would compare the catalogue against itself; this is the copy that
-	 * still knows what the old expressions did, including the ordinal slip
-	 * {@see SqlFileCatalogueTest::testTheLegacyOrdinalSlipIsUnrepresentable()}
-	 * pins as the one intended difference.
+	 * A frozen fixture: never refactor it or share it with the class it tests.
 	 *
 	 * @param string $sql_data
 	 * @return array ['tables'=>[], 'data'=>[], 'engine'=>[], 'charset'=>[]]
