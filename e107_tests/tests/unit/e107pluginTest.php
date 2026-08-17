@@ -485,7 +485,7 @@
 			  'link_id' => '12',
 			  'link_name' => 'LAN_MULTILAN_NAVICON',
 			  'link_url' => '#',
-			  'link_description' => '',
+			  'link_description' => 'Choose Language',
 			  'link_button' => '',
 			  'link_category' => '1',
 			  'link_order' => '11',
