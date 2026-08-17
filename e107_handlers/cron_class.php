@@ -26,6 +26,8 @@ define ('CRON_RETRIGGER_DEBUG', false);
  */
 class _system_cron
 {
+	const REDACTED = '[redacted]';
+
 	function __construct()
 	{
 		e107::coreLan('cron', true);
@@ -185,12 +187,12 @@ class _system_cron
 		}
 
 		$message .= "<h3>e107 PATHS</h3>";
-		$message .= $this->renderTable($userVars);
+		$message .= $this->renderTable($this->withoutSecrets($userVars));
 
 		$message .= "<h3>_SERVER</h3>";
 		$message .= $this->renderTable($this->withoutSecrets($_SERVER));
 		$message .= "<h3>_ENV</h3>";
-		$message .= $this->renderTable($_ENV);
+		$message .= $this->renderTable($this->withoutSecrets($_ENV));
 		$message .= "<h3>LAST ERROR</h3>";
 		$message .= "<pre>".print_r(error_get_last(), true)."</pre>";
 		$message .= "<h3>HEADERS LIST</h3>";
@@ -224,19 +226,68 @@ class _system_cron
 	/**
 	 * @param array $vars
 	 * @return array
-	 *   $vars without the keys that carry the request's token, its HTTP credentials or the request line.
+	 *   $vars without the keys that name a secret, and with every occurrence of a value e107
+	 *   knows to be secret replaced by {@see _system_cron::REDACTED}.
 	 */
 	private function withoutSecrets(array $vars)
 	{
-		foreach(array_keys($vars) as $key)
+		$secrets = $this->secretValues();
+
+		foreach($vars as $key => $value)
 		{
-			if(preg_match('/token|auth|argv|query_string|request_uri/i', $key))
+			if(preg_match('/token|auth|argv|query_string|request_uri|passw|secret/i', $key))
 			{
 				unset($vars[$key]);
+				continue;
 			}
+
+			$vars[$key] = $this->redact($value, $secrets);
 		}
 
 		return $vars;
+	}
+
+	/**
+	 * @param mixed $value
+	 * @param string[] $secrets
+	 * @return mixed
+	 *   $value with every occurrence of a secret replaced, recursing into arrays.
+	 */
+	private function redact($value, array $secrets)
+	{
+		if(is_array($value))
+		{
+			foreach($value as $key => $item)
+			{
+				$value[$key] = $this->redact($item, $secrets);
+			}
+
+			return $value;
+		}
+
+		if(!is_string($value))
+		{
+			return $value;
+		}
+
+		return str_replace($secrets, self::REDACTED, $value);
+	}
+
+	/**
+	 * @return string[]
+	 *   The values that must not leave the site in a diagnostic dump.
+	 */
+	private function secretValues()
+	{
+		$secrets = array();
+		$token = e107::getPref('e_cron_pwd');
+
+		if(is_string($token) && $token !== '')
+		{
+			$secrets[] = $token;
+		}
+
+		return $secrets;
 	}
 
 	/**
