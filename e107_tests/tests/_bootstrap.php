@@ -1,4 +1,13 @@
 <?php
+// Anything PHP prints before e107 boots costs the suite its session: once
+// headers are sent, session_start() returns false and never recovers. The
+// runner leaves display_errors on, and each PHP release finds something new
+// to say about Codeception (the backtick operator in its console width probe
+// on 8.5, spl_object_hash() on 8.6), so silence the display here rather than
+// chase the messages. log_errors still writes every one to stderr, and
+// Codeception still collects and reports them at the end of the run.
+ini_set('display_errors', '0');
+
 Codeception\Util\Autoload::addNamespace('', codecept_root_dir().'/tests/unit');
 
 define('PARAMS_GENERATOR', realpath(codecept_root_dir()."/lib/config.php"));

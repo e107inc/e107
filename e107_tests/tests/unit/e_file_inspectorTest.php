@@ -115,7 +115,7 @@ class e_file_inspectorTest extends \Codeception\Test\Unit
     private function createCustomPathFileInspector()
     {
         /** @var e_file_inspector $object */
-        $object = $this->make('e_file_inspector');
+        $object = $this->make('e_file_inspector_json');
         $class = new ReflectionClass(get_class($object));
         $object->customPathToDefaultPath('populate_cache');
         $member = $class->getProperty('customDirsCache');

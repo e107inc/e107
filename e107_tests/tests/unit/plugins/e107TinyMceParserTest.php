@@ -34,6 +34,8 @@
 
 		public function testToHtmlOnPlain()
 		{
+			$this->tm->setHtmlClass(e_UC_PUBLIC);
+
 			$test = 'Plain text paragraph 1
 
 Plain text &quot;paragraph&quot; 2
@@ -55,6 +57,8 @@ Plain text paragraph 3<br />';
 
 		public function testToHtmlOnBbcode()
 		{
+			$this->tm->setHtmlClass(e_UC_PUBLIC);
+
 			$test = '[b]Bold text[/b]
 			
 			paragraph 2
