@@ -30,12 +30,13 @@ jobs:
         # Old PHP is paired with old MySQL and new with new, which is how
         # these are actually deployed.
         #
-        # Every cell here was run before it was written down. The ceiling is
-        # 8.2, not the newest PHP: on 8.5 this branch reports 41 errors and
-        # 198 failures out of 429, because Codeception 4 and its PHPUnit 7
-        # wrapper trip the implicit-nullable deprecation throughout vendor
-        # code and the notices land in the responses the tests assert on.
-        # Raising it means a Codeception major bump, not a matrix edit.
+        # Every cell here was run before it was written down. The ceiling was
+        # 8.2 because e107 named E_STRICT while building its debug handler,
+        # which PHP 8.4 deprecates and which happens before class2.php
+        # narrows error_reporting: display_errors is on in this harness, so
+        # two notices arrived at the top of every response and twelve tests
+        # reading page content broke on them. Fixing that one file is enough
+        # to make all 439 pass on 8.5, in both layouts.
         #
         # Both layouts are tested because e107 derives e_HTTP from the
         # request and scopes its session cookie, its redirects and every
@@ -51,11 +52,11 @@ jobs:
             db: 'mysql:5.5'
             layout: subdirectory
             base_path: 'e107'
-          - php: '8.2'
+          - php: '8.5'
             db: 'mariadb:12.3'
             layout: docroot
             base_path: ''
-          - php: '8.2'
+          - php: '8.5'
             db: 'mariadb:12.3'
             layout: subdirectory
             base_path: 'e107'
