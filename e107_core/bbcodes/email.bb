@@ -7,18 +7,20 @@ global $pref;
 if($pref['make_clickable'])
 {
 
+	$tp = e107::getParser();
+
 	if($parm)
 	{
 		list($p1,$p2) = explode("@",$parm);
-		return "<a rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+\"".$p1."\"+\"@\"+\"".$p2."\";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+\"".$p1."\"+\"@\"+\"".$p2."\"; return true;' onmouseout='window.status=\"\";return true;'>".$code_text."</a>";
+		return "<a rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+".$tp->toJsString($p1)."+\"@\"+".$tp->toJsString($p2).";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+".$tp->toJsString($p1)."+\"@\"+".$tp->toJsString($p2)."; return true;' onmouseout='window.status=\"\";return true;'>".$code_text."</a>";
 	}
 	else
 	{
 		list($p1, $p2) = explode("@", $code_text);
-		
+
 		// CHARSET is utf-8 - email.bb too
 		$email_text = $p1.'©'.$p2;
-		return "<a rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+\"".$p1."\"+\"@\"+\"".$p2."\";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+\"".$p1."\"+\"@\"+\"".$p2."\"; return true;' onmouseout='window.status=\"\";return true;'>".$email_text."</a>";
+		return "<a rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+".$tp->toJsString($p1)."+\"@\"+".$tp->toJsString($p2).";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+".$tp->toJsString($p1)."+\"@\"+".$tp->toJsString($p2)."; return true;' onmouseout='window.status=\"\";return true;'>".$email_text."</a>";
 	}
 }
 // Old method that attracts SPAM.

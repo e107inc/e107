@@ -22,7 +22,7 @@ if(isset($parm_array[2]))
 	foreach($extraParms as $_parm => $_val)
 	{
 		if($_parm && $_val) {
-			$text .= "\t<param name='{$_parm}' value='{$_val}' />\n";
+			$text .= "\t<param name='".e107::getParser()->toAttribute($_parm)."' value='".e107::getParser()->toAttribute($_val)."' />\n";
 		}
 	}
 }
