@@ -349,17 +349,34 @@ class system_tools
 	}
 
 
-	// Developer Mode ONly.. No LANS required. 
+	/**
+	 * @return bool
+	 *   False when developer mode is off, after answering the administrator with the reason.
+	 */
+	private function githubSyncAllowed()
+	{
+		$pref = e107::pref();
+
+		if(!empty($pref['developer']))
+		{
+			return true;
+		}
+
+		e107::getMessage()->addError("Developer mode has to be enabled in order to use this functionality!");
+		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_112, e107::getMessage()->render());
+
+		return false;
+	}
+
+
+	// Developer Mode ONly.. No LANS required.
 	private function githubSync()
 	{
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
-		$pref = e107::pref();
 
-		if(empty($pref['developer']))
+		if(!$this->githubSyncAllowed())
 		{
-			e107::getMessage()->addError("Developer mode has to be enabled in order to use this functionality!");
-			e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_112, $mes->render());
 			return;
 		}
 
@@ -390,6 +407,11 @@ class system_tools
 	// Developer Mode ONly.. No LANS.
 	private function githubSyncProcess()
 	{
+		if(!$this->githubSyncAllowed())
+		{
+			return null;
+		}
+
 		$fl = e107::getFile();
 		$result = $fl->unzipGithubArchive('core');
 
