@@ -44,8 +44,8 @@ class e_url
 		$this->_alias           = e107::getPref('e_url_alias');
 
 		$this->_rootnamespace   = e107::getPref('url_main_module');
-		$this->_legacy          = e107::getPref('url_config');
-		$this->_legacyAliases   = e107::getPref('url_aliases');
+		$this->_legacy          = (array) e107::getPref('url_config');
+		$this->_legacyAliases   = (array) e107::getPref('url_aliases');
 
 
 		$this->setRootNamespace();
