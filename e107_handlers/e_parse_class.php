@@ -2216,6 +2216,25 @@ class e_parse
 	}
 
 	/**
+	 * Encode a value as a JavaScript string literal, delimiters included, for inline script.
+	 *
+	 * {@see toAttribute()} is not enough for a value that lands inside an on* handler or a
+	 * `javascript:` URL: the browser HTML-decodes the attribute before the script is
+	 * compiled, so an entity-encoded quote turns back into a real quote and closes the
+	 * literal. Quotes, angle brackets and ampersands leave here as \uXXXX escapes, which
+	 * survive that decode intact.
+	 *
+	 * @param string $text
+	 * @return string a complete JavaScript string literal, its delimiting quotes included
+	 */
+	public function toJsString($text)
+	{
+		$encoded = json_encode((string) $text, JSON_HEX_QUOT | JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP);
+
+		return $encoded === false ? '""' : $encoded;
+	}
+
+	/**
 	 * Build a series of HTML attributes from the provided array
 	 *
 	 * Because of legacy loose typing client code usages, values that are {@see empty()} will not be added to the
