@@ -1333,7 +1333,6 @@ class ThumbnailContainmentCest
 		ob_start();
 		imagepng($image);
 		$png = ob_get_clean();
-		imagedestroy($image);
 
 		return $png."\n".$text."\n";
 	}
@@ -1419,7 +1418,6 @@ class ThumbnailContainmentCest
 
 		if($width !== strlen(self::SECRET_SYSTEM)) // every sentinel is this long
 		{
-			imagedestroy($image);
 
 			return null;
 		}
@@ -1442,7 +1440,6 @@ class ThumbnailContainmentCest
 			}
 		}
 
-		imagedestroy($image);
 
 		return $text;
 	}

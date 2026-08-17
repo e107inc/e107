@@ -1212,13 +1212,13 @@ class e_db_mysql implements e_db
 					break;
 
 					case 'num':
-					case 2; // MYSQL_NUM: // 2
+					case 2: // MYSQL_NUM: // 2
 						$type = MYSQL_NUM;
 					break;
 
 					default:
 					case 'assoc':
-					case 1; //: // 1
+					case 1: //: // 1
 						$type = MYSQL_ASSOC;
 					break;
 				}
@@ -2305,7 +2305,7 @@ class e_db_mysql implements e_db
 
 		if(empty($fields))
 		{
-			$this->mysqlLastErrText = "copyRow \$fields list was empty";
+			$this->mySQLlastErrText = "copyRow \$fields list was empty";
 			return false;
 		}
 
@@ -2381,7 +2381,7 @@ class e_db_mysql implements e_db
 	 */
 	function backup($table='*', $file='', $options=null)
 	{
-		$this->mysqlLastErrText = "PDO is required to use the mysql backup() method";
+		$this->mySQLlastErrText = "PDO is required to use the mysql backup() method";
 		return false;
 	}
 

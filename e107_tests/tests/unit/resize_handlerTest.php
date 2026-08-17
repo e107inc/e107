@@ -490,7 +490,6 @@ class resize_handlerTest extends \Codeception\Test\Unit
 		$img = imagecreatetruecolor($width, $height);
 		imagefill($img, 0, 0, imagecolorallocate($img, 135, 206, 235));
 		imagejpeg($img, $path, 80);
-		imagedestroy($img);
 	}
 
 	/**

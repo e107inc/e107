@@ -16,6 +16,9 @@
 		private $structLabels;
 		private $userValues;
 		private $structRequired;
+		private $structValues;
+		private $structDefault;
+		private $structParent;
 
 		/** @var e107_user_extended */
 		protected $ue;

@@ -33,6 +33,8 @@ if(!is_object($cobj))
 
 class list_comment
 {
+	public $parent;
+
 	function __construct($parent)
 	{
 		$this->parent = $parent;

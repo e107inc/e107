@@ -395,7 +395,7 @@
 			$options['uniqueId'] = (string) $this->uniqueId;
 			$options['menuArea'] = (int) $this->eMenuArea;
 			$options['menuCount'] = $this->eMenuCount;
-			$options['menuTotal'] = (int) varset($this->eMenuTotal[$this->eMenuArea]);
+			$options['menuTotal'] = (int) ($this->eMenuArea !== null ? varset($this->eMenuTotal[$this->eMenuArea]) : '');
 			$options['setStyle'] = (string) $this->eSetStyle;
 
 			$options['caption'] = e107::getParser()->toText($caption);
@@ -415,7 +415,7 @@
 				$this->styleCount[$this->eSetStyle]++;
 			}
 
-			$options['styleCount'] = varset($this->styleCount[$this->eSetStyle]);
+			$options['styleCount'] = $this->eSetStyle !== null ? varset($this->styleCount[$this->eSetStyle]) : '';
 
 
 			//XXX Optional feature may be added if needed - define magic shortcodes inside $thm class. eg. function msc_custom();

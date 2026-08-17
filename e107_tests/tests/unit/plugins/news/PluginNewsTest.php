@@ -100,13 +100,10 @@ class PluginNewsTest extends \Codeception\Test\Unit
 		include_once e_PLUGIN . "news/news.php";
 		$news = new news_front();
 
-		$reflection = new ReflectionClass($news);
-		$property   = $reflection->getProperty("subAction");
-		$property->setAccessible(true);
+		$property = new \e107\Reflection\ReflectionProperty($news, "subAction");
 		$property->setValue($news, current($rows)["news_id"]);
 
-		$method = $reflection->getMethod("renderViewTemplate");
-		$method->setAccessible(true);
+		$method = new \e107\Reflection\ReflectionMethod($news, "renderViewTemplate");
 		try
 		{
 			$method->invoke($news);
@@ -116,8 +113,7 @@ class PluginNewsTest extends \Codeception\Test\Unit
 			$this->fail("ReflectionException: " . $e->getMessage());
 		}
 
-		$property = $reflection->getProperty("currentRow");
-		$property->setAccessible(true);
+		$property = new \e107\Reflection\ReflectionProperty($news, "currentRow");
 
 		return $property->getValue($news);
 	}

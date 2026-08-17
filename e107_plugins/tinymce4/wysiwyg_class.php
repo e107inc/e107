@@ -1010,7 +1010,7 @@ class wysiwyg
 		$ret = array();
 		foreach($files as $f)
 		{
-			$content = file_get_contents($f['path'].$f['fname'], null, null, null, 140);
+			$content = file_get_contents($f['path'].$f['fname'], false, null, 0, 140);
 
 			preg_match('/<!--[^\w]*Title:[\s]([^\r\n]*)[\s]*Info: ?([^\r\n]*)/is', $content, $m);
 			if(!empty($m[1]))

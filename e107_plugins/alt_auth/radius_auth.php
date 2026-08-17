@@ -44,7 +44,7 @@ class auth_login extends alt_auth_base
 	/**
 	 *	Read configuration, initialise connection to LDAP database
 	 *
-	 *	@return int AUTH_xxxx result code
+	 *	{@see auth_login::$Available} says whether it worked.
 	 */
 	function __construct()
 	{
@@ -67,15 +67,14 @@ class auth_login extends alt_auth_base
 		$this->ErrorText = '';
 		if(!function_exists('radius_auth_open'))
 		{
-			return AUTH_NORESOURCE;
+			return;
 		}
 
 		if(!$this -> connect())
 		{
-			return AUTH_NOCONNECT;
+			return;
 		}
 		$this->Available = TRUE;
-		return AUTH_SUCCESS;
 	}
 
 

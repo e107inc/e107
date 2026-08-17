@@ -1,5 +1,7 @@
 <?php
 
+use e107\Reflection\ReflectionMethod;
+
 class TreeModelTest extends \Codeception\Test\Unit
 {
     /**
@@ -13,10 +15,7 @@ class TreeModelTest extends \Codeception\Test\Unit
 
     protected function _before()
     {
-        $class = new \ReflectionClass('e_tree_model');
-
-        $method = $class->getMethod('arrayToTree');
-        $method->setAccessible(true);
+        $method = new ReflectionMethod('e_tree_model', 'arrayToTree');
         $this->tree = $method->invoke(null, $this->sample_rows, $this->sample_key, $this->sample_parent_key);
     }
 
@@ -64,10 +63,7 @@ class TreeModelTest extends \Codeception\Test\Unit
 
     public function testTreeValuesAreFlattenedInExpectedOrder()
     {
-        $class = new \ReflectionClass('e_tree_model');
-
-        $method = $class->getMethod('flattenTree');
-        $method->setAccessible(true);
+        $method = new ReflectionMethod('e_tree_model', 'flattenTree');
         $rows = $method->invoke(null, $this->tree, 'link_order', 1);
 
 	$expected = ['General', 'Home', 'Downloads', 'Members', 'Online Users',
@@ -89,9 +85,7 @@ class TreeModelTest extends \Codeception\Test\Unit
         $tree_model = $this->make('e_tree_model');
         $tree_model->setParam('db_query', 'ORDER BY n.news_sticky DESC, n.news_datestamp DESC LIMIT 4');
 
-        $class = new \ReflectionClass(get_class($tree_model));
-        $method = $class->getMethod('prepareSimulatedPagination');
-        $method->setAccessible(true);
+        $method = new ReflectionMethod($tree_model, 'prepareSimulatedPagination');
         $method->invoke($tree_model);
 
         $this->assertEquals('ORDER BY n.news_sticky DESC, n.news_datestamp DESC', trim($tree_model->getParam('db_query')));
@@ -104,9 +98,7 @@ class TreeModelTest extends \Codeception\Test\Unit
         $tree_model = $this->make('e_tree_model');
         $tree_model->setParam('db_query', 'ORDER BY n.news_sticky DESC, n.news_datestamp DESC LIMIT 79,163');
 
-        $class = new \ReflectionClass(get_class($tree_model));
-        $method = $class->getMethod('prepareSimulatedPagination');
-        $method->setAccessible(true);
+        $method = new ReflectionMethod($tree_model, 'prepareSimulatedPagination');
         $method->invoke($tree_model);
 
         $this->assertEquals('ORDER BY n.news_sticky DESC, n.news_datestamp DESC', trim($tree_model->getParam('db_query')));
@@ -117,9 +109,7 @@ class TreeModelTest extends \Codeception\Test\Unit
     public function testMultiFieldCompareWithSortFieldsReturnsExpectedValues()
     {
     	$tree_model = $this->make('e_tree_model');
-	$class = new \ReflectionClass(get_class($tree_model));
-	$method = $class->getMethod('multiFieldCmp');
-	$method->setAccessible(true);
+	$method = new ReflectionMethod($tree_model, 'multiFieldCmp');
 
 	$row1 = array(
 	    'field1' => '0',
@@ -154,9 +144,7 @@ class TreeModelTest extends \Codeception\Test\Unit
     public function testMultiFieldCompareWithSortFieldReturnsExpectedValues()
     {
     	$tree_model = $this->make('e_tree_model');
-	$class = new \ReflectionClass(get_class($tree_model));
-	$method = $class->getMethod('multiFieldCmp');
-	$method->setAccessible(true);
+	$method = new ReflectionMethod($tree_model, 'multiFieldCmp');
 
 	$row1 = array(
 	    'field1' => '0',

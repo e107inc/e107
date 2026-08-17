@@ -8,6 +8,8 @@
  *
  */
 
+use e107\Reflection\ReflectionMethod;
+
 /**
  * Covers e107::isAllowedHost(), the private helper that decides whether
  * `$_SERVER['HTTP_HOST']` is acceptable given the configured siteurl host,
@@ -54,11 +56,8 @@ class e107HostValidationTest extends \Codeception\Test\Unit
 			self::fail("Couldn't load e107 object");
 		}
 
-		$reflection = new ReflectionClass($this->e107);
-		$this->isAllowedHost = $reflection->getMethod('isAllowedHost');
-		$this->isAllowedHost->setAccessible(true);
-		$this->resolveHttpHost = $reflection->getMethod('resolveHttpHost');
-		$this->resolveHttpHost->setAccessible(true);
+		$this->isAllowedHost = new ReflectionMethod($this->e107, 'isAllowedHost');
+		$this->resolveHttpHost = new ReflectionMethod($this->e107, 'resolveHttpHost');
 	}
 
 	protected function _after()

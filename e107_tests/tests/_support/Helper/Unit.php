@@ -55,12 +55,11 @@ class Unit extends E107Base
 	 * @param \Codeception\TestInterface|null $test
 	 * @return void
 	 */
-	public function _before(\Codeception\TestInterface $test = null)
+	public function _before($test = null)
 	{
 		parent::_before($test);
 
-		$scClasses = new \ReflectionProperty('e_parse_shortcode', 'scClasses');
-		$scClasses->setAccessible(true);
+		$scClasses = new \e107\Reflection\ReflectionProperty('e_parse_shortcode', 'scClasses');
 
 		foreach($scClasses->getValue(\e107::getScParser()) as $batch)
 		{

@@ -20,6 +20,8 @@ if (!defined('e107_INIT')) { exit; }
 
 class list_members
 {
+	public $parent;
+
 	function __construct($parent)
 	{
 		$this->parent = $parent;

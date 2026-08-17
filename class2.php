@@ -2021,8 +2021,15 @@ class error_handler
 
 	function __construct()
 	{
-		$this->label = array(E_NOTICE => "Notice", E_WARNING => "Warning", E_DEPRECATED => "Deprecated", E_STRICT => "Strict");
-		$this->color = array(E_NOTICE=> 'info', E_WARNING=>'warning', E_DEPRECATED => 'danger', E_STRICT => 'primary');
+		$this->label = array(E_NOTICE => "Notice", E_WARNING => "Warning", E_DEPRECATED => "Deprecated");
+		$this->color = array(E_NOTICE=> 'info', E_WARNING=>'warning', E_DEPRECATED => 'danger');
+
+		if(PHP_VERSION_ID < 80000)
+		{
+			$this->label[E_STRICT] = "Strict";
+			$this->color[E_STRICT] = 'primary';
+		}
+
 		$this->docroot = e_ROOT; // dirname(realpath(__FILE__)).DIRECTORY_SEPARATOR;
 
 		// This is initialized before the current debug level is known
@@ -2043,7 +2050,7 @@ class error_handler
 
 		if(!empty($_E107['cli']))
 		{
-			error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE);
+			error_reporting(PHP_VERSION_ID < 80000 ? E_ALL & ~E_STRICT & ~E_NOTICE : E_ALL & ~E_NOTICE);
 			return;
 		}
 
@@ -2388,7 +2395,7 @@ class e_http_header
 				{
 				    date_default_timezone_set('UTC');
 				}
-				$time = time()+ (integer) e107::getPref('site_page_expires');
+				$time = time()+ (int) e107::getPref('site_page_expires');
 				$this->setHeader('Expires: '.gmdate("D, d M Y H:i:s", $time).' GMT', true);
 			}
 		}

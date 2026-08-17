@@ -2089,9 +2089,7 @@ class e107
 		trigger_error('<b>'.__METHOD__.' is deprecated.</b>  Use the e_user_provider interfaces instead (e107::getUserProvider())', E_USER_DEPRECATED); // NO LAN
 
 		$e_user_provider = new e_user_provider(null, $config);
-		$reflection = new ReflectionClass('e_user_provider');
-		$reflection_property = $reflection->getProperty('hybridauth');
-		$reflection_property->setAccessible(true);
+		$reflection_property = new \e107\Reflection\ReflectionProperty('e_user_provider', 'hybridauth');
 		return $reflection_property->getValue($e_user_provider);
 	}
 
@@ -6598,6 +6596,13 @@ class e107
 	 */
 	public function __get($name)
 	{
+		static $instances = array();
+
+		if(isset($instances[$name]))
+		{
+			return $instances[$name];
+		}
+
 		switch ($name)
 		{
 			case 'tp':
@@ -6658,7 +6663,8 @@ class e107
 			break;
 		}
 
-		$this->$name = $ret;
+		$instances[$name] = $ret;
+
 		return $ret;
 	}
 

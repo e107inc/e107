@@ -159,7 +159,7 @@ class redirection
 		if($session->has($name))
 		{
 			// expired - cookie like session implementation
-			if((integer) $session->get($name.'_expire') < time())
+			if((int) $session->get($name.'_expire') < time())
 			{
 				$session->clear($name.'_expire')
 					->clear($name);
@@ -191,12 +191,12 @@ class redirection
 		if(!$forceCookie && e107::getPref('cookie_name') != 'cookie')
 		{
 			// expired - cookie like session implementation
-			if(null !== $expire) $session->set($name.'_expire', time() + (integer) $expire); 
+			if(null !== $expire) $session->set($name.'_expire', time() + (int) $expire); 
 			$session->set($name, $value);
 		}
 		else
 		{
-			cookie($cookiename, $value, time() + (integer) $expire, e_HTTP, e107::getLanguage()->getCookieDomain());
+			cookie($cookiename, $value, time() + (int) $expire, e_HTTP, e107::getLanguage()->getCookieDomain());
 		}
 
 		return $this;

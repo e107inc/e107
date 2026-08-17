@@ -1919,7 +1919,7 @@ class e_session_db #implements SessionHandlerInterface
 				$this->_lifetime = 3600;
 			}
 		}
-		return (integer) $this->_lifetime;
+		return (int) $this->_lifetime;
 	}
 	
 	/**

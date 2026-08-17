@@ -96,14 +96,14 @@ class installStateTest extends \Codeception\Test\Unit
 	{
 		$bs = new ReflectionClass('GuzzleHttp\\Psr7\\BufferStream');
 		$buffer = $bs->newInstanceWithoutConstructor();
-		$p = $bs->getProperty('hwm');    $p->setAccessible(true); $p->setValue($buffer, 16384);
-		$p = $bs->getProperty('buffer'); $p->setAccessible(true); $p->setValue($buffer, '');
+		$p = new \e107\Reflection\ReflectionProperty($buffer, 'hwm');    $p->setValue($buffer, 16384);
+		$p = new \e107\Reflection\ReflectionProperty($buffer, 'buffer'); $p->setValue($buffer, '');
 
 		$ps = new ReflectionClass('GuzzleHttp\\Psr7\\PumpStream');
 		$stream = $ps->newInstanceWithoutConstructor();
 		foreach (array('source' => $sink, 'buffer' => $buffer, 'size' => null, 'tellPos' => 0, 'metadata' => array()) as $k => $v)
 		{
-			$p = $ps->getProperty($k); $p->setAccessible(true); $p->setValue($stream, $v);
+			$p = new \e107\Reflection\ReflectionProperty($stream, $k); $p->setValue($stream, $v);
 		}
 
 		return base64_encode(serialize(array('paths' => array('hash' => $stream))));

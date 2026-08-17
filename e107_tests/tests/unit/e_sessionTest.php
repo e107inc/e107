@@ -278,8 +278,7 @@
 					$_SERVER['HTTP_ORIGIN'] = $origin;
 				}
 
-				$method = new ReflectionMethod('e_core_session', 'fetchMetadataVouches');
-				$method->setAccessible(true);
+				$method = new \e107\Reflection\ReflectionMethod('e_core_session', 'fetchMetadataVouches');
 
 				return $method->invoke(null, $mode);
 			};
@@ -335,8 +334,7 @@
 					$_SERVER['HTTP_ORIGIN'] = $origin;
 				}
 
-				$method = new ReflectionMethod('e_core_session', 'fetchMetadataDisavows');
-				$method->setAccessible(true);
+				$method = new \e107\Reflection\ReflectionMethod('e_core_session', 'fetchMetadataDisavows');
 
 				return $method->invoke(null, $mode);
 			};

@@ -1902,7 +1902,7 @@ class e_parse
 		}
 		elseif (is_string($mixed))
 		{
-			return iconv('UTF-8', 'UTF-8//IGNORE', utf8_encode($mixed));
+			return iconv('ISO-8859-1', 'UTF-8', $mixed);
 		}
 
 		return $mixed;
@@ -5482,10 +5482,9 @@ class e_parse
 		// Set it up for processing.
 
 		libxml_use_internal_errors(true);
-		if (function_exists('mb_convert_encoding'))
+		if (function_exists('mb_encode_numericentity'))
 		{
-			$html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
-
+			$html = mb_encode_numericentity($html, array(0x80, 0x10FFFF, 0, 0x1FFFFF), 'UTF-8');
 		}
 
 		//	$fragment = $doc->createDocumentFragment();

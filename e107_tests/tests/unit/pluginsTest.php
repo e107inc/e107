@@ -642,15 +642,13 @@
 
 			try
 			{
-				$reflectionClass = new ReflectionClass($class_name_that_has_plugin_addons_array);
+				$reflectionProperty = new \e107\Reflection\ReflectionProperty($class_name_that_has_plugin_addons_array, 'plugin_addons');
 			}
 			catch(ReflectionException $e)
 			{
 				$this->fail("Could not instantiate $class_name_that_has_plugin_addons_array to get \$plugin_addons");
 			}
 
-			$reflectionProperty = $reflectionClass->getProperty('plugin_addons');
-			$reflectionProperty->setAccessible(true);
 			$valid_plugin_addon_names = $reflectionProperty->getValue(new $class_name_that_has_plugin_addons_array());
 
 			$plugin_addon_names = array_filter($plugin_addon_names, function ($plugin_addon_name) use ($valid_plugin_addon_names)

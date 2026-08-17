@@ -156,7 +156,7 @@ class e_user_model extends e_admin_model
 	 */
 	public function getId()
 	{
-		return (integer) parent::getId();
+		return (int) parent::getId();
 	}
 
 	/**
@@ -570,7 +570,7 @@ class e_user_model extends e_admin_model
 	 */
 	final public function hasBan()
 	{
-		return ((integer) $this->get('user_ban') === 1);
+		return ((int) $this->get('user_ban') === 1);
 	}
 
 	/**
@@ -578,7 +578,7 @@ class e_user_model extends e_admin_model
 	 */
 	final public function hasRestriction()
 	{
-		return ((integer) $this->get('user_ban') !== 0);
+		return ((int) $this->get('user_ban') !== 0);
 	}
 
 	/**
@@ -2214,7 +2214,7 @@ class e_user extends e_user_model
 
 			if($this->get('user_currentvisit') + 3600 < time() || !$this->get('user_lastvisit'))
 			{
-				$this->set('user_lastvisit', (integer) $this->get('user_currentvisit'));
+				$this->set('user_lastvisit', (int) $this->get('user_currentvisit'));
 				$this->set('user_currentvisit', time());
 				$sql->update('user', "user_visits = user_visits + 1, user_lastvisit = ".$this->get('user_lastvisit').", user_currentvisit = ".$this->get('user_currentvisit').$update_ip." WHERE user_id = ".$this->getId()." LIMIT 1 ");
 			}
@@ -2437,7 +2437,7 @@ class e_user_extended_model extends e_admin_model
 	 */
 	public function getId()
 	{
-		return (integer) parent::getId();
+		return (int) parent::getId();
 	}
 
 	/**
