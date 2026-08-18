@@ -6528,7 +6528,7 @@ class e_admin_ui extends e_admin_controller_ui
         if($scount > 0)
         {
 			e107::getMessage()->addSuccess(LAN_CREATED. ' (' .$scount. ') ' .defset('LAN_PLUGIN_FEATUREBOX_NAME'));
-			e107::getMessage()->addSuccess("<a class='btn btn-small btn-primary' href='".e_PLUGIN_ABS."featurebox/admin_config.php?searchquery=&filter_options=fb_category__{$category}' ".LAN_CONFIGURE. ' ' .LAN_PLUGIN_FEATUREBOX_NAME. '</a>');
+			e107::getMessage()->addSuccess("<a class='btn btn-small btn-primary' href='".e_PLUGIN_ABS."featurebox/admin_config.php?searchquery=&filter_options=fb_category__{$category}'>".LAN_CONFIGURE. ' ' .LAN_PLUGIN_FEATUREBOX_NAME. '</a>');
 			return $scount;        
         }
 
