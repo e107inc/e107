@@ -543,21 +543,7 @@ class news {
 				$parms['mode'] = 'news_grid_menu';
 			}
 
-		//	$gridSize       = vartrue($parms['layout'],'col-md-4');
-
-			$parmSrch       = array(
-								'{NEWSGRID}',
-								'_titleLimit_',
-								'_summaryLimit_'
-							);
-
-			$parmReplace    = array(
-							//	$gridSize,
-							//	vartrue($parms['titleLimit'], 0),
-						//		vartrue($parms['summaryLimit'], 0)
-							);
-
-			$template = str_replace($parmSrch , '', $template); // clean up deprecated elements.
+			$template = str_replace(array('{NEWSGRID}', '_titleLimit_', '_summaryLimit_'), '', $template); // clean up deprecated elements.
 
 			$render = (empty($parms['caption'])) ? false: true;
 
