@@ -18,6 +18,54 @@ class PluginNewsTest extends \Codeception\Test\Unit
 		$this->assertEquals("news.php?list.579773.0", $output);
 	}
 
+	/**
+	 * @see https://github.com/e107inc/e107/issues/5955
+	 */
+	public function testNewsGridMenuOffersTheFeaturedParmTheRendererReads()
+	{
+		$fields = $this->newsGridMenuFields();
+
+		$this->assertArrayHasKey(
+			"featured",
+			$fields,
+			"e_news_tree::render() reads \$parms['featured'], and menu_class::updateParms() "
+			. "stores each posted value under its field name verbatim, so the News Grid menu "
+			. "field has to be named 'featured' for the setting to reach the renderer."
+		);
+		$this->assertArrayNotHasKey(
+			"feature",
+			$fields,
+			"Nothing reads \$parms['feature']; a field of that name is saved and never used."
+		);
+
+		$this->assertArrayHasKey("count", $fields);
+		$this->assertArrayHasKey("titleLimit", $fields);
+		$this->assertArrayHasKey("summaryLimit", $fields);
+	}
+
+	/**
+	 * @see https://github.com/e107inc/e107/issues/5955
+	 */
+	public function testNewsGridMenuFeaturedCountSurvivesToTheRenderedGrid()
+	{
+		$fields = $this->newsGridMenuFields();
+		$posted = array("count" => 3, "layout" => "col-md-4");
+
+		$plain = $this->renderNewsGrid(array_intersect_key($posted, $fields));
+		$featured = $this->renderNewsGrid(
+			array_intersect_key(array_merge($posted, array("featured" => 1)), $fields)
+		);
+
+		$this->assertStringNotContainsString("row featured", $plain);
+		$this->assertStringContainsString(
+			"row featured",
+			$featured,
+			"menu_class::updateParms() keeps only the keys config('news_grid') declares, so a "
+			. "featured count typed into the Menu Manager reaches e_news_tree::render() only "
+			. "while the field carries the name the renderer reads."
+		);
+	}
+
 	public function testNewsFrontCategoryUrl()
 	{
 		$payload = $this->simulateShowNewsItem();
@@ -83,6 +131,28 @@ class PluginNewsTest extends \Codeception\Test\Unit
 			e107::getUrl()->front()->setRouter($oldRouter);
 			e107::getConfig()->set('url_config', $oldUrlConfig);
 		}
+	}
+
+	/**
+	 * @return array
+	 */
+	private function newsGridMenuFields()
+	{
+		require_once e_PLUGIN . "news/e_menu.php";
+		$menu = new news_menu();
+
+		return $menu->config("news_grid");
+	}
+
+	/**
+	 * @param $parms array
+	 * @return string
+	 */
+	private function renderNewsGrid($parms)
+	{
+		e107::getCache()->clear("nq_news_grid_menu_" . md5(serialize($parms)));
+
+		return $this->make("news")->render_newsgrid($parms);
 	}
 
 	/**
