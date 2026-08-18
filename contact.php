@@ -237,6 +237,8 @@ class contact_front
 				<tr>
 				<td>IP:</td><td>" . e107::getIPHandler()->getIP(true) . "</td></tr>";
 
+			$body .= "<tr><td>" . LAN_EMAIL . ":</td><td>" . $tp->toEmail($sender, true, 'RAWTEXT') . "</td></tr>";
+
 			if(USER)
 			{
 				$body .= "<tr><td>User:</td><td>#" . USERID . " " . USERNAME . "</td></tr>";
