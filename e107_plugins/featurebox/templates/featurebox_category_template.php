@@ -132,6 +132,9 @@ $FEATUREBOX_CATEGORY_TEMPLATE['default']['item_empty'] = '';
 // inline JS, without <script> tags
 //$FEATUREBOX_CATEGORY_TEMPLATE['default']['js_inline'] = '';
 
+// tablerender() caption, parsed against the category. Omit for the plugin name, set '' for no heading.
+//$FEATUREBOX_CATEGORY_TEMPLATE['default']['caption'] = '{FEATUREBOX_CATEGORY_TITLE}';
+
 
 
 

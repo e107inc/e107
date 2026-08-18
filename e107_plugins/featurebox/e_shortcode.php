@@ -117,7 +117,7 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 			return $ret;
 		}
 		
-		return e107::getRender()->tablerender(LAN_PLUGIN_FEATUREBOX_NAME, $ret, vartrue($parm['tablestyle'], 'featurebox'), true);
+		return e107::getRender()->tablerender($this->caption($tmpl, $category), $ret, vartrue($parm['tablestyle'], 'featurebox'), true);
 	}
 	
 	/**
@@ -451,6 +451,27 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 			$tmpl = e107::getTemplate('featurebox', 'featurebox_category', 'default', false); //plugin default
 		}
 		return $tmpl;
+	}
+
+	/**
+	 * Caption a category template hands to {@see e_render::tablerender()}.
+	 *
+	 * The 'caption' key is parsed against the category model, so it reaches the
+	 * same shortcodes as 'list_start'. Absent, it falls back to the plugin name;
+	 * present but empty, it is honoured and the wrapper renders with no heading.
+	 *
+	 * @param array $tmpl category template, from {@see featurebox_shortcodes::getFboxTemplate()}
+	 * @param plugin_featurebox_category $category
+	 * @return string
+	 */
+	public function caption($tmpl, $category)
+	{
+		if(!isset($tmpl['caption']))
+		{
+			return defset('LAN_PLUGIN_FEATUREBOX_NAME', 'Feature Box');
+		}
+
+		return e107::getParser()->parseTemplate($tmpl['caption'], true, $category);
 	}
 	
 	/**
