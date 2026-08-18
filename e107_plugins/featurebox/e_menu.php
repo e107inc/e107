@@ -62,4 +62,48 @@ class featurebox_menu
 
 		return $categories;
 	}
+
+	/**
+	 * Build the {FEATUREBOX} shortcode for one placement of featurebox_menu.php.
+	 *
+	 * The category becomes the modifier and everything else the query string of
+	 * {@see featurebox_shortcodes::sc_featurebox()}.
+	 *
+	 * @param array|string $parm menu parameters: an array from Menu Manager, a query string from {@see menu_shortcode()} or {@see plugin_shortcode()}
+	 * @param string $default category template to render when the placement names none; reaches the shortcode verbatim, so pass a trusted value
+	 * @return string
+	 */
+	public static function shortcode($parm, $default)
+	{
+		if(is_string($parm))
+		{
+			parse_str($parm, $parms);
+		}
+		else
+		{
+			$parms = (array) $parm;
+		}
+
+		$category = isset($parms['category']) && is_scalar($parms['category'])
+			? preg_replace('/[^\w-]/', '', (string) $parms['category'])
+			: '';
+		unset($parms['category'], $parms['path']);
+
+		foreach(array('notablestyle', 'no_fill_empty') as $flag)
+		{
+			if(isset($parms[$flag]) && empty($parms[$flag]))
+			{
+				unset($parms[$flag]);
+			}
+		}
+
+		if($category === '')
+		{
+			$category = $default;
+		}
+
+		$query = http_build_query($parms, '', '&');
+
+		return '{FEATUREBOX|'.$category.($query === '' ? '' : '='.$query).'}';
+	}
 }
