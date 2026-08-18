@@ -838,7 +838,10 @@ class faq
 				->where('faq_info_id', $faq)->fetchRow();
 			extract($row); // get rid of this
 		}
-		$ns->tablerender(LAN_PLUGIN_FAQS_FRONT_NAME.$faq_info_title, "<div style='text-align:center'>".$text."</div>".$this->faq_footer());
+		$sc = e107::getScBatch('faqs', true);
+		$tmpl = e107::getTemplate('faqs');
+
+		$ns->tablerender($sc->caption($tmpl, 'add', LAN_PLUGIN_FAQS_FRONT_NAME.$faq_info_title), "<div style='text-align:center'>".$text."</div>".$this->faq_footer());
 
 	}
 
