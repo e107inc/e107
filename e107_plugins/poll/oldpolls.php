@@ -93,7 +93,11 @@ class oldpolls_front
 					}
 			*/
 				$text .= e107::getComment()->compose_comment('poll', 'comment', intval($row['poll_id']), null, '', false, 'html');
-				$ns->tablerender(LAN_PLUGIN_POLL_NAME . " #" . $row['poll_id'], $text);
+
+				$sc = e107::getScBatch('poll');
+				$sc->setVars($row);
+
+				$ns->tablerender($sc->caption(e107::getTemplate('poll'), 'oldpolls', LAN_PLUGIN_POLL_NAME . " #" . $row['poll_id']), $text);
 				echo "<hr />";
 			}
 		}

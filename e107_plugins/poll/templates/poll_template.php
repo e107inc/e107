@@ -238,5 +238,8 @@ $POLL_TEMPLATE['denied']['end'] = "<div class='alert text-warning text-center'>{
 </div>
 ";
 
+// tablerender() caption of a single archived poll. Omit for the plugin name and poll id, set '' for no heading.
+//$POLL_TEMPLATE['oldpolls']['caption'] = '{QUESTION}';
+
 
 
