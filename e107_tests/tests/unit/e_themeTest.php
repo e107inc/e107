@@ -405,10 +405,20 @@ class e_themeTest extends \Test\Unit
 
 		);
 
-		foreach($tests as $index => $var)
+		$tp = e107::getParser();
+		$bootstrap = $tp->getBootstrap();
+
+		try
 		{
-			$loaded = e107::getTheme($var['theme'])->loadLibrary($var['scope']);
-			$this->assertSame($var['expected'], $loaded, 'Test #' . $index . ' failed.');
+			foreach($tests as $index => $var)
+			{
+				$loaded = e107::getTheme($var['theme'])->loadLibrary($var['scope']);
+				$this->assertSame($var['expected'], $loaded, 'Test #' . $index . ' failed.');
+			}
+		}
+		finally
+		{
+			$tp->setBootstrap($bootstrap);
 		}
 
 		//	var_export($loaded);
