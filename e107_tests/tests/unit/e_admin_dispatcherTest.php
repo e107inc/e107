@@ -138,6 +138,49 @@ class e_admin_dispatcherTest extends \Test\Unit
 
 	}
 
+	public function testRenderMenuCollapseSpellsEveryBootstrapVersion()
+	{
+
+		$this->req->setMode('main');
+		$this->req->setAction('custom1');
+
+		$this->dp->setMenuData([
+			'main/custom'  => ['caption' => 'Custom Pages', 'perm' => 'P'],
+			'main/custom1' => ['group' => 'main/custom', 'caption' => 'Custom Page 1', 'perm' => 'P'],
+		]);
+
+		$this->dp->method('hasRouteAccess')->willReturn(true);
+
+		$expectedData = [
+			'data-toggle'    => 'collapse',
+			'data-bs-toggle' => 'collapse',
+			'data-target'    => '#sub-main-custom',
+			'data-bs-target' => '#sub-main-custom',
+			'role'           => 'button',
+			'aria-expanded'  => 'true',
+		];
+
+		$tp = e107::getParser();
+		$restore = $tp->getBootstrap();
+
+		try
+		{
+			foreach([3 => 'collapse in', 4 => 'collapse show', 5 => 'collapse show'] as $version => $subClass)
+			{
+				$tp->setBootstrap($version);
+
+				$result = $this->dp->renderMenu(true);
+
+				$this::assertEquals($expectedData, $result['main/custom']['link_data'], 'Bootstrap ' . $version . ' link attributes');
+				$this::assertSame($subClass, $result['main/custom']['sub_class'], 'Bootstrap ' . $version . ' collapse class');
+			}
+		}
+		finally
+		{
+			$tp->setBootstrap($restore);
+		}
+	}
+
 	public function testRenderMenuUserclassAccess()
 	{
 

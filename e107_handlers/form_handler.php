@@ -594,7 +594,7 @@ class e_form
 		}
 
 		$id = !empty($options['id']) ? 'id="'.$options['id'].'" ' : '';
-		$toggle = ($this->_bootstrap > 3) ? 'data-bs-toggle="tab"' : 'data-toggle="tab"';
+		$toggle = $this->tp->toAttributes($this->tp->bootstrapData(['toggle' => 'tab']));
 
 		$text  ='
 		<!-- Nav tabs -->
@@ -617,7 +617,7 @@ class e_form
 			}
 
 			$active = ($key == $act) ? ' active' : '';
-			$text .= '<li class="nav-item'.$active.'"><a class="nav-link'.$active.'" href="#'.$key.'" '.$toggle.'>'.$tab['caption'].'</a></li>';
+			$text .= '<li class="nav-item'.$active.'"><a class="nav-link'.$active.'" href="#'.$key.'"'.$toggle.'>'.$tab['caption'].'</a></li>';
 			$c++;
 		}
 
