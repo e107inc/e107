@@ -102,6 +102,9 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 		return $this->sc_logo($parm);	
 	}
 
+	/**
+	 * @param array|string $parm 'class' is appended to the image's default classes.
+	 */
 	function sc_logo($parm = array())
 	{
 		if(is_string($parm))
@@ -189,7 +192,14 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 			$dimensions = getimagesize($path);
 		}
 
-		$opts = array('alt'=>SITENAME, 'class'=>'logo img-responsive img-fluid');
+		$class = 'logo img-responsive img-fluid';
+
+		if(!empty($parm['class']))
+		{
+			$class .= ' '.$tp->toAttribute($parm['class'], true);
+		}
+
+		$opts = array('alt'=>SITENAME, 'class'=>$class);
 
 		if(!empty($dimensions[0]))
 		{
