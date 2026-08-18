@@ -116,10 +116,10 @@ class signup_shortcodes extends e_shortcode
 		switch ($type)
 		{
 			case "login":
-				$lan_plugin_social_xup = LAN_PLUGIN_SOCIAL_XUP_SIGNUP;
+				$lan_plugin_social_xup = defset('LAN_PLUGIN_SOCIAL_XUP_SIGNUP', "Sign-in with your [x] account");
 				break;
 			case "signup":
-				$lan_plugin_social_xup = LAN_PLUGIN_SOCIAL_XUP_REG;
+				$lan_plugin_social_xup = defset('LAN_PLUGIN_SOCIAL_XUP_REG', "Register with your [x] account");
 				break;
 		}
 
