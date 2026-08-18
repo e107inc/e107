@@ -1617,7 +1617,7 @@ class e_menuManager
 		}*/
 		elseif(strpos($str, "{FEATUREBOX") !== false)
 		{
-			echo "<div class=text style='padding: 80px; text-align: center'>[".LAN_PLUGIN_FEATUREBOX_NAME."]</div>";
+			echo "<div class=text style='padding: 80px; text-align: center'>[".defset('LAN_PLUGIN_FEATUREBOX_NAME', 'Feature Box')."]</div>";
 		//	echo $this->renderPanel('Embedded Custom Menu',$cust);
 		}
 		// Display embedded Plugin information.

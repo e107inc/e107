@@ -6468,6 +6468,7 @@ class e_admin_ui extends e_admin_controller_ui
 		$tree = $this->getTreeModel();
 		$urlData = $this->getTreeModel()->url($selected, array('sc' => true));
 		$data = $this->featurebox;
+		$featureboxName = defset('LAN_PLUGIN_FEATUREBOX_NAME', 'Feature Box');
 
 		$scount = 0;
 		$category = 0;
@@ -6508,14 +6509,14 @@ class e_admin_ui extends e_admin_controller_ui
 
             if($res !== FALSE)
             {
-				e107::getMessage()->addSuccess(LAN_CREATED. ': ' .LAN_PLUGIN_FEATUREBOX_NAME. ': ' .($name ? $name : 'n/a'));
+				e107::getMessage()->addSuccess(LAN_CREATED. ': ' .$featureboxName. ': ' .($name ? $name : 'n/a'));
 				$scount++; 
             }
             else
             {
                 if($sql->getLastErrorNumber())
                 {
-					e107::getMessage()->addError(LAN_CREATED_FAILED. ': ' .LAN_PLUGIN_FEATUREBOX_NAME. ': ' .$name. ': ' .LAN_SQL_ERROR);
+					e107::getMessage()->addError(LAN_CREATED_FAILED. ': ' .$featureboxName. ': ' .$name. ': ' .LAN_SQL_ERROR);
 					e107::getMessage()->addDebug('SQL Featurebox Creation Error #'.$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
                 }  
 				else
@@ -6527,8 +6528,8 @@ class e_admin_ui extends e_admin_controller_ui
 
         if($scount > 0)
         {
-			e107::getMessage()->addSuccess(LAN_CREATED. ' (' .$scount. ') ' .defset('LAN_PLUGIN_FEATUREBOX_NAME'));
-			e107::getMessage()->addSuccess("<a class='btn btn-small btn-primary' href='".e_PLUGIN_ABS."featurebox/admin_config.php?searchquery=&filter_options=fb_category__{$category}' ".LAN_CONFIGURE. ' ' .LAN_PLUGIN_FEATUREBOX_NAME. '</a>');
+			e107::getMessage()->addSuccess(LAN_CREATED. ' (' .$scount. ') ' .$featureboxName);
+			e107::getMessage()->addSuccess("<a class='btn btn-small btn-primary' href='".e_PLUGIN_ABS."featurebox/admin_config.php?searchquery=&filter_options=fb_category__{$category}'>".LAN_CONFIGURE. ' ' .$featureboxName. '</a>');
 			return $scount;        
         }
 
@@ -8760,7 +8761,7 @@ class e_admin_form_ui extends e_form
 				'url',
 				false,
 				array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '';
-			$selectOpt .= !empty($options['featurebox']) ? $this->option(defset('LAN_PLUGIN_FEATUREBOX_BATCH'),
+			$selectOpt .= !empty($options['featurebox']) ? $this->option(defset('LAN_PLUGIN_FEATUREBOX_BATCH', 'Create Featurebox Item'),
 				'featurebox',
 				false,
 				array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '';
