@@ -32,9 +32,7 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 
 		if($parm == null && $mod == '') // ie {FEATUREBOX}
 		{
-			$menCat = e107::getPlugPref('featurebox','menu_category');
-			$type 	= vartrue($menCat,'bootstrap_carousel');
-			$text = e107::getParser()->parseTemplate("{FEATUREBOX|".$type."}");
+			$text = e107::getParser()->parseTemplate("{FEATUREBOX|".self::defaultCategory()."}");
 			
 			return $text;
 		}
@@ -455,6 +453,37 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 		return $tmpl;
 	}
 	
+	/**
+	 * Category template rendered when the caller names none.
+	 *
+	 * An empty 'menu_category' preference is answered from the categories the site
+	 * holds, so this returns the pre-2014 'bootstrap_carousel' seed or the current
+	 * 'bootstrap3_carousel' depending on when featurebox was installed.
+	 *
+	 * @return string
+	 */
+	public static function defaultCategory()
+	{
+		$pref = e107::getPlugPref('featurebox', 'menu_category');
+
+		if(!empty($pref))
+		{
+			return $pref;
+		}
+
+		if(e107::isInstalled('featurebox'))
+		{
+			$legacy = new plugin_featurebox_category();
+
+			if($legacy->loadByTemplate('bootstrap_carousel')->hasData())
+			{
+				return 'bootstrap_carousel';
+			}
+		}
+
+		return 'bootstrap3_carousel';
+	}
+
 	/**
 	 * Get category model by template
 	 * @param string $template

@@ -2,15 +2,15 @@
 /*
 * Copyright (c) 2014 e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
 *
-* Gallery Template 
+* Gallery Template
 */
 
 if (!defined('e107_INIT')) { exit; }
 
 // e107::Lan('featurebox', 'front');
 e107::includeLan(e_PLUGIN.'featurebox/languages/'.e_LANGUAGE.'_admin_featurebox.php'); // This line added to admin warning
-$cat = e107::getPlugPref('featurebox','menu_category');
-$type 	= vartrue($cat,'bootstrap_carousel');
+require_once(e_PLUGIN.'featurebox/e_shortcode.php');
+$type 	= featurebox_shortcodes::defaultCategory();
 $text = e107::getParser()->parseTemplate("{FEATUREBOX|".$type."}");
 
 if(empty($text))
@@ -20,5 +20,3 @@ if(empty($text))
 
 echo $text;
 unset($text);
-
-
