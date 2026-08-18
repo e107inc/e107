@@ -263,6 +263,34 @@ class plugin_featurebox_item extends e_model
 	}
 
 	/**
+	 * Title of the item's own category
+	 * Parameter (single string format):
+	 * - alt: return title as tag attribute text
+	 *
+	 * @param string $parm
+	 * @return string
+	 * @see plugin_featurebox_category::sc_featurebox_category_title()
+	 */
+	public function sc_featurebox_category_title($parm = null)
+	{
+		return $this->getCategory()->sc_featurebox_category_title($parm);
+	}
+
+	/**
+	 * Icon of the item's own category
+	 * Parameter (single string format):
+	 * - src: return image src URL only
+	 *
+	 * @param string $parm
+	 * @return string
+	 * @see plugin_featurebox_category::sc_featurebox_category_icon()
+	 */
+	public function sc_featurebox_category_icon($parm = null)
+	{
+		return $this->getCategory()->sc_featurebox_category_icon($parm);
+	}
+
+	/**
 	 * Set current category
 	 * @param plugin_featurebox_category $category
 	 * @return plugin_featurebox_item
@@ -285,20 +313,6 @@ class plugin_featurebox_item extends e_model
 			$this->_category->load($this->get('fb_category'));
 		}
 		return $this->_category;
-	}
-
-	/**
-	 * Magic call - category shortcodes
-	 *
-	 * @param string $method
-	 * @param array $arguments
-	 */
-	public function __call($method, $arguments)
-	{
-		if (strpos($method, "sc_featurebox_") === 0)
-		{
-			return call_user_func_array(array($this->getCategory(), $method), $arguments);
-		}
 	}
 }
 
