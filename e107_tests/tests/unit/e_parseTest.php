@@ -1361,6 +1361,44 @@ EXPECTED;
 		$this->assertEquals($expected, $actual);
 	}
 
+	public function testBootstrapData()
+	{
+		$expected = [
+			'data-toggle'    => 'collapse',
+			'data-bs-toggle' => 'collapse',
+			'data-target'    => '#sub-main-custom',
+			'data-bs-target' => '#sub-main-custom',
+		];
+
+		$input = ['toggle' => 'collapse', 'target' => '#sub-main-custom'];
+
+		foreach ([3, 4, 5] as $version)
+		{
+			$this->tp->setBootstrap($version);
+
+			self::assertSame($expected, $this->tp->bootstrapData($input), 'Bootstrap ' . $version);
+		}
+
+		self::assertSame([], $this->tp->bootstrapData([]));
+	}
+
+	public function testBootstrapShowClass()
+	{
+		$expected = [3 => 'in', 4 => 'show', 5 => 'show'];
+
+		foreach ($expected as $version => $class)
+		{
+			$this->tp->setBootstrap($version);
+
+			self::assertSame($class, $this->tp->bootstrapShowClass(), 'Bootstrap ' . $version);
+		}
+
+		$undeclared = $this->make('e_parse');
+
+		self::assertNull($undeclared->getBootstrap());
+		self::assertSame('in', $undeclared->bootstrapShowClass());
+	}
+
 	public function testThumbCacheFile()
 	{
 		$tests = array(
