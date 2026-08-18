@@ -271,7 +271,6 @@ else
 			{ADMIN_MSG=request}
 			{ADMIN_PLUGINS}
 		
-			<!--<div class="admin-copyright"><small>Copyright &copy; 2008-2017 e107.org</small></div>-->
 			</div>
 			{SETSTYLE=default}			
 		</div>
