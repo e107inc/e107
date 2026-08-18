@@ -428,11 +428,6 @@ echo "\n<!-- ".md5($bcache)." -->\n";
 
 unset($uclist, $bcache);
 
-$show = deftrue('e_POWEREDBY_DISABLE') ? "none" : "block"; // Let search engines find us to increase e107.org ranking - even if hidden. 
-//XXX Must not contain IDs or Classes 	
-// echo "<div style='text-align:center; display:".$show."; position: absolute; width:99%; height:20px; margin-top:-30px; z-index:30000; opacity:1.0; color: silver'>Proudly powered by <a style='color:silver' href='http://e107.org/' title='e107 Content Management System'>e107</a></div>";
-unset($show);
-
 if(isset($pref['meta_bodyend'][e_LANGUAGE]))
 {
 	echo "\n<!-- Start custom body-end tag -->\n";
