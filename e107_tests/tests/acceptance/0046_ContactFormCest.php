@@ -218,6 +218,19 @@ class ContactFormCest
 	}
 
 	/**
+	 * The recorded message bodies alone, without the headers the rest of the log carries.
+	 *
+	 * @param AcceptanceTester $I
+	 * @return array
+	 */
+	private function mailBodies(AcceptanceTester $I)
+	{
+		preg_match_all("/^Body: (.*?)^-{20,}/ms", $this->mailLog($I), $m);
+
+		return $m[1];
+	}
+
+	/**
 	 * (a) The recipient is whoever the caller names.
 	 */
 	public function theRecipientMustBeOneTheSelectorWouldHaveOffered(AcceptanceTester $I)
@@ -487,6 +500,29 @@ class ContactFormCest
 
 		$I->assertStringContainsString('Mail-ID=', $this->mailLog($I),
 			'a complete guest submission must still be delivered');
+	}
+
+	/**
+	 * The sender's address travels as a Reply-To header and nothing else.
+	 */
+	public function theDeliveredMessageCarriesTheSendersAddress(AcceptanceTester $I)
+	{
+		$I->wantTo('find the sender address in the contact message as delivered');
+
+		$this->probe($I, 'act=clearmaillog');
+
+		$token = $this->openFormAndGrabToken($I);
+		$submission = $this->submission();
+		$post = array_merge($submission, $this->captcha($I), array('e-token' => $token));
+		$I->sendPostRequest('/contact.php', $post);
+
+		$bodies = $this->mailBodies($I);
+
+		$I->assertCount(1, $bodies, 'the dry run transport must record the body it was handed');
+		$I->assertStringContainsString($submission['email_send'], $bodies[0],
+			'the message the recipient reads must carry the address that sent it');
+		$I->assertStringNotContainsString('e-email', $bodies[0],
+			'the address must reach the recipient as itself, not as obfuscated markup');
 	}
 
 	/**
