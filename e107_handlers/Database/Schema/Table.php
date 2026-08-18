@@ -78,6 +78,35 @@ class Table
 	}
 
 	/**
+	 * Add a column from a definition that already carries its own name, e.g. a
+	 * line of the server's own SHOW CREATE TABLE output.
+	 *
+	 * @param SqlFragment $definition Vouched `` `name` <type> ... `` fragment.
+	 * @param string|null $after Existing column, the {@see SchemaBuilder::FIRST} sentinel, or null.
+	 * @return $this
+	 */
+	public function addColumnRaw($definition, $after = null)
+	{
+		$this->clauses[] = 'ADD '.$this->_vouchedDefinition($definition, 'addColumnRaw').$this->_position($after);
+
+		return $this;
+	}
+
+	/**
+	 * Redefine a column from a definition that already carries its own name, the
+	 * counterpart to {@see Table::addColumnRaw()}. No placement is offered.
+	 *
+	 * @param SqlFragment $definition Vouched `` `name` <type> ... `` fragment.
+	 * @return $this
+	 */
+	public function modifyColumnRaw($definition)
+	{
+		$this->clauses[] = 'MODIFY '.$this->_vouchedDefinition($definition, 'modifyColumnRaw');
+
+		return $this;
+	}
+
+	/**
 	 * @param string $oldName
 	 * @param string $newName
 	 * @param Column|SqlFragment $definition
@@ -214,6 +243,25 @@ class Table
 	public function execute()
 	{
 		return $this->db->execute($this->getSQL());
+	}
+
+	/**
+	 * A whole-column definition for one of the raw seams, which splice it after
+	 * a bare ADD or MODIFY and so need it to carry its own column name.
+	 *
+	 * @param SqlFragment $definition
+	 * @param string $method for the error message.
+	 * @return string
+	 * @throws InvalidArgumentException when $definition is not a vouched fragment.
+	 */
+	private function _vouchedDefinition($definition, $method)
+	{
+		if(!$definition instanceof SqlFragment)
+		{
+			throw new InvalidArgumentException($method.'() expects a SqlFragment carrying the whole column definition, name included (e.g. $qb->raw(...)); a Column renders no name and a bare string is not accepted.');
+		}
+
+		return $definition->getSql();
 	}
 
 	/**

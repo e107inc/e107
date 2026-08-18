@@ -33,6 +33,17 @@ class db_verifyTest extends \Test\Unit
 		$this->dbv->__construct();
 	}
 
+	public function testItSettlesEngineAndCharsetForTheSchemaCore()
+	{
+		$this->assertInstanceOf('e107\\Database\\Schema\\Declared\\EngineCharsetResolverInterface', $this->dbv);
+
+		$table = new \e107\Database\Schema\Declared\DeclaredTable('core', 'user', 'user_id int(10) unsigned NOT NULL AUTO_INCREMENT, PRIMARY KEY (user_id)', null, null);
+		$intended = $this->dbv->resolve($table);
+
+		$this->assertNotEmpty($intended['engine']);
+		$this->assertNotEmpty($intended['charset']);
+	}
+
 	public function testGetFields()
 	{
 
