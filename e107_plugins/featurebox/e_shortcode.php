@@ -25,7 +25,7 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 	 * 
 	 * @param string $parm parameters
 	 * @param string $mod category template
-	 * @example {FEATUREBOX=cols=2|tabs}
+	 * @example {FEATUREBOX|tabs=cols=2}
 	 */
 	function sc_featurebox($parm=null, $mod = '')
 	{
