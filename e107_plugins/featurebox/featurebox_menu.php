@@ -8,7 +8,6 @@
 if (!defined('e107_INIT')) { exit; }
 
 // e107::Lan('featurebox', 'front');
-e107::includeLan(e_PLUGIN.'featurebox/languages/'.e_LANGUAGE.'_admin_featurebox.php'); // This line added to admin warning
 require_once(e_PLUGIN.'featurebox/e_shortcode.php');
 $type 	= featurebox_shortcodes::defaultCategory();
 $text = e107::getParser()->parseTemplate("{FEATUREBOX|".$type."}");
