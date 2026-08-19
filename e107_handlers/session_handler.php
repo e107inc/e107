@@ -1242,12 +1242,11 @@ class e_session
 	public function destroy()
 	{
 		$this->cookieDelete()->close();
-		//unset($_SESSION);
-		
+
 		// cleanup
 		cookie(e_COOKIE, null, null); // remove user auth cookie
-		// unset($_SESSION['_cookie_session_validate']);
-		
+		unset($_SESSION[e_COOKIE], $_COOKIE[e_COOKIE]);
+
 		session_destroy();
 		return $this;
 	}
