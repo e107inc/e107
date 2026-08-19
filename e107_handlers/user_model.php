@@ -2322,7 +2322,7 @@ class e_user extends e_user_model
 			}
 
 			// we have a match
-			if(md5($udata['user_password']) == $upw)
+			if(hash_equals(md5($udata['user_password']), (string) $upw))
 			{
 				// set current user data
 				$this->setData($udata);
