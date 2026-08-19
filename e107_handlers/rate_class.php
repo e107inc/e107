@@ -239,22 +239,18 @@ class rater
 		{
 			return false;
 		}
-		else
-		{
-			if(preg_match("/\." . USERID . "\./", $row['rate_voters']))
-			{
-				return true;
-				//added option to split an individual users rating
-			}
-			elseif(preg_match("/\." . USERID . chr(1) . "([0-9]{1,2})\./", $row['rate_voters']))
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
+
+		return $this->hasVoted($row['rate_voters'], USERID);
+	}
+
+	/**
+	 * @param string $voters rate_voters column: ".{uid}." thumb markers and ".{uid}<chr(1)>{rating}." star markers
+	 * @param int $userid
+	 * @return bool
+	 */
+	private function hasVoted($voters, $userid)
+	{
+		return preg_match("/\.".(int) $userid."(".chr(1)."[0-9]{1,2})?\./", (string) $voters) === 1;
 	}
 
 	/**
@@ -628,21 +624,20 @@ class rater
 
 		if ($row)
 		{
+			if($this->hasVoted($row['rate_voters'], USERID))
+			{
+				$currentStat = $row['rate_votes'] ? round(($row['rate_rating'] / $row['rate_votes']) / 2, 1) : 0;
+
+				return RATELAN_9."|".$this->renderVotes($row['rate_votes'], $currentStat);
+			}
 
 			$rate_voters = $row['rate_voters'].".".$voter.".";
 			$new_votes = $row['rate_votes'] + 1;
 			$new_rating = $row['rate_rating'] + $rate;
-			
+
 			$stat = ($new_rating /$new_votes)/2;
 			$statR = round($stat,1);
-			
-			if(strpos($row['rate_voters'], ".".$voter.".") == true || strpos($row['rate_voters'], ".".USERID.".") == true)
-			{
 
-				return RATELAN_9."|".$this->renderVotes($new_votes,$statR); // " newvotes = ".($statR). " =".$new_votes;
-			}
-			
-			
 			if($sql->createQueryBuilder()->update('rate')
 				->set('rate_votes', $new_votes)
 				->set('rate_rating', $new_rating)
