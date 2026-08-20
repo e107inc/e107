@@ -136,7 +136,6 @@ class signin_shortcodesTest extends \Test\Unit
 			'LAN_SIGNIN_USEREMAIL',
 			'LAN_SIGNIN_SIGNIN',
 			'LAN_SIGNIN_SIGNUP',
-			'LAN_SIGNIN_REMEMBER',
 			'LAN_SIGNIN_FPW',
 			'LAN_SIGNIN_RESEND',
 			'LAN_SIGNIN_PROFILE',
@@ -161,7 +160,6 @@ class signin_shortcodesTest extends \Test\Unit
 		$html = e107::getParser()->parseTemplate(e107::getTemplate('signin', 'signin', 'signin'), true, $this->sc);
 
 		self::assertStringContainsString(LAN_SIGNIN_SIGNIN, $html);
-		self::assertStringContainsString(LAN_SIGNIN_REMEMBER, $html);
 		self::assertStringContainsString(LAN_SIGNIN_FPW, $html);
 		self::assertStringContainsString(LAN_SIGNIN_RESEND, $html);
 	}

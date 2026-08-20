@@ -184,19 +184,6 @@ e107::getLanguage()->bcDefs($bcDefs);
 				return "<input class='button btn btn-default btn-secondary login' type='submit' name='userlogin' id='userlogin' value='".LAN_LOGIN."' />";
 			}
 
-			function sc_lm_rememberme($parm='')
-			{
-				$pref = e107::getPref();
-				if($parm == "hidden"){
-					return "<input type='hidden' name='autologin' id='autologin' value='1' />";
-				}
-				if(varset($pref['user_tracking']) !== "session")
-				{
-					return "<label for='autologin'><input type='checkbox' name='autologin' id='autologin' value='1' checked='checked' />".($parm ? $parm : "".LAN_LOGINMENU_6."</label>");
-				}
-				return '';
-			}
-
 			function sc_lm_signup_link($parm='')
 			{
 				$pref = e107::getPref();

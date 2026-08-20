@@ -159,11 +159,6 @@ class theme_shortcodes extends e_shortcode
 				{LM_IMAGECODE_NUMBER}
 				{LM_IMAGECODE_BOX}
 				
-				<div class="checkbox">
-				
-				<label class="string optional" for="autologin"><input style="margin-right: 10px;" type="checkbox" name="autologin" id="autologin" value="1">
-				'.LAN_LOGINMENU_6.'</label>
-				</div>
 				<input class="btn btn-primary btn-block" type="submit" name="userlogin" id="userlogin" value="'.LAN_LOGINMENU_51.'">
 				';
 				
