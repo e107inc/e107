@@ -2,9 +2,8 @@
 
 /**
  * The authentication token e_user::load() accepts is
- * "<user_id>.<md5 of the stored password hash>", read from $_SESSION or from
- * the auth cookie depending on the user_tracking preference. Two ways in were
- * closed:
+ * "<user_id>.<md5 of the stored password hash>", read from $_SESSION. Two ways
+ * in were closed:
  *
  * - the password component was compared with `==`, so any stored hash whose
  *   md5 reads as a number matched a token component that reads as the same
@@ -18,10 +17,9 @@
  * The probe drives e_user::load() over HTTP because the CLI branch of load()
  * short-circuits to user 1 and never reaches the token at all.
  *
- * Only the token comparison is covered in both tracking modes. The destroyed
- * session is covered in session mode alone: on master e_session::validate()
- * returns early for anyone whose $_SESSION carries no token, which is every
- * user in cookie mode, so that branch never reaches destroy() there at all.
+ * The third way in was the token being read out of a client cookie at all, and
+ * that is covered here at the model and in 0076_CookieModeRemovedCest over
+ * HTTP.
  */
 class SessionAuthTokenCest
 {
@@ -48,11 +46,11 @@ class SessionAuthTokenCest
 		$this->seeProbeAuthenticates($I, 'valid');
 	}
 
-	public function theCorrectTokenAuthenticatesACookie(AcceptanceTester $I)
+	public function theCorrectTokenInACookieAuthenticatesNobody(AcceptanceTester $I)
 	{
-		$I->wantTo('log a cookie in with the token its own password hash produces');
+		$I->wantTo('refuse a cookie carrying the token its own password hash produces');
 
-		$this->seeProbeAuthenticates($I, 'valid_cookie');
+		$this->seeProbeRefuses($I, 'valid_cookie');
 	}
 
 	public function aNumericallyEqualSessionTokenIsRefused(AcceptanceTester $I)
@@ -60,13 +58,6 @@ class SessionAuthTokenCest
 		$I->wantTo('refuse a session token that only equals the password hash as a number');
 
 		$this->seeProbeRefuses($I, 'magic');
-	}
-
-	public function aNumericallyEqualCookieTokenIsRefused(AcceptanceTester $I)
-	{
-		$I->wantTo('refuse a cookie token that only equals the password hash as a number');
-
-		$this->seeProbeRefuses($I, 'magic_cookie');
 	}
 
 	public function aSessionThatPassesValidationStaysAuthenticated(AcceptanceTester $I)
@@ -213,11 +204,6 @@ switch($act)
 	case 'valid_cookie':
 		$config->set('user_tracking', 'cookie')->save(false, true, false);
 		$_COOKIE[e_COOKIE] = $uid.'.'.md5($fixturePassword);
-		break;
-
-	case 'magic_cookie':
-		$config->set('user_tracking', 'cookie')->save(false, true, false);
-		$_COOKIE[e_COOKIE] = $uid.'.0e0';
 		break;
 
 	case 'stored_key':
