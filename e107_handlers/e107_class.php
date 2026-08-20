@@ -5898,6 +5898,12 @@ class e107
 	 * decides whether a visitor may be sent to one, and the two must not be able
 	 * to disagree.
 	 *
+	 * Entries that {@see e107::normaliseHost()} reduces to nothing are dropped,
+	 * so an empty return means "this installation has been told no hostname of
+	 * its own" rather than "it was told one that can never match". The boot-time
+	 * check arms itself on that emptiness, and a site whose whole configuration
+	 * is a blank `trusted_hosts` line must not be locked out by it.
+	 *
 	 * @return array host names, possibly empty
 	 */
 	public static function trustedHosts()
@@ -5918,7 +5924,17 @@ class e107
 			$hosts = array_merge($hosts, (array) $trusted_hosts_pref);
 		}
 
-		return $hosts;
+		$usable_hosts = array();
+
+		foreach($hosts as $host)
+		{
+			if(self::normaliseHost($host) !== '')
+			{
+				$usable_hosts[] = $host;
+			}
+		}
+
+		return $usable_hosts;
 	}
 
 	/**
@@ -5939,7 +5955,6 @@ class e107
 	public function set_urls_deferred()
 	{
 		$siteurl = self::getPref('siteurl');
-		$configured_host = parse_url($siteurl, PHP_URL_HOST);
 		$http_host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
 
 		$allowed_hosts = self::trustedHosts();
@@ -5949,7 +5964,7 @@ class e107
 			define('SITEURL', $siteurl);
 			define('SITEURLBASE', rtrim(SITEURL,'/'));
 		}
-		elseif(!empty($configured_host) && strpos($siteurl,'http')!== false && !$this->isAllowedHost($allowed_hosts, $http_host))
+		elseif(!empty($allowed_hosts) && !$this->isAllowedHost($allowed_hosts, $http_host))
 		{
 			error_log('e107 host check: HTTP_HOST '.var_export($http_host, true).' is not allowed by the configured siteurl preference '.var_export($siteurl, true).' or any of the configured `trusted_hosts` pref entries');
 			$this->renderHostMismatchKillswitch();
@@ -6012,7 +6027,7 @@ class e107
 	}
 
 	/**
-	 * Normalise a hostname for comparison: lowercase, strip a trailing
+	 * Normalise a hostname for comparison: trim, lowercase, strip a trailing
 	 * `:port`, strip a leading `www.`.
 	 *
 	 * Both sides of the host check run through this so the configured
@@ -6021,6 +6036,9 @@ class e107
 	 * port) since `parse_url(PHP_URL_HOST)` already drops the port from
 	 * `siteurl`; applying it symmetrically keeps any manually-entered
 	 * `trusted_hosts` entries that include a port from silently never matching.
+	 * The trim likewise only ever reaches a configured value, since
+	 * {@see e107::resolveHttpHost()} has already refused a request `Host`
+	 * carrying whitespace before this is asked anything.
 	 *
 	 * @param string $host
 	 *
@@ -6028,7 +6046,7 @@ class e107
 	 */
 	private static function normaliseHost($host)
 	{
-		$host = strtolower((string) $host);
+		$host = strtolower(trim((string) $host));
 		$host = preg_replace('/:\d+$/', '', $host);
 		$host = preg_replace('/^www\./', '', $host);
 		return $host;
