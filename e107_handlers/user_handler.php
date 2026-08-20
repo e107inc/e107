@@ -706,6 +706,9 @@ class UserHandler
 	/**
 	 *	Create user cookie
 	 *
+	 *	Regenerates the session id first, so anything holding the old one has to
+	 *	read it again. {@see e_session::regenerateId()}
+	 *
 	 *	@param array $lode - user information from DB - 'user_id' and 'user_password' required
 	 *	@param bool $autologin - TRUE if the 'Remember Me' box ticked
 	 *
@@ -717,6 +720,8 @@ class UserHandler
 		{
 			return true;
 		}
+
+		e107::getSession()->regenerateId();
 
 		$cookieval = $lode['user_id'].'.'.md5($lode['user_password']);		// (Use extra md5 on cookie value to obscure hashed value for password)
 		if (e107::getPref('user_tracking','session') == 'session')
