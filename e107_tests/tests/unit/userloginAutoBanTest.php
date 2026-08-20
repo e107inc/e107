@@ -320,6 +320,96 @@ class userloginAutoBanTest extends \Test\Unit
 		$this->assertSame(0, $this->expiredBanRows());
 	}
 
+	protected function seedAgedNote($age)
+	{
+		e107::getDb()->createQueryBuilder()->insert('generic')->values(array(
+			'gen_type'      => 'failed_login',
+			'gen_datestamp' => time() - $age,
+			'gen_user_id'   => 0,
+			'gen_ip'        => self::TEST_IP,
+			'gen_intdata'   => 0,
+			'gen_chardata'  => 'aged',
+		))->execute();
+	}
+
+	protected function liveIndexColumns($name)
+	{
+		$sql = e107::getDb();
+		$sql->gen("SHOW INDEX FROM `#generic`");
+		$cols = array();
+		while($row = $sql->fetch())
+		{
+			if($row['Key_name'] === $name) { $cols[(int) $row['Seq_in_index']] = $row['Column_name']; }
+		}
+		ksort($cols);
+		return implode(',', $cols);
+	}
+
+	public function testHistoryPastRetentionIsPruned()
+	{
+		$this->seedAgedNote(userlogin::FAILURE_RETENTION + 86400);
+		$this->assertSame(1, $this->failedLoginCount());
+
+		$this->lg->login(self::TEST_USER, 'not the password', 0, '', true);
+
+		$this->assertSame(1, $this->failedLoginCount());
+	}
+
+	public function testHistoryInsideRetentionIsKept()
+	{
+		$this->seedAgedNote(userlogin::FAILURE_RETENTION - 86400);
+
+		$this->lg->login(self::TEST_USER, 'not the password', 0, '', true);
+
+		$this->assertSame(2, $this->failedLoginCount());
+	}
+
+	public function testDbVerifyOffersTheCompositeIndex()
+	{
+		require_once(e_HANDLER . 'db_verify_class.php');
+
+		$sql = e107::getDb();
+		$sql->gen("ALTER TABLE `#generic` DROP INDEX `gen_type_ip`");
+
+		$dbv = new db_verify();
+		$dbv->clearCache();
+		$dbv->__construct();
+		$dbv->compare('core');
+		$dbv->compileResults();
+
+		$this->assertSame('missing_index', $dbv->indices['generic']['gen_type_ip']['_status']);
+		$this->assertSame('gen_type,gen_ip', $dbv->indices['generic']['gen_type_ip']['_valid']['keyname']);
+
+		$dbv->runFix(array('core' => array('generic' => array('gen_type_ip' => array('index')))));
+
+		$this->assertSame('gen_type,gen_ip', $this->liveIndexColumns('gen_type_ip'));
+	}
+
+	public function testTheShippedSchemaIndexesTheBanCounterQuery()
+	{
+		$sql = file_get_contents(e_CORE . 'sql/core_sql.php');
+
+		$this->assertNotFalse(strpos($sql, 'KEY gen_type_ip (gen_type,gen_ip)'));
+		$this->assertNotFalse(strpos($sql, 'KEY gen_type_ts (gen_type,gen_datestamp)'));
+	}
+
+	public function testTheUpgradeRoutineRestoresTheCompositeIndexes()
+	{
+		require_once(e_ADMIN . 'update_routines.php');
+
+		$sql = e107::getDb();
+		$sql->gen("ALTER TABLE `#generic` DROP INDEX `gen_type_ip`");
+		$sql->gen("ALTER TABLE `#generic` DROP INDEX `gen_type_ts`");
+
+		$this->assertSame('', $this->liveIndexColumns('gen_type_ip'));
+		$this->assertFalse(update_20x_to_latest('check'), 'update_needed() reports by returning false');
+
+		update_20x_to_latest('do');
+
+		$this->assertSame('gen_type,gen_ip', $this->liveIndexColumns('gen_type_ip'));
+		$this->assertSame('gen_type,gen_datestamp', $this->liveIndexColumns('gen_type_ts'));
+	}
+
 	public function testUnknownUsernameIsStillCounted()
 	{
 		$result = $this->lg->login('vr9hnosuchuser', 'not the password', 0, '', true);
