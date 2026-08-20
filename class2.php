@@ -844,7 +844,7 @@ $dbg->logTime('Login/logout/ban/tz');
 
 if (isset($_POST['userlogin']) || isset($_POST['userlogin_x']))
 {
-	e107::getUser()->login($_POST['username'], $_POST['userpass'], $_POST['autologin'], varset($_POST['hashchallenge']), false);
+	e107::getUser()->login(varset($_POST['username']), varset($_POST['userpass']), (int) varset($_POST['autologin']), varset($_POST['hashchallenge']), false);
 //	e107_require_once(e_HANDLER.'login.php');
 //	$usr = new userlogin($_POST['username'], $_POST['userpass'], $_POST['autologin'], varset($_POST['hashchallenge'],''));
 }

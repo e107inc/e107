@@ -47,6 +47,7 @@ class userlogin
 	protected $passResult = false;	// USed to determine if stored password needs update
 	protected $testMode   = false;
 	protected $secImageType = 'logcode';
+	protected $providerLogin = false;	// Set only by loginProvider(), never from request data
 
 	public function __construct()
 	{
@@ -99,8 +100,7 @@ class userlogin
 			return FALSE;
 		}
 		
-		$forceLogin = ($autologin === 'signup');
-		if(!$forceLogin && $autologin === 'provider') $forceLogin = 'provider';
+		$forceLogin = $this->providerLogin ? 'provider' : ($autologin === 'signup');
 
 		if(empty($username) || (empty($userpass) && empty($response) && $forceLogin !== 'provider'))
 		{	// Required fields blank
@@ -366,6 +366,30 @@ class userlogin
 
 
 	/**
+	 * Log in the account whose user_xup column matches $xup, without a password.
+	 *
+	 * Only for callers that have already verified the provider handshake;
+	 * {@see e_user::loginProvider()} gates it on the social login pref.
+	 *
+	 * @param string $xup external user provider identifier
+	 * @return bool
+	 */
+	public function loginProvider($xup)
+	{
+		$this->providerLogin = true;
+
+		try
+		{
+			return $this->login($xup, '', 0, '', true);
+		}
+		finally
+		{
+			$this->providerLogin = false;
+		}
+	}
+
+
+	/**
 	 * @return array
 	 */
 	public function getUserData()
@@ -527,7 +551,7 @@ class userlogin
 		// Now check password
 		if ($forceLogin)
 		{
-			if (md5($this->userData['user_name'].$this->userData['user_password'].$this->userData['user_join']) != $userpass)
+			if (!hash_equals(md5($this->userData['user_name'].$this->userData['user_password'].$this->userData['user_join']), (string) $userpass))
 			{
 				return $this->invalidLogin($username,LOGIN_BAD_PW);
 			}
