@@ -381,7 +381,7 @@ class admin_shortcodes extends e_shortcode
 		if($lanperms && !getperms($sql->mySQLlanguage))
 		{
 			$slng->set($lanperms[0]);
-			if ($pref['user_tracking'] === 'session' && $pref['multilanguage_subdomain'])
+			if (!empty($pref['multilanguage_subdomain']))
 			{
 				e107::getRedirect()->redirect($slng->subdomainUrl($lanperms[0]));
 			}
