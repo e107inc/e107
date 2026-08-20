@@ -1543,7 +1543,7 @@ class e107MailManager
 
 			$hash = ($vals[0] . '/' . $vals[1] . '/' . $vals[2] . '/');
 
-			if (md5($hash) != $vals[3]) // 'Extended' ID has md5 validation
+			if (!hash_equals(md5($hash), (string) $vals[3])) // 'Extended' ID has md5 validation
 			{
 				$errors[] = 'Bad md5';
 				$errors[] = print_r($vals, true);

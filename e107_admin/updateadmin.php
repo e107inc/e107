@@ -27,7 +27,7 @@ $frm = e107::getForm();
 
 if (isset($_POST['update_settings'])) 
 {
-	if ($_POST['ac'] == md5(ADMINPWCHANGE)) 
+	if (e107::getUser()->checkAdminPwchangeToken(varset($_POST['ac'])))
 	{
 		$userData = array();
 		$userData['data'] = array();
