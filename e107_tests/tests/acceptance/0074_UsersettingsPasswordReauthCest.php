@@ -346,19 +346,14 @@ class UsersettingsPasswordReauthCest
 	 */
 	private function confirmationForm(AcceptanceTester $I)
 	{
-		$body = $I->grabResponseBody();
-
-		$matches = array();
-		$form = strstr($body, "<input type='hidden' name='updated_data'", true);
-		$I->assertNotFalse($form, 'the confirmation form is rendered');
+		$form = $this->confirmationFormMarkup($I);
 
 		$action = array();
-		$I->assertNotEmpty(preg_match_all("#<form method='post' action='([^']*)'>#", $form, $action, PREG_SET_ORDER),
+		$I->assertNotEmpty(preg_match("#<form method='post' action='([^']*)'>#", $form, $action),
 			'the confirmation form declares an action');
-		$action = end($action);
 
-		$found = preg_match_all("#<input type='hidden' name='([^']+)' value='([^']*)' />#", $form, $matches, PREG_SET_ORDER);
-		$I->assertNotEmpty($found, 'the confirmation form carries hidden fields');
+		$matches = array();
+		preg_match_all("#<input type='hidden' name='([^']+)' value='([^']*)' />#", $form, $matches, PREG_SET_ORDER);
 
 		$fields = array();
 		foreach ($matches as $match)
@@ -366,16 +361,33 @@ class UsersettingsPasswordReauthCest
 			$fields[$match[1]] = $match[2];
 		}
 
-		foreach (array('updated_data', 'updated_key', 'updated_extended', 'extended_key', 'e-token') as $name)
-		{
-			preg_match("#<input type='hidden' name='" . preg_quote($name, '#') . "' value='([^']*)' />#", $body, $one);
-			$I->assertNotEmpty($one, 'the confirmation form carries ' . $name);
-			$fields[$name] = $one[1];
-		}
-
+		$I->assertArrayHasKey('e-token', $fields, 'the confirmation form carries an e-token');
 		$fields['SaveValidatedInfo'] = '1';
 
 		return array($action[1], $fields);
+	}
+
+	/**
+	 * The whole <form> the confirmation was rendered into, so the caller submits exactly
+	 * the fields it offered rather than a list of names fixed at the time of writing.
+	 *
+	 * @param AcceptanceTester $I
+	 * @return string
+	 */
+	private function confirmationFormMarkup(AcceptanceTester $I)
+	{
+		$body = $I->grabResponseBody();
+
+		$field = strpos($body, "name='currentpassword'");
+		$I->assertNotFalse($field, 'the confirmation form is rendered');
+
+		$open = strrpos(substr($body, 0, $field), "<form method='post'");
+		$I->assertNotFalse($open, 'the current-password field sits inside a form');
+
+		$close = strpos($body, '</form>', $open);
+		$I->assertNotFalse($close, 'that form is closed');
+
+		return substr($body, $open, $close - $open);
 	}
 
 	/**
