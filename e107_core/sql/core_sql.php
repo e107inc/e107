@@ -203,7 +203,9 @@ CREATE TABLE generic (
   gen_intdata int(10) unsigned NOT NULL default '0',
   gen_chardata text NOT NULL,
   PRIMARY KEY  (gen_id),
-  KEY gen_type (gen_type)
+  KEY gen_type (gen_type),
+  KEY gen_type_ip (gen_type,gen_ip),
+  KEY gen_type_ts (gen_type,gen_datestamp)
 ) ENGINE=MyISAM;
 # --------------------------------------------------------
 

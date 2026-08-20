@@ -41,6 +41,12 @@ class userlogin
 	/** Seconds of history the auto-ban counter reads. Matches the shipped BAN_TYPE_LOGINS duration, so a ban lifts with the counter already clear. */
 	const FAILURE_WINDOW = 3600;
 
+	/** How long a failed_login row stays readable by an administrator. Unrelated to FAILURE_WINDOW, which is what the ban counter reads. */
+	const FAILURE_RETENTION = 2592000;
+
+	/** Rows one prune may remove. Caps the delete, not the scan behind it, which is what KEY gen_type_ts is for. */
+	const FAILURE_PRUNE_LIMIT = 500;
+
 	protected $e107;
 	protected $userMethods;			// Pointer to user handler
 	protected $userIP;				// IP address
@@ -681,6 +687,8 @@ class userlogin
 				$since = time() - self::FAILURE_WINDOW;
 				$fails = e107::getDb()->count("generic", "(*)", "WHERE gen_ip='{$this->userIP}' AND gen_type='failed_login' AND gen_datestamp > ".$since.$settled);
 
+				$this->pruneFailureNotes();
+
 				$failLimit = vartrue($pref['failed_login_limit'],10);
 
 				if($fails >= $failLimit)
@@ -744,6 +752,19 @@ class userlogin
 		$noteId = e107::getDb()->insert("generic", "0, 'failed_login', '".time()."', 0, '{$this->userIP}', 0, '{$message}'");
 
 		$this->failureNoteId = is_numeric($noteId) ? (int) $noteId : 0;
+	}
+
+	/**
+	 * Drop failed-login history past FAILURE_RETENTION. Bounded per call, and
+	 * indexed on (gen_type, gen_datestamp), so it stays cheap once caught up.
+	 *
+	 * @return void
+	 */
+	protected function pruneFailureNotes()
+	{
+		$cutoff = time() - self::FAILURE_RETENTION;
+		e107::getDb()->delete('generic',
+			"gen_type='failed_login' AND gen_datestamp < ".$cutoff." LIMIT ".self::FAILURE_PRUNE_LIMIT);
 	}
 
 	/**

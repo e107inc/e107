@@ -627,6 +627,32 @@ function update_core_database($type = '')
 		$pref = e107::getPref();
 
 
+		$genericIndexes = array();
+		if($sql->gen("SHOW INDEX FROM `".MPREFIX."generic`"))
+		{
+			while($row = $sql->fetch())
+			{
+				$genericIndexes[$row['Key_name']] = true;
+			}
+		}
+
+		if(!isset($genericIndexes['gen_type_ip']) || !isset($genericIndexes['gen_type_ts']))
+		{
+			if($just_check)
+			{
+				return update_needed("The failed-login table is missing the indexes the auto-ban counter reads.");
+			}
+
+			if(!isset($genericIndexes['gen_type_ip']))
+			{
+				$sql->gen("ALTER TABLE `".MPREFIX."generic` ADD INDEX `gen_type_ip` (`gen_type`,`gen_ip`);");
+			}
+			if(!isset($genericIndexes['gen_type_ts']))
+			{
+				$sql->gen("ALTER TABLE `".MPREFIX."generic` ADD INDEX `gen_type_ts` (`gen_type`,`gen_datestamp`);");
+			}
+		}
+
 		if(empty($pref['ban_durations'][eIPHandler::BAN_TYPE_LOGINS]))
 		{
 			if($just_check)
