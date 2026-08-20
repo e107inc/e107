@@ -465,15 +465,16 @@ class UserHandler
 
 
 	/**
-	 *	Checks whether the user has to validate a change of user settings by entering password (basically, if that field affects the
-	 *	stored password value)
+	 *	Checks whether the user has to confirm a change of user settings by entering their current password - either
+	 *	because the field affects the stored password value, or because the field is the credential itself.
 	 *
 	 *	@param string $fieldName - name of field being changed
 	 *
-	 *	@return bool TRUE if change required, false otherwise
+	 *	@return bool TRUE if the current password is required, false otherwise
 	 */
 	public function isPasswordRequired($fieldName)
 	{
+		if ($fieldName === 'user_password') return TRUE;
 		if ($this->preferred == PASSWORD_E107_MD5) return false;
 		switch ($fieldName)
 		{
