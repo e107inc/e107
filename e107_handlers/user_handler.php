@@ -185,7 +185,7 @@ class UserHandler
 
 
 	/**
-	 * Check if a user posted field is readonly (should not be user-editable) - used in usersettings.php
+	 * Check if a user posted field is readonly (should not be user-editable).
 	 * @param array $posted
 	 * @return bool
 	 */
