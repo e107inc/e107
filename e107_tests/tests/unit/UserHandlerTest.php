@@ -29,6 +29,28 @@
 
 		}
 
+		/**
+		 * GHSA-m8v8-wc99-3h82: user_xup sat in the member-editable whitelist, so a
+		 * profile update carried it through to the caller's own account even though
+		 * no form renders the field. Only the OAuth callback may write that column.
+		 */
+		public function testUserXupIsNotAcceptedFromPostedFields()
+		{
+			// Not $this->usr: make() skips the constructor that builds the whitelist.
+			$vettingInfo = e107::getUserSession()->userVettingInfo;
+
+			$posted = array(
+				'realname' => 'Legitimate Real Name',
+				'user_xup' => 'Facebook_100000000000001',
+			);
+
+			$result = validatorClass::validateFields($posted, $vettingInfo, true);
+
+			$this->assertArrayNotHasKey('user_xup', $vettingInfo);
+			$this->assertArrayNotHasKey('user_xup', $result['data']);
+			$this->assertSame('Legitimate Real Name', $result['data']['user_login']);
+		}
+
 /*
 		public function testCheckPassword()
 		{
