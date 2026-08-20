@@ -38,6 +38,9 @@ define ('LOGIN_DB_ERROR', -12);		// Error adding user to main DB
  */
 class userlogin
 {
+	/** Seconds of history the auto-ban counter reads. Matches the shipped BAN_TYPE_LOGINS duration, so a ban lifts with the counter already clear. */
+	const FAILURE_WINDOW = 3600;
+
 	protected $e107;
 	protected $userMethods;			// Pointer to user handler
 	protected $userIP;				// IP address
@@ -675,7 +678,8 @@ class userlogin
 			if($pref['autoban'] == 1 || $pref['autoban'] == 3) // Flood + Login or Login Only.
 			{
 				$settled = !empty($this->failureNoteId) ? " AND gen_id != ".(int) $this->failureNoteId : '';
-				$fails = e107::getDb()->count("generic", "(*)", "WHERE gen_ip='{$this->userIP}' AND gen_type='failed_login'".$settled);
+				$since = time() - self::FAILURE_WINDOW;
+				$fails = e107::getDb()->count("generic", "(*)", "WHERE gen_ip='{$this->userIP}' AND gen_type='failed_login' AND gen_datestamp > ".$since.$settled);
 
 				$failLimit = vartrue($pref['failed_login_limit'],10);
 

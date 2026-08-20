@@ -627,6 +627,25 @@ function update_core_database($type = '')
 		$pref = e107::getPref();
 
 
+		if(empty($pref['ban_durations'][eIPHandler::BAN_TYPE_LOGINS]))
+		{
+			if($just_check)
+			{
+				return update_needed("Failed-login bans never expire on this site.");
+			}
+
+			$durations = varset($pref['ban_durations'], array());
+			foreach(eIPHandler::getValidReasonList() as $banType)
+			{
+				if(!isset($durations[$banType])) { $durations[$banType] = 0; }
+			}
+			$durations[eIPHandler::BAN_TYPE_LOGINS] = 1;
+
+			e107::getConfig()->set('ban_durations', $durations)->save(false, true, false);
+			e107::getLog()->addEvent(4, __FILE__, "UPDATE", 'LAN_UPDATE',
+				"Failed-login bans were set to never expire; given a one-hour duration.", false, LOG_TO_ROLLING);
+		}
+
 		if(!isset($pref['admin_navbar_debug']))
 		{
 			if($just_check)
