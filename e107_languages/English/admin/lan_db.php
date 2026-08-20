@@ -141,3 +141,5 @@ define("DBLAN_119", "Backup");
 define("DBLAN_120", "Starting backup....");
 define("DBLAN_121", "Moving [x] to [y].");
 
+define("DBLAN_REFUSED_TOKEN_MISSING", "That operation was not started, because the link carried no security token. Start it from the Database Utilities menu rather than from a bookmark or a link on another site.");
+
