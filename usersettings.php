@@ -58,8 +58,8 @@ require_once(e_HANDLER.'validator_class.php');
 
 class usersettings_front // Begin Usersettings rewrite.
 {
-	/** Session key holding the password hashes of a change awaiting confirmation of the current password. */
-	const PENDING_PASSWORD = 'usersettings_pending_password';
+	/** Session key holding a change awaiting confirmation of the current password. */
+	const PENDING_CHANGE = 'usersettings_pending_change';
 
 
 	private $template = array();
@@ -676,26 +676,16 @@ class usersettings_front // Begin Usersettings rewrite.
 		}  // End - update setttings
 		elseif(isset($_POST['SaveValidatedInfo'])) // Next bit only valid if user editing their own data
 		{
-/*			if(!empty($_POST['updated_data']) && !empty($_POST['currentpassword']) && !empty($_POST['updated_key']))
-			{	// Got some data confirmed with password entry*/
-				$new_data = base64_decode($_POST['updated_data']);
+				$pendingChange = $this->pendingChange(isset($_POST['pending']) ? $_POST['pending'] : '');
 
-				 // Should only happen if someone's fooling around
-				if ($this->getValidationKey($new_data) !== $_POST['updated_key'] || ($userMethods->hasReadonlyField($new_data) !==false))
-				{
-					echo LAN_USET_42.'<br />';
+				if (!$pendingChange)
+				{  // Nothing is waiting on this account, so this confirmation has nothing to apply
+
+					$mes->addError("<p>".defset('LAN_USET_CHANGE_NOT_COMPLETED', "Your changes were not completed. Please try again.")."</p>");
+					$mes->addError("<a class='btn btn-danger' href='".e107::getUrl()->create('user/myprofile/edit')."'>".LAN_BACK."</a>");
+
+					echo $mes->render();
 					return false;
-				}
-
-				if (isset($_POST['updated_extended']))
-				{
-					$new_extended = base64_decode($_POST['updated_extended']);
-
-					if ($this->getValidationKey($new_extended) !== $_POST['extended_key'])
-					{  // Should only happen if someone's fooling around
-						echo LAN_USET_42.'<br />';
-						return false;
-					}
 				}
 
 				if ($userMethods->CheckPassword($_POST['currentpassword'], $udata['user_loginname'], $udata['user_password']) === false) // Use old data to validate
@@ -708,39 +698,20 @@ class usersettings_front // Begin Usersettings rewrite.
 					return false;
 				}
 
+				e107::getSession()->clear(self::PENDING_CHANGE);
+
 				$reauthenticated = true;
-				$pendingPassword = $this->takePendingPassword();
+				$changedUserData = $pendingChange['data'];
+				$changedEUFData  = $pendingChange['extended'];
 
-				if (!empty($_POST['pendingpassword']) && !$pendingPassword)
-				{  // The change this confirmation was rendered for is no longer held
-
-					$mes->addError("<p>".defset('LAN_USET_PASSWORD_CHANGE_LOST', "Your password change was not completed. Please enter your new password again.")."</p>");
-					$mes->addError("<a class='btn btn-danger' href='".e107::getUrl()->create('user/myprofile/edit')."'>".LAN_BACK."</a>");
-
-					echo $mes->render();
-					return false;
-				}
-
-				$changedUserData = e107::unserialize($new_data);
-				$changedUserData = e107::getParser()->filter($changedUserData, 'str');
-
-				if ($pendingPassword)
+				if ($pendingChange['hashes'])
 				{
-					$changedUserData = $this->withPasswordHashes($changedUserData, $udata, $pendingPassword);
+					$changedUserData = $this->withPasswordHashes($changedUserData, $udata, $pendingChange['hashes']);
 				}
 				else
 				{
 					$savePassword = $_POST['currentpassword'];
 				}
-
-				if(!empty($new_extended))
-				{
-					$changedEUFData = e107::unserialize($new_extended);
-					$changedEUFData = e107::getParser()->filter($changedEUFData, 'str');
-				}
-
-				unset($new_data);
-				unset($new_extended);
 
 				if (isset($changedUserData['user_sess']))
 				{
@@ -750,7 +721,6 @@ class usersettings_front // Begin Usersettings rewrite.
 				{
 					$avatar_to_delete = $udata['user_image'];
 				}
-		//	}
 		}
 		unset($_POST['updatesettings']);
 		unset($_POST['SaveValidatedInfo']);
@@ -1113,32 +1083,25 @@ class usersettings_front // Begin Usersettings rewrite.
 
 
 	/**
-	 * @param $string
-	 * @return string
-	 */
-	private function getValidationKey($string)
-	{
-		return hash_hmac('sha256', $string, e_TOKEN);
-	}
-
-
-	/**
-	 * Take, and spend, the hashes {@see renderPasswordForm()} stashed for the account holder. Rendering a
-	 * confirmation that carries no password change clears the stash, so an abandoned change cannot reach
-	 * a later confirmation.
+	 * The change {@see renderPasswordForm()} stashed under this handle, if it is still the one waiting.
+	 * Reading it does not spend it; the caller clears it once the current password has been proven.
 	 *
-	 * @return array empty when no password change is waiting on this account
+	 * Only the most recent confirmation is held, so a second one started in another tab displaces the
+	 * first, and confirming the first is then refused rather than silently applying the second.
+	 *
+	 * @param string $handle the confirmation form's `pending` value
+	 * @return array empty when this handle is not the change waiting on this account
 	 */
-	private function takePendingPassword()
+	private function pendingChange($handle)
 	{
-		$pending = e107::getSession()->get(self::PENDING_PASSWORD, true);
+		$pending = e107::getSession()->get(self::PENDING_CHANGE);
 
-		if (empty($pending['hashes']) || empty($pending['user_id']) || (int) $pending['user_id'] !== (int) USERID)
+		if (empty($pending['handle']) || empty($pending['user_id']) || (int) $pending['user_id'] !== (int) USERID)
 		{
 			return array();
 		}
 
-		return $pending['hashes'];
+		return hash_equals($pending['handle'], (string) $handle) ? $pending : array();
 	}
 
 
@@ -1173,24 +1136,18 @@ class usersettings_front // Begin Usersettings rewrite.
 	 */
 	private function renderPasswordForm($changedUserData, $changedEUFData, $pendingPassword = array() )
 	{
-		$ns                 = e107::getRender();
-		$updated_data       = (string) e107::serialize($changedUserData,'json');
-		$validation_key     = $this->getValidationKey($updated_data);
-		$updated_data       = base64_encode($updated_data);
-		$updated_extended   = (string) e107::serialize($changedEUFData, 'json');
-		$extended_key       = $this->getValidationKey($updated_extended);
-		$updated_extended   = base64_encode($updated_extended);
-
+		$ns         = e107::getRender();
+		$tp         = e107::getParser();
 		$formTarget = e107::getUrl()->create('user/myprofile/edit');
+		$handle     = e_random::hex(32);
 
-		if ($pendingPassword)
-		{
-			e107::getSession()->set(self::PENDING_PASSWORD, array('user_id' => (int) USERID, 'hashes' => $pendingPassword));
-		}
-		else
-		{
-			e107::getSession()->clear(self::PENDING_PASSWORD);
-		}
+		e107::getSession()->set(self::PENDING_CHANGE, array(
+			'handle'   => $handle,
+			'user_id'  => (int) USERID,
+			'data'     => $changedUserData,
+			'extended' => $changedEUFData,
+			'hashes'   => $pendingPassword,
+		));
 
 		$prompt = $pendingPassword ? defset('LAN_USET_CONFIRM_PASSWORD_CHANGE', LAN_USET_21) : LAN_USET_21;
 
@@ -1203,12 +1160,12 @@ class usersettings_front // Begin Usersettings rewrite.
 					{
 						foreach ($v as $sk => $sv)
 						{
-							$text .= "<input type='hidden' name='{$k}[{$sk}]' value='{$sv}' />\n";
+							$text .= "<input type='hidden' name='".$tp->toAttribute($k, true)."[".$tp->toAttribute($sk, true)."]' value='".$tp->toAttribute($sv, true)."' />\n";
 						}
 					}
 					else
 					{
-						$text .= "<input type='hidden' name='{$k}' value='{$v}' />\n";
+						$text .= "<input type='hidden' name='".$tp->toAttribute($k, true)."' value='".$tp->toAttribute($v, true)."' />\n";
 					}
 				}
 
@@ -1219,11 +1176,7 @@ class usersettings_front // Begin Usersettings rewrite.
 				<input type='password' class='form-control' name='currentpassword' value='' size='30' />";
 
 				$text .= "
-				<input type='hidden' name='pendingpassword' value='".($pendingPassword ? '1' : '')."' />
-			<input type='hidden' name='updated_data' value='{$updated_data}' />
-				<input type='hidden' name='updated_key' value='{$validation_key}' />
-				<input type='hidden' name='updated_extended' value='{$updated_extended}' />
-				<input type='hidden' name='extended_key' value='{$extended_key}' />
+				<input type='hidden' name='pending' value='{$handle}' />
 				<input type='hidden' name='e-token' value='".defset('e_TOKEN')."' />
 				</td></tr>
 				<tr><td>&nbsp;</td></tr>
