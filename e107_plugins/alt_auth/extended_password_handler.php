@@ -390,7 +390,7 @@ class ExtendedPasswordHandler extends UserHandler
 			e107::getMessage()->addDebug("Generated Hash: ".$pwHash);
 		}
 
-		if ($stored_hash != $pwHash) return PASSWORD_INVALID;
+		if (!hash_equals((string) $stored_hash, (string) $pwHash)) return PASSWORD_INVALID;
 
 		return PASSWORD_VALID;
 	}

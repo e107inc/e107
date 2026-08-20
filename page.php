@@ -1185,7 +1185,7 @@ class pageClass
 		{
 			
 			
-			if($_POST['page_pw'] == $page_password)
+			if(hash_equals((string) $page_password, (string) varset($_POST['page_pw'])))
 			{
 				$this->setPageCookie();
 				$this->authorized = true;
@@ -1201,7 +1201,7 @@ class pageClass
 			// TODO - e_COOKIE
 			$cookiename = $this->getCookieName();
 
-			if(isset($_COOKIE[$cookiename]) && ($_COOKIE[$cookiename] == md5($page_password.USERID)))
+			if(isset($_COOKIE[$cookiename]) && hash_equals(md5($page_password.USERID), (string) $_COOKIE[$cookiename]))
 			{
 				$this->authorized = true;
 				return TRUE;
