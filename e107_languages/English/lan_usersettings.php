@@ -32,6 +32,8 @@ return [
     'LAN_USET_18' => "User data changed by admin: [x], login name: [y]",
     'LAN_USET_20' => "You must also change the user's password if you are changing their login name or email address",
     'LAN_USET_21' => "Please validate the changes by re-entering your password:",
+    'LAN_USET_CONFIRM_PASSWORD_CHANGE' => "Please confirm the changes by entering your current password:",
+    'LAN_USET_PASSWORD_CHANGE_LOST' => "Your password change was not completed. Please enter your new password again.",
     'LAN_USET_23' => "Leave blank to keep existing password",
     'LAN_USET_24' => "New password:",
     'LAN_USET_25' => "Re-type new password:",

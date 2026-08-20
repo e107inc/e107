@@ -58,6 +58,9 @@ require_once(e_HANDLER.'validator_class.php');
 
 class usersettings_front // Begin Usersettings rewrite.
 {
+	/** Session key holding the password hashes of a change awaiting confirmation of the current password. */
+	const PENDING_PASSWORD = 'usersettings_pending_password';
+
 
 	private $template = array();
 	private $sc = null;
@@ -377,6 +380,8 @@ class usersettings_front // Begin Usersettings rewrite.
 	//	$ue_fields          = '';
 		$caption            = '';
 		$promptPassword     = false;
+		$reauthenticated    = false;
+		$pendingPassword    = array();
 		$error              = FALSE;
 		$extraErrors        = array();
 		$eufVals            = array();
@@ -703,11 +708,30 @@ class usersettings_front // Begin Usersettings rewrite.
 					return false;
 				}
 
+				$reauthenticated = true;
+				$pendingPassword = $this->takePendingPassword();
+
+				if (!empty($_POST['pendingpassword']) && !$pendingPassword)
+				{  // The change this confirmation was rendered for is no longer held
+
+					$mes->addError("<p>".defset('LAN_USET_PASSWORD_CHANGE_LOST', "Your password change was not completed. Please enter your new password again.")."</p>");
+					$mes->addError("<a class='btn btn-danger' href='".e107::getUrl()->create('user/myprofile/edit')."'>".LAN_BACK."</a>");
+
+					echo $mes->render();
+					return false;
+				}
 
 				$changedUserData = e107::unserialize($new_data);
 				$changedUserData = e107::getParser()->filter($changedUserData, 'str');
 
-				$savePassword = $_POST['currentpassword'];
+				if ($pendingPassword)
+				{
+					$changedUserData = $this->withPasswordHashes($changedUserData, $udata, $pendingPassword);
+				}
+				else
+				{
+					$savePassword = $_POST['currentpassword'];
+				}
 
 				if(!empty($new_extended))
 				{
@@ -746,18 +770,29 @@ class usersettings_front // Begin Usersettings rewrite.
 				$loginname = $changedUserData['user_loginname'] ? $changedUserData['user_loginname'] : $udata['user_loginname'];
 				$email = (isset($changedUserData['user_email']) && $changedUserData['user_email']) ? $changedUserData['user_email'] : $udata['user_email'];
 				// $sql->escape() removed: this value is bound by the array-form update of 'user' below (see #user update). Binding makes pre-escaping redundant (it would double-escape).
-				$changedUserData['user_password'] = $userMethods->HashPassword($savePassword, $loginname);
-				if (varset($pref['allowEmailLogin'], FALSE))
+				$newHashes = array(
+					'user_password'  => $userMethods->HashPassword($savePassword, $loginname),
+					'email_password' => varset($pref['allowEmailLogin'], FALSE) ? $userMethods->HashPassword($savePassword, $email) : null,
+				);
+
+				if (!$reauthenticated && !$_uid && $userMethods->isPasswordRequired('user_password'))
+				{	// User is changing their own password
+					if (!$error)
+					{
+						$promptPassword  = true;
+						$pendingPassword = $newHashes;
+					}
+				}
+				else
 				{
-					$user_prefs = e107::unserialize($udata['user_prefs']);
-					$user_prefs['email_password'] = $userMethods->HashPassword($savePassword, $email);
-					$changedUserData['user_prefs'] = e107::serialize($user_prefs);
+					$changedUserData = $this->withPasswordHashes($changedUserData, $udata, $newHashes);
 				}
 			}
 			else
 			{
-				if ((isset($changedUserData['user_loginname']) && $userMethods->isPasswordRequired('user_loginname'))
-					|| (isset($changedUserData['user_email']) && $userMethods->isPasswordRequired('user_email')))
+				if (!$reauthenticated
+					&& ((isset($changedUserData['user_loginname']) && $userMethods->isPasswordRequired('user_loginname'))
+					|| (isset($changedUserData['user_email']) && $userMethods->isPasswordRequired('user_email'))))
 				{
 					if ($_uid && ADMIN)
 					{	// Admin is changing it
@@ -992,7 +1027,7 @@ class usersettings_front // Begin Usersettings rewrite.
 
 		if ($promptPassword) // User has to enter password to validate data
 		{
-			$this->renderPasswordForm($changedUserData,$changedEUFData);
+			$this->renderPasswordForm($changedUserData,$changedEUFData,$pendingPassword);
 			return false;
 		}
 
@@ -1083,25 +1118,81 @@ class usersettings_front // Begin Usersettings rewrite.
 	 */
 	private function getValidationKey($string)
 	{
-		return crypt($string, e_TOKEN);
+		return hash_hmac('sha256', $string, e_TOKEN);
+	}
+
+
+	/**
+	 * Take, and spend, the hashes {@see renderPasswordForm()} stashed for the account holder. Rendering a
+	 * confirmation that carries no password change clears the stash, so an abandoned change cannot reach
+	 * a later confirmation.
+	 *
+	 * @return array empty when no password change is waiting on this account
+	 */
+	private function takePendingPassword()
+	{
+		$pending = e107::getSession()->get(self::PENDING_PASSWORD, true);
+
+		if (empty($pending['hashes']) || empty($pending['user_id']) || (int) $pending['user_id'] !== (int) USERID)
+		{
+			return array();
+		}
+
+		return $pending['hashes'];
+	}
+
+
+	/**
+	 * Fold a password change's hashes into a pending record. The email-login hash lives inside the
+	 * user_prefs envelope, which is rebuilt from the record as it stands in this request.
+	 *
+	 * @param array $changedUserData
+	 * @param array $udata the stored user record
+	 * @param array $hashes user_password, and email_password or null when email login is off
+	 * @return array
+	 */
+	private function withPasswordHashes($changedUserData, $udata, $hashes)
+	{
+		$changedUserData['user_password'] = $hashes['user_password'];
+
+		if ($hashes['email_password'] !== null)
+		{
+			$user_prefs = e107::unserialize($udata['user_prefs']);
+			$user_prefs['email_password'] = $hashes['email_password'];
+			$changedUserData['user_prefs'] = e107::serialize($user_prefs);
+		}
+
+		return $changedUserData;
 	}
 
 
 	/**
 	 * @param $changedUserData
 	 * @param $changedEUFData
+	 * @param array $pendingPassword password hashes to apply once the current password is confirmed
 	 */
-	private function renderPasswordForm($changedUserData, $changedEUFData )
+	private function renderPasswordForm($changedUserData, $changedEUFData, $pendingPassword = array() )
 	{
 		$ns                 = e107::getRender();
-		$updated_data       = e107::serialize($changedUserData,'json');
+		$updated_data       = (string) e107::serialize($changedUserData,'json');
 		$validation_key     = $this->getValidationKey($updated_data);
 		$updated_data       = base64_encode($updated_data);
-		$updated_extended   = e107::serialize($changedEUFData, 'json');
+		$updated_extended   = (string) e107::serialize($changedEUFData, 'json');
 		$extended_key       = $this->getValidationKey($updated_extended);
 		$updated_extended   = base64_encode($updated_extended);
 
 		$formTarget = e107::getUrl()->create('user/myprofile/edit');
+
+		if ($pendingPassword)
+		{
+			e107::getSession()->set(self::PENDING_PASSWORD, array('user_id' => (int) USERID, 'hashes' => $pendingPassword));
+		}
+		else
+		{
+			e107::getSession()->clear(self::PENDING_PASSWORD);
+		}
+
+		$prompt = $pendingPassword ? defset('LAN_USET_CONFIRM_PASSWORD_CHANGE', LAN_USET_21) : LAN_USET_21;
 
 		$text = "<form method='post' action='".$formTarget."'>
 			<table><tr><td>";
@@ -1121,14 +1212,15 @@ class usersettings_front // Begin Usersettings rewrite.
 					}
 				}
 
-				$text .= LAN_USET_21."</td></tr>
+				$text .= $prompt."</td></tr>
 				<tr><td>&nbsp;</td></tr>
 				<tr><td>
 
 				<input type='password' class='form-control' name='currentpassword' value='' size='30' />";
 
 				$text .= "
-				<input type='hidden' name='updated_data' value='{$updated_data}' />
+				<input type='hidden' name='pendingpassword' value='".($pendingPassword ? '1' : '')."' />
+			<input type='hidden' name='updated_data' value='{$updated_data}' />
 				<input type='hidden' name='updated_key' value='{$validation_key}' />
 				<input type='hidden' name='updated_extended' value='{$updated_extended}' />
 				<input type='hidden' name='extended_key' value='{$extended_key}' />
