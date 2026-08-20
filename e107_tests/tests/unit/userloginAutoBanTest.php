@@ -1,0 +1,224 @@
+<?php
+/**
+ * e107 website system
+ *
+ * Copyright (C) 2008-2020 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ */
+
+class userloginAutoBanTest extends \Codeception\Test\Unit
+{
+	/** RFC 5737 TEST-NET-2 as eIPHandler stores it. Banning the CLI IP instead would kill the rest of the run. */
+	const TEST_IP = '0000:0000:0000:0000:0000:ffff:c633:6401';
+
+	const TEST_USER = 'vr9hvictim';
+	const TEST_PASS = 'correct horse battery staple';
+	const FAIL_LIMIT = 3;
+
+	/** @var userlogin */
+	protected $lg;
+
+	/** @var int */
+	protected $userId;
+
+	/** @var array */
+	protected $prefBackup = array();
+
+	protected function _before()
+	{
+		$this->clearBanState();
+
+		$this->userId = e107::getDb()->insert('user', array(
+			'user_name'      => self::TEST_USER,
+			'user_loginname' => self::TEST_USER,
+			'user_email'     => self::TEST_USER . '@example.com',
+			'user_password'  => md5(self::TEST_PASS),
+			'user_join'      => time(),
+			'user_ban'       => 0,
+			'user_class'     => '',
+		));
+		$this->assertNotEmpty($this->userId);
+
+		$this->prefBackup = isset($GLOBALS['pref']) ? $GLOBALS['pref'] : array();
+		$GLOBALS['pref']['autoban'] = 1;
+		$GLOBALS['pref']['failed_login_limit'] = self::FAIL_LIMIT;
+
+		$this->lg = $this->make('userlogin');
+		$this->lg->__construct();
+		$this->setUserIP($this->lg, self::TEST_IP);
+	}
+
+	protected function _after()
+	{
+		$GLOBALS['pref'] = $this->prefBackup;
+		$this->clearBanState();
+	}
+
+	protected function clearBanState()
+	{
+		$sql = e107::getDb();
+		$sql->delete('generic', "gen_ip='" . self::TEST_IP . "'");
+		$sql->delete('banlist', "banlist_ip='" . self::TEST_IP . "'");
+		$sql->delete('user', "user_loginname='" . self::TEST_USER . "'");
+		e107::getIPHandler()->regenerateFiles();
+	}
+
+	protected function setUserIP($login, $ip)
+	{
+		$property = new ReflectionProperty('userlogin', 'userIP');
+		$property->setAccessible(true);
+		$property->setValue($login, $ip);
+	}
+
+	/**
+	 * Reach invalidLogin() from a frame that has a file, the way login() does.
+	 * ReflectionMethod::invoke() has none, and logNote() reads one.
+	 */
+	protected function recordFailure($reason)
+	{
+		$record = Closure::bind(function ($username, $reason) {
+			return $this->invalidLogin($username, $reason);
+		}, $this->lg, 'userlogin');
+
+		$record(self::TEST_USER, $reason);
+	}
+
+	protected function failedLoginCount()
+	{
+		return (int) e107::getDb()->count('generic', '(*)',
+			"WHERE gen_ip='" . self::TEST_IP . "' AND gen_type='failed_login'");
+	}
+
+	protected function loginBanCount()
+	{
+		return (int) e107::getDb()->count('banlist', '(*)',
+			"WHERE banlist_ip='" . self::TEST_IP . "' AND banlist_bantype=" . eIPHandler::BAN_TYPE_LOGINS);
+	}
+
+	protected function autoBannedCount()
+	{
+		return (int) e107::getDb()->count('generic', '(*)',
+			"WHERE gen_ip='" . self::TEST_IP . "' AND gen_type='auto_banned'");
+	}
+
+	public function testWrongPasswordOnValidAccountIsCounted()
+	{
+		$this->assertSame(0, $this->failedLoginCount());
+
+		$result = $this->lg->login(self::TEST_USER, 'not the password', 0, '', true);
+
+		$this->assertFalse($result);
+		$this->assertSame(1, $this->failedLoginCount());
+	}
+
+	public function testWrongPasswordsReachingTheLimitTriggerTheBan()
+	{
+		for($i = 1; $i <= self::FAIL_LIMIT; $i++)
+		{
+			$this->lg->login(self::TEST_USER, 'not the password ' . $i, 0, '', true);
+		}
+
+		$this->assertSame(self::FAIL_LIMIT, $this->failedLoginCount());
+		$this->assertSame(0, $this->loginBanCount());
+
+		$this->lg->login(self::TEST_USER, 'not the password either', 0, '', true);
+
+		$this->assertSame(1, $this->loginBanCount());
+		$this->assertSame(1, $this->autoBannedCount());
+	}
+
+	public function testDiagnosticModeRecordsNothing()
+	{
+		$messages = $this->lg->test();
+
+		$this->assertNotEmpty($messages);
+		$this->assertSame(0, $this->failedLoginCount());
+	}
+
+	public function testANoteIsDiscardedWhenTheAttemptGoesOnToAuthorise()
+	{
+		$this->lg->login(self::TEST_USER, 'not the password', 0, '', true);
+		$this->assertSame(1, $this->failedLoginCount());
+
+		$userData = e107::getDb()->retrieve('user', '*', 'user_id=' . (int) $this->userId);
+		$this->lg->validLogin($userData);
+
+		$this->assertSame(0, $this->failedLoginCount());
+	}
+
+	public function testAnAttemptThatAuthorisesIsNotItselfBanned()
+	{
+		for($i = 1; $i < self::FAIL_LIMIT; $i++)
+		{
+			$this->lg->login(self::TEST_USER, 'not the password ' . $i, 0, '', true);
+		}
+
+		$this->lg->login(self::TEST_USER, 'not the password', 0, '', true);
+		$userData = e107::getDb()->retrieve('user', '*', 'user_id=' . (int) $this->userId);
+		$this->lg->validLogin($userData);
+
+		$this->assertSame(0, $this->loginBanCount());
+		$this->assertSame(0, $this->autoBannedCount());
+	}
+
+	protected function seedFailedLogin()
+	{
+		e107::getDb()->insert('generic', "0, 'failed_login', '".time()."', 0, '".self::TEST_IP."', 0, 'seeded'");
+	}
+
+	protected function noteText()
+	{
+		return e107::getDb()->retrieve('generic', 'gen_chardata',
+			"gen_ip='" . self::TEST_IP . "' AND gen_type='failed_login'");
+	}
+
+	public function testASecondReasonInOneAttemptReplacesTheFirst()
+	{
+		$this->recordFailure(LOGIN_BAD_PW);
+		$this->recordFailure(LOGIN_ABORT);
+
+		$this->assertSame(1, $this->failedLoginCount());
+		$this->assertNotFalse(strpos($this->noteText(), 'Alt_auth'));
+	}
+
+	public function testTheBanIsDecidedOncePerAttempt()
+	{
+		for($i = 1; $i <= self::FAIL_LIMIT; $i++)
+		{
+			$this->seedFailedLogin();
+		}
+
+		$this->recordFailure(LOGIN_BAD_PW);
+		$this->recordFailure(LOGIN_ABORT);
+
+		$this->assertSame(1, $this->loginBanCount());
+		$this->assertSame(1, $this->autoBannedCount());
+	}
+
+	public function testUnknownUsernameIsStillCounted()
+	{
+		$result = $this->lg->login('vr9hnosuchuser', 'not the password', 0, '', true);
+
+		$this->assertFalse($result);
+		$this->assertSame(1, $this->failedLoginCount());
+	}
+
+	public function testSuccessfulLoginIsNotCounted()
+	{
+		$result = $this->lg->login(self::TEST_USER, self::TEST_PASS, 0, '', true);
+
+		$this->assertTrue($result);
+		$this->assertSame(0, $this->failedLoginCount());
+		$this->assertSame(0, $this->loginBanCount());
+	}
+
+	public function testBlankPasswordIsNotCounted()
+	{
+		$result = $this->lg->login(self::TEST_USER, '', 0, '', true);
+
+		$this->assertFalse($result);
+		$this->assertSame(0, $this->failedLoginCount());
+	}
+}
