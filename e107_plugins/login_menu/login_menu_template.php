@@ -66,7 +66,7 @@ if ( ! isset($LOGIN_MENU_FORM))
 
 	$LOGIN_MENU_FORM = "{LM_MESSAGE}";
 
-	if ((varset($pref['password_CHAP'],0) == 2) && ($pref['user_tracking'] == "session"))
+	if (varset($pref['password_CHAP'],0) == 2)
 	{
 	  $LOGIN_MENU_FORM .= "
     	<div style='text-align: center' id='nologinmenuchap'>"."Javascript must be enabled in your browser if you wish to log into this site"."

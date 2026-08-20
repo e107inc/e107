@@ -859,7 +859,7 @@ if (isset($_POST['userlogin']) || isset($_POST['userlogin_x']))
 
 // $_SESSION['ubrowser'] check not needed anymore - see session handler
 // e_QUERY not defined in single entry mod
-if (($_SERVER['QUERY_STRING'] === 'logout')/* || (($pref['user_tracking'] == 'session') && isset($_SESSION['ubrowser']) && ($_SESSION['ubrowser'] != $ubrowser))*/)
+if (($_SERVER['QUERY_STRING'] === 'logout'))
 {
 	if (USER)
 	{
@@ -886,14 +886,7 @@ if (($_SERVER['QUERY_STRING'] === 'logout')/* || (($pref['user_tracking'] == 'se
 
 	// first model logout and session destroy..
 	e107::getUser()->logout();
-	
-	// it might be removed soon
-	if ($pref['user_tracking'] === 'session')
-	{
-		session_destroy();
-		$_SESSION[e_COOKIE]='';
-		// @TODO: Need to destroy the session cookie as well (not done by session_destroy()
-	}
+
 	cookie(e_COOKIE, '', (time() - 2592000));
 
 	if($prev) // allow scripts to set the logged out URL via setPreviousUrl()
@@ -1830,7 +1823,8 @@ function cookie($name, $value, $expire=0, $path = e_HTTP, $domain = '', $secure 
 //
 /**
  *
- * generic function for retaining values across pages. ie. cookies or sessions.
+ * generic function for retaining values across pages. The value is kept in the
+ * session; the cookie parameters are ignored since v2.3.11.
  * @deprecated Use e107::getUserSession()->makeUserCookie($userData, $autologin); instead.
  * @param $name
  * @param $value
@@ -1845,26 +1839,7 @@ function session_set($name, $value, $expire='', $path = e_HTTP, $domain = '', $s
 	//$userData = ['user_name
 //	e107::getUserSession()->makeUserCookie($userData, $autologin);
 
-	global $pref;
-	if ($pref['user_tracking'] === 'session')
-	{
-		$_SESSION[$name] = $value;
-	}
-	else
-	{
-		if((empty($domain) && !e_SUBDOMAIN) || (defined('MULTILANG_SUBDOMAIN') && MULTILANG_SUBDOMAIN === true))
-		{
-			$domain = (e_DOMAIN !== false) ? ".".e_DOMAIN : "";
-		}
-
-		if(defined('e_MULTISITE_MATCH'))
-		{
-			$path = '/';
-		}
-		
-		setcookie($name, $value, $expire, $path, $domain, $secure, true);
-		$_COOKIE[$name] = $value;
-	}
+	$_SESSION[$name] = $value;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
