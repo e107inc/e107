@@ -414,15 +414,90 @@ class bbcodeAttributeInjectionTest extends \Test\Unit
 			'A [stream] lost its size.');
 	}
 
+	/**
+	 * @return array
+	 */
+	public function imageInjections()
+	{
+		return array(
+			'attribute name'        => array('<b>hi</b>[img onmouseover=alert(1)]{e_IMAGE}generic/blank.gif[/img]'),
+			'attribute name slash'  => array('<b>hi</b>[img autofocus/onfocus=alert(1)]{e_IMAGE}generic/blank.gif[/img]'),
+			'no tag, just a bracket' => array('1<2>3 [img onmouseover=alert(1)]{e_IMAGE}generic/blank.gif[/img]'),
+			'style out of its quotes' => array('<b>hi</b>[img style=q" onmouseover="alert(1)]{e_MEDIA_IMAGE}b.gif[/img]'),
+			'id out of its quotes'    => array('<b>hi</b>[img id=q" onmouseover="alert(1)]{e_MEDIA_IMAGE}b.gif[/img]'),
+			'class out of its quotes' => array('<b>hi</b>[img class=q" onmouseover="alert(1)]{e_MEDIA_IMAGE}b.gif[/img]'),
+			'width out of its quotes' => array('<b>hi</b>[img width=q" onmouseover="alert(1)]{e_MEDIA_IMAGE}b.gif[/img]'),
+			'height out of its quotes' => array('<b>hi</b>[img height=q" onload="alert(1)]{e_MEDIA_IMAGE}b.gif[/img]'),
+			'loading out of its quotes' => array('<b>hi</b>[img loading=q" onmouseover="alert(1)]{e_MEDIA_IMAGE}b.gif[/img]'),
+		);
+	}
+
+	/**
+	 * [img] is a bb_*.php class, so bb_img::toDB() whitelists its parameters on
+	 * the way in and the render trusted that. It should not have: e_parse's
+	 * isBBcode() returns false for any text that also contains something shaped
+	 * like <tag>, preFilter() then skips the whole pre-save pass, and the
+	 * parameter reaches the database untouched. A member who cannot post HTML
+	 * still gets there, because preFilter() runs before the tags are stripped,
+	 * so the tag only has to be in the submission and not in the stored row.
+	 *
+	 * Rows written before that whitelist existed are in the same position, which
+	 * is the general reason a save-time filter cannot be the only one.
+	 *
+	 * @dataProvider imageInjections
+	 * @param string $bbcode
+	 */
+	public function testTheImageBbcodeCannotBeReachedAroundItsPreSavePass($bbcode)
+	{
+		$html = $this->renderStored($bbcode);
+
+		self::assertSame(0, preg_match('#[\s/]on[a-z]+\s*=#i', $html),
+			'An [img] parameter emitted an event handler: '.$bbcode.' Rendered: '.$html);
+		$this->assertNoEventHandler($html, 'An [img] parameter emitted an event handler.');
+	}
+
+	/**
+	 * @return array
+	 */
+	public function imagePassthroughs()
+	{
+		return array(
+			'plain'  => array('[img class=floatleft&style=border:1px&id=pic1&alt=A+cat&width=100]{e_IMAGE}generic/blank.gif[/img]',
+				"class='img-rounded rounded bbcode bbcode-img floatleft' id='pic1' style='border:1px' alt='A cat' width='100'"),
+			'sized'  => array('[img width=100]{e_IMAGE}generic/blank.gif[/img]', "width='100'"),
+			'bare'   => array('[img]{e_IMAGE}generic/blank.gif[/img]', "src='/e107_images/generic/blank.gif'"),
+			'loading' => array('<b>hi</b>[img loading=eager]{e_MEDIA_IMAGE}b.gif[/img]', 'loading="eager"'),
+		);
+	}
+
+	/**
+	 * @dataProvider imagePassthroughs
+	 * @param string $bbcode
+	 * @param string $expected
+	 */
+	public function testTheImageBbcodeKeepsTheAttributesItAllows($bbcode, $expected)
+	{
+		self::assertStringContainsString($expected, $this->renderStored($bbcode),
+			'An [img] parameter naming an allowed attribute was dropped: '.$bbcode);
+	}
 
 
 
 
 
 
+	/**
+	 * The allow list compares lowercased but the guards below it address the
+	 * lowercase key, so an uppercase name used to pass the list and then skip
+	 * its guard. Names are case-insensitive to a browser, so STYLE is style.
+	 */
+	public function testTheImageBbcodeGuardsAnUppercaseAttributeName()
+	{
+		$html = $this->renderStored('<b>hi</b>[img STYLE=background:url(//evil.tld/x)]{e_IMAGE}generic/blank.gif[/img]');
 
-
-
+		self::assertStringNotContainsString('url(', $html,
+			'An uppercase [img] parameter skipped the guard its lowercase spelling gets. Rendered: '.$html);
+	}
 
 	/**
 	 * parse_str() returns an array for a bracketed key, and the brackets reach
@@ -449,11 +524,59 @@ class bbcodeAttributeInjectionTest extends \Test\Unit
 	public function arrayValuedParameters()
 	{
 		return array(
+			'img loading' => array('<b>hi</b>[img loading%5B%5D=lazy]{e_MEDIA_IMAGE}b.gif[/img]'),
+			'img class'   => array('<b>hi</b>[img class%5B%5D=x]{e_MEDIA_IMAGE}b.gif[/img]'),
+			'img style'   => array('<b>hi</b>[img style%5B%5D=x]{e_IMAGE}generic/blank.gif[/img]'),
+			'img alt'     => array('<b>hi</b>[img alt%5B%5D=x]{e_MEDIA_IMAGE}b.gif[/img]'),
 			'textarea'    => array('[textarea style%5B%5D=x]y[/textarea]'),
 			'stream'      => array('[stream autostart%5B%5D=false]http://e.com/a.wmv[/stream]'),
 		);
 	}
 
+	/**
+	 * bb_img fills title from alt, and toImage() encodes alt but prints title
+	 * as it is given. alt is the user's own text, so the payload legitimately
+	 * survives inside it; what may not happen is title gaining a real quote,
+	 * because that is what ends the attribute.
+	 */
+	public function testTheImageBbcodeCannotEscapeItsTitleByWayOfAlt()
+	{
+		$html = $this->renderStored('<b>hi</b>[img alt=q" onload="alert(1)]{e_MEDIA_IMAGE}b.gif[/img]');
 
+		self::assertStringNotContainsString('" onload="', $html,
+			'An [img] alt escaped the title attribute. Rendered: '.$html);
+		self::assertStringContainsString('title="q&quot;', $html,
+			'The title attribute lost the encoding that keeps it inside its quotes. Rendered: '.$html);
+	}
 
+	/**
+	 * figcaption is not an attribute; mediaImage() reads it and unsets it. It
+	 * still has to survive the allow list to get there. These two go through
+	 * the path where toDB() is skipped, because toDB() drops figcaption and
+	 * casts the dimensions itself, so it is the only path where the render is
+	 * the thing being measured.
+	 */
+	public function testTheImageBbcodeStillBuildsAFigureCaption()
+	{
+		$html = $this->renderStored('<b>hi</b>[img figcaption=Hello]{e_MEDIA_IMAGE}b.gif[/img]');
+
+		self::assertStringContainsString('<figcaption>Hello</figcaption>', $html,
+			'An [img] lost its explicit caption. Rendered: '.$html);
+	}
+
+	/**
+	 * A dimension that is not a number is dropped rather than cast, because
+	 * casting turns it into 0 and an image sized 0 is an image nobody can see.
+	 */
+	public function testTheImageBbcodeDoesNotCollapseANonNumericDimension()
+	{
+		foreach(array('<b>hi</b>[img width=auto]{e_MEDIA_IMAGE}b.gif[/img]',
+			'<b>hi</b>[img height=auto]{e_MEDIA_IMAGE}b.gif[/img]') as $bbcode)
+		{
+			$html = $this->renderStored($bbcode);
+
+			self::assertStringNotContainsString('="0"', $html,
+				'An [img] dimension was cast to zero: '.$bbcode.' Rendered: '.$html);
+		}
+	}
 }
