@@ -627,6 +627,45 @@ function update_core_database($type = '')
 		$pref = e107::getPref();
 
 
+		// Session rows still keyed by the raw session id.
+		require_once(e_HANDLER.'session_handler.php');
+		$sessionLegacy = array();
+
+		if($sql->select('session', 'session_id', "`session_id` NOT LIKE '".e_session_db::KEY_ALGO."$%'"))
+		{
+			while($sessionRow = $sql->fetch())
+			{
+				$sessionLegacy[] = $sessionRow['session_id'];
+			}
+		}
+
+		if(!empty($sessionLegacy))
+		{
+			if($just_check)
+			{
+				return update_needed('Stored session ids need to be hashed.');
+			}
+
+			$sessionHashed = 0;
+
+			foreach($sessionLegacy as $sessionId)
+			{
+				$updated = $sql->update('session', array(
+					'data' => array('session_id' => e_session_db::storageKey($sessionId)),
+					'_FIELD_TYPES' => array('session_id' => 'str'),
+					'WHERE' => "`session_id`='".$sql->escape($sessionId)."'",
+				));
+
+				if(false !== $updated)
+				{
+					$sessionHashed++;
+				}
+			}
+
+			$log->addDebug('Stored session ids hashed: '.$sessionHashed.' of '.count($sessionLegacy));
+		}
+
+
 		if(!isset($pref['admin_navbar_debug']))
 		{
 			if($just_check)
