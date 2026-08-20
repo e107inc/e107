@@ -310,6 +310,70 @@ class userloginAutoBanTest extends \Codeception\Test\Unit
 		$this->assertSame(0, $this->expiredBanRows());
 	}
 
+	protected function seedAgedNote($age)
+	{
+		e107::getDb()->insert('generic', "0, 'failed_login', '".(time() - $age)."', 0, '".self::TEST_IP."', 0, 'aged'");
+	}
+
+
+	public function testHistoryPastRetentionIsPruned()
+	{
+		$this->seedAgedNote(userlogin::FAILURE_RETENTION + 86400);
+		$this->assertSame(1, $this->failedLoginCount());
+
+		$this->lg->login(self::TEST_USER, 'not the password', 0, '', true);
+
+		$this->assertSame(1, $this->failedLoginCount());
+	}
+
+	public function testHistoryInsideRetentionIsKept()
+	{
+		$this->seedAgedNote(userlogin::FAILURE_RETENTION - 86400);
+
+		$this->lg->login(self::TEST_USER, 'not the password', 0, '', true);
+
+		$this->assertSame(2, $this->failedLoginCount());
+	}
+
+
+	protected function liveIndexColumns($name)
+	{
+		$sql = e107::getDb();
+		$sql->gen("SHOW INDEX FROM `#generic`");
+		$cols = array();
+		while($row = $sql->fetch())
+		{
+			if($row['Key_name'] === $name) { $cols[(int) $row['Seq_in_index']] = $row['Column_name']; }
+		}
+		ksort($cols);
+		return implode(',', $cols);
+	}
+
+	public function testTheShippedSchemaIndexesTheBanCounterQuery()
+	{
+		$sql = file_get_contents(e_CORE . 'sql/core_sql.php');
+
+		$this->assertNotFalse(strpos($sql, 'KEY gen_type_ip (gen_type,gen_ip)'));
+		$this->assertNotFalse(strpos($sql, 'KEY gen_type_ts (gen_type,gen_datestamp)'));
+	}
+
+	public function testTheUpgradeRoutineRestoresTheCompositeIndexes()
+	{
+		require_once(e_ADMIN . 'update_routines.php');
+
+		$sql = e107::getDb();
+		$sql->gen("ALTER TABLE `#generic` DROP INDEX `gen_type_ip`");
+		$sql->gen("ALTER TABLE `#generic` DROP INDEX `gen_type_ts`");
+
+		$this->assertSame('', $this->liveIndexColumns('gen_type_ip'));
+		$this->assertFalse(update_20x_to_latest('check'), 'update_needed() reports by returning false');
+
+		update_20x_to_latest('do');
+
+		$this->assertSame('gen_type,gen_ip', $this->liveIndexColumns('gen_type_ip'));
+		$this->assertSame('gen_type,gen_datestamp', $this->liveIndexColumns('gen_type_ts'));
+	}
+
 	public function testUnknownUsernameIsStillCounted()
 	{
 		$result = $this->lg->login('vr9hnosuchuser', 'not the password', 0, '', true);
