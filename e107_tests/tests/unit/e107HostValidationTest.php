@@ -263,6 +263,8 @@ class e107HostValidationTest extends \Test\Unit
 			'mismatched host with port still rejected'       => array('example.com', 'evil.com:8080', false, 'mismatched host with port still rejected'),
 			'case-insensitive exact match'                   => array('Example.COM', 'example.com', true, 'case-insensitive exact match'),
 			'case-insensitive www visit'                     => array('example.com', 'WWW.EXAMPLE.COM', true, 'case-insensitive www visit'),
+			'whitespace around an allowed entry'             => array(' example.com ', 'example.com', true, 'whitespace around an allowed entry'),
+			'whitespace around a list entry'                 => array(array("\n", ' example.com '), 'sub.example.com', true, 'whitespace around a list entry'),
 		);
 	}
 }
