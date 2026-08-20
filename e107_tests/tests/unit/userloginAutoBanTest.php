@@ -13,6 +13,9 @@ class userloginAutoBanTest extends \Codeception\Test\Unit
 	/** RFC 5737 TEST-NET-2 as eIPHandler stores it. Banning the CLI IP instead would kill the rest of the run. */
 	const TEST_IP = '0000:0000:0000:0000:0000:ffff:c633:6401';
 
+	/** A second address, so checkBan()'s per-query cache cannot carry a verdict between tests. */
+	const EXPIRED_IP = '0000:0000:0000:0000:0000:ffff:c633:6402';
+
 	const TEST_USER = 'vr9hvictim';
 	const TEST_PASS = 'correct horse battery staple';
 	const FAIL_LIMIT = 3;
@@ -25,6 +28,9 @@ class userloginAutoBanTest extends \Codeception\Test\Unit
 
 	/** @var array */
 	protected $prefBackup = array();
+
+	/** @var mixed */
+	protected $durationBackup;
 
 	protected function _before()
 	{
@@ -42,6 +48,9 @@ class userloginAutoBanTest extends \Codeception\Test\Unit
 		$this->assertNotEmpty($this->userId);
 
 		$this->prefBackup = isset($GLOBALS['pref']) ? $GLOBALS['pref'] : array();
+		$this->durationBackup = e107::getConfig()->get('ban_durations');
+		e107::getConfig()->setPref('ban_durations', array(eIPHandler::BAN_TYPE_LOGINS => 1));
+
 		$GLOBALS['pref']['autoban'] = 1;
 		$GLOBALS['pref']['failed_login_limit'] = self::FAIL_LIMIT;
 
@@ -52,7 +61,14 @@ class userloginAutoBanTest extends \Codeception\Test\Unit
 
 	protected function _after()
 	{
+		if(!empty($this->userId))
+		{
+			e107::setRegistry('core/e107/user/' . (int) $this->userId, null);
+		}
+
+		e107::getConfig()->setPref('ban_durations', $this->durationBackup);
 		$GLOBALS['pref'] = $this->prefBackup;
+
 		$this->clearBanState();
 	}
 
@@ -62,6 +78,7 @@ class userloginAutoBanTest extends \Codeception\Test\Unit
 		$sql->delete('generic', "gen_ip='" . self::TEST_IP . "'");
 		$sql->delete('banlist', "banlist_ip='" . self::TEST_IP . "'");
 		$sql->delete('user', "user_loginname='" . self::TEST_USER . "'");
+		$sql->delete('banlist', "banlist_ip='" . self::EXPIRED_IP . "'");
 		e107::getIPHandler()->regenerateFiles();
 	}
 
@@ -163,9 +180,9 @@ class userloginAutoBanTest extends \Codeception\Test\Unit
 		$this->assertSame(0, $this->autoBannedCount());
 	}
 
-	protected function seedFailedLogin()
+	protected function seedFailedLogin($age = 0)
 	{
-		e107::getDb()->insert('generic', "0, 'failed_login', '".time()."', 0, '".self::TEST_IP."', 0, 'seeded'");
+		e107::getDb()->insert('generic', "0, 'failed_login', '".(time() - $age)."', 0, '".self::TEST_IP."', 0, 'seeded'");
 	}
 
 	protected function noteText()
@@ -195,6 +212,102 @@ class userloginAutoBanTest extends \Codeception\Test\Unit
 
 		$this->assertSame(1, $this->loginBanCount());
 		$this->assertSame(1, $this->autoBannedCount());
+	}
+
+	public function testFailuresOlderThanTheWindowDoNotBan()
+	{
+		$stale = userlogin::FAILURE_WINDOW + 60;
+
+		for($i = 0; $i <= self::FAIL_LIMIT; $i++)
+		{
+			$this->seedFailedLogin($stale);
+		}
+
+		$this->lg->login(self::TEST_USER, 'not the password', 0, '', true);
+
+		$this->assertSame(0, $this->loginBanCount());
+		$this->assertSame(0, $this->autoBannedCount());
+	}
+
+	public function testFailuresInsideTheWindowStillBan()
+	{
+		for($i = 0; $i <= self::FAIL_LIMIT; $i++)
+		{
+			$this->seedFailedLogin(60);
+		}
+
+		$this->lg->login(self::TEST_USER, 'not the password', 0, '', true);
+
+		$this->assertSame(1, $this->loginBanCount());
+	}
+
+	public function testTheShippedInstallDefaultExpiresFailedLoginBans()
+	{
+		$xml = e107::getXml()->loadXMLfile(e_CORE . "xml/default_install.xml", 'advanced');
+
+		$durations = null;
+		foreach($xml['prefs']['core'] as $pref)
+		{
+			if($pref['@attributes']['name'] === 'ban_durations')
+			{
+				$durations = e107::getArrayStorage()->unserialize($pref['@value']);
+			}
+		}
+
+		$this->assertTrue(is_array($durations));
+		$this->assertArrayHasKey(eIPHandler::BAN_TYPE_LOGINS, $durations);
+		$this->assertGreaterThan(0, $durations[eIPHandler::BAN_TYPE_LOGINS]);
+	}
+
+	public function testABanCarriesAnExpiryWhenADurationIsConfigured()
+	{
+		for($i = 0; $i <= self::FAIL_LIMIT; $i++)
+		{
+			$this->seedFailedLogin(60);
+		}
+
+		$this->lg->login(self::TEST_USER, 'not the password', 0, '', true);
+
+		$expires = e107::getDb()->retrieve('banlist', 'banlist_banexpires',
+			"banlist_ip='" . self::TEST_IP . "'");
+
+		$this->assertSame(1, $this->loginBanCount());
+		$this->assertGreaterThan(time(), $expires);
+	}
+
+	protected function seedExpiredBan()
+	{
+		e107::getDb()->insert('banlist', array('data' => array(
+			'banlist_id'         => 0,
+			'banlist_ip'         => self::EXPIRED_IP,
+			'banlist_bantype'    => eIPHandler::BAN_TYPE_LOGINS,
+			'banlist_datestamp'  => time() - 7200,
+			'banlist_banexpires' => time() - 60,
+			'banlist_admin'      => 1,
+			'banlist_reason'     => 'expired',
+			'banlist_notes'      => '',
+		)));
+	}
+
+	protected function expiredBanRows()
+	{
+		return (int) e107::getDb()->count('banlist', '(*)',
+			"WHERE banlist_ip='" . self::EXPIRED_IP . "'");
+	}
+
+	/**
+	 * Characterises the pre-existing checkBan() expiry that the shipped
+	 * ban_durations default relies on; it does not exercise the fix itself.
+	 */
+	public function testAnExpiredBanLiftsItself()
+	{
+		$this->seedExpiredBan();
+		$this->assertSame(1, $this->expiredBanRows());
+
+		$notBanned = e107::getIPHandler()->checkBan("banlist_ip='" . self::EXPIRED_IP . "'", false, true);
+
+		$this->assertTrue($notBanned);
+		$this->assertSame(0, $this->expiredBanRows());
 	}
 
 	public function testUnknownUsernameIsStillCounted()
