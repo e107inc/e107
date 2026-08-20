@@ -480,10 +480,74 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 			'An [img] parameter naming an allowed attribute was dropped: '.$bbcode);
 	}
 
+	/**
+	 * [alert] concatenates its parameter into a class attribute and neither its
+	 * toDB() nor its toHTML() touched it, so an apostrophe closed the attribute.
+	 * toHTML() hands one back: $search/$replace restores &#039; before bbcodes
+	 * are parsed. bb_p, bb_block and bb_h already guard the same position with
+	 * eHelper.
+	 */
+	public function testTheAlertBbcodeCannotEscapeItsClassAttribute()
+	{
+		$html = $this->renderStored("[alert=info' onmouseover='alert(1)]hello[/alert]");
 
+		self::assertSame(false, strpos($html, 'alert(1)'),
+			'An [alert] parameter escaped the class attribute. Rendered: '.$html);
+		self::assertSame(0, preg_match('#[\s/]on[a-z]+\s*=#i', $html),
+			'An [alert] parameter emitted an event handler. Rendered: '.$html);
+	}
 
+	/**
+	 * @return array
+	 */
+	public function alertPassthroughs()
+	{
+		return array(
+			'named'   => array('[alert=warning]hello[/alert]', "class='alert alert-warning'"),
+			'default' => array('[alert]hello[/alert]', "class='alert alert-info'"),
+		);
+	}
 
+	/**
+	 * @dataProvider alertPassthroughs
+	 * @param string $bbcode
+	 * @param string $expected
+	 */
+	public function testTheAlertBbcodeKeepsAnOrdinaryVariant($bbcode, $expected)
+	{
+		self::assertNotSame(false, strpos($this->renderStored($bbcode), $expected),
+			'An ordinary [alert] lost its variant class: '.$bbcode);
+	}
 
+	/**
+	 * An allow list of names keeps a member out of the handler attributes, but
+	 * eHelper::secureClassAttr() keeps whitespace, so a class VALUE is still a
+	 * class list. e107 bundles Bootstrap, whose positioning utilities then turn
+	 * one bbcode into a transparent overlay across the whole viewport that eats
+	 * every click on the page. No script needed, so an allow list of names is
+	 * not on its own enough wherever the value lands in a class.
+	 */
+	public function testTheAlertBbcodeCannotCoverThePageWithUtilityClasses()
+	{
+		$html = $this->renderStored('[alert=info position-fixed top-0 start-0 w-100 vh-100 opacity-0]x[/alert]');
+
+		self::assertSame(false, strpos($html, 'position-fixed'),
+			'An [alert] variant smuggled a second class in. Rendered: '.$html);
+	}
+
+	/**
+	 * bb_block guards id and style with eHelper two lines below where it built
+	 * its class, and did not guard the class. bb_p and bb_h guard all three.
+	 */
+	public function testTheBlockBbcodeCannotEscapeItsClassAttribute()
+	{
+		$html = $this->renderStored('<b>hi</b>[block=class=q" onmouseover="alert(1)]x[/block]');
+
+		self::assertSame(false, strpos($html, 'alert(1)'),
+			'A [block] class escaped its attribute. Rendered: '.$html);
+		self::assertSame(0, preg_match('#[\s/]on[a-z]+\s*=#i', $html),
+			'A [block] class emitted an event handler. Rendered: '.$html);
+	}
 
 	/**
 	 * The allow list compares lowercased but the guards below it address the
