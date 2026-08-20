@@ -284,4 +284,172 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 			'A [flash] parameter injected an element: '.$html);
 		$this->assertNoEventHandler($html, 'A [flash] parameter emitted an event handler.');
 	}
+
+	/**
+	 * toDB() encodes an ampersand, and toHTML() never gives it back, so a
+	 * stored multi-parameter bbcode only ever delivers its first parameter.
+	 * Content written by a user who may post HTML, and a bbcode written into a
+	 * template, keep their ampersands and are the paths on which the rest of
+	 * the parameters arrive.
+	 *
+	 * @param string $bbcode
+	 * @return string
+	 */
+	private function renderUnencoded($bbcode)
+	{
+		return $this->tp->toHTML($bbcode, true);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function attributeNameInjections()
+	{
+		return array(
+			'textarea slash separated' => array('[textarea autofocus/onfocus=alert(1)]x[/textarea]'),
+			'textarea handler alone'   => array('[textarea onclick=alert(1)]x[/textarea]'),
+			'textarea uppercase'       => array('[textarea ONCLICK=alert(1)]x[/textarea]'),
+			'textarea after an allowed' => array('[textarea rows/onfocus=alert(1)]x[/textarea]'),
+			'stream slash separated'   => array('[stream autostart/onmouseover=alert(1)]http://e.com/a.wmv[/stream]'),
+			'stream handler alone'     => array('[stream onclick=alert(1)]http://e.com/a.wmv[/stream]'),
+		);
+	}
+
+	/**
+	 * [textarea] and [stream] turn their parameter into an array with
+	 * parse_str() and emit each key as an attribute NAME. toAttribute() makes a
+	 * string safe between quotes and there are no quotes around a name, so it
+	 * changed nothing here: a key of autofocus/onfocus reached the tag intact
+	 * and HTML5 reads the slash as the end of one attribute and the start of
+	 * the next, giving an auto-focused textarea with a live handler on it.
+	 *
+	 * The assertion is that the payload is simply absent, because the guard is
+	 * an allow list of names and a rejected key is dropped whole. DOMDocument
+	 * cannot be the oracle: it reads autofocus/onfocus as the single attribute
+	 * autofocus and drops the handler, so reading attributes back would pass on
+	 * the unfixed code that Chrome fires.
+	 *
+	 * @dataProvider attributeNameInjections
+	 * @param string $bbcode
+	 */
+	public function testABbcodeParameterCannotNameAnAttribute($bbcode)
+	{
+		$html = $this->renderStored($bbcode);
+
+		self::assertSame(false, strpos($html, 'alert(1)'),
+			'A bbcode parameter named an attribute that is not allowed: '.$bbcode);
+		self::assertSame(0, preg_match('#[\s/]on[a-z]+\s*=#i', $html),
+			'A bbcode parameter emitted an event handler: '.$bbcode.' Rendered: '.$html);
+	}
+
+	/**
+	 * autofocus is what makes the handler fire without the reader touching
+	 * anything, and a post has no business taking the caret off the page.
+	 */
+	public function testTheTextareaBbcodeCannotStealTheCaret()
+	{
+		self::assertSame(false, strpos($this->renderStored('[textarea autofocus]x[/textarea]'), 'autofocus'),
+			'A [textarea] parameter focused itself on load.');
+	}
+
+	/**
+	 * The payload reaches the database byte for byte: it carries no angle
+	 * bracket for toDB() to strip, and a legacy .bb bbcode gets no pre-save
+	 * pass at all, unlike a bb_*.php class which whitelists its parameters
+	 * there. Everything already stored therefore still holds its payload, and
+	 * only the render can be made to neutralise it.
+	 */
+	public function testTheTextareaPayloadReachesTheDatabaseIntact()
+	{
+		$bbcode = '[textarea autofocus/onfocus=alert(1)]x[/textarea]';
+
+		self::assertSame($bbcode, $this->tp->toDB($bbcode),
+			'toDB() altered the payload, which would make this a save-time defect rather than a render-time one.');
+	}
+
+	/**
+	 * @return array
+	 */
+	public function attributeNamePassthroughs()
+	{
+		return array(
+			'name'      => array('[textarea name=comment]x[/textarea]', "name = 'comment'"),
+			'uppercase' => array('[textarea NAME=comment]x[/textarea]', "NAME = 'comment'"),
+			'style'     => array('[textarea style=width:100%]x[/textarea]', "style = 'width:100%'"),
+			'rows'      => array('[textarea rows=5]x[/textarea]', "rows = '5'"),
+			'autocomplete' => array('[textarea autocomplete=off]x[/textarea]', "autocomplete = 'off'"),
+		);
+	}
+
+	/**
+	 * @dataProvider attributeNamePassthroughs
+	 * @param string $bbcode
+	 * @param string $expected
+	 */
+	public function testTheTextareaBbcodeKeepsTheAttributesItAllows($bbcode, $expected)
+	{
+		self::assertNotSame(false, strpos($this->renderStored($bbcode), $expected),
+			'A [textarea] parameter naming an allowed attribute was dropped: '.$bbcode);
+	}
+
+	public function testTheTextareaBbcodeKeepsEveryAllowedAttributeOfAMultipartParameter()
+	{
+		self::assertNotSame(false, strpos($this->renderUnencoded('[textarea name=comment&rows=5&cols=40]x[/textarea]'), "name = 'comment' rows = '5' cols = '40' "),
+			'A [textarea] with several allowed parameters lost some of them.');
+	}
+
+	public function testTheStreamBbcodeKeepsTheParametersItAllows()
+	{
+		$html = $this->renderUnencoded(
+			'[stream autostart=false&showcontrols=true&wmode=transparent&width=640&height=480]http://e.com/a.wmv[/stream]');
+
+		self::assertNotSame(false, strpos($html, "wmode='transparent'"),
+			'A [stream] lost the one attribute e_parse itself allows on an embed.');
+		self::assertNotSame(false, strpos($html, "autostart='false' showcontrols='true' "),
+			'A [stream] parameter naming an allowed player setting was dropped.');
+		self::assertNotSame(false, strpos($html, "<param name='autostart' value='false'>"),
+			'A [stream] parameter naming an allowed player setting was dropped from the object.');
+		self::assertNotSame(false, strpos($html, "width='640' height='480'"),
+			'A [stream] lost its size.');
+	}
+
+
+
+
+
+
+
+
+
+
+
+	/**
+	 * parse_str() returns an array for a bracketed key, and the brackets reach
+	 * it URL-encoded so the bbcode splitter never sees the closing one. Every
+	 * guard downstream expects a string: strtolower() throws outright on PHP 8,
+	 * and the eHelper guards hand an array to preg_replace() and get one back.
+	 * A bbcode parameter has no legitimate array value, so it is refused where
+	 * the parameter is taken in rather than at each guard.
+	 *
+	 * @dataProvider arrayValuedParameters
+	 * @param string $bbcode
+	 */
+	public function testABbcodeParameterCannotCarryAnArrayValue($bbcode)
+	{
+		$html = $this->renderStored($bbcode);
+
+		self::assertSame(false, strpos($html, 'Array'),
+			'A bracketed parameter reached the markup: '.$bbcode.' Rendered: '.$html);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function arrayValuedParameters()
+	{
+		return array(
+			'textarea'    => array('[textarea style%5B%5D=x]y[/textarea]'),
+			'stream'      => array('[stream autostart%5B%5D=false]http://e.com/a.wmv[/stream]'),
+		);
+	}
 }
