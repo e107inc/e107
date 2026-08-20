@@ -83,6 +83,28 @@ class SessionAuthTokenCest
 		$this->seeProbeRefuses($I, 'destroyed');
 	}
 
+	public function theSessionTableDoesNotHoldTheVisitorsCookie(AcceptanceTester $I)
+	{
+		$I->wantTo('keep the session table from holding a value that is itself a session cookie');
+
+		$I->amOnPage('/'.self::PROBE_FILE.'?act=stored_key');
+		$I->seeInSource('PROBE_OK');
+		$I->seeInSource('LIVE_ROW=0');
+		$I->seeInSource('HASHED_ROW=1');
+	}
+
+	public function aSessionStoredBeforeTheUpgradeIsAdoptedNotDropped(AcceptanceTester $I)
+	{
+		$I->wantTo('keep a session that predates the storage key, and re-key it in place');
+
+		$I->amOnPage('/'.self::PROBE_FILE.'?act=adopted');
+		$I->seeInSource('PROBE_OK');
+		$I->dontSeeInSource('FIXTURE=0');
+		$I->seeInSource('RESULT=AUTHENTICATED');
+		$I->seeInSource('LIVE_ROW=0');
+		$I->seeInSource('HASHED_ROW=1');
+	}
+
 	/**
 	 * @param AcceptanceTester $I
 	 * @param string $act probe action
@@ -197,6 +219,36 @@ switch($act)
 		$config->set('user_tracking', 'cookie')->save(false, true, false);
 		$_COOKIE[e_COOKIE] = $uid.'.0e0';
 		break;
+
+	case 'stored_key':
+	case 'adopted':
+		$_SESSION[e_COOKIE] = $uid.'.'.md5($fixturePassword);
+		$live = session_id();
+		session_write_close();
+
+		// Spelled out rather than asked of the class under test, so that
+		// removing the fix makes these counters disagree rather than fatal.
+		$hashedKey = 'sha256$'.hash('sha256', $live);
+
+		if($act === 'adopted')
+		{
+			$sql->update('session', array(
+				'data' => array('session_id' => $live),
+				'_FIELD_TYPES' => array('session_id' => 'str'),
+				'WHERE' => "`session_id`='".$hashedKey."'",
+			));
+
+			session_start();
+			$adoptedUser = new e_user();
+			$adoptedId = (int) $adoptedUser->getId();
+			echo "UID=".$adoptedId."\n";
+			echo "RESULT=".($uid > 0 && $adoptedId === $uid ? 'AUTHENTICATED' : 'ANONYMOUS')."\n";
+		}
+
+		echo "LIVE_ROW=".(int) (bool) $sql->select('session', 'session_id', "session_id='".$live."'")."\n";
+		echo "HASHED_ROW=".(int) (bool) $sql->select('session', 'session_id', "session_id='".$hashedKey."'")."\n";
+		echo "PROBE_OK\n";
+		exit;
 
 	case 'alive':
 		$_SESSION[e_COOKIE] = $uid.'.'.md5($fixturePassword);
