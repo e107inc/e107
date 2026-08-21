@@ -146,6 +146,34 @@ class userloginAutoBanTest extends \Codeception\Test\Unit
 		$this->assertSame(1, $this->autoBannedCount());
 	}
 
+	protected function seedWhitelist()
+	{
+		e107::getDb()->insert('banlist', array('data' => array(
+			'banlist_id'         => 0,
+			'banlist_ip'         => self::TEST_IP,
+			'banlist_bantype'    => eIPHandler::BAN_TYPE_WHITELIST,
+			'banlist_datestamp'  => time(),
+			'banlist_banexpires' => 0,
+			'banlist_admin'      => 1,
+			'banlist_reason'     => 'whitelisted',
+			'banlist_notes'      => '',
+		)));
+	}
+
+	public function testAWhitelistedAddressIsNotRecordedAsBanned()
+	{
+		$this->seedWhitelist();
+
+		for($i = 1; $i <= self::FAIL_LIMIT + 1; $i++)
+		{
+			$this->lg->login(self::TEST_USER, 'not the password ' . $i, 0, '', true);
+		}
+
+		$this->assertSame(self::FAIL_LIMIT + 1, $this->failedLoginCount());
+		$this->assertSame(0, $this->loginBanCount());
+		$this->assertSame(0, $this->autoBannedCount());
+	}
+
 	public function testDiagnosticModeRecordsNothing()
 	{
 		$messages = $this->lg->test();
