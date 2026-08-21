@@ -753,16 +753,20 @@ class userlogin
 				{
 					$time = time();
 					$description = e107::getParser()->lanVars(LAN_LOGIN_18,$failLimit);
-					e107::getIPHandler()->add_ban(4, $description, $this->userIP, 1);
-					e107::getDb()->createQueryBuilder()->insert('generic')->values(array(
-						'gen_type'      => 'auto_banned',
-						'gen_datestamp' => $time,
-						'gen_user_id'   => 0,
-						'gen_ip'        => $this->userIP,
-						'gen_intdata'   => $extra_text,
-						'gen_chardata'  => LAN_LOGIN_20.": ".e107::getParser()->toDB($username).", ".LAN_LOGIN_17,
-					))->execute();
-					e107::getEvent()->trigger('user_ban_failed_login', array('time'=>$time, 'ip'=>$this->userIP, 'other'=>$extra_text)); 
+					$banAdded = e107::getIPHandler()->add_ban(4, $description, $this->userIP, 1);
+
+					if($banAdded !== false)
+					{
+						e107::getDb()->createQueryBuilder()->insert('generic')->values(array(
+							'gen_type'      => 'auto_banned',
+							'gen_datestamp' => $time,
+							'gen_user_id'   => 0,
+							'gen_ip'        => $this->userIP,
+							'gen_intdata'   => $extra_text,
+							'gen_chardata'  => LAN_LOGIN_20.": ".e107::getParser()->toDB($username).", ".LAN_LOGIN_17,
+						))->execute();
+						e107::getEvent()->trigger('user_ban_failed_login', array('time'=>$time, 'ip'=>$this->userIP, 'other'=>$extra_text));
+					}
 				}
 			}
 		}
