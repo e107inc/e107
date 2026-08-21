@@ -67,6 +67,19 @@ class redirection
 	const LOGIN_DEST_PURPOSE = 'login-destination';
 
 	/**
+	 * Claim marking a destination that only an administrator may be returned to.
+	 *
+	 * A destination is captured from the bounce that refused the visitor, so the
+	 * permission it was refused for is known then and nowhere else: the URL alone
+	 * does not carry it, and a plugin's admin page lives under e107_plugins/
+	 * rather than under the admin directory. Sealing the requirement alongside the
+	 * URL is what lets {@see getLoginDestination()} answer, after any login, on any
+	 * of the three consumption seams, whether this is the user the destination was
+	 * gated for.
+	 */
+	const LOGIN_DEST_ADMIN_CLAIM = 'adm';
+
+	/**
 	 * Static-asset extensions that must never be captured as a return destination.
 	 * A missing thumbnail or source-map routes through index.php, but bouncing a
 	 * user to one of those after login/logout is the bug behind issue #5218.
@@ -545,16 +558,19 @@ class redirection
 	 *
 	 * @param string|null $url defaults to the current request URI (relative, query preserved)
 	 * @param int $ttl token lifetime in seconds
+	 * @param bool $adminOnly true when the visitor was refused this URL for want of
+	 *                        administrator rights, so only an administrator may be
+	 *                        returned to it ({@see LOGIN_DEST_ADMIN_CLAIM})
 	 * @return string sealed token, or '' when nothing should be captured
 	 */
-	public function getLoginDestinationToken($url = null, $ttl = self::LOGIN_DEST_TTL)
+	public function getLoginDestinationToken($url = null, $ttl = self::LOGIN_DEST_TTL, $adminOnly = false)
 	{
 		if(null === $url)
 		{
 			$url = $this->getSelf(false); // e_REQUEST_URI - relative, SEF / single-entry safe
 		}
 
-		$cacheKey = $url . '|' . (int) $ttl;
+		$cacheKey = $url . '|' . (int) $ttl . '|' . ($adminOnly ? '1' : '0');
 		if(isset($this->destination_token_cache[$cacheKey]))
 		{
 			return $this->destination_token_cache[$cacheKey];
@@ -566,7 +582,14 @@ class redirection
 			return '';
 		}
 
-		$token = e107::getSealedToken(self::LOGIN_DEST_PURPOSE)->seal(array('dest' => $url), (int) $ttl);
+		$claims = array('dest' => $url);
+
+		if($adminOnly)
+		{
+			$claims[self::LOGIN_DEST_ADMIN_CLAIM] = 1;
+		}
+
+		$token = e107::getSealedToken(self::LOGIN_DEST_PURPOSE)->seal($claims, (int) $ttl);
 
 		if($token === false)
 		{
@@ -592,19 +615,42 @@ class redirection
 	 */
 	public function verifyDestination($token)
 	{
+		$claims = $this->openDestination($token);
+
+		if($claims === false)
+		{
+			return false;
+		}
+
+		return $this->verifyDestinationUrl($claims['dest']);
+	}
+
+	/**
+	 * Open a destination token and return its claims, or false.
+	 *
+	 * Says nothing about where the destination points or who may go there; both
+	 * are settled by the callers, {@see verifyDestination()} and
+	 * {@see getLoginDestination()}, which is also why the token is opened here
+	 * once rather than in each of them.
+	 *
+	 * @param string $token
+	 * @return array|false claims including 'dest', or false
+	 */
+	private function openDestination($token)
+	{
 		if(!is_string($token) || $token === '')
 		{
 			return false;
 		}
 
-		$payload = e107::getSealedToken(self::LOGIN_DEST_PURPOSE)->open($token);
+		$claims = e107::getSealedToken(self::LOGIN_DEST_PURPOSE)->open($token);
 
-		if(empty($payload['dest']) || !is_string($payload['dest']))
+		if(empty($claims['dest']) || !is_string($claims['dest']))
 		{
 			return false;
 		}
 
-		return $this->verifyDestinationUrl($payload['dest']);
+		return $claims;
 	}
 
 	/**
@@ -749,11 +795,12 @@ class redirection
 	 *
 	 * @param string|null $url defaults to the current request URI
 	 * @param int $ttl cookie / token lifetime in seconds
+	 * @param bool $adminOnly {@see getLoginDestinationToken()}
 	 * @return redirection
 	 */
-	public function setLoginDestination($url = null, $ttl = self::LOGIN_DEST_TTL)
+	public function setLoginDestination($url = null, $ttl = self::LOGIN_DEST_TTL, $adminOnly = false)
 	{
-		$token = $this->getLoginDestinationToken($url, $ttl);
+		$token = $this->getLoginDestinationToken($url, $ttl, $adminOnly);
 
 		if($token !== '')
 		{
@@ -765,15 +812,22 @@ class redirection
 	}
 
 	/**
-	 * Return the verified post-login destination, or false.
+	 * Return the verified post-login destination for the user who has just logged
+	 * in, or false.
 	 *
 	 * Reads the sealed token from the submitted form first (so it still works with
 	 * cookies disabled), then the cookie. The result is always same-origin (see
-	 * self::verifyDestination()).
+	 * self::verifyDestination()) and always somewhere this user may go: a
+	 * destination captured from an administrator bounce is refused for anyone who
+	 * is not an administrator, so a member logging in on a browser that was earlier
+	 * refused an admin page is not sent to the admin login form.
 	 *
+	 * @param bool|null $isAdmin whether the authenticated user is an administrator;
+	 *                           null asks {@see e_user::isAdmin()}, which is only
+	 *                           correct once the login has populated the user model
 	 * @return string|false
 	 */
-	public function getLoginDestination()
+	public function getLoginDestination($isAdmin = null)
 	{
 		$token = '';
 
@@ -786,12 +840,27 @@ class redirection
 			$token = $_COOKIE[self::LOGIN_DEST_COOKIE];
 		}
 
-		if($token === '')
+		$claims = $this->openDestination($token);
+
+		if($claims === false)
 		{
 			return false;
 		}
 
-		return $this->verifyDestination($token);
+		if(!empty($claims[self::LOGIN_DEST_ADMIN_CLAIM]))
+		{
+			if(null === $isAdmin)
+			{
+				$isAdmin = e107::getUser()->isAdmin();
+			}
+
+			if(!$isAdmin)
+			{
+				return false;
+			}
+		}
+
+		return $this->verifyDestinationUrl($claims['dest']);
 	}
 
 	/**
@@ -971,7 +1040,7 @@ class redirection
 			// post-login go('admin') to the dashboard.
 			if(!e107::getUser()->isAdmin())
 			{
-				$this->setLoginDestination();
+				$this->setLoginDestination(null, self::LOGIN_DEST_TTL, true);
 			}
 			$url = SITEURLBASE. e_ADMIN_ABS;
 		}

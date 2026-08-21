@@ -329,7 +329,7 @@ class auth
 			$destToken = $rd->getStoredDestinationToken();
 			if($destToken === '')
 			{
-				$destToken = $rd->getLoginDestinationToken();
+				$destToken = $rd->getLoginDestinationToken(null, redirection::LOGIN_DEST_TTL, true);
 			}
 			if($destToken !== '')
 			{
