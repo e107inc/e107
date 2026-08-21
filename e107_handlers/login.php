@@ -345,7 +345,7 @@ class userlogin
 		}
 		
 		// Return the user to the page they were trying to reach before logging in.
-		$redirDest = e107::getRedirect()->getLoginDestination();
+		$redirDest = e107::getRedirect()->getLoginDestination(!empty($user_admin));
 
 		if($redirDest)
 		{

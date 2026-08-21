@@ -494,6 +494,54 @@ class redirectionTest extends \Test\Unit
 	}
 
 	/**
+	 * Discussion #6005: a destination captured from an administrator bounce is handed
+	 * back to an administrator and to nobody else. Without this, the next person to
+	 * log in on that browser inherits it and lands on the admin login form while
+	 * being logged in perfectly well.
+	 */
+	public function testAdminOnlyDestinationIsRefusedForANonAdmin()
+	{
+		$token = $this->rd->getLoginDestinationToken('/e107_admin/users.php', redirection::LOGIN_DEST_TTL, true);
+		self::assertNotSame('', $token);
+
+		$_POST[redirection::LOGIN_DEST_FIELD] = $token;
+
+		self::assertFalse($this->rd->getLoginDestination(false));
+		self::assertSame('/e107_admin/users.php', $this->rd->getLoginDestination(true));
+
+		unset($_POST[redirection::LOGIN_DEST_FIELD]);
+	}
+
+	public function testOrdinaryDestinationIsRefusedToNobody()
+	{
+		$token = $this->rd->getLoginDestinationToken('/news.php?extend.1');
+		self::assertNotSame('', $token);
+
+		$_POST[redirection::LOGIN_DEST_FIELD] = $token;
+		self::assertSame('/news.php?extend.1', $this->rd->getLoginDestination(false));
+
+		unset($_POST[redirection::LOGIN_DEST_FIELD]);
+	}
+
+	/**
+	 * The per-request token cache is keyed by URL, so the marking has to be part of
+	 * that key or the same admin page asked for twice comes back unmarked.
+	 */
+	public function testTheAdminMarkingSurvivesTheTokenCache()
+	{
+		$plain  = $this->rd->getLoginDestinationToken('/e107_admin/users.php');
+		$marked = $this->rd->getLoginDestinationToken('/e107_admin/users.php', redirection::LOGIN_DEST_TTL, true);
+
+		$_POST[redirection::LOGIN_DEST_FIELD] = $plain;
+		self::assertSame('/e107_admin/users.php', $this->rd->getLoginDestination(false));
+
+		$_POST[redirection::LOGIN_DEST_FIELD] = $marked;
+		self::assertFalse($this->rd->getLoginDestination(false));
+
+		unset($_POST[redirection::LOGIN_DEST_FIELD]);
+	}
+
+	/**
 	 * issue #5698: on a members-only site, registration set to "Disabled"
 	 * (user_reg=0) with no social login provider sends a guest to a login.php
 	 * that turns them straight back, looping until the browser aborts. The
