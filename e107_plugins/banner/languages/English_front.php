@@ -24,7 +24,7 @@ return [
     'BANNERLAN_26' => "Impressions",
     'BANNERLAN_27' => "Impressions Purchased",
     'BANNERLAN_28' => "Impressions Left",
-    'BANNERLAN_30' => "Unlimited",
+    'BANNERLAN_30' => "0=unlimited",
     'BANNERLAN_31' => "Not applicable",
     'BANNERLAN_35' => "Clickthrough IP addresses",
     'BANNERLAN_39' => "No image assigned to this banner.",
