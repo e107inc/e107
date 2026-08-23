@@ -1741,8 +1741,9 @@ class cronSetup
 	/**
 	 * What this server says about itself.
 	 *
-	 * Every probe is suppressed: open_basedir turns a stat outside the site into
-	 * a warning, and a warning is not worth a broken admin page.
+	 * Paths open_basedir puts out of reach are never probed, and every probe
+	 * that does run is suppressed, so a restricted host reports what it can
+	 * see instead of a page of warnings.
 	 *
 	 * @return array
 	 *   array('os' => 'unix'|'windows', 'panel' => 'cpanel'|'directadmin'|'plesk'|null,
@@ -1762,7 +1763,7 @@ class cronSetup
 
 		foreach(self::panelProbes() as $name => $probe)
 		{
-			if(@is_file($probe['file']))
+			if(self::withinOpenBasedir($probe['file']) && @is_file($probe['file']))
 			{
 				$panel = $name;
 				$panelPort = $probe['port'];
@@ -1774,7 +1775,7 @@ class cronSetup
 
 		foreach(self::candidatePaths($os, PHP_VERSION, PHP_BINDIR) as $candidate)
 		{
-			if(@is_file($candidate) && @is_executable($candidate))
+			if(self::withinOpenBasedir($candidate) && @is_file($candidate) && @is_executable($candidate))
 			{
 				$cli = $candidate;
 				break;
@@ -1884,6 +1885,64 @@ class cronSetup
 		}
 
 		return $options;
+	}
+
+	/**
+	 * Whether open_basedir is likely to let this process stat the path.
+	 *
+	 * PHP compares against each entry as a directory name rather than as a
+	 * string, and resolves symbolic links before it does. This reads the same
+	 * setting the same way, without the link resolution, and it allows the path
+	 * whenever an entry is relative, so the answer is "worth attempting" and
+	 * not a guarantee.
+	 *
+	 * @param string $path
+	 *   An absolute path.
+	 * @param string|null $basedir
+	 *   An open_basedir setting; read from the running configuration when null.
+	 * @return bool
+	 */
+	public static function withinOpenBasedir($path, $basedir = null)
+	{
+		if($basedir === null)
+		{
+			$basedir = (string) ini_get('open_basedir');
+		}
+
+		if($basedir === '')
+		{
+			return true;
+		}
+
+		foreach(explode(PATH_SEPARATOR, $basedir) as $prefix)
+		{
+			if($prefix === '')
+			{
+				continue;
+			}
+
+			if(!self::isAbsolutePath($prefix))
+			{
+				return true;
+			}
+
+			if(strpos($path, rtrim($prefix, '/\\').DIRECTORY_SEPARATOR) === 0)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * @param string $path
+	 *   A non-empty path.
+	 * @return bool
+	 */
+	private static function isAbsolutePath($path)
+	{
+		return $path[0] === '/' || $path[0] === '\\' || strpos($path, ':') === 1;
 	}
 
 	/**
