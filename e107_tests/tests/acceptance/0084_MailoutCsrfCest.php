@@ -60,6 +60,15 @@ class MailoutCsrfCest
 	/** A bulk mailer that is not SMTP, which the Mailout menu entry must survive. */
 	const NON_SMTP_MAILER = 'php';
 
+	/** An administrator holding 'W' and nothing else: what mailout.php's own gate asks for. */
+	const DELEGATED_ADMIN = 'm84wadmin';
+
+	/** What that administrator holds. */
+	const DELEGATED_PERMS = 'W';
+
+	/** Seeded onto the delegated administrator, as 0037_AdminRoutePermsCest seeds its own. */
+	const PWCHANGE = 1262304000;
+
 	/**
 	 * A GET that the framework does police: attest() refuses any e-token it
 	 * cannot validate, whatever the request method, and answers with this.
@@ -68,6 +77,7 @@ class MailoutCsrfCest
 
 	public function _before(AcceptanceTester $I)
 	{
+		$I->resetAllCookies();
 		$I->loginAsAdmin();
 
 		$I->haveInDatabase('e107_mail_content', array(
@@ -281,6 +291,37 @@ class MailoutCsrfCest
 	}
 
 	/**
+	 * mailout.php's only gate is getperms('W') at the top of the file, class
+	 * mailout_admin declares neither $perm nor $access, and
+	 * e_admin_dispatcher::checkAccess() consults nothing else. The '0' on the menu
+	 * entry is read by restrictMenuAccess(), which decides whether the entry is
+	 * drawn and lets the route through either way, so every administrator who could
+	 * open Mailout at all could make the site connect and authenticate to the
+	 * configured SMTP server. prefsPage(), maintPage() and saveMailPrefs() beside it
+	 * have each asked getperms('0') for years.
+	 */
+	public function aDelegatedAdministratorIsRefusedTheSmtpConnectionTest(AcceptanceTester $I)
+	{
+		$this->loginAsDelegatedAdmin($I);
+
+		$I->amOnPage(self::MENU . '?mode=prefs&action=test&e-token=' . $I->grabFreshAdminToken(self::MENU));
+
+		$I->dontSeeInSource(self::SMTP_ATTEMPTED);
+		$I->dontSeeInSource(self::UNAUTHORIZED);
+	}
+
+	/**
+	 * The other half of the same gate: it asks for the permission its neighbours ask
+	 * for, and refuses nobody they would let through.
+	 */
+	public function aMainAdministratorStillGetsTheSmtpConnectionTest(AcceptanceTester $I)
+	{
+		$I->amOnPage(self::MENU . '?mode=prefs&action=test&e-token=' . $I->grabFreshAdminToken(self::MENU));
+
+		$I->seeInSource(self::SMTP_ATTEMPTED);
+	}
+
+	/**
 	 * A page that only renders is not a CSRF surface, and gating one would refuse
 	 * a bookmark and the browser's back button. They stay reachable bare.
 	 */
@@ -293,6 +334,39 @@ class MailoutCsrfCest
 			$I->dontSeeInSource(self::REFUSED);
 			$I->dontSeeInSource(self::UNAUTHORIZED);
 		}
+	}
+
+	/**
+	 * Seed an administrator holding one delegated permission and sign in as them.
+	 *
+	 * Seeded on every call rather than memoised: Codeception shares one Cest
+	 * instance across its test methods and removes every haveInDatabase() row after
+	 * each of them, so a cached user id outlives the user it names.
+	 *
+	 * @param AcceptanceTester $I
+	 * @return void
+	 */
+	private function loginAsDelegatedAdmin(AcceptanceTester $I)
+	{
+		$I->haveInDatabase('e107_user', array(
+			'user_name'      => self::DELEGATED_ADMIN,
+			'user_loginname' => self::DELEGATED_ADMIN,
+			'user_email'     => self::DELEGATED_ADMIN . '@example.com',
+			'user_password'  => md5(self::DELEGATED_ADMIN),
+			'user_join'      => 1262304000,
+			'user_class'     => '',
+			'user_admin'     => 1,
+			'user_perms'     => self::DELEGATED_PERMS,
+			'user_pwchange'  => self::PWCHANGE,
+			'user_xup'       => '',
+			'user_prefs'     => '',
+			'user_signature' => '',
+			'user_realm'     => '',
+		));
+
+		$I->resetAllCookies();
+		$I->loginAsAdmin(self::DELEGATED_ADMIN, self::DELEGATED_ADMIN);
+		$I->dontSeeElement('input[name=authpass]');
 	}
 
 	/**
