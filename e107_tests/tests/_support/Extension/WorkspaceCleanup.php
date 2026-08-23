@@ -105,11 +105,13 @@ class WorkspaceCleanup extends Extension
 		'e107_tests_rate_csrf.php',            // @see RateVoteCsrfCest
 		'e107_tests_signup_csrf.php',          // @see SignupTestMailCsrfCest
 		'e107_tests_upload_csrf.php',          // @see MediaUploadCsrfCest
+		'e107_tests_lan_fallback.php',        // @see CsrfRefusalLanFallbackCest
 	];
 
 	/** Files a test moves aside for one test method, as parked name to the name it belongs back at. */
 	private static $parked = [
 		'e107_images/e107_tests_5999_adminlogo.png' => 'e107_images/adminlogo.png', // @see admin_shortcodesLogoTest
+		'e107_languages/English/lan_rate.php.bak' => 'e107_languages/English/lan_rate.php', // @see CsrfRefusalLanFallbackCest
 	];
 
 	/** @var \Deployer|null */
