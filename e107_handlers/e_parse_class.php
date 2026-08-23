@@ -4651,6 +4651,7 @@ class e_parse
 		$linkEnd = '';
 		$full = !empty($options['base64']) ? true : false;
 		$file = '';
+		$remote = false;
 
 		if (!empty($options['mode']) && $options['mode'] === 'full')
 		{
@@ -4682,22 +4683,15 @@ class e_parse
 		$image = (!empty($userData['user_image'])) ? varset($userData['user_image']) : null;
 
 		$genericFile = e_IMAGE . 'generic/blank_avatar.jpg';
-		$genericImg = $tp->thumbUrl($genericFile, 'w=' . $width . '&h=' . $height, false, $full);
+		$genericImg = $tp->thumbUrl($genericFile, 'w=' . $width . '&h=' . $height, true, $full);
 
 		if (!empty($image))
 		{
 
 			if (strpos($image, '://') !== false) // Remote Image
 			{
-				if (@fopen($image, 'r'))
-				{
-                    $url = $image;
-                }
-                else
-                {
-					$file = $genericFile;
-					$url = $genericImg;
-                }
+				$url = $image;
+				$remote = true;
 			}
 			elseif (strpos($image, '-upload-') === 0)
 			{
@@ -4793,9 +4787,10 @@ class e_parse
 		$class = !empty($options['class']) ? $options['class'] : $shape . ' user-avatar';
 		$style = !empty($options['style']) ? " style='" . $options['style'] . "'" : '';
 		$loading = !empty($options['loading']) ? " loading='" . $options['loading'] . "'" : " loading='lazy'"; // default to lazy.
+		$onError = ($remote && strpos($url, 'data:') !== 0) ? " onerror=\"this.onerror=null;this.src='" . $genericImg . "';\"" : '';
 
 		$text = $linkStart;
-		$text .= '<img ' . $id . "class='" . $class . $classOnline . "' alt=\"" . $title . "\" src='" . $url . "'  width='" . $width . "' " . $heightInsert . $style . $loading . ' />';
+		$text .= '<img ' . $id . "class='" . $class . $classOnline . "' alt=\"" . $title . "\" src='" . $url . "'  width='" . $width . "' " . $heightInsert . $style . $loading . $onError . ' />';
 		$text .= $linkEnd;
 
 		//	return $url;

@@ -2871,6 +2871,57 @@ EXPECTED;
 
 	}
 
+	/**
+	 * A remote avatar whose host has gone away must fall back to the generic
+	 * avatar in the browser, without the server ever fetching the URL itself.
+	 * @see https://github.com/e107inc/e107/pull/5311
+	 */
+	public function testToAvatarRemoteImageCarriesAClientSideFallback()
+	{
+		$parms = array('w' => 50, 'h' => 50, 'crop' => false);
+
+		$remote = $this->tp->toAvatar(array('user_image' => 'https://mydomain.com/remoteavatar.jpg'), $parms);
+
+		self::assertStringContainsString("src='https://mydomain.com/remoteavatar.jpg'", $remote);
+		self::assertStringContainsString('onerror="this.onerror=null;this.src=', $remote);
+		self::assertStringContainsString('thumb.php?src=e_IMAGE%2Fgeneric%2Fblank_avatar.jpg&amp;w=50&amp;h=50', $remote);
+
+		$local = $this->tp->toAvatar(array('user_image' => 'avatartest.png'), $parms);
+
+		self::assertStringNotContainsString('onerror', $local);
+	}
+
+	/**
+	 * A remote avatar embedded as base64 cannot fail to load, so it is left
+	 * without the fallback attribute.
+	 * @see https://github.com/e107inc/e107/pull/5311
+	 */
+	public function testToAvatarBase64RemoteImageCarriesNoFallback()
+	{
+		$registryId = 'core/e107/singleton/e_file';
+		$originalFile = e107::getRegistry($registryId);
+		$remoteBytes = file_get_contents(codecept_data_dir() . 'icon_64.png');
+		$stubFile = $this->make('e_file', array(
+			'getRemoteContent' => function () use ($remoteBytes) { return $remoteBytes; },
+		));
+		e107::setRegistry($registryId, $stubFile);
+
+		try
+		{
+			$result = $this->tp->toAvatar(
+				array('user_image' => 'https://mydomain.com/remoteavatar.jpg'),
+				array('w' => 50, 'h' => 50, 'crop' => false, 'base64' => true)
+			);
+		}
+		finally
+		{
+			e107::setRegistry($registryId, $originalFile);
+		}
+
+		self::assertStringContainsString("src='data:image/jpg;base64,", $result);
+		self::assertStringNotContainsString('onerror', $result);
+	}
+
 	public function testToIcon()
 	{
 		$icon = codecept_data_dir() . "icon_64.png";
