@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Seven admin GETs that act, and e107's CSRF guard does not police a GET.
+ * Eight admin GETs that act, and e107's CSRF guard does not police a GET.
  *
  * e_session::isStateChangingRequest() returns true only for POST, so attest()
  * returns early on every GET that carries no e-token at all. What stands between
  * an attacker's <img> tag and a state-changing GET is therefore whatever the
- * endpoint does for itself, and these seven did nothing:
+ * endpoint does for itself, and these eight did nothing:
  *
  *  - users.php?mode=main&action=test opens an outbound SMTP conversation with
  *    the mail host of whichever account the attacker names;
@@ -22,9 +22,11 @@
  *  - admin.php?mode=addons&type=plugin forces an outbound fetch to ADDONFEED
  *    and caches what comes back;
  *  - admin.php?mode=addons&type=update asks the marketplace for the plugin and
- *    theme version lists and caches both for twelve hours.
+ *    theme version lists and caches both for twelve hours;
+ *  - admin.php?mode=core&type=feed opens an outbound HTTPS request to ADMINFEED
+ *    on every request, with nothing cached, so the cost is paid again each time.
  *
- * The last three are AJAX branches that a hostile page reaches without setting a
+ * The last four are AJAX branches that a hostile page reaches without setting a
  * header, because e107_class.php falls back to isset($_REQUEST['ajax_used'])
  * and $_REQUEST carries the query string.
  *
@@ -33,7 +35,7 @@
  * download page already use: the endpoint tests that it is present and attest()
  * decides whether it is the right one. These cases assert both halves of that
  * division of labour, and the controls assert that ordinary admin navigation
- * still reaches every one of the seven.
+ * still reaches every one of the eight.
  *
  * The probe seeds a member, rewrites install_date and reaches Login As, so it
  * answers nobody who cannot show the secret this run minted for it, and it
@@ -193,6 +195,19 @@ class AdminMiscCsrfCest
 	}
 
 	/**
+	 * The general news panel fetches ADMINFEED on every request and caches
+	 * nothing, so each forged request buys the attacker another outbound HTTPS
+	 * connection from the server, to a host the administrator never named.
+	 */
+	public function aTokenlessGetDoesNotFetchTheAdminFeed(AcceptanceTester $I)
+	{
+		$I->amOnPage(self::DASHBOARD.'?mode=core&type=feed&ajax_used=1');
+
+		$I->assertSame(403, $I->grabResponseCode(), 'a tokenless admin feed fetch must be refused');
+		$I->seeInSource(self::REFUSED);
+	}
+
+	/**
 	 * Presence is all the endpoint tests; whether the value is the right one is
 	 * attest()'s half. Both halves are needed, so assert the second one too.
 	 */
@@ -295,7 +310,7 @@ class AdminMiscCsrfCest
 	}
 
 	/**
-	 * The dashboard's own scripts still reach both AJAX branches.
+	 * The dashboard's own scripts still reach all four AJAX branches.
 	 */
 	public function theDashboardsOwnPanelsStillLoad(AcceptanceTester $I)
 	{
@@ -305,6 +320,8 @@ class AdminMiscCsrfCest
 			'#admin\.php\?mode=addons&type=plugin(&e-token=[^\'"]*)?#');
 		$addonsUpdate = $this->publishedLink($I, self::DASHBOARD,
 			'#admin\.php\?mode=addons&type=update(&e-token=[^\'"]*)?#');
+		$feed = $this->publishedLink($I, self::DASHBOARD,
+			'#admin\.php\?mode=core&type=feed(&e-token=[^\'"]*)?#');
 
 		$I->amOnPage($core.'&ajax_used=1');
 		$I->assertSame(200, $I->grabResponseCode(), 'the dashboard update check must still run');
@@ -316,6 +333,10 @@ class AdminMiscCsrfCest
 
 		$I->amOnPage($addonsUpdate.'&ajax_used=1');
 		$I->assertSame(200, $I->grabResponseCode(), 'the dashboard addons update check must still run');
+		$I->dontSeeInSource(self::REFUSED);
+
+		$I->amOnPage($feed.'&ajax_used=1');
+		$I->assertSame(200, $I->grabResponseCode(), 'the dashboard news panel must still load');
 		$I->dontSeeInSource(self::REFUSED);
 	}
 
