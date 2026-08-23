@@ -56,13 +56,21 @@ class core_system_xup_controller extends eController
 		if($allow && vartrue($_GET['provider']))
 		{
 			$provider = e107::getUserProvider($_GET['provider']);
-			try
+
+			if(deftrue('e_TOKEN') && empty($_GET['e-token']) && $provider->loginNeedsToken())
 			{
-				$provider->login($this->backUrl, true, false); // redirect to test page is expected, if true - redirect to SITEURL
+				e107::getMessage()->addError(defset('LAN_XUP_REFUSED_TOKEN_MISSING', 'That sign-in was not started, because the link carried no security token.'), 'default', true);
 			}
-			catch (Exception $e)
+			else
 			{
-				e107::getMessage()->addError('['.$e->getCode().']'.$e->getMessage(), 'default', true);
+				try
+				{
+					$provider->login($this->backUrl, true, false); // redirect to test page is expected, if true - redirect to SITEURL
+				}
+				catch (Exception $e)
+				{
+					e107::getMessage()->addError('['.$e->getCode().']'.$e->getMessage(), 'default', true);
+				}
 			}
 		}
 		
@@ -117,10 +125,7 @@ class core_system_xup_controller extends eController
 		{
 			if($var['enabled'] == 1)
 			{
-				$testLoginUrl = e107::getUrl()->create('system/xup/login', [
-					'provider' => $key,
-					'back' => $testUrl,
-				]);
+				$testLoginUrl = e107::getUserProvider($key)->generateLoginUrl($testUrl);
 
 				echo '<h4>'.$key.'</h4>';
 				echo '<div><a class="btn btn-default btn-secondary" href="'.$testLoginUrl.'">'.e107::getParser()->lanVars(LAN_XUP_ERRM_10, array('x'=>$key)).'</a></div>';
