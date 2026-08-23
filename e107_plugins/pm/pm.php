@@ -66,7 +66,9 @@
 		define("PM_DELETE_ICON", "<img src='" . e_PLUGIN_ABS . "pm/images/mail_delete.png'  alt='" . LAN_DELETE . "' class='icon S16' />");
 	}
 
-	$qs = explode('.', e_QUERY);
+	list($pmRoute) = explode('&', e_QUERY, 2);
+
+	$qs = explode('.', $pmRoute);
 	$action = varset($qs[0], 'inbox');
 	if(!$action)
 	{
@@ -89,6 +91,15 @@
 	}*/
 
 	$pm_proc_id = intval(varset($qs[1], 0));
+
+	$pmIsPost = (isset($_SERVER['REQUEST_METHOD']) && strtoupper($_SERVER['REQUEST_METHOD']) === 'POST');
+
+	if(!$pmIsPost && pm_actionNeedsToken($action) && defined('e_TOKEN') && empty($_GET['e-token']))
+	{
+		e107::getMessage()->addError(defset('LAN_PM_REFUSED_TOKEN_MISSING', 'Invalid or missing security token.'));
+		$action = 'inbox';
+		$pm_proc_id = 0;
+	}
 
 	//$pm_prefs = $sysprefs->getArray('pm_prefs');
 
