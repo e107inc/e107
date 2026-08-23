@@ -84,7 +84,7 @@ $GALLERY_TEMPLATE['slideshow_wrapper'] = '
 
 $GALLERY_TEMPLATE['slideshow_slide_item'] = '<span class="gallery-slide-item">{GALLERY_THUMB: w=150&h=120}</span>';
 
-// tablerender() caption of the slideshow menu. Omit for the plugin name, set '' for no heading.
+// tablerender() caption of the slideshow menu. Omit for the plugin name, set '' for no heading; the menu has no item, so gallery item shortcodes resolve empty.
 //$GALLERY_TEMPLATE['slideshow_caption'] = LAN_PLUGIN_GALLERY_TITLE;
 
 $GALLERY_TEMPLATE['prettyphoto']['content'] = '

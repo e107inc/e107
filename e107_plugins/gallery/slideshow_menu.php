@@ -41,6 +41,8 @@ e107::js('settings', array('gallery' => $settings));
 $sc = e107::getScBatch('gallery', true);
 
 $text = e107::getParser()->parseTemplate("{GALLERY_SLIDESHOW}");
+$sc->setVars(array());
+
 e107::getRender()->tablerender($sc->slideshowCaption(e107::getTemplate('gallery', 'gallery')), $text, 'gallery_slideshow');
 unset($text);
 unset($gp);
