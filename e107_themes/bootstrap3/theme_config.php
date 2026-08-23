@@ -2,7 +2,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-e107::lan('theme', 'admin',true);
+e107::themeLan('admin', basename(__DIR__), true);
 
 // Theme Configuration File.
 class theme_config implements e_theme_config
