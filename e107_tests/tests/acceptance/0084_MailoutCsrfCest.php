@@ -8,8 +8,10 @@
  * an attacker's <img> tag and a state-changing GET is therefore whatever the
  * endpoint does for itself, and e107_admin/mailout.php did nothing for three of
  * them: the AJAX progress endpoint sends the next batch of queued mail,
- * action=sendnow releases a held mailshot to its whole list, and action=send
- * throws the recipient list away and builds it again.
+ * action=sendnow releases a held mailshot to its whole list, action=send
+ * throws the recipient list away and builds it again, and action=test opens an
+ * outbound connection to the configured SMTP server and authenticates to it
+ * with the stored credentials.
  *
  * The progress endpoint is reachable from a plain <img> tag because
  * e107_class.php falls back to isset($_REQUEST['ajax_used']) and $_REQUEST
@@ -51,6 +53,12 @@ class MailoutCsrfCest
 
 	/** A distinctive fragment of LAN_MAILOUT_REFUSED_TOKEN_MISSING. */
 	const REFUSED = 'no security token';
+
+	/** testPage()'s own report of the connection it opened, whatever the server answered. */
+	const SMTP_ATTEMPTED = 'Connect failed using';
+
+	/** A bulk mailer that is not SMTP, which the Mailout menu entry must survive. */
+	const NON_SMTP_MAILER = 'php';
 
 	/**
 	 * A GET that the framework does police: attest() refuses any e-token it
@@ -229,6 +237,50 @@ class MailoutCsrfCest
 	}
 
 	/**
+	 * testPage() opens a TCP connection to the configured smtp_server and offers
+	 * the stored smtp_username and smtp_password to it, so a forged hit makes the
+	 * site talk to whatever host its preferences name. It carries no getperms('0')
+	 * of its own either, unlike prefsPage() and maintPage() beside it.
+	 */
+	public function aTokenlessGetDoesNotOpenAnSmtpConnection(AcceptanceTester $I)
+	{
+		$I->amOnPage(self::MENU . '?mode=prefs&action=test');
+
+		$I->dontSeeInSource(self::SMTP_ATTEMPTED);
+		$I->seeInSource(self::REFUSED);
+	}
+
+	/**
+	 * The only link in core that reaches testPage() is the Mailout menu entry, so
+	 * this reads it off the rendered menu and follows it. It runs with the bulk
+	 * mailer set to something other than SMTP, because testPage() reads the stored
+	 * SMTP preferences whatever the site sends its bulk mail with: a menu entry
+	 * that appeared only for one of the three mailers would leave the guarded page
+	 * with no entry point at all on the other two. The preference goes back before
+	 * anything is asserted, so a failure here leaves the site as it was.
+	 */
+	public function theMailoutMenusOwnTestLinkStillOpensAnSmtpConnection(AcceptanceTester $I)
+	{
+		$was = $this->haveBulkMailer($I, self::NON_SMTP_MAILER);
+
+		$I->amOnPage(self::MENU . '?mode=prefs&action=prefs');
+
+		$matches = array();
+		preg_match('#href="([^"]*mailout\\.php\\?mode=prefs&(?:amp;)?action=test[^"]*)"#',
+			$I->grabPageSource(), $matches);
+
+		$this->haveBulkMailer($I, $was);
+
+		$I->assertNotEmpty($matches, 'The Mailout menu published no Test SMTP Connection link');
+
+		$I->amOnPage($this->toPath(html_entity_decode($matches[1], ENT_QUOTES, 'UTF-8')));
+
+		$I->dontSeeInSource(self::REFUSED);
+		$I->dontSeeInSource(self::UNAUTHORIZED);
+		$I->seeInSource(self::SMTP_ATTEMPTED);
+	}
+
+	/**
 	 * A page that only renders is not a CSRF surface, and gating one would refuse
 	 * a bookmark and the browser's back button. They stay reachable bare.
 	 */
@@ -241,6 +293,25 @@ class MailoutCsrfCest
 			$I->dontSeeInSource(self::REFUSED);
 			$I->dontSeeInSource(self::UNAUTHORIZED);
 		}
+	}
+
+	/**
+	 * @param AcceptanceTester $I
+	 * @param string $mailer value to leave the bulkmailer preference at
+	 * @return string the value it held before
+	 */
+	private function haveBulkMailer(AcceptanceTester $I, $mailer)
+	{
+		$I->amOnPage(self::MENU . '?mode=prefs&action=prefs');
+
+		$was = $I->grabValueFrom('#mailsettingsform [name=bulkmailer]');
+
+		if($was !== $mailer)
+		{
+			$I->submitForm('#mailsettingsform', array('bulkmailer' => $mailer), 'updateprefs');
+		}
+
+		return $was;
 	}
 
 	/**
