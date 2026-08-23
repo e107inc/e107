@@ -1014,6 +1014,11 @@ class mailout_main_ui extends e_admin_ui
 	*/
 	function testPage()
 	{
+		if(!getperms('0'))
+		{
+			return;
+		}
+
 		if(mailout_tokenMissing())
 		{
 			e107::getMessage()->addError(mailout_tokenRefusal());
