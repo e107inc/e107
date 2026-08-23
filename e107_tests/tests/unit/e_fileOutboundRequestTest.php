@@ -353,6 +353,8 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 		$php .= "\$echo = isset(\$_GET['echo']);\n";
 		$php .= "if(isset(\$_GET['log']))\n{\n";
 		$php .= "\tfile_put_contents('" . $this->hitPath . "', 'x', FILE_APPEND | LOCK_EX);\n}\n";
+		$php .= "if(isset(\$_GET['loghost']))\n{\n";
+		$php .= "\tfile_put_contents('" . $this->hitPath . "', isset(\$_SERVER['HTTP_HOST']) ? \$_SERVER['HTTP_HOST'] : '', FILE_APPEND | LOCK_EX);\n}\n";
 		$php .= "if(\$hop < \$stop)\n{\n";
 		$php .= "\tsleep(isset(\$_GET['sleep']) ? (int) \$_GET['sleep'] : 0);\n";
 		$php .= "\t\$next = '/" . self::HOP_FIXTURE . "?hop=' . (\$hop + 1) . '&stop=' . \$stop;\n";
@@ -1164,9 +1166,9 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	}
 
 	/**
-	 * isValidURL() probes with get_headers(), which follows a Location with
-	 * nothing revalidating the target. It only takes a context argument from
-	 * PHP 7.1, and these fixes are backported to a branch whose CI runs 5.6.
+	 * The probe must not follow a Location: nothing would revalidate the target
+	 * it lands on, and the option that stops it has to travel with this one
+	 * request rather than sit in the default stream context.
 	 */
 	public function testIsValidUrlDoesNotFollowRedirects()
 	{
@@ -1193,6 +1195,38 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * The probe put the URL to the policy and then handed it as typed to
+	 * fopen(), so the lookup that connected was a second lookup. p3-pin.test
+	 * has no DNS record anywhere (RFC 6761), so an answer can only come back
+	 * if the request was rewritten to an address the policy resolved.
+	 */
+	public function testIsValidUrlConnectsToThePinnedAddress()
+	{
+		$this->requireFixtureServer();
+
+		$fl = new E107P3PinnedFile();
+		$fl->addresses = array('127.0.0.1');
+
+		$timeout = ini_get('default_socket_timeout');
+
+		self::assertTrue($fl->isValidURL($this->pinnedUrl() . '&loghost=1'));
+		self::assertSame(self::PINNED_HOST . $this->fixturePort(), $this->fixtureLog(),
+			'The name has to arrive in the Host header, or the rewrite has changed which site answers.');
+		self::assertSame($timeout, ini_get('default_socket_timeout'),
+			'The probe must not leave its own socket timeout behind for the rest of the request.');
+
+		$unpinned = new E107P3PinnedFile();
+		$unpinned->addresses = array();
+
+		self::assertFalse($unpinned->isValidURL($this->pinnedUrl(self::UNPINNED_HOST)),
+			'Negative control: with nothing to pin the name cannot be resolved at all.');
+
+		self::assertFalse($this->fl->isValidURL('http://127.0.0.1' . $this->fixturePort() . '/'),
+			'The address policy still governs the probe.');
+	}
+
+
+	/**
 	 * @return int requests the fixture has answered since the last reset
 	 */
 	private function fixtureHits()
@@ -1200,6 +1234,36 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 		clearstatcache(true, $this->hitPath);
 
 		return is_file($this->hitPath) ? (int) filesize($this->hitPath) : 0;
+	}
+
+	/**
+	 * The `ssl` options are new here and the return value cannot show them, so
+	 * this drives an https probe with and without the certificate's issuer.
+	 */
+	public function testIsValidUrlProbesOverTls()
+	{
+		$this->requireTlsFixture();
+
+		$body = "\$fl = new E107P3PinnedFile(); \$fl->addresses = array('127.0.0.1'); ";
+		$body .= "\$r = \$fl->isValidURL('" . addslashes($this->hopUrl(0, 0, 'https')) . "'); ";
+		$body .= $this->reportResult();
+
+		self::assertSame('true', $this->resultOf($this->runPhp($body, '-d openssl.cafile=' . self::CA_BUNDLE)),
+			'A peer the probe can verify has to be reported reachable.');
+
+		self::assertSame('false', $this->resultOf($this->runPhp($body)),
+			'... and one it cannot verify must not be.');
+	}
+
+
+	/**
+	 * @return string everything the fixture has appended since the last reset
+	 */
+	private function fixtureLog()
+	{
+		clearstatcache(true, $this->hitPath);
+
+		return is_file($this->hitPath) ? (string) file_get_contents($this->hitPath) : '';
 	}
 
 	private function resetFixtureHits()
