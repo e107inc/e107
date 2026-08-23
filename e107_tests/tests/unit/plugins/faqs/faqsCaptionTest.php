@@ -18,11 +18,21 @@ class faqsCaptionTest extends \Test\Unit
 	/** @var faqs_shortcodes */
 	protected $sc;
 
+	/** @var string */
+	protected $faqQuestion = 'Which "theme" do you prefer & why?';
+
 	protected function _before()
 	{
 		require_once(e_PLUGIN . 'faqs/faqs_shortcodes.php');
 
 		$this->sc = new faqs_shortcodes();
+		$this->sc->setVars(array(
+			'faq_id'        => 42,
+			'faq_question'  => $this->faqQuestion,
+			'faq_answer'    => 'Whichever one you can still edit in five years.',
+			'faq_tags'      => '',
+			'faq_datestamp' => 0,
+		));
 	}
 
 	public function testATemplateWithoutACaptionKeepsTheConstant()
@@ -73,6 +83,20 @@ class faqsCaptionTest extends \Test\Unit
 
 		$this->assertSame(
 			e107::getParser()->parseTemplate($markup, true, $this->sc),
+			$this->sc->caption($tmpl, 'add', 'FAQ')
+		);
+	}
+
+	/**
+	 * The add/edit form captions the FAQ it is editing, which resolves only
+	 * because {@see faq::add_faq()} hands that row to the batch first.
+	 */
+	public function testACaptionResolvesTheFaqTheBatchHolds()
+	{
+		$tmpl = array('add' => array('caption' => '{FAQ_QUESTION}'));
+
+		$this->assertSame(
+			e107::getParser()->toHTML($this->faqQuestion, true, 'TITLE'),
 			$this->sc->caption($tmpl, 'add', 'FAQ')
 		);
 	}

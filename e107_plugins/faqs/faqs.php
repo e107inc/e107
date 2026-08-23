@@ -744,8 +744,8 @@ class faq
 		if ($action == "edit")
 		{
 			$sql->createQueryBuilder()->select('*')->from('faqs')->where('faq_id', (int) $idx)->execute();
-			$row = $sql->fetch();
-			extract($row); // get rid of this
+			$faqRow = $sql->fetch();
+			extract($faqRow); // get rid of this
 			$data = $faq_answer;
 		}
 
@@ -839,6 +839,7 @@ class faq
 			extract($row); // get rid of this
 		}
 		$sc = e107::getScBatch('faqs', true);
+		$sc->setVars(varset($faqRow, array()));
 		$tmpl = e107::getTemplate('faqs');
 
 		$ns->tablerender($sc->caption($tmpl, 'add', LAN_PLUGIN_FAQS_FRONT_NAME.$faq_info_title), "<div style='text-align:center'>".$text."</div>".$this->faq_footer());
