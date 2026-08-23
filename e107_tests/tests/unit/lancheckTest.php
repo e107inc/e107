@@ -6,6 +6,7 @@
 	 * Time: 12:17 PM
 	 */
 
+	use e107\Reflection\ReflectionMethod;
 
 	class lancheckTest extends \Test\Unit
 	{
@@ -15,6 +16,9 @@
 
 		/** @var string Scratch language file for the write_lanfile() tests. */
 		protected $target;
+
+		/** @var string Scratch language pack directory for the findLocale() tests. */
+		protected $scratchLang;
 
 		protected function _before()
 		{
@@ -43,6 +47,17 @@
 			if($this->target && is_file($this->target))
 			{
 				unlink($this->target);
+			}
+
+			if($this->scratchLang && is_dir($this->scratchLang))
+			{
+				foreach(glob($this->scratchLang.'*') as $file)
+				{
+					unlink($file);
+				}
+
+				rmdir($this->scratchLang);
+				$this->scratchLang = null;
 			}
 
 			unset($_SESSION['lancheck-edit-file'], $_POST['newlang'], $_POST['newdef']);
@@ -287,6 +302,49 @@
 			}
 
 
+		}
+
+		/**
+		 * Reach the private locale reader.
+		 *
+		 * @param string $language language pack directory name
+		 * @return bool|string
+		 */
+		protected function findLocale($language)
+		{
+			$method = new ReflectionMethod('lancheck', 'findLocale');
+
+			return $method->invoke($this->lan, $language);
+		}
+
+		/**
+		 * Write a scratch language pack, which _after() then removes.
+		 *
+		 * @param string $body PHP for the pack file, without the opening tag
+		 * @return string the pack's language name
+		 */
+		protected function writeScratchPack($body)
+		{
+			$language = uniqid('Testlang');
+			$this->scratchLang = e_LANGUAGEDIR.$language.'/';
+
+			mkdir($this->scratchLang);
+			file_put_contents($this->scratchLang.$language.'.php', "<?php\n".$body);
+
+			return $language;
+		}
+
+		public function testFindLocaleReadsTheCoreEnglishPack()
+		{
+			$this->assertSame('en_GB', $this->findLocale('English'));
+		}
+
+		/** Third-party packs and release/v2.3.x still declare the codes with define(). */
+		public function testFindLocaleReadsADefineStylePack()
+		{
+			$language = $this->writeScratchPack("define(\"CORE_LC\", \"xx\");\ndefine(\"CORE_LC2\", \"yy\");\n");
+
+			$this->assertSame('xx_YY', $this->findLocale($language));
 		}
 
 		/**

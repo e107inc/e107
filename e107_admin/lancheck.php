@@ -292,7 +292,7 @@ class lancheck
 		$code = file_get_contents(e_LANGUAGEDIR.$language."/".$language.".php");
 		$tmp = explode("\n",$code);
 
-		$srch = array("define","const","'",'"',"(",")",";","CORE_LC2","CORE_LC",",","=");
+		$srch = array("define","const","'",'"',"(",")",";","CORE_LC2","CORE_LC",",","=",">");
 
 		foreach($tmp as $line)
 		{
