@@ -550,7 +550,8 @@ class e_file
 
 
 	/**
-	 * Reject URLs that point at private/reserved IP ranges or non-HTTP(S) protocols.
+	 * Reject URLs whose host does not resolve or resolves into private/reserved
+	 * IP ranges, and URLs on non-HTTP(S) protocols.
 	 * Define `e_REMOTE_FILE_ALLOW_PRIVATE` to bypass for legitimate intranet use.
 	 *
 	 * @param string $url
@@ -663,12 +664,31 @@ class e_file
 
 
 	/**
-	 * Every A and AAAA address $host has.
+	 * Every A and AAAA address $host has, from either resolver this machine has.
 	 *
 	 * @param string $host
 	 * @return string[] empty when the name does not resolve
 	 */
 	protected function resolveHostname($host)
+	{
+		$addresses = $this->dnsRecordAddresses($host);
+
+		if(empty($addresses))
+		{
+			$addresses = $this->systemResolverAddresses($host);
+		}
+
+		return $addresses;
+	}
+
+
+	/**
+	 * The A and AAAA addresses PHP's own resolver has for $host.
+	 *
+	 * @param string $host
+	 * @return string[] empty when this resolver has no answer
+	 */
+	protected function dnsRecordAddresses($host)
 	{
 		$records = @dns_get_record($host, DNS_A | DNS_AAAA);
 		if(!is_array($records))
@@ -684,6 +704,60 @@ class e_file
 		}
 
 		return $addresses;
+	}
+
+
+	/**
+	 * The addresses the operating system's resolver has for $host, IPv4 only.
+	 *
+	 * Names only: the C library answers a host that spells an address in
+	 * decimal, octal or hex without asking any name service, and those
+	 * spellings are refused here.
+	 *
+	 * @param string $host
+	 * @return string[] empty when this resolver has no answer
+	 */
+	protected function systemResolverAddresses($host)
+	{
+		if(!function_exists('gethostbynamel') || !$this->isHostname($host))
+		{
+			return array();
+		}
+
+		$resolved = @gethostbynamel($host);
+
+		if(!is_array($resolved))
+		{
+			return array();
+		}
+
+		$addresses = array();
+		foreach($resolved as $ip)
+		{
+			if(filter_var($ip, FILTER_VALIDATE_IP))
+			{
+				$addresses[] = $ip;
+			}
+		}
+
+		return $addresses;
+	}
+
+
+	/**
+	 * Whether $host is a name to look up rather than an address in disguise.
+	 *
+	 * @param string $host
+	 * @return bool
+	 */
+	private function isHostname($host)
+	{
+		if(stripos($host, '0x') === 0)
+		{
+			return false;
+		}
+
+		return (bool) preg_match('/[a-zA-Z]/', $host);
 	}
 
 
@@ -990,7 +1064,7 @@ class e_file
 
 		if(!$this->isUrlSafe($remote_url))
 		{
-			$this->error = 'Refused to fetch URL with non-HTTP(S) scheme or private/reserved IP: ' . $remote_url;
+			$this->error = 'Refused to fetch URL with an unresolvable host, a non-HTTP(S) scheme or a private/reserved IP: ' . $remote_url;
 			error_log($this->error);
 			return false;
 		}
@@ -1095,7 +1169,7 @@ class e_file
 
 		if($curlOptions === false)
 		{
-			$this->error = 'Refused to fetch URL with non-HTTP(S) scheme or private/reserved IP: ' . $address;
+			$this->error = 'Refused to fetch URL with an unresolvable host, a non-HTTP(S) scheme or a private/reserved IP: ' . $address;
 
 			return false;
 		}
@@ -1312,7 +1386,7 @@ class e_file
 
 			if($target === false)
 			{
-				$this->error = 'Refused to fetch URL with non-HTTP(S) scheme or private/reserved IP: ' . $url;
+				$this->error = 'Refused to fetch URL with an unresolvable host, a non-HTTP(S) scheme or a private/reserved IP: ' . $url;
 
 				return false;
 			}
@@ -1663,7 +1737,7 @@ class e_file
 
 		if($request === false)
 		{
-			$this->error = 'Refused to fetch URL with non-HTTP(S) scheme or private/reserved IP: ' . $url;
+			$this->error = 'Refused to fetch URL with an unresolvable host, a non-HTTP(S) scheme or a private/reserved IP: ' . $url;
 
 			return false;
 		}
