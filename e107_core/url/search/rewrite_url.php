@@ -22,7 +22,7 @@ class core_search_rewrite_url extends eUrlConfig
 			
 			// rule set array
 			'rules' => array(
-				'/'			=> array('index/index', 'defaultVars' => array('id' => 0)),
+				'/'			=> array('index/index'),
 			) 
 		);
 	}

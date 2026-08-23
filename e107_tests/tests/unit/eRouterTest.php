@@ -99,4 +99,61 @@ class eRouterTest extends \Test\Unit
 
 		self::markTestSkipped('every bundled plugin is installed');
 	}
+
+	/**
+	 * {@see eUrlRule::setData()} filters a rule definition through
+	 * get_class_vars(), so a key the class has no property for is dropped
+	 * without a word. Three core rules declared 'defaultVars' for years and the
+	 * defaults never applied. Rule definitions only: the module-level config
+	 * block reaches a rule through a different path, and #6028 covers that.
+	 */
+	public function testEveryCoreUrlRuleDeclaresOnlyKeysTheRuleObjectReads()
+	{
+		$known = array();
+		$reflection = new ReflectionClass('eUrlRule');
+
+		foreach($reflection->getProperties() as $property)
+		{
+			$known[] = $property->getName();
+		}
+
+		$inspected = 0;
+		$unread = array();
+
+		foreach(glob(e_CORE . 'url/*/*.php') as $file)
+		{
+			$module = basename(dirname($file));
+			$class = 'core_' . $module . '_' . basename($file, '.php');
+
+			require_once $file;
+			self::assertTrue(class_exists($class), $file . ' declares ' . $class);
+
+			$config = new $class();
+			$definition = $config->config();
+
+			foreach(varset($definition['rules'], array()) as $pattern => $rule)
+			{
+				$inspected++;
+
+				if(!is_array($rule))
+				{
+					continue;
+				}
+
+				foreach(array_keys($rule) as $key)
+				{
+					if(is_int($key) || in_array($key, $known, true))
+					{
+						continue;
+					}
+
+					$unread[] = $module . '/' . basename($file) . " rule '" . $pattern . "' declares '" . $key . "'";
+				}
+			}
+		}
+
+		self::assertGreaterThan(10, $inspected, 'no core URL rules were inspected');
+		self::assertSame(array(), $unread);
+	}
+
 }
