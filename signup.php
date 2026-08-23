@@ -176,11 +176,13 @@ if ((USER || (intval($pref['user_reg']) !== 1) || (vartrue($pref['auth_method'],
 //----------------------------------------
 require_once(e_HANDLER."e_signup_class.php");
 
-if(e_QUERY && e_QUERY != 'stage1')
+$signupQuery = explode('&', str_replace('&amp;', '&', e_QUERY));
+
+if($signupQuery[0] && $signupQuery[0] != 'stage1')
 {
 	require_once(HEADERF);
 	$suObj = new e_signup;
-	$suObj->run(e_QUERY);
+	$suObj->run($signupQuery[0]);
 	require_once(FOOTERF);
 	return;
 	exit;
