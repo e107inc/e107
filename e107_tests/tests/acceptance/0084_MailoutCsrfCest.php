@@ -69,6 +69,21 @@ class MailoutCsrfCest
 	/** Seeded onto the delegated administrator, as 0037_AdminRoutePermsCest seeds its own. */
 	const PWCHANGE = 1262304000;
 
+	/** Port the stub SMTP server listens on. One of the values the preferences offer. */
+	const SMTP_STUB_PORT = 2525;
+
+	/** Stored in the preferences, distinctive enough to search the rendered page for. */
+	const SMTP_USERNAME = 'csrf-probe-smtp-user';
+
+	/** The same, and the one that matters. */
+	const SMTP_PASSWORD = 'Csrf-Probe-Smtp-Secret';
+
+	/** The opening of LAN_MAILOUT_271, which nothing but an authentication failure renders. */
+	const AUTH_FAILED = 'Authentication failed with username';
+
+	/** What the bundled PHPMailer's own SMTP::client_send() puts in place of a credential. */
+	const CREDENTIALS_HIDDEN = '[credentials hidden]';
+
 	/**
 	 * A GET that the framework does police: attest() refuses any e-token it
 	 * cannot validate, whatever the request method, and answers with this.
@@ -271,7 +286,7 @@ class MailoutCsrfCest
 	 */
 	public function theMailoutMenusOwnTestLinkStillOpensAnSmtpConnection(AcceptanceTester $I)
 	{
-		$was = $this->haveBulkMailer($I, self::NON_SMTP_MAILER);
+		$was = $this->haveMailPreferences($I, array('bulkmailer' => self::NON_SMTP_MAILER));
 
 		$I->amOnPage(self::MENU . '?mode=prefs&action=prefs');
 
@@ -279,7 +294,7 @@ class MailoutCsrfCest
 		preg_match('#href="([^"]*mailout\\.php\\?mode=prefs&(?:amp;)?action=test[^"]*)"#',
 			$I->grabPageSource(), $matches);
 
-		$this->haveBulkMailer($I, $was);
+		$this->haveMailPreferences($I, $was);
 
 		$I->assertNotEmpty($matches, 'The Mailout menu published no Test SMTP Connection link');
 
@@ -319,6 +334,59 @@ class MailoutCsrfCest
 		$I->amOnPage(self::MENU . '?mode=prefs&action=test&e-token=' . $I->grabFreshAdminToken(self::MENU));
 
 		$I->seeInSource(self::SMTP_ATTEMPTED);
+	}
+
+	/**
+	 * testPage() reported a rejected login as lanVars(LAN_MAILOUT_271, array('x' =>
+	 * $username, 'y' => $pwd), true), so the SMTP password the site stores was
+	 * rendered in an admin error message every time the server turned it down. The
+	 * transcript printed beneath that notice never carried it: PHPMailer's own
+	 * SMTP::client_send() substitutes '[credentials hidden]' for anything below
+	 * DEBUG_LOWLEVEL, and testPage() runs it at DEBUG_CONNECTION.
+	 *
+	 * The stub server is here because the disclosure needs an authentication
+	 * failure, and an authentication failure needs a server that gets as far as
+	 * offering AUTH. The preferences go back before anything is asserted, so a
+	 * failure here leaves the site as it was.
+	 */
+	public function anAuthenticationFailureDoesNotPublishTheStoredSmtpCredentials(AcceptanceTester $I)
+	{
+		$stub = $this->haveSmtpServerRefusingAuthentication();
+		$was = null;
+		$source = '';
+
+		try
+		{
+			$was = $this->haveMailPreferences($I, array(
+				'bulkmailer'    => 'smtp',
+				'smtp_server'   => '127.0.0.1',
+				'smtp_port'     => (string) self::SMTP_STUB_PORT,
+				'smtp_username' => self::SMTP_USERNAME,
+				'smtp_password' => self::SMTP_PASSWORD,
+			));
+
+			$I->amOnPage(self::MENU . '?mode=prefs&action=test&e-token=' . $I->grabFreshAdminToken(self::MENU));
+
+			$source = $I->grabPageSource();
+		}
+		finally
+		{
+			if($was !== null)
+			{
+				$this->haveMailPreferences($I, $was);
+			}
+
+			$this->stopSmtpServer($stub);
+		}
+
+		$I->assertStringContainsString(self::AUTH_FAILED, $source,
+			'The stub server has to get as far as refusing the credentials, or this proves nothing');
+		$I->assertStringNotContainsString(self::SMTP_PASSWORD, $source,
+			'The stored SMTP password was rendered in the authentication failure notice');
+		$I->assertStringNotContainsString(self::SMTP_USERNAME, $source,
+			'The stored SMTP username was rendered in the authentication failure notice');
+		$I->assertStringContainsString(self::CREDENTIALS_HIDDEN, $source,
+			'The notice should say the credentials were withheld, the way PHPMailer says it');
 	}
 
 	/**
@@ -371,21 +439,164 @@ class MailoutCsrfCest
 
 	/**
 	 * @param AcceptanceTester $I
-	 * @param string $mailer value to leave the bulkmailer preference at
-	 * @return string the value it held before
+	 * @param array $values mail preference fields to leave set, keyed by form field name
+	 * @return array what those same fields held before, ready to be handed back in
 	 */
-	private function haveBulkMailer(AcceptanceTester $I, $mailer)
+	private function haveMailPreferences(AcceptanceTester $I, array $values)
 	{
 		$I->amOnPage(self::MENU . '?mode=prefs&action=prefs');
 
-		$was = $I->grabValueFrom('#mailsettingsform [name=bulkmailer]');
+		$was = array();
 
-		if($was !== $mailer)
+		foreach($values as $field => $value)
 		{
-			$I->submitForm('#mailsettingsform', array('bulkmailer' => $mailer), 'updateprefs');
+			$was[$field] = $I->grabValueFrom('#mailsettingsform [name=' . $field . ']');
 		}
 
+		$I->submitForm('#mailsettingsform', $values, 'updateprefs');
+
 		return $was;
+	}
+
+	/**
+	 * Start an SMTP server that greets, offers AUTH LOGIN, and then refuses whatever
+	 * credentials it is given.
+	 *
+	 * It runs beside the suite rather than beside the site because the acceptance
+	 * runner and Apache share a container, so a listener on the loopback address is
+	 * the same listener to both.
+	 *
+	 * @return array the handle stopSmtpServer() wants back
+	 */
+	private function haveSmtpServerRefusingAuthentication()
+	{
+		$script = sys_get_temp_dir() . '/e107_tests_smtp_stub_' . getmypid() . '.php';
+		$ready = $script . '.ready';
+
+		@unlink($ready);
+		file_put_contents($script, $this->smtpServerSource());
+
+		$pipes = array();
+		$process = proc_open(
+			'exec php ' . escapeshellarg($script) . ' ' . self::SMTP_STUB_PORT . ' ' . escapeshellarg($ready),
+			array(array('pipe', 'r'), array('file', '/dev/null', 'a'), array('file', '/dev/null', 'a')),
+			$pipes
+		);
+
+		if(!is_resource($process))
+		{
+			throw new \RuntimeException('Could not start a stub SMTP server');
+		}
+
+		$stub = array('process' => $process, 'pipes' => $pipes, 'script' => $script, 'ready' => $ready);
+		$deadline = microtime(true) + 10;
+
+		clearstatcache(true, $ready);
+
+		while(!file_exists($ready))
+		{
+			if(microtime(true) > $deadline)
+			{
+				$this->stopSmtpServer($stub);
+
+				throw new \RuntimeException('The stub SMTP server never bound to port ' . self::SMTP_STUB_PORT);
+			}
+
+			usleep(50000);
+			clearstatcache(true, $ready);
+		}
+
+		return $stub;
+	}
+
+	/**
+	 * @param array $stub as haveSmtpServerRefusingAuthentication() returned it
+	 * @return void
+	 */
+	private function stopSmtpServer(array $stub)
+	{
+		foreach($stub['pipes'] as $pipe)
+		{
+			if(is_resource($pipe))
+			{
+				fclose($pipe);
+			}
+		}
+
+		proc_terminate($stub['process']);
+		proc_close($stub['process']);
+
+		@unlink($stub['script']);
+		@unlink($stub['ready']);
+	}
+
+	/**
+	 * @return string source of the stub server, which runs under a PHP of its own
+	 */
+	private function smtpServerSource()
+	{
+		return <<<'STUB'
+<?php
+
+$server = stream_socket_server('tcp://127.0.0.1:' . (int) $argv[1], $errno, $errstr);
+
+if(!$server)
+{
+	fwrite(STDERR, $errstr);
+	exit(1);
+}
+
+file_put_contents($argv[2], 'listening');
+
+$deadline = time() + 60;
+
+while(time() < $deadline)
+{
+	$connection = @stream_socket_accept($server, 1);
+
+	if(!$connection)
+	{
+		continue;
+	}
+
+	fwrite($connection, "220 e107-test-stub ESMTP\r\n");
+
+	while(($line = fgets($connection, 1024)) !== false)
+	{
+		$verb = strtoupper(substr(ltrim($line), 0, 4));
+
+		if($verb === 'EHLO')
+		{
+			fwrite($connection, "250-e107-test-stub\r\n250 AUTH LOGIN\r\n");
+			continue;
+		}
+
+		if($verb === 'HELO')
+		{
+			fwrite($connection, "250 e107-test-stub\r\n");
+			continue;
+		}
+
+		if($verb === 'AUTH')
+		{
+			fwrite($connection, "535 5.7.8 Authentication credentials invalid\r\n");
+			continue;
+		}
+
+		if($verb === 'QUIT')
+		{
+			fwrite($connection, "221 2.0.0 Bye\r\n");
+			break;
+		}
+
+		fwrite($connection, "502 5.5.2 Command not implemented\r\n");
+	}
+
+	fclose($connection);
+}
+
+fclose($server);
+STUB;
 	}
 
 	/**
