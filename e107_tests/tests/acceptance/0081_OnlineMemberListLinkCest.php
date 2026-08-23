@@ -244,6 +244,7 @@ class OnlineMemberListLinkCest
 <?php
 // Fixture for 0081_OnlineMemberListLinkCest. Removed again in the Cest's _after().
 require_once(__DIR__.'/class2.php');
+{{E107_TEST_PROBE_GUARD}}
 header('Content-Type: text/plain');
 
 if(varset(\$_GET['act']) === 'link')

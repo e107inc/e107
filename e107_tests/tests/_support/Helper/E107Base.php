@@ -33,13 +33,17 @@ abstract class E107Base extends Base
      * Lives here rather than on Acceptance because the webdriver suite writes
      * probe files too; both suites reach the same app the same way.
      *
+     * A fixture that boots e107 in the docroot goes through
+     * {@see ProbeGuard::contain()} first, which refuses one that reserved no
+     * room for the guard.
+     *
      * @param string $relative_path path relative to the app root
      * @param string $contents
      * @return void
      */
     public function writeAppFile($relative_path, $contents)
     {
-        $this->deployer->writeAppFile($relative_path, $contents);
+        $this->deployer->writeAppFile($relative_path, ProbeGuard::contain($relative_path, $contents));
     }
 
     /**

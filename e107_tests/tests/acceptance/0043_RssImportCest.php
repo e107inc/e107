@@ -508,6 +508,7 @@ class RssImportCest
 define('e_REMOTE_FILE_ALLOW_PRIVATE', true);
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
+{{E107_TEST_PROBE_GUARD}}
 header('Content-Type: text/plain');
 require_once(e_PLUGIN.'import/providers/rss_import_class.php');
 

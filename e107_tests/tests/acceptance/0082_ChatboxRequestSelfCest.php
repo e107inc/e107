@@ -174,6 +174,7 @@ class ChatboxRequestSelfCest
 <?php
 // Fixture for 0082_ChatboxRequestSelfCest. Removed again in the Cest's _after().
 require_once(__DIR__.'/class2.php');
+{{E107_TEST_PROBE_GUARD}}
 require_once(HEADERF);
 
 $sql = e107::getDb();

@@ -453,6 +453,7 @@ class CsrfModeMatrixCest
 // 'default' removes it, which is how the recommended setting is stored.
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
+{{E107_TEST_PROBE_GUARD}}
 if(isset($_GET['csrf_matrix_reset']))
 {
 	// Flood protection counts hits per address and bans at fifty. A flood ban is

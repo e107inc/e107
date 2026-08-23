@@ -57,6 +57,7 @@ class CsrfClientHalfCest
 // Fixture for 0022_CsrfClientHalfCest. Removed again in the Cest's _after().
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
+{{E107_TEST_PROBE_GUARD}}
 e107::getDb()->delete('online');
 e107::getDb()->delete('banlist', 'banlist_bantype IN (2, -2)');
 if(isset($_GET['mode']))
