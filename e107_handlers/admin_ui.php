@@ -1846,11 +1846,10 @@ class e_admin_dispatcher
 			{
 				$item['link'] = '#';
 				$item['link_caret'] = true;
-				$item['link_data'] = [
-					'data-toggle' => 'collapse',
-					'data-target' => '#sub-' . $item['link_id'],
-					'role'        => 'button'
-				];
+				$item['link_data'] = array_merge($tp->bootstrapData([
+					'toggle' => 'collapse',
+					'target' => '#sub-' . $item['link_id'],
+				]), ['role' => 'button']);
 				$item['sub_class'] = 'collapse';
 				$item['caret'] = true;
 
@@ -1860,7 +1859,7 @@ class e_admin_dispatcher
 					{
 						$parent = $subItem['group'];
 						$var[$parent]['link_data']['aria-expanded'] = 'true';
-						$item['sub_class'] = 'collapse in';
+						$item['sub_class'] = 'collapse ' . $tp->bootstrapShowClass();
 					}
 				}
 			}

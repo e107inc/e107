@@ -462,7 +462,7 @@ $(document).ready(function()
 			var target = $($link.attr('data-target'));
 
 			// Initial state on page load
-			if (target.hasClass('in')) {
+			if (target.hasClass('in') || target.hasClass('show')) {
 				$caret.removeClass('fa-chevron-down').addClass('fa-chevron-up');
 			} else {
 				$caret.removeClass('fa-chevron-up').addClass('fa-chevron-down');

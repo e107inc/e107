@@ -2268,6 +2268,45 @@ class e_parse
 	}
 
 	/**
+	 * Spell a Bootstrap JavaScript behaviour's data attributes for Bootstrap 3, 4 and 5 at once.
+	 *
+	 * Pass the behaviour, not the prefix: `data-` and `data-bs-` both come back. State classes cannot be doubled up
+	 * like this; use {@see e_parse::bootstrapShowClass()}.
+	 *
+	 * @param array $attributes Behaviour attributes without their prefix, e.g. `['toggle' => 'collapse', 'target' => '#sub-1']`
+	 * @return array Attribute name-value pairs, ready for {@see e_parse::toAttributes()}
+	 * @deprecated v2.4.0 Stopgap while core markup is still framework-coupled. Framework spellings belong in template
+	 *             packs (issue #5909); reach for a template override before calling this from new code.
+	 */
+	public function bootstrapData($attributes)
+	{
+		$prefixed = [];
+
+		foreach ($attributes as $key => $value)
+		{
+			$prefixed['data-' . $key] = $value;
+			$prefixed['data-bs-' . $key] = $value;
+		}
+
+		return $prefixed;
+	}
+
+	/**
+	 * The class Bootstrap puts on a shown `.collapse` or a faded-in `.fade` element: `in` on Bootstrap 3, `show` from
+	 * Bootstrap 4 on.
+	 *
+	 * Emit one or the other, never both: Bootstrap 3 also ships `.show` as a `display: block !important` utility.
+	 *
+	 * @return string
+	 * @deprecated v2.4.0 Stopgap while core markup is still framework-coupled. Framework spellings belong in template
+	 *             packs (issue #5909); reach for a template override before calling this from new code.
+	 */
+	public function bootstrapShowClass()
+	{
+		return $this->bootstrap > 3 ? 'show' : 'in';
+	}
+
+	/**
 	 * Flatten a multi-dimensional associative array with slashes.
 	 *
 	 * Based on Illuminate\Support\Arr::dot()
@@ -4193,6 +4232,16 @@ class e_parse
 	public function setBootstrap($version)
 	{
 		$this->bootstrap = (int) $version;
+	}
+
+	/**
+	 * The major Bootstrap version the active theme declared, or null when it declared none.
+	 *
+	 * @return int|null
+	 */
+	public function getBootstrap()
+	{
+		return $this->bootstrap;
 	}
 
 	public function setmodRewriteMedia($bool)
