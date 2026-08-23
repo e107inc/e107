@@ -18,6 +18,16 @@
  * families that keep such a record: OAuth2 under authorization_state, OAuth1
  * under request_token.
  *
+ * The five OpenID providers keep no such record, so nothing in the session
+ * tells their two legs apart and neither is asked for a token. What is left is
+ * a forced login, and what refuses it is the browser's own account of the
+ * request: another site asking for this address as anything but a document is
+ * neither a sign-in a visitor started nor a provider bringing one home. The
+ * three OpenID cases hold everything else still and vary only the fetch
+ * metadata, because that pair of headers is the whole of the decision; a
+ * fourth sends none at all, which is the answer given by a browser too old to
+ * have any and has to stay the answer it was.
+ *
  * REDIRECTS ARE NOT FOLLOWED. A begun handshake leaves the site, and a
  * returning leg is answered with a redirect of e107's own; the evidence is the
  * session store, read back through the probe.
@@ -37,8 +47,19 @@ class XupProviderLoginTokenCest
 	const OAUTH2_PROVIDER = 'Facebook';
 	const OAUTH1_PROVIDER = 'Twitter';
 
+	/** An OpenID provider: it records no handshake and cannot be given a token. */
+	const OPENID_PROVIDER = 'Steam';
+
 	/** The handshake record loginNeedsToken() reads for the OAuth2 provider. */
 	const OAUTH2_HANDSHAKE = 'facebook.authorization_state';
+
+	/**
+	 * The account the profile seeded into Hybridauth's store resolves to, and
+	 * its login name. That store is what Adapter\OpenID::isConnected() reads,
+	 * above every other test its authenticate() makes.
+	 */
+	const OPENID_USER = 'e107tests OpenID';
+	const OPENID_LOGINNAME = 'e107tests_openid';
 
 	/** @var string a CSRF token minted for this client */
 	private $token = '';
@@ -173,11 +194,90 @@ class XupProviderLoginTokenCest
 	}
 
 	/**
+	 * The OpenID leg a visitor starts, from a link on a page of this site.
+	 * Nothing about it may change: the whole cost of the guard is meant to
+	 * fall on somebody else.
+	 */
+	public function anOpenIdLoginStartedFromThisSiteStillSignsIn(AcceptanceTester $I)
+	{
+		$I->wantTo('still sign in with an OpenID provider from a link on this site');
+
+		$this->reconnectOpenId($I);
+		$this->fetchMetadata($I, 'same-origin', 'document');
+		$I->amOnPage(self::ROUTE.'&provider='.self::OPENID_PROVIDER);
+
+		$I->assertSame(self::OPENID_USER, $this->signedInAs($I),
+			'A sign-in started from this site has to reach the provider');
+	}
+
+	/**
+	 * The forgery, and the forced login it wins. A page on another site loads
+	 * this address as an image, and a visitor whose session still holds the
+	 * profile of an earlier OpenID sign-in is signed straight back in as that
+	 * identity, on a shared machine as readily as anywhere else.
+	 *
+	 * The attacker holds no session, no token and no account, and cannot read
+	 * the response; that a request shaped like this one signs anybody in at all
+	 * is the whole finding.
+	 */
+	public function anOpenIdLoginAnotherSiteAsksForInTheBackgroundIsRefused(AcceptanceTester $I)
+	{
+		$I->wantTo('refuse a social login another site asked for in the background');
+
+		$this->reconnectOpenId($I);
+		$this->fetchMetadata($I, 'cross-site', 'image');
+		$I->amOnPage(self::ROUTE.'&provider='.self::OPENID_PROVIDER);
+
+		$I->assertSame('', $this->signedInAs($I),
+			'An image another site asked for must not sign anybody in');
+	}
+
+	/**
+	 * The leg that matters most, and the one a guard built out of these headers
+	 * can most easily break: an OpenID provider sending the visitor back is a
+	 * navigation from another site to a document, and it carries nothing this
+	 * site issued. Refusing it would take every OpenID sign-in down with it.
+	 */
+	public function anOpenIdProviderReturningAsANavigationStillSignsIn(AcceptanceTester $I)
+	{
+		$I->wantTo('let an OpenID provider send the visitor back to this site');
+
+		$this->reconnectOpenId($I);
+		$this->fetchMetadata($I, 'cross-site', 'document');
+		$I->amOnPage(self::ROUTE.'&provider='.self::OPENID_PROVIDER);
+
+		$I->assertSame(self::OPENID_USER, $this->signedInAs($I),
+			'A provider returning the visitor has to be let through');
+	}
+
+	/**
+	 * A browser that predates fetch metadata says nothing at all, and silence
+	 * is not a claim to have come from somewhere else. e_core_session::attest()
+	 * falls through on it rather than refusing, and so does this: an OpenID
+	 * sign-in was never gated and a silent client must not be the one visitor
+	 * who finds it is.
+	 */
+	public function anOpenIdLoginWithoutFetchMetadataStillSignsIn(AcceptanceTester $I)
+	{
+		$I->wantTo('leave a browser that sends no fetch metadata as it was');
+
+		$this->reconnectOpenId($I);
+		$I->amOnPage(self::ROUTE.'&provider='.self::OPENID_PROVIDER);
+
+		$I->assertSame(self::OPENID_USER, $this->signedInAs($I),
+			'A client that says nothing has to be let through');
+	}
+
+	/**
 	 * Seeding that store is exactly how a returning leg is recognised, so a
 	 * caller that cannot show this run's secret has to get nothing at all. A
 	 * probe left in the docroot by a run that died would otherwise let another
 	 * site plant a handshake record in a visitor's session and walk the very
 	 * refusal the first case pins straight past the guard.
+	 *
+	 * Planting an OpenID profile is worse still, because that is the state the
+	 * forced login needs and the probe writes it in one request, so the gate is
+	 * pinned on that action as well as on the one that seeds a handshake.
 	 */
 	public function theProbeRefusesACallerThatCannotShowTheSecret(AcceptanceTester $I)
 	{
@@ -187,6 +287,66 @@ class XupProviderLoginTokenCest
 		$I->seeResponseCodeIs(403);
 		$I->assertSame('', $this->storedValue($I, self::OAUTH2_HANDSHAKE),
 			'A refused caller must not have planted a handshake record');
+
+		$I->amOnPage('/'.self::PROBE_FILE.'?act=connect');
+
+		$I->seeResponseCodeIs(403);
+		$I->assertSame('', $this->storedValue($I, strtolower(self::OPENID_PROVIDER).'.user'),
+			'A refused caller must not have planted an OpenID profile');
+	}
+
+	/**
+	 * Sign the client out and give it back the profile of an earlier OpenID
+	 * sign-in, so that every OpenID case below starts from the one session
+	 * state the risk needs and differs only in what the browser says.
+	 *
+	 * @param AcceptanceTester $I
+	 * @return void
+	 */
+	private function reconnectOpenId(AcceptanceTester $I)
+	{
+		$I->amOnPage($this->probeUrl('act=signout'));
+		$I->seeInSource('PROBE_OK signout');
+		$I->amOnPage($this->probeUrl('act=connect'));
+		$I->seeInSource('PROBE_OK connect');
+	}
+
+	/**
+	 * Say what the browser would have said. The harness sends no Sec-Fetch-*
+	 * of its own, so a case that does not set these is the silent client.
+	 *
+	 * @param AcceptanceTester $I
+	 * @param string $site
+	 * @param string $dest
+	 * @return void
+	 */
+	private function fetchMetadata(AcceptanceTester $I, $site, $dest)
+	{
+		$I->haveHttpHeader('Sec-Fetch-Site', $site);
+		$I->haveHttpHeader('Sec-Fetch-Dest', $dest);
+	}
+
+	/**
+	 * Who the client is signed in as, read back through the probe because a
+	 * refused request and an accepted one are answered by the same redirect.
+	 *
+	 * The headers are dropped first: they belong to the request under test and
+	 * would otherwise ride along on every request that reads its result.
+	 *
+	 * @param AcceptanceTester $I
+	 * @return string the display name, or '' when nobody is signed in
+	 */
+	private function signedInAs(AcceptanceTester $I)
+	{
+		$I->deleteHeader('Sec-Fetch-Site');
+		$I->deleteHeader('Sec-Fetch-Dest');
+
+		$I->amOnPage($this->probeUrl('act=whoami'));
+		$I->seeInSource('PROBE_OK whoami');
+
+		preg_match('#^USER:(.*)$#m', $I->grabPageSource(), $match);
+
+		return isset($match[1]) ? trim($match[1]) : '';
 	}
 
 	/**
@@ -246,6 +406,11 @@ class XupProviderLoginTokenCest
 	private function probeSource()
 	{
 		$secret = $this->secret;
+		$provider = self::OPENID_PROVIDER;
+		$identifier = self::OPENID_LOGINNAME;
+		$username = self::OPENID_USER;
+		$loginname = self::OPENID_LOGINNAME;
+		$xup = self::OPENID_PROVIDER.'_'.self::OPENID_LOGINNAME;
 
 		return <<<PHP
 <?php
@@ -277,10 +442,42 @@ switch(\$act)
 			'enabled' => 1,
 			'keys' => array('key' => 'e107testsconsumerkey', 'secret' => 'e107testsconsumersecret'),
 		));
+		\$manager->setProviderConfig('Steam', array('enabled' => 1));
 		\$manager->saveConfig();
 		\$manager->setFlag(social_login_config::ENABLE_BIT_GLOBAL, true);
+		e107::getDb()->delete('user', "user_loginname='$loginname'");
+		e107::getDb()->insert('user', array(
+			'user_name' => '$username',
+			'user_loginname' => '$loginname',
+			'user_login' => '$username',
+			'user_password' => '',
+			'user_email' => '$loginname@example.invalid',
+			'user_hideemail' => 1,
+			'user_join' => time(),
+			'user_ban' => 0,
+			'user_xup' => '$xup',
+		));
 		echo "PROBE_OK setup\\n";
 		echo 'TOKEN:'.defset('e_TOKEN')."\\n";
+		break;
+
+	case 'signout':
+		e107::getUser()->logout();
+		echo "PROBE_OK signout\\n";
+		break;
+
+	case 'connect':
+		\$profile = new Hybridauth\\User\\Profile();
+		\$profile->identifier = '$identifier';
+		\$profile->displayName = '$username';
+		\$store = new Hybridauth\\Storage\\Session();
+		\$store->set('$provider.user', \$profile);
+		echo "PROBE_OK connect\\n";
+		break;
+
+	case 'whoami':
+		echo "PROBE_OK whoami\\n";
+		echo 'USER:'.(e107::getUser()->isUser() ? e107::getUser()->getName() : '')."\\n";
 		break;
 
 	case 'clear':
@@ -301,15 +498,19 @@ switch(\$act)
 
 	case 'peek':
 		\$store = isset(\$_SESSION['HYBRIDAUTH::STORAGE']) ? \$_SESSION['HYBRIDAUTH::STORAGE'] : array();
+		\$held = isset(\$store[\$key]) ? \$store[\$key] : '';
 		echo "PROBE_OK peek\\n";
-		echo 'VALUE:'.(isset(\$store[\$key]) ? \$store[\$key] : '')."\\n";
+		echo 'VALUE:'.(is_scalar(\$held) ? \$held : 'held')."\\n";
 		break;
 
 	case 'teardown':
 		\$manager->setFlag(social_login_config::ENABLE_BIT_GLOBAL, false);
 		\$manager->forgetProvider('Facebook');
 		\$manager->forgetProvider('Twitter');
+		\$manager->forgetProvider('Steam');
 		\$manager->saveConfig();
+		e107::getUser()->logout();
+		e107::getDb()->delete('user', "user_loginname='$loginname'");
 		unset(\$_SESSION['HYBRIDAUTH::STORAGE']);
 		echo "PROBE_OK teardown\\n";
 		break;
