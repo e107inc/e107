@@ -443,4 +443,5 @@ Below is the list of files that could potentially be malicious:",
     'LAN_EMULATION_ADMINPERMS' => "Admin Permissions:",
     'LAN_EMULATION_TEMPORARY' => "Permission emulation is temporary. Your identity is unchanged, and emulation ends when you log out.",
     'LAN_EMULATION_STOP' => "Stop Emulating",
+    'ADLAN_REFUSED_TOKEN_MISSING' => "That request was not carried out, because it carried no security token. Use the dashboard's own controls rather than a bookmark or a link on another site.",
 ];
