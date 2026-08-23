@@ -291,14 +291,8 @@ class mailout_admin extends e_admin_dispatcher
 
 	function init()
 	{
-		$mailer = e107::getPref('bulkmailer');
-
-		if($mailer === 'smtp' )
-		{
-			$this->adminMenu['other3'] =   array('divider'=> true);
-			$this->adminMenu['prefs/test'] =array('caption'=> LAN_MAILOUT_270, 'perm' => '0'); //TODO LAN
-		}
-
+		$this->adminMenu['other3'] =   array('divider'=> true);
+		$this->adminMenu['prefs/test'] = array('caption'=> defset('LAN_MAILOUT_270', 'Test SMTP Connection'), 'perm' => '0', 'uri' => e_SELF.'?mode=prefs&amp;action=test&amp;e-token='.defset('e_TOKEN')); //TODO LAN
 	}
 }
 
@@ -1020,6 +1014,11 @@ class mailout_main_ui extends e_admin_ui
 	*/
 	function testPage()
 	{
+		if(mailout_tokenMissing())
+		{
+			e107::getMessage()->addError(mailout_tokenRefusal());
+			return '';
+		}
 
 		require_once(e_HANDLER.'vendor/autoload.php');
 	//	require_once(e_HANDLER. 'phpmailer/PHPMailerAutoload.php');
