@@ -183,7 +183,7 @@ class e_db_pdo implements e_db
 		catch(PDOException $ex)
 		{
 			$this->mySQLlastErrText = $ex->getMessage();
-			$this->mySQLlastErrNum = $ex->getCode();
+			$this->mySQLlastErrNum = $this->_errorNumber($ex);
 			$this->dbg->log($this->mySQLlastErrText);
 			return false;
 		}
@@ -240,7 +240,7 @@ class e_db_pdo implements e_db
 		catch (PDOException $e)
 		{
 			$this->mySQLlastErrText = $e->getMessage();
-			$this->mySQLlastErrNum = $e->getCode();
+			$this->mySQLlastErrNum = $this->_errorNumber($e);
 			return false;
 	    }
 
@@ -350,6 +350,8 @@ class e_db_pdo implements e_db
 			$this->log($log_type, $log_remark, $query);
 		}
 
+		$this->resetLastError();
+
 		// PDO raises a ValueError on an empty statement and a TypeError on one that
 		// is not a string. Neither descends from PDOException, so neither is caught
 		// below, and a caller that would have read back false instead loses the
@@ -367,6 +369,7 @@ class e_db_pdo implements e_db
 		if(!is_string($statement) || trim($statement) === '')
 		{
 			$this->mySQLlastErrText = 'Empty or non-string query passed to '.__FUNCTION__.'()';
+			$this->mySQLlastErrNum = -1;
 
 			return false;
 		}
@@ -398,7 +401,7 @@ class e_db_pdo implements e_db
 			{
 				$sQryRes = false;
 				$this->mySQLlastErrText = $ex->getMessage();
-				$this->mySQLlastErrNum = $ex->getCode();
+				$this->mySQLlastErrNum = $this->_errorNumber($ex);
 			}
 		}
 		else
@@ -425,7 +428,7 @@ class e_db_pdo implements e_db
 			{
 				$sQryRes = false;
 				$this->mySQLlastErrText = $ex->getMessage();
-				$this->mySQLlastErrNum = $ex->getCode();
+				$this->mySQLlastErrNum = $this->_errorNumber($ex);
 			}
 		}
 
@@ -2583,6 +2586,27 @@ class e_db_pdo implements e_db
 		return $from." :: ".$this->mySQLlastErrText;
 
 
+	}
+
+
+	/**
+	 * MySQL error number behind a PDO exception, matching what {@see e_db_mysql} records; -1 when the error carries no driver number.
+	 *
+	 * Before PHP 7.3.22 and 7.4.10 (php-src bug #64705) a connection failure sets no errorInfo and puts the errno in the exception code as an int, while a SQLSTATE always arrives there as a string, so the test is is_int() and never is_numeric(): SQLSTATE values such as '23000' are all digits.
+	 *
+	 * @param PDOException $ex
+	 * @return int
+	 */
+	private function _errorNumber($ex)
+	{
+		if(isset($ex->errorInfo[1]) && (int) $ex->errorInfo[1] !== 0)
+		{
+			return (int) $ex->errorInfo[1];
+		}
+
+		$code = $ex->getCode();
+
+		return (is_int($code) && $code !== 0) ? $code : -1;
 	}
 
 

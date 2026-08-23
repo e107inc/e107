@@ -64,13 +64,6 @@ class e_db_mysqlTest extends e_db_abstractTest
 		$this->assertRegExp('/[0-9]+\./', $result);
 	}
 
-	public function testGetLastErrorNumber()
-	{
-		$this->db->select('doesnt_exists');
-		$result = $this->db->getLastErrorNumber();
-		$this->assertEquals("1146", $result);
-	}
-
 	public function testDb_Close()
 	{
 		$db_impl = $this->getDbImplementation();

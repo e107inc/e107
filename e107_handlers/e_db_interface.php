@@ -236,7 +236,8 @@
 		// Return error number for last operation
 
 		/**
-		 * @return mixed
+		 * @desc Driver error number of the last operation; 0 when there was none, and -1 when the error carries no driver number
+		 * @return int
 		 */
 		function getLastErrorNumber();
 
