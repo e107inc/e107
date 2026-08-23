@@ -35,9 +35,9 @@ class featurebox_menu
 	}
 
 	/**
-	 * Selectable category templates, empty while the plugin is uninstalled.
+	 * Selectable categories, empty while the plugin is uninstalled.
 	 *
-	 * @return array fb_category_template => fb_category_title
+	 * @return array {@see plugin_featurebox_category::address()} => fb_category_title
 	 */
 	private function categories()
 	{
@@ -47,7 +47,7 @@ class featurebox_menu
 		}
 
 		$rows = e107::getDb()->createQueryBuilder()
-			->select('fb_category_template', 'fb_category_title')->from('featurebox_category')
+			->select('*')->from('featurebox_category')
 			->orderBy('fb_category_id', 'ASC')
 			->fetchAll();
 
@@ -55,7 +55,7 @@ class featurebox_menu
 
 		foreach((array) $rows as $row)
 		{
-			$categories[$row['fb_category_template']] = $row['fb_category_title'];
+			$categories[plugin_featurebox_category::address($row)] = $row['fb_category_title'];
 		}
 
 		unset($categories['unassigned']);
@@ -70,7 +70,7 @@ class featurebox_menu
 	 * {@see featurebox_shortcodes::sc_featurebox()}.
 	 *
 	 * @param array|string $parm menu parameters: an array from Menu Manager, a query string from {@see menu_shortcode()} or {@see plugin_shortcode()}
-	 * @param string $default category template to render when the placement names none; reaches the shortcode verbatim, so pass a trusted value
+	 * @param string $default category address to render when the placement names none; reaches the shortcode verbatim, so pass a trusted value
 	 * @return string
 	 */
 	public static function shortcode($parm, $default)

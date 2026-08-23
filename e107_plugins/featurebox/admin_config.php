@@ -69,6 +69,7 @@ class fb_category_ui extends e_admin_ui
 		'fb_category_id'		=> array('title'=> LAN_ID,				'type' => 'number',		'data' => 'int',	'width' =>'5%', 'forced'=> TRUE),     		
      	'fb_category_icon' 		=> array('title'=> LAN_ICON,			'type' => 'icon',		'data' => 'str', 	'width' => '5%', 'thclass' => 'center', 'class'=>'center'),
 		'fb_category_title' 	=> array('title'=> LAN_TITLE,			'type' => 'text',		'data' => 'str',  	'inline'=>true, 'width' => 'auto',  'help' => 'up to 200 characters', 'thclass' => 'left', 'writeParms'=>'size=xlarge'), 
+		'fb_category_sef' 		=> array('title'=> LAN_FEATUREBOX_SEF,	'type' => 'text',		'data' => 'str',	'inline'=>true, 'width' => 'auto', 'thclass' => 'left', 'writeParms'=>array('size'=>'xlarge', 'sef'=>'fb_category_title'), 'help' => LAN_FEATUREBOX_SEF_HELP),
 		'fb_category_template' 	=> array('title'=> FBLAN_30,	        'type' => 'layouts',	'inline'=>true, 	'data' => 'str', 	'width' => 'auto', 'thclass' => 'left', 'writeParms' => 'plugin=featurebox&id=featurebox_category&merge=1', 'filter' => true),
 		'fb_category_random' 	=> array('title'=> FBLAN_31,			'type' => 'boolean',	'data' => 'int', 	'width' => '5%', 'thclass' => 'center', 'class' => 'center', 'batch' => true, 'filter' => true),
 		'fb_category_class' 	=> array('title'=> LAN_VISIBILITY,		'type' => 'userclass',	'data' => 'int', 	'inline'=>true, 'width' => 'auto', 'filter' => true, 'batch' => true),
@@ -148,63 +149,102 @@ class fb_category_ui extends e_admin_ui
 			$new_data['fb_category_template'] = 'default';
 		}
 
-		return $new_data;
+		return $this->beforeSave($new_data, array(), 0);
 	}
 	
 	public function beforeUpdate($new_data, $old_data, $id)
 	{
-		if(!varset($new_data['fb_category_template']))
+		if(isset($new_data['fb_category_template']) && !$new_data['fb_category_template'])
 		{
 			$new_data['fb_category_template'] = 'default';
 		}
-		return $new_data;
+
+		return $this->beforeSave($new_data, (array) $old_data, (int) $id);
 	}
 
 	/**
-	 * Create error callback
+	 * Guard what the dropped UNIQUE KEY fb_category_template used to guard, then
+	 * settle the sef. Returning false abandons the save.
 	 *
-	 * @param $new_data
-	 * @param $old_data
-	 * @return bool
+	 * @param array $new_data
+	 * @param array $old_data empty while creating
+	 * @param int $id row being updated, 0 while creating
+	 * @return array|false the row to write
 	 */
-	public function onCreateError($new_data, $old_data)
+	protected function beforeSave($new_data, $old_data, $id)
 	{
-		return $this->_handleUnique($new_data, 'create');
+		if(!$this->allowTemplate($new_data, $old_data))
+		{
+			e107::getMessage()->addError(LAN_FEATUREBOX_LAYOUT_RESERVED);
+
+			return false;
+		}
+
+		return $this->settleSef($new_data, $old_data, $id);
 	}
 
 	/**
-	 * Create error callback
+	 * The 'unassigned' Layout is how seven places identify the system category, so
+	 * no other row may take it. A theme shipping its own 'unassigned' key would
+	 * otherwise offer it in the dropdown, and a crafted post needs no theme.
+	 * Compared without regard to case, because {@see e_admin_ui::_add2featurebox()}
+	 * finds the system category in SQL, under the column's collation.
 	 *
 	 * @param array $new_data
 	 * @param array $old_data
-	 * @param int   $id
 	 * @return bool
 	 */
-	public function onUpdateError($new_data, $old_data, $id)
+	protected function allowTemplate($new_data, $old_data)
 	{
-		return $this->_handleUnique($new_data, 'update');
+		return strcasecmp(varset($new_data['fb_category_template'], ''), 'unassigned') !== 0
+			|| strcasecmp(varset($old_data['fb_category_template'], ''), 'unassigned') === 0;
 	}
-	
-	/**
-	 * Provide user friendly message on mysql duplicate entry error #1062 
-	 * No need of beforeCreate callback and additional SQL query - mysql error number give us
-	 * enough info
-	 * @param array $new_data
-	 * @param string $mod
-	 * @return boolean true - suppress model errors
-	 */
-	protected function _handleUnique($new_data, $mod)
-	{
-		if($this->getModel()->getSqlErrorNumber() == 1062)
-		{
-			$templates = e107::getLayouts('featurebox', 'featurebox_category', 'front', '', true, false);
-			$msg = e107::getMessage();
-			$msg->addError('Layout <strong>'.vartrue($templates[$new_data['fb_category_template']], 'n/a').'</strong> is in use by another category. Layout should be unique per category. ');
-			$msg->addError($mod == 'create' ? LAN_CREATED_FAILED : LAN_UPDATED_FAILED);
 
-			return (!E107_DEBUG_LEVEL); // suppress messages (TRUE) only when not in debug mod
+	/**
+	 * Settle the category's sef: whatever was typed, else the address the category
+	 * already answers to, else one built from its title. Refuses the save when the
+	 * result is empty or answers for another category. Like news_category's own
+	 * check this is check-then-act rather than a constraint, so two simultaneous
+	 * creates can still land on one sef.
+	 *
+	 * @param array $new_data
+	 * @param array $old_data empty while creating
+	 * @param int $id row being updated, 0 while creating
+	 * @return array|false the row to write
+	 */
+	protected function settleSef($new_data, $old_data, $id)
+	{
+		$sef = plugin_featurebox_category::toSef(varset($new_data['fb_category_sef'], ''));
+
+		if($sef === '')
+		{
+			$sef = plugin_featurebox_category::toSef(plugin_featurebox_category::address($old_data));
 		}
-		return false;
+
+		if($sef === '')
+		{
+			$sef = plugin_featurebox_category::toSef(eHelper::title2sef(varset($new_data['fb_category_title'], '')));
+		}
+
+		if($sef === '')
+		{
+			e107::getMessage()->addError(LAN_FEATUREBOX_SEF_EMPTY);
+
+			return false;
+		}
+
+		$taken = plugin_featurebox_category::findByAddress($sef, false);
+
+		if($taken && (int) $taken['fb_category_id'] !== $id)
+		{
+			e107::getMessage()->addError(LAN_FEATUREBOX_SEF_TAKEN);
+
+			return false;
+		}
+
+		$new_data['fb_category_sef'] = $sef;
+
+		return $new_data;
 	}
 }
 
@@ -263,9 +303,8 @@ class fb_main_ui extends e_admin_ui
 		foreach($rows as $row)
 		{
 			$id = $row['fb_category_id'];
-			$tmpl = $row['fb_category_template'];
 			$categories[$id] = $row['fb_category_title'];
-			$menuCat[$tmpl] = $row['fb_category_title'];
+			$menuCat[plugin_featurebox_category::address($row)] = $row['fb_category_title'];
 		}
 
 		$this->fields['fb_category']['writeParms'] 		= $categories;	
