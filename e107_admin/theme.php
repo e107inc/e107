@@ -1655,6 +1655,7 @@ TEMPLATE;
 			$folders = e107::getTheme()->clearCache()->getList('id'); // array_keys($list);
 
 			$text = $frm->open('copytheme','get','theme.php?mode=convert');
+			$text .= $frm->hidden('e-token', defset('e_TOKEN'));
 			$text .= "<table class='table adminform'>
 						<colgroup>
 							<col class='col-label' />
@@ -1703,6 +1704,12 @@ TEMPLATE;
 		{
 			if(empty($this->themeSrc) || empty($this->themeName) || is_dir(e_THEME.$this->themeName))
 			{
+				return false;
+			}
+
+			if(defined('e_TOKEN') && empty($_GET['e-token']))
+			{
+				e107::getMessage()->addError(defset('TPVLAN_REFUSED_TOKEN_MISSING', 'Invalid Token'));
 				return false;
 			}
 
