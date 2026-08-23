@@ -293,6 +293,7 @@ define("LAN_MAILOUT_269", "Send Later");
 
 define("LAN_MAILOUT_270", "Test SMTP Connection");
 define("LAN_MAILOUT_271", "Authentication failed with username ([x]) and password ([y]):");
+define("LAN_MAILOUT_REFUSED_TOKEN_MISSING", "That mail operation was not started, because the link carried no security token. Start it from the Mailout menu rather than from a bookmark or a link on another site.");
 
 
 

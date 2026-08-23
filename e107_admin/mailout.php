@@ -135,6 +135,28 @@ function sendProgress($id)
 	 
 }
 
+/**
+ * @return bool whether a GET that would act arrived without an e-token; a POST is attest()'s business
+ */
+function mailout_tokenMissing()
+{
+	if(isset($_SERVER['REQUEST_METHOD']) && strtoupper($_SERVER['REQUEST_METHOD']) === 'POST')
+	{
+		return false;
+	}
+
+	return (defined('e_TOKEN') && empty($_GET['e-token']));
+}
+
+/**
+ * @return string what to show where an acting request brought no e-token
+ */
+function mailout_tokenRefusal()
+{
+	return defset('LAN_MAILOUT_REFUSED_TOKEN_MISSING',
+		'That operation was not started, because the link carried no security token.');
+}
+
 	if(!empty($_GET['iframe']))
 	{
 		define('e_IFRAME', true);
@@ -142,6 +164,12 @@ function sendProgress($id)
 
 if(e_AJAX_REQUEST)
 {
+	if(mailout_tokenMissing())
+	{
+		echo mailout_tokenRefusal();
+		exit;
+	}
+
 	$id = intval($_GET['mode']);
 	echo sendProgress($id);
 	exit;
@@ -956,6 +984,12 @@ class mailout_main_ui extends e_admin_ui
 
 	function sendnowPage()
 	{
+		if(mailout_tokenMissing())
+		{
+			e107::getMessage()->addError(mailout_tokenRefusal());
+			return '';
+		}
+
 		$id = $this->getId();
 
 		$this->getResponse()->setTitle(LAN_MAILOUT_15.SEP.'Process Mail Queue #'.$id);
@@ -973,7 +1007,7 @@ class mailout_main_ui extends e_admin_ui
 			$pause = e107::getConfig()->get('mail_pausetime',1);
 			$interval = ($pause * 1000);
 			
-			$text = e107::getForm()->progressBar('mail-progress',0, array('btn-label'=>'Start', 'interval'=>$interval, 'url'=> e_SELF, 'mode'=>$id));
+			$text = e107::getForm()->progressBar('mail-progress',0, array('btn-label'=>'Start', 'interval'=>$interval, 'url'=> e_SELF.'?e-token='.defset('e_TOKEN'), 'mode'=>$id));
 		}
 	
 		return $text;	
@@ -1087,9 +1121,14 @@ class mailout_main_ui extends e_admin_ui
 		
 	function sendPage()
 	{
-		
+		if(mailout_tokenMissing())
+		{
+			e107::getMessage()->addError(mailout_tokenRefusal());
+			return '';
+		}
+
 		$id = $this->getId();
-		
+
 		$mailData = e107::getDb()->retrieve('mail_content','*','mail_source_id='.intval($id));
 		
 		if(empty($mailData))
@@ -1712,7 +1751,7 @@ class mailout_admin_form_ui extends e_admin_form_ui
 		{
 			$text = "";
 			
-			$link = e_SELF."?mode=main&action=send&id=".$id;	
+			$link = e_SELF."?mode=main&amp;action=send&amp;id=".$id."&amp;e-token=".defset('e_TOKEN');	
 			$preview = e_SELF."?mode=main&action=preview&id=".$id;
 			$text .= "<span class='btn-group'>";
 			$text .= "<a href='".$link."' class='btn btn-default' title='".LAN_MAILOUT_08."'>".defset('E_32_MAIL')."</a>";
