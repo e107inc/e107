@@ -170,6 +170,7 @@ class MenuPrefFixture extends CodeceptionModule
 // Fixture for the menu configuration Cests. Removed again in the Cest's _after().
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
+{{E107_TEST_PROBE_GUARD}}
 header('Content-Type: text/plain');
 
 $config = e107::getConfig('menu');

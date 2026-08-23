@@ -181,6 +181,7 @@ class CsrfFailClosedCest
 // POST that follows is decided by the same production path an operator uses.
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
+{{E107_TEST_PROBE_GUARD}}
 if(isset($_GET['csrf_probe_mode']))
 {
 	e107::getConfig('core')->set('csrf_enforce', (int) $_GET['csrf_probe_mode'])->save(false, true, false);

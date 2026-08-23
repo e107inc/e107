@@ -124,7 +124,7 @@ class ForumFixture extends CodeceptionModule
 		$this->haveForumProbe();
 
 		$browser = $this->browser();
-		$browser->amOnPage('/'.self::PROBE_FILE.'?'.$query);
+		$browser->amOnPage('/'.self::PROBE_FILE.'?'.ProbeGuard::query().'&'.$query);
 
 		$body = $browser->grabPageSource();
 
@@ -712,6 +712,7 @@ class ForumFixture extends CodeceptionModule
 // Fixture for the forum Cests. Written per suite, removed in _after().
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
+{{E107_TEST_PROBE_GUARD}}
 header('Content-Type: text/plain');
 
 $act = isset($_GET['act']) ? $_GET['act'] : '';

@@ -371,6 +371,7 @@ class PmAttachmentCest
 // Fixture for PmAttachmentCest. Written per test, removed in _after().
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
+{{E107_TEST_PROBE_GUARD}}
 header('Content-Type: text/plain');
 
 if(!defined('e_CURRENT_PLUGIN'))

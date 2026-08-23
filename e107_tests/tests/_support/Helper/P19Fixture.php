@@ -72,6 +72,7 @@ class P19Fixture
 // Fixture for the P19 Cests. Written per test, removed in _after().
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
+{{E107_TEST_PROBE_GUARD}}
 
 $act = isset($_GET['p19']) ? $_GET['p19'] : '';
 $dest = isset($_GET['dest']) ? $_GET['dest'] : '';
