@@ -318,6 +318,7 @@ class e_formTest extends \Codeception\Test\Unit
 		$opt = ['active'=>'1', 'fade'=>true];
 		$result = $this->_frm->tabs($array,$opt);
 		self::assertStringContainsString('<a class="nav-link active" href="#tab-1"',$result, 'Test 1 Nav Failed'); // Nav
+		self::assertStringContainsString("href=\"#tab-1\" data-toggle='tab' data-bs-toggle='tab'>", $result, 'Test 1 Toggle Failed'); // Toggle
 		self::assertStringContainsString('<div class="tab-pane fade in active" id="tab-1"', $result, 'Test 1 Pane Failed'); // Pane
 
 		// Test 2.
