@@ -183,6 +183,11 @@ if(isset($_POST['updateprefs']))
 		$core_pref->set('contact_info', []); // reset to type array if string had been used in the past.
 	}
 
+	if(mailoutAdminClass::smtpPasswordWasLeftAlone(varset($_POST['smtp_password'])))
+	{
+		unset($_POST['smtp_password']);
+	}
+
 	$smtp_opts = array();
 
 	if(!empty($_POST['smtp_options']))
