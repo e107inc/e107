@@ -24,6 +24,9 @@ class sitelinks
 	var $eSubLinkLevel = 0;
 	var $sefList = array();
 
+	/** @var array keys of the submenus {@see sitelinks::subLink()} is inside right now */
+	private $openSubLinks = array();
+
 	const LINK_DISPLAY_FLAT     = 1;
 	const LINK_DISPLAY_MENU     = 2;
 	const LINK_DISPLAY_OTHER    = 3;
@@ -326,37 +329,60 @@ class sitelinks
 			return null;
 		}
 
-		$sub['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && empty($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid]));
-						
-		foreach($this->eLinkList[$main_linkid] as $val) // check that something in the submenu is actually selected.
- 		{
-			if($this->hilite($val['link_url'],TRUE)== TRUE || $sub['link_expand'] == FALSE)
-         	{
-         		$substyle = "block"; // previously (non-W3C compliant): compact
-          		break;
-        	}
-			else
-			{
-				$substyle = "none";
-			}
-		}
+		$openBelow = $this->openSubLinks;
+		$this->openSubLinks[] = $main_linkid;
+		// getlinks() builds these keys as 'sub_'.<id>; a different shape there reads as parent 0 here.
+		$parent_id = (int) substr($main_linkid, strlen('sub_'));
 
-		$text = "";
-		$text .= "\n\n<div id='{$main_linkid}' style='display:$substyle' class='d_sublink'>\n";
-
-		foreach ($this->eLinkList[$main_linkid] as $sub)
+		try
 		{
-			$id = (!empty($sub['link_id'])) ? "sub_".$sub['link_id'] : 'sub_0';
-			$sub['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && empty($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$id]) && is_array($this->eLinkList[$id]));
-			$class = "sublink-level-".($level+1);
-			$class .= ($css_class) ? " ".$css_class : "";
-			$class .= ($aSubStyle['sublinkclass']) ? " ".$aSubStyle['sublinkclass'] : ""; // backwards compatible
-			$text .= $this->makeLink($sub, TRUE, $aSubStyle,$class );
-			$text .= $this->subLink($id,$aSubStyle,$css_class,($level+1));				
-		}
+			$sub['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && empty($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid]));
+						
+			foreach($this->eLinkList[$main_linkid] as $val) // check that something in the submenu is actually selected.
+	 		{
+				if($this->hilite($val['link_url'],TRUE)== TRUE || $sub['link_expand'] == FALSE)
+	         	{
+	         		$substyle = "block"; // previously (non-W3C compliant): compact
+	          		break;
+	        	}
+				else
+				{
+					$substyle = "none";
+				}
+			}
 
-		$text .= "\n</div>\n\n";
-		return $text;	
+			$text = "";
+			$text .= "\n\n<div id='{$main_linkid}' style='display:$substyle' class='d_sublink'>\n";
+
+			foreach ($this->eLinkList[$main_linkid] as $sub)
+			{
+				$id = (!empty($sub['link_id'])) ? "sub_".$sub['link_id'] : 'sub_0';
+				// Inferred, not recorded: a plugin bucket whose rows carry a parent id equal to this sitelink's own id still reads as one of ours.
+				$from_links_table = isset($sub['link_parent']) && (int) $sub['link_parent'] === $parent_id;
+				$has_children = $from_links_table
+					&& !in_array($id, $this->openSubLinks, true)
+					&& isset($this->eLinkList[$id])
+					&& is_array($this->eLinkList[$id]);
+				$sub['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && empty($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && $has_children);
+				$class = "sublink-level-".($level+1);
+				$class .= ($css_class) ? " ".$css_class : "";
+				$class .= ($aSubStyle['sublinkclass']) ? " ".$aSubStyle['sublinkclass'] : ""; // backwards compatible
+				$text .= $this->makeLink($sub, TRUE, $aSubStyle,$class );
+
+				if($has_children)
+				{
+					$text .= $this->subLink($id,$aSubStyle,$css_class,($level+1));
+				}
+			}
+
+			$text .= "\n</div>\n\n";
+
+			return $text;
+		}
+		finally
+		{
+			$this->openSubLinks = $openBelow;
+		}
 	}
 
 
