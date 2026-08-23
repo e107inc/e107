@@ -397,7 +397,9 @@ e107::getLanguage()->bcDefs($bcDefs);
 					return '';
 				}
 
-				return $tp->parseTemplate($LOGIN_MENU_STATS, true, $this);
+				$ret = $tp->parseTemplate($LOGIN_MENU_STATS, true, $this);
+
+				return trim($ret) === '' ? '' : $ret;
 			}
 
 			function sc_lm_new_news($parm='')
