@@ -1998,6 +1998,11 @@ class themeHandler
 				{
 					if(!empty($data['multilan']))
 					{
+						if(!isset($values[$field]) || !is_array($values[$field]))
+						{
+							$values[$field] = array();
+						}
+
 						$values[$field][e_LANGUAGE] = isset($_POST[$field][e_LANGUAGE]) ? $_POST[$field][e_LANGUAGE] : '';
 					} else {
 						$values[$field] = isset($_POST[$field]) ? $_POST[$field] : '';
