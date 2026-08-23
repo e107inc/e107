@@ -386,6 +386,58 @@ class ContactFormCest
 	}
 
 	/**
+	 * A plugin may answer the render seams with markup of its own, and core
+	 * cannot tell what that markup is. Asking whether the form already carries
+	 * a CAPTCHA by looking for core's own field name therefore always said no,
+	 * and put a second copy of the plugin's widget on the page.
+	 */
+	public function anOverriddenCaptchaIsNotRenderedTwice(AcceptanceTester $I)
+	{
+		$I->wantTo('leave a form alone when a plugin has already put its CAPTCHA on it');
+
+		$out = $this->probe($I, 'act=overridden');
+
+		preg_match('/WIDGETS=(\d+)/', $out, $m);
+
+		$I->assertSame('2', isset($m[1]) ? $m[1] : $out,
+			'the template asks for the image and the input, and nothing may append a third and a fourth');
+	}
+
+	/**
+	 * The contact menu ships a template with no CAPTCHA in it, so it depends on
+	 * the block being appended. A page that renders the form first must not
+	 * spend that on the form and leave the menu unsubmittable.
+	 */
+	public function theMenuStillCarriesACaptchaAfterTheFormHasRendered(AcceptanceTester $I)
+	{
+		$I->wantTo('give every form on the page its own CAPTCHA');
+
+		$menu = $this->probe($I, 'act=formthenmenu');
+
+		$I->assertNotFalse(strpos($menu, "name='code_verify'"),
+			'the contact menu must carry the CAPTCHA answer field its handler requires');
+		$I->assertNotFalse(strpos($menu, "name='rand_num'"),
+			'the contact menu must carry the CAPTCHA token its handler requires');
+	}
+
+	/**
+	 * The block appended to one form must not count as the next form's CAPTCHA.
+	 * Two contact menus on one page are two forms, and each has to be
+	 * submittable on its own.
+	 */
+	public function eachAppendedCaptchaIsCountedOnlyForItsOwnForm(AcceptanceTester $I)
+	{
+		$I->wantTo('append a CAPTCHA to every form on the page that needs one');
+
+		$out = $this->probe($I, 'act=menutwice');
+
+		preg_match('/TOKENS=(\d+)/', $out, $m);
+
+		$I->assertSame('2', isset($m[1]) ? $m[1] : $out,
+			'two contact menus are two forms and both need their own CAPTCHA');
+	}
+
+	/**
 	 * The document a visitor is served has to be enough on its own: every other
 	 * test here mints its CAPTCHA out of the application, so none of them would
 	 * notice a form that stopped rendering one.
@@ -508,6 +560,31 @@ header('Content-Type: text/plain');
 e107::getDb()->delete('online');
 e107::getDb()->delete('banlist', 'banlist_bantype IN (2, -2)');
 
+class e107TestsP6Captcha
+{
+	public static function render(\$form = null)
+	{
+		return '<div class="p6-widget"></div>';
+	}
+}
+
+class e107TestsP6Probe
+{
+	/**
+	 * The contact form, rendered the way contact.php renders it.
+	 *
+	 * @return string
+	 */
+	public static function contactForm()
+	{
+		\$sc = e107::getScBatch('contact');
+		\$sc->wrapper('contact/form');
+
+		return \$sc->withImagecode(
+			e107::getParser()->parseTemplate(e107::getCoreTemplate('contact', 'form'), true, \$sc));
+	}
+}
+
 \$act = isset(\$_GET['act']) ? \$_GET['act'] : '';
 \$config = e107::getConfig('core');
 \$logFile = e_LOG.'mailoutlog.log';
@@ -553,6 +630,32 @@ switch(\$act)
 
 	case 'menu':
 		// The bundled contact menu, rendered the way the menu system renders it.
+		ob_start();
+		require(e_PLUGIN.'contact/contact_menu.php');
+		\$menu = ob_get_clean();
+		echo "PROBE_OK\n".\$menu;
+		break;
+
+	case 'overridden':
+		// What a CAPTCHA plugin does: both render seams answered by its own
+		// widget, and no code_verify field anywhere in what it emits.
+		e107::getOverride()->replace('secure_image::r_image', 'e107TestsP6Captcha::render');
+		e107::getOverride()->replace('secure_image::renderInput', 'e107TestsP6Captcha::render');
+		echo "PROBE_OK\n";
+		echo "WIDGETS=".substr_count(e107TestsP6Probe::contactForm(), 'p6-widget')."\n";
+		break;
+
+	case 'menutwice':
+		ob_start();
+		require(e_PLUGIN.'contact/contact_menu.php');
+		require(e_PLUGIN.'contact/contact_menu.php');
+		\$menus = ob_get_clean();
+		echo "PROBE_OK\n";
+		echo "TOKENS=".substr_count(\$menus, "name='rand_num'")."\n";
+		break;
+
+	case 'formthenmenu':
+		e107TestsP6Probe::contactForm();
 		ob_start();
 		require(e_PLUGIN.'contact/contact_menu.php');
 		\$menu = ob_get_clean();
