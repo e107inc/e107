@@ -28,5 +28,6 @@ define("LANUPLOAD_16", "Unknown Error");
 define("LANUPLOAD_17", "Invalid name for uploaded file");
 define("LANUPLOAD_18", "The uploaded file exceeds allowable limits.");
 define("LANUPLOAD_19", "Too many files uploaded - excess deleted.");
+define("LANUPLOAD_REFUSED_TOKEN_MISSING", "Nothing was uploaded, because the request carried no security token. Upload from the Media Manager rather than from a bookmark or a link on another site.");
 
 

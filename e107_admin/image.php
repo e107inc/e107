@@ -1466,8 +1466,10 @@ class media_admin_ui extends e_admin_ui
 			$maxFileSize = '20M';
 		}
 
+		$token = defined('e_TOKEN') ? '&amp;e-token='.e_TOKEN : '';
+
 		$text = '<h4>' .IMALAN_145. '</h4>';
-		$text .= '<div id="uploader" data-max-size="'.str_replace('M','mb',$maxFileSize).'" rel="'.e_JS.'plupload/upload.php?for='.$this->getQuery('for').'&path='.$this->getQuery('path').'">
+		$text .= '<div id="uploader" data-max-size="'.str_replace('M','mb',$maxFileSize).'" rel="'.e_JS.'plupload/upload.php?for='.$this->getQuery('for').'&amp;path='.$this->getQuery('path').$token.'">
 	        <p>'.IMALAN_146.'</p>
 		</div>';
 	    $text .= '<hr />';
