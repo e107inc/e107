@@ -185,13 +185,16 @@ project_label() {
         app-path) col=5 ;;
         *) err "unknown label: $2" ;;
     esac
-    # awk runs END even after `exit`, hence the found flag.
+    # Reads to EOF; exiting on the match would SIGPIPE snapshot, and pipefail reports that.
     snapshot | awk -F'\t' -v p="$1" -v c="$col" '
         $1 == p && $c != "" {
-            if ($7 == "web") { print $c; found = 1; exit }
-            if (fallback == "") fallback = $c
+            if ($7 == "web") { if (!found) { web = $c; found = 1 } }
+            else if (fallback == "") fallback = $c
         }
-        END { if (!found && fallback != "") print fallback }
+        END {
+            if (found) print web
+            else if (fallback != "") print fallback
+        }
     '
 }
 
