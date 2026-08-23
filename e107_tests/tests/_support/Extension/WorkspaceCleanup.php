@@ -106,6 +106,7 @@ class WorkspaceCleanup extends Extension
 		'e107_tests_signup_csrf.php',          // @see SignupTestMailCsrfCest
 		'e107_tests_upload_csrf.php',          // @see MediaUploadCsrfCest
 		'e107_tests_lan_fallback.php',        // @see CsrfRefusalLanFallbackCest
+		'e107_tests_security_level.php',      // @see SecurityLevelZeroCsrfCest
 	];
 
 	/** Files a test moves aside for one test method, as parked name to the name it belongs back at. */
