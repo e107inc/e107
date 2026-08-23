@@ -90,6 +90,15 @@ class forum_front
 			switch($_GET['f'])
 			{
 				case 'mfar':
+					if(defined('e_TOKEN') && empty($_GET['e-token']))
+					{
+						e107::getMessage()->addError(defset('LAN_FORUM_REFUSED_TOKEN_MISSING', 'Invalid or missing security token.'));
+						include_once(HEADERF);
+						e107::getRender()->tablerender(LAN_PLUGIN_FORUM_NAME, e107::getMessage()->render(), 'forum');
+						include_once(FOOTERF);
+						exit;
+					}
+
 					$forum->forumMarkAsRead($id);
 					header('location:' . e_SELF);
 					exit;

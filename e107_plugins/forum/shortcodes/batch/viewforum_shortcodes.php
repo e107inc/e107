@@ -484,7 +484,7 @@
 			--*/
 
 		//	$url = e107::getUrl()->create('forum/forum/mfar', 'id=' . $this->var['forum_id']);
-			$url = e107::url('forum', 'markread', $this->var);
+			$url = e107::url('forum', 'markread', $this->var, array('query' => array('e-token' => defset('e_TOKEN'))));
 			return (USER && is_array($newflag_list) && in_array($this->var['forum_id'], $newflag_list)) ? "<a href='" . $url . "'>" . IMAGE_new . '</a>' : IMAGE_nonew;
 
 		}
