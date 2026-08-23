@@ -621,6 +621,68 @@
 		}*/
 
 
+		public function testDiagnosticsSilencedWithTheAtOperatorAreNotCollected()
+		{
+			$level = error_reporting();
+			$handler = new error_handler();
+			set_error_handler(array($handler, 'handle_error'));
+
+			@filemtime(e_BASE . 'class2Test-no-such-cache-file.php');
+
+			restore_error_handler();
+			error_reporting($level);
+
+			self::assertSame(array(), $handler->errors);
+		}
+
+
+		public function testDiagnosticsRaisedWithoutTheAtOperatorAreStillCollected()
+		{
+			$level = error_reporting();
+			$handler = new error_handler();
+			set_error_handler(array($handler, 'handle_error'));
+
+			filemtime(e_BASE . 'class2Test-no-such-cache-file.php');
+
+			restore_error_handler();
+			error_reporting($level);
+
+			self::assertCount(1, $handler->errors);
+		}
+
+
+		public function testTheAtOperatorIsRecognisedBelowFullReporting()
+		{
+			$level = error_reporting();
+			$handler = new error_handler();
+			set_error_handler(array($handler, 'handle_error'));
+			error_reporting(E_ALL & ~E_NOTICE);
+
+			@filemtime(e_BASE . 'class2Test-no-such-cache-file.php');
+
+			restore_error_handler();
+			error_reporting($level);
+
+			self::assertSame(array(), $handler->errors);
+		}
+
+
+		public function testAnUnsilencedDiagnosticSurvivesANarrowedReportingLevel()
+		{
+			$level = error_reporting();
+			$handler = new error_handler();
+			set_error_handler(array($handler, 'handle_error'));
+			error_reporting(E_ERROR | E_PARSE);
+
+			filemtime(e_BASE . 'class2Test-no-such-cache-file.php');
+
+			restore_error_handler();
+			error_reporting($level);
+
+			self::assertCount(1, $handler->errors);
+		}
+
+
 		private function echoMem()
 		{
 
