@@ -1580,6 +1580,9 @@ class e_user_provider
 	 * OpenID adapters store nothing at all before they redirect, see
 	 * {@see \Hybridauth\Adapter\OpenID::authenticateBegin()}, so their two legs
 	 * are indistinguishable from here and neither of them is asked for a token.
+	 * What remains forgeable on those five is refused by the browser's own
+	 * account of the request instead, see
+	 * {@see core_system_xup_controller::askedForByAnotherSiteInTheBackground()}.
 	 *
 	 * @return bool
 	 */
