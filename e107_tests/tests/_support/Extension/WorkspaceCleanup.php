@@ -105,6 +105,7 @@ class WorkspaceCleanup extends Extension
 		'e107_tests_encoding_tinymce_canary.xml',
 		'e107_tests_captcha_probe.php',        // @see CaptchaLifecycleCest
 		'e107_tests_redirect_probe.php',           // @see Helper\RedirectFixture
+		'e107_tests_no_token_probe.php',       // @see ForcedLogoutCsrfCest
 		'e107_tests_menu_prefs_probe.php',        // @see Helper\MenuPrefFixture
 		'e107_tests_online_memberlist_probe.php',  // @see OnlineMemberListLinkCest
 		'e107_tests_chatbox_request_self_probe.php', // @see ChatboxRequestSelfCest
