@@ -11,25 +11,24 @@
  */
 ob_implicit_flush(true);
 
-if(!empty($_GET['action']) && $_GET['action'] === 'progress' && !empty($_GET['scan']))
-{
-    $content = file_inspector::readScanProgress($_GET['scan']);
-    echo $content;
-    exit;
-}
-
-
 require_once(__DIR__.'/../class2.php');
-
-
-
-e107::coreLan('fileinspector', true);
 
 if(!getperms('Y'))
 {
 	e107::redirect('admin');
 	exit;
 }
+
+if(varset($_GET['action']) === 'progress')
+{
+	$scanProgress = new e_file_inspector_progress(e107::getUser()->getId());
+
+	header('Content-type: text/plain; charset=utf-8', true);
+	echo $scanProgress->percentComplete();
+	exit;
+}
+
+e107::coreLan('fileinspector', true);
 
 set_time_limit(18000);
 $e_sub_cat = 'fileinspector';
@@ -265,7 +264,6 @@ require_once(e_ADMIN."footer.php");
 
 
 class file_inspector {
-    const SCAN_ID_PREFIX = 'e107-file-inspector-scan-';
 
     /** @var e_file_inspector */
 	private $coreImage;
@@ -279,7 +277,9 @@ class file_inspector {
 	var $results = 0;
 	private $totalFiles = 0;
 	private $progress_units = 0;
-	private $progressPercentage = 0;
+	private $progressPercentage = -1;
+	/** @var e_file_inspector_progress */
+	private $progress;
 	private $langs = array();
 	private $lang_short = array();
 	private $iconTag = array();
@@ -319,6 +319,7 @@ class file_inspector {
 		$langs  = $lng->installed();
 
         $this->setOptions($_GET);
+		$this->progress = new e_file_inspector_progress(e107::getUser()->getId());
 
 		$lang_short = array();
 
@@ -401,8 +402,6 @@ class file_inspector {
 			$_POST['missing'] = 0;
 			$_POST['integrity'] = 0;
 		}
-
-		self::pruneOldProgressFiles();
 	}
 
 
@@ -1098,7 +1097,6 @@ class file_inspector {
         echo $text;
 
         $this->sendProgress($this->totalFiles);
-        self::pruneOldProgressFiles();
 	}
 
     function checksum($filename)
@@ -1136,35 +1134,31 @@ class file_inspector {
 
 	function sendProgress($increment=0)
 	{
-		if(empty($this->options['scan']))
-        {
-            return null;
-        }
+		$this->progress_units = $this->progress_units + $increment;
 
-        $this->progress_units = $this->progress_units + $increment;
-
-		$rand = (int)  $this->progress_units;
 		$total = (int) $this->totalFiles;
 
-		$inc = round(($rand / $total) * 100);
-
-		if($inc >= 100)
+		if($total < 1)
 		{
-			$inc = 100;
+			return null;
 		}
 
-        if( $this->progressPercentage === $inc)
-        {
-            return null;
-        }
+		$inc = (int) round(($this->progress_units / $total) * 100);
 
-        $this->progressPercentage = $inc;
+		if($inc > e_file_inspector_progress::COMPLETE)
+		{
+			$inc = e_file_inspector_progress::COMPLETE;
+		}
 
-        self::writeScanProgress($this->options['scan'], $this->progressPercentage);
+		if($this->progressPercentage === $inc)
+		{
+			return null;
+		}
+
+		$this->progressPercentage = $inc;
+		$this->progress->record($inc);
 
 		return null;
-
-
 	}
 
 
@@ -1279,44 +1273,6 @@ i.fa-folder-open-o, i.fa-times-circle-o { cursor:pointer }
         return $oldVersion;
     }
 
-    private static function writeScanProgress($scanId, $progress)
-    {
-        self::exitOnEvilScanId($scanId);
-        $tmpDir = sys_get_temp_dir();
-        $progressPath = $tmpDir . "/" . self::SCAN_ID_PREFIX . $scanId;
-        if ($progress >= 100) unlink($progressPath);
-        else file_put_contents($progressPath, $progress);
-    }
-
-    public static function readScanProgress($scanId)
-    {
-        self::exitOnEvilScanId($scanId);
-        $tmpDir = sys_get_temp_dir();
-        $progressPath = $tmpDir . "/" . self::SCAN_ID_PREFIX . $scanId;
-        $result = trim(@file_get_contents($progressPath));
-        if (!strlen($result)) $result = '100';
-        return $result;
-    }
-
-    private static function exitOnEvilScanId($scanId)
-    {
-        if (!preg_match('/^[0-9A-F]+$/i', $scanId)) exit(1);
-    }
-
-    private static function pruneOldProgressFiles()
-    {
-        $tmpDir = sys_get_temp_dir();
-        $i = new DirectoryIterator($tmpDir);
-        foreach ($i as $fileInfo)
-        {
-            $candidateFileName = $fileInfo->getFilename();
-            if (substr($candidateFileName, 0, strlen(self::SCAN_ID_PREFIX)) !== self::SCAN_ID_PREFIX)
-                continue;
-
-            if ($fileInfo->isFile() && time() - $fileInfo->getMTime() > 300)
-                unlink($fileInfo->getRealPath());
-        }
-    }
 }
 /*
 function fileinspector_adminmenu() //FIXME - has problems when navigation is on the LEFT instead of the right. 

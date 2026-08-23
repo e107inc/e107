@@ -203,6 +203,7 @@ class e107
 		'e_emote'                        => '{e_HANDLER}e_emote_class.php',
 		'e_file'                         => '{e_HANDLER}file_class.php',
 		'e_file_inspector_json_phar'     => '{e_HANDLER}e_file_inspector_json_phar.php',
+		'e_file_inspector_progress'      => '{e_HANDLER}e_file_inspector.php',
 		'e_form'                         => '{e_HANDLER}form_handler.php',
 		'e_jshelper'                     => '{e_HANDLER}js_helper.php',
 		'e_media'                        => '{e_HANDLER}media_class.php',
