@@ -1026,7 +1026,6 @@ class mailout_main_ui extends e_admin_ui
 		}
 
 		require_once(e_HANDLER.'vendor/autoload.php');
-	//	require_once(e_HANDLER. 'phpmailer/PHPMailerAutoload.php');
 
 		/** @var SMTP $smtp */
 		$smtp = new SMTP;
@@ -1038,14 +1037,6 @@ class mailout_main_ui extends e_admin_ui
 		$username = $pref['smtp_username'];
 		$pwd     = $pref['smtp_password'];
 		$port = ($pref['smtp_port'] != 465) ? $pref['smtp_port'] : 25;
-//		$port = vartrue($pref['smtp_port'], 25);
-
-	//	var_dump($pref['smtp_port']);
-
-	//	return null;
-
-	//	var_dump($pref['smtp_password']);
-	//	print_a($pref['smtp_password']);
 
 		ob_start();
 
