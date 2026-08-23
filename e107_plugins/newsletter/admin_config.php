@@ -29,7 +29,8 @@ $mes = e107::getMessage();
 
 if (e_QUERY) 
 {
-	list($action, $id, $key) = explode('.', e_QUERY);
+	list($nlRoute) = explode('&', e_QUERY, 2);
+	list($action, $id, $key) = explode('.', $nlRoute);
 	$key = intval($key);
 	$id = intval($id);
 }
@@ -54,7 +55,14 @@ else
 			$nl -> view_subscribers($id);
 			break;
 		case  'remove' :	// Remove subscriber
-			$nl -> remove_subscribers($id,$key);
+			if(defined('e_TOKEN') && empty($_GET['e-token']))
+			{
+				$mes->addError(defset('NLLAN_REFUSED_TOKEN_MISSING', 'Invalid or missing security token.'));
+			}
+			else
+			{
+				$nl -> remove_subscribers($id,$key);
+			}
 			$nl -> view_subscribers($id);
 			break;
 		default:
@@ -698,7 +706,7 @@ class newsletter
 								<td>".$val."</td>
 								<td>".$userlink."</td>
 								<td>".$nl_row['user_email']."</td>
-								<td><a href='".e_SELF."?remove.{$p_id}.{$val}'>".ADMIN_DELETE_ICON."</a>".(($nl_row['user_ban'] > 0) ? NLLAN_62 : "")."</td>
+								<td><a href='".e_SELF."?remove.{$p_id}.{$val}&amp;e-token=".defset('e_TOKEN')."'>".ADMIN_DELETE_ICON."</a>".(($nl_row['user_ban'] > 0) ? NLLAN_62 : "")."</td>
 							</tr>";
 							$_last_subscriber = $val;
 						}
