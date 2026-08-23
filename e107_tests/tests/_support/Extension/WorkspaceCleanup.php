@@ -61,6 +61,7 @@ class WorkspaceCleanup extends Extension
 		'e107_plugins/nofollow',      // @see pluginsTest::testRemotePlugin
 		'e107_plugins/temptest',      // @see e_pluginTest::testIgnoringOfInvalidPlugin
 		'e107_plugins/temptest5709',  // @see e107pluginTest
+		'e107_plugins/temptest6024',  // @see SingleEntryErrorPageCest
 		'e107_tests_forum_fixture_probe.php', // @see Helper\ForumFixture
 		'e107_tests_forum_canary.txt',        // @see ForumAttachmentCest
 		'e107_tests_pm_fixture_probe.php',    // @see PmAttachmentCest
