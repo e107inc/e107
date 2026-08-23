@@ -1120,7 +1120,8 @@ class mailout_main_ui extends e_admin_ui
 				}
 				else
 				{
-					$msg = e107::getParser()->lanVars(LAN_MAILOUT_271,array('x'=>$username, 'y'=>$pwd), true);
+					$hidden = '[credentials hidden]';
+					$msg = e107::getParser()->lanVars(LAN_MAILOUT_271,array('x'=>$hidden, 'y'=>$hidden), true);
 					$mes->addError($msg . $smtp->getError()['error']);
 				}
 			}
