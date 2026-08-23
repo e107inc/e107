@@ -28,5 +28,7 @@ define("RATELAN_GOOD","Good");
 define("RATELAN_VERYGOOD","Very Good");
 define("RATELAN_EXCELLENT","Excellent");
 
+define("RATELAN_REFUSED_TOKEN_MISSING", "Your vote was not counted, because the link carried no security token. Vote from the rating box on the page itself rather than from a bookmark or a link on another site.");
+
 
 
