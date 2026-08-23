@@ -121,6 +121,12 @@ if(e_AJAX_REQUEST && getperms('0') &&  varset($_GET['mode']) == 'addons' && ($_G
 
 if(e_AJAX_REQUEST &&  ADMIN && varset($_GET['mode']) == 'core' && ($_GET['type'] == 'feed'))
 {
+	if($bootTokenRefused)
+	{
+		header('HTTP/1.1 403 Forbidden', true, 403);
+		echo $bootTokenMessage;
+		exit;
+	}
 
 	$limit = 3;
 
