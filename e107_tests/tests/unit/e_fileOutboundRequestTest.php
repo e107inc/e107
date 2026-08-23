@@ -570,6 +570,113 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * PHP's own resolver and the operating system's do not always agree.
+	 * dns_get_record() builds its own queries instead of calling
+	 * getaddrinfo(), and on Windows it fails per host and per call, so a name
+	 * cURL reaches without trouble was being refused as unsafe.
+	 */
+	public function testResolveHostnameFallsBackToTheSystemResolver()
+	{
+		$fl = new E107P3SplitResolverFile();
+
+		// Positive control: the first resolver answers and the second is not consulted.
+		$fl->dnsRecords = array(self::PUBLIC_IP);
+		$fl->systemRecords = array('127.0.0.1');
+		$target = $fl->resolveOutboundTarget('http://p3-split.test/');
+		self::assertIsArray($target);
+		self::assertSame(array(self::PUBLIC_IP), $target['addresses'],
+			'The system resolver is a fallback, not a second source to merge in.');
+
+		$fl->dnsRecords = array();
+		$fl->systemRecords = array('8.8.8.8');
+		$target = $fl->resolveOutboundTarget('http://p3-split.test/');
+		self::assertIsArray($target);
+		self::assertSame(array('8.8.8.8'), $target['addresses']);
+	}
+
+
+	/**
+	 * The fallback answer is put to the same address test as any other, so a
+	 * resolver that says 127.0.0.1 is refused exactly as before, and a name
+	 * neither resolver can see stays refused.
+	 */
+	public function testTheSystemResolverAnswerFacesTheSameAddressTest()
+	{
+		$fl = new E107P3SplitResolverFile();
+		$fl->dnsRecords = array();
+
+		$fl->systemRecords = array('127.0.0.1');
+		self::assertFalse($fl->resolveOutboundTarget('http://p3-split.test/'));
+
+		$fl->systemRecords = array('169.254.169.254');
+		self::assertFalse($fl->resolveOutboundTarget('http://p3-split.test/'));
+
+		$fl->systemRecords = array(self::PUBLIC_IP, '10.0.0.1');
+		self::assertFalse($fl->resolveOutboundTarget('http://p3-split.test/'),
+			'One private answer still poisons the whole name.');
+
+		$fl->systemRecords = array('not-an-address');
+		self::assertFalse($fl->resolveOutboundTarget('http://p3-split.test/'));
+
+		$fl->systemRecords = array();
+		self::assertFalse($fl->resolveOutboundTarget('http://p3-split.test/'),
+			'Neither resolver answering is still a refusal.');
+
+		// Positive control, so the refusals above are the address test talking
+		// and not a fallback that never ran.
+		$fl->systemRecords = array(self::PUBLIC_IP);
+		self::assertIsArray($fl->resolveOutboundTarget('http://p3-split.test/'));
+	}
+
+
+	/**
+	 * The C library answers a host that spells an address in decimal, octal or
+	 * hex out of inet_aton, without asking any name service, so the fallback
+	 * would otherwise accept spellings this policy has always refused.
+	 */
+	public function testTheSystemResolverIsAskedAboutNamesOnly()
+	{
+		$fl = new E107P3SplitResolverFile();
+		$fl->dnsRecords = array();
+
+		self::assertFalse($fl->resolveOutboundTarget('http://16843009/'),
+			'1.1.1.1 in decimal is an address literal, not a name.');
+		self::assertFalse($fl->resolveOutboundTarget('http://1.1/'));
+		self::assertFalse($fl->resolveOutboundTarget('http://0x01010101/'));
+		self::assertFalse($fl->resolveOutboundTarget('http://2130706433/'));
+		self::assertFalse($fl->resolveOutboundTarget('http://0177.0.0.1/'));
+
+		self::assertSame(array(), $fl->addressesFor('16843009'));
+		self::assertSame(array(), $fl->addressesFor('0x01010101'));
+	}
+
+
+	/**
+	 * The fallback runs the real system resolver, on the one name every host
+	 * this suite runs on resolves without a name server: gethostbyname() would
+	 * answer a failed lookup with the name it was handed, gethostbynamel()
+	 * answers false.
+	 */
+	public function testTheSystemResolverHalfAnswersWithAddressesOnly()
+	{
+		$fl = new E107P3SplitResolverFile();
+		$fl->dnsRecords = array();
+
+		$addresses = $fl->addressesFor('localhost');
+
+		self::assertNotSame(array(), $addresses,
+			'localhost resolves through the system resolver wherever this suite runs.');
+		self::assertFalse(in_array('localhost', $addresses, true),
+			'A name is not an address.');
+
+		foreach($addresses as $ip)
+		{
+			self::assertNotFalse(filter_var($ip, FILTER_VALIDATE_IP), $ip);
+		}
+	}
+
+
+	/**
 	 * The per-hop predicate has to refuse everything isUrlSafe() refuses,
 	 * because it is what isUrlSafe() now answers from.
 	 */
