@@ -241,7 +241,10 @@ if ( ! isset($LOGIN_MENU_STATS))
     ';
 }
 
-$LM_STATITEM_SEPARATOR = '<br />';
+if ( ! isset($LM_STATITEM_SEPARATOR))
+{
+	$LM_STATITEM_SEPARATOR = '<br />';
+}
 if (!isset($LOGIN_MENU_STATITEM))
 {
 
