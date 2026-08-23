@@ -1526,7 +1526,12 @@ class mailout_main_ui extends e_admin_ui
 		$temp['bulkmailer']     = $tp->filter($_POST['bulkmailer']);
 		$temp['smtp_server'] 	= $tp->toDB(trim($_POST['smtp_server']));
 		$temp['smtp_username'] 	= $tp->toDB(trim($_POST['smtp_username']));
-		$temp['smtp_password'] 	= $tp->toDB(trim($_POST['smtp_password']));
+
+		if(!mailoutAdminClass::smtpPasswordWasLeftAlone(varset($_POST['smtp_password'])))
+		{
+			$temp['smtp_password'] = $tp->toDB(trim($_POST['smtp_password']));
+		}
+
 		$temp['smtp_port'] 	    = intval($_POST['smtp_port']);
 	
 		$smtp_opts = array();
