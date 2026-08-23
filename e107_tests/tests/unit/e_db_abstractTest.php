@@ -1575,11 +1575,45 @@ abstract class e_db_abstractTest extends \Test\Unit
 
 			}
 	*/
+	/**
+	 * Both backends answer with the MySQL error number. The PDO driver used to
+	 * store PDOException::getCode(), which is the SQLSTATE, so a caller
+	 * comparing against a MySQL number never matched on a PDO install.
+	 *
+	 * @see https://github.com/e107inc/e107/issues/5993
+	 */
 	public function testGetLastErrorNumber()
 	{
 		$this->db->select('doesnt_exists');
 		$result = $this->db->getLastErrorNumber();
-		$this->assertEquals("42S02", $result);
+		$this->assertSame(1146, $result);
+	}
+
+	/**
+	 * A duplicate-key insert is the number callers actually branch on, as
+	 * featurebox's admin_config.php does with 1062 to explain which layout is
+	 * already taken. On PDO that comparison saw the SQLSTATE '23000'.
+	 *
+	 * @see https://github.com/e107inc/e107/issues/5993
+	 */
+	public function testDuplicateKeyReportsTheMysqlErrorNumber()
+	{
+		$table = MPREFIX.'test_duplicate_key';
+
+		$this->db->dropTable('test_duplicate_key');
+
+		$this->assertNotFalse($this->db->execute('CREATE TABLE `'.$table.'` (`id` INT NOT NULL, PRIMARY KEY (`id`))'),
+			'precondition: the table has to be created, or the insert below fails for the wrong reason');
+
+		$this->assertSame(1, $this->db->execute('INSERT INTO `'.$table.'` (`id`) VALUES (1)'),
+			'precondition: the first insert has to land');
+
+		$this->assertFalse($this->db->execute('INSERT INTO `'.$table.'` (`id`) VALUES (1)'),
+			'a duplicate key has to come back as a failed query');
+		$this->assertSame(1062, $this->db->getLastErrorNumber(),
+			'a duplicate key has to report ER_DUP_ENTRY, not the SQLSTATE');
+
+		$this->db->dropTable('test_duplicate_key');
 	}
 
 	public function testGetLastErrorText()
