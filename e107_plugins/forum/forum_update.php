@@ -1368,7 +1368,7 @@ class forumUpgrade
 		$this->logf = e_LOG . 'forum_upgrade.log';
 		$this->getUpdateInfo();
 
-		if(empty($updateInfo))
+		if(empty($this->updateInfo))
 		{
 			$this->removeDeprecatedFiles();
 		}
