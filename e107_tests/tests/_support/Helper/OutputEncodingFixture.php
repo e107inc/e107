@@ -329,6 +329,7 @@ switch($p8act)
 
 	case 'adminfeed':
 	case 'addonsfeed':
+		$_GET['e-token'] = defset('e_TOKEN');
 		require_once(e_ADMIN.'boot.php');
 		// boot.php exits inside each feed branch, so reaching here means the
 		// branch was never entered.
