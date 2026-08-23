@@ -83,6 +83,42 @@ class redirectionTest extends \Codeception\Test\Unit
 			}*/
 
 
+	/**
+	 * A logout link now carries an e-token, so the query string it arrives on is
+	 * no longer the bare word the exception list held.
+	 */
+	public function testSetPreviousUrlRefusesATokenisedLogout()
+	{
+		$stored = array();
+		$recorder = function($name, $value) use (&$stored) { $stored[$name] = $value; };
+
+		$rd = $this->make('redirection', array(
+			'query_exceptions' => array('logout'),
+			'setCookie' => $recorder,
+		));
+
+		$serverBackup = $_SERVER;
+
+		try
+		{
+			$_SERVER['QUERY_STRING'] = 'logout';
+			$rd->setPreviousUrl();
+			self::assertSame(array(), $stored, 'a bare logout must not be stored as the previous URL');
+
+			$_SERVER['QUERY_STRING'] = 'logout&e-token=abc123';
+			$rd->setPreviousUrl();
+			self::assertSame(array(), $stored, 'a tokenised logout must not be stored either');
+
+			$_SERVER['QUERY_STRING'] = 'logoutlist';
+			$rd->setPreviousUrl();
+			self::assertArrayHasKey('_previousUrl', $stored, 'a query that merely begins with the word is not the exception');
+		}
+		finally
+		{
+			$_SERVER = $serverBackup;
+		}
+	}
+
 	public function testRedirectHost()
 	{
 
