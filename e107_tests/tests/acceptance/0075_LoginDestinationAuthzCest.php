@@ -79,8 +79,8 @@ class LoginDestinationAuthzCest
 		$I->wantTo('Not hand a logged-out administrator\'s destination to the next member who logs in');
 
 		$I->loginAsAdmin();
-		$I->amOnPage($this->adminPage);
-		$I->amOnPage($this->adminPage . '?logout');
+		$token = $I->grabFreshAdminToken($this->adminPage);
+		$I->amOnPage($this->adminPage . '?logout&e-token=' . $token);
 
 		$I->seeElement('input', array('name' => 'authname'));
 

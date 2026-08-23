@@ -437,6 +437,23 @@ class redirection
 	}
 
 	/**
+	 * @param string $query query string as the request carried it
+	 * @return bool whether an excepted query names it, with or without parameters of its own
+	 */
+	protected function queryIsExcepted($query)
+	{
+		foreach($this->query_exceptions as $exception)
+		{
+			if($query === $exception || strpos($query, $exception.'&') === 0)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Decide whether the current (or a given) request is a sensible page to send a
 	 * user back to after they log in.
 	 *
@@ -504,7 +521,7 @@ class redirection
 		{
 			return false;
 		}
-		if(isset($_SERVER['QUERY_STRING']) && in_array($_SERVER['QUERY_STRING'], $this->query_exceptions))
+		if($this->queryIsExcepted(isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : ''))
 		{
 			return false;
 		}

@@ -61,4 +61,5 @@ return [
     'LAN_USET_54' => "Confirmation Email Sent",
     'LAN_USET_55' => "Please click the following link to complete the deletion of your account.",
     'LAN_USET_56' => "Your account has been successfully deleted.",
+    'LAN_USET_DELETE_LINK_INVALID' => "Your account has not been deleted, because that confirmation link is no longer valid. Ask for removal again below to receive a new one.",
 ];

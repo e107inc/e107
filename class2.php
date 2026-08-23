@@ -808,7 +808,7 @@ $e107 = e107::getInstance();		// Is this needed now?
 $dbg->logTime('IP Handler and Ban Check');
 e107::getIPHandler()->ban();
 
-if(USER && !isset($_E107['no_forceuserupdate']) && $_SERVER['QUERY_STRING'] !== 'logout' && varset($pref['force_userupdate']))
+if(USER && !isset($_E107['no_forceuserupdate']) && !logout_requested() && varset($pref['force_userupdate']))
 {
 	if(isset($currentUser) && force_userupdate($currentUser))
 	{
@@ -852,7 +852,11 @@ if (isset($_POST['userlogin']) || isset($_POST['userlogin_x']))
 
 
 // e_QUERY not defined in single entry mod
-if (($_SERVER['QUERY_STRING'] === 'logout'))
+if (logout_refused())
+{
+	e107::getMessage()->addError(defset('LAN_LOGOUT_REFUSED_TOKEN_MISSING', 'You have not been logged out, because that link carried no security token. Use the logout link in this site\'s own menu rather than a bookmark or a link on another site.'));
+}
+elseif (logout_requested())
 {
 	if (USER)
 	{
@@ -1969,6 +1973,26 @@ function include_lan($path, $force = false)
 
 
 /**
+ * @return boolean true when the query string asks core to log the current user out
+ */
+function logout_requested()
+{
+	$query = isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '';
+
+	return ($query === 'logout' || strpos($query, 'logout&') === 0);
+}
+
+
+/**
+ * @return boolean true when that logout arrived without the e-token core's own links carry
+ */
+function logout_refused()
+{
+	return (logout_requested() && defined('e_TOKEN') && empty($_GET['e-token']));
+}
+
+
+/**
  *	Check that all required user fields (including extended fields) are valid.
  *	@param array $currentUser - data for user
  *	@return boolean true if update required
@@ -2451,7 +2475,7 @@ class e_http_header
 		
 	// $this->setHeader("Cache-Control: must-revalidate", true); 
 		 
-		if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'GET' && $_SERVER['QUERY_STRING'] != 'logout' && $canCache && !deftrue('e_NOCACHE'))
+		if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'GET' && !logout_requested() && $canCache && !deftrue('e_NOCACHE'))
 		{
 			// header("Cache-Control: must-revalidate", true);	
 			if(e107::getPref('site_page_expires')) // TODO - allow per page

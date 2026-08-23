@@ -1078,7 +1078,7 @@ class users_admin_ui extends e_admin_ui
 			$user = e107::getUser();
 			
 			// TODO - lan
-			$mes->addSuccess('Successfully logged in as '.$sysuser->getName().' <a href="'.e_ADMIN_ABS.'users.php?mode=main&amp;action=logoutas">[logout]</a>')
+			$mes->addSuccess('Successfully logged in as '.$sysuser->getName().' <a href="'.e_ADMIN_ABS.'users.php?mode=main&amp;action=logoutas&amp;e-token='.defset('e_TOKEN').'">[logout]</a>')
 				->addSuccess('Please, <a href="'.SITEURL.'" rel="external">Leave Admin</a> to browse the system as this user. Use &quot;Logout&quot; option in Administration to end front-end session');
 			
 			$search = array('--UID--', '--NAME--', '--EMAIL--', '--ADMIN_UID--', '--ADMIN_NAME--', '--ADMIN_EMAIL--');
@@ -1097,10 +1097,22 @@ class users_admin_ui extends e_admin_ui
 	}
 
 	/**
-	 * Main admin logout as a system user trigger
+	 * Main admin logout as a system user trigger.
+	 *
+	 * Ending the impersonated session is a state change, so a GET has to carry
+	 * the e-token core's own links publish and {@see e_core_session::attest()}
+	 * decides whether it is the right one. The user list posts this action
+	 * instead, and a POST is policed by attest() already.
 	 */
 	public function LogoutasObserver()
 	{
+		if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] !== 'POST' && defined('e_TOKEN') && empty($_GET['e-token']))
+		{
+			e107::getMessage()->addError(defset('LAN_LOGOUT_REFUSED_TOKEN_MISSING', "You have not been logged out, because that link carried no security token. Use the logout link in this site's own menu rather than a bookmark or a link on another site."), 'default', true);
+			$this->redirect('list', 'main', true);
+			return;
+		}
+
 		$user = e107::getUser();
 		$sysuser = e107::getSystemUser($user->getSessionDataAs(), false);
 

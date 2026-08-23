@@ -315,12 +315,12 @@ e107::getLanguage()->bcDefs($bcDefs);
 			function sc_lm_logout($parm='')
 			{
 			$text = ($parm) ? $parm : LAN_LOGOUT;
-			return '<a class="login_menu_link logout" id="login_menu_link_logout" href="'.e_HTTP.'index.php?logout">'.$text.'</a>';
+			return '<a class="login_menu_link logout" id="login_menu_link_logout" href="'.e_HTTP.'index.php?logout&amp;e-token='.defset('e_TOKEN').'">'.$text.'</a>';
 			}
 
 			function sc_lm_logout_href($parm='')
 			{
-			return e_HTTP.'index.php?logout';
+			return e_HTTP.'index.php?logout&amp;e-token='.defset('e_TOKEN');
 			}
 
 			function sc_lm_external_links($parm='')

@@ -103,6 +103,7 @@ return [
     "LAN_PREVIOUS" => "Previous",
     "LAN_LOGIN" => "Login",
     "LAN_LOGOUT" => "Logout",
+    "LAN_LOGOUT_REFUSED_TOKEN_MISSING" => "You have not been logged out, because that link carried no security token. Use the logout link in this site's own menu rather than a bookmark or a link on another site.",
     "LAN_VERIFY" => "Verify",
     "LAN_SETTINGS" => "Settings",
     "LAN_PASSWORD" => "Password",

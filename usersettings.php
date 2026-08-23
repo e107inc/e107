@@ -399,9 +399,15 @@ class usersettings_front // Begin Usersettings rewrite.
 
 		if(!empty($_GET['del'])) // delete account via confirmation email link.
 		{
+			$deleted = $this->processUserDelete($_GET['del']);
 
-			echo $this->processUserDelete($_GET['del']);
-			//e107::getSession()->destroy();
+			if($deleted === false)
+			{
+				echo e107::getMessage()->addError(defset('LAN_USET_DELETE_LINK_INVALID', "Your account has not been deleted, because that confirmation link is no longer valid. Ask for removal again below to receive a new one."))->render();
+				return null;
+			}
+
+			echo $deleted;
 			e107::getUser()->logout();
 			return null;
 		}
