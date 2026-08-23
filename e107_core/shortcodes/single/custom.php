@@ -28,7 +28,7 @@ function custom_shortcode($parm)
 					$ret .= "<a class='loginc admin' href='".e_ADMIN."admin.php'>".LAN_LOGINMENU_11."</a> ".$sep.' ';
 				}
 				$ret .= ($custom_query[0] != 'login noprofile') ? "<a class='loginc profile' href='".e_BASE."user.php?id.".USERID."'>".LAN_LOGINMENU_13."</a>\n".$sep." ":"";
-				$ret .= "<a class='loginc usersettings' href='" . e_BASE . "usersettings.php'>".LAN_SETTINGS."</a> ".$sep." <a class='loginc logout' href='".e_BASE."index.php?logout'>".LAN_LOGOUT."</a> ".$sep."</span>";
+				$ret .= "<a class='loginc usersettings' href='" . e_BASE . "usersettings.php'>".LAN_SETTINGS."</a> ".$sep." <a class='loginc logout' href='".e_BASE."index.php?logout&amp;e-token=".defset('e_TOKEN')."'>".LAN_LOGOUT."</a> ".$sep."</span>";
 			}
 			else
 			{

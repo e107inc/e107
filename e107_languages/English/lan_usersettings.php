@@ -75,4 +75,5 @@ define("LAN_USET_53", "Account Removal Confirmation");
 define("LAN_USET_54", "Confirmation Email Sent");
 define("LAN_USET_55", "Please click the following link to complete the deletion of your account.");
 define("LAN_USET_56", "Your account has been successfully deleted.");
+define("LAN_USET_DELETE_LINK_INVALID", "Your account has not been deleted, because that confirmation link is no longer valid. Ask for removal again below to receive a new one.");
 

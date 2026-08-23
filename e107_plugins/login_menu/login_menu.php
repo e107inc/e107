@@ -49,7 +49,7 @@ else
 if (defined('CORRUPT_COOKIE') && CORRUPT_COOKIE == TRUE)
 {
 	$text = "<div class='core-sysmsg loginbox'>".LAN_LOGINMENU_7."<br /><br />
-	{$bullet} <a href='".SITEURL."index.php?logout'>".LAN_LOGOUT."</a></div>";
+	{$bullet} <a href='".SITEURL."index.php?logout&amp;e-token=".defset('e_TOKEN')."'>".LAN_LOGOUT."</a></div>";
 	$ns->tablerender(LAN_LOGINMENU_9, $text, 'login_error');
 }
     

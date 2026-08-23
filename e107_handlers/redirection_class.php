@@ -82,6 +82,23 @@ class redirection
 	}
 	
 	/**
+	 * @param string $query query string as the request carried it
+	 * @return bool whether an excepted query names it, with or without parameters of its own
+	 */
+	protected function queryIsExcepted($query)
+	{
+		foreach($this->query_exceptions as $exception)
+		{
+			if($query === $exception || strpos($query, $exception.'&') === 0)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * FIXME - build self_exceptions dynamically - use URL assembling to match the proper URLs later
 	 * Store the current URL in a cookie for 5 minutes so we can return to it after being logged out. 
 	 * @param string $url if empty self url will be used
@@ -106,7 +123,7 @@ class redirection
 			{
 				return;
 			}
-			if(in_array($_SERVER['QUERY_STRING'], $this->query_exceptions))
+			if($this->queryIsExcepted(isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : ''))
 			{
 				return;
 			}

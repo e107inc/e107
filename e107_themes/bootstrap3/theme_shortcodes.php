@@ -268,7 +268,7 @@ class theme_shortcodes extends e_shortcode
 		}
 		
 		$text .= '
-		<li><a href="'.e_HTTP.'index.php?logout">{GLYPH=fa-power-off} '.LAN_LOGOUT.'</a></li>
+		<li><a href="'.e_HTTP.'index.php?logout&amp;e-token='.defset('e_TOKEN').'">{GLYPH=fa-power-off} '.LAN_LOGOUT.'</a></li>
 		</ul>
 		</li>
 		</ul>
