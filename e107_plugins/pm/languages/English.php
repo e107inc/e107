@@ -91,4 +91,5 @@ define("LAN_PM_113", "Read Message");
 define("LAN_PM_114", "You do not have access to send to this user.");
 define("LAN_PM_115", "User Not Found");
 define("LAN_PM_116", "Attachments cannot be stored privately on this site - nothing was attached. Please tell the site administrator.");
+define("LAN_PM_REFUSED_TOKEN_MISSING", "Nothing was changed, because the link carried no security token. Use the buttons on your private messages pages rather than a bookmark or a link on another site.");
 
