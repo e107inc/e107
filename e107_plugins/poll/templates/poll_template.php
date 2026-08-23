@@ -7,7 +7,7 @@
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  */
- 
+
 if (!defined('e107_INIT')) { exit; }
 
 /* ################################# */
@@ -185,7 +185,7 @@ $POLL_TEMPLATE['form']['start'] = "
 	<div>
 		<div class='form-group control-group'>
 			Poll: {QUESTION}
-			
+
 ";
 
 $POLL_TEMPLATE['form']['item'] = "
@@ -194,7 +194,7 @@ $POLL_TEMPLATE['form']['item'] = "
 			</div>";
 
 $POLL_TEMPLATE['form']['end'] = "
-			
+
 		</div>
 		<div class='control-group'>
 			 <div class='controls text-center'>
@@ -237,6 +237,9 @@ $POLL_TEMPLATE['denied']['end'] = "<div class='alert text-warning text-center'>{
 	</div>
 </div>
 ";
+
+// tablerender() caption of a single archived poll. Omit for the plugin name and poll id, set '' for no heading.
+//$POLL_TEMPLATE['oldpolls']['caption'] = '{QUESTION}';
 
 
 

@@ -49,6 +49,7 @@ class oldpolls_front
 			if($row)
 			{
 				$pl = new poll;
+				$tmpl = e107::getTemplate('poll');
 
 				$start_datestamp = $tp->toDate($row['poll_datestamp'], "long");
 				$end_datestamp = $tp->toDate($row['poll_end_datestamp'], "long");
@@ -93,7 +94,11 @@ class oldpolls_front
 					}
 			*/
 				$text .= e107::getComment()->compose_comment('poll', 'comment', intval($row['poll_id']), null, '', false, 'html');
-				$ns->tablerender(LAN_PLUGIN_POLL_NAME . " #" . $row['poll_id'], $text);
+
+				$sc = e107::getScBatch('poll');
+				$sc->setVars($row);
+
+				$ns->tablerender($sc->caption($tmpl, 'oldpolls', LAN_PLUGIN_POLL_NAME . " #" . $row['poll_id']), $text);
 				echo "<hr />";
 			}
 		}

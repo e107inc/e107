@@ -1129,6 +1129,29 @@ class poll_shortcodes extends e_shortcode
 	}
 
 
+	/**
+	 * Caption a template section hands to {@see e_render::tablerender()}.
+	 *
+	 * Absent 'caption' falls back to $default; an empty one is honoured, so the
+	 * wrapper renders with no heading. The caption resolves against the poll
+	 * this batch currently holds, so {@see poll_shortcodes::setVars()} first.
+	 *
+	 * @param array $tmpl $POLL_TEMPLATE, from {@see e107::getTemplate()}
+	 * @param string $key section of $tmpl the caption belongs to
+	 * @param string $default caption rendered before the section could set its own
+	 * @return string
+	 */
+	public function caption($tmpl, $key, $default)
+	{
+		if(!isset($tmpl[$key]['caption']))
+		{
+			return $default;
+		}
+
+		return e107::getParser()->parseTemplate($tmpl[$key]['caption'], true, $this);
+	}
+
+
 	function sc_question($parm = "")
 	{
 		$tp = e107::getParser();

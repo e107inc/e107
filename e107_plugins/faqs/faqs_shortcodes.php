@@ -276,6 +276,29 @@ class faqs_shortcodes extends e_shortcode
 		return e107::getParser()->toDate($this->var['faq_datestamp'], $type);
 	}
 
+	/**
+	 * Caption a template section hands to {@see e_render::tablerender()}.
+	 *
+	 * Absent 'caption' falls back to $default; an empty one is honoured, so the
+	 * wrapper renders with no heading. The caption resolves against the row this
+	 * batch holds, so {@see faqs_shortcodes::setVars()} first where the section
+	 * has one.
+	 *
+	 * @param array $tmpl $FAQS_TEMPLATE, from {@see e107::getTemplate()}
+	 * @param string $key section of $tmpl the caption belongs to
+	 * @param string $default caption rendered before the section could set its own
+	 * @return string
+	 */
+	public function caption($tmpl, $key, $default)
+	{
+		if(!isset($tmpl[$key]['caption']))
+		{
+			return $default;
+		}
+
+		return e107::getParser()->parseTemplate($tmpl[$key]['caption'], true, $this);
+	}
+
 	function sc_faq_caption()
 	{
 
