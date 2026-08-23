@@ -97,7 +97,7 @@ class adminstyle_infopanel
 
 		$code = "
 		jQuery(function($){
-  			$('#e-adminfeed').load('".e_ADMIN."admin.php?mode=core&type=feed');
+  			$('#e-adminfeed').load('".e_ADMIN."admin.php?mode=core&type=feed&e-token=".defset('e_TOKEN')."');
   		    $('#e-adminfeed-plugin').load('".e_ADMIN."admin.php?mode=addons&type=plugin&e-token=".defset('e_TOKEN')."');
   		    $('#e-adminfeed-theme').load('".e_ADMIN."admin.php?mode=addons&type=theme&e-token=".defset('e_TOKEN')."');
 
