@@ -108,6 +108,8 @@ class WorkspaceCleanup extends Extension
 		'e107_tests_menu_prefs_probe.php',        // @see Helper\MenuPrefFixture
 		'e107_tests_online_memberlist_probe.php',  // @see OnlineMemberListLinkCest
 		'e107_tests_chatbox_request_self_probe.php', // @see ChatboxRequestSelfCest
+		'e107_themes/e107_tests_p84_themecopy',    // @see AdminGetCsrfPluginThemeMenuCest
+		'e107_plugins/admin_menu/admin_menu_sql.php', // @see AdminGetCsrfPluginThemeMenuCest
 	];
 
 	/** Files a test moves aside for one test method, as parked name to the name it belongs back at. */
