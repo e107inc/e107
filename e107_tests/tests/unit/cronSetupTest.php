@@ -255,6 +255,34 @@ class cronSetupTest extends \Codeception\Test\Unit
 		self::assertSame(array('C:\\php\\php.exe', 'C:\\other\\php.exe'), $windows);
 	}
 
+	public function testOpenBasedirRulesOutTheProbesItWouldRefuse()
+	{
+		$basedir = implode(PATH_SEPARATOR, array('/home/site/', '/tmp/', '/usr/local/php83/lib/'));
+
+		self::assertFalse(cronSetup::withinOpenBasedir('/usr/local/cpanel/version', $basedir));
+		self::assertFalse(cronSetup::withinOpenBasedir('/usr/local/php83/bin/php8.3', $basedir));
+		self::assertFalse(cronSetup::withinOpenBasedir('/opt/cpanel/ea-php83/root/usr/bin/php', $basedir));
+
+		self::assertTrue(cronSetup::withinOpenBasedir('/home/site/public_html/cron.php', $basedir));
+		self::assertTrue(cronSetup::withinOpenBasedir('/usr/local/php83/lib/php.ini', $basedir));
+		self::assertTrue(cronSetup::withinOpenBasedir('/usr/local/cpanel/version', ''));
+	}
+
+	public function testOpenBasedirEntriesAreDirectoriesAndNotStringPrefixes()
+	{
+		self::assertFalse(cronSetup::withinOpenBasedir('/usr/local/php83/bin/php', '/usr/local/php8'));
+		self::assertFalse(cronSetup::withinOpenBasedir('/home/sitely/cron.php', '/home/site'));
+
+		self::assertTrue(cronSetup::withinOpenBasedir('/usr/local/php83/lib/php.ini', '/usr/local/php83/lib'));
+		self::assertTrue(cronSetup::withinOpenBasedir('/home/site/cron.php', '/home/site'));
+	}
+
+	public function testAnOpenBasedirEntryThisCannotResolveLetsTheProbeThrough()
+	{
+		self::assertTrue(cronSetup::withinOpenBasedir('/usr/local/cpanel/version', '.'));
+		self::assertFalse(cronSetup::withinOpenBasedir('/home/site/cron.php', implode(PATH_SEPARATOR, array('', '/tmp/'))));
+	}
+
 	public function testDetectEnvironmentDescribesThisServer()
 	{
 		$env = cronSetup::detectEnvironment();
