@@ -30,7 +30,94 @@
 
 		public function testSetThemeConfig()
 		{
+			$config        = e107::getThemeConfig(e107::getPref('sitetheme'));
+			$siteThemePref = e107::getConfig()->get('sitetheme_pref');
+			$posted        = $_POST;
 
+			$this->th->id             = e107::getPref('sitetheme');
+			$this->th->themeConfigObj = new theme_config();
+
+			$_POST = array('themeHandlerTest_text' => 'posted');
+
+			try
+			{
+				$this->th->setThemeConfig();
+				$stored = $config->getPref();
+			}
+			finally
+			{
+				$_POST = $posted;
+				self::undoThemeConfigSave($config, $siteThemePref);
+			}
+
+			$this->assertSame('posted', $stored['themeHandlerTest_text']);
+			$this->assertSame('', $stored['themeHandlerTest_checkbox']);
+			$this->assertSame(array(e_LANGUAGE => ''), $stored['themeHandlerTest_multilan']);
+		}
+
+		public function testSetThemeConfigMultilanFieldHoldingAString()
+		{
+			$config        = e107::getThemeConfig(e107::getPref('sitetheme'));
+			$siteThemePref = e107::getConfig()->get('sitetheme_pref');
+			$posted        = $_POST;
+			$stored        = array();
+
+			$this->th->id             = e107::getPref('sitetheme');
+			$this->th->themeConfigObj = new theme_config();
+
+			$_POST = array('themeHandlerTest_multilan' => array(e_LANGUAGE => 'posted'));
+
+			try
+			{
+				foreach(array('legacy', '') as $before)
+				{
+					$config->setPref('themeHandlerTest_multilan', $before)->save(false, true, false);
+
+					$this->th->setThemeConfig();
+
+					$stored[$before] = $config->getPref('themeHandlerTest_multilan');
+				}
+			}
+			finally
+			{
+				$_POST = $posted;
+				self::undoThemeConfigSave($config, $siteThemePref);
+			}
+
+			$this->assertSame(array('legacy' => array(e_LANGUAGE => 'posted'), '' => array(e_LANGUAGE => 'posted')), $stored);
+		}
+
+		/**
+		 * The theme configuration field declarations both tests drive {@see themeHandler::setThemeConfig()} with.
+		 *
+		 * @return array
+		 */
+		public static function themeConfigFields()
+		{
+			return array(
+				'themeHandlerTest_text'     => array('title' => 'Text', 'type' => 'text'),
+				'themeHandlerTest_checkbox' => array('title' => 'Checkbox', 'type' => 'checkbox'),
+				'themeHandlerTest_multilan' => array('title' => 'Multilan', 'type' => 'text', 'multilan' => true),
+			);
+		}
+
+		/**
+		 * Drops the preferences the tests write and puts back the core preference {@see themeHandler::setThemeConfig()} clears.
+		 *
+		 * @param e_theme_pref $config
+		 * @param mixed $siteThemePref
+		 * @return void
+		 */
+		private static function undoThemeConfigSave($config, $siteThemePref)
+		{
+			foreach(array_keys(self::themeConfigFields()) as $field)
+			{
+				$config->removePref($field);
+			}
+
+			$config->save(false, true, false);
+
+			e107::getConfig()->set('sitetheme_pref', $siteThemePref)->save(false, true, false);
 		}
 /*
 		public function testTheme_adminlog()
@@ -200,4 +287,16 @@
 	*/
 
 
+	}
+
+	/**
+	 * Stands in for a theme's own theme_config.php class; the name is what {@see themeHandler::setThemeConfig()} matches on,
+	 * so no test here may let {@see themeHandler::loadThemeConfig()} include a real theme's config file over the top of it.
+	 */
+	class theme_config
+	{
+		public function config()
+		{
+			return themeHandlerTest::themeConfigFields();
+		}
 	}
