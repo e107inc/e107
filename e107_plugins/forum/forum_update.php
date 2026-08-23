@@ -1363,7 +1363,6 @@ class forumUpgrade
 	public function __construct()
 	{
 
-		$this->updateInfo['lastThread'] = 0;
 		$this->attachmentData = array();
 		$this->logf = e_LOG . 'forum_upgrade.log';
 		$this->getUpdateInfo();
