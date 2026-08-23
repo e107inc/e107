@@ -2219,8 +2219,8 @@ class e_parse
 	 * Build a series of HTML attributes from the provided array
 	 *
 	 * Because of legacy loose typing client code usages, values that are {@see empty()} will not be added to the
-	 * concatenated HTML attribute string except when the key is `value`, the key begins with `data-`, or the value is
-	 * a number.
+	 * concatenated HTML attribute string except when the key is `alt` or `value`, the key begins with `data-`, or the
+	 * value is a number.
 	 *
 	 * @param array $attributes Key-value pairs of HTML attributes. The value must not be HTML-encoded. If the value is
 	 *                          boolean true, the value will be set to the key (e.g. `['required' => true]` becomes
@@ -2239,7 +2239,7 @@ class e_parse
 			{
 				$value = $key;
 			}
-			if (!empty($value) || is_numeric($value) || $key === "value" || strpos($key, 'data-') === 0)
+			if (!empty($value) || is_numeric($value) || in_array($key, array('alt', 'value'), true) || strpos($key, 'data-') === 0)
 			{
 				$stringifiedAttributes[] = $key . "='" . $this->toAttribute($value, $pure) . "'";
 			}
@@ -4761,7 +4761,7 @@ class e_parse
 			$linkEnd = '</a>';
 		}
 
-		$title = (ADMIN) ? $image : $tp->toAttribute($userData['user_name']);
+		$title = (ADMIN) ? $image : $userData['user_name'];
 		$shape = (!empty($options['shape'])) ? 'img-' . $options['shape'] : 'img-rounded rounded';
 
 		if ($shape === 'img-circle')
@@ -4776,21 +4776,31 @@ class e_parse
 
 		if (!empty($options['alt']))
 		{
-			$title = $tp->toAttribute($options['alt']);
+			$title = $options['alt'];
 		}
-
-		$heightInsert = empty($height) ? '' : "height='" . $height . "'";
-		$id = (!empty($options['id'])) ? "id='" . $options['id'] . "' " : '';
 
 		$classOnline = (!empty($userData['user_currentvisit']) && intval($userData['user_currentvisit']) > (time() - 300)) ? ' user-avatar-online' : '';
 
 		$class = !empty($options['class']) ? $options['class'] : $shape . ' user-avatar';
-		$style = !empty($options['style']) ? " style='" . $options['style'] . "'" : '';
-		$loading = !empty($options['loading']) ? " loading='" . $options['loading'] . "'" : " loading='lazy'"; // default to lazy.
-		$onError = ($remote && strpos($url, 'data:') !== 0) ? " onerror=\"this.onerror=null;this.src='" . $genericImg . "';\"" : '';
+
+		$attributes = array(
+			'id'      => !empty($options['id']) ? $options['id'] : null,
+			'class'   => $class . $classOnline,
+			'alt'     => $title,
+			'src'     => html_entity_decode($url, ENT_QUOTES, 'UTF-8'),
+			'width'   => $width,
+			'height'  => empty($height) ? null : $height,
+			'style'   => !empty($options['style']) ? $options['style'] : null,
+			'loading' => !empty($options['loading']) ? $options['loading'] : 'lazy',
+		);
+
+		if ($remote && strpos($url, 'data:') !== 0)
+		{
+			$attributes['onerror'] = "this.onerror=null;this.src='" . html_entity_decode($genericImg, ENT_QUOTES, 'UTF-8') . "';";
+		}
 
 		$text = $linkStart;
-		$text .= '<img ' . $id . "class='" . $class . $classOnline . "' alt=\"" . $title . "\" src='" . $url . "'  width='" . $width . "' " . $heightInsert . $style . $loading . $onError . ' />';
+		$text .= '<img' . $tp->toAttributes($attributes, true) . ' />';
 		$text .= $linkEnd;
 
 		//	return $url;
