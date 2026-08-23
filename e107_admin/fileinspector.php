@@ -30,10 +30,9 @@ if(varset($_GET['action']) === 'progress')
 
 e107::coreLan('fileinspector', true);
 
-set_time_limit(18000);
 $e_sub_cat = 'fileinspector';
 
-if (!empty($_GET['regex']))
+if (!empty($_POST['regex']))
 {
     $css = ".f { padding: 1px 0px 1px 8px; vertical-align: bottom; width: 90% }\n";
 }
@@ -98,6 +97,7 @@ e107::js('footer-inline', $js);
 
 class fileinspector_admin extends e_admin_dispatcher
 {
+	const SCAN_TIME_LIMIT = 18000;
 
 	protected $modes = array(
 
@@ -148,8 +148,21 @@ class fileinspector_admin extends e_admin_dispatcher
 
 
 
-        if(!empty($_GET['action']) && $_GET['action'] === 'begin')
+        if(varset($_GET['action']) === 'begin')
         {
+            if(varset($_SERVER['REQUEST_METHOD']) !== 'POST')
+            {
+                e107::redirect(e_SELF);
+                exit;
+            }
+
+            $executionLimit = (int) ini_get('max_execution_time');
+
+            if($executionLimit > 0 && $executionLimit < self::SCAN_TIME_LIMIT)
+            {
+                @set_time_limit(self::SCAN_TIME_LIMIT);
+            }
+
             /** @var file_inspector $fi */
             $fi = e107::getSingleton('file_inspector');
             $fi->scan_results();
@@ -214,20 +227,23 @@ class fileinspector_ui extends e_admin_ui
             $this->addTitle(LAN_RUN);
 
             $frm = $this->getUI();
+            $optionFields = file_inspector::optionFields($frm, $_POST);
 
-            unset($_GET['mode'],$_GET['action']);
+            if($optionFields === '')
+            {
+                e107::redirect(e_SELF.'?mode=main&action=setup');
+                exit;
+            }
 
-            $source =  e_SELF."?mode=main&action=begin&".http_build_query($_GET);
+            $source = e_SELF."?mode=main&action=begin";
             $target = '#results-container';
             $interval = 500;
 
             $text = $frm->open('runit');
+            $text .= $optionFields;
             $text .= $frm->progressBar('inspector-progress', 0);
 
-         //   $text .= '<button id="start-render" type="button" data-loading-icon="fa-spinner" data-loading-target="#start-render" class="e-ajax btn-sm btn btn-primary" data-src="'.$source.'" data-target="#results-container">Other</button>';
-
-
-			$text .= '<a id="start-render" class="btn btn-primary e-progress e-ajax " data-src="'.$source.'" data-target="'.$target.'" data-loading-icon="fa-spinner" data-progress-interval="'.$interval.'" data-progress-target="inspector-progress" data-progress="' .  e_SELF.'?mode=main&action=progress&scan='.filter_var($_GET['scan']).'" data-progress-mode="0" data-progress-show="1"  data-loading-target="#fi-loading-target" ><span id="fi-loading-target"></span> '.FR_LAN_33.'</a>';
+			$text .= '<a id="start-render" class="btn btn-primary e-progress e-ajax " data-src="'.$source.'" data-target="'.$target.'" data-loading-icon="fa-spinner" data-progress-interval="'.$interval.'" data-progress-target="inspector-progress" data-progress="' .  e_SELF.'?action=progress" data-progress-mode="0" data-progress-show="1"  data-loading-target="#fi-loading-target" ><span id="fi-loading-target"></span> '.FR_LAN_33.'</a>';
 			$text .= ' <a data-progress-target="inspector-progress" class="btn btn-danger e-progress-cancel" >'.LAN_CANCEL.'</a>';
 
 
@@ -284,7 +300,7 @@ class file_inspector {
 	private $lang_short = array();
 	private $iconTag = array();
 
-	private $options = array(
+	private static $optionDefaults = array(
 		'core'          => '',
 		'type'          => 'tree',
 		'missing'       => 0,
@@ -294,13 +310,36 @@ class file_inspector {
 		'regex'         => 0,
 		'mod'           => '',
 		'num'           => 0,
-		'line'          => 0,
-		'scan'          => null // progress identifier
+		'line'          => 0
 	);
+
+	private $options = array();
     /**
      * @var array
      */
     private $glyph;
+
+	/**
+	 * Carry the scan options through a form as hidden fields, so they never travel in a URL.
+	 *
+	 * @param e_form $frm
+	 * @param array $posted
+	 * @return string
+	 */
+	public static function optionFields(e_form $frm, array $posted)
+	{
+		$text = '';
+
+		foreach(self::$optionDefaults as $k => $v)
+		{
+			if(isset($posted[$k]) && is_scalar($posted[$k]))
+			{
+				$text .= $frm->hidden($k, $posted[$k]);
+			}
+		}
+
+		return $text;
+	}
 
     function setOptions($post)
 	{
@@ -318,7 +357,7 @@ class file_inspector {
 		$lng    = e107::getLanguage();
 		$langs  = $lng->installed();
 
-        $this->setOptions($_GET);
+		$this->options = self::$optionDefaults;
 		$this->progress = new e_file_inspector_progress(e107::getUser()->getId());
 
 		$lang_short = array();
@@ -394,7 +433,7 @@ class file_inspector {
 
 		if(!empty($_POST['regex']))
 		{
-			if($_POST['core'] == 'fail')
+			if(varset($_POST['core']) == 'fail')
 			{
 				$_POST['core'] = 'all';
 			}
@@ -402,6 +441,8 @@ class file_inspector {
 			$_POST['missing'] = 0;
 			$_POST['integrity'] = 0;
 		}
+
+		$this->setOptions($_POST);
 	}
 
 
@@ -453,7 +494,7 @@ class file_inspector {
 		$tab = array();
 
 		$head = "<div>
-		<form action='".e_SELF."' method='get' id='scanform'>";
+		<form action='".e_SELF."?mode=main&amp;action=run' method='post' id='scanform'>";
 
 		$text = "
 		<table class='table  adminform'>";
@@ -540,7 +581,7 @@ class file_inspector {
 			".FC_LAN_18.":
 			</td>
 			<td colspan='2' style='width: 65%'>
-			#<input class='tbox' type='text' name='regex' size='40' value='".htmlentities($_POST['regex'], ENT_QUOTES)."' />#<input class='tbox' type='text' name='mod' size='5' value='".$_POST['mod']."' />
+			#<input class='tbox' type='text' name='regex' size='40' value='".htmlentities(varset($_POST['regex'], ''), ENT_QUOTES)."' />#<input class='tbox' type='text' name='mod' size='5' value='".varset($_POST['mod'], '')."' />
 			</td>
 			</tr>";
 
@@ -549,7 +590,7 @@ class file_inspector {
 			".FC_LAN_19.":
 			</td>
 			<td colspan='2' style='width: 65%'>
-			<input type='checkbox' name='num' value='1'".(($_POST['num'] || !isset($_POST['num'])) ? " checked='checked'" : "")." />
+			<input type='checkbox' name='num' value='1'".((varset($_POST['num']) || !isset($_POST['num'])) ? " checked='checked'" : "")." />
 			</td>
 			</tr>";
 
@@ -558,7 +599,7 @@ class file_inspector {
 			".FC_LAN_20.":
 			</td>
 			<td colspan='2' style='width: 65%'>
-			<input type='checkbox' name='line' value='1'".(($_POST['line'] || !isset($_POST['line'])) ? " checked='checked'" : "")." />
+			<input type='checkbox' name='line' value='1'".((varset($_POST['line']) || !isset($_POST['line'])) ? " checked='checked'" : "")." />
 			</td>
 			</tr>";
 
@@ -573,9 +614,7 @@ class file_inspector {
 
 		$foot = "
 		<div class='buttons-bar center'>
-		".$frm->admin_button('scan', md5(time()), 'other', LAN_GO).
-		$frm->hidden('mode','main').
-		$frm->hidden('action','run')."
+		".$frm->admin_button('scan', 'run', 'other', LAN_GO)."
 		</div>
 		</form>
 		</div>";
