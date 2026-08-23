@@ -3616,16 +3616,15 @@ class e107plugin
 
 						if(!$sql->db_Query($query))
 						{
-							$errno = (string) $sql->getLastErrorNumber();
+							$errno = $sql->getLastErrorNumber();
 							$error = $sql->getLastErrorText();
 
 							// "Table already exists" is normal rather than a
 							// failure: uninstalling a plugin leaves its tables in
 							// place unless delete_tables was asked for, so every
 							// reinstall meets them again, and the table being
-							// there is all this step wanted. PDO reports it as
-							// SQLSTATE 42S01 and mysqli as 1050, so take either.
-							if(in_array($errno, array('42S01', '1050'), true))
+							// there is all this step wanted.
+							if((int) $errno === 1050)
 							{
 								$txt = "Table {$v} already present.";
 								$status = E_MESSAGE_INFO;
