@@ -53,6 +53,12 @@
 			$this->assertSame('posted', $stored['themeHandlerTest_text']);
 			$this->assertSame('', $stored['themeHandlerTest_checkbox']);
 			$this->assertSame(array(e_LANGUAGE => ''), $stored['themeHandlerTest_multilan']);
+			$this->assertSame(array(), $stored['themeHandlerTest_checkboxes']);
+			$this->assertSame(array(), $stored['themeHandlerTest_optarray']);
+			$this->assertSame(array(), $stored['themeHandlerTest_json']);
+			$this->assertSame(array(), $stored['themeHandlerTest_lanlist']);
+			$this->assertSame(array(), $stored['themeHandlerTest_layouts']);
+			$this->assertSame('', $stored['themeHandlerTest_dropdown']);
 		}
 
 		public function testSetThemeConfigMultilanFieldHoldingAString()
@@ -87,8 +93,52 @@
 			$this->assertSame(array('legacy' => array(e_LANGUAGE => 'posted'), '' => array(e_LANGUAGE => 'posted')), $stored);
 		}
 
+		public function testThemeConfigEmptyValueMirrorsRenderElement()
+		{
+			$frm    = e107::getForm();
+			$helper = new ReflectionMethod('themeHandler', 'themeConfigEmptyValue');
+			$helper->setAccessible(true);
+
+			foreach(self::renderedThemeConfigFields() as $field => $data)
+			{
+				$html = $frm->renderElement($field, '', $data);
+
+				$this->assertSame(1, preg_match("/name='([^']+)'/", $html, $match), $field);
+				$this->assertSame(strpos($match[1], $field . '[') === 0, is_array($helper->invoke(null, $data)), $field);
+			}
+		}
+
 		/**
-		 * The theme configuration field declarations both tests drive {@see themeHandler::setThemeConfig()} with.
+		 * Field declarations whose rendered input name decides which empty {@see themeHandler::setThemeConfig()} stores when the field is absent from the POST.
+		 *
+		 * @return array
+		 */
+		public static function renderedThemeConfigFields()
+		{
+			return array(
+				'text_plain'              => array('title' => 'T', 'type' => 'text'),
+				'checkbox_plain'          => array('title' => 'T', 'type' => 'checkbox'),
+				'checkboxes_plain'        => array('title' => 'T', 'type' => 'checkboxes', 'writeParms' => array('one' => 'One', 'two' => 'Two')),
+				'comma_plain'             => array('title' => 'T', 'type' => 'comma', 'writeParms' => array('one' => 'One')),
+				'userclasses_plain'       => array('title' => 'T', 'type' => 'userclasses'),
+				'userclass_plain'         => array('title' => 'T', 'type' => 'userclass'),
+				'userclass_multiple'      => array('title' => 'T', 'type' => 'userclass', 'writeParms' => array('multiple' => true)),
+				'country_plain'           => array('title' => 'T', 'type' => 'country'),
+				'country_multiple'        => array('title' => 'T', 'type' => 'country', 'writeParms' => array('multiple' => true)),
+				'country_json'            => array('title' => 'T', 'type' => 'country', 'writeParms' => '{"multiple":1}'),
+				'dropdown_plain'          => array('title' => 'T', 'type' => 'dropdown', 'writeParms' => array('one' => 'One')),
+				'dropdown_optarray'       => array('title' => 'T', 'type' => 'dropdown', 'writeParms' => array('optArray' => array('one' => 'One'), 'multiple' => true)),
+				'dropdown_json'           => array('title' => 'T', 'type' => 'dropdown', 'writeParms' => '{"optArray":{"one":"One"},"multiple":1}'),
+				'dropdown_options_string' => array('title' => 'T', 'type' => 'dropdown', 'writeParms' => array('one' => 'One', '__options' => 'multiple=1')),
+				'dropdown_parms_string'   => array('title' => 'T', 'type' => 'dropdown', 'writeParms' => 'multiple=1'),
+				'language_options_string' => array('title' => 'T', 'type' => 'language', 'writeParms' => '__options[multiple]=1'),
+				'language_options_array'  => array('title' => 'T', 'type' => 'language', 'writeParms' => array('__options' => array('multiple' => true))),
+				'language_optarray'       => array('title' => 'T', 'type' => 'language', 'writeParms' => array('optArray' => array('one' => 'One'), 'multiple' => true)),
+			);
+		}
+
+		/**
+		 * The theme configuration field declarations both save-path tests drive {@see themeHandler::setThemeConfig()} with.
 		 *
 		 * @return array
 		 */
@@ -98,6 +148,12 @@
 				'themeHandlerTest_text'     => array('title' => 'Text', 'type' => 'text'),
 				'themeHandlerTest_checkbox' => array('title' => 'Checkbox', 'type' => 'checkbox'),
 				'themeHandlerTest_multilan' => array('title' => 'Multilan', 'type' => 'text', 'multilan' => true),
+				'themeHandlerTest_checkboxes' => array('title' => 'Checkboxes', 'type' => 'checkboxes', 'writeParms' => array('one' => 'One', 'two' => 'Two')),
+				'themeHandlerTest_optarray' => array('title' => 'Optarray', 'type' => 'dropdown', 'writeParms' => array('optArray' => array('one' => 'One'), 'multiple' => true)),
+				'themeHandlerTest_json' => array('title' => 'Json', 'type' => 'dropdown', 'writeParms' => '{"optArray":{"one":"One"},"multiple":1}'),
+				'themeHandlerTest_lanlist' => array('title' => 'Lanlist', 'type' => 'lanlist', 'writeParms' => '__options[multiple]=1'),
+				'themeHandlerTest_layouts' => array('title' => 'Layouts', 'type' => 'layouts', 'writeParms' => array('multiple' => true)),
+				'themeHandlerTest_dropdown' => array('title' => 'Dropdown', 'type' => 'dropdown', 'writeParms' => array('one' => 'One')),
 			);
 		}
 
