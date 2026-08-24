@@ -12,18 +12,17 @@
 
 require_once(__DIR__."/../class2.php");
 
-$css = "body 				{ text-align: left; font-size:13px; line-height:1.5em; font-weight:normal; font-family:Arial, Helvetica, sans-serif; }
-			p 					{ margin:0px 5px 10px 5px; }
+$css = ".credits-content		{ padding:20px 40px; text-align: left; font-size:13px; line-height:1.5em; font-weight:normal; font-family:Arial, Helvetica, sans-serif; }
+			.credits-content p	{ margin:0px 5px 10px 5px; }
 		
-			a					{ color:#F6931E; text-decoration:none; }
-			a:hover				{ color:#fdce8a; text-decoration:none; }
+			.credits-content a	{ color:#F6931E; text-decoration:none; }
+			.credits-content a:hover	{ color:#fdce8a; text-decoration:none; }
 			.bold				{ font-weight:bold; }
 			.center				{ text-align:center; }
 			.wrapper			{ width:600px;  margin:0px auto 0px 0px; padding-bottom:10px;  }
 			.wrapper-middle		{ min-height:389px;  }
 			.wrapper-text		{  }
 			.logo				{ margin-bottom:20px }
-			.credits-content	{ padding:20px 40px;}
         	.copyright			{  margin-top:30px}
       ";
 
