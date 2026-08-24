@@ -2005,7 +2005,7 @@ class themeHandler
 
 						$values[$field][e_LANGUAGE] = isset($_POST[$field][e_LANGUAGE]) ? $_POST[$field][e_LANGUAGE] : '';
 					} else {
-						$values[$field] = isset($_POST[$field]) ? $_POST[$field] : '';
+						$values[$field] = isset($_POST[$field]) ? $_POST[$field] : self::themeConfigEmptyValue($data);
 					}
 				}
 
@@ -2030,6 +2030,55 @@ class themeHandler
 			e107::getCache()->clearAll('library');
 			return call_user_func(array(&$this->themeConfigObj, 'process')); //pre v2.1.4
 		}
+	}
+
+	/**
+	 * The value stored for a theme configuration field absent from the POST; the types {@see e_form::renderElement()} posts as name[] get an empty array and every other type ''. A type whose picker always emits a hidden input (media) never goes absent, so it stays scalar.
+	 *
+	 * @param array $data field declaration from a theme's theme_config::config()
+	 * @return array|string
+	 */
+	private static function themeConfigEmptyValue($data)
+	{
+		$type = varset($data['type']);
+
+		if($type === 'checkboxes' || $type === 'comma' || $type === 'userclasses')
+		{
+			return array();
+		}
+
+		if(!in_array($type, array('dropdown', 'lanlist', 'language', 'country', 'userclass', 'layouts'), true))
+		{
+			return '';
+		}
+
+		$parms = varset($data['writeParms'], array());
+
+		if($json = e107::getParser()->isJSON($parms))
+		{
+			$parms = $json;
+		}
+
+		if(is_string($parms))
+		{
+			parse_str($parms, $parms);
+		}
+
+		if($type === 'country' || $type === 'userclass' || $type === 'layouts' || ($type === 'dropdown' && isset($parms['optArray'])))
+		{
+			$options = $parms;
+		}
+		else
+		{
+			$options = varset($parms['__options'], array());
+		}
+
+		if(is_string($options))
+		{
+			parse_str($options, $options);
+		}
+
+		return empty($options['multiple']) ? '' : array();
 	}
 
 	/**
