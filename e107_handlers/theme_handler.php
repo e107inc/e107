@@ -1526,7 +1526,10 @@ class themeHandler
 			$this->id = $this->curTheme;
 
 			$this->setLayouts(); // Update the layouts in case they have been manually changed.
-			$this->SetCustomPages($_POST['custompages']);
+			if(isset($_POST['custompages']))
+			{
+				$this->SetCustomPages($_POST['custompages']);
+			}
 			$this->setStyle();
 
 			e107::getConfig()->save();
