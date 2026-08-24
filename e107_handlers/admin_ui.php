@@ -3206,6 +3206,32 @@ class e_admin_controller_ui extends e_admin_controller
 	}
 
 	/**
+	 * Check that a posted batch trigger may address a field: it must pass
+	 * {@see e_admin_controller_ui::isFieldIdentifier()}, carry the 'batch' flag
+	 * {@see e_admin_form_ui::renderBatchFilter()} builds the batch menu from, and must not be
+	 * declared 'data' => false, the declaration {@see e_admin_ui::_setModel()} keeps out of
+	 * dataFields. An omitted or null 'data' is the common case on a real column and stays
+	 * permitted.
+	 * @param string $field field segment of the posted batch trigger
+	 * @return boolean
+	 */
+	protected function isBatchField($field)
+	{
+		if(!$this->isFieldIdentifier($field))
+		{
+			return false;
+		}
+
+		if(!$this->getFieldAttr($field, 'batch', false) || $this->getFieldAttr($field, 'data', null) === false)
+		{
+			e107::getDebug()->log('Rejected batch field: '.var_export($field, true));
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 *
 	 * @param string $field
 	 * @param string $key attribute name
@@ -3851,13 +3877,26 @@ class e_admin_controller_ui extends e_admin_controller
 
 			case 'sefgen':
 				$field = $trigger[1];
-				$value = $trigger[2];
+				$value = varset($trigger[2]);
 
 				//handleListBatch(); for custom handling of all field names
-				if(empty($selected) || !$this->isFieldIdentifier($field))
+				if(empty($selected) || !$this->isBatchField($field))
 				{
 					return $this;
 				}
+
+				$parms = $this->getFieldAttr($field, 'writeParms', array());
+				if(!is_array($parms))
+				{
+					parse_str($parms, $parms);
+				}
+
+				if(empty($parms['sef']) || (string) $parms['sef'] !== (string) $value)
+				{
+					e107::getDebug()->log('Rejected batch sef source: '.var_export($value, true));
+					return $this;
+				}
+
 				$method = 'handle'.$actionName.'SefgenBatch';
 				if(method_exists($this, $method)) // callback handling
 				{
@@ -3886,7 +3925,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 				if(empty($selected) && !$this->getPosted('etrigger_delete_confirm')) // it's a delete batch, confirm screen
 				{
-					$params = $this->getFieldAttr($trigger[1], 'writeParms', array());
+					$params = $this->getFieldAttr(varset($trigger[1], ''), 'writeParms', array());
 					if(!is_array($params))
 					{
 						parse_str($params, $params);
@@ -3910,7 +3949,7 @@ class e_admin_controller_ui extends e_admin_controller
 					return $this;
 				}
 				$field = $trigger[1];
-				if(!$this->isFieldIdentifier($field))
+				if(!$this->isBatchField($field))
 				{
 					return $this;
 				}
@@ -3929,7 +3968,7 @@ class e_admin_controller_ui extends e_admin_controller
 					return $this;
 				}
 				$field = $trigger[1];
-				if(!$this->isFieldIdentifier($field))
+				if(!$this->isBatchField($field))
 				{
 					return $this;
 				}
@@ -3953,7 +3992,7 @@ class e_admin_controller_ui extends e_admin_controller
 				$field = $trigger[1];
 				$value = $trigger[2];
 
-				if(!$this->isFieldIdentifier($field))
+				if(!$this->isBatchField($field))
 				{
 					return $this;
 				}
@@ -3993,7 +4032,7 @@ class e_admin_controller_ui extends e_admin_controller
 				$field = $trigger[1];
 				$class = $trigger[2];
 
-				if(!$this->isFieldIdentifier($field))
+				if(!$this->isBatchField($field))
 				{
 					return $this;
 				}
@@ -4024,7 +4063,7 @@ class e_admin_controller_ui extends e_admin_controller
 				}
 				$field = $trigger[1];
 
-				if(!$this->isFieldIdentifier($field))
+				if(!$this->isBatchField($field))
 				{
 					return $this;
 				}
@@ -4061,12 +4100,12 @@ class e_admin_controller_ui extends e_admin_controller
 			// handleListCopyBatch etc.
 			default:
 				$field = $trigger[0];
-				$value = $trigger[1];
+				$value = varset($trigger[1]);
 
 				//something like handleListUrlTypeBatch(); for custom handling of 'url_type' field name
 				$method = 'handle'.$actionName.$this->getRequest()->camelize($field).'Batch';
 
-				e107::getMessage()->addDebug('Searching for custom batch method: ' .$method. '(' .$selected. ',' .$value. ')');
+				e107::getMessage()->addDebug('Searching for custom batch method: ' .$method. '(' .implode(',', $selected). ',' .$value. ')');
 
 				if(method_exists($this, $method)) // callback handling
 				{
@@ -4076,7 +4115,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 				//handleListBatch(); for custom handling of all field names
 				//if(empty($selected)) return $this;
-				if(!$this->isFieldIdentifier($field))
+				if(!$this->isBatchField($field))
 				{
 					return $this;
 				}
