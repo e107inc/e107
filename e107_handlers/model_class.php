@@ -4229,6 +4229,12 @@ class e_front_tree_model extends e_tree_model
 			$syncvalue = $value;
 		}
 
+		if(!is_string($field) || $sql->quoteIdentifier($field) === false)
+		{
+			$this->addMessageDebug('batchUpdate() refused a field name that is not a valid identifier.');
+			return false;
+		}
+
 		// A raw SQL expression must be passed EXPLICITLY as a SqlFragment (e.g.
 		// "1-`field`"); anything else is a literal and gets bound, never spliced.
 		$isExpression = $value instanceof \e107\Database\SqlFragment;

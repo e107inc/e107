@@ -317,7 +317,7 @@ class banlist_ui extends e_admin_ui
 						intval(varset($_POST['ban_over_expiry'], 0)),
 						$separator_char[intval(varset($_POST['ban_separator'], 1))],
 						$quote_char[intval(varset($_POST['ban_quote'], 3))]);
-					banlist_adminlog('07', 'File: ' . e_UPLOAD . $files[0]['name'] . '<br />' . $message);
+					e107::getLog()->add('BANLIST_07', 'File: ' . e_UPLOAD . $files[0]['name'] . '<br />' . $message);
 				}
 
 			}
@@ -451,7 +451,7 @@ class banlist_ui extends e_admin_ui
 					Write messages and times to disc file
 				 *****************************************/
 				$ipAdministrator->writeBanMessageFile();
-				banlist_adminlog('08','');
+				e107::getLog()->add('BANLIST_08', '');
 
 			}	
 			
@@ -590,7 +590,7 @@ class banlist_ui extends e_admin_ui
 				->where('banlist_banexpires', '>', 0)
 				->where('banlist_banexpires', '<', time())
 				->execute();
-				banlist_adminlog('12', $result);
+				e107::getLog()->add('BANLIST_12', $result);
 				$mes->addSuccess(str_replace('[y]', $result, BANLAN_48));
 			}
 
@@ -899,32 +899,24 @@ class banlist_form_ui extends e_admin_form_ui
 		// optional
 		public function init()
 		{
-			if(varset($_POST['etrigger_batch']) == 'gen_intdata__1' && count($_POST['e-multiselect'])) // Do we need BAN here?
-			{
-				$dels = implode(',',$_POST['e-multiselect']);
-				//$e107::getDb()->insert('banlist',
-			}
-
 			$allFailedTotal = e107::getDB()->createQueryBuilder()->from('generic')
 				->where('gen_type', 'failed_login')->count();
 
 			$this->batchOptions = array('delete-all'=>str_replace('[x]', $allFailedTotal, BANLAN_127));
-
-			if(!empty($_POST['etrigger_batch']) && $_POST['etrigger_batch'] == "delete-all")
-			{
-				$this->deleteAllFailed();
-			}
-
-		
 		}
 
-		private function deleteAllFailed()
+		/**
+		 * Batch handler for the 'delete-all' option; dispatched by {@see e_admin_controller_ui::_handleListBatch()}.
+		 */
+		public function handleListDeleteAllBatch($selected = null)
 		{
 
 			if(e107::getDB()->createQueryBuilder()->delete('generic')->where('gen_type', 'failed_login')->execute())
 			{
 				e107::getMessage()->addSuccess(LAN_DELETED);
 			}
+
+			$this->getTreeModel()->loadBatch(true);
 		}
 
 		public function afterDelete($deleted_data, $id, $deleted_check)
