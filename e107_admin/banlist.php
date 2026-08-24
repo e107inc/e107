@@ -317,7 +317,7 @@ class banlist_ui extends e_admin_ui
 						intval(varset($_POST['ban_over_expiry'], 0)),
 						$separator_char[intval(varset($_POST['ban_separator'], 1))],
 						$quote_char[intval(varset($_POST['ban_quote'], 3))]);
-					banlist_adminlog('07', 'File: ' . e_UPLOAD . $files[0]['name'] . '<br />' . $message);
+					e107::getLog()->add('BANLIST_07', 'File: ' . e_UPLOAD . $files[0]['name'] . '<br />' . $message);
 				}
 
 			}
@@ -451,7 +451,7 @@ class banlist_ui extends e_admin_ui
 					Write messages and times to disc file
 				 *****************************************/
 				$ipAdministrator->writeBanMessageFile();
-				banlist_adminlog('08','');
+				e107::getLog()->add('BANLIST_08', '');
 
 			}	
 			
@@ -586,7 +586,7 @@ class banlist_ui extends e_admin_ui
 			if (isset($_POST['remove_expired_bans']))
 			{
 				$result = $sql->delete('banlist',"`banlist_bantype` < ".eIPHandler::BAN_TYPE_WHITELIST." AND `banlist_banexpires` > 0 AND `banlist_banexpires` < ".time());
-				banlist_adminlog('12', $result);
+				e107::getLog()->add('BANLIST_12', $result);
 				$mes->addSuccess(str_replace('[y]', $result, BANLAN_48));
 			}
 
