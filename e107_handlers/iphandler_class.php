@@ -78,7 +78,7 @@ class eIPHandler
 	const BAN_TYPE_USER = 		-6;				/// User is banned
 												// Spare value
 	const BAN_TYPE_UNKNOWN = 	-8;
-	const BAN_TYPE_TEMPORARY =	-9;				/// Used during CSV import - giving it this value highlights problems
+	const BAN_TYPE_TEMPORARY =	-9;				/// Left behind by a v2.3.0 or earlier CSV import that died mid-run; shown on the banlist screen, enforced by nothing
 
 	const BAN_TYPE_WHITELIST = 	100;			/// Entry for whitelist - actually not a ban at all! Keep at this value for BC
 
@@ -1289,6 +1289,11 @@ class eIPHandler
  */
 class banlistManager
 {
+	const CSV_IMPORT_MAX_BYTES = 2097152;
+	const CSV_IMPORT_DELETE_CHUNK = 500;
+	const DELETE_GUARD_IMPORTED = 'imported';
+	const DELETE_GUARD_LAPSED = 'lapsed';
+
 	private $ourConfigDir = '';
 	public $banTypes = array();
 
@@ -1387,12 +1392,12 @@ class banlistManager
 		{
 			while ($row = $sql->fetch())
 			{
+				if ($ipManager->whatIsThis($row['banlist_ip']) != 'ip') continue;		// Ignore non-numeric IP Addresses
 				if ($row['banlist_bantype'] == eIPHandler::BAN_TYPE_LEGACY) $row['banlist_bantype'] = eIPHandler::BAN_TYPE_UNKNOWN;		// Handle legacy bans
 				$encodedAddress = $this->trimWildcard($row['banlist_bantype'] < 0
 					? $this->encodeBanAddress($row['banlist_ip']) : $row['banlist_ip']);
 				$row['banlist_ip'] = $this->trimWildcard($row['banlist_ip']);
 				if ($row['banlist_ip'] == '') continue;								// Ignore empty IP addresses
-				if ($ipManager->whatIsThis($row['banlist_ip']) != 'ip') continue;		// Ignore non-numeric IP Addresses
 				foreach ($optList as $opt)
 				{
 					$line = '';
@@ -1452,6 +1457,485 @@ class banlistManager
 		return $encoded === FALSE ? $ip : $encoded;
 	}
 
+	/**
+	 *	Import ban list entries from a CSV file in the format written by e107_admin/banlist_export.php.
+	 *
+	 *	@param string $filename Path to the CSV file to ingest.
+	 *	@param array $options replaceImported (bool), useFileExpiry (bool), separator (string), quote (string), adminId (int).
+	 *	@return array imported (int), duplicates (int), errors (line number => reason), fatal (string, empty on success), warnings (array, empty where every row went as asked).
+	 */
+	public function importBanlistCsv($filename, $options = array())
+	{
+		$result = array('imported' => 0, 'duplicates' => 0, 'errors' => array(), 'fatal' => '', 'warnings' => array());
+
+		$unreadable = defset('BANLAN_IMPORT_UNREADABLE', "CSV import: The file could not be read.");
+		$entryInvalid = defset('BANLAN_IMPORT_ENTRY_INVALID', "the IP, email or host entry is not usable");
+
+		$replaceImported = !empty($options['replaceImported']);
+		$useFileExpiry = !empty($options['useFileExpiry']);
+		$separator = (string) varset($options['separator'], ',');
+		$quote = (string) varset($options['quote'], '"');
+		$adminId = (int) varset($options['adminId'], 0);
+
+		if(strlen($separator) !== 1)
+		{
+			$separator = ',';
+		}
+
+		if($quote !== '' && strlen($quote) !== 1)
+		{
+			$quote = '"';
+		}
+
+		if(!is_file($filename) || !is_readable($filename))
+		{
+			$result['fatal'] = $unreadable;
+			return $result;
+		}
+
+		if(filesize($filename) > self::CSV_IMPORT_MAX_BYTES)
+		{
+			$result['fatal'] = str_replace('[x]', self::CSV_IMPORT_MAX_BYTES, defset('BANLAN_IMPORT_TOO_LARGE', "CSV import: The file is larger than the [x] byte limit."));
+			return $result;
+		}
+
+		if(($fh = fopen($filename, 'rb')) === false)
+		{
+			$result['fatal'] = $unreadable;
+			return $result;
+		}
+
+		if(fread($fh, 3) !== "\xEF\xBB\xBF")
+		{
+			rewind($fh);
+		}
+
+		$sql = e107::getDb();
+		$ipHandler = e107::getIPHandler();
+
+		$durations = e107::getPref('ban_durations');
+		$defaultHours = is_array($durations) && isset($durations[eIPHandler::BAN_TYPE_IMPORTED]) ? (int) $durations[eIPHandler::BAN_TYPE_IMPORTED] : 0;
+		$defaultExpiry = ($defaultHours > 0) ? time() + ($defaultHours * 3600) : 0;
+
+		$replacedIds = array();
+
+		if($replaceImported)
+		{
+			if($sql->select('banlist', 'banlist_id', '`banlist_bantype` = '.eIPHandler::BAN_TYPE_IMPORTED))
+			{
+				while($row = $sql->fetch())
+				{
+					$replacedIds[(int) $row['banlist_id']] = true;
+				}
+			}
+		}
+
+		$known = array();
+		$lapsedIds = array();
+		$now = time();
+		if($sql->select('banlist', 'banlist_id, banlist_ip, banlist_banexpires', '`banlist_bantype` != '.eIPHandler::BAN_TYPE_TEMPORARY.' AND `banlist_bantype` < '.eIPHandler::BAN_TYPE_WHITELIST))
+		{
+			while($row = $sql->fetch())
+			{
+				if(isset($replacedIds[(int) $row['banlist_id']]))
+				{
+					continue;
+				}
+
+				$stored = $this->storedBanEntry($row['banlist_ip']);
+				$stored = ($stored === false) ? $row['banlist_ip'] : $stored;
+				$expires = (int) $row['banlist_banexpires'];
+
+				if($expires === 0 || $expires > $now)
+				{
+					$known[$stored] = true;
+					continue;
+				}
+
+				$lapsedIds[$stored][] = (int) $row['banlist_id'];
+			}
+		}
+
+		$supersededIds = array();
+		$insertedIds = array();
+		$enclosure = ($quote === '') ? "\0" : $quote;
+		$line = 0;
+
+		@set_time_limit(0);
+
+		while(($fields = fgetcsv($fh, 0, $separator, $enclosure, '\\')) !== false)
+		{
+			$line++;
+
+			if($fields === array(null) || trim(implode('', $fields)) === '')
+			{
+				continue;
+			}
+
+			foreach($fields as $field)
+			{
+				if(strpos((string) $field, "\n") !== false || strpos((string) $field, "\r") !== false)
+				{
+					fclose($fh);
+					return $this->abortImport($result, $insertedIds, BANLAN_49.$line);
+				}
+			}
+
+			if(count($fields) > 6)
+			{
+				$result['errors'][$line] = defset('BANLAN_IMPORT_FIELDS_INVALID', "too many fields (check the separator and quote settings)");
+				continue;
+			}
+
+			$entry = $this->storedBanEntry(varset($fields[0], ''));
+
+			if($entry === false)
+			{
+				$result['errors'][$line] = $entryInvalid;
+				continue;
+			}
+
+			$datestamp = $this->parseImportDate(varset($fields[1], ''), time());
+			$expiry = $useFileExpiry ? $this->parseImportDate(varset($fields[2], ''), 0) : $defaultExpiry;
+			if($datestamp === false || $expiry === false)
+			{
+				$result['errors'][$line] = defset('BANLAN_IMPORT_DATE_INVALID', "a date is not in YYYYMMDD_HHMMSS format or 0");
+				continue;
+			}
+
+			if(isset($known[$entry]))
+			{
+				$result['duplicates']++;
+				continue;
+			}
+			$known[$entry] = true;
+
+			if(isset($lapsedIds[$entry]))
+			{
+				$supersededIds = array_merge($supersededIds, $lapsedIds[$entry]);
+				unset($lapsedIds[$entry]);
+			}
+
+			$inserted = $sql->insert('banlist', array(
+				'banlist_ip'         => $entry,
+				'banlist_bantype'    => eIPHandler::BAN_TYPE_IMPORTED,
+				'banlist_datestamp'  => $datestamp,
+				'banlist_banexpires' => $expiry,
+				'banlist_admin'      => $adminId,
+				'banlist_reason'     => $this->filterImportText(varset($fields[4], '')),
+				'banlist_notes'      => $this->filterImportText(varset($fields[5], '')),
+			));
+
+			if($inserted === false)
+			{
+				fclose($fh);
+				return $this->abortImport($result, $insertedIds, BANLAN_50.$line);
+			}
+
+			if(is_numeric($inserted))
+			{
+				$insertedIds[] = (int) $inserted;
+			}
+			$result['imported']++;
+		}
+
+		fclose($fh);
+
+		if($replaceImported && !empty($result['errors']))
+		{
+			return $this->abortImport($result, $insertedIds,
+				str_replace('[x]', count($result['errors']), defset('BANLAN_IMPORT_REPLACE_INCOMPLETE', "CSV import: Nothing was imported. Replacing the existing imported bans needs the whole file to import, and [x] line(s) could not. Correct those lines and import again, or untick 'Replace existing imported bans' to add the rest alongside what is already there.")));
+		}
+
+		$lapsedKept = $this->deleteBanRows($supersededIds, self::DELETE_GUARD_LAPSED);
+
+		if($lapsedKept > 0)
+		{
+			$result['warnings'][] = str_replace('[x]', $lapsedKept, defset('BANLAN_IMPORT_LAPSED_KEPT', "CSV import: [x] expired entries for addresses the file re-banned are still on the ban list, so each of those addresses now has two entries. Delete the expired ones by hand."));
+		}
+
+		if($replaceImported && !empty($replacedIds))
+		{
+			if($result['imported'] === 0)
+			{
+				$result['warnings'][] = defset('BANLAN_IMPORT_REPLACE_NOTHING', "CSV import: The existing imported bans were kept, because the file added no entries the ban list did not already hold.");
+			}
+			else
+			{
+				$replacedKept = $this->deleteBanRows(array_keys($replacedIds), self::DELETE_GUARD_IMPORTED);
+
+				if($replacedKept > 0)
+				{
+					$result['warnings'][] = str_replace('[x]', $replacedKept, defset('BANLAN_IMPORT_REPLACE_KEPT', "CSV import: [x] of the previous imported bans are still on the ban list, beside the entries the file added."));
+				}
+			}
+		}
+
+		if($result['imported'] > 0)
+		{
+			$ipHandler->regenerateFiles();
+		}
+
+		return $result;
+	}
+
+	/**
+	 *	The banlist_ip form an entry is stored in, or false where no form of it bans only what it names.
+	 *
+	 *	@param string $entry Ban entry as written, from a file or from the column.
+	 *	@return string|false
+	 */
+	private function storedBanEntry($entry)
+	{
+		$entry = trim((string) $entry);
+
+		if(!preg_match('/^[A-Za-z0-9_.*@:+\-]{1,100}$/', $entry))
+		{
+			return false;
+		}
+
+		if($this->isEncodableBanAddress($entry))
+		{
+			$stored = e107::getIPHandler()->ipEncode($entry, true);
+
+			if(!is_string($stored) || strlen($stored) !== 39)
+			{
+				return false;
+			}
+		}
+		else
+		{
+			$stored = $this->storableRawBan($entry);
+		}
+
+		return (is_string($stored) && $stored !== '' && strlen($stored) <= 100) ? $stored : false;
+	}
+
+	/**
+	 *	Delete ban rows by id in chunks, each only while it is still the row the run decided to remove.
+	 *
+	 *	@param array $ids banlist_id values.
+	 *	@param string $guard DELETE_GUARD_IMPORTED or DELETE_GUARD_LAPSED to hold each row to what it was when the run decided about it; '' for rows the run wrote itself, which answer to nothing else.
+	 *	@return int how many of $ids are still in the table, counting the rows of a failed chunk and the rows a guard spared alike.
+	 */
+	private function deleteBanRows($ids, $guard = '')
+	{
+		$sql = e107::getDb();
+		$left = 0;
+
+		foreach(array_chunk(array_values($ids), self::CSV_IMPORT_DELETE_CHUNK) as $chunk)
+		{
+			$where = '`banlist_id` IN ('.implode(',', array_map('intval', $chunk)).')';
+
+			if($guard === self::DELETE_GUARD_IMPORTED)
+			{
+				$where .= ' AND `banlist_bantype` = '.eIPHandler::BAN_TYPE_IMPORTED;
+			}
+			elseif($guard === self::DELETE_GUARD_LAPSED)
+			{
+				$where .= ' AND `banlist_banexpires` > 0 AND `banlist_banexpires` <= '.time();
+			}
+
+			$removed = $sql->delete('banlist', $where);
+			$left += ($removed === false) ? count($chunk) : count($chunk) - $removed;
+		}
+
+		return $left;
+	}
+
+	/**
+	 *	Abandon a run that cannot finish: undo its inserts and say why, naming the rows left behind where the undo itself failed.
+	 *
+	 *	@param array $result Counts and per-line errors accumulated by the run.
+	 *	@param array $insertedIds banlist_id values inserted so far.
+	 *	@param string $reason LAN string naming the line that stopped the run.
+	 *	@return array
+	 */
+	private function abortImport($result, $insertedIds, $reason)
+	{
+		$result['imported'] = 0;
+		$result['duplicates'] = 0;
+		$left = $this->deleteBanRows($insertedIds);
+		$result['fatal'] = ($left === 0)
+			? $reason
+			: $reason.' '.str_replace('[x]', $left, defset('BANLAN_IMPORT_ROLLBACK_FAILED', "The [x] entries already written could not be removed and are still on the ban list."));
+
+		return $result;
+	}
+
+	/**
+	 *	Parse the YYYYMMDD_HHMMSS stamp used by the CSV transfer format, {@see banlistManager::dateFormat()}.
+	 *
+	 *	e107_admin/banlist_export.php renders both stamps through {@see e_parse::toDate()}, which wraps its output in a span, so the field arrives with markup around it.
+	 *
+	 *	@param string $text Field content from the file.
+	 *	@param int $emptyDefault Timestamp to substitute for an empty field.
+	 *	@return int|false Unix timestamp, 0 for '0', or false when malformed.
+	 */
+	private function parseImportDate($text, $emptyDefault = 0)
+	{
+		$text = trim(strip_tags((string) $text));
+
+		if($text === '')
+		{
+			return $emptyDefault;
+		}
+
+		if($text === '0')
+		{
+			return 0;
+		}
+
+		if(!preg_match('/^(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})(\d{2})$/', $text, $parts))
+		{
+			return false;
+		}
+
+		if(!checkdate((int) $parts[2], (int) $parts[3], (int) $parts[1]) || (int) $parts[4] > 23 || (int) $parts[5] > 59 || (int) $parts[6] > 59)
+		{
+			return false;
+		}
+
+		$stamp = mktime((int) $parts[4], (int) $parts[5], (int) $parts[6], (int) $parts[2], (int) $parts[3], (int) $parts[1]);
+
+		if($stamp === false || $stamp < 0 || $stamp > 4294967295)
+		{
+			return false;
+		}
+
+		return $stamp;
+	}
+
+	/**
+	 *	Whether {@see eIPHandler::ipEncode()} can express this entry, leaving the caller to check the width it returns.
+	 *
+	 *	Wildcards must be whole trailing octets of a dotted address, which is the only shape the encoder keeps in place.
+	 *
+	 *	@param string $entry Ban entry as the file wrote it.
+	 *	@return bool
+	 */
+	private function isEncodableBanAddress($entry)
+	{
+		if(strpos($entry, ':') !== false)
+		{
+			return strpos($entry, '*') === false && strpos($entry, 'x') === false
+				&& filter_var($entry, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false;
+		}
+
+		$octets = explode('.', $entry);
+		if(count($octets) > 4)
+		{
+			return false;
+		}
+
+		$wildcard = false;
+		foreach($octets as $index => $octet)
+		{
+			if($index > 0 && $octet === '*')
+			{
+				$wildcard = true;
+				continue;
+			}
+
+			if($wildcard || !preg_match('/^[0-9]{1,3}$/', $octet) || (int) $octet > 255)
+			{
+				return false;
+			}
+		}
+
+		return count($octets) === 4 || $wildcard;
+	}
+
+	/**
+	 *	The form to store an entry {@see banlistManager::isEncodableBanAddress()} refused in, or false where no form of it bans only what it names.
+	 *
+	 *	{@see banlistManager::writeBanListFiles()} drops an entry {@see eIPHandler::whatIsThis()} does not call an
+	 *	address, cuts the rest at their first wildcard and prefix-matches what is left against a lowercase encoded
+	 *	address, so an entry it keeps is storable only where that cut leaves the prefix of exactly the range the entry
+	 *	names, and never where it leaves a prefix of the marker every stored IPv4 address begins with.
+	 *
+	 *	A cut that leaves a bare run of hex characters names no group boundary and so bans everything under it, which is why both branches below refuse a token with no complete group in it.
+	 *
+	 *	@param string $entry Ban entry as the file wrote it.
+	 *	@return string|false
+	 */
+	private function storableRawBan($entry)
+	{
+		if(preg_match('/^[0-9.*x]+$/i', $entry))
+		{
+			return false;
+		}
+
+		$stored = (strpos($entry, ':') === false) ? $entry : strtolower($entry);
+		$token = $this->trimWildcard($stored);
+
+		if($token === '' || e107::getIPHandler()->whatIsThis($stored) !== 'ip')
+		{
+			return $stored;
+		}
+
+		if(strpos($stored, ':') === false)
+		{
+			return $this->isEncodedAddressPrefix($token) ? false : $stored;
+		}
+
+		if(!$this->isEncodedAddressPrefix($token) || strpos($token, ':') === false
+			|| strncasecmp('0000:0000:0000:0000:0000:ffff:', $token, strlen($token)) === 0)
+		{
+			return false;
+		}
+
+		return preg_match('/^[*x:]*$/', (string) substr($stored, strlen($token))) === 1 ? $stored : false;
+	}
+
+	/**
+	 *	Whether a stored value cut at its first wildcard can prefix the address {@see eIPHandler::ipEncode()} produces for a visitor.
+	 *
+	 *	@param string $token Stored value up to its first wildcard.
+	 *	@return bool
+	 */
+	private function isEncodedAddressPrefix($token)
+	{
+		return $token !== '' && preg_match('/^([0-9a-f]{4}:)*[0-9a-f]{0,4}$/i', $token) === 1;
+	}
+
+	/**
+	 *	Reduce an imported reason or notes field to text that stores safely and survives the next export.
+	 *
+	 *	@param string $text Field content from the file.
+	 *	@return string
+	 */
+	private function filterImportText($text)
+	{
+		$text = trim((string) $text);
+
+		if($text === '')
+		{
+			return '';
+		}
+
+		if(preg_match('//u', $text) !== 1)
+		{
+			$text = (string) e107::getParser()->toUTF8($text);
+		}
+
+		$text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
+		$text = preg_replace('/[\x00-\x1F\x7F]+/', ' ', $text);
+		$text = e107::getParser()->filter($text, 'str');
+		$text = str_replace('\\', '&#092;', $text);
+
+		if(strlen($text) > 255)
+		{
+			$text = (string) substr($text, 0, 255);
+			while($text !== '' && preg_match('//u', $text) !== 1)
+			{
+				$text = (string) substr($text, 0, -1);
+			}
+			$text = (string) preg_replace('/&[^&;]{0,7}$/', '', $text);
+		}
+
+		return $text;
+	}
 
 	/**
 	 *    Trim wildcards from IP addresses
