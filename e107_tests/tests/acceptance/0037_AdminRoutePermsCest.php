@@ -763,6 +763,77 @@ class AdminRoutePermsCest
 			.'refusals asserted above are a removed feature rather than an authorisation boundary.');
 	}
 
+	/**
+	 * The batch delete carries its selection in a second field, and that is the
+	 * one the request that deletes is read from.
+	 *
+	 * e_admin_ui::handleListDeleteBatch() puts the ticked ids into
+	 * delete_confirm_value, renders the confirm screen, and on the answer takes
+	 * the selection back out of that field. multiselect is not part of that
+	 * request, and nothing requires the confirm screen to have been rendered
+	 * first: the field and the confirm trigger posted together delete in one
+	 * round trip. A guard that reads only the checkbox column is looking at an
+	 * empty selection at the moment the rows are removed.
+	 *
+	 * Deleting the account is the destructive end of the rule beforeUpdate()
+	 * applies to rewriting it, so it answers to the same permission.
+	 *
+	 * The ordinary member goes first, and their row has to be gone: a route
+	 * that deleted nothing would make the refusal below meaningless.
+	 */
+	public function aDelegatedAdministratorCannotBatchDeleteAnAdministrator(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a confirmed batch delete of an administrator to a delegated administrator');
+
+		$victimId = $this->seedVictim($I);
+		$adminId = $this->seedOtherAdmin($I);
+		$this->loginAsDelegatedAdmin($I, 'p7rp4admin');
+
+		$this->sendConfirmedBatchDelete($I, self::ROUTE_LIST, $victimId);
+
+		$I->dontSeeInDatabase('e107_user', array('user_id' => $victimId));
+
+		$this->sendConfirmedBatchDelete($I, self::ROUTE_LIST, $adminId);
+
+		$I->seeInDatabase('e107_user', array('user_id' => $adminId));
+	}
+
+	/**
+	 * Positive control for the delete half of the guard, in the same shape as
+	 * the one above it: an administrator who may modify admin perms must still
+	 * be able to remove another administrator's account.
+	 */
+	public function anAdministratorWhoMayModifyAdminPermsStillBatchDeletesAnAdministrator(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the batch delete of an administrator working for a caller holding 3');
+
+		$adminId = $this->seedOtherAdmin($I);
+		$this->loginAsDelegatedAdmin($I, 'p7rpPermsadmin');
+
+		$this->sendConfirmedBatchDelete($I, self::ROUTE_LIST, $adminId);
+
+		$I->dontSeeInDatabase('e107_user', array('user_id' => $adminId));
+	}
+
+	/**
+	 * {@see e_admin_ui::ListBatchTrigger()} drops the whole submission on a posted cancel, so the
+	 * rule stands aside for one and writes no refusal. The caller is the one refused above,
+	 * which is what gives the audit-log assertion its teeth; the surviving row asserts the
+	 * dispatcher's own early return, base code this branch does not touch.
+	 */
+	public function aCancelledBatchDeleteNeitherDeletesNorRefuses(AcceptanceTester $I)
+	{
+		$I->wantTo('Leave a cancelled batch delete unrefused as well as undone');
+
+		$adminId = $this->seedOtherAdmin($I);
+		$this->loginAsDelegatedAdmin($I, 'p7rp4admin');
+
+		$this->sendCancelledBatchDelete($I, self::ROUTE_LIST, $adminId);
+
+		$I->seeInDatabase('e107_user', array('user_id' => $adminId));
+		$I->dontSeeInDatabase('e107_admin_log', array('dblog_remarks like' => '%Refused the batch%'));
+	}
+
 	// -----------------------------------------------------------------
 	// the maintenance write that runs whatever the route
 	// -----------------------------------------------------------------
@@ -870,14 +941,62 @@ class AdminRoutePermsCest
 	 */
 	private function sendBatch(AcceptanceTester $I, $route, $trigger, $id)
 	{
-		$token = $this->grabTokenFrom($I, $route);
-
-		$I->sendPostRequest($route, array(
+		$this->postWithToken($I, $route, array(
 			'etrigger_batch'    => $trigger,
 			'e__execute_batch'  => 'Go',
 			'multiselect'       => array($id => $id),
-			'e-token'           => $token,
 		));
+	}
+
+	/**
+	 * Post the request a batch delete is finished by: the ids travel in
+	 * delete_confirm_value, which {@see e_admin_ui::handleListDeleteBatch()} reads
+	 * in place of the selection once the confirm trigger is present.
+	 *
+	 * @param string $route
+	 * @param int $id row to delete
+	 * @return void
+	 */
+	private function sendConfirmedBatchDelete(AcceptanceTester $I, $route, $id)
+	{
+		$this->postWithToken($I, $route, array(
+			'etrigger_batch'          => 'delete',
+			'e__execute_batch'        => 'Go',
+			'etrigger_delete_confirm' => 'Confirm',
+			'delete_confirm_value'    => $id,
+		));
+	}
+
+	/**
+	 * Post the shape a confirm screen's Cancel button posts for a selection of two or more: the
+	 * ids and the cancel key, and not the confirm key, because a browser sends the button that
+	 * was clicked and not its sibling. A one-row selection posts etrigger_delete keyed by the id
+	 * instead, which reaches {@see e_admin_ui::ListDeleteTrigger()} and never
+	 * {@see users_admin_ui::refusesBatch()}.
+	 *
+	 * @param string $route
+	 * @param int $id row the cancelled delete would have removed
+	 * @return void
+	 */
+	private function sendCancelledBatchDelete(AcceptanceTester $I, $route, $id)
+	{
+		$this->postWithToken($I, $route, array(
+			'etrigger_batch'       => 'delete',
+			'delete_confirm_value' => $id,
+			'etrigger_cancel'      => 'Cancel',
+		));
+	}
+
+	/**
+	 * @param string $route
+	 * @param array $payload posted keys, which the route's own e-token is added to
+	 * @return void
+	 */
+	private function postWithToken(AcceptanceTester $I, $route, array $payload)
+	{
+		$payload['e-token'] = $this->grabTokenFrom($I, $route);
+
+		$I->sendPostRequest($route, $payload);
 	}
 
 	/**
@@ -1182,6 +1301,9 @@ switch(isset(\$_GET['act']) ? \$_GET['act'] : '')
 		// is actually sent, but the rows outlive the request that made them.
 		\$db->delete('mail_recipients', "mail_recipient_name LIKE 'p7rp%'");
 		\$db->delete('mail_content', "mail_title = 'RESEND ACTIVATION'");
+
+		// Refusals from earlier tests in this Cest, which a later one asserts the absence of.
+		\$db->delete('admin_log', "dblog_remarks LIKE '%Refused the batch%'");
 
 		\$core->set('user_new_period', $safe)->save(false, true, false);
 
