@@ -2275,7 +2275,7 @@ class e_parse
 	 *
 	 * @param array $attributes Behaviour attributes without their prefix, e.g. `['toggle' => 'collapse', 'target' => '#sub-1']`
 	 * @return array Attribute name-value pairs, ready for {@see e_parse::toAttributes()}
-	 * @deprecated v2.4.0 Stopgap while core markup is still framework-coupled. Framework spellings belong in template
+	 * @deprecated v2.3.12 Stopgap while core markup is still framework-coupled. Framework spellings belong in template
 	 *             packs (issue #5909); reach for a template override before calling this from new code.
 	 */
 	public function bootstrapData($attributes)
@@ -2298,7 +2298,7 @@ class e_parse
 	 * Emit one or the other, never both: Bootstrap 3 also ships `.show` as a `display: block !important` utility.
 	 *
 	 * @return string
-	 * @deprecated v2.4.0 Stopgap while core markup is still framework-coupled. Framework spellings belong in template
+	 * @deprecated v2.3.12 Stopgap while core markup is still framework-coupled. Framework spellings belong in template
 	 *             packs (issue #5909); reach for a template override before calling this from new code.
 	 */
 	public function bootstrapShowClass()
