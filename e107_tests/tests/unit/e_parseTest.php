@@ -1572,6 +1572,20 @@ EXPECTED;
 		self::assertEquals($expected, $actual);
 	}
 
+	public function testToAttributesKeepsMeaningfulEmptyValues()
+	{
+		$input = [
+			"alt"   => "",
+			"value" => "",
+			"title" => "",
+		];
+		$expected = " alt='' value=''";
+
+		$actual = $this->tp->toAttributes($input);
+
+		self::assertEquals($expected, $actual);
+	}
+
 	public function testToAttributesMixedPureAndReplaceConstants()
 	{
 		$input = [
@@ -2818,7 +2832,8 @@ EXPECTED;
 				'parms'    => array('w' => 50, 'h' => 50, 'crop' => false),
 				'expected' => array(
 					"thumb.php?src=e_IMAGE%2Fgeneric%2Fblank_avatar.jpg&amp;w=50&amp;h=50",
-					"class='img-rounded rounded user-avatar'"
+					"class='img-rounded rounded user-avatar'",
+					"alt=''"
 				)
 			),
 			3 => array(
@@ -2854,7 +2869,7 @@ EXPECTED;
 				'expected' => array(
 					"thumb.php?src=e_AVATAR%2Fdefault%2Favatartest.png&amp;w=30&amp;h=30",
 					"class='img-circle rounded-circle user-avatar'",
-					'alt="mytitle"',
+					"alt='mytitle'",
 				)
 			),
 
@@ -2909,6 +2924,158 @@ EXPECTED;
 		}
 
 
+	}
+
+	/**
+	 * Parse an {@see e_parse::toAvatar()} result and return its img element.
+	 * @param string $html
+	 * @return DOMElement
+	 */
+	private function avatarTag($html)
+	{
+		$doc = new DOMDocument();
+		$doc->loadHTML('<body>' . $html . '</body>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+
+		return $doc->getElementsByTagName('img')->item(0);
+	}
+
+	/**
+	 * A remote avatar whose host has gone away must fall back to the generic
+	 * avatar in the browser, without the server ever fetching the URL itself.
+	 * @see https://github.com/e107inc/e107/pull/5311
+	 */
+	public function testToAvatarRemoteImageCarriesAClientSideFallback()
+	{
+		$parms = array('w' => 50, 'h' => 50, 'crop' => false);
+
+		$remote = $this->avatarTag($this->tp->toAvatar(array('user_image' => 'https://mydomain.com/remoteavatar.jpg'), $parms));
+
+		self::assertEquals('https://mydomain.com/remoteavatar.jpg', $remote->getAttribute('src'));
+
+		$onError = $remote->getAttribute('onerror');
+
+		self::assertStringStartsWith("this.onerror=null;this.src='", $onError);
+		self::assertStringEndsWith("';", $onError);
+		self::assertStringContainsString('thumb.php?src=e_IMAGE%2Fgeneric%2Fblank_avatar.jpg&w=50&h=50', $onError);
+		self::assertStringNotContainsString('&amp;', $onError);
+
+		$local = $this->avatarTag($this->tp->toAvatar(array('user_image' => 'avatartest.png'), $parms));
+
+		self::assertFalse($local->hasAttribute('onerror'));
+	}
+
+	/**
+	 * A remote avatar URL is encoded as an attribute value, so a quote or an
+	 * ampersand in it survives the round trip instead of ending the attribute.
+	 * @see https://github.com/e107inc/e107/pull/5311
+	 */
+	public function testToAvatarEncodesTheRemoteImageUrl()
+	{
+		$image = "https://mydomain.com/remoteavatar.jpg?x=1&y=2'";
+
+		$img = $this->avatarTag($this->tp->toAvatar(array('user_image' => $image), array('w' => 50, 'h' => 50, 'crop' => false)));
+
+		self::assertEquals($image, $img->getAttribute('src'));
+	}
+
+	/**
+	 * A remote avatar URL is a URL and not template text, so an {e_...} token in
+	 * one stays as it was typed instead of expanding into a local path.
+	 * @see https://github.com/e107inc/e107/pull/5311
+	 */
+	public function testToAvatarLeavesConstantsInTheRemoteImageUrlAlone()
+	{
+		$image = 'https://mydomain.com/{e_IMAGE}remoteavatar.jpg';
+
+		$img = $this->avatarTag($this->tp->toAvatar(array('user_image' => $image), array('w' => 50, 'h' => 50, 'crop' => false)));
+
+		self::assertEquals($image, $img->getAttribute('src'));
+	}
+
+	/**
+	 * An administrator sees the raw user_image as the alt text, so it has to be
+	 * encoded as an attribute value rather than dropped between quotes.
+	 * @see https://github.com/e107inc/e107/pull/5311
+	 */
+	public function testToAvatarEncodesTheAdminAltText()
+	{
+		if (!deftrue('ADMIN'))
+		{
+			self::markTestSkipped('toAvatar() only puts the raw user_image in alt for an administrator.');
+		}
+
+		$image = 'https://mydomain.com/remoteavatar.jpg?q="x';
+
+		$img = $this->avatarTag($this->tp->toAvatar(array('user_image' => $image), array('w' => 50, 'h' => 50, 'crop' => false)));
+
+		self::assertEquals($image, $img->getAttribute('alt'));
+	}
+
+	/**
+	 * The caller's id and style reach the tag as attribute values, quotes and all.
+	 * @see https://github.com/e107inc/e107/pull/5311
+	 */
+	public function testToAvatarEncodesIdAndStyle()
+	{
+		$parms = array(
+			'w'     => 50,
+			'h'     => 50,
+			'crop'  => false,
+			'id'    => "av'1",
+			'style' => "background:url('x.png')",
+		);
+
+		$img = $this->avatarTag($this->tp->toAvatar(array('user_image' => 'avatartest.png'), $parms));
+
+		self::assertEquals("av'1", $img->getAttribute('id'));
+		self::assertEquals("background:url('x.png')", $img->getAttribute('style'));
+	}
+
+	/**
+	 * {USER_AVATAR=picture.png} reaches toAvatar() with a string where the
+	 * options array is expected, so nothing may subscript $options by reference.
+	 * @see https://github.com/e107inc/e107/pull/5311
+	 */
+	public function testToAvatarAcceptsStringOptionsFromAShortcode()
+	{
+		$image = 'https://mydomain.com/remoteavatar.jpg';
+
+		$img = $this->avatarTag($this->tp->toAvatar(array('user_image' => $image), $image));
+
+		self::assertEquals($image, $img->getAttribute('src'));
+	}
+
+	/**
+	 * A remote avatar embedded as base64 cannot fail to load, so it is left
+	 * without the fallback attribute.
+	 * @see https://github.com/e107inc/e107/pull/5311
+	 */
+	public function testToAvatarBase64RemoteImageCarriesNoFallback()
+	{
+		$registryId = 'core/e107/singleton/e_file';
+		$originalFile = e107::getRegistry($registryId);
+		$remoteBytes = file_get_contents(codecept_data_dir() . 'icon_64.png');
+		$stubFile = $this->make('e_file', array(
+			'getRemoteContent' => function () use ($remoteBytes) { return $remoteBytes; },
+		));
+		e107::setRegistry($registryId, $stubFile);
+
+		try
+		{
+			$result = $this->tp->toAvatar(
+				array('user_image' => 'https://mydomain.com/remoteavatar.jpg'),
+				array('w' => 50, 'h' => 50, 'crop' => false, 'base64' => true)
+			);
+		}
+		finally
+		{
+			e107::setRegistry($registryId, $originalFile);
+		}
+
+		$img = $this->avatarTag($result);
+
+		self::assertStringStartsWith('data:image/jpg;base64,', $img->getAttribute('src'));
+		self::assertFalse($img->hasAttribute('onerror'));
 	}
 
 	public function testToIcon()
