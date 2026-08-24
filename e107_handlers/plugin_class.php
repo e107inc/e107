@@ -673,7 +673,7 @@ class e_plugin
 		}
 
 
-        if(e_PAGE == 'e107_update.php')
+        if(defset('e_PAGE') == 'e107_update.php')
         {
             return null;
         }

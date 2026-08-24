@@ -322,6 +322,9 @@ class Acceptance extends E107Base
 	 * Uninstall a plugin and drop its tables, leaving the state a fresh install
 	 * leaves. Safe to call for a plugin that was never installed.
 	 *
+	 * Call it before deleting a fixture plugin's directory: the probe rebuilds
+	 * the detected-plugin list, and a folder that has gone loses its table row.
+	 *
 	 * @param string $plugin plugin folder name
 	 * @return void
 	 */
@@ -413,6 +416,9 @@ function e107_test_plugin_installed($folder)
 
 	return is_array($installed) && isset($installed[$folder]);
 }
+
+// A stale detected-plugin cache prunes the new plugin's row as an orphan.
+e107::getPlug()->clearCache();
 
 $plugin = e107::getPlugin();
 
