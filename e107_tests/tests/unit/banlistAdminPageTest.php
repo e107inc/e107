@@ -9,17 +9,22 @@
 
 /**
  * e107_admin/banlist.php is an entry point that cannot be included from a test,
- * so the custom batch option it declares is checked for a handler against the
- * source.
+ * so its two structural obligations are checked against the source: the custom
+ * batch option it declares has a handler, and it calls nothing that only exists
+ * inside the sibling banlist_export.php entry point.
  */
 class banlistAdminPageTest extends \Test\Unit
 {
 	/** @var string */
 	private $page;
 
+	/** @var string */
+	private $exportPage;
+
 	protected function _before()
 	{
 		$this->page = e_ADMIN . 'banlist.php';
+		$this->exportPage = e_ADMIN . 'banlist_export.php';
 	}
 
 	public function testFailedLoginDeleteAllBatchOptionHasAHandler()
@@ -30,6 +35,18 @@ class banlistAdminPageTest extends \Test\Unit
 		$this->assertContains('handleListDeleteAllBatch', $methods['failed_ui'],
 			"The 'delete-all' batch option needs a handleListDeleteAllBatch() handler, "
 			. 'or e_admin_controller_ui::_handleListBatch() treats "delete-all" as a column name.');
+	}
+
+	public function testBanlistPageCallsNoHelperOwnedByTheExportPage()
+	{
+		$leaked = array_values(array_intersect(
+			$this->globalFunctionCalls($this->page),
+			$this->declaredFunctions($this->exportPage)
+		));
+
+		$this->assertSame(array(), $leaked,
+			'banlist.php never includes banlist_export.php, so a call into it is a fatal: '
+			. implode(', ', $leaked));
 	}
 
 	// ---- source helpers ----
@@ -180,4 +197,31 @@ class banlistAdminPageTest extends \Test\Unit
 		return $found;
 	}
 
+	private function declaredFunctions($file)
+	{
+		$found = array();
+		$this->walk($file, function ($kind, $name, $class) use (&$found)
+		{
+			if($kind === 'function' && $class === null)
+			{
+				$found[] = $name;
+			}
+		});
+
+		return $found;
+	}
+
+	private function globalFunctionCalls($file)
+	{
+		$found = array();
+		$this->walk($file, function ($kind, $name, $class) use (&$found)
+		{
+			if($kind === 'call')
+			{
+				$found[$name] = $name;
+			}
+		});
+
+		return array_values($found);
+	}
 }
