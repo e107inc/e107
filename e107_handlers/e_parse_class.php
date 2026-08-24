@@ -2146,7 +2146,19 @@ class e_parse
 		}
 		elseif (is_string($mixed))
 		{
-			return iconv('UTF-8', 'UTF-8//IGNORE', mb_convert_encoding($mixed, 'UTF-8', 'ISO-8859-1'));
+			if (function_exists('mb_convert_encoding'))
+			{
+				$converted = mb_convert_encoding($mixed, 'UTF-8', 'ISO-8859-1');
+
+				return function_exists('iconv') ? iconv('UTF-8', 'UTF-8//IGNORE', $converted) : $converted;
+			}
+
+			if (function_exists('iconv'))
+			{
+				return iconv('ISO-8859-1', 'UTF-8', $mixed);
+			}
+
+			return $mixed;
 		}
 
 		return $mixed;
