@@ -2852,43 +2852,56 @@ class e_file
 
 
 		/**
-		 * Returns true is the URL is valid and false if it is not.
+		 * Whether $url answers, over a request pinned to the addresses
+		 * {@see e_file::resolveOutboundTarget()} resolved for it and to no others.
 		 *
-		 * @param $url
+		 * Does not follow redirects: nothing would revalidate the target a Location
+		 * lands on, and a 302 counts as reachable here anyway, so the answer about
+		 * the URL as handed in is the same either way.
+		 *
+		 * @param string $url
 		 * @return bool
 		 */
 		public function isValidURL($url)
 		{
 
-			if(!$this->isUrlSafe($url))
+			$target = $this->permittedOutboundTarget($url);
+
+			if($target === false)
 			{
 				return false;
 			}
 
-			ini_set('default_socket_timeout', 1);
+			$request = $this->pinnedRequest($url, $target);
 
-			// The probe must not follow redirects: nothing would revalidate the
-			// target it lands on. A 302 already counts as reachable below, so
-			// reporting on the URL as handed in leaves the answer unchanged.
-			//
-			// get_headers() only takes a context argument from PHP 7.1, and this
-			// has to hold on 5.6 too. The *default* context is the wrong place to
-			// carry it: on 5.6, once a stream has read through the default
-			// context, stream_context_set_default() no longer reaches the copy
-			// later reads take, so putting it back silently does nothing and every
-			// subsequent stream read in the request stops following redirects.
-			// fopen() has taken a context on every supported version, so the
-			// option travels with this one request and nothing global is touched.
-			$context = stream_context_create(array('http' => array(
+			if($request === false)
+			{
+				return false;
+			}
+
+			$http = array(
 				'follow_location' => 0,
 				'max_redirects'   => 1,
-				// Without this a 3xx or 4xx is an fopen() failure and the status
-				// line, which is the whole answer, never arrives.
 				'ignore_errors'   => true,
-			)));
+				'timeout'         => 1,
+			);
+
+			if($request['host'] !== '')
+			{
+				$http['header'] = 'Host: ' . $request['host'];
+			}
+
+			$context = stream_context_create(array(
+				'http' => $http,
+				'ssl'  => array(
+					'verify_peer'      => true,
+					'verify_peer_name' => true,
+					'peer_name'        => $target['host'],
+				),
+			));
 
 			$headers = array();
-			$stream  = @fopen($url, 'r', false, $context);
+			$stream  = @fopen($request['url'], 'r', false, $context);
 
 			if($stream !== false)
 			{
@@ -2897,12 +2910,9 @@ class e_file
 				fclose($stream);
 			}
 
-			if(empty($headers[0]))
-			{
-				return false;
-			}
+			$status = $this->headerStatus($headers);
 
-			return (stripos($headers[0], "200 OK") || strpos($headers[0], "302"));
+			return ($status === 200 || $status === 302);
 		}
 
 
