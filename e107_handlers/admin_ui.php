@@ -4112,6 +4112,41 @@ class e_admin_controller_ui extends e_admin_controller
 
 
 	/**
+	 * Whether a posted batch trigger carries its target field in its second segment, as
+	 * {@see e_admin_controller_ui::_handleListBatch()} dispatches it.
+	 *
+	 * @param string $type leading segment of the posted batch trigger
+	 * @return bool
+	 */
+	protected function isTypedBatchTrigger($type)
+	{
+		return in_array($type, array('sefgen', 'bool', 'boolreverse', 'attach', 'deattach',
+			'addAll', 'clearAll', 'ucadd', 'ucremove', 'ucaddall', 'ucdelall'), true);
+	}
+
+	/**
+	 * Whether a posted batch trigger may address the named field: it must carry the 'batch' flag
+	 * {@see e_admin_form_ui::renderBatchFilter()} builds the menu from, and must not be declared
+	 * 'data' => false, the declaration {@see e_admin_ui::_setModel()} keeps out of dataFields.
+	 * An omitted or null 'data' is the common case on a real column and stays permitted.
+	 *
+	 * @param string $field field segment of the posted batch trigger
+	 * @return bool
+	 */
+	protected function isBatchField($field)
+	{
+		if(!is_string($field) || !$this->getFieldAttr($field, 'batch', false)
+			|| $this->getFieldAttr($field, 'data', null) === false)
+		{
+			e107::getMessage()->addDebug('Unhandled batch field: ' .var_export($field, true));
+
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Handle posted batch options routine
 	 * @param string $batch_trigger
 	 * @return e_admin_controller_ui
@@ -4155,19 +4190,36 @@ class e_admin_controller_ui extends e_admin_controller
 			$actionName = 'List';
 		}
 
+		if($this->isTypedBatchTrigger($trigger[0]) && !$this->isBatchField(varset($trigger[1], '')))
+		{
+			return $this;
+		}
 
 		switch($trigger[0])
 		{
 
 			case 'sefgen':
 				$field = $trigger[1];
-				$value = $trigger[2];
+				$value = varset($trigger[2]);
 
 				//handleListBatch(); for custom handling of all field names
 				if(empty($selected))
 				{
 					return $this;
 				}
+
+				$parms = $this->getFieldAttr($field, 'writeParms', array());
+				if(!is_array($parms))
+				{
+					parse_str($parms, $parms);
+				}
+
+				if(empty($parms['sef']) || (string) $parms['sef'] !== (string) $value)
+				{
+					e107::getMessage()->addDebug('Unhandled batch sef source: ' .var_export($value, true));
+					break;
+				}
+
 				$method = 'handle'.$actionName.'SefgenBatch';
 				if(method_exists($this, $method)) // callback handling
 				{
@@ -4196,7 +4248,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 				if(empty($selected) && !$this->getPosted('etrigger_delete_confirm')) // it's a delete batch, confirm screen
 				{
-					$params = $this->getFieldAttr($trigger[1], 'writeParms', array());
+					$params = $this->getFieldAttr(varset($trigger[1], ''), 'writeParms', array());
 					if(!is_array($params))
 					{
 						parse_str($params, $params);
@@ -4359,10 +4411,8 @@ class e_admin_controller_ui extends e_admin_controller
 					break;
 				}
 
-				$declaredFields = $this->getFields();
-				if(empty($declaredFields[$field]['batch']))
+				if(!$this->isBatchField($field))
 				{
-					e107::getMessage()->addDebug('Unhandled batch field: ' .$field);
 					break;
 				}
 

@@ -1297,10 +1297,7 @@ class users_admin_ui extends e_admin_ui
 			return false;
 		}
 
-		$typed = array('sefgen', 'bool', 'boolreverse', 'attach', 'deattach', 'addAll',
-			'clearAll', 'ucadd', 'ucremove', 'ucaddall', 'ucdelall');
-
-		$field = in_array($type, $typed, true) ? varset($trigger[1], '') : $type;
+		$field = $this->isTypedBatchTrigger($type) ? varset($trigger[1], '') : $type;
 
 		if(!$this->getFieldAttr($field, 'batch', false))
 		{
