@@ -4346,16 +4346,23 @@ class e_admin_controller_ui extends e_admin_controller
 			// handleListCopyBatch etc.
 			default:
 				$field = $trigger[0];
-				$value = $trigger[1];
+				$value = varset($trigger[1]);
 
 				//something like handleListUrlTypeBatch(); for custom handling of 'url_type' field name
 				$method = 'handle'.$actionName.$this->getRequest()->camelize($field).'Batch';
 
-				e107::getMessage()->addDebug('Searching for custom batch method: ' .$method. '(' .$selected. ',' .$value. ')');
+				e107::getMessage()->addDebug('Searching for custom batch method: ' .$method. '(' .implode(',', $selected). ',' .$value. ')');
 
 				if(method_exists($this, $method)) // callback handling
 				{
 					$this->$method($selected, $value);
+					break;
+				}
+
+				$declaredFields = $this->getFields();
+				if(empty($declaredFields[$field]['batch']))
+				{
+					e107::getMessage()->addDebug('Unhandled batch field: ' .$field);
 					break;
 				}
 

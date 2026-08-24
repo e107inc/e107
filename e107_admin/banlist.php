@@ -899,32 +899,24 @@ class banlist_form_ui extends e_admin_form_ui
 		// optional
 		public function init()
 		{
-			if(varset($_POST['etrigger_batch']) == 'gen_intdata__1' && count($_POST['e-multiselect'])) // Do we need BAN here?
-			{
-				$dels = implode(',',$_POST['e-multiselect']);
-				//$e107::getDb()->insert('banlist',
-			}
-
 			$allFailedTotal = e107::getDB()->createQueryBuilder()->from('generic')
 				->where('gen_type', 'failed_login')->count();
 
 			$this->batchOptions = array('delete-all'=>str_replace('[x]', $allFailedTotal, BANLAN_127));
-
-			if(!empty($_POST['etrigger_batch']) && $_POST['etrigger_batch'] == "delete-all")
-			{
-				$this->deleteAllFailed();
-			}
-
-		
 		}
 
-		private function deleteAllFailed()
+		/**
+		 * Batch handler for the 'delete-all' option; dispatched by {@see e_admin_controller_ui::_handleListBatch()}.
+		 */
+		public function handleListDeleteAllBatch($selected = null)
 		{
 
 			if(e107::getDB()->createQueryBuilder()->delete('generic')->where('gen_type', 'failed_login')->execute())
 			{
 				e107::getMessage()->addSuccess(LAN_DELETED);
 			}
+
+			$this->getTreeModel()->loadBatch(true);
 		}
 
 		public function afterDelete($deleted_data, $id, $deleted_check)
