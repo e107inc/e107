@@ -87,6 +87,30 @@ class contact_front
 	}
 
 	/**
+	 * A visitor's words, ready to put in the message the site sends itself.
+	 *
+	 * Two things happen to this text after it is returned. It is assembled
+	 * into an HTML mail, so anything that parses as markup on the way in is
+	 * markup by the time an administrator opens it. {@see e_parse::filter()}
+	 * answers that, and answers BBCode with it, because nothing renders a tag
+	 * out of text whose brackets have been escaped.
+	 *
+	 * Then {@see e107Email::arraySet()} substitutes the assembled body into
+	 * the mail template and parses the result, so a shortcode written into a
+	 * contact message is expanded on the way out. The braces are encoded
+	 * rather than removed: the parser matches a literal brace, and a mail
+	 * client renders the entity as the brace the visitor typed.
+	 *
+	 * @param string $text
+	 * @return string
+	 */
+	private function textForTheEmail($text)
+	{
+		return str_replace(array('{', '}'), array('&#123;', '&#125;'),
+			e107::getParser()->filter($text));
+	}
+
+	/**
 	 * Did this submission come from a document this site rendered?
 	 *
 	 * A request that carries no cookie is exempt from the core check in
@@ -195,7 +219,7 @@ class contact_front
 		$sender_name = $tp->toEmail($_POST['author_name'], true, 'RAWTEXT');
 		$sender = check_email($_POST['email_send']);
 		$subject = $tp->toEmail($_POST['subject'], true, 'RAWTEXT');
-		$body = nl2br($tp->toEmail(strip_tags($_POST['body']), true, 'RAWTEXT'));
+		$body = nl2br($this->textForTheEmail($_POST['body']));
 
 		$email_copy = !empty($_POST['email_copy']) ? 1 : 0;
 
@@ -267,7 +291,7 @@ class contact_front
 			{
 				foreach($_POST as $k => $v)
 				{
-					$body .= "<tr><td>" . $k . ":</td><td>" . $tp->toEmail($v, true, 'RAWTEXT') . "</td></tr>";
+					$body .= "<tr><td>" . $this->textForTheEmail($k) . ":</td><td>" . $this->textForTheEmail($v) . "</td></tr>";
 				}
 			}
 
