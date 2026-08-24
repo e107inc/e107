@@ -24,7 +24,7 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 	 * - ids (string): comma separated id list - load specific featurebox items, default empty 
 	 * 
 	 * @param string $parm parameters
-	 * @param string $mod category template
+	 * @param string $mod category sef, or category template on a site whose sefs are still empty
 	 * @example {FEATUREBOX|tabs=cols=2}
 	 */
 	function sc_featurebox($parm=null, $mod = '')
@@ -77,6 +77,7 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 			return '';
 		}
 		
+		$ctemplate = $this->categoryTemplate($category, $ctemplate);
 		$tmpl = $this->getFboxTemplate($ctemplate);
 		
 		
@@ -129,7 +130,7 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 	 * - uselimit (boolean): ignore 'limit' field , use 'total' items number for navigation looping
 	 * 
 	 * @param string $parm parameters
-	 * @param string $mod category template
+	 * @param string $mod category sef, or category template on a site whose sefs are still empty
 	 */
 	function sc_featurebox_navigation($parm=null, $mod = '')
 	{
@@ -162,7 +163,7 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 		{
 			return '';
 		}
-		$tmpl = $this->getFboxTemplate($ctemplate);
+		$tmpl = $this->getFboxTemplate($this->categoryTemplate($category, $ctemplate));
 		
 		if($category->get('fb_category_random'))
 		{
@@ -284,7 +285,7 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 	 * - limit (int): load to
 	 * 
 	 * @param string $parm parameters
-	 * @param string $mod category template
+	 * @param string $mod category sef, or category template on a site whose sefs are still empty
 	 */
 	function sc_featurebox_items($parm=null, $mod = '')
 	{
@@ -313,7 +314,7 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 		{
 			return '';
 		}
-		return $this->render($category, $ctemplate, $parm);
+		return $this->render($category, $this->categoryTemplate($category, $ctemplate), $parm);
 	}
 	
 	/**
@@ -430,6 +431,21 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 	}
 	
 	/**
+	 * The template a loaded category renders through, which is no longer the same
+	 * string as the address that found it.
+	 *
+	 * @param plugin_featurebox_category $category
+	 * @param string $fallback address the caller asked for, used while the category carries no template of its own
+	 * @return string
+	 */
+	protected function categoryTemplate($category, $fallback)
+	{
+		$template = (string) $category->get('fb_category_template');
+
+		return $template !== '' ? $template : $fallback;
+	}
+
+	/**
 	 * Retrieve template array by category
 	 * 
 	 * @param string $ctemplate
@@ -496,7 +512,7 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 		{
 			$legacy = new plugin_featurebox_category();
 
-			if($legacy->loadByTemplate('bootstrap_carousel')->hasData())
+			if($legacy->loadBySef('bootstrap_carousel')->hasData())
 			{
 				return 'bootstrap_carousel';
 			}
@@ -506,18 +522,18 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 	}
 
 	/**
-	 * Get category model by template
-	 * @param string $template
+	 * Get category model by address
+	 * @param string $address category sef, or category template on a site whose sefs are still empty
 	 * @return plugin_featurebox_category
 	 */
-	public function getCategoryModel($template, $force = false)
+	public function getCategoryModel($address, $force = false)
 	{
 		
-		if(!isset($this->_categories[$template]))
+		if(!isset($this->_categories[$address]))
 		{		
-			$this->_categories[$template] = new plugin_featurebox_category();
-			$this->_categories[$template]->loadByTemplate($template, $force);
+			$this->_categories[$address] = new plugin_featurebox_category();
+			$this->_categories[$address]->loadBySef($address, $force);
 		}
-		return $this->_categories[$template];
+		return $this->_categories[$address];
 	}
 }

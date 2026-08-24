@@ -41,4 +41,9 @@ return [
     'FBLAN_34' => "Unassigned",
     'FBLAN_35' => "Carousel",
     'FBLAN_36' => "Tabs",
+    'LAN_FEATUREBOX_SEF' => "Shortcode name",
+    'LAN_FEATUREBOX_SEF_HELP' => "How a layout addresses this category, as {FEATUREBOX|my-category}. Letters, numbers, - and _ only; anything else is converted.",
+    'LAN_FEATUREBOX_SEF_EMPTY' => "Please give this category a shortcode name containing letters, numbers, - or _.",
+    'LAN_FEATUREBOX_SEF_TAKEN' => "Another category already uses that shortcode name. Please choose a different one.",
+    'LAN_FEATUREBOX_LAYOUT_RESERVED' => "The Unassigned layout belongs to the system category. Please choose a different layout.",
 ];
