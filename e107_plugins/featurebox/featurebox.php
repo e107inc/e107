@@ -70,6 +70,12 @@ if(!$fb_rendertype)
 }
 else 
 {
-	require_once(e_PLUGIN."featurebox/templates/".$fb_template.".php");
-	echo $FB_TEMPLATE;
+	$fb_templates = e_PLUGIN."featurebox/templates/";
+	$fb_file = e107::getFile()->resolveSendPath($fb_templates.$fb_template.".php", array($fb_templates));
+
+	if($fb_file !== false)
+	{
+		require_once($fb_file);
+		echo $FB_TEMPLATE;
+	}
 }
