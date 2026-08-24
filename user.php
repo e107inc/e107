@@ -173,14 +173,19 @@ else
 		}
 		else
 		{
-			$qs = explode(".", e_QUERY);
 			$from = intval($qs[0]);
-			$records = intval($qs[1]);
-			$order = ($qs[2] == 'ASC' ? 'ASC' : 'DESC');
+			$records = isset($qs[1]) ? intval($qs[1]) : 0;
+			$order = (varset($qs[2]) === 'ASC' ? 'ASC' : 'DESC');
 		}
 	}
 }
-if (vartrue($records) > 50)
+$records = (int) vartrue($records, 20);
+
+if ($records < 1)
+{
+	$records = 20;
+}
+elseif ($records > 50)
 {
 	$records = 50;
 }
@@ -281,7 +286,8 @@ if (isset($id))
 
 	$ns->tablerender(LAN_USER_52, $text, 'user-list');
 
-	$parms = $users_total.",".$records.",".$from.",".e_SELF.'?[FROM].'.$records.".".$order;
+	$listUrl = e107::getUrl()->create('user/profile/list', array('page' => '--FROM--', 'records' => $records, 'order' => $order), array('full' => 1));
+	$parms = $users_total.",".$records.",".$from.",".str_replace('--FROM--', '[FROM]', $listUrl);
 	echo "<div class='nextprev form-inline'>&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}")."</div>";
 
 
