@@ -1334,6 +1334,80 @@ class db_verify implements EngineCharsetResolverInterface
 
 
 	/**
+	 * The statements that take one live table's character columns through binary and back to utf8mb4, each built on the server's own column definition so that nothing but the type and the character set changes.
+	 *
+	 * A char or varchar becomes a varbinary wide enough for every byte it can hold at its present character set, so nothing is cut; a column under a FULLTEXT index cannot become binary, so it is converted in the second step alone.
+	 *
+	 * @param string $physical table name, prefix included
+	 * @param string[] $columns the columns to convert; one the server does not define, or that is not a char or text type, is skipped
+	 * @return array ['binary' => string[], 'restore' => string[]]
+	 * @throws InvalidArgumentException when the table name is not one the schema builder will quote
+	 */
+	public function utf8ConversionStatements($physical, array $columns)
+	{
+
+		$logical = (MPREFIX !== '' && strpos($physical, MPREFIX) === 0) ? (string) substr($physical, strlen(MPREFIX)) : $physical;
+		$create = e107::getDb()->schema()->getCreateTablePhysical($logical);
+		$statement = is_string($create) ? Materialiser::splitCreateStatement($create) : null;
+
+		if($statement === null)
+		{
+			return array('binary' => array(), 'restore' => array());
+		}
+
+		$definitions = Materialiser::definitionsByName($statement['body']);
+		$fulltext = array();
+		$bytesPerChar = array();
+		$sql = e107::getDb();
+
+		if($sql->execute('SELECT c.COLUMN_NAME, cs.MAXLEN FROM information_schema.COLUMNS c JOIN information_schema.CHARACTER_SETS cs ON cs.CHARACTER_SET_NAME = c.CHARACTER_SET_NAME WHERE c.TABLE_SCHEMA = DATABASE() AND c.TABLE_NAME = :table', array('table' => $physical)))
+		{
+			while($row = $sql->fetch())
+			{
+				$bytesPerChar[$row['COLUMN_NAME']] = (int) $row['MAXLEN'];
+			}
+		}
+
+		foreach($definitions['indexes'] as $index)
+		{
+			if(preg_match('/^FULLTEXT KEY `[^`]*` \((.*)\)/i', $index, $m))
+			{
+				foreach(explode(',', $m[1]) as $part)
+				{
+					$fulltext[trim($part, ' `')] = true;
+				}
+			}
+		}
+
+		$binary = array();
+		$restore = array();
+		$prefix = 'ALTER TABLE `' . str_replace('`', '``', $physical) . '` MODIFY ';
+
+		foreach($columns as $column)
+		{
+			if(!isset($definitions['columns'][$column], $bytesPerChar[$column])
+				|| !preg_match('/^(`[^`]+`\s+)((?:var)?char\((\d+)\)|(?:tiny|medium|long)?text)((?:\s+CHARACTER SET \w+)?(?:\s+COLLATE \w+)?)(.*)$/is', $definitions['columns'][$column], $m))
+			{
+				continue;
+			}
+
+			if(!isset($fulltext[$column]))
+			{
+				$binaryType = ($m[3] !== '')
+					? 'varbinary(' . ((int) $m[3] * $bytesPerChar[$column]) . ')'
+					: preg_replace('/text$/i', 'blob', $m[2]);
+
+				$binary[] = $prefix . $m[1] . $binaryType . $m[5] . ';';
+			}
+
+			$restore[] = $prefix . $m[1] . $m[2] . ' CHARACTER SET utf8mb4' . $m[5] . ';';
+		}
+
+		return array('binary' => $binary, 'restore' => $restore);
+	}
+
+
+	/**
 	 * The character set each compared table should carry, keyed by table name as reported, `lan_` prefix included; filled by {@see compare()} and {@see compareAll()}.
 	 *
 	 * @return array table => character set

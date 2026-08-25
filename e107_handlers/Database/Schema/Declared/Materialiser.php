@@ -197,14 +197,14 @@ final class Materialiser
 			throw new QueryException($this->_failure($table, 'the server would not state its own CREATE TABLE for the scratch table '.$this->scratchPhysical, $ddl));
 		}
 
-		$statement = self::_splitCreateStatement($create);
+		$statement = self::splitCreateStatement($create);
 
 		if($statement === null)
 		{
 			throw new QueryException($this->_failure($table, 'the server\'s own CREATE TABLE could not be split at its outer parentheses: '.$create, $ddl));
 		}
 
-		$definitions = self::_definitionsByName($statement['body']);
+		$definitions = self::definitionsByName($statement['body']);
 
 		$columns = array();
 
@@ -248,7 +248,7 @@ final class Materialiser
 	 * @param string $create
 	 * @return array|null ['body' => string, 'options' => string], everything after the closing parenthesis counting as options; null when the statement has no recognisable outer parentheses.
 	 */
-	private static function _splitCreateStatement($create)
+	public static function splitCreateStatement($create)
 	{
 		$lines = preg_split('/\r\n|\n|\r/', $create);
 		$body = array();
@@ -291,7 +291,7 @@ final class Materialiser
 	 * @param string $body
 	 * @return array ['columns' => name => string, 'indexes' => name => string]; a line defining neither, such as a CHECK constraint or a foreign key, is left out.
 	 */
-	private static function _definitionsByName($body)
+	public static function definitionsByName($body)
 	{
 		$columns = array();
 		$indexes = array();

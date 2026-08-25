@@ -20,12 +20,6 @@
         },
         {
             "file": "e107_admin/db.php",
-            "method": "execute",
-            "sql_excerpt": "{$query}",
-            "count": 1
-        },
-        {
-            "file": "e107_admin/db.php",
             "method": "gen",
             "sql_excerpt": "OPTIMIZE TABLE `{expr}`",
             "count": 1

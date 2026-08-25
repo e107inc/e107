@@ -1781,6 +1781,76 @@ DATA;
 		self::assertSame(($built !== false) ? 3072 : 767, $this->dbv->maxIndexKeyBytes('InnoDB'));
 	}
 
+	/**
+	 * Check charset's converter used to restate a column as bare `varbinary(N)` and `varchar(N) CHARACTER SET utf8mb4`,
+	 * so every column it touched came out `NULL DEFAULT NULL`. Built on the server's own definition, nothing else
+	 * about the column moves, and a FULLTEXT column, which cannot become binary, is converted in the second step alone.
+	 */
+	public function testUtf8ConversionStatementsChangeNothingButTheTypeAndCharacterSet()
+	{
+
+		$sql = e107::getDb();
+		$table = MPREFIX . 'dbvtest_convert';
+
+		$sql->gen('DROP TABLE IF EXISTS `' . $table . '`');
+		$sql->gen('CREATE TABLE `' . $table . "` (id int NOT NULL, a varchar(255) NOT NULL DEFAULT 'x' COMMENT 'kept', c char(10) NOT NULL DEFAULT '', t text NOT NULL, f varchar(100) NOT NULL DEFAULT '', e enum('a','b') NOT NULL DEFAULT 'a', PRIMARY KEY (id), FULLTEXT KEY f (f)) ENGINE=MyISAM DEFAULT CHARSET=utf8");
+		$sql->gen('INSERT INTO `' . $table . "` (id, a, c, t, f) VALUES (1, REPEAT(0xC3A9, 255), 'ab', 'body', 'words')");
+
+		try
+		{
+			$statements = $this->dbv->utf8ConversionStatements($table, array('a', 'c', 't', 'f', 'e', 'missing'));
+
+			self::assertCount(3, $statements['binary']);
+			self::assertStringContainsString("MODIFY `a` varbinary(765) NOT NULL DEFAULT 'x' COMMENT 'kept';", $statements['binary'][0], '255 characters of three-byte utf8 are 765 bytes');
+			self::assertStringContainsString("MODIFY `c` varbinary(30) NOT NULL DEFAULT '';", $statements['binary'][1], 'a char goes through varbinary, which does not pad');
+			self::assertStringContainsString('MODIFY `t` blob NOT NULL;', $statements['binary'][2]);
+
+			self::assertCount(4, $statements['restore']);
+			self::assertStringContainsString("MODIFY `a` varchar(255) CHARACTER SET utf8mb4 NOT NULL DEFAULT 'x' COMMENT 'kept';", $statements['restore'][0]);
+			self::assertStringContainsString("MODIFY `c` char(10) CHARACTER SET utf8mb4 NOT NULL DEFAULT '';", $statements['restore'][1]);
+			self::assertStringContainsString('MODIFY `t` text CHARACTER SET utf8mb4 NOT NULL;', $statements['restore'][2]);
+			self::assertStringContainsString("MODIFY `f` varchar(100) CHARACTER SET utf8mb4 NOT NULL DEFAULT '';", $statements['restore'][3]);
+
+			$run = array_merge(
+				$statements['binary'],
+				array('ALTER TABLE `' . $table . '` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci'),
+				$statements['restore']
+			);
+
+			foreach($run as $statement)
+			{
+				self::assertNotFalse($sql->gen($statement), $statement);
+			}
+
+			$sql->execute("SELECT COLUMN_NAME, IS_NULLABLE, COLUMN_DEFAULT, CHARACTER_SET_NAME FROM information_schema.columns WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = :table AND COLUMN_NAME IN ('a', 'c', 't', 'f')", array('table' => $table));
+			$after = array();
+
+			while($row = $sql->fetch())
+			{
+				$after[$row['COLUMN_NAME']] = $row;
+			}
+
+			foreach(array('a', 'c', 't', 'f') as $name)
+			{
+				self::assertSame('NO', $after[$name]['IS_NULLABLE'], $name . ' stays NOT NULL');
+				self::assertSame('utf8mb4', $after[$name]['CHARACTER_SET_NAME'], $name . ' is utf8mb4');
+			}
+
+			self::assertContains($after['a']['COLUMN_DEFAULT'], array('x', "'x'"), 'the default survives; MariaDB quotes it');
+
+			$sql->gen('SELECT CHAR_LENGTH(a) AS a_chars, HEX(c) AS c_hex, t, f FROM `' . $table . '` WHERE id = 1');
+			$row = $sql->fetch();
+			self::assertSame(255, (int) $row['a_chars'], 'a multibyte value is not cut on the way through binary');
+			self::assertSame('6162', $row['c_hex'], 'a char value is not padded on the way through binary');
+			self::assertSame('body', $row['t']);
+			self::assertSame('words', $row['f']);
+		}
+		finally
+		{
+			$sql->gen('DROP TABLE IF EXISTS `' . $table . '`');
+		}
+	}
+
 	private function givenServerCapabilities($version, $largePrefix)
 	{
 

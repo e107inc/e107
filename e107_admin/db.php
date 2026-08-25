@@ -158,6 +158,9 @@ class system_tools
 	
 	private $_utf8_exclude = array();
 
+	/** @var db_verify|null */
+	private $dbv;
+
 
 	function __construct()
 	{
@@ -769,7 +772,21 @@ class system_tools
 
 
 	/**
-	 * The collation each table should carry, as db_verify settles it for this server, keyed by physical table name.
+	 * @return db_verify
+	 */
+	private function dbVerify()
+	{
+		if($this->dbv === null)
+		{
+			require_once(e_HANDLER."db_verify_class.php");
+			$this->dbv = new db_verify;
+		}
+
+		return $this->dbv;
+	}
+
+	/**
+	 * The character set each table should carry, as db_verify settles it for this server, keyed by physical table name; a table db_verify does not know, and the `lan_` copy of one it does, take the base table's answer or utf8mb4.
 	 *
 	 * @param string[] $tables physical table names
 	 * @return array physical table name => character set
@@ -777,9 +794,8 @@ class system_tools
 	 */
 	private function intendedCharsets(array $tables)
 	{
-		require_once(e_HANDLER."db_verify_class.php");
-		$dbv = new db_verify;
-		$dbv->compareAll();
+		$intended = $this->dbVerify()->resolveAll();
+		$charsets = array();
 
 		foreach($tables as $table)
 		{
@@ -963,13 +979,43 @@ class system_tools
 		$held = array_keys(array_diff($intended, array('utf8mb4')));
 		$this->_utf8_exclude = array_merge($this->_utf8_exclude, $held);
 
-		$queries = array();
-		$queries[] = $this->getQueries("SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY ', column_name, ' ', REPLACE(column_type, 'char', 'binary'), ';') FROM information_schema.columns WHERE TABLE_SCHEMA = :schema AND TABLE_NAME LIKE :prefix".$heldClause." AND  COLLATION_NAME != 'utf8mb4_general_ci'  and data_type LIKE '%char%';", $schemaParams);
-		$queries[] = $this->getQueries("SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY ', column_name, ' ', REPLACE(column_type, 'text', 'blob'), ';') FROM information_schema.columns WHERE TABLE_SCHEMA = :schema AND TABLE_NAME LIKE :prefix".$heldClause." AND  COLLATION_NAME != 'utf8mb4_general_ci' and data_type LIKE '%text%';", $schemaParams);
+		$columns = array();
 
+		if($sql->execute("SELECT TABLE_NAME, COLUMN_NAME FROM information_schema.columns WHERE TABLE_SCHEMA = :schema AND TABLE_NAME LIKE :prefix AND COLLATION_NAME != 'utf8mb4_general_ci' AND (data_type LIKE '%char%' OR data_type LIKE '%text%') ORDER BY TABLE_NAME, ORDINAL_POSITION", $schemaParams))
+		{
+			while($row = $sql->fetch())
+			{
+				if(!in_array($row['TABLE_NAME'], $this->_utf8_exclude))
+				{
+					$columns[$row['TABLE_NAME']][] = $row['COLUMN_NAME'];
+				}
+			}
+		}
+		else
+		{
+			$mes->addError($sql->getLastErrorText());
+			$ERROR = TRUE;
+		}
+
+		$queries = array();
 		$queries2 = array();
-		$queries2[] = $this->getQueries("SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY ', column_name, ' ', column_type, ' CHARACTER SET utf8mb4;') FROM information_schema.columns WHERE TABLE_SCHEMA = :schema AND TABLE_NAME LIKE :prefix".$heldClause."  AND COLLATION_NAME != 'utf8mb4_general_ci' and data_type LIKE '%char%';", $schemaParams);
-		$queries2[] = $this->getQueries("SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY ', column_name, ' ', column_type, ' CHARACTER SET utf8mb4;') FROM information_schema.columns WHERE TABLE_SCHEMA = :schema AND TABLE_NAME LIKE :prefix".$heldClause." AND  COLLATION_NAME != 'utf8mb4_general_ci' and data_type LIKE '%text%';", $schemaParams);
+
+		foreach($columns as $table => $names)
+		{
+			try
+			{
+				$statements = $this->dbVerify()->utf8ConversionStatements($table, $names);
+			}
+			catch(InvalidArgumentException $e)
+			{
+				$mes->addError($e->getMessage());
+				$ERROR = TRUE;
+				continue;
+			}
+
+			$queries = array_merge($queries, $statements['binary']);
+			$queries2 = array_merge($queries2, $statements['restore']);
+		}
 
 
 	//	$sql->gen("USE ".$dbtable);
@@ -981,29 +1027,23 @@ class system_tools
 
 	
 		// Convert Text tables to Binary.
-		foreach($queries as $qry)
+		foreach($queries as $q)
 		{
-
-			foreach($qry as $q)
+			// Only a plain ALTER TABLE ... MODIFY built from the server's own definitions may run.
+			if(!preg_match('/^ALTER TABLE `[A-Za-z0-9_]+` MODIFY /', $q))
 			{
-				// $q is generated server-side from information_schema column/table
-				// names; reject anything that is not a plain ALTER TABLE ... MODIFY
-				// statement to prevent second-order injection via crafted identifiers.
-				if(!preg_match('/^ALTER TABLE `[A-Za-z0-9_]+` MODIFY /', $q))
-				{
-					$mes->addError($q);
-					$ERROR = TRUE;
-					continue;
-				}
-				if(!$sql->db_Query($q))
-				{
-					$mes->addError($q);
-					$ERROR = TRUE;
-				}
-				else
-				{
-					$mes->addDebug($q);
-				}
+				$mes->addError($q);
+				$ERROR = TRUE;
+				continue;
+			}
+			if(!$sql->db_Query($q))
+			{
+				$mes->addError($q);
+				$ERROR = TRUE;
+			}
+			else
+			{
+				$mes->addDebug($q);
 			}
 		}
 
@@ -1040,26 +1080,22 @@ class system_tools
 
 		// ---------------
 		// Convert Table Fields back to Text/varchar etc. 
-		foreach($queries2 as $qry)
+		foreach($queries2 as $q)
 		{
-			foreach($qry as $q)
+			if(!preg_match('/^ALTER TABLE `[A-Za-z0-9_]+` MODIFY /', $q))
 			{
-				// Same guard as above: only allow generated ALTER TABLE ... MODIFY statements.
-				if(!preg_match('/^ALTER TABLE `[A-Za-z0-9_]+` MODIFY /', $q))
-				{
-					$mes->addError($q);
-					$ERROR = TRUE;
-					continue;
-				}
-				if(!$sql->db_Query($q))
-				{
-					$mes->addError($q);
-					$ERROR = TRUE;
-				}
-				else
-				{
-					$mes->addDebug($q);
-				}
+				$mes->addError($q);
+				$ERROR = TRUE;
+				continue;
+			}
+			if(!$sql->db_Query($q))
+			{
+				$mes->addError($q);
+				$ERROR = TRUE;
+			}
+			else
+			{
+				$mes->addDebug($q);
 			}
 		}
 
@@ -1084,43 +1120,6 @@ class system_tools
 		echo $mes->render();
 	}
 
-	function getQueries($query, $params = array())
-	{
-
-		$mes = e107::getMessage();
-		$sql = e107::getDb('utf8-convert');
-
-		$qry = [];
-
-		if($sql->execute($query, $params))
-		{
-			while ($row = $sql->fetch('num'))
-			{
-	   			 $qry[] = $row[0];
-			}
-		}
-		else 
-		{
-			$mes->addError($query);	
-		}
-
-		return $qry;
-
-
-		/*
-		if(!$result = mysql_query($query))
-		{
-			$mes->addError("Query Failed: ".$query);
-			return;
-		}
-		while ($row = mysql_fetch_array($result, 'num'))
-		{
-   			 $qry[] = $row[0];
-		}
-
-		return $qry;
-		 * */
-	}
 
 
 	/**
