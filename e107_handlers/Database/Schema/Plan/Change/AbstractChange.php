@@ -60,6 +60,14 @@ abstract class AbstractChange implements ChangeInterface
 	}
 
 	/**
+	 * @return bool
+	 */
+	public function mayLoseData()
+	{
+		return false;
+	}
+
+	/**
 	 * A definition the server itself wrote, as a vouched fragment ready to be
 	 * spliced into a statement.
 	 *

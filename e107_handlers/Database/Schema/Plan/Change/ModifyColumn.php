@@ -25,16 +25,28 @@ final class ModifyColumn extends AbstractChange
 	/** @var ColumnSchema the declared column, whole */
 	private $column;
 
+	/** @var bool */
+	private $mayLoseData;
+
 	/**
 	 * @param string $sqlFile
 	 * @param string $table Unprefixed logical table name.
 	 * @param ColumnSchema $column The declared column; it must carry the server's own definition line.
 	 */
-	public function __construct($sqlFile, $table, ColumnSchema $column)
+	public function __construct($sqlFile, $table, ColumnSchema $column, $mayLoseData = false)
 	{
 		parent::__construct($sqlFile, $table);
 
 		$this->column = $column;
+		$this->mayLoseData = (bool) $mayLoseData;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function mayLoseData()
+	{
+		return $this->mayLoseData;
 	}
 
 	/**

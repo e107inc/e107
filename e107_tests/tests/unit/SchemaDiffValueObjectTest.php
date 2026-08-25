@@ -525,6 +525,11 @@ class SchemaDiffValueObjectTest_change implements ChangeInterface
 	{
 		return $this->sql;
 	}
+
+	public function mayLoseData()
+	{
+		return false;
+	}
 }
 
 /**

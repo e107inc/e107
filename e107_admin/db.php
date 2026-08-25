@@ -768,6 +768,52 @@ class system_tools
 	}
 
 
+	/**
+	 * The collation each table should carry, as db_verify settles it for this server, keyed by physical table name.
+	 *
+	 * @param string[] $tables physical table names
+	 * @return array physical table name => character set
+	 * @throws Exception when the live schema cannot be read
+	 */
+	private function intendedCharsets(array $tables)
+	{
+		require_once(e_HANDLER."db_verify_class.php");
+		$dbv = new db_verify;
+		$dbv->compareAll();
+
+		foreach($tables as $table)
+		{
+			$logical = (string) substr($table, strlen(MPREFIX));
+			$base = preg_replace('/^lan_[A-Za-z]+_/', '', $logical);
+
+			$charsets[$table] = isset($intended[$base]) ? $intended[$base] : 'utf8mb4';
+		}
+
+		return $charsets;
+	}
+
+	/**
+	 * @param string $collation as SHOW TABLE STATUS reports it
+	 * @param string $charset
+	 * @return bool whether the collation belongs to the character set, `utf8mb3` and `utf8` being one
+	 */
+	private static function sameCharset($collation, $charset)
+	{
+		$of = (string) substr((string) $collation, 0, (int) strpos((string) $collation . '_', '_'));
+
+		return preg_replace('/^utf8mb3$/', 'utf8', $of) === preg_replace('/^utf8mb3$/', 'utf8', (string) $charset);
+	}
+
+	/**
+	 * @param string $collation as SHOW TABLE STATUS reports it
+	 * @param string $charset the one db_verify settled on
+	 * @return bool
+	 */
+	private static function collationIsIntended($collation, $charset)
+	{
+		return ($charset === 'utf8mb4') ? ($collation === 'utf8mb4_general_ci') : self::sameCharset($collation, $charset);
+	}
+
 	private function convertUTF8Form()
 	{
 		$mes 	= e107::getMessage();
@@ -777,6 +823,19 @@ class system_tools
 		$tp = e107::getParser();
 		
 		$sql->execute('SHOW TABLE STATUS WHERE Name LIKE :prefix', array('prefix' => $config['mySQLprefix'].'%'));
+		$rows = $sql->rows();
+
+		try
+		{
+			$intended = $this->intendedCharsets(array_column($rows, 'Name'));
+		}
+		catch(Exception $e)
+		{
+			$mes->addError($e->getMessage());
+			e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_65.SEP.$config['mySQLdefaultdb'], $mes->render());
+
+			return;
+		}
 		
 		
 		$text = "<table class='table adminlist'>
@@ -800,23 +859,23 @@ class system_tools
 		
 		
 		$invalidCollations = false;	
-		while($row = $sql->fetch())
+		foreach($rows as $row)
 		{
 				if(in_array($row['Name'],$this->_utf8_exclude))
 				{
 					continue;
 				}
-					
-			
+
+				$valid = self::collationIsIntended($row['Collation'], $intended[$row['Name']]);
+
 				$text .= "<tr>
 					<td>".$row['Name']."</td>
 					<td>".$row['Engine']."</td>
 					<td>".$row['Collation']."</td>
-					<td>".(($row['Collation'] == 'utf8mb4_general_ci') ? defset('ADMIN_TRUE_ICON') : defset('ADMIN_FALSE_ICON'))."</td>
+					<td>".($valid ? defset('ADMIN_TRUE_ICON') : defset('ADMIN_FALSE_ICON'))."</td>
 					</tr>";
-			//	 print_a($row);
-				
-				if($row['Collation'] != 'utf8mb4_general_ci')
+
+				if(!$valid)
 				{
 					$invalidCollations = true;	
 				}
@@ -886,13 +945,31 @@ class system_tools
 	
 		$schemaParams = array('schema' => $dbtable, 'prefix' => $config['mySQLprefix'].'%');
 
+		$sql->execute('SHOW TABLE STATUS WHERE Name LIKE :prefix', array('prefix' => $config['mySQLprefix'].'%'));
+		$tables = array_column($sql->rows(), 'Name');
+
+		try
+		{
+			$intended = $this->intendedCharsets($tables);
+		}
+		catch(Exception $e)
+		{
+			$mes->addError($e->getMessage());
+			echo $mes->render();
+
+			return;
+		}
+
+		$held = array_keys(array_diff($intended, array('utf8mb4')));
+		$this->_utf8_exclude = array_merge($this->_utf8_exclude, $held);
+
 		$queries = array();
-		$queries[] = $this->getQueries("SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY ', column_name, ' ', REPLACE(column_type, 'char', 'binary'), ';') FROM information_schema.columns WHERE TABLE_SCHEMA = :schema AND TABLE_NAME LIKE :prefix AND  COLLATION_NAME != 'utf8mb4_general_ci'  and data_type LIKE '%char%';", $schemaParams);
-		$queries[] = $this->getQueries("SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY ', column_name, ' ', REPLACE(column_type, 'text', 'blob'), ';') FROM information_schema.columns WHERE TABLE_SCHEMA = :schema AND TABLE_NAME LIKE :prefix AND  COLLATION_NAME != 'utf8mb4_general_ci' and data_type LIKE '%text%';", $schemaParams);
+		$queries[] = $this->getQueries("SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY ', column_name, ' ', REPLACE(column_type, 'char', 'binary'), ';') FROM information_schema.columns WHERE TABLE_SCHEMA = :schema AND TABLE_NAME LIKE :prefix".$heldClause." AND  COLLATION_NAME != 'utf8mb4_general_ci'  and data_type LIKE '%char%';", $schemaParams);
+		$queries[] = $this->getQueries("SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY ', column_name, ' ', REPLACE(column_type, 'text', 'blob'), ';') FROM information_schema.columns WHERE TABLE_SCHEMA = :schema AND TABLE_NAME LIKE :prefix".$heldClause." AND  COLLATION_NAME != 'utf8mb4_general_ci' and data_type LIKE '%text%';", $schemaParams);
 
 		$queries2 = array();
-		$queries2[] = $this->getQueries("SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY ', column_name, ' ', column_type, ' CHARACTER SET utf8mb4;') FROM information_schema.columns WHERE TABLE_SCHEMA = :schema AND TABLE_NAME LIKE :prefix  AND COLLATION_NAME != 'utf8mb4_general_ci' and data_type LIKE '%char%';", $schemaParams);
-		$queries2[] = $this->getQueries("SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY ', column_name, ' ', column_type, ' CHARACTER SET utf8mb4;') FROM information_schema.columns WHERE TABLE_SCHEMA = :schema AND TABLE_NAME LIKE :prefix AND  COLLATION_NAME != 'utf8mb4_general_ci' and data_type LIKE '%text%';", $schemaParams);
+		$queries2[] = $this->getQueries("SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY ', column_name, ' ', column_type, ' CHARACTER SET utf8mb4;') FROM information_schema.columns WHERE TABLE_SCHEMA = :schema AND TABLE_NAME LIKE :prefix".$heldClause."  AND COLLATION_NAME != 'utf8mb4_general_ci' and data_type LIKE '%char%';", $schemaParams);
+		$queries2[] = $this->getQueries("SELECT CONCAT('ALTER TABLE `', table_name, '` MODIFY ', column_name, ' ', column_type, ' CHARACTER SET utf8mb4;') FROM information_schema.columns WHERE TABLE_SCHEMA = :schema AND TABLE_NAME LIKE :prefix".$heldClause." AND  COLLATION_NAME != 'utf8mb4_general_ci' and data_type LIKE '%text%';", $schemaParams);
 
 
 	//	$sql->gen("USE ".$dbtable);

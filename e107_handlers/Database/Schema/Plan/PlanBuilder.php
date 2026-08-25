@@ -72,7 +72,7 @@ final class PlanBuilder
 		{
 			foreach($this->_restoredStringColumns($diff) as $column)
 			{
-				$changes[] = new ModifyColumn($diff->getSqlFile(), $diff->getTableName(), $column);
+				$changes[] = new ModifyColumn($diff->getSqlFile(), $diff->getTableName(), $column, true);
 			}
 		}
 
