@@ -64,6 +64,16 @@ final class ConvertTable extends AbstractChange
 	}
 
 	/**
+	 * A character set conversion rewrites every value the target cannot hold; an engine change moves rows unaltered.
+	 *
+	 * @return bool
+	 */
+	public function mayLoseData()
+	{
+		return $this->charset !== null;
+	}
+
+	/**
 	 * @return string
 	 */
 	public function describe()

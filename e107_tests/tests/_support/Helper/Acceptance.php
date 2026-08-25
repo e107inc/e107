@@ -502,7 +502,8 @@ class Acceptance extends E107Base
 		$largePrefix = $dbh->query("SHOW VARIABLES LIKE 'innodb_large_prefix'")->fetch(\PDO::FETCH_ASSOC);
 
 		$innodbBytes = 3072;
-		if (!empty($largePrefix) && strtoupper($largePrefix['Value']) !== 'ON')
+		if (!empty($largePrefix) && strtoupper($largePrefix['Value']) === 'OFF' && $number !== ''
+			&& ($maria ? version_compare($number, '10.3', '<') : version_compare($number, '8.0', '<')))
 		{
 			$innodbBytes = 767;
 		}

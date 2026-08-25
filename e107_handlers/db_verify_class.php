@@ -559,10 +559,17 @@ class db_verify implements EngineCharsetResolverInterface
 	 * The engine and character set this server should build a declared table with, derived indexes included.
 	 *
 	 * @param DeclaredTable $table
+	 * @param TableSchema|null $live the table as it stands, when it exists; one already at the preferred character set keeps it. Untyped because PHP 5.6 and 8.4 disagree on how to spell a nullable parameter.
 	 * @return array ['engine' => string, 'charset' => string]
+	 * @throws InvalidArgumentException when $live is neither
 	 */
-	public function resolve(DeclaredTable $table)
+	public function resolve(DeclaredTable $table, $live = null)
 	{
+
+		if($live !== null && !$live instanceof TableSchema)
+		{
+			throw new InvalidArgumentException('db_verify::resolve() takes the live table as a TableSchema or null, ' . gettype($live) . ' given.');
+		}
 
 		$fields = $this->getFields($table->getBody());
 		$indexes = $this->getIndex($table->getBody());
@@ -578,8 +585,117 @@ class db_verify implements EngineCharsetResolverInterface
 			$fields,
 			$indexes,
 			$table->getDeclaredEngine(),
-			$table->getDeclaredCharset()
+			$table->getDeclaredCharset(),
+			($live === null) ? null : $this->liveKeyProof($live)
 		);
+	}
+
+
+	/**
+	 * What a live table proves about the keys this server accepts: the character set its indexed character columns stand at, the widest such key in characters, and the engine holding it.
+	 *
+	 * @param TableSchema $live
+	 * @return array|null ['engine' => string, 'charset' => string, 'widestIndexChars' => int]; null when the table has no indexed character column, or they do not all share one character set.
+	 */
+	private function liveKeyProof(TableSchema $live)
+	{
+
+		$columns = $live->getColumns();
+		$charset = null;
+		$widest = 0;
+
+		foreach($live->getIndexes() as $index)
+		{
+			if($index->getKind() === IndexSchema::KIND_FULLTEXT || $index->getKind() === IndexSchema::KIND_SPATIAL)
+			{
+				continue;
+			}
+
+			$chars = 0;
+
+			foreach($index->getParts() as $part)
+			{
+				$name = $part->getColumnName();
+
+				if(!isset($columns[$name]) || !preg_match('/^(?:var)?char\((\d+)\)/i', $columns[$name]->getColumnType(), $m))
+				{
+					continue;
+				}
+
+				$columnCharset = ($columns[$name]->getCharset() === null) ? $live->getCharset() : $columns[$name]->getCharset();
+
+				if($charset === null)
+				{
+					$charset = $columnCharset;
+				}
+				elseif($charset !== $columnCharset)
+				{
+					return null;
+				}
+
+				$subPart = $part->getSubPart();
+				$chars += ($subPart !== null && (int) $subPart > 0) ? min((int) $subPart, (int) $m[1]) : (int) $m[1];
+			}
+
+			$widest = max($widest, $chars);
+		}
+
+		if($charset === null)
+		{
+			return null;
+		}
+
+		return array('engine' => $live->getEngine(), 'charset' => $charset, 'widestIndexChars' => $widest);
+	}
+
+
+	/**
+	 * Settle the engine and character set of every declared table against the database as it stands, without comparing or building anything.
+	 *
+	 * @return array table => character set, as {@see getIntendedCharsets()} returns it
+	 * @throws Exception when the live schema cannot be read
+	 */
+	public function resolveAll()
+	{
+
+		foreach($this->sqlFileTables as $sqlFile => $file)
+		{
+			if(!is_array($file) || empty($file['tables']))
+			{
+				continue;
+			}
+
+			$declared = array();
+			$physical = array();
+
+			foreach($file['tables'] as $key => $tbl)
+			{
+				$table = $this->declaredTable($sqlFile, $key);
+
+				if($table === null)
+				{
+					continue;
+				}
+
+				$declared[$key] = $table;
+				$physical[$key] = MPREFIX . $table->getName();
+			}
+
+			if(empty($declared))
+			{
+				continue;
+			}
+
+			$live = $this->schemaReader()->readMany($physical);
+
+			foreach($declared as $key => $table)
+			{
+				$actual = isset($live[$physical[$key]]) ? $live[$physical[$key]] : null;
+				$this->intendedByTable[$table->getName()] = $this->resolve($table, $actual);
+			}
+		}
+
+		return $this->getIntendedCharsets();
 	}
 
 
@@ -596,7 +712,7 @@ class db_verify implements EngineCharsetResolverInterface
 	private function diffFor(DeclaredTable $table, $sqlFile, $logical, $actual)
 	{
 
-		$intended = $this->resolve($table);
+		$intended = $this->resolve($table, $actual);
 		$expected = $this->expectedSchema($table, $intended);
 
 		$this->disownedIndexes[$logical] = array_map('strval', array_keys($this->derivedIndexPartition($table, $intended)['redundant']));
@@ -1214,6 +1330,99 @@ class db_verify implements EngineCharsetResolverInterface
 		}
 
 		return $this->planBuilder;
+	}
+
+
+	/**
+	 * The statements that take one live table's character columns through binary and back to utf8mb4, each built on the server's own column definition so that nothing but the type and the character set changes.
+	 *
+	 * A char or varchar becomes a varbinary wide enough for every byte it can hold at its present character set, so nothing is cut; a column under a FULLTEXT index cannot become binary, so it is converted in the second step alone.
+	 *
+	 * @param string $physical table name, prefix included
+	 * @param string[] $columns the columns to convert; one the server does not define, or that is not a char or text type, is skipped
+	 * @return array ['binary' => string[], 'restore' => string[]]
+	 * @throws InvalidArgumentException when the table name is not one the schema builder will quote
+	 */
+	public function utf8ConversionStatements($physical, array $columns)
+	{
+
+		$logical = (MPREFIX !== '' && strpos($physical, MPREFIX) === 0) ? (string) substr($physical, strlen(MPREFIX)) : $physical;
+		$create = e107::getDb()->schema()->getCreateTablePhysical($logical);
+		$statement = is_string($create) ? Materialiser::splitCreateStatement($create) : null;
+
+		if($statement === null)
+		{
+			return array('binary' => array(), 'restore' => array());
+		}
+
+		$definitions = Materialiser::definitionsByName($statement['body']);
+		$fulltext = array();
+		$bytesPerChar = array();
+		$sql = e107::getDb();
+
+		if($sql->execute('SELECT c.COLUMN_NAME, cs.MAXLEN FROM information_schema.COLUMNS c JOIN information_schema.CHARACTER_SETS cs ON cs.CHARACTER_SET_NAME = c.CHARACTER_SET_NAME WHERE c.TABLE_SCHEMA = DATABASE() AND c.TABLE_NAME = :table', array('table' => $physical)))
+		{
+			while($row = $sql->fetch())
+			{
+				$bytesPerChar[$row['COLUMN_NAME']] = (int) $row['MAXLEN'];
+			}
+		}
+
+		foreach($definitions['indexes'] as $index)
+		{
+			if(preg_match('/^FULLTEXT KEY `[^`]*` \((.*)\)/i', $index, $m))
+			{
+				foreach(explode(',', $m[1]) as $part)
+				{
+					$fulltext[trim($part, ' `')] = true;
+				}
+			}
+		}
+
+		$binary = array();
+		$restore = array();
+		$prefix = 'ALTER TABLE `' . str_replace('`', '``', $physical) . '` MODIFY ';
+
+		foreach($columns as $column)
+		{
+			if(!isset($definitions['columns'][$column], $bytesPerChar[$column])
+				|| !preg_match('/^(`[^`]+`\s+)((?:var)?char\((\d+)\)|(?:tiny|medium|long)?text)((?:\s+CHARACTER SET \w+)?(?:\s+COLLATE \w+)?)(.*)$/is', $definitions['columns'][$column], $m))
+			{
+				continue;
+			}
+
+			if(!isset($fulltext[$column]))
+			{
+				$binaryType = ($m[3] !== '')
+					? 'varbinary(' . ((int) $m[3] * $bytesPerChar[$column]) . ')'
+					: preg_replace('/text$/i', 'blob', $m[2]);
+
+				$binary[] = $prefix . $m[1] . $binaryType . $m[5] . ';';
+			}
+
+			$restore[] = $prefix . $m[1] . $m[2] . ' CHARACTER SET utf8mb4' . $m[5] . ';';
+		}
+
+		return array('binary' => $binary, 'restore' => $restore);
+	}
+
+
+	/**
+	 * The character set each compared table should carry, keyed by table name as reported, `lan_` prefix included; filled by {@see compare()} and {@see compareAll()}.
+	 *
+	 * @return array table => character set
+	 */
+	public function getIntendedCharsets()
+	{
+
+		$charsets = array();
+
+		foreach($this->intendedByTable as $table => $intended)
+		{
+			$charsets[$table] = $intended['charset'];
+		}
+
+		return $charsets;
 	}
 
 
@@ -2190,30 +2399,61 @@ class db_verify implements EngineCharsetResolverInterface
 				continue;
 			}
 
-			foreach($statements as $query)
+			$mode = $change->mayLoseData() ? $this->enterStrictMode($sql) : null;
+
+			try
 			{
-				if(trim((string) $query) === '')
+				foreach($statements as $query)
 				{
-					$log->addDebug('No statement for ' . $change->describe() . ' on `' . $table . '`, nothing to run.');
+					if(trim((string) $query) === '')
+					{
+						$log->addDebug('No statement for ' . $change->describe() . ' on `' . $table . '`, nothing to run.');
 
-					continue;
-				}
+						continue;
+					}
 
-				if($sql->execute($query) !== false)
-				{
-					$log->addDebug(defset('LAN_UPDATED', 'Updated') . '  [' . $query . ']');
-					$outcome[$table]['applied']++;
+					if($sql->execute($query) !== false)
+					{
+						$log->addDebug(defset('LAN_UPDATED', 'Updated') . '  [' . $query . ']');
+						$outcome[$table]['applied']++;
+					}
+					else
+					{
+						$log->addWarning(defset('LAN_UPDATED_FAILED', 'Update Failed') . '  [' . $query . ']');
+						$log->addWarning($sql->getLastErrorText()); // PDO compatible.
+						$outcome[$table]['failed']++;
+					}
 				}
-				else
+			}
+			finally
+			{
+				if($mode !== null)
 				{
-					$log->addWarning(defset('LAN_UPDATED_FAILED', 'Update Failed') . '  [' . $query . ']');
-					$log->addWarning($sql->getLastErrorText()); // PDO compatible.
-					$outcome[$table]['failed']++;
+					$sql->execute('SET SESSION sql_mode = :mode', array('mode' => $mode));
 				}
 			}
 		}
 
 		return $outcome;
+	}
+
+
+	/**
+	 * Make the server refuse a statement that would rewrite data to fit, instead of doing so with a warning.
+	 *
+	 * Under e107's usual `NO_ENGINE_SUBSTITUTION` a `CONVERT TO CHARACTER SET` replaces every character the target
+	 * cannot hold with `?`; under `STRICT_TRANS_TABLES` the same statement fails and the table is left as it was.
+	 *
+	 * @param e_db $sql
+	 * @return string the session sql_mode to put back
+	 */
+	private function enterStrictMode($sql)
+	{
+
+		$mode = (string) $sql->getMode();
+		$sql->execute("SET SESSION sql_mode = CONCAT(@@sql_mode, ',STRICT_TRANS_TABLES')");
+
+		return $mode;
 	}
 
 
@@ -2780,17 +3020,26 @@ class db_verify implements EngineCharsetResolverInterface
 	 * MySQL before 5.7 and MariaDB before 10.1 cap an InnoDB index at 767
 	 * bytes, so a UNIQUE key over varchar(250) needs 1000 bytes and is refused
 	 * with error 1071. Three-byte utf8 brings the same column to 750 and it
-	 * fits. Servers with that limit never allowed 4-byte characters in an index
-	 * anyway, so nothing that used to fit stops fitting.
+	 * fits.
+	 *
+	 * A live table whose indexed character columns already stand at the
+	 * preferred character set, on this engine, with a key at least this wide,
+	 * is never narrowed: the server built it, so the keys fit, whatever the
+	 * probe says. Narrowing is for a table that has yet to be created.
 	 *
 	 * @param string $charset      the character set the table would otherwise get
-	 * @param array  $requirements widestIndexChars, and engine to measure against
+	 * @param array  $requirements widestIndexChars, engine to measure against, and existingCharset when a live table proves it
 	 * @return string
 	 */
 	private function narrowCharsetToIndexLimit($charset, array $requirements)
 	{
 
 		if($charset !== self::MOST_PREFERRED_CHARSET || empty($requirements['widestIndexChars']))
+		{
+			return $charset;
+		}
+
+		if(isset($requirements['existingCharset']) && $requirements['existingCharset'] === $charset)
 		{
 			return $charset;
 		}
@@ -2832,9 +3081,10 @@ class db_verify implements EngineCharsetResolverInterface
 	 * @param array  $indexes         as returned by {@see getIndex()}, with any derived indexes merged in
 	 * @param string $declaredEngine  storage engine named by the .sql file
 	 * @param string $declaredCharset character set named by the .sql file
+	 * @param array|null $proof what the live table proves, as {@see liveKeyProof()} returns it; null when it does not exist
 	 * @return array{engine:string|false, charset:string}
 	 */
-	private function intendedEngineAndCharset($fields, $indexes, $declaredEngine, $declaredCharset)
+	private function intendedEngineAndCharset($fields, $indexes, $declaredEngine, $declaredCharset, $proof = null)
 	{
 
 		$requirements = $this->deriveTableRequirements($fields, $indexes);
@@ -2842,6 +3092,13 @@ class db_verify implements EngineCharsetResolverInterface
 		$engine = $this->getIntendedStorageEngine($declaredEngine, $requirements);
 
 		$requirements['engine'] = $engine;
+
+		if($proof !== null
+			&& strcasecmp($proof['engine'], (string) $engine) === 0
+			&& $proof['widestIndexChars'] >= $requirements['widestIndexChars'])
+		{
+			$requirements['existingCharset'] = $proof['charset'];
+		}
 
 		return array(
 			'engine'  => $engine,
@@ -2955,9 +3212,8 @@ class db_verify implements EngineCharsetResolverInterface
 			$version = (string) varset($row['server_version'], '');
 		}
 
-		// Dropped once a large index prefix became unconditional (MySQL 8.0,
-		// MariaDB 10.3), so an absent variable means "no 767-byte limit", not
-		// "limit in force".
+		// Absent on MySQL 8.0 and MariaDB 10.6, listed but inert on MariaDB
+		// 10.3 to 10.5: {@see maxIndexKeyBytes()} weighs it by version.
 		$largePrefix = null;
 		$sql->execute("SHOW VARIABLES LIKE 'innodb_large_prefix'");
 		if($row = $sql->fetch())
@@ -3030,18 +3286,39 @@ class db_verify implements EngineCharsetResolverInterface
 		{
 			$caps = $this->getServerCapabilities();
 
-			if($caps['innodbLargePrefix'] === null)
-			{
-				return 3072;
-			}
-
-			return ($caps['innodbLargePrefix'] === 'ON') ? 3072 : 767;
+			return ($caps['innodbLargePrefix'] === 'OFF' && $this->innodbLargePrefixHasEffect()) ? 767 : 3072;
 		}
 
 		// MyISAM and Aria cap at 1000 on every server old enough for one of
 		// them to be chosen here. Newer servers allow more; treating their
 		// limit as 1000 only narrows a character set sooner, which is safe.
 		return 1000;
+	}
+
+	/**
+	 * Whether innodb_large_prefix still decides the InnoDB key limit here.
+	 *
+	 * MariaDB 10.3 to 10.5 keep the variable as a no-op that reads back empty, or OFF when a configuration sets it,
+	 * while every table already gets 3072 bytes; MySQL 8.0 and MariaDB 10.6 removed it. Measured against
+	 * mariadb:10.1 through 10.11 and mysql:5.7.
+	 *
+	 * @return bool
+	 */
+	private function innodbLargePrefixHasEffect()
+	{
+
+		$version = $this->getServerVersionNumber();
+
+		if($version === '')
+		{
+			return false;
+		}
+
+		$caps = $this->getServerCapabilities();
+
+		return $caps['isMariaDb']
+			? version_compare($version, '10.3', '<')
+			: version_compare($version, '8.0', '<');
 	}
 
 	/**

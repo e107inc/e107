@@ -1564,4 +1564,303 @@ DATA;
 
 	}
 
+	/**
+	 * innodb_large_prefix decides the key limit only on servers that still act on it. MariaDB 10.3 to 10.5
+	 * list it as a no-op that reads back empty, or OFF when a configuration sets it, and build 3072-byte keys
+	 * regardless; reading that as 767 narrowed every wide-keyed table to utf8 (discussion #6091).
+	 *
+	 * @dataProvider serverCapabilityProvider
+	 */
+	public function testMaxIndexKeyBytesTrustsInnodbLargePrefixOnlyWhereItActs($version, $largePrefix, $expected)
+	{
+
+		$this->givenServerCapabilities($version, $largePrefix);
+
+		self::assertSame($expected, $this->dbv->maxIndexKeyBytes('InnoDB'));
+		self::assertSame(1000, $this->dbv->maxIndexKeyBytes('MyISAM'));
+	}
+
+	public function serverCapabilityProvider()
+	{
+
+		return array(
+			'mariadb 10.1 default'  => array('10.1.48-MariaDB', 'OFF', 767),
+			'mariadb 10.2 set off'  => array('10.2.44-MariaDB', 'OFF', 767),
+			'mariadb 10.2 default'  => array('10.2.44-MariaDB', 'ON', 3072),
+			'mariadb 10.3 default'  => array('10.3.39-MariaDB', '', 3072),
+			'mariadb 10.3 set off'  => array('10.3.39-MariaDB', 'OFF', 3072),
+			'mariadb 10.5 set off'  => array('10.5.29-MariaDB', 'OFF', 3072),
+			'mariadb 10.6'          => array('10.6.28-MariaDB', null, 3072),
+			'mysql 5.6 default'     => array('5.6.51', 'OFF', 767),
+			'mysql 5.7 default'     => array('5.7.44', 'ON', 3072),
+			'mysql 5.7 set off'     => array('5.7.44', 'OFF', 767),
+			'mysql 8.0'             => array('8.0.46', null, 3072),
+			'unreadable version'    => array('', 'OFF', 3072),
+		);
+	}
+
+	/**
+	 * A table that already stands at utf8mb4 is never narrowed, whatever the probe says: the server built it
+	 * with these keys, so they fit. Narrowing is for a table that has yet to be created.
+	 */
+	public function testGetIntendedCharsetKeepsTheCharsetALiveTableAlreadyStandsAt()
+	{
+
+		$this->givenServerCapabilities('10.1.48-MariaDB', 'OFF');
+		$wide = array('widestIndexChars' => 255, 'engine' => 'InnoDB');
+
+		self::assertSame('utf8', $this->dbv->getIntendedCharset('utf8mb4', $wide));
+		self::assertSame('utf8mb4', $this->dbv->getIntendedCharset('utf8mb4', $wide + array('existingCharset' => 'utf8mb4')));
+		self::assertSame('utf8', $this->dbv->getIntendedCharset('utf8mb4', $wide + array('existingCharset' => 'utf8')));
+		self::assertSame('utf8', $this->dbv->getIntendedCharset('utf8mb4', $wide + array('existingCharset' => 'latin1')));
+	}
+
+	/**
+	 * The proof is the live table's indexed character columns, not its default collation: Check charset sets
+	 * the default with one ALTER that touches no column, so a half-converted table on a 767-byte server reads
+	 * utf8mb4 at the table and utf8 at the key.
+	 *
+	 * @dataProvider liveTableProvider
+	 */
+	public function testResolveReadsTheLiveKeysBeforeNarrowing($engine, $tableCharset, $columnCharset, $keyWidth, $expected)
+	{
+
+		$this->givenServerCapabilities('10.1.48-MariaDB', 'OFF');
+
+		$table = new \e107\Database\Schema\Declared\DeclaredTable(
+			'forum',
+			'forum',
+			"forum_id int(10) unsigned NOT NULL auto_increment,\n  forum_sef varchar(250) default NULL,\n  PRIMARY KEY (forum_id),\n  UNIQUE KEY forum_sef (forum_sef)",
+			'InnoDB',
+			'utf8mb4'
+		);
+
+		$live = new \e107\Database\Schema\Introspect\TableSchema(
+			MPREFIX . 'forum',
+			$engine,
+			$tableCharset,
+			$tableCharset . '_general_ci',
+			array(
+				new \e107\Database\Schema\Introspect\ColumnSchema('forum_id', 'int(10) unsigned', false, null, 'auto_increment', null, null, '', 1),
+				new \e107\Database\Schema\Introspect\ColumnSchema('forum_sef', 'varchar(' . $keyWidth . ')', true, null, '', $columnCharset, null, '', 2),
+			),
+			array(
+				new \e107\Database\Schema\Introspect\IndexSchema('PRIMARY', \e107\Database\Schema\Introspect\IndexSchema::KIND_PRIMARY, array(new \e107\Database\Schema\Introspect\IndexPart('forum_id', null, 'A'))),
+				new \e107\Database\Schema\Introspect\IndexSchema('forum_sef', \e107\Database\Schema\Introspect\IndexSchema::KIND_UNIQUE, array(new \e107\Database\Schema\Introspect\IndexPart('forum_sef', null, 'A'))),
+			)
+		);
+
+		$declaredOnly = $this->dbv->resolve($table);
+		$againstLive = $this->dbv->resolve($table, $live);
+
+		self::assertSame('utf8', $declaredOnly['charset']);
+		self::assertSame($expected, $againstLive['charset']);
+	}
+
+	public function liveTableProvider()
+	{
+
+		return array(
+			'key stands at utf8mb4'                  => array('InnoDB', 'utf8mb4', null, 250, 'utf8mb4'),
+			'table default only, key still utf8'     => array('InnoDB', 'utf8mb4', 'utf8', 250, 'utf8'),
+			'key at utf8mb4 but on MyISAM'           => array('MyISAM', 'utf8mb4', null, 250, 'utf8'),
+			'key at utf8mb4 but narrower than declared' => array('InnoDB', 'utf8mb4', null, 100, 'utf8'),
+			'table still utf8'                       => array('InnoDB', 'utf8', null, 250, 'utf8'),
+		);
+	}
+
+	/**
+	 * Discussion #6091: on MariaDB 10.5 the session table read "Character set should be utf8 but is utf8mb4",
+	 * and Repair converted it down. A live table at utf8mb4 with a 255-character unique key is the server's own
+	 * word that such a key fits.
+	 */
+	public function testCompareDoesNotReportALiveUtf8mb4TableAsDriftWhenTheProbeSays767()
+	{
+
+		$sql = e107::getDb();
+		$table = MPREFIX . 'dbvtest_wide';
+		$body = "id int NOT NULL,\n  k varchar(255) NOT NULL DEFAULT '',\n  PRIMARY KEY (id),\n  UNIQUE KEY k (k)";
+
+		$sql->gen('DROP TABLE IF EXISTS `' . $table . '`');
+
+		if(!$sql->gen('CREATE TABLE `' . $table . '` (' . $body . ') ENGINE=InnoDB DEFAULT CHARSET=utf8mb4'))
+		{
+			self::markTestSkipped('this server cannot build a 1020-byte key, so there is nothing a wrong probe could narrow');
+		}
+
+		try
+		{
+			$this->dbv->sqlFileTables['dbvtest'] = array(
+				'tables'  => array('dbvtest_wide'),
+				'data'    => array($body),
+				'engine'  => array('InnoDB'),
+				'charset' => array('utf8mb4'),
+			);
+
+			$this->givenServerCapabilities('10.1.48-MariaDB', 'OFF');
+			$this->dbv->compare('dbvtest');
+
+			$charsets = $this->dbv->getIntendedCharsets();
+
+			self::assertSame('utf8mb4', $charsets['dbvtest_wide']);
+			self::assertSame(0, $this->dbv->errors['dbvtest_wide']['_status'] & db_verify::STATUS_TABLE_MISMATCH_DEFAULT_CHARSET);
+			self::assertSame(0, $this->dbv->errors(), 'the table matches its declaration in every respect');
+		}
+		finally
+		{
+			$sql->gen('DROP TABLE IF EXISTS `' . $table . '`');
+		}
+	}
+
+	/**
+	 * A conversion the target cannot hold must fail, not rewrite the data: under e107's usual sql_mode the
+	 * server replaces every 4-byte character with '?' and only warns.
+	 */
+	public function testALossyCharsetConversionFailsAndLeavesTheDataAlone()
+	{
+
+		$sql = e107::getDb();
+		$table = MPREFIX . 'dbvtest_lossy';
+
+		$sql->gen('DROP TABLE IF EXISTS `' . $table . '`');
+		$sql->gen('CREATE TABLE `' . $table . "` (id int NOT NULL, s varchar(20) NOT NULL DEFAULT '', PRIMARY KEY (id)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+		$sql->gen('INSERT INTO `' . $table . "` (id, s) VALUES (1, CONCAT('x', 0xF09F9880, 'y'))");
+
+		try
+		{
+			$this->dbv->sqlFileTables['dbvtest'] = array(
+				'tables'  => array('dbvtest_lossy'),
+				'data'    => array("id int NOT NULL,\n  s varchar(20) NOT NULL DEFAULT '',\n  PRIMARY KEY (id)"),
+				'engine'  => array('InnoDB'),
+				'charset' => array('latin1'),
+			);
+
+			$before = $sql->getMode();
+
+			$this->dbv->compare('dbvtest');
+
+			self::assertNotSame(0, $this->dbv->errors['dbvtest_lossy']['_status'] & db_verify::STATUS_TABLE_MISMATCH_DEFAULT_CHARSET,
+				'declared latin1 against live utf8mb4 is the conversion under test');
+
+			$this->dbv->compileResults();
+
+			self::assertFalse($this->dbv->getFixPlan()->isEmpty(), 'the conversion is planned, so the repair below attempts it');
+
+			$this->dbv->runFix();
+
+			self::assertSame($before, $sql->getMode(), 'the session sql_mode is put back afterwards');
+
+			$sql->gen('SELECT HEX(s) AS h FROM `' . $table . '` WHERE id = 1');
+			$row = $sql->fetch();
+			self::assertSame('78F09F988079', $row['h'], 'the 4-byte character survived');
+
+			$sql->execute('SHOW TABLE STATUS WHERE Name = :name', array('name' => $table));
+			$status = $sql->fetch();
+			self::assertStringStartsWith('utf8mb4', $status['Collation'], 'the table was left as it was');
+		}
+		finally
+		{
+			$sql->gen('DROP TABLE IF EXISTS `' . $table . '`');
+		}
+	}
+
+	/**
+	 * The probe has to agree with what the server builds: a 1000-byte utf8mb4 primary key is exactly what a
+	 * 767-byte server refuses with error 1071 and a 3072-byte server takes without a word.
+	 */
+	public function testInnodbKeyLimitMatchesWhatTheServerBuilds()
+	{
+
+		$sql = e107::getDb();
+		$table = MPREFIX . 'dbvtest_keylimit';
+
+		$sql->gen('DROP TABLE IF EXISTS `' . $table . '`');
+		$built = $sql->gen('CREATE TABLE `' . $table . "` (k varchar(250) NOT NULL DEFAULT '', PRIMARY KEY (k)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+		$sql->gen('DROP TABLE IF EXISTS `' . $table . '`');
+
+		self::assertSame(($built !== false) ? 3072 : 767, $this->dbv->maxIndexKeyBytes('InnoDB'));
+	}
+
+	/**
+	 * Check charset's converter used to restate a column as bare `varbinary(N)` and `varchar(N) CHARACTER SET utf8mb4`,
+	 * so every column it touched came out `NULL DEFAULT NULL`. Built on the server's own definition, nothing else
+	 * about the column moves, and a FULLTEXT column, which cannot become binary, is converted in the second step alone.
+	 */
+	public function testUtf8ConversionStatementsChangeNothingButTheTypeAndCharacterSet()
+	{
+
+		$sql = e107::getDb();
+		$table = MPREFIX . 'dbvtest_convert';
+
+		$sql->gen('DROP TABLE IF EXISTS `' . $table . '`');
+		$sql->gen('CREATE TABLE `' . $table . "` (id int NOT NULL, a varchar(255) NOT NULL DEFAULT 'x' COMMENT 'kept', c char(10) NOT NULL DEFAULT '', t text NOT NULL, f varchar(100) NOT NULL DEFAULT '', e enum('a','b') NOT NULL DEFAULT 'a', PRIMARY KEY (id), FULLTEXT KEY f (f)) ENGINE=MyISAM DEFAULT CHARSET=utf8");
+		$sql->gen('INSERT INTO `' . $table . "` (id, a, c, t, f) VALUES (1, REPEAT(0xC3A9, 255), 'ab', 'body', 'words')");
+
+		try
+		{
+			$statements = $this->dbv->utf8ConversionStatements($table, array('a', 'c', 't', 'f', 'e', 'missing'));
+
+			self::assertCount(3, $statements['binary']);
+			self::assertStringContainsString("MODIFY `a` varbinary(765) NOT NULL DEFAULT 'x' COMMENT 'kept';", $statements['binary'][0], '255 characters of three-byte utf8 are 765 bytes');
+			self::assertStringContainsString("MODIFY `c` varbinary(30) NOT NULL DEFAULT '';", $statements['binary'][1], 'a char goes through varbinary, which does not pad');
+			self::assertStringContainsString('MODIFY `t` blob NOT NULL;', $statements['binary'][2]);
+
+			self::assertCount(4, $statements['restore']);
+			self::assertStringContainsString("MODIFY `a` varchar(255) CHARACTER SET utf8mb4 NOT NULL DEFAULT 'x' COMMENT 'kept';", $statements['restore'][0]);
+			self::assertStringContainsString("MODIFY `c` char(10) CHARACTER SET utf8mb4 NOT NULL DEFAULT '';", $statements['restore'][1]);
+			self::assertStringContainsString('MODIFY `t` text CHARACTER SET utf8mb4 NOT NULL;', $statements['restore'][2]);
+			self::assertStringContainsString("MODIFY `f` varchar(100) CHARACTER SET utf8mb4 NOT NULL DEFAULT '';", $statements['restore'][3]);
+
+			$run = array_merge(
+				$statements['binary'],
+				array('ALTER TABLE `' . $table . '` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci'),
+				$statements['restore']
+			);
+
+			foreach($run as $statement)
+			{
+				self::assertNotFalse($sql->gen($statement), $statement);
+			}
+
+			$sql->execute("SELECT COLUMN_NAME, IS_NULLABLE, COLUMN_DEFAULT, CHARACTER_SET_NAME FROM information_schema.columns WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = :table AND COLUMN_NAME IN ('a', 'c', 't', 'f')", array('table' => $table));
+			$after = array();
+
+			while($row = $sql->fetch())
+			{
+				$after[$row['COLUMN_NAME']] = $row;
+			}
+
+			foreach(array('a', 'c', 't', 'f') as $name)
+			{
+				self::assertSame('NO', $after[$name]['IS_NULLABLE'], $name . ' stays NOT NULL');
+				self::assertSame('utf8mb4', $after[$name]['CHARACTER_SET_NAME'], $name . ' is utf8mb4');
+			}
+
+			self::assertContains($after['a']['COLUMN_DEFAULT'], array('x', "'x'"), 'the default survives; MariaDB quotes it');
+
+			$sql->gen('SELECT CHAR_LENGTH(a) AS a_chars, HEX(c) AS c_hex, t, f FROM `' . $table . '` WHERE id = 1');
+			$row = $sql->fetch();
+			self::assertSame(255, (int) $row['a_chars'], 'a multibyte value is not cut on the way through binary');
+			self::assertSame('6162', $row['c_hex'], 'a char value is not padded on the way through binary');
+			self::assertSame('body', $row['t']);
+			self::assertSame('words', $row['f']);
+		}
+		finally
+		{
+			$sql->gen('DROP TABLE IF EXISTS `' . $table . '`');
+		}
+	}
+
+	private function givenServerCapabilities($version, $largePrefix)
+	{
+
+		$property = new ReflectionProperty('db_verify', 'serverCapabilities');
+		$property->setAccessible(true);
+		$property->setValue($this->dbv, array(
+			'version'           => $version,
+			'isMariaDb'         => stripos($version, 'mariadb') !== false,
+			'innodbLargePrefix' => $largePrefix,
+		));
+	}
+
 }

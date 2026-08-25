@@ -56,4 +56,11 @@ interface ChangeInterface
 	 * @throws \RuntimeException when the change cannot be rendered.
 	 */
 	public function toSql(SchemaBuilder $schema);
+
+	/**
+	 * Whether the server could rewrite stored values to carry this change out, such as a character set conversion replacing what the target cannot hold.
+	 *
+	 * @return bool
+	 */
+	public function mayLoseData();
 }
