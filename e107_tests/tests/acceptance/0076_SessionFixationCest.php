@@ -229,6 +229,7 @@ class SessionFixationCest
 // Fixture for 0076_SessionFixationCest. Removed again in the Cest's _after().
 \$_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
+{{E107_TEST_PROBE_GUARD}}
 header('Content-Type: text/plain');
 
 if(isset(\$_GET['mark']))

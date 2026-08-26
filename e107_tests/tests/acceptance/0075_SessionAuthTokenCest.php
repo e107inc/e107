@@ -138,6 +138,7 @@ class SessionAuthTokenCest
 // Fixture for 0075_SessionAuthTokenCest. Removed again in the Cest's _after().
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
+{{E107_TEST_PROBE_GUARD}}
 header('Content-Type: text/plain');
 
 // md5() of this is '0e462097431906509019562988736854', which PHP reads as the
