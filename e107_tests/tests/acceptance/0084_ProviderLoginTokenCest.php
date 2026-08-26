@@ -175,6 +175,7 @@ class ProviderLoginTokenCest
 		return <<<PHP
 <?php
 require_once(__DIR__.'/class2.php');
+{{E107_TEST_PROBE_GUARD}}
 
 if(!isset(\$_GET['probe']) || !hash_equals('$secret', \$_GET['probe']))
 {

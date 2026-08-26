@@ -46,7 +46,8 @@ class CookieModeRemovedCest
 	{
 		$I->wantTo('log out cleanly on a site that was in cookie mode before the upgrade');
 
-		$I->amOnPage('/index.php?logout');
+		$I->amOnPage('/'.self::PROBE_FILE.'?act=whoami');
+		$I->amOnPage('/index.php?logout&e-token='.$this->grabSessionToken($I));
 		$I->seeResponseCodeIs(200);
 		$I->dontSeeInSource('Fatal error');
 		$I->dontSeeInSource('Uncaught');
@@ -98,6 +99,25 @@ class CookieModeRemovedCest
 	/**
 	 * @return string
 	 */
+	/**
+	 * The session's own e-token, read off the probe's last response.
+	 *
+	 * A logout that carries no token is refused, and the browser here is
+	 * anonymous, so no page it can reach publishes a logout link to follow.
+	 *
+	 * @param AcceptanceTester $I
+	 * @return string
+	 */
+	private function grabSessionToken(AcceptanceTester $I)
+	{
+		if(!preg_match('/ETOKEN:?=([^\s]*)/', $I->grabPageSource(), $matches))
+		{
+			throw new \RuntimeException('The probe did not publish ETOKEN');
+		}
+
+		return $matches[1];
+	}
+
 	private function probeSource()
 	{
 		return <<<'PHP'
@@ -105,6 +125,7 @@ class CookieModeRemovedCest
 // Fixture for 0076_CookieModeRemovedCest. Removed again in the Cest's _after().
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
+{{E107_TEST_PROBE_GUARD}}
 header('Content-Type: text/plain');
 
 $act = isset($_GET['act']) ? $_GET['act'] : '';
@@ -142,6 +163,7 @@ if($act === 'teardown')
 if($act === 'whoami')
 {
 	echo "MODE=".$config->get('user_tracking')."\n";
+	echo "ETOKEN=".defset('e_TOKEN')."\n";
 	echo "COOKIE=".(empty($_COOKIE[e_COOKIE]) ? 0 : 1)."\n";
 	echo "UID=".(int) defset('USERID', 0)."\n";
 	echo "PROBE_OK\n";

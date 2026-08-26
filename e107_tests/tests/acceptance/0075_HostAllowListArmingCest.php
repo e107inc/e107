@@ -55,12 +55,12 @@ class HostAllowListArmingCest
 
 		if($this->ownBase === null)
 		{
-			$I->amOnPage('/' . self::PROBE_FILE);
+			$I->amOnPage($this->probeUrl(''));
 			$this->learnAddresses($I);
 		}
 		else
 		{
-			$I->amOnUrl($this->ownBase . '/' . self::PROBE_FILE);
+			$I->amOnUrl($this->probeUrl($this->ownBase));
 		}
 	}
 
@@ -81,7 +81,7 @@ class HostAllowListArmingCest
 	{
 		$this->configure($I, '/', '');
 
-		$I->amOnUrl($this->otherBase . '/' . self::PROBE_FILE);
+		$I->amOnUrl($this->probeUrl($this->otherBase));
 
 		$I->seeResponseCodeIs(200);
 		$I->seeInSource('PROBE_REACHED');
@@ -96,7 +96,7 @@ class HostAllowListArmingCest
 	{
 		$this->configure($I, '/', $this->ownHost);
 
-		$I->amOnUrl($this->otherBase . '/' . self::PROBE_FILE);
+		$I->amOnUrl($this->probeUrl($this->otherBase));
 
 		$I->seeResponseCodeIs(503);
 		$I->seeInSource(self::REFUSAL);
@@ -111,7 +111,7 @@ class HostAllowListArmingCest
 	{
 		$this->configure($I, '/', $this->ownHost);
 
-		$I->amOnUrl($this->ownBase . '/' . self::PROBE_FILE);
+		$I->amOnUrl($this->probeUrl($this->ownBase));
 
 		$I->seeResponseCodeIs(200);
 		$I->seeInSource('PROBE_REACHED');
@@ -125,7 +125,7 @@ class HostAllowListArmingCest
 	{
 		$this->configure($I, '//' . $this->ownHost . '/', '');
 
-		$I->amOnUrl($this->otherBase . '/' . self::PROBE_FILE);
+		$I->amOnUrl($this->probeUrl($this->otherBase));
 
 		$I->seeResponseCodeIs(503);
 		$I->seeInSource(self::REFUSAL);
@@ -140,12 +140,12 @@ class HostAllowListArmingCest
 	{
 		$this->configure($I, 'http://' . $this->ownHost . '/', '');
 
-		$I->amOnUrl($this->otherBase . '/' . self::PROBE_FILE);
+		$I->amOnUrl($this->probeUrl($this->otherBase));
 
 		$I->seeResponseCodeIs(503);
 		$I->seeInSource(self::REFUSAL);
 
-		$I->amOnUrl($this->ownBase . '/' . self::PROBE_FILE);
+		$I->amOnUrl($this->probeUrl($this->ownBase));
 
 		$I->seeResponseCodeIs(200);
 		$I->seeInSource('PROBE_REACHED');
@@ -161,7 +161,7 @@ class HostAllowListArmingCest
 	{
 		$this->configure($I, '/', "\n   \nwww.\n");
 
-		$I->amOnUrl($this->otherBase . '/' . self::PROBE_FILE);
+		$I->amOnUrl($this->probeUrl($this->otherBase));
 
 		$I->seeResponseCodeIs(200);
 		$I->seeInSource('PROBE_REACHED');
@@ -179,14 +179,14 @@ class HostAllowListArmingCest
 	{
 		$this->configure($I, '/', 'named.example.invalid');
 
-		$I->amOnUrl($this->ownBase . '/' . self::PROBE_FILE);
+		$I->amOnUrl($this->probeUrl($this->ownBase));
 
 		$I->seeResponseCodeIs(503);
 		$I->seeInSource(self::REFUSAL);
 
 		$this->restore($I);
 
-		$I->amOnUrl($this->ownBase . '/' . self::PROBE_FILE);
+		$I->amOnUrl($this->probeUrl($this->ownBase));
 
 		$I->seeResponseCodeIs(200);
 		$I->seeInSource('PROBE_REACHED');
@@ -199,8 +199,8 @@ class HostAllowListArmingCest
 	 */
 	public function theProbeRefusesAWriteWithoutThisRunsSecret(AcceptanceTester $I)
 	{
-		$I->amOnUrl($this->ownBase . '/' . self::PROBE_FILE
-			. '?host_arming_set=1&siteurl=%2F&trusted_hosts=named.example.invalid');
+		$I->amOnUrl($this->probeUrl($this->ownBase,
+			'host_arming_set=1&siteurl=%2F&trusted_hosts=named.example.invalid'));
 
 		$I->seeResponseCodeIs(403);
 		$I->dontSeeInSource('CONFIGURED');
@@ -258,15 +258,15 @@ class HostAllowListArmingCest
 	}
 
 	/**
-	 * The probe's address for a request that writes, carrying this run's secret.
+	 * The probe's address for a request that writes, carrying the probe's own secret as well.
 	 *
 	 * @param string $query the rest of the query string, without a leading separator
 	 * @return string
 	 */
 	private function writeUrl($query)
 	{
-		return $this->ownBase . '/' . self::PROBE_FILE
-			. '?host_arming_secret=' . urlencode($this->secret) . '&' . $query;
+		return $this->probeUrl($this->ownBase,
+			'host_arming_secret=' . urlencode($this->secret) . '&' . $query);
 	}
 
 	/**
@@ -279,6 +279,24 @@ class HostAllowListArmingCest
 	{
 		$I->amOnUrl($this->writeUrl('host_arming_restore=1'));
 		$I->seeInSource('RESTORED');
+	}
+
+	/**
+	 * The probe's address, carrying this run's guard secret.
+	 *
+	 * {@see \Helper\ProbeGuard} takes the secret from a header the suite sets
+	 * on every request, and amOnUrl() reconfigures the module, which builds a
+	 * client without it. Every case here needs an absolute address, so the
+	 * secret travels in the query string.
+	 *
+	 * @param string $base scheme and authority, or '' for a site-relative address
+	 * @param string $query further query string, without a leading separator
+	 * @return string
+	 */
+	private function probeUrl($base, $query = '')
+	{
+		return $base . '/' . self::PROBE_FILE . '?' . \Helper\ProbeGuard::query()
+			. ($query === '' ? '' : '&' . $query);
 	}
 
 	/**
@@ -329,6 +347,7 @@ if(isset($_GET['host_arming_restore']))
 }
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
+{{E107_TEST_PROBE_GUARD}}
 if(!file_exists($snapshot))
 {
 	e107::writeFileAtomic($snapshot, '<?php return '.var_export(base64_encode(host_arming_prefs()), true).';');
