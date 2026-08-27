@@ -662,6 +662,69 @@
 			$this->assertLessThan($posBeta, $posAlpha);
 			$this->assertLessThan($posGamma, $posBeta);
 		}
+
+		public function testAdminMarksOnlyInPagePanelLinks()
+		{
+			$vars = array(
+				'panel-one'  => array('text' => 'Panel One', 'icon' => ''),
+				'panel-two'  => array('text' => 'Panel Two', 'icon' => ''),
+				'real-page'  => array('text' => 'Real Page', 'link' => '/e107_admin/users.php', 'icon' => ''),
+				'menu-style' => array('text' => 'Menu Style', 'link' => '#legacyDefault', 'link_class' => ' menuManagerSelect', 'icon' => ''),
+			);
+
+			$tmpl = array(
+				'start'         => '<ul>',
+				'button'        => '<li><a class="link{LINK_CLASS}" href="{LINK_URL}">{LINK_TEXT}</a></li>',
+				'button_active' => '<li><a class="link-active{LINK_CLASS}" href="{LINK_URL}">{LINK_TEXT}</a></li>',
+				'end'           => '</ul>',
+			);
+
+			$result = e107::getNav()->admin('', 'panel-one', $vars, $tmpl);
+			$marker = e_navigation::ADMIN_PANE_LINK_CLASS;
+
+			// Supplying no link is what earns an #anchor URL, and with it the marker.
+			$this->assertStringContainsString('<a class="link-active '.$marker.'" href="#panel-one"', $result);
+			$this->assertStringContainsString('<a class="link '.$marker.'" href="#panel-two"', $result);
+
+			// An entry that brought its own link belongs to whichever handler owns it.
+			$this->assertStringContainsString('<a class="link" href="/e107_admin/users.php"', $result);
+			$this->assertStringContainsString('<a class="link menuManagerSelect" href="#legacyDefault"', $result);
+			$this->assertSame(2, substr_count($result, $marker));
+		}
+
+		public function testAdminSubMenuCarriesNoHiddenDefaultClass()
+		{
+			// No link and a sub: the shape admin_shortcodes.php's afuncs and plugm menus build.
+			$vars = array(
+				'parent' => array(
+					'text' => 'Parent',
+					'icon' => '',
+					'sub'  => array(
+						'child' => array('text' => 'Child', 'link' => '/e107_admin/users.php', 'icon' => ''),
+					),
+				),
+			);
+
+			$tmpl = array(
+				'start'         => '<ul>',
+				'button'        => '<li><a class="link{LINK_CLASS}" href="{LINK_URL}">{LINK_TEXT}</a>{SUB_MENU}</li>',
+				'button_active' => '<li><a class="link-active{LINK_CLASS}" href="{LINK_URL}">{LINK_TEXT}</a>{SUB_MENU}</li>',
+				'start_sub'     => '<ul class="sub{SUB_CLASS}">',
+				'button_sub'    => '<li><a href="{LINK_URL}">{LINK_TEXT}</a></li>',
+				'end_sub'       => '</ul>',
+				'end'           => '</ul>',
+			);
+
+			$result = e107::getNav()->admin('', 'no-active-page', $vars, $tmpl);
+
+			// Nothing implements e-expandme, so e-hideme here would hide a sub-menu nothing reopens.
+			$this->assertStringContainsString('<li><a href="/e107_admin/users.php">Child</a></li>', $result);
+			$this->assertStringNotContainsString('e-hideme', $result);
+			$this->assertStringNotContainsString('e-expandme', $result);
+
+			// A parent that owns sub-items is not an in-page panel switch.
+			$this->assertStringNotContainsString(e_navigation::ADMIN_PANE_LINK_CLASS, $result);
+		}
 /*
 		public function testCacheBase()
 		{
