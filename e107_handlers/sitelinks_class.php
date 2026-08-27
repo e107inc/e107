@@ -735,6 +735,16 @@ class sitelinks
 class e_navigation
 {
 	/**
+	 * Marks an admin side-navigation link that switches an in-page panel instead of loading a page.
+	 *
+	 * {@see e_navigation::admin()} applies it to entries that supply no `link` and own no `sub`, a subset of the
+	 * entries it gives an `#anchor` URL to. An entry that brings its own `link` has its behaviour attached elsewhere.
+	 *
+	 * Consumed by `e107_web/js/core/admin.jquery.js`.
+	 */
+	const ADMIN_PANE_LINK_CLASS = 'e-nav-pane';
+
+	/**
 	 * @var array Admin link structure
 	 */
 	var $admin_cat = array();
@@ -1530,6 +1540,11 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			$replace['LINK_CLASS'] = varset($e107_vars[$act]['link_class']);
 			$replace['SUB_CLASS'] = '';
 
+			if(empty($e107_vars[$act]['link']) && empty($e107_vars[$act]['sub']))
+			{
+				$replace['LINK_CLASS'] .= ' '.self::ADMIN_PANE_LINK_CLASS;
+			}
+
 			if(!isset($e107_vars[$act]['image_src']) && !isset($e107_vars[$act]['icon']))
 			{
 				$e107_vars[$act]['image_src'] = self::guessMenuIcon($act.'/'.$act);
@@ -1576,7 +1591,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			{
 				$replace['SUB_ID'] = $id ? " id='eplug-nav-{$rid}-sub'" : '';
 				$replace['LINK_CLASS'] = ' '.varset($e107_vars[$act]['link_class'], ''); // e-expandit removed.
-				$replace['SUB_CLASS'] = ' '.varset($e107_vars[$act]['sub_class'], 'e-hideme e-expandme');
+				$replace['SUB_CLASS'] = ' '.varset($e107_vars[$act]['sub_class'], '');
 
 
 				$replace['SUB_MENU']  = $tp->parseTemplate($START_SUB, false, $replace);
