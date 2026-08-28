@@ -1616,6 +1616,74 @@ abstract class e_db_abstractTest extends \Test\Unit
 		$this->db->dropTable('test_duplicate_key');
 	}
 
+	/**
+	 * The map a typed write consults to stand in for a null it was handed.
+	 * Wider than '_NOTNULL', which carries only the NOT NULL columns declaring no
+	 * DEFAULT; narrower than the column list, since a nullable column is one a
+	 * caller may legitimately want NULL in. The AUTO_INCREMENT column is out
+	 * because the server already reads a null there as "assign one", and a
+	 * stand-in of 0 would hand back an id of 0 under NO_AUTO_VALUE_ON_ZERO.
+	 */
+	public function testGetNotNullDefaultsReadsTheTableAsItStands()
+	{
+		$table = 'test_notnull_defaults';
+
+		$this->db->dropTable($table);
+
+		$this->assertNotFalse($this->db->execute('CREATE TABLE `'.MPREFIX.$table.'` ('
+			.'`id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,'
+			.'`with_default` VARCHAR(20) NOT NULL DEFAULT \'x\','
+			.'`spaced_default` VARCHAR(20) NOT NULL DEFAULT \'not assigned\','
+			.'`no_default` TEXT NOT NULL,'
+			.'`nullable_col` VARCHAR(20) NULL,'
+			.'PRIMARY KEY (`id`))'),
+			'precondition: the fixture table has to exist');
+
+		$this->assertSame(
+			array('with_default' => 'x', 'spaced_default' => 'not assigned', 'no_default' => ''),
+			$this->db->getNotNullDefaults($table)
+		);
+
+		$this->db->dropTable($table);
+	}
+
+	/**
+	 * The reason the map is not cached. Nothing clears e_CACHE_DB when db_verify
+	 * repairs a column or an update routine adds one, so a definition written
+	 * before the DDL would miss a NOT NULL column added since, and every typed
+	 * write binding a null for it would fail 1048 for as long as the file
+	 * survived.
+	 */
+	public function testGetNotNullDefaultsFollowsAColumnAddedAfterTheDefinitionWasCached()
+	{
+		$table = 'test_notnull_after_ddl';
+
+		$this->db->dropTable($table);
+		@unlink(e_CACHE_DB.$table.'.php');
+
+		$this->assertNotFalse($this->db->execute('CREATE TABLE `'.MPREFIX.$table.'` ('
+			.'`id` INT(10) UNSIGNED NOT NULL,'
+			.'PRIMARY KEY (`id`))'),
+			'precondition: the fixture table has to exist');
+
+		$this->assertNotFalse($this->db->getFieldDefs($table),
+			'precondition: the definition has to be on record before the table changes');
+
+		$this->assertNotFalse($this->db->execute('ALTER TABLE `'.MPREFIX.$table.'` ADD `body` TEXT NOT NULL'),
+			'precondition: the column has to be added behind the definition\'s back');
+
+		$this->assertSame(array('id' => '', 'body' => ''), $this->db->getNotNullDefaults($table));
+
+		@unlink(e_CACHE_DB.$table.'.php');
+		$this->db->dropTable($table);
+	}
+
+	public function testGetNotNullDefaultsIsEmptyForATableThatIsNotThere()
+	{
+		$this->assertSame(array(), $this->db->getNotNullDefaults('e107_tests_no_such_table'));
+	}
+
+
 	public function testGetLastErrorText()
 	{
 		$this->db->select('doesnt_exists');
