@@ -78,6 +78,9 @@ trait ConnectionTrait
 
 	private     $debugMode      = false;
 
+	/** @var array table => NOT NULL stand-in map, read from the server at most once per request */
+	private     $notNullDefaults = array();
+
 	/*
 	 * Backend contract: the driver-specific methods this trait calls.
 	 * Declared abstract so the dependency is explicit to readers and tooling,
@@ -325,6 +328,74 @@ trait ConnectionTrait
 		$defs = $this->getFieldDefs($tableName);
 
 		return (is_array($defs) && isset($defs['_FIELD_TYPES'])) ? $defs['_FIELD_TYPES'] : array();
+	}
+
+	/**
+	 * Documented at {@see ConnectionInterface::getNotNullDefaults()}.
+	 *
+	 * @param string $tableName
+	 * @return array column => stand-in value
+	 */
+	public function getNotNullDefaults($tableName)
+	{
+		if(!isset($this->notNullDefaults[$tableName]))
+		{
+			$this->notNullDefaults[$tableName] = $this->_readNotNullDefaults($tableName);
+		}
+
+		return $this->notNullDefaults[$tableName];
+	}
+
+	/**
+	 * Read the map off the table as it stands, rather than off a cached
+	 * definition. A definition file outlives the table it describes: nothing
+	 * clears e_CACHE_DB when db_verify repairs a column or an update routine adds
+	 * one, so a cached map would miss a NOT NULL column added since it was
+	 * written and, worse, would keep a stand-in for a column since made nullable
+	 * and quietly store '' where the caller meant NULL.
+	 *
+	 * The read costs one SHOW COLUMNS per table per request, and only on a typed
+	 * write that actually binds a null, which is the rare one. It runs on its own
+	 * connection because the caller may be part way through a result set of its
+	 * own; {@see user_extended::user_extended_get_types()} takes the same
+	 * precaution.
+	 *
+	 * An AUTO_INCREMENT column is left out on purpose: a null bound there means
+	 * "assign one", which is what the server does with NULL, whereas the stand-in
+	 * would bind 0 and hand back an id of 0 under NO_AUTO_VALUE_ON_ZERO.
+	 *
+	 * @param string $tableName Logical table name.
+	 * @return array column => stand-in value
+	 */
+	private function _readNotNullDefaults($tableName)
+	{
+		$table = $this->resolveTableName($tableName);
+
+		if($table === false)
+		{
+			return array();
+		}
+
+		$sql = e107::getDb('_schema');
+
+		if($sql->gen('SHOW COLUMNS FROM `'.str_replace('`', '``', $table).'`') === false)
+		{
+			return array();
+		}
+
+		$map = array();
+
+		while($row = $sql->fetch())
+		{
+			if($row['Null'] === 'YES' || stripos((string) $row['Extra'], 'auto_increment') !== false)
+			{
+				continue;
+			}
+
+			$map[$row['Field']] = ($row['Default'] === null) ? '' : $row['Default'];
+		}
+
+		return $map;
 	}
 
 	/**

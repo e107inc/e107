@@ -174,6 +174,9 @@ class QueryBuilder
 	/** @var array placeholder name => value, in the {@see ConnectionInterface::execute()} shape */
 	private $params = array();
 
+	/** @var array table => the connection's NOT NULL stand-in map, read at most once per table */
+	private $notNullDefaults = array();
+
 	/**
 	 * @var bool compile logical tables to `#table` markers instead of physical
 	 *      names, so {@see QueryBuilder::executeAllLanguages()} can resolve them per leg
@@ -1737,7 +1740,10 @@ class QueryBuilder
 	/**
 	 * Set the values for INSERT or REPLACE. Pass one column => value map for a
 	 * single row, or a list of such maps for a multi-row INSERT; every value is
-	 * bound.
+	 * bound exactly as handed over, a null included, which SQL NULL is what a
+	 * column declared NOT NULL then refuses. Use
+	 * {@see QueryBuilder::valuesTyped()} for a row that should be read against
+	 * the table's own definition.
 	 *
 	 * <code>
 	 * $qb->insert('tmp')->values(array(
@@ -1805,16 +1811,48 @@ class QueryBuilder
 	}
 
 	/**
-	 * Insert one row and return the auto-increment id of the new row. Name the
-	 * table first with {@see QueryBuilder::insert()}.
+	 * Execute this INSERT and return the auto-increment id of the new row. Name
+	 * the table first with {@see QueryBuilder::insert()}.
 	 *
-	 * @param array $values column => value
+	 * Pass nothing and the row is whichever one the query already carries, so
+	 * this composes with every way of building it:
+	 *
+	 * <code>
+	 * $qb->insert('download')->valuesTyped($row)->insertGetId();
+	 * $qb->insert('download')->values($row)->insertGetId();
+	 * </code>
+	 *
+	 * Pass a row and it goes through {@see QueryBuilder::valuesTyped()}, so the
+	 * values are read against the table's own definition, which is what the
+	 * deprecated array-form {@see ConnectionInterface::insert()} this shorthand
+	 * replaced did with the values it was given. That form also filled NOT NULL
+	 * columns the row left out altogether, and this does not; at e107's session
+	 * sql_mode the server substitutes the same implicit default for an omitted
+	 * column, so the two agree in practice, but a strict mode would not. Bind a
+	 * row literally by naming {@see QueryBuilder::values()} yourself and calling
+	 * this with no argument.
+	 *
+	 * The parameter carries no `array` type hint: it is nullable, and a nullable
+	 * one has no spelling that PHP 5.6 and PHP 8.4 both accept.
+	 *
+	 * @param array|null $values column => value for one row; null when the row is
+	 *                           already set.
 	 * @return int|string|bool the last insert id, or false on error.
-	 * @throws InvalidArgumentException when a column name fails validation.
+	 * @throws InvalidArgumentException when $values is neither an array nor null,
+	 *                                  when it is a list of rows rather than one
+	 *                                  row, or when a column name fails validation.
 	 */
-	public function insertGetId(array $values)
+	public function insertGetId($values = null)
 	{
-		$this->values($values);
+		if($values !== null)
+		{
+			if(!is_array($values))
+			{
+				throw new InvalidArgumentException('insertGetId() takes one column => value row, or nothing when the row is already set; '.gettype($values).' given.');
+			}
+
+			$this->valuesTyped($values);
+		}
 
 		if($this->execute() === false)
 		{
@@ -1928,6 +1966,10 @@ class QueryBuilder
 	 * override - $fieldType here is a field-type TOKEN ('int', 'float', 'array',
 	 * 'todb', 'null', 'str', 'cmd', ...).
 	 *
+	 * A null value is resolved against the column it is going into: a NOT NULL
+	 * column takes its default, anything else takes SQL NULL. Pass the 'null'
+	 * field type to bind SQL NULL whatever the column says.
+	 *
 	 * @param string $column
 	 * @param mixed $value
 	 * @param string $fieldType Field-type token.
@@ -1950,6 +1992,10 @@ class QueryBuilder
 	 * table ({@see ConnectionInterface::getFieldTypes()}), which is empty when the
 	 * table has no definition on record. Pass a map to override it, or array()
 	 * to bind every column as a string.
+	 *
+	 * A null value is resolved against the column it is going into: a NOT NULL
+	 * column takes its default, anything else takes SQL NULL. {@see
+	 * QueryBuilder::values()} does no such thing and binds what it is handed.
 	 *
 	 * Pass a single column => value map; a list of rows is rejected (bind the
 	 * rows individually, since each may carry different field types).
@@ -2027,6 +2073,29 @@ class QueryBuilder
 	}
 
 	/**
+	 * The connection's NOT NULL stand-in map for this query's table, empty until
+	 * a table is set; see {@see ConnectionInterface::getNotNullDefaults()}. Read at
+	 * most once per table, since a row of twenty columns would otherwise ask
+	 * twenty times.
+	 *
+	 * @return array column => stand-in value
+	 */
+	private function _tableNotNullDefaults()
+	{
+		if($this->table === null)
+		{
+			return array();
+		}
+
+		if(!isset($this->notNullDefaults[$this->table]))
+		{
+			$this->notNullDefaults[$this->table] = $this->db->getNotNullDefaults($this->table);
+		}
+
+		return $this->notNullDefaults[$this->table];
+	}
+
+	/**
 	 * The field-type token for a column: an explicit entry, else the '_DEFAULT'
 	 * fallback, else 'string'. All three identity-transform to a PARAM_STR bind,
 	 * matching the legacy default for an untyped field.
@@ -2059,6 +2128,17 @@ class QueryBuilder
 	 * transformed first and the bind type then derived from it - exactly the
 	 * legacy bind tuple.
 	 *
+	 * A null is first resolved against the column, since a typed write is one
+	 * that has asked for the table's own definition to apply: a column the table
+	 * declares NOT NULL takes its stand-in value
+	 * ({@see ConnectionInterface::getNotNullDefaults()}) and every other column
+	 * takes the null through to SQL NULL. Both explicit spellings of SQL NULL are
+	 * left alone: the 'null' field type, and the '_NULL_' sentinel value, which
+	 * is a string here and is turned into a null further down by
+	 * {@see ConnectionInterface::applyFieldType()}. A caller using either still
+	 * gets SQL NULL, and still hears from the server if the column cannot hold
+	 * one.
+	 *
 	 * @param string $column
 	 * @param mixed $value
 	 * @param string $fieldType Field-type token.
@@ -2070,6 +2150,16 @@ class QueryBuilder
 		if($fieldType === 'cmd' && $this->type === self::TYPE_UPDATE)
 		{
 			return $this->setExpression($column, SqlFragment::fragment((string) $value));
+		}
+
+		if($value === null && $fieldType !== 'null')
+		{
+			$standIns = $this->_tableNotNullDefaults();
+
+			if(isset($standIns[$column]))
+			{
+				$value = $standIns[$column];
+			}
 		}
 
 		$transformed = $this->db->applyFieldType($fieldType, $value);
