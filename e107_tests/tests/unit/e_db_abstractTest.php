@@ -1683,6 +1683,49 @@ abstract class e_db_abstractTest extends \Test\Unit
 		$this->assertSame(array(), $this->db->getNotNullDefaults('e107_tests_no_such_table'));
 	}
 
+	/**
+	 * The round trip #6104 turned on: a create form leaves a field off the page,
+	 * the absent $_POST key reaches the row as null, and the server rejects a
+	 * single-row INSERT of NULL into a NOT NULL column whatever the sql_mode.
+	 * The nullable column in the same row is the control: it still gets NULL.
+	 */
+	public function testATypedInsertStandsInForANullTheColumnCannotHold()
+	{
+		$table = 'test_typed_null_insert';
+
+		$this->db->dropTable($table);
+		@unlink(e_CACHE_DB.$table.'.php');
+
+		$this->assertNotFalse($this->db->execute('CREATE TABLE `'.MPREFIX.$table.'` ('
+			.'`id` INT(10) UNSIGNED NOT NULL,'
+			.'`body` TEXT NOT NULL,'
+			.'`note` VARCHAR(20) NULL,'
+			.'PRIMARY KEY (`id`))'),
+			'precondition: the fixture table has to exist');
+
+		$this->assertNotFalse(
+			$this->db->createQueryBuilder()->insert($table)
+				->valuesTyped(array('id' => 1, 'body' => null, 'note' => null))->execute(),
+			'a typed insert has to land: '.$this->db->getLastErrorText()
+		);
+
+		$row = $this->db->createQueryBuilder()->select('body', 'note')->from($table)->where('id', 1)->fetchRow();
+
+		$this->assertSame('', $row['body'], 'the NOT NULL column takes its stand-in');
+		$this->assertNull($row['note'], 'the nullable column still takes SQL NULL');
+
+		$this->assertFalse(
+			$this->db->createQueryBuilder()->insert($table)
+				->values(array('id' => 2, 'body' => null))->execute(),
+			'values() is the literal path and has to keep binding the null'
+		);
+		$this->assertSame(0, (int) $this->db->createQueryBuilder()->from($table)->where('id', 2)->count(),
+			'the row carrying the literal null must not have landed');
+
+		@unlink(e_CACHE_DB.$table.'.php');
+		$this->db->dropTable($table);
+	}
+
 
 	public function testGetLastErrorText()
 	{
