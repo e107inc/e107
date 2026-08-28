@@ -1249,6 +1249,70 @@ use e107\Reflection\ReflectionMethod;
 			$this->assertSame('INSERT INTO `e107_tmp` (`a`) VALUES (:qb1)', $stub->lastSql);
 		}
 
+		/**
+		 * The shorthand replaced the deprecated array-form insert(), which read a
+		 * row against the table's own definition. Binding it literally instead put
+		 * every one of those call sites on a path their legacy form never took.
+		 */
+		public function testInsertGetIdReadsItsRowAgainstTheTable()
+		{
+			$qb = $this->makeQb($stub);
+			$stub->insertId = 7;
+			$stub->executeReturn = 1;
+			$stub->fieldTypes['user'] = array('user_id' => 'int', '_DEFAULT' => 'str');
+			$stub->notNullDefaults['user'] = array('user_name' => '');
+
+			$this->assertSame(7, $qb->insert('user')->insertGetId(array('user_id' => '5', 'user_name' => null)));
+
+			$this->assertSame(
+				array(
+					'qb1' => array('value' => 5, 'type' => ConnectionInterface::PARAM_INT),
+					'qb2' => array('value' => '', 'type' => ConnectionInterface::PARAM_STR),
+				),
+				$stub->lastParams
+			);
+		}
+
+		/**
+		 * The id is orthogonal to how the row was built, so the shorthand must not
+		 * be the only way to ask for it.
+		 */
+		public function testInsertGetIdTakesTheRowTheQueryAlreadyCarries()
+		{
+			$qb = $this->makeQb($stub);
+			$stub->insertId = 12;
+			$stub->executeReturn = 1;
+
+			$this->assertSame(12, $qb->insert('tmp')->values(array('a' => null))->insertGetId());
+
+			$this->assertSame('INSERT INTO `e107_tmp` (`a`) VALUES (:qb1)', $stub->lastSql);
+			$this->assertSame(array('qb1' => null), $stub->lastParams,
+				'a row already bound by values() stays literal');
+		}
+
+		public function testInsertGetIdRefusesARowThatIsNotAnArray()
+		{
+			$qb = $this->makeQb();
+
+			$this->assertThrowsInvalidArgument(function () use ($qb)
+			{
+				$qb->insert('tmp')->insertGetId('a');
+			});
+		}
+
+		/**
+		 * A list of rows has no one id to return, and used to be accepted.
+		 */
+		public function testInsertGetIdRefusesAListOfRows()
+		{
+			$qb = $this->makeQb();
+
+			$this->assertThrowsInvalidArgument(function () use ($qb)
+			{
+				$qb->insert('tmp')->insertGetId(array(array('a' => 1), array('a' => 2)));
+			});
+		}
+
 		public function testNicheOrderingAndHaving()
 		{
 			$qb = $this->makeQb();

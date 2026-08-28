@@ -1811,16 +1811,48 @@ class QueryBuilder
 	}
 
 	/**
-	 * Insert one row and return the auto-increment id of the new row. Name the
-	 * table first with {@see QueryBuilder::insert()}.
+	 * Execute this INSERT and return the auto-increment id of the new row. Name
+	 * the table first with {@see QueryBuilder::insert()}.
 	 *
-	 * @param array $values column => value
+	 * Pass nothing and the row is whichever one the query already carries, so
+	 * this composes with every way of building it:
+	 *
+	 * <code>
+	 * $qb->insert('download')->valuesTyped($row)->insertGetId();
+	 * $qb->insert('download')->values($row)->insertGetId();
+	 * </code>
+	 *
+	 * Pass a row and it goes through {@see QueryBuilder::valuesTyped()}, so the
+	 * values are read against the table's own definition, which is what the
+	 * deprecated array-form {@see ConnectionInterface::insert()} this shorthand
+	 * replaced did with the values it was given. That form also filled NOT NULL
+	 * columns the row left out altogether, and this does not; at e107's session
+	 * sql_mode the server substitutes the same implicit default for an omitted
+	 * column, so the two agree in practice, but a strict mode would not. Bind a
+	 * row literally by naming {@see QueryBuilder::values()} yourself and calling
+	 * this with no argument.
+	 *
+	 * The parameter carries no `array` type hint: it is nullable, and a nullable
+	 * one has no spelling that PHP 5.6 and PHP 8.4 both accept.
+	 *
+	 * @param array|null $values column => value for one row; null when the row is
+	 *                           already set.
 	 * @return int|string|bool the last insert id, or false on error.
-	 * @throws InvalidArgumentException when a column name fails validation.
+	 * @throws InvalidArgumentException when $values is neither an array nor null,
+	 *                                  when it is a list of rows rather than one
+	 *                                  row, or when a column name fails validation.
 	 */
-	public function insertGetId(array $values)
+	public function insertGetId($values = null)
 	{
-		$this->values($values);
+		if($values !== null)
+		{
+			if(!is_array($values))
+			{
+				throw new InvalidArgumentException('insertGetId() takes one column => value row, or nothing when the row is already set; '.gettype($values).' given.');
+			}
+
+			$this->valuesTyped($values);
+		}
 
 		if($this->execute() === false)
 		{
