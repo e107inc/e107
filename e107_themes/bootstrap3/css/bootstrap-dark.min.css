@@ -1544,3 +1544,15 @@ ul.col-selection > li a 					{ border-top: 1px solid rgb(51, 51, 51);  border-bo
 .phpinfo-wrapper td.e            { background-color: #2a2a2a; }
 .phpinfo-wrapper td.v            { background-color: #373737; }
 .phpinfo-wrapper td.alert-danger { background-color: #5a1a1a; color: #f2b5b5; }
+
+/* System Docs (admin) palette - keep in sync with .docs-item structural styles in e107_admin/docs.php */
+.docs-item h2.docs-title                                          { border-bottom-color: #444; }
+.docs-item h3.docs-section                                        { border-bottom-color: #333; }
+.docs-item p.lead                                                 { color: #b8b8b8; }
+.docs-item .docs-figure figcaption                                { color: #999; }
+.docs-item ol.docs-steps > li                                     { background: #2a2a2a; border-left-color: #5bc0de; color: #d6d6d6; }
+.docs-item ol.docs-steps > li:before                              { background: #5bc0de; color: #1f1f1f; }
+.docs-item pre.docs-code                                          { background: #1a1a1a; color: #f2f2f2; }
+.docs-item .docs-toc                                              { background: #2a2a2a; border-color: #444; }
+.docs-item .docs-toc-title                                        { color: #b8b8b8; }
+.docs-item .docs-toc a                                            { color: #5bc0de; }

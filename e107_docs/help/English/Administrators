@@ -1,6 +1,19 @@
+H1> Granting admin access
 
-Q>	What are permissions?
-A>	These allow you to give administrators different access levels to the admin section. For example you might only want to let a certain admin post news items; using permissions you can do this. There are some admin functions that are only accessible to the main site admin, this is for security reasons.
+P> Administrators are regular users with elevated permissions. Each admin can be granted exactly the permissions they need – nothing more – so day-to-day moderators never see the dangerous areas of the site.
 
-Q>	I want to make an existing registered member into an administrator - how?
-A>	Click on Users in your admin section and search for the registered member, then click on Make Admin. You should then go immediately to the Administrators section and set his permissions. You can also remove admin status from someone in this way.
+SHOT> administrators/admin-users.png | Permission matrix when editing an administrator
+
+Q> What are permissions?
+A> Permissions allow you to give administrators different access levels to the admin section. For example you might only want to let a certain admin post news items; using permissions you can do that. There are some admin functions that are only accessible to the [b]main site admin[/b] for security reasons.
+
+WARN> The main site admin (user #1) cannot have its permissions revoked – this is by design so the site can never be locked out of itself.
+
+H1> Promoting an existing member
+
+STEP> Open [b]Admin → Users[/b] and search for the registered member.
+STEP> Click [b]Make Admin[/b] in the row actions.
+STEP> Go immediately to the [b]Administrators[/b] section.
+STEP> Tick the permissions the new admin should have and save.
+
+TIP> The same workflow lets you [b]revoke[/b] admin status: just clear the permissions or click [b]Remove Admin[/b].
