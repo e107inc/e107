@@ -106,6 +106,7 @@ class WorkspaceCleanup extends Extension
 		'e107_tests_captcha_probe.php',        // @see CaptchaLifecycleCest
 		'e107_tests_redirect_probe.php',           // @see Helper\RedirectFixture
 		'e107_tests_login_menu_prefs_probe.php',   // @see LoginMenuConfigSaveCest
+		'e107_tests_online_memberlist_probe.php',  // @see OnlineMemberListLinkCest
 	];
 
 	/** @var \Deployer|null */

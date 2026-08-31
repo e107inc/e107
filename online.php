@@ -377,8 +377,10 @@
 			->orderBy('user_join', 'DESC')->setFirstResult(0)->setMaxResults(1)
 			->fetchRow();
 
+		$uparams = array('id' => $row['user_id'], 'name' => $row['user_name']);
+
 		$scArray['ONLINE_TABLE_MEMBERS_TOTAL'] = "<br />" . ONLINE_EL5 . ": " . $total_members;
-		$scArray['ONLINE_TABLE_MEMBERS_NEWEST'] = "<br />" . ONLINE_EL6 . ": " . (USER ? "<a href='" . e_BASE . "user.php?id." . $row['user_id'] . "'>" . $row['user_name'] . "</a>" : $row['user_name']);
+		$scArray['ONLINE_TABLE_MEMBERS_NEWEST'] = "<br />" . ONLINE_EL6 . ": " . (USER ? "<a href='" . e107::getUrl()->create('user/profile/view', $uparams) . "'>" . $row['user_name'] . "</a>" : $row['user_name']);
 	}
 
 
