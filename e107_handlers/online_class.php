@@ -356,7 +356,8 @@ class e_online
 							$vals = explode('.', $row['online_user_id'], 2);
 							$user['user_id'] = $vals[0];
 							$user['user_name'] = $vals[1];
-							$member_list .= "<a href='".SITEURL."user.php?id.{$vals[0]}'>{$vals[1]}</a> ";
+							$uparams = array('id' => $vals[0], 'name' => $vals[1]);
+							$member_list .= "<a href='".e107::getUrl()->create('user/profile/view', $uparams)."'>{$vals[1]}</a> ";
 							$listuserson[$row['online_user_id']] = $row['online_location'];
 
 							$this->users[] = $user;

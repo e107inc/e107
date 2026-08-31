@@ -90,9 +90,9 @@ class WorkspaceCleanup extends Extension
 		'e107_tests_p6_rss_reset.php',          // @see RssCommentsFeedCest
 		'e107_tests_p6_poll_reset.php',         // @see PollStuffingCest
 		'e107_tests_p6_download_reset.php',     // @see DownloadMirrorActiveCest
-		'e107_themes/bootstrap5/online_template.php', // @see ForumNamesOutsideTheFeedCest
-		'e107_themes/voux/online_template.php',       // @see ForumNamesOutsideTheFeedCest
-		'e107_themes/bootstrap3/online_template.php', // @see ForumNamesOutsideTheFeedCest
+		'e107_themes/bootstrap5/online_template.php', // @see ForumNamesOutsideTheFeedCest, OnlineMemberListLinkCest
+		'e107_themes/voux/online_template.php',       // @see ForumNamesOutsideTheFeedCest, OnlineMemberListLinkCest
+		'e107_themes/bootstrap3/online_template.php', // @see ForumNamesOutsideTheFeedCest, OnlineMemberListLinkCest
 		'e107_tests_p8_probe.php',            // @see Helper\P8Fixture
 		'e107_tests_p8_feed.xml',
 		'e107_tests_p8_addons.xml',
@@ -100,6 +100,7 @@ class WorkspaceCleanup extends Extension
 		'e107_tests_p8_tinymce_canary.xml',
 		'e107_tests_p19_probe.php',           // @see Helper\P19Fixture
 		'e107_tests_login_menu_prefs_probe.php', // @see LoginMenuConfigSaveCest
+		'e107_tests_online_memberlist_probe.php',  // @see OnlineMemberListLinkCest
 	];
 
 	/** @var \Deployer|null */
