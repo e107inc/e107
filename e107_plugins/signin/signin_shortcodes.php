@@ -36,15 +36,14 @@ class plugin_signin_signin_shortcodes extends e_shortcode
 		$pref = e107::getPref();
 
 		$this->use_imagecode = e107::getConfig()->get('logcode');
-		$this->usernamePlaceholder = '';
-		$this->allowEmailLogin = $pref['allowEmailLogin'];
+		$this->allowEmailLogin = varset($pref['allowEmailLogin'], 0);
 
-		if ($pref['allowEmailLogin'] == 1)
+		if ($this->allowEmailLogin == 1)
 		{
 			$this->usernamePlaceholder = LAN_LOGINMENU_49;
 		}
 
-		if ($pref['allowEmailLogin'] == 2)
+		if ($this->allowEmailLogin == 2)
 		{
 			$this->usernamePlaceholder = LAN_LOGINMENU_50;
 		}
