@@ -231,15 +231,19 @@ class ForumFixture extends CodeceptionModule
 	}
 
 	/**
-	 * Write a core preference, or remove it when $value is null.
+	 * Write a core preference, or remove it when $value is null, and hand back
+	 * the value it replaced so the caller can put it back.
 	 *
 	 * @param string $name
 	 * @param string|int|null $value
+	 * @return string the replaced value, empty when the pref was unset
 	 */
 	public function haveSitePref($name, $value = null)
 	{
-		$this->probe('act=pref&name='.urlencode($name)
+		$body = $this->probe('act=pref&name='.urlencode($name)
 			.'&value='.urlencode($value === null ? '' : (string) $value));
+
+		return preg_match('/^PROBE_PREF_WAS (.*)$/m', $body, $matches) ? $matches[1] : '';
 	}
 
 	/**
@@ -832,6 +836,7 @@ switch($act)
 
 	case 'pref':
 		$config = e107::getConfig();
+		echo "PROBE_PREF_WAS ".$config->get($_GET['name'], '')."\n";
 		if($_GET['value'] === '') { $config->remove($_GET['name']); }
 		else { $config->setPref($_GET['name'], $_GET['value']); }
 		$config->save(false, true, false);
