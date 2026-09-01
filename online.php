@@ -37,11 +37,6 @@
 		return;
 	}
 	
-	$ONLINE_TABLE = '';
-	$ONLINE_TABLE_START = '';
-	$ONLINE_TABLE_END = '';
-	$ONLINE_TABLE_MISC = '';
-
 	if(!defined('COMMENT'))
 	{
 		define('COMMENT', '');
@@ -56,6 +51,11 @@
 	{
 		require_once(e_CORE . "templates/online_template.php");
 	}
+
+	$ONLINE_TABLE = varset($ONLINE_TABLE, '');
+	$ONLINE_TABLE_START = varset($ONLINE_TABLE_START, '');
+	$ONLINE_TABLE_END = varset($ONLINE_TABLE_END, '');
+	$ONLINE_TABLE_MISC = varset($ONLINE_TABLE_MISC, '');
 
 	global $listuserson;
 
