@@ -60,6 +60,7 @@ class WorkspaceCleanup extends Extension
 		                           // run that died before its uninstall fails every run
 		                           // after it until the directory goes
 		'e107_plugins/temptest6024',  // @see SingleEntryErrorPageCest
+		'e107_plugins/temptest6109',  // @see lancheckTest
 		'e107_tests_forum_fixture_probe.php', // @see Helper\ForumFixture
 		'e107_tests_forum_canary.txt',        // @see ForumAttachmentCest
 		'e107_tests_pm_fixture_probe.php',    // @see PmAttachmentCest

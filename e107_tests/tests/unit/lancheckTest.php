@@ -16,6 +16,9 @@
 		/** @var string Scratch language file for the write_lanfile() tests. */
 		protected $target;
 
+		/** @var string Scratch plugin directory for the language-pack tests. */
+		protected $scratchPlugin;
+
 		protected function _before()
 		{
 			require_once(e_ADMIN."lancheck.php");
@@ -40,14 +43,27 @@
 
 		protected function _after()
 		{
+			unset($_SESSION['lancheck']);
+			unset($_SESSION['lancheck-edit-file'], $_POST['newlang'], $_POST['newdef']);
+			unset($_GET['sub'], $_GET['lan'], $_GET['file'], $_GET['type']);
+			e107::getMessage()->reset();
+
 			if($this->target && is_file($this->target))
 			{
 				unlink($this->target);
 			}
 
-			unset($_SESSION['lancheck-edit-file'], $_POST['newlang'], $_POST['newdef']);
-			unset($_GET['sub'], $_GET['lan'], $_GET['file'], $_GET['type']);
-			e107::getMessage()->reset();
+			if($this->scratchPlugin && is_dir($this->scratchPlugin))
+			{
+				foreach(glob($this->scratchPlugin.'languages/*') as $file)
+				{
+					unlink($file);
+				}
+
+				rmdir($this->scratchPlugin.'languages');
+				rmdir($this->scratchPlugin);
+				$this->scratchPlugin = null;
+			}
 		}
 
 		/**
@@ -425,6 +441,101 @@
 
 			$this->assertStringNotContainsString('<script>', $rendered,
 				'The saved translation must be escaped before it is echoed back.');
+		}
+
+		/**
+		 * Write a scratch plugin language pack, which _after() then removes.
+		 *
+		 * The directory name is fixed so that WorkspaceCleanup's sweep can carry
+		 * it and heal a run that dies before _after().
+		 *
+		 * @param array $files file name => pack body, without the opening tag
+		 * @return string the plugin's directory name
+		 */
+		protected function writeScratchPlugin($files)
+		{
+			$plugin = 'temptest6109';
+			$this->scratchPlugin = e_PLUGIN.$plugin.'/';
+
+			mkdir($this->scratchPlugin.'languages', 0755, true);
+
+			foreach($files as $name => $body)
+			{
+				file_put_contents($this->scratchPlugin.'languages/'.$name, "<?php
+".$body);
+			}
+
+			return $plugin;
+		}
+
+		/**
+		 * A plugin that keeps its packs flat in languages/ leaves nothing before
+		 * the first slash of the relative path.
+		 */
+		public function testGet_comp_lan_phrasesReadsAFlatPluginLayout()
+		{
+			$plugin = $this->writeScratchPlugin(array('English.php' => "define('LAN_TEST_FLAT', 'flat');
+"));
+
+			$phrases = $this->lan->get_comp_lan_phrases(e_PLUGIN.$plugin.'/languages/', 'English', 1);
+
+			$this->assertSame(array('English.php' => array('LAN_TEST_FLAT' => 'flat')), $phrases);
+		}
+
+		/**
+		 * The whitelist reads the component out of the path, and only once
+		 * thirdPartyPlugins() has asked for it.
+		 * The last assertion is the shape check_lanfiles() passes, where the
+		 * component directory is already the root.
+		 */
+		public function testGet_comp_lan_phrasesFiltersOnTheComponentDirectory()
+		{
+			$plugin = $this->writeScratchPlugin(array('English.php' => "define('LAN_TEST_FLAT', 'flat');
+"));
+			$expected = array($plugin.'/languages/English.php' => array('LAN_TEST_FLAT' => 'flat'));
+
+			$this->lan->thirdPartyPlugins(false);
+
+			$this->lan->core_plugins = array($plugin);
+			$this->assertSame($expected, $this->lan->get_comp_lan_phrases(e_PLUGIN, 'English', 2));
+
+			$this->lan->core_plugins = array('not_a_plugin_of_ours');
+			$this->assertSame(array(), $this->lan->get_comp_lan_phrases(e_PLUGIN, 'English', 2));
+
+			$this->lan->core_plugins = array($plugin);
+			$this->assertSame(array(), $this->lan->get_comp_lan_phrases(e_PLUGIN.$plugin.'/languages/', 'English', 1));
+		}
+
+		/**
+		 * Put the checker into the state check_all() establishes before it
+		 * verifies a pack.
+		 *
+		 * @param string $language the language being verified
+		 */
+		protected function startVerifying($language)
+		{
+			$transLanguage = new ReflectionProperty('lancheck', 'transLanguage');
+			$transLanguage->setAccessible(true);
+			$transLanguage->setValue($this->lan, $language);
+
+			$_SESSION['lancheck'][$language] = array('file' => 0, 'def' => 0, 'bom' => 0, 'utf' => 0, 'total' => 0);
+		}
+
+		/** A pack with no BOM and no trailing content never gets a 'bom' entry. */
+		public function testCheck_lanfilesAcceptsAPackWithoutABomEntry()
+		{
+			$plugin = $this->writeScratchPlugin(array(
+				'English.php' => "define('LAN_TEST_FLAT', 'flat');
+",
+				'Dutch.php'   => "define('LAN_TEST_FLAT', 'plat');
+",
+			));
+
+			$this->startVerifying('Dutch');
+
+			$text = $this->lan->check_lanfiles('P', $plugin, 'English', 'Dutch');
+
+			$this->assertStringContainsString($plugin, $text);
 		}
 
 /*
