@@ -20,6 +20,9 @@ class signin_shortcodesTest extends \Test\Unit
 	/** @var mixed the plug_installed pref as found, restored in _after() */
 	private $savedInstalled = null;
 
+	/** @var mixed the allowEmailLogin pref as found, restored in _after() */
+	private $savedEmailLogin = null;
+
 	protected function _before()
 	{
 		require_once(e_PLUGIN.'signin/signin_shortcodes.php');
@@ -36,11 +39,13 @@ class signin_shortcodesTest extends \Test\Unit
 		$this->sc->__construct();
 
 		$this->savedInstalled = e107::getConfig()->get('plug_installed');
+		$this->savedEmailLogin = e107::getConfig()->get('allowEmailLogin');
 	}
 
 	protected function _after()
 	{
 		e107::getConfig()->set('plug_installed', $this->savedInstalled);
+		e107::getConfig()->set('allowEmailLogin', $this->savedEmailLogin);
 	}
 
 	/**
@@ -77,5 +82,47 @@ class signin_shortcodesTest extends \Test\Unit
 		e107::getConfig()->set('plug_installed', $installed);
 
 		self::assertNull($this->sc->sc_signin_pm_nav());
+	}
+
+	/**
+	 * One value of the username field names it twice, in the placeholder and in
+	 * the sr-only label, so an empty one leaves a screen reader nothing to read.
+	 */
+	public function testTheUsernameFieldIsNamedForEveryEmailLoginSetting()
+	{
+		$names = array(
+			0 => LAN_LOGINMENU_1,
+			1 => LAN_LOGINMENU_49,
+			2 => LAN_LOGINMENU_50,
+		);
+
+		foreach($names as $pref => $name)
+		{
+			e107::getConfig()->set('allowEmailLogin', $pref);
+
+			$this->assertUsernameFieldIsNamed($name, 'allowEmailLogin='.$pref);
+		}
+	}
+
+	/**
+	 * The pref is absent between the files landing and the database update that
+	 * seeds it, which is the shape of an upgrade in place.
+	 */
+	public function testTheUsernameFieldIsNamedWhileTheSettingIsAbsent()
+	{
+		e107::getConfig()->remove('allowEmailLogin');
+
+		$this->assertUsernameFieldIsNamed(LAN_LOGINMENU_1, 'allowEmailLogin absent');
+	}
+
+	/** Builds the batch against the pref as it stands, then reads the rendered field. */
+	private function assertUsernameFieldIsNamed($name, $case)
+	{
+		$sc = $this->make('plugin_signin_signin_shortcodes');
+		$sc->__construct();
+		$markup = $sc->sc_signin_input_username();
+
+		self::assertStringContainsString("placeholder='".$name."'", $markup, $case);
+		self::assertStringContainsString(">".$name."</label>", $markup, $case);
 	}
 }
