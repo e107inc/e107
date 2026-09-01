@@ -51,15 +51,14 @@ e107::getLanguage()->bcDefs($bcDefs);
 
 				$this->use_imagecode = e107::getConfig()->get('logcode');
 				$this->sec = e107::getSecureImg();
-				$this->usernameLabel = '';
-				$this->allowEmailLogin = $pref['allowEmailLogin'];
+				$this->allowEmailLogin = varset($pref['allowEmailLogin'], 0);
 
-				if($pref['allowEmailLogin']==1)
+				if($this->allowEmailLogin==1)
 				{
 					$this->usernameLabel = LAN_LOGINMENU_49;
 				}
 
-				if($pref['allowEmailLogin']==2)
+				if($this->allowEmailLogin==2)
 				{
 					$this->usernameLabel = LAN_LOGINMENU_50;
 				}
