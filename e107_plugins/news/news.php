@@ -429,13 +429,17 @@ class news_front
 				case 'all':
 				case 'tag':
 				case 'author':
-					$this->from = (int) ($_GET['page'] - 1)  * NEWSLIST_LIMIT;
+					$perPage = NEWSLIST_LIMIT;
 					break;
 
 				default:
-					$this->from = (int) ($_GET['page'] - 1)  * ITEMVIEW;
+					$perPage = ITEMVIEW;
 			}
 
+			$page = is_numeric($_GET['page']) ? $_GET['page'] : 1;
+			$offset = max(0, (int) ($page - 1)) * $perPage;
+
+			$this->from = min($offset, PHP_INT_MAX);
 		}
 
 		$this->addDebug('FROM', $this->from);
