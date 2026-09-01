@@ -1280,6 +1280,12 @@ class users_admin_ui extends e_admin_ui
 	{
 		$batch_trigger = (string) $batch_trigger;
 
+		// The dispatcher returns on a posted cancel, so nothing runs to refuse.
+		if($this->getPosted('etrigger_cancel'))
+		{
+			return false;
+		}
+
 		// A plugin batch addon, dispatched by e_admin_ui rather than written to
 		// a column of this table.
 		if(strpos($batch_trigger, 'batch_') === 0)
@@ -1290,17 +1296,24 @@ class users_admin_ui extends e_admin_ui
 		$trigger = explode('__', $batch_trigger);
 		$type = $trigger[0];
 
-		// Neither of these names a column. handleListDeleteBatch() has its own
-		// guard, and the export batch reads.
-		if($type === 'delete' || $type === 'export')
+		// The export batch reads.
+		if($type === 'export')
 		{
 			return false;
 		}
 
-		$typed = array('sefgen', 'bool', 'boolreverse', 'attach', 'deattach', 'addAll',
-			'clearAll', 'ucadd', 'ucremove', 'ucaddall', 'ucdelall');
+		if($this->batchSelectsProtectedAdmin())
+		{
+			return true;
+		}
 
-		$field = in_array($type, $typed, true) ? varset($trigger[1], '') : $type;
+		// handleListDeleteBatch() has its own confirm screen and names no column.
+		if($type === 'delete')
+		{
+			return false;
+		}
+
+		$field = $this->isTypedBatchTrigger($type) ? varset($trigger[1], '') : $type;
 
 		if(!$this->getFieldAttr($field, 'batch', false))
 		{
@@ -1308,6 +1321,56 @@ class users_admin_ui extends e_admin_ui
 		}
 
 		return ($field === 'user_admin' || $field === 'user_perms') && !$this->canGrantAdmin();
+	}
+
+	/**
+	 * Whether the posted selection holds an administrator this caller may not rewrite, which is
+	 * the rule {@see users_admin_ui::beforeUpdate()} applies on the edit route. A batch writes
+	 * through {@see e_admin_tree_model::batchUpdate()} and never reaches that method.
+	 *
+	 * @return bool
+	 */
+	private function batchSelectsProtectedAdmin()
+	{
+		if($this->canGrantAdmin())
+		{
+			return false;
+		}
+
+		$self = (int) e107::getUser()->getId();
+
+		foreach($this->batchSelection() as $id)
+		{
+			$id = (int) $id;
+
+			if($id < 1 || $id === $self)
+			{
+				continue;
+			}
+
+			$target = e107::getSystemUser($id, false);
+
+			if($target->getId() && $target->get('user_admin'))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Every row a posted batch acts on: the ticked selection, and the ids a confirmed delete
+	 * carries in delete_confirm_value instead of it.
+	 *
+	 * @return array
+	 */
+	private function batchSelection()
+	{
+		$selected = (array) $this->getPosted($this->getFieldAttr('checkboxes', 'toggle', 'multiselect'), array());
+		$confirmed = $this->getPosted('delete_confirm_value', '');
+
+		return is_scalar($confirmed) ? array_merge($selected, explode(',', (string) $confirmed)) : $selected;
 	}
 
 	/**
@@ -1344,8 +1407,8 @@ class users_admin_ui extends e_admin_ui
 	}
 
 	/**
-	 * Drop the whole submission, which is what a batch that ran would have done
-	 * through setTriggersEnabled(false).
+	 * Refuse the batch and drop the whole submission, so no later trigger in the same
+	 * request reads the selection this one turned down.
 	 *
 	 * @param string $batch_trigger
 	 * @return void
