@@ -234,6 +234,10 @@ class ForumFixture extends CodeceptionModule
 	 * Write a core preference, or remove it when $value is null, and hand back
 	 * the value it replaced so the caller can put it back.
 	 *
+	 * A name under url_config/ also clears the router's compiled rule cache,
+	 * without which the next request would go on assembling URLs through the
+	 * profile the site was on before the call.
+	 *
 	 * @param string $name
 	 * @param string|int|null $value
 	 * @return string the replaced value, empty when the pref was unset
@@ -836,10 +840,11 @@ switch($act)
 
 	case 'pref':
 		$config = e107::getConfig();
-		echo "PROBE_PREF_WAS ".$config->get($_GET['name'], '')."\n";
-		if($_GET['value'] === '') { $config->remove($_GET['name']); }
+		echo "PROBE_PREF_WAS ".(string) $config->getPref($_GET['name'])."\n";
+		if($_GET['value'] === '') { $config->removePref($_GET['name']); }
 		else { $config->setPref($_GET['name'], $_GET['value']); }
 		$config->save(false, true, false);
+		if(strpos($_GET['name'], 'url_config/') === 0) { eRouter::clearCache(); }
 		echo "PROBE_OK pref\n";
 		break;
 

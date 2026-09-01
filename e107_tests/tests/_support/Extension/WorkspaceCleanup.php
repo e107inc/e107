@@ -95,7 +95,7 @@ class WorkspaceCleanup extends Extension
 		'e107_tests_p6_rss_reset.php',          // @see RssCommentsFeedCest
 		'e107_tests_p6_poll_reset.php',         // @see PollStuffingCest
 		'e107_tests_p6_download_reset.php',     // @see DownloadMirrorActiveCest
-		'e107_themes/bootstrap5/online_template.php', // @see ForumNamesOutsideTheFeedCest
+		'e107_themes/bootstrap5/online_template.php', // @see ForumNamesOutsideTheFeedCest, OnlineMemberListLinkCest
 		'e107_tests_install_prefs_probe.php',  // @see InstallPrefDuplicatesCest
 		'e107_tests_5928_pref_probe.php',      // @see MissingCorePrefCest
 		'e107_tests_encoding_probe.php',            // @see Helper\OutputEncodingFixture
@@ -106,6 +106,7 @@ class WorkspaceCleanup extends Extension
 		'e107_tests_captcha_probe.php',        // @see CaptchaLifecycleCest
 		'e107_tests_redirect_probe.php',           // @see Helper\RedirectFixture
 		'e107_tests_login_menu_prefs_probe.php',   // @see LoginMenuConfigSaveCest
+		'e107_tests_online_memberlist_probe.php',  // @see OnlineMemberListLinkCest
 	];
 
 	/** @var \Deployer|null */
