@@ -103,8 +103,6 @@ class lancheck
 		// Verify
 		if($mode == 'verify' && !empty($lan))
 		{
-			// $_SESSION['lancheck-errors-only'] 	= ($_POST['errorsonly']==1 ) ?  1 : 0;
-			// $this->errorsOnly 					= ($_POST['errorsonly']==1) ?  TRUE : FALSE;
 			return $this->check_all('render', $lan);
 
 		}
@@ -813,7 +811,6 @@ class lancheck
 		$message .= "
 		<br /><br />
 		<input type='hidden' name='language' value='".$lan."' />
-		<input type='hidden' name='errorsonly' value='".$_SESSION['lancheck-errors-only']."' />    
 	    <input class='btn btn-primary' type='submit' name='ziplang[".$lan."]' value=\"".$just_go_diz."\"  onclick=\"this.value = '".$lan_pleasewait."'\" />
 	    <a href='".e_REQUEST_URI."' class='btn btn-default'>".$lang_sel_diz."</a>
 		</div>
@@ -1424,29 +1421,15 @@ class lancheck
 
 
 
+		$componentWhitelists = array('themes' => $this->core_themes, 'plugins' => $this->core_plugins);
+
 		foreach($lang_array as $f)
 		{
-			if($mode == 'plugins')
+			if($this->thirdPartyPlugins !== true && array_key_exists($mode, $componentWhitelists))
 			{
-				$tmpDir = str_replace($comp_dir,'',$f['path']);
-			//	echo "<br />".$tmpDir;
-				list($pluginDirectory, $other) = explode("/",$tmpDir, 2);
+				$componentDir = strstr(str_replace($comp_dir, '', $f['path'])."/", "/", true);
 
-
-				if(($this->thirdPartyPlugins !== true) && !in_array($pluginDirectory, $this->core_plugins))
-				{
-					continue;
-				}
-			}
-
-			if($mode == 'themes')
-			{
-				$tmpDir = str_replace($comp_dir,'',$f['path']);
-			//	echo "<br />".$tmpDir;
-				list($themeDirectory, $other) = explode("/",$tmpDir, 2);
-
-
-				if(($this->thirdPartyPlugins !== true) && !in_array($themeDirectory, $this->core_themes))
+				if(!in_array($componentDir, $componentWhitelists[$mode]))
 				{
 					continue;
 				}
@@ -1550,7 +1533,7 @@ class lancheck
 				$utf_error = "";
 	
 				$bomkey = str_replace(".php","",$k_check);
-				if($check['bom'][$bomkey])
+				if(!empty($check['bom'][$bomkey]))
 				{
 					$bom_error = "<i>".$tp->lanVars(LAN_CHECK_15,array("'&lt;?php'","'?&gt;'"))."</i><br />";
 					$this->checkLog('bom',1);
@@ -1559,7 +1542,6 @@ class lancheck
 				{
 					$bom_error = "";	
 				}
-			// 	$bom_error = ($check['bom'][$bomkey]) ? "<i>".LAN_CHECK_15."</i><br />" : ""; // illegal chars
 			
 				foreach($subkeys as $sk)
 				{
