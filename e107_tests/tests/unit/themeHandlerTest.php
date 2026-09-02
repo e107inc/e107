@@ -44,15 +44,19 @@
 
 			try
 			{
+				e107::getConfig()->set('sitetheme_pref', array('themeHandlerTest_text' => 'legacy'))->save(false, true, false);
+
 				$this->th->setThemeConfig();
 				$stored = $config->getPref();
+				$legacy = e107::getConfig()->get('sitetheme_pref');
 			}
 			finally
 			{
 				$_POST = $posted;
-				self::undoThemeConfigSave($config, $siteThemePref);
+				self::undoThemeConfigSave(array($config), $siteThemePref);
 			}
 
+			$this->assertEmpty($legacy, 'a successful save of the site theme has to retire the legacy preference');
 			$this->assertSame('posted', $stored['themeHandlerTest_text']);
 			$this->assertSame('', $stored['themeHandlerTest_checkbox']);
 			$this->assertSame(array(e_LANGUAGE => ''), $stored['themeHandlerTest_multilan']);
@@ -90,7 +94,7 @@
 			finally
 			{
 				$_POST = $posted;
-				self::undoThemeConfigSave($config, $siteThemePref);
+				self::undoThemeConfigSave(array($config), $siteThemePref);
 			}
 
 			$this->assertSame(array('legacy' => array(e_LANGUAGE => 'posted'), '' => array(e_LANGUAGE => 'posted')), $stored);
@@ -150,7 +154,7 @@
 				$_POST = $posted;
 				e107::getConfig()->removePostedData();
 				self::replaceThemeConfig($theme);
-				self::undoThemeConfigSave(e107::getThemeConfig($theme), $siteThemePref);
+				self::undoThemeConfigSave(array(e107::getThemeConfig($theme)), $siteThemePref);
 				$mes->reset(false, false, true);
 			}
 
@@ -185,6 +189,43 @@
 			}
 
 			$this->assertFalse($reported, 'a pre-v2.1.4 process() returning false means nothing changed, not that the write failed');
+		}
+
+		public function testSetThemeConfigWritesToTheThemeBeingConfigured()
+		{
+			$otherTheme    = 'themeHandlerTestTheme';
+			$otherConfig   = e107::getThemeConfig($otherTheme);
+			$siteConfig    = e107::getThemeConfig(e107::getPref('sitetheme'));
+			$siteThemePref = e107::getConfig()->get('sitetheme_pref');
+			$posted        = $_POST;
+
+			$this->th->id             = $otherTheme;
+			$this->th->themeConfigObj = $this->themeConfigStub();
+
+			$_POST = array('themeHandlerTest_text' => 'posted');
+
+			try
+			{
+				e107::getConfig()->set('sitetheme_pref', array('themeHandlerTest_text' => 'legacy'))->save(false, true, false);
+
+				$this->th->setThemeConfig();
+
+				$stored     = $otherConfig->getPref();
+				$siteStored = $siteConfig->getPref();
+				$legacy     = e107::getConfig()->get('sitetheme_pref');
+			}
+			finally
+			{
+				$_POST = $posted;
+				self::undoThemeConfigSave(array($otherConfig, $siteConfig), $siteThemePref);
+				e107::getDb()->createQueryBuilder()->delete('core')->where('e107_name', 'theme_' . $otherTheme)->execute();
+				$otherConfig->clearPrefCache();
+			}
+
+			$this->assertArrayHasKey('themeHandlerTest_text', $stored, 'the theme being configured has to be the one that received the posted field');
+			$this->assertSame('posted', $stored['themeHandlerTest_text']);
+			$this->assertArrayNotHasKey('themeHandlerTest_text', $siteStored);
+			$this->assertSame(array('themeHandlerTest_text' => 'legacy'), $legacy);
 		}
 
 		public function testThemeConfigEmptyValueMirrorsRenderElement()
@@ -314,18 +355,21 @@
 		/**
 		 * Drops the preferences the tests write and puts back the core preference {@see themeHandler::setThemeConfig()} clears.
 		 *
-		 * @param e_theme_pref $config
+		 * @param e_theme_pref[] $configs
 		 * @param mixed $siteThemePref
 		 * @return void
 		 */
-		private static function undoThemeConfigSave($config, $siteThemePref)
+		private static function undoThemeConfigSave(array $configs, $siteThemePref)
 		{
-			foreach(array_keys(self::themeConfigFields()) as $field)
+			foreach($configs as $config)
 			{
-				$config->removePref($field);
-			}
+				foreach(array_keys(self::themeConfigFields()) as $field)
+				{
+					$config->removePref($field);
+				}
 
-			$config->save(false, true, false);
+				$config->save(false, true, false);
+			}
 
 			e107::getConfig()->set('sitetheme_pref', $siteThemePref)->save(false, true, false);
 		}
