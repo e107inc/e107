@@ -629,17 +629,31 @@
 
 				$maxsize = intval($this->pmPrefs['attach_size']) * 1024;
 
-				if(is_array($_FILES['file_userfile']))
+				$attached = array();
+
+				if(isset($_FILES['file_userfile']['name']) && is_array($_FILES['file_userfile']['name']))
 				{
-					$file_userfile = $_FILES['file_userfile'];
-					foreach(array_keys($file_userfile['size']) as $fid)
+					foreach($_FILES['file_userfile']['name'] as $fid => $name)
 					{
-						if($maxsize > 0 && $file_userfile['size'][$fid] > $maxsize)
+						$size = $_FILES['file_userfile']['size'][$fid];
+
+						if(strlen($name) && ($maxsize < 1 || $size <= $maxsize))
 						{
-							$msg .= str_replace("{FILENAME}", $file_userfile['name'][$fid], LAN_PM_62) . "<br />";
-							$file_userfile['size'][$fid] = 0;
+							$attached[$fid] = $name;
+							$totalsize += $size;
+
+							continue;
 						}
-						$totalsize += $file_userfile['size'][$fid];
+
+						if(strlen($name))
+						{
+							$msg .= str_replace("{FILENAME}", $name, LAN_PM_62) . "<br />";
+						}
+
+						foreach(array_keys($_FILES['file_userfile']) as $part)
+						{
+							unset($_FILES['file_userfile'][$part][$fid]);
+						}
 					}
 				}
 
@@ -662,19 +676,23 @@
 				}
 
 
-				if(!empty($_POST['uploaded']))
+				if(!empty($attached))
 				{
 					if(check_class($this->pmPrefs['attach_class']))
 					{
-						$sendVars['uploaded'] = $this->processAttachments();
+						$uploaded = $this->processAttachments();
 
-						foreach($sendVars['uploaded'] as $var)
+						if(is_array($uploaded))
 						{
-							if(!empty($var['message']))
-							{
-								$msg .= $var['message'] . "<br />";
-							}
+							$sendVars['uploaded'] = $uploaded;
 
+							foreach($uploaded as $var)
+							{
+								if(!empty($var['message']))
+								{
+									$msg .= $var['message'] . "<br />";
+								}
+							}
 						}
 					}
 					else
