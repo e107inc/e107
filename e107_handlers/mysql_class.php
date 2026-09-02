@@ -636,7 +636,7 @@ class e_db_mysql implements e_db
 
 		// Fail closed if the table name is not a plain identifier - it is always
 		// interpolated unquoted into the FROM clause below.
-		if($this->_safeIdentifier($table) === false)
+		if(($table = $this->_safeIdentifier($table)) === false)
 		{
 			return $this->_refuseIdentifier(__FUNCTION__);
 		}
@@ -813,7 +813,7 @@ class e_db_mysql implements e_db
 		// $fields === 'generic' is the documented raw-SQL escape hatch ($table holds
 		// the full query); every other path interpolates $table unquoted into FROM,
 		// so validate it as a plain identifier and fail closed otherwise.
-		if ($fields != 'generic' && $this->_safeIdentifier($table) === false)
+		if ($fields != 'generic' && ($table = $this->_safeIdentifier($table)) === false)
 		{
 			return $this->_refuseIdentifier(__FUNCTION__);
 		}
@@ -889,7 +889,7 @@ class e_db_mysql implements e_db
 
 		// Fail closed if the table name is not a plain identifier - it is always
 		// interpolated unquoted into the DELETE statement below.
-		if($this->_safeIdentifier($table) === false)
+		if(($table = $this->_safeIdentifier($table)) === false)
 		{
 			return $this->_refuseIdentifier(__FUNCTION__);
 		}
@@ -1131,8 +1131,8 @@ class e_db_mysql implements e_db
 	 */
 	public function fields($table, $prefix = '', $retinfo = false)
 	{
-		// $table becomes a SQL identifier (cannot be bound); validate it like field().
-		if(($table = $this->_safeIdentifier($table)) === false)
+		if(($table = $this->_safeIdentifier($table)) === false
+			|| ($prefix != '' && ($prefix = $this->_safeIdentifier($prefix, true)) === false))
 		{
 			return $this->_refuseIdentifier(__FUNCTION__);
 		}
@@ -1380,20 +1380,6 @@ class e_db_mysql implements e_db
 	{
 		$this->mySQLlastErrNum = -1;
 		$this->mySQLlastErrText = "PDO is required to use the mysql backup() method";
-		return false;
-	}
-
-	/**
-	 * Refuses a table name that is not a plain identifier, recording the refusal and reporting it the way {@see e_db_mysql::dbError()} reports a failed query.
-	 *
-	 * @param string $method
-	 * @return bool false
-	 */
-	private function _refuseIdentifier($method)
-	{
-		$this->_refuse($method.'() invalid table identifier');
-		$this->dbError($method);
-
 		return false;
 	}
 

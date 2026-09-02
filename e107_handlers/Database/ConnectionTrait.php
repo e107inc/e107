@@ -1069,6 +1069,17 @@ trait ConnectionTrait
 	}
 
 	/**
+	 * Refuses a table name that {@see ConnectionTrait::_safeIdentifier()} rejected, for the legacy CRUD entry points each backend writes for itself.
+	 *
+	 * @param string $method
+	 * @return bool false, so a caller can return it directly
+	 */
+	protected function _refuseIdentifier($method)
+	{
+		return $this->_refuse($method.'() invalid table identifier');
+	}
+
+	/**
 	 * @return mixed
 	 */
 	public function getCharset()
@@ -1473,6 +1484,11 @@ trait ConnectionTrait
 	{
 		$this->_notifyDeprecated('insert', 'Use the query builder: $sql->createQueryBuilder()->insert(\'table\')->values($row)->execute().');
 
+		if(($tableName = $this->_safeIdentifier($tableName)) === false)
+		{
+			return $this->_refuseIdentifier(isset($arg['_REPLACE']) ? 'replace' : 'insert');
+		}
+
 		$table = $this->hasLanguage($tableName);
 		$this->mySQLcurTable = $table;
 		$REPLACE = false; // kill any PHP notices
@@ -1732,6 +1748,11 @@ trait ConnectionTrait
 	function update($tableName, $arg, $debug = false, $log_type = '', $log_remark = '')
 	{
 		$this->_notifyDeprecated('update', 'Use the query builder: $sql->createQueryBuilder()->update(\'table\')->set(\'col\', $value)->where(...)->execute().');
+
+		if(($tableName = $this->_safeIdentifier($tableName)) === false)
+		{
+			return $this->_refuseIdentifier(__FUNCTION__);
+		}
 
 		$table = $this->hasLanguage($tableName);
 		$this->mySQLcurTable = $table;

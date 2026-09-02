@@ -463,6 +463,10 @@ class e_db_pdo implements e_db
 	{
 		$this->_notifyDeprecated('select', 'Use the query builder: $sql->createQueryBuilder()->select(...)->from(\'table\')->where(...)->fetchAll().');
 
+		if(($table = $this->_safeIdentifier($table)) === false)
+		{
+			return $this->_refuseIdentifier(__FUNCTION__);
+		}
 
 		$table = $this->hasLanguage($table);
 
@@ -621,6 +625,11 @@ class e_db_pdo implements e_db
 	{
 		$this->_notifyDeprecated('count', 'Use the query builder: $sql->createQueryBuilder()->selectCount()->from(\'table\')->where(...)->fetchOne().');
 
+		if ($fields != 'generic' && ($table = $this->_safeIdentifier($table)) === false)
+		{
+			return $this->_refuseIdentifier(__FUNCTION__);
+		}
+
 		$table = $this->hasLanguage($table);
 
 		if ($fields == 'generic')
@@ -697,6 +706,11 @@ class e_db_pdo implements e_db
 	function delete($table, $arg = '', $debug = false, $log_type = '', $log_remark = '')
 	{
 		$this->_notifyDeprecated('delete', 'Use the query builder: $sql->createQueryBuilder()->delete(\'table\')->where(...)->execute().');
+
+		if(($table = $this->_safeIdentifier($table)) === false)
+		{
+			return $this->_refuseIdentifier(__FUNCTION__);
+		}
 
 		$table = $this->hasLanguage($table);
 		$this->mySQLcurTable = $table;
@@ -929,7 +943,11 @@ class e_db_pdo implements e_db
 	 */
 	public function fields($table, $prefix = '', $retinfo = false)
 	{
-
+		if(($table = $this->_safeIdentifier($table)) === false
+			|| ($prefix != '' && ($prefix = $this->_safeIdentifier($prefix, true)) === false))
+		{
+			return $this->_refuseIdentifier(__FUNCTION__);
+		}
 
 		$this->_getMySQLaccess();
 
