@@ -143,6 +143,8 @@ define("DOWLAN_128", "Mirrors");
 define("DOWLAN_129", "leave blank if not using mirrors");
 define("DOWLAN_130", "Add another mirror");
 define("DOWLAN_131", "Select local file");
+define("DOWLAN_LOCAL_PATH", "Or a path inside the downloads directory");
+define("DOWLAN_LOCAL_PATH_NOT_FOUND", "No file of that name is in the downloads directory, so nothing was saved. Check the path against the downloads directory and submit the download again.");
 define("DOWLAN_132", "Please enter mirror to use, then address to download and filesize");
 define("DOWLAN_133", "Mirror updated in database");
 define("DOWLAN_134", "Mirror saved in database");
