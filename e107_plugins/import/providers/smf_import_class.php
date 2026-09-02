@@ -318,7 +318,7 @@ class smf_import extends base_import_class
 		}
 
 
-		if(in_array($source['fileext'], array('png', 'jpg', 'jpeg', 'gif')))
+		if(in_array($source['fileext'], array('png', 'jpg', 'jpeg', 'gif', 'webp')))
 		{
 			$type = 'img';
 		}
