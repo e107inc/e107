@@ -95,6 +95,23 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$this->assertTrue($result);
 	}
 
+	/**
+	 * A refused connection records the driver error number rather than the SQLSTATE; before PHP 7.3.22 and 7.4.10 the exception carries no errorInfo at all and the number is only in its code, which is why {@see e_db_pdo::_errorNumber()} reads both.
+	 *
+	 * @see https://github.com/e107inc/e107/issues/5993
+	 * @see https://github.com/e107inc/e107/issues/6040
+	 */
+	public function testARefusedConnectionRecordsTheDriverErrorNumber()
+	{
+		$result = $this->db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], 'wrong password');
+
+		$this->assertFalse($result, 'precondition: the connection has to be refused');
+		$this->assertSame(1045, $this->db->getLastErrorNumber(),
+			'a refused connection has to report the driver error number');
+		$this->assertNotSame('', $this->db->getLastErrorText(),
+			'a refused connection has to report the driver error text');
+	}
+
 	public function testDatabase()
 	{
 		$this->db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword']);
@@ -109,6 +126,21 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$this->assertTrue($result);
 		$this->assertEquals("`".$this->dbConfig["mySQLdefaultdb"]."`.".\Helper\Unit::E107_MYSQL_PREFIX,
 			$this->db->mySQLPrefix);
+	}
+
+	/**
+	 * @see https://github.com/e107inc/e107/issues/6040
+	 */
+	public function testARefusedDatabaseSelectionRecordsTheDriverErrorNumber()
+	{
+		$this->db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], $this->dbConfig['mySQLpassword']);
+
+		$this->assertFalse($this->db->database('missing_database'),
+			'precondition: the database selection has to be refused');
+		$this->assertSame(1049, $this->db->getLastErrorNumber(),
+			'a refused database selection has to report the driver error number');
+		$this->assertNotSame('', $this->db->getLastErrorText(),
+			'a refused database selection has to report the driver error text');
 	}
 
 	public function testDb_Mark_Time()

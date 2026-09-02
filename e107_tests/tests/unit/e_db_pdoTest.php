@@ -35,24 +35,6 @@ class e_db_pdoTest extends e_db_abstractTest
 
 	}
 
-	/**
-	 * A refused connection records the driver error number, not the SQLSTATE.
-	 * Before PHP 7.3.22 and 7.4.10 the exception carries no errorInfo at all and
-	 * the number is only in its code, which is why {@see e_db_pdo} reads both.
-	 *
-	 * PDO-only: {@see e_db_mysql} records no number on this path.
-	 *
-	 * @see https://github.com/e107inc/e107/issues/5993
-	 */
-	public function testARefusedConnectionRecordsTheDriverErrorNumber()
-	{
-		$result = $this->db->connect($this->dbConfig['mySQLserver'], $this->dbConfig['mySQLuser'], 'wrong password');
-
-		$this->assertFalse($result, 'precondition: the connection has to be refused');
-		$this->assertSame(1045, $this->db->getLastErrorNumber(),
-			'a refused connection has to report the driver error number');
-	}
-
 	public function testGetCharSet()
 	{
 		$this->db->setCharset();
@@ -95,6 +77,10 @@ class e_db_pdoTest extends e_db_abstractTest
 
 		$result = $this->db->backup('missing_table', null, $opts);
 		$this->assertFalse($result);
+		$this->assertNotSame(0, $this->db->getLastErrorNumber(),
+			'a failed backup has to leave an error number behind');
+		$this->assertNotSame('', $this->db->getLastErrorText(),
+			'a failed backup has to say why');
 	}
 
 	/**

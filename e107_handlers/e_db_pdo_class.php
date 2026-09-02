@@ -2551,6 +2551,7 @@ class e_db_pdo implements e_db
 		catch (\Exception $e)
 		{
 			$this->mySQLlastErrText = 'mysqldump-php error: ' .$e->getMessage();
+			$this->mySQLlastErrNum = $this->_errorNumber($e);
 		    return false;
 		}
 
@@ -2594,7 +2595,7 @@ class e_db_pdo implements e_db
 	 *
 	 * Before PHP 7.3.22 and 7.4.10 (php-src bug #64705) a connection failure sets no errorInfo and puts the errno in the exception code as an int, while a SQLSTATE always arrives there as a string, so the test is is_int() and never is_numeric(): SQLSTATE values such as '23000' are all digits.
 	 *
-	 * @param PDOException $ex
+	 * @param Exception $ex
 	 * @return int
 	 */
 	private function _errorNumber($ex)
