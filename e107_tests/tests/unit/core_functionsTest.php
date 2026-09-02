@@ -53,4 +53,47 @@
 
 
 
+
+		public function testREmoteStoresTheFormsSoleTextareaBeforeInserting()
+		{
+			$script = $this->registeredEmoteScript();
+
+			$this->assertMatchesRegularExpression(
+				"#closest\\(\\s*'form'\\s*\\).+?find\\(\\s*'textarea'\\s*\\).+?length\\s*===\\s*1.+?storeCaret\\(\\s*area\\.get\\(\\s*0\\s*\\)\\s*\\).+?addtext\\(\\s*val\\s*,\\s*true\\s*\\)#s",
+				$script,
+				"r_emote() must hand storeCaret() the textarea node itself before addtext() runs, or the emote lands on a jQuery wrapper, or in whichever field the visitor happened to touch last."
+			);
+		}
+
+		private function registeredEmoteScript()
+		{
+			$manager = e107::getJs();
+			$snapshot = $manager->getData();
+
+			try
+			{
+				r_emote();
+				$data = $manager->getData();
+			}
+			finally
+			{
+				$manager->setData($snapshot);
+			}
+
+			$script = '';
+
+			foreach ($data['_runtime_footer_src'] as $zone)
+			{
+				foreach ($zone as $registered)
+				{
+					if (strpos($registered, '.addEmote') !== false)
+					{
+						$script .= $registered;
+					}
+				}
+			}
+
+			return $script;
+		}
+
 	}
