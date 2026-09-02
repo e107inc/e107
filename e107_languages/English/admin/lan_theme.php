@@ -117,4 +117,5 @@ return [
     'TPVLANHELP_05' => "End lines with a [b]$[/b] to exactly match against the end of script path.",
     'TPVLANHELP_06' => "Start lines with a [b]:[/b] to partially or fully match against e107::route()",
     'TPVLAN_97' => "This theme requires a newer version of e107.",
+    'LAN_THEME_OPTIONS_NOT_SAVED' => "Theme options were not saved.",
 ];

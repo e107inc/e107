@@ -96,6 +96,97 @@
 			$this->assertSame(array('legacy' => array(e_LANGUAGE => 'posted'), '' => array(e_LANGUAGE => 'posted')), $stored);
 		}
 
+		public function testSetThemeConfigReportsAFailedSave()
+		{
+			$theme  = e107::getPref('sitetheme');
+			$posted = $_POST;
+
+			$this->th->id             = $theme;
+			$this->th->themeConfigObj = $this->themeConfigStub();
+
+			$_POST = array();
+
+			try
+			{
+				e107::getThemeConfig($theme)->addValidationError('themeHandlerTest');
+
+				$result = $this->th->setThemeConfig();
+			}
+			finally
+			{
+				$_POST = $posted;
+				self::replaceThemeConfig($theme);
+			}
+
+			$this->assertFalse($result);
+		}
+
+		public function testSetStyleReportsAFailedSaveOnceAndInTheAdminsWords()
+		{
+			e107::includeLan(e_LANGUAGEDIR . e_LANGUAGE . '/admin/lan_theme.php');
+
+			$theme         = e107::getPref('sitetheme');
+			$siteThemePref = e107::getConfig()->get('sitetheme_pref');
+			$posted        = $_POST;
+			$mes           = e107::getMessage();
+
+			$this->th->id             = $theme;
+			$this->th->themeConfigObj = $this->themeConfigStub();
+
+			$_POST = array();
+			$mes->reset(false, false, true);
+
+			try
+			{
+				self::replaceThemeConfig($theme, $this->losingThemePref($theme));
+
+				$this->th->setStyle();
+
+				$errors  = $mes->get(E_MESSAGE_ERROR, 'default', true, false);
+				$success = $mes->hasMessage(E_MESSAGE_SUCCESS, 'default', true);
+			}
+			finally
+			{
+				$_POST = $posted;
+				e107::getConfig()->removePostedData();
+				self::replaceThemeConfig($theme);
+				self::undoThemeConfigSave(e107::getThemeConfig($theme), $siteThemePref);
+				$mes->reset(false, false, true);
+			}
+
+			$this->assertFalse($success, 'a write that failed must not be reported as saved');
+			$this->assertSame(array(LAN_THEME_OPTIONS_NOT_SAVED), $errors, 'the admin should get one message, not the wording e_pref was asked to keep off the screen');
+		}
+
+		public function testSetStyleStaysSilentWhenAPreV214ThemeReportsFalse()
+		{
+			require_once(__DIR__ . '/fixtures/ThemeHandlerLegacyThemeConfig.php');
+
+			$posted = $_POST;
+			$mes    = e107::getMessage();
+
+			$this->th->id             = e107::getPref('sitetheme');
+			$this->th->themeConfigObj = new ThemeHandlerLegacyThemeConfig();
+
+			$_POST = array();
+			$mes->reset(false, false, true);
+
+			try
+			{
+				$this->th->setStyle();
+
+				$reported = $mes->hasMessage(false, 'default', true);
+			}
+			finally
+			{
+				$_POST = $posted;
+				e107::getConfig()->removePostedData();
+				$mes->reset(false, false, true);
+			}
+
+			$this->assertFalse($reported, 'a pre-v2.1.4 process() returning false means nothing changed, not that the write failed');
+		}
+
 		public function testThemeConfigEmptyValueMirrorsRenderElement()
 		{
 			$frm    = e107::getForm();
@@ -179,6 +270,45 @@
 				'themeHandlerTest_layouts' => array('title' => 'Layouts', 'type' => 'layouts', 'writeParms' => array('multiple' => true)),
 				'themeHandlerTest_dropdown' => array('title' => 'Dropdown', 'type' => 'dropdown', 'writeParms' => array('one' => 'One')),
 			);
+		}
+
+		/**
+		 * Stands an object in for the preferences {@see e107::getThemeConfig()} keeps for a theme, or with no object drops what is there, so a test that spoiled one hands the next a clean one.
+		 *
+		 * @param string $theme
+		 * @param e_theme_pref|null $config
+		 * @return void
+		 */
+		private static function replaceThemeConfig($theme, $config = null)
+		{
+			$registry = new ReflectionProperty('e107', '_theme_config_arr');
+			$registry->setAccessible(true);
+
+			$configs = $registry->getValue();
+
+			if($config === null)
+			{
+				unset($configs[$theme]);
+			}
+			else
+			{
+				$configs[$theme] = $config;
+			}
+
+			$registry->setValue(null, $configs);
+		}
+
+		/**
+		 * A theme's preferences that lose every compare-and-swap {@see e_pref::persist()} runs.
+		 *
+		 * @param string $theme
+		 * @return e_theme_pref
+		 */
+		private function losingThemePref($theme)
+		{
+			require_once(__DIR__ . '/fixtures/ThemeHandlerLosingThemePref.php');
+
+			return new ThemeHandlerLosingThemePref($theme);
 		}
 
 		/**

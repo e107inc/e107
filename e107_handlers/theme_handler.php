@@ -1977,7 +1977,9 @@ class themeHandler
 
 
 	/**
-	 * @return bool|mixed|void
+	 * Stores the theme's own configuration preferences, reporting what {@see e_pref::save()} reported: false when the write failed, 0 when there was nothing to write; a pre-v2.1.4 theme's process() has no failure contract, so the false it is entitled to return is reported as 0.
+	 *
+	 * @return bool|int|mixed|void
 	 */
 	function setThemeConfig()
 	{
@@ -2009,7 +2011,9 @@ class themeHandler
 					}
 				}
 
-				if($pref->setPref($values)->save(true,true,false))
+				$saved = $pref->setPref($values)->save(true,true,false);
+
+				if($saved)
 				{
 					$siteThemePref = e107::getConfig()->get('sitetheme_pref');
 					if(!empty($siteThemePref))
@@ -2018,17 +2022,16 @@ class themeHandler
 					}
 				}
 
-			//	if($pref->dataHasChanged())
-				{
+				e107::getCache()->clearAll('library'); // Need to clear cache in order to refresh library information.
 
-					e107::getCache()->clearAll('library'); // Need to clear cache in order to refresh library information.
-				}
-
-				return true;
+				return $saved;
 			}
 
 			e107::getCache()->clearAll('library');
-			return call_user_func(array(&$this->themeConfigObj, 'process')); //pre v2.1.4
+
+			$processed = call_user_func(array(&$this->themeConfigObj, 'process')); //pre v2.1.4
+
+			return $processed === false ? 0 : $processed;
 		}
 	}
 
@@ -2918,7 +2921,11 @@ class themeHandler
 
 		$msg = $this->setThemeConfig();
 
-		if($msg)
+		if($msg === false)
+		{
+			$mes->addError(LAN_THEME_OPTIONS_NOT_SAVED);
+		}
+		elseif($msg)
 		{
 			$mes->add(TPVLAN_37, E_MESSAGE_SUCCESS);
 			if(is_array($msg))
