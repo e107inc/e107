@@ -1305,4 +1305,90 @@ abstract class e_db_abstractTest extends \Codeception\Test\Unit
 		$this->assertTrue($empty,"isEmpty() or truncate() failed");
 	}
 
+	/**
+	 * select(), count(), delete(), db_FieldList(), insert(), replace() and update() interpolate the table name unquoted into the statement they build, so a table name outside the identifier grammar has to fail closed on both backends.
+	 */
+	public function testCrudEntryPointsRejectHostileTableIdentifier()
+	{
+		$db = $this->db;
+
+		// every payload here is one an unguarded backend runs as SQL, and none of
+		// them changes a row
+		$this->assertFalse($db->select('user WHERE 1 = 1 -- ', 'user_id'),
+			'select() must refuse a table name that carries its own WHERE clause');
+		$this->assertFalse($db->count('user WHERE 1 = 1 -- '),
+			'count() must refuse a table name that carries its own WHERE clause');
+		$this->assertFalse($db->delete('user WHERE 1 = 0 -- '),
+			'delete() must refuse a table name that carries its own WHERE clause');
+		$this->assertFalse($db->db_FieldList('user WHERE 1 = 1 -- '),
+			'db_FieldList() must refuse a table name that carries its own WHERE clause');
+		$this->assertFalse($db->db_FieldList('user', MPREFIX.'user WHERE 1 = 1 -- '),
+			'db_FieldList() must refuse a hostile prefix as well as a hostile table');
+		$this->assertFalse($db->select("user\n", 'user_id'),
+			'select() must refuse an identifier with a trailing newline, as db_FieldList() already did');
+
+		// the write entry points build a statement that does not parse, so the -1
+		// error number is what separates a refusal from a driver error here
+		foreach(array('insert', 'replace', 'update') as $method)
+		{
+			$db->resetLastError();
+			$this->assertFalse($db->$method('user WHERE 1 = 0 -- ', array('user_name' => 'x')),
+				$method.'() must refuse a hostile table identifier');
+			$this->assertSame(-1, $db->getLastErrorNumber(),
+				$method.'() must refuse before the driver sees the statement');
+			$this->assertStringContainsString($method, $db->getLastErrorText(),
+				$method.'() must name itself in the refusal');
+		}
+
+		$db->resetLastError();
+		$this->assertFalse($db->db_UpdateArray('user WHERE 1 = 0 -- ', array('user_name' => 'x')),
+			'db_UpdateArray() must refuse a hostile table identifier');
+		$this->assertSame(-1, $db->getLastErrorNumber(),
+			'db_UpdateArray() must refuse before the driver sees the statement');
+
+		// valid identifiers behave exactly as before
+		$this->assertNotFalse($db->select('user', 'user_id', 'user_id = 1'),
+			'select() must still accept a plain table identifier');
+		$this->assertSame(1, (int) $db->count('user', '(*)', 'user_id = 1'),
+			'count() must still accept a plain table identifier');
+		$this->assertNotFalse($db->db_FieldList('user'),
+			'db_FieldList() must still accept a plain table identifier');
+		$this->assertNotFalse($db->db_FieldList('user', MPREFIX),
+			'db_FieldList() must still accept an explicit table prefix');
+		$this->assertSame(
+			1,
+			(int) $db->count("SELECT COUNT(*) FROM `".MPREFIX."user` WHERE user_id = 1", 'generic'),
+			"count() 'generic' raw-query escape hatch must still work"
+		);
+	}
+
+	/**
+	 * @dataProvider entryPointsGuardingTheTableIdentifier
+	 */
+	public function testARefusedTableIdentifierRecordsAnErrorNumber($method, $table)
+	{
+		$this->db->resetLastError();
+
+		$this->assertFalse($this->db->$method($table),
+			$method.'() has to refuse a hostile table identifier');
+		$this->assertSame(-1, $this->db->getLastErrorNumber(),
+			$method.'() refuses before the server sees anything, which the contract spells -1');
+		$this->assertStringContainsString($method, $this->db->getLastErrorText(),
+			$method.'() has to say which operation refused, and name itself correctly');
+	}
+
+	/**
+	 * One case per entry point, so a revert run reds each of them separately rather than stopping at the first. db_FieldList() is not here because the two backends refuse it under different names: e_db_pdo delegates to fields() and e_db_mysql does not have one.
+	 *
+	 * @return array
+	 */
+	public function entryPointsGuardingTheTableIdentifier()
+	{
+		return array(
+			'select' => array('select', 'user WHERE 1 = 1 -- '),
+			'count'  => array('count', 'user WHERE 1 = 1 -- '),
+			'delete' => array('delete', 'user WHERE 1 = 0 -- '),
+		);
+	}
+
 }
