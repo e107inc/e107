@@ -516,6 +516,8 @@ class e_pref extends e_front_model
 		{
 			return false;
 		}
+
+		$display = $session_messages !== false;
 		
 		e107::getMessage()->setUnique($this->prefid); // attempt to fix 
 		
@@ -531,7 +533,7 @@ class e_pref extends e_front_model
 
 		if(!$this->data_has_changed && !$force)
 		{
-			if($session_messages !== false)
+			if($display)
 			{
 				e107::getMessage()->addInfo(LAN_SETTINGS_NOT_SAVED_NO_CHANGES_MADE, $this->prefid, $session_messages)->moveStack($this->prefid);
 			}
@@ -618,7 +620,7 @@ class e_pref extends e_front_model
 				// FIXME: Admin LAN dependency out of nowhere
 				e107::includeLan(e_LANGUAGEDIR . e_LANGUAGE . '/admin/lan_admin.php');
 
-				$log->addSuccess(LAN_SETSAVED, ($session_messages === null || $session_messages === true));
+				$log->addSuccess(LAN_SETSAVED, $display);
 			//	$debug = debug_backtrace(null,2);
 			//	e107::getMessage()->addDebug(print_a($debug,true));
 				$uid = USERID;
@@ -644,8 +646,8 @@ class e_pref extends e_front_model
 			elseif(e107::getDb()->getLastErrorNumber())
 			{
 				if(!$disallow_logs)
-					$log->addError('mySQL error #'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText(), true, $session_messages)
-					->addError('Settings not saved.', true, $session_messages)
+					$log->addError('mySQL error #'.e107::getDb()->getLastErrorNumber().': '.e107::getDb()->getLastErrorText(), $display, $session_messages)
+					->addError('Settings not saved.', $display, $session_messages)
 					->flushMessages('PREFS_03', E_LOG_INFORMATIVE, '', $this->prefid);
 					
 				e107::getMessage()->moveStack($this->prefid);
@@ -658,7 +660,7 @@ class e_pref extends e_front_model
 			//add errors to the eMessage stack
 			//$this->setErrors(true, $session_messages); old - doesn't needed anymore
 			if(!$disallow_logs)
-				$log->addError('Settings not saved.', true, $session_messages)
+				$log->addError('Settings not saved.', $display, $session_messages)
 				->flushMessages('LAN_FIXME', E_LOG_INFORMATIVE, '', $this->prefid);
 				
 			e107::getMessage()->moveStack($this->prefid);
@@ -667,7 +669,10 @@ class e_pref extends e_front_model
 		}
 		else
 		{
-			e107::getMessage()->addInfo(LAN_SETTINGS_NOT_SAVED_NO_CHANGES_MADE, $this->prefid, $session_messages);
+			if($display)
+			{
+				e107::getMessage()->addInfo(LAN_SETTINGS_NOT_SAVED_NO_CHANGES_MADE, $this->prefid, $session_messages);
+			}
 			if(!$disallow_logs) $log->flushMessages('LAN_FIXME', E_LOG_INFORMATIVE, '', $this->prefid);
 			e107::getMessage()->moveStack($this->prefid);
 			return 0;

@@ -160,7 +160,47 @@
 
 		}
 
+		/**
+		 * The branch ends in trigger_error(E_USER_NOTICE), so that one notice is passed over and every other diagnostic is handed back to the runner's own handler.
+		 *
+		 * @return void
+		 */
+		public function testSilentSaveKeepsAFailureOffTheScreen()
+		{
+			require_once(__DIR__ . '/fixtures/PrefSqlErrorProbeFixture.php');
 
+			$prefid = 'test_pref_silent_failure';
 
+			$pref = $this->make('PrefSqlErrorProbeFixture');
+			$pref->__construct($prefid);
+			$pref->armSqlError();
+
+			$mes = e107::getMessage();
+			$mes->reset(false, false, true);
+
+			$previous = set_error_handler(function($no, $str, $file = '', $line = 0) use (&$previous) {
+				if($no === E_USER_NOTICE && $str === 'Settings not saved')
+				{
+					return true;
+				}
+
+				return $previous ? call_user_func($previous, $no, $str, $file, $line) : false;
+			});
+
+			try
+			{
+				$saved = $pref->save(false, true, false);
+			}
+			finally
+			{
+				restore_error_handler();
+			}
+
+			$displayed = $mes->hasMessage(E_MESSAGE_ERROR, 'default', true) || $mes->hasMessage(E_MESSAGE_ERROR, $prefid, true);
+			$mes->reset(false, false, true);
+
+			$this->assertFalse($saved, 'a save that could not write should report failure');
+			$this->assertFalse($displayed, 'a caller asking for no messages should not get a red block');
+		}
 
 	}
