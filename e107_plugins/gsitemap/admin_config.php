@@ -215,11 +215,13 @@ class gsitemap_ui extends e_admin_ui
 			{
 				if(!in_array($row['link_name'], $existing))
 				{
+					$sefUrl = !empty($row['link_owner']) && !empty($row['link_sefurl']) ? e107::url($row['link_owner'], $row['link_sefurl']) : '';
+
 					$importArray[] = array(
 						'table' => 'links',
 						'id'    => $row['link_id'],
 						'name' => $row['link_name'],
-						'url' => !empty($row['link_owner']) && !empty($row['link_sefurl']) ? e107::url($row['link_owner'], $row['link_sefurl']) : $row['link_url'],
+						'url' => !empty($sefUrl) ? $sefUrl : $row['link_url'],
 						'type' => GSLAN_1,
 						'class' => (int) $row['link_class']);
 				}

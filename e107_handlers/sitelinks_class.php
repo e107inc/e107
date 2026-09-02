@@ -364,7 +364,12 @@ class sitelinks
 
 		if(!empty($linkInfo['link_sefurl']) && !empty($linkInfo['link_owner']))
 		{
-			$linkInfo['link_url'] = e107::url($linkInfo['link_owner'],$linkInfo['link_sefurl']) ; //  $linkInfo['link_sefurl'];
+			$sefUrl = e107::url($linkInfo['link_owner'], $linkInfo['link_sefurl']);
+
+			if(!empty($sefUrl))
+			{
+				$linkInfo['link_url'] = $sefUrl;
+			}
 		}
 
 
@@ -387,7 +392,7 @@ class sitelinks
 		{
 			$linkInfo['link_url'] = $tp->parseTemplate($linkInfo['link_url'], TRUE); // shortcode in URL support - dynamic urls for multilanguage.
 		}
-		elseif($linkInfo['link_url'][0] !== '/' && strpos($linkInfo['link_url'],'http') !== 0)
+		elseif(substr($linkInfo['link_url'], 0, 1) !== '/' && strpos($linkInfo['link_url'],'http') !== 0)
 		{
 			$linkInfo['link_url'] = e_HTTP.ltrim($linkInfo['link_url'],'/');
 		}
@@ -1937,7 +1942,12 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 
 		if(!empty($data['link_owner']) && !empty($data['link_sefurl']))
 		{
-			$dbLink = e107::url($data['link_owner'],$data['link_sefurl']);
+			$sefUrl = e107::url($data['link_owner'], $data['link_sefurl']);
+
+			if(!empty($sefUrl))
+			{
+				$dbLink = $sefUrl;
+			}
 		}
 
 		//if(E107_DBG_PATH)

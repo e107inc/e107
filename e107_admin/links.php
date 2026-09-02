@@ -809,15 +809,22 @@ class links_admin_form_ui extends e_admin_form_ui
 			$owner = $this->getController()->getListModel()->get('link_owner');
 			$sef =  $this->getController()->getListModel()->get('link_sefurl');
 
-			if($curVal[0] !== '{' && substr($curVal,0,4) != 'http' && $mode == 'link_id')
+			if(substr($curVal, 0, 1) !== '{' && substr($curVal,0,4) != 'http' && $mode == 'link_id')
 			{
 				$curVal = '{e_BASE}'.$curVal;
 			}
 
+			$sefUrl = '';
+
 			if(!empty($owner) && !empty($sef))
 			{
 				$opt = ($mode == 'read') ? array('mode'=>'raw') : array();
-				$curVal = e107::url($owner,$sef, null, $opt);
+				$sefUrl = e107::url($owner, $sef, null, $opt);
+			}
+
+			if(!empty($sefUrl))
+			{
+				$curVal = $sefUrl;
 			}
 			else
 			{
@@ -837,13 +844,16 @@ class links_admin_form_ui extends e_admin_form_ui
 
 			if(!empty($owner) && !empty($sef))
 			{
+				$sefUrl = e107::url($owner, $sef);
 
-				$text = str_replace(e_HTTP,'',e107::url($owner,$sef)); // dynamically created.
-				$text .= $this->hidden('link_url',$curVal);
-				$text .= " <span class='label label-warning'>".LAN_AUTO_GENERATED."</span>";
+				if(!empty($sefUrl))
+				{
+					$text = (strpos($sefUrl, e_HTTP) === 0) ? (string) substr($sefUrl, strlen(e_HTTP)) : $sefUrl;
+					$text .= $this->hidden('link_url',$curVal);
+					$text .= " <span class='label label-warning'>".LAN_AUTO_GENERATED."</span>";
 
-				return $text;
-
+					return $text;
+				}
 			}
 
 			return $this->text('link_url', $curVal, 255,  array('size'=>'xxlarge'));
