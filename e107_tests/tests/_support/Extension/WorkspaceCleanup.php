@@ -99,7 +99,7 @@ class WorkspaceCleanup extends Extension
 		'e107_tests_p8_newsfeed.xml',
 		'e107_tests_p8_tinymce_canary.xml',
 		'e107_tests_p19_probe.php',           // @see Helper\P19Fixture
-		'e107_tests_login_menu_prefs_probe.php', // @see LoginMenuConfigSaveCest
+		'e107_tests_menu_prefs_probe.php',       // @see Helper\MenuPrefFixture
 		'e107_tests_online_memberlist_probe.php',  // @see OnlineMemberListLinkCest
 		'e107_tests_chatbox_request_self_probe.php', // @see ChatboxRequestSelfCest
 	];
