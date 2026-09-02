@@ -202,6 +202,7 @@ class e_db_mysql implements e_db
 
 		if (!$this->mySQLaccess = @mysqli_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword, $newLink))
 		{
+			$this->mySQLlastErrNum = mysqli_connect_errno();
 			$this->mySQLlastErrText = mysqli_connect_error();
 			return false;
 		}
@@ -253,6 +254,8 @@ class e_db_mysql implements e_db
 
 		if (!@mysqli_select_db($this->mySQLaccess, $database))
 		{
+			$this->mySQLlastErrNum = mysqli_errno($this->mySQLaccess);
+			$this->mySQLlastErrText = mysqli_error($this->mySQLaccess);
 			return false;
 		}
 
@@ -357,6 +360,7 @@ class e_db_mysql implements e_db
 		if(!is_string($statement) || trim($statement) === '')
 		{
 			$this->mySQLlastErrText = 'Empty or non-string query passed to '.__FUNCTION__.'()';
+			$this->mySQLlastErrNum = -1;
 
 			return false;
 		}
@@ -634,8 +638,7 @@ class e_db_mysql implements e_db
 		// interpolated unquoted into the FROM clause below.
 		if($this->_safeIdentifier($table) === false)
 		{
-			$this->dbError('select() invalid table identifier');
-			return false;
+			return $this->_refuseIdentifier(__FUNCTION__);
 		}
 
 		$table = $this->hasLanguage($table);
@@ -812,8 +815,7 @@ class e_db_mysql implements e_db
 		// so validate it as a plain identifier and fail closed otherwise.
 		if ($fields != 'generic' && $this->_safeIdentifier($table) === false)
 		{
-			$this->dbError('count() invalid table identifier');
-			return false;
+			return $this->_refuseIdentifier(__FUNCTION__);
 		}
 
 		$table = $this->hasLanguage($table);
@@ -889,8 +891,7 @@ class e_db_mysql implements e_db
 		// interpolated unquoted into the DELETE statement below.
 		if($this->_safeIdentifier($table) === false)
 		{
-			$this->dbError('delete() invalid table identifier');
-			return false;
+			return $this->_refuseIdentifier(__FUNCTION__);
 		}
 
 		$table = $this->hasLanguage($table);
@@ -1133,7 +1134,7 @@ class e_db_mysql implements e_db
 		// $table becomes a SQL identifier (cannot be bound); validate it like field().
 		if(($table = $this->_safeIdentifier($table)) === false)
 		{
-			return false;
+			return $this->_refuseIdentifier(__FUNCTION__);
 		}
 
 		$this->_getMySQLaccess();
@@ -1377,7 +1378,22 @@ class e_db_mysql implements e_db
 	 */
 	function backup($table='*', $file='', $options=null)
 	{
+		$this->mySQLlastErrNum = -1;
 		$this->mySQLlastErrText = "PDO is required to use the mysql backup() method";
+		return false;
+	}
+
+	/**
+	 * Refuses a table name that is not a plain identifier, recording the refusal and reporting it the way {@see e_db_mysql::dbError()} reports a failed query.
+	 *
+	 * @param string $method
+	 * @return bool false
+	 */
+	private function _refuseIdentifier($method)
+	{
+		$this->_refuse($method.'() invalid table identifier');
+		$this->dbError($method);
+
 		return false;
 	}
 
@@ -1389,13 +1405,19 @@ class e_db_mysql implements e_db
 	*/
 	function dbError($from)
 	{
-		$this->mySQLlastErrNum = mysqli_errno($this->mySQLaccess);
-		$this->mySQLlastErrText = '';
-		if ($this->mySQLlastErrNum == 0)
+		if ($this->mySQLlastErrNum === 0)
 		{
-			return '';
+			$this->mySQLlastErrNum = mysqli_errno($this->mySQLaccess);
+
+			if ($this->mySQLlastErrNum === 0)
+			{
+				$this->mySQLlastErrText = '';
+				return '';
+			}
+
+			$this->mySQLlastErrText = mysqli_error($this->mySQLaccess);		// Get the error text.
 		}
-		$this->mySQLlastErrText = mysqli_error($this->mySQLaccess);		// Get the error text.
+
 		if ($this->mySQLerror == TRUE)
 		{
 			message_handler('ADMIN_MESSAGE', '<b>mySQL Error!</b> Function: '.$from.'. ['.$this->mySQLlastErrNum.' - '.$this->mySQLlastErrText.']', __LINE__, __FILE__);

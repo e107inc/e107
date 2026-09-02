@@ -697,11 +697,16 @@ trait ConnectionTrait
 	 */
 	function truncate($table=null)
 	{
-		if($table == null){ return null; }
+		if($table == null)
+		{
+			$this->_refuse("truncate() needs a table name");
+
+			return null;
+		}
 
 		if(($table = $this->_safeIdentifier($table)) === false)
 		{
-			return false;
+			return $this->_refuse("truncate() invalid table identifier");
 		}
 
 		return $this->gen("TRUNCATE TABLE ".$this->mySQLPrefix.$table);
@@ -717,7 +722,7 @@ trait ConnectionTrait
 	{
 		if(empty($table) || ($table = $this->_safeIdentifier($table)) === false)
 		{
-			return false;
+			return $this->_refuse("isEmpty() missing or invalid table identifier");
 		}
 
 		$result = $this->gen("SELECT NULL FROM ".$this->mySQLPrefix.$table." LIMIT 1");
@@ -746,8 +751,7 @@ trait ConnectionTrait
 
 		if(empty($table) || empty($parent) || empty($pid))
 		{
-			$this->mySQLlastErrText = "missing variables in sql->categories()";
-			return false;
+			return $this->_refuse("missing variables in sql->selectTree()");
 		}
 
 		// table and column names fail closed outside the identifier grammar
@@ -756,8 +760,7 @@ trait ConnectionTrait
 			|| ($pid = $this->_safeIdentifier($pid, true)) === false
 			|| ($order = $this->_safeIdentifier($order, true)) === false)
 		{
-			$this->mySQLlastErrText = "invalid identifier in sql->selectTree()";
-			return false;
+			return $this->_refuse("invalid identifier in sql->selectTree()");
 		}
 
 		$sql = "DROP FUNCTION IF EXISTS `getDepth` ;";
@@ -844,6 +847,7 @@ trait ConnectionTrait
 
 		if(($table = $this->_safeIdentifier($table)) === false)
 		{
+			$this->_refuse("_getUnique() invalid table identifier");
 			return $unique;
 		}
 
@@ -887,13 +891,12 @@ trait ConnectionTrait
 	{
 		if(!$table || !$args )
 		{
-			return false;
+			return $this->_refuse("copyRow() needs both a table name and a where clause");
 		}
 
 		if(($table = $this->_safeIdentifier($table)) === false)
 		{
-			$this->mySQLlastErrText = "copyRow \$table failed identifier validation";
-			return false;
+			return $this->_refuse("copyRow \$table failed identifier validation");
 		}
 
 		if($fields !== '*')
@@ -902,8 +905,7 @@ trait ConnectionTrait
 			{
 				if($this->_safeIdentifier($fieldName, true) === false)
 				{
-					$this->mySQLlastErrText = "copyRow \$fields failed identifier validation";
-					return false;
+					return $this->_refuse("copyRow \$fields failed identifier validation");
 				}
 			}
 		}
@@ -912,8 +914,7 @@ trait ConnectionTrait
 			list($fieldList, $fieldList2) = $this->generateCopyRowFieldLists($table, $fields);
 
 			if (empty($fieldList)) {
-				$this->mySQLlastErrText = "copyRow \$fields list was empty";
-				return false;
+				return $this->_refuse("copyRow \$fields list was empty");
 			}
 
 			$beforeLastInsertId = $this->lastInsertId();
@@ -971,7 +972,7 @@ trait ConnectionTrait
 	{
 		if(($oldtable = $this->_safeIdentifier($oldtable)) === false || ($newtable = $this->_safeIdentifier($newtable)) === false)
 		{
-			return false;
+			return $this->_refuse("copyTable() invalid table identifier");
 		}
 
 		$old = $this->mySQLPrefix.strtolower($oldtable);
@@ -1021,7 +1022,7 @@ trait ConnectionTrait
 	{
 		if(($table = $this->_safeIdentifier($table)) === false)
 		{
-			return false;
+			return $this->_refuse("dropTable() invalid table identifier");
 		}
 
 		$name = $this->mySQLPrefix.strtolower($table);
@@ -1051,6 +1052,20 @@ trait ConnectionTrait
 	{
 		$this->mySQLlastErrNum = 0;
 		$this->mySQLlastErrText = '';
+	}
+
+	/**
+	 * Records a failure raised here rather than by the server, which carries no driver number and so reads back as the -1 {@see ConnectionInterface::getLastErrorNumber()} defines for that case.
+	 *
+	 * @param string $text
+	 * @return bool false, so a caller can return it directly
+	 */
+	private function _refuse($text)
+	{
+		$this->mySQLlastErrNum = -1;
+		$this->mySQLlastErrText = $text;
+
+		return false;
 	}
 
 	/**
@@ -1244,6 +1259,7 @@ trait ConnectionTrait
 
 		if(($table = $this->_safeIdentifier($table)) === false || ($field = $this->_safeIdentifier($field, true)) === false)
 		{
+			$this->_refuse("max() invalid table or field identifier");
 			return null;
 		}
 
@@ -1272,7 +1288,7 @@ trait ConnectionTrait
 
 		if(($table = $this->_safeIdentifier($table)) === false)
 		{
-			return false;
+			return $this->_refuse("field() invalid table identifier");
 		}
 
 		$convert = array("PRIMARY"=>"PRI","INDEX"=>"MUL","UNIQUE"=>"UNI");
@@ -1322,7 +1338,7 @@ trait ConnectionTrait
 
 		if(($table = $this->_safeIdentifier($table)) === false)
 		{
-			return false;
+			return $this->_refuse("index() invalid table identifier");
 		}
 
 		$this->_getMySQLaccess();
@@ -1497,7 +1513,10 @@ trait ConnectionTrait
 				unset($_tmp);
 			}
 
-			if(!isset($arg['data'])) { return false; }
+			if(!isset($arg['data']))
+			{
+				return $this->_refuse(($REPLACE ? 'replace' : 'insert')."() needs a data array");
+			}
 
 
 			// See if we need to auto-add field types array
@@ -1720,6 +1739,11 @@ trait ConnectionTrait
 		$this->_getMySQLaccess();
 
 		$arg = $this->_prepareUpdateArg($tableName, $arg);
+
+		if($arg === false)
+		{
+			return $this->_refuse("update() needs a data array");
+		}
 
 		$query = 'UPDATE '.$this->mySQLPrefix.$table.' SET '.$arg;
 

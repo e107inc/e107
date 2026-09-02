@@ -65,6 +65,19 @@ class e_db_mysqlTest extends e_db_abstractTest
 		$this->assertRegExp('/[0-9]+\./', $result);
 	}
 
+	/**
+	 * @see https://github.com/e107inc/e107/issues/6040
+	 */
+	public function testBackupWithoutPdoRecordsAnErrorNumber()
+	{
+		$this->assertFalse($this->db->backup(),
+			'precondition: the mysqli backend cannot take a backup');
+		$this->assertSame(-1, $this->db->getLastErrorNumber(),
+			'a refusal that carries no driver number has to report -1');
+		$this->assertNotSame('', $this->db->getLastErrorText(),
+			'a refused backup has to say why');
+	}
+
 	public function testDb_Close()
 	{
 	    $db_impl = $this->getDbImplementation();
@@ -133,6 +146,37 @@ class e_db_mysqlTest extends e_db_abstractTest
 			1,
 			(int) $db->count("SELECT COUNT(*) FROM `".MPREFIX."user` WHERE user_id = 1", 'generic'),
 			"count() 'generic' raw-query escape hatch must still work"
+		);
+	}
+
+	/**
+	 * @dataProvider entryPointsGuardingTheTableIdentifier
+	 * @see https://github.com/e107inc/e107/issues/6040
+	 */
+	public function testARefusedTableIdentifierRecordsAnErrorNumber($method)
+	{
+		$this->db->resetLastError();
+
+		$this->assertFalse($this->db->$method('user; DROP TABLE x'),
+			$method.'() has to refuse a hostile table identifier');
+		$this->assertSame(-1, $this->db->getLastErrorNumber(),
+			$method.'() refuses before the server sees anything, which the contract spells -1');
+		$this->assertStringContainsString($method, $this->db->getLastErrorText(),
+			$method.'() has to say which operation refused, and name itself correctly');
+	}
+
+	/**
+	 * One case per entry point, so a revert run reds each of them separately rather than stopping at the first.
+	 *
+	 * @return array
+	 */
+	public function entryPointsGuardingTheTableIdentifier()
+	{
+		return array(
+			'select' => array('select'),
+			'count'  => array('count'),
+			'delete' => array('delete'),
+			'fields' => array('fields'),
 		);
 	}
 
