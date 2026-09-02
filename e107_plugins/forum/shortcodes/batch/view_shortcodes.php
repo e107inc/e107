@@ -1213,6 +1213,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		}
 
 		$url = '';
+		$options = array();
 
 		if($this->forum->checkPerm($this->var['thread_forum_id'], 'post') && $this->var['thread_active'])
 		{
