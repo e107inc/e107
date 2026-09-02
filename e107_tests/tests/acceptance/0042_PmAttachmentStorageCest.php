@@ -98,6 +98,10 @@ class PmAttachmentStorageCest
 		$this->legacyUrl = $this->grab('/LEGACY_FILE=(\S+)/',
 			$this->probe($I, 'act=legacy&create=1'));
 
+		// A member who holds an attachment directory and is not the sender, so
+		// that what the send reads can be told from what it does not.
+		$this->probe($I, 'act=dirs&plugin=pm&user='.$this->bob.'&create=1');
+
 		$this->upload = sys_get_temp_dir().'/e107_pm_storage_'.getmypid().'.pdf';
 		file_put_contents($this->upload, "%PDF-1.4\n".self::SECRET."\n%%EOF\n");
 
@@ -233,6 +237,11 @@ class PmAttachmentStorageCest
 	 */
 	public function theMaintenanceSweepDoesNotSeeTheGuardFiles(AcceptanceTester $I)
 	{
+		$this->probe($I, 'act=setup');
+
+		$I->assertSame('1', $this->grab('/LEGACY_HT=(\d)/', $this->probe($I, 'act=legacy')),
+			'The directory the sweep reads carries no deny rule, so this proves nothing');
+
 		$orphans = $this->grab('/ORPHANS=(\S*)/', $this->probe($I, 'act=orphans'));
 		$names = explode(',', $orphans);
 
@@ -263,10 +272,16 @@ class PmAttachmentStorageCest
 	 * beside the plugin. send_file() and del() both still reach into that
 	 * directory, so covering only the media path would leave every upgraded
 	 * site exactly where it started.
+	 *
+	 * What covers it is the plugin's install and upgrade hook, driven here as
+	 * the plugin manager drives it. A send covers the sender's own directory
+	 * and the root above it, and the legacy directory is under neither.
 	 */
 	public function theLegacyPluginAttachmentDirectoryIsNotServed(AcceptanceTester $I)
 	{
 		$this->seeFileIsReallyThere($I, $this->legacyUrl);
+
+		$this->probe($I, 'act=setup');
 
 		$I->resetAllCookies();
 		$I->stopFollowingRedirects();
@@ -334,11 +349,13 @@ class PmAttachmentStorageCest
 	 *
 	 * Not on its own worth anything: a .htaccess proves nothing about what a
 	 * server does with it, which is what the fetches above are for. What this
-	 * adds is when they appeared. The probe's reset removed both directories
-	 * before the fixture sent anything, so their contents here were written by
-	 * the send, which is the claim: a directory left by an upgrade or a restore
-	 * is covered the first time the plugin writes to it, with no install step
-	 * and no administrator involved.
+	 * adds is where they appeared and where they did not. The probe's reset
+	 * removed the directories before the fixture sent anything, so what is here
+	 * was written by the send, and the send writes over the sender's own
+	 * directory and the root above it alone. Bob's directory was there before
+	 * it and is still bare after it: a walk of every member directory on the
+	 * site is a glob and three stat calls per member on every send (#6160), and
+	 * the deny rule at the root is what covers the members not sending.
 	 */
 	public function theGuardFilesAreWrittenWhenAnAttachmentIsStored(AcceptanceTester $I)
 	{
@@ -349,10 +366,12 @@ class PmAttachmentStorageCest
 		$I->assertSame('1', $this->grab('/USER_HT=(\d)/', $pm), 'member directory deny rule');
 		$I->assertSame('1', $this->grab('/USER_IDX=(\d)/', $pm), 'member directory index.html');
 
-		$legacy = $this->probe($I, 'act=legacy');
+		$bystander = $this->probe($I, 'act=dirs&plugin=pm&user='.$this->bob);
 
-		$I->assertSame('1', $this->grab('/LEGACY_HT=(\d)/', $legacy), 'legacy directory deny rule');
-		$I->assertSame('1', $this->grab('/LEGACY_IDX=(\d)/', $legacy), 'legacy directory index.html');
+		$I->assertSame('1', $this->grab('/USER_EXISTS=(\d)/', $bystander),
+			'The other member has no directory, so finding nothing in it proves nothing');
+		$I->assertSame('0', $this->grab('/USER_HT=(\d)/', $bystander),
+			'The send wrote into a member directory it was not storing anything in');
 	}
 
 	/**
@@ -502,6 +521,7 @@ function e107_test_guards($label, $dir)
 	$dir = rtrim($dir, '/').'/';
 
 	return $label.'_DIR='.e107_test_url($dir)
+		.' '.$label.'_EXISTS='.(is_dir($dir) ? 1 : 0)
 		.' '.$label.'_HT='.(file_exists($dir.'.htaccess') ? 1 : 0)
 		.' '.$label.'_IDX='.(file_exists($dir.'index.html') ? 1 : 0);
 }
@@ -621,6 +641,17 @@ switch($act)
 
 		echo 'PROBE_OK '.e107_test_guards('ROOT', dirname($userDir))
 			.' '.e107_test_guards('USER', $userDir)."\n";
+		break;
+
+	case 'setup':
+		// The plugin manager's own install and upgrade route, which is what
+		// covers a directory the plugin is not writing into.
+		require_once(e_PLUGIN.'pm/pm_setup.php');
+
+		$setup = new pm_setup();
+		$setup->install_post();
+
+		echo "PROBE_OK setup\n";
 		break;
 
 	case 'stat':
