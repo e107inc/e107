@@ -482,7 +482,14 @@ if (!function_exists('r_emote'))
 
 		$('.addEmote').click(function(){
 
-			val = $(this).attr('data-emote')
+			var val = $(this).attr('data-emote');
+			var area = $(this).closest('form').find('textarea');
+
+			if(area.length === 1)
+			{
+				storeCaret(area.get(0));
+			}
+
 			addtext(val,true);
 			return false;
 		});
