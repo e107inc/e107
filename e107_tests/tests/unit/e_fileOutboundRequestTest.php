@@ -1166,6 +1166,78 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * The stream layer walked the whole getaddrinfo list before the pin, and
+	 * ext/curl still walks it through CURLOPT_RESOLVE, so a name whose first
+	 * address refuses the connection has to answer over the streams too.
+	 * fe80::1 is dead wherever the suite runs: a link-local address carries no
+	 * scope here, so nothing can connect to it.
+	 */
+	public function testStreamFallbackTriesEveryResolvedAddress()
+	{
+		$this->requireFixtureServer();
+
+		$body = "\$fl = new E107P3PinnedFile(); \$fl->addresses = array('fe80::1', '127.0.0.1'); ";
+		$body .= "\$r = \$fl->getRemoteContent('" . addslashes($this->pinnedUrl()) . "'); ";
+		$body .= $this->reportResult();
+
+		self::assertSame(self::FINAL_SENTINEL, $this->resultOf($this->withoutCurl($body)),
+			'The first address the policy resolved must not be the whole answer.');
+
+		$body = "\$fl = new E107P3PinnedFile(); \$fl->addresses = array('fe80::1'); ";
+		$body .= "\$r = \$fl->getRemoteContent('" . addslashes($this->pinnedUrl()) . "'); ";
+		$body .= $this->reportResult();
+
+		self::assertSame('false', $this->resultOf($this->withoutCurl($body)),
+			'Negative control: nothing can be reached at fe80::1, so the walk cannot be passing for another reason.');
+	}
+
+	/**
+	 * The raw socket is what is left when neither ext/curl nor allow_url_fopen
+	 * is there, and it took the same one address.
+	 */
+	public function testSocketFallbackTriesEveryResolvedAddress()
+	{
+		$this->requireFixtureServer();
+
+		$body = "\$fl = new E107P3PinnedFile(); \$fl->addresses = array('fe80::1', '127.0.0.1'); ";
+		$body .= "\$r = \$fl->getRemoteContent('" . addslashes($this->pinnedUrl()) . "'); ";
+		$body .= $this->reportResult();
+
+		self::assertSame(self::FINAL_SENTINEL, $this->resultOf($this->withoutCurl($body, '-d allow_url_fopen=0')),
+			'The socket hop has to walk the addresses the policy resolved as well.');
+
+		$body = "\$fl = new E107P3PinnedFile(); \$fl->addresses = array('fe80::1'); ";
+		$body .= "\$r = \$fl->getRemoteContent('" . addslashes($this->pinnedUrl()) . "'); ";
+		$body .= $this->reportResult();
+
+		self::assertSame('false', $this->resultOf($this->withoutCurl($body, '-d allow_url_fopen=0')),
+			'Negative control: nothing can be reached at fe80::1 over a socket either.');
+	}
+
+	/**
+	 * A host that is already an address literal carries its own brackets, so
+	 * the socket hop has to leave it alone rather than quote it a second time.
+	 */
+	public function testSocketFallbackLeavesAnAddressLiteralAlone()
+	{
+		$this->requireFixtureServer();
+
+		if (!$this->fixtureAnswers('[::1]' . $this->fixturePort(), 'http'))
+		{
+			self::markTestSkipped('Nothing answers the fixture over IPv6 here, so a bracketed literal cannot be driven.');
+		}
+
+		$url = 'http://[::1]' . $this->fixturePort() . '/' . self::HOP_FIXTURE . '?hop=0&stop=0';
+
+		$body = "\$fl = new E107P3PinnedFile(); \$fl->addresses = array('::1'); ";
+		$body .= "\$r = \$fl->getRemoteContent('" . addslashes($url) . "'); ";
+		$body .= $this->reportResult();
+
+		self::assertSame(self::FINAL_SENTINEL, $this->resultOf($this->withoutCurl($body, '-d allow_url_fopen=0')),
+			'A literal reached the socket as [[::1]] rather than [::1].');
+	}
+
+	/**
 	 * The probe must not follow a Location: nothing would revalidate the target
 	 * it lands on, and the option that stops it has to travel with this one
 	 * request rather than sit in the default stream context.
@@ -1223,6 +1295,27 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 
 		self::assertFalse($this->fl->isValidURL('http://127.0.0.1' . $this->fixturePort() . '/'),
 			'The address policy still governs the probe.');
+	}
+
+	/**
+	 * The probe reports on the URL, not on one address of it, so it has to try
+	 * the rest of the set before answering unreachable.
+	 */
+	public function testIsValidUrlTriesEveryResolvedAddress()
+	{
+		$this->requireFixtureServer();
+
+		$fl = new E107P3PinnedFile();
+		$fl->addresses = array('fe80::1', '127.0.0.1');
+
+		self::assertTrue($fl->isValidURL($this->pinnedUrl()),
+			'A dead first address must not be reported as an unreachable URL.');
+
+		$dead = new E107P3PinnedFile();
+		$dead->addresses = array('fe80::1');
+
+		self::assertFalse($dead->isValidURL($this->pinnedUrl()),
+			'Negative control: nothing can be reached at fe80::1, so the walk cannot be passing for another reason.');
 	}
 
 
