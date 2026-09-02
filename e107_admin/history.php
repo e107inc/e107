@@ -165,11 +165,8 @@ class admin_history_ui extends e_admin_ui
 					}
 					else // update
 					{
-						$backup = $db->createQueryBuilder()
-							->select('*')->from($originalTable)
-							->where($pid, (int) $recordId)
-							->fetchRow();
-						if($changes = array_diff_assoc($originalData, $backup))
+						$backup = $this->historySnapshot($originalTable, $pid, $recordId);
+						if($backup && $changes = array_diff_assoc($originalData, $backup))
 	                    {
 							$old_changed_data = array_intersect_key($backup, $changes);
 							$this->backupToHistory($originalTable, $pid, $recordId, 'restore', $old_changed_data, false);
