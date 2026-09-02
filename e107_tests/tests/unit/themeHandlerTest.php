@@ -29,6 +29,14 @@
 
 		}
 
+		protected function _after()
+		{
+			if(class_exists('theme_config', false))
+			{
+				theme_config::$fields = null;
+			}
+		}
+
 
 
 		public function testSetThemeConfig()
@@ -128,6 +136,103 @@
 			}
 
 			$this->assertFalse($result);
+		}
+
+		public function testSetThemeConfigWritesNoPreferenceRowForAThemeDeclaringNoFields()
+		{
+			$theme  = 'themeHandlerTestNoFields';
+			$posted = $_POST;
+
+			$this->th->id             = $theme;
+			$this->th->themeConfigObj = $this->themeConfigStub(array());
+
+			$_POST = array();
+
+			try
+			{
+				$result = $this->th->setThemeConfig();
+				$rows   = e107::getDb()->count('core', '(*)', "WHERE e107_name = 'theme_" . $theme . "'");
+			}
+			finally
+			{
+				$_POST = $posted;
+				e107::getDb()->delete('core', "e107_name = 'theme_" . $theme . "'");
+				self::forgetThemeConfig($theme);
+			}
+
+			$this->assertSame(0, $rows, 'a theme declaring no fields has nothing to store, so nothing may be written for it');
+			$this->assertSame(0, $result);
+		}
+
+		public function testSetThemeConfigRetiresTheLegacyPreferenceWithNothingToStore()
+		{
+			$theme         = e107::getPref('sitetheme');
+			$config        = e107::getThemeConfig($theme);
+			$siteThemePref = e107::getConfig()->get('sitetheme_pref');
+			$posted        = $_POST;
+
+			$this->th->id             = $theme;
+			$this->th->themeConfigObj = $this->themeConfigStub(array());
+
+			$_POST = array();
+
+			try
+			{
+				$config->setPref('themeHandlerTest_text', 'stored')->save(false, true, false);
+				e107::getConfig()->set('sitetheme_pref', array('themeHandlerTest_text' => 'legacy'))->save(false, true, false);
+
+				$result = $this->th->setThemeConfig();
+				$legacy = e107::getConfig()->get('sitetheme_pref');
+			}
+			finally
+			{
+				$_POST = $posted;
+				self::undoThemeConfigSave(array($config), $siteThemePref);
+			}
+
+			$this->assertSame(0, $result);
+			$this->assertEmpty($legacy, 'the legacy preference is retired whenever the theme preferences stand as they should, not only when a write happened');
+		}
+
+		public function testSetThemeConfigKeepsTheLegacyPreferenceWhileTheThemeStoresNothing()
+		{
+			$theme         = e107::getPref('sitetheme');
+			$config        = e107::getThemeConfig($theme);
+			$siteThemePref = e107::getConfig()->get('sitetheme_pref');
+			$original      = $config->getPref();
+			$posted        = $_POST;
+
+			$this->th->id             = $theme;
+			$this->th->themeConfigObj = $this->themeConfigStub(array());
+
+			$_POST = array();
+
+			try
+			{
+				foreach(array_keys($original) as $field)
+				{
+					$config->removePref($field);
+				}
+
+				$config->save(false, true, false);
+				e107::getConfig()->set('sitetheme_pref', array('themeHandlerTest_text' => 'legacy'))->save(false, true, false);
+
+				$result   = $this->th->setThemeConfig();
+				$legacy   = e107::getConfig()->get('sitetheme_pref');
+				$stored   = $config->getPref();
+				$fallback = e107::getThemePref('themeHandlerTest_text');
+			}
+			finally
+			{
+				$_POST = $posted;
+				$config->setPref($original)->save(false, true, false);
+				self::undoThemeConfigSave(array($config), $siteThemePref);
+			}
+
+			$this->assertSame(0, $result);
+			$this->assertSame(array(), $stored, 'the theme has to end the save storing nothing, or this proves nothing');
+			$this->assertSame(array('themeHandlerTest_text' => 'legacy'), $legacy, 'nothing replaced the legacy preference, so retiring it would drop the values e107::getThemePref() falls back to');
+			$this->assertSame('legacy', $fallback, 'e107::getThemePref() is the reader that decides this, on the same test of the theme\'s own preferences');
 		}
 
 		public function testSetStyleReportsAFailedSaveOnceAndInTheAdminsWords()
@@ -296,9 +401,10 @@
 		/**
 		 * Stands in for a theme's own theme_config class: {@see themeHandler::setThemeConfig()} is why it must carry that name, and {@see themeHandler::loadThemeConfig()} asking class_exists() on that bare name, process-wide, is why it is required on first use rather than declared at file scope.
 		 *
+		 * @param array|null $fields the declarations {@see theme_config::config()} answers with, or null for {@see themeHandlerTest::themeConfigFields()}
 		 * @return object exposing config()
 		 */
-		protected function themeConfigStub()
+		protected function themeConfigStub($fields = null)
 		{
 			if(!self::$themeConfigStubDeclared)
 			{
@@ -310,6 +416,8 @@
 				require_once(codecept_data_dir('themeHandlerTestThemeConfig.php'));
 				self::$themeConfigStubDeclared = true;
 			}
+
+			theme_config::$fields = $fields;
 
 			return new theme_config();
 		}
