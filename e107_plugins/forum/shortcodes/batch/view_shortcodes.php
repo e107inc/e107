@@ -1221,7 +1221,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		}
 
 		$replyUrl = "<a class='btn btn-primary" . ($url ? "" : " disabled") . "' "
-			. ($url ? "" : " data-toggle='tooltip' data-bs-toggle='tooltip' title='" . LAN_FORUM_0046 . "'
+			. ($url ? " data-forum-action='postreply'" : " data-toggle='tooltip' data-bs-toggle='tooltip' title='" . LAN_FORUM_0046 . "'
 	style='cursor: not-allowed; pointer-events: all !important;'") . " href='" . ($url ?: "#") . "'>" . LAN_FORUM_2006 . "</a>" . ($url ? "" : "<span>&nbsp;</span>");
 
 		if($this->forum->checkPerm($this->var['thread_forum_id'], 'post'))
