@@ -680,9 +680,15 @@ class admin_shortcodes extends e_shortcode
 			$path = e_IMAGE.'adminlogo.png';
 		}
 
-		$dimensions = getimagesize($path);
+		$dimensions = @getimagesize($path);
+		$style = '';
 
-		$image = "<img class='logo admin_logo' src='".$logo."' style='width: ".$dimensions[0]. 'px; height: ' .$dimensions[1]."px' alt='".ADLAN_153."' />\n";
+		if(!empty($dimensions[0]) && !empty($dimensions[1]))
+		{
+			$style = " style='width: ".$dimensions[0]. 'px; height: ' .$dimensions[1]."px'";
+		}
+
+		$image = "<img class='logo admin_logo' src='".$logo."'".$style." alt='".ADLAN_153."' />\n";
 
 		if (isset($link) && $link)
 		{
