@@ -122,7 +122,7 @@ define("LAN_CRON_SETUP_RECOMMENDED", "Recommended");
 define("LAN_CRON_SETUP_PANEL_HOWTO", "In cPanel, DirectAdmin or Plesk, open the cron jobs page and add a job that runs every minute with this command. Without a control panel, run [b]crontab -e[/b] and add the crontab line.");
 define("LAN_CRON_SETUP_WGET_LABEL", "With wget instead of curl");
 define("LAN_CRON_SETUP_HTTP_FALLBACK_NOTE", "If your server cannot fetch its own site URL (some hosts block that), use the PHP command line option instead.");
-define("LAN_CRON_SETUP_PHP_FOUND", "PHP [x] was found at [y].");
+define("LAN_CRON_SETUP_PHP_FOUND", "PHP was found at [x].");
 define("LAN_CRON_SETUP_PHP_NOT_FOUND", "No PHP binary could be verified, so the command assumes [b]php[/b] is on the PATH. Ask your host for the path to the PHP [x] command-line binary if it is not.");
 define("LAN_CRON_SETUP_OPEN_BASEDIR_NOTE", "open_basedir prevented checking for PHP binaries.");
 define("LAN_CRON_SETUP_EXECUTABLE", "cron.php is executable.");
