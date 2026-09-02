@@ -2016,9 +2016,9 @@ class themeHandler
 					}
 				}
 
-				$saved = $pref->setPref($values)->save(true,true,false);
+				$saved = $pref->setPref($values)->save(true,false,false);
 
-				if($saved)
+				if($saved !== false && $pref->hasData())
 				{
 					$siteThemePref = e107::getConfig()->get('sitetheme_pref');
 					if(!empty($siteThemePref) && $pref === e107::getThemeConfig())
