@@ -2537,6 +2537,35 @@ EXPECTED;
 
 	}
 
+	/**
+	 * The hd option doubles an avatar's dimensions, a default height included.
+	 * @see https://github.com/e107inc/e107/issues/6060
+	 */
+	public function testToAvatarHdWithoutAnExplicitHeight()
+	{
+		$parser = e107::getParser();
+		$originalHeight = $parser->thumbHeight();
+		$parser->thumbHeight(0);
+
+		try
+		{
+			$img = $this->tp->toAvatar(array('user_image' => ''), array('w' => 50, 'crop' => false, 'hd' => true));
+
+			self::assertStringContainsString("width='50' ", $img);
+			self::assertStringNotContainsString("height='", $img);
+			self::assertStringContainsString('thumb.php?src=e_IMAGE%2Fgeneric%2Fblank_avatar.jpg&amp;w=100&amp;h=0', $img);
+
+			$sized = $this->tp->toAvatar(array('user_image' => ''), array('w' => 50, 'h' => 50, 'crop' => false, 'hd' => true));
+
+			self::assertStringContainsString("width='50' height='50'", $sized);
+			self::assertStringContainsString('thumb.php?src=e_IMAGE%2Fgeneric%2Fblank_avatar.jpg&amp;w=100&amp;h=100', $sized);
+		}
+		finally
+		{
+			$parser->thumbHeight($originalHeight);
+		}
+	}
+
 	public function testToIcon()
 	{
 		$icon = codecept_data_dir() . "icon_64.png";
