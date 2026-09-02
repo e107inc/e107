@@ -334,7 +334,7 @@ else
 
 	$text = $texta . $text;
 
-	if($pref['cb_layer'] === 2)
+	if(varset($pref['cb_layer']) === 2)
 	{
 		$text = "<div id='chatbox_posts'>" . $text . '</div>';
 	}
