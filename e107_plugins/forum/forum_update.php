@@ -1706,12 +1706,14 @@ class forumUpgrade
 		$post_id = $post['post_id'];
 		$newPath = $forum->getAttachmentPath($post['post_user']);
 
-		if(!is_dir($newPath))
-		{
-			mkdir($newPath, 0755);
-		}
+		require_once(e_PLUGIN . 'forum/forum_attachments.php');
 
-		e107::getFile()->protectDirectory($newPath);
+		if(!forum_attachments::protectPath($newPath))
+		{
+			$error = 'Attachment folder could not be protected from direct download';
+
+			return false;
+		}
 
 		$attachment['name'] = str_replace(array(
 			' ',
