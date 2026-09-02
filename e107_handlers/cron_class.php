@@ -2080,15 +2080,15 @@ class cronSetup
 		{
 			$parts = explode('.', (string) $env['php_version']);
 			$notes[] = str_replace('[x]', $parts[0].'.'.(isset($parts[1]) ? $parts[1] : '0'), LAN_CRON_SETUP_PHP_NOT_FOUND);
+
+			if(!empty($env['open_basedir']))
+			{
+				$notes[] = LAN_CRON_SETUP_OPEN_BASEDIR_NOTE;
+			}
 		}
 		else
 		{
 			$notes[] = str_replace(array('[x]', '[y]'), array($env['php_version'], $env['php_cli']), LAN_CRON_SETUP_PHP_FOUND);
-		}
-
-		if(!empty($env['open_basedir']))
-		{
-			$notes[] = LAN_CRON_SETUP_OPEN_BASEDIR_NOTE;
 		}
 
 		$notes[] = ($env['os'] === 'windows') ? LAN_CRON_SETUP_SCHTASKS_ACCOUNT_NOTE : LAN_CRON_SETUP_PANEL_HOWTO;
