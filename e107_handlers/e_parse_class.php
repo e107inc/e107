@@ -4689,6 +4689,38 @@ class e_parse
 	}
 
 	/**
+	 * Resolve a user_image value to the avatar file it names, without checking that the file is there.
+	 *
+	 * @param string $image user_image as stored, with or without the -upload- prefix
+	 * @return string path under e_AVATAR_UPLOAD or e_AVATAR_DEFAULT, '' when the value names no local
+	 *                file (a remote url, or anything carrying a path); never the generic avatar
+	 */
+	public function toAvatarPath($image)
+	{
+
+		if (!is_string($image) || strpbrk($image, "/\\\0") !== false)
+		{
+			return '';
+		}
+
+		$directory = e_AVATAR_DEFAULT;
+
+		if (strpos($image, '-upload-') === 0)
+		{
+			$directory = e_AVATAR_UPLOAD;
+			$image = (string) substr($image, 8);
+		}
+
+		if ($image === '' || trim($image, '.') === '')
+		{
+			return '';
+		}
+
+		return $directory . $image;
+	}
+
+
+	/**
 	 * Render an avatar based on supplied user data or current user when missing.
 	 *
 	 * @param array    $userData - user data from e107_user. ie. user_image, user_id etc.
@@ -4761,30 +4793,24 @@ class e_parse
 				$url = $image;
 				$remote = true;
 			}
-			elseif (strpos($image, '-upload-') === 0)
+			else
 			{
+				$file = $this->toAvatarPath($image);
 
-				$image = (string) substr($image, 8); // strip the -upload- from the beginning.
-				if (file_exists(e_AVATAR_UPLOAD . $image))
+				if ($file !== '')
 				{
-					$file = e_AVATAR_UPLOAD . $image;
+					$image = basename($file);
+				}
+
+				if (file_exists($file))
+				{
 					$url = $tp->thumbUrl($file, 'w=' . $width . '&h=' . $height . '&crop=' . $crop, false, $full);
 				}
-				else
+				else // Image Missing.
 				{
 					$file = $genericFile;
 					$url = $genericImg;
 				}
-			}
-			elseif (file_exists(e_AVATAR_DEFAULT . $image))  // User-Uplaoded Image
-			{
-				$file = e_AVATAR_DEFAULT . $image;
-				$url = $tp->thumbUrl($file, 'w=' . $width . '&h=' . $height . '&crop=' . $crop, false, $full);
-			}
-			else // Image Missing.
-			{
-				$url = $genericImg;
-				$file = $genericFile;
 			}
 		}
 		else // No image provided - so send generic.
