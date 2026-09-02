@@ -130,6 +130,51 @@ abstract class e_db_abstractTest extends \Test\Unit
 	}
 
 	/**
+	 * @dataProvider refusalsRaisedBeforeTheServerIsAsked
+	 * @see https://github.com/e107inc/e107/issues/6040
+	 */
+	public function testARefusalRaisedBeforeTheServerIsAskedRecordsAnErrorNumber($method, $args)
+	{
+		$this->db->resetLastError();
+
+		call_user_func_array(array($this->db, $method), $args);
+
+		$this->assertSame(-1, $this->db->getLastErrorNumber(),
+			$method.'() refuses before the server sees anything, which the contract spells -1');
+		$this->assertStringContainsString($method, $this->db->getLastErrorText(),
+			$method.'() has to say which operation refused, and name itself correctly');
+	}
+
+	/**
+	 * One case per refusal the shared trait raises without asking the server, so a revert run reds each of them separately rather than stopping at the first.
+	 *
+	 * @return array
+	 */
+	public function refusalsRaisedBeforeTheServerIsAsked()
+	{
+		$hostile = 'user; DROP TABLE x';
+
+		return array(
+			'truncate'         => array('truncate', array($hostile)),
+			'truncate empty'   => array('truncate', array('')),
+			'isEmpty'          => array('isEmpty', array($hostile)),
+			'copyRow table'    => array('copyRow', array($hostile, '*', 'user_id = 1')),
+			'copyRow fields'   => array('copyRow', array('core_media_cat', 'media_cat_id; DROP TABLE x', 'media_cat_id = 1')),
+			'copyRow no where' => array('copyRow', array('', '*', '')),
+			'copyTable'        => array('copyTable', array($hostile, 'tmp')),
+			'dropTable'        => array('dropTable', array($hostile)),
+			'max'              => array('max', array($hostile, 'user_id')),
+			'field'            => array('field', array($hostile, 'user_id')),
+			'index'            => array('index', array($hostile, 'PRIMARY')),
+			'selectTree empty' => array('selectTree', array('', 'x', 'y', 'z')),
+			'selectTree table' => array('selectTree', array($hostile, 'parent', 'id', 'order')),
+			'insert'           => array('insert', array('user', array('_FIELD_TYPES' => array('user_id' => 'int')))),
+			'replace'          => array('replace', array('user', array('_FIELD_TYPES' => array('user_id' => 'int')))),
+			'update'           => array('update', array('user', array('_FIELD_TYPES' => array('user_id' => 'int')))),
+		);
+	}
+
+	/**
 	 * @see https://github.com/e107inc/e107/issues/6040
 	 */
 	public function testARefusedDatabaseSelectionRecordsTheDriverErrorNumber()

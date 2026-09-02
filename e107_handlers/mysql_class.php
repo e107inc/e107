@@ -638,8 +638,7 @@ class e_db_mysql implements e_db
 		// interpolated unquoted into the FROM clause below.
 		if($this->_safeIdentifier($table) === false)
 		{
-			$this->dbError('select() invalid table identifier');
-			return false;
+			return $this->_refuseIdentifier(__FUNCTION__);
 		}
 
 		$table = $this->hasLanguage($table);
@@ -816,8 +815,7 @@ class e_db_mysql implements e_db
 		// so validate it as a plain identifier and fail closed otherwise.
 		if ($fields != 'generic' && $this->_safeIdentifier($table) === false)
 		{
-			$this->dbError('count() invalid table identifier');
-			return false;
+			return $this->_refuseIdentifier(__FUNCTION__);
 		}
 
 		$table = $this->hasLanguage($table);
@@ -893,8 +891,7 @@ class e_db_mysql implements e_db
 		// interpolated unquoted into the DELETE statement below.
 		if($this->_safeIdentifier($table) === false)
 		{
-			$this->dbError('delete() invalid table identifier');
-			return false;
+			return $this->_refuseIdentifier(__FUNCTION__);
 		}
 
 		$table = $this->hasLanguage($table);
@@ -1137,7 +1134,7 @@ class e_db_mysql implements e_db
 		// $table becomes a SQL identifier (cannot be bound); validate it like field().
 		if(($table = $this->_safeIdentifier($table)) === false)
 		{
-			return false;
+			return $this->_refuseIdentifier(__FUNCTION__);
 		}
 
 		$this->_getMySQLaccess();
@@ -1383,6 +1380,20 @@ class e_db_mysql implements e_db
 	{
 		$this->mySQLlastErrNum = -1;
 		$this->mySQLlastErrText = "PDO is required to use the mysql backup() method";
+		return false;
+	}
+
+	/**
+	 * Refuses a table name that is not a plain identifier, recording the refusal and reporting it the way {@see e_db_mysql::dbError()} reports a failed query.
+	 *
+	 * @param string $method
+	 * @return bool false
+	 */
+	private function _refuseIdentifier($method)
+	{
+		$this->_refuse($method.'() invalid table identifier');
+		$this->dbError($method);
+
 		return false;
 	}
 

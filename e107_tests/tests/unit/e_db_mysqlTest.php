@@ -150,6 +150,37 @@ class e_db_mysqlTest extends e_db_abstractTest
 	}
 
 	/**
+	 * @dataProvider entryPointsGuardingTheTableIdentifier
+	 * @see https://github.com/e107inc/e107/issues/6040
+	 */
+	public function testARefusedTableIdentifierRecordsAnErrorNumber($method)
+	{
+		$this->db->resetLastError();
+
+		$this->assertFalse($this->db->$method('user; DROP TABLE x'),
+			$method.'() has to refuse a hostile table identifier');
+		$this->assertSame(-1, $this->db->getLastErrorNumber(),
+			$method.'() refuses before the server sees anything, which the contract spells -1');
+		$this->assertStringContainsString($method, $this->db->getLastErrorText(),
+			$method.'() has to say which operation refused, and name itself correctly');
+	}
+
+	/**
+	 * One case per entry point, so a revert run reds each of them separately rather than stopping at the first.
+	 *
+	 * @return array
+	 */
+	public function entryPointsGuardingTheTableIdentifier()
+	{
+		return array(
+			'select' => array('select'),
+			'count'  => array('count'),
+			'delete' => array('delete'),
+			'fields' => array('fields'),
+		);
+	}
+
+	/**
 	 * e_db_mysql::db_Set_Charset() interpolates the charset into
 	 * "SET NAMES `$charset`", so a backtick or quote would break out of the
 	 * identifier context. The guard must reject any non-plain charset token.
