@@ -4713,7 +4713,7 @@ class e_parse
 
 		$tp = e107::getParser();
 		$width = !empty($options['w']) ? intval($options['w']) : $tp->thumbWidth;
-		$height = ($tp->thumbHeight !== 0) ? $tp->thumbHeight : '';
+		$height = $tp->thumbHeight;
 		$crop = isset($options['crop']) ? $options['crop'] : $tp->thumbCrop;
 		$linkStart = '';
 		$linkEnd = '';

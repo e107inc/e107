@@ -3078,6 +3078,42 @@ EXPECTED;
 		self::assertFalse($img->hasAttribute('onerror'));
 	}
 
+	/**
+	 * The hd option doubles an avatar's dimensions, a default height included.
+	 * @see https://github.com/e107inc/e107/issues/6060
+	 */
+	public function testToAvatarHdWithoutAnExplicitHeight()
+	{
+		$parser = e107::getParser();
+		$originalHeight = $parser->thumbHeight();
+		$parser->thumbHeight(0);
+
+		try
+		{
+			$img = $this->avatarTag($this->tp->toAvatar(
+				array('user_image' => 'https://mydomain.com/remoteavatar.jpg'),
+				array('w' => 50, 'hd' => true)
+			));
+
+			self::assertEquals('50', $img->getAttribute('width'));
+			self::assertFalse($img->hasAttribute('height'));
+			self::assertStringContainsString('w=100&h=0', $img->getAttribute('onerror'));
+
+			$sized = $this->avatarTag($this->tp->toAvatar(
+				array('user_image' => 'https://mydomain.com/remoteavatar.jpg'),
+				array('w' => 50, 'h' => 50, 'hd' => true)
+			));
+
+			self::assertEquals('50', $sized->getAttribute('width'));
+			self::assertEquals('50', $sized->getAttribute('height'));
+			self::assertStringContainsString('w=100&h=100', $sized->getAttribute('onerror'));
+		}
+		finally
+		{
+			$parser->thumbHeight($originalHeight);
+		}
+	}
+
 	public function testToIcon()
 	{
 		$icon = codecept_data_dir() . "icon_64.png";
