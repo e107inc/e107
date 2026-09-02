@@ -115,17 +115,10 @@ class forumSubForumGuardTest extends \Test\Unit
 	 */
 	private function renderForumIndex()
 	{
-		$php = "error_reporting(E_ALL); ini_set('display_errors', 1); ";
-		$php .= "\$_E107 = array('cli' => true); ";
-		$php .= "require_once('".addslashes(APP_PATH.'/class2.php')."'); ";
-		$php .= "e107::getConfig()->setPref('plug_installed/forum', '2.0'); ";
+		$php = "e107::getConfig()->setPref('plug_installed/forum', '2.0'); ";
 		$php .= "require_once('".addslashes(APP_PATH.'/e107_plugins/forum/forum.php')."'); ";
 
-		$output = array();
-		$status = 0;
-		exec(sprintf('timeout 60 php -r %s 2>&1', escapeshellarg($php)), $output, $status);
-
-		self::assertNotSame(124, $status, 'the subprocess wedged, so nothing was measured');
+		list($output, ) = $this->runInBootedCli($php);
 
 		return implode("\n", $output);
 	}
