@@ -171,7 +171,7 @@ else
 	if(varset($pref['cb_layer']) === 2)
 	{
 
-		$texta = "\n<form id='chatbox' action='" . $action . "'  method='post' onsubmit='return(false);'>
+		$texta = "\n<form id='chatbox' action='" . $action . "'  method='post' onsubmit=\"sendInfo('" . e_PLUGIN_ABS . "chatbox_menu/chatbox_menu.php', 'chatbox_posts', this); return false;\">
 		<div>
 			<input type='hidden' name='chatbox_ajax' id='chatbox_ajax' value='1' />
 		</div>";
@@ -191,25 +191,11 @@ else
 				? "style='width: " . $cb_width . ";'" : '') . ' /><br />';
 	}
 
-	if($pref['cb_layer'] === 2)
-	{
-
-		$oc =
-			"onclick=\"javascript:sendInfo('" . SITEURLBASE . e_PLUGIN_ABS . "chatbox_menu/chatbox_menu.php', 'chatbox_posts', this.form);\"";
-
-	}
-	else
-	{
-
-		$oc = '';
-
-	}
-
 	$texta .= '
 	<textarea placeholder="' . LAN_CHATBOX_100 . "\" required class='tbox chatbox form-control input-xlarge' id='cmessage' name='cmessage' cols='20' rows='5' style='max-width:97%; " . ($cb_width
 			? 'width:' . $cb_width . ';' : '') . " overflow: auto' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
 	<br />
-	<input class='btn btn-sm btn-primary button' type='submit' id='chat_submit' name='chat_submit' value='" . CHATBOX_L4 . "' {$oc}/>";
+	<input class='btn btn-sm btn-primary button' type='submit' id='chat_submit' name='chat_submit' value='" . CHATBOX_L4 . "' />";
 
 
 	// $texta .= "<input type='reset' name='reset' value='".CHATBOX_L5."' />"; // How often do we see these lately? ;-)
@@ -348,7 +334,7 @@ else
 
 	$text = $texta . $text;
 
-	if($pref['cb_layer'] === 2)
+	if(varset($pref['cb_layer']) === 2)
 	{
 		$text = "<div id='chatbox_posts'>" . $text . '</div>';
 	}
