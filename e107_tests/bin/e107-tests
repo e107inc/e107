@@ -57,6 +57,19 @@ warn() { printf '!! %s\n' "$*" >&2; }
 
 have() { command -v "$1" >/dev/null 2>&1; }
 
+# Three tries with a growing pause, for work that fails while a registry or
+# package host is stumbling and succeeds once it is back.
+retry() {
+    local label=$1 attempt
+    shift
+    for attempt in 1 2 3; do
+        "$@" && return 0
+        [ "$attempt" -lt 3 ] || return 1
+        warn "$label failed (attempt $attempt of 3); retrying in $((attempt * 30))s"
+        sleep $((attempt * 30))
+    done
+}
+
 # An e107 worktree this harness can drive: an e107 tree carrying its own copy
 # of the compose stack. A tree without one (an old release tag, before
 # `graft`) deliberately fails this test and is left to the script's own copy.
@@ -286,6 +299,7 @@ compose_up_cmd() {
     E107_DB_EXTRA_ARGS=$E107_DB_EXTRA_ARGS \
     E107_BASE_PATH=$BASE_PATH \
     E107_INTERNAL_URL=$(base_url) \
+    E107_COMPOSER_CACHE=${E107_COMPOSER_CACHE:-} \
     docker compose --project-directory "$DOCKER_DIR" -f "$COMPOSE_FILE" "$@"
 }
 
@@ -438,20 +452,38 @@ EOF
 # Self-heals used by `up`
 # ---------------------------------------------------------------------------
 
-# Transient registry failures ("denied", rate limits) shouldn't kill an `up`
-# when every needed image is already local.
+# The images a registry has to supply for this `up`, as "service image" rows.
+registry_images() {
+    printf 'db %s\n' "$E107_DB_IMAGE"
+    if [ "$WITH_SELENIUM" = yes ]; then
+        printf 'selenium %s\n' "${E107_SELENIUM_IMAGE:-docker.io/selenium/standalone-chrome:latest}"
+    fi
+}
+
+# `up` pulls only what is missing and gives up on the first refusal, so the
+# same set is pulled ahead of it, with retries.
+pull_missing_images() {
+    local svc img services=()
+    while read -r svc img; do
+        docker image inspect "$img" >/dev/null 2>&1 || services+=("$svc")
+    done < <(registry_images)
+    [ ${#services[@]} -gt 0 ] || return 0
+    retry "pulling ${services[*]}" compose_up_cmd pull "${services[@]}"
+}
+
+# A registry that stays down shouldn't kill an `up` when every needed image is
+# already local.
 up_with_registry_fallback() {
+    pull_missing_images || true
     local tmp rc=0
     tmp=$(mktemp)
     compose_up_cmd up -d --wait "${UP_SERVICES[@]}" 2>&1 | tee "$tmp" || rc=${PIPESTATUS[0]}
     if [ "$rc" -ne 0 ] && grep -qiE 'denied|unauthorized|toomanyrequests|manifest unknown' "$tmp"; then
-        local img missing=no images=("e107-web:${E107_PHP_VERSION}${XDEBUG_TAG}" "$E107_DB_IMAGE")
-        if [ "$WITH_SELENIUM" = yes ]; then
-            images+=("${E107_SELENIUM_IMAGE:-docker.io/selenium/standalone-chrome:latest}")
-        fi
-        for img in "${images[@]}"; do
+        local svc img missing=no
+        docker image inspect "e107-web:${E107_PHP_VERSION}${XDEBUG_TAG}" >/dev/null 2>&1 || missing=yes
+        while read -r svc img; do
             docker image inspect "$img" >/dev/null 2>&1 || missing=yes
-        done
+        done < <(registry_images)
         if [ "$missing" = no ]; then
             warn "registry refused the pull but all images exist locally; retrying with --pull never"
             rc=0
@@ -559,7 +591,7 @@ tests_sh() {
 # a stamp recording what was installed; the stamp powers the drift preflight.
 deps_install() {
     note ">> Installing test dependencies (composer)"
-    deps_install_once
+    retry "installing test dependencies" deps_install_once
     if [ -e "$APP_PATH/.git" ]; then
         ( cd "$APP_PATH" && git submodule update --init --recursive --remote >/dev/null 2>&1 ) || true
     fi
@@ -718,6 +750,10 @@ cmd_up() {
     PROJECT=$(project_name "$PHP" "$DB")
     normalise_base_path "$base"
     db_flavor_args
+    if [ -n "${E107_COMPOSER_CACHE:-}" ]; then
+        mkdir -p -- "$E107_COMPOSER_CACHE"
+        E107_COMPOSER_CACHE=$(readlink -f -- "$E107_COMPOSER_CACHE")
+    fi
     write_managed_config
 
     # Built as its own step, not as `up --build`. A failed build there leaves
