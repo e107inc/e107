@@ -65,6 +65,19 @@ class e_db_mysqlTest extends e_db_abstractTest
 		$this->assertRegExp('/[0-9]+\./', $result);
 	}
 
+	/**
+	 * @see https://github.com/e107inc/e107/issues/6040
+	 */
+	public function testBackupWithoutPdoRecordsAnErrorNumber()
+	{
+		$this->assertFalse($this->db->backup(),
+			'precondition: the mysqli backend cannot take a backup');
+		$this->assertSame(-1, $this->db->getLastErrorNumber(),
+			'a refusal that carries no driver number has to report -1');
+		$this->assertNotSame('', $this->db->getLastErrorText(),
+			'a refused backup has to say why');
+	}
+
 	public function testDb_Close()
 	{
 	    $db_impl = $this->getDbImplementation();
