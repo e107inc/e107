@@ -131,7 +131,12 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 
 			if(!empty($this->var['link_owner']) && !empty($this->var['link_sefurl']))
 			{
-				return e107::url($this->var['link_owner'], $this->var['link_sefurl']);
+				$sefUrl = e107::url($this->var['link_owner'], $this->var['link_sefurl']);
+
+				if(!empty($sefUrl))
+				{
+					return $sefUrl;
+				}
 			}
 
 			if(strpos($this->var['link_url'], e_HTTP) === 0)
