@@ -42,9 +42,12 @@
 			{
 				$safe['alt'] = e107::getParser()->filter($parms['alt']);
 			}
-			if(isset($parms['width']))
+			foreach(array('width', 'height') as $dimension)
 			{
-				$safe['width'] = (int) $parms['width'];
+				if(isset($parms[$dimension]) && is_numeric($parms[$dimension]))
+				{
+					$safe[$dimension] = (int) $parms[$dimension];
+				}
 			}
 
 			if(!empty($safe))
