@@ -3169,4 +3169,70 @@ Your browser does not support the audio tag.
 
 
 			}*/
+	private function avatarTag($html)
+	{
+		$doc = new DOMDocument();
+		$doc->loadHTML('<body>' . $html . '</body>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+
+		return $doc->getElementsByTagName('img')->item(0);
+	}
+
+	/**
+	 * The avatar manager needs the file a user_image names rather than the url that
+	 * renders it, and it must never be handed a path outside the avatar folders.
+	 * @see https://github.com/e107inc/e107/issues/6023
+	 */
+	public function testToAvatarPath()
+	{
+		self::assertSame(e_AVATAR_DEFAULT . 'avatartest.png', $this->tp->toAvatarPath('avatartest.png'));
+		self::assertSame(e_AVATAR_UPLOAD . 'avatartest.png', $this->tp->toAvatarPath('-upload-avatartest.png'));
+
+		$rejected = array(
+			'',
+			'-upload-',
+			'.',
+			'..',
+			'-upload-.',
+			'-upload-..',
+			'http://mydomain.com/remoteavatar.jpg',
+			'https://mydomain.com/remoteavatar.jpg',
+			'../../../class2.php',
+			'-upload-../../../class2.php',
+			'sub/avatartest.png',
+			'sub\\avatartest.png',
+			"avatartest.png\0.php",
+			null,
+			array('avatartest.png'),
+		);
+
+		foreach ($rejected as $image)
+		{
+			self::assertSame('', $this->tp->toAvatarPath($image), 'Resolved a path for ' . var_export($image, true));
+		}
+	}
+
+	/**
+	 * An administrator's alt text carries the stored name without its -upload-
+	 * prefix, as it did when toAvatar() stripped the prefix itself.
+	 */
+	public function testToAvatarKeepsTheUploadedNameInTheAdminAltText()
+	{
+		if (!deftrue('ADMIN'))
+		{
+			self::markTestSkipped('toAvatar() only puts the raw user_image in alt for an administrator.');
+		}
+
+		if (!is_dir(e_AVATAR_UPLOAD))
+		{
+			mkdir(e_AVATAR_UPLOAD, 0755, true);
+		}
+
+		copy(codecept_data_dir() . 'icon_64.png', e_AVATAR_UPLOAD . 'avatartest.png');
+
+		$parms = array('w' => 50, 'h' => 50, 'crop' => false);
+		$img = $this->avatarTag($this->tp->toAvatar(array('user_image' => '-upload-avatartest.png'), $parms));
+
+		self::assertEquals('avatartest.png', $img->getAttribute('alt'));
+	}
+
 }
