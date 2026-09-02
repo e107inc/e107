@@ -57,6 +57,19 @@ warn() { printf '!! %s\n' "$*" >&2; }
 
 have() { command -v "$1" >/dev/null 2>&1; }
 
+# Three tries with a growing pause, for work that fails while a registry or
+# package host is stumbling and succeeds once it is back.
+retry() {
+    local label=$1 attempt
+    shift
+    for attempt in 1 2 3; do
+        "$@" && return 0
+        [ "$attempt" -lt 3 ] || return 1
+        warn "$label failed (attempt $attempt of 3); retrying in $((attempt * 30))s"
+        sleep $((attempt * 30))
+    done
+}
+
 # An e107 worktree this harness can drive: an e107 tree carrying its own copy
 # of the compose stack. A tree without one (an old release tag, before
 # `graft`) deliberately fails this test and is left to the script's own copy.
@@ -286,6 +299,7 @@ compose_up_cmd() {
     E107_DB_EXTRA_ARGS=$E107_DB_EXTRA_ARGS \
     E107_BASE_PATH=$BASE_PATH \
     E107_INTERNAL_URL=$(base_url) \
+    E107_COMPOSER_CACHE=${E107_COMPOSER_CACHE:-} \
     docker compose --project-directory "$DOCKER_DIR" -f "$COMPOSE_FILE" "$@"
 }
 
@@ -418,9 +432,17 @@ EOF
 # Self-heals used by `up`
 # ---------------------------------------------------------------------------
 
-# Transient registry failures ("denied", rate limits) shouldn't kill an `up`
-# when every needed image is already local.
+# `up` pulls only what is missing and gives up on the first refusal, so the
+# database image is pulled ahead of it, with retries.
+pull_missing_images() {
+    docker image inspect "$E107_DB_IMAGE" >/dev/null 2>&1 && return 0
+    retry "pulling db" compose_up_cmd pull db
+}
+
+# A registry that stays down shouldn't kill an `up` when every needed image is
+# already local.
 up_with_registry_fallback() {
+    pull_missing_images || true
     local tmp rc=0
     tmp=$(mktemp)
     compose_up_cmd up -d --wait "${UP_SERVICES[@]}" 2>&1 | tee "$tmp" || rc=${PIPESTATUS[0]}
@@ -496,46 +518,94 @@ EOF
 # Dependency management (per-env vendor volume)
 # ---------------------------------------------------------------------------
 
+# Committed lock files, newest floor first: composer.lock is resolved on the
+# PHP composer.json's platform declares, composer.php<floor>.lock on an older
+# one, and an env installs the first of them its own PHP can take.
+lock_candidates() {
+    local f
+    printf 'composer.lock\n'
+    for f in "$TESTS_DIR"/composer.php*.lock; do
+        [ -e "$f" ] || continue
+        basename -- "$f"
+    done | sort -Vr
+}
+
+# The PHP a lock is resolved on.
+lock_floor() {
+    case $1 in
+        composer.php*.lock)
+            local f=${1#composer.php}
+            printf '%s' "${f%.lock}" ;;
+        *)
+            have php || err "relock reads composer.json with php, which is not on PATH"
+            php -r 'echo json_decode(file_get_contents($argv[1]), true)["config"]["platform"]["php"];' \
+                "$TESTS_DIR/composer.json" 2>/dev/null | sed 's/^\([0-9]*\.[0-9]*\).*/\1/' | grep . \
+                || err "composer.json declares no config.platform.php, so composer.lock has no floor to relock on" ;;
+    esac
+}
+
+# Run a script in the web container's e107_tests dir with the committed lock
+# names as its arguments.
+tests_sh() {
+    local candidates
+    mapfile -t candidates < <(lock_candidates)
+    compose_p exec -T -w "$WEB_TESTS_DIR" web sh -euc "$1" sh "${candidates[@]}"
+}
+
 # Each env owns a named volume mounted over e107_tests/vendor, so different
-# PHP versions never fight over one vendor tree and the repo's composer.lock
-# is never rewritten. Inside the volume, vendor/.e107-meta/ holds the copy of
-# composer.json (+ lock) that composer actually runs against, plus a stamp
-# recording what was installed; the stamp powers the drift preflight.
+# PHP versions never fight over one vendor tree and the repo's lock files are
+# never rewritten. Inside the volume, vendor/.e107-meta/ holds the copies of
+# composer.json and the lock files that composer actually runs against, plus
+# a stamp recording what was installed; the stamp powers the drift preflight.
 deps_install() {
     note ">> Installing test dependencies (composer)"
-    compose_p exec -T -w "$WEB_TESTS_DIR" web sh -euc '
+    retry "installing test dependencies" deps_install_once
+    if [ -e "$APP_PATH/.git" ]; then
+        ( cd "$APP_PATH" && git submodule update --init --recursive --remote >/dev/null 2>&1 ) || true
+    fi
+}
+
+deps_install_once() {
+    tests_sh '
         if [ ! -f composer.json ]; then
             echo ">> no e107_tests/composer.json in this tree; skipping composer (old-tag mode)" >&2
             exit 0
         fi
         META=vendor/.e107-meta
-        mkdir -p "$META"
+        mkdir -p "$META/locks"
         exec 9> "$META/.lock"
         flock -w 900 9
         cp -f composer.json "$META/composer.json"
-        if [ -f composer.lock ]; then
-            cp -f composer.lock "$META/composer.lock"
-        else
-            rm -f "$META/composer.lock"
-        fi
+        rm -f "$META"/locks/* "$META/composer.lock"
+        for lock in "$@"; do
+            if [ -f "$lock" ]; then
+                cp -f "$lock" "$META/locks/$lock"
+            fi
+        done
         # Hash the frozen copies now: the stamp must describe what this
         # install ran against, even if the worktree changes mid-install.
         JSON_SHA=$(sha256sum "$META/composer.json" | cut -d" " -f1)
-        LOCK_SHA=
-        if [ -f "$META/composer.lock" ]; then
-            LOCK_SHA=$(sha256sum "$META/composer.lock" | cut -d" " -f1)
-        fi
+        LOCK_SHA=$(cd "$META/locks" && cat "$@" 2>/dev/null | sha256sum | cut -d" " -f1)
         export COMPOSER="$PWD/$META/composer.json"
         export COMPOSER_VENDOR_DIR="$PWD/vendor"
         PHPVER=$(php -r "echo PHP_MAJOR_VERSION.\".\".PHP_MINOR_VERSION;")
-        MODE=
-        if [ -f "$META/composer.lock" ] && composer check-platform-reqs --lock >/dev/null 2>&1; then
-            if composer install --prefer-dist --no-progress; then
-                MODE=install
+        LOCK=
+        for lock in "$@"; do
+            [ -f "$META/locks/$lock" ] || continue
+            cp -f "$META/locks/$lock" "$META/composer.lock"
+            if composer check-platform-reqs --lock >/dev/null 2>&1; then
+                LOCK=$lock
+                break
             fi
-        fi
-        if [ -z "$MODE" ]; then
-            echo "!! repo composer.lock not installable on PHP $PHPVER; falling back to \"composer update\" for this env (repo lock untouched)" >&2
+        done
+        [ -n "$LOCK" ] || rm -f "$META/composer.lock"
+        [ "$LOCK" = composer.lock ] || composer config --unset platform.php
+        if [ -n "$LOCK" ]; then
+            echo ">> installing from $LOCK" >&2
+            composer install --prefer-dist --no-progress
+            MODE=install
+        else
+            echo "!! no committed lock ($*) installs on PHP $PHPVER; falling back to \"composer update\" (needs the network; run e107-tests relock after adding composer.php$PHPVER.lock)" >&2
             composer update --prefer-dist --no-progress
             MODE=update
         fi
@@ -544,28 +614,22 @@ deps_install() {
             echo "E107_STAMP_LOCK_SHA256=$LOCK_SHA"
             echo "E107_STAMP_PHP=$PHPVER"
             echo "E107_STAMP_MODE=$MODE"
+            echo "E107_STAMP_LOCK=$LOCK"
         } > "$META/stamp.env"
     '
-    if [ -e "$APP_PATH/.git" ]; then
-        ( cd "$APP_PATH" && git submodule update --init --recursive --remote >/dev/null 2>&1 ) || true
-    fi
 }
 
-# Fast drift check: did composer.json, composer.lock, or the PHP version
+# Fast drift check: did composer.json, a lock file, or the PHP version
 # change since this env's vendor was installed? Returns 1 on drift.
 deps_preflight() {
-    compose_p exec -T -w "$WEB_TESTS_DIR" web sh -euc '
+    tests_sh '
         [ -f composer.json ] || exit 0
         META=vendor/.e107-meta
         [ -f "$META/stamp.env" ] || exit 1
         [ -f vendor/autoload.php ] || exit 1
         . "./$META/stamp.env"
         [ "$E107_STAMP_JSON_SHA256" = "$(sha256sum composer.json | cut -d" " -f1)" ] || exit 1
-        CUR_LOCK=
-        if [ -f composer.lock ]; then
-            CUR_LOCK=$(sha256sum composer.lock | cut -d" " -f1)
-        fi
-        [ "$E107_STAMP_LOCK_SHA256" = "$CUR_LOCK" ] || exit 1
+        [ "$E107_STAMP_LOCK_SHA256" = "$(cat "$@" 2>/dev/null | sha256sum | cut -d" " -f1)" ] || exit 1
         [ "$E107_STAMP_PHP" = "$(php -r "echo PHP_MAJOR_VERSION.\".\".PHP_MINOR_VERSION;")" ] || exit 1
     '
 }
@@ -575,7 +639,7 @@ deps_ensure() {
     # nonzero exec, and drift legitimately exits nonzero); ensure_web_exec has
     # already proven the env is reachable.
     deps_preflight 2>/dev/null || {
-        note ">> deps drift detected (composer.json/lock or PHP changed); reinstalling"
+        note ">> deps drift detected (composer.json, a lock file or PHP changed); reinstalling"
         deps_install
     }
 }
@@ -677,6 +741,10 @@ cmd_up() {
     PROJECT=$(project_name "$PHP" "$DB")
     normalise_base_path "$base"
     db_flavor_args
+    if [ -n "${E107_COMPOSER_CACHE:-}" ]; then
+        mkdir -p -- "$E107_COMPOSER_CACHE"
+        E107_COMPOSER_CACHE=$(readlink -f -- "$E107_COMPOSER_CACHE")
+    fi
     write_managed_config
 
     # Built as its own step, not as `up --build`. A failed build there leaves
@@ -761,6 +829,39 @@ cmd_install() {
     resolve_env
     ensure_web_exec
     deps_install
+}
+
+# Regenerate the committed lock files, each inside an env on the PHP it is
+# resolved for, so a cell installs what that PHP's own Composer chose. Envs
+# this brings up are taken down again; envs that already existed are left.
+cmd_relock() {
+    local locks=("$@") lock floor marker= had_env
+    [ ${#locks[@]} -gt 0 ] || mapfile -t locks < <(lock_candidates)
+    [ ! -f "$MANAGED_CONFIG" ] || marker=$(cat "$MANAGED_CONFIG")
+    for lock in "${locks[@]}"; do
+        floor=$(lock_floor "$lock")
+        note ">> relocking $lock on PHP $floor"
+        had_env=no
+        ! project_exists "$(project_name "$floor" "$DEFAULT_DB")" || had_env=yes
+        cmd_up --php "$floor" --no-selenium >&2
+        compose_p exec -T -w "$WEB_TESTS_DIR" web sh -euc '
+            d=$(mktemp -d)
+            cp composer.json "$d/"
+            cd "$d"
+            [ "$1" = composer.lock ] || composer config --unset platform.php
+            composer update --no-install --no-progress >&2
+            composer check-platform-reqs --lock >&2
+            cat composer.lock
+        ' sh "$lock" > "$TESTS_DIR/$lock.new"
+        mv -f "$TESTS_DIR/$lock.new" "$TESTS_DIR/$lock"
+        [ "$had_env" = yes ] || cmd_down
+    done
+    if [ -n "$marker" ]; then
+        printf '%s\n' "$marker" > "$MANAGED_CONFIG"
+    else
+        rm -f "$MANAGED_CONFIG"
+    fi
+    git -C "$APP_PATH" --no-pager diff --stat -- 'e107_tests/composer*.lock' >&2 || true
 }
 
 cmd_urls() {
@@ -1180,9 +1281,15 @@ LIFECYCLE:
                                      --install-site, to clear up host-side after
                                      a run that could not finish, or when
                                      Codeception itself will not start.
-  install                            Re-run composer inside the web container
-                                     (lock-respecting install; falls back to
-                                     update when the PHP can't satisfy the lock).
+  install                            Re-run composer inside the web container:
+                                     installs the newest committed lock the
+                                     env's PHP can take (composer.lock, then
+                                     composer.php<floor>.lock), and falls back
+                                     to update only when none can.
+  relock [<lock>...]                 Regenerate the committed lock files, each
+                                     inside an env on the PHP it is resolved
+                                     for (all of them by default). Review the
+                                     diff, run the suites, commit.
   gc [--dry-run] [--worktrees-gone]  Remove volumes of downed/orphaned envs;
                                      with --worktrees-gone, tear down stacks
                                      whose worktree was deleted.
@@ -1231,8 +1338,8 @@ STATE:
   Env state lives in Docker labels and named volumes; there are no state
   files. Each worktree+PHP+DB combo is its own compose project with its own
   per-env vendor volume, so parallel envs never share dependencies and the
-  repo's composer.lock is never modified. `list` sees every worktree; use
-  --env <project> to drive any env from anywhere.
+  repo's lock files are only ever rewritten by `relock`. `list` sees every
+  worktree; use --env <project> to drive any env from anywhere.
 EOF
 }
 
@@ -1302,6 +1409,7 @@ case $CMD in
     up)         cmd_up "$@" ;;
     down)       cmd_down "$@" ;;
     install)    cmd_install "$@" ;;
+    relock)     cmd_relock "$@" ;;
     urls)       cmd_urls "$@" ;;
     status|ps)  cmd_status "$@" ;;
     logs)       cmd_logs "$@" ;;

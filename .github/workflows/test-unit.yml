@@ -2,7 +2,14 @@ name: Unit Tests
 
 on:
   push:
+    branches: [master, 'release/**']
   pull_request:
+
+# A newer push to a branch or pull request cancels the run it supersedes.
+# master is the exception: every merge commit there gets its full run.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
 
 # The unit suite runs on the same harness developers use locally
 # (e107_tests/bin/e107-tests), so a CI failure reproduces with two commands:
@@ -46,32 +53,10 @@ jobs:
         with:
           submodules: recursive
 
-      - uses: docker/setup-buildx-action@v4
-
-      # Built here rather than by `compose up` so the layers survive between
-      # runs. compose builds the web image only when it is missing, so loading
-      # it under the tag compose expects turns that build into a no-op. The
-      # xdebug variant carries its own tag and cache scope; coverage needs it.
-      #
-      # php:5.6 and php:7.0 are Debian Stretch and take the longest to build:
-      # their apt repositories have moved to archive.debian.org and gd and
-      # xdebug are compiled from source. The cache is what keeps that off the
-      # critical path on every run after the first.
-      - name: Build the web image
-        uses: docker/build-push-action@v7
-        with:
-          context: ./e107_tests/docker
-          build-args: |
-            PHP_VERSION=${{ matrix.php }}
-            WITH_XDEBUG=yes
-          tags: e107-web:${{ matrix.php }}-xdebug
-          load: true
-          cache-from: type=gha,scope=web-xdebug-${{ matrix.php }}
-          cache-to: type=gha,mode=max,scope=web-xdebug-${{ matrix.php }}
-
-      # No --install-site: the unit suite loads a dump and never runs the
-      # installer. --no-selenium because this branch has no WebDriver suite and
-      # the browser image is over a gigabyte.
+      # The xdebug image, because coverage needs it. No --install-site: the
+      # unit suite loads a dump and never runs the installer. --no-selenium
+      # because this branch has no WebDriver suite and the browser image is
+      # over a gigabyte.
       #
       # PHP 5.6 and 7.0 can be pointed at mysql:8.0 here, which the previous
       # workflow had to exclude. GitHub Actions service containers take no
@@ -80,12 +65,12 @@ jobs:
       # through compose, where db_flavor_args sets utf8mb3 and
       # mysql_native_password for exactly this reason.
       - name: Bring up the stack
-        run: |
-          ./e107_tests/bin/e107-tests up \
-            --php '${{ matrix.php }}' \
-            --db '${{ matrix.db }}' \
-            --xdebug \
-            --no-selenium
+        uses: ./.github/actions/harness-stack
+        with:
+          php: ${{ matrix.php }}
+          db: ${{ matrix.db }}
+          xdebug: 'yes'
+          up-args: --no-selenium
 
       - name: Run unit tests with coverage
         run: ./e107_tests/bin/e107-tests ci-unit

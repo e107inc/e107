@@ -1,0 +1,76 @@
+name: Bring up the e107 test harness
+description: >-
+  Brings up the compose stack e107_tests/bin/e107-tests drives, from caches
+  wherever it can: the web image travels between runs as a tarball keyed on
+  its inputs and the month, and Composer's download cache is keyed on the
+  lock files, so a warm run installs everything without a registry or
+  package host answering. Docker Hub gets a mirror for the pulls that remain,
+  and every step that reaches the network retries with a pause.
+
+inputs:
+  php:
+    description: PHP version of the web image (the php:<version>-apache tag)
+    required: true
+  db:
+    description: Database image
+    required: true
+  xdebug:
+    description: "'yes' for the coverage-capable image"
+    default: 'no'
+  up-args:
+    description: Further flags for `e107-tests up`, such as --no-selenium
+    default: ''
+
+runs:
+  using: composite
+  steps:
+    - uses: ./.github/actions/docker-hub-mirror
+
+    - name: Image cache key
+      id: key
+      shell: bash
+      run: |
+        echo "tag=e107-web:${{ inputs.php }}${{ inputs.xdebug == 'yes' && '-xdebug' || '' }}" >> "$GITHUB_OUTPUT"
+        echo "month=$(date -u +%Y-%m)" >> "$GITHUB_OUTPUT"
+
+    - name: Restore the web image
+      id: web
+      uses: actions/cache@v5
+      with:
+        path: /tmp/e107-web.tar
+        key: web-image-${{ inputs.php }}${{ inputs.xdebug == 'yes' && '-xdebug' || '' }}-${{ hashFiles('e107_tests/docker/Dockerfile', 'e107_tests/docker/entrypoint.sh', 'e107_tests/docker/apache-vhost.conf', 'e107_tests/docker/php-overrides.ini') }}-${{ steps.key.outputs.month }}
+
+    - name: Build the web image
+      if: steps.web.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        . "$GITHUB_ACTION_PATH/retry.sh"
+        retry docker build \
+          --build-arg 'PHP_VERSION=${{ inputs.php }}' \
+          --build-arg 'WITH_XDEBUG=${{ inputs.xdebug }}' \
+          -t '${{ steps.key.outputs.tag }}' e107_tests/docker
+        docker save '${{ steps.key.outputs.tag }}' -o /tmp/e107-web.tar
+
+    - name: Load the web image
+      if: steps.web.outputs.cache-hit == 'true'
+      shell: bash
+      run: docker load -i /tmp/e107-web.tar
+
+    - name: Restore the composer cache
+      uses: actions/cache@v5
+      with:
+        path: /tmp/e107-composer-cache
+        key: composer-${{ inputs.php }}-${{ hashFiles('e107_tests/composer.lock', 'e107_tests/composer.php*.lock') }}
+        restore-keys: composer-${{ inputs.php }}-
+
+    - name: Bring up the stack
+      shell: bash
+      env:
+        E107_COMPOSER_CACHE: /tmp/e107-composer-cache
+      run: |
+        . "$GITHUB_ACTION_PATH/retry.sh"
+        retry ./e107_tests/bin/e107-tests up \
+          --php '${{ inputs.php }}' \
+          --db '${{ inputs.db }}' \
+          ${{ inputs.xdebug == 'yes' && '--xdebug' || '' }} \
+          ${{ inputs.up-args }}

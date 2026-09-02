@@ -2,7 +2,14 @@ name: Acceptance Tests
 
 on:
   push:
+    branches: [master, 'release/**']
   pull_request:
+
+# A newer push to a branch or pull request cancels the run it supersedes.
+# master is the exception: every merge commit there gets its full run.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
 
 # The acceptance suite runs on the same harness developers use locally
 # (e107_tests/bin/e107-tests), so a CI failure reproduces with two commands:
@@ -68,30 +75,13 @@ jobs:
         with:
           submodules: recursive
 
-      - uses: docker/setup-buildx-action@v4
-
-      # Built here rather than by `compose up` so the layers survive between
-      # runs. compose builds the web image only when it is missing, so loading
-      # it under the tag compose expects turns that build into a no-op. This
-      # matters most for PHP 5.6, whose base is EOL: the image compiles its
-      # extensions from the Debian archive and takes minutes from cold.
-      - name: Build the web image
-        uses: docker/build-push-action@v7
-        with:
-          context: ./e107_tests/docker
-          build-args: PHP_VERSION=${{ matrix.php }}
-          tags: e107-web:${{ matrix.php }}
-          load: true
-          cache-from: type=gha,scope=web-${{ matrix.php }}
-          cache-to: type=gha,mode=max,scope=web-${{ matrix.php }}
-
       # An empty --base-path means a docroot install.
       - name: Bring up the stack
-        run: |
-          ./e107_tests/bin/e107-tests up \
-            --php '${{ matrix.php }}' \
-            --db '${{ matrix.db }}' \
-            --base-path '${{ matrix.base_path }}'
+        uses: ./.github/actions/harness-stack
+        with:
+          php: ${{ matrix.php }}
+          db: ${{ matrix.db }}
+          up-args: --base-path '${{ matrix.base_path }}'
 
       - name: Run acceptance tests
         run: ./e107_tests/bin/e107-tests run acceptance
