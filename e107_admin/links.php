@@ -865,7 +865,7 @@ class links_admin_form_ui extends e_admin_form_ui
 
 				if(!empty($sefUrl))
 				{
-					$text = str_replace(e_HTTP,'',$sefUrl); // dynamically created.
+					$text = (strpos($sefUrl, e_HTTP) === 0) ? (string) substr($sefUrl, strlen(e_HTTP)) : $sefUrl;
 					$text .= $this->hidden('link_url',$curVal);
 					$text .= " <span class='label label-warning'>".LAN_AUTO_GENERATED."</span>";
 
