@@ -141,3 +141,4 @@ define("TPVLANHELP_05", "End lines with a [b]$[/b] to exactly match against the 
 
 define("TPVLANHELP_06", "Start lines with a [b]:[/b] to partially or fully match against e107::route()");
 define("TPVLAN_97", "This theme requires a newer version of e107.");
+define("LAN_THEME_OPTIONS_NOT_SAVED", "Theme options were not saved.");
