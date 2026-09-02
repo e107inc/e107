@@ -1381,6 +1381,55 @@ class e_formTest extends \Codeception\Test\Unit
 
 
 	}
+
+	public function testRenderValueUserclassesInlineHeldClassOutsideClasslist()
+	{
+
+			$field = array('title'=>'Userclasses', 'type'=>'userclasses', 'inline'=>true, 'readParms'=>'classlist=classes,new&defaultLabel=--');
+			$result  = $this->_frm->renderValue('uc', '253', $field, 999);
+
+			$result = str_replace(array("\n", "\r"), "", $result);
+
+			$tags = e107::getParser()->getTags($result,'a');
+
+			self::assertNotEmpty($tags['a'][0]);
+			self::assertSame(',253', $tags['a'][0]['data-value']);
+			self::assertStringContainsString('{"value":253,"text":"Members"}', $tags['a'][0]['data-source'], 'Members (253) is held by the record but missing from the inline checklist, so it cannot be ticked and is dropped on save.');
+
+	}
+
+	public function testRenderValueUserclassInlineHeldClassOutsideClasslist()
+	{
+
+			$field = array('title'=>'Userclass', 'type'=>'userclass', 'inline'=>true, 'readParms'=>'classlist=classes,new');
+			$result  = $this->_frm->renderValue('uc', '253', $field, 999);
+
+			$result = str_replace(array("\n", "\r"), "", $result);
+
+			$tags = e107::getParser()->getTags($result,'a');
+
+			self::assertNotEmpty($tags['a'][0]);
+			self::assertSame('select', $tags['a'][0]['data-type']);
+			self::assertSame('253', $tags['a'][0]['data-value']);
+			self::assertStringContainsString('{"value":253,"text":"Members"}', $tags['a'][0]['data-source'], 'The single-class editor must offer the class the record holds, or saving replaces it with whichever option the browser preselected.');
+
+	}
+
+	public function testRenderValueUserclassesInlineStoredValueWithWhitespace()
+	{
+
+			$field = array('title'=>'Userclasses', 'type'=>'userclasses', 'inline'=>true, 'readParms'=>'classlist=classes,new&defaultLabel=--');
+			$result  = $this->_frm->renderValue('uc', '253, 1', $field, 999);
+
+			$result = str_replace(array("\n", "\r"), "", $result);
+
+			$tags = e107::getParser()->getTags($result,'a');
+
+			self::assertNotEmpty($tags['a'][0]);
+			self::assertStringContainsString('{"value":253,"text":"Members"}', $tags['a'][0]['data-source']);
+			self::assertSame(1, substr_count($tags['a'][0]['data-source'], '"text":"PRIVATEMENU"'), 'A class already in the classlist must not be offered twice.');
+
+	}
 	/*
 			public function testRenderListForm()
 			{
