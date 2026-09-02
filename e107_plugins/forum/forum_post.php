@@ -1728,9 +1728,10 @@ class forum_post_handler
 	 * ever seen the post. Sixteen hex characters are what stops that on a
 	 * server the deny rule cannot reach.
 	 *
-	 * The deny rule goes down before the file does, so an attachment is never
-	 * fetchable off the web server, not even between being stored and the next
-	 * write covering the directory.
+	 * The deny rule goes down before the file does, over the root and the
+	 * poster's own directory, so no attachment is ever stored ahead of the rule
+	 * meant to cover it. A host that will not take the rule is still given the
+	 * upload, and there the random component above is all there is.
 	 *
 	 * The permission test is the one sc_forumattachment() applies to the field
 	 * that produces these files. It was on the field and not on the sink, so a
@@ -1761,14 +1762,18 @@ class forum_post_handler
 			}
 
 			require_once(e_PLUGIN.'forum/forum_attachments.php');
-			forum_attachments::protect();
+
+			$file = e107::getFile();
+			$paths = forum_attachments::paths();
+			$dir = $this->forumObj->getAttachmentPath(USERID, TRUE);
+
+			$file->protectDirectory($paths[0]);
+			$file->protectDirectory($dir);
 
 			$type = 'attachment+'.e_random::hex(16).'_';
 
-			if($uploaded = e107::getFile()->getUploaded('attachments', $type, array( 'max_file_count' => 5)))
+			if($uploaded = $file->getUploaded('attachments', $type, array( 'max_file_count' => 5)))
 			{
-				e107::getFile()->protectDirectory($this->forumObj->getAttachmentPath(USERID));
-
 				e107::getMessage()->addDebug("Uploaded Data: ".print_a($uploaded,true));
 
 

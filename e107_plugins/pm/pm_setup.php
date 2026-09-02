@@ -32,9 +32,10 @@ class pm_setup
 	 *	Cover the attachment directories this site already holds.
 	 *
 	 *	A site whose attachments were stored before the deny rules existed has
-	 *	this and nothing else: sending a new attachment is what covers a directory
-	 *	otherwise, and the members whose files are sitting there exposed are the
-	 *	ones who are not sending any. The plugin's version is raised in plugin.xml
+	 *	this and nothing else: a send covers the sender's own directory and the
+	 *	root above it and reads no other, and the members whose files are sitting
+	 *	there exposed are the ones who are not sending any. The plugin's version is
+	 *	raised in plugin.xml
 	 *	so that this runs on every existing site rather than only on a fresh
 	 *	install.
 	 *
