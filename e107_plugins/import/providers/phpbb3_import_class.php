@@ -377,17 +377,20 @@ class phpbb3_import extends base_import_class
 			$attach = array();
 			
 			$forum = $this->helperClass; // e107_plugins/forum/forum_class.php 
-			
-			if($folder = $forum->getAttachmentPath($row['poster_id'],true)) // get Path and create Folder if needed. 
+
+			$folder = $forum->getAttachmentPath($row['poster_id'], true); // get Path and create Folder if needed.
+
+			require_once(e_PLUGIN . 'forum/forum_attachments.php');
+
+			if(!forum_attachments::protectPath($folder))
 			{
-				e107::getFile()->protectDirectory($folder);
-				e107::getMessage()->addDebug("Created Attachment Folder: ".$folder );
+				e107::getMessage()->addError("Couldn't create or protect the attachment folder for user-id: ".$row['poster_id'] );
+
+				return;
 			}
-			else
-			{
-				e107::getMessage()->addError("Couldn't find/create attachment folder for user-id: ".$row['poster_id'] );	
-			}
-			
+
+			e107::getMessage()->addDebug("Created Attachment Folder: ".$folder );
+
 			foreach($this->forum_attachments[$id] as $file => $name)
 			{
 				
