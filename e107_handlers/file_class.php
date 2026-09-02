@@ -2927,7 +2927,10 @@ class e_file
 		public function unzipArchive($localfile, $type, $overwrite = false)
 		{
 
-			$mes = e107::getMessage();
+			if(empty($localfile))
+			{
+				return $this->unzipFailed($localfile, "Couldn't open the archive. No file was uploaded.");
+			}
 
 			chmod(e_TEMP . $localfile, 0755);
 
@@ -2938,117 +2941,187 @@ class e_file
 			if(class_exists('ZipArchive')) // PHP7 compat. method.
 			{
 				$zip = new ZipArchive;
+				$opened = $zip->open(e_TEMP . $localfile);
 
-				if($zip->open(e_TEMP . $localfile) === true)
+				if($opened !== true)
 				{
-					for($i = 0; $i < $zip->numFiles; $i++)
-					{
-						$filename = $zip->getNameIndex($i);
-
-						$fileinfo = pathinfo($filename);
-
-						if($fileinfo['dirname'] === '.')
-						{
-							$dir = $fileinfo['basename'];
-							break;
-						}
-						elseif($fileinfo['basename'] === 'plugin.php' || $fileinfo['basename'] === 'theme.php')
-						{
-							$dir = $fileinfo['dirname'];
-						}
-
-						//   $stat = $zip->statIndex( $i );
-						//    print_a( $stat['name']  );
-					}
-
-
-					$zip->extractTo(e_TEMP);
-					chmod(e_TEMP . $dir, 0755);
-
-					if(empty($dir) && deftrue('e_DEBUG'))
-					{
-						print_a($fileinfo);
-					}
-
-
-					$zip->close();
+					return $this->unzipFailed($localfile, "Couldn't open the archive. " . $this->zipOpenError($opened));
 				}
 
+				for($i = 0; $i < $zip->numFiles; $i++)
+				{
+					$fileinfo = pathinfo($zip->getNameIndex($i));
 
+					if($fileinfo['dirname'] === '.')
+					{
+						$dir = $fileinfo['basename'];
+						break;
+					}
+
+					if($fileinfo['basename'] === 'plugin.php' || $fileinfo['basename'] === 'theme.php')
+					{
+						$dir = $fileinfo['dirname'];
+					}
+				}
+
+				if(empty($dir) && deftrue('e_DEBUG'))
+				{
+					print_a($fileinfo);
+				}
+
+				$refusal = $this->unusableRootFolder($dir);
+
+				if($refusal === '' && $zip->locateName($dir) !== false)
+				{
+					$refusal = "Couldn't find the plugin or theme folder in the archive. Zip the folder itself, with nothing beside it at the top of the archive.";
+				}
+
+				if($refusal !== '')
+				{
+					return $this->unzipFailed($localfile, $refusal, false, $zip);
+				}
+
+				$extracted = $zip->extractTo(e_TEMP);
+				$zip->close();
 			}
 			else // Legacy Method.
 			{
 				require_once(e_HANDLER . "pclzip.lib.php");
 
 				$archive = new PclZip(e_TEMP . $localfile);
-				$unarc = ($fileList = $archive->extract(PCLZIP_OPT_PATH, e_TEMP, PCLZIP_OPT_SET_CHMOD, 0755)); // Store in TEMP first.
-				$dir = $this->getRootFolder($unarc);
+				$listing = $archive->listContent();
+
+				if(!is_array($listing))
+				{
+					return $this->unzipFailed($localfile, "Couldn't open the archive. " . $archive->errorInfo(true));
+				}
+
+				$dir = $this->getRootFolder($listing);
+				$refusal = $this->unusableRootFolder($dir);
+
+				if($refusal !== '')
+				{
+					return $this->unzipFailed($localfile, $refusal);
+				}
+
+				$extracted = is_array($archive->extract(PCLZIP_OPT_PATH, e_TEMP, PCLZIP_OPT_SET_CHMOD, 0755)); // Store in TEMP first.
 			}
 
+			if($extracted === false || !is_dir(e_TEMP . $dir))
+			{
+				return $this->unzipFailed($localfile, "Couldn't unpack the archive into the temporary folder. It may be full, or not writable.", $dir);
+			}
+
+			chmod(e_TEMP . $dir, 0755);
 
 			$destpath = ($type == 'theme') ? e_THEME : e_PLUGIN;
-			//	$typeDiz 	= ucfirst($type);
+
+			if(is_dir($destpath . $dir))
+			{
+				if($overwrite !== true)
+				{
+					return $this->unzipFailed($localfile, "(" . ucfirst($type) . ") Already Downloaded - " . basename($destpath) . '/' . $dir, $dir);
+				}
+
+				if(file_exists(e_TEMP . $localfile) && rename($destpath . $dir, e_BACKUP . $dir . "_" . date("YmdHi")))
+				{
+					e107::getMessage()->addSuccess(ADLAN_195);
+				}
+			}
 
 			@copy(e_TEMP . $localfile, e_BACKUP . $dir . ".zip"); // Make a Backup in the system folder.
 
-			if($dir && is_dir($destpath . $dir))
+			if(rename(e_TEMP . $dir, $destpath . $dir) === false)
 			{
-				if($overwrite === true)
-				{
-					if(file_exists(e_TEMP . $localfile))
-					{
-						$time = date("YmdHi");
-						if(rename($destpath . $dir, e_BACKUP . $dir . "_" . $time))
-						{
-							$mes->addSuccess(ADLAN_195);
-						}
-					}
-				}
-				else
-				{
-
-					$mes->addError("(" . ucfirst($type) . ") Already Downloaded - " . basename($destpath) . '/' . $dir);
-
-					if(file_exists(e_TEMP . $localfile))
-					{
-						@unlink(e_TEMP . $localfile);
-					}
-
-					$this->removeDir(e_TEMP . $dir);
-
-					return false;
-				}
+				return $this->unzipFailed($localfile, "Couldn't Move " . e_TEMP . $dir . " to " . $destpath . $dir . " Folder", $dir);
 			}
 
+			@unlink(e_TEMP . $localfile);
+
+			return $dir;
+		}
+
+
+		/**
+		 * Says why $dir cannot name the archive's root folder, or '' when it can.
+		 *
+		 * @param string|false $dir
+		 * @return string
+		 */
+		private function unusableRootFolder($dir)
+		{
 			if(empty($dir))
 			{
-				$mes->addError("Couldn't detect the root folder in the zip."); //  flush();
-				@unlink(e_TEMP . $localfile);
-
-				return false;
+				return "Couldn't detect the root folder in the zip.";
 			}
 
-			if(is_dir(e_TEMP . $dir))
+			if($dir !== basename($dir) || $dir === '.' || $dir === '..')
 			{
-				$res = rename(e_TEMP . $dir, $destpath . $dir);
-				if($res === false)
-				{
-					$mes->addError("Couldn't Move " . e_TEMP . $dir . " to " . $destpath . $dir . " Folder"); //  flush(); usleep(50000);
-					@unlink(e_TEMP . $localfile);
+				return "Couldn't install the archive. Its root folder is not a plain folder name.";
+			}
 
-					return false;
-				}
+			return '';
+		}
 
 
-				//	$dir 		= basename($unarc[0]['filename']);
-				//	$plugPath	= preg_replace("/[^a-z0-9-\._]/", "-", strtolower($dir));
-				//$status = "Done"; // ADMIN_TRUE_ICON;
+		/**
+		 * Reports why {@see e_file::unzipArchive()} gave up and undoes what that attempt had done.
+		 *
+		 * @param string           $localfile - filename located in e_TEMP
+		 * @param string           $message
+		 * @param string|false     $dir       - folder unpacked into e_TEMP, where one was
+		 * @param ZipArchive|false $zip       - an archive still open, where there is one
+		 * @return false
+		 */
+		private function unzipFailed($localfile, $message, $dir = false, $zip = false)
+		{
+			if($zip instanceof ZipArchive)
+			{
+				$zip->close();
+			}
+
+			if(!empty($dir))
+			{
+				$this->removeDir(e_TEMP . $dir);
+			}
+
+			e107::getMessage()->addError($message);
+
+			if(!empty($localfile))
+			{
 				@unlink(e_TEMP . $localfile);
-
-				return $dir;
 			}
 
 			return false;
+		}
+
+
+		/**
+		 * Puts a failed {@see ZipArchive::open()} into words, falling back to its numeric code.
+		 *
+		 * @param int $status
+		 * @return string
+		 */
+		private function zipOpenError($status)
+		{
+			switch($status)
+			{
+				case ZipArchive::ER_NOENT:
+					return "The file is not there.";
+
+				case ZipArchive::ER_NOZIP:
+					return "The file is not a zip archive.";
+
+				case ZipArchive::ER_INCONS:
+					return "The archive is damaged.";
+
+				case ZipArchive::ER_OPEN:
+				case ZipArchive::ER_READ:
+					return "The file could not be read.";
+
+				default:
+					return "ZipArchive reported error " . (int) $status . ".";
+			}
 		}
 
 
