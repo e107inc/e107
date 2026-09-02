@@ -1944,7 +1944,7 @@ class themeHandler
 			{
 				if(is_numeric($field))
 				{
-					$text .= "<tr><td><b>".$val['caption']."</b>:</td><td colspan='2'>".$val['html']."<div class='field-help'>".$val['help']."</div></td></tr>";
+					$text .= "<tr><td><b>".$val['caption']."</b>:</td><td colspan='2'>".$val['html']."<div class='field-help'>".varset($val['help'])."</div></td></tr>";
 				}
 				else
 				{
