@@ -826,7 +826,7 @@ class links_admin_form_ui extends e_admin_form_ui
 			$owner = $this->getController()->getListModel()->get('link_owner');
 			$sef =  $this->getController()->getListModel()->get('link_sefurl');
 
-			if($curVal[0] !== '{' && substr($curVal,0,4) != 'http' && $mode == 'link_id')
+			if(substr($curVal, 0, 1) !== '{' && substr($curVal,0,4) != 'http' && $mode == 'link_id')
 			{
 				$curVal = '{e_BASE}'.$curVal;
 			}

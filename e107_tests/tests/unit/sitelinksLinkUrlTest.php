@@ -15,6 +15,11 @@ class sitelinksLinkUrlTest extends \Test\Unit
 {
 
 	/**
+	 * @var array every diagnostic the last quietly() raised
+	 */
+	private $diagnostics = array();
+
+	/**
 	 * makeLink() reads the $tp global that class2.php defines on a real
 	 * request and the suite's bootstrap does not.
 	 *
@@ -118,6 +123,47 @@ class sitelinksLinkUrlTest extends \Test\Unit
 	}
 
 	/**
+	 * Runs a renderer with the suite's error handler stood down, so what it
+	 * raises is collected in {@see sitelinksLinkUrlTest::$diagnostics} instead
+	 * of ending the test on the first one.
+	 *
+	 * @param callable $renderer
+	 * @return mixed whatever the renderer returned
+	 */
+	private function quietly($renderer)
+	{
+		$this->diagnostics = array();
+		$diagnostics = &$this->diagnostics;
+
+		set_error_handler(function ($severity, $message) use (&$diagnostics)
+		{
+			$diagnostics[] = $message;
+
+			return true;
+		});
+
+		try
+		{
+			return call_user_func($renderer);
+		}
+		finally
+		{
+			restore_error_handler();
+		}
+	}
+
+	/**
+	 * The suite's docroot raises cache diagnostics of its own, so only the
+	 * offset reads under test can be asserted on.
+	 *
+	 * @return array
+	 */
+	private function offsetDiagnostics()
+	{
+		return array_values(preg_grep('/offset/i', $this->diagnostics));
+	}
+
+	/**
 	 * @param array $row
 	 * @return string the markup makeLink() rendered for it
 	 */
@@ -185,5 +231,36 @@ class sitelinksLinkUrlTest extends \Test\Unit
 
 		self::assertStringEndsWith('e107_plugins/myplugin/myfile.php', (string) $sc->sc_nav_link_url(),
 			'the navigation shortcode has the same stored URL to fall back on');
+	}
+
+	public function testAHeadingRendersWithoutADiagnosticAndKeepsItsHref()
+	{
+		$row = self::headingRow();
+
+		$markup = $this->quietly(function () use ($row)
+		{
+			return $this->renderLink($row);
+		});
+
+		self::assertSame(array(), $this->offsetDiagnostics(),
+			'reading the first character of an empty URL is a diagnostic on every supported PHP');
+		self::assertSame(e_HTTP, self::href($markup),
+			"a heading has pointed at the site root for as long as there have been headings:\n".$markup);
+	}
+
+	public function testTheNavigationShortcodeReadsAHeadingWithoutADiagnostic()
+	{
+		$row = self::headingRow();
+
+		$this->quietly(function () use ($row)
+		{
+			$sc = e107::getScBatch('navigation');
+			$sc->setVars($row);
+
+			return $sc->sc_nav_link_url();
+		});
+
+		self::assertSame(array(), $this->offsetDiagnostics(),
+			'reading the first character of an empty URL is a diagnostic on every supported PHP');
 	}
 }
