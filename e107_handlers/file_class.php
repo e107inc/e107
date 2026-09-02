@@ -1312,7 +1312,7 @@ class e_file
 	private function curlResolveEntry($target)
 	{
 
-		if(empty($target['addresses']) || $this->hostLiteralIp($target['host']) !== false)
+		if($this->unpinnedTarget($target))
 		{
 			return false;
 		}
@@ -1321,7 +1321,7 @@ class e_file
 
 		foreach($target['addresses'] as $ip)
 		{
-			$addresses[] = (strpos($ip, ':') !== false) ? '[' . $ip . ']' : $ip;
+			$addresses[] = $this->addressAuthority($ip);
 		}
 
 		// Several addresses in one entry arrived in libcurl 7.59.0. An older
@@ -1733,52 +1733,57 @@ class e_file
 			return $this->socketHop($url, $target, $timeout);
 		}
 
-		$request = $this->pinnedRequest($url, $target);
+		return $this->walkOutboundAddresses($target, $timeout,
+			function($address, $seconds) use ($url, $target)
+			{
+				$request = $this->pinnedRequest($url, $address);
 
-		if($request === false)
-		{
-			$this->error = 'Refused to fetch URL with an unresolvable host, a non-HTTP(S) scheme or a private/reserved IP: ' . $url;
+				if($request === false)
+				{
+					$this->error = 'Refused to fetch URL with an unresolvable host, a non-HTTP(S) scheme or a private/reserved IP: ' . $url;
 
-			return false;
-		}
+					return false;
+				}
 
-		$context = array(
-			'http' => array(
-				'follow_location' => 0,
-				'max_redirects'   => 1,
-				'timeout'         => $timeout,
-			),
-			'ssl'  => array(
-				'verify_peer'      => true,
-				'verify_peer_name' => true,
-				'peer_name'        => $target['host'],
-			),
-		);
+				$context = array(
+					'http' => array(
+						'follow_location' => 0,
+						'max_redirects'   => 1,
+						'timeout'         => $seconds,
+					),
+					'ssl'  => array(
+						'verify_peer'      => true,
+						'verify_peer_name' => true,
+						'peer_name'        => $target['host'],
+					),
+				);
 
-		if($request['host'] !== '')
-		{
-			$context['http']['header'] = 'Host: ' . $request['host'];
-		}
+				if($request['host'] !== '')
+				{
+					$context['http']['header'] = 'Host: ' . $request['host'];
+				}
 
-		$fp = @fopen($request['url'], 'r', false, stream_context_create($context));
+				$fp = @fopen($request['url'], 'r', false, stream_context_create($context));
 
-		if($fp === false)
-		{
-			$this->error = 'Unable to fetch remote file: ' . $url;
+				if($fp === false)
+				{
+					$this->error = 'Unable to fetch remote file: ' . $url;
 
-			return false;
-		}
+					return false;
+				}
 
-		$meta = stream_get_meta_data($fp);
-		$body = stream_get_contents($fp);
-		fclose($fp);
+				$meta = stream_get_meta_data($fp);
+				$body = stream_get_contents($fp);
+				fclose($fp);
 
-		$headers = isset($meta['wrapper_data']) ? (array) $meta['wrapper_data'] : array();
+				$headers = isset($meta['wrapper_data']) ? (array) $meta['wrapper_data'] : array();
 
-		return array(
-			'result'   => $body,
-			'status'   => $this->headerStatus($headers),
-			'location' => $this->absoluteUrl($url, $this->headerValue($headers, 'location')),
+				return array(
+					'result'   => $body,
+					'status'   => $this->headerStatus($headers),
+					'location' => $this->absoluteUrl($url, $this->headerValue($headers, 'location')),
+				);
+			}
 		);
 	}
 
@@ -1801,11 +1806,6 @@ class e_file
 			return false;
 		}
 
-		// Connect to the address that passed the policy, not to whatever the
-		// name resolves to by the time the socket opens.
-		$peer = empty($target['addresses']) ? $target['host'] : $target['addresses'][0];
-		$peer = (strpos($peer, ':') !== false) ? '[' . $peer . ']' : $peer;
-
 		$transport = ($target['scheme'] === 'https') ? 'ssl://' : 'tcp://';
 		$context = stream_context_create(array(
 			'ssl' => array(
@@ -1815,8 +1815,20 @@ class e_file
 			),
 		));
 
-		$remote = @stream_socket_client($transport . $peer . ':' . $target['port'], $errno, $errstr, $timeout,
-			STREAM_CLIENT_CONNECT, $context);
+		$remote = $this->walkOutboundAddresses($target, $timeout,
+			function($address, $seconds) use ($target, $transport, $context)
+			{
+				// Connect to an address that passed the policy, not to whatever
+				// the name resolves to by the time the socket opens.
+				$peer = ($address === null) ? $target['host'] : $this->addressAuthority($address);
+
+				$errno  = 0;
+				$errstr = '';
+
+				return @stream_socket_client($transport . $peer . ':' . $target['port'], $errno, $errstr, $seconds,
+					STREAM_CLIENT_CONNECT, $context);
+			}
+		);
 
 		if($remote === false)
 		{
@@ -1863,18 +1875,92 @@ class e_file
 
 
 	/**
+	 * The first attempt at an address {@see e_file::resolveOutboundTarget()}
+	 * resolved that answers, so a name whose first address is dead is still
+	 * reached, as it was before the pin and as ext/curl still manages through
+	 * {@see e_file::curlResolveEntry()}.
+	 *
+	 * The addresses share the one deadline the hop was given rather than take
+	 * it each, so a multi-address name cannot multiply the caller's timeout,
+	 * and an address that answers leaves the error field as it found it.
+	 *
+	 * @param array    $target  as resolveOutboundTarget()
+	 * @param int      $timeout seconds for the walk as a whole
+	 * @param callable $attempt function($address, $seconds), $address being
+	 *                          null when there is nothing to pin, returning
+	 *                          false to move on to the next address
+	 * @return mixed the first attempt that is not false, or false
+	 */
+	private function walkOutboundAddresses($target, $timeout, $attempt)
+	{
+
+		if($this->unpinnedTarget($target))
+		{
+			return call_user_func($attempt, null, $timeout);
+		}
+
+		$deadline = microtime(true) + $timeout;
+		$error = $this->error;
+
+		foreach($target['addresses'] as $address)
+		{
+			$remaining = $deadline - microtime(true);
+
+			if($remaining <= 0)
+			{
+				break;
+			}
+
+			$result = call_user_func($attempt, $address, $remaining);
+
+			if($result !== false)
+			{
+				$this->error = $error;
+
+				return $result;
+			}
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * @param string $address
+	 * @return string the address as a URL authority, bracketed when it is IPv6
+	 */
+	private function addressAuthority($address)
+	{
+
+		return (strpos($address, ':') !== false) ? '[' . $address . ']' : $address;
+	}
+
+
+	/**
+	 * @param array $target as resolveOutboundTarget()
+	 * @return bool whether the request travels to the authority it arrived with
+	 */
+	private function unpinnedTarget($target)
+	{
+
+		return empty($target['addresses']) || $this->hostLiteralIp($target['host']) !== false;
+	}
+
+
+	/**
 	 * The URL a stream should open, and the Host header that goes with it, so
 	 * that the connection lands on an address the policy resolved.
 	 *
 	 * CURLOPT_RESOLVE has no stream equivalent: the address goes into the URL
 	 * and the name goes into the Host header and into the certificate check.
 	 *
-	 * @param string $url
-	 * @param array  $target as resolveOutboundTarget()
+	 * @param string      $url
+	 * @param string|null $address one of resolveOutboundTarget()'s addresses,
+	 *                             null when there is nothing to pin
 	 * @return array|false array('url', 'host'), 'host' being '' when nothing
 	 *                     needed rewriting
 	 */
-	private function pinnedRequest($url, $target)
+	private function pinnedRequest($url, $address)
 	{
 
 		$parts = @parse_url($url);
@@ -1884,13 +1970,12 @@ class e_file
 			return false;
 		}
 
-		if(empty($target['addresses']) || $this->hostLiteralIp($target['host']) !== false)
+		if($address === null)
 		{
 			return array('url' => $url, 'host' => '');
 		}
 
-		$address = $target['addresses'][0];
-		$address = (strpos($address, ':') !== false) ? '[' . $address . ']' : $address;
+		$address = $this->addressAuthority($address);
 
 		$host = $parts['host'];
 
@@ -3029,45 +3114,51 @@ class e_file
 			return false;
 		}
 
-		$request = $this->pinnedRequest($url, $target);
+		$status = $this->walkOutboundAddresses($target, 1,
+			function($address, $seconds) use ($url, $target)
+			{
+				$request = $this->pinnedRequest($url, $address);
 
-		if($request === false)
-		{
-			return false;
-		}
+				if($request === false)
+				{
+					return false;
+				}
 
-		$http = array(
-			'follow_location' => 0,
-			'max_redirects'   => 1,
-			'ignore_errors'   => true,
-			'timeout'         => 1,
+				$http = array(
+					'follow_location' => 0,
+					'max_redirects'   => 1,
+					'ignore_errors'   => true,
+					'timeout'         => $seconds,
+				);
+
+				if($request['host'] !== '')
+				{
+					$http['header'] = 'Host: ' . $request['host'];
+				}
+
+				$context = stream_context_create(array(
+					'http' => $http,
+					'ssl'  => array(
+						'verify_peer'      => true,
+						'verify_peer_name' => true,
+						'peer_name'        => $target['host'],
+					),
+				));
+
+				$stream = @fopen($request['url'], 'r', false, $context);
+
+				if($stream === false)
+				{
+					return false;
+				}
+
+				$meta    = stream_get_meta_data($stream);
+				$headers = isset($meta['wrapper_data']) && is_array($meta['wrapper_data']) ? $meta['wrapper_data'] : array();
+				fclose($stream);
+
+				return $this->headerStatus($headers);
+			}
 		);
-
-		if($request['host'] !== '')
-		{
-			$http['header'] = 'Host: ' . $request['host'];
-		}
-
-		$context = stream_context_create(array(
-			'http' => $http,
-			'ssl'  => array(
-				'verify_peer'      => true,
-				'verify_peer_name' => true,
-				'peer_name'        => $target['host'],
-			),
-		));
-
-		$headers = array();
-		$stream  = @fopen($request['url'], 'r', false, $context);
-
-		if($stream !== false)
-		{
-			$meta    = stream_get_meta_data($stream);
-			$headers = isset($meta['wrapper_data']) && is_array($meta['wrapper_data']) ? $meta['wrapper_data'] : array();
-			fclose($stream);
-		}
-
-		$status = $this->headerStatus($headers);
 
 		return ($status === 200 || $status === 302);
 	}
