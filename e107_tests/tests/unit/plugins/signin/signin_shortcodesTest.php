@@ -91,9 +91,9 @@ class signin_shortcodesTest extends \Test\Unit
 	public function testTheUsernameFieldIsNamedForEveryEmailLoginSetting()
 	{
 		$names = array(
-			0 => LAN_LOGINMENU_1,
-			1 => LAN_LOGINMENU_49,
-			2 => LAN_LOGINMENU_50,
+			0 => LAN_SIGNIN_USERNAME,
+			1 => LAN_SIGNIN_EMAIL,
+			2 => LAN_SIGNIN_USEREMAIL,
 		);
 
 		foreach($names as $pref => $name)
@@ -112,7 +112,95 @@ class signin_shortcodesTest extends \Test\Unit
 	{
 		e107::getConfig()->remove('allowEmailLogin');
 
-		$this->assertUsernameFieldIsNamed(LAN_LOGINMENU_1, 'allowEmailLogin absent');
+		$this->assertUsernameFieldIsNamed(LAN_SIGNIN_USERNAME, 'allowEmailLogin absent');
+	}
+
+	/**
+	 * Every string the batch renders has to come from the plugin's own language
+	 * file, because signin installs without login_menu and a name borrowed from
+	 * another plugin is undefined the moment that plugin is not on disk.
+	 */
+	public function testTheRenderedStringsComeFromTheSigninLanguageFile()
+	{
+		$path = e_PLUGIN.'signin/languages/English/English_front.php';
+
+		self::assertFileExists($path);
+
+		$strings = include($path);
+
+		self::assertIsArray($strings, $path.' has to return its strings as an array');
+
+		$used = array(
+			'LAN_SIGNIN_USERNAME',
+			'LAN_SIGNIN_EMAIL',
+			'LAN_SIGNIN_USEREMAIL',
+			'LAN_SIGNIN_SIGNIN',
+			'LAN_SIGNIN_SIGNUP',
+			'LAN_SIGNIN_REMEMBER',
+			'LAN_SIGNIN_FPW',
+			'LAN_SIGNIN_RESEND',
+			'LAN_SIGNIN_PROFILE',
+			'LAN_SIGNIN_ADMIN',
+			'LAN_SIGNIN_MAINTENANCE',
+		);
+
+		foreach($used as $name)
+		{
+			self::assertArrayHasKey($name, $strings);
+			self::assertSame($strings[$name], defset($name), $name.' has to be defined from this file');
+		}
+	}
+
+	/**
+	 * The bundled template carries the strings as {LAN=...} tokens, so a name
+	 * that no language file defines renders as nothing at all rather than
+	 * announcing itself.
+	 */
+	public function testTheBundledFormResolvesEveryLanguageToken()
+	{
+		$html = e107::getParser()->parseTemplate(e107::getTemplate('signin', 'signin', 'signin'), true, $this->sc);
+
+		self::assertStringContainsString(LAN_SIGNIN_SIGNIN, $html);
+		self::assertStringContainsString(LAN_SIGNIN_REMEMBER, $html);
+		self::assertStringContainsString(LAN_SIGNIN_FPW, $html);
+		self::assertStringContainsString(LAN_SIGNIN_RESEND, $html);
+	}
+
+	/**
+	 * The menu a member sees is the other half of the same template, and its two
+	 * remaining names sit in a wrapper each, which is markup no page renders
+	 * until the shortcode inside it answers.
+	 */
+	public function testTheSignedInMenuResolvesEveryLanguageToken()
+	{
+		$tp = e107::getParser();
+		$html = $tp->parseTemplate(e107::getTemplate('signin', 'signin', 'signout'), true, $this->sc);
+
+		self::assertStringContainsString(LAN_SIGNIN_PROFILE, $html);
+
+		$wrapper = e107::getRegistry('templates/wrapper/signin');
+
+		$wrapped = array(
+			array($wrapper['signin']['SIGNIN_SIGNUP_HREF'], LAN_SIGNIN_SIGNUP),
+			array($wrapper['signout']['SIGNIN_ADMIN_HREF'], LAN_SIGNIN_ADMIN),
+		);
+
+		foreach($wrapped as $case)
+		{
+			list($markup, $name) = $case;
+
+			self::assertStringContainsString($name, $tp->parseTemplate($markup, true, $this->sc), $markup);
+		}
+	}
+
+	/**
+	 * The field itself is named from core's own string, so the label beside it
+	 * has no business carrying a second translation of the same word.
+	 */
+	public function testThePasswordLabelIsTheStringTheFieldAlreadyUses()
+	{
+		self::assertSame(LAN_PASSWORD, $this->sc->sc_signin_password_label());
+		self::assertStringContainsString(">".LAN_PASSWORD."</label>", $this->sc->sc_signin_input_password());
 	}
 
 	/** Builds the batch against the pref as it stands, then reads the rendered field. */
