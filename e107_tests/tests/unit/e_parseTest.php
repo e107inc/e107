@@ -2659,6 +2659,66 @@ EXPECTED;
 		$this->assertSame($expected, $result);
 	}
 
+	/**
+	 * srcset and the src path are out of this contract: toImage() builds both itself and they already carry &amp;.
+	 */
+	public function testToImageAttributeInjection()
+	{
+		$src = '{e_PLUGIN}gallery/images/butterfly.jpg';
+		$breakout = '" onload="alert(1)';
+
+		$parm = array(
+			'w'       => 0,
+			'h'       => 0,
+			'id'      => 'x'.$breakout,
+			'class'   => 'x'.$breakout,
+			'alt'     => 'x'.$breakout,
+			'style'   => 'width:1px;'.$breakout,
+			'title'   => 'x'.$breakout,
+			'loading' => 'lazy'.$breakout,
+			'width'   => '1'.$breakout,
+			'height'  => '1'.$breakout,
+		);
+
+		$result = $this->tp->toImage($src, $parm);
+		$result = preg_replace('/"([^"]*)thumb.php/', '"thumb.php', $result);
+
+		$expected = '<img id="x&quot; onload=&quot;alert(1)" class="x&quot; onload=&quot;alert(1)"'
+			.' src="thumb.php?src=e_PLUGIN%2Fgallery%2Fimages%2Fbutterfly.jpg&amp;w=0&amp;h=0"'
+			.' alt="x&quot; onload=&quot;alert(1)"'
+			.' width="1&quot; onload=&quot;alert(1)" height="1&quot; onload=&quot;alert(1)"'
+			.' style="width:1px;&quot; onload=&quot;alert(1)"'
+			.' loading="lazy&quot; onload=&quot;alert(1)"'
+			.' title="x&quot; onload=&quot;alert(1)"  />';
+
+		self::assertSame($expected, $result);
+		self::assertStringNotContainsString($breakout, $result);
+	}
+
+	/**
+	 * The sink encodes what it is given; it does not validate it, and it does not encode it twice.
+	 */
+	public function testToImageKeepsLegacyAttributeValues()
+	{
+		$src = '{e_PLUGIN}gallery/images/butterfly.jpg';
+
+		$parm = array(
+			'w'      => 0,
+			'h'      => 0,
+			'class'  => 'salt &amp; pepper',
+			'title'  => "Ben&#039;s",
+			'width'  => '50%',
+			'height' => 'auto',
+		);
+
+		$result = $this->tp->toImage($src, $parm);
+
+		self::assertStringContainsString('class="salt &amp; pepper"', $result);
+		self::assertStringContainsString('title="Ben&#039;s"', $result);
+		self::assertStringContainsString('width="50%"', $result);
+		self::assertStringContainsString('height="auto"', $result);
+	}
+
 	public function testThumbSrcSet()
 	{
 		$src = "{e_PLUGIN}gallery/images/butterfly.jpg";
