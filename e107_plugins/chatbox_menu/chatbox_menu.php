@@ -166,10 +166,12 @@ else
 {
 	$cb_width = (defined('CBWIDTH') ? CBWIDTH : '');
 
+	$action = $tp->toUrlAttribute(e_REQUEST_URL);
+
 	if(varset($pref['cb_layer']) === 2)
 	{
 
-		$texta = "\n<form id='chatbox' action='" . e_SELF . '?' . e_QUERY . "'  method='post' onsubmit='return(false);'>
+		$texta = "\n<form id='chatbox' action='" . $action . "'  method='post' onsubmit='return(false);'>
 		<div>
 			<input type='hidden' name='chatbox_ajax' id='chatbox_ajax' value='1' />
 		</div>";
@@ -178,9 +180,7 @@ else
 	else
 	{
 
-		$texta = (e_QUERY
-			? "\n<form id='chatbox' method='post' action='" . e_SELF . '?' . e_QUERY . "'>"
-			: "\n<form id='chatbox' method='post' action='" . e_SELF . "'>");
+		$texta = "\n<form id='chatbox' method='post' action='" . $action . "'>";
 	}
 
 	$texta .= "<div class='control-group form-group' id='chatbox-input-block'>";
