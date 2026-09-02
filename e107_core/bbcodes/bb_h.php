@@ -31,6 +31,8 @@ class bb_h extends e_bb_base
 		$parms = $bparms[2];
 		unset($bparms);
 		
+		$safe = array();
+
 		if(!empty($parms['class']))
 		{
 			$safe['class'] = eHelper::secureClassAttr($parms['class']);
