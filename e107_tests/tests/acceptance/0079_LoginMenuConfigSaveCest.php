@@ -19,37 +19,30 @@
  */
 class LoginMenuConfigSaveCest
 {
-	/**
-	 * Registered in Extension\WorkspaceCleanup so a crashed run does not leave
-	 * it in the docroot.
-	 */
-	const PROBE_FILE = 'e107_tests_login_menu_prefs_probe.php';
-
 	const CONFIG_PATH = '/e107_plugins/login_menu/config.php';
 
 	/** The statistics rows render only for an installed core plugin, and this is the one a stock docroot can gain cheaply. */
 	const STATS_PLUGIN = 'chatbox_menu';
 
-	/**
-	 * Flat keys the lastseen menu reads off the shared row, as the probe's
-	 * seed action stores them.
-	 */
+	/** Flat keys the lastseen menu reads off the shared row, as this Cest seeds them. */
 	const SIBLING_PREFS = array(
 		'online_ls_amount'  => '15',
 		'online_ls_caption' => 'e107 tests last seen',
 	);
 
+	/** Everything on the shared row this Cest may disturb: the siblings above, and the subtree the screen owns. */
+	const OWNED_PREFS = array('online_ls_amount', 'online_ls_caption', 'login_menu');
+
 	public function _before(AcceptanceTester $I)
 	{
-		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
 		$I->resetAllCookies();
 		$I->loginAsAdmin();
 	}
 
 	public function _after(AcceptanceTester $I)
 	{
-		$this->probe($I, 'teardown');
-		$I->deleteAppFile(self::PROBE_FILE);
+		$I->restoreMenuPrefs();
+		$I->dropMenuPrefProbe();
 		$I->dropPluginInstall(self::STATS_PLUGIN);
 		$I->dropPluginProbe();
 	}
@@ -58,11 +51,11 @@ class LoginMenuConfigSaveCest
 	{
 		$I->wantTo('save the login menu configuration without losing another menu\'s settings');
 
-		$this->probe($I, 'seed');
+		$this->seedMenuRow($I);
 
 		$this->saveConfig($I, array('pref' => array('new_news' => '1')));
 
-		$menu = $this->grabMenuRow($I);
+		$menu = $I->grabMenuPrefs();
 		$login = isset($menu['login_menu']) ? $menu['login_menu'] : array();
 
 		$I->assertSame('1', isset($login['new_news']) ? $login['new_news'] : null,
@@ -79,14 +72,14 @@ class LoginMenuConfigSaveCest
 	{
 		$I->wantTo('see the save store only the keys the screen owns');
 
-		$this->probe($I, 'seed');
+		$this->seedMenuRow($I);
 
 		$this->saveConfig($I, array('pref' => array(
 			'new_news' => '1',
 			'smuggled' => 'stored',
 		)));
 
-		$menu = $this->grabMenuRow($I);
+		$menu = $I->grabMenuPrefs();
 		$login = isset($menu['login_menu']) ? $menu['login_menu'] : array();
 
 		$I->assertSame('1', isset($login['new_news']) ? $login['new_news'] : null,
@@ -105,7 +98,7 @@ class LoginMenuConfigSaveCest
 	{
 		$I->wantTo('see the box I just ticked come back ticked');
 
-		$this->probe($I, 'seed');
+		$this->seedMenuRow($I);
 		$I->havePluginInstalled(self::STATS_PLUGIN);
 
 		$this->saveConfig($I, array(
@@ -115,7 +108,7 @@ class LoginMenuConfigSaveCest
 
 		$form = $I->grabPageSource();
 
-		$menu = $this->grabMenuRow($I);
+		$menu = $I->grabMenuPrefs();
 		$login = isset($menu['login_menu']) ? $menu['login_menu'] : array();
 
 		$I->assertSame(self::STATS_PLUGIN, isset($login['external_stats']) ? $login['external_stats'] : null,
@@ -148,118 +141,15 @@ class LoginMenuConfigSaveCest
 	}
 
 	/**
-	 * The shared `menu` preference row, read back in a fresh process.
+	 * The row as this Cest needs it before a save: the sibling menu's settings,
+	 * and one key inside the subtree the screen owns.
 	 *
 	 * @param AcceptanceTester $I
-	 * @return array
+	 * @return void
 	 */
-	private function grabMenuRow(AcceptanceTester $I)
+	private function seedMenuRow(AcceptanceTester $I)
 	{
-		$body = $this->probe($I, 'menu');
-
-		if(!preg_match('/PROBE_OK (.+)/', $body, $matches))
-		{
-			throw new RuntimeException('The probe published no menu preferences: '.trim($body));
-		}
-
-		$row = json_decode($matches[1], true);
-
-		return is_array($row) ? $row : array();
-	}
-
-	/**
-	 * @param AcceptanceTester $I
-	 * @param string $query
-	 * @return string probe output
-	 */
-	private function probe(AcceptanceTester $I, $query)
-	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?act='.$query);
-
-		$body = $I->grabPageSource();
-
-		if(strpos($body, 'PROBE_OK') === false)
-		{
-			throw new RuntimeException('Preference probe failed for "'.$query.'": '.trim(strip_tags($body)));
-		}
-
-		return $body;
-	}
-
-	/**
-	 * @return string
-	 */
-	private function probeSource()
-	{
-		return <<<'PHP'
-<?php
-// Fixture for 0079_LoginMenuConfigSaveCest. Removed again in the Cest's _after().
-$_E107['allow_guest'] = true;
-require_once(__DIR__.'/class2.php');
-header('Content-Type: text/plain');
-
-// The `menu` row is shared with every other menu, so seeding it has to be
-// undoable: these are the branches the seed and the save under test both write.
-$owned = array('online_ls_amount', 'online_ls_caption', 'login_menu');
-
-$seed = array(
-	'online_ls_amount'     => '15',
-	'online_ls_caption'    => 'e107 tests last seen',
-	'login_menu/new_forum' => '1',
-);
-
-$backupKey = 'e107_tests_6069_backup';
-
-$config = e107::getConfig('menu');
-$act = isset($_GET['act']) ? $_GET['act'] : 'menu';
-
-if($act === 'seed')
-{
-	$backup = array();
-	foreach($owned as $name)
-	{
-		$found = $config->getPref($name);
-		if($found !== null)
-		{
-			$backup[$name] = $found;
-		}
-	}
-	foreach($seed as $name => $value)
-	{
-		$config->setPref($name, $value);
-	}
-	$config->setPref($backupKey, $backup)->save(false, true, false);
-	echo "PROBE_OK seed\n";
-	return;
-}
-
-if($act === 'teardown')
-{
-	$backup = $config->getPref($backupKey);
-	if($backup === null)
-	{
-		// The seed never ran, so the row holds nothing this test put there.
-		echo "PROBE_OK teardown\n";
-		return;
-	}
-
-	foreach($owned as $name)
-	{
-		if(array_key_exists($name, $backup))
-		{
-			$config->setPref($name, $backup[$name]);
-		}
-		else
-		{
-			$config->removePref($name);
-		}
-	}
-	$config->removePref($backupKey)->save(false, true, false);
-	echo "PROBE_OK teardown\n";
-	return;
-}
-
-echo "PROBE_OK ".json_encode($config->getPref())."\n";
-PHP;
+		$I->haveMenuPrefs(self::OWNED_PREFS,
+			array_merge(self::SIBLING_PREFS, array('login_menu/new_forum' => '1')));
 	}
 }
