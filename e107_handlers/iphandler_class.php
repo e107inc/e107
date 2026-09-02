@@ -1386,6 +1386,7 @@ class banlistManager
 		{
 			while ($row = $sql->fetch())
 			{
+				$encodedAddress = $this->trimWildcard($this->encodeBanAddress($row['banlist_ip']));
 				$row['banlist_ip'] = $this->trimWildcard($row['banlist_ip']);
 				if ($row['banlist_ip'] == '') continue;								// Ignore empty IP addresses
 				if ($ipManager->whatIsThis($row['banlist_ip']) != 'ip') continue;		// Ignore non-numeric IP Addresses
@@ -1397,7 +1398,7 @@ class banlistManager
 					{
 						case 'ip' :
 							// IP_address	action	expiry_time additional_parameters
-							$line = $row['banlist_ip'].' '.$row['banlist_bantype'].' '.$row['banlist_banexpires']."\n";
+							$line = $encodedAddress.' '.$row['banlist_bantype'].' '.$row['banlist_banexpires']."\n";
 							break;
 						case 'htaccess' :
 							$line = (($row['banlist_bantype'] > 0) ? 'allow from ' : 'deny from ').$row['banlist_ip']."\n";
@@ -1428,6 +1429,25 @@ class banlistManager
 			copy($oldName, $newName);
 			unlink($oldName);
 		}
+	}
+
+
+	/**
+	 * Ban file form of a stored address: dotted IPv4 whose whole-octet wildcards run to the end, through {@see eIPHandler::ipEncode()}; anything else as stored.
+	 *
+	 * @param string $ip
+	 * @return string
+	 */
+	private function encodeBanAddress($ip)
+	{
+		$ip = trim($ip);
+		$wildcard = strpos($ip, '*');
+		if ($wildcard === FALSE) return $ip;
+		if ($wildcard === 0 || $ip[$wildcard - 1] !== '.') return $ip;
+		if (trim((string) substr($ip, $wildcard), '*.') !== '') return $ip;
+		if (filter_var(str_replace('*', '0', $ip), FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) === FALSE) return $ip;
+		$encoded = e107::getIPHandler()->ipEncode($ip, TRUE);
+		return $encoded === FALSE ? $ip : $encoded;
 	}
 
 
