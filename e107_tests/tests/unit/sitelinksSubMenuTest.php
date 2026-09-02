@@ -114,11 +114,13 @@ class sitelinksSubMenuTest extends \Test\Unit
 	/**
 	 * @param string $render statements that echo the markup between the markers
 	 * @param array $linklist the array to hand the renderer as $linklist
+	 * @param string $prelude statements to run before class2.php, for constants a theme would otherwise define
 	 * @return string the markup the subprocess produced
 	 */
-	private function render($render, $linklist = null)
+	private function render($render, $linklist = null, $prelude = '')
 	{
 		$php  = "error_reporting(E_ALL); ini_set('display_errors', 1); ";
+		$php .= $prelude;
 		$php .= "\$_E107 = array('cli' => true); ";
 		$php .= "require_once('".addslashes(APP_PATH.'/class2.php')."'); ";
 		$php .= "\$linklist = ".var_export($linklist === null ? self::stockShape() : $linklist, true)."; ";
@@ -286,5 +288,27 @@ class sitelinksSubMenuTest extends \Test\Unit
 			"the loop must not reopen the menu it started in:\n".$markup);
 		self::assertSame(1, substr_count($markup, "id='sub_11'"),
 			"and must not reopen the one below it either:\n".$markup);
+	}
+
+	/**
+	 * get() refills eLinkList from the database, so unlike its neighbours this
+	 * runs on the deployed navigation, whose first head link 'Home' has nothing
+	 * under it. LINKCLASS_HILITE takes get() off both sides of its cache, and
+	 * E_ALL goes back after class2.php masks E_NOTICE for the CLI, because
+	 * below PHP 7.2 count(null) is a silent zero and the undefined-index notice
+	 * is all that separates the fixed source from the unfixed one.
+	 */
+	public function testDisplayModeThreeRendersAHeadLinkWithNoSubmenu()
+	{
+		$markup = $this->render(
+			"error_reporting(E_ALL); ".$this->echoing("e107::getSitelinks()->get(1)"),
+			array(),
+			"define('LINKDISPLAY', 3); define('LINKCLASS_HILITE', 'active'); "
+		);
+
+		self::assertStringContainsString('Home', $markup,
+			"the head link with no submenu is the one this mode renders:\n".$markup);
+		self::assertStringNotContainsString('sub_1', $markup,
+			"a bucket getlinks() never built must not be read:\n".$markup);
 	}
 }
