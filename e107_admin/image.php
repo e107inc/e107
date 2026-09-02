@@ -3860,8 +3860,8 @@ if (isset($_POST['check_avatar_sizes']))
 	//
 	$iUserCount = $sql->createQueryBuilder()->from('user')->count();
 	$found = false;
-	$allowedWidth = (int) $pref['im_width'];
-	$allowedHeight = (int) $pref['im_width'];
+	$allowedWidth = (int) vartrue($pref['im_width'], 100);
+	$allowedHeight = (int) vartrue($pref['im_height'], 100);
 	$avatarUsers = $sql->createQueryBuilder()
 		->select('*')->from('user')
 		->where('user_image', '!=', '')
