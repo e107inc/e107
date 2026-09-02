@@ -26,28 +26,30 @@ $frm = e107::getForm();
 
 if (isset($_POST['update_menu']))
 {
-	$temp = array();
-	foreach($_POST as $key=>$value)
-	{
-		if ($value != LAN_UPDATE)
-		{
-			$temp[$key] = $value;
-		}
-	}
+	$temp = array_intersect_key($_POST, array_flip(array(
+		'online_caption',
+		'online_ls_caption',
+		'online_ls_amount',
+		'online_show_guests',
+		'online_show_memberlist',
+		'online_show_memberlist_extended',
+	)));
 
 	$menu_pref = e107::getConfig('menu')->getPref();
 
 	if (e107::getLog()->logArrayDiffs($temp,$menu_pref,'MISC_02'))
 	{
 		$menuPref = e107::getConfig('menu');
-		//e107::getConfig('menu')->setPref('', $menu_pref);
-		//e107::getConfig('menu')->save(false, true, false);
 		foreach ($temp as $k => $v)
 		{
 			$menuPref->setPref($k, $v);
 		}
 		$menuPref->save(false, true, false);
 		$mes->addSuccess(LAN_SAVED);
+	}
+	else
+	{
+		$mes->addInfo(LAN_SETTINGS_NOT_SAVED_NO_CHANGES_MADE);
 	}
 	//$ns->tablerender('', "<div style='text-align:center'><b>".LAN_UPDATED.'</b></div>');
 	//e107::getRender()->tablerender(null, $mes->render() );
