@@ -27,6 +27,9 @@ class LoginMenuConfigSaveCest
 
 	const CONFIG_PATH = '/e107_plugins/login_menu/config.php';
 
+	/** The statistics rows render only for an installed core plugin, and this is the one a stock docroot can gain cheaply. */
+	const STATS_PLUGIN = 'chatbox_menu';
+
 	/**
 	 * Flat keys the lastseen menu reads off the shared row, as the probe's
 	 * seed action stores them.
@@ -47,6 +50,8 @@ class LoginMenuConfigSaveCest
 	{
 		$this->probe($I, 'teardown');
 		$I->deleteAppFile(self::PROBE_FILE);
+		$I->dropPluginInstall(self::STATS_PLUGIN);
+		$I->dropPluginProbe();
 	}
 
 	public function savingTheLoginMenuKeepsEveryOtherMenusPreferences(AcceptanceTester $I)
@@ -94,6 +99,32 @@ class LoginMenuConfigSaveCest
 			array('external_links', 'external_stats', 'new_comments', 'new_members', 'new_news'),
 			$keys,
 			'The login_menu subtree must hold exactly the five keys the screen owns.');
+	}
+
+	public function savingAStatisticsCheckboxTicksItOnTheFormThatComesBack(AcceptanceTester $I)
+	{
+		$I->wantTo('see the box I just ticked come back ticked');
+
+		$this->probe($I, 'seed');
+		$I->havePluginInstalled(self::STATS_PLUGIN);
+
+		$this->saveConfig($I, array(
+			'pref'           => array('new_news' => '1'),
+			'external_stats' => array(self::STATS_PLUGIN => '1'),
+		));
+
+		$form = $I->grabPageSource();
+
+		$menu = $this->grabMenuRow($I);
+		$login = isset($menu['login_menu']) ? $menu['login_menu'] : array();
+
+		$I->assertSame(self::STATS_PLUGIN, isset($login['external_stats']) ? $login['external_stats'] : null,
+			'The save must have landed for the next assertion to mean anything.');
+
+		$I->assertStringContainsString(
+			'name="external_stats['.self::STATS_PLUGIN.']" value="1" checked="checked"',
+			$form,
+			'The form returned by the save must show the statistics box ticked, or the next save writes the pre-save state back.');
 	}
 
 	// -----------------------------------------------------------------
