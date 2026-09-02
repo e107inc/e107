@@ -26,10 +26,9 @@
  * be protected, not that the plugin protects it.
  *
  * Storing a file is not the route that matters on a site that already has one,
- * and pm.php's send handler cannot be reached by a stock browser at all: it
- * gates the attachment branch on $_POST['uploaded'] and no shipped form emits
- * that field. installingThePluginProtectsAttachmentsAlreadyOnDisk drives the
- * route such a site does take, the plugin manager's own install and upgrade.
+ * where every attachment predates the rules and no member need ever send
+ * another. installingThePluginProtectsAttachmentsAlreadyOnDisk drives the route
+ * such a site does take, the plugin manager's own install and upgrade.
  *
  * Declared gap: a deny rule stops Apache, not e107's own PHP file servers.
  * thumb.php re-serves any readable image under e_MEDIA (e_thumbnail::checkSrc
@@ -289,9 +288,8 @@ class PmAttachmentStorageCest
 	 * the one they already sent is protected, and the sites holding exposed
 	 * files are the ones whose members are not sending any.
 	 *
-	 * pm.php gates processAttachments() on $_POST['uploaded'], which no shipped
-	 * form emits, so the send route the other tests here drive is not one a stock
-	 * browser can reach at all. This one is.
+	 * The send route the other tests here drive reaches the same rules, but only
+	 * once somebody sends something. This one needs nobody.
 	 */
 	public function installingThePluginProtectsAttachmentsAlreadyOnDisk(AcceptanceTester $I)
 	{
@@ -377,12 +375,8 @@ class PmAttachmentStorageCest
 	/**
 	 * Send a PM carrying a real upload, through the real form.
 	 *
-	 * The shipped template offers a file field but posts no `uploaded` flag, so
-	 * pm.php's own send form never reaches processAttachments(). That is a
-	 * separate defect; a client decides what it posts, and this posts what the
-	 * handler reads. What the guard rules must not depend on is anybody posting
-	 * it, which is what installingThePluginProtectsAttachmentsAlreadyOnDisk is
-	 * for.
+	 * What the guard rules must not depend on is a message being sent at all,
+	 * which is what installingThePluginProtectsAttachmentsAlreadyOnDisk is for.
 	 *
 	 * A PDF rather than a text file because e107 vets uploads against
 	 * filetypes.xml, and the list the installer writes for members is
@@ -400,7 +394,6 @@ class PmAttachmentStorageCest
 			'pm_to'      => (string) $this->bob,
 			'pm_subject' => self::SUBJECT,
 			'pm_message' => 'see attached',
-			'uploaded'   => '1',
 			'e-token'    => $this->formToken($I),
 		), array(
 			'file_userfile' => array(
