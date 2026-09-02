@@ -228,6 +228,19 @@
 			$this->assertSame(array('themeHandlerTest_text' => 'legacy'), $legacy);
 		}
 
+		public function testRenderThemeConfigMarkupRowWithoutHelpText()
+		{
+			require_once(__DIR__ . '/fixtures/ThemeHandlerMarkupThemeConfig.php');
+
+			$this->th->id             = e107::getPref('sitetheme');
+			$this->th->themeConfigObj = new ThemeHandlerMarkupThemeConfig();
+
+			$text = $this->th->renderThemeConfig();
+
+			$this->assertSame(2, substr_count($text, "<div class='field-help'>"), 'both markup rows have to render a help block');
+			$this->assertStringContainsString("<div class='field-help'></div>", $text, "a markup row without help renders an empty help block, the way a field declaration without help already does");
+		}
+
 		public function testThemeConfigEmptyValueMirrorsRenderElement()
 		{
 			$frm    = e107::getForm();
