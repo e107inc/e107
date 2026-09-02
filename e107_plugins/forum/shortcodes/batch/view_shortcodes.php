@@ -1392,7 +1392,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		}
 		else
 		{
-			$value = (e107::getPlugPref('forum', 'quickreply', 'default') === 'default') ? LAN_FORUM_2007 : LAN_FORUM_2006;
+			$value = LAN_FORUM_2007;
 		}
 
 		return "<input type='submit' data-token='" . defset('e_TOKEN') . "' data-forum-insert='" . $ajaxInsert . "' data-forum-post='" . $this->var['thread_forum_id'] . "' data-forum-thread='" . $this->var['thread_id'] . "' data-forum-action='quickreply' name='reply' value='" . $value . "' class='btn btn-success button' />";
