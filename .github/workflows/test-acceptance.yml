@@ -2,7 +2,14 @@ name: Acceptance Tests
 
 on:
   push:
+    branches: [master, 'release/**']
   pull_request:
+
+# A newer push to a branch or pull request cancels the run it supersedes.
+# master is the exception: every merge commit there gets its full run.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
 
 # The acceptance suite runs on the same harness developers use locally
 # (e107_tests/bin/e107-tests), so a CI failure reproduces with two commands:

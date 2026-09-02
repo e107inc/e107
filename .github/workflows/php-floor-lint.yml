@@ -2,7 +2,14 @@ name: PHP Version Floor Lint
 
 on:
   push:
+    branches: [master, 'release/**']
   pull_request:
+
+# A newer push to a branch or pull request cancels the run it supersedes.
+# master is the exception: every merge commit there gets its full run.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
 
 # Asks the oldest PHP e107 supports to parse every file the release archive
 # will contain, which is the tracked tree minus the tooling paths listed in
