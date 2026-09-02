@@ -431,21 +431,27 @@
 		}
 
 		/**
-		 * Declared here rather than at the top of the file because Codeception
-		 * parses test files before e107 has defined e_pref.
+		 * Declares an e_pref subclass, in a string because Codeception parses test files before e107 has defined e_pref.
+		 *
+		 * @param string $class
+		 * @param string $body
+		 * @return void
 		 */
-		private function defineRaceProbe()
+		private function defineProbe($class, $body)
 		{
-			if(class_exists('e_pref_race_probe', false))
+			if(class_exists($class, false))
 			{
 				return;
 			}
 
+			eval('class ' . $class . ' extends e_pref {' . $body . '}');
+		}
+
+		private function defineRaceProbe()
+		{
 			// Lands another writer's row in between this object's read and its
 			// write, which is the window the compare-and-swap exists to close.
-			eval('
-				class e_pref_race_probe extends e_pref
-				{
+			$this->defineProbe('e_pref_race_probe', '
 					public $raceArmed = true;
 
 					protected function replayJournal(array $base)
@@ -465,7 +471,33 @@
 
 						return parent::replayJournal($base);
 					}
-				}
+			');
+		}
+
+		/**
+		 * Declares a probe that lands a different row before every attempt, so no write can name a value storage still holds and the retries run out.
+		 *
+		 * @return void
+		 */
+		private function defineConflictProbe()
+		{
+			$this->defineProbe('e_pref_conflict_probe', '
+					public $rivals = 0;
+
+					protected function replayJournal(array $base)
+					{
+						$this->rivals++;
+
+						$rival = $base;
+						$rival["rival"] = $this->rivals;
+
+						e107::getDb()->createQueryBuilder()->update("core")
+							->set("e107_value", e107::serialize($rival, false))
+							->where("e107_name", $this->prefid)
+							->execute();
+
+						return parent::replayJournal($base);
+					}
 			');
 		}
 
@@ -488,6 +520,29 @@
 			$this->assertSame('kept', $stored['ours']);
 			$this->assertSame('seed', $stored['shared']);
 			$this->assertFalse($pref->raceArmed, 'the race should have been run exactly once');
+		}
+
+		public function testSilentSaveKeepsAFailureOffTheScreen()
+		{
+			$this->defineConflictProbe();
+
+			$id = 'test_pref_conflict';
+			$this->openPref($id)->set('shared', 'seed')->save(false, true, false);
+
+			$pref = $this->openPref($id, 'e_pref_conflict_probe');
+			$pref->set('ours', 'lost');
+
+			$mes = e107::getMessage();
+			$mes->reset(false, false, true);
+
+			$saved = $pref->save(false, true, false);
+
+			$displayed = $mes->hasMessage(E_MESSAGE_ERROR, 'default', true) || $mes->hasMessage(E_MESSAGE_ERROR, $id, true);
+			$mes->reset(false, false, true);
+
+			$this->assertFalse($saved);
+			$this->assertSame(3, $pref->rivals, 'every attempt should have lost its race');
+			$this->assertFalse($displayed, 'a caller asking for no messages should not get a red block');
 		}
 
 	}
