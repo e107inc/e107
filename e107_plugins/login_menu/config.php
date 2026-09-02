@@ -36,7 +36,6 @@ e107::includeLan(e_PLUGIN.'login_menu/languages/'.e_LANGUAGE.'.php');
 require_once(e_ADMIN.'auth.php');
 
 require_once(e_PLUGIN.'login_menu/login_menu_class.php');
-$loginClass = new login_menu_class();
 $menuPref = e107::getConfig('menu');				// Pref object
 $loginPrefs = $menuPref->getPref('login_menu');		// Array of login-related values
 
@@ -100,6 +99,8 @@ if (isset($_POST['update_menu']))
 	$mes->addSuccess(LAN_SAVED);
 	$ns->tablerender("", $mes->render());
 }
+
+$loginClass = new login_menu_class();
 
 if (!isset($loginPrefs['new_news']))
 {	// Assume no prefs defined
