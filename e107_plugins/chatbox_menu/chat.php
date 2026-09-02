@@ -200,14 +200,14 @@ $text = $textstart . $textstring . $textend;
 if (CB_MOD) {
 
 	$text =
-		"<form method='post' action='" . e_SELF . "'>"
+		"<form method='post' action='" . $tp->toUrlAttribute(e_REQUEST_URL) . "'>"
 		. $text .
 		"<input type='submit' class='btn btn-danger btn-secondary button float-right pull-right' name='moderate' value='" . CHATBOX_L13 . "' />
 		</form>";
 
 }
 
-$parms = "{$chat_total},30,{$from}," . e_SELF . '?[FROM]';
+$parms = "{$chat_total},30,{$from}," . e_REQUEST_SELF . '?[FROM]';
 
 $text .= "<div class='nextprev'>" . $tp->parseTemplate("{NEXTPREV={$parms}}") . '</div>';
 
