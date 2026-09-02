@@ -2929,14 +2929,13 @@ class e107plugin
 		$config = eRouter::adminBuildConfig(e107::getPref('url_config'), $modules); // merge with current config
 		$locations = eRouter::adminBuildLocations($modules); // rebuild locations pref
 		$aliases = eRouter::adminSyncAliases(e107::getPref('url_aliases'), $config); // rebuild aliases
-			
-		// set new values, changes should be saved outside this methods
-	/*	e107::getConfig()
+
+		e107::getConfig()
 			->set('url_aliases', $aliases)
 			->set('url_config', $config)
 			->set('url_modules', $modules)
 			->set('url_locations', $locations);
-			*/
+
 		eRouter::clearCache();
 	}
 
