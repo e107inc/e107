@@ -59,25 +59,22 @@ if(!deftrue('BOOTSTRAP')) // test with 'jayya'
 }
 
 // include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum.php');
-if(!defined('IMAGE_new') && !defined('IMAGE_e'))
+foreach(array(
+	THEME.'templates/forum/forum_icons_template.php', // Preferred v2.x location.
+	THEME.'forum/forum_icons_template.php',
+	THEME.'forum_icons_template.php',
+) as $forumIconsTemplate)
 {
-	if (file_exists(THEME.'templates/forum/forum_icons_template.php')) // Preferred v2.x location.
+	if(file_exists($forumIconsTemplate))
 	{
-		require_once(THEME.'templates/forum/forum_icons_template.php');
-	}
-	elseif (file_exists(THEME.'forum/forum_icons_template.php'))
-	{
-		require_once(THEME.'forum/forum_icons_template.php');
-	}
-	elseif (file_exists(THEME.'forum_icons_template.php'))
-	{
-		require_once(THEME.'forum_icons_template.php');
-	}
-	else
-	{
-		require_once(e_PLUGIN.'forum/templates/forum_icons_template.php');
+		require_once($forumIconsTemplate);
+		break;
 	}
 }
+
+unset($forumIconsTemplate);
+
+require_once(e_PLUGIN.'forum/templates/forum_icons_template.php');
 
 class e107forum
 {
