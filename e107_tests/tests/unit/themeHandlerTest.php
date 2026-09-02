@@ -62,6 +62,11 @@
 			$this->assertSame(array(), $stored['themeHandlerTest_lanlist']);
 			$this->assertSame(array(), $stored['themeHandlerTest_layouts']);
 			$this->assertSame('', $stored['themeHandlerTest_dropdown']);
+
+			$markup = array_filter(array_keys(self::themeConfigFields()), 'is_numeric');
+
+			$this->assertNotSame(array(), array_diff($markup, array(0)), 'e_pref::setData() drops the key 0 on its own, so the declarations must carry a markup row past the first');
+			$this->assertSame(array(), array_filter(array_keys($stored), 'is_numeric'), 'a numeric-keyed row is raw markup, not a field declaration');
 		}
 
 		public function testSetThemeConfigMultilanFieldHoldingAString()
@@ -202,6 +207,22 @@
 			}
 		}
 
+		public function testEveryNumericKeyIsAMarkupRow()
+		{
+			$predicate = new ReflectionMethod('themeHandler', 'isThemeConfigMarkupRow');
+			$predicate->setAccessible(true);
+
+			foreach(array(0, 1, '0', '2', '0.5', '-1') as $markup)
+			{
+				$this->assertTrue($predicate->invoke(null, $markup), var_export($markup, true));
+			}
+
+			foreach(array('themeHandlerTest_text', 'caption', '') as $declaration)
+			{
+				$this->assertFalse($predicate->invoke(null, $declaration), var_export($declaration, true));
+			}
+		}
+
 		/**
 		 * Field declarations whose rendered input name decides which empty {@see themeHandler::setThemeConfig()} stores when the field is absent from the POST.
 		 *
@@ -253,7 +274,7 @@
 		}
 
 		/**
-		 * The theme configuration field declarations both save-path tests drive {@see themeHandler::setThemeConfig()} with.
+		 * The theme configuration rows both save-path tests drive {@see themeHandler::setThemeConfig()} with: the field declarations, and the numeric-keyed raw markup rows {@see themeHandler::renderThemeConfig()} writes out as they stand, the second of them carrying no help, as _blank's own second row does not.
 		 *
 		 * @return array
 		 */
@@ -269,6 +290,8 @@
 				'themeHandlerTest_lanlist' => array('title' => 'Lanlist', 'type' => 'lanlist', 'writeParms' => '__options[multiple]=1'),
 				'themeHandlerTest_layouts' => array('title' => 'Layouts', 'type' => 'layouts', 'writeParms' => array('multiple' => true)),
 				'themeHandlerTest_dropdown' => array('title' => 'Dropdown', 'type' => 'dropdown', 'writeParms' => array('one' => 'One')),
+				array('caption' => 'Markup', 'html' => "<input type='text' name='themeHandlerTest_raw' />", 'help' => ''),
+				array('caption' => 'More markup', 'html' => "<input type='text' name='themeHandlerTest_raw2' />"),
 			);
 		}
 

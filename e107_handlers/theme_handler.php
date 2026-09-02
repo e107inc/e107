@@ -1935,7 +1935,7 @@ class themeHandler
 
 			foreach ($var as $field=>$val)
 			{
-				if(is_numeric($field))
+				if(self::isThemeConfigMarkupRow($field))
 				{
 					$text .= "<tr><td><b>".$val['caption']."</b>:</td><td colspan='2'>".$val['html']."<div class='field-help'>".$val['help']."</div></td></tr>";
 				}
@@ -1991,6 +1991,11 @@ class themeHandler
 
 				foreach($fields as $field=>$data)
 				{
+					if(self::isThemeConfigMarkupRow($field))
+					{
+						continue;
+					}
+
 					if(!empty($data['multilan']))
 					{
 						if(!isset($values[$field]) || !is_array($values[$field]))
@@ -2028,6 +2033,17 @@ class themeHandler
 		}
 	}
 	
+	/**
+	 * Whether a row of a theme's theme_config::config() is raw markup rather than a field declaration: {@see themeHandler::renderThemeConfig()} writes such a row out as it stands and {@see themeHandler::setThemeConfig()} stores nothing for it.
+	 *
+	 * @param int|string $field key of the row in a theme's theme_config::config()
+	 * @return bool
+	 */
+	private static function isThemeConfigMarkupRow($field)
+	{
+		return is_numeric($field);
+	}
+
 	/**
 	 * The value stored for a theme configuration field absent from the POST; the types {@see e_form::renderElement()} posts as name[] get an empty array and every other type ''. A type whose picker always emits a hidden input (media) never goes absent, so it stays scalar.
 	 *
