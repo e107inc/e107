@@ -30,6 +30,12 @@
  * a dispatcher that declares neither $perm nor $access, so nothing else takes
  * up the slack.
  *
+ * The handler underneath this file has a defect of its own: the guard
+ * e_admin_controller_ui carried for a userclass batch handed the whole class
+ * row to checkClass() rather than its userclass_editclass, so it answered on
+ * whichever column came first rather than on the one that says who may manage
+ * a class, on every list in core that has such a batch.
+ *
  * Every refusal here is read back as a side effect: the user row, the
  * e107_generic rank rows, or the core preferences through a probe.
  * e_admin_dispatcher::checkAccess() rewrites the action to e403 and then
@@ -40,6 +46,7 @@
  * @see e107_admin/newspost.php  news_admin::$perm, the shape this map should take
  * @see e107_handlers/admin_ui.php  e_admin_dispatcher::checkAccess(), hasRouteAccess()
  * @see e107_handlers/user_handler.php  e_userperms, the permission code list
+ * @see e107_handlers/admin_ui.php  e_admin_controller_ui::_handleListBatch(), the userclass batch
  */
 class AdminRoutePermsCest
 {
@@ -61,6 +68,19 @@ class AdminRoutePermsCest
 
 	/** The same listing under its other action name, with its own batch trigger. */
 	const ROUTE_GRID = '/e107_admin/users.php?mode=main&action=grid';
+
+	/** Welcome messages: a userclass batch on another table, behind another permission. */
+	const ROUTE_WMESSAGE = '/e107_admin/wmessage.php?mode=main&action=list';
+
+	/**
+	 * Main Admin, whose userclass_editclass is itself, so only a main administrator manages it.
+	 *
+	 * @see e107_core/xml/default_install.xml the userclass_classes a stock site is installed with
+	 */
+	const BARRED_CLASS = 250;
+
+	/** PRIVATEMENU, whose userclass_editclass is 254, a class every administrator holds. */
+	const MANAGED_CLASS = 1;
 
 	/** An account awaiting activation, which is what the mass reset acts on. */
 	const PENDING_USER = 'p7rppending';
@@ -100,6 +120,7 @@ class AdminRoutePermsCest
 		'p7rpU3admin'    => 'U3',   // user ranks only
 		'p7rp4admin'     => '4',    // manage all user access and settings, but not admin perms
 		'p7rpPermsadmin' => '4.3',  // manage all users, and modify admin perms
+		'p7rpMadmin'     => 'M',    // welcome messages, and nothing on the user list at all
 	);
 
 	/** A second administrator, for the routes that act on somebody else's account. */
@@ -925,6 +946,56 @@ class AdminRoutePermsCest
 		$I->dontSeeElement('input[name="perms[]"]');
 	}
 
+	/**
+	 * The guard e_admin_controller_ui already carried for a userclass batch
+	 * hands the whole class row to e_user_model::checkClass(), which iterates
+	 * an array argument's values and returns false on the first non-numeric
+	 * empty one. userclass_icon is empty on every stock class, so the guard
+	 * answered no for every class and every caller who is not the main
+	 * administrator, and never reached userclass_editclass at all.
+	 *
+	 * The managed class therefore goes first and is the case that reds without
+	 * the fix: the guard used to refuse it. The barred class holds either way,
+	 * and is here so that a fix which merely inverted the guard would be caught.
+	 *
+	 * Welcome messages, not the user list: the guard is in the shared handler,
+	 * that page answers to 'M' rather than to a Users permission, and nothing
+	 * in users_admin_ui is in the way, so a refusal here is the handler's.
+	 *
+	 * What is asserted is the value the guard tests, not that gen_intdata is
+	 * closed. The guard covers the ucadd and ucaddall spellings; the untyped
+	 * gen_intdata__250 and the inline editor reach that column with no
+	 * per-value check at all, and a page that wants one has to say so, which is
+	 * the per-field authorisation hook this release does not carry.
+	 */
+	public function theUserclassBatchGuardTestsTheClassManagerAndNotTheWholeRow(AcceptanceTester $I)
+	{
+		$I->wantTo('Test userclass_editclass in the shared userclass batch guard');
+
+		$managed = $this->seedWelcomeMessage($I, 'p7rp-managed');
+		$barred = $this->seedWelcomeMessage($I, 'p7rp-barred');
+		$this->loginAsDelegatedAdmin($I, 'p7rpMadmin');
+
+		$this->sendBatch($I, self::ROUTE_WMESSAGE, 'ucadd__gen_intdata__'.self::MANAGED_CLASS,
+			$managed, 'e-multiselect');
+
+		$I->assertSame((string) self::MANAGED_CLASS,
+			(string) $I->grabFromDatabase('e107_generic', 'gen_intdata', array('gen_id' => $managed)),
+			'A userclass batch for a class this administrator manages did not run. The guard reads '
+			.'the whole class row instead of its userclass_editclass, and check_class() gives up on '
+			.'the row\'s empty userclass_icon, so it refuses every class to everybody but the main '
+			.'administrator.');
+
+		$this->sendBatch($I, self::ROUTE_WMESSAGE, 'ucadd__gen_intdata__'.self::BARRED_CLASS,
+			$barred, 'e-multiselect');
+
+		$I->assertSame('0',
+			(string) $I->grabFromDatabase('e107_generic', 'gen_intdata', array('gen_id' => $barred)),
+			'A batch put a welcome message behind class '.self::BARRED_CLASS.' for an administrator '
+			.'holding only M. userclass_editclass on that class is '.self::BARRED_CLASS.', which this '
+			.'account does not hold.');
+	}
+
 	// -----------------------------------------------------------------
 	// fixture
 	// -----------------------------------------------------------------
@@ -937,14 +1008,15 @@ class AdminRoutePermsCest
 	 * @param string $route
 	 * @param string $trigger etrigger_batch value
 	 * @param int $id row to apply it to
+	 * @param string $selection name of the checkbox column, which each list declares for itself
 	 * @return void
 	 */
-	private function sendBatch(AcceptanceTester $I, $route, $trigger, $id)
+	private function sendBatch(AcceptanceTester $I, $route, $trigger, $id, $selection = 'multiselect')
 	{
 		$this->postWithToken($I, $route, array(
 			'etrigger_batch'    => $trigger,
 			'e__execute_batch'  => 'Go',
-			'multiselect'       => array($id => $id),
+			$selection          => array($id => $id),
 		));
 	}
 
@@ -1159,6 +1231,24 @@ class AdminRoutePermsCest
 			'user_prefs'     => '',
 			'user_signature' => '',
 			'user_realm'     => '',
+		));
+	}
+
+	/**
+	 * Seed a welcome message, a record on another table whose visibility is a userclass batch.
+	 *
+	 * @param string $title
+	 * @return int gen_id
+	 */
+	private function seedWelcomeMessage(AcceptanceTester $I, $title)
+	{
+		return (int) $I->haveInDatabase('e107_generic', array(
+			'gen_type'      => 'wmessage',
+			'gen_datestamp' => 1262304000,
+			'gen_user_id'   => 1,
+			'gen_ip'        => $title,
+			'gen_intdata'   => 0,
+			'gen_chardata'  => $title,
 		));
 	}
 
