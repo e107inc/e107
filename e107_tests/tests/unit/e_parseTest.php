@@ -1321,13 +1321,15 @@ EXPECTED;
 
 	}
 
-	/*
-			public function testHtmlwrap()
-			{
-				$html = "<div><p>My paragraph <b>bold</b></p></div>";
+	public function testHtmlwrapKeepsATagWhoseAttributeQuoteIsNeverClosed()
+	{
+		$tag = '<a href="' . str_repeat('a', 40) . '>';
 
-				$result = $this->tp->htmlwrap($html, 20);
-			}*/
+		self::assertStringContainsString($tag, $this->tp->htmlwrap($tag . ' tail', 20),
+			'htmlwrap() ends a tag at the first > and leaves it alone, where makeClickable() reads the '
+			. 'quotes and keeps scanning. The two splitters cannot be shared: the stricter one makes this '
+			. 'a run of text and writes a break character into the attribute.');
+	}
 
 	public function testToRss()
 	{
@@ -3431,6 +3433,91 @@ Your browser does not support the audio tag.
 		}
 
 
+	}
+
+	public function testMakeClickableSkipsMarkup()
+	{
+		$tp = $this->tp;
+
+		$untouched = array(
+			'email' => array(
+				"<a class='e-email' href='mailto:john@example.com'>john@example.com</a>" => 'an address between an <a> and its </a>',
+				'<a href="#">john@example.com'                                          => 'an address after an <a> that is never closed',
+				"<img src='x.png' alt='a > john@example.com' />"                         => 'an address inside a quoted attribute holding a >',
+				'<img src="x.png" alt="john@example.com" />'                             => 'an address inside an attribute',
+			),
+			'url'   => array(
+				'<a href="#">visit www.example.com</a>' => 'a url between an <a> and its </a>',
+				'<b>bold</b>www.example.com'            => 'a url running straight on from a tag',
+			),
+		);
+
+		foreach ($untouched as $type => $samples)
+		{
+			foreach ($samples as $sample => $why)
+			{
+				self::assertEquals($sample, $tp->makeClickable($sample, $type), 'Rewrote ' . $why);
+			}
+		}
+
+		$result = $tp->makeClickable('<a href="#">click</a> john@example.com', 'email');
+		self::assertStringContainsString("<a class='e-email' ", $result, 'An address after a closed link was left alone');
+
+		$expected = 'first line' . E_NL . '<a class="e-url" href="http://www.example.com" >www.example.com</a>';
+		self::assertEquals($expected, $tp->makeClickable('first line' . E_NL . 'www.example.com', 'url'), 'A url after a line break was left alone');
+
+		$expected = '<a class="e-url" href="http://example.com" >http://example.com</a>' . E_NL . 'next';
+		self::assertEquals($expected, $tp->makeClickable('http://example.com' . E_NL . 'next', 'url'), 'A line break was swallowed into the url');
+
+		$expected = 'first line' . E_NL . '<a class="e-url" href="http://WWW.EXAMPLE.COM" >WWW.EXAMPLE.COM</a>';
+		self::assertEquals($expected, $tp->makeClickable('first line' . E_NL . 'WWW.EXAMPLE.COM', 'url'), 'An upper case www. url stopped being linked');
+
+		$expected = 'first line' . E_NL . '<a class="e-url" href="FTP://FTP.EXAMPLE.COM" >FTP.EXAMPLE.COM</a>';
+		self::assertEquals($expected, $tp->makeClickable('first line' . E_NL . 'FTP.EXAMPLE.COM', 'url'), 'An upper case ftp. url stopped being linked');
+	}
+
+	public function testEmailBbcodesWithMakeClickableOn()
+	{
+		$cfg = e107::getConfig();
+		$savedPref = $cfg->get('make_clickable');
+		$hadGlobalPref = array_key_exists('pref', $GLOBALS);
+		$savedGlobalPref = $hadGlobalPref ? $GLOBALS['pref'] : null;
+
+		$cfg->set('make_clickable', 1);
+		$GLOBALS['pref']['make_clickable'] = 1;
+
+		try
+		{
+			$samples = array(
+				'[email]john@example.com[/email]',
+				'[email=john@example.com]Mail me[/email]',
+				'[link=mailto:john@example.com]Mail me[/link]',
+			);
+
+			foreach ($samples as $sample)
+			{
+				$tp = $this->make('e_parse');
+				$tp->__construct();
+
+				$result = $tp->toHTML($sample, true);
+
+				self::assertStringContainsString('"john"+"@"+"example.com"', $result, 'Address lost from ' . $sample);
+				self::assertStringNotContainsString("class='e-email'", $result, 'Nested link produced by ' . $sample);
+			}
+		}
+		finally
+		{
+			$cfg->set('make_clickable', $savedPref);
+
+			if ($hadGlobalPref)
+			{
+				$GLOBALS['pref'] = $savedGlobalPref;
+			}
+			else
+			{
+				unset($GLOBALS['pref']);
+			}
+		}
 	}
 
 

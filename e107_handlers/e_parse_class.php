@@ -1522,6 +1522,7 @@ class e_parse
 
 	/**
 	 * Replace text represenation of website urls and email addresses with clickable equivalents.
+	 * A well formed HTML tag, and the text between an <a> and its </a>, is left as it was found.
 	 *
 	 * @param string $text
 	 * @param string $type email|url
@@ -1547,45 +1548,116 @@ class e_parse
 			$textReplace = $this->toGlyph($textReplace, '');
 		}
 
-		switch ($type)
+		$segments = $this->splitOnTags($text);
+
+		if ($segments === false)
 		{
-			default:
-			case 'email':
-
-				preg_match_all("#(?:[\n\r ]|^)?([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", $text, $match);
-
-				if (!empty($match[0]))
-				{
-
-					$srch = array();
-					$repl = array();
-
-					foreach ($match[0] as $eml)
-					{
-						$email = trim($eml);
-						$srch[] = $email;
-						$repl[] = $this->emailObfuscate($email, $textReplace);
-					}
-					$text = str_replace($srch, $repl, $text);
-				}
-				break;
-
-			case 'url':
-
-				$linktext = (!empty($textReplace)) ? $textReplace : '$3';
-				$external = (!empty($opts['ext'])) ? 'target="_blank"' : '';
-
-				$text = preg_replace("/(^|[\n \(])([\w]*?)([\w]*?:\/\/[\w]+[^ \,\"\n\r\t<]*)/is", '$1$2<a class="e-url" href="$3" ' . $external . '>' . $linktext . '</a>', $text);
-				$text = preg_replace("/(^|[\n \(])([\w]*?)((www)\.[^ \,\"\t\n\r\)<]*)/is", '$1$2<a class="e-url" href="http://$3" ' . $external . '>' . $linktext . '</a>', $text);
-				$text = preg_replace("/(^|[\n ])([\w]*?)((ftp)\.[^ \,\"\t\n\r<]*)/is", '$1$2<a class="e-url" href="$4://$3" ' . $external . '>' . $linktext . '</a>', $text);
-
-				break;
-
+			return $text;
 		}
 
+		$depth = 0;
+
+		foreach ($segments as $i => $segment)
+		{
+			if ($i % 2)
+			{
+				if (preg_match('#^<(/?)a\b#i', $segment, $tag))
+				{
+					$depth = ($tag[1] === '') ? $depth + 1 : max(0, $depth - 1);
+				}
+
+				continue;
+			}
+
+			if ($depth === 0 && $segment !== '')
+			{
+				$segments[$i] = ($type === 'url')
+					? $this->clickableUrls($segment, $textReplace, !empty($opts['ext']), $i === 0)
+					: $this->clickableEmails($segment, $textReplace);
+			}
+		}
+
+		return implode('', $segments);
+	}
+
+
+	/**
+	 * Split text into alternating plain text and HTML tags, the tags landing on the odd offsets.
+	 * A tag whose attribute values are quoted keeps whatever the quotes contain, '>' included.
+	 *
+	 * @param string $text
+	 * @return array|false false when the text defeats the pattern engine
+	 */
+	private function splitOnTags($text)
+	{
+
+		return preg_split('#(<(?:[^<>"\']|"[^"]*"|\'[^\']*\')*>)#s', $text, -1, PREG_SPLIT_DELIM_CAPTURE);
+	}
+
+
+	/**
+	 * Obfuscate every email address in a fragment that is known to carry no markup.
+	 *
+	 * @param string $text
+	 * @param string $textReplace substitute text within links
+	 * @return string
+	 */
+	private function clickableEmails($text, $textReplace)
+	{
+
+		if (strpos($text, '@') === false)
+		{
+			return $text;
+		}
+
+		preg_match_all("#(?:[\n\r ]|^)?([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", $text, $match);
+
+		if (empty($match[0]))
+		{
+			return $text;
+		}
+
+		$srch = array();
+		$repl = array();
+
+		foreach ($match[0] as $eml)
+		{
+			$email = trim($eml);
+			$srch[] = $email;
+			$repl[] = $this->emailObfuscate($email, $textReplace);
+		}
+
+		return str_replace($srch, $repl, $text);
+	}
+
+
+	/**
+	 * Link every bare url in a fragment that is known to carry no markup.
+	 *
+	 * @param string $text
+	 * @param string $textReplace substitute text within links
+	 * @param bool   $external    load link in new window
+	 * @param bool   $atStart     whether this fragment opens the text, so a url may sit at its very start
+	 * @return string
+	 */
+	private function clickableUrls($text, $textReplace, $external, $atStart)
+	{
+
+		if (strpos($text, '://') === false && stripos($text, 'www.') === false && stripos($text, 'ftp.') === false)
+		{
+			return $text;
+		}
+
+		$linktext = (!empty($textReplace)) ? $textReplace : '$3';
+		$target = $external ? 'target="_blank"' : '';
+		$break = '\n' . E_NL;
+		$start = $atStart ? '^|' : '';
+
+		$text = preg_replace("/(" . $start . "[" . $break . " \(])([\w]*?)([\w]*?:\/\/[\w]+[^ \,\"" . $break . "\r\t<]*)/is", '$1$2<a class="e-url" href="$3" ' . $target . '>' . $linktext . '</a>', $text);
+		$text = preg_replace("/(" . $start . "[" . $break . " \(])([\w]*?)((www)\.[^ \,\"\t" . $break . "\r\)<]*)/is", '$1$2<a class="e-url" href="http://$3" ' . $target . '>' . $linktext . '</a>', $text);
+		$text = preg_replace("/(" . $start . "[" . $break . " ])([\w]*?)((ftp)\.[^ \,\"\t" . $break . "\r<]*)/is", '$1$2<a class="e-url" href="$4://$3" ' . $target . '>' . $linktext . '</a>', $text);
+
 		return $text;
-
-
 	}
 
 
@@ -6201,28 +6273,6 @@ class e_parse
 	private function processModifiers($opts, $text, $convertNL, $parseBB, $modifiers, $postID)
 	{
 
-		if ($opts['link_click'])
-		{
-
-			if ($opts['link_replace'] && defset('ADMIN_AREA') !== true)
-			{
-
-				$link_text = $this->pref['link_text'];
-				$email_text = ($this->pref['email_text']) ? $this->replaceConstants($this->pref['email_text']) : LAN_EMAIL_SUBS;
-
-				$text = $this->makeClickable($text, 'url', array('sub' => $link_text, 'ext' => $this->pref['links_new_window']));
-				$text = $this->makeClickable($text, 'email', array('sub' => $email_text));
-			}
-			else
-			{
-
-				$text = $this->makeClickable($text, 'url', array('ext' => true));
-				$text = $this->makeClickable($text, 'email');
-
-			}
-		}
-
-
 		// Convert emoticons to graphical icons, if enabled
 		if ($opts['emotes'])
 		{
@@ -6283,6 +6333,28 @@ class e_parse
 			else // Need to strip just some BBCodes
 			{
 				$text = e107::getBB()->parseBBCodes($text, $postID, 'default', $parseBB);
+			}
+		}
+
+
+		if ($opts['link_click'])
+		{
+
+			if ($opts['link_replace'] && defset('ADMIN_AREA') !== true)
+			{
+
+				$link_text = $this->pref['link_text'];
+				$email_text = ($this->pref['email_text']) ? $this->replaceConstants($this->pref['email_text']) : LAN_EMAIL_SUBS;
+
+				$text = $this->makeClickable($text, 'url', array('sub' => $link_text, 'ext' => $this->pref['links_new_window']));
+				$text = $this->makeClickable($text, 'email', array('sub' => $email_text));
+			}
+			else
+			{
+
+				$text = $this->makeClickable($text, 'url', array('ext' => true));
+				$text = $this->makeClickable($text, 'email');
+
 			}
 		}
 
