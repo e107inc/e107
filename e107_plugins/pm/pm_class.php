@@ -219,6 +219,11 @@ class private_message
 			$covered = $fl->protectDirectory($dir) && $covered;
 		}
 
+		if(!$covered)
+		{
+			e107::getLog()->add('PM_ADM_11', $this->attachmentRoot(), E_LOG_WARNING);
+		}
+
 		return $covered;
 	}
 

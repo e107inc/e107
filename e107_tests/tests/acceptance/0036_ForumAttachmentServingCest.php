@@ -735,40 +735,7 @@ class ForumAttachmentServingCest
 	{
 		$I->wantTo('store a forum attachment under a name that cannot be guessed');
 
-		$I->loginToForum('admin', \Helper\AdminLogin::ADMIN_PASS);
-
-		$page = '/e107_plugins/forum/forum_post.php?f=rp&id='.$this->ids['threadA'];
-		$token = $I->grabForumToken($page);
-
-		$upload = tempnam(sys_get_temp_dir(), 'p18');
-		file_put_contents($upload, self::sentinelPng(self::PUBLIC_IMAGE));
-
-		$I->sendPostRequestWithFiles($page, array(
-			'post'    => 'a reply carrying an attachment',
-			'reply'   => 'Submit',
-			'e-token' => $token,
-		), array(
-			'file_userfile' => array(array(
-				'name'     => 'holiday.png',
-				'type'     => 'image/png',
-				'error'    => 0,
-				'size'     => filesize($upload),
-				'tmp_name' => $upload,
-			)),
-		));
-
-		@unlink($upload);
-
-		$answer = self::messages($I->grabResponseBody());
-
-		$stored = $this->probe($I, 'attachments', array('entry' => 'a reply carrying an attachment'));
-
-		// Without this the assertion below is satisfied by there being no
-		// upload at all, which is the shape a vacuous pass takes here.
-		$I->assertNotSame('', self::env($stored, 'STORED'),
-			'No attachment was stored for the reply, so the stored name proves nothing. '
-			.'Probe said: '.self::env($stored, 'WHY').' On disk: '.self::env($stored, 'ONDISK')
-			.' The post answered: '.$answer);
+		$stored = $this->postAnAttachment($I, 'a reply carrying an attachment');
 
 		$name = self::env($stored, 'STORED');
 
@@ -795,6 +762,44 @@ class ForumAttachmentServingCest
 	}
 
 	/**
+	 * A post covers the root and the directory it is about to write into, and
+	 * reads no other.
+	 *
+	 * The walk it replaces globbed every poster directory on the site and
+	 * stat'ed three files in each, on every post carrying an attachment, and
+	 * that list grows with the number of members who have ever tried to attach
+	 * something rather than with the number holding files (#6160). What a site
+	 * gives up is the directory of a member who never posts again: the deny
+	 * rule at the root covers it wherever .htaccess is read, and the setup hook
+	 * below covers it outright.
+	 *
+	 * The guards come off first, because a rule an earlier test left behind
+	 * would let this pass with nothing having been written at all.
+	 */
+	public function aPostCoversItsOwnAttachmentDirectoryAndNoOther(AcceptanceTester $I)
+	{
+		$I->wantTo('cover the directory a post writes into without reading every other one');
+
+		$this->seeTheGuardsAreOff($I);
+
+		$this->postAnAttachment($I, 'a reply that covers one directory');
+
+		$mine = $this->probe($I, 'guards', array('dir' => $I->haveForumAttachmentDir(1)));
+
+		$I->assertSame('1', self::env($mine, 'GUARDED'),
+			'The post left the attachment root without guard files.');
+		$I->assertSame('1', self::env($mine, 'DIR_GUARDED'),
+			'The post left the directory it stored its own attachment in without guard files.');
+
+		$other = $this->probe($I, 'guards', array('dir' => $this->dir));
+
+		$I->assertSame('1', self::env($other, 'DIR_EXISTS'),
+			'The other poster has no directory, so finding nothing in it proves nothing.');
+		$I->assertSame('0', self::env($other, 'DIR_GUARDED'),
+			'The post wrote into a poster directory it was storing nothing in.');
+	}
+
+	/**
 	 * The attachments a site already holds keep the name they were stored
 	 * under, so the random component does nothing for them and the serving
 	 * routes are not the only way to their bytes. What covers them is a deny
@@ -814,12 +819,7 @@ class ForumAttachmentServingCest
 	{
 		$I->wantTo('cover an existing attachment directory with a deny rule');
 
-		$bare = $this->probe($I, 'unprotect');
-
-		$I->assertSame('0', self::env($bare, 'GUARDED'),
-			'The guard files were still in place, so what follows measures nothing.');
-		$I->assertSame('0', self::env($bare, 'GUARDED_DIRS'),
-			'The posters\' guard files were still in place, so what follows measures nothing.');
+		$this->seeTheGuardsAreOff($I);
 
 		$I->amOnPage('/'.$this->dir.self::PUBLIC_TEXT_FILE);
 
@@ -859,6 +859,23 @@ class ForumAttachmentServingCest
 	// ------------------------------------------------------------------
 	// Assertions
 	// ------------------------------------------------------------------
+
+	/**
+	 * Take the guard files away and see that they are gone, so that finding one
+	 * afterwards says something was written rather than something was left.
+	 *
+	 * @param AcceptanceTester $I
+	 * @return void
+	 */
+	private function seeTheGuardsAreOff(AcceptanceTester $I)
+	{
+		$bare = $this->probe($I, 'unprotect');
+
+		$I->assertSame('0', self::env($bare, 'GUARDED'),
+			'The guard files were still in place, so what follows measures nothing.');
+		$I->assertSame('0', self::env($bare, 'GUARDED_DIRS'),
+			'The posters\' guard files were still in place, so what follows measures nothing.');
+	}
 
 	/**
 	 * Why the last response counts as a disclosure of $secret, or '' when it
@@ -960,6 +977,53 @@ class ForumAttachmentServingCest
 	// ------------------------------------------------------------------
 	// Requests
 	// ------------------------------------------------------------------
+
+	/**
+	 * Post a reply carrying a real attachment, and answer with what the plugin
+	 * stored for it.
+	 *
+	 * @param AcceptanceTester $I
+	 * @param string $entry body of the reply, which is how the probe finds it again
+	 * @return array probe environment: STORED, WHY, ONDISK, POST
+	 */
+	private function postAnAttachment(AcceptanceTester $I, $entry)
+	{
+		$I->loginToForum('admin', \Helper\AdminLogin::ADMIN_PASS);
+
+		$page = '/e107_plugins/forum/forum_post.php?f=rp&id='.$this->ids['threadA'];
+		$token = $I->grabForumToken($page);
+
+		$upload = tempnam(sys_get_temp_dir(), 'p18');
+		file_put_contents($upload, self::sentinelPng(self::PUBLIC_IMAGE));
+
+		$I->sendPostRequestWithFiles($page, array(
+			'post'    => $entry,
+			'reply'   => 'Submit',
+			'e-token' => $token,
+		), array(
+			'file_userfile' => array(array(
+				'name'     => 'holiday.png',
+				'type'     => 'image/png',
+				'error'    => 0,
+				'size'     => filesize($upload),
+				'tmp_name' => $upload,
+			)),
+		));
+
+		@unlink($upload);
+
+		$answer = self::messages($I->grabResponseBody());
+		$stored = $this->probe($I, 'attachments', array('entry' => $entry));
+
+		// Without this every caller's assertions are satisfied by there being
+		// no upload at all, which is the shape a vacuous pass takes here.
+		$I->assertNotSame('', self::env($stored, 'STORED'),
+			'No attachment was stored for the reply, so nothing about it proves anything. '
+			.'Probe said: '.self::env($stored, 'WHY').' On disk: '.self::env($stored, 'ONDISK')
+			.' The post answered: '.$answer);
+
+		return $stored;
+	}
 
 	/**
 	 * The migrated-thumbnail copy, in the tree forum_update.php writes it to,
@@ -1129,8 +1193,8 @@ if($act === 'cleanup')
 	// this probe is the one that said so.
 	e107::getPlugConfig('forum')->remove('attach')->save(false, true, false);
 
-	foreach(array('a reply carrying an attachment', 'a preview carrying an attachment',
-		'a guest reply naming somebody elses file') as $entry)
+	foreach(array('a reply carrying an attachment', 'a reply that covers one directory',
+		'a preview carrying an attachment', 'a guest reply naming somebody elses file') as $entry)
 	{
 		e107::getDb()->delete('forum_post', "post_entry = '".addslashes($entry)."'");
 	}
@@ -1152,7 +1216,7 @@ if($act === 'noattach')
 	e107::getPlugConfig('forum')->set('attach', 0)->save(false, true, false);
 }
 
-if($act === 'unprotect' || $act === 'setup')
+if($act === 'unprotect' || $act === 'setup' || $act === 'guards')
 {
 	$root = e_MEDIA.'plugins/forum/attachments/';
 	$posters = glob($root.'*', GLOB_ONLYDIR) ?: array();
@@ -1165,7 +1229,7 @@ if($act === 'unprotect' || $act === 'setup')
 			@unlink($dir.'/index.html');
 		}
 	}
-	else
+	elseif($act === 'setup')
 	{
 		require_once(e_PLUGIN.'forum/forum_setup.php');
 		$setup = new forum_setup();
@@ -1182,8 +1246,12 @@ if($act === 'unprotect' || $act === 'setup')
 		}
 	}
 
+	$one = isset($_GET['dir']) ? rtrim(e_ROOT.ltrim(str_replace('..', '', $_GET['dir']), '/'), '/') : '';
+
 	echo "GUARDED=".((is_file($root.'.htaccess') && is_file($root.'index.html')) ? '1' : '0')."\n";
 	echo "GUARDED_DIRS=".($dirsGuarded ? '1' : '0')."\n";
+	echo "DIR_EXISTS=".(($one !== '' && is_dir($one)) ? '1' : '0')."\n";
+	echo "DIR_GUARDED=".(($one !== '' && is_file($one.'/.htaccess') && is_file($one.'/index.html')) ? '1' : '0')."\n";
 }
 
 if($act === 'attachments')
