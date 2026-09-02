@@ -109,6 +109,11 @@ class WorkspaceCleanup extends Extension
 		'e107_tests_online_memberlist_probe.php',  // @see OnlineMemberListLinkCest
 	];
 
+	/** Files a test moves aside for one test method, as parked name to the name it belongs back at. */
+	private static $parked = [
+		'e107_images/e107_tests_5999_adminlogo.png' => 'e107_images/adminlogo.png', // @see admin_shortcodesLogoTest
+	];
+
 	/** @var \Deployer|null */
 	private $appDeployer;
 
@@ -126,6 +131,7 @@ class WorkspaceCleanup extends Extension
 		}
 		$this->acquireWorkspaceLock();
 		$this->restoreConfigBackup();
+		$this->restoreParked();
 		$this->htaccess = @file_get_contents(APP_PATH.'/e107.htaccess');
 		$this->sweep();
 	}
@@ -137,6 +143,7 @@ class WorkspaceCleanup extends Extension
 			return;
 		}
 		$this->restoreConfigBackup();
+		$this->restoreParked();
 		$this->restoreHtaccess();
 		$this->sweep();
 		$this->releaseWorkspaceLock();
@@ -275,6 +282,25 @@ class WorkspaceCleanup extends Extension
 		codecept_debug('WorkspaceCleanup: restoring e107_config.php from an interrupted run');
 		@unlink(APP_PATH.'/e107_config.php');
 		@rename($backup, APP_PATH.'/e107_config.php');
+	}
+
+	/**
+	 * Put back anything a test parked and did not live to restore, on APP_PATH as {@see Extension\WorkspaceCleanup::restoreConfigBackup()} does.
+	 *
+	 * @return void
+	 */
+	private function restoreParked()
+	{
+		foreach (self::$parked as $parked => $original)
+		{
+			if (!file_exists(APP_PATH.'/'.$parked))
+			{
+				continue;
+			}
+			codecept_debug('WorkspaceCleanup: restoring '.$original.' from an interrupted run');
+			@unlink(APP_PATH.'/'.$original);
+			@rename(APP_PATH.'/'.$parked, APP_PATH.'/'.$original);
+		}
 	}
 
 	/**
