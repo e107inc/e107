@@ -1,4 +1,3 @@
-# syntax=docker/dockerfile:1.6
 #
 # e107 test harness — PHP + Apache image
 #

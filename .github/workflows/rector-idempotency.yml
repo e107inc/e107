@@ -2,7 +2,14 @@ name: Rector Idempotency
 
 on:
   push:
+    branches: [master, 'release/**']
   pull_request:
+
+# A newer push to a branch or pull request cancels the run it supersedes.
+# master is the exception: every merge commit there gets its full run.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
 
 # Gates merges on the PHP 5.6 downgrade being at its fixed point: running the
 # downgrade against the already-downgraded shipping source has to produce no

@@ -88,8 +88,10 @@ services:
       # Per-env vendor tree, shadowing the (untouched) worktree vendor dir so
       # every env resolves its own dependencies for its own PHP version.
       - vendor:/var/www/html/e107_tests/vendor
-      # Persist composer's download cache across `down`/`up` cycles.
-      - composer-cache:/root/.composer/cache
+      # Composer's download cache, kept across `down`/`up` cycles. A named
+      # volume unless E107_COMPOSER_CACHE names a host directory to bind
+      # instead, which is how CI keeps it between runs.
+      - ${E107_COMPOSER_CACHE:-composer-cache}:/root/.composer/cache
     ports:
       - "127.0.0.1:${E107_WEB_PORT:-0}:80"
 
