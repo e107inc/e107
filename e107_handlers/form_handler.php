@@ -5319,6 +5319,29 @@ var_dump($select_options);*/
 	}
 
 	/**
+	 * Inline-edit option list for a userclass field, extended with any class the record already holds.
+	 * @param array $parms field read/write parms; 'classlist' selects the option source
+	 * @param string|int $value comma-separated class ids currently stored against the record
+	 * @return array class id => class name
+	 */
+	private function userclassInlineOptions($parms, $value)
+	{
+		$options = $this->_uc->uc_required_class_list(vartrue($parms['classlist'], 'public,guest,nobody,member,admin,main,classes'));
+
+		foreach(explode(',', (string) $value) as $cid)
+		{
+			$cid = trim($cid);
+
+			if($cid !== '' && !isset($options[$cid]))
+			{
+				$options[$cid] = $this->_uc->getName($cid);
+			}
+		}
+
+		return $options;
+	}
+
+	/**
 	 * Check if a value should be linked and wrap in <a> tag if required.
 	 * @todo global pref for the target option?
 	 * @param mixed $value
@@ -6244,10 +6267,8 @@ var_dump($select_options);*/
 				{
 					// $mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
 
-					$uc_options = vartrue($parms['classlist'], 'public,guest,nobody,member,admin,main,classes'); // defaults to 'public,guest,nobody,member,classes' (userclass handler)
+					$array = $this->userclassInlineOptions($parms, $value);
 					unset($parms['classlist']);
-
-					$array = e107::getUserClass()->uc_required_class_list($uc_options); //XXX Ugly looking (non-standard) function naming - TODO discuss name change.
 
 					$value = $this->renderInline($field, $id, $attributes['title'], $value, $dispvalue, 'select', $array, array('placement'=>'left'));
 				}
@@ -6280,8 +6301,7 @@ var_dump($select_options);*/
 				// Inline Editing.  
 				if(!vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up
 				{
-					$uc_options = vartrue($parms['classlist'], 'public,guest, nobody,member,admin,main,classes'); // defaults to 'public,guest,nobody,member,classes' (userclass handler)
-					$array = e107::getUserClass()->uc_required_class_list($uc_options); //XXX Ugly looking (non-standard) function naming - TODO discuss name change.
+					$array = $this->userclassInlineOptions($parms, $value);
 
 					//NOTE Leading ',' required on $value; so it picks up existing value.
 					$value = $this->renderInline($field,$id,$attributes['title'],",$value",$dispvalue,'checklist',$array,['placement'=>'bottom']);
