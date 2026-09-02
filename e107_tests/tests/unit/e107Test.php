@@ -120,6 +120,44 @@ class e107Test extends \Test\Unit
 		}
 	}
 
+	/**
+	 * Both e107_config.php formats reach {@see e107::initCore()}, and it must hand {@see e107::setDirs()} the *_DIRECTORY names that method reads.
+	 */
+	public function testInitCoreExpandsEveryFolderOverride()
+	{
+		self::assertSame(['PLUGINS_DIRECTORY' => 'mysite_plugins/'],
+			$this->pathsPassedToInit(['plugins' => 'mysite_plugins/']),
+			"a v2.4 paths array that doesn't rename e107_admin/ must still be applied");
+
+		self::assertSame(['ADMIN_DIRECTORY' => 'mysite_admin/', 'WEB_DIRECTORY' => 'mysite_web/'],
+			$this->pathsPassedToInit(['admin' => 'mysite_admin/', 'web' => 'mysite_web/']),
+			'every v2.4 short key must be expanded');
+
+		self::assertSame(['ADMIN_DIRECTORY' => 'mysite_admin/', 'PLUGINS_DIRECTORY' => 'mysite_plugins/'],
+			$this->pathsPassedToInit(['ADMIN_DIRECTORY' => 'mysite_admin/', 'PLUGINS_DIRECTORY' => 'mysite_plugins/']),
+			"class2.php's legacy globals branch builds the names itself and they must survive as they are");
+
+		self::assertSame(['PLUGINS_DIRECTORY' => 'mysite_plugins/'],
+			$this->pathsPassedToInit(['media' => '', 'system' => false, 'plugins' => 'mysite_plugins/']),
+			'an entry naming no folder is not an override of it');
+	}
+
+	/**
+	 * The folder overrides {@see e107::initCore()} hands on, with the rest of the boot sequence stubbed out.
+	 *
+	 * @param array $paths
+	 * @return array
+	 */
+	private function pathsPassedToInit($paths)
+	{
+		require_once(__DIR__ . '/fixtures/E107InitCoreProbeFixture.php');
+
+		$probe = new E107InitCoreProbeFixture();
+		$probe->initCore($paths, e_ROOT);
+
+		return $probe->paths;
+	}
+
 	/*public function testInitCore()
 	{
 
