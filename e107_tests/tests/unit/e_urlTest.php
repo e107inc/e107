@@ -55,6 +55,67 @@ class e_urlTest extends \Test\Unit
 	}
 
 	/**
+	 * A plugin's sitelink is routed by its e_url config rather than by the URL
+	 * the installer stored, so a redirect naming a file that is not on disk
+	 * ends at the site 404 and says so to nobody but a main admin.
+	 */
+	public function testEveryBundledUrlConfigRedirectsToAFileThatIsOnDisk()
+	{
+		$read = array();
+		$missing = array();
+
+		foreach(e107::getPlug()->getCorePluginList() as $plugin)
+		{
+			$addon = e_PLUGIN.$plugin.'/e_url.php';
+			$class = $plugin.'_url';
+
+			if(!is_readable($addon))
+			{
+				continue;
+			}
+
+			include_once($addon);
+
+			if(!class_exists($class))
+			{
+				$missing[] = $plugin.'/e_url.php declares no '.$class;
+				continue;
+			}
+
+			$config = call_user_func(array(new $class, 'config'));
+
+			foreach((array) $config as $key => $route)
+			{
+				if(empty($route['regex']))
+				{
+					continue;
+				}
+
+				$target = empty($route['redirect']) ? null : $this->redirectTarget($route['redirect']);
+
+				if($target === null)
+				{
+					continue;
+				}
+
+				$read[] = $plugin.' ['.$key.']';
+
+				if(!is_file($target))
+				{
+					$missing[] = $plugin.' ['.$key.'] '.$route['redirect'].' => '.$target;
+				}
+			}
+		}
+
+		sort($missing);
+
+		self::assertContains('_blank [index]', $read, 'The route this test was written for was not read, '
+			. 'so a green result here would mean nothing.');
+		self::assertSame(array(), $missing, 'These bundled e_url entries do not resolve to a file on disk, '
+			. 'so e_url::run() drops through to the site 404 for the routes they own.');
+	}
+
+	/**
 	 * @param string[] $keys
 	 * @return callable puts every removed preference back as it was found
 	 */
@@ -76,5 +137,18 @@ class e_urlTest extends \Test\Unit
 				$config->set($key, $value);
 			}
 		};
+	}
+
+	/**
+	 * @param string $redirect an e_url config 'redirect' value
+	 * @return string|null what {@see e_url::run()} passes to file_exists() for an
+	 *                     empty capture, or null when a backreference picks the file
+	 */
+	private function redirectTarget($redirect)
+	{
+		$parts = explode('?', e107::getParser()->replaceConstants($redirect), 2);
+		$path = preg_replace('/\$\d+$/', '', $parts[0]);
+
+		return strpos($path, '$') === false ? $path : null;
 	}
 }
