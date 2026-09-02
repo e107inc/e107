@@ -365,6 +365,49 @@
 
 		}
 */
+		/**
+		 * A theme declaring no layouts renders no custom-pages field, so nothing named custompages reaches {@see themeHandler::postObserver()}.
+		 * @see https://github.com/e107inc/e107/issues/6064
+		 */
+		public function testPostObserverWithoutCustomPagesInThePost()
+		{
+			e107::coreLan('theme', true);
+
+			$config        = e107::getConfig();
+			$themeConfig   = e107::getThemeConfig(e107::getPref('sitetheme'));
+			$siteThemePref = $config->get('sitetheme_pref');
+			$original      = $config->getPref();
+			$customPages   = $config->get('sitetheme_custompages');
+			$posted        = $_POST;
+			$warnings      = array();
+
+			$this->th->themeConfigObj = $this->themeConfigStub();
+
+			$_POST = array('curTheme' => e107::getPref('sitetheme'), 'submit_style' => 1);
+
+			set_error_handler(function ($no, $str) use (&$warnings) {
+				$warnings[] = $str;
+
+				return true;
+			});
+
+			try
+			{
+				$this->th->postObserver();
+				$stored = $config->get('sitetheme_custompages');
+			}
+			finally
+			{
+				restore_error_handler();
+				$_POST = $posted;
+				$config->setPref($original)->save(false, true, false);
+				self::undoThemeConfigSave($themeConfig, $siteThemePref);
+			}
+
+			$this->assertSame(array(), $warnings, implode("\n", $warnings));
+			$this->assertSame($customPages, $stored);
+		}
+
 		public function testFindDefault()
 		{
 			$result = $this->th->findDefault('bootstrap3');
