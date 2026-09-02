@@ -157,7 +157,7 @@ class gsitemap_xml
 
 			$url = $sm[$prefix.'url'];
 
-			if($url[0] === '/')
+			if(substr($url, 0, 1) === '/')
 			{
 				 $url = ltrim($url, '/');
 			}

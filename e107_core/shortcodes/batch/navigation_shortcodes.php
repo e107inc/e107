@@ -131,14 +131,19 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 
 			if(!empty($this->var['link_owner']) && !empty($this->var['link_sefurl']))
 			{
-				return e107::url($this->var['link_owner'], $this->var['link_sefurl']);
+				$sefUrl = e107::url($this->var['link_owner'], $this->var['link_sefurl']);
+
+				if(!empty($sefUrl))
+				{
+					return $sefUrl;
+				}
 			}
 
 			if(strpos($this->var['link_url'], e_HTTP) === 0)
 			{
 				$url = "{e_BASE}" . substr($this->var['link_url'], strlen(e_HTTP));
 			}
-			elseif($this->var['link_url'][0] !== "{" && strpos($this->var['link_url'], "://") === false)
+			elseif(substr($this->var['link_url'], 0, 1) !== "{" && strpos($this->var['link_url'], "://") === false)
 			{
 				$url = "{e_BASE}" . $this->var['link_url']; // Add e_BASE to links like: 'news.php' or 'contact.php' 	
 			}
