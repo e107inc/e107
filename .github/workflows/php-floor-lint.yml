@@ -27,5 +27,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      - uses: ./.github/actions/docker-hub-mirror
+
       - name: Parse the shipping tree on the floor PHP
         run: ./e107_tests/_tools/rector/bin/php-floor-lint

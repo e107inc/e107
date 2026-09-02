@@ -55,34 +55,17 @@ jobs:
         with:
           submodules: recursive
 
-      - uses: docker/setup-buildx-action@v4
-
-      # Built here rather than by `compose up` so the layers survive between
-      # runs. compose builds the web image only when it is missing, so loading
-      # it under the tag compose expects turns that build into a no-op. The
-      # xdebug variant carries its own tag and cache scope; coverage needs it.
-      - name: Build the web image
-        uses: docker/build-push-action@v7
-        with:
-          context: ./e107_tests/docker
-          build-args: |
-            PHP_VERSION=${{ matrix.php }}
-            WITH_XDEBUG=yes
-          tags: e107-web:${{ matrix.php }}-xdebug
-          load: true
-          cache-from: type=gha,scope=web-xdebug-${{ matrix.php }}
-          cache-to: type=gha,mode=max,scope=web-xdebug-${{ matrix.php }}
-
-      # No --install-site: the unit suite loads a dump and never runs the
-      # installer. --no-selenium because the browser image is over a gigabyte
-      # and only the WebDriver suite needs it.
+      # The xdebug image, because coverage needs it. No --install-site: the
+      # unit suite loads a dump and never runs the installer. --no-selenium
+      # because the browser image is over a gigabyte and only the WebDriver
+      # suite needs it.
       - name: Bring up the stack
-        run: |
-          ./e107_tests/bin/e107-tests up \
-            --php '${{ matrix.php }}' \
-            --db '${{ matrix.db }}' \
-            --xdebug \
-            --no-selenium
+        uses: ./.github/actions/harness-stack
+        with:
+          php: ${{ matrix.php }}
+          db: ${{ matrix.db }}
+          xdebug: 'yes'
+          up-args: --no-selenium
 
       # Two groups come off on 5.6 and 7.0. Neither is a hole in e107's support
       # for those runtimes; both are the test tooling failing to reach the code

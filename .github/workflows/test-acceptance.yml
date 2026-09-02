@@ -76,30 +76,14 @@ jobs:
         with:
           submodules: recursive
 
-      - uses: docker/setup-buildx-action@v4
-
-      # Built here rather than by `compose up` so the layers survive between
-      # runs. compose builds the web image only when it is missing, so loading
-      # it under the tag compose expects turns that build into a no-op.
-      - name: Build the web image
-        uses: docker/build-push-action@v7
-        with:
-          context: ./e107_tests/docker
-          build-args: PHP_VERSION=${{ matrix.php }}
-          tags: e107-web:${{ matrix.php }}
-          load: true
-          cache-from: type=gha,scope=web-${{ matrix.php }}
-          cache-to: type=gha,mode=max,scope=web-${{ matrix.php }}
-
       # --no-selenium: the browser image is over a gigabyte and only the
       # WebDriver suite needs it. An empty --base-path means a docroot install.
       - name: Bring up the stack
-        run: |
-          ./e107_tests/bin/e107-tests up \
-            --php '${{ matrix.php }}' \
-            --db '${{ matrix.db }}' \
-            --base-path '${{ matrix.base_path }}' \
-            --no-selenium
+        uses: ./.github/actions/harness-stack
+        with:
+          php: ${{ matrix.php }}
+          db: ${{ matrix.db }}
+          up-args: --base-path '${{ matrix.base_path }}' --no-selenium
 
       - name: Run acceptance tests
         run: ./e107_tests/bin/e107-tests run acceptance
