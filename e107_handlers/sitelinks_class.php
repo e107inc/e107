@@ -227,7 +227,7 @@ class sitelinks
 		{
 			foreach($this->eLinkList['head_menu'] as $link)
 			{
-				if(!count($this->eLinkList['sub_' . $link['link_id']]))
+				if(empty($this->eLinkList['sub_' . $link['link_id']]))
 				{
 					$text .= $this->makeLink($link, '', $style, $css_class);
 				}
