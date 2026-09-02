@@ -3228,16 +3228,28 @@ EXPECTED;
 
 	}
 
+	public function testPreFilterRunsBbcodeSaveHandlersOnTextThatAlsoContainsHtml()
+	{
+		$payload = '[img height=1]{e_THEME}bootstrap3/images/logo.png[/img]';
+
+		$filtered = $this->tp->preFilter($payload);
+		self::assertSame('[img]{e_THEME}bootstrap3/images/logo.png[/img]', $filtered);
+
+		self::assertSame('<b>hi</b>' . $filtered, $this->tp->preFilter('<b>hi</b>' . $payload));
+	}
+
 	public function testIsBBcode()
 	{
 		$tests = array(
 			0 => array("My Simple Text", false), // input , expected result
 			1 => array("<hr />", false),
 			2 => array("[b]Bbcode[/b]", true),
-			3 => array("<div class='something'>[code]something[/code]</div>", false),
+			3 => array("<div class='something'>[code]something[/code]</div>", true),
 			4 => array("[code]&lt;b&gt;someting&lt;/b&gt;[/code]", true),
 			5 => array("[html]something[/html]", false),
-			6 => array("http://something.com/index.php?what=ever", false)
+			6 => array("http://something.com/index.php?what=ever", false),
+			7 => array("<b>hi</b>[img height=1]{e_THEME}logo.png[/img]", true),
+			8 => array("1<2>3 [b]Bbcode[/b]", true)
 		);
 
 
