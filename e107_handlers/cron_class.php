@@ -1748,9 +1748,8 @@ class cronSetup
 	 * @return array
 	 *   array('os' => 'unix'|'windows', 'panel' => 'cpanel'|'directadmin'|'plesk'|null,
 	 *   'panel_url' => string|null, 'php_version' => string, 'php_cli' => string|null,
-	 *   'php_cli_pinned' => bool, 'open_basedir' => bool, 'cron_executable' => bool,
-	 *   'cron_mode' => string|null, 'root' => string, 'siteurl' => string,
-	 *   'https' => bool, 'host' => string)
+	 *   'open_basedir' => bool, 'cron_executable' => bool, 'cron_mode' => string|null,
+	 *   'root' => string, 'siteurl' => string, 'https' => bool, 'host' => string)
 	 */
 	public static function detectEnvironment()
 	{
@@ -1791,7 +1790,6 @@ class cronSetup
 			'panel_url'       => ($panel !== null && $host !== '') ? 'https://'.$host.':'.$panelPort.'/' : null,
 			'php_version'     => PHP_VERSION,
 			'php_cli'         => $cli,
-			'php_cli_pinned'  => ($cli !== null && self::namesVersion($cli)),
 			'open_basedir'    => ((string) ini_get('open_basedir') !== ''),
 			'cron_executable' => (bool) @is_executable($cronFile),
 			'cron_mode'       => ($mode === false) ? null : substr(decoct($mode), -3),
@@ -1958,16 +1956,6 @@ class cronSetup
 	}
 
 	/**
-	 * @param string $path
-	 * @return bool
-	 *   Whether the path names a PHP version, so that the command it appears in stops working on an upgrade.
-	 */
-	private static function namesVersion($path)
-	{
-		return (bool) preg_match('#php[-/\\\\]?\d#i', (string) $path);
-	}
-
-	/**
 	 * @param array $env
 	 * @param string $token
 	 * @return array
@@ -2088,7 +2076,7 @@ class cronSetup
 		}
 		else
 		{
-			$notes[] = str_replace(array('[x]', '[y]'), array($env['php_version'], $env['php_cli']), LAN_CRON_SETUP_PHP_FOUND);
+			$notes[] = str_replace('[x]', $env['php_cli'], LAN_CRON_SETUP_PHP_FOUND);
 		}
 
 		$notes[] = ($env['os'] === 'windows') ? LAN_CRON_SETUP_SCHTASKS_ACCOUNT_NOTE : LAN_CRON_SETUP_PANEL_HOWTO;
