@@ -137,6 +137,29 @@
 
 		}
 
+		/**
+		 * The guard reads $_select_array before anything writes it, so the class must declare it.
+		 */
+		public function testGetLanSelectArrayReadsADeclaredProperty()
+		{
+			$this->assertTrue(defined('e_LANLIST'), 'e_LANLIST never reached the constant table.');
+
+			$errors = array();
+			set_error_handler(function ($no, $str) use (&$errors) {
+				$errors[] = $str;
+
+				return true;
+			});
+
+			$language = new language();
+			$select = $language->getLanSelectArray();
+
+			restore_error_handler();
+
+			$this->assertSame(array(), $errors, 'getLanSelectArray() complained on its first call.');
+			$this->assertNotEmpty($select, 'getLanSelectArray() returned no languages.');
+		}
+
 /*
 		public function testDetect()
 		{
