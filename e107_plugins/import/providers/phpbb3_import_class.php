@@ -380,6 +380,7 @@ class phpbb3_import extends base_import_class
 			
 			if($folder = $forum->getAttachmentPath($row['poster_id'],true)) // get Path and create Folder if needed. 
 			{
+				e107::getFile()->protectDirectory($folder);
 				e107::getMessage()->addDebug("Created Attachment Folder: ".$folder );
 			}
 			else

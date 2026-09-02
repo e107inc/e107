@@ -715,11 +715,6 @@
 		 */
 		function processAttachments()
 		{
-			if(!$this->protectStoredAttachments())
-			{
-				e107::getLog()->add('PM_ADM_11', $this->attachmentRoot(), E_LOG_WARNING);
-			}
-
 			if(!$this->protectAttachmentPaths(USERID))
 			{
 				e107::getLog()->add('PM_ADM_12', $this->attachmentDir(USERID), E_LOG_WARNING);

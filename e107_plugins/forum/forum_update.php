@@ -1684,6 +1684,8 @@ class forumUpgrade
 			mkdir($newPath, 0755);
 		}
 
+		e107::getFile()->protectDirectory($newPath);
+
 		$attachment['name'] = str_replace(array(
 			' ',
 			"\n",
