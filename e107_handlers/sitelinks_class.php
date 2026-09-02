@@ -364,7 +364,12 @@ class sitelinks
 
 		if(!empty($linkInfo['link_sefurl']) && !empty($linkInfo['link_owner']))
 		{
-			$linkInfo['link_url'] = e107::url($linkInfo['link_owner'],$linkInfo['link_sefurl']) ; //  $linkInfo['link_sefurl'];
+			$sefUrl = e107::url($linkInfo['link_owner'], $linkInfo['link_sefurl']);
+
+			if(!empty($sefUrl))
+			{
+				$linkInfo['link_url'] = $sefUrl;
+			}
 		}
 
 
@@ -1937,7 +1942,12 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 
 		if(!empty($data['link_owner']) && !empty($data['link_sefurl']))
 		{
-			$dbLink = e107::url($data['link_owner'],$data['link_sefurl']);
+			$sefUrl = e107::url($data['link_owner'], $data['link_sefurl']);
+
+			if(!empty($sefUrl))
+			{
+				$dbLink = $sefUrl;
+			}
 		}
 
 		//if(E107_DBG_PATH)
