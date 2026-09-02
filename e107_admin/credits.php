@@ -14,7 +14,6 @@ require_once(__DIR__."/../class2.php");
 
 $css = ".credits-content		{ padding:20px 40px; text-align: left; font-size:13px; line-height:1.5em; font-weight:normal; font-family:Arial, Helvetica, sans-serif; }
 			.credits-content p	{ margin:0px 5px 10px 5px; }
-		
 			.credits-content a	{ color:#F6931E; text-decoration:none; }
 			.credits-content a:hover	{ color:#fdce8a; text-decoration:none; }
 			.bold				{ font-weight:bold; }
