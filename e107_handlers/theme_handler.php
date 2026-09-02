@@ -1991,8 +1991,8 @@ class themeHandler
 
 			if($name === 'theme_config') // v2.1.4 - don't use process() method.
 			{
-				$pref = e107::getThemeConfig();
-				$values = e107::getThemeConfig($this->id)->getPref();
+				$pref = e107::getThemeConfig($this->id);
+				$values = $pref->getPref();
 
 				$fields = call_user_func(array(&$this->themeConfigObj, 'config'));
 
@@ -2016,7 +2016,7 @@ class themeHandler
 				if($saved)
 				{
 					$siteThemePref = e107::getConfig()->get('sitetheme_pref');
-					if(!empty($siteThemePref))
+					if(!empty($siteThemePref) && $pref === e107::getThemeConfig())
 					{
 						e107::getConfig()->set('sitetheme_pref')->save(false,true,false); // remove old theme pref
 					}
