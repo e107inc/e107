@@ -26,7 +26,6 @@ class cronSetupTest extends \Codeception\Test\Unit
 			'panel_url'       => 'https://example.com:2083/',
 			'php_version'     => '8.3.1',
 			'php_cli'         => '/opt/cpanel/ea-php83/root/usr/bin/php',
-			'php_cli_pinned'  => true,
 			'open_basedir'    => false,
 			'cron_executable' => false,
 			'cron_mode'       => '644',
@@ -125,25 +124,46 @@ class cronSetupTest extends \Codeception\Test\Unit
 
 		self::assertSame($expected, $cli['command']);
 		self::assertSame('* * * * * '.$expected, $cli['crontab_line']);
-		self::assertContains(str_replace(array('[x]', '[y]'),
-			array('8.3.1', '/opt/cpanel/ea-php83/root/usr/bin/php'), LAN_CRON_SETUP_PHP_FOUND), $cli['notes']);
+		self::assertContains(str_replace('[x]', '/opt/cpanel/ea-php83/root/usr/bin/php', LAN_CRON_SETUP_PHP_FOUND),
+			$cli['notes']);
 		self::assertContains(LAN_CRON_SETUP_PANEL_HOWTO, $cli['notes'], 'the control panel instruction belongs on a Unix command');
 		self::assertNotContains(LAN_CRON_SETUP_OPEN_BASEDIR_NOTE, $cli['notes']);
 	}
 
+	public function testTheCommandLineNoteNamesThePathWithoutClaimingAVersion()
+	{
+		$env = $this->unixEnv(array('php_version' => '9.9.9'));
+		$cli = $this->option(cronSetup::options($env, self::TOKEN), 'cli');
+		$notes = implode("\n", $cli['notes']);
+
+		self::assertStringContainsString($env['php_cli'], $notes, 'the notes have to name the binary the command runs');
+
+		$notes = str_replace($env['php_cli'], '', $notes);
+
+		foreach(array('[v]', '[w]', '[x]', '[y]', '[z]') as $placeholder)
+		{
+			self::assertStringNotContainsString($placeholder, $notes, 'the notes left '.$placeholder.' unreplaced');
+		}
+
+		self::assertStringNotContainsString($env['php_version'], $notes,
+			'the notes may not claim a version for a binary nothing ran');
+		self::assertStringNotContainsString(PHP_VERSION, $notes,
+			'the notes may not fall back to the version of the interpreter serving the page');
+	}
+
 	public function testUnixCommandLineFallsBackToThePath()
 	{
-		$env = $this->unixEnv(array('php_cli' => null, 'php_cli_pinned' => false));
+		$env = $this->unixEnv(array('php_cli' => null));
 		$cli = $this->option(cronSetup::options($env, self::TOKEN), 'cli');
 
 		self::assertSame('php -q /home/site/public_html/cron.php token='.self::TOKEN.' >/dev/null 2>&1', $cli['command']);
 		self::assertContains(str_replace('[x]', '8.3', LAN_CRON_SETUP_PHP_NOT_FOUND), $cli['notes']);
-		self::assertNotContains(str_replace(array('[x]', '[y]'), array('8.3.1', ''), LAN_CRON_SETUP_PHP_FOUND), $cli['notes']);
+		self::assertNotContains(str_replace('[x]', '', LAN_CRON_SETUP_PHP_FOUND), $cli['notes']);
 	}
 
 	public function testOpenBasedirIsReportedOnTheCommandLineOption()
 	{
-		$env = $this->unixEnv(array('php_cli' => null, 'php_cli_pinned' => false, 'open_basedir' => true));
+		$env = $this->unixEnv(array('php_cli' => null, 'open_basedir' => true));
 		$cli = $this->option(cronSetup::options($env, self::TOKEN), 'cli');
 
 		self::assertContains(LAN_CRON_SETUP_OPEN_BASEDIR_NOTE, $cli['notes']);
@@ -293,7 +313,6 @@ class cronSetupTest extends \Codeception\Test\Unit
 			'panel_url'       => 'NULL|string',
 			'php_version'     => 'string',
 			'php_cli'         => 'NULL|string',
-			'php_cli_pinned'  => 'boolean',
 			'open_basedir'    => 'boolean',
 			'cron_executable' => 'boolean',
 			'cron_mode'       => 'NULL|string',
