@@ -205,10 +205,24 @@ debug by hand:
 - **Stale bind mounts**: a long-lived container that starts failing every
   exec with "chdir to cwd" / "container breakout detected" (podman after
   heavy git churn) is restarted automatically and the command retried.
-- **Registry flakes**: a transient "denied"/rate-limit on pull doesn't kill
-  `up` when all needed images already exist locally.
+- **Registry flakes**: `up` pulls the database image when it is missing,
+  three times with a growing pause, before giving up, and a
+  "denied"/rate-limit refusal doesn't kill it when all needed images already
+  exist locally.
+- **Package host flakes**: the composer install inside the container gets
+  the same three tries, so a package host that answers 504 for a minute
+  costs a minute, not the run.
 - **Honest exit codes**: `up` verifies db/web/selenium are actually running
   and healthy and fails loudly (with `compose ps` output) if not.
+
+## Composer's download cache
+
+Composer's cache lives in a named volume per env, so a `down` followed by
+`up` reinstalls without downloading again. Set `E107_COMPOSER_CACHE` to an
+absolute host directory to bind that instead; CI does, wrapped in
+`actions/cache`, so a warm run installs from lock without a single request
+to a package host. `down --volumes` leaves a bound directory alone. Local
+users have no reason to set it.
 
 ## Working in a worktree
 

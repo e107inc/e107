@@ -57,6 +57,19 @@ warn() { printf '!! %s\n' "$*" >&2; }
 
 have() { command -v "$1" >/dev/null 2>&1; }
 
+# Three tries with a growing pause, for work that fails while a registry or
+# package host is stumbling and succeeds once it is back.
+retry() {
+    local label=$1 attempt
+    shift
+    for attempt in 1 2 3; do
+        "$@" && return 0
+        [ "$attempt" -lt 3 ] || return 1
+        warn "$label failed (attempt $attempt of 3); retrying in $((attempt * 30))s"
+        sleep $((attempt * 30))
+    done
+}
+
 # An e107 worktree this harness can drive: an e107 tree carrying its own copy
 # of the compose stack. A tree without one (an old release tag, before
 # `graft`) deliberately fails this test and is left to the script's own copy.
@@ -286,6 +299,7 @@ compose_up_cmd() {
     E107_DB_EXTRA_ARGS=$E107_DB_EXTRA_ARGS \
     E107_BASE_PATH=$BASE_PATH \
     E107_INTERNAL_URL=$(base_url) \
+    E107_COMPOSER_CACHE=${E107_COMPOSER_CACHE:-} \
     docker compose --project-directory "$DOCKER_DIR" -f "$COMPOSE_FILE" "$@"
 }
 
@@ -418,9 +432,17 @@ EOF
 # Self-heals used by `up`
 # ---------------------------------------------------------------------------
 
-# Transient registry failures ("denied", rate limits) shouldn't kill an `up`
-# when every needed image is already local.
+# `up` pulls only what is missing and gives up on the first refusal, so the
+# database image is pulled ahead of it, with retries.
+pull_missing_images() {
+    docker image inspect "$E107_DB_IMAGE" >/dev/null 2>&1 && return 0
+    retry "pulling db" compose_up_cmd pull db
+}
+
+# A registry that stays down shouldn't kill an `up` when every needed image is
+# already local.
 up_with_registry_fallback() {
+    pull_missing_images || true
     local tmp rc=0
     tmp=$(mktemp)
     compose_up_cmd up -d --wait "${UP_SERVICES[@]}" 2>&1 | tee "$tmp" || rc=${PIPESTATUS[0]}
@@ -537,7 +559,7 @@ tests_sh() {
 # a stamp recording what was installed; the stamp powers the drift preflight.
 deps_install() {
     note ">> Installing test dependencies (composer)"
-    deps_install_once
+    retry "installing test dependencies" deps_install_once
     if [ -e "$APP_PATH/.git" ]; then
         ( cd "$APP_PATH" && git submodule update --init --recursive --remote >/dev/null 2>&1 ) || true
     fi
@@ -719,6 +741,10 @@ cmd_up() {
     PROJECT=$(project_name "$PHP" "$DB")
     normalise_base_path "$base"
     db_flavor_args
+    if [ -n "${E107_COMPOSER_CACHE:-}" ]; then
+        mkdir -p -- "$E107_COMPOSER_CACHE"
+        E107_COMPOSER_CACHE=$(readlink -f -- "$E107_COMPOSER_CACHE")
+    fi
     write_managed_config
 
     # Built as its own step, not as `up --build`. A failed build there leaves
