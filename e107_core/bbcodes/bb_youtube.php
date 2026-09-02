@@ -44,6 +44,7 @@ class bb_youtube extends e_bb_base
 		$bbpars = array();
 		$widthString = '';
 		$parm = trim($parm);
+		$posted = $code_text;
 		
 		// Convert Simple URLs. 
 		if(strpos($code_text,"youtube.com/watch?v=")!==FALSE || strpos($code_text,"youtube.com/watch#!v=")!==FALSE )
@@ -86,12 +87,13 @@ class bb_youtube extends e_bb_base
 		}
 		else
 		{
-			//libxml_use_internal_errors(TRUE);
-			if (FALSE === ($info = simplexml_load_string($code_text)))
+			$libxml = libxml_use_internal_errors(true);
+			$info = simplexml_load_string($code_text);
+			libxml_clear_errors();
+			libxml_use_internal_errors($libxml);
+
+			if (FALSE === $info)
 			{
-				//print_a($matches);
-				//$xmlErrs = libxml_get_errors();
-				//print_a($xmlErrs);
 				$ok = 1;
 			}
 			else
@@ -112,22 +114,21 @@ class bb_youtube extends e_bb_base
 			}
 			if ($ok != 0)
 			{
-				print_a($info);
-				return '[sanitised]'.$ok.'B'.htmlspecialchars($matches[0]).'B[/sanitised]';
+				return '[sanitised]'.$ok.'B'.htmlspecialchars($posted).'B[/sanitised]';
 			}
 			$target =  (array)$info2['@attributes'];
 			unset($info);
 			$ws = varset($target['width'], 0);
 			$hs = varset($target['height'], 0);
-			if (($ws == 0) || ($hs == 0) || !isset($target['src'])) return  '[sanitised]A'.htmlspecialchars($matches[0]).'A[/sanitised]';
+			if (($ws == 0) || ($hs == 0) || !isset($target['src'])) return  '[sanitised]A'.htmlspecialchars($posted).'A[/sanitised]';
 			if (!$widthString)
 			{
 				$widthString = $ws.','.$hs;			// Set size of window
 			}
-			list($url, $query) = explode('?', $target['src']);
+			list($url, $query) = array_pad(explode('?', $target['src']), 2, '');
 			if (strpos($url, 'youtube-nocookie.com') !== FALSE)
 			{
-				$bb_params[] = 'privacy';
+				$bbpars[] = 'privacy';
 			}
 			
 			parse_str($query, $vals);		// Various options set here
@@ -148,15 +149,15 @@ class bb_youtube extends e_bb_base
 			{
 				$params[] = 'hd='.intval($vals['hd']);
 			}
-			if (varset($vals['hl'], 1) != 0)
+			if ((string) varset($vals['hl'], 1) !== '0')
 			{
 				$params[] = 'hl='.$vals['hl'];
 			}
-			if (varset($vals['color1'], 1) != 0)
+			if ((string) varset($vals['color1'], 1) !== '0')
 			{
 				$params[] = 'color1='.$vals['color1'];
 			}
-			if (varset($vals['color2'], 1) != 0)
+			if ((string) varset($vals['color2'], 1) !== '0')
 			{
 				$params[] = 'color2='.$vals['color2'];
 			}
