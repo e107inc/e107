@@ -538,15 +538,7 @@ class e107
 	 */
 	public function initCore($e107_paths, $e107_root_path, $e107_config_mysql_info=array(), $e107_config_override = array())
 	{
-		if(!empty($e107_paths['admin'])) //v2.4
-		{
-			foreach($e107_paths as $dir => $path)
-			{
-				$newKey = strtoupper($dir).'_DIRECTORY';
-				$e107_paths[$newKey] = $path;
-				unset($e107_paths[$dir]);
-			}
-		}
+		$e107_paths = self::expandShortPathKeys($e107_paths);
 
 		if(!empty($e107_config_mysql_info['db']))
 		{
@@ -554,6 +546,29 @@ class e107
 		}
 
 		return $this->_init($e107_paths, $e107_root_path, $e107_config_mysql_info, $e107_config_override);
+	}
+
+	/**
+	 * Key a folder override array by the names {@see e107::setDirs()} reads, dropping the entries that name no folder.
+	 *
+	 * @param array $e107_paths
+	 * @return array
+	 */
+	private static function expandShortPathKeys($e107_paths)
+	{
+		$expanded = array();
+
+		foreach((array) $e107_paths as $folder => $path)
+		{
+			if(!is_string($path) || $path === '')
+			{
+				continue;
+			}
+
+			$expanded[self::dirName($folder)] = $path;
+		}
+
+		return $expanded;
 	}
 
 	/**
@@ -813,6 +828,20 @@ class e107
 	}
 
 	/**
+	 * The {@see e107::overridableDirs()} name a folder goes by, from either the v2.4 short key ('admin') or the name itself ('ADMIN_DIRECTORY').
+	 *
+	 * @param string $folder
+	 * @return string
+	 */
+	private static function dirName($folder)
+	{
+		$suffix = '_DIRECTORY';
+		$name = strtoupper($folder);
+
+		return substr($name, -strlen($suffix)) === $suffix ? $name : $name.$suffix;
+	}
+
+	/**
 	 * Get default e107 folders, root folders can be overridden by passed override array
 	 *
 	 * @param array $override_root
@@ -987,7 +1016,7 @@ class e107
 	 */
 	public static function getFolder($for)
 	{
-		$key = strtoupper($for).'_DIRECTORY';
+		$key = self::dirName($for);
 		$self = self::getInstance();
 		return (isset($self->e107_dirs[$key]) ? $self->e107_dirs[$key] : '');
 	}
