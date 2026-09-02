@@ -143,7 +143,7 @@ require_once(__DIR__.'/navigation_shortcodes_legacy.php');
 			{
 				$url = "{e_BASE}" . substr($this->var['link_url'], strlen(e_HTTP));
 			}
-			elseif($this->var['link_url'][0] !== "{" && strpos($this->var['link_url'], "://") === false)
+			elseif(substr($this->var['link_url'], 0, 1) !== "{" && strpos($this->var['link_url'], "://") === false)
 			{
 				$url = "{e_BASE}" . $this->var['link_url']; // Add e_BASE to links like: 'news.php' or 'contact.php' 	
 			}

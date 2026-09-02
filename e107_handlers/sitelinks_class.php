@@ -392,7 +392,7 @@ class sitelinks
 		{
 			$linkInfo['link_url'] = $tp->parseTemplate($linkInfo['link_url'], TRUE); // shortcode in URL support - dynamic urls for multilanguage.
 		}
-		elseif($linkInfo['link_url'][0] !== '/' && strpos($linkInfo['link_url'],'http') !== 0)
+		elseif(substr($linkInfo['link_url'], 0, 1) !== '/' && strpos($linkInfo['link_url'],'http') !== 0)
 		{
 			$linkInfo['link_url'] = e_HTTP.ltrim($linkInfo['link_url'],'/');
 		}
