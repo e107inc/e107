@@ -69,7 +69,7 @@ if(empty($FORUM_VIEW_START_CONTAINER))
 // XXX These templates should remain unchanged.
 if (empty($FORUM_VIEW_FORUM)) {
 	$SC_WRAPPER['LASTPOST:type=date'] = "{---}<br>";
-	$SC_WRAPPER['LASTPOST:type=url'] = " <a href='{---}'>".IMAGE_post2."</a>";
+	$SC_WRAPPER['LASTPOST:type=url'] = " <a href='{---}'>".defset('IMAGE_post2')."</a>";
 	$FORUM_VIEW_FORUM = "
 		<tr>
 		<td style='vertical-align:middle; text-align:center; width:3%' class='forumheader3'>{ICON}</td>

@@ -18,7 +18,7 @@ $FORUM_PREVIEW = "<div>
 	($action != "nt" ? "</td>" : " ( ".LAN_FORUM_3011.": {PREVIEW_SUBJECT} )</td>")."
 <tr>
 	<td class='forumheader3' style='width:20%; vertical-align:top'><b>".$poster."</b></td>
-	<td class='forumheader3' style='width:80%'><div class='smallblacktext' style='text-align:right'>".IMAGE_post2." {PREVIEW_DATE}</div>{PREVIEW_POST}</td>
+	<td class='forumheader3' style='width:80%'><div class='smallblacktext' style='text-align:right'>".defset('IMAGE_post2')." {PREVIEW_DATE}</div>{PREVIEW_POST}</td>
 </tr>
 </table>
 </div>";
