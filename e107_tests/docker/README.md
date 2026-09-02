@@ -116,11 +116,12 @@ and installs the same Composer bootstrap, which auto-selects Composer 2.2 LTS
 on old PHP.
 
 `master`'s `e107_tests/composer.json` carries union constraints (for example
-`codeception/codeception: "^4.2 || >=5.0.11"`), so legacy containers resolve a
-working dependency set on this branch too: see "Which PHP resolves what"
-below. Grafted old tags and `release/v2.3.x` worktrees bring their own
-constraints; on a tree whose constraints can't resolve on the container's
-PHP, `install` surfaces composer's error untouched.
+`codeception/codeception: "^4.2 || >=5.0.11"`), and `composer.php5.6.lock`
+pins what they resolve to on PHP 5.6, so legacy containers install a known
+dependency set on this branch too: see "One lock per PHP range" below.
+Grafted old tags and `release/v2.3.x` worktrees bring their own constraints
+and locks; on a tree whose constraints can't resolve on the container's PHP,
+`install` surfaces composer's error untouched.
 
 ## Dependencies: per-env vendor, no lock churn
 
@@ -128,50 +129,62 @@ Every env mounts a named volume over `e107_tests/vendor`, so:
 
 - Two stacks with different PHP versions never poison each other's vendor
   tree, even in the same worktree.
-- The repo's `composer.lock` is **never modified** by the harness.
+- The repo's lock files are rewritten by `relock` alone, never by `up`,
+  `install` or `run`.
 
-`up`/`install` first try `composer install` against the repo lock (CI
-parity). When the env's PHP can't satisfy the lock (PHPUnit brackets PHP
-versions aggressively), the harness says so on one loud line and falls back
-to a per-env `composer update` whose lock lives inside the volume, not in
-your worktree. `run` preflights for drift (composer.json/lock edits, branch
-switches, PHP changes) and reinstalls automatically.
+`up`/`install` run `composer install` against the newest committed lock the
+env's PHP can take (CI parity). Only when no committed lock fits does the
+harness say so on one loud line and fall back to a per-env `composer update`
+whose lock lives inside the volume, not in your worktree; that line means a
+PHP range has no lock yet (see below). `run` preflights for drift
+(composer.json or lock edits, branch switches, PHP changes) and reinstalls
+automatically.
 
 The worktree's own `e107_tests/vendor/` directory is yours: the harness
 neither writes nor reads it. If you want IDE autocompletion for Codeception,
 run `composer install` in `e107_tests/` on the host yourself.
 
-### Which PHP resolves what
+### One lock per PHP range
 
 `composer.json` uses union constraints because one file has to serve every
 cell in the PHP 5.6-8.5 matrix, and composer picks the highest branch the
-running PHP can satisfy (JSON can't carry comments, so the rationale lives
-here):
+running PHP can satisfy. What it picks depends on where upstream dropped a
+PHP version, so one lock cannot serve the whole range; there is one per
+range instead, each resolved on the oldest PHP it serves so every newer PHP
+in the range installs it unchanged (JSON can't carry comments, so the
+rationale lives here):
 
-- PHP 8.4+: the committed `composer.lock` applies as-is (`composer install`,
-  CI parity).
-- PHP 8.1-8.3: the lock's PHPUnit pin wants 8.4, so the fallback
-  `composer update` resolves Codeception 5.x fresh.
-- PHP 5.6 / 7.0: the fallback resolves Codeception 4.2 with the 1.x modules
-  and Twig 1.x; Codeception's phpunit-wrapper then selects PHPUnit 5.7 (on
-  5.6) or 6.5 (on 7.0) by itself.
+- `composer.lock`: resolved on the PHP that `config.platform.php` in
+  `composer.json` declares (8.1), and installed as-is from there up.
+- `composer.php5.6.lock`: resolved on PHP 5.6 and installed on 5.6 and 7.0.
+  Codeception 4.2 with the 1.x modules, Twig 1.x and PHPUnit 5.7.
+
+An env tries `composer.lock` first, then each `composer.php<floor>.lock`
+from the newest floor down, and installs the first one whose platform
+requirements its PHP meets. A PHP that none fits falls back to a live
+`composer update`, and says so; the fix is to add an empty
+`composer.php<floor>.lock` for that range and run `relock`.
 
 There is deliberately no `behat/gherkin` cap: gherkin >=4.13 requires PHP
 8.1, so legacy cells can never reach the release that breaks Codeception
 4.x's loader, and modern cells run Codeception 5.x, which is fine with it.
 
-### Bumping the canon composer.lock
+### Upgrading the dependencies
 
-To re-pin the repo lock to the latest deps (done on the newest PHP):
+`relock` regenerates every committed lock inside an env on the PHP it is
+resolved for, and leaves the diff for you to review:
 
 ```sh
-e107_tests/bin/e107-tests up          # PHP 8.5
-e107_tests/bin/e107-tests exec sh -c 'cd e107_tests && composer update --prefer-dist --no-progress'
-e107_tests/bin/e107-tests run unit    # sanity before committing the lock
+e107_tests/bin/e107-tests relock                      # every lock
+e107_tests/bin/e107-tests relock composer.php5.6.lock # one of them
+e107_tests/bin/e107-tests up --php 8.1 && e107_tests/bin/e107-tests run unit
 ```
 
-`exec` runs plain composer without the vendor-volume redirect, so this is
-the one deliberate way the worktree lock gets rewritten.
+Generating a lock on its own floor matters twice over: the resolution is
+the one that PHP's Composer makes (the php:5.6 image ships Composer 2.2,
+which predates the advisory block that a current Composer applies to
+PHPUnit 5.7), and `check-platform-reqs` is checked on the real interpreter.
+`relock` needs `php` on the host to read the floor out of `composer.json`.
 
 ## How the wiring works
 
@@ -329,5 +342,7 @@ during validation, so we don't rely on it. Treat `clean` as the canonical
   combo; handles EOL Debian bases for PHP 5.6/7.0.
 - `compose.yml`: the db + web + selenium services, parameterized by env,
   plus the `e107.tests.*` labels that serve as the harness's state store.
+- `../composer.lock`, `../composer.php<floor>.lock`: one dependency lock per
+  PHP range; see "One lock per PHP range".
 - `entrypoint.sh`: waits for DB, fixes ownership on the bind mount.
 - `apache-vhost.conf` / `php-overrides.ini`: sensible test defaults.
