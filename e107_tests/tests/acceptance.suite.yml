@@ -21,3 +21,4 @@ modules:
         - \Helper\Acceptance:
         - \Helper\AdminLogin:
         - \Helper\ForumFixture:
+        - \Helper\MenuPrefFixture:
