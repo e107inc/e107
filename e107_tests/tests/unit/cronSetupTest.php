@@ -149,6 +149,15 @@ class cronSetupTest extends \Codeception\Test\Unit
 		self::assertContains(LAN_CRON_SETUP_OPEN_BASEDIR_NOTE, $cli['notes']);
 	}
 
+	public function testOpenBasedirIsNotReportedBesideABinaryTheProbeReached()
+	{
+		$env = $this->unixEnv(array('open_basedir' => true));
+		$cli = $this->option(cronSetup::options($env, self::TOKEN), 'cli');
+
+		self::assertNotContains(LAN_CRON_SETUP_OPEN_BASEDIR_NOTE, $cli['notes'],
+			'the note contradicts the binary named above it');
+	}
+
 	public function testShebangOptionReportsTheFileMode()
 	{
 		$options = cronSetup::options($this->unixEnv(), self::TOKEN);
