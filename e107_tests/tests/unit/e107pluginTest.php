@@ -15,6 +15,9 @@
 		/** @var e107plugin */
 		protected $ep;
 
+		/** @var array<string,mixed> url_* core preferences before this test seeded them */
+		private $urlPrefState = array();
+
 		protected function _before()
 		{
 			try
@@ -30,6 +33,40 @@
 
 		}
 
+		/**
+		 * Seed url_* core preferences, undone by {@see e107pluginTest::_after()}.
+		 *
+		 * @param array $values pref name => value to seed
+		 * @return void
+		 */
+		private function seedUrlPrefs(array $values)
+		{
+			$config = e107::getConfig();
+
+			foreach($values as $pref => $value)
+			{
+				if(!array_key_exists($pref, $this->urlPrefState))
+				{
+					$this->urlPrefState[$pref] = $config->get($pref);
+				}
+
+				$config->set($pref, $value);
+			}
+		}
+
+		/**
+		 * Put back the url_* preferences this test seeded, pass or fail.
+		 */
+		protected function _after()
+		{
+			foreach($this->urlPrefState as $pref => $value)
+			{
+				e107::getConfig()->set($pref, $value);
+			}
+
+			$this->urlPrefState = array();
+		}
+
 
 		public function testGetPluginRecord()
 		{
@@ -41,6 +78,42 @@
 			$this->assertEquals("LAN_PLUGIN_BANNER_NAME", $result['plugin_name']);
 
 
+		}
+
+		public function testRebuildUrlConfig()
+		{
+			$chosenConfig = array('news' => 'core/sef');
+			$staleAliases = array('zz' => array('gone' => 'no-such-module'));
+
+			$this->seedUrlPrefs(array(
+				'url_config'    => $chosenConfig,
+				'url_modules'   => array(),
+				'url_locations' => array(),
+				'url_aliases'   => $staleAliases,
+			));
+
+			$modules = eRouter::adminReadModules();
+			$config = eRouter::adminBuildConfig($chosenConfig, $modules);
+
+			$expected = array(
+				'url_modules'   => $modules,
+				'url_config'    => $config,
+				'url_locations' => eRouter::adminBuildLocations($modules),
+				'url_aliases'   => eRouter::adminSyncAliases($staleAliases, $config),
+			);
+
+			$this->assertNotEquals($chosenConfig, $expected['url_config']);
+			$this->assertNotEquals($staleAliases, $expected['url_aliases']);
+
+			$this->ep->rebuildUrlConfig();
+
+			foreach($expected as $pref => $value)
+			{
+				$this->assertEquals($value, e107::getConfig()->get($pref), $pref . ' was not persisted');
+			}
+
+			$written = e107::getConfig()->get('url_config');
+			$this->assertEquals($chosenConfig['news'], $written['news'], 'a readable custom location must survive the rebuild');
 		}
 
 
@@ -87,11 +160,6 @@
 		}
 
 		public function testUninstall()
-		{
-
-		}
-
-		public function testRebuildUrlConfig()
 		{
 
 		}
