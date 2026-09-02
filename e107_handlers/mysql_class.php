@@ -255,6 +255,7 @@ class e_db_mysql implements e_db
 
 		if (!$this->mySQLaccess = @mysqli_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword, $newLink))
 		{
+			$this->mySQLlastErrNum = mysqli_connect_errno();
 			$this->mySQLlastErrText = mysqli_connect_error();
 			return false;
 		}
@@ -302,6 +303,8 @@ class e_db_mysql implements e_db
 
 		if (!@mysqli_select_db($this->mySQLaccess, $database))
 		{
+			$this->mySQLlastErrNum = mysqli_errno($this->mySQLaccess);
+			$this->mySQLlastErrText = mysqli_error($this->mySQLaccess);
 			return false;
 		}
 
@@ -2381,6 +2384,7 @@ class e_db_mysql implements e_db
 	 */
 	function backup($table='*', $file='', $options=null)
 	{
+		$this->mySQLlastErrNum = -1;
 		$this->mySQLlastErrText = "PDO is required to use the mysql backup() method";
 		return false;
 	}
