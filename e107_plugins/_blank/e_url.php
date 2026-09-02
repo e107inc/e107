@@ -37,7 +37,7 @@ class _blank_url // plugin-folder + '_url'
 		$config['index'] = array(
 			'regex'			=> '^_blank/?$', 						// matched against url, and if true, redirected to 'redirect' below.
 			'sef'			=> '_blank', 							// used by e107::url(); to create a url from the db table.
-			'redirect'		=> '{e_PLUGIN}_blank/blank.php', 		// file-path of what to load when the regex returns true.
+			'redirect'		=> '{e_PLUGIN}_blank/_blank.php', 		// file-path of what to load when the regex returns true.
 
 		);
 
