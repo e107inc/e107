@@ -350,3 +350,46 @@
 		}
 
 	}
+
+	/**
+	 * Identifier validation shared by both database backends
+	 * Trait e_db_identifier
+	 */
+	trait e_db_identifier
+	{
+
+		/**
+		 * Answers whether a caller-supplied identifier may be interpolated into SQL, matching the whole subject including a trailing newline, and refusing rather than trimming so the validated bytes are the ones the statement carries.
+		 *
+		 * @param string $name
+		 * @param bool $allowDot true to also accept the database.name form
+		 * @return string|false the name, or false on violation
+		 */
+		protected function _safeIdentifier($name, $allowDot = false)
+		{
+			if(!is_string($name) && !is_numeric($name))
+			{
+				return false;
+			}
+
+			$name = (string) $name;
+
+			$pattern = $allowDot ? '/^[A-Za-z0-9_]+(\.[A-Za-z0-9_]+)?$/D' : '/^[A-Za-z0-9_]+$/D';
+
+			return preg_match($pattern, $name) ? $name : false;
+		}
+
+		/**
+		 * Refuses a table name {@see e_db_identifier::_safeIdentifier()} rejected, recording the -1 that getLastErrorNumber() reports for a failure raised without asking the server.
+		 *
+		 * @param string $method
+		 * @return bool false, so a caller can return it directly
+		 */
+		protected function _refuseIdentifier($method)
+		{
+			$this->mySQLlastErrNum = -1;
+			$this->mySQLlastErrText = $method.'() invalid table identifier';
+
+			return false;
+		}
+	}

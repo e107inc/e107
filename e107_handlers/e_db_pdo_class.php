@@ -25,6 +25,7 @@ class e_db_pdo implements e_db
 {
 
 	use e_db_legacy;
+	use e_db_identifier;
 
 	// TODO switch to protected vars where needed
 	public      $mySQLserver;
@@ -687,6 +688,10 @@ class e_db_pdo implements e_db
 	*/
 	public function select($table, $fields = '*', $arg = '', $noWhere = false, $debug = false, $log_type = '', $log_remark = '')
 	{
+		if($this->_safeIdentifier($table) === false)
+		{
+			return $this->_refuseIdentifier(__FUNCTION__);
+		}
 
 		$table = $this->hasLanguage($table);
 
@@ -774,6 +779,11 @@ class e_db_pdo implements e_db
 	 */
 	function insert($tableName, $arg, $debug = false, $log_type = '', $log_remark = '')
 	{
+		if($this->_safeIdentifier($tableName) === false)
+		{
+			return $this->_refuseIdentifier(isset($arg['_REPLACE']) ? 'replace' : 'insert');
+		}
+
 		$table = $this->hasLanguage($tableName);
 		$this->mySQLcurTable = $table;
 		$REPLACE = false; // kill any PHP notices
@@ -1097,6 +1107,11 @@ class e_db_pdo implements e_db
 	*/
 	function update($tableName, $arg, $debug = false, $log_type = '', $log_remark = '')
 	{
+		if($this->_safeIdentifier($tableName) === false)
+		{
+			return $this->_refuseIdentifier(__FUNCTION__);
+		}
+
 		$table = $this->hasLanguage($tableName);
 		$this->mySQLcurTable = $table;
 
@@ -1424,6 +1439,11 @@ class e_db_pdo implements e_db
 	 */
 	function count($table, $fields = '(*)', $arg = '', $debug = false, $log_type = '', $log_remark = '')
 	{
+		if ($fields != 'generic' && $this->_safeIdentifier($table) === false)
+		{
+			return $this->_refuseIdentifier(__FUNCTION__);
+		}
+
 		$table = $this->hasLanguage($table);
 
 		if ($fields == 'generic')
@@ -1504,6 +1524,11 @@ class e_db_pdo implements e_db
 	*/
 	function delete($table, $arg = '', $debug = false, $log_type = '', $log_remark = '')
 	{
+		if($this->_safeIdentifier($table) === false)
+		{
+			return $this->_refuseIdentifier(__FUNCTION__);
+		}
+
 		$table = $this->hasLanguage($table);
 		$this->mySQLcurTable = $table;
 
@@ -1949,7 +1974,10 @@ class e_db_pdo implements e_db
 	 */
 	public function fields($table, $prefix = '', $retinfo = false)
 	{
-
+		if($this->_safeIdentifier($table) === false || ($prefix != '' && $this->_safeIdentifier($prefix, true) === false))
+		{
+			return $this->_refuseIdentifier(__FUNCTION__);
+		}
 
 		$this->_getMySQLaccess();
 
