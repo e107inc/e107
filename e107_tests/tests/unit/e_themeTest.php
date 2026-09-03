@@ -621,6 +621,60 @@ class e_themeTest extends \Test\Unit
 
 	}
 
+	/**
+	 * The layout a stock install's front page resolves to has to offer a sidebar menu area.
+	 */
+	public function testBootstrap5FrontPageHasASidebarMenuArea()
+	{
+		$parsed  = e_theme::parse_theme_xml('bootstrap5');
+		$default = '';
+
+		foreach($parsed['layouts'] as $name => $layout)
+		{
+			if(isset($layout['@attributes']['default']) && $layout['@attributes']['default'] === 'true')
+			{
+				$default = $name;
+			}
+		}
+
+		$this->assertSame('sidebar_right', $default,
+			'this test resolves the front page through the theme\'s declared default, and sidebar_right is the one it declares');
+
+		$front = e_theme::getThemeLayout($parsed['custompages'], $default,
+			array('url' => SITEURL, 'script' => '/index.php'));
+		$file  = e_THEME.'bootstrap5/layouts/'.$front.'_layout.html';
+
+		$this->assertFileExists($file, 'the site root resolves to a layout this theme does not ship');
+
+		$markup = file_get_contents($file);
+
+		$match = array();
+
+		$this->assertSame(1, preg_match('/class=[\'"][^\'"]*col-md-3[^\'"]*sidebar/', $markup, $match, PREG_OFFSET_CAPTURE),
+			'the front page needs one narrow column marked as the sidebar');
+
+		$sidebar = $match[0][1];
+		$content = strpos($markup, 'col-md-9');
+		$body    = strpos($markup, '{---}');
+		$area    = strpos($markup, '{MENU=3}');
+		$bottom  = strpos($markup, '{MENU=2}');
+
+		$this->assertNotFalse($content, 'the front page needs a wide column to put its content in');
+		$this->assertNotFalse($area, 'the front page offers nowhere to put a menu beside its content');
+
+		$this->assertGreaterThan($content, $body, 'the page content has to render inside the wide column');
+		$this->assertGreaterThan($body, $sidebar, 'the sidebar column has to follow the content it sits beside');
+		$this->assertGreaterThan($sidebar, $area, 'the third menu area has to render inside the sidebar column');
+		$this->assertGreaterThan($area, $bottom, 'the bottom menu area has to stay below the row');
+
+		foreach(array('{HERO}', '{WMESSAGE}', '{MENU=1}', '{ALERTS}') as $kept)
+		{
+			$this->assertNotFalse(strpos($markup, $kept),
+				'the sidebar column cost the front page '.$kept);
+		}
+	}
+
+
 	/*
 					public function testClearCache()
 					{
