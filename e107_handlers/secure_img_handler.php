@@ -67,6 +67,16 @@ class secure_image
 	const DEFAULT_TTL = 86400;
 
 	/**
+	 * Characters a challenge is drawn from: no two alike in any shipped face, and none too wide for the image.
+	 */
+	const SOLUTION_ALPHABET = 'CDFLNRTVZ237';
+
+	/**
+	 * Characters in one challenge.
+	 */
+	const SOLUTION_LENGTH = 5;
+
+	/**
 	 * Directory, under the content cache, holding the spent markers.
 	 *
 	 * Its own directory rather than an {@see ecache} entry, because the marker
@@ -258,7 +268,7 @@ class secure_image
 		$name = $this->formName($form);
 
 		$claims = array(
-			'solution' => e107::getUserSession()->generateRandomString('*****'),
+			'solution' => $this->drawSolution(),
 			'ip'       => e107::getIPHandler()->getIP(false),
 			'form'     => $name,
 		);
@@ -274,6 +284,27 @@ class secure_image
 		$this->tokens[$name] = is_string($token) ? $token : '';
 
 		return $this->tokens[$name];
+	}
+
+
+	/**
+	 * Draw a challenge from {@see secure_image::SOLUTION_ALPHABET}.
+	 *
+	 * @return string
+	 * @throws Exception when no CSPRNG is available. {@see e_random::int()}
+	 */
+	private function drawSolution()
+	{
+		$alphabet = self::SOLUTION_ALPHABET;
+		$last     = strlen($alphabet) - 1;
+		$solution = '';
+
+		for($i = 0; $i < self::SOLUTION_LENGTH; $i++)
+		{
+			$solution .= $alphabet[e_random::int(0, $last)];
+		}
+
+		return $solution;
 	}
 
 
