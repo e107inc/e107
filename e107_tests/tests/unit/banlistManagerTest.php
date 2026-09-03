@@ -38,7 +38,12 @@ class banlistManagerTest extends \Test\Unit
 	const IP_WILDCARD_TOKEN = '0000:0000:0000:0000:0000:ffff:0a4d:42';
 	const IP_WILDCARD_WHITELISTED = '10.77.99.*';
 	const IP_WILDCARD_WHITELISTED_TOKEN = '0000:0000:0000:0000:0000:ffff:0a4d:63';
+	const IP_WILDCARD_WHITELISTED_STORED = '10.77.99.';
+	const IP_IN_WHITELISTED_WILDCARD = '10.77.99.65';
+	const IP_WILDCARD_LEGACY = '10.77.55.*';
+	const IP_WILDCARD_LEGACY_TOKEN = '0000:0000:0000:0000:0000:ffff:0a4d:37';
 	const WHITELIST_TYPE = 100;
+	const LEGACY_TYPE = 0;
 	const IP_NOBODY_BANNED = '203.0.113.9';
 
 	protected function _before()
@@ -196,24 +201,47 @@ class banlistManagerTest extends \Test\Unit
 	 * dotted form it was typed in, it prefixes nothing and bans nobody, while
 	 * the admin screen goes on showing it as a live ban.
 	 *
-	 * The ban type is no part of that: a whitelisted range is written the same
-	 * way, and the consequence there runs the other way about, since whitelist
-	 * entries are written first and end the scan on a match.
+	 * A legacy row is a ban too. Its stored type is 0 rather than negative, and
+	 * it is normalised to BAN_TYPE_UNKNOWN before anything is written, so it
+	 * reaches the file on the same terms as every other ban.
 	 */
 	public function testWildcardBanIsWrittenAsAnEncodedPrefix()
 	{
 		$this->haveBan(self::IP_WILDCARD, 0);
-		$this->haveBan(self::IP_WILDCARD_WHITELISTED, 0, self::WHITELIST_TYPE);
+		$this->haveBan(self::IP_WILDCARD_LEGACY, 0, self::LEGACY_TYPE);
 
 		$this->mgr->writeBanListFiles('ip');
 
 		$tokens = $this->banFileTokens();
 		self::assertContains(self::IP_WILDCARD_TOKEN, $tokens,
 			'a wildcard ban has to reach the file as the encoded prefix of its range');
-		self::assertContains(self::IP_WILDCARD_WHITELISTED_TOKEN, $tokens,
-			'and so does a wildcard whitelist, or the range an admin exempted stays unexempted');
+		self::assertContains(self::IP_WILDCARD_LEGACY_TOKEN, $tokens,
+			'and a legacy wildcard ban with it, since the type it is normalised to is a ban');
 		self::assertSame(0, strpos(e107::getIPHandler()->ipEncode(self::IP_IN_WILDCARD), self::IP_WILDCARD_TOKEN),
 			'and that prefix has to be the start of every encoded address in the range');
+	}
+
+	/**
+	 * A whitelist entry is not a ban, and the ban type is the whole of what
+	 * tells them apart. Whitelist rows are written into this file first and end
+	 * the scan on a match, so a wildcard whitelist row that reaches it encoded
+	 * stops every ban inside its range firing, with nothing on the banlist
+	 * screen saying so. It keeps the stored form it has always had, which
+	 * prefixes no encoded address and exempts nobody.
+	 */
+	public function testWildcardWhitelistRowIsWrittenAsStored()
+	{
+		$this->haveBan(self::IP_WILDCARD_WHITELISTED, 0, self::WHITELIST_TYPE);
+
+		$this->mgr->writeBanListFiles('ip');
+
+		$tokens = $this->banFileTokens();
+		self::assertNotContains(self::IP_WILDCARD_WHITELISTED_TOKEN, $tokens,
+			'a wildcard whitelist row must not reach the file in the form the ban check matches');
+		self::assertContains(self::IP_WILDCARD_WHITELISTED_STORED, $tokens,
+			'it has to reach the file in the form it was stored in');
+		self::assertNotSame(0, strpos(e107::getIPHandler()->ipEncode(self::IP_IN_WHITELISTED_WILDCARD), self::IP_WILDCARD_WHITELISTED_STORED),
+			'and that form has to stay inert against the addresses in its range');
 	}
 
 	/**
