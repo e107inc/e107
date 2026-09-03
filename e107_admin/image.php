@@ -3676,6 +3676,32 @@ $action = e_QUERY;
 
 
 
+/**
+ * Count the users, other than those given, whose avatar or photo names this file in either stored form.
+ *
+ * @param string $file file name as stored, without the -upload- prefix
+ * @param int[] $exceptUserIds rows about to be cleared, whose reference is about to go
+ * @return int
+ */
+function avatar_usage_count($file, array $exceptUserIds = array())
+{
+	$names = array($file, '-upload-'.$file);
+
+	$query = e107::getDb()->createQueryBuilder()->from('user')
+		->where(function ($group) use ($names)
+		{
+			$group->whereIn('user_image', $names)->orWhereIn('user_sess', $names);
+		});
+
+	if (!empty($exceptUserIds))
+	{
+		$query->whereNotIn('user_id', $exceptUserIds);
+	}
+
+	return (int) $query->count();
+}
+
+
 /*
  * DELETE ALL UNUSED IMAGES - SHOW AVATAR SCREEN
  */
@@ -3707,12 +3733,7 @@ if (isset($_POST['submit_show_deleteall']))
 		foreach ($dirlist as $image_name)
 		{
 			$image_name = basename($image_name);
-			$image_todb = $tp->toDB($image_name);
-			$usageCount = $sql->createQueryBuilder()->from('user')
-				->where('user_image', '-upload-'.$image_todb)
-				->orWhere('user_sess', $image_todb)
-				->count();
-			if (!$usageCount) {
+			if (!avatar_usage_count($image_name)) {
 				unlink(e_AVATAR_UPLOAD.$image_name);
 				$imgList .= '[!br!]'.$image_name;
 				$count++;
@@ -3732,7 +3753,6 @@ if (isset($_POST['submit_show_deleteall']))
  */
 if (isset($_POST['submit_avdelete_multi']))
 {
-	require_once(e_HANDLER. 'avatar_handler.php');
 	$avList = array();
 	$tmp = array();
 	$uids = array();
@@ -3755,15 +3775,24 @@ if (isset($_POST['submit_avdelete_multi']))
 		{
 			if (vartrue($search_users[$uid]))
 			{
-				$avname = avatar($search_users[$uid]['user_image']);
-				if (strpos($avname, 'http://') === FALSE)
-				{ // Internal file, so unlink it
-					@unlink($avname);
-				}
-
 				$uids[] = $uid;
 				$tmp[] = $search_users[$uid]['user_name'];
 				$avList[] = $uid.':'.$search_users[$uid]['user_name'].':'.$search_users[$uid]['user_image'];
+			}
+		}
+
+		foreach($uids as $uid)
+		{
+			$avfile = $tp->toAvatarPath($search_users[$uid]['user_image']);
+
+			if ($avfile === '' || e_AVATAR_UPLOAD === '' || strpos($avfile, e_AVATAR_UPLOAD) !== 0)
+			{
+				continue;
+			}
+
+			if (!avatar_usage_count(basename($avfile), $uids))
+			{
+				@unlink($avfile);
 			}
 		}
 
@@ -3831,8 +3860,8 @@ if (isset($_POST['check_avatar_sizes']))
 	//
 	$iUserCount = $sql->createQueryBuilder()->from('user')->count();
 	$found = false;
-	$allowedWidth = (int) $pref['im_width'];
-	$allowedHeight = (int) $pref['im_width'];
+	$allowedWidth = (int) vartrue($pref['im_width'], 100);
+	$allowedHeight = (int) vartrue($pref['im_height'], 100);
 	$avatarUsers = $sql->createQueryBuilder()
 		->select('*')->from('user')
 		->where('user_image', '!=', '')
@@ -3843,7 +3872,8 @@ if (isset($_POST['check_avatar_sizes']))
 		{
 			//Check size
 			$avname=avatar($row['user_image']);
-			if (strpos($avname, 'http://')!==FALSE)
+			$avfile = e107::getParser()->toAvatarPath($row['user_image']);
+			if ($avfile === '')
 			{
 				$iAVexternal++;
 				$bAVext=TRUE;
@@ -3852,7 +3882,7 @@ if (isset($_POST['check_avatar_sizes']))
 				$bAVext=FALSE;
 			}
 
-			$image_stats = getimagesize($avname);
+			$image_stats = @getimagesize($bAVext ? $avname : $avfile);
 			$sBadImage= '';
 
 			if (!$image_stats)
