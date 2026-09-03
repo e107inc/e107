@@ -258,6 +258,7 @@ define("LAN_FORUM_CLOSE", "Thread closed.");
 define("LAN_FORUM_OPEN", "Thread reopened.");
 define("LAN_FORUM_STICK", "Thread made sticky.");
 define("LAN_FORUM_UNSTICK", "Thread unstuck.");
+define("LAN_FORUM_ATTACHMENT_REFUSED_UNPROTECTED", "Attachment refused: its directory could not be protected from direct download. Please tell the site administrator.");
 
 
 
