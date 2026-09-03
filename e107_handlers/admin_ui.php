@@ -5082,7 +5082,7 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @param int    $id     The ID of the specific record being backed up.
 	 * @param string $action The action performed on the record (e.g., 'update' or 'delete').
 	 * @param array  $data   An associative array of field data to be included in the history record.
-	 * @param bool  $posted Whether the data has been posted and requires additional filter based on current $fields values or not.
+	 * @param bool  $posted True when $data came from the request, so only fields carrying a 'data' attribute are kept; false when $data is a stored row, which is already whole.
 	 * @return bool True on successful creation of the backup record, false on failure.
 	 */
 	protected function backupToHistory($table, $pid, $id, $action, $data, $posted = true)
@@ -5098,12 +5098,20 @@ class e_admin_controller_ui extends e_admin_controller
 			}
 		}
 
+		$json = json_encode($data, JSON_PRETTY_PRINT);
+
+		if($json === false)
+		{
+			e107::getMessage()->addError("Failed to encode history for table '{$table}', record ID {$id}: ".json_last_error_msg());
+			return false;
+		}
+
 		$historyData = [
 			'history_table'     => $table,
 			'history_pid'       => $pid,
 			'history_record_id' => $id,
 			'history_action'    => $action, // 'update' or 'delete'
-			'history_data'      => json_encode($data, JSON_PRETTY_PRINT),
+			'history_data'      => $json,
 			'history_user_id'   => USERID,
 			'history_datestamp' => time(),
 		];
@@ -5120,6 +5128,24 @@ class e_admin_controller_ui extends e_admin_controller
 		// Optional: Add debug logs for successful history creation
 		e107::getMessage()->addDebug("History saved for table '{$table}', record ID {$id}");
 		return true;
+	}
+
+	/**
+	 * The row as the table holds it, for {@see e_admin_controller_ui::backupToHistory()} to record.
+	 *
+	 * @param string     $table The name of the table where the record resides.
+	 * @param string     $pid   The primary ID field of the record.
+	 * @param int|string $id    The ID of the specific record; bound as given, as the model layer leaves it.
+	 * @return array The stored row, or an empty array when there is no such row.
+	 */
+	protected function historySnapshot($table, $pid, $id)
+	{
+		$row = e107::getDb()->createQueryBuilder()
+			->select('*')->from($table)
+			->where($pid, $id)
+			->fetchRow();
+
+		return is_array($row) ? $row : array();
 	}
 
 
@@ -5200,6 +5226,7 @@ class e_admin_controller_ui extends e_admin_controller
 		}
 
 		$id = $model->getId();
+		$stored = $id ? $this->historySnapshot($this->table, $this->getPrimaryName(), $id) : array();
 
 		// Trigger Plugin Admin-ui event.  'pre'
 		if($triggerName = $this->getEventTriggerName($this->getEventName(), $_posted['etrigger_submit'])) // 'create' or 'update';
@@ -5220,10 +5247,10 @@ class e_admin_controller_ui extends e_admin_controller
 	    {
 	        $new_data = $model->getData();
 
-	        if($changes = array_diff_assoc($new_data, $old_data))
+	        if($changes = array_diff_assoc($new_data, $stored))
 	        {
-	            $old_changed_data = array_intersect_key($old_data, $changes);
-				$this->backupToHistory($this->table, $this->getPrimaryName(), $id, 'update', $old_changed_data);
+	            $old_changed_data = array_intersect_key($stored, $changes);
+				$this->backupToHistory($this->table, $this->getPrimaryName(), $id, 'update', $old_changed_data, false);
 	        }
 
 	    }
@@ -6252,9 +6279,9 @@ class e_admin_ui extends e_admin_controller_ui
 			{
 				$data = $model->getData();
 
-				if($this->table !== 'admin_history')
+				if($this->table !== 'admin_history' && ($stored = $this->historySnapshot($this->table, $this->pid, $id)))
 				{
-					$this->backupToHistory($this->table, $this->pid, $id, 'delete', $data);
+					$this->backupToHistory($this->table, $this->pid, $id, 'delete', $stored, false);
 				}
 
 				if($this->beforeDelete($data, $id))
@@ -6936,14 +6963,15 @@ class e_admin_ui extends e_admin_controller_ui
 		$this->setTriggersEnabled(false);
 		$data = array();
 		$model = $this->getTreeModel()->getNode($id); //FIXME - this has issues with being on a page other than the 1st. 
+
+		if($this->table !== 'admin_history' && ($stored = $this->historySnapshot($this->table, $this->pid, $id)))
+		{
+			$this->backupToHistory($this->table, $this->pid, $id, 'delete', $stored, false);
+		}
+
 		if($model)
 		{
 			$data = $model->getData();
-
-			if($this->table !== 'admin_history')
-			{
-				$this->backupToHistory($this->table, $this->pid, $id,'delete',$data);
-			}
 
 			if($this->beforeDelete($data, $id))
 			{
