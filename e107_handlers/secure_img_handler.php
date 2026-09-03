@@ -24,6 +24,16 @@ class secure_image
 	public $FONT_COLOR = "90,90,90";
 	private $secret;
 
+	/**
+	 * Characters a challenge is drawn from: no two alike in any shipped face, and none too wide for the image.
+	 */
+	const SOLUTION_ALPHABET = 'CDFLNRTVZ237';
+
+	/**
+	 * Characters in one challenge.
+	 */
+	const SOLUTION_LENGTH = 5;
+
 	function __construct()
 	{
 		
@@ -43,6 +53,27 @@ class secure_image
 	    $this->IMAGES_DIRECTORY     =  e107::getFolder('IMAGES');
 
 	}
+
+	/**
+	 * Draw a challenge from {@see secure_image::SOLUTION_ALPHABET}.
+	 *
+	 * @return string
+	 * @throws Exception when no CSPRNG is available. {@see e_random::int()}
+	 */
+	private function drawSolution()
+	{
+		$alphabet = self::SOLUTION_ALPHABET;
+		$last     = strlen($alphabet) - 1;
+		$solution = '';
+
+		for($i = 0; $i < self::SOLUTION_LENGTH; $i++)
+		{
+			$solution .= $alphabet[e_random::int(0, $last)];
+		}
+
+		return $solution;
+	}
+
 
 	/**
 	 * @deprecated Use createCode() instead.
@@ -69,7 +100,7 @@ class secure_image
 		list($usec, $sec)     = explode(" ", microtime());
 		$this->random_number  = str_replace(".", "", $sec.$usec);
 
-		$this->secret = e107::getUserSession()->generateRandomString('*****');
+		$this->secret = $this->drawSolution();
 
 		$secImg = e107::getSession('secureImage');
 
