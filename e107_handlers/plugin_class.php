@@ -169,6 +169,7 @@ class e_plugin
 		$this->_installed = array();
 		$this->_addons = array();
 		e107::setRegistry('core/e107/addons/e_url');
+		e107\Language\GlobalLanguageList::invalidate();
 
 		$this->_init(true);
 		$this->_initIDs();
@@ -1251,7 +1252,6 @@ class e_plugin
 		$core->set('bbcode_list', array())
 			 ->set('shortcode_legacy_list', array())
 			 ->set('shortcode_list', array())
-			 ->set('lan_global_list', array())
 			 ->set('wysiwyg_list', array());
 
 		$paths = $this->getDetected();
@@ -1277,11 +1277,6 @@ class e_plugin
 
 			if ($is_installed)
 			{
-				if($hasLAN = $this->hasLanGlobal())
-				{
-					$core->setPref('lan_global_list/'.$hasLAN, $hasLAN);
-				}
-
 				foreach ($tmp as $val)
 				{
 					if (strpos($val, 'e_') === 0)
@@ -1799,14 +1794,13 @@ class e107plugin
 						$this->XmlLanguageFiles('upgrade');
 					}
 
-					// Reconcile the global/log language-file lists on a folder scan too, not just 'refresh'.
+					// Reconcile the log language-file list on a folder scan too, not just 'refresh'.
 					// XmlLanguageFileCheck() forces an 'uninstall' (removePref) when the plugin is not
-					// installed, so a stale lan_global_list/lan_log_list entry for an uninstalled plugin
-					// is cleared instead of surviving every scan. See https://github.com/e107inc/e107/issues/5709
+					// installed, so a stale lan_log_list entry for an uninstalled plugin is cleared
+					// instead of surviving every scan. See https://github.com/e107inc/e107/issues/5709
 					if ($mode == 'refresh' || $mode == 'update')
 					{
 						if ($this->XmlLanguageFileCheck('_log', 'lan_log_list', 'refresh', $pluginDBList[$plugin_path]['plugin_installflag'], FALSE, $plugin_path)) $sp = TRUE;
-						if ($this->XmlLanguageFileCheck('_global', 'lan_global_list', 'refresh', $pluginDBList[$plugin_path]['plugin_installflag'], TRUE, $plugin_path)) $sp = TRUE;
 					}
 
 					// Check for missing plugin_category in plugin table.
@@ -1915,6 +1909,8 @@ class e107plugin
 			$this->rebuildUrlConfig();
 			e107::getConfig('core')->save(true,false,false);
 		}
+
+		e107::getPlug()->clearCache();
 
 		// Triggering system (post) event.
 		e107::getEvent()->trigger('system_plugins_table_updated', array(
@@ -3982,15 +3978,8 @@ class e107plugin
 				case 'install':
 				case 'upgrade':
 				case 'refresh':
-					e107::getMessage()->addDebug("Adding ".$this->plugFolder." to lan_global_list");
 					e107::lan($this->plugFolder,'global',true);
-					$core->setPref('lan_global_list/'.$this->plugFolder, $this->plugFolder);
-					$updated = true;
 					break;
-				case 'uninstall':
-					$core->removePref('lan_global_list/'.$this->plugFolder);
-					$updated = true;
-				break;
 			}	
 		}
 			

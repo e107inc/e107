@@ -1277,8 +1277,6 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 
 		$arr = array();
 
-		$pref = e107::getPref();
-
 		foreach($data as $path=>$ver)
 		{
 
@@ -1287,7 +1285,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 				continue;
 			}
 
-			if(!empty($pref['lan_global_list']) && !in_array($path, $pref['lan_global_list']))
+			if(!e107\Language\GlobalLanguageList::has($path))
 			{
 				e107::loadLanFiles($path, 'admin');
 			}
