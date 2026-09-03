@@ -823,21 +823,13 @@ class links_admin_form_ui extends e_admin_form_ui
 	{
 		if($mode == 'read' || $mode == 'link_id') // read = display mode, link_id = actual absolute URL
 		{
-			$owner = $this->getController()->getListModel()->get('link_owner');
-			$sef =  $this->getController()->getListModel()->get('link_sefurl');
-
 			if(substr($curVal, 0, 1) !== '{' && substr($curVal,0,4) != 'http' && $mode == 'link_id')
 			{
 				$curVal = '{e_BASE}'.$curVal;
 			}
 
-			$sefUrl = '';
-
-			if(!empty($owner) && !empty($sef))
-			{
-				$opt = ($mode == 'read') ? array('mode'=>'raw') : array();
-				$sefUrl = e107::url($owner, $sef, null, $opt);
-			}
+			$opt = ($mode == 'read') ? array('mode'=>'raw') : array();
+			$sefUrl = sitelinks::sefUrl($this->getController()->getListModel()->getData(), $opt);
 
 			if(!empty($sefUrl))
 			{
@@ -856,21 +848,15 @@ class links_admin_form_ui extends e_admin_form_ui
 
 		if($mode == 'write')
 		{
-			$owner = $this->getController()->getModel()->get('link_owner');
-			$sef =  $this->getController()->getModel()->get('link_sefurl');
+			$sefUrl = sitelinks::sefUrl($this->getController()->getModel()->getData());
 
-			if(!empty($owner) && !empty($sef))
+			if(!empty($sefUrl))
 			{
-				$sefUrl = e107::url($owner, $sef);
+				$text = (strpos($sefUrl, e_HTTP) === 0) ? (string) substr($sefUrl, strlen(e_HTTP)) : $sefUrl;
+				$text .= $this->hidden('link_url',$curVal);
+				$text .= " <span class='label label-warning'>".LAN_AUTO_GENERATED."</span>";
 
-				if(!empty($sefUrl))
-				{
-					$text = (strpos($sefUrl, e_HTTP) === 0) ? (string) substr($sefUrl, strlen(e_HTTP)) : $sefUrl;
-					$text .= $this->hidden('link_url',$curVal);
-					$text .= " <span class='label label-warning'>".LAN_AUTO_GENERATED."</span>";
-
-					return $text;
-				}
+				return $text;
 			}
 
 			return $this->text('link_url', $curVal, 255,  array('size'=>'xxlarge'));
