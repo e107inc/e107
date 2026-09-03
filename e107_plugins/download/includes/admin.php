@@ -1212,33 +1212,13 @@ $columnInfo = array(
 			
 		//	print_a($this);
 	
-	      	global $e107, $cal, $rs, $ns, $file_array, $image_array, $thumb_array;
+	      	global $e107, $cal, $rs, $ns, $image_array, $thumb_array;
 	      	require_once(e_PLUGIN.'download/download_shortcodes.php');
 			require_once(e_PLUGIN.'download/handlers/download_class.php');
 	      	require_once(e_HANDLER."form_handler.php");
 			
 			$download = new download;
 	
-		    if ($file_array = $fl->get_files(e_DOWNLOAD, "","standard",5))
-		    {
-		    	sort($file_array);
-		    }
-		    if ($public_array = $fl->get_files(e_UPLOAD))
-		    {
-		    	foreach($public_array as $key=>$val)
-		    	{
-					$file_array[] = str_replace(e_UPLOAD,"",$val);
-				}
-			}
-	/*      if ($sql->select("rbinary")) //TODO Remove me.
-	      {
-	         while ($row = $sql->fetch())
-	         {
-	            extract($row);
-	            $file_array[] = "Binary ".$binary_id."/".$binary_name;
-	         }
-	      }
-	*/
 	      if ($image_array = $fl->get_files(e_FILE.'downloadimages/', '\.gif$|\.jpg$|\.png$|\.GIF$|\.JPG$|\.PNG$','standard',2))
 	      {
 	         sort($image_array);
@@ -1309,51 +1289,19 @@ $columnInfo = array(
 	                  <table class='table adminform' style='margin:0'>
 	                     <tr>
 	                        <td>".DOWLAN_13."</td>
-	                        <td style='width:80%'>
-	                           <div>".DOWLAN_131."&nbsp;&nbsp;";
-							  
-	                   //       $text .= "<select name='download_url' class='form-control'>
-	                  //               <option value=''>&nbsp;</option>\n";
-	   
-	
-	      $counter = 0;
-	      while (isset($file_array[$counter]))
-	      {
-	         $fpath = str_replace(e_DOWNLOAD,"",$file_array[$counter]['path']).$file_array[$counter]['fname'];
-	         $selected = '';
-	         if (stripos($fpath, $download_url) !== false)
-	         {
-	            $selected = " selected='selected'";
-	            $found = 1;
-	         }
-	
-	     //    $text .= "<option value='".$fpath."' $selected>".$fpath."</option>\n";
-	         $counter++;
-	      }
-	
+	                        <td style='width:80%'>";
+
+	      $download_url = varset($download_url, '');
+
 	      if (preg_match("/http:|https:|ftp:/", $download_url))
 	      {
 	         $download_url_external = $download_url;
 	         $download_url = '';
 	      }
-	
-	      $etext = " - (".DOWLAN_68.")";
-	      if (file_exists(e_UPLOAD.$download_url))
-	      {
-	         $etext = "";
-	      }
-	
-	      //if (!$found && $download_url)
-	   //   {
-	    //     $text .= "<option value='".$download_url."' selected='selected'>".$download_url.$etext."</option>\n";
-	  //    }
-	
-	  //    $text .= "             </select>";
-	  
-	  	$text .= e107::getForm()->filepicker("download_url",$download_url,DOWLAN_131,"media=download_file&title=Choose a file");
-	  
+
+	      $text .= $this->localFileField($download_url);
+
 	      $text .= "
-	                        </div>
 	                     </td>
 	                  </tr>
 	               </table>
@@ -1699,6 +1647,68 @@ $columnInfo = array(
 		}
 	}
 
+	   /**
+	    * The file $path names inside {@see e_DOWNLOAD}, as a path relative to it, or false when it names no readable file there.
+	    *
+	    * @param string $path as typed on the Local tab
+	    * @return string|false
+	    */
+	   private function localDownloadPath($path)
+	   {
+	      if(!is_string($path) || trim($path) === '')
+	      {
+	         return false;
+	      }
+
+	      $resolved = e107::getFile()->resolveSendPath(e_DOWNLOAD.ltrim(trim($path), '/\\'), array(e_DOWNLOAD));
+
+	      if($resolved === false || !is_file($resolved))
+	      {
+	         return false;
+	      }
+
+	      return (string) substr($resolved, strlen(rtrim(realpath(e_DOWNLOAD), '/\\')) + 1);
+	   }
+
+	   /**
+	    * The Local tab's file for this submission: the typed path, or null where the media picker's own value stands, or false where the typed path names nothing in the downloads directory.
+	    *
+	    * @param array $posted
+	    * @return string|null|false
+	    */
+	   private function submittedLocalPath(array $posted)
+	   {
+	      $typed = isset($posted['download_url_local']) ? $posted['download_url_local'] : '';
+
+	      if(!is_string($typed) || trim($typed) === '')
+	      {
+	         return null;
+	      }
+
+	      $picked   = isset($posted['download_url']) ? $posted['download_url'] : '';
+	      $rendered = isset($posted['download_url_picked']) ? $posted['download_url_picked'] : '';
+
+	      $freshlyPicked = is_string($picked) && trim($picked) !== '' && $picked !== $rendered;
+
+	      return $freshlyPicked ? null : $this->localDownloadPath($typed);
+	   }
+
+	   /**
+	    * The Local tab's two controls: the Media Manager picker, and the path relative to {@see e_DOWNLOAD} that {@see download_main_admin_ui::localDownloadPath()} validates on submit.
+	    *
+	    * @param string $downloadUrl stored value
+	    * @return string
+	    */
+	   private function localFileField($downloadUrl)
+	   {
+	      $frm    = e107::getForm();
+	      $typed  = (string) $this->localDownloadPath($downloadUrl);
+	      $picked = $typed === '' ? $downloadUrl : '';
+
+	      return "<div>".DOWLAN_131."&nbsp;&nbsp;".$frm->filepicker("download_url", $picked, DOWLAN_131, "media=download_file&title=Choose a file").$frm->hidden("download_url_picked", $picked)."</div>
+	         <div>".defset('DOWLAN_LOCAL_PATH', 'Or a path inside the downloads directory')."&nbsp;&nbsp;".$frm->text("download_url_local", $typed, 255, array('size' => 'xxlarge'))."</div>";
+	   }
+
 	// Actually save a new or edited download to the DB
 	   function submit_download()
 	   {
@@ -1723,6 +1733,20 @@ $columnInfo = array(
 		        	$_POST['download_filesize_external'] = FALSE;
 		       	}
 			}
+
+			$localPath = $this->submittedLocalPath($_POST);
+
+			if ($localPath === false)
+			{
+				$mes->addError(defset('DOWLAN_LOCAL_PATH_NOT_FOUND', 'No file of that name is in the downloads directory, so nothing was saved. Check the path against the downloads directory and submit the download again.'));
+
+				return;
+			}
+
+			if ($localPath !== null)
+			{
+				$_POST['download_url'] = $localPath;
+			}
 	
 			if (!empty($_POST['download_url_external']) && empty($_POST['download_url']) && !empty($_POST['download_filesize_unit']))
 			{
@@ -1732,7 +1756,7 @@ $columnInfo = array(
 			}
 			else
 			{
-				$dlInfo['download_url'] = $tp->toDB($_POST['download_url']);
+				$dlInfo['download_url'] = is_string($localPath) ? $localPath : $tp->toDB($_POST['download_url']);
 				if ($_POST['download_filesize_external'])
 				{
 	            	$filesize = intval($_POST['download_filesize_external']);
@@ -1748,8 +1772,12 @@ $columnInfo = array(
 					{
 						$filesize = filesize($tp->replaceConstants($dlInfo['download_url']));
 					}
+					elseif(($sized = $this->localDownloadPath($dlInfo['download_url'])) !== false)
+					{
+						$filesize = filesize(e_DOWNLOAD.$sized);
+					}
 		            else
-		            {  	
+		            {
 		               $filesize = filesize(e_BASE.$DOWNLOADS_DIRECTORY.$dlInfo['download_url']);
 		            }
 				}
