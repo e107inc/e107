@@ -43,7 +43,7 @@ class history_adminArea extends e_admin_dispatcher
 		'main/edit'	=> 'main/list'				
 	);	
 	
-	protected $menuTitle = 'History';
+	protected $menuTitle = LAN_HISTORY;
 
 	protected $adminMenuIcon = '{e_IMAGE}admin_images/undo_32.png';
 }
@@ -75,12 +75,12 @@ class admin_history_ui extends e_admin_ui
 			'checkboxes'              => array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => 'value', 'class' => 'center', 'toggle' => 'e-multiselect', 'readParms' => [], 'writeParms' => [],),
 		//	'history_id'              => array ( 'title' => LAN_ID, 'type' => 'number', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => [], 'writeParms' => [], 'class' => 'left', 'thclass' => 'left',),
 			'history_datestamp'       => array ( 'title' => LAN_DATESTAMP, 'type' => 'datestamp', 'data' => 'int', 'width' => '15%', 'filter' => true, 'help' => '', 'readParms' => [], 'writeParms' => [], 'class' => 'left', 'thclass' => 'left',),
-			'history_table'           => array ( 'title' => 'Table', 'type' => 'text', 'data' => 'safestr', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => [], 'writeParms' => [], 'class' => 'left', 'thclass' => 'left',),
+			'history_table'           => array ( 'title' => LAN_HISTORY_TABLE, 'type' => 'text', 'data' => 'safestr', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => [], 'writeParms' => [], 'class' => 'left', 'thclass' => 'left',),
 			'history_record_id'       => array ( 'title' => LAN_ID, 'type' => 'number', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => [], 'writeParms' => [], 'class' => 'left', 'thclass' => 'left',),
-			'history_action'          => array ( 'title' => 'Action', 'type' => 'dropdown', 'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => [], 'writeParms' => [], 'class' => 'left', 'thclass' => 'left', 'batch' => false,),
-			'history_data'            => array ( 'title' => 'Changed Data', 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => [], 'writeParms' => [], 'class' => 'history-data left', 'thclass' => 'left', 'filter' => false, 'batch' => false,),
+			'history_action'          => array ( 'title' => LAN_HISTORY_ACTION, 'type' => 'dropdown', 'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => [], 'writeParms' => [], 'class' => 'left', 'thclass' => 'left', 'batch' => false,),
+			'history_data'            => array ( 'title' => LAN_HISTORY_CHDATA, 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => [], 'writeParms' => [], 'class' => 'history-data left', 'thclass' => 'left', 'filter' => false, 'batch' => false,),
 			'history_user_id'         => array ( 'title' => LAN_USER, 'type' => 'user', 'data' => 'int', 'width' => '5%', 'filter' => true, 'help' => '', 'readParms' => [], 'writeParms' => [], 'class' => 'left', 'thclass' => 'left',),
-			'history_restored'         => array ( 'title' => "Restored", 'type' => 'datestamp', 'data' => 'int', 'width' => '5%', 'filter' => true, 'help' => '', 'readParms' => [], 'writeParms' => [], 'class' => 'center', 'thclass' => 'center',),
+			'history_restored'         => array ( 'title' => LAN_HISTORY_RESTORCOL, 'type' => 'datestamp', 'data' => 'int', 'width' => '5%', 'filter' => true, 'help' => '', 'readParms' => [], 'writeParms' => [], 'class' => 'center', 'thclass' => 'center',),
 
 			'options'                 => array ( 'title' => LAN_OPTIONS, 'type' => 'method', 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => 'value', 'readParms' => [], 'writeParms' => [],),
 		);		
@@ -98,7 +98,7 @@ class admin_history_ui extends e_admin_ui
 				$this->fields['history_action']['writeParms']['optArray'] = [
 					'delete'    => "<span class='label label-danger'>". LAN_DELETE."</span>",
 					'update'    =>  "<span class='label label-success'>". LAN_UPDATE."</span>",
-					'restore'    =>  "<span class='label label-warning'>Restore</span>"
+					'restore'    =>  "<span class='label label-warning'>".LAN_HISTORY_RESTORE."</span>"
 				];
 
 
@@ -228,16 +228,16 @@ class admin_history_ui extends e_admin_ui
 	{
 		$caption = LAN_HELP;
 		$text = "
-        <p>This page allows you to view the <strong>history of changes</strong> made to records in the system and restore records to a previous state when needed.</p>
+        <p>".LAN_HISTORY_HELP_INTRO."</p>
         
-        <h4>Features of this page:</h4>
+        <h4>".LAN_HISTORY_HELP_FEATURES."</h4>
         <ul>
-            <li><strong>View Changes:</strong> See details of updates and deletions, including who made the changes and when.</li>
-            <li><strong>Revert Changes:</strong> Restore a record to its earlier version, undoing accidental or undesired modifications.</li>
-            <li><strong>Audit Trail:</strong> Track all actions performed on records for accountability and transparency.</li>
+            <li>".LAN_HISTORY_HELP_VIEW."</li>
+            <li>".LAN_HISTORY_HELP_REVERT."</li>
+            <li>".LAN_HISTORY_HELP_AUDIT."</li>
         </ul>
         
-        <p>Use the filters to narrow down the history logs or locate specific changes. If a record can be restored, an option will be available in the Options menu.</p>
+        <p>".LAN_HISTORY_HELP_FILTERS."</p>
     ";
 
 		return ['caption' => $caption, 'text' => $text];
@@ -264,7 +264,7 @@ class admin_history_form_ui extends e_admin_form_ui
 		if (!empty($id))
 		{
 			// Generate Restore button
-			$restoreTitle = "Restore this Record";
+			$restoreTitle = LAN_HISTORY_RESTORREC;
 
 			$type = $row['history_action'];
 			$name = ($type === 'delete') ? "restore_deleted[$id]" : "restore_updated[$id]";
