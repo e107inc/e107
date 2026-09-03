@@ -1386,11 +1386,12 @@ class banlistManager
 		{
 			while ($row = $sql->fetch())
 			{
-				$encodedAddress = $this->trimWildcard($this->encodeBanAddress($row['banlist_ip']));
+				if ($row['banlist_bantype'] == eIPHandler::BAN_TYPE_LEGACY) $row['banlist_bantype'] = eIPHandler::BAN_TYPE_UNKNOWN;		// Handle legacy bans
+				$encodedAddress = $this->trimWildcard($row['banlist_bantype'] < 0
+					? $this->encodeBanAddress($row['banlist_ip']) : $row['banlist_ip']);
 				$row['banlist_ip'] = $this->trimWildcard($row['banlist_ip']);
 				if ($row['banlist_ip'] == '') continue;								// Ignore empty IP addresses
 				if ($ipManager->whatIsThis($row['banlist_ip']) != 'ip') continue;		// Ignore non-numeric IP Addresses
-				if ($row['banlist_bantype'] == eIPHandler::BAN_TYPE_LEGACY) $row['banlist_bantype'] = eIPHandler::BAN_TYPE_UNKNOWN;		// Handle legacy bans
 				foreach ($optList as $opt)
 				{
 					$line = '';
