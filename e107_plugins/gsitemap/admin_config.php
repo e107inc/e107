@@ -214,7 +214,7 @@ class gsitemap_ui extends e_admin_ui
 			{
 				if(!in_array($row['link_name'], $existing))
 				{
-					$sefUrl = !empty($row['link_owner']) && !empty($row['link_sefurl']) ? e107::url($row['link_owner'], $row['link_sefurl']) : '';
+					$sefUrl = sitelinks::sefUrl($row);
 
 					$importArray[] = array(
 						'table' => 'links',

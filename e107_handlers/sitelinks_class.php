@@ -387,6 +387,26 @@ class sitelinks
 
 
 	/**
+	 * Resolve the SEF URL a sitelink row names, or '' when it names none and when the route does not resolve
+	 *
+	 * @param array $linkInfo a sitelink row, read for its link_owner and link_sefurl
+	 * @param array $options as {@see e107::url()} takes them
+	 * @return string
+	 */
+	public static function sefUrl($linkInfo, $options = array())
+	{
+		if(empty($linkInfo['link_owner']) || empty($linkInfo['link_sefurl']))
+		{
+			return '';
+		}
+
+		$sefUrl = e107::url($linkInfo['link_owner'], $linkInfo['link_sefurl'], array(), $options);
+
+		return !empty($sefUrl) ? $sefUrl : '';
+	}
+
+
+	/**
 	 * @param $linkInfo
 	 * @param $submenu
 	 * @param $style
@@ -411,14 +431,11 @@ class sitelinks
 			$style['linkclass_hilite'] = "";	
 		}
 
-		if(!empty($linkInfo['link_sefurl']) && !empty($linkInfo['link_owner']))
-		{
-			$sefUrl = e107::url($linkInfo['link_owner'], $linkInfo['link_sefurl']);
+		$sefUrl = self::sefUrl($linkInfo);
 
-			if(!empty($sefUrl))
-			{
-				$linkInfo['link_url'] = $sefUrl;
-			}
+		if(!empty($sefUrl))
+		{
+			$linkInfo['link_url'] = $sefUrl;
 		}
 
 
@@ -2067,14 +2084,11 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 
 		$dbLink = str_replace("//","/",$dbLink); // precaution for e_HTTP inclusion above.
 
-		if(!empty($data['link_owner']) && !empty($data['link_sefurl']))
-		{
-			$sefUrl = e107::url($data['link_owner'], $data['link_sefurl']);
+		$sefUrl = sitelinks::sefUrl($data);
 
-			if(!empty($sefUrl))
-			{
-				$dbLink = $sefUrl;
-			}
+		if(!empty($sefUrl))
+		{
+			$dbLink = $sefUrl;
 		}
 
 		//if(E107_DBG_PATH)

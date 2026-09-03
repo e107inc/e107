@@ -9,7 +9,8 @@
 
 /**
  * e107::url() answers false for an e_url key the registry does not hold, and a
- * sitelink that names one still carries the URL it was saved with.
+ * sitelink that names one still carries the URL it was saved with. The six call
+ * sites reach that answer through {@see sitelinks::sefUrl()}.
  */
 class sitelinksLinkUrlTest extends \Test\Unit
 {
@@ -262,5 +263,77 @@ class sitelinksLinkUrlTest extends \Test\Unit
 
 		self::assertSame(array(), $this->offsetDiagnostics(),
 			'reading the first character of an empty URL is a diagnostic on every supported PHP');
+	}
+
+	public function testTheResolverAnswersAnEmptyStringWhenTheRouteIsUnknown()
+	{
+		self::assertSame('', sitelinks::sefUrl(self::pluginRow()),
+			'e107::url() answers false for a key the registry does not hold, and every call site tests the answer with !empty()');
+	}
+
+	public function testTheResolverAnswersTheUrlWhenTheRouteResolves()
+	{
+		$restore = self::registerRoute('my/route');
+
+		try
+		{
+			$sefUrl = sitelinks::sefUrl(self::pluginRow());
+		}
+		finally
+		{
+			self::restoreRoutes($restore);
+		}
+
+		self::assertSame(e_HTTP.'my/route', $sefUrl,
+			'a registered route is the URL the six call sites are asking the resolver for');
+	}
+
+	public function testTheResolverAnswersAnEmptyStringForARowWithNoRoute()
+	{
+		self::assertSame('', sitelinks::sefUrl(self::headingRow()), 'a heading names no route to resolve');
+	}
+
+	public function testTheResolverReadsARowThatPredatesTheSefColumnsWithoutADiagnostic()
+	{
+		$row = self::headingRow();
+
+		unset($row['link_owner'], $row['link_sefurl']);
+
+		$sefUrl = $this->quietly(function () use ($row)
+		{
+			return sitelinks::sefUrl($row);
+		});
+
+		self::assertSame('', $sefUrl, 'a links row saved before these columns existed names no route either');
+		self::assertSame(array(), $this->offsetDiagnostics(),
+			'and the resolver has to reach for the two keys without assuming the row carries them');
+	}
+
+	public function testTheResolverAnswersAStringForALegacyCoreOwner()
+	{
+		$row = self::pluginRow();
+
+		$row['link_owner']  = 'search';
+		$row['link_sefurl'] = 'index';
+
+		self::assertIsString(sitelinks::sefUrl($row),
+			'e107::url() hands its third argument straight to eRouter::assemble() as $options for a legacy core owner, and array_merge() will not take null');
+	}
+
+	public function testTheResolverPassesItsOptionsToTheUrlBuilder()
+	{
+		$restore = self::registerRoute('my/route');
+
+		try
+		{
+			$raw = sitelinks::sefUrl(self::pluginRow(), array('mode' => 'raw'));
+		}
+		finally
+		{
+			self::restoreRoutes($restore);
+		}
+
+		self::assertSame('my/route', $raw,
+			"the admin list's read mode is the one caller whose options have to reach e107::url()");
 	}
 }
