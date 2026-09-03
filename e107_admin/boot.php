@@ -227,11 +227,10 @@ e107::coreLan('footer', true);
 // here mostly because of BC reasons
 //if(!deftrue('e_MINIMAL'))
 {
-	$_globalLans = e107::pref('core', 'lan_global_list'); 
 	$_plugins = e107::getPref('plug_installed');
 	$plugDir = e107::getFolder('plugins');
 
-	if(strpos(e_REQUEST_URI,$plugDir) !== false && !deftrue('e_ADMIN_UI') && !empty($_plugins) && !empty($_globalLans) && is_array($_plugins) && (count($_plugins) > 0))
+	if(strpos(e_REQUEST_URI,$plugDir) !== false && !deftrue('e_ADMIN_UI') && !empty($_plugins) && is_array($_plugins) && (count($_plugins) > 0))
 	{
 		$_plugins = array_keys($_plugins);
 
@@ -242,7 +241,7 @@ e107::coreLan('footer', true);
 				continue;
 			}
 
-			if(in_array($_p, $_globalLans)) // filter out those with globals unless we are in a plugin folder.
+			if(e107\Language\GlobalLanguageList::has($_p)) // filter out those with globals unless we are in a plugin folder.
 			{
 				continue;
 			}

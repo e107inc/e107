@@ -680,19 +680,6 @@ function update_core_database($type = '')
 
 		}
 
-		if(!isset($pref['lan_global_list']['news']))
-		{
-			if($just_check)
-			{
-				return update_needed("News is missing from global lan list. ");
-			}
-
-			$plgClass = e107::getPlugin();
-			$plgClass->plugFolder = 'news';
-			$plgClass->XmlLanguageFiles('refresh');
-		}
-
-
 		if(!$sql->createQueryBuilder()->select('media_cat_id')->from('core_media_cat')->where('media_cat_category', '_icon_svg')->setMaxResults(1)->fetchRow())
 		{
 			if($just_check)
@@ -745,6 +732,17 @@ function update_core_database($type = '')
 			}
 
 			e107::getConfig()->remove('flood_protect')->save(false,true,false);
+		}
+
+
+		if(isset($pref['lan_global_list']))
+		{
+			if ($just_check)
+			{
+				return update_needed("The global language list is now derived, so its old pref needs to be removed.");
+			}
+
+			e107::getConfig()->remove('lan_global_list')->save(false,true,false);
 		}
 
 

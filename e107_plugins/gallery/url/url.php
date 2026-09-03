@@ -39,10 +39,10 @@ class plugin_gallery_url extends eUrlConfig
 	 * The labels below are this plugin's own, out of its
 	 * languages/English/English_global.php, and not lan_eurl.php as this
 	 * docblock used to claim. That file only reaches an admin page when the
-	 * plugin is in the lan_global_list pref, so on the URL configuration page
-	 * of a site where it is not, every one of them is an undefined constant,
-	 * which PHP 8 makes fatal. Loading it here costs a cached registry lookup
-	 * and makes the module answerable for its own strings.
+	 * plugin is installed, so on the URL configuration page of a site where it
+	 * is not, every one of them is an undefined constant, which PHP 8 makes
+	 * fatal. Loading it here costs a cached registry lookup and makes the
+	 * module answerable for its own strings.
 	 */
 	public function admin()
 	{

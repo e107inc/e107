@@ -966,7 +966,7 @@ class xmlClass
 		{
 			$xmlArray = e107::getSingleton('xmlClass')->loadXMLfile(e_CORE."xml/default_install.xml",'advanced');
 			$default = e107::getSingleton('xmlClass')->e107ImportPrefs($xmlArray,'core');
-			$excludes = array('social_login','replyto_email','replyto_name','siteadminemail','lan_global_list','menuconfig_list','plug_installed','shortcode_legacy_list','siteurl','cookie_name','install_date', 'wysiwyg');
+			$excludes = array('social_login','replyto_email','replyto_name','siteadminemail','menuconfig_list','plug_installed','shortcode_legacy_list','siteurl','cookie_name','install_date', 'wysiwyg');
 		}
 
 		if(varset($xmlprefs)) // Export Core Preferences.

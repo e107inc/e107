@@ -579,17 +579,7 @@ if(!isset($_E107['no_lan']))
 
 	$dbg->logTime('Include Global Plugin Language Files');
 
-	if(isset($pref['lan_global_list']))
-	{
-		foreach($pref['lan_global_list'] as $path)
-		{
-			if(e107::plugLan($path, 'global', true) === false)
-			{
-				e107::plugLan($path, 'global');
-			}
-
-		}
-	}
+	e107\Language\GlobalLanguageList::loadAll();
 }
 
 if(!isset($_E107['no_session']))
