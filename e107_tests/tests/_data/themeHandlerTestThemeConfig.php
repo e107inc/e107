@@ -13,8 +13,11 @@
 
 class theme_config
 {
+	/** @var array|null the declarations {@see theme_config::config()} answers with, or null for the test class's own set */
+	public static $fields = null;
+
 	public function config()
 	{
-		return themeHandlerTest::themeConfigFields();
+		return self::$fields === null ? themeHandlerTest::themeConfigFields() : self::$fields;
 	}
 }
