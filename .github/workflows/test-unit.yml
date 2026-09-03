@@ -14,11 +14,11 @@ concurrency:
 # The unit suite runs on the same harness developers use locally
 # (e107_tests/bin/e107-tests), so a CI failure reproduces with two commands:
 #
-#   e107_tests/bin/e107-tests up --php 5.6 --db mysql:5.5 --xdebug --no-selenium
+#   e107_tests/bin/e107-tests up --php 5.6 --db mysql:5.5 --no-selenium
 #   e107_tests/bin/e107-tests ci-unit
 #
-# `ci-unit` exists to replay this job exactly, coverage flags and all, so base
-# image drift such as a changed default memory_limit reproduces on demand.
+# `ci-unit` exists to replay this job exactly, so base image drift such as a
+# changed default memory_limit reproduces on demand.
 #
 # The harness image is also better equipped than the container it replaces,
 # which turns nine skipped tests back into running ones: it ships ImageMagick,
@@ -28,9 +28,11 @@ concurrency:
 # e_fileOutboundRequest TLS peer-verification cases do too. The tenth skip,
 # opt-in CDN fixture regeneration, is correct and stays.
 #
-# Coverage is still measured and coverage.xml still travels with the failure
-# artefacts, but nothing consumes it off the runner: the Code Climate reporter
-# that used to receive it is gone, and its download URL now answers 404.
+# No coverage is measured here. Nothing has consumed it since the Code Climate
+# reporter went, and collecting it under Xdebug multiplied the run by three on
+# PHP 8.5, by seven on 7.0 and by nine on 5.6, before the Clover report added
+# its own minutes on top. `e107-tests run unit --coverage` on an env brought up
+# with `up --xdebug` still measures it on demand.
 
 jobs:
   test-unit:
@@ -53,10 +55,9 @@ jobs:
         with:
           submodules: recursive
 
-      # The xdebug image, because coverage needs it. No --install-site: the
-      # unit suite loads a dump and never runs the installer. --no-selenium
-      # because this branch has no WebDriver suite and the browser image is
-      # over a gigabyte.
+      # No --install-site: the unit suite loads a dump and never runs the
+      # installer. --no-selenium because this branch has no WebDriver suite and
+      # the browser image is over a gigabyte.
       #
       # PHP 5.6 and 7.0 can be pointed at mysql:8.0 here, which the previous
       # workflow had to exclude. GitHub Actions service containers take no
@@ -69,10 +70,9 @@ jobs:
         with:
           php: ${{ matrix.php }}
           db: ${{ matrix.db }}
-          xdebug: 'yes'
           up-args: --no-selenium
 
-      - name: Run unit tests with coverage
+      - name: Run unit tests
         run: ./e107_tests/bin/e107-tests ci-unit
 
       - name: Collect container logs

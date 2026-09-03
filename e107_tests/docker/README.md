@@ -264,8 +264,11 @@ e107-tests sql < dump.sql
 e107-tests exec php -i             # one-shot PHP CLI command
 
 # CI reproduction
+e107-tests ci-unit                 # CI's exact unit command
+
+# Coverage, on demand
 e107-tests up --xdebug             # coverage-capable image
-e107-tests ci-unit                 # CI's exact unit coverage command
+e107-tests run unit --coverage --coverage-html
 
 # Reset only the DB and test-written app state, keep the stack
 e107-tests reset
