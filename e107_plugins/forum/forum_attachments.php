@@ -156,6 +156,39 @@ class forum_attachments
 	}
 
 	/**
+	 * Cover a poster's directory and the root above it, before anything is written into either.
+	 *
+	 * @param string $dir a poster's directory, as {@see e107forum::getAttachmentPath()} returns it
+	 * @return bool true when the directory and whichever of {@see forum_attachments::paths()} holds it are both covered
+	 */
+	public static function protectPath($dir)
+	{
+		if(!is_dir($dir))
+		{
+			@mkdir($dir, 0755, true);
+		}
+
+		if(!is_dir($dir))
+		{
+			return false;
+		}
+
+		$file = e107::getFile();
+		$covered = true;
+
+		foreach(self::paths() as $root)
+		{
+			if(strpos($dir, $root) === 0)
+			{
+				$covered = $file->protectDirectory($root);
+				break;
+			}
+		}
+
+		return $file->protectDirectory($dir) && $covered;
+	}
+
+	/**
 	 * Whether every caller may read the attachment, decided without working out
 	 * who is asking.
 	 *

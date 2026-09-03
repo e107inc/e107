@@ -258,6 +258,7 @@ return [
     'LAN_FORUM_OPEN' => "Thread reopened.",
     'LAN_FORUM_STICK' => "Thread made sticky.",
     'LAN_FORUM_UNSTICK' => "Thread unstuck.",
+    'LAN_FORUM_ATTACHMENT_REFUSED_UNPROTECTED' => "Attachment refused: its directory could not be protected from direct download. Please tell the site administrator.",
 
 
 

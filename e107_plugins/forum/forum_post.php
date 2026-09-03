@@ -1764,11 +1764,16 @@ class forum_post_handler
 			require_once(e_PLUGIN.'forum/forum_attachments.php');
 
 			$file = e107::getFile();
-			$paths = forum_attachments::paths();
 			$dir = $this->forumObj->getAttachmentPath(USERID, TRUE);
 
-			$file->protectDirectory($paths[0]);
-			$file->protectDirectory($dir);
+			$offered = array_diff((array) $_FILES['file_userfile']['error'], array(UPLOAD_ERR_NO_FILE));
+
+			if($offered !== array() && !forum_attachments::protectPath($dir))
+			{
+				e107::getMessage()->addError(LAN_FORUM_ATTACHMENT_REFUSED_UNPROTECTED, 'default', true);
+
+				return $ret;
+			}
 
 			$type = 'attachment+'.e_random::hex(16).'_';
 
