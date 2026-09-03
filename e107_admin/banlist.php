@@ -12,6 +12,9 @@
 */
 require_once(__DIR__.'/../class2.php');
 
+use e107\Banlist\Entry;
+use e107\Ip\Address;
+
 if (!getperms('4'))
 {
 	e107::redirect('admin');
@@ -132,12 +135,14 @@ class banlist_ui extends e_admin_ui
 		{
 			parent::CreateObserver();
 			$this->fields['banlist_ip']['title']= BANLAN_5;
+			$this->fields['banlist_ip']['help']= BANLAN_ENTRY_FORMATS;
 		}
 
 		function EditObserver()
 		{
 			parent::EditObserver();
 			$this->fields['banlist_ip']['title']= BANLAN_5;
+			$this->fields['banlist_ip']['help']= BANLAN_ENTRY_FORMATS;
 		}
 
 		//
@@ -151,6 +156,13 @@ class banlist_ui extends e_admin_ui
 			$ret = array(
 				"banlist_ip = '".$srch."'"
 			);
+
+			$stored = Entry::fromText($srch)->stored();
+
+			if($stored !== null)
+			{
+				$ret[] = "banlist_ip = '".e107::getDb()->escape($stored)."'";
+			}
 
 			if($ip6 = e107::getIPHandler()->ipEncode($srch,true))
 			{
@@ -194,26 +206,49 @@ class banlist_ui extends e_admin_ui
 
 		public function beforeCreate($new_data, $old_data)
 		{
-			$new_data['banlist_admin'] = ADMINID;
-
-			if(filter_var($new_data['banlist_ip'], FILTER_VALIDATE_IP)) // check it's an IP
-			{
-				$new_data['banlist_ip'] = e107::getIPHandler()->ipEncode($new_data['banlist_ip']);
-			}
-
-			return $new_data;
+			return $this->storableRow($new_data);
 		}
 
 		public function beforeUpdate($new_data, $old_data, $id)
 		{
-			$new_data['banlist_admin'] = ADMINID;
+			return $this->storableRow($new_data);
+		}
 
-			if(filter_var($new_data['banlist_ip'], FILTER_VALIDATE_IP)) // check it's an IP
+		/**
+		 * @param array $data the posted row
+		 * @return array|false the row with banlist_ip in its stored form, or false when the entry is one nothing enforces
+		 */
+		private function storableRow($data)
+		{
+			$data['banlist_admin'] = ADMINID;
+
+			if(!isset($data['banlist_ip']))
 			{
-				$new_data['banlist_ip'] = e107::getIPHandler()->ipEncode($new_data['banlist_ip']);
+				return $data;
 			}
 
-			return $new_data;
+			$entry = Entry::fromText($data['banlist_ip']);
+
+			if($entry->kind() === Entry::INVALID)
+			{
+				e107::getMessage()->addError(BANLAN_ENTRY_INVALID);
+
+				return false;
+			}
+
+			$range = $entry->range();
+			$isBan = (int) varset($data['banlist_bantype'], eIPHandler::BAN_TYPE_MANUAL) < eIPHandler::BAN_TYPE_WHITELIST;
+
+			if($isBan && $range !== null && $range->contains(Address::toHex(e107::getIPHandler()->getIP())))
+			{
+				e107::getMessage()->addError(e107::getParser()->lanVars(BANLAN_ENTRY_COVERS_YOU, e107::getIPHandler()->getIP(true)));
+
+				return false;
+			}
+
+			$data['banlist_ip'] = $entry->stored();
+
+			return $data;
 		}
 
 
@@ -715,28 +750,31 @@ class banlist_form_ui extends e_admin_form_ui
 	}
 
 	// Custom Method/Function
-	function banlist_ip($curVal,$mode) //TODO
+	function banlist_ip($curVal,$mode)
 	{
-
-		if(!empty($curVal))
-		{
-			$tmp = explode(":",$curVal);
-
-			if(count($tmp) === 8)
-			{
-				$curVal = e107::getIPHandler()->ipDecode($curVal);
-			}
-		}
+		$entry = Entry::fromText($curVal);
+		$range = $entry->range();
+		$shown = e107::getParser()->toHTML(($entry->kind() === Entry::ADDRESS) ? $range->toDisplay() : $curVal, false, 'TITLE');
 
 		switch($mode)
 		{
 			case 'read': // List Page
-				return $curVal;
+				if($entry->kind() === Entry::INVALID)
+				{
+					return $shown." <span class='label label-warning'>".BANLAN_ENTRY_NOT_ENFORCED."</span>";
+				}
+
+				if($entry->kind() === Entry::RANGE)
+				{
+					return $shown."<br /><small class='text-muted'>".$range->toDisplay()."</small>";
+				}
+
+				return $shown;
 				break;
 
 			case 'write': // Edit Page
 
-				return $this->text('banlist_ip', $curVal, array());
+				return $this->text('banlist_ip', $shown, array());
 				break;
 
 			case 'filter':
@@ -796,7 +834,7 @@ class banlist_form_ui extends e_admin_form_ui
 		switch($mode)
 		{
 			case 'read': // List Page
-				$id = $this->getController()->getListModel()->get('banlist_ip');
+				$id = $this->getController()->getListModel()->get('banlist_id');
 			//	$val =  ($curVal ? strftime($pref['ban_date_format'], $curVal).(($curVal < time()) ? ' ('.BANLAN_34.')' : '') : LAN_NEVER); // ."<br />".$this->banexpires();
 			//	$val .= " (".$curVal.")";
 				// $mod = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
