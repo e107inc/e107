@@ -389,6 +389,35 @@ class eIPHandlerTest extends \Test\Unit
 		self::assertSame(array($this->ip->getIP()), $asked, 'the reverse-DNS check has to run for a host-only list');
 	}
 
+	/**
+	 * Deprecated, and still answering as it always has: the truncated token
+	 * is padded with x nibbles and colons to the 39 characters of a stored
+	 * address.
+	 */
+	public function testIp6AddWildcardsPadsToTheStoredLength()
+	{
+		self::assertSame('0000:0000:0000:0000:0000:ffff:0a4d:42xx', $this->ip->ip6AddWildcards('0000:0000:0000:0000:0000:ffff:0a4d:42'));
+		self::assertSame('0000:0000:0000:0000:0000:ffff:xxxx:xxxx', $this->ip->ip6AddWildcards('0000:0000:0000:0000:0000:ffff'));
+		self::assertSame('2001:0db8:0000:0000:0000:0000:0000:0001', $this->ip->ip6AddWildcards('2001:0db8:0000:0000:0000:0000:0000:0001'));
+	}
+
+	/**
+	 * Deprecated, and still answering as it always has, including the
+	 * answer that made it unfit for the ban file: a host name made of hex
+	 * digits and dots is an address to it.
+	 */
+	public function testWhatIsThisKeepsItsRoughGuesses()
+	{
+		self::assertSame('ip', $this->ip->whatIsThis('10.77.66.65'));
+		self::assertSame('ip', $this->ip->whatIsThis('2001:db8::1'));
+		self::assertSame('ip', $this->ip->whatIsThis('10.77.66.*'));
+		self::assertSame('ip', $this->ip->whatIsThis('bad.cc'));
+		self::assertSame('email', $this->ip->whatIsThis('user@example.com'));
+		self::assertSame('url', $this->ip->whatIsThis('https://example.com/'));
+		self::assertSame('ftp', $this->ip->whatIsThis('ftp://example.com/'));
+		self::assertSame('unknown', $this->ip->whatIsThis('example.org'));
+	}
+
 	public function testIsAddressRoutable()
 	{
 

@@ -674,7 +674,11 @@ class eIPHandler
 	/**
 	 *    Given a potentially truncated IPV6 address as used in the ban list files, adds 'x' characters etc to create
 	 *    a normalised IPV6 address as stored in the DB. Returned length is exactly 39 characters
-	 * @param $address
+	 *
+	 * @deprecated v2.4.0 Avoid in new code and migrate existing call sites when refactoring: the ban files no longer
+	 *             hold truncated addresses, and {@see \e107\Ip\Range::fromString()} reads the wildcard form directly.
+	 *             This method remains supported and tested, with no removal planned.
+	 * @param string $address
 	 * @return string
 	 */
 	public function ip6AddWildcards($address)
@@ -785,6 +789,9 @@ class eIPHandler
 	 * Given a string which may be IP address, email address etc, tries to work out what it is
 	 * Uses a fairly simplistic (but quick) approach - does NOT check formatting etc
 	 *
+	 * @deprecated v2.4.0 Avoid in new code and migrate existing call sites when refactoring: this calls anything made of
+	 *             hex digits, dots and asterisks an address, so *.de is an address to it. {@see \e107\Banlist\Entry::fromText()}
+	 *             checks the format and says what is stored. This method remains supported and tested, with no removal planned.
 	 * @param string $string
 	 * @return string ip|email|url|ftp|unknown
 	 */
