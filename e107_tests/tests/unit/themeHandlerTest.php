@@ -445,7 +445,7 @@
 				restore_error_handler();
 				$_POST = $posted;
 				$config->setPref($original)->save(false, true, false);
-				self::undoThemeConfigSave($themeConfig, $siteThemePref);
+				self::undoThemeConfigSave(array($themeConfig), $siteThemePref);
 			}
 
 			$this->assertSame(array(), $warnings, implode("\n", $warnings));
