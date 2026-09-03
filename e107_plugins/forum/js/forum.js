@@ -49,6 +49,32 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		return $field.length ? $field.val() : '';
 	}
 
+	/**
+	 * Hands what is in the quick-reply box to the full reply form at url, or follows url as it stands when there is nothing to carry.
+	 */
+	function openReplyForm(url, text)
+	{
+		if (!text)
+		{
+			window.location = url;
+
+			return;
+		}
+
+		var token = e107.security.csrfToken();
+		var $form = $('<form/>', {method: 'post', action: url})
+			.append($('<input/>', {type: 'hidden', name: 'post', value: text}));
+
+		// Empty where the site does not work in tokens at all, and a token
+		// input carrying nothing is refused by the modes that do.
+		if (token)
+		{
+			$form.append($('<input/>', {type: 'hidden', name: 'e-token', value: token}));
+		}
+
+		$form.appendTo('body').trigger('submit');
+	}
+
 	function clearQuickReply()
 	{
 		var editor = quickReplyEditor();
@@ -84,10 +110,21 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 			{
 				$(this).on('click', function (e)
 				{
-					e.preventDefault();
-
 					var $this = $(this);
 					var action = $this.attr('data-forum-action');
+
+					// Post Reply is the one action here whose href goes anywhere
+					// else, the rest pointing back at the page they are on, so a
+					// modified click on it means "open that page in its own tab"
+					// and belongs to the browser. The new tab would be starting
+					// from an empty quick reply box in any case.
+					if (action === 'postreply' && (e.which > 1 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey))
+					{
+						return;
+					}
+
+					e.preventDefault();
+
 					var thread = $this.attr('data-forum-thread');
 					var post = $this.attr('data-forum-post');
 
@@ -121,6 +158,13 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					var insert = $this.attr('data-forum-insert');
 					var token = $this.attr('data-token');
 					var script = $this.attr("src");
+
+					if (action === 'postreply')
+					{
+						openReplyForm($this.attr('href'), text);
+
+						return false;
+					}
 
 					$.ajax({
 						type: "POST",
