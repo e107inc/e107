@@ -52,10 +52,10 @@ class Unit extends E107Base
 	 * the plugin's include_lan(), and a language file that has already defined
 	 * its constants cannot define them twice.
 	 *
-	 * @param \Codeception\TestInterface|null $test
+	 * @param \Codeception\TestInterface $test
 	 * @return void
 	 */
-	public function _before($test = null)
+	public function _before(\Codeception\TestInterface $test)
 	{
 		parent::_before($test);
 
