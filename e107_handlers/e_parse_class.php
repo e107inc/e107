@@ -5271,7 +5271,7 @@ class e_parse
 			return false;
 		}
 
-		if (strpos($text, '[') === false || preg_match('#(?<=<)\w+(?=[^<]*?>)#', $text))
+		if (strpos($text, '[') === false)
 		{
 			return false;
 		}
@@ -5310,11 +5310,6 @@ class e_parse
 		if (strpos($text, '[html]') !== false)
 		{
 			return true;
-		}
-
-		if ($this->isBBcode($text))
-		{
-			return false;
 		}
 
 		if (preg_match('#(?<=<)\w+(?=[^<]*?>)#', $text))
