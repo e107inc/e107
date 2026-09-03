@@ -14,16 +14,6 @@ if (!defined('e107_INIT')) { exit; }
 class user_user // plugin-folder + '_user'
 {		
 		
-/*	function profile($udata)  // display on user profile page.
-	{
-
-		$var = array(
-			0 => array('label' => "Label", 'text' => "Some text to display", 'url'=> e_PLUGIN_ABS."_blank/blank.php")
-		);
-		
-		return $var;
-	}*/
-
 
 	/**
 	 * Experimental and subject to change without notice.
