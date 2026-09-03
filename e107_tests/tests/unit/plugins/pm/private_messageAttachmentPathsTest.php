@@ -118,7 +118,7 @@ class private_messageAttachmentPathsTest extends \Codeception\Test\Unit
 
 		self::assertFalse($this->pm->protectStoredAttachments());
 		self::assertFileExists($this->root . '.htaccess', 'The directories it could cover are still covered');
-		self::assertFileDoesNotExist($this->root . 'user_000012/.htaccess');
+		self::assertFileNotExists($this->root . 'user_000012/.htaccess');
 
 		chmod($this->root . 'user_000012', 0755);
 	}

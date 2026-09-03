@@ -169,7 +169,7 @@ PHP;
 
 		foreach($fixtures as $fixture)
 		{
-			self::assertFileDoesNotExist($fixture, 'the probe left a theme icons template behind');
+			self::assertFileNotExists($fixture, 'the probe left a theme icons template behind');
 		}
 
 		self::assertSame('preferred', $this->reported($output, self::SOURCE),
