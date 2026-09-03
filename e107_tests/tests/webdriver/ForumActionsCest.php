@@ -25,10 +25,12 @@
  *  - No error callback, so a refused or broken request produced no message and
  *    no trace, which looks exactly like a click that never fired.
  *
- * csrf_enforce is pinned to 0 throughout. These tests are about what the
- * browser does with a click; a request refused for a token reason would satisfy
- * "nothing happened" without the dialog having anything to do with it. The
- * token modes have their own coverage in CsrfOverTlsCest and CsrfPlainHttpCest.
+ * csrf_enforce is pinned to 0 for every case that asserts an absence. Those
+ * are about what the browser does with a click; a request refused for a token
+ * reason would satisfy "nothing happened" without the dialog having anything to
+ * do with it. The token modes have their own coverage in CsrfOverTlsCest and
+ * CsrfPlainHttpCest. The one case that asserts a presence lifts the pin, so the
+ * token the synthesised POST appends is actually validated somewhere.
  */
 class ForumActionsCest
 {
@@ -172,6 +174,59 @@ JS;
 		$I->click('#forum-track-button');
 
 		$I->waitForJS('return window.__forumErrors.length > 0;', 10);
+	}
+
+	/**
+	 * The mis-click the carry-over exists for: something typed into the quick
+	 * reply box, then Post Reply, which was plain GET navigation and dropped it.
+	 *
+	 * The one case here that lifts the csrf_enforce pin. It asserts a presence
+	 * rather than an absence, so a token-related refusal reds it instead of
+	 * passing it, and the harness serves plain HTTP from a non-loopback host,
+	 * where 'default' degrades to a mode that publishes a token. That makes it
+	 * the only coverage the token append has.
+	 */
+	public function postReplyCarriesTheQuickReplyTextIntoTheFullForm(WebDriverTester $I)
+	{
+		$typed = 'carried across by the mis-click';
+
+		$I->haveForumCsrfMode('default');
+
+		$I->loginToForum('wdalice');
+		$I->amOnPage('/e107_plugins/forum/forum_viewtopic.php?id='.$this->ids['threadA']);
+
+		$I->fillField('#forum-quickreply-text', $typed);
+		$this->clickPostReply($I);
+
+		$I->seeInCurrentUrl('f=rp');
+		$I->seeInField("textarea[name='post']", $typed);
+	}
+
+	/**
+	 * An empty box has nothing to carry, so the link is followed as the link it
+	 * looks like, which is what it did before any of this.
+	 */
+	public function postReplyWithAnEmptyQuickReplyIsPlainNavigation(WebDriverTester $I)
+	{
+		$I->loginToForum('wdalice');
+		$I->amOnPage('/e107_plugins/forum/forum_viewtopic.php?id='.$this->ids['threadA']);
+
+		$this->clickPostReply($I);
+
+		$I->seeInCurrentUrl('f=rp');
+		$I->seeInField("textarea[name='post']", '');
+	}
+
+	/**
+	 * @param WebDriverTester $I
+	 */
+	private function clickPostReply(WebDriverTester $I)
+	{
+		$selector = "a[data-forum-action='postreply']";
+
+		$I->seeElementInDOM($selector);
+		$I->executeJS("document.querySelector(\"".$selector."\").click();");
+		$I->wait(3);
 	}
 
 	/**
