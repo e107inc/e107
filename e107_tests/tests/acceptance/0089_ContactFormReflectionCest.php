@@ -10,8 +10,15 @@
  *
  * so a posted body carrying </textarea> closed the element and everything
  * after it became markup in a page served from the site's own origin. The
- * three sibling fields in the same batch had always escaped their value, so
- * this was an omission rather than a policy.
+ * name and subject fields beside it escaped their value, so this was an
+ * omission rather than a policy.
+ *
+ * The email field escaped nothing either. It ran the posted address through
+ * FILTER_SANITIZE_EMAIL, which keeps apostrophes, equals signs and backticks,
+ * and wrote the result into a single-quoted attribute, so an apostrophe ended
+ * the value and the character after it began an attribute of the sender's
+ * choosing, with no space, angle bracket or parenthesis anywhere in the
+ * request. It takes the escaper its siblings use now.
  *
  * Escaping the field is only half of it. renderContactForm() parses the form
  * template in full, and contact.php then dropped the finished markup into
@@ -119,6 +126,16 @@ class ContactFormReflectionCest
 		$this->post($I, array('subject' => 'START{SITENAME}END'));
 
 		$I->seeInSource('START{SITENAME}END');
+	}
+
+	public function aPostedEmailAddressCannotEndItsAttribute(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a posted address that closes the attribute it is written into');
+
+		$this->post($I, array('email_send' => "a'onfocus=alert`document.domain`autofocus='"));
+
+		$I->dontSeeInSource("value='a'onfocus");
+		$I->seeInSource("value='a&#039;onfocus=alert`document.domain`autofocus=&#039;'");
 	}
 
 	public function anOrdinaryMessageIsStillGivenBack(AcceptanceTester $I)
