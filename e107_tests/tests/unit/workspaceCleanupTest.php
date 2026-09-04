@@ -16,6 +16,13 @@
  */
 class workspaceCleanupTest extends \Test\Unit
 {
+	/** Fixture names an acceptance Cest declares that name no file of their own at the app root. */
+	private static $notFilesAtTheAppRoot = array(
+		'e107_tests_p84_menu',           // a menus table row
+		'e107_tests_upload_csrf.txt',    // under e_IMPORT, inside the site-path directory the list sweeps whole
+		'e107_tests_security_level.txt', // under e_IMPORT, inside the site-path directory the list sweeps whole
+	);
+
 	public function testEveryCestFixtureNameIsSwept()
 	{
 		$swept = $this->sweptNames();
@@ -23,7 +30,7 @@ class workspaceCleanupTest extends \Test\Unit
 
 		foreach($this->cestFixtureNames() as $name => $declaredBy)
 		{
-			if(!in_array($name, $swept, true))
+			if(!in_array($name, $swept, true) && !in_array($name, self::$notFilesAtTheAppRoot, true))
 			{
 				$missing[] = $name . ' (' . implode(', ', $declaredBy) . ')';
 			}
@@ -35,14 +42,15 @@ class workspaceCleanupTest extends \Test\Unit
 	}
 
 	/**
-	 * @return string[] what Extension\WorkspaceCleanup removes from the app root
+	 * @return string[] what Extension\WorkspaceCleanup removes, each as listed and by its own name
 	 */
 	private function sweptNames()
 	{
 		$artifacts = new ReflectionProperty('Extension\\WorkspaceCleanup', 'artifacts');
 		$artifacts->setAccessible(true);
+		$listed = $artifacts->getValue();
 
-		return $artifacts->getValue();
+		return array_merge($listed, array_map('basename', $listed));
 	}
 
 	/**

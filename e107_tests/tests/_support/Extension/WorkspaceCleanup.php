@@ -138,6 +138,9 @@ class WorkspaceCleanup extends Extension
 		'e107_plugins/admin_menu/admin_menu_sql.php', // @see AdminGetCsrfPluginThemeMenuCest
 		'e107_plugins/forum/forum_update_check.php', // @see ForumUpgradeCsrfCest
 		'e107_tests_admin_password_probe.php',       // @see AdminPasswordChangeCest
+		'e107_tests_ghsa7v5h_probe.php',       // @see SessionAuthTokenCest
+		'e107_tests_cookie_mode_probe.php',    // @see CookieModeRemovedCest
+		'e107_tests_session_rekey_probe.php',  // @see SessionRekeyUpgradeCest
 	];
 
 	/** Files a test moves aside for one test method, as parked name to the name it belongs back at. */
