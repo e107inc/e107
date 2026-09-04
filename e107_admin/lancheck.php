@@ -805,25 +805,18 @@ class lancheck
 
 
 	/**
-	 * Is this a name that may be written into generated PHP as a constant?
-	 *
-	 * Matches what fill_phrases_array() is willing to read back, so a name that
-	 * passes here survives a save/reload cycle.
+	 * May this name be written into generated PHP as a constant?
 	 *
 	 * @param string $name candidate constant name from the newdef[] field
 	 * @return bool
 	 */
 	private function isConstantName($name)
 	{
-		return is_string($name) && preg_match('/^\w+$/', $name) === 1;
+		return is_string($name) && preg_match('/^\w+\z/', $name) === 1;
 	}
 
 	/**
-	 * Undo the escaping {@see lancheck::fill_phrases_array()} leaves in place.
-	 *
-	 * The reader hands back the body of the string literal rather than its
-	 * value, so the textarea holds escaped source. Without this step every save
-	 * would escape the escapes again and the backslashes would multiply.
+	 * Undo the escaping {@see lancheck::fill_phrases_array()} leaves in place, so a save does not escape the escapes again.
 	 *
 	 * @param string $body literal body as the reader produced it
 	 * @return string the phrase itself
@@ -841,8 +834,7 @@ class lancheck
 	}
 
 	/**
-	 * Render a value as the double-quoted PHP literal this file has always
-	 * generated, escaped so that nothing in it can end the literal early.
+	 * Render a value as the double-quoted PHP literal this file has always generated, escaped so nothing can end it early.
 	 *
 	 * @param string $value the phrase itself
 	 * @return string a complete PHP string literal, quotes included
@@ -860,11 +852,7 @@ class lancheck
 	}
 
 	/**
-	 * Turn the setlocale() field into a list of quoted PHP string literals.
-	 *
-	 * The field reaches us as the argument list lifted out of the file, so pull
-	 * every locale name back out and re-quote each one. Anything not shaped like
-	 * a locale is dropped rather than written.
+	 * Re-quote every locale name in the LC_ALL field, which arrives as the argument list lifted out of the file, and drop the rest.
 	 *
 	 * @param string $raw contents of the LC_ALL textarea
 	 * @return array PHP literals, ready to join with commas
@@ -896,11 +884,7 @@ class lancheck
 	}
 
 	/**
-	 * Is this a language file the editor may open?
-	 *
-	 * The value arrives on the query string and ends up inside the path this
-	 * class creates directories at, writes stub files to, and finally saves
-	 * over, so it has to be a plain relative path to a .php file.
+	 * Is this a language file the editor may open? The value reaches the filesystem, so it has to be a plain relative .php path.
 	 *
 	 * @param string $file candidate path, relative to a language root
 	 * @return bool

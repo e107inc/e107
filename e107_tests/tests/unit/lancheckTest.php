@@ -392,6 +392,19 @@
 		}
 
 		/**
+		 * PCRE's $ matches before a final newline as well as at the end of the subject, so a
+		 * name ending in one passed the test and went into the file as a constant no template
+		 * can ever reference by name.
+		 */
+		public function testWrite_lanfileRejectsAConstantNameEndingInANewline()
+		{
+			$written = $this->writeLanFile(array("FOO\n"), array('harmless'));
+
+			$this->assertStringNotContainsString('FOO', $written,
+				'A name that is not a usable identifier must not be written into the file.');
+		}
+
+		/**
 		 * The LC_ALL branch interpolates the value with no quotes at all, so this
 		 * one never even needed a quote to break out of.
 		 */
