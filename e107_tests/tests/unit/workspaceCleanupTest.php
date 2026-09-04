@@ -46,7 +46,8 @@ class workspaceCleanupTest extends \Codeception\Test\Unit
 	}
 
 	/**
-	 * @return array docroot-relative fixture name to the Cests that name it
+	 * @return array docroot-relative fixture name, recognised by the suite's own
+	 *               prefix wherever it falls in the name, to the Cests that name it
 	 */
 	private function cestFixtureNames()
 	{
@@ -69,7 +70,7 @@ class workspaceCleanupTest extends \Codeception\Test\Unit
 
 			foreach($reflection->getConstants() as $value)
 			{
-				if(is_string($value) && preg_match('#(^|/)e107_tests[_/]#', $value))
+				if(is_string($value) && strpos($value, 'e107_tests') !== false)
 				{
 					$names[$value][] = $reflection->getShortName();
 				}
