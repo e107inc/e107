@@ -1058,9 +1058,11 @@ class eIPHandler
 		$tp = e107::getParser();
 		$log = e107::getLog();
 
-		$caller = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
+		$trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
+		$caller = isset($trace[1]) ? $trace[1] : array();
 
-		$callerFunction = $caller['function']."() in ". basename($caller['file']);;
+		$callerFunction = (isset($caller['function']) ? $caller['function'].'()' : 'main')
+			.(isset($caller['file']) ? ' in '.basename($caller['file']) : '');
 		$log->addEvent(4, __FILE__ . "|" . __FUNCTION__ . "@" . __LINE__, "DBG", "Check for Ban ", $query."\nCall: $call_id\nCaller: $callerFunction", false, LOG_TO_ROLLING);
 
 		$full_query = "SELECT * FROM banlist WHERE $query ORDER BY `banlist_bantype` DESC";
