@@ -947,7 +947,7 @@ class xmlClass
 	 * @param array $tables - table names without the prefix
 	 * @param array|null $plugPrefs
 	 * @param array|null $themePrefs
-	 * @param array $options [optional] debug, return, query
+	 * @param array $options [optional] debug, return, query, fields, exclude (column names to leave out of every exported row)
 	 * @return string text / file for download
 	 */
 	public function e107Export($xmlprefs, $tables, $plugPrefs=null, $themePrefs=null, $options = array())
@@ -1049,6 +1049,7 @@ class xmlClass
 
 		if(!empty($tables))
 		{
+			$exclude = !empty($options['exclude']) ? (array) $options['exclude'] : array();
 			$text .= "\t<database>\n";
 			foreach($tables as $tbl)
 			{
@@ -1126,6 +1127,11 @@ class xmlClass
 					$text .= "\t\t<item>\n";
 					foreach($row as $key=>$val)
 					{
+						if(in_array($key, $exclude, true))
+						{
+							continue;
+						}
+
 						$text .= "\t\t\t<field name=\"".$key."\">".$this->e107ExportValue($val,$key)."</field>\n";
 					}
 

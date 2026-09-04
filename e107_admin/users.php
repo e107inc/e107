@@ -892,6 +892,11 @@ class users_admin_ui extends e_admin_ui
 	 */
 	public function ListUnbanTrigger($userid)
 	{
+		if($this->refusesRowTrigger('unban', $userid))
+		{
+			return;
+		}
+
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 		$sysuser = e107::getSystemUser($userid, false);
@@ -928,6 +933,11 @@ class users_admin_ui extends e_admin_ui
 	 */
 	public function ListBanTrigger($userid)
 	{
+		if($this->refusesRowTrigger('ban', $userid))
+		{
+			return;
+		}
+
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
 		$admin_log = e107::getLog();
@@ -997,6 +1007,11 @@ class users_admin_ui extends e_admin_ui
 	 */
 	public function ListVerifyTrigger($userid)
 	{
+		if($this->refusesRowTrigger('verify', $userid))
+		{
+			return;
+		}
+
 		$e_event = e107::getEvent();
 		$admin_log = e107::getLog();
 		$sysuser = e107::getSystemUser($userid, false);
@@ -1334,7 +1349,7 @@ class users_admin_ui extends e_admin_ui
 		$isTyped = $this->isTypedBatchTrigger($type);
 		$field = $isTyped ? varset($trigger[1], '') : $type;
 
-		if(!$this->getFieldAttr($field, 'batch', false))
+		if(!$this->isBatchField($field))
 		{
 			return true;
 		}
@@ -1453,13 +1468,25 @@ class users_admin_ui extends e_admin_ui
 	}
 
 	/**
-	 * Whether the posted selection holds an administrator this caller may not rewrite, which is
-	 * the rule {@see users_admin_ui::beforeUpdate()} applies on the edit route. A batch writes
-	 * through {@see e_admin_tree_model::batchUpdate()} and never reaches that method.
+	 * The administrator rule against the rows a posted batch acts on, which writes through
+	 * {@see e_admin_tree_model::batchUpdate()} and so never reaches
+	 * {@see users_admin_ui::beforeUpdate()}.
 	 *
 	 * @return bool
 	 */
 	private function batchSelectsProtectedAdmin()
+	{
+		return $this->holdsProtectedAdmin($this->batchSelection());
+	}
+
+	/**
+	 * Whether any of these rows is an administrator this caller may not rewrite, which is the
+	 * rule {@see users_admin_ui::beforeUpdate()} applies on the edit route.
+	 *
+	 * @param array $ids rows the request acts on
+	 * @return bool
+	 */
+	private function holdsProtectedAdmin(array $ids)
 	{
 		if($this->canGrantAdmin())
 		{
@@ -1468,7 +1495,7 @@ class users_admin_ui extends e_admin_ui
 
 		$self = (int) e107::getUser()->getId();
 
-		foreach($this->batchSelection() as $id)
+		foreach(array_unique($ids) as $id)
 		{
 			$id = (int) $id;
 
@@ -1489,6 +1516,25 @@ class users_admin_ui extends e_admin_ui
 	}
 
 	/**
+	 * The administrator rule on a single-row trigger, with the refusal recorded when it bites.
+	 *
+	 * @param string $trigger posted trigger name, as the admin log records it
+	 * @param int $userid row the trigger acts on
+	 * @return bool true when the trigger must not write
+	 */
+	private function refusesRowTrigger($trigger, $userid)
+	{
+		if(!$this->holdsProtectedAdmin(array($userid)))
+		{
+			return false;
+		}
+
+		$this->refuseAdminAction('Refused the '.$trigger.' of administrator '.(int) $userid);
+
+		return true;
+	}
+
+	/**
 	 * Every row a posted batch acts on: the ticked selection, and the ids a confirmed delete
 	 * carries in delete_confirm_value instead of it.
 	 *
@@ -1497,9 +1543,21 @@ class users_admin_ui extends e_admin_ui
 	private function batchSelection()
 	{
 		$selected = (array) $this->getPosted($this->getFieldAttr('checkboxes', 'toggle', 'multiselect'), array());
+
+		return array_merge($selected, $this->confirmedSelection());
+	}
+
+	/**
+	 * The ids a confirmed delete carries in delete_confirm_value, which is where the confirm
+	 * screen's second round trip puts them instead of the checkbox column.
+	 *
+	 * @return array
+	 */
+	private function confirmedSelection()
+	{
 		$confirmed = $this->getPosted('delete_confirm_value', '');
 
-		return is_scalar($confirmed) ? array_merge($selected, explode(',', (string) $confirmed)) : $selected;
+		return is_scalar($confirmed) ? explode(',', (string) $confirmed) : array();
 	}
 
 	/**
@@ -1510,7 +1568,7 @@ class users_admin_ui extends e_admin_ui
 	{
 		if($this->refusesBatch($batch_trigger))
 		{
-			$this->refuseBatch($batch_trigger);
+			$this->refuseSubmission($batch_trigger);
 			return;
 		}
 
@@ -1528,7 +1586,7 @@ class users_admin_ui extends e_admin_ui
 	{
 		if($this->refusesBatch($batch_trigger))
 		{
-			$this->refuseBatch($batch_trigger);
+			$this->refuseSubmission($batch_trigger);
 			return;
 		}
 
@@ -1536,16 +1594,51 @@ class users_admin_ui extends e_admin_ui
 	}
 
 	/**
-	 * Refuse the batch and drop the whole submission, so no later trigger in the same
-	 * request reads the selection this one turned down.
+	 * The single-row delete route, which carries no rule of its own and reaches
+	 * {@see e_front_tree_model::delete()} without {@see e_admin_ui::beforeDelete()} whenever the
+	 * row is not on the loaded list page, so the rule cannot live in that callback.
 	 *
-	 * @param string $batch_trigger
+	 * @param array $posted rows the delete acts on, keyed by id
 	 * @return void
 	 */
-	private function refuseBatch($batch_trigger)
+	public function ListDeleteTrigger($posted)
 	{
-		$this->refuseAdminAction('Refused the batch '.e107::getParser()->toDB($batch_trigger));
+		if(!$this->getPosted('etrigger_cancel')
+			&& $this->holdsProtectedAdmin(array_merge(array_keys((array) $posted), $this->confirmedSelection())))
+		{
+			$this->refuseSubmission('delete');
+			return;
+		}
+
+		parent::ListDeleteTrigger($posted);
+	}
+
+	/**
+	 * Refuse a trigger and drop the whole submission, so no later trigger in the same request
+	 * reads the selection this one turned down.
+	 *
+	 * @param string $trigger posted trigger name, as the admin log records it
+	 * @return void
+	 */
+	private function refuseSubmission($trigger)
+	{
+		$this->refuseAdminAction('Refused the trigger '.e107::getParser()->toDB($trigger));
 		$this->setPosted(array());
+	}
+
+	/**
+	 * The export batch reads rather than writes, so the administrator rule stands aside for it;
+	 * what it writes out is narrowed instead, because e107Xml::e107Export() otherwise streams
+	 * every column of the row, the password hash and the session key included.
+	 *
+	 * @param array $selected
+	 * @return void
+	 */
+	protected function handleListExportBatch($selected)
+	{
+		$this->getTreeModel()->setParam('export_exclude', array('user_password', 'user_sess'));
+
+		parent::handleListExportBatch($selected);
 	}
 
 	/**
@@ -1869,6 +1962,11 @@ class users_admin_ui extends e_admin_ui
 	 */
 	public function ListResendTrigger($userid)
 	{
+		if($this->refusesRowTrigger('resend', $userid))
+		{
+			return;
+		}
+
 		$this->resendActivation($userid);
 	}
 	
@@ -2096,6 +2194,11 @@ class users_admin_ui extends e_admin_ui
 	 */
 	public function ListReqverifyTrigger($userid)
 	{
+		if($this->refusesRowTrigger('reqverify', $userid))
+		{
+			return;
+		}
+
 		$sysuser = e107::getSystemUser($userid, false);
 		
 		if(!$sysuser->getId())

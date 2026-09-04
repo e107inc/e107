@@ -39,7 +39,7 @@ class usersAdminBatchGuardTest extends \Test\Unit
 	{
 		$this->assertContains('batchSelectsProtectedAdmin', $this->callsIn('refusesBatch'),
 			'refusesBatch() must refuse a selection holding an administrator the caller may not edit.');
-		$this->assertContains('canGrantAdmin', $this->callsIn('batchSelectsProtectedAdmin'),
+		$this->assertContains('canGrantAdmin', $this->callsIn('holdsProtectedAdmin'),
 			'The administrator rule is permission 3, the same one beforeUpdate() asks for.');
 		$this->assertContains('batchSelection', $this->callsIn('batchSelectsProtectedAdmin'),
 			'The rule must read every row the batch acts on, not only the ticked ones.');
@@ -55,14 +55,35 @@ class usersAdminBatchGuardTest extends \Test\Unit
 			'A batch that rewrites the column is measured on the classes the selection holds too.');
 	}
 
+	/**
+	 * The batch route is not the only one that writes an administrator's row. Every single-row
+	 * trigger on this page that writes user_ban, user_sess or user_password reaches a write of
+	 * its own, and the rule has to be on all of them: a list that is one short is how the
+	 * asymmetry this test exists to catch got there in the first place.
+	 */
+	public function testTheSingleRowRoutesApplyTheSameAdministratorRule()
+	{
+		foreach(array('ListBanTrigger', 'ListUnbanTrigger', 'ListVerifyTrigger',
+			'ListReqverifyTrigger', 'ListResendTrigger') as $trigger)
+		{
+			$this->assertContains('refusesRowTrigger', $this->callsIn($trigger),
+				$trigger . '() must ask the administrator rule before it writes.');
+		}
+
+		$this->assertContains('holdsProtectedAdmin', $this->callsIn('refusesRowTrigger'),
+			'The single-row rule must be the rule the batch route applies, not a second one.');
+		$this->assertContains('holdsProtectedAdmin', $this->callsIn('ListDeleteTrigger'),
+			'The single-row delete must ask the rule about every row it is given.');
+	}
+
 	public function testTheGuardStillAsksWhetherTheFieldOffersABatch()
 	{
 		$calls = $this->callsIn('refusesBatch');
 
 		$this->assertContains('isTypedBatchTrigger', $calls,
 			'refusesBatch() must read the field segment the dispatcher reads.');
-		$this->assertContains('getFieldAttr', $calls,
-			"refusesBatch() must still test the field's own 'batch' declaration.");
+		$this->assertContains('isBatchField', $calls,
+			'refusesBatch() must put the field to the same test the dispatcher puts it to.');
 	}
 
 	/**
