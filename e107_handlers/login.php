@@ -57,6 +57,7 @@ class userlogin
 	protected $secImageType = 'logcode';
 	protected $failureNoteId = 0;	// generic table row this attempt recorded, if any
 	protected $banChecked = false;	// ban already decided for this attempt
+	protected $failureBanTime = 0;	// datestamp of the banlist row this attempt raised, if any
 
 	public function __construct()
 	{
@@ -105,6 +106,7 @@ class userlogin
 		$userpass = trim($userpass);
 		$this->failureNoteId = 0;
 		$this->banChecked = false;
+		$this->failureBanTime = 0;
 
 		if($_E107['cli'] && ($username == ''))
 		{
@@ -698,6 +700,11 @@ class userlogin
 					$description = e107::getParser()->lanVars(LAN_LOGIN_18,$failLimit);
 					$banAdded = e107::getIPHandler()->add_ban(4, $description, $this->userIP, 1);
 
+					if($banAdded === true)
+					{
+						$this->failureBanTime = $time;
+					}
+
 					if($banAdded !== false)
 					{
 						e107::getDb()->insert("generic", "0, 'auto_banned', '".$time."', 0, '{$this->userIP}', '{$extra_text}', '".LAN_LOGIN_20.": ".e107::getParser()->toDB($username).", ".LAN_LOGIN_17."'");
@@ -773,18 +780,29 @@ class userlogin
 	}
 
 	/**
-	 * Drop the failed_login row this attempt recorded. Call from any path that
-	 * ends up authorising the user.
+	 * Drop the failed_login row and the ban this attempt recorded. Call from any
+	 * path that ends up authorising the user.
 	 *
 	 * @return void
 	 */
 	protected function discardFailureNote()
 	{
-		if(empty($this->failureNoteId)) { return; }
+		if(!empty($this->failureNoteId))
+		{
+			e107::getDb()->delete('generic', 'gen_id='.(int) $this->failureNoteId);
 
-		e107::getDb()->delete('generic', 'gen_id='.(int) $this->failureNoteId);
+			$this->failureNoteId = 0;
+		}
 
-		$this->failureNoteId = 0;
+		if(empty($this->failureBanTime)) { return; }
+
+		$ip = e107::getDb()->escape($this->userIP);
+		e107::getDb()->delete('banlist', "banlist_ip='".$ip."' AND banlist_bantype=".eIPHandler::BAN_TYPE_LOGINS
+			." AND banlist_datestamp >= ".(int) $this->failureBanTime);
+
+		$this->failureBanTime = 0;
+
+		e107::getIPHandler()->regenerateFiles();
 	}
 
 

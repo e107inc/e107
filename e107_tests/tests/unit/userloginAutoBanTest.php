@@ -222,6 +222,24 @@ class userloginAutoBanTest extends \Codeception\Test\Unit
 		$this->assertSame(0, $this->autoBannedCount());
 	}
 
+	public function testABanRaisedByAnAttemptThatAuthorisesIsLifted()
+	{
+		for($i = 1; $i <= self::FAIL_LIMIT; $i++)
+		{
+			$this->lg->login(self::TEST_USER, 'not the password ' . $i, 0, '', true);
+		}
+
+		$this->lg->login(self::TEST_USER, 'not the password', 0, '', true);
+
+		$this->assertSame(1, $this->loginBanCount());
+
+		$userData = e107::getDb()->retrieve('user', '*', 'user_id=' . (int) $this->userId);
+		$this->lg->validLogin($userData);
+
+		$this->assertSame(0, $this->loginBanCount());
+		$this->assertSame(self::FAIL_LIMIT, $this->failedLoginCount());
+	}
+
 	protected function seedFailedLogin($age = 0)
 	{
 		e107::getDb()->insert('generic', "0, 'failed_login', '".(time() - $age)."', 0, '".self::TEST_IP."', 0, 'seeded'");
