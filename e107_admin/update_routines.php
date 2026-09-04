@@ -703,7 +703,7 @@ function update_core_database($type = '')
 			}
 
 			$durations = varset($pref['ban_durations'], array());
-			foreach(eIPHandler::getValidReasonList() as $banType)
+			foreach(banlistManager::getValidReasonList() as $banType)
 			{
 				if(!isset($durations[$banType])) { $durations[$banType] = 0; }
 			}
