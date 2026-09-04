@@ -486,7 +486,7 @@ class rater
 		{
 			$row 		= $sql->fetch();
 			
-			if(preg_match("/\.". USERID."\./",$row['rate_voters'])) // already voted. 
+			if(preg_match("/\.". USERID."\./",$row['rate_voters']) !== 0) // already voted. 
 			{		
 				return false;
 			}
