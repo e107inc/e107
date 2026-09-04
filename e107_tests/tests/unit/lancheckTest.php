@@ -536,6 +536,19 @@
 		}
 
 		/**
+		 * PCRE's $ matches before a final newline, so a constant name ending in one passed the
+		 * name test, went into the file, and then read back zero times: the phrase vanished
+		 * from the editor while the constant stayed on disk.
+		 */
+		public function testWrite_lanfileRejectsAConstantNameEndingInANewline()
+		{
+			$written = $this->writeLanFile(array("FOO\n"), array('harmless'));
+
+			$this->assertStringNotContainsString('FOO', $written,
+				'A name the editor cannot read back must not be written into the file.');
+		}
+
+		/**
 		 * The LC_ALL branch interpolates the value with no quotes at all, so this
 		 * one never even needed a quote to break out of.
 		 */
