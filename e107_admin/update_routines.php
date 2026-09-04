@@ -815,10 +815,13 @@ function update_core_database($type = '')
 
 		$sessionHashed = 0;
 		$sessionSeen = 0;
+		$sessionSkipped = 0;
 
 		while($sessionLegacy = $sql->createQueryBuilder()
 			->select('session_id')->from('session')
 			->whereNotLike('session_id', e_session_db::KEY_ALGO.'$%')
+			->orderBy('session_id')
+			->setFirstResult($sessionSkipped)
 			->setMaxResults($just_check ? 1 : 200)
 			->fetchAll())
 		{
@@ -826,8 +829,6 @@ function update_core_database($type = '')
 			{
 				return update_needed('Stored session ids need to be hashed.');
 			}
-
-			$sessionConverted = 0;
 
 			foreach($sessionLegacy as $sessionRow)
 			{
@@ -838,15 +839,12 @@ function update_core_database($type = '')
 					->where('session_id', $sessionRow['session_id'])
 					->execute())
 				{
-					$sessionConverted++;
+					$sessionHashed++;
 				}
-			}
-
-			$sessionHashed += $sessionConverted;
-
-			if(!$sessionConverted)
-			{
-				break;
+				else
+				{
+					$sessionSkipped++;
+				}
 			}
 		}
 
