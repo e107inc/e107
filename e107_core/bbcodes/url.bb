@@ -2,20 +2,19 @@
 $class = e107::getBB()->getClass('url');
 global $pref;
 
+$tp       = e107::getParser();
 $parm     = trim($parm);
 $external = ($pref['links_new_window'] || strpos($parm, 'external') === 0) ? ' rel="external"' : '';
 
 if ($parm && $parm != 'external' && strpos($parm, ' ') === FALSE)
 {
-	$parm = preg_replace('#^external.#is', '', $parm);
-	if (strtolower(substr($parm, 0, 11)) === 'javascript:')
-		return '';
-	return '<a href="'.e107::getParser()->toAttribute($parm).'" class="bbcode '.$class.'"'.$external.'>'.$code_text.'</a>';
+	$url = preg_replace('#^external.#is', '', $parm);
 }
 else
 {
-	if (strtolower(substr($code_text, 0, 11)) === 'javascript:')
-		return '';
-	return '<a href="'.e107::getParser()->toAttribute($code_text).'" class="bbcode '.$class.'"'.$external.'>'.$code_text.'</a>';
+	$url = $code_text;
 }
 
+if ($url !== '' && $tp->toUrlAttribute($url) === '') return '';
+
+return '<a href="'.$tp->toAttribute($url).'" class="bbcode '.$class.'"'.$external.'>'.$code_text.'</a>';

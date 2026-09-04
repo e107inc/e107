@@ -73,6 +73,6 @@ global $pref, $parm;
 	{
     	$insert = ($pref['links_new_window'] && strpos($link,"{e_")===FALSE && substr($link,0,1) != "#" && substr($link,0,1) != "/" && strpos($extras,"rel=internal")===FALSE) ? "rel='external' " : "";
     }
-	if (strtolower(substr($link,0,11)) == 'javascript:') return '';
-	return "<a class='{$class}' href='".e107::getParser() -> toAttribute($link)."' ".$insert.">".$code_text."</a>";
+	if ($link !== '' && $tp->toUrlAttribute($link) === '') return '';
+	return "<a class='{$class}' href='".$tp->toAttribute($link)."' ".$insert.">".$code_text."</a>";
 
