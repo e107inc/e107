@@ -43,9 +43,9 @@ global $pref, $parm;
 		list($pre,$email) = explode(":",$parm);
 		list($p1,$p2) = explode("@",$email);
 		$p2=rawurlencode($p2);			// Primarily to pick up spaces, which are not allowed
-		$p1=$tp->toJsString($p1);
-		$p2=$tp->toJsString($p2);
-		return "<a class='bbcode' rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+$p1+\"@\"+$p2;self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+$p1+\"@\"+$p2; return true;' onmouseout='window.status=\"\";return true;'>".$code_text."</a>";
+		$address = $tp->toJsString($p1).'+"@"+'.$tp->toJsString($p2);
+		$href = str_replace('%', '%25', $address);
+		return "<a class='bbcode' rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+$href;self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+$address; return true;' onmouseout='window.status=\"\";return true;'>".$code_text."</a>";
 	}
 
 	if (substr($code_text,0,1) === ']')

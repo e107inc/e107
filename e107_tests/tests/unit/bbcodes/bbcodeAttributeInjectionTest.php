@@ -122,24 +122,31 @@ class bbcodeAttributeInjectionTest extends \Test\Unit
 	}
 
 	/**
-	 * The handler these two bbcodes build is a chain of JavaScript string
-	 * literals joined by +, and the whole defect is that a parameter could end
-	 * one of them early and have the rest of itself run as code. So the property
-	 * is structural: read back as the browser decodes it, the handler must still
-	 * be nothing but well-formed literals and the + between them.
+	 * The script these two bbcodes build is a chain of JavaScript string literals
+	 * joined by +, and the whole defect is that a parameter could end one of them
+	 * early and have the rest of itself run as code. So the property is structural:
+	 * read back as the browser decodes it, each of the two must still be nothing
+	 * but well-formed literals and the + between them. The href is read through
+	 * rawurldecode() because a javascript: URL is percent-decoded before it is
+	 * compiled, and the handler is not.
 	 *
 	 * @param string $html
 	 * @param string $message
 	 */
 	private function assertHandlerIsOnlyStringLiterals($html, $message)
 	{
+		$literals = '(?:"(?:[^"\\\\]|\\\\.)*"|\+)+';
+
 		foreach($this->elementsOf($html) as $element)
 		{
 			if($element->tagName === 'a' && $element->hasAttribute('onmouseover'))
 			{
-				self::assertMatchesRegularExpression(
-					'#^window\.status=(?:"(?:[^"\\\\]|\\\\.)*"|\+)+; return true;$#',
+				self::assertMatchesRegularExpression('#^window\.status='.$literals.'; return true;$#',
 					$element->getAttribute('onmouseover'), $message.' Rendered: '.$html);
+
+				self::assertMatchesRegularExpression('#^window\.location='.$literals.';self\.close\(\);$#',
+					rawurldecode(substr($element->getAttribute('href'), strlen('javascript:'))),
+					$message.' Rendered: '.$html);
 
 				return;
 			}
@@ -148,39 +155,31 @@ class bbcodeAttributeInjectionTest extends \Test\Unit
 		self::fail('No anchor carrying an onmouseover was rendered from: '.$html);
 	}
 
-	public function testTheMailtoLinkBbcodeCannotEndAStringLiteral()
+	/**
+	 * @return array
+	 */
+	public function mailtoPayloads()
 	{
-		$this->assertHandlerIsOnlyStringLiterals(
-			$this->renderStored('[link=mailto:"+(alert(1))+"@example.com]contact[/link]'),
-			'A [link=mailto:] parameter escaped the JavaScript string literal it was placed in.');
+		return array(
+			'link parameter'     => array('[link=mailto:"+(alert(1))+"@example.com]contact[/link]'),
+			'link percent'       => array('[link=mailto:%22+alert(1)+%22@example.com]contact[/link]'),
+			'email parameter'    => array('[email="+(alert(1))+"@example.com]contact[/email]'),
+			'email percent'      => array('[email=%22+alert(1)+%22@example.com]contact[/email]'),
+			'email body'         => array('[email]"+(alert(1))+"@example.com[/email]'),
+			'email body percent' => array('[email]%22+alert(1)+%22@example.com[/email]'),
+		);
 	}
 
 	/**
-	 * A valid address never reaches this bbcode while make_clickable is on: the
-	 * clickable-link pass rewrites it first. A payload does reach it, because it
-	 * does not look like an address, which is exactly why the sink matters.
+	 * @dataProvider mailtoPayloads
+	 * @param string $bbcode
 	 */
-	public function testTheEmailBbcodeCannotEndAStringLiteral()
+	public function testAMailtoBbcodeCannotEndAStringLiteral($bbcode)
 	{
 		e107::getConfig()->set('make_clickable', 1);
-		$parser = new e_parse();
 
-		$this->assertHandlerIsOnlyStringLiterals(
-			$this->renderStored('[email="+(alert(1))+"@example.com]contact[/email]', $parser),
-			'An [email] parameter escaped the JavaScript string literal it was placed in.');
-	}
-
-	/**
-	 * The same payload, written in the text rather than the parameter.
-	 */
-	public function testTheEmailBbcodeCannotEndAStringLiteralFromItsText()
-	{
-		e107::getConfig()->set('make_clickable', 1);
-		$parser = new e_parse();
-
-		$this->assertHandlerIsOnlyStringLiterals(
-			$this->renderStored('[email]"+(alert(1))+"@example.com[/email]', $parser),
-			'An [email] body escaped the JavaScript string literal it was placed in.');
+		$this->assertHandlerIsOnlyStringLiterals($this->renderStored($bbcode, new e_parse()),
+			'A mailto bbcode escaped the JavaScript string literal it was placed in: '.$bbcode);
 	}
 
 	/**
