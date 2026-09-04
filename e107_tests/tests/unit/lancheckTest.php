@@ -272,6 +272,26 @@
 		}
 
 		/**
+		 * GHSA-pf37-7c5m-mpg3: the header block the generator writes carried the
+		 * display name of whoever pressed save, and a display name holding the
+		 * sequence that ends a comment ended the header early, leaving the rest
+		 * of the name to run as PHP on every page that loads the file.
+		 */
+		public function testWrite_lanfileKeepsUserInputOutOfTheGeneratedHeader()
+		{
+			$written = $this->writeLanFile(array('LAN_X'), array('harmless'));
+
+			$this->assertStringNotContainsString(USERNAME, $written,
+				'The generated file must carry no value the saving user controls.');
+
+			$result = $this->includeGenerated('LAN_X');
+
+			$this->assertSame(0, $result['exit'], 'Including the generated file must not fatal.');
+			$this->assertSame('[VALUE]harmless', $result['stdout'],
+				'Nothing but the translation may come out of the generated file.');
+		}
+
+		/**
 		 * GHSA-pf37-7c5m-mpg3: the translation lands inside a double-quoted PHP
 		 * string literal, so a value carrying a quote used to close define() early
 		 * and run whatever followed, for every visitor to a page loading the file.
