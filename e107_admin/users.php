@@ -1464,6 +1464,45 @@ class users_admin_ui extends e_admin_ui
 	}
 
 	/**
+	 * The export batch reads rather than writes, so the administrator rule stands aside for it;
+	 * what it reads is narrowed instead, because e107Xml::e107Export() otherwise selects every
+	 * column of the row.
+	 *
+	 * @param array $selected
+	 * @return void
+	 */
+	protected function handleListExportBatch($selected)
+	{
+		$this->getTreeModel()->setParam('export_fields', $this->exportColumns());
+
+		parent::handleListExportBatch($selected);
+	}
+
+	/**
+	 * Columns the export may stream: the user table columns this screen declares, less the
+	 * password hash and the session key, which are credentials rather than user data.
+	 *
+	 * @return string comma-separated list for e107Xml::e107Export()'s 'fields' option
+	 */
+	private function exportColumns()
+	{
+		$columns = array();
+		$excluded = array('checkboxes', 'options', 'user_password', 'user_sess');
+
+		foreach($this->getFields() as $field => $attr)
+		{
+			if(isset($attr['__tableField']) || in_array($field, $excluded, true))
+			{
+				continue;
+			}
+
+			$columns[] = $field;
+		}
+
+		return implode(',', $columns);
+	}
+
+	/**
 	 * Remove admin status trigger
 	 */
 	public function ListUnadminTrigger($userid)
