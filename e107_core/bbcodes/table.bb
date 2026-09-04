@@ -7,16 +7,33 @@ $allowedAttributes = array('align', 'bgcolor', 'border', 'cellpadding', 'cellspa
 
 $renderedParm = html_entity_decode((string) $parm, ENT_QUOTES, 'UTF-8');
 
-preg_match_all('#(?:^|[\s/"\'])([a-z][a-z0-9-]*)\s*=#i', $renderedParm, $attributesUsed);
+preg_match_all('#([a-z][a-z0-9-]*)\s*=\s*(?|"([^"]*)"|\'([^\']*)\'|([^\s"\'>]+(?:\s+(?![a-z][a-z0-9-]*\s*=)[^\s"\'>]+)*))#i', $renderedParm, $pairs, PREG_SET_ORDER);
 
-if(strpos($renderedParm, '>') !== false || array_diff(array_map('strtolower', $attributesUsed[1]), $allowedAttributes))
+$attributes = array();
+
+foreach($pairs as $pair)
 {
-	$parm = '';
+	$name = strtolower($pair[1]);
+
+	if(in_array($name, $allowedAttributes, true))
+	{
+		$attributes[$name] = $pair[2];
+	}
 }
 
-if($parm)
+if(!$attributes)
 {
-	 return "<table class='{$class}' {$parm}>".trim($code_text)."</table>";
+	return "<table class='table table-striped table-bordered {$class}'>".trim($code_text)."</table>";
 }
 
-return "<table class='table table-striped table-bordered {$class}'>".trim($code_text)."</table>";
+$attributes = array('class' => trim($class.' '.varset($attributes['class']))) + $attributes;
+
+$renderedAttributes = '';
+
+foreach($attributes as $name => $value)
+{
+	$value = str_replace(array('&', '<', '>', '"', "'"), array('&#38;', '&#60;', '&#62;', '&#34;', '&#x27;'), $value);
+	$renderedAttributes .= " {$name}='{$value}'";
+}
+
+return "<table{$renderedAttributes}>".trim($code_text)."</table>";

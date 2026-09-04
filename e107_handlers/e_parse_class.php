@@ -2288,13 +2288,8 @@ class e_parse
 	}
 
 	/**
-	 * Encode a value as a JavaScript string literal, delimiters included, for inline script.
-	 *
-	 * {@see toAttribute()} is not enough for a value that lands inside an on* handler or a
-	 * `javascript:` URL: the browser HTML-decodes the attribute before the script is
-	 * compiled, so an entity-encoded quote turns back into a real quote and closes the
-	 * literal. Quotes, angle brackets and ampersands leave here as \uXXXX escapes, which
-	 * survive that decode intact.
+	 * Encode a value as a complete JavaScript string literal, safe inside an HTML attribute
+	 * the browser decodes before compiling it, which {@see e_parse::toAttribute()} is not.
 	 *
 	 * @param string $text
 	 * @return string a complete JavaScript string literal, its delimiting quotes included

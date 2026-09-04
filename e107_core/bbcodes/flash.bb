@@ -3,7 +3,7 @@ $class = e107::getBB()->getClass('flash');
 
 // USAGE: [flash=width,height,param_name=value&param_name=value]http://www.example.com/file.swf[/flash]
 
-$movie_path = e107::getParser()->toAttribute($code_text);
+$movie_path = e107::getParser()->toUrlAttribute($code_text);
 
 $parm_array = explode(',', $parm);
 $width = preg_replace('#[^0-9%]#', '', varsettrue($parm_array[0], 50));
@@ -22,7 +22,7 @@ if(isset($parm_array[2]))
 	foreach($extraParms as $_parm => $_val)
 	{
 		if($_parm && $_val) {
-			$text .= "\t<param name='".e107::getParser()->toAttribute($_parm)."' value='".e107::getParser()->toAttribute($_val)."' />\n";
+			$text .= "\t<param name='".e107::getParser()->toAttribute($_parm, true)."' value='".e107::getParser()->toAttribute($_val, true)."' />\n";
 		}
 	}
 }
