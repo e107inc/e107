@@ -578,7 +578,7 @@ class userlogin
 
 
 	/**
-	 * Put a password check made outside {@see userlogin::login()} through the same failure funnel, so the counter and the auto-ban see it.
+	 * Hand a password check made outside {@see userlogin::login()} to the failure arm a wrong login takes.
 	 * @param string $username - as entered
 	 * @return bool always false, so a caller can return it directly
 	 */
