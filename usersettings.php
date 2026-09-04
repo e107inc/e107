@@ -678,7 +678,7 @@ class usersettings_front // Begin Usersettings rewrite.
 		{
 				$pendingChange = $this->pendingChange(isset($_POST['pending']) ? $_POST['pending'] : '');
 
-				if (!$pendingChange)
+				if (!$pendingChange || (int) $inp !== (int) $pendingChange['user_id'])
 				{  // Nothing is waiting on this account, so this confirmation has nothing to apply
 
 					$mes->addError("<p>".defset('LAN_USET_CHANGE_NOT_COMPLETED', "Your changes were not completed. Please try again.")."</p>");
