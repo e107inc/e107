@@ -85,6 +85,12 @@
 				$imgParms['loading'] = 'lazy';
 			}
 
+			if(!empty($imgParms['title']))
+			{
+				// toImage() encodes alt and prints title as given, and title is filled from alt.
+				$imgParms['title'] = $tp->toAttribute($imgParms['title']);
+			}
+
 			$resizeWidth = e107::getBB()->resizeWidth();
 
 			$w = !empty($imgParms['width']) ? (int) $imgParms['width'] : vartrue($resizeWidth, 0);
@@ -122,21 +128,72 @@
 			$imgParms = array();
 
 
-			$parm = preg_replace('#onerror *=#i', '', $parm);
 			$parm = str_replace("amp;", "&", $parm);
 
 			//  $parm = str_replace(" ","&",$parm); // Needed as parse_str() doesn't know how to handle spaces. Could return [width] => '400 AltValue'
 
 			parse_str($parm, $imgParms);
 
+			$allowedAttributes = array('alt', 'class', 'figcaption', 'height', 'id', 'loading', 'style', 'width');
+			$safeParms = array();
+
+			foreach($imgParms as $key => $val)
+			{
+				$key = strtolower($key);
+
+				if(is_scalar($val) && in_array($key, $allowedAttributes, true))
+				{
+					$safeParms[$key] = $val;
+				}
+			}
+
+			$imgParms = $safeParms;
+
+			if(isset($imgParms['loading'])
+				&& !in_array(strtolower($imgParms['loading']), array('auto', 'eager', 'lazy'), true))
+			{
+				unset($imgParms['loading']);
+			}
+
+			if(isset($imgParms['class']))
+			{
+				$imgParms['class'] = eHelper::secureClassAttr($imgParms['class']);
+			}
+
+			if(isset($imgParms['id']))
+			{
+				$imgParms['id'] = eHelper::secureIdAttr($imgParms['id']);
+			}
+
+			if(isset($imgParms['style']))
+			{
+				$imgParms['style'] = eHelper::secureStyleAttr($imgParms['style']);
+			}
+
+			foreach(array('width', 'height') as $dimension)
+			{
+				if(!isset($imgParms[$dimension]))
+				{
+					continue;
+				}
+
+				if(is_numeric($imgParms[$dimension]))
+				{
+					$imgParms[$dimension] = (int) $imgParms[$dimension];
+				}
+				else
+				{
+					unset($imgParms[$dimension]);
+				}
+			}
 
 			if(empty($imgParms['width']) && strpos($parm, 'width') !== false) // Calculate thumbnail width from style.
 			{
 				preg_match("/width:([\d]*)[p|x|%|;]*/i", $parm, $m);
-				if($m[1] > 0)
+				if(!empty($m[1]) && $m[1] > 0)
 				{
 					$imgParms['width'] = $m[1];
-					$imgParms['style'] = str_replace($m[0], '', $imgParms['style']); // strip hard-coded width styling.
+					$imgParms['style'] = str_replace($m[0], '', varset($imgParms['style'], '')); // strip hard-coded width styling.
 				}
 			}
 
