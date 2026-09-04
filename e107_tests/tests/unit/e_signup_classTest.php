@@ -12,11 +12,18 @@
 	class e_signup_classTest extends \Test\Unit
 	{
 
+		/** The password the fixture account is created with. */
+		const RESEND_PASSWORD = 'resend-fixture-password';
+
 		/** @var e_signup */
 		protected $sup;
 
+		/** @var array preference values as they were before a test changed them */
+		protected $restorePrefs = array();
+
 		protected function _before()
 		{
+			require_once(e_HANDLER."user_handler.php");
 			require_once(e_HANDLER."e_signup_class.php");
 			try
 			{
@@ -29,6 +36,25 @@
 
 			$this->sup->__construct();
 
+		}
+
+		protected function _after()
+		{
+			if(empty($this->restorePrefs))
+			{
+				return;
+			}
+
+			$config = e107::getConfig();
+
+			foreach($this->restorePrefs as $key => $value)
+			{
+				$config->set($key, $value);
+			}
+
+			$config->save(false, true);
+
+			$this->restorePrefs = array();
 		}
 
 
@@ -78,6 +104,127 @@
 			$this->assertEquals("Privacy Policy", LAN_SIGNUP_122, "Language file failed to load.");
 
 
+		}
+
+
+		/**
+		 * The resend form checked the password itself, so a guess reached none
+		 * of the counting userlogin does for the login form.
+		 */
+		public function testAWrongResendPasswordGoesThroughTheLoginFailureFunnel()
+		{
+			$name = 'resendvictim';
+			$email = $name.'@example.com';
+
+			$this->haveUnactivatedUser($name, $email);
+			$this->havePrefs(array('user_reg_veri' => 1, 'roll_log_active' => 1));
+
+			$before = $this->failureNotesFor($name);
+
+			list($output, ) = $this->runInBootedCli($this->resendRequest($name, 'not-the-password', 'moved-'.$email));
+			$out = implode("\n", $output);
+
+			$this->assertNotFalse(strpos($out, LAN_INCORRECT_PASSWORD),
+				'the resend form never reached its wrong-password branch: '.$out);
+
+			$this->assertSame($before + 1, $this->failureNotesFor($name),
+				'the wrong password was not put through the failure funnel userlogin counts');
+
+			$this->assertSame($email, e107::getDb()->createQueryBuilder()
+				->select('user_email')->from('user')->where('user_loginname', $name)->fetchOne(),
+				'the wrong password still moved the account to another address');
+		}
+
+
+		/**
+		 * @param string $name
+		 * @param string $email
+		 * @return int user id
+		 */
+		private function haveUnactivatedUser($name, $email)
+		{
+			$id = e107::getDb()->insert('user', array(
+				'user_name'      => $name,
+				'user_loginname' => $name,
+				'user_login'     => $name,
+				'user_email'     => $email,
+				'user_password'  => md5(self::RESEND_PASSWORD),
+				'user_join'      => time(),
+				'user_ban'       => USER_REGISTERED_NOT_VALIDATED,
+				'user_class'     => '',
+				'user_sess'      => 'resend-fixture-session',
+			));
+
+			$this->assertNotEmpty($id, 'could not write the account this test needs');
+
+			return (int) $id;
+		}
+
+
+		/**
+		 * @param array $prefs set for this test and restored after it
+		 * @return void
+		 */
+		private function havePrefs($prefs)
+		{
+			$config = e107::getConfig();
+
+			foreach($prefs as $key => $value)
+			{
+				$this->restorePrefs[$key] = e107::getPref($key);
+				$config->set($key, $value);
+			}
+
+			$config->save(false, true);
+		}
+
+
+		/**
+		 * @param string $name
+		 * @return int rolling-log notes userlogin has written about $name
+		 */
+		private function failureNotesFor($name)
+		{
+			$rows = e107::getDb()->createQueryBuilder()
+				->select('dblog_remarks')->from('dblog')
+				->where('dblog_eventcode', 'LOGIN')
+				->fetchAll();
+
+			$found = 0;
+
+			foreach($rows as $row)
+			{
+				if(strpos($row['dblog_remarks'], $name) !== false)
+				{
+					$found++;
+				}
+			}
+
+			return $found;
+		}
+
+
+		/**
+		 * @param string $name what the visitor typed in the identifier field
+		 * @param string $password what the visitor typed in the password field
+		 * @param string $newEmail the address the visitor asks the account to be moved to
+		 * @return string PHP that posts the resend form, for a booted CLI request
+		 */
+		private function resendRequest($name, $password, $newEmail)
+		{
+			$post = array(
+				'submit_resend'   => 1,
+				'resend_email'    => $name,
+				'resend_newemail' => $newEmail,
+				'resend_password' => $password,
+			);
+
+			$php  = '$userMethods = e107::getUserSession(); ';
+			$php .= '$_POST = '.var_export($post, true).'; ';
+			$php .= "require_once('".addslashes(APP_PATH.'/e107_handlers/e_signup_class.php')."'); ";
+			$php .= '$signup = new e_signup(); $signup->run("resend");';
+
+			return $php;
 		}
 
 
