@@ -225,6 +225,25 @@ class userloginAutoBanTest extends \Test\Unit
 		$this->assertSame(0, $this->autoBannedCount());
 	}
 
+	public function testABanRaisedByAnAttemptThatAuthorisesIsLifted()
+	{
+		for($i = 1; $i <= self::FAIL_LIMIT; $i++)
+		{
+			$this->lg->login(self::TEST_USER, 'not the password ' . $i, 0, '', true);
+		}
+
+		$this->lg->login(self::TEST_USER, 'not the password', 0, '', true);
+
+		$this->assertSame(1, $this->loginBanCount());
+
+		$userData = e107::getDb()->createQueryBuilder()->select('*')->from('user')
+			->where('user_id', (int) $this->userId)->fetchRow();
+		$this->lg->validLogin($userData);
+
+		$this->assertSame(0, $this->loginBanCount());
+		$this->assertSame(self::FAIL_LIMIT, $this->failedLoginCount());
+	}
+
 	protected function seedFailedLogin($age = 0)
 	{
 		e107::getDb()->createQueryBuilder()->insert('generic')->values(array(
