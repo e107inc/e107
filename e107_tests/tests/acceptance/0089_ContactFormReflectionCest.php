@@ -44,12 +44,13 @@
  * the validation out of the measurement: what is under test is the redisplay,
  * not the send.
  *
- * Three of the cases below pass before the fix as well as after, and they are
- * what stops the refusal being satisfied by dropping the field: an ordinary
- * message must still come back, it must come back with its backslashes
- * intact, because the stripslashes() that guarded the old line ran
- * unconditionally on a PHP that has had no magic quotes since 5.4, and both
- * assembled blocks must still reach the page.
+ * Two of the cases below pass before the fix as well as after, and they are
+ * what stops the refusals being satisfied by dropping a field or by refusing
+ * to assemble the page: an ordinary message must still come back, and both
+ * assembled blocks must still reach it. The backslashes case reads like a
+ * third, but it is a refusal too. The stripslashes() that guarded the old
+ * line ran unconditionally and MAGIC_QUOTES_GPC is defined false, so the base
+ * ate a backslash out of every redisplayed message and that case is red on it.
  */
 class ContactFormReflectionCest
 {
