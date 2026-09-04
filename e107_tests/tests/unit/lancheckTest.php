@@ -536,16 +536,16 @@
 		}
 
 		/**
-		 * PCRE's $ matches before a final newline, so a constant name ending in one passed the
-		 * name test, went into the file, and then read back zero times: the phrase vanished
-		 * from the editor while the constant stayed on disk.
+		 * PCRE's $ matches before a final newline as well as at the end of the subject, so a
+		 * name ending in one passed the test and went into the file as a constant no template
+		 * can ever reference by name.
 		 */
 		public function testWrite_lanfileRejectsAConstantNameEndingInANewline()
 		{
 			$written = $this->writeLanFile(array("FOO\n"), array('harmless'));
 
 			$this->assertStringNotContainsString('FOO', $written,
-				'A name the editor cannot read back must not be written into the file.');
+				'A name that is not a usable identifier must not be written into the file.');
 		}
 
 		/**
