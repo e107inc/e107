@@ -683,6 +683,30 @@
 		}
 
 
+		/**
+		 * The refusal of a command line entry point in a web-shaped environment
+		 * has to reach whatever piped the message in.
+		 */
+		public function testARefusedCommandLineEntryPointReportsFailure()
+		{
+			$root = realpath(e_HANDLER . '..');
+			self::assertNotFalse($root, 'Could not locate the e107 root.');
+
+			$code = "\$_E107 = array('cli' => true); ";
+			$code .= "require_once('" . addslashes($root . '/class2.php') . "');";
+
+			$output = array();
+			$status = 0;
+			exec(sprintf('HTTP_HOST=mta.example.com timeout 30 php -r %s 2>&1', escapeshellarg($code)),
+				$output, $status);
+
+			self::assertSame(1, $status,
+				'An MTA reads a zero status as a delivered message, so a bounce refused here is one it drops');
+			self::assertSame(array(), $output,
+				'Whatever the refusal prints is what the sender is handed back');
+		}
+
+
 		private function echoMem()
 		{
 

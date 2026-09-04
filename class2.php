@@ -56,7 +56,7 @@ if(!empty($_E107['cli']) && (PHP_SAPI === "cli-server"
 	|| !empty($_SERVER['HTTP_HOST'])
 	|| !empty($_SERVER['SERVER_PROTOCOL'])))
 {
-	exit();
+	exit(1);
 }
 
 if(function_exists('utf8_encode') === false)
