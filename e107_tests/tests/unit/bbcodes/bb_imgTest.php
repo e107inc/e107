@@ -34,6 +34,60 @@
 		public function testToDB()
 		{
 
+			$tests = array(
+				array(
+					'parm'      => 'width=300&height=200',
+					'expected'  => '[img width=300&height=200]{e_MEDIA_IMAGE}2020-12/horse.jpg[/img]'
+				),
+				array(
+					'parm'      => 'height=200',
+					'expected'  => '[img height=200]{e_MEDIA_IMAGE}2020-12/horse.jpg[/img]'
+				),
+				array(
+					'parm'      => 'width=300',
+					'expected'  => '[img width=300]{e_MEDIA_IMAGE}2020-12/horse.jpg[/img]'
+				),
+				array(
+					'parm'      => 'height=1" onload="alert(1)',
+					'expected'  => '[img]{e_MEDIA_IMAGE}2020-12/horse.jpg[/img]'
+				),
+				array(
+					'parm'      => 'width=abc',
+					'expected'  => '[img]{e_MEDIA_IMAGE}2020-12/horse.jpg[/img]'
+				),
+				array(
+					'parm'      => 'figcaption=Hello&loading=eager',
+					'expected'  => '[img figcaption=Hello&loading=eager]{e_MEDIA_IMAGE}2020-12/horse.jpg[/img]'
+				),
+				array(
+					'parm'      => 'loading=nonsense',
+					'expected'  => '[img]{e_MEDIA_IMAGE}2020-12/horse.jpg[/img]'
+				),
+			);
+
+			foreach($tests as $var)
+			{
+				$result = $this->bb->toDB('{e_MEDIA_IMAGE}2020-12/horse.jpg', $var['parm']);
+
+				$this->assertSame($var['expected'], $result, $var['parm']);
+			}
+		}
+
+		/**
+		 * filter() is not idempotent, so the caption is stored as it was typed and encoded once, at the render.
+		 */
+		public function testAPostedCaptionReachesTheReaderAsItWasTyped()
+		{
+
+			$stored = $this->bb->toDB('{e_MEDIA_IMAGE}2020-12/horse.jpg', "alt=A horse&figcaption=Ben's horse");
+
+			$this->assertSame('[img alt=A+horse&figcaption=Ben%27s+horse]{e_MEDIA_IMAGE}2020-12/horse.jpg[/img]', $stored);
+
+			preg_match('#^\[img ([^\]]*)\](.*)\[/img\]$#', $stored, $m);
+
+			$result = $this->bb->toHTML($m[2], $m[1]);
+
+			$this->assertStringContainsString('<figcaption>Ben&#039;s horse</figcaption>', $result);
 		}
 
 		public function testToHTML()

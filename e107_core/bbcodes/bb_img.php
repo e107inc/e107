@@ -42,9 +42,21 @@
 			{
 				$safe['alt'] = e107::getParser()->filter($parms['alt']);
 			}
-			if(isset($parms['width']))
+			if(!empty($parms['figcaption']))
 			{
-				$safe['width'] = (int) $parms['width'];
+				$safe['figcaption'] = $parms['figcaption'];
+			}
+			foreach(array('width', 'height') as $dimension)
+			{
+				if(isset($parms[$dimension]) && is_numeric($parms[$dimension]))
+				{
+					$safe[$dimension] = (int) $parms[$dimension];
+				}
+			}
+
+			if(!empty($parms['loading']) && in_array($parms['loading'], array('lazy', 'eager', 'auto'), true))
+			{
+				$safe['loading'] = $parms['loading'];
 			}
 
 			if(!empty($safe))
@@ -206,7 +218,7 @@
 					$imgParms['alt'] = ucwords(str_replace("_", " ", $match[1]));
 				}
 			}
-			else
+			elseif(empty($imgParms['figcaption']))
 			{
 				$imgParms['figcaption'] = $imgParms['alt'];
 			}

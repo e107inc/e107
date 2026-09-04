@@ -4921,24 +4921,24 @@ class e_parse
 			$path = $tp->thumbUrl($file, $parm);
 		}
 
-		$id = (!empty($parm['id'])) ? 'id="' . $parm['id'] . '" ' : '';
-		$class = (!empty($parm['class'])) ? $parm['class'] : 'img-responsive img-fluid';
-		$alt = (!empty($parm['alt'])) ? $tp->toAttribute($parm['alt']) : basename($file);
-		$style = (!empty($parm['style'])) ? 'style="' . $parm['style'] . '" ' : '';
-		$srcset = (!empty($parm['srcset'])) ? 'srcset="' . $parm['srcset'] . '" ' : '';
+		$id = (!empty($parm['id'])) ? 'id="' . $this->attributeValue($parm['id']) . '" ' : '';
+		$class = (!empty($parm['class'])) ? $this->attributeValue($parm['class']) : 'img-responsive img-fluid';
+		$alt = (!empty($parm['alt'])) ? $tp->toAttribute($parm['alt']) : $this->attributeValue(basename($file));
+		$style = (!empty($parm['style'])) ? 'style="' . $this->attributeValue($parm['style']) . '" ' : '';
+		$srcset = (!empty($parm['srcset'])) ? 'srcset="' . $this->attributeValue($parm['srcset']) . '" ' : '';
 		$width = (!empty($parm['w'])) ? 'width="' . (int) $parm['w'] . '" ' : '';
-		$title = (!empty($parm['title'])) ? 'title="' . $parm['title'] . '" ' : '';
+		$title = (!empty($parm['title'])) ? 'title="' . $this->attributeValue($parm['title']) . '" ' : '';
 		$height = !empty($parm['h']) ? 'height="' . (int) $parm['h'] . '" ' : '';
-		$loading = !empty($parm['loading']) ? 'loading="' . $parm['loading'] . '" ' : ''; // eg. lazy, eager, auto
+		$loading = !empty($parm['loading']) ? 'loading="' . $this->attributeValue($parm['loading']) . '" ' : ''; // eg. lazy, eager, auto
 
 		if (isset($parm['width'])) // width attribute override (while retaining w)
 		{
-			$width = 'width="' . $parm['width'] . '" ';
+			$width = 'width="' . $this->attributeValue($parm['width']) . '" ';
 		}
 
 		if (isset($parm['height'])) // height attribute override (while retaining h)
 		{
-			$height = 'height="' . $parm['height'] . '" ';
+			$height = 'height="' . $this->attributeValue($parm['height']) . '" ';
 		}
 
 		$html = '';
@@ -4967,12 +4967,24 @@ class e_parse
 			return null;
 		}
 
-		$html .= "<img {$id}class=\"{$class}\" src=\"" . $path . '" alt="' . $alt . '" ' . $srcset . $width . $height . $style . $loading . $title . ' />';
+		$html .= "<img {$id}class=\"{$class}\" src=\"" . $this->attributeValue($path) . '" alt="' . $alt . '" ' . $srcset . $width . $height . $style . $loading . $title . ' />';
 
 		//	$html .= ($this->convertToWebP) ? "\n</picture>" : '';
 
 		return $html;
 
+	}
+
+
+	/**
+	 * Encode a value for a quoted HTML attribute, leaving an entity the caller already wrote alone.
+	 *
+	 * @param mixed $value
+	 * @return string
+	 */
+	private function attributeValue($value)
+	{
+		return htmlspecialchars((string) $value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false);
 	}
 
 
