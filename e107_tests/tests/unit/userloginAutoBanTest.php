@@ -174,6 +174,20 @@ class userloginAutoBanTest extends \Codeception\Test\Unit
 		$this->assertSame(0, $this->autoBannedCount());
 	}
 
+	public function testNoBanIsRaisedWhileFailedLoginBansCannotExpire()
+	{
+		e107::getConfig()->setPref('ban_durations', array());
+
+		for($i = 0; $i <= self::FAIL_LIMIT; $i++)
+		{
+			$this->lg->login(self::TEST_USER, 'not the password ' . $i, 0, '', true);
+		}
+
+		$this->assertSame(self::FAIL_LIMIT + 1, $this->failedLoginCount());
+		$this->assertSame(0, $this->loginBanCount());
+		$this->assertSame(0, $this->autoBannedCount());
+	}
+
 	public function testDiagnosticModeRecordsNothing()
 	{
 		$messages = $this->lg->test();
