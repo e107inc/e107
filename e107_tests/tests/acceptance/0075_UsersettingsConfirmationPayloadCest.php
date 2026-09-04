@@ -262,12 +262,15 @@ class UsersettingsConfirmationPayloadCest
 	 */
 	private function seeStillAnOrdinaryMember(AcceptanceTester $I, $userId, $how)
 	{
-		$I->assertSame('0', (string) $I->grabFromDatabase('e107_user', 'user_admin', array('user_id' => $userId)),
-			'user_admin was not written through ' . $how);
-		$I->assertSame('', (string) $I->grabFromDatabase('e107_user', 'user_perms', array('user_id' => $userId)),
-			'user_perms was not written through ' . $how);
-		$I->assertSame('', (string) $I->grabFromDatabase('e107_user', 'user_xup', array('user_id' => $userId)),
-			'user_xup was not written through ' . $how);
+		$untouched = array('user_admin' => '0', 'user_perms' => '', 'user_xup' => '');
+		$stored    = array();
+
+		foreach (array_keys($untouched) as $column)
+		{
+			$stored[$column] = (string) $I->grabFromDatabase('e107_user', $column, array('user_id' => $userId));
+		}
+
+		$I->assertSame($untouched, $stored, 'a restricted column was written through ' . $how);
 	}
 
 	/**
