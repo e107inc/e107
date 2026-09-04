@@ -125,9 +125,8 @@ class bbcodeAttributeInjectionTest extends \Test\Unit
 				self::assertMatchesRegularExpression('#^window\.status='.$literals.'; return true;$#',
 					$element->getAttribute('onmouseover'), $message.' Rendered: '.$html);
 
-				self::assertMatchesRegularExpression('#^window\.location='.$literals.';self\.close\(\);$#',
-					rawurldecode(substr($element->getAttribute('href'), strlen('javascript:'))),
-					$message.' Rendered: '.$html);
+				self::assertMatchesRegularExpression('#^javascript:window\.location='.$literals.';self\.close\(\);$#',
+					rawurldecode($element->getAttribute('href')), $message.' Rendered: '.$html);
 
 				return;
 			}
