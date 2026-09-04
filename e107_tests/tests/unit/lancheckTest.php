@@ -38,7 +38,7 @@
 			global $ns;
 			$ns = e107::getRender();
 
-			$this->target = sys_get_temp_dir().'/e107-lancheck-'.uniqid('', true).'.php';
+			$this->target = e_LANGUAGEDIR.'e107_tests_lancheck_target.php';
 		}
 
 		protected function _after()
@@ -248,18 +248,24 @@
 			}
 		}
 
-		/** The guard must not be so tight that the feature stops working. */
-		public function testInitStillOpensAnOrdinaryLanguageFile()
+		/**
+		 * The edit screen's caption comes from language.php's own language file and from SEP,
+		 * which the admin theme defines; a unit run has neither and neither bears on the guard.
+		 */
+		protected function loadEditScreenLans()
 		{
-			// The edit screen's caption is built from language.php's own language
-			// file and from SEP, which the admin theme defines. Neither is present
-			// in a unit run, and neither has anything to do with the guard.
 			e107::coreLan('language', true);
 
 			if(!defined('SEP'))
 			{
 				define('SEP', ' &raquo; ');
 			}
+		}
+
+		/** The guard must not be so tight that the feature stops working. */
+		public function testInitStillOpensAnOrdinaryLanguageFile()
+		{
+			$this->loadEditScreenLans();
 
 			$_GET['sub']  = 'edit';
 			$_GET['lan']  = 'English';
@@ -268,6 +274,44 @@
 			$result = $this->lan->init();
 
 			$this->assertIsArray($result, 'An ordinary language file should still open.');
+			$this->assertSame('edit', $result['mode']);
+		}
+
+		/**
+		 * GHSA-pf37-7c5m-mpg3: the P and T types prefix the plugin and theme roots, and
+		 * containment stopped at the root itself, so any writable .php file under a plugin
+		 * opened in the editor and was replaced whole by the save that followed.
+		 */
+		public function testInitRefusesAPluginFileOutsideALanguagesDirectory()
+		{
+			$this->loadEditScreenLans();
+
+			$_GET['sub']  = 'edit';
+			$_GET['lan']  = 'English';
+			$_GET['type'] = 'P';
+			$_GET['file'] = 'download/handlers/SecureLinkDecorator.php';
+
+			$this->assertEmpty($this->lan->init(),
+				'The editor opened a plugin file that is not a language file.');
+			$this->assertArrayNotHasKey('lancheck-edit-file', $_SESSION,
+				'A plugin file outside a languages directory reached the save step.');
+		}
+
+		/** The plugin the editor is actually for still opens. */
+		public function testInitStillOpensAPluginLanguageFile()
+		{
+			$this->loadEditScreenLans();
+
+			$plugin = $this->writeScratchPlugin(array('English.php' => 'define("LAN_TEST_X", "Hello");'));
+
+			$_GET['sub']  = 'edit';
+			$_GET['lan']  = 'English';
+			$_GET['type'] = 'P';
+			$_GET['file'] = $plugin.'/languages/English.php';
+
+			$result = $this->lan->init();
+
+			$this->assertIsArray($result, 'A plugin language file should still open.');
 			$this->assertSame('edit', $result['mode']);
 		}
 
