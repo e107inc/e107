@@ -3828,6 +3828,20 @@ class e_admin_controller_ui extends e_admin_controller
 
 
 	/**
+	 * Whether the caller may put a record in or out of a user class, which its userclass_editclass declares.
+	 *
+	 * @param int|string $class user class id
+	 * @return bool
+	 */
+	private function canManageUserclass($class)
+	{
+		$tree = e107::getUserClass()->class_tree;
+
+		return isset($tree[$class]['userclass_editclass'])
+			&& e107::getUser()->checkClass($tree[$class]['userclass_editclass']);
+	}
+
+	/**
 	 * Handle posted batch options routine
 	 * @param string $batch_trigger
 	 * @return e_admin_controller_ui
@@ -4037,11 +4051,7 @@ class e_admin_controller_ui extends e_admin_controller
 					return $this;
 				}
 
-				$user = e107::getUser();
-				$e_userclass = e107::getUserClass(); 
-				
-				// check userclass manager class
-				if (!isset($e_userclass->class_tree[$class]) || !$user->checkClass($e_userclass->class_tree[$class]))
+				if(!$this->canManageUserclass($class))
 				{
 					return $this;
 				}
@@ -4068,8 +4078,6 @@ class e_admin_controller_ui extends e_admin_controller
 					return $this;
 				}
 
-				$user = e107::getUser();
-				$e_userclass = e107::getUserClass();
 				$parms = $this->getFieldAttr($field, 'writeParms', array());
 				if(!is_array($parms))
 				{
@@ -4080,16 +4088,20 @@ class e_admin_controller_ui extends e_admin_controller
 					return $this;
 				}
 				
-				$classes = $e_userclass->uc_required_class_list($parms['classlist']);
+				$classes = e107::getUserClass()->uc_required_class_list($parms['classlist']);
 				foreach ($classes as $id => $label) 
 				{
-					// check userclass manager class
-					if (!isset($e_userclass->class_tree[$id]) || !$user->checkClass($e_userclass->class_tree[$id]))
+					if(!$this->canManageUserclass($id))
 					{
 						$msg = $tp->lanVars(LAN_NO_ADMIN_PERMISSION,$label);
 						$this->getTreeModel()->addMessageWarning($msg);
 						unset($classes[$id],$msg);
 					}
+				}
+				if(empty($classes))
+				{
+					$this->getTreeModel()->setMessages();
+					return $this;
 				}
 				if(method_exists($this, 'handleCommaBatch'))
 				{

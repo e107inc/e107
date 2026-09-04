@@ -8,7 +8,7 @@
  * administrator at all". This one answers the next question down: "does this
  * administrator hold the permission this route requires".
  *
- * Two separate defects live in the same file.
+ * Three separate defects live in the same file.
  *
  * The first is a grant of administrator permissions by a caller who may not
  * make one. users_admin_ui::AddSubmitTrigger() writes
@@ -30,6 +30,22 @@
  * a dispatcher that declares neither $perm nor $access, so nothing else takes
  * up the slack.
  *
+ * The third is that the user class is written by three routes that never vet
+ * it. users_admin_ui::checkAllowed() refuses a class whose userclass_editclass
+ * the caller does not hold, and the dedicated Set user class page runs it over
+ * every posted id. e_admin_ui::InlineAjaxPage() writes the posted value
+ * straight onto the model; the batch reaches the column through
+ * handleCommaBatch(), which saves the tree model without ever calling
+ * beforeUpdate(); and AddSubmitTrigger() writes it out of $_POST['class'] on
+ * its way to the insert. A delegated administrator holding '4', U0 or U1 could
+ * put any account, their own included, into Main Admin's class.
+ *
+ * The handler underneath this file has a defect of its own: the guard
+ * e_admin_controller_ui carried for a userclass batch handed the whole class
+ * row to checkClass() rather than its userclass_editclass, so it answered on
+ * whichever column came first rather than on the one that says who may manage
+ * a class, on every list in core that has such a batch.
+ *
  * Every refusal here is read back as a side effect: the user row, the
  * e107_generic rank rows, or the core preferences through a probe.
  * e_admin_dispatcher::checkAccess() rewrites the action to e403 and then
@@ -40,6 +56,8 @@
  * @see e107_admin/newspost.php  news_admin::$perm, the shape this map should take
  * @see e107_handlers/admin_ui.php  e_admin_dispatcher::checkAccess(), hasRouteAccess()
  * @see e107_handlers/user_handler.php  e_userperms, the permission code list
+ * @see e107_admin/users.php  users_admin_ui::checkAllowed(), the user class rule
+ * @see e107_handlers/admin_ui.php  e_admin_controller_ui::_handleListBatch(), the userclass batch
  */
 class AdminRoutePermsCest
 {
@@ -61,6 +79,22 @@ class AdminRoutePermsCest
 
 	/** The same listing under its other action name, with its own batch trigger. */
 	const ROUTE_GRID = '/e107_admin/users.php?mode=main&action=grid';
+
+	/** The inline editor's endpoint. The row id goes on the end. */
+	const ROUTE_INLINE = '/e107_admin/users.php?mode=main&action=inline&ajax_used=1&id=';
+
+	/** Welcome messages: a userclass batch on another table, behind another permission. */
+	const ROUTE_WMESSAGE = '/e107_admin/wmessage.php?mode=main&action=list';
+
+	/**
+	 * Main Admin, whose userclass_editclass is itself, so only a main administrator manages it.
+	 *
+	 * @see e107_core/xml/default_install.xml the userclass_classes a stock site is installed with
+	 */
+	const BARRED_CLASS = 250;
+
+	/** PRIVATEMENU, whose userclass_editclass is 254, a class every administrator holds. */
+	const MANAGED_CLASS = 1;
 
 	/** An account awaiting activation, which is what the mass reset acts on. */
 	const PENDING_USER = 'p7rppending';
@@ -100,6 +134,7 @@ class AdminRoutePermsCest
 		'p7rpU3admin'    => 'U3',   // user ranks only
 		'p7rp4admin'     => '4',    // manage all user access and settings, but not admin perms
 		'p7rpPermsadmin' => '4.3',  // manage all users, and modify admin perms
+		'p7rpMadmin'     => 'M',    // welcome messages, and nothing on the user list at all
 	);
 
 	/** A second administrator, for the routes that act on somebody else's account. */
@@ -926,6 +961,348 @@ class AdminRoutePermsCest
 	}
 
 	// -----------------------------------------------------------------
+	// item 3: the user class, which the Set user class page vets and the
+	// inline editor and the batch do not
+	// -----------------------------------------------------------------
+
+	/**
+	 * A delegated administrator must not put an account in a class whose
+	 * userclass_editclass they do not hold.
+	 *
+	 * users_admin_ui::checkAllowed() is the rule, and the dedicated Set user
+	 * class page runs it over every posted id. The inline editor posts one
+	 * field straight at the model through e_admin_ui::InlineAjaxPage(), which
+	 * checks the field is inline and the token verifies and nothing else. On a
+	 * stock install the widget already draws checkboxes for three classes the
+	 * dedicated page refuses, so the crafted value below is the general case
+	 * rather than the only one.
+	 *
+	 * The class this account may manage goes first: an editor that refused
+	 * everything would leave the refusal beneath it meaningless.
+	 */
+	public function aDelegatedAdministratorCannotSetABarredUserClassInline(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse an inline user class this administrator may not manage');
+
+		$victimId = $this->seedVictim($I);
+		$this->loginAsDelegatedAdmin($I, 'p7rp4admin');
+
+		$this->sendInline($I, $victimId, 'user_class', (string) self::MANAGED_CLASS);
+
+		$I->assertSame((string) self::MANAGED_CLASS,
+			(string) $I->grabFromDatabase('e107_user', 'user_class', array('user_id' => $victimId)),
+			'The inline editor no longer writes a class this administrator may manage, so the '
+			.'refusal asserted below is a broken editor rather than an authorisation boundary.');
+
+		$this->sendInline($I, $victimId, 'user_class', self::MANAGED_CLASS.','.self::BARRED_CLASS);
+
+		$I->assertSame((string) self::MANAGED_CLASS,
+			(string) $I->grabFromDatabase('e107_user', 'user_class', array('user_id' => $victimId)),
+			'A delegated administrator holding 4 put '.self::VICTIM_USER.' in class '
+			.self::BARRED_CLASS.' by posting name=user_class to the inline route. That class carries '
+			.'userclass_editclass '.self::BARRED_CLASS.', which this account does not hold, and the '
+			.'Set user class page refuses the same id with USRLAN_231.');
+	}
+
+	/**
+	 * The mirror of the case above, and the half no rendered widget makes
+	 * obvious: taking a class away is as much a change to it as adding one.
+	 *
+	 * The inline editor replaces the whole field with what was posted, and the
+	 * option list it renders leaves out the classes it did not draw a control
+	 * for, so a save that never mentions class 250 removes it. Only a caller
+	 * who may manage that class may do that.
+	 */
+	public function aDelegatedAdministratorCannotStripABarredUserClassInline(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse an inline save that drops a user class this administrator may not manage');
+
+		$victimId = $this->seedVictim($I, self::BARRED_CLASS);
+		$this->loginAsDelegatedAdmin($I, 'p7rp4admin');
+
+		$this->sendInline($I, $victimId, 'user_class', (string) self::MANAGED_CLASS);
+
+		$I->assertSame((string) self::BARRED_CLASS,
+			(string) $I->grabFromDatabase('e107_user', 'user_class', array('user_id' => $victimId)),
+			'A delegated administrator holding 4 took '.self::VICTIM_USER.' out of class '
+			.self::BARRED_CLASS.' through the inline editor, by posting a value that leaves it out. '
+			.'The widget never renders that class, so this is what an ordinary click does.');
+	}
+
+	/**
+	 * Positive control for the whole of the user class guard: the main
+	 * administrator manages every class, and the inline editor must keep
+	 * working for them.
+	 */
+	public function theMainAdministratorStillSetsAnyUserClassInline(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the inline user class editor working for the main administrator');
+
+		$victimId = $this->seedVictim($I);
+		$I->loginAsAdmin();
+
+		$this->sendInline($I, $victimId, 'user_class', (string) self::BARRED_CLASS);
+
+		$I->assertSame((string) self::BARRED_CLASS,
+			(string) $I->grabFromDatabase('e107_user', 'user_class', array('user_id' => $victimId)),
+			'The main administrator can no longer set a user class inline, which is the feature '
+			.'rather than the defect.');
+	}
+
+	/**
+	 * The same rule on the batch, which reaches the column by a different road:
+	 * e_admin_ui::handleCommaBatch() saves the tree model directly and never
+	 * calls beforeUpdate(), as this file's own docblock at refusesBatch() says.
+	 *
+	 * Two spellings of one operation are posted. ucadd is what the batch menu
+	 * emits for a userclasses field; attach is the generic comma spelling that
+	 * reaches the same handler and that the menu never renders.
+	 */
+	public function aDelegatedAdministratorCannotAttachABarredUserClassThroughTheBatch(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a user class batch this administrator may not manage');
+
+		$victimId = $this->seedVictim($I);
+		$this->loginAsDelegatedAdmin($I, 'p7rp4admin');
+
+		$this->sendBatch($I, self::ROUTE_LIST, 'ucadd__user_class__'.self::MANAGED_CLASS, $victimId);
+
+		$I->assertSame((string) self::MANAGED_CLASS,
+			(string) $I->grabFromDatabase('e107_user', 'user_class', array('user_id' => $victimId)),
+			'The user class batch no longer runs for a class this administrator may manage, so the '
+			.'refusals below are a broken batch menu rather than an authorisation boundary.');
+
+		$this->sendBatch($I, self::ROUTE_LIST, 'ucadd__user_class__'.self::BARRED_CLASS, $victimId);
+
+		$I->assertSame((string) self::MANAGED_CLASS,
+			(string) $I->grabFromDatabase('e107_user', 'user_class', array('user_id' => $victimId)),
+			'A delegated administrator holding 4 attached class '.self::BARRED_CLASS.' to '
+			.self::VICTIM_USER.' by posting etrigger_batch=ucadd__user_class__'.self::BARRED_CLASS.'.');
+
+		$this->sendBatch($I, self::ROUTE_LIST, 'attach__user_class__'.self::BARRED_CLASS, $victimId);
+
+		$I->assertSame((string) self::MANAGED_CLASS,
+			(string) $I->grabFromDatabase('e107_user', 'user_class', array('user_id' => $victimId)),
+			'A delegated administrator holding 4 attached class '.self::BARRED_CLASS.' through the '
+			.'generic comma spelling, which the batch menu does not render and which reaches '
+			.'e_admin_ui::handleCommaBatch() all the same.');
+	}
+
+	/**
+	 * The batch writes whichever column the trigger names, so the untyped
+	 * spelling replaces user_class outright with the posted value. It is the
+	 * shortest form of this attack and it is on no menu.
+	 */
+	public function aDelegatedAdministratorCannotWriteUserClassWholesaleThroughTheBatch(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a wholesale user class write through the batch');
+
+		$victimId = $this->seedVictim($I);
+		$this->loginAsDelegatedAdmin($I, 'p7rp4admin');
+
+		$this->sendBatch($I, self::ROUTE_LIST, 'user_class__'.self::BARRED_CLASS, $victimId);
+
+		$I->assertSame('',
+			(string) $I->grabFromDatabase('e107_user', 'user_class', array('user_id' => $victimId)),
+			'A delegated administrator holding 4 set user_class to '.self::BARRED_CLASS.' by naming '
+			.'the column in etrigger_batch, the same shape that reached user_password and '
+			.'user_email before this page confined a batch to its declared columns.');
+	}
+
+	/**
+	 * The removal half on the batch. Every spelling but attach and deattach
+	 * rewrites the column outright, so it discards whatever the selected
+	 * accounts held, including the classes this caller may not manage.
+	 */
+	public function aDelegatedAdministratorCannotStripABarredUserClassThroughTheBatch(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a batch that drops a user class this administrator may not manage');
+
+		$victimId = $this->seedVictim($I, self::BARRED_CLASS);
+		$this->loginAsDelegatedAdmin($I, 'p7rp4admin');
+
+		$this->sendBatch($I, self::ROUTE_LIST, 'clearAll__user_class__', $victimId);
+
+		$I->assertSame((string) self::BARRED_CLASS,
+			(string) $I->grabFromDatabase('e107_user', 'user_class', array('user_id' => $victimId)),
+			'A delegated administrator holding 4 emptied user_class on '.self::VICTIM_USER
+			.', which held class '.self::BARRED_CLASS.'. clearAll with no list blanks the column.');
+
+		$this->sendBatch($I, self::ROUTE_LIST, 'ucaddall__user_class', $victimId);
+
+		$I->assertSame((string) self::BARRED_CLASS,
+			(string) $I->grabFromDatabase('e107_user', 'user_class', array('user_id' => $victimId)),
+			'A delegated administrator holding 4 took '.self::VICTIM_USER.' out of class '
+			.self::BARRED_CLASS.' with the batch menu\'s own "(Add All)", which replaces the column '
+			.'with the classes it offers.');
+
+		$this->sendBatch($I, self::ROUTE_LIST, 'ucdelall__user_class', $victimId);
+
+		$I->assertSame((string) self::BARRED_CLASS,
+			(string) $I->grabFromDatabase('e107_user', 'user_class', array('user_id' => $victimId)),
+			'"(Clear All)" took '.self::VICTIM_USER.' out of class '.self::BARRED_CLASS
+			.'. That batch removes only the classes e_admin_controller_ui hands it, and it is not '
+			.'supposed to hand it one this administrator may not manage.');
+	}
+
+	/**
+	 * Positive control for the two batches that name no class of their own.
+	 *
+	 * They are on the rendered menu, so a rule that refused them outright would
+	 * take a working feature away from every administrator who is not the main
+	 * one. e_admin_controller_ui drops the classes this caller may not manage
+	 * before either runs, which is what leaves them safe to allow.
+	 */
+	public function aDelegatedAdministratorStillRunsTheAddAllUserClassBatch(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep "(Add All)" and "(Clear All)" working for a delegated administrator');
+
+		$victimId = $this->seedVictim($I);
+		$this->loginAsDelegatedAdmin($I, 'p7rp4admin');
+
+		$this->sendBatch($I, self::ROUTE_LIST, 'ucaddall__user_class', $victimId);
+
+		$stored = (string) $I->grabFromDatabase('e107_user', 'user_class', array('user_id' => $victimId));
+
+		$I->assertContains((string) self::MANAGED_CLASS, explode(',', $stored),
+			'"(Add All)" no longer adds the classes this administrator may manage. It wrote '
+			.var_export($stored, true).'.');
+
+		$I->assertNotContains('247', explode(',', $stored),
+			'"(Add All)" added class 247, whose userclass_editclass is 250. e_admin_controller_ui '
+			.'is supposed to drop it before the batch runs.');
+
+		$this->sendBatch($I, self::ROUTE_LIST, 'ucdelall__user_class', $victimId);
+
+		$I->assertSame('',
+			(string) $I->grabFromDatabase('e107_user', 'user_class', array('user_id' => $victimId)),
+			'"(Clear All)" no longer removes the classes this administrator may manage.');
+	}
+
+	/**
+	 * Positive control for the batch half: the main administrator manages every
+	 * class and must keep the batch menu.
+	 */
+	public function theMainAdministratorStillRunsTheUserClassBatch(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the user class batch working for the main administrator');
+
+		$victimId = $this->seedVictim($I);
+		$I->loginAsAdmin();
+
+		$this->sendBatch($I, self::ROUTE_LIST, 'ucadd__user_class__'.self::BARRED_CLASS, $victimId);
+
+		$I->assertSame((string) self::BARRED_CLASS,
+			(string) $I->grabFromDatabase('e107_user', 'user_class', array('user_id' => $victimId)),
+			'The main administrator can no longer run the user class batch, which is the feature '
+			.'rather than the defect.');
+	}
+
+	/**
+	 * The guard e_admin_controller_ui already carried for a userclass batch
+	 * hands the whole class row to e_user_model::checkClass(), which iterates
+	 * an array argument's values and returns false on the first non-numeric
+	 * empty one. userclass_icon is empty on every stock class, so the guard
+	 * answered no for every class and every caller who is not the main
+	 * administrator, and never reached userclass_editclass at all.
+	 *
+	 * The managed class therefore goes first and is the case that reds without
+	 * the fix: the guard used to refuse it. The barred class holds either way,
+	 * and is here so that a fix which merely inverted the guard would be caught.
+	 *
+	 * Welcome messages, not the user list: the guard is in the shared handler,
+	 * that page answers to 'M' rather than to a Users permission, and nothing
+	 * in users_admin_ui is in the way, so a refusal here is the handler's.
+	 *
+	 * What is asserted is the value the guard tests, not that gen_intdata is
+	 * closed. The guard covers the ucadd and ucaddall spellings; the untyped
+	 * gen_intdata__250 and the inline editor reach that column with no
+	 * per-value check at all, and a page that wants one has to say so, which is
+	 * the per-field authorisation hook this release does not carry.
+	 */
+	public function theUserclassBatchGuardTestsTheClassManagerAndNotTheWholeRow(AcceptanceTester $I)
+	{
+		$I->wantTo('Test userclass_editclass in the shared userclass batch guard');
+
+		$managed = $this->seedWelcomeMessage($I, 'p7rp-managed');
+		$barred = $this->seedWelcomeMessage($I, 'p7rp-barred');
+		$this->loginAsDelegatedAdmin($I, 'p7rpMadmin');
+
+		$this->sendBatch($I, self::ROUTE_WMESSAGE, 'ucadd__gen_intdata__'.self::MANAGED_CLASS,
+			$managed, 'e-multiselect');
+
+		$I->assertSame((string) self::MANAGED_CLASS,
+			(string) $I->grabFromDatabase('e107_generic', 'gen_intdata', array('gen_id' => $managed)),
+			'A userclass batch for a class this administrator manages did not run. The guard reads '
+			.'the whole class row instead of its userclass_editclass, and check_class() gives up on '
+			.'the row\'s empty userclass_icon, so it refuses every class to everybody but the main '
+			.'administrator.');
+
+		$this->sendBatch($I, self::ROUTE_WMESSAGE, 'ucadd__gen_intdata__'.self::BARRED_CLASS,
+			$barred, 'e-multiselect');
+
+		$I->assertSame('0',
+			(string) $I->grabFromDatabase('e107_generic', 'gen_intdata', array('gen_id' => $barred)),
+			'A batch put a welcome message behind class '.self::BARRED_CLASS.' for an administrator '
+			.'holding only M. userclass_editclass on that class is '.self::BARRED_CLASS.', which this '
+			.'account does not hold.');
+	}
+
+	/**
+	 * The third road into the column, and the one that never goes near the
+	 * model layer: users_admin_ui::AddSubmitTrigger() hands $_POST to
+	 * validatorClass::validateFields(), where user_class is declared with
+	 * srcName 'class' and dataType 1, so the posted list becomes the new
+	 * account's classes. An administrator holding U1 ("Quick Add User") and
+	 * nothing else creates a member of any class it names, with a password it
+	 * chooses.
+	 *
+	 * The barred class goes first here, where the cases above put the control
+	 * first, because this route creates the account only once: a refusal posted
+	 * after a successful add would be answered by the duplicate login name
+	 * rather than by the guard, and the test would prove nothing.
+	 *
+	 * The refusal stops the submission where the permission grant above it
+	 * drops the field and carries on. The permission table is not on the form
+	 * this account is served, so there is nothing for it to correct; the class
+	 * checkboxes are on the form for every caller, so the error names something
+	 * it can untick. That shape is asserted rather than assumed: a guard that
+	 * stripped the barred ids and created the account anyway would satisfy the
+	 * first assertion below and leave the control reading the row it had just
+	 * written, because this route creates the account only once.
+	 */
+	public function aDelegatedAdministratorCannotQuickAddIntoABarredUserClass(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a quick-add into a user class this administrator may not manage');
+
+		$this->loginAsDelegatedAdmin($I, 'p7rpU1admin');
+
+		$I->amOnPage(self::ROUTE_ADD);
+		$I->sendPostRequest(self::ROUTE_ADD,
+			$this->quickAddPayload($I, null, null, array(self::MANAGED_CLASS, self::BARRED_CLASS)));
+
+		$I->assertNotContains((string) self::BARRED_CLASS,
+			explode(',', (string) $I->grabFromDatabase('e107_user', 'user_class',
+				array('user_loginname' => self::CREATED_USER))),
+			'A delegated administrator holding U1 ("Quick Add User") and nothing else created '
+			.self::CREATED_USER.' in class '.self::BARRED_CLASS.' by posting class[]. That class '
+			.'carries userclass_editclass '.self::BARRED_CLASS.', which this account does not hold, '
+			.'and the Set user class page refuses the same id with USRLAN_231.');
+
+		$I->dontSeeInDatabase('e107_user', array('user_loginname' => self::CREATED_USER));
+
+		$I->amOnPage(self::ROUTE_ADD);
+		$I->sendPostRequest(self::ROUTE_ADD,
+			$this->quickAddPayload($I, null, null, array(self::MANAGED_CLASS)));
+
+		$I->assertContains((string) self::MANAGED_CLASS,
+			explode(',', (string) $I->grabFromDatabase('e107_user', 'user_class',
+				array('user_loginname' => self::CREATED_USER))),
+			'The quick-add route no longer creates an account in a class this administrator may '
+			.'manage, so the refusal above is a broken route rather than an authorisation boundary.');
+	}
+
+	// -----------------------------------------------------------------
 	// fixture
 	// -----------------------------------------------------------------
 
@@ -937,15 +1314,54 @@ class AdminRoutePermsCest
 	 * @param string $route
 	 * @param string $trigger etrigger_batch value
 	 * @param int $id row to apply it to
+	 * @param string $selection name of the checkbox column, which each list declares for itself
 	 * @return void
 	 */
-	private function sendBatch(AcceptanceTester $I, $route, $trigger, $id)
+	private function sendBatch(AcceptanceTester $I, $route, $trigger, $id, $selection = 'multiselect')
 	{
 		$this->postWithToken($I, $route, array(
 			'etrigger_batch'    => $trigger,
 			'e__execute_batch'  => 'Go',
-			'multiselect'       => array($id => $id),
+			$selection          => array($id => $id),
 		));
+	}
+
+	/**
+	 * Post what the inline editor posts: the field, its new value, the session's CSRF token, and
+	 * the inline token {@see e_form::renderInline()} puts on every inline link of the page.
+	 *
+	 * @param int $id row to edit
+	 * @param string $field column to write
+	 * @param string $value posted value
+	 * @return void
+	 */
+	private function sendInline(AcceptanceTester $I, $id, $field, $value)
+	{
+		$I->amOnPage(self::ROUTE_LIST);
+
+		$I->sendPostRequest(self::ROUTE_INLINE.$id, array(
+			'name'    => $field,
+			'value'   => $value,
+			'pk'      => $id,
+			'token'   => $this->grabInlineToken($I),
+			'e-token' => $this->grabToken($I),
+		));
+	}
+
+	/**
+	 * @return string the inline-edit token on the page currently loaded
+	 */
+	private function grabInlineToken(AcceptanceTester $I)
+	{
+		$source = $I->grabPageSource();
+		$matches = array();
+
+		if(!preg_match('/data-token=[\'"]([^\'"]+)[\'"]/', $source, $matches))
+		{
+			throw new \RuntimeException('The user list rendered no inline-edit token to post back.');
+		}
+
+		return $matches[1];
 	}
 
 	/**
@@ -1009,9 +1425,10 @@ class AdminRoutePermsCest
 	 *
 	 * @param string|null $perms permission code to ask for, or null for none
 	 * @param string|null $token CSRF token, scraped from the current page if omitted
+	 * @param array|null $classes user class ids to ask for, or null for none
 	 * @return array
 	 */
-	private function quickAddPayload(AcceptanceTester $I, $perms = null, $token = null)
+	private function quickAddPayload(AcceptanceTester $I, $perms = null, $token = null, $classes = null)
 	{
 		$payload = array(
 			'etrigger_submit' => 'Add user',
@@ -1028,6 +1445,11 @@ class AdminRoutePermsCest
 		if($perms !== null)
 		{
 			$payload['perms'] = array($perms);
+		}
+
+		if($classes !== null)
+		{
+			$payload['class'] = $classes;
 		}
 
 		return $payload;
@@ -1116,9 +1538,10 @@ class AdminRoutePermsCest
 	/**
 	 * Seed an ordinary member for the edit route to be aimed at.
 	 *
+	 * @param string $class user_class the account starts with
 	 * @return int user id
 	 */
-	private function seedVictim(AcceptanceTester $I)
+	private function seedVictim(AcceptanceTester $I, $class = '')
 	{
 		return (int) $I->haveInDatabase('e107_user', array(
 			'user_name'      => self::VICTIM_USER,
@@ -1126,7 +1549,7 @@ class AdminRoutePermsCest
 			'user_email'     => self::VICTIM_USER.'@example.com',
 			'user_password'  => md5(self::VICTIM_USER),
 			'user_join'      => 1262304000,
-			'user_class'     => '',
+			'user_class'     => (string) $class,
 			'user_admin'     => 0,
 			'user_perms'     => '',
 			'user_pwchange'  => self::PWCHANGE,
@@ -1159,6 +1582,24 @@ class AdminRoutePermsCest
 			'user_prefs'     => '',
 			'user_signature' => '',
 			'user_realm'     => '',
+		));
+	}
+
+	/**
+	 * Seed a welcome message, a record on another table whose visibility is a userclass batch.
+	 *
+	 * @param string $title
+	 * @return int gen_id
+	 */
+	private function seedWelcomeMessage(AcceptanceTester $I, $title)
+	{
+		return (int) $I->haveInDatabase('e107_generic', array(
+			'gen_type'      => 'wmessage',
+			'gen_datestamp' => 1262304000,
+			'gen_user_id'   => 1,
+			'gen_ip'        => $title,
+			'gen_intdata'   => 0,
+			'gen_chardata'  => $title,
 		));
 	}
 

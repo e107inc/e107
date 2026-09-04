@@ -571,6 +571,13 @@ class users_admin_ui extends e_admin_ui
 			return false;
 		}
 
+		if(isset($new_data['user_class'])
+			&& $this->refusesClassChange($new_data['user_class'], varset($old_data['user_class'], '')))
+		{
+			$this->refuseAdminAction('Refused a user class change on user '.(int) $id);
+			return false;
+		}
+
 		$pwdField = 'user_password_'.$id;
 
 		if(!empty($new_data[$pwdField]))
@@ -991,14 +998,125 @@ class users_admin_ui extends e_admin_ui
 		$typed = array('sefgen', 'bool', 'boolreverse', 'attach', 'deattach', 'addAll',
 			'clearAll', 'ucadd', 'ucremove', 'ucaddall', 'ucdelall');
 
-		$field = in_array($type, $typed, true) ? varset($trigger[1], '') : $type;
+		$isTyped = in_array($type, $typed, true);
+		$field = $isTyped ? varset($trigger[1], '') : $type;
 
 		if(!$this->getFieldAttr($field, 'batch', false))
 		{
 			return true;
 		}
 
+		if($field === 'user_class')
+		{
+			return $this->refusesClassBatch($type, varset($trigger[$isTyped ? 2 : 1], ''));
+		}
+
 		return ($field === 'user_admin' || $field === 'user_perms') && !$this->canGrantAdmin();
+	}
+
+	/**
+	 * Whether a user_class batch writes or withdraws a class {@see users_admin_ui::checkAllowed()} bars.
+	 *
+	 * @param string $type leading segment of the posted batch trigger
+	 * @param string $named the segment of the trigger that names a class, if it has one
+	 * @return bool true when the batch must not run
+	 */
+	private function refusesClassBatch($type, $named)
+	{
+		if($type === 'ucdelall')
+		{
+			return false;
+		}
+
+		if($this->refusesClasses($this->classIdsIn($named)))
+		{
+			return true;
+		}
+
+		$attaches = array('attach', 'deattach', 'ucadd', 'ucremove');
+
+		return !in_array($type, $attaches, true) && $this->refusesClasses($this->selectedClassIds());
+	}
+
+	/**
+	 * The classes the selected accounts hold, which a wholesale batch takes away from them.
+	 *
+	 * @return array class id => class id
+	 */
+	private function selectedClassIds()
+	{
+		$classes = array();
+
+		foreach($this->batchSelection() as $id)
+		{
+			$id = (int) $id;
+
+			if($id < 1)
+			{
+				continue;
+			}
+
+			$classes += $this->classIdsIn(e107::getSystemUser($id, false)->get('user_class'));
+		}
+
+		return $classes;
+	}
+
+	/**
+	 * Whether every class the posted list adds or drops answers to {@see users_admin_ui::checkAllowed()}.
+	 *
+	 * @param string|array $posted
+	 * @param string|array $stored
+	 * @return bool true when the change must not be saved
+	 */
+	private function refusesClassChange($posted, $stored)
+	{
+		$posted = $this->classIdsIn($posted);
+		$stored = $this->classIdsIn($stored);
+
+		return $this->refusesClasses(array_diff($posted, $stored) + array_diff($stored, $posted));
+	}
+
+	/**
+	 * Whether any of these classes is one the caller may not assign or withdraw.
+	 *
+	 * @param array $classes class ids
+	 * @return bool
+	 */
+	private function refusesClasses($classes)
+	{
+		foreach($classes as $class)
+		{
+			if(!$this->checkAllowed($class))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * The class ids in a stored or posted class list, keyed by id so one class counts once.
+	 *
+	 * @param string|array $value comma-separated list, or an array of ids
+	 * @return array class id => class id
+	 */
+	private function classIdsIn($value)
+	{
+		$ids = array();
+
+		foreach(is_array($value) ? $value : explode(',', (string) $value) as $id)
+		{
+			$id = trim((string) $id);
+
+			if($id !== '')
+			{
+				$ids[(int) $id] = (int) $id;
+			}
+		}
+
+		return $ids;
 	}
 
 	/**
@@ -1711,6 +1829,12 @@ class users_admin_ui extends e_admin_ui
 		}
 		
 		$_POST['password2'] = $_POST['password1'] = $_POST['password'];
+
+		if($this->refusesClassChange(varset($_POST['class'], array()), ''))
+		{
+			$this->refuseAdminAction('Refused a user class grant on the quick-add route');
+			$error = true;
+		}
 
 		// #1728 - Default value, because user will always be part of 'Members'
 		$_POST['class'][] =  e_UC_MEMBER;
