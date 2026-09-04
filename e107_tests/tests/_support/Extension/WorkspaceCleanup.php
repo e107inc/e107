@@ -55,6 +55,13 @@ class WorkspaceCleanup extends Extension
 		'e107_themes/testcore',
 		'e107_themes/testkubrick',
 		'e107_core/templates/e107_tests_corescan_template.php', // @see e107TemplateSourceTest
+		'e107_themes/tpstate1_legacy',    // @see Helper\ThemeFixture
+		'e107_themes/tpstate3_plain',
+		'e107_themes/tpstate3_rootfpw',
+		'e107_themes/tpstate3_globalfpw',
+		'e107_themes/tpstate4_legacybs',
+		'e107_themes/tpstate4_globalfpw',
+		'e107_tests_theme_fixture_probe.php', // @see Helper\ThemeFixture
 		'e107_plugins/thing',      // downloaded by e_marketplaceTest
 		'e107_plugins/nofollow',   // downloaded by pluginsTest::testRemotePlugin, which
 		                           // asserts it is absent before it downloads it, so a

@@ -43,17 +43,10 @@ if ($pref['membersonly_enabled'])
 	);
 	
 	
-	if(deftrue('BOOTSTRAP'))
-	{
-		$FPW_TABLE_HEADER = e107::getCoreTemplate('fpw','header');	
-		$FPW_TABLE_FOOTER = e107::getCoreTemplate('fpw','footer');	
-	}
-	else
-	{
-		$fpwTmpl = e107::coreTemplatePath('fpw');
-		e107::predefineLegacyLans($fpwTmpl); // #5653: define any still-missing LAN_* before the require — prevents PHP 8 fatals.
-		require_once ($fpwTmpl); //correct way to load a core template.
-	}
+	$fpwTemplate = e107::getCoreTemplate('fpw');
+
+	$FPW_TABLE_HEADER = vartrue($FPW_TABLE_HEADER, vartrue($fpwTemplate['FPW_TABLE_HEADER'], varset($fpwTemplate['header'], '')));
+	$FPW_TABLE_FOOTER = vartrue($FPW_TABLE_FOOTER, vartrue($fpwTemplate['FPW_TABLE_FOOTER'], varset($fpwTemplate['footer'], '')));
 
 	define('e_IFRAME', true);
 	$HEAD = $tp->simpleParse($FPW_TABLE_HEADER, $sc);
@@ -337,7 +330,15 @@ if (!empty($_POST['pwsubmit']))
 $sc = array(); // needed?
 
 
-if(deftrue('BOOTSTRAP'))
+$template = e107::getCoreTemplate('fpw');
+$legacy   = vartrue($FPW_TABLE, varset($template['FPW_TABLE'], ''));
+
+if(!empty($legacy))
+{
+	$FPW_TABLE = $legacy;
+	$caption = LAN_03;
+}
+else
 {
 	$FPW_TABLE = "<form method='post' action='".SITEURL."fpw.php' autocomplete='off'>";
 
@@ -347,16 +348,9 @@ if(deftrue('BOOTSTRAP'))
 	}
 
 
-	$FPW_TABLE .= e107::getCoreTemplate('fpw','form');	
+	$FPW_TABLE .= varset($template['form'], '');
 	$FPW_TABLE .= "</form>"; 
 	$caption = deftrue('LAN_FPW_100',"Forgot your password?");	
-}	
-elseif(!$FPW_TABLE)
-{
-	$fpwTmpl = e107::coreTemplatePath('fpw');
-	e107::predefineLegacyLans($fpwTmpl); // #5653
-	require_once ($fpwTmpl); //correct way to load a core template.
-	$caption = LAN_03;
 }
 
 $sc = e107::getScBatch('fpw'); // fpw_shortcodes;
