@@ -27,22 +27,21 @@ $frm = e107::getForm();
 
 if (isset($_POST['update_settings'])) 
 {
-	if ($_POST['ac'] == md5(ADMINPWCHANGE)) 
+	if (varset($_POST['ac'], '') === md5(ADMINPWCHANGE))
 	{
 		$userData = array();
 		$userData['data'] = array();
-		if ($_POST['a_password'] != '' && $_POST['a_password2'] != '' && ($_POST['a_password'] == $_POST['a_password2'])) 
+		$password = varset($_POST['a_password'], '');
+		if ($password !== '' && $password === varset($_POST['a_password2'], ''))
 		{
-			$userData['data']['user_password'] = $sql->escape($userMethods->HashPassword($_POST['a_password'], $currentUser['user_loginname']), FALSE);
+			$userData['data']['user_password'] = $sql->escape($userMethods->HashPassword($password, $currentUser['user_loginname']), FALSE);
 			unset($_POST['a_password']);
 			unset($_POST['a_password2']);
 
 			if (vartrue($pref['allowEmailLogin']))
 			{
-				$new_pass = e107::getParser()->filter($_POST['a_password']);
-
 				$user_prefs = e107::getArrayStorage()->unserialize($currentUser['user_prefs']);
-				$user_prefs['email_password'] = $userMethods->HashPassword($new_pass, USEREMAIL);
+				$user_prefs['email_password'] = $userMethods->HashPassword($password, USEREMAIL);
 				$userData['data']['user_prefs'] = e107::getArrayStorage()->serialize($user_prefs);
 			}
 
