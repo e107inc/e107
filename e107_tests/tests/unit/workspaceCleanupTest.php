@@ -16,12 +16,12 @@
  */
 class workspaceCleanupTest extends \Codeception\Test\Unit
 {
-	/** Values carrying the suite's prefix that name no file at the app root, as value to why. */
+	/** Values carrying the suite's prefix that name no file at the app root, as value to why and to the name the sweep takes in its place, where it takes one. */
 	private static $notAppRootFixtures = [
-		'e107_tests_p84_menu'           => 'a menu name in the database',
-		'e107_tests_p84_themecopy'      => 'a theme directory, swept as e107_themes/e107_tests_p84_themecopy',
-		'e107_tests_upload_csrf.txt'    => 'written into e_IMPORT, inside the e107_system hash the sweep takes whole',
-		'e107_tests_security_level.txt' => 'written into e_IMPORT, inside the e107_system hash the sweep takes whole',
+		'e107_tests_p84_menu'           => ['a menu name in the database', ''],
+		'e107_tests_p84_themecopy'      => ['a theme directory', 'e107_themes/e107_tests_p84_themecopy'],
+		'e107_tests_upload_csrf.txt'    => ['written into e_IMPORT, inside the e107_system hash the sweep takes whole', ''],
+		'e107_tests_security_level.txt' => ['written into e_IMPORT, inside the e107_system hash the sweep takes whole', ''],
 	];
 
 	public function testEveryCestFixtureNameIsSwept()
@@ -40,6 +40,24 @@ class workspaceCleanupTest extends \Codeception\Test\Unit
 		self::assertSame(array(), $missing,
 			'every docroot fixture an acceptance Cest names must be listed in '
 			. 'Extension\\WorkspaceCleanup::$artifacts, or a run that dies leaves it behind');
+	}
+
+	public function testEveryNameSweptInPlaceOfAFixtureIsOnTheList()
+	{
+		$swept = $this->sweptNames();
+		$missing = array();
+
+		foreach(self::$notAppRootFixtures as $name => $exemption)
+		{
+			if($exemption[1] !== '' && !in_array($exemption[1], $swept, true))
+			{
+				$missing[] = $exemption[1] . ' (in place of ' . $name . ')';
+			}
+		}
+
+		self::assertSame(array(), $missing,
+			'a fixture exempted because the sweep takes it under another name must have that '
+			. 'name in Extension\\WorkspaceCleanup::$artifacts, or nothing sweeps it at all');
 	}
 
 	/**
