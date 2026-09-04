@@ -472,14 +472,16 @@ class MailoutCsrfCest
 	{
 		$script = sys_get_temp_dir() . '/e107_tests_smtp_stub_' . getmypid() . '.php';
 		$ready = $script . '.ready';
+		$error = $script . '.err';
 
 		@unlink($ready);
+		@unlink($error);
 		file_put_contents($script, $this->smtpServerSource());
 
 		$pipes = array();
 		$process = proc_open(
 			'exec php ' . escapeshellarg($script) . ' ' . self::SMTP_STUB_PORT . ' ' . escapeshellarg($ready),
-			array(array('pipe', 'r'), array('file', '/dev/null', 'a'), array('file', '/dev/null', 'a')),
+			array(array('pipe', 'r'), array('file', '/dev/null', 'a'), array('file', $error, 'a')),
 			$pipes
 		);
 
@@ -488,22 +490,29 @@ class MailoutCsrfCest
 			throw new \RuntimeException('Could not start a stub SMTP server');
 		}
 
-		$stub = array('process' => $process, 'pipes' => $pipes, 'script' => $script, 'ready' => $ready);
-		$deadline = microtime(true) + 10;
+		$stub = array('process' => $process, 'pipes' => $pipes, 'script' => $script, 'ready' => $ready, 'error' => $error);
 
-		clearstatcache(true, $ready);
-
-		while(!file_exists($ready))
+		$outcome = \Test\Poll::until(function () use ($ready, $process)
 		{
-			if(microtime(true) > $deadline)
-			{
-				$this->stopSmtpServer($stub);
+			clearstatcache(true, $ready);
 
-				throw new \RuntimeException('The stub SMTP server never bound to port ' . self::SMTP_STUB_PORT);
+			if(file_exists($ready))
+			{
+				return 'listening';
 			}
 
-			usleep(50000);
-			clearstatcache(true, $ready);
+			$status = proc_get_status($process);
+
+			return $status['running'] ? false : 'exited';
+		}, 10);
+
+		if($outcome !== 'listening')
+		{
+			$reason = trim((string) @file_get_contents($error));
+			$this->stopSmtpServer($stub);
+
+			throw new \RuntimeException('The stub SMTP server never bound to port ' . self::SMTP_STUB_PORT
+				. ($reason === '' ? '' : ': ' . $reason));
 		}
 
 		return $stub;
@@ -528,6 +537,7 @@ class MailoutCsrfCest
 
 		@unlink($stub['script']);
 		@unlink($stub['ready']);
+		@unlink($stub['error']);
 	}
 
 	/**
