@@ -314,3 +314,5 @@ define("EPL_ADLAN_256", "Skipped [x] (already exists)");
 define ("EPL_ADLAN_257","Readonly");
 
 
+define("EPL_ADLAN_REFUSED_PULL_TOKEN_MISSING", "The plugin was not updated from its Git repository, because the link carried no security token. Start it from the Plugin Manager rather than from a bookmark or a link on another site.");
+define("EPL_ADLAN_REFUSED_BUILD_TOKEN_MISSING", "No table definition file was written, because the link carried no security token. Start the plugin builder from the Plugins menu rather than from a bookmark or a link on another site.");

@@ -97,7 +97,14 @@ class e_menuManager
 
                 if (vartrue($_GET['mode']) == "deac")
 				{
-				 	$this->menuDeactivate();
+					if(defined('e_TOKEN') && empty($_GET['e-token']))
+					{
+						$this->menuAddMessage(defset('MENLAN_REFUSED_TOKEN_MISSING', 'Invalid Token'), E_MESSAGE_ERROR);
+					}
+					else
+					{
+						$this->menuDeactivate();
+					}
 				}
 
 				if ($_GET['mode'] == "conf")
@@ -1843,7 +1850,7 @@ class e_menuManager
 		$editLink = e_SELF.'?'.http_build_query(array('lay' => $this->curLayout, 'parmsId' => $menu_id, 'iframe' => 1), '', '&');
 		$text .= '<a data-modal-caption="'.LAN_CONFIGURE.'" class="e-menumanager-option menu-btn" target="_top" href="'.$editLink.'" title="'.LAN_CONFIGURE.'"><i class="S16 e-edit-16" ></i></a>';
 
-		$text .= '<a title="'.LAN_DELETE.'" id="remove-'.$menu_id.'-'.$menu_location.'" class="delete e-menumanager-delete menu-btn" href="'.e_SELF.'?configure='.$this->curLayout.'&amp;mode=deac&amp;id='.$menu_id.'"><i class="S16 e-delete-16"></i></a>
+		$text .= '<a title="'.LAN_DELETE.'" id="remove-'.$menu_id.'-'.$menu_location.'" class="delete e-menumanager-delete menu-btn" href="'.e_SELF.'?configure='.$this->curLayout.'&amp;mode=deac&amp;id='.$menu_id.'&amp;e-token='.defset('e_TOKEN').'"><i class="S16 e-delete-16"></i></a>
 		
 		<span id="status-'.$menu_id.'" style="display:none">'.($rep == true ? "" : "insert").'</span>
 		</span></div>';

@@ -534,6 +534,13 @@ class plugin_ui extends e_admin_ui
 
 		function pullPage()
 		{
+			if(defined('e_TOKEN') && empty($this->getQuery('e-token')))
+			{
+				e107::getMessage()->addError(defset('EPL_ADLAN_REFUSED_PULL_TOKEN_MISSING', 'Invalid Token'));
+				$this->redirectAction('list');
+				return null;
+			}
+
 			$id = $this->getQueryPath();
 
 			if(!e107::isInstalled($id))
