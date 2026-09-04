@@ -287,7 +287,7 @@ class UserHandler
 			case PASSWORD_E107_SALT:
 				$hash = $this->HashPassword($password, $login_name, PASSWORD_E107_SALT);
 				if ($hash === false) return PASSWORD_INVALID;
-				return ($hash == $stored_hash) ? PASSWORD_VALID : PASSWORD_INVALID;
+				return hash_equals((string) $stored_hash, $hash) ? PASSWORD_VALID : PASSWORD_INVALID;
 				break;
 
 			case PASSWORD_E107_PHP: // PHP 5.5+ Blowfish+
@@ -448,8 +448,8 @@ class UserHandler
 	 */
 	public function CheckCHAP($challenge, $response, $login_name, $stored_hash )
 	{
-		if (strlen($challenge) != 40) return PASSWORD_INVALID;
-		if (strlen($response) != 32) return PASSWORD_INVALID;
+		if (!is_string($challenge) || strlen($challenge) != 40) return PASSWORD_INVALID;
+		if (!is_string($response) || strlen($response) != 32) return PASSWORD_INVALID;
 		$valid_ret = PASSWORD_VALID;
 		if (strlen($stored_hash) == 32)
 		{	// Its simple md5 password storage
@@ -457,7 +457,7 @@ class UserHandler
 			if ($this->passwordOpts != PASSWORD_E107_MD5) $valid_ret = $stored_hash;
 		}
 		$testval = md5(substr($stored_hash,strlen(PASSWORD_E107_ID)).$challenge);
-		if ($testval == $response) return $valid_ret;
+		if (hash_equals($testval, $response)) return $valid_ret;
 		return PASSWORD_INVALID;
 	}
 
@@ -711,6 +711,9 @@ class UserHandler
 	/**
 	 *	Create user cookie
 	 *
+	 *	Regenerates the session id first, so anything holding the old one has to
+	 *	read it again. {@see e_session::regenerateId()}
+	 *
 	 *	@param array $lode - user information from DB - 'user_id' and 'user_password' required
 	 *	@param bool $autologin - ignored since v2.3.12; 'Remember Me' is discontinued
 	 *
@@ -722,6 +725,8 @@ class UserHandler
 		{
 			return true;
 		}
+
+		e107::getSession()->regenerateId();
 
 		$_SESSION[e107::getPref('cookie_name')] = $lode['user_id'].'.'.md5($lode['user_password']);
 	}
