@@ -76,6 +76,36 @@ class UsersettingsPasswordReauthCest
 	}
 
 	/**
+	 * The waiver survived in one shape: a validation error riding along dropped the
+	 * confirmation without dropping the email change, so the recovery address moved
+	 * on a submission the member was answered with an error.
+	 */
+	public function aValidationErrorDoesNotWaiveTheEmailConfirmation(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the email confirmation when a validation error rides along with the password');
+
+		$userId = $this->haveMember($I, 'errored');
+		$this->loginAsMember($I, 'errored');
+		$before = $this->grabHash($I, $userId);
+
+		$this->postSettings($I, 'errored', array(
+			'username'  => 'a',
+			'email'     => 'attacker@evil.test',
+			'password1' => self::NEW_PASS,
+			'password2' => self::NEW_PASS,
+		));
+
+		$body = $I->grabResponseBody();
+		$I->assertSame('errored@example.test', $this->grabEmail($I, $userId), 'the email is untouched');
+		$I->assertSame($before, $this->grabHash($I, $userId), 'the password is untouched');
+		$I->assertStringContainsString(self::DISPLAY_NAME_LABEL, $body,
+			'the member is told which field is wrong');
+		$I->assertStringNotContainsString(self::SAVED_MARKER, $body,
+			'and is not told the settings were saved');
+	}
+
+
+	/**
 	 * Refusing everything would pass both tests above. This is the same change,
 	 * carried through the confirmation stage, and it has to land.
 	 */
