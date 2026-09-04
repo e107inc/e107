@@ -85,7 +85,9 @@ $SIGNUP_END  = null;
 $COPPA_TEMPLATE = null;
 $COPPA_FAIL = null;
 
-if($template = e107::getCoreTemplate('signup'))
+$template = e107::getCoreTemplate('signup');
+
+if(isset($template['start']))
 {
 	$SIGNUP_BEGIN                   = $template['start'];
 	$SIGNUP_BODY                    = $template['body'];

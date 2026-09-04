@@ -54,6 +54,7 @@ class WorkspaceCleanup extends Extension
 		'e107_themes/basic-light', // fixtures copied out of tests/_data
 		'e107_themes/testcore',
 		'e107_themes/testkubrick',
+		'e107_core/templates/e107_tests_corescan_template.php', // @see e107TemplateSourceTest
 		'e107_plugins/thing',      // downloaded by e_marketplaceTest
 		'e107_plugins/nofollow',   // downloaded by pluginsTest::testRemotePlugin, which
 		                           // asserts it is absent before it downloads it, so a

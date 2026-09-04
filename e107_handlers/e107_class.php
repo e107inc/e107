@@ -3681,7 +3681,12 @@ class e107
         // Introducing noWrapper when merging
 		$ret_core = self::_getTemplate($id, $key, $reg_path, $path, $info, true);
 
-		return (is_array($ret_core) ? array_merge($ret_core, $ret) : $ret);
+		if($ret === false && is_array($ret_core))
+		{
+			return $ret_core;
+		}
+
+		return (is_array($ret_core) && is_array($ret) ? array_merge($ret_core, $ret) : $ret);
 	}
 
 	/**
@@ -3973,14 +3978,30 @@ class e107
 
 			if($source === null)
 			{
+				if(strpos($path, e_CORE) !== 0)
+				{
+					self::predefineLegacyLans($path);
+				}
+
+				global $pref;
+
 				(deftrue('E107_DEBUG_LEVEL') ? include_once($path) : @include_once($path));
+
+				$definedByTheIncludedFile = get_defined_vars();
+				$v1Shaped = !isset($$var);
+
 				$source = array(
-					'template' => (isset($$var) ? $$var : array()),
+					'template' => ($v1Shaped ? self::v1TemplateVars($definedByTheIncludedFile, array($var, $var_info, $wrapper, 'SC_WRAPPER')) : $$var),
 					'info'     => (isset($$var_info) && is_array($$var_info) ? $$var_info : array()),
-					'sc_style' => (isset($SC_WRAPPER) ? $SC_WRAPPER : null),
+					'sc_style' => (isset($SC_WRAPPER) ? $SC_WRAPPER : ($v1Shaped && isset($sc_style) ? $sc_style : null)),
 					'wrapper'  => (isset($$wrapper) && !empty($$wrapper) && is_array($$wrapper) ? $$wrapper : null),
 				);
 				self::setRegistry($sourceRegPath, $source);
+
+				if(deftrue('E107_DBG_INCLUDES'))
+				{
+					self::getMessage()->addDebug("Loaded Template File: ".$path);
+				}
 			}
 
 			self::setRegistry($regPath, $source['template']);
@@ -4024,6 +4045,30 @@ class e107
 		}
 
 		return ($ret && is_array($ret) && isset($ret[$key])) ? $ret[$key] : false;
+	}
+
+	/**
+	 * The uppercase variables a v1-shaped template file left behind, as the template array {@see e107::_getTemplate()} returns.
+	 *
+	 * @param array $defined the included file's scope, taken with get_defined_vars()
+	 * @param array $reserved the names the loader reads for itself
+	 * @return array
+	 */
+	private static function v1TemplateVars($defined, $reserved)
+	{
+		$ret = array();
+
+		foreach($defined as $name => $value)
+		{
+			if(in_array($name, $reserved, true) || !preg_match('/^[A-Z][A-Z0-9_]*$/', $name))
+			{
+				continue;
+			}
+
+			$ret[$name] = $value;
+		}
+
+		return $ret;
 	}
 
 	/**
