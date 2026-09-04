@@ -87,7 +87,7 @@ class contact_front
 	}
 
 	/**
-	 * A visitor's words with every tag stripped and every brace encoded.
+	 * A visitor's words, every tag stripped and every brace encoded through the mail template parse.
 	 *
 	 * @param string $text
 	 * @return string
