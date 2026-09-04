@@ -6,8 +6,14 @@
  * The refusal is shared: an entry script says it is command line only by
  * setting $_E107['cli'], and class2.php is the one place that decides whether
  * the caller may have it. e107_handlers/bounce_handler.php is the entry point
- * that ships with e107 and it is web reachable, so it is exercised here
- * alongside a bare fixture that does nothing but set the flag.
+ * that ships with e107, so it is exercised here alongside a bare fixture that
+ * does nothing but set the flag.
+ *
+ * Which layer turns the handler away depends on the host: e107_handlers ships
+ * an .htaccess denying the directory, which a server reading it answers before
+ * PHP is reached and a server configured with AllowOverride None ignores
+ * entirely. Those cases therefore assert what holds either way, that the
+ * handler did not run, and the bare fixture is what pins the bootstrap guard.
  *
  * Every request is made twice, once carrying a User-Agent header and once
  * without one: an HTTP request needs no User-Agent, so a guard reading that
@@ -93,7 +99,7 @@ class CliBootstrapHttpRefusalCest
 		$I->wantTo('stop an anonymous caller running the bounce handler over HTTP');
 
 		$this->clearBounceLog($I);
-		$this->request($I, 'target=bounce&ua=1');
+		$this->request($I, 'target=bounce&ua=1', false);
 		$this->seeTheBounceHandlerDidNotRun($I);
 	}
 
@@ -102,7 +108,7 @@ class CliBootstrapHttpRefusalCest
 		$I->wantTo('stop the same caller getting in by sending no User-Agent');
 
 		$this->clearBounceLog($I);
-		$this->request($I, 'target=bounce&ua=0');
+		$this->request($I, 'target=bounce&ua=0', false);
 		$this->seeTheBounceHandlerDidNotRun($I);
 	}
 
@@ -149,16 +155,21 @@ class CliBootstrapHttpRefusalCest
 	/**
 	 * @param AcceptanceTester $I
 	 * @param string $query target= and ua= for the probe
+	 * @param bool $served whether the web server has to hand the target to PHP
 	 * @return string the raw response the probe's client read
 	 */
-	private function request(AcceptanceTester $I, $query)
+	private function request(AcceptanceTester $I, $query, $served = true)
 	{
 		$out = $this->probe($I, 'act=request&'.$query);
 
 		$I->assertStringNotContainsString('CONNECT_FAILED', $out,
 			'the probe could not open a connection to the web server');
-		$I->assertSame(1, preg_match('#\nHTTP/1\.[01] 200 #', $out),
-			'the target must be served for its refusal to mean anything');
+
+		if($served)
+		{
+			$I->assertSame(1, preg_match('#\nHTTP/1\.[01] 200 #', $out),
+				'the target must be served for its refusal to mean anything');
+		}
 
 		return $out;
 	}
