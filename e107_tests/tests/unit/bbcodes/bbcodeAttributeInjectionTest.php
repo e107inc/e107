@@ -374,6 +374,15 @@ class bbcodeAttributeInjectionTest extends \Test\Unit
 			'A [table] value containing onerror ended the tag early.');
 	}
 
+	/** An <object> takes its data from a member, so the scheme has to be one that cannot run. */
+	public function testTheFlashBbcodeRefusesAUrlThatCanExecute()
+	{
+		$html = $this->renderStored('[flash=50,50]javascript:alert(1)[/flash]');
+
+		self::assertStringNotContainsString('javascript:', $html,
+			'A [flash] URL kept a scheme that can execute: '.$html);
+	}
+
 	/**
 	 * parse_str() URL-decodes this bbcode's third parameter, which is how a <
 	 * reaches the output when every other bbcode still has it encoded. That
