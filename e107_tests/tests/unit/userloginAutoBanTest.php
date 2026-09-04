@@ -471,6 +471,27 @@ class userloginAutoBanTest extends \Test\Unit
 		$this->assertSame('gen_type,gen_datestamp', $this->liveIndexColumns('gen_type_ts'));
 	}
 
+	public function testTheFailedLoginDurationDefaultIsAppliedOnce()
+	{
+		require_once(e_ADMIN . 'update_routines.php');
+
+		e107::getConfig()->set('ban_durations', array())
+			->remove('ban_durations_login_default_applied')->save(false, true, false);
+
+		update_20x_to_latest('do');
+
+		$applied = e107::getPref('ban_durations');
+		$this->assertSame(1, (int) $applied[eIPHandler::BAN_TYPE_LOGINS]);
+
+		$applied[eIPHandler::BAN_TYPE_LOGINS] = 0;
+		e107::getConfig()->set('ban_durations', $applied)->save(false, true, false);
+
+		update_20x_to_latest('do');
+
+		$kept = e107::getPref('ban_durations');
+		$this->assertSame(0, (int) $kept[eIPHandler::BAN_TYPE_LOGINS]);
+	}
+
 	public function testUnknownUsernameIsStillCounted()
 	{
 		$result = $this->lg->login('vr9hnosuchuser', 'not the password', 0, '', true);
