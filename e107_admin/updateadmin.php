@@ -31,18 +31,17 @@ if (isset($_POST['update_settings']))
 	{
 		$userData = array();
 		$userData['data'] = array();
-		if ($_POST['a_password'] != '' && $_POST['a_password2'] != '' && ($_POST['a_password'] == $_POST['a_password2'])) 
+		$password = varset($_POST['a_password'], '');
+		if ($password !== '' && $password === varset($_POST['a_password2'], ''))
 		{
-			$userData['data']['user_password'] = $userMethods->HashPassword($_POST['a_password'], $currentUser['user_loginname']);
+			$userData['data']['user_password'] = $userMethods->HashPassword($password, $currentUser['user_loginname']);
 			unset($_POST['a_password']);
 			unset($_POST['a_password2']);
 
 			if (vartrue($pref['allowEmailLogin']))
 			{
-				$new_pass = e107::getParser()->filter($_POST['a_password']);
-
 				$user_prefs = e107::getArrayStorage()->unserialize($currentUser['user_prefs']);
-				$user_prefs['email_password'] = $userMethods->HashPassword($new_pass, USEREMAIL);
+				$user_prefs['email_password'] = $userMethods->HashPassword($password, USEREMAIL);
 				$userData['data']['user_prefs'] = e107::getArrayStorage()->serialize($user_prefs);
 			}
 
@@ -118,6 +117,7 @@ else
 			</table>
 			<div class='buttons-bar center'>
 				<input type='hidden' name='ac' value='".md5(defset('ADMINPWCHANGE'))."' />".
+				$frm->token().
 				$frm->admin_button('update_settings','no-value','update',UDALAN_7)."
 				
 			</div>
