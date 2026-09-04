@@ -249,7 +249,7 @@ class rater
 	 */
 	private function hasVoted($voters, $userid)
 	{
-		return preg_match("/\.".(int) $userid."(".chr(1)."[0-9]{1,2})?\./", (string) $voters) === 1;
+		return preg_match("/\.".(int) $userid."(".chr(1)."[0-9]{1,2})?\./", (string) $voters) !== 0;
 	}
 
 	/**

@@ -156,6 +156,31 @@ class rate_classTest extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * preg_match() answers false on a PCRE error, which has to count as a vote
+	 * already cast rather than as a clear run.
+	 */
+	public function testAPcreFailureIsTreatedAsAlreadyVoted()
+	{
+		$hasVoted = new ReflectionMethod('rater', 'hasVoted');
+		$hasVoted->setAccessible(true);
+		$backtrackLimit = ini_get('pcre.backtrack_limit');
+		ini_set('pcre.backtrack_limit', '0');
+
+		try
+		{
+			$voted = $hasVoted->invoke($this->rater, ".".USERID.chr(1)."5.", USERID);
+			$pcreError = preg_last_error();
+		}
+		finally
+		{
+			ini_set('pcre.backtrack_limit', $backtrackLimit);
+		}
+
+		self::assertNotSame(PREG_NO_ERROR, $pcreError, 'preg_match() did not fail on the fixture.');
+		self::assertTrue($voted);
+	}
+
+	/**
 	 * @param int $itemid
 	 * @param string $voters
 	 * @param int $votes
