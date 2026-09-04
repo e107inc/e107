@@ -1058,7 +1058,7 @@ class admin_shortcodes extends e_shortcode
 			}
 
 			$e107_var['lout']['text'] = LAN_LOGOUT;
-			$e107_var['lout']['link'] = e_ADMIN_ABS.'admin.php?logout';
+			$e107_var['lout']['link'] = e_ADMIN_ABS.'admin.php?logout&e-token='.defset('e_TOKEN');
 
 			if(function_exists('e_admin_menu'))
 			{
@@ -2060,7 +2060,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			
 			$tmp[3]['text']            = LAN_LOGOUT;
 			$tmp[3]['description']     = ADLAN_151;
-			$tmp[3]['link']            = e_ADMIN_ABS.'admin.php?logout';
+			$tmp[3]['link']            = e_ADMIN_ABS.'admin.php?logout&e-token='.defset('e_TOKEN');
 			$tmp[3]['image']           = "<i class='S16 e-logout-16'></i>"; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
 			$tmp[3]['image_large']     = '';
 			$tmp[3]['image_src']       = '';
@@ -2069,7 +2069,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 			$tmp[4]['text']            = LAN_LOGOUT;
 			$tmp[4]['description']     = ADLAN_151;
-			$tmp[4]['link']            = e_ADMIN_ABS.'admin.php?logout';
+			$tmp[4]['link']            = e_ADMIN_ABS.'admin.php?logout&e-token='.defset('e_TOKEN');
 			$tmp[4]['image']           = '';
 			$tmp[4]['image_large']     = '';
 			$tmp[4]['image_src']       = '';

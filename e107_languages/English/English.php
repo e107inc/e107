@@ -102,6 +102,7 @@ define("LAN_NEXT", "Next");
 define("LAN_PREVIOUS", "Previous");
 define("LAN_LOGIN", "Login");
 define("LAN_LOGOUT", "Logout");
+define("LAN_LOGOUT_REFUSED_TOKEN_MISSING", "You have not been logged out, because that link carried no security token. Use the logout link in this site's own menu rather than a bookmark or a link on another site.");
 define("LAN_VERIFY", "Verify");
 define("LAN_SETTINGS", "Settings");
 define("LAN_PASSWORD", "Password");

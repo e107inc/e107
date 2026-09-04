@@ -91,7 +91,14 @@ class core_system_xup_controller extends eController
 		
 		if(isset($_GET['logout']))
 		{
-			e107::getUser()->logout();
+			if(defined('e_TOKEN') && empty($_GET['e-token']))
+			{
+				echo e107::getMessage()->addError(defset('LAN_LOGOUT_REFUSED_TOKEN_MISSING', "You have not been logged out, because that link carried no security token. Use the logout link in this site's own menu rather than a bookmark or a link on another site."))->render();
+			}
+			else
+			{
+				e107::getUser()->logout();
+			}
 		}
 		
 		$profileData = null;
@@ -128,6 +135,6 @@ class core_system_xup_controller extends eController
 			}
 		}
 		
-			echo '<br /><br /><a class="btn btn-default btn-secondary" href="'.e107::getUrl()->create('system/xup/test?logout=true').'">'.LAN_XUP_ERRM_12.'</a>';
+			echo '<br /><br /><a class="btn btn-default btn-secondary" href="'.e107::getUrl()->create('system/xup/test', ['logout' => 'true', 'e-token' => defset('e_TOKEN')]).'">'.LAN_XUP_ERRM_12.'</a>';
 	}
 }
