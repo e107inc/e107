@@ -150,6 +150,9 @@ class e107HostValidationTest extends \Codeception\Test\Unit
 			'non-numeric port rejected, uses SERVER_NAME' => array(
 				array('HTTP_HOST' => 'localhost:zz', 'SERVER_NAME' => 'safe.example.com'),
 				'safe.example.com', 'non-numeric port rejected, uses SERVER_NAME'),
+			'trailing newline in Host rejected, uses SERVER_NAME' => array(
+				array('HTTP_HOST' => "example.com\n", 'SERVER_NAME' => 'server.example'),
+				'server.example', 'trailing newline in Host rejected, uses SERVER_NAME'),
 			'both sources unusable, empty string' => array(
 				array('HTTP_HOST' => 'bad/host', 'SERVER_NAME' => ''),
 				'', 'both sources unusable, empty string'),

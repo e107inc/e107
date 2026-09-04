@@ -6022,9 +6022,11 @@ class e107
 	 * port) since `parse_url(PHP_URL_HOST)` already drops the port from
 	 * `siteurl`; applying it symmetrically keeps any manually-entered
 	 * `trusted_hosts` entries that include a port from silently never matching.
-	 * The trim likewise only ever reaches a configured value, since
-	 * {@see e107::resolveHttpHost()} has already refused a request `Host`
-	 * carrying whitespace before this is asked anything.
+	 * The trim reaches a configured value and, through the public
+	 * {@see e107::isTrustedHost()}, a host a caller parsed out of a URL of its
+	 * own, such as the redirect destination {@see redirection::leavesThisSite()}
+	 * hands over; widening a value there can only move a match towards this
+	 * site's own hostnames.
 	 *
 	 * @param string $host
 	 *
@@ -6065,7 +6067,7 @@ class e107
 
 		// A bare hostname / IPv4, or a bracketed IPv6 literal, with an optional
 		// numeric port: what a browser puts in the `Host` header.
-		$shaped = '/^(?:[A-Za-z0-9._-]+|\[[0-9A-Fa-f:]+\])(?::\d{1,5})?$/';
+		$shaped = '/^(?:[A-Za-z0-9._-]+|\[[0-9A-Fa-f:]+\])(?::\d{1,5})?$/D';
 
 		if($httpHost !== '' && preg_match($shaped, $httpHost))
 		{
