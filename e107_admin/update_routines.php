@@ -629,40 +629,51 @@ function update_core_database($type = '')
 
 		// Session rows still keyed by the raw session id.
 		require_once(e_HANDLER.'session_handler.php');
-		$sessionLegacy = array();
+		$sessionHashed = 0;
+		$sessionSeen = 0;
+		$sessionPending = "`session_id` NOT LIKE '".e_session_db::KEY_ALGO."$%' LIMIT ";
 
-		if($sql->select('session', 'session_id', "`session_id` NOT LIKE '".e_session_db::KEY_ALGO."$%'"))
-		{
-			while($sessionRow = $sql->fetch())
-			{
-				$sessionLegacy[] = $sessionRow['session_id'];
-			}
-		}
-
-		if(!empty($sessionLegacy))
+		while($sql->select('session', 'session_id', $sessionPending.($just_check ? 1 : 200)))
 		{
 			if($just_check)
 			{
 				return update_needed('Stored session ids need to be hashed.');
 			}
 
-			$sessionHashed = 0;
+			$sessionLegacy = array();
+
+			while($sessionRow = $sql->fetch())
+			{
+				$sessionLegacy[] = $sessionRow['session_id'];
+			}
+
+			$sessionConverted = 0;
 
 			foreach($sessionLegacy as $sessionId)
 			{
-				$updated = $sql->update('session', array(
+				$sessionSeen++;
+
+				if($sql->update('session', array(
 					'data' => array('session_id' => e_session_db::storageKey($sessionId)),
 					'_FIELD_TYPES' => array('session_id' => 'str'),
 					'WHERE' => "`session_id`='".$sql->escape($sessionId)."'",
-				));
-
-				if(false !== $updated)
+				)))
 				{
-					$sessionHashed++;
+					$sessionConverted++;
 				}
 			}
 
-			$log->addDebug('Stored session ids hashed: '.$sessionHashed.' of '.count($sessionLegacy));
+			$sessionHashed += $sessionConverted;
+
+			if(!$sessionConverted)
+			{
+				break;
+			}
+		}
+
+		if($sessionSeen)
+		{
+			$log->addDebug('Stored session ids hashed: '.$sessionHashed.' of '.$sessionSeen);
 		}
 
 
