@@ -103,10 +103,10 @@ class Acceptance extends E107Base
 	 * Show the run's probe secret on every request, so a fixture in the docroot
 	 * answers this suite and nobody else.
 	 *
-	 * @param \Codeception\TestInterface|null $test
+	 * @param \Codeception\TestInterface $test
 	 * @return void
 	 */
-	public function _before($test = null)
+	public function _before(\Codeception\TestInterface $test)
 	{
 		parent::_before($test);
 		$this->getModule('PhpBrowser')->haveHttpHeader(ProbeGuard::HEADER, ProbeGuard::secret());
