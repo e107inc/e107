@@ -48,7 +48,7 @@
 		{
 			$offenders = array();
 
-			foreach ($this->unitTestFiles() as $file)
+			foreach (\Test\Tree::phpFiles('tests/unit') as $file)
 			{
 				$parent = $this->declaredParent(file_get_contents($file));
 				if ($parent === null)
@@ -56,7 +56,7 @@
 					continue;
 				}
 
-				$offenders[] = $this->relativePath($file) . ' extends ' . $parent;
+				$offenders[] = \Test\Tree::relativePath($file) . ' extends ' . $parent;
 			}
 
 			sort($offenders);
@@ -96,48 +96,5 @@
 			}
 
 			return null;
-		}
-
-		/**
-		 * Every PHP file in the unit suite.
-		 *
-		 * @return array
-		 */
-		private function unitTestFiles()
-		{
-			$files = array();
-
-			$iterator = new RecursiveIteratorIterator(
-				new RecursiveDirectoryIterator($this->suiteRoot(), FilesystemIterator::SKIP_DOTS)
-			);
-
-			foreach ($iterator as $file)
-			{
-				if (substr($file->getFilename(), -4) === '.php')
-				{
-					$files[] = $file->getPathname();
-				}
-			}
-
-			return $files;
-		}
-
-		/**
-		 * @return string
-		 */
-		private function suiteRoot()
-		{
-			return rtrim(codecept_root_dir(), '/') . '/tests/unit';
-		}
-
-		/**
-		 * @param string $path
-		 * @return string
-		 */
-		private function relativePath($path)
-		{
-			$root = codecept_root_dir();
-
-			return strpos($path, $root) === 0 ? (string) substr($path, strlen($root)) : $path;
 		}
 	}
