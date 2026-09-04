@@ -379,6 +379,7 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 			'name'      => array('[textarea name=comment]x[/textarea]', "name = 'comment'"),
 			'uppercase' => array('[textarea NAME=comment]x[/textarea]', "NAME = 'comment'"),
 			'style'     => array('[textarea style=width:100%]x[/textarea]', "style = 'width:100'"),
+			'style colour' => array('[textarea style=color:#3366ff]x[/textarea]', "style = 'color:3366ff'"),
 			'rows'      => array('[textarea rows=5]x[/textarea]', "rows = '5'"),
 			'autocomplete' => array('[textarea autocomplete=off]x[/textarea]', "autocomplete = 'off'"),
 		);
@@ -404,8 +405,11 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 	/**
 	 * [textarea] allows a style and wrote the value between the quotes as it
 	 * was given, so a member's declaration list rendered whole. It goes through
-	 * the guard [img] uses, which leaves no bracket to open a URL with, and
-	 * takes the per cent sign out of an ordinary width with it.
+	 * the guard [img] uses, which leaves no bracket to open a URL with. The
+	 * guard is a character class, so it takes the hash off a colour and the per
+	 * cent off a width as well, and it keeps a positioning declaration: whether
+	 * a member may position an element at all is open for [img] and [block] on
+	 * the same terms.
 	 */
 	public function testTheTextareaBbcodeGuardsItsStyleAttribute()
 	{
@@ -580,7 +584,7 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 	 */
 	public function testTheBlockBbcodeCannotEscapeItsClassAttribute()
 	{
-		$html = $this->renderStored('<b>hi</b>[block=class=q" onmouseover="alert(1)]x[/block]');
+		$html = $this->renderStored('[block=class=q" onmouseover="alert(1)]x[/block]');
 
 		self::assertSame(false, strpos($html, 'alert(1)'),
 			'A [block] class escaped its attribute. Rendered: '.$html);
@@ -655,9 +659,10 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 	 * bb_img cut an onerror= substring out of the parameter before parsing it,
 	 * above the allow list that is the boundary, and took the words of ordinary
 	 * text with it. The lower-case spelling never arrives here to be cut,
-	 * because e_parse's own $search has rewritten it before a bbcode is read.
+	 * because e_parse's own $search has rewritten it before a bbcode is read,
+	 * so the one capitalisation that reaches bb_img whole is what is measured.
 	 */
-	public function testTheImageBbcodeKeepsTheWordsOfAnOrdinaryAlt()
+	public function testTheImageBbcodeKeepsAnUppercaseOnerrorInItsAlt()
 	{
 		self::assertNotSame(false, strpos(
 			$this->renderUnencoded('[img alt=Onerror = a handler]{e_MEDIA_IMAGE}b.gif[/img]'),
