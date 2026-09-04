@@ -6,7 +6,7 @@
 	 * Nothing in the directory is meant to be fetched over the web, and until
 	 * this file shipped, every reachable script in it defended itself alone.
 	 */
-	class handlersHtaccessTest extends \Codeception\Test\Unit
+	class handlersHtaccessTest extends \Test\Unit
 	{
 
 		public function testTheHandlersDirectoryShipsTheDenialE107Writes()
