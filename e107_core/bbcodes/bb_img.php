@@ -38,12 +38,13 @@
 			{
 				$safe['style'] = eHelper::secureStyleAttr($parms['style']);
 			}
-			foreach(array('alt', 'figcaption') as $caption)
+			if(!empty($parms['alt']))
 			{
-				if(!empty($parms[$caption]))
-				{
-					$safe[$caption] = e107::getParser()->filter($parms[$caption]);
-				}
+				$safe['alt'] = e107::getParser()->filter($parms['alt']);
+			}
+			if(!empty($parms['figcaption']))
+			{
+				$safe['figcaption'] = $parms['figcaption'];
 			}
 			foreach(array('width', 'height') as $dimension)
 			{
@@ -160,7 +161,7 @@
 					$imgParms['alt'] = ucwords(str_replace("_", " ", $match[1]));
 				}
 			}
-			else
+			elseif(empty($imgParms['figcaption']))
 			{
 				$imgParms['figcaption'] = $imgParms['alt'];
 			}

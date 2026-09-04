@@ -60,8 +60,8 @@
 					'expected'  => '[img figcaption=Hello&loading=eager]{e_MEDIA_IMAGE}2020-12/horse.jpg[/img]'
 				),
 				array(
-					'parm'      => 'figcaption=<b>Hello</b>&loading=nonsense',
-					'expected'  => '[img figcaption=Hello]{e_MEDIA_IMAGE}2020-12/horse.jpg[/img]'
+					'parm'      => 'loading=nonsense',
+					'expected'  => '[img]{e_MEDIA_IMAGE}2020-12/horse.jpg[/img]'
 				),
 			);
 
@@ -71,6 +71,23 @@
 
 				$this->assertSame($var['expected'], $result, $var['parm']);
 			}
+		}
+
+		/**
+		 * filter() is not idempotent, so the caption is stored as it was typed and encoded once, at the render.
+		 */
+		public function testAPostedCaptionReachesTheReaderAsItWasTyped()
+		{
+
+			$stored = $this->bb->toDB('{e_MEDIA_IMAGE}2020-12/horse.jpg', "alt=A horse&figcaption=Ben's horse");
+
+			$this->assertSame('[img alt=A+horse&figcaption=Ben%27s+horse]{e_MEDIA_IMAGE}2020-12/horse.jpg[/img]', $stored);
+
+			preg_match('#^\[img ([^\]]*)\](.*)\[/img\]$#', $stored, $m);
+
+			$result = $this->bb->toHTML($m[2], $m[1]);
+
+			$this->assertStringContainsString('<figcaption>Ben&#039;s horse</figcaption>', $result);
 		}
 
 		public function testToHTML()
