@@ -500,16 +500,41 @@
 		 */
 		public function testWrite_lanfileRoundTripsAPhraseThatLooksLikeTheEndOfTheStatement()
 		{
-			$typed = 'a\\"); b';
+			// (what the editor shows, what the phrase comes out as at runtime)
+			$cases = array(
+				'escaped quote' => array('a\\"); b', 'a"); b'),
+				'apostrophe'    => array("abc'); def", "abc'); def"),
+			);
 
-			$written = $this->writeLanFile(array('LAN_X'), array($typed));
+			foreach($cases as $label => $pair)
+			{
+				list($typed, $value) = $pair;
 
-			$result = $this->includeGenerated('LAN_X');
-			$this->assertSame('[VALUE]a"); b', $result['stdout'], 'The phrase changed at runtime.');
+				$written = $this->writeLanFile(array('LAN_X'), array($typed));
+
+				$result = $this->includeGenerated('LAN_X');
+				$this->assertSame('[VALUE]'.$value, $result['stdout'],
+					'The phrase changed at runtime for case: '.$label);
+
+				$back = $this->lan->fill_phrases_array($written, 'tran');
+				$this->assertSame($typed, $back['tran']['LAN_X'],
+					'The reader stopped short of the quote that ends the literal for case: '.$label);
+			}
+		}
+
+		/**
+		 * A phrase ending in a space is ordinary in a language file, and the reader handed back
+		 * a trimmed copy, so an administrator who opened the file and saved it without changing
+		 * anything wrote the trimmed phrase over the real one.
+		 */
+		public function testFill_phrases_arrayKeepsTrailingWhitespace()
+		{
+			$written = $this->writeLanFile(array('LAN_X'), array('Guests: '));
 
 			$back = $this->lan->fill_phrases_array($written, 'tran');
-			$this->assertSame($typed, $back['tran']['LAN_X'],
-				'The reader stopped at the escaped quote instead of at the one that ends the literal.');
+
+			$this->assertSame('Guests: ', $back['tran']['LAN_X'],
+				'A trailing space was dropped, so the next save writes the trimmed phrase.');
 		}
 
 		/** A NUL cannot be written into the literal, so it is dropped rather than left to truncate the phrase. */

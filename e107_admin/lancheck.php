@@ -1798,15 +1798,19 @@ class lancheck
 			$retloc[$type][$locale[1]]= $locale[2];	
 		}
 				
-		if(preg_match_all('/^\s*?define\s*?\(\s*?([\'"])([\w]+)\1\s*?,\s*?([\'"])((?:\\\\[\s\S]|[^\\\\])*?)\s*?([\'"])\s*?\)\s*?;/imu',$data,$matches))
+		$call = '/^\s*?define\s*?\(\s*?([\'"])([\w]+)\1\s*?,\s*?([\'"])%s\s*?\)\s*?;/imu';
+		$anyValue = sprintf($call, '([\s\S]*?)\s*?[\'"]');
+		$singleLiteral = sprintf($call, '((?:\\\\[\s\S]|(?!\3)[^\\\\])*)\3');
+
+		foreach(array($anyValue, $singleLiteral) as $pattern)
 		{
-			$def = $matches[2];
-			$values = $matches[4];	
-	
-			foreach($def as $k=>$d)
+			if(preg_match_all($pattern, $data, $matches))
 			{
-				$retloc[$type][$d]= $values[$k];
-			}	
+				foreach($matches[2] as $k => $name)
+				{
+					$retloc[$type][$name] = $matches[4][$k];
+				}
+			}
 		}
 			
 		return $retloc;
