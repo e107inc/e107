@@ -46,6 +46,8 @@ modules:
         - \Helper\PrefCacheReset
         # After PrefCacheReset: starts each test logged out.
         - \Helper\WebDriverSession
+        # After WebDriver: its wait() replaces the blind sleep with a refusal.
+        - \Helper\NoBlindWaits
 step_decorators: ~
 # Two environments, because some behaviour only exists over one scheme.
 #

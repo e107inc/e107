@@ -89,7 +89,12 @@ JS;
 
 		$this->clickDeleteLink($I, $this->ids['threadA']);
 		$I->acceptPopup();
-		$I->wait(3);
+
+		$threadId = $this->ids['threadA'];
+		\Test\Poll::until(function () use ($I, $threadId)
+		{
+			return $I->grabNumRecords('e107_forum_thread', array('thread_id' => $threadId)) === 0;
+		}, 10);
 
 		$I->dontSeeInDatabase('e107_forum_thread', array('thread_id' => $this->ids['threadA']));
 	}
@@ -102,10 +107,12 @@ JS;
 		$I->loginToForum('wdmoda');
 		$I->amOnPage('/e107_plugins/forum/forum_viewforum.php?id='.$this->ids['forumA']);
 
+		$I->executeJS(self::COUNT_AJAX);
 		$this->clickDeleteLink($I, $this->ids['threadA']);
 		$I->cancelPopup();
-		$I->wait(3);
 
+		$I->assertEquals(0, $I->executeJS('return window.__forumAjax;'),
+			'Cancel must send nothing, or the rows below would only be there because the request was still in flight');
 		$I->seeInDatabase('e107_forum_thread', array('thread_id' => $this->ids['threadA']));
 		$I->seeInDatabase('e107_forum_post', array('post_id' => $this->ids['postA']));
 	}
@@ -129,7 +136,7 @@ JS;
 		$I->executeJS(self::COUNT_AJAX);
 
 		$I->click('#forum-track-button');
-		$I->wait(2);
+		$I->waitForJS('return window.__forumAjax >= 1;', 10);
 
 		$I->assertEquals(1, $I->executeJS('return window.__forumAjax;'),
 			'one click on the track button should send exactly one request');
@@ -151,7 +158,7 @@ JS;
 		$I->executeJS(self::COUNT_AJAX);
 
 		$I->click('#forum-track-button');
-		$I->wait(2);
+		$I->waitForJS('return window.__forumAjax >= 1;', 10);
 
 		$I->assertEquals(1, $I->executeJS('return window.__forumAjax;'),
 			'the click should still reach the server with no editor on the page');
@@ -226,7 +233,10 @@ JS;
 
 		$I->seeElementInDOM($selector);
 		$I->executeJS("document.querySelector(\"".$selector."\").click();");
-		$I->wait(3);
+		\Test\Poll::until(function () use ($I)
+		{
+			return strpos($I->grabFromCurrentUrl(), 'f=rp') !== false;
+		}, 10);
 	}
 
 	/**

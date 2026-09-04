@@ -117,8 +117,9 @@ on old PHP.
 
 `master`'s `e107_tests/composer.json` carries union constraints (for example
 `codeception/codeception: "^4.2 || >=5.0.11"`), and `composer.php5.6.lock`
-pins what they resolve to on PHP 5.6, so legacy containers install a known
-dependency set on this branch too: see "One lock per PHP range" below.
+and `composer.php7.4.lock` pin what they resolve to on those PHPs, so legacy
+containers install a known dependency set on this branch too: see "One lock
+per PHP range" below.
 Grafted old tags and `release/v2.3.x` worktrees bring their own constraints
 and locks; on a tree whose constraints can't resolve on the container's PHP,
 `install` surfaces composer's error untouched.
@@ -156,8 +157,17 @@ rationale lives here):
 
 - `composer.lock`: resolved on the PHP that `config.platform.php` in
   `composer.json` declares (8.1), and installed as-is from there up.
+- `composer.php7.4.lock`: resolved on PHP 7.4 and installed on 7.4 and 8.0.
+  Codeception 4.2 with the 1.x modules, Twig 1.x and PHPUnit 9.
 - `composer.php5.6.lock`: resolved on PHP 5.6 and installed on 5.6 and 7.0.
   Codeception 4.2 with the 1.x modules, Twig 1.x and PHPUnit 5.7.
+
+Composer 2.9 and later refuse to resolve any release carrying a Packagist
+security advisory, which on PHP 7.4 leaves no installable Twig at all (every
+release below 3.20 has one, and the ones above need PHP 8.1). `composer.json`
+turns that resolution-time block off (`config.audit.block-insecure`): the
+harness is dev-only and never ships, and `composer audit` still reports the
+advisories after an install.
 
 An env tries `composer.lock` first, then each `composer.php<floor>.lock`
 from the newest floor down, and installs the first one whose platform
