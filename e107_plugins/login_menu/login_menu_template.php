@@ -32,7 +32,6 @@ if ( ! isset($LOGIN_MENU_FORM))
     NEW SHORTCODES/PARAMETERS:
 
     $LOGIN_MENU_LOGGED
-    - LM_REMEMBERME (parm: 'href' or empty)
     - LM_SIGNUP_LINK (parm: 'href' or empty)
     - LM_FPW_LINK (parm: 'href' or empty)
     - LM_RESEND_LINK (parm: 'href' or empty)
@@ -55,9 +54,6 @@ if ( ! isset($LOGIN_MENU_FORM))
     $sc_style['LM_RESEND_LINK']['pre'] = "<br />[ ";
     $sc_style['LM_RESEND_LINK']['post'] = " ]";
 
-    $sc_style['LM_REMEMBERME']['pre'] = "<br />";
-    $sc_style['LM_REMEMBERME']['post'] = "";
-
     $sc_style['LM_IMAGECODE_NUMBER']['pre'] = "<br />";
     $sc_style['LM_IMAGECODE_NUMBER']['post'] = "<br />";
 
@@ -66,7 +62,7 @@ if ( ! isset($LOGIN_MENU_FORM))
 
 	$LOGIN_MENU_FORM = "{LM_MESSAGE}";
 
-	if ((varset($pref['password_CHAP'],0) == 2) && ($pref['user_tracking'] == "session"))
+	if (varset($pref['password_CHAP'],0) == 2)
 	{
 	  $LOGIN_MENU_FORM .= "
     	<div style='text-align: center' id='nologinmenuchap'>"."Javascript must be enabled in your browser if you wish to log into this site"."
@@ -86,7 +82,6 @@ if ( ! isset($LOGIN_MENU_FORM))
             {LM_PASSWORD_INPUT}<br />
             {LM_IMAGECODE_NUMBER}{LM_IMAGECODE_BOX}
             {LM_LOGINBUTTON}
-            {LM_REMEMBERME}<br />
             {LM_SIGNUP_LINK}
             {LM_FPW_LINK}
             {LM_RESEND_LINK}

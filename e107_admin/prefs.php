@@ -258,12 +258,11 @@ if(isset($_POST['updateprefs']))
 	// special case, do session cleanup, logout, redirect to login screen
 	if($sessionRegenerate)
 	{
-		// reset cookie
-		cookie($core_pref->get('cookie_name'), $_COOKIE[e_COOKIE], (time() + 3600 * 24 * 30), e_HTTP, e107::getLanguage()->getCookieDomain());
 		cookie(e_COOKIE, null, null);
 		
 		// regenerate session
 		$s = $_SESSION;
+		unset($s[e_COOKIE]);
 		e107::getSession()->destroy();
 		$session = new e_core_session(array('name' => $core_pref->get('cookie_name')));
 		$_SESSION = $s;
@@ -1552,15 +1551,6 @@ $text .= "
 						</td>
 					</tr>
 
-					<tr>
-						<td><label for='user-tracking-cookie'>".PRFLAN_48."</label></td>
-						<td >
-							<div class='form-inline'>
-							".$frm->radio('user_tracking', array('cookie' => PRFLAN_49, 'session' => PRFLAN_50), varset($pref['user_tracking']))."
-						</div></td>
-					</tr>
-					
-				
 					<tr>
 						<td><label for='cookie-name'>".PRFLAN_55."</label>".$frm->help(PRFLAN_263)."</td>
 						<td >".$frm->text('cookie_name', varset($pref['cookie_name']), 20)."

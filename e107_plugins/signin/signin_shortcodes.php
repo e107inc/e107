@@ -157,22 +157,6 @@ class plugin_signin_signin_shortcodes extends e_shortcode
 
 
 
-	function sc_signin_rememberme($parm = '')
-	{
-
-		$pref = e107::getPref();
-		if ($parm == "hidden")
-		{
-			return "<input type='hidden' name='autologin' id='autologin' value='1' />";
-		}
-		if (varset($pref['user_tracking']) !== "session")
-		{
-			return "<input type='checkbox' name='autologin' id='autologin' value='1' checked='checked' />" . ($parm ? $parm : "" . defset('LAN_SIGNIN_REMEMBER', '') );
-		}
-
-		return null;
-	}
-
 	function sc_signin_signup_href($parm = '')
 	{
 

@@ -126,43 +126,6 @@ class login_shortcodes extends e_shortcode
 		// return "<input class='tbox' type='text' name='code_verify' size='15' maxlength='20' />";	
 	}
 
-	function sc_login_table_autologin($parm='')//FIXME use $frm
-	{
-		if(empty($this->userReg))
-		{
-			return null;
-		}
-
-		return "<input type='checkbox' name='autologin' value='1' />";	
-	}
-	
-
-	function sc_login_table_autologin_lan($parm=null)
-	{
-		if(empty($this->userReg))
-		{
-			return null;
-		}
-
-		return LAN_LOGIN_8;	
-	}
-
-	function sc_login_table_rememberme($parm=array())
-	{
-		if(empty($this->userReg))
-		{
-			return null;
-		}
-
-		if(!isset($parm['label']))
-		{
-			$parm['label'] = LAN_LOGIN_8;
-		}
-
-		return e107::getForm()->checkbox('autologin',1,false,$parm);
-
-	}
-	
 	/* example: {LOGIN_TABLE_SUBMIT=large} */
 	/* example: {LOGIN_TABLE_SUBMIT: class=btn submit_but}  */
 	
