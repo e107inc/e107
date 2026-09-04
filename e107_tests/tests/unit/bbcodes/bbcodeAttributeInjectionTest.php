@@ -416,6 +416,18 @@ class bbcodeAttributeInjectionTest extends \Test\Unit
 			'A [textarea] style reached out for a remote URL. Rendered: '.$html);
 	}
 
+	/**
+	 * bb_img takes the whitespace and punctuation out of an id and [textarea]
+	 * wrote the member's value as given, which is invalid markup and a name a
+	 * script can be made to collide with.
+	 */
+	public function testTheTextareaBbcodeGuardsItsIdAttribute()
+	{
+		self::assertStringContainsString("id = 'qonmouseoveralert1'",
+			$this->renderStored('[textarea id=q onmouseover=alert(1)]x[/textarea]'),
+			'A [textarea] id kept the characters the [img] guard removes.');
+	}
+
 	public function testTheStreamBbcodeKeepsTheParametersItAllows()
 	{
 		$html = $this->renderUnencoded(
