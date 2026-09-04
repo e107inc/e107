@@ -86,13 +86,30 @@ class Acceptance extends E107Base
 	 * when the app under test is remote (CI deploys over SFTP). Parent
 	 * directories are created.
 	 *
+	 * A fixture that boots e107 in the docroot goes through
+	 * {@see ProbeGuard::contain()} first, which refuses one that reserved no
+	 * room for the guard.
+	 *
 	 * @param string $relative_path path relative to the app root
 	 * @param string $contents
 	 * @return void
 	 */
 	public function writeAppFile($relative_path, $contents)
 	{
-		$this->deployer->writeAppFile($relative_path, $contents);
+		$this->deployer->writeAppFile($relative_path, ProbeGuard::contain($relative_path, $contents));
+	}
+
+	/**
+	 * Show the run's probe secret on every request, so a fixture in the docroot
+	 * answers this suite and nobody else.
+	 *
+	 * @param \Codeception\TestInterface|null $test
+	 * @return void
+	 */
+	public function _before($test = null)
+	{
+		parent::_before($test);
+		$this->getModule('PhpBrowser')->haveHttpHeader(ProbeGuard::HEADER, ProbeGuard::secret());
 	}
 
 	/**
@@ -364,7 +381,8 @@ class Acceptance extends E107Base
 		}
 
 		$browser = $this->getModule('PhpBrowser');
-		$browser->amOnPage('/'.self::PLUGIN_PROBE_FILE.'?act='.$act.'&plugin='.urlencode($plugin));
+		$browser->amOnPage('/'.self::PLUGIN_PROBE_FILE.'?'.ProbeGuard::query()
+			.'&act='.$act.'&plugin='.urlencode($plugin));
 
 		$body = $browser->grabPageSource();
 
@@ -387,6 +405,7 @@ class Acceptance extends E107Base
 // Fixture for Helper\Acceptance::havePluginInstalled(). Removed in dropPluginProbe().
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
+{{E107_TEST_PROBE_GUARD}}
 header('Content-Type: text/plain');
 
 $act = isset($_GET['act']) ? $_GET['act'] : '';

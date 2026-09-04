@@ -61,6 +61,9 @@ class WorkspaceCleanup extends Extension
 		                           // after it until the directory goes
 		'e107_plugins/temptest6024',  // @see SingleEntryErrorPageCest
 		'e107_plugins/temptest6109',  // @see lancheckTest
+		'e107_tests_token_injection_probe.php', // @see CsrfTokenInjectionCest
+		'e107_tests_csrf_failclosed_probe.php', // @see CsrfFailClosedCest
+		'e107_tests_csrf_matrix_probe.php',      // @see CsrfModeMatrixCest
 		'e107_tests_forum_fixture_probe.php', // @see Helper\ForumFixture
 		'e107_tests_forum_canary.txt',        // @see ForumAttachmentCest
 		'e107_tests_pm_fixture_probe.php',    // @see PmAttachmentCest
@@ -102,6 +105,7 @@ class WorkspaceCleanup extends Extension
 		'e107_tests_menu_prefs_probe.php',       // @see Helper\MenuPrefFixture
 		'e107_tests_online_memberlist_probe.php',  // @see OnlineMemberListLinkCest
 		'e107_tests_chatbox_request_self_probe.php', // @see ChatboxRequestSelfCest
+		'e107_tests_containment_unguarded.php', // @see ProbeContainmentCest
 	];
 
 	/** Files a test moves aside for one test method, as parked name to the name it belongs back at. */

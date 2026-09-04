@@ -238,6 +238,7 @@ if($p8act === 'newsfeed' || $p8act === 'newsfeedstale')
 
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
+{{E107_TEST_PROBE_GUARD}}
 
 $sql = e107::getDb();
 
