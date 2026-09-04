@@ -4273,6 +4273,7 @@ class e_admin_tree_model extends e_front_tree_model
 
 	/**
 	 * Export Selected Data
+	 * Every column of the table is streamed unless the 'export_exclude' param names columns to leave out.
 	 * @param $ids
 	 * @return null
 	 */
@@ -4291,8 +4292,15 @@ class e_admin_tree_model extends e_front_tree_model
 
 	    $filename   = "e107Export_" .$this->getModelTable()."_". date("YmdHi").".xml";
 	    $query      = $this->getFieldIdName().' IN ('.$idstr.') '; //  ORDER BY '.$this->getParam('db_order') ;
+	    $options    = array('file' => $filename, 'query' => $query);
+	    $exclude    = $this->getParam('export_exclude');
 
-		e107::getXml()->e107Export(null,$table,null,null, array('file'=>$filename,'query'=>$query));
+		if(!empty($exclude))
+		{
+			$options['exclude'] = $exclude;
+		}
+
+		e107::getXml()->e107Export(null, $table, null, null, $options);
 
 		return null;
 
