@@ -44,13 +44,14 @@
  * the validation out of the measurement: what is under test is the redisplay,
  * not the send.
  *
- * Two of the cases below pass before the fix as well as after, and they are
+ * Three of the cases below pass before the fix as well as after, and they are
  * what stops the refusals being satisfied by dropping a field or by refusing
- * to assemble the page: an ordinary message must still come back, and both
- * assembled blocks must still reach it. The backslashes case reads like a
- * third, but it is a refusal too. The stripslashes() that guarded the old
- * line ran unconditionally and MAGIC_QUOTES_GPC is defined false, so the base
- * ate a backslash out of every redisplayed message and that case is red on it.
+ * to assemble the page: an ordinary message must still come back, so must an
+ * ordinary address, and both assembled blocks must still reach the page. The
+ * backslashes case reads like a fourth, but it is a refusal too. The
+ * stripslashes() that guarded the old line ran unconditionally and
+ * MAGIC_QUOTES_GPC is defined false, so the base ate a backslash out of every
+ * redisplayed message and that case is red on it.
  */
 class ContactFormReflectionCest
 {
@@ -146,6 +147,15 @@ class ContactFormReflectionCest
 		$this->post($I, array('body' => 'Order 5150 arrived damaged. Please advise.'));
 
 		$I->seeInSource('Order 5150 arrived damaged. Please advise.');
+	}
+
+	public function anOrdinaryAddressIsStillGivenBack(AcceptanceTester $I)
+	{
+		$I->wantTo('Give an ordinary address back to whoever typed it');
+
+		$this->post($I, array('email_send' => 'jane.doe@example.com'));
+
+		$I->seeInSource("value='jane.doe@example.com'");
 	}
 
 	public function aMessageKeepsItsBackslashes(AcceptanceTester $I)
