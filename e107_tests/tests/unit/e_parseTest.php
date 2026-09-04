@@ -3268,7 +3268,7 @@ EXPECTED;
 	}
 
 	/**
-	 * srcset and the src path are out of this contract: toImage() builds both itself and they already carry &amp;.
+	 * Every operand of the <img> statement is encoded where it is written, the src path and srcset included.
 	 */
 	public function testToImageAttributeInjection()
 	{
@@ -3325,6 +3325,43 @@ EXPECTED;
 		self::assertStringContainsString('title="Ben&#039;s"', $result);
 		self::assertStringContainsString('width="50%"', $result);
 		self::assertStringContainsString('height="auto"', $result);
+	}
+
+	/**
+	 * The src path and the srcset are operands like the rest, and a caller may hand either of them a quote.
+	 */
+	public function testToImageEncodesThePathAndSrcset()
+	{
+		$breakout = '" onwheel="alert(1)';
+
+		$parm = array('srcset' => 'b' . $breakout . '.gif 2x');
+
+		$result = $this->tp->toImage('http://example.com/a' . $breakout . '.gif', $parm);
+
+		$expected = '<img class="img-responsive img-fluid"'
+			. ' src="http://example.com/a&quot; onwheel=&quot;alert(1).gif"'
+			. ' alt="a&quot; onwheel=&quot;alert(1).gif"'
+			. ' srcset="b&quot; onwheel=&quot;alert(1).gif 2x"  />';
+
+		self::assertSame($expected, $result);
+		self::assertStringNotContainsString($breakout, $result);
+	}
+
+	/**
+	 * thumbUrl() and thumbSrcSet() mint an &amp; of their own, and the encoder has to leave it as one.
+	 */
+	public function testToImageLeavesItsOwnThumbnailUrlsAlone()
+	{
+		$result = $this->tp->toImage('{e_MEDIA_IMAGE}2020-12/b.gif', array('w' => 100, 'h' => 100));
+		$result = preg_replace('/"([^"]*)thumb.php/', '"thumb.php', $result);
+
+		$expected = '<img class="img-responsive img-fluid"'
+			. ' src="thumb.php?src=e_MEDIA_IMAGE%2F2020-12%2Fb.gif&amp;w=100&amp;h=100"'
+			. ' alt="b.gif"'
+			. ' srcset="thumb.php?src=e_MEDIA_IMAGE%2F2020-12%2Fb.gif&amp;w=200&amp;h=200 2x"'
+			. ' width="100" height="100"  />';
+
+		self::assertSame($expected, $result);
 	}
 
 	public function testThumbSrcSet()
