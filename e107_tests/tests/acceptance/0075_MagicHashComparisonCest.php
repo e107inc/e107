@@ -15,7 +15,7 @@
  * while that account keeps that timestamp - which is why the assertions here
  * seed the timestamp rather than wait for one. 240610708 is the published md5
  * preimage of 0e462097431906509019562988736854; the account is put on it in
- * _before() and put back in _after().
+ * _before() and put back on the value the sample dump ships in _after().
  *
  * Nothing here writes a password. Every case posts two passwords that do not
  * match, so a submission that gets past the gate stops at the handler's own
@@ -33,6 +33,9 @@ class MagicHashComparisonCest
 
 	/** md5('240610708') is '0e462097431906509019562988736854'. */
 	const SEEDED_PWCHANGE = 240610708;
+
+	/** The user_pwchange e107_v2.3.0.sample.sql ships for user_id 1. */
+	const DUMP_PWCHANGE = 1590351985;
 
 	/**
 	 * A magic hash that is not the one this account's form renders. Equal to it
@@ -55,13 +58,8 @@ class MagicHashComparisonCest
 	 */
 	const PAST_THE_GATE_MARKER = 'Error - please re-submit.';
 
-	/** @var int|string the account's own user_pwchange, put back in _after() */
-	private $restorePwchange;
-
 	public function _before(AcceptanceTester $I)
 	{
-		$this->restorePwchange = $I->grabFromDatabase('e107_user', 'user_pwchange', array('user_id' => 1));
-
 		$I->updateInDatabase('e107_user', array('user_pwchange' => self::SEEDED_PWCHANGE),
 			array('user_id' => 1));
 
@@ -70,7 +68,7 @@ class MagicHashComparisonCest
 
 	public function _after(AcceptanceTester $I)
 	{
-		$I->updateInDatabase('e107_user', array('user_pwchange' => $this->restorePwchange),
+		$I->updateInDatabase('e107_user', array('user_pwchange' => self::DUMP_PWCHANGE),
 			array('user_id' => 1));
 	}
 
