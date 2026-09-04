@@ -402,6 +402,8 @@
 
 			$result = $this->includeGenerated('LAN_UNUSED');
 
+			$this->assertSame(0, $result['exit'],
+				'Including the generated file must not fatal: '.$result['stdout']);
 			$this->assertStringNotContainsString('INJECTED_LOCALE', $result['stdout'],
 				'The setlocale() arguments must be written as quoted literals, not as source.');
 		}
