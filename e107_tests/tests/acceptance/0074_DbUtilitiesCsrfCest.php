@@ -51,8 +51,8 @@ class DbUtilitiesCsrfCest
 	/** DBLAN_62, printed by the AJAX branch after e_db::backup() returns. */
 	const DUMPED = 'Database backup complete!';
 
-	/** LAN_UPDATE_5, the row title e107Update renders for the core structure. */
-	const UPDATE_LISTED = 'Core database structure';
+	/** LAN_UPDATE_5, in e107_languages/English/admin/lan_e107_update.php. */
+	const UPDATE_LISTED = 'Update core database structure';
 
 	/** A distinctive fragment of DBLAN_REFUSED_TOKEN_MISSING. */
 	const REFUSED = 'no security token';
