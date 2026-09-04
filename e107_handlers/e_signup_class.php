@@ -103,7 +103,14 @@ class e_signup
 
 			if($query === 'test')
 			{
-				$this->sendEmailPreview();
+				if(defined('e_TOKEN') && empty($_GET['e-token']))
+				{
+					echo "<div class='alert alert-danger'>".defset('LAN_SIGNUP_REFUSED_TOKEN_MISSING', 'Test email refused.')."</div>";
+				}
+				else
+				{
+					$this->sendEmailPreview();
+				}
 			}
 		}
 

@@ -174,24 +174,26 @@ class rater
 
 		$jump = "";
 		$url = "";
+		$token = "";
 		if($mode==FALSE){
 			$jump = "onchange='urljump(this.options[selectedIndex].value)'";
 			$url = e_HTTP."rate.php?";
+			$token = defined('e_TOKEN') ? "&amp;e-token=".e_TOKEN : "";
 		}
 
 		$str = $text."
 			<select name='rateindex' ".$jump." class='tbox'>
 			<option selected='selected'  value='0'>".RATELAN_5."</option>
-			<option value='".$url."{$table}^{$id}^{$self}^1'>1</option>
-			<option value='".$url."{$table}^{$id}^{$self}^2'>2</option>
-			<option value='".$url."{$table}^{$id}^{$self}^3'>3</option>
-			<option value='".$url."{$table}^{$id}^{$self}^4'>4</option>
-			<option value='".$url."{$table}^{$id}^{$self}^5'>5</option>
-			<option value='".$url."{$table}^{$id}^{$self}^6'>6</option>
-			<option value='".$url."{$table}^{$id}^{$self}^7'>7</option>
-			<option value='".$url."{$table}^{$id}^{$self}^8'>8</option>
-			<option value='".$url."{$table}^{$id}^{$self}^9'>9</option>
-			<option value='".$url."{$table}^{$id}^{$self}^10'>10</option>
+			<option value='".$url."{$table}^{$id}^{$self}^1".$token."'>1</option>
+			<option value='".$url."{$table}^{$id}^{$self}^2".$token."'>2</option>
+			<option value='".$url."{$table}^{$id}^{$self}^3".$token."'>3</option>
+			<option value='".$url."{$table}^{$id}^{$self}^4".$token."'>4</option>
+			<option value='".$url."{$table}^{$id}^{$self}^5".$token."'>5</option>
+			<option value='".$url."{$table}^{$id}^{$self}^6".$token."'>6</option>
+			<option value='".$url."{$table}^{$id}^{$self}^7".$token."'>7</option>
+			<option value='".$url."{$table}^{$id}^{$self}^8".$token."'>8</option>
+			<option value='".$url."{$table}^{$id}^{$self}^9".$token."'>9</option>
+			<option value='".$url."{$table}^{$id}^{$self}^10".$token."'>10</option>
 			</select>";
 		return $str;
 	}
