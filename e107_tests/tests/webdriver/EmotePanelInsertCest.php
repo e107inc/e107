@@ -103,7 +103,8 @@ class EmotePanelInsertCest
 
 	private function amOnProbe(\WebDriverTester $I)
 	{
-		$I->amOnPage('/' . self::PROBE_FILE);
+		$I->amOnPage('/' . self::PROBE_FILE . '?' . \Helper\ProbeGuard::query());
+		$I->dontSee(\Helper\ProbeGuard::REFUSAL);
 		$I->waitForElement('.addEmote', self::TIMEOUT);
 	}
 
