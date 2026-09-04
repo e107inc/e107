@@ -21,6 +21,8 @@ class UsersettingsConfirmationPayloadCest
 	const MEMBER_PASS = 'Member1Pass!';
 	// LAN_USET_43, the message a write that could not be applied leaves behind.
 	const WRITE_REFUSED = 'Error updating user data';
+	// LAN_USET_41, the message a settings write that did land leaves behind.
+	const SAVED_MARKER = 'Settings updated and saved into database.';
 	const FORGED = '{
     "user_admin": "1",
     "user_perms": "0",
@@ -123,7 +125,7 @@ class UsersettingsConfirmationPayloadCest
 		$I->assertSame('displaced@example.test',
 			$I->grabFromDatabase('e107_user', 'user_email', array('user_id' => $userId)),
 			'the displaced confirmation applied neither its own change nor the newer one');
-		$I->assertStringNotContainsString('Settings updated and saved into database.', $I->grabResponseBody(),
+		$I->assertStringNotContainsString(self::SAVED_MARKER, $I->grabResponseBody(),
 			'and did not report a successful update');
 
 		// The change that is actually waiting still completes.
@@ -161,9 +163,37 @@ class UsersettingsConfirmationPayloadCest
 		$I->assertSame('nothingheld@example.test',
 			$I->grabFromDatabase('e107_user', 'user_email', array('user_id' => $userId)),
 			'the replay applied nothing');
-		$I->assertStringNotContainsString('Settings updated and saved into database.', $I->grabResponseBody(),
+		$I->assertStringNotContainsString(self::SAVED_MARKER, $I->grabResponseBody(),
 			'and did not report a successful update');
 	}
+
+	/**
+	 * The cheapest attack of the set: post the confirmation without ever asking for
+	 * one. It needs no rendered form, so it was the only route that did not turn on
+	 * the site's password encoding, and it is the one route the suite never walked.
+	 */
+	public function aConfirmationNobodyAskedForWritesNothing(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a confirmation the member invented rather than asked for');
+
+		$userId = $this->haveMember($I, 'coldpost');
+		$this->loginAsMember($I, 'coldpost');
+
+		$token = $this->grabToken($I);
+
+		$I->sendPostRequest('/usersettings.php', array(
+			'SaveValidatedInfo' => '1',
+			'updated_data'      => base64_encode(self::FORGED),
+			'updated_key'       => crypt(self::FORGED, $token),
+			'currentpassword'   => self::MEMBER_PASS,
+			'e-token'           => $token,
+		));
+
+		$this->seeStillAnOrdinaryMember($I, $userId, 'a confirmation nobody asked for');
+		$I->assertStringNotContainsString(self::SAVED_MARKER, $I->grabResponseBody(),
+			'and no success was reported');
+	}
+
 
 	/**
 	 * A confirmed change is spent the moment it is confirmed: the session slot is
