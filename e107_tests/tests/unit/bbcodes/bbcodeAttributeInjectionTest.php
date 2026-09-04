@@ -378,7 +378,7 @@ class bbcodeAttributeInjectionTest extends \Test\Unit
 		return array(
 			'name'      => array('[textarea name=comment]x[/textarea]', "name = 'comment'"),
 			'uppercase' => array('[textarea NAME=comment]x[/textarea]', "NAME = 'comment'"),
-			'style'     => array('[textarea style=width:100%]x[/textarea]', "style = 'width:100%'"),
+			'style'     => array('[textarea style=width:100%]x[/textarea]', "style = 'width:100'"),
 			'rows'      => array('[textarea rows=5]x[/textarea]', "rows = '5'"),
 			'autocomplete' => array('[textarea autocomplete=off]x[/textarea]', "autocomplete = 'off'"),
 		);
@@ -400,6 +400,20 @@ class bbcodeAttributeInjectionTest extends \Test\Unit
 		self::assertStringContainsString("name = 'comment' rows = '5' cols = '40' ",
 			$this->renderUnencoded('[textarea name=comment&rows=5&cols=40]x[/textarea]'),
 			'A [textarea] with several allowed parameters lost some of them.');
+	}
+
+	/**
+	 * [textarea] allows a style and wrote the value between the quotes as it
+	 * was given, so a member's declaration list rendered whole. It goes through
+	 * the guard [img] uses, which leaves no bracket to open a URL with, and
+	 * takes the per cent sign out of an ordinary width with it.
+	 */
+	public function testTheTextareaBbcodeGuardsItsStyleAttribute()
+	{
+		$html = $this->renderStored('[textarea style=background:url(//evil.tld/x);position:fixed]x[/textarea]');
+
+		self::assertStringNotContainsString('url(', $html,
+			'A [textarea] style reached out for a remote URL. Rendered: '.$html);
 	}
 
 	public function testTheStreamBbcodeKeepsTheParametersItAllows()
