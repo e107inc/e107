@@ -874,7 +874,7 @@ class lancheck
 		{
 			$candidate = trim($candidate);
 
-			if($candidate !== '' && preg_match('/^[A-Za-z0-9_.@+-]+$/', $candidate))
+			if($candidate !== '' && preg_match('/^[A-Za-z0-9_.@+-]+\z/', $candidate))
 			{
 				$args[] = $this->encodeLanLiteral($candidate);
 			}
