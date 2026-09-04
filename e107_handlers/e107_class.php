@@ -6167,9 +6167,12 @@ class e107
 	 * by the public {@see e107::isTrustedHost()} so both reason about the same
 	 * allow-list.
 	 *
-	 * Entries that {@see e107::normaliseHost()} reduces to nothing are dropped,
-	 * so an empty return means "this installation has been told no hostname of
-	 * its own" rather than "it was told one that can never match". The boot-time
+	 * The `trusted_hosts` pref is read through
+	 * {@see e107::normaliseTrustedHostList()}, so a value holding a multi-line
+	 * string or a whole URL names the hostnames it says rather than one entry
+	 * that can never match. Entries that reduce to nothing are dropped, so an
+	 * empty return means "this installation has been told no hostname of its
+	 * own" rather than "it was told one that can never match". The boot-time
 	 * check arms itself on that emptiness, and a site whose whole configuration
 	 * is a blank `trusted_hosts` line must not be locked out by it.
 	 *
@@ -6180,27 +6183,12 @@ class e107
 		$allowed_hosts = array();
 
 		$configured_host = parse_url(self::getPref('siteurl'), PHP_URL_HOST);
-		if(!empty($configured_host))
+		if(self::normaliseHost($configured_host) !== '')
 		{
 			$allowed_hosts[] = $configured_host;
 		}
 
-		$trusted_hosts_pref = self::getPref('trusted_hosts');
-		if(!empty($trusted_hosts_pref))
-		{
-			$allowed_hosts = array_merge($allowed_hosts, (array) $trusted_hosts_pref);
-		}
-
-		$usable_hosts = array();
-		foreach($allowed_hosts as $allowed_host)
-		{
-			if(self::normaliseHost($allowed_host) !== '')
-			{
-				$usable_hosts[] = $allowed_host;
-			}
-		}
-
-		return $usable_hosts;
+		return array_merge($allowed_hosts, self::normaliseTrustedHostList(self::getPref('trusted_hosts')));
 	}
 
 	/**
