@@ -1022,7 +1022,6 @@ class lancheck
 		//	$diz .= "|        ".chr(36)."URL: $writeit ".chr(36)."\n";
 		//	$diz .= "|        ".chr(36)."Revision: 1.0 ".chr(36)."\n";
 		//	$diz .= "|        ".chr(36)."Id: ".date("Y/m/d H:i:s")." ".chr(36)."\n";
-			$diz .= "|        ".chr(36)."Author: ".USERNAME." ".chr(36)."\n";
 			$diz .= "+---------------------------------------------------------------+\n";
 			$diz .= "*".chr(47)."\n\n";
 		}
