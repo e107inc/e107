@@ -3403,7 +3403,7 @@ EXPECTED;
 
 	public function testPreFilterRunsBbcodeSaveHandlersOnTextThatAlsoContainsHtml()
 	{
-		$payload = '[img height=1]{e_THEME}bootstrap3/images/logo.png[/img]';
+		$payload = '[img height=bogus]{e_THEME}bootstrap3/images/logo.png[/img]';
 
 		$filtered = $this->tp->preFilter($payload);
 		self::assertSame('[img]{e_THEME}bootstrap3/images/logo.png[/img]', $filtered);
