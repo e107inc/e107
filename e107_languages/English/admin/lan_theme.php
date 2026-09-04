@@ -118,4 +118,5 @@ return [
     'TPVLANHELP_06' => "Start lines with a [b]:[/b] to partially or fully match against e107::route()",
     'TPVLAN_97' => "This theme requires a newer version of e107.",
     'LAN_THEME_OPTIONS_NOT_SAVED' => "Theme options were not saved.",
+    'TPVLAN_REFUSED_TOKEN_MISSING' => "The theme was not copied, because the link carried no security token. Start it from the Theme Manager's create form rather than from a bookmark or a link on another site.",
 ];
