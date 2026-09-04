@@ -493,6 +493,25 @@
 			}
 		}
 
+		/**
+		 * The encoder escapes a quote inside the phrase, so the reader has to walk past that
+		 * escape instead of taking it for the end of the literal: a phrase carrying one came
+		 * back cut short, and the next save wrote the truncation to disk.
+		 */
+		public function testWrite_lanfileRoundTripsAPhraseThatLooksLikeTheEndOfTheStatement()
+		{
+			$typed = 'a\\"); b';
+
+			$written = $this->writeLanFile(array('LAN_X'), array($typed));
+
+			$result = $this->includeGenerated('LAN_X');
+			$this->assertSame('[VALUE]a"); b', $result['stdout'], 'The phrase changed at runtime.');
+
+			$back = $this->lan->fill_phrases_array($written, 'tran');
+			$this->assertSame($typed, $back['tran']['LAN_X'],
+				'The reader stopped at the escaped quote instead of at the one that ends the literal.');
+		}
+
 		/** A NUL cannot be written into the literal, so it is dropped rather than left to truncate the phrase. */
 		public function testWrite_lanfileDropsNullBytesFromTheTranslation()
 		{

@@ -1798,10 +1798,10 @@ class lancheck
 			$retloc[$type][$locale[1]]= $locale[2];	
 		}
 				
-		if(preg_match_all('/^\s*?define\s*?\(\s*?(\'|\")([\w]+)(\'|\")\s*?,\s*?(\'|\")([\s\S]*?)\s*?(\'|\")\s*?\)\s*?;/imu',$data,$matches))
+		if(preg_match_all('/^\s*?define\s*?\(\s*?([\'"])([\w]+)\1\s*?,\s*?([\'"])((?:\\\\[\s\S]|[^\\\\])*?)\s*?([\'"])\s*?\)\s*?;/imu',$data,$matches))
 		{
 			$def = $matches[2];
-			$values = $matches[5];	
+			$values = $matches[4];	
 	
 			foreach($def as $k=>$d)
 			{
