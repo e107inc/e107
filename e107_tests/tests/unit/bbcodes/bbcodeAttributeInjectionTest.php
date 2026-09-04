@@ -194,6 +194,37 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 		self::assertNotSame(false, strpos($html, '"example.co.uk"'), $html);
 	}
 
+	/**
+	 * @return array
+	 */
+	public function scriptUrls()
+	{
+		return array(
+			'url body'       => array("[url]java\tscript:alert(1)[/url]"),
+			'url parameter'  => array("[url=java\tscript:alert(1)]x[/url]"),
+			'link parameter' => array("[link=java\tscript:alert(1)]x[/link]"),
+		);
+	}
+
+	/**
+	 * A browser skips control characters while it reads a scheme, so a guard that
+	 * compares the first eleven characters never sees the scheme it is looking for.
+	 *
+	 * @dataProvider scriptUrls
+	 * @param string $bbcode
+	 */
+	public function testAnAnchorNeverCarriesAUrlThatCanExecute($bbcode)
+	{
+		foreach($this->elementsOf($this->renderStored($bbcode)) as $element)
+		{
+			if($element->tagName !== 'a') continue;
+
+			self::assertSame(0, preg_match('#^javascript:#i',
+				preg_replace('/[\x00-\x20\x7F]/', '', $element->getAttribute('href'))),
+				'An anchor carried a URL that can execute: '.$bbcode);
+		}
+	}
+
 	public function testTheQuoteBbcodeCannotAddAnAttributeToItsCitation()
 	{
 		$html = $this->renderStored('[quote=" onmouseover="alert(1)]hello[/quote]');
