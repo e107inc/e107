@@ -748,8 +748,9 @@ class userlogin
 				$this->pruneFailureNotes();
 
 				$failLimit = vartrue($pref['failed_login_limit'],10);
+				$durations = e107::getPref('ban_durations', array());
 
-				if($fails >= $failLimit)
+				if($fails >= $failLimit && !empty($durations[eIPHandler::BAN_TYPE_LOGINS]))
 				{
 					$time = time();
 					$description = e107::getParser()->lanVars(LAN_LOGIN_18,$failLimit);
