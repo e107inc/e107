@@ -501,16 +501,16 @@ class MailoutCsrfCest
 
 			$status = proc_get_status($process);
 
-			return $status['running'] ? false : 'exited';
+			return $status['running'] ? false : 'exited with status ' . $status['exitcode'];
 		}, 10);
 
 		if($bound !== 'bound')
 		{
 			$this->stopSmtpServer($stub);
 
-			$reason = $bound === 'exited' ? 'exited without binding to' : 'never bound to';
+			$reason = $bound ? $bound : 'never bound';
 
-			throw new \RuntimeException('The stub SMTP server ' . $reason . ' port ' . self::SMTP_STUB_PORT);
+			throw new \RuntimeException('The stub SMTP server on port ' . self::SMTP_STUB_PORT . ' ' . $reason);
 		}
 
 		return $stub;
