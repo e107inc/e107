@@ -17,6 +17,11 @@ foreach($tmp as $key => $p)
     continue;
   }
 
+  if(strtolower($key) === 'style')
+  {
+    $p = eHelper::secureStyleAttr($p);
+  }
+
   $tastr .= e107::getParser()->toAttribute($key)." = '".e107::getParser()->toAttribute($p)."' ";
 }
 return "<textarea class='{$class}' $tastr>$code_text</textarea>";
