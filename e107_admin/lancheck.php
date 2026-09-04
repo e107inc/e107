@@ -892,7 +892,7 @@ class lancheck
 		{
 			$candidate = trim($candidate);
 
-			if($candidate !== '' && preg_match('/^[A-Za-z0-9_.@+-]+$/', $candidate))
+			if($candidate !== '' && preg_match('/^[A-Za-z0-9_.@+-]+\z/', $candidate))
 			{
 				$args[] = var_export($candidate, true);
 			}
@@ -1882,7 +1882,7 @@ class lancheck
 				&& isset($sig[$i + 4]) && $sig[$i + 4][0] === T_CONSTANT_ENCAPSED_STRING)
 			{
 				$key = $this->decodeStringToken($sig[$i + 2][1]);
-				if(preg_match('/^\w+$/', $key))
+				if($this->isConstantName($key))
 				{
 					$retloc[$type][$key] = $this->decodeStringToken($sig[$i + 4][1]);
 				}
@@ -1896,7 +1896,7 @@ class lancheck
 				&& isset($sig[$i + 3]) && $sig[$i + 3][0] === T_CONSTANT_ENCAPSED_STRING)
 			{
 				$key = $sig[$i + 1][1];
-				if(preg_match('/^[A-Z_][A-Z0-9_]*$/', $key))
+				if(preg_match('/^[A-Z_][A-Z0-9_]*\z/', $key))
 				{
 					$retloc[$type][$key] = $this->decodeStringToken($sig[$i + 3][1]);
 				}
@@ -1909,7 +1909,7 @@ class lancheck
 				&& isset($sig[$i + 2]) && $sig[$i + 2][0] === T_CONSTANT_ENCAPSED_STRING)
 			{
 				$key = $this->decodeStringToken($text);
-				if(preg_match('/^[A-Z][A-Z0-9_]*$/', $key))
+				if(preg_match('/^[A-Z][A-Z0-9_]*\z/', $key))
 				{
 					$retloc[$type][$key] = $this->decodeStringToken($sig[$i + 2][1]);
 				}

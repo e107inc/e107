@@ -549,6 +549,20 @@
 		}
 
 		/**
+		 * The writer refuses a name ending in a newline, so the reader has to refuse one too:
+		 * a file already carrying such a name would otherwise put it back on the edit screen,
+		 * where the attribute round trip turns the newline into a space and the next save
+		 * drops the phrase from the file.
+		 */
+		public function testFill_phrases_arrayRejectsAConstantNameEndingInANewline()
+		{
+			$back = $this->lan->fill_phrases_array("<?php\ndefine('FOO\n', 'value');\n", 'tran');
+
+			$this->assertArrayNotHasKey("FOO\n", $back['tran'],
+				'The reader accepted a name the writer refuses to write.');
+		}
+
+		/**
 		 * The LC_ALL branch interpolates the value with no quotes at all, so this
 		 * one never even needed a quote to break out of.
 		 */
