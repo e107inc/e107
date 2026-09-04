@@ -205,8 +205,8 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 	{
 		$html = $this->renderStored('[url=tel:+15551234567]Call us[/url]');
 
-		self::assertStringContainsString('Call us', $html, 'A refused scheme took the text with it.');
-		self::assertStringNotContainsString('<a', $html, 'A refused scheme was linked anyway: '.$html);
+		self::assertNotSame(false, strpos($html, 'Call us'), 'A refused scheme took the text with it.');
+		self::assertSame(false, strpos($html, '<a'), 'A refused scheme was linked anyway: '.$html);
 	}
 
 	/** Without this the payload rows above would pass on a bbcode that rendered nothing at all. */
