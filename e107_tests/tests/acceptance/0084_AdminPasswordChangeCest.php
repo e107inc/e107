@@ -213,7 +213,7 @@ switch($act)
 			$config->set($backupKey, $stash);
 		}
 
-		$config->set('allowEmailLogin', 1);
+		$config->set('allowEmailLogin', 2);
 		$config->save(false, true, false);
 		echo "PROBE_OK setup\n";
 		break;
