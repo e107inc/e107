@@ -194,6 +194,21 @@ class DbUtilitiesCsrfCest
 	}
 
 	/**
+	 * Why the gate exempts a POST at all: the page's own form posts back to it
+	 * with the token in the body and no query string to put one in, so an
+	 * exemption that ever narrowed would take the update itself with it.
+	 */
+	public function theUpdatePagesOwnPostStillReachesTheUpdateList(AcceptanceTester $I)
+	{
+		$token = $I->grabFreshAdminToken(self::MENU . '?mode=importForm');
+
+		$I->sendPostRequest(self::UPDATE_PAGE, array('e-token' => $token));
+
+		$I->seeInSource(self::UPDATE_LISTED);
+		$I->dontSeeInSource(self::REFUSED);
+	}
+
+	/**
 	 * Presence is all the endpoint tests; whether the value is the right one is
 	 * attest()'s half. Both halves are needed, so assert the second one too.
 	 */
