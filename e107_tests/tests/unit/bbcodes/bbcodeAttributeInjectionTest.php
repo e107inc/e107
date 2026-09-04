@@ -640,6 +640,19 @@ class bbcodeAttributeInjectionTest extends \Test\Unit
 	}
 
 	/**
+	 * bb_img cut an onerror= substring out of the parameter before parsing it,
+	 * above the allow list that is the boundary, and took the words of ordinary
+	 * text with it. The lower-case spelling never arrives here to be cut,
+	 * because e_parse's own $search has rewritten it before a bbcode is read.
+	 */
+	public function testTheImageBbcodeKeepsTheWordsOfAnOrdinaryAlt()
+	{
+		self::assertStringContainsString('alt="Onerror = a handler"',
+			$this->renderUnencoded('[img alt=Onerror = a handler]{e_MEDIA_IMAGE}b.gif[/img]'),
+			'An [img] alt lost the words a blocklist matched.');
+	}
+
+	/**
 	 * figcaption is not an attribute; mediaImage() reads it and unsets it. It
 	 * still has to survive the render's allow list to get there.
 	 */
