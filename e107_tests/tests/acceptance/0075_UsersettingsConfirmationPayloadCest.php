@@ -21,7 +21,8 @@ class UsersettingsConfirmationPayloadCest
 	const MEMBER_PASS = 'Member1Pass!';
 	const FORGED = '{
     "user_admin": "1",
-    "user_perms": "0"
+    "user_perms": "0",
+    "user_xup": "Facebook_attacker-chosen"
 }';
 
 	public function _before(AcceptanceTester $I)
@@ -163,6 +164,10 @@ class UsersettingsConfirmationPayloadCest
 	}
 
 	/**
+	 * The three columns the first stage's allow list keeps out of a member's reach:
+	 * two that make an administrator, and the external-login binding tracked as its
+	 * own advisory, so a re-cut that reopens either one reds here.
+	 *
 	 * @param AcceptanceTester $I
 	 * @param int $userId
 	 * @param string $how
@@ -173,6 +178,8 @@ class UsersettingsConfirmationPayloadCest
 			'user_admin was not written through ' . $how);
 		$I->assertSame('', (string) $I->grabFromDatabase('e107_user', 'user_perms', array('user_id' => $userId)),
 			'user_perms was not written through ' . $how);
+		$I->assertSame('', (string) $I->grabFromDatabase('e107_user', 'user_xup', array('user_id' => $userId)),
+			'user_xup was not written through ' . $how);
 	}
 
 	/**
@@ -282,6 +289,7 @@ class UsersettingsConfirmationPayloadCest
 			'user_prefs'     => '',
 			'user_signature' => '',
 			'user_realm'     => '',
+			'user_xup'       => '',
 		));
 	}
 
