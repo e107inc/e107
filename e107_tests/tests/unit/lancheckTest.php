@@ -16,6 +16,9 @@
 		/** @var string Scratch language file for the write_lanfile() tests. */
 		protected $target;
 
+		/** @var string What the confirmation screen rendered on the last write. */
+		protected $rendered;
+
 		/** @var string Scratch plugin directory for the language-pack tests. */
 		protected $scratchPlugin;
 
@@ -87,7 +90,7 @@
 
 			ob_start();
 			$this->lan->write_lanfile('English');
-			ob_end_clean();
+			$this->rendered = ob_get_clean();
 
 			return file_get_contents($this->target);
 		}
@@ -495,18 +498,23 @@
 		 */
 		public function testWrite_lanfileEscapesTheConfirmationHtml()
 		{
-			file_put_contents($this->target, "<?php\n");
+			$this->writeLanFile(array('LAN_X'), array('<script>alert(1)</script>'));
 
-			$_SESSION['lancheck-edit-file'] = $this->target;
-			$_POST['newdef']                = array('LAN_X');
-			$_POST['newlang']               = array('<script>alert(1)</script>');
-
-			ob_start();
-			$this->lan->write_lanfile('English');
-			$rendered = ob_get_clean();
-
-			$this->assertStringNotContainsString('<script>', $rendered,
+			$this->assertStringNotContainsString('<script>', $this->rendered,
 				'The saved translation must be escaped before it is echoed back.');
+		}
+
+		/**
+		 * The confirmation screen is the only account of what went to disk, and a phrase that
+		 * is not valid UTF-8 is an ordinary condition of a language pack rather than an odd
+		 * one, so the line has to survive one instead of disappearing.
+		 */
+		public function testWrite_lanfileShowsAPhraseThatIsNotValidUtf8()
+		{
+			$this->writeLanFile(array('LAN_X'), array("caf\xe9"));
+
+			$this->assertStringContainsString('LAN_X', $this->rendered,
+				'The confirmation screen dropped the whole line for a phrase that is not valid UTF-8.');
 		}
 
 		/**

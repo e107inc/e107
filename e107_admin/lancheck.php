@@ -1075,7 +1075,7 @@ class lancheck
 				$statement = $func."(".$this->encodeLanLiteral($defvar).", ".$this->encodeLanLiteral($this->decodeLanBody($deflang)).");";
 			}
 
-			$message .= htmlspecialchars($notdef_start.$statement, ENT_QUOTES, 'UTF-8').'<br />'.$notdef_end;
+			$message .= htmlspecialchars($notdef_start.$statement, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8').'<br />'.$notdef_end;
 			$input .= $notdef_start.$statement.$notdef_end;
 		}
 	
@@ -1632,6 +1632,17 @@ class lancheck
 	}
 	
 	
+	/**
+	 * Escape a phrase or a key for the edit screen, substituting rather than blanking invalid UTF-8.
+	 *
+	 * @param string $value phrase or key as the reader handed it over
+	 * @return string
+	 */
+	private function forEditScreen($value)
+	{
+		return htmlentities(str_replace("ndef++", "", (string) $value), ENT_QUOTES | ENT_SUBSTITUTE);
+	}
+
 	function edit_lanfiles($dir1, $dir2, $f1, $f2, $lan, $type=null)
 	{
 		if($lan == '')
@@ -1726,11 +1737,11 @@ class lancheck
 				$hglt2="</span>";
 			}
 			$text .="<tr>
-			<td style='width:10%;vertical-align:top'>".$hglt1.htmlentities($sk).$hglt2."</td>
-			<td style='width:40%;vertical-align:top'>".htmlentities(str_replace("ndef++","",$trans['orig'][$sk])) ."</td>";
+			<td style='width:10%;vertical-align:top'>".$hglt1.$this->forEditScreen($sk).$hglt2."</td>
+			<td style='width:40%;vertical-align:top'>".$this->forEditScreen($trans['orig'][$sk])."</td>";
 			$text .= "<td class='forumheader3' style='width:50%;vertical-align:top'>";
 			$text .= ($writable) ? "<textarea  class='input-xxlarge' name='newlang[]' rows='$rowamount' cols='45' style='height:100%'>" : "";
-			$text .= htmlentities(str_replace("ndef++","", varset($trans['tran'][$sk])));
+			$text .= $this->forEditScreen(varset($trans['tran'][$sk]));
 			$text .= ($writable) ? "</textarea>" : "";
 			//echo "orig --> ".$trans['orig'][$sk]."<br />";
 			if (strpos($trans['orig'][$sk],"ndef++") !== false)
