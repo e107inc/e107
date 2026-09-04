@@ -958,6 +958,28 @@ cmd_sql() {
     fi
 }
 
+# Coverage is on demand: `run <suite> --coverage...` on an env from `up --xdebug`.
+# XDEBUG_MODE switches Xdebug 3 into coverage for that one process; Xdebug 2,
+# on the PHP 5.6 to 7.1 images, collects without being asked.
+COVERAGE_EXEC_ENV=()
+set_coverage_exec_env() {
+    local arg
+    COVERAGE_EXEC_ENV=()
+    for arg in "$@"; do
+        case $arg in
+            --coverage*)
+                # 2>/dev/null: podman prints "Error: executing ..." for any nonzero exec.
+                if ! compose_p exec -T web php -r 'exit(extension_loaded("xdebug") ? 0 : 1);' >/dev/null 2>&1; then
+                    err "coverage needs the xdebug image, and PHP in $PROJECT has no xdebug loaded (env records xdebug=$(project_label "$PROJECT" xdebug)).
+       Run: e107-tests up --php $E107_PHP_VERSION --db $E107_DB_IMAGE --xdebug"
+                fi
+                COVERAGE_EXEC_ENV=(-e XDEBUG_MODE=coverage)
+                return
+                ;;
+        esac
+    done
+}
+
 cmd_run() {
     resolve_env
     ensure_web_exec
@@ -974,24 +996,20 @@ cmd_run() {
             cc_args+=("$suite"); shift ;;
     esac
     cc_args+=(--steps "$@")
-    compose_p exec -w "$WEB_TESTS_DIR" web "${CODECEPT[@]}" "${cc_args[@]}"
+    set_coverage_exec_env "$@"
+    compose_p exec "${COVERAGE_EXEC_ENV[@]}" -w "$WEB_TESTS_DIR" web "${CODECEPT[@]}" "${cc_args[@]}"
 }
 
-# Replay CI's unit coverage run exactly (test-unit.yml), so base-image drift
-# like a changed default memory_limit reproduces on demand.
+# Replay CI's unit run exactly (test-unit.yml), so base-image drift like a
+# changed default memory_limit reproduces on demand.
 cmd_ci_unit() {
     resolve_env
     ensure_web_exec
-    # 2>/dev/null: podman prints "Error: executing ..." for any nonzero exec.
-    if ! compose_p exec -T web php -r 'exit(extension_loaded("xdebug") ? 0 : 1);' >/dev/null 2>&1; then
-        err "ci-unit needs the xdebug image, and PHP in $PROJECT has no xdebug loaded (env records xdebug=$(project_label "$PROJECT" xdebug)).
-       Run: e107-tests up --php $E107_PHP_VERSION --db $E107_DB_IMAGE --xdebug"
-    fi
     deps_ensure
     build_actions
     compose_p exec -w "$WEB_TESTS_DIR" web \
-        php -d memory_limit=-1 -d xdebug.mode=coverage -d register_argc_argv=1 \
-        ./vendor/bin/codecept run unit --steps --debug --coverage --coverage-xml
+        php -d memory_limit=-1 -d register_argc_argv=1 \
+        ./vendor/bin/codecept run unit --steps --debug
 }
 
 cmd_reset() {
@@ -1316,8 +1334,7 @@ INTERACT:
 TEST:
   run [suite] [args...]              Run Codeception inside the web container.
                                      Extra args are passed through to `codecept`.
-  ci-unit                            Replay CI's exact unit coverage run
-                                     (needs an env built with `up --xdebug`).
+  ci-unit                            Replay CI's exact unit run.
 
   Examples:
     e107-tests run unit
