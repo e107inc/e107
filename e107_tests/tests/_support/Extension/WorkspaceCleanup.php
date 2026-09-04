@@ -124,6 +124,12 @@ class WorkspaceCleanup extends Extension
 		'e107_tests_xup_token_probe.php',     // @see ProviderLoginTokenCest
 		'e107_tests_xup_route_probe.php',     // @see XupProviderLoginTokenCest
 		'e107_tests_admin_password_probe.php',       // @see AdminPasswordChangeCest
+		'e107_tests_csrf_failclosed_probe.php',    // @see CsrfFailClosedCest
+		'e107_tests_csrf_matrix_probe.php',        // @see CsrfModeMatrixCest
+		'e107_tests_token_injection_probe.php',    // @see CsrfTokenInjectionCest
+		'e107_tests_pm_send_probe.php',            // @see PmAttachmentSendCest
+		'e107_tests_host_arming_probe.php',        // @see HostAllowListArmingCest
+		'e107_tests_host_arming_prefs.php',        // @see HostAllowListArmingCest
 	];
 
 	/** Files a test moves aside for one test method, as parked name to the name it belongs back at. */
