@@ -77,6 +77,7 @@ define("NLLAN_63", "Total subscribers");
 define("NLLAN_64", "Return to Newsletter frontpage");
 define("NLLAN_65", "Subscribers overview newsletter ID");
 define("NLLAN_66", "Your news letter subscriber list has been sanitised.");
+define("NLLAN_REFUSED_TOKEN_MISSING", "The subscriber was not removed, because the link carried no security token. Use the delete button on the subscribers list rather than a bookmark or a link on another site.");
 
 // Up to NLLAN_72 used in "public" file
 

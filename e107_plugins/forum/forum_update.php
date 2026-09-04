@@ -26,7 +26,25 @@ if(!getperms('P'))
 require_once(e_PLUGIN . 'forum/forum_class.php');
 require_once(e_ADMIN . 'auth.php');
 
-if(e_QUERY == "reset")
+e107::lan('forum', 'admin', true);
+
+if(defined('e_TOKEN') && empty($_GET['e-token']))
+{
+	$forumUpdateRefusal = defset('FORLAN_REFUSED_TOKEN_MISSING', 'Invalid or missing security token.');
+
+	if(e_AJAX_REQUEST)
+	{
+		echo $forumUpdateRefusal;
+		exit;
+	}
+
+	e107::getMessage()->addError($forumUpdateRefusal);
+	e107::getRender()->tablerender('Forum Upgrade', e107::getMessage()->render());
+	require(e_ADMIN . 'footer.php');
+	exit;
+}
+
+if(isset($_GET['reset']) && $_GET['reset'] === '')
 {
 	unset($_SESSION['forumUpgrade']);
 	unset($_SESSION['forumupdate']);
@@ -141,7 +159,7 @@ function step1()
 			}
 			$text .= "
 			<br />
-			<form method='post' action='" . e_SELF . "?step=2'>
+			<form method='post' action='" . forum_update_url('step=2') . "'>
 			<input class='btn' type='submit' name='retest_attach' value='Retest Permissions' />
 			&nbsp;&nbsp;&nbsp;
 			<input class='btn btn-success' type='submit' name='skip_attach'  value='Skip - I understand the risks' />
@@ -152,7 +170,7 @@ function step1()
 		{
 			$mes->addSuccess("Attachment and attachment/thumb directories are writable");
 
-			$text = "<form method='post' action='" . e_SELF . "?step=2'>
+			$text = "<form method='post' action='" . forum_update_url('step=2') . "'>
 			<input class='btn btn-success' type='submit' name='nextStep[2]' value='Proceed to step 2' />
 			</form>
 			";
@@ -228,7 +246,7 @@ function step2()
 	}
 	else
 	{
-		$text = "<form method='post' action='" . e_SELF . "?step=3'>
+		$text = "<form method='post' action='" . forum_update_url('step=3') . "'>
 			<input class='btn btn-success' type='submit' name='nextStep[3]' value='Proceed to step 3' />
 			</form>";
 	}
@@ -298,7 +316,7 @@ function step3()
 	else
 	{
 		$text = "
-			<form method='post' action='" . e_SELF . "?step=4'>
+			<form method='post' action='" . forum_update_url('step=4') . "'>
 			<input class='btn btn-success' type='submit' name='nextStep[4]' value='Proceed to step 4' />
 			</form>
 			";
@@ -440,7 +458,7 @@ function step4()
 	</ul>
 	");
 
-	$text = "<form method='post' action='" . e_SELF . "?step=5'>
+	$text = "<form method='post' action='" . forum_update_url('step=5') . "'>
 	<input class='btn btn-success' type='submit' name='nextStep[5]' value='Proceed to step 5' />
 	</form>";
 
@@ -543,7 +561,7 @@ function step5()
 	$mes->add("Renaming forum_new to forum", $result);
 
 	$text = "
-		<form method='post' action='" . e_SELF . "?step=6'>
+		<form method='post' action='" . forum_update_url('step=6') . "'>
 		<input class='btn btn-success' type='submit' name='nextStep[6]' value='Proceed to step 6' />
 		</form>
 		";
@@ -594,11 +612,11 @@ function renderProgress($caption, $step)
 	   				<div class="progress-bar bar" role="progressbar" id="progress"></div>
 				</div>
 			
-			<a id="' . $thisStep . '" data-loading-text="Please wait..." data-progress="' . e_SELF . '"  data-progress-target="progress"  data-progress-mode="' . $step . '" data-progress-show="' . $nextStep . '" data-progress-hide="' . $thisStep . '" class="btn btn-primary e-progress" >' . $caption . '</a>
+			<a id="' . $thisStep . '" data-loading-text="Please wait..." data-progress="' . forum_update_url() . '"  data-progress-target="progress"  data-progress-mode="' . $step . '" data-progress-show="' . $nextStep . '" data-progress-hide="' . $thisStep . '" class="btn btn-primary e-progress" >' . $caption . '</a>
 			</div>
 		</div>';
 
-	$text .= "<form method='post' action='" . e_SELF . "?step=" . ($step + 1) . "'>
+	$text .= "<form method='post' action='" . forum_update_url('step=' . ($step + 1)) . "'>
 		<input id='" . $nextStep . "' style='display:none' class='btn btn-success' type='submit' name='nextStep[" . ($step + 1) . "]' value='Proceed to step " . ($step + 1) . "' />
 		</form>";
 
@@ -689,7 +707,7 @@ function step7()
 	$text = "
 	Successfully recalculated forum posts for " . count($counts) . " users.
 	<br /><br />
-	<form method='post' action='" . e_SELF . "?step=8'>
+	<form method='post' action='" . forum_update_url('step=8') . "'>
 	<input class='btn btn-success' type='submit' name='nextStep[8]' value='Proceed to step 8' />
 	</form>
 	";
@@ -826,7 +844,7 @@ function step9()
 	$text .= "
 	Successfully migrated forum poll information for " . count($threadList) . " thread poll(s).
 	<br /><br />
-	<form method='post' action='" . e_SELF . "?step=10'>
+	<form method='post' action='" . forum_update_url('step=10') . "'>
 	<input class='btn btn-success' type='submit' name='nextStep[10]' value='Proceed to step 10' />
 	</form>
 	";
@@ -854,7 +872,7 @@ function step10()
 		$text = "
 		No forum attachments found. 
 		<br /><br />
-		<form method='post' action='" . e_SELF . "?step=11'>
+		<form method='post' action='" . forum_update_url('step=11') . "'>
 		<input class='btn btn-success' type='submit' name='nextStep[11]' value='Proceed to step 11' />
 		</form>
 		";
@@ -1161,7 +1179,7 @@ function step11()
 		<form method='post'>
 		<input class='btn btn-success' data-loading-text='Please wait...' type='submit' name='delete_orphans' value='Proceed with attachment deletion' />
 		</form>
-		<form method='post' action='" . e_SELF . "?step=12'>
+		<form method='post' action='" . forum_update_url('step=12') . "'>
 			<input class='btn btn-primary' type='submit' name='nextStep[12]' value='Skip this step' />
 		</form>
 		";
@@ -1203,7 +1221,7 @@ function step11()
 				Successfully removed {$success} orphaned files <br />
 				{$failText}
 				<br /><br />
-				<form method='post' action='" . e_SELF . "?step=12'>
+				<form method='post' action='" . forum_update_url('step=12') . "'>
 				<input class='btn' type='submit' name='nextStep[12]' value='Proceed to step 12' />
 				</form>
 			";
@@ -1242,7 +1260,7 @@ function step11()
 		$text .= "
 			There were no orphaned files found <br />
 			<br /><br />
-			<form method='post' action='" . e_SELF . "?step=12'>
+			<form method='post' action='" . forum_update_url('step=12') . "'>
 			<input class='btn' type='submit' name='nextStep[12]' value='Proceed to step 12' />
 			</form>
 		";
@@ -1321,12 +1339,11 @@ class forumUpgrade
 	public function __construct()
 	{
 
-		$this->updateInfo['lastThread'] = 0;
 		$this->attachmentData = array();
 		$this->logf = e_LOG . 'forum_upgrade.log';
 		$this->getUpdateInfo();
 
-		if(empty($updateInfo))
+		if(empty($this->updateInfo))
 		{
 			$this->removeDeprecatedFiles();
 		}
@@ -1832,13 +1849,21 @@ function createThreadLimitDropdown($count)
 	return $ret;
 }
 
+function forum_update_url($query = '', $sep = '&amp;')
+{
+
+	$url = e_SELF . '?e-token=' . defset('e_TOKEN');
+
+	return ($query === '') ? $url : $url . $sep . $query;
+}
+
 function forum_update_adminmenu()
 {
 
 	$action = 1;
 
 	$var[1]['text'] = '1 - Permissions';
-	$var[1]['link'] = e_SELF . "?step=1";
+	$var[1]['link'] = forum_update_url('step=1');
 
 	$var[2]['text'] = '2 - Create new tables';
 	$var[2]['link'] = '#';
@@ -1878,19 +1903,19 @@ function forum_update_adminmenu()
 		$var[13]['divider'] = true;
 
 		$var[14]['text'] = 'Reset';
-		$var[14]['link'] = e_SELF . "?reset";
+		$var[14]['link'] = forum_update_url('reset');
 
 		$var[15]['text'] = 'Reset to 3';
-		$var[15]['link'] = e_SELF . "?step=3&reset=3";
+		$var[15]['link'] = forum_update_url('step=3&amp;reset=3');
 
 		$var[16]['text'] = 'Reset to 6';
-		$var[16]['link'] = e_SELF . "?step=6&reset=6";
+		$var[16]['link'] = forum_update_url('step=6&amp;reset=6');
 
 		$var[17]['text'] = 'Reset to 7';
-		$var[17]['link'] = e_SELF . "?step=7&reset=7";
+		$var[17]['link'] = forum_update_url('step=7&amp;reset=7');
 
 		$var[18]['text'] = 'Reset to 10';
-		$var[18]['link'] = e_SELF . "?step=10&reset=10";
+		$var[18]['link'] = forum_update_url('step=10&amp;reset=10');
 
 	}
 

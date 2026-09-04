@@ -238,4 +238,5 @@ define("FORLAN_220", "Post editor");
 define("FORLAN_221", "Which editor should be used to create/edit posts?");
 define("FORLAN_222", "Quick reply editor");
 define("FORLAN_223", "Use only plain text (no bbcode or html allowed!)");
+define("FORLAN_REFUSED_TOKEN_MISSING", "The forum upgrade did nothing, because the request carried no security token. Start it from the forum's administration menu rather than from a bookmark or a link on another site.");
 
