@@ -49,7 +49,10 @@ jobs:
         # 5.6 and 7.0 are here because they are what e107 v2 claims to support,
         # and a claim nothing exercises is a guess. Their images build from the
         # Debian archive, which the Dockerfile already handles for `graft`.
-        php: ['5.6', '7.0', '8.1', '8.2', '8.3', '8.4', '8.5']
+        # 7.4 closes the gap between them and 8.1: the last of the 7 line, and
+        # the one cell where composer resolves Codeception 4 with PHPUnit 9,
+        # a generation the 5.7 and 10 cells on either side never exercise.
+        php: ['5.6', '7.0', '7.4', '8.1', '8.2', '8.3', '8.4', '8.5']
         # mysql:5.5 and mariadb:10.0 are here because e107 can be installed on
         # them again: db_verify now settles a table's storage engine and
         # character set against what the server can actually do, so the tables
@@ -74,9 +77,9 @@ jobs:
           db: ${{ matrix.db }}
           up-args: --no-selenium
 
-      # Two groups come off on 5.6 and 7.0. Neither is a hole in e107's support
-      # for those runtimes; both are the test tooling failing to reach the code
-      # under test.
+      # Two groups come off on 5.6, 7.0 and 7.4. Neither is a hole in e107's
+      # support for those runtimes; both are the test tooling failing to reach
+      # the code under test.
       #
       # runs-in-separate-process: Codeception 4 is what composer can install on
       # these versions, and there a @runInSeparateProcess case is re-bootstrapped
@@ -89,8 +92,8 @@ jobs:
         run: |
           set --
           case '${{ matrix.php }}' in
-            5.6|7.0) set -- --skip-group runs-in-separate-process \
-                            --skip-group requires-modern-php ;;
+            5.6|7.0|7.1|7.2|7.3|7.4) set -- --skip-group runs-in-separate-process \
+                                            --skip-group requires-modern-php ;;
           esac
           ./e107_tests/bin/e107-tests ci-unit "$@"
 
