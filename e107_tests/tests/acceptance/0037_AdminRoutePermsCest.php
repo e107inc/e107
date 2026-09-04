@@ -935,6 +935,39 @@ class AdminRoutePermsCest
 		$I->dontSeeInDatabase('e107_user', array('user_id' => $adminId));
 	}
 
+	/**
+	 * The export batch is exempt from the administrator rule because it only reads. What it
+	 * read was every column of every selected row: e_front_tree_model::export() named no
+	 * columns and e107Xml::e107Export() falls back to SELECT *, so the password hash and the
+	 * session key of any row a delegated administrator could tick came back as a download.
+	 *
+	 * The row itself has to be in the file, or an export that had simply stopped working would
+	 * satisfy every other assertion here.
+	 */
+	public function theUserExportStreamsNoCredentials(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the password hash and the session key out of the user export');
+
+		$victimId = $this->seedVictim($I);
+		$this->loginAsDelegatedAdmin($I, 'p7rp4admin');
+
+		$this->sendBatch($I, self::ROUTE_LIST, 'export', $victimId);
+
+		$export = $I->grabPageSource();
+
+		$I->assertNotSame(false, strpos($export, self::VICTIM_USER),
+			'The export batch no longer returns the row it was given, so nothing below is evidence.');
+
+		$I->assertSame(false, strpos($export, md5(self::VICTIM_USER)),
+			'The user export streamed the password hash of the selected row.');
+
+		$I->assertSame(false, strpos($export, 'user_password'),
+			'The user export named the password hash column, so it is selecting it.');
+
+		$I->assertSame(false, strpos($export, 'user_sess'),
+			'The user export streamed user_sess, which is the key signup.php activates an account with.');
+	}
+
 	// -----------------------------------------------------------------
 	// the maintenance write that runs whatever the route
 	// -----------------------------------------------------------------
