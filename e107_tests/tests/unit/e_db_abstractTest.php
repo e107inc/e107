@@ -696,11 +696,93 @@ abstract class e_db_abstractTest extends \Test\Unit
 		$this->assertFalse($db->selectTree($hostile, 'p', 'i', 'o'));
 		$this->assertFalse($db->selectTree('tmp', 'p)`; DROP FUNCTION x', 'i', 'o'));
 
+		// the write entry points return false for a malformed statement too, so the
+		// -1 error number is what separates a refusal from a driver error here
+		foreach(array('insert', 'replace', 'update') as $method)
+		{
+			$db->resetLastError();
+			$this->assertFalse($db->$method($hostile, array('tmp_ip' => 'x')),
+				$method.'() must refuse a hostile table identifier');
+			$this->assertSame(-1, $db->getLastErrorNumber(),
+				$method.'() must refuse before the driver sees the statement');
+			$this->assertStringContainsString($method, $db->getLastErrorText(),
+				$method.'() must name itself in the refusal');
+		}
+
 		// valid identifiers behave exactly as before
 		$this->assertFalse($db->isEmpty('user'));
 		$this->assertTrue($db->field('user', 'user_name'));
 		$this->assertTrue($db->index('user', 'PRIMARY'));
 		$this->assertGreaterThanOrEqual(1, (int) $db->max('user', 'user_id'));
+	}
+
+	/**
+	 * select(), count(), delete() and fields() interpolate the table name unquoted into FROM, DELETE FROM or SHOW COLUMNS FROM, so a table name outside the identifier grammar has to fail closed on both backends.
+	 */
+	public function testCrudEntryPointsRejectHostileTableIdentifier()
+	{
+		$db = $this->db;
+
+		// every payload here is one an unguarded backend runs as SQL, and none of
+		// them changes a row
+		$this->assertFalse($db->select('user WHERE 1 = 1 -- ', 'user_id'),
+			'select() must refuse a table name that carries its own WHERE clause');
+		$this->assertFalse($db->count('user WHERE 1 = 1 -- '),
+			'count() must refuse a table name that carries its own WHERE clause');
+		$this->assertFalse($db->delete('user WHERE 1 = 0 -- '),
+			'delete() must refuse a table name that carries its own WHERE clause');
+		$this->assertFalse($db->fields('user WHERE 1 = 1 -- '),
+			'fields() must refuse a table name that carries its own WHERE clause');
+		$this->assertFalse($db->fields('user', MPREFIX.'user WHERE 1 = 1 -- '),
+			'fields() must refuse a hostile prefix as well as a hostile table');
+
+		// valid identifiers behave exactly as before
+		$this->assertNotFalse($db->select('user', 'user_id', 'user_id = 1'),
+			'select() must still accept a plain table identifier');
+		$this->assertSame(1, (int) $db->count('user', '(*)', 'user_id = 1'),
+			'count() must still accept a plain table identifier');
+		$this->assertNotFalse($db->fields('user'),
+			'fields() must still accept a plain table identifier');
+		$this->assertNotFalse($db->fields('user', MPREFIX),
+			'fields() must still accept an explicit table prefix');
+		$this->assertNotFalse($db->fields(' user '),
+			'fields() must use the name it validated, not the untrimmed argument');
+		$this->assertSame(
+			1,
+			(int) $db->count("SELECT COUNT(*) FROM `".MPREFIX."user` WHERE user_id = 1", 'generic'),
+			"count() 'generic' raw-query escape hatch must still work"
+		);
+	}
+
+	/**
+	 * @dataProvider entryPointsGuardingTheTableIdentifier
+	 * @see https://github.com/e107inc/e107/issues/6040
+	 */
+	public function testARefusedTableIdentifierRecordsAnErrorNumber($method, $table)
+	{
+		$this->db->resetLastError();
+
+		$this->assertFalse($this->db->$method($table),
+			$method.'() has to refuse a hostile table identifier');
+		$this->assertSame(-1, $this->db->getLastErrorNumber(),
+			$method.'() refuses before the server sees anything, which the contract spells -1');
+		$this->assertStringContainsString($method, $this->db->getLastErrorText(),
+			$method.'() has to say which operation refused, and name itself correctly');
+	}
+
+	/**
+	 * One case per entry point, so a revert run reds each of them separately rather than stopping at the first.
+	 *
+	 * @return array
+	 */
+	public function entryPointsGuardingTheTableIdentifier()
+	{
+		return array(
+			'select' => array('select', 'user WHERE 1 = 1 -- '),
+			'count'  => array('count', 'user WHERE 1 = 1 -- '),
+			'delete' => array('delete', 'user WHERE 1 = 0 -- '),
+			'fields' => array('fields', 'user WHERE 1 = 1 -- '),
+		);
 	}
 
 	public function testEscapeDeprecationNoticeOncePerCallSite()
