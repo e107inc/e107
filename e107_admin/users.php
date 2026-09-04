@@ -686,9 +686,8 @@ class users_admin_ui extends e_admin_ui
 	 */
 	public function ListUnbanTrigger($userid)
 	{
-		if($this->holdsProtectedAdmin(array($userid)))
+		if($this->refusesRowTrigger('unban', $userid))
 		{
-			$this->refuseAdminAction('Refused the unban of administrator '.(int) $userid);
 			return;
 		}
 
@@ -727,9 +726,8 @@ class users_admin_ui extends e_admin_ui
 	 */
 	public function ListBanTrigger($userid)
 	{
-		if($this->holdsProtectedAdmin(array($userid)))
+		if($this->refusesRowTrigger('ban', $userid))
 		{
-			$this->refuseAdminAction('Refused the ban of administrator '.(int) $userid);
 			return;
 		}
 
@@ -796,6 +794,11 @@ class users_admin_ui extends e_admin_ui
 	 */
 	public function ListVerifyTrigger($userid)
 	{
+		if($this->refusesRowTrigger('verify', $userid))
+		{
+			return;
+		}
+
 		$userid = intval($userid);
 		$e_event = e107::getEvent();
 		$admin_log = e107::getLog();
@@ -1046,6 +1049,25 @@ class users_admin_ui extends e_admin_ui
 		}
 
 		return false;
+	}
+
+	/**
+	 * The administrator rule on a single-row trigger, with the refusal recorded when it bites.
+	 *
+	 * @param string $trigger posted trigger name, as the admin log records it
+	 * @param int $userid row the trigger acts on
+	 * @return bool true when the trigger must not write
+	 */
+	private function refusesRowTrigger($trigger, $userid)
+	{
+		if(!$this->holdsProtectedAdmin(array($userid)))
+		{
+			return false;
+		}
+
+		$this->refuseAdminAction('Refused the '.$trigger.' of administrator '.(int) $userid);
+
+		return true;
 	}
 
 	/**
@@ -1491,6 +1513,11 @@ class users_admin_ui extends e_admin_ui
 	 */
 	public function ListResendTrigger($userid)
 	{
+		if($this->refusesRowTrigger('resend', $userid))
+		{
+			return;
+		}
+
 		$this->resendActivation($userid);
 	}
 	
@@ -1686,6 +1713,11 @@ class users_admin_ui extends e_admin_ui
 	 */
 	public function ListReqverifyTrigger($userid)
 	{
+		if($this->refusesRowTrigger('reqverify', $userid))
+		{
+			return;
+		}
+
 		$userid = intval($userid);
 		$sysuser = e107::getSystemUser($userid, false);
 		

@@ -108,6 +108,12 @@ class AdminRoutePermsCest
 	/** What that second administrator holds. */
 	const OTHER_ADMIN_PERMS = 'H';
 
+	/**
+	 * Seeded session key for that second administrator. Non-empty on purpose: Verify blanks
+	 * user_sess, and a row seeded with '' would satisfy the refusal assertion either way.
+	 */
+	const OTHER_ADMIN_SESS = 'p7rpotheradminsess';
+
 	/** Login name of the account the quick-add attack creates. */
 	const CREATED_USER = 'p7rpcreated';
 
@@ -873,18 +879,19 @@ class AdminRoutePermsCest
 	// -----------------------------------------------------------------
 
 	/**
-	 * The row Ban and Unban controls write the columns the batch writes, one row at a time,
-	 * and neither asked whether the row belonged to an administrator. Unban is the sharper of
-	 * the two: it sets user_ban = 2 and rotates user_sess, which is the state the login
-	 * handler refuses, so a delegated administrator could lock another administrator out with
-	 * one posted trigger and no batch anywhere in the request.
+	 * The row controls write the columns the batch writes, one row at a time, and not one of
+	 * them asked whether the row belonged to an administrator. Unban and Reqverify are the
+	 * sharpest: both set user_ban = 2 and rotate user_sess, which is the state the login handler
+	 * refuses, so a delegated administrator could lock another administrator out with one posted
+	 * trigger and no batch anywhere in the request. Verify blanks the session key instead, and
+	 * Resend replaces the password outright on a site that generates passwords at signup.
 	 *
-	 * The ordinary member goes first for both operations. A pair of controls that had simply
-	 * stopped working would make the refusals below meaningless.
+	 * The ordinary member goes through the same controls first. A set of controls that had
+	 * simply stopped working would make every refusal below meaningless.
 	 */
-	public function aDelegatedAdministratorCannotBanOrUnbanAnAdministratorFromTheRow(AcceptanceTester $I)
+	public function aDelegatedAdministratorCannotReachAnAdministratorThroughTheRowControls(AcceptanceTester $I)
 	{
-		$I->wantTo('Refuse the row Ban and Unban controls on an administrator to a delegated administrator');
+		$I->wantTo('Refuse the single-row user controls on an administrator to a delegated administrator');
 
 		$victimId = $this->seedVictim($I);
 		$adminId = $this->seedOtherAdmin($I);
@@ -903,27 +910,32 @@ class AdminRoutePermsCest
 			(string) $I->grabFromDatabase('e107_user', 'user_ban', array('user_id' => $victimId)),
 			'The row Unban control no longer acts on an ordinary member for a delegated administrator.');
 
-		$sessBefore = (string) $I->grabFromDatabase('e107_user', 'user_sess', array('user_id' => $adminId));
+		$this->sendRowTrigger($I, self::ROUTE_LIST, 'verify', $victimId);
 
-		$this->sendRowTrigger($I, self::ROUTE_LIST, 'ban', $adminId);
+		$I->assertSame('0',
+			(string) $I->grabFromDatabase('e107_user', 'user_ban', array('user_id' => $victimId)),
+			'The row Verify control no longer acts on an ordinary member for a delegated administrator.');
+
+		foreach(array('ban', 'unban', 'verify', 'reqverify', 'resend') as $trigger)
+		{
+			$this->sendRowTrigger($I, self::ROUTE_LIST, $trigger, $adminId);
+		}
 
 		$I->assertSame('0',
 			(string) $I->grabFromDatabase('e107_user', 'user_ban', array('user_id' => $adminId)),
-			'A delegated administrator holding 4 banned '.self::OTHER_ADMIN.' by posting '
-			.'etrigger_ban to '.self::ROUTE_LIST.'. ListBanTrigger() refused only the main '
-			.'administrator, where the batch route refuses every administrator.');
+			'A delegated administrator holding 4 rewrote user_ban on '.self::OTHER_ADMIN
+			.' from a row control. user_ban = 1 is Ban and 2 is the pending state the login handler '
+			.'refuses, and either of them locks that administrator out.');
 
-		$this->sendRowTrigger($I, self::ROUTE_LIST, 'unban', $adminId);
-
-		$I->assertSame('0',
-			(string) $I->grabFromDatabase('e107_user', 'user_ban', array('user_id' => $adminId)),
-			'A delegated administrator holding 4 set user_ban = 2 on '.self::OTHER_ADMIN
-			.' by posting etrigger_unban, which is the state the login handler refuses.');
-
-		$I->assertSame($sessBefore,
+		$I->assertSame(self::OTHER_ADMIN_SESS,
 			(string) $I->grabFromDatabase('e107_user', 'user_sess', array('user_id' => $adminId)),
-			'The row Unban control rotated another administrator\'s session key, which signs them '
+			'A row control rotated or blanked another administrator\'s session key, which signs them '
 			.'out of every device they are signed in on.');
+
+		$I->assertSame(md5(self::OTHER_ADMIN),
+			(string) $I->grabFromDatabase('e107_user', 'user_password', array('user_id' => $adminId)),
+			'The row Resend control replaced another administrator\'s password: resendActivation() '
+			.'calls resetPassword() when signup_option_password is empty.');
 	}
 
 	/**
@@ -1350,6 +1362,7 @@ class AdminRoutePermsCest
 			'user_loginname' => self::OTHER_ADMIN,
 			'user_email'     => self::OTHER_ADMIN.'@example.com',
 			'user_password'  => md5(self::OTHER_ADMIN),
+			'user_sess'      => self::OTHER_ADMIN_SESS,
 			'user_join'      => 1262304000,
 			'user_class'     => '',
 			'user_admin'     => 1,
