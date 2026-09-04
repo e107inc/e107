@@ -835,6 +835,107 @@ class AdminRoutePermsCest
 	}
 
 	// -----------------------------------------------------------------
+	// the single-row controls beside the batch
+	// -----------------------------------------------------------------
+
+	/**
+	 * The row Ban and Unban controls write the columns the batch writes, one row at a time,
+	 * and neither asked whether the row belonged to an administrator. Unban is the sharper of
+	 * the two: it sets user_ban = 2 and rotates user_sess, which is the state the login
+	 * handler refuses, so a delegated administrator could lock another administrator out with
+	 * one posted trigger and no batch anywhere in the request.
+	 *
+	 * The ordinary member goes first for both operations. A pair of controls that had simply
+	 * stopped working would make the refusals below meaningless.
+	 */
+	public function aDelegatedAdministratorCannotBanOrUnbanAnAdministratorFromTheRow(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse the row Ban and Unban controls on an administrator to a delegated administrator');
+
+		$victimId = $this->seedVictim($I);
+		$adminId = $this->seedOtherAdmin($I);
+		$this->loginAsDelegatedAdmin($I, 'p7rp4admin');
+
+		$this->sendRowTrigger($I, self::ROUTE_LIST, 'ban', $victimId);
+
+		$I->assertSame('1',
+			(string) $I->grabFromDatabase('e107_user', 'user_ban', array('user_id' => $victimId)),
+			'The row Ban control no longer bans an ordinary member for a delegated administrator, '
+			.'so the refusals below are a removed feature rather than an authorisation boundary.');
+
+		$this->sendRowTrigger($I, self::ROUTE_LIST, 'unban', $victimId);
+
+		$I->assertSame('2',
+			(string) $I->grabFromDatabase('e107_user', 'user_ban', array('user_id' => $victimId)),
+			'The row Unban control no longer acts on an ordinary member for a delegated administrator.');
+
+		$sessBefore = (string) $I->grabFromDatabase('e107_user', 'user_sess', array('user_id' => $adminId));
+
+		$this->sendRowTrigger($I, self::ROUTE_LIST, 'ban', $adminId);
+
+		$I->assertSame('0',
+			(string) $I->grabFromDatabase('e107_user', 'user_ban', array('user_id' => $adminId)),
+			'A delegated administrator holding 4 banned '.self::OTHER_ADMIN.' by posting '
+			.'etrigger_ban to '.self::ROUTE_LIST.'. ListBanTrigger() refused only the main '
+			.'administrator, where the batch route refuses every administrator.');
+
+		$this->sendRowTrigger($I, self::ROUTE_LIST, 'unban', $adminId);
+
+		$I->assertSame('0',
+			(string) $I->grabFromDatabase('e107_user', 'user_ban', array('user_id' => $adminId)),
+			'A delegated administrator holding 4 set user_ban = 2 on '.self::OTHER_ADMIN
+			.' by posting etrigger_unban, which is the state the login handler refuses.');
+
+		$I->assertSame($sessBefore,
+			(string) $I->grabFromDatabase('e107_user', 'user_sess', array('user_id' => $adminId)),
+			'The row Unban control rotated another administrator\'s session key, which signs them '
+			.'out of every device they are signed in on.');
+	}
+
+	/**
+	 * The single-row Delete control: the destructive end of the rule the batch delete already
+	 * answers to, reached under a different trigger and with no rule of its own.
+	 *
+	 * The rule cannot live in beforeDelete(). e_admin_ui::ListDeleteTrigger() falls through to
+	 * the tree model's delete() with beforeDelete() never called whenever getNode() comes back
+	 * empty, which is every row that is not on the list page the request loaded.
+	 *
+	 * The ordinary member is deleted first, so a route that removed nothing cannot pass for a
+	 * guard.
+	 */
+	public function aDelegatedAdministratorCannotDeleteAnAdministratorFromTheRow(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a confirmed single-row delete of an administrator to a delegated administrator');
+
+		$victimId = $this->seedVictim($I);
+		$adminId = $this->seedOtherAdmin($I);
+		$this->loginAsDelegatedAdmin($I, 'p7rp4admin');
+
+		$this->sendConfirmedRowDelete($I, self::ROUTE_LIST, $victimId);
+
+		$I->dontSeeInDatabase('e107_user', array('user_id' => $victimId));
+
+		$this->sendConfirmedRowDelete($I, self::ROUTE_LIST, $adminId);
+
+		$I->seeInDatabase('e107_user', array('user_id' => $adminId));
+	}
+
+	/**
+	 * Positive control for the row delete, in the shape the batch delete's control already has.
+	 */
+	public function anAdministratorWhoMayModifyAdminPermsStillDeletesAnAdministratorFromTheRow(AcceptanceTester $I)
+	{
+		$I->wantTo('Keep the single-row delete of an administrator working for a caller holding 3');
+
+		$adminId = $this->seedOtherAdmin($I);
+		$this->loginAsDelegatedAdmin($I, 'p7rpPermsadmin');
+
+		$this->sendConfirmedRowDelete($I, self::ROUTE_LIST, $adminId);
+
+		$I->dontSeeInDatabase('e107_user', array('user_id' => $adminId));
+	}
+
+	// -----------------------------------------------------------------
 	// the maintenance write that runs whatever the route
 	// -----------------------------------------------------------------
 
@@ -984,6 +1085,38 @@ class AdminRoutePermsCest
 			'etrigger_batch'       => 'delete',
 			'delete_confirm_value' => $id,
 			'etrigger_cancel'      => 'Cancel',
+		));
+	}
+
+	/**
+	 * Post a single-row control the way the user list posts one: the trigger names the
+	 * operation and carries the id, with no checkbox selection in the request at all.
+	 *
+	 * @param string $route
+	 * @param string $trigger operation name, as users_admin::init() maps useraction to it
+	 * @param int $id row to apply it to
+	 * @return void
+	 */
+	private function sendRowTrigger(AcceptanceTester $I, $route, $trigger, $id)
+	{
+		$this->postWithToken($I, $route, array('etrigger_'.$trigger => $id));
+	}
+
+	/**
+	 * Post the request a single-row delete is finished by: the confirm screen re-posts
+	 * etrigger_delete keyed by the id beside the ids it carries in delete_confirm_value, which
+	 * reaches {@see e_admin_ui::ListDeleteTrigger()} and never the batch handler.
+	 *
+	 * @param string $route
+	 * @param int $id row to delete
+	 * @return void
+	 */
+	private function sendConfirmedRowDelete(AcceptanceTester $I, $route, $id)
+	{
+		$this->postWithToken($I, $route, array(
+			'etrigger_delete'         => array($id => $id),
+			'etrigger_delete_confirm' => 'Confirm',
+			'delete_confirm_value'    => $id,
 		));
 	}
 
@@ -1303,7 +1436,7 @@ switch(isset(\$_GET['act']) ? \$_GET['act'] : '')
 		\$db->delete('mail_content', "mail_title = 'RESEND ACTIVATION'");
 
 		// Refusals from earlier tests in this Cest, which a later one asserts the absence of.
-		\$db->delete('admin_log', "dblog_remarks LIKE '%Refused the batch%'");
+		\$db->delete('admin_log', "dblog_remarks LIKE 'Refused %'");
 
 		\$core->set('user_new_period', $safe)->save(false, true, false);
 

@@ -686,6 +686,12 @@ class users_admin_ui extends e_admin_ui
 	 */
 	public function ListUnbanTrigger($userid)
 	{
+		if($this->holdsProtectedAdmin(array($userid)))
+		{
+			$this->refuseAdminAction('Refused the unban of administrator '.(int) $userid);
+			return;
+		}
+
 		$userid = intval($userid);
 		$sql = e107::getDb();
 		$tp = e107::getParser();
@@ -721,6 +727,12 @@ class users_admin_ui extends e_admin_ui
 	 */
 	public function ListBanTrigger($userid)
 	{
+		if($this->holdsProtectedAdmin(array($userid)))
+		{
+			$this->refuseAdminAction('Refused the ban of administrator '.(int) $userid);
+			return;
+		}
+
 		$userid = intval($userid);
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
@@ -992,13 +1004,25 @@ class users_admin_ui extends e_admin_ui
 	}
 
 	/**
-	 * Whether the posted selection holds an administrator this caller may not rewrite, which is
-	 * the rule {@see users_admin_ui::beforeUpdate()} applies on the edit route. A batch writes
-	 * through {@see e_admin_tree_model::batchUpdate()} and never reaches that method.
+	 * The administrator rule against the rows a posted batch acts on, which writes through
+	 * {@see e_admin_tree_model::batchUpdate()} and so never reaches
+	 * {@see users_admin_ui::beforeUpdate()}.
 	 *
 	 * @return bool
 	 */
 	private function batchSelectsProtectedAdmin()
+	{
+		return $this->holdsProtectedAdmin($this->batchSelection());
+	}
+
+	/**
+	 * Whether any of these rows is an administrator this caller may not rewrite, which is the
+	 * rule {@see users_admin_ui::beforeUpdate()} applies on the edit route.
+	 *
+	 * @param array $ids rows the request acts on
+	 * @return bool
+	 */
+	private function holdsProtectedAdmin(array $ids)
 	{
 		if($this->canGrantAdmin())
 		{
@@ -1007,7 +1031,7 @@ class users_admin_ui extends e_admin_ui
 
 		$self = (int) e107::getUser()->getId();
 
-		foreach($this->batchSelection() as $id)
+		foreach($ids as $id)
 		{
 			$id = (int) $id;
 
@@ -1072,6 +1096,26 @@ class users_admin_ui extends e_admin_ui
 		}
 
 		parent::GridBatchTrigger($batch_trigger);
+	}
+
+	/**
+	 * The single-row delete route, which carries no rule of its own and reaches
+	 * {@see e_front_tree_model::delete()} without {@see e_admin_ui::beforeDelete()} whenever the
+	 * row is not on the loaded list page, so the rule cannot live in that callback.
+	 *
+	 * @param array $posted rows the delete acts on, keyed by id
+	 * @return void
+	 */
+	public function ListDeleteTrigger($posted)
+	{
+		if(!$this->getPosted('etrigger_cancel')
+			&& $this->holdsProtectedAdmin(array_merge(array_keys((array) $posted), $this->batchSelection())))
+		{
+			$this->refuseBatch('delete');
+			return;
+		}
+
+		parent::ListDeleteTrigger($posted);
 	}
 
 	/**
