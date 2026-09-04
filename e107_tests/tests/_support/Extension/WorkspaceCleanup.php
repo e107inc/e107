@@ -102,6 +102,8 @@ class WorkspaceCleanup extends Extension
 		'e107_themes/bootstrap5/online_template.php', // @see ForumNamesOutsideTheFeedCest, OnlineMemberListLinkCest
 		'e107_tests_install_prefs_probe.php',  // @see InstallPrefDuplicatesCest
 		'e107_tests_5928_pref_probe.php',      // @see MissingCorePrefCest
+		'e107_tests_xup_token_probe.php',      // @see ProviderLoginTokenCest
+		'e107_tests_xup_route_probe.php',      // @see XupProviderLoginTokenCest
 		'e107_tests_encoding_probe.php',            // @see Helper\OutputEncodingFixture
 		'e107_tests_encoding_feed.xml',
 		'e107_tests_encoding_addons.xml',

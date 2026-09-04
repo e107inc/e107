@@ -147,8 +147,8 @@ class signup_shortcodes extends e_shortcode
 				else
 					$button = "<span title='" . $tp->lanVars($lan_plugin_social_xup, $p) . "'>$p</span>";
 
-				$callback_url = e107::getUserProvider($p)->generateCallbackUrl(e_REQUEST_URL);
-				$text .= " <a title='" . $tp->lanVars($lan_plugin_social_xup, $p) . " ' role='button' class='signup-xup $class' href='$callback_url'>$button</a> ";
+				$login_url = e107::getUserProvider($p)->generateLoginUrl(e_REQUEST_URL);
+				$text .= " <a title='" . $tp->lanVars($lan_plugin_social_xup, $p) . " ' role='button' class='signup-xup $class' href='$login_url'>$button</a> ";
 			}
 			//TODO different icon options. see: http://zocial.smcllns.com/
 		}

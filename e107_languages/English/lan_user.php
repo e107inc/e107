@@ -117,6 +117,8 @@ return [
     'LAN_XUP_ERRM_10' => "Test signup/login with [x]",
     'LAN_XUP_ERRM_11' => "Logged in:",
     'LAN_XUP_ERRM_12' => "Test logout",
+    'LAN_XUP_REFUSED_TOKEN_MISSING' => "That sign-in was not started, because the link carried no security token. Start it from a sign-in button on this site rather than from a bookmark or a link on another site.",
+    'LAN_XUP_REFUSED_NOT_A_NAVIGATION' => "That sign-in was not started, because another site asked for it in the background rather than sending you here. Start it from a sign-in button on this site.",
 
     // Used in validator_class for error handling
     'USER_ERR_01' => "Missing value",
