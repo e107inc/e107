@@ -1959,8 +1959,8 @@ class e_user extends e_user_model
 		if($this->isUser()) return true;
 		
 		$userlogin = new userlogin();
-		$userlogin->login($xup, '', 'provider', false, true);
-		
+		$userlogin->loginProvider($xup);
+
 		$userdata  = $userlogin->getUserData();
 
 		if(defset('E107_DEBUG_LEVEL', 0) > 0)
