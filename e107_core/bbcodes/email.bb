@@ -14,7 +14,7 @@ if($pref['make_clickable'])
 	// CHARSET is utf-8 - email.bb too
 	$text = $parm ? $code_text : $p1.'©'.$p2;
 
-	$address = $tp->toJsString($p1).'+"@"+'.$tp->toJsString($p2);
+	$address = $tp->toJsString($p1).'+"@"+'.$tp->toJsString(rawurlencode($p2));
 	$href = str_replace('%', '%25', $address);
 
 	return "<a rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+$href;self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+$address; return true;' onmouseout='window.status=\"\";return true;'>".$text."</a>";
