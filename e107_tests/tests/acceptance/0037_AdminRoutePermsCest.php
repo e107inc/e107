@@ -800,7 +800,7 @@ class AdminRoutePermsCest
 			'A delegated administrator holding U0 banned '.self::OTHER_ADMIN.' by posting '
 			.'etrigger_batch=user_ban__1 to '.self::ROUTE_LIST.'.');
 
-		$I->seeInDatabase('e107_admin_log', array('dblog_remarks like' => '%Refused the batch user_ban%'));
+		$I->seeInDatabase('e107_admin_log', array('dblog_remarks like' => '%Refused the trigger user_ban%'));
 	}
 
 	/**
@@ -871,7 +871,7 @@ class AdminRoutePermsCest
 		$this->sendCancelledBatchDelete($I, self::ROUTE_LIST, $adminId);
 
 		$I->seeInDatabase('e107_user', array('user_id' => $adminId));
-		$I->dontSeeInDatabase('e107_admin_log', array('dblog_remarks like' => '%Refused the batch%'));
+		$I->dontSeeInDatabase('e107_admin_log', array('dblog_remarks like' => 'Refused %'));
 	}
 
 	// -----------------------------------------------------------------

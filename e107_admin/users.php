@@ -1366,7 +1366,7 @@ class users_admin_ui extends e_admin_ui
 
 		$self = (int) e107::getUser()->getId();
 
-		foreach($ids as $id)
+		foreach(array_unique($ids) as $id)
 		{
 			$id = (int) $id;
 
@@ -1414,9 +1414,21 @@ class users_admin_ui extends e_admin_ui
 	private function batchSelection()
 	{
 		$selected = (array) $this->getPosted($this->getFieldAttr('checkboxes', 'toggle', 'multiselect'), array());
+
+		return array_merge($selected, $this->confirmedSelection());
+	}
+
+	/**
+	 * The ids a confirmed delete carries in delete_confirm_value, which is where the confirm
+	 * screen's second round trip puts them instead of the checkbox column.
+	 *
+	 * @return array
+	 */
+	private function confirmedSelection()
+	{
 		$confirmed = $this->getPosted('delete_confirm_value', '');
 
-		return is_scalar($confirmed) ? array_merge($selected, explode(',', (string) $confirmed)) : $selected;
+		return is_scalar($confirmed) ? explode(',', (string) $confirmed) : array();
 	}
 
 	/**
@@ -1427,7 +1439,7 @@ class users_admin_ui extends e_admin_ui
 	{
 		if($this->refusesBatch($batch_trigger))
 		{
-			$this->refuseBatch($batch_trigger);
+			$this->refuseSubmission($batch_trigger);
 			return;
 		}
 
@@ -1445,7 +1457,7 @@ class users_admin_ui extends e_admin_ui
 	{
 		if($this->refusesBatch($batch_trigger))
 		{
-			$this->refuseBatch($batch_trigger);
+			$this->refuseSubmission($batch_trigger);
 			return;
 		}
 
@@ -1463,9 +1475,9 @@ class users_admin_ui extends e_admin_ui
 	public function ListDeleteTrigger($posted)
 	{
 		if(!$this->getPosted('etrigger_cancel')
-			&& $this->holdsProtectedAdmin(array_merge(array_keys((array) $posted), $this->batchSelection())))
+			&& $this->holdsProtectedAdmin(array_merge(array_keys((array) $posted), $this->confirmedSelection())))
 		{
-			$this->refuseBatch('delete');
+			$this->refuseSubmission('delete');
 			return;
 		}
 
@@ -1473,15 +1485,15 @@ class users_admin_ui extends e_admin_ui
 	}
 
 	/**
-	 * Refuse the batch and drop the whole submission, so no later trigger in the same
-	 * request reads the selection this one turned down.
+	 * Refuse a trigger and drop the whole submission, so no later trigger in the same request
+	 * reads the selection this one turned down.
 	 *
-	 * @param string $batch_trigger
+	 * @param string $trigger posted trigger name, as the admin log records it
 	 * @return void
 	 */
-	private function refuseBatch($batch_trigger)
+	private function refuseSubmission($trigger)
 	{
-		$this->refuseAdminAction('Refused the batch '.e107::getParser()->toDB($batch_trigger));
+		$this->refuseAdminAction('Refused the trigger '.e107::getParser()->toDB($trigger));
 		$this->setPosted(array());
 	}
 
