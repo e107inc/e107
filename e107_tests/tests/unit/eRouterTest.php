@@ -84,6 +84,21 @@ class eRouterTest extends \Test\Unit
 	}
 
 	/**
+	 * A top replier whose account has gone carries a null id and a null name.
+	 */
+	public function testAProfileUrlForNobodyFallsBackToTheMemberList()
+	{
+		require_once e_CORE . 'url/user/url.php';
+		$config = new core_user_url();
+
+		$deleted = array('user_id' => null, 'user_name' => null, 'user_forums' => 9, 'percentage' => 9);
+
+		self::assertSame('user.php', $config->create(array('profile', 'view'), $deleted));
+		self::assertSame('user.php', $config->create(array('profile', 'edit'), $deleted));
+		self::assertSame('user.php?id.7', $config->create(array('profile', 'view'), array('user_id' => 7, 'user_name' => 'replier')));
+	}
+
+	/**
 	 * The SEF rule reaches user.php through the same positional query, built by
 	 * {@see e_parse::simpleParse()} from the request parameters the rule allows.
 	 */

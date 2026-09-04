@@ -56,8 +56,7 @@ class core_user_url extends eUrlConfig
 		
 		if($route[0] == 'profile')
 		{
-			// Params required for user view, list & edit
-			if(!$params) return 'user.php';
+			if(!$params || (empty($params['id']) && $route[1] !== 'list')) return 'user.php';
 
 			switch ($route[1]) 
 			{
