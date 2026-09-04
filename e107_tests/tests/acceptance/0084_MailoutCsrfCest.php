@@ -489,21 +489,19 @@ class MailoutCsrfCest
 		}
 
 		$stub = array('process' => $process, 'pipes' => $pipes, 'script' => $script, 'ready' => $ready);
-		$deadline = microtime(true) + 10;
 
-		clearstatcache(true, $ready);
-
-		while(!file_exists($ready))
+		$bound = \Test\Poll::until(function () use ($ready)
 		{
-			if(microtime(true) > $deadline)
-			{
-				$this->stopSmtpServer($stub);
-
-				throw new \RuntimeException('The stub SMTP server never bound to port ' . self::SMTP_STUB_PORT);
-			}
-
-			usleep(50000);
 			clearstatcache(true, $ready);
+
+			return file_exists($ready);
+		}, 10);
+
+		if(!$bound)
+		{
+			$this->stopSmtpServer($stub);
+
+			throw new \RuntimeException('The stub SMTP server never bound to port ' . self::SMTP_STUB_PORT);
 		}
 
 		return $stub;
