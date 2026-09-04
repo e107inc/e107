@@ -15,6 +15,6 @@ else
 	$url = $code_text;
 }
 
-if ($url !== '' && $tp->toUrlAttribute($url) === '') return '';
+if ($url !== '' && $tp->toUrlAttribute($url) === '') return $code_text;
 
 return '<a href="'.$tp->toAttribute($url).'" class="bbcode '.$class.'"'.$external.'>'.$code_text.'</a>';
