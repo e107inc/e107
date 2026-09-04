@@ -46,16 +46,24 @@ class usersAdminBatchGuardTest extends \Test\Unit
 	}
 
 	/**
-	 * The batch route is not the only one that writes an administrator's row: Ban, Unban and the
-	 * single-row Delete each reach a write of their own, and the rule has to be on all of them.
+	 * The batch route is not the only one that writes an administrator's row. Every single-row
+	 * trigger on this page that writes user_ban, user_sess or user_password reaches a write of
+	 * its own, and the rule has to be on all of them: a list that is one short is how the
+	 * asymmetry this test exists to catch got there in the first place.
 	 */
 	public function testTheSingleRowRoutesApplyTheSameAdministratorRule()
 	{
-		foreach(array('ListBanTrigger', 'ListUnbanTrigger', 'ListDeleteTrigger') as $trigger)
+		foreach(array('ListBanTrigger', 'ListUnbanTrigger', 'ListVerifyTrigger',
+			'ListReqverifyTrigger', 'ListResendTrigger') as $trigger)
 		{
-			$this->assertContains('holdsProtectedAdmin', $this->callsIn($trigger),
+			$this->assertContains('refusesRowTrigger', $this->callsIn($trigger),
 				$trigger . '() must ask the administrator rule before it writes.');
 		}
+
+		$this->assertContains('holdsProtectedAdmin', $this->callsIn('refusesRowTrigger'),
+			'The single-row rule must be the rule the batch route applies, not a second one.');
+		$this->assertContains('holdsProtectedAdmin', $this->callsIn('ListDeleteTrigger'),
+			'The single-row delete must ask the rule about every row it is given.');
 	}
 
 	public function testTheGuardStillAsksWhetherTheFieldOffersABatch()
