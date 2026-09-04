@@ -813,32 +813,46 @@ function update_core_database($type = '')
 		// Session rows still keyed by the raw session id.
 		require_once(e_HANDLER.'session_handler.php');
 
-		$sessionLegacy = $sql->createQueryBuilder()
+		$sessionHashed = 0;
+		$sessionSeen = 0;
+
+		while($sessionLegacy = $sql->createQueryBuilder()
 			->select('session_id')->from('session')
 			->whereNotLike('session_id', e_session_db::KEY_ALGO.'$%')
-			->fetchAll();
-
-		if(!empty($sessionLegacy))
+			->setMaxResults($just_check ? 1 : 200)
+			->fetchAll())
 		{
 			if($just_check)
 			{
 				return update_needed('Stored session ids need to be hashed.');
 			}
 
-			$sessionHashed = 0;
+			$sessionConverted = 0;
 
 			foreach($sessionLegacy as $sessionRow)
 			{
-				if(false !== $sql->createQueryBuilder()->update('session')
+				$sessionSeen++;
+
+				if($sql->createQueryBuilder()->update('session')
 					->set('session_id', e_session_db::storageKey($sessionRow['session_id']))
 					->where('session_id', $sessionRow['session_id'])
 					->execute())
 				{
-					$sessionHashed++;
+					$sessionConverted++;
 				}
 			}
 
-			$log->addDebug('Stored session ids hashed: '.$sessionHashed.' of '.count($sessionLegacy));
+			$sessionHashed += $sessionConverted;
+
+			if(!$sessionConverted)
+			{
+				break;
+			}
+		}
+
+		if($sessionSeen)
+		{
+			$log->addDebug('Stored session ids hashed: '.$sessionHashed.' of '.$sessionSeen);
 		}
 
 
