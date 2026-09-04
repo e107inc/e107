@@ -39,10 +39,23 @@ class usersAdminBatchGuardTest extends \Test\Unit
 	{
 		$this->assertContains('batchSelectsProtectedAdmin', $this->callsIn('refusesBatch'),
 			'refusesBatch() must refuse a selection holding an administrator the caller may not edit.');
-		$this->assertContains('canGrantAdmin', $this->callsIn('batchSelectsProtectedAdmin'),
+		$this->assertContains('canGrantAdmin', $this->callsIn('holdsProtectedAdmin'),
 			'The administrator rule is permission 3, the same one beforeUpdate() asks for.');
 		$this->assertContains('batchSelection', $this->callsIn('batchSelectsProtectedAdmin'),
 			'The rule must read every row the batch acts on, not only the ticked ones.');
+	}
+
+	/**
+	 * The batch route is not the only one that writes an administrator's row: Ban, Unban and the
+	 * single-row Delete each reach a write of their own, and the rule has to be on all of them.
+	 */
+	public function testTheSingleRowRoutesApplyTheSameAdministratorRule()
+	{
+		foreach(array('ListBanTrigger', 'ListUnbanTrigger', 'ListDeleteTrigger') as $trigger)
+		{
+			$this->assertContains('holdsProtectedAdmin', $this->callsIn($trigger),
+				$trigger . '() must ask the administrator rule before it writes.');
+		}
 	}
 
 	public function testTheGuardStillAsksWhetherTheFieldOffersABatch()
