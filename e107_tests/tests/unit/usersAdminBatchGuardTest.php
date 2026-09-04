@@ -64,8 +64,8 @@ class usersAdminBatchGuardTest extends \Test\Unit
 
 		$this->assertContains('isTypedBatchTrigger', $calls,
 			'refusesBatch() must read the field segment the dispatcher reads.');
-		$this->assertContains('getFieldAttr', $calls,
-			"refusesBatch() must still test the field's own 'batch' declaration.");
+		$this->assertContains('isBatchField', $calls,
+			'refusesBatch() must put the field to the same test the dispatcher puts it to.');
 	}
 
 	/**
