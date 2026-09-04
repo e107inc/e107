@@ -125,9 +125,8 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 				self::assertSame(1, preg_match('#^window\.status='.$literals.'; return true;$#',
 					$element->getAttribute('onmouseover')), $message.' Rendered: '.$html);
 
-				self::assertSame(1, preg_match('#^window\.location='.$literals.';self\.close\(\);$#',
-					rawurldecode(substr($element->getAttribute('href'), strlen('javascript:')))),
-					$message.' Rendered: '.$html);
+				self::assertSame(1, preg_match('#^javascript:window\.location='.$literals.';self\.close\(\);$#',
+					rawurldecode($element->getAttribute('href'))), $message.' Rendered: '.$html);
 
 				return;
 			}
@@ -233,7 +232,7 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 	 */
 	public function testAParameterDoesNotExpandAnE107PathConstant($bbcode)
 	{
-		self::assertStringNotContainsString('e107_themes', $this->renderStored($bbcode),
+		self::assertSame(false, strpos($this->renderStored($bbcode), 'e107_themes'),
 			'A bbcode parameter expanded an e107 path constant: '.$bbcode);
 	}
 
@@ -360,7 +359,7 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 	{
 		$html = $this->renderStored('[flash=50,50]javascript:alert(1)[/flash]');
 
-		self::assertStringNotContainsString('javascript:', $html,
+		self::assertSame(false, strpos($html, 'javascript:'),
 			'A [flash] URL kept a scheme that can execute: '.$html);
 	}
 
