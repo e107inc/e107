@@ -235,6 +235,30 @@ class bbcodeAttributeInjectionTest extends \Test\Unit
 	/**
 	 * @return array
 	 */
+	public function constantParameters()
+	{
+		return array(
+			'quote' => array('[quote={e_THEME}]x[/quote]'),
+			'flash' => array('[flash=1,1,a={e_THEME}]http://example.com/a.swf[/flash]'),
+		);
+	}
+
+	/**
+	 * e_parse::toAttribute() expands an e107 path constant unless it is told the
+	 * value is a visitor's, which would hand every reader the server's paths.
+	 *
+	 * @dataProvider constantParameters
+	 * @param string $bbcode
+	 */
+	public function testAParameterDoesNotExpandAnE107PathConstant($bbcode)
+	{
+		self::assertStringNotContainsString('e107_themes', $this->renderStored($bbcode),
+			'A bbcode parameter expanded an e107 path constant: '.$bbcode);
+	}
+
+	/**
+	 * @return array
+	 */
 	public function tableInjections()
 	{
 		return array(
