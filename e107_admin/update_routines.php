@@ -810,6 +810,50 @@ function update_core_database($type = '')
 		}
 
 
+		// Session rows still keyed by the raw session id.
+		require_once(e_HANDLER.'session_handler.php');
+
+		$sessionHashed = 0;
+		$sessionSeen = 0;
+		$sessionSkipped = 0;
+
+		while($sessionLegacy = $sql->createQueryBuilder()
+			->select('session_id')->from('session')
+			->whereNotLike('session_id', e_session_db::KEY_ALGO.'$%')
+			->orderBy('session_id')
+			->setFirstResult($sessionSkipped)
+			->setMaxResults($just_check ? 1 : 200)
+			->fetchAll())
+		{
+			if($just_check)
+			{
+				return update_needed('Stored session ids need to be hashed.');
+			}
+
+			foreach($sessionLegacy as $sessionRow)
+			{
+				$sessionSeen++;
+
+				if($sql->createQueryBuilder()->update('session')
+					->set('session_id', e_session_db::storageKey($sessionRow['session_id']))
+					->where('session_id', $sessionRow['session_id'])
+					->execute())
+				{
+					$sessionHashed++;
+				}
+				else
+				{
+					$sessionSkipped++;
+				}
+			}
+		}
+
+		if($sessionSeen)
+		{
+			$log->addDebug('Stored session ids hashed: '.$sessionHashed.' of '.$sessionSeen);
+		}
+
+
 		// User is marked as not installed.
 		if($sql->createQueryBuilder()->select('plugin_id')->from('plugin')->where('plugin_path', 'user')->where('plugin_installflag', '!=', 1)->setMaxResults(1)->fetchRow())
 		{

@@ -24,10 +24,6 @@ $SIGNIN_TEMPLATE['signin'] = '
 					{SIGNIN_IMAGECODE_NUMBER}
 					{SIGNIN_IMAGECODE_BOX}
 					
-					<div class="checkbox my-2">		
-					<label class="string optional" for="bs3-autologin"><input style="margin-right: 10px;" type="checkbox" name="autologin" id="bs3-autologin" value="1">
-					{LAN=LAN_SIGNIN_REMEMBER}</label>
-					</div>
 					<div class="d-grid gap-2" style="padding-bottom:15px">
 					<input class="btn btn-primary btn-block" type="submit" name="userlogin" id="bs3-userlogin" value="{LAN=LAN_SIGNIN_SIGNIN}">			
 					<a href="{SIGNIN_FPW_HREF}" class="btn btn-default btn-secondary btn-sm  btn-block">{LAN=LAN_SIGNIN_FPW}</a>

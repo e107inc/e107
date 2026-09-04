@@ -1414,11 +1414,10 @@ public function getData($key = null, $clear = false)
     public function destroy()
     {
         $this->cookieDelete()->close();
-        //unset($_SESSION);
 
         // cleanup
         cookie(e_COOKIE, null, null); // remove user auth cookie
-        // unset($_SESSION['_cookie_session_validate']);
+        unset($_SESSION[e_COOKIE], $_COOKIE[e_COOKIE]);
 
         session_destroy();
         return $this;
@@ -2011,6 +2010,12 @@ class e_core_session extends e_session
 class e_session_db implements SessionHandlerInterface
 {
     /**
+     * Digest the session id is stored under, and the prefix that marks a row as
+     * carrying one. Must be a {@see hash_algos()} name.
+     */
+    const KEY_ALGO = 'sha256';
+
+    /**
      * @var e_db
      */
     protected $_db = null;
@@ -2124,10 +2129,48 @@ class e_session_db implements SessionHandlerInterface
     #[\ReturnTypeWillChange]
     public function read($id)
     {
+        $data = $this->readKey(self::storageKey($id));
+
+        if('' === $data)
+        {
+            $legacy = $this->readKey(self::_sanitize($id));
+
+            if('' !== $legacy && false !== $legacy && $this->rekey(self::_sanitize($id), self::storageKey($id)))
+            {
+                $data = $legacy;
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * Storage key for a session id.
+     *
+     * The id is the value of the visitor's session cookie, so a row keyed by it
+     * verbatim turns any read of this table into a set of live credentials.
+     * The algorithm is named in the value so {@see e_session_db::read()} can
+     * recognise a row written before this was introduced, and so the digest can
+     * be changed later without a second migration.
+     *
+     * @param string $id
+     * @return string
+     */
+    public static function storageKey($id)
+    {
+        return self::KEY_ALGO.'$'.hash(self::KEY_ALGO, self::_sanitize($id));
+    }
+
+    /**
+     * @param string $key
+     * @return string|false session data, '' when no live row holds that key
+     */
+    protected function readKey($key)
+    {
         $data = false;
         $check = $this->_db->createQueryBuilder()
             ->select('session_data')->from($this->getTable())
-            ->where('session_id', $this->_sanitize($id))
+            ->where('session_id', $key)
             ->where('session_expires', '>', time())
             ->execute();
         if($check)
@@ -2140,6 +2183,20 @@ class e_session_db implements SessionHandlerInterface
             $data = '';
         }
         return $data;
+    }
+
+    /**
+     * @param string $from
+     * @param string $to
+     * @return bool
+     */
+    protected function rekey($from, $to)
+    {
+        return false !== $this->_db->createQueryBuilder()
+            ->update($this->getTable())
+            ->set('session_id', $to)
+            ->where('session_id', $from)
+            ->execute();
     }
 
     /**
@@ -2156,10 +2213,12 @@ class e_session_db implements SessionHandlerInterface
             'session_data'    => base64_encode($data),
             'session_user'    => (int) defset('USERID'),
         );
-        if(!($id = $this->_sanitize($id)))
+        if(!self::_sanitize($id))
         {
             return false;
         }
+
+        $id = self::storageKey($id);
 
         $check = $this->_db->createQueryBuilder()
             ->select('session_id')->from($this->getTable())
@@ -2201,11 +2260,13 @@ class e_session_db implements SessionHandlerInterface
     #[\ReturnTypeWillChange]
     public function destroy($id)
     {
-        $id = $this->_sanitize($id);
-        $this->_db->createQueryBuilder()
-            ->delete($this->getTable())
-            ->where('session_id', $id)
-            ->execute();
+        foreach (array(self::storageKey($id), self::_sanitize($id)) as $key)
+        {
+            $this->_db->createQueryBuilder()
+                ->delete($this->getTable())
+                ->where('session_id', $key)
+                ->execute();
+        }
         return true;
     }
 
@@ -2228,7 +2289,7 @@ class e_session_db implements SessionHandlerInterface
      * @param string $id
      * @return string
      */
-    protected function _sanitize($id)
+    protected static function _sanitize($id)
     {
         return preg_replace('#[^0-9a-zA-Z,-]#', '', $id);
     }

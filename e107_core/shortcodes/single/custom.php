@@ -33,7 +33,6 @@ function custom_shortcode($parm)
 			else
 			{
 				$ret .= "<form method='post' action='".e_SELF.(e_QUERY ? '?'.e_QUERY : '')."'>\n<div class='loginc_div'>\n".LAN_LOGINMENU_1."<input class='tbox loginc user' type='text' name='username' size='15' value=\"".USERNAME."\" maxlength='20' />&nbsp;&nbsp;\n".LAN_LOGINMENU_2."<input class='tbox loginc pass' type='password' name='userpass' size='15' value='' maxlength='20' />&nbsp;&nbsp;\n";
-				$ret .= ($pref['user_tracking'] == "cookie") ? "<input type='checkbox' name='autologin' value='1' />".LAN_LOGINMENU_6."&nbsp;&nbsp;\n" : "";
 				$ret .= "<input class='btn btn-default btn-secondary button loginc' type='submit' name='userlogin' value='".LAN_LOGIN."' />";
 				if (intval($pref['user_reg'])===1)
 				{
