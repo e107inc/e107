@@ -1539,6 +1539,48 @@ class e_user_provider
 	}
 
 	/**
+	 * Whether a request naming this provider has to prove that it started here.
+	 *
+	 * The address that begins a social login is also the address the provider
+	 * sends the visitor back to, so an ordinary token cannot be asked of
+	 * everything that arrives at it: the provider has no way to carry one home.
+	 * The two legs are told apart by the session instead. Hybridauth writes a
+	 * record of the handshake under the provider's own name before it redirects
+	 * the visitor away, in {@see \Hybridauth\Adapter\OAuth2::getAuthorizeUrl()}
+	 * and {@see \Hybridauth\Adapter\OAuth1::requestAuthToken()}, and takes that
+	 * record back out once the provider has answered. Its presence marks the
+	 * returning leg; its absence marks a fresh outgoing one, which is the leg
+	 * another site can forge and so the leg that has to carry a token.
+	 *
+	 * OpenID adapters store nothing at all before they redirect, see
+	 * {@see \Hybridauth\Adapter\OpenID::authenticateBegin()}, so their two legs
+	 * are indistinguishable from here and neither of them is asked for a token.
+	 * What remains forgeable on those five is refused by the browser's own
+	 * account of the request instead, see
+	 * {@see core_system_xup_controller::askedForByAnotherSiteInTheBackground()}.
+	 *
+	 * @return bool
+	 */
+	public function loginNeedsToken()
+	{
+		$provider = $this->getProvider();
+
+		if (empty($provider) || self::getTypeOf($provider) === 'OpenID')
+		{
+			return false;
+		}
+
+		$storage = new Hybridauth\Storage\Session();
+
+		foreach (array('authorization_state', 'request_token') as $handshakeKey)
+		{
+			if ($storage->get($provider . '.' . $handshakeKey)) return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * XUP Signup Method (falls-back to XUP login when existing user is detected).
 	 * May be used as a simple XUP login link for existing and non-existing users.
 	 */
@@ -1761,6 +1803,30 @@ class e_user_provider
 				),
 			array('full' => true, 'encode' => false)
 		);
+	}
+
+	/**
+	 * Build the address a visitor follows to begin a social login here.
+	 *
+	 * The site's own token is added to it, and deliberately not to
+	 * {@see e_user_provider::generateCallbackUrl()}: the callback is the
+	 * redirect_uri every site has already filed with its provider, and a
+	 * provider matches it exactly, so it has to keep the shape it has always
+	 * had. Only the outgoing leg comes from a page e107 rendered, and only the
+	 * outgoing leg is asked to prove it, see
+	 * {@see e_user_provider::loginNeedsToken()}.
+	 *
+	 * @param string $backUrl
+	 * @return string
+	 */
+	public function generateLoginUrl($backUrl = null)
+	{
+		$url = $this->generateCallbackUrl($backUrl);
+		$token = defset('e_TOKEN');
+
+		if (empty($token)) return $url;
+
+		return $url . (strpos($url, '?') === false ? '?' : '&') . 'e-token=' . $token;
 	}
 
 	/**

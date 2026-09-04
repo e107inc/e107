@@ -128,6 +128,8 @@ define("LAN_XUP_ERRM_08", "Please log out of e107 before testing the user login/
 define("LAN_XUP_ERRM_10", "Test signup/login with [x]");
 define("LAN_XUP_ERRM_11", "Logged in:");
 define("LAN_XUP_ERRM_12", "Test logout");
+define("LAN_XUP_REFUSED_TOKEN_MISSING", "That sign-in was not started, because the link carried no security token. Start it from a sign-in button on this site rather than from a bookmark or a link on another site.");
+define("LAN_XUP_REFUSED_NOT_A_NAVIGATION", "That sign-in was not started, because another site asked for it in the background rather than sending you here. Start it from a sign-in button on this site.");
 
 // Error messages for when user data is missing. Done this way so that other code can override the default messages
 

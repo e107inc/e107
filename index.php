@@ -124,7 +124,16 @@
 
 	// unset($_SESSION['E:SOCIAL']);
 
-	if(vartrue($_GET['provider']) && !isset($_SESSION['E:SOCIAL']) && e107::getUserProvider()->isSocialLoginEnabled() && (e_ADMIN_AREA !== true))
+	$providerRequested = (vartrue($_GET['provider']) && !isset($_SESSION['E:SOCIAL']) && e107::getUserProvider()->isSocialLoginEnabled() && (e_ADMIN_AREA !== true));
+
+	if($providerRequested && defined('e_TOKEN') && empty($_GET['e-token']))
+	{
+		$providerRequested = false;
+		e107::coreLan('user');
+		e107::getMessage()->addError(defset('LAN_XUP_REFUSED_TOKEN_MISSING', 'Invalid or missing security token.'));
+	}
+
+	if($providerRequested)
 	{
 		$hybridauth = e107::getHybridAuth();
 
