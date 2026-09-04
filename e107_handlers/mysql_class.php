@@ -25,6 +25,9 @@
  * Always use $this->getConfig() method to avoid issues pointed above
  */
 
+require_once(__DIR__.'/e_db_interface.php');
+require_once(__DIR__.'/e_db_legacy_trait.php');
+
 if(defined('MYSQL_LIGHT'))
 {
 	define('E107_DEBUG_LEVEL', 0);
@@ -60,6 +63,8 @@ $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which s
  */
 class e_db_mysql implements e_db
 {
+	use e_db_identifier;
+
 	// TODO switch to protected vars where needed
 	public      $mySQLserver;
 	public      $mySQLuser;
@@ -623,6 +628,11 @@ class e_db_mysql implements e_db
 	{
 		global $db_mySQLQueryCount;
 
+		if($this->_safeIdentifier($table) === false)
+		{
+			return $this->_refuseIdentifier(__FUNCTION__);
+		}
+
 		$table = $this->hasLanguage($table);
 
 		$this->mySQLcurTable = $table;
@@ -696,6 +706,11 @@ class e_db_mysql implements e_db
 	 */
 	function insert($tableName, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
 	{
+		if($this->_safeIdentifier($tableName) === false)
+		{
+			return $this->_refuseIdentifier(isset($arg['_REPLACE']) ? 'replace' : 'insert');
+		}
+
 		$table = $this->hasLanguage($tableName);
 		$this->mySQLcurTable = $table;
 		$REPLACE = false; // kill any PHP notices
@@ -1012,6 +1027,11 @@ class e_db_mysql implements e_db
 	*/
 	function update($tableName, $arg, $debug = FALSE, $log_type = '', $log_remark = '')
 	{
+		if($this->_safeIdentifier($tableName) === false)
+		{
+			return $this->_refuseIdentifier(__FUNCTION__);
+		}
+
 		$table = $this->hasLanguage($tableName);
 		$this->mySQLcurTable = $table;
 
@@ -1150,6 +1170,11 @@ class e_db_mysql implements e_db
 	*/
 	function db_UpdateArray($table, $vars, $arg='', $debug = FALSE, $log_type = '', $log_remark = '')
 	{
+	  if($this->_safeIdentifier($table) === false)
+	  {
+		return $this->_refuseIdentifier(__FUNCTION__);
+	  }
+
 	  $table = $this->hasLanguage($table);
 	  $this->mySQLcurTable = $table;
 
@@ -1269,6 +1294,11 @@ class e_db_mysql implements e_db
 	 */
 	function count($table, $fields = '(*)', $arg = '', $debug = FALSE, $log_type = '', $log_remark = '')
 	{
+		if ($fields != 'generic' && $this->_safeIdentifier($table) === false)
+		{
+			return $this->_refuseIdentifier(__FUNCTION__);
+		}
+
 		$table = $this->hasLanguage($table);
 
 		if ($fields == 'generic')
@@ -1359,6 +1389,11 @@ class e_db_mysql implements e_db
 	*/
 	function delete($table, $arg = '', $debug = FALSE, $log_type = '', $log_remark = '')
 	{
+		if($this->_safeIdentifier($table) === false)
+		{
+			return $this->_refuseIdentifier(__FUNCTION__);
+		}
+
 		$table = $this->hasLanguage($table);
 		$this->mySQLcurTable = $table;
 
@@ -1858,6 +1893,11 @@ class e_db_mysql implements e_db
 	 */
 	function db_FieldList($table, $prefix = '', $retinfo = FALSE)
 	{
+		if($this->_safeIdentifier($table) === false || ($prefix != '' && $this->_safeIdentifier($prefix, true) === false))
+		{
+			return $this->_refuseIdentifier(__FUNCTION__);
+		}
+
 		if(!$this->mySQLdefaultdb)
 		{
 			global $mySQLdefaultdb;
@@ -1867,14 +1907,6 @@ class e_db_mysql implements e_db
 		$this->provide_mySQLaccess();
 
 		if ($prefix == '') $prefix = $this->mySQLPrefix;
-
-		// $prefix.$table is an identifier; reject anything outside a strict identifier allowlist.
-		// A secondary-database prefix may carry a backtick-quoted database qualifier (`db`.prefix),
-		// so allow an optional leading `db`. (or db.) before the identifier characters.
-		if (!preg_match('/^(`?[A-Za-z0-9_]+`?\.)?[A-Za-z0-9_]+$/D', (string) ($prefix.$table)))
-		{
-			return false;		// Error return
-		}
 
 		if (false ===  $this->gen('SHOW COLUMNS FROM '.$prefix.$table))
 		{
