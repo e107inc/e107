@@ -256,7 +256,7 @@ class e_user_model extends e_admin_model
 	 */
 	final public function checkAdminPwchangeToken($value)
 	{
-		return hash_equals(md5((string) $this->getAdminPwchange()), (string) $value);
+		return is_string($value) && hash_equals(md5((string) $this->getAdminPwchange()), $value);
 	}
 
 	/**
