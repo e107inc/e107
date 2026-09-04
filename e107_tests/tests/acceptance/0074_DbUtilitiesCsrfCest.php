@@ -235,6 +235,20 @@ class DbUtilitiesCsrfCest
 	}
 
 	/**
+	 * The other half of that delegation, which nothing else in the suite reds
+	 * on: the endpoint exempts every POST unconditionally, so if the framework
+	 * ever stopped refusing a POST that brings no token at all, the exemption
+	 * would be a hole and every case here would still pass.
+	 */
+	public function aTokenlessPostToAGatedModeIsRefusedByTheFramework(AcceptanceTester $I)
+	{
+		$I->sendPostRequest(self::MENU . '?mode=optimize_sql');
+
+		$I->seeInSource(self::UNAUTHORIZED);
+		$I->dontSeeInSource(self::OPTIMISED);
+	}
+
+	/**
 	 * A mode that renders rather than acts is not a CSRF surface, and gating one
 	 * would refuse a bookmark, the browser's back button and every deep link a
 	 * plugin has been shipping for twenty years. They stay reachable bare.
