@@ -46,4 +46,5 @@ return [
     'LANG_LAN_159' => "[x] non-UTF8 phrase(s)",
     'LANG_LAN_160' => "Tip: open the [x] tab to see the affected files/keys. Enable [y] in [z] to bypass this check and generate the pack anyway.",
     'LANG_LAN_AGR' => "Note: By using these tools you agree to share your language pack(s) with the e107 community.",
+    'LANG_LAN_REFUSED_TOKEN_MISSING' => "That language check was not run, because the link carried no security token. Start it from the Language Packs list rather than from a bookmark or a link on another site.",
 ];

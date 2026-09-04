@@ -226,4 +226,5 @@ return [
     'USRLAN_AS_2' => "Logout from [x] account",
     'USRLAN_AS_3' => "You are already logged in as another user account. Please logout first.",
     'USRLAN_EMU_1' => "Emulate permissions of [x] (admin area)",
+    'USRLAN_REFUSED_TOKEN_MISSING' => "That action was not carried out, because the link carried no security token. Start it from the user list rather than from a bookmark or a link on another site.",
 ];

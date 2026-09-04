@@ -461,7 +461,14 @@ TMPO;
 
 		if(!empty($_GET['dismiss']) && $_GET['dismiss'] == 'upgrade')
 		{
-			file_put_contents($upgradeAlertFlag,'true');
+			if(!defined('e_TOKEN') || !empty($_GET['e-token']))
+			{
+				file_put_contents($upgradeAlertFlag,'true');
+			}
+			else
+			{
+				echo e107::getMessage()->addError(defset('ADLAN_REFUSED_TOKEN_MISSING', 'Invalid or missing security token.'))->render();
+			}
 		}
 
 		$pref = e107::getPref('install_date');
@@ -481,7 +488,7 @@ TMPO;
 			$srch = array('[',']');
 			$repl = array("<a href='https://github.com/e107inc/e107/discussions' target='_blank' rel='external'>","</a>");
 			$message = str_replace($srch,$repl,ADLAN_191);
-			$message .= "<div class='text-right'><a class='btn btn-xs btn-primary ' href='admin.php?dismiss=upgrade'>".LAN_DONT_SHOW_AGAIN."</a></div>"; //todo do it with class=e-ajax and data-dismiss='alert'
+			$message .= "<div class='text-right'><a class='btn btn-xs btn-primary ' href='admin.php?dismiss=upgrade&amp;e-token=".defset('e_TOKEN')."'>".LAN_DONT_SHOW_AGAIN."</a></div>"; //todo do it with class=e-ajax and data-dismiss='alert'
 			echo e107::getMessage()->setTitle(LAN_UPGRADING,E_MESSAGE_INFO)->addInfo($message)->render();
 		}
 

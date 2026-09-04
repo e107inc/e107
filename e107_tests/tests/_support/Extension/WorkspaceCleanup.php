@@ -124,6 +124,7 @@ class WorkspaceCleanup extends Extension
 		'e107_tests_pm_send_probe.php',            // @see PmAttachmentSendCest
 		'e107_tests_host_arming_probe.php',        // @see HostAllowListArmingCest
 		'e107_tests_host_arming_prefs.php',        // @see HostAllowListArmingCest
+		'e107_tests_p9_csrf_probe.php',        // @see AdminMiscCsrfCest
 	];
 
 	/** Files a test moves aside for one test method, as parked name to the name it belongs back at. */
