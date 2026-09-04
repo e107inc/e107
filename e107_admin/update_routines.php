@@ -653,7 +653,7 @@ function update_core_database($type = '')
 			}
 		}
 
-		if(empty($pref['ban_durations'][eIPHandler::BAN_TYPE_LOGINS]))
+		if(empty($pref['ban_durations'][eIPHandler::BAN_TYPE_LOGINS]) && empty($pref['ban_durations_login_default_applied']))
 		{
 			if($just_check)
 			{
@@ -667,7 +667,8 @@ function update_core_database($type = '')
 			}
 			$durations[eIPHandler::BAN_TYPE_LOGINS] = 1;
 
-			e107::getConfig()->set('ban_durations', $durations)->save(false, true, false);
+			e107::getConfig()->set('ban_durations', $durations)
+				->set('ban_durations_login_default_applied', 1)->save(false, true, false);
 			e107::getLog()->addEvent(4, __FILE__, "UPDATE", 'LAN_UPDATE',
 				"Failed-login bans were set to never expire; given a one-hour duration.", false, LOG_TO_ROLLING);
 		}
