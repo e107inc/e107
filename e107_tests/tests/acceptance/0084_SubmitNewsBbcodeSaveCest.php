@@ -1,7 +1,7 @@
 <?php
 
 /**
- * A news submission is stored through the bbcode save pass; {@see e_parse::isBBcode()} still skips that pass for a submission carrying an HTML tag.
+ * A news submission is stored through the bbcode save pass, so {@see bb_img::toDB()} is what decides which [img] parameters survive it.
  */
 class SubmitNewsBbcodeSaveCest
 {
