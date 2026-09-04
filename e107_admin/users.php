@@ -1097,12 +1097,18 @@ class users_admin_ui extends e_admin_ui
 	}
 
 	/**
-	 * Main admin logout as a system user trigger
+	 * Main admin logout as a system user trigger.
+	 *
+	 * Ending the impersonated session is a state change, so a GET has to carry
+	 * the e-token core's own links publish and {@see e_core_session::attest()}
+	 * decides whether it is the right one. The user list posts this action
+	 * instead, and a POST is policed by attest() already.
 	 */
 	public function LogoutasObserver()
 	{
 		if($this->refuseTokenlessGet())
 		{
+			$this->redirect('list', 'main', true);
 			return;
 		}
 

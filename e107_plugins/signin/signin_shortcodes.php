@@ -266,7 +266,7 @@ class plugin_signin_signin_shortcodes extends e_shortcode
 
 	function sc_signin_logout_href($parm = '')
 	{
-		return e_HTTP . 'index.php?logout';
+		return e_HTTP . 'index.php?logout&amp;e-token=' . defset('e_TOKEN');
 	}
 
 

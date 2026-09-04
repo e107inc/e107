@@ -234,6 +234,34 @@ class redirectionTest extends \Test\Unit
 		}
 	}
 
+	/**
+	 * A logout link now carries an e-token, so the query string it arrives on is
+	 * no longer the bare word the exception list held.
+	 */
+	public function testIsCapturableRefusesATokenisedLogout()
+	{
+		$rd = $this->make('redirection', array('query_exceptions' => array('logout')));
+		$serverBackup = $_SERVER;
+
+		try
+		{
+			unset($_SERVER['HTTP_SEC_FETCH_DEST']);
+
+			$_SERVER['QUERY_STRING'] = 'logout';
+			self::assertFalse($rd->isCapturable('/index.php?logout'), 'a bare logout must not be capturable');
+
+			$_SERVER['QUERY_STRING'] = 'logout&e-token=abc123';
+			self::assertFalse($rd->isCapturable('/index.php?logout&e-token=abc123'), 'a tokenised logout must not be capturable either');
+
+			$_SERVER['QUERY_STRING'] = 'logoutlist';
+			self::assertTrue($rd->isCapturable('/index.php?logoutlist'), 'a query that merely begins with the word is not the exception');
+		}
+		finally
+		{
+			$_SERVER = $serverBackup;
+		}
+	}
+
 	public function testIsCapturableRejectsEmbeddedRequests()
 	{
 		// A page rendered inside an <iframe> or modal (e.g. the menu manager's
