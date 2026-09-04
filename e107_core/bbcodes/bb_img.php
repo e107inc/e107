@@ -38,9 +38,12 @@
 			{
 				$safe['style'] = eHelper::secureStyleAttr($parms['style']);
 			}
-			if(!empty($parms['alt']))
+			foreach(array('alt', 'figcaption') as $caption)
 			{
-				$safe['alt'] = e107::getParser()->filter($parms['alt']);
+				if(!empty($parms[$caption]))
+				{
+					$safe[$caption] = e107::getParser()->filter($parms[$caption]);
+				}
 			}
 			foreach(array('width', 'height') as $dimension)
 			{
@@ -48,6 +51,11 @@
 				{
 					$safe[$dimension] = (int) $parms[$dimension];
 				}
+			}
+
+			if(!empty($parms['loading']) && in_array($parms['loading'], array('lazy', 'eager', 'auto'), true))
+			{
+				$safe['loading'] = $parms['loading'];
 			}
 
 			if(!empty($safe))

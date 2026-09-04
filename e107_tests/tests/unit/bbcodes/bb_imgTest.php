@@ -55,6 +55,14 @@
 					'parm'      => 'width=abc',
 					'expected'  => '[img]{e_MEDIA_IMAGE}2020-12/horse.jpg[/img]'
 				),
+				array(
+					'parm'      => 'figcaption=Hello&loading=eager',
+					'expected'  => '[img figcaption=Hello&loading=eager]{e_MEDIA_IMAGE}2020-12/horse.jpg[/img]'
+				),
+				array(
+					'parm'      => 'figcaption=<b>Hello</b>&loading=nonsense',
+					'expected'  => '[img figcaption=Hello]{e_MEDIA_IMAGE}2020-12/horse.jpg[/img]'
+				),
 			);
 
 			foreach($tests as $var)
