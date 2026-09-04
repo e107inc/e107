@@ -27,6 +27,19 @@ if (!getperms('0'))
 $e_sub_cat = 'database';
 
 require_once ("auth.php");
+
+$updateIsPost = (isset($_SERVER['REQUEST_METHOD']) && strtoupper($_SERVER['REQUEST_METHOD']) === 'POST');
+
+if(!$updateIsPost && defined('e_TOKEN') && empty($_GET['e-token']))
+{
+	e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_e107_update.php');
+	e107::getMessage()->addError(defset('LAN_UPDATE_REFUSED_TOKEN_MISSING', 'Invalid or missing security token.'));
+	e107::getRender()->tablerender(defset('LAN_UPDATE_56', 'System Update'), e107::getMessage()->render());
+
+	require_once ("footer.php");
+	exit;
+}
+
 require_once ("update_routines.php");
 
 new e107Update($dbupdate);

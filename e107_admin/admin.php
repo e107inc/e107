@@ -300,7 +300,7 @@ class admin_start
 
         if($this->upgradeRequiredFirst)
         {
-            $message = "<p><a class='btn btn-lg btn-primary alert-link' href='e107_update.php'>".LAN_CONTINUE." ".SEP."</a></p>";
+            $message = "<p><a class='btn btn-lg btn-primary alert-link' href='e107_update.php?e-token=".defset('e_TOKEN')."'>".LAN_CONTINUE." ".SEP."</a></p>";
             e107::getMessage()->addInfo($message);
         }
 
