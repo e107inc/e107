@@ -54,6 +54,7 @@ class WorkspaceCleanup extends Extension
 		'e107_themes/basic-light', // fixtures copied out of tests/_data
 		'e107_themes/testcore',
 		'e107_themes/testkubrick',
+		'e107_core/templates/e107_tests_corescan_template.php', // @see e107TemplateSourceTest
 		'e107_plugins/thing',      // downloaded by e_marketplaceTest
 		// Plugin folders a unit test creates and removes itself. A test that
 		// fails part way leaves one behind, and the next run's plugin scan
