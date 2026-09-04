@@ -73,6 +73,6 @@ global $pref, $parm;
 	{
     	$insert = ($pref['links_new_window'] && strpos($link,"{e_")===FALSE && substr($link,0,1) != "#" && substr($link,0,1) != "/" && strpos($extras,"rel=internal")===FALSE) ? "rel='external' " : "";
     }
-	if ($link !== '' && $tp->toUrlAttribute($link) === '') return '';
+	if ($link !== '' && $tp->toUrlAttribute($link) === '') return $code_text;
 	return "<a class='{$class}' href='".$tp->toAttribute($link)."' ".$insert.">".$code_text."</a>";
 

@@ -103,13 +103,8 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 	}
 
 	/**
-	 * The script these two bbcodes build is a chain of JavaScript string literals
-	 * joined by +, and the whole defect is that a parameter could end one of them
-	 * early and have the rest of itself run as code. So the property is structural:
-	 * read back as the browser decodes it, each of the two must still be nothing
-	 * but well-formed literals and the + between them. The href is read through
-	 * rawurldecode() because a javascript: URL is percent-decoded before it is
-	 * compiled, and the handler is not.
+	 * Both scripts must read back as nothing but well-formed literals and the + between
+	 * them, the href after the extra percent-decode a javascript: URL gets.
 	 *
 	 * @param string $html
 	 * @param string $message
@@ -205,6 +200,33 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 		}
 	}
 
+	/** A scheme this bbcode will not link costs the link, never the words the member wrote. */
+	public function testARefusedSchemeStillRendersItsText()
+	{
+		$html = $this->renderStored('[url=tel:+15551234567]Call us[/url]');
+
+		self::assertStringContainsString('Call us', $html, 'A refused scheme took the text with it.');
+		self::assertStringNotContainsString('<a', $html, 'A refused scheme was linked anyway: '.$html);
+	}
+
+	/** Without this the payload rows above would pass on a bbcode that rendered nothing at all. */
+	public function testAnOrdinaryUrlIsStillLinked()
+	{
+		$html = $this->renderStored('[url=http://example.com/a?b=1]x[/url]');
+
+		foreach($this->elementsOf($html) as $element)
+		{
+			if($element->tagName === 'a')
+			{
+				self::assertSame('http://example.com/a?b=1', $element->getAttribute('href'), $html);
+
+				return;
+			}
+		}
+
+		self::fail('An ordinary URL rendered no anchor at all: '.$html);
+	}
+
 	public function testTheQuoteBbcodeCannotAddAnAttributeToItsCitation()
 	{
 		$html = $this->renderStored('[quote=" onmouseover="alert(1)]hello[/quote]');
@@ -278,6 +300,18 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 			self::assertSame(false, strpos($this->renderStored($bbcode), 'foo'),
 				'A [table] parameter closed its own tag: '.$bbcode);
 		}
+	}
+
+	/**
+	 * A browser ends an unquoted value at whitespace or >, and keeps a / inside it, so
+	 * the pair that follows one is part of the value rather than an attribute of its own.
+	 */
+	public function testAnUnquotedTableValueKeepsASlashRatherThanStartingAnAttribute()
+	{
+		$table = $this->tableIn($this->renderStored('[table style=x/onmouseover=alert(1)]y[/table]'));
+
+		self::assertSame('x/onmouseover=alert(1)', $table->getAttribute('style'));
+		self::assertFalse($table->hasAttribute('onmouseover'));
 	}
 
 	/**
