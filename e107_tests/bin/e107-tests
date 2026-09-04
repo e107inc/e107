@@ -967,6 +967,28 @@ cmd_sql() {
     fi
 }
 
+# Coverage is on demand: `run <suite> --coverage...` on an env from `up --xdebug`.
+# XDEBUG_MODE switches Xdebug 3 into coverage for that one process; Xdebug 2,
+# on the PHP 5.6 to 7.1 images, collects without being asked.
+COVERAGE_EXEC_ENV=()
+set_coverage_exec_env() {
+    local arg
+    COVERAGE_EXEC_ENV=()
+    for arg in "$@"; do
+        case $arg in
+            --coverage*)
+                # 2>/dev/null: podman prints "Error: executing ..." for any nonzero exec.
+                if ! compose_p exec -T web php -r 'exit(extension_loaded("xdebug") ? 0 : 1);' >/dev/null 2>&1; then
+                    err "coverage needs the xdebug image, and PHP in $PROJECT has no xdebug loaded (env records xdebug=$(project_label "$PROJECT" xdebug)).
+       Run: e107-tests up --php $E107_PHP_VERSION --db $E107_DB_IMAGE --xdebug"
+                fi
+                COVERAGE_EXEC_ENV=(-e XDEBUG_MODE=coverage)
+                return
+                ;;
+        esac
+    done
+}
+
 cmd_run() {
     resolve_env
     ensure_web_exec
@@ -1000,11 +1022,12 @@ cmd_run() {
     if [ "$colour_set" = no ] && [ ! -t 1 ]; then
         cc_args+=(--no-colors)
     fi
-    compose_p exec -w "$WEB_TESTS_DIR" web "${CODECEPT[@]}" "${cc_args[@]}"
+    set_coverage_exec_env "$@"
+    compose_p exec "${COVERAGE_EXEC_ENV[@]}" -w "$WEB_TESTS_DIR" web "${CODECEPT[@]}" "${cc_args[@]}"
 }
 
-# Replay CI's unit coverage run exactly (test-unit.yml), so base-image drift
-# like a changed default memory_limit reproduces on demand.
+# Replay CI's unit run exactly (test-unit.yml), so base-image drift like a
+# changed default memory_limit reproduces on demand.
 #
 # Trailing args go to `codecept`, so a workflow's own extras -- the legacy
 # matrix cells' --skip-group, say -- can be replayed too. No --no-colors
@@ -1012,15 +1035,11 @@ cmd_run() {
 cmd_ci_unit() {
     resolve_env
     ensure_web_exec
-    # 2>/dev/null: podman prints "Error: executing ..." for any nonzero exec.
-    if ! compose_p exec -T web php -r 'exit(extension_loaded("xdebug") ? 0 : 1);' >/dev/null 2>&1; then
-        err "ci-unit needs the xdebug image, and PHP in $PROJECT has no xdebug loaded (env records xdebug=$(project_label "$PROJECT" xdebug)).
-       Run: e107-tests up --php $E107_PHP_VERSION --db $E107_DB_IMAGE --xdebug"
-    fi
     deps_ensure
-    compose_p exec -w "$WEB_TESTS_DIR" web \
-        php -d memory_limit=-1 -d xdebug.mode=coverage -d register_argc_argv=1 \
-        ./vendor/bin/codecept run unit --steps --debug --coverage --coverage-xml "$@"
+    set_coverage_exec_env "$@"
+    compose_p exec "${COVERAGE_EXEC_ENV[@]}" -w "$WEB_TESTS_DIR" web \
+        php -d memory_limit=-1 -d register_argc_argv=1 \
+        ./vendor/bin/codecept run unit --steps --debug "$@"
 }
 
 cmd_reset() {
@@ -1356,8 +1375,7 @@ TEST:
                                      Extra args are passed through to `codecept`.
                                      Add --steps to trace every step; a failing
                                      test prints its own trace either way.
-  ci-unit [args...]                  Replay CI's exact unit coverage run
-                                     (needs an env built with `up --xdebug`).
+  ci-unit [args...]                  Replay CI's exact unit run.
                                      Extra args are passed through to
                                      `codecept`, as with `run`, so an --env
                                      after the subcommand is codecept's

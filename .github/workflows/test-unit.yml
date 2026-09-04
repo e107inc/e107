@@ -14,17 +14,17 @@ concurrency:
 # The unit suite runs on the same harness developers use locally
 # (e107_tests/bin/e107-tests), so a CI failure reproduces with two commands:
 #
-#   e107_tests/bin/e107-tests up --php 8.4 --db mariadb:10.11 --xdebug --no-selenium
+#   e107_tests/bin/e107-tests up --php 8.4 --db mariadb:10.11 --no-selenium
 #   e107_tests/bin/e107-tests ci-unit
 #
-# `ci-unit` exists to replay this job exactly, coverage flags and all, so base
-# image drift such as a changed default memory_limit reproduces on demand.
+# `ci-unit` exists to replay this job exactly, so base image drift such as a
+# changed default memory_limit reproduces on demand.
 #
 # The legacy cells hand it two --skip-group flags (see the step for why), and a
 # repro of one of those has to hand it the same ones or it runs a different
 # suite from the one that failed:
 #
-#   e107_tests/bin/e107-tests up --php 5.6 --db mysql:5.5 --xdebug --no-selenium
+#   e107_tests/bin/e107-tests up --php 5.6 --db mysql:5.5 --no-selenium
 #   e107_tests/bin/e107-tests ci-unit --skip-group runs-in-separate-process --skip-group requires-modern-php
 #
 # The harness image carries what this suite needs to stop skipping tests: it
@@ -34,9 +34,11 @@ concurrency:
 # e_fileOutboundRequest TLS peer-verification cases do too. Nine tests that the
 # hand-built container skipped are real coverage again.
 #
-# Coverage is still measured and coverage.xml still travels with the failure
-# artefacts, but nothing consumes it off the runner: the Code Climate reporter
-# that used to receive it is gone, and its download URL now answers 404.
+# No coverage is measured here. Nothing has consumed it since the Code Climate
+# reporter went, and collecting it under Xdebug multiplied the run by three on
+# PHP 8.5, by seven on 7.0 and by nine on 5.6, before the Clover report added
+# its own minutes on top. `e107-tests run unit --coverage` on an env brought up
+# with `up --xdebug` still measures it on demand.
 
 jobs:
   test-unit:
@@ -62,16 +64,14 @@ jobs:
         with:
           submodules: recursive
 
-      # The xdebug image, because coverage needs it. No --install-site: the
-      # unit suite loads a dump and never runs the installer. --no-selenium
-      # because the browser image is over a gigabyte and only the WebDriver
-      # suite needs it.
+      # No --install-site: the unit suite loads a dump and never runs the
+      # installer. --no-selenium because the browser image is over a gigabyte
+      # and only the WebDriver suite needs it.
       - name: Bring up the stack
         uses: ./.github/actions/harness-stack
         with:
           php: ${{ matrix.php }}
           db: ${{ matrix.db }}
-          xdebug: 'yes'
           up-args: --no-selenium
 
       # Two groups come off on 5.6 and 7.0. Neither is a hole in e107's support
@@ -85,7 +85,7 @@ jobs:
       #
       # requires-modern-php: cases that load dev tooling requiring PHP 8.1, which
       # an older runtime cannot even parse.
-      - name: Run unit tests with coverage
+      - name: Run unit tests
         run: |
           set --
           case '${{ matrix.php }}' in
