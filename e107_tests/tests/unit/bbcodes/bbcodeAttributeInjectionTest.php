@@ -8,27 +8,8 @@
  */
 
 /**
- * e_parse::toDB() encodes a visitor's quotes, and e_parse::toHTML() gives them
- * back: $search/$replace turns &quot; into " immediately before bbcodes are
- * parsed. Every .bb file therefore receives raw quotes in $parm and has to
- * encode them itself before putting them in markup, and five of them did not,
- * which let any member store JavaScript that ran for whoever read the page.
- *
- * These tests drive the whole path a stored payload really takes, toDB() then
- * toHTML() with bbcode parsing on, because the defect lives in the seam between
- * the two rather than in either half.
- *
- * Two shapes of assertion are used, and neither pins the exact markup, so the
- * templates stay free to change:
- *
- *   - where a bbcode has no business emitting an event handler at all, none may
- *     appear;
- *   - where one legitimately does ([link] and [email] build a mailto out of
- *     inline script), the handler may not gain a quote that a benign address
- *     would not have produced, since a quote is what ends the string literal.
- *
- * Attribute values are read back through DOMDocument, which decodes them the
- * way a browser does before compiling the handler.
+ * Stored payloads driven through toDB() and then toHTML(), the seam where five
+ * bbcodes let a member's own quotes reach the page as markup.
  */
 class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 {
