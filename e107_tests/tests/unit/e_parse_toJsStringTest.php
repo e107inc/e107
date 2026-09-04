@@ -45,6 +45,7 @@ class e_parse_toJsStringTest extends \Codeception\Test\Unit
 			'dashed'       => array('first-last_1', '"first-last_1"'),
 			'empty'        => array('', '""'),
 			'digits'       => array('12345', '"12345"'),
+			'percent'      => array('%22', '"%22"'),
 		);
 	}
 
