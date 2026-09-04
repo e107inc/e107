@@ -108,6 +108,20 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 	}
 
 	/**
+	 * @param string $html
+	 * @return DOMElement
+	 */
+	private function tableIn($html)
+	{
+		foreach($this->elementsOf($html) as $element)
+		{
+			if($element->tagName === 'table') return $element;
+		}
+
+		self::fail('No table was rendered from: '.$html);
+	}
+
+	/**
 	 * The handler these two bbcodes build is a chain of JavaScript string
 	 * literals joined by +, and the whole defect is that a parameter could end
 	 * one of them early and have the rest of itself run as code. So the property
@@ -207,12 +221,8 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 	}
 
 	/**
-	 * [table] emits its parameter as raw attributes by design, so the guard is
-	 * an allow list of names rather than an encoder, and a rejected parameter is
-	 * dropped whole. Asserting the payload is simply absent is what makes this
-	 * faithful: DOMDocument does not reproduce every transition a browser makes
-	 * back into attribute-name state, and treats style="x"/onmouseover="..." as
-	 * one attribute where Chrome reads two.
+	 * The assertion is the payload's plain absence, because DOMDocument does not
+	 * reproduce every transition a browser makes back into attribute-name state.
 	 *
 	 * @dataProvider tableInjections
 	 * @param string $bbcode
@@ -226,10 +236,7 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 		$this->assertNoEventHandler($html, 'A [table] parameter emitted an event handler.');
 	}
 
-	/**
-	 * A parameter carrying a > would close the tag early, whether or not it is
-	 * still spelled as an entity when this bbcode is parsed.
-	 */
+	/** An unquoted value ends at a >, however that > was spelled when it was stored. */
 	public function testTheTableBbcodeDropsAParameterThatClosesTheTag()
 	{
 		foreach(array('[table style=x>foo]y[/table]', '[table style=x&gt;foo]y[/table]') as $bbcode)
@@ -245,28 +252,72 @@ class bbcodeAttributeInjectionTest extends \Codeception\Test\Unit
 	public function tablePassthroughs()
 	{
 		return array(
-			'class'          => array('[table class=table]x[/table]', "class=table"),
 			'generated css'  => array('[table style=border-collapse: collapse; width: 100%]x[/table]',
-				'style=border-collapse: collapse; width: 100%'),
+				array('style' => 'border-collapse: collapse; width: 100%')),
 			'several'        => array('[table border=1 cellpadding=2 cellspacing=0]x[/table]',
-				'border=1 cellpadding=2 cellspacing=0'),
+				array('border' => '1', 'cellpadding' => '2', 'cellspacing' => '0')),
 			'quoted'         => array('[table style="width: 50%" class="foo"]x[/table]',
-				'style="width: 50%" class="foo"'),
+				array('style' => 'width: 50%')),
+			'entity encoded' => array('[table summary="a &gt; b" border=1]x[/table]',
+				array('summary' => 'a > b', 'border' => '1')),
 		);
 	}
 
 	/**
-	 * The WYSIWYG converter writes [table style=<raw css>], unquoted and full of
-	 * spaces, so the allow list has to leave that spelling alone.
+	 * The WYSIWYG converter writes [table style=<raw css>], unquoted and full of spaces.
 	 *
 	 * @dataProvider tablePassthroughs
 	 * @param string $bbcode
-	 * @param string $expected
+	 * @param array $expected
 	 */
 	public function testTheTableBbcodeKeepsTheAttributesItAllows($bbcode, $expected)
 	{
-		self::assertNotSame(false, strpos($this->renderStored($bbcode), $expected),
-			'A [table] parameter that only names allowed attributes was dropped: '.$bbcode);
+		$table = $this->tableIn($this->renderStored($bbcode));
+
+		foreach($expected as $name => $value)
+		{
+			self::assertSame($value, $table->getAttribute($name),
+				'A [table] parameter that only names allowed attributes was dropped: '.$bbcode);
+		}
+	}
+
+	/** A parameter of its own is not a reason to drop the class this bbcode always emits. */
+	public function testTheTableBbcodeAddsAParameterClassToItsOwn()
+	{
+		self::assertSame(e107::getBB()->getClass('table').' table',
+			$this->tableIn($this->renderStored('[table class=table]x[/table]'))->getAttribute('class'),
+			'A [table] class parameter did not join the class this bbcode emits.');
+	}
+
+	/**
+	 * @return array
+	 */
+	public function tableQuoteEscapes()
+	{
+		return array(
+			'double quoted' => array('[table title="a]" onmouseover=alert(1)>[/table]'),
+			'single quoted' => array("[table title='a]' onmouseover=alert(1)>[/table]"),
+		);
+	}
+
+	/**
+	 * The bbcode ends at the first ], so the closing quote and everything after it
+	 * arrive as the body, which this bbcode must not be able to end its tag with.
+	 *
+	 * @dataProvider tableQuoteEscapes
+	 * @param string $bbcode
+	 */
+	public function testTheTableBbcodeCannotBeClosedByItsOwnBody($bbcode)
+	{
+		$this->assertNoEventHandler($this->renderStored($bbcode),
+			'A [table] parameter with an unbalanced quote took an event handler from its body: '.$bbcode);
+	}
+
+	/** The entity pass rewrites onerror inside the rendered tag, which must stay cosmetic. */
+	public function testTheTableBbcodeKeepsItsBodyWhenAValueIsRewritten()
+	{
+		self::assertSame('z', trim($this->tableIn($this->renderStored('[table title=xonerrory]z[/table]'))->textContent),
+			'A [table] value containing onerror ended the tag early.');
 	}
 
 	/**
