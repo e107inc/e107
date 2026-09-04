@@ -28,6 +28,8 @@ class HostAllowListArmingCest
 {
 	const PROBE_FILE = 'e107_tests_host_arming_probe.php';
 
+	const SNAPSHOT_FILE = 'e107_tests_host_arming_prefs.php';
+
 	const REFUSAL = 'Site Configuration Issue Detected';
 
 	/** @var string|null scheme://host of the site as the suite reaches it */
@@ -39,14 +41,16 @@ class HostAllowListArmingCest
 	/** @var string the host the suite reaches this site on, without a port */
 	private $ownHost;
 
-	/** @var string|null the siteurl this site had before the Cest started */
-	private $originalSiteurl;
-
-	/** @var string|null the trusted_hosts this site had, one host per line */
-	private $originalTrustedHosts;
+	/** @var string|null the secret this run's probe answers a restore on */
+	private $secret;
 
 	public function _before(AcceptanceTester $I)
 	{
+		if($this->secret === null)
+		{
+			$this->secret = sha1(uniqid('host_arming', true) . mt_rand());
+		}
+
 		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
 
 		if($this->ownBase === null)
@@ -58,17 +62,11 @@ class HostAllowListArmingCest
 		{
 			$I->amOnUrl($this->ownBase . '/' . self::PROBE_FILE);
 		}
-
-		if($this->originalSiteurl === null)
-		{
-			$this->originalSiteurl = $this->grab($I, 'SITEURL_PREF');
-			$this->originalTrustedHosts = $this->grab($I, 'TRUSTED_HOSTS');
-		}
 	}
 
 	public function _after(AcceptanceTester $I)
 	{
-		$this->configure($I, $this->originalSiteurl, $this->originalTrustedHosts);
+		$this->restore($I);
 		$I->deleteAppFile(self::PROBE_FILE);
 	}
 
@@ -170,6 +168,31 @@ class HostAllowListArmingCest
 	}
 
 	/**
+	 * A configuration this Cest is allowed to write is one the host check may
+	 * refuse, and every request that reaches class2.php is a request the check
+	 * decides, the one putting the preferences back included. Locking the site
+	 * out and letting the probe undo it is what makes the restore in _after()
+	 * worth having: without this case, the first regression in the arming
+	 * condition would leave the preferences armed for the rest of the suite.
+	 */
+	public function aRefusedConfigurationIsRestoredOutOfBand(AcceptanceTester $I)
+	{
+		$this->configure($I, '/', 'named.example.invalid');
+
+		$I->amOnUrl($this->ownBase . '/' . self::PROBE_FILE);
+
+		$I->seeResponseCodeIs(503);
+		$I->seeInSource(self::REFUSAL);
+
+		$this->restore($I);
+
+		$I->amOnUrl($this->ownBase . '/' . self::PROBE_FILE);
+
+		$I->seeResponseCodeIs(200);
+		$I->seeInSource('PROBE_REACHED');
+	}
+
+	/**
 	 * Work out the two addresses every test below is driven through, from the
 	 * request the suite has just made under its own configuration.
 	 *
@@ -222,6 +245,19 @@ class HostAllowListArmingCest
 	}
 
 	/**
+	 * Put the preferences back as the probe first found them.
+	 *
+	 * @param AcceptanceTester $I
+	 * @return void
+	 */
+	private function restore(AcceptanceTester $I)
+	{
+		$I->amOnUrl($this->ownBase . '/' . self::PROBE_FILE
+			. '?host_arming_restore=1&host_arming_secret=' . urlencode($this->secret));
+		$I->seeInSource('RESTORED');
+	}
+
+	/**
 	 * @param AcceptanceTester $I
 	 * @param string $field one of the [FIELD:value] pairs the probe publishes
 	 * @return string
@@ -238,7 +274,10 @@ class HostAllowListArmingCest
 
 	private function probeSource()
 	{
-		return <<<'PHP'
+		return str_replace(
+			array('{{SNAPSHOT}}', '{{SECRET}}'),
+			array(self::SNAPSHOT_FILE, $this->secret),
+			<<<'PHP'
 <?php
 // Fixture for 0075_HostAllowListArmingCest. Removed again in the Cest's _after().
 // A GET carrying host_arming_set stores the two preferences the boot-time host
@@ -246,8 +285,29 @@ class HostAllowListArmingCest
 // path a site owner's own configuration goes through. Reaching the echo at all
 // is the assertion: the check runs inside class2.php and ends the request when
 // it refuses.
+// A GET carrying host_arming_restore puts the untouched preferences back
+// without booting e107, because the check decides every request that reaches
+// class2.php, and a restore the check can refuse cannot undo the configuration
+// that made it refuse.
+$snapshot = __DIR__.'/{{SNAPSHOT}}';
+if(isset($_GET['host_arming_restore']))
+{
+	$offered = isset($_GET['host_arming_secret']) ? (string) $_GET['host_arming_secret'] : '';
+	if(!hash_equals('{{SECRET}}', $offered))
+	{
+		header('HTTP/1.1 403 Forbidden');
+		exit;
+	}
+	echo is_readable($snapshot) && host_arming_prefs(base64_decode(include $snapshot))
+		? 'RESTORED' : 'RESTORE_FAILED';
+	exit;
+}
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
+if(!file_exists($snapshot))
+{
+	e107::writeFileAtomic($snapshot, '<?php return '.var_export(base64_encode(host_arming_prefs()), true).';');
+}
 if(isset($_GET['host_arming_set']))
 {
 	$config = e107::getConfig('core');
@@ -266,12 +326,77 @@ if(isset($_GET['host_arming_set']))
 	echo 'CONFIGURED ';
 }
 $scheme = (!empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off') ? 'https' : 'http';
-$trusted = e107::getPref('trusted_hosts');
 echo 'PROBE_REACHED'
 	.' [SCHEME:'.$scheme.']'
-	.' [HOST:'.htmlspecialchars($_SERVER['HTTP_HOST'], ENT_QUOTES, 'UTF-8').']'
-	.' [SITEURL_PREF:'.htmlspecialchars((string) e107::getPref('siteurl'), ENT_QUOTES, 'UTF-8').']'
-	.' [TRUSTED_HOSTS:'.htmlspecialchars(implode("\n", (array) $trusted), ENT_QUOTES, 'UTF-8').']';
-PHP;
+	.' [HOST:'.htmlspecialchars($_SERVER['HTTP_HOST'], ENT_QUOTES, 'UTF-8').']';
+
+/**
+ * The stored SitePrefs row, read or written straight over the database.
+ *
+ * @param string|null $value bytes to store, or null to read the row
+ * @return string|bool the row's bytes when reading, whether the write landed when writing
+ */
+function host_arming_prefs($value = null)
+{
+	mysqli_report(MYSQLI_REPORT_OFF);
+
+	$config = include __DIR__.'/e107_config.php';
+	$database = is_array($config) && isset($config['database']) ? $config['database'] : array(
+		'server' => $mySQLserver, 'user' => $mySQLuser, 'password' => $mySQLpassword,
+		'db' => $mySQLdefaultdb, 'prefix' => $mySQLprefix);
+
+	$server = $database['server'];
+	$port = null;
+	if(substr_count($server, ':') === 1)
+	{
+		list($server, $port) = explode(':', $server, 2);
+	}
+
+	$link = $port === null
+		? @new mysqli($server, $database['user'], $database['password'], $database['db'])
+		: @new mysqli($server, $database['user'], $database['password'], $database['db'], (int) $port);
+	if($link->connect_errno)
+	{
+		return false;
+	}
+
+	$name = 'SitePrefs';
+	$statement = $value === null
+		? $link->prepare('SELECT e107_value FROM `'.$database['prefix'].'core` WHERE e107_name = ?')
+		: $link->prepare('UPDATE `'.$database['prefix'].'core` SET e107_value = ? WHERE e107_name = ?');
+	if(!$statement)
+	{
+		return false;
+	}
+
+	if($value === null)
+	{
+		$statement->bind_param('s', $name);
+		$statement->execute();
+		$statement->bind_result($stored);
+		$statement->fetch();
+		$result = (string) $stored;
+	}
+	else
+	{
+		$statement->bind_param('ss', $value, $name);
+		$result = $statement->execute();
+
+		// e_pref serves this row out of the system cache for a day, so a row put
+		// back while the cache stands is a row the next request does not read.
+		$system = isset($config['paths']['system']) ? $config['paths']['system'] : 'e107_system/';
+		foreach(glob(__DIR__.'/'.$system.'*/cache/content/S_Config_*.cache.php') ?: array() as $cached)
+		{
+			@unlink($cached);
+		}
+	}
+
+	$statement->close();
+	$link->close();
+
+	return $result;
+}
+PHP
+		);
 	}
 }
