@@ -42,6 +42,12 @@ require_once(e_HANDLER . 'mail_manager_class.php');
 class mailoutAdminClass extends e107MailManager
 {
 
+	/**
+	 * Stands in the preferences form for a stored SMTP password, and is read on the
+	 * way back as an instruction to leave the stored one where it is.
+	 */
+	const SMTP_PASSWORD_UNCHANGED = '••••••••';
+
 	public $_cal = array();
 	protected $mode;
 	// So we know what the current task is
@@ -1337,7 +1343,7 @@ class mailoutAdminClass extends e107MailManager
 		// Show the table of advanced options
 
 		$text .= "<div class='buttons-bar center'>";
-		$text .= "<a href='" . e_SELF . "?mode=main&action=sendnow&id=" . $mailMainID . "' class='btn btn-primary'>" . LAN_MAILOUT_158 . "</a>";
+		$text .= "<a href='" . e_SELF . "?mode=main&amp;action=sendnow&amp;id=" . $mailMainID . "&amp;e-token=" . defset('e_TOKEN') . "' class='btn btn-primary'>" . LAN_MAILOUT_158 . "</a>";
 
 		//	$text .= $frm->admin_button('email_sendnow', "Send Now", 'primary');
 		$text .= $frm->admin_button('email_send', LAN_MAILOUT_269);
@@ -1750,7 +1756,7 @@ class mailoutAdminClass extends e107MailManager
 
 		<tr>
 		<td>" . LAN_MAILOUT_89 . ":</td>
-		<td>" . $frm->password('smtp_password', $pref['smtp_password'], 128, array('size' => 'xxlarge', 'required' => false, 'pattern' => '.{4,}', 'placeholder' => "(" . LAN_OPTIONAL . ")", 'autocomplete' => 'new-password')) . "
+		<td>" . $frm->password('smtp_password', self::smtpPasswordFieldValue(varset($pref['smtp_password'], '')), 128, array('size' => 'xxlarge', 'required' => false, 'pattern' => '.{4,}', 'placeholder' => "(" . LAN_OPTIONAL . ")", 'autocomplete' => 'new-password')) . "
 		</td>
 		</tr>
 
@@ -1821,6 +1827,26 @@ class mailoutAdminClass extends e107MailManager
 		return $text;
 
 
+	}
+
+
+	/**
+	 * @param string $stored the SMTP password as the preferences hold it
+	 * @return string the value the preferences form should render for it
+	 */
+	public static function smtpPasswordFieldValue($stored)
+	{
+		return ($stored === '' || $stored === null) ? '' : self::SMTP_PASSWORD_UNCHANGED;
+	}
+
+
+	/**
+	 * @param mixed $submitted the smtp_password field as the preferences form returned it
+	 * @return bool whether it came back exactly as it was rendered
+	 */
+	public static function smtpPasswordWasLeftAlone($submitted)
+	{
+		return is_string($submitted) && $submitted === self::SMTP_PASSWORD_UNCHANGED;
 	}
 
 
