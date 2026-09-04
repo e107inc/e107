@@ -72,90 +72,63 @@ class usersettings_front // Begin Usersettings rewrite.
 	function __construct()
 	{
 
-		if(deftrue('BOOTSTRAP'))
-		{
-			$template = e107::getCoreTemplate('usersettings','', true, true); // always merge
+		global $USERSETTINGS_EDIT, $USER_EXTENDED_CAT, $USEREXTENDED_FIELD, $REQUIRED_FIELD;
 
-			$USERSETTINGS_MESSAGE 				= "{MESSAGE}";
-			$USERSETTINGS_MESSAGE_CAPTION 		= LAN_OK;
-			$USERSETTINGS_EDIT_CAPTION 			= LAN_USET_39; 	// 'Update User Settings'
-			$USERSETTINGS_EDIT					= $template['edit'];
-			$usersettings_shortcodes 			= e107::getScBatch('usersettings');
+		$bcDefs = array(
+			'LAN_418'   => 'LAN_USET_31',
+			'LAN_7'     => 'LAN_USER_01',
+			'LAN_8'     => 'LAN_USER_80',
+			'LAN_9'     => 'LAN_USER_81',
+			'LAN_10'    => 'LAN_USER_82',
+			'LAN_112'   => 'LAN_USER_60',
+			'LAN_113'   => 'LAN_USER_83',
+			'LAN_114'   => 'LAN_USER_84',
+			'LAN_120'   => 'LAN_USER_71', // Signature
+			'LAN_152'   => 'LAN_USET_24',
+			'LAN_153'   => 'LAN_USET_25',
+			'LAN_154'   => 'LAN_USET_37',
+			'LAN_308'   => 'LAN_USER_63',
+			'LAN_401'   => 'LAN_USET_23',
+			'LAN_404'   => 'LAN_USET_32',
+			'LAN_414'   => 'LAN_USET_27',
+			'LAN_415'   => 'LAN_USET_26',
+			'LAN_420'   => 'LAN_USER_07', // Avatar
+			'LAN_421'   => 'LAN_USET_33',
+			'LAN_422'   => 'LAN_USET_34',
+			'LAN_423'   => 'LAN_USET_35',
+			'LAN_424'   => 'LAN_USET_36',
+			'LAN_425'   => 'LAN_USER_06',
+			'LAN_426'   => 'LAN_USET_28',
+			'LAN_433'   => '',
+			'LAN_434'   => '',
+			'LAN_435'   => '',
+			'LAN_122'   => 'UE_LAN_TIMEZONE',
+			'LAN_CUSTOMTITLE'   => 'LAN_USER_04'
 
-			$usersettings_shortcodes->wrapper('usersettings/edit');
-
-		/*	e107::css('inline', "
-
-				.usersettings-form .col-sm-9 .checkboxes { margin-left:20px }
-			");*/
-		}
-		else
-		{
-			$bcDefs = array(
-				'LAN_418'   => 'LAN_USET_31',
-				'LAN_7'     => 'LAN_USER_01',
-				'LAN_8'     => 'LAN_USER_80',
-				'LAN_9'     => 'LAN_USER_81',
-				'LAN_10'    => 'LAN_USER_82',
-				'LAN_112'   => 'LAN_USER_60',
-				'LAN_113'   => 'LAN_USER_83',
-				'LAN_114'   => 'LAN_USER_84',
-				'LAN_120'   => 'LAN_USER_71', // Signature
-				'LAN_152'   => 'LAN_USET_24',
-				'LAN_153'   => 'LAN_USET_25',
-				'LAN_154'   => 'LAN_USET_37',
-				'LAN_308'   => 'LAN_USER_63',
-				'LAN_401'   => 'LAN_USET_23',
-				'LAN_404'   => 'LAN_USET_32',
-				'LAN_414'   => 'LAN_USET_27',
-				'LAN_415'   => 'LAN_USET_26',
-				'LAN_420'   => 'LAN_USER_07', // Avatar
-				'LAN_421'   => 'LAN_USET_33',
-				'LAN_422'   => 'LAN_USET_34',
-				'LAN_423'   => 'LAN_USET_35',
-				'LAN_424'   => 'LAN_USET_36',
-				'LAN_425'   => 'LAN_USER_06',
-				'LAN_426'   => 'LAN_USET_28',
-				'LAN_433'   => '',
-				'LAN_434'   => '',
-				'LAN_435'   => '',
-				'LAN_122'   => 'UE_LAN_TIMEZONE',
-				'LAN_CUSTOMTITLE'   => 'LAN_USER_04'
-
-			);
+		);
 
 
-			e107::getLanguage()->bcDefs($bcDefs);
+		e107::getLanguage()->bcDefs($bcDefs);
 
-			global $sc_style;
-			$REQUIRED_FIELD                     = '';
-			$USER_EXTENDED_CAT                  = '';
-			$USEREXTENDED_FIELD                 = '';
-			$USERSETTINGS_MESSAGE 				= '';
-			$USERSETTINGS_MESSAGE_CAPTION 		= '';
-			$USERSETTINGS_EDIT_CAPTION 			= '';
-			$USERSETTINGS_EDIT					= '';
-			$coreTemplatePath                   = e107::coreTemplatePath('usersettings');
-			e107::predefineLegacyLans($coreTemplatePath); // #5653: pre-define any missing legacy LAN_* before include.
-			include_once($coreTemplatePath); //correct way to load a core template.
-			e107::scStyle($sc_style);
-			$usersettings_shortcodes = e107::getScBatch('usersettings');
+		$template = e107::getCoreTemplate('usersettings', '', true, true);
 
-			$usersettings_shortcodes->legacyTemplate = array(
-				'USER_EXTENDED_CAT' => $USER_EXTENDED_CAT,
-				'USEREXTENDED_FIELD' => $USEREXTENDED_FIELD,
-					'REQUIRED_FIELD' => $REQUIRED_FIELD
-			);
+		$legacyTemplate = array(
+			'USERSETTINGS_EDIT'  => vartrue($USERSETTINGS_EDIT, varset($template['USERSETTINGS_EDIT'], '')),
+			'USER_EXTENDED_CAT'  => vartrue($USER_EXTENDED_CAT, varset($template['USER_EXTENDED_CAT'], '')),
+			'USEREXTENDED_FIELD' => vartrue($USEREXTENDED_FIELD, varset($template['USEREXTENDED_FIELD'], '')),
+			'REQUIRED_FIELD'     => vartrue($REQUIRED_FIELD, varset($template['REQUIRED_FIELD'], '')),
+		);
 
-		}
+		$usersettings_shortcodes = e107::getScBatch('usersettings');
+		$usersettings_shortcodes->wrapper('usersettings/edit');
+		$usersettings_shortcodes->legacyTemplate = $legacyTemplate;
 
 		$this->sc = $usersettings_shortcodes;
 		$this->template = array(
-			'message'           => $USERSETTINGS_MESSAGE,
-			'message_caption'   => $USERSETTINGS_MESSAGE_CAPTION,
-			'edit_caption'      => $USERSETTINGS_EDIT_CAPTION,
-			'edit'              => $USERSETTINGS_EDIT,
-
+			'message'           => "{MESSAGE}",
+			'message_caption'   => LAN_OK,
+			'edit_caption'      => LAN_USET_39,
+			'edit'              => vartrue($legacyTemplate['USERSETTINGS_EDIT'], varset($template['edit'], '')),
 		);
 
 
