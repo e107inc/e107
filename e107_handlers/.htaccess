@@ -1,0 +1,16 @@
+# Prevent anyone from fetching or browsing this folder on Apache HTTP Server.
+# Every directive below is AllowOverride FileInfo or Limit class, the classes
+# e107.htaccess already needs. Require is AuthConfig, which a host need not
+# have granted, and a directive the host has not granted answers 500 for the
+# whole directory rather than being ignored.
+<IfModule mod_alias.c>
+	RedirectMatch 403 ^
+</IfModule>
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+	RewriteRule .* - [F]
+</IfModule>
+<IfModule !mod_authz_core.c>
+	Order allow,deny
+	Deny from all
+</IfModule>

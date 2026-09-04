@@ -51,9 +51,12 @@ $oblev_before_start = ob_get_level();
 // B: Remove all output buffering
 //
 if(!isset($_E107) || !is_array($_E107)) { $_E107 = array(); }
-if(isset($_E107['cli'], $_SERVER["HTTP_USER_AGENT"]) && !isset($_E107['debug']))
+if(!empty($_E107['cli']) && (PHP_SAPI === "cli-server"
+	|| !empty($_SERVER['REQUEST_METHOD'])
+	|| !empty($_SERVER['HTTP_HOST'])
+	|| !empty($_SERVER['SERVER_PROTOCOL'])))
 {
-	exit();
+	exit(1);
 }
 
 if (version_compare(PHP_VERSION, '5.6', '<'))
