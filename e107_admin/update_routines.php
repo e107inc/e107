@@ -669,6 +669,59 @@ function update_core_database($type = '')
 
 		}
 
+		$genericIndexes = array();
+		if($sql->gen("SHOW INDEX FROM `".MPREFIX."generic`"))
+		{
+			while($row = $sql->fetch())
+			{
+				$genericIndexes[$row['Key_name']] = true;
+			}
+		}
+
+		if(!isset($genericIndexes['gen_type_ip']) || !isset($genericIndexes['gen_type_ts']))
+		{
+			if($just_check)
+			{
+				return update_needed("The failed-login table is missing the indexes the auto-ban counter reads.");
+			}
+
+			if(!isset($genericIndexes['gen_type_ip']))
+			{
+				$sql->gen("ALTER TABLE `".MPREFIX."generic` ADD INDEX `gen_type_ip` (`gen_type`,`gen_ip`);");
+			}
+			if(!isset($genericIndexes['gen_type_ts']))
+			{
+				$sql->gen("ALTER TABLE `".MPREFIX."generic` ADD INDEX `gen_type_ts` (`gen_type`,`gen_datestamp`);");
+			}
+		}
+
+		if(empty($pref['ban_durations_login_default_applied']))
+		{
+			if(empty($pref['ban_durations'][eIPHandler::BAN_TYPE_LOGINS]))
+			{
+				if($just_check)
+				{
+					return update_needed("Failed-login bans never expire on this site.");
+				}
+
+				$durations = varset($pref['ban_durations'], array());
+				foreach(banlistManager::getValidReasonList() as $banType)
+				{
+					if(!isset($durations[$banType])) { $durations[$banType] = 0; }
+				}
+				$durations[eIPHandler::BAN_TYPE_LOGINS] = 1;
+
+				e107::getConfig()->set('ban_durations', $durations);
+				e107::getLog()->addEvent(4, __FILE__, "UPDATE", 'LAN_UPDATE',
+					"Failed-login bans were set to never expire; given a one-hour duration.", false, LOG_TO_ROLLING);
+			}
+
+			if(!$just_check)
+			{
+				e107::getConfig()->set('ban_durations_login_default_applied', 1)->save(false, true, false);
+			}
+		}
+
 		if(!isset($pref['admin_navbar_debug']))
 		{
 			if($just_check)
