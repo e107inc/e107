@@ -181,6 +181,10 @@ class e_signup
 			}
 			else
 			{
+				require_once(e_HANDLER.'login.php');
+				$usr = new userlogin();
+				$usr->noteFailedPassword($clean_email);
+
 				message_handler("ALERT",LAN_INCORRECT_PASSWORD); // Incorrect Password.
 				return false;
 			}

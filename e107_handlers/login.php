@@ -524,6 +524,17 @@ class userlogin
 
 
 	/**
+	 * Put a password check made outside {@see userlogin::login()} through the same failure funnel, so the counter and the auto-ban see it.
+	 * @param string $username - as entered
+	 * @return bool always false, so a caller can return it directly
+	 */
+	public function noteFailedPassword($username)
+	{
+		return $this->invalidLogin($username, LOGIN_BAD_PW);
+	}
+
+
+	/**
 	 * @return array
 	 */
 	public function test()
