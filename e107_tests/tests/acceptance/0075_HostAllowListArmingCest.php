@@ -179,14 +179,14 @@ class HostAllowListArmingCest
 	{
 		$this->configure($I, '/', 'named.example.invalid');
 
-		$I->amOnUrl($this->ownBase . '/' . self::PROBE_FILE);
+		$I->amOnUrl($this->probeUrl($this->ownBase));
 
 		$I->seeResponseCodeIs(503);
 		$I->seeInSource(self::REFUSAL);
 
 		$this->restore($I);
 
-		$I->amOnUrl($this->ownBase . '/' . self::PROBE_FILE);
+		$I->amOnUrl($this->probeUrl($this->ownBase));
 
 		$I->seeResponseCodeIs(200);
 		$I->seeInSource('PROBE_REACHED');
@@ -199,8 +199,8 @@ class HostAllowListArmingCest
 	 */
 	public function theProbeRefusesAWriteWithoutThisRunsSecret(AcceptanceTester $I)
 	{
-		$I->amOnUrl($this->ownBase . '/' . self::PROBE_FILE
-			. '?host_arming_set=1&siteurl=%2F&trusted_hosts=named.example.invalid');
+		$I->amOnUrl($this->probeUrl($this->ownBase,
+			'host_arming_set=1&siteurl=%2F&trusted_hosts=named.example.invalid'));
 
 		$I->seeResponseCodeIs(403);
 		$I->dontSeeInSource('CONFIGURED');
