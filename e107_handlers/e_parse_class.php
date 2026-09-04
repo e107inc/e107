@@ -4925,7 +4925,7 @@ class e_parse
 		$class = (!empty($parm['class'])) ? $this->attributeValue($parm['class']) : 'img-responsive img-fluid';
 		$alt = (!empty($parm['alt'])) ? $tp->toAttribute($parm['alt']) : $this->attributeValue(basename($file));
 		$style = (!empty($parm['style'])) ? 'style="' . $this->attributeValue($parm['style']) . '" ' : '';
-		$srcset = (!empty($parm['srcset'])) ? 'srcset="' . $parm['srcset'] . '" ' : '';
+		$srcset = (!empty($parm['srcset'])) ? 'srcset="' . $this->attributeValue($parm['srcset']) . '" ' : '';
 		$width = (!empty($parm['w'])) ? 'width="' . (int) $parm['w'] . '" ' : '';
 		$title = (!empty($parm['title'])) ? 'title="' . $this->attributeValue($parm['title']) . '" ' : '';
 		$height = !empty($parm['h']) ? 'height="' . (int) $parm['h'] . '" ' : '';
@@ -4967,7 +4967,7 @@ class e_parse
 			return null;
 		}
 
-		$html .= "<img {$id}class=\"{$class}\" src=\"" . $path . '" alt="' . $alt . '" ' . $srcset . $width . $height . $style . $loading . $title . ' />';
+		$html .= "<img {$id}class=\"{$class}\" src=\"" . $this->attributeValue($path) . '" alt="' . $alt . '" ' . $srcset . $width . $height . $style . $loading . $title . ' />';
 
 		//	$html .= ($this->convertToWebP) ? "\n</picture>" : '';
 
