@@ -734,7 +734,9 @@ class usersettings_front // Begin Usersettings rewrite.
 
 		if ($dataToSave)
 		{
-			// Sort out password hashes
+			$newHashes   = array();
+			$mustConfirm = array();
+
 			if ($savePassword)
 			{
 				$loginname = $changedUserData['user_loginname'] ? $changedUserData['user_loginname'] : $udata['user_loginname'];
@@ -744,35 +746,44 @@ class usersettings_front // Begin Usersettings rewrite.
 					'user_password'  => $userMethods->HashPassword($savePassword, $loginname),
 					'email_password' => varset($pref['allowEmailLogin'], FALSE) ? $userMethods->HashPassword($savePassword, $email) : null,
 				);
+			}
 
-				if (!$reauthenticated && !$_uid && $userMethods->isPasswordRequired('user_password'))
-				{	// User is changing their own password
-					if (!$error)
-					{
-						$promptPassword  = true;
-						$pendingPassword = $newHashes;
-					}
+			$changedCredentials = array(
+				'user_password'  => (bool) $savePassword,
+				'user_loginname' => isset($changedUserData['user_loginname']),
+				'user_email'     => isset($changedUserData['user_email']),
+			);
+
+			foreach ($changedCredentials as $field => $isChanged)
+			{
+				if ($isChanged && $userMethods->isPasswordRequired($field))
+				{
+					$mustConfirm[$field] = $field;
 				}
-				else
+			}
+
+			$needsConfirmation = $mustConfirm && !$reauthenticated;
+			$ownRecord         = !$_uid;
+
+			if (!$needsConfirmation || !$ownRecord)
+			{
+				if ($savePassword)
 				{
 					$changedUserData = $this->withPasswordHashes($changedUserData, $udata, $newHashes);
 				}
+				elseif ($needsConfirmation)
+				{
+					$extraErrors[] = LAN_USET_20;
+				}
+			}
+			elseif ($error)
+			{
+				$changedUserData = array_diff_key($changedUserData, $mustConfirm);
 			}
 			else
 			{
-				if (!$reauthenticated
-					&& ((isset($changedUserData['user_loginname']) && $userMethods->isPasswordRequired('user_loginname'))
-					|| (isset($changedUserData['user_email']) && $userMethods->isPasswordRequired('user_email'))))
-				{
-					if ($_uid && ADMIN)
-					{	// Admin is changing it
-						$extraErrors[] = LAN_USET_20;
-					}
-					else
-					{	// User is changing their own info
-						$promptPassword = true;
-					}
-				}
+				$promptPassword  = true;
+				$pendingPassword = $newHashes;
 			}
 		}
 
