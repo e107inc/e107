@@ -5907,15 +5907,15 @@ class e107
 	 * check arms itself on that emptiness, and a site whose whole configuration
 	 * is a blank `trusted_hosts` line must not be locked out by it.
 	 *
-	 * @return array host names, possibly empty
+	 * @return array normalised host names, possibly empty
 	 */
 	public static function trustedHosts()
 	{
 		$hosts = array();
 
-		$configured_host = parse_url(self::getPref('siteurl'), PHP_URL_HOST);
+		$configured_host = self::normaliseHost(parse_url(self::getPref('siteurl'), PHP_URL_HOST));
 
-		if(self::normaliseHost($configured_host) !== '')
+		if($configured_host !== '')
 		{
 			$hosts[] = $configured_host;
 		}
