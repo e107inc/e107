@@ -506,7 +506,7 @@ class social_ui extends e_admin_ui
 			if ($social_setup->upgrade_required())
 			{
 				$srch = array('[',']');
-				$repl = array("<a href=\"" . e_ADMIN_ABS . "e107_update.php\">", "</a>");
+				$repl = array("<a href=\"" . e_ADMIN_ABS . "e107_update.php?e-token=" . defset('e_TOKEN') . "\">", "</a>");
 
 				e107::getMessage()->addInfo(str_replace($srch,$repl, LAN_SOCIAL_ADMIN_43));
 				return null;

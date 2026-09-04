@@ -18,10 +18,14 @@
  * whether it is the right one. These cases assert both halves of that division
  * of labour on the db.php modes that act rather than render.
  *
- * The modes that only render a page are deliberately left alone, and the last
- * three cases are the controls for that: an operation reached from e107's own
- * menu still runs, a POST carrying a valid token still reaches its operation,
- * and a read-only mode still opens from a bare URL.
+ * The modes that only render a page are deliberately left alone, and the
+ * controls are for that: an operation reached from e107's own menu still runs,
+ * a POST carrying a valid token still reaches its operation, and a read-only
+ * mode still opens from a bare URL.
+ *
+ * The core update behind mode=db_update has a second front door of its own at
+ * e107_admin/e107_update.php, which gated on the administrator permission and
+ * nothing else, so it is covered here beside the mode it duplicates.
  *
  * @see e107_handlers/session_handler.php  e_session::isStateChangingRequest()
  * @see e107_admin/db.php                  db_modeNeedsToken()
@@ -29,6 +33,8 @@
 class DbUtilitiesCsrfCest
 {
 	const MENU = '/e107_admin/db.php';
+
+	const UPDATE_PAGE = '/e107_admin/e107_update.php';
 
 	/** DBLAN_11, emitted by system_tools::optimizesql() once it has run. */
 	const OPTIMISED = 'optimized';
@@ -154,6 +160,34 @@ class DbUtilitiesCsrfCest
 	public function theMenusOwnLinkStillStartsACoreUpdate(AcceptanceTester $I)
 	{
 		$I->amOnPage($this->menuLink($I, 'db_update'));
+
+		$I->seeInSource(self::UPDATE_LISTED);
+		$I->dontSeeInSource(self::REFUSED);
+	}
+
+	/**
+	 * The second front door. The gate has to sit above the require, because
+	 * including update_routines.php runs every installed plugin's _setup.php at
+	 * file scope before e107Update's constructor reaches clear_sys().
+	 */
+	public function aTokenlessGetDoesNotStartACoreUpdateThroughTheUpdatePage(AcceptanceTester $I)
+	{
+		$I->amOnPage(self::UPDATE_PAGE);
+
+		$I->dontSeeInSource(self::UPDATE_LISTED);
+		$I->seeInSource(self::REFUSED);
+	}
+
+	/**
+	 * The control for it. The dashboard, the admin notification and two plugins
+	 * publish this page only while an upgrade is pending, which no fixture here
+	 * arranges, so this follows the URL they build rather than a link on screen.
+	 */
+	public function theTokenisedUpdateLinkStillListsTheCoreUpdate(AcceptanceTester $I)
+	{
+		$token = $I->grabFreshAdminToken(self::MENU . '?mode=importForm');
+
+		$I->amOnPage(self::UPDATE_PAGE . '?e-token=' . $token);
 
 		$I->seeInSource(self::UPDATE_LISTED);
 		$I->dontSeeInSource(self::REFUSED);
