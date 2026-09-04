@@ -167,4 +167,5 @@ define("LAN_SIGNUP_122", "Privacy Policy");
 define("LAN_SIGNUP_123", "Terms and conditions");
 define("LAN_SIGNUP_124", "By signing up you agree to our [x] and our [y].");
 define("LAN_SIGNUP_125", "Min. [x] chars.");
+define("LAN_SIGNUP_REFUSED_TOKEN_MISSING", "No test activation email was sent, because the link carried no security token. Use the button on the signup page rather than a bookmark or a link on another site.");
 
