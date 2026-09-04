@@ -653,24 +653,31 @@ function update_core_database($type = '')
 			}
 		}
 
-		if(empty($pref['ban_durations'][eIPHandler::BAN_TYPE_LOGINS]) && empty($pref['ban_durations_login_default_applied']))
+		if(empty($pref['ban_durations_login_default_applied']))
 		{
-			if($just_check)
+			if(empty($pref['ban_durations'][eIPHandler::BAN_TYPE_LOGINS]))
 			{
-				return update_needed("Failed-login bans never expire on this site.");
+				if($just_check)
+				{
+					return update_needed("Failed-login bans never expire on this site.");
+				}
+
+				$durations = varset($pref['ban_durations'], array());
+				foreach(banlistManager::getValidReasonList() as $banType)
+				{
+					if(!isset($durations[$banType])) { $durations[$banType] = 0; }
+				}
+				$durations[eIPHandler::BAN_TYPE_LOGINS] = 1;
+
+				e107::getConfig()->set('ban_durations', $durations);
+				e107::getLog()->addEvent(4, __FILE__, "UPDATE", 'LAN_UPDATE',
+					"Failed-login bans were set to never expire; given a one-hour duration.", false, LOG_TO_ROLLING);
 			}
 
-			$durations = varset($pref['ban_durations'], array());
-			foreach(banlistManager::getValidReasonList() as $banType)
+			if(!$just_check)
 			{
-				if(!isset($durations[$banType])) { $durations[$banType] = 0; }
+				e107::getConfig()->set('ban_durations_login_default_applied', 1)->save(false, true, false);
 			}
-			$durations[eIPHandler::BAN_TYPE_LOGINS] = 1;
-
-			e107::getConfig()->set('ban_durations', $durations)
-				->set('ban_durations_login_default_applied', 1)->save(false, true, false);
-			e107::getLog()->addEvent(4, __FILE__, "UPDATE", 'LAN_UPDATE',
-				"Failed-login bans were set to never expire; given a one-hour duration.", false, LOG_TO_ROLLING);
 		}
 
 		if(!isset($pref['admin_navbar_debug']))

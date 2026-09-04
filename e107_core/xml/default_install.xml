@@ -33,6 +33,7 @@
   -6 => 0,
   -8 => 0,
 )]]></core>
+		<core name="ban_durations_login_default_applied">1</core>
 		<core name="ban_max_online_access">100,200</core>
 		<core name="ban_retrigger">0</core>
 		<core name="cachestatus"></core>
