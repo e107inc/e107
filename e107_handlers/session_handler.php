@@ -1126,6 +1126,28 @@ public function getData($key = null, $clear = false)
     }
 
     /**
+     * Give the session a new id, keeping its data and deleting the old record.
+     *
+     * Call this where the identity the session speaks for changes. Silently
+     * does nothing when no session is running or output has already started.
+     *
+     * @return e_session
+     */
+    public function regenerateId()
+    {
+        if (session_status() !== PHP_SESSION_ACTIVE || headers_sent())
+        {
+            e107::getDebug()->log('Session id not regenerated: no active session, or output has already started.');
+
+            return $this;
+        }
+
+        session_regenerate_id(true);
+
+        return $this;
+    }
+
+    /**
      * Retrieve current session save method
      * @return string
      */
@@ -1485,20 +1507,7 @@ class e_core_session extends e_session
         {
             if(e_SECURITY_LEVEL == e_session::SECURITY_LEVEL_INSANE)
             {
-                // regenerate SID
-                $oldSID = session_id(); // old SID
-                $oldSData = $_SESSION; // old session data
-                session_regenerate_id();
-                $newSID = session_id(); // new SID
-
-                // Clean
-                session_id($oldSID); // switch to the old session
-                session_destroy(); // destroy it
-
-                // set new ID, reopen the session, set saved data
-                session_id($newSID);
-                session_start();
-                $_SESSION = $oldSData;
+                $this->regenerateId();
             }
             $this->set('__form_token_regenerate', time()); // check() needs it to re-create token on the next request
         }

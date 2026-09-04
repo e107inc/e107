@@ -435,4 +435,36 @@
 
 			e107::setRegistry('core/e107/user/'.$uid, null);
 		}
+
+		/**
+		 * A confirmation value that is not a string is refused before it is cast.
+		 *
+		 * Every caller passes the request field straight through, so a field
+		 * posted as an array reached the cast and raised a warning where the
+		 * comparison before it was silent.
+		 */
+		public function testCheckAdminPwchangeTokenRefusesAnArrayWithoutAWarning()
+		{
+			$raised = array();
+
+			set_error_handler(function($errno, $errstr) use (&$raised) {
+				$raised[] = $errstr;
+
+				return true;
+			});
+
+			try
+			{
+				$accepted = $this->usr->checkAdminPwchangeToken(array());
+			}
+			finally
+			{
+				restore_error_handler();
+			}
+
+			$this->assertFalse($accepted, 'An array was accepted as the confirmation value.');
+			$this->assertSame(array(), $raised,
+				'checkAdminPwchangeToken() raised '.implode('; ', $raised).' for a value posted as an '
+				.'array, so the cast ran before the type was checked.');
+		}
 	}
