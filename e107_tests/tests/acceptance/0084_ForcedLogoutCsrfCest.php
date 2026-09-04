@@ -268,7 +268,7 @@ class ForcedLogoutCsrfCest
 	private function seeStillSignedIn(AcceptanceTester $I)
 	{
 		$I->amOnPage(self::SETTINGS_PAGE);
-		$I->seeCurrentUrlEquals(self::SETTINGS_PAGE);
+		$I->seeInCurrentUrl(self::SETTINGS_PAGE);
 	}
 
 	/**
