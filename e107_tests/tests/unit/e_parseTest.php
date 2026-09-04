@@ -3364,6 +3364,22 @@ EXPECTED;
 		self::assertSame($expected, $result);
 	}
 
+	/**
+	 * The route the advisory names: a member's file name appended raw to a SEF media URL by thumbUrlSEF().
+	 */
+	public function testToImageEncodesTheSefMediaPath()
+	{
+		$breakout = '" onwheel="alert(1)';
+
+		$this->tp->setmodRewriteMedia(true);
+		$result = $this->tp->toImage('{e_MEDIA_IMAGE}2020-12/a' . $breakout . '.gif', array('w' => 100, 'h' => 100));
+		$this->tp->setmodRewriteMedia(false);
+
+		self::assertStringContainsString('/100x100/2020-12/a&quot; onwheel=&quot;alert(1).gif"', $result);
+		self::assertStringContainsString('/200x200/2020-12/a&quot; onwheel=&quot;alert(1).gif', $result);
+		self::assertStringNotContainsString($breakout, $result);
+	}
+
 	public function testThumbSrcSet()
 	{
 		$src = "{e_PLUGIN}gallery/images/butterfly.jpg";
