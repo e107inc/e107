@@ -939,15 +939,10 @@ class lancheck
 	}
 
 	/**
-	 * Does this directory still sit under one of the roots language files are
-	 * kept in?
-	 *
-	 * The roots themselves are relative to the calling script (e_LANGUAGEDIR
-	 * reads as ../e107_languages/ from the admin area), so this compares
-	 * against the constants rather than trying to reason about the path.
+	 * Is this a directory the language editor may write a language file into?
 	 *
 	 * @param string $dir directory built from one of the language roots
-	 * @return bool
+	 * @return bool true under e107_languages, or under a plugin's or theme's own languages directory
 	 */
 	private function withinLanRoots($dir)
 	{
@@ -956,9 +951,19 @@ class lancheck
 			return false;
 		}
 
-		foreach(array(e_LANGUAGEDIR, e_PLUGIN, e_THEME) as $root)
+		if(e_LANGUAGEDIR !== '' && strpos($dir, e_LANGUAGEDIR) === 0)
 		{
-			if($root !== '' && strpos($dir, $root) === 0)
+			return true;
+		}
+
+		foreach(array(e_PLUGIN, e_THEME) as $root)
+		{
+			if($root === '' || strpos($dir, $root) !== 0)
+			{
+				continue;
+			}
+
+			if(strpos('/'.substr($dir, strlen($root)), '/languages/') !== false)
 			{
 				return true;
 			}
@@ -977,13 +982,18 @@ class lancheck
 		$kom_start = chr(47)."*";
 		$kom_end = "*".chr(47);
 	
-		if(!empty($_SESSION['lancheck-edit-file']))
-		{
-			$writeit = $_SESSION['lancheck-edit-file'];
-		}
-		else
+		if(empty($_SESSION['lancheck-edit-file']))
 		{
 			e107::getMessage()->addError("There is a problem with sessions");
+			return;
+		}
+
+		$writeit = str_replace("//", "/", $_SESSION['lancheck-edit-file']);
+
+		if(!$this->withinLanRoots(dirname($writeit)."/") || !$this->isLanFileTarget(basename($writeit)))
+		{
+			unset($_SESSION['lancheck-edit-file']);
+			e107::getMessage()->addError(LAN_ERROR);
 			return;
 		}
 	
@@ -1088,8 +1098,6 @@ class lancheck
 		 $input .= "\n\n?>";
 		*/
 		// Write to file.
-		
-		$writeit = str_replace("//","/",$writeit); // Quick Fix. 
 		
 		$fp = @fopen($writeit,"w");
 		if($fp === false || !@fwrite($fp, $input))
