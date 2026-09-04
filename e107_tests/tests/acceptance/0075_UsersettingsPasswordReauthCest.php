@@ -20,9 +20,10 @@ class UsersettingsPasswordReauthCest
 	const MEMBER_PASS = 'Member1Pass!';
 	const NEW_PASS = 'BrandNewPass1!';
 	const ADMIN_SET_PASS = 'AdminSetPass1!';
-	// LAN_USET_41, the success message, and LAN_USER_01, the display name's field label.
+	// LAN_USET_41, the success message, and USER_ERR_04, which reaches the page only
+	// once a validation error has been compiled into the response.
 	const SAVED_MARKER = 'Settings updated and saved into database.';
-	const DISPLAY_NAME_LABEL = 'Display name';
+	const TOO_SHORT_MARKER = 'Value too short';
 
 	public function _before(AcceptanceTester $I)
 	{
@@ -98,8 +99,8 @@ class UsersettingsPasswordReauthCest
 		$body = $I->grabResponseBody();
 		$I->assertSame('errored@example.test', $this->grabEmail($I, $userId), 'the email is untouched');
 		$I->assertSame($before, $this->grabHash($I, $userId), 'the password is untouched');
-		$I->assertStringContainsString(self::DISPLAY_NAME_LABEL, $body,
-			'the member is told which field is wrong');
+		$I->assertStringContainsString(self::TOO_SHORT_MARKER, $body,
+			'the member is told what is wrong with the field');
 		$I->assertStringNotContainsString(self::SAVED_MARKER, $body,
 			'and is not told the settings were saved');
 	}
@@ -208,8 +209,8 @@ class UsersettingsPasswordReauthCest
 		$body = $I->grabResponseBody();
 		$I->assertStringNotContainsString('currentpassword', $body,
 			'the confirmation form is not offered');
-		$I->assertStringContainsString(self::DISPLAY_NAME_LABEL, $body,
-			'the member is told which field is wrong');
+		$I->assertStringContainsString(self::TOO_SHORT_MARKER, $body,
+			'the member is told what is wrong with the field');
 		$I->assertStringNotContainsString(self::SAVED_MARKER, $body,
 			'and is not told the settings were saved');
 		$I->assertSame($before, $this->grabHash($I, $userId), 'and the password is untouched');
