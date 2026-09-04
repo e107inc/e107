@@ -866,25 +866,18 @@ class lancheck
 
 
 	/**
-	 * Is this a name that may be written into generated PHP as a constant?
-	 *
-	 * Matches what fill_phrases_array() is willing to read back, so a name that
-	 * passes here survives a save/reload cycle.
+	 * May this name be written into generated PHP as a constant?
 	 *
 	 * @param string $name candidate constant name from the newdef[] field
 	 * @return bool
 	 */
 	private function isConstantName($name)
 	{
-		return is_string($name) && preg_match('/^\w+$/', $name) === 1;
+		return is_string($name) && preg_match('/^\w+\z/', $name) === 1;
 	}
 
 	/**
-	 * Turn the setlocale() field into a list of quoted PHP string literals.
-	 *
-	 * The field reaches us either as a bare locale name or as the argument list
-	 * lifted out of the file, so accept both and re-quote every name found.
-	 * Anything that is not shaped like a locale is dropped rather than written.
+	 * Re-quote every locale name in the LC_ALL field, whether it arrives bare or as an argument list, and drop the rest.
 	 *
 	 * @param string $raw contents of the LC_ALL textarea
 	 * @return array PHP literals, ready to join with commas
@@ -906,7 +899,7 @@ class lancheck
 		{
 			$candidate = trim($candidate);
 
-			if($candidate !== '' && preg_match('/^[A-Za-z0-9_.@+-]+$/', $candidate))
+			if($candidate !== '' && preg_match('/^[A-Za-z0-9_.@+-]+\z/', $candidate))
 			{
 				$args[] = var_export($candidate, true);
 			}
@@ -916,11 +909,7 @@ class lancheck
 	}
 
 	/**
-	 * Is this a language file the editor may open?
-	 *
-	 * The value arrives on the query string and ends up inside the path this
-	 * class creates directories at, writes stub files to, and finally saves
-	 * over, so it has to be a plain relative path to a .php file.
+	 * Is this a language file the editor may open? The value reaches the filesystem, so it has to be a plain relative .php path.
 	 *
 	 * @param string $file candidate path, relative to a language root
 	 * @return bool
@@ -946,15 +935,10 @@ class lancheck
 	}
 
 	/**
-	 * Does this directory still sit under one of the roots language files are
-	 * kept in?
-	 *
-	 * The roots themselves are relative to the calling script (e_LANGUAGEDIR
-	 * reads as ../e107_languages/ from the admin area), so this compares
-	 * against the constants rather than trying to reason about the path.
+	 * Is this a directory the language editor may write a language file into?
 	 *
 	 * @param string $dir directory built from one of the language roots
-	 * @return bool
+	 * @return bool true under e107_languages, or under a plugin's or theme's own languages directory
 	 */
 	private function withinLanRoots($dir)
 	{
@@ -963,9 +947,19 @@ class lancheck
 			return false;
 		}
 
-		foreach(array(e_LANGUAGEDIR, e_PLUGIN, e_THEME) as $root)
+		if(e_LANGUAGEDIR !== '' && strpos($dir, e_LANGUAGEDIR) === 0)
 		{
-			if($root !== '' && strpos($dir, $root) === 0)
+			return true;
+		}
+
+		foreach(array(e_PLUGIN, e_THEME) as $root)
+		{
+			if($root === '' || strpos($dir, $root) !== 0)
+			{
+				continue;
+			}
+
+			if(strpos('/'.substr($dir, strlen($root)), '/languages/') !== false)
 			{
 				return true;
 			}
@@ -984,13 +978,18 @@ class lancheck
 		$kom_start = chr(47)."*";
 		$kom_end = "*".chr(47);
 	
-		if(!empty($_SESSION['lancheck-edit-file']))
-		{
-			$writeit = $_SESSION['lancheck-edit-file'];
-		}
-		else
+		if(empty($_SESSION['lancheck-edit-file']))
 		{
 			e107::getMessage()->addError("There is a problem with sessions");
+			return;
+		}
+
+		$writeit = str_replace("//", "/", $_SESSION['lancheck-edit-file']);
+
+		if(!$this->withinLanRoots(dirname($writeit)."/") || !$this->isLanFileTarget(basename($writeit)))
+		{
+			unset($_SESSION['lancheck-edit-file']);
+			e107::getMessage()->addError(LAN_ERROR);
 			return;
 		}
 	
@@ -1029,7 +1028,6 @@ class lancheck
 		//	$diz .= "|        ".chr(36)."URL: $writeit ".chr(36)."\n";
 		//	$diz .= "|        ".chr(36)."Revision: 1.0 ".chr(36)."\n";
 		//	$diz .= "|        ".chr(36)."Id: ".date("Y/m/d H:i:s")." ".chr(36)."\n";
-			$diz .= "|        ".chr(36)."Author: ".USERNAME." ".chr(36)."\n";
 			$diz .= "+---------------------------------------------------------------+\n";
 			$diz .= "*".chr(47)."\n\n";
 		}
@@ -1086,7 +1084,7 @@ class lancheck
 				$statement = $func."(".var_export($defvar, true).", ".var_export($deflang, true).");";
 			}
 
-			$message .= htmlspecialchars($notdef_start.$statement, ENT_QUOTES, 'UTF-8').'<br />'.$notdef_end;
+			$message .= htmlspecialchars($notdef_start.$statement, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8').'<br />'.$notdef_end;
 			$input .= $notdef_start.$statement.$notdef_end;
 		}
 	
@@ -1096,8 +1094,6 @@ class lancheck
 		 $input .= "\n\n?>";
 		*/
 		// Write to file.
-		
-		$writeit = str_replace("//","/",$writeit); // Quick Fix. 
 		
 		$fp = @fopen($writeit,"w");
 		if($fp === false || !@fwrite($fp, $input))
@@ -1645,6 +1641,17 @@ class lancheck
 	}
 	
 	
+	/**
+	 * Escape a phrase or a key for the edit screen, substituting rather than blanking invalid UTF-8.
+	 *
+	 * @param string $value phrase or key as the reader handed it over
+	 * @return string
+	 */
+	private function forEditScreen($value)
+	{
+		return htmlentities(str_replace("ndef++", "", (string) $value), ENT_QUOTES | ENT_SUBSTITUTE);
+	}
+
 	function edit_lanfiles($dir1, $dir2, $f1, $f2, $lan, $type=null)
 	{
 		if($lan == '')
@@ -1739,11 +1746,11 @@ class lancheck
 				$hglt2="</span>";
 			}
 			$text .="<tr>
-			<td style='width:10%;vertical-align:top'>".$hglt1.htmlentities($sk).$hglt2."</td>
-			<td style='width:40%;vertical-align:top'>".htmlentities(str_replace("ndef++","",$trans['orig'][$sk])) ."</td>";
+			<td style='width:10%;vertical-align:top'>".$hglt1.$this->forEditScreen($sk).$hglt2."</td>
+			<td style='width:40%;vertical-align:top'>".$this->forEditScreen($trans['orig'][$sk])."</td>";
 			$text .= "<td class='forumheader3' style='width:50%;vertical-align:top'>";
 			$text .= ($writable) ? "<textarea  class='input-xxlarge' name='newlang[]' rows='$rowamount' cols='45' style='height:100%'>" : "";
-			$text .= htmlentities(str_replace("ndef++","", varset($trans['tran'][$sk])));
+			$text .= $this->forEditScreen(varset($trans['tran'][$sk]));
 			$text .= ($writable) ? "</textarea>" : "";
 			//echo "orig --> ".$trans['orig'][$sk]."<br />";
 			if (strpos($trans['orig'][$sk],"ndef++") !== false)
@@ -1882,7 +1889,7 @@ class lancheck
 				&& isset($sig[$i + 4]) && $sig[$i + 4][0] === T_CONSTANT_ENCAPSED_STRING)
 			{
 				$key = $this->decodeStringToken($sig[$i + 2][1]);
-				if(preg_match('/^\w+$/', $key))
+				if($this->isConstantName($key))
 				{
 					$retloc[$type][$key] = $this->decodeStringToken($sig[$i + 4][1]);
 				}
@@ -1896,7 +1903,7 @@ class lancheck
 				&& isset($sig[$i + 3]) && $sig[$i + 3][0] === T_CONSTANT_ENCAPSED_STRING)
 			{
 				$key = $sig[$i + 1][1];
-				if(preg_match('/^[A-Z_][A-Z0-9_]*$/', $key))
+				if(preg_match('/^[A-Z_][A-Z0-9_]*\z/', $key))
 				{
 					$retloc[$type][$key] = $this->decodeStringToken($sig[$i + 3][1]);
 				}
@@ -1909,7 +1916,7 @@ class lancheck
 				&& isset($sig[$i + 2]) && $sig[$i + 2][0] === T_CONSTANT_ENCAPSED_STRING)
 			{
 				$key = $this->decodeStringToken($text);
-				if(preg_match('/^[A-Z][A-Z0-9_]*$/', $key))
+				if(preg_match('/^[A-Z][A-Z0-9_]*\z/', $key))
 				{
 					$retloc[$type][$key] = $this->decodeStringToken($sig[$i + 2][1]);
 				}
