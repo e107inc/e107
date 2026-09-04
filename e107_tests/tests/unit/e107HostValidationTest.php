@@ -159,6 +159,50 @@ class e107HostValidationTest extends \Codeception\Test\Unit
 		);
 	}
 
+	/**
+	 * The allow-list the boot-time check arms itself on, driven through the
+	 * public wrapper, with the `trusted_hosts` pref holding what a hand-edited
+	 * or upgraded row holds rather than what the admin form writes.
+	 *
+	 * @dataProvider configuredTrustedHostsProvider
+	 */
+	public function testConfiguredTrustedHostsAdmitTheHostsTheyName($trustedHosts, $httpHost, $expected, $scenario)
+	{
+		$cfg = e107::getConfig();
+		$beforeSiteurl = $cfg->get('siteurl');
+		$beforeTrusted = $cfg->get('trusted_hosts');
+
+		try
+		{
+			$cfg->set('siteurl', 'http://configured.example/');
+			$cfg->set('trusted_hosts', $trustedHosts);
+
+			self::assertSame($expected, $this->e107->isTrustedHost($httpHost), "Failed scenario: $scenario");
+		}
+		finally
+		{
+			$cfg->set('siteurl', $beforeSiteurl);
+			$cfg->set('trusted_hosts', $beforeTrusted);
+		}
+	}
+
+	public function configuredTrustedHostsProvider()
+	{
+		$multiline = "a.example.com\nb.example.com";
+		$blanks = "\n   \n";
+
+		return array(
+			'multi-line string, first host named'  => array($multiline, 'a.example.com', true, 'multi-line string, first host named'),
+			'multi-line string, second host named' => array($multiline, 'b.example.com', true, 'multi-line string, second host named'),
+			'multi-line string, host named by neither' => array($multiline, 'evil.example.net', false, 'multi-line string, host named by neither'),
+			'whole URL rather than a hostname'     => array('https://Example.com/foo', 'example.com', true, 'whole URL rather than a hostname'),
+			'whole URL, host it does not name'     => array('https://Example.com/foo', 'evil.example.net', false, 'whole URL, host it does not name'),
+			'no trusted hosts, siteurl admitted'   => array('', 'configured.example', true, 'no trusted hosts, siteurl admitted'),
+			'blank entries, siteurl still admitted' => array($blanks, 'configured.example', true, 'blank entries, siteurl still admitted'),
+			'blank entries, other host refused'    => array($blanks, 'evil.example.net', false, 'blank entries, other host refused'),
+		);
+	}
+
 	public function trustedHostListProvider()
 	{
 		return array(
