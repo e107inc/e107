@@ -214,20 +214,21 @@ class e_fileOutboundRequestTest extends \Codeception\Test\Unit
 			register_shutdown_function(array(__CLASS__, 'stopBuiltInServer'));
 
 			$authority = '127.0.0.1:' . $port;
-			for($waited = 0; $waited < 50; $waited++)
+			$outcome = \Test\Poll::until(function () use ($authority, $server)
 			{
 				if($this->fixtureAnswers($authority, 'http'))
 				{
-					return $authority;
+					return 'answering';
 				}
 
 				$status = proc_get_status($server);
-				if(!$status['running'])
-				{
-					break; // the port was taken between the probe and here
-				}
 
-				usleep(100000);
+				return $status['running'] ? false : 'exited';
+			}, 30);
+
+			if($outcome === 'answering')
+			{
+				return $authority;
 			}
 
 			self::stopBuiltInServer();

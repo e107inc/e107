@@ -260,10 +260,6 @@
 				$except = null;
 				stream_select($open, $write, $except, 0, 100000);
 			}
-			else
-			{
-				usleep(1000);
-			}
 
 			foreach(array_keys($running) as $id)
 			{
