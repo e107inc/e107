@@ -37,6 +37,9 @@ if(!empty($_GET['iframe']) && !defined('e_IFRAME')) // global iframe support.
 	define('e_IFRAME', true);
 }
 
+$bootTokenRefused = (defined('e_TOKEN') && empty($_GET['e-token']));
+$bootTokenMessage = defset('ADLAN_REFUSED_TOKEN_MISSING', 'Invalid or missing security token.');
+
 // .e-sef-generate routine.
 if(e_AJAX_REQUEST && ADMIN && defset('e_ADMIN_UI') && varset($_POST['mode']) == 'sef' && !empty($_POST['source']))
 {
@@ -47,6 +50,13 @@ if(e_AJAX_REQUEST && ADMIN && defset('e_ADMIN_UI') && varset($_POST['mode']) == 
 
 if(e_AJAX_REQUEST && getperms('0') &&  varset($_GET['mode']) == 'core' && ($_GET['type'] == 'update'))
 {
+		if($bootTokenRefused)
+		{
+			header('HTTP/1.1 403 Forbidden', true, 403);
+			header('Content-type: application/json; charset=UTF-8');
+			echo json_encode(array('msg' => $bootTokenMessage, 'error' => true));
+			exit;
+		}
 
 		require_once(e_ADMIN.'update_routines.php');
 
@@ -64,6 +74,13 @@ if(e_AJAX_REQUEST && getperms('0') &&  varset($_GET['mode']) == 'core' && ($_GET
 
 if(e_AJAX_REQUEST && getperms('0') &&  varset($_GET['mode']) == 'addons' && ($_GET['type'] == 'update'))
 {
+	if($bootTokenRefused)
+	{
+		header('HTTP/1.1 403 Forbidden', true, 403);
+		echo $bootTokenMessage;
+		exit;
+	}
+
 	if(!E107_DEBUG_LEVEL)
 	{
 		e107::getSession()->set('addons-update-checked',true);
@@ -104,6 +121,12 @@ if(e_AJAX_REQUEST && getperms('0') &&  varset($_GET['mode']) == 'addons' && ($_G
 
 if(e_AJAX_REQUEST &&  ADMIN && varset($_GET['mode']) == 'core' && ($_GET['type'] == 'feed'))
 {
+	if($bootTokenRefused)
+	{
+		header('HTTP/1.1 403 Forbidden', true, 403);
+		echo $bootTokenMessage;
+		exit;
+	}
 
 	$limit = 3;
 
@@ -147,6 +170,13 @@ if(e_AJAX_REQUEST &&  ADMIN && varset($_GET['mode']) == 'core' && ($_GET['type']
 
 if(ADMIN && (e_AJAX_REQUEST || deftrue('e_DEBUG_FEEDS')) && varset($_GET['mode']) == 'addons' )
 {
+	if($bootTokenRefused)
+	{
+		header('HTTP/1.1 403 Forbidden', true, 403);
+		echo $bootTokenMessage;
+		exit;
+	}
+
 	$type = ($_GET['type'] == 'plugin') ? 'plugin' : 'theme';
 	// Versioned: the composed HTML is what gets cached, so an install upgrading
 	// into the encoding below must not be handed three more hours of the bytes

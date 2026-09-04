@@ -91,7 +91,14 @@ class lancheck
 
 
 		$acceptedLans = explode(",",e_LANLIST);
-	
+
+		$isPost = (isset($_SERVER['REQUEST_METHOD']) && strtoupper($_SERVER['REQUEST_METHOD']) === 'POST');
+
+		if(!$isPost && in_array($mode, array('verify', 'edit'), true) && defined('e_TOKEN') && empty($_GET['e-token']))
+		{
+			e107::getMessage()->addError(defset('LANG_LAN_REFUSED_TOKEN_MISSING', 'Invalid or missing security token.'));
+			return false;
+		}
 
 		if(!empty($_POST['ziplang']))
 		{

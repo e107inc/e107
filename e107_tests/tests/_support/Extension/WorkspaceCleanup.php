@@ -110,6 +110,7 @@ class WorkspaceCleanup extends Extension
 		'e107_tests_cli_only_entry.php',       // @see CliBootstrapHttpRefusalCest
 		'e107_tests_cli_only_canary.txt',      // @see CliBootstrapHttpRefusalCest
 		'e107_tests_sessionfixation_probe.php', // @see SessionFixationCest
+		'e107_tests_p9_csrf_probe.php',       // @see AdminMiscCsrfCest
 	];
 
 	/** Files a test moves aside for one test method, as parked name to the name it belongs back at. */

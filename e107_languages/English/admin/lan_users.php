@@ -307,6 +307,7 @@ define("USFLAN_7", "User Information");
 define("USRLAN_AS_1", "Login as [x]");
 define("USRLAN_AS_2", "Logout from [x] account");
 define("USRLAN_AS_3", "You are already logged in as another user account. Please logout first.");
+define("USRLAN_REFUSED_TOKEN_MISSING", "That action was not carried out, because the link carried no security token. Start it from the user list rather than from a bookmark or a link on another site.");
 
 // Always search lan_admin.php before adding more. 
 

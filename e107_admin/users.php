@@ -213,7 +213,7 @@ JS;
 				// redirect to TestObserver/TestPage
 				case 'test':
 					$this->getRequest()
-						->setQuery(array())
+						->setQuery(array('e-token' => defset('e_TOKEN', '')))
 						->setMode('main')
 						->setAction('test')
 						->setId($_POST['userid']);
@@ -874,7 +874,7 @@ class users_admin_ui extends e_admin_ui
 			$user = e107::getUser();
 			
 			// TODO - lan
-			$mes->addSuccess('Successfully logged in as '.$sysuser->getName().' <a href="'.e_ADMIN_ABS.'users.php?mode=main&amp;action=logoutas">[logout]</a>')
+			$mes->addSuccess('Successfully logged in as '.$sysuser->getName().' <a href="'.e_ADMIN_ABS.'users.php?mode=main&amp;action=logoutas&amp;e-token='.defset('e_TOKEN').'">[logout]</a>')
 				->addSuccess('Please, <a href="'.SITEURL.'" rel="external">Leave Admin</a> to browse the system as this user. Use &quot;Logout&quot; option in Administration to end front-end session');
 			
 			$search = array('--UID--', '--NAME--', '--EMAIL--', '--ADMIN_UID--', '--ADMIN_NAME--', '--ADMIN_EMAIL--');
@@ -897,6 +897,11 @@ class users_admin_ui extends e_admin_ui
 	 */
 	public function LogoutasObserver()
 	{
+		if($this->refuseTokenlessGet())
+		{
+			return;
+		}
+
 		$user = e107::getUser();
 		$sysuser = e107::getSystemUser($user->getSessionDataAs(), false);
 
@@ -1509,10 +1514,41 @@ class users_admin_ui extends e_admin_ui
 	}
 
 	/**
+	 * An action that acts on a GET must carry an e-token; whether the value is
+	 * the right one is {@see e_core_session::check()}'s half.
+	 *
+	 * A POST is left to that check alone rather than guarded again here. The
+	 * site's {@see e_session::tokenCheckMode()} decides what a tokenless POST
+	 * costs, and in a mode that reads no token
+	 * {@see e_token_injector::process()} publishes none either, so the request
+	 * this refused would be the administrator's own submission.
+	 *
+	 * @return bool true when the request brought no proof and must not act
+	 */
+	protected function refuseTokenlessGet()
+	{
+		$isPost = (isset($_SERVER['REQUEST_METHOD']) && strtoupper($_SERVER['REQUEST_METHOD']) === 'POST');
+
+		if($isPost || !defined('e_TOKEN') || !empty($_GET['e-token']))
+		{
+			return false;
+		}
+
+		e107::getMessage()->addError(defset('USRLAN_REFUSED_TOKEN_MISSING', 'Invalid or missing security token.'));
+
+		return true;
+	}
+
+	/**
 	 * Test user email observer
 	 */
 	public function TestObserver()
 	{
+		if($this->refuseTokenlessGet())
+		{
+			$this->redirect('list', 'main', true);
+		}
+
 		$sysuser = e107::getSystemUser($this->getId(), false);
 		$mes = e107::getMessage();
 		$email = $sysuser->getValue('email');

@@ -320,7 +320,7 @@ if(!empty($_GET['iframe']))
 				<td class='text-right'>";
 
 			//	$text .= "<input type='submit' name='language_sel[{$language}]' value=\"".LAN_CHECK_2."\" class='btn btn-primary' />";
-				$text .= "<a href='".e_REQUEST_URI."&amp;sub=verify&amp;lan=".$language."' class='btn btn-default' >".$tp->toGlyph('fa-search').LAN_CHECK_2."</a>";
+				$text .= "<a href='".e_REQUEST_URI."&amp;sub=verify&amp;lan=".$language."&amp;e-token=".defset('e_TOKEN')."' class='btn btn-default' >".$tp->toGlyph('fa-search').LAN_CHECK_2."</a>";
 
 			/*	$text .= "
 				<input type='submit' name='ziplang[{$language}]' value=\"".LANG_LAN_23."\" class='btn btn-default' onclick=\"this.value = '".$lan_pleasewait."'\" />";

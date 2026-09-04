@@ -44,7 +44,7 @@ class adminstyle_infopanel
 		{
 			$coreUpdateCheck = "
 				$('#e-admin-core-update').html('<i title=\"".LAN_CHECKING_FOR_UPDATES."\" class=\"fa fa-spinner fa-spin\"></i>');
-  		    	$.get('".e_ADMIN."admin.php?mode=core&type=update', function( data ) {
+  		    	$.get('".e_ADMIN."admin.php?mode=core&type=update&e-token=".defset('e_TOKEN')."', function( data ) {
  		    	
   		    	var res = $.parseJSON(data);
 		    
@@ -73,7 +73,7 @@ class adminstyle_infopanel
 		if( e107::getSession()->get('addons-update-checked') !== true)
 		{
 			$addonUpdateCheck = "
-			$('#e-admin-addons-update').load('".e_ADMIN."admin.php?mode=addons&type=update');
+			$('#e-admin-addons-update').load('".e_ADMIN."admin.php?mode=addons&type=update&e-token=".defset('e_TOKEN')."');
 			";
 
 		}
@@ -82,9 +82,9 @@ class adminstyle_infopanel
 
 		$code = "
 		jQuery(function($){
-  			$('#e-adminfeed').load('".e_ADMIN."admin.php?mode=core&type=feed');
-  		    $('#e-adminfeed-plugin').load('".e_ADMIN."admin.php?mode=addons&type=plugin');
-  		    $('#e-adminfeed-theme').load('".e_ADMIN."admin.php?mode=addons&type=theme');
+  			$('#e-adminfeed').load('".e_ADMIN."admin.php?mode=core&type=feed&e-token=".defset('e_TOKEN')."');
+  		    $('#e-adminfeed-plugin').load('".e_ADMIN."admin.php?mode=addons&type=plugin&e-token=".defset('e_TOKEN')."');
+  		    $('#e-adminfeed-theme').load('".e_ADMIN."admin.php?mode=addons&type=theme&e-token=".defset('e_TOKEN')."');
   		    
   		    ".$coreUpdateCheck."
   		    ".$addonUpdateCheck."

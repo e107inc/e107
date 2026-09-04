@@ -602,3 +602,4 @@ define("LAN_META_DESCRIPTION", "Meta Description");
 define("LAN_SYSTEM_NOTIFICATIONS_X", "[x] System Notification(s)");
 define("LAN_PHP_OUTDATED", "Your website is currently running an [outdated version of PHP], which may pose a security risk. If your plugins will allow it, we recommend upgrading to [x] to ensure that your website is secure and up-to-date.");
 define("LAN_DATABASE_UPDATE", "An update is available for your database. We recommend [running this update] as soon as possible to ensure that your database is secure and up-to-date.");
+define("ADLAN_REFUSED_TOKEN_MISSING", "That request was not carried out, because it carried no security token. Use the dashboard's own controls rather than a bookmark or a link on another site.");
