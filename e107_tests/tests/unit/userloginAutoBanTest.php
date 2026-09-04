@@ -32,6 +32,9 @@ class userloginAutoBanTest extends \Test\Unit
 	/** @var mixed */
 	protected $durationBackup;
 
+	/** @var mixed */
+	protected $markerBackup;
+
 	protected function _before()
 	{
 		$this->clearBanState();
@@ -49,6 +52,7 @@ class userloginAutoBanTest extends \Test\Unit
 
 		$this->prefBackup = isset($GLOBALS['pref']) ? $GLOBALS['pref'] : array();
 		$this->durationBackup = e107::getConfig()->get('ban_durations');
+		$this->markerBackup = e107::getConfig()->get('ban_durations_login_default_applied', 0);
 		e107::getConfig()->setPref('ban_durations', array(eIPHandler::BAN_TYPE_LOGINS => 1));
 
 		$GLOBALS['pref']['autoban'] = 1;
@@ -66,7 +70,8 @@ class userloginAutoBanTest extends \Test\Unit
 			e107::setRegistry('core/e107/user/' . (int) $this->userId, null);
 		}
 
-		e107::getConfig()->setPref('ban_durations', $this->durationBackup);
+		e107::getConfig()->set('ban_durations', $this->durationBackup)
+			->set('ban_durations_login_default_applied', $this->markerBackup)->save(false, true, false);
 		$GLOBALS['pref'] = $this->prefBackup;
 
 		$this->clearBanState();
@@ -317,17 +322,23 @@ class userloginAutoBanTest extends \Test\Unit
 		$xml = e107::getXml()->loadXMLfile(e_CORE . "xml/default_install.xml", 'advanced');
 
 		$durations = null;
+		$applied = null;
 		foreach($xml['prefs']['core'] as $pref)
 		{
 			if($pref['@attributes']['name'] === 'ban_durations')
 			{
 				$durations = e107::getArrayStorage()->unserialize($pref['@value']);
 			}
+			if($pref['@attributes']['name'] === 'ban_durations_login_default_applied')
+			{
+				$applied = $pref['@value'];
+			}
 		}
 
 		$this->assertTrue(is_array($durations));
 		$this->assertArrayHasKey(eIPHandler::BAN_TYPE_LOGINS, $durations);
 		$this->assertGreaterThan(0, $durations[eIPHandler::BAN_TYPE_LOGINS]);
+		$this->assertNotEmpty($applied);
 	}
 
 	public function testABanCarriesAnExpiryWhenADurationIsConfigured()
@@ -482,9 +493,34 @@ class userloginAutoBanTest extends \Test\Unit
 
 		$applied = e107::getPref('ban_durations');
 		$this->assertSame(1, (int) $applied[eIPHandler::BAN_TYPE_LOGINS]);
+		$this->assertNotEmpty(e107::getPref('ban_durations_login_default_applied'));
+
+		$settled = update_20x_to_latest('check');
 
 		$applied[eIPHandler::BAN_TYPE_LOGINS] = 0;
 		e107::getConfig()->set('ban_durations', $applied)->save(false, true, false);
+
+		$this->assertSame($settled, update_20x_to_latest('check'));
+
+		update_20x_to_latest('do');
+
+		$kept = e107::getPref('ban_durations');
+		$this->assertSame(0, (int) $kept[eIPHandler::BAN_TYPE_LOGINS]);
+	}
+
+	public function testADurationChosenAfterTheDefaultLandedSurvivesTheUpgrade()
+	{
+		require_once(e_ADMIN . 'update_routines.php');
+
+		e107::getConfig()->set('ban_durations', array(eIPHandler::BAN_TYPE_LOGINS => 2))
+			->remove('ban_durations_login_default_applied')->save(false, true, false);
+
+		update_20x_to_latest('do');
+
+		$this->assertNotEmpty(e107::getPref('ban_durations_login_default_applied'));
+
+		e107::getConfig()->set('ban_durations', array(eIPHandler::BAN_TYPE_LOGINS => 0))
+			->save(false, true, false);
 
 		update_20x_to_latest('do');
 
