@@ -128,7 +128,6 @@
 			$imgParms = array();
 
 
-			$parm = preg_replace('#onerror *=#i', '', $parm);
 			$parm = str_replace("amp;", "&", $parm);
 
 			//  $parm = str_replace(" ","&",$parm); // Needed as parse_str() doesn't know how to handle spaces. Could return [width] => '400 AltValue'
