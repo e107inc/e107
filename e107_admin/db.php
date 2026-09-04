@@ -43,6 +43,23 @@ if(isset($_GET['type']))
     $_GET['type'] = preg_replace('/[^\w\-]/', '', $_GET['type']);
 }
 
+if(e_QUERY === 'plugin')
+{
+	$_GET['mode'] = 'plugin_scan';
+}
+
+$dbIsPost = (isset($_SERVER['REQUEST_METHOD']) && strtoupper($_SERVER['REQUEST_METHOD']) === 'POST');
+
+$dbTokenRefused = (!$dbIsPost && isset($_GET['mode']) && db_modeNeedsToken($_GET['mode'])
+	&& defined('e_TOKEN') && empty($_GET['e-token']));
+$dbTokenMessage = defset('DBLAN_REFUSED_TOKEN_MISSING', 'Invalid or missing security token.');
+
+if($dbTokenRefused)
+{
+	$_GET['mode'] = '';
+	$mes->addError($dbTokenMessage);
+}
+
 /*
  * Execute trigger
  */
@@ -85,7 +102,11 @@ if(e_AJAX_REQUEST )
         ob_end_clean();
 	}
 
-	if(varset($_GET['mode']) == 'backup') //FIXME - not displaying progress until complete. Use e-progress?
+	if($dbTokenRefused)
+	{
+		echo $dbTokenMessage;
+	}
+	elseif(varset($_GET['mode']) == 'backup') //FIXME - not displaying progress until complete. Use e-progress?
 	{
 		echo "".DBLAN_120."<br />";
 		
@@ -234,7 +255,7 @@ class system_tools
 			e107::getCache()->clear('Dbverify',true);
 			require_once(e_HANDLER."db_verify_class.php");
 			$dbv = new db_verify;
-			$dbv->backUrl = e_SELF."?mode=verify_sql";
+			$dbv->backUrl = db_modeUrl('verify_sql', '&amp;');
 			$dbv->verify();
 
 			//echo e107::getMessage()->render();
@@ -289,7 +310,7 @@ class system_tools
 			$this->scan_override();
 		}
 
-		if(isset($_POST['plugin_scan']) || e_QUERY == "plugin" || isset($_POST['delplug']) || $_GET['mode']=='plugin_scan')
+		if(isset($_POST['plugin_scan']) || isset($_POST['delplug']) || $_GET['mode']=='plugin_scan')
 		{
 			$this->plugin_viewscan('refresh');
 		}
@@ -445,7 +466,7 @@ class system_tools
 		$mes = e107::getMessage();
 		
 		$message = DBLAN_70;
-		$message .= "<br /><a class='e-ajax btn btn-success' data-loading-text='".DBLAN_71."' href='#backupstatus' data-src='".e_SELF."?mode=backup' >".LAN_CREATE."</a>";
+		$message .= "<br /><a class='e-ajax btn btn-success' data-loading-text='".DBLAN_71."' href='#backupstatus' data-src='".e_SELF."?mode=backup&amp;e-token=".defset('e_TOKEN')."' >".LAN_CREATE."</a>";
 		
 		
 		$mes->addInfo($message);
@@ -1102,10 +1123,11 @@ class system_tools
 
 		foreach($this->_options as $key=>$val)
 		{
-			
+			$url = db_modeUrl($key, '&amp;');
+
 			$text .= "<div class='col-md-6 col-lg-4' style='height:80px; padding-bottom:10px'>
-			<a class='btn btn-default btn-secondary btn-lg btn-large pull-left' style='margin-right:10px' href='".e_SELF."?mode=".$key."' title=\"".$val['label']."\">".$tp->toGlyph($val['icon'], ['fw'=>true, 'size'=>'2x'])."</a>
-			<h4 style='margin-bottom:3px'><a href='".e_SELF."?mode=".$key."' title=\"".$val['label']."\">".$val['label']."</a></h4><small>".$val['diz']."</small>
+			<a class='btn btn-default btn-secondary btn-lg btn-large pull-left' style='margin-right:10px' href='".$url."' title=\"".$val['label']."\">".$tp->toGlyph($val['icon'], ['fw'=>true, 'size'=>'2x'])."</a>
+			<h4 style='margin-bottom:3px'><a href='".$url."' title=\"".$val['label']."\">".$val['label']."</a></h4><small>".$val['diz']."</small>
 			</div>";
 		
 		}
@@ -1770,6 +1792,34 @@ class system_tools
 
 //XXX - what is this for (backup core)? <input type='hidden' name='sqltext' value='{$sqltext}' />
 
+/**
+ * @param string $mode value of $_GET['mode']
+ * @return bool whether the mode acts on this request and so must present an e-token
+ */
+function db_modeNeedsToken($mode)
+{
+	$acting = array('correct_perms', 'db_update', 'optimize_sql', 'plugin_scan', 'sc_override_scan');
+
+	if(e_AJAX_REQUEST)
+	{
+		$acting[] = 'backup';
+	}
+
+	return in_array($mode, $acting, true);
+}
+
+/**
+ * @param string $mode value for $_GET['mode']
+ * @param string $sep query-string separator, '&amp;' where the result lands in markup
+ * @return string
+ */
+function db_modeUrl($mode, $sep)
+{
+	$url = e_SELF."?mode=".$mode;
+
+	return db_modeNeedsToken($mode) ? $url.$sep."e-token=".defset('e_TOKEN') : $url;
+}
+
 function db_adminmenu() //FIXME - has problems when navigation is on the LEFT instead of the right. 
 {
 	global $st;
@@ -1779,7 +1829,7 @@ function db_adminmenu() //FIXME - has problems when navigation is on the LEFT in
 	foreach($st->_options as $key=>$val)
 	{
 		$var[$key]['text'] = $val['label'];
-		$var[$key]['link'] = e_SELF."?mode=".$key;
+		$var[$key]['link'] = db_modeUrl($key, '&');
 		$var[$key]['image_src'] = $val['icon'];
 	}
 
