@@ -12,11 +12,18 @@
 	class e_signup_classTest extends \Test\Unit
 	{
 
+		/** The password the fixture account is created with. */
+		const RESEND_PASSWORD = 'resend-fixture-password';
+
 		/** @var e_signup */
 		protected $sup;
 
+		/** @var array preference values as they were before a test changed them */
+		protected $restorePrefs = array();
+
 		protected function _before()
 		{
+			require_once(e_HANDLER."user_handler.php");
 			require_once(e_HANDLER."e_signup_class.php");
 			try
 			{
@@ -29,6 +36,27 @@
 
 			$this->sup->__construct();
 
+		}
+
+		protected function _after()
+		{
+			if(empty($this->restorePrefs))
+			{
+				return;
+			}
+
+			$config = e107::getConfig();
+
+			foreach($this->restorePrefs as $key => $value)
+			{
+				$config->set($key, $value);
+			}
+
+			$config->save(false, true);
+
+			$this->restorePrefs = array();
+
+			$this->syncRollingLog();
 		}
 
 
@@ -78,6 +106,234 @@
 			$this->assertEquals("Privacy Policy", LAN_SIGNUP_122, "Language file failed to load.");
 
 
+		}
+
+
+		/**
+		 * The resend form checked the password itself, so a guess left none of
+		 * the evidence the same guess leaves on the login form.
+		 */
+		public function testAWrongResendPasswordLeavesWhatAWrongLoginLeaves()
+		{
+			$name = 'resendvictim';
+			$email = $name.'@example.com';
+
+			$this->haveUnactivatedUser($name, $email);
+			$this->havePrefs(array('user_reg_veri' => 1, 'roll_log_active' => 1));
+
+			require_once(e_HANDLER.'login.php');
+
+			$start = $this->failureEvidenceFor($name);
+
+			$lg = new userlogin();
+			$lg->login($name, 'not-the-password', 0, '', true);
+
+			$afterLogin = $this->failureEvidenceFor($name);
+
+			$out = $this->runResend($name, 'not-the-password', 'moved-'.$email);
+
+			$afterResend = $this->failureEvidenceFor($name);
+
+			$fromLogin = $this->evidenceAdded($start, $afterLogin);
+			$fromResend = $this->evidenceAdded($afterLogin, $afterResend);
+
+			$this->assertNotFalse(strpos($out, LAN_INCORRECT_PASSWORD),
+				'the resend form never reached its wrong-password branch: '.$out);
+
+			$this->assertTrue(in_array(true, $fromLogin, true),
+				'the login form recorded nothing at all, so there is nothing to compare against');
+
+			$this->assertSame($fromLogin, $fromResend,
+				'a wrong resend password did not leave the evidence a wrong login leaves');
+
+			$this->assertSame($email, $this->addressOf($name),
+				'the wrong password still moved the account to another address');
+		}
+
+
+		/**
+		 * The account's own password still moves the address when the stored
+		 * hash is in a format the site no longer prefers, where CheckPassword()
+		 * answers with a replacement hash instead of TRUE.
+		 */
+		public function testARightResendPasswordMovesTheAddressAndIsNotCounted()
+		{
+			$name = 'resendmember';
+			$email = $name.'@example.com';
+			$moved = 'moved-'.$email;
+
+			$this->haveUnactivatedUser($name, $email);
+			$this->havePrefs(array('user_reg_veri' => 1, 'roll_log_active' => 1, 'passwordEncoding' => 1));
+
+			$before = $this->failureEvidenceFor($name);
+
+			$this->runResend($name, self::RESEND_PASSWORD, $moved);
+
+			$this->assertSame($before, $this->failureEvidenceFor($name),
+				'a correct password was recorded as a failed login');
+
+			$this->assertSame($moved, $this->addressOf($name),
+				'the correct password did not move the account to the new address');
+		}
+
+
+		/**
+		 * @param string $name
+		 * @param string $email
+		 * @return int user id
+		 */
+		private function haveUnactivatedUser($name, $email)
+		{
+			$id = e107::getDb()->insert('user', array(
+				'user_name'      => $name,
+				'user_loginname' => $name,
+				'user_login'     => $name,
+				'user_email'     => $email,
+				'user_password'  => md5(self::RESEND_PASSWORD),
+				'user_join'      => time(),
+				'user_ban'       => USER_REGISTERED_NOT_VALIDATED,
+				'user_class'     => '',
+				'user_sess'      => 'resend-fixture-session',
+			));
+
+			$this->assertNotEmpty($id, 'could not write the account this test needs');
+
+			return (int) $id;
+		}
+
+
+		/**
+		 * @param array $prefs set for this test and restored after it
+		 * @return void
+		 */
+		private function havePrefs($prefs)
+		{
+			$config = e107::getConfig();
+
+			foreach($prefs as $key => $value)
+			{
+				$this->restorePrefs[$key] = e107::getPref($key);
+				$config->set($key, $value);
+			}
+
+			$config->save(false, true);
+
+			$this->syncRollingLog();
+		}
+
+
+		/**
+		 * The log object read the preference once, when it was built.
+		 *
+		 * @return void
+		 */
+		private function syncRollingLog()
+		{
+			e107::getLog()->rollingLog(!empty(e107::getPref('roll_log_active')));
+		}
+
+
+		/**
+		 * @param string $name
+		 * @return string the address the account currently carries
+		 */
+		private function addressOf($name)
+		{
+			return e107::getDb()->createQueryBuilder()
+				->select('user_email')->from('user')->where('user_loginname', $name)->fetchOne();
+		}
+
+
+		/**
+		 * @param string $name
+		 * @return array how much of each kind of failure evidence names $name
+		 */
+		private function failureEvidenceFor($name)
+		{
+			$notes = e107::getDb()->createQueryBuilder()
+				->select('dblog_remarks')->from('dblog')
+				->where('dblog_eventcode', 'LOGIN')
+				->fetchAll();
+
+			$failures = e107::getDb()->createQueryBuilder()
+				->select('gen_chardata')->from('generic')
+				->where('gen_type', 'failed_login')
+				->fetchAll();
+
+			return array(
+				'note'    => $this->rowsMentioning($notes, 'dblog_remarks', $name),
+				'failure' => $this->rowsMentioning($failures, 'gen_chardata', $name),
+			);
+		}
+
+
+		/**
+		 * @param array $rows
+		 * @param string $column
+		 * @param string $name
+		 * @return int
+		 */
+		private function rowsMentioning($rows, $column, $name)
+		{
+			$found = 0;
+
+			foreach($rows as $row)
+			{
+				if(strpos($row[$column], $name) !== false)
+				{
+					$found++;
+				}
+			}
+
+			return $found;
+		}
+
+
+		/**
+		 * @param array $before from {@see e_signup_classTest::failureEvidenceFor()}
+		 * @param array $after from {@see e_signup_classTest::failureEvidenceFor()}
+		 * @return array which kinds of evidence the attempt in between added
+		 */
+		private function evidenceAdded($before, $after)
+		{
+			$added = array();
+
+			foreach($after as $kind => $count)
+			{
+				$added[$kind] = $count > $before[$kind];
+			}
+
+			return $added;
+		}
+
+
+		/**
+		 * Posts the resend form in its own request, because its wrong-password
+		 * branch ends in message_handler(), which exits.
+		 *
+		 * @param string $name what the visitor typed in the identifier field
+		 * @param string $password what the visitor typed in the password field
+		 * @param string $newEmail the address the visitor asks the account to be moved to
+		 * @return string everything the request wrote
+		 */
+		private function runResend($name, $password, $newEmail)
+		{
+			$post = array(
+				'submit_resend'   => 1,
+				'resend_email'    => $name,
+				'resend_newemail' => $newEmail,
+				'resend_password' => $password,
+			);
+
+			$php  = '$userMethods = e107::getUserSession(); ';
+			$php .= 'e107::coreLan("signup"); ';
+			$php .= '$_POST = '.var_export($post, true).'; ';
+			$php .= "require_once('".addslashes(APP_PATH.'/e107_handlers/e_signup_class.php')."'); ";
+			$php .= '$signup = new e_signup(); $signup->run("resend");';
+
+			list($output, ) = $this->runInBootedCli($php);
+
+			return implode("\n", $output);
 		}
 
 
