@@ -578,10 +578,11 @@ class ContactFormCest
 	 *
 	 * The message and any custom field the template adds are assembled into an
 	 * HTML mail, so anything that parses as markup on the way in is markup by
-	 * the time an administrator opens it. strip_tags() on the message was not
-	 * enough: it answers a literal tag and says nothing about BBCode, which the
-	 * parser turns into one, and it never covered the custom fields at all,
-	 * whose names went into the table unescaped.
+	 * the time an administrator opens it. toEmail() did not answer that on its
+	 * own: a message carrying a tag took its HTML branch and kept the tag, a
+	 * message carrying BBCode took the other branch and had it rendered, and the
+	 * custom fields were never covered at all, their names going into the table
+	 * unescaped.
 	 *
 	 * The markers are what stop this being satisfied by an empty mail: every
 	 * piece the visitor sent must still be in the message the site receives.
