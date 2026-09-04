@@ -38,6 +38,15 @@ define ('LOGIN_DB_ERROR', -12);		// Error adding user to main DB
  */
 class userlogin
 {
+	/** Seconds of history the auto-ban counter reads. Matches the shipped BAN_TYPE_LOGINS duration, so a ban lifts with the counter already clear. */
+	const FAILURE_WINDOW = 3600;
+
+	/** How long a failed_login row stays readable by an administrator. Unrelated to FAILURE_WINDOW, which is what the ban counter reads. */
+	const FAILURE_RETENTION = 2592000;
+
+	/** Rows one prune may remove. Caps the delete, not the scan behind it, which is what KEY gen_type_ts is for. */
+	const FAILURE_PRUNE_LIMIT = 500;
+
 	protected $e107;
 	protected $userMethods;			// Pointer to user handler
 	protected $userIP;				// IP address
@@ -47,6 +56,9 @@ class userlogin
 	protected $testMode   = false;
 	protected $secImageType = 'logcode';
 	protected $providerLogin = false;	// Set only by loginProvider(), never from request data
+	protected $failureNoteId = 0;	// generic table row this attempt recorded, if any
+	protected $banChecked = false;	// ban already decided for this attempt
+	protected $failureBanTime = 0;	// datestamp of the banlist row this attempt raised, if any
 
 	public function __construct()
 	{
@@ -93,6 +105,9 @@ class userlogin
 		
 		$username = trim($username);
 		$userpass = trim($userpass);
+		$this->failureNoteId = 0;
+		$this->banChecked = false;
+		$this->failureBanTime = 0;
 
 		if($_E107['cli'] && ($username == ''))
 		{
@@ -601,7 +616,7 @@ class userlogin
 		{
 			case LOGIN_ABORT :        // alt_auth reject
 				$message = LAN_LOGIN_21;
-				$this->genNote($this->userIP, $username, 'Alt_auth: ' . LAN_LOGIN_14);
+				$this->genNote($username, 'Alt_auth: ' . LAN_LOGIN_14);
 				$this->logNote('LAN_ROLL_LOG_04', 'Alt_Auth: ' . $username);
 				$doCheck = true;
 				break;
@@ -613,11 +628,15 @@ class userlogin
 				break;
 			case LOGIN_BAD_PW :
 				$message = LAN_LOGIN_21;
+				$this->genNote($username, LAN_LOGIN_15);
 				$this->logNote('LAN_ROLL_LOG_03', $username);
+				$doCheck = true;
 				break;
 			case LOGIN_CHAP_FAIL :
 				$message = LAN_LOGIN_21;
+				$this->genNote($username, 'CHAP: ' . LAN_LOGIN_15);
 				$this->logNote('LAN_ROLL_LOG_03', 'CHAP: ' . $username);
+				$doCheck = true;
 				break;
 			case LOGIN_BAD_USER :
 				$message = LAN_LOGIN_21;
@@ -684,21 +703,37 @@ class userlogin
 
 	//	$sql->update('online', 'user_active = 0 WHERE user_ip = "'.$this->userIP.'" LIMIT 1');
 
-		if ($doCheck) // See if ban required (formerly the checkibr() function)
+		if ($doCheck && $this->banChecked === false) // See if ban required (formerly the checkibr() function)
 		{
+			$this->banChecked = true;
+
 			if($pref['autoban'] == 1 || $pref['autoban'] == 3) // Flood + Login or Login Only.
 			{
-				$fails = e107::getDb()->count("generic", "(*)", "WHERE gen_ip='{$this->userIP}' AND gen_type='failed_login' ");
+				$settled = !empty($this->failureNoteId) ? " AND gen_id != ".(int) $this->failureNoteId : '';
+				$since = time() - self::FAILURE_WINDOW;
+				$fails = e107::getDb()->count("generic", "(*)", "WHERE gen_ip='{$this->userIP}' AND gen_type='failed_login' AND gen_datestamp > ".$since.$settled);
+
+				$this->pruneFailureNotes();
 
 				$failLimit = vartrue($pref['failed_login_limit'],10);
+				$durations = e107::getPref('ban_durations', array());
 
-				if($fails >= $failLimit)
+				if($fails >= $failLimit && !empty($durations[eIPHandler::BAN_TYPE_LOGINS]))
 				{
 					$time = time();
 					$description = e107::getParser()->lanVars(LAN_LOGIN_18,$failLimit);
-					e107::getIPHandler()->add_ban(4, $description, $this->userIP, 1);
-					e107::getDb()->insert("generic", "0, 'auto_banned', '".$time."', 0, '{$this->userIP}', '{$extra_text}', '".LAN_LOGIN_20.": ".e107::getParser()->toDB($username).", ".LAN_LOGIN_17);
-					e107::getEvent()->trigger('user_ban_failed_login', array('time'=>$time, 'ip'=>$this->userIP, 'other'=>$extra_text)); 
+					$banAdded = e107::getIPHandler()->add_ban(4, $description, $this->userIP, 1);
+
+					if($banAdded === true)
+					{
+						$this->failureBanTime = $time;
+					}
+
+					if($banAdded !== false)
+					{
+						e107::getDb()->insert("generic", "0, 'auto_banned', '".$time."', 0, '{$this->userIP}', '{$extra_text}', '".LAN_LOGIN_20.": ".e107::getParser()->toDB($username).", ".LAN_LOGIN_17."'");
+						e107::getEvent()->trigger('user_ban_failed_login', array('time'=>$time, 'ip'=>$this->userIP, 'other'=>$extra_text));
+					}
 				}
 			}
 		}
@@ -714,6 +749,8 @@ class userlogin
 	 */
 	protected function logNote($title, $text)
 	{
+		if($this->testMode === true) { return; }
+
 		$title = e107::getParser()->toDB($title);
 	//	$text  = e107::getParser()->toDB($text);
 	//	$text = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS_);
@@ -738,8 +775,58 @@ class userlogin
 	 */
 	protected function genNote($username, $msg1)
 	{
+		if($this->testMode === true) { return; }
+
 		$message = e107::getParser()->toDB($msg1." ::: ".LAN_LOGIN_1.": ".$username);
-		e107::getDb()->insert("generic", "0, 'failed_login', '".time()."', 0, '{$this->userIP}', 0, '{$message}'");
+
+		if(!empty($this->failureNoteId))
+		{
+			e107::getDb()->update('generic', "gen_chardata='".$message."' WHERE gen_id=".(int) $this->failureNoteId);
+			return;
+		}
+
+		$noteId = e107::getDb()->insert("generic", "0, 'failed_login', '".time()."', 0, '{$this->userIP}', 0, '{$message}'");
+
+		$this->failureNoteId = is_numeric($noteId) ? (int) $noteId : 0;
+	}
+
+	/**
+	 * Drop failed-login history past FAILURE_RETENTION. Bounded per call, and
+	 * indexed on (gen_type, gen_datestamp), so it stays cheap once caught up.
+	 *
+	 * @return void
+	 */
+	protected function pruneFailureNotes()
+	{
+		$cutoff = time() - self::FAILURE_RETENTION;
+		e107::getDb()->delete('generic',
+			"gen_type='failed_login' AND gen_datestamp < ".$cutoff." LIMIT ".self::FAILURE_PRUNE_LIMIT);
+	}
+
+	/**
+	 * Drop the failed_login row and the ban this attempt recorded. Call from any
+	 * path that ends up authorising the user.
+	 *
+	 * @return void
+	 */
+	protected function discardFailureNote()
+	{
+		if(!empty($this->failureNoteId))
+		{
+			e107::getDb()->delete('generic', 'gen_id='.(int) $this->failureNoteId);
+
+			$this->failureNoteId = 0;
+		}
+
+		if(empty($this->failureBanTime)) { return; }
+
+		$ip = e107::getDb()->escape($this->userIP);
+		e107::getDb()->delete('banlist', "banlist_ip='".$ip."' AND banlist_bantype=".eIPHandler::BAN_TYPE_LOGINS
+			." AND banlist_datestamp >= ".(int) $this->failureBanTime);
+
+		$this->failureBanTime = 0;
+
+		e107::getIPHandler()->regenerateFiles();
 	}
 
 
@@ -752,6 +839,7 @@ class userlogin
 	 */
 	public function validLogin($userData, $autologin=false)
 	{
+		$this->discardFailureNote();
 
 		$cookieval = $this->userMethods->makeUserCookie($userData, $autologin);
 

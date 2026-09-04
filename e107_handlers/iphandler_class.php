@@ -1080,7 +1080,8 @@ class eIPHandler
 		// See if address already in the banlist
 		if ($sql->select('banlist', '`banlist_bantype`', "`banlist_ip`='{$ban_ip}'"))
 		{
-			list($banType) = $sql->fetch();
+			$banRow = $sql->fetch();
+			$banType = $banRow['banlist_bantype'];
 			
 			if ($banType >= eIPHandler::BAN_TYPE_WHITELIST)
 			{ // Got a whitelist entry for this

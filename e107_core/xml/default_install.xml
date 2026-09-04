@@ -23,6 +23,17 @@
 		<core name="autoban">1</core>
 		<core name="autologinpostsignup">1</core>
 		<core name="ban_date_format">%H:%M %d-%m-%y</core>
+		<core name="ban_durations"><![CDATA[array (
+  0 => 0,
+  -1 => 0,
+  -2 => 0,
+  -3 => 0,
+  -4 => 1,
+  -5 => 0,
+  -6 => 0,
+  -8 => 0,
+)]]></core>
+		<core name="ban_durations_login_default_applied">1</core>
 		<core name="ban_max_online_access">100,200</core>
 		<core name="ban_retrigger">0</core>
 		<core name="cachestatus"></core>
