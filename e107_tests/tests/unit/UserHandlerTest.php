@@ -170,6 +170,28 @@
 			$this->assertSame(PASSWORD_INVALID, $this->usr->CheckPassword('hunter3', 'plainuser', $stored));
 		}
 
+		/** Admin > Password reads both of the handler's field-type tables from outside the class to build the _FIELD_TYPES envelope it writes with. */
+		public function testFieldTypesAreReadableFromOutsideTheHandler()
+		{
+
+			$userMethods = e107::getUserSession();
+
+			$userData = array('data' => array(
+				'user_password' => 'a-stored-hash',
+				'user_prefs'    => 'a:0:{}',
+				'user_pwchange' => 1756944000,
+			));
+
+			validatorClass::addFieldTypes($userMethods->userVettingInfo, $userData, $userMethods->otherFieldTypes);
+
+			$this->assertSame(array(
+				'user_password' => 'string',
+				'user_prefs'    => 'string',
+				'user_pwchange' => 'int',
+			), $userData['_FIELD_TYPES']);
+
+		}
+
 /*
 		public function testCheckPassword()
 		{

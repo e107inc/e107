@@ -122,6 +122,7 @@ class WorkspaceCleanup extends Extension
 		'e107_plugins/forum/forum_update_check.php', // @see ForumUpgradeCsrfCest
 		'e107_tests_xup_token_probe.php',     // @see ProviderLoginTokenCest
 		'e107_tests_xup_route_probe.php',     // @see XupProviderLoginTokenCest
+		'e107_tests_admin_password_probe.php',       // @see AdminPasswordChangeCest
 	];
 
 	/** Files a test moves aside for one test method, as parked name to the name it belongs back at. */

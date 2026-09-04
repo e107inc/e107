@@ -1655,7 +1655,7 @@ class e_install
 
 		if(varset($_POST['pass1']) || !vartrue($this->previous_steps['admin']['password']))
 		{
-			if($_POST['pass1'] != $_POST['pass2'])
+			if(varset($_POST['pass1'], '') !== varset($_POST['pass2'], ''))
 			{
 				$this->required['pass1'] = LANINS_049; // passwords don't match.
 			}
