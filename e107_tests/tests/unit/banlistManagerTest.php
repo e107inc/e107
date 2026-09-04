@@ -7,10 +7,14 @@
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  */
 
+use e107\Ip\Address;
+use e107\Ip\RangeFile;
+use e107\Ip\RangeLookup;
+
 /**
  * The two halves of banlistManager that act on stored rows: banRetriggerAction(),
  * the cron half of ban retriggering, and writeBanListFiles(), which turns the
- * table into the files eIPHandler prefix-matches every visitor against.
+ * table into the range table eIPHandler searches for every visitor.
  */
 class banlistManagerTest extends \Test\Unit
 {
@@ -35,16 +39,12 @@ class banlistManagerTest extends \Test\Unit
 	const IP_UNTOUCHED = '10.66.66.22';
 	const IP_WILDCARD = '10.77.66.*';
 	const IP_IN_WILDCARD = '10.77.66.65';
-	const IP_WILDCARD_TOKEN = '0000:0000:0000:0000:0000:ffff:0a4d:42';
 	const IP_WILDCARD_WHITELISTED = '10.77.99.*';
-	const IP_WILDCARD_WHITELISTED_TOKEN = '0000:0000:0000:0000:0000:ffff:0a4d:63';
-	const IP_WILDCARD_WHITELISTED_STORED = '10.77.99.';
 	const IP_IN_WHITELISTED_WILDCARD = '10.77.99.65';
 	const IP_WILDCARD_LEGACY = '10.77.55.*';
-	const IP_WILDCARD_LEGACY_TOKEN = '0000:0000:0000:0000:0000:ffff:0a4d:37';
 	const WHITELIST_TYPE = 100;
 	const LEGACY_TYPE = 0;
-	const IP_NOBODY_BANNED = '203.0.113.9';
+	const USER_TYPE_AS_STORED_BY_USERS_PHP = 6;
 
 	protected function _before()
 	{
@@ -72,11 +72,14 @@ class banlistManagerTest extends \Test\Unit
 
 			// The ban files are generated from the table, and the run under test
 			// regenerated them with these rows in. Put them back as they were.
-			$this->mgr->writeBanListFiles('ip');
+			$this->mgr->writeBanListFiles('ip,htaccess,csv');
 		}
 
-		e107::getConfig()->set('ban_durations', $this->savedDurations);
-		e107::getConfig()->set('ban_retrigger', $this->savedRetrigger);
+		putenv('REMOTE_ADDR');
+		$config = e107::getConfig();
+		$config->set('ban_durations', $this->savedDurations);
+		$config->set('ban_retrigger', $this->savedRetrigger);
+		$config->save(false, true, false);
 	}
 
 	/**
@@ -114,36 +117,74 @@ class banlistManagerTest extends \Test\Unit
 	}
 
 	/**
-	 * The match tokens of the generated IP ban file, in the order written.
+	 * The compiled range table as the last writeBanListFiles('ip') left it.
 	 *
-	 * @return array
+	 * @return RangeFile
 	 */
-	private function banFileTokens()
+	private function compiledTable()
 	{
-		$file = e107::getIPHandler()->getConfigDir().eIPHandler::BAN_FILE_IP_NAME.eIPHandler::BAN_FILE_EXTENSION;
-		self::assertFileExists($file, 'writeBanListFiles() wrote no IP ban file');
+		$file = e107::getIPHandler()->getConfigDir().eIPHandler::BAN_FILE_RANGES_NAME.eIPHandler::BAN_FILE_EXTENSION;
+		self::assertFileExists($file, 'writeBanListFiles() wrote no range table');
 
-		$tokens = array();
-		foreach(file($file) as $line)
+		$set = RangeFile::open($file);
+		self::assertNotNull($set, 'the range table has to be one this version reads');
+
+		return $set;
+	}
+
+	/**
+	 * @param RangeLookup $set
+	 * @param string $address
+	 * @return array banlist_id => enforced type, for the rows covering the address, in lookup order
+	 */
+	private function rowsCovering(RangeLookup $set, $address)
+	{
+		$segment = $set->find(Address::toHex($address));
+		$rows = array();
+
+		if($segment < 0)
 		{
-			$parts = explode(' ', trim($line));
-			if(count($parts) === 3) $tokens[] = $parts[0];
+			return $rows;
 		}
 
-		return $tokens;
+		foreach($set->hits($segment) as $index)
+		{
+			$entry = $set->entry($index);
+			$rows[$entry['id']] = $entry['type'];
+		}
+
+		return $rows;
+	}
+
+	/**
+	 * The lines of a generated text file, without the PHP guard.
+	 *
+	 * @param string $name one of the eIPHandler::BAN_FILE_* names
+	 * @return string[]
+	 */
+	private function generatedLines($name)
+	{
+		$file = e107::getIPHandler()->getConfigDir().$name.eIPHandler::BAN_FILE_EXTENSION;
+		self::assertFileExists($file, 'writeBanListFiles() wrote no '.$name.' file');
+
+		$lines = file($file, FILE_IGNORE_NEW_LINES);
+		self::assertSame('<?php', $lines[0], 'the file has to stay inert when served');
+		self::assertSame('; die();', $lines[1]);
+
+		return array_slice($lines, 2);
 	}
 
 
 	/**
-	 * Queue one address for retriggering, in the format eIPHandler writes and
-	 * splitLogEntry() reads: timestamp, address, negative reason code, notes.
+	 * Queue one row for retriggering, in the format eIPHandler writes and
+	 * splitLogEntry() reads: timestamp, banlist_id, negative reason code, notes.
 	 *
-	 * @param string $ip
+	 * @param int $id
 	 * @return void
 	 */
-	private function haveRetriggerEntry($ip)
+	private function haveRetriggerEntry($id)
 	{
-		file_put_contents($this->retriggerFile, time().' '.$ip.' '.self::BAN_TYPE." Retrigger: ".$ip."\n");
+		file_put_contents($this->retriggerFile, time().' '.$id.' '.self::BAN_TYPE." Retrigger: ".self::IP_TRIGGERED."\n");
 	}
 
 	/**
@@ -159,7 +200,7 @@ class banlistManagerTest extends \Test\Unit
 
 		$expiresSoon = time() + 60;
 		$id = $this->haveBan(self::IP_TRIGGERED, $expiresSoon);
-		$this->haveRetriggerEntry(self::IP_TRIGGERED);
+		$this->haveRetriggerEntry($id);
 
 		$before = time();
 		$count = $this->mgr->banRetriggerAction();
@@ -185,9 +226,9 @@ class banlistManagerTest extends \Test\Unit
 		e107::getConfig()->set('ban_durations', array(self::BAN_TYPE => self::HOURS));
 
 		$untouchedExpiry = time() + 999999;
-		$this->haveBan(self::IP_TRIGGERED, time() + 60);
+		$triggered = $this->haveBan(self::IP_TRIGGERED, time() + 60);
 		$other = $this->haveBan(self::IP_UNTOUCHED, $untouchedExpiry);
-		$this->haveRetriggerEntry(self::IP_TRIGGERED);
+		$this->haveRetriggerEntry($triggered);
 
 		$this->mgr->banRetriggerAction();
 
@@ -196,90 +237,157 @@ class banlistManagerTest extends \Test\Unit
 	}
 
 	/**
-	 * eIPHandler compares the visitor's encoded address against each entry of
-	 * this file, so a wildcard row has to reach it encoded. Written in the
-	 * dotted form it was typed in, it prefixes nothing and bans nobody, while
-	 * the admin screen goes on showing it as a live ban.
-	 *
-	 * A legacy row is a ban too. Its stored type is 0 rather than negative, and
-	 * it is normalised to BAN_TYPE_UNKNOWN before anything is written, so it
-	 * reaches the file on the same terms as every other ban.
+	 * A visit from inside a wildcard ban has to reach the row that banned it.
+	 * banAction() queues what it matched for retriggering and
+	 * banRetriggerAction() looks it up; when the queued value was the
+	 * truncated prefix the old file held, no row ever equalled it and the ban
+	 * never extended (#6205). The queue now carries the row id, which a stored
+	 * range with spaces in it could never have been looked up by.
 	 */
-	public function testWildcardBanIsWrittenAsAnEncodedPrefix()
+	public function testAVisitFromInsideAWildcardBanRetriggersThatRow()
 	{
-		$this->haveBan(self::IP_WILDCARD, 0);
-		$this->haveBan(self::IP_WILDCARD_LEGACY, 0, self::LEGACY_TYPE);
+		$config = e107::getConfig();
+		$config->set('ban_retrigger', 1);
+		$config->set('ban_durations', array(self::BAN_TYPE => self::HOURS));
+		$config->save(false, true, false);
 
+		$expiresSoon = time() + 60;
+		$id = $this->haveBan(self::IP_WILDCARD, $expiresSoon);
 		$this->mgr->writeBanListFiles('ip');
+		$this->mgr->writeBanMessageFile();
 
-		$tokens = $this->banFileTokens();
-		self::assertContains(self::IP_WILDCARD_TOKEN, $tokens,
-			'a wildcard ban has to reach the file as the encoded prefix of its range');
-		self::assertContains(self::IP_WILDCARD_LEGACY_TOKEN, $tokens,
-			'and a legacy wildcard ban with it, since the type it is normalised to is a ban');
-		self::assertSame(0, strpos(e107::getIPHandler()->ipEncode(self::IP_IN_WILDCARD), self::IP_WILDCARD_TOKEN),
-			'and that prefix has to be the start of every encoded address in the range');
+		putenv('REMOTE_ADDR='.self::IP_IN_WILDCARD);
+		list($output) = $this->runInBootedCli('echo "REACHED";');
+		putenv('REMOTE_ADDR');
+
+		self::assertNotContains('REACHED', $output, 'a visitor inside the banned range has to be stopped');
+		self::assertFileExists($this->retriggerFile, 'the banned visit has to be queued for retriggering');
+		self::assertStringContainsString(' '.$id.' ', file_get_contents($this->retriggerFile),
+			'the queued value has to be the row id, which is what banRetriggerAction() looks up');
+
+		$before = time();
+		self::assertSame(1, $this->mgr->banRetriggerAction(), 'the queued visit has to reach one row');
+		self::assertGreaterThanOrEqual($before + (self::HOURS * 3600), $this->expiryOf($id),
+			'the wildcard ban has to run for its full duration from the visit');
 	}
 
 	/**
-	 * A whitelist entry is not a ban, and the ban type is the whole of what
-	 * tells them apart. Whitelist rows are written into this file first and end
-	 * the scan on a match, so a wildcard whitelist row that reaches it encoded
-	 * stops every ban inside its range firing, with nothing on the banlist
-	 * screen saying so. It keeps the stored form it has always had, which
-	 * prefixes no encoded address and exempts nobody.
+	 * Every form a row has ever been stored in has to be enforced as the
+	 * range it names: dotted and encoded singles, the x-wildcard encoding,
+	 * dotted wildcards, CIDR and hyphenated ranges. A 0.7-era row with type
+	 * 0 is enforced as an unknown ban, and the positive 6 users.php stores
+	 * is enforced as a user ban rather than read as an allow entry. Patterns
+	 * that are not addresses are counted, so a list holding only those still
+	 * makes ban() run the database checks, and junk is neither.
 	 */
-	public function testWildcardWhitelistRowIsWrittenAsStored()
+	public function testCompiledTableCoversEveryStoredForm()
 	{
-		$this->haveBan(self::IP_WILDCARD_WHITELISTED, 0, self::WHITELIST_TYPE);
-
-		$this->mgr->writeBanListFiles('ip');
-
-		$tokens = $this->banFileTokens();
-		self::assertNotContains(self::IP_WILDCARD_WHITELISTED_TOKEN, $tokens,
-			'a wildcard whitelist row must not reach the file in the form the ban check matches');
-		self::assertContains(self::IP_WILDCARD_WHITELISTED_STORED, $tokens,
-			'it has to reach the file in the form it was stored in');
-		self::assertNotSame(0, strpos(e107::getIPHandler()->ipEncode(self::IP_IN_WHITELISTED_WILDCARD), self::IP_WILDCARD_WHITELISTED_STORED),
-			'and that form has to stay inert against the addresses in its range');
-	}
-
-	/**
-	 * The other direction, and the reason the encoder is choosy. whatIsThis()
-	 * calls anything built from hex digits, dots and wildcards an address, so
-	 * all of these rows reach the file, and each has to arrive exactly as it
-	 * does today: a host name and a plain stored address name no range to
-	 * encode, an embedded wildcard would widen the ban to a /8, a wildcard
-	 * inside an octet would shrink it to the single address 10.77.66.5, and an
-	 * octet of two wildcards is not an octet ipEncode() can read.
-	 */
-	public function testAnAddressPatternThatCannotBeEncodedIsLeftAsStored()
-	{
-		$expected = array(
-			'bad.cc'      => 'bad.cc',
-			'10.66.66.33' => '10.66.66.33',
-			'10.*.66.5'   => '10.',
-			'10.77.66.5*' => '10.77.66.5',
-			'10.77.66.**' => '10.77.66.',
+		$rows = array(
+			'10.66.66.33'                                 => array(self::BAN_TYPE, '10.66.66.33'),
+			'0000:0000:0000:0000:0000:ffff:0a42:4222'     => array(self::BAN_TYPE, '10.66.66.34'),
+			'0000:0000:0000:0000:0000:ffff:0a4d:42xx'     => array(self::BAN_TYPE, self::IP_IN_WILDCARD),
+			self::IP_WILDCARD_LEGACY                      => array(self::LEGACY_TYPE, '10.77.55.9'),
+			'10.77.70.0/24'                               => array(self::BAN_TYPE, '10.77.70.200'),
+			'10.77.71.5-10.77.71.9'                       => array(self::BAN_TYPE, '10.77.71.7'),
+			'10.77.56.1'                                  => array(self::USER_TYPE_AS_STORED_BY_USERS_PHP, '10.77.56.1'),
+			'2001:db8:6245::/48'                          => array(self::BAN_TYPE, '2001:db8:6245:1::1'),
+			self::IP_WILDCARD_WHITELISTED                 => array(self::WHITELIST_TYPE, self::IP_IN_WHITELISTED_WILDCARD),
 		);
-		foreach(array_keys($expected) as $stored)
+		$ids = array();
+
+		foreach($rows as $stored => $spec)
 		{
-			$this->haveBan($stored, 0);
+			$ids[$stored] = $this->haveBan($stored, 0, $spec[0]);
 		}
+
+		$this->haveBan(self::IP_IN_WHITELISTED_WILDCARD, 0);
+		$hostRow = $this->haveBan('*.example.invalid', 0);
+		$emailRow = $this->haveBan('*@example.invalid', 0);
+		$junkRow = $this->haveBan('bad.cc', 0);
 
 		$this->mgr->writeBanListFiles('ip');
+		$set = $this->compiledTable();
 
-		$tokens = $this->banFileTokens();
-		foreach($expected as $stored => $token)
+		$expectedType = array(
+			self::LEGACY_TYPE                          => eIPHandler::BAN_TYPE_UNKNOWN,
+			self::USER_TYPE_AS_STORED_BY_USERS_PHP     => eIPHandler::BAN_TYPE_USER,
+		);
+
+		foreach($rows as $stored => $spec)
 		{
-			self::assertContains($token, $tokens, $stored.' has to reach the ban file exactly as it did before');
+			$covering = $this->rowsCovering($set, $spec[1]);
+			self::assertArrayHasKey($ids[$stored], $covering, $stored.' has to cover '.$spec[1]);
+			$type = isset($expectedType[$spec[0]]) ? $expectedType[$spec[0]] : $spec[0];
+			self::assertSame($type, $covering[$ids[$stored]], $stored.' is enforced as the wrong type');
 		}
 
-		$visitor = e107::getIPHandler()->ipEncode(self::IP_NOBODY_BANNED);
-		foreach($tokens as $token)
+		$inWhitelist = $this->rowsCovering($set, self::IP_IN_WHITELISTED_WILDCARD);
+		self::assertSame($ids[self::IP_WILDCARD_WHITELISTED], key($inWhitelist),
+			'the whitelist row has to come before the ban on the same address');
+
+		self::assertSame(array(), $this->rowsCovering($set, '10.77.71.10'), 'a hyphenated range ends where it says');
+		self::assertSame(array(), $this->rowsCovering($set, '10.66.66.35'), 'a single address covers only itself');
+		self::assertGreaterThanOrEqual(2, $set->others(), 'the host and email patterns have to be counted');
+
+		for($i = 0; $i < $set->entryCount(); $i++)
 		{
-			self::assertNotSame(0, strpos($visitor, $token),
-				'no entry may match an address nobody banned, and this one does: '.$token);
+			$entry = $set->entry($i);
+			self::assertNotContains($entry['id'], array($hostRow, $emailRow, $junkRow), 'a pattern is not a range');
 		}
+	}
+
+	/**
+	 * Apache reads dotted addresses and CIDR blocks; the encoded colon form
+	 * the file used to carry matches nothing there (#6199). A range that is
+	 * not a block is written as the blocks that make it up, and a whitelist
+	 * row is an allow line.
+	 */
+	public function testHtaccessFileIsDottedAndInCidrBlocks()
+	{
+		$this->haveBan('0000:0000:0000:0000:0000:ffff:0a42:4222', 0);
+		$this->haveBan('10.77.70.0/24', 0);
+		$this->haveBan('10.77.71.5-10.77.71.9', 0);
+		$this->haveBan('2001:db8:6245::/48', 0);
+		$this->haveBan(self::IP_WILDCARD_WHITELISTED, 0, self::WHITELIST_TYPE);
+		$this->haveBan('*.example.invalid', 0);
+
+		$this->mgr->writeBanListFiles('htaccess');
+		$lines = $this->generatedLines(eIPHandler::BAN_FILE_HTACCESS);
+
+		foreach(array('deny from 10.66.66.34', 'deny from 10.77.70.0/24', 'deny from 10.77.71.5/32', 'deny from 10.77.71.6/31', 'deny from 10.77.71.8/31', 'deny from 2001:db8:6245::/48', 'allow from 10.77.99.0/24') as $line)
+		{
+			self::assertContains($line, $lines, $line.' has to be in the .htaccess file');
+		}
+
+		foreach($lines as $line)
+		{
+			self::assertMatchesRegularExpression('#^(allow|deny) from [0-9a-f.:]+(/[0-9]+)?$#', $line, 'not a directive Apache reads: '.$line);
+			self::assertStringNotContainsString('0000:0000:0000', $line, 'the encoded form matches nothing in Apache');
+			self::assertStringNotContainsString('example.invalid', $line, 'a host pattern is not an address');
+		}
+	}
+
+	/**
+	 * The csv option read a column the table does not have, so every export
+	 * said a ban never expired.
+	 */
+	public function testCsvOptionWritesTheExpiry()
+	{
+		$expires = time() + 3600;
+		$this->haveBan('10.77.72.1', $expires);
+
+		$this->mgr->writeBanListFiles('csv');
+
+		$row = null;
+		foreach($this->generatedLines(eIPHandler::BAN_FILE_CSV_NAME) as $line)
+		{
+			if(strpos($line, '10.77.72.1,') === 0)
+			{
+				$row = str_getcsv($line);
+			}
+		}
+
+		self::assertNotNull($row, 'the row has to be exported');
+		self::assertSame(eShims::strftime('%Y%m%d_%H%M%S', $expires), $row[2], 'the third field is the expiry');
 	}
 }

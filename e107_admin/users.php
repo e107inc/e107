@@ -916,6 +916,7 @@ class users_admin_ui extends e_admin_ui
 		$sql->createQueryBuilder()->delete('banlist')
 			->where('banlist_ip', $row['user_ip'])
 			->execute();
+		e107::getIPHandler()->regenerateFiles();
 
 		$vars = array('x'=>$sysuser->getId(), 'y'=> $sysuser->getName(), 'z'=> $sysuser->getValue('email'));
 
@@ -984,7 +985,7 @@ class users_admin_ui extends e_admin_ui
 				}
 				else
 				{
-					if ($iph->add_ban(6, USRLAN_149.$row['user_name'].'/'.$row['user_loginname'], $row['user_ip'], USERID))
+					if ($iph->add_ban(eIPHandler::BAN_TYPE_USER, USRLAN_149.$row['user_name'].'/'.$row['user_loginname'], $row['user_ip'], USERID))
 					{
 						// Successful IP ban
 						$mes->addSuccess(str_replace("{IP}", $iph->ipDecode($row['user_ip']), USRLAN_137));

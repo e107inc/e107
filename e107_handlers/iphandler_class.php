@@ -51,13 +51,21 @@
  *				- do we have a separate text file for the accesses in need of retriggering? Could then delete it once actioned; keeps it small
  *	@todo	Implement flood bans - needs db access - maybe leave to the second part of this file or the online handler
  *
- *	All IP addresses are stored in 'normal' form - a fixed length IPV6 format with separator colons.
+ *	Single IP addresses are stored in 'normal' form - a fixed length IPV6 format with separator colons. Ranges are
+ *	stored as written; {@see \e107\Banlist\Entry} tells the forms apart and {@see \e107\Ip\RangeSet} is the compiled
+ *	table the address check searches.
  *
  *	To use:
  *		include this file, early on (before DB accesses started), and instantiate class ipHandler.
  *
  */
 
+use e107\Banlist\Entry;
+use e107\Ip\Address;
+use e107\Ip\Range;
+use e107\Ip\RangeFile;
+use e107\Ip\RangeLookup;
+use e107\Ip\RangeSet;
 
 class eIPHandler
 {
@@ -93,6 +101,7 @@ class eIPHandler
 	const BAN_FILE_HTACCESS 	= 'banhtaccess';		/// File in format for direct paste into .htaccess
 	const BAN_FILE_CSV_NAME 	= 'banlistcsv';			/// Output file in CSV format
 	const BAN_FILE_RETRIGGER_NAME = 'banretrigger';		/// Any bans needing retriggering
+	const BAN_FILE_RANGES_NAME	= 'banranges';			/// Compiled table of whitelisted and banned address ranges
 	const BAN_FILE_EXTENSION 	= '.php';				/// File extension to use
 
 	/**
@@ -128,20 +137,35 @@ class eIPHandler
 
 
 	/**
-	 *	Flag set to the IP address that triggered the match, if current IP has an expired ban to clear
+	 *	The expired ban-list row the current IP matched, as {@see RangeSet::entry()} gives it, or FALSE
 	 */
 	private $clearBan = FALSE;
 
 
 	/**
-	 *	IP Address from ban list file which matched (may have wildcards)
+	 *	Stored address of the ban-list row which matched
 	 */
 	private $matchAddress = '';
 
 	/**
-	 *	Number of entries read from banlist/whitelist
+	 *	banlist_id of the ban-list row which matched
+	 */
+	private $matchId = 0;
+
+	/**
+	 *	Number of ban-list rows in force: address ranges plus email and host patterns
 	 */
 	private $actionCount = 0;
+
+	/**
+	 *	@var RangeLookup the compiled address ranges
+	 */
+	private $rangeSet;
+
+	/**
+	 *	Whether a compiled range table was read at construction
+	 */
+	private $rangeSetLoaded = false;
 
 	/**
 	 *	Constructor
@@ -161,7 +185,8 @@ class eIPHandler
 
 		if ($configDir)
 		{
-			$this->ourConfigDir = realpath($configDir);
+			$real = realpath($configDir);
+			$this->ourConfigDir = rtrim($real === false ? $configDir : $real, '/\\').'/';
 		}
 		else
 		{
@@ -173,6 +198,7 @@ class eIPHandler
 		$this->serverIP = $this->ipEncode(isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : 'x.x.x.x');
 
 		$this->makeUserToken();
+		$this->loadRangeSet();
 
 		$ipStatus = $this->checkIP($this->ourIP);
 
@@ -393,7 +419,7 @@ class eIPHandler
 				{
 					if ($tmp = fopen($this->ourConfigDir.eIPHandler::BAN_FILE_RETRIGGER_NAME.eIPHandler::BAN_FILE_EXTENSION, 'a'))
 					{
-						$logLine = time().' '.$this->matchAddress.' '.$code.' Retrigger: '.$this->ourIP."\n";	// Same format as log entries - can share routines
+						$logLine = time().' '.$this->matchId.' '.$code.' Retrigger: '.$this->ourIP."\n";
 						fwrite($tmp,$logLine);
 						fclose($tmp);
 					}
@@ -426,49 +452,69 @@ class eIPHandler
 
 
 	/**
-	 *	Get whitelist and blacklist
+	 *	Open the compiled range table {@see banlistManager::writeBanListFiles()} wrote.
 	 *
-	 *	@return array  - each element is an array with elements 'ip', 'action, and 'time_limit'
+	 *	A missing, unreadable or foreign file leaves the table empty and is logged; it never stops the request.
+	 *	{@see eIPHandler::ban()} regenerates the file once the database is open.
 	 *
-	 *	Note: Intentionally a single call, so the two lists can be split across files as convenient
-	 *
-	 *	At present the list is a single file, one entry per line, whitelist entries first. Most precisely defined addresses before larger subnets
-	 *
-	 *	Format of each line is:
-	 *		IP_address	action	expiry_time additional_parameters
-	 *
-	 *	where action is: >0 = whitelisted, <0 blacklisted, value is 'reason code'
-	 *		expiry_time is zero for an indefinite ban, time stamp for a limited ban
-	 *		additional_parameters may be required for certain actions in the future
+	 *	@return void
 	 */
-	private function getWhiteBlackList()
+	private function loadRangeSet()
 	{
-		$ret = array();
-		$fileName = $this->ourConfigDir.eIPHandler::BAN_FILE_IP_NAME.eIPHandler::BAN_FILE_EXTENSION;
-		if (!is_readable($fileName)) return $ret;
+		$fileName = $this->ourConfigDir.eIPHandler::BAN_FILE_RANGES_NAME.eIPHandler::BAN_FILE_EXTENSION;
+		$set = RangeFile::open($fileName);
 
-		$vals  = file($fileName);
-		if ($vals === FALSE || count($vals) == 0) return $ret;
-		if (strpos($vals[0], '<?php') !== 0)
+		if ($set === null && file_exists($fileName))
 		{
-			echo 'Invalid list file';
-			die();			// Debatable, because admins can't get in if this fails. But can manually delete the file.
+			$this->logBanItem(0, 'Unreadable range table: '.$fileName);
 		}
-		unset($vals[0]);
-		foreach ($vals as $line)
+
+		$this->rangeSetLoaded = $set !== null;
+		$this->rangeSet = $set === null ? new RangeSet() : $set;
+		$this->actionCount = $this->rangeSet->entryCount() + $this->rangeSet->others();
+	}
+
+
+
+	/**
+	 *	The ban-list rows covering an address: the first still in force, and the first found expired.
+	 *
+	 *	Whitelist rows come first, then the narrowest range, so the live row is the one that decides.
+	 *
+	 *	@param string $hex address as {@see Address::toHex()} gives it
+	 *	@return array 'live' and 'expired', each a row as {@see RangeSet::entry()} gives it or null
+	 */
+	private function matchEntries($hex)
+	{
+		$found = array('live' => null, 'expired' => null);
+		$segment = $this->rangeSet->find($hex);
+
+		if ($segment < 0)
 		{
-			if (strpos($line, ';') === 0) continue;
-			if (trim($line))
+			return $found;
+		}
+
+		$now = time();
+
+		foreach ($this->rangeSet->hits($segment) as $index)
+		{
+			$entry = $this->rangeSet->entry($index);
+
+			if ($entry === null)
 			{
-				$tmp = explode(' ',$line);
-				if (count($tmp) >= 2)
-				{
-					$ret[] = array('ip' => $tmp[0], 'action' => $tmp[1], 'time_limit' => intval(varset($tmp[2], 0)));
-				}
+				continue;
+			}
+
+			$expired = $entry['expires'] > 0 && $entry['expires'] <= $now;
+			$slot = $expired ? 'expired' : 'live';
+
+			if ($found[$slot] === null)
+			{
+				$found[$slot] = $entry;
 			}
 		}
-		$this->actionCount = count($ret);		// Note how many entries in list
-		return $ret;
+
+		return $found;
 	}
 
 
@@ -479,45 +525,59 @@ class eIPHandler
 	 *	@param string $addr - IP address in 'normal' form
 	 *
 	 *	@return int - >0 = whitelisted, 0 = not listed (= 'OK'), <0 is 'reason code' for ban
-	 *
-	 *	note: Could maybe combine this with getWhiteBlackList() for efficiency, but makes it less general
 	 */
 	private function checkIP($addr)
 	{
-		$now = time();
-		$checkLists = $this->getWhiteBlackList();
+		$hex = Address::toHex($addr);
 
-		if($this->debug)
+		if ($hex === null)
 		{
-			echo "<h4>Banlist.php</h4>";
-			print_a($checkLists);
-			print_a("Now: ".$now. "   ".date('r',$now));
+			return 0;
 		}
 
+		$found = $this->matchEntries($hex);
 
-		foreach ($checkLists as $val)
+		if ($found['expired'] !== null)
 		{
-			if (strpos($addr, $val['ip']) === 0)	// See if our address begins with an entry - handles wildcards
-			{	// Match found
-
-				if($this->debug)
-				{
-					print_a("Found ".$addr." in file.  TimeLimit: ".date('r',$val['time_limit']));
-				}
-
-				if (($val['time_limit'] == 0) || ($val['time_limit'] > $now))
-				{	// Indefinite ban, or timed ban (not expired) or whitelist entry
-					if ($val['action']== eIPHandler::BAN_TYPE_LEGACY) return eIPHandler::BAN_TYPE_MANUAL;		// Precautionary
-					$this->matchAddress = $val['ip'];
-					return $val['action'];			// OK to just return - PHP should release the memory used by $checkLists
-				}
-				// Time limit expired
-				$this->clearBan = $val['ip'];	// Note what triggered the match - it could be a wildcard (although timed ban unlikely!)
-				return 0;						// Can just return - shouldn't be another entry
-			}
-
+			$this->clearBan = $found['expired'];
 		}
-		return 0;
+
+		if ($found['live'] === null)
+		{
+			return 0;
+		}
+
+		$this->matchAddress = $found['live']['ip'];
+		$this->matchId = $found['live']['id'];
+
+		if ($this->debug)
+		{
+			print_a('Ban list match for '.$addr.': '.$this->matchAddress.' (type '.$found['live']['type'].')');
+		}
+
+		return (int) $found['live']['type'];
+	}
+
+
+
+	/**
+	 *	Whether a whitelist row still in force covers an address.
+	 *
+	 *	@param string $address in any form {@see Range::fromString()} reads
+	 *	@return bool
+	 */
+	private function isWhitelisted($address)
+	{
+		$range = Range::fromString($address);
+
+		if ($range === null)
+		{
+			return false;
+		}
+
+		$found = $this->matchEntries($range->start());
+
+		return $found['live'] !== null && $found['live']['type'] >= eIPHandler::BAN_TYPE_WHITELIST;
 	}
 
 
@@ -614,7 +674,11 @@ class eIPHandler
 	/**
 	 *    Given a potentially truncated IPV6 address as used in the ban list files, adds 'x' characters etc to create
 	 *    a normalised IPV6 address as stored in the DB. Returned length is exactly 39 characters
-	 * @param $address
+	 *
+	 * @deprecated v2.4.0 Avoid in new code and migrate existing call sites when refactoring: the ban files no longer
+	 *             hold truncated addresses, and {@see \e107\Ip\Range::fromString()} reads the wildcard form directly.
+	 *             This method remains supported and tested, with no removal planned.
+	 * @param string $address
 	 * @return string
 	 */
 	public function ip6AddWildcards($address)
@@ -725,6 +789,9 @@ class eIPHandler
 	 * Given a string which may be IP address, email address etc, tries to work out what it is
 	 * Uses a fairly simplistic (but quick) approach - does NOT check formatting etc
 	 *
+	 * @deprecated v2.4.0 Avoid in new code and migrate existing call sites when refactoring: this calls anything made of
+	 *             hex digits, dots and asterisks an address, so *.de is an address to it. {@see \e107\Banlist\Entry::fromText()}
+	 *             checks the format and says what is stored. This method remains supported and tested, with no removal planned.
 	 * @param string $string
 	 * @return string ip|email|url|ftp|unknown
 	 */
@@ -902,15 +969,17 @@ class eIPHandler
 		$sql = e107::getDb();
 
 		if ($this->clearBan !== FALSE)
-		{	// Expired ban to clear - match exactly the address which triggered this action - could be a wildcard
-			$clearAddress = $this->ip6AddWildcards($this->clearBan);
-			if ($sql->createQueryBuilder()->delete('banlist')->where('banlist_ip', $clearAddress)->execute())
+		{
+			if ($sql->createQueryBuilder()->delete('banlist')->where('banlist_id', (int) $this->clearBan['id'])->execute())
 			{
-				$this->actionCount--;		// One less item on list
-				$this->logBanItem(0,'Ban cleared: '.$clearAddress);
-				// Now regenerate the text files - so no further triggers from this entry
-				$this->regenerateFiles();
+				$this->actionCount--;
+				$this->logBanItem(0, 'Ban cleared: '.$this->clearBan['ip']);
 			}
+			$this->regenerateFiles();
+		}
+		elseif (!$this->rangeSetLoaded && is_writable($this->ourConfigDir))
+		{
+			$this->regenerateFiles();
 		}
 
 
@@ -1116,6 +1185,7 @@ class eIPHandler
 			case 1 : $bantype = eIPHandler::BAN_TYPE_MANUAL; break;
 			case 2 : $bantype = eIPHandler::BAN_TYPE_FLOOD; break;
 			case 4 : $bantype = eIPHandler::BAN_TYPE_LOGINS; break;
+			case 6 : $bantype = eIPHandler::BAN_TYPE_USER; break;
 		}
 		if (!$ban_message)
 		{
@@ -1125,7 +1195,7 @@ class eIPHandler
 		{
 			$ban_ip = $this->getIP();
 		}
-		$ban_ip = preg_replace('/[^\w@\.:]*/', '', urldecode($ban_ip)); // Make sure no special characters
+		$ban_ip = preg_replace('/[^\w@\.:\/\-\*]/', '', urldecode($ban_ip));
 		if (!$ban_ip)
 		{
 			return FALSE;
@@ -1135,24 +1205,15 @@ class eIPHandler
 			->select('banlist_bantype')->from('banlist')
 			->where('banlist_ip', $ban_ip)
 			->fetchRow();
-		if ($banRow)
+		if ($banRow && $banRow['banlist_bantype'] < eIPHandler::BAN_TYPE_WHITELIST)
 		{
-			$banType = $banRow['banlist_bantype'];
-
-			if ($banType >= eIPHandler::BAN_TYPE_WHITELIST) // Got a whitelist entry for this
-			{
-				$log->addEvent(4, __FILE__."|".__FUNCTION__."@".__LINE__, "BANLIST_11", 'LAN_AL_BANLIST_11', $ban_ip, FALSE, LOG_TO_ROLLING);
-				return FALSE;
-			}
 			return 1;		// Already in ban list
 		}
-		/*
-		// See if the address is in the whitelist
-		if ($sql->select('banlist', '*', "`banlist_ip`='{$ban_ip}' AND `banlist_bantype` >= ".eIPHandler::BAN_TYPE_WHITELIST))
-		{ // Got a whitelist entry for this
-			//$admin_log->addEvent(4, __FILE__."|".__FUNCTION__."@".__LINE__, "BANLIST_11", 'LAN_AL_BANLIST_11', $ban_ip, FALSE, LOG_TO_ROLLING);
+		if ($banRow || $this->isWhitelisted($ban_ip))
+		{
+			$log->addEvent(4, __FILE__."|".__FUNCTION__."@".__LINE__, "BANLIST_11", 'LAN_AL_BANLIST_11', $ban_ip, FALSE, LOG_TO_ROLLING);
 			return FALSE;
-		} */
+		}
 		if(!empty($pref['enable_rdns_on_ban']))
 		{
 			$ban_message .= 'Host: '.$this->get_host_name($ban_ip);
@@ -1392,16 +1453,17 @@ class banlistManager
 
 
 	/**
-	 *	Create banlist-related text files as requested:
-	 *		List of whitelisted and blacklisted IP addresses
+	 *	Create banlist-related files as requested:
+	 *		Compiled table of whitelisted and banned address ranges, searched by {@see eIPHandler}
 	 *		file for easy import into .htaccess file  (allow from...., deny from....)
 	 *		Generic CSV-format export file
 	 *
-	 *	@param string $options {ip|htaccess|csv} - comma separated list (no spaces) to select which files to write
+	 *	@param string $options {ip|htaccess|csv} - comma separated list (no spaces) to select which files to write; ip is the
+	 *				table {@see RangeFile} reads
 	 *	@param string $typeList - optional comma-separated list of ban types required (default is all)
+	 *	@return bool whether every requested file was written
 	 *	Uses constants:
-	 *		BAN_FILE_IP_NAME		Saves list of banned and whitelisted IP addresses
-	 *		BAN_FILE_ACTION_NAME	Details of actions for different ban types
+	 *		BAN_FILE_RANGES_NAME	Compiled address ranges
 	 *		BAN_FILE_HTACCESS		File in format for direct paste into .htaccess
 	 *		BAN_FILE_CSV_NAME
 	 *		BAN_FILE_EXTENSION		File extension to append
@@ -1411,133 +1473,143 @@ class banlistManager
 	{
 		e107::getMessage()->addDebug("Writing new Banlist files.");
 		$sql = e107::getDb();
-		$ipManager = e107::getIPHandler();
 
-		$optList = explode(',',$options);
-		$fileList = array();				// Array of file handles once we start
+		$fileNameList = array('ip' => eIPHandler::BAN_FILE_RANGES_NAME, 'htaccess' => eIPHandler::BAN_FILE_HTACCESS, 'csv' => eIPHandler::BAN_FILE_CSV_NAME);
+		$optList = array_intersect(explode(',', $options), array_keys($fileNameList));
 
-		$fileNameList = array('ip' => eIPHandler::BAN_FILE_IP_NAME, 'htaccess' => eIPHandler::BAN_FILE_HTACCESS, 'csv' => eIPHandler::BAN_FILE_CSV_NAME);
+		if (empty($optList))
+		{
+			return false;
+		}
 
 		$qb = $sql->createQueryBuilder()->select('*')->from('banlist');
 		if ($typeList != '')
 		{
 			$qb->whereIn('banlist_bantype', array_map('intval', explode(',', $typeList)));
 		}
-		$qb->orderBy('banlist_bantype', 'DESC');			// Order ensures whitelisted addresses appear first
+		$qb->orderBy('banlist_id', 'ASC');
 
-		// Create a temporary file for each type as demanded. Vet the options array on this pass, as well
-		foreach($optList as $k => $opt)
-		{
-			if (isset($fileNameList[$opt]))
-			{
-				if ($tmp = fopen($this->ourConfigDir.$fileNameList[$opt].'_tmp'.eIPHandler::BAN_FILE_EXTENSION, 'w'))
-				{
-					$fileList[$opt] = $tmp;			// Save file handle
-					fwrite($fileList[$opt], "<?php\n; die();\n");
-					//echo "Open File for write: ".$this->ourConfigDir.$fileNameList[$opt].'_tmp'.eIPHandler::BAN_FILE_EXTENSION.'<br />';
-				}
-				else
-				{
-					unset($optList[$k]);
-					/// @todo - flag error?
-				}
-			}
-			else
-			{
-				unset($optList[$k]);
-			}
-		}
+		$set = new RangeSet();
+		$text = array('htaccess' => '', 'csv' => '');
 
 		foreach ($qb->fetchEach() as $row)
 		{
-			if ($row['banlist_bantype'] == eIPHandler::BAN_TYPE_LEGACY) $row['banlist_bantype'] = eIPHandler::BAN_TYPE_UNKNOWN;		// Handle legacy bans
-			$encodedAddress = $this->trimWildcard($row['banlist_bantype'] < 0
-				? $this->encodeBanAddress($row['banlist_ip']) : $row['banlist_ip']);
-			$row['banlist_ip'] = $this->trimWildcard($row['banlist_ip']);
-			if ($row['banlist_ip'] == '') continue;								// Ignore empty IP addresses
-			if ($ipManager->whatIsThis($row['banlist_ip']) != 'ip') continue;		// Ignore non-numeric IP Addresses
-			foreach ($optList as $opt)
+			$entry = Entry::fromText($row['banlist_ip']);
+			$range = $entry->range();
+
+			if ($range === null)
 			{
-				$line = '';
-				switch ($opt)
+				if ($entry->kind() !== Entry::INVALID)
 				{
-					case 'ip' :
-						// IP_address	action	expiry_time additional_parameters
-						$line = $encodedAddress.' '.$row['banlist_bantype'].' '.$row['banlist_banexpires']."\n";
-						break;
-					case 'htaccess' :
-						$line = (($row['banlist_bantype'] > 0) ? 'allow from ' : 'deny from ').$row['banlist_ip']."\n";
-						break;
-					case 'csv' :		/// @todo - when PHP5.1 is minimum, can use fputcsv() function
-						$line = $row['banlist_ip'].','.$this->dateFormat($row['banlist_datestamp']).','.$this->dateFormat($row['banlist_expires']).',';
-						$line .= $row['banlist_bantype'].',"'.$row['banlist_reason'].'","'.$row['banlist_notes'].'"'."\n";
-						break;
+					$set->addOther();
 				}
-				fwrite($fileList[$opt], $line);
+				continue;
+			}
+
+			$type = $this->enforcedType($row['banlist_bantype']);
+			$set->add($range, $row['banlist_id'], $type, $row['banlist_banexpires'], $row['banlist_ip']);
+			$text['htaccess'] .= $this->htaccessLines($range, $type);
+			$text['csv'] .= $row['banlist_ip'].','.$this->dateFormat($row['banlist_datestamp']).','.$this->dateFormat($row['banlist_banexpires']).',';
+			$text['csv'] .= $type.',"'.$row['banlist_reason'].'","'.$row['banlist_notes'].'"'."\n";
+		}
+
+		$set->compile();
+		$written = true;
+
+		foreach ($optList as $opt)
+		{
+			$fileName = $this->ourConfigDir.$fileNameList[$opt].eIPHandler::BAN_FILE_EXTENSION;
+			$content = $opt === 'ip' ? RangeFile::render($set) : "<?php\n; die();\n".$text[$opt];
+			$written = e107::writeFileAtomic($fileName, $content) && $written;
+		}
+
+		if ($written && in_array('ip', $optList))
+		{
+			$this->removeLegacyFiles();
+		}
+
+		return $written;
+	}
+
+
+	/**
+	 *	The ban type a row is enforced as: 0.7-era rows carry 0, or a positive code where the negative one is meant,
+	 *	and a code with no ban message of its own is enforced as an unknown ban rather than left unmatched.
+	 *
+	 *	@param int $type as stored
+	 *	@return int
+	 */
+	private function enforcedType($type)
+	{
+		$type = (int) $type;
+
+		if ($type >= eIPHandler::BAN_TYPE_WHITELIST)
+		{
+			return $type;
+		}
+
+		if ($type > 0)
+		{
+			$type = -$type;
+		}
+
+		if ($type == eIPHandler::BAN_TYPE_LEGACY || !in_array($type, self::getValidReasonList(), true))
+		{
+			return eIPHandler::BAN_TYPE_UNKNOWN;
+		}
+
+		return $type;
+	}
+
+
+	/**
+	 *	@param Range $range
+	 *	@param int $type
+	 *	@return string one allow or deny line per CIDR block, in dotted or compressed notation
+	 */
+	private function htaccessLines(Range $range, $type)
+	{
+		$directive = ($type >= eIPHandler::BAN_TYPE_WHITELIST) ? 'allow from ' : 'deny from ';
+
+		if ($range->isSingle())
+		{
+			return $directive.$range->toDisplay()."\n";
+		}
+
+		$lines = '';
+
+		foreach ($range->toCidr() as $block)
+		{
+			$lines .= $directive.$block."\n";
+		}
+
+		return $lines;
+	}
+
+
+	/**
+	 *	Remove the prefix-token ban file earlier versions wrote, and the temporary files their copy-then-delete publish left behind.
+	 *
+	 *	@return void
+	 */
+	private function removeLegacyFiles()
+	{
+		$names = array(
+			eIPHandler::BAN_FILE_IP_NAME,
+			eIPHandler::BAN_FILE_IP_NAME.'_tmp',
+			eIPHandler::BAN_FILE_HTACCESS.'_tmp',
+			eIPHandler::BAN_FILE_CSV_NAME.'_tmp',
+		);
+
+		foreach ($names as $name)
+		{
+			$file = $this->ourConfigDir.$name.eIPHandler::BAN_FILE_EXTENSION;
+
+			if (file_exists($file))
+			{
+				unlink($file);
 			}
 		}
-
-		// Now close each file
-		foreach ($optList as $opt)
-		{
-			fclose($fileList[$opt]);
-		}
-
-		// Finally, delete the working file, rename the temporary one
-		// Docs suggest that 'newname' is auto-deleted if it exists (as it usually should)
-		//		- but didn't appear to work, hence copy then delete
-		foreach ($optList as $opt)
-		{
-			$oldName = $this->ourConfigDir.$fileNameList[$opt].'_tmp'.eIPHandler::BAN_FILE_EXTENSION;
-			$newName = $this->ourConfigDir.$fileNameList[$opt].eIPHandler::BAN_FILE_EXTENSION;
-			copy($oldName, $newName);
-			unlink($oldName);
-		}
-	}
-
-
-	/**
-	 * Ban file form of a stored address: dotted IPv4 whose whole-octet wildcards run to the end, through {@see eIPHandler::ipEncode()}; anything else as stored.
-	 *
-	 * @param string $ip
-	 * @return string
-	 */
-	private function encodeBanAddress($ip)
-	{
-		$ip = trim($ip);
-		$wildcard = strpos($ip, '*');
-		if ($wildcard === FALSE) return $ip;
-		if ($wildcard === 0 || $ip[$wildcard - 1] !== '.') return $ip;
-		if (trim((string) substr($ip, $wildcard), '*.') !== '') return $ip;
-		if (filter_var(str_replace('*', '0', $ip), FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) === FALSE) return $ip;
-		$encoded = e107::getIPHandler()->ipEncode($ip, TRUE);
-		return $encoded === FALSE ? $ip : $encoded;
-	}
-
-
-	/**
-	 *    Trim wildcards from IP addresses
-	 *
-	 * @param string $ip - IP address in any normal form
-	 *
-	 *    Note - this removes all characters after (and including) the first '*' or 'x' found. So an '*' or 'x' in the middle of a string may
-	 *            cause unexpected results.
-	 * @return string
-	 */
-	private function trimWildcard($ip)
-	{
-		$ip = trim($ip);
-		$temp = strpos($ip, 'x');
-		if ($temp !== FALSE)
-		{
-			return (string) substr($ip, 0, $temp);
-		}
-		$temp = strpos($ip, '*');
-		if ($temp !== FALSE)
-		{
-			return (string) substr($ip, 0, $temp);
-		}
-		return $ip;
 	}
 
 
@@ -1600,21 +1672,15 @@ class banlistManager
 	 */
 	public function writeBanMessageFile()
 	{
-		$pref['ban_messages'] = e107::getPref('ban_messages');
+		$messages = e107::getPref('ban_messages');
+		$content = "<?php\n; die();\n";
 
-		$oldName = $this->ourConfigDir.eIPHandler::BAN_FILE_ACTION_NAME.'_tmp'.eIPHandler::BAN_FILE_EXTENSION;
-		if ($tmp = fopen($oldName, 'w'))
+		foreach ($this->getValidReasonList() as $type)
 		{
-			fwrite($tmp, "<?php\n; die();\n");
-			foreach ($this->getValidReasonList() as $type)
-			{
-				fwrite($tmp,'['.$type.']'.$pref['ban_messages'][$type]."\n");
-			}
-			fclose($tmp);
-			$newName = $this->ourConfigDir.eIPHandler::BAN_FILE_ACTION_NAME.eIPHandler::BAN_FILE_EXTENSION;
-			copy($oldName, $newName);
-			unlink($oldName);
+			$content .= '['.$type.']'.varset($messages[$type], '')."\n";
 		}
+
+		e107::writeFileAtomic($this->ourConfigDir.eIPHandler::BAN_FILE_ACTION_NAME.eIPHandler::BAN_FILE_EXTENSION, $content);
 	}
 
 
@@ -1704,7 +1770,8 @@ class banlistManager
 
 	/**
 	 *	Update expiry time for IP addresses that have accessed the site while banned.
-	 *	Processes the entries in the 'ban retrigger' action file, and deletes the file
+	 *	Processes the entries in the 'ban retrigger' action file, and deletes the file. Each line carries the
+	 *	banlist_id of the row that matched, since a stored range need not equal any single address.
 	 *
 	 *	Needs to be called from a cron job, at least once per hour, and ideally every few minutes. Otherwise banned users who access
 	 *	the site in the period since the last call to this routine may be able to get in because their ban has expired. (Unlikely to be
@@ -1749,7 +1816,7 @@ class banlistManager
 
 		foreach ($ipAction as $ipKey => $ipInfo)
 		{
-			if ($ourDb->createQueryBuilder()->select('*')->from('banlist')->where('banlist_ip', $ipKey)->execute() === 1)
+			if ($ourDb->createQueryBuilder()->select('*')->from('banlist')->where('banlist_id', (int) $ipKey)->execute() === 1)
 			{
 				if ($row = $ourDb->fetch())
 				{

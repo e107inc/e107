@@ -8,16 +8,34 @@
  *
  */
 
+use e107\Ip\Range;
+use e107\Ip\RangeFile;
+use e107\Ip\RangeSet;
 use e107\Reflection\ReflectionMethod;
+use e107\Reflection\ReflectionProperty;
 
 class eIPHandlerTest extends \Test\Unit
 {
+	const VISITOR = '198.51.100.77';
+	const NEIGHBOUR = '198.51.100.78';
+	const TEST_NET = '198.51.100.0/24';
+	const STRANGER = '203.0.113.9';
+	const OUTSIDER = '203.0.113.99';
+	const REASON = 'eIPHandlerTest';
 
 	/** @var eIPHandler */
 	protected $ip;
 
+	/** @var string[] scratch directories to remove */
+	private $scratchDirs = array();
+
+	/** @var mixed the enable_rdns pref as found */
+	private $savedRdns = null;
+
 	protected function _before()
 	{
+		$this->savedRdns = e107::getConfig()->get('enable_rdns');
+		unset($_SERVER['REMOTE_ADDR']);
 
 		try
 		{
@@ -35,8 +53,95 @@ class eIPHandlerTest extends \Test\Unit
 	{
 		e107::setRegistry('core/eIPHandler/checkBan', null);
 		e107::getSession('eIPHandler')->clearData();
+		unset($_SERVER['REMOTE_ADDR']);
+		putenv('REMOTE_ADDR');
+		e107::getConfig()->set('enable_rdns', $this->savedRdns);
+
+		e107::getDb()->createQueryBuilder()->delete('banlist')->where('banlist_reason', self::REASON)->execute();
+
 		$this->ip->regenerateFiles();
 
+		foreach($this->scratchDirs as $dir)
+		{
+			array_map('unlink', glob($dir.'*'));
+			rmdir($dir);
+		}
+	}
+
+	/**
+	 * @param string $ip stored as given
+	 * @param int $type
+	 * @param int $expires
+	 * @return int banlist_id
+	 */
+	private function haveRow($ip, $type, $expires = 0)
+	{
+		$id = e107::getDb()->insert('banlist', array(
+			'banlist_id'         => 0,
+			'banlist_ip'         => $ip,
+			'banlist_bantype'    => $type,
+			'banlist_datestamp'  => time() - 60,
+			'banlist_banexpires' => $expires,
+			'banlist_admin'      => 0,
+			'banlist_reason'     => self::REASON,
+			'banlist_notes'      => '',
+		));
+		self::assertNotEmpty($id, 'could not write the banlist row this test needs');
+
+		return (int) $id;
+	}
+
+	/**
+	 * A compiled range table in a directory of its own, for constructing the
+	 * handler without touching the site's files or the database.
+	 *
+	 * @param array[] $rows each: text, id, type, expires
+	 * @param int $others rows that are patterns rather than addresses
+	 * @return string the directory, with a trailing slash
+	 */
+	private function haveTable(array $rows, $others = 0)
+	{
+		$dir = sys_get_temp_dir().'/e107_iph_'.uniqid('', true).'/';
+		mkdir($dir, 0777, true);
+		$this->scratchDirs[] = $dir;
+
+		$set = new RangeSet();
+		foreach($rows as $row)
+		{
+			$set->add(Range::fromString($row[0]), $row[1], $row[2], $row[3], $row[0]);
+		}
+		for($i = 0; $i < $others; $i++)
+		{
+			$set->addOther();
+		}
+		$set->compile();
+		file_put_contents($dir.eIPHandler::BAN_FILE_RANGES_NAME.eIPHandler::BAN_FILE_EXTENSION, RangeFile::render($set));
+
+		return $dir;
+	}
+
+	/**
+	 * @param string $name
+	 * @return mixed a private property of the handler under test
+	 */
+	private function handlerProperty($name)
+	{
+		$property = new ReflectionProperty(eIPHandler::class, $name);
+
+		return $property->getValue($this->ip);
+	}
+
+	/**
+	 * @param string $visitor REMOTE_ADDR for the child
+	 * @return string[] the child's output lines
+	 */
+	private function bootAs($visitor)
+	{
+		putenv('REMOTE_ADDR='.$visitor);
+		list($output) = $this->runInBootedCli('echo "REACHED";');
+		putenv('REMOTE_ADDR');
+
+		return $output;
 	}
 
 
@@ -113,8 +218,204 @@ class eIPHandlerTest extends \Test\Unit
 
 	//	e107::getConfig()->set('ban_durations', $banDurations)->save(false, true, false);
 
-		$result = $this->ip->add_ban(2, "unit test generated ban", '123.123.123.123');
+		$result = $this->ip->add_ban(2, self::REASON, '123.123.123.123');
 		$this::assertTrue($result);
+	}
+
+	/**
+	 * A visitor inside a whitelisted range is let through however many bans
+	 * cover the same address, and the whitelist row is the one remembered, so
+	 * the log names it. The directory handed to the constructor is used as
+	 * given: realpath() strips the trailing slash every file name is built on.
+	 */
+	public function testWhitelistedVisitorIsLetThroughAndRemembered()
+	{
+		$dir = $this->haveTable(array(
+			array(self::TEST_NET, 1, eIPHandler::BAN_TYPE_WHITELIST, 0),
+			array(self::VISITOR, 2, eIPHandler::BAN_TYPE_MANUAL, 0),
+		));
+		$_SERVER['REMOTE_ADDR'] = self::VISITOR;
+
+		$this->ip->__construct($dir);
+
+		self::assertSame(self::VISITOR, $this->ip->getIP(true));
+		self::assertSame(self::TEST_NET, $this->handlerProperty('matchAddress'), 'the whitelist row has to be the match');
+		self::assertFalse($this->handlerProperty('clearBan'));
+		self::assertSame(rtrim(realpath($dir), '/').'/', $this->ip->getConfigDir());
+	}
+
+	/**
+	 * An address no range covers is neither banned nor remembered.
+	 */
+	public function testUnlistedVisitorIsLetThrough()
+	{
+		$dir = $this->haveTable(array(array(self::TEST_NET, 1, eIPHandler::BAN_TYPE_MANUAL, 0)));
+		$_SERVER['REMOTE_ADDR'] = self::STRANGER;
+
+		$this->ip->__construct($dir);
+
+		self::assertSame('', $this->handlerProperty('matchAddress'));
+		self::assertFalse($this->handlerProperty('clearBan'));
+	}
+
+	/**
+	 * An expired ban does not stop the visitor, but its row is remembered so
+	 * ban() can delete it once the database is open, by id rather than by an
+	 * address no wildcard row equals (#6205). A whitelist row over the same
+	 * address is still the match.
+	 */
+	public function testExpiredBanIsRememberedForClearing()
+	{
+		$dir = $this->haveTable(array(array(self::VISITOR, 5, eIPHandler::BAN_TYPE_FLOOD, time() - 5)));
+		$_SERVER['REMOTE_ADDR'] = self::VISITOR;
+
+		$this->ip->__construct($dir);
+
+		$expired = $this->handlerProperty('clearBan');
+		self::assertSame(5, $expired['id'], 'the expired row is remembered by id');
+		self::assertSame(self::VISITOR, $expired['ip']);
+		self::assertSame('', $this->handlerProperty('matchAddress'));
+
+		$dir = $this->haveTable(array(
+			array('10.77.66.*', 6, eIPHandler::BAN_TYPE_FLOOD, time() - 5),
+			array('10.77.0.0/16', 7, eIPHandler::BAN_TYPE_WHITELIST, 0),
+		));
+		$_SERVER['REMOTE_ADDR'] = '10.77.66.65';
+		$this->ip = $this->make('eIPHandler');
+
+		$this->ip->__construct($dir);
+
+		$expired = $this->handlerProperty('clearBan');
+		self::assertSame(6, $expired['id']);
+		self::assertSame('10.77.0.0/16', $this->handlerProperty('matchAddress'));
+	}
+
+	/**
+	 * A file that is not a range table, such as the prefix-token file older
+	 * versions wrote under a similar name, leaves the visitor unbanned rather
+	 * than stopping every request, and the site regenerates on the next
+	 * database-backed check.
+	 */
+	public function testAForeignTableIsAnEmptyOne()
+	{
+		$dir = sys_get_temp_dir().'/e107_iph_'.uniqid('', true).'/';
+		mkdir($dir, 0777, true);
+		$this->scratchDirs[] = $dir;
+		file_put_contents($dir.eIPHandler::BAN_FILE_RANGES_NAME.eIPHandler::BAN_FILE_EXTENSION, "<?php\n; die();\n0000:0000:0000:0000:0000:ffff:c633:644d -1 0\n");
+		$_SERVER['REMOTE_ADDR'] = self::VISITOR;
+
+		$this->ip->__construct($dir);
+
+		self::assertSame('', $this->handlerProperty('matchAddress'));
+		self::assertFalse($this->handlerProperty('rangeSetLoaded'), 'ban() has to know there is nothing loaded');
+	}
+
+	/**
+	 * A ban row stored in dotted form bans the address it names. The old
+	 * prefix scan compared it against the encoded visitor address and
+	 * matched nobody, while the banlist screen listed it as live (#6245).
+	 */
+	public function testDottedIpv4BanRowBansTheAddress()
+	{
+		$this->haveRow(self::VISITOR, eIPHandler::BAN_TYPE_MANUAL);
+		$this->ip->regenerateFiles();
+
+		self::assertNotContains('REACHED', $this->bootAs(self::VISITOR), 'the dotted row has to ban the address it names');
+		self::assertContains('REACHED', $this->bootAs(self::NEIGHBOUR), 'and nobody else');
+	}
+
+	/**
+	 * A visit from inside an expired wildcard ban deletes that row. ban()
+	 * used to delete by an address rebuilt from the truncated token, which
+	 * no wildcard row equals, so the row stayed and cost one dead DELETE per
+	 * request (#6205).
+	 */
+	public function testExpiredWildcardBanIsDeletedByBan()
+	{
+		$id = $this->haveRow('10.77.66.*', eIPHandler::BAN_TYPE_FLOOD, time() - 10);
+		$this->ip->regenerateFiles();
+
+		self::assertContains('REACHED', $this->bootAs('10.77.66.65'), 'an expired ban stops nobody');
+		self::assertSame(0, e107::getDb()->createQueryBuilder()->from('banlist')->where('banlist_id', $id)->count(),
+			'the expired row has to be gone after the visit');
+	}
+
+	/**
+	 * The whitelist exists so the site's own people cannot be locked out by
+	 * an automatic ban. add_ban() only ever looked for a whitelist row
+	 * equal to the address, so a whitelisted range protected nobody in it.
+	 * The addresses are passed encoded, as every caller in core passes them.
+	 */
+	public function testAddBanRefusesAnAddressInsideAWhitelistedRange()
+	{
+		$this->haveRow(self::TEST_NET, eIPHandler::BAN_TYPE_WHITELIST);
+		$this->ip->regenerateFiles();
+		$_SERVER['REMOTE_ADDR'] = self::STRANGER;
+		$this->ip->__construct();
+		$inside = $this->ip->ipEncode(self::VISITOR);
+		$outside = $this->ip->ipEncode(self::OUTSIDER);
+
+		self::assertFalse($this->ip->add_ban(2, self::REASON, $inside), 'an address inside a whitelisted range cannot be banned');
+		self::assertSame(0, e107::getDb()->createQueryBuilder()->from('banlist')->where('banlist_ip', $inside)->count());
+		self::assertTrue($this->ip->add_ban(2, self::REASON, $outside), 'an address outside it can');
+		self::assertSame(1, e107::getDb()->createQueryBuilder()->from('banlist')->where('banlist_ip', $outside)->count());
+	}
+
+	/**
+	 * A ban list holding only host patterns is still a ban list. ban() skips
+	 * the reverse-DNS check when it believes the list is empty, and the old
+	 * file counted only address rows, so a host-only list was never checked.
+	 * The table here holds one pattern and no address, which the old file
+	 * could not express at all.
+	 */
+	public function testHostnameOnlyBanlistStillRunsTheDomainCheck()
+	{
+		$asked = array();
+		$this->ip = $this->make('eIPHandler', array(
+			'get_host_name' => function($address) use (&$asked)
+			{
+				$asked[] = $address;
+
+				return 'host.example.test';
+			},
+		));
+		$dir = $this->haveTable(array(), 1);
+		e107::getConfig()->set('enable_rdns', 1);
+		$_SERVER['REMOTE_ADDR'] = self::STRANGER;
+		$this->ip->__construct($dir);
+
+		$this->ip->ban();
+
+		self::assertSame(array($this->ip->getIP()), $asked, 'the reverse-DNS check has to run for a host-only list');
+	}
+
+	/**
+	 * Deprecated, and still answering as it always has: the truncated token
+	 * is padded with x nibbles and colons to the 39 characters of a stored
+	 * address.
+	 */
+	public function testIp6AddWildcardsPadsToTheStoredLength()
+	{
+		self::assertSame('0000:0000:0000:0000:0000:ffff:0a4d:42xx', $this->ip->ip6AddWildcards('0000:0000:0000:0000:0000:ffff:0a4d:42'));
+		self::assertSame('0000:0000:0000:0000:0000:ffff:xxxx:xxxx', $this->ip->ip6AddWildcards('0000:0000:0000:0000:0000:ffff'));
+		self::assertSame('2001:0db8:0000:0000:0000:0000:0000:0001', $this->ip->ip6AddWildcards('2001:0db8:0000:0000:0000:0000:0000:0001'));
+	}
+
+	/**
+	 * Deprecated, and still answering as it always has, including the
+	 * answer that made it unfit for the ban file: a host name made of hex
+	 * digits and dots is an address to it.
+	 */
+	public function testWhatIsThisKeepsItsRoughGuesses()
+	{
+		self::assertSame('ip', $this->ip->whatIsThis('10.77.66.65'));
+		self::assertSame('ip', $this->ip->whatIsThis('2001:db8::1'));
+		self::assertSame('ip', $this->ip->whatIsThis('10.77.66.*'));
+		self::assertSame('ip', $this->ip->whatIsThis('bad.cc'));
+		self::assertSame('email', $this->ip->whatIsThis('user@example.com'));
+		self::assertSame('url', $this->ip->whatIsThis('https://example.com/'));
+		self::assertSame('ftp', $this->ip->whatIsThis('ftp://example.com/'));
+		self::assertSame('unknown', $this->ip->whatIsThis('example.org'));
 	}
 
 	public function testIsAddressRoutable()
