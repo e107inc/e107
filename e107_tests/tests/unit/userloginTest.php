@@ -4,6 +4,12 @@
 	class userloginTest extends \Test\Unit
 	{
 
+		/** Fixture password; e107 reads any 32-character hash as PASSWORD_E107_MD5. */
+		const FIXTURE_PASS = 'never-used-by-these-tests';
+
+		/** user_join that makes the signup token an md5 of the form 0e[0-9]{30}. */
+		const MAGIC_JOIN = 18194810;
+
 		/** @var userlogin */
 		protected $lg;
 
@@ -93,6 +99,97 @@
 
 		}
 
+
+
+		/**
+		 * GHSA-9gr7-g6pw-5244: 'provider' arrived as the $autologin argument, which
+		 * class2.php fills from $_POST, and checkUserPassword() returns true for it
+		 * without looking at a password.
+		 */
+		public function testProviderModeIsNotSelectableThroughLogin()
+		{
+			$xup = 'Facebook_100000000000001';
+			$this->haveProviderUser('xupvictim', $xup);
+
+			$lg = new userlogin();
+
+			$this->assertFalse($lg->login($xup, '', 'provider', '', true));
+			$this->assertSame(array(), $lg->getUserData());
+		}
+
+		/**
+		 * The mode itself still works for the OAuth callback that owns it.
+		 */
+		public function testLoginProviderAdmitsTheLinkedAccount()
+		{
+			$xup = 'Facebook_100000000000002';
+			$id = $this->haveProviderUser('xupmember', $xup);
+
+			$lg = new userlogin();
+
+			$this->assertTrue($lg->loginProvider($xup));
+
+			$data = $lg->getUserData();
+			$this->assertSame($id, (int) $data['user_id']);
+		}
+
+		/**
+		 * The flag the mode now travels on must not survive the call that set it,
+		 * or the next login on the same instance inherits a password-free session.
+		 */
+		public function testProviderFlagDoesNotLeakIntoTheNextLogin()
+		{
+			$xup = 'Facebook_100000000000003';
+			$this->haveProviderUser('xupleak', $xup);
+
+			$lg = new userlogin();
+			$lg->loginProvider('Facebook_no-such-identifier');
+
+			$this->assertFalse($lg->login($xup, '', 0, '', true));
+		}
+
+		/**
+		 * GHSA-c33m item 3: the force-login token was compared with !=, and PHP
+		 * compares two numeric strings numerically, so a stored token of the form
+		 * 0e[0-9]{30} matched any password that also reads as zero. "0e0" is not
+		 * empty(), so the blank-field guard does not catch it either.
+		 */
+		public function testSignupTokenIsNotMatchedByANumericLookalike()
+		{
+			$this->haveProviderUser('xupmagic', '', self::MAGIC_JOIN);
+
+			$token = md5('xupmagic'.md5(self::FIXTURE_PASS).self::MAGIC_JOIN);
+			$this->assertTrue($token == '0e0', 'fixture no longer yields a 0e-form token');
+
+			$lg = new userlogin();
+
+			$this->assertFalse($lg->login('xupmagic', '0e0', 'signup', '', true));
+		}
+
+		/**
+		 * @param string $name
+		 * @param string $xup
+		 * @param int|null $join defaults to now
+		 * @return int user id
+		 */
+		private function haveProviderUser($name, $xup, $join = null)
+		{
+			$id = e107::getDb()->insert('user', array(
+				'user_name'      => $name,
+				'user_loginname' => $name,
+				'user_login'     => $name,
+				'user_email'     => $name.'@example.com',
+				'user_password'  => md5(self::FIXTURE_PASS),
+				'user_join'      => $join === null ? time() : $join,
+				'user_ban'       => USER_VALIDATED,
+				'user_class'     => '',
+				'user_xup'       => $xup,
+			));
+
+			$this->assertNotEmpty($id);
+
+			return (int) $id;
+		}
 
 
 		public function testErrorMessages()

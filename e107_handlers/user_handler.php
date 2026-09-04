@@ -108,7 +108,6 @@ class UserHandler
 		'user_email' => array('niceName'=> LAN_EMAIL, 'fieldType' => 'string', 'vetMethod' => '1,3', 'vetParam' => '', 'fieldOptional' => varset($pref['disable_emailcheck'],0), 'srcName' => 'email', 'dbClean' => 'toDB'),
 		'user_signature' => array('niceName'=> LAN_USER_09, 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'signature', 'dbClean' => 'toDB'),
 		'user_hideemail' => array('niceName'=> LAN_USER_10, 'fieldType' => 'int', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'hideemail', 'dbClean' => 'intval'),
-		'user_xup' => array('niceName'=> "XUP File", 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'user_xup', 'dbClean' => 'toDB'),
 		'user_class' => array('niceName'=> LAN_USER_12, 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'class', 'dataType' => '1')
 	);
 
@@ -803,7 +802,6 @@ class UserHandler
   user_image		image			image*			-				Avatar (may be external URL or file on server)
   user_hideemail	hideemail		hideemail		-				Flag to hide user's email address
   user_login		realname		realname		realname		User Real name
-  user_xup			xupexist$		user_xup		-				XUP file link
   user_class		class			class			userclass		User class (array on form)
 
 user_loginname may be auto-generated
