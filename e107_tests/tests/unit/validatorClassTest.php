@@ -247,13 +247,13 @@
 
 			$definitions = e107::getUserSession()->userVettingInfo;
 
-			$mistyped = array('password1' => '1e3', 'password2' => '1000');
+			$mistyped = array('password1' => '0123456789', 'password2' => '123456789');
 			$result = validatorClass::validateFields($mistyped, $definitions, true);
 
 			$this->assertSame(ERR_PASSWORDS_DIFFERENT, varset($result['errors']['user_password']),
-				'"1e3" and "1000" are two different passwords, so the confirmation must not match.');
+				'"0123456789" and "123456789" are two different passwords, so the confirmation must not match.');
 
-			$matching = array('password1' => '1e3', 'password2' => '1e3');
+			$matching = array('password1' => '0123456789', 'password2' => '0123456789');
 			$result = validatorClass::validateFields($matching, $definitions, true);
 
 			$this->assertArrayNotHasKey('user_password', $result['errors'],
