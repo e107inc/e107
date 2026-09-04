@@ -16,6 +16,9 @@
 		/** @var string Scratch language file for the write_lanfile() tests. */
 		protected $target;
 
+		/** @var string What the confirmation screen rendered on the last write. */
+		protected $rendered;
+
 		/** @var string Scratch plugin directory for the language-pack tests. */
 		protected $scratchPlugin;
 
@@ -38,7 +41,7 @@
 			global $ns;
 			$ns = e107::getRender();
 
-			$this->target = sys_get_temp_dir().'/e107-lancheck-'.uniqid('', true).'.php';
+			$this->target = e_LANGUAGEDIR.'e107_tests_lancheck_target.php';
 		}
 
 		protected function _after()
@@ -87,7 +90,7 @@
 
 			ob_start();
 			$this->lan->write_lanfile('English');
-			ob_end_clean();
+			$this->rendered = ob_get_clean();
 
 			return file_get_contents($this->target);
 		}
@@ -248,18 +251,24 @@
 			}
 		}
 
-		/** The guard must not be so tight that the feature stops working. */
-		public function testInitStillOpensAnOrdinaryLanguageFile()
+		/**
+		 * The edit screen's caption comes from language.php's own language file and from SEP,
+		 * which the admin theme defines; a unit run has neither and neither bears on the guard.
+		 */
+		protected function loadEditScreenLans()
 		{
-			// The edit screen's caption is built from language.php's own language
-			// file and from SEP, which the admin theme defines. Neither is present
-			// in a unit run, and neither has anything to do with the guard.
 			e107::coreLan('language', true);
 
 			if(!defined('SEP'))
 			{
 				define('SEP', ' &raquo; ');
 			}
+		}
+
+		/** The guard must not be so tight that the feature stops working. */
+		public function testInitStillOpensAnOrdinaryLanguageFile()
+		{
+			$this->loadEditScreenLans();
 
 			$_GET['sub']  = 'edit';
 			$_GET['lan']  = 'English';
@@ -269,6 +278,64 @@
 
 			$this->assertIsArray($result, 'An ordinary language file should still open.');
 			$this->assertSame('edit', $result['mode']);
+		}
+
+		/**
+		 * GHSA-pf37-7c5m-mpg3: the P and T types prefix the plugin and theme roots, and
+		 * containment stopped at the root itself, so any writable .php file under a plugin
+		 * opened in the editor and was replaced whole by the save that followed.
+		 */
+		public function testInitRefusesAPluginFileOutsideALanguagesDirectory()
+		{
+			$this->loadEditScreenLans();
+
+			$_GET['sub']  = 'edit';
+			$_GET['lan']  = 'English';
+			$_GET['type'] = 'P';
+			$_GET['file'] = 'download/handlers/SecureLinkDecorator.php';
+
+			$this->assertEmpty($this->lan->init(),
+				'The editor opened a plugin file that is not a language file.');
+			$this->assertArrayNotHasKey('lancheck-edit-file', $_SESSION,
+				'A plugin file outside a languages directory reached the save step.');
+		}
+
+		/** The plugin the editor is actually for still opens. */
+		public function testInitStillOpensAPluginLanguageFile()
+		{
+			$this->loadEditScreenLans();
+
+			$plugin = $this->writeScratchPlugin(array('English.php' => 'define("LAN_TEST_X", "Hello");'));
+
+			$_GET['sub']  = 'edit';
+			$_GET['lan']  = 'English';
+			$_GET['type'] = 'P';
+			$_GET['file'] = $plugin.'/languages/English.php';
+
+			$result = $this->lan->init();
+
+			$this->assertIsArray($result, 'A plugin language file should still open.');
+			$this->assertSame('edit', $result['mode']);
+		}
+
+		/**
+		 * GHSA-pf37-7c5m-mpg3: the header block the generator writes carried the
+		 * display name of whoever pressed save, and a display name holding the
+		 * sequence that ends a comment ended the header early, leaving the rest
+		 * of the name to run as PHP on every page that loads the file.
+		 */
+		public function testWrite_lanfileKeepsUserInputOutOfTheGeneratedHeader()
+		{
+			$written = $this->writeLanFile(array('LAN_X'), array('harmless'));
+
+			$this->assertStringNotContainsString(USERNAME, $written,
+				'The generated file must carry no value the saving user controls.');
+
+			$result = $this->includeGenerated('LAN_X');
+
+			$this->assertSame(0, $result['exit'], 'Including the generated file must not fatal.');
+			$this->assertSame('[VALUE]harmless', $result['stdout'],
+				'Nothing but the translation may come out of the generated file.');
 		}
 
 		/**
@@ -325,6 +392,19 @@
 		}
 
 		/**
+		 * PCRE's $ matches before a final newline as well as at the end of the subject, so a
+		 * name ending in one passed the test and went into the file as a constant no template
+		 * can ever reference by name.
+		 */
+		public function testWrite_lanfileRejectsAConstantNameEndingInANewline()
+		{
+			$written = $this->writeLanFile(array("FOO\n"), array('harmless'));
+
+			$this->assertStringNotContainsString('FOO', $written,
+				'A name that is not a usable identifier must not be written into the file.');
+		}
+
+		/**
 		 * The LC_ALL branch interpolates the value with no quotes at all, so this
 		 * one never even needed a quote to break out of.
 		 */
@@ -338,6 +418,8 @@
 
 			$result = $this->includeGenerated('LAN_UNUSED');
 
+			$this->assertSame(0, $result['exit'],
+				'Including the generated file must not fatal: '.$result['stdout']);
 			$this->assertStringNotContainsString('INJECTED_LOCALE', $result['stdout'],
 				'The setlocale() arguments must be written as quoted literals, not as source.');
 		}
@@ -411,6 +493,50 @@
 			}
 		}
 
+		/**
+		 * The encoder escapes a quote inside the phrase, so the reader has to walk past that
+		 * escape instead of taking it for the end of the literal: a phrase carrying one came
+		 * back cut short, and the next save wrote the truncation to disk.
+		 */
+		public function testWrite_lanfileRoundTripsAPhraseThatLooksLikeTheEndOfTheStatement()
+		{
+			// (what the editor shows, what the phrase comes out as at runtime)
+			$cases = array(
+				'escaped quote' => array('a\\"); b', 'a"); b'),
+				'apostrophe'    => array("abc'); def", "abc'); def"),
+			);
+
+			foreach($cases as $label => $pair)
+			{
+				list($typed, $value) = $pair;
+
+				$written = $this->writeLanFile(array('LAN_X'), array($typed));
+
+				$result = $this->includeGenerated('LAN_X');
+				$this->assertSame('[VALUE]'.$value, $result['stdout'],
+					'The phrase changed at runtime for case: '.$label);
+
+				$back = $this->lan->fill_phrases_array($written, 'tran');
+				$this->assertSame($typed, $back['tran']['LAN_X'],
+					'The reader stopped short of the quote that ends the literal for case: '.$label);
+			}
+		}
+
+		/**
+		 * A phrase ending in a space is ordinary in a language file, and the reader handed back
+		 * a trimmed copy, so an administrator who opened the file and saved it without changing
+		 * anything wrote the trimmed phrase over the real one.
+		 */
+		public function testFill_phrases_arrayKeepsTrailingWhitespace()
+		{
+			$written = $this->writeLanFile(array('LAN_X'), array('Guests: '));
+
+			$back = $this->lan->fill_phrases_array($written, 'tran');
+
+			$this->assertSame('Guests: ', $back['tran']['LAN_X'],
+				'A trailing space was dropped, so the next save writes the trimmed phrase.');
+		}
+
 		/** A NUL cannot be written into the literal, so it is dropped rather than left to truncate the phrase. */
 		public function testWrite_lanfileDropsNullBytesFromTheTranslation()
 		{
@@ -429,18 +555,23 @@
 		 */
 		public function testWrite_lanfileEscapesTheConfirmationHtml()
 		{
-			file_put_contents($this->target, "<?php\n");
+			$this->writeLanFile(array('LAN_X'), array('<script>alert(1)</script>'));
 
-			$_SESSION['lancheck-edit-file'] = $this->target;
-			$_POST['newdef']                = array('LAN_X');
-			$_POST['newlang']               = array('<script>alert(1)</script>');
-
-			ob_start();
-			$this->lan->write_lanfile('English');
-			$rendered = ob_get_clean();
-
-			$this->assertStringNotContainsString('<script>', $rendered,
+			$this->assertStringNotContainsString('<script>', $this->rendered,
 				'The saved translation must be escaped before it is echoed back.');
+		}
+
+		/**
+		 * The confirmation screen is the only account of what went to disk, and a phrase that
+		 * is not valid UTF-8 is an ordinary condition of a language pack rather than an odd
+		 * one, so the line has to survive one instead of disappearing.
+		 */
+		public function testWrite_lanfileShowsAPhraseThatIsNotValidUtf8()
+		{
+			$this->writeLanFile(array('LAN_X'), array("caf\xe9"));
+
+			$this->assertStringContainsString('LAN_X', $this->rendered,
+				'The confirmation screen dropped the whole line for a phrase that is not valid UTF-8.');
 		}
 
 		/**

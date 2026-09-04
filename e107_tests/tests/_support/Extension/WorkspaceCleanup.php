@@ -64,6 +64,7 @@ class WorkspaceCleanup extends Extension
 		'e107_tests_token_injection_probe.php', // @see CsrfTokenInjectionCest
 		'e107_tests_csrf_failclosed_probe.php', // @see CsrfFailClosedCest
 		'e107_tests_csrf_matrix_probe.php',      // @see CsrfModeMatrixCest
+		'e107_languages/e107_tests_lancheck_target.php', // @see lancheckTest
 		'e107_tests_forum_fixture_probe.php', // @see Helper\ForumFixture
 		'e107_tests_forum_canary.txt',        // @see ForumAttachmentCest
 		'e107_tests_pm_fixture_probe.php',    // @see PmAttachmentCest
