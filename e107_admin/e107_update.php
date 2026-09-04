@@ -32,6 +32,8 @@ $updateIsPost = (isset($_SERVER['REQUEST_METHOD']) && strtoupper($_SERVER['REQUE
 
 if(!$updateIsPost && defined('e_TOKEN') && empty($_GET['e-token']))
 {
+	header('HTTP/1.1 403 Forbidden', true, 403);
+
 	e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_e107_update.php');
 	e107::getMessage()->addError(defset('LAN_UPDATE_REFUSED_TOKEN_MISSING', 'Invalid or missing security token.'));
 	e107::getRender()->tablerender(defset('LAN_UPDATE_56', 'System Update'), e107::getMessage()->render());
