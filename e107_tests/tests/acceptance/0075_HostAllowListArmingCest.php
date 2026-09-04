@@ -193,6 +193,20 @@ class HostAllowListArmingCest
 	}
 
 	/**
+	 * The probe writes for the run that wrote it and for nobody else. A fixture
+	 * that reconfigured a site for anyone who guessed a parameter name would be
+	 * a worse thing to leave in a docroot than the defect it is here to cover.
+	 */
+	public function theProbeRefusesAWriteWithoutThisRunsSecret(AcceptanceTester $I)
+	{
+		$I->amOnUrl($this->ownBase . '/' . self::PROBE_FILE
+			. '?host_arming_set=1&siteurl=%2F&trusted_hosts=named.example.invalid');
+
+		$I->seeResponseCodeIs(403);
+		$I->dontSeeInSource('CONFIGURED');
+	}
+
+	/**
 	 * Work out the two addresses every test below is driven through, from the
 	 * request the suite has just made under its own configuration.
 	 *
@@ -238,10 +252,21 @@ class HostAllowListArmingCest
 	 */
 	private function configure(AcceptanceTester $I, $siteurl, $trustedHosts)
 	{
-		$I->amOnUrl($this->ownBase . '/' . self::PROBE_FILE
-			. '?host_arming_set=1&siteurl=' . urlencode($siteurl)
-			. '&trusted_hosts=' . urlencode($trustedHosts));
+		$I->amOnUrl($this->writeUrl('host_arming_set=1&siteurl=' . urlencode($siteurl)
+			. '&trusted_hosts=' . urlencode($trustedHosts)));
 		$I->seeInSource('CONFIGURED');
+	}
+
+	/**
+	 * The probe's address for a request that writes, carrying this run's secret.
+	 *
+	 * @param string $query the rest of the query string, without a leading separator
+	 * @return string
+	 */
+	private function writeUrl($query)
+	{
+		return $this->ownBase . '/' . self::PROBE_FILE
+			. '?host_arming_secret=' . urlencode($this->secret) . '&' . $query;
 	}
 
 	/**
@@ -252,8 +277,7 @@ class HostAllowListArmingCest
 	 */
 	private function restore(AcceptanceTester $I)
 	{
-		$I->amOnUrl($this->ownBase . '/' . self::PROBE_FILE
-			. '?host_arming_restore=1&host_arming_secret=' . urlencode($this->secret));
+		$I->amOnUrl($this->writeUrl('host_arming_restore=1'));
 		$I->seeInSource('RESTORED');
 	}
 
@@ -288,16 +312,17 @@ class HostAllowListArmingCest
 // A GET carrying host_arming_restore puts the untouched preferences back
 // without booting e107, because the check decides every request that reaches
 // class2.php, and a restore the check can refuse cannot undo the configuration
-// that made it refuse.
+// that made it refuse. Either write answers only to the secret this run baked
+// into the file it wrote.
 $snapshot = __DIR__.'/{{SNAPSHOT}}';
+$offered = isset($_GET['host_arming_secret']) ? (string) $_GET['host_arming_secret'] : '';
+if((isset($_GET['host_arming_set']) || isset($_GET['host_arming_restore'])) && !hash_equals('{{SECRET}}', $offered))
+{
+	header('HTTP/1.1 403 Forbidden');
+	exit;
+}
 if(isset($_GET['host_arming_restore']))
 {
-	$offered = isset($_GET['host_arming_secret']) ? (string) $_GET['host_arming_secret'] : '';
-	if(!hash_equals('{{SECRET}}', $offered))
-	{
-		header('HTTP/1.1 403 Forbidden');
-		exit;
-	}
 	echo is_readable($snapshot) && host_arming_prefs(base64_decode(include $snapshot))
 		? 'RESTORED' : 'RESTORE_FAILED';
 	exit;
