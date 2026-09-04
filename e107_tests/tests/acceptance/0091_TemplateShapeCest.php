@@ -14,6 +14,9 @@ class TemplateShapeCest
 	const EXTENDED_FIELD = 'TP shape field';
 	const EXTENDED_FIELD_ID = 'ue-user-tpshapefield';
 
+	/** LAN_MEMBERS_1, the one string membersonly.php prints whoever is asking. */
+	const RESTRICTED_AREA = 'This is a restricted area.';
+
 	/** Text that only a PHP diagnostic puts on a rendered page. */
 	private static $diagnostics = array('Fatal error', 'Parse error', 'Warning:', 'Undefined ');
 
@@ -84,6 +87,26 @@ class TemplateShapeCest
 		$I->seeElement('table.adminform');
 	}
 
+	public function membersOnlyRendersOnAV1Theme(AcceptanceTester $I)
+	{
+		$this->seeTheRestrictedAreaPage($I, 'tpstate1_legacy');
+	}
+
+	public function membersOnlyRendersOnAThemeDeclaringNoFramework(AcceptanceTester $I)
+	{
+		$this->seeTheRestrictedAreaPage($I, 'tpstate3_plain');
+	}
+
+	public function membersOnlyRendersOnAV1ThemeThatDefinesBootstrap(AcceptanceTester $I)
+	{
+		$this->seeTheRestrictedAreaPage($I, 'tpstate4_legacybs');
+	}
+
+	public function membersOnlyRendersOnTheShippedTheme(AcceptanceTester $I)
+	{
+		$this->seeTheRestrictedAreaPage($I, self::SHIPPED_THEME);
+	}
+
 	/** Both copies at once, as discussions #6008 and #6111 describe; the fborder table is the one only the theme's own file puts on this page. */
 	public function bothTemplatesInTheThemeWin(AcceptanceTester $I)
 	{
@@ -140,6 +163,24 @@ class TemplateShapeCest
 
 		$I->seeElement('#'.self::EXTENDED_FIELD_ID);
 		$I->seeInSource(self::EXTENDED_CATEGORY);
+
+		$this->seeNoDiagnostics($I);
+	}
+
+	/**
+	 * The members-only notice, as a visitor who is not signed in, which is the only way to arrive at that page for real.
+	 *
+	 * @param AcceptanceTester $I
+	 * @param string $theme theme directory name; a fixture when tests/_data holds one, else a shipped theme
+	 */
+	private function seeTheRestrictedAreaPage(AcceptanceTester $I, $theme)
+	{
+		$I->haveThemeFixture($theme);
+		$I->haveSiteTheme($theme);
+
+		$I->amOnPage('/membersonly.php');
+
+		$I->seeInSource(self::RESTRICTED_AREA);
 
 		$this->seeNoDiagnostics($I);
 	}
