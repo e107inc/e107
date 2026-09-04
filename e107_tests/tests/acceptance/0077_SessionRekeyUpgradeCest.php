@@ -16,8 +16,10 @@
  * of agreeing with themselves.
  *
  * update_routines.php turns away anyone who is not a main admin at its own top,
- * so every probe request is made as one. Running it applies whatever else the
- * site has outstanding, which on a site installed from this tree is nothing.
+ * so every probe request is made as one. Running it also applies whatever else
+ * the site has outstanding, so _before() asserts there is nothing outstanding
+ * before it seeds; without that, the routine reporting itself satisfied
+ * afterwards would say nothing about the rows seeded here.
  */
 class SessionRekeyUpgradeCest
 {
@@ -30,6 +32,13 @@ class SessionRekeyUpgradeCest
 	{
 		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
 		$I->loginAsAdmin();
+
+		$I->assertSame(
+			array('raw' => 0, 'hashed' => 0, 'intact' => 0, 'needed' => 0),
+			$this->state($I, 0),
+			'The site has to start with nothing outstanding, or a pending update here proves nothing about the rows this seeds.'
+		);
+
 		$this->probe($I, 'seed&rows='.self::SEEDED_ROWS);
 	}
 
@@ -45,7 +54,7 @@ class SessionRekeyUpgradeCest
 
 		$I->assertSame(
 			array('raw' => self::SEEDED_ROWS, 'hashed' => 0, 'intact' => 0, 'needed' => 1),
-			$this->state($I),
+			$this->state($I, self::SEEDED_ROWS),
 			'The seeded table has to look like a site that has not been upgraded yet.'
 		);
 
@@ -53,7 +62,7 @@ class SessionRekeyUpgradeCest
 
 		$I->assertSame(
 			array('raw' => 0, 'hashed' => self::SEEDED_ROWS, 'intact' => self::SEEDED_ROWS, 'needed' => 0),
-			$this->state($I),
+			$this->state($I, self::SEEDED_ROWS),
 			'Every seeded row has to move to the digest of its own id, contents untouched.'
 		);
 	}
@@ -67,18 +76,19 @@ class SessionRekeyUpgradeCest
 
 		$I->assertSame(
 			array('raw' => 0, 'hashed' => self::SEEDED_ROWS, 'intact' => self::SEEDED_ROWS, 'needed' => 0),
-			$this->state($I),
+			$this->state($I, self::SEEDED_ROWS),
 			'A second run has nothing to convert and must not disturb what the first one wrote.'
 		);
 	}
 
 	/**
 	 * @param AcceptanceTester $I
+	 * @param int $rows how many seeded ids to look for
 	 * @return array fixture rows still raw, re-keyed, and re-keyed with their contents intact, plus whether the upgrade is still pending
 	 */
-	private function state(AcceptanceTester $I)
+	private function state(AcceptanceTester $I, $rows)
 	{
-		$body = $this->probe($I, 'state&rows='.self::SEEDED_ROWS);
+		$body = $this->probe($I, 'state&rows='.$rows);
 
 		if(!preg_match('/PROBE_OK (\{.*\})/', $body, $matches))
 		{
