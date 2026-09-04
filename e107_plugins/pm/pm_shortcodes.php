@@ -846,7 +846,7 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 					break;
 			}
 
-			return $ret; 
+			return pm_actionUrl($ret, '&amp;');
 		}
 
 	}

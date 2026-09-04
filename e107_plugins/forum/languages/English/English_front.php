@@ -349,6 +349,8 @@ return [
     'LAN_FORUM_8029' => "New topic created!",
     'LAN_FORUM_8030' => "Couldn't delete post (moderator permission needed)",
 
+    'LAN_FORUM_REFUSED_TOKEN_MISSING' => "Nothing was marked as read, because the link carried no security token. Use the new-posts marker on the forum list rather than a bookmark or a link on another site.",
+
 /*  THIS WILL BE DELETED ONCE THE REWRITE IS DONE
 ==================================================
  * 

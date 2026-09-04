@@ -118,7 +118,7 @@ class forum_setup
 		}
 		else
 		{
-			e107::getRedirect()->go(e_PLUGIN_ABS.'forum/forum_update.php'); //Redirect upgrade to customized upgrade routine
+			e107::getRedirect()->go(e_PLUGIN_ABS.'forum/forum_update.php?e-token='.defset('e_TOKEN')); //Redirect upgrade to customized upgrade routine
 		}
 
 		//header('Location: '.e_PLUGIN.'forum/forum_update.php');
@@ -158,7 +158,7 @@ class forum_setup
 		if($sql->isEmpty('forum_thread') === true && $sql->isTable('forum_t') && $sql->isEmpty('forum_t') === false)
 		{
 			$mes = e107::getMessage();
-			$mes->addSuccess("Migration is required. Please click 'Continue'.<br /><a class='btn btn-primary' href='".e_PLUGIN."forum/forum_update.php'>Continue</a>");
+			$mes->addSuccess("Migration is required. Please click 'Continue'.<br /><a class='btn btn-primary' href='".e_PLUGIN."forum/forum_update.php?e-token=".defset('e_TOKEN')."'>Continue</a>");
 		}
 
 

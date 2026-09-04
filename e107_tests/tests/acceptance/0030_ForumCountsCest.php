@@ -140,8 +140,9 @@ class ForumCountsCest
 	}
 
 	/**
-	 * Mark all forums read. The link carries no id at all, which is exactly the
-	 * case the branch test got wrong.
+	 * Mark all forums read. The request carries no id at all, which is exactly
+	 * the case the branch test got wrong. It carries a token because marking
+	 * threads read is a write, and forum.php now refuses one that does not.
 	 */
 	public function markingAllForumsReadMarksThemRead(AcceptanceTester $I)
 	{
@@ -150,7 +151,8 @@ class ForumCountsCest
 		// ordinary signup would have one already.
 		$I->haveForumThreadsRead($this->alice, array());
 
-		$I->amOnPage('/e107_plugins/forum/forum.php?f=mfar');
+		$I->amOnPage('/e107_plugins/forum/forum.php?f=mfar&e-token='
+			.$I->grabForumToken('/e107_plugins/forum/forum.php'));
 
 		$I->seeInDatabase('e107_user_extended', array(
 			'user_extended_id' => $this->alice,
