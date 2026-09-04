@@ -19,6 +19,8 @@ class UsersettingsConfirmationPayloadCest
 {
 	const MEMBER = 'payloadmember';
 	const MEMBER_PASS = 'Member1Pass!';
+	// LAN_USET_43, the message a write that could not be applied leaves behind.
+	const WRITE_REFUSED = 'Error updating user data';
 	const FORGED = '{
     "user_admin": "1",
     "user_perms": "0",
@@ -164,6 +166,37 @@ class UsersettingsConfirmationPayloadCest
 	}
 
 	/**
+	 * A confirmed change is spent the moment it is confirmed: the session slot is
+	 * cleared before the write, so a write the database refuses cannot be retried.
+	 * Answering it with a page carrying no message leaves the member believing it
+	 * saved.
+	 */
+	public function aConfirmedWriteThatFailsIsReported(AcceptanceTester $I)
+	{
+		$I->wantTo('Report a confirmed change the database refused');
+
+		$userId = $this->haveMember($I, 'failedwrite');
+		$this->loginAsMember($I, 'failedwrite');
+
+		$this->startEmailChange($I, 'failedwrite-new@example.test', array('username' => 'takenname'));
+		$fields = $this->confirmationFields($I);
+		$fields['currentpassword'] = self::MEMBER_PASS;
+
+		// Somebody claims the display name between the prompt and the confirmation, so
+		// the write fails on the unique index rather than on anything the member did.
+		$this->haveMember($I, 'nameholder', 'takenname');
+
+		$I->sendPostRequest('/usersettings.php', $fields);
+
+		$I->assertStringContainsString(self::WRITE_REFUSED, $I->grabResponseBody(),
+			'the member is told the change could not be written');
+		$I->assertSame('failedwrite@example.test',
+			$I->grabFromDatabase('e107_user', 'user_email', array('user_id' => $userId)),
+			'and nothing of it landed');
+	}
+
+
+	/**
 	 * The three columns the first stage's allow list keeps out of a member's reach:
 	 * two that make an administrator, and the external-login binding tracked as its
 	 * own advisory, so a re-cut that reopens either one reds here.
@@ -188,20 +221,21 @@ class UsersettingsConfirmationPayloadCest
 	 *
 	 * @param AcceptanceTester $I
 	 * @param string $email
+	 * @param array $extra further settings fields to change in the same submission
 	 * @return string the e-token, which is also e_TOKEN
 	 */
-	private function startEmailChange(AcceptanceTester $I, $email)
+	private function startEmailChange(AcceptanceTester $I, $email, array $extra = array())
 	{
 		$token = $this->grabToken($I);
 
-		$I->sendPostRequest('/usersettings.php', array(
+		$I->sendPostRequest('/usersettings.php', array_merge(array(
 			'email'          => $email,
 			'hideemail'      => '1',
 			'password1'      => '',
 			'password2'      => '',
 			'e-token'        => $token,
 			'updatesettings' => 'Update Settings',
-		));
+		), $extra));
 
 		$I->assertStringContainsString('currentpassword', $I->grabResponseBody(),
 			'the confirmation stage was reached');
@@ -271,12 +305,13 @@ class UsersettingsConfirmationPayloadCest
 	/**
 	 * @param AcceptanceTester $I
 	 * @param string $name
+	 * @param string $displayName
 	 * @return int
 	 */
-	private function haveMember(AcceptanceTester $I, $name)
+	private function haveMember(AcceptanceTester $I, $name, $displayName = self::MEMBER)
 	{
 		return $I->haveInDatabase('e107_user', array(
-			'user_name'      => self::MEMBER,
+			'user_name'      => $displayName,
 			'user_loginname' => $name,
 			'user_login'     => $name,
 			'user_password'  => password_hash(self::MEMBER_PASS, PASSWORD_DEFAULT),

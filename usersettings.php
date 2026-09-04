@@ -811,6 +811,7 @@ class usersettings_front // Begin Usersettings rewrite.
 				if (FALSE === $updated)
 				{
 					$extraErrors[] = LAN_USET_43;
+					$error = true;
 				}
 				else
 				{
@@ -1077,7 +1078,7 @@ class usersettings_front // Begin Usersettings rewrite.
 			$temp[] = implode('<br />', $extraErrors);
 		}
 
-		if (count($allData['errors']))
+		if (vartrue($allData['errors']))
 		{
 			$temp[] = validatorClass::makeErrorList($allData,'USER_ERR_','%n - %x - %t: %v', '<br />', $userMethods->userVettingInfo);
 		}
