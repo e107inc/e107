@@ -27,7 +27,7 @@ $frm = e107::getForm();
 
 if (isset($_POST['update_settings'])) 
 {
-	if (varset($_POST['ac'], '') === md5(ADMINPWCHANGE))
+	if (e107::getUser()->checkAdminPwchangeToken(varset($_POST['ac'])))
 	{
 		$userData = array();
 		$userData['data'] = array();
@@ -117,6 +117,7 @@ else
 			</table>
 			<div class='buttons-bar center'>
 				<input type='hidden' name='ac' value='".md5(defset('ADMINPWCHANGE'))."' />".
+				$frm->token().
 				$frm->admin_button('update_settings','no-value','update',UDALAN_7)."
 				
 			</div>

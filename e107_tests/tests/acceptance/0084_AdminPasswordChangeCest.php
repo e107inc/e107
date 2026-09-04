@@ -15,6 +15,11 @@
  * password that was typed, not of whatever is left after the plaintext has been
  * scrubbed out of $_POST.
  *
+ * The submission is assembled from the fields the screen itself renders, so a
+ * form that stops rendering the token the session check asks for, or the marker
+ * its own handler asks for, fails here rather than passing on fields the test
+ * supplied for it.
+ *
  * Asserted through the application's own CheckPassword() in a fresh process,
  * because a hash carries a salt and cannot be compared by value.
  *
@@ -33,10 +38,15 @@ class AdminPasswordChangeCest
 	const MISTYPED = '1e3';
 	const MISTYPED_CONFIRMATION = '1000';
 
+	/** Known only to this run, so the probe answers this Cest and nothing else. */
+	private $probeKey;
+
 	public function _before(AcceptanceTester $I)
 	{
+		$this->probeKey = md5(uniqid('', true));
+
 		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=setup');
+		$I->amOnPage($this->probeUrl('setup'));
 		$I->seeInSource('PROBE_OK');
 
 		$I->resetAllCookies();
@@ -45,7 +55,7 @@ class AdminPasswordChangeCest
 
 	public function _after(AcceptanceTester $I)
 	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=teardown');
+		$I->amOnPage($this->probeUrl('teardown'));
 		$I->seeInSource('PROBE_OK');
 		$I->deleteAppFile(self::PROBE_FILE);
 	}
@@ -89,8 +99,7 @@ class AdminPasswordChangeCest
 	// -----------------------------------------------------------------
 
 	/**
-	 * Submit the form the way the browser does, carrying the stale-form marker
-	 * the screen renders and a token, which that hand-written form does not.
+	 * Submit the form with every hidden field the screen rendered into it.
 	 *
 	 * @param AcceptanceTester $I
 	 * @param string $password
@@ -100,20 +109,34 @@ class AdminPasswordChangeCest
 	private function submitPasswordChange(AcceptanceTester $I, $password, $confirmation)
 	{
 		$I->amOnPage(self::PAGE);
-
-		$matches = array();
-		if (!preg_match('/name=[\'"]ac[\'"][^>]*value=[\'"]([^\'"]*)[\'"]/', $I->grabPageSource(), $matches))
-		{
-			throw new \RuntimeException('Admin > Password rendered no "ac" field, so there is nothing to submit.');
-		}
+		$source = $I->grabPageSource();
 
 		$I->sendPostRequest(self::PAGE, array(
 			'update_settings' => 'no-value',
-			'ac'              => $matches[1],
-			'e-token'         => $I->grabFreshAdminToken(),
+			'ac'              => $this->grabHiddenField($source, 'ac'),
+			'e-token'         => $this->grabHiddenField($source, 'e-token'),
 			'a_password'      => $password,
 			'a_password2'     => $confirmation,
 		));
+	}
+
+	/**
+	 * @param string $source rendered page
+	 * @param string $name hidden field name
+	 * @return string
+	 * @throws RuntimeException when the screen renders no such field, which is a defect in the screen
+	 */
+	private function grabHiddenField($source, $name)
+	{
+		$matches = array();
+		$pattern = '/name=[\'"]'.preg_quote($name, '/').'[\'"][^>]*value=[\'"]([^\'"]*)[\'"]/';
+
+		if (!preg_match($pattern, $source, $matches))
+		{
+			throw new RuntimeException('Admin > Password rendered no "'.$name.'" field, so the request it builds cannot be the one the browser sends.');
+		}
+
+		return $matches[1];
 	}
 
 	/**
@@ -123,18 +146,28 @@ class AdminPasswordChangeCest
 	 * @param AcceptanceTester $I
 	 * @param string $password
 	 * @return array password and email_password, each true when the stored hash matches
+	 * @throws RuntimeException when the probe answers with anything else
 	 */
 	private function grabStoredPasswordCheck(AcceptanceTester $I, $password)
 	{
-		$I->amOnPage('/'.self::PROBE_FILE.'?act=read&pass='.urlencode($password));
+		$I->amOnPage($this->probeUrl('read').'&pass='.urlencode($password));
 
 		$matches = array();
 		if (!preg_match('/PROBE_OK (.+)/', $I->grabPageSource(), $matches))
 		{
-			throw new \RuntimeException('The stored-password probe published nothing.');
+			throw new RuntimeException('The stored-password probe published nothing.');
 		}
 
 		return json_decode(trim($matches[1]), true);
+	}
+
+	/**
+	 * @param string $act
+	 * @return string
+	 */
+	private function probeUrl($act)
+	{
+		return '/'.self::PROBE_FILE.'?key='.$this->probeKey.'&act='.$act;
 	}
 
 	/**
@@ -142,12 +175,18 @@ class AdminPasswordChangeCest
 	 */
 	private function probeSource()
 	{
-		return <<<'PHP'
+		return str_replace('%PROBE_KEY%', $this->probeKey, <<<'PHP'
 <?php
 // Fixture for 0084_AdminPasswordChangeCest. Removed again in the Cest's _after().
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
 header('Content-Type: text/plain');
+
+if(!isset($_GET['key']) || !hash_equals('%PROBE_KEY%', $_GET['key']))
+{
+	echo "not this run\n";
+	return;
+}
 
 $adminId = 1;
 $backupKey = 'e107_tests_admin_password_backup';
@@ -227,6 +266,7 @@ switch($act)
 	default:
 		echo "unknown action\n";
 }
-PHP;
+PHP
+		);
 	}
 }
