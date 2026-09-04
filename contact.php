@@ -87,19 +87,7 @@ class contact_front
 	}
 
 	/**
-	 * A visitor's words, ready to put in the message the site sends itself.
-	 *
-	 * Two things happen to this text after it is returned. It is assembled
-	 * into an HTML mail, so anything that parses as markup on the way in is
-	 * markup by the time an administrator opens it. {@see e_parse::filter()}
-	 * answers that, and answers BBCode with it, because nothing renders a tag
-	 * out of text whose brackets have been escaped.
-	 *
-	 * Then {@see e107Email::arraySet()} substitutes the assembled body into
-	 * the mail template and parses the result, so a shortcode written into a
-	 * contact message is expanded on the way out. The braces are encoded
-	 * rather than removed: the parser matches a literal brace, and a mail
-	 * client renders the entity as the brace the visitor typed.
+	 * A visitor's words with every tag stripped and every brace encoded.
 	 *
 	 * @param string $text
 	 * @return string
