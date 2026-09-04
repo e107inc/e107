@@ -28,6 +28,41 @@ class Unit extends \Codeception\Test\Unit
 	use \Helper\PhpUnitCompat;
 
 	/**
+	 * Copies a fixture tree, e.g. a theme out of tests/_data into e_THEME.
+	 *
+	 * @param string $src
+	 * @param string $dst
+	 * @return bool false when there is nothing to copy or the destination is already there
+	 */
+	protected function copydir($src, $dst)
+	{
+		if(!is_dir($src) || is_dir($dst))
+		{
+			return false;
+		}
+
+		mkdir($dst);
+
+		foreach(scandir($src) as $file)
+		{
+			if($file === '.' || $file === '..')
+			{
+				continue;
+			}
+
+			if(is_dir($src.DIRECTORY_SEPARATOR.$file))
+			{
+				$this->copydir($src.DIRECTORY_SEPARATOR.$file, $dst.DIRECTORY_SEPARATOR.$file);
+				continue;
+			}
+
+			copy($src.DIRECTORY_SEPARATOR.$file, $dst.DIRECTORY_SEPARATOR.$file);
+		}
+
+		return true;
+	}
+
+	/**
 	 * Runs $php in a subprocess that has booted class2.php in CLI mode.
 	 *
 	 * @param string $php
