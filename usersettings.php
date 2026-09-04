@@ -683,7 +683,7 @@ class usersettings_front // Begin Usersettings rewrite.
 			}
 
 			$needsConfirmation = $mustConfirm && !$reauthenticated;
-			$ownRecord         = !$_uid;
+			$ownRecord         = (int) $inp === (int) USERID;
 
 			if (!$needsConfirmation || !$ownRecord)
 			{
