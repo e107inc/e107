@@ -631,9 +631,10 @@ function update_core_database($type = '')
 		require_once(e_HANDLER.'session_handler.php');
 		$sessionHashed = 0;
 		$sessionSeen = 0;
-		$sessionPending = "`session_id` NOT LIKE '".e_session_db::KEY_ALGO."$%' LIMIT ";
+		$sessionSkipped = 0;
+		$sessionPending = "`session_id` NOT LIKE '".e_session_db::KEY_ALGO."$%' ORDER BY `session_id` LIMIT ";
 
-		while($sql->select('session', 'session_id', $sessionPending.($just_check ? 1 : 200)))
+		while($sql->select('session', 'session_id', $sessionPending.$sessionSkipped.', '.($just_check ? 1 : 200)))
 		{
 			if($just_check)
 			{
@@ -647,8 +648,6 @@ function update_core_database($type = '')
 				$sessionLegacy[] = $sessionRow['session_id'];
 			}
 
-			$sessionConverted = 0;
-
 			foreach($sessionLegacy as $sessionId)
 			{
 				$sessionSeen++;
@@ -659,15 +658,12 @@ function update_core_database($type = '')
 					'WHERE' => "`session_id`='".$sql->escape($sessionId)."'",
 				)))
 				{
-					$sessionConverted++;
+					$sessionHashed++;
 				}
-			}
-
-			$sessionHashed += $sessionConverted;
-
-			if(!$sessionConverted)
-			{
-				break;
+				else
+				{
+					$sessionSkipped++;
+				}
 			}
 		}
 
