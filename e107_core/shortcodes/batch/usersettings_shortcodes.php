@@ -441,7 +441,7 @@ class usersettings_shortcodes extends e_shortcode
 			$this->loadUECatData('write');
 		}
 
-		if(THEME_LEGACY === true)
+		if(!empty($this->legacyTemplate['USER_EXTENDED_CAT']))
 		{
 			$USER_EXTENDED_CAT = $this->legacyTemplate['USER_EXTENDED_CAT'];
 		}
@@ -587,7 +587,7 @@ class usersettings_shortcodes extends e_shortcode
 		$ue = e107::getUserExt();
 
 
-		if(THEME_LEGACY === true || !deftrue('BOOTSTRAP'))
+		if(!empty($this->legacyTemplate['USEREXTENDED_FIELD']))
 		{
 			$USEREXTENDED_FIELD = $this->legacyTemplate['USEREXTENDED_FIELD'];
 			$REQUIRED_FIELD = $this->legacyTemplate['REQUIRED_FIELD'];
@@ -595,7 +595,7 @@ class usersettings_shortcodes extends e_shortcode
 		else
 		{
 			$USEREXTENDED_FIELD = e107::getCoreTemplate('usersettings', 'extended-field');
-			$REQUIRED_FIELD = '';
+			$REQUIRED_FIELD = (string) e107::getCoreTemplate('usersettings', 'required-field');
 		}
 
 
@@ -620,7 +620,7 @@ class usersettings_shortcodes extends e_shortcode
 
 		$fname = $tp->toHTML($fname, "", "emotes_off, defs");
 
-		if($fInfo['user_extended_struct_required'] == 1 && !deftrue('BOOTSTRAP'))
+		if($fInfo['user_extended_struct_required'] == 1 && !empty($REQUIRED_FIELD))
 		{
 			$fname = str_replace("{FIELDNAME}", $fname, $REQUIRED_FIELD);
 		}

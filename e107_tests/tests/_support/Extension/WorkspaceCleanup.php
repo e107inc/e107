@@ -59,6 +59,7 @@ class WorkspaceCleanup extends Extension
 		'e107_themes/tpstate3_plain',
 		'e107_themes/tpstate3_rootfpw',
 		'e107_themes/tpstate3_globalfpw',
+		'e107_themes/tpstate3_tplusersettings',
 		'e107_themes/tpstate4_legacybs',
 		'e107_themes/tpstate4_globalfpw',
 		'e107_tests_theme_fixture_probe.php', // @see Helper\ThemeFixture
