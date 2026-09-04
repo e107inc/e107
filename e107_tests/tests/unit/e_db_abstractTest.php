@@ -1329,16 +1329,12 @@ abstract class e_db_abstractTest extends \Test\Unit
 		$probe = e107::getDb();
 		$this->assertNotSame($id, (int) $probe->retrieve('SELECT CONNECTION_ID()'), 'the probe must not be the connection under test');
 
-		$deadline = microtime(true) + 2;
-		do
+		$gone = \Test\Poll::until(function () use ($probe, $id)
 		{
-			$alive = $probe->retrieve('SELECT ID FROM information_schema.PROCESSLIST WHERE ID = ' . $id, false);
-			if(empty($alive)) { break; }
-			usleep(50000);
-		}
-		while(microtime(true) < $deadline);
+			return !$probe->retrieve('SELECT ID FROM information_schema.PROCESSLIST WHERE ID = ' . $id, false);
+		}, 2);
 
-		$this->assertEmpty($alive, "server connection $id survived close()");
+		$this->assertTrue($gone, "server connection $id survived close()");
 	}
 
 	public function testDelete()
