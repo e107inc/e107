@@ -1251,7 +1251,7 @@ class validatorClass
 							break;
 						case 2 :        // Assumes we're processing a dual password field - array name for second value is one more than for first
 							$src2 = substr($src, 0, -1) . (substr($src, -1, 1) + 1);
-							if (!isset($sourceFields[$src2]) || ($sourceFields[$src2] != $value))
+							if (!isset($sourceFields[$src2]) || ($sourceFields[$src2] !== $value))
 							{
 								$errNum = ERR_PASSWORDS_DIFFERENT;
 							}

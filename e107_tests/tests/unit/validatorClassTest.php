@@ -240,4 +240,25 @@
 
 
 
+
+		/** Two spellings of one number are two different passwords, on every form whose confirmation goes through the validator. */
+		public function testTwoSpellingsOfOneNumberAreNotAMatchingPasswordPair()
+		{
+
+			$definitions = e107::getUserSession()->userVettingInfo;
+
+			$mistyped = array('password1' => '1e3', 'password2' => '1000');
+			$result = validatorClass::validateFields($mistyped, $definitions, true);
+
+			$this->assertSame(ERR_PASSWORDS_DIFFERENT, varset($result['errors']['user_password']),
+				'"1e3" and "1000" are two different passwords, so the confirmation must not match.');
+
+			$matching = array('password1' => '1e3', 'password2' => '1e3');
+			$result = validatorClass::validateFields($matching, $definitions, true);
+
+			$this->assertArrayNotHasKey('user_password', $result['errors'],
+				'Two boxes holding the same string are still a match.');
+
+		}
+
 	}
