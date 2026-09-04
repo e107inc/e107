@@ -87,6 +87,18 @@ class contact_front
 	}
 
 	/**
+	 * A visitor's words, every tag stripped and every brace encoded through the mail template parse.
+	 *
+	 * @param string $text
+	 * @return string
+	 */
+	private function textForTheEmail($text)
+	{
+		return str_replace(array('{', '}'), array('&#123;', '&#125;'),
+			e107::getParser()->filter($text));
+	}
+
+	/**
 	 * Did this submission come from a document this site rendered?
 	 *
 	 * A request that carries no cookie is exempt from the core check in
@@ -200,7 +212,7 @@ class contact_front
 		$sender_name = $tp->toEmail($_POST['author_name'], true, 'RAWTEXT');
 		$sender = check_email($_POST['email_send']);
 		$subject = $tp->toEmail($_POST['subject'], true, 'RAWTEXT');
-		$body = nl2br($tp->toEmail($_POST['body'], true, 'RAWTEXT'));
+		$body = nl2br($this->textForTheEmail($_POST['body']));
 
 		$email_copy = !empty($_POST['email_copy']) ? 1 : 0;
 
@@ -272,7 +284,7 @@ class contact_front
 			{
 				foreach($_POST as $k => $v)
 				{
-					$body .= "<tr><td>" . $k . ":</td><td>" . $tp->toEmail($v, true, 'RAWTEXT') . "</td></tr>";
+					$body .= "<tr><td>" . $this->textForTheEmail($k) . ":</td><td>" . $this->textForTheEmail($v) . "</td></tr>";
 				}
 			}
 

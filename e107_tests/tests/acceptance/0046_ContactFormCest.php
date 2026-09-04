@@ -574,6 +574,55 @@ class ContactFormCest
 	}
 
 	/**
+	 * A visitor's words reach the site as words, whatever they look like.
+	 *
+	 * The message and any custom field the template adds are assembled into an
+	 * HTML mail, so anything that parses as markup on the way in is markup by
+	 * the time an administrator opens it. toEmail() did not answer that on its
+	 * own: a message carrying a tag took its HTML branch and kept the tag, a
+	 * message carrying BBCode took the other branch and had it rendered, and the
+	 * custom fields were never covered at all, their names going into the table
+	 * unescaped.
+	 *
+	 * The markers are what stop this being satisfied by an empty mail: every
+	 * piece the visitor sent must still be in the message the site receives.
+	 */
+	public function aMessageReachesTheSiteAsWordsRatherThanMarkup(AcceptanceTester $I)
+	{
+		$I->wantTo('read a contact message as what was typed rather than as markup');
+
+		$this->probe($I, 'act=clearmaillog');
+
+		$token = $this->openFormAndGrabToken($I);
+		$post = array_merge($this->submission(), $this->captcha($I), array(
+			'e-token'             => $token,
+			'body'                => 'Please look at [img]http://example.com/BODYMARKER.png[/img] '
+				.'and at <marquee>BODYTAG</marquee> and at {SITENAME}, which is comfortably '
+				.'longer than the fifteen characters the form insists on.',
+			'noteFIELDKEY<marquee>' => '<marquee>FIELDTAG</marquee>',
+		));
+		$I->sendPostRequest('/contact.php', $post);
+
+		$log = $this->mailLog($I);
+
+		$I->assertStringContainsString('BODYMARKER', $log,
+			'what the visitor wrote must still reach the recipient');
+		$I->assertStringContainsString('BODYTAG', $log,
+			'text inside a tag the visitor wrote must still reach the recipient');
+		$I->assertStringContainsString('noteFIELDKEY', $log,
+			'a custom field must still be named in the message');
+		$I->assertStringContainsString('FIELDTAG', $log,
+			'a custom field value must still reach the recipient');
+
+		$I->assertStringNotContainsString('<marquee', $log,
+			'a tag the visitor wrote must not be a tag in the message');
+		$I->assertStringNotContainsString("src='http://example.com/BODYMARKER.png'", $log,
+			'BBCode the visitor wrote must not be rendered into the message');
+		$I->assertStringContainsString('{SITENAME}', $log,
+			'a shortcode the visitor wrote must not be expanded into the message');
+	}
+
+	/**
 	 * @return string
 	 */
 	private function probeSource()
