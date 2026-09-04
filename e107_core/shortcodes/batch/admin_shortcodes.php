@@ -1946,7 +1946,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				$lan = defset('LAN_DATABASE_UPDATE', "An update is available for your database. We recommend [running this update] as soon as possible to ensure that your database is secure and up-to-date.");
 				$srch = array('[',']');
 				$repl = [
-					"<a class='text-info' href='".e_ADMIN_ABS."e107_update.php'>",
+					"<a class='text-info' href='".e_ADMIN_ABS."e107_update.php?e-token=".defset('e_TOKEN')."'>",
 					"</a>"
 				];
 				eHelper::addSystemNotification('core_update', str_replace($srch, $repl, $lan));
@@ -1958,7 +1958,6 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		//	$upStatus =  (e107::getSession()->get('core-update-status') === true) ? '<span title="' .ADLAN_120. '" class="text-info"><i class="fa fa-database"></i></span>' : '<!-- -->';
 
 			return;
-		//	return varset($template['start']). '<li><a id="e-admin-core-update" tabindex="0" href="'.e_ADMIN_ABS.'e107_update.php" class="e-popover text-primary" role="button" data-container="body" data-toggle="popover" data-bs-toggle="popover" data-placement="right" data-trigger="bottom" data-content="'.$tp->toAttribute(ADLAN_120).'">'.$upStatus.'</a></li>' .varset($template['end']);
 
 		}
 

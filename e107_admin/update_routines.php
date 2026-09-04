@@ -2080,7 +2080,7 @@ function update_70x_to_706($type='')
       // a vouched index fragment so the emitted key stays exactly as before.
       if(!$sql->schema()->addIndex('plugin', Index::raw(SqlFragment::raw("UNIQUE (`plugin_path`)"))))
 	  {
-		$mesg = LAN_UPDATE_12." : <a href='".e_ADMIN."db.php?plugin'>".ADLAN_145."</a>.";
+		$mesg = LAN_UPDATE_12." : <a href='".e_ADMIN."db.php?mode=plugin_scan&amp;e-token=".defset('e_TOKEN')."'>".ADLAN_145."</a>.";
         //$ns -> tablerender(LAN_ERROR,$mes);
         e107::getMessage()->add($mesg, E_MESSAGE_ERROR);
        	catch_error($sql);

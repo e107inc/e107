@@ -50,4 +50,5 @@ return [
     'LAN_UPDATE_CAPTION_PLUGIN' => "Plugin Updates",
     'LAN_UPDATE_CAPTION_CORE' => "Core Updates",
     'LAN_UPDATE_58' => "It is highly recommended that you run [File Inspector] after you have completed all the updates, in order to detect any outdated files that need to be removed.",
+    'LAN_UPDATE_REFUSED_TOKEN_MISSING' => "That operation was not started, because the link carried no security token. Start the system update from the link e107 shows you in the administration area rather than from a bookmark or a link on another site.",
 ];
