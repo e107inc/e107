@@ -322,12 +322,10 @@ class CronMisconfigMailCest
 	 */
 	private function waitForTheDueWindow()
 	{
-		$second = (int) date('s');
-
-		if($second >= 38)
+		\Test\Poll::until(function ()
 		{
-			sleep(61 - $second);
-		}
+			return (int) date('s') < 38;
+		}, 60);
 	}
 
 	/**
