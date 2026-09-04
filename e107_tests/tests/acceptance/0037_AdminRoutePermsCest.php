@@ -764,6 +764,40 @@ class AdminRoutePermsCest
 	}
 
 	/**
+	 * The scenario the advisory leads with, which nothing under e107_tests pinned. user_ban is
+	 * on the batch menu the page draws for a holder of 4 or U0, and a batch writes through
+	 * e_admin_tree_model::batchUpdate(), which never reaches beforeUpdate(): ticking another
+	 * administrator's row and choosing Banned locked them out of the site.
+	 *
+	 * The ordinary member is banned in the same shape first, so a batch menu that had stopped
+	 * working could not pass for the guard.
+	 */
+	public function aDelegatedAdministratorCannotBanAnAdministratorThroughTheBatch(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a user_ban batch on an administrator to a delegated administrator');
+
+		$victimId = $this->seedVictim($I);
+		$adminId = $this->seedOtherAdmin($I);
+		$this->loginAsDelegatedAdmin($I, 'p7rpU0admin');
+
+		$this->sendBatch($I, self::ROUTE_LIST, 'user_ban__1', $victimId);
+
+		$I->assertSame('1',
+			(string) $I->grabFromDatabase('e107_user', 'user_ban', array('user_id' => $victimId)),
+			'The user_ban batch no longer bans an ordinary member for a delegated administrator, '
+			.'so the refusal below is a broken batch menu rather than an authorisation boundary.');
+
+		$this->sendBatch($I, self::ROUTE_LIST, 'user_ban__1', $adminId);
+
+		$I->assertSame('0',
+			(string) $I->grabFromDatabase('e107_user', 'user_ban', array('user_id' => $adminId)),
+			'A delegated administrator holding U0 banned '.self::OTHER_ADMIN.' by posting '
+			.'etrigger_batch=user_ban__1 to '.self::ROUTE_LIST.'.');
+
+		$I->seeInDatabase('e107_admin_log', array('dblog_remarks like' => '%Refused the batch user_ban%'));
+	}
+
+	/**
 	 * The batch delete carries its selection in a second field, and that is the
 	 * one the request that deletes is read from.
 	 *
