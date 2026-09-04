@@ -12,8 +12,9 @@
  * Which layer turns the handler away depends on the host: e107_handlers ships
  * an .htaccess denying the directory, which a server reading it answers before
  * PHP is reached and a server configured with AllowOverride None ignores
- * entirely. Those cases therefore assert what holds either way, that the
- * handler did not run, and the bare fixture is what pins the bootstrap guard.
+ * entirely. Either answer is accepted for that target, what has to hold under
+ * both is that the handler did not run, and the bare fixture goes on pinning
+ * the bootstrap guard on its own.
  *
  * Every request is made twice, once carrying a User-Agent header and once
  * without one: an HTTP request needs no User-Agent, so a guard reading that
@@ -99,7 +100,7 @@ class CliBootstrapHttpRefusalCest
 		$I->wantTo('stop an anonymous caller running the bounce handler over HTTP');
 
 		$this->clearBounceLog($I);
-		$this->request($I, 'target=bounce&ua=1', false);
+		$this->request($I, 'target=bounce&ua=1');
 		$this->seeTheBounceHandlerDidNotRun($I);
 	}
 
@@ -108,7 +109,7 @@ class CliBootstrapHttpRefusalCest
 		$I->wantTo('stop the same caller getting in by sending no User-Agent');
 
 		$this->clearBounceLog($I);
-		$this->request($I, 'target=bounce&ua=0', false);
+		$this->request($I, 'target=bounce&ua=0');
 		$this->seeTheBounceHandlerDidNotRun($I);
 	}
 
@@ -153,23 +154,23 @@ class CliBootstrapHttpRefusalCest
 	}
 
 	/**
+	 * The bounce handler sits under the denial e107_handlers ships, so a server
+	 * that reads .htaccess answers it before PHP does; every other target has
+	 * to be served for its refusal to mean anything.
+	 *
 	 * @param AcceptanceTester $I
 	 * @param string $query target= and ua= for the probe
-	 * @param bool $served whether the web server has to hand the target to PHP
 	 * @return string the raw response the probe's client read
 	 */
-	private function request(AcceptanceTester $I, $query, $served = true)
+	private function request(AcceptanceTester $I, $query)
 	{
 		$out = $this->probe($I, 'act=request&'.$query);
+		$answered = (strpos($query, 'target=bounce') === false) ? '200' : '(200|403)';
 
 		$I->assertStringNotContainsString('CONNECT_FAILED', $out,
 			'the probe could not open a connection to the web server');
-
-		if($served)
-		{
-			$I->assertSame(1, preg_match('#\nHTTP/1\.[01] 200 #', $out),
-				'the target must be served for its refusal to mean anything');
-		}
+		$I->assertSame(1, preg_match('#\nHTTP/1\.[01] '.$answered.' #', $out),
+			'the web server has to answer the target for its refusal to mean anything');
 
 		return $out;
 	}

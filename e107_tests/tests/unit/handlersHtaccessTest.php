@@ -9,24 +9,60 @@
 	class handlersHtaccessTest extends \Codeception\Test\Unit
 	{
 
-		public function testTheHandlersDirectoryShipsADenial()
+		public function testTheHandlersDirectoryShipsTheDenialE107Writes()
 		{
 			$guard = e_HANDLER . '.htaccess';
 
 			self::assertFileExists($guard,
 				'Three sibling directories ship a denial and this one holds the bounce handler');
 
-			$rule = file_get_contents($guard);
+			self::assertSame($this->directives($this->ruleE107Writes()),
+				$this->directives(file_get_contents($guard)),
+				'The shipped denial has to be the rule e_file::protectDirectory() writes, '
+				. 'or a host is reading one of the two long after the other was corrected');
+		}
 
-			self::assertStringContainsString('RedirectMatch 403', $rule,
-				'The refusal an Apache 2.4 reads, whether or not it still loads mod_access_compat');
-			self::assertStringContainsString('Deny from all', $rule,
-				'The refusal an Apache 2.2 reads');
-			self::assertStringContainsString('<IfModule !mod_authz_core.c>', $rule,
-				'Unguarded, the 2.2 form is an unknown directive on a 2.4 without mod_access_compat, '
-				. 'which answers 500 for the whole directory');
-			self::assertStringNotContainsString('Require ', $rule,
-				'A guard file may ask for no AllowOverride class beyond the ones e107.htaccess already needs');
+		/**
+		 * @return string the guard e_file::protectDirectory() writes today
+		 */
+		private function ruleE107Writes()
+		{
+			$dir = e_TEMP . 'handlers_htaccess_' . uniqid() . '/';
+			mkdir($dir);
+
+			try
+			{
+				self::assertTrue(e107::getFile()->protectDirectory($dir));
+
+				return file_get_contents($dir . '.htaccess');
+			}
+			finally
+			{
+				@unlink($dir . '.htaccess');
+				@unlink($dir . 'index.html');
+				@rmdir($dir);
+			}
+		}
+
+		/**
+		 * @param string $rule
+		 * @return array the rule's directives, without its comments or blank lines
+		 */
+		private function directives($rule)
+		{
+			$directives = array();
+
+			foreach(explode("\n", $rule) as $line)
+			{
+				$line = trim($line);
+
+				if($line !== '' && strpos($line, '#') !== 0)
+				{
+					$directives[] = $line;
+				}
+			}
+
+			return $directives;
 		}
 
 	}

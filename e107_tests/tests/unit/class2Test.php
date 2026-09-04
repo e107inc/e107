@@ -697,13 +697,13 @@
 
 			$output = array();
 			$status = 0;
-			exec(sprintf('HTTP_HOST=mta.example.com timeout 30 php -r %s 2>&1', escapeshellarg($code)),
-				$output, $status);
+			exec(sprintf('HTTP_HOST=mta.example.com %s -r %s 2>&1',
+				escapeshellarg(PHP_BINARY), escapeshellarg($code)), $output, $status);
 
-			self::assertSame(1, $status,
-				'An MTA reads a zero status as a delivered message, so a bounce refused here is one it drops');
 			self::assertSame(array(), $output,
-				'Whatever the refusal prints is what the sender is handed back');
+				'the refusal says nothing, so a line here is the child interpreter failing for another reason');
+			self::assertSame(1, $status,
+				'an MTA reads a zero status as a delivered message, so a bounce refused here is one it loses');
 		}
 
 
