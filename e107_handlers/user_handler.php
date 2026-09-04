@@ -712,7 +712,7 @@ class UserHandler
 	 *	Create user cookie
 	 *
 	 *	@param array $lode - user information from DB - 'user_id' and 'user_password' required
-	 *	@param bool $autologin - ignored since v2.3.11; 'Remember Me' is discontinued
+	 *	@param bool $autologin - ignored since v2.3.12; 'Remember Me' is discontinued
 	 *
 	 *	@return void
 	 */

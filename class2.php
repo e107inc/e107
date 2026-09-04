@@ -1824,7 +1824,7 @@ function cookie($name, $value, $expire=0, $path = e_HTTP, $domain = '', $secure 
 /**
  *
  * generic function for retaining values across pages. The value is kept in the
- * session; the cookie parameters are ignored since v2.3.11.
+ * session; the cookie parameters are ignored since v2.3.12.
  * @deprecated Use e107::getUserSession()->makeUserCookie($userData, $autologin); instead.
  * @param $name
  * @param $value
