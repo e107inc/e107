@@ -3206,6 +3206,19 @@ class e_admin_controller_ui extends e_admin_controller
 	}
 
 	/**
+	 * Whether a posted batch trigger carries its target field in its second segment, as
+	 * {@see e_admin_controller_ui::_handleListBatch()} dispatches it.
+	 *
+	 * @param string $type leading segment of the posted batch trigger
+	 * @return bool
+	 */
+	protected function isTypedBatchTrigger($type)
+	{
+		return in_array($type, array('sefgen', 'bool', 'boolreverse', 'attach', 'deattach',
+			'addAll', 'clearAll', 'ucadd', 'ucremove', 'ucaddall', 'ucdelall'), true);
+	}
+
+	/**
 	 * Check that a posted batch trigger may address a field: it must pass
 	 * {@see e_admin_controller_ui::isFieldIdentifier()}, carry the 'batch' flag
 	 * {@see e_admin_form_ui::renderBatchFilter()} builds the batch menu from, and must not be
