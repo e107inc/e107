@@ -27,10 +27,10 @@ class ProviderLoginChainCest
 	const LINKED_XUP  = 'Facebook_100000000000001';
 	const CHOSEN_XUP  = 'Facebook_attacker-chosen';
 
-	/** @var int account with a social login already linked */
+	/** @var int account with a social login already linked, used for the profile-update half */
 	private $linkedId;
 
-	/** @var int password-only account, used for the profile-update half */
+	/** @var int password-only account */
 	private $plainId;
 
 	public function _before(AcceptanceTester $I)
@@ -96,10 +96,10 @@ class ProviderLoginChainCest
 	{
 		$I->wantTo('Refuse a posted user_xup on a profile update (GHSA-m8v8-wc99-3h82)');
 
-		$this->loginAsMember($I, 'xupplain');
-		$this->saveProfile($I, $this->plainId, array('user_xup' => self::CHOSEN_XUP));
+		$this->loginAsMember($I, 'xuplinked');
+		$this->saveProfile($I, $this->linkedId, array('user_xup' => self::CHOSEN_XUP));
 
-		$I->seeInDatabase('e107_user', array('user_id' => $this->plainId, 'user_xup' => ''));
+		$I->seeInDatabase('e107_user', array('user_id' => $this->linkedId, 'user_xup' => self::LINKED_XUP));
 	}
 
 	/**
