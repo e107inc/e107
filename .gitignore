@@ -13,6 +13,7 @@ phpDocumentor.phar
 e107.htaccess
 e107_config.php
 e107_config_*.php
+e107_config.php.bak
 e107_media/*
 e107_system/*
 e107Install.log
