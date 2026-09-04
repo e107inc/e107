@@ -16,6 +16,13 @@
  */
 class workspaceCleanupTest extends \Codeception\Test\Unit
 {
+	/** Values carrying the suite's prefix that name no file at the app root, as value to why. */
+	private static $notAppRootFixtures = [
+		'e107_tests_p84_menu'           => 'a menu name in the database',
+		'e107_tests_upload_csrf.txt'    => 'written into e_IMPORT, inside the e107_system hash the sweep takes whole',
+		'e107_tests_security_level.txt' => 'written into e_IMPORT, inside the e107_system hash the sweep takes whole',
+	];
+
 	public function testEveryCestFixtureNameIsSwept()
 	{
 		$swept = $this->sweptNames();
@@ -35,14 +42,15 @@ class workspaceCleanupTest extends \Codeception\Test\Unit
 	}
 
 	/**
-	 * @return string[] what Extension\WorkspaceCleanup removes from the app root
+	 * @return string[] what Extension\WorkspaceCleanup removes, each entry with its basename
 	 */
 	private function sweptNames()
 	{
 		$artifacts = new ReflectionProperty('Extension\\WorkspaceCleanup', 'artifacts');
 		$artifacts->setAccessible(true);
+		$swept = $artifacts->getValue();
 
-		return $artifacts->getValue();
+		return array_merge($swept, array_map('basename', $swept));
 	}
 
 	/**
@@ -70,7 +78,8 @@ class workspaceCleanupTest extends \Codeception\Test\Unit
 
 			foreach($reflection->getConstants() as $value)
 			{
-				if(is_string($value) && strpos($value, 'e107_tests') !== false)
+				if(is_string($value) && strpos($value, 'e107_tests') !== false
+					&& !isset(self::$notAppRootFixtures[$value]))
 				{
 					$names[$value][] = $reflection->getShortName();
 				}
