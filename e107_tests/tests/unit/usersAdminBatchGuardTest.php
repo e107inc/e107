@@ -45,6 +45,16 @@ class usersAdminBatchGuardTest extends \Test\Unit
 			'The rule must read every row the batch acts on, not only the ticked ones.');
 	}
 
+	public function testTheGuardAppliesTheUserClassRule()
+	{
+		$this->assertContains('refusesClassBatch', $this->callsIn('refusesBatch'),
+			'refusesBatch() must refuse a batch writing a user class the caller may not manage.');
+		$this->assertContains('checkAllowed', $this->callsIn('refusesClasses'),
+			'The user class rule is checkAllowed(), the one the Set user class page applies.');
+		$this->assertContains('selectedClassIds', $this->callsIn('refusesClassBatch'),
+			'A batch that rewrites the column is measured on the classes the selection holds too.');
+	}
+
 	public function testTheGuardStillAsksWhetherTheFieldOffersABatch()
 	{
 		$calls = $this->callsIn('refusesBatch');

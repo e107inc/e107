@@ -123,7 +123,8 @@ class AdminUiBatchCustomFieldProbeFixture extends AdminUiBatchProbeFixture
 class AdminUiBatchUserClassStub
 {
 	/** @var array */
-	public $class_tree = array(253 => array('userclass_id' => 253, 'userclass_name' => 'Members'));
+	public $class_tree = array(253 => array('userclass_id' => 253, 'userclass_name' => 'Members',
+		'userclass_editclass' => 254));
 
 	public function uc_required_class_list($list = '')
 	{
