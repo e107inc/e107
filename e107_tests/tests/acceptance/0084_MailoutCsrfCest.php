@@ -490,18 +490,27 @@ class MailoutCsrfCest
 
 		$stub = array('process' => $process, 'pipes' => $pipes, 'script' => $script, 'ready' => $ready);
 
-		$bound = \Test\Poll::until(function () use ($ready)
+		$bound = \Test\Poll::until(function () use ($ready, $process)
 		{
 			clearstatcache(true, $ready);
 
-			return file_exists($ready);
+			if(file_exists($ready))
+			{
+				return 'bound';
+			}
+
+			$status = proc_get_status($process);
+
+			return $status['running'] ? false : 'exited';
 		}, 10);
 
-		if(!$bound)
+		if($bound !== 'bound')
 		{
 			$this->stopSmtpServer($stub);
 
-			throw new \RuntimeException('The stub SMTP server never bound to port ' . self::SMTP_STUB_PORT);
+			$reason = $bound === 'exited' ? 'exited without binding to' : 'never bound to';
+
+			throw new \RuntimeException('The stub SMTP server ' . $reason . ' port ' . self::SMTP_STUB_PORT);
 		}
 
 		return $stub;
