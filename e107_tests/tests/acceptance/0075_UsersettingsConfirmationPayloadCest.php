@@ -197,6 +197,31 @@ class UsersettingsConfirmationPayloadCest
 
 
 	/**
+	 * The change is held for one row and the write took its target from the query
+	 * string, so an administrator confirming their own stashed change at somebody
+	 * else's id put it on that record instead.
+	 */
+	public function aConfirmationCannotBeRedirectedAtAnotherRow(AcceptanceTester $I)
+	{
+		$I->wantTo('Refuse a confirmation aimed at a row other than the one it was stashed for');
+
+		$otherId = $this->haveMember($I, 'bystander');
+
+		$I->loginAsAdmin();
+
+		$this->startEmailChange($I, 'administrator-new@example.test');
+		$fields = $this->confirmationFields($I);
+		$fields['currentpassword'] = self::MEMBER_PASS;
+
+		$I->sendPostRequest('/usersettings.php?' . $otherId, $fields);
+
+		$I->assertSame('bystander@example.test',
+			$I->grabFromDatabase('e107_user', 'user_email', array('user_id' => $otherId)),
+			'the change stashed for the administrator did not land on another member');
+	}
+
+
+	/**
 	 * The three columns the first stage's allow list keeps out of a member's reach:
 	 * two that make an administrator, and the external-login binding tracked as its
 	 * own advisory, so a re-cut that reopens either one reds here.
