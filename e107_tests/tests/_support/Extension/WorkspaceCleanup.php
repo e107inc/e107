@@ -106,6 +106,9 @@ class WorkspaceCleanup extends Extension
 		'e107_tests_online_memberlist_probe.php',  // @see OnlineMemberListLinkCest
 		'e107_tests_chatbox_request_self_probe.php', // @see ChatboxRequestSelfCest
 		'e107_tests_containment_unguarded.php', // @see ProbeContainmentCest
+		'e107_tests_cli_bootstrap_probe.php',  // @see CliBootstrapHttpRefusalCest
+		'e107_tests_cli_only_entry.php',       // @see CliBootstrapHttpRefusalCest
+		'e107_tests_cli_only_canary.txt',      // @see CliBootstrapHttpRefusalCest
 	];
 
 	/** Files a test moves aside for one test method, as parked name to the name it belongs back at. */
