@@ -378,6 +378,7 @@ PHP;
 // Fixture for 0045_CronMisconfigMailCest. Removed again in the Cest's _after().
 \$_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
+{{E107_TEST_PROBE_GUARD}}
 require_once(e_HANDLER.'cron_class.php');
 header('Content-Type: text/plain');
 

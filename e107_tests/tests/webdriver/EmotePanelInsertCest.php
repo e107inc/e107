@@ -117,6 +117,7 @@ class EmotePanelInsertCest
 <?php
 // Fixture for EmotePanelInsertCest. Removed again in the Cest's _after().
 require_once(__DIR__.'/class2.php');
+{{E107_TEST_PROBE_GUARD}}
 require_once(HEADERF);
 
 \$handlers = "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'";

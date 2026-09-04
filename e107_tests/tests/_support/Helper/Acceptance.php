@@ -60,11 +60,15 @@ class Acceptance extends E107Base
 	private $siteInstalled = false;
 
 	/**
+	 * Show the run's probe secret on every request, so a fixture in the docroot
+	 * answers this suite and nobody else.
+	 *
      * @param \Codeception\TestInterface|null $test
      */
     public function _before($test = null)
 	{
 		parent::_before($test);
+		$this->getModule('PhpBrowser')->haveHttpHeader(ProbeGuard::HEADER, ProbeGuard::secret());
 		$this->haveInstalledSite();
 	}
 
@@ -650,7 +654,8 @@ class Acceptance extends E107Base
 		}
 
 		$browser = $this->getModule('PhpBrowser');
-		$browser->amOnPage('/'.self::PLUGIN_PROBE_FILE.'?act='.$act.'&plugin='.urlencode($plugin));
+		$browser->amOnPage('/'.self::PLUGIN_PROBE_FILE.'?'.ProbeGuard::query()
+			.'&act='.$act.'&plugin='.urlencode($plugin));
 
 		$body = $browser->grabPageSource();
 
@@ -673,6 +678,7 @@ class Acceptance extends E107Base
 // Fixture for Helper\Acceptance::havePluginInstalled(). Removed in dropPluginProbe().
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
+{{E107_TEST_PROBE_GUARD}}
 header('Content-Type: text/plain');
 
 $act = isset($_GET['act']) ? $_GET['act'] : '';

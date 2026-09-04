@@ -1150,6 +1150,7 @@ PHP;
 // Fixture for 0033_AdminPreAuthCest. Removed again in the Cest's _after().
 \$_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
+{{E107_TEST_PROBE_GUARD}}
 header('Content-Type: text/plain');
 
 \$canary = __DIR__.'/$canary';
