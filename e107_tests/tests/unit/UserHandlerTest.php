@@ -215,11 +215,7 @@
 			$this->assertFalse($userMethods->hasReadonlyField(array()));
 		}
 
-		/**
-		 * usersettings.php recalculates user_class from the classes the member may
-		 * edit and strips the fixed ones, so a stage one write of that column is
-		 * legitimate whatever signup_option_class is set to.
-		 */
+		/** usersettings.php filters user_class through the classes the member may edit, so that column is theirs to write. */
 		public function testHasReadonlyFieldPassesTheClassColumnStageOneWrites()
 		{
 			$userMethods = e107::getUserSession();
@@ -240,11 +236,7 @@
 			}
 		}
 
-		/**
-		 * Every e107 model keeps its fields where a foreach in this class cannot
-		 * reach them, and one object cannot be told from another here, so only an
-		 * array or a Traversable is read and the rest is refused unread.
-		 */
+		/** Only an array or a Traversable is read; anything else, every e107 model included, is refused unread. */
 		public function testHasReadonlyFieldRefusesWhatItCannotRead()
 		{
 			$userMethods = e107::getUserSession();
