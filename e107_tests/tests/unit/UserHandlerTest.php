@@ -192,7 +192,7 @@
 
 		}
 
-		/** A restricted field is refused wherever the set names it: as a key, as a value, or as a property. */
+		/** A restricted field is refused wherever the set names it: as a key, or as one name in a list of them. */
 		public function testHasReadonlyFieldFindsARestrictedField()
 		{
 			$userMethods = e107::getUserSession();
@@ -200,7 +200,7 @@
 			$this->assertTrue($userMethods->hasReadonlyField(array('user_admin' => 1, 'user_perms' => '0')));
 			$this->assertTrue($userMethods->hasReadonlyField(array('user_signature' => 'hello', 'user_ban' => 1)));
 			$this->assertTrue($userMethods->hasReadonlyField(array('user_name', 'user_admin')));
-			$this->assertTrue($userMethods->hasReadonlyField((object) array('user_admin' => 1)));
+			$this->assertTrue($userMethods->hasReadonlyField(new ArrayObject(array('user_admin' => 1))));
 		}
 
 		/** Fields a member may edit are not restricted, so an ordinary profile update still passes. */
@@ -210,14 +210,15 @@
 
 			$this->assertFalse($userMethods->hasReadonlyField(array('user_name' => 'Someone', 'user_signature' => 'hello')));
 			$this->assertFalse($userMethods->hasReadonlyField(array('user_name', 'user_signature')));
-			$this->assertFalse($userMethods->hasReadonlyField((object) array('user_name' => 'Someone')));
+			$this->assertFalse($userMethods->hasReadonlyField(array('user_signature' => 'user_admin')));
+			$this->assertFalse($userMethods->hasReadonlyField(new ArrayObject(array('user_name' => 'Someone'))));
 			$this->assertFalse($userMethods->hasReadonlyField(array()));
 		}
 
 		/**
 		 * usersettings.php recalculates user_class from the classes the member may
 		 * edit and strips the fixed ones, so a stage one write of that column is
-		 * legitimate whatever signup_option_class says about offering the selector.
+		 * legitimate whatever signup_option_class is set to.
 		 */
 		public function testHasReadonlyFieldPassesTheClassColumnStageOneWrites()
 		{
@@ -239,7 +240,11 @@
 			}
 		}
 
-		/** Anything that is not a field set cannot be checked against the list, and what cannot be checked is refused. */
+		/**
+		 * Every e107 model keeps its fields where a foreach in this class cannot
+		 * reach them, and one object cannot be told from another here, so only an
+		 * array or a Traversable is read and the rest is refused unread.
+		 */
 		public function testHasReadonlyFieldRefusesWhatItCannotRead()
 		{
 			$userMethods = e107::getUserSession();
@@ -247,6 +252,7 @@
 			$this->assertTrue($userMethods->hasReadonlyField('{"user_admin":1,"user_perms":"0"}'));
 			$this->assertTrue($userMethods->hasReadonlyField('{"user_name":"Someone"}'));
 			$this->assertTrue($userMethods->hasReadonlyField(null));
+			$this->assertTrue($userMethods->hasReadonlyField((object) array('user_name' => 'Someone')));
 		}
 
 /*
