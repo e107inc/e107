@@ -196,14 +196,13 @@ class ForumFixture extends CodeceptionModule
 	}
 
 	/**
-	 * e107 bans an address after fifty requests and localhost is exempt, but the
-	 * client address inside the container is the bridge. Without this the suite
-	 * bans itself part way through and every later response comes back empty,
-	 * which reads as pages that do not exist.
+	 * Empty the forum's report throttle, which is scoped per reporter and gives
+	 * every guest one shared bucket, so a report left by an earlier test would
+	 * otherwise refuse the next one.
 	 */
-	public function resetForumFloodProtection()
+	public function resetForumReportThrottle()
 	{
-		$this->probe('act=flood');
+		$this->probe('act=reports');
 	}
 
 	/**
@@ -742,13 +741,9 @@ switch($act)
 		echo "PROBE_OK mode\n";
 		break;
 
-	case 'flood':
-		e107::getDb()->delete('online');
-		e107::getDb()->delete('banlist', 'banlist_bantype IN (2, -2)');
-		// Reports are throttled per reporter, and guests share one bucket, so
-		// a report left by an earlier test would throttle the next one.
+	case 'reports':
 		e107::getDb()->delete('generic', "gen_type = 'reported_post'");
-		echo "PROBE_OK flood\n";
+		echo "PROBE_OK reports\n";
 		break;
 
 	case 'attachdir':

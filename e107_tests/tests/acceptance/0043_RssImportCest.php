@@ -624,11 +624,6 @@ echo 'MEDIA_URL=/'.e107_test_url(e_MEDIA)."\n";
 switch($act)
 {
 	case 'reset':
-		// e107 bans an address after fifty requests in a window and every
-		// request from the container arrives from the same bridge address.
-		e107::getDb()->delete('online');
-		e107::getDb()->delete('banlist', 'banlist_bantype IN (2, -2)');
-
 		// install.php creates every directory in e107_dirs, e_MEDIA_IMAGE
 		// among them. The suite's second install writes a config naming a site
 		// path it never installed under, so put the tree in the shape a real

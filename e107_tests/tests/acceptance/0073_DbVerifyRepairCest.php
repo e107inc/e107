@@ -67,7 +67,6 @@ class DbVerifyRepairCest
 	public function _before(AcceptanceTester $I)
 	{
 		$this->restoreTable($I);
-		$this->clearRequestBan($I);
 	}
 
 	public function _after(AcceptanceTester $I)
@@ -390,18 +389,5 @@ class DbVerifyRepairCest
 			$dbh->exec('ALTER TABLE `'.self::PREFIXED_TABLE.'` '
 				.'ADD INDEX `'.self::INDEX.'` (`'.self::INDEXED_COLUMN.'`)');
 		}
-	}
-
-	/**
-	 * Clear e107's flood protection, which a long run trips before this Cest loads.
-	 *
-	 * @return void
-	 */
-	private function clearRequestBan(AcceptanceTester $I)
-	{
-		$dbh = $this->dbh($I);
-
-		$dbh->exec('DELETE FROM `e107_online`');
-		$dbh->exec('DELETE FROM `e107_banlist` WHERE `banlist_bantype` IN (2, -2)');
 	}
 }

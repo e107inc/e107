@@ -55,7 +55,6 @@ JS;
 
 	public function _before(WebDriverTester $I)
 	{
-		$I->resetForumFloodProtection();
 		$I->haveForumPluginInstalled();
 		$I->haveForumCsrfMode(0);
 

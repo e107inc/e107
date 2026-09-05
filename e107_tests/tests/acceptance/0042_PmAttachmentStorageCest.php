@@ -563,10 +563,6 @@ $legacyDir = e_PLUGIN.'pm/attachments/';
 switch($act)
 {
 	case 'reset':
-		// e107 bans an address after fifty requests in a window and every
-		// request from the container arrives from the same bridge address.
-		$db->delete('online');
-		$db->delete('banlist', 'banlist_bantype IN (2, -2)');
 		// Messages this fixture sends are not tracked by the Db module, so a
 		// run that died part way through would leave them for the next one.
 		$db->delete('private_msg');
