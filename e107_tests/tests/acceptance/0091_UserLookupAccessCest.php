@@ -40,6 +40,8 @@ class UserLookupAccessCest
 
 	const PREFS_FORM = "form[action*='users.php']";
 
+	const TOKEN_PATTERN = '/name=[\'"]e-token[\'"][^>]*value=[\'"]([^\'"]+)[\'"]/';
+
 	/** e_UC_PUBLIC and e_UC_MEMBER, as the preference stores them. */
 	const PUBLIC_CLASS = '0';
 
@@ -88,8 +90,8 @@ class UserLookupAccessCest
 	{
 		$I->wantTo('return nothing rather than everything for a keyword that filters down to nothing');
 
-		$this->loginAsViewer($I);
-		$I->sendPostRequest(self::LOOKUP, array('q' => '<x>', 'l' => '100000'));
+		$token = $this->loginAsViewer($I);
+		$I->sendPostRequest(self::LOOKUP, array('q' => '<x>', 'l' => '100000', 'e-token' => $token));
 
 		$I->assertStringNotContainsString(self::PREFIX, $I->grabResponseBody(),
 			'A keyword that filters down to an empty pattern still matched every member');
@@ -99,8 +101,8 @@ class UserLookupAccessCest
 	{
 		$I->wantTo('keep accounts the member list withholds out of the typeahead');
 
-		$this->loginAsViewer($I);
-		$I->sendPostRequest(self::LOOKUP, array('q' => self::PREFIX, 'l' => '100'));
+		$token = $this->loginAsViewer($I);
+		$I->sendPostRequest(self::LOOKUP, array('q' => self::PREFIX, 'l' => '100', 'e-token' => $token));
 
 		$body = $I->grabResponseBody();
 
@@ -117,8 +119,9 @@ class UserLookupAccessCest
 		$I->wantTo('cap the lookup however many rows the caller asks for');
 
 		$this->seedCrowd($I);
-		$this->loginAsViewer($I);
-		$I->sendPostRequest(self::LOOKUP, array('q' => self::PREFIX . 'Crowd', 'l' => '100000'));
+		$token = $this->loginAsViewer($I);
+		$I->sendPostRequest(self::LOOKUP,
+			array('q' => self::PREFIX . 'Crowd', 'l' => '100000', 'e-token' => $token));
 
 		$returned = substr_count($I->grabResponseBody(), '"label"');
 
@@ -194,8 +197,12 @@ class UserLookupAccessCest
 	}
 
 	/**
+	 * Log the seeded member in and hand back the session token their posts need:
+	 * class2.php refuses a cookie-bearing POST that carries none, so an
+	 * authenticated lookup without one never reaches the code under test.
+	 *
 	 * @param AcceptanceTester $I
-	 * @return void
+	 * @return string the e-token this session's posts must carry
 	 */
 	private function loginAsViewer(AcceptanceTester $I)
 	{
@@ -206,6 +213,12 @@ class UserLookupAccessCest
 		$I->click('userlogin');
 		$I->amOnPage('/usersettings.php');
 		$I->seeInSource(self::VIEWER);
+
+		$matches = array();
+		$found = preg_match(self::TOKEN_PATTERN, $I->grabPageSource(), $matches);
+		$I->assertNotEmpty($found, 'usersettings.php renders an e-token');
+
+		return $matches[1];
 	}
 
 	/**
