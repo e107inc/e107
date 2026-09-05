@@ -3681,7 +3681,7 @@ var_dump($select_options);*/
 			$style = '';
 		}
 
-		return $this->option($prefix.$this->_uc->getName($classnum), $classSign.$classIndex, ($current_value !== '' && in_array($classnum, $tmp)), array('style' => ($style)))."\n";
+		return $this->option($prefix.$this->_uc->getName($classnum), $classSign.$classIndex, $this->optionIsSelected($classnum, $tmp), array('style' => ($style)))."\n";
 	}
 
 
@@ -3730,6 +3730,34 @@ var_dump($select_options);*/
 	}
 
 
+	/**
+	 * @param mixed $value an option's value
+	 * @param mixed $selected what the caller asked to have selected, or a list of them
+	 * @return bool whether this option is the selected one
+	 */
+	private function optionIsSelected($value, $selected)
+	{
+		if(is_array($selected))
+		{
+			foreach($selected as $one)
+			{
+				if($this->optionIsSelected($value, $one))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		if($value === '' || $selected === '')
+		{
+			return (string) $value === (string) $selected;
+		}
+
+		return $value == $selected;
+	}
+
     /**
     * Use selectbox() instead.
     */
@@ -3771,7 +3799,7 @@ var_dump($select_options);*/
 			else
 			{
 
-				$sel = is_array($selected) ? in_array($value, $selected) : ($value == $selected); // comparison as int/string currently required for admin-ui to function correctly.
+				$sel = $this->optionIsSelected($value, $selected);
 
 				if(!empty($options['optDisabled']) && is_array($options['optDisabled']))
 				{
@@ -3824,7 +3852,7 @@ var_dump($select_options);*/
 					$opts['disabled'] = in_array($val, $options['optDisabled']);
 				}
 
-				$text .= $this->option($lab, $val, (is_array($selected) ? in_array($val, $selected) : $selected == $val), $opts)."\n";
+				$text .= $this->option($lab, $val, $this->optionIsSelected($val, $selected), $opts)."\n";
 			}
 
 		}

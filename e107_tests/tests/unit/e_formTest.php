@@ -690,6 +690,31 @@ class e_formTest extends \Codeception\Test\Unit
 
 
 	}
+	/** @return void */
+	public function testSelectLeavesTheOptionKeyedZeroAloneWhenNothingIsSelected()
+	{
+		$this->_frm->__construct(true);
+
+		$opt_array = array('' => 'Recommended', 3 => 'Token or same site', 0 => 'Off');
+
+		$actual = $this->_frm->select('csrf_enforce', $opt_array, '');
+
+		self::assertSame(1, substr_count($actual, "selected='selected'"),
+			'An empty selection must mark exactly one option selected');
+		self::assertSame(1, substr_count($actual, "<option value='' selected='selected'>"),
+			'An empty selection must select the empty option, not the one keyed zero');
+
+		$grouped = $this->_frm->select('csrf_enforce', array('GROUP' => $opt_array), '');
+
+		self::assertSame(1, substr_count($grouped, "selected='selected'"),
+			'The grouped path must not select the option keyed zero either');
+
+		$stored = $this->_frm->select('csrf_enforce', $opt_array, '0');
+
+		self::assertSame(1, substr_count($stored, "<option value='0' selected='selected'>"),
+			'A stored zero still selects the option keyed zero');
+	}
+
 	/*
 			public function testUserclass()
 			{
