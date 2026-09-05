@@ -32,11 +32,6 @@
 		exit;
 	}
 
-	if(vartrue($_POST['keyword']))
-	{
-		pm_user_lookup();
-	}
-
 	e107::css('pm', 'pm.css');
 	require_once(e_PLUGIN . 'pm/pm_class.php');
 	require_once(e_PLUGIN . 'pm/pm_func.php');
@@ -786,34 +781,6 @@
 
 		}
 
-	}
-
-
-	/**
-	 *    Look up users matching a keyword, output a list of those found
-	 *    Direct echo
-	 */
-	function pm_user_lookup()
-	{
-		$sql = e107::getDb();
-
-		$tp = e107::getParser();
-
-		$qb = $sql->createQueryBuilder();
-		$rows = $qb->select('user_id', 'user_name')->from('user')
-			->where($qb->expr()->regexp('user_name', '^' . $tp->filter($_POST['keyword'], 'w')))
-			->fetchEach();
-
-		$u = array();
-		echo '[';
-		foreach($rows as $row)
-		{
-			$u[] = "{\"caption\":\"" . $row['user_name'] . "\",\"value\":" . $row['user_id'] . "}";
-		}
-
-		echo implode(",", $u);
-		echo ']';
-		exit;
 	}
 
 
