@@ -89,10 +89,6 @@ class CommentEditAuthzCest
 	{
 		$I->writeAppFile(self::PROBE_FILE, $this->probeSource());
 
-		// Every request from the container arrives from the bridge address, and
-		// e107 bans an address once it has been seen enough times in a window.
-		$this->probe($I, 'act=flood');
-
 		// Pin the CSRF mode rather than inherit it. What an unset preference
 		// resolves to is a decision that moves between releases, and these tests
 		// are about authorisation: a POST refused by the CSRF gate would never
@@ -795,12 +791,6 @@ $key = isset($_GET['k']) ? preg_replace('/[^\w]/', '', $_GET['k']) : '';
 
 switch($act)
 {
-	case 'flood':
-		e107::getDb()->delete('online');
-		e107::getDb()->delete('banlist', 'banlist_bantype IN (2, -2)');
-		echo "PROBE_OK flood\n";
-		break;
-
 	case 'pref':
 		$value = isset($_GET['v']) ? $_GET['v'] : '';
 		$config = e107::getConfig('core');

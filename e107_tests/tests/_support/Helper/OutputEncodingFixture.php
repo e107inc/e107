@@ -245,10 +245,6 @@ $sql = e107::getDb();
 switch($p8act)
 {
 	case 'reset':
-		// Flood protection counts hits per address and bans at fifty; every
-		// request in this container arrives from the same bridge address.
-		$sql->delete('online');
-		$sql->delete('banlist', 'banlist_bantype IN (2, -2)');
 		header('Content-Type: text/plain');
 		echo "P8_OK reset\n";
 		break;
