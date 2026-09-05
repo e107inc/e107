@@ -185,11 +185,16 @@ class UserHandler
 
 	/**
 	 * Check if a user posted field is readonly (should not be user-editable).
-	 * @param array $posted
+	 * @param array $posted values keyed by field name; anything else is readonly, because it cannot be checked
 	 * @return bool
 	 */
 	public function hasReadonlyField($posted)
 	{
+		if(!is_array($posted))
+		{
+			return true;
+		}
+
 		$restricted = array_keys($this->otherFields);
 
 		$pref = e107::getPref();
