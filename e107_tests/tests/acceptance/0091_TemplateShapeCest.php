@@ -109,6 +109,26 @@ class TemplateShapeCest
 		$this->seeASearchForm($I, self::SHIPPED_THEME);
 	}
 
+	public function signupOffersItsFormOnAV1Theme(AcceptanceTester $I)
+	{
+		$this->seeARegistrationForm($I, 'tpstate1_legacy');
+	}
+
+	public function signupOffersItsFormOnAThemeDeclaringNoFramework(AcceptanceTester $I)
+	{
+		$this->seeARegistrationForm($I, 'tpstate3_plain');
+	}
+
+	public function signupOffersItsFormOnAV1ThemeThatDefinesBootstrap(AcceptanceTester $I)
+	{
+		$this->seeARegistrationForm($I, 'tpstate4_legacybs');
+	}
+
+	public function signupOffersItsFormOnTheShippedTheme(AcceptanceTester $I)
+	{
+		$this->seeARegistrationForm($I, self::SHIPPED_THEME);
+	}
+
 	public function membersOnlyRendersOnAV1Theme(AcceptanceTester $I)
 	{
 		$this->seeTheRestrictedAreaPage($I, 'tpstate1_legacy');
@@ -204,6 +224,28 @@ class TemplateShapeCest
 
 		$I->seeElement('#searchform');
 		$I->seeElement('#searchform input[name=q]');
+
+		$this->seeNoDiagnostics($I);
+	}
+
+	/**
+	 * The registration form, as a visitor, past the age question the site's use_coppa preference stands in front of it.
+	 *
+	 * @param AcceptanceTester $I
+	 * @param string $theme theme directory name; a fixture when tests/_data holds one, else a shipped theme
+	 */
+	private function seeARegistrationForm(AcceptanceTester $I, $theme)
+	{
+		$I->haveThemeFixture($theme);
+		$I->haveSiteTheme($theme);
+
+		$I->amOnPage('/signup.php');
+
+		$I->selectOption('coppa', '1');
+		$I->click('newver');
+
+		$I->seeElement('input#email');
+		$I->seeElement('input[name=register]');
 
 		$this->seeNoDiagnostics($I);
 	}
