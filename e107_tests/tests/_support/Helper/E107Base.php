@@ -57,6 +57,27 @@ abstract class E107Base extends Base
         $this->deployer->unlinkAppFile($relative_path);
     }
 
+    /**
+     * Empty the tables e107 counts requests in and records an auto-ban in.
+     *
+     * @return void
+     */
+    public function resetFloodProtection()
+    {
+        try
+        {
+            $dbh = $this->getDbModule()->_getDbh();
+
+            $dbh->exec('DELETE FROM `'.self::E107_MYSQL_PREFIX.'online`');
+            $dbh->exec('DELETE FROM `'.self::E107_MYSQL_PREFIX.'banlist` '
+                .'WHERE `banlist_bantype` IN (2, -2)');
+        }
+        catch (\PDOException $e)
+        {
+            return;
+        }
+    }
+
     public function _beforeSuite($settings = [])
     {
         $this->acquireDeploymentLock();

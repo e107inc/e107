@@ -43,22 +43,24 @@ e107::getLanguage()->bcDefs($bcList);
 
 
 
+$full_perms = getperms("0") || check_class(varset($pref['memberlist_access'], 253));		// Controls display of info from other users
+$user_list_max = 50;
+
 if(e_AJAX_REQUEST)
 {
-	if(vartrue($_POST['q']))
-	{
-		$db = e107::getDb();
-		$tp = e107::getParser();
+	$q = $full_perms && is_string(varset($_POST['q'])) ? e107::getParser()->filter($_POST['q']) : '';
 
-		$q = $tp->filter($_POST['q']);
+	if($q !== '')
+	{
 		$l = vartrue($_POST['l']) ? intval($_POST['l']) : 10;
 
 		//TODO FIXME Filter by userclass.  - see $frm->userlist().
 
-		$qb = $db->createQueryBuilder();
+		$qb = e107::getDb()->createQueryBuilder();
 		$rows = $qb->select('user_id', 'user_name')->from('user')
 			->where($qb->expr()->startsWith('user_name', $q))
-			->orderBy('user_name', 'ASC')->setMaxResults((int) $l)
+			->andWhere('user_ban', 0)
+			->orderBy('user_name', 'ASC')->setMaxResults(max(1, min($user_list_max, $l)))
 			->fetchAll();
 
 		if($rows)
@@ -139,7 +141,6 @@ $user_shortcodes->wrapper('user/view');
 $user_frm = new form;
 require_once(HEADERF);
 
-$full_perms = getperms("0") || check_class(varset($pref['memberlist_access'], 253));		// Controls display of info from other users
 if (!$full_perms && !$self_page)
 {
 	$ns->tablerender(LAN_ERROR, "<div style='text-align:center'>".LAN_USER_55."</div>");
@@ -185,9 +186,9 @@ if ($records < 1)
 {
 	$records = 20;
 }
-elseif ($records > 50)
+elseif ($records > $user_list_max)
 {
-	$records = 50;
+	$records = $user_list_max;
 }
 
 if (isset($id))
