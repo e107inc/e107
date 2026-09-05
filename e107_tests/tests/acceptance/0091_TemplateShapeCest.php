@@ -86,6 +86,29 @@ class TemplateShapeCest
 		$I->seeElement('table.adminform');
 	}
 
+	public function searchOffersItsFormOnAV1Theme(AcceptanceTester $I)
+	{
+		$this->seeASearchForm($I, 'tpstate1_legacy');
+		$I->seeElement('#tp-search input[name=q]');
+	}
+
+	public function searchOffersItsFormOnAThemeDeclaringNoFramework(AcceptanceTester $I)
+	{
+		$this->seeASearchForm($I, 'tpstate3_plain');
+		$I->seeElement('#tp-search input[name=q]');
+	}
+
+	public function searchOffersItsFormOnAV1ThemeThatDefinesBootstrap(AcceptanceTester $I)
+	{
+		$this->seeASearchForm($I, 'tpstate4_legacybs');
+		$I->seeElement('#tp-search input[name=q]');
+	}
+
+	public function searchOffersItsFormOnTheShippedTheme(AcceptanceTester $I)
+	{
+		$this->seeASearchForm($I, self::SHIPPED_THEME);
+	}
+
 	public function membersOnlyRendersOnAV1Theme(AcceptanceTester $I)
 	{
 		$this->seeTheRestrictedAreaPage($I, 'tpstate1_legacy');
@@ -162,6 +185,25 @@ class TemplateShapeCest
 
 		$I->seeElement('#'.self::EXTENDED_FIELD_ID);
 		$I->seeInSource(self::EXTENDED_CATEGORY);
+
+		$this->seeNoDiagnostics($I);
+	}
+
+	/**
+	 * The search form, and with it whatever the theme's own {SEARCH} produced.
+	 *
+	 * @param AcceptanceTester $I
+	 * @param string $theme theme directory name; a fixture when tests/_data holds one, else a shipped theme
+	 */
+	private function seeASearchForm(AcceptanceTester $I, $theme)
+	{
+		$I->haveThemeFixture($theme);
+		$I->haveSiteTheme($theme);
+
+		$I->amOnPage('/search.php');
+
+		$I->seeElement('#searchform');
+		$I->seeElement('#searchform input[name=q]');
 
 		$this->seeNoDiagnostics($I);
 	}
