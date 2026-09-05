@@ -30,7 +30,6 @@ class NewsPaginationCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->resetForumFloodProtection();
 
 		$replaced = array(
 			'news_pagination' => $I->haveSitePref('news_pagination', 'page'),
