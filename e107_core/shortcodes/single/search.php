@@ -16,10 +16,8 @@ function search_shortcode($parm=null)
 
 	if(empty($SEARCH_SHORTCODE))
 	{
-		if(!$SEARCH_SHORTCODE = e107::getCoreTemplate('search','shortcode'))
-		{
-			$SEARCH_SHORTCODE = include(e107::coreTemplatePath('search'));
-		}
+		$template = e107::getCoreTemplate('search');
+		$SEARCH_SHORTCODE = vartrue($template['SEARCH_SHORTCODE'], varset($template['shortcode'], ''));
 	}
 
 	if(empty($SEARCH_SHORTCODE))

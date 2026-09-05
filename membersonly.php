@@ -15,25 +15,18 @@
 require_once("class2.php");
 e107::coreLan('membersonly');
 
-if(deftrue('BOOTSTRAP')) //v2.x
-{
-	$MEMBERSONLY_TEMPLATE = e107::getCoretemplate('membersonly');
-}
-else // Legacy
-{
-	if(is_readable(THEME . "membersonly_template.php"))
-	{
-		require_once(THEME . "membersonly_template.php");
-	}
-	else
-	{
-		require_once(e_CORE . "templates/membersonly_template.php");
-	}
+$MEMBERSONLY_TEMPLATE = e107::getCoreTemplate('membersonly');
 
-	$MEMBERSONLY_TEMPLATE['default']['caption'] = $MEMBERSONLY_CAPTION;
-	$MEMBERSONLY_TEMPLATE['default']['header'] = $MEMBERSONLY_BEGIN;
-	$MEMBERSONLY_TEMPLATE['default']['body'] = $MEMBERSONLY_TABLE;
-	$MEMBERSONLY_TEMPLATE['default']['footer'] = $MEMBERSONLY_END;
+$legacyBody = vartrue($MEMBERSONLY_TABLE, varset($MEMBERSONLY_TEMPLATE['MEMBERSONLY_TABLE'], ''));
+
+if(!empty($legacyBody))
+{
+	$MEMBERSONLY_TEMPLATE['default'] = array(
+		'caption' => vartrue($MEMBERSONLY_CAPTION, varset($MEMBERSONLY_TEMPLATE['MEMBERSONLY_CAPTION'], '')),
+		'header'  => vartrue($MEMBERSONLY_BEGIN, varset($MEMBERSONLY_TEMPLATE['MEMBERSONLY_BEGIN'], '')),
+		'body'    => $legacyBody,
+		'footer'  => vartrue($MEMBERSONLY_END, varset($MEMBERSONLY_TEMPLATE['MEMBERSONLY_END'], '')),
+	);
 }
 
 if(!defined('e_IFRAME'))
