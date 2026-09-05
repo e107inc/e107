@@ -26,6 +26,9 @@ mark            { text-decoration: underline; color:#FF0000; font-weight:bold; }
 #login-template { width:60%; max-width:350px; margin-right:auto;margin-left:auto; }
 div.form-group  { padding-top: 5px }
 
+/* Bootstrap Dropdown, as the date picker expects it */
+.datetimepicker.dropdown-menu { display: none; position: absolute; color: #333; background-color: #FFF; border: 1px solid #CCC; }
+
 div.news-empty  { text-align:center; font-weight: bold }
 
 div.checkboxes label.checkbox { display: block }
