@@ -16,6 +16,7 @@ class FileInspectorProgressGateCest
 {
 	const PROGRESS = '/e107_admin/fileinspector.php?action=progress&scan=DEADBEEF';
 	const SETUP = '/e107_admin/fileinspector.php?mode=main&action=setup';
+	const RUN = '/e107_admin/fileinspector.php?mode=main&action=run';
 	const ADMIN_DIR = 'e107_admin';
 	const PAYLOAD = '"><img src=x onerror=alert(document.domain)>';
 
@@ -106,25 +107,33 @@ class FileInspectorProgressGateCest
 	 * GHSA-396r-g8m8-w9xx. The poll URL used to carry the scan identifier straight
 	 * out of the query string through filter_var(), which sanitises nothing, so a
 	 * double quote in it closed data-progress and the rest was parsed as markup.
-	 * The poll URL is now constant and the run page reads no query parameter.
+	 *
+	 * Both routes to the run page are asked. The crafted link is the attack, and
+	 * it no longer renders the page at all. The POST is what proves the sink: the
+	 * run page does render, with the crafted identifier sitting in the query
+	 * string it is rendering from, and still writes none of it out.
 	 */
 	public function aCraftedScanIdentifierIsNotReflected(AcceptanceTester $I)
 	{
-		$I->wantTo('Keep a crafted File Inspector scan identifier out of the page');
+		$I->wantTo('Keep a crafted File Inspector scan identifier out of the run page');
 
 		$I->resetAllCookies();
 		$I->startFollowingRedirects();
 		$I->loginAsAdmin();
 
-		$I->amOnPage('/e107_admin/fileinspector.php?mode=main&action=run&scan='.urlencode(self::PAYLOAD));
+		$I->amOnPage(self::RUN.'&scan='.urlencode(self::PAYLOAD));
 
 		$I->dontSeeInSource(self::PAYLOAD);
-		$I->dontSeeInSource('&scan=');
 
-		$I->amOnPage(self::SETUP);
-		$I->submitForm('#scanform', array('core' => 'all', 'type' => 'list'));
+		$I->sendPostRequest(self::RUN.'&scan='.urlencode(self::PAYLOAD), array(
+			'core'    => 'all',
+			'type'    => 'list',
+			'e-token' => $I->grabFreshAdminToken(self::SETUP),
+		));
 
+		$I->seeElement('form#runit input[type=hidden][name=core][value=all]');
+		$I->dontSeeInSource(self::PAYLOAD);
 		$I->seeInSource('?action=progress"');
-		$I->dontSeeInSource('&scan=');
+		$I->dontSeeInSource('action=progress&');
 	}
 }
