@@ -173,6 +173,32 @@ class TemplateShapeCest
 		$this->seeTheRestrictedAreaPage($I, self::SHIPPED_THEME);
 	}
 
+	public function loginOffersItsFormOnAV1Theme(AcceptanceTester $I)
+	{
+		$this->seeALoginForm($I, 'tpstate1_legacy');
+	}
+
+	public function loginOffersItsFormOnAThemeDeclaringNoFramework(AcceptanceTester $I)
+	{
+		$this->seeALoginForm($I, 'tpstate3_plain');
+	}
+
+	public function loginOffersItsFormOnAV1ThemeThatDefinesBootstrap(AcceptanceTester $I)
+	{
+		$this->seeALoginForm($I, 'tpstate4_legacybs');
+	}
+
+	public function loginOffersItsFormOnTheShippedTheme(AcceptanceTester $I)
+	{
+		$this->seeALoginForm($I, self::SHIPPED_THEME);
+	}
+
+	public function aLoginTemplateAtTheThemeRootWins(AcceptanceTester $I)
+	{
+		$this->seeALoginForm($I, 'tpstate3_rootlogin');
+		$I->see('TPSTATE3_ROOTLOGIN_MARKER');
+	}
+
 	/** Both copies at once, as discussions #6008 and #6111 describe; the fborder table is the one only the theme's own file puts on this page. */
 	public function bothTemplatesInTheThemeWin(AcceptanceTester $I)
 	{
@@ -312,6 +338,26 @@ class TemplateShapeCest
 		$I->amOnPage('/membersonly.php');
 
 		$I->seeInSource(self::RESTRICTED_AREA);
+
+		$this->seeNoDiagnostics($I);
+	}
+
+	/**
+	 * The login form, as a visitor, which is the only way to arrive at it.
+	 *
+	 * @param AcceptanceTester $I
+	 * @param string $theme theme directory name; a fixture when tests/_data holds one, else a shipped theme
+	 */
+	private function seeALoginForm(AcceptanceTester $I, $theme)
+	{
+		$I->haveThemeFixture($theme);
+		$I->haveSiteTheme($theme);
+
+		$I->amOnPage('/login.php');
+
+		$I->seeElement('input#username');
+		$I->seeElement('input#userpass');
+		$I->seeElement('input[name=userlogin]');
 
 		$this->seeNoDiagnostics($I);
 	}
