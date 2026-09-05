@@ -199,31 +199,6 @@ if (isset($_POST['commentsubmit']) || isset($_POST['editsubmit']))
 		exit;
 	}
 
-	switch ($table)
-	{
-		case 'poll' :
-			if (!$sql->select("polls", "poll_title", "`poll_id` = '{$id}' AND `poll_comment` = 1")) 
-			{
-				e107::redirect();
-				exit;
-			}
-			break;
-		case 'news' :
-			if (!$sql->select("news", "news_allow_comments", "`news_id` = '{$id}' AND `news_allow_comments` = 0")) 
-			{
-				e107::redirect();
-				exit;
-			}
-			break;
-		case 'user' :
-			if (!$sql->select('user', 'user_name', '`user_id` ='.$id)) 
-			{
-				e107::redirect();
-				exit;
-			}
-			break;
-	}
-
 	$pid = intval(varset($_POST['pid'], 0));				// ID of the specific comment being edited (nested comments - replies)
 	$editpid = intval(varset($_POST['editpid'], 0));		// ID of the specific comment being edited (in-line comments)
 
@@ -253,28 +228,16 @@ if (isset($_POST['commentsubmit']) || isset($_POST['editsubmit']))
 
 if (isset($_POST['replysubmit']))
 {	// Reply to nested comment being posted
-	if ($table == "news" && !$sql->select("news", "news_allow_comments", "news_id='{$nid}' "))
-	{
-		e107::redirect();
-		exit;
-	}
-	else
-	{
-		$row = $sql->fetch();
-		if (!$row['news_id'])
-		{
-			$pid = (isset($_POST['pid']) ? $_POST['pid'] : 0);
-			$pid = intval($pid);
+	$pid = intval(varset($_POST['pid'], 0));
 
-			$clean_authorname = $_POST['author_name'];
-			$clean_comment = $_POST['comment'];
-			$clean_subject = $_POST['subject'];
+	$clean_authorname = $_POST['author_name'];
+	$clean_comment = $_POST['comment'];
+	$clean_subject = $_POST['subject'];
 
-			$cobj->enter_comment($clean_authorname, $clean_comment, $table, $nid, $pid, $clean_subject);
-			e107::getCache()->clear("comment.php?{$table}.{$id}");
-		}
-		$redirectFlag = $nid;
-	}
+	$cobj->enter_comment($clean_authorname, $clean_comment, $table, $nid, $pid, $clean_subject);
+	e107::getCache()->clear("comment.php?{$table}.{$id}");
+
+	$redirectFlag = $nid;
 }
 
 if ($redirectFlag)

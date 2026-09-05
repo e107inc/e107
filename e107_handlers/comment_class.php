@@ -698,6 +698,40 @@ class comment
 	
 	
 	/**
+	 * Whether the item accepts comments; a comment type core models no switch for passes.
+	 *
+	 * @param string|int $table comment type, or the core table name it maps to
+	 * @param int        $id    id of the item in that table
+	 * @return bool
+	 */
+	private function itemAcceptsComments($table, $id)
+	{
+		$sql = e107::getDb();
+		$id = (int) $id;
+
+		switch ($this->getTable($this->getCommentType($table)))
+		{
+			case 'news':
+				return (bool) $sql->select('news', 'news_id', "`news_id` = ".$id." AND `news_allow_comments` = 0");
+
+			case 'poll':
+				return (bool) $sql->select('polls', 'poll_id', "`poll_id` = ".$id." AND `poll_comment` = 1");
+
+			case 'page':
+				return (bool) $sql->select('page', 'page_id', "`page_id` = ".$id." AND `page_comment_flag` = 1");
+
+			case 'download':
+				return (bool) $sql->select('download', 'download_id', "`download_id` = ".$id." AND `download_comment` = 1");
+
+			case 'user':
+				return !empty(e107::pref('core', 'profile_comments'))
+					&& (bool) $sql->select('user', 'user_id', "`user_id` = ".$id);
+		}
+
+		return true;
+	}
+
+	/**
 	 * Add a comment to an item
 	 * e-token POST value should be always valid when using this method.
 	 *
@@ -752,6 +786,8 @@ class comment
 		}
 
 		if ($this->getCommentPermissions() != 'rw') return;
+
+		if (!$this->itemAcceptsComments($table, $id)) return false;
 
 		if ($user_func = e107::getOverride()->check($this,'enter_comment'))
 		{

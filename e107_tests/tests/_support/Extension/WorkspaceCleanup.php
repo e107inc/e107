@@ -130,6 +130,7 @@ class WorkspaceCleanup extends Extension
 		'e107_tests_ghsa7v5h_probe.php',       // @see SessionAuthTokenCest
 		'e107_tests_cookie_mode_probe.php',    // @see CookieModeRemovedCest
 		'e107_tests_session_rekey_probe.php',  // @see SessionRekeyUpgradeCest
+		'e107_tests_comment_post_authz_probe.php', // @see CommentPostAuthzCest
 	];
 
 	/** Files a test moves aside for one test method, as parked name to the name it belongs back at. */
