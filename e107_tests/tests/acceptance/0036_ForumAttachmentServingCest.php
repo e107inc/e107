@@ -119,16 +119,12 @@ class ForumAttachmentServingCest
 		$I->resetAllCookies();
 
 		$I->haveForumPluginInstalled();
-		$I->resetForumFloodProtection();
 
 		$I->writeAppFile(self::PROBE, $this->probeSource());
 
-		// e107 bans an address after fifty requests in a window and every
-		// request in the container arrives from the same bridge address, so the
-		// ban goes before each test rather than once per suite. The image cache
-		// goes with it: thumb.php keys a cache entry on the request parameters
-		// and serves it back without looking at the source again, so an entry a
-		// vulnerable run wrote would answer a fixed run's refusal with a hit.
+		// thumb.php keys a cache entry on the request parameters and serves it
+		// back without looking at the source again, so an entry a vulnerable run
+		// wrote would answer a fixed run's refusal with a hit.
 		$this->probe($I, 'reset');
 
 		$I->haveUserClass(\Helper\ForumFixture::CLASS_MOD_A, 'fixture_mod_a');
@@ -1135,9 +1131,6 @@ $act = isset($_GET['act']) ? $_GET['act'] : '';
 
 if($act === 'reset' || $act === 'cleanup')
 {
-	e107::getDb()->delete('online');
-	e107::getDb()->delete('banlist', 'banlist_bantype IN (2, -2)');
-
 	foreach(glob(e_CACHE_IMAGE.'*') ?: array() as $file)
 	{
 		if(is_file($file))

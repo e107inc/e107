@@ -41,7 +41,6 @@ class ForumPostingCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->resetForumFloodProtection();
 		$I->haveForumPluginInstalled();
 		$I->haveForumCsrfMode(2);
 
