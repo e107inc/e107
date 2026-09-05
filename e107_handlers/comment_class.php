@@ -717,6 +717,45 @@ class comment
 
 
 	/**
+	 * Whether the item accepts comments; a comment type core models no switch for passes.
+	 *
+	 * @param string|int $table comment type, or the core table name it maps to
+	 * @param int        $id    id of the item in that table
+	 * @return bool
+	 */
+	private function itemAcceptsComments($table, $id)
+	{
+		$sql = e107::getDb();
+		$id = (int) $id;
+
+		switch ($this->getTable($this->getCommentType($table)))
+		{
+			case 'news':
+				return (bool) $sql->createQueryBuilder()->select('news_id')->from('news')
+					->where('news_id', $id)->where('news_allow_comments', 0)->fetchRow();
+
+			case 'poll':
+				return (bool) $sql->createQueryBuilder()->select('poll_id')->from('polls')
+					->where('poll_id', $id)->where('poll_comment', 1)->fetchRow();
+
+			case 'page':
+				return (bool) $sql->createQueryBuilder()->select('page_id')->from('page')
+					->where('page_id', $id)->where('page_comment_flag', 1)->fetchRow();
+
+			case 'download':
+				return (bool) $sql->createQueryBuilder()->select('download_id')->from('download')
+					->where('download_id', $id)->where('download_comment', 1)->fetchRow();
+
+			case 'user':
+				return !empty(e107::pref('core', 'profile_comments'))
+					&& (bool) $sql->createQueryBuilder()->select('user_id')->from('user')
+						->where('user_id', $id)->fetchRow();
+		}
+
+		return true;
+	}
+
+	/**
 	 * Add a comment to an item
 	 * e-token POST value should be always valid when using this method.
 	 *
@@ -771,6 +810,8 @@ class comment
 		}
 
 		if ($this->getCommentPermissions() != 'rw') return;
+
+		if (!$this->itemAcceptsComments($table, $id)) return false;
 
 		if ($user_func = e107::getOverride()->check($this,'enter_comment'))
 		{
