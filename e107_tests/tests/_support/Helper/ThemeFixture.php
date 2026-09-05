@@ -10,7 +10,7 @@ class ThemeFixture extends CodeceptionModule
 	const PROBE_FILE = 'e107_tests_theme_fixture_probe.php';
 
 	/** What a fixture theme may be made of; anything else in the fixture directory is not deployed. */
-	private static $files = array('theme.php', 'theme.xml', 'fpw_template.php', 'templates/fpw_template.php', 'templates/usersettings_template.php');
+	private static $files = array('theme.php', 'theme.xml', 'fpw_template.php', 'login_template.php', 'templates/fpw_template.php', 'templates/usersettings_template.php');
 
 	/** @var bool */
 	private $probeWritten = false;

@@ -58,6 +58,7 @@ class WorkspaceCleanup extends Extension
 		'e107_themes/tpstate1_legacy',    // @see Helper\ThemeFixture
 		'e107_themes/tpstate3_plain',
 		'e107_themes/tpstate3_rootfpw',
+		'e107_themes/tpstate3_rootlogin',
 		'e107_themes/tpstate3_globalfpw',
 		'e107_themes/tpstate3_tplusersettings',
 		'e107_themes/tpstate4_legacybs',
