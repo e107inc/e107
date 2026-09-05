@@ -215,6 +215,31 @@
 			$this->assertFalse($userMethods->hasReadonlyField(array()));
 		}
 
+		/**
+		 * usersettings.php recalculates user_class from the classes the member may
+		 * edit and strips the fixed ones, so a stage one write of that column is
+		 * legitimate whatever signup_option_class says about offering the selector.
+		 */
+		public function testHasReadonlyFieldPassesTheClassColumnStageOneWrites()
+		{
+			$userMethods = e107::getUserSession();
+			$pref = e107::getConfig();
+			$restore = e107::getPref('signup_option_class');
+
+			try
+			{
+				$pref->set('signup_option_class', 0);
+				$this->assertFalse($userMethods->hasReadonlyField(array('user_class' => '1,2')));
+
+				$pref->set('signup_option_class', 1);
+				$this->assertFalse($userMethods->hasReadonlyField(array('user_class' => '1,2')));
+			}
+			finally
+			{
+				$pref->set('signup_option_class', $restore);
+			}
+		}
+
 		/** Anything that is not a field set cannot be checked against the list, and what cannot be checked is refused. */
 		public function testHasReadonlyFieldRefusesWhatItCannotRead()
 		{

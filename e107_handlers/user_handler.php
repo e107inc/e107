@@ -197,13 +197,6 @@ class UserHandler
 
 		$restricted = array_keys($this->otherFields);
 
-		$pref = e107::getPref();
-
-		if(empty($pref['signup_option_class']))
-		{
-			$restricted[] = 'user_class';
-		}
-
 		foreach($posted as $k=>$v)
 		{
 			if(in_array($k,$restricted))
