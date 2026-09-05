@@ -110,30 +110,24 @@ $self_page =($qs[0] == 'id' && intval($qs[1]) == USERID);
 
 if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
 
-if(THEME_LEGACY === true) // v1.x BC Fix for loading old templates.
-{
-    $sc_style = array();
-	e107::getMessage()->addDebug( "Loading v1.x user template");
-	$_userTmpl = e107::coreTemplatePath('user');
-	e107::predefineLegacyLans($_userTmpl); // #5653: pre-define any missing legacy LAN_* before include.
-	include($_userTmpl); //correct way to load a core template. (don't use 'include_once' in case it has already been loaded).
-    e107::scStyle($sc_style);
-}
-else // v2.x
-{
-    e107::getMessage()->addDebug( "Loading v2.x user template");
-    $USER_TEMPLATE              = e107::getCoreTemplate('user');
-	$USER_FULL_TEMPLATE         = $USER_TEMPLATE['view'];
-	$USER_SHORT_TEMPLATE_START  = $USER_TEMPLATE['list']['start'] ;
-	$USER_SHORT_TEMPLATE        = $USER_TEMPLATE['list']['item'] ;
-	$USER_SHORT_TEMPLATE_END    = $USER_TEMPLATE['list']['end'];
+$USER_TEMPLATE  = e107::getCoreTemplate('user');
+$USER_LIST      = varset($USER_TEMPLATE['list'], array());
 
-}
+$USER_FULL_TEMPLATE         = vartrue($USER_TEMPLATE['USER_FULL_TEMPLATE'], varset($USER_TEMPLATE['view'], ''));
+$USER_SHORT_TEMPLATE_START  = vartrue($USER_TEMPLATE['USER_SHORT_TEMPLATE_START'], varset($USER_LIST['start'], ''));
+$USER_SHORT_TEMPLATE        = vartrue($USER_TEMPLATE['USER_SHORT_TEMPLATE'], varset($USER_LIST['item'], ''));
+$USER_SHORT_TEMPLATE_END    = vartrue($USER_TEMPLATE['USER_SHORT_TEMPLATE_END'], varset($USER_LIST['end'], ''));
 
 $USER_FULL_TEMPLATE = str_replace('{USER_EMBED_USERPROFILE}','{USER_ADDONS}', $USER_FULL_TEMPLATE); // BC Fix
 
 $user_shortcodes = e107::getScBatch('user');
 $user_shortcodes->wrapper('user/view');
+$user_shortcodes->legacyTemplate = array(
+	'EXTENDED_CATEGORY_START'         => varset($USER_TEMPLATE['EXTENDED_CATEGORY_START'], ''),
+	'EXTENDED_CATEGORY_TABLE'         => varset($USER_TEMPLATE['EXTENDED_CATEGORY_TABLE'], ''),
+	'EXTENDED_CATEGORY_END'           => varset($USER_TEMPLATE['EXTENDED_CATEGORY_END'], ''),
+	'USER_EMBED_USERPROFILE_TEMPLATE' => varset($USER_TEMPLATE['USER_EMBED_USERPROFILE_TEMPLATE'], '')
+);
 
 
 $user_frm = new form;

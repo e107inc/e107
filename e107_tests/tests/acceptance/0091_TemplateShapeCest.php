@@ -17,6 +17,9 @@ class TemplateShapeCest
 	/** LAN_MEMBERS_1, the one string membersonly.php prints whoever is asking. */
 	const RESTRICTED_AREA = 'This is a restricted area.';
 
+	/** LAN_PLUGIN_FORUM_POSTS, which the forum plugin's e_user addon puts on every profile. */
+	const ADDON_LABEL = 'Forum posts';
+
 	/** Text that only a PHP diagnostic puts on a rendered page. */
 	private static $diagnostics = array('Fatal error', 'Parse error', 'Warning:', 'Undefined ');
 
@@ -127,6 +130,26 @@ class TemplateShapeCest
 	public function signupOffersItsFormOnTheShippedTheme(AcceptanceTester $I)
 	{
 		$this->seeARegistrationForm($I, self::SHIPPED_THEME);
+	}
+
+	public function userListAndProfileRenderOnAV1Theme(AcceptanceTester $I)
+	{
+		$this->seeTheMemberListAndAProfile($I, 'tpstate1_legacy');
+	}
+
+	public function userListAndProfileRenderOnAThemeDeclaringNoFramework(AcceptanceTester $I)
+	{
+		$this->seeTheMemberListAndAProfile($I, 'tpstate3_plain');
+	}
+
+	public function userListAndProfileRenderOnAV1ThemeThatDefinesBootstrap(AcceptanceTester $I)
+	{
+		$this->seeTheMemberListAndAProfile($I, 'tpstate4_legacybs');
+	}
+
+	public function userListAndProfileRenderOnTheShippedTheme(AcceptanceTester $I)
+	{
+		$this->seeTheMemberListAndAProfile($I, self::SHIPPED_THEME);
 	}
 
 	public function membersOnlyRendersOnAV1Theme(AcceptanceTester $I)
@@ -247,6 +270,30 @@ class TemplateShapeCest
 		$I->seeElement('input#email');
 		$I->seeElement('input[name=register]');
 
+		$this->seeNoDiagnostics($I);
+	}
+
+	/**
+	 * The member list and the first member's profile, as a signed-in member, because memberlist_access keeps a visitor off both.
+	 *
+	 * @param AcceptanceTester $I
+	 * @param string $theme theme directory name; a fixture when tests/_data holds one, else a shipped theme
+	 */
+	private function seeTheMemberListAndAProfile(AcceptanceTester $I, $theme)
+	{
+		$I->haveForumPluginInstalled();
+		$I->haveForumMember(self::MEMBER);
+		$I->loginToForum(self::MEMBER);
+
+		$I->haveThemeFixture($theme);
+		$I->haveSiteTheme($theme);
+
+		$I->amOnPage('/user.php');
+		$I->seeElement('.user-list');
+		$this->seeNoDiagnostics($I);
+
+		$I->amOnPage('/user.php?id.1');
+		$I->seeInSource(self::ADDON_LABEL);
 		$this->seeNoDiagnostics($I);
 	}
 
