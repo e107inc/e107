@@ -428,6 +428,16 @@
 		self::assertSame(1, substr_count($result, '<link'));
 	}
 
+	public function testOtherCssUrlCannotShiftTheRecordFieldsWithADoubledSeparator()
+	{
+		$this->js->otherCSS('https://cdn.example.com/x.css##|#|#<script>alert(1)</script>');
+
+		$result = $this->js->renderJs('other_css', null, 'css', true);
+
+		self::assertStringNotContainsString('<script', $result);
+		self::assertSame(1, substr_count($result, '<link'));
+	}
+
 	public function testOtherCssMediaCannotEscapeTheMediaAttribute()
 	{
 		$this->js->otherCSS('https://cdn.example.com/x.css', 'all" onload="alert(1)');
@@ -445,6 +455,16 @@
 		$result = $this->js->renderJs('other_css', null, 'css', true);
 
 		self::assertStringContainsString('href="https://cdn.example.com/x.css"', $result);
+	}
+
+	public function testOtherCssMediaCannotShiftTheRecordFieldsWithADoubledSeparator()
+	{
+		$this->js->otherCSS('https://cdn.example.com/x.css', 'all##|#|#https://attacker.example.net/x.css');
+
+		$result = $this->js->renderJs('other_css', null, 'css', true);
+
+		self::assertStringContainsString('href="https://cdn.example.com/x.css"', $result);
+		self::assertStringNotContainsString('href="https://attacker.example.net/x.css"', $result);
 	}
 
 	public function testOtherCssUrlKeepsOneAmpersandEntity()

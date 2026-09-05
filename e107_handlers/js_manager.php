@@ -1212,7 +1212,7 @@ class e_jsmanager
 	}
 
 	/**
-	 * Join one registry record, keeping the path and the media inside their own fields.
+	 * Join one registry record, stripping the separator out of the path and the media until it cannot re-form.
 	 *
 	 * @param string $path
 	 * @param string $pre raw markup {@see e_jsmanager::renderFile()} emits before the tag
@@ -1223,11 +1223,29 @@ class e_jsmanager
 	 */
 	private function packRecord($path, $pre, $post, $media = null, $flags = array())
 	{
-		$fields = str_replace($this->_sep, '', $media === null ? array($path) : array($media, $path));
+		$fields = $media === null ? array($path) : array($media, $path);
+
+		do
+		{
+			$fields = str_replace($this->_sep, '', $fields, $stripped);
+		}
+		while($stripped > 0);
+
 		$fields[] = $pre;
 		$fields[] = $post;
 
 		return implode($this->_sep, array_merge($fields, $flags));
+	}
+
+	/**
+	 * Encode an asset URL for an href or src through {@see e_parse::toUrlAttribute()}, which also refuses a scheme that executes.
+	 *
+	 * @param string $url
+	 * @return string
+	 */
+	private function urlAttribute($url)
+	{
+		return e107::getParser()->toUrlAttribute($url);
 	}
 
 	/**
@@ -1473,7 +1491,7 @@ class e_jsmanager
 						$path = $this->url($path);
 					}
 
-					echo $pre.'<link rel="stylesheet" media="'.$tp->toAttribute($media, true).'" type="text/css" href="'.$tp->toUrlAttribute($path).'" />'.$post;
+					echo $pre.'<link rel="stylesheet" media="'.$tp->toAttribute($media, true).'" type="text/css" href="'.$this->urlAttribute($path).'" />'.$post;
 					echo "\n";
 				//	$this->cacheList['css'][] = $path;
 					continue;
@@ -1492,7 +1510,7 @@ class e_jsmanager
 					$path = $tp->replaceConstants($path, 'abs').'?external=1'; // &amp;'.$this->getCacheId();
 					$path = $this->url($path);
 
-					echo $pre.'<script src="'.$tp->toUrlAttribute($path).'"></script>'.$post;
+					echo $pre.'<script src="'.$this->urlAttribute($path).'"></script>'.$post;
 					echo "\n";
 					continue;
 				}
@@ -1547,7 +1565,7 @@ class e_jsmanager
 						$path = $this->url($path);
 					}
 
-					echo $pre.'<link '.$insertID.' rel="stylesheet" media="'.$tp->toAttribute($media, true).'" property="stylesheet" type="text/css" href="'.$tp->toUrlAttribute($path).'" />'.$post;
+					echo $pre.'<link '.$insertID.' rel="stylesheet" media="'.$tp->toAttribute($media, true).'" property="stylesheet" type="text/css" href="'.$this->urlAttribute($path).'" />'.$post;
 					echo "\n";
 
 					continue;
@@ -1587,7 +1605,7 @@ class e_jsmanager
 					}
 
 
-					echo $pre.'<script src="'.$tp->toUrlAttribute($path).'"'.$inline.'></script>'.$post;
+					echo $pre.'<script src="'.$this->urlAttribute($path).'"'.$inline.'></script>'.$post;
 					echo "\n";
 					continue;
 				}
@@ -1755,15 +1773,13 @@ class e_jsmanager
 
 			echo "\n\n<!-- [JSManager] Cached ".strtoupper($type)." -->\n";
 
-			$tp = e107::getParser();
-
 			if($type == 'js')
 			{
-				echo "<script src='".$tp->toUrlAttribute($this->url(e_WEB_ABS."cache/".$fileName,'js',false))."'></script>\n\n";
+				echo "<script src='".$this->urlAttribute($this->url(e_WEB_ABS."cache/".$fileName,'js',false))."'></script>\n\n";
 			}
 			else
 			{
-				echo "<link type='text/css' href='".$tp->toUrlAttribute($this->url(e_WEB_ABS."cache/".$fileName,false))."' rel='stylesheet' property='stylesheet'  />\n\n";
+				echo "<link type='text/css' href='".$this->urlAttribute($this->url(e_WEB_ABS."cache/".$fileName,false))."' rel='stylesheet' property='stylesheet'  />\n\n";
 				if(!empty($this->_cache_list['css_inline']))
 				{
 					echo $this->_cache_list['css_inline'];
