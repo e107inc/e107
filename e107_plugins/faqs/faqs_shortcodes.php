@@ -336,6 +336,16 @@ class faqs_shortcodes extends e_shortcode
 		return "<img src='".e_PLUGIN_ABS."faq/images/faq.png'  alt='' />";	
 	}
 
+	/**
+	 * @return bool whether this caller may ask a question
+	 */
+	private function canSubmitQuestion()
+	{
+		$faqpref = e107::pref('faqs');
+
+		return check_class(varset($faqpref['submit_question'], e_UC_NOBODY));
+	}
+
 	function sc_faq_submit_question($parms=null)
 	{
 
@@ -366,7 +376,7 @@ class faqs_shortcodes extends e_shortcode
 
 			$text .= "<div id='form-ask-a-question' class='alert alert-info alert-block ".$hide." form-group faq-submit-question-form'>";
 
-			if(check_class($faqpref['submit_question']))
+			if($this->canSubmitQuestion())
 			{
 				$text .= $frm->open('faq-ask-question','post');
 				//TODO LAN ie. [x] character limit.
@@ -400,9 +410,7 @@ class faqs_shortcodes extends e_shortcode
 
 	function sc_faq_submit_question_list()
 	{
-		$faqpref = e107::pref('faqs');
-
-		if (isset($faqpref['submit_question']) && check_class($faqpref['submit_question']))
+		if ($this->canSubmitQuestion())
 		{
 			$tp = e107::getParser();
 
