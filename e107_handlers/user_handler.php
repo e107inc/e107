@@ -185,21 +185,21 @@ class UserHandler
 
 	/**
 	 * Check if a user posted field is readonly (should not be user-editable).
-	 * @param array|object $posted values keyed by field name, or a list of field names
+	 * @param array|Traversable $posted values keyed by field name, or a list of field names
 	 * @return bool true if the set names a readonly field, or cannot be checked against the list
 	 */
 	public function hasReadonlyField($posted)
 	{
 		$restricted = array_keys($this->otherFields);
 
-		if(empty($restricted) || (!is_array($posted) && !is_object($posted)))
+		if(empty($restricted) || (!is_array($posted) && !($posted instanceof Traversable)))
 		{
 			return true;
 		}
 
 		foreach($posted as $k=>$v)
 		{
-			if(in_array($k, $restricted, true) || in_array($v, $restricted, true))
+			if(in_array($k, $restricted, true) || (is_int($k) && in_array($v, $restricted, true)))
 			{
 				return true;
 			}
