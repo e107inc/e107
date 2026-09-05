@@ -73,7 +73,12 @@ if (!vartrue($_GET['elan']) && empty($_GET))
 $from = (vartrue($from) ? $from : 0);
 $amount = 50;
 
-if (isset($_POST['faq_submit']))
+$faqpref        = e107::getPlugConfig('faqs')->getPref();
+$canAddFaq      = check_class(varset($faqpref['add_faq'], e_UC_NOBODY)) || e107::getUser()->isAdmin();
+$canAskQuestion = check_class(varset($faqpref['submit_question'], e_UC_NOBODY));
+$hasToken       = !empty($_POST['e-token']);
+
+if (isset($_POST['faq_submit']) && $canAddFaq && $hasToken)
 {
 	$message = "-";
 	if ($_POST['faq_question'] != "" || $_POST['data'] != "")
@@ -108,22 +113,36 @@ if (isset($_POST['faq_submit']))
 	$id = (int) $_POST['faq_parent'];
 }
 
-if (isset($_POST['faq_edit_submit']))
+if (!empty($_POST['submit_a_question']) && $canAskQuestion && $hasToken)
 {
-	if ($_POST['faq_question'] != "" || $_POST['data'] != "")
-	{
-		$faq_question 	= $tp->toDB($_POST['faq_question']);
-		$data 			= $tp->toDB($_POST['data']);
+	$existing = $sql->select('faqs','faq_id',"faq_answer='' AND faq_author_ip = '".USERIP."' ");
 
-		$sql->update("faqs", "faq_parent='".intval($_POST['faq_parent'])."', faq_question ='$faq_question', faq_answer='$data', faq_comment='".e107::getParser()->filter($_POST['faq_comment'], 'str')."'  WHERE faq_id='".intval($idx)."' ");
-		
-		$message = LAN_UPDATED;
-		
-		unset($faq_question, $data);
+	if(!empty($faqpref['submit_question_limit']) && $existing >= $faqpref['submit_question_limit'])
+	{
+		e107::getMessage()->setTitle(LAN_WARNING,E_MESSAGE_INFO)->addInfo(LAN_FAQS_005);
 	}
 	else
 	{
-		$message = LAN_REQUIRED_BLANK;
+		$question = filter_input(INPUT_POST, 'ask_a_question', FILTER_SANITIZE_STRING);
+
+		$insert = array(
+			'faq_id'        => 0,
+			'faq_parent'    => 0, // meaning 'unassigned/unanswered'.
+			'faq_question'  => $question,
+			'faq_answer'    => '',
+			'faq_comment'   => 0,
+			'faq_datestamp' => time(),
+			'faq_author'    => USERID,
+			'faq_author_ip' => USERIP,
+			'faq_tags'      => '',
+			'faq_order'     => 99999
+		);
+
+		if($sql->insert('faqs', $insert))
+		{
+			$message = !empty($faqpref['submit_question_acknowledgement']) ? e107::getParser()->toHTML($faqpref['submit_question_acknowledgement'],true, 'BODY') : LAN_FAQS_004;
+			e107::getMessage()->addSuccess($message);
+		}
 	}
 }
 
@@ -136,8 +155,6 @@ if (isset($_POST['commentsubmit']))
 // Actions +++++++++++++++++++++++++++++
 
 	$faq = new faq;
-
-	$faqpref = e107::getPlugConfig('faqs')->getPref();
 
 	if (empty($action) || $action == "main")
 	{
@@ -207,7 +224,7 @@ if (isset($_POST['commentsubmit']))
 	}
 
 
-	if((check_class($faqpref['add_faq']) || ADMIN) && ($action == "new" || $action == "edit"))
+	if($canAddFaq && ($action == "new" || $action == "edit"))
 	{
 		require_once (HEADERF);
 		$faq->add_faq($action, $id, $idx);
@@ -233,45 +250,6 @@ class faq
 		$sc = e107::getScBatch('faqs', true);
 		$this->pref = e107::pref('faqs'); // Short version of e107::getPlugConfig('faqs')->getPref(); ;
 		$sc->pref = $this->pref;
-
-
-		if(!empty($_POST['submit_a_question']))
-		{
-			$sql = e107::getDb();
-
-			$existing = $sql->select('faqs','faq_id',"faq_answer='' AND faq_author_ip = '".USERIP."' ");
-
-			if(!empty($this->pref['submit_question_limit']) && $existing >= $this->pref['submit_question_limit'])
-			{
-				e107::getMessage()->setTitle(LAN_WARNING,E_MESSAGE_INFO)->addInfo(LAN_FAQS_005);
-				return;
-			}
-
-			$question = filter_input(INPUT_POST, 'ask_a_question', FILTER_SANITIZE_STRING);
-
-			$insert = array(
-				'faq_id'        => 0,
-				'faq_parent'    => 0, // meaning 'unassigned/unanswered'.
-				'faq_question'  => $question,
-				'faq_answer'    => '',
-				'faq_comment'   => 0,
-				'faq_datestamp' => time(),
-				'faq_author'    => USERID,
-				'faq_author_ip' => USERIP,
-				'faq_tags'      => '',
-				'faq_order'     => 99999
-			);
-
-			if($sql->insert('faqs', $insert))
-			{
-				$message = !empty($this->pref['submit_question_acknowledgement']) ? e107::getParser()->toHTML($this->pref['submit_question_acknowledgement'],true, 'BODY') : LAN_FAQS_004;
-				e107::getMessage()->addSuccess($message);
-			}
-
-		}
-
-
-
 	}
 
 
