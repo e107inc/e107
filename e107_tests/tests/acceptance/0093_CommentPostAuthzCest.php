@@ -1,31 +1,16 @@
 <?php
 
 /**
- * GHSA-vhf5-8cfh-jr22: posting a comment on an item whose comments are off.
+ * GHSA-vhf5-8cfh-jr22: posting a comment on an item whose comments are off,
+ * through every route that reaches comment::enter_comment().
  *
- * e107 authorises a comment against the site, never against the item. The site
- * half is comment::getCommentPermissions(), which reads the comments_disabled
- * preference and the comments_class user class. The item half lived in a
- * three-case switch in comment.php, on one of the routes into the insert, and
- * covered polls, news and user rows only.
- *
- * So a signed-in member reached comment::enter_comment() past the operator's
- * decision through four routes: the AJAX endpoint, which had no per-item check
- * of any kind; the ordinary form's reply branch, whose guard read a column it
- * had not selected and was therefore always true; custom pages and downloads on
- * either route, because comment.php had no case for either table; and user
- * profiles on either route while profile_comments was off, because the user
- * case only asked whether the row existed.
- *
- * Every case here reads the stored row back. comment.php answers 200 or 302 for
- * reasons unrelated to the insert, so nothing in the response separates a
- * refusal from a successful post.
- *
- * The positive controls are what make the refusals mean anything: same actor,
- * same token, same route, same request, and only the item's flag different. The
- * flags disagree about which way round they read, news_allow_comments being 0
- * for allowed where every other one is 1, so a fix with the polarity inverted
- * would silently refuse every comment on the site and pass a file of refusals.
+ * Two things about the shape of it. Every case reads the stored row back,
+ * because comment.php answers 200 and 302 for reasons unrelated to the insert
+ * and the response separates neither. And every refusal has a positive control
+ * that changes nothing but the item's flag: the flags disagree about which way
+ * round they read, news_allow_comments being 0 for allowed where every other one
+ * is 1, so a guard with the polarity inverted would refuse every comment on the
+ * site and still pass a file of refusals.
  */
 class CommentPostAuthzCest
 {
@@ -133,10 +118,6 @@ class CommentPostAuthzCest
 		$I->deleteAppFile(self::PROBE_FILE);
 	}
 
-	// -----------------------------------------------------------------
-	// news, on all three routes
-	// -----------------------------------------------------------------
-
 	/**
 	 * The route the advisory was filed about.
 	 */
@@ -204,10 +185,6 @@ class CommentPostAuthzCest
 		$this->seeCommentOn($I, $text, 0, $this->newsOn);
 	}
 
-	// -----------------------------------------------------------------
-	// custom pages, which comment.php had no case for at all
-	// -----------------------------------------------------------------
-
 	public function aPageWithCommentsOffRefusesTheFormRoute(AcceptanceTester $I)
 	{
 		$text = 'vhf5 form page off';
@@ -234,10 +211,6 @@ class CommentPostAuthzCest
 
 		$this->seeCommentOn($I, $text, 'page', $this->pageOn);
 	}
-
-	// -----------------------------------------------------------------
-	// user profiles, which are gated by a site preference
-	// -----------------------------------------------------------------
 
 	public function aProfileRefusesTheFormRouteWhileProfileCommentsIsOff(AcceptanceTester $I)
 	{
@@ -316,10 +289,6 @@ class CommentPostAuthzCest
 		));
 	}
 
-	// -----------------------------------------------------------------
-	// downloads and polls
-	// -----------------------------------------------------------------
-
 	public function aDownloadWithCommentsOffRefusesTheFormRoute(AcceptanceTester $I)
 	{
 		$text = 'vhf5 form download off';
@@ -355,10 +324,6 @@ class CommentPostAuthzCest
 
 		$this->seeCommentOn($I, $text, 4, $this->pollOn);
 	}
-
-	// -----------------------------------------------------------------
-	// routes
-	// -----------------------------------------------------------------
 
 	/**
 	 * The ordinary form, whose branch takes the table and the item id out of the
@@ -424,10 +389,6 @@ class CommentPostAuthzCest
 			'e-token'       => $this->token,
 		));
 	}
-
-	// -----------------------------------------------------------------
-	// fixtures
-	// -----------------------------------------------------------------
 
 	/**
 	 * Assert the comment landed against the item it was aimed at. A row alone
