@@ -42,6 +42,8 @@ modules:
         # Writes e107_config.php from the dump's DB params so the served app is
         # installed (Acceptance's variant no-ops the write and installs instead).
         - \Helper\Webdriver
+        # Fixture themes and the site switched onto them, shared with acceptance.
+        - \Helper\ThemeFixture
         # After DelayedDb: the dump load leaves e107's pref cache stale.
         - \Helper\PrefCacheReset
         # After PrefCacheReset: starts each test logged out.
