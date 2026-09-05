@@ -112,6 +112,13 @@ class FileInspectorProgressGateCest
 	 * it no longer renders the page at all. The POST is what proves the sink: the
 	 * run page does render, with the crafted identifier sitting in the query
 	 * string it is rendering from, and still writes none of it out.
+	 *
+	 * Everything after the POST is asserted against the response source, as every
+	 * other sendPostRequest() caller in this suite does. _request() sends the
+	 * request without reloading the page, so the DOM crawler still holds whatever
+	 * amOnPage() last fetched, and seeElement() here would be answered by the
+	 * setup tab. theScanOptionsDoNotTravelInAUrl() covers the same fields through
+	 * the DOM, because submitForm() does reload.
 	 */
 	public function aCraftedScanIdentifierIsNotReflected(AcceptanceTester $I)
 	{
@@ -131,7 +138,8 @@ class FileInspectorProgressGateCest
 			'e-token' => $I->grabFreshAdminToken(self::SETUP),
 		));
 
-		$I->seeElement('form#runit input[type=hidden][name=core][value=all]');
+		$I->seeInSource("id='runit'");
+		$I->seeInSource("name='core' value='all'");
 		$I->dontSeeInSource(self::PAYLOAD);
 		$I->seeInSource('?action=progress"');
 		$I->dontSeeInSource('action=progress&');
