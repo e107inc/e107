@@ -199,34 +199,6 @@ if (isset($_POST['commentsubmit']) || isset($_POST['editsubmit']))
 		exit;
 	}
 
-	switch ($table)
-	{
-		case 'poll' :
-			if (!$sql->createQueryBuilder()->select('poll_title')->from('polls')
-				->where('poll_id', $id)->where('poll_comment', 1)->fetchRow())
-			{
-				e107::redirect();
-				exit;
-			}
-			break;
-		case 'news' :
-			if (!$sql->createQueryBuilder()->select('news_allow_comments')->from('news')
-				->where('news_id', $id)->where('news_allow_comments', 0)->fetchRow())
-			{
-				e107::redirect();
-				exit;
-			}
-			break;
-		case 'user' :
-			if (!$sql->createQueryBuilder()->select('user_name')->from('user')
-				->where('user_id', $id)->fetchRow())
-			{
-				e107::redirect();
-				exit;
-			}
-			break;
-	}
-
 	$pid = intval(varset($_POST['pid'], 0));				// ID of the specific comment being edited (nested comments - replies)
 	$editpid = intval(varset($_POST['editpid'], 0));		// ID of the specific comment being edited (in-line comments)
 
@@ -256,33 +228,16 @@ if (isset($_POST['commentsubmit']) || isset($_POST['editsubmit']))
 
 if (isset($_POST['replysubmit']))
 {	// Reply to nested comment being posted
-	$row = array();
-	if ($table == "news")
-	{
-		$row = $sql->createQueryBuilder()->select('news_allow_comments')->from('news')
-			->where('news_id', $nid)->fetchRow();
-	}
-	if ($table == "news" && !$row)
-	{
-		e107::redirect();
-		exit;
-	}
-	else
-	{
-		if (empty($row['news_id']))
-		{
-			$pid = (isset($_POST['pid']) ? $_POST['pid'] : 0);
-			$pid = intval($pid);
+	$pid = intval(varset($_POST['pid'], 0));
 
-			$clean_authorname = $_POST['author_name'];
-			$clean_comment = $_POST['comment'];
-			$clean_subject = $_POST['subject'];
+	$clean_authorname = $_POST['author_name'];
+	$clean_comment = $_POST['comment'];
+	$clean_subject = $_POST['subject'];
 
-			$cobj->enter_comment($clean_authorname, $clean_comment, $table, $nid, $pid, $clean_subject);
-			e107::getCache()->clear("comment.php?{$table}.{$id}");
-		}
-		$redirectFlag = $nid;
-	}
+	$cobj->enter_comment($clean_authorname, $clean_comment, $table, $nid, $pid, $clean_subject);
+	e107::getCache()->clear("comment.php?{$table}.{$id}");
+
+	$redirectFlag = $nid;
 }
 
 if ($redirectFlag)
