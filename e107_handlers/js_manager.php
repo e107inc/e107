@@ -1049,25 +1049,24 @@ class e_jsmanager
 		{
 			case 'core':
 				// added direct CDN support
-				$file_path = (strpos($file_path, 'http') !== 0 && strpos($file_path, '//') !== 0 ? '{e_WEB_JS}'.trim($file_path, '/') : $file_path).$this->_sep.$pre.$this->_sep.$post;
+				$file_path = $this->packRecord(strpos($file_path, 'http') !== 0 && strpos($file_path, '//') !== 0 ? '{e_WEB_JS}'.trim($file_path, '/') : $file_path, $pre, $post);
 				$registry = &$this->_e_jslib_core;
 			break;
 
 			case 'plugin':
 				$file_path = explode(':', $file_path);
-				$file_path = '{e_PLUGIN}'.$file_path[0].'/'.trim($file_path[1], '/').$this->_sep.$pre.$this->_sep.$post;
+				$file_path = $this->packRecord('{e_PLUGIN}'.$file_path[0].'/'.trim($file_path[1], '/'), $pre, $post);
 				$registry = &$this->_e_jslib_plugin;
 			break;
 
 			case 'theme':
-				$file_path = '{e_THEME}'.$this->getCurrentTheme().'/'.trim($file_path, '/').$this->_sep.$pre.$this->_sep.$post;
-				//echo "file-Path = ".$file_path;
+				$file_path = $this->packRecord('{e_THEME}'.$this->getCurrentTheme().'/'.trim($file_path, '/'), $pre, $post);
 				$registry = &$this->_e_jslib_theme;
 			break;
 
 			case 'core_css': //FIXME - core CSS should point to new e_WEB/css; add one more case - js_css -> e_WEB/jslib/
 				// added direct CDN support
-				$file_path = $runtime_location.$this->_sep.(strpos($file_path, 'http') !== 0 && strpos($file_path, '//') !== 0 ? '{e_WEB_JS}'.trim($file_path, '/') : $file_path).$this->_sep.$pre.$this->_sep.$post;
+				$file_path = $this->packRecord(strpos($file_path, 'http') !== 0 && strpos($file_path, '//') !== 0 ? '{e_WEB_JS}'.trim($file_path, '/') : $file_path, $pre, $post, $runtime_location);
 				if(!isset($this->_e_css['core'])) $this->_e_css['core'] = array();
 				$registry = &$this->_e_css['core'];
 				$runtime = true;
@@ -1075,10 +1074,10 @@ class e_jsmanager
 
 			case 'plugin_css':
 				$pfile_path = explode(':', $file_path,2);
-				$plugfile_path = $runtime_location.$this->_sep.'{e_PLUGIN}'.$pfile_path[0].'/'.trim($pfile_path[1], '/').$this->_sep.$pre.$this->_sep.$post;
+				$plugfile_path = $this->packRecord('{e_PLUGIN}'.$pfile_path[0].'/'.trim($pfile_path[1], '/'), $pre, $post, $runtime_location);
 
 				// allow for URLs to be attributed to plugins. (loads after theme css in admin area header)
-				$file_path = ((strpos($pfile_path[1], 'http') !== 0 && strpos($pfile_path[1], '//') !== 0)) ? $plugfile_path : 'all'.$this->_sep.$pfile_path[1].$this->_sep.$pre.$this->_sep.$post;
+				$file_path = ((strpos($pfile_path[1], 'http') !== 0 && strpos($pfile_path[1], '//') !== 0)) ? $plugfile_path : $this->packRecord($pfile_path[1], $pre, $post, 'all');
 				if(!isset($this->_e_css['plugin'])) $this->_e_css['plugin'] = array();
 				$registry = &$this->_e_css['plugin'];
 				$runtime = true;
@@ -1086,21 +1085,21 @@ class e_jsmanager
 			break;
 
 			case 'theme_css':
-				$file_path = $runtime_location.$this->_sep.(strpos($file_path, 'http') !== 0 && strpos($file_path, '//') !== 0 ?'{e_THEME}'.$this->getCurrentTheme().'/'.trim($file_path, '/') : $file_path).$this->_sep.$pre.$this->_sep.$post;
+				$file_path = $this->packRecord(strpos($file_path, 'http') !== 0 && strpos($file_path, '//') !== 0 ?'{e_THEME}'.$this->getCurrentTheme().'/'.trim($file_path, '/') : $file_path, $pre, $post, $runtime_location);
 				if(!isset($this->_e_css['theme'])) $this->_e_css['theme'] = array();
 				$registry = &$this->_e_css['theme'];
 				$runtime = true;
 			break;
 
 			case 'other_css':
-				$file_path = $runtime_location.$this->_sep.$tp->createConstants($file_path, 'mix').$this->_sep.$pre.$this->_sep.$post;
+				$file_path = $this->packRecord($tp->createConstants($file_path, 'mix'), $pre, $post, $runtime_location);
 				if(!isset($this->_e_css['other'])) $this->_e_css['other'] = array();
 				$registry = &$this->_e_css['other'];
 				$runtime = true;
 			break;
 
 			case 'library_css':
-				$file_path = $runtime_location.$this->_sep.$tp->createConstants($file_path, 'mix').$this->_sep.$pre.$this->_sep.$post;
+				$file_path = $this->packRecord($tp->createConstants($file_path, 'mix'), $pre, $post, $runtime_location);
 				// 	e107::getDebug()->log($file_path);
 				if(!isset($this->_e_css['library'])) $this->_e_css['library'] = array();
 				$registry = &$this->_e_css['library'];
@@ -1115,23 +1114,19 @@ class e_jsmanager
 
 
 			case 'header':
-				$info = [
-					$tp->createConstants($file_path, 'mix'),
-					$pre,
-					$post
-				];
+				$flags = [];
 
 				if(isset($opts['defer']) || in_array('defer', $opts, true))
 				{
-					$info[] = 'defer';
+					$flags[] = 'defer';
 				}
 
 				if(!empty($opts['async']) || in_array('async', $opts, true))
 				{
-					$info[] = 'async';
+					$flags[] = 'async';
 				}
 
-				$file_path = implode($this->_sep, $info);
+				$file_path = $this->packRecord($tp->createConstants($file_path, 'mix'), $pre, $post, null, $flags);
 				$zone = (int) $runtime_location;
 
 				if($zone > 5 || $zone < 1)
@@ -1149,23 +1144,19 @@ class e_jsmanager
 			break;
 
 			case 'footer':
-				$info = [
-					$tp->createConstants($file_path, 'mix'),
-					$pre,
-					$post
-				];
+				$flags = [];
 
 				if(isset($opts['defer']) || in_array('defer', $opts, true))
 				{
-					$info[] = 'defer';
+					$flags[] = 'defer';
 				}
 
 				if(!empty($opts['async']) || in_array('async', $opts, true))
 				{
-					$info[] = 'async';
+					$flags[] = 'async';
 				}
 
-				$file_path = implode($this->_sep, $info);
+				$file_path = $this->packRecord($tp->createConstants($file_path, 'mix'), $pre, $post, null, $flags);
 
 				$zone = (int) $runtime_location;
 
@@ -1221,6 +1212,25 @@ class e_jsmanager
 		$registry[] = $file_path;
 
 		return $this;
+	}
+
+	/**
+	 * Join one registry record, keeping the path and the media inside their own fields.
+	 *
+	 * @param string $path
+	 * @param string $pre raw markup {@see e_jsmanager::renderFile()} emits before the tag
+	 * @param string $post raw markup emitted after the tag
+	 * @param string $media null for a record with no media field, i.e. a script
+	 * @param array $flags render flags trailing the record, i.e. defer and async
+	 * @return string
+	 */
+	private function packRecord($path, $pre, $post, $media = null, $flags = array())
+	{
+		$fields = str_replace($this->_sep, '', $media === null ? array($path) : array($media, $path));
+		$fields[] = $pre;
+		$fields[] = $post;
+
+		return implode($this->_sep, array_merge($fields, $flags));
 	}
 
 	/**
@@ -1475,7 +1485,7 @@ class e_jsmanager
 						$path = $this->url($path);
 					}
 
-					echo $pre.'<link rel="stylesheet" media="'.$media.'" type="text/css" href="'.$path.'" />'.$post;
+					echo $pre.'<link rel="stylesheet" media="'.$tp->toAttribute($media, true).'" type="text/css" href="'.$tp->toUrlAttribute($path).'" />'.$post;
 					echo "\n";
 				//	$this->cacheList['css'][] = $path;
 					continue;
@@ -1494,7 +1504,7 @@ class e_jsmanager
 					$path = $tp->replaceConstants($path, 'abs').'?external=1'; // &amp;'.$this->getCacheId();
 					$path = $this->url($path);
 					$defer = ($this->_js_defer && !$this->isInAdmin()) ? ' defer' : '';
-					echo $pre.'<script src="'.$path.'"'.$defer.'></script>'.$post;
+					echo $pre.'<script src="'.$tp->toUrlAttribute($path).'"'.$defer.'></script>'.$post;
 					echo "\n";
 					continue;
 				}
@@ -1548,12 +1558,8 @@ class e_jsmanager
 						$path = $tp->replaceConstants($path, 'abs'); // .'?'.$this->getCacheId();
 						$path = $this->url($path);
 					}
-					elseif($this->isValidUrl($path) === false)
-					{
-						continue;
-					}
 
-					echo $pre.'<link '.$insertID.' rel="stylesheet" media="'.$media.'" property="stylesheet" type="text/css" href="'.$path.'" />'.$post;
+					echo $pre.'<link '.$insertID.' rel="stylesheet" media="'.$tp->toAttribute($media, true).'" property="stylesheet" type="text/css" href="'.$tp->toUrlAttribute($path).'" />'.$post;
 					echo "\n";
 
 					continue;
@@ -1592,12 +1598,8 @@ class e_jsmanager
 						$path = $this->url($path);
 					}
 
-					if($isExternal === true && $this->isValidUrl($path) == false)
-					{
-						continue;
-					}
 					$defer = ($this->_js_defer && !$this->isInAdmin() && strpos($inline,'defer')===false) ? ' defer' : '';
-					echo $pre.'<script src="'.$path.'"'.$inline.$defer.'></script>'.$post;
+					echo $pre.'<script src="'.$tp->toUrlAttribute($path).'"'.$inline.$defer.'></script>'.$post;
 					echo "\n";
 					continue;
 				}
@@ -1686,7 +1688,7 @@ class e_jsmanager
 		{
 			if(strpos($path,'?')!==false)
 			{
-				$path .= "&amp;".$this->cacheToken();
+				$path .= "&".$this->cacheToken();
 			}
 			elseif($cacheId === true)
 			{
@@ -1698,31 +1700,6 @@ class e_jsmanager
 
 	}
 
-
-
-	/**
-	 * Check CDN Url is valid.
-	 * Experimental.
-	 * @param $url
-	 * @return bool
-	 */
-	private function isValidUrl($url)
-	{
-		return true;
-		/*
-
-
-		$connected = e107::getFile()->isValidURL($url);
-
-		if($connected == false)
-		{
-		//	echo "<br />Skipping: ".$url ." : ".$port;
-			e107::getDebug()->log("Couldn't reach ".$url);
-		}
-
-		return $connected;
-		*/
-	}
 
 
 	/**
@@ -1790,14 +1767,16 @@ class e_jsmanager
 
 			echo "\n\n<!-- [JSManager] Cached ".strtoupper($type)." -->\n";
 
+			$tp = e107::getParser();
+
 			if($type == 'js')
 			{
 				$deferCache = ($this->_js_defer && !$this->isInAdmin()) ? 'defer' : '';
-				echo "<script src='".$this->url(e_WEB_ABS."cache/".$fileName,'js',false)."' $deferCache></script>\n\n";
+				echo "<script src='".$tp->toUrlAttribute($this->url(e_WEB_ABS."cache/".$fileName,'js',false))."' $deferCache></script>\n\n";
 			}
 			else
 			{
-				echo "<link type='text/css' href='".$this->url(e_WEB_ABS."cache/".$fileName,false)."' rel='stylesheet' property='stylesheet'  />\n\n";
+				echo "<link type='text/css' href='".$tp->toUrlAttribute($this->url(e_WEB_ABS."cache/".$fileName,false))."' rel='stylesheet' property='stylesheet'  />\n\n";
 				if(!empty($this->_cache_list['css_inline']))
 				{
 					echo $this->_cache_list['css_inline'];
