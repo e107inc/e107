@@ -43,22 +43,24 @@ e107::getLanguage()->bcDefs($bcList);
 
 
 
+$full_perms = getperms("0") || check_class(varset($pref['memberlist_access'], 253));		// Controls display of info from other users
+
 if(e_AJAX_REQUEST)
 {
-	if(vartrue($_POST['q']))
+	$q = $full_perms && is_string(varset($_POST['q'])) ? e107::getParser()->filter($_POST['q']) : '';
+
+	if($q !== '')
 	{
 		$db = e107::getDb();
-		$tp = e107::getParser();
 
-		$q = $tp->filter($_POST['q']);
 		$l = vartrue($_POST['l']) ? intval($_POST['l']) : 10;
 
-		$where = "user_name LIKE '". $q."%' ";
+		$where = "user_ban = 0 AND user_name LIKE '". addcslashes($q, '%_\\')."%' ";
 
 		//TODO FIXME Filter by userclass.  - see $frm->userlist().
 
 
-		if($db->select("user", "user_id,user_name", $where. " ORDER BY user_name LIMIT " . $l))
+		if($db->select("user", "user_id,user_name", $where. " ORDER BY user_name LIMIT " . max(1, min(50, $l))))
 		{
 			$data = array();
 			while($row = $db->fetch())
@@ -135,7 +137,6 @@ $user_shortcodes->wrapper('user/view');
 $user_frm = new form;
 require_once(HEADERF);
 
-$full_perms = getperms("0") || check_class(varset($pref['memberlist_access'], 253));		// Controls display of info from other users
 if (!$full_perms && !$self_page)
 {
 	$ns->tablerender(LAN_ERROR, "<div style='text-align:center'>".LAN_USER_55."</div>");
