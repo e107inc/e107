@@ -72,6 +72,7 @@ class WorkspaceCleanup extends Extension
 		'e107_plugins/pm/attachments',        // legacy attachment path; @see PmAttachmentStorageCest
 		'e107_tests_plugin_install_probe.php', // @see Helper\Acceptance::havePluginInstalled()
 		'e107_tests_thumb_probe.php',          // @see ThumbnailContainmentCest
+		'e107_tests_faqs_authz.php',           // @see FaqsAnonymousWriteCest
 		'e107_tests_p16_probe.php',            // @see ThumbMediaUserclassCest
 		'e107_tests_p18_probe.php',            // @see ForumAttachmentServingCest
 		'e107_themes/bootstrap5/images/e107_tests_p16_theme.png',       // @see ThumbMediaUserclassCest
