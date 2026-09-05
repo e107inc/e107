@@ -44,6 +44,7 @@ e107::getLanguage()->bcDefs($bcList);
 
 
 $full_perms = getperms("0") || check_class(varset($pref['memberlist_access'], 253));		// Controls display of info from other users
+$user_list_max = 50;
 
 if(e_AJAX_REQUEST)
 {
@@ -59,7 +60,7 @@ if(e_AJAX_REQUEST)
 		$rows = $qb->select('user_id', 'user_name')->from('user')
 			->where($qb->expr()->startsWith('user_name', $q))
 			->andWhere('user_ban', 0)
-			->orderBy('user_name', 'ASC')->setMaxResults(max(1, min(50, $l)))
+			->orderBy('user_name', 'ASC')->setMaxResults(max(1, min($user_list_max, $l)))
 			->fetchAll();
 
 		if($rows)
@@ -185,9 +186,9 @@ if ($records < 1)
 {
 	$records = 20;
 }
-elseif ($records > 50)
+elseif ($records > $user_list_max)
 {
-	$records = 50;
+	$records = $user_list_max;
 }
 
 if (isset($id))
