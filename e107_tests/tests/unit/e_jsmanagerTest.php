@@ -406,4 +406,73 @@
 */
 
 
+	public function testOtherCssUrlCannotEscapeTheHrefAttribute()
+	{
+		$this->js->otherCSS('https://cdn.example.com/x/bootstrap.min.css"><script>alert(1)</script><link href="');
+
+		$result = $this->js->renderJs('other_css', null, 'css', true);
+
+		self::assertStringNotContainsString('<script', $result);
+		self::assertStringContainsString('&quot;&gt;&lt;script&gt;', $result);
+		self::assertSame(1, substr_count($result, '<link'));
+	}
+
+	public function testOtherCssUrlCannotShiftTheRecordFields()
+	{
+		$this->js->otherCSS('https://cdn.example.com/x.css#|#<script>alert(1)</script>');
+
+		$result = $this->js->renderJs('other_css', null, 'css', true);
+
+		self::assertStringNotContainsString('<script', $result);
+		self::assertStringContainsString('href="https://cdn.example.com/x.css&lt;script&gt;', $result);
+		self::assertSame(1, substr_count($result, '<link'));
+	}
+
+	public function testOtherCssMediaCannotEscapeTheMediaAttribute()
+	{
+		$this->js->otherCSS('https://cdn.example.com/x.css', 'all" onload="alert(1)');
+
+		$result = $this->js->renderJs('other_css', null, 'css', true);
+
+		self::assertStringNotContainsString('onload="', $result);
+		self::assertStringContainsString('href="https://cdn.example.com/x.css"', $result);
+	}
+
+	public function testOtherCssMediaCannotShiftTheRecordFields()
+	{
+		$this->js->otherCSS('https://cdn.example.com/x.css', 'all#|#https://attacker.example.net/x.css');
+
+		$result = $this->js->renderJs('other_css', null, 'css', true);
+
+		self::assertStringContainsString('href="https://cdn.example.com/x.css"', $result);
+	}
+
+	public function testOtherCssUrlKeepsOneAmpersandEntity()
+	{
+		$this->js->otherCSS('{e_WEB}css/x.css?v=1');
+
+		$result = $this->js->renderJs('other_css', null, 'css', true);
+
+		self::assertStringContainsString('css/x.css?v=1&amp;', $result);
+		self::assertStringNotContainsString('&amp;amp;', $result);
+	}
+
+	public function testHeaderFileUrlCannotEscapeTheSrcAttribute()
+	{
+		$this->js->headerFile('https://cdn.example.com/x.js"></script><script>alert(1)</script><script src="', 1);
+
+		$result = $this->js->renderJs('header', 1, true, true);
+
+		self::assertSame(1, substr_count($result, '<script'));
+	}
+
+	public function testHeaderFileUrlCannotShiftTheRecordFields()
+	{
+		$this->js->headerFile('https://cdn.example.com/x.js#|#<script>alert(1)</script>', 1);
+
+		$result = $this->js->renderJs('header', 1, true, true);
+
+		self::assertSame(1, substr_count($result, '<script'));
+	}
+
 	}
