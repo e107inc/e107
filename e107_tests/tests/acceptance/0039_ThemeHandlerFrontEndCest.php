@@ -457,6 +457,8 @@ switch(isset(\$_GET['act']) ? \$_GET['act'] : '')
 		break;
 
 	case 'reset':
+		\$db->delete('online');
+		\$db->delete('banlist', 'banlist_bantype IN (2, -2)');
 		\$db->delete('user', "user_loginname LIKE 'p7th%'");
 
 		\$core->set('allow_theme_select', 0)

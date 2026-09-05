@@ -58,6 +58,8 @@ class CsrfClientHalfCest
 $_E107['allow_guest'] = true;
 require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}
+e107::getDb()->delete('online');
+e107::getDb()->delete('banlist', 'banlist_bantype IN (2, -2)');
 if(isset($_GET['mode']))
 {
 	$config = e107::getConfig('core');

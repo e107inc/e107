@@ -1581,6 +1581,8 @@ header('Content-Type: text/plain');
 
 if(\$act === 'reset' || \$act === 'cleanup')
 {
+	e107::getDb()->delete('online');
+	e107::getDb()->delete('banlist', 'banlist_bantype IN (2, -2)');
 
 	foreach(glob(e_CACHE_IMAGE.'*') ?: array() as \$file)
 	{

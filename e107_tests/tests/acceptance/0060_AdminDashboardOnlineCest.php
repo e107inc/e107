@@ -39,8 +39,6 @@ class AdminDashboardOnlineCest
 		$I->writeAppFile(\Helper\OutputEncodingFixture::PROBE_FILE, \Helper\OutputEncodingFixture::probeSource());
 		$I->amOnPage('/'.\Helper\OutputEncodingFixture::PROBE_FILE.'?p8=reset');
 		$I->see('P8_OK reset');
-
-		$I->resetFloodProtection();
 	}
 
 	public function _after(AcceptanceTester $I)
