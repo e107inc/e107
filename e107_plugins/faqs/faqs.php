@@ -76,9 +76,9 @@ $amount = 50;
 $faqpref        = e107::getPlugConfig('faqs')->getPref();
 $canAddFaq      = check_class(varset($faqpref['add_faq'], e_UC_NOBODY)) || e107::getUser()->isAdmin();
 $canAskQuestion = check_class(varset($faqpref['submit_question'], e_UC_NOBODY));
-$hasToken       = !empty($_POST['e-token']);
+$tokenOk        = !e_session::modeUsesToken() || !empty($_POST['e-token']);
 
-if (isset($_POST['faq_submit']) && $canAddFaq && $hasToken)
+if (isset($_POST['faq_submit']) && $canAddFaq && $tokenOk)
 {
 	$message = "-";
 	if ($_POST['faq_question'] != "" || $_POST['data'] != "")
@@ -113,7 +113,7 @@ if (isset($_POST['faq_submit']) && $canAddFaq && $hasToken)
 	$id = (int) $_POST['faq_parent'];
 }
 
-if (!empty($_POST['submit_a_question']) && $canAskQuestion && $hasToken)
+if (!empty($_POST['submit_a_question']) && $canAskQuestion && $tokenOk)
 {
 	$existing = $sql->select('faqs','faq_id',"faq_answer='' AND faq_author_ip = '".USERIP."' ");
 

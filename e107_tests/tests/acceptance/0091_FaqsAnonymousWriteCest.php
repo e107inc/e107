@@ -32,10 +32,11 @@ class FaqsAnonymousWriteCest
 
 	const PAGE = '/e107_plugins/faqs/faqs.php';
 
-	/** e_UC_PUBLIC and e_UC_NOBODY, which the test process does not define. */
+	/** e_UC_PUBLIC, which the test process does not define. */
 	const EVERYONE = 0;
 
-	const NOBODY = 255;
+	/** e_session::CSRF_CHECK_SAME_SITE, likewise. */
+	const SAME_SITE = 4;
 
 	/** The category faqs_setup seeds, visible to guests. */
 	const CATEGORY = 1;
@@ -48,6 +49,7 @@ class FaqsAnonymousWriteCest
 
 	public function _after(AcceptanceTester $I)
 	{
+		$this->haveCsrfMode($I, 'default');
 		$I->dropPluginInstall('faqs');
 		$I->dropPluginProbe();
 		$I->deleteAppFile(self::PROBE_FILE);
@@ -124,6 +126,26 @@ class FaqsAnonymousWriteCest
 	}
 
 	/**
+	 * The other half of the control, and the reason the token test above pins a
+	 * mode. e_token_injector publishes nothing in a mode that reads no token, so
+	 * a page in one of those modes draws a tokenless form, and an endpoint that
+	 * demanded a token there would drop the submission of the very visitor the
+	 * site admitted. What the framework asks for instead is the browser's word.
+	 */
+	public function aVisitorStillWritesInAModeThatPublishesNoToken(AcceptanceTester $I)
+	{
+		$I->wantTo('take a tokenless question in a CSRF mode that mints no token');
+
+		$this->havePermissions($I, self::EVERYONE);
+		$this->haveCsrfMode($I, self::SAME_SITE);
+
+		$I->haveHttpHeader('Sec-Fetch-Site', 'same-origin');
+		$I->sendPostRequest(self::PAGE, $this->askQuestion('ask-fetch-metadata'));
+
+		$I->seeInDatabase('e107_faqs', array('faq_question' => $this->marker('ask-fetch-metadata')));
+	}
+
+	/**
 	 * @param AcceptanceTester $I
 	 * @param array $post
 	 * @return void
@@ -183,6 +205,17 @@ class FaqsAnonymousWriteCest
 
 	/**
 	 * @param AcceptanceTester $I
+	 * @param int|string $mode a csrf_enforce value, or 'default' to remove it
+	 * @return void
+	 */
+	private function haveCsrfMode(AcceptanceTester $I, $mode)
+	{
+		$I->amOnPage('/'.self::PROBE_FILE.'?act=csrf&mode='.urlencode($mode));
+		$I->seeInSource('PROBE_OK');
+	}
+
+	/**
+	 * @param AcceptanceTester $I
 	 * @return string the token the FAQ page published to its own forms
 	 */
 	private function grabPublishedToken(AcceptanceTester $I)
@@ -215,6 +248,16 @@ if(isset($_GET['act']) && $_GET['act'] === 'prefs')
 	$config->set('submit_question', (int) $_GET['ask']);
 	$config->save(false, true, false);
 	echo "PROBE_OK prefs\n";
+	exit;
+}
+
+if(isset($_GET['act']) && $_GET['act'] === 'csrf')
+{
+	$config = e107::getConfig('core');
+	if($_GET['mode'] === 'default') { $config->remove('csrf_enforce'); }
+	else { $config->set('csrf_enforce', (int) $_GET['mode']); }
+	$config->save(false, true, false);
+	echo "PROBE_OK csrf\n";
 	exit;
 }
 
