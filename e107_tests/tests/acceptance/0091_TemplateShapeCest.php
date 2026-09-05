@@ -20,6 +20,12 @@ class TemplateShapeCest
 	/** LAN_PLUGIN_FORUM_POSTS, which the forum plugin's e_user addon puts on every profile. */
 	const ADDON_LABEL = 'Forum posts';
 
+	/** LAN_ONLINE_11, a row the online plugin's own template carries and the copy in the page does not. */
+	const ONLINE_TOTAL = 'Total registered members';
+
+	/** The menu area the fixture layouts render, chosen because the default install puts nothing in it. */
+	const MENU_AREA = 2;
+
 	/** Text that only a PHP diagnostic puts on a rendered page. */
 	private static $diagnostics = array('Fatal error', 'Parse error', 'Warning:', 'Undefined ');
 
@@ -199,6 +205,40 @@ class TemplateShapeCest
 		$I->see('TPSTATE3_ROOTLOGIN_MARKER');
 	}
 
+	public function onlineMenusRenderOnAV1Theme(AcceptanceTester $I)
+	{
+		$this->seeTheOnlineMenus($I, 'tpstate1_legacy');
+		$I->seeInSource(self::ONLINE_TOTAL);
+	}
+
+	public function onlineMenusRenderOnAThemeDeclaringNoFramework(AcceptanceTester $I)
+	{
+		$this->seeTheOnlineMenus($I, 'tpstate3_plain');
+		$I->seeInSource(self::ONLINE_TOTAL);
+	}
+
+	public function onlineMenusRenderOnAV1ThemeThatDefinesBootstrap(AcceptanceTester $I)
+	{
+		$this->seeTheOnlineMenus($I, 'tpstate4_legacybs');
+		$I->seeInSource(self::ONLINE_TOTAL);
+	}
+
+	/** The theme's own $sc_style reaches the parser, because nothing loads the plugin's file beside the theme's to register $ONLINE_MENU_WRAPPER over it. */
+	public function anOnlineTemplateAtTheThemeRootWins(AcceptanceTester $I)
+	{
+		$this->seeTheOnlineMenus($I, 'tpstate1_onlinetpl');
+		$I->seeInSource('TPSTATE1_ONLINETPL_MARKER');
+		$I->seeInSource('TPSTATE1_ONLINETPL_LASTSEEN');
+		$I->seeElement('#tp-menu ul.online-menu li.tp-online-guests');
+	}
+
+	/** The same file where a v2 theme puts its plugin overrides; only the online menu is placed, because an override replaces the plugin's file rather than merging with it. */
+	public function anOnlineTemplateInTheThemeTemplatesFolderWins(AcceptanceTester $I)
+	{
+		$this->seeTheOnlineMenu($I, 'tpstate1_onlinedir');
+		$I->seeInSource('TPSTATE1_ONLINEDIR_MARKER');
+	}
+
 	/** Both copies at once, as discussions #6008 and #6111 describe; the fborder table is the one only the theme's own file puts on this page. */
 	public function bothTemplatesInTheThemeWin(AcceptanceTester $I)
 	{
@@ -360,6 +400,60 @@ class TemplateShapeCest
 		$I->seeElement('input[name=userlogin]');
 
 		$this->seeNoDiagnostics($I);
+	}
+
+	/**
+	 * Both of the online plugin's menus, in the area every fixture layout carries, on the front page, as a visitor.
+	 *
+	 * @param AcceptanceTester $I
+	 * @param string $theme theme directory name; a fixture when tests/_data holds one, else a shipped theme
+	 */
+	private function seeTheOnlineMenus(AcceptanceTester $I, $theme)
+	{
+		$I->haveInDatabase('e107_menus', $this->menuRow('lastseen_menu', 2));
+
+		$this->seeTheOnlineMenu($I, $theme);
+
+		$I->seeElement('#tp-menu ul.lastseen-menu');
+	}
+
+	/**
+	 * The online menu alone, which ships unassigned, so it is placed in the area the fixture layouts render and in the layout the default one answers to.
+	 *
+	 * @param AcceptanceTester $I
+	 * @param string $theme theme directory name; a fixture when tests/_data holds one, else a shipped theme
+	 */
+	private function seeTheOnlineMenu(AcceptanceTester $I, $theme)
+	{
+		$I->haveInDatabase('e107_menus', $this->menuRow('online_menu', 1));
+
+		$I->haveThemeFixture($theme);
+		$I->haveSiteTheme($theme);
+
+		$I->amOnPage('/index.php');
+
+		$I->seeElement('#tp-menu ul.online-menu');
+
+		$this->seeNoDiagnostics($I);
+	}
+
+	/**
+	 * @param string $name the menu file, without its _menu.php suffix
+	 * @param int $order where in the area it sits
+	 * @return array
+	 */
+	private function menuRow($name, $order)
+	{
+		return array(
+			'menu_name'     => $name,
+			'menu_location' => self::MENU_AREA,
+			'menu_order'    => $order,
+			'menu_class'    => 0,
+			'menu_pages'    => '',
+			'menu_path'     => 'online/',
+			'menu_layout'   => '',
+			'menu_parms'    => '',
+		);
 	}
 
 	/**
