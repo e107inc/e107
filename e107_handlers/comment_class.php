@@ -727,8 +727,10 @@ class comment
 	{
 		$sql = e107::getDb();
 		$id = (int) $id;
+		$type = $this->getCommentType($table);
+		$table = $this->getTable(is_numeric($type) ? (int) $type : $type);
 
-		switch ($this->getTable($this->getCommentType($table)))
+		switch ($table)
 		{
 			case 'news':
 				return (bool) $sql->createQueryBuilder()->select('news_id')->from('news')
@@ -747,6 +749,7 @@ class comment
 					->where('download_id', $id)->where('download_comment', 1)->fetchRow();
 
 			case 'user':
+			case 'profile':
 				return !empty(e107::pref('core', 'profile_comments'))
 					&& (bool) $sql->createQueryBuilder()->select('user_id')->from('user')
 						->where('user_id', $id)->fetchRow();

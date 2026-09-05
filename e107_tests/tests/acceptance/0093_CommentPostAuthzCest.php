@@ -241,36 +241,79 @@ class CommentPostAuthzCest
 
 	public function aProfileRefusesTheFormRouteWhileProfileCommentsIsOff(AcceptanceTester $I)
 	{
-		$text = 'vhf5 form profile off';
+		foreach ($this->profileTypes() as $table)
+		{
+			$text = 'vhf5 form profile off '.$table;
 
-		$this->postForm($I, 'user', $this->profile, $text);
+			$this->postForm($I, $table, $this->profile, $text);
 
-		$I->dontSeeInDatabase('e107_comments', array('comment_comment' => $text));
+			$I->dontSeeInDatabase('e107_comments', array('comment_comment' => $text));
+		}
 	}
 
 	/**
 	 * The one case where the stored comment reached the public: comment.php
-	 * renders comment_type 'user' rows to any visitor whose class passes, with
-	 * no profile_comments check on the display path either.
+	 * renders these rows to any visitor whose class passes, with no
+	 * profile_comments check on the display path either.
 	 */
 	public function aProfileRefusesTheAjaxRouteWhileProfileCommentsIsOff(AcceptanceTester $I)
 	{
-		$text = 'vhf5 ajax profile off';
+		foreach ($this->profileTypes() as $table)
+		{
+			$text = 'vhf5 ajax profile off '.$table;
 
-		$this->postAjax($I, 'user', $this->profile, $text);
+			$this->postAjax($I, $table, $this->profile, $text);
 
-		$I->dontSeeInDatabase('e107_comments', array('comment_comment' => $text));
+			$I->dontSeeInDatabase('e107_comments', array('comment_comment' => $text));
+		}
 	}
 
 	public function aProfileStillAcceptsACommentWhileProfileCommentsIsOn(AcceptanceTester $I)
 	{
-		$text = 'vhf5 form profile on';
-
 		$this->probe($I, 'act=pref&k=profile_comments&v=1');
 
-		$this->postForm($I, 'user', $this->profile, $text);
+		foreach ($this->profileTypes() as $table)
+		{
+			$text = 'vhf5 form profile on '.$table;
 
-		$this->seeCommentOn($I, $text, 'user', $this->profile);
+			$this->postForm($I, $table, $this->profile, $text);
+
+			$this->seeCommentOn($I, $text, $table, $this->profile);
+		}
+	}
+
+	/**
+	 * A member's profile answers to two comment types, and a rule that knows one
+	 * of them leaves the other open. comment.php's own route calls it 'user',
+	 * which is what the deleted switch matched; user.php's insert and the form
+	 * the profile page publishes both call it 'profile'.
+	 *
+	 * @return array
+	 */
+	private function profileTypes()
+	{
+		return array('user', 'profile');
+	}
+
+	/**
+	 * The type comes off the request line unfiltered, and getCommentType() hands
+	 * back anything numeric unchanged, so '00' reaches the guard as a type that
+	 * is not the array key 0 and is not a plugin's type either. It has to resolve
+	 * to news, the way every other reader of a numeric type resolves it.
+	 */
+	public function aNumericAliasOfTheNewsTypeIsResolvedRatherThanWavedThrough(AcceptanceTester $I)
+	{
+		$refused = 'vhf5 form alias news off';
+		$accepted = 'vhf5 form alias news on';
+
+		$this->postForm($I, '00', $this->newsOff, $refused);
+		$this->postForm($I, '00', $this->newsOn, $accepted);
+
+		$I->dontSeeInDatabase('e107_comments', array('comment_comment' => $refused));
+		$I->seeInDatabase('e107_comments', array(
+			'comment_comment' => $accepted,
+			'comment_item_id' => $this->newsOn,
+		));
 	}
 
 	// -----------------------------------------------------------------
