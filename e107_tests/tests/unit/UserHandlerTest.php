@@ -192,6 +192,39 @@
 
 		}
 
+		/**
+		 * The guard holds the right restricted list and the settings confirmation
+		 * handed it the base64-decoded payload as a string, so the foreach below
+		 * never ran and every column passed. That caller is gone; the method is
+		 * public, so the next one gets an answer it can rely on.
+		 */
+		public function testHasReadonlyFieldFindsARestrictedFieldInAnArray()
+		{
+			$userMethods = e107::getUserSession();
+
+			$this->assertTrue($userMethods->hasReadonlyField(array('user_admin' => 1, 'user_perms' => '0')));
+			$this->assertTrue($userMethods->hasReadonlyField(array('user_signature' => 'hello', 'user_ban' => 1)));
+		}
+
+		/** Fields a member may edit are not restricted, so an ordinary profile update still passes. */
+		public function testHasReadonlyFieldPassesAnEditableFieldSet()
+		{
+			$userMethods = e107::getUserSession();
+
+			$this->assertFalse($userMethods->hasReadonlyField(array('user_name' => 'Someone', 'user_signature' => 'hello')));
+			$this->assertFalse($userMethods->hasReadonlyField(array()));
+		}
+
+		/** Anything that is not a field set cannot be checked against the list, and what cannot be checked is refused. */
+		public function testHasReadonlyFieldRefusesWhatItCannotRead()
+		{
+			$userMethods = e107::getUserSession();
+
+			$this->assertTrue($userMethods->hasReadonlyField('{"user_admin":1,"user_perms":"0"}'));
+			$this->assertTrue($userMethods->hasReadonlyField('{"user_name":"Someone"}'));
+			$this->assertTrue($userMethods->hasReadonlyField(null));
+		}
+
 /*
 		public function testCheckPassword()
 		{
@@ -234,11 +267,6 @@
 		}
 
 		public function testConvertPassword()
-		{
-
-		}
-
-		public function testHasReadonlyField()
 		{
 
 		}
