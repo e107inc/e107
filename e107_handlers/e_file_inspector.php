@@ -415,3 +415,90 @@ abstract class e_file_inspector implements e_file_inspector_interface
         return realpath(e_BASE . $path);
     }
 }
+
+/**
+ * Percentage a running File Inspector scan has reported, for the admin page to poll.
+ *
+ * Held in the core `tmp` table, which class2.php clears of anything older than five
+ * minutes, so a figure that is not refreshed within that window is gone.
+ */
+class e_file_inspector_progress
+{
+	const TMP_KEY_PREFIX = 'fileinspector-progress-';
+	const COMPLETE = 100;
+
+	/** @var string */
+	private $key;
+
+	/**
+	 * @param int $ownerId user whose scan this tracks
+	 */
+	public function __construct($ownerId)
+	{
+		$this->key = self::TMP_KEY_PREFIX . (int) $ownerId;
+	}
+
+	/**
+	 * @param int $percent
+	 * @return void
+	 */
+	public function record($percent)
+	{
+		$percent = (int) $percent;
+
+		if($percent >= self::COMPLETE)
+		{
+			$this->discard();
+			return;
+		}
+
+		$sql = e107::getDb();
+
+		$row = array(
+			'tmp_ip'   => $this->key,
+			'tmp_time' => time(),
+			'tmp_info' => (string) $percent,
+		);
+
+		if($sql->select('tmp', 'tmp_ip', $this->ownedRow()))
+		{
+			$row['WHERE'] = $this->ownedRow();
+			$sql->update('tmp', $row);
+
+			return;
+		}
+
+		$sql->insert('tmp', $row);
+	}
+
+	/**
+	 * @return int percentage the scan last reported, or {@see e_file_inspector_progress::COMPLETE} when no scan is on record
+	 */
+	public function percentComplete()
+	{
+		$recorded = e107::getDb()->retrieve('tmp', 'tmp_info', $this->ownedRow());
+
+		if($recorded === null || $recorded === false || !strlen($recorded))
+		{
+			return self::COMPLETE;
+		}
+
+		return (int) $recorded;
+	}
+
+	/**
+	 * @return void
+	 */
+	public function discard()
+	{
+		e107::getDb()->delete('tmp', $this->ownedRow());
+	}
+
+	/**
+	 * @return string WHERE clause selecting this owner's row and nobody else's
+	 */
+	private function ownedRow()
+	{
+		return "tmp_ip = '".e107::getDb()->escape($this->key, false)."'";
+	}
+}
