@@ -708,8 +708,10 @@ class comment
 	{
 		$sql = e107::getDb();
 		$id = (int) $id;
+		$type = $this->getCommentType($table);
+		$table = $this->getTable(is_numeric($type) ? (int) $type : $type);
 
-		switch ($this->getTable($this->getCommentType($table)))
+		switch ($table)
 		{
 			case 'news':
 				return (bool) $sql->select('news', 'news_id', "`news_id` = ".$id." AND `news_allow_comments` = 0");
@@ -724,6 +726,7 @@ class comment
 				return (bool) $sql->select('download', 'download_id', "`download_id` = ".$id." AND `download_comment` = 1");
 
 			case 'user':
+			case 'profile':
 				return !empty(e107::pref('core', 'profile_comments'))
 					&& (bool) $sql->select('user', 'user_id', "`user_id` = ".$id);
 		}
