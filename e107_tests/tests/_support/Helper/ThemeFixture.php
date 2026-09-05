@@ -108,7 +108,7 @@ class ThemeFixture extends CodeceptionModule
 		}
 
 		$browser = $this->browser();
-		$browser->amOnPage('/'.self::PROBE_FILE.'?act='.$act.'&name='.urlencode($name));
+		$browser->amOnPage('/'.self::PROBE_FILE.'?'.ProbeGuard::query().'&act='.$act.'&name='.urlencode($name));
 
 		$body = $browser->grabPageSource();
 
