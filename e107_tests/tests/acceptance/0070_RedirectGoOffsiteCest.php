@@ -39,11 +39,6 @@ class RedirectGoOffsiteCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		// Every request in this file arrives from the same bridge address and
-		// e107 bans one after the configured ceiling. Reset here rather than
-		// relying on a neighbouring Cest having sorted first and done it.
-		$I->resetForumFloodProtection();
-
 		$I->writeAppFile(\Helper\P19Fixture::PROBE_FILE, \Helper\P19Fixture::probeSource());
 
 		$I->amOnPage('/'.\Helper\P19Fixture::PROBE_FILE.'?p19=constants');

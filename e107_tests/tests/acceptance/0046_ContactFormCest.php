@@ -637,11 +637,6 @@ require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}
 header('Content-Type: text/plain');
 
-// Every request in the container arrives from the bridge address, so a Cest
-// that makes more than a handful of them bans itself part way through.
-e107::getDb()->delete('online');
-e107::getDb()->delete('banlist', 'banlist_bantype IN (2, -2)');
-
 class e107TestsP6Captcha
 {
 	public static function render(\$form = null)

@@ -1942,9 +1942,6 @@ header('Content-Type: text/plain');
 switch(isset(\$_GET['act']) ? \$_GET['act'] : '')
 {
 	case 'reset':
-		\$db->delete('online');
-		\$db->delete('banlist', 'banlist_bantype IN (2, -2)');
-
 		// Accounts this Cest created through the application. Codeception's Db
 		// module rolls back only the rows it inserted itself.
 		\$db->delete('user', "user_loginname LIKE 'p7rp%'");

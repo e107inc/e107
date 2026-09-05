@@ -417,11 +417,6 @@ require_once(__DIR__.'/class2.php');
 {{E107_TEST_PROBE_GUARD}}
 if(isset($_GET['csrf_matrix_reset']))
 {
-	// Flood protection counts hits per address and bans at fifty. A flood ban is
-	// recorded with banlist_bantype -2, and once one exists every later request
-	// is answered with an empty body, so both have to go.
-	e107::getDb()->delete('online');
-	e107::getDb()->delete('banlist', 'banlist_bantype IN (2, -2)');
 	echo 'RESET_DONE ';
 }
 if(isset($_GET['csrf_matrix_mode']))

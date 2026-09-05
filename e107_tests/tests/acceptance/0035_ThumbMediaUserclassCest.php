@@ -856,8 +856,6 @@ function p16_pref_cookie_name(\$value)
 
 if(\$act === 'reset' || \$act === 'cleanup')
 {
-	e107::getDb()->delete('online');
-	e107::getDb()->delete('banlist', 'banlist_bantype IN (2, -2)');
 
 	p16_pref_cookie_name('e107cookie');
 

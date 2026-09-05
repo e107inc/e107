@@ -28,7 +28,6 @@ class ForumFixtureCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->resetForumFloodProtection();
 		$I->haveForumPluginInstalled();
 
 		// Pinned, not inherited. 0023 removes the preference in its teardown and

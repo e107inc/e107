@@ -53,7 +53,6 @@ class ForumNamesOutsideTheFeedCest
 
 	public function _before(AcceptanceTester $I)
 	{
-		$I->resetForumFloodProtection();
 		$I->haveForumPluginInstalled();
 
 		$I->haveUserClass(\Helper\ForumFixture::CLASS_MOD_A, 'fixture_mod_a');
@@ -164,7 +163,7 @@ class ForumNamesOutsideTheFeedCest
 	 */
 	private function haveWatcherAt(AcceptanceTester $I, $page)
 	{
-		$I->resetForumFloodProtection();
+		$I->resetFloodProtection();
 
 		$I->haveInDatabase('e107_online', array(
 			'online_timestamp' => time(),

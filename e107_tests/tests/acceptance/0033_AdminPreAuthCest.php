@@ -995,9 +995,6 @@ header('Content-Type: text/plain');
 switch(isset(\$_GET['act']) ? \$_GET['act'] : '')
 {
 	case 'reset':
-		e107::getDb()->delete('online');
-		e107::getDb()->delete('banlist', 'banlist_bantype IN (2, -2)');
-
 		@unlink(\$canary);
 
 		// Prove the payload's mechanism works here before any test concludes

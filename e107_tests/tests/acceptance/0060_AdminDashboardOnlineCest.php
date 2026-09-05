@@ -39,6 +39,8 @@ class AdminDashboardOnlineCest
 		$I->writeAppFile(\Helper\P8Fixture::PROBE_FILE, \Helper\P8Fixture::probeSource());
 		$I->amOnPage('/'.\Helper\P8Fixture::PROBE_FILE.'?p8=reset');
 		$I->see('P8_OK reset');
+
+		$I->resetFloodProtection();
 	}
 
 	public function _after(AcceptanceTester $I)
