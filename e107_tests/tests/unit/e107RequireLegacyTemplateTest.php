@@ -230,16 +230,19 @@ class e107RequireLegacyTemplateTest extends \Codeception\Test\Unit
 		unset($GLOBALS['__test_cached']);
 	}
 
-	// --- fpw_template.php regression for #5653 -----------------------------
+	// --- v1 template regression for #5653 ---------------------------------
 
-	public function testFpwLegacyTemplateScanFindsLan112()
+	/** The shape the shipped legacy fpw template had when it fataled: numbered LAN names beside current ones, all read as bare constants. */
+	public function testLegacyTemplateScanFindsLan112()
 	{
-		$path = realpath(__DIR__ . '/../../../e107_core/templates/legacy/fpw_template.php');
-		if (!$path || !is_readable($path))
-		{
-			$this->markTestSkipped('fpw_template.php not found at expected legacy path');
-		}
+		$body = "<?php\n"
+			."\$FPW_TABLE = \"<td>\".LAN_05.\"</td>\";\n"
+			."\$FPW_TABLE .= \"<td>\".LAN_FPW1.\"</td>\";\n"
+			."\$FPW_TABLE .= \"<td>\".LAN_112.\"</td>\";\n";
+		$path = $this->writeTempTemplate('lan112.php', $body);
+
 		$names = e107::_extractLanConstantsFromSource(file_get_contents($path));
+
 		$this->assertContains('LAN_05', $names);
 		$this->assertContains('LAN_FPW1', $names);
 		$this->assertContains('LAN_112', $names, 'The very constant that fataled in issue #5653 must be detected');

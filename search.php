@@ -62,65 +62,25 @@ class search_front extends e_shortcode
 								'be' => LAN_SEARCH_27
 							);
 	private $searchtype;
-	
+
+	/** The v1 variable each part of the form was assigned to, before every pack assigned the same keys. */
+	private static $legacyForm = array(
+		'SEARCH_TOP_TABLE'	=> 'start',
+		'SEARCH_BOT_TABLE'	=> 'end',
+		'SEARCH_CATS'		=> 'category',
+		'SEARCH_TYPE'		=> 'type',
+		'SEARCH_ADV'		=> 'advanced',
+		'SEARCH_ENHANCED'	=> 'enhanced',
+		'SEARCH_ADV_COMBO'	=> 'advanced-combo',
+		'SEARCH_TABLE_MSG'	=> 'message'
+	);
+
 	function __construct()
 	{
 		$this->search_prefs = e107::getConfig('search')->getPref();		
 		$this->search_info 	= $this->searchConfig();
 
-		if(THEME_LEGACY === false)
-		{
-			$tmp = e107::getCoreTemplate('search','form');
-
-			$SEARCH_TOP_TABLE 	= $tmp['start'];
-			$SEARCH_BOT_TABLE 	= $tmp['end'];
-			$SEARCH_CATS		= $tmp['category'];
-			$SEARCH_TYPE		= varset($tmp['type']);
-			$SEARCH_ADV			= $tmp['advanced'];
-			$SEARCH_ENHANCED	= varset($tmp['enhanced']);
-			$SEARCH_ADV_COMBO	= $tmp['advanced-combo'];
-			
-			$this->template = $tmp;
-
-			unset($tmp);
-		}
-		else
-		{
-			if (file_exists(THEME."templates/search_template.php"))
-			{
-				require(THEME."templates/search_template.php");
-			}
-			elseif (file_exists(THEME."search_template.php"))
-			{
-				require(THEME."search_template.php");
-			} 
-			else
-			{
-				$_legacy_search_tmpl = e_CORE."templates/legacy/search_template.php";
-				e107::predefineLegacyLans($_legacy_search_tmpl); // #5653
-				require($_legacy_search_tmpl);
-			}
-
-			if(!isset($SEARCH_TOP_TABLE))
-			{
-				$SEARCH_TOP_TABLE = '';
-			}
-
-			$SEARCH_TOP_TABLE .= "{SEARCH_ENHANCED}";
-			
-			$tmp = array();
-			
-			$tmp['start']  			= varset($SEARCH_TOP_TABLE);
-			$tmp['end'] 			= varset($SEARCH_BOT_TABLE);
-			$tmp['category'] 		= varset($SEARCH_CATS);
-			$tmp['type'] 			= varset($SEARCH_TYPE);
-			$tmp['advanced'] 		= varset($SEARCH_ADV);
-			$tmp['enhanced'] 		= varset($SEARCH_ENHANCED);
-			$tmp['advanced-combo'] 	= varset($SEARCH_ADV_COMBO);
-			$tmp['message']         = varset($SEARCH_TABLE_MSG);
-
-			$this->template = $tmp;
-		}
+		$this->template = $this->formTemplate(e107::getCoreTemplate('search'));
 
 
 		if(e_AJAX_REQUEST)
@@ -143,6 +103,36 @@ class search_front extends e_shortcode
 	public function getTemplate()
 	{
 		return $this->template;
+	}
+
+	/**
+	 * The form, in whichever shape the theme or core's own pack delivered it {@see e107::getCoreTemplate()}.
+	 *
+	 * @param array $template every key the loader returned for this id
+	 * @return array
+	 */
+	private function formTemplate($template)
+	{
+		if(!is_array($template))
+		{
+			return array();
+		}
+
+		if(!array_intersect_key($template, self::$legacyForm))
+		{
+			return varset($template['form'], array());
+		}
+
+		$form = array();
+
+		foreach(self::$legacyForm as $legacyKey => $key)
+		{
+			$form[$key] = varset($template[$legacyKey], '');
+		}
+
+		$form['start'] .= "{SEARCH_ENHANCED}";
+
+		return $form;
 	}
 
 
