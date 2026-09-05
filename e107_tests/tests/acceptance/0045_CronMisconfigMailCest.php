@@ -380,6 +380,11 @@ require_once(__DIR__.'/class2.php');
 require_once(e_HANDLER.'cron_class.php');
 header('Content-Type: text/plain');
 
+// Every request in the container arrives from the bridge address, so a Cest
+// that makes more than a handful of them bans itself part way through.
+e107::getDb()->delete('online');
+e107::getDb()->delete('banlist', 'banlist_bantype IN (2, -2)');
+
 \$act = isset(\$_GET['act']) ? \$_GET['act'] : '';
 \$config = e107::getConfig('core');
 \$logFile = e_LOG.'mailoutlog.log';

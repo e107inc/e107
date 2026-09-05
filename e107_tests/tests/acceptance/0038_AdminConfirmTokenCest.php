@@ -354,6 +354,9 @@ header('Content-Type: text/plain');
 switch(isset(\$_GET['act']) ? \$_GET['act'] : '')
 {
 	case 'reset':
+		\$db->delete('online');
+		\$db->delete('banlist', 'banlist_bantype IN (2, -2)');
+
 		// Created through the application, so Codeception's Db module, which
 		// rolls back only the rows it inserted itself, knows nothing about it.
 		\$db->delete('user', "user_loginname LIKE 'p7ct%'");
