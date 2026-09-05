@@ -56,6 +56,8 @@ class WorkspaceCleanup extends Extension
 		'e107_themes/testkubrick',
 		'e107_core/templates/e107_tests_corescan_template.php', // @see e107TemplateSourceTest
 		'e107_themes/tpstate1_legacy',    // @see Helper\ThemeFixture
+		'e107_themes/tpstate1_onlinetpl',
+		'e107_themes/tpstate1_onlinedir',
 		'e107_themes/tpstate3_plain',
 		'e107_themes/tpstate3_rootfpw',
 		'e107_themes/tpstate3_rootlogin',

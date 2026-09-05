@@ -14,5 +14,5 @@ function tablestyle($caption, $text, $mode = '')
 	echo "<div class='tp-block'><h2 class='tp-caption'>".$caption."</h2><div class='tp-body'>".$text."</div></div>";
 }
 
-$HEADER = "<div id='tpstate4-legacybs'><div id='tp-search'>{SEARCH}</div>";
+$HEADER = "<div id='tpstate4-legacybs'><div id='tp-search'>{SEARCH}</div><div id='tp-menu'>{MENU=2}</div>";
 $FOOTER = "</div>";
