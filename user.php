@@ -44,6 +44,7 @@ e107::getLanguage()->bcDefs($bcList);
 
 
 $full_perms = getperms("0") || check_class(varset($pref['memberlist_access'], 253));		// Controls display of info from other users
+$user_list_max = 50;
 
 if(e_AJAX_REQUEST)
 {
@@ -55,12 +56,12 @@ if(e_AJAX_REQUEST)
 
 		$l = vartrue($_POST['l']) ? intval($_POST['l']) : 10;
 
-		$where = "user_ban = 0 AND user_name LIKE '". addcslashes($q, '%_\\')."%' ";
+		$where = "user_ban = 0 AND user_name LIKE '". $db->escape(addcslashes($q, '%_\\'))."%' ";
 
 		//TODO FIXME Filter by userclass.  - see $frm->userlist().
 
 
-		if($db->select("user", "user_id,user_name", $where. " ORDER BY user_name LIMIT " . max(1, min(50, $l))))
+		if($db->select("user", "user_id,user_name", $where. " ORDER BY user_name LIMIT " . max(1, min($user_list_max, $l))))
 		{
 			$data = array();
 			while($row = $db->fetch())
@@ -182,9 +183,9 @@ if ($records < 1)
 {
 	$records = 20;
 }
-elseif ($records > 50)
+elseif ($records > $user_list_max)
 {
-	$records = 50;
+	$records = $user_list_max;
 }
 
 if (isset($id))

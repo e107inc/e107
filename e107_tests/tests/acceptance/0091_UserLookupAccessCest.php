@@ -1,14 +1,6 @@
 <?php
 
-/**
- * Regression test for GHSA-72mc-5q6j-2fqq: the user-name lookups answered an
- * anonymous caller with the whole member directory. user.php's AJAX branch ran
- * ahead of the memberlist_access check the same file makes for the page below
- * it, and the PM plugin ran its own lookup ahead of the pm_class gate. Neither
- * capped the rows it returned, neither excluded banned or unvalidated accounts,
- * and a keyword of nothing but markup filtered down to an empty pattern that
- * matched every row.
- */
+/** Regression test for GHSA-72mc-5q6j-2fqq, unauthenticated member enumeration. */
 class UserLookupAccessCest
 {
 	const LOOKUP = '/user.php?ajax_used=1';
@@ -95,6 +87,17 @@ class UserLookupAccessCest
 
 		$I->assertStringNotContainsString(self::PREFIX, $I->grabResponseBody(),
 			'A keyword that filters down to an empty pattern still matched every member');
+	}
+
+	public function anAuthorisedLookupTakesAWildcardLiterally(AcceptanceTester $I)
+	{
+		$I->wantTo('match a LIKE metacharacter as a character rather than as a pattern');
+
+		$token = $this->loginAsViewer($I);
+		$I->sendPostRequest(self::LOOKUP, array('q' => '%', 'l' => '100', 'e-token' => $token));
+
+		$I->assertStringNotContainsString(self::PREFIX, $I->grabResponseBody(),
+			'A keyword of one wildcard still matched every member');
 	}
 
 	public function anAuthorisedLookupSkipsBannedAndUnvalidatedAccounts(AcceptanceTester $I)
@@ -197,12 +200,8 @@ class UserLookupAccessCest
 	}
 
 	/**
-	 * Log the seeded member in and hand back the session token their posts need:
-	 * class2.php refuses a cookie-bearing POST that carries none, so an
-	 * authenticated lookup without one never reaches the code under test.
-	 *
 	 * @param AcceptanceTester $I
-	 * @return string the e-token this session's posts must carry
+	 * @return string the e-token a cookie-bearing POST has to carry to get past class2.php
 	 */
 	private function loginAsViewer(AcceptanceTester $I)
 	{
@@ -222,11 +221,8 @@ class UserLookupAccessCest
 	}
 
 	/**
-	 * Store memberlist_access through the admin form, so the preference handler
-	 * refreshes the cache it would otherwise serve the old value from.
-	 *
 	 * @param AcceptanceTester $I
-	 * @param string $class userclass id to store
+	 * @param string $class userclass id to store, through the admin form so the pref cache follows
 	 * @return void
 	 */
 	private function haveMemberlistAccess(AcceptanceTester $I, $class)
